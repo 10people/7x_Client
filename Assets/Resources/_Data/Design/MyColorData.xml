@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<MyColorData id="1" Color="ffb12a" />
+<MyColorData id="2" Color="fff8d9" />
+<MyColorData id="3" Color="2b180a" />
+<MyColorData id="4" Color="10ff2b" />
+<MyColorData id="5" Color="c40000" />
+<MyColorData id="6" Color="016bc5" />
+<MyColorData id="7" Color="5e01bc" />
+<MyColorData id="8" Color="676767" />
+<MyColorData id="9" Color="fff8d9" />
+<MyColorData id="10" Color="000000" />
+<MyColorData id="11" Color= "128c02"/>
+<MyColorData id="12" Color= "00e1c4"/>
+<MyColorData id="13" Color= "ec7500"/>
+<MyColorData id="14" Color= "c909cb"/>
+</dataset>

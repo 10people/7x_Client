@@ -1,0 +1,152 @@
+fileFormatVersion: 2
+guid: a512967ad703da347b45915b7ef00474
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: DrawCall_0093
+    100002: DrawCall_0094
+    100004: DrawCall_0095
+    100006: DrawCall_0096
+    100008: Object001
+    100010: s7_biaoqiang
+    100012: s7_caoche
+    100014: s7_daoche
+    100016: s7_feixuA
+    100018: s7_feixuB
+    100020: s7_feixuC
+    100022: s7_feixuD
+    100024: s7_feixuE
+    100026: s7_huodui
+    100028: s7_liaowangtai
+    100030: s7_pengzi
+    100032: s7_shiban
+    100034: //RootNode
+    400000: DrawCall_0093
+    400002: DrawCall_0094
+    400004: DrawCall_0095
+    400006: DrawCall_0096
+    400008: Object001
+    400010: s7_biaoqiang
+    400012: s7_caoche
+    400014: s7_daoche
+    400016: s7_feixuA
+    400018: s7_feixuB
+    400020: s7_feixuC
+    400022: s7_feixuD
+    400024: s7_feixuE
+    400026: s7_huodui
+    400028: s7_liaowangtai
+    400030: s7_pengzi
+    400032: s7_shiban
+    400034: //RootNode
+    2300000: DrawCall_0093
+    2300002: DrawCall_0094
+    2300004: DrawCall_0095
+    2300006: DrawCall_0096
+    2300008: Object001
+    2300010: s7_biaoqiang
+    2300012: s7_caoche
+    2300014: s7_daoche
+    2300016: s7_feixuA
+    2300018: s7_feixuB
+    2300020: s7_feixuC
+    2300022: s7_feixuD
+    2300024: s7_huodui
+    2300026: s7_liaowangtai
+    2300028: s7_pengzi
+    2300030: s7_shiban
+    3300000: DrawCall_0093
+    3300002: DrawCall_0094
+    3300004: DrawCall_0095
+    3300006: DrawCall_0096
+    3300008: Object001
+    3300010: s7_biaoqiang
+    3300012: s7_caoche
+    3300014: s7_daoche
+    3300016: s7_feixuA
+    3300018: s7_feixuB
+    3300020: s7_feixuC
+    3300022: s7_feixuD
+    3300024: s7_huodui
+    3300026: s7_liaowangtai
+    3300028: s7_pengzi
+    3300030: s7_shiban
+    4300000: s7_shiban
+    4300002: s7_huodui
+    4300004: s7_liaowangtai
+    4300006: s7_biaoqiang
+    4300008: s7_daoche
+    4300010: s7_caoche
+    4300012: s7_feixuC
+    4300014: s7_feixuD
+    4300016: s7_feixuA
+    4300018: s7_feixuB
+    4300020: s7_pengzi
+    4300022: DrawCall_0093
+    4300024: DrawCall_0094
+    4300026: DrawCall_0095
+    4300028: DrawCall_0096
+    4300030: Object001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

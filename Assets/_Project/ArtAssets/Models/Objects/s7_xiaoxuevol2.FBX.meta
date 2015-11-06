@@ -1,0 +1,148 @@
+fileFormatVersion: 2
+guid: 91835cba3ae37ff4592f62942441b89d
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Particle View 01
+    100002: Particle View 01 1
+    100004: Particle View 01 2
+    100006: Particle View 01 3
+    100008: Particle View 01 4
+    100010: Particle View 01 5
+    100012: Particle View 01 6
+    100014: Particle View 01 7
+    100016: Particle View 01 8
+    100018: Particle View 01 9
+    100020: Particle View01
+    100022: s7_fightpve_box1
+    100024: s7_fightpve_box2
+    100026: s7_fightpve_box3
+    100028: s7_fightpve_gu
+    100030: s7_fightpve_guanzi
+    100032: s7_fightpve_luzi
+    100034: s7_fightpve_madai
+    100036: s7_fightpve_shuijing01
+    100038: s7_fightpve_xiangzi03
+    100040: s7_fightpve_xsczaotai01
+    100042: s7_shidunzi
+    100044: //RootNode
+    400000: Particle View 01
+    400002: Particle View 01 1
+    400004: Particle View 01 2
+    400006: Particle View 01 3
+    400008: Particle View 01 4
+    400010: Particle View 01 5
+    400012: Particle View 01 6
+    400014: Particle View 01 7
+    400016: Particle View 01 8
+    400018: Particle View 01 9
+    400020: Particle View01
+    400022: s7_fightpve_box1
+    400024: s7_fightpve_box2
+    400026: s7_fightpve_box3
+    400028: s7_fightpve_gu
+    400030: s7_fightpve_guanzi
+    400032: s7_fightpve_luzi
+    400034: s7_fightpve_madai
+    400036: s7_fightpve_shuijing01
+    400038: s7_fightpve_xiangzi03
+    400040: s7_fightpve_xsczaotai01
+    400042: s7_shidunzi
+    400044: //RootNode
+    2300000: s7_fightpve_box1
+    2300002: s7_fightpve_box2
+    2300004: s7_fightpve_box3
+    2300006: s7_fightpve_gu
+    2300008: s7_fightpve_guanzi
+    2300010: s7_fightpve_luzi
+    2300012: s7_fightpve_madai
+    2300014: s7_fightpve_shuijing01
+    2300016: s7_fightpve_xiangzi03
+    2300018: s7_fightpve_xsczaotai01
+    2300020: s7_shidunzi
+    3300000: s7_fightpve_box1
+    3300002: s7_fightpve_box2
+    3300004: s7_fightpve_box3
+    3300006: s7_fightpve_gu
+    3300008: s7_fightpve_guanzi
+    3300010: s7_fightpve_luzi
+    3300012: s7_fightpve_madai
+    3300014: s7_fightpve_shuijing01
+    3300016: s7_fightpve_xiangzi03
+    3300018: s7_fightpve_xsczaotai01
+    3300020: s7_shidunzi
+    4300000: s7_fightpve_guanzi
+    4300002: s7_fightpve_box3
+    4300004: s7_fightpve_box2
+    4300006: s7_fightpve_box1
+    4300008: s7_fightpve_luzi
+    4300010: s7_fightpve_shuijing01
+    4300012: s7_fightpve_xsczaotai01
+    4300014: s7_fightpve_xiangzi03
+    4300016: s7_fightpve_gu
+    4300018: s7_fightpve_madai
+    4300020: s7_shidunzi
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

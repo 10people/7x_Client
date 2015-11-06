@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: ea659cba6e3627340bb3aeae0ae834f7
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - bloomMaterial: {fileID: 2100000, guid: 5209417774801496dbc4ad7f143115a1, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

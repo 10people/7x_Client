@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HeroType typeId="1" typeName="11000" typeDesc="11000" atkType="0" kuId="0" />
+<HeroType typeId="11" typeName="11003" typeDesc="11003" atkType="2" kuId="1" />
+<HeroType typeId="12" typeName="11004" typeDesc="11004" atkType="1" kuId="2" />
+<HeroType typeId="13" typeName="11005" typeDesc="11005" atkType="1" kuId="3" />
+<HeroType typeId="14" typeName="11006" typeDesc="11006" atkType="1" kuId="4" />
+<HeroType typeId="21" typeName="11007" typeDesc="11007" atkType="1" kuId="5" />
+<HeroType typeId="22" typeName="11008" typeDesc="11008" atkType="2" kuId="6" />
+<HeroType typeId="23" typeName="11009" typeDesc="11009" atkType="2" kuId="7" />
+<HeroType typeId="30" typeName="11010" typeDesc="11010" atkType="0" kuId="8" />
+</dataset>

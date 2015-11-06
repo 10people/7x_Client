@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<FuwenJiacheng ID="1" levelMin="1" addition="200" />
+<FuwenJiacheng ID="2" levelMin="2" addition="400" />
+<FuwenJiacheng ID="3" levelMin="3" addition="600" />
+<FuwenJiacheng ID="4" levelMin="4" addition="800" />
+<FuwenJiacheng ID="5" levelMin="5" addition="1000" />
+<FuwenJiacheng ID="6" levelMin="6" addition="1200" />
+<FuwenJiacheng ID="7" levelMin="7" addition="1400" />
+<FuwenJiacheng ID="8" levelMin="8" addition="1600" />
+<FuwenJiacheng ID="9" levelMin="9" addition="1800" />
+<FuwenJiacheng ID="10" levelMin="10" addition="2000" />
+<FuwenJiacheng ID="11" levelMin="11" addition="2200" />
+</dataset>

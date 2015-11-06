@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: deb967d8883ca2f459c285666e3675aa
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Object04_001_001
+    100002: Object04_001_002
+    100004: Object04_001_003
+    100006: Object18_001
+    100008: Object18_002
+    100010: Object18_003
+    100012: Object25
+    100014: Object54_001
+    100016: Object54_002
+    100018: Object54_003
+    100020: //RootNode
+    100022: s7_minjuAcity
+    100024: s7_minjucityB
+    100026: s7_minjucityC
+    100028: 1111_001
+    100030: 1111_002
+    100032: 1111_003
+    100034: 1111_004
+    100036: Rectangle001
+    100038: Rectangle002
+    100040: s7_minjucityD
+    400000: Object04_001_001
+    400002: Object04_001_002
+    400004: Object04_001_003
+    400006: Object18_001
+    400008: Object18_002
+    400010: Object18_003
+    400012: Object25
+    400014: Object54_001
+    400016: Object54_002
+    400018: Object54_003
+    400020: //RootNode
+    400022: s7_minjuAcity
+    400024: s7_minjucityB
+    400026: s7_minjucityC
+    400028: 1111_001
+    400030: 1111_002
+    400032: 1111_003
+    400034: 1111_004
+    400036: Rectangle001
+    400038: Rectangle002
+    400040: s7_minjucityD
+    2300000: Object04_001_001
+    2300002: Object04_001_002
+    2300004: Object04_001_003
+    2300006: Object18_001
+    2300008: Object18_002
+    2300010: Object18_003
+    2300012: Object54_001
+    2300014: Object54_002
+    2300016: Object54_003
+    2300018: 1111_001
+    2300020: 1111_002
+    2300022: 1111_003
+    2300024: 1111_004
+    2300026: Rectangle001
+    2300028: Rectangle002
+    3300000: Object04_001_001
+    3300002: Object04_001_002
+    3300004: Object04_001_003
+    3300006: Object18_001
+    3300008: Object18_002
+    3300010: Object18_003
+    3300012: Object54_001
+    3300014: Object54_002
+    3300016: Object54_003
+    3300018: 1111_001
+    3300020: 1111_002
+    3300022: 1111_003
+    3300024: 1111_004
+    3300026: Rectangle001
+    3300028: Rectangle002
+    4300000: Object04_001_001
+    4300002: Object04_001_002
+    4300004: Object04_001_003
+    4300006: Object18_001
+    4300008: Object18_002
+    4300010: Object18_003
+    4300012: Object54_001
+    4300014: Object54_002
+    4300016: Object54_003
+    4300018: 1111_001
+    4300020: 1111_002
+    4300022: 1111_003
+    4300024: 1111_004
+    4300026: Rectangle002
+    4300028: Rectangle001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

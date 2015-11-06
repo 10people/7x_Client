@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<EffectIdGroup Id="1" Group="1010" CountLow="3" CountMed="4" CountHigh="5" Time="0.8" />
+<EffectIdGroup Id="2" Group="67" CountLow="5" CountMed="6" CountHigh="7" Time="0.8" />
+</dataset>

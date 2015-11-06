@@ -19,3 +19,14 @@
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+*.svn-base
+.svn/entries
+.svn/format
+.svn/wc.db
+.svn/wc.db-journal
+Assets/UnityVS.meta
+Assets/UnityVS/Editor.meta
+Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll
+Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll.meta
+Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Messaging.dll
+Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Messaging.dll.meta

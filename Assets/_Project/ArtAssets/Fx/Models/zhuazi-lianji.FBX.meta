@@ -1,0 +1,132 @@
+fileFormatVersion: 2
+guid: 85c0979b00abb4946a8a3029fe0fd58a
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: ________________03
+    100002: ________________04
+    100004: Bip01
+    100006: Bip01 Head
+    100008: Bip01 L Calf
+    100010: Bip01 L Clavicle
+    100012: Bip01 L Foot
+    100014: Bip01 L Forearm
+    100016: Bip01 L Hand
+    100018: Bip01 L Thigh
+    100020: Bip01 L UpperArm
+    100022: Bip01 Pelvis
+    100024: Bip01 Prop1
+    100026: Bip01 R Calf
+    100028: Bip01 R Clavicle
+    100030: Bip01 R Foot
+    100032: Bip01 R Forearm
+    100034: Bip01 R Hand
+    100036: Bip01 R Thigh
+    100038: Bip01 R UpperArm
+    100040: Bip01 Spine
+    100042: Bip01 Spine1
+    100044: Bone01
+    100046: Bone02
+    100048: Bone09
+    100050: Bone10
+    100052: Bone12
+    100054: Bone12(mirrored)
+    100056: Bone13
+    100058: Bone13(mirrored)
+    100060: //RootNode
+    100062: zhujue_haojie_nan
+    400000: ________________03
+    400002: ________________04
+    400004: Bip01
+    400006: Bip01 Head
+    400008: Bip01 L Calf
+    400010: Bip01 L Clavicle
+    400012: Bip01 L Foot
+    400014: Bip01 L Forearm
+    400016: Bip01 L Hand
+    400018: Bip01 L Thigh
+    400020: Bip01 L UpperArm
+    400022: Bip01 Pelvis
+    400024: Bip01 Prop1
+    400026: Bip01 R Calf
+    400028: Bip01 R Clavicle
+    400030: Bip01 R Foot
+    400032: Bip01 R Forearm
+    400034: Bip01 R Hand
+    400036: Bip01 R Thigh
+    400038: Bip01 R UpperArm
+    400040: Bip01 Spine
+    400042: Bip01 Spine1
+    400044: Bone01
+    400046: Bone02
+    400048: Bone09
+    400050: Bone10
+    400052: Bone12
+    400054: Bone12(mirrored)
+    400056: Bone13
+    400058: Bone13(mirrored)
+    400060: //RootNode
+    400062: zhujue_haojie_nan
+    2300000: ________________03
+    2300002: ________________04
+    3300000: ________________03
+    3300002: ________________04
+    4300000: zhujue_haojie_nan
+    4300002: ________________03
+    4300004: ________________04
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: zhujue_haojie_nan
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

@@ -1,0 +1,1270 @@
+﻿//#define DEBUG_ENTER_NEXT_SCENE
+
+//#define DEBUG_SHOW_LOADING_INFO
+
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+using ProtoBuf;
+using qxmobile.protobuf;
+using ProtoBuf.Meta;
+
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2014.10.1
+ * @since:		Unity 4.5.3
+ * Function:	Exist in Loading Scene, prepare loading, exes scene switches.
+ * 
+ * Notes:
+ * None.
+ */ 
+public class EnterNextScene : MonoBehaviour, SocketListener{
+	
+	/// 加载进度条
+	public UISlider m_slider_progress;
+
+	public UILabel m_lb_debug;
+
+	/// Background Image
+	private UITexture m_background_image;
+
+//	private AsyncOperation m_async;
+
+
+	private static EnterNextScene m_instance;
+
+	public static EnterNextScene Instance(){
+		return m_instance; 
+	}
+
+	#region Mono
+	
+	void Awake(){
+//		Debug.Log( "EnterNextScene.Awake()" );
+
+		m_instance = this;
+	}
+
+	void Start(){
+//		Debug.Log( "EnterNextScene.Start()" );
+
+		{
+			if( ConfigTool.GetBool( ConfigTool.CONST_LOG_TOTAL_LOADING_TIME, true ) ){
+				Debug.Log( "------------------" +
+				          "Reset Loading Time" +
+				          "------------------" );
+			}
+
+			ResetLoadingInfo();
+		}
+
+		// Find Real Background
+		{
+			m_background_image = StaticLoading.Instance().m_loading_bg;
+		}
+
+		{
+			DontDestroyOnLoad( gameObject );
+
+			DontDestroyOnLoad( StaticLoading.Instance().m_loading_bg_root );
+		}
+
+		SocketTool.RegisterSocketListener( this );
+
+		PrepareToLoadScene();
+	}
+
+	/** Notes:
+	 * bug fixed, NEVER destroy here.
+	 * destroy in ManualDestroy.
+	 */
+	void OnDestroy(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.OnDestroy()" );
+		#endif
+	}
+
+	void Update(){
+//		if( m_async != null ){
+//			Debug.Log( "m_async.progress: " + m_async.progress );
+//
+//			m_slider_progress.value = m_async.progress * 100;
+//
+//			StaticLoading.UpdatePercentag( StaticLoading.m_loading_sections,
+//			                              StaticLoading.CONST_COMMON_LOADING_SCENE, m_async.progress );
+//		}
+
+		{
+			float t_percentage = StaticLoading.GetLoadingPercentage( StaticLoading.m_loading_sections );
+
+//			Debug.Log( "StaticLoading.Percentage: " + t_percentage );
+
+			if( t_percentage < m_preserve_percentage ){
+				t_percentage = m_preserve_percentage;
+			}
+
+			if( t_percentage < m_slider_progress.value ){
+//				Debug.Log( "Percentage error: " + t_percentage + " / " + m_slider_progress.value );
+			}
+			else{
+				m_slider_progress.value = t_percentage;
+			}
+		}
+
+		if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CURRENT_LOADING ) ){
+			if( m_loading_asset_changed ){
+				{
+					SetLoadingAssetChanged( false );
+					
+					m_lb_debug.gameObject.SetActive( true );
+				}
+				
+				if( m_lb_debug != null ){
+					m_lb_debug.text = StaticLoading.GetCurLoading();
+				}
+			}
+		}
+	}
+	
+	void OnRenderObject(){
+		if( m_battle_res_step == 1 ){
+			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+			                         StaticLoading.CONST_BATTLE_RENDER, "Init" );
+
+			m_battle_res_step++;
+		}
+	}
+
+	#endregion
+
+
+
+	#region Prepare To Load Scene
+
+	/// Called when Start(), then try to start loading.
+	void PrepareToLoadScene(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.PrepareToLoadScene()" );
+		#endif
+
+		if( SocketTool.IsConnected() ){
+//			Debug.Log( "--- Scene Tag --- EnterNextScene.PrepareToLoadScene --- State_LOADINGSCENE" );
+			
+			PlayerState t_state = new PlayerState();
+			
+			t_state.s_state = State.State_LOADINGSCENE;
+			
+			UtilityTool.SendQXMessage( t_state, ProtoIndexes.PLAYER_STATE_REPORT );
+		}
+		else{
+//			Debug.LogError( "Error, Socket not Connected." );
+		}
+
+        if (IsLoadingLogin()) {
+            Prepare_For_Login();
+        }
+        else if (IsLoadingMainCity() || IsLoadingMainCityYeWan())
+        {
+            // loading MainCity
+            Prepare_For_MainCity();
+        }
+        else if (IsLoadingAllianceCity()) {
+            Prepare_For_AllianceCity();
+        }
+        else if (IsLoadingAllianceCityYeWan()) {
+            Prepare_For_AllianceCity();
+        }
+        else if (IsLoadingAllianceTenentsCity())
+        {
+            Prepare_For_AllianceCity();
+        }
+        else if (IsLoadingBattleField()) {
+            // BattleField
+            Prepare_For_BattleField();
+        }
+        else {
+            // load scenes
+            DirectLoadLevel();
+        }
+	}
+
+	#endregion
+
+
+	
+	#region Direct Load Level
+
+	private static float m_load_level_time = 0.0f;
+
+	private void ShowLoadLevelTime(){
+		Debug.Log( "Load Level Time: " + m_load_level_time );
+	}
+	
+	/// Load the Scene Directly.
+	private void DirectLoadLevel(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.DirectLoadLevel( " + m_to_load_scene_name + " )" );
+		#endif
+
+		Global.LoadLevel( m_to_load_scene_name, LoadLevelDone );
+	}
+
+	public void LoadLevelDone( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.LoadLevelDone()" );
+		#endif
+
+		StartCoroutine( LoadLevelNow() );
+	}
+
+	/// Load the Scene Directly.
+	IEnumerator LoadLevelNow(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "---------------- LoadLevelNow( " + m_to_load_scene_name + " ) ---------------" );
+		#endif
+
+		m_load_level_time = Time.realtimeSinceStartup;
+
+		{
+			Application.LoadLevel( m_to_load_scene_name );
+		}
+
+		m_load_level_time = Time.realtimeSinceStartup - m_load_level_time;
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "LoadLevelAsync.Level.Load.Done()" );
+		#endif
+
+		while( Application.loadedLevelName != m_to_load_scene_name ){
+			#if DEBUG_ENTER_NEXT_SCENE
+			Debug.Log( "Waiting For Loading." );
+			#endif
+
+			yield return new WaitForEndOfFrame();
+		}
+
+		{
+            CityGlobalData.m_PlayerInCity = true;
+            PrepareWhenSceneLoaded();
+		}
+
+		{
+			SceneManager.UpdateSceneStateByLevel();
+		}
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "------------------------Level Change: " + Application.loadedLevelName );
+		#endif
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "PrepareWhenSceneLoaded.Before.Destroy()" );
+		#endif
+		
+		{
+			ManualDestroy();
+		}
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "PrepareWhenSceneLoaded.After.Destroy()" );
+		#endif
+
+		yield return null;
+	}
+
+	#endregion
+
+
+
+	#region Destroy
+
+	private static float m_preserve_percentage = 0.0f;
+
+	private void DestroyForNextLoading(){
+//		Debug.Log( "EnterNextScene.DestroyForNextLoading()" );
+
+		// only for loading & loading
+		{
+			m_preserve_percentage = StaticLoading.GetLoadingPercentage( StaticLoading.m_loading_sections );
+		}
+
+		UnRegister();
+
+		DestroyUI();
+	}
+
+	public void ManualDestroyImmediate(){
+		Debug.Log ( "ManualDestroyImmediate()" );
+
+		{
+			m_preserve_percentage = 0.0f;
+		}
+		
+		{
+			UnRegister();
+		}
+		
+		{
+			DestroyUI();
+		}
+	}
+
+	private void ManualDestroy(){
+//		Debug.Log( "EnterNextScene.ManualDestroy()" );
+
+		{
+			m_preserve_percentage = 0.0f;
+		}
+		
+		{
+			UnRegister();
+		}
+		
+		StartCoroutine( DelayDestroy() );
+	}
+
+	IEnumerator DelayDestroy(){
+		yield return new WaitForEndOfFrame();
+		
+		{
+			DestroyUI();
+		}
+	}
+
+	private void UnRegister(){
+		SocketTool.UnRegisterSocketListener( this );
+		
+		m_instance = null;
+	}
+
+	private void DestroyUI(){
+		if ( StaticLoading.Instance () != null ) {
+			StaticLoading.Instance ().ManualDestroy ();
+		}
+		else {
+			Debug.LogError( "Never Should be Here." );
+		}
+		
+		{
+			gameObject.SetActive( false );
+			
+			Destroy( gameObject );
+		}
+
+		{
+			UtilityTool.Instance.DelayedUnloadUnusedAssets();
+		}
+	}
+
+	#endregion
+
+
+
+	#region Prepare After Scene Loaded
+
+	private List<EventDelegate> m_loading_done_callback_list = new List<EventDelegate>();
+
+	public void AddLoadingDoneCallback( EventDelegate.Callback p_callback ){
+		EventDelegate.Add( m_loading_done_callback_list, p_callback );
+	}
+
+	/// Called when Next Scene Loaded.
+	private void PrepareWhenSceneLoaded(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "PrepareWhenSceneLoaded()" );
+		#endif
+
+		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_TOTAL_LOADING_TIME, true ) ){
+			Debug.Log( "------------------" + 
+			          " EnterNextScene: " + m_to_load_scene_name + " - " +
+			          GetTimeSinceLoading() + 
+			          " ------------------" );
+		
+			#if DEBUG_SHOW_LOADING_INFO
+			LoadingHelper.ShowTotalLoadingInfo();
+
+			Bundle_Loader.LogCoroutineInfo();
+			
+			ShowLoadLevelTime();
+			#endif
+		}
+
+		if( Global.m_is_loading_from_bundle ){
+			Bundle_Loader.CheckAllShaders();
+		}
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "PrepareWhenSceneLoaded.Before.Light()" );
+		#endif
+
+		{
+			ConfigBloomAndLight();
+		}
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "PrepareWhenSceneLoaded.Before.AA()" );
+		#endif
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "PrepareWhenSceneLoaded.Before.Callback()" );
+		#endif
+
+		EventDelegate.Execute( m_loading_done_callback_list );
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		EnterNextScene.LogTimeSinceLoading( "PrepareWhenSceneLoaded" );
+		#endif
+	}
+
+	private void ConfigBloomAndLight(){
+		{
+			bool t_active_light = false;
+			
+			bool t_active_bloom = false;
+			
+			if( IsLoadingLogin() ){
+				t_active_light = false;
+				
+				t_active_bloom = false;
+			}
+			else if( IsLoadingCreateRole() ){
+				t_active_light = !QualityTool.Instance.BattleField_ShowSimpleShadow();
+				
+				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
+			}
+			else if( IsLoadingBattleField() ){
+				t_active_light = !QualityTool.Instance.BattleField_ShowSimpleShadow();
+				
+				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
+			}
+			else if (IsLoadingMainCity() || IsLoadingMainCityYeWan() || IsLoadingAllianceCity() || IsLoadingAllianceTenentsCity() || IsLoadingHouse() || IsLoadingAllianceCityYeWan() || IsInAllianceTenentsCityYeWanScene() || IsLoadingCarriage()||IsLoadingAllianceBattle())
+			{
+				t_active_light = !QualityTool.Instance.InCity_ShowSimpleShadow();
+				
+				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
+			}
+			else{
+				Debug.LogError( "Error, Unknown Scene: " + m_to_load_scene_name );
+				
+				t_active_light = false;
+				
+				t_active_bloom = false;
+			}
+			
+			{
+				QualityTool.ConfigLights( t_active_light );
+			}
+			
+			{
+				QualityTool.ConfigBloom( t_active_bloom );
+			}
+		}
+	}
+
+	#endregion
+
+
+
+	#region Common Init
+
+	private static float m_begin_loading_time	= 0.0f;
+
+	private static float m_last_tagged_time		= 0.0f;
+
+	private static int m_asset_load_count 		= 0;
+
+	private static void ResetLoadingInfo(){
+		// reset local info
+		{
+			m_begin_loading_time = Time.realtimeSinceStartup;
+			
+			m_last_tagged_time = Time.realtimeSinceStartup;
+			
+			m_asset_load_count = 0;
+			
+			Bundle_Loader.ResetCoroutineInfo();
+		}
+
+		// reset detail info
+		{
+			LoadingHelper.ClearLoadingItemInfo();
+		}
+	}
+
+	public static int GetAssetLoadedCount(){
+		return m_asset_load_count;
+	}
+
+	public static void AssetLoaded(){
+		m_asset_load_count++;
+	}
+
+	public static float GetTimeSinceLoading(){
+		return Time.realtimeSinceStartup - m_begin_loading_time;
+	}
+
+	public static float GetTimesinceLastTimeTag( bool p_retag = true ){
+		float t_delta = Time.realtimeSinceStartup - m_last_tagged_time;
+
+		if( p_retag ){
+			m_last_tagged_time = Time.realtimeSinceStartup;
+		}
+
+		return t_delta;
+	}
+
+	public static void LogTimeSinceLoading( string p_loading_tag ){
+		Debug.Log( UtilityTool.FloatPrecision( GetTimesinceLastTimeTag(), 5 ) + 
+		          " / " + 
+		          UtilityTool.FloatPrecision( GetTimeSinceLoading(), 5 ) + " - " + 
+		          p_loading_tag );
+	}
+
+	#endregion
+
+
+
+	#region Prepare For Login
+
+	private int m_prepare_data_for_login = 0;
+
+	private const int PREPARE_DATA_COUNT_FOR_LOGIN	= 1;
+
+	private void Prepare_For_Login(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Prepare_For_Login()" );
+		#endif
+
+		// reset count
+		{
+			m_prepare_data_for_login = 0;
+
+			StartCoroutine( CheckingDataForLogin() );
+		}
+
+		// load res data
+		{
+			Res2DTemplate.LoadTemplates( LoginDataLoaded );
+
+			LanguageTemplate.LoadTemplates();
+		}
+	}
+
+	public void LoginDataLoaded(){
+		m_prepare_data_for_login++;
+	}
+	
+	IEnumerator CheckingDataForLogin(){
+		while( m_prepare_data_for_login < PREPARE_DATA_COUNT_FOR_LOGIN ){
+			yield return new WaitForEndOfFrame();
+		}
+
+		{
+//			SetAutoActivation( true );
+			
+			DirectLoadLevel();
+		}
+	}
+
+	#endregion
+
+
+
+	#region Prepare For Main City
+
+	/// 是否加载完PVE信息
+	private int m_received_data_for_main_city = 0;
+
+	private const int REQUEST_DATA_COUNT_FOR_MAINCITY = 4;
+
+	private void InitMainCityLoading(){
+//		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 2, -1 );
+
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_MAINCITY );
+	}
+
+	/// Prepare Data For Main City.
+	private void Prepare_For_MainCity(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Prepare_For_MainCity()" );
+		#endif
+
+		InitMainCityLoading();
+
+		// reset info
+		{
+			m_received_data_for_main_city = 0;
+
+			StartCoroutine( CheckingDataForMainCity() );
+		}
+
+		// request MiBao Info
+		{
+//			MiBaoGlobleData.Instance();
+//			MiBaoGlobleData.SendMiBaoIfoMessage ();
+		}
+
+		// request PVE Info
+		{
+			JunZhuDiaoLuoManager.RequestMapInfo( -1 );
+		}
+
+		// request JunZhu Info
+		{
+			// create instance, for battle field use.
+//			Debug.Log ("MainCity");
+			JunZhuData.Instance();
+			JunZhuData.RequestJunZhuInfo();
+		}
+
+		// request Equip Info
+		{
+//			Debug.Log ("MainCityEquipsBody");
+
+//			EquipsOfBody.Instance();
+//			EquipsOfBody.RequestEquipInfo();
+		}
+
+		//request Alliance Info
+		{
+			AllianceData.Instance.RequestData ();
+		}
+
+		// request Task Info
+		{
+//			Debug.Log ("MainCityTask");
+			TaskData.Instance.RequestData();
+		}
+        //  request Friend Info
+        {
+            FriendOperationData.Instance.RequestData();
+        }
+
+    }
+
+    IEnumerator CheckingDataForMainCity(){
+		while( m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY ){
+			yield return new WaitForEndOfFrame();
+		}
+
+		// enter pve for 1st battle.
+		if( Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103){
+//			Debug.Log( "CheckingDataForMainCity.EnterBattlePve()" );
+
+			DestroyForNextLoading();
+
+			EnterBattleField.EnterBattlePve( 1, Global.m_iScreenID % 10, LevelType.LEVEL_NORMAL );
+		}
+		else{
+//			SetAutoActivation( true );
+
+			DirectLoadLevel();
+		}
+	}
+
+	#endregion
+
+
+
+	#region Prepare For Alliance City
+
+	private int m_received_data_for_alliance_city = 0;
+	
+	private const int REQUEST_DATA_COUNT_FOR_ALLIANCECITY = 4;
+	
+	private void InitAllianceCityLoading(){
+//		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 2, -1 );
+		
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_ALLIANCECITY );
+	}
+	private void Prepare_For_AllianceCity(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Prepare_For_AllianceCity()" );
+		#endif
+
+		InitAllianceCityLoading();
+
+		// reset info
+		{
+			m_received_data_for_main_city = 0;
+			
+			StartCoroutine( CheckingDataForMainCity() );
+		}
+		
+		// request MiBao Info
+		{
+//			MiBaoGlobleData.Instance();
+//			MiBaoGlobleData.SendMiBaoIfoMessage ();
+		}
+		
+		// request PVE Info
+		{
+			JunZhuDiaoLuoManager.RequestMapInfo( -1 );
+		}
+		
+		// request JunZhu Info
+		{
+			// create instance, for battle field use.
+//			Debug.Log ("AllianceCity");
+			JunZhuData.Instance();
+			JunZhuData.RequestJunZhuInfo();
+		}
+		
+		// reques Equip Info
+		{
+//			EquipsOfBody.Instance();
+//			EquipsOfBody.RequestEquipInfo();
+		}
+		
+		{
+//			Debug.Log ("AllianceCityTask");
+			TaskData.Instance.RequestData();
+		}
+
+		//request Alliance Info
+		{
+			AllianceData.Instance.RequestData ();
+		}
+
+		{			
+			TenementData.Instance.RequestData();
+		}
+
+        //  request Friend Info
+        {
+            FriendOperationData.Instance.RequestData();
+        }
+
+        ////  request Nation Info
+        //{
+        //    NationData.Instance.RequestData();
+        //}
+    }
+
+	#endregion
+	
+	
+	
+	#region Prepare For Battle Field
+	
+	private int m_battle_res_step = 0;
+	
+	private const int BATTLE_RES_STEP_TOTAL	= 2;
+	
+	private GameObject temple2D;
+
+	private GameObject temple3D;
+
+	private void InitBattleLoading(){
+//		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 1, -1 );
+
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_2D, 1, 1 );
+
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_NETWORK, 1, 1 );
+
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_DATA, 1, 1 );
+
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_3D, 10, 42 );
+
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_FX, 20, 55 );
+
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_SOUND, 20, 95 );
+
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_CREATE_FLAGS, 1, 2 );
+	
+		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_RENDER, 2, 1 );
+	}
+
+	private void Prepare_For_BattleField(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Prepare_For_BattleField()" );
+
+		EnterNextScene.LogTimeSinceLoading( "Prepare_For_BattleField" );
+		#endif
+
+
+
+		InitBattleLoading();
+
+		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.BATTLEFIELD_V4_2D_UI ), 
+		                        Load2DCallback);
+
+		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.BATTLEFIELD_V4_3D_ROOT ),
+		                        Load3DCallback);
+	}
+
+	public void Load2DCallback( ref WWW p_www, string p_path, Object p_object ){
+		temple2D = p_object as GameObject;
+
+		enterBattleField();
+	}
+
+	public void Load3DCallback( ref WWW p_www, string p_path, Object p_object ){
+		temple3D = p_object as GameObject;
+
+		enterBattleField();
+	}
+
+	private void enterBattleField(){
+		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+		                         StaticLoading.CONST_BATTLE_LOADING_2D, "EnterBattleField" );
+
+		if (temple2D != null && temple3D != null){
+			Prepare_For_BattleFieldCallback ();
+		}
+	}
+
+	public void Prepare_For_BattleFieldCallback(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		EnterNextScene.LogTimeSinceLoading( "Prepare_For_BattleFieldCallback" );
+		#endif
+
+		// origin coroutine
+		{
+			GameObject gc2d = (GameObject)Instantiate( temple2D );
+
+			gc2d.SetActive( true );
+			
+			gc2d.transform.localScale = new Vector3(1, 1, 1);
+			
+			gc2d.transform.position = new Vector3(0, 500, 0);
+			
+			gc2d.name = "BattleField_V4_2D";
+			
+			{
+				DontDestroyOnLoad( gc2d );
+				
+				LoadingHelper.RemoveWhenSceneDone( gc2d );
+			}
+
+			GameObject gc = (GameObject)Instantiate( temple3D );
+			
+			gc.SetActive( true );
+			
+			gc.transform.localScale = new Vector3(1, 1, 1);
+			
+			gc.transform.localPosition = Vector3.zero;
+			
+			gc.name = "BattleField_V4_3D";
+			
+			{
+				DontDestroyOnLoad( gc );
+				
+				LoadingHelper.RemoveWhenSceneDone( gc );
+			}
+
+//			if(CityGlobalData.m_tempSection == 0 
+//			   && CityGlobalData.m_tempLevel == 0 
+//			   && CityGlobalData.m_enterPvp == false)
+//			{
+////				EffectTemplate et = EffectTemplate.getEffectTemplateByEffectId( 66 );
+//
+//				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.LOGIN_CREATE_ROLE ),
+//				                        LoginCreateRoleLoadCallback );
+//			}
+
+			BattleNet net = gc.GetComponentInChildren( typeof( BattleNet ) ) as BattleNet;
+
+			net.getData();
+		}
+	}
+
+//	public void LoginCreateRoleLoadCallback( ref WWW p_www, string p_path, Object p_object ){
+//		GameObject createRoleObject = Instantiate( p_object ) as GameObject;
+//
+//		createRoleObject.SetActive( true );
+//		
+//		createRoleObject.transform.localScale = new Vector3(1, 1, 1);
+//		
+//		createRoleObject.transform.localPosition = new Vector3(0, -500, 0);
+//		
+//		createRoleObject.name = "BattleField_V4_CreateRole";
+//		
+//		{
+//			DontDestroyOnLoad( createRoleObject );
+//			
+//			RemoveWhenSceneDone( createRoleObject );
+//		}
+//	}
+
+	private float m_battle_tex_time = 0.0f;
+
+	public void BattleLoadDone(){
+//		#if DEBUG_ENTER_NEXT_SCENE
+//		EnterNextScene.LogTimeSinceLoading( "BattleLoadDone()" );
+//		#endif
+
+		m_battle_tex_time = Time.realtimeSinceStartup;
+
+		m_battle_res_step++;
+
+		{
+			Dictionary<string, GameObject> t_dict = BattleEffectControllor.Instance().GetEffectDict();
+
+			List<Texture> t_list = new List<Texture>();
+
+			{
+				int t_index = 0;
+
+				int t_tex_count = 0;
+
+				int t_skip_count = 0;
+
+				GameObject t_template_gb = ( GameObject )Instantiate( m_background_image.gameObject );
+
+				{
+					t_template_gb.transform.parent = m_background_image.gameObject.transform.parent;
+
+					UtilityTool.CopyTransform( m_background_image.gameObject, t_template_gb );
+
+					{
+						UITexture t_tex = t_template_gb.GetComponent<UITexture>();
+
+						t_tex.depth = t_tex.depth - 1;
+					}
+				}
+
+				foreach( KeyValuePair< string, GameObject > t_pair in t_dict ){
+					if( t_pair.Value == null ){
+						t_index++;
+
+						continue;
+					}
+
+					{
+						t_index++;
+					}
+
+					GameObject t_gb = ( GameObject )Instantiate( t_pair.Value );
+
+//					Debug.Log( t_pair.Key + ": " + t_gb.name );
+
+					t_gb.SetActive( true );
+
+					{
+						ParticleSystem[] t_pss = t_gb.GetComponentsInChildren<ParticleSystem>();
+						
+						for( int i = 0; i < t_pss.Length; i++ ){
+							ParticleSystem t_ps = t_pss[ i ];
+
+							Texture t_tex = t_ps.GetComponent<Renderer>().material.mainTexture;
+
+							if( t_tex == null ){
+								continue;
+							}
+
+							if( t_list.Contains( t_tex ) ){
+								t_skip_count++;
+
+								continue;
+							}
+							else{
+								t_list.Add( t_tex );
+							}
+
+							t_tex_count++;
+
+							GameObject t_shadow_gb = ( GameObject )Instantiate( t_template_gb );
+
+							t_shadow_gb.transform.parent = m_background_image.gameObject.transform;
+
+							UtilityTool.CopyTransform( t_template_gb, t_shadow_gb );
+
+							t_shadow_gb.name = t_index + " : " + t_tex.name + "_" + t_tex_count;
+
+							UITexture t_ui_tex = t_shadow_gb.GetComponent<UITexture>();
+
+							t_ui_tex.mainTexture = t_tex;
+
+							t_ui_tex.SetDimensions( 16, 16 );
+						}
+					}
+
+					t_gb.SetActive( false );
+
+					Destroy( t_gb );
+				}
+
+				t_template_gb.SetActive( false );
+
+				Destroy( t_template_gb );
+			}
+		}
+
+		m_battle_tex_time = Time.realtimeSinceStartup - m_battle_tex_time;
+
+		StartCoroutine( CheckingResForBattleField() );
+	}
+
+	IEnumerator CheckingResForBattleField(){
+//		Debug.Log( "CheckingResForBattleField()" );
+
+		while ( m_battle_res_step < BATTLE_RES_STEP_TOTAL ){
+//			Debug.Log( "CheckingResForBattleField( " + 
+//			          m_battle_res_step + " / " + BATTLE_RES_STEP_TOTAL + 
+//			          " )" );
+
+			yield return new WaitForEndOfFrame();
+		}
+
+		// report when battle field is ready
+		{
+			OperationSupport.ReportClientAction( OperationSupport.ClientAction.ENTER_GAME );
+		}
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		EnterNextScene.LogTimeSinceLoading( "CheckingResForBattleField.Done" );
+		#endif
+
+		{
+//			SetAutoActivation( true );
+			
+			DirectLoadLevel();
+		}
+	}
+
+	public void CloseLoading()
+	{
+//		SetAutoActivation( true );
+		
+		DestroyUI ();
+	}
+
+	#endregion
+
+
+
+	#region Common Network
+
+	///	Every Proto Only Could Have 1 Processor, but Many Listener.
+	/// MainCity MAY Have Processors.
+	public bool OnSocketEvent( QXBuffer p_message ){
+//		Debug.Log ("p_message:" + p_message);
+		if( p_message == null ){
+			return false;
+		}
+
+		switch( p_message.m_protocol_index ){
+//			case ProtoIndexes.S_MIBAO_INFO_RESP:{
+//
+//			    MiBaoGlobleData.Instance().OnProcessSocketMessage(p_message);
+//				Debug.Log ("秘宝info：" + ProtoIndexes.S_MIBAO_INFO_RESP);
+//				m_received_data_for_main_city++;
+//
+//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_MIBAO_INFO_RESP" );
+//
+//				return true;
+//			}
+
+			case ProtoIndexes.PVE_PAGE_RET:{
+//				Debug.Log( "PveInfoResp:" + ProtoIndexes.PVE_PAGE_RET );
+
+				ProcessPVEPageReturn( p_message );
+
+				m_received_data_for_main_city++;
+
+			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+			                         StaticLoading.CONST_MAINCITY_NETWORK, "PVE_PAGE_RET" );
+				
+				return true;
+			}
+				
+//			case ProtoIndexes.S_EquipInfo:{
+//				Debug.Log( "OnSocketEvent: TanBaoYinDaoCol()" );
+//
+//				EquipsOfBody.Instance().ProcessEquipInfo( p_message );
+//
+//				m_received_data_for_main_city++;
+//
+//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_EquipInfo" );
+//
+//				return true;
+//			}
+
+			case ProtoIndexes.JunZhuInfoRet:{
+
+//				Debug.Log( "获得君主数据: " + Global.m_iScreenID );
+				
+				m_received_data_for_main_city++;
+
+			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+			                         StaticLoading.CONST_MAINCITY_NETWORK, "JunZhuInfoRet" );
+				
+				return true;
+			}
+
+		    case ProtoIndexes.ALLIANCE_HAVE_RESP:{
+				
+//				Debug.Log ("获得有联盟信息");
+				
+				m_received_data_for_main_city++;
+
+			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_HAVE_RESP" );
+				
+				return true;
+			}
+
+			case ProtoIndexes.ALLIANCE_NON_RESP:{
+			
+//				Debug.Log ("获得无联盟信息");
+			
+				m_received_data_for_main_city++;
+			
+			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_NON_RESP" );
+			
+			return true;
+			}
+
+			case ProtoIndexes.S_TaskList:{
+			
+//				Debug.Log( "获得主线任务: " + Global.m_iScreenID );
+			
+				m_received_data_for_main_city++;
+			
+			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_TaskList" );
+			
+			return true;
+		}
+
+			default:{
+				return false;
+			}
+		}
+	}
+
+	#endregion
+
+
+
+	#region Network Listeners
+
+	/// Refresh PVE Data
+	private void ProcessPVEPageReturn( QXBuffer p_buffer ){
+//		Debug.Log( "ProcessPVEPageReturn( 获得了管卡数据 )" );
+
+		MemoryStream t_stream = new MemoryStream( p_buffer.m_protocol_message, 0, p_buffer.position );
+		
+		QiXiongSerializer t_qx = new QiXiongSerializer();
+		
+		Section tempInfo = new Section();
+		
+		t_qx.Deserialize( t_stream, tempInfo, tempInfo.GetType() );
+
+		if(tempInfo.s_allLevel == null)
+		{
+			Debug.Log( "tempInfo.s_allLevel == null" );
+		}
+		if(tempInfo.maxCqPassId > CityGlobalData.m_temp_CQ_Section)
+		{
+			CityGlobalData.m_temp_CQ_Section = tempInfo.maxCqPassId;
+		}
+
+		foreach( Level tempLevel in tempInfo.s_allLevel ){
+			if( !tempLevel.s_pass ){
+
+				Global.m_iScreenID = tempLevel.guanQiaId;
+				
+				break;
+			}
+		}
+	}
+
+	#endregion
+
+
+
+	#region Utilities
+
+	private static bool m_loading_asset_changed = false;
+
+	public static void SetLoadingAssetChanged( bool p_changed ){
+		m_loading_asset_changed = p_changed;
+	}
+
+	/// Is Loading Login Now?
+	private bool IsLoadingLogin(){
+		return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_LOGIN;
+	}
+
+	/// Is Loading CreateRole Now?
+	private bool IsLoadingCreateRole(){
+		return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_CREATE_ROLE;
+	}
+
+	/// Is Loading Main City Now?
+	private bool IsLoadingMainCity(){
+        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_MAIN_CITY ;
+	}
+
+    private bool IsLoadingMainCityYeWan()
+    {
+        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN;
+    }
+    /// Is Loading Alliance City Now?
+    private bool IsLoadingAllianceCity(){
+        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY;
+    }
+    private bool IsLoadingAllianceCityYeWan()
+    {
+        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN;
+    }
+
+    private bool IsLoadingAllianceTenentsCity()
+    {
+         return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE;
+    }
+     public static bool IsInAllianceTenentsCityYeWanScene()
+     {
+         return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN;
+     }
+	/// Determines whether is loading Battle Field now.
+	private bool IsLoadingBattleField(){
+		return m_to_load_scene_name.StartsWith( ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX );
+	}
+
+	private bool IsLoadingHouse(){
+		return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_HOUSE;
+	}
+
+	private bool IsLoadingCarriage(){
+		return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_CARRIAGE;
+	}
+
+    private bool IsLoadingAllianceBattle()
+    {
+        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE;
+    }
+
+	#endregion
+
+
+
+	#region Config To Load Scene
+	
+	private static string m_to_load_scene_name = "";
+
+	/// Set Params For Next Scene to Load.
+	/// 
+	/// Params:
+	/// p_to_load_scene_name: Scene name, as in build setting.
+	public static void SetSceneToLoad( string p_to_load_scene_name ){
+//		Debug.Log( "-------------- EnterNextScene.SetSceneToLoad( " + 
+//						p_to_load_scene_name + " - " + p_auto_activation + 
+//						" ) --------------" );
+
+		m_to_load_scene_name = p_to_load_scene_name;
+	}
+
+	public static string GetSceneToLoad(){
+		return m_to_load_scene_name;
+	}
+
+	#endregion
+}

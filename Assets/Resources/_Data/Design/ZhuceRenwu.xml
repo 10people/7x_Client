@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<ZhuceRenwu id="1" sex="1" model="zc1" icon="zc1" descId="11" />
+<ZhuceRenwu id="2" sex="1" model="zc2" icon="zc2" descId="12" />
+<ZhuceRenwu id="3" sex="2" model="zc3" icon="zc3" descId="21" />
+<ZhuceRenwu id="4" sex="2" model="zc4" icon="zc4" descId="22" />
+</dataset>

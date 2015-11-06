@@ -1,0 +1,34 @@
+<project name="apache-ant" default="main" basedir=".">
+	<property name="sourcePath" value="."/>
+
+	<property name="backUpPath" value="F:\_BackUp_Root\DynastyMobile_2014"/>
+	
+	<property name="subFolder" value="Assets"/>
+
+
+	<target name="main">
+		<tstamp>
+			<format property="dstamp" pattern="yyyy_MM_dd" locale="en"/>
+
+			<format property="tstamp" pattern="HH_mm" locale="en"/>
+		</tstamp>
+
+
+		<echo message="${backUpPath}"/>
+		<echo message="${backUpPath}\${dstamp}"/>
+		<echo message="${backUpPath}\${dstamp}\${tstamp}"/>
+
+
+		<mkdir dir="${backUpPath}"/>
+		<mkdir dir="${backUpPath}\${dstamp}"/>
+		<mkdir dir="${backUpPath}\${dstamp}\${tstamp}"/>
+		<mkdir dir="${backUpPath}\${dstamp}\${tstamp}\${subFolder}"/>
+		
+
+		<copy todir="${backUpPath}\${dstamp}\${tstamp}\${subFolder}">
+			<fileset dir="${sourcePath}"/>
+		</copy>
+
+	</target>
+
+</project>

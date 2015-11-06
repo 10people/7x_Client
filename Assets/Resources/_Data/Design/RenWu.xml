@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<RenWu id="1" name="710001" funDesc="710001" type="1" condition="5" jiangli="0:900006:200#0:900001:1000#0:900015:10#0:900002:150" LmGongxian="10" icon="2" frontId="0" LinkNpcId="4" FunctionId="-1" Title="$" />
+<RenWu id="2" name="710002" funDesc="710002" type="1" condition="1" jiangli="0:900006:100#0:900001:1000#0:900015:10#0:900002:150" LmGongxian="10" icon="2" frontId="0" LinkNpcId="4" FunctionId="-1" Title="$" />
+<RenWu id="3" name="710003" funDesc="710003" type="1" condition="3" jiangli="0:900006:200#0:900001:1000#0:900015:10#0:900002:150" LmGongxian="10" icon="2" frontId="0" LinkNpcId="4" FunctionId="-1" Title="$" />
+<RenWu id="4" name="710004" funDesc="710004" type="1" condition="1" jiangli="0:900006:100#0:900001:2000#0:900015:10#0:900002:100" LmGongxian="10" icon="4" frontId="0" LinkNpcId="-1" FunctionId="6" Title="$" />
+<RenWu id="5" name="710005" funDesc="710005" type="1" condition="3" jiangli="0:900006:100#0:900015:10#0:900002:100" LmGongxian="10" icon="9" frontId="0" LinkNpcId="1" FunctionId="-1" Title="$" />
+<RenWu id="6" name="710006" funDesc="710006" type="1" condition="1" jiangli="0:900006:100#0:900015:10#0:900002:100" LmGongxian="10" icon="9" frontId="0" LinkNpcId="1" FunctionId="-1" Title="$" />
+<RenWu id="7" name="710007" funDesc="710007" type="1" condition="1" jiangli="0:900006:100#0:900015:10#0:900002:100" LmGongxian="10" icon="4" frontId="0" LinkNpcId="-1" FunctionId="900001" Title="$" />
+<RenWu id="8" name="710008" funDesc="710008" type="1" condition="5" jiangli="0:900006:100#0:900015:10#0:900002:150" LmGongxian="10" icon="4" frontId="0" LinkNpcId="-1" FunctionId="11" Title="$" />
+<RenWu id="9" name="710009" funDesc="710009" type="1" condition="2" jiangli="0:900006:50#0:900026:50#0:900015:80#0:900002:150" LmGongxian="80" icon="2" frontId="0" LinkNpcId="4" FunctionId="-1" Title="$" />
+<RenWu id="10" name="710010" funDesc="710010" type="1" condition="0" jiangli="0:900002:120" LmGongxian="0" icon="4" frontId="0" LinkNpcId="-1" FunctionId="-1" Title="$" />
+<RenWu id="11" name="710011" funDesc="710011" type="1" condition="0" jiangli="0:900003:50" LmGongxian="0" icon="4" frontId="0" LinkNpcId="-1" FunctionId="-1" Title="$" />
+<RenWu id="12" name="710011" funDesc="710011" type="1" condition="0" jiangli="0:900003:50" LmGongxian="0" icon="4" frontId="0" LinkNpcId="-1" FunctionId="-1" Title="$" />
+<RenWu id="13" name="710011" funDesc="710011" type="1" condition="0" jiangli="0:900003:50" LmGongxian="0" icon="4" frontId="0" LinkNpcId="-1" FunctionId="-1" Title="$" />
+<RenWu id="14" name="710012" funDesc="710012" type="1" condition="1" jiangli="0:900006:100#0:900015:10#0:900002:100" LmGongxian="10" icon="4" frontId="0" LinkNpcId="-1" FunctionId="500000" Title="$" />
+<RenWu id="15" name="710013" funDesc="710013" type="1" condition="3" jiangli="0:900006:200#0:900001:1000#0:900015:10#0:900002:150" LmGongxian="10" icon="2" frontId="0" LinkNpcId="8" FunctionId="-1" Title="$" />
+<RenWu id="16" name="710014" funDesc="710014" type="1" condition="3" jiangli="0:900006:100#0:900001:1000#0:900015:10#0:900002:150" LmGongxian="10" icon="2" frontId="0" LinkNpcId="3" FunctionId="-1" Title="$" />
+<RenWu id="17" name="710015" funDesc="710015" type="1" condition="1" jiangli="0:900006:100#0:900001:1000#0:900015:10#0:900002:100" LmGongxian="10" icon="2" frontId="0" LinkNpcId="3" FunctionId="-1" Title="$" />
+<RenWu id="18" name="710016" funDesc="710016" type="1" condition="1" jiangli="0:900006:50#0:900015:20#0:900002:100" LmGongxian="20" icon="4" frontId="0" LinkNpcId="10000" FunctionId="-1" Title="$" />
+<RenWu id="19" name="710017" funDesc="710017" type="1" condition="1" jiangli="0:910002:1#0:900015:10#0:900002:100" LmGongxian="10" icon="4" frontId="0" LinkNpcId="-1" FunctionId="900002" Title="$" />
+<RenWu id="80" name="710080" funDesc="710080" type="1" condition="1" jiangli="0:910002:1#0:900015:30#0:900002:100" LmGongxian="30" icon="2" frontId="0" LinkNpcId="802" FunctionId="-1" Title="$" />
+<RenWu id="81" name="710081" funDesc="710081" type="1" condition="2" jiangli="0:910000:1#0:900015:20" LmGongxian="20" icon="2" frontId="80" LinkNpcId="802" FunctionId="-1" Title="$" />
+<RenWu id="82" name="710082" funDesc="710082" type="1" condition="3" jiangli="0:910002:1#0:900015:10" LmGongxian="10" icon="2" frontId="81" LinkNpcId="802" FunctionId="-1" Title="$" />
+<RenWu id="83" name="710083" funDesc="710083" type="1" condition="4" jiangli="0:910000:1#0:900015:10" LmGongxian="10" icon="2" frontId="82" LinkNpcId="802" FunctionId="-1" Title="$" />
+<RenWu id="84" name="710084" funDesc="710084" type="1" condition="5" jiangli="0:910002:1#0:900015:10" LmGongxian="10" icon="2" frontId="83" LinkNpcId="802" FunctionId="-1" Title="$" />
+<RenWu id="85" name="710085" funDesc="710085" type="1" condition="6" jiangli="0:910000:1#0:900015:10" LmGongxian="10" icon="2" frontId="84" LinkNpcId="802" FunctionId="-1" Title="$" />
+<RenWu id="86" name="710086" funDesc="710086" type="1" condition="7" jiangli="0:910002:1#0:900015:10" LmGongxian="10" icon="2" frontId="85" LinkNpcId="802" FunctionId="-1" Title="$" />
+<RenWu id="87" name="710087" funDesc="710087" type="1" condition="8" jiangli="0:910000:1#0:900015:10" LmGongxian="10" icon="2" frontId="86" LinkNpcId="802" FunctionId="-1" Title="$" />
+</dataset>

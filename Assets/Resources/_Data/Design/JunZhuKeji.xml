@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<JunzhuKeji id="1001" name="3101" description="3101" icon="1" actionID="1001" dataType="1" value="1" limitLevel="3" money="1000" />
+<JunzhuKeji id="1002" name="3102" description="3102" icon="1" actionID="1001" dataType="1" value="1" limitLevel="6" money="2000" />
+<JunzhuKeji id="1003" name="3103" description="3103" icon="1" actionID="1001" dataType="1" value="1" limitLevel="10" money="3000" />
+<JunzhuKeji id="2001" name="3201" description="3201" icon="2" actionID="1002" dataType="1" value="20" limitLevel="14" money="9000" />
+<JunzhuKeji id="3001" name="3301" description="3301" icon="3" actionID="1003" dataType="1" value="3001" limitLevel="22" money="29000" />
+<JunzhuKeji id="4001" name="3401" description="3401" icon="4" actionID="1004" dataType="1" value="0" limitLevel="16" money="20000" />
+<JunzhuKeji id="1004" name="3104" description="3104" icon="1" actionID="1001" dataType="1" value="1" limitLevel="16" money="4000" />
+<JunzhuKeji id="5001" name="3501" description="3501" icon="5" actionID="1005" dataType="1" value="15000" limitLevel="18" money="11000" />
+<JunzhuKeji id="2002" name="3202" description="3202" icon="2" actionID="1002" dataType="1" value="20" limitLevel="24" money="16000" />
+<JunzhuKeji id="3002" name="3302" description="3302" icon="3" actionID="1003" dataType="1" value="3002" limitLevel="42" money="173000" />
+<JunzhuKeji id="4002" name="3402" description="3402" icon="4" actionID="1004" dataType="1" value="0" limitLevel="26" money="36000" />
+<JunzhuKeji id="5002" name="3502" description="3502" icon="5" actionID="1005" dataType="1" value="16000" limitLevel="28" money="30000" />
+<JunzhuKeji id="2003" name="3203" description="3203" icon="2" actionID="1002" dataType="1" value="20" limitLevel="34" money="65000" />
+<JunzhuKeji id="3003" name="3303" description="3303" icon="3" actionID="1003" dataType="1" value="3003" limitLevel="62" money="301000" />
+<JunzhuKeji id="4003" name="3403" description="3403" icon="4" actionID="1004" dataType="1" value="0" limitLevel="36" money="140000" />
+<JunzhuKeji id="5003" name="3503" description="3503" icon="5" actionID="1005" dataType="1" value="18000" limitLevel="38" money="75000" />
+<JunzhuKeji id="2004" name="3204" description="3204" icon="2" actionID="1002" dataType="1" value="20" limitLevel="44" money="92000" />
+<JunzhuKeji id="3004" name="3304" description="3304" icon="3" actionID="1003" dataType="1" value="3004" limitLevel="82" money="452000" />
+<JunzhuKeji id="4004" name="3404" description="3404" icon="4" actionID="1004" dataType="1" value="0" limitLevel="46" money="196000" />
+<JunzhuKeji id="5004" name="3504" description="3504" icon="5" actionID="1005" dataType="1" value="20000" limitLevel="48" money="104000" />
+<JunzhuKeji id="2005" name="3205" description="3205" icon="2" actionID="1002" dataType="1" value="20" limitLevel="54" money="123000" />
+<JunzhuKeji id="4005" name="3405" description="3405" icon="4" actionID="1004" dataType="1" value="0" limitLevel="56" money="260000" />
+<JunzhuKeji id="5005" name="3505" description="3505" icon="5" actionID="1005" dataType="1" value="23000" limitLevel="58" money="137000" />
+<JunzhuKeji id="2006" name="3206" description="3206" icon="2" actionID="1002" dataType="1" value="20" limitLevel="64" money="158000" />
+<JunzhuKeji id="4006" name="3406" description="3406" icon="4" actionID="1004" dataType="1" value="0" limitLevel="66" money="330000" />
+<JunzhuKeji id="5006" name="3506" description="3506" icon="5" actionID="1005" dataType="1" value="24000" limitLevel="68" money="172000" />
+<JunzhuKeji id="2007" name="3207" description="3207" icon="2" actionID="1002" dataType="1" value="20" limitLevel="74" money="195000" />
+<JunzhuKeji id="4007" name="3407" description="3407" icon="4" actionID="1004" dataType="1" value="0" limitLevel="76" money="405000" />
+<JunzhuKeji id="5007" name="3507" description="3507" icon="5" actionID="1005" dataType="1" value="26000" limitLevel="78" money="210000" />
+<JunzhuKeji id="2008" name="3208" description="3208" icon="2" actionID="1002" dataType="1" value="20" limitLevel="84" money="234000" />
+<JunzhuKeji id="4008" name="3408" description="3408" icon="4" actionID="1004" dataType="1" value="0" limitLevel="86" money="485000" />
+<JunzhuKeji id="5008" name="3508" description="3508" icon="5" actionID="1005" dataType="1" value="28000" limitLevel="88" money="251000" />
+<JunzhuKeji id="2009" name="3209" description="3209" icon="2" actionID="1002" dataType="1" value="20" limitLevel="94" money="277000" />
+<JunzhuKeji id="4009" name="3409" description="3409" icon="4" actionID="1004" dataType="1" value="0" limitLevel="96" money="571000" />
+<JunzhuKeji id="5009" name="3509" description="3509" icon="5" actionID="1005" dataType="1" value="30000" limitLevel="98" money="294000" />
+</dataset>

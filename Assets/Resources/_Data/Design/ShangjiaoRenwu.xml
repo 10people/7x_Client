@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<ShangjiaoRenwu id="1" jiangli="0:900002:60#0:900015:30" LmGongxian="30" />
+<ShangjiaoRenwu id="2" jiangli="0:910000:1#0:900015:30" LmGongxian="30" />
+<ShangjiaoRenwu id="3" jiangli="0:900015:10" LmGongxian="10" />
+<ShangjiaoRenwu id="4" jiangli="0:910000:1#0:900015:10" LmGongxian="10" />
+<ShangjiaoRenwu id="5" jiangli="0:900015:10" LmGongxian="10" />
+<ShangjiaoRenwu id="6" jiangli="0:910000:1#0:900015:10" LmGongxian="10" />
+<ShangjiaoRenwu id="7" jiangli="0:900015:10" LmGongxian="10" />
+<ShangjiaoRenwu id="8" jiangli="0:910000:1#0:900015:10" LmGongxian="10" />
+</dataset>

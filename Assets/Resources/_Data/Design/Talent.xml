@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Talent point="101" type="1" name="破甲" desc="增加攻击" maxLv="100" attributeId="2101" expId="2101" frontPoint="0" frontLv="0" pointNum="0" />
+<Talent point="102" type="1" name="穿刺" desc="增加武器伤害加深" maxLv="100" attributeId="2102" expId="2101" frontPoint="101" frontLv="10" pointNum="1" />
+<Talent point="103" type="1" name="嗜血" desc="增加武器暴击加深" maxLv="100" attributeId="2103" expId="2101" frontPoint="102" frontLv="20" pointNum="1" />
+<Talent point="104" type="1" name="技击" desc="增加技能伤害加深" maxLv="100" attributeId="2104" expId="2101" frontPoint="101" frontLv="10" pointNum="1" />
+<Talent point="105" type="1" name="狂战" desc="增加技能暴击加深" maxLv="100" attributeId="2105" expId="2101" frontPoint="104" frontLv="20" pointNum="1" />
+<Talent point="106" type="1" name="觉醒" desc="增加攻击" maxLv="1" attributeId="2106" expId="2106" frontPoint="103,105" frontLv="50" pointNum="1" />
+<Talent point="201" type="2" name="铁壁" desc="增加防御和生命" maxLv="100" attributeId="2201" expId="2201" frontPoint="0" frontLv="0" pointNum="0" />
+<Talent point="202" type="2" name="护盾" desc="增加武器伤害抵抗" maxLv="100" attributeId="2202" expId="2201" frontPoint="201" frontLv="10" pointNum="1" />
+<Talent point="203" type="2" name="坚韧" desc="增加武器暴击抵抗" maxLv="100" attributeId="2203" expId="2201" frontPoint="202" frontLv="20" pointNum="1" />
+<Talent point="204" type="2" name="格挡" desc="增加技能伤害抵抗" maxLv="100" attributeId="2204" expId="2201" frontPoint="201" frontLv="10" pointNum="1" />
+<Talent point="205" type="2" name="悍勇" desc="增加技能暴击抵抗" maxLv="100" attributeId="2205" expId="2201" frontPoint="204" frontLv="20" pointNum="1" />
+<Talent point="206" type="2" name="归元" desc="增加防御和生命" maxLv="1" attributeId="2206" expId="2206" frontPoint="203,205" frontLv="50" pointNum="1" />
+</dataset>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<DangpuCommon id="1102" itemType="0" itemId="920002" itemNum="1" type="1" needNum="10" site="1" flag="1" />
+<DangpuCommon id="1202" itemType="0" itemId="921002" itemNum="1" type="1" needNum="10" site="2" flag="1" />
+<DangpuCommon id="1103" itemType="0" itemId="920002" itemNum="10" type="1" needNum="100" site="3" flag="1" />
+<DangpuCommon id="1203" itemType="0" itemId="921002" itemNum="10" type="1" needNum="100" site="4" flag="1" />
+<DangpuCommon id="1001" itemType="0" itemId="910000" itemNum="1" type="1" needNum="50" site="5" flag="1" />
+<DangpuCommon id="1002" itemType="0" itemId="910000" itemNum="10" type="1" needNum="500" site="6" flag="1" />
+<DangpuCommon id="1003" itemType="0" itemId="910001" itemNum="1" type="1" needNum="200" site="7" flag="1" />
+<DangpuCommon id="1004" itemType="0" itemId="900016" itemNum="1" type="1" needNum="100" site="8" flag="1" />
+</dataset>

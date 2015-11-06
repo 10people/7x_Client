@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<BattleWin id="1" winType="4" killNum="50" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" showOnUI="1" />
+<BattleWin id="1" winType="3" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" showOnUI="0" />
+</dataset>

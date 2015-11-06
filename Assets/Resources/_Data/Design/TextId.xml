@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<TextId textId="1" Text="白" />
+<TextId textId="2" Text="绿" />
+<TextId textId="3" Text="蓝" />
+<TextId textId="4" Text="紫" />
+<TextId textId="5" Text="橙" />
+<TextId textId="6" Text="色武将拥有第" />
+<TextId textId="7" Text="个技能" />
+<TextId textId="8" Text="精魄" />
+</dataset>

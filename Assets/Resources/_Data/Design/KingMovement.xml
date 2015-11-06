@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<KingMovement movementId="101" time="0.1" length="0.314" />
+<KingMovement movementId="102" time="0.1" length="1.196" />
+<KingMovement movementId="103" time="0.1" length="0.142" />
+<KingMovement movementId="104" time="0.133" length="1.485" />
+<KingMovement movementId="105" time="0.2" length="0.048" />
+<KingMovement movementId="106" time="0.166" length="1.344" />
+<KingMovement movementId="107" time="0.166" length="0.074" />
+<KingMovement movementId="108" time="0.133" length="1.371" />
+<KingMovement movementId="109" time="0.133" length="0.056" />
+<KingMovement movementId="110" time="0.133" length="0.111" />
+<KingMovement movementId="111" time="0.133" length="1.025" />
+<KingMovement movementId="112" time="0.133" length="0.362" />
+<KingMovement movementId="113" time="0.133" length="0.955" />
+<KingMovement movementId="114" time="0.133" length="0.37" />
+<KingMovement movementId="115" time="0.233" length="4" />
+<KingMovement movementId="116" time="0.2" length="0.4" />
+<KingMovement movementId="201" time="0.733" length="1.028" />
+<KingMovement movementId="202" time="0.533" length="0.747" />
+<KingMovement movementId="203" time="0.367" length="0.515" />
+<KingMovement movementId="204" time="1.933" length="2.71" />
+<KingMovement movementId="230" time="0.09" length="1.152" />
+<KingMovement movementId="231" time="0.12" length="1.319" />
+<KingMovement movementId="232" time="0.09" length="0.506" />
+<KingMovement movementId="233" time="0.09" length="0.548" />
+<KingMovement movementId="234" time="0.12" length="0.788" />
+<KingMovement movementId="235" time="0.09" length="0.181" />
+<KingMovement movementId="236" time="0.18" length="0.347" />
+<KingMovement movementId="237" time="0.21" length="0.333" />
+<KingMovement movementId="238" time="0.09" length="0.274" />
+<KingMovement movementId="401" time="0.42" length="7" />
+</dataset>

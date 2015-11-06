@@ -1,0 +1,133 @@
+fileFormatVersion: 2
+guid: 5ae8100c078ad164e8cfa4860d4d0a65
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Particle View 01
+    100002: s7_3d_wj_gaoshipai
+    100004: s7_3d_wj_jiutanzi
+    100006: s7_3d_wj_jiutanzibroken
+    100008: s7_3d_wj_liangyijia
+    100010: s7_3d_wj_liangyijiaB
+    100012: s7_3d_wj_shidunzi
+    100014: s7_3d_wj_suanmingtan
+    100016: s7_3d_wj_teadesk
+    100018: s7_3d_wj_zhuoyizihe_002
+    100020: //RootNode
+    100022: T_s7_3d_wj_denglongludengA
+    100024: T_s7_3d_wj_denglongludengB
+    100026: T_s7_3d_wj_denglongludengC
+    400000: Particle View 01
+    400002: s7_3d_wj_gaoshipai
+    400004: s7_3d_wj_jiutanzi
+    400006: s7_3d_wj_jiutanzibroken
+    400008: s7_3d_wj_liangyijia
+    400010: s7_3d_wj_liangyijiaB
+    400012: s7_3d_wj_shidunzi
+    400014: s7_3d_wj_suanmingtan
+    400016: s7_3d_wj_teadesk
+    400018: s7_3d_wj_zhuoyizihe_002
+    400020: //RootNode
+    400022: T_s7_3d_wj_denglongludengA
+    400024: T_s7_3d_wj_denglongludengB
+    400026: T_s7_3d_wj_denglongludengC
+    2300000: s7_3d_wj_gaoshipai
+    2300002: s7_3d_wj_jiutanzi
+    2300004: s7_3d_wj_jiutanzibroken
+    2300006: s7_3d_wj_liangyijia
+    2300008: s7_3d_wj_liangyijiaB
+    2300010: s7_3d_wj_shidunzi
+    2300012: s7_3d_wj_suanmingtan
+    2300014: s7_3d_wj_teadesk
+    2300016: s7_3d_wj_zhuoyizihe_002
+    2300018: T_s7_3d_wj_denglongludengA
+    2300020: T_s7_3d_wj_denglongludengB
+    2300022: T_s7_3d_wj_denglongludengC
+    3300000: s7_3d_wj_gaoshipai
+    3300002: s7_3d_wj_jiutanzi
+    3300004: s7_3d_wj_jiutanzibroken
+    3300006: s7_3d_wj_liangyijia
+    3300008: s7_3d_wj_liangyijiaB
+    3300010: s7_3d_wj_shidunzi
+    3300012: s7_3d_wj_suanmingtan
+    3300014: s7_3d_wj_teadesk
+    3300016: s7_3d_wj_zhuoyizihe_002
+    3300018: T_s7_3d_wj_denglongludengA
+    3300020: T_s7_3d_wj_denglongludengB
+    3300022: T_s7_3d_wj_denglongludengC
+    4300000: s7_3d_wj_shidunzi
+    4300002: s7_3d_wj_zhuoyizihe_002
+    4300004: T_s7_3d_wj_denglongludengB
+    4300006: T_s7_3d_wj_denglongludengA
+    4300008: T_s7_3d_wj_denglongludengC
+    4300010: s7_3d_wj_gaoshipai
+    4300012: s7_3d_wj_teadesk
+    4300014: s7_3d_wj_jiutanzibroken
+    4300016: s7_3d_wj_jiutanzi
+    4300018: s7_3d_wj_liangyijia
+    4300020: s7_3d_wj_liangyijiaB
+    4300022: s7_3d_wj_suanmingtan
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

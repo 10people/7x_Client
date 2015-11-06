@@ -1,0 +1,5 @@
+info face="¿¬Ìå" size=32 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=33 base=28 scaleW=32 scaleH=32 pages=1 packed=0 alphaChnl=0 redChnl=3 greenChnl=3 blueChnl=3
+page id=0 file="CN_Dict_0.png"
+chars count=1
+char id=48   x=0     y=0     width=23    height=28    xoffset=0     yoffset=0     xadvance=23    page=0  chnl=15

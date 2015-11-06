@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<TaoZhuang id="1" type="1" condition="2" shuxing1="1" num1="20" shuxing2="2" num2="20" shuxing3="3" num3="400" targetShow="2201" />
+<TaoZhuang id="2" type="1" condition="3" shuxing1="1" num1="30" shuxing2="2" num2="30" shuxing3="3" num3="600" targetShow="2202" />
+<TaoZhuang id="3" type="1" condition="4" shuxing1="1" num1="40" shuxing2="2" num2="40" shuxing3="3" num3="800" targetShow="2203" />
+<TaoZhuang id="4" type="1" condition="5" shuxing1="1" num1="50" shuxing2="2" num2="50" shuxing3="3" num3="1000" targetShow="2204" />
+<TaoZhuang id="5" type="1" condition="6" shuxing1="1" num1="60" shuxing2="2" num2="60" shuxing3="3" num3="1200" targetShow="2205" />
+<TaoZhuang id="6" type="1" condition="7" shuxing1="1" num1="70" shuxing2="2" num2="70" shuxing3="3" num3="1400" targetShow="2206" />
+<TaoZhuang id="7" type="1" condition="8" shuxing1="1" num1="80" shuxing2="2" num2="80" shuxing3="3" num3="1600" targetShow="2207" />
+<TaoZhuang id="8" type="1" condition="9" shuxing1="1" num1="90" shuxing2="2" num2="90" shuxing3="3" num3="1800" targetShow="2208" />
+<TaoZhuang id="9" type="1" condition="10" shuxing1="1" num1="100" shuxing2="2" num2="100" shuxing3="3" num3="2000" targetShow="2209" />
+<TaoZhuang id="10" type="1" condition="11" shuxing1="1" num1="110" shuxing2="2" num2="110" shuxing3="3" num3="2200" targetShow="2210" />
+<TaoZhuang id="11" type="2" condition="10" shuxing1="1" num1="20" shuxing2="2" num2="20" shuxing3="3" num3="400" targetShow="2221" />
+<TaoZhuang id="12" type="2" condition="20" shuxing1="1" num1="30" shuxing2="2" num2="30" shuxing3="3" num3="600" targetShow="2222" />
+<TaoZhuang id="13" type="2" condition="30" shuxing1="1" num1="40" shuxing2="2" num2="40" shuxing3="3" num3="800" targetShow="2223" />
+<TaoZhuang id="14" type="2" condition="40" shuxing1="1" num1="50" shuxing2="2" num2="50" shuxing3="3" num3="1000" targetShow="2224" />
+<TaoZhuang id="15" type="2" condition="50" shuxing1="1" num1="60" shuxing2="2" num2="60" shuxing3="3" num3="1200" targetShow="2225" />
+<TaoZhuang id="16" type="2" condition="60" shuxing1="1" num1="70" shuxing2="2" num2="70" shuxing3="3" num3="1400" targetShow="2226" />
+<TaoZhuang id="17" type="2" condition="70" shuxing1="1" num1="80" shuxing2="2" num2="80" shuxing3="3" num3="1600" targetShow="2227" />
+<TaoZhuang id="18" type="2" condition="80" shuxing1="1" num1="90" shuxing2="2" num2="90" shuxing3="3" num3="1800" targetShow="2228" />
+<TaoZhuang id="19" type="2" condition="90" shuxing1="1" num1="100" shuxing2="2" num2="100" shuxing3="3" num3="2000" targetShow="2229" />
+<TaoZhuang id="20" type="2" condition="100" shuxing1="1" num1="110" shuxing2="2" num2="110" shuxing3="3" num3="2200" targetShow="2230" />
+</dataset>

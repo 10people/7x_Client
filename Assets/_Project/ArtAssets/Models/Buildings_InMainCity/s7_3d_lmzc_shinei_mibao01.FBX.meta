@@ -1,0 +1,143 @@
+fileFormatVersion: 2
+guid: 00e4ea030513c8641a6031664641da6a
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: chiyouniushouzun001
+    100002: guimianqi001
+    100004: nvwabutianshi001
+    100006: nvwalumingzheng001
+    100008: nvwatianxinpei001
+    100010: qinglongyu001
+    100012: //RootNode
+    100014: shenmongwuxuanqin001
+    100016: shennongqingmayi001
+    100018: xuanyuanlingniugu001
+    100020: xuanyuanxuannvtu001
+    100022: xuanyuanzhinanche001
+    100024: yihuangwukongxun001
+    100026: zhuanxuxuanmingxi001
+    100028: zhurongxifengqin001
+    100030: zhurongxuanhuoshan001
+    100032: zhurongzhuqueqi001
+    400000: chiyouniushouzun001
+    400002: guimianqi001
+    400004: nvwabutianshi001
+    400006: nvwalumingzheng001
+    400008: nvwatianxinpei001
+    400010: qinglongyu001
+    400012: //RootNode
+    400014: shenmongwuxuanqin001
+    400016: shennongqingmayi001
+    400018: xuanyuanlingniugu001
+    400020: xuanyuanxuannvtu001
+    400022: xuanyuanzhinanche001
+    400024: yihuangwukongxun001
+    400026: zhuanxuxuanmingxi001
+    400028: zhurongxifengqin001
+    400030: zhurongxuanhuoshan001
+    400032: zhurongzhuqueqi001
+    2300000: chiyouniushouzun001
+    2300002: guimianqi001
+    2300004: nvwabutianshi001
+    2300006: nvwalumingzheng001
+    2300008: nvwatianxinpei001
+    2300010: qinglongyu001
+    2300012: shenmongwuxuanqin001
+    2300014: shennongqingmayi001
+    2300016: xuanyuanlingniugu001
+    2300018: xuanyuanxuannvtu001
+    2300020: xuanyuanzhinanche001
+    2300022: yihuangwukongxun001
+    2300024: zhuanxuxuanmingxi001
+    2300026: zhurongxifengqin001
+    2300028: zhurongxuanhuoshan001
+    2300030: zhurongzhuqueqi001
+    3300000: chiyouniushouzun001
+    3300002: guimianqi001
+    3300004: nvwabutianshi001
+    3300006: nvwalumingzheng001
+    3300008: nvwatianxinpei001
+    3300010: qinglongyu001
+    3300012: shenmongwuxuanqin001
+    3300014: shennongqingmayi001
+    3300016: xuanyuanlingniugu001
+    3300018: xuanyuanxuannvtu001
+    3300020: xuanyuanzhinanche001
+    3300022: yihuangwukongxun001
+    3300024: zhuanxuxuanmingxi001
+    3300026: zhurongxifengqin001
+    3300028: zhurongxuanhuoshan001
+    3300030: zhurongzhuqueqi001
+    4300000: zhuanxuxuanmingxi001
+    4300002: nvwatianxinpei001
+    4300004: shenmongwuxuanqin001
+    4300006: qinglongyu001
+    4300008: zhurongzhuqueqi001
+    4300010: chiyouniushouzun001
+    4300012: yihuangwukongxun001
+    4300014: zhurongxifengqin001
+    4300016: nvwalumingzheng001
+    4300018: zhurongxuanhuoshan001
+    4300020: xuanyuanxuannvtu001
+    4300022: xuanyuanlingniugu001
+    4300024: shennongqingmayi001
+    4300026: guimianqi001
+    4300028: xuanyuanzhinanche001
+    4300030: nvwabutianshi001
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

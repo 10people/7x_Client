@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <LMZBuildingTemp id="101" type="1" side="1" x="0" y="-95" zhanlingzhiMax="0" criticalValue="0" zhanlingzhiAdd="0" scoreAdd="0" radius="5" />
+  <LMZBuildingTemp id="102" type="1" side="2" x="0" y="90" zhanlingzhiMax="0" criticalValue="0" zhanlingzhiAdd="0" scoreAdd="0" radius="5" />
+  <LMZBuildingTemp id="201" type="2" side="0" x="-15" y="-55" zhanlingzhiMax="400" criticalValue="100" zhanlingzhiAdd="2" scoreAdd="2" radius="5" />
+  <LMZBuildingTemp id="202" type="2" side="0" x="25" y="-55" zhanlingzhiMax="400" criticalValue="100" zhanlingzhiAdd="2" scoreAdd="2" radius="5" />
+  <LMZBuildingTemp id="203" type="2" side="0" x="5" y="-10" zhanlingzhiMax="400" criticalValue="100" zhanlingzhiAdd="2" scoreAdd="2" radius="5" />
+  <LMZBuildingTemp id="204" type="2" side="0" x="-15" y="50" zhanlingzhiMax="400" criticalValue="100" zhanlingzhiAdd="2" scoreAdd="2" radius="5" />
+  <LMZBuildingTemp id="205" type="2" side="0" x="30" y="50" zhanlingzhiMax="400" criticalValue="100" zhanlingzhiAdd="2" scoreAdd="2" radius="5" />
+</dataset>

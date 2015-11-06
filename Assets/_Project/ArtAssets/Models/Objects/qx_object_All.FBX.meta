@@ -1,0 +1,133 @@
+fileFormatVersion: 2
+guid: 5f81d4cc4d802bb48b4d085b0925627e
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Box01
+    100002: Box03
+    100004: C_xianglu
+    100006: DrawCall_154_006
+    100008: Object006
+    100010: Object007
+    100012: qx_nongchang
+    100014: //RootNode
+    100016: qx_object_band
+    100018: qx_object_box
+    100020: qx_object_desk
+    100022: qx_object_desk3
+    100024: Qx_object_weidang
+    100026: qx_object_xiaotan
+    100028: qx_object_xiaotanB
+    400000: Box01
+    400002: Box03
+    400004: C_xianglu
+    400006: DrawCall_154_006
+    400008: Object006
+    400010: Object007
+    400012: qx_nongchang
+    400014: //RootNode
+    400016: qx_object_band
+    400018: qx_object_box
+    400020: qx_object_desk
+    400022: qx_object_desk3
+    400024: Qx_object_weidang
+    400026: qx_object_xiaotan
+    400028: qx_object_xiaotanB
+    2300000: Box01
+    2300002: Box03
+    2300004: C_xianglu
+    2300006: DrawCall_154_006
+    2300008: Object006
+    2300010: Object007
+    2300012: qx_nongchang
+    2300014: qx_object_band
+    2300016: qx_object_box
+    2300018: qx_object_desk
+    2300020: qx_object_desk3
+    2300022: Qx_object_weidang
+    2300024: qx_object_xiaotan
+    2300026: qx_object_xiaotanB
+    3300000: Box01
+    3300002: Box03
+    3300004: C_xianglu
+    3300006: DrawCall_154_006
+    3300008: Object006
+    3300010: Object007
+    3300012: qx_nongchang
+    3300014: qx_object_band
+    3300016: qx_object_box
+    3300018: qx_object_desk
+    3300020: qx_object_desk3
+    3300022: Qx_object_weidang
+    3300024: qx_object_xiaotan
+    3300026: qx_object_xiaotanB
+    4300000: Qx_object_weidang
+    4300002: qx_object_xiaotan
+    4300004: Box01
+    4300006: qx_object_xiaotanB
+    4300008: qx_nongchang
+    4300010: qx_object_box
+    4300012: qx_object_band
+    4300014: qx_object_desk
+    4300016: qx_object_desk3
+    4300018: DrawCall_154_006
+    4300020: Object006
+    4300022: Object007
+    4300024: Box03
+    4300026: C_xianglu
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .100000001
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

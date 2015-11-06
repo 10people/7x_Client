@@ -1,0 +1,10 @@
+-------------------------------------------<Min>
+GMem:40
+Mem:200
+SL:20
+CCount:1
+IE:true
+RT:true
+UNGDN:PowerVR SGX 544/Adreno (TM) 220/Adreno (TM) 225/Adreno (TM) 305/Mali-400/Mali-400 MP
+UNDVC:iPhone4S/iPad2Gen/iPadMini1Gen/Xiaomi MI 1S?/samsung GT-I9300?
+-------------------------------------------</Min>

@@ -1,0 +1,127 @@
+fileFormatVersion: 2
+guid: 80ea9268b02df8b42b1a1fc8460eaa4d
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: 3
+    100002: objObject27
+    100004: //RootNode
+    100006: T_s7_3d_jz_guangchang
+    100008: T_s7_3d_jz_shangpu_01
+    100010: T_s7_3d_jz_shangpu_02
+    100012: T_s7_3d_jz_shangpu_04
+    100014: T_s7_3d_jz_shangpu_06
+    100016: T_s7_3d_jz_shangpu_07
+    100018: T_s7_3d_jz_shangpu_09
+    100020: T_s7_3d_jz_shangpu_10
+    100022: T_s7_3d_xiaotanwei_05
+    100024: T_s7_3d_jz_shangpu_03
+    100026: T_s7_3d_jz_shangpu_08
+    400000: 3
+    400002: objObject27
+    400004: //RootNode
+    400006: T_s7_3d_jz_guangchang
+    400008: T_s7_3d_jz_shangpu_01
+    400010: T_s7_3d_jz_shangpu_02
+    400012: T_s7_3d_jz_shangpu_04
+    400014: T_s7_3d_jz_shangpu_06
+    400016: T_s7_3d_jz_shangpu_07
+    400018: T_s7_3d_jz_shangpu_09
+    400020: T_s7_3d_jz_shangpu_10
+    400022: T_s7_3d_xiaotanwei_05
+    400024: T_s7_3d_jz_shangpu_03
+    400026: T_s7_3d_jz_shangpu_08
+    2300000: 3
+    2300002: objObject27
+    2300004: T_s7_3d_jz_guangchang
+    2300006: T_s7_3d_jz_shangpu_01
+    2300008: T_s7_3d_jz_shangpu_02
+    2300010: T_s7_3d_jz_shangpu_04
+    2300012: T_s7_3d_jz_shangpu_06
+    2300014: T_s7_3d_jz_shangpu_07
+    2300016: T_s7_3d_jz_shangpu_09
+    2300018: T_s7_3d_jz_shangpu_10
+    2300020: T_s7_3d_xiaotanwei_05
+    2300022: T_s7_3d_jz_shangpu_03
+    2300024: T_s7_3d_jz_shangpu_08
+    3300000: 3
+    3300002: objObject27
+    3300004: T_s7_3d_jz_guangchang
+    3300006: T_s7_3d_jz_shangpu_01
+    3300008: T_s7_3d_jz_shangpu_02
+    3300010: T_s7_3d_jz_shangpu_04
+    3300012: T_s7_3d_jz_shangpu_06
+    3300014: T_s7_3d_jz_shangpu_07
+    3300016: T_s7_3d_jz_shangpu_09
+    3300018: T_s7_3d_jz_shangpu_10
+    3300020: T_s7_3d_xiaotanwei_05
+    3300022: T_s7_3d_jz_shangpu_03
+    3300024: T_s7_3d_jz_shangpu_08
+    4300000: 3
+    4300002: T_s7_3d_jz_shangpu_07
+    4300004: T_s7_3d_jz_shangpu_04
+    4300006: T_s7_3d_jz_shangpu_01
+    4300008: T_s7_3d_jz_shangpu_10
+    4300010: T_s7_3d_xiaotanwei_05
+    4300012: T_s7_3d_jz_guangchang
+    4300014: T_s7_3d_jz_shangpu_09
+    4300016: objObject27
+    4300018: T_s7_3d_jz_shangpu_02
+    4300020: T_s7_3d_jz_shangpu_06
+    4300022: T_s7_3d_jz_shangpu_08
+    4300024: T_s7_3d_jz_shangpu_03
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

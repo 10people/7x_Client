@@ -1,0 +1,259 @@
+fileFormatVersion: 2
+guid: b37c8d36bd7cfe44d87e8035c8796d33
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: ________________
+    100002: Bip01
+    100004: Bip01 Head
+    100006: Bip01 L Calf
+    100008: Bip01 L Clavicle
+    100010: Bip01 L Foot
+    100012: Bip01 L Forearm
+    100014: Bip01 L Hand
+    100016: Bip01 L Thigh
+    100018: Bip01 L UpperArm
+    100020: Bip01 Pelvis
+    100022: Bip01 Prop1
+    100024: Bip01 R Calf
+    100026: Bip01 R Clavicle
+    100028: Bip01 R Foot
+    100030: Bip01 R Forearm
+    100032: Bip01 R Hand
+    100034: Bip01 R Thigh
+    100036: Bip01 R UpperArm
+    100038: Bip01 Spine
+    100040: Bip01 Spine1
+    100042: Bone01
+    100044: Bone02
+    100046: Bone05
+    100048: Bone05(mirrored)
+    100050: Bone06
+    100052: Bone06(mirrored)
+    100054: Bone07
+    100056: Bone07(mirrored)
+    100058: Bone09
+    100060: Bone10
+    100062: Bone12
+    100064: Bone12(mirrored)
+    100066: Bone13
+    100068: Bone13(mirrored)
+    100070: //RootNode
+    100072: zhujue_haojie_nan
+    400000: ________________
+    400002: Bip01
+    400004: Bip01 Head
+    400006: Bip01 L Calf
+    400008: Bip01 L Clavicle
+    400010: Bip01 L Foot
+    400012: Bip01 L Forearm
+    400014: Bip01 L Hand
+    400016: Bip01 L Thigh
+    400018: Bip01 L UpperArm
+    400020: Bip01 Pelvis
+    400022: Bip01 Prop1
+    400024: Bip01 R Calf
+    400026: Bip01 R Clavicle
+    400028: Bip01 R Foot
+    400030: Bip01 R Forearm
+    400032: Bip01 R Hand
+    400034: Bip01 R Thigh
+    400036: Bip01 R UpperArm
+    400038: Bip01 Spine
+    400040: Bip01 Spine1
+    400042: Bone01
+    400044: Bone02
+    400046: Bone05
+    400048: Bone05(mirrored)
+    400050: Bone06
+    400052: Bone06(mirrored)
+    400054: Bone07
+    400056: Bone07(mirrored)
+    400058: Bone09
+    400060: Bone10
+    400062: Bone12
+    400064: Bone12(mirrored)
+    400066: Bone13
+    400068: Bone13(mirrored)
+    400070: //RootNode
+    400072: zhujue_haojie_nan
+    2300000: ________________
+    3300000: ________________
+    4300000: zhujue_haojie_nan
+    4300002: ________________
+    7400000: skill_1_2
+    9500000: //RootNode
+    13700000: zhujue_haojie_nan
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 3
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: skill_1_2
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 35
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: .158995807
+        functionName: skillActionDao
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 11
+        messageOptions: 0
+      - time: .0446096659
+        functionName: attackMovementDao
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 11
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bip01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Head
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm/Bip01 L Forearm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm/Bip01 L Forearm/Bip01 L Hand
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm/Bip01 R Forearm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm/Bip01 R Forearm/Bip01 R Hand
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bone05
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bone05/Bone06
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bone05/Bone06/Bone07
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bone05(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bone05(mirrored)/Bone06(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bone05(mirrored)/Bone06(mirrored)/Bone07(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone09
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone09/Bone10
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone12
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone12/Bone13
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone12(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone12(mirrored)/Bone13(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Prop1
+        weight: 1
+      - path: Bip01/Bip01 Prop1/________________
+        weight: 1
+      - path: zhujue_haojie_nan
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

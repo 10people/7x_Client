@@ -1,0 +1,1208 @@
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class DramaControllor : MonoBehaviour
+{
+	public delegate void Callback ();
+
+
+	public UILabel label;
+
+	public UILabel labelName;
+
+	public UISprite spriteBoard;
+
+	public UITexture avatar;
+
+	public GameObject bg;
+
+	public GameObject guideDrama;
+
+	public KingCamera gameCamera;
+
+
+	private int yindaoId = 0;
+
+	private static DramaControllor _instance;
+
+	private DramaStoryControllor storyControllor;
+	
+	private GameObject selfRoot;
+	
+	private GameObject enemyRoot;
+
+	private Callback mCallback;
+
+	private int tempEventId;
+
+	private int tempLevel;
+
+	private bool inGuide;
+
+	private bool inDrama;
+
+	private GameObject gc_moving;
+
+	private Vector3 movingTargetPos;
+
+	private Vector3 movingStartPos;
+
+	private float movingCount;
+
+	private GameObject uiGc;
+
+	private bool tempAutoFight = false;
+
+	private List<int> nextPlayList = new List<int>();
+
+	private List<Callback> nextCallbackList = new List<Callback>();
+
+	private int m_levelCallback;
+
+	private int m_eventIdCallback;
+
+	private Callback m_callbackCallback;
+
+	private GuideTemplate m_templateCallback;
+
+
+	void Awake()
+	{
+//		Debug.Log( "DramaControllor.Awake()" );
+
+		_instance = this;
+	}
+
+	public static DramaControllor Instance() { return _instance; }
+
+	void init(GuideTemplate template)
+	{
+		if(template.para1 == 3)
+		{
+			if(template.pause == 1)
+			{
+				GameObject Gobj = GameObject.Find ("JoyStick");
+				
+				if(Gobj != null) Gobj.SendMessage ("release");
+			}
+		}
+		else if(template.para1 != 2 && template.para1 != 5 && template.para1 != 6 && template.para1 != 7 && template.para1 != 8)
+		{
+			GameObject Gobj = GameObject.Find ("JoyStick");
+			
+			if(Gobj != null) Gobj.SendMessage ("release");
+		}
+
+		gameCamera = (KingCamera)GameObject.Find ("Main Camera").GetComponent ("KingCamera");
+
+		selfRoot = GameObject.Find ("Self");
+
+		enemyRoot = GameObject.Find ("Enemy");
+
+		tempAutoFight = BattleControlor.Instance ().autoFight || tempAutoFight;
+
+		bg.SetActive (true);
+
+		if (storyControllor == null)
+		{
+			storyControllor = (DramaStoryControllor)DramaStoryReador.Instance().GetComponentInChildren (typeof(DramaStoryControllor));
+			
+			storyControllor.init ();
+		}
+	}
+
+	public void showEventDelay()
+	{
+		showEvent (m_levelCallback, m_eventIdCallback, m_callbackCallback);
+	}
+
+	public void showEvent(int level, int eventId, Callback _callBack)
+	{
+		if (inDrama == true) {
+			//nextPlayList.Add(eventId);
+
+			//nextCallbackList.Add(_callBack);
+
+			return;
+		}
+
+		GuideTemplate template = GuideTemplate.getTemplateByLevelAndEvent (level, eventId);
+
+		bool played = BattleControlor.Instance ().havePlayedGuide (template);
+
+		if (played == true) 
+		{
+			init (template);
+
+			mCallback = _callBack;
+
+			dramaOver ();
+
+			return;
+		}
+
+		BattleControlor.Instance ().guidePlayed.Add (template);
+
+		m_levelCallback = level;
+
+		m_eventIdCallback = eventId;
+
+		m_callbackCallback = _callBack;
+
+		m_templateCallback = template;
+
+		if (template.delay > 0 && template.type != 4) 
+		{
+			//yield return new WaitForSeconds (template.delay);
+
+			BattleControlor.Instance ().clockWithCallback (template.delay, showEventCallback);
+		}
+		else
+		{
+			showEventCallback();
+		}
+
+	}
+
+	private void showEventCallback()
+	{
+		int level = m_levelCallback;
+
+		int eventId = m_eventIdCallback;
+
+		Callback _callBack = m_callbackCallback;
+
+		GuideTemplate template = m_templateCallback;
+
+		if(template.para1 == 2)
+		{
+			tempLevel = level;
+			
+			tempEventId = eventId;
+			
+			mCallback = _callBack;
+
+			playmusic(template.para2);
+
+			dramaOver(false);
+
+			return;
+		}
+
+		gameObject.SetActive (true);
+
+		bg.SetActive (false);
+
+		GetComponent<BoxCollider> ().enabled = false;
+
+		//StartCoroutine (showEventAction(template, level, eventId, _callBack));
+
+		showEventAction (template, level, eventId, _callBack);
+	}
+
+	void showEventAction(GuideTemplate template, int level, int eventId, Callback _callBack)
+	{
+//		if(template.delay > 0)
+//		{
+//			yield return new WaitForSeconds (template.delay);
+//		}
+
+		GetComponent<BoxCollider> ().enabled = true;
+
+		init (template);
+
+		inGuide = false;
+
+		inDrama = true;
+
+		tempLevel = level;
+
+		tempEventId = eventId;
+
+		mCallback = _callBack;
+
+		if(template.differentiate == 1)
+		{
+//			Camera cam = (Camera)BattleControlor.Instance().getKing().gameCamera.GetComponent ("Camera");
+
+//			if(cam != null) cam.cullingMask = 1024;
+		}
+
+		bool returnFlag = true;
+
+		if(template.type == 6)
+		{
+			dramaOver();
+
+			returnFlag = false;
+		}
+		else if(template.type == 7)
+		{
+			dramaOver();
+			
+			returnFlag = false;
+		}
+		else if(template.para1 == 1)
+		{
+			foreach(BaseAI node in BattleControlor.Instance().selfNodes)
+			{
+				node.setNavMeshStop();
+
+				node.targetNode = null;
+
+				if(node.flag.hideInDrama == true)
+				{
+					node.setLayer(2);
+				}
+			}
+
+			foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+			{
+				node.setNavMeshStop();
+				
+				node.targetNode = null;
+
+				if(node.flag.hideInDrama == true)
+				{
+					node.setLayer(2);
+				}
+			}
+
+			foreach(BaseAI node in BattleControlor.Instance().midNodes)
+			{
+				node.setNavMeshStop();
+				
+				node.targetNode = null;
+				
+				if(node.flag.hideInDrama == true)
+				{
+					node.setLayer(2);
+				}
+			}
+
+			if (storyControllor == null)
+			{
+				storyControllor = (DramaStoryControllor)DramaStoryReador.Instance().GetComponentInChildren (typeof(DramaStoryControllor));
+				
+				storyControllor.init ();
+			}
+
+			showStoryBoard(template.para2);
+		}
+		else if(template.para1 == 2)
+		{
+			playmusic(template.para2);
+
+			dramaOver(false);
+
+			returnFlag = false;
+		}
+		else if(template.para1 == 3)
+		{
+			bool yindaoable = false;
+
+			if(template.content == 0)//无限制
+			{
+				yindaoable = true;
+			}
+			else if(template.content == 1)//是重武器
+			{
+				if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Heavy)
+				{
+					yindaoable = true;
+				}
+			}
+			else if(template.content == 2)//是轻武器
+			{
+				if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Light)
+				{
+					yindaoable = true;
+				}
+			}
+			else if(template.content == 3)//是弓武器
+			{
+				if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Ranged)
+				{
+					yindaoable = true;
+				}
+			}
+			else if(template.content == -1)//不是重武器
+			{
+				if(BattleControlor.Instance().getKing().weaponType != KingControllor.WeaponType.W_Heavy)
+				{
+					yindaoable = true;
+				}
+			}
+			else if(template.content == -2)//不是轻武器
+			{
+				if(BattleControlor.Instance().getKing().weaponType != KingControllor.WeaponType.W_Light)
+				{
+					yindaoable = true;
+				}
+			}
+			else if(template.content == -3)//不是弓武器
+			{
+				if(BattleControlor.Instance().getKing().weaponType != KingControllor.WeaponType.W_Ranged)
+				{
+					yindaoable = true;
+				}
+			}
+
+			if(yindaoable == true)
+			{
+				yindaoId = template.para2;
+
+				UIYindao.m_UIYindao.setOpenYindao(template.para2);
+			}
+
+			dramaOver (yindaoable == true && template.pause == 1);
+
+			returnFlag = yindaoable == true && template.pause == 1;
+
+			if(yindaoable == true && template.pause == 1)
+			{
+				SceneGuideManager.Instance().OnSceneTipsHide();
+
+				Time.timeScale = 0;
+			}
+		}
+		else if(template.para1 == 4)
+		{
+			refreshCD(template);
+
+			dramaOver ();
+
+			returnFlag = false;
+		}
+		else if(template.para1 == 5)
+		{
+			playSound(template.para2);
+			
+			dramaOver(false);
+			
+			returnFlag = false;
+		}
+		else if(template.para1 == 6)
+		{
+			SceneGuideManager.Instance ().ShowSceneGuide (template.para2);
+
+			dramaOver(false);
+
+			returnFlag = false;
+		}
+		else if(template.para1 == 7)
+		{
+			GameObject t_node = getNodeByName(template.cameraTarget);
+
+			if(t_node != null)
+			{
+				t_node.SetActive(false);
+			}
+
+			dramaOver(false);
+			
+			returnFlag = false;
+		}
+		else if(template.para1 == 8)
+		{
+			playVoice(template.para2);
+			
+			dramaOver(false);
+			
+			returnFlag = false;
+		}
+		else if(template.content == 0)
+		{
+			showDrama(template);
+		}
+		else
+		{
+			showGuide(template);
+		}
+
+		if(returnFlag == true)
+		{
+			BattleUIControlor.Instance().attackJoystick.reset();
+		}
+
+		if(returnFlag == true && BattleControlor.Instance().autoFight == true)
+		{
+			BattleUIControlor.Instance().changeAutoFight();
+		}
+	}
+
+	private void showStoryBoard(int index)
+	{
+		inGuide = true;
+
+		bg.SetActive (false);
+
+		guideDrama.SetActive(false);
+
+		BattleUIControlor.Instance ().layerFight.SetActive (false);
+
+		storyControllor.init ();
+
+		storyControllor.recreateModel (index);
+
+		//toryControllor.playNext (gameObject, index);
+
+		storyControllor.playAction (gameObject, index);
+
+		BattleControlor.Instance ().inDrama = true;
+	}
+
+	private void playmusic(int musicId)
+	{
+		ClientMain.m_sound_manager.chagneBGSound (musicId);
+	}
+
+	private void playSound(int soundId)
+	{
+		SoundPlayEff spe = BattleControlor.Instance().getKing().GetComponent<SoundPlayEff>();
+
+		if(spe != null)
+		{
+			spe.PlaySound(soundId + "");
+		}
+	}
+
+	private void playVoice(int soundId)
+	{
+		ClientMain.m_ClientMain.m_SoundPlayEff.PlaySound (soundId + "");
+	}
+
+	public void dramaStoryDone()
+	{
+		foreach(BaseAI node in BattleControlor.Instance().selfNodes)
+		{
+			node.setLayer(8);//3D Layer
+		}
+
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			node.setLayer(8);//3D Layer
+		}
+
+		foreach(BaseAI node in BattleControlor.Instance().midNodes)
+		{
+			node.setLayer(8);//3D Layer
+		}
+
+		onPressInDrama ();
+	}
+
+	private void showDrama(GuideTemplate template)
+	{
+		bg.SetActive (false);
+
+		guideDrama.SetActive(false);
+		
+		BattleUIControlor.Instance ().layerFight.SetActive (false);
+
+		if (template.para2 == 1)
+		{
+			GameObject focus = getNodeByName(template.cameraTarget);
+
+			if(focus != null)
+			{
+				StartCoroutine(hideActor(focus));
+
+				//focus.SetActive(false);
+			}
+
+			DialogCallback();
+
+			return;
+		}
+
+		UIYindao.m_UIYindao.CloseUI ();
+
+		List<DialogData.dialogData> dialoglistdata = new List<DialogData.dialogData>();
+
+		DialogData.dialogData dialogdata = new DialogData.dialogData();
+		
+		string text = template.pText;
+		
+		string textName = template.pName;
+
+//		Debug.Log( "BattleControlor.Instance(): " + BattleControlor.Instance() );
+
+//		Debug.Log( "BattleControlor.Instance().getKing(): " + BattleControlor.Instance().getKing() );
+
+		text = text.Replace ("xxxxx", BattleControlor.Instance().getKing().nodeData.nodeName);
+
+		textName = textName.Replace ("xxxxx", BattleControlor.Instance().getKing().nodeData.nodeName);
+
+		label.text = text;
+
+		labelName.text = textName;
+
+		dialogdata.iHeadID = template.icon;
+
+		dialogdata.sDialogData = text;
+
+		dialogdata.sName = textName;
+
+		dialogdata.isLeft = (template.position == 0);
+
+		dialoglistdata.Add(dialogdata);
+
+		float autoTime = 99999999;
+
+		if(tempAutoFight == true) autoTime = 10;
+
+		ClientMain.m_ClientMain.m_UIDialogSystem.setOpenDialog(dialoglistdata, autoTime, DialogCallback);
+
+		if(template.cameraTarget.Equals("") == false)
+		{
+			GameObject focus = getNodeByName(template.cameraTarget);
+
+			if(focus != null)
+			{
+				if(template.forwardFlagId != 0)
+				{
+					BaseAI forwardNode = BattleControlor.Instance().getNodebyId(template.forwardFlagId);
+
+					if(forwardNode != null)
+					{
+						focus.transform.forward = forwardNode.transform.position - focus.transform.position;
+					}
+					else
+					{
+						BattleFlag bf = null;
+
+						BattleControlor.Instance().flags.TryGetValue(template.forwardFlagId, out bf);
+
+						if(bf != null)
+						{
+							focus.transform.forward = bf.transform.position - focus.transform.position;
+						}
+					}
+				}
+
+				GameObject tempObject = new GameObject();
+
+				tempObject.transform.parent = gameCamera.transform.parent;
+
+				tempObject.transform.localScale = new Vector3(1, 1, 1);
+
+				tempObject.transform.position = Vector3.zero;
+
+				tempObject.transform.eulerAngles = focus.transform.localEulerAngles;
+
+				GameObject tempInner = new GameObject();
+
+				tempInner.transform.parent = tempObject.transform;
+
+				tempInner.transform.localScale = new Vector3(1, 1, 1);
+
+				tempInner.transform.localPosition = new Vector3(template.cameraPx, template.cameraPy, template.cameraPz);
+
+				tempInner.transform.localEulerAngles = new Vector3(template.cameraRx, template.cameraRy, 0); 
+
+				tempInner.transform.parent = tempObject.transform.parent;
+
+				gameCamera.targetChang(focus);
+
+				gameCamera.CameraChange(new Vector3(template.cameraPx, template.cameraPy, template.cameraPz), new Vector3(template.cameraRx, template.cameraRy, 0));
+
+				Destroy(tempObject);
+
+				Destroy(tempInner);
+			}
+			else
+			{
+				bg.SetActive(true);
+			}
+		}
+		else
+		{
+			gameCamera.resetCamera();
+		}
+
+		if(template.pause == 1) 
+		{
+			SceneGuideManager.Instance().OnSceneTipsHide();
+
+			Time.timeScale = 0;
+		}
+
+		BattleControlor.Instance ().inDrama = true;
+	}
+
+	private void refreshCD(GuideTemplate template)
+	{
+		if(template.content == 11)
+		{
+			BattleUIControlor.Instance().cooldownHeavySkill_1.CoolDownComplate();
+		}
+		else if(template.content == 12)
+		{
+			BattleUIControlor.Instance().cooldownHeavySkill_2.CoolDownComplate();
+		}
+		else if(template.content == 21)
+		{
+			BattleUIControlor.Instance().cooldownLightSkill_1.CoolDownComplate();
+		}
+		else if(template.content == 22)
+		{
+			BattleUIControlor.Instance().cooldownLightSkill_2.CoolDownComplate();
+		}
+		else if(template.content == 31)
+		{
+			BattleUIControlor.Instance().cooldownRangeSkill_1.CoolDownComplate();
+		}
+		else if(template.content == 32)
+		{
+			BattleUIControlor.Instance().cooldownRangeSkill_2.CoolDownComplate();
+		}
+		else if(template.content == 41)
+		{
+			BattleUIControlor.Instance().cooldownMibaoSkill.CoolDownComplate();
+		}
+	}
+
+	private void showGuide(GuideTemplate template)
+	{
+		inGuide = true;
+
+		BattleControlor.Instance ().inDrama = true;
+
+		bg.SetActive (true);
+
+		guideDrama.SetActive(false);
+
+		GameObject gc = null;
+
+		GameObject uigc = null;
+
+		Vector3 offset = Vector3.zero;
+
+		LockControllor.LOCK_TYPE lockType = LockControllor.LOCK_TYPE.Attack;
+
+		if (template.content == 1)
+		{
+			uigc = BattleUIControlor.Instance().m_gc_move;
+
+			BattleUIControlor.Instance().b_joystick = true;
+
+			//offset = BattleUIControlor.Instance().anchorBottomLeft.transform.localPosition;
+		}
+		else if(template.content == 2)
+		{
+			uigc = BattleUIControlor.Instance().m_gc_attack;
+
+			lockType = LockControllor.LOCK_TYPE.Attack;
+
+			BattleUIControlor.Instance().b_attack = true;
+
+			//offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
+		}
+		else if(template.content == 3)
+		{
+			if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Heavy)
+			{
+				uigc = BattleUIControlor.Instance().m_gc_skill_1[0];
+
+				lockType = LockControllor.LOCK_TYPE.HeavySkill_1;
+
+				BattleUIControlor.Instance().b_skill_heavy_1 = true;
+			}
+			else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Light)
+			{
+				uigc = BattleUIControlor.Instance().m_gc_skill_1[2];
+
+				lockType = LockControllor.LOCK_TYPE.LightSkill_1;
+
+				BattleUIControlor.Instance().b_skill_light_1 = true;
+			}
+			else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Ranged)
+			{
+				uigc = BattleUIControlor.Instance().m_gc_skill_1[1];
+
+				lockType = LockControllor.LOCK_TYPE.RangeSkill_1;
+
+				BattleUIControlor.Instance().b_skill_ranged_1 = true;
+			}
+
+			offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
+		}
+		else if(template.content == 4)
+		{
+			if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Heavy)
+			{
+				uigc = BattleUIControlor.Instance().m_gc_skill_2[0];
+
+				lockType = LockControllor.LOCK_TYPE.HeavySkill_2;
+
+				BattleUIControlor.Instance().b_skill_heavy_2 = true;
+			}
+			else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Light)
+			{
+				uigc = BattleUIControlor.Instance().m_gc_skill_2[2];
+
+				lockType = LockControllor.LOCK_TYPE.LightSkill_2;
+
+				BattleUIControlor.Instance().b_skill_light_2 = true;
+			}
+			else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Ranged)
+			{
+				uigc = BattleUIControlor.Instance().m_gc_skill_2[1];
+
+				lockType = LockControllor.LOCK_TYPE.RangeSkill_2;
+
+				BattleUIControlor.Instance().b_skill_ranged_2 = true;
+			}
+
+			offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
+		}
+		else if(template.content == 5)
+		{
+			uigc = BattleUIControlor.Instance().m_changeWeapon.btnHeavy.gameObject;
+
+			lockType = LockControllor.LOCK_TYPE.WeaponHeavy;
+
+			BattleUIControlor.Instance().b_weapon_heavy = true;
+
+			offset = BattleUIControlor.Instance().anchorBottom.transform.localPosition;
+		}
+		else if(template.content == 6)
+		{
+			uigc = BattleUIControlor.Instance().m_changeWeapon.btnLight.gameObject;
+
+			lockType = LockControllor.LOCK_TYPE.WeaponLight;
+
+			BattleUIControlor.Instance().b_weapon_light = true;
+
+			offset = BattleUIControlor.Instance().anchorBottom.transform.localPosition;
+		}
+		else if(template.content == 7)
+		{
+			uigc = BattleUIControlor.Instance().m_changeWeapon.btnRange.gameObject;
+
+			lockType = LockControllor.LOCK_TYPE.WeaponRange;
+
+			BattleUIControlor.Instance().b_weapon_range = true;
+
+			offset = BattleUIControlor.Instance().anchorBottom.transform.localPosition;
+		}
+		else if(template.content == 8)//暂停
+		{
+			uigc = BattleUIControlor.Instance().m_gc_pause;
+
+			lockType = LockControllor.LOCK_TYPE.Pause;
+
+			BattleUIControlor.Instance().b_pause = true;
+
+			//offset = BattleUIControlor.Instance().anchorTopLeft.transform.localPosition;
+		}
+		else if(template.content == 9)//自动
+		{
+			uigc = BattleUIControlor.Instance().m_gc_autoFight;
+
+			lockType = LockControllor.LOCK_TYPE.AutoFight;
+
+			BattleUIControlor.Instance().b_autoFight = true;
+
+			//offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
+		}
+		else if(template.content == 10)//翻滚
+		{
+			uigc = BattleUIControlor.Instance().m_gc_dodge;
+
+			lockType = LockControllor.LOCK_TYPE.Dodge;
+
+			BattleUIControlor.Instance().b_dodge = true;
+
+			//offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
+		}
+		else if(template.content == 11)
+		{
+			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Heavy);
+
+			BattleUIControlor.Instance().m_changeWeapon.changeWeaponToHeavy();
+
+			uigc = BattleUIControlor.Instance().m_gc_skill_1[0];
+			
+			lockType = LockControllor.LOCK_TYPE.HeavySkill_1;
+			
+			BattleUIControlor.Instance().b_skill_heavy_1 = true;
+		}
+		else if(template.content == 12)
+		{
+			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Heavy);
+
+			BattleUIControlor.Instance().m_changeWeapon.changeWeaponToHeavy();
+
+			uigc = BattleUIControlor.Instance().m_gc_skill_2[0];
+			
+			lockType = LockControllor.LOCK_TYPE.HeavySkill_2;
+			
+			BattleUIControlor.Instance().b_skill_heavy_2 = true;
+		}
+		else if(template.content == 13)
+		{
+			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Light);
+
+			BattleUIControlor.Instance().m_changeWeapon.changeWeaponToLight();
+
+			uigc = BattleUIControlor.Instance().m_gc_skill_1[2];
+			
+			lockType = LockControllor.LOCK_TYPE.LightSkill_1;
+			
+			BattleUIControlor.Instance().b_skill_light_1 = true;
+		}
+		else if(template.content == 14)
+		{
+			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Light);
+
+			BattleUIControlor.Instance().m_changeWeapon.changeWeaponToLight();
+
+			uigc = BattleUIControlor.Instance().m_gc_skill_2[2];
+			
+			lockType = LockControllor.LOCK_TYPE.LightSkill_2;
+			
+			BattleUIControlor.Instance().b_skill_light_2 = true;
+		}
+		else if(template.content == 15)
+		{
+			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Ranged);
+
+			BattleUIControlor.Instance().m_changeWeapon.changeWeaponToRange();
+
+			uigc = BattleUIControlor.Instance().m_gc_skill_1[1];
+			
+			lockType = LockControllor.LOCK_TYPE.RangeSkill_1;
+			
+			BattleUIControlor.Instance().b_skill_ranged_1 = true;
+		}
+		else if(template.content == 16)
+		{
+			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Ranged);
+
+			BattleUIControlor.Instance().m_changeWeapon.changeWeaponToRange();
+
+			uigc = BattleUIControlor.Instance().m_gc_skill_2[1];
+			
+			lockType = LockControllor.LOCK_TYPE.RangeSkill_2;
+			
+			BattleUIControlor.Instance().b_skill_ranged_2 = true;
+		}
+		else if(template.content == 17)
+		{
+			uigc = BattleUIControlor.Instance().btnMibaoSkill;
+
+			lockType = LockControllor.LOCK_TYPE.MiBaoSkill;
+
+			BattleUIControlor.Instance().b_skill_miBao = true;
+		}
+
+		if(uigc != null)
+		{
+			//LockControllor.Instance ().refreshLock(lockType, true);
+
+			StartCoroutine(_showGuide(lockType));
+
+			UI3DEffectTool.Instance().ShowBottomLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100170));
+
+			UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100009));
+		}
+		else
+		{
+			dramaOver ();
+		}
+	}
+
+	IEnumerator _showGuide(LockControllor.LOCK_TYPE lockType)
+	{
+		yield return new WaitForSeconds (1f);
+
+		LockControllor.Instance ().refreshLock(lockType, true);
+
+		yield return new WaitForSeconds (1f);
+
+		dramaOver ();
+	}
+
+	public void DialogCallback()
+	{
+		OnPress (true);
+	}
+
+	public void OnPress(bool pressed)
+	{
+		if (pressed == false) return;
+
+		if (inGuide == true) return;
+
+		//if (inDrama == true) return;
+
+		dramaOver ();
+	}
+
+	public void onPressInGuide()
+	{
+		dramaOver ();
+	}
+
+	public void onPressInDrama()
+	{
+		dramaOver ();
+	}
+
+	private void dramaOver(bool stopAction = true)
+	{
+		inDrama = false;
+
+		inGuide = false;
+
+		openEye ();
+		
+		int e = tempEventId + 1;
+
+		bool guideFlag = GuideTemplate.HaveId (tempLevel, e);
+		
+		Time.timeScale = 1;
+
+		if(stopAction == true)
+		{
+			BattleUIControlor.Instance ().m_gc_attack.SendMessage ("Start");
+
+			BattleUIControlor.Instance ().m_gc_move.SendMessage ("release");
+
+			BattleUIControlor.Instance ().resetKeyBoard ();
+		}
+
+		if(guideFlag == true)
+		{
+			bool f = GuideTemplate.HaveId(tempLevel, e);
+
+			if(f == true) 
+			{
+				GuideTemplate template = GuideTemplate.getTemplateByLevelAndEvent (tempLevel, e);
+
+				bool ff = BattleControlor.Instance().havePlayedGuide(template);
+
+				if(ff == false && template.type == 4)
+				{
+					if(template.delay > 0)
+					{
+						m_levelCallback = tempLevel;
+
+						m_templateCallback = template;
+
+						m_eventIdCallback = e;
+
+						m_callbackCallback = mCallback;
+
+						BattleControlor.Instance().clockWithCallback(template.delay, showEventDelay);
+					}
+					else
+					{
+						showEvent(tempLevel, e, mCallback);
+
+						return;
+					}
+				}
+			}
+		}
+
+//		if(nextPlayList.Count > 0)
+//		{
+//			int nextId = nextPlayList[0];
+//
+//			Callback callback = nextCallbackList[0];
+//
+//			nextPlayList.RemoveAt(0);
+//			
+//			nextCallbackList.RemoveAt(0);
+//
+//			showEvent(tempLevel, nextId, callback);
+//
+//			return;
+//		}
+
+		gameObject.SetActive(false);
+
+		if(gameCamera != null)
+		{
+			gameCamera.resetCamera();
+		
+			gameCamera.updateCameraFlags();
+
+			gameCamera.updateCamera();
+		}
+
+		BattleControlor.Instance ().inDrama = false;
+
+		if(mCallback != null) mCallback();
+
+		if(tempAutoFight == true && stopAction == true)
+		{
+			BattleUIControlor.Instance().changeAutoFight();
+
+			tempAutoFight = false;
+		}
+	}
+
+	public void closeYindao(int _yindaoId)
+	{
+		if(DramaControllor.Instance().yindaoId == _yindaoId)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+
+			int curYindaoId = DramaControllor.Instance().yindaoId;
+
+			DramaControllor.Instance().yindaoId = 0;
+
+			dramaOver(curYindaoId != 20109);
+		}
+	}
+
+	void Update()
+	{
+		if (gc_moving == null) return;
+
+		float count = 30f;
+
+		if(movingCount >= count)
+		{
+			gc_moving.SetActive(false);
+
+			uiGc.SetActive(true);
+
+			onPressInGuide ();
+
+			gc_moving = null;
+
+			Time.timeScale = 1;
+
+			return;
+		}
+
+		Vector3 pos = (movingTargetPos - movingStartPos) * movingCount / count;
+
+		gc_moving.transform.localPosition = pos;
+
+		movingCount += 1f;
+	}
+
+	private void openEye()
+	{
+		if( BattleUIControlor.Instance () == null ) return;
+
+		if( BattleUIControlor.Instance ().layerFight == null ) return;
+
+		BattleUIControlor.Instance ().layerFight.SetActive (true);
+
+		bool have = GuideTemplate.HaveId (tempLevel, tempEventId);
+
+		if (have == false) return;
+
+		GuideTemplate template = GuideTemplate.getTemplateByLevelAndEvent (tempLevel, tempEventId);
+
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			foreach(int flagId in template.flagId)
+			{
+				if(node.flag.flagId == flagId)
+				{
+					node.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_eyeRange, 100 );
+
+					SphereCollider sc = (SphereCollider)node.GetComponent("SphereCollider");
+					
+					if(sc != null)
+					{
+						sc.radius = node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_eyeRange );
+					}
+
+					return;
+				}
+			}
+		}
+	}
+
+	public bool getInDrama()
+	{
+		return inGuide;
+	}
+
+	private GameObject getNodeByName(string nodeName)
+	{
+		if(nodeName.Equals("xxxxx"))
+		{
+			return BattleControlor.Instance().getKing().gameObject;
+		}
+
+		Component[] selfComps = selfRoot.GetComponentsInChildren (typeof(BaseAI));
+
+		foreach(Component com in selfComps)
+		{
+			BaseAI node = (BaseAI)com;
+
+			if(node.nodeData.nodeName.Equals(nodeName) && node.nodeId != 1)
+			{
+				return node.gameObject;
+			}
+		}
+
+		BaseAI[] enemyComs = enemyRoot.GetComponentsInChildren<BaseAI> ();
+
+		foreach(BaseAI node in enemyComs)
+		{
+			if(node != null && node.nodeData.nodeName != null && node.nodeData.nodeName.Equals(nodeName))
+			{
+				return node.gameObject;
+			}
+		}
+
+		if (storyControllor == null) return null;
+
+		Component[] actorComs = storyControllor.GetComponentsInChildren (typeof(DramaActorControllor));
+
+		foreach(Component com in actorComs)
+		{
+			DramaActorControllor actor = (DramaActorControllor)com;
+
+			if(actor.gameObject.activeSelf == true && actor.actorName.Equals(nodeName))
+			{
+				return actor.gameObject;
+			}
+		}
+
+		return null;
+	}
+
+	IEnumerator hideActor(GameObject actor)
+	{
+		Renderer[] meshs = actor.GetComponentsInChildren<Renderer>();
+
+		float alpha = 1;
+
+		for(;alpha > 0;)
+		{
+			alpha -= .05f;
+
+			foreach(Renderer mesh in meshs)
+			{
+				foreach(Material mater in mesh.materials)
+				{
+					if(mater.shader.name.Equals("Custom/Characters/Main Texture High Light"))
+					{
+						mater.color = new Color(mater.color.r, mater.color.g, mater.color.b, alpha);
+					}
+				}
+			}
+
+			yield return new WaitForEndOfFrame();
+		}
+	}
+
+	public int getYindaoId()
+	{
+		return yindaoId;
+	}
+
+}

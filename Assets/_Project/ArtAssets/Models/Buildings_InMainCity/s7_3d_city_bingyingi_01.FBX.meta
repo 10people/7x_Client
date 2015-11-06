@@ -1,0 +1,89 @@
+fileFormatVersion: 2
+guid: e248b9786457de64e9176bd3de584d61
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Box05
+    100002: Object046
+    100004: Object43
+    100006: s7_3d_city_bingying_01
+    100008: s7_3d_city_bingying_dunpai_01
+    100010: s7_3d_city_bingying_qizi_01
+    100012: //RootNode
+    400000: Box05
+    400002: Object046
+    400004: Object43
+    400006: s7_3d_city_bingying_01
+    400008: s7_3d_city_bingying_dunpai_01
+    400010: s7_3d_city_bingying_qizi_01
+    400012: //RootNode
+    2300000: Box05
+    2300002: Object046
+    2300004: Object43
+    2300006: s7_3d_city_bingying_dunpai_01
+    2300008: s7_3d_city_bingying_qizi_01
+    3300000: Box05
+    3300002: Object046
+    3300004: Object43
+    3300006: s7_3d_city_bingying_dunpai_01
+    3300008: s7_3d_city_bingying_qizi_01
+    4300000: s7_3d_city_bingying_qizi_01
+    4300002: s7_3d_city_bingying_dunpai_01
+    4300004: Box05
+    4300006: Object046
+    4300008: Object43
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

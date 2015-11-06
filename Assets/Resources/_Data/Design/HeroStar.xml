@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HeroStar id="1000" quality="1" star="0" nextStar="1" exp="5" jingmaidian="1" />
+<HeroStar id="1001" quality="1" star="1" nextStar="2" exp="5" jingmaidian="1" />
+<HeroStar id="1002" quality="1" star="2" nextStar="3" exp="10" jingmaidian="1" />
+<HeroStar id="1003" quality="1" star="3" nextStar="4" exp="10" jingmaidian="1" />
+<HeroStar id="1004" quality="1" star="4" nextStar="5" exp="20" jingmaidian="1" />
+<HeroStar id="1005" quality="1" star="5" nextStar="-1" exp="0" jingmaidian="0" />
+<HeroStar id="2000" quality="2" star="0" nextStar="1" exp="5" jingmaidian="2" />
+<HeroStar id="2001" quality="2" star="1" nextStar="2" exp="5" jingmaidian="2" />
+<HeroStar id="2002" quality="2" star="2" nextStar="3" exp="10" jingmaidian="2" />
+<HeroStar id="2003" quality="2" star="3" nextStar="4" exp="10" jingmaidian="2" />
+<HeroStar id="2004" quality="2" star="4" nextStar="5" exp="20" jingmaidian="2" />
+<HeroStar id="2005" quality="2" star="5" nextStar="-1" exp="0" jingmaidian="0" />
+<HeroStar id="3000" quality="3" star="0" nextStar="1" exp="10" jingmaidian="3" />
+<HeroStar id="3001" quality="3" star="1" nextStar="2" exp="10" jingmaidian="3" />
+<HeroStar id="3002" quality="3" star="2" nextStar="3" exp="20" jingmaidian="3" />
+<HeroStar id="3003" quality="3" star="3" nextStar="4" exp="20" jingmaidian="3" />
+<HeroStar id="3004" quality="3" star="4" nextStar="5" exp="30" jingmaidian="3" />
+<HeroStar id="3005" quality="3" star="5" nextStar="-1" exp="0" jingmaidian="0" />
+<HeroStar id="4000" quality="4" star="0" nextStar="1" exp="20" jingmaidian="5" />
+<HeroStar id="4001" quality="4" star="1" nextStar="2" exp="20" jingmaidian="5" />
+<HeroStar id="4002" quality="4" star="2" nextStar="3" exp="30" jingmaidian="5" />
+<HeroStar id="4003" quality="4" star="3" nextStar="4" exp="30" jingmaidian="5" />
+<HeroStar id="4004" quality="4" star="4" nextStar="5" exp="40" jingmaidian="5" />
+<HeroStar id="4005" quality="4" star="5" nextStar="-1" exp="0" jingmaidian="0" />
+<HeroStar id="5000" quality="5" star="0" nextStar="1" exp="30" jingmaidian="10" />
+<HeroStar id="5001" quality="5" star="1" nextStar="2" exp="40" jingmaidian="10" />
+<HeroStar id="5002" quality="5" star="2" nextStar="3" exp="50" jingmaidian="10" />
+<HeroStar id="5003" quality="5" star="3" nextStar="4" exp="60" jingmaidian="10" />
+<HeroStar id="5004" quality="5" star="4" nextStar="5" exp="90" jingmaidian="10" />
+<HeroStar id="5005" quality="5" star="5" nextStar="-1" exp="0" jingmaidian="0" />
+</dataset>

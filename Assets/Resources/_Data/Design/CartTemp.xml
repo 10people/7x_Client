@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<CartTemp quality="1" name="骡马" cartSpeed="0.9" profitPara="21.4" failProfit="0.5" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="10" CartProbability="40000" />
+<CartTemp quality="2" name="驮马" cartSpeed="0.9" profitPara="27.8" failProfit="0.5" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="30" CartProbability="28000" />
+<CartTemp quality="3" name="膘马" cartSpeed="0.9" profitPara="36.4" failProfit="0.5" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="60" CartProbability="18000" />
+<CartTemp quality="4" name="骏马" cartSpeed="0.9" profitPara="47.1" failProfit="0.5" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="100" CartProbability="10000" />
+<CartTemp quality="5" name="神驹" cartSpeed="0.9" profitPara="59.9" failProfit="0.5" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="0" CartProbability="4000" />
+</dataset>

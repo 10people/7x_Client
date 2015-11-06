@@ -1,0 +1,171 @@
+fileFormatVersion: 2
+guid: 839ad79bf73c8714bb02934fcab03ba9
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: qx_zhucheng_shu_01
+    100002: s7_3d_plant_grass
+    100004: s7_3d_plant_guanmuA
+    100006: s7_3d_plant_guanmuB
+    100008: s7_3d_plant_guanmuC
+    100010: s7_3d_plant_guanmuD
+    100012: s7_3d_plant_stoneA
+    100014: s7_3d_plant_stoneB
+    100016: s7_3d_plant_taoshu
+    100018: s7_3d_shu_dashu
+    100020: s7_3d_shu_huaA
+    100022: s7_3d_shu_huaB
+    100024: s7_3d_shu_huaC
+    100026: s7_3d_shu_huaD
+    100028: s7_3d_shu_xiaoshu
+    100030: s7_3d_tree_dashu004
+    100032: s7_3d_tree_dashu2
+    100034: s7_3d_tree_dashu3
+    100036: //RootNode
+    100038: s7_3d_wj_yezi
+    100040: s7_3d_shu_xiaoshu001
+    400000: qx_zhucheng_shu_01
+    400002: s7_3d_plant_grass
+    400004: s7_3d_plant_guanmuA
+    400006: s7_3d_plant_guanmuB
+    400008: s7_3d_plant_guanmuC
+    400010: s7_3d_plant_guanmuD
+    400012: s7_3d_plant_stoneA
+    400014: s7_3d_plant_stoneB
+    400016: s7_3d_plant_taoshu
+    400018: s7_3d_shu_dashu
+    400020: s7_3d_shu_huaA
+    400022: s7_3d_shu_huaB
+    400024: s7_3d_shu_huaC
+    400026: s7_3d_shu_huaD
+    400028: s7_3d_shu_xiaoshu
+    400030: s7_3d_tree_dashu004
+    400032: s7_3d_tree_dashu2
+    400034: s7_3d_tree_dashu3
+    400036: //RootNode
+    400038: s7_3d_wj_yezi
+    400040: s7_3d_shu_xiaoshu001
+    2300000: qx_zhucheng_shu_01
+    2300002: s7_3d_plant_grass
+    2300004: s7_3d_plant_guanmuA
+    2300006: s7_3d_plant_guanmuB
+    2300008: s7_3d_plant_guanmuC
+    2300010: s7_3d_plant_guanmuD
+    2300012: s7_3d_plant_stoneA
+    2300014: s7_3d_plant_stoneB
+    2300016: s7_3d_plant_taoshu
+    2300018: s7_3d_shu_dashu
+    2300020: s7_3d_shu_huaA
+    2300022: s7_3d_shu_huaB
+    2300024: s7_3d_shu_huaC
+    2300026: s7_3d_shu_huaD
+    2300028: s7_3d_shu_xiaoshu
+    2300030: s7_3d_tree_dashu004
+    2300032: s7_3d_tree_dashu2
+    2300034: s7_3d_tree_dashu3
+    2300036: s7_3d_wj_yezi
+    2300038: s7_3d_shu_xiaoshu001
+    3300000: qx_zhucheng_shu_01
+    3300002: s7_3d_plant_grass
+    3300004: s7_3d_plant_guanmuA
+    3300006: s7_3d_plant_guanmuB
+    3300008: s7_3d_plant_guanmuC
+    3300010: s7_3d_plant_guanmuD
+    3300012: s7_3d_plant_stoneA
+    3300014: s7_3d_plant_stoneB
+    3300016: s7_3d_plant_taoshu
+    3300018: s7_3d_shu_dashu
+    3300020: s7_3d_shu_huaA
+    3300022: s7_3d_shu_huaB
+    3300024: s7_3d_shu_huaC
+    3300026: s7_3d_shu_huaD
+    3300028: s7_3d_shu_xiaoshu
+    3300030: s7_3d_tree_dashu004
+    3300032: s7_3d_tree_dashu2
+    3300034: s7_3d_tree_dashu3
+    3300036: s7_3d_wj_yezi
+    3300038: s7_3d_shu_xiaoshu001
+    4300000: s7_3d_shu_huaA
+    4300002: s7_3d_plant_guanmuC
+    4300004: s7_3d_plant_guanmuA
+    4300006: s7_3d_shu_huaB
+    4300008: s7_3d_plant_guanmuB
+    4300010: s7_3d_shu_huaD
+    4300012: s7_3d_plant_stoneA
+    4300014: s7_3d_plant_grass
+    4300016: s7_3d_shu_huaC
+    4300018: s7_3d_plant_guanmuD
+    4300020: s7_3d_plant_stoneB
+    4300022: s7_3d_shu_xiaoshu
+    4300024: s7_3d_shu_dashu
+    4300026: s7_3d_plant_taoshu
+    4300028: s7_3d_tree_dashu2
+    4300030: s7_3d_tree_dashu3
+    4300032: s7_3d_wj_yezi
+    4300034: s7_3d_tree_dashu004
+    4300036: qx_zhucheng_shu_01
+    4300038: s7_3d_shu_xiaoshu001
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

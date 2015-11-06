@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<SoundIdGroup Id="1" Group="4000|4001|4002|4003|4004|4005|4006|4007|4008|4009|4010|4011|4031|4032|4033|4034|4035|4036|4037|4038|4039" Count="2" />
+<SoundIdGroup Id="2" Group="300001|300002|300003|300004|300005|300006|300007|300008|3309|3310|3314|3315|3316|3311|3312|3313|3314|3315|3316" Count="5" />
+<SoundIdGroup Id="3" Group="400200" Count="1" />
+<SoundIdGroup Id="4" Group="400210" Count="2" />
+<SoundIdGroup Id="5" Group="420160" Count="1" />
+</dataset>

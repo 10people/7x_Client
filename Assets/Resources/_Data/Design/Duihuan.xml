@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Duihuan id="1001" itemType="5" itemId="311002" itemNum="5" needNum="1500" weight="10000" site="1" />
+<Duihuan id="1002" itemType="5" itemId="311001" itemNum="5" needNum="1500" weight="5000" site="2" />
+<Duihuan id="1003" itemType="5" itemId="311003" itemNum="5" needNum="1500" weight="5000" site="2" />
+<Duihuan id="1004" itemType="5" itemId="314001" itemNum="5" needNum="1500" weight="5000" site="3" />
+<Duihuan id="1005" itemType="5" itemId="314002" itemNum="5" needNum="1500" weight="5000" site="3" />
+<Duihuan id="1006" itemType="5" itemId="314003" itemNum="5" needNum="1500" weight="10000" site="4" />
+<Duihuan id="1007" itemType="5" itemId="315001" itemNum="5" needNum="1500" weight="5000" site="5" />
+<Duihuan id="1008" itemType="5" itemId="315002" itemNum="5" needNum="1500" weight="5000" site="5" />
+<Duihuan id="1009" itemType="5" itemId="315003" itemNum="5" needNum="1500" weight="10000" site="6" />
+<Duihuan id="2001" itemType="9" itemId="920002" itemNum="5" needNum="200" weight="5000" site="7" />
+<Duihuan id="2002" itemType="9" itemId="920003" itemNum="5" needNum="800" weight="5000" site="7" />
+<Duihuan id="2003" itemType="9" itemId="921002" itemNum="10" needNum="400" weight="5000" site="8" />
+<Duihuan id="2004" itemType="9" itemId="921003" itemNum="10" needNum="1600" weight="5000" site="8" />
+</dataset>

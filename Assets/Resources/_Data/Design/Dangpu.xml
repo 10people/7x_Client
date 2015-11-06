@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Dangpu id="6001" itemType="7" itemId="902017" itemNum="1" type="1" needNum="60" weight="3334" site="1" flag="1" />
+<Dangpu id="6002" itemType="7" itemId="902027" itemNum="1" type="1" needNum="60" weight="3333" site="1" flag="1" />
+<Dangpu id="6003" itemType="7" itemId="902037" itemNum="1" type="1" needNum="60" weight="3333" site="1" flag="1" />
+<Dangpu id="5001" itemType="3" itemId="950001" itemNum="1" type="1" needNum="50" weight="2000" site="2" flag="1" />
+<Dangpu id="5002" itemType="3" itemId="950002" itemNum="1" type="1" needNum="50" weight="2000" site="2" flag="1" />
+<Dangpu id="5003" itemType="3" itemId="950003" itemNum="1" type="1" needNum="50" weight="2000" site="2" flag="1" />
+<Dangpu id="5004" itemType="3" itemId="950004" itemNum="1" type="1" needNum="50" weight="2000" site="2" flag="1" />
+<Dangpu id="5005" itemType="3" itemId="950005" itemNum="1" type="1" needNum="50" weight="2000" site="2" flag="1" />
+<Dangpu id="3000" itemType="9" itemId="920001" itemNum="5" type="0" needNum="1000" weight="3333" site="3" flag="1" />
+<Dangpu id="3001" itemType="9" itemId="921001" itemNum="5" type="0" needNum="1000" weight="6667" site="3" flag="1" />
+<Dangpu id="3100" itemType="9" itemId="920002" itemNum="5" type="0" needNum="5000" weight="3333" site="4" flag="1" />
+<Dangpu id="3101" itemType="9" itemId="921002" itemNum="5" type="0" needNum="5000" weight="6667" site="4" flag="1" />
+<Dangpu id="4000" itemType="9" itemId="920002" itemNum="5" type="1" needNum="15" weight="3333" site="5" flag="1" />
+<Dangpu id="4001" itemType="9" itemId="921002" itemNum="5" type="1" needNum="15" weight="6667" site="5" flag="1" />
+<Dangpu id="4100" itemType="9" itemId="920003" itemNum="5" type="1" needNum="60" weight="3333" site="6" flag="1" />
+<Dangpu id="4101" itemType="9" itemId="921003" itemNum="5" type="1" needNum="60" weight="6667" site="6" flag="1" />
+<Dangpu id="1001" itemType="5" itemId="315001" itemNum="2" type="1" needNum="100" weight="3333" site="7" flag="1" />
+<Dangpu id="1002" itemType="5" itemId="315002" itemNum="2" type="1" needNum="100" weight="3333" site="7" flag="1" />
+<Dangpu id="1003" itemType="5" itemId="315003" itemNum="2" type="1" needNum="100" weight="3334" site="7" flag="1" />
+<Dangpu id="1004" itemType="5" itemId="316001" itemNum="2" type="1" needNum="100" weight="3333" site="8" flag="1" />
+<Dangpu id="1005" itemType="5" itemId="316002" itemNum="2" type="1" needNum="100" weight="3333" site="8" flag="1" />
+<Dangpu id="1006" itemType="5" itemId="316003" itemNum="2" type="1" needNum="100" weight="3334" site="8" flag="1" />
+</dataset>

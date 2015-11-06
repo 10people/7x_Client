@@ -1,0 +1,10 @@
+
+-------------------------------------------------------------------- <Version Config>
+// change every build
+BuildTime		= 1016-1525
+SmallVersion	= 2015_1016_1525
+
+// change together
+BigVersion		= 1.0.1014.1935
+BaseVersion		= 2015_1014_1935
+------------------------------------------------------------------- </Version Config>

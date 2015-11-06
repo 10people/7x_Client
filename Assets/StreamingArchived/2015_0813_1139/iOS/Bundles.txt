@@ -1,0 +1,38 @@
+{ 
+   "items" : [ 
+      { 
+         "key" : "iOS_Config", 
+         "size" : "556", 
+         "MD5" : "e5d177ba606c665e26c112a1fd99e6b1", 
+         "version" : "0"
+      }, 
+      { 
+         "key" : "Resources/Data/BattleField/BattleFlags/BattleFlags_-378e581f", 
+         "size" : "93726", 
+         "MD5" : "12a3ace4dc6404e266d464eb41b59c7e", 
+         "version" : "0"
+      }, 
+      { 
+         "key" : "Resources/Data/BattleField/StoryBoard/StoryBoard_-b94e39df", 
+         "size" : "2438", 
+         "MD5" : "7f4a7caa141b67163f2fec18ec51d50b", 
+         "version" : "0"
+      }, 
+      { 
+         "key" : "Resources/Data/Config/Config_-62859b8c", 
+         "size" : "2175", 
+         "MD5" : "1223213fb17bd15243604704f2e89288", 
+         "version" : "0"
+      }, 
+      { 
+         "key" : "Resources/Data/Design/Design_-7935980c", 
+         "size" : "384251", 
+         "MD5" : "fdce9e2207a8c5f450e4c5c6ad7357c0", 
+         "version" : "0"
+      }
+   ], 
+   "Version" : "2015_0813_1139", 
+   "baseVersion" : "2015_0813_1139", 
+   "BigVersion" : "0.99.0813.1139", 
+   "BuildTime" : "08/13/2015 12:06:51"
+}

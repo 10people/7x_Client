@@ -1,0 +1,146 @@
+fileFormatVersion: 2
+guid: 3053fcf48deee234c807e82e93a459ed
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: caotu
+    100002: DrawCall_0020_005
+    100004: //RootNode
+    100006: s7_3d_jianzhuB
+    100008: s7_fightpve_jiaozi
+    100010: s7_fightpve_jiaozi01|_a
+    100012: s7_fightpve_jiaozi01|_a01
+    100014: s7_fightpve_shuijing
+    100016: s7_fightpve_yijia1
+    100018: s7_maocaofang_a
+    100020: s7_maocaofang_b
+    100022: s7_maocaofang_d
+    100024: shimo
+    100026: wuqijiaA
+    100028: wuqijiaB
+    100030: wuqijiaC
+    400000: caotu
+    400002: DrawCall_0020_005
+    400004: //RootNode
+    400006: s7_3d_jianzhuB
+    400008: s7_fightpve_jiaozi
+    400010: s7_fightpve_jiaozi01|_a
+    400012: s7_fightpve_jiaozi01|_a01
+    400014: s7_fightpve_shuijing
+    400016: s7_fightpve_yijia1
+    400018: s7_maocaofang_a
+    400020: s7_maocaofang_b
+    400022: s7_maocaofang_d
+    400024: shimo
+    400026: wuqijiaA
+    400028: wuqijiaB
+    400030: wuqijiaC
+    2300000: caotu
+    2300002: DrawCall_0020_005
+    2300004: s7_3d_jianzhuB
+    2300006: s7_fightpve_jiaozi
+    2300008: s7_fightpve_jiaozi01|_a
+    2300010: s7_fightpve_jiaozi01|_a01
+    2300012: s7_fightpve_shuijing
+    2300014: s7_fightpve_yijia1
+    2300016: s7_maocaofang_a
+    2300018: s7_maocaofang_b
+    2300020: s7_maocaofang_d
+    2300022: shimo
+    2300024: wuqijiaA
+    2300026: wuqijiaB
+    2300028: wuqijiaC
+    3300000: caotu
+    3300002: DrawCall_0020_005
+    3300004: s7_3d_jianzhuB
+    3300006: s7_fightpve_jiaozi
+    3300008: s7_fightpve_jiaozi01|_a
+    3300010: s7_fightpve_jiaozi01|_a01
+    3300012: s7_fightpve_shuijing
+    3300014: s7_fightpve_yijia1
+    3300016: s7_maocaofang_a
+    3300018: s7_maocaofang_b
+    3300020: s7_maocaofang_d
+    3300022: shimo
+    3300024: wuqijiaA
+    3300026: wuqijiaB
+    3300028: wuqijiaC
+    4300000: s7_3d_jianzhuB
+    4300002: s7_fightpve_shuijing
+    4300004: DrawCall_0020_005
+    4300006: s7_maocaofang_b
+    4300008: s7_maocaofang_a
+    4300010: s7_maocaofang_d
+    4300012: shimo
+    4300014: caotu
+    4300016: wuqijiaB
+    4300018: wuqijiaC
+    4300020: wuqijiaA
+    4300022: s7_fightpve_jiaozi
+    4300024: s7_fightpve_jiaozi01|_a
+    4300026: s7_fightpve_jiaozi01|_a01
+    4300028: s7_fightpve_yijia1
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

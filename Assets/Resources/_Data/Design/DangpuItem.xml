@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<DangpuItem id="950001" name="950001" funDesc="950001" icon="5101" repeatNum="999" needNum="5" sellValue="20" buyValue="40" awardId="300" />
+<DangpuItem id="950002" name="950002" funDesc="950002" icon="5102" repeatNum="999" needNum="5" sellValue="20" buyValue="40" awardId="300" />
+<DangpuItem id="950003" name="950003" funDesc="950003" icon="5103" repeatNum="999" needNum="5" sellValue="20" buyValue="40" awardId="300" />
+<DangpuItem id="950004" name="950004" funDesc="950004" icon="5104" repeatNum="999" needNum="5" sellValue="20" buyValue="40" awardId="300" />
+<DangpuItem id="950005" name="950005" funDesc="950005" icon="5105" repeatNum="999" needNum="5" sellValue="20" buyValue="40" awardId="300" />
+</dataset>

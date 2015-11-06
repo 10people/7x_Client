@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<XianshiControl id="1501000" Name="冲级送礼" Desc="在限定时间内达到指定等级，即可获取丰厚奖励。\n您可以通过参加每日任务、过关斩将、顶礼膜拜等活动获得大量经验，快速升级。" jinduDesc="主人，您当前等级是**级，继续加油哟~" Rank="1" status="1" doneType="1" languageId="1501000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="1" />
+<XianshiControl id="1502000" Name="过关斩将" Desc="在限定时间内，通关过关斩将指定章节即可领取丰厚奖励。\n您可以通过合成（镶嵌）符石、装备进阶、装备强化、装备洗练、秘宝升级、秘宝升星以及升级天赋等获得更多战力，以通关更高难度的关卡。" jinduDesc="主人，您当前进度为第**章攻打中" Rank="2" status="1" doneType="2" languageId="1502000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="2" />
+<XianshiControl id="1544000" Name="精英集星" Desc="在限定时间内，在过关斩将精英关卡中，获取指定星数即可获取丰厚奖励。\n您在精英关卡中需注意星级评定要求，更高的战力以及细心的操作有助于您达到相应星级。" jinduDesc="主人，您当前获得的总星数为**" Rank="3" status="1" doneType="44" languageId="1544000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="3" />
+<XianshiControl id="1540000" Name="进阶达人" Desc="在限定时间内，足够数量的装备达到指定等阶，即可获取丰厚奖励（需领取完上一条奖励才能开启下一条）。\n您可以通过扫荡相应关卡、探宝、以及联盟荒野求生等活动，获得装备碎片用以进阶装备。" jinduDesc="进阶达人" Rank="4" status="1" doneType="40" languageId="1540000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="3" />
+</dataset>
