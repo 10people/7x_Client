@@ -33,12 +33,13 @@ namespace LimitActivity
         /// </summary>
         public OpenXianShi m_OpenXianShi;
 
-        private struct IconItem
+        public struct IconItem
         {
             public int type;
             public int id;
             public int num;
         }
+        public List<IconItem> m_IconList = new List<IconItem>();
 
         public const string ReceivedSpriteName = "alredayReceived";
         public const string OutOfTimeSpriteName = "outOfTime";
@@ -109,24 +110,24 @@ namespace LimitActivity
             m_ItemIconManagerList.Clear();
 
             List<string> itemList = m_HuoDongInfo.jiangli.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            List<IconItem> iconList = itemList.Select(item => item.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries)).Select(item => new IconItem()
+            m_IconList = itemList.Select(item => item.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries)).Select(item => new IconItem()
             {
                 type = int.Parse(item[0]),
                 id = int.Parse(item[1]),
                 num = int.Parse(item[2]),
             }).ToList();
 
-            if (iconList != null && iconList.Count > 0)
+            if (m_IconList != null && m_IconList.Count > 0)
             {
-                for (int i = 0; i < iconList.Count; i++)
+                for (int i = 0; i < m_IconList.Count; i++)
                 {
                     var temp = Instantiate(m_IconSamplePrefab) as GameObject;
                     UtilityTool.ActiveWithStandardize(m_Grid.transform, temp.transform);
 
                     var controller = temp.GetComponent<IconSampleManager>();
-                    controller.SetIconByID(iconList[i].id, iconList[i].num.ToString(), 5);
+                    controller.SetIconByID(m_IconList[i].id, m_IconList[i].num.ToString(), 5);
 
-					controller.SetIconPopText(iconList[i].id);
+                    controller.SetIconPopText(m_IconList[i].id);
 
                     m_ItemIconManagerList.Add(controller);
 

@@ -77,20 +77,24 @@ public class TenementManagerment : Singleton<TenementManagerment>
             //My house.
             else
             {
-                Debug.Log("My houseMy houseMy houseMy houseMy houseMy houseMy houseMy house");
-                if (index > 100)
+//                Debug.Log("My houseMy houseMy houseMy houseMy houseMy houseMy houseMy house");
+                
+				if (index > 100)
                 {
-                    Debug.Log("My houseMy houseMy houseMy houseMy houseMy houseMy houseMy house");
-                    if (BigHouseSelfPrefab == null)
+//                    Debug.Log("My houseMy houseMy houseMy houseMy houseMy houseMy houseMy house");
+                    
+					if (BigHouseSelfPrefab == null)
                     {
-                        Debug.Log("My houseMy houseMy houseMy houseMy houseMy houseMy houseMy house");
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.BIG_HOUSE_SELF),
+//                        Debug.Log("My houseMy houseMy houseMy houseMy houseMy houseMy houseMy house");
+                        
+						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.BIG_HOUSE_SELF),
                             OnBigHouseSelfLoadCallBack);
                     }
                     else
                     {
-                        Debug.Log("My houseMy houseMy houseMy houseMy houseMy houseMy houseMy house");
-                        WWW temp = null;
+//                        Debug.Log("My houseMy houseMy houseMy houseMy houseMy houseMy houseMy house");
+                        
+						WWW temp = null;
                    
                         OnBigHouseSelfLoadCallBack(ref temp, null, BigHouseSelfPrefab);
                     }

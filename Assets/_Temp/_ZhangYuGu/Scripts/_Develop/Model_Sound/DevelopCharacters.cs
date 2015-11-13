@@ -265,7 +265,7 @@ public class DevelopCharacters : MonoBehaviour {
 
 			m_cached_gb.transform.parent = gameObject.transform;
 
-			UtilityTool.ResetLocalPosAndLocalRot( m_cached_gb );
+			TransformHelper.ResetLocalPosAndLocalRot( m_cached_gb );
 
 			m_cached_animator = m_cached_gb.GetComponent<Animator>();
 		}
@@ -347,7 +347,7 @@ public class DevelopCharacters : MonoBehaviour {
 		{
 			t_gb.transform.parent = GetTempGameObject().transform;
 			
-			UtilityTool.ResetLocalPosAndLocalRot( t_gb );
+			TransformHelper.ResetLocalPosAndLocalRot( t_gb );
 			
 			UpdateFxSpeed( t_gb );
 		}
@@ -399,7 +399,7 @@ public class DevelopCharacters : MonoBehaviour {
 
 			m_temp_gb_root.transform.parent = gameObject.transform;
 
-			UtilityTool.ResetLocalPosAndLocalRotAndLocalScale( m_temp_gb_root );
+			TransformHelper.ResetLocalPosAndLocalRotAndLocalScale( m_temp_gb_root );
 		}
 
 		return m_temp_gb_root;
@@ -659,9 +659,9 @@ public class DevelopCharacters : MonoBehaviour {
 			break;
 		}
 
-		UtilityTool.ResetLocalPosAndLocalRot( t_gb_weapon_0 );
+		TransformHelper.ResetLocalPosAndLocalRot( t_gb_weapon_0 );
 
-		UtilityTool.ResetLocalPosAndLocalRot( t_gb_weapon_1 );
+		TransformHelper.ResetLocalPosAndLocalRot( t_gb_weapon_1 );
 	}
 
 	public void ClearWeapons(){

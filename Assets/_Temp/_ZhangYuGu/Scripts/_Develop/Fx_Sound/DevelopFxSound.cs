@@ -187,7 +187,7 @@ public class DevelopFxSound : MonoBehaviour {
 		Debug.Log( "Text: " + t_text );
 		#endif
 
-		string t_config_path_name = UtilityTool.GetFullPath_WithRelativePath( "Resources/" + XmlLoadManager.m_LoadPath + "EffectId.xml" );
+		string t_config_path_name = PathHelper.GetFullPath_WithRelativePath( "Resources/" + XmlLoadManager.m_LoadPath + "EffectId.xml" );
 
 		FileStream t_file_stream = null;
 

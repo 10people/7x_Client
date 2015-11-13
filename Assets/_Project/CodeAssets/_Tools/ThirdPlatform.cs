@@ -144,17 +144,17 @@ public class ThirdPlatform : MonoBehaviour {
 //		
 //		int t_button_index = 0;
 //		
-//		Rect t_rect = UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params );
+//		Rect t_rect = GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params );
 //
 //		if( GUI.Button( t_rect, "Show Center" ) ){
 //			ThirdPlatform.ShowSDKCenter();
 //		}
 //		
-//		if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "Log Out" ) ){
+//		if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "Log Out" ) ){
 //			ThirdPlatform.LogOut();
 //		}
 //		
-//		if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "Start Bundle Update" ) ){
+//		if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "Start Bundle Update" ) ){
 //			ThirdPlatform.ThirdPlatformLoginSuccess();
 //		}
 //	}

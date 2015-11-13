@@ -34,10 +34,10 @@ public class BattleResultPvpWin : MonoBehaviour
 //		optional int32 oldJunXianLevel = 6;
 //		optional int32 newJunXianLevel = 7;
 
-		Debug.Log ("旧排名：" + _resp.oldRank);
-		Debug.Log ("新排名：" + _resp.newRank);
-		Debug.Log ("老军衔：" + _resp.oldJunXianLevel);
-		Debug.Log ("新军衔：" + _resp.newJunXianLevel);
+//		Debug.Log ("旧排名：" + _resp.oldRank);
+//		Debug.Log ("新排名：" + _resp.newRank);
+//		Debug.Log ("老军衔：" + _resp.oldJunXianLevel);
+//		Debug.Log ("新军衔：" + _resp.newJunXianLevel);
 
 		newRecord.SetActive (_resp.oldRank > _resp.newRank);
 
@@ -49,9 +49,9 @@ public class BattleResultPvpWin : MonoBehaviour
 
 		labelNew.text = "" + _resp.newRank;
 
-		labelRes.text = "" + _resp.lostJianShe;
+//		labelRes.text = "" + _resp.lostJianShe;
 
-		labelWeiWang.text = "" + _resp.reciveWeiWang;
+//		labelWeiWang.text = "" + _resp.reciveWeiWang;
 	}
 
 }

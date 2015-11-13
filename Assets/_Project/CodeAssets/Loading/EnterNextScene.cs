@@ -114,6 +114,11 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 			}
 		}
 
+        //progress log
+//        {
+//            StaticLoading.LogLoadingInfo( StaticLoading.m_loading_sections );
+//        }
+
 		if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CURRENT_LOADING ) ){
 			if( m_loading_asset_changed ){
 				{
@@ -129,15 +134,6 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		}
 	}
 	
-	void OnRenderObject(){
-		if( m_battle_res_step == 1 ){
-			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-			                         StaticLoading.CONST_BATTLE_RENDER, "Init" );
-
-			m_battle_res_step++;
-		}
-	}
-
 	#endregion
 
 
@@ -163,27 +159,25 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 //			Debug.LogError( "Error, Socket not Connected." );
 		}
 
-        if (IsLoadingLogin()) {
+		if ( LoadingHelper.IsLoadingLogin()) {
             Prepare_For_Login();
         }
-        else if (IsLoadingMainCity() || IsLoadingMainCityYeWan())
-        {
+		else if ( LoadingHelper.IsLoadingMainCity() || LoadingHelper.IsLoadingMainCityYeWan() ){
             // loading MainCity
             Prepare_For_MainCity();
         }
-        else if (IsLoadingAllianceCity()) {
+		else if ( LoadingHelper.IsLoadingAllianceCity() ) {
             Prepare_For_AllianceCity();
         }
-        else if (IsLoadingAllianceCityYeWan()) {
+		else if ( LoadingHelper.IsLoadingAllianceCityYeWan() ) {
             Prepare_For_AllianceCity();
         }
-        else if (IsLoadingAllianceTenentsCity())
-        {
+		else if ( LoadingHelper.IsLoadingAllianceTenentsCity() ){
             Prepare_For_AllianceCity();
         }
-        else if (IsLoadingBattleField()) {
+		else if ( LoadingHelper.IsLoadingBattleField() ) {
             // BattleField
-            Prepare_For_BattleField();
+			gameObject.AddComponent<PrepareForBattleField>();
         }
         else {
             // load scenes
@@ -204,12 +198,12 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 	}
 	
 	/// Load the Scene Directly.
-	private void DirectLoadLevel(){
+	public static void DirectLoadLevel(){
 		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "EnterNextScene.DirectLoadLevel( " + m_to_load_scene_name + " )" );
 		#endif
 
-		Global.LoadLevel( m_to_load_scene_name, LoadLevelDone );
+		Global.LoadLevel( GetSceneToLoad(), Instance().LoadLevelDone );
 	}
 
 	public void LoadLevelDone( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
@@ -223,13 +217,13 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 	/// Load the Scene Directly.
 	IEnumerator LoadLevelNow(){
 		#if DEBUG_ENTER_NEXT_SCENE
-		Debug.Log( "---------------- LoadLevelNow( " + m_to_load_scene_name + " ) ---------------" );
+		Debug.Log( "---------------- LoadLevelNow( " + GetSceneToLoad() + " ) ---------------" );
 		#endif
 
 		m_load_level_time = Time.realtimeSinceStartup;
 
 		{
-			Application.LoadLevel( m_to_load_scene_name );
+			SceneManager.LoadLevel( GetSceneToLoad() );
 		}
 
 		m_load_level_time = Time.realtimeSinceStartup - m_load_level_time;
@@ -238,7 +232,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		Debug.Log( "LoadLevelAsync.Level.Load.Done()" );
 		#endif
 
-		while( Application.loadedLevelName != m_to_load_scene_name ){
+		while( Application.loadedLevelName != GetSceneToLoad() ){
 			#if DEBUG_ENTER_NEXT_SCENE
 			Debug.Log( "Waiting For Loading." );
 			#endif
@@ -262,10 +256,8 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "PrepareWhenSceneLoaded.Before.Destroy()" );
 		#endif
-		
-		{
-			ManualDestroy();
-		}
+
+		ManualDestroy();
 
 		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "PrepareWhenSceneLoaded.After.Destroy()" );
@@ -278,10 +270,11 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
 
 
-	#region Destroy
+	#region Destroy UI
 
 	private static float m_preserve_percentage = 0.0f;
 
+	// TODO, check if is for new player use.
 	private void DestroyForNextLoading(){
 //		Debug.Log( "EnterNextScene.DestroyForNextLoading()" );
 
@@ -295,6 +288,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		DestroyUI();
 	}
 
+	// for double loading use.
 	public void ManualDestroyImmediate(){
 		Debug.Log ( "ManualDestroyImmediate()" );
 
@@ -311,6 +305,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		}
 	}
 
+	// unregister and destroy UI if needed.
 	private void ManualDestroy(){
 //		Debug.Log( "EnterNextScene.ManualDestroy()" );
 
@@ -321,8 +316,10 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		{
 			UnRegister();
 		}
-		
-		StartCoroutine( DelayDestroy() );
+
+		if( IsDestroyUIWhenLevelLoaded() ){
+			StartCoroutine( DelayDestroy() );
+		}
 	}
 
 	IEnumerator DelayDestroy(){
@@ -335,11 +332,17 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
 	private void UnRegister(){
 		SocketTool.UnRegisterSocketListener( this );
-		
-		m_instance = null;
+
+		// move to destroy UI
+//		m_instance = null;
 	}
 
-	private void DestroyUI(){
+	/// call this to destroy loading UI when loading is done.
+	public void DestroyUI(){
+		{
+			m_instance = null;
+		}
+
 		if ( StaticLoading.Instance () != null ) {
 			StaticLoading.Instance ().ManualDestroy ();
 		}
@@ -378,12 +381,12 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
 		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_TOTAL_LOADING_TIME, true ) ){
 			Debug.Log( "------------------" + 
-			          " EnterNextScene: " + m_to_load_scene_name + " - " +
+			          " EnterNextScene: " + GetSceneToLoad() + " - " +
 			          GetTimeSinceLoading() + 
 			          " ------------------" );
 		
 			#if DEBUG_SHOW_LOADING_INFO
-			LoadingHelper.ShowTotalLoadingInfo();
+			ShowTotalLoadingInfo();
 
 			Bundle_Loader.LogCoroutineInfo();
 			
@@ -400,7 +403,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		#endif
 
 		{
-			ConfigBloomAndLight();
+			LoadingHelper.ConfigBloomAndLight();
 		}
 
 		#if DEBUG_ENTER_NEXT_SCENE
@@ -416,51 +419,6 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		#if DEBUG_ENTER_NEXT_SCENE
 		EnterNextScene.LogTimeSinceLoading( "PrepareWhenSceneLoaded" );
 		#endif
-	}
-
-	private void ConfigBloomAndLight(){
-		{
-			bool t_active_light = false;
-			
-			bool t_active_bloom = false;
-			
-			if( IsLoadingLogin() ){
-				t_active_light = false;
-				
-				t_active_bloom = false;
-			}
-			else if( IsLoadingCreateRole() ){
-				t_active_light = !QualityTool.Instance.BattleField_ShowSimpleShadow();
-				
-				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
-			}
-			else if( IsLoadingBattleField() ){
-				t_active_light = !QualityTool.Instance.BattleField_ShowSimpleShadow();
-				
-				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
-			}
-			else if (IsLoadingMainCity() || IsLoadingMainCityYeWan() || IsLoadingAllianceCity() || IsLoadingAllianceTenentsCity() || IsLoadingHouse() || IsLoadingAllianceCityYeWan() || IsInAllianceTenentsCityYeWanScene() || IsLoadingCarriage()||IsLoadingAllianceBattle())
-			{
-				t_active_light = !QualityTool.Instance.InCity_ShowSimpleShadow();
-				
-				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
-			}
-			else{
-				Debug.LogError( "Error, Unknown Scene: " + m_to_load_scene_name );
-				
-				t_active_light = false;
-				
-				t_active_bloom = false;
-			}
-			
-			{
-				QualityTool.ConfigLights( t_active_light );
-			}
-			
-			{
-				QualityTool.ConfigBloom( t_active_bloom );
-			}
-		}
 	}
 
 	#endregion
@@ -644,6 +602,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
     }
 
+    private bool _isEnterMainCity = true;
     IEnumerator CheckingDataForMainCity(){
 		while( m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY ){
 			yield return new WaitForEndOfFrame();
@@ -651,9 +610,9 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
 		// enter pve for 1st battle.
 		if( Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103){
-//			Debug.Log( "CheckingDataForMainCity.EnterBattlePve()" );
-
-			DestroyForNextLoading();
+            //			Debug.Log( "CheckingDataForMainCity.EnterBattlePve()" );
+            _isEnterMainCity = false;
+            DestroyForNextLoading();
 
 			EnterBattleField.EnterBattlePve( 1, Global.m_iScreenID % 10, LevelType.LEVEL_NORMAL );
 		}
@@ -662,6 +621,11 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
 			DirectLoadLevel();
 		}
+
+        if (m_received_data_for_main_city == REQUEST_DATA_COUNT_FOR_MAINCITY && _isEnterMainCity)
+        {
+            PrepareForCityLoad.Instance.m_NetData_IsReday = true;
+        }
 	}
 
 	#endregion
@@ -692,12 +656,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 			
 			StartCoroutine( CheckingDataForMainCity() );
 		}
-		
-		// request MiBao Info
-		{
-//			MiBaoGlobleData.Instance();
-//			MiBaoGlobleData.SendMiBaoIfoMessage ();
-		}
+ 
 		
 		// request PVE Info
 		{
@@ -706,17 +665,12 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		
 		// request JunZhu Info
 		{
-			// create instance, for battle field use.
-//			Debug.Log ("AllianceCity");
+ 
 			JunZhuData.Instance();
 			JunZhuData.RequestJunZhuInfo();
 		}
 		
-		// reques Equip Info
-		{
-//			EquipsOfBody.Instance();
-//			EquipsOfBody.RequestEquipInfo();
-		}
+ 
 		
 		{
 //			Debug.Log ("AllianceCityTask");
@@ -737,300 +691,8 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
             FriendOperationData.Instance.RequestData();
         }
 
-        ////  request Nation Info
-        //{
-        //    NationData.Instance.RequestData();
-        //}
+      
     }
-
-	#endregion
-	
-	
-	
-	#region Prepare For Battle Field
-	
-	private int m_battle_res_step = 0;
-	
-	private const int BATTLE_RES_STEP_TOTAL	= 2;
-	
-	private GameObject temple2D;
-
-	private GameObject temple3D;
-
-	private void InitBattleLoading(){
-//		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 1, -1 );
-
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_2D, 1, 1 );
-
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_NETWORK, 1, 1 );
-
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_DATA, 1, 1 );
-
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_3D, 10, 42 );
-
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_FX, 20, 55 );
-
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_LOADING_SOUND, 20, 95 );
-
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_CREATE_FLAGS, 1, 2 );
-	
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_BATTLE_RENDER, 2, 1 );
-	}
-
-	private void Prepare_For_BattleField(){
-		#if DEBUG_ENTER_NEXT_SCENE
-		Debug.Log( "EnterNextScene.Prepare_For_BattleField()" );
-
-		EnterNextScene.LogTimeSinceLoading( "Prepare_For_BattleField" );
-		#endif
-
-
-
-		InitBattleLoading();
-
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.BATTLEFIELD_V4_2D_UI ), 
-		                        Load2DCallback);
-
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.BATTLEFIELD_V4_3D_ROOT ),
-		                        Load3DCallback);
-	}
-
-	public void Load2DCallback( ref WWW p_www, string p_path, Object p_object ){
-		temple2D = p_object as GameObject;
-
-		enterBattleField();
-	}
-
-	public void Load3DCallback( ref WWW p_www, string p_path, Object p_object ){
-		temple3D = p_object as GameObject;
-
-		enterBattleField();
-	}
-
-	private void enterBattleField(){
-		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_2D, "EnterBattleField" );
-
-		if (temple2D != null && temple3D != null){
-			Prepare_For_BattleFieldCallback ();
-		}
-	}
-
-	public void Prepare_For_BattleFieldCallback(){
-		#if DEBUG_ENTER_NEXT_SCENE
-		EnterNextScene.LogTimeSinceLoading( "Prepare_For_BattleFieldCallback" );
-		#endif
-
-		// origin coroutine
-		{
-			GameObject gc2d = (GameObject)Instantiate( temple2D );
-
-			gc2d.SetActive( true );
-			
-			gc2d.transform.localScale = new Vector3(1, 1, 1);
-			
-			gc2d.transform.position = new Vector3(0, 500, 0);
-			
-			gc2d.name = "BattleField_V4_2D";
-			
-			{
-				DontDestroyOnLoad( gc2d );
-				
-				LoadingHelper.RemoveWhenSceneDone( gc2d );
-			}
-
-			GameObject gc = (GameObject)Instantiate( temple3D );
-			
-			gc.SetActive( true );
-			
-			gc.transform.localScale = new Vector3(1, 1, 1);
-			
-			gc.transform.localPosition = Vector3.zero;
-			
-			gc.name = "BattleField_V4_3D";
-			
-			{
-				DontDestroyOnLoad( gc );
-				
-				LoadingHelper.RemoveWhenSceneDone( gc );
-			}
-
-//			if(CityGlobalData.m_tempSection == 0 
-//			   && CityGlobalData.m_tempLevel == 0 
-//			   && CityGlobalData.m_enterPvp == false)
-//			{
-////				EffectTemplate et = EffectTemplate.getEffectTemplateByEffectId( 66 );
-//
-//				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.LOGIN_CREATE_ROLE ),
-//				                        LoginCreateRoleLoadCallback );
-//			}
-
-			BattleNet net = gc.GetComponentInChildren( typeof( BattleNet ) ) as BattleNet;
-
-			net.getData();
-		}
-	}
-
-//	public void LoginCreateRoleLoadCallback( ref WWW p_www, string p_path, Object p_object ){
-//		GameObject createRoleObject = Instantiate( p_object ) as GameObject;
-//
-//		createRoleObject.SetActive( true );
-//		
-//		createRoleObject.transform.localScale = new Vector3(1, 1, 1);
-//		
-//		createRoleObject.transform.localPosition = new Vector3(0, -500, 0);
-//		
-//		createRoleObject.name = "BattleField_V4_CreateRole";
-//		
-//		{
-//			DontDestroyOnLoad( createRoleObject );
-//			
-//			RemoveWhenSceneDone( createRoleObject );
-//		}
-//	}
-
-	private float m_battle_tex_time = 0.0f;
-
-	public void BattleLoadDone(){
-//		#if DEBUG_ENTER_NEXT_SCENE
-//		EnterNextScene.LogTimeSinceLoading( "BattleLoadDone()" );
-//		#endif
-
-		m_battle_tex_time = Time.realtimeSinceStartup;
-
-		m_battle_res_step++;
-
-		{
-			Dictionary<string, GameObject> t_dict = BattleEffectControllor.Instance().GetEffectDict();
-
-			List<Texture> t_list = new List<Texture>();
-
-			{
-				int t_index = 0;
-
-				int t_tex_count = 0;
-
-				int t_skip_count = 0;
-
-				GameObject t_template_gb = ( GameObject )Instantiate( m_background_image.gameObject );
-
-				{
-					t_template_gb.transform.parent = m_background_image.gameObject.transform.parent;
-
-					UtilityTool.CopyTransform( m_background_image.gameObject, t_template_gb );
-
-					{
-						UITexture t_tex = t_template_gb.GetComponent<UITexture>();
-
-						t_tex.depth = t_tex.depth - 1;
-					}
-				}
-
-				foreach( KeyValuePair< string, GameObject > t_pair in t_dict ){
-					if( t_pair.Value == null ){
-						t_index++;
-
-						continue;
-					}
-
-					{
-						t_index++;
-					}
-
-					GameObject t_gb = ( GameObject )Instantiate( t_pair.Value );
-
-//					Debug.Log( t_pair.Key + ": " + t_gb.name );
-
-					t_gb.SetActive( true );
-
-					{
-						ParticleSystem[] t_pss = t_gb.GetComponentsInChildren<ParticleSystem>();
-						
-						for( int i = 0; i < t_pss.Length; i++ ){
-							ParticleSystem t_ps = t_pss[ i ];
-
-							Texture t_tex = t_ps.GetComponent<Renderer>().material.mainTexture;
-
-							if( t_tex == null ){
-								continue;
-							}
-
-							if( t_list.Contains( t_tex ) ){
-								t_skip_count++;
-
-								continue;
-							}
-							else{
-								t_list.Add( t_tex );
-							}
-
-							t_tex_count++;
-
-							GameObject t_shadow_gb = ( GameObject )Instantiate( t_template_gb );
-
-							t_shadow_gb.transform.parent = m_background_image.gameObject.transform;
-
-							UtilityTool.CopyTransform( t_template_gb, t_shadow_gb );
-
-							t_shadow_gb.name = t_index + " : " + t_tex.name + "_" + t_tex_count;
-
-							UITexture t_ui_tex = t_shadow_gb.GetComponent<UITexture>();
-
-							t_ui_tex.mainTexture = t_tex;
-
-							t_ui_tex.SetDimensions( 16, 16 );
-						}
-					}
-
-					t_gb.SetActive( false );
-
-					Destroy( t_gb );
-				}
-
-				t_template_gb.SetActive( false );
-
-				Destroy( t_template_gb );
-			}
-		}
-
-		m_battle_tex_time = Time.realtimeSinceStartup - m_battle_tex_time;
-
-		StartCoroutine( CheckingResForBattleField() );
-	}
-
-	IEnumerator CheckingResForBattleField(){
-//		Debug.Log( "CheckingResForBattleField()" );
-
-		while ( m_battle_res_step < BATTLE_RES_STEP_TOTAL ){
-//			Debug.Log( "CheckingResForBattleField( " + 
-//			          m_battle_res_step + " / " + BATTLE_RES_STEP_TOTAL + 
-//			          " )" );
-
-			yield return new WaitForEndOfFrame();
-		}
-
-		// report when battle field is ready
-		{
-			OperationSupport.ReportClientAction( OperationSupport.ClientAction.ENTER_GAME );
-		}
-
-		#if DEBUG_ENTER_NEXT_SCENE
-		EnterNextScene.LogTimeSinceLoading( "CheckingResForBattleField.Done" );
-		#endif
-
-		{
-//			SetAutoActivation( true );
-			
-			DirectLoadLevel();
-		}
-	}
-
-	public void CloseLoading()
-	{
-//		SetAutoActivation( true );
-		
-		DestroyUI ();
-	}
 
 	#endregion
 
@@ -1180,7 +842,44 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
 
 
+	#region Config To Load Scene
+	
+	private static string m_to_load_scene_name = "";
+
+	private static bool m_destroy_ui_when_level_loaded = true;
+	
+	/// Set Params For Next Scene to Load.
+	/// 
+	/// Params:
+	/// p_to_load_scene_name: Scene name, as in build setting.
+	public static void SetSceneToLoad( string p_to_load_scene_name, bool p_destroy_ui_when_level_loaded = true ){
+		//		Debug.Log( "-------------- EnterNextScene.SetSceneToLoad( " + 
+		//						p_to_load_scene_name + " - " + p_auto_activation + 
+		//						" ) --------------" );
+		
+		m_to_load_scene_name = p_to_load_scene_name;
+
+		m_destroy_ui_when_level_loaded = p_destroy_ui_when_level_loaded;
+	}
+	
+	public static string GetSceneToLoad(){
+		return m_to_load_scene_name;
+	}
+
+	public static bool IsDestroyUIWhenLevelLoaded(){
+		return m_destroy_ui_when_level_loaded;
+	}
+	
+	#endregion
+
+
+
 	#region Utilities
+
+	// get background image for optimize useage.
+	public static UITexture GetBackgroundImage(){
+		return Instance().m_background_image;
+	}
 
 	private static bool m_loading_asset_changed = false;
 
@@ -1188,83 +887,6 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 		m_loading_asset_changed = p_changed;
 	}
 
-	/// Is Loading Login Now?
-	private bool IsLoadingLogin(){
-		return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_LOGIN;
-	}
-
-	/// Is Loading CreateRole Now?
-	private bool IsLoadingCreateRole(){
-		return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_CREATE_ROLE;
-	}
-
-	/// Is Loading Main City Now?
-	private bool IsLoadingMainCity(){
-        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_MAIN_CITY ;
-	}
-
-    private bool IsLoadingMainCityYeWan()
-    {
-        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN;
-    }
-    /// Is Loading Alliance City Now?
-    private bool IsLoadingAllianceCity(){
-        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY;
-    }
-    private bool IsLoadingAllianceCityYeWan()
-    {
-        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN;
-    }
-
-    private bool IsLoadingAllianceTenentsCity()
-    {
-         return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE;
-    }
-     public static bool IsInAllianceTenentsCityYeWanScene()
-     {
-         return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN;
-     }
-	/// Determines whether is loading Battle Field now.
-	private bool IsLoadingBattleField(){
-		return m_to_load_scene_name.StartsWith( ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX );
-	}
-
-	private bool IsLoadingHouse(){
-		return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_HOUSE;
-	}
-
-	private bool IsLoadingCarriage(){
-		return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_CARRIAGE;
-	}
-
-    private bool IsLoadingAllianceBattle()
-    {
-        return m_to_load_scene_name == ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE;
-    }
-
 	#endregion
 
-
-
-	#region Config To Load Scene
-	
-	private static string m_to_load_scene_name = "";
-
-	/// Set Params For Next Scene to Load.
-	/// 
-	/// Params:
-	/// p_to_load_scene_name: Scene name, as in build setting.
-	public static void SetSceneToLoad( string p_to_load_scene_name ){
-//		Debug.Log( "-------------- EnterNextScene.SetSceneToLoad( " + 
-//						p_to_load_scene_name + " - " + p_auto_activation + 
-//						" ) --------------" );
-
-		m_to_load_scene_name = p_to_load_scene_name;
-	}
-
-	public static string GetSceneToLoad(){
-		return m_to_load_scene_name;
-	}
-
-	#endregion
 }

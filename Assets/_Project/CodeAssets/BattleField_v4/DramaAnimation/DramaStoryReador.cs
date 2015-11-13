@@ -174,7 +174,7 @@ public class DramaStoryReador : MonoBehaviour
 	public void resLoadCallback(ref WWW p_www, string p_path, Object p_object)
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_DATA, p_path );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_DATA, p_path );
 
 		if (resList.ContainsKey (p_path) == false)
 		{

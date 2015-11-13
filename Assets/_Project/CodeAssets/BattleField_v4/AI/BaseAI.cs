@@ -996,23 +996,44 @@ public class BaseAI : MonoBehaviour
 	{
 		if(!isAlive || !aiable) return;
 
-		if(nodeData.nodeType == NodeType.NPC)
+		if (nodeData.nodeType == NodeType.NPC) return;
 
 		//if(BattleControlor.Instance().result != BattleControlor.BattleResult.RESULT_BATTLING) return;
 
 		if(BattleControlor.Instance().inCameraEffect_update == true) return;
 
-		isStopTimeOver();
+		bool aiFlag = false;
 
-		alarmUpdate ();
-
-		if (alarmState != 1)
+		if(nodeData.nodeType != NodeType.PLAYER)//非玩家单位每5帧执行一次AI
 		{
-			uptateTarget();
+			int frameCount = Time.frameCount % 5;
 
-			updateEnemysList();
+			int idIndex = nodeId % 5;
 
-			moveOrAttack();
+			if(frameCount == idIndex)
+			{
+				aiFlag = true;
+			}
+		}
+		else
+		{
+			aiFlag = true;
+		}
+
+		if(aiFlag == true)
+		{
+			isStopTimeOver();
+			
+			alarmUpdate ();
+			
+			if (alarmState != 1)
+			{
+				uptateTarget();
+				
+				updateEnemysList();
+				
+				moveOrAttack();
+			}
 		}
 
 		if(perpareForSkill == false)
@@ -2575,7 +2596,7 @@ public class BaseAI : MonoBehaviour
 
 		float length = Vector3.Distance (targetPosition, nav.destination);
 
-		if (length < .5f) return;
+		if (length < .5f && nodeData.nodeType != NodeType.PLAYER) return;
 
 		if(inTurning == false) StartCoroutine (turnToDestination(targetPosition));
 	}

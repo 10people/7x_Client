@@ -66,8 +66,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	public GameObject mCollectBtn;
 
-	//public GameObject Star_Art;
-
 	public GameObject Art;
 	private int mibaolevel;
 	public bool IsCloseArt;
@@ -84,8 +82,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	
 	private bool StartUsecountNunber = false;
 	
-	private bool MibaoSatrUpCallback = true;
-	
 	private bool MiBAostarStartUsecountNunber = false;
 	void Awake()
 	{
@@ -95,21 +91,16 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
 	}
-
 	void Start () {
 	
 		IsCloseArt = false;
 
 		MiBAostarStartUsecountNunber = false;
 
-		MibaoSatrUpCallback = true;
-
 		MibaoUpCallback = true;
 		
 	    StartUsecountNunber = false;
 	}
-
-
 	void Update () {
 	
 		if(mibaolevel > 0)
@@ -125,13 +116,10 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				UP_Money.text = MyColorData.getColorString(3, mExpXxmlTemp.needExp.ToString ());
 			}
 			MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(ShowmMiBaoinfo.miBaoId);
-			
-			
+		
 			if(MiBaoManager.Instance().G_MiBaoInfo.levelPoint > 0 && JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp &&
 			   mibaolevel < JunZhuData.Instance().m_junzhuInfo.level&&mibaolevel < 100)
 			{
-				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LOCkPoint);
-				//Debug.Log(" Not Close Art ----- ");
 				Art.SetActive(true);
 				IsCloseArt =false ;
 			}
@@ -144,12 +132,9 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 					//CantUpMiBao();
 					Art.SetActive(false);
 				}
-
 			}
 		}
-
 	}
-
 
 	void CreateLifeMove(GameObject move, int content)
 	{
@@ -179,11 +164,9 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	}
 	public void Init()
 	{
-		
 		MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(ShowmMiBaoinfo.miBaoId);
 
 		 mibaolevel = ShowmMiBaoinfo.level;
-
 
 		if (mibaolevel <= 0)
 		{
@@ -249,8 +232,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 			mCollectBtn.SetActive(true);
 
-
-
 			SuipianNum.text = ShowmMiBaoinfo.suiPianNum.ToString()+"/"+m_Mibaosuipian.hechengNum.ToString();
 
 			mUISlider.value = (float)( ShowmMiBaoinfo.suiPianNum )/ (float)(m_Mibaosuipian.hechengNum);
@@ -258,7 +239,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			
 			if(mUISlider.value > 1f)mUISlider.value = 1f;
 		}
-
 		else
 		{
 			mLock.SetActive(false);
@@ -276,8 +256,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				
 				mUISlider.value = (float)( ShowmMiBaoinfo.suiPianNum )/ (float)(ShowmMiBaoinfo.needSuipianNum);
 			}
-			
-			
 			if(mUISlider.value > 1f)mUISlider.value = 1f;
 
 			if(ShowmMiBaoinfo.suiPianNum >= ShowmMiBaoinfo.needSuipianNum && ShowmMiBaoinfo.star < 5)
@@ -295,7 +273,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				}
 
 			}
-
 			if(mibaolevel >= JunZhuData.Instance().m_junzhuInfo.level)
 			{
 				LevelUp.SetActive(false);
@@ -309,10 +286,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				Gre_dLevelUp.SetActive(false);
 			}
 		}
-
 		mmibaoxml = MiBaoXmlTemp.getMiBaoXmlTempById (ShowmMiBaoinfo.miBaoId);
-
-
 
 		MiBaoSuipianIcon.spriteName = m_Mibaosuipian.icon.ToString ();
 
@@ -334,11 +308,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		FangYu.text = MyColorData.getColorString(10, ShowmMiBaoinfo.fangYu.ToString ());
 
 		Life.text = MyColorData.getColorString(10, ShowmMiBaoinfo.shengMing.ToString ());
-
-//		if (ShowmMiBaoinfo.star >= 5) {
-//		
-//			StarUpbtn.SetActive(false);
-//		}
 
 		ShowStar ();
 		if(MiBaoScrollView.IsOPenPath)
@@ -369,9 +338,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	}
 	public void OpenLock()
 	{
-		
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),OpenLockLoadBack);
-		
 	}
 
 	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
@@ -433,7 +400,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	}
 	IEnumerator Update_ZhanliAndLevel()
 	{
-	
 		if(ShowmMiBaoinfo.zhanLi > Cru_MiBao_Zhanli+1)
 		{
 			int m = (ShowmMiBaoinfo.zhanLi - Cru_MiBao_Zhanli);
@@ -475,13 +441,11 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 				yield return new WaitForSeconds(mTime);
 			}
-			//Debug.Log("MiBao Animation1");
 
 			MiBaoZl.gameObject.transform.localScale = Vector3.one;
 		}
 		else{
-			//Debug.Log("MiBao Animation2");
-
+	
 			MiBaoZl.text = ShowmMiBaoinfo.zhanLi.ToString();
 		}
 	}
@@ -545,7 +509,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 		ExpXxmlTemp mExpXxmlTemp = ExpXxmlTemp.getExpXxmlTemp_By_expId (mMiBaoXmlTemp.expId,mibaolevel);
 
-
 		if(MiBaoManager.Instance().G_MiBaoInfo.levelPoint <= 0)
 		{
 			JunZhuData.Instance().BuyTiliAndTongBi(false,false,true);
@@ -553,9 +516,9 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			{
 				CloseEffect ();
 			}
+			MibaoUpCallback = true;
 			return;
 		}
-
 		if(JunZhuData.Instance().m_junzhuInfo.jinBi < mExpXxmlTemp.needExp)
 		{
 			CloseYInDao();
@@ -566,7 +529,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			}
 			return;
 		}
-
 		if(mibaolevel >= JunZhuData.Instance().m_junzhuInfo.level)
 		{
 			if(IsOPenEffect)
@@ -577,7 +539,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 			return;
 		}
-
 		if(mibaolevel>= 100)
 		{
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),Load_NoLevelUpBack);
@@ -609,7 +570,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
     
 	void CloseYInDao()
 	{
-	
 		if(UIYindao.m_UIYindao.m_isOpenYindao)
 		{
 			UIYindao.m_UIYindao.CloseUI();
@@ -620,7 +580,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		// TODO
 		// 秘宝升级全部完成后调用
 		PushAndNotificationHelper.SetRedSpotNotification ( 600, false );
-
 
 //
 //		// 秘宝升星激活红点时
@@ -646,8 +605,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 //		// 秘宝技能激活，红点取消时
 //		PushAndNotificationHelper.SetRedSpotNotification (610, false);
 	}
-
-
+	
     public bool OnProcessSocketMessage(QXBuffer p_message){
 	
 		if (p_message != null)
@@ -676,7 +634,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 						UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]); //密保升级
 					}
 				}
-
 				if(Levelup.mibaoInfo != null)
 				{
 					Debug.Log("518  dataBack");
@@ -695,8 +652,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				}
 				return true;
 			 }
-
-
 			case ProtoIndexes.s_Mibao_StarUp_Resp:
 			{
 				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -724,13 +679,11 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 					//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_CARD_TEMP ),LoadBck_2);
 
 				}
-
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 
 				MiBaoManager.Instance().ShowZhanLiAnmition();
 				return true;
 			}
-
 			default: return false;
 			}
 			
@@ -758,6 +711,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	void LockTongBiLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
+		MibaoUpCallback = true;
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
@@ -773,6 +727,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	void LoadMiBaolvBack(ref WWW p_www,string p_path, Object p_object)//秘宝等级不足回调函数
 	{
+		MibaoUpCallback = true;
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.LEVEL_NOT_ENOUGH);
@@ -786,6 +741,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	void Load_NoLevelUpBack(ref WWW p_www,string p_path, Object p_object)//秘宝等级不足回调函数
 	{
+		MibaoUpCallback = true;
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
@@ -802,12 +758,10 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			JunZhuData.Instance().BuyTiliAndTongBi(false,true,false);
 		}
 	}
-	
 
 	public void MibaoStarUp()
 	{
-		Debug.Log ("MibaoSatrUpCallback = " +MibaoSatrUpCallback);
-		if(!MibaoSatrUpCallback)
+		if(CityGlobalData.MibaoSatrUpCallback)
 		{
 			return;
 		}
@@ -820,10 +774,8 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	{
 		yield return new WaitForSeconds (1.0f);
 		
-		MibaoSatrUpCallback = true;
-		
-		MiBAostarStartUsecountNunber = false;
-		Debug.Log("233333333333333");
+		CityGlobalData.MibaoSatrUpCallback = false;
+	
 	}
 
 	void MiBaoUpStarLoadBack(ref WWW p_www,string p_path, Object p_object)
@@ -882,18 +834,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			}
 			else
 			{
-				if(!MibaoSatrUpCallback )
-				{
-					Debug.Log("99999999999");
-					if(!MiBAostarStartUsecountNunber)
-					{
-						MiBAostarStartUsecountNunber = true;
-
-					}
-					
-					return;
-				}
-				MibaoSatrUpCallback =  false;
+				CityGlobalData.MibaoSatrUpCallback =  true;
 
 				MibaoStarUpReq MiBaoinfo = new MibaoStarUpReq ();
 				MemoryStream MiBaoinfoStream = new MemoryStream ();
@@ -913,7 +854,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		}
 	}
 
-
 	public void ConllectMiBao()
 	{
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_NOT_ENOUGH_PIECE ),ShowPicecPath);
@@ -924,9 +864,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		GameObject mNoPiece = Instantiate ( p_object )as GameObject;
 		
 		mNoPiece.SetActive (true);
-		
-		//GameObject.Find ("Allpiece");
-		
+	
 		mNoPiece.transform.parent = GameObject.Find ("Allpiece").transform;;
 		
 		mNoPiece.transform.localScale = new Vector3 (1,1,1);

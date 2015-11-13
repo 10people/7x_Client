@@ -742,7 +742,8 @@ public class Pve_Level_Info : MonoBehaviour {
 
 	public void LoadResourceCallback2(ref WWW p_www,string p_path, Object p_object)
 	{
-		Debug.Log ("0000000000 0-0");
+//		Debug.Log ("0000000000 0-0");
+
 		GameObject tempOjbect = Instantiate(p_object)as GameObject;
 
 		tempOjbect.transform.parent = GameObject.Find ("Mapss").transform;

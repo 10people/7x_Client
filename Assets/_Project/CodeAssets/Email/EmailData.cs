@@ -8,7 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class EmailData : MonoBehaviour,SocketProcessor {
+public class EmailData : Singleton<EmailData>,SocketProcessor {
 
 	private static EmailData emailData;
 
@@ -16,18 +16,6 @@ public class EmailData : MonoBehaviour,SocketProcessor {
 
 	[HideInInspector]public string replyName;
 	[HideInInspector]public string content;
-
-	public static EmailData Instance()
-	{
-		if ( emailData == null )
-		{
-			GameObject t_GameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
-			
-			emailData = t_GameObject.AddComponent< EmailData >();
-		}
-		
-		return emailData;
-	}
 
 	void Awake ()
 	{
@@ -37,9 +25,11 @@ public class EmailData : MonoBehaviour,SocketProcessor {
 	/// <summary>
 	/// 邮箱请求
 	/// </summary>
-	public void EmailReq ()
+	public void EmailDataReq ()
 	{
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_REQ_MAIL_LIST,"25004");
+		QXComData.SendQxProtoMessage (ProtoIndexes.C_REQ_MAIL_LIST,ProtoIndexes.S_REQ_MAIL_LIST.ToString ());
+
+//		Debug.Log ("EmailDataReq:" + ProtoIndexes.C_REQ_MAIL_LIST);
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)
@@ -50,19 +40,14 @@ public class EmailData : MonoBehaviour,SocketProcessor {
 			{
 			case ProtoIndexes.S_REQ_MAIL_LIST://邮件返回
 			{
-				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer t_qx = new QiXiongSerializer();
-				
-				EmailListResponse emailInfoResp = new EmailListResponse();
-				
-				t_qx.Deserialize(t_stream, emailInfoResp, emailInfoResp.GetType());
-
-				if (emailInfoResp != null)
+				object objectValue = new EmailListResponse ();
+				EmailListResponse emailDataRes = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as EmailListResponse;
+			
+				if (emailDataRes != null)
 				{
-					if (emailInfoResp.emailList != null)
+					if (emailDataRes.emailList != null)
 					{
-						emailRespList = emailInfoResp.emailList;
+						emailRespList = emailDataRes.emailList;
 
 //						Debug.Log ("EmailList.count:" + emailInfoResp.emailList.Count);
 					}
@@ -82,17 +67,12 @@ public class EmailData : MonoBehaviour,SocketProcessor {
 			case ProtoIndexes.S_MAIL_NEW://收到一封新邮件
 			{
 				Debug.Log ("NewEmail:" + ProtoIndexes.S_MAIL_NEW);
-				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer t_qx = new QiXiongSerializer();
-				
-				NewMailResponse newEmailResp = new NewMailResponse();
-				
-				t_qx.Deserialize(t_stream, newEmailResp, newEmailResp.GetType());
+
+				object objectValue = new NewMailResponse ();
+				NewMailResponse newEmailResp = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as NewMailResponse;
 				
 				if (newEmailResp != null)
 				{
-//					EmailReq ();
 					emailRespList.Add (newEmailResp.email);
 
 					ExistNewEmail (true);
@@ -101,25 +81,6 @@ public class EmailData : MonoBehaviour,SocketProcessor {
 				}
 				return true;
 			}
-
-//			case ProtoIndexes.S_DELETE_MAIL:
-//			{
-//				Debug.Log ("删除一封邮件：" + ProtoIndexes.S_DELETE_MAIL);
-//				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-//				
-//				QiXiongSerializer t_qx = new QiXiongSerializer();
-//				
-//				DeleteEmailResp deleteResp = new DeleteEmailResp();
-//				
-//				t_qx.Deserialize(t_stream, deleteResp, deleteResp.GetType());
-//				
-//				if (deleteResp != null)
-//				{
-//					DeleteEmail (deleteResp.id);
-//				}
-//				
-//				return true;
-//			}
 
 			default:return false;
 			}

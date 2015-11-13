@@ -194,7 +194,8 @@ public class KingDetailInfo : MYNGUIPanel
 
     public void EndDelegate()
     {
-        Debug.Log("===1");
+//        Debug.Log("===1");
+
         Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + m_KingInfo.RoleID),
                                 PlayerLoadCallBack);
     }

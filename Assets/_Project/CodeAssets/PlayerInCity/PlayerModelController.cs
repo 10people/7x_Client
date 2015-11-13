@@ -68,7 +68,7 @@ public class PlayerModelController : MonoBehaviour
     {
         m_playerModelController = this;
 
-        CreatePlayerModel();
+      //  CreatePlayerModel();
         //		Debug.Log ("PlayerModelCol");
         //        JunZhuData.RequestJunZhuInfo();
     }
@@ -97,10 +97,118 @@ public class PlayerModelController : MonoBehaviour
         InitWithGlobalData();
     }
 
-    public void CreatePlayerModel()
+    public void CreatePlayerModel(Object p_object)
     {
-        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
-                                ResourceLoadCallback);
+        //Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
+        //                        ResourceLoadCallback);
+        m_ObjHero = Instantiate(p_object) as GameObject;
+
+        m_ObjHero.SetActive(true);
+
+        if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
+        {
+            m_ObjHero.AddComponent<TenementPortal>();
+        }
+        switch (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene())
+        {
+            case 0:
+                {
+
+                    if (CityGlobalData.m_CreateRoleCurrent)
+                    {
+                        CityGlobalData.m_CreateRoleCurrent = false;
+                        m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
+                    }
+                    else
+                    {
+                        if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
+                        {
+                            m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
+                            if (m_ObjHero.transform.position.y < 150 || m_ObjHero.transform.position.y > 177)
+                            {
+                                m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
+                            }
+                        }
+                        else
+                        {
+                            m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
+                        }
+                    }
+                }
+                break;
+            case 1:
+                {//FunctionWindowsCreateManagerment.IsCurrentJunZhuID(JunZhuData.Instance().m_junzhuInfo.id) && */
+                    if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
+                    {
+                        m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
+                        if (m_ObjHero.transform.position.y > 177.0f || m_ObjHero.transform.position.y < 150.0f)
+                        {
+                            m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
+                        }
+                    }
+                    else
+                    {
+                        m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
+                    }
+                }
+                break;
+            case 2:
+                {
+                    //if (FunctionWindowsCreateManagerment.IsCurrentJunZhuID(JunZhuData.Instance().m_junzhuInfo.id) && !FunctionWindowsCreateManagerment.IsChangeScene())
+                    //{
+                    //    m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
+                    //}
+                    //else
+                    //{
+                    //    m_ObjHero.transform.position = new Vector3(6.0f, 2.40f, -30.0f);
+                    //}
+                }
+                break;
+            default:
+                break;
+        }
+        m_isSetPos = true;
+        m_ObjHero.transform.localRotation = Quaternion.Euler(Vector3.zero);
+
+        m_ObjHero.transform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
+
+        m_character = m_ObjHero.GetComponent<CharacterController>();
+
+        m_agent = m_ObjHero.GetComponent<NavMeshAgent>();
+
+        m_agent.enabled = false;
+
+        m_transform = m_ObjHero.transform;
+
+        // Debug.Log("m_transform.position.ym_transform.position.y" + m_transform.position.y);
+
+        m_animator = m_ObjHero.GetComponent<Animator>();
+
+
+
+        m_currenPosition = m_transform.position;
+
+        m_mainCamera.GetComponent<CameraRun>().target = m_ObjHero.transform;
+
+        m_mainCamera.GetComponent<CameraRun>().setCameraPos();
+
+        ////Execute void delegate.
+        //if (m_VoidDelegate != null)
+        //{
+        //    m_VoidDelegate();
+        //    m_VoidDelegate = null;
+        //}
+        if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+        {
+            SceneGuideManager.Instance().ShowSceneGuide(1010001);
+        }
+        else
+        {
+            SceneGuideManager.Instance().ShowSceneGuide(1020001);
+        }
+
+
+        SendPlayerData();
     }
 
     public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object)
@@ -1039,7 +1147,7 @@ public class PlayerModelController : MonoBehaviour
 
         EquipSuoData.Instance();
 
-        EmailData.Instance().EmailReq();
+		EmailData.Instance.EmailDataReq();
 
         QXTanBaoData.Instance().TBInfoReq();
 

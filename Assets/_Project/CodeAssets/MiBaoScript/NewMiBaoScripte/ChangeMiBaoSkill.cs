@@ -97,15 +97,16 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 	public void GetRootName(string Root_Name)
 	{
-		Debug.Log ("Root_Name = "+Root_Name);
+//		Debug.Log ("Root_Name = "+Root_Name);
+
 		RootName = Root_Name;
 	}
 
 	public void Init(int MiBaoskillType, int ZH_ID)
 	{
-		Debug.Log ("MiBaoskillType = "+MiBaoskillType);
-
-		Debug.Log ("ZH_ID = "+ZH_ID);
+//		Debug.Log ("MiBaoskillType = "+MiBaoskillType);
+//
+//		Debug.Log ("ZH_ID = "+ZH_ID);
 
 		yinDaoId = ZH_ID;
 
@@ -122,7 +123,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 		if(FreshGuide.Instance().IsActive(100230)&& TaskData.Instance.m_TaskInfoDic[100230].progress >= 0 && SkillType == (int)(CityGlobalData.MibaoSkillType.PveSend))
 		{
-			Debug.Log("选中一个秘宝技能");
+//			Debug.Log("选中一个秘宝技能");
 
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100230];
 
@@ -218,10 +219,9 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 			}
 		}
 
-
-		Debug.Log("zh_id =  " +zh_id);
-
-		Debug.Log("Pinzhi =  " +Pinzhi);
+//		Debug.Log("zh_id =  " +zh_id);
+//
+//		Debug.Log("Pinzhi =  " +Pinzhi);
 	
 		if(Pinzhi < 2)
 		{
@@ -537,14 +537,17 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 //					}
 					case (int)(CityGlobalData.MibaoSkillType.PVP_Fangshou ):
 					{
-						GameObject baizhanObj = GameObject.Find ("BaiZhanMain");
-						if (baizhanObj != null)
-						{
-							BaiZhanMainPage baizhanMain = baizhanObj.GetComponent<BaiZhanMainPage> ();
-							baizhanMain.baiZhanResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
-							baizhanMain.DefensiveSetUp ();
-							baizhanMain.IsOpenOpponent = false;
-						}
+//						GameObject baizhanObj = GameObject.Find ("BaiZhanMain");
+//						if (baizhanObj != null)
+//						{
+//							BaiZhanMainPage baizhanMain = baizhanObj.GetComponent<BaiZhanMainPage> ();
+//							baizhanMain.baiZhanResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
+//							baizhanMain.DefensiveSetUp ();
+//							baizhanMain.IsOpenOpponent = false;
+//						}
+						PvpPage.pvpPage.pvpResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
+						PvpPage.pvpPage.PvpActiveState (true);
+						PvpPage.pvpPage.DefensiveSetUp ();
 
 						break;
 					}
@@ -654,10 +657,17 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 	    {
             CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.RefreshAllEffect();
         }
-		if(RootName != null)
+		if (SkillType == (int)CityGlobalData.MibaoSkillType.PVP_Fangshou)
 		{
-			MainCityUI.TryRemoveFromObjectList (GameObject.Find(RootName));
-			Destroy (GameObject.Find(RootName));
+			PvpPage.pvpPage.DisActiveObj ();
+		}
+		else
+		{
+			if(RootName != null)
+			{
+				MainCityUI.TryRemoveFromObjectList (GameObject.Find(RootName));
+				Destroy (GameObject.Find(RootName));
+			}
 		}
 
 		Destroy (this.gameObject);
@@ -671,8 +681,9 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		{
 		case (int)(CityGlobalData.MibaoSkillType.PVP_Fangshou ):
 		{
-			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
-			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
+//			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
+//			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
+			PvpPage.pvpPage.PvpActiveState (true);
 			break;
 		}
 		case (int)(CityGlobalData.MibaoSkillType.YaBiao_Fangshou ):

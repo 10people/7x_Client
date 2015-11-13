@@ -175,6 +175,7 @@ public class StaticLoading : MonoBehaviour {
 			return m_weight;
 		}
 
+        // reset total resources item count
 		public void SetTotalCount( int p_item_count ){
 //			Debug.Log( m_section_name + ".SetTotalCount( " + p_item_count + " )" );
 		
@@ -182,9 +183,9 @@ public class StaticLoading : MonoBehaviour {
 		}
 
 		public void Log(){
-			Debug.Log( "Loading Section: " + 
+			Debug.Log( "Loading Section( items.percent: " + 
 			          m_items_loaded + " / " + m_item_count + 
-			          " - " + m_weight + "   - " +
+			          " -    weight: " + m_weight + "   -    weight.percent: " +
 			          GetLoadedWeight() + " / " + GetTotalWeight() +
 			          "   " + m_section_name );
 		}
@@ -222,7 +223,7 @@ public class StaticLoading : MonoBehaviour {
 
 	public static void ItemLoaded( List<LoadingSection> p_list, string p_section_name, string p_item_name = "" ){
 		#if LOG_LOADING
-		Debug.Log( "ItemLoaded( " + p_section_name + ": " + p_item_name + " )" );
+	//	Debug.Log( "ItemLoaded( " + p_section_name + ": " + p_item_name + " )" );
 		#endif
 
 		LoadingSection t_section = GetSection( p_list, p_section_name );
@@ -254,7 +255,7 @@ public class StaticLoading : MonoBehaviour {
 
 	private static void SetCurLoading( string p_cur_loading_name ){
 		#if LOG_LOADING
-		Debug.Log( "SetCurLoading( " + p_cur_loading_name + " )" );
+		//Debug.Log( "SetCurLoading( " + p_cur_loading_name + " )" );
 		#endif
 
 		m_cur_loading_asset = p_cur_loading_name;
@@ -276,7 +277,11 @@ public class StaticLoading : MonoBehaviour {
 		LoadingSection t_section = GetSection( p_list, p_section_name );
 		
 		if( t_section == null ){
-			t_section = new LoadingSection( p_section_name, p_weight, p_item_count );
+            #if LOG_LOADING
+          //  Debug.Log("InitSectionInfo: " + p_section_name + ", " + p_weight + ", " + p_item_count );
+            #endif
+
+            t_section = new LoadingSection( p_section_name, p_weight, p_item_count );
 			
 			p_list.Add( t_section );
 		}
@@ -336,7 +341,7 @@ public class StaticLoading : MonoBehaviour {
 	}
 
 	public static void LogLoadingInfo( List<LoadingSection> p_list ){
-		Debug.Log( "StaticLoading.LogLoadingInfo()" );
+		Debug.Log( "--------- StaticLoading.LogLoadingInfo --------" );
 
 		if( p_list == null ){
 			return;
@@ -363,28 +368,6 @@ public class StaticLoading : MonoBehaviour {
 	#region Loading MainCity
 
 	public const string CONST_MAINCITY_NETWORK			= "MainCity_Network";
-
-	#endregion
-
-
-
-	#region Loading BattleField
-
-	public const string CONST_BATTLE_LOADING_2D			= "Battle_2D";
-
-	public const string CONST_BATTLE_LOADING_NETWORK	= "Battle_Net";
-
-	public const string CONST_BATTLE_LOADING_DATA		= "Battle_Data";
-
-	public const string CONST_BATTLE_LOADING_3D			= "Battle_3D";
-
-	public const string CONST_BATTLE_LOADING_FX			= "Battle_Fx";
-
-	public const string CONST_BATTLE_LOADING_SOUND		= "Battle_Sound";
-
-	public const string CONST_BATTLE_CREATE_FLAGS		= "Battle_Create_Flags";
-
-	public const string CONST_BATTLE_RENDER				= "Battle_Render";
 
 	#endregion
 }

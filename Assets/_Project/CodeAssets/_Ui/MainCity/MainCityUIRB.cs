@@ -678,7 +678,7 @@ public class MainCityUIRB : MonoBehaviour
                 case 104:
                     {
                         //                        AllianceData.Instance.RequestData();
-                        Debug.Log("JunZhuData.Instance().m_junzhuInfo.lianMengIdJunZhuData.Instance().m_junzhuInfo.lianMengId ::" + JunZhuData.Instance().m_junzhuInfo.lianMengId);
+//                        Debug.Log("JunZhuData.Instance().m_junzhuInfo.lianMengIdJunZhuData.Instance().m_junzhuInfo.lianMengId ::" + JunZhuData.Instance().m_junzhuInfo.lianMengId);
                         if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
                         {
                             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_NO_SELF_ALLIANCE),

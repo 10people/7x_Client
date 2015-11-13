@@ -1,4 +1,4 @@
-﻿#define DEBUG_PLATFORM
+#define DEBUG_PLATFORM
 
 using UnityEngine;
 using UnityEditor;
@@ -38,38 +38,38 @@ public class EditorIApplePlatform : MonoBehaviour {
 
 	
 	
-	[MenuItem("Build/Third Platform/IApple Platform/Third Platform", false, 1)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_IOS_3RD_PREFIX + "IApple Platform/Third Platform", false, 1)]
 	public static void BuildPlatform(){
 		string t_path = PathHelper.GetMacHome() + Configured_XCodeProject;
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.INFO_LIST_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.INFO_LIST_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.CONTROLLER_H_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.CONTROLLER_H_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.CONTROLLER_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.CONTROLLER_FOLDER_NAME );
 
-		EditorBuild3rd.ProcessFile ( t_path, IAPPLE_H_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, IAPPLE_H_FOLDER_NAME );
 
-		
-		
-		EditorBuild3rd.ProcessFolder ( t_path, PLATFORM_KIT_BUNDLE_FOLDER_NAME );
-
-		EditorBuild3rd.ProcessFolder ( t_path, PLATFORM_KIT_FRAMEWORK_FOLDER_NAME );
-
-		EditorBuild3rd.ProcessFolder ( t_path, PLATFORM_KIT_IMAGE_BUNDLE_FOLDER_NAME );
 		
 		
+		EditorBuildiOS3rd.ProcessFolder ( t_path, PLATFORM_KIT_BUNDLE_FOLDER_NAME );
 
-		EditorBuild3rd.ProcessFile ( t_path, IAPPLE_SDK_LIB_FILE_NAME );
+		EditorBuildiOS3rd.ProcessFolder ( t_path, PLATFORM_KIT_FRAMEWORK_FOLDER_NAME );
 
-		EditorBuild3rd.ProcessFile ( t_path, IAPPLE_SDK_LIB_WE_FILE_NAME );
+		EditorBuildiOS3rd.ProcessFolder ( t_path, PLATFORM_KIT_IMAGE_BUNDLE_FOLDER_NAME );
+		
+		
+
+		EditorBuildiOS3rd.ProcessFile ( t_path, IAPPLE_SDK_LIB_FILE_NAME );
+
+		EditorBuildiOS3rd.ProcessFile ( t_path, IAPPLE_SDK_LIB_WE_FILE_NAME );
 		
 		{
-			EditorBuild3rd.ProcessXG ( t_path );
+			EditorBuildiOS3rd.ProcessXG ( t_path );
 		}
 	}
 
-	[MenuItem("Build/Third Platform/IApple Platform/Third Platform Project", false, 100)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_IOS_3RD_PREFIX + "IApple Platform/Third Platform Project", false, 100)]
 	private static void BuildPlatformProject(){
 //		{
 //			BuildPlatform();
@@ -80,9 +80,9 @@ public class EditorIApplePlatform : MonoBehaviour {
 		OnProcessPbx( BuildTarget.iOS, t_built_projectpath );
 	}
 	
-	[MenuItem("Build/Settings/IApple", false, 1)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_SETTING_IOS_PREFIX + "IApple", false, 1)]
 	public static void BuildSettings(){
-		EditorBuild3rd.BuildSettings( "IApple" );
+		EditorBuildiOS3rd.BuildSettings( "IApple" );
 
 		AssetDatabase.Refresh();
 	}
@@ -119,16 +119,16 @@ public class EditorIApplePlatform : MonoBehaviour {
 		Debug.Log ( "OnProcessPbx()" );
 		#endif
 
-		string t_pbx = EditorBuild3rd.GetPBXContent( p_target, p_path_to_built_project );
+		string t_pbx = EditorBuildiOS3rd.GetPBXContent( p_target, p_path_to_built_project );
 
 		// backup
 		{
-			EditorBuild3rd.BackUpPbx( p_path_to_built_project );
+			EditorBuildiOS3rd.BackUpPbx( p_path_to_built_project );
 		}
 
 		{
 			// build file, rder
-			EditorBuild3rd.UpdatePbxAndCheckKeys( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbxAndCheckKeys( ref t_pbx, 
 									"D8A1C7280E80637F000160D3 /* RegisterMonoModules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C7240E80637F000160D3 /* RegisterMonoModules.cpp */; };\n",
 
 									"D8A1C7280E80637F000160D3 /* RegisterMonoModules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C7240E80637F000160D3 /* RegisterMonoModules.cpp */; };\n" +
@@ -164,7 +164,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 //									);
 
 			// ref
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 									"D8A1C7250E80637F000160D3 /* RegisterMonoModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterMonoModules.h; path = Libraries/RegisterMonoModules.h; sourceTree = SOURCE_ROOT; };\n",
 
 									"D8A1C7250E80637F000160D3 /* RegisterMonoModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterMonoModules.h; path = Libraries/RegisterMonoModules.h; sourceTree = SOURCE_ROOT; };\n" +
@@ -189,7 +189,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 			// PBXTargetDependency
 
 			// PBXFrameworksBuildPhase.frameworks
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "AA5D99871AFAD3C800B27605 /* CoreText.framework in Frameworks */,\n",
 
 			                         "11597A391BC7EC6800B369E7 /* AlipaySDK.framework in Frameworks */,\n" +
@@ -206,7 +206,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 
 
 			// PBXGroup
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "/* Begin PBXGroup section */\n",
 			                         
 			                         "/* Begin PBXGroup section */\n" +
@@ -224,7 +224,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 
 
 			// custom template
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "83B2574E0E63025400468741 /* libiconv.2.dylib */,\n",
 
 			                         "11597A221BC7EA3000B369E7 /* libXG-SDK.a */,\n" +
@@ -238,7 +238,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 			                         );
 
 			// PBXGroup.frameworks
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "AA5D99861AFAD3C800B27605 /* CoreText.framework */,\n",
 
 			                         "11597A2B1BC7EAAE00B369E7 /* libsqlite3.tbd */,\n" +
@@ -250,7 +250,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 			                          );
 
 			// classes
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "FC3D7EBE16D2621600D1BD0D /* CrashReporter.h */,\n",
 
 			                         "FC3D7EBE16D2621600D1BD0D /* CrashReporter.h */,\n" +
@@ -268,7 +268,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 //			                         );
 
 			// resources
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "56C56C9817D6015200616839 /* Images.xcassets in Resources */,\n",
 
 			                         "11597A351BC7EC4000B369E7 /* iiappleResource.bundle in Resources */,\n" +
@@ -286,7 +286,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 //			                         );
 
 			// framework search
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "FRAMEWORK_SEARCH_PATHS = \"$(inherited)\";\n" +
 			                         "				GCC_DYNAMIC_NO_PIC = NO;\n",
 
@@ -298,7 +298,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 			                         "				GCC_DYNAMIC_NO_PIC = NO;\n"
 			                         );
 
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "FRAMEWORK_SEARCH_PATHS = \"$(inherited)\";\n" +
 			                         "				GCC_ENABLE_CPP_EXCEPTIONS = YES;\n",
 			                         
@@ -323,7 +323,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 //			                         );
 
 			// lib search
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "\"\\\"$(SRCROOT)/Libraries\\\"\",\n",
 			                         
 			                         "\"\\\"$(SRCROOT)/Libraries\\\"\",\n" +
@@ -332,7 +332,7 @@ public class EditorIApplePlatform : MonoBehaviour {
 			                         );
 
 			// flag
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "OTHER_LDFLAGS = (\n" +
 			                         "					\"-weak_framework\",\n" +
 			                         "					CoreMotion,\n" +
@@ -351,13 +351,13 @@ public class EditorIApplePlatform : MonoBehaviour {
 		
 		{
 			// save
-			EditorBuild3rd.SavePbx( p_path_to_built_project, t_pbx );
+			EditorBuildiOS3rd.SavePbx( p_path_to_built_project, t_pbx );
 		}
 	}
 
 
 
-//	[MenuItem("Build/Third Platform/IApple Platform/ipa", false, 9999)]
+//	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_PREFIX + "IApple Platform/ipa", false, 9999)]
 	private static void Build(){
 		UnityEngine.Debug.Log( "Build ipa." );
 

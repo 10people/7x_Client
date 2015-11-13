@@ -236,7 +236,7 @@ public class PveLeveType : MonoBehaviour {
 				CityGlobalData.m_tempSection = Test_Section;
 
 				CityGlobalData.m_tempLevel = Test_Level;
-
+			    Global.m_isOpenPVP = true;
 				EnterBattleField.EnterBattlePve(Test_Section, Test_Level, LevelType.LEVEL_NORMAL);
 		
 			return;
@@ -282,7 +282,7 @@ public class PveLeveType : MonoBehaviour {
 		CityGlobalData.m_tempSection = my_tempSection;
 
 		CityGlobalData.m_tempLevel = my_tempLevel;
-
+		Global.m_isOpenPVP = true;
 		if(CityGlobalData.PT_Or_CQ )
 		{
 			if(MapData.mapinstance.Lv[a].type == 1)

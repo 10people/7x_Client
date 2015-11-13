@@ -49,7 +49,7 @@ public class Res2DTemplate : XmlLoadManager
         PVE_MAP_PREFIX,
         PVE_CLOUD,
         PVP_ZHENG_RONG,
-        PVP_BAI_ZHAN,
+        PVP_PAGE,
         TANBAO_ZHU_RONG_QING,
         TANBAO_ZHU_RONG_QI,
         TANBAO_ZHU_RONG_SHAN,

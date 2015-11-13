@@ -57,11 +57,11 @@ public class TestEffect : MonoBehaviour {
 			Screen.width * 0.2f, m_btn_enable_params[ 3 ],
 			0, m_btn_enable_params[ 5 ] };
 
-		m_particle_id = GUI.TextField( UtilityTool.GetGUIRect( 0, m_text_field_params ), 
+		m_particle_id = GUI.TextField( GUIHelper.GetGUIRect( 0, m_text_field_params ), 
 		                                m_particle_id, 
 		               					m_gui_text_field_style );
 
-		if( GUI.Button( UtilityTool.GetGUIRect( 0, m_btn_enable_params ), "Launch", m_gui_btn_style ) ){
+		if( GUI.Button( GUIHelper.GetGUIRect( 0, m_btn_enable_params ), "Launch", m_gui_btn_style ) ){
 			LaunchParticle( m_particle_id );
 		}
 	}

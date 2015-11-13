@@ -62,7 +62,7 @@ public class SceneTour : MonoBehaviour {
 		
 		int t_button_index = 0;
 
-		if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "Next" ) ){
+		if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "Next" ) ){
 			m_scene_index = ( m_scene_index + 1 ) % Application.levelCount;
 
 			Application.LoadLevel( m_scene_index );
@@ -70,7 +70,7 @@ public class SceneTour : MonoBehaviour {
 			UpdateCamera();
 		}
 
-		if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "Previous" ) ){
+		if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "Previous" ) ){
 			m_scene_index = ( m_scene_index - 1 + Application.levelCount ) % Application.levelCount;
 
 			Application.LoadLevel( m_scene_index );
@@ -105,13 +105,13 @@ public class SceneTour : MonoBehaviour {
 		}
 
 		{
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "+X" ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "+X" ) ){
 				m_camera.gameObject.transform.position += new Vector3( m_move_xz_unit, 0, 0 );
 			}
 			
 			t_button_index++;
 			
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "-X" ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "-X" ) ){
 				m_camera.gameObject.transform.position += new Vector3( -m_move_xz_unit, 0, 0 );
 			}
 		}
@@ -127,15 +127,15 @@ public class SceneTour : MonoBehaviour {
 			
 			m_btn_rect_params[ 5 ] = 0;
 			
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "-Z" ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "-Z" ) ){
 				m_camera.gameObject.transform.position += new Vector3( 0, 0, -m_move_xz_unit );
 			}
 			
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "Reset" ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "Reset" ) ){
 				m_camera.gameObject.transform.position = new Vector3( 0, m_camera.gameObject.transform.position.y, 0 );
 			}
 			
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "+Z" ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "+Z" ) ){
 				m_camera.gameObject.transform.position += new Vector3( 0, 0, m_move_xz_unit );
 			}
 		}
@@ -157,13 +157,13 @@ public class SceneTour : MonoBehaviour {
 		t_button_index = 0;
 
 		{
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "-Y" ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "-Y" ) ){
 				m_camera.gameObject.transform.position += new Vector3( 0, -m_move_y_unit, 0 );
 			}
 
 			t_button_index++;
 
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "+Y" ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "+Y" ) ){
 				m_camera.gameObject.transform.position += new Vector3( 0, m_move_y_unit, 0 );
 			}
 		}

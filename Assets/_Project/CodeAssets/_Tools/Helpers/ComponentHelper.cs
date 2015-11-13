@@ -149,5 +149,24 @@ public class ComponentHelper{
 		Debug.Log( "startColor: " + p_ps.startColor );
 	}
 
+	public static void LogTexture2D( Texture2D p_tex ){
+		if( p_tex == null ){
+			return;
+		}
+
+		Debug.Log( "w,h: " + p_tex.width + ", " + p_tex.height );
+
+		Debug.Log( "format: " + p_tex.format );
+
+//		Debug.Log( "texelSize: " + p_tex.texelSize );
+
+//		Debug.Log( "filterMode: " + p_tex.filterMode );
+
+//		Debug.Log( "wrapMode: " + p_tex.wrapMode );
+	}
+
 	#endregion
+
+
+
 }

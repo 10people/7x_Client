@@ -104,7 +104,13 @@ public class ChatWindow : ChatBaseWindow, SocketListener
 
     #region Mono
 
-    new void OnDestroy()
+    void OnEnable()
+    {
+        //Send carriage help times.
+        UtilityTool.SendQXMessage(ProtoIndexes.C_YABIAO_XIEZHU_RSQ);
+    }
+
+    void OnDestroy()
     {
         SocketTool.UnRegisterSocketListener(this);
 

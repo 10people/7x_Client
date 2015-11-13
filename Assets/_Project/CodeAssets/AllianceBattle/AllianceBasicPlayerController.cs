@@ -8,6 +8,10 @@ public class AllianceBasicPlayerController : MonoBehaviour
     public UIPanel NguiPanel;
 
     public UIProgressBar ProgressBar;
+    public UISprite ProgressBarForeSprite;
+    private const string redBarName = "progressred";
+    private const string greenBarName = "progressford";
+
     public UILabel NameLabel;
     public UILabel AllianceLabel;
 
@@ -17,6 +21,7 @@ public class AllianceBasicPlayerController : MonoBehaviour
     public string AllianceName;
     public float TotalBlood;
     public float RemainingBlood;
+    public bool IsRed;
 
     public GameObject PlayerSelectedSign;
 
@@ -24,6 +29,8 @@ public class AllianceBasicPlayerController : MonoBehaviour
     {
         NameLabel.text = string.IsNullOrEmpty(KingName) ? "" : KingName;
         AllianceName = string.IsNullOrEmpty(AllianceName) ? "无联盟" : AllianceName;
+        NameLabel.color = AllianceLabel.color = IsRed ? Color.red : Color.green;
+        ProgressBarForeSprite.spriteName = IsRed ? redBarName : greenBarName;
         if (TotalBlood > 0 || RemainingBlood <= TotalBlood)
         {
             UpdateBloodBar(RemainingBlood);

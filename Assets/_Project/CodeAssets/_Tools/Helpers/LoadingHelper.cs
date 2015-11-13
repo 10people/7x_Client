@@ -134,4 +134,112 @@ public class LoadingHelper{
 	}
 
 	#endregion
+
+
+
+	#region Loading Scene Checkers
+
+	/// Is Loading Login Now?
+	public static bool IsLoadingLogin(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_LOGIN;
+	}
+	
+	/// Is Loading CreateRole Now?
+	public static bool IsLoadingCreateRole(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_CREATE_ROLE;
+	}
+	
+	/// Is Loading Main City Now?
+	public static bool IsLoadingMainCity(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_MAIN_CITY ;
+	}
+	
+	public static bool IsLoadingMainCityYeWan(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN;
+	}
+	/// Is Loading Alliance City Now?
+	public static bool IsLoadingAllianceCity(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY;
+	}
+
+	public static bool IsLoadingAllianceCityYeWan(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN;
+	}
+	
+	public static bool IsLoadingAllianceTenentsCity(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE;
+	}
+	public static bool IsInAllianceTenentsCityYeWanScene(){
+		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN;
+	}
+	/// Determines whether is loading Battle Field now.
+	public static bool IsLoadingBattleField(){
+		return EnterNextScene.GetSceneToLoad().StartsWith( ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX );
+	}
+	
+	public static bool IsLoadingHouse(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_HOUSE;
+	}
+	
+	public static bool IsLoadingCarriage(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_CARRIAGE;
+	}
+	
+	public static bool IsLoadingAllianceBattle(){
+		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE;
+	}
+
+	#endregion
+
+
+
+	#region Scene Quality
+
+	public static void ConfigBloomAndLight(){
+		{
+			bool t_active_light = false;
+			
+			bool t_active_bloom = false;
+			
+			if( IsLoadingLogin() ){
+				t_active_light = false;
+				
+				t_active_bloom = false;
+			}
+			else if( IsLoadingCreateRole() ){
+				t_active_light = !QualityTool.Instance.BattleField_ShowSimpleShadow();
+				
+				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
+			}
+			else if( IsLoadingBattleField() ){
+				t_active_light = !QualityTool.Instance.BattleField_ShowSimpleShadow();
+				
+				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
+			}
+			else if (IsLoadingMainCity() || IsLoadingMainCityYeWan() || IsLoadingAllianceCity() || IsLoadingAllianceTenentsCity() || IsLoadingHouse() || IsLoadingAllianceCityYeWan() || IsInAllianceTenentsCityYeWanScene() || IsLoadingCarriage()||IsLoadingAllianceBattle())
+			{
+				t_active_light = !QualityTool.Instance.InCity_ShowSimpleShadow();
+				
+				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
+			}
+			else{
+				Debug.LogError( "Error, Unknown Scene: " + EnterNextScene.GetSceneToLoad() );
+				
+				t_active_light = false;
+				
+				t_active_bloom = false;
+			}
+			
+			{
+				QualityTool.ConfigLights( t_active_light );
+			}
+			
+			{
+				QualityTool.ConfigBloom( t_active_bloom );
+			}
+		}
+	}
+
+	#endregion
+
 }

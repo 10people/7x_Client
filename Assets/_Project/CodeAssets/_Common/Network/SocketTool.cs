@@ -519,19 +519,21 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 			SocketTool.CloseSocket();
 			
-			m_multi_login_gb = Global.CreateBox(LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_1),
+			m_multi_login_gb = Global.CreateBox( LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_1),
 			                                    LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TRANS_97),
 			                                    "",
 			                                    null,
 			                                    LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_2),
+
 			                                    null,
 			                                    MultiLoginCallback,
 			                                    null,
 			                                    null,
 			                                    null,
+
 			                                    false,
 			                                    false,
-			                                    true);
+			                                    true );
 			
 			DontDestroyOnLoad( m_multi_login_gb );
 			
@@ -679,11 +681,13 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		                 "",
 		                 null,
 		                 LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_4 ), 
+
 		                 null, 
 		                 p_on_click,
 		                 p_on_create,
 		                 null,
 		                 null,
+
 		                 false,
 		                 false,
 		                 true);

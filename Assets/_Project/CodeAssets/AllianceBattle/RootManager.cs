@@ -46,6 +46,7 @@ namespace AllianceBattle
 
             m_AllianceBasicPlayerController.TrackCamera = TrackCamera;
 
+            m_AllianceBasicPlayerController.IsRed = false;
             m_AllianceBasicPlayerController.KingName = kingName;
             m_AllianceBasicPlayerController.AllianceName = allianceName;
             if (totalBlood > 0)

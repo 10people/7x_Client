@@ -65,9 +65,9 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
     void Start()
     {
-        UtilityTool.SendQXMessage(ProtoIndexes.C_PVE_ZHANLI);
+//        UtilityTool.SendQXMessage(ProtoIndexes.C_PVE_ZHANLI);
 		UI_IsOpen = false;
-        GetTiLi();
+//        GetTiLi();
     }
 
     void Update()

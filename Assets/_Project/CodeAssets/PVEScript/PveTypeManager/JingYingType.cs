@@ -69,7 +69,7 @@ public class JingYingType : MonoBehaviour {
 
 			crossIcon.SetActive (true);
 
-			Debug.Log("levelInfo.win_Level = "+levelInfo.win_Level);
+//			Debug.Log("levelInfo.win_Level = "+levelInfo.win_Level);
 
 			if(levelInfo.win_Level == 1)
 			{
@@ -93,7 +93,7 @@ public class JingYingType : MonoBehaviour {
 				}
 			}
 
-			Debug.Log ("starnum = "+starnum);
+//			Debug.Log ("starnum = "+starnum);
 
 			for(int i = 0; i < starnum; i++)
 			{

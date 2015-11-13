@@ -210,7 +210,7 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 	private void OnSendEnterBattle()
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_NETWORK, "SendEnterBattle" );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_NETWORK, "SendEnterBattle" );
 		
 		PlayerState t_state = new PlayerState();
 		
@@ -228,7 +228,7 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 		case ProtoIndexes.ZhanDou_Init_Resp:
 		{
 			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-			                         StaticLoading.CONST_BATTLE_LOADING_NETWORK, "ZhanDou_Init_Resp" );
+			                         PrepareForBattleField.CONST_BATTLE_LOADING_NETWORK, "ZhanDou_Init_Resp" );
 			
 			MemoryStream t_stream = new MemoryStream( p_message.m_protocol_message, 0, p_message.position );
 			

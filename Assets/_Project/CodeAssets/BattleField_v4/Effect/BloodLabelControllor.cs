@@ -6,6 +6,7 @@ using qxmobile.protobuf;
 
 public class BloodLabelControllor : MonoBehaviour 
 {
+	[HideInInspector] public List<Vector3> randomList = new List<Vector3>();
 
 
 	private Dictionary<int, List<BloodLabel>> dict = new Dictionary<int, List<BloodLabel>>();
@@ -66,6 +67,16 @@ public class BloodLabelControllor : MonoBehaviour
 		}
 
 		dict.Clear ();
+
+		randomList.Clear ();
+
+		for(float x = 0; x < 1; x += .1f)
+		{
+			for(float z = 0; z < 1; z += .1f)
+			{
+				randomList.Add(new Vector3(x, 0, z));
+			}
+		}
 	}
 
 	public void showBloodEx(BaseAI defender, int hpValue, bool cri, BattleControlor.AttackType _type)

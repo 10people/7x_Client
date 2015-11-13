@@ -9,53 +9,6 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
 public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
-	
-	private string title;
-	private List<DuiHuanInfo> duiHuanList = new List<DuiHuanInfo> ();
-	private int refreshTime;
-	private int money;
-	private int refreshNeed;
-	
-	/// <summary>
-	/// 获得兑换商店信息
-	/// </summary>
-	/// <param name="tempType">商铺类型</param>
-	/// <param name="titleStr">商铺名字</param>
-	/// <param name="tempDuiHuanList">物品信息</param>
-	/// <param name="tempTime">刷新时间</param>
-	/// <param name="tempMoney">兑换钱币数量</param>
-	/// <param name="refreshNeedMoney">刷新货物需要的钱币数量</param>
-	public void LoadStorePrefab (StoreType tempType,string titleStr,List<DuiHuanInfo> tempDuiHuanList,int tempTime,int tempMoney,int refreshNeedMoney)
-	{
-		storeType = tempType;
-		title = titleStr;
-		duiHuanList = tempDuiHuanList;
-		refreshTime = tempTime;
-		money = tempMoney;
-		refreshNeed = refreshNeedMoney;
-
-		GameObject storePrefab = GameObject.Find ("GeneralStore");
-		if (storePrefab == null)
-		{
-			Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_STORE ),
-			                        StoreLoadBack );
-		}
-		else
-		{
-			GeneralStore generalStore = storePrefab.GetComponent<GeneralStore> ();
-			generalStore.GetStoreInfo (tempType,titleStr,tempDuiHuanList,tempTime,tempMoney,refreshNeed);
-		}
-	}
-	
-	void StoreLoadBack ( ref WWW p_www, string p_path, Object p_object )
-	{
-		GameObject storeObj = GameObject.Instantiate( p_object ) as GameObject;
-		
-		storeObj.name = "GeneralStore";
-		
-		GeneralStore generalStore = storeObj.GetComponent<GeneralStore> ();
-		generalStore.GetStoreInfo (storeType,title,duiHuanList,refreshTime,money,refreshNeed);
-	}
 
 	public string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);//确定按钮
 	public string cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);//取消按钮
@@ -142,16 +95,9 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 		
 		storeReq.type = reqType;
 		
-		MemoryStream t_stream = new MemoryStream ();
-		
-		QiXiongSerializer t_serializer = new QiXiongSerializer ();
-		
-		t_serializer.Serialize (t_stream,storeReq);
-		
-		byte[] t_protof = t_stream.ToArray ();
-		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.HY_SHOP_REQ,ref t_protof,"30391");
-		Debug.Log ("商铺信息请求:" + ProtoIndexes.HY_SHOP_REQ);
+		QXComData.SendQxProtoMessage (storeReq,ProtoIndexes.HY_SHOP_REQ,"30391");
+
+//		Debug.Log ("商铺信息请求:" + ProtoIndexes.HY_SHOP_REQ);
 	}
 	
 	/// <summary>
@@ -195,16 +141,8 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 		storeBuyReq.type = buyType;
 		storeBuyReq.goodId = tempItemId;
 		
-		MemoryStream t_stream = new MemoryStream ();
-		
-		QiXiongSerializer t_serializer = new QiXiongSerializer ();
-		
-		t_serializer.Serialize (t_stream,storeBuyReq);
-		
-		byte[] t_protof = t_stream.ToArray ();
-		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.HY_BUY_GOOD_REQ,ref t_protof,"30393");
-		Debug.Log ("商铺物品购买请求:" + ProtoIndexes.HY_BUY_GOOD_REQ);
+		QXComData.SendQxProtoMessage (storeBuyReq,ProtoIndexes.HY_BUY_GOOD_REQ,"30393");
+//		Debug.Log ("商铺物品购买请求:" + ProtoIndexes.HY_BUY_GOOD_REQ);
 	}
 	
 	public bool OnProcessSocketMessage (QXBuffer p_message)
@@ -215,14 +153,10 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 			{
 			case ProtoIndexes.HY_SHOP_RESP://商铺返回信息
 			{
-				Debug.Log ("商铺信息返回:" + ProtoIndexes.HY_SHOP_RESP);
-				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer t_qx = new QiXiongSerializer();
-				
-				HyShopResp storeRes = new HyShopResp();
-				
-				t_qx.Deserialize(t_stream, storeRes, storeRes.GetType());
+//				Debug.Log ("商铺信息返回:" + ProtoIndexes.HY_SHOP_RESP);
+
+				object tempTargetObj = new HyShopResp();
+				HyShopResp storeRes = QXComData.ReceiveQxProtoMessage (p_message,tempTargetObj) as HyShopResp;
 				
 				if (storeRes != null)
 				{
@@ -236,7 +170,7 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 					switch (storeType)
 					{
 					case StoreType.PVP:
-
+						PvpPage.pvpPage.PvpActiveState (false);
 						break;
 					case StoreType.HUANGYE:
 						HY_UIManager.Instance ().CanOpenShop = true;
@@ -250,10 +184,12 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 					default:
 						break;
 					}
-					Debug.Log ("storeRes.msg:" + storeResp.msg);
-					Debug.Log ("sstoreRes.goodsInfos:" + storeResp.goodsInfos.Count);
-					Debug.Log ("storeRes.hyMoney:" + storeResp.hyMoney);
-					Debug.Log ("sstoreRes.nextRefreshNeedMoney:" + storeResp.nextRefreshNeedMoney);
+
+//					Debug.Log ("storeRes.msg:" + storeResp.msg);
+//					Debug.Log ("sstoreRes.goodsInfos:" + storeResp.goodsInfos.Count);
+//					Debug.Log ("storeRes.hyMoney:" + storeResp.hyMoney);
+//					Debug.Log ("sstoreRes.nextRefreshNeedMoney:" + storeResp.nextRefreshNeedMoney);
+
 					if (storeRes.msg == 11)
 					{
 						//货币不足
@@ -275,13 +211,9 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 			case ProtoIndexes.HY_BUY_GOOD_RESP://购买物品返回
 			{
 				Debug.Log ("商铺物品购买返回:" + ProtoIndexes.HY_BUY_GOOD_RESP);
-				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer t_qx = new QiXiongSerializer();
-				
-				HyBuyGoodResp storeBuyRes = new HyBuyGoodResp();
-				
-				t_qx.Deserialize(t_stream, storeBuyRes, storeBuyRes.GetType());
+
+				object tempTargetObj = new HyBuyGoodResp();
+				HyBuyGoodResp storeBuyRes = QXComData.ReceiveQxProtoMessage (p_message,tempTargetObj) as HyBuyGoodResp;
 				
 				if (storeBuyRes != null)
 				{
@@ -292,7 +224,7 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 						switch (storeType)
 						{
 						case StoreType.PVP:
-							
+							UIYindao.m_UIYindao.CloseUI ();
 							break;
 						case StoreType.HUANGYE:
 							HY_UIManager.HuangYeData.ShowHuangyeBi (storeBuyRes.remianHyMoney);

@@ -1,4 +1,4 @@
-﻿//#define DEBUG_PLATFORM
+//#define DEBUG_PLATFORM
 
 using UnityEngine;
 using UnityEditor;
@@ -21,27 +21,27 @@ public class EditorTongBuPlatform : MonoBehaviour {
 	private const string Configured_TongBu_XCodeProject = "/workspace/xcode_workspace/xcode_qixiong_TongBu";
 
 
-	[MenuItem("Build/Third Platform/TongBu Platform/Third Platform", false, 1)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_IOS_3RD_PREFIX + "TongBu Platform/Third Platform", false, 1)]
 	public static void BuildPlatform(){
 		string t_path = PathHelper.GetMacHome() + Configured_TongBu_XCodeProject;
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.INFO_LIST_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.INFO_LIST_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFolder ( t_path, TONGBU_PLATFORM_KIT_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFolder ( t_path, TONGBU_PLATFORM_KIT_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFolder ( t_path, TONGBU_PLATFORM_KIT_BUNDLE_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFolder ( t_path, TONGBU_PLATFORM_KIT_BUNDLE_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.CONTROLLER_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.CONTROLLER_FOLDER_NAME );
 
 
 
 		{
-			EditorBuild3rd.ProcessXG ( t_path );
+			EditorBuildiOS3rd.ProcessXG ( t_path );
 		}
 	}
 
 
-	[MenuItem("Build/Third Platform/TongBu Platform/Third Platform Project", false, 100)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_IOS_3RD_PREFIX + "TongBu Platform/Third Platform Project", false, 100)]
 	private static void BuildPlatformProject(){
 //		{
 //			BuildPlatform();
@@ -52,9 +52,9 @@ public class EditorTongBuPlatform : MonoBehaviour {
 		OnProcessPbx( BuildTarget.iOS, t_built_projectpath );
 	}
 	
-	[MenuItem("Build/Settings/TongBu", false, 1)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_SETTING_IOS_PREFIX + "TongBu", false, 1)]
 	public static void BuildSettings(){
-		EditorBuild3rd.BuildSettings( "TongBu" );
+		EditorBuildiOS3rd.BuildSettings( "TongBu" );
 
 		AssetDatabase.Refresh();
 	}
@@ -91,16 +91,16 @@ public class EditorTongBuPlatform : MonoBehaviour {
 		Debug.Log ( "OnProcessPbx()" );
 		#endif
 
-		string t_pbx = EditorBuild3rd.GetPBXContent( p_target, p_path_to_built_project );
+		string t_pbx = EditorBuildiOS3rd.GetPBXContent( p_target, p_path_to_built_project );
 
 		// backup
 		{
-			EditorBuild3rd.BackUpPbx( p_path_to_built_project );
+			EditorBuildiOS3rd.BackUpPbx( p_path_to_built_project );
 		}
 
 		{
 			// build file, rder
-			EditorBuild3rd.UpdatePbxAndCheckKeys( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbxAndCheckKeys( ref t_pbx, 
 			                                     "D8A1C7280E80637F000160D3 /* RegisterMonoModules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C7240E80637F000160D3 /* RegisterMonoModules.cpp */; };\n",
 
 			                                     "D8A1C7280E80637F000160D3 /* RegisterMonoModules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C7240E80637F000160D3 /* RegisterMonoModules.cpp */; };\n" +
@@ -119,7 +119,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                                     );
 
 			// ref
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "D8A1C7250E80637F000160D3 /* RegisterMonoModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterMonoModules.h; path = Libraries/RegisterMonoModules.h; sourceTree = SOURCE_ROOT; };\n",
 
 									 "D8A1C7250E80637F000160D3 /* RegisterMonoModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterMonoModules.h; path = Libraries/RegisterMonoModules.h; sourceTree = SOURCE_ROOT; };\n" +
@@ -143,7 +143,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			// PBXTargetDependency
 
 			// PBXFrameworksBuildPhase.frameworks
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "AA5D99871AFAD3C800B27605 /* CoreText.framework in Frameworks */,\n",
 
 			                         "D8A8DBC11BB162AB00721ADC /* TBPlatform.framework in Frameworks */,\n" +
@@ -161,7 +161,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                         );
 
 			// custom template
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "83B2574E0E63025400468741 /* libiconv.2.dylib */,\n",
 
 			                         "83B2574E0E63025400468741 /* libiconv.2.dylib */,\n" +
@@ -171,7 +171,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                         );
 
 			// PBXGroup.frameworks
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "AA5D99861AFAD3C800B27605 /* CoreText.framework */,\n",
 
 			                         "D8F67A651B83039F00D287B2 /* CoreData.framework */,\n" +
@@ -186,7 +186,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                          );
 
 			// classes
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "8A5C148F174E662D0006EB36 /* PluginBase */,\n",
 
 			                         "8A5C148F174E662D0006EB36 /* PluginBase */,\n" +
@@ -194,7 +194,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                         );
 
 			// resources
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "56C56C9817D6015200616839 /* Images.xcassets in Resources */,\n",
 
 			                         "56C56C9817D6015200616839 /* Images.xcassets in Resources */,\n" +
@@ -202,7 +202,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                          );
 
 			// xg
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "/* End PBXGroup section */\n",
 
 			                         "D8F67A531B8301DB00D287B2 /* XG */ = {\n" +
@@ -224,7 +224,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 //			                         );
 
 			// framework search
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "FRAMEWORK_SEARCH_PATHS = \"$(inherited)\";\n" +
 			                         "				GCC_DYNAMIC_NO_PIC = NO;\n",
 			                         
@@ -236,7 +236,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                         "				GCC_DYNAMIC_NO_PIC = NO;\n"
 			                         );
 
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "COPY_PHASE_STRIP = YES;\n" +
 			                         "				FRAMEWORK_SEARCH_PATHS = \"$(inherited)\";\n",
 
@@ -249,7 +249,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                         );
 
 			// lib search
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "\"\\\"$(SRCROOT)/Libraries\\\"\",\n",
 			                         
 			                         "\"\\\"$(SRCROOT)/Libraries\\\"\",\n" +
@@ -258,7 +258,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 			                         );
 
 			// flag
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "OTHER_LDFLAGS = (\n" +
 			                         "					\"-weak_framework\",\n" +
 			                         "					CoreMotion,\n" +
@@ -280,7 +280,7 @@ public class EditorTongBuPlatform : MonoBehaviour {
 
 		{
 			// save
-			EditorBuild3rd.SavePbx( p_path_to_built_project, t_pbx );
+			EditorBuildiOS3rd.SavePbx( p_path_to_built_project, t_pbx );
 		}
 	}
 

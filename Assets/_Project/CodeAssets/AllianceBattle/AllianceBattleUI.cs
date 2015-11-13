@@ -465,7 +465,7 @@ namespace AllianceBattle
             {
                 if (m_RootManager.m_AlliancePlayerManager.m_PlayerDic == null || m_RootManager.m_AlliancePlayerManager.m_PlayerDic.Count == 0)
                 {
-                    //[ALERT]Donot modify call rank.
+                    //[ALERT]Donot modify rank of call.
                     DeactiveAttack();
                     m_ToAttackId = -1;
                     return;
@@ -473,7 +473,7 @@ namespace AllianceBattle
 
                 //In distance
                 var temp = m_RootManager.m_AlliancePlayerManager.m_PlayerDic.Where(item => Vector3.Distance(m_RootManager.m_AlliancePlayerController.transform.position, item.Value.transform.position) < AttackDistance);
-                if (temp == null || temp.Count() == 0)
+                if (!temp.Any())
                 {
                     DeactiveAttack();
                     m_ToAttackId = -1;
@@ -482,7 +482,16 @@ namespace AllianceBattle
 
                 //In angle
                 temp = temp.Where(item => Vector3.Angle(m_RootManager.m_AlliancePlayerController.transform.forward, item.Value.transform.position - m_RootManager.m_AlliancePlayerController.transform.position) < AttackDegree / 2.0f);
-                if (temp == null || temp.Count() == 0)
+                if (!temp.Any())
+                {
+                    DeactiveAttack();
+                    m_ToAttackId = -1;
+                    return;
+                }
+
+                //Select ememy
+                temp = temp.Where(item => item.Value.GetComponent<AllianceBasicPlayerController>().AllianceName != AllianceData.Instance.g_UnionInfo.name);
+                if (!temp.Any())
                 {
                     DeactiveAttack();
                     m_ToAttackId = -1;
@@ -490,7 +499,7 @@ namespace AllianceBattle
                 }
 
                 //Get only one target
-                //[ALERT]Donot modify call rank.
+                //[ALERT]Donot modify rank of call.
                 var temp2 = temp.ToList().OrderBy(item => Vector3.Distance(m_RootManager.m_AlliancePlayerController.transform.position, item.Value.transform.position)).First();
                 m_ToAttackId = temp2.Key;
                 ActiveAttack(temp2.Value.GetComponent<AllianceBasicPlayerController>().KingName);

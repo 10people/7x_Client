@@ -364,7 +364,7 @@ public class SoundManager{
 			if( p_path == m_listShoudID[ i ].sPath ){
 				if( !m_sound_dict.ContainsKey( m_listShoudID[i].iId ) ){
 					StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-					                         StaticLoading.CONST_BATTLE_LOADING_SOUND, p_path );
+					                         PrepareForBattleField.CONST_BATTLE_LOADING_SOUND, p_path );
 
 					m_sound_dict[ m_listShoudID[i].iId ] = t_clip;
 				}
@@ -394,12 +394,12 @@ public class SoundManager{
 
 		int t_id = -1;
 
-		string t_target_name = UtilityTool.GetFileNameFromPath( p_sound_name ).ToLowerInvariant();
+		string t_target_name = PathHelper.GetFileNameFromPath( p_sound_name ).ToLowerInvariant();
 
 		for(int i = 0; i < m_listShoudID.Count; i ++){
 			shoudId t_sound_id = m_listShoudID[ i ];
 
-			string t_name = UtilityTool.GetFileNameFromPath( t_sound_id.sPath ).ToLowerInvariant();
+			string t_name = PathHelper.GetFileNameFromPath( t_sound_id.sPath ).ToLowerInvariant();
 
 			if( t_target_name == t_name ){
 				t_id = t_sound_id.iId;

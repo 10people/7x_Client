@@ -365,7 +365,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
     private void OnMailClick()
     {
         //go to mail sys.
-        EmailData.Instance().ReplyLetter(m_JunzhuPlayerResp.name);
+		EmailData.Instance.ReplyLetter(m_JunzhuPlayerResp.name);
     }
 
     private void OnShieldClick()

@@ -48,7 +48,7 @@ public class EnterBaiZhan : MonoBehaviour {
 
 	void BaiZhanWindow ()
 	{
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.PVP_BAI_ZHAN ),
+		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.PVP_PAGE ),
 		                        BaiZhanLoadCallback );
 	}
 

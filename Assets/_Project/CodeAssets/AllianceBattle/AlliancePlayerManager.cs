@@ -71,6 +71,7 @@ namespace AllianceBattle
 
                             var tempBasicController = m_PlayerDic[tempScene.junZhuId].GetComponent<AllianceBasicPlayerController>();
                             tempBasicController.TrackCamera = m_RootManager.TrackCamera;
+                            tempBasicController.IsRed = string.IsNullOrEmpty(tempScene.allianceName) || AllianceData.Instance.IsAllianceNotExist || (tempScene.allianceName != AllianceData.Instance.g_UnionInfo.name);
                             tempBasicController.KingName = tempScene.senderName;
                             tempBasicController.AllianceName = tempScene.allianceName;
                             tempBasicController.RemainingBlood = tempScene.remainLife;
@@ -173,6 +174,7 @@ namespace AllianceBattle
 
                                     var tempBasicController = m_PlayerDic[reviveNotify.junzhuId].GetComponent<AllianceBasicPlayerController>();
                                     tempBasicController.TrackCamera = m_RootManager.TrackCamera;
+                                    tempBasicController.IsRed = false;
                                     tempBasicController.KingName = m_DeadPlayerDic[reviveNotify.junzhuId].m_KingName;
                                     tempBasicController.AllianceName = m_DeadPlayerDic[reviveNotify.junzhuId].m_AllianceName;
                                     tempBasicController.TotalBlood = m_DeadPlayerDic[reviveNotify.junzhuId].m_TotalBlood;

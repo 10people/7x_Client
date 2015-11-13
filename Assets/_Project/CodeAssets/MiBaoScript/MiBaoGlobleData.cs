@@ -82,6 +82,12 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 			StopCoroutine("ChangePveOpenDate");
 			StartCoroutine("ChangePveOpenDate");
 		}
+		if(CityGlobalData.MibaoSatrUpCallback &&changeState)
+		{
+			changeState = false;
+			StopCoroutine("ChangeMiBaoStarUp");
+			StartCoroutine("ChangeMiBaoStarUp");
+		}
 		if(MiBaoDataBack)
 		{
 			if(JUNZHULevel != JunZhuData.Instance ().m_junzhuInfo.level || JunZhuJinBi != JunZhuData.Instance ().m_junzhuInfo.jinBi ||Point != G_MiBaoInfo.levelPoint)
@@ -111,6 +117,13 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		yield return new WaitForSeconds (2.0f);
 		changeState = true;
 		CityGlobalData.PveLevel_UI_is_OPen = false;
+	}
+	IEnumerator ChangeMiBaoStarUp()
+	{
+		//		Debug.Log ("ChangePveOpenDate ");
+		yield return new WaitForSeconds (3.0f);
+		changeState = true;
+		CityGlobalData.MibaoSatrUpCallback = false;
 	}
 	bool MiBaoDataBack = false;
 	public bool OnProcessSocketMessage(QXBuffer p_message)
@@ -264,11 +277,11 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 			}
 		}
 
-		{
-			TimeHelper.LogDeltaTimeSinceSignet( "After 2 for." );
-			
-			TimeHelper.SignetTime();
-		}
+//		{
+//			TimeHelper.LogDeltaTimeSinceSignet( "After 2 for." );
+//			
+//			TimeHelper.SignetTime();
+//		}
 
 		CantUpMiBao ();
 

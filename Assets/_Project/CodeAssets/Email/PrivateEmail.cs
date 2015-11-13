@@ -23,7 +23,7 @@ public class PrivateEmail : MonoBehaviour {
 	/// <param name="tempList">Temp list.</param>
 	public void GetPrivateLetterList (List<EmailInfo> tempList)
 	{
-		Debug.Log ("GetPrivateEmailList:" + tempList.Count);
+//		Debug.Log ("GetPrivateEmailList:" + tempList.Count);
 	
 		if (tempList.Count > 0)
 		{

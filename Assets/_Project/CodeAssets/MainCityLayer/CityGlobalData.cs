@@ -10,6 +10,8 @@ public class CityGlobalData  {
 
 	public static bool  PveLevel_UI_is_OPen = false;
 
+	public static bool  MibaoSatrUpCallback = false;//秘宝升星返回判断
+
 	public static int  AllianceEventNotice ;
 
 	public static int  AllianceApplyNotice ;

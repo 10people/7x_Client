@@ -20,10 +20,14 @@ public class MainCityRoot : MonoBehaviour
     {
         m_instance = this;
 
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_MAINUI),
-                                MainCityLoadCallback);
+        //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_MAINUI),
+        //                        MainCityLoadCallback);
     }
 
+    public void CreateMainCity(Object p_object)
+    {
+        m_objMainUI = Instantiate(p_object) as GameObject;
+    }
     public void MainCityLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         m_objMainUI = Instantiate(p_object) as GameObject;

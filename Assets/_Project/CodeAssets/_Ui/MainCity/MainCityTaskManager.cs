@@ -122,16 +122,16 @@ public class MainCityTaskManager : MYNGUIPanel
 	{
 		m_iNum = 0;
 		m_iRefreshNum = 0;
-//		if((m_iState == TaskData.Instance.m_TaskInfoDic[TaskData.Instance.ShowId].progress && m_iShowID == TaskData.Instance.ShowId) || m_iShowID == -1)
-//		{
-//			m_TaskAnimationSatatae = TaskAnimationSatatae.Close;
-//			return true;
-//		}
-//		else
-//		{
+		if((m_iState == TaskData.Instance.m_TaskInfoDic[TaskData.Instance.ShowId].progress && m_iShowID == TaskData.Instance.ShowId) || m_iShowID == -1 || TaskData.Instance.m_TaskInfoDic[TaskData.Instance.ShowId].progress < 0)
+		{
+			m_TaskAnimationSatatae = TaskAnimationSatatae.Close;
+			return true;
+		}
+		else
+		{
 			m_iState = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.ShowId].progress;
 			m_iShowID = TaskData.Instance.ShowId;
-//		}
+		}
 
 		if(TaskData.Instance.m_TaskInfoDic[TaskData.Instance.ShowId].progress < 0)
 		{

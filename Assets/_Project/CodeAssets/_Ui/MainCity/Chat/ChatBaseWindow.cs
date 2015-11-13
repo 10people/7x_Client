@@ -81,14 +81,5 @@ public class ChatBaseWindow : MonoBehaviour
         FloatButtonPrefab = p_object as GameObject;
     }
 
-    public void OnEnable()
-    {
-        //Send carriage help times.
-        UtilityTool.SendQXMessage(ProtoIndexes.C_YABIAO_XIEZHU_RSQ);
-
-        //Send all friends request.
-        FriendOperationData.Instance.RequestData();
-    }
-
     #endregion
 }

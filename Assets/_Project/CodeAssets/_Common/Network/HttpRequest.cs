@@ -157,7 +157,7 @@ public class HttpRequest : MonoBehaviour{
 				NetworkWaiting.Instance().ShowNetworkSending( p_url );
 			}
 			else{
-				Debug.Log( "NetworkWaiting not showing: " + NetworkWaiting.m_instance_exist );
+//				Debug.Log( "NetworkWaiting not showing: " + NetworkWaiting.m_instance_exist );
 			}
 		}
 

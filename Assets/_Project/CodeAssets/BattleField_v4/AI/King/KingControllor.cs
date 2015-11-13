@@ -18,7 +18,7 @@ public class KingControllor : HeroAI
 	public GameObject m_weapon_Light_left;
 	
 	public GameObject m_weapon_Light_right;
-	
+
 	public GameObject m_weapon_Ranged;
 	
 	public KingWeapon weaponBox_1;//轻武器
@@ -416,7 +416,17 @@ public class KingControllor : HeroAI
 				character.Move(transform.forward * nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_moveSpeed ) * Time.deltaTime);
 			}
 
-			if(BattleControlor.Instance().autoFight == true || stance == Stance.STANCE_ENEMY)
+			bool auto = BattleControlor.Instance().autoFight == true;
+
+			if(auto == true)
+			{
+				if(BattleUIControlor.Instance().pressedJoystick == true)
+				{
+					auto = false;
+				}
+			}
+
+			if(auto == true || stance == Stance.STANCE_ENEMY)
 			{
 				updateWeapon();
 
@@ -798,7 +808,7 @@ public class KingControllor : HeroAI
 	{
 		if (Vector3.Distance(offset, Vector3.zero) > .2f) DramaControllor.Instance ().closeYindao (20109);
 
-		if (BattleControlor.Instance ().autoFight == true) return;
+		if (BattleControlor.Instance ().autoFight == true && BattleUIControlor.Instance().pressedJoystick == false) return;
 
 		if(!isAlive || mAnim == null) 
 		{

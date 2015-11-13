@@ -225,10 +225,9 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 	{
 		yield return new WaitForSeconds(0.1f);
 
-		Debug.Log("JunZhuData.Instance ().m_junzhuInfo.zhanLi  = "+JunZhuData.Instance ().m_junzhuInfo.zhanLi);
-		
-		Debug.Log("JunzhuZhaoli  = "+JunzhuZhaoli);
-
+//		Debug.Log("JunZhuData.Instance ().m_junzhuInfo.zhanLi  = "+JunZhuData.Instance ().m_junzhuInfo.zhanLi);
+//		
+//		Debug.Log("JunzhuZhaoli  = "+JunzhuZhaoli);
 
 		if(JunZhuData.Instance ().m_junzhuInfo.zhanLi > JunzhuZhaoli)
 		{
@@ -271,19 +270,19 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 				
 				yield return new WaitForSeconds(mTime);
 			}
-			Debug.Log("MiBao Animation1");
+//			Debug.Log("MiBao Animation1");
 			
 			ZhanLiNum.gameObject.transform.localScale = Vector3.one;
 		}
 		else{
-			Debug.Log("MiBao Animation2");
+//			Debug.Log("MiBao Animation2");
 			
 			ZhanLiNum.text = JunZhuData.Instance ().m_junzhuInfo.zhanLi.ToString();
 		}
 	}
 	public void SortUI(string UI_Name)
 	{
-		Debug.Log ("UI_Name = " +UI_Name);
+//		Debug.Log ("UI_Name = " +UI_Name);
 
 		foreach(GameObject m_ui in UIRoots)
 		{

@@ -47,7 +47,9 @@ public class SkillCopy : SkillDataBead
 				continue;
 			}
 		}
-		Debug.Log("生效");
+
+//		Debug.Log("生效");
+
 		int tempNum = m_iCopyNum - m_listCopyBaseAI.Count;
 		float angle = 360 / m_iCopyNum;
 		for(int i = 0; i < tempNum; i ++)

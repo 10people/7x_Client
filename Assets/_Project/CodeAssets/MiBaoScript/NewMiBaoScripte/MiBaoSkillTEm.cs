@@ -49,7 +49,7 @@ public class MiBaoSkillTEm : MonoBehaviour {
 		
 		if(isChoosed)
 		{
-			Debug.Log("被选中的id = "+ZUHE_id);
+//			Debug.Log("被选中的id = "+ZUHE_id);
 //
 //			UIToggle mUItoggle = this.GetComponent<UIToggle>();
 //
@@ -93,9 +93,9 @@ public class MiBaoSkillTEm : MonoBehaviour {
 
 		MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempBy_id (SkillId);
 
-		Debug.Log ("SkillId = "+SkillId);
-
-		Debug.Log ("mSkill.nameId = "+mSkill.nameId);
+//		Debug.Log ("SkillId = "+SkillId);
+//
+//		Debug.Log ("mSkill.nameId = "+mSkill.nameId);
 
 		NameIdTemplate mName = NameIdTemplate.getNameIdTemplateByNameId (mSkill.nameId);
 
@@ -129,7 +129,7 @@ public class MiBaoSkillTEm : MonoBehaviour {
 
 	public void ChoosedSkill()
 	{
-		Debug.Log ("ZUHE_id  = " +ZUHE_id);
+//		Debug.Log ("ZUHE_id  = " +ZUHE_id);
 
 		ChangeMiBaoSkill.Instance ().newZuHe_id = ZUHE_id;
 
@@ -137,7 +137,8 @@ public class MiBaoSkillTEm : MonoBehaviour {
 
 		if(FreshGuide.Instance().IsActive(100230)&& TaskData.Instance.m_TaskInfoDic[100230].progress >= 0 && chooseType == (int)(CityGlobalData.MibaoSkillType.PveSend))
 		{
-			Debug.Log("保存一个秘宝技能");
+//			Debug.Log("保存一个秘宝技能");
+
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100230];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[5]);
 		}

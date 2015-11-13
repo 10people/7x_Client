@@ -17,10 +17,6 @@ namespace LimitActivity
         public UILabel m_ActivityStateLabel;
         public UISprite m_ActivityDescSprite;
 
-        public PopupListController m_PopupReceiveResult;
-        private readonly Vector2 popLabelDistance = new Vector2(0, 35);
-        private const float popLabelDuration = 2.0f;
-
         public UIScrollView m_ScrollView;
         public UIScrollBar m_ScrollBar;
         public UIGrid m_Grid;
@@ -148,18 +144,12 @@ namespace LimitActivity
                                                 tempList[0].ReceiveInfoSprite.spriteName = ReceiveItemController.ReceivedSpriteName;
 
                                                 //Pop up received response.
-                                                var iconList = new List<PopupListController.PopupItem>();
-                                                tempList[0].m_ItemIconManagerList.ForEach(item =>
+                                                var iconList = new List<RewardData>();
+                                                tempList[0].m_IconList.ForEach(item =>
                                                 {
-                                                    iconList.Add(new PopupListController.PopupItem()
-                                                    {
-                                                        labelText = ColorTool.Color_Green_00ff00 + "+" + item.RightButtomCornorLabel.text + "[-]",
-                                                        iconObject = item.gameObject
-                                                    });
+                                                    iconList.Add(new RewardData(item.id, item.num));
                                                 });
-                                                m_PopupReceiveResult.SetThis(iconList);
-
-                                                PopUpLabelTool.Instance().AddPopLabelWatcher(m_PopupReceiveResult.gameObject, Vector3.zero, popLabelDistance, iTween.EaseType.easeOutBack, -1.0f, iTween.EaseType.linear, popLabelDuration);
+                                                GeneralRewardManager.Instance().CreateReward(iconList);
                                             }
 
                                             //Refresh limit activity data.

@@ -161,14 +161,15 @@ public class SceneManager{
        
         if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
         {
-            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN);
+            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN, false );
           //  EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY);
         }
         else
         {
-          EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY);
+          EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY, false );
            // EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN);
         }
+
         EnterLoading();
     }
 
@@ -206,11 +207,13 @@ public class SceneManager{
 
         if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
         {
-            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN);
+            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN, false);
+          //  EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN);
         }
         else
         {
-            EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY );
+            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY, false);
+          //  EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY );
         }
   
         EnterLoading();
@@ -391,6 +394,12 @@ public class SceneManager{
 
     #region Utilities
 
+	public static void LoadLevel( string p_level_name ){
+		Application.LoadLevel( p_level_name );
+		
+		UtilityTool.UnloadUnusedAssets();
+	}
+
 	public static bool IsInBattleScene(){
 		return LevelHelper.IsInBattleScene ();
 	}
@@ -426,7 +435,7 @@ public class SceneManager{
 		Debug.Log( "---------------- LoadLevel( " + ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE + " ) ---------------" );
 		#endif
 
-        Application.LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
+		LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
     }
 
     #endregion

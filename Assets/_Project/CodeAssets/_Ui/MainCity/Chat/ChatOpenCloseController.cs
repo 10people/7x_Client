@@ -131,6 +131,6 @@ public class ChatOpenCloseController : MonoBehaviour
     {
         CloseButtonLis = UIEventListener.Get(CloseButton);
 
-        m_Root = UtilityTool.GetComponentInParent<UIRoot>(transform);
+		m_Root = TransformHelper.GetComponentInParent<UIRoot>(transform);
     }
 }

@@ -632,63 +632,63 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 	void ChallengeLoadCallback( ref WWW p_www, string p_path,  Object p_object )
 	{
 		GameObject challenge = Instantiate (p_object) as GameObject;
-		challenge.name = "GeneralChallengePage";
-
-		switch (whichType)
-		{
-		case WhichOpponent.LUE_DUO:
-		{
-			GameObject lueDuoObj = GameObject.Find ("LueDuo");
-			if (lueDuoObj != null)
-			{
-				challenge.transform.parent = lueDuoObj.transform;
-				challenge.transform.localPosition = Vector3.zero;
-			}
-			break;
-		}
-		case WhichOpponent.RANKLIST:
-		{
-			GameObject kingDetalInfo = GameObject.Find ("KingDetailInfoWindow(Clone)");
-			if (kingDetalInfo)
-			{
-				challenge.transform.parent = kingDetalInfo.transform;
-				challenge.transform.localPosition = new Vector3(0,0,-500);
-			}
-			else
-			{
-				GameObject allianceMember = GameObject.Find ("AllianceMemberWindow(Clone)");
-				if (allianceMember)
-				{
-					challenge.transform.parent = allianceMember.transform;
-					challenge.transform.localPosition = Vector3.zero;
-				}
-				else
-				{
-					GameObject rankObj = GameObject.Find ("RankWindow(Clone)");
-					if (rankObj != null)
-					{
-						challenge.transform.parent = rankObj.transform;
-						challenge.transform.localPosition = Vector3.zero;
-					}
-				}
-			}
-			break;
-		}
-		case WhichOpponent.CHAT:
-		{
-			GameObject chatObj = GameObject.Find ("UIChat(Clone)");
-			if (chatObj)
-			{
-				challenge.transform.parent = chatObj.transform;
-				challenge.transform.localPosition = Vector3.zero;
-			}
-			break;
-		}
-		default:
-			break;
-		}
-	
-		challenge.transform.localScale = Vector3.one;
+//		challenge.name = "GeneralChallengePage";
+//
+//		switch (whichType)
+//		{
+//		case WhichOpponent.LUE_DUO:
+//		{
+//			GameObject lueDuoObj = GameObject.Find ("LueDuo");
+//			if (lueDuoObj != null)
+//			{
+//				challenge.transform.parent = lueDuoObj.transform;
+//				challenge.transform.localPosition = Vector3.zero;
+//			}
+//			break;
+//		}
+//		case WhichOpponent.RANKLIST:
+//		{
+//			GameObject kingDetalInfo = GameObject.Find ("KingDetailInfoWindow(Clone)");
+//			if (kingDetalInfo)
+//			{
+//				challenge.transform.parent = kingDetalInfo.transform;
+//				challenge.transform.localPosition = new Vector3(0,0,-500);
+//			}
+//			else
+//			{
+//				GameObject allianceMember = GameObject.Find ("AllianceMemberWindow(Clone)");
+//				if (allianceMember)
+//				{
+//					challenge.transform.parent = allianceMember.transform;
+//					challenge.transform.localPosition = Vector3.zero;
+//				}
+//				else
+//				{
+//					GameObject rankObj = GameObject.Find ("RankWindow(Clone)");
+//					if (rankObj != null)
+//					{
+//						challenge.transform.parent = rankObj.transform;
+//						challenge.transform.localPosition = Vector3.zero;
+//					}
+//				}
+//			}
+//			break;
+//		}
+//		case WhichOpponent.CHAT:
+//		{
+//			GameObject chatObj = GameObject.Find ("UIChat(Clone)");
+//			if (chatObj)
+//			{
+//				challenge.transform.parent = chatObj.transform;
+//				challenge.transform.localPosition = Vector3.zero;
+//			}
+//			break;
+//		}
+//		default:
+//			break;
+//		}
+//	
+//		challenge.transform.localScale = Vector3.one;
 		
 		GeneralTiaoZhan tiaoZhan = challenge.GetComponent<GeneralTiaoZhan> ();
 		

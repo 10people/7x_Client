@@ -110,16 +110,7 @@ public class GeneralGoods : MonoBehaviour {
 			IconSampleLoadCallBack(ref tempWww, null, iconSamplePrefab);
 		}
 
-		if(FreshGuide.Instance().IsActive(100200) && TaskData.Instance.m_TaskInfoDic[100200].progress >= 0)
-		{
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100200];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			this.gameObject.GetComponent<UIDragScrollView> ().enabled = false;
-		}
-		else
-		{
-			this.gameObject.GetComponent<UIDragScrollView> ().enabled = true;
-		}
+		this.gameObject.GetComponent<UIDragScrollView> ().enabled = !QXComData.CheckYinDaoOpenState (100200);
 	}
 
 	private void IconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -170,14 +161,7 @@ public class GeneralGoods : MonoBehaviour {
 		fuShiIconSample.SetIconPopText(itemId, itemName, mdesc, 1);
 		iconSample.transform.localScale = Vector3.one * 0.8f;
 
-		if(FreshGuide.Instance().IsActive(100200) && TaskData.Instance.m_TaskInfoDic[100200].progress >= 0)
-		{
-			iconSample.GetComponent<UIDragScrollView> ().enabled = false;
-		}
-		else
-		{
-			iconSample.GetComponent<UIDragScrollView> ().enabled = true;
-		}
+		iconSample.GetComponent<UIDragScrollView> ().enabled = !QXComData.CheckYinDaoOpenState (100200);
 	}
 
 	void OnClick ()
@@ -196,11 +180,7 @@ public class GeneralGoods : MonoBehaviour {
 				store.IsDuiHuan = true;
 				store.DuiHuanReq (duiHuanInfo,itemId,needMoney,itemName,itemType,num);
 				
-				if(FreshGuide.Instance().IsActive(100200) && TaskData.Instance.m_TaskInfoDic[100200].progress >= 0)
-				{
-					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100200];
-					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
-				}
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
 			}
 		}
 	}

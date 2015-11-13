@@ -175,7 +175,7 @@ public class AccountRequest : MonoBehaviour {
 				
 				tempUrl.Add ( "pwd",password.value );
 
-				tempUrl.Add ( "CustomDeviceId", QualityTool.GetDeviceInfo() );
+				tempUrl.Add ( "CustomDeviceId", DeviceHelper.GetDeviceInfo() );
 
 				AddClientInfo( tempUrl );
 
@@ -283,7 +283,7 @@ public class AccountRequest : MonoBehaviour {
 				
 				tempUrl.Add("pwd", password.value);
 
-				tempUrl.Add ( "CustomDeviceId", QualityTool.GetDeviceInfo() );
+				tempUrl.Add ( "CustomDeviceId", DeviceHelper.GetDeviceInfo() );
 
 				AddClientInfo( tempUrl );
 

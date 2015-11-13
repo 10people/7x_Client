@@ -322,27 +322,29 @@ public class FightTypeSelectManagerment : MonoBehaviour
 
     void BaiZhanWindow()
     {
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_BAI_ZHAN),
-                                BaiZhanLoadCallback);
+//        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_BAI_ZHAN),
+//                                BaiZhanLoadCallback);
+
+		PvpData.Instance.OpenPvp ();
     }
 
-    public void BaiZhanLoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject baizhanRoot = Instantiate(p_object) as GameObject;
-
-        baizhanRoot.SetActive(true);
-
-        baizhanRoot.name = "BaiZhan";
-
-        baizhanRoot.transform.localPosition = new Vector3(0, 800, 0);
-
-        baizhanRoot.transform.localScale = Vector3.one;
-
-		MainCityUI.TryAddToObjectList (baizhanRoot);
-		MainCityUI.TryRemoveFromObjectList(m_DestroyTarget);
-        Destroy(m_DestroyTarget);
-
-	}
+//    public void BaiZhanLoadCallback(ref WWW p_www, string p_path, Object p_object)
+//    {
+//        GameObject baizhanRoot = Instantiate(p_object) as GameObject;
+//
+//        baizhanRoot.SetActive(true);
+//
+//        baizhanRoot.name = "BaiZhan";
+//
+//        baizhanRoot.transform.localPosition = new Vector3(0, 800, 0);
+//
+//        baizhanRoot.transform.localScale = Vector3.one;
+//
+//		MainCityUI.TryAddToObjectList (baizhanRoot);
+//		MainCityUI.TryRemoveFromObjectList(m_DestroyTarget);
+//        Destroy(m_DestroyTarget);
+//
+//	}
     public void LoadHY_Map(ref WWW p_www, string p_path, Object p_object)
     {
     //    if (HY_Map)

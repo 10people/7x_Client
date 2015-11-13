@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FPSCounter_CS : MonoBehaviour {
 
-	public float m_update_interval = 0.5f;
+	public float m_update_interval = 0.33f;
 
 	public Vector2 m_pos_vector = new Vector2( 0.8f, 0.8f );
 
@@ -65,17 +65,51 @@ public class FPSCounter_CS : MonoBehaviour {
 	void Update(){
 		++m_frame_count;
 
-		m_cur_time = Time.realtimeSinceStartup;
+		if( Time.realtimeSinceStartup <= m_last_interval + m_update_interval ){
+			m_cur_time = Time.realtimeSinceStartup;
 
-		if( m_cur_time > m_last_interval + m_update_interval ){
-			m_fps = m_frame_count / ( m_cur_time - m_last_interval );
-
-			m_fps_str = m_fps.ToString( "f2" );
-
-			m_frame_count = 0;
-
-			m_last_interval = m_cur_time;
+			return;
 		}
+
+		{
+			AverageFPS();
+			
+//			MomentFPS();
+		}
+
+		{
+			UpdateShow();
+		}
+
+		{
+			m_cur_time = Time.realtimeSinceStartup;
+		}
+	}
+
+	#endregion
+
+
+
+	#region Calculation
+
+	private void AverageFPS(){
+		m_fps = m_frame_count / ( m_cur_time - m_last_interval );
+		
+		m_frame_count = 0;
+			
+		m_last_interval = m_cur_time;
+	}
+
+	private void MomentFPS(){
+		if( Time.deltaTime == 0 ){
+			return;
+		}
+
+		m_fps = 1.0f / Time.smoothDeltaTime;
+	}
+
+	private void UpdateShow(){
+		m_fps_str = m_fps.ToString( "f2" );
 	}
 
 	#endregion

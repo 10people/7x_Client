@@ -15,9 +15,16 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	/// </summary>
 	private ChallengeResp challengeInfo;
 	private int yinDaoState;
-	public int SetYinDaoState
+	public int YinDaoState
 	{
 		set{yinDaoState = value;}
+		get{return yinDaoState;}
+	}
+	private bool pvpReset = false;//是否重置百战
+	public bool PvpReset
+	{
+		set{pvpReset = value;}
+		get{return pvpReset;}
 	}
 
 	/// <summary>
@@ -91,6 +98,8 @@ public class GeneralTiaoZhan : MonoBehaviour {
 
 	public GameObject changeSkillBtn;//更换秘宝技能按钮
 
+	public ScaleEffectController sEffectController;
+
 	void Awake ()
 	{
 		generalTiaoZhan = this;
@@ -117,24 +126,10 @@ public class GeneralTiaoZhan : MonoBehaviour {
 		e_ZhanLi.text = tempInfo.oppoZhanli.ToString();//显示敌方战力
 
 		//引导相关
-		if(FreshGuide.Instance().IsActive(100180) && TaskData.Instance.m_TaskInfoDic[100180].progress >= 0)
-		{
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100180];
-			int state = -1;
-			switch (yinDaoState)
-			{
-			case 1:
-				state = 5;
-				break;
+		int state = YinDaoState == 1 ? 5 : 6;
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,state);
 
-			case 2:
-				state = 6;
-				break;
-			default:
-				break;
-			}
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[state]);
-		}
+		PvpReset = false;
 
 		InItGuYongBingInfo ();
 		ShowMyMiBaoSkill ();
@@ -489,7 +484,9 @@ public class GeneralTiaoZhan : MonoBehaviour {
 					//秘宝技能可用
 					mLockIconObj.SetActive (false);
 					MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (m_zuHeId);
-					Debug.Log ("mSkill.icon:" + mSkill.icon);
+
+//					Debug.Log ("mSkill.icon:" + mSkill.icon);
+
 					m_SkillIcon.spriteName = mSkill.icon.ToString();
 
 					break;
@@ -612,7 +609,7 @@ public class GeneralTiaoZhan : MonoBehaviour {
 
 		ShowChangeSkillEffect (false);
 
-		if(FreshGuide.Instance().IsActive(100180) && TaskData.Instance.m_TaskInfoDic[100180].progress >= 0)
+		if(QXComData.CheckYinDaoOpenState (100180))
 		{
 			UIYindao.m_UIYindao.CloseUI ();
 		}
@@ -626,7 +623,7 @@ public class GeneralTiaoZhan : MonoBehaviour {
 		
 		mChoose_MiBao.SetActive(true);
 		
-		mChoose_MiBao.transform.parent = this.transform.parent;
+		mChoose_MiBao.transform.parent = sEffectController.transform;
 		
 		mChoose_MiBao.transform.localPosition = new Vector3(0,0,-500);
 		
@@ -685,8 +682,10 @@ public class GeneralTiaoZhan : MonoBehaviour {
 //			
 		case ZhenRongType.PVP:
 			
-			BaiZhanUnExpected.unExpected.TiaoZhanStateReq (null,2,challengeInfo);
-			
+//			BaiZhanUnExpected.unExpected.TiaoZhanStateReq (null,2,challengeInfo);
+			PvpData.Instance.PvpChallengeResp = challengeInfo;
+			PvpData.Instance.PlayerStateCheck (PvpData.PlayerState.STATE_GENERAL_TIAOZHAN_PAGE);
+
 			break;
 			
 		case ZhenRongType.LUE_DUO:
@@ -720,8 +719,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	/// </summary>
 	public void DestroyRoot ()
 	{
-		Global.m_isOpenBaiZhan = false;
-
 		switch (zhenRongType)
 		{
 //		case ZhenRongType.HUANG_YE:
@@ -735,12 +732,17 @@ public class GeneralTiaoZhan : MonoBehaviour {
 			
 		case ZhenRongType.PVP:
 			
-			GameObject baizhan = GameObject.Find ("BaiZhan");
-			if (baizhan)
-			{
-				Destroy (baizhan);
-			}
-			
+//			GameObject baizhan = GameObject.Find ("BaiZhan");
+//			if (baizhan)
+//			{
+//				Destroy (baizhan);
+//			}
+			Global.m_isOpenBaiZhan = false;
+			PvpData.Instance.IsOpenPvpByBtn = false;
+
+			sEffectController.OnCloseWindowClick ();
+			sEffectController.CloseCompleteDelegate += DisActiveObj;
+
 			break;
 			
 		case ZhenRongType.LUE_DUO:
@@ -754,6 +756,7 @@ public class GeneralTiaoZhan : MonoBehaviour {
 				{
 					Destroy (lueDuo);
 				}
+				Destroy (gameObject);
 				break;
 			}
 			case LueDuoData.WhichOpponent.RANKLIST:
@@ -775,6 +778,7 @@ public class GeneralTiaoZhan : MonoBehaviour {
 				{
 					Destroy (rankObj);
 				}
+				Destroy (gameObject);
 				break;
 			}
 			case LueDuoData.WhichOpponent.CHAT:
@@ -794,6 +798,17 @@ public class GeneralTiaoZhan : MonoBehaviour {
 			break;
 		default:
 			break;
+		}
+	}
+
+	void DisActiveObj ()
+	{
+		MainCityUI.TryRemoveFromObjectList (gameObject);
+		gameObject.SetActive (false);
+
+		if (PvpReset)
+		{
+			PvpData.Instance.PvpDataReq ();
 		}
 	}
 }

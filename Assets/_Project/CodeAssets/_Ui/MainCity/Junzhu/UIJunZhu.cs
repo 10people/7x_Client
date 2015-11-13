@@ -430,7 +430,8 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 
 	public override void MYClick(GameObject ui)
 	{
-		Debug.Log(ui.name);
+//		Debug.Log(ui.name);
+
 		if(ui.name.IndexOf("Close") != -1 || ui.name.IndexOf ("FuWen(Clone)") != -1)
 		{
 		    m_ScaleEffectController.CloseCompleteDelegate = OnCloseWindow;
@@ -563,7 +564,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	
 	private void OnMiBaoIconClick(GameObject go)
 	{
-		IconSampleManager tempManager = UtilityTool.GetComponentInParent<IconSampleManager>(go.transform);
+		IconSampleManager tempManager = TransformHelper.GetComponentInParent<IconSampleManager>(go.transform);
 		int tempIndex = int.Parse(tempManager.gameObject.name.Substring(9, tempManager.gameObject.name.Length - 9));
 		for (int i = 0; i < 3; i++)
 		{

@@ -364,7 +364,7 @@ public class BattleControlor : MonoBehaviour
 
 	private void preLoadEffCountPlus(){
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections, 
-		                         StaticLoading.CONST_BATTLE_LOADING_FX, "preLoadEffCountPlus" );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_FX, "preLoadEffCountPlus" );
 
 		preLoadEffCount ++;
 
@@ -411,13 +411,13 @@ public class BattleControlor : MonoBehaviour
 		m_sound_loaded_count++;
 
 		if( m_sound_loaded_count == m_pre_load_sound_list.Count ){
-			EnterNextScene.Instance ().BattleLoadDone();
+			PrepareForBattleField.Instance().BattleLoadDone();
 		}
 	}
 
 	private void PreCountSoundFx(){
 		StaticLoading.LoadingSection t_loading = StaticLoading.GetSection( StaticLoading.m_loading_sections,
-		                                                                  StaticLoading.CONST_BATTLE_LOADING_SOUND );
+		                                                                  PrepareForBattleField.CONST_BATTLE_LOADING_SOUND );
 		
 		if( t_loading != null ){
 			t_loading.SetTotalCount( m_pre_load_sound_list.Count );
@@ -2471,7 +2471,7 @@ public class BattleControlor : MonoBehaviour
 			}
 		}
 
-		Debug.Log ("RETURN NULL WITH DATA : " + id);
+//		Debug.Log ("RETURN NULL WITH DATA : " + id);
 
 		return null;
 	}

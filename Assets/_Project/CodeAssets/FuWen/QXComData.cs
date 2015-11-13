@@ -10,6 +10,15 @@ using ProtoBuf.Meta;
 
 public class QXComData {
 
+	#region ComVariable 
+
+	public static string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);//确定按钮
+	public static string cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);//取消按钮
+	public static string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);//提示
+
+	#endregion
+
+	#region SendProtoMessage And ReceiveProtoMessage
 	/// <summary>
 	/// Sends the qx proto message.
 	/// </summary>
@@ -57,4 +66,81 @@ public class QXComData {
 
 		return o_value;
 	}
+	#endregion
+
+	#region ShowBtnEffect
+	public static void ShowChangeSkillEffect (bool tempOpen,GameObject tempSkillBtn,int tempEffectId)
+	{
+		UI3DEffectTool.Instance ().ClearUIFx (tempSkillBtn);
+		if (tempOpen)
+		{
+			if (MiBaoGlobleData.Instance ().GetMiBaoskillOpen ())
+			{
+				UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,tempSkillBtn,
+				                                               EffectIdTemplate.GetPathByeffectId(tempEffectId));
+			}
+			
+			BoxCollider btnBox = tempSkillBtn.GetComponent<BoxCollider> ();
+			if (btnBox != null)
+			{
+				btnBox.enabled = MiBaoGlobleData.Instance ().GetMiBaoskillOpen ();
+			}
+			
+			UISprite btnSprite = tempSkillBtn.GetComponent<UISprite> ();	 
+			if (btnSprite != null)
+			{
+				btnSprite.color = MiBaoGlobleData.Instance ().GetMiBaoskillOpen () ? Color.white : Color.black;
+			}
+		}
+	}
+	#endregion
+
+	#region YinDaoControl
+	public enum YinDaoStateControl
+	{
+		UN_FINISHED_TASK_YINDAO,//任务未完成时的引导步骤
+		FINISHED_TASK_YINDAO,//任务完成时的引导步骤
+	}
+	public static void YinDaoStateController (YinDaoStateControl tempYinDao,int tempTaskId,int tempState)
+	{
+		switch (tempYinDao)
+		{
+		case YinDaoStateControl.UN_FINISHED_TASK_YINDAO:
+
+			if(FreshGuide.Instance().IsActive(tempTaskId) && TaskData.Instance.m_TaskInfoDic[tempTaskId].progress >= 0)
+			{
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[tempTaskId];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempState]);
+			}
+
+			break;
+		case YinDaoStateControl.FINISHED_TASK_YINDAO:
+
+			if(FreshGuide.Instance().IsActive(tempTaskId) && TaskData.Instance.m_TaskInfoDic[tempTaskId].progress < 0)
+			{
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[tempTaskId];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempState]);
+			}
+
+			break;
+		default:
+			break;
+		}
+	}
+
+	/// <summary>
+	/// Checks the state of the yin DAO open.
+	/// </summary>
+	/// <returns><c>true</c>, if yin DAO open state was checked, <c>false</c> otherwise.</returns>
+	/// <param name="tempTaskId">Temp task identifier.</param>
+	public static bool CheckYinDaoOpenState (int tempTaskId)
+	{
+		if(FreshGuide.Instance().IsActive(tempTaskId) && TaskData.Instance.m_TaskInfoDic[tempTaskId].progress >= 0)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	#endregion
 }

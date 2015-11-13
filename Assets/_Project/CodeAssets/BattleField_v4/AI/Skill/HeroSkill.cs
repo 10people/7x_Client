@@ -906,7 +906,8 @@ public class HeroSkill : MonoBehaviour
 	{
 		if(m_iShow == 0)
 		{
-			Debug.Log(node.gameObject.name + "+m_CollStateType="+m_CollStateType);
+//			Debug.Log(node.gameObject.name + "+m_CollStateType="+m_CollStateType);
+
 			GameObject tempobjColl;
 			switch(m_CollStateType)
 			{
@@ -981,12 +982,15 @@ public class HeroSkill : MonoBehaviour
 
 	public virtual void activeSkill(int state)
 	{
-		if(node.gameObject.name == "Node_1" && template.id == 250101)
-		{
-			Debug.Log(template.id);
-			Debug.Log(template.name);
-			Debug.Log("技能可关闭");
-		}
+//		if(node.gameObject.name == "Node_1" && template.id == 250101)
+//		{
+//			Debug.Log(template.id);
+//
+//			Debug.Log(template.name);
+//
+//			Debug.Log("技能可关闭");
+//		}
+
 //		Debug.Log(node.gameObject.name + "activeSkill");
 		if(m_listShowRange != null)
 		{

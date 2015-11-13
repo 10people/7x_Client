@@ -367,7 +367,7 @@ public class ChatLogItem : MonoBehaviour
         DeActiveAllButtonsExpectAlert();
 
         //go to mail sys.
-        EmailData.Instance().ReplyLetter(m_ChatStruct.m_ChatPct.senderName);
+		EmailData.Instance.ReplyLetter(m_ChatStruct.m_ChatPct.senderName);
     }
 
     private void OnShieldClick()
@@ -681,15 +681,15 @@ public class ChatLogItem : MonoBehaviour
 
     private void Awake()
     {
-        SenderLabel = UtilityTool.FindChild(transform, "SenderText").GetComponent<UILabel>();
-        DetailLabel = UtilityTool.FindChild(transform, "DetailText").GetComponent<UILabel>();
-        CopyBtn = UtilityTool.FindChild(transform, "Copy").gameObject;
-        CarriageHelpBtn = UtilityTool.FindChild(transform, "CarriageHelp").gameObject;
-        RobBtn = UtilityTool.FindChild(transform, "Rob").gameObject;
-        CopyContainer = UtilityTool.FindChild(transform, "CopyContainer").gameObject;
-        CopyContainerBG = UtilityTool.FindChild(transform, "CopyContainerBG").GetComponent<UISprite>();
-        AlertBtn = UtilityTool.FindChild(transform, "Alert").gameObject;
-        DetailBG = UtilityTool.FindChild(transform, "DetailBG").GetComponent<UISprite>();
+		SenderLabel = TransformHelper.FindChild(transform, "SenderText").GetComponent<UILabel>();
+		DetailLabel = TransformHelper.FindChild(transform, "DetailText").GetComponent<UILabel>();
+		CopyBtn = TransformHelper.FindChild(transform, "Copy").gameObject;
+		CarriageHelpBtn = TransformHelper.FindChild(transform, "CarriageHelp").gameObject;
+		RobBtn = TransformHelper.FindChild(transform, "Rob").gameObject;
+		CopyContainer = TransformHelper.FindChild(transform, "CopyContainer").gameObject;
+		CopyContainerBG = TransformHelper.FindChild(transform, "CopyContainerBG").GetComponent<UISprite>();
+		AlertBtn = TransformHelper.FindChild(transform, "Alert").gameObject;
+		DetailBG = TransformHelper.FindChild(transform, "DetailBG").GetComponent<UISprite>();
         SenderListener = UIEventListener.Get(SenderLabel.gameObject);
         DetailListener = UIEventListener.Get(DetailBG.gameObject);
         CopyListener = UIEventListener.Get(CopyBtn.gameObject);

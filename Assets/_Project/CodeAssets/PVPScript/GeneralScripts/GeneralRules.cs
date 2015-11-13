@@ -53,8 +53,9 @@ public class GeneralRules : MonoBehaviour {
 		{
 		case GeneralControl.RuleType.PVP:
 		{
-			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
-			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
+			PvpPage.pvpPage.PvpActiveState (true);
+//			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
+//			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
 			break;
 		}
 		case GeneralControl.RuleType.LUE_DUO:
@@ -78,8 +79,9 @@ public class GeneralRules : MonoBehaviour {
 		{
 		case GeneralControl.RuleType.PVP:
 
-			BaiZhanData.Instance ().CloseBaiZhan ();
-
+//			BaiZhanData.Instance ().CloseBaiZhan ();
+			PvpPage.pvpPage.DisActiveObj ();
+		
 			break;
 
 		case GeneralControl.RuleType.ALLIANCE_FIGHT:

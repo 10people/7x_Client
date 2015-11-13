@@ -197,19 +197,19 @@ public class HouseModelController : MonoBehaviour, SocketListener
         m_treasureObjectDic.Clear();
         m_bookObject = null;
 
-        var bookParent = UtilityTool.FindChild(transform, "book_root");
+		var bookParent = TransformHelper.FindChild(transform, "book_root");
         foreach (Transform child in bookParent)
         {
             m_bookObject = child.gameObject;
         }
 
-        var weaponParent = UtilityTool.FindChild(transform, "weapon_root");
+		var weaponParent = TransformHelper.FindChild(transform, "weapon_root");
         foreach (Transform child in weaponParent)
         {
             m_weaponObjectDic.Add(child.gameObject, child.GetComponent<EventIndexHandle>().m_SendIndex);
         }
 
-        var treasureParent = UtilityTool.FindChild(transform, "treasure_root");
+		var treasureParent = TransformHelper.FindChild(transform, "treasure_root");
         foreach (Transform child in treasureParent)
         {
             m_treasureObjectDic.Add(child.gameObject, child.GetComponent<EventIndexHandle>().m_SendIndex);

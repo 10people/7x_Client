@@ -13,7 +13,7 @@ using UnityEditor.Callbacks;
 public class EditorUtilities : MonoBehaviour
 {
 
-    private enum MenuItemPriority
+    public enum MenuItemPriority
     {
         BUILD_DEBUG = 1,
 
@@ -21,14 +21,15 @@ public class EditorUtilities : MonoBehaviour
 		OPEN_JSON,
 		OPEN_OTHER,
         
-		COMBINE_MESH = 10,
-        ASSETS_FILTER,
-		UTILITIES___CHECK_FS_NAMES,
+		UTILITIES___FIND_LARGE_TEX = 10,
+		UTILITIES___FIND_TEX_IN_RES,
+		UTILITIES___ASSETS_FILTER,
+		UTILITIES___COMBINE_MESH,
 
-		NAV_UPGRADE,
-		LIGHTMAP_UPGRADE,
+		UPGRADE___NAV_UPGRADE = 20,
+		UPGRADE___LIGHTMAP_UPGRADE,
 
-		NEW_CHAR_DEVELOP = 20,
+		NEW_CHAR_DEVELOP = 30,
     }
 
     static EditorUtilities()
@@ -70,7 +71,7 @@ public class EditorUtilities : MonoBehaviour
 
 	#region Utilities Functions
 
-	[MenuItem("Utility/Utilities/Combine Mesh", false, (int)MenuItemPriority.COMBINE_MESH)]
+	[MenuItem("Utility/Utilities/Combine Mesh", false, (int)MenuItemPriority.UTILITIES___COMBINE_MESH)]
     static void CombineMesh()
     {
         Object[] selection = Selection.GetFiltered(typeof(GameObject), SelectionMode.TopLevel);
@@ -82,7 +83,7 @@ public class EditorUtilities : MonoBehaviour
         StaticBatchingUtility.Combine( t_gb );
     }
 
-	[MenuItem("Utility/Utilities/Assets Filter", false, (int)MenuItemPriority.ASSETS_FILTER)]
+	[MenuItem("Utility/Utilities/Assets Filter", false, (int)MenuItemPriority.UTILITIES___ASSETS_FILTER)]
     static void FilterAssets(){
         AssetsFilter.Filter();
     }
@@ -93,7 +94,7 @@ public class EditorUtilities : MonoBehaviour
 
 	#region Upgrade
 
-	[MenuItem("Utility/Nav Upgrade", false, (int)MenuItemPriority.NAV_UPGRADE)]
+	[MenuItem("Utility/Upgrade/Nav Upgrade", false, (int)MenuItemPriority.UPGRADE___NAV_UPGRADE)]
 	static void UpgradeNav(){
 		string[] t_scene_path = {
 //			"Assets/_Project/ArtAssets/Scenes/Login",
@@ -132,7 +133,7 @@ public class EditorUtilities : MonoBehaviour
 		}
 	}
 
-	[MenuItem("Utility/LightMap Upgrade", false, (int)MenuItemPriority.LIGHTMAP_UPGRADE)]
+	[MenuItem("Utility/Upgrade/LightMap Upgrade", false, (int)MenuItemPriority.UPGRADE___LIGHTMAP_UPGRADE)]
 	static void UpgradeLightMap(){
 		string[] t_scene_path = {
 //			"Assets/_Project/ArtAssets/Scenes/Login",
@@ -202,7 +203,7 @@ public class EditorUtilities : MonoBehaviour
 					m_change_path_list[ i ] + "\n";
 			}
 
-			UtilityTool.OutputFile( t_path, t_text );
+			FileHelper.OutputFile( t_path, t_text );
 		}
 	}
 
@@ -237,17 +238,6 @@ public class EditorUtilities : MonoBehaviour
 
 
 
-	#region Breaker
-
-	[MenuItem("Utility/", false, (int)MenuItemPriority.NEW_CHAR_DEVELOP + 1)]
-	static void ItemsBreaker(){
-		
-	}
-
-	#endregion
-
-
-
 	#region Bottom Part
 
 	[MenuItem("Utility/Find Font Usage")]
@@ -261,7 +251,7 @@ public class EditorUtilities : MonoBehaviour
     {
         foreach (Transform root in Selection.transforms)
         {
-            UtilityTool.ErgodicChilds(root).ForEach(child => CheckComponentNull(child, root));
+			TransformHelper.ErgodicChilds(root).ForEach(child => CheckComponentNull(child, root));
         }
     }
 
@@ -397,7 +387,7 @@ public class EditorUtilities : MonoBehaviour
 	public static List<string> GetFilePaths( string p_dir, string p_pattern ){
 		List<string> t_scene_names = new List<string>();
 
-		string[] t_paths = Directory.GetFiles ( UtilityTool.GetFullPath_WithRelativePath( p_dir ), p_pattern, SearchOption.AllDirectories );
+		string[] t_paths = Directory.GetFiles ( PathHelper.GetFullPath_WithRelativePath( p_dir ), p_pattern, SearchOption.AllDirectories );
 
 		for (int i = 0; i < t_paths.Length; i++) {
 			t_scene_names.Add( t_paths[ i ] );

@@ -295,7 +295,7 @@ public class CheckEmail : MonoBehaviour, SocketProcessor
     //privateLetter_shieldBtn
     public void ShieldBtn()
     {
-        Debug.Log("从聊天中调用");
+//        Debug.Log("从聊天中调用");
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
                                 ShieldLoadBack);
     }
@@ -318,7 +318,7 @@ public class CheckEmail : MonoBehaviour, SocketProcessor
     {
         if (i == 2)
         {
-            Debug.Log("发送屏蔽请求！");
+//            Debug.Log("发送屏蔽请求！");
             if (!TimeHelper.Instance.IsTimeCalcKeyExist("CheckEmail"))
 			{
 				EmailResponseReq(5);
@@ -341,7 +341,7 @@ public class CheckEmail : MonoBehaviour, SocketProcessor
 
         EmailSend send = writeObj.GetComponent<EmailSend>();
 
-		if (m_emailInfo.senderName != EmailData.Instance ().replyName)
+		if (m_emailInfo.senderName != EmailData.Instance.replyName)
 		{
 			send.CleanInputLabel(3);
 		}
@@ -365,7 +365,7 @@ public class CheckEmail : MonoBehaviour, SocketProcessor
         byte[] t_protof = t_stream.ToArray();
 
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MAIL_GET_REWARD, ref t_protof, "25008");
-        Debug.Log("GetAwardEmail:" + ProtoIndexes.C_MAIL_GET_REWARD);
+//        Debug.Log("GetAwardEmail:" + ProtoIndexes.C_MAIL_GET_REWARD);
     }
 
 	//邮件响应操作 操作码：1-同意，2-拒绝，5-屏蔽玩家
@@ -385,7 +385,7 @@ public class CheckEmail : MonoBehaviour, SocketProcessor
         byte[] t_protof = t_stream.ToArray();
 
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EMAIL_RESPONSE, ref t_protof);
-        Debug.Log("EmailResponseReq:" + ProtoIndexes.C_EMAIL_RESPONSE);
+//        Debug.Log("EmailResponseReq:" + ProtoIndexes.C_EMAIL_RESPONSE);
     }
 
     public bool OnProcessSocketMessage(QXBuffer p_message)
@@ -396,7 +396,7 @@ public class CheckEmail : MonoBehaviour, SocketProcessor
             {
 	        case ProtoIndexes.S_MAIL_GET_REWARD://领奖返回
 	        {
-	            Debug.Log("GetRewardRes：" + ProtoIndexes.S_MAIL_GET_REWARD);
+//	            Debug.Log("GetRewardRes：" + ProtoIndexes.S_MAIL_GET_REWARD);
 
 	            MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
@@ -409,12 +409,12 @@ public class CheckEmail : MonoBehaviour, SocketProcessor
 	            if (getAwardResp != null)
 	            {
 	            	getResp = getAwardResp;
-	            	Debug.Log("Get_isSuccess：" + getAwardResp.isSuccess);
+//	            	Debug.Log("Get_isSuccess：" + getAwardResp.isSuccess);
 
-                    if (getAwardResp.id != null)
-                    {
-                        Debug.Log("GetEmailId：" + getAwardResp.id);
-                    }
+//                    if (getAwardResp.id != null)
+//                    {
+//                        Debug.Log("GetEmailId：" + getAwardResp.id);
+//                    }
 
 					EmailManager.emailMan.DeletSystemEmail (getAwardResp.id);
 

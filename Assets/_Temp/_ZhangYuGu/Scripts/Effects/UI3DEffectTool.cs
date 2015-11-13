@@ -455,7 +455,7 @@ public class UI3DEffectTool : MonoBehaviour {
 		}
 
 		{
-			Vector3 t_local_pos = UtilityTool.GetLocalPositionInUIRoot( p_overlay_ngui_gb );
+			Vector3 t_local_pos = TransformHelper.GetLocalPositionInUIRoot( p_overlay_ngui_gb );
 			
 			t_obj.transform.localPosition = t_local_pos;
 		}
@@ -510,10 +510,10 @@ public class UI3DEffectTool : MonoBehaviour {
 			Vector3 t_local_pos = Vector3.zero;
 
 			if( p_target_ngui_center_gb == null ){
-				t_local_pos = UtilityTool.GetLocalPositionInUIRoot( p_overlay_ngui_gb );
+				t_local_pos = TransformHelper.GetLocalPositionInUIRoot( p_overlay_ngui_gb );
 			}
 			else{
-				t_local_pos = UtilityTool.GetLocalPositionInUIRoot( p_target_ngui_center_gb );
+				t_local_pos = TransformHelper.GetLocalPositionInUIRoot( p_target_ngui_center_gb );
 			}
 
 			t_obj.transform.localPosition = t_local_pos;
@@ -788,7 +788,7 @@ public class UI3DEffectTool : MonoBehaviour {
 				m_shadow_gb.transform.localPosition = p_local_pos * UI3DEffectTool.Instance().m_c_factor;
 			}
 			else{
-				Vector3 t_local_pos = UtilityTool.GetLocalPositionInUIRoot( m_target_ngui_center_gb );
+				Vector3 t_local_pos = TransformHelper.GetLocalPositionInUIRoot( m_target_ngui_center_gb );
 
 				m_shadow_gb.transform.localPosition = t_local_pos * UI3DEffectTool.Instance().m_c_factor;
 			}
@@ -904,9 +904,9 @@ public class UI3DEffectTool : MonoBehaviour {
 			#endif
 
 			{
-				m_cached_target_local_ngui_pos = UtilityTool.GetLocalPositionInUIRoot( m_target_ngui_gb );
+				m_cached_target_local_ngui_pos = TransformHelper.GetLocalPositionInUIRoot( m_target_ngui_gb );
 
-				m_cached_target_local_ngui_scale = UtilityTool.GetLocalScaleInUIRoot( m_target_ngui_gb );
+				m_cached_target_local_ngui_scale = TransformHelper.GetLocalScaleInUIRoot( m_target_ngui_gb );
 								
 //				Debug.Log( "Local Pos Updated: " + m_cached_local_ngui_pos );
 //
@@ -1142,10 +1142,10 @@ public class UI3DEffectTool : MonoBehaviour {
 				Vector3 t_delta_pos = Vector3.zero;
 
 				if( m_target_ngui_center_gb == null ){
-					t_delta_pos = UtilityTool.GetLocalPositionInUIRoot( m_ngui_gb );
+					t_delta_pos = TransformHelper.GetLocalPositionInUIRoot( m_ngui_gb );
 				}
 				else{
-					t_delta_pos = UtilityTool.GetLocalPositionInUIRoot( m_target_ngui_center_gb );
+					t_delta_pos = TransformHelper.GetLocalPositionInUIRoot( m_target_ngui_center_gb );
 				}
 
 //				Debug.Log( "Init Fx Pos: " + t_delta_pos );

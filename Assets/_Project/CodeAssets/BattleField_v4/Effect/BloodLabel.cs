@@ -14,17 +14,30 @@ public class BloodLabel : UILabel
 
 	private EventDelegate.Callback m_callback;
 
+	#region Mono
+
+	private Camera m_cached_camera_main = null;
+
+	private int m_cached_reset_count = -1;
 
 	public void Update ()
 	{
 		//base.Update();
 
-		if (Camera.main == null) return;
+		m_cached_camera_main = Camera.main;
 
-		if (Camera.main.gameObject.activeSelf == false) return;
+		if ( m_cached_camera_main == null ){
+			return;
+		}
 
-		transform.forward = Camera.main.transform.forward;
+		if ( m_cached_camera_main.gameObject.activeSelf == false ){ 
+			return;
+		}
+
+		transform.forward = m_cached_camera_main.transform.forward;
 	}
+
+	#endregion
 
 	public void showBloodEx(float time, float _ty, List<BloodLabel> _list, EventDelegate.Callback p_callback = null)
 	{
@@ -60,9 +73,15 @@ public class BloodLabel : UILabel
 	{
 		TweenAlpha.Begin (gameObject, 0, 1);
 
+		int random = (int)(Random.value * 1000) % BloodLabelControllor.Instance ().randomList.Count;
+
+		Vector3 randomVector3 = BloodLabelControllor.Instance ().randomList [random];
+
+		randomVector3.y = _ty;
+
 		iTween.MoveTo (gameObject, iTween.Hash(
 			"name", "Blood",
-			"position", transform.position + new Vector3(Random.value, _ty, Random.value),
+			"position", transform.position + randomVector3,
 			"time", time,
 			"easeType", iTween.EaseType.easeOutQuint
 			));
@@ -72,9 +91,11 @@ public class BloodLabel : UILabel
 			yield return new WaitForEndOfFrame ();
 		}
 
+		randomVector3.y = _ty + .5f;
+
 		iTween.MoveTo (gameObject, iTween.Hash(
 			"name", "Blood",
-			"position", transform.position + new Vector3(Random.value, _ty + .5f, Random.value),
+			"position", transform.position + randomVector3,
 			"time", time / 2,
 			"easeType", iTween.EaseType.linear
 			));

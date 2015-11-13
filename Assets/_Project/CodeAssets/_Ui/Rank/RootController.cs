@@ -148,12 +148,6 @@ namespace Rank
             CloseEventHandler.m_handler -= OnCloseClick;
         }
 
-        private void OnEnable()
-        {
-            //Send all friends request.
-            FriendOperationData.Instance.RequestData();
-        }
-
         public string SelectedAllianceName;
         public AlliancePlayerResp m_AlliancePlayerResp;
         public JunZhuInfo m_JunzhuPlayerResp;

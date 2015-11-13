@@ -1,0 +1,134 @@
+
+-------------------------------------------------------------------- <Version Config>
+ShowVersion:		true
+
+Version:iOS-1109-1436
+------------------------------------------------------------------- </Version Config>
+
+
+
+---------------------------------------------------------------------- <Debug Config>
+// control center
+ShowConsole:				false
+
+// common code error
+ShowCodeException:			true
+
+// close network anywhere
+NetworkCloseSwitcher:		false
+
+// manual clean
+ManualClean:				false
+
+// main camera info
+ShowMainCameraInfo:			false
+
+// Particles
+ShowParticleControllers:	false
+
+// show camera superior
+ShowCameraSuperior:			false
+
+// show qualitys
+ShowQualitySwitch:			false
+
+// show cur loading item
+ShowCurrentLoading:			false
+
+// show device info
+ShowDeviceInfo:				false
+
+// show pause under console
+QuickPause:					false
+
+// quick fx
+QuickFx:					false
+
+--------------------------------------------------------------------- </Debug Config>
+
+
+
+------------------------------------------------------------------------ <FPS Config>
+// must be 30 or 60
+TargetFPS:			60
+
+ShowFPS:			true
+
+LoadingInterval:	0.8
+----------------------------------------------------------------------- </FPS Config>
+
+
+
+---------------------------------------------------------------------- <Guide Config>
+// for Master Zhu
+OpenGuideEditor: 			false
+
+// fresh guide
+ShowGuideSwitcher:			false
+
+// for Master Zhu
+OpenAllTheFunction:			false
+--------------------------------------------------------------------- </Guide Config>
+
+
+
+---------------------------------------------------------------- <BattleField Config>
+// quick choose level
+QuickChooseLevel:			true
+
+// quick finish game
+QuickFight:					true
+
+// operate battle's camera
+ShowBattleCameraOps:		false
+--------------------------------------------------------------- </BattleField Config>
+
+
+
+-------------------------------------------------------------------- <Network Config>
+// Network Status Check
+SocketCheckTime:			10.0
+
+// Time Out Limit
+SocketTimeOut:				15.0
+
+// emulate network latency
+NetworkLatency:				0.0
+
+// show network status
+ShowNetworkStatus:			true
+------------------------------------------------------------------- </Network Config>
+
+
+
+------------------------------------------------------------------------ <Log Config>
+LogHttpStatus:				false
+
+LogSocketSend:				false
+LogSocketSendDetail:		false
+
+LogSocketReceive:			false
+LogSocketReceiveDetail:		false
+
+LogSocketProcessor:			false
+
+LogMainCitySpriteMove:		false
+
+LogAssetsLoading:			false
+
+LogItemLoadingTime:			false
+
+LogTotalLoadingTime:		false
+
+LogBundleDownLoading:		false
+
+LogDialogBox:				false
+
+LogQuality:					false
+----------------------------------------------------------------------- </Log Config>
+
+
+
+-------------------------------------------------------------------- <Bundle Config>
+CleanEditorCache:			false
+------------------------------------------------------------------- </Bundle Config>

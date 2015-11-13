@@ -54,7 +54,7 @@ public class ChuanQiType : MonoBehaviour,SocketProcessor {
 	{
 		levelInfo = tempLevelInfo;
 
-		//Debug.Log ("tempLevelInfo.cqSaoDangDayTimes  = "+m_GuanQia.cqSaoDangDayTimes);
+		Debug.Log ("m_GuanQia.cqPassTimes  = "+m_GuanQia.cqPassTimes);
 		//Debug.Log ("tempLevelInfo.cqSaoDangUsedTimes  = "+m_GuanQia.cqSaoDangUsedTimes);
 		tiaoZhanNum = 3 - m_GuanQia.cqPassTimes;
 		sdTotleTime = m_GuanQia.cqSaoDangDayTimes;

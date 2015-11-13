@@ -47,7 +47,7 @@ public class EmailManager : MonoBehaviour,SocketProcessor
 
 	void Start ()
 	{
-		GetEmailResp (EmailData.Instance ().emailRespList);
+		GetEmailResp (EmailData.Instance.emailRespList);
 
 		SystemBtn ();
 	}
@@ -80,7 +80,7 @@ public class EmailManager : MonoBehaviour,SocketProcessor
 		CheckUnReadEmail (privateEmailList,privateWarning);
 		CheckUnReadEmail (systemEmailList,systemWarning);
 
-		if (!string.IsNullOrEmpty (EmailData.Instance ().replyName) || !string.IsNullOrEmpty (EmailData.Instance ().content))
+		if (!string.IsNullOrEmpty (EmailData.Instance.replyName) || !string.IsNullOrEmpty (EmailData.Instance.content))
 		{
 			CheckDraft (true);
 		}
@@ -230,11 +230,11 @@ public class EmailManager : MonoBehaviour,SocketProcessor
 				{
 					Debug.Log ("readResp.emailId:" + readResp.emailId);
 
-					for (int i = 0;i < EmailData.Instance ().emailRespList.Count;i ++)
+					for (int i = 0;i < EmailData.Instance.emailRespList.Count;i ++)
 					{
-						if (readResp.emailId == EmailData.Instance ().emailRespList[i].id)
+						if (readResp.emailId == EmailData.Instance.emailRespList[i].id)
 						{
-							if (EmailData.Instance ().emailRespList[i].type == 80000)
+							if (EmailData.Instance.emailRespList[i].type == 80000)
 							{
 								HandlePrivateEmail (readResp.result,readResp.emailId);
 							}
@@ -246,7 +246,7 @@ public class EmailManager : MonoBehaviour,SocketProcessor
 						}
 					}
 
-					EmailData.Instance ().RefreshEmailRespList (readResp.result,readResp.emailId);//更新邮件返回list
+					EmailData.Instance.RefreshEmailRespList (readResp.result,readResp.emailId);//更新邮件返回list
 				}
 				return true;
 			}
@@ -334,11 +334,11 @@ public class EmailManager : MonoBehaviour,SocketProcessor
 	//系统邮件其它类型的删除操作 1-领取即删 2-操作即删
 	public void DeletSystemEmail (long emailId)
 	{
-		for (int i = 0;i < EmailData.Instance ().emailRespList.Count;i ++)
+		for (int i = 0;i < EmailData.Instance.emailRespList.Count;i ++)
 		{
-			if (emailId == EmailData.Instance ().emailRespList[i].id)
+			if (emailId == EmailData.Instance.emailRespList[i].id)
 			{
-				EmailData.Instance ().emailRespList.Remove (EmailData.Instance ().emailRespList[i]);
+				EmailData.Instance.emailRespList.Remove (EmailData.Instance.emailRespList[i]);
 			}
 		}
 
@@ -408,7 +408,7 @@ public class EmailManager : MonoBehaviour,SocketProcessor
 
 	public void DestroyEmailRoot ()
 	{
-		EmailData.Instance().ExistNewEmail(false);
+		EmailData.Instance.ExistNewEmail(false);
 	    m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
 	    m_ScaleEffectController.OnCloseWindowClick();
 	}

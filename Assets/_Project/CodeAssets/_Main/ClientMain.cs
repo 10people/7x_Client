@@ -572,7 +572,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 
 	private static int m_templates_loaded 		= 0;
 
-	private const int CONST_TEMPLATES_COUNT		= 104;
+	private const int CONST_TEMPLATES_COUNT		= 103;
 
 	public static bool m_is_templates_loaded = false;
 
@@ -666,11 +666,11 @@ public class ClientMain : MonoBehaviour , SocketListener
 
 
 
+			ShuXingTemp.LoadTemplates(TemplateLoadedCallback);
+
 			HeroTypeTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			LabelTemplate.LoadTemplates( TemplateLoadedCallback );
-			
-			EnemyTemp.LoadTemplates( TemplateLoadedCallback );
 			
 			NpcTemplate.LoadTemplates( TemplateLoadedCallback );
 			
@@ -855,9 +855,10 @@ public class ClientMain : MonoBehaviour , SocketListener
 		//101-110
 		{
 			MiBaoJiXingTemplate.LoadTemplates(TemplateLoadedCallback);
-            ZBChushiDiaoluoTemp.LoadTemplates(TemplateLoadedCallback);
-            ExpTempTemp.LoadTemplates(TemplateLoadedCallback);
-            ShuXingTemp.LoadTemplates(TemplateLoadedCallback);
+           
+			ZBChushiDiaoluoTemp.LoadTemplates(TemplateLoadedCallback);
+            
+			ExpTempTemp.LoadTemplates(TemplateLoadedCallback);
         }
 		m_is_templates_loaded = true;
 	}

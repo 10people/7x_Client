@@ -69,8 +69,8 @@ public class EmailSend : MonoBehaviour,SocketProcessor {
 	//默认名字
 	public void DefaultName ()
 	{
-		nameLabel.text = EmailData.Instance ().replyName;
-		contentLabel.text = EmailData.Instance ().content;
+		nameLabel.text = EmailData.Instance.replyName;
+		contentLabel.text = EmailData.Instance.content;
 	}
 
 	//获得好友名字
@@ -320,8 +320,8 @@ public class EmailSend : MonoBehaviour,SocketProcessor {
 	//返回按钮
 	public void BackToMainPage ()
 	{
-		EmailData.Instance ().replyName = nameLabel.text;
-		EmailData.Instance ().content = contentLabel.text;
+		EmailData.Instance.replyName = nameLabel.text;
+		EmailData.Instance.content = contentLabel.text;
 
 		if (!isReply)
 		{

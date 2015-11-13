@@ -1,4 +1,4 @@
-﻿//#define DEBUG_PLATFORM
+//#define DEBUG_PLATFORM
 
 using UnityEngine;
 using UnityEditor;
@@ -30,7 +30,7 @@ public class EditorI4Platform : MonoBehaviour {
 	
 	public const string AISI_PLATFORM_MM_FOLDER_NAME = "Classes/AsSDKConnector.mm";
 	
-	[MenuItem("Build/Third Platform/AiSi Platform/Third Platform", false, 1)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_IOS_3RD_PREFIX + "AiSi Platform/Third Platform", false, 1)]
 	public static void BuildAiSi(){
 		#if DEBUG_PLATFORM
 		Debug.Log ( "BuildAiSi()" );
@@ -38,34 +38,34 @@ public class EditorI4Platform : MonoBehaviour {
 
 		string t_path = PathHelper.GetMacHome() + Configured_AiSi_XCodeProject;
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.INFO_LIST_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.INFO_LIST_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.CONTROLLER_H_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.CONTROLLER_H_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.CONTROLLER_FOLDER_NAME );
-		
-		
-		
-		EditorBuild3rd.ProcessFile ( t_path, AISI_PLATFORM_H_FOLDER_NAME );
-		
-		EditorBuild3rd.ProcessFile ( t_path, AISI_PLATFORM_MM_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.CONTROLLER_FOLDER_NAME );
 		
 		
 		
-		EditorBuild3rd.ProcessFolder ( t_path, AISI_PLATFORM_KIT_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, AISI_PLATFORM_H_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFolder ( t_path, AISI_PLATFORM_KIT_BUNDLE_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, AISI_PLATFORM_MM_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFolder ( t_path, AISI_PLATFORM_KIT_IMAGE_BUNDLE_FOLDER_NAME );
+		
+		
+		EditorBuildiOS3rd.ProcessFolder ( t_path, AISI_PLATFORM_KIT_FOLDER_NAME );
+		
+		EditorBuildiOS3rd.ProcessFolder ( t_path, AISI_PLATFORM_KIT_BUNDLE_FOLDER_NAME );
+		
+		EditorBuildiOS3rd.ProcessFolder ( t_path, AISI_PLATFORM_KIT_IMAGE_BUNDLE_FOLDER_NAME );
 		
 
 		
 		{
-			EditorBuild3rd.ProcessXG ( t_path );
+			EditorBuildiOS3rd.ProcessXG ( t_path );
 		}
 	}
 
-	[MenuItem("Build/Third Platform/AiSi Platform/Third Platform Project", false, 100)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_IOS_3RD_PREFIX + "AiSi Platform/Third Platform Project", false, 100)]
 	private static void BuildAiSiProject(){
 //		{
 //			BuildAiSi();
@@ -76,9 +76,9 @@ public class EditorI4Platform : MonoBehaviour {
 		OnProcessPbx( BuildTarget.iOS, t_built_projectpath );
 	}
 	
-	[MenuItem("Build/Settings/AiSi", false, 1)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_SETTING_IOS_PREFIX + "AiSi", false, 1)]
 	public static void BuildSettingsAiSi(){
-		EditorBuild3rd.BuildSettings( "AiSi" );
+		EditorBuildiOS3rd.BuildSettings( "AiSi" );
 
 		AssetDatabase.Refresh();
 	}
@@ -113,16 +113,16 @@ public class EditorI4Platform : MonoBehaviour {
 		Debug.Log ( "OnProcessPbx()" );
 		#endif
 
-		string t_pbx = EditorBuild3rd.GetPBXContent( p_target, p_path_to_built_project );
+		string t_pbx = EditorBuildiOS3rd.GetPBXContent( p_target, p_path_to_built_project );
 
 		// backup
 		{
-			EditorBuild3rd.BackUpPbx( p_path_to_built_project );
+			EditorBuildiOS3rd.BackUpPbx( p_path_to_built_project );
 		}
 
 		{
 			// build file, order
-			EditorBuild3rd.UpdatePbxAndCheckKeys( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbxAndCheckKeys( ref t_pbx, 
 			                            "D8A1C7280E80637F000160D3 /* RegisterMonoModules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C7240E80637F000160D3 /* RegisterMonoModules.cpp */; };\n",
 
 			                            "D8A1C7280E80637F000160D3 /* RegisterMonoModules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C7240E80637F000160D3 /* RegisterMonoModules.cpp */; };\n" +
@@ -140,7 +140,7 @@ public class EditorI4Platform : MonoBehaviour {
   			);
 
 			// ref
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "D8A1C7250E80637F000160D3 /* RegisterMonoModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterMonoModules.h; path = Libraries/RegisterMonoModules.h; sourceTree = SOURCE_ROOT; };\n",
 
 			                         "D8A1C7250E80637F000160D3 /* RegisterMonoModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterMonoModules.h; path = Libraries/RegisterMonoModules.h; sourceTree = SOURCE_ROOT; };\n" +
@@ -164,7 +164,7 @@ public class EditorI4Platform : MonoBehaviour {
 			// PBXTargetDependency
 
 			// PBXFrameworksBuildPhase.frameworks
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "AA5D99871AFAD3C800B27605 /* CoreText.framework in Frameworks */,\n",
 			                         "AA5D99871AFAD3C800B27605 /* CoreText.framework in Frameworks */,\n" +
 			                         "D8C532071B80778300EE6F2A /* libstdc++.6.dylib in Frameworks */,\n" +
@@ -178,7 +178,7 @@ public class EditorI4Platform : MonoBehaviour {
 			                         );
 
 			// custom template
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "83B2574E0E63025400468741 /* libiconv.2.dylib */,\n",
 			                         "83B2574E0E63025400468741 /* libiconv.2.dylib */,\n" +
 			                         "D8C531EF1B8076D000EE6F2A /* AlipaySDK.bundle */,\n" +
@@ -188,7 +188,7 @@ public class EditorI4Platform : MonoBehaviour {
 			                         );
 
 			// PBXGroup.frameworks
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "AA5D99861AFAD3C800B27605 /* CoreText.framework */,\n",
 									 "D8C532061B80778300EE6F2A /* libstdc++.6.dylib */,\n" +
 			                         "D8C532031B80771600EE6F2A /* libsqlite3.dylib */,\n" +
@@ -199,7 +199,7 @@ public class EditorI4Platform : MonoBehaviour {
 			                          );
 
 			// classes
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "8A5C148F174E662D0006EB36 /* PluginBase */,\n",
 			                         "8A5C148F174E662D0006EB36 /* PluginBase */,\n" +
 			                         "D8C531F71B8076E500EE6F2A /* AsSDKConnector.h */,\n" +
@@ -208,7 +208,7 @@ public class EditorI4Platform : MonoBehaviour {
 			                         );
 
 			// resources
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "56C56C9817D6015200616839 /* Images.xcassets in Resources */,\n",
 			                         "D8C531F31B8076D000EE6F2A /* AlipaySDK.bundle in Resources */,\n" +
 			                         "D8C531F41B8076D000EE6F2A /* AsImage.bundle in Resources */,\n" +
@@ -216,7 +216,7 @@ public class EditorI4Platform : MonoBehaviour {
 			                          );
 
 			// xg
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                        	"D8A1C7220E80637F000160D3 /* Libraries */ = {\n",
 
 			                         	"D8C531F91B8076E500EE6F2A /* XG */ = {\n" +
@@ -232,14 +232,14 @@ public class EditorI4Platform : MonoBehaviour {
 										);
 
 			// source
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "D82DCFC30E8000A5005D6AD8 /* main.mm in Sources */,\n",
 			                         "D82DCFC30E8000A5005D6AD8 /* main.mm in Sources */,\n" +
 			                         "D8C531FC1B8076E500EE6F2A /* AsSDKConnector.mm in Sources */,\n"
 			                         );
 
 			// framework search
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                        "FRAMEWORK_SEARCH_PATHS = \"$(inherited)\";\n" +
 			                         "				GCC_DYNAMIC_NO_PIC = NO;\n",
 
@@ -251,7 +251,7 @@ public class EditorI4Platform : MonoBehaviour {
 			                         "				GCC_DYNAMIC_NO_PIC = NO;\n"
 			                         );
 
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "COPY_PHASE_STRIP = YES;\n" +
 			                         "				FRAMEWORK_SEARCH_PATHS = \"$(inherited)\";\n",
 			                         
@@ -271,7 +271,7 @@ public class EditorI4Platform : MonoBehaviour {
 		
 		{
 			// save
-			EditorBuild3rd.SavePbx( p_path_to_built_project, t_pbx );
+			EditorBuildiOS3rd.SavePbx( p_path_to_built_project, t_pbx );
 		}
 	}
 	

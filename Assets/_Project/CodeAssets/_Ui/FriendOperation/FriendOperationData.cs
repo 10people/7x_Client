@@ -10,6 +10,7 @@ using ProtoBuf.Meta;
 public class FriendOperationData :Singleton<FriendOperationData>, SocketProcessor
 {
     public  GetFriendListResp m_FriendListInfo = new GetFriendListResp();
+	public List<long> friendIdList = new List<long> ();
     public bool m_FriendInfoGet = false;
     public bool m_FriendInfoRequest = false; // only FriendOperationLayer Can Use
     private string _FriendName = "";
@@ -91,6 +92,13 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
 							ReponseInfo.friends = new List<FriendJunzhuInfo>();
 						}
                         m_FriendListInfo = ReponseInfo;
+
+						friendIdList.Clear ();
+						foreach (FriendJunzhuInfo friend in ReponseInfo.friends)
+						{
+							friendIdList.Add (friend.ownerid);
+						}
+
                         if (m_FriendInfoRequest)
                         {
                             m_FriendInfoRequest = false;
@@ -122,6 +130,7 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
 							}
 							case AddFriendType.BaiZhan:
 							{
+								PvpPage.pvpPage.RefreshOpponentFriendState ();
 								break;
 							}
 							case AddFriendType.Email:

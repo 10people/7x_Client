@@ -86,11 +86,11 @@ public class PopUpLabelTool : MonoBehaviour, IUIRootAutoActivator {
 		
 		int t_button_index = 0;
 		
-		if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, ConfigTool.Instance.m_btn_rect_params ), "By Hand", ConfigTool.Instance.m_gui_btn_style ) ){
+		if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, ConfigTool.Instance.m_btn_rect_params ), "By Hand", ConfigTool.Instance.m_gui_btn_style ) ){
 			PopUpLabelTool.Instance().AddPopLabelWatcher_ManageByHand( m_lb_by_hand.gameObject, Vector3.zero );
 		}
 
-		if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, ConfigTool.Instance.m_btn_rect_params ), "Label", ConfigTool.Instance.m_gui_btn_style ) ){
+		if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, ConfigTool.Instance.m_btn_rect_params ), "Label", ConfigTool.Instance.m_gui_btn_style ) ){
 			PopUpLabelTool.Instance().AddPopLabelWatcher( 
 			                                             m_lb_up.gameObject, new Vector3( Screen.width / 4, 0, 0.0f ),
 			                                             new Vector2( -Screen.width / 2, Screen.height / 4 ), iTween.EaseType.linear,
@@ -98,7 +98,7 @@ public class PopUpLabelTool : MonoBehaviour, IUIRootAutoActivator {
 			                                             3.0f );
 		}
 
-		if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, ConfigTool.Instance.m_btn_rect_params ), "Panel", ConfigTool.Instance.m_gui_btn_style ) ){
+		if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, ConfigTool.Instance.m_btn_rect_params ), "Panel", ConfigTool.Instance.m_gui_btn_style ) ){
 			PopUpLabelTool.Instance().AddPopLabelWatcher( 
 			                                             m_panel_down.gameObject, new Vector3( -Screen.width / 4, 0, 0.0f ),
 			                                             new Vector2( Screen.width / 2, -Screen.height / 4 ), iTween.EaseType.linear,
@@ -274,7 +274,7 @@ public class PopUpLabelTool : MonoBehaviour, IUIRootAutoActivator {
 				}
 
 				{
-					UtilityTool.ResetLocalPosAndLocalRotAndLocalScale( m_target_ngui_gb );
+					TransformHelper.ResetLocalPosAndLocalRotAndLocalScale( m_target_ngui_gb );
 					
 					m_target_ngui_gb.transform.localPosition = p_ngui_pos;
 				}

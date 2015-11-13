@@ -6,47 +6,47 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NpcManager : MonoBehaviour {
-	public static NpcManager m_NpcManager;
+    public static NpcManager m_NpcManager;
     public int m_depth = 1;
-	
-	public GameObject m_wayHelp;
-	
-	public Dictionary<int,NpcObjectItem> m_npcObjectItemDic = new Dictionary<int,NpcObjectItem>();
-	
-	public Camera m_camera;
-	
-	public Camera m_nguiCamera;
-	
-	//public Transform m_talkLayer;
-	
-	public UIRoot m_root;
-	
-	private NpcCityTemplate m_currentNpcTemplate;
-	
-	private float m_scale;
+
+    public GameObject m_wayHelp;
+
+    public Dictionary<int, NpcObjectItem> m_npcObjectItemDic = new Dictionary<int, NpcObjectItem>();
+
+    public Camera m_camera;
+
+    public Camera m_nguiCamera;
+
+    //public Transform m_talkLayer;
+
+    public UIRoot m_root = null;
+
+    private NpcCityTemplate m_currentNpcTemplate;
+
+    private float m_scale;
 
     private int HouseId = 0;
-	
-	Dictionary<int,Transform> m_currentNpcTransformDic = new Dictionary<int,Transform>();
-	
-	Dictionary<int,Transform> m_talkingTransformDic = new Dictionary<int,Transform>();
+
+    Dictionary<int, Transform> m_currentNpcTransformDic = new Dictionary<int, Transform>();
+
+    Dictionary<int, Transform> m_talkingTransformDic = new Dictionary<int, Transform>();
 
     private List<GameObject> _listBigHouse = new List<GameObject>();
     private List<GameObject> _listPartHouse = new List<GameObject>();
-	
-	LayerMask m_layerMask = 1<<8;
-	
-	Ray m_ray;
-	
-	
-	
-	void Awake(){
-		m_NpcManager = this;
-	}
-	
-	void Start(){
-		StartCoroutine( ManualStart() );
-	}
+
+    LayerMask m_layerMask = 1 << 8;
+
+    Ray m_ray;
+
+
+
+    void Awake() {
+        m_NpcManager = this;
+    }
+
+    void Start() {
+        //StartCoroutine( ManualStart() );
+    }
 
 
     private bool IsNavmeshToTenement = false;
@@ -114,7 +114,7 @@ public class NpcManager : MonoBehaviour {
         {
             Destroy(_listBigHouse[i]);
         }
-       // m_npcObjectItemDic.Clear();
+        // m_npcObjectItemDic.Clear();
         _listPartHouse.Clear();
         _listBigHouse.Clear();
 
@@ -133,8 +133,8 @@ public class NpcManager : MonoBehaviour {
             }
 
             Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202), TenementNPCBigHouse);
-       
-           // Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100200), TenementNPCPortal);
+
+            // Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100200), TenementNPCPortal);
         }
         //else 
         //{
@@ -150,32 +150,32 @@ public class NpcManager : MonoBehaviour {
         //   Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202),TenementNPCTenents);
         //    // CityGlobalData.m_isAllianceTenentsScene = false;
         //}
-        
+
     }
     private List<NpcCityTemplate> listMainCityTempInfo = new List<NpcCityTemplate>();
     private List<NpcCityTemplate> listAllianceCityTempInfo = new List<NpcCityTemplate>();
 
     private NpcCityTemplate _tempWorship;
-	IEnumerator ManualStart(){
-		while( MainCityRoot.Instance().m_objMainUI == null ){
-//			Debug.Log( "NPCManager.ManualStart.Waiting m_objMainUI: " + MainCityRoot.Instance().m_objMainUI );
+    IEnumerator ManualStart() {
+        while (MainCityRoot.Instance().m_objMainUI == null) {
+            //			Debug.Log( "NPCManager.ManualStart.Waiting m_objMainUI: " + MainCityRoot.Instance().m_objMainUI );
 
-			yield return new WaitForEndOfFrame();
-		}
+            yield return new WaitForEndOfFrame();
+        }
 
-		m_root = MainCityRoot.Instance().m_objMainUI.GetComponent<UIRoot>();
-		
-		m_nguiCamera = Global.GetObj(ref MainCityRoot.Instance().m_objMainUI, "Camera_UI").GetComponent<Camera>();
-		
-		//m_talkLayer = Global.GetObj(ref MainCityRoot.Instance().m_objMainUI, "NpcTalkLayer").transform;
-		
-		m_scale = m_root.activeHeight / (CityGlobalData.m_ScreenHeight);
+        m_root = MainCityRoot.Instance().m_objMainUI.GetComponent<UIRoot>();
+
+        m_nguiCamera = Global.GetObj(ref MainCityRoot.Instance().m_objMainUI, "Camera_UI").GetComponent<Camera>();
+
+        //m_talkLayer = Global.GetObj(ref MainCityRoot.Instance().m_objMainUI, "NpcTalkLayer").transform;
+
+        m_scale = m_root.activeHeight / (CityGlobalData.m_ScreenHeight);
 
         // TODO: replace with new res.
         _listPartHouse.Clear();
         _listBigHouse.Clear();
-        
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0 )
+
+        if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
         {
             listMainCityTempInfo.Clear();
             foreach (NpcCityTemplate _template in NpcCityTemplate.m_templates)
@@ -190,8 +190,8 @@ public class NpcManager : MonoBehaviour {
         }
         else if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1 && JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)//if (!CityGlobalData.m_isAllianceTenentsScene && JunZhuData.Instance().m_junzhuInfo.lianMengId != 0)
         {
-            listAllianceCityTempInfo.Clear();     
-    
+            listAllianceCityTempInfo.Clear();
+
             foreach (NpcCityTemplate _template in NpcCityTemplate.m_templates)
             {
                 if (_template.m_Type == 2 && _template.m_npcId < 1000)
@@ -216,11 +216,11 @@ public class NpcManager : MonoBehaviour {
                     break;
                 }
             }
-          
-            Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202),TenementNPCBigHouse);
-         //  Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100200), TenementNPCPortal);
+
+            Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202), TenementNPCBigHouse);
+            //  Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100200), TenementNPCPortal);
         }
-        else if(FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 2) // if (CityGlobalData.m_isAllianceTenentsScene)
+        else if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 2) // if (CityGlobalData.m_isAllianceTenentsScene)
         {
             foreach (KeyValuePair<int, HouseSimpleInfo> item in TenementData.Instance.m_AllianceCityTenementDic)
             {
@@ -230,13 +230,13 @@ public class NpcManager : MonoBehaviour {
                     break;
                 }
             }
-          Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100200),
-                            TenementNPCAlliancityPortal);
-          Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202),
-                      TenementNPCTenents);
-         // CityGlobalData.m_isAllianceTenentsScene = false;
+            Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100200),
+                              TenementNPCAlliancityPortal);
+            Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202),
+                        TenementNPCTenents);
+            // CityGlobalData.m_isAllianceTenentsScene = false;
         }
-	}
+    }
 
     public void NPCInMainCityLoadCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
@@ -265,6 +265,97 @@ public class NpcManager : MonoBehaviour {
                 }
                 listMainCityTempInfo.RemoveAt(i);
                 break;
+            }
+        }
+    }
+
+    public void CreateNPC(PrepareForCityLoad.NpcInfo n_Info)
+    {
+        if (m_root == null)
+        {
+            m_root = MainCityRoot.Instance().m_objMainUI.GetComponent<UIRoot>();
+
+            m_nguiCamera = Global.GetObj(ref MainCityRoot.Instance().m_objMainUI, "Camera_UI").GetComponent<Camera>();
+
+            m_scale = m_root.activeHeight / (CityGlobalData.m_ScreenHeight);
+        }
+
+        GameObject tempOjbect = Instantiate(n_Info._Obj) as GameObject;
+
+        tempOjbect.name = "NpcInCity";
+
+        tempOjbect.transform.parent = this.transform;
+
+        NpcObjectItem tempItem = tempOjbect.GetComponent<NpcObjectItem>();
+
+        tempItem.InitWithNpc(n_Info._NpcTemp);
+
+        m_npcObjectItemDic.Add(n_Info._NpcTemp.m_Id, tempItem);
+
+        PlayerEnterCollider[] tempEnterList = tempOjbect.GetComponentsInChildren<PlayerEnterCollider>();
+
+        foreach (PlayerEnterCollider tempCollider in tempEnterList)
+        {
+            tempCollider.m_colliser += TriggerEnter;
+        }
+    }
+
+    public void CreateHousePortal(PrepareForCityLoad.NpcInfo h_Self, PrepareForCityLoad.NpcInfo h_Other)
+    {
+        int house_id = 0;
+        GameObject tempOjbect = null;
+        foreach (KeyValuePair<int, HouseSimpleInfo> item in TenementData.Instance.m_AllianceCityTenementDic)
+        {
+            if (item.Value.jzId == JunZhuData.Instance().m_junzhuInfo.id)
+            {
+                house_id = item.Value.locationId;
+                break;
+            }
+        }
+        foreach (NpcCityTemplate _template in NpcCityTemplate.m_templates)
+        {
+            if (_template.m_npcId >= 1001 && _template.m_npcId < 1021)
+            {
+                if (_template.m_npcId - 1000 == house_id)
+                {
+                    tempOjbect = Instantiate(h_Self._Obj) as GameObject;
+                }
+                else
+                {
+                    tempOjbect = Instantiate(h_Other._Obj) as GameObject;
+                }
+                tempOjbect.name = "EffectBigHouse";
+                _listBigHouse.Add(tempOjbect);
+                tempOjbect.transform.parent = this.transform;
+                tempOjbect.GetComponent<TenementEnterPortal>().m_indexNum = _template.m_npcId;
+                if (TenementData.Instance.m_AllianceCityTenementDic.ContainsKey(_template.m_npcId - 1000))
+                {
+                    tempOjbect.GetComponent<TenementEnterPortal>().m_labName.enabled = true;
+                    tempOjbect.GetComponent<TenementEnterPortal>().m_labName.text = TenementData.Instance.m_AllianceCityTenementDic[_template.m_npcId - 1000].jzName;
+                }
+                else
+                {
+                    tempOjbect.GetComponent<TenementEnterPortal>().m_labName.enabled = false;
+                }
+
+                NpcObjectItem tempItem = tempOjbect.GetComponent<NpcObjectItem>();
+                tempItem.InitWithTenementNpc(_template);
+                if (m_npcObjectItemDic.ContainsKey(_template.m_Id))
+                {
+                    m_npcObjectItemDic.Remove(_template.m_Id);
+                    m_npcObjectItemDic.Add(_template.m_Id, tempItem);
+                }
+                else
+                {
+                    m_npcObjectItemDic.Add(_template.m_Id, tempItem);
+                }
+
+                PlayerEnterCollider[] tempEnterList = tempOjbect.GetComponentsInChildren<PlayerEnterCollider>();
+
+                foreach (PlayerEnterCollider tempCollider in tempEnterList)
+                {
+                    tempCollider.m_colliser += TriggerEnter;
+                }
             }
         }
     }

@@ -249,6 +249,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
                                 }
                             }
                        
+							FriendOperationData.Instance.friendIdList.Remove (ReponseInfo.junzhuId);
                         }
                         for (int i = 0; i < listInfo.Count; i++)
                         {
@@ -604,8 +605,8 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
         }
         if (!string.IsNullOrEmpty(name))
         {
-         EmailData.Instance ().ReplyLetter (name);
-         Destroy(m_MainParent);
+			EmailData.Instance.ReplyLetter (name);
+        	Destroy(m_MainParent);
         }       
     }
     string forbid_FriendName = "";

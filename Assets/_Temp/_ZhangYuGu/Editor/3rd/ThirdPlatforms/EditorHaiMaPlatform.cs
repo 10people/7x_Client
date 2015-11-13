@@ -1,4 +1,4 @@
-﻿//#define DEBUG_PLATFORM
+//#define DEBUG_PLATFORM
 
 using UnityEngine;
 using UnityEditor;
@@ -23,22 +23,22 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 	private const string Configured_XCodeProject = "/workspace/xcode_workspace/xcode_qixiong_HaiMa";
 
 
-	[MenuItem("Build/Third Platform/HaiMa Platform/Third Platform", false, 1)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_IOS_3RD_PREFIX + "HaiMa Platform/Third Platform", false, 1)]
 	public static void BuildPlatform(){
 		string t_path = PathHelper.GetMacHome() + Configured_XCodeProject;
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.INFO_LIST_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.INFO_LIST_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFolder ( t_path, PLATFORM_KIT_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFolder ( t_path, PLATFORM_KIT_FOLDER_NAME );
 		
-		EditorBuild3rd.ProcessFile ( t_path, EditorBuild3rd.CONTROLLER_FOLDER_NAME );
+		EditorBuildiOS3rd.ProcessFile ( t_path, EditorBuildiOS3rd.CONTROLLER_FOLDER_NAME );
 
 		{
-			EditorBuild3rd.ProcessXG ( t_path );
+			EditorBuildiOS3rd.ProcessXG ( t_path );
 		}
 	}
 
-	[MenuItem("Build/Third Platform/HaiMa Platform/Third Platform Project", false, 100)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_IOS_3RD_PREFIX + "HaiMa Platform/Third Platform Project", false, 100)]
 	private static void BuildHaiMaProject(){
 //		{
 		//			BuildPlatform();
@@ -49,9 +49,9 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 		OnProcessPbx( BuildTarget.iOS, t_built_projectpath );
 	}
 	
-	[MenuItem("Build/Settings/HaiMa", false, 1)]
+	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_SETTING_IOS_PREFIX + "HaiMa", false, 1)]
 	public static void BuildSettingsHaiMa(){
-		EditorBuild3rd.BuildSettings( "HaiMa" );
+		EditorBuildiOS3rd.BuildSettings( "HaiMa" );
 
 		AssetDatabase.Refresh();
 	}
@@ -86,16 +86,16 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 		Debug.Log ( "OnProcessPbx()" );
 		#endif
 
-		string t_pbx = EditorBuild3rd.GetPBXContent( p_target, p_path_to_built_project );
+		string t_pbx = EditorBuildiOS3rd.GetPBXContent( p_target, p_path_to_built_project );
 
 		// backup
 		{
-			EditorBuild3rd.BackUpPbx( p_path_to_built_project );
+			EditorBuildiOS3rd.BackUpPbx( p_path_to_built_project );
 		}
 
 		{
 			// build file, order
-			EditorBuild3rd.UpdatePbxAndCheckKeys( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbxAndCheckKeys( ref t_pbx, 
 			                                     "D8A1C7280E80637F000160D3 /* RegisterMonoModules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C7240E80637F000160D3 /* RegisterMonoModules.cpp */; };\n",
 
 											 	 "D8A1C7280E80637F000160D3 /* RegisterMonoModules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C7240E80637F000160D3 /* RegisterMonoModules.cpp */; };\n" +
@@ -123,7 +123,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 //								);
 
 			// ref
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "D8A1C7250E80637F000160D3 /* RegisterMonoModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterMonoModules.h; path = Libraries/RegisterMonoModules.h; sourceTree = SOURCE_ROOT; };\n",
 
 									 "D8A1C7250E80637F000160D3 /* RegisterMonoModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegisterMonoModules.h; path = Libraries/RegisterMonoModules.h; sourceTree = SOURCE_ROOT; };\n" +
@@ -154,7 +154,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 			// PBXTargetDependency
 
 			// PBXFrameworksBuildPhase.frameworks
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "AA5D99871AFAD3C800B27605 /* CoreText.framework in Frameworks */,\n",
 
 			                         "110E9FDE1BC75BB700BA819A /* libXG-SDK.a in Frameworks */,\n" +
@@ -174,7 +174,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 
 			
 			// PBXGroup
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "/* Begin PBXGroup section */\n",
 			                         
 			                         "/* Begin PBXGroup section */\n" +
@@ -239,7 +239,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 			                         );
 
 			// custom template
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "83B2574E0E63025400468741 /* libiconv.2.dylib */,\n",
 
 			                         "110E9FDD1BC75BB700BA819A /* libXG-SDK.a */,\n" +
@@ -249,7 +249,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 			                         );
 
 			// PBXGroup.frameworks
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "AA5D99861AFAD3C800B27605 /* CoreText.framework */,\n",
 
 			                         "115501B01BC674CB00D5EC9A /* libz.tbd */,\n" +
@@ -261,7 +261,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 			                         );
 
 			// classes
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "8AF18FE316490981007B4420 /* Unity */,\n",
 
 			                         "8AF18FE316490981007B4420 /* Unity */,\n" +
@@ -279,7 +279,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 
 			
 			// resources
-			EditorBuild3rd.UpdatePbx( ref t_pbx, 
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx, 
 			                         "56C56C9817D6015200616839 /* Images.xcassets in Resources */,\n",
 
 			                         "115501A21BC6745200D5EC9A /* AlipaySDK.bundle in Resources */,\n" +
@@ -303,7 +303,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 //			                         );
 
 			// framework search
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "FRAMEWORK_SEARCH_PATHS = \"$(inherited)\";\n" +
 			                         "				GCC_DYNAMIC_NO_PIC = NO;\n",
 			                         
@@ -316,7 +316,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 			                         "GCC_DYNAMIC_NO_PIC = NO;\n"
 			                         );
 
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "FRAMEWORK_SEARCH_PATHS = \"$(inherited)\";\n" +
 			                         "				GCC_ENABLE_CPP_EXCEPTIONS = YES;\n",
 			                         
@@ -343,7 +343,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 //			                         );
 
 			// lib search
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "\"\\\"$(SRCROOT)/Libraries\\\"\",\n",
 			                         
 			                         "\"\\\"$(SRCROOT)/Libraries\\\"\",\n" +
@@ -354,7 +354,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 			                         );
 			
 			// flag
-			EditorBuild3rd.UpdatePbx( ref t_pbx,
+			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
 			                         "OTHER_LDFLAGS = (\n" +
 			                         "					\"-weak_framework\",\n" +
 			                         "					CoreMotion,\n" +
@@ -373,7 +373,7 @@ public class EditorHaiMaPlatform : MonoBehaviour {
 		
 		{
 			// save
-			EditorBuild3rd.SavePbx( p_path_to_built_project, t_pbx );
+			EditorBuildiOS3rd.SavePbx( p_path_to_built_project, t_pbx );
 		}
 	}
 	

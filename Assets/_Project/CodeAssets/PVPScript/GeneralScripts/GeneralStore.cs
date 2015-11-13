@@ -63,7 +63,7 @@ public class GeneralStore : MonoBehaviour {
 		moneyTypeStr = MoneyStr (tempType);
 
 		refreshNeedMoney = refreshNeed;
-		Debug.Log ("refreshNeedMoney:" + refreshNeedMoney);
+//		Debug.Log ("refreshNeedMoney:" + refreshNeedMoney);
 
 		moneyIcon.spriteName = IconName (tempType);
 
@@ -115,6 +115,8 @@ public class GeneralStore : MonoBehaviour {
 		moneyIcon.GetComponent<NGUILongPress> ().OnLongPressFinish += DoActiveTips;
 
 		isDuiHuan = false;
+
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 	}
 
 	//iconName
@@ -244,14 +246,7 @@ public class GeneralStore : MonoBehaviour {
 			if (refreshTime == 0) 
 			{
 				//刷新商铺时间
-				if (storeType == GeneralControl.StoreType.PVP)
-				{
-					BaiZhanExchange.exchange.DuiHuanReq (0);
-				}
-				else
-				{
-					GeneralControl.Instance.GeneralStoreReq (storeType,GeneralControl.StoreReqType.FREE,titleLabel.text);
-				}
+				GeneralControl.Instance.GeneralStoreReq (storeType,GeneralControl.StoreReqType.FREE,titleLabel.text);
 			}
 			
 			yield return new WaitForSeconds(1);
@@ -325,33 +320,22 @@ public class GeneralStore : MonoBehaviour {
 		isDuiHuan = false;
 		if (i == 2)
 		{
-			if (storeType == GeneralControl.StoreType.PVP)
+			//判断钱币是否够 needNum
+			if (money >= needNum)
 			{
-				ConfirmManager.confirm.ConfirmReq (2,getDuiHuanInfo,0);
+				Debug.Log ("确定兑换");
+				
+				GeneralControl.Instance.StoreBuyReq (storeType,getDuiHuanInfo.id,itemName,needNum);
 			}
 			else
 			{
-				//判断钱币是否够 needNum
-				if (money >= needNum)
-				{
-					Debug.Log ("确定兑换");
-					
-					GeneralControl.Instance.StoreBuyReq (storeType,getDuiHuanInfo.id,itemName,needNum);
-				}
-				else
-				{
-					//钱币不足
-					BoxLoad (GeneralControl.BoxCallBackType.STORE_BUY);
-				}
+				//钱币不足
+				BoxLoad (GeneralControl.BoxCallBackType.STORE_BUY);
 			}
 		}
 		else if (i == 1)
 		{
-			if(FreshGuide.Instance().IsActive(100200) && TaskData.Instance.m_TaskInfoDic[100200].progress >= 0)
-			{
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100200];
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			}
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 		}
 	}
 	#endregion
@@ -381,24 +365,17 @@ public class GeneralStore : MonoBehaviour {
 	{
 		if (i == 2)
 		{
-			if (storeType == GeneralControl.StoreType.PVP)
+			//判断钱币是否够
+			if (money >= refreshNeedMoney)
 			{
-				BaiZhanExchange.exchange.DuiHuanReq (1);
+				Debug.Log ("确定刷新物品");
+				
+				GeneralControl.Instance.GeneralStoreReq (storeType,GeneralControl.StoreReqType.USE_MONEY,titleLabel.text);
 			}
 			else
 			{
-				//判断钱币是否够
-				if (money >= refreshNeedMoney)
-				{
-					Debug.Log ("确定刷新物品");
-					
-					GeneralControl.Instance.GeneralStoreReq (storeType,GeneralControl.StoreReqType.USE_MONEY,titleLabel.text);
-				}
-				else
-				{
-					//钱币不足
-					BoxLoad (GeneralControl.BoxCallBackType.STORE_REQ);
-				}
+				//钱币不足
+				BoxLoad (GeneralControl.BoxCallBackType.STORE_REQ);
 			}
 		}
 	}
@@ -450,24 +427,25 @@ public class GeneralStore : MonoBehaviour {
 		{
 		case GeneralControl.StoreType.PVP:
 		{
-			BaiZhanMainPage.baiZhanMianPage.baiZhanResp.hasWeiWang = money;
-			BaiZhanMainPage.baiZhanMianPage.InItMyRank ();
-			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
-			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
-			if(FreshGuide.Instance().IsActive(100200) && TaskData.Instance.m_TaskInfoDic[100200].progress >= 0)
-			{
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100200];
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-			}
+			PvpPage.pvpPage.PvpActiveState (true);
+			PvpPage.pvpPage.pvpResp.hasWeiWang = money;
+			PvpPage.pvpPage.InItMyRank ();
+//			BaiZhanMainPage.baiZhanMianPage.baiZhanResp.hasWeiWang = money;
+//			BaiZhanMainPage.baiZhanMianPage.InItMyRank ();
+//			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
+//			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
 
 			break;
 		}
 		case GeneralControl.StoreType.HUANGYE:
 		{
+
 			break;
 		}
 		case GeneralControl.StoreType.ALLANCE:
 		{
+			_MyAllianceManager.Instance().SHow_OR_Close_MyAlliance();
 			break;
 		}
 		case GeneralControl.StoreType.ALLIANCE_FIGHT:
@@ -491,7 +469,8 @@ public class GeneralStore : MonoBehaviour {
 		{
 		case GeneralControl.StoreType.PVP:
 		{
-			BaiZhanData.Instance ().CloseBaiZhan ();
+			PvpPage.pvpPage.DisActiveObj ();
+//			BaiZhanData.Instance ().CloseBaiZhan ();
 			break;
 		}
 		case GeneralControl.StoreType.HUANGYE:
@@ -501,7 +480,8 @@ public class GeneralStore : MonoBehaviour {
 		}
 		case GeneralControl.StoreType.ALLANCE:
 		{
-			_MyAllianceManager.Instance().Closed();
+			_MyAllianceManager.Instance().DoCloseWindow();
+			//_MyAllianceManager.Instance().Closed();
 			break;
 		}
 		case GeneralControl.StoreType.ALLIANCE_FIGHT:

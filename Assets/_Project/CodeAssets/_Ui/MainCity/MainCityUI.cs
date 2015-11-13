@@ -141,8 +141,9 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
             if (Global.m_isOpenBaiZhan)
             {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_BAI_ZHAN),
-                                        BaiZhanLoadCallback);
+//                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_PAGE),
+//                                        BaiZhanLoadCallback);
+				PvpData.Instance.OpenPvp ();
                 return;
             }
 

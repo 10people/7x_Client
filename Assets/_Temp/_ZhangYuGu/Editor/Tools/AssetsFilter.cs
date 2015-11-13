@@ -483,7 +483,7 @@ public class AssetsFilter : MonoBehaviour {
 	}
 
 	private static void OutputFile( string p_path, string p_text ){
-		UtilityTool.OutputFile( p_path, p_text );
+		FileHelper.OutputFile( p_path, p_text );
 	}
 
 	#endregion

@@ -56,11 +56,12 @@ public class TenementData : Singleton<TenementData>, SocketProcessor
 
 #if HOUSE_TEST
 
-                        if (MainCityUI.m_MainCityUI != null)
-                        {
-                            GameObject temp = UtilityTool.FindChild(MainCityUI.m_MainCityUI.transform, "HouseEnter").gameObject;
-                            BTNTest temp2 = temp.GetComponent<BTNTest>();
-                            temp2.DicKeyStr = string.Join(",", m_AllianceCityTenementDic.Keys.Select(item => item.ToString()).ToArray());
+                        if (MainCityUI.m_MainCityUI != null){
+							GameObject temp = TransformHelper.FindChild(MainCityUI.m_MainCityUI.transform, "HouseEnter").gameObject;
+                            
+							BTNTest temp2 = temp.GetComponent<BTNTest>();
+                    
+							temp2.DicKeyStr = string.Join(",", m_AllianceCityTenementDic.Keys.Select(item => item.ToString()).ToArray());
                         }
 
 #endif
@@ -134,9 +135,11 @@ public class TenementData : Singleton<TenementData>, SocketProcessor
 
                         if (MainCityUI.m_MainCityUI != null)
                         {
-                            GameObject temp = UtilityTool.FindChild(MainCityUI.m_MainCityUI.transform, "HouseEnter").gameObject;
-                            BTNTest temp2 = temp.GetComponent<BTNTest>();
-                            temp2.DicKeyStr = string.Join(",", m_AllianceCityTenementDic.Keys.Select(item => item.ToString()).ToArray());
+							GameObject temp = TransformHelper.FindChild(MainCityUI.m_MainCityUI.transform, "HouseEnter").gameObject;
+		                            
+							BTNTest temp2 = temp.GetComponent<BTNTest>();
+		                            
+							temp2.DicKeyStr = string.Join(",", m_AllianceCityTenementDic.Keys.Select(item => item.ToString()).ToArray());
                         }
 
 #endif

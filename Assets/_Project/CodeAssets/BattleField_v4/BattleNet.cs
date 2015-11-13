@@ -150,7 +150,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	private void OnSendEnterBattle()
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_NETWORK, "SendEnterBattle" );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_NETWORK, "SendEnterBattle" );
 		
 		PlayerState t_state = new PlayerState();
 		
@@ -183,7 +183,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	public void LoadGuangQiang()
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_DATA, "" );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_DATA, "" );
 
 		guangQiangLoadList.Clear ();
 
@@ -258,7 +258,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	public void LoadGuangQiangDone( ref WWW p_www, string p_path, Object p_object )
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_FX, p_path );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_FX, p_path );
 
 		for(int i = 0; i < 5; i++)
 		{
@@ -279,7 +279,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	public void LoadGuangQiangDone_2(ref WWW p_www, string p_path, Object p_object)
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_FX, p_path );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_FX, p_path );
 
 		BattleControlor.Instance ().GuangQiang_Forever = (GameObject)p_object;
 
@@ -292,7 +292,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	public void LoadBattleFlagDone()
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_CREATE_FLAGS, "BattleFlag" );
+		                         PrepareForBattleField.CONST_BATTLE_CREATE_FLAGS, "BattleFlag" );
 
 		Dictionary<int, BattleFlagGroup> groupDict = new Dictionary<int, BattleFlagGroup> ();
 		
@@ -528,7 +528,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	private void LoadCameraFlagDone()
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_CREATE_FLAGS, "CameraFlag" );
+		                         PrepareForBattleField.CONST_BATTLE_CREATE_FLAGS, "CameraFlag" );
 		
 		List<BattleCameraFlag> flags = new List<BattleCameraFlag>();
 		
@@ -578,7 +578,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	public void LoadDramaFlagDone()
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_CREATE_FLAGS, "DramaFlag" );
+		                         PrepareForBattleField.CONST_BATTLE_CREATE_FLAGS, "DramaFlag" );
 
 		List<BattleDramaFlag> flags = new List<BattleDramaFlag>();
 		
@@ -628,7 +628,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	public void LoadBattleWinDone()
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_CREATE_FLAGS, "DramaFlag" );
+		                         PrepareForBattleField.CONST_BATTLE_CREATE_FLAGS, "DramaFlag" );
 		
 		{
 			m_data_loaded++;
@@ -664,7 +664,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 			case ProtoIndexes.ZhanDou_Init_Resp:
 			{
 				StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-			                         StaticLoading.CONST_BATTLE_LOADING_NETWORK, "ZhanDou_Init_Resp" );
+			                         PrepareForBattleField.CONST_BATTLE_LOADING_NETWORK, "ZhanDou_Init_Resp" );
 
 				MemoryStream t_stream = new MemoryStream( p_message.m_protocol_message, 0, p_message.position );
 
@@ -796,7 +796,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 	public IEnumerator clickErrorCallback(int index)
 	{
-		EnterNextScene.Instance().CloseLoading();
+		EnterNextScene.Instance().DestroyUI();
 
 		yield return new WaitForEndOfFrame ();
 
@@ -1108,7 +1108,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 		{
 			StaticLoading.LoadingSection t_loading = StaticLoading.GetSection( StaticLoading.m_loading_sections,
-			                                                                  StaticLoading.CONST_BATTLE_LOADING_3D );
+			                                                                  PrepareForBattleField.CONST_BATTLE_LOADING_3D );
 
 			if( t_loading != null )
 			{
@@ -1142,7 +1142,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object )
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_3D, p_path );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_3D, p_path );
 
 		if(modelList.ContainsKey(p_path) == false)
 		{
@@ -1236,7 +1236,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 		{
 			StaticLoading.LoadingSection t_loading = StaticLoading.GetSection( StaticLoading.m_loading_sections,
-			                                                                  StaticLoading.CONST_BATTLE_LOADING_FX );
+			                                                                  PrepareForBattleField.CONST_BATTLE_LOADING_FX );
 			
 			if( t_loading != null ){
 				t_loading.SetTotalCount( m_listWantLoadEffID.Count );

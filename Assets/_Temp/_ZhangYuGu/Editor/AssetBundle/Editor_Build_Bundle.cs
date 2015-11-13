@@ -193,7 +193,7 @@ public class Editor_Build_Bundle{
 	public static void Generate_Bundle_List( BuildTarget p_build_target, string p_relative_path ){
 //		Debug.Log( "Generate_Bundle_List( " + p_relative_path + " )" );
 
-		string t_full_path = UtilityTool.GetFullPath_WithRelativePath( p_relative_path );
+		string t_full_path = PathHelper.GetFullPath_WithRelativePath( p_relative_path );
 	
 		{
 			DirectoryInfo t_dir = new DirectoryInfo( t_full_path );
@@ -205,7 +205,7 @@ public class Editor_Build_Bundle{
 				for( int i = 0; i < t_files.Length; i++ ){
 					FileInfo t_file_info = t_files[ i ];
 
-					if( UtilityTool.IsEndWith( t_file_info.FullName, ".meta#.txt" ) ){
+					if( StringHelper.IsEndWith( t_file_info.FullName, ".meta#.txt" ) ){
 						continue;
 					}
 
@@ -321,7 +321,7 @@ public class Editor_Build_Bundle{
 	}
 
 	public static JSONNode GetArchivedJsonNode( BuildTarget p_build_target ){
-		string t_full_path = UtilityTool.GetFullPath_WithRelativePath( CONFIG_ARCHIVED_ASSETS_PATH );
+		string t_full_path = PathHelper.GetFullPath_WithRelativePath( CONFIG_ARCHIVED_ASSETS_PATH );
 
 		JSONNode t_pre_json = null;
 
@@ -446,11 +446,11 @@ public class Editor_Build_Bundle{
 			string t_full_src_path = GetFullPath_WithRelativePath( t_process_path );
 
 			// clean
-			BuildUtility.DirectoryDelete( t_full_target_path, true );
+			FileHelper.DirectoryDelete( t_full_target_path, true );
 
 			// copy
 			{
-				BuildUtility.DirectoryCopy( t_full_src_path, t_full_target_path );
+				FileHelper.DirectoryCopy( t_full_src_path, t_full_target_path );
 			}
 
 			AssetDatabase.Refresh();
@@ -470,7 +470,7 @@ public class Editor_Build_Bundle{
 		{
 			string t_full_target_path = GetFullPath_WithRelativePath( "StreamingAssetsCache" );
 
-			BuildUtility.DirectoryDelete( t_full_target_path, true );
+			FileHelper.DirectoryDelete( t_full_target_path, true );
 		}
 		
 		ResetDependenceLevel( "Pop Dependencies Total Level: " + m_dependence_level,
@@ -965,7 +965,7 @@ public class Editor_Build_Bundle{
 			for( int i = 0; i< p_levels.Length; i++ ){
 				string t_asset_path_u3d = p_levels[ i ];
 				
-				string t_asset_path = UtilityTool.RemovePrefix( t_asset_path_u3d, "Assets/" );
+				string t_asset_path = StringHelper.RemovePrefix( t_asset_path_u3d, "Assets/" );
 				
 				#if ITEM_NAMES
 				string t_name = t_asset_path.Substring( t_asset_path.LastIndexOf( "/" ) + 1 );
@@ -986,7 +986,7 @@ public class Editor_Build_Bundle{
 			for( int i = 0; i< p_assets.Length; i++ ){
 				string t_asset_path_u3d = AssetDatabase.GetAssetPath( p_assets[ i ] );
 				
-				string t_asset_path = UtilityTool.RemovePrefix( t_asset_path_u3d, "Assets/" );
+				string t_asset_path = StringHelper.RemovePrefix( t_asset_path_u3d, "Assets/" );
 				
 				#if ITEM_NAMES
 				string t_name = t_asset_path.Substring( t_asset_path.LastIndexOf( "/" ) + 1 );
@@ -1030,7 +1030,7 @@ public class Editor_Build_Bundle{
 						UnityEngine.Object t_dependence_obj = AssetDatabase.LoadMainAssetAtPath( t_dependence_path[ j ] );
 						
 						if( Is_Recordable_Object( t_dependence_obj, t_dependence_path[ j ] ) ){
-							string t_dependence_asset_path = UtilityTool.RemovePrefix( t_dependence_path[ j ], "Assets/" );
+							string t_dependence_asset_path = StringHelper.RemovePrefix( t_dependence_path[ j ], "Assets/" );
 							
 							Build_D_O_Detail_Config( p_streaming_relative_path, 
 							                        t_asset_path_u3d,
@@ -1062,7 +1062,7 @@ public class Editor_Build_Bundle{
 						UnityEngine.Object t_dependence_obj = AssetDatabase.LoadMainAssetAtPath( t_dependence_path[ j ] );
 						
 						if( Is_Recordable_Object( t_dependence_obj, t_dependence_path[ j ] ) ){
-							string t_dependence_asset_path = UtilityTool.RemovePrefix( t_dependence_path[ j ], "Assets/" );
+							string t_dependence_asset_path = StringHelper.RemovePrefix( t_dependence_path[ j ], "Assets/" );
 							
 							Build_D_O_Detail_Config( p_streaming_relative_path, 
 							                        t_asset_path_u3d,
@@ -1434,13 +1434,13 @@ public class Editor_Build_Bundle{
 		string t_platform = "";
 		
 		if( p_build_target == BuildTarget.Android ){
-			t_platform = t_platform + UtilityTool.GetAndroidTag();
+			t_platform = t_platform + PlatformHelper.GetAndroidTag();
 		}
 		else if( p_build_target == BuildTarget.iOS ){
-			t_platform = t_platform + UtilityTool.GetiOSTag();
+			t_platform = t_platform + PlatformHelper.GetiOSTag();
 		}
 		else if( p_build_target == BuildTarget.StandaloneWindows ){
-			t_platform = t_platform + UtilityTool.GetWindowsTag();
+			t_platform = t_platform + PlatformHelper.GetWindowsTag();
 		}
 		else{
 			Debug.LogError( "TargetPlatform Error: " + p_build_target );
@@ -1457,13 +1457,13 @@ public class Editor_Build_Bundle{
 	public static string UpdateBundleRelativePath( string p_relative_path ){
 		string t_path = p_relative_path;
 
-		t_path = UtilityTool.RemovePrefix( p_relative_path, "/" );
+		t_path = StringHelper.RemovePrefix( p_relative_path, "/" );
 
-		t_path = UtilityTool.AddPrefix( p_relative_path, "/" );
+		t_path = StringHelper.AddPrefix( p_relative_path, "/" );
 
 		t_path = t_path.Replace( "/_", "/" );
 
-		t_path = UtilityTool.RemovePrefix( t_path, "/" );
+		t_path = StringHelper.RemovePrefix( t_path, "/" );
 
 		return t_path;
 	}
@@ -1483,15 +1483,15 @@ public class Editor_Build_Bundle{
 				t_bundle_relative_path = "/" + t_bundle_relative_path;
 			}
 
-			t_bundle_relative_path = UtilityTool.RemovePrefix( t_bundle_relative_path, "/Assets" );
+			t_bundle_relative_path = StringHelper.RemovePrefix( t_bundle_relative_path, "/Assets" );
 
-			t_bundle_relative_path = UtilityTool.RemovePrefix( t_bundle_relative_path, "/StreamingAssets" );
+			t_bundle_relative_path = StringHelper.RemovePrefix( t_bundle_relative_path, "/StreamingAssets" );
 
-			t_bundle_relative_path = UtilityTool.RemovePrefix( t_bundle_relative_path, "/" + UtilityTool.GetAndroidTag() );
+			t_bundle_relative_path = StringHelper.RemovePrefix( t_bundle_relative_path, "/" + PlatformHelper.GetAndroidTag() );
 
-			t_bundle_relative_path = UtilityTool.RemovePrefix( t_bundle_relative_path, "/" + UtilityTool.GetiOSTag() );
+			t_bundle_relative_path = StringHelper.RemovePrefix( t_bundle_relative_path, "/" + PlatformHelper.GetiOSTag() );
 
-			t_bundle_relative_path = UtilityTool.RemovePrefix( t_bundle_relative_path, "/" + UtilityTool.GetWindowsTag() );
+			t_bundle_relative_path = StringHelper.RemovePrefix( t_bundle_relative_path, "/" + PlatformHelper.GetWindowsTag() );
 		}
 		
 		string t_prefix = "Assets/StreamingAssets";
@@ -1609,7 +1609,7 @@ public class Editor_Build_Bundle{
 		
 		// check folder
 		{
-			string t_bundle_full_path = UtilityTool.GetFullPath_WithRelativePath( t_bundle_relative_path );
+			string t_bundle_full_path = PathHelper.GetFullPath_WithRelativePath( t_bundle_relative_path );
 			
 			DirectoryInfo t_dir = new DirectoryInfo( t_bundle_full_path );
 			
@@ -1661,7 +1661,7 @@ public class Editor_Build_Bundle{
 	 * 3.2.p_surfixes:		".jpg#.prefab#.png";
 	 */
 	public static void Build_Dir_To_One_Bundle_Deeply( string p_relative_path, string[] p_exc_path, string p_surfixes, BuildTarget p_build_target, bool p_push_dependence, bool p_check_sub_folders = true ){
-		string t_full_path = UtilityTool.GetFullPath_WithRelativePath( p_relative_path );
+		string t_full_path = PathHelper.GetFullPath_WithRelativePath( p_relative_path );
 
 		if( p_check_sub_folders ){
 			DirectoryInfo t_dir = new DirectoryInfo( t_full_path );
@@ -1703,7 +1703,7 @@ public class Editor_Build_Bundle{
 		// turn it to "/_Project/ArtAssets/UIs/_CommonAtlas"
 		{
 			// add first '/'
-			p_relative_path = UtilityTool.AddPrefix( p_relative_path, "/" );
+			p_relative_path = StringHelper.AddPrefix( p_relative_path, "/" );
 			
 			// remove '/'
 			while( p_relative_path.EndsWith( "/" ) ){
@@ -1748,7 +1748,7 @@ public class Editor_Build_Bundle{
 
 		// check folder
 		{
-			string t_dir_path = UtilityTool.GetFullPath_WithRelativePath( t_bundle_relative_path );
+			string t_dir_path = PathHelper.GetFullPath_WithRelativePath( t_bundle_relative_path );
 			
 			DirectoryInfo t_dir = new DirectoryInfo( t_dir_path );
 			
@@ -1806,7 +1806,7 @@ public class Editor_Build_Bundle{
 	*/
 	public static void Build_Dir_To_Multi_Bundle_Deeply( string p_relative_path, string[] p_exc_path, string p_surfixes, BuildTarget p_build_target, bool p_push_dependence, bool p_check_sub_folders = true ){
 		if( p_check_sub_folders ){
-			string t_full_path = UtilityTool.GetFullPath_WithRelativePath( p_relative_path );
+			string t_full_path = PathHelper.GetFullPath_WithRelativePath( p_relative_path );
 			
 			DirectoryInfo t_dir = new DirectoryInfo( t_full_path );
 			
@@ -1846,11 +1846,11 @@ public class Editor_Build_Bundle{
 
 		// remove relative prefix: "Assets". "/Assets"
 		{
-			p_relative_path = UtilityTool.RemovePrefix( p_relative_path, "/" );
+			p_relative_path = StringHelper.RemovePrefix( p_relative_path, "/" );
 
-			p_relative_path = UtilityTool.RemovePrefix( p_relative_path, "Assets" );
+			p_relative_path = StringHelper.RemovePrefix( p_relative_path, "Assets" );
 
-			p_relative_path = UtilityTool.RemovePrefix( p_relative_path, "/" );
+			p_relative_path = StringHelper.RemovePrefix( p_relative_path, "/" );
 		}
 
 		List<string> t_files_path_name = Get_All_Assets_Relative_Path ( p_relative_path, p_surfixes );
@@ -1869,7 +1869,7 @@ public class Editor_Build_Bundle{
 			t_bundle_relative_path = GetBundleRelativePath_WithRelativePath( t_bundle_relative_path,
 																				p_build_target );
 
-			string t_bundle_full_path = UtilityTool.GetFullPath_WithRelativePath( t_bundle_relative_path );
+			string t_bundle_full_path = PathHelper.GetFullPath_WithRelativePath( t_bundle_relative_path );
 			
 			DirectoryInfo t_dir = new DirectoryInfo( t_bundle_full_path );
 			
@@ -1888,7 +1888,7 @@ public class Editor_Build_Bundle{
 			string t_file_name = t_files_path_name[ i ];
 
 			if( !string.IsNullOrEmpty( p_surfixes ) ){
-				if( !UtilityTool.IsEndWith( t_file_name, p_surfixes ) ){
+				if( !StringHelper.IsEndWith( t_file_name, p_surfixes ) ){
 					continue;
 				}
 			}
@@ -1916,7 +1916,7 @@ public class Editor_Build_Bundle{
 	*/
 	public static void Build_Scenes_Dir_To_Multi_Bundle_Deeply( string p_relative_path, string[] p_exc_path, string p_surfixes, BuildTarget p_build_target, bool p_push_dependence, bool p_check_sub_folders = true ){
 		if( p_check_sub_folders ){
-			string t_full_path = UtilityTool.GetFullPath_WithRelativePath( p_relative_path );
+			string t_full_path = PathHelper.GetFullPath_WithRelativePath( p_relative_path );
 			
 			DirectoryInfo t_dir = new DirectoryInfo( t_full_path );
 			
@@ -1956,11 +1956,11 @@ public class Editor_Build_Bundle{
 		
 		// remove relative prefix: "Assets". "/Assets"
 		{
-			p_relative_path = UtilityTool.RemovePrefix( p_relative_path, "/" );
+			p_relative_path = StringHelper.RemovePrefix( p_relative_path, "/" );
 			
-			p_relative_path = UtilityTool.RemovePrefix( p_relative_path, "Assets" );
+			p_relative_path = StringHelper.RemovePrefix( p_relative_path, "Assets" );
 			
-			p_relative_path = UtilityTool.RemovePrefix( p_relative_path, "/" );
+			p_relative_path = StringHelper.RemovePrefix( p_relative_path, "/" );
 		}
 		
 		List<string> t_files_path_name = Get_All_Assets_Relative_Path ( p_relative_path, p_surfixes );
@@ -1979,7 +1979,7 @@ public class Editor_Build_Bundle{
 			t_bundle_relative_path = GetBundleRelativePath_WithRelativePath( t_bundle_relative_path,
 			                                                                p_build_target );
 
-			string t_bundle_full_path = UtilityTool.GetFullPath_WithRelativePath( t_bundle_relative_path );
+			string t_bundle_full_path = PathHelper.GetFullPath_WithRelativePath( t_bundle_relative_path );
 			
 			DirectoryInfo t_dir = new DirectoryInfo( t_bundle_full_path );
 			
@@ -1998,7 +1998,7 @@ public class Editor_Build_Bundle{
 			string t_file_name = t_files_path_name[ i ];
 
 			if( !string.IsNullOrEmpty( p_surfixes ) ){
-				if( !UtilityTool.IsEndWith( t_file_name, p_surfixes ) ){
+				if( !StringHelper.IsEndWith( t_file_name, p_surfixes ) ){
 					continue;
 				}
 			}
@@ -2039,7 +2039,7 @@ public class Editor_Build_Bundle{
 		
 		// check folder
 		{
-			string t_dir_path = UtilityTool.GetFullPath_WithRelativePath( t_bundle_relative_path );
+			string t_dir_path = PathHelper.GetFullPath_WithRelativePath( t_bundle_relative_path );
 			
 			DirectoryInfo t_dir = new DirectoryInfo( t_dir_path );
 			
@@ -2389,7 +2389,7 @@ public class Editor_Build_Bundle{
 
 		string t_asset_prefix = "Assets";
 
-		string t_path = UtilityTool.GetFullPath_WithRelativePath( p_relative_dir );
+		string t_path = PathHelper.GetFullPath_WithRelativePath( p_relative_dir );
 		
 		//Debug.Log ( "Assets Parent Path: " + t_path );
 
@@ -2399,7 +2399,7 @@ public class Editor_Build_Bundle{
 		
 		for( int i = 0; i < t_files.Length; i++ ){
 			if( !string.IsNullOrEmpty( p_surfixes ) ){
-				if( !UtilityTool.IsEndWith( t_files[ i ].Name, p_surfixes ) ){
+				if( !StringHelper.IsEndWith( t_files[ i ].Name, p_surfixes ) ){
 					continue;
 				}
 			}
@@ -2451,7 +2451,7 @@ public class Editor_Build_Bundle{
 			p_relative_dir = "/" + p_relative_dir;
 		}
 
-		string t_path = UtilityTool.GetFullPath_WithRelativePath( p_relative_dir );
+		string t_path = PathHelper.GetFullPath_WithRelativePath( p_relative_dir );
 		
 		//Debug.Log ( "Assets Parent Path: " + t_path );
 		
@@ -2460,7 +2460,7 @@ public class Editor_Build_Bundle{
 		FileInfo[] t_files = t_dir.GetFiles ();
 		
 		for( int i = 0; i < t_files.Length; i++ ){
-			if( !UtilityTool.IsEndWith( t_files[ i ].Name, p_surfixes ) ){
+			if( !StringHelper.IsEndWith( t_files[ i ].Name, p_surfixes ) ){
 				continue;
 			}
 

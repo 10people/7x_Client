@@ -106,7 +106,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 				mMBTempt[i].color =  new Color(0,0,0,255);
 			}
 		}
-		Debug.Log ("SkillId = "+SkillId);
+//		Debug.Log ("SkillId = "+SkillId);
 
 		MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempBy_pz_id (MiBaoNum,SkillId);
 		
@@ -130,7 +130,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 		Skillinstruction.text = SkillDes.description;
 
-		Debug.Log ("mSkill.SkillDetail = " +mSkill.SkillDetail);
+//		Debug.Log ("mSkill.SkillDetail = " +mSkill.SkillDetail);
 
 		DescIdTemplate DeliSkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.SkillDetail);
 
@@ -218,7 +218,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 					
 					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100220];
 					
-					Debug.Log("秘宝技能激活2");
+//					Debug.Log("秘宝技能激活2");
 					
 					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]); //选择秘宝
 
@@ -318,7 +318,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 				
 				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100220];
 				
-				Debug.Log("秘宝技能激活3");
+//				Debug.Log("秘宝技能激活3");
 				
 				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]); //选择秘宝
 

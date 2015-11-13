@@ -8,7 +8,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+
 using qxmobile.protobuf;
+
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -84,9 +86,9 @@ public class UtilityTool : Singleton<UtilityTool>{
 
         if ( p_pause ){
 			// clean
-			{
-				UtilityTool.Instance.DelayedUnloadUnusedAssets();
-			}
+//			{
+//				UtilityTool.Instance.DelayedUnloadUnusedAssets();
+//			}
 
         }
 
@@ -405,225 +407,6 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     #region Transform
 
-    /// Set localPosition and localRotation to Zero.
-    public static void ResetLocalPosAndLocalRot(GameObject p_gb)
-    {
-        if (p_gb == null)
-        {
-            return;
-        }
-
-        p_gb.transform.localPosition = Vector3.zero;
-
-        p_gb.transform.localRotation = Quaternion.identity;
-    }
-
-    /// Set localPosition and localRotation and localScale to Zero.
-    public static void ResetLocalPosAndLocalRotAndLocalScale(GameObject p_gb)
-    {
-        if (p_gb == null)
-        {
-            return;
-        }
-
-        ResetLocalPosAndLocalRot(p_gb);
-
-        p_gb.transform.localScale = Vector3.one;
-    }
-
-    public static Vector3 GetLocalPositionInUIRoot(GameObject p_ngui_gb)
-    {
-        if (p_ngui_gb == null)
-        {
-            Debug.LogError("Error, ngui gb = null.");
-
-            return Vector3.zero;
-        }
-
-        Vector3 t_local_pos = p_ngui_gb.transform.localPosition;
-
-        //		Debug.Log( p_ngui_gb.name + ": " + p_ngui_gb.transform.localPosition + " - " + p_ngui_gb.transform.position );
-
-        Transform t_parent = p_ngui_gb.transform.parent;
-
-        while (t_parent != null)
-        {
-            if (t_parent.gameObject.GetComponent<UIRoot>() != null)
-            {
-                break;
-            }
-
-            t_local_pos = t_local_pos + t_parent.localPosition;
-
-            //			Debug.Log( t_parent.name + ": " + t_parent.localPosition );
-
-            t_parent = t_parent.parent;
-
-            if (t_parent == null)
-            {
-                Debug.LogError("Error, UIRoot Not Founded.");
-
-                return Vector3.zero;
-            }
-        }
-
-        return t_local_pos;
-    }
-
-    public static Vector3 GetLocalScaleInUIRoot(GameObject p_ngui_gb)
-    {
-        if (p_ngui_gb == null)
-        {
-            Debug.LogError("Error, ngui gb = null.");
-
-            return Vector3.one;
-        }
-
-        Vector3 t_local_scale = p_ngui_gb.transform.localScale;
-
-        //		Debug.Log( p_ngui_gb.name + ": " + p_ngui_gb.transform.localPosition + " - " + p_ngui_gb.transform.position );
-
-        Transform t_parent = p_ngui_gb.transform.parent;
-
-        while (t_parent != null)
-        {
-            if (t_parent.gameObject.GetComponent<UIRoot>() != null)
-            {
-                break;
-            }
-
-            t_local_scale.x = t_local_scale.x * t_parent.localScale.x;
-            t_local_scale.y = t_local_scale.y * t_parent.localScale.y;
-            t_local_scale.z = t_local_scale.z * t_parent.localScale.z;
-
-            //			Debug.Log( t_parent.name + ": " + t_parent.localPosition );
-
-            t_parent = t_parent.parent;
-
-            if (t_parent == null)
-            {
-                Debug.LogError("Error, UIRoot Not Founded.");
-
-                return Vector3.one;
-            }
-        }
-
-        return t_local_scale;
-    }
-
-    public static void CopyTransform(GameObject p_source, GameObject p_destination)
-    {
-        if (p_source == null)
-        {
-            Debug.LogError("CopyTransform.Source = null");
-
-            return;
-        }
-
-        if (p_destination == null)
-        {
-            Debug.LogError("CopyTransform.Des = null");
-
-            return;
-        }
-
-        p_destination.transform.localPosition = p_source.transform.localPosition;
-
-        p_destination.transform.localScale = p_source.transform.localScale;
-
-        p_destination.transform.localRotation = p_source.transform.localRotation;
-
-    }
-
-    /// <summary>
-    /// Ergodic parent's all children
-    /// </summary>
-    /// <param name="parent">parent</param>
-    /// <returns>all children</returns>
-    public static List<Transform> ErgodicChilds(Transform parent)
-    {
-        List<Transform> returnTransforms = new List<Transform>();
-        for (int i = 0; i < parent.childCount; i++)
-        {
-            returnTransforms.Add(parent.GetChild(i));
-        }
-
-        foreach (var item in returnTransforms)
-        {
-            returnTransforms = returnTransforms.Concat(ErgodicChilds(item)).ToList();
-        }
-
-        return returnTransforms;
-    }
-
-    /// <summary>
-    /// Ergodic child's all parents
-    /// </summary>
-    /// <param name="child">child</param>
-    /// <returns>all parents</returns>
-    public static List<Transform> ErgodicParents(Transform child)
-    {
-        if (child == null)
-        {
-            return null;
-        }
-
-        List<Transform> returnTransforms = new List<Transform>();
-        Transform targetTransform = child.parent;
-        while (targetTransform != null)
-        {
-            returnTransforms.Add(targetTransform);
-            targetTransform = targetTransform.parent;
-        }
-
-        return returnTransforms;
-    }
-
-    /// <summary>
-    /// Find the first child transform with special name. 
-    /// </summary>
-    /// <param name="parent">The parent tranfrom of the child which will be found.</param>
-    /// <param name="objName">The name of the child transfrom.</param>
-    /// <returns>The transfrom to be found, null if not found.</returns>
-    public static Transform FindChild(Transform parent, string objName)
-    {
-        if (parent.name == objName)
-        {
-            return parent;
-        }
-        return (from Transform item in parent select FindChild(item, objName)).FirstOrDefault(child => child != null);
-    }
-
-    /// <summary>
-    /// Find the first parent transform with special name. 
-    /// </summary>
-    /// <param name="child">The child tranfrom of the parent which will be found.</param>
-    /// <param name="objName">The name of the child transfrom.</param>
-    /// <returns>The transfrom to be found, null if not found.</returns>
-    public static Transform FindParent(Transform child, string objName)
-    {
-        if (child == null)
-        {
-            return null;
-        }
-        return child.name == objName ? child : FindParent(child.parent.transform, objName);
-    }
-
-    /// <summary>
-    /// Get the first parent specific component, for unity elder version in used, don't use GameObject.GetComponentInParent().
-    /// </summary>
-    /// <typeparam name="T">generic variable which inherited from monobehaviour</typeparam>
-    /// <param name="child">The child tranfrom.</param>
-    /// <returns>The component to be found, null if not found.</returns>
-    public static T GetComponentInParent<T>(Transform child) where T : MonoBehaviour
-    {
-        if (child == null)
-        {
-            return null;
-        }
-        return child.GetComponent<T>() ?? GetComponentInParent<T>(child.parent.transform);
-    }
-
     /// <summary>
     /// Set parent's child num to specific num, standardize automaticlly.
     /// </summary>
@@ -851,254 +634,6 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 
 
-    #region Platform Path
-
-    /// Params:
-    /// p_path: file://E:/WorkSpace_External/DynastyMobile_2014/Assets/StreamingAssets/Android/Resources/Data/BattleField/BattleFlags/BattleFlags_-22f14f9d
-    /// 
-    /// return: BattleFlags_-22f14f9d
-    public static string GetFileNameFromPath(string p_path)
-    {
-        int t_index = p_path.LastIndexOf('/');
-
-        if (t_index < 0)
-        {
-            return p_path;
-        }
-        else
-        {
-            return p_path.Substring(t_index + 1);
-        }
-    }
-
-    /** Params:
-     * 1.p_relative_path:		"StreamingAssets/UIResources/MemoryTrace/MemoryTrace";
-     */
-    public static string GetFullPath_WithRelativePath(string p_res_relative_path)
-    {
-        // check first '/'
-        if (!p_res_relative_path.StartsWith("/"))
-        {
-            p_res_relative_path = "/" + p_res_relative_path;
-        }
-
-        while (p_res_relative_path.StartsWith("/Assets"))
-        {
-            p_res_relative_path = RemovePrefix(p_res_relative_path, "/Assets");
-        }
-
-        return Application.dataPath + p_res_relative_path;
-    }
-
-    /* Params:
-     * 1.p_res_relative_path: 	"Unfiled";
-     * 
-     * Return:			"Assets/StreamingAssets/PlatformX/Unfiled";
-     */
-    public static string GetConfigRelativePath_WithRelativePath(string p_config_relative_path_name)
-    {
-        string t_config_prefix = Application.streamingAssetsPath;
-
-        // Add platform prefix
-        {
-            string t_platform = "/";
-
-            t_platform = t_platform + UtilityTool.GetPlatformTag();
-
-            t_config_prefix = t_config_prefix + t_platform;
-        }
-
-        return t_config_prefix + "/" + p_config_relative_path_name;
-    }
-
-    /* Return:	iOS/Android/Windows
-     */
-    public static string GetPlatformTag()
-    {
-        RuntimePlatform t_runtime_platform = Application.platform;
-
-        string t_platform = "";
-
-        if (t_runtime_platform == RuntimePlatform.WindowsEditor)
-        {
-            t_platform = t_platform + GetAndroidTag();
-        }
-        else if (t_runtime_platform == RuntimePlatform.Android)
-        {
-            t_platform = t_platform + GetAndroidTag();
-        }
-        else if (t_runtime_platform == RuntimePlatform.OSXEditor)
-        {
-            t_platform = t_platform + GetiOSTag();
-        }
-        else if (t_runtime_platform == RuntimePlatform.IPhonePlayer)
-        {
-            t_platform = t_platform + GetiOSTag();
-        }
-        else if (t_runtime_platform == RuntimePlatform.WindowsPlayer)
-        {
-            t_platform = t_platform + GetWindowsTag();
-        }
-        else
-        {
-            Debug.LogError("TargetPlatform Error: " + t_runtime_platform);
-        }
-
-        return t_platform;
-    }
-
-    /// "Android"
-    public static string GetAndroidTag()
-    {
-        return "Android";
-    }
-
-    /// "iOS"
-    public static string GetiOSTag()
-    {
-        return "iOS";
-    }
-
-    public static string GetWindowsTag()
-    {
-        return "Windows";
-    }
-
-    /// Desc:
-    /// Asset Path for WWW.Load.
-    ///
-    /// Params:
-    /// p_bundle_key:	"_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab";
-    /// 
-    /// return:
-    /// OS.dataPath/Platform/_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab
-    public static string GeStreamingAssetWWWPath(string p_res_asset_path)
-    {
-        {
-            p_res_asset_path = UtilityTool.RemovePrefix(p_res_asset_path, "/");
-
-            p_res_asset_path = "/" + p_res_asset_path;
-        }
-
-#if UNITY_EDITOR
-        if (Application.platform == RuntimePlatform.WindowsEditor)
-        {
-            return "file://" + Application.streamingAssetsPath + p_res_asset_path;
-        }
-        else if (Application.platform == RuntimePlatform.OSXEditor)
-        {
-            return "file://" + Application.dataPath + "/StreamingAssets" + p_res_asset_path;
-        }
-#else
-		if (Application.platform == RuntimePlatform.WindowsPlayer ){
-			return "file://" + Application.streamingAssetsPath + p_res_asset_path;
-		}
-		else if( Application.platform == RuntimePlatform.Android ){
-			// Android
-			return "jar:file://" + Application.dataPath + "!/assets" + p_res_asset_path;
-		}
-		else if( Application.platform == RuntimePlatform.IPhonePlayer ){
-			// iOS 
-			return "file://" + Application.dataPath + "/Raw" + p_res_asset_path;
-		}
-		
-#endif
-
-        return null;
-    }
-
-    #endregion
-
-
-
-    #region File
-
-    /** Params:
-	* p_file_name: Local_File.bin
-	*/
-    public static string GetPersistentFilePath(string p_file_name)
-    {
-        string t_local_file_name = Application.persistentDataPath + "/" + p_file_name;
-
-        return t_local_file_name;
-    }
-
-    /** Params:
-    * p_file_name: Local_File.bin
-    */
-    public static System.IO.FileStream GetPersistentFileStream(string p_file_name)
-    {
-        string t_local_file_name = GetPersistentFilePath(p_file_name);
-
-        System.IO.FileStream t_stream = new System.IO.FileStream(t_local_file_name,
-                                                                 System.IO.FileMode.OpenOrCreate);
-
-#if UNITY_IPHONE
-		UnityEngine.iOS.Device.SetNoBackupFlag( t_local_file_name );
-#endif
-
-        return t_stream;
-    }
-
-    /// Params:
-    /// p_file_name: Local_File.bin
-    public static void DeletePersistentFileStream(string p_file_name)
-    {
-		string t_local_file_name = GetPersistentFilePath ( p_file_name );
-
-		if (System.IO.File.Exists( t_local_file_name ) ) {
-			System.IO.File.Delete( t_local_file_name );
-		}
-    }
-
-    public static string ReadString(System.IO.FileStream p_stream)
-    {
-        byte[] t_bytes = new byte[p_stream.Length];
-
-        p_stream.Read(t_bytes, 0, (int)p_stream.Length);
-
-        string t_str = Encoding.UTF8.GetString(t_bytes);
-
-        return t_str;
-    }
-
-    public static void WriteString(System.IO.FileStream p_stream, string p_data)
-    {
-        byte[] t_bytes = Encoding.UTF8.GetBytes(p_data);
-
-        p_stream.Write(t_bytes, 0, t_bytes.Length);
-    }
-
-    /// Params:
-    /// p_path: Application.dataPath + "/Resources/_Data/Config/Test/action.txt"
-    public static void OutputFile(string p_path, string p_text)
-    {
-        FileStream t_file_stream = null;
-
-        if (File.Exists(p_path))
-        {
-            t_file_stream = new FileStream(p_path, FileMode.Truncate);
-        }
-        else
-        {
-            t_file_stream = new FileStream(p_path, FileMode.Create);
-        }
-
-        StreamWriter t_stream_writer = new StreamWriter(
-            t_file_stream,
-            Encoding.Default);
-
-        t_stream_writer.Write(p_text);
-
-        t_stream_writer.Close();
-
-        t_file_stream.Close();
-    }
-
-    #endregion
-
-
-
     #region Load
 
     public static void LoadStringStringDict(Dictionary<string, string> p_dict, TextAsset p_text, char p_splitter)
@@ -1121,49 +656,6 @@ public class UtilityTool : Singleton<UtilityTool>{
                 //				Debug.LogWarning( "Parse Error: " + t_line );
             }
         }
-    }
-
-    #endregion
-
-
-
-    #region GUI
-
-    /** Desc:
-	 * Get GUI Rect with index and params[ 6 ].
-	 * 
-	 * Params:
-	 * p_offset_x: offset x
-	 * p_offset_y: offset y
-	 * p_size_x: size x
-	 * p_size_y: size y
-	 * p_delta_x: delta x
-	 * p_delta_y: delta y
-	 */
-    public static Rect GetGUIRect(int p_index, float[] p_params)
-    {
-        return GetGUIRect(p_index,
-                          p_params[0], p_params[1],
-                          p_params[2], p_params[3],
-                          p_params[4], p_params[5]);
-    }
-
-    /** Params:
-     * p_index: item index
-     * p_offset_x: offset x
-     * p_offset_y: offset y
-     * p_size_x: size x
-     * p_size_y: size y
-     * p_delta_x: delta x
-     * p_delta_y: delta y
-     */
-    public static Rect GetGUIRect(int p_index,
-                                  float p_offset_x, float p_offset_y,
-                                  float p_size_x, float p_size_y,
-                                  float p_delta_x, float p_delta_y)
-    {
-        return new Rect(p_offset_x + p_index * p_delta_x, p_offset_y + p_index * p_delta_y,
-                        p_size_x, p_size_y);
     }
 
     #endregion
@@ -1437,37 +929,15 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 
 
-	#region File Log
-
-	private const string LOG_FILE_NAME = "Log";
-
-	public static void DeleteLogFile(){
-//		Debug.Log ( "DeleteLogFile( " + GetPersistentFilePath( LOG_FILE_NAME ) + " )" );
-
-		DeletePersistentFileStream ( LOG_FILE_NAME );
-	}
-
-	public static void LogFile( string p_log, string p_stack, LogType p_type ){
-		string t_log_string = p_type + ": " + p_log + 
-			"\n" + p_stack + 
-				"\n";
-		
-//		Debug.Log ( "LogFile( " + t_log_string + " )" );
-
-		System.IO.FileStream t_stream = UtilityTool.GetPersistentFileStream( LOG_FILE_NAME );
-
-		t_stream.Position = t_stream.Length;
-
-		UtilityTool.WriteString( t_stream, t_log_string );
-		
-		t_stream.Close();
-	}
-
-	#endregion
-
-
-
     #region GC
+
+	public static void UnloadUnusedAssets(){
+//		Debug.Log( "UtilityTool.UnloadUnusedAssets()" );
+		
+		Resources.UnloadUnusedAssets();
+		
+		System.GC.Collect();
+	}
 
     public void DelayedUnloadUnusedAssets(){
         StartCoroutine( Exec_DelayedUnloadUnusedAssets( 0.5f ) );
@@ -1477,14 +947,6 @@ public class UtilityTool : Singleton<UtilityTool>{
         yield return p_delay;
 
         UnloadUnusedAssets();
-    }
-
-    public static void UnloadUnusedAssets(){
-//		Debug.Log( "UtilityTool.UnloadUnusedAssets()" );
-
-        Resources.UnloadUnusedAssets();
-
-        System.GC.Collect();
     }
 
     #endregion
@@ -1822,69 +1284,6 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 
     #region Utilities
-
-    public static string AddPrefix(string p_string, string p_prefix)
-    {
-        if (!p_string.StartsWith(p_prefix))
-        {
-            return p_prefix + p_string;
-        }
-
-        return p_string;
-    }
-
-    public static string RemovePrefix(string p_string, string p_prefix)
-    {
-        if (p_string.StartsWith(p_prefix))
-        {
-            p_string = p_string.Substring(p_prefix.Length);
-        }
-
-        return p_string;
-    }
-
-    public static string RemoveSurfix(string p_string, string p_surfix)
-    {
-        if (p_string.Contains(p_surfix))
-        {
-            int t_count = p_string.Length - p_surfix.Length;
-
-            if (t_count == p_string.LastIndexOf(p_surfix))
-            {
-                p_string = p_string.Substring(0, t_count);
-            }
-            else
-            {
-                Debug.LogError("Error, " + p_string + " not end with " + p_surfix);
-            }
-        }
-
-        return p_string;
-    }
-
-    /** Desc:
-     * 
-     * Params:
-     * 1.p_surfixes:	.jpg#.prefab#.png;
-     */
-    public static bool IsEndWith(string p_file_name, string p_surfixes)
-    {
-        char[] t_splitters = { '#' };
-
-        string[] t_surfixes = p_surfixes.Split(t_splitters);
-
-        for (int i = 0; i < t_surfixes.Length; i++)
-        {
-            if (p_file_name.ToLowerInvariant().EndsWith(t_surfixes[i].ToLowerInvariant()))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
 
     public static string GetStringTime(int p_sec)
     {

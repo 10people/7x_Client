@@ -71,11 +71,11 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 
 	public void OnGUI(){
+		ShowConsole ();
+
 		ShowPause ();
 
 		ShowQuickFx ();
-
-		ShowConsole ();
 	}
 
 	// Update is called once per frame
@@ -187,7 +187,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 		{
 			RegisterCommand ( PING_COMMAND, OnPing );
 
-			RegisterCommand ( LOG_DEVICE_INFO, LogDeviceInfo );
+			RegisterCommand ( LOG_DEVICE_INFO, DeviceHelper.LogDeviceInfo );
 		}
 
 		if ( ThirdPlatform.IsThirdPlatform () ) {
@@ -228,13 +228,13 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 			RegisterCommand( LOG_FPS, LogFps );
 
-			RegisterCommand( SET_BLOOM, Console_SetBloom.SetBloom );
+			RegisterCommand( SET_BLOOM, Console_SetQuality.SetBloom );
 
 			RegisterCommand( LOG_CONFIG, LogConfig );
 
 			RegisterCommand( LOG_QUALITY, LogQuality );
 
-			RegisterCommand( SET_WEIGHT, Console_SetWeight.SetWeight );
+			RegisterCommand( SET_WEIGHT, Console_SetQuality.SetWeight );
 
 			RegisterCommand( LOG_ROOT_AUTO_RELEASE, LogRootAutoRelease );
 
@@ -243,6 +243,12 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 			RegisterCommand( SET_SKILL_FX, Console_SetBattleFieldFx.SetSkillFx );
 
 			RegisterCommand( SET_BLOODLABEL, Console_SetBattleFieldFx.setBloodLabel );
+
+			RegisterCommand( SET_FPS, Console_SetQuality.SetFPS );
+
+			RegisterCommand( SET_SYNC, Console_SetQuality.SetSync );
+
+			RegisterCommand( GC, Console_SetSystem.GC );
 		}
 	}
 
@@ -584,29 +590,9 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	#region Log Device Info
 
 	public static void LogDeviceInfo(){
-		ConsoleTool.Instance().LogDeviceInfo( null );
+		DeviceHelper.LogDeviceInfo( null );
 	}
 
-	/// Emp:
-	/// LogDeviceInfo
-	private void LogDeviceInfo( string[] p_params ){
-		#if UNITY_IOS
-		Debug.Log( "iGen: " + UnityEngine.iOS.Device.generation.ToString() );
-		#endif
-		
-		Debug.Log( "Model: " + SystemInfo.deviceModel + " - Name: " + SystemInfo.deviceName );
-		
-		Debug.Log( "G.Name: " + SystemInfo.graphicsDeviceName );
-		
-		
-		
-		Debug.Log( "G.Mem: " + SystemInfo.graphicsMemorySize + " - P.FR: " + SystemInfo.graphicsPixelFillrate );
-		
-		Debug.Log( "S.Mem: " + SystemInfo.systemMemorySize + " - G.DV: " + SystemInfo.graphicsDeviceVersion );
-		
-		Debug.Log( "G: " + SystemInfo.processorType + " - G.Num: " + SystemInfo.processorCount );
-	}
-	
 	#endregion
 
 
@@ -805,6 +791,12 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	private const string SET_SKILL_FX					= "/SetSkillFx";
 
 	private const string SET_BLOODLABEL 				= "/SetBloodLabel";
+
+	private const string SET_FPS						= "/SetFPS";
+
+	private const string SET_SYNC						= "/SetSync";
+
+	private const string GC								= "/GC";
 
 	#endregion
 

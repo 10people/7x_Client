@@ -31,6 +31,8 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 
 	public GameObject m_EvenrAlert;
 
+	public GameObject GameObj_Camera;
+
 	public static _MyAllianceManager Instance ()
 	{
 		if (!m_MyAllianceManager)
@@ -72,7 +74,7 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 				
 				t_qx.Deserialize(t_tream, allianceHaveRes, allianceHaveRes.GetType());
 
-				Debug.Log ("监听到联盟信息返回了");
+//				Debug.Log ("监听到联盟信息返回了");
 
 				m_allianceHaveRes = allianceHaveRes;
 
@@ -167,7 +169,7 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 		}
 		HidAllGameobj ();
 
-		Debug.Log ("0000000000000000000000000000000");
+//		Debug.Log ("0000000000000000000000000000000");
 
 		m_Infomationobj.SetActive(true);
 
@@ -229,11 +231,13 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 	}
 	public void Closed()
 	{
+		Debug.Log ("Close---1");
 		m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
 		m_ScaleEffectController.OnCloseWindowClick();
 	}
-	void DoCloseWindow()
+	public void DoCloseWindow()
 	{
+		Debug.Log ("Close---2");
 		MainCityUI.TryRemoveFromObjectList(gameObject);
 		Destroy (this.gameObject);
 	}
@@ -246,5 +250,17 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 		m_Eventobj.SetActive(false);
 		
 		m_Applyobj.SetActive(false);
+	}
+	public void SHow_OR_Close_MyAlliance()
+	{
+		if(!GameObj_Camera.activeInHierarchy)
+		{
+			GameObj_Camera.SetActive (true);
+		}
+		else
+		{
+			GameObj_Camera.SetActive (false);
+		}
+
 	}
 }

@@ -13,16 +13,9 @@ public class EffectIdTemplate : XmlLoadManager
 
     public static List<EffectIdTemplate> templates = new List<EffectIdTemplate>();
 
-    public static void LoadTemplates(EventDelegate.Callback p_callback = null)
-    {
-		#if UNITY_ANDROID
-		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "EffectId_a.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
-		#elif UNITY_IOS
+    public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
 		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "EffectId.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
-		#else
-		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "EffectId.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
-		#endif
-    }
+	}
 
     public static void CurLoad(ref WWW www, string path, Object obj)
     {

@@ -343,6 +343,7 @@ public class EquipGrowthWearManagerment : MonoBehaviour
 
        // ShowEquips(_Index_Save);
   }
+ 
     void showAniMation()
     {
         for (int i = 0; i < m_listAnimation.Count; i++)
@@ -399,12 +400,16 @@ public class EquipGrowthWearManagerment : MonoBehaviour
 
     void OnEnable()
     {
+        m_EquipGrowth = this;
         if (EquipsOfBody.Instance().m_equipsOfBodyDic != null)
         {
             ShowEquipInfo();
         }
     }
-
+    void OnDisable()
+    {
+        m_EquipGrowth = null;
+    }
     void ShowEquipInfo()
     {
         Dictionary<int, BagItem> tempEquipsOfBodyDic = EquipsOfBody.Instance().m_equipsOfBodyDic;

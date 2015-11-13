@@ -160,6 +160,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	[HideInInspector] public BattleWinTemplate winDescTemplate;
 
+	[HideInInspector] public bool pressedJoystick;
+
 
 	private static BattleUIControlor _instance;
 
@@ -239,6 +241,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		keyDownA = false;
 		
 		keyDownD = false;
+
+		pressedJoystick = false;
 
 		//if(CityGlobalData.m_enterPvp == false) checkDrama (true);
 	}      
@@ -618,9 +622,11 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			return;
 		}
 
+		float offsetSize = Vector3.Distance (offset, Vector3.zero);
+
 		if(BattleControlor.Instance().getKing() != null)
 		{
-			if( Vector3.Distance(offset, Vector3.zero) != 0 
+			if( offsetSize != 0
 			   		&& m_camera != null 
 			  		&& m_camera.transform.localEulerAngles.y != 0) //摄像机角度不同时的修正
 			{
@@ -658,7 +664,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			bool playingAttack = BattleControlor.Instance().getKing().isPlayingAttack() == true 
 				&& BattleControlor.Instance().getKing().isPlayingSwing() == false;
 
-			if(Vector3.Distance(offset, Vector3.zero) != 0 && playingAttack == false) //转向时的角速度
+			if(offsetSize != 0 && playingAttack == false) //转向时的角速度
 			{
 				if(angleObject == null)
 				{
@@ -686,11 +692,18 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 				offset = angleObject.transform.forward;
 			}
 
+			pressedJoystick = offsetSize > .1f;
+
+			if(pressedJoystick == true && BattleControlor.Instance().autoFight == true)
+			{
+				BattleControlor.Instance().getKing().setNavMeshStop();
+			}
+
 			if(BattleControlor.Instance().getKing().isPlayingAttack() == true 
 			   && BattleControlor.Instance().getKing().isPlayingSwing() == false)
 			{
 				BattleControlor.Instance().getKing().move(Vector3.zero);
-				
+
 				return;
 			}
 
@@ -1833,7 +1846,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	private void OnSendExitBattle()
 	{
 		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-		                         StaticLoading.CONST_BATTLE_LOADING_NETWORK, "SendEnterBattle" );
+		                         PrepareForBattleField.CONST_BATTLE_LOADING_NETWORK, "SendEnterBattle" );
 		
 		PlayerState t_state = new PlayerState();
 		

@@ -40,7 +40,8 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 	public void FuWenDataReq ()
 	{
 		QXComData.SendQxProtoMessage (ProtoIndexes.C_FUWEN_MAINPAGE_REQ,"8002");
-		Debug.Log ("符文首页请求:" + ProtoIndexes.C_FUWEN_MAINPAGE_REQ);
+
+//		Debug.Log ("符文首页请求:" + ProtoIndexes.C_FUWEN_MAINPAGE_REQ);
 	}
 
 	/// <summary>

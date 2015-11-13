@@ -232,6 +232,7 @@ public class ConfigTool : Singleton<ConfigTool>
 		}
 	}
 
+	#if UNITY_IOS || UNITY_EDITOR || UNITY_ANDROID
 	public void OnGUI(){
 		{
 			InitGUI();
@@ -257,6 +258,7 @@ public class ConfigTool : Singleton<ConfigTool>
 			OnGUI_Quality();
 		}
 	}
+	#endif
 
 	#endregion
 
@@ -289,7 +291,12 @@ public class ConfigTool : Singleton<ConfigTool>
 
 	void OnGUI_Common_Info(){
 		if( GetBool( CONST_SHOW_VERSION ) ){
-			GUI.Label( new Rect( 0, Screen.height * 0.9f, 250, 35 ), GetString( CONST_VERSION ), m_gui_lb_style );
+			if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CONSOLE ) ) {
+				GUI.Label( new Rect( 0, ScreenTool.GetY( 0.9f ), 250, 35 ), GetString( CONST_VERSION ), m_gui_lb_style );
+			}
+			else{
+				GUI.Label( new Rect( ScreenTool.GetX( 0.0f ), ScreenTool.GetY( 0.0f ), 250, 35 ), GetString( CONST_VERSION ), m_gui_lb_style );
+			}
 
 //			GUI.Label( new Rect( 0, 25, 250, 35 ), "BV: " + Prepare_Bundle_Config.m_config_cached_small_version, m_gui_lb_style );
 //
@@ -312,18 +319,18 @@ public class ConfigTool : Singleton<ConfigTool>
 			m_lb_rect_params[ 5 ] = 40;
 
 			#if UNITY_IOS
-			GUI.Label( UtilityTool.GetGUIRect( t_info_index++, m_lb_rect_params ), "iGen: " + UnityEngine.iOS.Device.generation.ToString(), m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, m_lb_rect_params ), "iGen: " + UnityEngine.iOS.Device.generation.ToString(), m_gui_lb_style );
 			#endif
 
-			GUI.Label( UtilityTool.GetGUIRect( t_info_index++, m_lb_rect_params ), "Model: " + SystemInfo.deviceModel + " - Name: " + SystemInfo.deviceName, m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, m_lb_rect_params ), "Model: " + SystemInfo.deviceModel + " - Name: " + SystemInfo.deviceName, m_gui_lb_style );
 
-			GUI.Label( UtilityTool.GetGUIRect( t_info_index++, m_lb_rect_params ), "G.Name: " + SystemInfo.graphicsDeviceName, m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, m_lb_rect_params ), "G.Name: " + SystemInfo.graphicsDeviceName, m_gui_lb_style );
 
-			GUI.Label( UtilityTool.GetGUIRect( t_info_index++, m_lb_rect_params ), "G.Mem: " + SystemInfo.graphicsMemorySize + " - P.FR: " + SystemInfo.graphicsPixelFillrate, m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, m_lb_rect_params ), "G.Mem: " + SystemInfo.graphicsMemorySize + " - P.FR: " + SystemInfo.graphicsPixelFillrate, m_gui_lb_style );
 
-			GUI.Label( UtilityTool.GetGUIRect( t_info_index++, m_lb_rect_params ), "S.Mem: " + SystemInfo.systemMemorySize + " - G.DV: " + SystemInfo.graphicsDeviceVersion, m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, m_lb_rect_params ), "S.Mem: " + SystemInfo.systemMemorySize + " - G.DV: " + SystemInfo.graphicsDeviceVersion, m_gui_lb_style );
 
-			GUI.Label( UtilityTool.GetGUIRect( t_info_index++, m_lb_rect_params ), "G: " + SystemInfo.processorType + " - G.Num: " + SystemInfo.processorCount, m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, m_lb_rect_params ), "G: " + SystemInfo.processorType + " - G.Num: " + SystemInfo.processorCount, m_gui_lb_style );
 
 			if( !m_device_info_logged ){
 				m_device_info_logged = true;
@@ -351,13 +358,13 @@ public class ConfigTool : Singleton<ConfigTool>
 		int t_button_index = 0;
 
 		if( GetBool( CONST_NETWORK_CLOSE_SWITCHER ) ){
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "Close Socket", m_gui_btn_style ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "Close Socket", m_gui_btn_style ) ){
 				SocketTool.Instance().SetSocketLost();
 			}
 		}
 
 		if( GetBool( CONST_MANUAL_CLEAN ) ){
-			if( GUI.Button( UtilityTool.GetGUIRect( t_button_index++, m_btn_rect_params ), "Manual Clean", m_gui_btn_style ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_button_index++, m_btn_rect_params ), "Manual Clean", m_gui_btn_style ) ){
 				Debug.Log( "Manual Clean." );
 
 				Resources.UnloadUnusedAssets();
@@ -422,18 +429,18 @@ public class ConfigTool : Singleton<ConfigTool>
 		{
 			Vector3 m_pos = Camera.main.transform.position;
 			
-			GUI.Label( UtilityTool.GetGUIRect( 0, 
+			GUI.Label( GUIHelper.GetGUIRect( 0, 
 			                                  0, m_lb_rect_params[ 1 ],
 			                                  m_lb_rect_params[ 2 ], m_lb_rect_params[ 3 ],
 			                                  m_lb_rect_params[ 4 ], m_lb_rect_params[ 5 ] ), 
 			          "T: ", 
 			          m_gui_lb_style );
 			
-			GUI.Label( UtilityTool.GetGUIRect( 0, m_lb_rect_params ), m_pos.x.ToString( "f2" ), m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( 0, m_lb_rect_params ), m_pos.x.ToString( "f2" ), m_gui_lb_style );
 			
-			GUI.Label( UtilityTool.GetGUIRect( 1, m_lb_rect_params ), m_pos.y.ToString( "f2" ), m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( 1, m_lb_rect_params ), m_pos.y.ToString( "f2" ), m_gui_lb_style );
 			
-			GUI.Label( UtilityTool.GetGUIRect( 2, m_lb_rect_params ), m_pos.z.ToString( "f2" ), m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( 2, m_lb_rect_params ), m_pos.z.ToString( "f2" ), m_gui_lb_style );
 		}
 		
 		{
@@ -441,18 +448,18 @@ public class ConfigTool : Singleton<ConfigTool>
 			
 			Quaternion m_quaternion = Camera.main.transform.rotation;
 			
-			GUI.Label( UtilityTool.GetGUIRect( 0, 
+			GUI.Label( GUIHelper.GetGUIRect( 0, 
 			                                  0, m_lb_rect_params[ 1 ],
 			                                  m_lb_rect_params[ 2 ], m_lb_rect_params[ 3 ],
 			                                  m_lb_rect_params[ 4 ], m_lb_rect_params[ 5 ] ), 
 			          "R: ", 
 			          m_gui_lb_style );
 			
-			GUI.Label( UtilityTool.GetGUIRect( 0, m_lb_rect_params ), m_quaternion.eulerAngles.x.ToString( "f2" ), m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( 0, m_lb_rect_params ), m_quaternion.eulerAngles.x.ToString( "f2" ), m_gui_lb_style );
 			
-			GUI.Label( UtilityTool.GetGUIRect( 1, m_lb_rect_params ), m_quaternion.eulerAngles.y.ToString( "f2" ), m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( 1, m_lb_rect_params ), m_quaternion.eulerAngles.y.ToString( "f2" ), m_gui_lb_style );
 			
-			GUI.Label( UtilityTool.GetGUIRect( 2, m_lb_rect_params ), m_quaternion.eulerAngles.z.ToString( "f2" ), m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( 2, m_lb_rect_params ), m_quaternion.eulerAngles.z.ToString( "f2" ), m_gui_lb_style );
 		}
 	}
 
@@ -487,26 +494,26 @@ public class ConfigTool : Singleton<ConfigTool>
 
 		bool t_fog = RenderSettings.fog;
 
-		if( GUI.Button( UtilityTool.GetGUIRect( t_btn_index++, m_btn_rect_params ), 
+		if( GUI.Button( GUIHelper.GetGUIRect( t_btn_index++, m_btn_rect_params ), 
 		               m_light_on ? "L On" : "L Off" ) ){
 			m_light_on = !m_light_on;
 
 			QualityTool.ConfigLights( m_light_on );
 		}
 
-		if( GUI.Button( UtilityTool.GetGUIRect( t_btn_index++, m_btn_rect_params ), 
+		if( GUI.Button( GUIHelper.GetGUIRect( t_btn_index++, m_btn_rect_params ), 
 		               m_config_value_dict[ CONST_SHOW_CAMERA_SUPERIOR ].m_bool ? "Cam On" : "Cam Off" ) ){
 			m_config_value_dict[ CONST_SHOW_CAMERA_SUPERIOR ].m_bool = !m_config_value_dict[ CONST_SHOW_CAMERA_SUPERIOR ].m_bool;
 		}
 
-		if( GUI.Button( UtilityTool.GetGUIRect( t_btn_index++, m_btn_rect_params ), 
+		if( GUI.Button( GUIHelper.GetGUIRect( t_btn_index++, m_btn_rect_params ), 
 		               m_bloom_on ? "B On" : "B Off" ) ){
 			m_bloom_on = !m_bloom_on;
 			
 			QualityTool.ConfigBloom( m_bloom_on );
 		}
 
-		if( GUI.Button( UtilityTool.GetGUIRect( t_btn_index++, m_btn_rect_params ), 
+		if( GUI.Button( GUIHelper.GetGUIRect( t_btn_index++, m_btn_rect_params ), 
 		               "AA " + QualitySettings.antiAliasing + "" ) ){
 			int t_anti = 0;
 
@@ -594,7 +601,7 @@ public class ConfigTool : Singleton<ConfigTool>
 
 			m_toggle_rect_params[ 5 ] = m_slider_rect_params[ 5 ];
 
-			bool t_m_new_enable = GUI.Toggle( UtilityTool.GetGUIRect( 0, m_toggle_rect_params ), 
+			bool t_m_new_enable = GUI.Toggle( GUIHelper.GetGUIRect( 0, m_toggle_rect_params ), 
 			                                      m_enable_camera_superior, "SP" );
 
 			if( t_m_new_enable && !m_enable_camera_superior ){
@@ -625,7 +632,7 @@ public class ConfigTool : Singleton<ConfigTool>
 				
 				float t_min = i <= 2 ? -0.75f : -1.5f;
 				
-				float t_slider_value = GUI.VerticalSlider( UtilityTool.GetGUIRect( t_index++, m_slider_rect_params ),
+				float t_slider_value = GUI.VerticalSlider( GUIHelper.GetGUIRect( t_index++, m_slider_rect_params ),
 				                                          m_camera_superior_info[ i ],
 				                                          t_max, t_min );
 				
@@ -711,13 +718,13 @@ public class ConfigTool : Singleton<ConfigTool>
 		
 		// all
 		{
-			if( GUI.Button( UtilityTool.GetGUIRect( t_row, m_btn_enable_params ), "En All", m_gui_btn_style ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_row, m_btn_enable_params ), "En All", m_gui_btn_style ) ){
 //				Debug.Log( "Enable All." );
 
 				DebugParticles( true, "" );
 			}
 			
-			if( GUI.Button( UtilityTool.GetGUIRect( t_row, m_btn_disable_params ), "Dis All", m_gui_btn_style ) ){
+			if( GUI.Button( GUIHelper.GetGUIRect( t_row, m_btn_disable_params ), "Dis All", m_gui_btn_style ) ){
 //				Debug.Log( "Disable All." );
 
 				DebugParticles( false, "" );
@@ -729,19 +736,19 @@ public class ConfigTool : Singleton<ConfigTool>
 		// sub
 		{
 			for( int i = 0; i < m_particle_item_count; i++ ){
-				string t_particle_name = GUI.TextField( UtilityTool.GetGUIRect( t_row, m_text_field_params ), 
+				string t_particle_name = GUI.TextField( GUIHelper.GetGUIRect( t_row, m_text_field_params ), 
 				                                       m_particle_item_names[ i ], 
 				                                       m_gui_text_field_style );
 
 				m_particle_item_names[ i ] = t_particle_name;
 				
-				if( GUI.Button( UtilityTool.GetGUIRect( t_row, m_btn_enable_params ), "En", m_gui_btn_style ) ){
+				if( GUI.Button( GUIHelper.GetGUIRect( t_row, m_btn_enable_params ), "En", m_gui_btn_style ) ){
 //					Debug.Log( "Enable: " + i + " - " + t_particle_name );
 
 					DebugParticles( true, t_particle_name );
 				}
 				
-				if( GUI.Button( UtilityTool.GetGUIRect( t_row, m_btn_disable_params ), "Dis", m_gui_btn_style ) ){
+				if( GUI.Button( GUIHelper.GetGUIRect( t_row, m_btn_disable_params ), "Dis", m_gui_btn_style ) ){
 //					Debug.Log( "Disable: " + i + " - " + t_particle_name );
 
 					DebugParticles( false, t_particle_name );

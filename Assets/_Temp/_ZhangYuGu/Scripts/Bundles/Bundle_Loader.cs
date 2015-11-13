@@ -2,6 +2,9 @@
 
 #define SIMULATE_BUNDLE_LOAD
 
+
+//#define DEBUG_DELAY_LOAD
+
 //#define CUSTOM_7ZIP_LOAD
 
 //#define DEBUG_LOADING
@@ -151,7 +154,7 @@ public class Bundle_Loader : MonoBehaviour {
 			public string m_version;
 
 			public string GetUrl(){
-				string t_url_prefix = UtilityTool.RemoveSurfix( m_url_prefix, "/" );
+				string t_url_prefix = StringHelper.RemoveSurfix( m_url_prefix, "/" );
 				
 				return t_url_prefix + "/" + m_key;
 			}
@@ -329,13 +332,13 @@ public class Bundle_Loader : MonoBehaviour {
 	/// Param:	ui_atlas_prefabs
 	/// return: StreamingAssets/Android/ui_atlas_prefabs
 	public static string GetConfigAssetPath( string p_asset_name ){
-		string t_res_path_prefix = "StreamingAssets/" + UtilityTool.GetPlatformTag() + "/";
+		string t_res_path_prefix = "StreamingAssets/" + PlatformHelper.GetPlatformTag() + "/";
 		
 		return t_res_path_prefix + p_asset_name;
 	}
 	
 	public static string GetConfigBundleKey(){
-		string t_bundle_key = UtilityTool.GetPlatformTag() + Config_Bundle_Surfix;
+		string t_bundle_key = PlatformHelper.GetPlatformTag() + Config_Bundle_Surfix;
 		
 		return t_bundle_key;
 	}
@@ -449,7 +452,7 @@ public class Bundle_Loader : MonoBehaviour {
 							Debug.LogError( "Error: " + t_key );
 						}
 						
-						t_short_name = UtilityTool.GetFileNameFromPath( t_key );
+						t_short_name = PathHelper.GetFileNameFromPath( t_key );
 
 //						Debug.Log( "Short Name: " + t_short_name );
 					}
@@ -715,7 +718,7 @@ public class Bundle_Loader : MonoBehaviour {
 		if( p_log_loading ){
 			string t_asset_name = GetAssetName( p_res_asset_path );
 			
-			Debug.Log( "LoadAssetFromBundle( " + UtilityTool.GetFileNameFromPath( t_asset_name ) + " - " +
+			Debug.Log( "LoadAssetFromBundle( " + PathHelper.GetFileNameFromPath( t_asset_name ) + " - " +
 			          t_asset_name + " - " + 
 			          p_bundle_key + " )" );
 		}
@@ -819,6 +822,8 @@ public class Bundle_Loader : MonoBehaviour {
 //		}
 	}
 
+	public float m_delay_time = 0.00f;
+
 	IEnumerator ResourcesDotLoad( BundleToLoadTask p_load_task ){
 		#if DEBUG_LOADING
 		Debug.Log( "ResourcesDotLoad: " + p_load_task.m_res_asset_path );
@@ -830,6 +835,16 @@ public class Bundle_Loader : MonoBehaviour {
 		TimeHelper.SignetTime();
 
 		BeforeResDotLoad();
+
+		#if DEBUG_DELAY_LOAD
+		while( true ){
+			float t_wait = UtilityTool.GetRandom( 0.0f, m_delay_time );
+
+			yield return new WaitForSeconds( t_wait );
+
+			break;
+		}
+		#endif
 
 		{
 			BeforeReadyToLoadNextAsset();
@@ -992,7 +1007,7 @@ public class Bundle_Loader : MonoBehaviour {
 				
 				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_BUNDLE_DOWNLOADING, false ) ){
 					Debug.Log( "WWW.LoadFromCacheOrDownload( " + GetDownLoadTime() + " - " + 
-					          UtilityTool.GetFileNameFromPath( p_url ) + " - " +
+					          PathHelper.GetFileNameFromPath( p_url ) + " - " +
 					          p_version + " - " +
 					          p_url + " )" );
 				}
@@ -1330,7 +1345,7 @@ public class Bundle_Loader : MonoBehaviour {
 	 */
 	private static string GetLocalBundlePath( string p_res_asset_path ){
 		{
-			p_res_asset_path = UtilityTool.RemovePrefix( p_res_asset_path, "/" );
+			p_res_asset_path = StringHelper.RemovePrefix( p_res_asset_path, "/" );
 			
 			p_res_asset_path = "/" + p_res_asset_path;
 		}
@@ -1338,31 +1353,31 @@ public class Bundle_Loader : MonoBehaviour {
 		#if UNITY_EDITOR
 		if( Application.platform == RuntimePlatform.WindowsEditor ){
 			return Application.streamingAssetsPath + 
-				"/" + UtilityTool.GetAndroidTag() + 
+				"/" + PlatformHelper.GetAndroidTag() + 
 					p_res_asset_path;
 		}
 		else if( Application.platform == RuntimePlatform.OSXEditor ){
 			return Application.dataPath + "/StreamingAssets" + 
-				"/" + UtilityTool.GetiOSTag() +
+				"/" + PlatformHelper.GetiOSTag() +
 					p_res_asset_path;
 		}
 		#else
 		if (Application.platform == RuntimePlatform.WindowsPlayer ){
 			return Application.streamingAssetsPath + 
-				"/" + UtilityTool.GetAndroidTag() + 
+				"/" + PlatformHelper.GetAndroidTag() + 
 					p_res_asset_path;
 		}
 		else if( Application.platform == RuntimePlatform.Android ){
 			// TODO, Recheck
 			// Android
 			return "jar:" + Application.dataPath + "!/assets" + 
-				"/" + UtilityTool.GetAndroidTag() + 	
+				"/" + PlatformHelper.GetAndroidTag() + 	
 					p_res_asset_path;
 		}
 		else if( Application.platform == RuntimePlatform.IPhonePlayer ){
 			// iOS 
 			return Application.dataPath + "/Raw" + 
-				"/" + UtilityTool.GetiOSTag() + 
+				"/" + PlatformHelper.GetiOSTag() + 
 					p_res_asset_path;
 		}
 		
@@ -1382,7 +1397,7 @@ public class Bundle_Loader : MonoBehaviour {
 	 */
 	private static string GetLocalBundleWWWPath( string p_res_asset_path ){
 		{
-			p_res_asset_path = UtilityTool.RemovePrefix( p_res_asset_path, "/" );
+			p_res_asset_path = StringHelper.RemovePrefix( p_res_asset_path, "/" );
 			
 			p_res_asset_path = "/" + p_res_asset_path;
 		}
@@ -1390,30 +1405,30 @@ public class Bundle_Loader : MonoBehaviour {
 		#if UNITY_EDITOR
 		if( Application.platform == RuntimePlatform.WindowsEditor ){
 			return "file://" + Application.streamingAssetsPath + 
-				"/" + UtilityTool.GetAndroidTag() + 
+				"/" + PlatformHelper.GetAndroidTag() + 
 					p_res_asset_path;
 		}
 		else if( Application.platform == RuntimePlatform.OSXEditor ){
 			return "file://" + Application.dataPath + "/StreamingAssets" + 
-				"/" + UtilityTool.GetiOSTag() +
+				"/" + PlatformHelper.GetiOSTag() +
 					p_res_asset_path;
 		}
 		#else
 		if (Application.platform == RuntimePlatform.WindowsPlayer ){
 			return "file://" + Application.streamingAssetsPath + 
-				"/" + UtilityTool.GetAndroidTag() + 
+				"/" + PlatformHelper.GetAndroidTag() + 
 					p_res_asset_path;
 		}
 		else if( Application.platform == RuntimePlatform.Android ){
 			// Android
 			return "jar:file://" + Application.dataPath + "!/assets" + 
-				"/" + UtilityTool.GetAndroidTag() + 	
+				"/" + PlatformHelper.GetAndroidTag() + 	
 					p_res_asset_path;
 		}
 		else if( Application.platform == RuntimePlatform.IPhonePlayer ){
 			// iOS 
 			return "file://" + Application.dataPath + "/Raw" + 
-				"/" + UtilityTool.GetiOSTag() + 
+				"/" + PlatformHelper.GetiOSTag() + 
 					p_res_asset_path;
 		}
 		
@@ -1505,7 +1520,7 @@ public class Bundle_Loader : MonoBehaviour {
 	
 	private string GetConfigBundlePath(){
 		// "Android/Android_Config"
-		string t_bundle_path =	UtilityTool.GetPlatformTag() + Bundle_Loader.Config_Bundle_Surfix;
+		string t_bundle_path =	PlatformHelper.GetPlatformTag() + Bundle_Loader.Config_Bundle_Surfix;
 		
 		return t_bundle_path;
 	}

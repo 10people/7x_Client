@@ -32,6 +32,7 @@ public class UIRoot : MonoBehaviour
 		PixelPerfect,
 		FixedSize,
 		FixedSizeOnMobiles,
+		FixedBgOnMobiles,
 	}
 
 	/// <summary>
@@ -76,7 +77,7 @@ public class UIRoot : MonoBehaviour
 			if (scalingStyle == Scaling.FixedSize) return manualHeight;
 
 			#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY || UNITY_EDITOR || UNITY_STANDALONE
-			if (scalingStyle == Scaling.FixedSizeOnMobiles ){
+			if ( scalingStyle == Scaling.FixedSizeOnMobiles ){
 				float _scale_w = manualWidth * 1.0f / width;
 				
 				float _scale_h = manualHeight * 1.0f / height;
@@ -86,6 +87,18 @@ public class UIRoot : MonoBehaviour
 				}
 				else{
 					return manualHeight;
+				}
+			}
+			else if( scalingStyle == Scaling.FixedBgOnMobiles ){
+				float _scale_w = manualWidth * 1.0f / width;
+				
+				float _scale_h = manualHeight * 1.0f / height;
+				
+				if( _scale_w > _scale_h ){
+					return manualHeight;
+				}
+				else{
+					return manualWidth * height / width;
 				}
 			}
 #endif
@@ -123,16 +136,18 @@ public class UIRoot : MonoBehaviour
 	/// Calculate the pixel size adjustment at the specified screen height value.
 	/// </summary>
 
-	public float GetPixelSizeAdjustment (int height)
-	{
-		height = Mathf.Max(2, height);
+	public float GetPixelSizeAdjustment ( int height ){
+		height = Mathf.Max( 2, height );
 
-		if (scalingStyle == Scaling.FixedSize)
+		if ( scalingStyle == Scaling.FixedSize ){
 			return (float)manualHeight / height;
+		}
 
 		#if UNITY_IPHONE || UNITY_ANDROID || UNITY_STANDALONE
-		if (scalingStyle == Scaling.FixedSizeOnMobiles)
+		if ( scalingStyle == Scaling.FixedSizeOnMobiles ||
+		    scalingStyle == Scaling.FixedBgOnMobiles ){
 			return (float)manualHeight / height;
+		}
 #endif
 		if (height < minimumHeight) return (float)minimumHeight / height;
 		if (height > maximumHeight) return (float)maximumHeight / height;

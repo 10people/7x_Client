@@ -4,6 +4,15 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2015.9.7
+ * @since:		Unity 4.5.3
+ * Function:	Save&Load Custom Dictionary.
+ * 
+ * Notes:
+ * 1.split by "\n" and "=";
+ */ 
 public class LocalDataTool{
 
 	public Dictionary<string,string> m_data_dict = new Dictionary<string,string>();

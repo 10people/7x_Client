@@ -133,17 +133,26 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 			}
 		}
 
+		{
+			PathHelper.LogPath();
+		}
+
+		{
+			DeviceHelper.LogDeviceInfo( null );
+		}
+
 		// log
 		{
-			UtilityTool.DeleteLogFile();
+			FileHelper.DeleteLogFile();
 
-			Application.logMessageReceived += UtilityTool.LogFile;
+			Application.logMessageReceived += FileHelper.LogFile;
 		}
 
 		// report when game launched
 		{
 			OperationSupport.ReportClientAction( OperationSupport.ClientAction.LAUNCH_GAME );
 		}
+
 		// TODO, Debug Use, remove after lzma.
 //		Prepare_Bundle_Cleaner.CleanCache();
 	}
@@ -439,13 +448,13 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 				#endif
 			}
 			
-			// NotExist
+			// Not Exist
 			if( IsBundleNotExist() ){
 				// write
 				{
-					System.IO.FileStream t_stream = UtilityTool.GetPersistentFileStream( ConstInGame.CONST_PERSISTENT_DATA_BUNDLE_LIST );
+					System.IO.FileStream t_stream = FileHelper.GetPersistentFileStream( ConstInGame.CONST_PERSISTENT_DATA_BUNDLE_LIST );
 					
-					UtilityTool.WriteString( t_stream, Bundle_Loader.m_bundle_list_info.m_json.ToString( "" ) );
+					FileHelper.WriteString( t_stream, Bundle_Loader.m_bundle_list_info.m_json.ToString( "" ) );
 
 					t_stream.SetLength( t_stream.Position );
 
@@ -601,7 +610,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 			Dictionary< string,string > t_request_params = new Dictionary<string,string>();
 			
 			{
-				t_request_params.Add( "platform", UtilityTool.GetPlatformTag() );
+				t_request_params.Add( "platform", PlatformHelper.GetPlatformTag() );
 				
 				t_request_params.Add( "version", t_param );
 				
@@ -657,14 +666,15 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 		}
 	}
 
+	// update local bundle config
 	private void UpdateBundleItemsVersions(){
 		// delta
 		{
 			Bundle_Loader.BundleListInfo t_local_info = new Bundle_Loader.BundleListInfo();
 			
-			System.IO.FileStream t_stream = UtilityTool.GetPersistentFileStream( ConstInGame.CONST_PERSISTENT_DATA_BUNDLE_LIST );
+			System.IO.FileStream t_stream = FileHelper.GetPersistentFileStream( ConstInGame.CONST_PERSISTENT_DATA_BUNDLE_LIST );
 			
-			string t_content = UtilityTool.ReadString( t_stream );
+			string t_content = FileHelper.ReadString( t_stream );
 			
 			Debug.Log( "Local Bundle List: " + t_content );
 			
@@ -675,7 +685,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 			}
 			
 			if( string.IsNullOrEmpty( t_content ) ){
-				UtilityTool.WriteString( t_stream, Bundle_Loader.m_bundle_list_info.m_json.ToString( "" ) );
+				FileHelper.WriteString( t_stream, Bundle_Loader.m_bundle_list_info.m_json.ToString( "" ) );
 			}
 			else{
 				t_local_info.m_json[ CONST_URL_PREFIX_TAG ] = Bundle_Loader.m_bundle_list_info.m_url_prefix;
@@ -711,7 +721,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 					}
 				}
 				
-				UtilityTool.WriteString( t_stream, t_local_info.m_json.ToString( "" ) );
+				FileHelper.WriteString( t_stream, t_local_info.m_json.ToString( "" ) );
 				
 				Debug.Log( "Updated Bundle List: " + t_local_info.m_json.ToString( "" ) );
 			}
@@ -722,13 +732,14 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 		}
 	}
 
+	// reload newest bundle config
 	private void ReloadBundleItemsVersions(){
 		Bundle_Loader.m_bundle_list_info = new Bundle_Loader.BundleListInfo();
 		
-		System.IO.FileStream t_stream = UtilityTool.GetPersistentFileStream( ConstInGame.CONST_PERSISTENT_DATA_BUNDLE_LIST );
+		System.IO.FileStream t_stream = FileHelper.GetPersistentFileStream( ConstInGame.CONST_PERSISTENT_DATA_BUNDLE_LIST );
 		
 		{
-			string t_content = UtilityTool.ReadString( t_stream );
+			string t_content = FileHelper.ReadString( t_stream );
 			
 			ParseBundleListInfo( Bundle_Loader.m_bundle_list_info, t_content );
 			
@@ -757,7 +768,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 	public static void CleanBundleUpdateList(){
 //		Debug.Log( "CleanBundleUpdateList()" );
 
-		UtilityTool.DeletePersistentFileStream( ConstInGame.CONST_PERSISTENT_DATA_BUNDLE_LIST );
+		FileHelper.DeletePersistentFileStream( ConstInGame.CONST_PERSISTENT_DATA_BUNDLE_LIST );
 	}
 	
 	/// Server Response:
@@ -1083,6 +1094,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 		        m_bundle_state == BundleState.ToUpdate );
 	}
 
+	// load local bundles
 	private void LoadCachedBundleVersions(){
 		m_config_cached_small_version = PlayerPrefs.GetString( 
 		                                                      ConstInGame.CONST_PLAYER_PREFS_KEY_CACHED_BUNDLE_SMALL_VERSION, 
@@ -1275,11 +1287,11 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 			#endif
 			
 			#if UNITY_EDITOR
-			t_check_device = false;
+			t_check_device = true;
 			#endif
 			
 			if( t_check_device ){
-				if( !QualityTool.Instance.CheckIsDeviceSupported() ){
+				if( !DeviceHelper.CheckIsDeviceSupported() ){
 					return;
 				}
 			}
