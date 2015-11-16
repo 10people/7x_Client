@@ -58,7 +58,8 @@ public class UIChenghao : MYNGUIPanel
 	
 	public override void MYClick(GameObject ui)
 	{
-		Debug.Log(ui.name);
+//		Debug.Log(ui.name);
+
 		if(ui.name.IndexOf("ChenghaoIndex") != -1)
 		{
 			if(m_iSelectIndex != -1)
@@ -225,7 +226,8 @@ public class UIChenghao : MYNGUIPanel
 		{
 			for(int i = 0; i < m_chenghaoData.list.Count; i ++)
 			{
-				Debug.Log(m_chenghaoData.list[i].id);
+//				Debug.Log(m_chenghaoData.list[i].id);
+
 				UIChenghaoList tempChenghaoData = GameObject.Instantiate(m_UIChenghaoCopy);
 				tempChenghaoData.gameObject.SetActive(true);
 				tempChenghaoData.transform.parent = m_UIChenghaoCopy.transform.parent;
@@ -235,6 +237,7 @@ public class UIChenghao : MYNGUIPanel
 				tempChenghaoData.m_LabelDis.text = ChenghaoTemplate.GetChenghaoDis(m_chenghaoData.list[i].id);
 				tempChenghaoData.m_LabelName.text = ChenghaoTemplate.GetChenghaoName(m_chenghaoData.list[i].id);
 				tempChenghaoData.m_SpriteButton.name = "OnChenghao" + m_chenghaoData.list[i].id;
+
 				switch(m_chenghaoData.list[i].state)
 				{
 				case 0:

@@ -1,0 +1,1 @@
+/Application/Unity/Unity.app/Contents/MacOS/Unity -batchmode -quit -executeMethod EditorBuildPackage.Build
