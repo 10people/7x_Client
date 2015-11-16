@@ -19,6 +19,8 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 	public static bool EnemysDataIsBack = false;
 
 	public GameObject ShowStargb;
+
+	public GameObject Child;
 	//public GameObject GetStarJiangli;
 	Transform mtrans;
 	float mScale;
@@ -724,6 +726,19 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		if(i == 2)
 		{
 			JunZhuData.Instance().BuyTiliAndTongBi(true,false,false);
+		}
+	}
+
+	public void SHow_OrClose()
+	{
+		Debug.Log ("Close = "+Child.activeInHierarchy);
+		if(Child.activeInHierarchy)
+		{
+			Child.SetActive(false);
+		}
+		else
+		{
+			Child.SetActive(true);
 		}
 	}
 }

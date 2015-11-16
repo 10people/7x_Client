@@ -207,7 +207,7 @@ public class PveLeveType : MonoBehaviour {
 		
 		mChoose_MiBao.SetActive(true);
 		
-		mChoose_MiBao.transform.parent = this.transform.parent;
+		mChoose_MiBao.transform.parent = GameObject.Find("Mapss").transform;
 		
 		mChoose_MiBao.transform.localPosition = Vector3.zero;
 		
@@ -221,7 +221,7 @@ public class PveLeveType : MonoBehaviour {
 
 		mChangeMiBaoSkill.Init(1, PveLevelUImaneger.GuanqiaReq.zuheId);
 
-
+		PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
 	}
 
 	public void PVE_Fight()

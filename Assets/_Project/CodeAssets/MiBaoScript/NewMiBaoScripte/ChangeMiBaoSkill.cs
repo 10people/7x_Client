@@ -708,6 +708,12 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 			LueDuoManager.ldManager.ShowChangeSkillEffect (true);
 			break;
 		}
+		case (int)(CityGlobalData.MibaoSkillType.PveSend ):
+		{
+			PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
+
+			break;
+		}
 		default:
 			break;
 		}
