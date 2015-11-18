@@ -423,7 +423,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             case ProtoIndexes.S_TICHU_YBHELPXZ_RESP:
                 {
                     object tiChuXieZhuRsq = new TiChuXieZhuResp();
-                    if (UtilityTool.ReceiveQXMessage(ref tiChuXieZhuRsq, p_message, ProtoIndexes.S_TICHU_YBHELPXZ_RESP))
+                    if (SocketHelper.ReceiveQXMessage(ref tiChuXieZhuRsq, p_message, ProtoIndexes.S_TICHU_YBHELPXZ_RESP))
                     {
                         TiChuXieZhuResp temp = tiChuXieZhuRsq as TiChuXieZhuResp;
 

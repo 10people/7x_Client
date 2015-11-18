@@ -79,7 +79,7 @@ namespace AllianceBattle
             {
                 s_state = State.State_FIGHT_SCENE
             };
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.PLAYER_STATE_REPORT);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.PLAYER_STATE_REPORT);
         }
     }
 }

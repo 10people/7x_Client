@@ -168,5 +168,184 @@ public class ComponentHelper{
 	#endregion
 
 
+	
+	
+	
+	
+	#region Collider
+	
+	/// Clear All Colliders under p_gb and its' children.
+	public static void ClearColliders(GameObject p_gb)
+	{
+		if (p_gb == null)
+		{
+			Debug.LogWarning("Error in ClearColliders, p_gb = null.");
+			
+			return;
+		}
+		
+		int t_child_count = p_gb.transform.childCount;
+		
+		{
+			for (int i = 0; i < t_child_count; i++)
+			{
+				Transform t_child = p_gb.transform.GetChild(i);
+				
+				ClearColliders(t_child.gameObject);
+			}
+			
+			{
+				Collider2D[] t_colliders = p_gb.GetComponents<Collider2D>();
+				
+				for (int i = t_colliders.Length - 1; i >= 0; i--)
+				{
+					Collider2D t_collider = t_colliders[i];
+					
+					Destroy(t_collider);
+				}
+			}
+			
+			{
+				Collider[] t_colliders = p_gb.GetComponents<Collider>();
+				
+				for (int i = t_colliders.Length - 1; i >= 0; i--)
+				{
+					Collider t_collider = t_colliders[i];
+					
+					Destroy(t_collider);
+				}
+			}
+		}
+	}
+	
+	/// Disable All Colliders under p_gb and its' children.
+	public static void DisableColliders(GameObject p_gb)
+	{
+		if (p_gb == null)
+		{
+			Debug.LogWarning("Error in DisableColliders, p_gb = null.");
+			
+			return;
+		}
+		
+		int t_child_count = p_gb.transform.childCount;
+		
+		{
+			for (int i = 0; i < t_child_count; i++)
+			{
+				Transform t_child = p_gb.transform.GetChild(i);
+				
+				DisableColliders(t_child.gameObject);
+			}
+			
+			{
+				Collider2D[] t_colliders = p_gb.GetComponents<Collider2D>();
+				
+				for (int i = 0; i < t_colliders.Length; i++)
+				{
+					Collider2D t_collider = t_colliders[i];
+					
+					t_collider.enabled = false;
+				}
+			}
+			
+			{
+				Collider[] t_colliders = p_gb.GetComponents<Collider>();
+				
+				for (int i = 0; i < t_colliders.Length; i++)
+				{
+					Collider t_collider = t_colliders[i];
+					
+					t_collider.enabled = false;
+				}
+			}
+			
+			{
+				iTween.Stop(p_gb);
+			}
+		}
+	}
 
+	#endregion
+
+
+
+	#region iTween
+
+	public static void StopITweens(GameObject p_gb)
+	{
+		if (p_gb == null)
+		{
+			Debug.LogWarning("Error in ClearColliders, p_gb = null.");
+			
+			return;
+		}
+		
+		int t_child_count = p_gb.transform.childCount;
+		
+		{
+			for (int i = 0; i < t_child_count; i++)
+			{
+				Transform t_child = p_gb.transform.GetChild(i);
+				
+				StopITweens(t_child.gameObject);
+			}
+			
+			{
+				iTween.Stop(p_gb);
+			}
+		}
+	}
+
+	#endregion
+
+
+
+	#region Monos
+
+	/// Clears All Monos without NGUI under p_gb and its' children.
+	public static void ClearMonosWithoutNGUI(GameObject p_gb)
+	{
+		if (p_gb == null)
+		{
+			Debug.LogWarning("Error in ClearMonosWithoutNGUI, p_gb = null.");
+			
+			return;
+		}
+		
+		int t_child_count = p_gb.transform.childCount;
+		
+		{
+			for (int i = 0; i < t_child_count; i++)
+			{
+				Transform t_child = p_gb.transform.GetChild(i);
+				
+				ClearMonosWithoutNGUI(t_child.gameObject);
+			}
+			
+			Component[] t_monos = p_gb.GetComponentsInChildren(typeof(MonoBehaviour));
+			
+			for (int i = 0; i < t_monos.Length; i++)
+			{
+				MonoBehaviour t_mono = (MonoBehaviour)t_monos[i];
+				
+				if (t_mono is UIWidget ||
+				    t_mono is UIAnchor ||
+				    t_mono is UIWidgetContainer ||
+				    t_mono is UIFont ||
+				    t_mono is UIAtlas)
+				{
+					continue;
+				}
+				else
+				{
+					t_mono.enabled = false;
+					
+					Destroy(t_mono);
+				}
+			}
+		}
+	}
+
+	#endregion
 }

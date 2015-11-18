@@ -41,7 +41,7 @@ public class NpcObjectItem : MonoBehaviour {
 //		m_nameLabel.effectColor = Color.black;
 
 		m_iconSprite.spriteName = template.m_npcIcon.ToString();
-        m_Shadow.SetActive( QualityTool.Instance.InCity_ShowSimpleShadow());
+        m_Shadow.SetActive( Quality_Shadow.InCity_ShowSimpleShadow());
         m_nameLabel.transform.localEulerAngles = new Vector3(m_template.NameDirectX, m_template.NameDirectY, 0);
         m_iconSprite.transform.localEulerAngles = new Vector3(m_template.NameDirectX, m_template.NameDirectY, 0);
        // m_nameLabel.transform.localEulerAngles = new Vector3(0, -m_template.m_Angles, 0);

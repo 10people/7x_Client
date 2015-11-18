@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -62,9 +63,7 @@ public class QXComData {
 		
 		t_qx.Deserialize(t_stream, value, value.GetType());
 
-		object o_value = value;
-
-		return o_value;
+		return value;
 	}
 	#endregion
 
@@ -142,5 +141,62 @@ public class QXComData {
 		return false;
 	}
 	
+	#endregion
+
+	#region TimeStyle 00:00:00
+	public static string TimeFormat (int tempTime)
+	{
+		string hourStr = "";
+		string minuteStr = "";
+		string secondStr = "";
+
+		int hour = tempTime / 3600;
+		int minute = (tempTime / 60) % 60;
+		int second = tempTime % 60;
+		//			Debug.Log (hour + ":" + minute + ":" + second);
+		if (hour < 10)
+		{
+			hourStr = "0" + hour;
+		}
+		else
+		{
+			hourStr = hour.ToString ();
+		}
+		
+		if (minute < 10)
+		{
+			minuteStr = "0" + minute;
+		}
+		else
+		{
+			minuteStr = minute.ToString ();
+		}
+		
+		if (second < 10) 
+		{
+			secondStr = "0" + second;
+		} 
+		else 
+		{
+			secondStr = second.ToString ();
+		}
+		
+		return hourStr + " : " + minuteStr + "：" + secondStr;
+	}
+
+	public static string UTCToTimeString(long time, string format)
+	{
+		long lTime = time * 10000;
+		
+		DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+		
+		TimeSpan toNow = new TimeSpan(lTime);
+		
+		DateTime dtResult = dtStart.Add(toNow);
+		
+		// "yyyy-MM-dd HH:mm:ss"
+		return dtResult.ToString(format);
+	}
+
 	#endregion
 }

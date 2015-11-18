@@ -54,7 +54,7 @@ namespace LimitActivity
         public void RequestData()
         {
             XinShouXSActivity temp = new XinShouXSActivity() { typeId = m_OpenXianShi.typeId };
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.C_XIANSHI_INFO_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.C_XIANSHI_INFO_REQ);
         }
     }
 }

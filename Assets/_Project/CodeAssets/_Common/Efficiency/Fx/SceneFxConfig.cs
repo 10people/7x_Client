@@ -15,7 +15,7 @@ public class SceneFxConfig : MonoBehaviour {
 	#region Mono
 
 	void Awake(){
-		if( QualityTool.IsSceneFxNone() ){
+		if( Quality_SceneFx.IsSceneFxNone() ){
 			SetActive( false );
 
 			return;

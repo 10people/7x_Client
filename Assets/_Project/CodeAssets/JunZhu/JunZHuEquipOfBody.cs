@@ -35,6 +35,8 @@ public class JunZHuEquipOfBody : MonoBehaviour//,SocketListener
     public JunZhuZhuangBeiInfo m_zhuanbeiInfo;
     public UIProgressBar m_ProgressPurple;
     public UILabel m_LabelPurple;
+
+    public GameObject m_BottomButton;
     //public EventHandler m_TaozhuangInfo;
     public GameObject m_Mask;
 
@@ -668,6 +670,7 @@ public class JunZHuEquipOfBody : MonoBehaviour//,SocketListener
         //        }
         m_zhuanbeiInfo.GetEquipInfo(id, buwei);
         m_zhuanbeiInfo.gameObject.SetActive(true);
+        m_BottomButton.gameObject.SetActive(false);
     }
 
 	void TaoZhuangInfo(GameObject obj)

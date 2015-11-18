@@ -62,6 +62,107 @@ public class TransformHelper : MonoBehaviour {
 
 
 
+	#region Transform
+	
+	/// <summary>
+	/// Set parent's child num to specific num, standardize automaticlly.
+	/// </summary>
+	/// <param name="parentTransform">parent</param>
+	/// <param name="prefabObject">child prefab</param>
+	/// <param name="num">specific num</param>
+	public static void AddOrDelItem(Transform parentTransform, GameObject prefabObject, int num)
+	{
+		if (num < 0)
+		{
+			Debug.LogError("Num should not be nagative, num:" + num);
+			return;
+		}
+		
+		if (parentTransform.childCount > num)
+		{
+			while (parentTransform.childCount != num)
+			{
+				var child = parentTransform.GetChild(0);
+				child.parent = null;
+				Destroy(child.gameObject);
+			}
+		}
+		else if (parentTransform.childCount < num)
+		{
+			while (parentTransform.childCount != num)
+			{
+				var child = Instantiate(prefabObject) as GameObject;
+				
+				if (child == null)
+				{
+					Debug.LogError("Fail to instantiate prefab, abort.");
+					return;
+				}
+				
+				ActiveWithStandardize(parentTransform, child.transform);
+			}
+		}
+	}
+	
+	/// <summary>
+	/// Set parent's child num to specific num, using pool manager, standardize automaticlly.
+	/// </summary>
+	/// <param name="parentTransform">parent</param>
+	/// <param name="num">specific num</param>
+	/// <param name="poolList">pool list</param>
+	/// <param name="poolPrefabKey">which pool prefab to use</param>
+	public static void AddOrDelItemUsingPool(Transform parentTransform, int num, PoolManagerListController poolList, string poolPrefabKey)
+	{
+		if (num < 0)
+		{
+			Debug.LogError("Num should not be nagative, num:" + num);
+			return;
+		}
+		
+		if (parentTransform.childCount > num)
+		{
+			while (parentTransform.childCount != num)
+			{
+				var child = parentTransform.GetChild(0);
+				child.parent = null;
+				poolList.ReturnItem(poolPrefabKey, child.gameObject);
+			}
+		}
+		else if (parentTransform.childCount < num)
+		{
+			while (parentTransform.childCount != num)
+			{
+				var child = poolList.TakeItem(poolPrefabKey);
+				
+				if (child == null)
+				{
+					Debug.LogError("Fail to instantiate prefab, abort.");
+					return;
+				}
+				
+				ActiveWithStandardize(parentTransform, child.transform);
+			}
+		}
+	}
+	
+	/// <summary>
+	/// Set default transform and active.
+	/// </summary>
+	/// <param name="parent">parent transform</param>
+	/// <param name="targetChild">transform standardized</param>
+	public static void ActiveWithStandardize(Transform parent, Transform targetChild)
+	{
+		targetChild.transform.parent = parent;
+		targetChild.transform.localPosition = Vector3.zero;
+		targetChild.transform.localEulerAngles = Vector3.zero;
+		targetChild.transform.localScale = Vector3.one;
+		targetChild.gameObject.SetActive(true);
+	}
+	
+	#endregion
+
+
+
 	#region Utilities
 
 	/// Set localPosition and localRotation to Zero.

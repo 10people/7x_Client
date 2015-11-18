@@ -162,7 +162,7 @@ namespace Rank
                     case ProtoIndexes.S_Join_BlackList_Resp:
                         {
                             object joinToBlackListRespObject = new BlacklistResp();
-                            if (UtilityTool.ReceiveQXMessage(ref joinToBlackListRespObject, p_message,
+                            if (SocketHelper.ReceiveQXMessage(ref joinToBlackListRespObject, p_message,
                                 ProtoIndexes.S_Join_BlackList_Resp))
                             {
                                 BlacklistResp tempJoinBlacklistResp = joinToBlackListRespObject as BlacklistResp;
@@ -187,7 +187,7 @@ namespace Rank
                     case ProtoIndexes.RANKING_ALLIANCE_MEMBER_RESP:
                         {
                             object playerRespObject = new AlliancePlayerResp();
-                            if (UtilityTool.ReceiveQXMessage(ref playerRespObject, p_message, ProtoIndexes.RANKING_ALLIANCE_MEMBER_RESP))
+                            if (SocketHelper.ReceiveQXMessage(ref playerRespObject, p_message, ProtoIndexes.RANKING_ALLIANCE_MEMBER_RESP))
                             {
                                 m_AlliancePlayerResp = playerRespObject as AlliancePlayerResp;
 
@@ -201,7 +201,7 @@ namespace Rank
                     {
                         {
                             object junzhuResp = new JunZhuInfo();
-                            if (UtilityTool.ReceiveQXMessage(ref junzhuResp, p_message, ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP))
+                            if (SocketHelper.ReceiveQXMessage(ref junzhuResp, p_message, ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP))
                             {
                                 m_JunzhuPlayerResp = junzhuResp as JunZhuInfo;
 
@@ -300,7 +300,7 @@ namespace Rank
             {
                 junzhuId = m_JunzhuPlayerResp.junZhuId
             };
-            UtilityTool.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
+            SocketHelper.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ public class PlayerShadowManagerment : MonoBehaviour
     public GameObject m_Shadow;
 	void Start () 
     {
-        m_Shadow.SetActive( QualityTool.Instance.InCity_ShowSimpleShadow() );
+		m_Shadow.SetActive( Quality_Shadow.InCity_ShowSimpleShadow() );
 	}
 
  

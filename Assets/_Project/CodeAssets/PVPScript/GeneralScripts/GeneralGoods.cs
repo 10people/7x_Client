@@ -91,9 +91,7 @@ public class GeneralGoods : MonoBehaviour {
 			break;
 		}
 
-		GeneralStore store = generalStoreObj.GetComponent<GeneralStore> ();
-
-		moneyIcon.spriteName = store.IconName (tempStoreType);
+		moneyIcon.spriteName = GeneralControl.Instance.storeDic [tempStoreType] [0];
 
 //		Debug.Log ("isChange:" + tempInfo.isChange);
 		saleEnd.SetActive (tempInfo.isChange ? false : true);
@@ -106,8 +104,39 @@ public class GeneralGoods : MonoBehaviour {
 		}
 		else
 		{
-			WWW tempWww = null;
-			IconSampleLoadCallBack(ref tempWww, null, iconSamplePrefab);
+			iconSamplePrefab.SetActive (true);
+
+			//0普通道具;3当铺材料;5秘宝碎片;6进阶材料;7基础宝石;8高级宝石;9强化材料
+			IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
+			if (itemType == 5)//秘宝碎片 MibaoSuiPian表
+			{
+				MiBaoSuipianXMltemp miBaoSuiPian = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById (itemId);
+				itemName = NameIdTemplate.GetName_By_NameId (miBaoSuiPian.m_name);
+				fuShiIconSample.SetIconType(IconSampleManager.IconType.MiBaoSuiPian);
+			}
+			else
+			{
+				ItemTemp item = ItemTemp.getItemTempById (itemId);
+				itemName = NameIdTemplate.GetName_By_NameId (item.itemName);
+				if (itemType == 0 || itemType == 3 || itemType == 6 || itemType == 9)
+				{
+					fuShiIconSample.SetIconType(IconSampleManager.IconType.equipment);
+				}
+				else if (itemType == 7 || itemType == 8)
+				{
+					fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
+				}
+			}
+			
+			fuShiIconSample.SetIconBasic(4,itemId.ToString (),"x" + num.ToString ());
+			
+			string mdesc = DescIdTemplate.GetDescriptionById(itemId);
+			
+			fuShiIconSample.SetIconBasicDelegate (true,true,ClickItem);
+			fuShiIconSample.SetIconPopText(itemId, itemName, mdesc, 1);
+			iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
+			
+			iconSamplePrefab.GetComponent<UIDragScrollView> ().enabled = !QXComData.CheckYinDaoOpenState (100200);
 		}
 
 		this.gameObject.GetComponent<UIDragScrollView> ().enabled = !QXComData.CheckYinDaoOpenState (100200);
@@ -115,24 +144,14 @@ public class GeneralGoods : MonoBehaviour {
 
 	private void IconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
-		if (iconSamplePrefab == null)
-		{
-			iconSamplePrefab = p_object as GameObject;
-		}
-		foreach (GameObject obj in iconSampleList)
-		{
-			Destroy (obj);
-		}
-		iconSampleList.Clear ();
-
-		GameObject iconSample = (GameObject)Instantiate (iconSamplePrefab);
+		iconSamplePrefab = (GameObject)Instantiate (p_object);
 		
-		iconSample.SetActive(true);
-		iconSample.transform.parent = this.transform;
-		iconSample.transform.localPosition = new Vector3 (0,15,0);
-		iconSampleList.Add (iconSample);
+		iconSamplePrefab.SetActive(true);
+		iconSamplePrefab.transform.parent = this.transform;
+		iconSamplePrefab.transform.localPosition = new Vector3 (0,15,0);
+
 		//0普通道具;3当铺材料;5秘宝碎片;6进阶材料;7基础宝石;8高级宝石;9强化材料
-		IconSampleManager fuShiIconSample = iconSample.GetComponent<IconSampleManager>();
+		IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
 		if (itemType == 5)//秘宝碎片 MibaoSuiPian表
 		{
 			MiBaoSuipianXMltemp miBaoSuiPian = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById (itemId);
@@ -159,9 +178,9 @@ public class GeneralGoods : MonoBehaviour {
 
 		fuShiIconSample.SetIconBasicDelegate (true,true,ClickItem);
 		fuShiIconSample.SetIconPopText(itemId, itemName, mdesc, 1);
-		iconSample.transform.localScale = Vector3.one * 0.8f;
+		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
 
-		iconSample.GetComponent<UIDragScrollView> ().enabled = !QXComData.CheckYinDaoOpenState (100200);
+		iconSamplePrefab.GetComponent<UIDragScrollView> ().enabled = !QXComData.CheckYinDaoOpenState (100200);
 	}
 
 	void OnClick ()

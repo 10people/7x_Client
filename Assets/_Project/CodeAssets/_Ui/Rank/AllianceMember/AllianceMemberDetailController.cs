@@ -82,7 +82,7 @@ namespace Rank
 
             FloatButtonsController.Initialize(tempList, true);
 
-            UtilityTool.ActiveWithStandardize(FloatButtonsRoot.transform, tempObject.transform);
+            TransformHelper.ActiveWithStandardize(FloatButtonsRoot.transform, tempObject.transform);
 
             StartCoroutine(AdjustFloatButton());
         }
@@ -97,7 +97,7 @@ namespace Rank
                 yield break;
             }
 
-            UtilityTool.AdaptWidgetInScrollView(m_AllianceMemberController.m_ScrollView, m_AllianceMemberController.m_ScrollBar, FloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
+			NGUIHelper.AdaptWidgetInScrollView(m_AllianceMemberController.m_ScrollView, m_AllianceMemberController.m_ScrollBar, FloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
         }
 
         public override void GetInfo()
@@ -106,7 +106,7 @@ namespace Rank
             {
                 junzhuId = m_JunZhuInfo.junZhuId
             };
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
             m_ModuleController.ClampScrollView();
         }
 
@@ -126,7 +126,7 @@ namespace Rank
             {
                 junzhuId = m_JunZhuInfo.junZhuId
             };
-            UtilityTool.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
+            SocketHelper.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
             m_ModuleController.ClampScrollView();
         }
 

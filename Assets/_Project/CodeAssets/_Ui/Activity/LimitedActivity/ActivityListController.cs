@@ -52,7 +52,7 @@ namespace LimitActivity
                     }
 
                     var temp = Instantiate(m_ActivityItemPrefab) as GameObject;
-                    UtilityTool.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                    TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
 
                     var controller = temp.GetComponent<ActivityItemController>();
                     controller.m_ActivityListController = this;
@@ -63,7 +63,8 @@ namespace LimitActivity
                     m_ActivityItemControllerList.Add(controller);
                 }
                 m_Grid.Reposition();
-                UtilityTool.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
+
+				NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
             }
 
             if (m_RootController.IsClickFirstActivityItem && m_ActivityItemControllerList != null && m_ActivityItemControllerList.Count > 0)

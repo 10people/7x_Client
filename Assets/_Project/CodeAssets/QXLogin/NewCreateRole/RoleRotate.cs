@@ -23,7 +23,8 @@ public class RoleRotate : MonoBehaviour {
 	{
 		GameObject shadowTemp = Instantiate( p_object ) as GameObject;
 		
-		shadowTemp.SetActive (QualityTool.Instance.BattleField_ShowSimpleShadow());
+		shadowTemp.SetActive ( Quality_Shadow.BattleField_ShowSimpleShadow() );
+
 		shadowTemp.transform.parent =this.transform.GetChild (0);
 		
 		shadowTemp.transform.localPosition = new Vector3 (0,0.03f,0);

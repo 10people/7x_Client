@@ -7,9 +7,9 @@ using System.Text;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
+public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 {
-     private static PrepareForCityLoad m_instance = null;
+    private static PrepareForCityLoad m_instance = null;
     //public static PrepareForCityLoad Instance()
     //{
     //    return m_instance;
@@ -22,11 +22,12 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
         public NpcCityTemplate _NpcTemp;
         public GameObject _Obj;
     };
-    public bool m_NetData_IsReday = false;
     public List<NpcInfo> m_listNpcTemp = new List<NpcInfo>();
 
     NpcInfo _PortSelf;
     NpcInfo _PortOther;
+    public const string CONST_CITY_LOADING_CITY_NET = "City_NET";
+
     public const string CONST_CITY_LOADING_2D_UI = "City_2D_UI";
 
     public const string CONST_CITY_LOADING_2D_NAME = "City_2D_Name";
@@ -35,31 +36,21 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
 
     public const string CONST_CITY_LOADING_3D_JUNZHU_MODEL = "City_3D_JUNZHU_MODEL";
 
-    public const string CONST_CITY_LOADING_SOUND = "City_Sound";
+    public const string CONST_CITY_LOADING_GENERAL_REWARD= "City_GENERAL_REWARD";
+ 
 
-    public const string CONST_CITY_RENDER = "City_Render";
+ 
 
     void Awake()
     {
-        //m_instance = this;
+      m_instance = this;
     }
     // Use this for initialization
     void Start()
     {
-
+        SocketTool.RegisterSocketListener(this);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (m_NetData_IsReday)
-        {
-            m_NetData_IsReday = false;
-            Load_2D_UI();
-        }
-
-    }
-
+ 
     void OnDestroy()
     {
         //m_instance = null;
@@ -67,9 +58,10 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
 
     private void InitCityLoading()
     {
+        SocketTool.RegisterSocketListener(this);
+        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_CITY_NET, 1, 4);
         StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_UI, 1, 1);
 
- 
         if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1)
         {
             StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 15);
@@ -80,6 +72,9 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
         }
         StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_JUNZHU_MODEL, 1, 1);
         StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_NAME, 1, 1);
+        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_GENERAL_REWARD, 1, 1);
+        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, PrepareForBattleField.CONST_BATTLE_LOADING_SOUND, 1, 1);
+ 
     }
 
 
@@ -87,15 +82,14 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
 
     private const int BATTLE_RES_STEP_TOTAL = 2;
 
-    public GameObject m_CitytempleUI;
-    public GameObject m_CitySelfName;
-    public GameObject m_CityJunZhuModel;
+    private GameObject m_CitytempleUI;
+    private GameObject m_CitySelfName;
+    private GameObject m_CityJunZhuModel;
     private GameObject temple3D;
+    private GameObject m_GeneralReward;
 
     private void Load_2D_UI()
     {
-        InitCityLoading();
-
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_MAINUI),
                                 Load2DCallback);
     }
@@ -179,7 +173,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
         }
         index_Port_Num = 0;
 
-      
+
 
     }
 
@@ -220,10 +214,30 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
         StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
             CONST_CITY_LOADING_2D_NAME, "");
 
-     CityLoadDone();
+        // CityLoadDone();
+        LoadGeneralReward();
+
     }
 
-    void LoadJunZhuModel()
+    void LoadGeneralReward()
+    {
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_POP_REWARD_ROOT), ResourceLoadGeneralRewardCallback);
+    }
+
+    private void ResourceLoadGeneralRewardCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)
+    {
+        m_GeneralReward = p_object as GameObject;
+        StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+         CONST_CITY_LOADING_GENERAL_REWARD, "");
+
+        StartCoroutine(WaitForLoadComplete());
+    }
+    IEnumerator WaitForLoadComplete()
+    {
+      yield return new WaitForEndOfFrame();
+        CityLoadDone();
+    }
+        void LoadJunZhuModel()
     {
         Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
                                 ResourceLoadModelCallback);
@@ -266,6 +280,243 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>
         {
             NpcManager.m_NpcManager.CreateHousePortal(_PortSelf, _PortOther);
         }
+        if (GeneralRewardManager.Instance() == null)
+        {
+            GameObject obj = GameObject.Instantiate(m_GeneralReward);
+            DontDestroyOnLoad(obj);
+        }
         EnterNextScene.Instance().DestroyUI();
     }
+
+    private static int m_received_data_for_main_city = 0;
+
+    private const  int REQUEST_DATA_COUNT_FOR_MAINCITY = 4;
+
+    /// Prepare Data For Main City.
+    public void Prepare_For_MainCity()
+    {
+        //Debug.LogError("Prepare_For_MainCityPrepare_For_MainCityPrepare_For_MainCityPrepare_For_MainCity");
+        InitCityLoading();
+        // reset info
+        {
+            m_received_data_for_main_city = 0;
+
+            StartCoroutine(CheckingDataForMainCity());
+        }
+
+        // request PVE Info
+        {
+            JunZhuDiaoLuoManager.RequestMapInfo(-1);
+        }
+
+        // request JunZhu Info
+        {
+            // create instance, for battle field use.
+            //			Debug.Log ("MainCity");
+            JunZhuData.Instance();
+            JunZhuData.RequestJunZhuInfo();
+        }
+
+        //request Alliance Info
+        {
+            AllianceData.Instance.RequestData();
+        }
+
+        // request Task Info
+        {
+            TaskData.Instance.RequestData();
+        }
+        //  request Friend Info
+        {
+            FriendOperationData.Instance.RequestData();
+        }
+
+    }
+
+    private bool _isEnterMainCity = true;
+    IEnumerator CheckingDataForMainCity()
+    {
+        while (m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        // enter pve for 1st battle.
+        if (Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103)
+        {
+            _isEnterMainCity = false;
+           
+            DestroyForNextLoading();
+            //UnRegister();
+            EnterBattleField.EnterBattlePve(1, Global.m_iScreenID % 10, LevelType.LEVEL_NORMAL);
+        }
+        else
+        {
+            _isEnterMainCity = true;
+            EnterNextScene.DirectLoadLevel();
+        }
+
+        if (m_received_data_for_main_city == REQUEST_DATA_COUNT_FOR_MAINCITY && _isEnterMainCity)
+        {
+            UnRegister();
+            Load_2D_UI();
+        }
+    }
+    private static float m_preserve_percentage = 0.0f;
+    private void DestroyForNextLoading()
+    {
+        m_preserve_percentage = StaticLoading.GetLoadingPercentage(StaticLoading.m_loading_sections);
+
+     //   UnRegister();
+      EnterNextScene.Instance().DestroyUI();
+    }
+
+    public bool OnSocketEvent(QXBuffer p_message)
+    {
+     //   Debug.LogError("OnSocketEventOnSocketEventOnSocketEventOnSocketEvent");
+        if (p_message == null)
+        {
+            return false;
+        }
+        switch (p_message.m_protocol_index)
+        {
+            case ProtoIndexes.PVE_PAGE_RET:
+                {
+                    ProcessPVEPageReturn(p_message);
+
+                    m_received_data_for_main_city++;
+
+                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                            CONST_CITY_LOADING_CITY_NET, "PVE_PAGE_RET");
+
+                    return true;
+                }
+            case ProtoIndexes.JunZhuInfoRet:
+                {
+
+                    //				Debug.Log( "获得君主数据: " + Global.m_iScreenID );
+
+                    m_received_data_for_main_city++;
+                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                                   CONST_CITY_LOADING_CITY_NET, "JunZhuInfoRet");
+
+                    return true;
+                }
+
+            case ProtoIndexes.ALLIANCE_HAVE_RESP:
+                {
+
+                    //				Debug.Log ("获得有联盟信息");
+
+                    m_received_data_for_main_city++;
+                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                                   CONST_CITY_LOADING_CITY_NET, "ALLIANCE_HAVE_RESP");
+
+                    return true;
+                }
+
+            case ProtoIndexes.ALLIANCE_NON_RESP:
+                {
+
+                    //				Debug.Log ("获得无联盟信息");
+                    m_received_data_for_main_city++;
+                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                                   CONST_CITY_LOADING_CITY_NET, "ALLIANCE_NON_RESP");
+                    return true;
+                }
+            case ProtoIndexes.S_TaskList:
+                {
+                    //				Debug.Log( "获得主线任务: " + Global.m_iScreenID );
+                    m_received_data_for_main_city++;
+                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                                   CONST_CITY_LOADING_CITY_NET, "TaskList");
+                    return true;
+                }
+            default:
+                {
+                    return false;
+                }
+        }
+    }
+
+    private void ProcessPVEPageReturn(QXBuffer p_buffer)
+    {
+        //		Debug.Log( "ProcessPVEPageReturn( 获得了管卡数据 )" );
+
+        MemoryStream t_stream = new MemoryStream(p_buffer.m_protocol_message, 0, p_buffer.position);
+
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+
+        Section tempInfo = new Section();
+
+        t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+        if (tempInfo.s_allLevel == null)
+        {
+            Debug.Log("tempInfo.s_allLevel == null");
+        }
+        if (tempInfo.maxCqPassId > CityGlobalData.m_temp_CQ_Section)
+        {
+            CityGlobalData.m_temp_CQ_Section = tempInfo.maxCqPassId;
+        }
+
+        foreach (Level tempLevel in tempInfo.s_allLevel)
+        {
+            if (!tempLevel.s_pass)
+            {
+
+                Global.m_iScreenID = tempLevel.guanQiaId;
+
+                break;
+            }
+        }
+    }
+    void UnRegister()
+    {
+        SocketTool.UnRegisterSocketListener(this);
+    }
+
+    public void Prepare_For_AllianceCity()
+    {
+        InitCityLoading();
+
+        // reset info
+        {
+            m_received_data_for_main_city = 0;
+
+            StartCoroutine(CheckingDataForMainCity());
+        }
+
+
+        // request PVE Info
+        {
+            JunZhuDiaoLuoManager.RequestMapInfo(-1);
+        }
+
+        // request JunZhu Info
+        {
+
+            JunZhuData.Instance();
+            JunZhuData.RequestJunZhuInfo();
+        }
+        {
+ 
+            TaskData.Instance.RequestData();
+        }
+
+        //request Alliance Info
+        {
+            AllianceData.Instance.RequestData();
+        }
+
+        {
+            TenementData.Instance.RequestData();
+        }
+
+        //  request Friend Info
+        {
+            FriendOperationData.Instance.RequestData();
+        }
+    }
+
 }

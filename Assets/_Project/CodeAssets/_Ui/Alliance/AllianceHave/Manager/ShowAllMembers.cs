@@ -198,7 +198,7 @@ public class ShowAllMembers : MonoBehaviour {
 		m_tempObject.transform.localPosition = m_V;
 
 		m_tempObject.transform.localScale = Vector3.one;
-		//UtilityTool.ActiveWithStandardize(FloatButtonsRoot.transform, m_tempObject.transform);
+		//TransformHelper.ActiveWithStandardize(FloatButtonsRoot.transform, m_tempObject.transform);
 		//m_ModuleController.ScrollToEndIfClose();
 	}
 

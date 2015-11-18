@@ -238,7 +238,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	//        {
 	//            var tempIcon = Instantiate(loadedObject) as GameObject ;
 	//            tempIcon.name = "mibaoRect" + i;
-	//            UtilityTool.ActiveWithStandardize(m_MibaoRectIcon[i].transform, tempIcon.transform);
+	//            TransformHelper.ActiveWithStandardize(m_MibaoRectIcon[i].transform, tempIcon.transform);
 	//            IconSampleManager m_IconSampleManager = tempIcon.GetComponent<IconSampleManager>();
 	//
 	//            m_IconSampleManager.SetIconType(IconSampleManager.IconType.MiBao);
@@ -672,7 +672,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		m_PlayerModel.transform.parent = m_PlayerParent.transform;
 		m_PlayerModel.name = p_object.name;
 
-        // m_PlayerModel.name = m_role_model_path[CityGlobalData.m_king_model_Id - 1];
+		GameObjectHelper.SetGameObjectLayer(m_PlayerModel.transform.parent.gameObject, m_PlayerModel);
      
 		m_PlayerModel.transform.localPosition = new Vector3(0, -223, -100);
 		m_PlayerModel.GetComponent<NavMeshAgent>().enabled = false;
@@ -682,6 +682,8 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		m_PlayerModel.transform.localScale = new Vector3(190,190,190);
 		
 		m_PlayerModel.transform.rotation = new Quaternion(0,163,0,0);
+
+
 	}
 	public void setOpenWeapon(int index)
 	{

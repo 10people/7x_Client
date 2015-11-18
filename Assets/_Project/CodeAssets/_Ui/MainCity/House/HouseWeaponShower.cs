@@ -45,7 +45,7 @@ public class HouseWeaponShower : MonoBehaviour
         }
 
         var iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-        UtilityTool.ActiveWithStandardize(m_IconSampleParent, iconSampleObject.transform);
+        TransformHelper.ActiveWithStandardize(m_IconSampleParent, iconSampleObject.transform);
         m_IconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 
         m_IconSampleManager.SetIconByID(IconSampleManager.IconType.equipment, m_bagItem.itemId);

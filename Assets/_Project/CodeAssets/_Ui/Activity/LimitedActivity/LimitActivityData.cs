@@ -20,7 +20,7 @@ public class LimitActivityData : Singleton<LimitActivityData>, SocketListener
 
     public void RequestData()
     {
-        UtilityTool.SendQXMessage(ProtoIndexes.C_XIANSHI_REQ);
+        SocketHelper.SendQXMessage(ProtoIndexes.C_XIANSHI_REQ);
     }
 
     public bool OnSocketEvent(QXBuffer p_message)

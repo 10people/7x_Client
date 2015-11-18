@@ -57,7 +57,7 @@ public class FloatButtonsController : MonoBehaviour
         for (int i = 0; i < l_buttonInfos.Count; i++)
         {
             var temp = Instantiate(m_ButtonPrefab) as GameObject;
-            UtilityTool.ActiveWithStandardize(m_Grid.transform, temp.transform);
+            TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
 
             temp.name += "_" + UtilityTool.FullNumWithZeroDigit(i, l_buttonInfos.Count.ToString().Length);
 

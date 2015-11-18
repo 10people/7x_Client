@@ -99,6 +99,10 @@ public class KingCamera : MonoBehaviour
 		updateCameraFlags ();
 
 		updateCamera();
+
+		{
+			ConsoleTool.Instance().ManualLateUpdate();
+		}
 	}
 
 	public void targetChang(GameObject _target)

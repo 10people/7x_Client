@@ -10,17 +10,31 @@ using ProtoBuf.Meta;
 
 public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 
-	public string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);//确定按钮
-	public string cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);//取消按钮
+	#region GeneralStore
+	public class StoreGoodInfo
+	{
+		public int itemId;//兑换物品id
+		public string itemName;//兑换物品名字
+		public int needMoney;//需要的钱币数量
 
-	#region
+		public static StoreGoodInfo CreateStoreGood (int tempId,string tempName,int tempMoney)
+		{
+			StoreGoodInfo tempGood = new StoreGoodInfo ();
+			tempGood.itemId = tempId;
+			tempGood.itemName = tempName;
+			tempGood.needMoney = tempMoney;
+
+			return tempGood;
+		}
+	}
+	
 	//商店类型
 	public enum StoreType
 	{
-		PVP,//百战
-		HUANGYE,//荒野
-		ALLANCE,//联盟
-		ALLIANCE_FIGHT,//联盟战
+		PVP = 4,//百战
+		HUANGYE = 1,//荒野
+		ALLANCE = 2,//联盟
+		ALLIANCE_FIGHT = 3,//联盟战
 	}
 	private StoreType storeType = StoreType.PVP;
 	
@@ -30,72 +44,75 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 		FREE,//免费
 		USE_MONEY,//使用货币
 	}
-	private StoreReqType storeReqType = StoreReqType.FREE;
 
 	public enum BoxCallBackType
 	{
 		STORE_REQ,
 		STORE_BUY,
 	}
-	private BoxCallBackType boxCallBackType = BoxCallBackType.STORE_REQ;//提示框回调类型
 
 	private HyShopResp storeResp;//商铺返回信息
 	private HyBuyGoodResp storeBuyResp;//商铺购买返回信息
 
-	private string titleName;//商铺名字
+	private StoreGoodInfo goodInfo;
 
-	private int itemId;//兑换物品id
-	private string itemName;//兑换物品名字
-	private int needMoney;//需要的钱币数量
+	private List<StoreType> storeTypeList = new List<StoreType>();
+	public Dictionary<StoreType,string[]> storeDic = new Dictionary<StoreType, string[]>();
+	private string[][] storeInfo = new string[][]{new string[]{"weiwangIcon","威望","威望商店"},
+		new string[]{"HuangYe","荒野币","荒野商店"},
+		new string[]{"GongXun","功勋","功勋商店"},
+		new string[]{"GongXian","贡献","贡献商店"}};
 	
+	private Dictionary<StoreType,int[]> storeReqDic = new Dictionary<StoreType, int[]>();
+	private int[][] storeReqType = new int[][]{new int[]{40,41},
+		new int[]{20,21},
+		new int[]{30,31},
+		new int[]{10,11}};
+
+	private string moneyTypeName;
+	public string MoneyTypeName
+	{
+		set{moneyTypeName = value;}
+		get{return moneyTypeName;}
+	}
+
+	private GameObject generalStoreObj;
+
 	void Awake ()
 	{
 		SocketTool.RegisterMessageProcessor (this);
 	}
-	
+
 	/// <summary>
 	/// 公用商铺信息请求
 	/// </summary>
 	/// <param name="tempType">商铺类型</param>
 	/// <param name="buyType">购买类型</param>
-	/// <param name="titleName">商铺名字</param>
-	public void GeneralStoreReq (StoreType tempType,StoreReqType tempReqType,string tempTitleName)
+	public void GeneralStoreReq (StoreType tempType,StoreReqType tempReqType)
 	{
+		if (storeTypeList.Count == 0)
+		{
+			storeTypeList.Add (StoreType.PVP);
+			storeTypeList.Add (StoreType.HUANGYE);
+			storeTypeList.Add (StoreType.ALLIANCE_FIGHT);
+			storeTypeList.Add (StoreType.ALLANCE);
+			
+			for (int i = 0;i < storeTypeList.Count;i ++)
+			{
+				storeDic.Add (storeTypeList[i],storeInfo[i]);
+				storeReqDic.Add (storeTypeList[i],storeReqType[i]);
+			}
+		}
+
 		storeType = tempType;
-		storeReqType = tempReqType;
-		titleName = tempTitleName;
-		
+
+		MoneyTypeName = storeDic [tempType][1];
+
 		HyShopReq storeReq = new HyShopReq();
-		int reqType = 0;
-		switch (tempType)
-		{
-		case StoreType.PVP:
-		{
-			reqType = tempReqType == StoreReqType.FREE ? 40 : 41;
-			break;
-		}
-		case StoreType.ALLANCE:
-		{
-			reqType = tempReqType == StoreReqType.FREE ? 20 : 21;
-			break;
-		}
-		case StoreType.ALLIANCE_FIGHT:
-		{
-			reqType = tempReqType == StoreReqType.FREE ? 30 : 31;
-			break;
-		}
-		case StoreType.HUANGYE:
-		{
-			reqType = tempReqType == StoreReqType.FREE ? 10 : 11;
-			break;
-		}
-		default:
-			break;
-		}
 		
-		storeReq.type = reqType;
+		storeReq.type = tempReqType == StoreReqType.FREE ? storeReqDic[tempType][0] : storeReqDic[tempType][1];
 		
-		QXComData.SendQxProtoMessage (storeReq,ProtoIndexes.HY_SHOP_REQ,"30391");
+		QXComData.SendQxProtoMessage (storeReq,ProtoIndexes.HY_SHOP_REQ,ProtoIndexes.HY_SHOP_RESP.ToString ());
 
 //		Debug.Log ("商铺信息请求:" + ProtoIndexes.HY_SHOP_REQ);
 	}
@@ -103,45 +120,16 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 	/// <summary>
 	/// 商铺物品购买请求
 	/// </summary>
-	/// <param name="tempType">购买类型</param>
-	/// <param name="tempItemId">物品id</param>
-	/// <param name="tempItemName">物品名字</param>
-	/// <param name="tempNeedMoney">花费钱币</param>
-	public void StoreBuyReq (StoreType tempType,int tempItemId,string tempItemName,int tempNeedMoney)
+	public void StoreBuyReq (StoreGoodInfo tempGoodInfo)
 	{
-		storeType = tempType;
-		itemId = tempItemId;
-		itemName = tempItemName;
-		needMoney = tempNeedMoney;
+		goodInfo = tempGoodInfo;
 
 		HyBuyGoodReq storeBuyReq = new HyBuyGoodReq();
-		int buyType = 0;
-		switch (tempType)
-		{
-		case StoreType.PVP:
-			buyType = 4;
-			break;
-			
-		case StoreType.ALLANCE:
-			buyType = 2;
-			break;
-			
-		case StoreType.ALLIANCE_FIGHT:
-			buyType = 3;
-			break;
-			
-		case StoreType.HUANGYE:
-			buyType = 1;
-			break;
-			
-		default:
-			break;
-		}
+
+		storeBuyReq.type = (int)storeType;
+		storeBuyReq.goodId = tempGoodInfo.itemId;
 		
-		storeBuyReq.type = buyType;
-		storeBuyReq.goodId = tempItemId;
-		
-		QXComData.SendQxProtoMessage (storeBuyReq,ProtoIndexes.HY_BUY_GOOD_REQ,"30393");
+		QXComData.SendQxProtoMessage (storeBuyReq,ProtoIndexes.HY_BUY_GOOD_REQ,ProtoIndexes.HY_BUY_GOOD_RESP.ToString ());
 //		Debug.Log ("商铺物品购买请求:" + ProtoIndexes.HY_BUY_GOOD_REQ);
 	}
 	
@@ -155,8 +143,8 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 			{
 //				Debug.Log ("商铺信息返回:" + ProtoIndexes.HY_SHOP_RESP);
 
-				object tempTargetObj = new HyShopResp();
-				HyShopResp storeRes = QXComData.ReceiveQxProtoMessage (p_message,tempTargetObj) as HyShopResp;
+				HyShopResp storeRes = new HyShopResp();
+				storeRes = QXComData.ReceiveQxProtoMessage (p_message,storeRes) as HyShopResp;
 				
 				if (storeRes != null)
 				{
@@ -212,8 +200,8 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 			{
 				Debug.Log ("商铺物品购买返回:" + ProtoIndexes.HY_BUY_GOOD_RESP);
 
-				object tempTargetObj = new HyBuyGoodResp();
-				HyBuyGoodResp storeBuyRes = QXComData.ReceiveQxProtoMessage (p_message,tempTargetObj) as HyBuyGoodResp;
+				HyBuyGoodResp storeBuyRes = new HyBuyGoodResp();
+				storeBuyRes = QXComData.ReceiveQxProtoMessage (p_message,storeBuyRes) as HyBuyGoodResp;
 				
 				if (storeBuyRes != null)
 				{
@@ -243,7 +231,7 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 						if (storePrefab != null)
 						{
 							GeneralStore generalStore = storePrefab.GetComponent<GeneralStore> ();
-							generalStore.RefreshStoreItem (itemId,storeBuyRes.remianHyMoney);
+							generalStore.RefreshStoreItem (goodInfo.itemId,storeBuyRes.remianHyMoney);
 						}
 					}
 					BoxLoad (BoxCallBackType.STORE_BUY);
@@ -261,27 +249,26 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 	/// </summary>
 	void LoadGeneralStorePrefab ()
 	{
-		GameObject storePrefab = GameObject.Find ("GeneralStore");
-		if (storePrefab == null)
+		if (generalStoreObj == null)
 		{
 			Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_STORE ),
 			                        GeneralStoreLoadBack );
 		}
 		else
 		{
-			GeneralStore generalStore = storePrefab.GetComponent<GeneralStore> ();
-			generalStore.GetStoreInfo (storeType,titleName,storeResp.goodsInfos,storeResp.remianTime,storeResp.hyMoney,storeResp.nextRefreshNeedMoney);
+			generalStoreObj.SetActive (true);
+			MainCityUI.TryAddToObjectList (generalStoreObj);
+			GeneralStore generalStore = generalStoreObj.GetComponent<GeneralStore> ();
+			generalStore.GetStoreInfo (storeType,storeResp.goodsInfos,storeResp.remianTime,storeResp.hyMoney,storeResp.nextRefreshNeedMoney);
 		}
 	}
 
 	void GeneralStoreLoadBack ( ref WWW p_www, string p_path, Object p_object )
 	{
-		GameObject storeObj = GameObject.Instantiate( p_object ) as GameObject;
-		
-		storeObj.name = "GeneralStore";
-
-		GeneralStore generalStore = storeObj.GetComponent<GeneralStore> ();
-		generalStore.GetStoreInfo (storeType,titleName,storeResp.goodsInfos,storeResp.remianTime,storeResp.hyMoney,storeResp.nextRefreshNeedMoney);
+		generalStoreObj = GameObject.Instantiate( p_object ) as GameObject;
+		MainCityUI.TryAddToObjectList (generalStoreObj);
+		GeneralStore generalStore = generalStoreObj.GetComponent<GeneralStore> ();
+		generalStore.GetStoreInfo (storeType,storeResp.goodsInfos,storeResp.remianTime,storeResp.hyMoney,storeResp.nextRefreshNeedMoney);
 	}
 
 	/// <summary>
@@ -290,46 +277,15 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 	/// <param name="tempCallBack">T提示类型</param>
 	void BoxLoad (BoxCallBackType tempCallBack)
 	{
-		boxCallBackType = tempCallBack;
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-		                        BoxLoadCallBack );
-	}
-
-	private void BoxLoadCallBack ( ref WWW p_www, string p_path, Object p_object )
-	{
-		GameObject boxObj = Instantiate (p_object) as GameObject;
-		
-		UIBox uibox = boxObj.GetComponent<UIBox> ();
-
-		string titleStr = "提示";
 		string textStr = "";
 
-		string moneyType = "";
-		switch (storeType)
-		{
-		case StoreType.PVP:
-			moneyType = "威望";
-			break;
-		case StoreType.HUANGYE:
-			moneyType = "荒野币";
-			break;
-		case StoreType.ALLANCE:
-			moneyType = "贡献值";
-			break;
-		case StoreType.ALLIANCE_FIGHT:
-			moneyType = "功勋";
-			break;
-		default:
-			break;
-		}
-
-		switch (boxCallBackType)
+		switch (tempCallBack)
 		{
 		case BoxCallBackType.STORE_REQ:
 		{
 			if (storeResp.msg == 11)//货币不足
 			{
-				textStr = "\n商铺刷新失败，" + moneyType + "不足";
+				textStr = "\n\n商铺刷新失败，" + MoneyTypeName + "不足";
 			}
 			else if (storeResp.msg == 12)//刷新成功
 			{
@@ -341,11 +297,11 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 		{
 			if (storeBuyResp.msg == 1)//购买成功
 			{
-				textStr = "\n恭喜使用" + needMoney + moneyType + "成功兑换物品\n" + itemName;
+				textStr = "\n\n恭喜使用" + goodInfo.needMoney + MoneyTypeName + "成功兑换物品\n" + goodInfo.itemName;
 			}
 			else//购买失败
 			{
-				textStr = "\n\n" + moneyType + "不足,购买失败";
+				textStr = "\n\n" + MoneyTypeName + "不足,购买失败";
 			}
 			break;
 		}
@@ -353,8 +309,10 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 			break;
 		}
 
-		uibox.setBox(titleStr, MyColorData.getColorString (1,textStr), null, 
-		             null, confirmStr, null, null);
+		Global.CreateBox (QXComData.titleStr, 
+		                  MyColorData.getColorString (1,textStr), null, null, 
+		                  QXComData.confirmStr, null, 
+		                  null);
 	}
 
 	void OnDestroy ()
@@ -363,7 +321,7 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 	}
 	#endregion
 	
-	#region
+	#region GeneralRule
 	//规则类型
 	public enum RuleType
 	{

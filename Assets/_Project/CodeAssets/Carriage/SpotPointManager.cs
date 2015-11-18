@@ -28,7 +28,7 @@ namespace Carriage
                 {
                     var spotPoint = spotPointLine.Position[j];
                     var tempObject = Instantiate(loadedObject) as GameObject;
-                    UtilityTool.ActiveWithStandardize(m_spotPointParent.transform, tempObject.transform);
+                    TransformHelper.ActiveWithStandardize(m_spotPointParent.transform, tempObject.transform);
 
                     tempObject.name = (i + 1) + "-" + (j + 1);
                     tempObject.transform.localPosition = new Vector3(spotPoint.x, m_RootManager.BasicYPosition + 0.5f, spotPoint.y);

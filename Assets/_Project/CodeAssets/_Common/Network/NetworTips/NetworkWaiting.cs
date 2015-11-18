@@ -421,7 +421,7 @@ public class NetworkWaiting : MonoBehaviour {
 		{
 			float t_time = GetWaitTime();
 
-			t_time = UtilityTool.FloatPrecision( t_time, 2 );
+			t_time = MathHelper.FloatPrecision( t_time, 2 );
 
 			m_lb_time.text = t_time + "";
 		}

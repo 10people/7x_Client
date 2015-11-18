@@ -61,7 +61,7 @@ public class ExchangeSelfController : MonoBehaviour
             }
 
             //set each box manager.
-            UtilityTool.ActiveWithStandardize(IconSampleParentList[i].transform, iconSampleObject.transform);
+            TransformHelper.ActiveWithStandardize(IconSampleParentList[i].transform, iconSampleObject.transform);
             var itemManager = iconSampleObject.GetComponent<OldBookItemManager>() ??
                               iconSampleObject.AddComponent<OldBookItemManager>();
             itemManager.BoxId = sortedList[i].boxId;
@@ -104,7 +104,7 @@ public class ExchangeSelfController : MonoBehaviour
                     boxIdx = itemManager.BoxId,
                     itemId = itemManager.ItemId
                 };
-                UtilityTool.SendQXMessage(temp, ProtoIndexes.C_HUAN_WU_OPER);
+                SocketHelper.SendQXMessage(temp, ProtoIndexes.C_HUAN_WU_OPER);
                 break;
             //add to or remove from exchange items.
             case OldBookWindow.Mode.ExchangeBoxOther:

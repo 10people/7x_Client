@@ -76,7 +76,7 @@ public class OldBookSelfController : MonoBehaviour
             }
 
             //set book fragment data.
-            UtilityTool.ActiveWithStandardize(IconSampleParentList[i].transform, iconSampleObject.transform);
+            TransformHelper.ActiveWithStandardize(IconSampleParentList[i].transform, iconSampleObject.transform);
             var itemManager = iconSampleObject.GetComponent<OldBookItemManager>() ??
                               iconSampleObject.AddComponent<OldBookItemManager>();
             itemManager.BoxId = 0;
@@ -114,7 +114,7 @@ public class OldBookSelfController : MonoBehaviour
             boxIdx = 0,
             itemId = itemManager.ItemId
         };
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_HUAN_WU_OPER);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_HUAN_WU_OPER);
     }
 
     public void SetBox()
@@ -157,7 +157,7 @@ public class OldBookSelfController : MonoBehaviour
         {
             code = combineIndex
         };
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_EX_CAN_JUAN_JIANG_LI);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_EX_CAN_JUAN_JIANG_LI);
 
         //Show combine succeed effect.
         List<RewardData> tempList = bagItemList.Select(item => new RewardData(item.itemId, item.cnt)).ToList();

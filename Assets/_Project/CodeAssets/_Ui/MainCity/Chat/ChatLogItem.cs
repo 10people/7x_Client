@@ -351,7 +351,7 @@ public class ChatLogItem : MonoBehaviour
 
         //Set response to king detail info and request.
         m_ChatBaseDataHandler.IsResponseToKingDetailInfo = true;
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
     }
 
     private void OnAddFriendClick()
@@ -463,7 +463,7 @@ public class ChatLogItem : MonoBehaviour
 
                 AnswerYaBiaoHelpReq temp = new AnswerYaBiaoHelpReq() { code = 10, jzId = m_ChatStruct.m_ChatPct.senderId };
 
-                UtilityTool.SendQXMessage(temp, ProtoIndexes.C_ANSWER_YBHELP_RSQ);
+                SocketHelper.SendQXMessage(temp, ProtoIndexes.C_ANSWER_YBHELP_RSQ);
 
                 break;
             default:
@@ -547,7 +547,7 @@ public class ChatLogItem : MonoBehaviour
 
         SenderFloatButtonsController.Initialize(tempList, IsLeftMode);
 
-        UtilityTool.ActiveWithStandardize(transform, tempObject.transform);
+        TransformHelper.ActiveWithStandardize(transform, tempObject.transform);
         //adapt transform position.
         if (IsLeftMode)
         {
@@ -572,7 +572,7 @@ public class ChatLogItem : MonoBehaviour
         }
 
         //adapt pop up buttons to scroll view.
-        UtilityTool.AdaptWidgetInScrollView(m_ChatBaseDataHandler.m_ScrollView, m_ChatBaseDataHandler.m_ScrollBar, SenderFloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
+		NGUIHelper.AdaptWidgetInScrollView(m_ChatBaseDataHandler.m_ScrollView, m_ChatBaseDataHandler.m_ScrollBar, SenderFloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
     }
 
     private void OnDetailClick(GameObject go)
@@ -612,7 +612,7 @@ public class ChatLogItem : MonoBehaviour
 
         AlertFloatButtonsController.Initialize(tempList, IsLeftMode);
 
-        UtilityTool.ActiveWithStandardize(transform, tempObject.transform);
+        TransformHelper.ActiveWithStandardize(transform, tempObject.transform);
         //adapt transform position.
         if (IsLeftMode)
         {

@@ -69,7 +69,7 @@ namespace Rank
 
             RankingReq temp = new RankingReq { rankType = ModuleIndex + 1, guojiaId = nationID, pageNo = pageID };
 
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.RANKING_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_REQ);
 
             //Set CurrentNationIndex.
             CurrentNationIndex = nationID;
@@ -88,7 +88,7 @@ namespace Rank
                 rankType = ModuleIndex + 1,
                 name = p_name,
             };
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.RANKING_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_REQ);
         }
 
         public abstract void GetMyRank(int type, int nationID);

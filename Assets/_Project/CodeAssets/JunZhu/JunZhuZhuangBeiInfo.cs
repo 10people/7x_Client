@@ -45,6 +45,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor
     public UISprite m_SpritePinZhi;
     public UIProgressBar m_Progress;
     public UILabel m_labProgress;
+    public GameObject m_BottomButton;
     private int EquipSaveId;
 
     private int BuWeiSave;
@@ -735,6 +736,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor
             }
             else
             {
+                m_BottomButton.SetActive(true); 
                 m_RightObj.SetActive(true);
                 gameObject.SetActive(false);
             }

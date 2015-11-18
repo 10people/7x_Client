@@ -21,7 +21,7 @@ using ProtoBuf.Meta;
  * Notes:
  * None.
  */ 
-public class EnterNextScene : MonoBehaviour, SocketListener{
+public class EnterNextScene : MonoBehaviour{
 	
 	/// 加载进度条
 	public UISlider m_slider_progress;
@@ -72,7 +72,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 			DontDestroyOnLoad( StaticLoading.Instance().m_loading_bg_root );
 		}
 
-		SocketTool.RegisterSocketListener( this );
+		//SocketTool.RegisterSocketListener( this );
 
 		PrepareToLoadScene();
 	}
@@ -114,12 +114,12 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 			}
 		}
 
-        //progress log
-//        {
-//            StaticLoading.LogLoadingInfo( StaticLoading.m_loading_sections );
-//        }
+       // progress log
+        //{
+        //    StaticLoading.LogLoadingInfo(StaticLoading.m_loading_sections);
+        //}
 
-		if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CURRENT_LOADING ) ){
+        if ( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CURRENT_LOADING ) ){
 			if( m_loading_asset_changed ){
 				{
 					SetLoadingAssetChanged( false );
@@ -153,7 +153,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 			
 			t_state.s_state = State.State_LOADINGSCENE;
 			
-			UtilityTool.SendQXMessage( t_state, ProtoIndexes.PLAYER_STATE_REPORT );
+			SocketHelper.SendQXMessage( t_state, ProtoIndexes.PLAYER_STATE_REPORT );
 		}
 		else{
 //			Debug.LogError( "Error, Socket not Connected." );
@@ -164,16 +164,21 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
         }
 		else if ( LoadingHelper.IsLoadingMainCity() || LoadingHelper.IsLoadingMainCityYeWan() ){
             // loading MainCity
-            Prepare_For_MainCity();
+            //  Prepare_For_MainCity();
+     
+            PrepareForCityLoad.Instance.Prepare_For_MainCity();
         }
-		else if ( LoadingHelper.IsLoadingAllianceCity() ) {
-            Prepare_For_AllianceCity();
+		else if ( LoadingHelper.IsLoadingAllianceCity() || LoadingHelper.IsLoadingAllianceCityYeWan()) {
+            // Prepare_For_AllianceCity();
+    
+            PrepareForCityLoad.Instance.Prepare_For_AllianceCity();
         }
-		else if ( LoadingHelper.IsLoadingAllianceCityYeWan() ) {
-            Prepare_For_AllianceCity();
+		else if ( LoadingHelper.IsLoadingAllianceCityYeWan() || LoadingHelper.IsLoadingAllianceTenentsCity())
+        {
+            PrepareForCityLoad.Instance.Prepare_For_AllianceCity();
         }
 		else if ( LoadingHelper.IsLoadingAllianceTenentsCity() ){
-            Prepare_For_AllianceCity();
+          //  Prepare_For_AllianceCity();
         }
 		else if ( LoadingHelper.IsLoadingBattleField() ) {
             // BattleField
@@ -331,7 +336,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 	}
 
 	private void UnRegister(){
-		SocketTool.UnRegisterSocketListener( this );
+		//SocketTool.UnRegisterSocketListener(this);
 
 		// move to destroy UI
 //		m_instance = null;
@@ -474,9 +479,9 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 	}
 
 	public static void LogTimeSinceLoading( string p_loading_tag ){
-		Debug.Log( UtilityTool.FloatPrecision( GetTimesinceLastTimeTag(), 5 ) + 
+		Debug.Log( MathHelper.FloatPrecision( GetTimesinceLastTimeTag(), 5 ) + 
 		          " / " + 
-		          UtilityTool.FloatPrecision( GetTimeSinceLoading(), 5 ) + " - " + 
+		          MathHelper.FloatPrecision( GetTimeSinceLoading(), 5 ) + " - " + 
 		          p_loading_tag );
 	}
 
@@ -542,66 +547,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
 		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_MAINCITY );
 	}
-
-	/// Prepare Data For Main City.
-	private void Prepare_For_MainCity(){
-		#if DEBUG_ENTER_NEXT_SCENE
-		Debug.Log( "EnterNextScene.Prepare_For_MainCity()" );
-		#endif
-
-		InitMainCityLoading();
-
-		// reset info
-		{
-			m_received_data_for_main_city = 0;
-
-			StartCoroutine( CheckingDataForMainCity() );
-		}
-
-		// request MiBao Info
-		{
-//			MiBaoGlobleData.Instance();
-//			MiBaoGlobleData.SendMiBaoIfoMessage ();
-		}
-
-		// request PVE Info
-		{
-			JunZhuDiaoLuoManager.RequestMapInfo( -1 );
-		}
-
-		// request JunZhu Info
-		{
-			// create instance, for battle field use.
-//			Debug.Log ("MainCity");
-			JunZhuData.Instance();
-			JunZhuData.RequestJunZhuInfo();
-		}
-
-		// request Equip Info
-		{
-//			Debug.Log ("MainCityEquipsBody");
-
-//			EquipsOfBody.Instance();
-//			EquipsOfBody.RequestEquipInfo();
-		}
-
-		//request Alliance Info
-		{
-			AllianceData.Instance.RequestData ();
-		}
-
-		// request Task Info
-		{
-//			Debug.Log ("MainCityTask");
-			TaskData.Instance.RequestData();
-		}
-        //  request Friend Info
-        {
-            FriendOperationData.Instance.RequestData();
-        }
-
-    }
-
+ 
     private bool _isEnterMainCity = true;
     IEnumerator CheckingDataForMainCity(){
 		while( m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY ){
@@ -624,7 +570,7 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
         if (m_received_data_for_main_city == REQUEST_DATA_COUNT_FOR_MAINCITY && _isEnterMainCity)
         {
-            PrepareForCityLoad.Instance.m_NetData_IsReday = true;
+   
         }
 	}
 
@@ -702,104 +648,104 @@ public class EnterNextScene : MonoBehaviour, SocketListener{
 
 	///	Every Proto Only Could Have 1 Processor, but Many Listener.
 	/// MainCity MAY Have Processors.
-	public bool OnSocketEvent( QXBuffer p_message ){
-//		Debug.Log ("p_message:" + p_message);
-		if( p_message == null ){
-			return false;
-		}
+//	public bool OnSocketEvent( QXBuffer p_message ){
+////		Debug.Log ("p_message:" + p_message);
+//		if( p_message == null ){
+//			return false;
+//		}
 
-		switch( p_message.m_protocol_index ){
-//			case ProtoIndexes.S_MIBAO_INFO_RESP:{
-//
-//			    MiBaoGlobleData.Instance().OnProcessSocketMessage(p_message);
-//				Debug.Log ("秘宝info：" + ProtoIndexes.S_MIBAO_INFO_RESP);
+//		switch( p_message.m_protocol_index ){
+////			case ProtoIndexes.S_MIBAO_INFO_RESP:{
+////
+////			    MiBaoGlobleData.Instance().OnProcessSocketMessage(p_message);
+////				Debug.Log ("秘宝info：" + ProtoIndexes.S_MIBAO_INFO_RESP);
+////				m_received_data_for_main_city++;
+////
+////			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+////			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_MIBAO_INFO_RESP" );
+////
+////				return true;
+////			}
+
+//			case ProtoIndexes.PVE_PAGE_RET:{
+////				Debug.Log( "PveInfoResp:" + ProtoIndexes.PVE_PAGE_RET );
+
+//				ProcessPVEPageReturn( p_message );
+
 //				m_received_data_for_main_city++;
-//
+
 //			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-//			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_MIBAO_INFO_RESP" );
-//
+//			                         StaticLoading.CONST_MAINCITY_NETWORK, "PVE_PAGE_RET" );
+				
+//				return true;
+//			}
+				
+////			case ProtoIndexes.S_EquipInfo:{
+////				Debug.Log( "OnSocketEvent: TanBaoYinDaoCol()" );
+////
+////				EquipsOfBody.Instance().ProcessEquipInfo( p_message );
+////
+////				m_received_data_for_main_city++;
+////
+////			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+////			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_EquipInfo" );
+////
+////				return true;
+////			}
+
+//			case ProtoIndexes.JunZhuInfoRet:{
+
+////				Debug.Log( "获得君主数据: " + Global.m_iScreenID );
+				
+//				m_received_data_for_main_city++;
+
+//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			                         StaticLoading.CONST_MAINCITY_NETWORK, "JunZhuInfoRet" );
+				
 //				return true;
 //			}
 
-			case ProtoIndexes.PVE_PAGE_RET:{
-//				Debug.Log( "PveInfoResp:" + ProtoIndexes.PVE_PAGE_RET );
-
-				ProcessPVEPageReturn( p_message );
-
-				m_received_data_for_main_city++;
-
-			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-			                         StaticLoading.CONST_MAINCITY_NETWORK, "PVE_PAGE_RET" );
+//		    case ProtoIndexes.ALLIANCE_HAVE_RESP:{
 				
-				return true;
-			}
+////				Debug.Log ("获得有联盟信息");
 				
-//			case ProtoIndexes.S_EquipInfo:{
-//				Debug.Log( "OnSocketEvent: TanBaoYinDaoCol()" );
-//
-//				EquipsOfBody.Instance().ProcessEquipInfo( p_message );
-//
 //				m_received_data_for_main_city++;
-//
+
 //			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-//			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_EquipInfo" );
-//
+//			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_HAVE_RESP" );
+				
 //				return true;
 //			}
 
-			case ProtoIndexes.JunZhuInfoRet:{
+//			case ProtoIndexes.ALLIANCE_NON_RESP:{
+			
+////				Debug.Log ("获得无联盟信息");
+			
+//				m_received_data_for_main_city++;
+			
+//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_NON_RESP" );
+			
+//			return true;
+//			}
 
-//				Debug.Log( "获得君主数据: " + Global.m_iScreenID );
-				
-				m_received_data_for_main_city++;
+//			case ProtoIndexes.S_TaskList:{
+			
+////				Debug.Log( "获得主线任务: " + Global.m_iScreenID );
+			
+//				m_received_data_for_main_city++;
+			
+//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_TaskList" );
+			
+//			return true;
+//		}
 
-			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-			                         StaticLoading.CONST_MAINCITY_NETWORK, "JunZhuInfoRet" );
-				
-				return true;
-			}
-
-		    case ProtoIndexes.ALLIANCE_HAVE_RESP:{
-				
-//				Debug.Log ("获得有联盟信息");
-				
-				m_received_data_for_main_city++;
-
-			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_HAVE_RESP" );
-				
-				return true;
-			}
-
-			case ProtoIndexes.ALLIANCE_NON_RESP:{
-			
-//				Debug.Log ("获得无联盟信息");
-			
-				m_received_data_for_main_city++;
-			
-			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_NON_RESP" );
-			
-			return true;
-			}
-
-			case ProtoIndexes.S_TaskList:{
-			
-//				Debug.Log( "获得主线任务: " + Global.m_iScreenID );
-			
-				m_received_data_for_main_city++;
-			
-			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
-			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_TaskList" );
-			
-			return true;
-		}
-
-			default:{
-				return false;
-			}
-		}
-	}
+//			default:{
+//				return false;
+//			}
+//		}
+//	}
 
 	#endregion
 

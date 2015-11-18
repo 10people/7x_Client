@@ -190,7 +190,7 @@ namespace Carriage
         private void OnIconLoadCallBack(ref WWW www, string path, Object loadedObject)
         {
             var tempObject = Instantiate(loadedObject) as GameObject;
-            UtilityTool.ActiveWithStandardize(m_KingIconParent.transform, tempObject.transform);
+            TransformHelper.ActiveWithStandardize(m_KingIconParent.transform, tempObject.transform);
 
             m_IconSampleManager = tempObject.GetComponent<IconSampleManager>();
             SetIconSampleManager();

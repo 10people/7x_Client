@@ -308,6 +308,9 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 
 	void LoadMiBaoBack(ref WWW p_www, string p_path, Object p_object)
 	{
+
+		EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecendNeedCloseObg = this.gameObject;
+
 		GameObject mChoose_MiBao = Instantiate (p_object) as GameObject;
 		
 		mChoose_MiBao.SetActive (true);
@@ -339,7 +342,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		}
 		mChangeMiBaoSkill.GetRootName (this.gameObject.name);
 		mChangeMiBaoSkill.Init(mibaotype, m_You_XiaInfo.zuheId);
-		
+		EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose ();
 	}
 
 	public void CloseBtn()
@@ -352,6 +355,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	}
 	public void BackBtn()
 	{
+		EnterYouXiaBattle.GlobleEnterYouXiaBattle.ThirdShowOrClose ();
 		Destroy (this.gameObject);
 	}
 	private int NpcId;

@@ -15,14 +15,14 @@ public class EnterGeneralStore : MonoBehaviour {
 
 	void TempObj1 (GameObject obj)
 	{
-		GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.HUANGYE,GeneralControl.StoreReqType.FREE,"荒野商铺");
+		GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.HUANGYE,GeneralControl.StoreReqType.FREE);
 	}
 	void TempObj2 (GameObject obj)
 	{
-		GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.ALLANCE,GeneralControl.StoreReqType.FREE,"联盟商铺");
+		GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.ALLANCE,GeneralControl.StoreReqType.FREE);
 	}
 	void TempObj3 (GameObject obj)
 	{
-		GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.ALLIANCE_FIGHT,GeneralControl.StoreReqType.FREE,"联盟战商铺");
+		GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.ALLIANCE_FIGHT,GeneralControl.StoreReqType.FREE);
 	}
 }

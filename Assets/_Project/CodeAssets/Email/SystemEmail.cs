@@ -23,7 +23,7 @@ public class SystemEmail : MonoBehaviour {
 	/// <param name="tempList">Temp list.</param>
 	public void GetSystemEmailList (List<EmailInfo> tempList)
 	{
-		Debug.Log ("GetSystemEmailList:" + tempList.Count);
+//		Debug.Log ("GetSystemEmailList:" + tempList.Count);
 
 		if (tempList.Count > 0)
 		{
@@ -127,13 +127,14 @@ public class SystemEmail : MonoBehaviour {
 	/// </summary>
 	public void RefreshEmailList (List<EmailInfo> tempList)
 	{
-		Debug.Log ("RefreshTempList:" + tempList.Count);
+//		Debug.Log ("RefreshTempList:" + tempList.Count);
 
 		if (tempList.Count != emailItemList.Count)
 		{
 			if (tempList.Count > emailItemList.Count)
 			{
-				Debug.Log ("添加emailItem");
+//				Debug.Log ("添加emailItem");
+
 				int addCount = tempList.Count - emailItemList.Count;
 				for (int i = 0;i < addCount;i ++)
 				{
@@ -148,18 +149,21 @@ public class SystemEmail : MonoBehaviour {
 					emailItemList.Add (newEmailItem);
 				}
 			}
-
 			else if (tempList.Count < emailItemList.Count)
 			{
-				Debug.Log ("list1:" + emailItemList.Count);
+//				Debug.Log ("list1:" + emailItemList.Count);
+
 				int destroyCount = emailItemList.Count - tempList.Count;
-				Debug.Log ("destroyCount:" + destroyCount);
+
+//				Debug.Log ("destroyCount:" + destroyCount);
+
 				for (int i = 0;i < destroyCount;i ++)
 				{
 					Destroy (emailItemList[0]);
 					emailItemList.Remove (emailItemList[i]);
 				}
-				Debug.Log ("list2:" + emailItemList.Count);
+
+//				Debug.Log ("list2:" + emailItemList.Count);
 			}
 		}
 

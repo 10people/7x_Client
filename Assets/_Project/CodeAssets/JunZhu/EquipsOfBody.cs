@@ -32,7 +32,7 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
     {
         if (m_equipsOfBody == null)
         {
-            GameObject t_gameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
+            GameObject t_gameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
             m_equipsOfBody = t_gameObject.AddComponent<EquipsOfBody>();
         }

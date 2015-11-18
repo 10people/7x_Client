@@ -36,7 +36,7 @@ namespace Rank
                 for (int i = 0; i < list.Count; i++)
                 {
                     var temp = Instantiate(m_Prefab) as GameObject;
-                    UtilityTool.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                    TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
                     var controller = temp.GetComponent<BaizhanDetailController>();
 
                     temp.name += "_" + UtilityTool.FullNumWithZeroDigit(i, list.Count.ToString().Length);
@@ -90,7 +90,7 @@ namespace Rank
         {
             GetRankReq temp = new GetRankReq { rankType = type, guojiaId = nationID, id = (int)JunZhuData.Instance().m_junzhuInfo.id };
 
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.RANKING_MY_RANK_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_MY_RANK_REQ);
         }
 
         public bool OnSocketEvent(QXBuffer p_message)

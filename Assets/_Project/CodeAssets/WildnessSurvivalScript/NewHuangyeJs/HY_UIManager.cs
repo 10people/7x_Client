@@ -434,7 +434,9 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		{
 			curMaxlevel = CurMap*Levelsnum;
 		}
-		Debug.Log ("CurMap2 = " +CurMap);
+
+//		Debug.Log ("CurMap2 = " +CurMap);
+
 		if(CurMap <=1 )
 		{
 			Leftbtn.SetActive(false);
@@ -611,8 +613,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		if (canOpenShop)
 		{
 			canOpenShop = false;
-			string mtitleStr = "荒野货栈";
-			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.HUANGYE,GeneralControl.StoreReqType.FREE,mtitleStr);
+			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.HUANGYE,GeneralControl.StoreReqType.FREE);
 		}
 	}
 
@@ -716,5 +717,23 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Global.m_isOpenHuangYe = false;
 		Destroy (this.gameObject);
+	}
+	public GameObject NeedCloseObg;
+
+	public void ShowOrClose()
+	{
+		Debug.Log ("NeedCloseObg = " +NeedCloseObg);
+		if(NeedCloseObg == null)
+		{
+			return;
+		}
+		if(NeedCloseObg.activeInHierarchy)
+		{
+			NeedCloseObg.SetActive(false);
+		}
+		else
+		{
+			NeedCloseObg.SetActive(true);
+		}
 	}
 }

@@ -102,7 +102,8 @@ public class EmailItemInfo : MonoBehaviour {
 	//点击查看邮件
 	public void CheckEmail ()
 	{
-		Debug.Log ("EmailManager.emailMan.IsCheck:" + EmailManager.emailMan.IsCheck);
+//		Debug.Log ("EmailManager.emailMan.IsCheck:" + EmailManager.emailMan.IsCheck);
+
 		if (EmailManager.emailMan.IsCheck)
 		{
 			return;

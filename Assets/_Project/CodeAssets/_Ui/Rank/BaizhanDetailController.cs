@@ -101,7 +101,7 @@ namespace Rank
 
             FloatButtonsController.Initialize(tempList, true);
 
-            UtilityTool.ActiveWithStandardize(FloatButtonsRoot.transform, tempObject.transform);
+            TransformHelper.ActiveWithStandardize(FloatButtonsRoot.transform, tempObject.transform);
 
             StartCoroutine(AdjustFloatButton());
         }
@@ -112,7 +112,7 @@ namespace Rank
             {
                 junzhuId = m_BaizhanInfo.junZhuId
             };
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
             m_ModuleController.ClampScrollView();
         }
 
@@ -132,7 +132,7 @@ namespace Rank
             {
                 junzhuId = m_BaizhanInfo.junZhuId
             };
-            UtilityTool.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
+            SocketHelper.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
             m_ModuleController.ClampScrollView();
         }
 

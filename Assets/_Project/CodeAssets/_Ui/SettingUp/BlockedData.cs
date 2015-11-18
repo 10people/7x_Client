@@ -17,7 +17,7 @@ public class BlockedData : MonoBehaviour, SocketProcessor
     {
         if (m_BlockedData == null)
         {
-            GameObject t_GameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
+            GameObject t_GameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
             m_BlockedData = t_GameObject.AddComponent<BlockedData>();
         }

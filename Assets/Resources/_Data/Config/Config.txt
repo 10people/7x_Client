@@ -2,7 +2,7 @@
 -------------------------------------------------------------------- <Version Config>
 ShowVersion:		true
 
-Version:1116-1102
+Version:1118-1012
 ------------------------------------------------------------------- </Version Config>
 
 
@@ -67,7 +67,7 @@ OpenGuideEditor: 			false
 ShowGuideSwitcher:			false
 
 // for Master Zhu
-OpenAllTheFunction:			false
+OpenAllTheFunction:			true
 --------------------------------------------------------------------- </Guide Config>
 
 

@@ -16,7 +16,7 @@ public class BladeEffect : MonoBehaviour {
 			return;
 		}
 
-		QualityTool.Instance.UpdateBladeEffect( gameObject );
+		Quality_Blade.UpdateBladeEffect( gameObject );
 	}
 
 	// Use this for initialization

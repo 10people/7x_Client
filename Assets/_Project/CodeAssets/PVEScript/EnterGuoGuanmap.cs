@@ -13,7 +13,7 @@ public class EnterGuoGuanmap : MonoBehaviour {
 	{
 		if (m_instance == null)
 		{
-			GameObject t_gameObject = UtilityTool.GetDontDestroyOnLoadGameObject();;
+			GameObject t_gameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();;
 			
 			m_instance = t_gameObject.AddComponent<EnterGuoGuanmap>();
 		}

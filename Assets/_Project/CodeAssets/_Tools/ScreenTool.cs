@@ -32,4 +32,12 @@ public class ScreenTool : MonoBehaviour {
 	public static float GetY( float p_percent ){
 		return Screen.height * p_percent;
 	}
+
+	public static float GetWidth( float p_percent ){
+		return Screen.width * p_percent;
+	}
+
+	public static float GetHeight( float p_percent ){
+		return Screen.height * p_percent;
+	}
 }

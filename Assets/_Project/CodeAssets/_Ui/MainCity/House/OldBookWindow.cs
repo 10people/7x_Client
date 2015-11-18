@@ -161,7 +161,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         }
 
         //instance object
-        UtilityTool.AddOrDelItem(m_Grid.transform, OldBookSelfPrefab, 5);
+        TransformHelper.AddOrDelItem(m_Grid.transform, OldBookSelfPrefab, 5);
 
         //add to controller list
         m_OldBookSelfControllerList.Clear();
@@ -195,9 +195,10 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
         //reposition
         m_Grid.cellHeight = OldBookSelfPrefab.GetComponent<UISprite>().height;
-        m_Grid.Reposition();
+        
+		m_Grid.Reposition();
 
-        UtilityTool.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
+		NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
     }
 
     #endregion
@@ -238,7 +239,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         }
 
         //instance object
-        UtilityTool.AddOrDelItem(m_Grid.transform, ExchangeOtherPrefab, ExchangeOtherInfoList.Count);
+        TransformHelper.AddOrDelItem(m_Grid.transform, ExchangeOtherPrefab, ExchangeOtherInfoList.Count);
 
         //add to controller list
         ExchangeOtherControllerList.Clear();
@@ -269,9 +270,10 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
         //reposition
         m_Grid.cellHeight = ExchangeOtherPrefab.GetComponent<UISprite>().height;
-        m_Grid.Reposition();
+       
+		m_Grid.Reposition();
 
-        UtilityTool.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
+		NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
     }
 
     #endregion
@@ -296,7 +298,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                 selfItemId = MyToExchange.itemId.ToString()
             };
 
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.C_HUAN_WU_EXCHANGE);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.C_HUAN_WU_EXCHANGE);
 
             MyToExchange = null;
             OtherToExchange = null;

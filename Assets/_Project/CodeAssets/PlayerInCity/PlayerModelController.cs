@@ -1116,7 +1116,7 @@ public class PlayerModelController : MonoBehaviour
 
             t_state.s_state = State.State_LEAGUEOFCITY;
 
-            UtilityTool.SendQXMessage(t_state, ProtoIndexes.PLAYER_STATE_REPORT);
+            SocketHelper.SendQXMessage(t_state, ProtoIndexes.PLAYER_STATE_REPORT);
         }
 
         //        Debug.Log("SendPlayerData. m_ObjHero.transform.position :" + m_ObjHero.transform.position);
@@ -1147,15 +1147,15 @@ public class PlayerModelController : MonoBehaviour
 
         EquipSuoData.Instance();
 
-		EmailData.Instance.EmailDataReq();
+//		EmailData.Instance.EmailDataReq();
 
-        QXTanBaoData.Instance().TBInfoReq();
+//        QXTanBaoData.Instance().TBInfoReq();
 
-        YunBiaoData.Instance.YunBiaoInfoReq();
+//        YunBiaoData.Instance.YunBiaoInfoReq();
 
-        LueDuoData.Instance.LueDuoInfoReq();
+//        LueDuoData.Instance.LueDuoInfoReq();
 
-        FuWenData.Instance.FuWenDataReq();
+//        FuWenData.Instance.FuWenDataReq();
     }
 
 

@@ -16,7 +16,7 @@ public class SelectUrl : MonoBehaviour {
 
 	public UIPopupList url_select_list;
 
-	private static ConfigTool.ServerType selectType;
+	private static NetworkHelper.ServerType selectType;
 
 	private bool isOnValue;
 
@@ -66,8 +66,8 @@ public class SelectUrl : MonoBehaviour {
 			}
 		}
 		else{
-			url_select_list.value = ConfigTool.GetDefaultServerName();
-			select = ConfigTool.GetDefaultLoginServerType();
+			url_select_list.value = NetworkHelper.GetDefaultServerName();
+			select = NetworkHelper.GetDefaultLoginServerType();
 		}
 
 		SetUrl ();
@@ -132,7 +132,7 @@ public class SelectUrl : MonoBehaviour {
 		switch (select) 
 		{
 		case UrlSeclect.TiYan:
-			ConfigTool.SetServerType( ConfigTool.ServerType.TiYan );
+			NetworkHelper.SetServerType( NetworkHelper.ServerType.TiYan );
 			
 			//			CityGlobalData.RigisterURL = HttpRequest.GetTengXunPrefix() + HttpRequest.REGISTER_URL;
 			//			
@@ -140,7 +140,7 @@ public class SelectUrl : MonoBehaviour {
 			break;
 			
 		case UrlSeclect.CeShi:
-			ConfigTool.SetServerType( ConfigTool.ServerType.CeShi );
+			NetworkHelper.SetServerType( NetworkHelper.ServerType.CeShi );
 			
 			//			CityGlobalData.RigisterURL = HttpRequest.GetTengXunPrefix() + HttpRequest.REGISTER_URL;
 			//			
@@ -148,7 +148,7 @@ public class SelectUrl : MonoBehaviour {
 			break;
 			
 		case UrlSeclect.NeiWang:
-			ConfigTool.SetServerType( ConfigTool.ServerType.NeiWang );
+			NetworkHelper.SetServerType( NetworkHelper.ServerType.NeiWang );
 			
 			//			CityGlobalData.RigisterURL = HttpRequest.GetNeiWangPrefix() + HttpRequest.REGISTER_URL;
 			//			
@@ -158,9 +158,9 @@ public class SelectUrl : MonoBehaviour {
 		
 		// overwrite from config
 		{
-			CityGlobalData.RigisterURL = HttpRequest.GetPrefix() + HttpRequest.REGISTER_URL;
+			CityGlobalData.RigisterURL = NetworkHelper.GetPrefix() + NetworkHelper.REGISTER_URL;
 			
-			CityGlobalData.LoginURL = HttpRequest.GetPrefix() + HttpRequest.LOGIN_URL;
+			CityGlobalData.LoginURL = NetworkHelper.GetPrefix() + NetworkHelper.LOGIN_URL;
 		}
 	}
 
@@ -168,36 +168,32 @@ public class SelectUrl : MonoBehaviour {
 	/// Gets the type of the server.
 	/// </summary>
 	/// <returns>The server type.</returns>
-	public static ConfigTool.ServerType GetServerType ()
+	public static NetworkHelper.ServerType GetServerType ()
 	{
 		if (!string.IsNullOrEmpty (PlayerPrefs.GetString ("选服")))
 		{
 			string serveName = PlayerPrefs.GetString ("选服");
 			
-			switch (serveName)
-			{
+			switch (serveName){
 			case "体验":
-				
-				selectType = ConfigTool.ServerType.TiYan;
+				selectType = NetworkHelper.ServerType.TiYan;
 				
 				break;
 				
 			case "测试":
-				
-				selectType = ConfigTool.ServerType.CeShi;
+				selectType = NetworkHelper.ServerType.CeShi;
 				
 				break;
 				
 			case "内网":
-				
-				selectType = ConfigTool.ServerType.NeiWang;
+				selectType = NetworkHelper.ServerType.NeiWang;
 				
 				break;
 			}
 		}
 		else
 		{
-			selectType = ConfigTool.GetDefaultServerType();
+			selectType = NetworkHelper.GetDefaultServerType();
 		}
 
 		Debug.Log ("SelectUrl.GetServerType:" + selectType);
@@ -209,24 +205,20 @@ public class SelectUrl : MonoBehaviour {
 	/// Sets the type of the server.
 	/// </summary>
 	/// <param name="type">Type.</param>
-	public static void SetUrlServeType (ConfigTool.ServerType type)
-	{
+	public static void SetUrlServeType ( NetworkHelper.ServerType type ){
 		switch (type)
 		{
-		case ConfigTool.ServerType.CeShi:
-
+		case NetworkHelper.ServerType.CeShi:
 			PlayerPrefs.SetString ("选服","测试");
 
 			break;
 
-		case ConfigTool.ServerType.NeiWang:
-
+		case NetworkHelper.ServerType.NeiWang:
 			PlayerPrefs.SetString ("选服","内网");
 
 			break;
 
-		case ConfigTool.ServerType.TiYan:
-
+		case NetworkHelper.ServerType.TiYan:
 			PlayerPrefs.SetString ("选服","体验");
 
 			break;

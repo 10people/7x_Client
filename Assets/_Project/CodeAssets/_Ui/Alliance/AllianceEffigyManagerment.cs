@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 public class AllianceEffigyManagerment : MonoBehaviour
 {
+    public static AllianceEffigyManagerment m_Instance;
     public NpcObjectItem m_Itemtemplate;
     public UILabel m_LabelName;
     public static int m_EffigyRoleId = 0;
@@ -10,11 +11,7 @@ public class AllianceEffigyManagerment : MonoBehaviour
     public List<GameObject> m_listEffigy;
     void Start()
     {
-        //        if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
-        //        {
-        //          
-        //        }
-        SetNpcInfo();
+        m_Instance = this;
     }
     void Update()
     {
@@ -87,7 +84,7 @@ public class AllianceEffigyManagerment : MonoBehaviour
     
     
     }
-    void SetNpcInfo()
+    public void SetNpcInfo()
     {
         m_Itemtemplate.m_template = NpcCityTemplate.GetNpcItemById(10000);
 

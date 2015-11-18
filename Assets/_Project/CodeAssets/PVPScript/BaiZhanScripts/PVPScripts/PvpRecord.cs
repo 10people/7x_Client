@@ -114,6 +114,7 @@ public class PvpRecord : MonoBehaviour {
 		{
 			handler.m_handler -= BtnHandlerCallBack;
 		}
+		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
 	}
 }

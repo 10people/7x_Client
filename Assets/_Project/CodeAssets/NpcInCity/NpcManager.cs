@@ -358,6 +358,8 @@ public class NpcManager : MonoBehaviour {
                 }
             }
         }
+
+        AllianceEffigyManagerment.m_Instance.SetNpcInfo();
     }
 
     void WorshipNPCInCityLoadCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)

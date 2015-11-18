@@ -119,4 +119,57 @@ public class EnterYouXiaBattle : MonoBehaviour,SocketProcessor
         MainCityUI.TryRemoveFromObjectList(gameObject);
         Destroy(this.gameObject);
     }
+	public GameObject NeedCloseObg;
+	public void ShowOrClose()
+	{
+		Debug.Log ("NeedCloseObg = " +NeedCloseObg);
+		if(NeedCloseObg == null)
+		{
+			return;
+		}
+		if(NeedCloseObg.activeInHierarchy)
+		{
+			NeedCloseObg.SetActive(false);
+		}
+		else
+		{
+			NeedCloseObg.SetActive(true);
+		}
+	}
+	public GameObject SecendNeedCloseObg;
+
+	public void SecondShowOrClose()
+	{
+		Debug.Log ("SecendNeedCloseObg = " +SecendNeedCloseObg);
+		if(SecendNeedCloseObg == null)
+		{
+			return;
+		}
+		if(SecendNeedCloseObg.activeInHierarchy)
+		{
+			SecendNeedCloseObg.SetActive(false);
+		}
+		else
+		{
+			SecendNeedCloseObg.SetActive(true);
+		}
+	}
+	public GameObject ThirdNeedCloseObg;
+	
+	public void ThirdShowOrClose()
+	{
+		Debug.Log ("ThirdNeedCloseObg = " +ThirdNeedCloseObg);
+		if(ThirdNeedCloseObg == null)
+		{
+			return;
+		}
+		if(ThirdNeedCloseObg.activeInHierarchy)
+		{
+			ThirdNeedCloseObg.SetActive(false);
+		}
+		else
+		{
+			ThirdNeedCloseObg.SetActive(true);
+		}
+	}
 }

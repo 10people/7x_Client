@@ -86,8 +86,8 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 			{
 			case ProtoIndexes.S_FUWEN_MAINPAGE_RES://符文首页信息返回
 			{
-				object targetObject = new QueryFuwenResp ();
-				QueryFuwenResp fuWenData = QXComData.ReceiveQxProtoMessage (p_message,targetObject) as QueryFuwenResp;
+				QueryFuwenResp fuWenData = new QueryFuwenResp ();
+				fuWenData = QXComData.ReceiveQxProtoMessage (p_message,fuWenData) as QueryFuwenResp;
 
 				if (fuWenData != null)
 				{
@@ -167,8 +167,8 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 
 			case ProtoIndexes.S_FUWEN_OPERAT_RES:
 			{
-				object targetObject = new FuwenResp ();
-				FuwenResp fuWenOperate = QXComData.ReceiveQxProtoMessage (p_message,targetObject) as FuwenResp;
+				FuwenResp fuWenOperate = new FuwenResp ();
+				fuWenOperate = QXComData.ReceiveQxProtoMessage (p_message,fuWenOperate) as FuwenResp;
 
 				if (fuWenOperate != null)
 				{

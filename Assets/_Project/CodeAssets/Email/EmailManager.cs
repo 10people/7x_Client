@@ -228,7 +228,7 @@ public class EmailManager : MonoBehaviour,SocketProcessor
 				
 				if (readResp != null)
 				{
-					Debug.Log ("readResp.emailId:" + readResp.emailId);
+//					Debug.Log ("readResp.emailId:" + readResp.emailId);
 
 					for (int i = 0;i < EmailData.Instance.emailRespList.Count;i ++)
 					{
@@ -292,12 +292,14 @@ public class EmailManager : MonoBehaviour,SocketProcessor
 	//系统邮件读取处理
 	void HandleSystemEmail (int result,long emailId)
 	{
-		Debug.Log ("systemEmailList.Count:" + systemEmailList.Count);
+//		Debug.Log ("systemEmailList.Count:" + systemEmailList.Count);
+
 		for (int i = 0;i < systemEmailList.Count;i ++)
 		{
 			if (emailId == systemEmailList[i].id)
 			{
-				Debug.Log ("systemEmailList[i].id:" + systemEmailList[i].id);
+//				Debug.Log ("systemEmailList[i].id:" + systemEmailList[i].id);
+
 				if (result == 0)
 				{
 					CreateCheckEmailObj (systemEmailList[i]);

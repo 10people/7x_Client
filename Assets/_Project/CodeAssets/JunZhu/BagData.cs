@@ -49,7 +49,7 @@ public class BagData : MonoBehaviour, SocketProcessor
     {
         if (m_BatData == null)
         {
-            GameObject t_GameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
+            GameObject t_GameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
             m_BatData = t_GameObject.AddComponent<BagData>();
         }

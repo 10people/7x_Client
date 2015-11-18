@@ -29,19 +29,19 @@ namespace Carriage
         }
         private List<Vector2> m_positionList = new List<Vector2>();
 
-        public List<UtilityTool.SegmentInFoldLine> m_SegmentList
+		public List<MathHelper.SegmentInFoldLine> m_SegmentList
         {
             get
             {
                 if (m_segmentList == null || m_segmentList.Count == 0)
                 {
-                    m_segmentList = UtilityTool.GetSegmentListFromFoldLine(m_2DPositionList);
+                    m_segmentList = MathHelper.GetSegmentListFromFoldLine(m_2DPositionList);
                 }
 
                 return m_segmentList;
             }
         }
-        private List<UtilityTool.SegmentInFoldLine> m_segmentList = new List<UtilityTool.SegmentInFoldLine>();
+		private List<MathHelper.SegmentInFoldLine> m_segmentList = new List<MathHelper.SegmentInFoldLine>();
 
         private float usedTime;
         private float realUsedTime;
@@ -180,7 +180,7 @@ namespace Carriage
                                 Destroy(child.gameObject);
                             }
                             var temp = Instantiate(m_InAttackParticlePrefab) as GameObject;
-                            UtilityTool.ActiveWithStandardize(ParticleRootObject.transform, temp.transform);
+                            TransformHelper.ActiveWithStandardize(ParticleRootObject.transform, temp.transform);
                             ParticleRootObject.SetActive(true);
                             break;
                         }
@@ -195,7 +195,7 @@ namespace Carriage
                                 Destroy(child.gameObject);
                             }
                             var temp = Instantiate(m_ProtectParticlePrefab) as GameObject;
-                            UtilityTool.ActiveWithStandardize(ParticleRootObject.transform, temp.transform);
+                            TransformHelper.ActiveWithStandardize(ParticleRootObject.transform, temp.transform);
                             ParticleRootObject.SetActive(true);
 
                             //Set protect time label.
@@ -346,10 +346,10 @@ namespace Carriage
                 return;
             }
 
-            var point = UtilityTool.GetPointFromSegmentLine(precent, m_SegmentList);
+			var point = MathHelper.GetPointFromSegmentLine(precent, m_SegmentList);
             transform.localPosition = new Vector3(point.x, m_rootManager.BasicYPosition, point.y);
 
-            var direction = UtilityTool.GetDirectionFromSegmentLine(precent, m_SegmentList).normalized;
+			var direction = MathHelper.GetDirectionFromSegmentLine(precent, m_SegmentList).normalized;
             transform.forward = new Vector3(direction.x, 0, direction.y);
 
             //Bezier curve.

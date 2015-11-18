@@ -52,7 +52,7 @@ public class ProtoToolManager : Singleton<ProtoToolManager>, SocketListener
 
     private void RefreshSendMessageGrid()
     {
-        UtilityTool.AddOrDelItemUsingPool(SendMessageFieldGrid.transform, SendMessageDataList.Count, PoolManagerListController.Instance, "ProtoSend");
+        TransformHelper.AddOrDelItemUsingPool(SendMessageFieldGrid.transform, SendMessageDataList.Count, PoolManagerListController.Instance, "ProtoSend");
 
         SendMessageControllerList.Clear();
         foreach (Transform child in SendMessageFieldGrid.transform)
@@ -89,7 +89,7 @@ public class ProtoToolManager : Singleton<ProtoToolManager>, SocketListener
 
     public void RefreshViewMessageGrid()
     {
-        UtilityTool.AddOrDelItemUsingPool(ViewMessageFieldGrid.transform, ViewMessageDataList.Count, PoolManagerListController.Instance, "ProtoView");
+        TransformHelper.AddOrDelItemUsingPool(ViewMessageFieldGrid.transform, ViewMessageDataList.Count, PoolManagerListController.Instance, "ProtoView");
 
         ViewMessageControllerList.Clear();
         foreach (Transform child in ViewMessageFieldGrid.transform)
@@ -109,7 +109,7 @@ public class ProtoToolManager : Singleton<ProtoToolManager>, SocketListener
 
     private void RefreshReceiveStoredProtoIndexGrid()
     {
-        UtilityTool.AddOrDelItemUsingPool(StoredReceiveProtoGrid.transform, StoredReceiveProtoIndexDataDic.Count, PoolManagerListController.Instance, "ProtoIndex");
+        TransformHelper.AddOrDelItemUsingPool(StoredReceiveProtoGrid.transform, StoredReceiveProtoIndexDataDic.Count, PoolManagerListController.Instance, "ProtoIndex");
 
         StoredReceiveProtoIndexControllerList.Clear();
         foreach (Transform child in StoredReceiveProtoGrid.transform)
@@ -129,7 +129,7 @@ public class ProtoToolManager : Singleton<ProtoToolManager>, SocketListener
 
     public void RefreshSendStoredProtoIndexGrid()
     {
-        UtilityTool.AddOrDelItemUsingPool(StoredSendProtoGrid.transform, StoredSendProtoIndexDataDic.Count, PoolManagerListController.Instance, "ProtoIndex");
+        TransformHelper.AddOrDelItemUsingPool(StoredSendProtoGrid.transform, StoredSendProtoIndexDataDic.Count, PoolManagerListController.Instance, "ProtoIndex");
 
         StoredSendProtoIndexControllerList.Clear();
         foreach (Transform child in StoredSendProtoGrid.transform)
@@ -223,7 +223,7 @@ public class ProtoToolManager : Singleton<ProtoToolManager>, SocketListener
             return;
         }
 
-        UtilityTool.SendQXMessage(instance, sendMessageProtoIndex);
+        SocketHelper.SendQXMessage(instance, sendMessageProtoIndex);
     }
 
     public void OnOpenCloseClick()

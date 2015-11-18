@@ -6,25 +6,73 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TimeHelper : Singleton<TimeHelper>
-{
-    /// <summary>
-    /// Gets the current month day hour minute second.
-    /// </summary>
-    public static string GetCurMonthDayHourMinSec()
-    {
-        System.DateTime t_time = new System.DateTime();
+public class TimeHelper : Singleton<TimeHelper>{
 
-        t_time = System.DateTime.Now;
+	#region Time String Format
 
-        string t_time_str = t_time.ToString("MM-dd HH:mm:ss");
+	private static int m_temp_time_sec 		= 0;
 
-#if DEBUG_TIMER_HELPER
-		Debug.Log( "TimeHelper.GetCurMonthDayHourMinSec: " + t_time_str );
-#endif
+	private static int m_temp_time_min 		= 0;
 
-        return t_time_str;
-    }
+	private static int m_temp_time_hour		= 0;
+
+	/// 1）如果没超过小时，则显示
+	/// 分：秒
+	/// 01：01
+	/// 2）如果超过小时，则显示
+	/// 时：分：秒
+		/// 01：01：01
+	/// 3）如果小时数超过两位数
+	/// 时：分：秒
+		/// 101：01:01
+	/// 此为通用规则，游戏内时间的显示格式均遵循该规则
+	public static string GetUniformedTimeString( int p_int_sec ){
+		m_temp_time_sec = p_int_sec % 60;
+
+		m_temp_time_min = p_int_sec / 60;
+
+		m_temp_time_hour = m_temp_time_min / 60;
+
+		m_temp_time_min = m_temp_time_min % 60;
+
+		return m_temp_time_hour.ToString( "D2" ) + ":" + 
+			m_temp_time_min.ToString( "D2" ) + ":" +
+				m_temp_time_sec.ToString( "D2" );
+	}
+
+	/// 1）如果没超过小时，则显示
+	/// 分：秒
+	/// 01：01
+	/// 2）如果超过小时，则显示
+	/// 时：分：秒
+	/// 01：01：01
+	/// 3）如果小时数超过两位数
+	/// 时：分：秒
+	/// 101：01:01
+	/// 此为通用规则，游戏内时间的显示格式均遵循该规则
+	public static string GetUniformedTimeString( float p_float_sec ){
+		return GetUniformedTimeString( (int)p_float_sec );
+	}
+
+	/// 1）如果没超过小时，则显示
+	/// 分：秒
+	/// 01：01
+	/// 2）如果超过小时，则显示
+	/// 时：分：秒
+	/// 01：01：01
+	/// 3）如果小时数超过两位数
+	/// 时：分：秒
+	/// 101：01:01
+	/// 此为通用规则，游戏内时间的显示格式均遵循该规则
+	public static string GetUniformedTimeString( int p_int_hour, int p_int_min, int p_int_sec ){
+		return GetUniformedTimeString( p_int_hour * 3600 + p_int_min * 60 + p_int_sec );
+	}
+
+	#endregion
+
+
+
+	#region ClockTime
 
     public struct ClockTime
     {
@@ -104,6 +152,10 @@ public class TimeHelper : Singleton<TimeHelper>
     {
         return clockTime.hour * 3600 + clockTime.minute * 60 + clockTime.second;
     }
+
+	#endregion
+
+
 
     #region Time Calculate Module
 
@@ -185,7 +237,7 @@ public class TimeHelper : Singleton<TimeHelper>
     /// <returns></returns>
     public static bool RemoveFromTimeCalcWhenDisable(string key)
     {
-        if (UtilityTool.m_dont_destroy_on_load_gb != null)
+        if ( GameObjectHelper.m_dont_destroy_on_load_gb != null)
         {
             return TimeHelper.Instance.RemoveFromTimeCalc(key);
         }
@@ -343,6 +395,23 @@ public class TimeHelper : Singleton<TimeHelper>
 
 	
 	#region Origin Utilities's time code
+
+	/// <summary>
+	/// Gets the current month day hour minute second.
+	/// </summary>
+	public static string GetCurMonthDayHourMinSec(){
+		System.DateTime t_time = new System.DateTime();
+		
+		t_time = System.DateTime.Now;
+		
+		string t_time_str = t_time.ToString("MM-dd HH:mm:ss");
+		
+		#if DEBUG_TIMER_HELPER
+		Debug.Log( "TimeHelper.GetCurMonthDayHourMinSec: " + t_time_str );
+		#endif
+		
+		return t_time_str;
+	}
 	
 	private static float m_signet_time = 0.0f;
 	
@@ -362,7 +431,7 @@ public class TimeHelper : Singleton<TimeHelper>
 	{
 		float t_delta = GetDeltaTimeSinceSignet();
 		
-		Debug.Log(p_prefix + " : " + UtilityTool.FloatPrecision(t_delta, 5));
+		Debug.Log( p_prefix + " : " + MathHelper.FloatPrecision( t_delta, 5 ) );
 		
 		SignetTime();
 	}

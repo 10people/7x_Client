@@ -36,7 +36,7 @@ public class HouseRootManager : MonoBehaviour
         m_houseBasic.m_HouseModelController.m_House = m_houseBasic;
 
         var tempRoot = GameObject.Find("UI_Root_Temp");
-        UtilityTool.ActiveWithStandardize(null, m_houseBasic.m_HouseModelController.transform);
+        TransformHelper.ActiveWithStandardize(null, m_houseBasic.m_HouseModelController.transform);
 
         m_houseBasic.m_HouseModelController.gameObject.SetActive(true);
         m_houseBasic.m_HouseModelController.SetRoot3D();
@@ -45,7 +45,7 @@ public class HouseRootManager : MonoBehaviour
     private void OnPlayerLoadCallBack(ref WWW www, string path, Object loadedObject)
     {
         var tempObject = Instantiate(loadedObject) as GameObject;
-        UtilityTool.ActiveWithStandardize(null, tempObject.transform);
+        TransformHelper.ActiveWithStandardize(null, tempObject.transform);
 
         HousePlayerController = tempObject.AddComponent<HousePlayerController>();
 
@@ -95,7 +95,7 @@ public class HouseRootManager : MonoBehaviour
         //Send character sync message to server.
         PlayerState t_state = new PlayerState();
         t_state.s_state = State.State_HOUSE;
-        UtilityTool.SendQXMessage(t_state, ProtoIndexes.PLAYER_STATE_REPORT);
+        SocketHelper.SendQXMessage(t_state, ProtoIndexes.PLAYER_STATE_REPORT);
 
         //Show new scene title.
         if (m_houseBasic.m_HouseSimpleInfo.jzId == JunZhuData.Instance().m_junzhuInfo.id)

@@ -216,7 +216,7 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 		
 		t_state.s_state = State.State_PVEOFBATTLE;
 		
-		UtilityTool.SendQXMessage( t_state, ProtoIndexes.PLAYER_STATE_REPORT );
+		SocketHelper.SendQXMessage( t_state, ProtoIndexes.PLAYER_STATE_REPORT );
 	}
 
 	public bool OnProcessSocketMessage( QXBuffer p_message )

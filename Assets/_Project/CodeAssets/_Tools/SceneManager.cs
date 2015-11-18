@@ -278,7 +278,7 @@ public class SceneManager{
 				ClientMain.Instance().ClearObjectsWhenReconnect();
 			}
 
-			UtilityTool.ClearDontDestroyGameObject();
+			GameObjectHelper.ClearDontDestroyGameObject();
 			
 			MainCityUI.m_PlayerPlace=MainCityUI.PlayerPlace.MainCity;
 

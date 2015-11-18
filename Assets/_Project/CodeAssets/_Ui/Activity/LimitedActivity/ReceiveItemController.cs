@@ -122,7 +122,7 @@ namespace LimitActivity
                 for (int i = 0; i < m_IconList.Count; i++)
                 {
                     var temp = Instantiate(m_IconSamplePrefab) as GameObject;
-                    UtilityTool.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                    TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
 
                     var controller = temp.GetComponent<IconSampleManager>();
                     controller.SetIconByID(m_IconList[i].id, m_IconList[i].num.ToString(), 5);
@@ -188,7 +188,7 @@ namespace LimitActivity
                 huodongId = m_HuoDongInfo.huodongId
             };
 
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.C_XIANSHI_AWARD_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.C_XIANSHI_AWARD_REQ);
         }
 
         void OnDisable()

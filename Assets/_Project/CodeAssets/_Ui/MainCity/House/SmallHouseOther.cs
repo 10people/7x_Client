@@ -29,7 +29,7 @@ public class SmallHouseOther : HouseBasic, SocketListener
         m_HouseSecretCardShower = tempObject.GetComponent<HouseSecretCardShower>();
         m_HouseSecretCardShower.m_House = this;
 
-        UtilityTool.ActiveWithStandardize(transform, m_HouseSecretCardShower.transform);
+        TransformHelper.ActiveWithStandardize(transform, m_HouseSecretCardShower.transform);
 
         ShowTreasure();
     }
@@ -53,7 +53,7 @@ public class SmallHouseOther : HouseBasic, SocketListener
         m_HouseWeaponShower = tempObject.GetComponent<HouseWeaponShower>();
         m_HouseWeaponShower.m_House = this;
 
-        UtilityTool.ActiveWithStandardize(transform, m_HouseWeaponShower.transform);
+        TransformHelper.ActiveWithStandardize(transform, m_HouseWeaponShower.transform);
 
         ShowWeapon();
     }
@@ -79,7 +79,7 @@ public class SmallHouseOther : HouseBasic, SocketListener
         m_OldBookWindow.IsSelfHouse = false;
         m_OldBookWindow.m_House = this;
 
-        UtilityTool.ActiveWithStandardize(transform, m_OldBookWindow.transform);
+        TransformHelper.ActiveWithStandardize(transform, m_OldBookWindow.transform);
 
         OnBookClick();
     }
@@ -99,7 +99,7 @@ public class SmallHouseOther : HouseBasic, SocketListener
         EnterOrExitHouse temp = new EnterOrExitHouse();
         temp.houseId = m_HouseSimpleInfo.jzId;
         temp.code = 10;
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_EnterOrExitHouse);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_EnterOrExitHouse);
 
         //Send character sync message to server.
         EnterScene tempEnterScene = new EnterScene
@@ -110,7 +110,7 @@ public class SmallHouseOther : HouseBasic, SocketListener
             posY = 0,
             posZ = 0
         };
-        UtilityTool.SendQXMessage(tempEnterScene, ProtoIndexes.Enter_HouseScene);
+        SocketHelper.SendQXMessage(tempEnterScene, ProtoIndexes.Enter_HouseScene);
 
         SceneManager.EnterHouse();
     }
@@ -174,13 +174,13 @@ public class SmallHouseOther : HouseBasic, SocketListener
         EnterOrExitHouse temp = new EnterOrExitHouse();
         temp.houseId = m_HouseSimpleInfo.jzId;
         temp.code = 20;
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_EnterOrExitHouse);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_EnterOrExitHouse);
 
         //ExitScene tempExitScene = new ExitScene
         //{
         //    uid = HousePlayerController.s_uid,
         //};
-        //UtilityTool.SendQXMessage(tempExitScene, ProtoIndexes.Exit_HouseScene);
+        //SocketHelper.SendQXMessage(tempExitScene, ProtoIndexes.Exit_HouseScene);
 
         SceneManager.EnterAllianceCity();
     }

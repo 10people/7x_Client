@@ -63,7 +63,7 @@ public class SmallHouseSelfOperation : MonoBehaviour, SocketListener
         {
             RightPartInfo.SetActive(false);
 
-            UtilityTool.SendQXMessage(ProtoIndexes.C_GET_HOUSE_VISITOR);
+            SocketHelper.SendQXMessage(ProtoIndexes.C_GET_HOUSE_VISITOR);
         }
         else
         {
@@ -101,7 +101,7 @@ public class SmallHouseSelfOperation : MonoBehaviour, SocketListener
         HouseModelController.TryAddToHouseDimmer(gameObject);
 
         //Request exp info.
-        UtilityTool.SendQXMessage(ProtoIndexes.C_GET_MYSELF_HOUSE_EXP);
+        SocketHelper.SendQXMessage(ProtoIndexes.C_GET_MYSELF_HOUSE_EXP);
 
         //Set red alert info.
         ReceiveBTNRedAlert.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(500040));
@@ -302,7 +302,7 @@ public class SmallHouseSelfOperation : MonoBehaviour, SocketListener
         }
 
         //set item's num to specific
-        UtilityTool.AddOrDelItem(VisitorGrid.transform, VisitorPrefab, m_playerInfoList.Count);
+        TransformHelper.AddOrDelItem(VisitorGrid.transform, VisitorPrefab, m_playerInfoList.Count);
 
         m_HouseVisitorControllerList.Clear();
         //ergodic each visitor
@@ -358,7 +358,7 @@ public class SmallHouseSelfOperation : MonoBehaviour, SocketListener
         temp.targetId = m_SmallHouseSelf.m_HouseSimpleInfo.jzId;
         temp.locationId = m_SmallHouseSelf.m_HouseSimpleInfo.locationId;
 
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_SET_HOUSE_STATE);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_SET_HOUSE_STATE);
 
         //TenementData.Instance.RequestData();
     }
@@ -480,7 +480,7 @@ public class SmallHouseSelfOperation : MonoBehaviour, SocketListener
 
         //instance icon and set.
         var tempObject = Instantiate(IconSamplePrefab) as GameObject;
-        UtilityTool.ActiveWithStandardize(IconSampleParent, tempObject.transform);
+        TransformHelper.ActiveWithStandardize(IconSampleParent, tempObject.transform);
         var manager = tempObject.GetComponent<IconSampleManager>();
         manager.SetIconType(IconSampleManager.IconType.null_type);
         //[COMPLETE]set player icon

@@ -311,5 +311,7 @@ public class SelectYouXiaEntertype : MonoBehaviour {
 		mChooseYouXiaUIManager.mYouXia_Info = mYouXiaInfo;
 
 		mChooseYouXiaUIManager.Init ();
+
+		EnterYouXiaBattle.GlobleEnterYouXiaBattle.ShowOrClose ();
 	}
 }

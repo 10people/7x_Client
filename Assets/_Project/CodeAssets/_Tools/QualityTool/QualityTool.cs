@@ -23,11 +23,10 @@ using System.Collections.Generic;
  */ 
 public class QualityTool : Singleton<QualityTool>{
 
-	private enum AA{
-		None,
-		Low,	// 2
-		Medium,	// 4
-		High,	// 8
+	public enum QualityLevel{
+		Low = 0,
+		Medium,
+		High,
 	}
 
 	/// Quality values dict.
@@ -41,8 +40,6 @@ public class QualityTool : Singleton<QualityTool>{
 
 	public const char CONST_DEVICE_SPLITTER		= '/';
 
-
-	private Shader m_blade_effect = null;
 
 	#region Mono
 
@@ -312,11 +309,31 @@ public class QualityTool : Singleton<QualityTool>{
 	}
 
 	private void ExecQualityItems(){
+		// quality level
+		{
+			string t_quality_set = GetString( CONST_DEFAULT_QUALITY );
+			if( t_quality_set == CONST_QUALITY_SECTION_LOW ){
+				SetQualityLevel( QualityLevel.Low );
+			}
+
+			if( t_quality_set == CONST_QUALITY_SECTION_MEDIUM ){
+				SetQualityLevel( QualityLevel.Medium );
+			}
+
+			if( t_quality_set == CONST_QUALITY_SECTION_HIGH ){
+				SetQualityLevel( QualityLevel.High );
+			}
+		}
+
 		// AA
 		{
 			#if UNITY_IOS
-			QualityTool.ConfigAA();
+			Quality_Common.ConfigAA();
 			#endif
+		}
+
+		{
+			Quality_SceneFx.LoadSceneFxLevel( GetString( QualityTool.CONST_SCNE_FX_LEVEL ) );
 		}
 	}
 
@@ -436,7 +453,7 @@ public class QualityTool : Singleton<QualityTool>{
 
 		m_config_xml_dict[ CONST_CHARACTER_HITTED_FX ] = "false";
 
-		m_config_xml_dict[ CONST_SCNE_FX_LEVEL ] = CONST_SCENE_FX_LEVEL_NONE;
+		m_config_xml_dict[ CONST_SCNE_FX_LEVEL ] = Quality_SceneFx.CONST_SCENE_FX_LEVEL_NONE;
 	}
 
 	/// Highest quality for all platform.
@@ -459,428 +476,37 @@ public class QualityTool : Singleton<QualityTool>{
 
 		m_config_xml_dict[ CONST_CHARACTER_HITTED_FX ] = "true";
 
-		m_config_xml_dict[ CONST_SCNE_FX_LEVEL ] = CONST_SCENE_FX_LEVEL_HIGH;
+		m_config_xml_dict[ CONST_SCNE_FX_LEVEL ] = Quality_SceneFx.CONST_SCENE_FX_LEVEL_HIGH;
 	}
 
 	#endregion
 
 
 
-	#region InCity Shadow
+	#region Quality Level
 
-	/// Show simple plane shadow incity or not.
-	/// 
-	/// Notes:
-	/// 1.if not showed, never create the shadow.
-	public bool InCity_ShowSimpleShadow(){
-		bool t_show_simple_shadow = true;
+	private static QualityLevel m_quality_level = QualityLevel.Low;
 
-		#if UNITY_EDITOR && !IGNORE_EDITOR
-		t_show_simple_shadow = true;
-		#elif UNITY_STANDALONE
-		t_show_simple_shadow = true;
-		#elif UNITY_ANDROID
-		return !GetBool( CONST_IN_CITY_SHADOW );
-		#elif UNITY_IOS
-		return InCity_iOS_ShowSimpleShadow();
-		#else
-		Debug.LogError( "TargetPlatform Error: " + Application.platform );
-
-		return true;
-		#endif
-
-		#if SHOW_REAL_SHADOW
-		t_show_simple_shadow = false;
-		#endif
-		
-		return t_show_simple_shadow;
+	public static QualityLevel GetQualityLevel(){
+		return m_quality_level;
 	}
 
-	private bool InCity_iOS_ShowSimpleShadow(){
-		if( !DeviceHelper.Is_iOS_Target_Device() ){
-			return true;
-		}
-
-		#if UNITY_IOS
-		return !GetBool( CONST_IN_CITY_SHADOW );
-		#endif
-
-		return false;
+	public static void SetQualityLevel( QualityLevel p_quality_level ){
+		m_quality_level = p_quality_level;
 	}
 
-	#endregion
-
-
-
-	#region BattleField Shadow
-	
-	/// Show simple plane shadow in battle field or not.
-	/// 
-	/// Notes:
-	/// 1.if not showed, never create the shadow.
-	public bool BattleField_ShowSimpleShadow(){
-		bool t_show_simple_shadow = true;
-
-		#if UNITY_EDITOR && !IGNORE_EDITOR
-		t_show_simple_shadow = true;
-		#elif UNITY_STANDALONE
-		t_show_simple_shadow = true;
-		#elif UNITY_ANDROID
-		return !GetBool( CONST_BATTLE_FIELD_SHADOW );
-		#elif UNITY_IOS
-		return BattleField_iOS_ShowSimpleShadow();
-		#else
-		Debug.LogError( "TargetPlatform Error: " + Application.platform );
-		
-		return true;
-		#endif
-
-		#if SHOW_REAL_SHADOW
-		t_show_simple_shadow = false;
-		#endif
-
-		return t_show_simple_shadow;
-	}
-
-	private bool BattleField_iOS_ShowSimpleShadow(){
-		if( !DeviceHelper.Is_iOS_Target_Device() ){
-			return true;
-		}
-		
-		#if UNITY_IOS
-		return !GetBool( CONST_BATTLE_FIELD_SHADOW );
-		#endif
-		
-		return false;
+	public bool IsLowQuality(){
+		return m_quality_level == QualityLevel.Low;
 	}
 	
-	#endregion
-
-
-
-	#region Shadow
-
-	/// Add Shadows:
-	/// 
-	/// 1.Add Directional light;
-	/// 2.Edit Light Color and Intensity, Edit Light Direction(transform);
-	/// 3.Set Shadow Type: Hard Shadow, and Edit Shadow Strength;
-	/// 4.Set Culling Mask: 3DLayer, 3D Shadow Ground;
-	/// 5.Enable the GameObject, Disable the Light Components;
-	public static void ConfigLights( bool p_active_light ){
-		#if DEBUG_QUALITY
-		Debug.Log( "ConfigLights( " + p_active_light + " )" );
-		#endif
-
-		Object[] t_objs = GameObject.FindObjectsOfType( typeof(Light) );
-		
-		//		Debug.Log( "Active Light's GameObject Count: " + t_objs.Length );
-
-		for( int i = 0; i < t_objs.Length; i++ ){
-			Light t_light = (Light)t_objs[ i ];
-			
-			t_light.enabled = p_active_light;
-
-			#if DEBUG_QUALITY
-			GameObjectHelper.LogGameObjectHierarchy( t_light.gameObject, i + " Light " );
-			#endif
-
-			int t_mask = 0;
-
-			{
-				int t_index = LayerMask.NameToLayer( "3D Shadow Ground" );
-				
-				t_mask += 1 << t_index;
-			}
-
-			{
-				int t_index = LayerMask.NameToLayer( "3D Layer" );
-				
-				t_mask += 1 << t_index;
-			}
-
-			
-			t_light.cullingMask = t_mask;
-		}
-
-		#if DEBUG_QUALITY
-		Debug.Log( "ConfigLights Done." );
-		#endif
+	public bool IsMediumQuality(){
+		return m_quality_level == QualityLevel.Medium;
 	}
 	
-	#endregion
-
-
-
-	#region AA
-
-	public static void ConfigAA(){
-		string t_aa = GetString( CONST_AA );
-
-		if( string.IsNullOrEmpty( t_aa ) ){
-			Debug.LogError( "Error, No AA Setted." );
-
-			return;
-		}
-
-		switch( t_aa ){
-		case "None":
-			QualitySettings.antiAliasing = 0;
-
-			break;
-
-		case "Low":
-			QualitySettings.antiAliasing = 2;
-
-			break;
-
-		case "Medium":
-			QualitySettings.antiAliasing = 4;
-
-			break;
-
-		case "High":
-			QualitySettings.antiAliasing = 8;
-
-			break;
-
-		default:
-			Debug.LogError( "Error, No Value Exist." );
-
-			return;
-		}
-
-		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_QUALITY_CONFIG, false ) ){
-			Debug.Log( "AA: " + QualitySettings.antiAliasing );
-		}
+	public bool IsHighQuality(){
+		return m_quality_level == QualityLevel.High;
 	}
-
-	#endregion
-
-
-
-	#region Bloom
-
-//	private static FastBloom m_fast_bloom = null;
 	
-	public static void ConfigBloom( bool p_enable_bloom ){
-		#if UNITY_IOS && !ENABLE_BLOOM
-		return;
-		#endif
-
-		#if UNITY_ANDROID
-		return;
-		#endif
-
-		/*
-		#if DEBUG_QUALITY
-		Debug.Log( "ConfigBloom( " + p_enable_bloom + " )" );
-		#endif
-
-		FastBloom t_pre_bloom = null; 
-
-		{
-			Object[] t_objs = GameObject.FindObjectsOfType( typeof(FastBloom) );
-
-			if( t_objs.Length > 1 || t_objs.Length < 0 ){
-				Debug.LogError( "Error for Bloom Config." );
-
-				return;
-			}
-
-			if( t_objs.Length == 1 ){
-				t_pre_bloom = (FastBloom)t_objs[ 0 ];
-			}
-		}
-
-		if( Camera.main == null ){
-			Debug.LogError( "Error, No Main Camera Setted." );
-
-//			#if UNITY_EDITOR
-//			Debug.Log( "Scene: " + Application.loadedLevelName );
-//
-//			UnityEditor.EditorApplication.isPaused = true;
-//			#endif
-
-			return;
-		}
-
-		if( p_enable_bloom ){
-			if( QualitySettings.antiAliasing != 0 ){
-				QualitySettings.antiAliasing = 0;
-			}
-		}
-
-		FastBloom t_bloom = Camera.main.GetComponent<FastBloom>();
-
-		if( t_bloom == null ){
-			t_bloom = Camera.main.gameObject.AddComponent<FastBloom>();
-		}
-		else{
-
-		}
-		
-		if( t_bloom != m_fast_bloom ){
-			m_fast_bloom = t_bloom;
-		}
-
-//		Shader t_shader = Shader.Find( "Custom/Effects/MobileBloom" );
-
-		Shader t_shader = Shader.Find( "Hidden/FastBloom" );
-
-		if( t_shader != null ){
-			t_bloom.fastBloomShader = t_shader;
-		}
-		else{
-			Debug.LogError( "Error, Bloom Shader Not Found." );
-		}
-
-		if( m_fast_bloom != null ){
-			m_fast_bloom.enabled = p_enable_bloom;
-		}
-		else{
-			Debug.LogError( "Error, Bloom Not Found." );
-		}
-
-		if( t_pre_bloom != null && m_fast_bloom != null ){
-			m_fast_bloom.threshhold = t_pre_bloom.threshhold;
-
-			m_fast_bloom.intensity = t_pre_bloom.intensity;
-
-			m_fast_bloom.blurSize = t_pre_bloom.blurSize;
-
-			m_fast_bloom.blurIterations = t_pre_bloom.blurIterations;
-		}
-		else{
-			m_fast_bloom.threshhold = 0.3f;
-			
-			m_fast_bloom.intensity = 0.5f;
-			
-			m_fast_bloom.blurSize = 0.5f;
-			
-			m_fast_bloom.blurIterations = 1;
-		}
-
-		if( !p_enable_bloom ){
-//			Debug.Log( "Destroy.FB." );
-
-			Destroy( t_bloom );
-		}
-
-		#if DEBUG_QUALITY
-		Debug.Log( "ConfigBloom Done." );
-		#endif
-
-		*/
-	}
-
-	#endregion
-
-
-
-	#region Blade Effect
-
-	private bool ShowCoolBlade(){
-		#if UNITY_EDITOR
-		return false;
-		#elif UNITY_STANDALONE
-		return true;
-		#elif UNITY_ANDROID
-		return GetBool( CONST_BLADE_EFFECT );
-		#elif UNITY_IOS
-		return iOS_ShowCoolBlade();
-		#else
-		Debug.LogError( "TargetPlatform Error: " + Application.platform );
-		
-		return false;
-		#endif
-	}
-
-	private bool iOS_ShowCoolBlade(){
-		if( !DeviceHelper.Is_iOS_Target_Device() ){
-			return false;
-		}
-		
-		#if UNITY_IOS
-		return GetBool( CONST_BLADE_EFFECT );
-		#else
-		return false;
-		#endif
-	}
-
-	public void UpdateBladeEffect( GameObject p_gb ){
-		if( !ShowCoolBlade() ){
-			return;
-		}
-
-//		Debug.Log( "Set New Blade Effect." );
-
-		if( p_gb == null ){
-			Debug.LogError( "Error, GameObject Is Null." );
-
-			return;
-		}
-
-		ParticleSystem t_ps = p_gb.GetComponent<ParticleSystem>();
-
-		if( t_ps == null ){
-			Debug.LogError( "Error, GameObject.PS Is Null." );
-			
-			return;
-		}
-
-		Renderer t_renderer = t_ps.GetComponent<Renderer>();
-
-		if( t_renderer == null ){
-			Debug.LogError( "Error, GameObject.PS.Renderer Is Null." );
-			
-			return;
-		}
-
-		Material t_mat = t_renderer.sharedMaterial;
-
-		if( t_mat == null ){
-			Debug.LogError( "Error, GameObject.PS.Renderer.Mat Is Null." );
-			
-			return;
-		}
-
-		if( m_blade_effect == null ){
-			m_blade_effect = Shader.Find( "Custom/Effects/Blade Effect" );
-
-			if( m_blade_effect == null ){
-				Debug.LogError( "Error, Blade Effect not found." );
-
-				return;
-			}
-		}
-
-		t_mat.shader = m_blade_effect;
-	}
-
-	#endregion
-
-
-
-	#region Scene Fx
-
-	/// None Scene Fx
-	public static bool IsSceneFxNone(){
-		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_SCNE_FX_LEVEL ), QualityTool.CONST_SCENE_FX_LEVEL_NONE );
-	}
-
-	public static bool IsSceneFxLow(){
-		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_SCNE_FX_LEVEL ), QualityTool.CONST_SCENE_FX_LEVEL_LOW );
-	}
-
-	public static bool IsSceneFxMedium(){
-		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_SCNE_FX_LEVEL ), QualityTool.CONST_SCENE_FX_LEVEL_MEDIUM );
-	}
-
-	public static bool IsSceneFxHigh(){
-		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_SCNE_FX_LEVEL ), QualityTool.CONST_SCENE_FX_LEVEL_HIGH );
-	}
-
 	#endregion
 
 
@@ -907,24 +533,6 @@ public class QualityTool : Singleton<QualityTool>{
 		return UtilityTool.ValueToString( m_quality_dict, p_key, p_default_value );
 	}
 	
-	#endregion
-
-
-	
-	#region Utilities
-
-	public bool IsLowQuality(){
-		return GetString( CONST_DEFAULT_QUALITY ) == CONST_QUALITY_SECTION_LOW;
-	}
-	
-	public bool IsMediumQuality(){
-		return GetString( CONST_DEFAULT_QUALITY ) == CONST_QUALITY_SECTION_MEDIUM;
-	}
-	
-	public bool IsHighQuality(){
-		return GetString( CONST_DEFAULT_QUALITY ) == CONST_QUALITY_SECTION_HIGH;
-	}
-
 	#endregion
 
 
@@ -962,14 +570,6 @@ public class QualityTool : Singleton<QualityTool>{
 
 	public const string CONST_DEVICES_IOS_OTHERS		= "iOS.Others";
 
-
-
-	public const string CONST_QUALITY_SECTION_LOW		= "Low";
-	
-	public const string CONST_QUALITY_SECTION_MEDIUM	= "Medium";
-	
-	public const string CONST_QUALITY_SECTION_HIGH		= "High";
-
 	#endregion
 
 
@@ -1003,15 +603,13 @@ public class QualityTool : Singleton<QualityTool>{
 
 
 
-	#region Scene Fx Level
-
-	public const string CONST_SCENE_FX_LEVEL_NONE		= "None";
-
-	public const string CONST_SCENE_FX_LEVEL_LOW		= "Low";
-
-	public const string CONST_SCENE_FX_LEVEL_MEDIUM		= "Medium";
-
-	public const string CONST_SCENE_FX_LEVEL_HIGH		= "High";
-
+	#region Quality Level Values
+	
+	public const string CONST_QUALITY_SECTION_LOW		= "Low";
+	
+	public const string CONST_QUALITY_SECTION_MEDIUM	= "Medium";
+	
+	public const string CONST_QUALITY_SECTION_HIGH		= "High";
+	
 	#endregion
 }

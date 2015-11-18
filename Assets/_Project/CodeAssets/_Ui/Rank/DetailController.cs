@@ -20,7 +20,7 @@ namespace Rank
                 yield break;
             }
 
-            UtilityTool.AdaptWidgetInScrollView(m_ModuleController.m_ScrollView, m_ModuleController.m_ScrollBar, FloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
+			NGUIHelper.AdaptWidgetInScrollView(m_ModuleController.m_ScrollView, m_ModuleController.m_ScrollBar, FloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
         }
 
         public void DestroyFloatButtons()

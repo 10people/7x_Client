@@ -16,7 +16,7 @@ public class QXTanBaoData : MonoBehaviour,SocketProcessor {
 	{
 		if ( tbData == null )
 		{
-			GameObject t_GameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
+			GameObject t_GameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 			
 			tbData = t_GameObject.AddComponent< QXTanBaoData >();
 		}
@@ -159,30 +159,34 @@ public class QXTanBaoData : MonoBehaviour,SocketProcessor {
 
 	public void CheckFreeTanBao ()
 	{
-		FunctionOpenTemp functionTemp = FunctionOpenTemp.GetTemplateById (11);
-		int index = functionTemp.m_iID;
-
 		foreach (ExploreMineInfo tempInfo in tanBaoResp.mineRegionList)
 		{
-			if (tempInfo.isCanGet)
+			if (tempInfo.type == 0)
 			{
-				if (tempInfo.type == 0)
+				if (tempInfo.isCanGet)
 				{
-					MainCityUIRB.SetRedAlert (index,true);
+					PushAndNotificationHelper.SetRedSpotNotification (1101,true);
+					break;
 				}
-				else if (tempInfo.type == 1)
+				else
 				{
-					if (FunctionOpenTemp.GetWhetherContainID (1102))
+					PushAndNotificationHelper.SetRedSpotNotification (1101,false);
+				}
+			}
+			else if (tempInfo.type == 1)
+			{
+				if (FunctionOpenTemp.GetWhetherContainID (1102))
+				{
+					if (tempInfo.isCanGet)
 					{
-						MainCityUIRB.SetRedAlert (index,true);
+						PushAndNotificationHelper.SetRedSpotNotification (1102,true);
+						break;
+					}
+					else
+					{
+						PushAndNotificationHelper.SetRedSpotNotification (1102,false);
 					}
 				}
-
-				break;
-			}
-			else
-			{
-				MainCityUIRB.SetRedAlert (index,false);
 			}
 		}
 	}

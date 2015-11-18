@@ -464,8 +464,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		if (canOpenShop)
 		{
 			canOpenShop = false;
-			string mtitleStr = "贡献商店";
-			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.ALLANCE,GeneralControl.StoreReqType.FREE,mtitleStr);
+			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.ALLANCE,GeneralControl.StoreReqType.FREE);
 			_MyAllianceManager.Instance().SHow_OR_Close_MyAlliance();
 		}
 	}

@@ -349,7 +349,7 @@ public class BaseAI : MonoBehaviour
 //
 //		shadowObject.renderer.material.SetColor("_TintColor", shadowColor);
 
-		if( QualityTool.Instance.BattleField_ShowSimpleShadow() == true
+		if( Quality_Shadow.BattleField_ShowSimpleShadow() == true
 		   && nodeData.nodeType != NodeType.GOD)
 		{
 			if(shadowObject_2 == null) shadowObject_2 = (GameObject)Instantiate(shadowTemple_2);

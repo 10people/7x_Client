@@ -239,7 +239,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
                 case ProtoIndexes.S_Send_Chat:
                     {
                         object targetObject = new ChatPct();
-                        if (!UtilityTool.ReceiveQXMessage(ref targetObject, p_message, ProtoIndexes.S_Send_Chat))
+                        if (!SocketHelper.ReceiveQXMessage(ref targetObject, p_message, ProtoIndexes.S_Send_Chat))
                         {
                             return false;
                         }
@@ -257,7 +257,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
                         IsResponseToKingDetailInfo = false;
 
                         object junzhuResp = new JunZhuInfo();
-                        if (UtilityTool.ReceiveQXMessage(ref junzhuResp, p_message, ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP))
+                        if (SocketHelper.ReceiveQXMessage(ref junzhuResp, p_message, ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP))
                         {
                             m_JunzhuPlayerResp = junzhuResp as JunZhuInfo;
 

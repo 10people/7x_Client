@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class Console_Components {
+public class Console_Component {
 
 	#region Component
 	
@@ -51,7 +51,7 @@ public class Console_Components {
 				if( t_type == typeof(UISprite) ){
 					UISprite t_sprite = (UISprite)t_objects[ i ];
 					
-					if( !ConsoleTool.IsWHCompareStatisfy( t_sprite.width, t_sprite.height, t_param_2, t_param_3 ) ){
+					if( !IsWHCompareStatisfy( t_sprite.width, t_sprite.height, t_param_2, t_param_3 ) ){
 						continue;
 					}
 					
@@ -62,7 +62,7 @@ public class Console_Components {
 				else if( t_type == typeof(UITexture) ){
 					UITexture t_tex = (UITexture)t_objects[ i ];
 					
-					if( !ConsoleTool.IsWHCompareStatisfy( t_tex.width, t_tex.height, t_param_2, t_param_3 ) ){
+					if( !IsWHCompareStatisfy( t_tex.width, t_tex.height, t_param_2, t_param_3 ) ){
 						continue;
 					}
 					
@@ -366,5 +366,62 @@ public class Console_Components {
 		}
 	}
 	
+	#endregion
+
+
+
+	#region Utilities
+
+	/// p_ops: < or >
+	/// p_w_x_h: Wxh
+	public static bool IsWHCompareStatisfy( float p_w, float p_h, string p_ops, string p_w_x_h ){
+		if( string.IsNullOrEmpty( p_ops ) ){
+			return true;
+		} 
+		
+		if( string.IsNullOrEmpty( p_w_x_h ) ){
+			return true;
+		}
+		
+		string[] t_w_h = p_w_x_h.Split( new char[]{'x'} );
+		
+		if( t_w_h.Length != 2 ){
+			Debug.LogError( "WxH error: " + p_w_x_h );
+			
+			return false;
+		}
+		
+		float t_w = 0;
+		
+		float t_h = 0;
+		
+		try{
+			t_w = float.Parse( t_w_h[ 0 ] );
+			
+			t_h = float.Parse( t_w_h[ 1 ] );
+		}
+		catch( Exception e ){
+			Debug.LogError( "Error, params error: " + e );
+			
+			return false;
+		}
+		
+		if( StringHelper.IsLowerEqual( p_ops, "<" ) ){
+			if( p_w < t_w && p_h < t_h ){
+				return true;
+			}
+		}
+		else if( StringHelper.IsLowerEqual( p_ops, ">" ) ){
+			if( p_w > t_w && p_h > t_h ){
+				return true;
+			}
+		}
+		else{
+			Debug.Log( "compare error: " + p_ops );
+		}
+		
+		return false;
+	}
+
 	#endregion
 }

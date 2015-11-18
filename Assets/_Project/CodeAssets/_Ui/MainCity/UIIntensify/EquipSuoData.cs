@@ -96,7 +96,7 @@ public class EquipSuoData:MonoBehaviour
     public Dictionary<int, LockedSignal> m_listLockedSignal = new Dictionary<int, LockedSignal>();
     public static EquipSuoData Instance(){
 		if ( m_EquipSuoData == null ){
-			GameObject t_gameobject = UtilityTool.GetDontDestroyOnLoadGameObject();
+			GameObject t_gameobject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
 			m_EquipSuoData = t_gameobject.AddComponent< EquipSuoData >();
         }

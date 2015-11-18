@@ -37,6 +37,8 @@ public class YouXiaItem : MonoBehaviour {
 
 	public GameObject YouXiaLimit;
 
+	public GameObject mUIroot;
+
 	public UISprite UIIcon;
 
 	public YouXiaInfo mYou_XiaInfo;
@@ -116,7 +118,9 @@ public class YouXiaItem : MonoBehaviour {
 			return;
 		}
 		tempOjbect = Instantiate(p_object )as GameObject;
-		
+
+		EnterYouXiaBattle.GlobleEnterYouXiaBattle.ThirdNeedCloseObg = mUIroot;
+
 		tempOjbect.transform.parent = GameObject.Find ("FightTypeSelectLayer").transform;
 		
 		tempOjbect.transform.localScale = Vector3.one;
@@ -136,7 +140,7 @@ public class YouXiaItem : MonoBehaviour {
 		mYouXiaEnemyUI.m_You_XiaInfo = mYou_XiaInfo;
 
 		mYouXiaEnemyUI.Init ();
-
+		EnterYouXiaBattle.GlobleEnterYouXiaBattle.ThirdShowOrClose ();
 	}
 	void LoadBack_2(ref WWW p_www, string p_path, Object p_object)
 	{

@@ -467,7 +467,7 @@ public class PvpPage : MonoBehaviour {
 			break;
 		case "DuiHuanBtn":
 
-			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.PVP,GeneralControl.StoreReqType.FREE,"威望商店");
+			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.PVP,GeneralControl.StoreReqType.FREE);
 
 			break;
 		case "RecordBtn":
@@ -681,6 +681,7 @@ public class PvpPage : MonoBehaviour {
 		else
 		{
 			recordObj.SetActive (true);
+			MainCityUI.TryAddToObjectList (recordObj);
 			PvpRecord pvpRecord = recordObj.GetComponent<PvpRecord> ();
 			pvpRecord.InItRecordPage (pvpRecordResp);
 		}
@@ -688,6 +689,7 @@ public class PvpPage : MonoBehaviour {
 	void RecordLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{	
 		recordObj = (GameObject)Instantiate (p_object);
+		MainCityUI.TryAddToObjectList (recordObj);
 		PvpRecord pvpRecord = recordObj.GetComponent<PvpRecord> ();
 		pvpRecord.InItRecordPage (pvpRecordResp);
 	}

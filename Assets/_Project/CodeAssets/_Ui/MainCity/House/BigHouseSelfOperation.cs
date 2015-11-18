@@ -36,7 +36,7 @@ public class BigHouseSelfOperation : MonoBehaviour, SocketListener
         RightPartInfo.SetActive(false);
 
         //get visitors and set
-        UtilityTool.SendQXMessage(ProtoIndexes.C_GET_HOUSE_VISITOR);
+        SocketHelper.SendQXMessage(ProtoIndexes.C_GET_HOUSE_VISITOR);
 
         //get and set label text in language template.
         WorthLabel.text = (m_BigHouseSelf.m_HouseSimpleInfo.hworth * CanshuTemplate.GetValueByKey(CanshuTemplate.HOUSE_JINGPAI_PREFIX + 3) / 100).ToString();
@@ -199,7 +199,7 @@ public class BigHouseSelfOperation : MonoBehaviour, SocketListener
         }
 
         //set item num to specific
-        UtilityTool.AddOrDelItem(VisitorGrid.transform, VisitorPrefab, m_playerInfoList.Count);
+        TransformHelper.AddOrDelItem(VisitorGrid.transform, VisitorPrefab, m_playerInfoList.Count);
 
         //set each visitor controller
         m_HouseVisitorControllerList.Clear();
@@ -247,7 +247,7 @@ public class BigHouseSelfOperation : MonoBehaviour, SocketListener
         temp.targetId = m_BigHouseSelf.m_HouseSimpleInfo.jzId;
         temp.locationId = m_BigHouseSelf.m_HouseSimpleInfo.locationId;
 
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_SET_HOUSE_STATE);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_SET_HOUSE_STATE);
 
         //TenementData.Instance.RequestData();
     }
@@ -339,7 +339,7 @@ public class BigHouseSelfOperation : MonoBehaviour, SocketListener
 
         //instance icon and set
         var tempObject = Instantiate(IconSamplePrefab) as GameObject;
-        UtilityTool.ActiveWithStandardize(IconSampleParent, tempObject.transform);
+        TransformHelper.ActiveWithStandardize(IconSampleParent, tempObject.transform);
         var manager = tempObject.GetComponent<IconSampleManager>();
         manager.SetIconType(IconSampleManager.IconType.null_type);
         manager.SetIconBasic(5, "900001", "", "pinzhi4");

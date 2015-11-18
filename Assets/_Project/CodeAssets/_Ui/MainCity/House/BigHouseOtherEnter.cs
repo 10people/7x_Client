@@ -108,7 +108,7 @@ public class BigHouseOtherEnter : MonoBehaviour, SocketProcessor
                 {
                     targetId = m_BigHouseOther.m_HouseSimpleInfo.jzId
                 };
-                UtilityTool.SendQXMessage(temp, ProtoIndexes.C_PAI_BIG_HOUSE);
+                SocketHelper.SendQXMessage(temp, ProtoIndexes.C_PAI_BIG_HOUSE);
                 break;
         }
     }

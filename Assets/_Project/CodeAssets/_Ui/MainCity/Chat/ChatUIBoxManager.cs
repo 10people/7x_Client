@@ -109,7 +109,7 @@ public class ChatUIBoxManager : MonoBehaviour
                 {
                     junzhuId = JunZhuIDToBeShielded
                 };
-                UtilityTool.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
+                SocketHelper.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
                 break;
             default:
                 Debug.LogError("UIBox callback para:" + i + " is not correct.");

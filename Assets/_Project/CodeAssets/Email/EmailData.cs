@@ -40,8 +40,8 @@ public class EmailData : Singleton<EmailData>,SocketProcessor {
 			{
 			case ProtoIndexes.S_REQ_MAIL_LIST://邮件返回
 			{
-				object objectValue = new EmailListResponse ();
-				EmailListResponse emailDataRes = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as EmailListResponse;
+				EmailListResponse emailDataRes = new EmailListResponse ();
+				emailDataRes = QXComData.ReceiveQxProtoMessage (p_message,emailDataRes) as EmailListResponse;
 			
 				if (emailDataRes != null)
 				{
@@ -66,10 +66,10 @@ public class EmailData : Singleton<EmailData>,SocketProcessor {
 
 			case ProtoIndexes.S_MAIL_NEW://收到一封新邮件
 			{
-				Debug.Log ("NewEmail:" + ProtoIndexes.S_MAIL_NEW);
+//				Debug.Log ("NewEmail:" + ProtoIndexes.S_MAIL_NEW);
 
-				object objectValue = new NewMailResponse ();
-				NewMailResponse newEmailResp = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as NewMailResponse;
+				NewMailResponse newEmailResp = new NewMailResponse ();
+				newEmailResp = QXComData.ReceiveQxProtoMessage (p_message,newEmailResp) as NewMailResponse;
 				
 				if (newEmailResp != null)
 				{

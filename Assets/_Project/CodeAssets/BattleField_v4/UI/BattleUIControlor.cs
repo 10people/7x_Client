@@ -1852,7 +1852,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		
 		t_state.s_state = State.State_LEAGUEOFCITY;
 		
-		UtilityTool.SendQXMessage( t_state, ProtoIndexes.PLAYER_STATE_REPORT );
+		SocketHelper.SendQXMessage( t_state, ProtoIndexes.PLAYER_STATE_REPORT );
 	}
 
 	private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)

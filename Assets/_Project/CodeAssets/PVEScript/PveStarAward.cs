@@ -166,18 +166,21 @@ public class PveStarAward : MonoBehaviour, SocketProcessor {
 		
 		return false;
 	}
-
+	UIBox ui_box;
 	void GetXingJiRewardLoadBack ( ref WWW p_www, string p_path, Object p_object )
 	{
-		UIBox uibox = (Instantiate( p_object ) as GameObject).GetComponent<UIBox> ();
-
-		string titleStr = "提示";
-
-		string str = "\n\n您已领取过该星级奖励！";
-
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str), null, 
-		             null,confirmStr,null,null);
+		if(ui_box == null)
+		{
+		    ui_box = (Instantiate( p_object ) as GameObject).GetComponent<UIBox> ();
+			
+			string titleStr = "提示";
+			
+			string str = "\n\n您已领取过该星级奖励！";
+			
+			string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+			ui_box.setBox(titleStr, MyColorData.getColorString (1,str), null, 
+			              null,confirmStr,null,null);
+		}
 	}
 
 	public void CloseUI()
@@ -190,6 +193,8 @@ public class PveStarAward : MonoBehaviour, SocketProcessor {
 		}
 		if(Opentype == 2)
 		{
+			PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
+
 			PveLevelUImaneger.mPveLevelUImaneger.ShowEffect();
 
 			PveLevelUImaneger.mPveLevelUImaneger.ShowPVEGuid ();

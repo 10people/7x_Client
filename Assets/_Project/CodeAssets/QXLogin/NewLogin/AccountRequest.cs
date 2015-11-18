@@ -110,7 +110,7 @@ public class AccountRequest : MonoBehaviour {
 		Debug.Log ( Time.realtimeSinceStartup + "NoticeDataRequest()" );
 		#endif
 
-		HttpRequest.Instance ().Connect ( HttpRequest.GetPrefix() + HttpRequest.NOTICE_URL,
+		HttpRequest.Instance ().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.NOTICE_URL,
 		                                  null, 
 		                                  NoticeSuccess,
 		                                  NoticeFail,

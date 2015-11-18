@@ -138,7 +138,7 @@ namespace Carriage
         private void ExecuteACarriage(YabiaoJunZhuInfo l_yabiaoJunZhuInfo, Object loadedObject)
         {
             var tempObject = Instantiate(loadedObject) as GameObject;
-            UtilityTool.ActiveWithStandardize(m_Grid.transform, tempObject.transform);
+            TransformHelper.ActiveWithStandardize(m_Grid.transform, tempObject.transform);
 
             var tempController = tempObject.GetComponent<CarriageUIItemController>();
 
@@ -234,7 +234,7 @@ namespace Carriage
 
 
             GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
-            UtilityTool.ActiveWithStandardize(transform, mChoose_MiBao.transform);
+            TransformHelper.ActiveWithStandardize(transform, mChoose_MiBao.transform);
             mChoose_MiBao.SetActive(true);
 
             ChangeMiBaoSkill mChangeMiBaoSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();

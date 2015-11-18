@@ -8,12 +8,12 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 
 	public static GeneralRewardManager Instance ()
 	{
-		if( m_instance == null )
-		{
-			string t_ui_path = Res2DTemplate.GetResPath( Res2DTemplate.Res.UI_POP_REWARD_ROOT );
+		//if( m_instance == null )
+		//{
+		//	string t_ui_path = Res2DTemplate.GetResPath( Res2DTemplate.Res.UI_POP_REWARD_ROOT );
 			
-			Global.ResourcesDotLoad( t_ui_path, ResourceLoadCallback );
-		}
+		//	Global.ResourcesDotLoad( t_ui_path, ResourceLoadCallback );
+		//}
 		
 		return m_instance;
 	}

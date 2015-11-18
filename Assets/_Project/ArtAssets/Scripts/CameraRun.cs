@@ -34,5 +34,9 @@ public class CameraRun : MonoBehaviour {
 		if( target != null ){
 			transform.position = target.position + CameraOffset;
 		}
+
+		{
+			ConsoleTool.Instance().ManualLateUpdate();
+		}
     }
 }

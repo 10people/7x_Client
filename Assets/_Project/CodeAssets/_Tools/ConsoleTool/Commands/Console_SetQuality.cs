@@ -141,10 +141,65 @@ public class Console_SetQuality {
 		}
 		
 		{
-			QualityTool.ConfigBloom( t_param_1_show );
+			Quality_Common.ConfigBloom( t_param_1_show );
 			
 			QualityTool.m_quality_dict[ QualityTool.CONST_BLOOM ].AutoSet( p_params[ 1 ] );
 		}
+	}
+	
+	#endregion
+
+	
+	
+	#region Set Light
+	
+	public static void SetLight( string[] p_params ){
+		if( p_params.Length <= 1 ){
+			Debug.LogError( "Error, params not enough." );
+			
+			return;
+		}
+		
+		bool t_param_1_show = false;
+		
+		try{
+			t_param_1_show = bool.Parse( p_params[ 1 ] );
+		}
+		catch( Exception e ){
+			StringHelper.LogStringArray( p_params );
+			
+			Debug.LogError( "Error, params error: " + e );
+			
+			return;
+		}
+		
+		{
+			Quality_Shadow.ConfigLights( t_param_1_show );
+			
+			QualityTool.m_quality_dict[ QualityTool.CONST_IN_CITY_SHADOW ].AutoSet( p_params[ 1 ] );
+			
+			QualityTool.m_quality_dict[ QualityTool.CONST_BATTLE_FIELD_SHADOW ].AutoSet( p_params[ 1 ] );
+		}
+	}
+	
+	#endregion
+	
+	
+	
+	#region Log Quality
+	
+	public static void LogQuality( string[] p_params ){
+		QualityTool.LogQualityItems();
+	}
+	
+	#endregion
+	
+	
+	
+	#region LogRootAutoRelease
+	
+	public static void LogRootAutoRelease( string[] p_params ){
+		UIRootAutoActivator.Log();
 	}
 	
 	#endregion

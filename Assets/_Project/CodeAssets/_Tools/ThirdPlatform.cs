@@ -281,7 +281,7 @@ public class ThirdPlatform : MonoBehaviour {
 		#if DEBUG_HUGE_LOGIN
 		string t_url = HttpRequest.SERVER_HUGE_PREFIX + "qxrouter/channel/checkLogin.jsp";
 		#else
-		string t_url = HttpRequest.GetPrefix() + HttpRequest.THIRD_PLATFORM_LOGIN_URL;
+		string t_url = NetworkHelper.GetPrefix() + NetworkHelper.THIRD_PLATFORM_LOGIN_URL;
 		#endif
 
 		#if DEBUG_THIRD_PLATFORM
@@ -548,7 +548,7 @@ public class ThirdPlatform : MonoBehaviour {
 
 			t_error_message.errorCode = 0;
 			
-			UtilityTool.SendQXMessage( t_error_message, ProtoIndexes.C_XG_TOKEN );
+			SocketHelper.SendQXMessage( t_error_message, ProtoIndexes.C_XG_TOKEN );
 			
 			Debug.Log( "Upload XG Token: " + t_error_message.errorCode + 
 			               "   Desc: " + t_error_message.errorDesc +

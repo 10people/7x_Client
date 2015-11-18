@@ -35,7 +35,7 @@ namespace Carriage
         private void OnPlayerLoadCallBack(ref WWW www, string path, Object loadedObject)
         {
             var tempObject = Instantiate(loadedObject) as GameObject;
-            UtilityTool.ActiveWithStandardize(null, tempObject.transform);
+            TransformHelper.ActiveWithStandardize(null, tempObject.transform);
             if (IsGotoLastPosition && m_PlayerLastLocalPosition != Vector3.zero)
             {
                 IsGotoLastPosition = false;
@@ -80,13 +80,13 @@ namespace Carriage
             CarriageSceneManager.Instance.m_RootManager = this;
 
             //Refresh all carriages after scene loaded.
-            UtilityTool.SendQXMessage(CarriageSceneManager.Instance.s_RoomId, ProtoIndexes.C_BIAOCHE_INFO);
+            SocketHelper.SendQXMessage(CarriageSceneManager.Instance.s_RoomId, ProtoIndexes.C_BIAOCHE_INFO);
 
             PlayerState temp = new PlayerState
             {
                 s_state = State.State_YABIAO
             };
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.PLAYER_STATE_REPORT);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.PLAYER_STATE_REPORT);
 
             //load and set player.
             Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
@@ -148,7 +148,7 @@ namespace Carriage
                     return;
                 }
 
-                //House weapon, treasure, book click trigger.
+                //carriage click trigger.
                 ray = PlayerTrackCamera.ScreenPointToRay(Input.mousePosition);
                 tempHits = Physics.RaycastAll(ray, Mathf.Infinity);
 

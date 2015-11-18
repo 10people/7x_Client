@@ -111,7 +111,7 @@ public class DeviceHelper {
 				
 				tempUrl.Add ( "UnSupport" , m_nonsupport_reason + " - " + GetDeviceInfo() );
 				
-				HttpRequest.Instance ().Connect ( HttpRequest.GetPrefix() + HttpRequest.REPORT_UNSUPPORT_DEVICE_URL, 
+				HttpRequest.Instance ().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.REPORT_UNSUPPORT_DEVICE_URL, 
 				                                 tempUrl, 
 				                                 ReportSuccess, 
 				                                 ReportFail );

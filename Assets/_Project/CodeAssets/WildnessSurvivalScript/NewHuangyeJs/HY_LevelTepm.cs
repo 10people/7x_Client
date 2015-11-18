@@ -149,6 +149,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		{
 			return;
 		}
+
 		ZhengRongUI = Instantiate(p_object) as GameObject;
 		
 		ZhengRongUI.transform.parent = GameObject.Find("HY_UI(Clone)").transform;
@@ -162,6 +163,9 @@ public class HY_LevelTepm : MonoBehaviour {
 		m_HuangyeZhengRong.mHuangYeTreasure = mHuangYeTreasure;
 		
 		m_HuangyeZhengRong.Init();
+
+		HY_UIManager.Instance ().NeedCloseObg = ZhengRongUI;
+		//Debug.Log ("HY_UIManager.Instance ().NeedCloseObg = " +HY_UIManager.Instance ().NeedCloseObg);
 	}
 
 	void ResettingLoadBack(ref WWW p_www,string p_path, Object p_object)

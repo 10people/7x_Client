@@ -9,68 +9,59 @@ using ProtoBuf.Meta;
 
 public class GeneralStore : MonoBehaviour {
 
-	public UILabel titleLabel;
-
 	private GeneralControl.StoreType storeType;
+
+	private List<DuiHuanInfo> duihuanList = new List<DuiHuanInfo> ();
+	private List<GameObject> rewardObjList = new List<GameObject>();
+	public List<EventHandler> btnHandlerList = new List<EventHandler> ();
+
+	private int refreshTime;
+	private int money;
+	private int commonId;//钱币iconid
+	private int refreshNeedMoney;
+
+	public UILabel titleLabel;
+	public UILabel timeLabel;
+	public UILabel moneyLabel;
+	public UISprite moneyIcon;
 
 	public GameObject rewardGrid;
 	public GameObject rewardObj;
-	private List<GameObject> rewardObjList = new List<GameObject>();
 
-	private List<DuiHuanInfo> duihuanList = new List<DuiHuanInfo> ();
-
-	private int refreshTime;
-	public UILabel timeLabel;
-	private int money;
-	public UILabel moneyLabel;
-	public UISprite moneyIcon;
-	private int commonId;//钱币iconid
-
-	private int refreshNeedMoney;
-
-	private string confirmStr;
-	private string cancelStr;
-	private string titleStr = "提示";
-	private string moneyTypeStr;//钱币种类
 	private string textStr = "";
 
 	public ScaleEffectController m_ScaleEffectController;
-
-	void Start ()
-	{
-		confirmStr = GeneralControl.Instance.confirmStr;
-		cancelStr = GeneralControl.Instance.cancelStr;
-	}
 
 	/// <summary>
 	/// 获得兑换商店信息
 	/// </summary>
 	/// <param name="tempType">商铺类型</param>
-	/// <param name="titleStr">商铺名字</param>
 	/// <param name="tempDuiHuanList">物品信息</param>
 	/// <param name="tempTime">刷新时间</param>
 	/// <param name="tempMoney">兑换钱币数量</param>
 	/// <param name="refreshNeed">刷新货物需要的钱币数量</param>
-	public void GetStoreInfo (GeneralControl.StoreType tempType,string titleStr,List<DuiHuanInfo> tempDuiHuanList,int tempTime,int tempMoney,int refreshNeed)
+	public void GetStoreInfo (GeneralControl.StoreType tempType,List<DuiHuanInfo> tempDuiHuanList,int tempTime,int tempMoney,int refreshNeed)
 	{
+		m_ScaleEffectController.transform.localScale = Vector3.one;
+
 		storeType = tempType;
-		titleLabel.text = titleStr;
+		titleLabel.text = GeneralControl.Instance.storeDic[tempType][2];
 
 		refreshTime = tempTime;
 		money = tempMoney;
 
 		moneyLabel.text = tempMoney.ToString ();
-		moneyTypeStr = MoneyStr (tempType);
 
 		refreshNeedMoney = refreshNeed;
 //		Debug.Log ("refreshNeedMoney:" + refreshNeedMoney);
 
-		moneyIcon.spriteName = IconName (tempType);
+		moneyIcon.spriteName = GeneralControl.Instance.storeDic[tempType][0];
 
+		int instantCount = tempDuiHuanList.Count - rewardObjList.Count;
 		//创建商铺物品
-		if (rewardObjList.Count == 0)
+		if (instantCount > 0)
 		{
-			for (int i = 0;i < tempDuiHuanList.Count;i ++)
+			for (int i = 0;i < instantCount;i ++)
 			{
 				GameObject rewardItem = (GameObject)Instantiate (rewardObj);
 
@@ -80,6 +71,14 @@ public class GeneralStore : MonoBehaviour {
 				rewardItem.transform.localScale = Vector3.one;
 				
 				rewardObjList.Add (rewardItem);
+			}
+		}
+		else
+		{
+			for (int i = 0;i < Mathf.Abs (instantCount);i ++)
+			{
+				Destroy (rewardObjList[rewardObjList.Count - 1]);
+				rewardObjList.RemoveAt (rewardObjList.Count - 1);
 			}
 		}
 
@@ -96,6 +95,8 @@ public class GeneralStore : MonoBehaviour {
 			}
 		}
 
+		rewardGrid.GetComponent<UIGrid> ().repositionNow = true;
+
 		duihuanList = tempDuiHuanList;
 
 		for (int i = 0;i < tempDuiHuanList.Count;i ++)
@@ -103,8 +104,6 @@ public class GeneralStore : MonoBehaviour {
 			GeneralGoods goodsInfo = rewardObjList[i].GetComponent<GeneralGoods> ();
 			goodsInfo.InItGoodsInfo (tempType,tempDuiHuanList[i]);
 		}
-
-		rewardGrid.GetComponent<UIGrid> ().repositionNow = true;
 
 		rewardGrid.transform.parent.GetComponent <UIScrollView> ().enabled = tempDuiHuanList.Count <= 8 ? false : true;
 
@@ -114,81 +113,159 @@ public class GeneralStore : MonoBehaviour {
 		moneyIcon.GetComponent<NGUILongPress> ().OnLongPress += ActiveTips;
 		moneyIcon.GetComponent<NGUILongPress> ().OnLongPressFinish += DoActiveTips;
 
-		isDuiHuan = false;
+		foreach (EventHandler handler in btnHandlerList)
+		{
+			handler.m_handler += BtnHandlerCallBack;
+		}
 
+		isDuiHuan = false;
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 	}
 
-	//iconName
-	public string IconName (GeneralControl.StoreType tempStoreType)
+	void BtnHandlerCallBack (GameObject obj)
 	{
-		string iconName = "";
-		switch (tempStoreType)
+		switch (obj.name)
 		{
-		case GeneralControl.StoreType.PVP:
-			
-			iconName = "weiwangIcon";
-			
-			break;
-			
-		case GeneralControl.StoreType.HUANGYE:
-			
-			iconName = "HuangYe";
-			
-			break;
-			
-		case GeneralControl.StoreType.ALLIANCE_FIGHT:
-			
-			iconName = "GongXun";
-			
-			break;
-			
-		case GeneralControl.StoreType.ALLANCE:
-			
-			iconName = "GongXian";
-			
-			break;
+		case "RefreshBtn":
 
+			textStr = "\n\n立即刷新所有货物需要花费" + refreshNeedMoney + GeneralControl.Instance.MoneyTypeName + "\n确定刷新所有货物吗？";
+			
+			Global.CreateBox (QXComData.titleStr,
+			                  MyColorData.getColorString (1,textStr) ,null, null,
+			                  QXComData.cancelStr, QXComData.confirmStr,
+			                  RefreshBack);
+
+			break;
+		case "BackBtn":
+
+			switch (storeType)
+			{
+			case GeneralControl.StoreType.PVP:
+			{
+				PvpPage.pvpPage.PvpActiveState (true);
+				PvpPage.pvpPage.pvpResp.hasWeiWang = money;
+				PvpPage.pvpPage.InItMyRank ();
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
+				
+				break;
+			}
+			case GeneralControl.StoreType.HUANGYE:
+			{
+				
+				break;
+			}
+			case GeneralControl.StoreType.ALLANCE:
+			{
+				_MyAllianceManager.Instance().SHow_OR_Close_MyAlliance();
+				break;
+			}
+			case GeneralControl.StoreType.ALLIANCE_FIGHT:
+			{
+				break;
+			}
+			default:
+				break;
+			}
+			DoCloseWindow();
+
+			break;
+		case "CloseBtn":
+
+			switch (storeType)
+			{
+			case GeneralControl.StoreType.PVP:
+			{
+				PvpPage.pvpPage.DisActiveObj ();
+				break;
+			}
+			case GeneralControl.StoreType.HUANGYE:
+			{
+				HY_UIManager.Instance().CloseUI();
+				break;
+			}
+			case GeneralControl.StoreType.ALLANCE:
+			{
+				_MyAllianceManager.Instance().DoCloseWindow();
+				//_MyAllianceManager.Instance().Closed();
+				break;
+			}
+			case GeneralControl.StoreType.ALLIANCE_FIGHT:
+			{
+				_MyAllianceManager.Instance().Closed();
+				AllianceFightMainPage.fightMainPage.CloseBtn ();
+				break;
+			}
+			default:
+				break;
+			}
+			m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
+			m_ScaleEffectController.OnCloseWindowClick();
+
+			break;
 		default:
 			break;
 		}
-
-		return iconName;
 	}
 
-	public string MoneyStr (GeneralControl.StoreType tempStoreType)
+	void RefreshBack (int i)
 	{
-		string money = "";
-		switch (tempStoreType)
+		if (i == 2)
 		{
-		case GeneralControl.StoreType.PVP:
-			
-			money = "威望";
-			
+			//判断钱币是否够
+			if (money >= refreshNeedMoney)
+			{
+				Debug.Log ("确定刷新物品");
+				
+				GeneralControl.Instance.GeneralStoreReq (storeType,GeneralControl.StoreReqType.USE_MONEY);
+			}
+			else
+			{
+				//钱币不足
+				BoxLoad (GeneralControl.BoxCallBackType.STORE_REQ);
+			}
+		}
+	}
+	//钱币不足提示弹框
+	void BoxLoad (GeneralControl.BoxCallBackType tempCallBack)
+	{
+		switch (tempCallBack)
+		{
+		case GeneralControl.BoxCallBackType.STORE_REQ:
+		{
+			textStr = "\n\n商铺刷新失败，" + GeneralControl.Instance.MoneyTypeName + "不足";
 			break;
-			
-		case GeneralControl.StoreType.HUANGYE:
-			
-			money = "荒野币";
-			
+		}
+		case GeneralControl.BoxCallBackType.STORE_BUY:
+		{
+			textStr = "\n\n" + GeneralControl.Instance.MoneyTypeName + "不足,购买失败";
 			break;
-			
-		case GeneralControl.StoreType.ALLIANCE_FIGHT:
-			
-			money = "功勋";
-			
-			break;
-			
-		case GeneralControl.StoreType.ALLANCE:
-			
-			money = "贡献";
-			
-			break;
-			
+		}
 		default:
 			break;
 		}
-		return money;
+		
+		Global.CreateBox (QXComData.titleStr, 
+		                  MyColorData.getColorString (1,textStr), null, null, 
+		                  QXComData.confirmStr, null, 
+		                  BoxBack);
+	}
+	void BoxBack (int i)
+	{
+		isDuiHuan = false;
+	}
+
+	void DoCloseWindow()
+	{
+		foreach (EventHandler handler in btnHandlerList)
+		{
+			handler.m_handler -= BtnHandlerCallBack;
+		}
+
+		moneyIcon.GetComponent<NGUILongPress> ().OnLongPress -= ActiveTips;
+		moneyIcon.GetComponent<NGUILongPress> ().OnLongPressFinish -= DoActiveTips;
+
+		MainCityUI.TryRemoveFromObjectList (gameObject);
+		gameObject.SetActive (false);
 	}
 
 	void ActiveTips (GameObject go)
@@ -201,52 +278,17 @@ public class GeneralStore : MonoBehaviour {
 	}
 
 	IEnumerator RefreshStoreTime ()
-	{
-		string hourStr = "";
-		string minuteStr = "";
-		string secondStr = "";
-		
+	{	
 		while (refreshTime > 0) 
 		{
 			refreshTime --;
-
-			int hour = refreshTime / 3600;
-			int minute = (refreshTime / 60) % 60;
-			int second = refreshTime % 60;
-//			Debug.Log (hour + ":" + minute + ":" + second);
-			if (hour < 10)
-			{
-				hourStr = "0" + hour;
-			}
-			else
-			{
-				hourStr = hour.ToString ();
-			}
-
-			if (minute < 10)
-			{
-				minuteStr = "0" + minute;
-			}
-			else
-			{
-				minuteStr = minute.ToString ();
-			}
 			
-			if (second < 10) 
-			{
-				secondStr = "0" + second;
-			} 
-			else 
-			{
-				secondStr = second.ToString ();
-			}
-			
-			timeLabel.text = hourStr + " : " + minuteStr + "：" + secondStr;
+			timeLabel.text = QXComData.TimeFormat (refreshTime);
 			
 			if (refreshTime == 0) 
 			{
 				//刷新商铺时间
-				GeneralControl.Instance.GeneralStoreReq (storeType,GeneralControl.StoreReqType.FREE,titleLabel.text);
+				GeneralControl.Instance.GeneralStoreReq (storeType,GeneralControl.StoreReqType.FREE);
 			}
 			
 			yield return new WaitForSeconds(1);
@@ -305,13 +347,9 @@ public class GeneralStore : MonoBehaviour {
 		needNum = tempNeedMoney;
 		itemName = tempItemName;
 
-		GameObject dhWindow = (GameObject)Instantiate (duiHuanWindowObj);
-		dhWindow.SetActive (true);
-		dhWindow.transform.parent = duiHuanWindowObj.transform.parent;
-		dhWindow.transform.localPosition = duiHuanWindowObj.transform.localPosition;
-		dhWindow.transform.localScale = duiHuanWindowObj.transform.localScale;
+		duiHuanWindowObj.SetActive (true);
 
-		GeneralBuyWindow generalBuy = dhWindow.GetComponent<GeneralBuyWindow> ();
+		GeneralBuyWindow generalBuy = duiHuanWindowObj.GetComponent<GeneralBuyWindow> ();
 		generalBuy.GetGoodsInfo (storeType,tempItemType,tempItemId,tempItemNum,tempItemName,tempNeedMoney);
 	}
 
@@ -324,8 +362,8 @@ public class GeneralStore : MonoBehaviour {
 			if (money >= needNum)
 			{
 				Debug.Log ("确定兑换");
-				
-				GeneralControl.Instance.StoreBuyReq (storeType,getDuiHuanInfo.id,itemName,needNum);
+
+				GeneralControl.Instance.StoreBuyReq (GeneralControl.StoreGoodInfo.CreateStoreGood(getDuiHuanInfo.id,itemName,needNum));
 			}
 			else
 			{
@@ -339,164 +377,4 @@ public class GeneralStore : MonoBehaviour {
 		}
 	}
 	#endregion
-
-	//刷新按钮
-	public void RefreshBtn ()
-	{
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-		                        RefreshLoadCallback );
-	}
-	
-	private void RefreshLoadCallback( ref WWW p_www, string p_path, Object p_object )
-	{
-		GameObject boxObj = Instantiate( p_object ) as GameObject;
-		
-		UIBox uibox = boxObj.GetComponent<UIBox> ();
-
-		string str1 = "\n\n立即刷新所有货物需要花费";
-		string str2 = "\n确定刷新所有货物吗？";
-
-		textStr = str1 + refreshNeedMoney + moneyTypeStr + str2;
-
-		uibox.setBox(titleStr,MyColorData.getColorString (1,textStr) ,null, null, cancelStr, confirmStr,RefreshBack);
-	}
-	
-	void RefreshBack (int i)
-	{
-		if (i == 2)
-		{
-			//判断钱币是否够
-			if (money >= refreshNeedMoney)
-			{
-				Debug.Log ("确定刷新物品");
-				
-				GeneralControl.Instance.GeneralStoreReq (storeType,GeneralControl.StoreReqType.USE_MONEY,titleLabel.text);
-			}
-			else
-			{
-				//钱币不足
-				BoxLoad (GeneralControl.BoxCallBackType.STORE_REQ);
-			}
-		}
-	}
-
-	//钱币不足提示弹框
-	private GeneralControl.BoxCallBackType boxCallBackType;
-	void BoxLoad (GeneralControl.BoxCallBackType tempCallBack)
-	{
-		boxCallBackType = tempCallBack;
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-		                        BoxLoadCallBack );
-	}
-	
-	private void BoxLoadCallBack ( ref WWW p_www, string p_path, Object p_object )
-	{
-		GameObject boxObj = Instantiate (p_object) as GameObject;
-		
-		UIBox uibox = boxObj.GetComponent<UIBox> ();
-		
-		switch (boxCallBackType)
-		{
-		case GeneralControl.BoxCallBackType.STORE_REQ:
-		{
-			textStr = "\n商铺刷新失败，" + moneyTypeStr + "不足";
-			break;
-		}
-		case GeneralControl.BoxCallBackType.STORE_BUY:
-		{
-			textStr = "\n\n" + moneyTypeStr + "不足,购买失败";
-			break;
-		}
-		default:
-			break;
-		}
-		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,textStr), null, 
-		             null, confirmStr, null, BoxBack);
-	}
-
-	void BoxBack (int i)
-	{
-		isDuiHuan = false;
-	}
-
-	//返回按钮
-	public void BackBtn ()
-	{
-		switch (storeType)
-		{
-		case GeneralControl.StoreType.PVP:
-		{
-			PvpPage.pvpPage.PvpActiveState (true);
-			PvpPage.pvpPage.pvpResp.hasWeiWang = money;
-			PvpPage.pvpPage.InItMyRank ();
-//			BaiZhanMainPage.baiZhanMianPage.baiZhanResp.hasWeiWang = money;
-//			BaiZhanMainPage.baiZhanMianPage.InItMyRank ();
-//			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
-//			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
-
-			break;
-		}
-		case GeneralControl.StoreType.HUANGYE:
-		{
-
-			break;
-		}
-		case GeneralControl.StoreType.ALLANCE:
-		{
-			_MyAllianceManager.Instance().SHow_OR_Close_MyAlliance();
-			break;
-		}
-		case GeneralControl.StoreType.ALLIANCE_FIGHT:
-		{
-			break;
-		}
-		default:
-			break;
-		}
-
-		Destroy (this.gameObject);
-	}
-
-	//关闭按钮
-	public void CloseBtn ()
-	{
-		m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
-		m_ScaleEffectController.OnCloseWindowClick();
-
-		switch (storeType)
-		{
-		case GeneralControl.StoreType.PVP:
-		{
-			PvpPage.pvpPage.DisActiveObj ();
-//			BaiZhanData.Instance ().CloseBaiZhan ();
-			break;
-		}
-		case GeneralControl.StoreType.HUANGYE:
-		{
-			HY_UIManager.Instance().CloseUI();
-			break;
-		}
-		case GeneralControl.StoreType.ALLANCE:
-		{
-			_MyAllianceManager.Instance().DoCloseWindow();
-			//_MyAllianceManager.Instance().Closed();
-			break;
-		}
-		case GeneralControl.StoreType.ALLIANCE_FIGHT:
-		{
-			_MyAllianceManager.Instance().Closed();
-			AllianceFightMainPage.fightMainPage.CloseBtn ();
-			break;
-		}
-		default:
-			break;
-		}
-	}
-
-	void DoCloseWindow()
-	{
-		Destroy(gameObject);
-	}
 }

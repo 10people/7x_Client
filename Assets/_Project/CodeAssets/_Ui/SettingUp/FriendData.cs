@@ -12,7 +12,7 @@ public class FriendData : Singleton<FriendData>, SocketProcessor
 	public static List<string> Friendsid = new List<string>();
     public void RequestData()
     {
-        UtilityTool.SendQXMessage(ProtoIndexes.C_GET_FRIEND_IDS);
+        SocketHelper.SendQXMessage(ProtoIndexes.C_GET_FRIEND_IDS);
     }
 
     public bool OnProcessSocketMessage(QXBuffer p_message)

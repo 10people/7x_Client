@@ -61,7 +61,7 @@ public class ExchangeOtherController : MonoBehaviour
             }
 
             //set item's manager
-            UtilityTool.ActiveWithStandardize(IconSampleParentList[i].transform, iconSampleObject.transform);
+            TransformHelper.ActiveWithStandardize(IconSampleParentList[i].transform, iconSampleObject.transform);
             var itemManager = iconSampleObject.GetComponent<OldBookItemManager>() ??
                   iconSampleObject.AddComponent<OldBookItemManager>();
             itemManager.BoxId = ExchangeOtherInfoList[i].boxId;

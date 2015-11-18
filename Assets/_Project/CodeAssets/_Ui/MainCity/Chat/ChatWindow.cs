@@ -107,7 +107,7 @@ public class ChatWindow : ChatBaseWindow, SocketListener
     void OnEnable()
     {
         //Send carriage help times.
-        UtilityTool.SendQXMessage(ProtoIndexes.C_YABIAO_XIEZHU_RSQ);
+        SocketHelper.SendQXMessage(ProtoIndexes.C_YABIAO_XIEZHU_RSQ);
     }
 
     void OnDestroy()
@@ -159,7 +159,7 @@ public class ChatWindow : ChatBaseWindow, SocketListener
                     if (!IsChatWindowOpened()) return false;
 
                     object joinToBlackListRespObject = new BlacklistResp();
-                    if (UtilityTool.ReceiveQXMessage(ref joinToBlackListRespObject, p_message,
+                    if (SocketHelper.ReceiveQXMessage(ref joinToBlackListRespObject, p_message,
                         ProtoIndexes.S_Join_BlackList_Resp))
                     {
                         BlacklistResp tempJoinBlacklistResp = joinToBlackListRespObject as BlacklistResp;
@@ -184,7 +184,7 @@ public class ChatWindow : ChatBaseWindow, SocketListener
             case ProtoIndexes.S_ANSWER_YBHELP_RESP:
                 {
                     object answerCarriageHelp = new AnswerYaBiaoHelpResp();
-                    if (UtilityTool.ReceiveQXMessage(ref answerCarriageHelp, p_message,
+                    if (SocketHelper.ReceiveQXMessage(ref answerCarriageHelp, p_message,
                         ProtoIndexes.S_ANSWER_YBHELP_RESP))
                     {
                         AnswerYaBiaoHelpResp tempAnswerCarriageHelp = answerCarriageHelp as AnswerYaBiaoHelpResp;
@@ -252,7 +252,7 @@ public class ChatWindow : ChatBaseWindow, SocketListener
             case ProtoIndexes.S_YABIAO_XIEZHU_RESP:
                 {
                     object xieZhuTimesResp = new XieZhuTimesResp();
-                    if (UtilityTool.ReceiveQXMessage(ref xieZhuTimesResp, p_message,
+                    if (SocketHelper.ReceiveQXMessage(ref xieZhuTimesResp, p_message,
                         ProtoIndexes.S_YABIAO_XIEZHU_RESP))
                     {
                         m_xieZhuTimesResp = xieZhuTimesResp as XieZhuTimesResp;

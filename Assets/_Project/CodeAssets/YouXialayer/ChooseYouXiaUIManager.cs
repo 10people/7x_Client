@@ -310,6 +310,7 @@ public class ChooseYouXiaUIManager : MonoBehaviour,SocketProcessor {
 	}
 	public void Back()
 	{
+		EnterYouXiaBattle.GlobleEnterYouXiaBattle.ShowOrClose ();
 		Destroy (this.gameObject);
 	}
 

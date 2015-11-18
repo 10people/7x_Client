@@ -122,6 +122,7 @@ public class My_DamageRank : MonoBehaviour {
 	}
 	public void Close()
 	{
+		HY_UIManager.Instance ().ShowOrClose ();
 		Destroy (this.gameObject);
 	}
 }

@@ -96,7 +96,7 @@ namespace LimitActivity
             for (int i = 0; i < tempList.Count; i++)
             {
                 var temp = Instantiate(m_ReceiveItemPrefab) as GameObject;
-                UtilityTool.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
 
                 var controller = temp.GetComponent<ReceiveItemController>();
                 controller.m_ActivityDetailController = this;
@@ -107,8 +107,10 @@ namespace LimitActivity
 
                 m_ReceiveItemControllerList.Add(controller);
             }
+
             m_Grid.Reposition();
-            UtilityTool.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
+
+			NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
         }
 
         public bool OnSocketEvent(QXBuffer p_message)

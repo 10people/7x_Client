@@ -299,7 +299,7 @@ public class MainCityUIRB : MonoBehaviour
 
             GetButtonListByType(template.type - 1).Add(tempButtonManager);
 
-            UtilityTool.ActiveWithStandardize(GetButtonParentByType(template.type - 1).transform, tempObject.transform);
+            TransformHelper.ActiveWithStandardize(GetButtonParentByType(template.type - 1).transform, tempObject.transform);
             tempObject.transform.localScale = Vector3.one * scale;
         }
         else

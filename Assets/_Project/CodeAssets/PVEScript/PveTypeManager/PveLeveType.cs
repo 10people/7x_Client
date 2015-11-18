@@ -138,6 +138,8 @@ public class PveLeveType : MonoBehaviour {
 
 	public void LoadResourceCallback2(ref WWW p_www,string p_path, Object p_object)
 	{
+		PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
+
 		GameObject tempOjbect = Instantiate(p_object)as GameObject;
 		
 		tempOjbect.transform.parent = GameObject.Find ("Mapss").transform;
@@ -153,6 +155,7 @@ public class PveLeveType : MonoBehaviour {
 		mPveStarAward.Opentype = 2;
 
 		mPveStarAward.Init ();
+
 	}
 
 	//攻打按钮

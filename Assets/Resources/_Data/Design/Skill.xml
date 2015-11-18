@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Skill SkillId="101" SkillTarget="1" EffectTarget="0" ST_TypeRejectU="0" CRRejectU="0" Range_Min="0" Range_Max="300" BaseCD="1000" IsInGCD="1" Action1="101" />
+</dataset>

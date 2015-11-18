@@ -34,7 +34,7 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
         s_RoomId = l_roomId;
 
         EnterYaBiaoScene temp = new EnterYaBiaoScene { roomId = s_RoomId };
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_ENTER_YABIAOSCENE);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_ENTER_YABIAOSCENE);
 
         SceneManager.EnterCarriage();
     }
@@ -298,7 +298,7 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                         type = 20
                     };
 					CityGlobalData.SetYunBiaoBuyType = 20;
-                    UtilityTool.SendQXMessage(temp, ProtoIndexes.C_YABIAO_BUY_RSQ);
+                    SocketHelper.SendQXMessage(temp, ProtoIndexes.C_YABIAO_BUY_RSQ);
 					
                     break;
                 }

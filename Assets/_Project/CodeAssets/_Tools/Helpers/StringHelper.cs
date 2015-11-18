@@ -78,5 +78,40 @@ public class StringHelper {
 		return false;
 	}
 
+	/// <summary>
+	/// Get string before index by bytes.
+	/// </summary>
+	/// <param name="origStr">original string</param>
+	/// <param name="Index">get bytes before index</param>
+	/// <returns>cutted string</returns>
+	public static string GetSubStringWithByteIndex(string origStr, int Index){
+		if (string.IsNullOrEmpty(origStr) || Index < 0){
+			return null;
+		}
+
+		int bytesCount = System.Text.Encoding.GetEncoding("utf-8").GetByteCount(origStr);
+
+		if (bytesCount > Index){
+			int readyLength = 0;
+			for (int i = 0; i < origStr.Length; i++)
+			{
+				var byteLength = System.Text.Encoding.GetEncoding("utf-8").GetByteCount(new char[] { origStr[i] });
+				readyLength += byteLength;
+				if (readyLength == Index)
+				{
+					origStr = origStr.Substring(0, i + 1);
+					break;
+				}
+				else if (readyLength > Index)
+				{
+					origStr = origStr.Substring(0, i);
+					break;
+				}
+			}
+		}
+
+		return origStr;
+	}
+
 	#endregion
 }

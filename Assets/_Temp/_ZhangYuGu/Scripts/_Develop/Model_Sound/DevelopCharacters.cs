@@ -295,7 +295,7 @@ public class DevelopCharacters : MonoBehaviour {
 		}
 
 		{
-			UtilityTool.ClearColliders( m_cached_gb );
+			ComponentHelper.ClearColliders( m_cached_gb );
 		}
 
 		{
@@ -674,13 +674,13 @@ public class DevelopCharacters : MonoBehaviour {
 		#endif
 
 		{
-			UtilityTool.RemoveAllChildrenDeeply( m_gb_pos_weapon_Heavy );
+			GameObjectHelper.RemoveAllChildrenDeeply( m_gb_pos_weapon_Heavy );
 			
-			UtilityTool.RemoveAllChildrenDeeply( m_gb_pos_weapon_Light_left );
+			GameObjectHelper.RemoveAllChildrenDeeply( m_gb_pos_weapon_Light_left );
 			
-			UtilityTool.RemoveAllChildrenDeeply( m_gb_pos_weapon_Light_right );
+			GameObjectHelper.RemoveAllChildrenDeeply( m_gb_pos_weapon_Light_right );
 			
-			UtilityTool.RemoveAllChildrenDeeply( m_gb_pos_weapon_Ranged );
+			GameObjectHelper.RemoveAllChildrenDeeply( m_gb_pos_weapon_Ranged );
 		}
 	}
 

@@ -49,8 +49,9 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 
                         if (m_instance == null)
                         {
-                            var singleton = UtilityTool.GetDontDestroyOnLoadGameObject();
-                            m_instance = singleton.AddComponent<T>();
+                            var singleton = GameObjectHelper.GetDontDestroyOnLoadGameObject();
+                           
+							m_instance = singleton.AddComponent<T>();
 
                             //                    Debug.Log("[Singleton]Add singleton:" + typeof(T) + " in DontDestroyOnLoad.");
                         }

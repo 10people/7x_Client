@@ -116,7 +116,7 @@ public class KingDetailInfo : MYNGUIPanel
                 var controller = temp.GetComponent<KingDetailButtonController>();
 
                 controller.SetThis(configList[i]);
-                UtilityTool.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
             }
 
             m_Grid.Reposition();
@@ -181,7 +181,7 @@ public class KingDetailInfo : MYNGUIPanel
     {
         m_PlayerModel = Instantiate(p_object) as GameObject;
 
-        UtilityTool.ActiveWithStandardize(m_PlayerParent.transform, m_PlayerModel.transform);
+        TransformHelper.ActiveWithStandardize(m_PlayerParent.transform, m_PlayerModel.transform);
 
         m_PlayerModel.name = p_object.name;
 

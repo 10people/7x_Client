@@ -10,6 +10,7 @@ using ProtoBuf.Meta;
 public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
 {
     public List<UILabel> m_listLab = new List<UILabel>();
+
     public List<UIGrid> m_listGrid = new List<UIGrid>();
     public List<GameObject> m_listGameObject = new List<GameObject>();
     public List<EventHandler> m_listEvent = new List<EventHandler>();
@@ -17,9 +18,6 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
 
     public GameObject m_TeQuan;
     public GameObject m_ItemParent;
-    public UIFont titleFont;//标题字体
-    public UIFont btn1Font;//按钮1字体
-    public UIFont btn2Font;//按钮2字体
     public UIProgressBar m_ProgressBar;
     public UIScrollView m_SView;
     public GameObject m_NeedObject;
@@ -184,7 +182,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_MONTH_CARD_TAG_0) + "5" + LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_MONTH_CARD_TAG_1);
 
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, confirmStr, null, null, titleFont, btn1Font);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, confirmStr, null, null);
     }
     public void UIBoxLoadCallbackZero(ref WWW p_www, string p_path, Object p_object)
     {
@@ -195,7 +193,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOP_UP_FORBID);
 
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, confirmStr, null, null, titleFont, btn1Font);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, confirmStr, null, null);
     }
 
     public void UIBoxCallbackZero(ref WWW p_www, string p_path, Object p_object)
@@ -211,7 +209,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOP_UP_SUCCESS) + earnYuabao + NameIdTemplate.GetName_By_NameId(900002);
 
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, confirmStr, null, null, titleFont, btn1Font);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, confirmStr, null, null);
     }
     void EventTouch(GameObject obj)
     {
@@ -430,6 +428,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
    
     void OnDestroy()
     {
+        TopUpLoadManagerment.m_instance.m_isLoaded = false;
         SocketTool.UnRegisterMessageProcessor(this);
     }
 }

@@ -485,6 +485,8 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 					{
 					case (int)(CityGlobalData.MibaoSkillType.PveSend ):
 					{
+						PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
+
 						PveLevelUImaneger.GuanqiaReq.zuheId = skillZuHeId ;
 
 						PveLevelUImaneger.mPveLevelUImaneger.ShowMiBaoSkillIcon();
@@ -492,6 +494,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 						PveLevelUImaneger.mPveLevelUImaneger.IsChooseMiBao = true;
 
 						PveLevelUImaneger.mPveLevelUImaneger.ShowPVEGuid();
+
 
 						break;
 					}
@@ -512,9 +515,12 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 					}
 					case (int)(CityGlobalData.MibaoSkillType.HY_TreSend ):
 					{
+						HY_UIManager.Instance ().ShowOrClose ();
+
 						HYRetearceEnemy.Instance().M_Treas_info.zuheId =  skillZuHeId;
 
 					    HYRetearceEnemy.Instance().ShowMiBaoSkill();
+
 
 						break;
 					}
@@ -572,19 +578,21 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 					case (int)(CityGlobalData.MibaoSkillType.YX_JinBi) :
 					{
 						Debug.Log("(int)(CityGlobalData.MibaoSkillType.YX_JinBi) = "+(int)(CityGlobalData.MibaoSkillType.YX_JinBi));
-
+						EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
 						YouXiaEnemyUI.mYouXiaEnemyUI.m_You_XiaInfo.zuheId = skillZuHeId;
 						YouXiaEnemyUI.mYouXiaEnemyUI.ShowMiBaoSkillIcon();
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YX_Cailiao) :
 					{
+						EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
 						YouXiaEnemyUI.mYouXiaEnemyUI.m_You_XiaInfo.zuheId = skillZuHeId;
 						YouXiaEnemyUI.mYouXiaEnemyUI.ShowMiBaoSkillIcon();
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YX_Jingpo) :
 					{
+						EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
 						YouXiaEnemyUI.mYouXiaEnemyUI.m_You_XiaInfo.zuheId = skillZuHeId;
 						YouXiaEnemyUI.mYouXiaEnemyUI.ShowMiBaoSkillIcon();
 						break;
@@ -663,10 +671,66 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		}
 		else
 		{
+			switch (SkillType) 
+			{
+			case (int)(CityGlobalData.MibaoSkillType.PVP_Fangshou ):
+			{
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.YaBiao_Fangshou ):
+			{
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.PvpSend ):
+			{
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.LueDuo_GongJi ):
+			{
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou ):
+			{
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.PveSend ):
+			{
+				PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
+				
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.HY_TreSend ):
+			{
+				HY_UIManager.Instance ().ShowOrClose ();
+				
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.YX_JinBi ):
+			{
+				EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+				EnterYouXiaBattle.GlobleEnterYouXiaBattle.ThirdShowOrClose();
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.YX_Cailiao ):
+			{
+				EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+				EnterYouXiaBattle.GlobleEnterYouXiaBattle.ThirdShowOrClose();
+				break;
+			}
+			case (int)(CityGlobalData.MibaoSkillType.YX_Jingpo ):
+			{
+				EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+				EnterYouXiaBattle.GlobleEnterYouXiaBattle.ThirdShowOrClose();
+				break;
+			}	
+			default:
+				break;
+			}
 			if(RootName != null)
 			{
-				MainCityUI.TryRemoveFromObjectList (GameObject.Find(RootName));
-				Destroy (GameObject.Find(RootName));
+				GameObject myobg = GameObject.Find(RootName);
+				MainCityUI.TryRemoveFromObjectList (myobg);
+				Destroy (myobg);
 			}
 		}
 
@@ -712,6 +776,30 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		{
 			PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
 
+			break;
+		}
+		case (int)(CityGlobalData.MibaoSkillType.HY_TreSend ):
+		{
+			HY_UIManager.Instance ().ShowOrClose ();
+			
+			break;
+		}
+		case (int)(CityGlobalData.MibaoSkillType.YX_JinBi ):
+		{
+			EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+			
+			break;
+		}
+		case (int)(CityGlobalData.MibaoSkillType.YX_Cailiao ):
+		{
+			EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+			
+			break;
+		}
+		case (int)(CityGlobalData.MibaoSkillType.YX_Jingpo ):
+		{
+			EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+			
 			break;
 		}
 		default:

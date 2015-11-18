@@ -33,7 +33,7 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
         m_HouseSecretCardShower = tempObject.GetComponent<HouseSecretCardShower>();
         m_HouseSecretCardShower.m_House = this;
 
-        UtilityTool.ActiveWithStandardize(transform, m_HouseSecretCardShower.transform);
+        TransformHelper.ActiveWithStandardize(transform, m_HouseSecretCardShower.transform);
 
         ShowTreasure();
     }
@@ -57,7 +57,7 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
         m_HouseWeaponShower = tempObject.GetComponent<HouseWeaponShower>();
         m_HouseWeaponShower.m_House = this;
 
-        UtilityTool.ActiveWithStandardize(transform, m_HouseWeaponShower.transform);
+        TransformHelper.ActiveWithStandardize(transform, m_HouseWeaponShower.transform);
 
         ShowWeapon();
     }
@@ -83,7 +83,7 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
         m_OldBookWindow.IsSelfHouse = true;
         m_OldBookWindow.m_House = this;
 
-        UtilityTool.ActiveWithStandardize(transform, m_OldBookWindow.transform);
+        TransformHelper.ActiveWithStandardize(transform, m_OldBookWindow.transform);
 
         OnBookClick();
     }
@@ -96,7 +96,7 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
         EnterOrExitHouse temp = new EnterOrExitHouse();
         temp.houseId = m_HouseSimpleInfo.jzId;
         temp.code = 10;
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_EnterOrExitHouse);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_EnterOrExitHouse);
 
         //Send character sync message to server.
         EnterScene tempEnterScene = new EnterScene
@@ -107,7 +107,7 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
             posY = 0,
             posZ = 0
         };
-        UtilityTool.SendQXMessage(tempEnterScene, ProtoIndexes.Enter_HouseScene);
+        SocketHelper.SendQXMessage(tempEnterScene, ProtoIndexes.Enter_HouseScene);
 
         SceneManager.EnterHouse();
     }
@@ -128,13 +128,13 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
 				EnterOrExitHouse temp = new EnterOrExitHouse ();
 				temp.houseId = m_HouseSimpleInfo.jzId;
 				temp.code = 20;
-				UtilityTool.SendQXMessage (temp, ProtoIndexes.C_EnterOrExitHouse);
+				SocketHelper.SendQXMessage (temp, ProtoIndexes.C_EnterOrExitHouse);
 
                 //ExitScene tempExitScene = new ExitScene
                 //{
                 //    uid = HousePlayerController.s_uid,
                 //};
-                //UtilityTool.SendQXMessage(tempExitScene, ProtoIndexes.Exit_HouseScene);
+                //SocketHelper.SendQXMessage(tempExitScene, ProtoIndexes.Exit_HouseScene);
 
 				SceneManager.EnterAllianceCity ();
 		}
@@ -203,7 +203,7 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
         temp.code = 20;
         temp.houseId = m_HouseSimpleInfo.jzId;
         temp.visitorId = playerInfo.jzId;
-        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_SHOT_OFF_HOUSE_VISITOR);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_SHOT_OFF_HOUSE_VISITOR);
 
         m_BigHouseSelfOperation.m_playerInfoList.Remove(playerInfo);
         m_BigHouseSelfOperation.RefreshVisitorsGrid();
@@ -216,7 +216,7 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
             return;
         }
 
-        UtilityTool.SendQXMessage(ProtoIndexes.C_GET_BIGHOUSE_EXP);
+        SocketHelper.SendQXMessage(ProtoIndexes.C_GET_BIGHOUSE_EXP);
     }
 
     public bool OnSocketEvent(QXBuffer p_message)

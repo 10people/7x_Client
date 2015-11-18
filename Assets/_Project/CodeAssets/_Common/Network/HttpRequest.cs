@@ -2,121 +2,11 @@
 
 //#define DEBUG_HTTP_PARAMS
 
-
-#define CLOSE_CE_SHI_SERVER
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class HttpRequest : MonoBehaviour{
-
-	#region Consts
-
-	// NeiWang Develop server
-	private const string SERVER_NEIWANG_PREFIX		= "http://192.168.3.80:8090/";
-
-	// TiYan Public server
-	private const string SERVER_TIYAN_PREFIX		= "http://203.195.230.100:9090/";
-
-
-	#if CLOSE_CE_SHI_SERVER
-
-	// Now is the same as NeiWang
-	private const string SERVER_CESHI_PREFIX		= "http://192.168.3.80:8090/";
-	#else
-	// Ceshi develop test server
-	private const string SERVER_CESHI_PREFIX		= "http://203.195.230.100:9091/";
-	#endif
-
-
-	/// Update Server
-	public const string UPDATE_URL_NEIWANG			= "http://192.168.3.80:8070/wsRes/compare.jsp";
-
-	public const string UPDATE_URL_TIYAN			= "http://203.195.230.100:9090/wsRes/compare.jsp";
-
-	public const string UPDATE_URL_CESHI			= "http://203.195.230.100:8010/wsRes/compare.jsp";
-
-		
-	// develop register
-	public const string REGISTER_URL				= "qxrouter/accountReg.jsp";
-
-	// develop login
-	public const string LOGIN_URL					= "qxrouter/accountLogin.jsp";
-
-	// verify 3rd platform login 
-	public const string THIRD_PLATFORM_LOGIN_URL	= "qxrouter/channel/checkLogin.jsp";
-
-	// report unsupported device to server
-	public const string REPORT_UNSUPPORT_DEVICE_URL			= "qxrouter/client/clientTooLow.jsp";
-
-	/// 公告
-	public const string NOTICE_URL 					= "qxrouter/sysNotice.jsp";	
-
-
-
-	// report client info to server
-	public const string OPERATION_SUPPORT_REPORT_ACTION_URL = "qxrouter/client/reportAction.jsp";
-
-
-	#endregion
-
-
-
-	#region Server Developer
-
-	public const string SERVER_HUGE_PREFIX		= "http://192.168.0.176:8080/";
-
-	#endregion
-
-
-
-	#region Get Common Urls
-
-	public static string GetPrefix(){
-		string t_prefix = "";
-		
-		if( ConfigTool.GetServerType() == ConfigTool.ServerType.NeiWang ){
-			t_prefix = SERVER_NEIWANG_PREFIX;
-		}
-		else if( ConfigTool.GetServerType() == ConfigTool.ServerType.TiYan ){
-			t_prefix = SERVER_TIYAN_PREFIX;
-		}
-		else if( ConfigTool.GetServerType() == ConfigTool.ServerType.CeShi ){
-			t_prefix = SERVER_CESHI_PREFIX;
-		}
-		else{
-			Debug.LogError( "Error, Not Existed Server Type." );
-		}
-		
-		return t_prefix;
-	}
-
-	public static string GetTiYanPrefix(){
-		return SERVER_TIYAN_PREFIX;
-	}
-
-	public static string GetCeShiPrefix(){
-		return SERVER_CESHI_PREFIX;
-	}
-
-	public static string GetNeiWangPrefix(){
-		return SERVER_NEIWANG_PREFIX;
-	}
-
-	private static string m_cur_update_server_url = "";
-
-	public static void SetUpdateUrl( string p_url ){
-		m_cur_update_server_url = p_url;
-	}
-
-	public static string GetUpdateUrl(){
-		return m_cur_update_server_url;
-	}
-
-	#endregion
-
-
 
 	#region HttpRequest
 
@@ -126,7 +16,7 @@ public class HttpRequest : MonoBehaviour{
 
     public static HttpRequest Instance(){
 		if( m_request == null ){
-			GameObject t_gameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
+			GameObject t_gameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
 			m_request = t_gameObject.AddComponent<HttpRequest>();
         }

@@ -429,7 +429,7 @@ namespace AllianceBattle
         private void OnReturnToMainCity()
         {
             ExitScene temp = new ExitScene { uid = 0 };
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.EXIT_FIGHT_SCENE);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.EXIT_FIGHT_SCENE);
 
             //GoToReturn.
             if (AllianceData.Instance.IsAllianceNotExist)
@@ -682,7 +682,7 @@ namespace AllianceBattle
         void Start()
         {
             SetLeftTopUI();
-            UtilityTool.SendQXMessage(ProtoIndexes.ALLIANCE_BATTLE_FIELD_REQ);
+            SocketHelper.SendQXMessage(ProtoIndexes.ALLIANCE_BATTLE_FIELD_REQ);
 
             InitOccupyBar();
         }

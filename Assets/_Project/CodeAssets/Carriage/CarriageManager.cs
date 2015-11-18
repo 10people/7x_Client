@@ -100,7 +100,7 @@ namespace Carriage
         private void ExecuteACarriage(YabiaoJunZhuInfo l_yabiaoJunZhuInfo, Object loadedObject)
         {
             var tempObject = Instantiate(loadedObject) as GameObject;
-            UtilityTool.ActiveWithStandardize(m_carriageParent.transform, tempObject.transform);
+            TransformHelper.ActiveWithStandardize(m_carriageParent.transform, tempObject.transform);
             tempObject.transform.localPosition = m_RootManager.m_SpotPointManager.m_SpotPointLineVecs[l_yabiaoJunZhuInfo.pathId - 1][0];
 
             CarriageController tempController = tempObject.GetComponent<CarriageController>() ??

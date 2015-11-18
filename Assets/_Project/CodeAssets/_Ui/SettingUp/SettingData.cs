@@ -19,7 +19,7 @@ public class SettingData : MonoBehaviour, SocketProcessor
     {
         if (m_SettingData == null)
         {
-			GameObject t_GameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
+			GameObject t_GameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
             m_SettingData = t_GameObject.AddComponent<SettingData>();
         }

@@ -191,7 +191,7 @@ public class Bundle_Loader : MonoBehaviour {
 	 */
 	public static Bundle_Loader Instance(){
 		if( m_instance == null ){
-			GameObject t_gb = UtilityTool.GetDontDestroyOnLoadGameObject();
+			GameObject t_gb = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 			
 			m_instance = t_gb.AddComponent<Bundle_Loader>();
 		}

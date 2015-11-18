@@ -108,17 +108,17 @@ namespace AllianceBattle
             HoldPointList.ForEach(item =>
             {
                 var temp = new GameObject("HoldPoint");
-                UtilityTool.ActiveWithStandardize(transform, temp.transform);
+                TransformHelper.ActiveWithStandardize(transform, temp.transform);
                 temp.transform.position = item.OccupyPosition;
                 item.OccupyObject = temp;
 
                 //Add temp hold point mesh.
                 var temp3 = Instantiate(m_TempHoldPointMesh);
-                UtilityTool.ActiveWithStandardize(transform, temp3.transform);
+                TransformHelper.ActiveWithStandardize(transform, temp3.transform);
                 temp3.transform.position = item.OccupyPosition;
 
                 var temp2 = Instantiate(m_OccupyPointGizmosPrefab);
-                UtilityTool.ActiveWithStandardize(m_OccupyPointGizmosPrefab.transform.parent, temp2.transform);
+                TransformHelper.ActiveWithStandardize(m_OccupyPointGizmosPrefab.transform.parent, temp2.transform);
                 temp2.transform.localPosition = m_RootManager.m_AllianceBattleUi.SmallMapPositionTransfer(item.OccupyPosition);
                 temp2.SetActive(true);
                 item.m_OccupyGizmosSprite = temp2.GetComponent<UISprite>();

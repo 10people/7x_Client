@@ -194,8 +194,8 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			{
 //				Debug.Log ("PvpnRes:" + ProtoIndexes.BAIZHAN_INFO_RESP);
 
-				object objectValue = new BaiZhanInfoResp ();
-				BaiZhanInfoResp pvpInfo = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as BaiZhanInfoResp;
+				BaiZhanInfoResp pvpInfo = new BaiZhanInfoResp ();
+				pvpInfo = QXComData.ReceiveQxProtoMessage (p_message,pvpInfo) as BaiZhanInfoResp;
 				
 				if (pvpInfo != null)
 				{
@@ -230,8 +230,8 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			{
 //				Debug.Log ("ConfirmResp:" + ProtoIndexes.CONFIRM_EXECUTE_RESP);
 
-				object objectValue = new ConfirmExecuteResp ();
-				ConfirmExecuteResp confirm = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as ConfirmExecuteResp;
+				ConfirmExecuteResp confirm = new ConfirmExecuteResp ();
+				confirm = QXComData.ReceiveQxProtoMessage (p_message,confirm) as ConfirmExecuteResp;
 
 				if (confirm != null)
 				{
@@ -435,8 +435,8 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			{
 				Debug.Log ("PvpRecordResp:" + ProtoIndexes.ZhanDou_Notes_Resq);
 				
-				object objectValue = new ZhandouRecordResp ();
-				ZhandouRecordResp pvpRecord = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as ZhandouRecordResp;
+				ZhandouRecordResp pvpRecord = new ZhandouRecordResp ();
+				pvpRecord = QXComData.ReceiveQxProtoMessage (p_message,pvpRecord) as ZhandouRecordResp;
 
 				if (pvpRecord != null)
 				{
@@ -453,8 +453,8 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			{
 //				Debug.Log ("PlayerStateCheck:" + ProtoIndexes.PLAYER_STATE_RESP);
 
-				object objectValue = new PlayerStateResp ();
-				PlayerStateResp stateRes = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as PlayerStateResp;
+				PlayerStateResp stateRes = new PlayerStateResp ();
+				stateRes = QXComData.ReceiveQxProtoMessage (p_message,stateRes) as PlayerStateResp;
 
 				if (stateRes != null)
 				{
@@ -575,8 +575,8 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			{
 //				Debug.Log ("ChallengeResp:" + ProtoIndexes.CHALLENGE_RESP);
 
-				object objectValue = new ChallengeResp ();
-				ChallengeResp challenge = QXComData.ReceiveQxProtoMessage (p_message,objectValue) as ChallengeResp;
+				ChallengeResp challenge = new ChallengeResp ();
+				challenge = QXComData.ReceiveQxProtoMessage (p_message,challenge) as ChallengeResp;
 
 				if (challenge != null)
 				{

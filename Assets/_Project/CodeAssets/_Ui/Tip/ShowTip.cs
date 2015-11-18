@@ -48,7 +48,7 @@ public class ShowTip : ScriptableObject
 
 	public static void showTip(int commonItemId)
 	{
-		Debug.Log ("Show Tips With Id " + commonItemId);
+//		Debug.Log ("Show Tips With Id " + commonItemId);
 
 		bool flag = CommonItemTemplate.haveCommonItemTemplateById (commonItemId);
 

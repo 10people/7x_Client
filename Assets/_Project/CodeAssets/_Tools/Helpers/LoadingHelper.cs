@@ -207,18 +207,18 @@ public class LoadingHelper{
 				t_active_bloom = false;
 			}
 			else if( IsLoadingCreateRole() ){
-				t_active_light = !QualityTool.Instance.BattleField_ShowSimpleShadow();
+				t_active_light = !Quality_Shadow.BattleField_ShowSimpleShadow();
 				
 				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
 			}
 			else if( IsLoadingBattleField() ){
-				t_active_light = !QualityTool.Instance.BattleField_ShowSimpleShadow();
+				t_active_light = !Quality_Shadow.BattleField_ShowSimpleShadow();
 				
 				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
 			}
 			else if (IsLoadingMainCity() || IsLoadingMainCityYeWan() || IsLoadingAllianceCity() || IsLoadingAllianceTenentsCity() || IsLoadingHouse() || IsLoadingAllianceCityYeWan() || IsInAllianceTenentsCityYeWanScene() || IsLoadingCarriage()||IsLoadingAllianceBattle())
 			{
-				t_active_light = !QualityTool.Instance.InCity_ShowSimpleShadow();
+				t_active_light = !Quality_Shadow.InCity_ShowSimpleShadow();
 				
 				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
 			}
@@ -231,11 +231,11 @@ public class LoadingHelper{
 			}
 			
 			{
-				QualityTool.ConfigLights( t_active_light );
+				Quality_Shadow.ConfigLights( t_active_light );
 			}
 			
 			{
-				QualityTool.ConfigBloom( t_active_bloom );
+				Quality_Common.ConfigBloom( t_active_bloom );
 			}
 		}
 	}

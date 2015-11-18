@@ -6,11 +6,13 @@ public class TopUpLoadManagerment : MonoBehaviour
     public static TopUpLoadManagerment m_instance;
     private bool isNeed = false;
     private bool isSpecial = false;
+
+    public bool m_isLoaded = false;
     public static TopUpLoadManagerment Instance()
     {
         if (m_instance == null)
         {
-            GameObject t_gameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
+            GameObject t_gameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
             m_instance = t_gameObject.AddComponent<TopUpLoadManagerment>();
         }
@@ -27,10 +29,11 @@ public class TopUpLoadManagerment : MonoBehaviour
         }
 
       isNeed = ison;
-      //if (GameObject.Find("TopUpLayer(Clone)") == null)
-      //{
-      //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TOPUP_MAIN_LAYER), RB_LR_75_LoadCallback);
-      //}
+        if (!m_isLoaded)
+        {
+            m_isLoaded = true;
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TOPUP_MAIN_LAYER), RB_LR_75_LoadCallback);
+        }
     }
     public void LoadPrefabSpecial(bool ison,bool special)//是否需要特殊处理
     {
@@ -41,10 +44,11 @@ public class TopUpLoadManagerment : MonoBehaviour
 
         isNeed = ison;
         isSpecial = special;
-        //if (GameObject.Find("TopUpLayer(Clone)") == null)
-        //{
-        //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TOPUP_MAIN_LAYER), RB_LR_75_LoadCallback);
-        //}
+        if (!m_isLoaded)
+        {
+            m_isLoaded = true;
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TOPUP_MAIN_LAYER), RB_LR_75_LoadCallback);
+        }
     }
 
     void RB_LR_75_LoadCallback(ref WWW p_www, string p_path, Object p_object)

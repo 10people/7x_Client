@@ -76,13 +76,13 @@ public class HouseModelController : MonoBehaviour, SocketListener
                 {
                     ownerid = m_House.m_HouseSimpleInfo.jzId
                 };
-                UtilityTool.SendQXMessage(temp, ProtoIndexes.C_GET_OTHER_WEAPON);
+                SocketHelper.SendQXMessage(temp, ProtoIndexes.C_GET_OTHER_WEAPON);
 
                 MibaoInfoOtherReq temp2 = new MibaoInfoOtherReq
                 {
                     ownerId = m_House.m_HouseSimpleInfo.jzId
                 };
-                UtilityTool.SendQXMessage(temp2, ProtoIndexes.C_MIBAO_INFO_OTHER_REQ);
+                SocketHelper.SendQXMessage(temp2, ProtoIndexes.C_MIBAO_INFO_OTHER_REQ);
             }
         }
     }

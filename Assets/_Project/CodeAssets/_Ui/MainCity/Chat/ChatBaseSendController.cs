@@ -47,7 +47,7 @@ public class ChatBaseSendController : MonoBehaviour
 
     public void SendMessageWithChatPct(ChatPct chatPct)
     {
-        UtilityTool.SendQXMessage(chatPct, ProtoIndexes.C_Send_Chat);
+        SocketHelper.SendQXMessage(chatPct, ProtoIndexes.C_Send_Chat);
 
         NotInSendMessageCD = false;
 

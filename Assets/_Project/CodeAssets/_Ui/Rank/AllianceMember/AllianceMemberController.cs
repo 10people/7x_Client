@@ -47,7 +47,7 @@ namespace Rank
                 {
                     var temp = Instantiate(m_Prefab) as GameObject;
                     var controller = temp.GetComponent<AllianceMemberDetailController>();
-                    UtilityTool.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                    TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
 
                     controller.m_JunZhuInfo = m_AlliancePlayerResp.player[i];
                     controller.SetThis();

@@ -64,7 +64,7 @@ namespace Rank
 
             FloatButtonsController.Initialize(tempList, true);
 
-            UtilityTool.ActiveWithStandardize(FloatButtonsRoot.transform, tempObject.transform);
+            TransformHelper.ActiveWithStandardize(FloatButtonsRoot.transform, tempObject.transform);
 
             StartCoroutine(AdjustFloatButton());
         }
@@ -74,7 +74,7 @@ namespace Rank
             m_ModuleController.m_RootController.SelectedAllianceName = m_AllianceInfo.mengName;
 
             AlliancePlayerReq temp = new AlliancePlayerReq() { mengId = m_AllianceInfo.mengId };
-            UtilityTool.SendQXMessage(temp, ProtoIndexes.RANKING_ALLIANCE_MEMBER_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_ALLIANCE_MEMBER_REQ);
         }
 
         public override void AddFriend()

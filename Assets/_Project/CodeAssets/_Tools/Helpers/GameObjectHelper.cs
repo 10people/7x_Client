@@ -15,7 +15,7 @@ public class GameObjectHelper {
 		Debug.Log( "RegisterGlobalComponents()" );
 		#endif
 
-		GameObject t_dont_destroy = UtilityTool.GetDontDestroyOnLoadGameObject();
+		GameObject t_dont_destroy = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
 		ComponentHelper.AddIfNotExist( t_dont_destroy, typeof(UtilityTool) );
 
@@ -28,6 +28,101 @@ public class GameObjectHelper {
 
 
 
+	#region Dont Destroy On Load
+	
+	public static GameObject m_dont_destroy_on_load_gb = null;
+
+	private static GameObject m_temp_gbs_root_gb = null;
+	
+	private static string CONST_DONT_DESTROY_ON_LOAD_GAME_OBJECT_NAME = "_Dont_Destroy_On_Load";
+	
+	private static string CONST_TEMP_GAMEOBJECTS_ROOT_GAME_OBJECT_NAME = "_Temps_GB_Root";
+
+	public static string GetDontDestroyGameObjectName(){
+		return CONST_DONT_DESTROY_ON_LOAD_GAME_OBJECT_NAME;
+	}
+	
+	public static GameObject GetDontDestroyOnLoadGameObject(){
+		if ( m_dont_destroy_on_load_gb == null ){
+			m_dont_destroy_on_load_gb = new GameObject();
+			
+			m_dont_destroy_on_load_gb.name = CONST_DONT_DESTROY_ON_LOAD_GAME_OBJECT_NAME;
+
+			GameObject.DontDestroyOnLoad( m_dont_destroy_on_load_gb );
+		}
+		
+		return m_dont_destroy_on_load_gb;
+	}
+	
+	public static GameObject GetTempGameObjectsRootGameObject(){
+		if( m_temp_gbs_root_gb == null ){
+			m_temp_gbs_root_gb = new GameObject();
+			
+			m_temp_gbs_root_gb.name = CONST_TEMP_GAMEOBJECTS_ROOT_GAME_OBJECT_NAME;
+			
+			GameObject.DontDestroyOnLoad(m_temp_gbs_root_gb);
+		}
+		
+		return m_temp_gbs_root_gb;
+	}
+	
+	public static void ClearDontDestroyGameObject()
+	{
+		//		Debug.Log( "UtilityTool.ClearDontDestroyGameObject()" );
+		
+		if (m_dont_destroy_on_load_gb != null)
+		{
+			
+			MonoBehaviour[] t_items = m_dont_destroy_on_load_gb.GetComponents<MonoBehaviour>();
+			
+			for (int i = 0; i < t_items.Length; i++)
+			{
+				if (t_items[i].GetType() == typeof(UtilityTool))
+				{
+					//					Debug.Log( "Skip UtilityTool." );
+					
+					continue;
+				}
+				
+				if (t_items[i].GetType() == typeof(ConfigTool))
+				{
+					//					Debug.Log( "Skip ConfigTool." );
+					
+					continue;
+				}
+				
+				if (t_items[i].GetType() == typeof(Bundle_Loader))
+				{
+					//					Debug.Log( "Skip Bundle_Loader." );
+					
+					//					Bundle_Loader.CleanData();
+					
+					continue;
+				}
+				
+				if (t_items[i].GetType() == typeof(ThirdPlatform))
+				{
+					continue;
+				}
+				
+				
+				t_items[i].enabled = false;
+
+				GameObject.Destroy( t_items[i] );
+			}
+			
+			//			m_dont_destroy_on_load_gb.SetActive( false );
+			//
+			//			Destroy( m_dont_destroy_on_load_gb );
+			//
+			//			m_dont_destroy_on_load_gb = null;
+		}
+	}
+	
+	#endregion
+	
+	
+	
 	#region Hierarchy
 
 	public static void LogGameObjectHierarchy( GameObject p_gb, string p_prefex = "" ){
@@ -141,5 +236,96 @@ public class GameObjectHelper {
 		}
 	}
 
+	#endregion
+
+	
+	
+	#region GameObject
+
+	/// instantiate p_prefab and add it to p_parent's child.
+	/// 
+	/// Notes:
+	/// 1.will also change it's layer to p_parent's.
+	public static GameObject AddChild( GameObject p_parent, GameObject p_prefab ){
+		GameObject t_gb = (GameObject)GameObject.Instantiate(p_prefab);
+		
+		if (t_gb != null && p_parent != null)
+		{
+			Transform t = t_gb.transform;
+			
+			t.parent = p_parent.transform;
+			
+			t.localPosition = Vector3.zero;
+			
+			t.localRotation = Quaternion.identity;
+			
+			t.localScale = Vector3.one;
+			
+			t_gb.layer = p_parent.layer;
+		}
+		
+		return t_gb;
+	}
+
+	public static void RemoveAllChildrenDeeply( GameObject p_gb, bool p_remove_self = false ){
+		if ( p_gb == null ){
+			Debug.LogWarning("Error in RemoveAllChildrenDeeply, p_gb = null.");
+			
+			return;
+		}
+		
+		int t_child_count = p_gb.transform.childCount;
+		
+		{
+			for ( int i = 0; i < t_child_count; i++ ){
+				Transform t_child = p_gb.transform.GetChild(i);
+				
+				RemoveAllChildrenDeeply(t_child.gameObject, true);
+			}
+			
+			if (p_remove_self){
+				p_gb.SetActive(false);
+
+				GameObject.Destroy( p_gb );
+			}
+		}
+	}
+	
+	#endregion
+
+
+	
+	#region Layer
+	
+	public static void SetGameObjectLayer(GameObject p_target_layer_gb, GameObject p_gameobject)
+	{
+		if( p_gameobject == null ){
+			Debug.LogError( "p_gameobject = null." );
+			
+			return;
+		}
+		
+		if(p_target_layer_gb == null ){
+			Debug.LogError( "p_target_layer_gb = null." );
+			
+			return;
+		}
+		
+		int t_child_count = p_gameobject.transform.childCount;
+		
+		{
+			for (int i = 0; i < t_child_count; i++)
+			{
+				Transform t_child = p_gameobject.transform.GetChild(i);
+				
+				t_child.gameObject.layer = p_target_layer_gb.layer;
+				
+				SetGameObjectLayer(p_target_layer_gb, t_child.gameObject);
+			}
+			
+			p_gameobject.layer = p_target_layer_gb.layer;
+		}
+	}
+	
 	#endregion
 }

@@ -226,7 +226,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 					NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mItemTemp.nameId);
 					string mdesc = DescIdTemplate.GetDescriptionById(mAwardTemp[i].itemId);
 
-				    iconSampleManager.SetIconByID(mItemTemp.id, "", 15);
+				    iconSampleManager.SetIconByID(mItemTemp.id, "", 7);
                     iconSampleManager.SetIconPopText(mAwardTemp[i].itemId, mNameIdTemplate.Name, mdesc);
 				}
 			}
@@ -497,7 +497,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 			}
 
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-            iconSampleManager.SetIconBasic(15, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
+            iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
 			//iconSampleManager.SetIconPopText(popTextTitle, popTextDesc);
 			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
@@ -580,7 +580,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
             }
 
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-            iconSampleManager.SetIconBasic(15, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
+            iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
 			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
 		}
@@ -657,7 +657,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
             }
 
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-            iconSampleManager.SetIconBasic(15, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
+            iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
 			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
 		}
@@ -754,6 +754,8 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		mMy_DamageRank.mRankList = m_MaxDamageRank;
 
 		mMy_DamageRank.Init ();
+
+		HY_UIManager.Instance ().ShowOrClose ();
 	}
 
 	IEnumerator CountTime()
@@ -798,7 +800,8 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 //		Debug.Log(Treas_info.timesOfDay);
 
 
-			Debug.Log(Treas_info.status);
+//			Debug.Log(Treas_info.status);
+
 			if(Treas_info.status == 1 ) //有人在挑战中
 			{
 				ShowPlayerDoingTiaoZhan.SetActive(true);
@@ -813,7 +816,9 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 				ShowPlayerDoingTiaoZhan.SetActive(false);
 
 				m_objInBattle.SetActive(true);
-				Debug.Log(m_isEnterBattle);
+
+//				Debug.Log(m_isEnterBattle);
+
 				if(m_isEnterBattle)
 				{
 //					Debug.Log("asdasd");
@@ -875,7 +880,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		mChangeMiBaoSkill.GetRootName (this.gameObject.name);
 		
 		mChangeMiBaoSkill.Init(3, M_Treas_info.zuheId);
-
+		HY_UIManager.Instance ().ShowOrClose ();
 	}
 	void HavNoTime(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -1055,6 +1060,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 	public void Backbtn()
 	{
 		CityGlobalData.IsOPenHyLeveUI = false;
+
 		Destroy (this.gameObject);
 	}
 

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Action Id="101" TypeKey="1" Param1="100" Param2="0" Param3="0" Param4="0" Param5="0" TSR="0" TTR="0" CeOnHit="0" Prob="1000" />
+</dataset>

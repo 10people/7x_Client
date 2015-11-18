@@ -309,7 +309,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			#if FX_ART_USE && UNITY_EDITOR
 			SetGameObjectLayer( GetTopRoot( p_ui_type ), t_gb );
 			#else
-			UtilityTool.SetGameObjectLayer( GetTopRoot( p_ui_type ), t_gb );
+			GameObjectHelper.SetGameObjectLayer( GetTopRoot( p_ui_type ), t_gb );
 			#endif
 
 			#if DEBUG_UI_EFFECT
@@ -364,7 +364,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			#if FX_ART_USE && UNITY_EDITOR
 			SetGameObjectLayer( GetBotRoot( p_ui_type ), t_gb );
 			#else
-			UtilityTool.SetGameObjectLayer( GetBotRoot( p_ui_type ), t_gb );
+			GameObjectHelper.SetGameObjectLayer( GetBotRoot( p_ui_type ), t_gb );
 			#endif
 
 			#if DEBUG_UI_EFFECT
@@ -448,7 +448,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			return;
 		}
 		
-		GameObject t_obj = UtilityTool.AddChild( GetNGUIRoot( p_ui_type ), p_overlay_ngui_gb );
+		GameObject t_obj = GameObjectHelper.AddChild( GetNGUIRoot( p_ui_type ), p_overlay_ngui_gb );
 
 		{
 			ClearShadow( t_obj );
@@ -470,7 +470,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			#if FX_ART_USE && UNITY_EDITOR
 			SetGameObjectLayer( GetMidRoot( p_ui_type ), t_gb );
 			#else
-			UtilityTool.SetGameObjectLayer( GetMidRoot( p_ui_type ), t_gb );
+			GameObjectHelper.SetGameObjectLayer( GetMidRoot( p_ui_type ), t_gb );
 			#endif
 
 			#if DEBUG_UI_EFFECT
@@ -500,7 +500,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			return;
 		}
 
-		GameObject t_obj = UtilityTool.AddChild( GetNGUIRoot( p_ui_type ), p_overlay_ngui_gb );
+		GameObject t_obj = GameObjectHelper.AddChild( GetNGUIRoot( p_ui_type ), p_overlay_ngui_gb );
 
 		{
 			ClearShadow( t_obj );
@@ -523,11 +523,11 @@ public class UI3DEffectTool : MonoBehaviour {
 	}
 
 	private void ClearShadow( GameObject p_gb ){
-		UtilityTool.DisableColliders( p_gb );
+		ComponentHelper.DisableColliders( p_gb );
 		
-		UtilityTool.StopITweens( p_gb );
+		ComponentHelper.StopITweens( p_gb );
 		
-		UtilityTool.ClearMonosWithoutNGUI( p_gb );
+		ComponentHelper.ClearMonosWithoutNGUI( p_gb );
 	}
 	
 	#endregion
@@ -826,7 +826,7 @@ public class UI3DEffectTool : MonoBehaviour {
 		public FxWatcher( GameObject p_target_ngui_gb ){
 			m_target_ngui_gb = p_target_ngui_gb;
 
-			m_target_ngui_ui_root_gb = UtilityTool.GetUIRoot( m_target_ngui_gb );
+			m_target_ngui_ui_root_gb = NGUIHelper.GetUIRoot( m_target_ngui_gb );
 
 			UpdateCachedTransform();
 		}

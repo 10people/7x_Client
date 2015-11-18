@@ -124,7 +124,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 
 		// 1st & 2nd test in third platform
 		{
-			GameObject t_gb = UtilityTool.GetDontDestroyOnLoadGameObject();
+			GameObject t_gb = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
 			ThirdPlatform t_3rd = t_gb.GetComponent<ThirdPlatform>();
 
@@ -275,18 +275,18 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 	}
 
 	private void SetDefaultServer(){
-		ConfigTool.ServerType t_server_type = SelectUrl.GetServerType();
+		NetworkHelper.ServerType t_server_type = SelectUrl.GetServerType();
 
 		switch( t_server_type ){
-		case ConfigTool.ServerType.CeShi:
+		case NetworkHelper.ServerType.CeShi:
 			m_pop_update_server.value = "测试服";
 			break;
 
-		case ConfigTool.ServerType.NeiWang:
+		case NetworkHelper.ServerType.NeiWang:
 			m_pop_update_server.value = "内网服";
 			break;
 
-		case ConfigTool.ServerType.TiYan:
+		case NetworkHelper.ServerType.TiYan:
 			m_pop_update_server.value = "体验服";
 			break;
 		}
@@ -297,19 +297,19 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 	}
 
 	private void SetTiYanServer(){
-		HttpRequest.SetUpdateUrl( HttpRequest.UPDATE_URL_TIYAN );
+		NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_TIYAN );
 		
-		ConfigTool.SetServerType( ConfigTool.ServerType.TiYan );
+		NetworkHelper.SetServerType( NetworkHelper.ServerType.TiYan );
 		
-		SelectUrl.SetUrlServeType( ConfigTool.ServerType.TiYan );
+		SelectUrl.SetUrlServeType( NetworkHelper.ServerType.TiYan );
 	}
 
 	private void SetCeshiServer(){
-		HttpRequest.SetUpdateUrl( HttpRequest.UPDATE_URL_CESHI );
+		NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_CESHI );
 		
-		ConfigTool.SetServerType( ConfigTool.ServerType.CeShi );
+		NetworkHelper.SetServerType( NetworkHelper.ServerType.CeShi );
 		
-		SelectUrl.SetUrlServeType( ConfigTool.ServerType.CeShi );
+		SelectUrl.SetUrlServeType( NetworkHelper.ServerType.CeShi );
 	}
 
 	public void OnPopupListChange(){
@@ -319,11 +319,11 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 
 		switch( m_pop_update_server.value ){
 		case "测试服":
-			HttpRequest.SetUpdateUrl( HttpRequest.UPDATE_URL_CESHI );
+			NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_CESHI );
 
-			ConfigTool.SetServerType( ConfigTool.ServerType.CeShi );
+			NetworkHelper.SetServerType( NetworkHelper.ServerType.CeShi );
 
-			SelectUrl.SetUrlServeType( ConfigTool.ServerType.CeShi );
+			SelectUrl.SetUrlServeType( NetworkHelper.ServerType.CeShi );
 			break;
 
 		case "体验服":
@@ -332,11 +332,11 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 
 		case "内网服":
 			// default
-			HttpRequest.SetUpdateUrl( HttpRequest.UPDATE_URL_NEIWANG );
+			NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_NEIWANG );
 
-			ConfigTool.SetServerType( ConfigTool.ServerType.NeiWang );
+			NetworkHelper.SetServerType( NetworkHelper.ServerType.NeiWang );
 
-			SelectUrl.SetUrlServeType( ConfigTool.ServerType.NeiWang );
+			SelectUrl.SetUrlServeType( NetworkHelper.ServerType.NeiWang );
 			break;
 		}
 
@@ -620,10 +620,10 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 			}
 
 			#if DEBUG_LOADING
-			Debug.Log( "Get Update Info: " + HttpRequest.GetUpdateUrl() );
+			Debug.Log( "Get Update Info: " + NetworkHelper.GetUpdateUrl() );
 			#endif
 			
-			HttpRequest.Instance().Connect( HttpRequest.GetUpdateUrl(), 
+			HttpRequest.Instance().Connect( NetworkHelper.GetUpdateUrl(), 
 			                               t_request_params, 
 			                               UpdateSuccessCallback, 
 			                               UpdateFailCallback ); 
@@ -803,7 +803,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 		Debug.LogError( "UpdateFailCallback: " + p_response );
 
 		{
-			UtilityTool.SetCommonCodeError( "Update", p_response );
+			DebugHelper.SetCommonCodeError( "Update", p_response );
 		}
 	}
 
@@ -881,7 +881,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 
 		Application.LoadLevel( ConstInGame.CONST_SCENE_NAME_BUNDLE );
 
-		UtilityTool.ClearCommonCodeError();
+		DebugHelper.ClearCommonCodeError();
 	}
 
 	#endregion

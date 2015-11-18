@@ -243,6 +243,11 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public float TrackCameraOffsetUpDownRotation;
 
+    [HideInInspector]
+    public Vector3 TrackCameraPosition;
+    [HideInInspector]
+    public Vector3 TrackCameraRotation;
+
     public void LateUpdate()
     {
         if (TrackCamera == null)
@@ -250,6 +255,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        //Use camera back, up and updownrotate value.
         if (IsRotateCamera)
         {
             TrackCamera.transform.localPosition = transform.localPosition;
@@ -258,9 +264,20 @@ public class PlayerController : MonoBehaviour
             TrackCamera.transform.Translate(Vector3.back * TrackCameraOffsetPosBack);
             TrackCamera.transform.localEulerAngles = new Vector3(TrackCameraOffsetUpDownRotation, transform.localEulerAngles.y, 0);
         }
+        //Use camera offset position and rotation.
         else
         {
-            TrackCamera.transform.localPosition = transform.localPosition + new Vector3(0, TrackCameraOffsetPosUp, -TrackCameraOffsetPosBack);
+            if (TrackCameraPosition == Vector3.zero || TrackCameraRotation == Vector3.zero)
+            {
+                TrackCameraPosition = TrackCamera.transform.localPosition;
+                TrackCameraRotation = TrackCamera.transform.localEulerAngles;
+
+                return;
+            }
+
+            TrackCamera.transform.localPosition = TrackCameraPosition + new Vector3(transform.localPosition.x, 0, transform.localPosition.z);
+            TrackCamera.transform.localEulerAngles = TrackCameraRotation;
+            //TrackCamera.transform.localPosition = transform.localPosition + new Vector3(0, TrackCameraOffsetPosUp, -TrackCameraOffsetPosBack);
         }
     }
 

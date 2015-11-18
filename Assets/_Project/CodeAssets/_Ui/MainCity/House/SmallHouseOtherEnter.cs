@@ -114,7 +114,7 @@ public class SmallHouseOtherEnter : MonoBehaviour, SocketListener
                 break;
             case 2:
                 //cancel exchange
-                UtilityTool.SendQXMessage(ProtoIndexes.C_CANCEL_EXCHANGE);
+                SocketHelper.SendQXMessage(ProtoIndexes.C_CANCEL_EXCHANGE);
                 break;
         }
     }
@@ -256,7 +256,7 @@ public class SmallHouseOtherEnter : MonoBehaviour, SocketListener
                         {
                             targetId = m_SmallHouseOther.m_HouseSimpleInfo.jzId
                         };
-                        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_HOUSE_EXCHANGE_RQUEST);
+                        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_HOUSE_EXCHANGE_RQUEST);
                     }
                     else
                     //no house owner 
@@ -266,7 +266,7 @@ public class SmallHouseOtherEnter : MonoBehaviour, SocketListener
                         {
                             targetloc = m_SmallHouseOther.m_HouseSimpleInfo.locationId
                         };
-                        UtilityTool.SendQXMessage(temp, ProtoIndexes.C_EHOUSE_EXCHANGE_RQUEST);
+                        SocketHelper.SendQXMessage(temp, ProtoIndexes.C_EHOUSE_EXCHANGE_RQUEST);
                     }
                 }
                 break;
@@ -410,7 +410,7 @@ public class SmallHouseOtherEnter : MonoBehaviour, SocketListener
                 temp.targetId = m_SmallHouseOther.m_HouseSimpleInfo.jzId;
                 temp.locationId = m_SmallHouseOther.m_HouseSimpleInfo.locationId;
 
-                UtilityTool.SendQXMessage(temp, ProtoIndexes.C_SET_HOUSE_STATE);
+                SocketHelper.SendQXMessage(temp, ProtoIndexes.C_SET_HOUSE_STATE);
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), SwitchToSellSucceedCallBack);
 
                 //TenementData.Instance.RequestData();
@@ -453,7 +453,7 @@ public class SmallHouseOtherEnter : MonoBehaviour, SocketListener
                 temp.targetId = m_SmallHouseOther.m_HouseSimpleInfo.jzId;
                 temp.locationId = m_SmallHouseOther.m_HouseSimpleInfo.locationId;
 
-                UtilityTool.SendQXMessage(temp, ProtoIndexes.C_SET_HOUSE_STATE);
+                SocketHelper.SendQXMessage(temp, ProtoIndexes.C_SET_HOUSE_STATE);
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), SwitchToLivingSucceedCallBack);
 
                 //TenementData.Instance.RequestData();

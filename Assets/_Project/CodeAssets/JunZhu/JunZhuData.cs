@@ -48,7 +48,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     {
         if (m_junzhu_data_instance == null)
         {
-            GameObject t_GameObject = UtilityTool.GetDontDestroyOnLoadGameObject();
+            GameObject t_GameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
             m_junzhu_data_instance = t_GameObject.AddComponent<JunZhuData>();
         }
@@ -65,7 +65,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
     void Start()
     {
-//        UtilityTool.SendQXMessage(ProtoIndexes.C_PVE_ZHANLI);
+//        SocketHelper.SendQXMessage(ProtoIndexes.C_PVE_ZHANLI);
 		UI_IsOpen = false;
 //        GetTiLi();
     }
@@ -560,23 +560,28 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
         string str1 = "购买点数";//LanguageTemplate.GetText(LanguageTemplate.Text.BUY_1) + LanguageTemplate.GetText(LanguageTemplate.Text.BUY_5);
         string str2 = "\r\n" + "你的升级点数不足了" + "\r\n" + "\r\n" + "是否花费" + Buy_TimespInfo.mibaoHuaFei.ToString() + "元宝购买点数？";//LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_CONFIRM_DUIHUAN_USE_WEIWANG_ASKSTR1);
-        //string str3 = ;//Buy_TimespInfo.tongBiHuaFei.ToString();
+       
+		//string str3 = ;//Buy_TimespInfo.tongBiHuaFei.ToString();
         //string str4 = ;//LanguageTemplate.GetText(LanguageTemplate.Text.BUY_2);
         //string str5 = ;//Buy_TimespInfo.tongBiHuoDe.ToString();
         //string str6 = ;//LanguageTemplate.GetText(LanguageTemplate.Text.BUY_5) + "？";
         //string str7 = ;//LanguageTemplate.GetText(LanguageTemplate.Text.BUY_4);
         //string str8 = ;//Buy_TimespInfo.tongBi.ToString();
         //string str9 = ;//LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_ADDNUM_ASKSTR3);
-        string strbtn1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+        
+		string strbtn1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
         string strbtn2 = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
-        UIBox uibox = m_Box.GetComponent<UIBox>();
-        uibox.setBox(str1, str2, null, null, strbtn1, strbtn2, BuyPoint, null, null, null);
+       
+		UIBox uibox = m_Box.GetComponent<UIBox>();
+        
+		uibox.setBox(str1, str2, null, null, strbtn1, strbtn2, BuyPoint, null, null, null);
     }
 
     void LoadBuyTongBiBack(ref WWW p_www, string p_path, Object p_object)
     {
-		Debug.Log ("tongbi.........");
+//		Debug.Log ("tongbi.........");
+
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_1) + LanguageTemplate.GetText(LanguageTemplate.Text.BUY_5);
         string str2 = "\r\n" + LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_CONFIRM_DUIHUAN_USE_WEIWANG_ASKSTR1);
         string str3 = Buy_TimespInfo.tongBiHuaFei.ToString();
