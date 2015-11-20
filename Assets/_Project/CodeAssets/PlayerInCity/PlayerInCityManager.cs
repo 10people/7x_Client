@@ -99,6 +99,8 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
             m_playrDic.Add(p_enter_scene.uid, t_gb);
             PlayerNameManager.m_PlayerNamesParent = m_NameParent;
             PlayerNameManager.CreatePlayerName(p_enter_scene);
+            EffectTool.DisableCityOcclusion(t_gb);
+
 
         }
         else

@@ -11,7 +11,6 @@
 //#define DEBUG_HITTED
 
 
-
 using System;
 using UnityEngine;
 using System.IO;
@@ -21,120 +20,156 @@ using System.Collections.Generic;
 
 public class EffectTool : Singleton<EffectTool> {
 
-	#region Occlusion
-	
-	private static Shader m_shader = null;
-	
-	public static void DisableOcclusion(GameObject p_object)
-	{
+	#region Occlusion City
+
+	public static void DisableCityOcclusion( GameObject p_object ){
+		if( p_object == null ){
+			return;
+		}
+
+		#if DEBUG_OCCLUSION
+		Debug.Log( "DisableCityOcclusion( " + p_object + " )" );
+
+		GameObjectHelper.LogGameObjectInfo( p_object );
+		#endif
+
+		{
+			FindCharHL();
+
+			FindCharOC();
+		}
+
+		{
+			ShaderHelper.Replace<SkinnedMeshRenderer>( p_object, m_sl_char_oc, m_sl_char_hl );
+			
+			ShaderHelper.Replace<MeshRenderer>( p_object, m_sl_char_oc, m_sl_char_hl );
+		}
+	}
+
+	private static Shader m_sl_char_oc			= null;
+
+	private static Shader m_sl_char_hl			= null;
+
+	private static void FindCharOC(){
+		if( m_sl_char_oc == null ){
+			m_sl_char_oc = Shader.Find( "Custom/Characters/Occlusion Colored" );
+		}
+	}
+
+	private static void FindCharHL(){
+		if( m_sl_char_hl == null ){
+			m_sl_char_hl = Shader.Find( "Custom/Characters/Main Texture High Light" );
+		}
+	}
+
+	#endregion
+
+
+
+	#region Occlusion BattleField
+
+	public static void DisableBattleOcclusion( GameObject p_object ){
 		#if DEBUG_OCCLUSION
 		Debug.Log( "DisableOcclusion( " + p_object + " )" );
 		#endif
 
-		if (m_shader == null)
+		if( p_object == null ){
+			return;
+		}
+
 		{
-			m_shader = Shader.Find("Custom/Effects/Occlusion Colored");
+			FindFxOC();
 		}
 		
 		{
-			DisableOcclusionRenderers<SkinnedMeshRenderer>(p_object, m_shader);
-		}
+			DisableBattleOcclusionRenderers<SkinnedMeshRenderer>( p_object, m_sl_effect_oc );
 		
-		{
-			DisableOcclusionRenderers<MeshRenderer>(p_object, m_shader);
+			DisableBattleOcclusionRenderers<MeshRenderer>( p_object, m_sl_effect_oc );
 		}
 
 		#if DEBUG_OCCLUSION
 		Debug.Log( "DisableOcclusion.Done." );
 		#endif
 	}
-	
-	private static void DisableOcclusionRenderers<T>(GameObject p_object, Shader p_shader) where T : Renderer
-	{
-		{
-			T[] t_renderers = p_object.GetComponentsInChildren<T>();
+
+	/// Only Should be used in BattleField Occlusion.
+	private static void DisableBattleOcclusionRenderers<T>( GameObject p_object, Shader p_shader ) where T : Renderer{
+		T[] t_renderers = p_object.GetComponentsInChildren<T>();
+		
+		for ( int i = 0; i < t_renderers.Length; i++ ){
+			T t_renderer = t_renderers[i];
 			
-			for (int i = 0; i < t_renderers.Length; i++)
-			{
-				T t_renderer = t_renderers[i];
+			Material[] t_mats = t_renderer.materials;
+			
+			for ( int j = 0; j < t_renderer.materials.Length; j++ ){
+				Material t_mat = t_renderer.materials[ j ];
 				
-				Material[] t_mats = t_renderer.materials;
+				if ( t_mat == null ){
+					continue;
+				}
 				
-				for ( int j = 0; j < t_renderer.materials.Length; j++ ){
-					Material t_mat = t_renderer.materials[ j ];
+				if ( t_mat.shader == p_shader ){
+					StoreMaterialInfo( p_object, t_mats[j] );
 					
-					if (t_mat == null)
-					{
-						continue;
-					}
+					t_mats[j] = null;
 					
-					if (t_mat.shader == p_shader)
+					Material[] t_new_mats = new Material[ t_mats.Length - 1 ];
+					
 					{
-						StoreMaterialInfo(p_object, t_mats[j]);
+						int t_index = 0;
 						
-						t_mats[j] = null;
-						
-						Material[] t_new_mats = new Material[ t_mats.Length - 1 ];
-						
-						{
-							int t_index = 0;
-							
-							for( int k = 0; k < t_mats.Length; k++ ){
-								if( t_mats[ k ] != null ){
-									t_new_mats[ t_index++ ] = t_mats[ k ];
-								}
+						for( int k = 0; k < t_mats.Length; k++ ){
+							if( t_mats[ k ] != null ){
+								t_new_mats[ t_index++ ] = t_mats[ k ];
 							}
 						}
-						
-						t_renderer.materials = t_new_mats;
-						
-						break;
 					}
+					
+					t_renderer.materials = t_new_mats;
+					
+					break;
 				}
 			}
 		}
 	}
-	
-	private static void StoreMaterialInfo(GameObject p_object, Material p_mat)
-	{
+
+	/// Only Should be used in BattleField Occlusion.
+	private static void StoreMaterialInfo( GameObject p_object, Material p_mat ){
 		StoreGameObjectData t_data = p_object.GetComponent<StoreGameObjectData>();
 		
-		if (t_data == null)
-		{
+		if ( t_data == null ){
 			t_data = p_object.AddComponent<StoreGameObjectData>();
 		}
 		
 		t_data.m_shared_mat = p_mat;
 	}
 	
-	public static void RestoreOcclusion(GameObject p_object)
-	{
+	public static void RestoreBattleOcclusion( GameObject p_object ){
 		#if DEBUG_OCCLUSION
 		Debug.Log( "RestoreOcclusion( " + p_object + " )" );
 		#endif
 
 		StoreGameObjectData t_data = p_object.GetComponent<StoreGameObjectData>();
 		
-		if (t_data == null)
-		{
+		if ( t_data == null ){
 			// Debug.LogError("StoreGameObjectData == null.");
 			
 			return;
 		}
 		
 		{
-			RestoreOcclusionRenderer<SkinnedMeshRenderer>(p_object, t_data);
+			RestoreBattleOcclusionRenderer<SkinnedMeshRenderer>(p_object, t_data);
 			
-			RestoreOcclusionRenderer<MeshRenderer>(p_object, t_data);
+			RestoreBattleOcclusionRenderer<MeshRenderer>(p_object, t_data);
 		}
 
 		#if DEBUG_OCCLUSION
 		Debug.Log( "RestoreOcclusion.Done." );
 		#endif
 	}
-	
-	private static void RestoreOcclusionRenderer<T>(GameObject p_object, StoreGameObjectData p_data) where T : Renderer
-	{
+
+	/// Only Should be used in BattleField Occlusion.
+	private static void RestoreBattleOcclusionRenderer<T>( GameObject p_object, StoreGameObjectData p_data ) where T : Renderer{
 		T[] t_renderers = p_object.GetComponentsInChildren<T>();
 		
 		for (int i = 0; i < t_renderers.Length; i++)
@@ -145,8 +180,7 @@ public class EffectTool : Singleton<EffectTool> {
 			
 			bool t_found = false;
 			
-			for (int j = 0; j < t_renderer.materials.Length; j++)
-			{
+			for ( int j = 0; j < t_renderer.materials.Length; j++ ){
 				Material t_mat = t_renderer.materials[j];
 				
 				if( t_mat.shader == p_data.m_shared_mat.shader ){
@@ -169,7 +203,15 @@ public class EffectTool : Singleton<EffectTool> {
 			}
 		}
 	}
+
+	private static Shader m_sl_effect_oc 		= null;
 	
+	private static void FindFxOC(){
+		if( m_sl_effect_oc == null ){
+			m_sl_effect_oc = Shader.Find( "Custom/Effects/Occlusion Colored" );
+		}
+	}
+
 	#endregion
 
 
@@ -198,12 +240,10 @@ public class EffectTool : Singleton<EffectTool> {
 		#endif
 	}
 	
-	private static void DisableDeadEffect<T>( GameObject p_gb ) where T : Renderer
-	{
+	private static void DisableDeadEffect<T>( GameObject p_gb ) where T : Renderer{
 		T[] t_renderers = p_gb.GetComponentsInChildren<T>();
 		
-		if (t_renderers == null || t_renderers.Length == 0)
-		{
+		if ( t_renderers == null || t_renderers.Length == 0 ){
 			return;
 		}
 		
@@ -247,12 +287,10 @@ public class EffectTool : Singleton<EffectTool> {
 		#endif
 	}
 	
-	private static void SetDeadEffect<T>( GameObject p_gb ) where T : Renderer
-	{
+	private static void SetDeadEffect<T>( GameObject p_gb ) where T : Renderer{
 		T[] t_renderers = p_gb.GetComponentsInChildren<T>();
 		
-		if (t_renderers == null || t_renderers.Length == 0)
-		{
+		if ( t_renderers == null || t_renderers.Length == 0 ){
 			return;
 		}
 		
@@ -279,14 +317,13 @@ public class EffectTool : Singleton<EffectTool> {
 
 	#region Boss
 	
-	private static Shader m_boss_effect = null;
+	private static Shader m_sl_boss_effect = null;
 	
 	private static List<GameObject> m_boss_target_list = new List<GameObject> ();
 	
 	private static Material m_boss_mat = null;
 	
-	public static void SetBossEffect(GameObject p_gb)
-	{
+	public static void SetBossEffect( GameObject p_gb ){
 		if ( p_gb == null ){
 			Debug.Log("Error, p_gb = null.");
 			
@@ -339,7 +376,7 @@ public class EffectTool : Singleton<EffectTool> {
 	private static void SetDetailBossEffect<T>( GameObject p_gb ) where T : Renderer{
 		T[] t_renderers = p_gb.GetComponentsInChildren<T>();
 		
-		if (t_renderers == null || t_renderers.Length == 0){
+		if ( t_renderers == null || t_renderers.Length == 0 ){
 			return;
 		}
 		
@@ -358,8 +395,7 @@ public class EffectTool : Singleton<EffectTool> {
 		}
 		#endif
 		
-		for (int i = 0; i < t_renderers.Length; i++)
-		{
+		for ( int i = 0; i < t_renderers.Length; i++ ){
 			Renderer t_renderer = t_renderers[i];
 			
 			Material[] t_mats = t_renderer.materials;
@@ -408,8 +444,7 @@ public class EffectTool : Singleton<EffectTool> {
 
 		HittedEffect t_hitted = p_gb.GetComponent<HittedEffect>();
 		
-		if (t_hitted == null)
-		{
+		if ( t_hitted == null ){
 			t_hitted = p_gb.AddComponent<HittedEffect>();
 		}
 		

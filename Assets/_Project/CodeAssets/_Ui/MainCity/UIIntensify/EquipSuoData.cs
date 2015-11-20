@@ -14,9 +14,11 @@ public class EquipSuoData:MonoBehaviour
     public struct StrengthEffect
     {
         public int _num;
+        public int _LevelAdd;
         public bool _isshow;
     };
     public static Dictionary<int, StrengthEffect> m_listEffectInfo = new Dictionary<int, StrengthEffect>();
+    public static Dictionary<int, int> m_equipsLevelSave = new Dictionary<int, int>();
     public struct NewAttribute
     {
         public int _num;
@@ -46,18 +48,19 @@ public class EquipSuoData:MonoBehaviour
       public int _num;
       public int _nameid;
       public bool _isMax;
-      public int _count;
+      public float _count;
       public int _add;
       public bool _isnew;
+      public bool _isHave;
     }
 
     public struct ShuXingInfo
     {
         public int _type;
         public int _Max;
-        public int _Count;
+        public float _Count;
         public int _Max2;
-        public int _Count2;
+        public float _Count2;
         public int _nameid;
     
         public bool _NeedUpgrade;
@@ -105,7 +108,7 @@ public class EquipSuoData:MonoBehaviour
     }
     public static int GetNameIDByIndex(int index)
     {
-        int[] allName = { 990011, 990012, 990013, 990014, 990015, 990016, 990017, 990018 };
+        int[] allName = { 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013};
         return allName[index];
     }
 

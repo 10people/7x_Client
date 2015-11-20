@@ -9,7 +9,7 @@ Version:1118-1012
 
 ---------------------------------------------------------------------- <Debug Config>
 // control center
-ShowConsole:				false
+ShowConsole:				true
 
 // common code error
 ShowCodeException:			true

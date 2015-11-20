@@ -10,11 +10,9 @@ using ProtoBuf.Meta;
 public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 {
     public UILabel m_TotalGold;
-    private IconSampleManager m_IconSampleManager;
     private static GameObject IconSamplePrefab;
     public static bool m_WetherIsIntensify = false;
     public GameObject m_IntensifyTanHao;
-   // public GameObject m_UpGradeTanHao;
     public GameObject m_WashTanHao;
 
     public GameObject UIName;
@@ -25,10 +23,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_AttributeArmor;
     public GameObject m_AttributeWeapon;
     public UIGrid m_GrideShuXing;
-    
-
-    //public GameObject m_AtrrTip;
-    
+ 
     public GameObject m_SharePart;
     public UILabel m_LabPrecess;
     public GameObject m_EquipUpgrade;
@@ -44,20 +39,20 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_TitleType2;
     public int m_AttributeCount;
 
-    public List<UILabel> listArmorTopCount = new List<UILabel>();
-    public List<UILabel> listArmorLabTitle = new List<UILabel>();
-    public List<UILabel> listArmorLabCount = new List<UILabel>();
+    public List<UILabel> listArmorTopCount;
+    public List<UILabel> listArmorLabTitle;
+    public List<UILabel> listArmorLabCount;
 
 
-    public List<UILabel> listWeaponLabTitle = new List<UILabel>();
-    public List<UILabel> listWeaponLabCount = new List<UILabel>();
-    public List<UILabel> listWeaponTopCount = new List<UILabel>();
+    public List<UILabel> listWeaponLabTitle;
+    public List<UILabel> listWeaponLabCount;
+    public List<UILabel> listWeaponTopCount;
 
 
     public UILabel m_ArmorAttributeTitle;
     public UILabel m_WeaponAttributeTitle;
 
-    public List<GameObject> m_ListtArmorTitleLine = new List<GameObject>();
+    public List<GameObject> m_ListtArmorTitleLine;
     public GameObject m_WeaponTitleLineBottom;
 
     public UIProgressBar m_ProgressBar;
@@ -82,19 +77,13 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private int ShowType = 0;
     private long EquipIntensifyId;
     private string Equipname = "";
-
     private int equipType = 0;
-
-
-    //    private int MaxXilianCount;
-
     private int MaxExp;
     private int CurrExp;
     private int StrengthenIndex = 0;
- 
     private EquipStrengthResp EquipInfoSave = new EquipStrengthResp();
     EquipStrengthResp EquipInfo = new EquipStrengthResp();
-    private List<int> listData = new List<int>();
+    private List<float> listData = new List<float>();
     private struct EquipAtrrInfo
     {
         public string gong;
@@ -117,9 +106,44 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             m_TotalGold.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
         }
 
-        m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
+     //   m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
     }
 
+    public static bool m_isEffect = false;
+    private int _CurrenItemNum = 0;
+    private float _timeInterval = 0;
+    void Update()
+    {
+        _timeInterval += Time.deltaTime;
+        if (_timeInterval >= 0.1f)
+        {
+            _timeInterval = 0;
+            int[] arrange = { 3, 4, 5, 0, 8, 1, 7, 2, 6 };
+            if (m_isEffect)
+            {
+                if (_CurrenItemNum < 9)
+                {
+                   
+                    if (EquipSuoData.m_listEffectInfo.ContainsKey(arrange[_CurrenItemNum]))
+                    {
+                        m_isEffect = false;
+                        m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[EquipSuoData.m_listEffectInfo[arrange[_CurrenItemNum]]._num].MoveLabel(EquipSuoData.m_listEffectInfo[arrange[_CurrenItemNum]]._LevelAdd);
+                    }
+                    _CurrenItemNum++;
+                }
+                else
+                {
+                    foreach (KeyValuePair<int, EquipSuoData.StrengthEffect> iten in EquipSuoData.m_listEffectInfo)
+                    {
+                        m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[iten.Value._num].m_ObjEffect.SetActive(false);
+                    }
+                    m_isEffect = false;
+                    EquipsInfoTidy(EquipInfo);
+                    _CurrenItemNum = 0;
+                }
+            }
+        }
+    }
     void OnEnable()
     {
         StrengthenIndex = 0;
@@ -145,12 +169,10 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             byte[] t_protof;
             t_protof = t_tream.ToArray();
             SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPGRADE, ref t_protof); 
-        
         }
     }
 
     private ZhuangBei equipmentShowed = new ZhuangBei();
-
     public void ShowEquipInfo(ZhuangBei equipment, string gong, string fang, string xue, int max, int curr, int pinzhi, int level)
     {
         equipmentShowed = equipment;
@@ -180,6 +202,8 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         if (ShowType == 0)//0强化
         {
             m_EquipUpgrade.SetActive(false);
+            m_ListtArmorTitleLine[0].SetActive(false);
+            m_WeaponTitleLineBottom.SetActive(false);
             EquipSuoData.Instance().m_WashIson = false;
             IntensifyEquipInfoShow();
 
@@ -189,8 +213,18 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         }
         else if (ShowType == 1)//1 洗练
         {
+            m_WeaponTitleLineBottom.SetActive(false);
+            int size_shuxing = m_GrideShuXing.transform.childCount;
+            if (size_shuxing > 0)
+            {
+                for (int i = 0; i < size_shuxing; i++)
+                {
+                    Destroy(m_GrideShuXing.transform.GetChild(i).gameObject);
+                }
+                _listObj.Clear();
+            }
             m_EquipUpgrade.SetActive(false);
-  
+            
 
             EquipSuoData.Instance().m_EquipID = EquipSaveId;
  
@@ -290,19 +324,6 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 
     void IntensifyEquipInfoShow()//强化装备信息显示
     {
-        foreach (KeyValuePair<int, EquipSuoData.StrengthEffect> iten in EquipSuoData.m_listEffectInfo)
-        {
-            if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(iten.Value._num) && BuWeiSave != iten.Value._num)
-            {
-                m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listAnimation[iten.Value._num].SetActive(true);
-            }
-            else
-            {
-                m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listAnimation[iten.Value._num].SetActive(false);
-                EquipSuoData.m_listEffectInfo.Remove(iten.Key);
-                break;
-            }
-        }
         if (BuWeiSave == (int)EquipPositionEnum.QingWuQi || BuWeiSave == (int)EquipPositionEnum.ZhongWuQi || BuWeiSave == (int)EquipPositionEnum.Gong)
         {
             equipType = 1;
@@ -368,11 +389,11 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         if (BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_HEAVY_WEAPONS || BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_LIGHT_WEAPONS || BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_BOW)
         {
             equipType = 1;
-            if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-            {
-                m_WeaponTitleLineBottom.SetActive(true);
-            }
-            else
+            //if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
+            //{
+            //    m_WeaponTitleLineBottom.SetActive(true);
+            //}
+            //else
             {
                 m_WeaponTitleLineBottom.SetActive(false);
             }
@@ -398,11 +419,11 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 
             // m_AtrrTip.GetComponent<EquipGrowthTipsShow>().isOpen = false;
             EquipSuoData.Instance().m_WashIson = true;
-            if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-            {
-                m_ListtArmorTitleLine[0].SetActive(true);
-            }
-            else
+            //if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
+            //{
+            //    m_ListtArmorTitleLine[0].SetActive(true);
+            //}
+            //else
             {
                 m_ListtArmorTitleLine[0].SetActive(false);
                 //  m_ArmorAttributeTitle.transform.localPosition = new Vector3(-432, -66, -38);
@@ -489,8 +510,6 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                             EquipGrowthMaterialUseManagerment.touchIsEnable = false;
                         }
                        m_IntensifyTanHao.SetActive(AllIntensify());
-                    //s   m_UpGradeTanHao.SetActive(EquipSuoData.AllUpgrade());
-                   
                        m_WashTanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(1210)&& FunctionOpenTemp.GetWhetherContainID(1210));
                         PushAndNotificationHelper.SetRedSpotNotification(1212, AllIntensify());  
                         EquipsInfoTidy(EquipInfo);
@@ -505,19 +524,20 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
  
                         if (Equip.allResp != null)
                         {
+                            EquipSuoData.m_listEffectInfo.Clear();
                             for (int i = 0; i < Equip.allResp.Count; i++)
                             {
-                                if (Equip.allResp[i].zhuangbeiID != EquipSaveId)
+
+                                if (Equip.allResp[i].level > EquipSuoData.m_equipsLevelSave[EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei)])
                                 {
-                                    if (!EquipSuoData.m_listEffectInfo.ContainsKey(EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei)))
-                                    {
-                                        EquipSuoData.StrengthEffect sf = new EquipSuoData.StrengthEffect();
-                                        sf._num = EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei);
-                                        sf._isshow = true;
-                                        EquipSuoData.m_listEffectInfo.Add(EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei), sf);
-                                    }
+                                    EquipSuoData.StrengthEffect sf = new EquipSuoData.StrengthEffect();
+                                    sf._num = EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei);
+                                    sf._isshow = true;
+                                    sf._LevelAdd = Equip.allResp[i].level - EquipSuoData.m_equipsLevelSave[EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei)];
+                                    EquipSuoData.m_listEffectInfo.Add(EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei), sf);
                                 }
-                                else
+
+                                if (Equip.allResp[i].zhuangbeiID == EquipSaveId)
                                 {
                                     StrengthenIndex = 0;
                                     EquipInfo = Equip.allResp[i];
@@ -529,7 +549,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                             EquipInfoSave = EquipInfo;
 
                             m_IntensifyTanHao.SetActive(AllIntensify());
-                            EquipsInfoTidy(EquipInfo);
+                   
                             if (EquipInfo.level < JunZhuData.Instance().m_junzhuInfo.level)
                             {
                                 EquipGrowthMaterialUseManagerment.touchIsEnable = true;
@@ -539,6 +559,12 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                                 EquipGrowthMaterialUseManagerment.touchIsEnable = false;
                             }
 
+                            foreach (KeyValuePair<int, EquipSuoData.StrengthEffect> iten in EquipSuoData.m_listEffectInfo)
+                            {
+                                m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[iten.Value._num].m_ObjEffect.SetActive(true);
+                            }
+                            m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ButtonShow();
+                            m_isEffect = true;
                         }
                         return true;
                     }
@@ -552,10 +578,6 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     {
         //m_LabName.gameObject.SetActive(false);
         //m_LabLevel.gameObject.SetActive(false);
-        //if (m_IconSampleManager != null)
-        //{
-        //    m_IconSampleManager.gameObject.SetActive(false);
-        //}
         //m_EquipIntensify.SetActive(false);
         SocketTool.UnRegisterMessageProcessor(this);
     }
@@ -579,7 +601,11 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         {
             if (ZhuangBei.templates[i].id == EquipSaveId)
             {
-                int[] attribute = { esr.wqSH, esr.wqJM, esr.wqBJ, esr.wqRX, esr.jnSH, esr.jnJM, esr.jnBJ, esr.jnRX };
+                float[] attribute = { float.Parse(esr.wqSH.ToString()), float.Parse(esr.wqJM.ToString()), float.Parse(esr.wqBJ.ToString())
+                , float.Parse(esr.wqRX.ToString()), float.Parse(esr.jnSH.ToString()), float.Parse(esr.jnJM.ToString())
+                , float.Parse(esr.jnBJ.ToString()), float.Parse(esr.jnRX.ToString())
+                ,esr.wqBJL, esr.jnBJL, esr.wqMBL, esr.jnMBL, esr.jnRX };
+               // int[] attribute = { esr.wqSH, esr.wqJM, esr.wqBJ, esr.wqRX, esr.jnSH, esr.jnJM, esr.jnBJ, esr.jnRX };
                 //    int[] attribute_Max = { esr.wqSH, esr.wqJM, esr.wqBJ, esr.wqRX, esr.jnSH, esr.jnJM, esr.jnBJ, esr.jnRX };
                 listData.AddRange(attribute);
                 for (int j = 0; j < listData.Count; j++)

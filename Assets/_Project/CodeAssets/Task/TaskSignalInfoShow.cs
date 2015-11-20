@@ -85,7 +85,8 @@ public class TaskSignalInfoShow : MonoBehaviour
     }
     IEnumerator WaitSecond()
     {
-        yield return new WaitForSeconds(1.5f);
+        //   yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.05f);
 
         if (!_isCancelEffect)
         {

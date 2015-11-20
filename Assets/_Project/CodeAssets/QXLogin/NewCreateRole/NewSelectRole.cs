@@ -96,8 +96,8 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 	//选择国家
 	public void SelectNation (int nationId)
 	{
-		Debug.Log ("currentNationId:" + currentNationId);
-		Debug.Log ("nationId:" + nationId);
+//		Debug.Log ("currentNationId:" + currentNationId);
+//		Debug.Log ("nationId:" + nationId);
 
 		currentNationId = nationId;
 		

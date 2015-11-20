@@ -165,11 +165,32 @@ public class ComponentHelper{
 //		Debug.Log( "wrapMode: " + p_tex.wrapMode );
 	}
 
+	public static void LogMat( Material p_mat ){
+		if( p_mat == null ){
+			return;
+		}
+
+		Debug.Log( "Mat: " + p_mat.name );
+
+		LogShader( p_mat.shader );
+	}
+
+	public static void LogShader( Shader p_shader ){
+		if( p_shader == null ){
+			Debug.Log( "Shader is null." );
+
+			return;
+		}
+
+		Debug.Log( "Shader: " + p_shader );
+		
+		Debug.Log( "Shader.Name: " + p_shader.name );
+		
+		Debug.Log( "Shader.String: " + p_shader.ToString() );
+	}
+
 	#endregion
 
-
-	
-	
 	
 	
 	#region Collider

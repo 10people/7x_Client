@@ -10,27 +10,19 @@ using ProtoBuf.Meta;
 
 public class EquipGrowthIntensifyManagerment : MonoBehaviour
 {
-    [HideInInspector]
-    public GameObject IconSamplePrefab;
-
     public GameObject m_MainParent;
-    public GameObject m_MainLayer;
     public GameObject m_NoMaterial;
     public GameObject m_Material;
     public GameObject m_IntensifyTag;
 
     public UIGrid IconSampleGrid;
-    public List<EventHandler> listEvent = new List<EventHandler>();
-    public List<EventHandler> listTagEvent = new List<EventHandler>();
-
-    public List<UISprite> listSprite = new List<UISprite>();
-    //public UILabel m_LabTag;
-    //public UILabel m_LabTag2;
+    public List<EventHandler> listEvent;
+    public List<EventHandler> listTagEvent;
+    public List<UISprite> listSprite;
     public int SelectType = 0;
     public UIProgressBar m_EquipExp;
     public UILabel m_LabProgress;
     public EquipGrowthEquipInfoManagerment m_EquipGrowthEquipInfoManagerment;
-    //	private List<string> listName = new List<string>();
     public List<GameObject> m_listEquipTaHao;
 
     public List<GameObject> m_listGameObject;
@@ -57,13 +49,31 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
     {
         listEvent.ForEach(p => p.m_handler += IntensifyTouch);
         listTagEvent.ForEach(p => p.m_handler += TagConfirm);
+      
+    }
+
+    void OnEnable()
+    {
+        index_Num = 0;
+        Addindex = 0;
+
+        curr_residue = 0;
+        curr_Max = 0;
+        addCount = 0;
+        IsResidueOn = false;
+        ReduceIndex_Now = 0;
+        lastcontent = 0;
+        currentLevel = 0;
+        EquipGrowthMaterialUseManagerment.m_IsSurpassLimited = false;
+        ExpXxmlTemp.m_listNeedInfo.Clear();
+        ExpXxmlTemp.m_listReduceInfo.Clear();
+        EquipGrowthMaterialUseManagerment.m_TotalAddExp = 0;
         BagCaiLiao = BagData.Instance().m_playerCaiLiaoDic;
         if (FreshGuide.Instance().IsActive(100080) && TaskData.Instance.m_TaskInfoDic[100080].progress >= 0)
         {
             m_EquipGrowthEquipInfoManagerment.m_ScrollView.enabled = false;
             FunctionWindowsCreateManagerment.SetSelectEquipInfo(1, 3);
             TaskData.Instance.m_iCurMissionIndex = 100080;
-
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
             tempTaskData.m_iCurIndex = 2;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
@@ -71,7 +81,6 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
         else if (FreshGuide.Instance().IsActive(100160) && TaskData.Instance.m_TaskInfoDic[100160].progress >= 0)
         {
             m_EquipGrowthEquipInfoManagerment.m_ScrollView.enabled = false;
-            ////FunctionWindowsCreateManagerment.SetSelectEquipInfo(1,0);
             TaskData.Instance.m_iCurMissionIndex = 100160;
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
             tempTaskData.m_iCurIndex = 1;
@@ -80,23 +89,23 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
     }
     void Update()
     {
-        if (EquipGrowthMaterialUseManagerment.listTouchedId.Count == 0 && !EquipGrowthMaterialUseManagerment.strengthenIsOn)//按钮状态显示控制
-        {
-            EquipGrowthMaterialUseManagerment.strengthenIsOn = true;
-            for (int i = 0; i < 1; i++)
-            {
-                WashBotton(false, i);
-            }
-        }
-        else if (EquipGrowthMaterialUseManagerment.listTouchedId.Count > 0 && EquipGrowthMaterialUseManagerment.strengthenIsOn)
-        {
+        //if (EquipGrowthMaterialUseManagerment.listTouchedId.Count == 0 && !EquipGrowthMaterialUseManagerment.strengthenIsOn)//按钮状态显示控制
+        //{
+        //    EquipGrowthMaterialUseManagerment.strengthenIsOn = true;
+        //    for (int i = 0; i < 1; i++)
+        //    {
+        //        WashBotton(false, i);
+        //    }
+        //}
+        //else if (EquipGrowthMaterialUseManagerment.listTouchedId.Count > 0 && EquipGrowthMaterialUseManagerment.strengthenIsOn)
+        //{
  
-            EquipGrowthMaterialUseManagerment.strengthenIsOn = false;
-            for (int i = 0; i < 1; i++)
-            {
-                WashBotton(true, i);
-            }
-        }
+        //    EquipGrowthMaterialUseManagerment.strengthenIsOn = false;
+        //    for (int i = 0; i < 1; i++)
+        //    {
+        //        WashBotton(true, i);
+        //    }
+        //}
 
         if (EquipGrowthMaterialUseManagerment.materialItemTouched)
         {
@@ -181,7 +190,14 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
             else
             {
                 EquipGrowthEquipInfoManagerment.m_WetherIsIntensify = true;
-                EquipUpGrade(savedbid, EquipGrowthMaterialUseManagerment.listTouchedId);
+                if (EquipGrowthMaterialUseManagerment.listTouchedId.Count == 0)
+                {
+                    EquipUpGrade(savedbid, EquipGrowthMaterialUseManagerment.listTouchedId);
+                }
+                else
+                {
+                    Strengthen(Equip_BuWei);
+                }
             }
         }
         else if (obj.name.Equals("ButtondYJQiangHua"))
@@ -251,18 +267,16 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
 
         if (level >= JunZhuData.Instance().m_junzhuInfo.level)
         {
-            {
-                WashBotton(false, 0);
-                WashBotton(false, 1);
-            }
-
+            WashBotton(false, 0);
+            WashBotton(false, 1);
         }
         else if (max != -1 && level < JunZhuData.Instance().m_junzhuInfo.level)
         {
+
             m_EquipExp.value = curr / float.Parse(max.ToString());
             m_LabProgress.text = curr.ToString() + "/" + max.ToString();
-            WashBotton(false, 0);
-            WashBotton(true, 1);
+             WashBotton(true, 0);
+             WashBotton(true, 1);
         }
         else if (max == -1)
         {
@@ -287,6 +301,12 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
         CaiLiaoEquips.Clear();
         EquipGrowthMaterialUseManagerment.listMaterials.Clear();
         MaterialsInfoTidy();
+    }
+
+    public void ButtonShow()
+    {
+        WashBotton(false, 0);
+        WashBotton(false, 1);
     }
 
     void MaterialsInfoTidy()//材料信息整理
@@ -550,6 +570,7 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
                 WetherHaveMaterial = true;
                 m_Material.SetActive(true);
                 m_NoMaterial.SetActive(false);
+                listEvent[0].gameObject.SetActive(true);
                 listEvent[1].gameObject.SetActive(true);
                 listEvent[2].gameObject.SetActive(false);
             }
@@ -567,16 +588,10 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
                     m_listGameObject[2].SetActive(true);
                 }
                 WetherHaveMaterial = true;
-                listEvent[1].gameObject.SetActive(false);
-                //if (!FunctionOpenTemp.GetWhetherContainID(9))
-                //{
-                //    listEvent[2].gameObject.SetActive(false);
-                //}
-                //else
-                {
-                    listEvent[2].gameObject.SetActive(true);
-                }
-                WashBotton(false, 0);
+         
+                listEvent[0].gameObject.SetActive(false);
+                listEvent[2].gameObject.SetActive(true);
+                
                 m_Material.SetActive(true);
                 m_NoMaterial.SetActive(true);
                 for (int i = 0; i < 2; i++)
@@ -801,23 +816,6 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
             }
         }
         CreateClone(current);
-    }
-    void OnEnable()
-    {
-        index_Num = 0;
-        Addindex = 0;
-
-        curr_residue = 0;
-        curr_Max = 0;
-        addCount = 0;
-        IsResidueOn = false;
-        ReduceIndex_Now = 0;
-        lastcontent = 0;
-        currentLevel = 0;
-        EquipGrowthMaterialUseManagerment.m_IsSurpassLimited = false;
-        ExpXxmlTemp.m_listNeedInfo.Clear();
-        ExpXxmlTemp.m_listReduceInfo.Clear();
-        EquipGrowthMaterialUseManagerment.m_TotalAddExp = 0;
     }
     private int index_Num = 0;
     private int Addindex = 0;
@@ -1421,7 +1419,12 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
 
             //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallback_OverStep);
             //}
- 
+            EquipSuoData.m_equipsLevelSave.Clear();
+            Dictionary<int, BagItem> listtemp = EquipsOfBody.Instance().m_equipsOfBodyDic;
+            foreach (KeyValuePair<int, BagItem> item in listtemp)
+            {
+                EquipSuoData.m_equipsLevelSave.Add(item.Value.buWei, item.Value.qiangHuaLv);
+            }
             SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPALLGRADE);
         }
     }
@@ -1439,22 +1442,22 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
 
     void EXPOverStep(int index)
     {
-        Debug.Log("indexindexindexindexindexindexindexindex" + index);
+        
     }
 
-     public  void ShowEquipTanHao()
+    public  void ShowEquipTanHao()
     {
-        int _size = m_listEquipTaHao.Count;
+        int _size = m_EquipGrowthEquipInfoManagerment.m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent.Count;
         for (int i = 0; i < _size; i++)
         {
+ 
             if (AllIntensify(i) == i)
             {
-             //   Debug.Log(" AllIntensify(i) AllIntensify(i) AllIntensify(i) AllIntensify(i) ::" + AllIntensify(i));
-               m_listEquipTaHao[i].SetActive(true);
+                m_EquipGrowthEquipInfoManagerment.m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[i].m_ObjTanHao.SetActive(true);
             }
             else
             {
-                m_listEquipTaHao[i].SetActive(false);
+                m_EquipGrowthEquipInfoManagerment.m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[i].m_ObjTanHao.SetActive(false);
             }
         }
     }
@@ -1678,5 +1681,145 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
             Destroy(m_MainParent);
         }
 
+    }
+
+   void Strengthen(int index)// 强化升一级ID统计
+    {
+        int EquipExp = 0;
+        int equipLevel = 0;
+        int pinzhi = 0;
+        int EquipType = 0;
+        if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(index))
+        {
+            equipLevel = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaLv;
+            EquipExp = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaExp;
+            pinzhi = EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi;
+            if (EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 3 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 4 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 5)
+            {
+                EquipType = 1;
+            }
+            else
+            {
+                EquipType = 0;
+            }
+
+            foreach (KeyValuePair<long, List<BagItem>> item in BagData.Instance().m_playerCaiLiaoDic)
+            {
+                for (int i = 0; i < ItemTemp.templates.Count; i++)
+                {
+                    if (item.Value[0].itemId == ItemTemp.templates[i].id)
+                    {
+                        if (EquipType == 0 && item.Value[0].itemType == 2)
+                        {
+                            EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
+                            EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value[0].dbId);
+                        }
+                        else if (EquipType == 1 && item.Value[0].itemType == 1)
+                        {
+                            EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
+                            EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value[0].dbId);
+                        }
+                        else if (item.Value[0].itemType == 6 && pinzhi > item.Value[0].pinZhi)
+                        {
+
+                            int tempBuwei = 0;
+                            switch (ZhuangBei.GetBuWeiByItemId(item.Value[0].itemId))
+                            {
+                                case 1: tempBuwei = 3; break;//重武器
+                                case 2: tempBuwei = 4; break;//轻武器
+                                case 3: tempBuwei = 5; break;//弓
+                                case 11: tempBuwei = 0; break;//头盔
+                                case 12: tempBuwei = 8; break;//肩膀
+                                case 13: tempBuwei = 1; break;//铠甲
+                                case 14: tempBuwei = 7; break;//手套
+                                case 15: tempBuwei = 2; break;//裤子
+                                case 16: tempBuwei = 6; break;//鞋子
+                                default: break;
+                            }
+                            if (EquipType == 1)
+                            {
+                                if (tempBuwei == 3 || tempBuwei == 4 || tempBuwei == 5)
+                                {
+                                    if (tempBuwei == index && EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi > item.Value[0].pinZhi)
+                                    {
+                                        EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
+                                        EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value[0].dbId);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (tempBuwei != 3 && tempBuwei != 4 && tempBuwei != 5)
+                                {
+                                    if (tempBuwei == index && EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi > item.Value[0].pinZhi)
+                                    {
+                                        EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
+                                        EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value[0].dbId);
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
+            {
+                int tempBuwei = 0;
+                switch (item.Value.buWei)
+                {
+                    case 1: tempBuwei = 3; break;//重武器
+                    case 2: tempBuwei = 4; break;//轻武器
+                    case 3: tempBuwei = 5; break;//弓
+                    case 11: tempBuwei = 0; break;//头盔
+                    case 12: tempBuwei = 8; break;//肩膀
+                    case 13: tempBuwei = 1; break;//铠甲
+                    case 14: tempBuwei = 7; break;//手套
+                    case 15: tempBuwei = 2; break;//裤子
+                    case 16: tempBuwei = 6; break;//鞋子
+                    default: break;
+                }
+                if (tempBuwei == EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei && item.Value.pinZhi <= EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi)
+                {
+                    EquipExp += ZhuangBei.GetItemByID(item.Value.itemId).exp;
+                    EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value.dbId);
+                }
+            }
+
+            if (ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp > 0)
+            {
+                if (EquipExp < ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp)
+                {
+                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallback);
+                }
+            }
+        }
+
+    }
+    void UIBoxLoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject boxObj = Instantiate(p_object) as GameObject;
+
+        UIBox uibox = boxObj.GetComponent<UIBox>();
+ 
+        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
+
+        string str = LanguageTemplate.GetText(LanguageTemplate.Text.LACK_OF_QIANGHUACL);
+        string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+        uibox.setBox("", MyColorData.getColorString(1, str), null, null, concelr, confirmStr, ConfirmStrength, null, null, null);
+    }
+
+    private  void ConfirmStrength(int index)
+    {
+        if (index == 2)
+        {
+            EquipUpGrade(savedbid, EquipGrowthMaterialUseManagerment.listTouchedId);
+        }
+        else
+        {
+            EquipGrowthMaterialUseManagerment.listTouchedId.Clear();
+        }
     }
 }

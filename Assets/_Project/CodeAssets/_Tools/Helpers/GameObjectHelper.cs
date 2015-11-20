@@ -204,6 +204,8 @@ public class GameObjectHelper {
 		}
 
 		Debug.Log( "GameObject.Name: " + p_gb.name );
+
+		LogGameObjectHierarchy( p_gb );
 	}
 
 	public static void LogGameObjectTransform( GameObject p_gb, string p_prefex = "" ){

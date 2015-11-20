@@ -439,7 +439,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 
 
-	public const string LOG_DEVICE_INFO				= "/LogDeviceInfo";
+	public const string LOG_DEVICE_INFO					= "/LogDeviceInfo";
 
 	public const string SET_LIGHT 						= "/SetLight";
 
@@ -447,7 +447,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 
 
-	public const string LOG_QUALITY					= "/LogQuality";
+	public const string LOG_QUALITY						= "/LogQuality";
 
 	public const string SET_WEIGHT						= "/SetWeight";
 
@@ -459,9 +459,9 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public const string SET_SKILL_FX					= "/SetSkillFx";
 
-	public const string SET_BLOODLABEL 				= "/SetBloodLabel";
+	public const string SET_BLOODLABEL 					= "/SetBloodLabel";
 
-	public const string SET_FPS						= "/SetFPS";
+	public const string SET_FPS							= "/SetFPS";
 
 	public const string SET_SYNC						= "/SetSync";
 
@@ -471,7 +471,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public const string SET_CAM_TOUR					= "/SetCamTour";
 
-	public const string LOG_MAIN_CAMERA				= "/LogMainCam";
+	public const string LOG_MAIN_CAMERA					= "/LogMainCam";
 
 	#endregion
 

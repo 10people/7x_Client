@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -2075,13 +2075,13 @@ public class BaseAI : MonoBehaviour
 
 		if(body == null) 
 		{
-			EffectTool.RestoreOcclusion (gameObject);
+			EffectTool.RestoreBattleOcclusion (gameObject);
 
 			EffectTool.DisableDeadEffect(gameObject);
 		}
 		else
 		{
-			EffectTool.RestoreOcclusion (body);
+			EffectTool.RestoreBattleOcclusion (body);
 
 			EffectTool.DisableDeadEffect(body);
 		}
@@ -2095,11 +2095,11 @@ public class BaseAI : MonoBehaviour
 		//if (nodeData.nodeType == NodeType.PLAYER) return;
 
 		if(body == null){
-			EffectTool.DisableOcclusion (gameObject);
+			EffectTool.DisableBattleOcclusion (gameObject);
 		}
 		
 		else {
-			EffectTool.DisableOcclusion (body);
+			EffectTool.DisableBattleOcclusion (body);
 		}
 	}
 

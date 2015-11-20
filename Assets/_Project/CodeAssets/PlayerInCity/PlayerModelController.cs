@@ -627,7 +627,7 @@ public class PlayerModelController : MonoBehaviour
         if (m_moveDir != Vector3.zero)
         {
             MoveTurnToDestination(m_moveDir);
-            m_transform.forward = m_moveDir;
+           // m_transform.forward = m_moveDir;
             m_animator.SetBool("inRun", true);
             if (CityGlobalData.m_selfNavigation)
             {
@@ -694,25 +694,91 @@ public class PlayerModelController : MonoBehaviour
             CityGlobalData.m_isRightGuide = true;
         }
     }
+    private GameObject camObject;
+    private GameObject offObject;
+    private GameObject angleObject;
     void MoveTurnToDestination(Vector3 targetPosition)
     {
         m_agent.enabled = true;
-        //  if (targetPosition == Vector3.zero)
+        if (offObject == null)
         {
-            Vector3 oldangle = transform.eulerAngles;
+            offObject = new GameObject();
+        }
 
-            transform.forward = targetPosition - transform.position;
+        offObject.transform.localPosition = targetPosition;
 
-            float tar = transform.eulerAngles.y;
+        offObject.transform.localEulerAngles = new Vector3(0, 0, 0);
 
-            float sp = 1080 * Time.deltaTime;
+        offObject.transform.localScale = new Vector3(1, 1, 1);
 
-            float angle = Mathf.MoveTowardsAngle(oldangle.y, tar, sp);
+        if (camObject == null)
+        {
+            camObject = new GameObject();
+        }
 
-            transform.eulerAngles = new Vector3(0, angle, 0);
+        camObject.transform.localPosition = new Vector3(0, 0, 0);
+
+        camObject.transform.localEulerAngles = Vector3.zero;
+
+        camObject.transform.localScale = new Vector3(1, 1, 1);
+
+        offObject.transform.parent = camObject.transform;
+
+        camObject.transform.localEulerAngles = new Vector3(0, Camera.main.transform.localEulerAngles.y, 0);
+
+        targetPosition = offObject.transform.position;
 
 
-            m_character.Move(targetPosition * m_speed * Time.deltaTime);
+
+        if (angleObject == null)
+        {
+            angleObject = new GameObject();
+        }
+
+        angleObject.transform.localScale = new Vector3(1, 1, 1);
+
+        angleObject.transform.localPosition = Vector3.zero;
+
+        angleObject.transform.eulerAngles = m_transform.transform.eulerAngles;
+
+        Vector3 oldangle = angleObject.transform.eulerAngles;
+
+        angleObject.transform.forward = targetPosition;
+
+        float tar = angleObject.transform.eulerAngles.y;
+
+        float sp = 1080 * Time.deltaTime;
+
+        float angle = Mathf.MoveTowardsAngle(oldangle.y, tar, sp);
+
+        angleObject.transform.eulerAngles = new Vector3(0, angle, 0);
+
+
+        {
+
+            //Vector3 oldangle = transform.eulerAngles;
+
+            //transform.forward = targetPosition - transform.position;
+
+            //float tar = transform.eulerAngles.y;
+
+            //float sp = 1080 * Time.deltaTime;
+
+            //float angle = Mathf.MoveTowardsAngle(oldangle.y, tar, sp);
+
+            //transform.eulerAngles = new Vector3(0, angle, 0);
+
+            //if(objTemp == null)
+            //objTemp = new GameObject();
+            //m_ObjHero.transform.parent = objTemp.transform;
+            //objTemp.transform.localEulerAngles = new Vector3(0, Camera.main.transform.localEulerAngles.y, 0);
+            //  m_ObjHero.transform.localEulerAngles =  new Vector3(0, Camera.main.transform.localEulerAngles.y, 0);
+
+            Vector3 sp2 = targetPosition * m_speed * Time.deltaTime;
+
+            m_transform.forward = sp2;
+
+            m_character.Move(sp2);
         }
 
     }
