@@ -615,7 +615,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 			var rightButtomSpriteName = "boss";
 			
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-		    iconSampleManager.SetIconBasic(15, mYouXiaNpcTemplate.icon.ToString());
+		    iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
 			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
 	
@@ -679,7 +679,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 			var rightButtomSpriteName = "";
 			Debug.Log("mYouXiaNpcTemplate.icon.ToString() = " +mYouXiaNpcTemplate.icon.ToString());
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-			iconSampleManager.SetIconBasic(15, mYouXiaNpcTemplate.icon.ToString());
+			iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
 			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
 			
@@ -746,7 +746,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 			var rightButtomSpriteName = "";
 
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-			iconSampleManager.SetIconBasic(15, mYouXiaNpcTemplate.icon.ToString());
+			iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
 			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
 			
@@ -866,7 +866,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
                     NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mAwardTemp[i].itemId);
 					string mdesc = DescIdTemplate.GetDescriptionById(mAwardTemp[i].itemId);
 
-                    iconSampleManager.SetIconByID(mAwardTemp[i].itemId, "", 15);
+                    iconSampleManager.SetIconByID(mAwardTemp[i].itemId, "", 10);
                     iconSampleManager.SetIconPopText(mAwardTemp[0].itemId, mNameIdTemplate.Name, mdesc, 1);
 				}
 			}
