@@ -115,7 +115,11 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     void OnLevelWasLoaded()
     {
-        if (IsShowFunctionOpenEffectInAllianceCity && (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN))
+        if ( IsShowFunctionOpenEffectInAllianceCity 
+		    && ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY ) 
+		    		|| Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE 
+		    		|| Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN 
+		    || Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY_YE_WAN ) ) )
         {
             IsShowFunctionOpenEffectInAllianceCity = false;
 

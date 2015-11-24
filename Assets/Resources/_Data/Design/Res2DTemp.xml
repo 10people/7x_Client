@@ -202,4 +202,5 @@
 <Res2DTemplate UIID="200" path="_UIs/Utilities/UI_Pop_Reward_Root" />
 <Res2DTemplate UIID="201" path="_3D/Models/BattleField/ShadowTemple" />
 <Res2DTemplate UIID="202" path="_UIs/MainCity/UIMonarch/Prefabs/TanZhuangInfoItem" />
+<Res2DTemplate UIID="203" path="_UIs/MainCity/UIIntensify/Prefabs/EquipInfoItem" />
 </dataset>

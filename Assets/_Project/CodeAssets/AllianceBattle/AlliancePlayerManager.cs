@@ -54,7 +54,7 @@ namespace AllianceBattle
         /// <returns></returns>
         public bool OnSocketEvent(QXBuffer p_message)
         {
-            if (Application.loadedLevelName != ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE) return false;
+			if ( Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE ) ) return false;
 
             if (p_message != null)
             {

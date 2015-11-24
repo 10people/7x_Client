@@ -2,14 +2,14 @@
 -------------------------------------------------------------------- <Version Config>
 ShowVersion:		true
 
-Version:1118-1012
+Version:1123-1604
 ------------------------------------------------------------------- </Version Config>
 
 
 
 ---------------------------------------------------------------------- <Debug Config>
 // control center
-ShowConsole:				true
+ShowConsole:				false
 
 // common code error
 ShowCodeException:			true

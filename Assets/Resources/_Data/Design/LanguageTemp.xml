@@ -880,4 +880,12 @@
 <LanTemp LID="1269" str="进阶到绿色装备后可洗练" />
 <LanTemp LID="1270" str="您的所有高级与稀有属性已\n达到最大值，无法继续洗练" />
 <LanTemp LID="1271" str="强化材料数量不足提升1级，\n继续强化将消耗全部材料，\n是否继续？" />
+<LanTemp LID="1272" str="确定消耗一个转国令" />
+<LanTemp LID="1273" str="转到" />
+<LanTemp LID="1274" str="国完成加入联盟申请？" />
+<LanTemp LID="1275" str="确定花费" />
+<LanTemp LID="1276" str="元宝购买一个转国令" />
+<LanTemp LID="1277" str="装备强化或进阶后，强化经验与洗练进度不变" />
+<LanTemp LID="1278" str="继续洗练，该属性不再增加" />
+<LanTemp LID="1279" str="已达到最大值" />
 </dataset>

@@ -861,6 +861,16 @@ public class LanguageTemplate : XmlLoadManager
         XILIAN_DESC_6 = 1269,
         XILIAN_DESC_7 = 1270,
         LACK_OF_QIANGHUACL = 1271,
+
+        ALLIANCE_TAG_ADD = 1272,
+        ALLIANCE_TAG_ADD_1 = 1273,
+        ALLIANCE_TAG_ADD_2 = 1274,
+        ALLIANCE_TAG_ADD_3 = 1275,
+        ALLIANCE_TAG_ADD_4 = 1276,
+        XILIAN_DESC_8 = 1277,
+        XILIAN_DESC_9 = 1278,
+        XILIAN_DESC_10 = 1279,
+
     }
 
     public int lanId;

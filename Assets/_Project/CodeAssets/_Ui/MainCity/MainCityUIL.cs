@@ -357,7 +357,9 @@ public class MainCityUIL : MonoBehaviour
         chatUI.GetComponentInChildren<ChatWindow>().m_ChatChannelFrameList.ForEach(item =>
         {
             var temp = item.m_ChatBaseDataHandler.GetComponent<ChatDataHandler>();
-            if (temp.m_Channel == ChatPct.Channel.SHIJIE || (temp.m_Channel == ChatPct.Channel.LIANMENG && !AllianceData.Instance.IsAllianceNotExist) || (temp.m_Channel == ChatPct.Channel.XiaoWu && Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_HOUSE))
+            if (temp.m_Channel == ChatPct.Channel.SHIJIE || (temp.m_Channel == ChatPct.Channel.LIANMENG 
+					&& !AllianceData.Instance.IsAllianceNotExist) || (temp.m_Channel == ChatPct.Channel.XiaoWu 
+			      	&& Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) ))
             {
                 item.m_ChatBaseDataHandler.GetComponent<ChatDataHandler>().Awake();
             }

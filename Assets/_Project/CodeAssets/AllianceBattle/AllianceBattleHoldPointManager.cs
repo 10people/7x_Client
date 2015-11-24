@@ -34,11 +34,9 @@ namespace AllianceBattle
 
             public void RefreshValue(int elapseTime)
             {
-                if (Application.loadedLevelName != ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE)
-                {
-                    if (TimeHelper.Instance.IsTimeCalcKeyExist("AllianceBattleOccupyBar" + id))
-                    {
-                        TimeHelper.Instance.RemoveFromTimeCalc("AllianceBattleOccupyBar" + id);
+				if ( Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE ) ){
+                    if ( TimeHelper.Instance.IsTimeCalcKeyExist("AllianceBattleOccupyBar" + id ) ){
+                        TimeHelper.Instance.RemoveFromTimeCalc("AllianceBattleOccupyBar" + id );
                     }
 
                     return;

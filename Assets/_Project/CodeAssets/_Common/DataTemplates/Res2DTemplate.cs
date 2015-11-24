@@ -212,6 +212,7 @@ public class Res2DTemplate : XmlLoadManager
 		UI_POP_REWARD_ROOT = 200,
 		SHADOW_TEMPLE = 201,
         TAO_ZHUANG_ITEM = 202,
+        EQUIPINFO_ITEM = 203,
     }
 
 

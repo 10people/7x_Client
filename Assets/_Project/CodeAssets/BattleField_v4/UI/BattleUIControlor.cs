@@ -983,7 +983,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
-			if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
+			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
 
 			if (BattleControlor.Instance ().getKing ().isPlayingSkill() == true) return false;
 		}
@@ -1009,15 +1009,9 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
-			if (BattleControlor.Instance().getKing().isPlayingAttack() == true) 
-			{
-				return false;
-			}
+			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
 
-			if (BattleControlor.Instance ().getKing ().isPlayingSkill() == true) 
-			{
-				return false;
-			}
+			if (BattleControlor.Instance ().getKing ().isPlayingSkill() == true) return false;
 		}
 
 		if (BattleControlor.Instance ().getKing ().nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) < 0) return false;
@@ -1045,7 +1039,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
-			if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
+			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
 			
 			if (BattleControlor.Instance ().getKing ().isPlayingSkill() == true) return false;
 		}
@@ -1071,7 +1065,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
-			if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
+			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
 			
 			if (BattleControlor.Instance ().getKing ().isPlayingSkill() == true) return false;
 		}
@@ -1097,7 +1091,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
-			if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
+			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
 			
 			if (BattleControlor.Instance ().getKing ().isPlayingSkill() == true) return false;
 		}
@@ -1123,7 +1117,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
-			if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
+			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
 			
 			if (BattleControlor.Instance ().getKing ().isPlayingSkill() == true) return false;
 		}
@@ -1277,7 +1271,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
-			if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
+			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
 			
 			if (BattleControlor.Instance ().getKing ().isPlayingSkill() == true) return false;
 		}

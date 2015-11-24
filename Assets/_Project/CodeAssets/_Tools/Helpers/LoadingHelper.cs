@@ -146,24 +146,24 @@ public class LoadingHelper{
 	
 	/// Is Loading CreateRole Now?
 	public static bool IsLoadingCreateRole(){
-		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_CREATE_ROLE;
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CREATE_ROLE );
 	}
 	
 	/// Is Loading Main City Now?
 	public static bool IsLoadingMainCity(){
-		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_MAIN_CITY ;
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY );
 	}
 	
 	public static bool IsLoadingMainCityYeWan(){
-		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN;
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY_YE_WAN );
 	}
 	/// Is Loading Alliance City Now?
 	public static bool IsLoadingAllianceCity(){
-		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY;
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY );
 	}
 
 	public static bool IsLoadingAllianceCityYeWan(){
-		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN;
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY_YE_WAN );
 	}
 	
 	public static bool IsLoadingAllianceTenentsCity(){
@@ -178,15 +178,15 @@ public class LoadingHelper{
 	}
 	
 	public static bool IsLoadingHouse(){
-		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_HOUSE;
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE );
 	}
 	
 	public static bool IsLoadingCarriage(){
-		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_CARRIAGE;
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE );
 	}
 	
 	public static bool IsLoadingAllianceBattle(){
-		return EnterNextScene.GetSceneToLoad() == ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE;
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE );
 	}
 
 	#endregion

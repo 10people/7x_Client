@@ -33,9 +33,9 @@ public class EnterBattleField : ScriptableObject
 
 		CityGlobalData.battleTemplateId = template.id;
 
-//			CityGlobalData.m_nextSceneName = "BattleField_V4_" + template.sceneId;
+//		CityGlobalData.m_nextSceneName = "BattleField_V4_" + template.sceneId;
 
-		CityGlobalData.t_next_battle_field_scene = ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX + template.sceneId;
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( template.sceneId );
 
 		CityGlobalData.m_configId = template.configId;
 
@@ -69,7 +69,7 @@ public class EnterBattleField : ScriptableObject
 
 //		CityGlobalData.m_nextSceneName = "BattleField_V4_" + chapterId;
 
-		CityGlobalData.t_next_battle_field_scene = ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX + chapterId;
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( chapterId );
 
 		CityGlobalData.m_configId = 900;
 
@@ -96,7 +96,7 @@ public class EnterBattleField : ScriptableObject
 
 		CityGlobalData.battleTemplateId = template.id;
 
-		CityGlobalData.t_next_battle_field_scene = ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX + sceneId;
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( sceneId );
 		
 		//ceneManager.EnterBattleField( CityGlobalData.t_next_battle_field_scene );
 
@@ -123,7 +123,7 @@ public class EnterBattleField : ScriptableObject
 
 		CityGlobalData.m_configId = template.configId;
 
-		CityGlobalData.t_next_battle_field_scene = ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX + sceneId;
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( sceneId );
 		
 		//SceneManager.EnterBattleField( CityGlobalData.t_next_battle_field_scene );
 
@@ -144,7 +144,7 @@ public class EnterBattleField : ScriptableObject
 		
 		int chapterId = 900;
 		
-		CityGlobalData.t_next_battle_field_scene = ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX + chapterId;
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( chapterId );
 		
 		CityGlobalData.m_configId = 900;
 
@@ -175,7 +175,7 @@ public class EnterBattleField : ScriptableObject
 
 		CityGlobalData.battleTemplateId = template.id;
 
-		CityGlobalData.t_next_battle_field_scene = ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX + template.sceneId;
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( template.sceneId );
 		
 		CityGlobalData.m_configId = template.configId;
 		
@@ -204,7 +204,7 @@ public class EnterBattleField : ScriptableObject
 		
 		//		CityGlobalData.m_nextSceneName = "BattleField_V4_" + chapterId;
 		
-		CityGlobalData.t_next_battle_field_scene = ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX + chapterId;
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( chapterId );
 		
 		CityGlobalData.m_configId = 900;
 		

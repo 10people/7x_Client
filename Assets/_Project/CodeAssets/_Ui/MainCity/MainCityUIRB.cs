@@ -178,15 +178,18 @@ public class MainCityUIRB : MonoBehaviour
     public void Initialize()
     {
         //Set state
-        if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_MAIN_CITY || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN)
-        {
+		if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY ) 
+		    || Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY_YE_WAN ) ){
             m_FunctionState = FunctionState.MainCity;
         }
-        else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN)
+		else if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY ) 
+		         || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE 
+		         || Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY_YE_WAN )
+		         || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN)
         {
             m_FunctionState = FunctionState.AllianceCity;
         }
-        else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_HOUSE)
+		else if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) )
         {
             m_FunctionState = FunctionState.House;
         }

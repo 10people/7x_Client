@@ -39,8 +39,7 @@ public class ChatOpenCloseController : MonoBehaviour
         isOpen = true;
         m_ChatWindow.isEnterToggleByOpeningWindow = true;
 
-        if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_CARRIAGE)
-        {
+		if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
             CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.m_ChatRedAlert.SetActive(false);
         }
         else
@@ -58,7 +57,8 @@ public class ChatOpenCloseController : MonoBehaviour
         {
             m_ChatWindow.AllianceAlert.SetActive(false);
         }
-        if (m_ChatWindow.PrivateAlert.activeSelf && Application.loadedLevelName != ConstInGame.CONST_SCENE_NAME_HOUSE)
+		if ( m_ChatWindow.PrivateAlert.activeSelf && 
+		    Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) )
         {
             m_ChatWindow.PrivateAlert.SetActive(false);
         }
@@ -78,7 +78,8 @@ public class ChatOpenCloseController : MonoBehaviour
                 m_ChatWindow.TogglesControl.TogglesEvents[1].gameObject,
                 SendMessageOptions.DontRequireReceiver);
         }
-        else if (m_ChatWindow.PrivateAlert.activeSelf && Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_HOUSE)
+		else if (m_ChatWindow.PrivateAlert.activeSelf 
+		         && Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) )
         {
             m_ChatWindow.TogglesControl.TogglesEvents[2].gameObject.SendMessage(
                 "OnClick",

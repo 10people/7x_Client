@@ -59,8 +59,7 @@ public class ChatDataHandler : ChatBaseDataHandler
         //Show alert if window closed.
         if (!m_ChatWindow.m_ChatOpenCloseController.isOpen)
         {
-            if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_CARRIAGE)
-            {
+			if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
                 CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.m_ChatRedAlert.SetActive(true);
 
                 if (m_Channel != ChatPct.Channel.SYSTEM)

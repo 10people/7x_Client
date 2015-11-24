@@ -227,7 +227,7 @@ public class DebugPhoneData : MonoBehaviour, SocketProcessor {
 				// Added By YuGu, 2015.3.4
 				Debug.LogError( "Error! Never Call This Directly" );
 
-				Application.LoadLevel( ConstInGame.CONST_SCENE_NAME_MAIN_CITY );
+				Application.LoadLevel( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY ) );
 			}
 
 			return true;

@@ -137,8 +137,7 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                         YabiaoJunZhuList temp = new YabiaoJunZhuList();
                         t_qx.Deserialize(t_tream, temp, temp.GetType());
 
-                        if (Application.loadedLevelName != ConstInGame.CONST_SCENE_NAME_CARRIAGE)
-                        {
+				if (Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
                             Debug.LogWarning("Do not sync s_YabiaoJunZhuList in CarriageSceneManager cause not initialized.");
                             return false;
                         }
@@ -163,8 +162,7 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                         BiaoCheState temp = new BiaoCheState();
                         t_qx.Deserialize(t_tream, temp, temp.GetType());
 
-                        if (s_YabiaoJunZhuList == null || Application.loadedLevelName != ConstInGame.CONST_SCENE_NAME_CARRIAGE)
-                        {
+						if (s_YabiaoJunZhuList == null || Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
                             Debug.LogWarning("Do not sync BiaoCheState in CarriageSceneManager cause not initialized.");
                             return false;
                         }
@@ -184,8 +182,7 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                         YabiaoJunZhuInfo temp = new YabiaoJunZhuInfo();
                         t_qx.Deserialize(t_tream, temp, temp.GetType());
 
-                        if (Application.loadedLevelName != ConstInGame.CONST_SCENE_NAME_CARRIAGE)
-                        {
+						if (Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
                             Debug.LogWarning("Do not sync BiaoCheState in CarriageSceneManager cause not initialized.");
                             return false;
                         }

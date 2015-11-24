@@ -430,7 +430,7 @@ public class KingControllor : HeroAI
 			{
 				updateWeapon();
 
-				updateWeaponSkill ();
+				if(stance == Stance.STANCE_ENEMY) updateWeaponSkill ();
 
 				base.BaseUpdate();
 

@@ -572,7 +572,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 
 	private static int m_templates_loaded 		= 0;
 
-	private const int CONST_TEMPLATES_COUNT		= 103;
+	private const int CONST_TEMPLATES_COUNT		= 104;
 
 	public static bool m_is_templates_loaded = false;
 
@@ -859,7 +859,12 @@ public class ClientMain : MonoBehaviour , SocketListener
 			ZBChushiDiaoluoTemp.LoadTemplates(TemplateLoadedCallback);
             
 			ExpTempTemp.LoadTemplates(TemplateLoadedCallback);
+
+			SceneTemplate.LoadTemplates( TemplateLoadedCallback );
+			
+
         }
+
 		m_is_templates_loaded = true;
 	}
 

@@ -661,8 +661,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 	{
 		YinDaoCol ();
 		LueDuoData.Instance.IsStop = false;
-	    if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_CARRIAGE)
-	    {
+		if (Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
             CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.RefreshAllEffect();
         }
 		if (SkillType == (int)CityGlobalData.MibaoSkillType.PVP_Fangshou)
@@ -805,8 +804,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		default:
 			break;
 		}
-        if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_CARRIAGE)
-        {
+		if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
             CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.RefreshAllEffect();
         }
 

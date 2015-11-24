@@ -1317,22 +1317,6 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 
 
 
-	#region Bundle Checker
-
-	private static string m_level_name = "";
-
-	public static void LoadLoadinglDone( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
-		Debug.Log( "LoadLoadinglDone( " + p_path + " )" );
-
-		Debug.LogError( "Never Use This." );
-
-		Application.LoadLevel( m_level_name );
-	}
-
-	#endregion
-
-
-
 	#region Bundle Update State
 
 	public enum BundleUpdateState{

@@ -35,29 +35,15 @@ public class ConstInGame : MonoBehaviour {
 
 	public const string CONST_SCENE_NAME_LOGIN			= "Game_Scene_Login";
 
-	public const string CONST_SCENE_NAME_CREATE_ROLE	= "Game_Scene_Create_Role";
-
-	public const string CONST_SCENE_NAME_HOUSE			= "Game_Scene_House";
-
-	public const string CONST_SCENE_NAME_CARRIAGE       = "Game_Scene_Carriage";
-
-	public const string CONST_SCENE_NAME_ALLIANCE_BATTLE       = "Game_Scene_AllianceBattle";
-
-	public const string CONST_SCENE_NAME_MAIN_CITY		= "Game_Scene_MainCity";
-
-    public const string CONST_SCENE_NAME_MAIN_CITY_YEWAN = "Game_Scene_MainCity_YeWan";
-
-    public const string CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE	= "Game_Scene_Loading";
+	public const string CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE	= "Game_Scene_Loading";
 
 
-	public const string CONST_SCENE_NAME_ALLIANCE_CITY = "Game_Scene_AllianceCity";
+	/// deprecated
+	public const string CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE 	= "Game_Scene_AllianceTenentsCity_One";
 
-	public const string CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN = "Game_Scene_AllianceCity_YeWan";
+	/// deprecated
+    public const string CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN 	= "Game_Scene_AllianceTenentsCity_One_YeWan";
 
-
-	public const string CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE = "Game_Scene_AllianceTenentsCity_One";
-
-    public const string CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN = "Game_Scene_AllianceTenentsCity_One_YeWan";
 	#endregion
 
 
@@ -78,22 +64,16 @@ public class ConstInGame : MonoBehaviour {
 	#endregion
 
 
-	#region Battle Field Replay
+
+	#region Persist Data
+
+	// ------------------------- Persistent Data File -----------------------------------------
 	
-	public const string CONST_SCENE_NAME_BATTLE_FIELD_REPLAY		= "BattleReplay_V4";
+	public const string CONST_PERSISTENT_DATA_BUNDLE_LIST		= "BundleList";
+
+	public const string CONST_NEW_CHENGHAO 						= "NewChenghao";
 	
+	// ------------------------- Persistent Data File -----------------------------------------
+
 	#endregion
-	
-
-	// -------------------------- Scene Name ------------------------------------------
-
-
-
-	// ------------------------- Persistent Data File -----------------------------------------
-	
-	public const string CONST_PERSISTENT_DATA_BUNDLE_LIST	= "BundleList";
-
-	public const string CONST_NEW_CHENGHAO = "NewChenghao";
-	
-	// ------------------------- Persistent Data File -----------------------------------------
 }

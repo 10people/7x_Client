@@ -89,7 +89,7 @@ public class SceneManager{
 		Debug.Log("EnterCreateRole()" );
 		#endif
 
-        EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_CREATE_ROLE );
+		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CREATE_ROLE ) );
 
         EnterLoading();
     }
@@ -105,9 +105,9 @@ public class SceneManager{
         //Object.DontDestroyOnLoad( mainCityUI.gameObject );
         CityGlobalData.m_isAllianceTenentsScene = false;
 
-        EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_HOUSE );
-
-        EnterLoading();
+		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) );
+		
+		EnterLoading();
     }
 
     /// Load Carriage Scene.
@@ -117,23 +117,22 @@ public class SceneManager{
 		Debug.Log("EnterCarriage()" );
         #endif
 
-        EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_CARRIAGE );
-
-        EnterLoading();
+		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) );
+		
+		EnterLoading();
     }
 
     /// <summary>
     /// Load Alliance Battle Scene.
     /// </summary>
-    public static void EnterAllianceBattle()
-    {
+    public static void EnterAllianceBattle(){
 		#if DEBUG_LOADING_SCENE
 		Debug.Log("EnterAllianceBattle()" );
         #endif
 
-        EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE );
-
-        EnterLoading();
+		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE ) );
+		
+		EnterLoading();
     }
 
     /// Request to Load Main City Scene.
@@ -159,14 +158,12 @@ public class SceneManager{
         }
      
        
-        if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
-        {
-            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN, false );
+        if ( CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20 ){
+			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY_YE_WAN ), false );
           //  EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY);
         }
-        else
-        {
-          EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY, false );
+        else{
+			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY ), false );
            // EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN);
         }
 
@@ -207,12 +204,12 @@ public class SceneManager{
 
         if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
         {
-            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN, false);
+			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY_YE_WAN ), false );
           //  EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN);
         }
         else
         {
-            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY, false);
+			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY ), false );
           //  EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY );
         }
   
@@ -221,6 +218,8 @@ public class SceneManager{
 
    
     public static void EnterAllianceCityTenentsCityOne(){
+		Debug.LogError( "Should Never Be Here." );
+
 #if DEBUG_LOADING_SCENE
 		Debug.Log("EnterAllianceCityTenentsCityOne( " + " )" );
 #endif
@@ -333,58 +332,48 @@ public class SceneManager{
 		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE;
 	}
 	
-	public static bool IsInLoginScene()
-	{
+	public static bool IsInLoginScene(){
 		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_LOGIN;
 	}
 	
-	public static bool IsInCreateRoleScene()
-	{
-		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_CREATE_ROLE;
+	public static bool IsInCreateRoleScene(){
+		return Application.loadedLevelName ==SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CREATE_ROLE );
 	}
 	
-	public static bool IsInMainCityScene()
-	{
-		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_MAIN_CITY;
+	public static bool IsInMainCityScene(){
+		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY );
 	}
-	public static bool IsInMainCityYeWanScene()
-	{
-		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN;
-	}
-	
-	public static bool IsInAllianceCityScene()
-	{
-		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY;
+
+	public static bool IsInMainCityYeWanScene(){
+		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY_YE_WAN );
 	}
 	
-	public static bool IsInAllianceCityYeWanScene()
-	{
-		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN;
+	public static bool IsInAllianceCityScene(){
+		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY );
 	}
 	
-	public static bool IsInAllianceTenentsCityScene()
-	{
+	public static bool IsInAllianceCityYeWanScene(){
+		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY_YE_WAN );
+	}
+	
+	public static bool IsInAllianceTenentsCityScene(){
 		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE;
 	}
 	
-	public static bool IsInAllianceTenentsCityYeWanScene()
-	{
+	public static bool IsInAllianceTenentsCityYeWanScene(){
 		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN;
 	}
 	
-	public static bool IsInBattleFieldScene()
-	{
+	public static bool IsInBattleFieldScene(){
 		return Application.loadedLevelName.StartsWith(ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX);
 	}
 	
-	public static bool IsInHouseScene()
-	{
-		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_HOUSE;
+	public static bool IsInHouseScene(){
+		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE );
 	}
 	
-	public static bool IsInCarriageScene()
-	{
-		return Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_CARRIAGE;
+	public static bool IsInCarriageScene(){
+		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE );
 	}
 	
 	
@@ -479,37 +468,37 @@ public class SceneManager{
 			return;
 		}
 
-		if( t_level == ConstInGame.CONST_SCENE_NAME_CREATE_ROLE ){
+		if( t_level == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CREATE_ROLE ) ){
 			SetSceneState( SceneState.CreateRole );
 
 			return;
 		}
 
-		if (t_level.StartsWith (ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX)) {
+		if (t_level.StartsWith ( ConstInGame.CONST_SCENE_NAME_BATTLE_FIELD_PREFIX ) ) {
 			SetSceneState( SceneState.BattleField );
 
 			return;
 		}
 
-		if (t_level.StartsWith ( ConstInGame.CONST_SCENE_NAME_MAIN_CITY )) {
+		if (t_level.StartsWith ( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY ) )) {
 			SetSceneState( SceneState.MainCity );
 			
 			return;
 		}
 
-		if (t_level.StartsWith ( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY )) {
+		if (t_level.StartsWith ( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY ) )) {
 			SetSceneState( SceneState.AllianceCity );
 			
 			return;
 		}
 
-		if (t_level.StartsWith ( ConstInGame.CONST_SCENE_NAME_CARRIAGE )) {
+		if (t_level.StartsWith ( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) )) {
 			SetSceneState( SceneState.Carriage );
 			
 			return;
 		}
 
-		if (t_level.StartsWith ( ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE )) {
+		if (t_level.StartsWith ( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE ) ) ) {
 			SetSceneState( SceneState.AllianceBattle );
 			
 			return;

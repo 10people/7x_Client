@@ -802,7 +802,13 @@ public class EnterNextScene : MonoBehaviour{
 		//		Debug.Log( "-------------- EnterNextScene.SetSceneToLoad( " + 
 		//						p_to_load_scene_name + " - " + p_auto_activation + 
 		//						" ) --------------" );
-		
+
+		if( string.IsNullOrEmpty( p_to_load_scene_name ) ){
+			Debug.LogError( "Error, Scene Name is NullorEmpty." );
+
+			return;
+		}
+
 		m_to_load_scene_name = p_to_load_scene_name;
 
 		m_destroy_ui_when_level_loaded = p_destroy_ui_when_level_loaded;
