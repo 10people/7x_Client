@@ -218,7 +218,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 						else
 						{
 							pvpObj.SetActive (true);
-							PvpPage.pvpPage.sEffectControl.OnOpenWindowClick ();
+//							PvpPage.pvpPage.sEffectControl.OnOpenWindowClick ();
 							PvpPage.pvpPage.InItPvpPage (pvpInfo);
 						}
 					}

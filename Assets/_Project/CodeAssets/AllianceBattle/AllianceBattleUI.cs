@@ -543,8 +543,8 @@ namespace AllianceBattle
             SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FIGHT_ATTACK_REQ, ref t_protof);
 
             //Play animation
-            m_RootManager.m_AlliancePlayerController.m_Animator.SetTrigger("Attack");
-            m_RootManager.m_AlliancePlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<Animator>().SetTrigger("BATC");
+            m_RootManager.m_AlliancePlayerController.m_Animator.Play("attack");
+            m_RootManager.m_AlliancePlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<Animator>().Play("BATC");
         }
 
         #endregion

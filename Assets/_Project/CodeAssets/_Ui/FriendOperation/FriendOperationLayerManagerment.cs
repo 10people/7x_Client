@@ -605,7 +605,8 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
         }
         if (!string.IsNullOrEmpty(name))
         {
-			EmailData.Instance.ReplyLetter (name);
+//			EmailData.Instance.ReplyLetter (name);
+			NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE,name);
         	Destroy(m_MainParent);
         }       
     }

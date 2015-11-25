@@ -367,7 +367,8 @@ public class ChatLogItem : MonoBehaviour
         DeActiveAllButtonsExpectAlert();
 
         //go to mail sys.
-		EmailData.Instance.ReplyLetter(m_ChatStruct.m_ChatPct.senderName);
+//		EmailData.Instance.ReplyLetter(m_ChatStruct.m_ChatPct.senderName);
+		NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE,m_ChatStruct.m_ChatPct.senderName);
     }
 
     private void OnShieldClick()

@@ -1213,6 +1213,8 @@ public class PlayerModelController : MonoBehaviour
 
         EquipSuoData.Instance();
 
+		NewEmailData.Instance ().LoadEmailPrefab ();
+
 //		EmailData.Instance.EmailDataReq();
 
 //        QXTanBaoData.Instance().TBInfoReq();

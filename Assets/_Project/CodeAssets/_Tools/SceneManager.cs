@@ -156,13 +156,15 @@ public class SceneManager{
         {
             m_isSequencer = true;
         }
-     
-       
-        if ( CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20 ){
-			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY_YE_WAN ), false );
-          //  EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY);
-        }
-        else{
+
+
+        //if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
+        //{
+        //    EnterNextScene.SetSceneToLoad(SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.MAIN_CITY_YE_WAN), false);
+        //    //  EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY);
+        //}
+        //else
+        {
 			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY ), false );
            // EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN);
         }
@@ -202,12 +204,12 @@ public class SceneManager{
             m_isSequencer = true;
         }
 
-        if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
-        {
-			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY_YE_WAN ), false );
-          //  EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN);
-        }
-        else
+   //     if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
+   //     {
+			//EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY_YE_WAN ), false );
+   //       //  EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_YE_WAN);
+   //     }
+   //     else
         {
 			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY ), false );
           //  EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY );

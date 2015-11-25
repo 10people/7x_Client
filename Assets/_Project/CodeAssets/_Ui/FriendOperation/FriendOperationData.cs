@@ -135,12 +135,7 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
 							}
 							case AddFriendType.Email:
 							{
-								GameObject checkEmail = GameObject.Find (parentGameObjName);
-								if (checkEmail != null)
-								{
-									CheckEmail check = checkEmail.GetComponent<CheckEmail> ();
-									check.RefreshAddFriendBtn ();
-								}
+								EmailPage.emailPage.RefreshEmailCheck (EmailPage.RefreshType.ADD_FRIEND);
 								break;
 							}
 							default:

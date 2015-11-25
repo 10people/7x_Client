@@ -47,7 +47,7 @@ TextureImporter:
   buildTargetSettings:
   - buildTarget: Android
     maxTextureSize: 1024
-    textureFormat: 46
+    textureFormat: 47
     compressionQuality: 50
   spriteSheet:
     sprites: []

@@ -104,6 +104,10 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 //        {
 //            return;
 //        }
+		if(!Global.m_isOpenJiaoxue)
+		{
+			return;
+		}
 		m_iCurId = id;
 		if(id == 0)
 		{
@@ -173,6 +177,10 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 //		{
 //			YindaoEditor.YINDAOEDITOR.setCurYindao(yindaoElenemt.m_ID);
 //		}
+		if(!Global.m_isOpenJiaoxue)
+		{
+			return;
+		}
 		iTween[] tempiTewwn = gameObject.GetComponents<iTween>();
 		for(int i = 0; i < tempiTewwn.Length; i ++)
 		{
@@ -427,7 +435,10 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 	public void CloseUI()
 	{
     //	Debug.Log("CloseYinDao");
-
+		if(!Global.m_isOpenJiaoxue)
+		{
+			return;
+		}
 		m_isAddSound = false;
 		m_UISpriteCenter.gameObject.SetActive(false);
 		m_UISpriteTop.gameObject.SetActive(false);

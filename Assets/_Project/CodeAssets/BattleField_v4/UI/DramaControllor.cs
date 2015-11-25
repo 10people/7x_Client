@@ -131,7 +131,7 @@ public class DramaControllor : MonoBehaviour
 
 		bool played = BattleControlor.Instance ().havePlayedGuide (template);
 
-		if (played == true) 
+		if (played == true || true) 
 		{
 			init (template);
 

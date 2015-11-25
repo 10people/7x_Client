@@ -131,8 +131,9 @@ public class MainCityUIL : MonoBehaviour
                 }
             case 2:
                 {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
-                        EmailLoadCallback);
+					NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_MAIN_PAGE);
+//                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
+//                        EmailLoadCallback);
                     break;
                 }
             case 3:
