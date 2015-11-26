@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class MecJoyStick : MonoBehaviour {
@@ -93,10 +93,10 @@ public class MecJoyStick : MonoBehaviour {
 	#region Utilities
 
 	void UpdateSpeed(){
-		Vector2 t_local_pos = new Vector2( transform.localPosition.x + ScreenTool.DesignWidth * 0.5f, 
-		                                  transform.localPosition.y + ScreenTool.DesignHeight * 0.5f );
+		Vector2 t_local_pos = new Vector2( transform.localPosition.x + ScreenHelper.DesignWidth * 0.5f, 
+		                                  transform.localPosition.y + ScreenHelper.DesignHeight * 0.5f );
 		
-		Vector2 t_design_pos = ScreenTool.ScreenToDesign( UICamera.currentTouch.pos );
+		Vector2 t_design_pos = ScreenHelper.ScreenToDesign( UICamera.currentTouch.pos );
 		
 		Vector2 t_delta = t_design_pos - t_local_pos;
 		

@@ -164,12 +164,12 @@ namespace AllianceBattle
 
         public void SetPlayerPositionInSmallMap()
         {
-            if (m_RootManager.m_AlliancePlayerController == null || m_RootManager.m_AllianceBasicPlayerController == null)
+            if (m_RootManager.m_AbPlayerController == null || m_RootManager.m_AbBasicPlayerController == null)
             {
                 return;
             }
 
-            PlayerPointsSprite.transform.localPosition = SmallMapPositionTransfer(m_RootManager.m_AlliancePlayerController.transform.localPosition);
+            PlayerPointsSprite.transform.localPosition = SmallMapPositionTransfer(m_RootManager.m_AbPlayerController.transform.localPosition);
         }
 
         #endregion
@@ -444,7 +444,10 @@ namespace AllianceBattle
 
         #endregion
 
-        #region Attack
+        #region Skill
+
+        public List<RTSkillController> m_SkillControllers = new List<RTSkillController>();
+        public List<RTSkillController> m_CanActivedSkillControllers = new List<RTSkillController>();
 
         public UIButton m_AttackButton;
         public UISprite m_AttackSprite;
@@ -454,7 +457,7 @@ namespace AllianceBattle
 
         void Update()
         {
-            if (m_RootManager.m_AlliancePlayerManager == null || m_RootManager.m_AllianceBasicPlayerController == null) return;
+            if (m_RootManager.m_AbPlayerManager == null || m_RootManager.m_AbBasicPlayerController == null) return;
 
             //Update small map
             {
@@ -463,88 +466,132 @@ namespace AllianceBattle
 
             //Show select effect.
             {
-                if (m_RootManager.m_AlliancePlayerManager.m_PlayerDic == null || m_RootManager.m_AlliancePlayerManager.m_PlayerDic.Count == 0)
+                if (m_RootManager.m_AbPlayerManager.m_PlayerDic == null || m_RootManager.m_AbPlayerManager.m_PlayerDic.Count == 0)
                 {
                     //[ALERT]Donot modify rank of call.
-                    DeactiveAttack();
+                    DeactiveSkills();
                     m_ToAttackId = -1;
                     return;
                 }
 
                 //In distance
-                var temp = m_RootManager.m_AlliancePlayerManager.m_PlayerDic.Where(item => Vector3.Distance(m_RootManager.m_AlliancePlayerController.transform.position, item.Value.transform.position) < AttackDistance);
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => Vector3.Distance(m_RootManager.m_AbPlayerController.transform.position, item.Value.transform.position) < AttackDistance);
                 if (!temp.Any())
                 {
-                    DeactiveAttack();
+                    DeactiveSkills();
                     m_ToAttackId = -1;
                     return;
                 }
 
                 //In angle
-                temp = temp.Where(item => Vector3.Angle(m_RootManager.m_AlliancePlayerController.transform.forward, item.Value.transform.position - m_RootManager.m_AlliancePlayerController.transform.position) < AttackDegree / 2.0f);
+                temp = temp.Where(item => Vector3.Angle(m_RootManager.m_AbPlayerController.transform.forward, item.Value.transform.position - m_RootManager.m_AbPlayerController.transform.position) < AttackDegree / 2.0f);
                 if (!temp.Any())
                 {
-                    DeactiveAttack();
+                    DeactiveSkills();
                     m_ToAttackId = -1;
                     return;
                 }
 
                 //Select ememy
-                temp = temp.Where(item => item.Value.GetComponent<AllianceBasicPlayerController>().AllianceName != AllianceData.Instance.g_UnionInfo.name);
+                temp = temp.Where(item => item.Value.GetComponent<ABBasicPlayerController>().AllianceName != AllianceData.Instance.g_UnionInfo.name);
                 if (!temp.Any())
                 {
-                    DeactiveAttack();
+                    DeactiveSkills();
                     m_ToAttackId = -1;
                     return;
                 }
 
                 //Get only one target
                 //[ALERT]Donot modify rank of call.
-                var temp2 = temp.ToList().OrderBy(item => Vector3.Distance(m_RootManager.m_AlliancePlayerController.transform.position, item.Value.transform.position)).First();
+                var temp2 = temp.ToList().OrderBy(item => Vector3.Distance(m_RootManager.m_AbPlayerController.transform.position, item.Value.transform.position)).First();
                 m_ToAttackId = temp2.Key;
-                ActiveAttack(temp2.Value.GetComponent<AllianceBasicPlayerController>().KingName);
+                ActiveSkills(temp2.Value.GetComponent<ABBasicPlayerController>().KingName);
             }
         }
 
-        public void ActiveAttack(string toAttackName)
+        public void ActiveSkills(string toAttackName)
         {
-            m_AttackButton.isEnabled = true;
-            m_AttackSprite.color = Color.white;
+            //active attack and skills operated to others.
+            m_CanActivedSkillControllers.ForEach(item => item.m_SkillButton.isEnabled = true);
+            m_CanActivedSkillControllers.ForEach(item => item.m_SkillSprite.color = Color.white);
+
             ToAttackLabel.text = "目标:" + toAttackName;
 
-            m_RootManager.m_AlliancePlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<AllianceBasicPlayerController>().OnSelected();
+            m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<ABBasicPlayerController>().OnSelected();
         }
 
-        public void DeactiveAttack()
+        public void DeactiveSkills()
         {
-            m_AttackButton.isEnabled = false;
-            m_AttackSprite.color = Color.grey;
+            //deactive attack and skills operated to others.
+            m_CanActivedSkillControllers.ForEach(item => item.m_SkillButton.isEnabled = false);
+            m_CanActivedSkillControllers.ForEach(item => item.m_SkillSprite.color = Color.grey);
+
             ToAttackLabel.text = "目标:无";
 
-            if (m_ToAttackId > 0 && m_RootManager.m_AlliancePlayerManager.m_PlayerDic.Keys.Contains(m_ToAttackId))
+            if (m_ToAttackId > 0 && m_RootManager.m_AbPlayerManager.m_PlayerDic.Keys.Contains(m_ToAttackId))
             {
-                m_RootManager.m_AlliancePlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<AllianceBasicPlayerController>().OnDeSelected();
+                m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<ABBasicPlayerController>().OnDeSelected();
             }
         }
 
-        public void OnAttackClick()
+        public void OnSkillClick(int index)
         {
-            if (m_ToAttackId < 0) return;
-
-            FightAttackReq tempInfo = new FightAttackReq()
+            //attack
+            if (index < 0)
             {
-                targetId = m_ToAttackId
-            };
-            MemoryStream tempStream = new MemoryStream();
-            QiXiongSerializer tempSer = new QiXiongSerializer();
-            tempSer.Serialize(tempStream, tempInfo);
-            byte[] t_protof;
-            t_protof = tempStream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FIGHT_ATTACK_REQ, ref t_protof);
+                //attack target check
+                if (m_ToAttackId < 0) return;
 
-            //Play animation
-            m_RootManager.m_AlliancePlayerController.m_Animator.Play("attack");
-            m_RootManager.m_AlliancePlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<Animator>().Play("BATC");
+                FightAttackReq tempInfo = new FightAttackReq()
+                {
+                    targetId = m_ToAttackId,
+                    skillId = 0
+                };
+                MemoryStream tempStream = new MemoryStream();
+                QiXiongSerializer tempSer = new QiXiongSerializer();
+                tempSer.Serialize(tempStream, tempInfo);
+                byte[] t_protof;
+                t_protof = tempStream.ToArray();
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FIGHT_ATTACK_REQ, ref t_protof);
+
+                //Play animation
+                m_RootManager.m_AbPlayerController.DeactiveMove();
+                m_RootManager.m_AbPlayerController.m_Animator.Play("Attack");
+
+                m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].DeactiveMove();
+                m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<Animator>().Play("BATC");
+            }
+            //skill
+            else
+            {
+                RTSkillTemplate template = m_SkillControllers.Where(item => item.m_Index == index).First().m_Template;
+
+                ////skill target check, operated to others.
+                //if (template.SkillTarget == 1 && m_ToAttackId < 0) return;
+
+                ////skill target check, cannot operated to players.
+                //if (template.ST_TypeRejectU == 1) return;
+
+                ////skill distance check.
+                //if (template.SkillTarget == 1)
+                //{
+                //    var distance = Vector3.Distance(m_RootManager.m_AbPlayerController.transform.position, m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].transform.position);
+
+                //    if (distance > template.Range_Max || distance < template.Range_Min) return;
+                //}
+
+                FightAttackReq tempInfo = new FightAttackReq()
+                {
+                    targetId = template.SkillTarget == 0 ? JunZhuData.Instance().m_junzhuInfo.id : m_ToAttackId,
+                    skillId = index
+                };
+                MemoryStream tempStream = new MemoryStream();
+                QiXiongSerializer tempSer = new QiXiongSerializer();
+                tempSer.Serialize(tempStream, tempInfo);
+                byte[] t_protof;
+                t_protof = tempStream.ToArray();
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FIGHT_ATTACK_REQ, ref t_protof);
+            }
         }
 
         #endregion
@@ -555,6 +602,7 @@ namespace AllianceBattle
             {
                 switch (p_message.m_protocol_index)
                 {
+                    //Attack/Skill
                     case ProtoIndexes.S_FIGHT_ATTACK_RESP:
                         {
                             MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -562,13 +610,51 @@ namespace AllianceBattle
                             FightAttackResp tempInfo = new FightAttackResp();
                             t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
+                            if (tempInfo.result != Result.SUCCESS)
+                            {
+                                switch (tempInfo.result)
+                                {
+                                    case Result.SKILL_DISTANCE_ERROR:
+                                        {
+                                            ClientMain.m_UITextManager.createText("目标不在技能距离范围内");
+                                            return true;
+                                        }
+                                    case Result.SKILL_COOL_TIME:
+                                        {
+                                            ClientMain.m_UITextManager.createText("技能正在冷却中");
+                                            return true;
+                                        }
+                                    case Result.SKILL_NOT_EXIST:
+                                        {
+                                            ClientMain.m_UITextManager.createText("技能不存在");
+                                            return true;
+                                        }
+                                    case Result.TARGET_NOT_EXIST:
+                                        {
+                                            ClientMain.m_UITextManager.createText("目标不存在");
+                                            return true;
+                                        }
+                                }
+
+                                return true;
+                            }
+
+                            //skill
+                            if (tempInfo.skillId > 0)
+                            {
+                                ClientMain.m_UITextManager.createText("skillID:" + tempInfo.skillId + ", damage:" + tempInfo.damage);
+                                return true;
+                            }
+
+                            //attack
                             bool isMineAttack = false;
 
-                            var temp = m_RootManager.m_AlliancePlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackId).ToList();
+                            var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackId).ToList();
                             if (temp != null && temp.Count() > 0)
                             {
                                 //other player attack.
-                                temp.First().Value.GetComponent<Animator>().SetTrigger("Attack");
+                                temp.First().Value.DeactiveMove();
+                                temp.First().Value.GetComponent<Animator>().Play("Attack");
                             }
                             else
                             {
@@ -576,27 +662,41 @@ namespace AllianceBattle
                                 isMineAttack = true;
                             }
 
-                            var temp2 = m_RootManager.m_AlliancePlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
+                            var temp2 = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
                             if (temp2 != null && temp2.Count() > 0)
                             {
                                 //other player been attack.
                                 //Cancel play animation when mine attack.
                                 if (!isMineAttack)
                                 {
-                                    temp2.First().Value.GetComponent<Animator>().SetTrigger("BATC");
+                                    temp2.First().Value.DeactiveMove();
+                                    temp2.First().Value.GetComponent<Animator>().Play("BATC");
                                 }
-                                temp2.First().Value.GetComponent<AllianceBasicPlayerController>().OnDamage(tempInfo.damage, tempInfo.remainLife);
+                                temp2.First().Value.GetComponent<ABBasicPlayerController>().OnDamage(tempInfo.damage, tempInfo.remainLife);
                             }
-                            else if (m_RootManager.m_AllianceBasicPlayerController != null && m_RootManager.m_AlliancePlayerController != null)
+                            else if (m_RootManager.m_AbBasicPlayerController != null && m_RootManager.m_AbPlayerController != null)
                             {
                                 //mine been attack.
                                 //Cancel play animation when mine attack.
                                 if (!isMineAttack)
                                 {
-                                    m_RootManager.m_AlliancePlayerController.GetComponent<Animator>().SetTrigger("BATC");
+                                    m_RootManager.m_AbPlayerController.DeactiveMove();
+                                    m_RootManager.m_AbPlayerController.GetComponent<Animator>().Play("BATC");
                                 }
-                                m_RootManager.m_AllianceBasicPlayerController.OnDamage(tempInfo.damage, tempInfo.remainLife);
+                                m_RootManager.m_AbBasicPlayerController.OnDamage(tempInfo.damage, tempInfo.remainLife);
                             }
+
+                            return true;
+                        }
+                    //buff
+                    case ProtoIndexes.BUFFER_INFO:
+                        {
+                            MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                            QiXiongSerializer t_qx = new QiXiongSerializer();
+                            BufferInfo tempInfo = new BufferInfo();
+                            t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+                            ClientMain.m_UITextManager.createText("buffID:" + tempInfo.bufferId + ", damage:" + tempInfo.value);
 
                             return true;
                         }
@@ -613,14 +713,14 @@ namespace AllianceBattle
                             Refresh();
 
                             //Set character blood.
-                            if (m_RootManager.m_AllianceBasicPlayerController != null)
+                            if (m_RootManager.m_AbBasicPlayerController != null)
                             {
-                                m_RootManager.m_AllianceBasicPlayerController.TotalBlood = m_BattlefieldInfoResp.totalLife;
-                                m_RootManager.m_AllianceBasicPlayerController.RemainingBlood = m_BattlefieldInfoResp.remainLife;
+                                m_RootManager.m_AbBasicPlayerController.TotalBlood = m_BattlefieldInfoResp.totalLife;
+                                m_RootManager.m_AbBasicPlayerController.RemainingBlood = m_BattlefieldInfoResp.remainLife;
                             }
-                            m_RootManager.m_AllianceBasicPlayerController.SetThis();
+                            m_RootManager.m_AbBasicPlayerController.SetThis();
                             //Set character position.
-                            m_RootManager.m_AlliancePlayerController.transform.localPosition = new Vector3(m_BattlefieldInfoResp.posX, m_RootManager.m_AlliancePlayerController.transform.localPosition.y, m_BattlefieldInfoResp.posZ);
+                            m_RootManager.m_AbPlayerController.transform.localPosition = new Vector3(m_BattlefieldInfoResp.posX, m_RootManager.m_AbPlayerController.transform.localPosition.y, m_BattlefieldInfoResp.posZ);
 
                             return true;
                         }
@@ -690,6 +790,25 @@ namespace AllianceBattle
         void Awake()
         {
             SocketTool.RegisterSocketListener(this);
+
+            //Read skill data.
+            m_SkillControllers.ForEach(item =>
+            {
+                item.m_AllianceBattleUi = this;
+                if (item.m_Index > 0)
+                {
+                    var temp = RTSkillTemplate.templates.Where(item2 => item2.SkillId == item.m_Index);
+                    if (temp.Any())
+                    {
+                        item.m_Template = temp.First();
+                    }
+                    else
+                    {
+                        Debug.LogError("RTSkill template not found.");
+                    }
+                }
+            });
+            m_CanActivedSkillControllers = m_SkillControllers.Where(item => item.m_Index < 0 || item.m_Template.SkillTarget == 1).ToList();
 
             //Read data from xmls.
             AttackDistance = LianmengzhanTemplate.Templates[0].ScreeningDistance;

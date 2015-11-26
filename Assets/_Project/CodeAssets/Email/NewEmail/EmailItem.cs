@@ -29,8 +29,8 @@ public class EmailItem : MonoBehaviour {
 	
 	public GameObject awardIcon;
 
-	//1-玩家邮件 2-房屋 3-联盟 4-荒野 5-百战 6-国战 7-运镖 8-运营
-	private string[] iconLength = new string[]{"home","alliance","huangye","baizhan","guozhan","yunbiao","yunying"};
+	//1-玩家邮件 2-房屋 3-联盟 4-荒野 5-百战 6-国战 7-运镖 8-运营 9-掠夺
+	private string[] iconLength = new string[]{"home","alliance","huangye","baizhan","guozhan","yunbiao","yunying","lueduo"};
 	
 	//获得emailitem信息
 	public void GetEmailItemInfo (EmailInfo emailInfo)
@@ -57,7 +57,7 @@ public class EmailItem : MonoBehaviour {
 			//			Debug.Log ("emailInfo.type" + emailInfo.type);
 			EmailTemp emailTemp = EmailTemp.getEmailTempByType (emailInfo.type);
 			int whichType = emailTemp.whichType;
-			
+//			Debug.Log ("whichType:" + whichType);
 			emailIcon.spriteName = iconLength[whichType - 2];
 			
 			if (emailInfo.goodsList != null)

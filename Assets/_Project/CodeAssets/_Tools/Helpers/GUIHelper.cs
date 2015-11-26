@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class GUIHelper {
@@ -59,32 +59,32 @@ public class GUIHelper {
 	}
 
 	public static Rect GetJoyStickRect( GUIJoyStickType p_type, GUIJoyStickButton p_button ){
-		Rect t_rect = new Rect( 0, 0, ScreenTool.GetWidth( 0.075f ), ScreenTool.GetHeight( 0.15f ) );
+		Rect t_rect = new Rect( 0, 0, ScreenHelper.GetWidth( 0.075f ), ScreenHelper.GetHeight( 0.15f ) );
 
 		if( p_button == GUIJoyStickButton.Up ||
 		   p_button == GUIJoyStickButton.Down ){
-			t_rect.x = ScreenTool.GetX( 0.25f ) - t_rect.width / 2;
+			t_rect.x = ScreenHelper.GetX( 0.25f ) - t_rect.width / 2;
 		}
 		else if( p_button == GUIJoyStickButton.Left ){
-			t_rect.x = ScreenTool.GetX( 0.25f ) - t_rect.width;
+			t_rect.x = ScreenHelper.GetX( 0.25f ) - t_rect.width;
 		}
 		else{
-			t_rect.x = ScreenTool.GetX( 0.25f );
+			t_rect.x = ScreenHelper.GetX( 0.25f );
 		}
 
 		if( p_type == GUIJoyStickType.Right ){
-			t_rect.x = t_rect.x + ScreenTool.GetWidth( 0.5f );
+			t_rect.x = t_rect.x + ScreenHelper.GetWidth( 0.5f );
 		}
 
 		if( p_button == GUIJoyStickButton.Left ||
 		   p_button == GUIJoyStickButton.Right ){
-			t_rect.y = ScreenTool.GetY( 0.5f );
+			t_rect.y = ScreenHelper.GetY( 0.5f );
 		}
 		else if( p_button == GUIJoyStickButton.Up ){
-			t_rect.y = ScreenTool.GetY( 0.5f ) - t_rect.height;
+			t_rect.y = ScreenHelper.GetY( 0.5f ) - t_rect.height;
 		}
 		else{
-			t_rect.y = ScreenTool.GetY( 0.5f ) + t_rect.height;
+			t_rect.y = ScreenHelper.GetY( 0.5f ) + t_rect.height;
 		}
 
 		return t_rect;

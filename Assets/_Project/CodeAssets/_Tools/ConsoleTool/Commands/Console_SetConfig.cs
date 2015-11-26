@@ -1,4 +1,4 @@
-﻿
+
 
 using UnityEngine;
 using System.Collections;
@@ -25,7 +25,7 @@ public class Console_SetConfig {
 			return;
 		}
 		
-		if( GUI.Button( new Rect( 0, ScreenTool.GetY( 0.1f ), ScreenTool.GetX( 0.15f ), ScreenTool.GetY( 0.1f ) ), 
+		if( GUI.Button( new Rect( 0, ScreenHelper.GetY( 0.1f ), ScreenHelper.GetX( 0.15f ), ScreenHelper.GetY( 0.1f ) ), 
 		               ( Time.timeScale > 0 ? "Pause" : "Resume" ) ) ){
 			ExecPause();
 		}
@@ -40,7 +40,7 @@ public class Console_SetConfig {
 			return;
 		}
 		
-		if( GUI.Button( new Rect( ScreenTool.GetX( 0.2f ), ScreenTool.GetY( 0.1f ), ScreenTool.GetX( 0.2f ), ScreenTool.GetY( 0.1f ) ), 
+		if( GUI.Button( new Rect( ScreenHelper.GetX( 0.2f ), ScreenHelper.GetY( 0.1f ), ScreenHelper.GetX( 0.2f ), ScreenHelper.GetY( 0.1f ) ), 
 		               m_show_fx ? "Fx.Hide" : "Fx.Show" ) ){
 			m_show_fx = !m_show_fx;
 			

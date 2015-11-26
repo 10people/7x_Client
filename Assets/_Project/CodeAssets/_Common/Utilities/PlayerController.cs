@@ -28,6 +28,23 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+    #region Move Controller
+
+    private bool is_CanMove = true;
+
+    public void DeactiveMove()
+    {
+        StopPlayerNavigation();
+        is_CanMove = false;
+    }
+
+    public void ActiveMove()
+    {
+        is_CanMove = true;
+    }
+
+    #endregion
+
     public bool IsMainCityUIExist
     {
         get { return MainCityUI.m_MainCityUI != null; }
@@ -119,6 +136,12 @@ public class PlayerController : MonoBehaviour
 
     public void StartNavigation(Vector3 tempPosition)
     {
+        if (!is_CanMove)
+        {
+            Debug.LogWarning("Cancel navigate cause controller set.");
+            return;
+        }
+
         if (m_RealJoystickOffset != Vector3.zero)
         {
             Debug.LogWarning("Cancel navigation cause in character control");
@@ -339,111 +362,118 @@ public class PlayerController : MonoBehaviour
 
         #region Character Controller
 
-        if (!m_IsTurning && !IsInNavigate)
+        if (!is_CanMove)
         {
-            Vector3 offset = m_RealJoystickOffset;
-
-            if (offset != Vector3.zero)
+            Debug.LogWarning("Cancel move cause controller set.");
+        }
+        else
+        {
+            if (!m_IsTurning && !IsInNavigate)
             {
-                if (IsRotateCamera)
+                Vector3 offset = m_RealJoystickOffset;
+
+                if (offset != Vector3.zero)
                 {
-                    Vector3 normalizedOffset = offset.normalized;
-                    bool isMoveForward = false;
-
-                    double angleTemp = Math.Atan2(normalizedOffset.x, normalizedOffset.z) / Math.PI * 180;
-                    double distance = Vector2.Distance(Vector2.zero, new Vector2(offset.x, offset.z));
-                    if (60 < angleTemp && 180 > angleTemp)
+                    if (IsRotateCamera)
                     {
-                        m_Transform.localEulerAngles = new Vector3(0, (float)(m_Transform.localEulerAngles.y + angleSpeed * Time.deltaTime), 0);
-                    }
-                    else if (angleTemp > -180 && angleTemp < -60)
-                    {
-                        m_Transform.localEulerAngles = new Vector3(0, (float)(m_Transform.localEulerAngles.y - angleSpeed * Time.deltaTime), 0);
-                    }
-                    else if (angleTemp > -60 && angleTemp < 60)
-                    {
-                        isMoveForward = true;
-                    }
+                        Vector3 normalizedOffset = offset.normalized;
+                        bool isMoveForward = false;
 
-                    OnPlayerRun();
-
-                    if (!m_IsMoving)
-                    {
-                        m_IsMoving = true;
-
-                        if (IsMainCityUIExist)
+                        double angleTemp = Math.Atan2(normalizedOffset.x, normalizedOffset.z) / Math.PI * 180;
+                        double distance = Vector2.Distance(Vector2.zero, new Vector2(offset.x, offset.z));
+                        if (60 < angleTemp && 180 > angleTemp)
                         {
-                            MainCityUIRB.IsCanClickButtons = false;
-                            MainCityUI.m_MainCityUI.m_MainCityUIRB.SetPanel(false);
-                            UIYindao.m_UIYindao.setCloseUIEff();
+                            m_Transform.localEulerAngles = new Vector3(0, (float)(m_Transform.localEulerAngles.y + angleSpeed * Time.deltaTime), 0);
+                        }
+                        else if (angleTemp > -180 && angleTemp < -60)
+                        {
+                            m_Transform.localEulerAngles = new Vector3(0, (float)(m_Transform.localEulerAngles.y - angleSpeed * Time.deltaTime), 0);
+                        }
+                        else if (angleTemp > -60 && angleTemp < 60)
+                        {
+                            isMoveForward = true;
+                        }
+
+                        OnPlayerRun();
+
+                        if (!m_IsMoving)
+                        {
+                            m_IsMoving = true;
+
+                            if (IsMainCityUIExist)
+                            {
+                                MainCityUIRB.IsCanClickButtons = false;
+                                MainCityUI.m_MainCityUI.m_MainCityUIRB.SetPanel(false);
+                                UIYindao.m_UIYindao.setCloseUIEff();
+                            }
+                        }
+
+                        Vector3 moveDirection = transform.forward;
+
+                        if (!m_CharacterController.isGrounded)
+                        {
+                            moveDirection.y -= m_CharacterSpeedY;
+                        }
+
+                        //move if offset above half distance
+                        if (distance > Joystick.MaxToggleDistance / 2.0f || isMoveForward)
+                        {
+                            m_CharacterController.Move(moveDirection.normalized * m_CharacterSpeed * Time.deltaTime);
                         }
                     }
-
-                    Vector3 moveDirection = transform.forward;
-
-                    if (!m_CharacterController.isGrounded)
+                    else
                     {
-                        moveDirection.y -= m_CharacterSpeedY;
-                    }
+                        Vector3 moveDirection = offset.normalized;
 
-                    //move if offset above half distance
-                    if (distance > Joystick.MaxToggleDistance / 2.0f || isMoveForward)
-                    {
+                        OnPlayerRun();
+
+                        if (!m_IsMoving)
+                        {
+                            m_IsMoving = true;
+
+                            if (IsMainCityUIExist)
+                            {
+                                MainCityUIRB.IsCanClickButtons = false;
+                                MainCityUI.m_MainCityUI.m_MainCityUIRB.SetPanel(false);
+                                UIYindao.m_UIYindao.setCloseUIEff();
+                            }
+                        }
+
+                        if (!m_CharacterController.isGrounded)
+                        {
+                            moveDirection.y -= m_CharacterSpeedY;
+                        }
+
+                        //rotate and move.
+                        transform.forward = offset.normalized;
                         m_CharacterController.Move(moveDirection.normalized * m_CharacterSpeed * Time.deltaTime);
                     }
                 }
                 else
                 {
-                    Vector3 moveDirection = offset.normalized;
+                    OnPlayerStop();
 
-                    OnPlayerRun();
-
-                    if (!m_IsMoving)
+                    if (m_IsMoving)
                     {
-                        m_IsMoving = true;
+                        m_IsMoving = false;
 
                         if (IsMainCityUIExist)
                         {
-                            MainCityUIRB.IsCanClickButtons = false;
-                            MainCityUI.m_MainCityUI.m_MainCityUIRB.SetPanel(false);
-                            UIYindao.m_UIYindao.setCloseUIEff();
+                            MainCityUIRB.IsCanClickButtons = true;
+                            MainCityUI.m_MainCityUI.m_MainCityUIRB.SetPanel(true);
+                            UIYindao.m_UIYindao.setOpenUIEff();
                         }
                     }
+
+                    Vector3 moveDirection = Vector3.zero;
 
                     if (!m_CharacterController.isGrounded)
                     {
                         moveDirection.y -= m_CharacterSpeedY;
                     }
 
-                    //rotate and move.
-                    transform.forward = offset.normalized;
                     m_CharacterController.Move(moveDirection.normalized * m_CharacterSpeed * Time.deltaTime);
                 }
-            }
-            else
-            {
-                OnPlayerStop();
-
-                if (m_IsMoving)
-                {
-                    m_IsMoving = false;
-
-                    if (IsMainCityUIExist)
-                    {
-                        MainCityUIRB.IsCanClickButtons = true;
-                        MainCityUI.m_MainCityUI.m_MainCityUIRB.SetPanel(true);
-                        UIYindao.m_UIYindao.setOpenUIEff();
-                    }
-                }
-
-                Vector3 moveDirection = Vector3.zero;
-
-                if (!m_CharacterController.isGrounded)
-                {
-                    moveDirection.y -= m_CharacterSpeedY;
-                }
-
-                m_CharacterController.Move(moveDirection.normalized * m_CharacterSpeed * Time.deltaTime);
             }
         }
 

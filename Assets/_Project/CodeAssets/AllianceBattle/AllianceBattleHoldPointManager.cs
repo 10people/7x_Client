@@ -86,11 +86,11 @@ namespace AllianceBattle
 
         void Update()
         {
-            if (m_RootManager.m_AlliancePlayerController == null || m_RootManager.m_AllianceBasicPlayerController == null) return;
+            if (m_RootManager.m_AbPlayerController == null || m_RootManager.m_AbBasicPlayerController == null) return;
 
             for (int i = 0; i < HoldPointList.Count; i++)
             {
-                if (Vector3.Distance(m_RootManager.m_AlliancePlayerController.transform.position, HoldPointList[i].OccupyObject.transform.position) < HoldPointRange)
+                if (Vector3.Distance(m_RootManager.m_AbPlayerController.transform.position, HoldPointList[i].OccupyObject.transform.position) < HoldPointRange)
                 {
                     OccupyPoint.CurrentShowingID = HoldPointList[i].id;
                     return;

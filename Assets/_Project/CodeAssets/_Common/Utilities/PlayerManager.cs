@@ -14,9 +14,9 @@ public class PlayerManager : MonoBehaviour
     /// <summary>
     /// Key for id, value for OtherPlayerController
     /// </summary>
-    public Dictionary<long, OtherPlayerController> m_PlayerDic = new Dictionary<long, OtherPlayerController>();
+    public Dictionary<long, BasicPlayerController> m_PlayerDic = new Dictionary<long, BasicPlayerController>();
 
-    public virtual void AddTrackCamera(OtherPlayerController temp)
+    public virtual void AddTrackCamera(BasicPlayerController temp)
     {
         Debug.LogError("Call AddTrackCamera in base class.");
     }
@@ -35,7 +35,7 @@ public class PlayerManager : MonoBehaviour
             tempObject.transform.position = new Vector3(l_position.x, l_position.y, l_position.z);
             tempObject.transform.name = "CreatedOtherPlayer_" + l_ID;
 
-            OtherPlayerController tempItem = tempObject.AddComponent<OtherPlayerController>();
+            BasicPlayerController tempItem = tempObject.AddComponent<BasicPlayerController>();
             AddTrackCamera(tempItem);
 
             tempItem.m_PlayerID = l_ID;
@@ -53,7 +53,7 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
-        OtherPlayerController tempPlayer = m_PlayerDic[l_ID];
+        BasicPlayerController tempPlayer = m_PlayerDic[l_ID];
         l_position.y = 0;
 
         Vector3 targetPosition = new Vector3(l_position.x, l_position.y, l_position.z);
@@ -63,7 +63,7 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdatePlayerPosition()
     {
-        foreach (OtherPlayerController tempPlayer in m_PlayerDic.Values)
+        foreach (BasicPlayerController tempPlayer in m_PlayerDic.Values)
         {
             if (tempPlayer != null)
             {

@@ -135,6 +135,7 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
 							}
 							case AddFriendType.Email:
 							{
+								NewEmailData.Instance ().StopClick = false;
 								EmailPage.emailPage.RefreshEmailCheck (EmailPage.RefreshType.ADD_FRIEND);
 								break;
 							}

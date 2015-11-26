@@ -71,6 +71,13 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 												   "不能给自己发邮件！","间隔时间不到1分钟！","收件人在黑名单中！"};
 
 	private string textStr;
+
+	private bool stopClick;
+	public bool StopClick
+	{
+		set{stopClick = value;}
+		get{return stopClick;}
+	}
 	
 	void Awake ()
 	{
@@ -89,7 +96,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 	{
 		emailObj = Instantiate(p_object) as GameObject;
 		emailObj.SetActive (false);
-		DontDestroyOnLoad (emailObj);
+//		DontDestroyOnLoad (emailObj);
 	}
 
 	#region OpenEmail
@@ -276,7 +283,8 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 					if (newEmailResp.email.type == 80000)
 					{
 						privateList.Add (newEmailResp.email);
-						if (emailObj.activeSelf)
+
+						if (emailObj != null && emailObj.activeSelf)
 						{
 							EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.PRIVATE,privateList);
 						}
@@ -284,7 +292,8 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 					else
 					{
 						systemList.Add (newEmailResp.email);
-						if (emailObj.activeSelf)
+
+						if (emailObj != null && emailObj.activeSelf)
 						{
 							EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
 						}
@@ -321,6 +330,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 				
 				if (responseResp != null)//isSuccess ： 0-成功 1-失败
 				{
+					StopClick = false;
 					if (letterOperateType == LetterOperateType.SHIELD)
 					{
 						if (responseResp.isSuccess == 0)

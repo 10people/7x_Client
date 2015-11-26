@@ -131,8 +131,10 @@ public class ProtoIndexes
 
     public const short ALLIANCE_BATTLE_RESULT = 4216;
 
-	// red notice info
-	public const short RED_NOTICE_INFO = 4220;
+    public const short BUFFER_INFO = 4217;
+
+    // red notice info
+    public const short RED_NOTICE_INFO = 4220;
 
     public const int PVE_PAGE_REQ = 23201;              //请求章节信息
     public const int PVE_PAGE_RET = 23202;              //服务器返回章节信息

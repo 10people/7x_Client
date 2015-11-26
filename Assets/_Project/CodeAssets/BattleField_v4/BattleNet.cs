@@ -122,6 +122,8 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 		}
 		else
 		{
+			//CityGlobalData.t_resp.selfTroop.nodes[0].modleId = 1;
+
 			loadModelEff (CityGlobalData.t_resp);
 		}
 	}

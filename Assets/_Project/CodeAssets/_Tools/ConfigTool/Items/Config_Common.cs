@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Config_Common {
@@ -39,10 +39,10 @@ public class Config_Common {
 	private static void OnGUI_Common_Info(){
 		if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_VERSION ) ){
 			if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CONSOLE ) ) {
-				GUI.Label( new Rect( 0, ScreenTool.GetY( 0.9f ), 250, 35 ), ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
+				GUI.Label( new Rect( 0, ScreenHelper.GetY( 0.9f ), 250, 35 ), ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
 			}
 			else{
-				GUI.Label( new Rect( ScreenTool.GetX( 0.0f ), ScreenTool.GetY( 0.0f ), 250, 35 ), ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
+				GUI.Label( new Rect( ScreenHelper.GetX( 0.0f ), ScreenHelper.GetY( 0.0f ), 250, 35 ), ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
 			}
 			
 			//			GUI.Label( new Rect( 0, 25, 250, 35 ), "BV: " + Prepare_Bundle_Config.m_config_cached_small_version, m_gui_lb_style );

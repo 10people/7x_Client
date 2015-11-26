@@ -186,7 +186,7 @@ public class EmailPage : MonoBehaviour {
 				}
 				else
 				{
-					if (tempList[j].time > tempList[j + 1].time)
+					if (tempList[j].time < tempList[j + 1].time)
 					{
 						EmailInfo tempEmailInfo = tempList[j];
 						tempList[j] = tempList[j + 1];
@@ -217,6 +217,11 @@ public class EmailPage : MonoBehaviour {
 
 	void EmailItemHandlerCallBack (GameObject obj)
 	{
+		if (NewEmailData.Instance ().StopClick)
+		{
+			return;
+		}
+		NewEmailData.Instance ().StopClick = true;
 		EmailItem email = obj.GetComponent<EmailItem> ();
 		switch (email.EmailItemInfo.isRead)
 		{
@@ -359,6 +364,7 @@ public class EmailPage : MonoBehaviour {
 	/// <param name="tempType">Temp type.</param>
 	public void RefreshEmailList (EmailShowType tempType,List<EmailInfo> tempList)
 	{
+		NewEmailData.Instance ().StopClick = false;
 		switch (tempType)
 		{
 		case EmailShowType.SYSTEM:
@@ -376,11 +382,10 @@ public class EmailPage : MonoBehaviour {
 		default:
 			break;
 		}
-
+		CheckUnSendEmail ();
 		if (showPage == EmailShowPage.EMAIL_MAINPGE)
 		{
 			InItEmailList (ShowType == EmailShowType.SYSTEM ? systemList : privateList);
-			CheckUnSendEmail ();
 		}
 	}
 	
@@ -426,6 +431,7 @@ public class EmailPage : MonoBehaviour {
 	{
 		ShowType = EmailShowType.SYSTEM;
 		GetSendEmailInfo ();
+		NewEmailData.Instance ().StopClick = false;
 		NewEmailData.Instance ().ExistNewEmail ();
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);

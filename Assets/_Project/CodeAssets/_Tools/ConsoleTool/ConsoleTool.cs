@@ -1,4 +1,4 @@
-﻿//#define OPEN_CONSOLE
+//#define OPEN_CONSOLE
 
 //#define DEBUG_CONSOLE
 
@@ -157,9 +157,9 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	private void ShowConsole(){
-		m_text = GUI.TextField ( new Rect ( ScreenTool.GetX( 0.2f ), 0, ScreenTool.GetWidth( 0.5f ), ScreenTool.GetHeight( 0.1f ) ), m_text );
+		m_text = GUI.TextField ( new Rect ( ScreenHelper.GetX( 0.2f ), 0, ScreenHelper.GetWidth( 0.5f ), ScreenHelper.GetHeight( 0.1f ) ), m_text );
 		
-		if( GUI.Button( new Rect( 0, 0, ScreenTool.GetWidth( 0.15f ), ScreenTool.GetHeight( 0.1f ) ), "go" ) ){
+		if( GUI.Button( new Rect( 0, 0, ScreenHelper.GetWidth( 0.15f ), ScreenHelper.GetHeight( 0.1f ) ), "go" ) ){
 			OnChatContent( m_text );
 		}
 		

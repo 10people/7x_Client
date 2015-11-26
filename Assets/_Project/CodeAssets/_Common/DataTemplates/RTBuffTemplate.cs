@@ -63,7 +63,7 @@ public class RTBuffTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.BuffId = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
-                t_template.IsDebuff = bool.Parse(t_reader.Value);
+                t_template.IsDebuff = (int.Parse(t_reader.Value) == 1);
                 t_reader.MoveToNextAttribute();
                 t_template.Attr_1 = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();

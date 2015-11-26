@@ -31,7 +31,7 @@ public class SendMail : MonoBehaviour {
 		contentLabel.value = "";
 
 		RefreshBtnState (1);
-
+		NewEmailData.Instance ().StopClick = false;
 		foreach (EventHandler handler in sendEmailBtnList)
 		{
 			handler.m_handler -= BtnHandlerCallBack;
@@ -62,7 +62,7 @@ public class SendMail : MonoBehaviour {
 			Debug.Log ("Unity");
 			#else
 			Debug.Log ("Android or Ios");
-			block.gameObject.SetActive (true);
+			btnDic["Block"].gameObject.SetActive (true);
 			#endif
 
 			break;

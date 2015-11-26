@@ -862,7 +862,15 @@ public class ClientMain : MonoBehaviour , SocketListener
 
 			SceneTemplate.LoadTemplates( TemplateLoadedCallback );
 			
+            RTActionTemplate.LoadTemplates(TemplateLoadedCallback);
+        }
 
+		//111-115
+		{
+			RTBuffTemplate.LoadTemplates(TemplateLoadedCallback);
+           
+			RTSkillTemplate.LoadTemplates(TemplateLoadedCallback);
+            
         }
 
 		m_is_templates_loaded = true;

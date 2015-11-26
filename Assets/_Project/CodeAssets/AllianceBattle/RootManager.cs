@@ -9,10 +9,14 @@ namespace AllianceBattle
     public class RootManager : MonoBehaviour
     {
         public AllianceBattleUI m_AllianceBattleUi;
-        public AlliancePlayerManager m_AlliancePlayerManager;
+        public ABPlayerManager m_AbPlayerManager;
         public AllianceBattleHoldPointManager m_AllianceBattleHoldPointManager;
 
         public Camera TrackCamera;
+        [HideInInspector]
+        public Vector3 TrackCameraPosition;
+        [HideInInspector]
+        public Vector3 TrackCameraRotation;
 
         [HideInInspector]
         public Vector3 originalPosition1;
@@ -23,8 +27,8 @@ namespace AllianceBattle
         public GameObject LuoliPrefab;
 
         public Joystick m_Joystick;
-        public AlliancePlayerController m_AlliancePlayerController;
-        public AllianceBasicPlayerController m_AllianceBasicPlayerController;
+        public ABPlayerController m_AbPlayerController;
+        public ABBasicPlayerController m_AbBasicPlayerController;
 
         public static float BasicYPosition = 0.1f;
 
@@ -33,33 +37,39 @@ namespace AllianceBattle
             var tempObject = Instantiate(roleID <= 2 ? HaojiePrefab : LuoliPrefab) as GameObject;
             tempObject.transform.localPosition = position;
 
-            m_AlliancePlayerController = tempObject.GetComponent<AlliancePlayerController>() ?? tempObject.AddComponent<AlliancePlayerController>();
-            m_AllianceBasicPlayerController = tempObject.GetComponent<AllianceBasicPlayerController>();
+            m_AbPlayerController = tempObject.GetComponent<ABPlayerController>() ?? tempObject.AddComponent<ABPlayerController>();
+            m_AbBasicPlayerController = tempObject.GetComponent<ABBasicPlayerController>();
 
-            m_AlliancePlayerController.IsRotateCamera = false;
-            m_AlliancePlayerController.IsUploadPlayerPosition = true;
-            m_AlliancePlayerController.BaseGroundPosY = 0.1f;
-            m_AlliancePlayerController.m_CharacterSyncDuration = 0.1f;
+            m_AbPlayerController.IsRotateCamera = false;
+            m_AbPlayerController.IsUploadPlayerPosition = true;
+            m_AbPlayerController.BaseGroundPosY = 0.1f;
+            m_AbPlayerController.m_CharacterSyncDuration = 0.1f;
 
-            m_AlliancePlayerController.m_Joystick = m_Joystick;
-            m_AlliancePlayerController.TrackCamera = TrackCamera;
+            m_AbPlayerController.TrackCameraPosition = TrackCameraPosition;
+            m_AbPlayerController.TrackCameraRotation = TrackCameraRotation;
 
-            m_AllianceBasicPlayerController.TrackCamera = TrackCamera;
+            m_AbPlayerController.m_Joystick = m_Joystick;
+            m_AbPlayerController.TrackCamera = TrackCamera;
 
-            m_AllianceBasicPlayerController.IsRed = false;
-            m_AllianceBasicPlayerController.KingName = kingName;
-            m_AllianceBasicPlayerController.AllianceName = allianceName;
+            m_AbBasicPlayerController.TrackCamera = TrackCamera;
+
+            m_AbBasicPlayerController.IsRed = false;
+            m_AbBasicPlayerController.KingName = kingName;
+            m_AbBasicPlayerController.AllianceName = allianceName;
             if (totalBlood > 0)
             {
-                m_AllianceBasicPlayerController.TotalBlood = totalBlood;
-                m_AllianceBasicPlayerController.RemainingBlood = m_AllianceBasicPlayerController.TotalBlood;
+                m_AbBasicPlayerController.TotalBlood = totalBlood;
+                m_AbBasicPlayerController.RemainingBlood = m_AbBasicPlayerController.TotalBlood;
             }
 
-            m_AllianceBasicPlayerController.SetThis();
+            m_AbBasicPlayerController.SetThis();
         }
 
         void Start()
         {
+            TrackCameraPosition = TrackCamera.transform.localPosition;
+            TrackCameraRotation = TrackCamera.transform.localEulerAngles;
+
             InitPlayer(CityGlobalData.m_king_model_Id, originalPosition1, JunZhuData.Instance().m_junzhuInfo.name, AllianceData.Instance.IsAllianceNotExist ? "" : AllianceData.Instance.g_UnionInfo.name);
 
             //Close yindao UI.
