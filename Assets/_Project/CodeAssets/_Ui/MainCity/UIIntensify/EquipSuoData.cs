@@ -67,6 +67,7 @@ public class EquipSuoData:MonoBehaviour
         public bool _NoHave;
         public bool _IsAdd;
         public int _CountAdd;
+        public bool _IsAllMax;
     }
     public static Dictionary<int, List<WashInfo>> m_listEquipWash = new Dictionary<int, List<WashInfo>>();
     public struct AttributeLocked
@@ -147,9 +148,10 @@ public class EquipSuoData:MonoBehaviour
         UIBox uibox = boxObj.GetComponent<UIBox>();
         string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.HUANGYE_19);
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
+        string cancelStr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
         // string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SS);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, confirmStr, null, OnComfirm, null, null);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, cancelStr,confirmStr, OnComfirm, null, null);
     }
 
     private static void OnComfirm(int index)
@@ -157,8 +159,8 @@ public class EquipSuoData:MonoBehaviour
         if (index == 2)
         {
             MainCityUI.TryRemoveFromObjectList(_MainParent);
+            _MainParent.SetActive(false);
             TopUpLoadManagerment.m_instance.LoadPrefab(false);
-            Destroy(_MainParent);
         }
     }
 

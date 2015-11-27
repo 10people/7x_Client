@@ -27,9 +27,22 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                 m_ProgressPuple.gameObject.SetActive(false);
                 m_ProgressBlue.gameObject.SetActive(true);
                 m_ProgressBlue.value = float.Parse(_ShuXingInfo._Count.ToString()) / _ShuXingInfo._Max;
+                m_ProgressBlue.ForceUpdate();
+            //    m_ProgressBlue.alpha = float.Parse(_ShuXingInfo._Count.ToString()) / _ShuXingInfo._Max;
                 if (Mathf.Abs(_ShuXingInfo._CountAdd) == 0)
                 {
-                    m_labProgressBlue.text = _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString();
+                    if (_ShuXingInfo._Count >= _ShuXingInfo._Max && _ShuXingInfo._IsAllMax)
+                    {
+                        m_labProgressBlue.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_10);
+                    }
+                    else if (_ShuXingInfo._Count >= _ShuXingInfo._Max)
+                    {
+                        m_labProgressBlue.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_9);
+                    }
+                    else
+                    {
+                        m_labProgressBlue.text = _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString();
+                    }
                 }
                 else
                 {
@@ -39,7 +52,18 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                     }
                     else
                     {
-                        m_labProgressBlue.text = MyColorData.getColorString(4, "+" + _ShuXingInfo._CountAdd.ToString());
+                        if (_ShuXingInfo._Count >= _ShuXingInfo._Max && _ShuXingInfo._IsAllMax)
+                        {
+                            m_labProgressBlue.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_10);
+                        }
+                        else if (_ShuXingInfo._Count >= _ShuXingInfo._Max)
+                        {
+                            m_labProgressBlue.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_9);
+                        }
+                        else
+                        {
+                            m_labProgressBlue.text = MyColorData.getColorString(4, "+" + _ShuXingInfo._CountAdd.ToString());
+                        }
                     }
                 }
                 if (_ShuXingInfo._Max2 != 0)
@@ -80,15 +104,24 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
             {
                 m_ProgressBlue.gameObject.SetActive(false);
                 m_ProgressPuple.gameObject.SetActive(true);
-              
+
                 m_ProgressPuple.value = float.Parse(_ShuXingInfo._Count.ToString()) / _ShuXingInfo._Max;
-                //Debug.Log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF ::" + float.Parse(_ShuXingInfo._Count.ToString()) / _ShuXingInfo._Max);
-                //Debug.Log("SSSSSSSSSSDDDD ::" + _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString());
- 
+                m_ProgressPuple.ForceUpdate();
+              //  m_ProgressPuple.alpha = float.Parse(_ShuXingInfo._Count.ToString()) / _ShuXingInfo._Max;
                 if (Mathf.Abs(_ShuXingInfo._CountAdd) == 0)
                 {
-                    m_labProgressPuple.text = _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString();
-                   // Debug.Log("OOOOOOOOOOOOOOOOOOOO ::" + _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString());
+                    if (_ShuXingInfo._Count >= _ShuXingInfo._Max && _ShuXingInfo._IsAllMax)
+                    {
+                        m_labProgressPuple.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_10);
+                    }
+                    else if (_ShuXingInfo._Count >= _ShuXingInfo._Max)
+                    {
+                        m_labProgressPuple.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_9);
+                    }
+                    else
+                    {
+                        m_labProgressPuple.text = _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString();
+                    }
                 }
                 else
                 {
@@ -98,7 +131,18 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                     }
                     else
                     {
-                        m_labProgressPuple.text = MyColorData.getColorString(4, "+" + _ShuXingInfo._CountAdd.ToString());
+                        if (_ShuXingInfo._Count >= _ShuXingInfo._Max && _ShuXingInfo._IsAllMax)
+                        {
+                            m_labProgressPuple.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_10);
+                        }
+                        else if (_ShuXingInfo._Count >= _ShuXingInfo._Max)
+                        {
+                            m_labProgressPuple.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_9);
+                        }
+                        else
+                        {
+                            m_labProgressPuple.text = MyColorData.getColorString(4, "+" + _ShuXingInfo._CountAdd.ToString());
+                        }
                     }
                 }
                 if (_ShuXingInfo._Max2 != 0)
@@ -139,7 +183,7 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
         }
         else
         {
-            m_ObjMax.SetActive(_ShuXingInfo._Max == _ShuXingInfo._Count);
+            m_ObjMax.SetActive(_ShuXingInfo._Max <= _ShuXingInfo._Count&& !_ShuXingInfo._IsAllMax);
         }
         
         m_ObjNone.SetActive(_ShuXingInfo._Max == 0 && _ShuXingInfo._Count == 0);

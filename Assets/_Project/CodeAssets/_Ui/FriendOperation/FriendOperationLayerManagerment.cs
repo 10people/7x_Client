@@ -57,7 +57,8 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
         friendItenDic.Clear();
         index = 0;
         m_listEvent.ForEach(p => p.m_Handle += TouchEvent);
-      //  pageIndex = 1;
+        m_listEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+        //  pageIndex = 1;
         RequestData(pageIndex);
 	}
 
@@ -71,11 +72,11 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
                     {
                         if (item.m_SendIndex == index)
                         {
-                            item.GetComponent<ButtonDepthManagerment>().ObjectDepthController(true);
+                            item.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
                         }
                         else 
                         {
-                            item.GetComponent<ButtonDepthManagerment>().ObjectDepthController(false);
+                            item.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
                         }
                     }
                     listForbidInfor.Clear();
@@ -90,11 +91,11 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
                     {
                         if (item.m_SendIndex == index)
                         {
-                            item.GetComponent<ButtonDepthManagerment>().ObjectDepthController(true);
+                            item.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
                         }
                         else
                         {
-                            item.GetComponent<ButtonDepthManagerment>().ObjectDepthController(false);
+                            item.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
                         }
                     }
 

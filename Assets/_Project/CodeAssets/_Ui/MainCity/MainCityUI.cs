@@ -33,7 +33,8 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     public List<MYNGUIPanel> m_MYNGUIPanel = new List<MYNGUIPanel>();
 
     /// <summary>
-    /// access not allowed
+	/// 1.access not allowed;
+	/// 2.After negotiation, all objects contained here are only Functions' Main UI, not sub UI popped.
     /// </summary>
     private List<GameObject> m_WindowObjectList = new List<GameObject>();
 
@@ -58,6 +59,11 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         if (m_MainCityUI != null)
         {
             m_MainCityUI.m_WindowObjectList.Add(go);
+
+			// assume all param:go is functionUI's main page, if not will cause an error
+			{
+				UI2DTool.Instance.ShowUI( go );
+			}
         }
     }
 

@@ -19,7 +19,7 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     public GameObject m_IntensifyOrWash;
  
     public ScaleEffectController m_SEC;
-    public GameObject m_UpgradeTanHao;
+
 	void Start () 
     {
         m_EquipGrowth = this;
@@ -411,7 +411,7 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             {
                 if (tempEquipsOfBodyDic[i].qiangHuaLv > 0)
                 {
-                    m_listItemEvent[i].m_Level.text = MyColorData.getColorString(1, "+" + tempEquipsOfBodyDic[i].qiangHuaLv.ToString());
+                    m_listItemEvent[i].m_Level.text = MyColorData.getColorString(4, "+" + tempEquipsOfBodyDic[i].qiangHuaLv.ToString());
                 }
                 else
                 {

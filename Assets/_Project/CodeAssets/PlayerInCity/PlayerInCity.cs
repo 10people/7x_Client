@@ -85,48 +85,16 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
                 }
             }
         }
-        //if (_listPos.Count == 0 && _isMovingOn)
-        //{
-        //    Debug.Log("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-        //    _isMovingOn = false;
-        //}
-        //if (CityGlobalData.m_PlayerInCity)
-        //{
-        //    Debug.Log("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-        //    CityGlobalData.m_PlayerInCity = false;
-
-        //    m_Agent.enabled = true;
-        //}
-
     }
 
     void MovingOn(Vector3 targetPosition)
     {
+        m_animation.SetBool("inRun", true);
+        m_Agent.speed = PlayerModelController.m_playerModelController.m_speed;
 
-        //Vector3 oldangle = transform.eulerAngles;
+        m_Agent.Resume();
+        m_Agent.SetDestination(targetPosition);
 
-        //transform.forward = targetPosition - transform.position;
-
-        //float tar = transform.eulerAngles.y;
-
-        //float sp = 1080 * Time.deltaTime;
-
-        //float angle = Mathf.MoveTowardsAngle(oldangle.y, tar, sp);
-
-        //transform.eulerAngles = new Vector3(0, angle, 0);
-  
-  
-
-            m_animation.SetBool("inRun", true);
-
-         m_Agent.speed = PlayerModelController.m_playerModelController.m_speed;
-
-
-
-            m_Agent.Resume();
-          //   transform.position = targetPosition;
-           m_Agent.SetDestination(targetPosition);
-        
     }
  
     protected bool inTurning;

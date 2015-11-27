@@ -73,6 +73,11 @@ public class UIWidget : UIRect
 
 	public float aspectRatio = 1f;
 
+	/// <summary>
+	/// Face MainCamera all the time or not
+	/// </summary>
+	public bool m_camera_oriented = false;
+
 	public delegate bool HitCheck (Vector3 worldPos);
 
 	/// <summary>
@@ -1165,13 +1170,34 @@ public class UIWidget : UIRect
 	/// <summary>
 	/// Ensure we have a panel to work with.
 	/// </summary>
-
 	protected override void OnUpdate ()
 	{
 		if (panel == null) CreatePanel();
 #if UNITY_EDITOR
 		else if (!mPlayMode) ParentHasChanged();
 #endif
+
+		UpdateCameraFace();
+	}
+
+	private Camera m_cached_camera = null;
+
+	private void UpdateCameraFace(){
+		if( !m_camera_oriented ){
+			return;	
+		}
+
+		m_cached_camera = Camera.main;
+		
+		if ( m_cached_camera == null ){
+			return;
+		}
+		
+		if ( m_cached_camera.gameObject.activeInHierarchy == false ){ 
+			return;
+		}
+		
+		transform.forward = m_cached_camera.transform.forward;
 	}
 
 #if !UNITY_EDITOR

@@ -27,6 +27,11 @@ public class MainCityRoot : MonoBehaviour
     public void CreateMainCity(Object p_object)
     {
         m_objMainUI = Instantiate(p_object) as GameObject;
+
+		// create UI2DTool and set MainCity UI
+		{
+			UI2DTool.Instance.ShowUI( m_objMainUI );
+		}
     }
     public void MainCityLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {

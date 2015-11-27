@@ -158,6 +158,11 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 							fuWenObj.SetActive (true);
 							FuWenMainPage fuWenMainPage = fuWenObj.GetComponent<FuWenMainPage> ();
 							fuWenMainPage.InItFuWenPage (fuWenDataResp);
+
+							// Manual show UI
+							{
+								UI2DTool.Instance.ShowUI( fuWenObj );
+							}
 						}
 					}
 				}

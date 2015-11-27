@@ -183,6 +183,8 @@ public class ConfigTool : Singleton<ConfigTool>
 
 	void OnDestroy(){
 		CleanData();
+
+		base.OnDestroy();
 	}
 
 	#endregion

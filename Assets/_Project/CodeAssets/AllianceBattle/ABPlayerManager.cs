@@ -27,7 +27,7 @@ namespace AllianceBattle
         /// </summary>
         public Dictionary<long, IDCollector> m_DeadPlayerDic = new Dictionary<long, IDCollector>();
 
-        public override void AddTrackCamera(BasicPlayerController temp)
+        public override void AddTrackCamera(PlayerController temp)
         {
             temp.TrackCamera = m_RootManager.TrackCamera;
         }
@@ -67,9 +67,13 @@ namespace AllianceBattle
                             EnterFightScene tempScene = new EnterFightScene();
                             t_qx.Deserialize(t_stream, tempScene, tempScene.GetType());
 
-                            CreatePlayer(tempScene.junZhuId, tempScene.roleId, tempScene.uid, new Vector3(tempScene.posX, tempScene.posY, tempScene.posZ));
+                            if (!CreatePlayer(tempScene.junZhuId, tempScene.roleId, tempScene.uid, new Vector3(tempScene.posX, tempScene.posY, tempScene.posZ)))
+                            {
+                                Debug.LogError("Cannot create duplicated player.");
+                                return true;
+                            }
 
-                            var tempBasicController = m_PlayerDic[tempScene.junZhuId].GetComponent<ABBasicPlayerController>();
+                            var tempBasicController = m_PlayerDic[tempScene.junZhuId].GetComponent<ABCulturePlayerController>();
                             tempBasicController.TrackCamera = m_RootManager.TrackCamera;
                             tempBasicController.IsRed = string.IsNullOrEmpty(tempScene.allianceName) || AllianceData.Instance.IsAllianceNotExist || (tempScene.allianceName != AllianceData.Instance.g_UnionInfo.name);
                             tempBasicController.KingName = tempScene.senderName;
@@ -121,9 +125,9 @@ namespace AllianceBattle
                                     m_PlayerID = m_PlayerDic[playerDeadNotify.junzhuId].m_PlayerID,
                                     m_RoleID = m_PlayerDic[playerDeadNotify.junzhuId].m_RoleID,
                                     m_UID = m_PlayerDic[playerDeadNotify.junzhuId].m_UID,
-                                    m_KingName = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABBasicPlayerController>().KingName,
-                                    m_AllianceName = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABBasicPlayerController>().AllianceName,
-                                    m_TotalBlood = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABBasicPlayerController>().TotalBlood,
+                                    m_KingName = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABCulturePlayerController>().KingName,
+                                    m_AllianceName = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABCulturePlayerController>().AllianceName,
+                                    m_TotalBlood = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABCulturePlayerController>().TotalBlood,
                                 });
                                 DestroyPlayer(playerDeadNotify.junzhuId);
                             }
@@ -134,14 +138,14 @@ namespace AllianceBattle
                                 {
                                     m_PlayerID = JunZhuData.Instance().m_junzhuInfo.id,
                                     m_RoleID = CityGlobalData.m_king_model_Id,
-                                    m_KingName = m_RootManager.m_AbBasicPlayerController.KingName,
-                                    m_AllianceName = m_RootManager.m_AbBasicPlayerController.AllianceName,
-                                    m_TotalBlood = m_RootManager.m_AbBasicPlayerController.TotalBlood,
+                                    m_KingName = m_RootManager.m_AbCulturePlayerController.KingName,
+                                    m_AllianceName = m_RootManager.m_AbCulturePlayerController.AllianceName,
+                                    m_TotalBlood = m_RootManager.m_AbCulturePlayerController.TotalBlood,
                                 });
 
                                 Destroy(m_RootManager.m_AbPlayerController.gameObject);
                                 m_RootManager.m_AbPlayerController = null;
-                                m_RootManager.m_AbBasicPlayerController = null;
+                                m_RootManager.m_AbCulturePlayerController = null;
 
                                 m_RootManager.m_AllianceBattleUi.DeactiveSkills();
                                 m_RootManager.m_AllianceBattleUi.m_ToAttackId = -1;
@@ -152,7 +156,7 @@ namespace AllianceBattle
 
                             return true;
                         }
-                    case ProtoIndexes.ALLIANCE_FIGHT_PLAYER_REVIVE: //player rebirth.
+                    case ProtoIndexes.ALLIANCE_FIGHT_PLAYER_REVIVE: //player/other player rebirth.
                         {
                             MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
                             PlayerReviveNotify reviveNotify = new PlayerReviveNotify();
@@ -172,7 +176,7 @@ namespace AllianceBattle
                                 {
                                     CreatePlayer(reviveNotify.junzhuId, m_DeadPlayerDic[reviveNotify.junzhuId].m_RoleID, m_DeadPlayerDic[reviveNotify.junzhuId].m_UID, m_RootManager.originalPosition1);
 
-                                    var tempBasicController = m_PlayerDic[reviveNotify.junzhuId].GetComponent<ABBasicPlayerController>();
+                                    var tempBasicController = m_PlayerDic[reviveNotify.junzhuId].GetComponent<ABCulturePlayerController>();
                                     tempBasicController.TrackCamera = m_RootManager.TrackCamera;
                                     tempBasicController.IsRed = false;
                                     tempBasicController.KingName = m_DeadPlayerDic[reviveNotify.junzhuId].m_KingName;

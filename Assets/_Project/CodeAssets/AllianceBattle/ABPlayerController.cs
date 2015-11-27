@@ -6,7 +6,7 @@ using qxmobile.protobuf;
 
 namespace AllianceBattle
 {
-    public class ABPlayerController : PlayerController
+    public class ABPlayerController : SinglePlayerController
     {
         public override void OnPlayerRun()
         {

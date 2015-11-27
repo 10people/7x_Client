@@ -2,10 +2,10 @@
 using System.Collections;
 using AllianceBattle;
 
-public class ABBasicPlayerController : MonoBehaviour
+public class ABCulturePlayerController : MonoBehaviour
 {
-    public ABPlayerController m_PlayerController;
-    public BasicPlayerController m_BasicPlayerController;
+    public ABPlayerController m_ABPlayerController;
+    public PlayerController m_PlayerController;
 
     public void OnAttackFinish()
     {
@@ -19,20 +19,20 @@ public class ABBasicPlayerController : MonoBehaviour
 
     private void EnableMove()
     {
-        if (m_PlayerController == null && m_BasicPlayerController == null)
+        if (m_ABPlayerController == null && m_PlayerController == null)
         {
-            m_PlayerController = GetComponent<ABPlayerController>();
-            m_BasicPlayerController = GetComponent<BasicPlayerController>();
+            m_ABPlayerController = GetComponent<ABPlayerController>();
+            m_PlayerController = GetComponent<PlayerController>();
+        }
+
+        if (m_ABPlayerController != null)
+        {
+            m_ABPlayerController.ActiveMove();
         }
 
         if (m_PlayerController != null)
         {
             m_PlayerController.ActiveMove();
-        }
-
-        if (m_BasicPlayerController != null)
-        {
-            m_BasicPlayerController.ActiveMove();
         }
     }
 
@@ -48,7 +48,7 @@ public class ABBasicPlayerController : MonoBehaviour
     public UILabel NameLabel;
     public UILabel AllianceLabel;
 
-    public UILabel PopupDamageLabel;
+    public UILabel PopupLabel;
 
     public string KingName;
     public string AllianceName;
@@ -87,8 +87,21 @@ public class ABBasicPlayerController : MonoBehaviour
     public void OnDamage(float damage, float remaining)
     {
         StopAllCoroutines();
-        DeactiveDamage();
-        StartCoroutine(ShowDamage(damage));
+        DeactivePopupLabel();
+        StartCoroutine(ShowBloodChange(damage, true));
+
+        UpdateBloodBar(remaining);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="recover">recover</param>
+    public void OnRecover(float recover, float remaining)
+    {
+        StopAllCoroutines();
+        DeactivePopupLabel();
+        StartCoroutine(ShowBloodChange(recover, false));
 
         UpdateBloodBar(remaining);
     }
@@ -99,18 +112,18 @@ public class ABBasicPlayerController : MonoBehaviour
         ProgressBar.value = RemainingBlood / TotalBlood;
     }
 
-    private IEnumerator ShowDamage(float damage)
+    private IEnumerator ShowBloodChange(float change, bool isSub)
     {
-        PopupDamageLabel.text = ColorTool.Color_Red_c40000 + damage + "[-]";
-        PopupDamageLabel.gameObject.SetActive(true);
+        PopupLabel.text = (isSub ? (ColorTool.Color_Red_c40000 + "-") : (ColorTool.Color_Green_00ff00 + "+")) + change + "[-]";
+        PopupLabel.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(1.0f);
-        DeactiveDamage();
+        DeactivePopupLabel();
     }
 
-    private void DeactiveDamage()
+    private void DeactivePopupLabel()
     {
-        PopupDamageLabel.gameObject.SetActive(false);
+        PopupLabel.gameObject.SetActive(false);
     }
 
     void LateUpdate()

@@ -67,8 +67,9 @@
 <CanShu key="FANGWUJINGPAI_4" value="80" desc="贡献值返还衰减" />
 <CanShu key="MEIRI_DINGSHIZENGSONG_TILI" value="50" desc="每日定时赠送体力" />
 <CanShu key="TILI_JILEI_SHANGXIAN" value="500" desc="体力积累上限" />
-<CanShu key="DIJI_TANBAO_REFRESHTIME" value="600" desc="低级探宝冷却时间（秒）" />
-<CanShu key="GAOJI_TANBAO_REFRESHTIME" value="82800" desc="高级探宝冷却时间（秒）" />
+<CanShu key="TONGBI_TANBAO_REFRESHTIME" value="600" desc="铜币探宝冷却时间（秒）" />
+<CanShu key="YUANBAO_TANBAO_REFRESHTIME" value="82800" desc="元宝探宝冷却时间（秒）" />
+<CanShu key="TONGBI_TANBAO_FREETIMES" value="5" desc="铜币探宝每日免费次数（秒）" />
 <CanShu key="MOVESPEED_CHENGNEI_JUNZHU" value="2" desc="城内君主移动速度倍数" />
 <CanShu key="BATTLE_SLOWDOWN_VALUE" value="0.25" desc="战斗胜利或失败慢动作速率" />
 <CanShu key="BATTLE_SLOWDOWN_TIME" value="1" desc="战斗胜利或失败慢动作持续时间" />
@@ -122,6 +123,10 @@
 <CanShu key="XILIANZHI_Free" value="1" desc="单次免费洗练值" />
 <CanShu key="XILIANZHI_YUANBAO" value="1" desc="单次元宝洗练值" />
 <CanShu key="XILIANSHI_MAXTIMES" value="99" desc="每日洗练石洗练次数上限" />
-<CanShu key="XILIANZHI_MAX" value="120" desc="洗练值上限" />
+<CanShu key="XILIANZHI_MAX" value="100" desc="洗练值上限" />
 <CanShu key="WEIWANG_INIT" value="1000" desc="初始可领取威望" />
+<CanShu key="WUQI_BAOJILV" value="0.2" desc="初始武器暴击率" />
+<CanShu key="JINENG_BAOJILV" value="0.2" desc="初始技能暴击率" />
+<CanShu key="GONGJICHOUHEN_ADD" value="30" desc="攻击仇恨值增量" />
+<CanShu key="GONGJICHOUHEN_TIME" value="5" desc="攻击仇恨值持续时间（秒）" />
 </dataset>

@@ -28,7 +28,7 @@ namespace AllianceBattle
 
         public Joystick m_Joystick;
         public ABPlayerController m_AbPlayerController;
-        public ABBasicPlayerController m_AbBasicPlayerController;
+        public ABCulturePlayerController m_AbCulturePlayerController;
 
         public static float BasicYPosition = 0.1f;
 
@@ -38,7 +38,7 @@ namespace AllianceBattle
             tempObject.transform.localPosition = position;
 
             m_AbPlayerController = tempObject.GetComponent<ABPlayerController>() ?? tempObject.AddComponent<ABPlayerController>();
-            m_AbBasicPlayerController = tempObject.GetComponent<ABBasicPlayerController>();
+            m_AbCulturePlayerController = tempObject.GetComponent<ABCulturePlayerController>();
 
             m_AbPlayerController.IsRotateCamera = false;
             m_AbPlayerController.IsUploadPlayerPosition = true;
@@ -51,18 +51,18 @@ namespace AllianceBattle
             m_AbPlayerController.m_Joystick = m_Joystick;
             m_AbPlayerController.TrackCamera = TrackCamera;
 
-            m_AbBasicPlayerController.TrackCamera = TrackCamera;
+            m_AbCulturePlayerController.TrackCamera = TrackCamera;
 
-            m_AbBasicPlayerController.IsRed = false;
-            m_AbBasicPlayerController.KingName = kingName;
-            m_AbBasicPlayerController.AllianceName = allianceName;
+            m_AbCulturePlayerController.IsRed = false;
+            m_AbCulturePlayerController.KingName = kingName;
+            m_AbCulturePlayerController.AllianceName = allianceName;
             if (totalBlood > 0)
             {
-                m_AbBasicPlayerController.TotalBlood = totalBlood;
-                m_AbBasicPlayerController.RemainingBlood = m_AbBasicPlayerController.TotalBlood;
+                m_AbCulturePlayerController.TotalBlood = totalBlood;
+                m_AbCulturePlayerController.RemainingBlood = m_AbCulturePlayerController.TotalBlood;
             }
 
-            m_AbBasicPlayerController.SetThis();
+            m_AbCulturePlayerController.SetThis();
         }
 
         void Start()

@@ -1029,7 +1029,14 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
 			                        ResourcesLoadCallBack);
         }
     }
-
+    public struct AllianceInfo
+    {
+        public int _id;
+        public string _name;
+        public int _reputation;
+        public string _creatorName;
+        public bool _isApplied;
+    };
     public void ResourcesLoadCallBack(ref WWW p_www,string p_path,Object p_object)
     {
        // Debug.Log("listAllianceInfolistAllianceInfolistAllianceInfo ::" + listAllianceInfo.Count + "index_Nuindex_Nuindex_Nuindex_Nuindex_Nu ::" + index_Nu);

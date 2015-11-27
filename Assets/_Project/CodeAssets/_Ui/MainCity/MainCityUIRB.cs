@@ -616,6 +616,11 @@ public class MainCityUIRB : MonoBehaviour
                         else
                         {
                             m_bagObject.SetActive(true);
+
+							// Manual show UI
+							{
+								UI2DTool.Instance.ShowUI( m_bagObject );
+							}
                         }
                     }
                     break;

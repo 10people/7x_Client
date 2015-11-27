@@ -944,6 +944,11 @@ public class PlayerModelController : MonoBehaviour
                         else
                         {
                             equipObject.SetActive(true);
+
+							// Manual show UI
+							{
+								UI2DTool.Instance.ShowUI( equipObject );
+							}
                         }
                     }
                     else

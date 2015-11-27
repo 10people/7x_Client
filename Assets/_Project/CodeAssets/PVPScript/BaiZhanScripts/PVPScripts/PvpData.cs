@@ -10,8 +10,6 @@ using ProtoBuf.Meta;
 
 public class PvpData : Singleton<PvpData>,SocketProcessor {
 
-	private static PvpData pvpData;
-
 	private bool isOpenPvpByBtn = false;
 	public bool IsOpenPvpByBtn
 	{

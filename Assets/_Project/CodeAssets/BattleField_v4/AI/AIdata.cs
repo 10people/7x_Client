@@ -88,10 +88,13 @@ public class AIdata
 		ATTRTYPE_ReductionBTAC = 71,		//被击抗性
 		ATTRTYPE_ReductionDisable = 72,		//击晕抗性
 
+
+		ATTRTYPE_Threat = 73,				//增加的仇恨值，用于BUFF计算
+
 		//////////////////////////////////
 
-		ATTRTYPE_Ice = 63,              	//冰箭射中后的短暂免疫
-		ATTRTYPE_Focus = 74,				//轻武器技能2的标记
+		ATTRTYPE_Ice = 74,              	//冰箭射中后的短暂免疫
+		ATTRTYPE_Focus = 75,				//轻武器技能2的标记
 		ATTRTYPE_isIdle = 100,				//眩晕
 		ATTRTYPE_hpDelay = 101,				//减少生命
 		ATTRTYPE_Blind = 102,				//致盲，恐惧
@@ -256,6 +259,8 @@ public class AIdata
 
 		AddAttribute (0);//ATTRTYPE_Ice = 60,
 		AddAttribute (0);//ATTRTYPE_Focus = 61,
+
+		AddAttribute (0);
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan 
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao

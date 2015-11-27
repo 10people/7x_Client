@@ -14,28 +14,30 @@ public class PlayerManager : MonoBehaviour
     /// <summary>
     /// Key for id, value for OtherPlayerController
     /// </summary>
-    public Dictionary<long, BasicPlayerController> m_PlayerDic = new Dictionary<long, BasicPlayerController>();
+    public Dictionary<long, PlayerController> m_PlayerDic = new Dictionary<long, PlayerController>();
 
-    public virtual void AddTrackCamera(BasicPlayerController temp)
+    public virtual void AddTrackCamera(PlayerController temp)
     {
         Debug.LogError("Call AddTrackCamera in base class.");
     }
 
-    public void CreatePlayer(long l_ID, int l_roleID,int l_uID, Vector3 l_position)
+    public bool CreatePlayer(long l_ID, int l_roleID, int l_uID, Vector3 l_position)
     {
         if (m_PlayerDic.ContainsKey(l_ID))
         {
-            return;
+            return false;
         }
 
         if (!m_PlayerDic.ContainsKey(l_ID))
         {
-            var tempObject = Instantiate(l_roleID <= 2 ? MaleCharacterPrefab : FemaleCharacterPrefab) as GameObject;
+            var temp = Instantiate(l_roleID <= 2 ? MaleCharacterPrefab : FemaleCharacterPrefab) as GameObject;
 
-            tempObject.transform.position = new Vector3(l_position.x, l_position.y, l_position.z);
-            tempObject.transform.name = "CreatedOtherPlayer_" + l_ID;
+            temp.GetComponent<CharacterController>().enabled = false;
 
-            BasicPlayerController tempItem = tempObject.AddComponent<BasicPlayerController>();
+            temp.transform.localPosition = l_position;
+            temp.transform.name = "CreatedOtherPlayer_" + l_ID;
+
+            PlayerController tempItem = temp.AddComponent<PlayerController>();
             AddTrackCamera(tempItem);
 
             tempItem.m_PlayerID = l_ID;
@@ -44,6 +46,8 @@ public class PlayerManager : MonoBehaviour
 
             m_PlayerDic.Add(l_ID, tempItem);
         }
+
+        return true;
     }
 
     public void UpdatePlayerPosition(long l_ID, Vector3 l_position)
@@ -53,7 +57,7 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
-        BasicPlayerController tempPlayer = m_PlayerDic[l_ID];
+        PlayerController tempPlayer = m_PlayerDic[l_ID];
         l_position.y = 0;
 
         Vector3 targetPosition = new Vector3(l_position.x, l_position.y, l_position.z);
@@ -63,7 +67,7 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdatePlayerPosition()
     {
-        foreach (BasicPlayerController tempPlayer in m_PlayerDic.Values)
+        foreach (PlayerController tempPlayer in m_PlayerDic.Values)
         {
             if (tempPlayer != null)
             {

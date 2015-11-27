@@ -53,10 +53,15 @@ public class PvpOpponent : MonoBehaviour {
 		if (opponentInfo.rank < 4)
 		{
 			rankIcon.gameObject.SetActive (true);
-			
+			rankLabel.text = "";
 			rankIcon.spriteName = "rank" + opponentInfo.rank;
 		}
-		rankLabel.text = opponentInfo.rank.ToString ();
+		else
+		{
+			rankIcon.gameObject.SetActive (false);
+			rankLabel.text = opponentInfo.rank.ToString ();
+		}
+
 		//		Debug.Log ("RoleId:" + opponentInfo.roleId);
 		headIcon.spriteName = "PlayerIcon" + opponentInfo.roleId;
 		

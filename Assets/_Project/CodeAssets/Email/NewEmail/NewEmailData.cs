@@ -110,7 +110,8 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		emailOpenType = tempType;
 
 		SendName = tempName != null ? tempName : SendName;
-		Debug.Log ("replyName:" + SendName);
+
+//		Debug.Log ("replyName:" + SendName);
 
 		SendEmailType = tempType == EmailOpenType.EMAIL_REPLY_PAGE ? SendType.REPLY_FROM_FRIEND : SendType.DEFAULT;
 
@@ -123,7 +124,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		if (!isEmailReq)
 		{
 			QXComData.SendQxProtoMessage (ProtoIndexes.C_REQ_MAIL_LIST,ProtoIndexes.S_REQ_MAIL_LIST.ToString ());
-			Debug.Log ("EmailDataReq:" + ProtoIndexes.C_REQ_MAIL_LIST);
+//			Debug.Log ("EmailDataReq:" + ProtoIndexes.C_REQ_MAIL_LIST);
 		}
 		else
 		{

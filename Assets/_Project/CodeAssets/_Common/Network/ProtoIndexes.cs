@@ -71,6 +71,8 @@ public class ProtoIndexes
     public const short EXIT_FIGHT_SCENE = 22006;        //exit fight scene.
     public const short ENTER_FIGHT_SCENE = 22007;       //进入战斗场景
     public const short ENTER_FIGHT_SCENE_OK = 22008;       //进入战斗场景ok
+    public const short EXIT_CARGO_SCENE = 22009;        
+    public const short ENTER_CARGO_SCENE = 22010;      
 
 
     public const short S_HEAD_STRING = 22101;//更新称号ok

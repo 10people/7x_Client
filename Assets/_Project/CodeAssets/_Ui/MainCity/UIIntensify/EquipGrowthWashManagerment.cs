@@ -9,63 +9,42 @@ using ProtoBuf.Meta;
 public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
 {
     public UILabel m_TotalGold;
-    public UILabel m_WashTimeDown;
+ 
     public GameObject m_EquipInfo;
     public GameObject m_SuoTagSignal;
-    public GameObject m_TimesShow;
+ 
     public GameObject m_HidenGameobject;
     public GameObject m_WashTanHao;
     public GameObject m_WashSeniorTanHao;
-    public GameObject m_WashTanHao2;
     public GameObject m_MainParent;
-    public GameObject m_WashDisable;
     public UIGrid m_GridParent;
     public UILabel m_LabPPPP;
-    public UILabel m_WashFreeTimesCount;
+    public UIGrid m_GridTop;
+    public UIGrid m_GridTop2;
+    public GameObject m_XLYuanBao;
+    public GameObject m_XLStone;
     public UILabel m_WashConsume;
-    public UILabel m_WashCostTimesCount;
-    public GameObject m_FreeTimesSingnalFinish;
-    public GameObject m_FreeTimesSingnalTimesCount;
-    public GameObject m_WashSignal;
-    public GameObject m_LabSuoSignal;
-    public List<UILabel> listAttrShow = new List<UILabel>();
+    public UILabel m_WashConsumeSignal;
     public GameObject m_WashSuccesse;
     public GameObject m_UnWashSuccesse;
     public List<EventIndexHandle> listEvent;
+    public EventIndexHandle m_MaskTouch;
     XiLianRes EquipWashInfo = new XiLianRes();
-    private int keepTime = 0;
-    public List<GameObject> listButton = new List<GameObject>();
-    public UILabel m_SuoSignalContent;
-    //public GameObject m_YuanBaoSignal;
-    public GameObject m_FreeWashComplete;
-    public GameObject m_FreeWashIsOn;
-    public GameObject m_NotEnoughYB;
-    public GameObject m_MaskTouch;
-    public List<EventPressIndexHandle> m_listPress;
-    public UILabel m_labelStone;
+    public EventPressIndexHandle m_EventPress;
     public GameObject m_ObjNewAttribute;
     public UILabel m_labNewAttSignal;
     private int _WashType = 0;
     private long dbIdSave;
     public int buttonNum = 0;
-    public UICamera m_Camera;
     private int savedId;
-
-    private bool unLocked = false;
     private int _StoneWashTImes = 0;
     private bool _isFull = false;
-
- 
     private List<int> listConnect = new List<int>();
     private List<int> listSuoAdded = new List<int>();
-    private int timesCurrent = 0;//
-    private int _CurrentSecond = 0;
     private bool washYuanBao = false;
     private int pinzhiSaved = 0;
-//    private int totalTime = 0;
     private int YBXiLianLimited = 0;
     private int _yuanbaoConSume = 0;
-
     public int m_EquipType = 0;
     public UIGrid m_GridAdd;
     public struct RangeInfo
@@ -86,8 +65,9 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     void Start()
     {
         _WadhStoneCount = BagData.Instance().GetCountByItemId(910002);
+        m_MaskTouch.m_Handle += TouchEvent;
         listEvent.ForEach(p => p.m_Handle += TouchEvent);
-        m_listPress.ForEach(p=> p.m_Handle += PressEvent);
+        m_EventPress.m_Handle += PressEvent;
         if (FreshGuide.Instance().IsActive(100330) && TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
         {
             TaskData.Instance.m_iCurMissionIndex = 100330;
@@ -135,10 +115,9 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                     }
                     else if (index == 1)
                     {
-
                         washYuanBao = false;
                     }
-
+                    CreateMove(m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_11));
                     if (index == 2 && JunZhuData.Instance().m_junzhuInfo.yuanBao < EquipWashInfo.yuanBao && (_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0))
                     {
                         EquipSuoData.TopUpLayerTip(m_MainParent);
@@ -154,8 +133,8 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                         }
                         else
                         {
-                            m_listPress[0].transform.GetComponent<Collider>().enabled = false;
-                            m_listPress[1].transform.GetComponent<Collider>().enabled = false;
+                            m_EventPress.GetComponent<Collider>().enabled = false;
+                            
                             EquipWashRequest(index);
                         }
                     }
@@ -197,8 +176,6 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                     {
                         if (FreshGuide.Instance().IsActive(100170) && TaskData.Instance.m_TaskInfoDic[100170].progress < 0)
                         {
-                            // ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100170];
-                            //  UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
                             UIYindao.m_UIYindao.CloseUI();
                         }
                     }
@@ -210,29 +187,16 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                 if (index == 11)
                 {
                     CityGlobalData.m_isWashMaxSignal = true;
-                    m_MaskTouch.SetActive(false);
-                    unLocked = true;
-                    m_WashSignal.SetActive(false);
+                    m_MaskTouch.gameObject.SetActive(false);
+               
+ 
 
                 }
                 else if (index == 12)
                 {
-                    m_MaskTouch.SetActive(false);
+                    m_MaskTouch.gameObject.SetActive(false);
                     CityGlobalData.m_isWashMaxSignalConfirm = true;
-                    unLocked = true;
-                    m_WashSignal.SetActive(false);
                 }
-                //else if (index == 15)
-                //{
-
-                //    MainCityUI.TryRemoveFromObjectList(m_MainParent);
-                //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                //                              UITopUp);
-                //}
-                //else if (index == 16)
-                //{
-                //    m_YuanBaoSignal.SetActive(false);
-                //}
                 else if (index == 10)
                 {
                     EquipSuoData.TopUpLayerTip(m_MainParent);
@@ -251,7 +215,6 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         pinzhiSaved = pinzhi;
         dbIdSave = dbid;
         savedId = equipid;
- 
         MemoryStream t_tream = new MemoryStream();
         QiXiongSerializer t_qx = new QiXiongSerializer();
         XiLianReq equip = new XiLianReq();
@@ -292,15 +255,9 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                         XiLianRes WashInfo = new XiLianRes();
                         t_qx.Deserialize(t_tream, WashInfo, WashInfo.GetType());
                         YBXiLianLimited = WashInfo.yuanBaoTimes;
-                        m_WashCostTimesCount.text = WashInfo.yuanBaoTimes.ToString(); //+ "/" + VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).YBxilianLimit.ToString();
-                        timesCurrent = WashInfo.freeXilianTimes;
-                        _CurrentSecond = WashInfo.time;
                         m_HidenGameobject.SetActive(true);
-                     
-                       
                         _StoneWashTImes = WashInfo.xilianshiTimes;
                         EquipWashInfo = WashInfo;
-
                         if (WashInfo.count4New > 0)
                         {
                             m_labNewAttSignal.text = LanguageTemplate.GetText(LanguageTemplate.Text.WASH_INFO) + WashInfo.count4New + LanguageTemplate.GetText(LanguageTemplate.Text.WASH_INFO1);
@@ -327,13 +284,10 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                                 {
                                     _yuanbaoConSume = _WashInfoSave.yuanBao;
                                 }
-                             //   Debug.Log("_yuanbaoConSume_yuanbaoConSume :::" + _yuanbaoConSume);
                             }
                             else
                             {
-
                                 _yuanbaoConSume = 0;
-                               // Debug.Log("_yuanbaoConSume_yuanbaoConSume :::" + _yuanbaoConSume);
                             }
 
                             if (buttonNum == 2 && _WadhStoneCount > 0 && _StoneWashTImes < int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)))
@@ -341,47 +295,12 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                                 _WadhStoneCount--;
                             }
                             AppendAttributeTidy(EquipWashInfo);
-                            // m_UnWashSuccesse.SetActive(false);
-                            // ShowWashSuccessInfo();
                             buttonNum = 0;
                         }
                         else if (buttonNum == 3 || buttonNum == 4)
                         {
                             SaveOrCancel(buttonNum);
-
-                            if (timesCurrent > 0 && timesCurrent < VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit && _CurrentSecond > 0 && !washYuanBao)
-                            {
-                                keepTime = _CurrentSecond;
-                                if (IsInvoking("TimeDown") )
-                                {
-                                    CancelInvoke("TimeDown");
-                                    InvokeRepeating("TimeDown", 1, 1);
-                                }
-                                else
-                                {
-                                    InvokeRepeating("TimeDown", 1, 1);
-                                }
-                            }
-                            else if (timesCurrent == 0 && !washYuanBao)
-                            {
-                                WashBotton(false, 0);
-                                keepTime = _CurrentSecond;
-                                if (IsInvoking("TimeDown")){
-                                    CancelInvoke("TimeDown");
-                                   
-									InvokeRepeating("TimeDown", 1, 1);
-                                }
-                                else
-                                {
-                                    InvokeRepeating("TimeDown", 1, 1);
-                                }
-                            }
-                            else if (timesCurrent == VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit && !washYuanBao)
-                            {
-                                CancelInvoke("TimeDown");
-                                m_WashTimeDown.text = "";
-                            }
-                            m_MaskTouch.SetActive(false);
+                            m_MaskTouch.gameObject.SetActive(false);
                             m_WashSuccesse.SetActive(false);
                             buttonNum = 0;
                         }
@@ -393,7 +312,6 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
                         QiXiongSerializer t_qx = new QiXiongSerializer();
                         XilianError WashErr = new XilianError();
-
                         t_qx.Deserialize(t_tream, WashErr, WashErr.GetType());
                         FreshLab();
                         switch (WashErr.result)
@@ -434,17 +352,20 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     void ShowRangeInfo(XiLianRes xlres)
     {
         _listRangeInfo.Clear();
-        List<int> _listAtt = new List<int>();
+        _listAtt.Clear();
+        float[] allNow = { float.Parse(xlres.wqSH.ToString()), float.Parse(xlres.wqJM.ToString()), float.Parse(xlres.wqBJ.ToString())
+                , float.Parse(xlres.wqRX.ToString()), float.Parse(xlres.jnSH.ToString()), float.Parse(xlres.jnJM.ToString())
+                , float.Parse(xlres.jnBJ.ToString()), float.Parse(xlres.jnRX.ToString())
+                ,xlres.wqBJL, xlres.jnBJL, xlres.wqMBL, xlres.jnMBL, xlres.jnMBL };
 
-        int[] allNow = { xlres.wqSH, xlres.wqJM, xlres.wqBJ, xlres.wqRX, xlres.jnSH, xlres.jnJM, xlres.jnBJ, xlres.jnRX };
         int[] allMax = { xlres.wqSHMax, xlres.wqJMMax, xlres.wqBJMax, xlres.wqRXMax, xlres.jnSHMax, xlres.jnJMMax, xlres.jnBJMax, xlres.jnRXMax };
 
         int attri_size = EquipSuoData.AllShuXin(XiLianShuXingTemp.GetTemplateById(savedId)).Count;
+
         for (int i = 0; i < attri_size; i++)
         {
             _listAtt.Add(EquipSuoData.AllShuXin(XiLianShuXingTemp.GetTemplateById(savedId))[i]);
         }
-
 
         for (int j = 0; j < _listAtt.Count; j++)
         {
@@ -459,18 +380,15 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
             }
         }
 
-        for (int i = 0; i < _listAtt.Count; i++)
+        if (WetherAllMax(xlres))
         {
-            if (allNow[_listAtt[i]] == allMax[_listAtt[i]])
-            {
-                _isFull = true;
-            }
-            else
-            {
-                _isFull = false;
-            }
-
+            _isFull = true;
         }
+        else
+        {
+            _isFull = false;
+        }
+
 
         for (int i = 0; i < _listAtt.Count; i++)
         {
@@ -490,10 +408,10 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                 add._Count = allNow[_listAtt[i]];
                 add._Max2 = 0;
                 add._Count2 = 0;
-
-                add._NeedUpgrade = allMax[_listAtt[i]] == allNow[_listAtt[i]]; ;
+                add._NeedUpgrade = allMax[_listAtt[i]] <= allNow[_listAtt[i]]; ;
                 add._NoHave = false;
                 add._IsAdd = false;
+                add._IsAllMax = WetherAllMax(xlres);
                 _listRangeInfo.Add(add);
             }
             else
@@ -513,76 +431,112 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                 add._Max2 = 0;
                 add._Count2 = 0;
 
-                add._NeedUpgrade = allMax[_listAtt[i]] == allNow[_listAtt[i]]; ;
+                if (_listAtt[i] < allMax.Length)
+                {
+                    add._NeedUpgrade = allMax[_listAtt[i]] == allNow[_listAtt[i]];
+                }
                 add._NoHave = true;
                 add._IsAdd = false;
+                add._IsAllMax = WetherAllMax(xlres);
                 _listRangeInfo.Add(add);
             }
         }
 
-        int size = m_GridParent.transform.childCount;
+        int size = m_GridTop.transform.childCount;
         int sizeR = _listRangeInfo.Count;
         if (size > 0)
         {
-            //if (sizeR == size)
-            //{
-            //    for (int i = 0; i < size; i++)
-            //    {
-            //        m_GridParent.transform.GetChild(i).GetComponent<EquipGrowthAttributeManagerment>().ShowInfo(_listRangeInfo[i]);
-            //    }
-            //}
-            //else
-            //{
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < 4; i++)
             {
-                Destroy(m_GridParent.transform.GetChild(i).gameObject);
+                m_GridTop.transform.GetChild(i).GetComponent<EquipGrowthAttributeManagerment>().ShowInfo(_listRangeInfo[i]);
             }
-            //}
         }
-
-        index_ShuXing = 0;
-        for (int i = 0; i < _listRangeInfo.Count; i++)
+        else
         {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM2), ResourcesLoadCallBack2);
+            index_ShuXing = 0;
+            for (int i = 0; i < _listRangeInfo.Count; i++)
+            {
+                if (i < 4)
+                {
+                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM2), ResourcesLoadCallBack2);
+                }
+                //else
+                //{
+                //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack3);
+                //}
+            }
         }
     }
- 
+
+    private bool WetherAllMax(XiLianRes xlres)
+    {
+        float[] allNow = { float.Parse(xlres.wqSH.ToString()), float.Parse(xlres.wqJM.ToString()), float.Parse(xlres.wqBJ.ToString())
+                , float.Parse(xlres.wqRX.ToString()), float.Parse(xlres.jnSH.ToString()), float.Parse(xlres.jnJM.ToString())
+                , float.Parse(xlres.jnBJ.ToString()), float.Parse(xlres.jnRX.ToString())
+                ,xlres.wqBJL, xlres.jnBJL, xlres.wqMBL, xlres.jnMBL, xlres.jnMBL };
+
+        int[] allMax = { xlres.wqSHMax, xlres.wqJMMax, xlres.wqBJMax, xlres.wqRXMax, xlres.jnSHMax, xlres.jnJMMax, xlres.jnBJMax, xlres.jnRXMax };
+
+        for (int i = 0; i < _listAtt.Count; i++)
+        {
+            if (allMax[_listAtt[i]] > allNow[_listAtt[i]])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     void FreshLab()
     {
-        m_MaskTouch.SetActive(false);
-        m_listPress[0].transform.GetComponent<Collider>().enabled = true;
-        m_listPress[1].transform.GetComponent<Collider>().enabled = true;
-      
-        if ((_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0) && _WashType == 2)
+        m_MaskTouch.gameObject.SetActive(false);
+        m_EventPress.GetComponent<Collider>().enabled = true;
+ 
+ 
+        if (_StoneWashTImes < int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) && _WadhStoneCount > 0)
         {
-            if (JunZhuData.Instance().m_junzhuInfo.yuanBao >= _yuanbaoConSume)
+            m_XLYuanBao.SetActive(false);
+            m_XLStone.SetActive(true);
+     
+            m_WashConsume.text = _WadhStoneCount.ToString();
+            m_WashConsumeSignal.text = MyColorData.getColorString(10, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_1));
+        }
+        else
+        {
+            m_XLYuanBao.SetActive(true);
+            m_XLStone.SetActive(false);
+            m_WashConsumeSignal.text = MyColorData.getColorString(10, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_2) +YBXiLianLimited.ToString());
+          //  if ((_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0) && _WashType == 2)
             {
-                JunZhuData.Instance().m_junzhuInfo.yuanBao -= _yuanbaoConSume;
+                if (JunZhuData.Instance().m_junzhuInfo.yuanBao >= _yuanbaoConSume)
+                {
+                    JunZhuData.Instance().m_junzhuInfo.yuanBao -= _yuanbaoConSume;
+                }
+            }
+
+            if (JunZhuData.Instance().m_junzhuInfo.yuanBao > 10000)
+            {
+                m_TotalGold.text = (JunZhuData.Instance().m_junzhuInfo.yuanBao / 10000).ToString() + NameIdTemplate.GetName_By_NameId(990051);
+            }
+            else
+            {
+                m_TotalGold.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
+            }
+
+            if (JunZhuData.Instance().m_junzhuInfo.yuanBao < EquipWashInfo.yuanBao)
+            {
+                m_WashConsume.text = MyColorData.getColorString(5, EquipWashInfo.yuanBao.ToString());
+            }
+            else
+            {
+                m_WashConsume.text = MyColorData.getColorString(1, EquipWashInfo.yuanBao.ToString());
             }
         }
 
-        if (JunZhuData.Instance().m_junzhuInfo.yuanBao > 10000)
-        {
-            m_TotalGold.text = (JunZhuData.Instance().m_junzhuInfo.yuanBao / 10000).ToString() + NameIdTemplate.GetName_By_NameId(990051);
-        }
-        else
-        {
-            m_TotalGold.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
-        }
-        m_WashFreeTimesCount.text = timesCurrent.ToString() + "/" + VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit;
+        if (FunctionOpenTemp.GetWhetherContainID(1210) 
+            &&((YBXiLianLimited > 0 && (_StoneWashTImes < int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) && _WadhStoneCount > 0))
 
-        if (JunZhuData.Instance().m_junzhuInfo.yuanBao < EquipWashInfo.yuanBao)
-        {
-            m_WashConsume.text = MyColorData.getColorString(5, EquipWashInfo.yuanBao.ToString());
-        }
-        else
-        {
-            m_WashConsume.text = MyColorData.getColorString(1, EquipWashInfo.yuanBao.ToString());
-        }
-        m_labelStone.text = _WadhStoneCount.ToString();
-
-        if (FunctionOpenTemp.GetWhetherContainID(1210) &&(timesCurrent > 0
-            || (YBXiLianLimited > 0 && _StoneWashTImes < int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) && _WadhStoneCount > 0)))
+             || (YBXiLianLimited > 0 && (_yuanbaoConSume <= JunZhuData.Instance().m_junzhuInfo.yuanBao))) /*&& !_isFull*/)
         {
             m_WashTanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(1210) && FunctionOpenTemp.GetWhetherContainID(1210));
             PushAndNotificationHelper.SetRedSpotNotification(1210, true);
@@ -592,98 +546,52 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
             m_WashTanHao.SetActive(false);
             PushAndNotificationHelper.SetRedSpotNotification(1210,  false);
         }
-        m_WashSeniorTanHao.SetActive(_StoneWashTImes < int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) && _WadhStoneCount > 0 && !_isFull ? true : false);
-        m_WashTanHao2.SetActive(timesCurrent > 0 && FunctionOpenTemp.GetWhetherContainID(1210) && !_isFull);
+        m_WashSeniorTanHao.SetActive((_StoneWashTImes < int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) && _WadhStoneCount > 0 || (YBXiLianLimited > 0 && (_yuanbaoConSume <= JunZhuData.Instance().m_junzhuInfo.yuanBao))) && !_isFull);
+        //m_WashTanHao2.SetActive(timesCurrent > 0 && FunctionOpenTemp.GetWhetherContainID(1210) && !_isFull);
 
         WashButtonsShowState();
     }
 
     void ShowWashInfo()
     {
-
         FreshLab();
-        keepTime = _CurrentSecond;
-	
-        if (JunZhuData.Instance().m_junzhuInfo.yuanBao < EquipWashInfo.yuanBao)
+        //if (JunZhuData.Instance().m_junzhuInfo.yuanBao < EquipWashInfo.yuanBao)
+        //{
+        //    m_WashConsume.text = MyColorData.getColorString(5, EquipWashInfo.yuanBao.ToString());
+        //}
+        //else
+        //{
+        //    m_WashConsume.text = MyColorData.getColorString(1, EquipWashInfo.yuanBao.ToString());
+        //}
+
+        if (ShowWetherWash())
         {
-            m_WashConsume.text = MyColorData.getColorString(5, EquipWashInfo.yuanBao.ToString());
-        }
-        else
-        {
-            m_WashConsume.text = MyColorData.getColorString(1, EquipWashInfo.yuanBao.ToString());
-        }
-		
-     
-        if ( EquipWashInfo.wqSHAdd == 0 && EquipWashInfo.wqJMAdd == 0 && EquipWashInfo.wqBJAdd == 0 && EquipWashInfo.wqRXAdd == 0 && EquipWashInfo.jnSHAdd == 0 && EquipWashInfo.jnJMAdd == 0 && EquipWashInfo.jnBJAdd == 0 && EquipWashInfo.jnRXAdd == 0 )
-        {
-            m_WashTimeDown.text = TimeInfo(_CurrentSecond);         
             m_UnWashSuccesse.SetActive(true);
             m_WashSuccesse.SetActive(false);
-            if (timesCurrent < VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit && keepTime > 0 && pinzhiSaved > 1)
-            {
-                if (IsInvoking("TimeDown") )
-                {
-                    CancelInvoke("TimeDown");
-
-                    InvokeRepeating("TimeDown", 0, 1.0f);
-                }
-                else
-                {
-                    InvokeRepeating("TimeDown", 0, 1.0f);
-                }
-            }
-            else if (timesCurrent < VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit && keepTime > 0 && pinzhiSaved <= 1)
-            {
-                m_WashFreeTimesCount.text =   timesCurrent.ToString() + "/" +VipTemplate.GetVipInfoByLevel(0).xilianLimit;
-                
-				m_FreeWashIsOn.SetActive(true);
-                
-				m_FreeWashComplete.SetActive(false);
-                
-				m_WashTimeDown.text = "";
-            }
-            else if (timesCurrent < VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit && keepTime <= 0 && pinzhiSaved > 1)
-            {
-                EquipWash(dbIdSave, savedId, 0, 3, 3, 3, 3, 3, 3, 3, 3, pinzhiSaved);
-            }
-            else if (timesCurrent == VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit && !washYuanBao)
-            {
-                m_WashTimeDown.text = "";
-            }
         }
         else
         {
-			if(timesCurrent == 0)
-			{
-				m_WashTimeDown.text = "";
-			}
             m_WashSuccesse.SetActive(true);
-          //  m_MaskTouch.SetActive(true);
             m_UnWashSuccesse.SetActive(false);
-   
             SuccessedAttribute();
         }
-
-       
         WashButtonsShowState();
-        if (FreshGuide.Instance().IsActive(100330) && TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
-        {
-            TaskData.Instance.m_iCurMissionIndex = 100330;
+    }
 
-            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 2;
-            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+    private bool ShowWetherWash()
+    {
+        if (EquipWashInfo.wqSHAdd == 0 && EquipWashInfo.wqJMAdd == 0 && EquipWashInfo.wqBJAdd == 0 && EquipWashInfo.wqRXAdd == 0 && EquipWashInfo.jnSHAdd == 0 && EquipWashInfo.jnJMAdd == 0 && EquipWashInfo.jnBJAdd == 0 && EquipWashInfo.jnRXAdd == 0)
+        {
+            return true;
         }
+        return false;
     }
     void ShowWashSuccessInfo()
     {
         FreshLab();
         m_WashSuccesse.SetActive(true);
-      // m_MaskTouch.SetActive(true);
- 
         if (buttonNum == 3 || buttonNum == 4)
         {
-      //      m_MaskTouch.SetActive(false);
             m_WashSuccesse.SetActive(false);
         }
         else if (buttonNum == 1 || buttonNum == 2)
@@ -694,11 +602,11 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
        // CurrentAttributeTidy();
         SuccessedAttribute();
     }
-
+    private List<int> _listAtt = new List<int>();
     void SuccessedAttribute()//显示新生成属性
     {
         _listAddInfo.Clear();
-        List<int> _listAtt = new List<int>();
+        _listAtt.Clear();
         int attri_size = EquipSuoData.AllShuXin(XiLianShuXingTemp.GetTemplateById(savedId)).Count;
         for (int i = 0; i < attri_size; i++)
         {
@@ -716,8 +624,10 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                 }
             }
         }
-        int[] allNow = { EquipWashInfo.wqSH, EquipWashInfo.wqJM, EquipWashInfo.wqBJ, EquipWashInfo.wqRX, EquipWashInfo.jnSH, EquipWashInfo.jnJM, EquipWashInfo.jnBJ, EquipWashInfo.jnRX };
-
+        float[] allNow = { float.Parse(EquipWashInfo.wqSH.ToString()), float.Parse(EquipWashInfo.wqJM.ToString()), float.Parse(EquipWashInfo.wqBJ.ToString())
+                , float.Parse(EquipWashInfo.wqRX.ToString()), float.Parse(EquipWashInfo.jnSH.ToString()), float.Parse(EquipWashInfo.jnJM.ToString())
+                , float.Parse(EquipWashInfo.jnBJ.ToString()), float.Parse(EquipWashInfo.jnRX.ToString())
+                ,EquipWashInfo.wqBJL, EquipWashInfo.jnBJL, EquipWashInfo.wqMBL, EquipWashInfo.jnMBL, EquipWashInfo.jnMBL };
         int[] attribute = { EquipWashInfo.wqSHAdd, EquipWashInfo.wqJMAdd, EquipWashInfo.wqBJAdd, EquipWashInfo.wqRXAdd, EquipWashInfo.jnSHAdd, EquipWashInfo.jnJMAdd, EquipWashInfo.jnBJAdd, EquipWashInfo.jnRXAdd };
 
         int[] allMax = { EquipWashInfo.wqSHMax, EquipWashInfo.wqJMMax, EquipWashInfo.wqBJMax, EquipWashInfo.wqRXMax, EquipWashInfo.jnSHMax, EquipWashInfo.jnJMMax, EquipWashInfo.jnBJMax, EquipWashInfo.jnRXMax };
@@ -737,7 +647,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                     add._type = 0;
                 }
                 add._Max = allMax[_listAtt[i]];
-                if (attribute[_listAtt[i]] > 0)
+                if (_listAtt[i] < attribute.Length && attribute[_listAtt[i]] > 0)
                 {
                     add._IsAdd = true;
                     add._Max2 = allMax[_listAtt[i]];
@@ -777,27 +687,42 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                 add._Count = 0;
                 add._Max2 = 0;
                 add._Count2 = 0;
-                add._NeedUpgrade = allMax[_listAtt[i]] == allNow[_listAtt[i]]; ;
+                if (_listAtt[i] < allMax.Length)
+                {
+                    add._NeedUpgrade = allMax[_listAtt[i]] == allNow[_listAtt[i]];
+                }
                 add._NoHave = true;
                 add._IsAdd = false;
                 _listAddInfo.Add(add);
             }
         }
-        int size = m_GridAdd.transform.childCount;
+        int size = m_GridTop2.transform.childCount;
         int size_add = _listAddInfo.Count;
         if (size > 0)
         {
-            for (int i = 0; i < size_add; i++)
+            for (int i = 0; i < 4; i++)
             {
-                m_GridAdd.transform.GetChild(i).GetComponent<EquipGrowthAttributeManagerment>().ShowInfo(_listAddInfo[i]);
+                m_GridTop2.transform.GetChild(i).GetComponent<EquipGrowthAttributeManagerment>().ShowInfo(_listAddInfo[i]);
             }
+
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    m_GridBottom2.transform.GetChild(i).GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowXYAttribute(_listAddInfo[i]);
+            //}
         }
         else
         {
             index_add = 0;
             for (int i = 0; i < _listAddInfo.Count; i++)
             {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM2), ResourcesLoadAddCallBack);
+                if (i < 4)
+                {
+                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM2), ResourcesLoadAddCallBack);
+                }
+                //else
+                //{
+                //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadAddCallBack4);
+                //}
             }
         }
     }
@@ -808,7 +733,10 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         EquipSuoData.m_listNewAttribute.Clear();
 
         _listEquipWash = new List<EquipSuoData.WashInfo>();
-        int[] allNow = { xlres.wqSH, xlres.wqJM, xlres.wqBJ, xlres.wqRX, xlres.jnSH, xlres.jnJM, xlres.jnBJ, xlres.jnRX };
+        float[] allNow = { float.Parse(xlres.wqSH.ToString()), float.Parse(xlres.wqJM.ToString()), float.Parse(xlres.wqBJ.ToString())
+                , float.Parse(xlres.wqRX.ToString()), float.Parse(xlres.jnSH.ToString()), float.Parse(xlres.jnJM.ToString())
+                , float.Parse(xlres.jnBJ.ToString()), float.Parse(xlres.jnRX.ToString())
+                ,xlres.wqBJL, xlres.jnBJL, xlres.wqMBL, xlres.jnMBL, xlres.jnMBL };
 
         int[] allAdd = { xlres.wqSHAdd, xlres.wqJMAdd, xlres.wqBJAdd, xlres.wqRXAdd, xlres.jnSHAdd, xlres.jnJMAdd, xlres.jnBJAdd, xlres.jnRXAdd };
  
@@ -858,8 +786,15 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                 }
                 wss._num = i;
                 wss._nameid = EquipSuoData.GetNameIDByIndex(i);
-                wss._add = allAdd[i];
-                wss._isMax = allNow[i] == allMax[i] ? true : false;
+                if (i < allAdd.Length)
+                {
+                    wss._add = allAdd[i];
+                }
+
+                if (i < allMax.Length)
+                {
+                    wss._isMax = allNow[i] == allMax[i] ? true : false;
+                }
                 wss._count = allNow[i];
 
                 if (EquipSuoData.m_listNewAttribute.ContainsKey(i))
@@ -871,19 +806,20 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         }
         EquipSuoData.m_listEquipWash.Add(EquipWashInfo.zhuangbeiID, _listEquipWash);
         m_ObjNewAttribute.SetActive(EquipSuoData.GetWetherContainNewAttribute(EquipWashInfo.zhuangbeiID));
-        m_WashFreeTimesCount.text = timesCurrent.ToString() + "/" + VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit;
+      //  m_WashFreeTimesCount.text = timesCurrent.ToString() + "/" + VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit;
         if (EquipSuoData.GetWetherContainNewAttribute(EquipWashInfo.zhuangbeiID))
         {
             FreshLab();
             ShowRangeInfo(xlres);
-            m_MaskTouch.SetActive(false); 
+            m_MaskTouch.gameObject.SetActive(false); 
             listEvent[0].transform.GetComponent<Collider>().enabled = true;
             listEvent[1].transform.GetComponent<Collider>().enabled = true;
             m_UnWashSuccesse.SetActive(true);
             //m_labelStone.text = _WadhStoneCount.ToString();
             //listEvent[0].gameObject.SetActive(false);
             UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjNewAttribute, EffectIdTemplate.GetPathByeffectId(100180), null);
-            m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().AppendAttributeUpdate(EquipWashInfo.zhuangbeiID);
+            // m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().AppendAttributeUpdate(EquipWashInfo.zhuangbeiID);
+            ShowRangeInfo(EquipWashInfo);
             StartCoroutine(WaitSecond());
         }
         else
@@ -926,75 +862,45 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
             }
             ShowRangeInfo(EquipWashInfo);
             m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().AppendAttributeUpdate(EquipWashInfo.zhuangbeiID);
+            ShowRangeInfo(EquipWashInfo);
             m_UnWashSuccesse.SetActive(true);
             m_WashSuccesse.SetActive(false);
             /// listEvent[0].gameObject.SetActive(true);
-  
         }
         else
         {
-    
             m_UnWashSuccesse.SetActive(true);
             m_WashSuccesse.SetActive(false);
         }
         FreshLab();
     }
      
-    void WashBotton(bool ison, int index)
+    void WashBotton1(bool ison, int index)
     {
         if (ison)
         {
-            listButton[index].transform.GetComponent<Collider>().enabled = ison;
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().from = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().to = new Color(1.0f, 1.0f, 1.0f);
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().enabled = true;
+            m_EventPress.GetComponent<Collider>().enabled = ison;
+            m_EventPress.transform.FindChild("Background").GetComponent<TweenColor>().from = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
+            m_EventPress.transform.FindChild("Background").GetComponent<TweenColor>().to = new Color(1.0f, 1.0f, 1.0f);
+            m_EventPress.transform.FindChild("Background").GetComponent<TweenColor>().enabled = true;
         }
         else
         {
-            listButton[index].transform.GetComponent<Collider>().enabled = ison;
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().from = new Color(1.0f, 1.0f, 1.0f);
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().to = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().enabled = true;
+            m_EventPress.transform.GetComponent<Collider>().enabled = ison;
+            m_EventPress.transform.FindChild("Background").GetComponent<TweenColor>().from = new Color(1.0f, 1.0f, 1.0f);
+            m_EventPress.transform.FindChild("Background").GetComponent<TweenColor>().to = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
+            m_EventPress.transform.FindChild("Background").GetComponent<TweenColor>().enabled = true;
         }
     }
 
     void OnDisable()
     {
-        //buttonNum = 0;
+         //buttonNum = 0;
         //m_UnWashSuccesse.SetActive(false);
         //m_WashSuccesse.SetActive(false);
         SocketTool.UnRegisterMessageProcessor(this);
     }
-
-    void TimeDown()
-    {
-        if (keepTime >= 0)
-        {
-            m_WashTimeDown.text = TimeInfo(keepTime);
-            keepTime--;
-             if (keepTime > 0)
-            {
-                m_FreeWashIsOn.SetActive(true);
-                m_FreeWashComplete.SetActive(false);
-                m_WashTimeDown.text = TimeInfo(keepTime);
-            }
-            else if (keepTime < 0)
-            {
-                if (timesCurrent < VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit)
-                {
-                    CancelInvoke("TimeDown");
-                    buttonNum = 0;
-                    EquipWash(dbIdSave, savedId, 0, 3, 3, 3, 3, 3, 3, 3, 3, pinzhiSaved);
-                  
-                }
-                else if (timesCurrent == VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).xilianLimit)
-                {
-                    CancelInvoke("TimeDown");
-                    m_WashTimeDown.text = "";
-                }
-            }
-        }
-    }
+  
     private string TimeInfo(int time)
     {
         int hour = time / 3600;
@@ -1019,108 +925,26 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     }
     void WashButtonsShowState()//免费洗练和元宝洗练按钮的显示状态控制
     {
-        //if (EquipSuoData.Instance().m_EquipSuoInfo.ContainsKey(savedId))
-        //{
-        //    m_WashTimeDown.gameObject.SetActive(false);
-        //    if (!EquipSuoData.Instance().m_EquipSuoInfo[savedId].oneSuo && !EquipSuoData.Instance().m_EquipSuoInfo[savedId].twoSuo && !EquipSuoData.Instance().m_EquipSuoInfo[savedId].threeSuo && !EquipSuoData.Instance().m_EquipSuoInfo[savedId].fourSuo && EquipWashInfo.freeXilianTimes > 0 && XiLianIsOn() && pinzhiSaved > 1 && timesCurrent > 0)
-        //    {
-        //        WashBotton(true, 0);
-        //        m_TimesShow.SetActive(true);
-        //        m_LabSuoSignal.gameObject.SetActive(false);
-                
-        //    }
-        //    else
-        //    {
-        //       m_LabSuoSignal.gameObject.SetActive(true);
-        //       m_TimesShow.SetActive(false);
-        //        WashBotton(false, 0);
-          
-        //    }
-        //}
-        //else
-        {
-            m_WashTimeDown.gameObject.SetActive(true);
-            m_LabSuoSignal.gameObject.SetActive(false);
 
-         
-            if (pinzhiSaved > 1 && !_isFull)
+        if (pinzhiSaved > 1 && !_isFull)
+        {
+            m_SuoTagSignal.SetActive(false);
+            if (YBXiLianLimited == 0 && (_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0))
             {
-                m_WashDisable.SetActive(false);
-                m_TimesShow.SetActive(true);
-                m_SuoTagSignal.SetActive(false);
-                WashBotton(timesCurrent > 0 ? true : false, 0);
-           
-                if (YBXiLianLimited == 0 && (_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0))
-                {
-                    m_WashDisable.SetActive(false);
-                    WashBotton(false, 1);
-                }
-                else
-                {
-                    WashBotton(true, 1);
-                }
+                m_EventPress.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
             }
             else
             {
-                //if (pinzhiSaved <= 1)
-                //{
-                    m_WashDisable.SetActive(true);
-                    WashBotton(false, 1);
-                //}
-                //else if (YBXiLianLimited == 0 &&(_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0))
-                //{
-                //    m_WashDisable.SetActive(false);
-                //    WashBotton(false, 1);
-                //}
-                //else
-                //{
-                //    m_WashDisable.SetActive(false);
-                //    WashBotton(true, 1);
-                //}
-                WashBotton(false, 0);
+                m_EventPress.GetComponent<ButtonColorManagerment>().ButtonsControl(true);
             }
+            m_labNewAttSignal.gameObject.SetActive(true);
         }
-
-        //if (EquipSuoData.Instance().m_EquipSuoInfo.ContainsKey(savedId))
-        //{
-        //    int SuoIndex = 0;
-        //    for(int i = 0;i < listSuoAdded.Count;i++ )
-        //    {  
-        //      SuoIndex += listSuoAdded[i];
-        //    }
-
-        //    if (!XiLianIsOn() || SuoIndex == EquipSuoData.Instance().listIndexs.Count ? true : false)
-        //    {
-        //        WashBotton(false, 1);
-        //    }
-        //    else
-        //    {
-        //        if (YBXiLianLimited > 0)
-        //        {
-        //            WashBotton(true, 1);
-        //        }
-        //        else
-        //        {
-        //            WashBotton(false, 1);
-        //        }
-        //    }
-        //}
-        //else
-        //{
-        //    if (!EquipSuoData.Instance().m_EquipSuoInfo.ContainsKey(savedId))
-        //    {
-        //        listSuoAdded.Clear();
-        //    }
-
-        //    if (!XiLianIsOn() || YBXiLianLimited == 0)
-        //    {
-        //        WashBotton(false, 1);
-        //    }
-        //    else
-        //    {
-        //        WashBotton(true, 1);
-        //    }
-        //}
+        else
+        {
+            m_labNewAttSignal.gameObject.SetActive(false);
+            m_EventPress.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+            m_EventPress.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+        }
     }
     int index_s = 0;
     List<int> listIndeAddSuo = new List<int>();
@@ -1136,7 +960,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         listConnect.Clear();
         int[] connect = { 3, 3, 3, 3, 3, 3, 3, 3 };
         listConnect.AddRange(connect);
-        m_MaskTouch.SetActive(true);
+        m_MaskTouch.gameObject.SetActive(true);
  
         EquipWash(dbIdSave, savedId, index, listConnect[0], listConnect[1], listConnect[2], listConnect[3], listConnect[4], listConnect[5], listConnect[6], listConnect[7], pinzhiSaved);
 
@@ -1195,10 +1019,10 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     int index_ShuXing = 0;
     public void ResourcesLoadCallBack2(ref WWW p_www, string p_path, Object p_object)
     {
-        if (m_GridParent != null)
+        if (m_GridTop != null)
         {
             GameObject rewardShow = Instantiate(p_object) as GameObject;
-            rewardShow.transform.parent = m_GridParent.transform;
+            rewardShow.transform.parent = m_GridTop.transform;
             rewardShow.transform.localScale = Vector3.one;
             rewardShow.transform.localPosition = Vector3.zero;
             rewardShow.transform.GetComponent<EquipGrowthAttributeManagerment>().ShowInfo(_listRangeInfo[index_ShuXing]);
@@ -1206,21 +1030,42 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
             {
                 index_ShuXing++;
             }
-            m_GridParent.repositionNow = true;
+            m_GridTop.repositionNow = true;
         }
         else
         {
             p_object = null;
         }
     }
+    public void ResourcesLoadCallBack3(ref WWW p_www, string p_path, Object p_object)
+    {
+       // if (m_GridBottom != null)
+        {
+            GameObject rewardShow = Instantiate(p_object) as GameObject;
+          //  rewardShow.transform.parent = m_GridBottom.transform;
+            rewardShow.transform.localScale = Vector3.one;
+            rewardShow.transform.localPosition = Vector3.zero;
+        //    rewardShow.transform.GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowXYAttribute(_listRangeInfo[index_ShuXing]);
+            if (index_ShuXing < _listRangeInfo.Count - 1)
+            {
+                index_ShuXing++;
+            }
+          //  m_GridBottom.repositionNow = true;
+        }
+        //else
+        //{
+        //    p_object = null;
+        //}
+    }
 
     int index_add;
     public void ResourcesLoadAddCallBack(ref WWW p_www, string p_path, Object p_object)
     {
-        if (m_GridParent != null)
+        if (m_GridTop2 != null)
         {
-            GameObject rewardShow = Instantiate(p_object) as GameObject;
-            rewardShow.transform.parent = m_GridAdd.transform;
+            //m_GridAdd
+               GameObject rewardShow = Instantiate(p_object) as GameObject;
+            rewardShow.transform.parent = m_GridTop2.transform;
             rewardShow.transform.localScale = Vector3.one;
             rewardShow.transform.localPosition = Vector3.zero;
             rewardShow.transform.GetComponent<EquipGrowthAttributeManagerment>().ShowInfo(_listAddInfo[index_add]);
@@ -1234,5 +1079,26 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         {
             p_object = null;
         }
-    }  
+    }
+
+    public void ResourcesLoadAddCallBack4(ref WWW p_www, string p_path, Object p_object)
+    {
+        //if (m_GridBottom2 != null)
+        {
+            GameObject rewardShow = Instantiate(p_object) as GameObject;
+           // rewardShow.transform.parent = m_GridBottom2.transform;
+            rewardShow.transform.localScale = Vector3.one;
+            rewardShow.transform.localPosition = Vector3.zero;
+           // rewardShow.transform.GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowXYAttribute(_listAddInfo[index_ShuXing]);
+            if (index_add < _listAddInfo.Count - 1)
+            {
+                index_add++;
+            }
+         //   m_GridBottom2.repositionNow = true;
+        }
+        //else
+        //{
+        //    p_object = null;
+        //}
+    }
 }

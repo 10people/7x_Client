@@ -870,7 +870,7 @@ public class LanguageTemplate : XmlLoadManager
         XILIAN_DESC_8 = 1277,
         XILIAN_DESC_9 = 1278,
         XILIAN_DESC_10 = 1279,
-
+        XILIAN_DESC_11 = 1280,
     }
 
     public int lanId;

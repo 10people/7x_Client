@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using qxmobile.protobuf;
 
-public class HousePlayerController : PlayerController, SocketListener
+public class HousePlayerController : SinglePlayerController, SocketListener
 {
     public static HousePlayerController s_HousePlayerController;
 

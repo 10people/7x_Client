@@ -164,7 +164,7 @@ namespace AllianceBattle
 
         public void SetPlayerPositionInSmallMap()
         {
-            if (m_RootManager.m_AbPlayerController == null || m_RootManager.m_AbBasicPlayerController == null)
+            if (m_RootManager.m_AbPlayerController == null || m_RootManager.m_AbCulturePlayerController == null)
             {
                 return;
             }
@@ -457,7 +457,7 @@ namespace AllianceBattle
 
         void Update()
         {
-            if (m_RootManager.m_AbPlayerManager == null || m_RootManager.m_AbBasicPlayerController == null) return;
+            if (m_RootManager.m_AbPlayerManager == null || m_RootManager.m_AbCulturePlayerController == null) return;
 
             //Update small map
             {
@@ -493,7 +493,7 @@ namespace AllianceBattle
                 }
 
                 //Select ememy
-                temp = temp.Where(item => item.Value.GetComponent<ABBasicPlayerController>().AllianceName != AllianceData.Instance.g_UnionInfo.name);
+                temp = temp.Where(item => item.Value.GetComponent<ABCulturePlayerController>().AllianceName != AllianceData.Instance.g_UnionInfo.name);
                 if (!temp.Any())
                 {
                     DeactiveSkills();
@@ -505,7 +505,7 @@ namespace AllianceBattle
                 //[ALERT]Donot modify rank of call.
                 var temp2 = temp.ToList().OrderBy(item => Vector3.Distance(m_RootManager.m_AbPlayerController.transform.position, item.Value.transform.position)).First();
                 m_ToAttackId = temp2.Key;
-                ActiveSkills(temp2.Value.GetComponent<ABBasicPlayerController>().KingName);
+                ActiveSkills(temp2.Value.GetComponent<ABCulturePlayerController>().KingName);
             }
         }
 
@@ -517,7 +517,7 @@ namespace AllianceBattle
 
             ToAttackLabel.text = "目标:" + toAttackName;
 
-            m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<ABBasicPlayerController>().OnSelected();
+            m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<ABCulturePlayerController>().OnSelected();
         }
 
         public void DeactiveSkills()
@@ -530,7 +530,7 @@ namespace AllianceBattle
 
             if (m_ToAttackId > 0 && m_RootManager.m_AbPlayerManager.m_PlayerDic.Keys.Contains(m_ToAttackId))
             {
-                m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<ABBasicPlayerController>().OnDeSelected();
+                m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<ABCulturePlayerController>().OnDeSelected();
             }
         }
 
@@ -596,6 +596,112 @@ namespace AllianceBattle
 
         #endregion
 
+        private void ExecuteAttack(FightAttackResp tempInfo)
+        {
+            bool isMineAttack = false;
+
+            {
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackId).ToList();
+                if (temp != null && temp.Count() > 0)
+                {
+                    //other player attack.
+                    temp.First().Value.DeactiveMove();
+                    temp.First().Value.GetComponent<Animator>().Play("Attack");
+                }
+                else
+                {
+                    //mine attack.
+                    //Cancel play animation when mine attack.
+                    isMineAttack = true;
+                }
+            }
+
+            {
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
+                if (temp != null && temp.Count() > 0)
+                {
+                    //other player been attack.
+                    //Cancel play animation when mine attack.
+                    if (!isMineAttack)
+                    {
+                        temp.First().Value.DeactiveMove();
+                        temp.First().Value.GetComponent<Animator>().Play("BATC");
+                    }
+                    temp.First().Value.GetComponent<ABCulturePlayerController>().OnDamage(tempInfo.damage, tempInfo.remainLife);
+                }
+                else if (m_RootManager.m_AbCulturePlayerController != null && m_RootManager.m_AbPlayerController != null)
+                {
+                    //mine been attack.
+                    //Cancel play animation when mine attack.
+                    if (!isMineAttack)
+                    {
+                        m_RootManager.m_AbPlayerController.DeactiveMove();
+                        m_RootManager.m_AbPlayerController.GetComponent<Animator>().Play("BATC");
+                    }
+                    m_RootManager.m_AbCulturePlayerController.OnDamage(tempInfo.damage, tempInfo.remainLife);
+                }
+            }
+        }
+
+        private void ExecuteSkill(FightAttackResp tempInfo)
+        {
+            if (tempInfo.skillId != 101) return;
+
+            if (tempInfo.attackId == JunZhuData.Instance().m_junzhuInfo.id)
+            {
+                //mine skill
+                m_RootManager.m_AbPlayerController.DeactiveMove();
+                m_RootManager.m_AbPlayerController.GetComponent<Animator>().Play("Attack");
+            }
+            else
+            {
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackId).ToList();
+                if (temp != null && temp.Count() > 0)
+                {
+                    //other player skill.
+                    temp.First().Value.DeactiveMove();
+                    temp.First().Value.GetComponent<Animator>().Play("Attack");
+                }
+            }
+
+            if (tempInfo.targetId == JunZhuData.Instance().m_junzhuInfo.id)
+            {
+                //mine been attack
+                m_RootManager.m_AbPlayerController.DeactiveMove();
+                m_RootManager.m_AbPlayerController.GetComponent<Animator>().Play("BATC");
+                m_RootManager.m_AbCulturePlayerController.OnDamage(tempInfo.damage, tempInfo.remainLife);
+            }
+            else
+            {
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
+                if (temp != null && temp.Count() > 0)
+                {
+                    //other player been attack.
+                    temp.First().Value.DeactiveMove();
+                    temp.First().Value.GetComponent<Animator>().Play("BATC");
+                    temp.First().Value.GetComponent<ABCulturePlayerController>().OnDamage(tempInfo.damage, tempInfo.remainLife);
+                }
+            }
+        }
+
+        private void ExecuteBuff(BufferInfo tempInfo)
+        {
+            //mine buff
+            if (tempInfo.targetId == JunZhuData.Instance().m_junzhuInfo.id)
+            {
+                m_RootManager.m_AbCulturePlayerController.OnRecover(tempInfo.value, tempInfo.remainLife);
+            }
+            //other player buff
+            else
+            {
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
+                if (temp != null && temp.Count() > 0)
+                {
+                    temp.First().Value.GetComponent<ABCulturePlayerController>().OnRecover(tempInfo.value, tempInfo.remainLife);
+                }
+            }
+        }
+
         public bool OnSocketEvent(QXBuffer p_message)
         {
             if (p_message != null)
@@ -642,48 +748,12 @@ namespace AllianceBattle
                             //skill
                             if (tempInfo.skillId > 0)
                             {
-                                ClientMain.m_UITextManager.createText("skillID:" + tempInfo.skillId + ", damage:" + tempInfo.damage);
-                                return true;
+                                ExecuteSkill(tempInfo);
                             }
-
                             //attack
-                            bool isMineAttack = false;
-
-                            var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackId).ToList();
-                            if (temp != null && temp.Count() > 0)
-                            {
-                                //other player attack.
-                                temp.First().Value.DeactiveMove();
-                                temp.First().Value.GetComponent<Animator>().Play("Attack");
-                            }
                             else
                             {
-                                //mine attack.
-                                isMineAttack = true;
-                            }
-
-                            var temp2 = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
-                            if (temp2 != null && temp2.Count() > 0)
-                            {
-                                //other player been attack.
-                                //Cancel play animation when mine attack.
-                                if (!isMineAttack)
-                                {
-                                    temp2.First().Value.DeactiveMove();
-                                    temp2.First().Value.GetComponent<Animator>().Play("BATC");
-                                }
-                                temp2.First().Value.GetComponent<ABBasicPlayerController>().OnDamage(tempInfo.damage, tempInfo.remainLife);
-                            }
-                            else if (m_RootManager.m_AbBasicPlayerController != null && m_RootManager.m_AbPlayerController != null)
-                            {
-                                //mine been attack.
-                                //Cancel play animation when mine attack.
-                                if (!isMineAttack)
-                                {
-                                    m_RootManager.m_AbPlayerController.DeactiveMove();
-                                    m_RootManager.m_AbPlayerController.GetComponent<Animator>().Play("BATC");
-                                }
-                                m_RootManager.m_AbBasicPlayerController.OnDamage(tempInfo.damage, tempInfo.remainLife);
+                                ExecuteAttack(tempInfo);
                             }
 
                             return true;
@@ -696,7 +766,7 @@ namespace AllianceBattle
                             BufferInfo tempInfo = new BufferInfo();
                             t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                            ClientMain.m_UITextManager.createText("buffID:" + tempInfo.bufferId + ", damage:" + tempInfo.value);
+                            ExecuteBuff(tempInfo);
 
                             return true;
                         }
@@ -713,12 +783,12 @@ namespace AllianceBattle
                             Refresh();
 
                             //Set character blood.
-                            if (m_RootManager.m_AbBasicPlayerController != null)
+                            if (m_RootManager.m_AbCulturePlayerController != null)
                             {
-                                m_RootManager.m_AbBasicPlayerController.TotalBlood = m_BattlefieldInfoResp.totalLife;
-                                m_RootManager.m_AbBasicPlayerController.RemainingBlood = m_BattlefieldInfoResp.remainLife;
+                                m_RootManager.m_AbCulturePlayerController.TotalBlood = m_BattlefieldInfoResp.totalLife;
+                                m_RootManager.m_AbCulturePlayerController.RemainingBlood = m_BattlefieldInfoResp.remainLife;
                             }
-                            m_RootManager.m_AbBasicPlayerController.SetThis();
+                            m_RootManager.m_AbCulturePlayerController.SetThis();
                             //Set character position.
                             m_RootManager.m_AbPlayerController.transform.localPosition = new Vector3(m_BattlefieldInfoResp.posX, m_RootManager.m_AbPlayerController.transform.localPosition.y, m_BattlefieldInfoResp.posZ);
 
@@ -731,6 +801,12 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             BattlefieldInfoNotify tempInfo = new BattlefieldInfoNotify();
                             t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+                            if (m_BattlefieldInfoResp == null)
+                            {
+                                Debug.LogWarning("Cannot refersh alliance battle field cause data not inited.");
+                                return true;
+                            }
 
                             m_BattlefieldInfoResp.endRemainTime = tempInfo.endRemainTime;
                             m_BattlefieldInfoResp.battleDatas = tempInfo.battleDatas;

@@ -13,11 +13,14 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 
     private static T m_instance;
 
+	public static T GetInstanceWithOutCreate(){
+		return m_instance;
+	}
+
     /// <summary>
     /// get the instance of this type monobehaviour, will create a component attached to DontDestroyOnLoad if instance is null
     /// </summary>
-    public static T Instance
-    {
+    public static T Instance{
         get
         {
             var editMode = Application.isEditor && !Application.isPlaying;
@@ -67,8 +70,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
-    void OnDestroy()
-    {
+    public void OnDestroy(){
         m_instance = null;
     }
 

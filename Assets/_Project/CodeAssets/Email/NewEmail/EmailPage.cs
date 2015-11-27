@@ -424,7 +424,7 @@ public class EmailPage : MonoBehaviour {
 		SendMail send = emailPageList [2].GetComponent<SendMail> ();
 		NewEmailData.Instance ().SendName = send.nameLabel.value;
 		NewEmailData.Instance ().SendContent = send.contentLabel.value;
-		Debug.Log ("SendName:" + NewEmailData.Instance ().SendName + "//SendContent:" + NewEmailData.Instance ().SendContent);
+//		Debug.Log ("SendName:" + NewEmailData.Instance ().SendName + "//SendContent:" + NewEmailData.Instance ().SendContent);
 	}
 
 	public void CloseEmail ()

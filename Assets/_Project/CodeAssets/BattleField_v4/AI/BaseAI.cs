@@ -166,7 +166,9 @@ public class BaseAI : MonoBehaviour
 	[HideInInspector] public float m_fStopBTime = 0.0f;
 
 	[HideInInspector] public int modelId;
-	
+
+	[HideInInspector] public Dictionary<int, Threat> threatDict = new Dictionary<int, Threat> ();
+
 
 	protected CharacterController chongfengControllor;
 	
@@ -320,6 +322,8 @@ public class BaseAI : MonoBehaviour
 		hoverIndex = -1;
 
 		avoidancePriority = nav.avoidancePriority;
+
+		threatDict.Clear ();
 	}
 
 	public void init(int _modelId)
@@ -934,6 +938,8 @@ public class BaseAI : MonoBehaviour
 	int tempnum = 0;
 	void FixedUpdate ()
 	{
+		updateThreats ();
+
 		if(BattleUIControlor.Instance().resultControllor != null && BattleUIControlor.Instance().resultControllor.gameObject.activeSelf == true)
 		//if(BattleControlor.Instance().result != BattleControlor.BattleResult.RESULT_BATTLING)
 		{
@@ -990,6 +996,33 @@ public class BaseAI : MonoBehaviour
 		updateDistanceDrama ();
 
 		BaseUpdate ();
+	}
+
+	private void updateThreats()
+	{
+		foreach(BaseAI node in enemysInRange)
+		{
+			if(node.gameObject.activeSelf == false) continue;
+
+			if(node.isAlive == false) continue;
+
+			if(node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0) continue;
+
+			Threat threat = null;
+
+			threatDict.TryGetValue(node.nodeId, out threat);
+
+			if(threat == null)
+			{
+				threat = new Threat();
+
+				threatDict.Add(node.nodeId, threat);
+			}
+
+			float lengthThreat = 1000 - Vector3.Distance(node.transform.position, transform.position) * 10;
+			
+			threat.lengthThreat = lengthThreat;
+		}
 	}
 
 	public virtual void BaseUpdate ()
@@ -1144,7 +1177,7 @@ public class BaseAI : MonoBehaviour
 
 		targetNode = null;
 
-		float templ = 9999;
+		float tempThreast = 0;
 
 		//List<BaseAI> tempList = stance == Stance.STANCE_ENEMY ? BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes;
 
@@ -1156,13 +1189,22 @@ public class BaseAI : MonoBehaviour
 
 			if(node.gameObject.activeSelf == false) continue;
 
-			float l = Vector3.Distance(transform.position, node.transform.position);
+			Threat threat = null;
 
-			if(l < templ)
+			threatDict.TryGetValue(node.nodeId, out threat);
+
+			float threatNum = 0;
+
+			if(threat != null)
+			{
+				threatNum = threat.totalThreat;
+			}
+
+			if(threatNum > tempThreast)
 			{
 				targetNode = node;
 
-				templ = l;
+				tempThreast = threatNum;
 			}
 		}
 	}
@@ -2943,6 +2985,8 @@ public class BaseAI : MonoBehaviour
 		float t_attr = defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp );
 
 		defender.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp, t_attr - hpValue );
+
+		Buff.createBuff (defender, AIdata.AttributeType.ATTRTYPE_Threat, (float)CanshuTemplate.m_TaskInfoDic[CanshuTemplate.GONGJICHOUHEN_ADD], (float)CanshuTemplate.m_TaskInfoDic[CanshuTemplate.GONGJICHOUHEN_TIME]);
 
 		if (attackedType == BattleControlor.AttackType.BASE_ATTACK) m_listAtk.Add (defender);
 

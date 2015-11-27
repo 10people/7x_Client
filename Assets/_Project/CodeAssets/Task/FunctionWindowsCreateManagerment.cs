@@ -6,6 +6,15 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
 {
    private static int BigHouseId = 0;
    private static int SmallHouseId = 0;
+
+    public enum SettingType
+    {
+        NONE = -1,
+        NATION_CHANGE = 0,
+        NAME_CHANGE = 1,
+        SWITCH_USER = 2,
+    }
+    public static SettingType m_SettingUpTYpe = SettingType.NONE;
     public static void FunctionWindowCreate(int id)
     {
         switch (id)
@@ -203,6 +212,13 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
             }
         }
     }
+
+    public static void ShowSettingup()
+    {
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_LAYER),
+                                           SettingUpLoadCallback);
+    }
+
     private static void JunzhuLayerLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject tempObject = Instantiate(p_object) as GameObject;

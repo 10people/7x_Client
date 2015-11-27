@@ -238,11 +238,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         }
         listMainLab[1].text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString() + "   " + JunZhuData.Instance().m_junzhuInfo.name;
         listMainLab[2].text = "";
-       // m_SpriteIcon.spriteName = JunZhuData.Instance().m_junzhuInfo
         m_SpriteIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id; ;
-
-        // m_SpriteIcon.spriteName = "button_junzhu" + CityGlobalData.m_king_model_Id;
-
         SettingButtonControl();
     }
 
@@ -251,14 +247,46 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 
         for (int i = 0; i < SettingData.Instance().m_listSettingsInfo.Count; i++)
         {
-           // Debug.Log("SettingData.Instance().m_listSettingsInfoSettingData.Instance().m_listSettingsInfo : " + SettingData.Instance().m_listSettingsInfo[i]);
             ShowButtonInfo(i, SettingData.Instance().m_listSettingsInfo[i]);
         }
-        //PlayerPrefs.DeleteKey("MUSIC");
-        //PlayerPrefs.DeleteKey("AUDIO_EFFECT");
-        //PlayerPrefs.DeleteKey("POWER_GET");
-        //PlayerPrefs.DeleteKey("POWER_FULL");
-        //PlayerPrefs.DeleteKey("PAWNSHOP_FRESH");
+
+        Debug.Log("FunctionWindowsCreateManagerment.m_SettingUpTYpe ::" + FunctionWindowsCreateManagerment.m_SettingUpTYpe);
+        if (FunctionWindowsCreateManagerment.m_SettingUpTYpe != FunctionWindowsCreateManagerment.SettingType.NONE)
+        {
+            StartCoroutine(AutoShowNation());
+        }
+    }
+
+    IEnumerator AutoShowNation()
+    {
+        yield return new WaitForSeconds(0.6f);
+        switch (FunctionWindowsCreateManagerment.m_SettingUpTYpe)
+        {
+            case FunctionWindowsCreateManagerment.SettingType.NATION_CHANGE:
+                {
+                    m_ChangeCountryLayer.SetActive(true);
+                    ChangeCountryInfo(JunZhuData.Instance().m_junzhuInfo.guoJiaId);
+                    m_listChangeCountryEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+                    m_SpriteCountryCurrent.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
+                }
+                break;
+
+            case FunctionWindowsCreateManagerment.SettingType.NAME_CHANGE:
+                {
+
+
+                }
+                break;
+            case FunctionWindowsCreateManagerment.SettingType.SWITCH_USER:
+                {
+
+
+                }
+                break;
+            default:
+                break;
+        }
+        FunctionWindowsCreateManagerment.m_SettingUpTYpe = FunctionWindowsCreateManagerment.SettingType.NONE;
     }
     void ShowButtonInfo(int index, int state)
     {

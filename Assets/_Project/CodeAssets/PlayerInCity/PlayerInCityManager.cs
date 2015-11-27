@@ -79,8 +79,8 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
            GameObject t_gb = Instantiate(player_object, t_pos, Quaternion.Euler(Vector3.zero)) as GameObject;
 
             //GameObject t_gb = Instantiate(player_object) as GameObject;
-            t_gb.name = "PlayerObject" + p_enter_scene.uid;
-           t_gb.GetComponent<CharacterController>().enabled = false;
+            t_gb.name = "PlayerObject:" + p_enter_scene.uid;
+           //t_gb.GetComponent<CharacterController>().enabled = false;
             t_gb.transform.parent = this.transform;
           //  Debug.Log(t_gb.transform.localPosition);
             

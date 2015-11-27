@@ -36,14 +36,14 @@ public class NationData : Singleton<NationData>,SocketProcessor
                         GuoJiaMainInfoResp ReponseInfo = new GuoJiaMainInfoResp();
                         t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
                         m_NationInfo = ReponseInfo;
-                        if (ReponseInfo.guojiaAward.Equals("0"))
-                        {
-                            MainCityUIRB.SetRedAlert(212, false);
-                        }
-                        else
-                        {
-                            MainCityUIRB.SetRedAlert(212, true);
-                        }
+                        //if (ReponseInfo.guojiaAward.Equals("0"))
+                        //{
+                        //    MainCityUIRB.SetRedAlert(212, false);
+                        //}
+                        //else
+                        //{
+                        //    MainCityUIRB.SetRedAlert(212, true);
+                        //}
                         if (m_DataRequest)
                         {
                             m_DataRequest = false;

@@ -66,33 +66,27 @@ public class GameObjectHelper {
 		return m_temp_gbs_root_gb;
 	}
 	
-	public static void ClearDontDestroyGameObject()
-	{
+	public static void ClearDontDestroyGameObject(){
 		//		Debug.Log( "UtilityTool.ClearDontDestroyGameObject()" );
 		
-		if (m_dont_destroy_on_load_gb != null)
-		{
+		if ( m_dont_destroy_on_load_gb != null ){
 			
 			MonoBehaviour[] t_items = m_dont_destroy_on_load_gb.GetComponents<MonoBehaviour>();
 			
-			for (int i = 0; i < t_items.Length; i++)
-			{
-				if (t_items[i].GetType() == typeof(UtilityTool))
-				{
+			for (int i = 0; i < t_items.Length; i++){
+				if (t_items[i].GetType() == typeof(UtilityTool)){
 					//					Debug.Log( "Skip UtilityTool." );
 					
 					continue;
 				}
 				
-				if (t_items[i].GetType() == typeof(ConfigTool))
-				{
+				if (t_items[i].GetType() == typeof(ConfigTool)){
 					//					Debug.Log( "Skip ConfigTool." );
 					
 					continue;
 				}
 				
-				if (t_items[i].GetType() == typeof(Bundle_Loader))
-				{
+				if (t_items[i].GetType() == typeof(Bundle_Loader)){
 					//					Debug.Log( "Skip Bundle_Loader." );
 					
 					//					Bundle_Loader.CleanData();
@@ -100,8 +94,7 @@ public class GameObjectHelper {
 					continue;
 				}
 				
-				if (t_items[i].GetType() == typeof(ThirdPlatform))
-				{
+				if (t_items[i].GetType() == typeof(ThirdPlatform)){
 					continue;
 				}
 				
@@ -138,6 +131,10 @@ public class GameObjectHelper {
 	}
 	
 	public static string GetGameObjectHierarchy( GameObject p_gb ){
+		if( p_gb == null ){
+			return "<Null GameObject>";
+		}
+
 		string t_name = p_gb.name;
 		
 		while( p_gb.transform.parent != null ){

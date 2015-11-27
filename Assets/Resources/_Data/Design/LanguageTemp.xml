@@ -888,4 +888,5 @@
 <LanTemp LID="1277" str="装备强化或进阶后，强化经验与洗练进度不变" />
 <LanTemp LID="1278" str="继续洗练，该属性不再增加" />
 <LanTemp LID="1279" str="已达到最大值" />
+<LanTemp LID="1280" str="洗练成功" />
 </dataset>

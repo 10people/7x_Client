@@ -9,6 +9,7 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NationManagerment : MonoBehaviour, SocketProcessor
 {
+    public GameObject m_Main;
     public List<UILabel> m_ListInfo;
     public UIScrollView m_ScrollView;
     public List<EventIndexHandle> m_ListEvent;
@@ -19,10 +20,8 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_ObjectNow;
     public GameObject m_ObjectReward;
     public UIGrid m_ObjectRewardParent;
-    public GameObject m_Tanhao;
-
+    //public GameObject m_Tanhao;
     public ScaleEffectController m_SEC;
-
     private List<GameObject> _listitem = new List<GameObject>();
     private List<GuojiaRankInfo> _listNationInfo = new List<GuojiaRankInfo>();
     private string _strTitle = "";
@@ -32,30 +31,23 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     private bool _isLocked = false;
     private bool _isEnough = false;
     private int _lastRank = 0;
-    // private string _strReward = "";
-
-
-
     private bool _isForward = false;
     private GuoJiaMainInfoResp _GuojiaInfo = new GuoJiaMainInfoResp();
     void Awake()
     {
         SocketTool.RegisterMessageProcessor(this);
     }
-
     void Start()
     {
         NationData.Instance.m_DataGetComplete = false;
         m_SEC.OpenCompleteDelegate += RequestData;
         m_ListEvent.ForEach(p => p.m_Handle += ShowInfo);
     }
-
     public void RequestData()
     {
         NationData.Instance.m_DataRequest = true;
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.GUO_JIA_MAIN_INFO_REQ);
     }
-
     void Update()
     {
         if (NationData.Instance.m_DataGetComplete)
@@ -83,9 +75,12 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                 break;
             case 1:
                 {
-                    m_ListEvent[1].GetComponent<Collider>().enabled = false;
-                    //    Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                    SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_JUANXIAN_DAYAWARD_REQ);
+                    FunctionWindowsCreateManagerment.m_SettingUpTYpe = FunctionWindowsCreateManagerment.SettingType.NATION_CHANGE;
+                    MainCityUI.TryRemoveFromObjectList(m_Main);
+                    FunctionWindowsCreateManagerment.ShowSettingup();
+                    Destroy(m_Main);
+                    //m_ListEvent[1].GetComponent<Collider>().enabled = false;
+                    //SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_JUANXIAN_DAYAWARD_REQ);
                 }
                 break;
             case 2:
@@ -141,8 +136,6 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                         TidyData(_GuojiaInfo.nowRank);
                     }
                     _isForward = !_isForward;
-                    //m_AllInfo.SetActive(true);
-                    //m_Introduce.SetActive(false);
                 }
                 break;
             case 4:
@@ -241,13 +234,13 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
         m_ListInfo[0].text = NameIdTemplate.GetName_By_NameId(temp.guojiaId);
         m_ListInfo[1].text = temp.kingName;
 
-        m_ListInfo[4].text = temp.todayGive.ToString();
-        m_ListInfo[5].text = temp.thisWeekGive.ToString();
+     //   m_ListInfo[4].text = temp.todayGive.ToString();
+       // m_ListInfo[5].text = temp.thisWeekGive.ToString();
         //_TodayGiveCount = temp.todayGive;
         //_WeekGiveCount = temp.thisWeekGive;
      
         //; jinjie
-        m_ListInfo[6].text = temp.myGongJin.ToString() + "/" + temp.shouldGive.ToString();
+     //   m_ListInfo[6].text = temp.myGongJin.ToString() + "/" + temp.shouldGive.ToString();
         //_AllShengWang = temp.myGongJin;
         //_shouldGiveShengWang = temp.shouldGive;
         _isEnough = temp.myGongJin >= temp.shouldGive ? true : false;
@@ -271,15 +264,15 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
       //   Debug.Log("isCanGiveisCanGiveisCanGiveisCanGiveisCanGiveisCanGiveisCanGiveisCanGiveisCanGive ::" + temp.isCanGive);
         _isLocked = temp.isCanGive;
  
-        if (PushAndNotificationHelper.IsShowRedSpotNotification(500020) && _isLocked)
-        {
-            PushAndNotificationHelper.SetRedSpotNotification(500020, true);
-        }
-        else
-        {
-            PushAndNotificationHelper.SetRedSpotNotification(500020, false);
-        }
-        m_Tanhao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(500020) && _isLocked);
+        //if (PushAndNotificationHelper.IsShowRedSpotNotification(500020) && _isLocked)
+        //{
+        //    PushAndNotificationHelper.SetRedSpotNotification(500020, true);
+        //}
+        //else
+        //{
+        //    PushAndNotificationHelper.SetRedSpotNotification(500020, false);
+        //}
+      //  m_Tanhao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(500020) && _isLocked);
         //_lastRank = temp.lastGuoRank;
         if (temp.guojiaAward.Equals("0"))
         {
@@ -360,22 +353,22 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                                     break;
                                 }
                             }
-                            m_ListInfo[4].text = ReponseInfo.gjmainInfo.todayGive.ToString();
-                            m_ListInfo[5].text = ReponseInfo.gjmainInfo.thisWeekGive.ToString();
+                         //   m_ListInfo[4].text = ReponseInfo.gjmainInfo.todayGive.ToString();
+                       //     m_ListInfo[5].text = ReponseInfo.gjmainInfo.thisWeekGive.ToString();
 
-                            m_ListInfo[6].text = ReponseInfo.gjmainInfo.myGongJin.ToString() + "/" + ReponseInfo.gjmainInfo.shouldGive;
+                          //  m_ListInfo[6].text = ReponseInfo.gjmainInfo.myGongJin.ToString() + "/" + ReponseInfo.gjmainInfo.shouldGive;
                             _isEnough = ReponseInfo.gjmainInfo.myGongJin >= ReponseInfo.gjmainInfo.shouldGive ? true : false;
 
-                            if (!_isEnough)
-                            {
-                                m_Tanhao.SetActive(_isEnough);
-                                PushAndNotificationHelper.SetRedSpotNotification(500020, false);
-                            }
-                            else
-                            {
-                                m_Tanhao.SetActive(_isEnough);
-                                PushAndNotificationHelper.SetRedSpotNotification(500020, true);
-                            }
+                            //if (!_isEnough)
+                            //{
+                            //    m_Tanhao.SetActive(_isEnough);
+                            //    PushAndNotificationHelper.SetRedSpotNotification(500020, false);
+                            //}
+                            //else
+                            //{
+                            //    m_Tanhao.SetActive(_isEnough);
+                            //    PushAndNotificationHelper.SetRedSpotNotification(500020, true);
+                            //}
                             m_ListInfo[2].text = ReponseInfo.gjshengwang.ToString();
                             // _shouldGiveShengWang = ReponseInfo.nextNeedGongjin;
                             //   TidyData(ReponseInfo.guojiInfo);
@@ -416,8 +409,8 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                         }
                         else if (ReponseInfo.result == 50)
                         {
-                            m_Tanhao.SetActive(false);
-                            PushAndNotificationHelper.SetRedSpotNotification(500020, false);
+                            //m_Tanhao.SetActive(false);
+                           // PushAndNotificationHelper.SetRedSpotNotification(500020, false);
                             _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.NATION_SHANGJIAO_TITLE);
                             _strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.GONGJIN_TIME_FULL);
                             _strContent2 = "";

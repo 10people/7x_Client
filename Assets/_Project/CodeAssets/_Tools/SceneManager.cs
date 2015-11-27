@@ -414,6 +414,11 @@ public class SceneManager{
 			}
 		}
 
+		// clear ui reference
+		{
+			UI2DTool.ClearAll();
+		}
+
         string t_loading_level_name = ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE;
 
         Global.LoadLevel( t_loading_level_name, LoadLoadinglDone );

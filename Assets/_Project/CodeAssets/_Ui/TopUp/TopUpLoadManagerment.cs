@@ -23,10 +23,10 @@ public class TopUpLoadManagerment : MonoBehaviour
 
     public void LoadPrefab(bool ison)//是否需要特殊处理
     {
-        if (MainCityUI.IsWindowsExist())
-        {
-            return;
-        }
+        //if (MainCityUI.IsWindowsExist())
+        //{
+        //    return;
+        //}
 
       isNeed = ison;
         if (!m_isLoaded)

@@ -14,18 +14,13 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     public static bool m_WetherIsIntensify = false;
     public GameObject m_IntensifyTanHao;
     public GameObject m_WashTanHao;
+    public UILabel m_labelIntensify;
 
-    public GameObject UIName;
-    public UISprite m_EquipIcon;
-    public UISprite m_EquipQuality;
-    public UILabel m_LabName;
-    public UILabel m_LabLevel;
-    public GameObject m_AttributeArmor;
-    public GameObject m_AttributeWeapon;
-    public UIGrid m_GrideShuXing;
+
+    public GameObject m_ParentInfo;
  
     public GameObject m_SharePart;
-    public UILabel m_LabPrecess;
+
     public GameObject m_EquipUpgrade;
 
     public GameObject m_EquipIntensify;
@@ -34,30 +29,9 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 
     public GameObject m_MianInfo;
 
- 
-    public GameObject m_TitleType1;
-    public GameObject m_TitleType2;
     public int m_AttributeCount;
 
-    public List<UILabel> listArmorTopCount;
-    public List<UILabel> listArmorLabTitle;
-    public List<UILabel> listArmorLabCount;
-
-
-    public List<UILabel> listWeaponLabTitle;
-    public List<UILabel> listWeaponLabCount;
-    public List<UILabel> listWeaponTopCount;
-
-
-    public UILabel m_ArmorAttributeTitle;
-    public UILabel m_WeaponAttributeTitle;
-
-    public List<GameObject> m_ListtArmorTitleLine;
-    public GameObject m_WeaponTitleLineBottom;
-
-    public UIProgressBar m_ProgressBar;
-
-    public UILabel m_LabelMove;
+  //  public UILabel m_LabelMove;
 
     public GameObject m_objSharePart;
     public UIScrollView m_ScrollView;
@@ -67,11 +41,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private int WuSave;
     private int YouSave;
     private int ZhiSave;
-
-
     public int BuWeiSave;
-
-    public UILabel m_LabelTopUp;
     private long DBidSave;
 
     private int ShowType = 0;
@@ -81,9 +51,10 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private int MaxExp;
     private int CurrExp;
     private int StrengthenIndex = 0;
-    private EquipStrengthResp EquipInfoSave = new EquipStrengthResp();
-    EquipStrengthResp EquipInfo = new EquipStrengthResp();
+    private EquipStrengthResp EquipInfoSave;
+    EquipStrengthResp EquipInfo;
     private List<float> listData = new List<float>();
+
     private struct EquipAtrrInfo
     {
         public string gong;
@@ -95,8 +66,25 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         public int level;
     };
     EquipAtrrInfo ei = new EquipAtrrInfo();
+
+    public struct EquipBaseInfo
+    {
+        public string _Name;
+        public int _Gong;
+        public int _Fang;
+        public int _Xue;
+        public int _Level;
+        public string _Progress;
+        public string _Icon;
+        public string _PinZhi;
+        public float _PregressValue;
+        public int _AttrCount;
+    };
+    private EquipBaseInfo _EquipBInfo;
+    public EquipGrowthEquipInfoItemManagerment m_EquipItenm = null;
     void Start()
     {
+        _listObj.Clear();
         if (JunZhuData.Instance().m_junzhuInfo.yuanBao > 10000)
         {
             m_TotalGold.text = (JunZhuData.Instance().m_junzhuInfo.yuanBao / 10000).ToString() + NameIdTemplate.GetName_By_NameId(990051);
@@ -112,6 +100,8 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     public static bool m_isEffect = false;
     private int _CurrenItemNum = 0;
     private float _timeInterval = 0;
+
+
     void Update()
     {
         _timeInterval += Time.deltaTime;
@@ -182,30 +172,28 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         ei.level = level;
         Equipname = equipment.m_name;
 
-        if (max != -1)
-        {
-            m_ProgressBar.value = curr / float.Parse(max.ToString());
-
-            m_LabPrecess.text = curr.ToString() + "/" + max.ToString();
-        }
-        else
+     
         {
             if (_isMaxLevel)
             {
                 _isMaxLevel = false;
-                CreateMove(m_LabPrecess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_MAX_LEVEL));
+                if (m_EquipItenm != null)
+                {
+                    CreateMove(m_EquipItenm.m_LabelProgress.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_MAX_LEVEL));
+                }
             }
-            m_ProgressBar.value = 1.0f;
+          //  m_ProgressBar.value = 1.0f;
 
-            m_LabPrecess.text = "";
+           // m_LabPrecess.text = "";
         }
         if (ShowType == 0)//0强化
         {
+            m_labelIntensify.gameObject.SetActive(true);
+            m_labelIntensify.text = MyColorData.getColorString(1, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_8));
             m_EquipUpgrade.SetActive(false);
-            m_ListtArmorTitleLine[0].SetActive(false);
-            m_WeaponTitleLineBottom.SetActive(false);
+          
             EquipSuoData.Instance().m_WashIson = false;
-            IntensifyEquipInfoShow();
+         //   IntensifyEquipInfoShow();
 
             m_EquipIntensify.SetActive(true);
             m_EquipWashObject.SetActive(false);
@@ -213,22 +201,16 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         }
         else if (ShowType == 1)//1 洗练
         {
-            m_WeaponTitleLineBottom.SetActive(false);
-            int size_shuxing = m_GrideShuXing.transform.childCount;
-            if (size_shuxing > 0)
-            {
-                for (int i = 0; i < size_shuxing; i++)
-                {
-                    Destroy(m_GrideShuXing.transform.GetChild(i).gameObject);
-                }
-                _listObj.Clear();
-            }
+            m_labelIntensify.gameObject.SetActive(true);
+
+            int size_shuxing = m_ParentInfo.transform.childCount;
+     
             m_EquipUpgrade.SetActive(false);
             
 
             EquipSuoData.Instance().m_EquipID = EquipSaveId;
  
-            WashEquipInfoShow();
+        //    WashEquipInfoShow();
             m_EquipIntensify.SetActive(false);
             m_EquipWashObject.SetActive(true);
             m_EquipWash.SetActive(true);
@@ -236,30 +218,133 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             m_EquipWash.GetComponent<EquipGrowthWashManagerment>().buttonNum = 0;
             m_EquipWash.GetComponent<EquipGrowthWashManagerment>().EquipWash(DBidSave, EquipSaveId, 0, 3, 3, 3, 3, 3, 3, 3, 3, pinzhi);
         }
+        //else
+        //{
+        //    m_EquipIntensify.SetActive(false);
+        //    m_EquipWashObject.SetActive(false);
+        //   // m_EquipWash.GetComponent<EquipGrowthWashManagerment>().EquipWash(DBidSave, EquipSaveId, 0, 3, 3, 3, 3, 3, 3, 3, 3, pinzhi);
+   
+        //    ShowUpgradeInfo();
+        //}
+
+ 
+        _EquipBInfo._Name = MyColorData.getColorString(10, NameIdTemplate.GetName_By_NameId(int.Parse(equipment.m_name))); ;
+        _EquipBInfo._Gong = int.Parse(gong);
+        _EquipBInfo._Fang = int.Parse(fang);
+        _EquipBInfo._Xue = int.Parse(xue);
+        if (max != -1)
+        {
+            _EquipBInfo._Progress = curr.ToString() + "/" + max.ToString();
+            _EquipBInfo._PregressValue = curr / float.Parse(max.ToString());
+        }
         else
         {
-            m_EquipIntensify.SetActive(false);
-            m_EquipWashObject.SetActive(false);
-           // m_EquipWash.GetComponent<EquipGrowthWashManagerment>().EquipWash(DBidSave, EquipSaveId, 0, 3, 3, 3, 3, 3, 3, 3, 3, pinzhi);
-   
-            ShowUpgradeInfo();
+            _EquipBInfo._Progress = "";
+            _EquipBInfo._PregressValue = 1.0f;
         }
-       
-        m_EquipIcon.spriteName = equipment.id.ToString();
-        m_EquipIcon.gameObject.SetActive(true);
-        m_EquipQuality.spriteName = QualityIconSelected.SelectQuality(equipment.color);
-
-        m_LabName.gameObject.SetActive(true);
-        m_LabName.text = MyColorData.getColorString(10, NameIdTemplate.GetName_By_NameId(int.Parse(equipment.m_name)));// +MyColorData.getColorString(4, " +" + ei.level.ToString());
+        _EquipBInfo._Icon = equipment.id.ToString();
+        _EquipBInfo._PinZhi = QualityIconSelected.SelectQuality(equipment.color);
+        _EquipBInfo._AttrCount = EquipSuoData.m_listEquipWash[EquipSaveId].Count;
+        if (m_EquipItenm == null)
+        {
+            LoadEquipItem();
+        }
+        else
+        {
+            m_EquipItenm.ShowInfo(_EquipBInfo);
+            LoadAttrbuite();
+        } 
         ShowLevel(ei.level, 0, 0, 0);
         m_MianInfo.SetActive(true);
         m_SharePart.SetActive(true);
-        if (max == -1)
-        {
-
-        }
+    
+    }
+    void LoadEquipItem()
+    {
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIPINFO_ITEM), ResourcesLoadEquipItemCallBack);
     }
 
+    public void ResourcesLoadEquipItemCallBack(ref WWW p_www, string p_path, Object p_object)
+    {
+        if (m_ParentInfo != null)
+        {
+            GameObject rewardShow = Instantiate(p_object) as GameObject;
+            rewardShow.transform.parent = m_ParentInfo.transform;
+            rewardShow.transform.localScale = Vector3.one;
+            rewardShow.transform.localPosition = Vector3.zero;
+            rewardShow.GetComponent<EquipGrowthEquipInfoItemManagerment>().ShowInfo(_EquipBInfo);
+            m_EquipItenm = rewardShow.GetComponent<EquipGrowthEquipInfoItemManagerment>();
+           // m_TableInfo.repositionNow = true;
+
+            if (ShowType == 0)//0强化
+            {
+                IntensifyEquipInfoShow();
+            }
+            else if (ShowType == 1)//1 洗练
+            {
+                WashEquipInfoShow();
+            }
+        }
+        else
+        {
+            p_object = null;
+        }
+       LoadAttrbuite();
+    }
+
+    void LoadAttrbuite()
+    {
+        int size_shuxing = EquipSuoData.m_listEquipWash[EquipSaveId].Count;
+        int size = _listObj.Count;
+        if (size > 0)
+        {
+            if (size_shuxing >= size)
+            {
+                for (int k = 0; k < size_shuxing; k++)
+                {
+                    if (k < size)
+                    {
+                        _listObj[k].GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][k], false, false);
+                    }
+                    else
+                    {
+                        if (k == size)
+                        {
+                            index_ShuXing = k;
+                        }
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
+                    }
+                }
+            }
+            else
+            {
+                for (int k = 0; k < size; k++)
+                {
+                    if (k < size_shuxing)
+                    {
+                        _listObj[k].GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][k], false, false);
+                    }
+                    else
+                    {
+                        Destroy(_listObj[k]);
+                    }
+                }
+
+                for (int k = 0; k < size - size_shuxing; k++)
+                {
+                    _listObj.RemoveAt(_listObj.Count - 1);
+                }
+            }
+        }
+        else
+        {
+            index_ShuXing = 0;
+            for (int k = 0; k < size_shuxing; k++)
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
+            }
+        }
+    }
     private readonly Vector3 BasicIconPos = new Vector3(-110, 0, 0);
     private const int BasicIconDepth = 10;
     private List<int> _Show_Gong = new List<int>();
@@ -267,29 +352,29 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private List<int> _Show_Fang = new List<int>();
     public void ShowLevel(int index, int gong, int fang, int xue)
     {
-        m_LabLevel.gameObject.SetActive(true);
-        m_LabLevel.text = MyColorData.getColorString(4, " +" + index.ToString());
+
+        m_EquipItenm.m_LabelLevel.text = MyColorData.getColorString(4, " +" + index.ToString());
         if (ShowType == 0)
         {
             if (gong > 0)
             {
-                CreateClone(listWeaponTopCount[0].gameObject, gong);
+                CreateClone(m_EquipItenm.m_LabelGong.gameObject, gong);
  
                 int gg = int.Parse(ei.gong) + gong;
                 ei.gong = gg.ToString();
 
-                listWeaponTopCount[0].text = MyColorData.getColorString(10, gg.ToString());
+                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, gg.ToString());
             }
             else
             {
                 if (gong < 0)
                 {
-                    CreateClone(listWeaponTopCount[0].gameObject, gong);
+                    CreateClone(m_EquipItenm.m_LabelGong.gameObject, gong);
                 }
 
                 int gg = int.Parse(ei.gong) + gong;
                 ei.gong = gg.ToString();
-                listWeaponTopCount[0].text = MyColorData.getColorString(10, gg.ToString());
+                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, gg.ToString());
             }
 
             if (fang > 0)
@@ -299,25 +384,25 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                 int xx = int.Parse(ei.xue) + xue;
         
                 ei.xue = xx.ToString();
-                CreateClone(listArmorTopCount[1].gameObject, xue);
-                CreateClone(listArmorTopCount[0].gameObject, fang);
-                listArmorTopCount[0].text = MyColorData.getColorString(10, ff.ToString());
-                listArmorTopCount[1].text = MyColorData.getColorString(10, xx.ToString());// +MyColorData.getColorString(4, "+" + xue);
+                CreateClone(m_EquipItenm.m_LabelXue.gameObject, xue);
+                CreateClone(m_EquipItenm.m_LabelFang.gameObject, fang);
+                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ff.ToString());
+                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, xx.ToString());// +MyColorData.getColorString(4, "+" + xue);
             }
             else
             {
                 if (xue < 0)
                 {
-                    CreateClone(listArmorTopCount[1].gameObject, xue);
-                    CreateClone(listArmorTopCount[0].gameObject, fang);
+                    CreateClone(m_EquipItenm.m_LabelXue.gameObject, xue);
+                    CreateClone(m_EquipItenm.m_LabelFang.gameObject, fang);
                 }
                 int ff = int.Parse(ei.fang) + fang;
                 ei.fang = ff.ToString();
                 int xx = int.Parse(ei.xue) + xue;
                 ei.xue = xx.ToString();
-            
-                listArmorTopCount[0].text = MyColorData.getColorString(10, ff.ToString());
-                listArmorTopCount[1].text = MyColorData.getColorString(10, xx.ToString());
+
+                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ff.ToString());
+                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, xx.ToString());
             }
         }
     }
@@ -327,27 +412,15 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         if (BuWeiSave == (int)EquipPositionEnum.QingWuQi || BuWeiSave == (int)EquipPositionEnum.ZhongWuQi || BuWeiSave == (int)EquipPositionEnum.Gong)
         {
             equipType = 1;
-            if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-            {
-                m_WeaponTitleLineBottom.SetActive(true);
-            }
-            else
-            {
-                m_WeaponTitleLineBottom.SetActive(false);
-            }
-
-
-            m_AttributeArmor.SetActive(false);
-            m_AttributeWeapon.SetActive(true);
 
             if (EquipInfo.gongJiAdd == 0 || StrengthenIndex == 1)
             {
-                listWeaponTopCount[0].text = MyColorData.getColorString(10, ei.gong);
+                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
             }
             else
             {
-                listWeaponTopCount[0].text = MyColorData.getColorString(10, ei.gong);
-                CreateClone(listWeaponTopCount[0].gameObject, EquipInfo.gongJiAdd);
+                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
+                CreateClone(m_EquipItenm.m_LabelGong.gameObject, EquipInfo.gongJiAdd);
             }
 
             m_EquipIntensify.SetActive(true);
@@ -355,30 +428,20 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         else
         {
             equipType = 0;
-            m_AttributeArmor.SetActive(true);
-            m_AttributeWeapon.SetActive(false);
-
-            if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-            {
-                m_ListtArmorTitleLine[0].SetActive(true);
-            }
-            else
-            {
-                m_ListtArmorTitleLine[0].SetActive(false);
-            }
+           
 
             if (EquipInfo.fangYuAdd == 0 && EquipInfo.shengMingAdd == 0 || StrengthenIndex == 1)
             {
-                listArmorTopCount[0].text = MyColorData.getColorString(10, ei.fang);
-                listArmorTopCount[1].text = MyColorData.getColorString(10, ei.xue);
+                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
+                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
             }
             else
             {
-                listArmorTopCount[0].text = MyColorData.getColorString(10, ei.fang);
-                listArmorTopCount[1].text = MyColorData.getColorString(10, ei.xue);
+                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
+                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
 
-                CreateClone(listArmorTopCount[0].gameObject, EquipInfo.fangYuAdd);
-                CreateClone(listArmorTopCount[1].gameObject, EquipInfo.shengMingAdd);
+                CreateClone(m_EquipItenm.m_LabelFang.gameObject, EquipInfo.fangYuAdd);
+                CreateClone(m_EquipItenm.m_LabelXue.gameObject, EquipInfo.shengMingAdd);
             }
         }
     }
@@ -389,68 +452,34 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         if (BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_HEAVY_WEAPONS || BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_LIGHT_WEAPONS || BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_BOW)
         {
             equipType = 1;
-            //if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-            //{
-            //    m_WeaponTitleLineBottom.SetActive(true);
-            //}
-            //else
-            {
-                m_WeaponTitleLineBottom.SetActive(false);
-            }
-
-            m_AttributeArmor.SetActive(false);
-            m_AttributeWeapon.SetActive(true);
             EquipSuoData.Instance().m_WashIson = true;
-
             if (EquipInfo.gongJiAdd == 0 || StrengthenIndex == 1)
             {
-                listWeaponTopCount[0].text = MyColorData.getColorString(10, ei.gong);
+                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
             }
             else
             {
-                CreateClone(listWeaponTopCount[0].gameObject, EquipInfo.gongJiAdd);
+                CreateClone(m_EquipItenm.m_LabelGong.gameObject, EquipInfo.gongJiAdd);
             }
         }
         else
         {
             equipType = 0;
-            m_AttributeArmor.SetActive(true);
-            m_AttributeWeapon.SetActive(false);
-
-            // m_AtrrTip.GetComponent<EquipGrowthTipsShow>().isOpen = false;
+            
             EquipSuoData.Instance().m_WashIson = true;
-            //if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-            //{
-            //    m_ListtArmorTitleLine[0].SetActive(true);
-            //}
-            //else
-            {
-                m_ListtArmorTitleLine[0].SetActive(false);
-                //  m_ArmorAttributeTitle.transform.localPosition = new Vector3(-432, -66, -38);
-            }
-
-            if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-            {
-                m_ListtArmorTitleLine[0].SetActive(true);
-            }
-            else
-            {
-                m_ListtArmorTitleLine[0].SetActive(false);
-
-            }
 
             if (EquipInfo.fangYuAdd == 0 && EquipInfo.shengMingAdd == 0 || StrengthenIndex == 1)
             {
-                listArmorTopCount[0].text = MyColorData.getColorString(10, ei.fang);
-                listArmorTopCount[1].text = MyColorData.getColorString(10, ei.xue);
+                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
+                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
             }
             else
             {
-                listArmorTopCount[0].text = MyColorData.getColorString(10, ei.fang);
-                listArmorTopCount[1].text = MyColorData.getColorString(10, ei.xue);
+                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
+                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
 
-                CreateClone(listArmorTopCount[0].gameObject, EquipInfo.shengMingAdd);
-                CreateClone(listArmorTopCount[1].gameObject, EquipInfo.fangYuAdd);
+                CreateClone(m_EquipItenm.m_LabelFang.gameObject, EquipInfo.shengMingAdd);
+                CreateClone(m_EquipItenm.m_LabelXue.gameObject, EquipInfo.fangYuAdd);
             }
 
             m_EquipWashObject.SetActive(true);
@@ -487,9 +516,9 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                             }
                             else
                             {
-                                UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipQuality.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
+                                UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_SpritePinZhi.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
                                 m_WetherIsIntensify = false;
-								CreateMove(m_LabelMove.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
+                                CreateMove(m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
                                 if (EquipInfo.expMax == -1)
                                 {
                                     _isMaxLevel = true;
@@ -630,56 +659,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 
                 EquipSuoData.m_listEquipWash.Add(esr.zhuangbeiID, _listAttribute);
                 // index_ShuXing = 0;
-                int size_shuxing = EquipSuoData.m_listEquipWash[EquipSaveId].Count;
-                int size = _listObj.Count;
-                if (size > 0)
-                {
-                    if (size_shuxing >= size)
-                    {
-                        for (int k = 0; k < size_shuxing; k++)
-                        {
-                            if (k < size)
-                            {
-                               _listObj[k].GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][k], false, false);
-                            }
-                            else
-                            {
-                                if (k== size)
-                                {
-                                    index_ShuXing = k;
-                                }
-                                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int k = 0; k < size; k++)
-                        {
-                            if (k < size_shuxing)
-                            {
-                                _listObj[k].GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][k], false,false);
-                            }
-                            else
-                            {
-                                Destroy(_listObj[k]);
-                            }
-                        }
-
-                        for (int k = 0; k < size - size_shuxing; k++)
-                        {
-                            _listObj.RemoveAt(_listObj.Count - 1);
-                        }
-                    }
-                }
-                else
-                {
-                    index_ShuXing = 0;
-                    for (int k = 0; k < size_shuxing; k++)
-                    {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
-                    }
-                }
+               
                 foreach (KeyValuePair<int, BagItem> item in EquipsOfBodyDic)
                 {
                     if (item.Value.itemId == EquipSaveId)
@@ -797,7 +777,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     IEnumerator WatiFor(GameObject obj)
     {
         yield return new WaitForSeconds(0.8f);
-        UI3DEffectTool.Instance().ClearUIFx(m_EquipQuality.gameObject);
+        UI3DEffectTool.Instance().ClearUIFx(m_EquipItenm.m_SpritePinZhi.gameObject);
         Destroy(obj);
     }
 
@@ -806,57 +786,32 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         if (BuWeiSave == (int)EquipPositionEnum.QingWuQi || BuWeiSave == (int)EquipPositionEnum.ZhongWuQi || BuWeiSave == (int)EquipPositionEnum.Gong)
         {
             equipType = 1;
-            if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-            {
-                m_WeaponTitleLineBottom.SetActive(true);
-            }
-            else
-            {
-                m_WeaponTitleLineBottom.SetActive(false);
-            }
-            m_AttributeArmor.SetActive(false);
-            m_AttributeWeapon.SetActive(true);
 
             if (EquipInfo.gongJiAdd == 0 || StrengthenIndex == 1)
             {
-                listWeaponTopCount[0].text = MyColorData.getColorString(10, ei.gong);
+                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
             }
             else
             {
-                listWeaponTopCount[0].text = MyColorData.getColorString(10, ei.gong);
-                CreateClone(listWeaponTopCount[0].gameObject, EquipInfo.gongJiAdd);
+                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
+                CreateClone(m_EquipItenm.m_LabelGong.gameObject, EquipInfo.gongJiAdd);
             }
         }
         else
         {
             equipType = 0;
-            m_AttributeArmor.SetActive(true);
-            m_AttributeWeapon.SetActive(false);
- 
-            {
-                if (EquipSuoData.m_listEquipWash[EquipSaveId].Count > 0)
-                {
-                    m_ListtArmorTitleLine[0].SetActive(true);
- 
-                }
-                else
-                {
-                   m_ListtArmorTitleLine[0].SetActive(false); 
-                }
-            }
-
             if (EquipInfo.fangYuAdd == 0 && EquipInfo.shengMingAdd == 0 || StrengthenIndex == 1)
             {
-                listArmorTopCount[0].text = MyColorData.getColorString(10, ei.fang);
-                listArmorTopCount[1].text = MyColorData.getColorString(10, ei.xue);
+                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
+                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
             }
             else
             {
-                listArmorTopCount[0].text = MyColorData.getColorString(10, ei.fang);
-                listArmorTopCount[1].text = MyColorData.getColorString(10, ei.xue);
+                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
+                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
 
-                CreateClone(listArmorTopCount[0].gameObject, EquipInfo.fangYuAdd);
-                CreateClone(listArmorTopCount[1].gameObject, EquipInfo.shengMingAdd);
+                CreateClone(m_EquipItenm.m_LabelFang.gameObject, EquipInfo.fangYuAdd);
+                CreateClone(m_EquipItenm.m_LabelXue.gameObject, EquipInfo.shengMingAdd);
             }
         }
          m_EquipUpgrade.SetActive(true);
@@ -998,20 +953,19 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     public List<GameObject> _listObj = new List<GameObject>();
     public void ResourcesLoadCallBack2(ref WWW p_www, string p_path, Object p_object)
     {
-        if (m_GrideShuXing != null)
+        if (m_ParentInfo != null)
         {
             GameObject rewardShow = Instantiate(p_object) as GameObject;
             _listObj.Add(rewardShow);
-            rewardShow.transform.parent = m_GrideShuXing.transform;
+            rewardShow.transform.parent = m_ParentInfo.transform;
             rewardShow.transform.localScale = Vector3.one;
-            rewardShow.transform.localPosition = Vector3.zero;
+            rewardShow.transform.localPosition = new Vector3(-237, -20+index_ShuXing * (-28), 0);
             rewardShow.transform.GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][index_ShuXing],false, EquipSuoData.GetWetherContainNewAttribute(EquipSaveId));
-            m_GrideShuXing.repositionNow = true;
-            if (index_ShuXing < EquipSuoData.m_listEquipWash[EquipSaveId].Count -1)
+            //m_TableInfo.repositionNow = true;
+            if (index_ShuXing < EquipSuoData.m_listEquipWash[EquipSaveId].Count - 1)
             {
                 index_ShuXing++;
             }
-          
         }
         else
         {

@@ -133,6 +133,9 @@ public class CanshuTemplate : XmlLoadManager
 	public static string RANK_MAXNUM = "RANK_MAXNUM";
 	public static string RANK_MINLEVEL = "RANK_MINLEVEL";
     public static string XILIANSHI_MAXTIMES = "XILIANSHI_MAXTIMES";
+	public static string GONGJICHOUHEN_ADD = "GONGJICHOUHEN_ADD";
+	public static string GONGJICHOUHEN_TIME = "GONGJICHOUHEN_TIME";
+
 
     /// <summary>
     /// 以下参数表里未找到

@@ -2,11 +2,24 @@
 
 //#define DEBUG_UI_EFFECT
 
+
+
+#define ALWAYS_RETAIN
+
 using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2015.x.x
+ * @since:		Unity 4.5.3
+ * Function:	Help to manage 3d ui effect.
+ * 
+ * Notes:
+ * None.
+ */ 
 public class UI3DEffectTool : MonoBehaviour {
 
 	/// Desc:
@@ -489,6 +502,7 @@ public class UI3DEffectTool : MonoBehaviour {
 		}
 	}
 
+	/// add a overlaying ngui shadow object.
 	private void SetOverLayNGUI( UIType p_ui_type, GameObject p_overlay_ngui_gb, GameObject p_target_ngui_center_gb = null ){
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "SetOverLayNGUI: " + p_ui_type + " - " + p_overlay_ngui_gb + " - " + p_target_ngui_center_gb );
@@ -754,9 +768,9 @@ public class UI3DEffectTool : MonoBehaviour {
 			InitConstructor( p_target_gb, t_target_widget, p_sync_ngui_tran, p_target_ngui_center_gb );
 		}
 
-		public FxWatcherShadow( GameObject p_target_gb, UIWidget p_target_widget, bool p_sync_ngui_tran ){
-			InitConstructor( p_target_gb, p_target_widget, p_sync_ngui_tran );
-		}
+//		public FxWatcherShadow( GameObject p_target_gb, UIWidget p_target_widget, bool p_sync_ngui_tran ){
+//			InitConstructor( p_target_gb, p_target_widget, p_sync_ngui_tran );
+//		}
 
 		private void InitConstructor( GameObject p_target_gb, UIWidget p_target_widget, bool p_sync_ngui_tran, GameObject p_target_ngui_center_gb = null ){
 			if( p_target_gb == null ){
@@ -776,6 +790,14 @@ public class UI3DEffectTool : MonoBehaviour {
 			}
 			
 			m_sync_ngui_tran = p_sync_ngui_tran;
+		}
+
+		public void UpdateVisibility( bool p_visible ){
+			if( m_shadow_gb == null ){
+				return;
+			}
+
+			m_shadow_gb.SetActive( p_visible );
 		}
 
 		/// Update Fx GameObject.
@@ -821,12 +843,16 @@ public class UI3DEffectTool : MonoBehaviour {
 
 		private Vector3 m_cached_target_local_ngui_scale = Vector3.one;
 
+		private bool m_cached_visibility	= false;
+
 		public List<FxWatcherShadow> m_shadow_list = new List<FxWatcherShadow>();
 
 		public FxWatcher( GameObject p_target_ngui_gb ){
 			m_target_ngui_gb = p_target_ngui_gb;
 
 			m_target_ngui_ui_root_gb = NGUIHelper.GetUIRoot( m_target_ngui_gb );
+
+			UpdateCachedVisibility();
 
 			UpdateCachedTransform();
 		}
@@ -884,7 +910,34 @@ public class UI3DEffectTool : MonoBehaviour {
 				return;
 			}
 
+			UpdateVisiblility();
+
 			UpdateTransform();
+		}
+
+		private void UpdateVisiblility(){
+			if( m_target_ngui_gb == null ){
+				return;
+			}
+
+			if( m_cached_visibility == m_target_ngui_gb.activeInHierarchy ){
+				return;
+			}
+			else{
+				m_cached_visibility = m_target_ngui_gb.activeInHierarchy;
+			}
+
+			int t_count = m_shadow_list.Count;
+			
+			for( int i = t_count - 1; i >= 0; i-- ){
+				FxWatcherShadow t_shadow = m_shadow_list[ i ];
+
+				#if DEBUG_UI_EFFECT
+				Debug.Log( "Update Visibility to: " + m_cached_visibility );						
+				#endif
+
+				t_shadow.UpdateVisibility( m_cached_visibility );
+			}
 		}
 
 		private void UpdateTransform(){
@@ -942,6 +995,10 @@ public class UI3DEffectTool : MonoBehaviour {
 			}
 		}
 
+		private void UpdateCachedVisibility(){
+			m_cached_visibility = m_target_ngui_gb.activeInHierarchy;
+		}
+
 		private void UpdateCachedTransform(){
 			m_cached_target_local_ngui_pos = m_target_ngui_gb.transform.position;
 
@@ -958,12 +1015,16 @@ public class UI3DEffectTool : MonoBehaviour {
 
 				return true;
 			}
+
+			#if ALWAYS_RETAIN
+			return false;
+			#endif
+
 			
 			if( !m_target_ngui_gb.activeSelf ){
 #if DEBUG_UI_EFFECT
                 Debug.Log("m_target_ngui_gb.activeSelf = false.");
 #endif
-
 
 				return true;
 			}

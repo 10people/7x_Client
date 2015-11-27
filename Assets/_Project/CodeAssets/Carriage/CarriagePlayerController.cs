@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 namespace Carriage
 {
-    public class CarriagePlayerController : PlayerController
+    public class CarriagePlayerController : SinglePlayerController
     {
         public static CarriagePlayerController s_CarriagePlayerController;
         public RootManager m_RootManager;

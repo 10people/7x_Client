@@ -222,4 +222,18 @@ public class PurchaseTemplate : XmlLoadManager {
             return null;
         }
     }
+
+	public static PurchaseTemplate GetPurchaseTempById (int id)
+	{
+		foreach (PurchaseTemplate _template in templates)
+		{
+			if (_template.id == id)
+			{
+				return _template;
+			}
+		}
+
+		Debug.LogError( "not found: " + id );
+		return null;
+	}
 }

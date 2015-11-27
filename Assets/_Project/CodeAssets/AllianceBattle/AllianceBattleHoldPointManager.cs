@@ -86,7 +86,7 @@ namespace AllianceBattle
 
         void Update()
         {
-            if (m_RootManager.m_AbPlayerController == null || m_RootManager.m_AbBasicPlayerController == null) return;
+            if (m_RootManager.m_AbPlayerController == null || m_RootManager.m_AbCulturePlayerController == null) return;
 
             for (int i = 0; i < HoldPointList.Count; i++)
             {

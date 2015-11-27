@@ -7,6 +7,7 @@ public class AllianceItemManagerment : MonoBehaviour {
     public GameObject m_ObjGou;
     public UILabel m_LabName;
     public UILabel m_LabLevel;
+    public UILabel m_LabCountry;
     public UILabel m_LabShengWang;
     public UILabel m_LabMengZhu;
     public List<EventIndexHandle> m_listEvent;
@@ -52,6 +53,7 @@ public class AllianceItemManagerment : MonoBehaviour {
 		m_listEvent [1].gameObject.SetActive (!gou);
         m_LabName.text = "<" + name + ">";
         m_LabLevel.text = level.ToString();
+        m_LabCountry.text = level.ToString();
         m_LabShengWang.text = shengwang.ToString();
         m_LabMengZhu.text = mengzhu;
         if (callback != null)

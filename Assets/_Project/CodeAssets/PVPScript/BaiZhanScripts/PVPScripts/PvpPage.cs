@@ -706,6 +706,7 @@ public class PvpPage : MonoBehaviour {
 	{
 		if (showGetTipObj)
 		{
+			getTipObj.SetActive (true);
 			Vector3 tempScale = getTipObj.transform.localScale;
 			float addNum = 0.05f;
 			if (tempScale == Vector3.one)
@@ -729,6 +730,7 @@ public class PvpPage : MonoBehaviour {
 		}
 		else
 		{
+			getTipObj.SetActive (false);
 			getTipObj.transform.localScale = Vector3.zero;
 		}
 
