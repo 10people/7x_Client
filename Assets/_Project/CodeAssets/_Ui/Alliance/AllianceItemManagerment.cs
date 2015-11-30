@@ -12,11 +12,13 @@ public class AllianceItemManagerment : MonoBehaviour {
     public UILabel m_LabMengZhu;
     public List<EventIndexHandle> m_listEvent;
     private int ItemId = 0;
+    public UILabel m_labButtonName;
 
     public delegate void OnClick_Touch(int id);
     OnClick_Touch CallBackTouch;
-    public delegate void OnClick_Application(int id);
+    public delegate void OnClick_Application(int country_id,int alliance_id);
     OnClick_Application CallBackAppliacetion;
+    private int _Country = 0;
 	void Start () 
     {
         m_listEvent.ForEach(p => p.m_Handle += TouchIndex);
@@ -35,7 +37,15 @@ public class AllianceItemManagerment : MonoBehaviour {
         {
             if (CallBackAppliacetion != null)
             {
-                CallBackAppliacetion(ItemId);
+                if (_Country != JunZhuData.Instance().m_junzhuInfo.guoJiaId)
+                {
+                    CallBackAppliacetion(_Country, ItemId);
+                }
+                else
+                {
+                    CallBackAppliacetion(-1,ItemId);
+                }
+            
             }
         
         }
@@ -45,17 +55,23 @@ public class AllianceItemManagerment : MonoBehaviour {
     {
      
     }
-    public void ShowAllianceItem(int id, string name, int level, int shengwang, string mengzhu, bool gou, OnClick_Touch callback,OnClick_Application application)
+    public void ShowAllianceItem(AllianceLayerManagerment.AllianceItemInfo aii, OnClick_Touch callback,OnClick_Application application)
     {
-        ItemId = id;
+        ItemId = aii.id;
         // m_SpriteIcon.spriteName = icon;
-        m_ObjGou.SetActive(gou);
-		m_listEvent [1].gameObject.SetActive (!gou);
-        m_LabName.text = "<" + name + ">";
-        m_LabLevel.text = level.ToString();
-        m_LabCountry.text = level.ToString();
-        m_LabShengWang.text = shengwang.ToString();
-        m_LabMengZhu.text = mengzhu;
+        _Country = aii.country;
+        //m_ObjGou.SetActive(aii.isApply);
+        Debug.Log("aii.isApplyaii.isApplyaii.isApply" + aii.isApply);
+ 
+ 
+        m_labButtonName.text = !aii.isApply ? "申请":"已申请";
+        m_listEvent[1].GetComponent<ButtonColorManagerment>().ButtonsControl(!aii.isApply);
+        //m_listEvent[1].gameObject.SetActive (!aii.isApply);
+        m_LabName.text = "<" + aii.name + ">";
+        m_LabLevel.text = aii.level.ToString();
+        m_LabCountry.text = NameIdTemplate.GetName_By_NameId(aii.country);
+        m_LabShengWang.text = aii.shengwang.ToString();
+        m_LabMengZhu.text = aii.mengzhu;
         if (callback != null)
         {
             CallBackTouch = callback;

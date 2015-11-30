@@ -207,18 +207,18 @@ public class LoadingHelper{
 				t_active_bloom = false;
 			}
 			else if( IsLoadingCreateRole() ){
-				t_active_light = !Quality_Shadow.BattleField_ShowSimpleShadow();
+				t_active_light = Quality_Shadow.BattleField_RealShadow();
 				
 				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
 			}
 			else if( IsLoadingBattleField() ){
-				t_active_light = !Quality_Shadow.BattleField_ShowSimpleShadow();
+				t_active_light = Quality_Shadow.BattleField_RealShadow();
 				
 				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
 			}
 			else if (IsLoadingMainCity() || IsLoadingMainCityYeWan() || IsLoadingAllianceCity() || IsLoadingAllianceTenentsCity() || IsLoadingHouse() || IsLoadingAllianceCityYeWan() || IsInAllianceTenentsCityYeWanScene() || IsLoadingCarriage()||IsLoadingAllianceBattle())
 			{
-				t_active_light = !Quality_Shadow.InCity_ShowSimpleShadow();
+				t_active_light = Quality_Shadow.InCity_RealShadow();
 				
 				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
 			}

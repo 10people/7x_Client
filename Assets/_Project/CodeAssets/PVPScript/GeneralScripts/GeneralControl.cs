@@ -227,12 +227,8 @@ public class GeneralControl : Singleton<GeneralControl>,SocketProcessor {
 							break;
 						}
 
-						GameObject storePrefab = GameObject.Find ("GeneralStore");
-						if (storePrefab != null)
-						{
-							GeneralStore generalStore = storePrefab.GetComponent<GeneralStore> ();
-							generalStore.RefreshStoreItem (goodInfo.itemId,storeBuyRes.remianHyMoney);
-						}
+						GeneralStore generalStore = generalStoreObj.GetComponent<GeneralStore> ();
+						generalStore.RefreshStoreItem (goodInfo.itemId,storeBuyRes.remianHyMoney);
 					}
 					BoxLoad (BoxCallBackType.STORE_BUY);
 				}

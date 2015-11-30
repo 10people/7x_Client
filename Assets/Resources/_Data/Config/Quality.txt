@@ -1,7 +1,7 @@
 -------------------------------------------<iOS>
 Device=iPhone4S/iPad2Gen/iPadMini1Gen/iPodTouch5Gen
 Quality:Low
-BattleFieldShadow:true
+BattleFieldShadow:Low
 BladeEffect:false
 Bloom:false
 
@@ -33,7 +33,7 @@ Quality:Low
 
 GDN=PowerVR SGX 544MP/Adreno (TM) 320/Adreno (TM) 330/Mali-450 MP
 Quality:Low
-BattleFieldShadow:false
+BattleFieldShadow:None
 Bloom:false
 
 GDN=Adreno (TM) 420/Adreno (TM) 430/Mali-T760?
@@ -45,8 +45,8 @@ AntiAlias:None
 
 -------------------------------------------<Config>
 Quality=Low
-InCityShadow:false
-BattleFieldShadow:false
+InCityShadow:None
+BattleFieldShadow:None
 BladeEffect:false
 BossEffect:true
 AntiAlias:None
@@ -55,8 +55,8 @@ HittedPS:false
 SceneFx:Low
 
 Quality=Medium
-InCityShadow:true
-BattleFieldShadow:true
+InCityShadow:High
+BattleFieldShadow:High
 BladeEffect:false
 BossEffect:true
 AntiAlias:Low
@@ -65,8 +65,8 @@ HittedPS:true
 SceneFx:Medium
 
 Quality=High
-InCityShadow:true
-BattleFieldShadow:true
+InCityShadow:High
+BattleFieldShadow:High
 BladeEffect:true
 BossEffect:true
 AntiAlias:Low

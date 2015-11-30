@@ -28,6 +28,7 @@ public class SocketHelper {
 		GameObject t_gb = GameObjectHelper.GetDontDestroyOnLoadGameObject ();
 
 		ComponentHelper.AddIfNotExist ( t_gb, typeof(PushAndNotificationHelper) );
+		ComponentHelper.AddIfNotExist ( t_gb, typeof(PlayerSceneSyncManager) );
 	}
 
 	#endregion

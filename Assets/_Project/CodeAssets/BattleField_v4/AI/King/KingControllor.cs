@@ -1704,6 +1704,11 @@ public class KingControllor : HeroAI
 		
 			BattleControlor.Instance().getKing().gameCamera.Shake(KingCamera.ShakeType.Vertical);
 		}
+		else if(attackId == 600156)
+		{
+			m_play_attack_effect.Set( 600156,
+			                         DevelopUtility.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT);
+		}
 
 		return m_play_attack_effect;
 	}

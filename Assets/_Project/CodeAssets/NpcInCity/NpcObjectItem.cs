@@ -42,14 +42,14 @@ public class NpcObjectItem : MonoBehaviour {
 
 		m_iconSprite.spriteName = template.m_npcIcon.ToString();
         m_Shadow.SetActive( Quality_Shadow.InCity_ShowSimpleShadow());
-        m_nameLabel.transform.localEulerAngles = new Vector3(m_template.NameDirectX, m_template.NameDirectY, 0);
-        m_iconSprite.transform.localEulerAngles = new Vector3(m_template.NameDirectX, m_template.NameDirectY, 0);
+        //m_nameLabel.transform.localEulerAngles = new Vector3(m_template.NameDirectX, m_template.NameDirectY, 0);
+        //m_iconSprite.transform.localEulerAngles = new Vector3(m_template.NameDirectX, m_template.NameDirectY, 0);
        // m_nameLabel.transform.localEulerAngles = new Vector3(0, -m_template.m_Angles, 0);
 
-        if (CityGlobalData.m_isAllianceTenentsScene)
-        {
-            m_iconSprite.transform.localEulerAngles = new Vector3(0, m_template.NameDirectY, 0);
-        }
+        //if (CityGlobalData.m_isAllianceTenentsScene)
+        //{
+        //    m_iconSprite.transform.localEulerAngles = new Vector3(0, m_template.NameDirectY, 0);
+        //}
 
 		if(SceneManager.IsInBattleFieldScene())
 		{

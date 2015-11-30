@@ -236,14 +236,14 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		{
 			CarriageSceneManager.Instance.ReturnCarriage(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN);
 		}
-        else if (JunZhuData.Instance().m_junzhuInfo.lianMengId <=0)
+        else //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <=0)
         {
             SceneManager.EnterMainCity();
         }
-        else
-        {
-            SceneManager.EnterAllianceCity();
-        }
+        //else
+        //{
+        //    SceneManager.EnterAllianceCity();
+        //}
 
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("JunZhu")))
         {

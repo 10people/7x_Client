@@ -211,12 +211,13 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             // m_AllianceAppliedCount = 0;
                             g_UnionInfo = null;
                             Isdismissed = true;
-                            if (!CityGlobalData.m_isJieBiaoScene && BattleControlor.Instance() == null)
-                            {
-                                CityGlobalData.m_isAllianceScene = false;
-                                CityGlobalData.m_isMainScene = true;
-                                SceneManager.EnterMainCity();
-                            }
+                            JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;//new add
+                            //if (!CityGlobalData.m_isJieBiaoScene && BattleControlor.Instance() == null)
+                            //{
+                            //    CityGlobalData.m_isAllianceScene = false;
+                            //    CityGlobalData.m_isMainScene = true;
+                            //    SceneManager.EnterMainCity();
+                            //}
                         }
 
                         return true;
@@ -236,8 +237,10 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         {
                             _isNoAllianceKey = false;
                             CityGlobalData.m_isMainScene = false;
-                           // CityGlobalData.m_isAllianceScene = true;
-                            SceneManager.EnterAllianceCity();
+                            // CityGlobalData.m_isAllianceScene = true;
+                            // SceneManager.EnterAllianceCity();
+
+                            JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;//new add
                         }
                         return true;
                     }
@@ -266,7 +269,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                                 }
                             }
 
-                            SceneManager.EnterMainCity();
+                            //SceneManager.EnterMainCity();
                         }
                         return true;
                         break;
@@ -302,10 +305,11 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 			MainCityUI.TryRemoveFromObjectList(uirot);
 			Destroy(uirot);
 		}
-		//JunZhuData.Instance ().m_junzhuInfo.lianMengId = 0;
+		 JunZhuData.Instance ().m_junzhuInfo.lianMengId = 0;
 		CityGlobalData.m_isAllianceScene = false;
 		CityGlobalData.m_isMainScene = true;
-		SceneManager.EnterMainCity();
+
+		//SceneManager.EnterMainCity();
 	}
     public void RequestData()
     {

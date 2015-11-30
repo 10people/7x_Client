@@ -62,11 +62,11 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_CITY_NET, 1, 4);
         StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_UI, 1, 1);
 
-        if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1)
-        {
-            StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 15);
-        }
-        else
+        //if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1)
+        //{
+        //    StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 15);
+        //}
+        //else
         {
             StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 13);
         }
@@ -108,7 +108,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         listNpcTempInfo.Clear();
         m_listNpcTemp.Clear();
         _IndexNum = 0;
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+       // if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
         {
             foreach (NpcCityTemplate _template in NpcCityTemplate.m_templates)
             {
@@ -124,22 +124,22 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
                                   LoadNpcCallback);
             }
         }
-        else if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1)
-        {
-            foreach (NpcCityTemplate _template in NpcCityTemplate.m_templates)
-            {
-                if (_template.m_Type == 2 && _template.m_npcId < 1000)
-                {
-                    listNpcTempInfo.Add(_template);
-                }
-            }
-            int size = listNpcTempInfo.Count;
-            for (int i = 0; i < size; i++)
-            {
-                Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(listNpcTempInfo[i].m_npcShowId),
-                                  LoadNpcCallback);
-            }
-        }
+        //else if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1)
+        //{
+        //    foreach (NpcCityTemplate _template in NpcCityTemplate.m_templates)
+        //    {
+        //        if (_template.m_Type == 2 && _template.m_npcId < 1000)
+        //        {
+        //            listNpcTempInfo.Add(_template);
+        //        }
+        //    }
+        //    int size = listNpcTempInfo.Count;
+        //    for (int i = 0; i < size; i++)
+        //    {
+        //        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(listNpcTempInfo[i].m_npcShowId),
+        //                          LoadNpcCallback);
+        //    }
+        //}
     }
     int _IndexNum = 0;
     public void LoadNpcCallback(ref WWW p_www, string p_path, Object p_object)
@@ -336,6 +336,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     private bool _isEnterMainCity = true;
     IEnumerator CheckingDataForMainCity()
     {
+   
         while (m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY)
         {
             yield return new WaitForEndOfFrame();
@@ -355,7 +356,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
             _isEnterMainCity = true;
             EnterNextScene.DirectLoadLevel();
         }
-
+ 
         if (m_received_data_for_main_city == REQUEST_DATA_COUNT_FOR_MAINCITY && _isEnterMainCity)
         {
             UnRegister();
@@ -476,7 +477,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         SocketTool.UnRegisterSocketListener(this);
     }
 
-    public void Prepare_For_AllianceCity()
+    public void Prepare_For_AllianceCity11()
     {
         InitCityLoading();
 

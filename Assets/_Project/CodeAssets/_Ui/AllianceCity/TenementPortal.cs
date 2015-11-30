@@ -16,7 +16,7 @@ public class TenementPortal : MonoBehaviour
             CityGlobalData.m_isAllianceTenentsScene = false;
 
             CityGlobalData.m_isAllianceScene = true;
-            SceneManager.EnterAllianceCity();
+            //SceneManager.EnterAllianceCity();
         }
         else if (other.name.Equals("EffectBigHouse") || other.name.Equals("EffectPortal"))
         {
@@ -31,7 +31,7 @@ public class TenementPortal : MonoBehaviour
             CityGlobalData.m_iAllianceTenentsSceneNum = other.GetComponent<TenementEnterPortal>().m_indexNum;
             // Debug.Log(" CityGlobalData.m_iAllianceTenentsSceneNum CityGlobalData.m_iAllianceTenentsSceneNum CityGlobalData.m_iAllianceTenentsSceneNum ::" + CityGlobalData.m_iAllianceTenentsSceneNum);
             CityGlobalData.m_isAllianceTenentsScene = true;
-            SceneManager.EnterAllianceCityTenentsCityOne();
+          //  SceneManager.EnterAllianceCityTenentsCityOne();
         }
         else if (other.name.Equals("RangCollider"))
         {

@@ -201,7 +201,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         }
         else if (ShowType == 1)//1 洗练
         {
-            m_labelIntensify.gameObject.SetActive(true);
+            m_labelIntensify.gameObject.SetActive(false);
 
             int size_shuxing = m_ParentInfo.transform.childCount;
      

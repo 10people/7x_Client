@@ -99,14 +99,14 @@ public class BattlePauseControllor : MonoBehaviour
 
 		//SceneManager.EnterMainCity();
 
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
-        {
+        //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+        //{
             SceneManager.EnterMainCity();
-        }
-        else
-        {
-            SceneManager.EnterAllianceCity();
-        }
+        //}
+        //else
+        //{
+        //    SceneManager.EnterAllianceCity();
+        //}
 
 //		Application.LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
 	}

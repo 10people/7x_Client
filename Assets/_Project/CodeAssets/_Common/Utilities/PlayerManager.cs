@@ -14,50 +14,49 @@ public class PlayerManager : MonoBehaviour
     /// <summary>
     /// Key for id, value for OtherPlayerController
     /// </summary>
-    public Dictionary<long, PlayerController> m_PlayerDic = new Dictionary<long, PlayerController>();
+    public Dictionary<int, PlayerController> m_PlayerDic = new Dictionary<int, PlayerController>();
 
     public virtual void AddTrackCamera(PlayerController temp)
     {
         Debug.LogError("Call AddTrackCamera in base class.");
     }
 
-    public bool CreatePlayer(long l_ID, int l_roleID, int l_uID, Vector3 l_position)
+    public bool CreatePlayer(int l_roleID, int l_uID, Vector3 l_position)
     {
-        if (m_PlayerDic.ContainsKey(l_ID))
+        if (m_PlayerDic.ContainsKey(l_uID))
         {
             return false;
         }
 
-        if (!m_PlayerDic.ContainsKey(l_ID))
+        if (!m_PlayerDic.ContainsKey(l_uID))
         {
             var temp = Instantiate(l_roleID <= 2 ? MaleCharacterPrefab : FemaleCharacterPrefab) as GameObject;
 
             temp.GetComponent<CharacterController>().enabled = false;
 
             temp.transform.localPosition = l_position;
-            temp.transform.name = "CreatedOtherPlayer_" + l_ID;
+            temp.transform.name = "CreatedOtherPlayer_" + l_uID;
 
             PlayerController tempItem = temp.AddComponent<PlayerController>();
             AddTrackCamera(tempItem);
 
-            tempItem.m_PlayerID = l_ID;
             tempItem.m_RoleID = l_roleID;
             tempItem.m_UID = l_uID;
 
-            m_PlayerDic.Add(l_ID, tempItem);
+            m_PlayerDic.Add(l_uID, tempItem);
         }
 
         return true;
     }
 
-    public void UpdatePlayerPosition(long l_ID, Vector3 l_position)
+    public void UpdatePlayerPosition(int l_uID, Vector3 l_position)
     {
-        if (!m_PlayerDic.ContainsKey(l_ID))
+        if (!m_PlayerDic.ContainsKey(l_uID))
         {
             return;
         }
 
-        PlayerController tempPlayer = m_PlayerDic[l_ID];
+        PlayerController tempPlayer = m_PlayerDic[l_uID];
         l_position.y = 0;
 
         Vector3 targetPosition = new Vector3(l_position.x, l_position.y, l_position.z);
@@ -79,12 +78,12 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void DestroyPlayer(long l_ID)
+    public void DestroyPlayer(int l_uID)
     {
-        if (m_PlayerDic.ContainsKey(l_ID))
+        if (m_PlayerDic.ContainsKey(l_uID))
         {
-            Destroy(m_PlayerDic[l_ID].gameObject);
-            m_PlayerDic.Remove(l_ID);
+            Destroy(m_PlayerDic[l_uID].gameObject);
+            m_PlayerDic.Remove(l_uID);
         }
     }
 

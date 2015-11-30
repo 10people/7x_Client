@@ -2,10 +2,6 @@
 
 //#define DEBUG_QUALITY
 
-//#define SHOW_REAL_SHADOW
-
-//#define IGNORE_EDITOR
-
 //#define ENABLE_BLOOM
 
 using UnityEngine;
@@ -263,9 +259,9 @@ public class QualityTool : Singleton<QualityTool>{
 			Debug.Log( "Mobile.Device.G.Name: " + SystemInfo.graphicsDeviceName );
 		}
 		
-		ConfigTool.LoadValues( m_quality_dict, CONST_IN_CITY_SHADOW, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_IN_CITY_SHADOW ) );
+		ConfigTool.LoadValues( m_quality_dict, CONST_IN_CITY_SHADOW, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_IN_CITY_SHADOW ) );
 		
-		ConfigTool.LoadValues( m_quality_dict, CONST_BATTLE_FIELD_SHADOW, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_BATTLE_FIELD_SHADOW ) );
+		ConfigTool.LoadValues( m_quality_dict, CONST_BATTLE_FIELD_SHADOW, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_BATTLE_FIELD_SHADOW ) );
 		
 		ConfigTool.LoadValues( m_quality_dict, CONST_BLADE_EFFECT, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_BLADE_EFFECT ) );
 		
@@ -439,9 +435,9 @@ public class QualityTool : Singleton<QualityTool>{
 			Debug.Log( "SetToLowest()" );
 		}
 
-		m_config_xml_dict[ CONST_IN_CITY_SHADOW ] = "false";
+		m_config_xml_dict[ CONST_IN_CITY_SHADOW ] = Quality_Shadow.SHADOW_NONE;
 		
-		m_config_xml_dict[ CONST_BATTLE_FIELD_SHADOW ] = "true";
+		m_config_xml_dict[ CONST_BATTLE_FIELD_SHADOW ] = Quality_Shadow.SHADOW_NONE;
 		
 		m_config_xml_dict[ CONST_BLADE_EFFECT ] = "false";
 		
@@ -462,9 +458,9 @@ public class QualityTool : Singleton<QualityTool>{
 			Debug.Log( "SetToHighest()" );
 		}
 
-		m_config_xml_dict[ CONST_IN_CITY_SHADOW ] = "true";
+		m_config_xml_dict[ CONST_IN_CITY_SHADOW ] = Quality_Shadow.SHADOW_HIGH;
 		
-		m_config_xml_dict[ CONST_BATTLE_FIELD_SHADOW ] = "true";
+		m_config_xml_dict[ CONST_BATTLE_FIELD_SHADOW ] = Quality_Shadow.SHADOW_HIGH;
 		
 		m_config_xml_dict[ CONST_BLADE_EFFECT ] = "true";
 		

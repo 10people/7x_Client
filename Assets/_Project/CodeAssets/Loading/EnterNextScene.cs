@@ -114,10 +114,10 @@ public class EnterNextScene : MonoBehaviour{
 			}
 		}
 
-       // progress log
-        //{
-        //    StaticLoading.LogLoadingInfo(StaticLoading.m_loading_sections);
-        //}
+        // progress log
+        {
+           // StaticLoading.LogLoadingInfo(StaticLoading.m_loading_sections);
+        }
 
         if ( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CURRENT_LOADING ) ){
 			if( m_loading_asset_changed ){
@@ -171,11 +171,11 @@ public class EnterNextScene : MonoBehaviour{
 		else if ( LoadingHelper.IsLoadingAllianceCity() || LoadingHelper.IsLoadingAllianceCityYeWan()) {
             // Prepare_For_AllianceCity();
     
-            PrepareForCityLoad.Instance.Prepare_For_AllianceCity();
+           // PrepareForCityLoad.Instance.Prepare_For_AllianceCity();
         }
 		else if ( LoadingHelper.IsLoadingAllianceCityYeWan() || LoadingHelper.IsLoadingAllianceTenentsCity())
         {
-            PrepareForCityLoad.Instance.Prepare_For_AllianceCity();
+           // PrepareForCityLoad.Instance.Prepare_For_AllianceCity();
         }
 		else if ( LoadingHelper.IsLoadingAllianceTenentsCity() ){
           //  Prepare_For_AllianceCity();

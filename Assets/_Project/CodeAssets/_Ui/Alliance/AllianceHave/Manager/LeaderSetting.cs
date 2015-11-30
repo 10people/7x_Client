@@ -304,9 +304,11 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 	void DisAllianceSuccessBack (int i)
 	{
         //JunZhuData.Instance ().m_junzhuInfo.lianMengId = 0;
-        CityGlobalData.m_isAllianceScene = false;
-        CityGlobalData.m_isMainScene = true;
-        SceneManager.EnterMainCity();
+        //CityGlobalData.m_isAllianceScene = false;
+        //CityGlobalData.m_isMainScene = true;
+
+        JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;//new add
+        // SceneManager.EnterMainCity();
     }
 
 	//关闭招募返回异步加载回调

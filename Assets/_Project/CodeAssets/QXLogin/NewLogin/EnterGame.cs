@@ -211,18 +211,18 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
                                     CityGlobalData.countryId = loginRet.guoJiaId;
 
                                     //						EquipsOfBody.Instance();
-                                    if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 2)
-                                    {
+                                    //if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 2)
+                                    //{
                                         CityGlobalData.m_isAllianceTenentsScene = true;
                                         CityGlobalData.m_iAllianceTenentsSceneNum = FunctionWindowsCreateManagerment.IsFenChengNum();
-                                        SceneManager.EnterAllianceCityTenentsCityOne();
-                                      
-                                    }
-                                    else
-                                    {
-                                        SceneManager.EnterAllianceCity();
-                                    }
-                                    
+                                    //SceneManager.EnterAllianceCityTenentsCityOne();
+                                    SceneManager.EnterMainCity();
+                                    //}
+                                    //else
+                                    //{
+                                    //    SceneManager.EnterAllianceCity();
+                                    //}
+
 
                                     break;
 

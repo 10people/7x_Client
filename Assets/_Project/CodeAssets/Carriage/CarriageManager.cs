@@ -11,7 +11,7 @@ namespace Carriage
     public class CarriageManager : MonoBehaviour
     {
         public RootManager m_RootManager;
-        public List<CarriageController> m_CarriageControllers = new List<CarriageController>();
+        public List<CarriageCultureController> m_CarriageControllers = new List<CarriageCultureController>();
 
         private GameObject m_carriageParent;
 
@@ -26,14 +26,14 @@ namespace Carriage
 
         public void RefreshACarriage(BiaoCheState l_biaoCheState)
         {
-            List<CarriageController> controllers = m_CarriageControllers.Where(controller => controller.m_YabiaoJunZhuInfo.junZhuId == l_biaoCheState.junZhuId).ToList();
+            List<CarriageCultureController> controllers = m_CarriageControllers.Where(controller => controller.m_YabiaoJunZhuInfo.junZhuId == l_biaoCheState.junZhuId).ToList();
             if (controllers == null || controllers.Count == 0)
             {
                 Debug.LogError("Fail to find carriage when refresh a carriage, kingId:" + l_biaoCheState.junZhuId);
                 return;
             }
 
-            foreach (CarriageController controller in controllers)
+            foreach (CarriageCultureController controller in controllers)
             {
                 controller.m_YabiaoJunZhuInfo.state = l_biaoCheState.state;
                 controller.m_YabiaoJunZhuInfo.hp = l_biaoCheState.hp;
@@ -49,7 +49,7 @@ namespace Carriage
 
         public void InitACarriage(YabiaoJunZhuInfo l_yabiaoJunZhuInfo)
         {
-            List<CarriageController> controllers = m_CarriageControllers.Where(controller => controller.m_YabiaoJunZhuInfo.junZhuId == l_yabiaoJunZhuInfo.junZhuId).ToList();
+            List<CarriageCultureController> controllers = m_CarriageControllers.Where(controller => controller.m_YabiaoJunZhuInfo.junZhuId == l_yabiaoJunZhuInfo.junZhuId).ToList();
             //List<CarriageController> controllers2 = m_CarriageControllers.Where(controller => controller.m_YabiaoJunZhuInfo.pathId == l_yabiaoJunZhuInfo.pathId).ToList();
 
             if (controllers != null && controllers.Count != 0)
@@ -103,8 +103,8 @@ namespace Carriage
             TransformHelper.ActiveWithStandardize(m_carriageParent.transform, tempObject.transform);
             tempObject.transform.localPosition = m_RootManager.m_SpotPointManager.m_SpotPointLineVecs[l_yabiaoJunZhuInfo.pathId - 1][0];
 
-            CarriageController tempController = tempObject.GetComponent<CarriageController>() ??
-                                                tempObject.AddComponent<CarriageController>();
+            CarriageCultureController tempController = tempObject.GetComponent<CarriageCultureController>() ??
+                                                tempObject.AddComponent<CarriageCultureController>();
 
             tempController.m_YabiaoJunZhuInfo = l_yabiaoJunZhuInfo;
             tempController.m_rootManager = m_RootManager;

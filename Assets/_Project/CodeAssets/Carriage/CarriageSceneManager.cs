@@ -54,14 +54,14 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
 
     public void ReturnMainCity()
     {
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
-        {
+        //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+        //{
             SceneManager.EnterMainCity();
-        }
-        else
-        {
-            SceneManager.EnterAllianceCity();
-        }
+        //}
+        //else
+        //{
+        //    SceneManager.EnterAllianceCity();
+        //}
     }
 
     /// <summary>
@@ -137,7 +137,8 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                         YabiaoJunZhuList temp = new YabiaoJunZhuList();
                         t_qx.Deserialize(t_tream, temp, temp.GetType());
 
-				if (Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
+                        if (Application.loadedLevelName != SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.CARRIAGE))
+                        {
                             Debug.LogWarning("Do not sync s_YabiaoJunZhuList in CarriageSceneManager cause not initialized.");
                             return false;
                         }
@@ -162,7 +163,8 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                         BiaoCheState temp = new BiaoCheState();
                         t_qx.Deserialize(t_tream, temp, temp.GetType());
 
-						if (s_YabiaoJunZhuList == null || Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
+                        if (s_YabiaoJunZhuList == null || Application.loadedLevelName != SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.CARRIAGE))
+                        {
                             Debug.LogWarning("Do not sync BiaoCheState in CarriageSceneManager cause not initialized.");
                             return false;
                         }
@@ -182,7 +184,8 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                         YabiaoJunZhuInfo temp = new YabiaoJunZhuInfo();
                         t_qx.Deserialize(t_tream, temp, temp.GetType());
 
-						if (Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
+                        if (Application.loadedLevelName != SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.CARRIAGE))
+                        {
                             Debug.LogWarning("Do not sync BiaoCheState in CarriageSceneManager cause not initialized.");
                             return false;
                         }
@@ -201,32 +204,32 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                         BuyCountsResp temp = new BuyCountsResp();
                         t_qx.Deserialize(t_tream, temp, temp.GetType());
 
-						if (CityGlobalData.GetYunBiaoBuyType == 20)
-						{
-							switch (temp.result)
-							{
-								//succeed
-								case 10:
-								{
-									s_YabiaoJunZhuList.jieBiaoCiShu = temp.leftJBTimes;
-									
-									Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnBuyRobTimesSucceed);
-									break;
-								}
-									//not enough ingot
-								case 20:
-								{
-									Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnNotEnoughIngot);
-									break;
-								}
-									//buy times exhausted
-								case 30:
-								{
-									Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnCannotBuyTimes);
-									break;
-								}
-							}
-						}
+                        if (CityGlobalData.GetYunBiaoBuyType == 20)
+                        {
+                            switch (temp.result)
+                            {
+                                //succeed
+                                case 10:
+                                    {
+                                        s_YabiaoJunZhuList.jieBiaoCiShu = temp.leftJBTimes;
+
+                                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnBuyRobTimesSucceed);
+                                        break;
+                                    }
+                                //not enough ingot
+                                case 20:
+                                    {
+                                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnNotEnoughIngot);
+                                        break;
+                                    }
+                                //buy times exhausted
+                                case 30:
+                                    {
+                                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnCannotBuyTimes);
+                                        break;
+                                    }
+                            }
+                        }
                         break;
                     }
             }
@@ -294,9 +297,9 @@ public class CarriageSceneManager : Singleton<CarriageSceneManager>, SocketListe
                     {
                         type = 20
                     };
-					CityGlobalData.SetYunBiaoBuyType = 20;
+                    CityGlobalData.SetYunBiaoBuyType = 20;
                     SocketHelper.SendQXMessage(temp, ProtoIndexes.C_YABIAO_BUY_RSQ);
-					
+
                     break;
                 }
         }

@@ -24,8 +24,6 @@ public class PlayerController : MonoBehaviour
     public Camera TrackCamera;
 
     [HideInInspector]
-    public long m_PlayerID;
-    [HideInInspector]
     public int m_UID;
     [HideInInspector] 
     public int m_RoleID;

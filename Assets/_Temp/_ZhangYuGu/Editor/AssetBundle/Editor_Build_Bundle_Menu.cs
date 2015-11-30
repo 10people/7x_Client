@@ -1,3 +1,5 @@
+//#define DEBUG_BUNDLE
+
 using UnityEngine;
 using UnityEditor;
 using SimpleJSON;
@@ -19,10 +21,10 @@ using System.Security.Cryptography;
  */ 
 public class Editor_Build_Bundle_Menu : MonoBehaviour {
 
-
 	private enum MenuItemPriority{
-		BUILD_ALL = 100,
-		BUILD_DEBUG,
+		BUILD_DEBUG = 100,
+
+		BUILD_ALL,
 		BUILD_SUB_UI_ATLAS_PREFABS,
 		BUILD_SUB_UI_IMAGES,
 		BUILD_SUB_DATA,
@@ -36,6 +38,20 @@ public class Editor_Build_Bundle_Menu : MonoBehaviour {
 		BUILD_SUB_CONFIG,
 		BUILD_SUB_BUNDLE_LIST,
 	}
+
+	#region Debug
+
+	#if DEBUG_BUNDLE
+	[MenuItem("Build/Bundles/Debug Bundle", false, (int)MenuItemPriority.BUILD_DEBUG ) ]
+	public static void Debug_Editor_Debug_Bundle() {
+		BuildPipeline.BuildAssetBundles( "Assets/_Temp/_ZhangYuGu/_Debug",
+		                                BuildAssetBundleOptions.None,
+		                                BuildTarget.Android );
+	}
+	#endif
+
+	#endregion
+
 
 	
 	#region Build All

@@ -184,39 +184,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         }
     }
     GameObject SendObj;
-    //void ButtonsControl(GameObject obj, bool colliderEnable)
-    //{
-    //    if (obj.transform.FindChild("Background").GetComponent<TweenColor>() == null)
-    //    {
-    //        obj.transform.FindChild("Background").gameObject.AddComponent<TweenColor>();
-    //        obj.transform.FindChild("Background").gameObject.AddComponent<TweenColor>().enabled = false;
-    //    }
-    //    if (colliderEnable)
-    //    {
-    //        obj.transform.FindChild("Background").GetComponent<TweenColor>().from = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
-    //        obj.transform.FindChild("Background").GetComponent<TweenColor>().to = new Color(1.0f, 1.0f, 1.0f);
-    //    }
-    //    else
-    //    {
-    //        obj.transform.FindChild("Background").GetComponent<TweenColor>().from = new Color(1.0f, 1.0f, 1.0f);
-    //        obj.transform.FindChild("Background").GetComponent<TweenColor>().to = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
-    //    }
-
-    //    obj.transform.FindChild("Background").GetComponent<TweenColor>().duration = 0.2f;
-    //    obj.transform.FindChild("Background").GetComponent<TweenColor>().enabled = true;
-    //    obj.collider.enabled = colliderEnable;
-    //    SendObj = obj;
-    //    EventDelegate.Add(obj.transform.FindChild("Background").GetComponent<TweenColor>().onFinished, TweenColorDestroy);
-
-    //}
-    //void TweenColorDestroy()
-    //{
-    //    if (SendObj.transform.FindChild("Background").GetComponent<TweenColor>() != null)
-    //    {
-    //        EventDelegate.Remove(SendObj.transform.FindChild("Background").GetComponent<TweenColor>().onFinished, TweenColorDestroy);
-    //        Destroy(SendObj.transform.FindChild("Background").GetComponent<TweenColor>());
-    //    }
-    //}
+   
     public void SettingInfoShow()
     {
         
@@ -250,7 +218,6 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
             ShowButtonInfo(i, SettingData.Instance().m_listSettingsInfo[i]);
         }
 
-        Debug.Log("FunctionWindowsCreateManagerment.m_SettingUpTYpe ::" + FunctionWindowsCreateManagerment.m_SettingUpTYpe);
         if (FunctionWindowsCreateManagerment.m_SettingUpTYpe != FunctionWindowsCreateManagerment.SettingType.NONE)
         {
             StartCoroutine(AutoShowNation());
@@ -470,7 +437,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         }
                         else if (tempResponse.result == 102)
                         {
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadNOZhuanGuoKa);
+                           
                         }
                         return true;
                     }
@@ -709,17 +676,24 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     {
         if (index == 2)
         {
+            if (BagData.GetMaterialCountByID(910001) > 0)
+            {
+                MemoryStream tempStream = new MemoryStream();
+                QiXiongSerializer t_serializer = new QiXiongSerializer();
+                ChangeGuojiaReq temp = new ChangeGuojiaReq();
+                temp.guojiaId = SaveNum;
+                temp.useType = 0;
+                t_serializer.Serialize(tempStream, temp);
 
-            MemoryStream tempStream = new MemoryStream();
-            QiXiongSerializer t_serializer = new QiXiongSerializer();
-            ChangeGuojiaReq temp = new ChangeGuojiaReq();
-            temp.guojiaId = SaveNum;
-            t_serializer.Serialize(tempStream, temp);
+                byte[] t_protof = tempStream.ToArray();
 
-            byte[] t_protof = tempStream.ToArray();
-
-            t_protof = tempStream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ChangeCountry_REQ, ref t_protof);
+                t_protof = tempStream.ToArray();
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ChangeCountry_REQ, ref t_protof);
+            }
+            else
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadNOZhuanGuoKa);
+            }
         }
     
     }
@@ -730,10 +704,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         UIBox uibox = boxObj.GetComponent<UIBox>();
         string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
         string str = LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_SUCCESS);
-
-        // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
         uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null, titleFont, btn1Font);
 
     }

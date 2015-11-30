@@ -182,7 +182,7 @@ public class BigHouseOther : HouseBasic, SocketListener
         //};
         //SocketHelper.SendQXMessage(tempExitScene, ProtoIndexes.Exit_HouseScene);
 
-        SceneManager.EnterAllianceCity();
+        ////SceneManager.EnterAllianceCity();
     }
 
     public bool OnSocketEvent(QXBuffer p_message)

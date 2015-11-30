@@ -815,14 +815,14 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 		{
 			CarriageSceneManager.Instance.ReturnCarriage();
 		}
-		else if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+		else //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{
 			SceneManager.EnterMainCity();
 		}
-		else
-		{
-			SceneManager.EnterAllianceCity();
-		}
+		//else
+		//{
+		//	SceneManager.EnterAllianceCity();
+		//}
 		
 		if (!string.IsNullOrEmpty(PlayerPrefs.GetString("JunZhu")))
 		{

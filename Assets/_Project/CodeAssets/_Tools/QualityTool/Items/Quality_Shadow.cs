@@ -1,9 +1,59 @@
-﻿using UnityEngine;
+﻿#define DEVELOPMENT_SHADOW_TYPE
+
+
+
+//#define SHOW_REAL_SHADOW
+
+//#define SHOW_SIMPLE_SHADOW
+
+//#define SHOW_NONE_SHADOW
+
+
+
+using UnityEngine;
 using System.Collections;
 
 public class Quality_Shadow {
 
 	#region InCity Shadow
+
+	public static bool InCity_RealShadow(){
+		bool t_show_shadow = true;
+
+		#if UNITY_EDITOR && DEVELOPMENT_SHADOW_TYPE
+		t_show_shadow = false;
+		#elif UNITY_STANDALONE
+		t_show_shadow = false;
+		#elif UNITY_ANDROID
+		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_IN_CITY_SHADOW ),
+		                                 SHADOW_HIGH );
+		#elif UNITY_IOS
+		if( !DeviceHelper.Is_iOS_Target_Device() ){
+			return false;
+		}
+		
+		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_IN_CITY_SHADOW ),
+		                                 SHADOW_HIGH );
+		#else
+		Debug.LogError( "TargetPlatform Error: " + Application.platform );
+		
+		return true;
+		#endif
+		
+		#if SHOW_REAL_SHADOW
+		t_show_shadow = true;
+		#endif
+
+		#if SHOW_SIMPLE_SHADOW
+		t_show_shadow = false;
+		#endif
+
+		#if SHOW_NONE_SHADOW
+		t_show_shadow = false;
+		#endif
+		
+		return t_show_shadow;
+	}
 	
 	/// Show simple plane shadow incity or not.
 	/// 
@@ -12,14 +62,20 @@ public class Quality_Shadow {
 	public static bool InCity_ShowSimpleShadow(){
 		bool t_show_simple_shadow = true;
 
-		#if UNITY_EDITOR && !IGNORE_EDITOR
+		#if UNITY_EDITOR && DEVELOPMENT_SHADOW_TYPE
 		t_show_simple_shadow = true;
 		#elif UNITY_STANDALONE
 		t_show_simple_shadow = true;
 		#elif UNITY_ANDROID
-		return !QualityTool.GetBool( QualityTool.CONST_IN_CITY_SHADOW );
+		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_IN_CITY_SHADOW ),
+		                                 SHADOW_LOW );
 		#elif UNITY_IOS
-		return InCity_iOS_ShowSimpleShadow();
+		if( !DeviceHelper.Is_iOS_Target_Device() ){
+			return true;
+		}
+		
+		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_IN_CITY_SHADOW ),
+		                                 SHADOW_LOW );
 		#else
 		Debug.LogError( "TargetPlatform Error: " + Application.platform );
 		
@@ -30,27 +86,61 @@ public class Quality_Shadow {
 		t_show_simple_shadow = false;
 		#endif
 		
-		return t_show_simple_shadow;
-	}
-	
-	private static bool InCity_iOS_ShowSimpleShadow(){
-		if( !DeviceHelper.Is_iOS_Target_Device() ){
-			return true;
-		}
-		
-		#if UNITY_IOS
-		return !QualityTool.GetBool( QualityTool.CONST_IN_CITY_SHADOW );
+		#if SHOW_SIMPLE_SHADOW
+		t_show_simple_shadow = true;
 		#endif
 		
-		return false;
+		#if SHOW_NONE_SHADOW
+		t_show_simple_shadow = false;
+		#endif
+		
+		return t_show_simple_shadow;
 	}
-	
+
 	#endregion
 	
 	
 	
 	#region BattleField Shadow
-	
+
+	public static bool BattleField_RealShadow(){
+		bool t_show_shadow = true;
+		
+		#if UNITY_EDITOR && DEVELOPMENT_SHADOW_TYPE
+		t_show_shadow = false;
+		#elif UNITY_STANDALONE
+		t_show_shadow = false;
+		#elif UNITY_ANDROID
+		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_BATTLE_FIELD_SHADOW ),
+		                                 SHADOW_HIGH );
+		#elif UNITY_IOS
+		if( !DeviceHelper.Is_iOS_Target_Device() ){
+			return false;
+		}
+		
+		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_BATTLE_FIELD_SHADOW ),
+		                                 SHADOW_HIGH );
+		#else
+		Debug.LogError( "TargetPlatform Error: " + Application.platform );
+		
+		return true;
+		#endif
+		
+		#if SHOW_REAL_SHADOW
+		t_show_shadow = true;
+		#endif
+		
+		#if SHOW_SIMPLE_SHADOW
+		t_show_shadow = false;
+		#endif
+		
+		#if SHOW_NONE_SHADOW
+		t_show_shadow = false;
+		#endif
+		
+		return t_show_shadow;
+	}
+
 	/// Show simple plane shadow in battle field or not.
 	/// 
 	/// Notes:
@@ -58,14 +148,20 @@ public class Quality_Shadow {
 	public static bool BattleField_ShowSimpleShadow(){
 		bool t_show_simple_shadow = true;
 		
-		#if UNITY_EDITOR && !IGNORE_EDITOR
+		#if UNITY_EDITOR && DEVELOPMENT_SHADOW_TYPE
 		t_show_simple_shadow = true;
 		#elif UNITY_STANDALONE
 		t_show_simple_shadow = true;
 		#elif UNITY_ANDROID
-		return !QualityTool.GetBool( QualityTool.CONST_BATTLE_FIELD_SHADOW );
+		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_BATTLE_FIELD_SHADOW ),
+		                                 SHADOW_LOW );
 		#elif UNITY_IOS
-		return BattleField_iOS_ShowSimpleShadow();
+		if( !DeviceHelper.Is_iOS_Target_Device() ){
+			return true;
+		}
+		
+		return StringHelper.IsLowerEqual( QualityTool.GetString( QualityTool.CONST_BATTLE_FIELD_SHADOW ),
+		                                 SHADOW_LOW );
 		#else
 		Debug.LogError( "TargetPlatform Error: " + Application.platform );
 		
@@ -76,19 +172,15 @@ public class Quality_Shadow {
 		t_show_simple_shadow = false;
 		#endif
 		
-		return t_show_simple_shadow;
-	}
-	
-	private static bool BattleField_iOS_ShowSimpleShadow(){
-		if( !DeviceHelper.Is_iOS_Target_Device() ){
-			return true;
-		}
-		
-		#if UNITY_IOS
-		return !QualityTool.GetBool( QualityTool.CONST_BATTLE_FIELD_SHADOW );
+		#if SHOW_SIMPLE_SHADOW
+		t_show_simple_shadow = true;
 		#endif
 		
-		return false;
+		#if SHOW_NONE_SHADOW
+		t_show_simple_shadow = false;
+		#endif
+		
+		return t_show_simple_shadow;
 	}
 	
 	#endregion
@@ -147,4 +239,16 @@ public class Quality_Shadow {
 	
 	#endregion
 
+
+
+	#region Shadow Type
+
+	public const string SHADOW_NONE		= "None";
+
+	public const string SHADOW_LOW		= "Low";
+
+	public const string SHADOW_HIGH		= "High";
+
+
+	#endregion
 }

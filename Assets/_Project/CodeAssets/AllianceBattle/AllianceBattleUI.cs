@@ -428,18 +428,7 @@ namespace AllianceBattle
 
         private void OnReturnToMainCity()
         {
-            ExitScene temp = new ExitScene { uid = 0 };
-            SocketHelper.SendQXMessage(temp, ProtoIndexes.EXIT_FIGHT_SCENE);
-
-            //GoToReturn.
-            if (AllianceData.Instance.IsAllianceNotExist)
-            {
-                SceneManager.EnterMainCity();
-            }
-            else
-            {
-                SceneManager.EnterAllianceCity();
-            }
+            PlayerSceneSyncManager.Instance.ExitAB();
         }
 
         #endregion
@@ -451,7 +440,7 @@ namespace AllianceBattle
 
         public UIButton m_AttackButton;
         public UISprite m_AttackSprite;
-        public long m_ToAttackId = -1;
+        public int m_ToAttackId = -1;
 
         public UILabel ToAttackLabel;
 
@@ -544,7 +533,7 @@ namespace AllianceBattle
 
                 FightAttackReq tempInfo = new FightAttackReq()
                 {
-                    targetId = m_ToAttackId,
+                    targetUid = m_ToAttackId,
                     skillId = 0
                 };
                 MemoryStream tempStream = new MemoryStream();
@@ -582,7 +571,7 @@ namespace AllianceBattle
 
                 FightAttackReq tempInfo = new FightAttackReq()
                 {
-                    targetId = template.SkillTarget == 0 ? JunZhuData.Instance().m_junzhuInfo.id : m_ToAttackId,
+                    targetUid = template.SkillTarget == 0 ? PlayerSceneSyncManager.Instance.m_MyselfUid : m_ToAttackId,
                     skillId = index
                 };
                 MemoryStream tempStream = new MemoryStream();
@@ -601,7 +590,7 @@ namespace AllianceBattle
             bool isMineAttack = false;
 
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackId).ToList();
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     //other player attack.
@@ -617,7 +606,7 @@ namespace AllianceBattle
             }
 
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetUid).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     //other player been attack.
@@ -647,7 +636,7 @@ namespace AllianceBattle
         {
             if (tempInfo.skillId != 101) return;
 
-            if (tempInfo.attackId == JunZhuData.Instance().m_junzhuInfo.id)
+            if (tempInfo.attackUid == PlayerSceneSyncManager.Instance.m_MyselfUid)
             {
                 //mine skill
                 m_RootManager.m_AbPlayerController.DeactiveMove();
@@ -655,7 +644,7 @@ namespace AllianceBattle
             }
             else
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackId).ToList();
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     //other player skill.
@@ -664,7 +653,7 @@ namespace AllianceBattle
                 }
             }
 
-            if (tempInfo.targetId == JunZhuData.Instance().m_junzhuInfo.id)
+            if (tempInfo.targetUid == PlayerSceneSyncManager.Instance.m_MyselfUid)
             {
                 //mine been attack
                 m_RootManager.m_AbPlayerController.DeactiveMove();
@@ -673,7 +662,7 @@ namespace AllianceBattle
             }
             else
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
+                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetUid).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     //other player been attack.
@@ -687,7 +676,7 @@ namespace AllianceBattle
         private void ExecuteBuff(BufferInfo tempInfo)
         {
             //mine buff
-            if (tempInfo.targetId == JunZhuData.Instance().m_junzhuInfo.id)
+            if (tempInfo.targetId == PlayerSceneSyncManager.Instance.m_MyselfUid)
             {
                 m_RootManager.m_AbCulturePlayerController.OnRecover(tempInfo.value, tempInfo.remainLife);
             }

@@ -557,12 +557,13 @@ public class PlayerModelController : MonoBehaviour
                         {
                             TidyTenementNpcInfo();
                         }
-                        else if (CityGlobalData.m_isAllianceTenentsScene)
-                        {
-                            CityGlobalData.m_isAllianceTenentsScene = false;
-                            CityGlobalData.m_isAllianceScene = true;
-                            SceneManager.EnterAllianceCity();
-                        }
+                        //else if (CityGlobalData.m_isAllianceTenentsScene)
+                        //{
+                        //    CityGlobalData.m_isAllianceTenentsScene = false;
+                        //    CityGlobalData.m_isAllianceScene = true;
+                        //    //  SceneManager.EnterAllianceCity();
+                        //    SceneManager.EnterMainCity();
+                        //}
                         else
                         {
                             if (m_iMoveToNpcID >= 10060)
@@ -589,7 +590,7 @@ public class PlayerModelController : MonoBehaviour
                                 FunctionWindowsCreateManagerment.SetFenChengNum(CityGlobalData.m_iAllianceTenentsSceneNum);
                                 CityGlobalData.m_isAllianceScene = false;
                                 CityGlobalData.m_isAllianceTenentsScene = true;
-                                SceneManager.EnterAllianceCityTenentsCityOne();
+                              //  SceneManager.EnterAllianceCityTenentsCityOne();
                             }
                             else
                             {

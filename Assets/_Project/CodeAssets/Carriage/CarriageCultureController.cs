@@ -7,7 +7,7 @@ using qxmobile.protobuf;
 
 namespace Carriage
 {
-    public class CarriageController : MonoBehaviour
+    public class CarriageCultureController : MonoBehaviour
     {
         public YabiaoJunZhuInfo m_YabiaoJunZhuInfo;
         public RootManager m_rootManager;

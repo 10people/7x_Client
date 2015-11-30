@@ -224,7 +224,7 @@ namespace Carriage
         {
             m_CarriageUi.SetCarriageInfo(m_YabiaoJunZhuInfo);
 
-            CarriageController controller = m_RootManager.m_CarriageManager.m_CarriageControllers.Where(item => item.m_YabiaoJunZhuInfo.junZhuId == m_YabiaoJunZhuInfo.junZhuId).First();
+            CarriageCultureController controller = m_RootManager.m_CarriageManager.m_CarriageControllers.Where(item => item.m_YabiaoJunZhuInfo.junZhuId == m_YabiaoJunZhuInfo.junZhuId).First();
             if (controller != null)
             {
                 m_RootManager.m_CarriagePlayerController.m_NavigationTransform = controller.transform;

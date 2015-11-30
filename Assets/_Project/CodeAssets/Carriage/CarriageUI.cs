@@ -250,7 +250,7 @@ namespace Carriage
             }
 
             //Check.
-            List<CarriageController> controllers = m_RootManager.m_CarriageManager.m_CarriageControllers.Where(item => item.m_YabiaoJunZhuInfo.junZhuId == m_selectedYabiaoJunZhuInfo.junZhuId).ToList();
+            List<CarriageCultureController> controllers = m_RootManager.m_CarriageManager.m_CarriageControllers.Where(item => item.m_YabiaoJunZhuInfo.junZhuId == m_selectedYabiaoJunZhuInfo.junZhuId).ToList();
             if (controllers == null || controllers.Count != 1)
             {
                 Debug.LogError("Cannot find specific carriage:" + m_selectedYabiaoJunZhuInfo.junZhuId + ", cancel open battle.");

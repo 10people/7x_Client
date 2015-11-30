@@ -88,8 +88,8 @@ public class QXTanBaoData : MonoBehaviour,SocketProcessor {
 
 					if (tbObj != null)
 					{
-						TanBaoManager tanBaoManager = tbObj.GetComponent<TanBaoManager> ();
-						tanBaoManager.GetTanBaoInfo (tanBaoInfo);
+//						TanBaoManager tanBaoManager = tbObj.GetComponent<TanBaoManager> ();
+//						tanBaoManager.GetTanBaoInfo (tanBaoInfo);
 					}
 				}
 				
@@ -101,28 +101,28 @@ public class QXTanBaoData : MonoBehaviour,SocketProcessor {
 
 	public void TanBaoCd ()
 	{
-		for (int i = 0;i < tanBaoResp.mineRegionList.Count;i ++)
-		{
-			if (tanBaoResp.mineRegionList[i].type == 0)
-			{
-				if (tb1CdTime == 0)
-				{
-					tb1CdTime = tanBaoResp.mineRegionList[i].remainingTime;
-
-					StartCoroutine (TanBaoCd (tanBaoResp.mineRegionList[i].type,tb1CdTime));
-				}
-			}
-
-			else if (tanBaoResp.mineRegionList[i].type == 1)
-			{
-				if (tb2CdTime == 0)
-				{
-					tb2CdTime = tanBaoResp.mineRegionList[i].remainingTime;
-					
-					StartCoroutine (TanBaoCd (tanBaoResp.mineRegionList[i].type,tb2CdTime));
-				}
-			}
-		}
+//		for (int i = 0;i < tanBaoResp.mineRegionList.Count;i ++)
+//		{
+//			if (tanBaoResp.mineRegionList[i].type == 0)
+//			{
+//				if (tb1CdTime == 0)
+//				{
+//					tb1CdTime = tanBaoResp.mineRegionList[i].remainingTime;
+//
+//					StartCoroutine (TanBaoCd (tanBaoResp.mineRegionList[i].type,tb1CdTime));
+//				}
+//			}
+//
+//			else if (tanBaoResp.mineRegionList[i].type == 1)
+//			{
+//				if (tb2CdTime == 0)
+//				{
+//					tb2CdTime = tanBaoResp.mineRegionList[i].remainingTime;
+//					
+//					StartCoroutine (TanBaoCd (tanBaoResp.mineRegionList[i].type,tb2CdTime));
+//				}
+//			}
+//		}
 	}
 
 	IEnumerator TanBaoCd (int type,int cdTime)
@@ -159,36 +159,36 @@ public class QXTanBaoData : MonoBehaviour,SocketProcessor {
 
 	public void CheckFreeTanBao ()
 	{
-		foreach (ExploreMineInfo tempInfo in tanBaoResp.mineRegionList)
-		{
-			if (tempInfo.type == 0)
-			{
-				if (tempInfo.isCanGet)
-				{
-					PushAndNotificationHelper.SetRedSpotNotification (1101,true);
-					break;
-				}
-				else
-				{
-					PushAndNotificationHelper.SetRedSpotNotification (1101,false);
-				}
-			}
-			else if (tempInfo.type == 1)
-			{
-				if (FunctionOpenTemp.GetWhetherContainID (1102))
-				{
-					if (tempInfo.isCanGet)
-					{
-						PushAndNotificationHelper.SetRedSpotNotification (1102,true);
-						break;
-					}
-					else
-					{
-						PushAndNotificationHelper.SetRedSpotNotification (1102,false);
-					}
-				}
-			}
-		}
+//		foreach (ExploreMineInfo tempInfo in tanBaoResp.mineRegionList)
+//		{
+//			if (tempInfo.type == 0)
+//			{
+//				if (tempInfo.isCanGet)
+//				{
+//					PushAndNotificationHelper.SetRedSpotNotification (1101,true);
+//					break;
+//				}
+//				else
+//				{
+//					PushAndNotificationHelper.SetRedSpotNotification (1101,false);
+//				}
+//			}
+//			else if (tempInfo.type == 1)
+//			{
+//				if (FunctionOpenTemp.GetWhetherContainID (1102))
+//				{
+//					if (tempInfo.isCanGet)
+//					{
+//						PushAndNotificationHelper.SetRedSpotNotification (1102,true);
+//						break;
+//					}
+//					else
+//					{
+//						PushAndNotificationHelper.SetRedSpotNotification (1102,false);
+//					}
+//				}
+//			}
+//		}
 	}
 
 	void OnDestroy () 

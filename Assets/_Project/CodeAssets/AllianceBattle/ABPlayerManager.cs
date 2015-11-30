@@ -13,7 +13,6 @@ namespace AllianceBattle
 
         public struct IDCollector
         {
-            public long m_PlayerID;
             public int m_UID;
             public int m_RoleID;
 
@@ -32,18 +31,18 @@ namespace AllianceBattle
             temp.TrackCamera = m_RootManager.TrackCamera;
         }
 
-        private void AddToDeadDic(long id, IDCollector collector)
+        private void AddToDeadDic(long u_id, IDCollector collector)
         {
-            if (m_DeadPlayerDic.ContainsKey(id)) return;
+            if (m_DeadPlayerDic.ContainsKey(u_id)) return;
 
-            m_DeadPlayerDic.Add(id, collector);
+            m_DeadPlayerDic.Add(u_id, collector);
         }
 
-        private void RemoveFromDeadDic(long id)
+        private void RemoveFromDeadDic(int u_id)
         {
-            if (m_DeadPlayerDic.ContainsKey(id))
+            if (m_DeadPlayerDic.ContainsKey(u_id))
             {
-                m_DeadPlayerDic.Remove(id);
+                m_DeadPlayerDic.Remove(u_id);
             }
         }
 
@@ -67,13 +66,13 @@ namespace AllianceBattle
                             EnterFightScene tempScene = new EnterFightScene();
                             t_qx.Deserialize(t_stream, tempScene, tempScene.GetType());
 
-                            if (!CreatePlayer(tempScene.junZhuId, tempScene.roleId, tempScene.uid, new Vector3(tempScene.posX, tempScene.posY, tempScene.posZ)))
+                            if (!CreatePlayer(tempScene.roleId, tempScene.uid, new Vector3(tempScene.posX, tempScene.posY, tempScene.posZ)))
                             {
                                 Debug.LogError("Cannot create duplicated player.");
                                 return true;
                             }
 
-                            var tempBasicController = m_PlayerDic[tempScene.junZhuId].GetComponent<ABCulturePlayerController>();
+                            var tempBasicController = m_PlayerDic[tempScene.uid].GetComponent<ABCulturePlayerController>();
                             tempBasicController.TrackCamera = m_RootManager.TrackCamera;
                             tempBasicController.IsRed = string.IsNullOrEmpty(tempScene.allianceName) || AllianceData.Instance.IsAllianceNotExist || (tempScene.allianceName != AllianceData.Instance.g_UnionInfo.name);
                             tempBasicController.KingName = tempScene.senderName;
@@ -91,7 +90,7 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempMove, tempMove.GetType());
 
-                            long uID = m_PlayerDic.Where(item => item.Value.m_UID == tempMove.uid).First().Key;
+                            int uID = m_PlayerDic.Where(item => item.Value.m_UID == tempMove.uid).First().Key;
 
                             UpdatePlayerPosition(uID, new Vector3(tempMove.posX, tempMove.posY, tempMove.posZ));
 
@@ -104,9 +103,9 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempScene, tempScene.GetType());
 
-                            if (m_PlayerDic.ContainsKey(tempScene.junzhuId))
+                            if (m_PlayerDic.ContainsKey(tempScene.uid))
                             {
-                                DestroyPlayer(tempScene.junzhuId);
+                                DestroyPlayer(tempScene.uid);
                             }
 
                             return true;
@@ -118,25 +117,23 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, playerDeadNotify, playerDeadNotify.GetType());
 
-                            if (m_PlayerDic.ContainsKey(playerDeadNotify.junzhuId))
+                            if (m_PlayerDic.ContainsKey(playerDeadNotify.uid))
                             {
-                                AddToDeadDic(playerDeadNotify.junzhuId, new IDCollector()
+                                AddToDeadDic(playerDeadNotify.uid, new IDCollector()
                                 {
-                                    m_PlayerID = m_PlayerDic[playerDeadNotify.junzhuId].m_PlayerID,
-                                    m_RoleID = m_PlayerDic[playerDeadNotify.junzhuId].m_RoleID,
-                                    m_UID = m_PlayerDic[playerDeadNotify.junzhuId].m_UID,
-                                    m_KingName = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABCulturePlayerController>().KingName,
-                                    m_AllianceName = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABCulturePlayerController>().AllianceName,
-                                    m_TotalBlood = m_PlayerDic[playerDeadNotify.junzhuId].GetComponent<ABCulturePlayerController>().TotalBlood,
+                                    m_RoleID = m_PlayerDic[playerDeadNotify.uid].m_RoleID,
+                                    m_UID = m_PlayerDic[playerDeadNotify.uid].m_UID,
+                                    m_KingName = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABCulturePlayerController>().KingName,
+                                    m_AllianceName = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABCulturePlayerController>().AllianceName,
+                                    m_TotalBlood = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABCulturePlayerController>().TotalBlood,
                                 });
-                                DestroyPlayer(playerDeadNotify.junzhuId);
+                                DestroyPlayer(playerDeadNotify.uid);
                             }
 
-                            if (JunZhuData.Instance().m_junzhuInfo.id == playerDeadNotify.junzhuId)
+                            if (PlayerSceneSyncManager.Instance.m_MyselfUid == playerDeadNotify.uid)
                             {
-                                AddToDeadDic(playerDeadNotify.junzhuId, new IDCollector()
+                                AddToDeadDic(playerDeadNotify.uid, new IDCollector()
                                 {
-                                    m_PlayerID = JunZhuData.Instance().m_junzhuInfo.id,
                                     m_RoleID = CityGlobalData.m_king_model_Id,
                                     m_KingName = m_RootManager.m_AbCulturePlayerController.KingName,
                                     m_AllianceName = m_RootManager.m_AbCulturePlayerController.AllianceName,
@@ -163,30 +160,30 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, reviveNotify, reviveNotify.GetType());
 
-                            if (m_DeadPlayerDic.ContainsKey(reviveNotify.junzhuId))
+                            if (m_DeadPlayerDic.ContainsKey(reviveNotify.uid))
                             {
-                                if (JunZhuData.Instance().m_junzhuInfo.id == reviveNotify.junzhuId)
+                                if (PlayerSceneSyncManager.Instance.m_MyselfUid == reviveNotify.uid)
                                 {
-                                    m_RootManager.InitPlayer(m_DeadPlayerDic[reviveNotify.junzhuId].m_RoleID, m_RootManager.originalPosition1, m_DeadPlayerDic[reviveNotify.junzhuId].m_KingName, m_DeadPlayerDic[reviveNotify.junzhuId].m_AllianceName, m_DeadPlayerDic[reviveNotify.junzhuId].m_TotalBlood);
+                                    m_RootManager.InitPlayer(m_DeadPlayerDic[reviveNotify.uid].m_RoleID, m_RootManager.originalPosition1, m_DeadPlayerDic[reviveNotify.uid].m_KingName, m_DeadPlayerDic[reviveNotify.uid].m_AllianceName, m_DeadPlayerDic[reviveNotify.uid].m_TotalBlood);
 
                                     //Show dead dimmer.
                                     m_RootManager.m_AllianceBattleUi.ShowDimmer(false);
                                 }
                                 else
                                 {
-                                    CreatePlayer(reviveNotify.junzhuId, m_DeadPlayerDic[reviveNotify.junzhuId].m_RoleID, m_DeadPlayerDic[reviveNotify.junzhuId].m_UID, m_RootManager.originalPosition1);
+                                    CreatePlayer(m_DeadPlayerDic[reviveNotify.uid].m_RoleID, m_DeadPlayerDic[reviveNotify.uid].m_UID, m_RootManager.originalPosition1);
 
-                                    var tempBasicController = m_PlayerDic[reviveNotify.junzhuId].GetComponent<ABCulturePlayerController>();
+                                    var tempBasicController = m_PlayerDic[reviveNotify.uid].GetComponent<ABCulturePlayerController>();
                                     tempBasicController.TrackCamera = m_RootManager.TrackCamera;
                                     tempBasicController.IsRed = false;
-                                    tempBasicController.KingName = m_DeadPlayerDic[reviveNotify.junzhuId].m_KingName;
-                                    tempBasicController.AllianceName = m_DeadPlayerDic[reviveNotify.junzhuId].m_AllianceName;
-                                    tempBasicController.TotalBlood = m_DeadPlayerDic[reviveNotify.junzhuId].m_TotalBlood;
+                                    tempBasicController.KingName = m_DeadPlayerDic[reviveNotify.uid].m_KingName;
+                                    tempBasicController.AllianceName = m_DeadPlayerDic[reviveNotify.uid].m_AllianceName;
+                                    tempBasicController.TotalBlood = m_DeadPlayerDic[reviveNotify.uid].m_TotalBlood;
                                     tempBasicController.RemainingBlood = tempBasicController.TotalBlood;
 
                                     tempBasicController.SetThis();
 
-                                    RemoveFromDeadDic(reviveNotify.junzhuId);
+                                    RemoveFromDeadDic(reviveNotify.uid);
                                 }
                             }
 

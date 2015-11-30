@@ -136,7 +136,7 @@ public class BigHouseSelf : HouseBasic, IHouseSelf, SocketListener
                 //};
                 //SocketHelper.SendQXMessage(tempExitScene, ProtoIndexes.Exit_HouseScene);
 
-				SceneManager.EnterAllianceCity ();
+				//SceneManager.EnterAllianceCity ();
 		}
 
     public void OnOperationClick()

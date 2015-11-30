@@ -650,8 +650,9 @@ public class MainCityUIRB : MonoBehaviour
                                 CityGlobalData.m_isRightGuide = true;
                             }
                         }
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TANBAO),
-                                                SerachTreasureLoadCallback);
+//                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TANBAO),
+//                                                SerachTreasureLoadCallback);
+						TanBaoData.Instance.TanBaoInfoReq ();
                     }
                     break;
                 //task sys

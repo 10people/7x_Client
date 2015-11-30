@@ -781,20 +781,23 @@ public class BattleControlor : MonoBehaviour
 		Destroy (root3d);
 		
 		Destroy (root2d);
-		
-//		CityGlobalData.m_nextSceneName = ConstInGame.CONST_SCENE_NAME_MAIN_CITY;
-//		
-//		Application.LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
 
-	//	SceneManager.EnterMainCity();
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
-        {
+        //		CityGlobalData.m_nextSceneName = ConstInGame.CONST_SCENE_NAME_MAIN_CITY;
+        //		
+        //		Application.LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
+
+        //	SceneManager.EnterMainCity();
+
+
+        //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+        //{
+           JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;//new add
             SceneManager.EnterMainCity();
-        }
-        else 
-        {
-            SceneManager.EnterAllianceCity();
-        }
+        //}
+        //else 
+        //{
+        //    SceneManager.EnterAllianceCity();
+        //}
 
 		if (!string.IsNullOrEmpty(PlayerPrefs.GetString ("JunZhu"))) 
 		{
@@ -1346,14 +1349,14 @@ public class BattleControlor : MonoBehaviour
 		{
 			CarriageSceneManager.Instance.ReturnCarriage();
 		}
-		else if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+		else //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{
 			SceneManager.EnterMainCity();
 		}
-		else
-		{
-			SceneManager.EnterAllianceCity();
-		}
+		//else
+		//{
+		//	SceneManager.EnterAllianceCity();
+		//}
 		
 		if (!string.IsNullOrEmpty(PlayerPrefs.GetString("JunZhu")))
 		{

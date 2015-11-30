@@ -186,7 +186,7 @@ public class SceneManager{
 
     /// Request to Load Alliance City Scene.
  
-    public static void EnterAllianceCity(){
+    public static void EnterAllianceCity1111(){
 #if DEBUG_LOADING_SCENE
 		Debug.Log("EnterAllianceCity( " + " )" );
 #endif
@@ -219,7 +219,7 @@ public class SceneManager{
     }
 
    
-    public static void EnterAllianceCityTenentsCityOne(){
+    public static void EnterAllianceCityTenentsCityOne111(){
 		Debug.LogError( "Should Never Be Here." );
 
 #if DEBUG_LOADING_SCENE
