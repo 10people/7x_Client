@@ -10,6 +10,7 @@
 
 //#define DEBUG_SOCKET_CONNECT
 
+//#define DEBUG_PROCESSOR_COST
 
 using UnityEngine;
 using System.Collections;
@@ -102,19 +103,19 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	private int m_read_index = 0;
 
 	/// receivd queue
-	private static Queue<QXBuffer> m_received_messages = new Queue<QXBuffer>();
+	private static Queue<QXBuffer> m_received_messages 		= new Queue<QXBuffer>();
 
 	/// seding queue
-	private static Queue<QXBuffer> m_sending_messages = new Queue<QXBuffer>();
+	private static Queue<QXBuffer> m_sending_messages 		= new Queue<QXBuffer>();
 
 	/// processor list
-	private static List<SocketProcessor> m_socket_message_processors = new List<SocketProcessor>();
+	private static List<SocketProcessor> m_socket_message_processors 	= new List<SocketProcessor>();
 
 	/// listener list
-	private static List<SocketListener> m_socket_listeners = new List<SocketListener>();
+	private static List<SocketListener> m_socket_listeners 				= new List<SocketListener>();
 
 	/// receiving wait queue
-	private static List<ReceivingWaitings> m_receiving_waiting_list = new List<ReceivingWaitings>();
+	private static List<ReceivingWaitings> m_receiving_waiting_list 	= new List<ReceivingWaitings>();
 
 	private const char RECEIVING_WAIT_SPLITTER	= '|';
 
@@ -196,15 +197,37 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	}
 
+	private long m_ms_before_processor	= 0;
+
 	void Update(){
 		if ( m_socket == null ) {
 			return;
 		}
 
 		if( IsConnected() ){
-			Process_Network_Waiting();
-			
-			Process_Received_Messages();
+
+			{
+				Process_Network_Waiting();
+			}
+
+			#if DEBUG_PROCESSOR_COST
+			{
+				m_ms_before_processor = TimeHelper.GetCurrentTimeMillis();
+				
+				Process_Received_Messages();
+				
+				long t_cost_ms = ( TimeHelper.GetCurrentTimeMillis() - m_ms_before_processor );
+				
+				if( t_cost_ms > 0 ){
+					Debug.Log( "Processor Cost in ms: " + t_cost_ms );
+				}
+			}
+
+			#else
+			{
+				Process_Received_Messages();
+			}
+			#endif
 		}
 
 		if( m_state == SocketState.ConnectiontLost || m_state == SocketState.ConnectedFailed ){
@@ -328,7 +351,6 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 					QXBuffer t_next_buffer = m_sending_messages.Peek();
 					
 					ExecSend( t_next_buffer );
-					
 				}
 				else{
 					Debug.LogError( "Error: " + m_socket );
@@ -878,7 +900,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			return;
 		}
 
-		if ( m_socket.Available == 0 ){
+//		if ( m_socket.Available == 0 )
+		{
 			// multi message received
 			ProcessMultiMessage();
 		}
@@ -912,7 +935,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	void ProcessMultiMessage(){
 		byte[] t_bytes = m_receive_buffer.buffer;
 		
-		while ( m_read_index + 4 < m_receive_buffer.position ){
+		while( m_read_index + 4 < m_receive_buffer.position ){
 			int t_next_len = 0;
 			
 			// buff len
@@ -988,8 +1011,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 					LogReceiveMessageDetail( m_receive_buffer );
 				}
 
-				lock ( m_received_messages )
-				{
+				lock( m_received_messages ){
 					m_received_messages.Enqueue( t_buffer );
 				}
 			}
@@ -997,7 +1019,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			m_read_index += ( 4 + t_next_len );
 		}
 
-		if (m_read_index == m_receive_buffer.position) {
+		if ( m_read_index == m_receive_buffer.position ) {
 //			Debug.Log( "Recycle." );
 
 			m_receive_buffer.Recycle ();
@@ -1408,7 +1430,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			return;
 		}
 		
-		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_PROCESSOR ) ){
+		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER ) ){
 			Debug.Log( "--- RegisterSocketListener: " + p_listener );
 		}
 		
@@ -1417,7 +1439,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	/// Unregister a socket listener.
 	public static void UnRegisterSocketListener( SocketListener p_listener ){
-		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_PROCESSOR ) ){
+		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER ) ){
 			Debug.Log( "--- UnRegisterSocketListener: " + p_listener );
 		}
 
@@ -1535,7 +1557,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			return;
 		}
 
-		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_PROCESSOR ) ){
+		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER ) ){
 			Debug.Log( "--- RegisterMessageProcessor: " + p_processor );
 		}
 
@@ -1545,7 +1567,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	/// Desc:
 	/// Unregister a proto processor.
 	public static void UnRegisterMessageProcessor( SocketProcessor p_processor ){
-		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_PROCESSOR ) ){
+		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER ) ){
 			Debug.Log( "--- UnRegisterMessageProcessor: " + p_processor );
 		}
 
@@ -1553,32 +1575,48 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	private void Process_Received_Messages(){
+		int t_message_count = 0;
+
+		QXBuffer t_buffer = null;
+
 		lock( m_received_messages ){
-			while( m_received_messages.Count > 0 ){
+			t_message_count = m_received_messages.Count;
+
+			if( t_message_count > 0 ){
+				t_buffer = m_received_messages.Peek();
+			}
+			else{
+				t_buffer = null;
+			}
+		}
+
+		{
+			while( t_message_count > 0 ){
 				{
 					SetLastReceiveDataTime( Time.realtimeSinceStartup );
 				}
 
 //				Debug.Log( "Receive Message Count: " + m_received_messages.Count );
 
-				QXBuffer t_buffer = m_received_messages.Peek();
-
 				#if DEBUG_RECEIVE
 				Debug.Log( "Received Socket Processing: " + t_buffer.m_protocol_index + ", " + t_buffer.size );
 				#endif
 
-				if( ConfigTool.m_is_emulating_latency ){
-					if( t_buffer.GetTimeAfterCreate() < ConfigTool.m_emulate_network_latency ){
-						//update emulate create time tag
-						foreach( QXBuffer t_buffer_in_queue in m_received_messages ){
-							t_buffer_in_queue.GetTimeAfterCreate();
-						}
-
-						return;
-					}
-				}
+				// after lock updated, remove this code for safety reason
+//				if( ConfigTool.m_is_emulating_latency ){
+//					if( t_buffer.GetTimeAfterCreate() < ConfigTool.m_emulate_network_latency ){
+//						//update emulate create time tag
+//						foreach( QXBuffer t_buffer_in_queue in m_received_messages ){
+//							t_buffer_in_queue.GetTimeAfterCreate();
+//						}
+//
+//						return;
+//					}
+//				}
 
 				bool t_message_processed = false;
+
+				SocketProcessor t_pre_processor	= null;
 
 				for( int i = 0; i < m_socket_message_processors.Count; i++ ){
 					SocketProcessor t_processor = m_socket_message_processors[ i ];
@@ -1587,12 +1625,14 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 						if( t_processor.OnProcessSocketMessage( t_buffer ) ){
 							if( !t_message_processed ){
 								t_message_processed = true;
+
+								t_pre_processor = t_processor;
 								
 //							break;
 							}
 							else{
 								Debug.LogError( "Proto Have Multi Processors: " + t_buffer.m_protocol_index + "   - " +
-								               t_processor );
+								               t_processor + "   pre: " + t_pre_processor );
 							}
 						}
 					}
@@ -1603,11 +1643,11 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 				// no matter message processed or not, now process listener
 
-				bool t_message_listended = false;
+				bool t_message_listened = false;
 
 				try{
 					{
-						t_message_listended = ProcessSocketListeners( t_buffer );
+						t_message_listened = ProcessSocketListeners( t_buffer );
 					}
 				}
 				catch( Exception e ){
@@ -1618,20 +1658,22 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 				Debug.Log( t_buffer.m_protocol_index + " Status, Processed - Listened: " + t_message_processed + "-" + t_message_listended  );
 				#endif
 
-//				if( !t_message_processed ){
-//					if( t_message_listended ){
-//						Debug.LogWarning( "Error, Message Listened, but not processed: " + 
-//						                 t_buffer.m_protocol_index + 
-//						                 ", byte len: " + t_buffer.position +
-//						                 ", message queue len:" + m_received_messages.Count );
-//					}
-//					else{
-//						Debug.LogWarning( "Error, Socket Message not processed: " + 
-//						                 t_buffer.m_protocol_index + 
-//						                 ", byte len: " + t_buffer.position +
-//						                 ", message queue len:" + m_received_messages.Count );
-//					}
-//				}
+				if( !ThirdPlatform.IsThirdPlatform() ){
+					if( !t_message_processed ){
+						if( !t_message_listened ){
+							Debug.LogWarning( "Error, Socket Message neither processed nor listened: " + 
+							                 t_buffer.m_protocol_index + 
+							                 ", byte len: " + t_buffer.position +
+							                 ", message queue len:" + t_message_count );
+						}
+	//					else{
+	//						Debug.LogWarning( "Error, Message Listened, but not processed: " + 
+	//						                 t_buffer.m_protocol_index + 
+	//						                 ", byte len: " + t_buffer.position +
+	//						                 ", message queue len:" + t_message_count );
+	//					}
+					}
+				}
 
 				// update waiting view
 				{
@@ -1658,10 +1700,25 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 					}
 				}
 
-				if( m_received_messages.Count > 0 ){
-					m_received_messages.Dequeue();
+				lock( m_received_messages ){
+					// remove processed
+					if( m_received_messages.Count > 0 ){
+						m_received_messages.Dequeue();
+						
+						t_buffer.Recycle();
+					}
 
-					t_buffer.Recycle();
+					// update queue info
+					{
+						t_message_count = m_received_messages.Count;
+						
+						if( t_message_count > 0 ){
+							t_buffer = m_received_messages.Peek();
+						}
+						else{
+							t_buffer = null;
+						}
+					}
 				}
 			}
 		}

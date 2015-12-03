@@ -54,7 +54,7 @@ public class ChuanQiType : MonoBehaviour,SocketProcessor {
 	{
 		levelInfo = tempLevelInfo;
 
-		Debug.Log ("m_GuanQia.cqPassTimes  = "+m_GuanQia.cqPassTimes);
+//		Debug.Log ("m_GuanQia.cqPassTimes  = "+m_GuanQia.cqPassTimes);
 		//Debug.Log ("tempLevelInfo.cqSaoDangUsedTimes  = "+m_GuanQia.cqSaoDangUsedTimes);
 		tiaoZhanNum = 3 - m_GuanQia.cqPassTimes;
 		sdTotleTime = m_GuanQia.cqSaoDangDayTimes;
@@ -100,7 +100,7 @@ public class ChuanQiType : MonoBehaviour,SocketProcessor {
 
 			int my_star = starsAward;
 
-			Debug.Log("levelInfo.pingJia = "+levelInfo.pingJia);
+//			Debug.Log("levelInfo.pingJia = "+levelInfo.pingJia);
 
 			if(levelInfo.pingJia == 1)
 			{

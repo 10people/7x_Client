@@ -222,7 +222,7 @@ public class JieBiaoEnemyList : MonoBehaviour,SocketProcessor {
 				else
 				{
 					//进入劫镖场景
-					CarriageSceneManager.Instance.EnterCarriage (selectEInfo.eRoomId);
+					PlayerSceneSyncManager.Instance.EnterCarriage();
 				}
 			}
 			else

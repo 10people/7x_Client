@@ -213,8 +213,12 @@ public class QXBuffer
 
 	private float m_create_time_tag		= 0.0f;
 
+	private long m_create_time_long		= 0;
+
 	private void ResetCreateTimeTag(){
 		m_is_new_created = true;
+
+		m_create_time_long = TimeHelper.GetCurrentTimeMillis();
 	}
 
 	public float GetTimeAfterCreate(){
@@ -229,6 +233,10 @@ public class QXBuffer
 
 	public float GetCreateTimeTag(){
 		return m_create_time_tag;
+	}
+
+	public long GetTimeMillis(){
+		return m_create_time_long;
 	}
 
 	#endregion

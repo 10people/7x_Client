@@ -101,12 +101,14 @@ public class ComponentHelper{
 	}
 
 	/// Add type to a gameobject, if not exist on it.
-	public static void AddIfNotExist( GameObject p_gb, System.Type p_type ){
+	public static Component AddIfNotExist( GameObject p_gb, System.Type p_type ){
 		Component t_com = p_gb.GetComponent( p_type );
 		
-		if (t_com == null) {
-			p_gb.AddComponent( p_type );
+		if( t_com == null ) {
+			t_com = p_gb.AddComponent( p_type );
 		}
+
+		return t_com;
 	}
 
 	#endregion

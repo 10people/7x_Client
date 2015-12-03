@@ -16,7 +16,7 @@ namespace Carriage
         private void OnReturnClick(GameObject go)
         {
             CityGlobalData.m_isJieBiaoScene = false;
-            CarriageSceneManager.Instance.ReturnMainCity();
+            PlayerSceneSyncManager.Instance.ExitCarriage();
         }
 
         #region Anchor Buttom Left
@@ -151,30 +151,18 @@ namespace Carriage
 
         private void OnInitCarriageItemLoadCallBack(ref WWW www, string path, Object loadedObject)
         {
-            ////Clear all.
-            //m_CarriageUiItemControllers.ForEach(item =>
+            //if (CarriageMsgManager.Instance.s_YabiaoJunZhuList == null || CarriageMsgManager.Instance.s_YabiaoJunZhuList.yabiaoJunZhuList == null)
             //{
-            //    item.transform.parent = null;
-            //    Destroy(item.gameObject);
-            //});
-            //m_CarriageUiItemControllers.Clear();
-            //foreach (Transform child in m_Grid.transform)
-            //{
-            //    Destroy(child.gameObject);
+            //    return;
             //}
 
-            if (CarriageSceneManager.Instance.s_YabiaoJunZhuList == null || CarriageSceneManager.Instance.s_YabiaoJunZhuList.yabiaoJunZhuList == null)
-            {
-                return;
-            }
+            //for (int i = 0; i < CarriageMsgManager.Instance.s_YabiaoJunZhuList.yabiaoJunZhuList.Count; i++)
+            //{
+            //    YabiaoJunZhuInfo temp = CarriageMsgManager.Instance.s_YabiaoJunZhuList.yabiaoJunZhuList[i];
 
-            for (int i = 0; i < CarriageSceneManager.Instance.s_YabiaoJunZhuList.yabiaoJunZhuList.Count; i++)
-            {
-                YabiaoJunZhuInfo temp = CarriageSceneManager.Instance.s_YabiaoJunZhuList.yabiaoJunZhuList[i];
-
-                ExecuteACarriage(temp, loadedObject);
-            }
-            m_Grid.Reposition();
+            //    ExecuteACarriage(temp, loadedObject);
+            //}
+            //m_Grid.Reposition();
         }
 
         #endregion
@@ -184,29 +172,29 @@ namespace Carriage
         public EventHandler m_SwitchSkillHandler;
         public EventHandler m_BattleHandler;
 
-        /// <summary>
-        /// carriage used for battle.
-        /// </summary>
-        private YabiaoJunZhuInfo m_selectedYabiaoJunZhuInfo
-        {
-            get { return m_NavigationYabiaoJunZhuInfo ?? m_nearestYabiaoJunZhuInfo; }
-        }
+        ///// <summary>
+        ///// carriage used for battle.
+        ///// </summary>
+        //private YabiaoJunZhuInfo m_selectedYabiaoJunZhuInfo
+        //{
+        //    get { return m_NavigationYabiaoJunZhuInfo ?? m_nearestYabiaoJunZhuInfo; }
+        //}
 
-        /// <summary>
-        /// the carriage nearest to player.
-        /// </summary>
-        private YabiaoJunZhuInfo m_nearestYabiaoJunZhuInfo
-        {
-            get
-            {
-                return
-                    m_RootManager.m_CarriageManager.m_CarriageControllers.Aggregate(
-                        (i, j) =>
-                            Vector3.Distance(i.transform.position, m_RootManager.m_CarriagePlayerController.transform.position) > Vector3.Distance(j.transform.position, m_RootManager.m_CarriagePlayerController.transform.position)
-                                ? j : i)
-                                .m_YabiaoJunZhuInfo;
-            }
-        }
+        ///// <summary>
+        ///// the carriage nearest to player.
+        ///// </summary>
+        //private YabiaoJunZhuInfo m_nearestYabiaoJunZhuInfo
+        //{
+        //    get
+        //    {
+        //        return
+        //            m_RootManager.m_CarriageManager.m_CarriageControllers.Aggregate(
+        //                (i, j) =>
+        //                    Vector3.Distance(i.transform.position, m_RootManager.m_CarriagePlayerController.transform.position) > Vector3.Distance(j.transform.position, m_RootManager.m_CarriagePlayerController.transform.position)
+        //                        ? j : i)
+        //                        .m_YabiaoJunZhuInfo;
+        //    }
+        //}
 
         /// <summary>
         /// the carriage info navigate to.
@@ -231,96 +219,94 @@ namespace Carriage
 
         void LoadBack(ref WWW p_www, string p_path, Object p_object)
         {
+            //GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
+            //TransformHelper.ActiveWithStandardize(transform, mChoose_MiBao.transform);
+            //mChoose_MiBao.SetActive(true);
 
-
-            GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
-            TransformHelper.ActiveWithStandardize(transform, mChoose_MiBao.transform);
-            mChoose_MiBao.SetActive(true);
-
-            ChangeMiBaoSkill mChangeMiBaoSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();
-            mChangeMiBaoSkill.Init(7, CarriageSceneManager.Instance.s_YabiaoJunZhuList.gongjiZuHeId);
+            //ChangeMiBaoSkill mChangeMiBaoSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();
+            //mChangeMiBaoSkill.Init(7, CarriageMsgManager.Instance.s_YabiaoJunZhuList.gongjiZuHeId);
         }
 
         private bool CheckCanRob()
         {
-            if (m_selectedYabiaoJunZhuInfo == null)
-            {
-                Debug.LogError("Cannot enter battle cause no carriage selected.");
-                return false;
-            }
+            //if (m_selectedYabiaoJunZhuInfo == null)
+            //{
+            //    Debug.LogError("Cannot enter battle cause no carriage selected.");
+            //    return false;
+            //}
 
-            //Check.
-            List<CarriageCultureController> controllers = m_RootManager.m_CarriageManager.m_CarriageControllers.Where(item => item.m_YabiaoJunZhuInfo.junZhuId == m_selectedYabiaoJunZhuInfo.junZhuId).ToList();
-            if (controllers == null || controllers.Count != 1)
-            {
-                Debug.LogError("Cannot find specific carriage:" + m_selectedYabiaoJunZhuInfo.junZhuId + ", cancel open battle.");
-                return false;
-            }
+            ////Check.
+            //List<CarriageCultureController> controllers = m_RootManager.m_CarriageManager.m_CarriageControllers.Where(item => item.m_YabiaoJunZhuInfo.junZhuId == m_selectedYabiaoJunZhuInfo.junZhuId).ToList();
+            //if (controllers == null || controllers.Count != 1)
+            //{
+            //    Debug.LogError("Cannot find specific carriage:" + m_selectedYabiaoJunZhuInfo.junZhuId + ", cancel open battle.");
+            //    return false;
+            //}
 
-            if (m_BattleHandler.GetComponent<UISprite>().color == Color.grey)
-            {
-                Debug.LogWarning("===========cancel open battle cause not close enough.");
-                ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_57));
-                return false;
-            }
+            //if (m_BattleHandler.GetComponent<UISprite>().color == Color.grey)
+            //{
+            //    Debug.LogWarning("===========cancel open battle cause not close enough.");
+            //    ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_57));
+            //    return false;
+            //}
 
-            if (m_selectedYabiaoJunZhuInfo.junZhuId == JunZhuData.Instance().m_junzhuInfo.id)
-            {
-                Debug.LogWarning("===========cancel open battle cause carriage is mine.");
-                ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_55));
-                return false;
-            }
+            //if (m_selectedYabiaoJunZhuInfo.junZhuId == JunZhuData.Instance().m_junzhuInfo.id)
+            //{
+            //    Debug.LogWarning("===========cancel open battle cause carriage is mine.");
+            //    ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_55));
+            //    return false;
+            //}
 
-            if (!AllianceData.Instance.IsAllianceNotExist && AllianceData.Instance.g_UnionInfo != null && m_selectedYabiaoJunZhuInfo.lianMengName == AllianceData.Instance.g_UnionInfo.name)
-            {
-                Debug.LogWarning("===========cancel open battle cause carriage is alliance.");
-                ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_56));
-                return false;
-            }
+            //if (!AllianceData.Instance.IsAllianceNotExist && AllianceData.Instance.g_UnionInfo != null && m_selectedYabiaoJunZhuInfo.lianMengName == AllianceData.Instance.g_UnionInfo.name)
+            //{
+            //    Debug.LogWarning("===========cancel open battle cause carriage is alliance.");
+            //    ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_56));
+            //    return false;
+            //}
 
-            if (m_selfRemainTimes <= 0)
-            {
-                Debug.LogWarning("===========cancel open battle cause not enough times.");
-                //ShowInfo("你的劫镖次数已用尽，不能劫镖");
-                CarriageSceneManager.Instance.OnBuyRobTimesConfirm();
-                return false;
-            }
+            //if (m_selfRemainTimes <= 0)
+            //{
+            //    Debug.LogWarning("===========cancel open battle cause not enough times.");
+            //    //ShowInfo("你的劫镖次数已用尽，不能劫镖");
+            //    CarriageMsgManager.Instance.OnBuyRobTimesConfirm();
+            //    return false;
+            //}
 
-            if (m_selfProtectTime > 0)
-            {
-                Debug.LogWarning("===========cancel open battle cause king in cd.");
-                ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_52));
-                return false;
-            }
+            //if (m_selfProtectTime > 0)
+            //{
+            //    Debug.LogWarning("===========cancel open battle cause king in cd.");
+            //    ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_52));
+            //    return false;
+            //}
 
-            if (m_selectedYabiaoJunZhuInfo.state == 30)
-            {
-                Debug.LogWarning("===========cancel open battle cause carriage in protect.");
-                ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_53));
-                return false;
-            }
+            //if (m_selectedYabiaoJunZhuInfo.state == 30)
+            //{
+            //    Debug.LogWarning("===========cancel open battle cause carriage in protect.");
+            //    ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_53));
+            //    return false;
+            //}
 
-            if (m_selectedYabiaoJunZhuInfo.state == 20)
-            {
-                Debug.LogWarning("===========cancel open battle cause carriage in fight.");
-                ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_54));
-                return false;
-            }
+            //if (m_selectedYabiaoJunZhuInfo.state == 20)
+            //{
+            //    Debug.LogWarning("===========cancel open battle cause carriage in fight.");
+            //    ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_54));
+            //    return false;
+            //}
 
             return true;
         }
 
         private void OnBattleClick(GameObject go)
         {
-            if (!CheckCanRob())
-            {
-                return;
-            }
+            //if (!CheckCanRob())
+            //{
+            //    return;
+            //}
 
-            EnterBattleField.EnterBattleCarriage(m_selectedYabiaoJunZhuInfo.junZhuId);
-            RootManager.m_PlayerLastLocalPosition = m_RootManager.m_CarriagePlayerController.transform.localPosition;
-            RootManager.KingInfoBattleWith = m_selectedYabiaoJunZhuInfo;
-            RootManager.KingInfoBattleWith.junZhuId = -RootManager.KingInfoBattleWith.junZhuId;
+            //EnterBattleField.EnterBattleCarriage(m_selectedYabiaoJunZhuInfo.junZhuId);
+            //RootManager.m_PlayerLastLocalPosition = m_RootManager.m_CarriagePlayerController.transform.localPosition;
+            //RootManager.KingInfoBattleWith = m_selectedYabiaoJunZhuInfo;
+            //RootManager.KingInfoBattleWith.junZhuId = -RootManager.KingInfoBattleWith.junZhuId;
         }
 
         public UILabel m_CarriageInfoLabel;
@@ -352,47 +338,47 @@ namespace Carriage
         /// </summary>
         public void RefreshMibaoSkillEffect()
         {
-            List<MibaoGroup> mibaoGroup = MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup;
-            List<MibaoGroup> activeGroup = new List<MibaoGroup>();
+            //List<MibaoGroup> mibaoGroup = MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup;
+            //List<MibaoGroup> activeGroup = new List<MibaoGroup>();
 
-            for (int i = 0; i < mibaoGroup.Count; i++)
-            {
-                List<MibaoInfo> miBaoInfoList = new List<MibaoInfo>();
+            //for (int i = 0; i < mibaoGroup.Count; i++)
+            //{
+            //    List<MibaoInfo> miBaoInfoList = new List<MibaoInfo>();
 
-                for (int j = 0; j < mibaoGroup[i].mibaoInfo.Count; j++)
-                {
-                    if (mibaoGroup[i].mibaoInfo[j].level > 0 && !mibaoGroup[i].mibaoInfo[j].isLock)
-                    {
-                        miBaoInfoList.Add(mibaoGroup[i].mibaoInfo[j]);
-                    }
-                }
-                if (miBaoInfoList.Count >= 2)
-                {
-                    activeGroup.Add(mibaoGroup[i]);
-                }
-            }
+            //    for (int j = 0; j < mibaoGroup[i].mibaoInfo.Count; j++)
+            //    {
+            //        if (mibaoGroup[i].mibaoInfo[j].level > 0 && !mibaoGroup[i].mibaoInfo[j].isLock)
+            //        {
+            //            miBaoInfoList.Add(mibaoGroup[i].mibaoInfo[j]);
+            //        }
+            //    }
+            //    if (miBaoInfoList.Count >= 2)
+            //    {
+            //        activeGroup.Add(mibaoGroup[i]);
+            //    }
+            //}
 
-            if (activeGroup.Count > 0)
-            {
-                List<int> zuHeIdList = new List<int>();
-                for (int i = 0; i < activeGroup.Count; i++)
-                {
-                    zuHeIdList.Add(activeGroup[i].zuheId);
-                }
+            //if (activeGroup.Count > 0)
+            //{
+            //    List<int> zuHeIdList = new List<int>();
+            //    for (int i = 0; i < activeGroup.Count; i++)
+            //    {
+            //        zuHeIdList.Add(activeGroup[i].zuheId);
+            //    }
 
-                if (zuHeIdList.Contains(CarriageSceneManager.Instance.s_YabiaoJunZhuList.gongjiZuHeId))
-                {
-                    UI3DEffectTool.Instance().ClearUIFx(m_SwitchSkillHandler.gameObject);
-                }
-                else
-                {
-                    UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, m_SwitchSkillHandler.gameObject, EffectTemplate.getEffectTemplateByEffectId(100005).path);
-                }
-            }
-            else
-            {
-                UI3DEffectTool.Instance().ClearUIFx(m_SwitchSkillHandler.gameObject);
-            }
+            //    if (zuHeIdList.Contains(CarriageMsgManager.Instance.s_YabiaoJunZhuList.gongjiZuHeId))
+            //    {
+            //        UI3DEffectTool.Instance().ClearUIFx(m_SwitchSkillHandler.gameObject);
+            //    }
+            //    else
+            //    {
+            //        UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, m_SwitchSkillHandler.gameObject, EffectTemplate.getEffectTemplateByEffectId(100005).path);
+            //    }
+            //}
+            //else
+            //{
+            //    UI3DEffectTool.Instance().ClearUIFx(m_SwitchSkillHandler.gameObject);
+            //}
         }
 
         /// <summary>
@@ -454,20 +440,20 @@ namespace Carriage
                 DoSetKingInfoLabel();
             }
 
-            if (Time.realtimeSinceStartup - m_robButtonsLastCalcTime > 1.0f)
-            {
-                m_robButtonsLastCalcTime = Time.realtimeSinceStartup;
+            //if (Time.realtimeSinceStartup - m_robButtonsLastCalcTime > 1.0f)
+            //{
+            //    m_robButtonsLastCalcTime = Time.realtimeSinceStartup;
 
-                var tempList =
-                    m_RootManager.m_CarriageManager.m_CarriageControllers.Where(
-                        item => item.m_YabiaoJunZhuInfo.junZhuId == m_selectedYabiaoJunZhuInfo.junZhuId).ToList();
-                if (tempList == null || tempList.Count != 1)
-                {
-                    return;
-                }
+            //    var tempList =
+            //        m_RootManager.m_CarriageManager.m_CarriageControllers.Where(
+            //            item => item.m_YabiaoJunZhuInfo.junZhuId == m_selectedYabiaoJunZhuInfo.junZhuId).ToList();
+            //    if (tempList == null || tempList.Count != 1)
+            //    {
+            //        return;
+            //    }
 
-                SetBattleColor(Vector3.Distance(m_RootManager.m_CarriagePlayerController.transform.position, tempList[0].transform.position) < 5);
-            }
+            //    SetBattleColor(Vector3.Distance(m_RootManager.m_CarriagePlayerController.transform.position, tempList[0].transform.position) < 5);
+            //}
         }
 
         #endregion

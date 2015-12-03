@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -161,7 +161,7 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 
 							// Manual show UI
 							{
-								UI2DTool.Instance.ShowUI( fuWenObj );
+								UI2DTool.Instance.AddTopUI( fuWenObj );
 							}
 						}
 					}

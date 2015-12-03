@@ -393,14 +393,13 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     public static bool GetBool(Dictionary<string, ConfigTool.ConfigValue> p_dict, string p_key, bool p_default_value = false)
     {
-        if (!p_dict.ContainsKey(p_key))
-        {
-            //			Debug.LogError( "Key Not Contained: " + p_key );
+        if( !p_dict.ContainsKey( p_key ) ){
+//			Debug.LogError( "Key Not Contained: " + p_key );
 
             return p_default_value;
         }
 
-        return p_dict[p_key].m_bool;
+        return p_dict[ p_key ].m_bool;
     }
 
     public static int GetInt(Dictionary<string, ConfigTool.ConfigValue> p_dict, string p_key, int p_default_value = 0)

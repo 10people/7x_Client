@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 <FunctionOpen id="1" MenuID="-1" usePushData="false" key="MeiRiJiangLi" Type="-1" desc="每日奖励" Rank="-1" npcid="-1" SenceTpye="0" lv="1000" RenWuID="-1" RenWuIDAward="-1" doneCond="-1" descID="-1" LockWarning="-1" />
-<FunctionOpen id="2" MenuID="-1" usePushData="false" key="SheZhi" Type="5" desc="设置" Rank="-1" npcid="-1" SenceTpye="100" lv="0" RenWuID="-1" RenWuIDAward="-1" doneCond="-1" descID="-1" LockWarning="-1" />
 <FunctionOpen id="22" MenuID="-1" usePushData="true" key="YouXiang" Type="6" desc="邮箱" Rank="20" npcid="-1" SenceTpye="100" lv="0" RenWuID="-1" RenWuIDAward="-1" doneCond="-1" descID="-1" LockWarning="-1" />
 <FunctionOpen id="10" MenuID="22" usePushData="true" key="SiXin" Type="0" desc="邮箱-私信" Rank="-1" npcid="-1" SenceTpye="100" lv="0" RenWuID="-1" RenWuIDAward="-1" doneCond="-1" descID="-1" LockWarning="-1" />
 <FunctionOpen id="41" MenuID="22" usePushData="true" key="XiTong" Type="0" desc="邮箱-系统" Rank="-1" npcid="-1" SenceTpye="100" lv="0" RenWuID="-1" RenWuIDAward="-1" doneCond="-1" descID="-1" LockWarning="-1" />

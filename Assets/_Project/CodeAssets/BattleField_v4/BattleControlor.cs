@@ -1347,7 +1347,6 @@ public class BattleControlor : MonoBehaviour
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao)
 		{
-			CarriageSceneManager.Instance.ReturnCarriage();
 		}
 		else //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{
@@ -1939,14 +1938,26 @@ public class BattleControlor : MonoBehaviour
 
 	public BattleResult reCheckResult(BaseAI _node)
 	{
-		if (_node != null && _node.nodeId == 1) 
+		if (_node != null) 
 		{
-			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
+			if(_node.nodeId == 1)
 			{
-				return BattleResult.RESULT_WIN;
+				if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
+				{
+					return BattleResult.RESULT_WIN;
+				}
+				
+				return BattleResult.RESULT_LOSE;
 			}
+			else
+			{
+				BattleWinTemplate template = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.PROTECT);
 
-			return BattleResult.RESULT_LOSE;
+				if(template != null && template.protectNodeId == _node.nodeId)
+				{
+					return BattleResult.RESULT_LOSE;
+				}
+			}
 		}
 
 		bool fWin = false;
@@ -2076,6 +2087,24 @@ public class BattleControlor : MonoBehaviour
 				fWin = true;
 			}
 
+			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
+		}
+
+		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.PROTECT);
+		
+		if(winTemplate != null)
+		{
+			BaseAI protectNode = getNodebyId(winTemplate.protectNodeId);
+
+			if(protectNode != null && protectNode.isAlive && protectNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) > 0)
+			{
+				fWin = true;
+			}
+			else
+			{
+				fWin = false;
+			}
+			
 			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
 		}
 

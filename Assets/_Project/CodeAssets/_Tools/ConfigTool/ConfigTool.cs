@@ -383,7 +383,7 @@ public class ConfigTool : Singleton<ConfigTool>
 			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_RECEIVE_DETAIL, LoadBoolValue( m_config_dict, CONST_LOG_SOCKET_RECEIVE_DETAIL ) );
 
 
-			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_PROCESSOR, LoadBoolValue( m_config_dict, CONST_LOG_SOCKET_PROCESSOR ) );
+			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER, LoadBoolValue( m_config_dict, CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER ) );
 
 			LoadValues( m_config_value_dict, CONST_LOG_MAINCITY_SPRITE_MOVE, LoadBoolValue( m_config_dict, CONST_LOG_MAINCITY_SPRITE_MOVE ) );
 
@@ -417,11 +417,9 @@ public class ConfigTool : Singleton<ConfigTool>
 		// bundle
 		{
 			#if UNITY_EDITOR
-			
 			if( GetBool( CONST_CLEAN_EDITOR_CACHE ) ){
-				Prepare_Bundle_Cleaner.CleanCache();
+				BundleHelper.CleanCache();
 			}
-			
 			#endif
 		}
 	}
@@ -804,7 +802,7 @@ public class ConfigTool : Singleton<ConfigTool>
 	public const string CONST_LOG_SOCKET_RECEIVE		= "LogSocketReceive";
 	public const string CONST_LOG_SOCKET_RECEIVE_DETAIL	= "LogSocketReceiveDetail";
 
-	public const string CONST_LOG_SOCKET_PROCESSOR		= "LogSocketProcessor";
+	public const string CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER		= "LogSocketProcessorListener";
 
 	public const string CONST_LOG_MAINCITY_SPRITE_MOVE	= "LogMainCitySpriteMove";
 

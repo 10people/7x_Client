@@ -421,7 +421,7 @@ public class Prepare_Bundle_Config : MonoBehaviour {
 				if( IsBundleNotExist() ){
 					Debug.Log( "Clear Bundle & WWW-Path." );
 					
-					Prepare_Bundle_Cleaner.CleanCache();
+					BundleHelper.CleanCache();
 					
 					CleanBundleUpdateList();
 				}

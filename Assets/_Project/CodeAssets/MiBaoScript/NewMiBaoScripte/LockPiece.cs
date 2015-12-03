@@ -77,7 +77,7 @@ public class LockPiece : MonoBehaviour ,SocketProcessor{
 
 				MapCurrentInfo = tempInfo;
 
-				Debug.Log("MapCurrentInfo.chuanQiId  = " +MapCurrentInfo.chuanQiId );
+//				Debug.Log("MapCurrentInfo.chuanQiId  = " +MapCurrentInfo.chuanQiId );
 			    QuerySection();
 			}
 				return true;

@@ -5,12 +5,8 @@ using System.Collections.Generic;
 using qxmobile.protobuf;
 using Object = UnityEngine.Object;
 
-public class MainCityUIL : MonoBehaviour
+public class MainCityUIL : MYNGUIPanel
 {
-    public EventIndexHandle TaskHandle;
-    public EventIndexHandle EmailHandle;
-    public EventIndexHandle ChatHandle;
-
     public GameObject TaskRedAlertObject;
     public GameObject EmailRedAlertObject;
     public GameObject ChatRedAlertObject;
@@ -116,39 +112,6 @@ public class MainCityUIL : MonoBehaviour
         }
     }
 
-    public void OnIndexHandleClick(int i)
-    {
-        if (MainCityUI.IsWindowsExist())
-        {
-            return;
-        }
-
-        switch (i)
-        {
-            case 1:
-                {
-                    break;
-                }
-            case 2:
-                {
-					NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_MAIN_PAGE);
-//                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
-//                        EmailLoadCallback);
-                    break;
-                }
-            case 3:
-                {
-                    OnChatClick();
-                    break;
-                }
-            default:
-                {
-                    Debug.LogError("Error index clicked, index:" + i);
-                    break;
-                }
-        }
-    }
-
     public void EmailLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject tempObject = Instantiate(p_object) as GameObject;
@@ -162,9 +125,7 @@ public class MainCityUIL : MonoBehaviour
 
     void Awake()
     {
-        TaskHandle.m_Handle += OnIndexHandleClick;
-        EmailHandle.m_Handle += OnIndexHandleClick;
-        ChatHandle.m_Handle += OnIndexHandleClick;
+
     }
 
     void Start()
@@ -190,9 +151,6 @@ public class MainCityUIL : MonoBehaviour
 
     void OnDestroy()
     {
-        TaskHandle.m_Handle -= OnIndexHandleClick;
-        EmailHandle.m_Handle -= OnIndexHandleClick;
-        ChatHandle.m_Handle -= OnIndexHandleClick;
     }
 
     public static bool IsDoDelegateAfterInit = false;
@@ -298,7 +256,7 @@ public class MainCityUIL : MonoBehaviour
             return true;
         }
 
-        MainCityUI.m_MainCityUI.m_MainCityUIL.EmailHandle.gameObject.SetActive(isActive);
+		MainCityUI.m_MainCityUI.m_MainCityUIL.EmailRedAlertObject.transform.parent.gameObject.SetActive(isActive);
         return true;
     }
 
@@ -345,7 +303,6 @@ public class MainCityUIL : MonoBehaviour
         chatUI.SetActive(true);
         MainCityUI.TryAddToObjectList(chatUI);
 
-        chatWindow.m_RootChatOpenObject = ChatHandle.gameObject;
         chatWindow.m_ChatOpenCloseController.OnOpenWindowClick(gameObject);
     }
 
@@ -353,7 +310,6 @@ public class MainCityUIL : MonoBehaviour
     {
         chatUI = Instantiate(p_object) as GameObject;
         DontDestroyOnLoad(chatUI);
-        chatWindow.m_RootChatOpenObject = ChatHandle.gameObject;
 
         chatUI.GetComponentInChildren<ChatWindow>().m_ChatChannelFrameList.ForEach(item =>
         {
@@ -375,7 +331,6 @@ public class MainCityUIL : MonoBehaviour
         DontDestroyOnLoad(chatUI);
         MainCityUI.TryAddToObjectList(chatUI);
 
-        chatWindow.m_RootChatOpenObject = ChatHandle.gameObject;
         chatWindow.m_ChatOpenCloseController.OnOpenWindowClick(gameObject);
     }
 
@@ -384,4 +339,69 @@ public class MainCityUIL : MonoBehaviour
 
     }
     #endregion
+
+	public override void MYClick(GameObject ui)
+	{
+		if (MainCityUI.IsWindowsExist())
+		{
+			return;
+		}
+		if(ui.name.IndexOf("L_Task") != -1)
+		{
+
+		}
+//		switch (i)
+//		{
+//		case 1:
+//		{
+//			break;
+//		}
+//		case 2:
+//		{
+//
+//			//                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
+//			//                        EmailLoadCallback);
+//			break;
+//		}
+//		case 3:
+//		{
+//			OnChatClick();
+//			break;
+//		}
+//		default:
+//		{
+//			Debug.LogError("Error index clicked, index:" + i);
+//			break;
+//		}
+//		}
+	}
+
+	public override void MYMouseOver(GameObject ui)
+	{
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+	}
 }

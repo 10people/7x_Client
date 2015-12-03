@@ -29,6 +29,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     public MainCityUIRT m_MainCityUIRT;
     public Joystick m_MainCityUILB;
     public GameObject m_AddFunction;
+	public GameObject m_MainGlobalBelongings;
     [HideInInspector]
     public List<MYNGUIPanel> m_MYNGUIPanel = new List<MYNGUIPanel>();
 
@@ -62,7 +63,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
 			// assume all param:go is functionUI's main page, if not will cause an error
 			{
-				UI2DTool.Instance.ShowUI( go );
+				UI2DTool.Instance.AddTopUI( go );
 			}
         }
     }
@@ -96,8 +97,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         m_MainCityUI.m_WindowObjectList.Clear();
     }
 
-    public List<EventIndexHandle> m_listEvent = new List<EventIndexHandle>();
-
     void OnDestroy()
     {
         m_MainCityUI = null;
@@ -109,10 +108,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     {
         m_MainCityUI = this;
         m_MYNGUIPanel.Add(m_MainCityUILT);
+        m_MYNGUIPanel.Add(m_MainCityUIRT);
         m_MYNGUIPanel.Add(null);
-        m_MYNGUIPanel.Add(m_MainCityUILB);
-        //m_MYNGUIPanel.Add(m_MainCityUIRB);
-
+        m_MYNGUIPanel.Add(m_MainCityUIRB);
+		m_MYNGUIPanel.Add(m_MainCityUIL);
         SocketTool.RegisterSocketListener(this);
 
     }
@@ -139,7 +138,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     void Start()
     {
         ClientMain.m_isNewOpenFunction = false;
-        m_listEvent.ForEach(p => p.m_Handle += EventTouch);
         m_MainCityUIRB.Initialize();
         if (Global.m_isOpenJiaoxue)
         {
@@ -173,10 +171,30 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         setInit();
 
         Global.ScendID(ProtoIndexes.C_ADD_TILI_INTERVAL, 1);
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_Belongings), OnLoadCallBack);
 
         //		Global.m_isZhanli = true;
         //		ClientMain.addPopUP(10, 0, "", null);
     }
+
+	private void OnLoadCallBack(ref WWW www, string str, object obj)
+	{
+		m_MainGlobalBelongings = obj as GameObject;
+	}
+/// <summary>
+///  通用资源显示
+/// </summary>
+/// <param name="parent">绑定在哪个OBJ下面</param>
+/// <param name="x">坐标X</param>
+/// <param name="y">坐标Y</param>
+	public void setGlobalBelongings(GameObject parent, float x, float y)
+	{
+		GameObject tempObj = GameObject.Instantiate(m_MainGlobalBelongings);
+		tempObj.transform.parent = parent.transform;
+		tempObj.transform.localScale = Vector3.one;
+		tempObj.transform.localPosition = new Vector3(x,y,0);
+	}
+
     private int[] m_mission = new int[]
     {
         100010,0,100020,0,100030,0,100040,1,100050,0,100060,0,100070,0,
@@ -186,31 +204,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         100300,0,100330,0,100340,0,100350,1,100360,0,100380,0,100400,0,
         100410,0
     };
-    private void EventTouch(int index)
-    {
-        switch (index)
-        {
-            //vip click
-            case 0:
-                TopUpLoadManagerment.m_instance.LoadPrefabSpecial(true, true);
-                break;
-            //buy money
-            case 1:
-                JunZhuData.Instance().BuyTiliAndTongBi(false, true, false);
-                break;
-            //recharge
-            case 2:
-                TopUpLoadManagerment.m_instance.LoadPrefab(true);
-                break;
-            //buy energy
-            case 3:
-                JunZhuData.Instance().BuyTiliAndTongBi(true, false, false);
-                break;
-            default:
-                break;
-        }
-
-    }
     public void setInit()
     {
         //		Debug.Log( "MainCityUI.SetInit()" );
@@ -341,6 +334,8 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     public override void MYClick(GameObject ui)
     {
+//		Debug.Log(ui.name);
+
         if (!m_isClick)
         {
             return;
@@ -349,18 +344,21 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         int tempIndex = 0;
         if (ui.name.IndexOf("LT_") != -1)
         {
-
             tempIndex = 0;
         }
+		else if (ui.name.IndexOf("RT_") != -1)
+		{
+			tempIndex = 1;
+		}
         else if (ui.name.IndexOf("RB_") != -1)
         {
             tempIndex = 3;
         }
+		else if (ui.name.IndexOf("L_") != -1)
+		{
+			tempIndex = 4;
+		}
         m_MYNGUIPanel[tempIndex].MYClick(ui);
-        if (ui.name.IndexOf("BattleValueContainer") != -1)
-        {
-            MainCityUILT.ShowMainTipWindow();
-        }
     }
 
     private GameObject baizhanRoot;

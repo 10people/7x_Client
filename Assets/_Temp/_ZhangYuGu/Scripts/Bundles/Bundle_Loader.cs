@@ -214,7 +214,7 @@ public class Bundle_Loader : MonoBehaviour {
 
 		if (Application.platform == RuntimePlatform.WindowsPlayer ||
 		    Application.platform == RuntimePlatform.OSXPlayer ){
-			Prepare_Bundle_Cleaner.CleanCache();
+			BundleHelper.CleanCache();
 		}
 		
 		#endif
@@ -355,7 +355,7 @@ public class Bundle_Loader : MonoBehaviour {
 
 		string t_bundle_key = GetConfigBundleKey();
 		
-//		string t_bundle_url = GetLocalBundlePath( t_bundle_name );
+		//		string t_bundle_url = PathHelper.GetLocalBundlePath( t_bundle_name );
 		
 		{
 			// set to prepare
@@ -556,9 +556,9 @@ public class Bundle_Loader : MonoBehaviour {
 				// all local bundle's version is 0.
 
 #if CUSTOM_7ZIP_LOAD
-				string t_bundle_url = GetLocalBundlePath( p_bundle_key );
+				string t_bundle_url = PathHelper.GetLocalBundlePath( p_bundle_key );
 #else
-				string t_bundle_url = GetLocalBundleWWWPath( p_bundle_key );
+				string t_bundle_url = PathHelper.GetLocalBundleWWWPath( p_bundle_key );
 #endif
 
 //				Debug.Log( "Loading From Local Bundle: " + t_bundle_url );
@@ -1333,110 +1333,8 @@ public class Bundle_Loader : MonoBehaviour {
 		
 		return "";
 	}
+	
 
-	/** Desc:
-	 * Bundle Path for FileStream.
-	 * 
-	 * Params:
-	 * p_bundle_key:	"_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab";
-	 * 
-	 * return:
-	 * OS.dataPath/Platform/_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab
-	 */
-	private static string GetLocalBundlePath( string p_res_asset_path ){
-		{
-			p_res_asset_path = StringHelper.RemovePrefix( p_res_asset_path, "/" );
-			
-			p_res_asset_path = "/" + p_res_asset_path;
-		}
-		
-		#if UNITY_EDITOR
-		if( Application.platform == RuntimePlatform.WindowsEditor ){
-			return Application.streamingAssetsPath + 
-				"/" + PlatformHelper.GetAndroidTag() + 
-					p_res_asset_path;
-		}
-		else if( Application.platform == RuntimePlatform.OSXEditor ){
-			return Application.dataPath + "/StreamingAssets" + 
-				"/" + PlatformHelper.GetiOSTag() +
-					p_res_asset_path;
-		}
-		#else
-		if (Application.platform == RuntimePlatform.WindowsPlayer ){
-			return Application.streamingAssetsPath + 
-				"/" + PlatformHelper.GetAndroidTag() + 
-					p_res_asset_path;
-		}
-		else if( Application.platform == RuntimePlatform.Android ){
-			// TODO, Recheck
-			// Android
-			return "jar:" + Application.dataPath + "!/assets" + 
-				"/" + PlatformHelper.GetAndroidTag() + 	
-					p_res_asset_path;
-		}
-		else if( Application.platform == RuntimePlatform.IPhonePlayer ){
-			// iOS 
-			return Application.dataPath + "/Raw" + 
-				"/" + PlatformHelper.GetiOSTag() + 
-					p_res_asset_path;
-		}
-		
-		#endif
-		
-		return null;
-	}
-	
-	/** Desc:
-	 * Bundle Path for WWW.Load.
-	 * 
-	 * Params:
-	 * p_bundle_key:	"_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab";
-	 * 
-	 * return:
-	 * OS.dataPath/Platform/_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab
-	 */
-	private static string GetLocalBundleWWWPath( string p_res_asset_path ){
-		{
-			p_res_asset_path = StringHelper.RemovePrefix( p_res_asset_path, "/" );
-			
-			p_res_asset_path = "/" + p_res_asset_path;
-		}
-		
-		#if UNITY_EDITOR
-		if( Application.platform == RuntimePlatform.WindowsEditor ){
-			return "file://" + Application.streamingAssetsPath + 
-				"/" + PlatformHelper.GetAndroidTag() + 
-					p_res_asset_path;
-		}
-		else if( Application.platform == RuntimePlatform.OSXEditor ){
-			return "file://" + Application.dataPath + "/StreamingAssets" + 
-				"/" + PlatformHelper.GetiOSTag() +
-					p_res_asset_path;
-		}
-		#else
-		if (Application.platform == RuntimePlatform.WindowsPlayer ){
-			return "file://" + Application.streamingAssetsPath + 
-				"/" + PlatformHelper.GetAndroidTag() + 
-					p_res_asset_path;
-		}
-		else if( Application.platform == RuntimePlatform.Android ){
-			// Android
-			return "jar:file://" + Application.dataPath + "!/assets" + 
-				"/" + PlatformHelper.GetAndroidTag() + 	
-					p_res_asset_path;
-		}
-		else if( Application.platform == RuntimePlatform.IPhonePlayer ){
-			// iOS 
-			return "file://" + Application.dataPath + "/Raw" + 
-				"/" + PlatformHelper.GetiOSTag() + 
-					p_res_asset_path;
-		}
-		
-		#endif
-		
-		return null;
-	}
-	
 	private static List<string> GetBundleDependency( string p_bundle_key ){
 		float t_cur = Time.realtimeSinceStartup;
 

@@ -218,6 +218,11 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 							pvpObj.SetActive (true);
 //							PvpPage.pvpPage.sEffectControl.OnOpenWindowClick ();
 							PvpPage.pvpPage.InItPvpPage (pvpInfo);
+
+							// ui 2d tool
+							{
+								UI2DTool.Instance.AddTopUI( GameObjectHelper.GetRootGameObject( pvpObj ) );
+							}
 						}
 					}
 				}

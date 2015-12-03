@@ -22,6 +22,9 @@ using System.Collections.Generic;
  */ 
 public class UI2DTool : Singleton<UI2DTool>{
 
+	// 0: MainMenu
+	// 1: Pop UI
+	// 2: Pop UI's sub UI or redirect UI
 	private static List<UI2DToolItem> m_2d_manager_list = new List<UI2DToolItem>();
 
 
@@ -49,7 +52,7 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 	#region 2D UI Management
 
-	/// Clear all references.
+	/// Clear all references, called when enter new scene
 	public static void ClearAll(){
 		m_2d_manager_list.Clear();
 
@@ -57,14 +60,34 @@ public class UI2DTool : Singleton<UI2DTool>{
 	}
 
 	/// Desc:
-	/// Manual set UI the Toppest, and hide MainCityUI.
+	/// Manual add the Toppest UI, and hide MainCityUI.
 	/// 
 	/// Notice:
-	/// 1.p_gb MUST be Function's Main UI.
-	public void ShowUI( GameObject p_gb ){
+	/// 1.p_gb MUST be Function's UI.
+	public void AddTopUI( GameObject p_gb ){
 		#if !ENABLE_OPTIMIZE
 		return;
 		#endif
+
+		if( p_gb == null ){
+			Debug.LogError( "Error, p_gb is null." );
+
+			return;
+		}
+
+		if( !p_gb.activeSelf ){
+			Debug.LogError( "Error, p_gb must be active." );
+
+			return;
+		}
+
+		if( GetTopUI() != null ){
+			if( GetTopUI().GetRootGameObject() == p_gb ){
+				Debug.Log( "Already Added." );
+
+				return;
+			}
+		}
 
 		UI2DToolItem t_manager = new UI2DToolItem( p_gb );
 
@@ -79,14 +102,23 @@ public class UI2DTool : Singleton<UI2DTool>{
 		          GameObjectHelper.GetGameObjectHierarchy( p_gb ) );
 		#endif
 
+		// hide origin top
+		if( GetTopUI() != null ){
+			if( GetTopUI().GetRootGameObject() != null ){
+				GetTopUI().SetActive( false );
+			}
+		}
+
+		// add new top
 		m_2d_manager_list.Add( t_manager );
 
-		UpdateMainUI();
+		// refresh new top
+		UpdateTopUI();
 	}
 
-	public static void HideUI(){
-		RemoveTopUI();
-	}
+//	public static void RemoveUI(){
+//		RemoveTopUI();
+//	}
 
 	#endregion
 
@@ -112,10 +144,16 @@ public class UI2DTool : Singleton<UI2DTool>{
 			return;
 		}
 
-		UI2DToolItem t_top = m_2d_manager_list[ m_2d_manager_list.Count - 1 ];
+		UI2DToolItem t_top = GetTopUI();
 
-		if( m_cached_gb == null || t_top.GetRootGameObject() == null ){
+		if( m_cached_gb == null ){
 			UpdateTopUI();
+
+			return;
+		}
+
+		if( t_top.GetRootGameObject() == null ){
+			RemoveTopUI();
 
 			return;
 		}
@@ -133,21 +171,15 @@ public class UI2DTool : Singleton<UI2DTool>{
 		}
 	}
 
-	private static void UpdateTopUI(){
-		if( m_2d_manager_list.Count <= 0 ){
-			return;
-		}
-
-		UpdateCachedGameObject();
-
-		if( !m_cached_visibility && m_2d_manager_list.Count > 1 ){
-			RemoveTopUI();
-		}
-	}
-
+	/// Remove Top UI, then update new Toppest UI.
 	private static void RemoveTopUI(){
 		if( m_2d_manager_list.Count <= 0 ){
 			Debug.LogError( "Error, out of bound." );
+
+			return;
+		}
+		else if( m_2d_manager_list.Count == 1 ){
+			Debug.LogError( "Never try to remove MainUI." );
 
 			return;
 		}
@@ -162,18 +194,51 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 		m_2d_manager_list.RemoveAt( m_2d_manager_list.Count - 1 );
 
-		UpdateTopUI();
+		// make new toppest visible
+		MakeTopUIVisible();
 	}
 
+	private static UI2DToolItem GetTopUI(){
+		if( m_2d_manager_list.Count <= 0 ){
+//			Debug.LogError( "Error, Top UI is null." );
+
+			return null;
+		}
+
+		return m_2d_manager_list[ m_2d_manager_list.Count - 1 ];
+	}
+
+	private static void MakeTopUIVisible(){
+		if( m_2d_manager_list.Count <= 0 ){
+			Debug.LogError( "Error, Top UI doesn't exist." );
+
+			return;
+		}
+
+		UI2DToolItem t_ui = GetTopUI();
+
+		if( t_ui.GetRootGameObject() != null ){
+			t_ui.SetActive( true );
+		}
+	}
+
+	/// Update Top UI, if Top UI is invisible, Remove it.
+	private static void UpdateTopUI(){
+		if( m_2d_manager_list.Count <= 0 ){
+			return;
+		}
+		
+		UpdateCachedGameObject();
+
+		if( !m_cached_visibility && m_2d_manager_list.Count > 1 ){
+			RemoveTopUI();
+		}
+	}
+	
 	private static void UpdateCachedGameObject(){
 		// update cached gb
 		{
-			m_cached_gb = m_2d_manager_list[ m_2d_manager_list.Count - 1 ].GetRootGameObject();
-		}
-
-		// show Main UI
-		if( m_2d_manager_list.Count == 1 ){
-			UpdateMainUI();
+			m_cached_gb = GetTopUI().GetRootGameObject();
 		}
 
 		// update cached visibility
@@ -242,7 +307,7 @@ public class UI2DTool : Singleton<UI2DTool>{
 				return;
 			}
 
-			m_ui_root_gb = p_gb;
+			m_ui_root_gb = GameObjectHelper.GetRootGameObject( p_gb );
 		}
 
 		public GameObject GetRootGameObject(){

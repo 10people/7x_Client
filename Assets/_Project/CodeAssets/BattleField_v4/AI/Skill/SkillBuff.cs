@@ -109,6 +109,10 @@ public class SkillBuff : SkillDataBead
 
 					if(able == true) Buff.createBuff(defender, (AIdata.AttributeType)m_iBuffID, va, m_fLastTime, this);
 				}
+				else if(m_iBuffID == 73)//增加的仇恨值，用于BUFF计算
+				{
+					Buff.createBuffThreat(defender, va, m_fLastTime, m_HeroSkill.node.nodeId);
+				}
 				else
 				{
 					Buff.createBuff(defender, (AIdata.AttributeType)m_iBuffID, va, m_fLastTime, this);
@@ -116,6 +120,7 @@ public class SkillBuff : SkillDataBead
 
 				m_HeroSkill.isFirse(defender);
 			}
+
 			defender.showText(m_HeroSkill.m_sDec, m_HeroSkill.template.id);
 		}
 	}

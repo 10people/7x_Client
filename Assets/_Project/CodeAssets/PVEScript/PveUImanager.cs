@@ -528,8 +528,8 @@ public class PveUImanager :MYNGUIPanel
             UIYindao.m_UIYindao.CloseUI();
         }
         MapData.mapinstance.IsCloseGuid = true;
-		WindowBackShowController.CreateSaveWindow("Secret(Clone)");
-		WindowBackShowController.CreateSaveWindow("JUN_ZHU_LAYER_AMEND");
+//		WindowBackShowController.CreateSaveWindow("Secret(Clone)");
+//		WindowBackShowController.CreateSaveWindow("JUN_ZHU_LAYER_AMEND");
 		if(UIYindao.m_UIYindao.m_isOpenYindao)
 		{
 			UIYindao.m_UIYindao.CloseUI();

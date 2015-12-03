@@ -11,7 +11,7 @@ public class MainCameraOriented : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
 		UpdateCameraFace();
 	}
 

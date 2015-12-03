@@ -25,13 +25,11 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     public UILabel m_playrVipLevel;
 
     public UILabel m_leagueName;
-
-    public UILabel m_MoneyNum;
-    public UILabel m_yuanbaoNuM;
-    public UILabel m_energyNuM;
+	
     public GameObject PopupObject;
     public UILabel PopupLabel;
     public UISprite NationSprite;
+	public UISprite m_SpriteExp;
 
     public UILabel m_ZhanLiLabel;
 
@@ -40,7 +38,6 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     //public GameObject m_objMoney;
     public GameObject m_objLianmengbg;
     //public GameObject m_objWulianmengbg;
-    public GameObject m_objBattleValue;
 
     public NGUILongPress MoneyDetailLongPress;
     public NGUILongPress IngotDetailLongPress;
@@ -49,14 +46,6 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     public MainCityZhanliChange m_MainCityZhanliChange;
 
     private bool m_isLianmeng = true;
-
-    private void OnBattleValueClick(GameObject go)
-    {
-        if (!MainCityUI.IsWindowsExist())
-        {
-            ShowMainTipWindow();
-        }
-    }
 
     /// <summary>
     /// Show main tip window
@@ -87,44 +76,19 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     {
         //player info
         m_UISpriteHeroIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id;
-        m_playerName.text = MyColorData.getColorString(9, "[b]" + JunZhuData.Instance().m_junzhuInfo.name + "[/b]");
-        m_playrLevel.text = JunZhuData.Instance().m_junzhuInfo.level.ToString();
+        m_playerName.text = JunZhuData.Instance().m_junzhuInfo.name;
+        m_playrLevel.text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString();
         m_playrVipLevel.text = "VIP" + JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
         NationSprite.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
-
-        //money info
-        m_MoneyNum.text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString();
-        if (JunZhuData.Instance().m_junzhuInfo.jinBi > 10000)
-        {
-            m_MoneyNum.text = JunZhuData.Instance().m_junzhuInfo.jinBi / 10000 + "万";
-        }
-
-        //ingot info
-        m_yuanbaoNuM.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
-        if (JunZhuData.Instance().m_junzhuInfo.yuanBao > 10000)
-        {
-            m_yuanbaoNuM.text = (JunZhuData.Instance().m_junzhuInfo.yuanBao / 10000) + "万";
-        }
-
-        //energy info
-        string energyText = JunZhuData.Instance().m_junzhuInfo.tili > 10000 ? JunZhuData.Instance().m_junzhuInfo.tili / 10000 + "万" : JunZhuData.Instance().m_junzhuInfo.tili.ToString();
-        string energyMaxText = JunZhuData.Instance().m_junzhuInfo.tiLiMax > 10000 ? JunZhuData.Instance().m_junzhuInfo.tiLiMax / 10000 + "万" : JunZhuData.Instance().m_junzhuInfo.tiLiMax.ToString();
-        m_energyNuM.text = energyText + "/" + energyMaxText;
+		m_SpriteExp.SetDimensions(Global.getBili(122, (float)JunZhuData.Instance().m_junzhuInfo.exp, (float)JunZhuData.Instance().m_junzhuInfo.expMax), 8);
+		//m_SpriteExp
         if (Global.m_iZhanli == 0)
         {
             Global.m_iZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
         }
         m_ZhanLiLabel.text = Global.m_iZhanli.ToString();
 
-        //init player model controller
-
-        //if (PlayerModelController.m_playerModelController != null)
-        //{
-        //    if (PlayerModelController.m_playerModelController.m_playerName != null)
-        //    {
-        //        PlayerModelController.m_playerModelController.m_playerName.Init(JunZhuData.Instance().m_junzhuInfo.name, "1","");
-        //    }
-        //}
+		MainCityUI.m_MainCityUI.m_MainCityUIRT.RefreshJunZhuInfo();
     }
 
     public void RefreshBattleValue()
@@ -256,8 +220,6 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
     void Awake()
     {
-        UIEventListener.Get(m_objBattleValue).onClick = OnBattleValueClick;
-
         MoneyDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
         MoneyDetailLongPress.NormalPressTriggerWhenLongPress = false;
         IngotDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
@@ -283,8 +245,6 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
     void OnDestroy()
     {
-        UIEventListener.Get(m_objBattleValue).onClick = null;
-
         MoneyDetailLongPress.OnLongPress = null;
         IngotDetailLongPress.OnLongPress = null;
         EnergyDetailLongPress.OnLongPress = null;
@@ -305,12 +265,31 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     /// <param name="ui"></param>
     public override void MYClick(GameObject ui)
     {
-        if (ui.name.IndexOf("LT_Button_HeroHead") != -1 && !MainCityUI.IsWindowsExist())
+		if(MainCityUI.IsWindowsExist())
+		{
+			return;
+		}
+		if(ui.name.IndexOf("LT_Email") != -1)
+		{
+			NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_MAIN_PAGE);
+		}
+		else if(ui.name.IndexOf("LT_Bianqiang") != -1)
+		{
+			if (!MainCityUI.IsWindowsExist())
+			{
+				ShowMainTipWindow();
+			}
+		}
+        else if (ui.name.IndexOf("LT_Button_HeroHead") != -1)
         {
             CityGlobalData.m_JunZhuTouXiangGuide = false;
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.JUN_ZHU_LAYER_AMEND),
                                     JunzhuLayerLoadCallback);
         }
+		else if (ui.name.IndexOf("LT_VIPButton") != -1)
+		{
+			TopUpLoadManagerment.m_instance.LoadPrefabSpecial(true, true);
+		}
     }
 
     public override void MYMouseOver(GameObject ui)

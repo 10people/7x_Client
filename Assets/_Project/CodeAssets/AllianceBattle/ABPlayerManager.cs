@@ -72,7 +72,7 @@ namespace AllianceBattle
                                 return true;
                             }
 
-                            var tempBasicController = m_PlayerDic[tempScene.uid].GetComponent<ABCulturePlayerController>();
+                            var tempBasicController = m_PlayerDic[tempScene.uid].GetComponent<ABPlayerCultureController>();
                             tempBasicController.TrackCamera = m_RootManager.TrackCamera;
                             tempBasicController.IsRed = string.IsNullOrEmpty(tempScene.allianceName) || AllianceData.Instance.IsAllianceNotExist || (tempScene.allianceName != AllianceData.Instance.g_UnionInfo.name);
                             tempBasicController.KingName = tempScene.senderName;
@@ -123,9 +123,9 @@ namespace AllianceBattle
                                 {
                                     m_RoleID = m_PlayerDic[playerDeadNotify.uid].m_RoleID,
                                     m_UID = m_PlayerDic[playerDeadNotify.uid].m_UID,
-                                    m_KingName = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABCulturePlayerController>().KingName,
-                                    m_AllianceName = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABCulturePlayerController>().AllianceName,
-                                    m_TotalBlood = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABCulturePlayerController>().TotalBlood,
+                                    m_KingName = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABPlayerCultureController>().KingName,
+                                    m_AllianceName = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABPlayerCultureController>().AllianceName,
+                                    m_TotalBlood = m_PlayerDic[playerDeadNotify.uid].GetComponent<ABPlayerCultureController>().TotalBlood,
                                 });
                                 DestroyPlayer(playerDeadNotify.uid);
                             }
@@ -135,14 +135,14 @@ namespace AllianceBattle
                                 AddToDeadDic(playerDeadNotify.uid, new IDCollector()
                                 {
                                     m_RoleID = CityGlobalData.m_king_model_Id,
-                                    m_KingName = m_RootManager.m_AbCulturePlayerController.KingName,
-                                    m_AllianceName = m_RootManager.m_AbCulturePlayerController.AllianceName,
-                                    m_TotalBlood = m_RootManager.m_AbCulturePlayerController.TotalBlood,
+                                    m_KingName = m_RootManager.m_AbPlayerCultureController.KingName,
+                                    m_AllianceName = m_RootManager.m_AbPlayerCultureController.AllianceName,
+                                    m_TotalBlood = m_RootManager.m_AbPlayerCultureController.TotalBlood,
                                 });
 
                                 Destroy(m_RootManager.m_AbPlayerController.gameObject);
                                 m_RootManager.m_AbPlayerController = null;
-                                m_RootManager.m_AbCulturePlayerController = null;
+                                m_RootManager.m_AbPlayerCultureController = null;
 
                                 m_RootManager.m_AllianceBattleUi.DeactiveSkills();
                                 m_RootManager.m_AllianceBattleUi.m_ToAttackId = -1;
@@ -173,7 +173,7 @@ namespace AllianceBattle
                                 {
                                     CreatePlayer(m_DeadPlayerDic[reviveNotify.uid].m_RoleID, m_DeadPlayerDic[reviveNotify.uid].m_UID, m_RootManager.originalPosition1);
 
-                                    var tempBasicController = m_PlayerDic[reviveNotify.uid].GetComponent<ABCulturePlayerController>();
+                                    var tempBasicController = m_PlayerDic[reviveNotify.uid].GetComponent<ABPlayerCultureController>();
                                     tempBasicController.TrackCamera = m_RootManager.TrackCamera;
                                     tempBasicController.IsRed = false;
                                     tempBasicController.KingName = m_DeadPlayerDic[reviveNotify.uid].m_KingName;

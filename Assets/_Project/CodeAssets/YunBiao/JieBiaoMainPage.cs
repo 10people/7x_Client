@@ -429,7 +429,7 @@ public class JieBiaoMainPage : MonoBehaviour,SocketProcessor {
 	{
         //跳转到劫镖场景
     
-        CarriageSceneManager.Instance.EnterCarriage (selectRoomId);
+        PlayerSceneSyncManager.Instance.EnterCarriage ();
         CityGlobalData.m_isJieBiaoScene = true;
     }
 

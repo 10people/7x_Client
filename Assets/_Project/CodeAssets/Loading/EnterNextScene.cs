@@ -115,9 +115,10 @@ public class EnterNextScene : MonoBehaviour{
 		}
 
         // progress log
-        {
+//        {
            // StaticLoading.LogLoadingInfo(StaticLoading.m_loading_sections);
-        }
+//        }
+
 
         if ( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CURRENT_LOADING ) ){
 			if( m_loading_asset_changed ){

@@ -49,7 +49,6 @@ public class EmailCheck : MonoBehaviour {
 	public void GetEmailInfo (EmailInfo tempInfo)
 	{
 		emailInfo = tempInfo;
-		NewEmailData.Instance ().StopClick = false;
 		EmailTemp emailTemp = EmailTemp.getEmailTempByType(emailInfo.type);
 		operateType = (EmailOperateType)Enum.ToObject (typeof (EmailOperateType),emailTemp.operateType);
 
@@ -213,11 +212,6 @@ public class EmailCheck : MonoBehaviour {
 
 	void BtnHandlerCallBack (GameObject obj)
 	{
-		if (NewEmailData.Instance ().StopClick)
-		{
-			return;
-		}
-		NewEmailData.Instance ().StopClick = true;
 		if (emailInfo.type == 80000)
 		{
 			switch (obj.name)

@@ -36,6 +36,9 @@ public class TanBaoPage : MonoBehaviour {
 		{"KjSpend",40002}
 	};
 
+	public GameObject kdRedObj;
+	public GameObject kjRedObj;
+
 	public enum RewardType
 	{
 		KUANGDONG,
@@ -47,6 +50,9 @@ public class TanBaoPage : MonoBehaviour {
 	private int kjCdTime;
 
 	public ScaleEffectController sEffectController;
+
+	private int tongBiNum;
+	private int yuanBaoNum;
 
 	void Awake ()
 	{
@@ -78,6 +84,9 @@ public class TanBaoPage : MonoBehaviour {
 			}
 		}
 
+		tongBiNum = tempResp.tongBi;
+		yuanBaoNum = tempResp.yuanBao;
+
 		labelDic ["TongBi"].text = tempResp.tongBi.ToString ();
 		labelDic ["YuanBao"].text = tempResp.yuanBao.ToString ();
 		labelDic ["Kd_Spend"].text = TanBaoCost (costDic ["KdSpend"]).ToString ();
@@ -85,6 +94,7 @@ public class TanBaoPage : MonoBehaviour {
 
 		InItKuangDong ();
 		InItKuangJing ();
+		CheckTBRed ();
 	}
 
 	/// <summary>
@@ -185,38 +195,40 @@ public class TanBaoPage : MonoBehaviour {
 		{
 		case TanBaoData.TanBaoType.TONGBI_SINGLE:
 
+			rewardType = RewardType.KUANGDONG;
 			tbInfoResp.tongBi = tempInfo.money;
 			tbInfoResp.remainFreeTongBiCount = tempInfo.remainFreeCount;
 			tbInfoResp.tongBiCd = tempInfo.cd;
 
-			labelDic ["TongBi"].text = tbInfoResp.tongBi.ToString ();
 			InItKuangDong ();
 
 			break;
 		case TanBaoData.TanBaoType.TONGBI_SPEND:
 
+			rewardType = RewardType.KUANGDONG;
 			tbInfoResp.tongBi = tempInfo.money;
-			labelDic ["TongBi"].text = tbInfoResp.tongBi.ToString ();
 
 			break;
 		case TanBaoData.TanBaoType.YUANBAO_SINGLE:
 
+			rewardType = RewardType.KUANGJING;
 			tbInfoResp.yuanBao = tempInfo.money;
 			tbInfoResp.yuanBaoCd = tempInfo.cd;
-			
-			labelDic ["YuanBao"].text = tbInfoResp.yuanBao.ToString ();
+
 			InItKuangJing ();
 
 			break;
 		case TanBaoData.TanBaoType.YUANBAO_SPEND:
-			
+
+			rewardType = RewardType.KUANGJING;
 			tbInfoResp.yuanBao = tempInfo.money;
-			labelDic ["YuanBao"].text = tbInfoResp.yuanBao.ToString ();
 			
 			break;
 		default:
 			break;
 		}
+
+		CheckTBRed ();
 	}
 
 	void TBBtnHandlerCallBack (GameObject obj)
@@ -248,8 +260,14 @@ public class TanBaoPage : MonoBehaviour {
 
 			break;
 		case "TBAddBtn":
+
+
+
 			break;
 		case "YBAddBtn":
+
+			ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"[dc0600]元宝充值[-]暂未开启"));
+
 			break;
 		case "CloseBtn":
 
@@ -262,9 +280,120 @@ public class TanBaoPage : MonoBehaviour {
 		}
 	}
 
+	void Update ()
+	{
+		switch (rewardType)
+		{
+		case RewardType.KUANGDONG:
+
+			tongBiNum = MoneyNum (labelDic ["TongBi"],tongBiNum,tbInfoResp.tongBi);
+//			NumCount (labelDic ["TongBi"],RewardType.KUANGDONG,tbInfoResp.tongBi);
+
+			break;
+		case RewardType.KUANGJING:
+
+			yuanBaoNum = MoneyNum (labelDic ["YuanBao"],yuanBaoNum,tbInfoResp.yuanBao);
+//			NumCount (labelDic ["YuanBao"],RewardType.KUANGJING,tbInfoResp.yuanBao);
+
+			break;
+		default:
+			break;
+		}
+	}
+
+	/// <summary>
+	/// Moneies the number.
+	/// </summary>
+	/// <returns>The number.</returns>
+	/// <param name="tempLabel">Temp label.</param>
+	/// <param name="tempStartNum">Temp start number.</param>
+	/// <param name="tempEndNum">Temp end number.</param>
+	private int MoneyNum (UILabel tempLabel,int tempStartNum,int tempEndNum)
+	{
+		int startNum = tempStartNum;
+
+		if (startNum <= tempEndNum)
+		{
+			if(tempLabel.gameObject.transform.localScale != Vector3.one)
+			{
+				Vector3 tempScal = tempLabel.gameObject.transform.localScale;
+				
+				tempScal.x -= 0.02f;
+				tempScal.y -= 0.02f;
+				tempScal.z -= 0.02f;
+				
+				if(tempScal.x < 1)
+				{
+					tempScal.x = 1f;
+					tempScal.y = 1f;
+					tempScal.z = 1f;
+				}
+				
+				tempLabel.gameObject.transform.localScale = tempScal;
+			}
+		}
+		else
+		{
+			if (tempLabel.gameObject.transform.localScale.x < 1.1f)
+			{
+				Vector3 tempScal = tempLabel.gameObject.transform.localScale;
+				
+				tempScal.x += 0.1f;
+				tempScal.y += 0.1f;
+				tempScal.z += 0.1f;
+				
+				if(tempScal.x > 1.1)
+				{
+					tempScal.x = 1.1f;
+					tempScal.y = 1.1f;
+					tempScal.z = 1.1f;
+				}
+				
+				tempLabel.gameObject.transform.localScale = tempScal;
+			}
+			else
+			{
+				float tempAddNum = (startNum - tempEndNum) / 10;
+				
+				if (Mathf.Abs(tempAddNum) < 1)
+				{
+					startNum = tempEndNum;
+				}
+				else
+				{
+					startNum = (int)(startNum - tempAddNum);
+				}
+				
+				tempLabel.text = startNum.ToString ();
+			}
+		}
+
+		return startNum;
+	}
+
+	/// <summary>
+	/// Checks the TB red.
+	/// </summary>
+	public void CheckTBRed ()
+	{
+		if (tbInfoResp.remainFreeTongBiCount > 0)
+		{
+			PushAndNotificationHelper.SetRedSpotNotification (1101,kdCdTime <= 0 ? true : false);
+			kdRedObj.SetActive (kdCdTime <= 0 ? true : false);
+		}
+		else
+		{
+			PushAndNotificationHelper.SetRedSpotNotification (1101,false);
+			kdRedObj.SetActive (false);
+		}
+
+		PushAndNotificationHelper.SetRedSpotNotification (1102,kjCdTime <= 0 ? true : false);
+		kjRedObj.SetActive (kjCdTime <= 0 ? true : false);
+	}
+
 	public void CloseTanBao ()
 	{
-
+		CheckTBRed ();
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
 	}

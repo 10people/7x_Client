@@ -889,4 +889,6 @@
 <LanTemp LID="1278" str="继续洗练，该属性不再增加" />
 <LanTemp LID="1279" str="已达到最大值" />
 <LanTemp LID="1280" str="洗练成功" />
+<LanTemp LID="1281" str="成功加入联盟！" />
+
 </dataset>

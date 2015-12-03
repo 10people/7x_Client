@@ -11,9 +11,7 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     private VoidDelegate m_enterSceneDelegate;
 
-    #region Alliance Battle
-
-    public void EnterAB()
+    private byte[] GetEnterSceneStructure(float initYPosition)
     {
         //Send character sync message to server.
         EnterScene tempEnterScene = new EnterScene
@@ -21,7 +19,7 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
             senderName = SystemInfo.deviceName,
             uid = 0,
             posX = 0,
-            posY = 1,
+            posY = initYPosition,
             posZ = 0
         };
 
@@ -31,6 +29,14 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
         byte[] t_protof;
         t_protof = tempStream.ToArray();
 
+        return t_protof;
+    }
+
+    #region Alliance Battle
+
+    public void EnterAB()
+    {
+        byte[] t_protof = GetEnterSceneStructure(0.5f);
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.ENTER_FIGHT_SCENE, ref t_protof);
 
         m_enterSceneDelegate = DoEnterAB;
@@ -55,6 +61,34 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
         //{
         //   // SceneManager.EnterAllianceCity();
         //}
+    }
+
+    #endregion
+
+    #region
+
+    public void EnterCarriage()
+    {
+        byte[] t_protof = GetEnterSceneStructure(-2.5f);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.ENTER_CARRIAGE_SCENE, ref t_protof);
+
+        m_enterSceneDelegate = DoEnterCarriage;
+    }
+
+    private void DoEnterCarriage()
+    {
+        SceneManager.EnterCarriage();
+    }
+
+    public void ExitCarriage()
+    {
+        //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+        //{
+        SceneManager.EnterMainCity();
+        //}
+        //else
+        //{
+        //    SceneManager.EnterAllianceCity();
     }
 
     #endregion

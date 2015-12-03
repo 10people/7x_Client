@@ -222,18 +222,18 @@ namespace Carriage
 
         void OnColliderClick(GameObject go)
         {
-            m_CarriageUi.SetCarriageInfo(m_YabiaoJunZhuInfo);
+            //m_CarriageUi.SetCarriageInfo(m_YabiaoJunZhuInfo);
 
-            CarriageCultureController controller = m_RootManager.m_CarriageManager.m_CarriageControllers.Where(item => item.m_YabiaoJunZhuInfo.junZhuId == m_YabiaoJunZhuInfo.junZhuId).First();
-            if (controller != null)
-            {
-                m_RootManager.m_CarriagePlayerController.m_NavigationTransform = controller.transform;
-                m_RootManager.m_CarriagePlayerController.StartNavigation(controller.transform.position);
-            }
-            else
-            {
-                Debug.LogError("Fail to find carriage controller when click carriage ui item.");
-            }
+            //CarriageCultureController controller = m_RootManager.m_CarriageManager.m_CarriageControllers.Where(item => item.m_YabiaoJunZhuInfo.junZhuId == m_YabiaoJunZhuInfo.junZhuId).First();
+            //if (controller != null)
+            //{
+            //    m_RootManager.m_CarriagePlayerController.m_NavigationTransform = controller.transform;
+            //    m_RootManager.m_CarriagePlayerController.StartNavigation(controller.transform.position);
+            //}
+            //else
+            //{
+            //    Debug.LogError("Fail to find carriage controller when click carriage ui item.");
+            //}
         }
 
         void Awake()

@@ -66,7 +66,7 @@ public class Config_Common {
 			GUIHelper.m_lb_rect_params[ 5 ] = 40;
 			
 			#if UNITY_IOS
-			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, m_lb_rect_params ), "iGen: " + UnityEngine.iOS.Device.generation.ToString(), m_gui_lb_style );
+			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, GUIHelper.m_lb_rect_params ), "iGen: " + UnityEngine.iOS.Device.generation.ToString(), GUIHelper.m_gui_lb_style );
 			#endif
 			
 			GUI.Label( GUIHelper.GetGUIRect( t_info_index++, GUIHelper.m_lb_rect_params ), "Model: " + SystemInfo.deviceModel + " - Name: " + SystemInfo.deviceName, GUIHelper.m_gui_lb_style );

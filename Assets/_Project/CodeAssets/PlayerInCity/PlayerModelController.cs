@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -948,7 +948,7 @@ public class PlayerModelController : MonoBehaviour
 
 							// Manual show UI
 							{
-								UI2DTool.Instance.ShowUI( equipObject );
+								UI2DTool.Instance.AddTopUI( equipObject );
 							}
                         }
                     }

@@ -213,4 +213,93 @@ public class QXComData {
 		                                       onClcik);
 	}
 	#endregion
+
+	#region Instance Obj Effect
+	public enum EffectPos
+	{
+		TOP,
+		MID,
+		BOTTOM,
+	}
+	public static void InstanceEffect (EffectPos pos,GameObject obj,int effectId)
+	{
+		switch (pos)
+		{
+		case EffectPos.TOP:
+
+			UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
+			                                               obj,
+			                                               EffectIdTemplate.GetPathByeffectId(effectId));
+
+			break;
+		case EffectPos.MID:
+
+			UI3DEffectTool.Instance ().ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
+			                                               obj,
+			                                               EffectIdTemplate.GetPathByeffectId(effectId));
+
+			break;
+		case EffectPos.BOTTOM:
+
+			UI3DEffectTool.Instance ().ShowBottomLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
+			                                               obj,
+			                                               EffectIdTemplate.GetPathByeffectId(effectId));
+
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public static void ClearEffect (GameObject obj)
+	{
+		UI3DEffectTool.Instance ().ClearUIFx (obj);
+	}
+	#endregion
+
+	#region MoneyType
+	public enum MoneyType
+	{
+		WEIWANG,//威望
+		GONGXUN,//功勋
+		HUANGYE,//荒野
+		GONGXIAN,//贡献
+		YUANBAO,//元宝
+		TONGBI,//铜币
+	}
+	private static readonly Dictionary<MoneyType,string[]> moneyDic = new Dictionary<MoneyType, string[]>()
+	{
+		{MoneyType.WEIWANG,new string[]{"weiwangIcon","威望","60,60"}},
+		{MoneyType.GONGXUN,new string[]{"GongXun","功勋","60,63"}},
+		{MoneyType.HUANGYE,new string[]{"HuangYe","荒野币","70,70"}},
+		{MoneyType.GONGXIAN,new string[]{"GongXian","贡献","60,60"}},
+		{MoneyType.YUANBAO,new string[]{"YB_big","元宝","55,40"}},
+		{MoneyType.TONGBI,new string[]{"coinicon","铜币","50,50"}}
+	};
+
+	/// <summary>
+	/// Moneies the sprite.
+	/// </summary>
+	/// <returns>The sprite.</returns>
+	/// <param name="tempType">Temp type.</param>
+	public static UISprite MoneySprite (MoneyType tempType)
+	{
+		UISprite tempSprite = new UISprite ();
+		tempSprite.transform.localScale = Vector3.one;
+		tempSprite.transform.localRotation = new Quaternion (0,0,tempType == MoneyType.YUANBAO ? 15 : 0,0);
+		tempSprite.spriteName = moneyDic [tempType] [0];
+		string[] scale = moneyDic [tempType] [2].Split (',');
+		tempSprite.SetDimensions (int.Parse (scale[0]),int.Parse (scale[1]));
+		return tempSprite;
+	}
+	/// <summary>
+	/// Moneies the name.
+	/// </summary>
+	/// <returns>The name.</returns>
+	/// <param name="tempType">Temp type.</param>
+	public static string MoneyName (MoneyType tempType)
+	{
+		return moneyDic [tempType] [1];
+	}
+	#endregion
 }

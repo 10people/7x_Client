@@ -30,7 +30,7 @@ public class MainCityRoot : MonoBehaviour
 
 		// create UI2DTool and set MainCity UI
 		{
-			UI2DTool.Instance.ShowUI( m_objMainUI );
+			UI2DTool.Instance.AddTopUI( m_objMainUI );
 		}
     }
     public void MainCityLoadCallback(ref WWW p_www, string p_path, Object p_object)

@@ -2,7 +2,7 @@
 -------------------------------------------------------------------- <Version Config>
 ShowVersion:		true
 
-Version:1126-1756
+Version:1130-1818
 ------------------------------------------------------------------- </Version Config>
 
 
@@ -93,6 +93,7 @@ SocketCheckTime:			10.0
 SocketTimeOut:				15.0
 
 // emulate network latency
+// NEVER USE THIS, after lock updated
 NetworkLatency:				0.0
 
 // show network status
@@ -110,7 +111,7 @@ LogSocketSendDetail:		false
 LogSocketReceive:			false
 LogSocketReceiveDetail:		false
 
-LogSocketProcessor:			false
+LogSocketProcessorListener:	false
 
 LogMainCitySpriteMove:		false
 

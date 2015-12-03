@@ -59,8 +59,9 @@ public class ChatDataHandler : ChatBaseDataHandler
         //Show alert if window closed.
         if (!m_ChatWindow.m_ChatOpenCloseController.isOpen)
         {
-			if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
-                CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.m_ChatRedAlert.SetActive(true);
+            if (Application.loadedLevelName == SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.CARRIAGE))
+            {
+                //CarriageMsgManager.Instance.m_RootManager.m_CarriageUi.m_ChatRedAlert.SetActive(true);
 
                 if (m_Channel != ChatPct.Channel.SYSTEM)
                 {
@@ -146,7 +147,7 @@ public class ChatDataHandler : ChatBaseDataHandler
 
         ChatSelfLogItemStr = "ChatDataSelfItem";
         ChatOtherLogItemStr = "ChatDataOtherItem";
-        
+
         m_ChannelList.AddRange(new List<ChatPct.Channel>() { m_Channel, ChatPct.Channel.SYSTEM });
         m_DataReceivedEvent += OnDataReceived;
     }

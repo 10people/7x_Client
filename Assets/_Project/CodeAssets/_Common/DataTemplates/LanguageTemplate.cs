@@ -871,6 +871,8 @@ public class LanguageTemplate : XmlLoadManager
         XILIAN_DESC_9 = 1278,
         XILIAN_DESC_10 = 1279,
         XILIAN_DESC_11 = 1280,
+        ALLIANCE_TAG_ADD_5 = 1281,
+
     }
 
     public int lanId;

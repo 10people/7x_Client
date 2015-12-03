@@ -8,6 +8,18 @@ using System.Linq;
 
 public class TimeHelper : Singleton<TimeHelper>{
 
+	#region Current Time
+
+	private static DateTime m_date_time = new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc );
+
+	public static long GetCurrentTimeMillis(){
+		return (long) ( ( DateTime.UtcNow - m_date_time ).TotalMilliseconds );
+	}
+
+	#endregion
+
+
+
 	#region Time String Format
 
 	private static int m_temp_time_sec 		= 0;

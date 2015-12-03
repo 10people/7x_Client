@@ -23,6 +23,8 @@ public class Buff : MonoBehaviour
 
 	private GameObject m_ObjEff;
 
+	private int dictId;
+
 
 	public static Buff createBuff(BaseAI _ai, AIdata.AttributeType _buffType, float _buffValue, float _time, SkillBuff _supplement = null )
 	{
@@ -93,6 +95,33 @@ public class Buff : MonoBehaviour
 				}
 			}
 		}
+
+		return buff;
+	}
+
+	public static Buff createBuffThreat(BaseAI _ai, float _buffValue, float _time, int _dictId)
+	{
+		if (_ai.threatDict [_dictId] == null) return null;
+
+		Buff buff = (Buff)_ai.gameObject.AddComponent<Buff>();
+		
+		buff.ai = _ai;
+		
+		buff.buffType = AIdata.AttributeType.ATTRTYPE_Threat;
+
+		buff.buffValue = _buffValue;
+		
+		buff.time = _time;
+
+		buff.dictId = _dictId;
+
+		buff.supplement = null;
+		
+		buff.startTime = Time.time;
+		
+		_ai.threatDict [_dictId].actionThreat += _buffValue;
+
+		_ai.getBuffs().Add (buff);
 
 		return buff;
 	}
@@ -409,6 +438,13 @@ public class Buff : MonoBehaviour
 		else if(buffType == AIdata.AttributeType.ATTRTYPE_DeleteBuff)
 		{
 
+		}
+		else if(buffType == AIdata.AttributeType.ATTRTYPE_Threat)
+		{
+			if(ai.threatDict [dictId] != null)
+			{
+				ai.threatDict [dictId].actionThreat -= buffValue;
+			}
 		}
 		else if((int)buffType < 100)
 		{

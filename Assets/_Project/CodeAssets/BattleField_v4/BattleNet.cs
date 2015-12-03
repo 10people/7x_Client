@@ -592,7 +592,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 			
 			gc.name = "DramaFlag_" + template.flagId;
 			
-			gc.transform.localScale = new Vector3(1, 1, 1);
+			gc.transform.localScale = new Vector3(template.cx, template.cy, template.cz);
 			
 			gc.transform.position = new Vector3(template.x, template.y, template.z);
 
@@ -601,17 +601,15 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 			BattleDramaFlag bf = (BattleDramaFlag)gc.AddComponent<BattleDramaFlag>();
 			
 			bf.flagId = template.flagId;
-			
-			bf.eventId = template.eventId;
-			
-			BoxCollider bc = (BoxCollider)gc.AddComponent<BoxCollider>();
-			
-			bc.size = new Vector3(template.cx, template.cy, template.cz);
-			
-			bc.center = Vector3.zero;
-			
-			bc.isTrigger = true;
-			
+
+			bf.nodeId = template.nodeId;
+
+			//triggerFlagList
+			foreach(int triggerI in template.triggerFlag)
+			{
+				bf.triggerFlagListInteger.Add(triggerI);
+			}
+
 			flags.Add(bf);
 		}
 
@@ -813,7 +811,6 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 		//  SceneManager.EnterMainCity();
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao)
 		{
-			CarriageSceneManager.Instance.ReturnCarriage();
 		}
 		else //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{

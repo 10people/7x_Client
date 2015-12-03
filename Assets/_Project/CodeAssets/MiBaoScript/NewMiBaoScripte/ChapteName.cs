@@ -58,7 +58,7 @@ public class ChapteName : MonoBehaviour {
 
 	public void EnterChapter()
 	{
-		WindowBackShowController.SaveWindowInfo ("Secret(Clone)", Res2DTemplate.Res.UI_PANEL_SECRET);
+//		WindowBackShowController.SaveWindowInfo ("Secret(Clone)", Res2DTemplate.Res.UI_PANEL_SECRET);
 
 		CityGlobalData.PT_Or_CQ = false;
 
@@ -66,13 +66,13 @@ public class ChapteName : MonoBehaviour {
 
 		EnterGuoGuanmap.EnterPveUI (ChapterNum);
 
-		GameObject mobg = GameObject.Find ("Secret(Clone)");
+//		GameObject mobg = GameObject.Find ("Secret(Clone)");
 
-		MainCityUI.TryRemoveFromObjectList(mobg);
+//		MainCityUI.TryRemoveFromObjectList(mobg);
 
 		TaskData.Instance.m_DestroyMiBao = false;
 
-		Destroy(mobg) ;
+//		Destroy(mobg) ;
 
 	}
 }

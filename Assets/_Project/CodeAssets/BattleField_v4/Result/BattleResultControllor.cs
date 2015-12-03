@@ -234,7 +234,6 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao)
 		{
-			CarriageSceneManager.Instance.ReturnCarriage(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN);
 		}
         else //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <=0)
         {

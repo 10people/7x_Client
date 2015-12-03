@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 /// <summary>
 /// 主城UI界面右下角功能开启按钮管理类
 /// </summary>
-public class MainCityUIRB : MonoBehaviour
+public class MainCityUIRB : MYNGUIPanel
 {
     public enum FunctionState
     {
@@ -585,12 +585,12 @@ public class MainCityUIRB : MonoBehaviour
             switch (id)
             {
                 //setting up
-                case 2:
-                    {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_LAYER),
-                                         SettingUpLoadCallback);
-                    }
-                    break;
+//                case 2:
+//                    {
+//                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_LAYER),
+//                                         SettingUpLoadCallback);
+//                    }
+//                    break;
                 //goto rank
                 case 210:
                     {
@@ -619,7 +619,7 @@ public class MainCityUIRB : MonoBehaviour
 
 							// Manual show UI
 							{
-								UI2DTool.Instance.ShowUI( m_bagObject );
+								UI2DTool.Instance.AddTopUI( m_bagObject );
 							}
                         }
                     }
@@ -937,17 +937,6 @@ public class MainCityUIRB : MonoBehaviour
         GameObject tempObject = (GameObject)Instantiate(p_object);
         MainCityUI.TryAddToObjectList(tempObject);
         tempObject.name = "QXTanBao";
-    }
-
-    public void SettingUpLoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject tempObject = (GameObject)Instantiate(p_object);
-        MainCityUI.TryAddToObjectList(tempObject);
-        tempObject.transform.position = new Vector3(0, 500, 0);
-
-
-        UIYindao.m_UIYindao.CloseUI();
-
     }
 
     public void FriendLoadCallback(ref WWW p_www, string p_path, Object p_object)
@@ -1764,4 +1753,37 @@ public class MainCityUIRB : MonoBehaviour
     }
 
     #endregion
+
+	public override void MYClick(GameObject ui)
+	{
+	}
+
+	public override void MYMouseOver(GameObject ui)
+	{
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+	}
 }

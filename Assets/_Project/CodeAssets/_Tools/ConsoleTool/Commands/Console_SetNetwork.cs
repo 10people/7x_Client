@@ -19,8 +19,12 @@ public class Console_SetNetwork {
 	
 	
 	#region Ping
-	
-	private static float m_on_ping_time = 0.0f;
+
+	// unity
+	private static float m_on_ping_time 	= 0.0f;
+
+	// cs
+	private static long m_on_ping_time_long	= 0;
 	
 	public static void OnPing( string[] p_params ){
 		#if DEBUG_CONSOLE
@@ -39,28 +43,54 @@ public class Console_SetNetwork {
 		
 		{
 			m_on_ping_time = Time.realtimeSinceStartup;
+
+			m_on_ping_time_long = TimeHelper.GetCurrentTimeMillis();
 		}
+
+//		{
+//			int t_count = 1000;
+//			
+//			for( int i = 0; i < t_count; i++ ){
+//				for( int j = 0; j < t_count; j++ ){
+//					float t_value = i * j;
+//				}
+//			}
+//		}
 		
 		SocketHelper.SendQXMessage( t_msg, ProtoIndexes.DELAY_REQ );
 	}
 	
-	public static void OnPingReceive( ErrorMessage p_msg ){
+	public static void OnPingReceive( QXBuffer p_message, ErrorMessage p_msg ){
 		#if DEBUG_CONSOLE
 		Debug.Log( Time.realtimeSinceStartup + " OnPingReceive( " + p_msg.cmd + 
 		          "   - " + p_msg.errorCode +
 		          "   - " + p_msg.errorDesc + " )" );
 		#endif
-		
-		Debug.Log ( "Ping Duration: " + ( Time.realtimeSinceStartup - m_on_ping_time ) );
-		
-		
+
+//		{
+//			Debug.Log( "Message Create Time: " + p_message.GetTimeMillis() );
+//			
+//			Debug.Log( "Ping Sent Time: " + m_on_ping_time_long );
+//		}
+
+		// time from sent to receive
+		long t_ping = p_message.GetTimeMillis() - m_on_ping_time_long;
+
+		// time from receive to process
+		long t_delay = (int)( ( Time.realtimeSinceStartup - m_on_ping_time ) * 1000 ) - t_ping;
+
+		{
+
+			Debug.Log ( "Ping ms: " + t_ping  + "   Delay ms: " + t_delay );
+		}
+
 		{
 			ChatPct tempChatPct = new ChatPct();
 			
 			tempChatPct.senderName = "Sys";
 			
-			tempChatPct.content = "Delay: " + (Time.realtimeSinceStartup - m_on_ping_time);
-			
+			tempChatPct.content = "Ping ms: " + t_ping + "   Delay ms: " + t_delay;
+
 			tempChatPct.channel = ChatWindow.s_ChatWindow.CurrentChannel;
 			
 			ChatWindow.s_ChatWindow.GetChannelFrame(ChatWindow.s_ChatWindow.CurrentChannel).m_ChatBaseDataHandler.OnChatMessageReceived(tempChatPct );

@@ -217,11 +217,6 @@ public class EmailPage : MonoBehaviour {
 
 	void EmailItemHandlerCallBack (GameObject obj)
 	{
-		if (NewEmailData.Instance ().StopClick)
-		{
-			return;
-		}
-		NewEmailData.Instance ().StopClick = true;
 		EmailItem email = obj.GetComponent<EmailItem> ();
 		switch (email.EmailItemInfo.isRead)
 		{
@@ -364,7 +359,6 @@ public class EmailPage : MonoBehaviour {
 	/// <param name="tempType">Temp type.</param>
 	public void RefreshEmailList (EmailShowType tempType,List<EmailInfo> tempList)
 	{
-		NewEmailData.Instance ().StopClick = false;
 		switch (tempType)
 		{
 		case EmailShowType.SYSTEM:
@@ -431,7 +425,6 @@ public class EmailPage : MonoBehaviour {
 	{
 		ShowType = EmailShowType.SYSTEM;
 		GetSendEmailInfo ();
-		NewEmailData.Instance ().StopClick = false;
 		NewEmailData.Instance ().ExistNewEmail ();
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
@@ -442,28 +435,43 @@ public class EmailPage : MonoBehaviour {
 	/// </summary>
 	public void CheckUnSendEmail ()
 	{
-		foreach (EmailInfo email in systemList)
+		if (systemList.Count == 0)
 		{
-			if (email.isRead == 0)
+			redObjList[0].SetActive (false);
+		}
+		else
+		{
+			foreach (EmailInfo email in systemList)
 			{
-				redObjList[0].SetActive (true);
-				break;
-			}
-			else
-			{
-				redObjList[0].SetActive (false);
+				if (email.isRead == 0)
+				{
+					redObjList[0].SetActive (true);
+					break;
+				}
+				else
+				{
+					redObjList[0].SetActive (false);
+				}
 			}
 		}
-		foreach (EmailInfo email in privateList)
+
+		if (privateList.Count == 0)
 		{
-			if (email.isRead == 0)
+			redObjList[1].SetActive (false);
+		}
+		else
+		{
+			foreach (EmailInfo email in privateList)
 			{
-				redObjList[1].SetActive (true);
-				break;
-			}
-			else
-			{
-				redObjList[1].SetActive (false);
+				if (email.isRead == 0)
+				{
+					redObjList[1].SetActive (true);
+					break;
+				}
+				else
+				{
+					redObjList[1].SetActive (false);
+				}
 			}
 		}
 		redObjList[2].SetActive (string.IsNullOrEmpty (NewEmailData.Instance ().SendName) && string.IsNullOrEmpty (NewEmailData.Instance ().SendContent) ?

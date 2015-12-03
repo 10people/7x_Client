@@ -252,16 +252,21 @@ public class SinglePlayerController : MonoBehaviour
     /// offset of positive axis y.
     /// </summary>
     [HideInInspector]
+    [Obsolete("Only effective in camera rotate mode, this mode of camera has not exist in the game.")]
     public float TrackCameraOffsetPosUp;
+
     /// <summary>
     /// offset of negative axis z.
     /// </summary>
     [HideInInspector]
+    [Obsolete("Only effective in camera rotate mode, this mode of camera has not exist in the game.")]
     public float TrackCameraOffsetPosBack;
+
     /// <summary>
     /// offset of up down rotation.
     /// </summary>
     [HideInInspector]
+    [Obsolete("Only effective in camera rotate mode, this mode of camera has not exist in the game.")]
     public float TrackCameraOffsetUpDownRotation;
 
     [HideInInspector]

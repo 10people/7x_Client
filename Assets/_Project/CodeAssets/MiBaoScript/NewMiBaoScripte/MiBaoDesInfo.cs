@@ -452,7 +452,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	void ShowStar()
 	{
-		Debug.Log ("star = "+ShowmMiBaoinfo.star);
+//		Debug.Log ("star = "+ShowmMiBaoinfo.star);
 
 		foreach(UISprite s in Stars)
 		{

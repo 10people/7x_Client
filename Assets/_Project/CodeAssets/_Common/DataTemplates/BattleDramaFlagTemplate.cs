@@ -8,9 +8,11 @@ public class BattleDramaFlagTemplate : XmlLoadManager
 {
 
 	public int flagId;
-	
-	public int eventId;
-	
+
+	public int nodeId = 1;
+
+	public List<int> triggerFlag;
+
 	public float x;
 	
 	public float y;
@@ -71,9 +73,23 @@ public class BattleDramaFlagTemplate : XmlLoadManager
 			{
 				t_reader.MoveToNextAttribute();
 				t_template.flagId = int.Parse( t_reader.Value );
-				
+
 				t_reader.MoveToNextAttribute();
-				t_template.eventId = int.Parse( t_reader.Value );
+				t_template.nodeId = int.Parse( t_reader.Value );
+
+				{
+					t_reader.MoveToNextAttribute();
+					string strTrigger = t_reader.Value;
+					
+					string[] sTrigger = strTrigger.Split(',');
+					
+					t_template.triggerFlag = new List<int>();
+					
+					foreach(string st in sTrigger)
+					{
+						t_template.triggerFlag.Add(int.Parse(st));
+					}
+				}
 				
 				t_reader.MoveToNextAttribute();
 				t_template.x = float.Parse( t_reader.Value );

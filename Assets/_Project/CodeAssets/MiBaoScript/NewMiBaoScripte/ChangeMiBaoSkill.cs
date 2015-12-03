@@ -104,6 +104,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 	public void Init(int MiBaoskillType, int ZH_ID)
 	{
+
 //		Debug.Log ("MiBaoskillType = "+MiBaoskillType);
 //
 //		Debug.Log ("ZH_ID = "+ZH_ID);
@@ -570,8 +571,8 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YaBiao_Gongji) :
 					{
-						CarriageSceneManager.Instance.s_YabiaoJunZhuList.gongjiZuHeId = skillZuHeId;
-						CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.RefreshMibaoSkillEffect();
+						//CarriageMsgManager.Instance.s_YabiaoJunZhuList.gongjiZuHeId = skillZuHeId;
+						//CarriageMsgManager.Instance.m_RootManager.m_CarriageUi.RefreshMibaoSkillEffect();
 
 						break;
 					}
@@ -662,7 +663,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		YinDaoCol ();
 		LueDuoData.Instance.IsStop = false;
 		if (Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
-            CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.RefreshAllEffect();
+            //CarriageMsgManager.Instance.m_RootManager.m_CarriageUi.RefreshAllEffect();
         }
 		if (SkillType == (int)CityGlobalData.MibaoSkillType.PVP_Fangshou)
 		{
@@ -805,7 +806,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 			break;
 		}
 		if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
-            CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.RefreshAllEffect();
+            //CarriageMsgManager.Instance.m_RootManager.m_CarriageUi.RefreshAllEffect();
         }
 
 		Destroy (this.gameObject);

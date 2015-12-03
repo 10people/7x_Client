@@ -20,9 +20,9 @@ public class Prepare_Bundle_Cleaner : MonoBehaviour {
 		{
 			CleanBundleVersionPrefs();
 		}
-		
+
 		{
-			CleanCache();
+			BundleHelper.CleanCache();
 		}
 		
 		{
@@ -30,12 +30,6 @@ public class Prepare_Bundle_Cleaner : MonoBehaviour {
 			
 			Prepare_Bundle_Config.CleanBundleUpdateList();
 		}
-	}
-
-	public static void CleanCache(){
-		Debug.Log( "Clean Cache." );
-		
-		Caching.CleanCache();
 	}
 
 	private static void CleanBundleVersionPrefs(){

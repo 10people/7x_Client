@@ -21,6 +21,8 @@ public class BattleWinTemplate : XmlLoadManager
 
 	public int showOnUI;
 
+	public int protectNodeId;
+
 
 	public static List<BattleWinTemplate> templates;
 
@@ -89,6 +91,9 @@ public class BattleWinTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.showOnUI = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.protectNodeId = int.Parse( t_reader.Value );
 			}
 
 			bool f = true;
@@ -119,6 +124,8 @@ public class BattleWinTemplate : XmlLoadManager
 
 	private static void refreshDesc()
 	{
+		if (BattleUIControlor.Instance () == null) return;
+
 		foreach(BattleWinTemplate template in templates)
 		{
 			if(template.showOnUI != 0)

@@ -38,8 +38,10 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public static ConsoleTool Instance(){
 		if( m_instance == null ){
 			GameObject t_gameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
-			
-			m_instance = t_gameObject.AddComponent( typeof( ConsoleTool ) ) as ConsoleTool;
+
+			ComponentHelper.AddIfNotExist( t_gameObject, typeof(ConsoleTool) );
+
+			m_instance = t_gameObject.GetComponent<ConsoleTool>();
 		}
 		
 		return m_instance;
@@ -337,15 +339,11 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public bool OnProcessSocketMessage( QXBuffer p_message ){
 		// ping ret
 		if( p_message.m_protocol_index == ProtoIndexes.DELAY_RET ){
-			MemoryStream t_stream = new MemoryStream( p_message.m_protocol_message, 0, p_message.position );
-			
 			ErrorMessage t_msg = new ErrorMessage();
 			
-			QiXiongSerializer t_qx = new QiXiongSerializer();
-			
-			t_qx.Deserialize( t_stream, t_msg, t_msg.GetType() );
+			ProtoHelper.DeserializeProto( t_msg, p_message );
 
-			Console_SetNetwork.OnPingReceive( t_msg );
+			Console_SetNetwork.OnPingReceive( p_message, t_msg );
 
 			return true;
 		}

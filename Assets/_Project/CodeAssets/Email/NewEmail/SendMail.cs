@@ -31,7 +31,6 @@ public class SendMail : MonoBehaviour {
 		contentLabel.value = "";
 
 		RefreshBtnState (1);
-		NewEmailData.Instance ().StopClick = false;
 		foreach (EventHandler handler in sendEmailBtnList)
 		{
 			handler.m_handler -= BtnHandlerCallBack;

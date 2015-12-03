@@ -39,8 +39,9 @@ public class ChatOpenCloseController : MonoBehaviour
         isOpen = true;
         m_ChatWindow.isEnterToggleByOpeningWindow = true;
 
-		if ( Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
-            CarriageSceneManager.Instance.m_RootManager.m_CarriageUi.m_ChatRedAlert.SetActive(false);
+        if (Application.loadedLevelName == SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.CARRIAGE))
+        {
+            //CarriageMsgManager.Instance.m_RootManager.m_CarriageUi.m_ChatRedAlert.SetActive(false);
         }
         else
         {
@@ -57,8 +58,8 @@ public class ChatOpenCloseController : MonoBehaviour
         {
             m_ChatWindow.AllianceAlert.SetActive(false);
         }
-		if ( m_ChatWindow.PrivateAlert.activeSelf && 
-		    Application.loadedLevelName != SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) )
+        if (m_ChatWindow.PrivateAlert.activeSelf &&
+            Application.loadedLevelName != SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.HOUSE))
         {
             m_ChatWindow.PrivateAlert.SetActive(false);
         }
@@ -78,8 +79,8 @@ public class ChatOpenCloseController : MonoBehaviour
                 m_ChatWindow.TogglesControl.TogglesEvents[1].gameObject,
                 SendMessageOptions.DontRequireReceiver);
         }
-		else if (m_ChatWindow.PrivateAlert.activeSelf 
-		         && Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) )
+        else if (m_ChatWindow.PrivateAlert.activeSelf
+                 && Application.loadedLevelName == SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.HOUSE))
         {
             m_ChatWindow.TogglesControl.TogglesEvents[2].gameObject.SendMessage(
                 "OnClick",
@@ -132,6 +133,6 @@ public class ChatOpenCloseController : MonoBehaviour
     {
         CloseButtonLis = UIEventListener.Get(CloseButton);
 
-		m_Root = TransformHelper.GetComponentInParent<UIRoot>(transform);
+        m_Root = TransformHelper.GetComponentInParent<UIRoot>(transform);
     }
 }

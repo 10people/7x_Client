@@ -1215,6 +1215,8 @@ public class BaseAI : MonoBehaviour
 		
 		enemysInRange.Clear();
 
+		threatDict.Clear ();
+
 		List<BaseAI> templist = null;
 
 		if(stance == Stance.STANCE_ENEMY)
@@ -2986,7 +2988,7 @@ public class BaseAI : MonoBehaviour
 
 		defender.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp, t_attr - hpValue );
 
-		Buff.createBuff (defender, AIdata.AttributeType.ATTRTYPE_Threat, (float)CanshuTemplate.m_TaskInfoDic[CanshuTemplate.GONGJICHOUHEN_ADD], (float)CanshuTemplate.m_TaskInfoDic[CanshuTemplate.GONGJICHOUHEN_TIME]);
+		Buff.createBuffThreat (defender, (float)CanshuTemplate.m_TaskInfoDic[CanshuTemplate.GONGJICHOUHEN_ADD], (float)CanshuTemplate.m_TaskInfoDic[CanshuTemplate.GONGJICHOUHEN_TIME], nodeId);
 
 		if (attackedType == BattleControlor.AttackType.BASE_ATTACK) m_listAtk.Add (defender);
 

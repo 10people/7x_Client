@@ -44,6 +44,13 @@ public class Global
 	public static bool m_isFuWen = false;
 	public static bool m_isOpenFuWen = false;
 
+	public static bool m_isOpenShop = false;
+
+	public static int getBili(int w, float curNum, float maxNum)
+	{
+		return (int)((curNum / maxNum) * w);
+	}
+
 	public static int[] getNum(int num){
         int curNum = 1;
         

@@ -203,4 +203,8 @@
 <Res2DTemplate UIID="201" path="_3D/Models/BattleField/ShadowTemple" />
 <Res2DTemplate UIID="202" path="_UIs/MainCity/UIMonarch/Prefabs/TanZhuangInfoItem" />
 <Res2DTemplate UIID="203" path="_UIs/MainCity/UIIntensify/Prefabs/EquipInfoItem" />
+<Res2DTemplate UIID="204" path="_UIs/MainCity/Prefabs/Global_Belongings" />
+<Res2DTemplate UIID="205" path="_UIs/MainCity/UITask/Prefabs/OtherPlayerInfo" />
+<Res2DTemplate UIID="206" path="_UIs/Activity/Prefabs/SignalInLayer" />
+<Res2DTemplate UIID="207" path="_UIs/Shop/Prefabs/QXShop" />
 </dataset>

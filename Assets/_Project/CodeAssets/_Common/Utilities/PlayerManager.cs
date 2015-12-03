@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
 {
     public GameObject MaleCharacterPrefab;
     public GameObject FemaleCharacterPrefab;
+    public GameObject CarriagePrefab;
     public float BasicYPosition;
 
     /// <summary>
@@ -30,7 +31,7 @@ public class PlayerManager : MonoBehaviour
 
         if (!m_PlayerDic.ContainsKey(l_uID))
         {
-            var temp = Instantiate(l_roleID <= 2 ? MaleCharacterPrefab : FemaleCharacterPrefab) as GameObject;
+            var temp = Instantiate(l_roleID >= 50000 ? CarriagePrefab : (l_roleID <= 2 ? MaleCharacterPrefab : FemaleCharacterPrefab)) as GameObject;
 
             temp.GetComponent<CharacterController>().enabled = false;
 

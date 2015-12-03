@@ -213,6 +213,10 @@ public class Res2DTemplate : XmlLoadManager
 		SHADOW_TEMPLE = 201,
         TAO_ZHUANG_ITEM = 202,
         EQUIPINFO_ITEM = 203,
+        GLOBAL_Belongings = 204,
+        OTHER_PLAYER_INFO = 205,
+        SIGNAL_LAYER = 206,
+		QXSHOP = 207,
     }
 
 

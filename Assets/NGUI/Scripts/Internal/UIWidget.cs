@@ -1176,7 +1176,9 @@ public class UIWidget : UIRect
 #if UNITY_EDITOR
 		else if (!mPlayMode) ParentHasChanged();
 #endif
+	}
 
+	public void LateUpdate(){
 		UpdateCameraFace();
 	}
 

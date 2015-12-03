@@ -71,13 +71,6 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 												   "不能给自己发邮件！","间隔时间不到1分钟！","收件人在黑名单中！"};
 
 	private string textStr;
-
-	private bool stopClick;
-	public bool StopClick
-	{
-		set{stopClick = value;}
-		get{return stopClick;}
-	}
 	
 	void Awake ()
 	{
@@ -331,7 +324,6 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 				
 				if (responseResp != null)//isSuccess ： 0-成功 1-失败
 				{
-					StopClick = false;
 					if (letterOperateType == LetterOperateType.SHIELD)
 					{
 						if (responseResp.isSuccess == 0)

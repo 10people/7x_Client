@@ -28,6 +28,14 @@ public class TanBaoReward : MonoBehaviour {
 
 	private int cardTurnEndNum;
 
+	private List<Award> miBaoList = new List<Award>();
+	private int miBaoIndex;
+	public int MiBaoIndex
+	{
+		set{miBaoIndex = value;}
+		get{return miBaoIndex;}
+	}
+
 	void Awake ()
 	{
 		tbReward = this;
@@ -80,6 +88,7 @@ public class TanBaoReward : MonoBehaviour {
 		tbType = tempType;
 
 		cardTurnEndNum = 0;
+		MiBaoListClear ();
 
 		rewardType = tempType == TanBaoData.TanBaoType.TONGBI_SINGLE || tempType == TanBaoData.TanBaoType.TONGBI_SPEND ?
 			TanBaoPage.RewardType.KUANGDONG : TanBaoPage.RewardType.KUANGJING;
@@ -159,7 +168,7 @@ public class TanBaoReward : MonoBehaviour {
 	{
 		while (sureHandler.GetComponent<UISprite> ().alpha < 1)
 		{
-			sureHandler.GetComponent<UISprite> ().alpha += 0.05f;
+			sureHandler.GetComponent<UISprite> ().alpha += 0.1f;
 			yield return new WaitForSeconds (0.01f);
 			if (sureHandler.GetComponent<UISprite> ().alpha >= 1)
 			{
@@ -172,10 +181,74 @@ public class TanBaoReward : MonoBehaviour {
 	{
 		foreach (GameObject card in cardList)
 		{
-			card.SetActive (false);
+			TBCardInfo cardInfo = card.GetComponent<TBCardInfo> ();
+			cardInfo.ClearAllEffect ();
 		}
 		sureHandler.m_handler -= SureBtnHandlerBack;
 		sureHandler.gameObject.SetActive (false);
 		BlockController (false);
+	}
+
+	/// <summary>
+	/// Itweens the scale.
+	/// </summary>
+	/// <param name="tempScale">Temp scale.</param>
+	/// <param name="tempTime">Temp time.</param>
+	/// <param name="tempType">Temp type.</param>
+	/// <param name="tempMethod">Temp method.</param>
+	/// <param name="tempObj">Temp object.</param>
+	public void ItweenScale (Vector3 tempScale,float tempTime,iTween.EaseType tempType,string tempMethod,GameObject tempObj,GameObject tempTargetObj)
+	{
+		Hashtable scale = new Hashtable ();
+		scale.Add ("scale",tempScale);
+		scale.Add ("time",tempTime);
+		scale.Add ("easetype",tempType);
+		scale.Add ("islocal",true);
+		scale.Add ("oncomplete",tempMethod);
+		scale.Add ("oncompletetarget",tempTargetObj);
+		iTween.ScaleTo (tempObj,scale);
+	}
+
+	/// <summary>
+	/// Adds the award in to mi bao list.
+	/// </summary>
+	/// <param name="tempAward">Temp award.</param>
+	public void AddAwardInToMiBaoList (Award tempAward)
+	{
+		miBaoList.Add (tempAward);
+	}
+
+	/// <summary>
+	/// Shows the mibao card.
+	/// </summary>
+	public void ShowMibaoCard ()
+	{
+		if (MiBaoIndex < miBaoList.Count)
+		{
+			TBMiBaoReward.tbMibaoReward.ShowMibaoReward (miBaoList[MiBaoIndex],tbType);
+		}
+		else
+		{
+			//关闭显示秘宝
+			TBMiBaoReward.tbMibaoReward.CloseMiBaoReward ();
+		}
+	}
+
+	/// <summary>
+	/// Checks the mi bao card.
+	/// </summary>
+	public void CheckMiBaoCard ()
+	{
+		MiBaoIndex ++;
+		ShowMibaoCard ();
+	}
+
+	/// <summary>
+	/// Mis the bao list clear.
+	/// </summary>
+	public void MiBaoListClear ()
+	{
+		MiBaoIndex = 0;
+		miBaoList.Clear ();
 	}
 }

@@ -1,40 +1,116 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BattleDramaFlag : MonoBehaviour
 {
 	public int flagId;
 
-	public int eventId;
+	public int nodeId = 1;
+
+	public GameObject triggerFlagRoot;
+
+	public List<BattleFlag> triggerFlagList = new List<BattleFlag> ();
 
 
-	public void OnTriggerEnter(Collider other)
+	[HideInInspector] public List<int> triggerFlagListInteger = new List<int> ();
+
+
+	private BaseAI node;
+
+
+	public void refreshTriggerFlags()
 	{
-		KingControllor node = (KingControllor)other.gameObject.GetComponent("KingControllor");
+		if (triggerFlagRoot == null) return;
+		
+		Component[] coms = triggerFlagRoot.GetComponentsInChildren(typeof(BattleFlag));
+		
+		foreach(Component co in coms)
+		{
+			BattleFlag bf = (BattleFlag)co;
+			
+			bool b = true;
+			
+			foreach(BattleFlag temp in triggerFlagList)
+			{
+				if(temp.flagId == bf.flagId) 
+				{
+					b = false;
+					
+					break;
+				}
+			}
+			
+			if(b == true) triggerFlagList.Add(bf);
+		}
+	}
 
-		bool f = CityGlobalData.getDramable ();
+	void FixedUpdate ()
+	{
+		if (BattleControlor.Instance () == null) return;
 
-		if(node == null || !node.isAlive || f == false)
+		if(node == null)
+		{
+			node = BattleControlor.Instance().getNodebyId(nodeId);
+		}
+
+		if (node == null) return;
+
+		bool f = collider (node);
+
+		if(f == true)
+		{
+			trigger(node);
+		}
+	}
+
+	private bool collider(BaseAI t_node)
+	{
+		Vector3 pos2 = t_node.transform.position;
+		
+		Vector3 p4 = transform.position;
+		
+		pos2.y = 0;
+		
+		p4.y = 0;
+		
+		Vector3 m_VForWard = transform.forward;
+		
+		float m_iCollValue1 = transform.localScale.z;//boxCol.size.z;
+		
+		float m_iCollValue2 = transform.localScale.x;//boxCol.size.x;
+		
+		Vector3 p0 = p4 - ((m_VForWard * m_iCollValue1) / 2);
+		
+		Vector3 p1 = p4 + ((m_VForWard * m_iCollValue1) / 2);
+		
+		Vector3 p2 = p4 + (new Vector3(-m_VForWard.z, 0f, m_VForWard.x).normalized * (m_iCollValue2 / 2.0f));
+		
+		Vector3 p3 = p4 + (new Vector3(m_VForWard.z, 0f, -m_VForWard.x).normalized * (m_iCollValue2 / 2.0f));
+		
+		if(Global.getCollRect(pos2, p1, p0, p3, p2))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public void trigger(BaseAI node)
+	{
+		if(node == null || !node.isAlive)
 		{
 			return;
 		}
 
-		int level = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
+		foreach(int flagId in triggerFlagListInteger)
+		{
+			BattleFlag flag = BattleControlor.Instance().flags[flagId];
 
-		GuideTemplate template = GuideTemplate.getTemplateByLevelAndEvent (level, eventId);
+			flag.trigger();
+		}
 
-		bool flag = BattleControlor.Instance ().havePlayedGuide (template);
-		
-		if (flag == true) return;
-
-		BattleUIControlor.Instance ().showDaramControllor (level, eventId);
-	
 		Destroy (gameObject);
-	}
-
-	public void OnTriggerExit(Collider other)
-	{
-
 	}
 
 }

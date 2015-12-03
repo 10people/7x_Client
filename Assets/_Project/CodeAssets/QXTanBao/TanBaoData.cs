@@ -34,7 +34,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 	public void TanBaoInfoReq ()
 	{
 		QXComData.SendQxProtoMessage (ProtoIndexes.EXPLORE_INFO_REQ,ProtoIndexes.EXPLORE_INFO_RESP.ToString ());
-		Debug.Log ("TanBaoInfoReq:" + ProtoIndexes.EXPLORE_INFO_REQ);
+//		Debug.Log ("TanBaoInfoReq:" + ProtoIndexes.EXPLORE_INFO_REQ);
 	}
 
 	/// <summary>
@@ -44,11 +44,11 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 	public void TBGetRewardReq (TanBaoType tempType)
 	{
 		tbType = tempType;
-		Debug.Log ("tbType:" + tbType);
+//		Debug.Log ("tbType:" + tbType);
 		ExploreReq tbGetRewardReq = new ExploreReq ();
 		tbGetRewardReq.type = (int)tempType;
 		QXComData.SendQxProtoMessage (tbGetRewardReq,ProtoIndexes.EXPLORE_REQ,ProtoIndexes.EXPLORE_RESP.ToString ());
-		Debug.Log ("TBGetRewardReq:" + ProtoIndexes.EXPLORE_REQ);
+//		Debug.Log ("TBGetRewardReq:" + ProtoIndexes.EXPLORE_REQ);
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)
@@ -59,19 +59,21 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 			{
 			case ProtoIndexes.EXPLORE_INFO_RESP://探宝返回
 			{
-				Debug.Log ("TanBaoInfoResp:" + ProtoIndexes.EXPLORE_INFO_RESP);
+//				Debug.Log ("TanBaoInfoResp:" + ProtoIndexes.EXPLORE_INFO_RESP);
+
 				ExploreInfoResp tbInfoRes = new ExploreInfoResp();
 				tbInfoRes = QXComData.ReceiveQxProtoMessage (p_message,tbInfoRes) as ExploreInfoResp;
 
 				if (tbInfoRes != null)
 				{
 					tbInfoResp = tbInfoRes;
-					Debug.Log ("铜币：" + tbInfoRes.tongBi + 
-					           "\n免费铜币抽取次数：" + tbInfoRes.allFreeTongBiCount +
-					           "\n铜币还剩免费抽取次数：" + tbInfoRes.remainFreeTongBiCount + 
-					           "\n铜币抽取cd：" + tbInfoRes.tongBiCd +
-					           "\n元宝：" + tbInfoRes.yuanBao + 
-					           "\n元宝抽取cd：" + tbInfoRes.yuanBaoCd);
+
+//					Debug.Log ("铜币：" + tbInfoRes.tongBi + 
+//					           "\n免费铜币抽取次数：" + tbInfoRes.allFreeTongBiCount +
+//					           "\n铜币还剩免费抽取次数：" + tbInfoRes.remainFreeTongBiCount + 
+//					           "\n铜币抽取cd：" + tbInfoRes.tongBiCd +
+//					           "\n元宝：" + tbInfoRes.yuanBao + 
+//					           "\n元宝抽取cd：" + tbInfoRes.yuanBaoCd);
 
 					LoadTanBaoPrefab ();
 				}
@@ -105,8 +107,6 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 						TanBaoPage.tbPage.RefreshTanBaoInfo (tbType,tbGetRewardRes.info);
 						TanBaoReward.tbReward.GetTBRewardInfo (tbType,tbGetRewardRes);
 					}
-
-
 				}
 
 				return true;

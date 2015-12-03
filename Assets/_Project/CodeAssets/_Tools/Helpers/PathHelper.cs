@@ -19,19 +19,6 @@ public class PathHelper : MonoBehaviour {
 	 * 
 	 */
 
-
-	public static void LogPath(){
-		#if UNITY_ANDROID && DEBUG_PATH
-		Debug.Log( "dataPath: " + Application.dataPath );
-
-		Debug.Log( "persistentDataPath: " + Application.persistentDataPath );
-
-		Debug.Log( "streamingAssetsPath: " + Application.streamingAssetsPath );
-
-		Debug.Log( "temporaryCachePath: " + Application.temporaryCachePath );
-		#endif
-	}
-
 	/** Params:
 	* p_file_name: Local_File.bin
 	*/
@@ -181,6 +168,137 @@ public class PathHelper : MonoBehaviour {
 
 	public static string GetXCodeProjectFullPath(){
 		return PathHelper.GetMacHome() + XcodeProjectRelativePath;
+	}
+
+	#endregion
+
+
+
+	#region Bundle
+
+	/** Desc:
+	 * Bundle Path for WWW.Load.
+	 * 
+	 * 
+	 * Params(U4):
+	 * p_bundle_key:	"_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab";
+	 * 
+	 * Params(U5):
+	 * p_bundle_key:	"2d/ui/ui_prefab"
+	 * 
+	 * return:
+	 * OS.dataPath/Platform/_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab
+	 */
+	public static string GetLocalBundleWWWPath( string p_res_asset_path ){
+		{
+			p_res_asset_path = StringHelper.RemovePrefix( p_res_asset_path, "/" );
+			
+			p_res_asset_path = "/" + p_res_asset_path;
+		}
+		
+		#if UNITY_EDITOR
+		if( Application.platform == RuntimePlatform.WindowsEditor ){
+			return "file://" + Application.streamingAssetsPath + 
+				"/" + PlatformHelper.GetAndroidTag() + 
+					p_res_asset_path;
+		}
+		else if( Application.platform == RuntimePlatform.OSXEditor ){
+			return "file://" + Application.dataPath + "/StreamingAssets" + 
+				"/" + PlatformHelper.GetiOSTag() +
+					p_res_asset_path;
+		}
+		#else
+		if (Application.platform == RuntimePlatform.WindowsPlayer ){
+			return "file://" + Application.streamingAssetsPath + 
+				"/" + PlatformHelper.GetAndroidTag() + 
+					p_res_asset_path;
+		}
+		else if( Application.platform == RuntimePlatform.Android ){
+			// Android
+			return "jar:file://" + Application.dataPath + "!/assets" + 
+				"/" + PlatformHelper.GetAndroidTag() + 	
+					p_res_asset_path;
+		}
+		else if( Application.platform == RuntimePlatform.IPhonePlayer ){
+			// iOS 
+			return "file://" + Application.dataPath + "/Raw" + 
+				"/" + PlatformHelper.GetiOSTag() + 
+					p_res_asset_path;
+		}
+		
+		#endif
+		
+		return null;
+	}
+	
+	/** Desc:
+	 * Bundle Path for FileStream, use with caution.
+	 * 
+	 * Params:
+	 * p_bundle_key:	"_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab";
+	 * 
+	 * return:
+	 * OS.dataPath/Platform/_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab
+	 */
+	public static string GetLocalBundlePath( string p_res_asset_path ){
+		{
+			p_res_asset_path = StringHelper.RemovePrefix( p_res_asset_path, "/" );
+			
+			p_res_asset_path = "/" + p_res_asset_path;
+		}
+		
+		#if UNITY_EDITOR
+		if( Application.platform == RuntimePlatform.WindowsEditor ){
+			return Application.streamingAssetsPath + 
+				"/" + PlatformHelper.GetAndroidTag() + 
+					p_res_asset_path;
+		}
+		else if( Application.platform == RuntimePlatform.OSXEditor ){
+			return Application.dataPath + "/StreamingAssets" + 
+				"/" + PlatformHelper.GetiOSTag() +
+					p_res_asset_path;
+		}
+		#else
+		if (Application.platform == RuntimePlatform.WindowsPlayer ){
+			return Application.streamingAssetsPath + 
+				"/" + PlatformHelper.GetAndroidTag() + 
+					p_res_asset_path;
+		}
+		else if( Application.platform == RuntimePlatform.Android ){
+			// TODO, Recheck
+			// Android
+			return "jar:" + Application.dataPath + "!/assets" + 
+				"/" + PlatformHelper.GetAndroidTag() + 	
+					p_res_asset_path;
+		}
+		else if( Application.platform == RuntimePlatform.IPhonePlayer ){
+			// iOS 
+			return Application.dataPath + "/Raw" + 
+				"/" + PlatformHelper.GetiOSTag() + 
+					p_res_asset_path;
+		}
+		
+		#endif
+		
+		return null;
+	}
+
+	#endregion
+
+
+
+	#region Logs
+	
+	public static void LogPath(){
+		#if UNITY_ANDROID && DEBUG_PATH
+		Debug.Log( "dataPath: " + Application.dataPath );
+		
+		Debug.Log( "persistentDataPath: " + Application.persistentDataPath );
+		
+		Debug.Log( "streamingAssetsPath: " + Application.streamingAssetsPath );
+		
+		Debug.Log( "temporaryCachePath: " + Application.temporaryCachePath );
+		#endif
 	}
 
 	#endregion

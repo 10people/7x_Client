@@ -611,7 +611,9 @@ public class BattleFlagWritor : MonoBehaviour
 		foreach(Component temp in coms)
 		{
 			BattleDramaFlag bf = (BattleDramaFlag)temp;
-			
+
+			bf.refreshTriggerFlags();
+
 			dramaFalgs.Add(bf);
 		}
 	}
@@ -649,9 +651,30 @@ public class BattleFlagWritor : MonoBehaviour
 			string str = "<BattleDramaFlag";
 			
 			str += " flagId=\"" + flag.flagId + "\"";
-			
-			str += " eventId=\"" + flag.eventId + "\"";
-			
+
+			str += " nodeId=\"" + flag.nodeId + "\"";
+
+			//triggerFlagList
+			{
+				string strTrigger = " triggerFlag=\"";
+				
+				if(flag.triggerFlagList.Count == 0) strTrigger += "0";
+				
+				for(int iTrigger = 0; iTrigger < flag.triggerFlagList.Count; iTrigger++)
+				{
+					strTrigger += flag.triggerFlagList[iTrigger].flagId + "";
+					
+					if(iTrigger != flag.triggerFlagList.Count - 1)
+					{
+						strTrigger += ",";
+					}
+				}
+				
+				strTrigger += "\"";
+				
+				str += strTrigger;
+			}
+
 			str += " x=\"" + flag.transform.position.x + "\"";
 			
 			str += " y=\"" + flag.transform.position.y + "\"";
@@ -721,6 +744,8 @@ public class BattleFlagWritor : MonoBehaviour
 			str += " destinationRadius=\"" + flag.destinationRadius + "\"";
 
 			str += " showOnUI=\"" + (flag.showOnUI ? 1 : 0) + "\"";
+
+			str += " protectNodeId=\"" + flag.protectNodeId + "\"";
 
 			str += " />";
 

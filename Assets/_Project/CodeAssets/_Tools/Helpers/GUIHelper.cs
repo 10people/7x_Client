@@ -3,7 +3,35 @@ using System.Collections;
 
 public class GUIHelper {
 
+	#region GUI Layout
+
+	public static void GUILayoutHorizontalSpace( float p_screen_percentage ){
+		GUILayout.BeginHorizontal();
+
+		GUILayout.Space( ScreenHelper.GetWidth(  p_screen_percentage ) );
+
+		GUILayout.EndHorizontal();
+	}
+
+	public static void GUILayoutVerticalSpace( float p_screen_percentage ){
+		GUILayout.BeginVertical();
+
+		GUILayout.Space( ScreenHelper.GetHeight( p_screen_percentage ) );
+
+		GUILayout.EndVertical();
+	}
+
+	#endregion
+
+
+
 	#region GUI Rect
+
+	public static Rect GetGUIRect( float p_x_in_percent, float p_y_in_percent,
+	                              float p_w_in_percent, float p_h_in_percent ){
+		return new Rect( ScreenHelper.GetX( p_x_in_percent ), ScreenHelper.GetY( p_y_in_percent ),
+		                ScreenHelper.GetWidth( p_w_in_percent ), ScreenHelper.GetHeight( p_h_in_percent ) );
+	}
 	
 	/** Desc:
 	 * Get GUI Rect with index and params[ 6 ].

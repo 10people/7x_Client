@@ -380,7 +380,9 @@ public class PushAndNotificationHelper : MonoBehaviour, SocketProcessor{
 		if( p_message.m_protocol_index == ProtoIndexes.RED_NOTICE_INFO ){
 			ErrorMessage t_error_body = new ErrorMessage();
 
-			t_error_body = (ErrorMessage)ProtoHelper.DeserializeProto( t_error_body, p_message );
+//			t_error_body = (ErrorMessage)ProtoHelper.DeserializeProto( t_error_body, p_message );
+
+			ProtoHelper.DeserializeProto( t_error_body, p_message );
 
 			#if DEBUG_RED_SPOT
 			Debug.Log( "Server Active Red Spot: " + t_error_body.errorCode );

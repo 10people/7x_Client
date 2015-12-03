@@ -300,14 +300,10 @@ public class JunZHuEquipOfBody : MonoBehaviour//,SocketListener
             }
 
         }
-
-       
-
-
-        if (!string.IsNullOrEmpty(Global.m_sPanelWantRun) || WindowBackShowController.m_SaveEquipBuWei != 0)
-        {
-            StartCoroutine(WatitShow());
-        }
+        //if (!string.IsNullOrEmpty(Global.m_sPanelWantRun) || WindowBackShowController.m_SaveEquipBuWei != 0)
+        //{
+        //    StartCoroutine(WatitShow());
+        //}
        
     }
 

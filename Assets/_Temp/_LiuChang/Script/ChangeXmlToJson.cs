@@ -34,6 +34,8 @@ public class ChangeXmlToJson : MonoBehaviour
 		
 		levels.Add (900);
 
+		for(int i = 0; i < 14; i++) levels.Add (100001 + i);
+
 		levels.Add (100101);
 
 		for(int i = 0; i < 7; i++) levels.Add (100201 + i);
@@ -479,8 +481,14 @@ public class ChangeXmlToJson : MonoBehaviour
 			BattleDramaFlag bf = (BattleDramaFlag)gc.AddComponent<BattleDramaFlag>();
 			
 			bf.flagId = template.flagId;
-			
-			bf.eventId = template.eventId;
+
+			bf.nodeId = template.nodeId;
+
+			//triggerFlagList
+			foreach(int triggerI in template.triggerFlag)
+			{
+				bf.triggerFlagListInteger.Add(triggerI);
+			}
 			
 			BoxCollider bc = (BoxCollider)gc.AddComponent<BoxCollider>();
 			
@@ -532,6 +540,7 @@ public class ChangeXmlToJson : MonoBehaviour
 
 			flag.destinationRadius = template.destinationRadius;
 
+			flag.protectNodeId = template.protectNodeId;
 		}
 
 		{

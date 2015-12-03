@@ -11,7 +11,8 @@ public class BattleWinFlag : MonoBehaviour
 		Reach_Time,
 		Kill_Gear,
 		Kill_Soldier,
-		Kill_Hero
+		Kill_Hero,
+		PROTECT,
 	}
 
 	public int winId;
@@ -25,5 +26,7 @@ public class BattleWinFlag : MonoBehaviour
 	public float destinationRadius;
 
 	public bool showOnUI = false;
+
+	public int protectNodeId;
 
 }

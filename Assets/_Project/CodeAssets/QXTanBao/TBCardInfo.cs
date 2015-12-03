@@ -26,10 +26,17 @@ public class TBCardInfo : MonoBehaviour {
 	public GameObject cardTexObj;
 
 	public UISprite cardBorder;
-
 	public UILabel cardLabel;
 
 	private GameObject iconSamplePrefab;
+
+	public UIWidget effectWidget;
+	private int pinZhiId;
+
+	private readonly Dictionary<int,int> colorDic = new Dictionary<int, int>()//0-0 | 1.2-1 | 3.4.5-2 | 6.7.8-3 | 9.10-4
+	{
+		{0,0},{1,1},{2,1},{3,2},{4,2},{5,2},{6,3},{7,3},{8,3},{9,4},{10,4}
+	};
 
 	private string[] bgSpriteName = new string[]{"CardBg_back","CardBg"};
 
@@ -37,23 +44,41 @@ public class TBCardInfo : MonoBehaviour {
 	private Vector3 targetPos;
 
 	private float itweenTime = 1f;
-	
+
+	/// <summary>
+	/// Gets the TB card info.
+	/// </summary>
+	/// <param name="tempType">Temp type.</param>
+	/// <param name="tempAward">Temp award.</param>
+	/// <param name="tempTargetPos">Temp target position.</param>
 	public void GetTBCardInfo (TanBaoData.TanBaoType tempType,Award tempAward,Vector3 tempTargetPos)
 	{
-		cardTexObj.SetActive (false);
-		cardBg.spriteName = bgSpriteName[0];
-		cardBox.enabled = false;
-		cardHandler.m_handler -= CardBtnHandlerBack;
-		cState = ClickState.STATE_BEGIN;
+		ResetCard ();
 
 		tbType = tempType;
 		awardInfo = tempAward;
 		targetPos = tempTargetPos;
 
-		CardMoveItween ();
+		CardMove ();
 	}
-	
-	void CardMoveItween ()
+
+	/// <summary>
+	/// Resets the card.
+	/// </summary>
+	void ResetCard ()
+	{
+		TanBaoReward.tbReward.blockHandler.m_handler -= CardBtnHandlerBack;
+		cardTexObj.SetActive (false);
+		cardBg.spriteName = bgSpriteName[0];
+		cardBox.enabled = false;
+		cardHandler.m_handler -= CardBtnHandlerBack;
+		cState = ClickState.STATE_BEGIN;
+	}
+
+	/// <summary>
+	/// Cards the move.
+	/// </summary>
+	void CardMove ()
 	{
 		Hashtable scale = new Hashtable ();
 		scale.Add ("scale",Vector3.one);
@@ -66,23 +91,39 @@ public class TBCardInfo : MonoBehaviour {
 		move.Add ("time",itweenTime);
 		move.Add ("islocal",true);
 		move.Add ("easetype",iTween.EaseType.easeOutQuart);
-		move.Add ("oncomplete","CardMoveItweenEnd");
+		move.Add ("oncomplete","CardMoveEnd");
 		move.Add ("oncompletetarget",gameObject);
 		iTween.MoveTo (gameObject,move);
 	}
-
-	void CardMoveItweenEnd ()
+	/// <summary>
+	/// Cards the move end.
+	/// </summary>
+	void CardMoveEnd ()
 	{
 		InItCardInfo ();
-		cardBox.enabled = true;
-		cardHandler.m_handler += CardBtnHandlerBack;
-	}
 
+		if (tbType == TanBaoData.TanBaoType.TONGBI_SINGLE || tbType == TanBaoData.TanBaoType.YUANBAO_SINGLE)
+		{
+			CardBtnHandlerBack (gameObject);
+
+			if (awardInfo.itemType != 4)
+			{
+				cardHandler.m_handler += CardBtnHandlerBack;
+			}
+		}
+		else
+		{
+			cardBox.enabled = true;
+		}
+	}
+	/// <summary>
+	/// Ins it card info.
+	/// </summary>
 	void InItCardInfo ()
 	{
 		CommonItemTemplate commonTemp = CommonItemTemplate.getCommonItemTemplateById (awardInfo.itemId);
 		int nameId = commonTemp.nameId;
-		int pinZhiId = commonTemp.color;//0 | 1.2 | 3.4.5 | 6.7.8 | 9.10
+		pinZhiId = commonTemp.color;//0 | 1.2 | 3.4.5 | 6.7.8 | 9.10
 		cardBorder.spriteName = "pinzhi" + (pinZhiId - 1);
 
 		if (awardInfo.itemType == 4)
@@ -176,6 +217,10 @@ public class TBCardInfo : MonoBehaviour {
 		iconSampleManager.SetIconPopText(awardInfo.itemId, itemName, mdesc, 1);
 	}
 
+	/// <summary>
+	/// Cards the button handler back.
+	/// </summary>
+	/// <param name="obj">Object.</param>
 	void CardBtnHandlerBack (GameObject obj)
 	{	
 		switch (cState)
@@ -183,15 +228,23 @@ public class TBCardInfo : MonoBehaviour {
 		case ClickState.STATE_BEGIN:
 
 			cardBox.enabled = false;
-			CardBgRotateTween ();
+			TanBaoReward.tbReward.ItweenScale (new Vector3(0,1,1),0.15f,iTween.EaseType.linear,"CardBgScaleEnd",gameObject,gameObject);
 
-			if (tbType == TanBaoData.TanBaoType.TONGBI_SINGLE || tbType == TanBaoData.TanBaoType.YUANBAO_SINGLE)
+			if (awardInfo.itemType == 4)
 			{
+				effectWidget.depth = -1;
+				QXComData.InstanceEffect (QXComData.EffectPos.MID,effectWidget.gameObject,100155);
 
+				if (tbType == TanBaoData.TanBaoType.TONGBI_SPEND || tbType == TanBaoData.TanBaoType.YUANBAO_SPEND)
+				{
+					//加入显示秘宝卡队列
+					TanBaoReward.tbReward.AddAwardInToMiBaoList (awardInfo);
+				}
 			}
 			else
 			{
-
+				effectWidget.depth = 2;
+				QXComData.InstanceEffect (QXComData.EffectPos.TOP,effectWidget.gameObject,100141);
 			}
 
 			break;
@@ -200,47 +253,63 @@ public class TBCardInfo : MonoBehaviour {
 			if (tbType == TanBaoData.TanBaoType.TONGBI_SINGLE || tbType == TanBaoData.TanBaoType.YUANBAO_SINGLE)
 			{
 				TanBaoReward.tbReward.BlockController (false);
-				gameObject.SetActive (false);
-			}
-			else
-			{
-				
+				ClearAllEffect ();
 			}
 
 			break;
 		}
 	}
 
-	void CardBgRotateTween ()
-	{
-		Hashtable scale = new Hashtable ();
-		scale.Add ("scale",new Vector3 (0,1,1));
-		scale.Add ("time",0.15f);
-		scale.Add ("easetype",iTween.EaseType.easeOutQuart);
-		scale.Add ("islocal",true);
-		scale.Add ("oncomplete","CardBgRotateTweenEnd");
-		scale.Add ("oncompletetarget",gameObject);
-		iTween.ScaleTo (gameObject,scale);
-	}
-	void CardBgRotateTweenEnd ()
+	/// <summary>
+	/// Cards the background scale end.
+	/// </summary>
+	void CardBgScaleEnd ()
 	{
 		cardBg.spriteName = bgSpriteName [1];
 		cardTexObj.SetActive (true);
 
-		Hashtable scale = new Hashtable ();
-		scale.Add ("scale",new Vector3 (1,1,1));
-		scale.Add ("time",0.1f);
-		scale.Add ("easetype",iTween.EaseType.easeInQuart);
-		scale.Add ("islocal",true);
-		scale.Add ("oncomplete","CardRotateTweenEnd");
-		scale.Add ("oncompletetarget",gameObject);
-		iTween.ScaleTo (gameObject,scale);
+		TanBaoReward.tbReward.ItweenScale (Vector3.one,0.15f,iTween.EaseType.linear,"CardTexScaleEnd",gameObject,gameObject);
 	}
-	void CardRotateTweenEnd ()
+	/// <summary>
+	/// Cards the scale end.
+	/// </summary>
+	void CardTexScaleEnd ()
 	{
-		cState = ClickState.STATE_ROTATE_END;
-		cardBox.enabled = true;
+		if (tbType == TanBaoData.TanBaoType.TONGBI_SINGLE || tbType == TanBaoData.TanBaoType.YUANBAO_SINGLE)
+		{
+			if (awardInfo.itemType == 4)
+			{
+				//清除其它特效,显示秘宝卡
+				ClearAllEffect ();
 
-		TanBaoReward.tbReward.GetCardTurnEndNum ();
+				TanBaoReward.tbReward.BlockController (false);
+				TBMiBaoReward.tbMibaoReward.ShowMibaoReward (awardInfo,tbType);
+			}
+			else
+			{
+				cState = ClickState.STATE_ROTATE_END;
+				TanBaoReward.tbReward.blockHandler.m_handler += CardBtnHandlerBack;
+			}
+		}
+		else
+		{
+			TanBaoReward.tbReward.GetCardTurnEndNum ();
+			if (awardInfo.itemType == 4)
+			{
+				QXComData.InstanceEffect (QXComData.EffectPos.TOP,cardBg.gameObject,100142 + colorDic[pinZhiId]);
+				QXComData.InstanceEffect (QXComData.EffectPos.MID,cardBg.gameObject,100150 + colorDic[pinZhiId]);
+
+				//开始显示秘宝卡
+				TanBaoReward.tbReward.BlockController (false);
+				TanBaoReward.tbReward.ShowMibaoCard ();
+			}
+		}
+	}
+
+	public void ClearAllEffect ()
+	{
+		QXComData.ClearEffect (effectWidget.gameObject);
+		QXComData.ClearEffect (cardBg.gameObject);
+		gameObject.SetActive (false);
 	}
 }

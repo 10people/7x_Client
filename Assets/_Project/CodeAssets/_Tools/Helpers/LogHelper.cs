@@ -8,6 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
+#if UNITY_EDITOR
+using UnityEditor;
+using System.Reflection;
+#endif
+
 public class LogHelper : MonoBehaviour {
 
 	
@@ -135,5 +140,26 @@ public class LogHelper : MonoBehaviour {
 		}
 	}
 	
+	#endregion
+
+
+
+	#region Utilities
+
+	public static void LogRunTime(){
+		#if UNITY_EDITOR
+		Type type = Type.GetType( "Mono.Runtime" );
+		if( type != null ){
+			MethodInfo displayName = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+			if ( displayName != null ){
+				Debug.Log(displayName.Invoke(null, null));
+			}
+			else{
+				Debug.LogError( "Error in Get RunTime." );
+			}
+		}
+		#endif
+	}
+
 	#endregion
 }

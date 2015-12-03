@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<BattleWin id="1" winType="1" killNum="1" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" showOnUI="0" />
+<BattleWin id="1" winType="1" killNum="1" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" showOnUI="0" protectNodeId="0" />
 </dataset>

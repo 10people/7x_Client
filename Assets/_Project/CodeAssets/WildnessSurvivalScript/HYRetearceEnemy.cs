@@ -880,6 +880,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		mChangeMiBaoSkill.GetRootName (this.gameObject.name);
 		
 		mChangeMiBaoSkill.Init(3, M_Treas_info.zuheId);
+
 		HY_UIManager.Instance ().ShowOrClose ();
 	}
 	void HavNoTime(ref WWW p_www,string p_path, Object p_object)

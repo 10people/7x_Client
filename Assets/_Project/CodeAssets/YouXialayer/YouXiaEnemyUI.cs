@@ -341,7 +341,9 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 			break;
 		}
 		mChangeMiBaoSkill.GetRootName (this.gameObject.name);
+
 		mChangeMiBaoSkill.Init(mibaotype, m_You_XiaInfo.zuheId);
+
 		EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose ();
 	}
 

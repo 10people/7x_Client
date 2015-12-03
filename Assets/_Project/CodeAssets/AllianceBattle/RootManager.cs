@@ -28,7 +28,7 @@ namespace AllianceBattle
 
         public Joystick m_Joystick;
         public ABPlayerController m_AbPlayerController;
-        public ABCulturePlayerController m_AbCulturePlayerController;
+        public ABPlayerCultureController m_AbPlayerCultureController;
 
         public static float BasicYPosition = 0.1f;
 
@@ -38,7 +38,7 @@ namespace AllianceBattle
             tempObject.transform.localPosition = position;
 
             m_AbPlayerController = tempObject.GetComponent<ABPlayerController>() ?? tempObject.AddComponent<ABPlayerController>();
-            m_AbCulturePlayerController = tempObject.GetComponent<ABCulturePlayerController>();
+            m_AbPlayerCultureController = tempObject.GetComponent<ABPlayerCultureController>();
 
             m_AbPlayerController.IsRotateCamera = false;
             m_AbPlayerController.IsUploadPlayerPosition = true;
@@ -51,18 +51,18 @@ namespace AllianceBattle
             m_AbPlayerController.m_Joystick = m_Joystick;
             m_AbPlayerController.TrackCamera = TrackCamera;
 
-            m_AbCulturePlayerController.TrackCamera = TrackCamera;
+            m_AbPlayerCultureController.TrackCamera = TrackCamera;
 
-            m_AbCulturePlayerController.IsRed = false;
-            m_AbCulturePlayerController.KingName = kingName;
-            m_AbCulturePlayerController.AllianceName = allianceName;
+            m_AbPlayerCultureController.IsRed = false;
+            m_AbPlayerCultureController.KingName = kingName;
+            m_AbPlayerCultureController.AllianceName = allianceName;
             if (totalBlood > 0)
             {
-                m_AbCulturePlayerController.TotalBlood = totalBlood;
-                m_AbCulturePlayerController.RemainingBlood = m_AbCulturePlayerController.TotalBlood;
+                m_AbPlayerCultureController.TotalBlood = totalBlood;
+                m_AbPlayerCultureController.RemainingBlood = m_AbPlayerCultureController.TotalBlood;
             }
 
-            m_AbCulturePlayerController.SetThis();
+            m_AbPlayerCultureController.SetThis();
         }
 
         void Start()

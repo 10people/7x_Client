@@ -894,7 +894,7 @@ public class UIWidgetInspector : UIRectEditor
 
 			GUILayout.BeginHorizontal();
 			NGUIEditorTools.DrawProperty("Face Camera", serializedObject, "m_camera_oriented", GUILayout.Width(130f));
-			GUILayout.Label("make it facing camera all the time");
+			GUILayout.Label("make it facing Main Camera");
 			GUILayout.EndHorizontal();
 
 			if (serializedObject.isEditingMultipleObjects || mWidget.hasBoxCollider)

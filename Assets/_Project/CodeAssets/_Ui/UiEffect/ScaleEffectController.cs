@@ -62,7 +62,9 @@ public class ScaleEffectController : MonoBehaviour
         }
     }
 
-    void OnEnable()
+	// OnEnable will make callback run twice if ui is deactived then active again
+	void Start()
+//    void OnEnable()
     {
         if (IsAutoExecuteOpenEffect)
         {

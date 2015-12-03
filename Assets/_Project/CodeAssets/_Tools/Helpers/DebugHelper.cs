@@ -6,6 +6,10 @@
 
 using System;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+using System.Reflection;
+#endif
 
 public class DebugHelper{
 
@@ -49,6 +53,13 @@ public class DebugHelper{
 		return m_common_code_error;
 	}
 	
+	#endregion
+
+
+
+	#region Utilities
+
+
 	#endregion
 }
 

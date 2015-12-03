@@ -928,12 +928,12 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor
     void GoTo(int id)
     {
         WindowBackShowController.m_SaveEquipBuWei = BuWeiSave;
-        MainCityUI.TryRemoveFromObjectList(m_MainPaent);
-
-        WindowBackShowController.SaveWindowInfo("JUN_ZHU_LAYER_AMEND", Res2DTemplate.Res.JUN_ZHU_LAYER_AMEND);
+//        MainCityUI.TryRemoveFromObjectList(m_MainPaent);
+//
+//        WindowBackShowController.SaveWindowInfo("JUN_ZHU_LAYER_AMEND", Res2DTemplate.Res.JUN_ZHU_LAYER_AMEND);
         EnterGuoGuanmap.Instance().ShouldOpen_id = id;
 
-        Destroy(m_MainPaent);
+//        Destroy(m_MainPaent);
 
     }
     int index_DiaoLuoNum = 0;
