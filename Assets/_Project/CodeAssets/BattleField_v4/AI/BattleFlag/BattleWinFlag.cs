@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BattleWinFlag : MonoBehaviour 
 {
-	public enum WinType
+	public enum EndType
 	{
 		Kill_All,
 		Kill_Boss,
@@ -15,9 +16,11 @@ public class BattleWinFlag : MonoBehaviour
 		PROTECT,
 	}
 
-	public int winId;
+	public int endId;
 
-	public WinType winType;
+	public bool isWin = true;
+
+	public EndType endType;
 
 	public int killNum;
 
@@ -25,8 +28,14 @@ public class BattleWinFlag : MonoBehaviour
 	
 	public float destinationRadius;
 
+	public int activeNum;
+
+	public List<int> activeList = new List<int> ();
+
 	public bool showOnUI = false;
 
-	public int protectNodeId;
+	public int protectNum;
+
+	public List<int> protectList = new List<int>();
 
 }

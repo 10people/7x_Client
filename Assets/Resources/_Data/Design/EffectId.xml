@@ -261,4 +261,5 @@
 <EffectTemplate  effectId="600154" path="_3D/Fx/Prefabs/UiEffect/xiaobaoxiang" sound="-1" position="0" />
 <EffectTemplate  effectId="600155" path="_3D/Fx/Prefabs/UiEffect/UI_jinengkaiqi_chixu_JinJie" sound="-1" position="0" />
 <EffectTemplate  effectId="600156" path="_3D/Fx/Prefabs/BattleEffect/pugongshejian" sound="-1" position="0" />
+<EffectTemplate  effectId="600157" path="_3D/Fx/Prefabs/BattleEffect/zhongdiantexiao" sound="-1" position="0" />
 </dataset>

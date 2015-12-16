@@ -121,13 +121,19 @@ public class UI3DEffectTool : MonoBehaviour {
 #else
 #endif
 
-		UpdateToLoad();
-		
-		UpdateFxWatcher();
+		{
+			FxTool.UpdateFx();
+		}
 
-		UpdateCameras();
-
-		DynamicSet();
+		{
+			UpdateToLoad();
+			
+			UpdateFxWatcher();
+			
+			UpdateCameras();
+			
+			DynamicSet();
+		}
 	}
 
 	void OnDestroy(){
@@ -1093,7 +1099,7 @@ public class UI3DEffectTool : MonoBehaviour {
 
 	public delegate void UI3DEffectLoadDelegate( UIType p_ui_type, GameObject p_ngui_gb, GameObject p_3d_effect_gb, GameObject p_ngui_center_gb );
 
-	public class FxToLoad{
+	private class FxToLoad{
 		private enum LoadState{
 			Ready_To_Load = 0,
 			Loading,
@@ -1157,7 +1163,6 @@ public class UI3DEffectTool : MonoBehaviour {
 
 		public void EffectLoadCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
 //			Debug.Log(p_path);
-
 			GameObject t_gb = (GameObject)Instantiate( p_object );
 
 			// ui effect auto release
@@ -1216,22 +1221,8 @@ public class UI3DEffectTool : MonoBehaviour {
 				{
 					CleanFx( t_gb );
 
-					PlayFxSound( t_gb );
+					SoundHelper.PlayFxSound( t_gb, m_fx_path );
 				}
-			}
-		}
-
-		private void PlayFxSound( GameObject p_gb ){
-			EffectIdTemplate t_template = EffectIdTemplate.getEffectTemplateByEffectPath( m_fx_path, false );
-
-			if( t_template == null ){
-				return;
-			}
-
-			if( t_template.HaveSound() ){
-				SoundPlayEff spe = p_gb.AddComponent<SoundPlayEff>();
-				
-				spe.PlaySound( t_template.sound );
 			}
 		}
 

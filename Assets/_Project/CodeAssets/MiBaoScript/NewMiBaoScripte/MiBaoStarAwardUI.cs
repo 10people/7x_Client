@@ -133,26 +133,26 @@ public class MiBaoStarAwardUI : MonoBehaviour,SocketProcessor {
 				
 				QiXiongSerializer t_qx = new QiXiongSerializer();
 				
-				GetFullStarAwardresp mGetFullStarAwardresp = new GetFullStarAwardresp();
-				
-				t_qx.Deserialize(t_stream, mGetFullStarAwardresp, mGetFullStarAwardresp.GetType());
-				
-				Debug.Log("mGetFullStarAwardresp = " +mGetFullStarAwardresp.success);
-				
-				if(mGetFullStarAwardresp.success == 1)
-				{
-					MiBaoScrollView.m_MiBaoScrollView.StarNum -= MiBaoScrollView.m_MiBaoScrollView.my_MiBaoInfo.needAllStar;
-					
-					MiBaoScrollView.m_MiBaoScrollView.my_MiBaoInfo.needAllStar = mGetFullStarAwardresp.nexNeedAllStar;
-					
-					MiBaoScrollView.m_MiBaoScrollView.ShowScrollBar();
-				}
-				else
-				{
-					Debug.Log("领取失败了 后台数据");
-				}
-				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
-				Close();
+//				GetFullStarAwardresp mGetFullStarAwardresp = new GetFullStarAwardresp();
+//				
+//				t_qx.Deserialize(t_stream, mGetFullStarAwardresp, mGetFullStarAwardresp.GetType());
+//				
+//				Debug.Log("mGetFullStarAwardresp = " +mGetFullStarAwardresp.success);
+//				
+//				if(mGetFullStarAwardresp.success == 1)
+//				{
+//					MiBaoScrollView.m_MiBaoScrollView.StarNum -= MiBaoScrollView.m_MiBaoScrollView.my_MiBaoInfo.needAllStar;
+//					
+//					MiBaoScrollView.m_MiBaoScrollView.my_MiBaoInfo.needAllStar = mGetFullStarAwardresp.nexNeedAllStar;
+//					
+//					MiBaoScrollView.m_MiBaoScrollView.ShowScrollBar();
+//				}
+//				else
+//				{
+//					Debug.Log("领取失败了 后台数据");
+//				}
+//				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
+//				Close();
 				return true;
 			}
 			default: return false;

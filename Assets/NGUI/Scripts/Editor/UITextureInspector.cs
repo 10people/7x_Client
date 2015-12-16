@@ -51,6 +51,7 @@ public class UITextureInspector : UIWidgetInspector
 			}
 		}
 		EditorGUI.EndDisabledGroup();
+
 		return true;
 	}
 

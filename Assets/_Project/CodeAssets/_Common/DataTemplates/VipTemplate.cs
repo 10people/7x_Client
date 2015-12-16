@@ -11,22 +11,31 @@ public class VipTemplate : XmlLoadManager
     public int lv;
     public int needNum;
     public int bugMoneyTime;
-
     public int bugTiliTime;
     public int bugBaizhanTime;
+
     public int saodangFree;
     public int xilianLimit;
     public int yujueDuihuan;
     public int legendPveRefresh;
     public int YBxilianLimit;
+
     public int dangpuRefreshLimit;
     public int desc;
     public float baizhanPara;
     public int houseFitmentNum;
 	public int MiBaoLimit;
+
 	public int YouxiaTimes;
 	public int YunbiaoTimes;
 	public int JiebiaoTimes;
+	public int InviteAssistTimes;
+	public int LveduoTimes;
+
+	public int HuangyeTimes;
+	public int BloodVialTimes;
+	public int resurgenceTimes;
+	public int CartPinZhiMax;
 
     public static List<VipTemplate> templates = new List<VipTemplate>();
 
@@ -124,6 +133,24 @@ public class VipTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.JiebiaoTimes = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.InviteAssistTimes = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.LveduoTimes = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.HuangyeTimes = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.BloodVialTimes = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.resurgenceTimes = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.CartPinZhiMax = int.Parse(t_reader.Value);
             }
 
             //			t_template.Log();

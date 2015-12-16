@@ -363,7 +363,7 @@ public class SoundManager{
 		for(int i = 0; i < m_listShoudID.Count; i ++){
 			if( p_path == m_listShoudID[ i ].sPath ){
 				if( !m_sound_dict.ContainsKey( m_listShoudID[i].iId ) ){
-					StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+					LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 					                         PrepareForBattleField.CONST_BATTLE_LOADING_SOUND, p_path );
 
 					m_sound_dict[ m_listShoudID[i].iId ] = t_clip;

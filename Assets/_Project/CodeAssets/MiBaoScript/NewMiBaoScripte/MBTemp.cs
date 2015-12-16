@@ -9,25 +9,12 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
 public class MBTemp : MonoBehaviour {
-//	required int64 dbId = 1;			// 秘宝DBid，不在db中发-1
-//	required int32 tempId = 2;			// 秘宝类型id，配置文件中的tempId
-//	required int32 miBaoId = 3;			// 配置文件mibao中id字段
-//	required int32 star = 4;			// 星级
-//	required int32 level = 5;			// 等级 , <= 0 表示没有激活
-//	required int32 suiPianNum = 6;		// 拥有的碎片数量
-//	required int32 needSuipianNum = 7;	// 升星 需要的碎片数量
-//	required int32 gongJi = 8;			// 攻击
-//	required int32 fangYu = 9;			// 防御
-//	required int32 shengMing = 10;		// 生命
-//	required bool lock = 11;
-
-	public GameObject Lock;
 
 	public GameObject MiBaoActive;
 
 	public GameObject MiBaoDisActive;
 
-	public UILabel suipianNum;
+	public UILabel Lv;
 
 	public UILabel HechengNum;
 
@@ -37,7 +24,7 @@ public class MBTemp : MonoBehaviour {
 
 	public UISprite Star;
 
-	public UISprite Gree_Star;
+	//public UISprite Gree_Star;
 
 	public UISprite MiBaoIcon;
 
@@ -60,25 +47,6 @@ public class MBTemp : MonoBehaviour {
 
 	public void Init()
 	{
-		//Debug.Log ("==================5  = "+mMiBaoinfo.miBaoId);
-		if(mMiBaoinfo.isLock)
-		{
-			Lock.SetActive(true);
-			Proess.SetActive(false);
-		}
-		else
-		{
-			if(mMiBaoinfo.level <= 0)
-			{
-				Proess.SetActive(true);
-
-			}
-			else
-			{
-				Proess.SetActive(false);
-			}
-		}
-
 		if(mMiBaoinfo.level <= 0)
 		{
 			MiBaoActive.SetActive(false);
@@ -108,19 +76,13 @@ public class MBTemp : MonoBehaviour {
 			UISlider mSlider = Proess.GetComponent<UISlider>();
 			
 			mSlider.value = (float)(mMiBaoinfo.suiPianNum)/(float)(mMiBaoSuipianXMltemp.hechengNum);
-
-			if(mMiBaoinfo.suiPianNum >= mMiBaoSuipianXMltemp.hechengNum && !mMiBaoinfo.isLock )
-			{
-				Tips.gameObject.SetActive(true);
-			}
-			CreateStar (Gree_Star);
-			
+	
 		}
 		else
 		{
 			MiBaoXmlTemp mmibao = MiBaoXmlTemp.getMiBaoXmlTempById(mMiBaoinfo.miBaoId);
 
-			suipianNum.text = mMiBaoinfo.level.ToString();
+			Lv.text = "Lv."+mMiBaoinfo.level.ToString();
 
 			MiBaoActive.SetActive(true);
 			
@@ -131,13 +93,13 @@ public class MBTemp : MonoBehaviour {
 			MiBaopinZi.spriteName = "";
 			ExpXxmlTemp mExpXxmlTemp = ExpXxmlTemp.getExpXxmlTemp_By_expId (mmibao.expId,mMiBaoinfo.level);
 
-			if(MiBaoManager.Instance().G_MiBaoInfo.levelPoint > 0 && JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp &&
-			   mMiBaoinfo.level < JunZhuData.Instance().m_junzhuInfo.level&&mMiBaoinfo.level < 100 && !mMiBaoinfo.isLock)
-			{
-				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LOCkPoint);
-				Tips.gameObject.SetActive(true);
-			}
-		
+//			if(MiBaoManager.Instance().G_MiBaoInfo.levelPoint > 0 && JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp &&
+//			   mMiBaoinfo.level < JunZhuData.Instance().m_junzhuInfo.level&&mMiBaoinfo.level < 100 && !mMiBaoinfo.isLock)
+//			{
+//				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LOCkPoint);
+//				Tips.gameObject.SetActive(true);
+//			}
+//		
 
 			switch(mMiBaoinfo.star)
 			{
@@ -170,10 +132,6 @@ public class MBTemp : MonoBehaviour {
 				break;
 
 			}
-			if(mMiBaoinfo.suiPianNum >= mMiBaoinfo.needSuipianNum && mMiBaoinfo.star < 5&& !mMiBaoinfo.isLock)
-			{
-				Tips.gameObject.SetActive(true);
-			}
 			CreateStar (Star);
 		}
 
@@ -182,7 +140,7 @@ public class MBTemp : MonoBehaviour {
 		{
 			if(int.Parse(Global.m_sPanelWantRun)  == mMiBaoinfo.miBaoId)
 			{
-				ShowActiveInfo();
+				//ShowActiveInfo();
 				Global.m_sPanelWantRun = "";
 			}
 		}
@@ -199,7 +157,7 @@ public class MBTemp : MonoBehaviour {
 				}
 				else
 				{
-					ShowActiveInfo();
+					//ShowActiveInfo();
 				}
 
 			}
@@ -246,14 +204,6 @@ public class MBTemp : MonoBehaviour {
 
 	public void ShowActiveInfo()
 	{
-//		Debug.Log ("mMiBaoinfo.mibaoid = " +mMiBaoinfo.miBaoId);
-//		
-//		Debug.Log ("mMiBaoinfo.gongJi = " +mMiBaoinfo.gongJi);
-//		
-//		Debug.Log ("mMiBaoinfo.fangYu = " +mMiBaoinfo.fangYu);
-//		
-//		Debug.Log ("mMiBaoinfo.shengMing = " +mMiBaoinfo.shengMing);
-
 		if(FreshGuide.Instance().IsActive(100050)&& TaskData.Instance.m_TaskInfoDic[100050].progress>= 0)
 		{
 			
@@ -263,10 +213,7 @@ public class MBTemp : MonoBehaviour {
 
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]); //选择秘宝
 		}
-
-		MiBaoManager.Instance ().MiBaoManager_mMiBaotempinfo = mMiBaoinfo;
-
-		MiBaoManager.Instance ().SortUI ("MiBaoTempInfo");
+		NewMiBaoManager.Instance ().ShowMiBaoDeilInf (mMiBaoinfo);
 	}
 
 	private int Mony;

@@ -19,6 +19,7 @@ public class AllianceItemManagerment : MonoBehaviour {
     public delegate void OnClick_Application(int country_id,int alliance_id);
     OnClick_Application CallBackAppliacetion;
     private int _Country = 0;
+    private bool _isCanApply = false;
 	void Start () 
     {
         m_listEvent.ForEach(p => p.m_Handle += TouchIndex);
@@ -37,15 +38,23 @@ public class AllianceItemManagerment : MonoBehaviour {
         {
             if (CallBackAppliacetion != null)
             {
-                if (_Country != JunZhuData.Instance().m_junzhuInfo.guoJiaId)
+                if (_isCanApply)
                 {
-                    CallBackAppliacetion(_Country, ItemId);
+                    if (_Country != JunZhuData.Instance().m_junzhuInfo.guoJiaId)
+                    {
+                        CallBackAppliacetion(_Country, ItemId);
+                    }
+                    else
+                    {
+                        CallBackAppliacetion(-1, ItemId);
+                    }
                 }
                 else
                 {
-                    CallBackAppliacetion(-1,ItemId);
+                    EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
+                                                , LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_APPLY_HOUR)
+                                                , "");
                 }
-            
             }
         
         }
@@ -58,15 +67,10 @@ public class AllianceItemManagerment : MonoBehaviour {
     public void ShowAllianceItem(AllianceLayerManagerment.AllianceItemInfo aii, OnClick_Touch callback,OnClick_Application application)
     {
         ItemId = aii.id;
-        // m_SpriteIcon.spriteName = icon;
         _Country = aii.country;
-        //m_ObjGou.SetActive(aii.isApply);
-        Debug.Log("aii.isApplyaii.isApplyaii.isApply" + aii.isApply);
- 
- 
+        _isCanApply = aii.isCanApply;
         m_labButtonName.text = !aii.isApply ? "申请":"已申请";
         m_listEvent[1].GetComponent<ButtonColorManagerment>().ButtonsControl(!aii.isApply);
-        //m_listEvent[1].gameObject.SetActive (!aii.isApply);
         m_LabName.text = "<" + aii.name + ">";
         m_LabLevel.text = aii.level.ToString();
         m_LabCountry.text = NameIdTemplate.GetName_By_NameId(aii.country);
@@ -78,6 +82,4 @@ public class AllianceItemManagerment : MonoBehaviour {
         }
         CallBackAppliacetion = application;
     }
-	
-	 
 }

@@ -15,7 +15,7 @@ public class TaskForwardManagerment : MonoBehaviour
 
     public  void ShowNeedInfo()
     {
-        m_TaskLayerManager.ChangeLayer(listButton[m_ButtonIndex]);
+      //  m_TaskLayerManager.ChangeLayer(listButton[m_ButtonIndex]);
     }
 	
 

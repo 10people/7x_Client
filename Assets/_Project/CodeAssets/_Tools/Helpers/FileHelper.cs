@@ -14,6 +14,20 @@ public class FileHelper {
 
 	#region Directory
 
+	public static void DeleteDirectoryAndCreate( string p_full_path ){
+		FileHelper.DirectoryDelete( p_full_path, true );
+		
+		FileHelper.DirectoryCreate( p_full_path );
+	}
+
+	public static void DirectoryCreate( string p_full_path ){
+		DirectoryInfo t_dir = new DirectoryInfo( p_full_path );
+
+		if( !t_dir.Exists ){
+			Directory.CreateDirectory( p_full_path );
+		}
+	}
+
 	public static void DirectoryDelete( string p_full_path, bool p_recursive ){
 		DirectoryInfo t_dir = new DirectoryInfo( p_full_path );
 
@@ -66,12 +80,36 @@ public class FileHelper {
 
 	#region File Ops
 
+	/// BackUp file, name it as XXX.back.
+	public static void FileBackUp( string p_file_path ){
+		string t_back_path = p_file_path + ".back" + "." + TimeHelper.GetCurrentTime_String();
+//		string t_back_path = p_file_path + ".back";
+
+		if( File.Exists( t_back_path ) ){
+			File.Delete( t_back_path );
+		}
+		
+		{
+//			Debug.Log( "src: " + p_file_path );
+//
+//			Debug.Log( "dst: " + t_back_path );
+
+			File.Copy( p_file_path, t_back_path );
+		}
+	}
+
 	public static void FileCopy( string p_src, string p_dest ){
 		if ( File.Exists ( p_dest ) ) {
 			File.Delete ( p_dest );
 		}
 
 		File.Copy( p_src, p_dest );
+	}
+
+	public static void FileDelete( string p_file_path ){
+		if( File.Exists( p_file_path ) ){
+			File.Delete( p_file_path );
+		}
 	}
 
 	#endregion
@@ -83,12 +121,11 @@ public class FileHelper {
 	/** Params:
     * p_file_name: Local_File.bin
     */
-	public static System.IO.FileStream GetPersistentFileStream(string p_file_name)
-	{
-		string t_local_file_name = PathHelper.GetPersistentFilePath(p_file_name);
+	public static System.IO.FileStream GetPersistentFileStream( string p_file_name ){
+		string t_local_file_name = PathHelper.GetPersistentFilePath( p_file_name );
 		
-		System.IO.FileStream t_stream = new System.IO.FileStream(t_local_file_name,
-		                                                         System.IO.FileMode.OpenOrCreate);
+		System.IO.FileStream t_stream = new System.IO.FileStream( t_local_file_name,
+		                                                         System.IO.FileMode.OpenOrCreate );
 		
 		#if UNITY_IPHONE
 		UnityEngine.iOS.Device.SetNoBackupFlag( t_local_file_name );
@@ -96,11 +133,24 @@ public class FileHelper {
 		
 		return t_stream;
 	}
+
+	public static string ReadString( string p_full_path ){
+		try{
+			System.IO.FileStream t_stream = new System.IO.FileStream( p_full_path,
+		                                                         System.IO.FileMode.Open );
+
+			return ReadString( t_stream );
+		}
+		catch( Exception e ){
+			Debug.Log( "File not exist: " + e );
+
+			return "";
+		}
+	} 
 	
 	/// Params:
 	/// p_file_name: Local_File.bin
-	public static void DeletePersistentFileStream(string p_file_name)
-	{
+	public static void DeletePersistentFileStream( string p_file_name ){
 		string t_local_file_name = PathHelper.GetPersistentFilePath ( p_file_name );
 		
 		if (System.IO.File.Exists( t_local_file_name ) ) {
@@ -108,20 +158,18 @@ public class FileHelper {
 		}
 	}
 	
-	public static string ReadString(System.IO.FileStream p_stream)
-	{
-		byte[] t_bytes = new byte[p_stream.Length];
+	public static string ReadString( System.IO.FileStream p_stream ){
+		byte[] t_bytes = new byte[ p_stream.Length ];
 		
-		p_stream.Read(t_bytes, 0, (int)p_stream.Length);
+		p_stream.Read( t_bytes, 0, (int)p_stream.Length );
 		
 		string t_str = Encoding.UTF8.GetString(t_bytes);
 		
 		return t_str;
 	}
 	
-	public static void WriteString(System.IO.FileStream p_stream, string p_data)
-	{
-		byte[] t_bytes = Encoding.UTF8.GetBytes(p_data);
+	public static void WriteString( System.IO.FileStream p_stream, string p_data ){
+		byte[] t_bytes = Encoding.UTF8.GetBytes( p_data );
 		
 		p_stream.Write(t_bytes, 0, t_bytes.Length);
 	}
@@ -131,26 +179,52 @@ public class FileHelper {
 	public static void OutputFile( string p_path, string p_text ){
 		FileStream t_file_stream = null;
 		
-		if (File.Exists(p_path))
-		{
-			t_file_stream = new FileStream(p_path, FileMode.Truncate);
+		if( File.Exists( p_path ) ){
+			t_file_stream = new FileStream( p_path, FileMode.Truncate );
 		}
-		else
-		{
-			t_file_stream = new FileStream(p_path, FileMode.Create);
+		else{
+			t_file_stream = new FileStream( p_path, FileMode.Create );
 		}
 		
 		StreamWriter t_stream_writer = new StreamWriter(
 			t_file_stream,
 			Encoding.Default);
 		
-		t_stream_writer.Write(p_text);
+		t_stream_writer.Write( p_text );
 		
 		t_stream_writer.Close();
 		
 		t_file_stream.Close();
 	}
 	
+	#endregion
+
+
+
+	#region File Size
+
+	/** Desc:
+	 * Return file size about the bundle, -2G to 2G.
+	 * 
+	 * Params:
+	 * 1.p_full_path:			"E:/WorkSpace_External/DynastyMobile_2014/Assets/StreamingAssets/Android/Resources/_UIs/_CommonAtlas/Common";
+	 */
+	public static int GetFileSize( string p_full_path ){
+		FileInfo t_file_info = new FileInfo( p_full_path );
+
+		if( !t_file_info.Exists ){
+			Debug.LogError( "Error, File not exist: " + p_full_path );
+
+			return 0;
+		}
+
+		return GetFileSize( t_file_info );
+	}
+	
+	public static int GetFileSize( FileInfo p_file_info ){
+		return (int)p_file_info.Length;
+	}
+
 	#endregion
 
 

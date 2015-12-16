@@ -13,8 +13,12 @@ public class Joystick : MYNGUIPanel
 
     private UICamera.MouseOrTouch m_MouseOrTouch;
 
+	public BoxCollider m_Box;
+
     public Vector3 m_uiOffset;
 
+	public UISprite m_spriteBG;
+	public UISprite m_spriteButton;
     public bool m_isLockBack;
     void Awake()
     {
@@ -23,7 +27,8 @@ public class Joystick : MYNGUIPanel
 
     void Start()
     {
-
+		m_Box.center = new Vector3((480 + ClientMain.m_iMoveX) / 2 - 76, (320 + ClientMain.m_iMoveY) / 2 - 76, 0);
+		m_Box.size = new Vector3(480 + ClientMain.m_iMoveX, 320 + ClientMain.m_iMoveY, 0);
     }
 
     public void setPos(int x, int y)
@@ -46,17 +51,6 @@ public class Joystick : MYNGUIPanel
                 m_joystickTransform.localPosition = Vector3.zero;
                 m_uiOffset = Vector3.zero;
 
-                if (MainCityUI.m_MainCityUI != null)
-                {
-                    if (MainCityUI.m_PlayerPlace == MainCityUI.PlayerPlace.MainCity)
-                    {
-                        //                    StopNavigation();
-                    }
-                    else
-                    {
-                        HousePlayerController.s_HousePlayerController.StopPlayerNavigation();
-                    }
-                }
                 return;
             }
             m_joystickTransform.position = m_currentCamera.ScreenToWorldPoint(m_MouseOrTouch.pos);
@@ -68,11 +62,6 @@ public class Joystick : MYNGUIPanel
             }
             m_uiOffset = new Vector3(m_joystickTransform.localPosition.x, 0, m_joystickTransform.localPosition.y);
         }
-        //else if (isWidgetShowed)
-        //{
-        //    SetChildrenWidgetA(transform, 0.01f);
-        //    isWidgetShowed = false;
-        //}
     }
 
     private void SetChildrenWidgetA(Transform parent, float a)
@@ -111,22 +100,11 @@ public class Joystick : MYNGUIPanel
                 m_joystickBackGround.position = m_currentCamera.ScreenToWorldPoint(m_MouseOrTouch.pos);
                 //Check
                 m_joystickBackGround.localPosition = new Vector3(
-                    m_joystickBackGround.localPosition.x < 90 ? 90 : m_joystickBackGround.localPosition.x,
-                    m_joystickBackGround.localPosition.y < 90 ? 90 : m_joystickBackGround.localPosition.y,
+                    m_joystickBackGround.localPosition.x < 76 ? 76 : m_joystickBackGround.localPosition.x,
+                    m_joystickBackGround.localPosition.y < 76 ? 76 : m_joystickBackGround.localPosition.y,
                     0);
-            }
-
-            if (MainCityUI.m_MainCityUI != null)
-            {
-                //Only in main city
-                if (MainCityUI.m_PlayerPlace == MainCityUI.PlayerPlace.MainCity)
-                {
-                    //                PlayerModelController.m_playerModelController.StopNavigation();
-                }
-                else
-                {
-                    HousePlayerController.s_HousePlayerController.StopPlayerNavigation();
-                }
+				m_spriteBG.color = new Color(1f, 1f, 1f, 1f);
+				m_spriteButton.color = new Color(1f, 1f, 1f, 1f);
             }
         }
         else
@@ -134,9 +112,11 @@ public class Joystick : MYNGUIPanel
             CityGlobalData.m_joystickControl = false;
 
             m_MouseOrTouch = null;
-            m_joystickBackGround.localPosition = new Vector3(90, 90, 0);
+            m_joystickBackGround.localPosition = new Vector3(76, 76, 0);
             m_joystickTransform.localPosition = Vector3.zero;
             m_uiOffset = Vector3.zero;
+			m_spriteBG.color = new Color(1f, 1f, 1f, 0.3f);
+			m_spriteButton.color = new Color(1f, 1f, 1f, 0.3f);
         }
     }
 

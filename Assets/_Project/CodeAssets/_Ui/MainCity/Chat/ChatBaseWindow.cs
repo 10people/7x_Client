@@ -52,8 +52,6 @@ public class ChatBaseWindow : MonoBehaviour
 
     #region Carriage Help
 
-    public XieZhuTimesResp m_xieZhuTimesResp;
-
     public UILabel InfoLabel;
     public GameObject InfoObject;
 

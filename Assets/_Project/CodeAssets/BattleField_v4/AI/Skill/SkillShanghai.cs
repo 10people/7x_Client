@@ -15,17 +15,33 @@ public class SkillShanghai : SkillDataBead
 	public override void setData(ref string data)
 	{
 		int tempNum = int.Parse(Global.NextCutting(ref data));
-
-		for(int i = 0; i < tempNum; i ++)
+		float time;
+		if(tempNum == -1)
 		{
-			m_iType.Add(int.Parse(Global.NextCutting(ref data)));
-			m_iXishu.Add(float.Parse(Global.NextCutting(ref data)));
-			m_fTime.Add(float.Parse(Global.NextCutting(ref data)));
-//			m_HeroSkill.dis += "生效时间" + m_fTime[i] + "，";
+			tempNum = int.Parse(Global.NextCutting(ref data));
+			time = float.Parse(Global.NextCutting(ref data));
+			int tempType = int.Parse(Global.NextCutting(ref data));
+			float tempXishu = float.Parse(Global.NextCutting(ref data));
+			float tempTime = float.Parse(Global.NextCutting(ref data));
+			for(int i = 0; i < tempNum; i ++)
+			{
+				m_iType.Add(tempType);
+				m_iXishu.Add(tempXishu);
+				m_fTime.Add(time + (tempTime * (i + 1)));
+			}
+		}
+		else
+		{
+			for(int i = 0; i < tempNum; i ++)
+			{
+				m_iType.Add(int.Parse(Global.NextCutting(ref data)));
+				m_iXishu.Add(float.Parse(Global.NextCutting(ref data)));
+				m_fTime.Add(float.Parse(Global.NextCutting(ref data)));
+			}
 		}
 	}
 
-	public override void activeSkill(int state)
+	public override void activeSkill(int state, GameObject skillEff)
 	{
 		for(int i = 0; i < m_HeroSkill.m_listATTTarget.Count; i ++)
 		{

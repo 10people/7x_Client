@@ -46,7 +46,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 	public MibaoInfoResp ShowMiBaoGroupTemp;
 
-	public MibaoGroup ShowMiBaoGroup;
+	//public MibaoGroup ShowMiBaoGroup;
 
 	public List<UISprite> mMBTempt = new List<UISprite>();
 
@@ -84,226 +84,226 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 	public int SkillId;
 	public void Init()
 	{
-		CanActive = false;
-		
-	    CanJinjie = false;
+//		CanActive = false;
+//		
+//	    CanJinjie = false;
+//
+//		int MiBaoNum = 0;
+//		 
+////		for(int i = 0 ; i < ShowMiBaoGroup.mibaoInfo.Count; i ++)
+////		{
+////			MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(ShowMiBaoGroup.mibaoInfo[i].miBaoId);
+////
+////			mMBTempt[i].spriteName = mMiBaoXmlTemp.icon.ToString();
+////
+////			if(ShowMiBaoGroup.mibaoInfo[i].level > 0&& !ShowMiBaoGroup.mibaoInfo[i].isLock )
+////			{
+////				MiBaoNum += 1;
+////				mMBTempt[i].color =  Color.white;
+////			}
+////			else
+////			{
+////				mMBTempt[i].color =  new Color(0,0,0,255);
+////			}
+////		}
+////		Debug.Log ("SkillId = "+SkillId);
+//
+//		MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempBy_pz_id (MiBaoNum,SkillId);
+//		
+//		NameIdTemplate mName = NameIdTemplate.getNameIdTemplateByNameId (mSkill.nameId);
+//		
+//		DescIdTemplate mDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.zuheDesc);
+//
+//		SkillTemplate mskilltemp = SkillTemplate.getSkillTemplateById (mSkill.skill);
+//
+//		NameIdTemplate Skill_Name = NameIdTemplate.getNameIdTemplateByNameId (mskilltemp.skillName);
+//
+//		SkillIcon1.spriteName = mSkill.icon.ToString ();
+//		
+//		SkillIcon2.spriteName = mSkill.icon.ToString ();
+//
+//		ZuheName.text = mName.Name; //大名字
+//
+//		SkillName.text = Skill_Name.Name; //xx小名字
+//
+//		DescIdTemplate SkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.shuxingDesc);
+//
+//		Skillinstruction.text = SkillDes.description;
+//
+////		Debug.Log ("mSkill.SkillDetail = " +mSkill.SkillDetail);
+//
+//		DescIdTemplate DeliSkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.SkillDetail);
+//
+//		instruction.text = DeliSkillDes.description;
+//
+//
+//		if(mSkill.desc1 != 0)
+//		{
+//			DescIdTemplate SHUXIng1Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc1);
+//			
+//			SHUXIng1.text = SHUXIng1Des.description;
+//
+//			SHUXIng_1.text = mSkill.value1;
+//		}
+//
+//		if(mSkill.desc2 != 0)
+//		{
+//			DescIdTemplate SHUXIng2Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc2);
+//			
+//			SHUXIng2.text = SHUXIng2Des.description;
+//			
+//			SHUXIng_2.text = mSkill.value2;
+//		}
+//		if(mSkill.desc3 != 0)
+//		{
+//			DescIdTemplate SHUXIng3Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc3);
+//			
+//			SHUXIng3.text = SHUXIng3Des.description;
+//			
+//			SHUXIng_3.text = mSkill.value3;
+//		}
+//		if(mSkill.desc4 != 0)
+//		{
+//			DescIdTemplate SHUXIng4Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc4);
+//			
+//			SHUXIng4.text = SHUXIng4Des.description;
+//			
+//			SHUXIng_4.text = mSkill.value4;
+//		}
+//
+//		DescIdTemplate All_instructionDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.SkillSummary);
+//
+//		All_instruction.text = All_instructionDes.description;
+//
+//		int number = 0;
 
-		int MiBaoNum = 0;
-		 
-		for(int i = 0 ; i < ShowMiBaoGroup.mibaoInfo.Count; i ++)
-		{
-			MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(ShowMiBaoGroup.mibaoInfo[i].miBaoId);
+//		if (ShowMiBaoGroup.hasActive == 1)
+//		{
+//			if(ShowMiBaoGroup.hasJinjie == 0)
+//			{
+//				number = 2;
+//			}
+//			else
+//			{
+//				number = 3;
+//			}
+//		}
 
-			mMBTempt[i].spriteName = mMiBaoXmlTemp.icon.ToString();
+//		name_Num.text = mName.Name+"("+number.ToString()+"/"+"3"+")"; //大名字
+//
+//		int effectId = 100160 ;
 
-			if(ShowMiBaoGroup.mibaoInfo[i].level > 0&& !ShowMiBaoGroup.mibaoInfo[i].isLock )
-			{
-				MiBaoNum += 1;
-				mMBTempt[i].color =  Color.white;
-			}
-			else
-			{
-				mMBTempt[i].color =  new Color(0,0,0,255);
-			}
-		}
-//		Debug.Log ("SkillId = "+SkillId);
-
-		MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempBy_pz_id (MiBaoNum,SkillId);
-		
-		NameIdTemplate mName = NameIdTemplate.getNameIdTemplateByNameId (mSkill.nameId);
-		
-		DescIdTemplate mDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.zuheDesc);
-
-		SkillTemplate mskilltemp = SkillTemplate.getSkillTemplateById (mSkill.skill);
-
-		NameIdTemplate Skill_Name = NameIdTemplate.getNameIdTemplateByNameId (mskilltemp.skillName);
-
-		SkillIcon1.spriteName = mSkill.icon.ToString ();
-		
-		SkillIcon2.spriteName = mSkill.icon.ToString ();
-
-		ZuheName.text = mName.Name; //大名字
-
-		SkillName.text = Skill_Name.Name; //xx小名字
-
-		DescIdTemplate SkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.shuxingDesc);
-
-		Skillinstruction.text = SkillDes.description;
-
-//		Debug.Log ("mSkill.SkillDetail = " +mSkill.SkillDetail);
-
-		DescIdTemplate DeliSkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.SkillDetail);
-
-		instruction.text = DeliSkillDes.description;
-
-
-		if(mSkill.desc1 != 0)
-		{
-			DescIdTemplate SHUXIng1Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc1);
-			
-			SHUXIng1.text = SHUXIng1Des.description;
-
-			SHUXIng_1.text = mSkill.value1;
-		}
-
-		if(mSkill.desc2 != 0)
-		{
-			DescIdTemplate SHUXIng2Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc2);
-			
-			SHUXIng2.text = SHUXIng2Des.description;
-			
-			SHUXIng_2.text = mSkill.value2;
-		}
-		if(mSkill.desc3 != 0)
-		{
-			DescIdTemplate SHUXIng3Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc3);
-			
-			SHUXIng3.text = SHUXIng3Des.description;
-			
-			SHUXIng_3.text = mSkill.value3;
-		}
-		if(mSkill.desc4 != 0)
-		{
-			DescIdTemplate SHUXIng4Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc4);
-			
-			SHUXIng4.text = SHUXIng4Des.description;
-			
-			SHUXIng_4.text = mSkill.value4;
-		}
-
-		DescIdTemplate All_instructionDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.SkillSummary);
-
-		All_instruction.text = All_instructionDes.description;
-
-		int number = 0;
-
-		if (ShowMiBaoGroup.hasActive == 1)
-		{
-			if(ShowMiBaoGroup.hasJinjie == 0)
-			{
-				number = 2;
-			}
-			else
-			{
-				number = 3;
-			}
-		}
-
-		name_Num.text = mName.Name+"("+number.ToString()+"/"+"3"+")"; //大名字
-
-		int effectId = 100160 ;
-
-		if(ShowMiBaoGroup.hasActive == 0)
-		{
-			ActiveBtn.SetActive(true);
-
-			JinJiebtn.SetActive(false);
-			if(MiBaoNum >= 2)
-			{
-
-				CanActive = true;
-
-				LockAndJinJie.gameObject.SetActive(true);
-
-				LockAndJinJie.text = "解锁";
-
-				PushAndNotificationHelper.SetRedSpotNotification (610, true);
-
-				Arts.SetActive(true);
-
-				StartCoroutine("BtnShake");
-
-				if(FreshGuide.Instance().IsActive(100220)&& TaskData.Instance.m_TaskInfoDic[100220].progress>= 0)
-				{
-					
-					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100220];
-					
-//					Debug.Log("秘宝技能激活2");
-					
-					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]); //选择秘宝
-
-				}
-			}
-			else
-			{
-				Arts.SetActive(false);
-			}
-		}
-		else
-		{
-			ActiveBtn.SetActive(false);
-
-			if(ShowMiBaoGroup.hasJinjie == 0)
-			{
-				JinJiebtn.SetActive(true);
-
-				if(MiBaoNum >= 3)
-				{
-					CanJinjie = true;
-
-					LockAndJinJie.gameObject.SetActive(true);
-
-					LockAndJinJie.text = "进阶";
-
-					Arts.SetActive(true);
-
-					StartCoroutine("BtnMove");
-				}
-				else
-				{
-					Arts.SetActive(false);
-					JinJiebtn.SetActive(false);
-					LockAndJinJie.gameObject.SetActive(false);
-				}
-			}
-			else
-			{
-				LockAndJinJie.gameObject.SetActive(false);
-				Arts.SetActive(false);
-				JinJiebtn.SetActive(false);
-			}
-		}
+//		if(ShowMiBaoGroup.hasActive == 0)
+//		{
+//			ActiveBtn.SetActive(true);
+//
+//			JinJiebtn.SetActive(false);
+//			if(MiBaoNum >= 2)
+//			{
+//
+//				CanActive = true;
+//
+//				LockAndJinJie.gameObject.SetActive(true);
+//
+//				LockAndJinJie.text = "解锁";
+//
+//				PushAndNotificationHelper.SetRedSpotNotification (610, true);
+//
+//				Arts.SetActive(true);
+//
+//				StartCoroutine("BtnShake");
+//
+//				if(FreshGuide.Instance().IsActive(100220)&& TaskData.Instance.m_TaskInfoDic[100220].progress>= 0)
+//				{
+//					
+//					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100220];
+//					
+////					Debug.Log("秘宝技能激活2");
+//					
+//					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]); //选择秘宝
+//
+//				}
+//			}
+//			else
+//			{
+//				Arts.SetActive(false);
+//			}
+//		}
+//		else
+//		{
+//			ActiveBtn.SetActive(false);
+//
+//			if(ShowMiBaoGroup.hasJinjie == 0)
+//			{
+//				JinJiebtn.SetActive(true);
+//
+//				if(MiBaoNum >= 3)
+//				{
+//					CanJinjie = true;
+//
+//					LockAndJinJie.gameObject.SetActive(true);
+//
+//					LockAndJinJie.text = "进阶";
+//
+//					Arts.SetActive(true);
+//
+//					StartCoroutine("BtnMove");
+//				}
+//				else
+//				{
+//					Arts.SetActive(false);
+//					JinJiebtn.SetActive(false);
+//					LockAndJinJie.gameObject.SetActive(false);
+//				}
+//			}
+//			else
+//			{
+//				LockAndJinJie.gameObject.SetActive(false);
+//				Arts.SetActive(false);
+//				JinJiebtn.SetActive(false);
+//			}
+//		}
 
 		//特效加载
 
 		//UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,SkillFIX,
 		                                              // EffectIdTemplate.GetPathByeffectId(effectId));
 	}
-	IEnumerator BtnShake()
-	{
-
-		while(ShowMiBaoGroup.hasActive == 0)
-		{
-			yield return new WaitForSeconds (1f);
-			
-			iTween.ShakePosition(ActiveBtn,new Vector3(0.02f,0.001f,0),1);
-			//iTween.ShakeRotation(ActiveBtn,new Vector3(0,0,10f),1);
-		}
-
-	}
+//	IEnumerator BtnShake()
+//	{
+//
+//		while(0)
+//		{
+//			yield return new WaitForSeconds (1f);
+//			
+//			iTween.ShakePosition(ActiveBtn,new Vector3(0.02f,0.001f,0),1);
+//			//iTween.ShakeRotation(ActiveBtn,new Vector3(0,0,10f),1);
+//		}
+//
+//	}
 	int Dir = -1;
 	float Speed = 0.03f;
-	IEnumerator BtnMove()
-	{
-		Vector3 starpos = new Vector3 (0,-11,0);;
-
-		while(ShowMiBaoGroup.hasJinjie == 0)
-		{
-
-			Vector3 endPos  = starpos+ new Vector3(0,20,0);
-
-			//Debug.Log("move.....le1  =  " +endPos);
-
-			TweenPosition.Begin(JinJiebtn,1f,endPos);
-
-			yield return new WaitForSeconds (1.0f);
-
-			JinJiebtn.transform.localPosition = endPos - new Vector3(0,20,0);
-
-			//Debug.Log("move.....le2  =  " +JinJiebtn.transform.localPosition);
-		}
-		
-	}
+//	IEnumerator BtnMove()
+//	{
+//		Vector3 starpos = new Vector3 (0,-11,0);;
+//
+//		while(0)
+//		{
+//
+//			Vector3 endPos  = starpos+ new Vector3(0,20,0);
+//
+//			//Debug.Log("move.....le1  =  " +endPos);
+//
+//			TweenPosition.Begin(JinJiebtn,1f,endPos);
+//
+//			yield return new WaitForSeconds (1.0f);
+//
+//			JinJiebtn.transform.localPosition = endPos - new Vector3(0,20,0);
+//
+//			//Debug.Log("move.....le2  =  " +JinJiebtn.transform.localPosition);
+//		}
+//		
+//	}
 	int Activetype ;
 
 	public void OpenLock()
@@ -384,24 +384,24 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 	}
 	void SendStarUpInfo(int i)
 	{
-		if( i == 2)
-		{
-			MiBaoDealSkillReq mMiBaoDealSkillReq = new MiBaoDealSkillReq ();
-			
-			MemoryStream miBaoStream = new MemoryStream ();
-			
-			QiXiongSerializer MiBaoSer = new QiXiongSerializer ();
-			
-			mMiBaoDealSkillReq.zuheId = ShowMiBaoGroup.zuheId;
-			
-			mMiBaoDealSkillReq.activeOrJinjie = Activetype;
-			
-			MiBaoSer.Serialize (miBaoStream,mMiBaoDealSkillReq);
-			byte[] t_protof;
-			t_protof = miBaoStream.ToArray();
-			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.MIBAO_DEAL_SKILL_REQ,ref t_protof);
-		}
+//		if( i == 2)
+//		{
+//			MiBaoDealSkillReq mMiBaoDealSkillReq = new MiBaoDealSkillReq ();
+//			
+//			MemoryStream miBaoStream = new MemoryStream ();
+//			
+//			QiXiongSerializer MiBaoSer = new QiXiongSerializer ();
+//			
+//			mMiBaoDealSkillReq.zuheId = ShowMiBaoGroup.zuheId;
+//			
+//			mMiBaoDealSkillReq.activeOrJinjie = Activetype;
+//			
+//			MiBaoSer.Serialize (miBaoStream,mMiBaoDealSkillReq);
+//			byte[] t_protof;
+//			t_protof = miBaoStream.ToArray();
+//			
+//			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.MIBAO_DEAL_SKILL_REQ,ref t_protof);
+//		}
 	}
 
 	public bool OnProcessSocketMessage(QXBuffer p_message)
@@ -434,7 +434,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 					break;
 				case 11:
 
-					ShowMiBaoGroup.hasActive = 1;
+					//ShowMiBaoGroup.hasActive = 1;
 					PushAndNotificationHelper.SetRedSpotNotification (610, false);
 					Debug.Log("激活成功");
 					Init();
@@ -447,8 +447,8 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 				case 21:
 					Debug.Log("激活成功");
-					ShowMiBaoGroup.hasJinjie = 1;
-					SkillId = mMiBaoDealSkillResp.skillId;
+					//ShowMiBaoGroup.hasJinjie = 1;
+					//SkillId = mMiBaoDealSkillResp.skillId;
 					Init();
 					break;
 

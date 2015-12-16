@@ -17,6 +17,60 @@ public class QXComData {
 	public static string cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);//取消按钮
 	public static string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);//提示
 
+	public static int maxVipLevel = 10;
+
+	public static void LoadYuanBaoInfo (GameObject obj)
+	{
+		MainCityUI.m_MainCityUI.setGlobalBelongings (obj, 420, 314);
+	}
+
+	#endregion
+
+	#region EffectColor
+
+	private static readonly Dictionary<int,int> colorDic = new Dictionary<int, int>()//0-null | 1-0白 | 2.3-1绿 | 4.5.6-2蓝 | 7.8.9-3紫 | 10.11-橙
+	{
+		{0,-1},{1,0},{2,1},{3,1},{4,2},{5,2},{6,2},{7,3},{8,3},{9,3},{10,4},{11,4}
+	};
+
+	/// <summary>
+	/// Gets the color of the effect.
+	/// </summary>
+	/// <returns>The effect color.</returns>
+	/// <param name="xmlColorId">Xml color identifier.</param>
+	public static int GetEffectColorByXmlColorId (int xmlColorId)
+	{
+		return colorDic [xmlColorId];
+	}
+
+
+	#endregion
+
+	#region XmlTemplateType
+
+	public enum XmlType
+	{
+		COMMON = 0,//普通道具
+		EQUIP = 2,//装备
+		YUJUE = 3,//玉珏
+		MIBAO = 4,//秘宝
+		MIBAO_PIECE = 5,//秘宝碎片
+		ADVANCED_MATERIALS = 6,//进阶材料
+		BAOSHI = 7,//宝石
+		FUSHI = 8,//符石
+		STRENGTH_MATERIALS = 9,//强化材料
+	}
+
+	/// <summary>
+	/// Gets the xml type by item identifier.
+	/// </summary>
+	/// <returns>The xml type by item identifier.</returns>
+	/// <param name="itemId">Item identifier.</param>
+	public static XmlType GetXmlTypeByItemId (int itemId)
+	{
+		return (XmlType)Enum.ToObject (typeof (XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (itemId));
+	}
+
 	#endregion
 
 	#region SendProtoMessage And ReceiveProtoMessage
@@ -108,8 +162,8 @@ public class QXComData {
 
 			if(FreshGuide.Instance().IsActive(tempTaskId) && TaskData.Instance.m_TaskInfoDic[tempTaskId].progress >= 0)
 			{
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[tempTaskId];
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempState]);
+				//ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[tempTaskId];
+				UIYindao.m_UIYindao.setOpenYindao(ZhuXianTemp.getTemplateById(tempTaskId).m_listYindaoShuju[tempState]);
 			}
 
 			break;
@@ -117,8 +171,8 @@ public class QXComData {
 
 			if(FreshGuide.Instance().IsActive(tempTaskId) && TaskData.Instance.m_TaskInfoDic[tempTaskId].progress < 0)
 			{
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[tempTaskId];
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempState]);
+				//ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[tempTaskId];
+				UIYindao.m_UIYindao.setOpenYindao(ZhuXianTemp.getTemplateById(tempTaskId).m_listYindaoShuju[tempState]);
 			}
 
 			break;
@@ -260,12 +314,12 @@ public class QXComData {
 	#region MoneyType
 	public enum MoneyType
 	{
-		WEIWANG,//威望
-		GONGXUN,//功勋
-		HUANGYE,//荒野
-		GONGXIAN,//贡献
-		YUANBAO,//元宝
-		TONGBI,//铜币
+		WEIWANG =3,//威望
+		GONGXUN = 5,//功勋
+		HUANGYE = 4,//荒野
+		GONGXIAN = 2,//贡献
+		YUANBAO = 1,//元宝
+		TONGBI = 0,//铜币
 	}
 	private static readonly Dictionary<MoneyType,string[]> moneyDic = new Dictionary<MoneyType, string[]>()
 	{
@@ -282,11 +336,10 @@ public class QXComData {
 	/// </summary>
 	/// <returns>The sprite.</returns>
 	/// <param name="tempType">Temp type.</param>
-	public static UISprite MoneySprite (MoneyType tempType)
+	public static UISprite MoneySprite (MoneyType tempType,UISprite tempSprite)
 	{
-		UISprite tempSprite = new UISprite ();
 		tempSprite.transform.localScale = Vector3.one;
-		tempSprite.transform.localRotation = new Quaternion (0,0,tempType == MoneyType.YUANBAO ? 15 : 0,0);
+//		tempSprite.transform.localRotation = new Quaternion (0,0,tempType == MoneyType.YUANBAO ? 15 : 0,0);
 		tempSprite.spriteName = moneyDic [tempType] [0];
 		string[] scale = moneyDic [tempType] [2].Split (',');
 		tempSprite.SetDimensions (int.Parse (scale[0]),int.Parse (scale[1]));
@@ -302,4 +355,122 @@ public class QXComData {
 		return moneyDic [tempType] [1];
 	}
 	#endregion
+
+	#region CreateScrollView GameObjectList
+
+	public static List<GameObject> CreateGameObjectList (GameObject tempObj,UIGrid tempGrid,int tempResCount,List<GameObject> tempObjList)
+	{
+		int tempCount = tempResCount - tempObjList.Count;
+		if (tempCount > 0)
+		{
+			for (int i = 0;i < tempCount;i ++)
+			{
+				GameObject obj = GameObject.Instantiate (tempObj);
+
+				obj.SetActive (true);
+				obj.transform.parent = tempGrid.transform;
+				obj.transform.localPosition = Vector3.zero;
+				obj.transform.localScale = Vector3.one;
+
+				tempObjList.Add (obj);
+			}
+		}
+		else
+		{
+			for (int i = 0;i < Mathf.Abs (tempCount);i ++)
+			{
+				GameObject.Destroy (tempObjList[tempObjList.Count - 1]);
+				tempObjList.RemoveAt (tempObjList.Count - 1);
+			}
+		}
+
+		tempGrid.repositionNow = true;
+
+		return tempObjList;
+	}
+
+	#endregion
+}
+
+/// <summary>
+/// Shop good info.
+/// </summary>
+public class ShopGoodInfo
+{
+	public int xmlId;//xmlId
+	public int itemId;//兑换物品id
+	public int itemType;//物品类型
+	public string itemName;//兑换物品名字
+	public int itemNum;//兑换的数量
+	public int needMoney;//需要的钱币数量
+	public QXComData.MoneyType moneyType;//币种
+	
+	public static ShopGoodInfo CreateShopGood (int tempXmlId,int tempId,int tempItemType,string tempName,int tempMoney,QXComData.MoneyType tempType,int tempNum)
+	{
+		ShopGoodInfo tempGood = new ShopGoodInfo ();
+		tempGood.xmlId = tempXmlId;
+		tempGood.itemId = tempId;
+		tempGood.itemType = tempItemType;
+		tempGood.itemName = tempName;
+		tempGood.needMoney = tempMoney;
+		tempGood.moneyType = tempType;
+		tempGood.itemNum = tempNum;
+		
+		return tempGood;
+	}
+}
+
+/// <summary>
+/// Biao ju horse info.
+/// </summary>
+public class BiaoJuHorseInfo
+{
+	public int horseId;
+	public int horseItemId;
+	public string horseName;
+	public int shouYi;
+	public int upNeedMoney;
+	public int needVipLevel;
+}
+
+/// <summary>
+/// Horse property info.
+/// </summary>
+public class HorsePropInfo
+{
+	public int id;
+	public string name;
+	public int iconId;
+	public int colorId;
+	public string desc;
+	public int cost;
+	public bool isBuy;
+
+	public static HorsePropInfo CreateHorseProp (int tempId,string tempName,int tempIconId,int tempColorId,string tempDesc,int tempCost,bool tempIsBuy)
+	{
+		HorsePropInfo tempInfo = new HorsePropInfo ();
+		tempInfo.id = tempId;
+		tempInfo.name = tempName;
+		tempInfo.iconId = tempIconId;
+		tempInfo.colorId = tempColorId;
+		tempInfo.desc = tempDesc;
+		tempInfo.cost = tempCost;
+		tempInfo.isBuy = tempIsBuy;
+
+		return tempInfo;
+	}
+
+	public static HorsePropInfo CreateHorseProp (int tempId,bool tempIsBuy)
+	{
+		MaJuTemplate maJuTemp = MaJuTemplate.GetMaJuTemplateById (tempId);
+		HorsePropInfo propInfo = HorsePropInfo.CreateHorseProp (maJuTemp.id,
+		                                                        NameIdTemplate.GetName_By_NameId (maJuTemp.nameId),
+		                                                        maJuTemp.iconId,
+		                                                        maJuTemp.colorId,
+		                                                        DescIdTemplate.GetDescriptionById (maJuTemp.descId),
+		                                                        maJuTemp.priceId,
+		                                                        tempIsBuy);
+
+		return propInfo;
+	}
 }

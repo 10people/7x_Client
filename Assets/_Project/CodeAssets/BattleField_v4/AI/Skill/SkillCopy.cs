@@ -36,7 +36,7 @@ public class SkillCopy : SkillDataBead
 //		m_HeroSkill.dis += "生效时间" + m_fTime[0] + "，";
 	}
 	
-	public override void activeSkill(int state)
+	public override void activeSkill(int state, GameObject skillEff)
 	{
 		for(int i = 0; i < m_listCopyBaseAI.Count; i ++)
 		{
@@ -105,10 +105,10 @@ public class SkillCopy : SkillDataBead
 
 			//new_Node.gameObject.name = new_Node.gameObject.name + "Copy" + i;
 
-			GameObject tempObj = new GameObject();
-			tempObj.transform.localPosition = Vector3.zero;
-			tempObj.transform.localRotation = Quaternion.Euler(new Vector3(0, angle * i + 90, 0));
-			tempObj.transform.localScale = new Vector3(1, 1, 1);
+//			GameObject tempObj = new GameObject();
+//			tempObj.transform.localPosition = Vector3.zero;
+//			tempObj.transform.localRotation = Quaternion.Euler(new Vector3(0, angle * i + 90, 0));
+//			tempObj.transform.localScale = new Vector3(1, 1, 1);
 
 			//new_Node.gameObject.transform.localPosition += (tempObj.transform.forward.normalized * 3);
 			new_Node.gameObject.SetActive(true);

@@ -112,7 +112,7 @@ public class BloodLabel : UILabel
 
 	public void destroy()
 	{
-		list.Remove (this);
+		if(list != null) list.Remove (this);
 
 		gameObject.SetActive (false);
 

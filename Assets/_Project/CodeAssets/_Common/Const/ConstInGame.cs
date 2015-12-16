@@ -5,17 +5,37 @@ public class ConstInGame : MonoBehaviour {
 
 	// ------------------------- PlayerPrefs -----------------------------------------
 
+	#region Bundle
+
 	public const string CONST_PLAYER_PREFS_KEY_CACHED_BUNDLE_VERSION_DEFAULT	= "";
 
-	// small bundle version
-	public const string CONST_PLAYER_PREFS_KEY_CACHED_BUNDLE_SMALL_VERSION	= "CachedBundleSmallVersion";
+	// small bundle version, used in both u4 and u5.
+	public const string CONST_PLAYER_PREFS_KEY_CACHED_BUNDLE_SMALL_VERSION		= "CachedBundleSmallVersion";
 
-	// big bundle version
-	public const string CONST_PLAYER_PREFS_KEY_CACHED_BUNDLE_BIG_VRESION	= "CachedBundleBigVersion";
+	// big bundle version, used in u4.
+	public const string CONST_PLAYER_PREFS_KEY_CACHED_BUNDLE_BIG_VRESION		= "CachedBundleBigVersion";
+
+	#endregion
+
+
+
+	#region Root Bundle
+
+	public const int CONST_PLAYER_PREFS_KEY_CACHED_ROOT_BUNDLE_VRESION_DEFAULT		= 0;
+
+	public const string CONST_PLAYER_PREFS_KEY_CACHED_ROOT_BUNDLE_VERSION			= "CachedRootBundleVersion";
+
+	#endregion
+
+
+
+	#region Encrypt
 
 	public const string CONST_ENCRYPT_RJDL_KEY	= "MVIDMIG3F";
 
 	public const string CONST_ENCRYPT_RJDL_IV	= "IMVYWMGU1";
+
+	#endregion
 
 	// First Time To Play Video
 	public const string CONST_FIRST_TIME_TO_PLAY_VIDEO = "FirstTimePlayVideo";

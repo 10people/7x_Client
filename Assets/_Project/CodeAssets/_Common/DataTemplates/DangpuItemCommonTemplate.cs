@@ -110,4 +110,8 @@ public class DangpuItemCommonTemplate : XmlLoadManager
 		return null;
 	}
 
+	public static List<DangpuItemCommonTemplate> dangpuItemTemplateList ()
+	{
+		return templates;
+	}
 }

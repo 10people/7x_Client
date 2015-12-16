@@ -81,41 +81,41 @@ public class MiBaoScrollView : MonoBehaviour,SocketProcessor {
 
 		StarNum = 0;
 
-		for( int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i ++)
-		{
-			GameObject m_MiBaoGroupTemp = Instantiate(mMiBaoGroupTemp) as GameObject;
-
-			m_MiBaoGroupTemp.SetActive(true);
-
-			m_MiBaoGroupTemp.transform.parent = mMiBaoGroupTemp.transform.parent;
-
-			m_MiBaoGroupTemp.transform.localPosition = new Vector3(0,150-i*Dis,0);
-
-			m_MiBaoGroupTemp.transform.localScale = Vector3.one;
-
-			MibaoZuheTemp mMibaoZuheTemp = m_MiBaoGroupTemp.GetComponent<MibaoZuheTemp>();
-
-			mMibaoZuheTemp.mMiBaoGroup = my_MiBaoInfo.mibaoGroup[i];
-
-			mMibaoZuheTemp.Skill_id = my_MiBaoInfo.mibaoGroup[i].skillId;
-
-			mMibaoZuheTemp.DragonNum = i+1;
-
-			mMibaoZuheTemp.Zuhe = i+1;
-
-			mMibaoZuheTempList.Add(mMibaoZuheTemp);
-
-			mMibaoZuheTemp.Init();
-
-			for(int j = 0 ; j < my_MiBaoInfo.mibaoGroup[i].mibaoInfo.Count; j++)
-			{
-				if( my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level > 0)
-				{
-					StarNum += my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].star;
-				}
-
-			}
-		}
+//		for( int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i ++)
+//		{
+//			GameObject m_MiBaoGroupTemp = Instantiate(mMiBaoGroupTemp) as GameObject;
+//
+//			m_MiBaoGroupTemp.SetActive(true);
+//
+//			m_MiBaoGroupTemp.transform.parent = mMiBaoGroupTemp.transform.parent;
+//
+//			m_MiBaoGroupTemp.transform.localPosition = new Vector3(0,150-i*Dis,0);
+//
+//			m_MiBaoGroupTemp.transform.localScale = Vector3.one;
+//
+//			MibaoZuheTemp mMibaoZuheTemp = m_MiBaoGroupTemp.GetComponent<MibaoZuheTemp>();
+//
+////			mMibaoZuheTemp.mMiBaoGroup = my_MiBaoInfo.mibaoGroup[i];
+////
+////			mMibaoZuheTemp.Skill_id = my_MiBaoInfo.mibaoGroup[i].skillId;
+//
+//			mMibaoZuheTemp.DragonNum = i+1;
+//
+//			mMibaoZuheTemp.Zuhe = i+1;
+//
+//			mMibaoZuheTempList.Add(mMibaoZuheTemp);
+//
+//			mMibaoZuheTemp.Init();
+//
+//			for(int j = 0 ; j < my_MiBaoInfo.mibaoGroup[i].mibaoInfo.Count; j++)
+//			{
+//				if( my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level > 0)
+//				{
+//					StarNum += my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].star;
+//				}
+//
+//			}
+//		}
 		ShowScrollBar ();
 
 		mScrollViewPanle.GetComponent<UIScrollView> ().UpdateScrollbars (true);
@@ -171,54 +171,54 @@ public class MiBaoScrollView : MonoBehaviour,SocketProcessor {
 	{
 //		Debug.Log ("StarNum =" +StarNum);
 //		Debug.Log ("my_MiBaoInfo.needAllStar =" +my_MiBaoInfo.needAllStar);
-
-		if(my_MiBaoInfo.needAllStar == -1)
-		{
-			mUISlider.gameObject.SetActive(false);
-			return;
-		}
-		if(StarNum < my_MiBaoInfo.needAllStar)
-		{
-			GetMiBaoAwardBtn.SetActive(false);
-		}
-		else
-		{
-			GetMiBaoAwardBtn.SetActive(true);
-			ShowEffect();
-		}
-
-		if(StarNum <= 0)
-		{
-			Star_Num.text = MyColorData.getColorString(5, StarNum.ToString())+"/"+my_MiBaoInfo.needAllStar.ToString ();
-		}
-		 else if(StarNum >= my_MiBaoInfo.needAllStar)
-		{
-			Star_Num.text = MyColorData.getColorString(6, StarNum.ToString())+"/"+my_MiBaoInfo.needAllStar.ToString ();
-		}
-		else
-		{
-			Star_Num.text = StarNum.ToString () + "/" + my_MiBaoInfo.needAllStar.ToString ();
-		}
-
-
-		mUISlider.value = (float)StarNum/(float)my_MiBaoInfo.needAllStar;
-		if(this.gameObject.activeInHierarchy)
-		{
-			StopCoroutine ("BtnShake");
-			StartCoroutine ("BtnShake");
-		}
+//
+//		if(my_MiBaoInfo.needAllStar == -1)
+//		{
+//			mUISlider.gameObject.SetActive(false);
+//			return;
+//		}
+//		if(StarNum < my_MiBaoInfo.needAllStar)
+//		{
+//			GetMiBaoAwardBtn.SetActive(false);
+//		}
+//		else
+//		{
+//			GetMiBaoAwardBtn.SetActive(true);
+//			ShowEffect();
+//		}
+//
+//		if(StarNum <= 0)
+//		{
+//			Star_Num.text = MyColorData.getColorString(5, StarNum.ToString())+"/"+my_MiBaoInfo.needAllStar.ToString ();
+//		}
+//		 else if(StarNum >= my_MiBaoInfo.needAllStar)
+//		{
+//			Star_Num.text = MyColorData.getColorString(6, StarNum.ToString())+"/"+my_MiBaoInfo.needAllStar.ToString ();
+//		}
+//		else
+//		{
+//			Star_Num.text = StarNum.ToString () + "/" + my_MiBaoInfo.needAllStar.ToString ();
+//		}
+//
+//
+//		mUISlider.value = (float)StarNum/(float)my_MiBaoInfo.needAllStar;
+//		if(this.gameObject.activeInHierarchy)
+//		{
+//			StopCoroutine ("BtnShake");
+//			StartCoroutine ("BtnShake");
+//		}
 
 	}
 
-	IEnumerator BtnShake()
-	{
-		while(StarNum >= my_MiBaoInfo.needAllStar)
-		{
-			//iTween.ShakePosition(this.gameObject,new Vector3(0.02f,0.001f,0),1);
-			iTween.ShakeRotation(GetMiBaoAwardBtn,new Vector3(0,0,20f),0.8f);
-			yield return new WaitForSeconds (2.5f);
-		}
-	}
+//	IEnumerator BtnShake()
+//	{
+//		while(StarNum >= my_MiBaoInfo.needAllStar)
+//		{
+//			//iTween.ShakePosition(this.gameObject,new Vector3(0.02f,0.001f,0),1);
+//			iTween.ShakeRotation(GetMiBaoAwardBtn,new Vector3(0,0,20f),0.8f);
+//			yield return new WaitForSeconds (2.5f);
+//		}
+//	}
 	public void ShowEffect()
 	{
 		int effectid = 600154;
@@ -237,27 +237,27 @@ public class MiBaoScrollView : MonoBehaviour,SocketProcessor {
 
 	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
-		GameObject tempObject = ( GameObject )Instantiate( p_object );
-
-		tempObject.transform.parent = this.transform.parent;
-
-		tempObject.transform.localPosition = Vector3.zero;
-
-		tempObject.transform.localScale  = Vector3.one;
-
-		MiBaoStarAwardUI mMiBaoStarAwardUI = tempObject.GetComponent<MiBaoStarAwardUI>();
-
-		mMiBaoStarAwardUI.mSum = my_MiBaoInfo.needAllStar;
-
-		if(StarNum >= my_MiBaoInfo.needAllStar)
-		{
-			mMiBaoStarAwardUI.IsGetaward = true;
-		}
-		else
-		{
-			mMiBaoStarAwardUI.IsGetaward = false;
-		}
-		mMiBaoStarAwardUI.Init ();
+//		GameObject tempObject = ( GameObject )Instantiate( p_object );
+//
+//		tempObject.transform.parent = this.transform.parent;
+//
+//		tempObject.transform.localPosition = Vector3.zero;
+//
+//		tempObject.transform.localScale  = Vector3.one;
+//
+//		MiBaoStarAwardUI mMiBaoStarAwardUI = tempObject.GetComponent<MiBaoStarAwardUI>();
+//
+//		mMiBaoStarAwardUI.mSum = my_MiBaoInfo.needAllStar;
+//
+//		if(StarNum >= my_MiBaoInfo.needAllStar)
+//		{
+//			mMiBaoStarAwardUI.IsGetaward = true;
+//		}
+//		else
+//		{
+//			mMiBaoStarAwardUI.IsGetaward = false;
+//		}
+//		mMiBaoStarAwardUI.Init ();
 	}
 	public void ClosemScrollViewPanlemove()
 	{

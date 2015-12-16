@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 public class RTSkillTemplate : XmlLoadManager
@@ -16,6 +17,8 @@ public class RTSkillTemplate : XmlLoadManager
     public int BaseCD;
     public int IsInGCD;
     public int Action1;
+    public string CsOnShot;
+    public int EsOnShot;
 
     public static List<RTSkillTemplate> templates = new List<RTSkillTemplate>();
 
@@ -77,10 +80,30 @@ public class RTSkillTemplate : XmlLoadManager
                 t_template.IsInGCD = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
                 t_template.Action1 = int.Parse(t_reader.Value);
+                t_reader.MoveToNextAttribute();
+                t_template.CsOnShot = t_reader.Value;
+                t_reader.MoveToNextAttribute();
+                t_template.EsOnShot = int.Parse(t_reader.Value);
             }
 
             templates.Add(t_template);
         }
         while (t_has_items);
+    }
+
+    public static RTSkillTemplate GetTemplateByID(int p_ID)
+    {
+        var temp = templates.Where(item => item.SkillId == p_ID).ToList();
+
+        if (temp != null && temp.Any())
+        {
+            return temp.First();
+        }
+        else
+        {
+            Debug.LogError("No RTSkillTemplate found by id: " + p_ID);
+
+            return null;
+        }
     }
 }

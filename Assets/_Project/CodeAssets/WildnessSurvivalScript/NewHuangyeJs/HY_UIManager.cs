@@ -613,7 +613,8 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		if (canOpenShop)
 		{
 			canOpenShop = false;
-			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.HUANGYE,GeneralControl.StoreReqType.FREE);
+//			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.HUANGYE,GeneralControl.StoreReqType.FREE);
+			ShopData.Instance.OpenShop (ShopData.ShopType.HUANGYE);
 		}
 	}
 

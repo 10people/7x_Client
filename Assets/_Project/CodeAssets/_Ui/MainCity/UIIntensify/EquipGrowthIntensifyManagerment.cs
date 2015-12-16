@@ -88,24 +88,6 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
     }
     void Update()
     {
-        //if (EquipGrowthMaterialUseManagerment.listTouchedId.Count == 0 && !EquipGrowthMaterialUseManagerment.strengthenIsOn)//按钮状态显示控制
-        //{
-        //    EquipGrowthMaterialUseManagerment.strengthenIsOn = true;
-        //    for (int i = 0; i < 1; i++)
-        //    {
-        //        WashBotton(false, i);
-        //    }
-        //}
-        //else if (EquipGrowthMaterialUseManagerment.listTouchedId.Count > 0 && EquipGrowthMaterialUseManagerment.strengthenIsOn)
-        //{
- 
-        //    EquipGrowthMaterialUseManagerment.strengthenIsOn = false;
-        //    for (int i = 0; i < 1; i++)
-        //    {
-        //        WashBotton(true, i);
-        //    }
-        //}
-
         if (EquipGrowthMaterialUseManagerment.materialItemTouched)
         {
             EquipGrowthMaterialUseManagerment.materialItemTouched = false;
@@ -1683,143 +1665,39 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
 
     }
 
-   void Strengthen(int index)// 强化升一级ID统计
+    public struct MaterialsInfo
+    {
+        public long _dbId;
+        public int _cnt;
+        public int pinzhi;
+        public int buwei;
+        public int _exp;
+    };
+    private List<MaterialsInfo> _listOneLevelMaterial = new List<MaterialsInfo>();
+
+    void Strengthen(int index)// 强化升一级ID统计
     {
         int EquipExp = 0;
         int equipLevel = 0;
         int pinzhi = 0;
         int EquipType = 0;
+        List<BagItem> _listMaterial = new List<BagItem>();
+        List<BagItem> _listSuiPian = new List<BagItem>();
+        List<BagItem> _listEquip = new List<BagItem>();
+
         if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(index))
         {
             equipLevel = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaLv;
             EquipExp = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaExp;
             pinzhi = EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi;
-            if (EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 3 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 4 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 5)
-            {
-                EquipType = 1;
-            }
-            else
-            {
-                EquipType = 0;
-            }
-            foreach (KeyValuePair<long, List<BagItem>> item in BagData.Instance().m_playerCaiLiaoDic)
-            {
-                for (int i = 0; i < ItemTemp.templates.Count; i++)
-                {
-                    if (item.Value[0].itemId == ItemTemp.templates[i].id)
-                    {
-                        if (EquipType == 0 && item.Value[0].itemType == 2)
-                        {
-                            for (int j = 0; j < item.Value[0].cnt; j++)
-                            {//13 ge
-                                EquipExp += ItemTemp.templates[i].effectId;
-                                EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value[0].dbId);
-                      
-                                if (NeedIsEnought(EquipExp, index, equipLevel))
-                                {
-                                    EquipIntensy();
-                                    return;
-                                }
-                            } 
-                        }
-                        else if (EquipType == 1 && item.Value[0].itemType == 1)
-                        {
-                            for (int j = 0; j < item.Value[0].cnt; j++)
-                            {
-                                EquipExp += ItemTemp.templates[i].effectId;
-                                EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value[0].dbId);
-                              
-                                if (NeedIsEnought(EquipExp, index, equipLevel))
-                                {
-                                    EquipIntensy();
-                                    return;
-                                }
-                            }
-                        }
-                        else if (item.Value[0].itemType == 6 && pinzhi > item.Value[0].pinZhi)
-                        {
 
-                            int tempBuwei = 0;
-                            switch (ZhuangBei.GetBuWeiByItemId(item.Value[0].itemId))
-                            {
-                                case 1: tempBuwei = 3; break;//重武器
-                                case 2: tempBuwei = 4; break;//轻武器
-                                case 3: tempBuwei = 5; break;//弓
-                                case 11: tempBuwei = 0; break;//头盔
-                                case 12: tempBuwei = 8; break;//肩膀
-                                case 13: tempBuwei = 1; break;//铠甲
-                                case 14: tempBuwei = 7; break;//手套
-                                case 15: tempBuwei = 2; break;//裤子
-                                case 16: tempBuwei = 6; break;//鞋子
-                                default: break;
-                            }
-                            if (EquipType == 1)
-                            {
-                                if (tempBuwei == 3 || tempBuwei == 4 || tempBuwei == 5)
-                                {
-                                    if (tempBuwei == index && EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi > item.Value[0].pinZhi)
-                                    {
-                                        for (int j = 0; j < item.Value[0].cnt; j++)
-                                        {
-                                            EquipExp += ItemTemp.templates[i].effectId;
-                                            EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value[0].dbId);
-                                           
-                                            if (NeedIsEnought(EquipExp, index, equipLevel))
-                                            {
-                                                EquipIntensy();
-                                                return;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (tempBuwei != 3 && tempBuwei != 4 && tempBuwei != 5)
-                                {
-                                    if (tempBuwei == index && EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi > item.Value[0].pinZhi)
-                                    {
-                                        for (int j = 0; j < item.Value[0].cnt; j++)
-                                        {
-                                            EquipExp += ItemTemp.templates[i].effectId;
-                                            EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value[0].dbId);
-                                         
-                                            if (NeedIsEnought(EquipExp, index, equipLevel))
-                                            {
-                                                Debug.Log("jjjjjjjjj ::" + j);
-                                                Debug.Log("EquipGrowthMaterialUseManagerment.listTouchedId.CountEquipGrowthMaterialUseManagerment.listTouchedId.Count ::" + EquipGrowthMaterialUseManagerment.listTouchedId.Count);
-                                                // EquipIntensy();
-                                                return;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
+            int size_Material = EquipGrowthMaterialUseManagerment.listMaterials.Count;
+            for (int i = 0; i < size_Material; i++)
             {
-                int tempBuwei = 0;
-                switch (item.Value.buWei)
+                for (int j = 0; j < int.Parse(EquipGrowthMaterialUseManagerment.listMaterials[i].count); j++)
                 {
-                    case 1: tempBuwei = 3; break;//重武器
-                    case 2: tempBuwei = 4; break;//轻武器
-                    case 3: tempBuwei = 5; break;//弓
-                    case 11: tempBuwei = 0; break;//头盔
-                    case 12: tempBuwei = 8; break;//肩膀
-                    case 13: tempBuwei = 1; break;//铠甲
-                    case 14: tempBuwei = 7; break;//手套
-                    case 15: tempBuwei = 2; break;//裤子
-                    case 16: tempBuwei = 6; break;//鞋子
-                    default: break;
-                }
-                if (tempBuwei == EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei && item.Value.pinZhi <= EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi)
-                {
-                    EquipExp += ZhuangBei.GetItemByID(item.Value.itemId).exp;
-                    EquipGrowthMaterialUseManagerment.listTouchedId.Add(item.Value.dbId);
+                    EquipExp += EquipGrowthMaterialUseManagerment.listMaterials[i].materialEXP;
+                    EquipGrowthMaterialUseManagerment.listTouchedId.Add(EquipGrowthMaterialUseManagerment.listMaterials[i].dbid);
                     if (NeedIsEnought(EquipExp, index, equipLevel))
                     {
                         EquipIntensy();
@@ -1828,22 +1706,18 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
                 }
             }
 
-           // if (ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp > 0)
+            if (EquipExp < ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp)
             {
-                if (EquipExp < ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp)
-                {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallback);
-                }
-                else
-                {
-                  EquipIntensy();
-                }
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallback);
             }
-            //else
-            //{
-            //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallback);
-            //}
+
         }
+    }
+
+    private void TidyOneLevelMaterial()
+    {
+
+
     }
 
     private void EquipIntensy()
@@ -1878,5 +1752,59 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour
         {
             EquipGrowthMaterialUseManagerment.listTouchedId.Clear();
         }
+    }
+
+
+
+    List<MaterialsInfo> QualitySortOneLevel(List<MaterialsInfo> list)//按品质排序
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            for (int j = 0; j < list.Count - 1 - i; j++)
+            {
+                if (list[j].pinzhi > list[j + 1].pinzhi)
+                {
+                    MaterialsInfo mm = new MaterialsInfo();
+                    mm = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = mm;
+                }
+            }
+        }
+        return list;
+
+    }
+
+
+
+    List<MaterialsInfo> SortBuWeiOneLevel(List<MaterialsInfo> list)//按部位排序
+    {
+        List<MaterialsInfo> listMid = new List<MaterialsInfo>();
+        int[] Sequence = { 1, 2, 3, 11, 12, 13, 14, 15, 16 };
+        for (int i = 0; i < Sequence.Length; i++)
+        {
+            for (int j = 0; j < list.Count; j++)
+            {
+                if (CaiLiaoAdvance[j].buwei == Sequence[i])
+                {
+                    int tempBuwei = 0;
+                    switch (Sequence[i])
+                    {
+                        case 1: tempBuwei = 3; break;//重武器
+                        case 2: tempBuwei = 4; break;//轻武器
+                        case 3: tempBuwei = 5; break;//弓
+                        case 11: tempBuwei = 0; break;//头盔
+                        case 12: tempBuwei = 8; break;//肩膀
+                        case 13: tempBuwei = 1; break;//铠甲
+                        case 14: tempBuwei = 7; break;//手套
+                        case 15: tempBuwei = 2; break;//裤子
+                        case 16: tempBuwei = 6; break;//鞋子
+                        default: break;
+                    }
+                    listMid.Add(list[j]);
+                }
+            }
+        }
+        return listMid;
     }
 }

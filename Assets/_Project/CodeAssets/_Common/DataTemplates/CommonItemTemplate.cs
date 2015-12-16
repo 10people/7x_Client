@@ -138,4 +138,18 @@ public class CommonItemTemplate : XmlLoadManager
 		Debug.LogError("XML ERROR: Can't get CommonItemTemplate with m_icon " + m_icon);
 		return null;
 	}
+
+	public static int GetCommonItemTemplateTypeById (int id)
+	{
+		foreach (CommonItemTemplate template in templates)
+		{
+			if (template.id == id)
+			{
+				return template.itemType;
+			}
+		}
+
+		Debug.LogError("XML ERROR: Can't Get CommonItemTemplateType with Id " + id);
+		return -1;
+	}
 }

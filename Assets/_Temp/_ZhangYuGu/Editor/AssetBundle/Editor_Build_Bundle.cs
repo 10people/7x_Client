@@ -225,7 +225,7 @@ public class Editor_Build_Bundle{
 						
 						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_KEY_TAG ] = t_key;
 						
-						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_SIZE_TAG ] = GetFileSize( t_file_info ).ToString();
+						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_SIZE_TAG ] = FileHelper.GetFileSize( t_file_info ).ToString();
 						
 						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_MD5_TAG ] = GetMd5Hash( t_file_info );
 						
@@ -265,13 +265,13 @@ public class Editor_Build_Bundle{
 
 		// update info
 		{
-			VersionTool.Instance().Init();
+			VersionTool_4.Instance().Init();
 
-			m_all_bundle_json[ CONFIG_BUNDLE_SMALL_VERSION_TAG ] = VersionTool.GetSmallVersion();
+			m_all_bundle_json[ CONFIG_BUNDLE_SMALL_VERSION_TAG ] = VersionTool_4.GetSmallVersion();
 
-			m_all_bundle_json[ CONFIG_BUNDLE_BASE_VERSION_TAG ] = VersionTool.GetBaseVersion();
+			m_all_bundle_json[ CONFIG_BUNDLE_BASE_VERSION_TAG ] = VersionTool_4.GetBaseVersion();
 
-			m_all_bundle_json[ CONFIG_BUNDLE_BIG_VERSION_TAG ] = VersionTool.GetBigVersion();
+			m_all_bundle_json[ CONFIG_BUNDLE_BIG_VERSION_TAG ] = VersionTool_4.GetBigVersion();
 
 			m_all_bundle_json[ CONFIG_BUNDLE_LIST_BUILD_TIME_TAG ] = DateTime.Now.ToLocalTime().ToString();
 		}
@@ -435,9 +435,9 @@ public class Editor_Build_Bundle{
 		                     null,
 		                     p_build_target );
 
-		string t_cache_streaming_path = "StreamingAssetsCache/" + GetPlatformTag (p_build_target);
+		string t_cache_streaming_path = "StreamingAssetsCache/" + GetPlatformTag( p_build_target );
 
-		string t_process_path = "StreamingAssets/" + GetPlatformTag (p_build_target);
+		string t_process_path = "StreamingAssets/" + GetPlatformTag ( p_build_target );
 
 		// cache
 		{
@@ -1258,7 +1258,7 @@ public class Editor_Build_Bundle{
 
 				// len
 				{
-					long t_len = GetFileSize( t_full_path );
+					int t_len = FileHelper.GetFileSize( t_full_path );
 
 					m_cur_bundle_json[ t_key ][ CONFIG_FILE_LEN_TAG ] = t_len.ToString();
 				}
@@ -2517,22 +2517,6 @@ public class Editor_Build_Bundle{
 		t_f_s.Close();
 		
 		return t_builder.ToString();
-	}
-
-	/** Desc:
-	 * Return file size about the bundle.
-	 * 
-	 * Params:
-	 * 1.p_full_path:			"E:/WorkSpace_External/DynastyMobile_2014/Assets/StreamingAssets/Android/Resources/_UIs/_CommonAtlas/Common";
-	 */
-	private static long GetFileSize( string p_full_path ){
-		FileInfo t_file_info = new FileInfo( p_full_path );
-		
-		return GetFileSize( t_file_info );
-	}
-
-	private static long GetFileSize( FileInfo p_file_info ){
-		return p_file_info.Length;
 	}
 
 	#endregion

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
@@ -14,19 +14,17 @@ using qxmobile.protobuf;
 
 public class Console_SetNetwork {
 
-	
-	
-	
-	
 	#region Ping
 
 	// unity
-	private static float m_on_ping_time 	= 0.0f;
+	private static float m_on_ping_time 		= 0.0f;
 
 	// cs
-	private static long m_on_ping_time_long	= 0;
+	private static long m_on_ping_time_long		= 0;
+
+	private static bool m_log_ping				= true;
 	
-	public static void OnPing( string[] p_params ){
+	public static void OnPing( string[] p_params, bool p_log_ping = true ){
 		#if DEBUG_CONSOLE
 		Debug.Log( "OnPing() " + Time.realtimeSinceStartup );
 		#endif
@@ -44,7 +42,13 @@ public class Console_SetNetwork {
 		{
 			m_on_ping_time = Time.realtimeSinceStartup;
 
-			m_on_ping_time_long = TimeHelper.GetCurrentTimeMillis();
+			m_on_ping_time_long = TimeHelper.GetCurrentTime_MilliSecond();
+
+			m_log_ping = p_log_ping;
+		}
+
+		if( m_log_ping ){
+			Debug.Log( "Ping Time: " + TimeHelper.GetCurrentTime_MilliSecond() + "   - " + TimeHelper.GetCurrentTime_Second() );
 		}
 
 //		{
@@ -68,23 +72,26 @@ public class Console_SetNetwork {
 		#endif
 
 //		{
-//			Debug.Log( "Message Create Time: " + p_message.GetTimeMillis() );
+//			Debug.Log( "Message Create Time: " + p_message.GetCreateTime_MilliSecond() );
+//
+//			Debug.Log( "Message Create Time: " + p_message.GetCreateTime_Second() );
 //			
 //			Debug.Log( "Ping Sent Time: " + m_on_ping_time_long );
 //		}
 
 		// time from sent to receive
-		long t_ping = p_message.GetTimeMillis() - m_on_ping_time_long;
+		long t_ping = p_message.GetCreateTime_MilliSecond() - m_on_ping_time_long;
 
 		// time from receive to process
 		long t_delay = (int)( ( Time.realtimeSinceStartup - m_on_ping_time ) * 1000 ) - t_ping;
 
 		{
-
-			Debug.Log ( "Ping ms: " + t_ping  + "   Delay ms: " + t_delay );
+			NetworkHelper.SetPingMS( t_ping );
 		}
 
-		{
+		if( m_log_ping ){
+			Debug.Log ( "Ping ms: " + t_ping  + "   Delay ms: " + t_delay );
+		
 			ChatPct tempChatPct = new ChatPct();
 			
 			tempChatPct.senderName = "Sys";
@@ -125,6 +132,78 @@ public class Console_SetNetwork {
 	
 	public static void LogSocketListener( string[] p_params ){
 		SocketTool.LogSocketListener ();
+	}
+	
+	#endregion
+
+
+
+	#region MMO
+
+	/// value stored for PreRunC.
+	private static float m_pre_run_c		= 3.0f;
+	
+	public static void SetPreRunC( string[] p_params ){
+		if( p_params.Length <= 1 ){
+			Debug.LogError( "Error, params not enough." );
+			
+			return;
+		}
+		
+		float t_param_1_c = 0;
+		
+		try{
+			t_param_1_c = float.Parse( p_params[ 1 ] );
+		}
+		catch( Exception e ){
+			StringHelper.LogStringArray( p_params );
+			
+			Debug.LogError( "Error, params error: " + e );
+			
+			return;
+		}
+		
+		m_pre_run_c = t_param_1_c;
+		
+		Debug.Log( "PreRun C: " + m_pre_run_c );
+	}
+
+	/// Pre Run C for other players.
+	public static float GetPreRunC(){
+		return m_pre_run_c;
+	}
+
+	/// Value stored for ValidRunC.
+	private static float m_valid_run_c		= 3.0f;
+
+	public static void SetValidRunC( string[] p_params ){
+		if( p_params.Length <= 1 ){
+			Debug.LogError( "Error, params not enough." );
+			
+			return;
+		}
+		
+		float t_param_1_c = 0;
+		
+		try{
+			t_param_1_c = float.Parse( p_params[ 1 ] );
+		}
+		catch( Exception e ){
+			StringHelper.LogStringArray( p_params );
+			
+			Debug.LogError( "Error, params error: " + e );
+			
+			return;
+		}
+		
+		m_valid_run_c = t_param_1_c;
+		
+		Debug.Log( "ValidRun C: " + m_valid_run_c );
+	}
+
+	/// Valid Run C for local player config.
+	public static float GetValidRunC(){
+		return m_valid_run_c;
 	}
 	
 	#endregion

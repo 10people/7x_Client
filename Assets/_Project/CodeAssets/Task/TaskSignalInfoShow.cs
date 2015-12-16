@@ -61,7 +61,7 @@ public class TaskSignalInfoShow : MonoBehaviour
             iconSampleObject.SetActive(true);
             iconSampleObject.transform.parent = m_grid.transform;
             iconSampleObject.transform.localPosition = Vector3.zero;
-            iconSampleObject.transform.localScale = Vector3.one;
+            iconSampleObject.transform.localScale = Vector3.one*0.8f;
             IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
             iconSampleManager.SetIconByID(int.Parse(listRewardInfo[index_Num].icon), listRewardInfo[index_Num].count);
 

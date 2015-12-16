@@ -121,7 +121,6 @@ public class ClientMain : MonoBehaviour , SocketListener
 
 		float scalex = (float)(Screen.width / 960f);
 		float scaley = (float)(Screen.height / 640f);
-		
 		m_fScale = scalex > scaley ? scaley : scalex;
 		
 		m_iMoveX = (int)((Screen.width - 960 * m_fScale) / 2 / m_fScale);
@@ -694,6 +693,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 			QiangHuaTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			GuideTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			PlotChatTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			NameKuTemplate.LoadTemplates( TemplateLoadedCallback );
 			
@@ -725,6 +726,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 			TaoZhuangTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			DiaoLuoTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			MaJuTemplate.LoadTemplates( TemplateLoadedCallback );
 		}
 
 //			UnLoadManager.startLoad( TemplateLoadedCallback );
@@ -848,8 +851,6 @@ public class ClientMain : MonoBehaviour , SocketListener
 
             LMZBuildingTemplate.LoadTemplates(TemplateLoadedCallback);
 
-			FunctionUnlock.LoadTemplates(TemplateLoadedCallback);
-
             XiLianShuXingTemp.LoadTemplates(TemplateLoadedCallback);
         }
 		//101-110
@@ -870,10 +871,18 @@ public class ClientMain : MonoBehaviour , SocketListener
 			RTBuffTemplate.LoadTemplates(TemplateLoadedCallback);
            
 			RTSkillTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			YunBiaoSafeTemplate.LoadTemplates(TemplateLoadedCallback);
+            QiriQiandaoTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			MiBaoExtrattributeTemplate.LoadTemplates(TemplateLoadedCallback);
+            LianMengTuTengTemplate.LoadTemplates(TemplateLoadedCallback);
+
             
+			HeroSkillUpTemplate.LoadTemplates(TemplateLoadedCallback);
         }
 
-		m_is_templates_loaded = true;
+        m_is_templates_loaded = true;
 	}
 
 	public static void TemplateLoadedCallback(){

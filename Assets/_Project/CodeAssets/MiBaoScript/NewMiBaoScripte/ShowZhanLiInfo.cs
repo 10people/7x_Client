@@ -72,5 +72,8 @@ public class ShowZhanLiInfo : MonoBehaviour {
 
 		JNBJDK.text  = MyColorData.getColorString(7,JunZhuData.Instance ().m_junzhuInfo.jnRX.ToString());
 	}
-
+	public void CloseBtn()
+	{
+		NewMiBaoManager.Instance ().BackToFirstPage (this.gameObject);
+	}
 }

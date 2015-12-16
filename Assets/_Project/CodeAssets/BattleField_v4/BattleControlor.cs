@@ -83,14 +83,6 @@ public class BattleControlor : MonoBehaviour
 
 	[HideInInspector] public List<int> mibaoIds = new List<int>();
 
-	[HideInInspector] public int bossKilled;
-
-	[HideInInspector] public int gearKilled;
-
-	[HideInInspector] public int soldierKilled;
-
-	[HideInInspector] public int heroKilled;
-
 	[HideInInspector] public JianDunDataManager achivement;
 
 	[HideInInspector] public Dictionary<int, int> droppenDict = new Dictionary<int, int>();
@@ -98,6 +90,8 @@ public class BattleControlor : MonoBehaviour
 	[HideInInspector] public List<int> droppenList = new List<int> ();
 
 	[HideInInspector] public float HYK;//荒野战斗中计算伤害的系数K
+
+	[HideInInspector] public BattleCheckResult battleCheck;
 
 
 	private KingControllor king;
@@ -165,7 +159,6 @@ public class BattleControlor : MonoBehaviour
 	/// Load sfx.
 	public void BattleStart()
 	{
-
 		//transform.localScale = new Vector3(1 / transform.parent.parent.localScale.x, 1 / transform.parent.parent.localScale.y, 1 / transform.parent.parent.localScale.z); 
 
 		inDrama = false;
@@ -235,7 +228,7 @@ public class BattleControlor : MonoBehaviour
 
 		foreach(GuideTemplate t in guidePlayed)
 		{
-			if(t.id == template.id && t.eventId == template.eventId && template.retriggerableCurBattle == false)
+			if(t.id == template.id && t.dungeonId == template.dungeonId && template.retriggerableCurBattle == false)
 			{
 				return true;
 			}
@@ -252,7 +245,7 @@ public class BattleControlor : MonoBehaviour
 		//玩家死亡之后，除了失败播放的剧情之外，其他都不触发
 		if(result == BattleResult.RESULT_LOSE || king.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
 		{
-			if(template.type != 3)
+			if(template.triggerType != 3)
 			{
 				return true;
 			}
@@ -363,7 +356,7 @@ public class BattleControlor : MonoBehaviour
 	}
 
 	private void preLoadEffCountPlus(){
-		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections, 
+		LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections, 
 		                         PrepareForBattleField.CONST_BATTLE_LOADING_FX, "preLoadEffCountPlus" );
 
 		preLoadEffCount ++;
@@ -416,7 +409,7 @@ public class BattleControlor : MonoBehaviour
 	}
 
 	private void PreCountSoundFx(){
-		StaticLoading.LoadingSection t_loading = StaticLoading.GetSection( StaticLoading.m_loading_sections,
+		LoadingSection t_loading = LoadingHelper.GetSection( StaticLoading.m_loading_sections,
 		                                                                  PrepareForBattleField.CONST_BATTLE_LOADING_SOUND );
 		
 		if( t_loading != null ){
@@ -1000,6 +993,8 @@ public class BattleControlor : MonoBehaviour
 			return;
 		}
 
+		battleCheck = new BattleCheckResult ();
+
 		UIYindao.m_UIYindao.CloseUI ();
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)
@@ -1015,14 +1010,6 @@ public class BattleControlor : MonoBehaviour
 				HighestUI.Instance.m_BroadCast.Clear();
 			}
 		}
-
-		bossKilled = 0;
-
-		gearKilled = 0;
-
-		soldierKilled = 0;
-
-		heroKilled = 0;
 
 		BattleUIControlor.Instance().checkDrama (true);
 
@@ -1367,6 +1354,11 @@ public class BattleControlor : MonoBehaviour
 
 	private void showSceneName()
 	{
+		if(BattleUIControlor.Instance().b_autoFight == true && autoFight == false)
+		{
+			BattleUIControlor.Instance().changeAutoFight();
+		}
+
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)
 		{
 			PveTempTemplate pve = PveTempTemplate.GetPVETemplate (CityGlobalData.m_tempSection, CityGlobalData.m_tempLevel);
@@ -1433,7 +1425,7 @@ public class BattleControlor : MonoBehaviour
 
 		GuideTemplate template = GuideTemplate.getTemplateByLevelAndType (level, 1);
 
-		BattleUIControlor.Instance ().showDaramControllor (level, template.eventId, showLockEff);
+		BattleUIControlor.Instance ().showDaramControllor (level, template.id, showLockEff);
 	}
 
 	IEnumerator showHintBox()
@@ -1581,7 +1573,6 @@ public class BattleControlor : MonoBehaviour
 		achivement = new JianDunDataManager (list);
 	}
 
-	
 	public int getLabelType(BaseAI defender, AttackType _type)
 	{
 		if(_type == AttackType.ADD_HP)
@@ -1613,7 +1604,7 @@ public class BattleControlor : MonoBehaviour
 		
 		return (int)AttackType.BASE_ATTACK;
 	}
-	
+
 	public GameObject getLabelTemplate(BaseAI defender, AttackType _type)
 	{
 		if(_type == AttackType.ADD_HP)
@@ -1624,12 +1615,12 @@ public class BattleControlor : MonoBehaviour
 		{
 			return labelTemple_default;
 		}
-		
+
 		if(defender.stance == BaseAI.Stance.STANCE_SELF)
 		{
 			return labelTemple_enemy;
 		}
-		
+
 		if(_type == AttackType.BASE_ATTACK)
 		{
 			return labelTemple_base;
@@ -1642,10 +1633,10 @@ public class BattleControlor : MonoBehaviour
 		{
 			return labelTemple_skill;
 		}
-		
+
 		return labelTemple_base;
 	}
-	
+
 	public GameObject getLabelTemplate(int labelType)
 	{
 		if(labelType == (int)AttackType.ADD_HP)
@@ -1677,7 +1668,6 @@ public class BattleControlor : MonoBehaviour
 		
 		return labelTemple_base;
 	}
-
 
 	void FixedUpdate ()
 	{
@@ -1713,13 +1703,13 @@ public class BattleControlor : MonoBehaviour
 			{
 				GuideTemplate gt_win = GuideTemplate.getTemplateByLevelAndType(level, 2);
 				
-				StartCoroutine(showDramaControllor(level, gt_win.eventId, showResult));
+				StartCoroutine(showDramaControllor(level, gt_win.dungeonId, showResult));
 			}
 			else if(fLose == true && result == BattleResult.RESULT_LOSE && f == true)
 			{
 				GuideTemplate gt_lose = GuideTemplate.getTemplateByLevelAndType(level, 3);
 				
-				StartCoroutine(showDramaControllor(level, gt_lose.eventId, showResult));
+				StartCoroutine(showDramaControllor(level, gt_lose.dungeonId, showResult));
 			}
 			else
 			{
@@ -1778,6 +1768,8 @@ public class BattleControlor : MonoBehaviour
 
 	public void showResult()
 	{
+		Debug.Log ("showResult showResult");
+
 		BattleUIControlor.Instance ().addDebugText ("showResult()");
 
 		UtilityTool.Instance.DelayedUnloadUnusedAssets();
@@ -1811,6 +1803,8 @@ public class BattleControlor : MonoBehaviour
 
 	IEnumerator showResultAction()
 	{
+		Debug.Log ("showResultAction showResultAction");
+
 		UtilityTool.UnloadUnusedAssets ();
 
 		BattleUIControlor.Instance ().LoadResultRes ();
@@ -1891,226 +1885,56 @@ public class BattleControlor : MonoBehaviour
 	{
 		if(lastCameraEffect == true) return;
 
-		BattleResult br = reCheckResult (null);
+		result = battleCheck.checkResult (null);
 
-		bool fWin = br == BattleResult.RESULT_WIN;
-
-		bool fLose = br == BattleResult.RESULT_LOSE;
-
-		if(fWin == true) result = BattleResult.RESULT_WIN;
-
-		if(king.isAlive == false) 
-		{
-			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve
-			   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
-			{
-				result = BattleResult.RESULT_WIN;
-			}
-			else
-			{
-				result = BattleResult.RESULT_LOSE;
-			}
-		}
-
-		if(timeLast <= 0 && timeLast != -100)
-		{
-			BattleWinTemplate template = BattleWinTemplate.getWinTemplateContainsType(BattleWinFlag.WinType.Reach_Time);
-
-			bool winFlag = false;
-
-			if(template != null)
-			{
-				winFlag = BattleWinTemplate.reachType(template.winId);
-			}
-
-			if(winFlag == true
-			   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve
-			   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
-			{
-				result = BattleResult.RESULT_WIN;
-			}
-			else
-			{
-				result = BattleResult.RESULT_LOSE;
-			}
-		}
-	}
-
-	public BattleResult reCheckResult(BaseAI _node)
-	{
-		if (_node != null) 
-		{
-			if(_node.nodeId == 1)
-			{
-				if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
-				{
-					return BattleResult.RESULT_WIN;
-				}
-				
-				return BattleResult.RESULT_LOSE;
-			}
-			else
-			{
-				BattleWinTemplate template = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.PROTECT);
-
-				if(template != null && template.protectNodeId == _node.nodeId)
-				{
-					return BattleResult.RESULT_LOSE;
-				}
-			}
-		}
-
-		bool fWin = false;
-
-		BattleWinTemplate winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.Kill_All);
-
-		if(winTemplate != null)
-		{
-			fWin = true;
-			
-			foreach(BaseAI enemyNode in enemyNodes)
-			{
-				if(_node != null && enemyNode.nodeId == _node.nodeId)
-				{
-					continue;
-				}
-
-				if(enemyNode.flag.accountable)
-				{
-					fWin = false;
-				}
-			}
-
-			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
-		}
-
-		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.Kill_Boss);
-
-		if(winTemplate != null)
-		{
-			int killNum = winTemplate.killNum;
-
-			if(_node!= null && _node.nodeData.nodeType == NodeType.BOSS && _node.nodeId > 0)
-			{
-				killNum --;
-			}
-
-			if(bossKilled >= killNum)
-			{
-				fWin = true;
-
-				bossKilled = winTemplate.killNum;
-
-				BattleUIControlor.Instance().refreshWinDesc();
-			}
-
-			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
-		}
-
-		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.Kill_Gear);
-		
-		if(winTemplate != null)
-		{
-			int killNum = winTemplate.killNum;
-			
-			if(_node!= null && _node.nodeData.nodeType == NodeType.GEAR && _node.nodeId > 0)
-			{
-				killNum --;
-			}
-			
-			if(gearKilled >= killNum)
-			{
-				fWin = true;
-
-				gearKilled = winTemplate.killNum;
-
-				BattleUIControlor.Instance().refreshWinDesc();
-			}
-			
-			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
-		}
-
-		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.Kill_Hero);
-		
-		if(winTemplate != null)
-		{
-			int killNum = winTemplate.killNum;
-			
-			if(_node!= null && _node.nodeData.nodeType == NodeType.HERO && _node.nodeId > 0)
-			{
-				killNum --;
-			}
-			
-			if(heroKilled >= killNum)
-			{
-				fWin = true;
-
-				heroKilled = winTemplate.killNum;
-				
-				BattleUIControlor.Instance().refreshWinDesc();
-			}
-			
-			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
-		}
-
-		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.Kill_Soldier);
-		
-		if(winTemplate != null)
-		{
-			int killNum = winTemplate.killNum;
-			
-			if(_node!= null && _node.nodeData.nodeType == NodeType.SOLDIER && _node.nodeId > 0)
-			{
-				killNum --;
-			}
-			
-			if(soldierKilled >= killNum)
-			{
-				fWin = true;
-
-				soldierKilled = winTemplate.killNum;
-				
-				BattleUIControlor.Instance().refreshWinDesc();
-			}
-			
-			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
-		}
-
-		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.Reach_Destination);
-
-		if(winTemplate != null)
-		{
-			float length = Vector3.Distance(king.transform.position, winTemplate.destination);
-			
-			if(length < winTemplate.destinationRadius)
-			{
-				fWin = true;
-			}
-
-			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
-		}
-
-		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.WinType.PROTECT);
-		
-		if(winTemplate != null)
-		{
-			BaseAI protectNode = getNodebyId(winTemplate.protectNodeId);
-
-			if(protectNode != null && protectNode.isAlive && protectNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) > 0)
-			{
-				fWin = true;
-			}
-			else
-			{
-				fWin = false;
-			}
-			
-			if(fWin == true) fWin = BattleWinTemplate.reachType(winTemplate.winId);
-		}
-
-		if (fWin == true) return BattleResult.RESULT_WIN;
-
-		return BattleResult.RESULT_BATTLING;
+//		BattleResult br = battleCheck.checkResult (null);
+//
+//		bool fWin = br == BattleResult.RESULT_WIN;
+//
+//		bool fLose = br == BattleResult.RESULT_LOSE;
+//
+//		if(fWin == true) result = BattleResult.RESULT_WIN;
+//
+//		if(king.isAlive == false) 
+//		{
+//			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve
+//			   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
+//			{
+//				result = BattleResult.RESULT_WIN;
+//			}
+//			else
+//			{
+//				result = BattleResult.RESULT_LOSE;
+//			}
+//		}
+//
+//		if(timeLast <= 0 && timeLast != -100)
+//		{
+//			BattleWinTemplate template = BattleWinTemplate.getWinTemplateContainsType(BattleWinFlag.EndType.Reach_Time);
+//
+//			bool winFlag = false;
+//
+//			if(template != null)
+//			{
+//				winFlag = BattleWinTemplate.reachTypeWin(template.winId);
+//			}
+//
+//			if(winFlag == true
+//			   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve
+//			   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
+//			{
+//				result = BattleResult.RESULT_WIN;
+//			}
+//			else
+//			{
+//				result = BattleResult.RESULT_LOSE;
+//			}
+//		}
+//
+//		if(result != BattleResult.RESULT_BATTLING)
+//		{
+//			Debug.Log("checkResult checkResult " + result);
+//		}
 	}
  
 	public void ResultSlowDown()

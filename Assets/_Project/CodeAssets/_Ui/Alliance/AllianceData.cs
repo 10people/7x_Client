@@ -68,7 +68,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
     //    }
     //}
 
-    private static readonly List<int> AllianceAddFuncBtn = new List<int>() { 2000, 2001, 2002 };
+//    private static readonly List<int> AllianceAddFuncBtn = new List<int>() { 2000, 2001, 2002 };
 
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
@@ -128,14 +128,6 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
                         t_qx.Deserialize(t_tream, allianceHaveRes, allianceHaveRes.GetType());
 
-                        //                Debug.Log("_isNoAllianceKey_isNoAllianceKey_isNoAllianceKey_isNoAllianceKey_isNoAllianceKey " + m_InstantiateNoAlliance);
-
-                        //				if (_isNoAllianceKey)
-                        //                {
-                        //                    _isNoAllianceKey = false;
-                        //                    SceneManager.EnterAllianceCity();
-                        //                }
-
                         if (allianceHaveRes != null)
                         {
                             //					Debug.Log("接收有联盟信息！");
@@ -156,13 +148,15 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
                             CityGlobalData.m_AllianceIsHave = true;
 
-                            foreach (var item in AllianceAddFuncBtn)
-                            {
-                                if (!FunctionOpenTemp.m_EnableFuncIDList.Contains(item))
-                                {
-                                    FunctionOpenTemp.m_EnableFuncIDList.Add(item);
-                                }
-                            }
+//                            foreach (var item in AllianceAddFuncBtn)
+//                            {
+//                                if (!FunctionOpenTemp.m_EnableFuncIDList.Contains(item))
+//                                {
+//									Debug.Log("=============1");
+//									Debug.Log(item);
+//                                    FunctionOpenTemp.m_EnableFuncIDList.Add(item);
+//                                }
+//                            }
                             ApplicateAllianceReq(g_UnionInfo);
                             //					GameObject allianceObj = GameObject.Find("My_Union(Clone)");
                             //					if (allianceObj != null)

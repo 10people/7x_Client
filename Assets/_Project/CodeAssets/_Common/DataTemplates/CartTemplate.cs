@@ -31,6 +31,8 @@ public class CartTemplate : XmlLoadManager
 
 	public int CartProbability;
 
+	public int vipMin;
+
     public static List<CartTemplate> Templates = new List<CartTemplate>();
 
     public static void LoadTemplates(EventDelegate.Callback p_callback = null)
@@ -104,6 +106,8 @@ public class CartTemplate : XmlLoadManager
 				t_reader.MoveToNextAttribute();
 				t_template.CartProbability = int.Parse(t_reader.Value);
 
+				t_reader.MoveToNextAttribute();
+				t_template.vipMin = int.Parse(t_reader.Value);
             }
 
             Templates.Add(t_template);

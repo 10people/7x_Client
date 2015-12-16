@@ -43,7 +43,6 @@ namespace AllianceBattle
             m_AbPlayerController.IsRotateCamera = false;
             m_AbPlayerController.IsUploadPlayerPosition = true;
             m_AbPlayerController.BaseGroundPosY = 0.1f;
-            m_AbPlayerController.m_CharacterSyncDuration = 0.1f;
 
             m_AbPlayerController.TrackCameraPosition = TrackCameraPosition;
             m_AbPlayerController.TrackCameraRotation = TrackCameraRotation;
@@ -70,7 +69,7 @@ namespace AllianceBattle
             TrackCameraPosition = TrackCamera.transform.localPosition;
             TrackCameraRotation = TrackCamera.transform.localEulerAngles;
 
-            InitPlayer(CityGlobalData.m_king_model_Id, originalPosition1, JunZhuData.Instance().m_junzhuInfo.name, AllianceData.Instance.IsAllianceNotExist ? "" : AllianceData.Instance.g_UnionInfo.name);
+            InitPlayer(CityGlobalData.m_king_model_Id, PlayerSceneSyncManager.Instance.m_MyselfPosition, JunZhuData.Instance().m_junzhuInfo.name, AllianceData.Instance.IsAllianceNotExist ? "" : AllianceData.Instance.g_UnionInfo.name);
 
             //Close yindao UI.
             UIYindao.m_UIYindao.CloseUI();

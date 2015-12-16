@@ -6,6 +6,7 @@ using qxmobile.protobuf;
 public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketListener
 {
     public int m_MyselfUid = -1;
+    public Vector3 m_MyselfPosition;
 
     private delegate void VoidDelegate();
 
@@ -107,6 +108,7 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
                         t_qx.Deserialize(t_stream, tempScene, tempScene.GetType());
 
                         m_MyselfUid = tempScene.uid;
+                        m_MyselfPosition = new Vector3(tempScene.posX, tempScene.posY, tempScene.posZ);
 
                         if (m_enterSceneDelegate != null)
                         {

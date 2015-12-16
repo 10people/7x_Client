@@ -844,7 +844,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 			MiBaoicon.spriteName = "";
 			return;
 		}
-		MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempByZuHe_Pinzhi(M_Treas_info.zuheId,2);
+		MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(M_Treas_info.zuheId);
 
 		MiBaoicon.spriteName = mMiBaoskill.icon.ToString ();
 		//TimeAndAllTimes.text = M_Treas_info.timesOfDay.ToString () + "/" + M_Treas_info.totalTimes.ToString ();
@@ -856,32 +856,22 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 	}
 	public void Trea_ChangeMiBaoBtn() //  选择秘宝
 	{
-		if(!MiBaoGlobleData.Instance ().GetEnterChangeMiBaoSkill_Oder ())
-		{
-			return;
-		}
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), LoadBack);
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeSkillLoadBack);
 	}
-	void LoadBack(ref WWW p_www, string p_path, Object p_object)
+
+
+	void ChangeSkillLoadBack(ref WWW p_www, string p_path, Object p_object)
 	{
-
-
-		GameObject mChoose_MiBao = Instantiate (p_object) as GameObject;
-
-		mChoose_MiBao.SetActive (true);
-
-		mChoose_MiBao.transform.parent = this.transform.parent;
-
-		mChoose_MiBao.transform.localPosition = Vector3.zero;
-
-		mChoose_MiBao.transform.localScale = Vector3.one;
-
-		ChangeMiBaoSkill mChangeMiBaoSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();
-		mChangeMiBaoSkill.GetRootName (this.gameObject.name);
+		GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
 		
-		mChangeMiBaoSkill.Init(3, M_Treas_info.zuheId);
-
-		HY_UIManager.Instance ().ShowOrClose ();
+		mChoose_MiBao.transform.localPosition = new Vector3(0, -100, 0);
+		
+		mChoose_MiBao.transform.localScale = Vector3.one;
+		
+		NewMiBaoSkill mNewMiBaoSkill = mChoose_MiBao.GetComponent<NewMiBaoSkill>();
+		mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.HY_TreSend ),M_Treas_info.zuheId );
+		MainCityUI.TryAddToObjectList(mChoose_MiBao);
+		
 	}
 	void HavNoTime(ref WWW p_www,string p_path, Object p_object)
 	{

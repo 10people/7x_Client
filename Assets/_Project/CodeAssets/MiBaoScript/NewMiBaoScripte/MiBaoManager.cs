@@ -51,7 +51,7 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 
 	public List<GameObject> UIRoots = new List<GameObject>();
 
-	public MibaoGroup MiBaoManager_mMiBaoGroup;
+	//public MibaoGroup MiBaoManager_mMiBaoGroup;
 
 	public int CurrSkill_id;
 
@@ -312,7 +312,7 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 					
 					mShowMiBaoSkill.ShowMiBaoGroupTemp = G_MiBaoInfo;
 
-					mShowMiBaoSkill.ShowMiBaoGroup = MiBaoManager_mMiBaoGroup;
+				//	mShowMiBaoSkill.ShowMiBaoGroup = MiBaoManager_mMiBaoGroup;
 
 					mShowMiBaoSkill.SkillId = CurrSkill_id;
 

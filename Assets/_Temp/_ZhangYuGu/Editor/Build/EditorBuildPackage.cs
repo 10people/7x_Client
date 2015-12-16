@@ -110,25 +110,25 @@ public class EditorBuildPackage : MonoBehaviour {
 		Debug.Log( "EditorBuildPackage.BuildBundles()" );
 		#endif
 
-		VersionTool.Instance().Init();
+		VersionTool_4.Instance().Init();
 
-		VersionTool.VersionType t_type = GetVersionType();
+		VersionTool_4.VersionType t_type = GetVersionType();
 
 		switch( t_type ){
-		case VersionTool.VersionType.None:
+		case VersionTool_4.VersionType.None:
 			return;
 
-		case VersionTool.VersionType.SmallVersion:
+		case VersionTool_4.VersionType.SmallVersion:
 			BuildSmallVersion();
 			break;
 
-		case VersionTool.VersionType.BigVersion:
+		case VersionTool_4.VersionType.BigVersion:
 			BuildBigVersion();
 			break;
 		}
 	}
 
-	private static VersionTool.VersionType GetVersionType(){
+	private static VersionTool_4.VersionType GetVersionType(){
 		BuildTarget t_target = BuildTarget.Android;
 
 		#if UNITY_IOS
@@ -156,41 +156,41 @@ public class EditorBuildPackage : MonoBehaviour {
 			Debug.Log( "t_node = null." );
 			#endif
 
-			return VersionTool.VersionType.BigVersion;
+			return VersionTool_4.VersionType.BigVersion;
 		}
-		else if( t_node_big != VersionTool.GetBigVersion() ){
+		else if( t_node_big != VersionTool_4.GetBigVersion() ){
 			#if DEBUG_BUILD
 			Debug.Log( "Archive Big: " + t_node_big );
 
-			Debug.Log( "Cur: " + VersionTool.GetBigVersion() );
+			Debug.Log( "Cur: " + VersionTool_4.GetBigVersion() );
 			#endif
 
-			if( t_node_base == VersionTool.GetBaseVersion() ){
-				Debug.LogError( "Error: " + t_node_base + " - " + VersionTool.GetBaseVersion() );
+			if( t_node_base == VersionTool_4.GetBaseVersion() ){
+				Debug.LogError( "Error: " + t_node_base + " - " + VersionTool_4.GetBaseVersion() );
 				
-				return VersionTool.VersionType.None;
+				return VersionTool_4.VersionType.None;
 			}
 			
-			return VersionTool.VersionType.BigVersion;
+			return VersionTool_4.VersionType.BigVersion;
 		}
-		else if( t_node_small != VersionTool.GetSmallVersion() ){
+		else if( t_node_small != VersionTool_4.GetSmallVersion() ){
 			#if DEBUG_BUILD
 			Debug.Log( "Archive Small: " + t_node_small );
 			
-			Debug.Log( "Cur: " + VersionTool.GetSmallVersion() );
+			Debug.Log( "Cur: " + VersionTool_4.GetSmallVersion() );
 			#endif
 
-			return VersionTool.VersionType.SmallVersion;
+			return VersionTool_4.VersionType.SmallVersion;
 		}
-		else if( t_node_small == VersionTool.GetSmallVersion() ){
-			Debug.LogError( "Error: " + t_node_small + " - " + VersionTool.GetSmallVersion() );
+		else if( t_node_small == VersionTool_4.GetSmallVersion() ){
+			Debug.LogError( "Error: " + t_node_small + " - " + VersionTool_4.GetSmallVersion() );
 			
-			return VersionTool.VersionType.None;
+			return VersionTool_4.VersionType.None;
 		}
 		else{
 			Debug.LogError( "Error: Nothing To Build." );
 			
-			return VersionTool.VersionType.None;
+			return VersionTool_4.VersionType.None;
 		}
 	}
 
@@ -275,9 +275,9 @@ public class EditorBuildPackage : MonoBehaviour {
 
 		{
 			#if UNITY_ANDROID
-			string t_full_path = PathHelper.GetFullPath_WithRelativePath( "StreamingArchived/" + VersionTool.GetSmallVersion() + "/Android" );
+			string t_full_path = PathHelper.GetFullPath_WithRelativePath( "StreamingArchived/" + VersionTool_4.GetSmallVersion() + "/Android" );
 			#elif UNITY_IOS
-			string t_full_path = PathHelper.GetFullPath_WithRelativePath( "StreamingArchived/" + VersionTool.GetSmallVersion() + "/iOS" );
+			string t_full_path = PathHelper.GetFullPath_WithRelativePath( "StreamingArchived/" + VersionTool_4.GetSmallVersion() + "/iOS" );
 			#else
 			string t_full_path = "";
 			#endif
@@ -306,9 +306,9 @@ public class EditorBuildPackage : MonoBehaviour {
 		}
 
 		{
-			string t_src_path = PathHelper.GetFullPath_WithRelativePath( "StreamingArchived/" + VersionTool.GetSmallVersion() );
+			string t_src_path = PathHelper.GetFullPath_WithRelativePath( "StreamingArchived/" + VersionTool_4.GetSmallVersion() );
 			
-			string t_dest_path = Path.Combine( GetBuildTargetFolder(), VersionTool.GetSmallVersion() );
+			string t_dest_path = Path.Combine( GetBuildTargetFolder(), VersionTool_4.GetSmallVersion() );
 
 			FileHelper.DirectoryCopy( t_src_path, t_dest_path );
 		}
@@ -428,7 +428,7 @@ public class EditorBuildPackage : MonoBehaviour {
 	private static void ExecBuild( BuildOptions p_options ){
 		Debug.Log( "ExecBuild( " + p_options + " )" );
 
-		VersionTool.Instance().Init();
+		VersionTool_4.Instance().Init();
 
 		bool t_is_project = false;
 
@@ -444,7 +444,7 @@ public class EditorBuildPackage : MonoBehaviour {
 			Debug.Log( "Is Building Project: " + t_is_project );
 		}
 		
-		string t_file_name = VersionTool.GetSmallVersion();
+		string t_file_name = VersionTool_4.GetSmallVersion();
 
 		if( !t_is_project ){
 			#if UNITY_ANDROID
@@ -495,11 +495,10 @@ public class EditorBuildPackage : MonoBehaviour {
 			                          t_target,
 			                          p_options );
 		}
-
 	}
 
 	private static string GetBuildTargetFolder(){
-		return Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.Desktop ), VersionTool.GetBuildTime() );
+		return Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.Desktop ), VersionTool_4.GetBuildTime() );
 	}
 
 	#endregion

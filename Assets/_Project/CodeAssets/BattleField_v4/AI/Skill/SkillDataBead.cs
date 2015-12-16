@@ -31,7 +31,7 @@ public class SkillDataBead
 		yield return new WaitForSeconds (0.0f);
 	}
 	
-	public virtual void activeSkill(int state)
+	public virtual void activeSkill(int state, GameObject skillEff)
 	{
 		
 	}

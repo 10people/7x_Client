@@ -61,7 +61,6 @@ public class GeneralRules : MonoBehaviour {
 		case GeneralControl.RuleType.LUE_DUO:
 		{
 			LueDuoData.Instance.IsStop = false;
-			LueDuoManager.ldManager.ShowChangeSkillEffect (true);
 			break;
 		}
 		default:

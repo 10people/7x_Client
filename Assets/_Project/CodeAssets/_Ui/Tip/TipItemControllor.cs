@@ -228,34 +228,34 @@ public class TipItemControllor : MonoBehaviour
 		}
 		else if(template.itemType == 4)//秘宝数量在秘宝列表中
 		{
-			foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
-			{
-				foreach(MibaoInfo mibao in group.mibaoInfo)
-				{
-					if(mibao.miBaoId == template.id)
-					{
-						if(mibao.isLock == false)
-						{
-							num = 1;
-						}
-					}
-				}
-			}
+//			foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
+//			{
+//				foreach(MibaoInfo mibao in group.mibaoInfo)
+//				{
+//					if(mibao.miBaoId == template.id)
+//					{
+//						if(mibao.isLock == false)
+//						{
+//							num = 1;
+//						}
+//					}
+//				}
+//			}
 
 			gotoBag = false;
 		}
 		else if(template.itemType == 5)//秘宝碎片数量在秘宝列表中
 		{
-			foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
-			{
-				foreach(MibaoInfo mibao in group.mibaoInfo)
-				{
-					if(mibao.miBaoId == template.synItemID)
-					{
-						num = mibao.suiPianNum;
-					}
-				}
-			}
+//			foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
+//			{
+//				foreach(MibaoInfo mibao in group.mibaoInfo)
+//				{
+//					if(mibao.miBaoId == template.synItemID)
+//					{
+//						num = mibao.suiPianNum;
+//					}
+//				}
+//			}
 		}
 
 		if(gotoBag == true)
@@ -289,35 +289,35 @@ public class TipItemControllor : MonoBehaviour
 		bool isHave = false;
 
 		int numMax = 0;
-		
-		foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
-		{
-			foreach(MibaoInfo mibao in group.mibaoInfo)
-			{
-				MiBaoXmlTemp mibaoTemplate = MiBaoXmlTemp.getMiBaoXmlTempById(mibao.miBaoId);
-
-				if(mibaoTemplate.suipianId == template.id)
-				{
-					if(mibao.star == 0)
-					{
-						isHave = false;
-
-						MiBaoSuipianXMltemp suipianTemplate = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById(mibaoTemplate.suipianId);
-						
-						isLock = mibao.isLock;
-						
-						numMax = suipianTemplate.hechengNum;
-					}
-					else
-					{
-						isHave = true;
-
-						numMax = mibao.needSuipianNum;
-					}
-
-				}
-			}
-		}
+//		
+//		foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
+//		{
+//			foreach(MibaoInfo mibao in group.mibaoInfo)
+//			{
+//				MiBaoXmlTemp mibaoTemplate = MiBaoXmlTemp.getMiBaoXmlTempById(mibao.miBaoId);
+//
+//				if(mibaoTemplate.suipianId == template.id)
+//				{
+//					if(mibao.star == 0)
+//					{
+//						isHave = false;
+//
+//						MiBaoSuipianXMltemp suipianTemplate = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById(mibaoTemplate.suipianId);
+//						
+//						//isLock = mibao.isLock;
+//						
+//						numMax = suipianTemplate.hechengNum;
+//					}
+//					else
+//					{
+//						isHave = true;
+//
+//						numMax = mibao.needSuipianNum;
+//					}
+//
+//				}
+//			}
+//		}
 
 		bar.value = (num * 1f) / (numMax * 1f);
 		

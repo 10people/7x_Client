@@ -6,6 +6,23 @@ using ProtoBuf.Meta;
 
 public class CityGlobalData  {
 
+	public enum skillLevelId
+	{
+		zhongji = 0,
+		bahuanglieri,
+		qiankundouzhuan,
+		tuci,
+		jueyingxingguangzhan,
+		xuejilaoyin,
+		jishe,
+		zhuixingjian,
+		hanbingjian
+	}
+
+	public static int[] skillLevel = new int[9]{0, 1, 2, 0, 1, 2, 0, 1, 2};
+
+
+
 	public static bool autoFightDebug = false;//自动不停的战斗的测试
 
 	public static bool  PveLevel_UI_is_OPen = false;

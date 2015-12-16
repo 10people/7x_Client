@@ -140,12 +140,15 @@ public class UtilityTool : Singleton<UtilityTool>{
     {
         //		Global.ResourcesDotLoad( Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), CachedBoxCallback );
 
+//		Debug.Log( "UtilityTool.LoadBox()" );
+
         // Updated 2015.7.4, Bundle Load Use.
-        Global.ResourcesDotLoad("New/Box", CachedBoxCallback);
+        Global.ResourcesDotLoad( "New/Box", CachedBoxCallback );
     }
 
-    private static void CachedBoxCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)
-    {
+    private static void CachedBoxCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
+//		Debug.Log( "UtilityTool.CachedBoxCallback( " + p_path + " - " + p_object + " )" );
+
         m_cached_box_obj = p_object;
     }
 
@@ -208,8 +211,7 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     GameObject ExecLoadBox(string tile, string dis1, string dis2, List<BagItem> bagItem, string buttonname1, string buttonname2, UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true)
     {
-        if (m_cached_box_obj == null)
-        {
+        if ( m_cached_box_obj == null ){
             Debug.LogError("Error, No Cached box.");
 
             LoadBox();
@@ -339,23 +341,18 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     #region Load
 
-    public static void LoadStringStringDict(Dictionary<string, string> p_dict, TextAsset p_text, char p_splitter)
-    {
+    public static void LoadStringStringDict( Dictionary<string, string> p_dict, TextAsset p_text, char p_splitter ){
         string[] t_lines = p_text.text.Split('\n');
 
-        foreach (string t_line in t_lines)
-        {
-            string[] t_pair = t_line.Split(p_splitter);
+        foreach ( string t_line in t_lines ){
+            string[] t_pair = t_line.Split( p_splitter );
 
-            if (t_pair.Length == 2)
-            {
-                if (!p_dict.ContainsKey(t_pair[0].Trim()))
-                {
-                    p_dict.Add(t_pair[0].Trim(), t_pair[1].Trim());
+            if( t_pair.Length == 2 ){
+                if( !p_dict.ContainsKey( t_pair[0].Trim() ) ){
+                    p_dict.Add( t_pair[0].Trim(), t_pair[1].Trim() );
                 }
             }
-            else
-            {
+            else{
                 //				Debug.LogWarning( "Parse Error: " + t_line );
             }
         }
@@ -414,10 +411,8 @@ public class UtilityTool : Singleton<UtilityTool>{
         return p_dict[p_key].m_int;
     }
 
-    public static float GetFloat(Dictionary<string, ConfigTool.ConfigValue> p_dict, string p_key, float p_default_value = 0f)
-    {
-        if (!p_dict.ContainsKey(p_key))
-        {
+    public static float GetFloat( Dictionary<string, ConfigTool.ConfigValue> p_dict, string p_key, float p_default_value = 0f ){
+        if ( !p_dict.ContainsKey( p_key ) ){
             //			Debug.LogError( "Key Not Contained: " + p_key );
 
             return p_default_value;
@@ -426,10 +421,8 @@ public class UtilityTool : Singleton<UtilityTool>{
         return p_dict[p_key].m_float;
     }
 
-    public static string GetString(Dictionary<string, ConfigTool.ConfigValue> p_dict, string p_key, string p_default_value = "")
-    {
-        if (!p_dict.ContainsKey(p_key))
-        {
+    public static string GetString( Dictionary<string, ConfigTool.ConfigValue> p_dict, string p_key, string p_default_value = "" ){
+        if ( !p_dict.ContainsKey( p_key ) ){
             //			Debug.LogError( "Key Not Contained: " + p_key );
 
             return p_default_value;

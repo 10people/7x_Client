@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using qxmobile.protobuf;
+
 /*
 *  无敌斩
 */
@@ -41,6 +43,13 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 			if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.dark();
 		}
+		else
+		{
+			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.jueyingxingguangzhan] == 0)
+			{
+				if((index + 1) % 3 == 0) return;
+			}
+		}
 
 		Vector3 vcZero = curNode == null ? king.transform.position : curNode.transform.position;
 
@@ -54,7 +63,9 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		{
 			if(n.gameObject.activeSelf == true
 			   && Vector3.Distance(n.transform.position, vcZero) < radius 
-			   && n.isAlive)
+			   && n.isAlive
+			   && n.nodeData.nodeType != NodeType.GOD
+			   && n.nodeData.nodeType != NodeType.NPC)
 			{
 				if( n.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) > 0)
 				{
@@ -89,19 +100,19 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	private BaseAI getCurNode(List<BaseAI> list)
 	{
+		if(list.Count == 0) return null;
+
+		BaseAI t_node = list[0];
+
 		foreach(BaseAI node in list)
 		{
-			if(node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Focus) > 1)
+			if(node.nodeData.nodeType > t_node.nodeData.nodeType)
 			{
-				return node;
+				t_node = node;
 			}
 		}
 
-		int random = (int)(Random.value * 100);
-		
-		random = random % list.Count;
-		
-		return list [random];
+		return t_node;
 	}
 
 	public void skill_1_resetPosition()

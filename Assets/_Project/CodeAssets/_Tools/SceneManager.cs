@@ -22,6 +22,48 @@ public class SceneManager{
     public static bool m_isSequencer = false;
     private static int m_MainSceneIndex = 0;
     private static int m_AllianceSceneIndex = 0;
+
+	#region Clean In Loading
+
+	/// Enter Loading Scene, clean everything here
+	private static void EnterLoading(){
+		#if DEBUG_LOADING_SCENE
+		Debug.Log( "SceneManager.EnterLoading()" );
+		#endif
+		
+		if ( EnterNextScene.Instance () != null ) {
+			Debug.Log( "Loading loading." );
+			
+			EnterNextScene.Instance().ManualDestroyImmediate();
+		}
+		
+		// clear all fx
+		{
+			// ui fx
+			if( UI3DEffectTool.HaveInstance() ){
+				UI3DEffectTool.Instance().ClearAllUI3DEffect();
+			}
+
+			// 3d fx
+			{
+				FxTool.CleanFxToLoad();
+			}
+		}
+		
+		// clear ui reference
+		{
+			UI2DTool.ClearAll();
+		}
+		
+		string t_loading_level_name = ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE;
+		
+		Global.LoadLevel( t_loading_level_name, LoadLoadinglDone );
+	}
+
+	#endregion
+
+
+
     #region Scene Loader
 
     /// Error, Never Use This.
@@ -273,6 +315,7 @@ public class SceneManager{
 			Global.m_iZhanli = 0;
 			Global.m_isFuWen = false;
 			Global.m_isOpenFuWen = false;
+			Global.m_isOpenShop = false;
 
             //Clear highest ui and chat objects.
 			if( ClientMain.Instance() != null ){
@@ -386,6 +429,10 @@ public class SceneManager{
     #region Utilities
 
 	public static void LoadLevel( string p_level_name ){
+		#if DEBUG_LOADING_SCENE
+		Debug.Log( "LoadLevel( " + p_level_name + " )" );
+		#endif
+
 		Application.LoadLevel( p_level_name );
 		
 		UtilityTool.UnloadUnusedAssets();
@@ -395,40 +442,9 @@ public class SceneManager{
 		return LevelHelper.IsInBattleScene ();
 	}
 
-    /// Enter Loading Scene.
-    private static void EnterLoading(){
-		#if DEBUG_LOADING_SCENE
-		Debug.Log( "SceneManager.EnterLoading()" );
-		#endif
-
-		if ( EnterNextScene.Instance () != null ) {
-			Debug.Log( "Loading loading." );
-
-			EnterNextScene.Instance().ManualDestroyImmediate();
-		}
-
-		// clear all ui fx
-		{
-			if( UI3DEffectTool.HaveInstance() ){
-				UI3DEffectTool.Instance().ClearAllUI3DEffect();
-			}
-		}
-
-		// clear ui reference
-		{
-			UI2DTool.ClearAll();
-		}
-
-        string t_loading_level_name = ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE;
-
-        Global.LoadLevel( t_loading_level_name, LoadLoadinglDone );
-    }
-
     public static void LoadLoadinglDone( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
 		#if DEBUG_LOADING_SCENE
 		Debug.Log( "SceneManager.LoadLoadinglDone( " + p_path + " )" );
-
-		Debug.Log( "---------------- LoadLevel( " + ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE + " ) ---------------" );
 		#endif
 
 		LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );

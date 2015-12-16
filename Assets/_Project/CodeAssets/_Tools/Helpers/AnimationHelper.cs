@@ -3,6 +3,11 @@ using System.Collections;
 
 public class AnimationHelper 
 {
+    public static int GetAnimatorPlayingHash(Animator p_animator)
+    {
+        return p_animator.GetCurrentAnimatorStateInfo(0).shortNameHash;
+    }
+
 
 	public static string IsPlaying(Animator mAnim)
 	{

@@ -134,7 +134,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 
 //		FreshGuide.Instance().LogActiveTask();
 
-		if( MainCityUIRB.IsNavigationButtonOpen&&(id == 603 || id == 6030)){
+		if( MainCityUIRB.isOpen&&(id == 603 || id == 6030)){
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
 
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
@@ -142,7 +142,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 			return;
 		}
 
-        if (MainCityUIRB.IsFastButtonOpen&&(id == 604 || id == 6040))
+		if (MainCityUIRB.isOpen&&(id == 604 || id == 6040))
         {
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
 			

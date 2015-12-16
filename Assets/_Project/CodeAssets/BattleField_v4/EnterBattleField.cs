@@ -41,7 +41,7 @@ public class EnterBattleField : ScriptableObject
 
 		//Application.LoadLevelAdditiveAsync
 
-		if(template.id == 100101)
+		if(template.id == 100001)
 		{
 			SceneManager.EnterBattleField( CityGlobalData.t_next_battle_field_scene );
 		}

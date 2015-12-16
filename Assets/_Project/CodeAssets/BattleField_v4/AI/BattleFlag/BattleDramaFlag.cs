@@ -103,9 +103,11 @@ public class BattleDramaFlag : MonoBehaviour
 			return;
 		}
 
-		foreach(int flagId in triggerFlagListInteger)
+		foreach(int _flagId in triggerFlagListInteger)
 		{
-			BattleFlag flag = BattleControlor.Instance().flags[flagId];
+			if(_flagId == 0) continue;
+
+			BattleFlag flag = BattleControlor.Instance().flags[_flagId];
 
 			flag.trigger();
 		}

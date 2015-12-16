@@ -196,7 +196,7 @@ public class BattleEffectControllor : MonoBehaviour
 	}
 
 	public void LoadCallback(ref WWW p_www, string p_path, Object p_object){
-		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+		LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 		                         PrepareForBattleField.CONST_BATTLE_LOADING_FX, p_path );
 
 		if( dict_effectObj.ContainsKey( p_path ) ){

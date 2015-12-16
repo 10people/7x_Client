@@ -1,3 +1,5 @@
+//#define MYAPP_ANDROID_PLATFORM
+
 //#define PP_PLATFORM
 
 //#define XY_PLATFORM
@@ -39,6 +41,8 @@ public class ThirdPlatform : MonoBehaviour {
 
 	public enum PlatformType{
 		None,
+		MyApp_Android_Platform,
+
 		PP_Platform,
 		XY_Platform,
 		TongBu_Platform,
@@ -49,8 +53,9 @@ public class ThirdPlatform : MonoBehaviour {
 		ITools_Platform,
 	}
 	
-	
-	#if PP_PLATFORM
+	#if MYAPP_ANDROID_PLATFORM
+	private PlatformType m_platform_type = PlatformType.MyApp_Android_Platform;
+	#elif PP_PLATFORM
 	private PlatformType m_platform_type = PlatformType.PP_Platform;
 	#elif XY_PLATFORM
 	private PlatformType m_platform_type = PlatformType.XY_Platform;
@@ -176,20 +181,20 @@ public class ThirdPlatform : MonoBehaviour {
 		Debug.Log( "ThirdPlatform.ThirdPlatformLoginSuccess()" );
 
 
-		if ( Prepare_Bundle_Config.GetBundleUpdateState () < Prepare_Bundle_Config.BundleUpdateState.CHECKING_UPDATE_INFO ) {
-			if( Prepare_Bundle_Config.Instance() == null ){
+		if ( PrepareBundles.GetBundleUpdateState () < PrepareBundles.UpdateState.CHECKING_UPDATE_INFO ) {
+			if( PrepareBundles.Instance() == null ){
 				Debug.LogError( "Prepare_Bundle_Config.instance == null, Error, in Wrong Place." );
 				
 				return;
 			}
 
-			Prepare_Bundle_Config.Instance ().UpdateServerSelected ( null );
+			PrepareBundles.Instance ().UpdateServerSelected ( null );
 		}
-		else if ( Prepare_Bundle_Config.GetBundleUpdateState () == Prepare_Bundle_Config.BundleUpdateState.PREPARE_START_GAME ) {
-			Prepare_Bundle_Config.BundleUpdateDone ();
+		else if ( PrepareBundles.GetBundleUpdateState () == PrepareBundles.UpdateState.PREPARE_START_GAME ) {
+			PrepareBundles.BundleUpdateDone ();
 		}
 		else {
-			Debug.LogError( "ThirdPlatformLoginSuccess in wrong state: " + Prepare_Bundle_Config.GetBundleUpdateState () );
+			Debug.LogError( "ThirdPlatformLoginSuccess in wrong state: " + PrepareBundles.GetBundleUpdateState () );
 
 			ThirdPlatform.Instance().SetPlatformStatus( PlatformStatus.LogOut );
 		}
@@ -202,7 +207,7 @@ public class ThirdPlatform : MonoBehaviour {
 	public static void StartGame(){
 		Debug.Log( "ThirdPlatform.StartGame()" );
 
-		Prepare_Bundle_Config.StartGame();
+		PrepareBundles.StartGame();
 	}
 
 	public void LogOutCallback( bool p_check_sdk ){
@@ -220,7 +225,7 @@ public class ThirdPlatform : MonoBehaviour {
 
 		}
 
-		if ( Prepare_Bundle_Config.Instance () != null ) {
+		if ( PrepareBundles.Instance () != null ) {
 			Debug.Log( "Still In Version Check, Skip ReLogin Ops." );
 			
 			return;
@@ -236,11 +241,11 @@ public class ThirdPlatform : MonoBehaviour {
 	#region Game UI
 	
 	private static void ShowErrorBox( string p_error_string, UIBox.onclick p_click ){
-		Global.CreateBox( POPUP_TIPS_TITLE,
+		Global.CreateBox( PrepareBundleHelper.POPUP_TIPS_TITLE,
 		                 p_error_string,
 		                 "",
 		                 null,
-		                 Prepare_Bundle_Config.BUTTON_TXT_OK, 
+		                 PrepareBundleHelper.BUTTON_TXT_OK, 
 		                 null, 
 		                 p_click,
 		                 null,
@@ -297,6 +302,11 @@ public class ThirdPlatform : MonoBehaviour {
 					t_request_params.Add( "channel", GetPlatformTag() );
 					
 					t_request_params.Add( "sid", GetPPToken() );
+				}
+				else if( IsMyAppAndroidPlatform() ){
+					t_request_params.Add( "channel", GetPlatformTag() );
+					
+					t_request_params.Add( "sid", GetMyAppToken() );
 				}
 				else if( IsXYPlatform() ){
 					t_request_params.Add( "channel", GetPlatformTag() );
@@ -631,23 +641,26 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 	
 	public static string GetPlatformSession(){
-		if ( IsPPPLatform () ){
-			return GetPPToken ();
+		if ( IsPPPLatform() ){
+			return GetPPToken();
 		} 
-		else if ( IsXYPlatform () ) {
-			return GetXYToken ();
-		} 
-		else if ( IsTongBuPlatform () ) {
-			return GetTongBuSession ();
+		else if( IsMyAppAndroidPlatform() ){
+			return GetMyAppToken();
 		}
-		else if ( IsI4Platform ()) {
-			return GetI4Token ();
+		else if ( IsXYPlatform() ) {
+			return GetXYToken();
 		} 
-		else if ( IsKuaiYongPlatform () ) {
-			return GetKuaiYongToken ();
+		else if ( IsTongBuPlatform() ) {
+			return GetTongBuSession();
+		}
+		else if ( IsI4Platform()) {
+			return GetI4Token();
 		} 
-		else if ( IsHaiMaPlatform () ) {
-			return GetHaiMaToken ();
+		else if ( IsKuaiYongPlatform() ) {
+			return GetKuaiYongToken();
+		} 
+		else if ( IsHaiMaPlatform() ) {
+			return GetHaiMaToken();
 		}
 		else if ( IsIApplePlatform() ){
 			return GetIAppleToken();
@@ -659,11 +672,15 @@ public class ThirdPlatform : MonoBehaviour {
 			return "Default";
 		}
 	}
-	
+
 	public static bool IsThirdPlatform(){
 		return !( GetPlarformType () == PlatformType.None );
 	}
-	
+
+	public static bool IsMyAppAndroidPlatform(){
+		return GetPlarformType() == PlatformType.MyApp_Android_Platform;
+	}
+
 	public static bool IsPPPLatform(){
 		return GetPlarformType() == PlatformType.PP_Platform;
 	}
@@ -1228,6 +1245,52 @@ public class ThirdPlatform : MonoBehaviour {
 	
 	public void IToolsLeavePlatform(){
 		Debug.Log ( "ThirdPlatform.IToolsLeavePlatform( " + " )" );
+		
+		CheckLoginToShowSDK();
+	}
+	
+	#endregion
+
+
+
+	#region MyApp Platform
+	
+	public const string PLATFORM_MYAPP_TAG 		= "MyApp";
+	
+	private string m_my_app_token 				= "";
+	
+	public static string GetMyAppToken(){
+		return Instance().m_my_app_token;
+	}
+	
+	public void MyAppSetToken( string p_msg ){
+		Debug.Log ( "ThirdPlatform.MyAppSetToken( " + p_msg + " )" );
+		
+		m_my_app_token = p_msg;
+		
+		{
+			ThirdPlatformLoginSuccess();
+		}
+	}
+	
+//	public void KuaiYongSubAccountLogoutFinish(){
+//		Debug.Log ( "ThirdPlatform.KuaiYongSubAccountLogoutFinish( " + " )" );
+//
+//		KuaiYongLogout ( false );
+//	}
+	
+	public void MyAppLogoutFinish(){
+		Debug.Log ( "ThirdPlatform.MyAppLogoutFinish( " + " )" );
+		
+		LogOutCallback ( true );
+	}
+	
+//	private void IToolsLogout( bool p_check_sdk ){
+//		LogOutCallback ( p_check_sdk );
+//	}
+	
+	public void MyAppLeavePlatform(){
+		Debug.Log ( "ThirdPlatform.MyAppLeavePlatform( " + " )" );
 		
 		CheckLoginToShowSDK();
 	}

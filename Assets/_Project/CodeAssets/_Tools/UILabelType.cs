@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(UILabel))]
@@ -6,6 +6,7 @@ using System.Collections;
 public class UILabelType : MonoBehaviour 
 {
 	public int m_iType = 0;//0一级标题 1二级标题 2按钮的黄色文字 3按钮的红色文字 4黄色影子文字 6 2好字体+粗 100灰色未开启时使用 101  2号类型的暗色未选择时使用
+	public int m_iSize = 0;//Font Size
 	UILabel m_UILabel;
 	// Use this for initialization
 	void Start () 
@@ -21,7 +22,7 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.trueTypeFont = ClientMain.GetInstance().m_Font;
 		}
 		else{
-			m_UILabel.trueTypeFont = Prepare_Bundle_Config.Instance().m_font;
+			m_UILabel.trueTypeFont = PrepareBundles.Instance().m_font;
 		}
 
 	    m_UILabel.bitmapFont = null;
@@ -93,7 +94,7 @@ public class UILabelType : MonoBehaviour
 			break;
 		case 6:
 			m_UILabel.fontSize = 25;
-			m_UILabel.fontStyle = FontStyle.Bold;
+			m_UILabel.fontStyle = FontStyle.Normal;
 			m_UILabel.applyGradient = true;
 			m_UILabel.gradientTop = new Color(1.0f, 239f/255f, 163f/255f);
 			m_UILabel.gradientBottom = new Color(240f/255f, 168f/255f, 64f/255f);
@@ -120,6 +121,10 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.effectColor = new Color(13f/255f, 6f/255f, 1f/255f);
 			m_UILabel.effectDistance = new Vector2(1, 1);
 			break;
+		}
+		if(m_iSize != 0)
+		{
+			m_UILabel.fontSize = m_iSize;
 		}
 	}
 

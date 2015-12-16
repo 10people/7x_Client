@@ -6,62 +6,43 @@ using System.IO;
 
 public class GuideTemplate : XmlLoadManager
 {
-	//<Guide id="100101" levelType="0" eventId="1" type="1" para1="0" para2="0" content="0" 
-	//delay="0" cameraTarget="xxxxx" cameraPx="-0.000001636374" cameraPy="5.826938" cameraPz="7.066081" 
-	//cameraRx="30.01426" cameraRy="180" pName="xxxxx" pText="这就到顶层了？[00B0F0]千重楼[-]也不过如此!" 
-	//flagId="0" icon="0" pause="1" differentiate="0" position="1" desc="触发对话" />
+	//<Guide id="100101" levelType="0" dungeonId="1" tiggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" 
+	//ap1="10101" ap2="0" ap3="0" pause="1" delTarget="0" />
 
 
 	public int id;
 
 	public int levelType;
 
-	public int eventId;
+	public int dungeonId;
 	
-	public int type;
+	public int triggerType;
 	
-	public int para1;
+	public int tp1;
 	
-	public int para2;
+	public int tp2;
 
-	public int content;
-
-	public float delay;
-
-	public string cameraTarget;
-
-	public float cameraPx;
-
-	public float cameraPy;
-
-	public float cameraPz;
-
-	public float cameraRx;
-
-	public float cameraRy;
-
-	public string pName;
-
-	public string pText;
-
-	public List<int> flagId;
-	
-	public int icon;
-	
-	public int pause;
-
-	public int differentiate;
-
-	public int position;
+	public int tp3;
 
 	public bool retriggerable;
 
 	public bool retriggerableCurBattle;
 
-	public string desc;
+	public float delay;
 
-	public int forwardFlagId;
+	public int actionType;
 
+	public int ap1;
+	
+	public int ap2;
+	
+	public string ap3;
+
+	public int pause;
+
+	public int delTarget;
+
+	public List<int> flagId;
 	
 	private static List<GuideTemplate> templates = new List<GuideTemplate>();
 	
@@ -88,7 +69,7 @@ public class GuideTemplate : XmlLoadManager
 		}
 		
 		if( m_templates_text == null ) {
-			Debug.LogError( "Error, Asset Not Exist." );
+			//Debug.LogError( "Error, Asset Not Exist." );
 			
 			return;
 		}
@@ -107,7 +88,6 @@ public class GuideTemplate : XmlLoadManager
 			GuideTemplate t_template = new GuideTemplate();
 			
 			{
-
 				t_reader.MoveToNextAttribute();
 				t_template.id = int.Parse( t_reader.Value );
 
@@ -115,48 +95,48 @@ public class GuideTemplate : XmlLoadManager
 				t_template.levelType = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.eventId = int.Parse( t_reader.Value );
-
-				//Debug.Log("GGGGGGGGGGGuide " + t_template.id + ", " + t_template.eventId);
+				t_template.dungeonId = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.type = int.Parse( t_reader.Value );
+				t_template.triggerType = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
-				t_template.para1 = int.Parse( t_reader.Value );
+				t_template.tp1 = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.para2 = int.Parse( t_reader.Value );
-				
+				t_template.tp2 = int.Parse( t_reader.Value );
+
 				t_reader.MoveToNextAttribute();
-				t_template.content = int.Parse( t_reader.Value );
-		
+				t_template.tp3 = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				string strRetrigger = t_reader.Value;
+				string[] strsRetrigger = strRetrigger.Split(',');
+				
+				t_template.retriggerable = int.Parse( strsRetrigger[1] ) != 0;
+				
+				t_template.retriggerableCurBattle = int.Parse( strsRetrigger[0] ) != 0;
+
 				t_reader.MoveToNextAttribute();
 				t_template.delay = float.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.cameraTarget = t_reader.Value;
-				
-				t_reader.MoveToNextAttribute();
-				t_template.cameraPx = float.Parse( t_reader.Value );
+				t_template.actionType = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.cameraPy = float.Parse( t_reader.Value );
+				t_template.ap1 = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
-				t_template.cameraPz = float.Parse( t_reader.Value );
+				t_template.ap2 = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
-				t_template.cameraRx = float.Parse( t_reader.Value );
-				
-				t_reader.MoveToNextAttribute();
-				t_template.cameraRy = float.Parse( t_reader.Value );
+				t_template.ap3 = t_reader.Value;
 
 				t_reader.MoveToNextAttribute();
-				t_template.pName = t_reader.Value;
+				t_template.pause = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.pText = t_reader.Value;
+				t_template.delTarget = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
 				t_template.flagId = new List<int>();
@@ -169,36 +149,8 @@ public class GuideTemplate : XmlLoadManager
 					if(id == 0) continue;
 
 					t_template.flagId.Add(id);
-				}
-
-				t_reader.MoveToNextAttribute();
-				t_template.icon = int.Parse( t_reader.Value );
-				
-				t_reader.MoveToNextAttribute();
-				t_template.pause = int.Parse( t_reader.Value );
-
-				t_reader.MoveToNextAttribute();
-				t_template.differentiate = int.Parse( t_reader.Value );
-
-				t_reader.MoveToNextAttribute();
-				t_template.position = int.Parse( t_reader.Value );
-
-				t_reader.MoveToNextAttribute();
-				string strRetrigger = t_reader.Value;
-				string[] strsRetrigger = strRetrigger.Split(',');
-
-				t_template.retriggerable = int.Parse( strsRetrigger[1] ) != 0;
-
-				t_template.retriggerableCurBattle = int.Parse( strsRetrigger[0] ) != 0;
-
-				t_reader.MoveToNextAttribute();
-				t_template.desc = t_reader.Value;
-
-				t_reader.MoveToNextAttribute();
-				t_template.forwardFlagId = int.Parse(t_reader.Value);
+				}		
 			}
-			
-			//			t_template.Log();
 			
 			templates.Add( t_template );
 		}
@@ -219,7 +171,7 @@ public class GuideTemplate : XmlLoadManager
 		bool t_have = false;
 
 		foreach(GuideTemplate template in templates){
-			if( template.id == p_level_id && template.eventId == p_event_id && template.levelType == levelType){
+			if( template.dungeonId == p_level_id && template.id == p_event_id && template.levelType == levelType){
 				t_have = true;
 
 				return t_have;
@@ -239,7 +191,7 @@ public class GuideTemplate : XmlLoadManager
 		bool t_have = false;
 		
 		foreach(GuideTemplate template in templates){
-			if( template.id == p_level_id && template.type == p_type && template.levelType == levelType)
+			if( template.dungeonId == p_level_id && template.triggerType == p_type && template.levelType == levelType)
 			{
 				t_have = true;
 				
@@ -261,7 +213,7 @@ public class GuideTemplate : XmlLoadManager
 		
 		foreach(GuideTemplate template in templates)
 		{
-			if( template.id == p_level_id && template.type == p_type && template.para2 == p_skillType && template.levelType == levelType)
+			if( template.dungeonId == p_level_id && template.triggerType == p_type && template.tp1 == p_skillType && template.levelType == levelType)
 			{
 				t_have = true;
 
@@ -283,7 +235,7 @@ public class GuideTemplate : XmlLoadManager
 
 		foreach(GuideTemplate template in templates)
 		{
-			if(template.id == levelId && template.eventId == eventId && template.levelType == levelType)
+			if(template.dungeonId == levelId && template.id == eventId && template.levelType == levelType)
 			{
 				return template;
 			}
@@ -303,7 +255,7 @@ public class GuideTemplate : XmlLoadManager
 
 		foreach(GuideTemplate template in templates)
 		{
-			if(template.id == levelId && template.type == type && template.levelType == levelType)
+			if(template.dungeonId == levelId && template.triggerType == type && template.levelType == levelType)
 			{
 				return template;
 			}
@@ -323,7 +275,7 @@ public class GuideTemplate : XmlLoadManager
 
 		foreach(GuideTemplate template in templates)
 		{
-			if(template.id == levelId && template.type == type && template.para2 == skillType && template.levelType == levelType)
+			if(template.dungeonId == levelId && template.triggerType == type && template.tp1 == skillType && template.levelType == levelType)
 			{
 				return template;
 			}

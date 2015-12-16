@@ -395,13 +395,13 @@ public class Bundle_Loader : MonoBehaviour {
 		{
 			m_config_loaded_count++;
 
-			StaticLoading.ItemLoaded( Prepare_Bundle_Config.m_loading_sections, Prepare_Bundle_Config.CONST_LOADING_BUNDLE_CONFIG );
+			LoadingHelper.ItemLoaded( Prepare_Bundle_Config_4.m_loading_sections, Prepare_Bundle_Config_4.CONST_LOADING_BUNDLE_CONFIG );
 
 			if( p_object != null ){
-				Prepare_Bundle_Config.SetCurLoading( p_object.name );
+				Prepare_Bundle_Config_4.SetCurLoading( p_object.name );
 			}
 			else{
-				Prepare_Bundle_Config.SetCurLoading( p_path );
+				Prepare_Bundle_Config_4.SetCurLoading( p_path );
 			}
 		}
 
@@ -814,8 +814,6 @@ public class Bundle_Loader : MonoBehaviour {
 				StartCoroutine( ResourcesDotLoad( t_load_task ) );
 				break;
 			}
-
-
 		}
 //		else{
 //			Debug.Log( "List Empty: " + m_to_load_list.Count );

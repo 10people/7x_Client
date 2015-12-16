@@ -283,7 +283,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		}
 		else
 		{
-			MiBaoSkillTemp mMiBAo = MiBaoSkillTemp.getMiBaoSkillTempByZuHe_Pinzhi(m_You_XiaInfo.zuheId,2);
+			MiBaoSkillTemp mMiBAo = MiBaoSkillTemp.getMiBaoSkillTempBy_id(m_You_XiaInfo.zuheId);
 			
 			MiBaoSkillIcon.spriteName = mMiBAo.icon.ToString();
 		}
@@ -299,54 +299,22 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	}
 	public void ChangerMiBaoSkillBtn()
 	{
-		if(!MiBaoGlobleData.Instance ().GetEnterChangeMiBaoSkill_Oder ())
-		{
-			return;
-		}
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), LoadMiBaoBack);
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeSkillLoadBack);
 	}
-
-	void LoadMiBaoBack(ref WWW p_www, string p_path, Object p_object)
+	
+	void ChangeSkillLoadBack(ref WWW p_www, string p_path, Object p_object)
 	{
-
-		EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecendNeedCloseObg = this.gameObject;
-
-		GameObject mChoose_MiBao = Instantiate (p_object) as GameObject;
+		GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
 		
-		mChoose_MiBao.SetActive (true);
-		
-		mChoose_MiBao.transform.parent = this.transform.parent;
-		
-		mChoose_MiBao.transform.localPosition = Vector3.zero;
+		mChoose_MiBao.transform.localPosition = new Vector3(0, -100, 0);
 		
 		mChoose_MiBao.transform.localScale = Vector3.one;
 		
-		ChangeMiBaoSkill mChangeMiBaoSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();
-
-		int mibaotype = 0;
-
-		switch(big_id)
-		{
-		case 1:
-			mibaotype = (int)CityGlobalData.MibaoSkillType.YX_JinBi;
-			break;
-		case 2:
-			mibaotype = (int)CityGlobalData.MibaoSkillType.YX_Cailiao;
-			break;
-		case 3:
-			mibaotype = (int)CityGlobalData.MibaoSkillType.YX_Jingpo;
-			break;
-
-		default:
-			break;
-		}
-		mChangeMiBaoSkill.GetRootName (this.gameObject.name);
-
-		mChangeMiBaoSkill.Init(mibaotype, m_You_XiaInfo.zuheId);
-
-		EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose ();
+		NewMiBaoSkill mNewMiBaoSkill = mChoose_MiBao.GetComponent<NewMiBaoSkill>();
+		mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.YX_JinBi),m_You_XiaInfo.zuheId );
+		MainCityUI.TryAddToObjectList(mChoose_MiBao);
+		
 	}
-
 	public void CloseBtn()
 	{
 		GameObject desgameobj = GameObject.Find ("Enter_YouXiaBattle(Clone)");

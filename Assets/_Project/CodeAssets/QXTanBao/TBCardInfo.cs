@@ -33,11 +33,6 @@ public class TBCardInfo : MonoBehaviour {
 	public UIWidget effectWidget;
 	private int pinZhiId;
 
-	private readonly Dictionary<int,int> colorDic = new Dictionary<int, int>()//0-0 | 1.2-1 | 3.4.5-2 | 6.7.8-3 | 9.10-4
-	{
-		{0,0},{1,1},{2,1},{3,2},{4,2},{5,2},{6,3},{7,3},{8,3},{9,4},{10,4}
-	};
-
 	private string[] bgSpriteName = new string[]{"CardBg_back","CardBg"};
 
 	private TanBaoData.TanBaoType tbType;
@@ -114,6 +109,7 @@ public class TBCardInfo : MonoBehaviour {
 		else
 		{
 			cardBox.enabled = true;
+			cardHandler.m_handler += CardBtnHandlerBack;
 		}
 	}
 	/// <summary>
@@ -212,7 +208,7 @@ public class TBCardInfo : MonoBehaviour {
 		
 		string mdesc = DescIdTemplate.GetDescriptionById(awardInfo.itemId);
 		
-		iconSampleManager.SetIconBasicDelegate (true,true,CardBtnHandlerBack);
+		iconSampleManager.SetIconBasicDelegate (true,true,null);///////////////////////////////
 		iconSampleManager.BgSprite.gameObject.SetActive (false);
 		iconSampleManager.SetIconPopText(awardInfo.itemId, itemName, mdesc, 1);
 	}
@@ -226,7 +222,7 @@ public class TBCardInfo : MonoBehaviour {
 		switch (cState)
 		{
 		case ClickState.STATE_BEGIN:
-
+			Debug.Log ("hahahahah");
 			cardBox.enabled = false;
 			TanBaoReward.tbReward.ItweenScale (new Vector3(0,1,1),0.15f,iTween.EaseType.linear,"CardBgScaleEnd",gameObject,gameObject);
 
@@ -252,7 +248,7 @@ public class TBCardInfo : MonoBehaviour {
 
 			if (tbType == TanBaoData.TanBaoType.TONGBI_SINGLE || tbType == TanBaoData.TanBaoType.YUANBAO_SINGLE)
 			{
-				TanBaoReward.tbReward.BlockController (false);
+				TanBaoReward.tbReward.BlockController (false,0);
 				ClearAllEffect ();
 			}
 
@@ -282,7 +278,7 @@ public class TBCardInfo : MonoBehaviour {
 				//清除其它特效,显示秘宝卡
 				ClearAllEffect ();
 
-				TanBaoReward.tbReward.BlockController (false);
+				TanBaoReward.tbReward.BlockController (false,0);
 				TBMiBaoReward.tbMibaoReward.ShowMibaoReward (awardInfo,tbType);
 			}
 			else
@@ -296,11 +292,11 @@ public class TBCardInfo : MonoBehaviour {
 			TanBaoReward.tbReward.GetCardTurnEndNum ();
 			if (awardInfo.itemType == 4)
 			{
-				QXComData.InstanceEffect (QXComData.EffectPos.TOP,cardBg.gameObject,100142 + colorDic[pinZhiId]);
-				QXComData.InstanceEffect (QXComData.EffectPos.MID,cardBg.gameObject,100150 + colorDic[pinZhiId]);
+				QXComData.InstanceEffect (QXComData.EffectPos.TOP,cardBg.gameObject,100142 + QXComData.GetEffectColorByXmlColorId (pinZhiId));
+				QXComData.InstanceEffect (QXComData.EffectPos.MID,cardBg.gameObject,100150 + QXComData.GetEffectColorByXmlColorId (pinZhiId));
 
 				//开始显示秘宝卡
-				TanBaoReward.tbReward.BlockController (false);
+				TanBaoReward.tbReward.BlockController (false,0);
 				TanBaoReward.tbReward.ShowMibaoCard ();
 			}
 		}

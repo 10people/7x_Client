@@ -10,6 +10,7 @@ using ProtoBuf.Meta;
 public class NationManagerment : MonoBehaviour, SocketProcessor
 {
     public GameObject m_Main;
+    public GameObject m_Durable_UI;
     public List<UILabel> m_ListInfo;
     public UIScrollView m_ScrollView;
     public List<EventIndexHandle> m_ListEvent;
@@ -20,7 +21,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_ObjectNow;
     public GameObject m_ObjectReward;
     public UIGrid m_ObjectRewardParent;
-    //public GameObject m_Tanhao;
+    public GameObject m_HiddenObj;
     public ScaleEffectController m_SEC;
     private List<GameObject> _listitem = new List<GameObject>();
     private List<GuojiaRankInfo> _listNationInfo = new List<GuojiaRankInfo>();
@@ -32,6 +33,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     private bool _isEnough = false;
     private int _lastRank = 0;
     private bool _isForward = false;
+    
     private GuoJiaMainInfoResp _GuojiaInfo = new GuoJiaMainInfoResp();
     void Awake()
     {
@@ -53,12 +55,12 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
         if (NationData.Instance.m_DataGetComplete)
         {
             NationData.Instance.m_DataGetComplete = false;
+            m_HiddenObj.SetActive(true);
             NationInfo(NationData.Instance.m_NationInfo);
         }
     }
     void ShowInfo(int index)
     {
-
         switch (index)
         {
             case 0:
@@ -69,18 +71,18 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                         + LanguageTemplate.GetText(LanguageTemplate.Text.ZHU_BU_RULE_4) + "\n";
 
                     m_ListInfo[9].text = _sss;
-                    m_AllInfo.SetActive(false);
+                   // m_AllInfo.SetActive(false);
                     m_Introduce.SetActive(true);
                 }
                 break;
             case 1:
                 {
-                    FunctionWindowsCreateManagerment.m_SettingUpTYpe = FunctionWindowsCreateManagerment.SettingType.NATION_CHANGE;
-                    MainCityUI.TryRemoveFromObjectList(m_Main);
-                    FunctionWindowsCreateManagerment.ShowSettingup();
-                    Destroy(m_Main);
+                    //   FunctionWindowsCreateManagerment.m_SettingUpTYpe = FunctionWindowsCreateManagerment.SettingType.NATION_CHANGE;
+                    // MainCityUI.TryRemoveFromObjectList(m_Main);
+                    //FunctionWindowsCreateManagerment.ShowSettingup();
+                    //   Destroy(m_Main);
                     //m_ListEvent[1].GetComponent<Collider>().enabled = false;
-                    //SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_JUANXIAN_DAYAWARD_REQ);
+                   SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_JUANXIAN_DAYAWARD_REQ);
                 }
                 break;
             case 2:
@@ -140,7 +142,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                 break;
             case 4:
                 {
-                    m_AllInfo.SetActive(true);
+                   // m_AllInfo.SetActive(true);
                     m_Introduce.SetActive(false);
                 }
                 break;
@@ -154,12 +156,27 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                     m_ObjectReward.SetActive(false);
                 }
                 break;
+            case 9:
+                {
+                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SWITCH_COUNTRY_ROOT),
+                           SwitchCountry_LoadCallback);
+                }
+                break;
             default: break;
         }
     }
+    public void SwitchCountry_LoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject tempObject = (GameObject)Instantiate(p_object);
+        MainCityUI.TryAddToObjectList(tempObject);
+        tempObject.transform.position = new Vector3(0, 500, 0);
+        //UI2DTool.Instance.AddTopUI(tempObject);
 
+        UIYindao.m_UIYindao.CloseUI();
+    }
     void NationInfo(GuoJiaMainInfoResp temp)
     {
+        MainCityUI.m_MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         _GuojiaInfo = temp;
         if (temp.nowRank != null)
         {
@@ -450,7 +467,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                             m_ListInfo[10].text = LanguageTemplate.GetText(LanguageTemplate.Text.NATION_REWARD) + ReponseInfo.guojiRank.ToString()
                                    + LanguageTemplate.GetText(LanguageTemplate.Text.NATION_REWARD_1) + ReponseInfo.lianMengRank.ToString()
                                    + LanguageTemplate.GetText(LanguageTemplate.Text.NATION_REWARD_2);
-                            MainCityUIRB.SetRedAlert(212, false);
+                       //     MainCityUIRB.SetRedAlert(212, false);
                             m_ListEvent[1].GetComponent<Collider>().enabled = false;
                             m_ListEvent[1].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
                             m_ObjectReward.SetActive(true);
@@ -663,7 +680,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         uibox.setBox(_strTitle, MyColorData.getColorString(1, _strContent1), MyColorData.getColorString(1, _strContent2), null, confirmStr, null, null);
     }
-    void OnDestroy()
+    void OnDisable()
     {
         SocketTool.UnRegisterMessageProcessor(this);
     }

@@ -73,7 +73,6 @@ public class TBMiBaoReward : MonoBehaviour {
 	void InItMibaoCardInfo ()
 	{
 		miBaoObj.transform.localScale = Vector3.zero;
-		MiBaoXmlTemp mbXml = MiBaoXmlTemp.getMiBaoXmlTempById(awardInfo.itemId);
 		
 		CommonItemTemplate commonTemp = CommonItemTemplate.getCommonItemTemplateById (awardInfo.itemId);
 		int iconId = commonTemp.icon;
@@ -106,7 +105,7 @@ public class TBMiBaoReward : MonoBehaviour {
 
 	void MiBaoScaleEnd ()
 	{
-		QXComData.InstanceEffect (QXComData.EffectPos.TOP,topBorderEffectObj,100148);
+		QXComData.InstanceEffect (QXComData.EffectPos.TOP,miBaoObj,100148);
 		QXComData.InstanceEffect (QXComData.EffectPos.MID,miBaoObj,100157);
 
 		blockHandler.m_handler += BlockHandlerBack;
@@ -219,7 +218,7 @@ public class TBMiBaoReward : MonoBehaviour {
 		blockHandler.gameObject.SetActive (false);
 		if (tbType == TanBaoData.TanBaoType.TONGBI_SPEND || tbType == TanBaoData.TanBaoType.YUANBAO_SPEND)
 		{
-			TanBaoReward.tbReward.BlockController (true);
+			TanBaoReward.tbReward.BlockController (true,1);
 			TanBaoReward.tbReward.MiBaoListClear ();
 		}
 	}

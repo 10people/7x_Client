@@ -59,6 +59,8 @@ public class EditorBuildiOS3rd : MonoBehaviour {
 		ProcessFile ( p_project, XG_LIB_FILE_NAME );
 
 		ProcessFolder (p_project, XG_CLASS_FOLDER_NAME);
+
+		AssetDatabase.Refresh();
 	}
 
 	#endregion
@@ -69,35 +71,9 @@ public class EditorBuildiOS3rd : MonoBehaviour {
 
 	[MenuItem( EditorBuildiOS3rd.BUILD_MENU_SETTING_IOS_PREFIX + "GameGoo", false, 1)]
 	public static void BuildSettingsGameGoo(){
-		BuildSettings( "GameGoo" );
+		EditorBuild3rd.BuildSettings( "GameGoo" );
 	}
 
-	#endregion
-
-
-
-	#region Settings
-
-	public static string GetSettingsPath_WithRelativePath( string p_res_relative_path )
-	{
-		// check first '/'
-		if (!p_res_relative_path.StartsWith("/"))
-		{
-			p_res_relative_path = "/" + p_res_relative_path;
-		}
-
-		return Application.dataPath.Substring( 0, Application.dataPath.Length - "/Assets".Length ) + p_res_relative_path;
-	}
-
-	public static void BuildSettings( string p_platform_desc = "KuaiYong" ){
-		string t_src = GetSettingsPath_WithRelativePath ("ProjectSettings/3rd/" + p_platform_desc + "/ProjectSettings.asset");
-
-		string t_des = GetSettingsPath_WithRelativePath ( "ProjectSettings/ProjectSettings.asset" );
-
-		FileHelper.FileCopy ( t_src,
-		                       t_des );
-	}
-	
 	#endregion
 
 

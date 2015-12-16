@@ -17,13 +17,10 @@ public class TanBaoPage : MonoBehaviour {
 	public List<EventHandler> tbBtnHandlerList = new List<EventHandler> ();
 	private Dictionary<string,EventHandler> tbBtnDic = new Dictionary<string, EventHandler> ();
 
-	public List<NGUILongPress> btnLongPressList = new List<NGUILongPress> ();
-
 	public List<UILabel> labelList = new List<UILabel> ();
 	private Dictionary<string,UILabel> labelDic = new Dictionary<string, UILabel> ();
 	private readonly string[] labelName = new string[]
 	{
-		"TongBi","YuanBao",
 		"Kd_Des","Kd_Single","Kd_Spend",
 		"Kj_Des","Kj_Single","Kj_Spend"
 	};
@@ -51,12 +48,16 @@ public class TanBaoPage : MonoBehaviour {
 
 	public ScaleEffectController sEffectController;
 
-	private int tongBiNum;
-	private int yuanBaoNum;
+	private bool isOpenFirst = true;
 
 	void Awake ()
 	{
 		tbPage = this;
+	}
+
+	void Start ()
+	{
+		QXComData.LoadYuanBaoInfo (sEffectController.transform.gameObject);
 	}
 
 	/// <summary>
@@ -66,6 +67,12 @@ public class TanBaoPage : MonoBehaviour {
 	public void GetTBInfoResp (ExploreInfoResp tempResp)
 	{
 		tbInfoResp = tempResp;
+
+		if (isOpenFirst)
+		{
+			sEffectController.OnOpenWindowClick ();
+			isOpenFirst = false;
+		}
 
 		if (tbBtnDic.Count == 0)
 		{
@@ -84,11 +91,6 @@ public class TanBaoPage : MonoBehaviour {
 			}
 		}
 
-		tongBiNum = tempResp.tongBi;
-		yuanBaoNum = tempResp.yuanBao;
-
-		labelDic ["TongBi"].text = tempResp.tongBi.ToString ();
-		labelDic ["YuanBao"].text = tempResp.yuanBao.ToString ();
 		labelDic ["Kd_Spend"].text = TanBaoCost (costDic ["KdSpend"]).ToString ();
 		labelDic ["Kj_Spend"].text = TanBaoCost (costDic ["KjSpend"]).ToString ();
 
@@ -237,36 +239,26 @@ public class TanBaoPage : MonoBehaviour {
 		{
 		case "KDSingleBtn":
 
-			TanBaoReward.tbReward.BlockController (true);
+			TanBaoReward.tbReward.BlockController (true,0.1f);
 			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.TONGBI_SINGLE);
 
 			break;
 		case "KDSpendBtn":
 
-			TanBaoReward.tbReward.BlockController (true);
+			TanBaoReward.tbReward.BlockController (true,0.1f);
 			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.TONGBI_SPEND);
 
 			break;
 		case "KJSingleBtn":
 
-			TanBaoReward.tbReward.BlockController (true);
+			TanBaoReward.tbReward.BlockController (true,.01f);
 			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.YUANBAO_SINGLE);
 
 			break;
 		case "KJSpendBtn":
 
-			TanBaoReward.tbReward.BlockController (true);
+			TanBaoReward.tbReward.BlockController (true,0.1f);
 			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.YUANBAO_SPEND);
-
-			break;
-		case "TBAddBtn":
-
-
-
-			break;
-		case "YBAddBtn":
-
-			ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"[dc0600]元宝充值[-]暂未开启"));
 
 			break;
 		case "CloseBtn":
@@ -282,23 +274,23 @@ public class TanBaoPage : MonoBehaviour {
 
 	void Update ()
 	{
-		switch (rewardType)
-		{
-		case RewardType.KUANGDONG:
-
-			tongBiNum = MoneyNum (labelDic ["TongBi"],tongBiNum,tbInfoResp.tongBi);
-//			NumCount (labelDic ["TongBi"],RewardType.KUANGDONG,tbInfoResp.tongBi);
-
-			break;
-		case RewardType.KUANGJING:
-
-			yuanBaoNum = MoneyNum (labelDic ["YuanBao"],yuanBaoNum,tbInfoResp.yuanBao);
-//			NumCount (labelDic ["YuanBao"],RewardType.KUANGJING,tbInfoResp.yuanBao);
-
-			break;
-		default:
-			break;
-		}
+//		switch (rewardType)
+//		{
+//		case RewardType.KUANGDONG:
+//
+//			tongBiNum = MoneyNum (labelDic ["TongBi"],tongBiNum,tbInfoResp.tongBi);
+////			NumCount (labelDic ["TongBi"],RewardType.KUANGDONG,tbInfoResp.tongBi);
+//
+//			break;
+//		case RewardType.KUANGJING:
+//
+//			yuanBaoNum = MoneyNum (labelDic ["YuanBao"],yuanBaoNum,tbInfoResp.yuanBao);
+////			NumCount (labelDic ["YuanBao"],RewardType.KUANGJING,tbInfoResp.yuanBao);
+//
+//			break;
+//		default:
+//			break;
+//		}
 	}
 
 	/// <summary>
@@ -393,6 +385,7 @@ public class TanBaoPage : MonoBehaviour {
 
 	public void CloseTanBao ()
 	{
+		isOpenFirst = true;
 		CheckTBRed ();
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);

@@ -138,7 +138,6 @@ public class LDRecordManager : MonoBehaviour,SocketProcessor {
 
 	public void BackBtn ()
 	{
-		LueDuoManager.ldManager.ShowChangeSkillEffect (true);
 		Destroy (this.gameObject);
 	}
 

@@ -55,7 +55,7 @@ public class ChatLogItem : MonoBehaviour
     [HideInInspector]
     public bool IsRefreshed = false;
 
-    [HideInInspector] 
+    [HideInInspector]
     public bool IsSimpleMode = false;
 
     public ChatBaseDataHandler m_ChatBaseDataHandler;
@@ -367,8 +367,8 @@ public class ChatLogItem : MonoBehaviour
         DeActiveAllButtonsExpectAlert();
 
         //go to mail sys.
-//		EmailData.Instance.ReplyLetter(m_ChatStruct.m_ChatPct.senderName);
-		NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE,m_ChatStruct.m_ChatPct.senderName);
+        //		EmailData.Instance.ReplyLetter(m_ChatStruct.m_ChatPct.senderName);
+        NewEmailData.Instance().OpenEmail(NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE, m_ChatStruct.m_ChatPct.senderName);
     }
 
     private void OnShieldClick()
@@ -425,21 +425,7 @@ public class ChatLogItem : MonoBehaviour
 
     private void OnCarriageHelpClick(GameObject go)
     {
-        if (m_ChatBaseDataHandler.m_ChatBaseWindow.m_xieZhuTimesResp == null)
-        {
-            Debug.LogError("Cannot goto carriage help cause help info not exist.");
-            return;
-        }
-
-        //Help times not enough
-        if (m_ChatBaseDataHandler.m_ChatBaseWindow.m_xieZhuTimesResp.remainXZ <= 0)
-        {
-            m_ChatBaseDataHandler.m_ChatBaseWindow.ShowInfo(LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_84));
-        }
-        else
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnCarriageHelpCallBack);
-        }
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnCarriageHelpCallBack);
     }
 
     private void OnCarriageHelpCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -447,7 +433,7 @@ public class ChatLogItem : MonoBehaviour
         UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
         uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
         uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-            null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_12).Replace("***", m_ChatStruct.m_ChatPct.senderName).Replace("N", m_ChatBaseDataHandler.m_ChatBaseWindow.m_xieZhuTimesResp.remainXZ.ToString()).Replace("X", CanshuTemplate.GetValueByKey(CanshuTemplate.YUNBIAOASSISTANCE_GAIN_SUCCEED).ToString()),
+            null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_12).Replace("***", m_ChatStruct.m_ChatPct.senderName).Replace("X", CanshuTemplate.GetValueByKey(CanshuTemplate.YUNBIAOASSISTANCE_GAIN_SUCCEED).ToString()),
             null,
             LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL), LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM),
             OnBoxCarriageHelp);
@@ -573,7 +559,7 @@ public class ChatLogItem : MonoBehaviour
         }
 
         //adapt pop up buttons to scroll view.
-		NGUIHelper.AdaptWidgetInScrollView(m_ChatBaseDataHandler.m_ScrollView, m_ChatBaseDataHandler.m_ScrollBar, SenderFloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
+        NGUIHelper.AdaptWidgetInScrollView(m_ChatBaseDataHandler.m_ScrollView, m_ChatBaseDataHandler.m_ScrollBar, SenderFloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
     }
 
     private void OnDetailClick(GameObject go)
@@ -682,15 +668,15 @@ public class ChatLogItem : MonoBehaviour
 
     private void Awake()
     {
-		SenderLabel = TransformHelper.FindChild(transform, "SenderText").GetComponent<UILabel>();
-		DetailLabel = TransformHelper.FindChild(transform, "DetailText").GetComponent<UILabel>();
-		CopyBtn = TransformHelper.FindChild(transform, "Copy").gameObject;
-		CarriageHelpBtn = TransformHelper.FindChild(transform, "CarriageHelp").gameObject;
-		RobBtn = TransformHelper.FindChild(transform, "Rob").gameObject;
-		CopyContainer = TransformHelper.FindChild(transform, "CopyContainer").gameObject;
-		CopyContainerBG = TransformHelper.FindChild(transform, "CopyContainerBG").GetComponent<UISprite>();
-		AlertBtn = TransformHelper.FindChild(transform, "Alert").gameObject;
-		DetailBG = TransformHelper.FindChild(transform, "DetailBG").GetComponent<UISprite>();
+        SenderLabel = TransformHelper.FindChild(transform, "SenderText").GetComponent<UILabel>();
+        DetailLabel = TransformHelper.FindChild(transform, "DetailText").GetComponent<UILabel>();
+        CopyBtn = TransformHelper.FindChild(transform, "Copy").gameObject;
+        CarriageHelpBtn = TransformHelper.FindChild(transform, "CarriageHelp").gameObject;
+        RobBtn = TransformHelper.FindChild(transform, "Rob").gameObject;
+        CopyContainer = TransformHelper.FindChild(transform, "CopyContainer").gameObject;
+        CopyContainerBG = TransformHelper.FindChild(transform, "CopyContainerBG").GetComponent<UISprite>();
+        AlertBtn = TransformHelper.FindChild(transform, "Alert").gameObject;
+        DetailBG = TransformHelper.FindChild(transform, "DetailBG").GetComponent<UISprite>();
         SenderListener = UIEventListener.Get(SenderLabel.gameObject);
         DetailListener = UIEventListener.Get(DetailBG.gameObject);
         CopyListener = UIEventListener.Get(CopyBtn.gameObject);

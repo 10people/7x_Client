@@ -11,35 +11,36 @@ public class SinglePlayerController : MonoBehaviour
     /// <summary>
     /// Is fixed or rotate main camera.
     /// </summary>
-    [HideInInspector]
-    public bool IsRotateCamera;
+    public bool IsRotateCamera = false;
 
     /// <summary>
     /// Is upload player position or not.
     /// </summary>
-    [HideInInspector]
-    public bool IsUploadPlayerPosition;
+    public bool IsUploadPlayerPosition = true;
 
-    [HideInInspector]
     public float BaseGroundPosY;
 
-    [HideInInspector]
-    public float m_CharacterSyncDuration = 0.1f;
+    public static float m_CharacterSyncDuration = 0.1f;
+    public static float m_CharacterMoveDistance = 0.1f;
 
     #endregion
 
     #region Move Controller
 
-    private bool is_CanMove = true;
+    public bool is_CanMove = true;
 
     public void DeactiveMove()
     {
+        Debug.LogWarning("--------------self deactive move.");
+
         StopPlayerNavigation();
         is_CanMove = false;
     }
 
     public void ActiveMove()
     {
+        Debug.LogWarning("+++++++++++++++++self active move.");
+
         is_CanMove = true;
     }
 
@@ -313,31 +314,34 @@ public class SinglePlayerController : MonoBehaviour
 
     public float m_lastUploadCheckTime;
 
-    public Vector3 m_lastPosition;
     public Vector3 m_nowPosition;
+    public Vector3 m_lastPosition;
+    public Vector3 m_nowRotation;
+    public Vector3 m_lastRotation;
 
     /// <summary>
     /// Commit this character's position to server.
     /// </summary>
     public void UploadPlayerPosition()
     {
-        if (Vector3.Distance(m_lastPosition, m_nowPosition) > 0.1) //玩家有位移 发送数据
+        SpriteMove tempPositon = new SpriteMove
         {
-            SpriteMove tempPositon = new SpriteMove();
-            tempPositon.posX = m_nowPosition.x;
-            tempPositon.posY = m_nowPosition.y;
-            tempPositon.posZ = m_nowPosition.z;
+            posX = m_nowPosition.x,
+            posY = m_nowPosition.y,
+            posZ = m_nowPosition.z,
+            dir = m_nowRotation.y
+        };
 
-            MemoryStream t_tream = new MemoryStream();
-            QiXiongSerializer t_qx = new QiXiongSerializer();
-            t_qx.Serialize(t_tream, tempPositon);
+        MemoryStream t_tream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        t_qx.Serialize(t_tream, tempPositon);
 
-            m_lastPosition = transform.position;
+        byte[] t_protof;
+        t_protof = t_tream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.Sprite_Move, ref t_protof, false);
 
-            byte[] t_protof;
-            t_protof = t_tream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.Sprite_Move, ref t_protof, false);
-        }
+        m_lastPosition = m_nowPosition;
+        m_lastRotation = m_nowRotation;
     }
 
     #endregion
@@ -349,7 +353,8 @@ public class SinglePlayerController : MonoBehaviour
         if (IsUploadPlayerPosition && Time.realtimeSinceStartup - m_lastUploadCheckTime >= m_CharacterSyncDuration)
         {
             m_lastUploadCheckTime = Time.realtimeSinceStartup;
-            m_nowPosition = transform.position;
+            m_nowPosition = transform.localPosition;
+            m_nowRotation = transform.localEulerAngles;
 
             UploadPlayerPosition();
         }
@@ -367,7 +372,7 @@ public class SinglePlayerController : MonoBehaviour
 
         if (!is_CanMove)
         {
-            Debug.LogWarning("Cancel move cause controller set.");
+            Debug.Log("Cancel move cause controller set.");
         }
         else
         {
@@ -427,6 +432,8 @@ public class SinglePlayerController : MonoBehaviour
                     else
                     {
                         Vector3 moveDirection = offset.normalized;
+                        double degree = -TrackCamera.transform.localEulerAngles.y * Math.PI / 180;
+                        moveDirection = new Vector3((float)(Math.Cos(degree) * moveDirection.x - Math.Sin(degree) * moveDirection.z), 0, (float)(Math.Cos(degree) * moveDirection.z + Math.Sin(degree) * moveDirection.x));
 
                         OnPlayerRun();
 
@@ -442,14 +449,16 @@ public class SinglePlayerController : MonoBehaviour
                             }
                         }
 
+                        //rotate and move.
+                        transform.forward = moveDirection.normalized;
+
                         if (!m_CharacterController.isGrounded)
                         {
                             moveDirection.y -= m_CharacterSpeedY;
                         }
 
-                        //rotate and move.
-                        transform.forward = offset.normalized;
                         m_CharacterController.Move(moveDirection.normalized * m_CharacterSpeed * Time.deltaTime);
+
                     }
                 }
                 else
@@ -487,7 +496,7 @@ public class SinglePlayerController : MonoBehaviour
         if (IsInNavigate)
         {
             //Check navigation remaining destination
-            if (Vector3.Distance(m_Transform.position, NavigationEndPosition) <= 3)
+            if (Vector3.Distance(m_Transform.position, NavigationEndPosition) <= 1f)
             {
                 StopPlayerNavigation();
                 if (m_CompleteNavDelegate != null)

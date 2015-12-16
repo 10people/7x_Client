@@ -53,31 +53,31 @@ public class TaskGridManager : MonoBehaviour
         m_transform = this.transform;
     }
 
-    void Update()
-    {
-        if (TaskData.Instance.isReload)
-        {
-            TaskData.Instance.isReload = false;
-            if (CityGlobalData.m_TaskType == (int)TaskType.MainQuest)
-            {
-                CrateItem(CityGlobalData.m_TaskType);
-            }
-        }
+    //void Update()
+    //{
+    //    if (TaskData.Instance.isReload)
+    //    {
+    //        TaskData.Instance.isReload = false;
+    //        if (CityGlobalData.m_TaskType == (int)TaskType.MainQuest)
+    //        {
+    //            CrateItem(CityGlobalData.m_TaskType);
+    //        }
+    //    }
 
-        if (TaskData.Instance.m_DailyQuestIsRefresh)
-        {
-            TaskData.Instance.m_DailyQuestIsRefresh = false;
-            if (FunctionOpenTemp.GetWhetherContainID(106))
-            {
-                m_ObjLayer.GetComponent<TaskLayerManager>().ShowDailyTanhao();
-            }
+    //    if (TaskData.Instance.m_DailyQuestIsRefresh)
+    //    {
+    //        TaskData.Instance.m_DailyQuestIsRefresh = false;
+    //        if (FunctionOpenTemp.GetWhetherContainID(106))
+    //        {
+    //            m_ObjLayer.GetComponent<TaskLayerManager>().ShowDailyTanhao();
+    //        }
  
-            if (CityGlobalData.m_TaskType == (int)TaskType.DailyQuest)
-            {
-                CrateItem(CityGlobalData.m_TaskType);
-            }
-        }
-    }
+    //        if (CityGlobalData.m_TaskType == (int)TaskType.DailyQuest)
+    //        {
+    //            CrateItem(CityGlobalData.m_TaskType);
+    //        }
+    //    }
+    //}
 
     public void CrateItem(int indexType)//创建任务 item
     {
@@ -292,10 +292,10 @@ public class TaskGridManager : MonoBehaviour
                
                    tempObject.GetComponent<TaskScrollViewItemAmend>().m_Kuang.SetActive(listTaskShowInfo[index_Num].tempComplete);
               
-                    tempObject.GetComponent<TaskScrollViewItemAmend>().ShowTaskInfo(listTaskShowInfo[index_Num].Type,
-                        listTaskShowInfo[index_Num].tempItemId, listTaskShowInfo[index_Num].tempJindu, listTaskShowInfo[index_Num].tempComplete,
-                        listTaskShowInfo[index_Num].reward, listTaskShowInfo[index_Num].name, listTaskShowInfo[index_Num].des,
-                        listTaskShowInfo[index_Num].triggerCond, listTaskShowInfo[index_Num].doneCond, ShowReward, listTaskShowInfo[index_Num].title);
+                    //tempObject.GetComponent<TaskScrollViewItemAmend>().ShowTaskInfo(listTaskShowInfo[index_Num].Type,
+                    //    listTaskShowInfo[index_Num].tempItemId, listTaskShowInfo[index_Num].tempJindu, listTaskShowInfo[index_Num].tempComplete,
+                    //    listTaskShowInfo[index_Num].reward, listTaskShowInfo[index_Num].name, listTaskShowInfo[index_Num].des,
+                    //    listTaskShowInfo[index_Num].triggerCond, listTaskShowInfo[index_Num].doneCond, ShowReward, listTaskShowInfo[index_Num].title);
 
                     tempObject.GetComponent<TaskScrollViewItemAmend>().m_taskIcon.spriteName = "Icon_RenWuType_" + listTaskShowInfo[index_Num].icon;
 
@@ -440,7 +440,7 @@ public class TaskGridManager : MonoBehaviour
     {
     }
     public int m_SaveId = 0;
-    void ShowReward(int id,string award,string title,GameObject obj)
+    void ShowReward(TaskLayerManager.TaskNeedInfo taskInfo, GameObject obj)
     {
  
         //if (id == 0 && )
@@ -449,44 +449,44 @@ public class TaskGridManager : MonoBehaviour
         //    MainCityUI.TryRemoveFromObjectList(m_MainObject);
         //}
         //else 
-        if (!string.IsNullOrEmpty(award))
-        {
-            if (!m_isTouched)
-            {
-                m_isTouched = true;
-                m_SaveId = id;
-                m_ObjFinish.SetActive(true);
-                StartCoroutine(WaitSecond(award, title, id, obj));
-            }
-        }
-        else 
-        {
-            if (TaskData.Instance.m_TaskInfoDic.ContainsKey(id))
-            {
-                MainCityUI.TryRemoveFromObjectList(m_MainObject);
-                if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId == -1)
-                {
-                    NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskInfoDic[id].LinkNpcId);
-                }
-                else if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId != -1)
-                {
-                    FunctionWindowsCreateManagerment.FunctionWindowCreate(TaskData.Instance.m_TaskInfoDic[id].FunctionId);
-                }
-            }
-            else if(TaskData.Instance.m_TaskDailyDic.ContainsKey(id))
-            {
-                MainCityUI.TryRemoveFromObjectList(m_MainObject);
-                if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId == -1)
-                {
-                    NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskDailyDic[id].LinkNpcId);
-                }
-                else if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId != -1)
-                {
-                    FunctionWindowsCreateManagerment.FunctionWindowCreate(TaskData.Instance.m_TaskDailyDic[id].FunctionId);
-                }
-            }
-            Destroy(m_MainObject);
-        }
+        //if (!string.IsNullOrEmpty(award))
+        //{
+        //    if (!m_isTouched)
+        //    {
+        //        m_isTouched = true;
+        //        m_SaveId = id;
+        //        m_ObjFinish.SetActive(true);
+        //        StartCoroutine(WaitSecond(award, title, id, obj));
+        //    }
+        //}
+        //else 
+        //{
+        //    if (TaskData.Instance.m_TaskInfoDic.ContainsKey(id))
+        //    {
+        //        MainCityUI.TryRemoveFromObjectList(m_MainObject);
+        //        if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId == -1)
+        //        {
+        //            NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskInfoDic[id].LinkNpcId);
+        //        }
+        //        else if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId != -1)
+        //        {
+        //            FunctionWindowsCreateManagerment.FunctionWindowCreate(TaskData.Instance.m_TaskInfoDic[id].FunctionId);
+        //        }
+        //    }
+        //    else if(TaskData.Instance.m_TaskDailyDic.ContainsKey(id))
+        //    {
+        //        MainCityUI.TryRemoveFromObjectList(m_MainObject);
+        //        if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId == -1)
+        //        {
+        //            NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskDailyDic[id].LinkNpcId);
+        //        }
+        //        else if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId != -1)
+        //        {
+        //            FunctionWindowsCreateManagerment.FunctionWindowCreate(TaskData.Instance.m_TaskDailyDic[id].FunctionId);
+        //        }
+        //    }
+        //    Destroy(m_MainObject);
+        //}
       
     }
     IEnumerator WaitSecond(string award, string title, int id, GameObject obj)
@@ -494,7 +494,7 @@ public class TaskGridManager : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         m_ObjFinish.SetActive(false);
         m_RewardPanel.SetActive(true);
-        m_RewardPanel.GetComponent<TaskRewardsShow>().Show(award, title, id, obj);
+       //m_RewardPanel.GetComponent<TaskRewardsShow>().Show(award, title, id, obj);
     }
         void Remove()
     {

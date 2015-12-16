@@ -17,13 +17,14 @@ public class EquipGrowthSpecialAttributeManagerment : MonoBehaviour
     {
         m_labName.text = MyColorData.getColorString(ColorID(attribute._type), NameIdTemplate.GetName_By_NameId(attribute._nameid));
         m_labCount.text = MyColorData.getColorString(ColorID(attribute._type), attribute._count.ToString());
-        m_labMax.gameObject.SetActive(attribute._isMax);
+       // m_labMax.gameObject.SetActive(attribute._isMax);
         m_Animation.SetActive(attribute._isnew);
         if (!attribute._isMax && isadd && !isnew)
         {
             _addCount = attribute._add;
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_MOVE_ITEM), ResourcesLoadAddCallBack);
         }
+
         if (attribute._isnew)
         {
             StartCoroutine(WatiFor(m_Animation));

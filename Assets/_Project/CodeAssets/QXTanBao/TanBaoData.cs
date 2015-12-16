@@ -23,6 +23,8 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 
 	private GameObject tbObj;
 
+	private string textStr;
+
 	void Awake ()
 	{
 		SocketTool.RegisterMessageProcessor (this);
@@ -107,6 +109,24 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 						TanBaoPage.tbPage.RefreshTanBaoInfo (tbType,tbGetRewardRes.info);
 						TanBaoReward.tbReward.GetTBRewardInfo (tbType,tbGetRewardRes);
 					}
+					else
+					{
+						switch (tbGetRewardRes.success)
+						{
+						case 1:
+							textStr = "铜币不足...";
+							break;
+						case 2:
+							textStr = "元宝不足...";
+							break;
+						case 3:
+							textStr = "数据错误...";
+							break;
+						default:
+							break;
+						}
+						QXComData.CreateBox (1,textStr,true,TanBaoRespCallBack);
+					}
 				}
 
 				return true;
@@ -114,6 +134,11 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 			}
 		}
 		return false;
+	}
+
+	void TanBaoRespCallBack (int i)
+	{
+		TanBaoReward.tbReward.BlockController (false,0);
 	}
 
 	void LoadTanBaoPrefab ()
@@ -126,14 +151,22 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 		else
 		{
 			tbObj.SetActive (true);
-			MainCityUI.TryAddToObjectList(tbObj);
-			TanBaoPage.tbPage.GetTBInfoResp (tbInfoResp);
+			InItTanBaoInfo ();
 		}
 	}
 	public void TanBaoPrefabLoadCallBack (ref WWW p_www, string p_path, Object p_object)
 	{
 		tbObj = (GameObject)Instantiate(p_object);
-		MainCityUI.TryAddToObjectList(tbObj);
+		InItTanBaoInfo ();
+	}
+
+	void InItTanBaoInfo ()
+	{
+		if (!MainCityUI.IsExitInObjectList (tbObj))
+		{
+			MainCityUI.TryAddToObjectList(tbObj);
+		}
+
 		TanBaoPage.tbPage.GetTBInfoResp (tbInfoResp);
 	}
 

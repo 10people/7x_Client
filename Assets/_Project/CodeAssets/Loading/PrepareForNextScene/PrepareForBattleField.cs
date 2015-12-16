@@ -44,7 +44,7 @@ public class PrepareForBattleField : MonoBehaviour {
 
 	void OnRenderObject(){
 		if( m_battle_res_step == 1 ){
-			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 			                         CONST_BATTLE_RENDER, "Init" );
 			
 			m_battle_res_step++;
@@ -62,23 +62,23 @@ public class PrepareForBattleField : MonoBehaviour {
 	#region loading sections
 
 	private void InitBattleLoading(){
-		//		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 1, -1 );
+		//		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 1, -1 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_2D, 1, 1 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_2D, 1, 1 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_NETWORK, 1, 1 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_NETWORK, 1, 1 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_DATA, 1, 1 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_DATA, 1, 1 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_3D, 10, 42 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_3D, 10, 42 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_FX, 20, 55 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_FX, 20, 55 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_SOUND, 20, 95 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_SOUND, 20, 95 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_CREATE_FLAGS, 1, 2 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_CREATE_FLAGS, 1, 2 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_RENDER, 2, 1 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_RENDER, 2, 1 );
 	}
 
 	#endregion
@@ -123,7 +123,7 @@ public class PrepareForBattleField : MonoBehaviour {
 	}
 	
 	private void enterBattleField(){
-		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+		LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 		                         CONST_BATTLE_LOADING_2D, "EnterBattleField" );
 		
 		if (temple2D != null && temple3D != null){

@@ -66,8 +66,6 @@ public class BloodLabelControllor : MonoBehaviour
 			listIndexList.Add (i, 0);
 		}
 
-		dict.Clear ();
-
 		randomList.Clear ();
 
 		for(float x = 0; x < 1; x += .1f)
@@ -76,6 +74,34 @@ public class BloodLabelControllor : MonoBehaviour
 			{
 				randomList.Add(new Vector3(x, 0, z));
 			}
+		}
+
+		foreach(Dictionary<int, GameObject> list in objectList.Values)
+		{
+			foreach(GameObject labelObject in list.Values)
+			{
+				BloodLabel label = labelObject.GetComponent<BloodLabel>();
+				
+				labelObject.transform.localScale = labelTempleList[0].transform.localScale * 1.1f;
+				
+				label.text = "";
+				
+				label.showBloodEx (1, -50, null, null);
+			}
+		}
+
+		dict.Clear ();
+
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			dict.Add(node.nodeId, new List<BloodLabel>());
+		}
+
+		dictDroppen.Clear ();
+
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			dictDroppen.Add(node.nodeId, new List<BloodLabel>());
 		}
 	}
 

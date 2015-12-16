@@ -8,6 +8,16 @@ public class BattleFlagWritor : MonoBehaviour
 
 	public int chapterId;
 
+	public bool canWriteBattleFlag = true;
+
+	public bool canWriteBattleBuffFlag = true;
+
+	public bool canWriteBattleCameraFlag = true;
+
+	public bool canWriteBattleDramaFlag = true;
+
+	public bool canWriteBattleWinFlag = true;
+
 
 	private List<BattleWinFlag> winFlags = new List<BattleWinFlag>();
 
@@ -37,37 +47,38 @@ public class BattleFlagWritor : MonoBehaviour
 		{
 			getBattleFlagGroup();
 
-			writeBattleFlagGroup();
+			if(canWriteBattleFlag == true) writeBattleFlagGroup();
 		}
 
 		{
 			getBattleFlag();
 
-			writeBattleFlag();
+			if(canWriteBattleFlag == true) writeBattleFlag();
 		}
 
 		{
 			getBattleBuffFlag();
 
-			writeBattleBuffFlag();
+			if(canWriteBattleBuffFlag == true) writeBattleBuffFlag();
 		}
 
 		{
 			getBattleCameraFlag();
 
-			writeBattleCameraFlag(path);
+			if(canWriteBattleCameraFlag == true) writeBattleCameraFlag(path);
 		}
 
 		{
 			getBattleDramaFlag();
 
-			writeBattleDramaFlag();
+			if(canWriteBattleDramaFlag == true) writeBattleDramaFlag();
 		}
+
 
 		{
 			getBattleWinFlag();
 
-			writeBattleWin();
+			if(canWriteBattleWinFlag == true) writeBattleWin();
 		}
 
 		GameObject Changeobject = GameObject.Find ("ChangeXmlToJson");
@@ -618,20 +629,6 @@ public class BattleFlagWritor : MonoBehaviour
 		}
 	}
 
-	private void getBattleWinFlag()
-	{
-		winFlags.Clear ();
-
-		BattleWinFlag[] flags = GetComponents<BattleWinFlag>();
-
-		if (flags.Length == 0) Debug.LogError ("ERROR: There is no WinFlag !");
-
-		foreach(BattleWinFlag bf in flags)
-		{
-			winFlags.Add(bf);
-		}
-	}
-
 	private void writeBattleDramaFlag()
 	{
 		string pa = Application.dataPath + "/Resources/_Data/BattleField/BattleFlags" + "//" + "Drama_" + chapterId + ".xml";
@@ -707,6 +704,61 @@ public class BattleFlagWritor : MonoBehaviour
 		Debug.Log ("Write Battle Drama Flag !  " + pa);
 	}
 
+	private void getBattleWinFlag()
+	{
+		winFlags.Clear ();
+		
+		BattleWinFlag[] flags = GetComponents<BattleWinFlag>();
+		
+		if (flags.Length == 0)
+		{
+			Debug.LogError ("ERROR: There is no WinFlag !");
+
+			List<BattleWinFlag> flagList = new List<BattleWinFlag>();
+
+			BattleWinFlag winFlag = gameObject.AddComponent<BattleWinFlag>();
+
+			winFlag.endId = 1;
+
+			winFlag.isWin = true;
+
+			winFlag.endType = BattleWinFlag.EndType.Kill_All;
+
+			flagList.Add(winFlag);
+
+			BattleWinFlag loseFlagDie = gameObject.AddComponent<BattleWinFlag>();
+
+			loseFlagDie.endId = 1;
+
+			loseFlagDie.isWin = false;
+
+			loseFlagDie.endType = BattleWinFlag.EndType.PROTECT;
+
+			loseFlagDie.protectNum = 1;
+
+			loseFlagDie.protectList.Add(1);
+
+			flagList.Add(loseFlagDie);
+
+			BattleWinFlag loseFlagTime = gameObject.AddComponent<BattleWinFlag>();
+			
+			loseFlagTime.endId = 1;
+			
+			loseFlagTime.isWin = false;
+			
+			loseFlagTime.endType = BattleWinFlag.EndType.Reach_Time;
+			
+			flagList.Add(loseFlagTime);
+
+			flags = flagList.ToArray();
+		}
+
+		foreach(BattleWinFlag bf in flags)
+		{
+			winFlags.Add(bf);
+		}
+	}
+
 	private void writeBattleWin()
 	{
 		string pa = Application.dataPath + "/Resources/_Data/BattleField/BattleFlags" + "//" + "Win_" + chapterId + ".xml";
@@ -723,9 +775,11 @@ public class BattleFlagWritor : MonoBehaviour
 		{
 			string str = "<BattleWin";
 
-			str += " id=\"" + flag.winId + "\"";
+			str += " id=\"" + flag.endId + "\"";
 
-			str += " winType=\"" + (int)flag.winType + "\"";
+			str += " isWin=\"" + (flag.isWin ? 1 : 0) + "\"";
+
+			str += " endType=\"" + (int)flag.endType + "\"";
 
 			str += " killNum=\"" + flag.killNum + "\"";
 
@@ -743,9 +797,53 @@ public class BattleFlagWritor : MonoBehaviour
 
 			str += " destinationRadius=\"" + flag.destinationRadius + "\"";
 
+			str += " activeNum=\"" + flag.activeNum + "\"";
+
+			//activeList
+			{
+				string strAlist = " activeList=\"";
+				
+				if(flag.activeList.Count == 0) strAlist += "0";
+				
+				for(int iAlist = 0; iAlist < flag.activeList.Count; iAlist++)
+				{
+					strAlist += flag.activeList[iAlist] + "";
+					
+					if(iAlist != flag.activeList.Count - 1)
+					{
+						strAlist += ",";
+					}
+				}
+				
+				strAlist += "\"";
+				
+				str += strAlist;
+			}
+
 			str += " showOnUI=\"" + (flag.showOnUI ? 1 : 0) + "\"";
 
-			str += " protectNodeId=\"" + flag.protectNodeId + "\"";
+			str += " protectNum=\"" + flag.protectNum + "\"";
+
+			//protectList
+			{
+				string strPlist = " protectList=\"";
+				
+				if(flag.protectList.Count == 0) strPlist += "0";
+				
+				for(int iPlist = 0; iPlist < flag.protectList.Count; iPlist++)
+				{
+					strPlist += flag.protectList[iPlist] + "";
+					
+					if(iPlist != flag.protectList.Count - 1)
+					{
+						strPlist += ",";
+					}
+				}
+				
+				strPlist += "\"";
+				
+				str += strPlist;
+			}
 
 			str += " />";
 

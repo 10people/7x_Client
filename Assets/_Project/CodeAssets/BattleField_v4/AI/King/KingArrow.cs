@@ -62,7 +62,7 @@ public class KingArrow : MonoBehaviour {
 //
 //	public static void LoadResCallback(ref WWW p_www, string p_path, Object p_object)
 //	{
-//		StaticLoading.ItemLoaded( StaticLoading.CONST_BATTLE_LOADING_FX, p_path );
+//		LoadingHelper.ItemLoaded( StaticLoading.CONST_BATTLE_LOADING_FX, p_path );
 //
 //		if( arrowTemples.ContainsKey ( p_path ) ) return;
 //

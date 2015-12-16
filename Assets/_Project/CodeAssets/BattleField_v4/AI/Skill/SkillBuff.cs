@@ -77,7 +77,7 @@ public class SkillBuff : SkillDataBead
 //		m_HeroSkill.dis += "生效时间" + m_fTime[0];
 	}
 
-	public override void activeSkill(int state)
+	public override void activeSkill(int state, GameObject skillEff)
 	{
 		for(int i = 0; i < m_HeroSkill.m_listATTTarget.Count; i ++)
 		{
@@ -111,7 +111,7 @@ public class SkillBuff : SkillDataBead
 				}
 				else if(m_iBuffID == 73)//增加的仇恨值，用于BUFF计算
 				{
-					Buff.createBuffThreat(defender, va, m_fLastTime, m_HeroSkill.node.nodeId);
+					Buff.createBuffThreat(defender, va, m_fLastTime, m_HeroSkill.node.nodeId, m_HeroSkill.template.id);
 				}
 				else
 				{

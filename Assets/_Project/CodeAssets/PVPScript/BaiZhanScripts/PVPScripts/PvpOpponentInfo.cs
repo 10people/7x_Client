@@ -84,32 +84,32 @@ public class PvpOpponentInfo : MonoBehaviour {
 		
 		country.spriteName = "nation_" + tempInfo.guojia;
 
-		if (tempInfo.activateMiBaoCount >= 2)
-		{
-			lockObj.SetActive (false);
-			skillIcon.gameObject.SetActive (true);
-			miBaoSkillInfoObj.SetActive (true);
-			notActiveLabel.text = "";
-
-			int miBaoCombId = tempInfo.zuheId;
-			miBaoSkillBg.spriteName = PvpPage.pvpPage.MibaoSkillBgColor (miBaoCombId);
-			titleSprite.spriteName = miBaoCombId.ToString ();
-			
-			MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (miBaoCombId);
-			skillIcon.spriteName = miBaoSkillTemp.skill.ToString ();
-			
-			SkillTemplate skillTemp = SkillTemplate.getSkillTemplateById (miBaoSkillTemp.skill);
-			skillName.text = NameIdTemplate.GetName_By_NameId (skillTemp.skillName);
-			activeNum.text = NameIdTemplate.GetName_By_NameId (miBaoSkillTemp.nameId) + "(" + tempInfo.activateMiBaoCount + "/3)";
-		}
-		else
-		{
-			lockObj.SetActive (true);
-			skillIcon.gameObject.SetActive (false);
-			miBaoSkillInfoObj.SetActive (false);
-			miBaoSkillBg.spriteName = PvpPage.pvpPage.MibaoSkillBgColor (4);
-			notActiveLabel.text = "未选择可用的组合技能";
-		}
+//		if (tempInfo.activateMiBaoCount >= 2)
+//		{
+//			lockObj.SetActive (false);
+//			skillIcon.gameObject.SetActive (true);
+//			miBaoSkillInfoObj.SetActive (true);
+//			notActiveLabel.text = "";
+//
+//			int miBaoCombId = tempInfo.zuheId;
+//			miBaoSkillBg.spriteName = PvpPage.pvpPage.MibaoSkillBgColor (miBaoCombId);
+//			titleSprite.spriteName = miBaoCombId.ToString ();
+//			
+//			MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (miBaoCombId);
+//			skillIcon.spriteName = miBaoSkillTemp.skill.ToString ();
+//			
+//			SkillTemplate skillTemp = SkillTemplate.getSkillTemplateById (miBaoSkillTemp.skill);
+//			skillName.text = NameIdTemplate.GetName_By_NameId (skillTemp.skillName);
+//			activeNum.text = NameIdTemplate.GetName_By_NameId (miBaoSkillTemp.nameId) + "(" + tempInfo.activateMiBaoCount + "/3)";
+//		}
+//		else
+//		{
+//			lockObj.SetActive (true);
+//			skillIcon.gameObject.SetActive (false);
+//			miBaoSkillInfoObj.SetActive (false);
+//			miBaoSkillBg.spriteName = PvpPage.pvpPage.MibaoSkillBgColor (4);
+//			notActiveLabel.text = "未选择可用的组合技能";
+//		}
 //		Debug.Log ("btnHandlerList:" + btnHandlerList.Count);
 		foreach (EventHandler handler in btnHandlerList)
 		{

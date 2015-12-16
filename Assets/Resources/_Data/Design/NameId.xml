@@ -142,6 +142,21 @@
 <NameId nameId="5036" Name="名相" />
 <NameId nameId="5037" Name="奇人" />
 <NameId nameId="5038" Name="无" />
+<NameId nameId="6101" Name="攻击" />
+<NameId nameId="6102" Name="防御" />
+<NameId nameId="6103" Name="生命" />
+<NameId nameId="6104" Name="穿刺" />
+<NameId nameId="6105" Name="嗜血" />
+<NameId nameId="6106" Name="技击" />
+<NameId nameId="6107" Name="狂战" />
+<NameId nameId="6108" Name="护盾" />
+<NameId nameId="6109" Name="坚韧" />
+<NameId nameId="6110" Name="格挡" />
+<NameId nameId="6111" Name="悍勇" />
+<NameId nameId="6201" Name="疾行马术" />
+<NameId nameId="6202" Name="弩机工艺" />
+<NameId nameId="6203" Name="急救医术" />
+<NameId nameId="6301" Name="鲁班工艺" />
 <NameId nameId="7200" Name="首充奖励" />
 <NameId nameId="7301" Name="VIP1礼包" />
 <NameId nameId="7302" Name="VIP2礼包" />
@@ -1410,6 +1425,7 @@
 <NameId nameId="19130" Name="不容12级" />
 <NameId nameId="19131" Name="丰隆12级" />
 <NameId nameId="19132" Name="阴跷脉12周天" />
+<NameId nameId="30000" Name="第零章  勇闯重楼" />
 <NameId nameId="30001" Name="第一章  天子求贤" />
 <NameId nameId="30002" Name="第二章  晋国平乱" />
 <NameId nameId="30003" Name="第三章  齐王誓约" />
@@ -1425,129 +1441,127 @@
 <NameId nameId="30013" Name="第十三章  河西之战" />
 <NameId nameId="30014" Name="第十四章  义渠之乱" />
 <NameId nameId="30015" Name="第十五章  抗击匈奴" />
-<NameId nameId="40101" Name="1-1 勇闯重楼" />
-<NameId nameId="40102" Name="潜入晋国" />
-<NameId nameId="40103" Name="偶遇韩虎" />
-<NameId nameId="40201" Name="2-1 潜入晋国" />
-<NameId nameId="40202" Name="2-2 偶遇韩虎" />
-<NameId nameId="40203" Name="2-3 魏氏援兵" />
-<NameId nameId="40204" Name="2-4 途中偶遇" />
-<NameId nameId="40205" Name="2-5 力战追兵" />
-<NameId nameId="40206" Name="2-6 遭遇信使" />
-<NameId nameId="40207" Name="2-7 瓜衍奇袭" />
-<NameId nameId="40301" Name="3-1 小试牛刀" />
-<NameId nameId="40302" Name="3-2 路遇刺客" />
-<NameId nameId="40303" Name="3-3 杀机四伏" />
-<NameId nameId="40304" Name="3-4 遭遇堵截" />
-<NameId nameId="40305" Name="3-5 寻获契约" />
-<NameId nameId="40306" Name="3-6 独闯山寨" />
-<NameId nameId="40307" Name="3-7 营救小七" />
-<NameId nameId="40401" Name="4-1 路遇劫匪" />
-<NameId nameId="40402" Name="4-2 勇斗山贼" />
-<NameId nameId="40403" Name="4-3 夺取草药" />
-<NameId nameId="40404" Name="4-4 再遇截杀" />
-<NameId nameId="40405" Name="4-5 双面间谍" />
-<NameId nameId="40406" Name="4-6 盗取虎符" />
-<NameId nameId="40407" Name="4-7 远走齐国" />
-<NameId nameId="40501" Name="5-1 暗度陈仓1" />
-<NameId nameId="40502" Name="5-2 暗度陈仓2" />
-<NameId nameId="40503" Name="5-3 暗度陈仓3" />
-<NameId nameId="40504" Name="5-4 围魏救赵1" />
-<NameId nameId="40505" Name="5-5 围魏救赵2" />
-<NameId nameId="40506" Name="5-6 围魏救赵3" />
-<NameId nameId="40507" Name="5-7 桂陵之战1" />
-<NameId nameId="40508" Name="5-8 桂陵之战2" />
-<NameId nameId="40509" Name="5-9 桂陵之战3" />
-<NameId nameId="40601" Name="6-1 故技重施" />
-<NameId nameId="40602" Name="6-2 长驱直入" />
-<NameId nameId="40603" Name="6-3 太子之死" />
-<NameId nameId="40604" Name="6-4 马陵之战1" />
-<NameId nameId="40605" Name="6-5 马陵之战2" />
-<NameId nameId="40606" Name="6-6 马陵之战3" />
-<NameId nameId="40607" Name="6-7 兵临城下" />
-<NameId nameId="40608" Name="6-8 再破魏都" />
-<NameId nameId="40609" Name="6-9 忠臣殉国" />
-<NameId nameId="40701" Name="7-1 齐国惊变" />
-<NameId nameId="40702" Name="7-2 营救田忌1" />
-<NameId nameId="40703" Name="7-3 营救田忌2" />
-<NameId nameId="40704" Name="7-4 田忌出逃1" />
-<NameId nameId="40705" Name="7-5 田忌出逃2" />
-<NameId nameId="40706" Name="7-6 途遇信使" />
-<NameId nameId="40707" Name="7-7 临淄城下" />
-<NameId nameId="40708" Name="7-8 夜闯临淄1" />
-<NameId nameId="40709" Name="7-9 夜闯临淄2" />
-<NameId nameId="40801" Name="8-1 返回洛阳1" />
-<NameId nameId="40802" Name="8-2 返回洛阳2" />
-<NameId nameId="40803" Name="8-3 返回洛阳3" />
-<NameId nameId="40804" Name="8-4 拜祭亡者" />
-<NameId nameId="40805" Name="8-5 孤军深入1" />
-<NameId nameId="40806" Name="8-6 孤军深入2" />
-<NameId nameId="40807" Name="8-7 虎口脱险1" />
-<NameId nameId="40808" Name="8-8 虎口脱险2" />
-<NameId nameId="40809" Name="8-9 虎口脱险3" />
-<NameId nameId="40901" Name="9-1 终极逃亡1" />
-<NameId nameId="40902" Name="9-2 终极逃亡2" />
-<NameId nameId="40903" Name="9-3 终极逃亡3" />
-<NameId nameId="40904" Name="9-4 四面楚歌1" />
-<NameId nameId="40905" Name="9-5 四面楚歌2" />
-<NameId nameId="40906" Name="9-6 四面楚歌3" />
-<NameId nameId="40907" Name="9-7 绝境逢生1" />
-<NameId nameId="40908" Name="9-8 绝境逢生2" />
-<NameId nameId="40909" Name="9-9 绝境逢生3" />
-<NameId nameId="41001" Name="10-1 遁出洛阳1" />
-<NameId nameId="41002" Name="10-2 遁出洛阳2" />
-<NameId nameId="41003" Name="10-3 再次遇袭" />
-<NameId nameId="41004" Name="10-4 同室操戈1" />
-<NameId nameId="41005" Name="10-5 同室操戈2" />
-<NameId nameId="41006" Name="10-6 同室操戈3" />
-<NameId nameId="41007" Name="10-7 天罗地网1" />
-<NameId nameId="41008" Name="10-8 天罗地网2" />
-<NameId nameId="41009" Name="10-9 天罗地网3" />
-<NameId nameId="41101" Name="11-1 幕后黑手1" />
-<NameId nameId="41102" Name="11-2 幕后黑手2" />
-<NameId nameId="41103" Name="11-3 幕后黑手3" />
-<NameId nameId="41104" Name="11-4 潜入邹城1" />
-<NameId nameId="41105" Name="11-5 潜入邹城2" />
-<NameId nameId="41106" Name="11-6 潜入邹城3" />
-<NameId nameId="41107" Name="11-7 揭开真相1" />
-<NameId nameId="41108" Name="11-8 揭开真相2" />
-<NameId nameId="41109" Name="11-9 揭开真相3" />
-<NameId nameId="41201" Name="12-1 偶遇郭隗" />
-<NameId nameId="41202" Name="12-2 会合苏秦1" />
-<NameId nameId="41203" Name="12-3 会合苏秦2" />
-<NameId nameId="41204" Name="12-4 突入重围1" />
-<NameId nameId="41205" Name="12-5 突入重围2" />
-<NameId nameId="41206" Name="12-6 蓟城之战" />
-<NameId nameId="41207" Name="12-7 血洗敌营1" />
-<NameId nameId="41208" Name="12-8 血洗敌营2" />
-<NameId nameId="41209" Name="12-9 擒贼擒王" />
-<NameId nameId="41301" Name="13-1 秦军哨骑1" />
-<NameId nameId="41302" Name="13-2 秦军哨骑2" />
-<NameId nameId="41303" Name="13-3 秦军哨骑3" />
-<NameId nameId="41304" Name="13-4 渡河之战" />
-<NameId nameId="41305" Name="13-5 潜入邯郸" />
-<NameId nameId="41306" Name="13-6 夜出离石" />
-<NameId nameId="41307" Name="13-7 西进雕阴1" />
-<NameId nameId="41308" Name="13-8 西进雕阴2" />
-<NameId nameId="41309" Name="13-9 佯攻蒙骜" />
-<NameId nameId="41401" Name="14-1 西入秦关" />
-<NameId nameId="41402" Name="14-2 义渠哨骑" />
-<NameId nameId="41403" Name="14-3 义渠前部" />
-<NameId nameId="41404" Name="14-4 埋伏奇袭1" />
-<NameId nameId="41405" Name="14-5 埋伏奇袭2" />
-<NameId nameId="41406" Name="14-6 埋伏奇袭3" />
-<NameId nameId="41407" Name="14-7 追击残部1" />
-<NameId nameId="41408" Name="14-8 追击残部2" />
-<NameId nameId="41409" Name="14-9 铲除义渠" />
-<NameId nameId="41501" Name="15-1 匈奴哨骑" />
-<NameId nameId="41502" Name="15-2 匈奴右翼" />
-<NameId nameId="41503" Name="15-3 匈奴侧翼1" />
-<NameId nameId="41504" Name="15-4 匈奴侧翼2" />
-<NameId nameId="41505" Name="15-5 匈奴前部" />
-<NameId nameId="41506" Name="15-6 匈奴左贤王" />
-<NameId nameId="41507" Name="15-7 匈奴右贤王1" />
-<NameId nameId="41508" Name="15-8 匈奴右贤王2" />
-<NameId nameId="41509" Name="15-9 匈奴可汗" />
+<NameId nameId="40001" Name="0-1 勇闯千重楼" />
+<NameId nameId="40101" Name="1-1 潜入晋国" />
+<NameId nameId="40102" Name="1-2 偶遇韩虎" />
+<NameId nameId="40103" Name="1-3 魏氏援兵" />
+<NameId nameId="40104" Name="1-4 途中偶遇" />
+<NameId nameId="40105" Name="1-5 力战追兵" />
+<NameId nameId="40106" Name="1-6 遭遇信使" />
+<NameId nameId="40107" Name="1-7 瓜衍奇袭" />
+<NameId nameId="40201" Name="2-1 小试牛刀" />
+<NameId nameId="40202" Name="2-2 路遇刺客" />
+<NameId nameId="40203" Name="2-3 杀机四伏" />
+<NameId nameId="40204" Name="2-4 遭遇堵截" />
+<NameId nameId="40205" Name="2-5 寻获契约" />
+<NameId nameId="40206" Name="2-6 独闯山寨" />
+<NameId nameId="40207" Name="2-7 营救小七" />
+<NameId nameId="40301" Name="3-1 路遇劫匪" />
+<NameId nameId="40302" Name="3-2 勇斗山贼" />
+<NameId nameId="40303" Name="3-3 夺取草药" />
+<NameId nameId="40304" Name="3-4 再遇截杀" />
+<NameId nameId="40305" Name="3-5 双面间谍" />
+<NameId nameId="40306" Name="3-6 盗取虎符" />
+<NameId nameId="40307" Name="3-7 远走齐国" />
+<NameId nameId="40401" Name="4-1 暗度陈仓1" />
+<NameId nameId="40402" Name="4-2 暗度陈仓2" />
+<NameId nameId="40403" Name="4-3 暗度陈仓3" />
+<NameId nameId="40404" Name="4-4 围魏救赵1" />
+<NameId nameId="40405" Name="4-5 围魏救赵2" />
+<NameId nameId="40406" Name="4-6 围魏救赵3" />
+<NameId nameId="40407" Name="4-7 桂陵之战1" />
+<NameId nameId="40408" Name="4-8 桂陵之战2" />
+<NameId nameId="40409" Name="4-9 桂陵之战3" />
+<NameId nameId="40501" Name="5-1 故技重施" />
+<NameId nameId="40502" Name="5-2 长驱直入" />
+<NameId nameId="40503" Name="5-3 太子之死" />
+<NameId nameId="40504" Name="5-4 马陵之战1" />
+<NameId nameId="40505" Name="5-5 马陵之战2" />
+<NameId nameId="40506" Name="5-6 马陵之战3" />
+<NameId nameId="40507" Name="5-7 兵临城下" />
+<NameId nameId="40508" Name="5-8 再破魏都" />
+<NameId nameId="40509" Name="5-9 忠臣殉国" />
+<NameId nameId="40601" Name="6-1 齐国惊变" />
+<NameId nameId="40602" Name="6-2 营救田忌1" />
+<NameId nameId="40603" Name="6-3 营救田忌2" />
+<NameId nameId="40604" Name="6-4 田忌出逃1" />
+<NameId nameId="40605" Name="6-5 田忌出逃2" />
+<NameId nameId="40606" Name="6-6 途遇信使" />
+<NameId nameId="40607" Name="6-7 临淄城下" />
+<NameId nameId="40608" Name="6-8 夜闯临淄1" />
+<NameId nameId="40609" Name="6-9 夜闯临淄2" />
+<NameId nameId="40701" Name="7-1 返回洛阳1" />
+<NameId nameId="40702" Name="7-2 返回洛阳2" />
+<NameId nameId="40703" Name="7-3 返回洛阳3" />
+<NameId nameId="40704" Name="7-4 拜祭亡者" />
+<NameId nameId="40705" Name="7-5 孤军深入1" />
+<NameId nameId="40706" Name="7-6 孤军深入2" />
+<NameId nameId="40707" Name="7-7 虎口脱险1" />
+<NameId nameId="40708" Name="7-8 虎口脱险2" />
+<NameId nameId="40709" Name="7-9 虎口脱险3" />
+<NameId nameId="40801" Name="8-1 终极逃亡1" />
+<NameId nameId="40802" Name="8-2 终极逃亡2" />
+<NameId nameId="40803" Name="8-3 终极逃亡3" />
+<NameId nameId="40804" Name="8-4 四面楚歌1" />
+<NameId nameId="40805" Name="8-5 四面楚歌2" />
+<NameId nameId="40806" Name="8-6 四面楚歌3" />
+<NameId nameId="40807" Name="8-7 绝境逢生1" />
+<NameId nameId="40808" Name="8-8 绝境逢生2" />
+<NameId nameId="40809" Name="8-9 绝境逢生3" />
+<NameId nameId="40901" Name="9-1 遁出洛阳1" />
+<NameId nameId="40902" Name="9-2 遁出洛阳2" />
+<NameId nameId="40903" Name="9-3 再次遇袭" />
+<NameId nameId="40904" Name="9-4 同室操戈1" />
+<NameId nameId="40905" Name="9-5 同室操戈2" />
+<NameId nameId="40906" Name="9-6 同室操戈3" />
+<NameId nameId="40907" Name="9-7 天罗地网1" />
+<NameId nameId="40908" Name="9-8 天罗地网2" />
+<NameId nameId="40909" Name="9-9 天罗地网3" />
+<NameId nameId="41001" Name="10-1 幕后黑手1" />
+<NameId nameId="41002" Name="10-2 幕后黑手2" />
+<NameId nameId="41003" Name="10-3 幕后黑手3" />
+<NameId nameId="41004" Name="10-4 潜入邹城1" />
+<NameId nameId="41005" Name="10-5 潜入邹城2" />
+<NameId nameId="41006" Name="10-6 潜入邹城3" />
+<NameId nameId="41007" Name="10-7 揭开真相1" />
+<NameId nameId="41008" Name="10-8 揭开真相2" />
+<NameId nameId="41009" Name="10-9 揭开真相3" />
+<NameId nameId="41101" Name="11-1 偶遇郭隗" />
+<NameId nameId="41102" Name="11-2 会合苏秦1" />
+<NameId nameId="41103" Name="11-3 会合苏秦2" />
+<NameId nameId="41104" Name="11-4 突入重围1" />
+<NameId nameId="41105" Name="11-5 突入重围2" />
+<NameId nameId="41106" Name="11-6 蓟城之战" />
+<NameId nameId="41107" Name="12-7 血洗敌营1" />
+<NameId nameId="41108" Name="11-8 血洗敌营2" />
+<NameId nameId="41109" Name="11-9 擒贼擒王" />
+<NameId nameId="41201" Name="12-1 秦军哨骑1" />
+<NameId nameId="41202" Name="12-2 秦军哨骑2" />
+<NameId nameId="41203" Name="12-3 秦军哨骑3" />
+<NameId nameId="41204" Name="12-4 渡河之战" />
+<NameId nameId="41205" Name="12-5 潜入邯郸" />
+<NameId nameId="41206" Name="12-6 夜出离石" />
+<NameId nameId="41207" Name="12-7 西进雕阴1" />
+<NameId nameId="41208" Name="12-8 西进雕阴2" />
+<NameId nameId="41209" Name="12-9 佯攻蒙骜" />
+<NameId nameId="41301" Name="13-1 西入秦关" />
+<NameId nameId="41302" Name="13-2 义渠哨骑" />
+<NameId nameId="41303" Name="13-3 义渠前部" />
+<NameId nameId="41304" Name="13-4 埋伏奇袭1" />
+<NameId nameId="41305" Name="13-5 埋伏奇袭2" />
+<NameId nameId="41306" Name="13-6 埋伏奇袭3" />
+<NameId nameId="41307" Name="13-7 追击残部1" />
+<NameId nameId="41308" Name="13-8 追击残部2" />
+<NameId nameId="41309" Name="13-9 铲除义渠" />
+<NameId nameId="41401" Name="14-1 匈奴哨骑" />
+<NameId nameId="41402" Name="14-2 匈奴右翼" />
+<NameId nameId="41403" Name="14-3 匈奴侧翼1" />
+<NameId nameId="41404" Name="14-4 匈奴侧翼2" />
+<NameId nameId="41405" Name="14-5 匈奴前部" />
+<NameId nameId="41406" Name="14-6 匈奴左贤王" />
+<NameId nameId="41407" Name="14-7 匈奴右贤王1" />
+<NameId nameId="41408" Name="14-8 匈奴右贤王2" />
+<NameId nameId="41409" Name="14-9 匈奴可汗" />
 <NameId nameId="50001" Name="普通膜拜" />
 <NameId nameId="50002" Name="虔诚膜拜" />
 <NameId nameId="50003" Name="顶礼膜拜" />
@@ -2010,6 +2024,7 @@
 <NameId nameId="651004" Name="神农百草" />
 <NameId nameId="651005" Name="颛顼王道" />
 <NameId nameId="651006" Name="女娲补天" />
+<NameId nameId="651007" Name="蚩尤地煞" />
 <NameId nameId="700101" Name="势如破竹1" />
 <NameId nameId="700102" Name="势如破竹2" />
 <NameId nameId="700103" Name="势如破竹3" />
@@ -2518,6 +2533,10 @@
 <NameId nameId="901003" Name="推图体力上限" />
 <NameId nameId="901004" Name="百战次数上限" />
 <NameId nameId="901005" Name="天工图上限" />
+<NameId nameId="910006" Name="镖马收益保底" />
+<NameId nameId="910007" Name="马鞭" />
+<NameId nameId="910008" Name="高级马鞭" />
+<NameId nameId="910009" Name="无敌护罩" />
 <NameId nameId="910000" Name="虎符" />
 <NameId nameId="910001" Name="转国令" />
 <NameId nameId="910002" Name="洗练石" />

@@ -214,23 +214,23 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 						return;
 		MibaoInfoResp my_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
 		//IsShowEffect = true;
-		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
-		{
-			int Activenum = 0;
-			for(int j = 0 ; j < my_MiBaoInfo.mibaoGroup[i].mibaoInfo.Count; j++)
-			{
-				if(my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level > 0)
-				{
-					Activenum +=1;
-					if(Activenum >= 2)
-					{
-						IsShowEffect = true;
-						break;
-					}
-				}
-			}
-			
-		}
+//		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
+//		{
+//			int Activenum = 0;
+//			for(int j = 0 ; j < my_MiBaoInfo.mibaoGroup[i].mibaoInfo.Count; j++)
+//			{
+//				if(my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level > 0)
+//				{
+//					Activenum +=1;
+//					if(Activenum >= 2)
+//					{
+//						IsShowEffect = true;
+//						break;
+//					}
+//				}
+//			}
+//			
+//		}
 		//GuanQia.zuheId = 0;
 		if(GuanqiaReq.zuheId <= 0 && IsShowEffect)
 		{
@@ -512,7 +512,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		}
 		else
 		{
-			MiBaoSkillTemp mMiBaoSkill  = MiBaoSkillTemp.getMiBaoSkillTempByZuHe_Pinzhi(GuanqiaReq.zuheId,2);
+			MiBaoSkillTemp mMiBaoSkill  = MiBaoSkillTemp.getMiBaoSkillTempBy_id(GuanqiaReq.zuheId);
 
 			MiBaoSkillIcon.spriteName = mMiBaoSkill.icon.ToString();
 		}

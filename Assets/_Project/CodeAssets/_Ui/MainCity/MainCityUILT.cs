@@ -44,8 +44,39 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     public NGUILongPress EnergyDetailLongPress;
 
     public MainCityZhanliChange m_MainCityZhanliChange;
+	public MainCityTaskManager m_MainCityTaskManagerMain;
+	public MainCityTaskManager m_MainCityTaskManagerOther;
 
     private bool m_isLianmeng = true;
+
+	void Awake()
+	{
+		MoneyDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
+		MoneyDetailLongPress.NormalPressTriggerWhenLongPress = false;
+		IngotDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
+		IngotDetailLongPress.NormalPressTriggerWhenLongPress = false;
+		EnergyDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
+		EnergyDetailLongPress.NormalPressTriggerWhenLongPress = false;
+		
+		MoneyDetailLongPress.OnLongPress = OnMoneyDetailClick;
+		IngotDetailLongPress.OnLongPress = OnIngotDetailClick;
+		EnergyDetailLongPress.OnLongPress = OnEnergyDetailClick;
+		MoneyDetailLongPress.OnLongPressFinish = OnCloseDetail;
+		IngotDetailLongPress.OnLongPressFinish = OnCloseDetail;
+		EnergyDetailLongPress.OnLongPressFinish = OnCloseDetail;
+		
+		SocketTool.RegisterSocketListener(this);
+	}
+	
+	// Use this for initialization
+	void Start()
+	{
+		StartCoroutine(Init());
+		Debug.Log(m_MainCityTaskManagerMain);
+		m_MainCityTaskManagerMain.setData(TaskData.Instance.ShowId);
+		m_MainCityTaskManagerOther.setData(TaskData.Instance.m_iShowOtherId);
+		setLTPos(true);
+	}
 
     /// <summary>
     /// Show main tip window
@@ -174,6 +205,32 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
         }
     }
 
+	public void setLTPos(bool init)
+	{
+		int BY = 200;
+		if(m_MainCityTaskManagerMain.gameObject.activeSelf)
+		{
+			m_MainCityTaskManagerMain.gameObject.transform.localPosition = new Vector3(0f, (float)-BY, 0f);
+			BY += 75;
+		}
+		if(m_MainCityTaskManagerOther.gameObject.activeSelf)
+		{
+			m_MainCityTaskManagerOther.gameObject.transform.localPosition = new Vector3(0f, (float)-BY, 0f);
+			BY += 75;
+		}
+		BY += 30;
+		MainCityUI.m_MainCityUI.m_MainCityListButton_L.setBPos(30, -BY, 0, -100);
+		MainCityUI.m_MainCityUI.m_MainCityListButton_L.setPos();
+		if(init)
+		{
+			MainCityUI.m_MainCityUI.m_MainCityListButton_L.setEndPos();
+		}
+		else
+		{
+			MainCityUI.m_MainCityUI.m_MainCityListButton_L.setMove(null);
+		}
+	}
+
     public void JunzhuLayerLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject tempObject = Instantiate(p_object) as GameObject;
@@ -218,30 +275,35 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
     #region Mono
 
-    void Awake()
-    {
-        MoneyDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
-        MoneyDetailLongPress.NormalPressTriggerWhenLongPress = false;
-        IngotDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
-        IngotDetailLongPress.NormalPressTriggerWhenLongPress = false;
-        EnergyDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
-        EnergyDetailLongPress.NormalPressTriggerWhenLongPress = false;
-
-        MoneyDetailLongPress.OnLongPress = OnMoneyDetailClick;
-        IngotDetailLongPress.OnLongPress = OnIngotDetailClick;
-        EnergyDetailLongPress.OnLongPress = OnEnergyDetailClick;
-        MoneyDetailLongPress.OnLongPressFinish = OnCloseDetail;
-        IngotDetailLongPress.OnLongPressFinish = OnCloseDetail;
-        EnergyDetailLongPress.OnLongPressFinish = OnCloseDetail;
-
-        SocketTool.RegisterSocketListener(this);
-    }
-
-    // Use this for initialization
-    void Start()
-    {
-        StartCoroutine(Init());
-    }
+    public void ClickTasID(int id)
+	{
+		if (TaskData.Instance.m_TaskInfoDic.ContainsKey(id))
+		{
+			if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId == -1)
+			{
+				NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskInfoDic[id].LinkNpcId);
+			}
+			else if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId != -1)
+			{
+				GameObject tempObj = new GameObject();
+				tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskInfoDic[id].FunctionId;
+				MainCityUI.m_MainCityUI.MYClick(tempObj);
+			}
+		}
+		else if(TaskData.Instance.m_TaskDailyDic.ContainsKey(id))
+		{
+			if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId == -1)
+	        {
+	            NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskDailyDic[id].LinkNpcId);
+	        }
+	        else if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId != -1)
+	        {
+				GameObject tempObj = new GameObject();
+				tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskDailyDic[id].FunctionId;
+				MainCityUI.m_MainCityUI.MYClick(tempObj);
+	        }
+		}
+	}
 
     void OnDestroy()
     {
@@ -289,6 +351,14 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 		else if (ui.name.IndexOf("LT_VIPButton") != -1)
 		{
 			TopUpLoadManagerment.m_instance.LoadPrefabSpecial(true, true);
+		}
+		else if(ui.name.IndexOf("LT_TaskMainButton") != -1)
+		{
+			ClickTasID(TaskData.Instance.ShowId);
+		}
+		else if(ui.name.IndexOf("LT_TaskOtherButton") != -1)
+		{
+			ClickTasID(TaskData.Instance.m_iShowOtherId);
 		}
     }
 

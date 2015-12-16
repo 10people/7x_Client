@@ -6,50 +6,36 @@ using System.IO;
 
 public class MiBaoSkillTemp : XmlLoadManager {
 
-//	<MibaoSkill zuhe="1" pinzhi="2" skill="250101" shuxingDesc="391001" skill2="251201" 
-//		desc1="399001" value1="10%" desc2="0" value2="20%" desc3="0" value3="30%" desc4="0"
-//			value4="0" nameId="651001" zuheDesc="392001" SkillSummary="393001" SkillDetail="394001" icon="250101" />
-	public int zuhe;
+//	d="1" needNum="3" lv="1" skill="250101" skillDesc="391001" skill2="251201" skill2Desc="395001" nameId="651001" briefDesc="392001" detailDesc="394001" 
+//		icon="250101" />
+//		<MibaoSkill 
+	public int id;
 	
-	public int pinzhi;
-	
+	public int needNum;
+
+	public int lv;
+
 	public int skill;
 	
-	public int shuxingDesc;
+	public int skillDesc;
 
-	public string skill2;
+	public int skill2;
 
-	public int desc1;
-
-	public string value1;
-
-	public int desc2;
-
-	public string value2;
-
-	public int desc3;
-
-	public string value3;
-
-	public int desc4;
-
-	public string value4;
+	public int skill2Desc;
 
 	public int nameId;
 
-	public int zuheDesc;
+	public int briefDesc;
 
-	public int SkillSummary;
+	public int detailDesc;
 
-	public int SkillDetail;
-
-	public int icon;
+	public string icon;
 
 	public static List<MiBaoSkillTemp> templates = new List<MiBaoSkillTemp>();
 	
 	
 	public void Log(){
-		Debug.Log( "MiBaoSkillTemp.Log( id: " + zuhe +
+		Debug.Log( "MiBaoSkillTemp.Log( id: " + id +
 		          " awardId : " );
 	}
 	
@@ -92,58 +78,38 @@ UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "MibaoSkill.xml"), CurLoa
 			
 			{
 				t_reader.MoveToNextAttribute();
-				t_template.zuhe = int.Parse( t_reader.Value );
+				t_template.id = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
-				t_template.pinzhi = int.Parse( t_reader.Value );
+				t_template.needNum = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
-				t_template.skill = int.Parse( t_reader.Value );
+				t_template.lv = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
-				t_template.shuxingDesc = int.Parse(t_reader.Value);
+				t_template.skill = int.Parse(t_reader.Value);
 
 				t_reader.MoveToNextAttribute();
-				t_template.skill2 =  t_reader.Value ;
+				t_template.skillDesc =  int.Parse(t_reader.Value);
 
 				t_reader.MoveToNextAttribute();
-				t_template.desc1 = int.Parse( t_reader.Value );
+				t_template.skill2 = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.value1 = t_reader.Value;
-
-				t_reader.MoveToNextAttribute();
-				t_template.desc2 = int.Parse( t_reader.Value );
-
-				t_reader.MoveToNextAttribute();
-				t_template.value2 = t_reader.Value;
-
-				t_reader.MoveToNextAttribute();
-				t_template.desc3 = int.Parse( t_reader.Value );
-
-				t_reader.MoveToNextAttribute();
-				t_template.value3 = t_reader.Value;
-
-				t_reader.MoveToNextAttribute();
-				t_template.desc4 = int.Parse( t_reader.Value );
-
-				t_reader.MoveToNextAttribute();
-				t_template.value4 = t_reader.Value;
+				t_template.skill2Desc = int.Parse(t_reader.Value);
 
 				t_reader.MoveToNextAttribute();
 				t_template.nameId = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.zuheDesc = int.Parse( t_reader.Value );
+				t_template.briefDesc = int.Parse(t_reader.Value);
 
 				t_reader.MoveToNextAttribute();
-				t_template.SkillSummary = int.Parse( t_reader.Value );
+				t_template.detailDesc = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.SkillDetail = int.Parse( t_reader.Value );
+				t_template.icon = t_reader.Value;
 
-				t_reader.MoveToNextAttribute();
-				t_template.icon = int.Parse( t_reader.Value );
 
 			}
 
@@ -158,10 +124,10 @@ UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "MibaoSkill.xml"), CurLoa
 	{
 		foreach( MiBaoSkillTemp template in templates )
 		{
-			if( template.zuhe == mzuhe&& template.pinzhi == pz)
-			{
-				return template;
-			}
+//			if( template.zuhe == mzuhe&& template.pinzhi == pz)
+//			{
+//				return template;
+//			}
 		}
 		
 		Debug.LogError("XML ERROR: Can't get MiBaoSkillTemp with tempid " + mzuhe+pz);
@@ -172,7 +138,7 @@ UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "MibaoSkill.xml"), CurLoa
 	{
 		foreach( MiBaoSkillTemp template in templates )
 		{
-			if( template.skill == id)
+			if( template.id == id)
 			{
 				return template;
 			}
@@ -203,7 +169,7 @@ UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "MibaoSkill.xml"), CurLoa
 		foreach( MiBaoSkillTemp template in templates )
 		{
 			//Debug.Log("template.skill = "+template.skill +"template.pinzhi = "+template.pinzhi);
-			if( template.zuhe == zuHeId)
+			if( template.id == zuHeId)
 			{
 				return template;
 			}

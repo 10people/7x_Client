@@ -13,8 +13,7 @@ using System.Collections.Generic;
  * Notes:
  * 1. All Config Key MUST be listed here.
  */ 
-public class ConfigTool : Singleton<ConfigTool>
-{
+public class ConfigTool : Singleton<ConfigTool>{
 
 	public class ConfigValue{
 		public enum ValueType{
@@ -240,7 +239,7 @@ public class ConfigTool : Singleton<ConfigTool>
 	
 	public void ResourceLoadCallback( ref WWW p_www, string p_path, Object p_object ){
 		#if DEBUG_CONFIG
-		Debug.Log( "ConfigTool.ResourceLoadCallback()" );
+		Debug.Log( "ConfigTool.ResourceLoadCallback( " + ((TextAsset)p_object).text + " )" );
 		#endif
 
 		if ( m_config_dict.Count > 0 && m_config_value_dict.Count > 0 ) {
@@ -365,8 +364,6 @@ public class ConfigTool : Singleton<ConfigTool>
 			#endif
 
 			LoadValues( m_config_value_dict, CONST_NETWORK_SHOW_STATUS, LoadBoolValue( m_config_dict, CONST_NETWORK_SHOW_STATUS ) );
-
-			LoadValues( m_config_value_dict, CONST_SHOW_NETWORK_SELECTOR, LoadBoolValue( m_config_dict, CONST_SHOW_NETWORK_SELECTOR ) );
 		}
 		
 		// logs
@@ -493,7 +490,7 @@ public class ConfigTool : Singleton<ConfigTool>
 	 */
 	public static string LoadStringValue( Dictionary<string, string> p_dict, string p_key ){
 		if( !ContainsKey( p_dict, p_key ) ){
-			Debug.Log( "Config.Key not contained: " + p_key );
+			Debug.LogWarning( "Config.Key not contained: " + p_key );
 			
 			return "";
 		}
@@ -518,7 +515,7 @@ public class ConfigTool : Singleton<ConfigTool>
 	 */
 	public static bool LoadBoolValue( Dictionary<string, string> p_dict, string p_key ){
 		if( !ContainsKey( p_dict, p_key ) ){
-			//			Debug.Log( "Config.Key not contained: " + p_key );
+			Debug.LogWarning( "Config.Key not contained: " + p_key );
 			
 			return false;
 		}
@@ -555,7 +552,7 @@ public class ConfigTool : Singleton<ConfigTool>
 	 */
 	public static int LoadIntValue( Dictionary<string, string> p_dict, string p_key ){
 		if( !ContainsKey( p_dict, p_key ) ){
-			Debug.Log( "Config.Key not contained: " + p_key );
+			Debug.LogWarning( "Config.Key not contained: " + p_key );
 			
 			return 0;
 		}
@@ -582,7 +579,7 @@ public class ConfigTool : Singleton<ConfigTool>
 	 */
 	public static float LoadFloatValue( Dictionary<string, string> p_dict, string p_key ){
 		if( !ContainsKey( p_dict, p_key ) ){
-			Debug.Log( "Config.Key not contained: " + p_key );
+			Debug.LogWarning( "Config.Key not contained: " + p_key );
 			
 			return 0;
 		}
@@ -785,8 +782,6 @@ public class ConfigTool : Singleton<ConfigTool>
 	public const string CONST_NETWORK_LATENCY			= "NetworkLatency";
 
 	public const string CONST_NETWORK_SHOW_STATUS		= "ShowNetworkStatus";
-
-	public const string CONST_SHOW_NETWORK_SELECTOR 	= "ShowServerSelector";
 
 	#endregion
 

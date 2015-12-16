@@ -391,28 +391,41 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 
                         return true;
                     }
-                //case ProtoIndexes.S_CANCEL_BLACK:
-                //    {
-                //        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                case ProtoIndexes.S_CDKEY_RES:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
-                //        QiXiongSerializer t_qx = new QiXiongSerializer();
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
 
-                //        CancelBlackResp tempResponse = new CancelBlackResp();
+                        GetCDKeyAwardResp tempResponse = new GetCDKeyAwardResp();
+                     
+                        t_qx.Deserialize(t_stream, tempResponse, tempResponse.GetType());
+                        if (tempResponse.result == 0)
+                        {
+                            string _award = "";
+                          for (int i = 0; i < tempResponse.awards.Count;i++)
+                          {
+                                if (i < tempResponse.awards.Count - 1)
+                                {
+                                    _award += tempResponse.awards[i].awardType + ":" + tempResponse.awards[i].awardId + ":" + tempResponse.awards[i].awardNum+ "#";
+                                }
+                                else
+                                {
+                                    _award += tempResponse.awards[i].awardType + ":" + tempResponse.awards[i].awardId + ":" + tempResponse.awards[i].awardNum;
+                                }
 
-                //        t_qx.Deserialize(t_stream, tempResponse, tempResponse.GetType());
-             
-                //        if (tempResponse.result == 0)
-                //        {
-                //            BlockedData.Instance().m_BlockedInfoDic.Remove(tempResponse.junzhuId);
-                //            listBlockedChatObject[0].SetActive(true);
-                //            listBlockedChatObject[1].SetActive(false);
-                //            Destroy(BloakedEleDic[tempResponse.junzhuId]);
-                //            BloakedEleDic.Remove(tempResponse.junzhuId);
-                //            listBlockedChatObject[2].GetComponent<UIGrid>().Reposition();
-                //        }
-                      
-                //        return true;
-                //    }
+                          }
+                          FunctionWindowsCreateManagerment.ShowRAwardInfo(_award);
+                        }
+                        else
+                        {
+                            EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
+                                                         , tempResponse.errorMsg
+                                                         , "");
+                        }
+                        
+                        return true;
+                    }
 
 
                 case ProtoIndexes.S_ChangeCountry_RESP:
@@ -552,8 +565,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         {
             case 0:
                 {
-                    listCDKeyObject[0].SetActive(false);
-                    listCDKeyObject[1].SetActive(true);
+                   CDKeyController(CDkeyInfo);
                 }
                 break;
             case 1:
@@ -571,9 +583,16 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 break;
         }
     }
-    void CDKeyController()
-    { 
-    
+    void CDKeyController(string cdKey)
+    {
+        MemoryStream t_tream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        GetCDKeyAwardReq cdkey = new GetCDKeyAwardReq();
+        cdkey.cdkey = cdKey;
+        t_qx.Serialize(t_tream, cdkey);
+        byte[] t_protof;
+        t_protof = t_tream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_CDKEY_REQ, ref t_protof);
     }
 
     void SwitchAccountController(int index)

@@ -26,7 +26,23 @@ public class HeroSkill : MonoBehaviour
 
 	[HideInInspector] public int m_isDeadOverSkill = 0; //死亡后0不播放1继续播放
 
+	public List<int> m_otherSkillID = new List<int>();
+
 	public List<HeroSkill> m_otherSkill = new List<HeroSkill> ();
+
+	public bool m_isSeal = false;
+
+	public bool m_isCurSeal = false;
+
+	public List<int> m_UnLockSkillID = new List<int>();
+
+	public List<HeroSkill> m_UnLockSkill = new List<HeroSkill>();
+
+	public List<int> m_CloseSkillID = new List<int>();
+
+	public List<HeroSkill> m_CloseSkill = new List<HeroSkill>();
+
+//	public List<HeroSkill> m_otherSkill = new List<HeroSkill> ();
 
 	private List<SkillDataBead> m_SkillDataBead = new List<SkillDataBead>();
 	//随机天雷
@@ -52,6 +68,18 @@ public class HeroSkill : MonoBehaviour
 	private List<int> m_ListProfession = new List<int>();
 
 	private List<int> m_ListType = new List<int>();
+
+	private List<int> m_ListAngleEffMove = new List<int>();//特效移动的角度
+
+	private List<float> m_ListEffMoveDistance = new List<float>();//特效移动的距离
+	
+	private List<float> m_ListEffMoveTime = new List<float>();//特效移动的时间
+
+	private float m_fEffMoveIndexBTime = 0;//特效移动开始的时间
+
+	private float m_fEffMovePassageTime = 0;//流逝的时间
+
+	private int m_iEffMoveIndex = 0;//当前执行第几个移动
 
 	private float m_iUseValue0 = 0;
 
@@ -82,6 +110,8 @@ public class HeroSkill : MonoBehaviour
 
 	private float m_iCollValue4;
 
+	private float m_iCollValue5;
+
 	private string m_sAnimName;
 
 	private bool m_isUseSelf = false;//施法敌方我方0敌方1我方
@@ -102,6 +132,16 @@ public class HeroSkill : MonoBehaviour
 	private int m_iTargetValue1;
 
 	private int m_iEffID = 0;//特效ID
+
+	private float m_fYinliRound = 0;//引力范围
+
+	private float m_fYinliStrength = 0;//引力大小 每帧的距离
+
+	private float m_fYinliTime = 0;//引力时间
+
+	private float m_fYinliCurTime = 0;//引力开始的时间
+
+	private float m_iYinliShenfen = 0;//引力作用身份
 
 	private int m_iEffLockID = 0;//绑定ID
 
@@ -155,6 +195,7 @@ public class HeroSkill : MonoBehaviour
 		FALL,//击倒
 		BYATK,//让对方播放被击 强制打断
 		DELETEBUFF,//清除BUFF
+		YINLI,//引力
 	}
 
 	public List<SKILLELEMENTTYPE> m_look = new List<SKILLELEMENTTYPE>();
@@ -201,23 +242,30 @@ public class HeroSkill : MonoBehaviour
 		}
 
 		int otherSkillNum = int.Parse(Global.NextCutting(ref temptemptempString));
-//		Debug.Log("otherSkillNum="+otherSkillNum);
-//		for(int q = 0; q < node.skills.Count; q ++)
-//		{
-//			Debug.Log("node.skills[q].template.id="+node.skills[q].template.id);
-//		}
+
 		for (int i = 0; i < otherSkillNum; i ++)
 		{
-			int tempSkillID = int.Parse(Global.NextCutting(ref temptemptempString));
-//			Debug.Log("tempSkillID="+tempSkillID);
-			for(int q = 0; q < node.skills.Count; q ++)
-			{
-				if(node.skills[q].template.id == tempSkillID)
-				{
-					node.skills[q].m_isGuanlian = true;
-					m_otherSkill.Add(node.skills[q]);
-				}
-			}
+			m_otherSkillID.Add(int.Parse(Global.NextCutting(ref temptemptempString)));
+		}
+
+		tempValue = int.Parse(Global.NextCutting(ref temptemptempString));
+
+		m_isSeal = (tempValue != 0);
+
+		m_isCurSeal = m_isSeal;
+
+		otherSkillNum = int.Parse(Global.NextCutting(ref temptemptempString));
+		
+		for (int i = 0; i < otherSkillNum; i ++)
+		{
+			m_UnLockSkillID.Add(int.Parse(Global.NextCutting(ref temptemptempString)));
+		}
+
+		otherSkillNum = int.Parse(Global.NextCutting(ref temptemptempString));
+		
+		for (int i = 0; i < otherSkillNum; i ++)
+		{
+			m_CloseSkillID.Add(int.Parse(Global.NextCutting(ref temptemptempString)));
 		}
 
 		m_isDeadOverSkill = int.Parse(Global.NextCutting(ref temptemptempString));
@@ -302,6 +350,14 @@ public class HeroSkill : MonoBehaviour
 			m_ListType.Add(int.Parse(Global.NextCutting(ref temptemptempString)));
 		}
 
+		tempValue = int.Parse(Global.NextCutting(ref temptemptempString));
+		for(int i = 0; i < tempValue; i ++)
+		{
+			m_ListAngleEffMove.Add(int.Parse(Global.NextCutting(ref temptemptempString)));
+			m_ListEffMoveDistance.Add(float.Parse(Global.NextCutting(ref temptemptempString)));
+			m_ListEffMoveTime.Add(float.Parse(Global.NextCutting(ref temptemptempString)));
+		}
+
 		m_CollStateType = (COLLSTATETYPE)int.Parse(Global.NextCutting(ref temptemptempString));//作用范围类型
 
 		//作用范围
@@ -322,6 +378,8 @@ public class HeroSkill : MonoBehaviour
 			m_iCollValue2 = float.Parse(Global.NextCutting(ref temptemptempString));
 			m_iCollValue3 = float.Parse(Global.NextCutting(ref temptemptempString));
 			m_iCollValue4 = int.Parse(Global.NextCutting(ref temptemptempString));
+			m_iCollValue5 = float.Parse(Global.NextCutting(ref temptemptempString));
+			Debug.Log(m_iCollValue5);
 			dis += "射线，";
 			break;
 		}
@@ -372,8 +430,11 @@ public class HeroSkill : MonoBehaviour
 		}
 		m_iEffID = int.Parse(Global.NextCutting(ref temptemptempString));//特效ID
 		m_iEffLockID = int.Parse(Global.NextCutting(ref temptemptempString));//绑定特效ID
+
 		if(m_iEffLockID != 0)
 		{
+			Debug.Log("skillid=" + template.value7);
+			Debug.Log(m_sAnimName);
 			GameObject tempEffobj = BattleEffectControllor.Instance().getInstantiateEffect(m_iEffLockID);
 			tempEffobj.SetActive(true);
 			tempEffobj.transform.position = node.gameObject.transform.position;
@@ -448,6 +509,9 @@ public class HeroSkill : MonoBehaviour
 				break;
 			case SKILLELEMENTTYPE.DELETEBUFF:
 				tempSkillDataBead = new SkillDeleteBuff(this);
+				break;
+			case SKILLELEMENTTYPE.YINLI:
+				tempSkillDataBead = new SkillYinli(this);
 				break;
 			default:
 				Debug.Log("tempSKILLELEMENTTYPE="+tempSKILLELEMENTTYPE);
@@ -802,7 +866,10 @@ public class HeroSkill : MonoBehaviour
 		}
 		BaseAI tempTargetOne;
 		tempTargetOne = getLatestTarget(tempTarget);//获取目标中最近的一个
-		node.gameObject.transform.LookAt(tempTargetOne.gameObject.transform.position);
+		if (!m_isGuanlian) 
+		{
+			node.gameObject.transform.LookAt(tempTargetOne.gameObject.transform.position);
+		}
 		if((m_CollStateType == COLLSTATETYPE.VECTOR) && m_sAnimName != "null")
 		{
 			m_VForWard = node.gameObject.transform.forward;
@@ -821,14 +888,22 @@ public class HeroSkill : MonoBehaviour
 				tempEffobj.transform.rotation = node.gameObject.transform.rotation;
 				if(m_CollStateType == COLLSTATETYPE.VECTOR)
 				{
-					tempEffobj.transform.LookAt(tempTargetOne.gameObject.transform);
-					tempEffobj.transform.position = new Vector3(tempEffobj.transform.position.x, tempEffobj.transform.position.y, tempEffobj.transform.position.z);
+					if(m_iCollValue5 == -1000)
+					{
+						tempEffobj.transform.LookAt(tempTargetOne.gameObject.transform);
+						tempEffobj.transform.LookAt(tempTargetOne.gameObject.transform);
+					}
+					else
+					{
+						tempEffobj.transform.forward = node.transform.forward;
+						tempEffobj.transform.localEulerAngles += new Vector3(0,m_iCollValue5,0);
+					}
 				}
 				if(m_isEffLock)
 				{
 					tempEffobj.transform.parent = node.gameObject.transform;
-					tempEffobj.transform.localPosition = new Vector3(tempEffobj.transform.localPosition.x, (tempEffobj.transform.localPosition.y + (node.getHeight() * EffectIdTemplate.GetHeight(m_iEffID))), tempEffobj.transform.localPosition.z);
 				}
+				tempEffobj.transform.localPosition = new Vector3(tempEffobj.transform.localPosition.x, (tempEffobj.transform.localPosition.y + (node.getHeight() * EffectIdTemplate.GetHeight(m_iEffID))), tempEffobj.transform.localPosition.z);
 				tempEffobj.name = "skill" + m_iIndex;
 			}
 			else
@@ -898,16 +973,33 @@ public class HeroSkill : MonoBehaviour
 			}
 			break;
 		}
+		if(m_ListEffMoveTime.Count != 0)
+		{
+			for(int i = 0; i < m_listMyEffElement.Count; i ++)
+			{
+				int tempAngle;
+				if(m_ListAngleEffMove[m_iEffMoveIndex] == -1)
+				{
+					tempAngle = Global.getRandom(360);
+				}
+				else
+				{
+					tempAngle = m_ListAngleEffMove[0];
+				}
+				m_listMyEffElement[i].transform.localEulerAngles = new Vector3(0, tempAngle, 0);
+			}
+
+
+		}
 		//Debug.Log("m_listMyEffElement.Count="+m_listMyEffElement.Count);
 		setShow();
 	}
 
 	public void setShow()
 	{
+		Debug.Log (template.id);
 		if(m_iShow == 0)
 		{
-//			Debug.Log(node.gameObject.name + "+m_CollStateType="+m_CollStateType);
-
 			GameObject tempobjColl;
 			switch(m_CollStateType)
 			{
@@ -932,15 +1024,18 @@ public class HeroSkill : MonoBehaviour
 					tempobjColl = Global.getEffAtkWaring(ClientMain.m_rect);
 					tempobjColl.transform.position = node.transform.position;
 					tempobjColl.transform.position = new Vector3(tempobjColl.transform.position.x, tempobjColl.transform.position.y + 0.01f, tempobjColl.transform.position.z);
-					Vector3 moveat = node.transform.forward;
-					moveat.y = 0;
-					tempobjColl.transform.position += (moveat.normalized * (m_iCollValue1 / 2));
 					Vector3 tempRotation = node.transform.localRotation.eulerAngles;
 
 					tempobjColl.transform.localRotation = Quaternion.Euler(90,tempRotation.y + 90,0);
 
 					tempobjColl.transform.localScale = new Vector3(m_iCollValue1, m_iCollValue2, 1);
-
+					Debug.Log(node.transform.localEulerAngles);
+					node.transform.localEulerAngles += new Vector3(0, m_iCollValue5, 0);
+					Vector3 moveat = node.transform.forward;
+					node.transform.localEulerAngles -= new Vector3(0, m_iCollValue5, 0);
+					tempobjColl.transform.localEulerAngles += new Vector3(0, m_iCollValue5, 0);
+					moveat.y = 0;
+					tempobjColl.transform.position += (moveat.normalized * (m_iCollValue1 / 2));
 					m_listShowRange.Add(tempobjColl);
 					m_iCollValue1 = tempValue1;
 				}
@@ -1024,10 +1119,9 @@ public class HeroSkill : MonoBehaviour
 //		Debug.Log("m_listMyEffElement.Count="+m_listMyEffElement.Count);
 	
 		// debug use
-		if(!Console_SetBattleFieldFx.IsEnableSkillFx() ){
-			return;
-		}
-
+//		if(!Console_SetBattleFieldFx.IsEnableSkillFx() ){
+//			return;
+//		}
 		for(int i = 0; i < m_listMyEffElement.Count; i ++)
 		{
 			if(m_listMyEffElement[i] != null && !m_listMyEffElement[i].activeSelf)
@@ -1061,21 +1155,19 @@ public class HeroSkill : MonoBehaviour
 			{
 				deleteAllTheEff();
 			}
-			if(m_isUseThisSkill)
+			if(m_isUseThisSkill && !m_isCurSeal)
 			{
 				if((tempTime - cooldown) >= template.timePeriod)
 				{
 					if(node.gameObject.name == "Node_1" && template.id == 250101 && m_NumStop == 0)
 					{
-						Debug.Log(template.id);
-						Debug.Log(template.name);
-						Debug.Log(m_Nummmmm);
 						m_NumStop = 1;
 						BattleUIControlor.Instance().enterPause();
 					}
 				}
 			}
 			if((tempTime - cooldown) >= template.timePeriod 
+			   && !m_isCurSeal
 			   && !template.zhudong
 			   && m_iUseNum > 0
 			   && !m_isUseThisSkill
@@ -1093,16 +1185,31 @@ public class HeroSkill : MonoBehaviour
 				bool flag = false;
 				if(castSkill())
 				{
+					if(m_isSeal)
+					{
+						m_isCurSeal = m_isSeal;
+					}
 					int tempIndex = node.m_iUseSkillIndex;
 					m_isUseThisSkill = true;
 					m_vectorMove = false;
 					m_AttBaseAI = new List<List<BaseAI>>();
 					m_iUseNum --;
+					m_iEffMoveIndex = 0;
+					m_fEffMoveIndexBTime = tempTime;
+					m_fEffMovePassageTime = m_fEffMoveIndexBTime;
 					node.m_iUseSkillIndex = m_iIndex;
 					node.checkSkillDrama(node.skills[m_iIndex].template.id);
 					for(int i = 0; i < m_otherSkill.Count; i ++)
 					{
 						m_otherSkill[i].m_isUseThisSkill = true;
+					}
+					for(int i = 0; i < m_UnLockSkill.Count; i ++)
+					{
+						m_UnLockSkill[i].m_isCurSeal = false;
+					}
+					for(int i = 0; i < m_CloseSkill.Count; i ++)
+					{
+						m_CloseSkill[i].ForcedTermination();
 					}
 					//							BaseAI.checkSkillDrama();
 //					Debug.Log("设定技能播放名称="+m_sAnimName);
@@ -1113,6 +1220,7 @@ public class HeroSkill : MonoBehaviour
 
 					if(m_sAnimName == "null")
 					{
+						Debug.Log("===============1");
 						if(template.id / 1000 == 250)//开头是250的技能是主动秘宝技能
 						{
 							if(node.nodeId == 1)
@@ -1124,15 +1232,18 @@ public class HeroSkill : MonoBehaviour
 								BattleUIControlor.Instance().cooldownMibaoSkill_enemy.refreshCDTime();
 							}
 						}
+						Debug.Log("===============2");
 						node.openShow();
+						Debug.Log("===============3");
 						node.activeSkillStart(0);
+						Debug.Log("===============4");
 //						setShowFanRand();
 //						activeSkill(0);
-						for(int i = 0; i < m_otherSkill.Count; i ++)
-						{
-							m_otherSkill[i].setShowFanRand();
-							m_otherSkill[i].activeSkill(0);
-						}
+//						for(int i = 0; i < m_otherSkill.Count; i ++)
+//						{
+//							m_otherSkill[i].setShowFanRand();
+//							m_otherSkill[i].activeSkill(0);
+//						}
 						node.m_iUseSkillIndex = tempIndex;
 					}
 					else
@@ -1182,6 +1293,7 @@ public class HeroSkill : MonoBehaviour
 			if(m_isUseThisSkill)
 			{
 				//Debug.Log(m_listMyEffCutTime.Count);
+
 				for(int i = 0; i < m_listMyEffCutTime.Count; i ++)//判定每个技能特效里 元素组的第几个攻击时间
 				{
 					if(m_listMyEffElement[i] == null)
@@ -1194,11 +1306,7 @@ public class HeroSkill : MonoBehaviour
 						i --;
 						if(m_listMyEffCutTime.Count == 0)
 						{
-							m_isUseThisSkill = false;
-							if(node.gameObject.name == "Node_1" && template.id == 250101)
-							{
-								Debug.Log("技能结束");
-							}
+							EndSkill();
 							return;
 						}
 						continue;
@@ -1216,21 +1324,42 @@ public class HeroSkill : MonoBehaviour
 							i --;
 							if(m_listMyEffCutTime.Count == 0)
 							{
-								m_isUseThisSkill = false;
-								if(node.gameObject.name == "Node_1" && template.id == 250101)
-								{
-									Debug.Log("技能结束");
-								}
+								EndSkill();
 							}
 						}
 						continue;
 					}
 
-					if(m_CollStateType == COLLSTATETYPE.VECTOR && m_iCollValue0 != 0)
+					if(m_iEffMoveIndex < m_ListAngleEffMove.Count)
+					{
+						Debug.Log(m_iEffMoveIndex);
+						Debug.Log(m_ListAngleEffMove.Count);
+						m_fEffMovePassageTime = tempTime;
+						m_listMyEffElement[i].transform.position += m_listMyEffElement[i].transform.forward.normalized * (((tempTime - m_fEffMovePassageTime) / m_ListEffMoveTime[m_iEffMoveIndex]) * m_ListEffMoveDistance[m_iEffMoveIndex]);
+//						m_fEffMovePassageTime
+						if(tempTime - m_fEffMoveIndexBTime >= m_ListEffMoveTime[m_iEffMoveIndex])
+						{
+							m_fEffMoveIndexBTime = tempTime;
+							m_fEffMovePassageTime = tempTime;
+							m_iEffMoveIndex ++;
+							int tempAngle;
+							if(m_ListAngleEffMove[m_iEffMoveIndex] == -1)
+							{
+								tempAngle = Global.getRandom(360);
+							}
+							else
+							{
+								tempAngle = m_ListAngleEffMove[m_iEffMoveIndex];
+							}
+							m_listMyEffElement[i].transform.localEulerAngles = new Vector3(0, tempAngle, 0);
+						}
+					}
+
+					if(m_CollStateType == COLLSTATETYPE.VECTOR && m_iCollValue0 != 0)//射线并且有速度
 					{
 						if(m_isEffLock)
 						{
-							if(!m_vectorMove)
+							if(!m_vectorMove)//用NAV移动 只需要在最开始的时候移动一次之后特效直接等于任务坐标
 							{
 								m_vectorMove = true;
 								m_VectorPos = node.gameObject.transform.position;
@@ -1243,12 +1372,12 @@ public class HeroSkill : MonoBehaviour
 						}
 						else
 						{
-							m_listMyEffElement[i].gameObject.transform.position += (m_VForWard * m_iCollValue0);
+							m_listMyEffElement[i].gameObject.transform.position += (m_listMyEffElement[i].gameObject.transform.forward.normalized * m_iCollValue0);
 						}
 					}
 					m_listATTTarget = null;
 
-					if(m_CollStateType == COLLSTATETYPE.VECTOR && m_iCollValue0 != 0)
+					if(m_CollStateType == COLLSTATETYPE.VECTOR && m_iCollValue0 != 0)//射线并且有速度
 					{
 //						m_listMyEffElement[i].gameObject.transform.position += (m_VForWard * m_iCollValue0);
 						m_listATTTarget = getAttListTarget(m_listMyEffElement[i]);
@@ -1261,7 +1390,7 @@ public class HeroSkill : MonoBehaviour
 							}
 							for(int q = 0; q < m_SkillDataBead.Count; q ++)
 							{
-								m_SkillDataBead[q].activeSkill(0);
+								m_SkillDataBead[q].activeSkill(0, m_listMyEffElement[i]);
 								addAttackNode(m_listATTTarget, i);
 							}
 							if(m_iCollValue3 <= m_AttBaseAI[i].Count)
@@ -1285,7 +1414,7 @@ public class HeroSkill : MonoBehaviour
 									m_listATTTarget = getAttListTarget(m_listMyEffElement[i]);
 									if(m_listATTTarget != null && m_listATTTarget.Count != 0)
 									{
-										m_SkillDataBead[q].activeSkill(0);
+										m_SkillDataBead[q].activeSkill(0, m_listMyEffElement[i]);
 										addAttackNode(m_listATTTarget, i);
 										m_listATTTarget = null;
 									}
@@ -1304,11 +1433,7 @@ public class HeroSkill : MonoBehaviour
 						i --;
 						if(m_listMyEffCutTime.Count == 0)
 						{
-							m_isUseThisSkill = false;
-							if(node.gameObject.name == "Node_1" && template.id == 250101)
-							{
-								Debug.Log("技能结束");
-							}
+							EndSkill();
 						}
 						continue;
 					}
@@ -1651,7 +1776,7 @@ public class HeroSkill : MonoBehaviour
 		node.m_isStopTime = false;
 		node.mAnim.speed = 1;
 
-		m_isUseThisSkill = false;
+		EndSkill();
 		if(node.gameObject.name == "Node_1" && template.id == 250101)
 		{
 			Debug.Log("技能结束");
@@ -1716,10 +1841,56 @@ public class HeroSkill : MonoBehaviour
 			i --;
 			if(m_listMyEffElement.Count == 0)
 			{
-				m_isUseThisSkill = false;
+				EndSkill();
 				if(node.gameObject.name == "Node_1" && template.id == 250101)
 				{
 					Debug.Log("技能结束");
+				}
+			}
+		}
+	}
+
+	public void EndSkill()
+	{
+		m_isUseThisSkill = false;
+		for(int i = 0; i < m_UnLockSkill.Count; i ++)
+		{
+			m_UnLockSkill[i].m_isCurSeal = true;
+		}
+	}
+
+	public void getSkillAssociated()
+	{
+		for(int i = 0; i < m_otherSkillID.Count; i ++)
+		{
+			for(int q = 0; q < node.skills.Count; q ++)
+			{
+				if(node.skills[q].template.id == m_otherSkillID[i])
+				{
+					node.skills[q].m_isGuanlian = true;
+					m_otherSkill.Add(node.skills[q]);
+				}
+			}
+		}
+
+		for(int i = 0; i < m_UnLockSkillID.Count; i ++)
+		{
+			for(int q = 0; q < node.skills.Count; q ++)
+			{
+				if(node.skills[q].template.id == m_UnLockSkillID[i])
+				{
+					m_UnLockSkill.Add(node.skills[q]);
+				}
+			}
+		}
+
+		for(int i = 0; i < m_CloseSkillID.Count; i ++)
+		{
+			for(int q = 0; q < node.skills.Count; q ++)
+			{
+				if(node.skills[q].template.id == m_CloseSkillID[i])
+				{
+					m_CloseSkill.Add(node.skills[q]);
 				}
 			}
 		}

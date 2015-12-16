@@ -64,4 +64,6 @@
 <Mail type="80000" icon="80000" title="" taitou="" content="" sender="" award="0" remainTime="30" mailType="0" mailfenlei="1" />
 <Mail type="90000" icon="90000" title="国战通知" taitou="亲爱的xxxxx：" content="国战将于今晚八点半准时开始，请各路英豪准时参加，保家卫国，征战天下。" sender="掌军司马" award="0" remainTime="0" mailType="0" mailfenlei="6" />
 <Mail type="100001" icon="100001" title="掠夺排行奖励" taitou="英雄：" content="本周掠夺玩法的排名已经确定，您的国家在全服排名中位列第***名，您的联盟在国家排名中位列第###名，特赠予您一批奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="0" mailType="2" mailfenlei="9" />
+<Mail type="100002" icon="100002" title="个人贡金排行奖励" taitou="英雄：" content="恭喜您在昨日的掠夺玩法中表现优异！您的当日排行为第***名。特赠送您丰厚的奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="1" mailType="2" mailfenlei="9" />
+<Mail type="100003" icon="100003" title="联盟贡金排行奖励通知" taitou="英雄：" content="恭喜您的联盟在昨日的掠夺玩法中表现优异！您的联盟在当日的排行为第***名。特赠予您丰厚的奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="1" mailType="1" mailfenlei="9" />
 </dataset>

@@ -257,12 +257,20 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 				RegisterCommand( SET_SYNC, Console_SetQuality.SetSync );
 				
 				RegisterCommand( GC, Console_SetSystem.GC );
+
+				RegisterCommand( CONST_LOG_SCREEN, Console_SetSystem.LogScreen );
 			}
 
 			{
 				RegisterCommand( SET_CAM_TOUR, Console_SetCam.SetCamTour );
 				
 				RegisterCommand ( LOG_MAIN_CAMERA, Console_SetCam.LogMainCamera );
+			}
+
+			{
+				RegisterCommand( SET_PRE_RUN_C, Console_SetNetwork.SetPreRunC );
+
+				RegisterCommand( SET_VALID_RUN_C, Console_SetNetwork.SetValidRunC );
 			}
 		}
 	}
@@ -411,7 +419,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public const string LOG_SOCKET_PROCESSOR_COMMAND	= "/LogSocketProcessor";
 
-	public const string LOG_SOCKET_LISTENER_COMMAND	= "/LogSocketListener";
+	public const string LOG_SOCKET_LISTENER_COMMAND		= "/LogSocketListener";
 
 
 
@@ -419,7 +427,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public const string DESTROY_GAMEOBJECT				= "/DestroyGameObject";
 
-	public const string COMPONENT_COUNT				= "/ComponentCount";
+	public const string COMPONENT_COUNT					= "/ComponentCount";
 
 	public const string DESTROY_COMPONENT				= "/DestroyComponent";
 
@@ -431,7 +439,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public const string SET_CONFIG_TOOL 				= "/SetConfig";
 
-	public const string LOG_FPS						= "/LogFps";
+	public const string LOG_FPS							= "/LogFps";
 	
 	public const string LOG_CONFIG						= "/LogConfig";
 
@@ -470,6 +478,14 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public const string SET_CAM_TOUR					= "/SetCamTour";
 
 	public const string LOG_MAIN_CAMERA					= "/LogMainCam";
+
+	public const string CONST_LOG_SCREEN				= "/LogScreen";
+
+
+
+	public const string SET_PRE_RUN_C					= "/SetPreRunC";
+
+	public const string SET_VALID_RUN_C					= "/SetValidRunC";
 
 	#endregion
 

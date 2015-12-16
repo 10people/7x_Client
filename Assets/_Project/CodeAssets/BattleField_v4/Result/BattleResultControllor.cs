@@ -140,13 +140,20 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		AudioListener al = BattleControlor.Instance().getKing().gameCamera.target.GetComponent<AudioListener>();
 		
 		Destroy ( al );
-		
+
 		if (CityGlobalData.m_isWhetherOpenLevelUp == false) return;
 
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_TaskReq,
-            //		                                        "29502|10000" );
-                                                true,
-                                                ProtoIndexes.S_TaskList);
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0)
+		{
+			ExecQuit();
+		}
+		else
+		{
+			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_TaskReq,
+			                                        //"29502|10000" );
+			                                        true,
+			                                        ProtoIndexes.S_TaskList);
+		}
         
 		ClientMain.m_ClientMainObj.AddComponent<AudioListener> ();
 		
@@ -234,15 +241,16 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao)
 		{
+
 		}
-        else //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <=0)
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0)
+		{
+			SceneManager.EnterCreateRole();
+		}
+		else
         {
             SceneManager.EnterMainCity();
         }
-        //else
-        //{
-        //    SceneManager.EnterAllianceCity();
-        //}
 
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("JunZhu")))
         {

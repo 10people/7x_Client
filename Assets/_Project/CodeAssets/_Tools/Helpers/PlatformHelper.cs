@@ -13,34 +13,27 @@ public class PlatformHelper {
 	
 	/* Return:	iOS/Android/Windows
      */
-	public static string GetPlatformTag()
-	{
+	public static string GetPlatformTag(){
 		RuntimePlatform t_runtime_platform = Application.platform;
 		
 		string t_platform = "";
 		
-		if (t_runtime_platform == RuntimePlatform.WindowsEditor)
-		{
+		if ( t_runtime_platform == RuntimePlatform.WindowsEditor ){
 			t_platform = t_platform + GetAndroidTag();
 		}
-		else if (t_runtime_platform == RuntimePlatform.Android)
-		{
+		else if ( t_runtime_platform == RuntimePlatform.Android ){
 			t_platform = t_platform + GetAndroidTag();
 		}
-		else if (t_runtime_platform == RuntimePlatform.OSXEditor)
-		{
+		else if ( t_runtime_platform == RuntimePlatform.OSXEditor ){
 			t_platform = t_platform + GetiOSTag();
 		}
-		else if (t_runtime_platform == RuntimePlatform.IPhonePlayer)
-		{
+		else if ( t_runtime_platform == RuntimePlatform.IPhonePlayer ){
 			t_platform = t_platform + GetiOSTag();
 		}
-		else if (t_runtime_platform == RuntimePlatform.WindowsPlayer)
-		{
+		else if ( t_runtime_platform == RuntimePlatform.WindowsPlayer ){
 			t_platform = t_platform + GetWindowsTag();
 		}
-		else
-		{
+		else{
 			Debug.LogError("TargetPlatform Error: " + t_runtime_platform);
 		}
 		

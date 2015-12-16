@@ -13,8 +13,13 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	public enum E_JUNZHUSTATE
 	{
 		E_DEF,
-		E_XIANGXIN,
+		E_SKILL,
+		E_XIANGXI,
+		E_TIANFU,
+		E_FUWEN,
+		E_CHENGHAO,
 	}
+	public E_JUNZHUSTATE m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 	public ItemTopCol m_ItemTopCol;
 
  
@@ -42,6 +47,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	public GameObject m_PlayerRight;
     public GameObject m_Equip;
     public GameObject m_SkillGameobj;
+	public GameObject m_MonetParentObj;
 	public List<SkillDescribe> m_SkillDescribe;
 	
 	private int[] m_strSkillTilsIndex = new int[]{301, 302, 303};
@@ -101,7 +107,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	
 	void Start ()
 	{
- 
+ 		MainCityUI.m_MainCityUI.setGlobalBelongings(m_MonetParentObj, 480 + ClientMain.m_iMoveX - 40, 320 + ClientMain.m_iMoveY - 5);
 		m_ScaleEffectController.OpenCompleteDelegate = EndDelegate;
 		if (FreshGuide.Instance().IsActive(100380) && TaskData.Instance.m_TaskInfoDic[100380].progress >= 0)
 		{
@@ -337,6 +343,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				m_PlayerLeft.SetActive(false);
 				m_PlayerRight.SetActive(false);
 				m_UITianfu.setData(tempInfo);
+				m_JunzhuState = E_JUNZHUSTATE.E_TIANFU;
 				break;
 			}
 			case ProtoIndexes.S_TALENT_UP_LEVEL_RESP:
@@ -382,6 +389,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				}
 				m_UILbaelHeroName.gameObject.SetActive(false);
 				m_PlayerLeft.gameObject.transform.localPosition = new Vector3(40,0,0);
+				m_JunzhuState = E_JUNZHUSTATE.E_CHENGHAO;
 				break;
 			}
 			default: return false;
@@ -430,12 +438,37 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 
 	public override void MYClick(GameObject ui)
 	{
-//		Debug.Log(ui.name);
+		Debug.Log(ui.name);
 
 		if(ui.name.IndexOf("Close") != -1 || ui.name.IndexOf ("FuWen(Clone)") != -1)
 		{
-		    m_ScaleEffectController.CloseCompleteDelegate = OnCloseWindow;
-            m_ScaleEffectController.OnCloseWindowClick();
+			GameObject temoObjClickName = new GameObject();
+			Debug.Log(m_JunzhuState);
+			switch(m_JunzhuState)
+			{
+			case E_JUNZHUSTATE.E_DEF:
+				m_ScaleEffectController.CloseCompleteDelegate = OnCloseWindow;
+				m_ScaleEffectController.OnCloseWindowClick();
+				break;
+			case E_JUNZHUSTATE.E_SKILL:
+				temoObjClickName.name = "skillback";
+				MYClick(temoObjClickName);
+				break;
+			case E_JUNZHUSTATE.E_XIANGXI:
+				temoObjClickName.name = "ArrBack";
+				MYClick(temoObjClickName);
+				break;
+			case E_JUNZHUSTATE.E_FUWEN:
+				break;
+			case E_JUNZHUSTATE.E_TIANFU:
+				temoObjClickName.name = "tianfuback";
+				m_UITianfu.MYClick(temoObjClickName);
+				break;
+			case E_JUNZHUSTATE.E_CHENGHAO:
+				temoObjClickName.name = "chenghaoback";
+				m_UIChenghao.MYClick(temoObjClickName);
+				break;
+			}
 		}
 		else if(ui.name.IndexOf("Skill") != -1)
 		{
@@ -453,14 +486,15 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				m_PlayerRight.SetActive(false);
 				break;
 			case 1:
-				for(int i = 0; i < 3; i ++)
-				{
-					m_SkillDescribe[i].m_SkillTile.text = DescIdTemplate.GetDescriptionById(m_strSkillTilsIndex[i]);
-					m_SkillDescribe[i].m_SkillDis.text = DescIdTemplate.GetDescriptionById(m_strSkillDisIndex[i]);
-					m_SkillDescribe[i].m_skillType = i + 1;
-				}
+//				for(int i = 0; i < 3; i ++)
+//				{
+//					m_SkillDescribe[i].m_SkillTile.text = DescIdTemplate.GetDescriptionById(m_strSkillTilsIndex[i]);
+//					m_SkillDescribe[i].m_SkillDis.text = DescIdTemplate.GetDescriptionById(m_strSkillDisIndex[i]);
+//					m_SkillDescribe[i].m_skillType = i + 1;
+//				}
 				m_SkillGameobj.SetActive(true);
 				m_XiangxiPanelLeft.SetActive(false);
+				m_JunzhuState = E_JUNZHUSTATE.E_SKILL;
 				break;
 			case 2:
 				if(FunctionOpenTemp.IsHaveID(500000))
@@ -511,6 +545,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			m_XiangxiPanelLeft.SetActive(true);
 			m_PlayerLeft.SetActive(false);
 			m_PlayerRight.SetActive(false);
+			m_JunzhuState = E_JUNZHUSTATE.E_XIANGXI;
 			//			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 		}
 		else if(ui.name.IndexOf("HeroArrBack") != -1)
@@ -518,11 +553,13 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			m_XiangxiPanelLeft.SetActive(false);
 			m_PlayerLeft.SetActive(true);
 			m_PlayerRight.SetActive(true);
+			m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 		}
 		else if(ui.name.IndexOf("skillback") != -1)
 		{
 			m_SkillGameobj.SetActive(false);
 			m_XiangxiPanelLeft.SetActive(true);
+			m_JunzhuState = E_JUNZHUSTATE.E_XIANGXI;
 //			m_PlayerLeft.SetActive(true);
 		}
 		else if(ui.name.IndexOf("EquipTZBack") != -1)
@@ -536,6 +573,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			m_XiangxiPanelLeft.SetActive(false);
 			m_PlayerLeft.SetActive(true);
 			m_PlayerRight.SetActive(true);
+			m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 		}
 		else if(ui.name.IndexOf("Chenghao") != -1)
 		{

@@ -92,7 +92,7 @@ namespace AllianceBattle
 
                             int uID = m_PlayerDic.Where(item => item.Value.m_UID == tempMove.uid).First().Key;
 
-                            UpdatePlayerPosition(uID, new Vector3(tempMove.posX, tempMove.posY, tempMove.posZ));
+                            UpdatePlayerTransform(uID, new Vector3(tempMove.posX, tempMove.posY, tempMove.posZ), tempMove.dir);
 
                             return true;
                         }
@@ -198,8 +198,11 @@ namespace AllianceBattle
 
         void Awake()
         {
-            MaleCharacterPrefab = Resources.Load<GameObject>("_3D/Models/AllianceBattle/AllianceBattleHaoJie");
-            FemaleCharacterPrefab = Resources.Load<GameObject>("_3D/Models/AllianceBattle/AllianceBattleLuoLi");
+            PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/AllianceBattleHaoJie"));
+            PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/AllianceBattleQinglan"));
+            PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/AllianceBattleQiangwei"));
+            PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/AllianceBattleLuoli"));
+
             BasicYPosition = 1.0f;
             SocketTool.RegisterSocketListener(this);
         }

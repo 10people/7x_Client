@@ -28,6 +28,7 @@ public class SocketHelper {
 		GameObject t_gb = GameObjectHelper.GetDontDestroyOnLoadGameObject ();
 
 		ComponentHelper.AddIfNotExist ( t_gb, typeof(PushAndNotificationHelper) );
+
 		ComponentHelper.AddIfNotExist ( t_gb, typeof(PlayerSceneSyncManager) );
 	}
 
@@ -80,5 +81,132 @@ public class SocketHelper {
 		return true;
 	}
 	
+	#endregion
+
+
+
+	#region Socket Status
+
+	private static float m_last_socket_check_time = 0.0f;
+	
+	public static Queue<float> m_socket_check_send_queue = new Queue<float>();
+	
+	private const int MAX_SOCKET_CHECK_QUEUE_COUNT	= 10;
+	
+	public static void ClearNetWorkCheckQueue(){
+		m_socket_check_send_queue.Clear();
+
+		m_last_socket_check_time = 0.0f;
+	}
+	
+	public static void UpdateNetworkStatusCheck(){
+		if( !SocketTool.IsConnected() ){
+			Debug.Log( "Should only see this int low rate." );
+			
+			ClearNetWorkCheckQueue();
+			
+			return;
+		}
+
+		// network ping
+		{
+			UpdateNetworkPing();
+		}
+
+		// network status check
+		{
+			UpdateNetworkStatusSend();
+			
+			UpdateNetworkStatusReceive();
+		}
+	}
+
+	private static void UpdateNetworkStatusSend(){
+		float t_time = ConfigTool.GetFloat( ConfigTool.CONST_NETWORK_CHECK_TIME );
+		
+		if( Time.realtimeSinceStartup - m_last_socket_check_time < t_time ){
+			return;
+		}
+		
+		m_last_socket_check_time = Time.realtimeSinceStartup;
+		
+		if( m_socket_check_send_queue.Count >= MAX_SOCKET_CHECK_QUEUE_COUNT ){
+			Debug.Log( "Socket Check Queue out of bounds." );
+			
+			return;
+		}
+		
+		SocketTool.Instance().SendSocketMessage( ProtoIndexes.NETWORK_CHECK, false );
+		
+		m_socket_check_send_queue.Enqueue( Time.realtimeSinceStartup );
+	}
+	
+	private static void UpdateNetworkStatusReceive(){
+		if( m_socket_check_send_queue.Count <= 0 ){
+			return;
+		}
+		
+		if ( TimeHelper.GetCurrentTime_Second() - GetDataReceived_Sec () < ConfigTool.GetFloat ( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT ) ) {
+			ClearNetWorkCheckQueue();
+			
+			return;
+		}
+		
+		float t_sent_time = m_socket_check_send_queue.Peek();
+		
+		if( Time.realtimeSinceStartup - t_sent_time > ConfigTool.GetFloat( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT ) ){
+			Debug.Log( "Socket Status Check Fail: " + ( Time.realtimeSinceStartup - t_sent_time ) );
+			
+			ClearNetWorkCheckQueue();
+			
+			Debug.Log( "Proto: 101, Not responding." );
+			
+			// Tell Server client is going to close connection.
+			{
+				SocketTool.Instance().SendSocketMessage( ProtoIndexes.C_DROP_CONN, false );
+			}
+
+			SocketTool.ConnectionTimeOut();
+		}
+	}
+
+	#endregion
+
+
+
+	#region Receive Data Tag
+	
+	private static long m_last_data_received_time_ms = 0;
+	
+	public static void SocketDataReceived(){
+		m_last_data_received_time_ms = TimeHelper.GetCurrentTime_MilliSecond();
+	}
+	
+	public static float GetDataReceived_Sec(){
+		return m_last_data_received_time_ms / 1000.0f;
+	}
+
+	public static long GetDataReceived_MS(){
+		return m_last_data_received_time_ms;
+	}
+
+	#endregion
+
+
+
+	#region Ping
+
+	private static float m_last_ping_time	= 0.0f;
+
+	private const float PING_INTERVAL		= 3.0f;
+
+	private static void UpdateNetworkPing(){
+		if( Time.realtimeSinceStartup - m_last_ping_time >= PING_INTERVAL ){
+			Console_SetNetwork.OnPing( null, false );
+
+			m_last_ping_time = Time.realtimeSinceStartup;
+		}
+	}
+
 	#endregion
 }

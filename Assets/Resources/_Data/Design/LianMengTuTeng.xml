@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LianMengTuTeng id="103001" tuTengLevel="1" alliance_lv_needed="1" tuTeng_lvUp_value="50" moBaiTimes1="6" award1="0:900001:10000" moBaiTimes2="12" award2="0:900001:10000" moBaiTimes3="18" award3="0:900001:10000" />
+<LianMengTuTeng id="103002" tuTengLevel="2" alliance_lv_needed="2" tuTeng_lvUp_value="140" moBaiTimes1="8" award1="0:900001:10000" moBaiTimes2="16" award2="0:900001:10000" moBaiTimes3="24" award3="0:900001:10000" />
+<LianMengTuTeng id="103003" tuTengLevel="3" alliance_lv_needed="3" tuTeng_lvUp_value="280" moBaiTimes1="10" award1="0:900001:10000" moBaiTimes2="20" award2="0:900001:10000" moBaiTimes3="30" award3="0:900001:10000" />
+<LianMengTuTeng id="103004" tuTengLevel="4" alliance_lv_needed="4" tuTeng_lvUp_value="420" moBaiTimes1="12" award1="0:900001:10000" moBaiTimes2="24" award2="0:900001:10000" moBaiTimes3="36" award3="0:900001:10000" />
+<LianMengTuTeng id="103005" tuTengLevel="5" alliance_lv_needed="5" tuTeng_lvUp_value="800" moBaiTimes1="14" award1="0:900001:10000" moBaiTimes2="28" award2="0:900001:10000" moBaiTimes3="42" award3="0:900001:10000" />
+<LianMengTuTeng id="103006" tuTengLevel="6" alliance_lv_needed="6" tuTeng_lvUp_value="1800" moBaiTimes1="16" award1="0:900001:10000" moBaiTimes2="32" award2="0:900001:10000" moBaiTimes3="48" award3="0:900001:10000" />
+<LianMengTuTeng id="103007" tuTengLevel="7" alliance_lv_needed="7" tuTeng_lvUp_value="3500" moBaiTimes1="18" award1="0:900001:10000" moBaiTimes2="36" award2="0:900001:10000" moBaiTimes3="54" award3="0:900001:10000" />
+<LianMengTuTeng id="103008" tuTengLevel="8" alliance_lv_needed="8" tuTeng_lvUp_value="5600" moBaiTimes1="20" award1="0:900001:10000" moBaiTimes2="40" award2="0:900001:10000" moBaiTimes3="60" award3="0:900001:10000" />
+<LianMengTuTeng id="103009" tuTengLevel="9" alliance_lv_needed="9" tuTeng_lvUp_value="8400" moBaiTimes1="22" award1="0:900001:10000" moBaiTimes2="44" award2="0:900001:10000" moBaiTimes3="66" award3="0:900001:10000" />
+<LianMengTuTeng id="103010" tuTengLevel="10" alliance_lv_needed="10" tuTeng_lvUp_value="8400" moBaiTimes1="24" award1="0:900001:10000" moBaiTimes2="48" award2="0:900001:10000" moBaiTimes3="72" award3="0:900001:10000" />
+</dataset>

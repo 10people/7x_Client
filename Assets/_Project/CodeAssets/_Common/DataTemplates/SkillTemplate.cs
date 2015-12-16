@@ -142,9 +142,9 @@ public class SkillTemplate : XmlLoadManager
 			}
 			catch (System.Exception e)
 			{
-				Debug.LogError(templates[i].value7);
-				Debug.Log(e.Message);
-				Debug.Log(e);
+				//Debug.LogError(templates[i].value7);
+				//Debug.Log(e.Message);
+				//Debug.Log(e);
 			}
 
 		}
@@ -181,10 +181,22 @@ public class SkillTemplate : XmlLoadManager
 
 	public static List<int> setFirstLoadEffID(string tempString)
 	{
+//		Debug.Log (tempString);
 		List<int> tempLoadEffID = new List<int>();
 		Global.NextCutting(ref tempString);
 
 		int otherSkillNum = int.Parse(Global.NextCutting(ref tempString));
+		for (int i = 0; i < otherSkillNum; i ++)
+		{
+			Global.NextCutting(ref tempString);
+		}
+		Global.NextCutting(ref tempString);
+		otherSkillNum = int.Parse(Global.NextCutting(ref tempString));
+		for (int i = 0; i < otherSkillNum; i ++)
+		{
+			Global.NextCutting(ref tempString);
+		}
+		otherSkillNum = int.Parse(Global.NextCutting(ref tempString));
 		for (int i = 0; i < otherSkillNum; i ++)
 		{
 			Global.NextCutting(ref tempString);
@@ -251,7 +263,15 @@ public class SkillTemplate : XmlLoadManager
 		}
 		
 		//		m_CollStateType = (COLLSTATETYPE)int.Parse(Global.NextCutting(ref tempString));//作用范围类型
-		
+
+		tempValue = int.Parse(Global.NextCutting(ref tempString));
+		for(int i = 0; i < tempValue; i ++)
+		{
+			Global.NextCutting(ref tempString);
+			Global.NextCutting(ref tempString);
+			Global.NextCutting(ref tempString);
+		}
+
 		//作用范围
 		switch((HeroSkill.COLLSTATETYPE)int.Parse(Global.NextCutting(ref tempString)))
 		{
@@ -268,9 +288,11 @@ public class SkillTemplate : XmlLoadManager
 			Global.NextCutting(ref tempString);
 			Global.NextCutting(ref tempString);
 			Global.NextCutting(ref tempString);
+			Global.NextCutting(ref tempString);
 			break;
 		}
-		Global.NextCutting(ref tempString);
+		Global.NextCutting (ref tempString);
+//		;
 		Global.NextCutting(ref tempString);
 		Global.NextCutting(ref tempString);
 		
@@ -307,7 +329,7 @@ public class SkillTemplate : XmlLoadManager
 		//		m_fEffEndTime = float.Parse(Global.NextCutting(ref temptemptempString));
 		//		Debug.Log("temptemptempString="+temptemptempString);
 		tempValue = int.Parse(Global.NextCutting(ref tempString));
-		//		Debug.Log(tempValue);
+//				Debug.Log(tempValue);
 		for(int i = 0; i < tempValue; i ++)
 		{
 			//			Debug.Log(temptemptempString);
@@ -347,6 +369,9 @@ public class SkillTemplate : XmlLoadManager
 			case HeroSkill.SKILLELEMENTTYPE.DELETEBUFF:
 				tempSkillDataBead = new SkillDeleteBuff(null);
 				break;
+			case HeroSkill.SKILLELEMENTTYPE.YINLI:
+				tempSkillDataBead = new SkillYinli(null);
+				break;
 			default:
 				tempSkillDataBead = new SkillSummon(null);
 				break;
@@ -358,7 +383,6 @@ public class SkillTemplate : XmlLoadManager
 				tempLoadEffID.Add(tempBuff.m_iEffID);
 			}
 		}
-		//		Debug.Log(m_iPlayFirstID);
 		return tempLoadEffID;
 	}
 }

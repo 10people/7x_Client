@@ -859,7 +859,7 @@ namespace AllianceBattle
             //Read skill data.
             m_SkillControllers.ForEach(item =>
             {
-                item.m_AllianceBattleUi = this;
+                item.m_AllianceBattleUI = this;
                 if (item.m_Index > 0)
                 {
                     var temp = RTSkillTemplate.templates.Where(item2 => item2.SkillId == item.m_Index);

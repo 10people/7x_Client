@@ -139,72 +139,72 @@ public class PvpPage : MonoBehaviour {
 		
 		int miBaoCombId = pvpResp.pvpInfo.zuheId;
 
-		Dictionary<int,MibaoGroup> miBaoGroupDic = new Dictionary<int, MibaoGroup> ();
-		foreach (MibaoGroup group in MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup)
-		{
-			if (!miBaoGroupDic.ContainsKey (group.zuheId))
-			{
-				miBaoGroupDic.Add (group.zuheId,group);
-			}
-		}
-
-		if (miBaoGroupDic.ContainsKey (miBaoCombId))
-		{
-			MibaoGroup miBaoGroup = miBaoGroupDic[miBaoCombId];
-			if (miBaoGroup.hasActive == 1)//激活
-			{
-				int activeCount = 0;
-				foreach (MibaoInfo mibaoInfo in miBaoGroup.mibaoInfo)
-				{
-					if (mibaoInfo.level > 0 && !mibaoInfo.isLock)
-					{
-						activeCount ++;
-					}
-				}
-
-				lockObj.SetActive (false);
-				skillIcon.gameObject.SetActive (true);
-				miBaoSkillInfoObj.SetActive (true);
-
-				BoxCollider skillBtnBox = pvpBtnHandlerDic["ChangeSkillBtn"].gameObject.GetComponent<BoxCollider> ();
-				skillBtnBox.enabled = true;
-				UISprite skillBtnSprite = pvpBtnHandlerDic["ChangeSkillBtn"].gameObject.GetComponent<UISprite> ();
-				skillBtnSprite.color = Color.white;
-
-				notActiveLabel.text = "";
-				miBaoSkillBg.spriteName = MibaoSkillBgColor (miBaoCombId);
-				titleSprite.spriteName = miBaoCombId.ToString ();
-				
-				MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (miBaoCombId);
-				skillIcon.spriteName = miBaoSkillTemp.skill.ToString ();
-				
-				SkillTemplate skillTemp = SkillTemplate.getSkillTemplateById (miBaoSkillTemp.skill);
-				skillName.text = NameIdTemplate.GetName_By_NameId (skillTemp.skillName);
-				activeNum.text = NameIdTemplate.GetName_By_NameId (miBaoSkillTemp.nameId) + "(" + activeCount + "/3)";
-
-				isShowSkillBtnEffect = false;
-			}
-			else
-			{
-				lockObj.SetActive (true);
-				skillIcon.gameObject.SetActive (false);
-				miBaoSkillInfoObj.SetActive (false);
-				miBaoSkillBg.spriteName = MibaoSkillBgColor (4);
-				notActiveLabel.text = "未选择可用的组合技能";
-
-				isShowSkillBtnEffect = true;
-			}
-		}
-		else
-		{
-			lockObj.SetActive (true);
-			skillIcon.gameObject.SetActive (false);
-			miBaoSkillInfoObj.SetActive (false);
-			miBaoSkillBg.spriteName = MibaoSkillBgColor (4);
-			notActiveLabel.text = "未选择可用的组合技能";
-
-			isShowSkillBtnEffect = true;
-		}
+//		Dictionary<int,MibaoGroup> miBaoGroupDic = new Dictionary<int, MibaoGroup> ();
+//		foreach (MibaoGroup group in MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup)
+//		{
+//			if (!miBaoGroupDic.ContainsKey (group.zuheId))
+//			{
+//				miBaoGroupDic.Add (group.zuheId,group);
+//			}
+//		}
+//
+//		if (miBaoGroupDic.ContainsKey (miBaoCombId))
+//		{
+//			MibaoGroup miBaoGroup = miBaoGroupDic[miBaoCombId];
+//			if (miBaoGroup.hasActive == 1)//激活
+//			{
+//				int activeCount = 0;
+//				foreach (MibaoInfo mibaoInfo in miBaoGroup.mibaoInfo)
+//				{
+//					if (mibaoInfo.level > 0 && !mibaoInfo.isLock)
+//					{
+//						activeCount ++;
+//					}
+//				}
+//
+//				lockObj.SetActive (false);
+//				skillIcon.gameObject.SetActive (true);
+//				miBaoSkillInfoObj.SetActive (true);
+//
+//				BoxCollider skillBtnBox = pvpBtnHandlerDic["ChangeSkillBtn"].gameObject.GetComponent<BoxCollider> ();
+//				skillBtnBox.enabled = true;
+//				UISprite skillBtnSprite = pvpBtnHandlerDic["ChangeSkillBtn"].gameObject.GetComponent<UISprite> ();
+//				skillBtnSprite.color = Color.white;
+//
+//				notActiveLabel.text = "";
+//				miBaoSkillBg.spriteName = MibaoSkillBgColor (miBaoCombId);
+//				titleSprite.spriteName = miBaoCombId.ToString ();
+//				
+//				MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (miBaoCombId);
+//				skillIcon.spriteName = miBaoSkillTemp.skill.ToString ();
+//				
+//				SkillTemplate skillTemp = SkillTemplate.getSkillTemplateById (miBaoSkillTemp.skill);
+//				skillName.text = NameIdTemplate.GetName_By_NameId (skillTemp.skillName);
+//				activeNum.text = NameIdTemplate.GetName_By_NameId (miBaoSkillTemp.nameId) + "(" + activeCount + "/3)";
+//
+//				isShowSkillBtnEffect = false;
+//			}
+//			else
+//			{
+//				lockObj.SetActive (true);
+//				skillIcon.gameObject.SetActive (false);
+//				miBaoSkillInfoObj.SetActive (false);
+//				miBaoSkillBg.spriteName = MibaoSkillBgColor (4);
+//				notActiveLabel.text = "未选择可用的组合技能";
+//
+//				isShowSkillBtnEffect = true;
+//			}
+//		}
+//		else
+//		{
+//			lockObj.SetActive (true);
+//			skillIcon.gameObject.SetActive (false);
+//			miBaoSkillInfoObj.SetActive (false);
+//			miBaoSkillBg.spriteName = MibaoSkillBgColor (4);
+//			notActiveLabel.text = "未选择可用的组合技能";
+//
+//			isShowSkillBtnEffect = true;
+//		}
 		SkillEffect (true);
 		ShowRecordWarring (pvpResp.isShow);
 	}
@@ -232,14 +232,14 @@ public class PvpPage : MonoBehaviour {
 	public string MibaoSkillBgColor (int id)
 	{
 		string bgSpriteName = "";
-		if (id <= 0 || id > MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup.Count)
-		{
-			bgSpriteName = mibaoSkillBgStr[3];
-		}
-		else
-		{
-			bgSpriteName = mibaoSkillBgStr[id - 1];
-		}
+//		if (id <= 0 || id > MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup.Count)
+//		{
+//			bgSpriteName = mibaoSkillBgStr[3];
+//		}
+//		else
+//		{
+//			bgSpriteName = mibaoSkillBgStr[id - 1];
+//		}
 		return bgSpriteName;
 	}
 	#endregion
@@ -467,7 +467,8 @@ public class PvpPage : MonoBehaviour {
 			break;
 		case "DuiHuanBtn":
 
-			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.PVP,GeneralControl.StoreReqType.FREE);
+//			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.PVP,GeneralControl.StoreReqType.FREE);
+			ShopData.Instance.OpenShop (ShopData.ShopType.WEIWANG);
 
 			break;
 		case "RecordBtn":
@@ -623,20 +624,19 @@ public class PvpPage : MonoBehaviour {
 			SkillEffect (true);
 		}
 	}
-
+	
 	void ChangeMiBaoSkillLoadBack (ref WWW p_www, string p_path, Object p_object)
 	{
 		GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
 		
-		mChoose_MiBao.SetActive(true);
-		mChoose_MiBao.transform.parent = pvpObj.transform.parent;
-		mChoose_MiBao.transform.localPosition = Vector3.zero;
+		mChoose_MiBao.transform.localPosition = new Vector3(0, -100, 0);
+		
 		mChoose_MiBao.transform.localScale = Vector3.one;
 		
-		ChangeMiBaoSkill mChangeMiBaoSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();
-		mChangeMiBaoSkill.Init ((int)CityGlobalData.MibaoSkillType.PVP_Fangshou, pvpResp.pvpInfo.zuheId);
+		NewMiBaoSkill mNewMiBaoSkill = mChoose_MiBao.GetComponent<NewMiBaoSkill>();
+		mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.PVP_Fangshou ),pvpResp.pvpInfo.zuheId );
+		MainCityUI.TryAddToObjectList(mChoose_MiBao);
 	}
-
 	//打开按钮特效
 	public void OpenSkillEffect (int i)
 	{

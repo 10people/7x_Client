@@ -635,7 +635,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                 , float.Parse(esr.jnBJ.ToString()), float.Parse(esr.jnRX.ToString())
                 ,esr.wqBJL, esr.jnBJL, esr.wqMBL, esr.jnMBL, esr.jnRX };
                // int[] attribute = { esr.wqSH, esr.wqJM, esr.wqBJ, esr.wqRX, esr.jnSH, esr.jnJM, esr.jnBJ, esr.jnRX };
-                //    int[] attribute_Max = { esr.wqSH, esr.wqJM, esr.wqBJ, esr.wqRX, esr.jnSH, esr.jnJM, esr.jnBJ, esr.jnRX };
+               // int[] attribute_Max = { esr.wqSHMA, esr.wqJM, esr.wqBJ, esr.wqRX, esr.jnSH, esr.jnJM, esr.jnBJ, esr.jnRX };
                 listData.AddRange(attribute);
                 for (int j = 0; j < listData.Count; j++)
                 {
@@ -650,6 +650,12 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                         {
                             wss._type = 0;
                         }
+                        //if (j < attribute_Max.Length)
+                        //{
+                        //    Debug.Log(" listData[j] listData[j] listData[j] ::" + listData[j]);
+                        //    Debug.Log(" attribute_Max[j]attribute_Max[j]attribute_Max[j] ::" + attribute_Max[j] + "JJJJJJJJJJJJJJJJ  :" + j );
+                        //    wss._isMax = listData[j] == attribute_Max[j] ? true : false;
+                        //}
                         wss._num = j;
                         wss._nameid = EquipSuoData.GetNameIDByIndex(j);
                         wss._count = listData[j];

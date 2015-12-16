@@ -20,7 +20,7 @@ public class MiBaoSkillTEm : MonoBehaviour {
 
 	public bool isChoosed;
 
-	public MibaoGroup mMiBaoGroup;
+	//public MibaoGroup mMiBaoGroup;
 
 	public int ZUHE_id;
 
@@ -72,9 +72,9 @@ public class MiBaoSkillTEm : MonoBehaviour {
 	public void Init()
 	{
 
-		ZUHE_id = mMiBaoGroup.zuheId;
+		//ZUHE_id = mMiBaoGroup.zuheId;
 
-		SkillId = mMiBaoGroup.skillId;
+		//SkillId = mMiBaoGroup.skillId;
 
 		//Skillbg.spriteName = ZUHE_id.ToString();     //缺少资源等美术给资源后可以去掉注释
 
@@ -82,14 +82,14 @@ public class MiBaoSkillTEm : MonoBehaviour {
 
 		int pinzhi = 0;
 
-		for(int i = 0 ; i < mMiBaoGroup.mibaoInfo.Count; i++)
-		{
-			if(mMiBaoGroup.mibaoInfo[i].level > 0 &&!mMiBaoGroup.mibaoInfo[i].isLock)
-			{
-				pinzhi++;
-			}
-
-		}
+//		for(int i = 0 ; i < mMiBaoGroup.mibaoInfo.Count; i++)
+//		{
+//			if(mMiBaoGroup.mibaoInfo[i].level > 0 &&!mMiBaoGroup.mibaoInfo[i].isLock)
+//			{
+//				pinzhi++;
+//			}
+//
+//		}
 
 		MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempBy_id (SkillId);
 
@@ -100,18 +100,18 @@ public class MiBaoSkillTEm : MonoBehaviour {
 		NameIdTemplate mName = NameIdTemplate.getNameIdTemplateByNameId (mSkill.nameId);
 
 		SkillName.text = mName.Name; //大名字
-		if(mMiBaoGroup.hasActive == 1)
-		{
-			Lock.SetActive(false);
-		}
-		else
-		{
-			Lock.SetActive(true);
-			
-			MiBaoNum.text = "(未解锁)";
-			
-			SkillIcon.spriteName = "";
-		}
+//		if(mMiBaoGroup.hasActive == 1)
+//		{
+//			Lock.SetActive(false);
+//		}
+//		else
+//		{
+//			Lock.SetActive(true);
+//			
+//			MiBaoNum.text = "(未解锁)";
+//			
+//			SkillIcon.spriteName = "";
+//		}
 		if(pinzhi >= 2)
 		{
 

@@ -25,6 +25,8 @@ public class Buff : MonoBehaviour
 
 	private int dictId;
 
+	private int skillId;
+
 
 	public static Buff createBuff(BaseAI _ai, AIdata.AttributeType _buffType, float _buffValue, float _time, SkillBuff _supplement = null )
 	{
@@ -99,9 +101,30 @@ public class Buff : MonoBehaviour
 		return buff;
 	}
 
-	public static Buff createBuffThreat(BaseAI _ai, float _buffValue, float _time, int _dictId)
+	public static Buff createBuffThreat(BaseAI _ai, float _buffValue, float _time, int _dictId, int _skillId)
 	{
-		if (_ai.threatDict [_dictId] == null) return null;
+		Threat threat = null;
+
+		_ai.threatDict.TryGetValue (_dictId, out threat);
+
+		if (threat == null) 
+		{
+			threat = new Threat();
+
+			_ai.threatDict.Add(_dictId, threat);
+		}
+		else
+		{
+			foreach(Buff _buff in _ai.buffs)
+			{
+				if(_buff.dictId == _dictId && _buff.skillId == _skillId)
+				{
+					_buff.startTime = Time.time;
+
+					return _buff;
+				}
+			}
+		}
 
 		Buff buff = (Buff)_ai.gameObject.AddComponent<Buff>();
 		
@@ -114,6 +137,8 @@ public class Buff : MonoBehaviour
 		buff.time = _time;
 
 		buff.dictId = _dictId;
+
+		buff.skillId = _skillId;
 
 		buff.supplement = null;
 		

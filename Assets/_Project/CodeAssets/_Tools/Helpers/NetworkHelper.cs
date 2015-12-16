@@ -1,4 +1,10 @@
-﻿#define CLOSE_CE_SHI_SERVER
+﻿//#define CLOSE_CE_SHI_SERVER
+
+//#define DEBUG_HUGE_UPDATE_SERVER
+
+//#define DEBUG_PING
+
+
 
 using UnityEngine;
 using System.Collections;
@@ -7,14 +13,58 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 
-public class NetworkHelper : MonoBehaviour {
+public class NetworkHelper {
+
+	#region Network Status
+
+	private static long m_ping_long_ms		= 0;
+
+	public static float GetPingSec(){
+		return m_ping_long_ms / 1000.0f;
+	}
+
+	public static long GetPingMS(){
+		return m_ping_long_ms;
+	}
+
+	public static void SetPingMS( long p_ping_ms ){
+		if( p_ping_ms < 0 ){
+			Debug.LogError( "Error in set ping ms: " + p_ping_ms );
+
+			return;
+		}
+
+		#if DEBUG_PING
+		Debug.Log( "SetPingMS( " + p_ping_ms + " )" );
+		#endif
+
+		m_ping_long_ms = p_ping_ms;
+	}
+
+	/// Pre Run C for other players.
+	public static float GetPreRunC(){
+		return Console_SetNetwork.GetPreRunC();
+	}
+
+	/// Valid Run C for local player config.
+	public static float GetValidRunC(){
+		return Console_SetNetwork.GetValidRunC();
+	}
+
+	#endregion
+
+
 	
-	#region Get Common Urls
+	#region Update Url
 	
 	private static string m_cur_update_server_url = "";
 	
 	public static void SetUpdateUrl( string p_url ){
 		m_cur_update_server_url = p_url;
+
+		#if DEBUG_HUGE_UPDATE_SERVER
+		m_cur_update_server_url = NetworkHelper.UPDATE_URL_HUGE;
+		#endif
 	}
 	
 	public static string GetUpdateUrl(){
@@ -119,7 +169,7 @@ public class NetworkHelper : MonoBehaviour {
 	private const string SERVER_CESHI_PREFIX		= "http://203.195.230.100:9091/";
 	#endif
 	
-	public const string SERVER_HUGE_PREFIX		= "http://192.168.0.176:8080/";
+	public const string SERVER_HUGE_PREFIX			= "http://192.168.0.176:8080/";
 
 	#endregion
 
@@ -128,11 +178,13 @@ public class NetworkHelper : MonoBehaviour {
 	#region Update Server
 
 	/// Update Server
-	public const string UPDATE_URL_NEIWANG			= "http://192.168.3.80:8070/wsRes/compare.jsp";
+	public const string UPDATE_URL_NEIWANG			= "http://192.168.3.80:8070/wsRes/compare1.1.jsp";
 	
-	public const string UPDATE_URL_TIYAN			= "http://203.195.230.100:9090/wsRes/compare.jsp";
+	public const string UPDATE_URL_TIYAN			= "http://203.195.230.100:9090/wsRes/compare1.1.jsp";
 	
-	public const string UPDATE_URL_CESHI			= "http://203.195.230.100:8010/wsRes/compare.jsp";
+	public const string UPDATE_URL_CESHI			= "http://203.195.230.100:8010/wsRes/compare1.1.jsp";
+
+	public const string UPDATE_URL_HUGE				= SERVER_HUGE_PREFIX + "wsRes/compare1.1.jsp";
 
 	#endregion
 

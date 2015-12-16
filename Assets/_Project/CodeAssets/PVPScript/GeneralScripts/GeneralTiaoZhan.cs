@@ -120,7 +120,7 @@ public class GeneralTiaoZhan : MonoBehaviour {
 
 		m_zuHeId = tempInfo.myZuheId;
 		e_zuHeId = tempInfo.oppZuheId;
-		activeMibaoCount = tempInfo.oppActivateMiBaoCount;
+//		activeMibaoCount = tempInfo.oppActivateMiBaoCount;
 
 		m_ZhanLi.text = tempInfo.myZhanli.ToString();//显示我的战力
 		e_ZhanLi.text = tempInfo.oppoZhanli.ToString();//显示敌方战力
@@ -475,36 +475,36 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	{
 		var miBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
 
-		for(int i = 0;i < miBaoInfo.mibaoGroup.Count;i ++)
-		{
-			if(miBaoInfo.mibaoGroup[i].zuheId == m_zuHeId)
-			{
-				if (miBaoInfo.mibaoGroup[i].hasActive == 1)
-				{
-					//秘宝技能可用
-					mLockIconObj.SetActive (false);
-					MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (m_zuHeId);
-
-//					Debug.Log ("mSkill.icon:" + mSkill.icon);
-
-					m_SkillIcon.spriteName = mSkill.icon.ToString();
-
-					break;
-				}
-				else
-				{
-					//秘宝技能不可用
-					mLockIconObj.SetActive (true);
-					m_SkillIcon.spriteName = "";
-				}
-			}
-			else
-			{
-				//秘宝技能不可用
-				mLockIconObj.SetActive (true);
-				m_SkillIcon.spriteName = "";
-			}
-		}
+//		for(int i = 0;i < miBaoInfo.mibaoGroup.Count;i ++)
+//		{
+//			if(miBaoInfo.mibaoGroup[i].zuheId == m_zuHeId)
+//			{
+//				if (miBaoInfo.mibaoGroup[i].hasActive == 1)
+//				{
+//					//秘宝技能可用
+//					mLockIconObj.SetActive (false);
+//					MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (m_zuHeId);
+//
+////					Debug.Log ("mSkill.icon:" + mSkill.icon);
+//
+//					m_SkillIcon.spriteName = mSkill.icon.ToString();
+//
+//					break;
+//				}
+//				else
+//				{
+//					//秘宝技能不可用
+//					mLockIconObj.SetActive (true);
+//					m_SkillIcon.spriteName = "";
+//				}
+//			}
+//			else
+//			{
+//				//秘宝技能不可用
+//				mLockIconObj.SetActive (true);
+//				m_SkillIcon.spriteName = "";
+//			}
+//		}
 	}
 
 	/// <summary>
@@ -514,33 +514,33 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	{
 		if (isOpen)
 		{
-			var mibaoGroupList = MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup;
+//			var mibaoGroupList = MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup;
+//			
+//			List<int> zuHeIdList = new List<int> ();
+//			
+//			for (int i = 0;i < mibaoGroupList.Count;i ++)
+//			{
+//				zuHeIdList.Add (mibaoGroupList[i].zuheId);
+//			}
 			
-			List<int> zuHeIdList = new List<int> ();
-			
-			for (int i = 0;i < mibaoGroupList.Count;i ++)
-			{
-				zuHeIdList.Add (mibaoGroupList[i].zuheId);
-			}
-			
-			if (zuHeIdList.Contains (m_zuHeId))
-			{
-				changeSkillBtn.SetActive (true);
-				UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
-			}
-			else
-			{
-				if (MiBaoGlobleData.Instance ().GetMiBaoskillOpen ())
-				{
-					changeSkillBtn.SetActive (true);
-					UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,changeSkillBtn,
-					                                               EffectIdTemplate.GetPathByeffectId(100006));
-				}
-				else
-				{
-					UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
-				}
-			}
+//			if (zuHeIdList.Contains (m_zuHeId))
+//			{
+//				changeSkillBtn.SetActive (true);
+//				UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
+//			}
+//			else
+//			{
+//				if (MiBaoGlobleData.Instance ().GetMiBaoskillOpen ())
+//				{
+//					changeSkillBtn.SetActive (true);
+//					UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,changeSkillBtn,
+//					                                               EffectIdTemplate.GetPathByeffectId(100006));
+//				}
+//				else
+//				{
+//					UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
+//				}
+//			}
 		}
 		else
 		{
@@ -621,38 +621,16 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	{
 		GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
 		
-		mChoose_MiBao.SetActive(true);
-		
-		mChoose_MiBao.transform.parent = sEffectController.transform;
-		
-		mChoose_MiBao.transform.localPosition = new Vector3(0,0,-500);
+		mChoose_MiBao.transform.localPosition = new Vector3(0, -100, 0);
 		
 		mChoose_MiBao.transform.localScale = Vector3.one;
 		
-		ChangeMiBaoSkill changeSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();
-		
-		switch (zhenRongType)
-		{
-		case ZhenRongType.HUANG_YE:
+		NewMiBaoSkill mNewMiBaoSkill = mChoose_MiBao.GetComponent<NewMiBaoSkill>();
 
-			changeSkill.Init((int)CityGlobalData.MibaoSkillType.HY_ResSend, m_zuHeId);
+		mNewMiBaoSkill.Init ((int)(CityGlobalData.MibaoSkillType.PvpSend ), m_zuHeId );
 
-			break;
+		MainCityUI.TryAddToObjectList(mChoose_MiBao);
 
-		case ZhenRongType.PVP:
-
-			changeSkill.Init((int)CityGlobalData.MibaoSkillType.PvpSend, m_zuHeId);
-
-			break;
-
-		case ZhenRongType.LUE_DUO:
-
-			changeSkill.Init((int)CityGlobalData.MibaoSkillType.LueDuo_GongJi, m_zuHeId);
-
-			break;
-		default:
-			break;
-		}
 	}
 
 	/// <summary>
@@ -703,14 +681,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	/// </summary>
 	public void BackBtn ()
 	{
-		if (zhenRongType == ZhenRongType.LUE_DUO)
-		{
-			GameObject lueDuo = GameObject.Find ("LueDuo");
-			if (lueDuo)
-			{
-				LueDuoManager.ldManager.ShowChangeSkillEffect (true);
-			}
-		}
 		Destroy (this.gameObject);
 	}
 

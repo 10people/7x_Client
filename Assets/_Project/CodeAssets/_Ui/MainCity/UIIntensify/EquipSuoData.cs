@@ -199,6 +199,19 @@ public class EquipSuoData:MonoBehaviour
         uibox.setBox(_strTitle, MyColorData.getColorString(1, _strContent1), MyColorData.getColorString(1, _strContent2), null, confirmStr, null, null);
     }
 
+    private static string _OtherPlayerInfo = "";
+    public static void CreateChaKan(string _playerInfo)
+    {
+        _OtherPlayerInfo = _playerInfo;
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.OTHER_PLAYER_INFO),
+                           UIBoxLoadCallback_ChaKan);
+    }
+
+    private static void UIBoxLoadCallback_ChaKan(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject boxObj = Instantiate(p_object) as GameObject;
+        boxObj.GetComponent<OtherPlayerInfoManagerment>().m_OtherPlayerId = _OtherPlayerInfo;
+    }
     public static bool AllUpgrade()
     {
         foreach (KeyValuePair<int, BagItem> equip in EquipsOfBody.Instance().m_equipsOfBodyDic)

@@ -45,7 +45,7 @@ public class SkillSummon : SkillDataBead
 //		m_HeroSkill.dis += "生效时间" + m_fTime[0] + "，";
 	}
 	
-	public override void activeSkill(int state)
+	public override void activeSkill(int state, GameObject skillEff)
 	{
 //		for(int i = 0; i < m_HeroSkill.m_listATTTarget.Count; i ++)
 //		{

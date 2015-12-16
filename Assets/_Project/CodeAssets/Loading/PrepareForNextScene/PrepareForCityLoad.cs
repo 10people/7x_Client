@@ -59,21 +59,21 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     private void InitCityLoading()
     {
         SocketTool.RegisterSocketListener(this);
-        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_CITY_NET, 1, 4);
-        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_UI, 1, 1);
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_CITY_NET, 1, 4);
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_UI, 1, 1);
 
         //if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1)
         //{
-        //    StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 15);
+        //    LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 15);
         //}
         //else
         {
-            StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 13);
+            LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 13);
         }
-        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_JUNZHU_MODEL, 1, 1);
-        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_NAME, 1, 1);
-        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_GENERAL_REWARD, 1, 1);
-        StaticLoading.InitSectionInfo(StaticLoading.m_loading_sections, PrepareForBattleField.CONST_BATTLE_LOADING_SOUND, 1, 1);
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_JUNZHU_MODEL, 1, 1);
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_NAME, 1, 1);
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_GENERAL_REWARD, 1, 1);
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, PrepareForBattleField.CONST_BATTLE_LOADING_SOUND, 1, 1);
  
     }
 
@@ -97,7 +97,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     public void Load2DCallback(ref WWW p_www, string p_path, Object p_object)
     {
         m_CitytempleUI = p_object as GameObject;
-        StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+        LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                          CONST_CITY_LOADING_2D_UI, "");
         LoadCityNpc();
 
@@ -153,7 +153,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
             no._Obj = p_object as GameObject;
             m_listNpcTemp.Add(no);
         }
-        StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+        LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                          CONST_CITY_LOADING_3D_NPC, "");
         if (_IndexNum < listNpcTempInfo.Count - 1)
         {
@@ -194,7 +194,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         no._NpcTemp = listNpcTempInfo[_IndexNum];
         no._Obj = p_object as GameObject;
         m_listNpcTemp.Add(no);
-        StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+        LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                  CONST_CITY_LOADING_3D_NPC, "");
         if (index_Port_Num == 2)
         {
@@ -211,7 +211,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     public void LoadSelfNameCallback(ref WWW p_www, string p_path, Object p_object)
     {
         m_CitySelfName = p_object as GameObject;
-        StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+        LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
             CONST_CITY_LOADING_2D_NAME, "");
 
         // CityLoadDone();
@@ -227,7 +227,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     private void ResourceLoadGeneralRewardCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
         m_GeneralReward = p_object as GameObject;
-        StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+        LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
          CONST_CITY_LOADING_GENERAL_REWARD, "");
 
         StartCoroutine(WaitForLoadComplete());
@@ -246,7 +246,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     private void ResourceLoadModelCallback(ref WWW p_www, string p_path, Object p_object)
     {
         m_CityJunZhuModel = p_object as GameObject;
-        StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+        LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                  CONST_CITY_LOADING_3D_JUNZHU_MODEL, "");
         LoadSelfName();
     }
@@ -343,13 +343,14 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         }
 
         // enter pve for 1st battle.
-        if (Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103)
-        {
+		//if (Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103)
+		if (Global.m_iScreenID == 100001)
+		{
             _isEnterMainCity = false;
            
             DestroyForNextLoading();
             //UnRegister();
-            EnterBattleField.EnterBattlePve(1, Global.m_iScreenID % 10, LevelType.LEVEL_NORMAL);
+            EnterBattleField.EnterBattlePve(0, Global.m_iScreenID % 10, LevelType.LEVEL_NORMAL);
         }
         else
         {
@@ -366,7 +367,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     private static float m_preserve_percentage = 0.0f;
     private void DestroyForNextLoading()
     {
-        m_preserve_percentage = StaticLoading.GetLoadingPercentage(StaticLoading.m_loading_sections);
+		m_preserve_percentage = LoadingHelper.GetLoadingPercentage(StaticLoading.m_loading_sections);
 
      //   UnRegister();
       EnterNextScene.Instance().DestroyUI();
@@ -387,7 +388,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 
                     m_received_data_for_main_city++;
 
-                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                    LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                             CONST_CITY_LOADING_CITY_NET, "PVE_PAGE_RET");
 
                     return true;
@@ -398,7 +399,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
                     //				Debug.Log( "获得君主数据: " + Global.m_iScreenID );
 
                     m_received_data_for_main_city++;
-                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                    LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "JunZhuInfoRet");
 
                     return true;
@@ -410,7 +411,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
                     //				Debug.Log ("获得有联盟信息");
 
                     m_received_data_for_main_city++;
-                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                    LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "ALLIANCE_HAVE_RESP");
 
                     return true;
@@ -421,7 +422,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 
                     //				Debug.Log ("获得无联盟信息");
                     m_received_data_for_main_city++;
-                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                    LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "ALLIANCE_NON_RESP");
                     return true;
                 }
@@ -429,7 +430,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
                 {
                     //				Debug.Log( "获得主线任务: " + Global.m_iScreenID );
                     m_received_data_for_main_city++;
-                    StaticLoading.ItemLoaded(StaticLoading.m_loading_sections,
+                    LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "TaskList");
                     return true;
                 }

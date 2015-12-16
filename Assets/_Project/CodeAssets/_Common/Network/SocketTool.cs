@@ -237,7 +237,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		}
 
 		{
-			UpdateNetworkStatusCheck();
+			SocketHelper.UpdateNetworkStatusCheck();
 		}
 	}
 
@@ -460,7 +460,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	/// <summary>
 	/// No response from server.
 	/// </summary>
-	private void ConnectionTimeOut(){
+	public static void ConnectionTimeOut(){
 		CreateTimeOutReConnectWindow( ReLoginClickCallback );
 		
 		m_state = SocketState.DisConnected;
@@ -591,80 +591,6 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	#region Network Listener
 
-	private float m_last_socket_check_time = 0.0f;
-
-	private Queue<float> m_socket_check_send_queue = new Queue<float>();
-
-	private const int MAX_SOCKET_CHECK_QUEUE_COUNT	= 10;
-
-	void ClearNetWorkCheckQueue(){
-		m_socket_check_send_queue.Clear();
-	}
-
-	void UpdateNetworkStatusCheck(){
-		if( !SocketTool.IsConnected() ){
-			Debug.Log( "Should only see this int low rate." );
-
-			ClearNetWorkCheckQueue();
-
-			return;
-		}
-
-		UpdateNetworkStatusSend();
-
-		UpdateNetworkStatusReceive();
-	}
-
-	void UpdateNetworkStatusSend(){
-		float t_time = ConfigTool.GetFloat( ConfigTool.CONST_NETWORK_CHECK_TIME );
-		
-		if( Time.realtimeSinceStartup - m_last_socket_check_time < t_time ){
-			return;
-		}
-		
-		m_last_socket_check_time = Time.realtimeSinceStartup;
-
-		if( m_socket_check_send_queue.Count >= MAX_SOCKET_CHECK_QUEUE_COUNT ){
-			Debug.Log( "Socket Check Queue out of bounds." );
-
-			return;
-		}
-
-		SocketTool.Instance().SendSocketMessage( ProtoIndexes.NETWORK_CHECK, false );
-
-		m_socket_check_send_queue.Enqueue( Time.realtimeSinceStartup );
-	}
-
-	void UpdateNetworkStatusReceive(){
-		if( m_socket_check_send_queue.Count <= 0 ){
-			return;
-		}
-
-		if ( Time.realtimeSinceStartup - GetLastReceiveDataTime () <
-		    ConfigTool.GetFloat ( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT ) ) {
-			ClearNetWorkCheckQueue();
-
-			return;
-		}
-
-		float t_sent_time = m_socket_check_send_queue.Peek();
-
-		if( Time.realtimeSinceStartup - t_sent_time > ConfigTool.GetFloat( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT ) ){
-			Debug.Log( "Socket Status Check Fail: " + ( Time.realtimeSinceStartup - t_sent_time ) );
-
-			ClearNetWorkCheckQueue();
-
-			Debug.Log( "Proto: 101, Not responding." );
-
-			// Tell Server client is going to close connection.
-			{
-				SocketTool.Instance().SendSocketMessage( ProtoIndexes.C_DROP_CONN, false );
-			}
-
-			ConnectionTimeOut();
-		}
-	}
-
 	public bool OnSocketEvent( QXBuffer p_message ){
 		if( p_message == null ){
 			return false;
@@ -676,8 +602,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		{
 //			Debug.Log( "Network Status OK." );
 
-			if( m_socket_check_send_queue.Count > 0 ){
-				ClearNetWorkCheckQueue();
+			if( SocketHelper.m_socket_check_send_queue.Count > 0 ){
+				SocketHelper.ClearNetWorkCheckQueue();
 			}
 
 			return true;
@@ -771,9 +697,9 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public void ClearSendAdnReceiveMessages(){
 		m_sending_messages.Clear();
 
-		m_receiving_waiting_list.Clear ();
+		m_receiving_waiting_list.Clear();
 
-		ClearNetWorkCheckQueue();
+		SocketHelper.ClearNetWorkCheckQueue();
 	}
 
 	private void Clear(){
@@ -810,16 +736,6 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 
 	#region Receiving Data
-
-	private static float m_last_received_time = 0.0f;
-
-	private static void SetLastReceiveDataTime( float p_time ){
-		m_last_received_time = p_time;
-	}
-
-	private static float GetLastReceiveDataTime(){
-		return m_last_received_time;
-	}
 
 	/// asynchronous
 	void StartReceive(){
@@ -1009,6 +925,10 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_RECEIVE_DETAIL ) ){
 					LogReceiveMessageDetail( m_receive_buffer );
+				}
+
+				{
+					SocketHelper.SocketDataReceived();
 				}
 
 				lock( m_received_messages ){
@@ -1592,10 +1512,6 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 		{
 			while( t_message_count > 0 ){
-				{
-					SetLastReceiveDataTime( Time.realtimeSinceStartup );
-				}
-
 //				Debug.Log( "Receive Message Count: " + m_received_messages.Count );
 
 				#if DEBUG_RECEIVE

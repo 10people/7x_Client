@@ -138,7 +138,6 @@ public class LDOpponentItem : MonoBehaviour {
 		if (!LueDuoData.Instance.IsStop)
 		{
 			LueDuoData.Instance.IsStop = true;
-			LueDuoManager.ldManager.ShowChangeSkillEffect (false);
 			LueDuoData.Instance.JunNationId = junZhuInfo.guojiaId;
 			LueDuoData.Instance.LueDuoOpponentReq (junZhuInfo.junZhuId,LueDuoData.WhichOpponent.LUE_DUO);
 		}

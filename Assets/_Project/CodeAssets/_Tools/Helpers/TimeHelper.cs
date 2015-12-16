@@ -10,10 +10,19 @@ public class TimeHelper : Singleton<TimeHelper>{
 
 	#region Current Time
 
-	private static DateTime m_date_time = new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc );
+	/// "yyyy-MM-dd hh:mm:ss"
+	public static string GetCurrentTime_String(){
+		return DateTime.Now.ToLocalTime().ToString( "MMdd-hhmmss" );
+	}
 
-	public static long GetCurrentTimeMillis(){
-		return (long) ( ( DateTime.UtcNow - m_date_time ).TotalMilliseconds );
+	private static DateTime m_date_time = System.DateTime.Now;
+
+	public static long GetCurrentTime_MilliSecond(){
+		return (long) ( ( DateTime.Now - m_date_time ).TotalMilliseconds );
+	}
+
+	public static double GetCurrentTime_Second(){
+		return GetCurrentTime_MilliSecond() / 1000.0;
 	}
 
 	#endregion

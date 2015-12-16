@@ -93,12 +93,12 @@ public class EnterNextScene : MonoBehaviour{
 //
 //			m_slider_progress.value = m_async.progress * 100;
 //
-//			StaticLoading.UpdatePercentag( StaticLoading.m_loading_sections,
+//			StaticLoading.UpdatePercentage( StaticLoading.m_loading_sections,
 //			                              StaticLoading.CONST_COMMON_LOADING_SCENE, m_async.progress );
 //		}
 
 		{
-			float t_percentage = StaticLoading.GetLoadingPercentage( StaticLoading.m_loading_sections );
+			float t_percentage = LoadingHelper.GetLoadingPercentage( StaticLoading.m_loading_sections );
 
 //			Debug.Log( "StaticLoading.Percentage: " + t_percentage );
 
@@ -116,7 +116,7 @@ public class EnterNextScene : MonoBehaviour{
 
         // progress log
 //        {
-           // StaticLoading.LogLoadingInfo(StaticLoading.m_loading_sections);
+// 				LoadingHelper.LogLoadingInfo(StaticLoading.m_loading_sections);
 //        }
 
 
@@ -286,7 +286,7 @@ public class EnterNextScene : MonoBehaviour{
 
 		// only for loading & loading
 		{
-			m_preserve_percentage = StaticLoading.GetLoadingPercentage( StaticLoading.m_loading_sections );
+			m_preserve_percentage = LoadingHelper.GetLoadingPercentage( StaticLoading.m_loading_sections );
 		}
 
 		UnRegister();
@@ -544,9 +544,9 @@ public class EnterNextScene : MonoBehaviour{
 	private const int REQUEST_DATA_COUNT_FOR_MAINCITY = 4;
 
 	private void InitMainCityLoading(){
-//		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 2, -1 );
+//		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 2, -1 );
 
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_MAINCITY );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_MAINCITY );
 	}
  
     private bool _isEnterMainCity = true;
@@ -556,8 +556,9 @@ public class EnterNextScene : MonoBehaviour{
 		}
 
 		// enter pve for 1st battle.
-		if( Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103){
-            //			Debug.Log( "CheckingDataForMainCity.EnterBattlePve()" );
+		if( Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103)
+		{
+            			Debug.Log( "CheckingDataForMainCity.EnterBattlePve()" );
             _isEnterMainCity = false;
             DestroyForNextLoading();
 
@@ -586,9 +587,9 @@ public class EnterNextScene : MonoBehaviour{
 	private const int REQUEST_DATA_COUNT_FOR_ALLIANCECITY = 4;
 	
 	private void InitAllianceCityLoading(){
-//		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 2, -1 );
+//		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 2, -1 );
 		
-		StaticLoading.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_ALLIANCECITY );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_ALLIANCECITY );
 	}
 	private void Prepare_For_AllianceCity(){
 		#if DEBUG_ENTER_NEXT_SCENE
@@ -662,7 +663,7 @@ public class EnterNextScene : MonoBehaviour{
 ////				Debug.Log ("秘宝info：" + ProtoIndexes.S_MIBAO_INFO_RESP);
 ////				m_received_data_for_main_city++;
 ////
-////			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+////			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 ////			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_MIBAO_INFO_RESP" );
 ////
 ////				return true;
@@ -675,7 +676,7 @@ public class EnterNextScene : MonoBehaviour{
 
 //				m_received_data_for_main_city++;
 
-//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 //			                         StaticLoading.CONST_MAINCITY_NETWORK, "PVE_PAGE_RET" );
 				
 //				return true;
@@ -688,7 +689,7 @@ public class EnterNextScene : MonoBehaviour{
 ////
 ////				m_received_data_for_main_city++;
 ////
-////			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+////			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 ////			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_EquipInfo" );
 ////
 ////				return true;
@@ -700,7 +701,7 @@ public class EnterNextScene : MonoBehaviour{
 				
 //				m_received_data_for_main_city++;
 
-//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 //			                         StaticLoading.CONST_MAINCITY_NETWORK, "JunZhuInfoRet" );
 				
 //				return true;
@@ -712,7 +713,7 @@ public class EnterNextScene : MonoBehaviour{
 				
 //				m_received_data_for_main_city++;
 
-//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 //			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_HAVE_RESP" );
 				
 //				return true;
@@ -724,7 +725,7 @@ public class EnterNextScene : MonoBehaviour{
 			
 //				m_received_data_for_main_city++;
 			
-//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 //			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_NON_RESP" );
 			
 //			return true;
@@ -736,7 +737,7 @@ public class EnterNextScene : MonoBehaviour{
 			
 //				m_received_data_for_main_city++;
 			
-//			StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 //			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_TaskList" );
 			
 //			return true;

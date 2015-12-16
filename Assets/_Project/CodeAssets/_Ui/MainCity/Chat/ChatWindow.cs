@@ -249,17 +249,6 @@ public class ChatWindow : ChatBaseWindow, SocketListener
                     }
                     return false;
                 }
-            case ProtoIndexes.S_YABIAO_XIEZHU_RESP:
-                {
-                    object xieZhuTimesResp = new XieZhuTimesResp();
-                    if (SocketHelper.ReceiveQXMessage(ref xieZhuTimesResp, p_message,
-                        ProtoIndexes.S_YABIAO_XIEZHU_RESP))
-                    {
-                        m_xieZhuTimesResp = xieZhuTimesResp as XieZhuTimesResp;
-                        return true;
-                    }
-                    return false;
-                }
         }
         return false;
     }

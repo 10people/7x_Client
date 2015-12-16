@@ -97,8 +97,6 @@ public class LueDuoManager : MonoBehaviour {
 		SetLueDuoInfoState (tempRes);
 
 		CheckNewRecord (tempRes.hasRecord);
-
-		ShowChangeSkillEffect (true);
 	}
 
 	/// <summary>
@@ -353,45 +351,7 @@ public class LueDuoManager : MonoBehaviour {
 		}
 	}
 
-	/// <summary>
-	/// 是否显示切换技能按钮特效
-	/// </summary>
-	public void ShowChangeSkillEffect (bool isOpen)
-	{
-		if (isOpen)
-		{
-			var mibaoGroupList = MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup;
-			
-			List<int> zuHeIdList = new List<int> ();
-			
-			for (int i = 0;i < mibaoGroupList.Count;i ++)
-			{
-				zuHeIdList.Add (mibaoGroupList[i].zuheId);
-			}
-			
-			if (zuHeIdList.Contains (lueDuoInfoRes.myFangShouId))
-			{
-				UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
-			}
-			else
-			{
-				if (MiBaoGlobleData.Instance ().GetMiBaoskillOpen ())
-				{
-					UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,changeSkillBtn,
-					                                               EffectIdTemplate.GetPathByeffectId(100006));
-				}
-				else
-				{
-					UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
-				}
-			}
-		}
-		
-		else
-		{
-			UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
-		}
-	}
+
 
 	/// <summary>
 	/// 掠夺规则按钮
@@ -402,7 +362,6 @@ public class LueDuoManager : MonoBehaviour {
 		{
 			LueDuoData.Instance.IsStop = true;
 
-			ShowChangeSkillEffect (false);
 			GeneralControl.Instance.LoadRulesPrefab (GeneralControl.RuleType.LUE_DUO,ruleList);
 		}
 	}
@@ -416,7 +375,6 @@ public class LueDuoManager : MonoBehaviour {
 		{
 			LueDuoData.Instance.IsStop = true;
 
-			ShowChangeSkillEffect (false);
 			CheckNewRecord (false);
 			LueDuoData.Instance.CheckNewRecord (false);
 			Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.LUEDUO_RECORD ),
@@ -451,33 +409,26 @@ public class LueDuoManager : MonoBehaviour {
 		{
 			LueDuoData.Instance.IsStop = true;
 
-			ShowChangeSkillEffect (false);
 			if(!MiBaoGlobleData.Instance ().GetEnterChangeMiBaoSkill_Oder ())
 			{
 				return;
 			}
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeSkillLoadBack);
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeMiBaoSkillLoadBack);
 		}
 	}
-	void ChangeSkillLoadBack(ref WWW p_www, string p_path, Object p_object)
-	{
 
+	void ChangeMiBaoSkillLoadBack (ref WWW p_www, string p_path, Object p_object)
+	{
 		GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
 		
-		mChoose_MiBao.SetActive(true);
-		
-		mChoose_MiBao.transform.parent = this.transform;
-		
-		mChoose_MiBao.transform.localPosition = Vector3.zero;
+		mChoose_MiBao.transform.localPosition = new Vector3(0, -100, 0);
 		
 		mChoose_MiBao.transform.localScale = Vector3.one;
 		
-		ChangeMiBaoSkill mChangeMiBaoSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();
-
-		mChangeMiBaoSkill.GetRootName ("LueDuo");
-		mChangeMiBaoSkill.Init ((int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou),lueDuoInfoRes.myFangShouId);
+		NewMiBaoSkill mNewMiBaoSkill = mChoose_MiBao.GetComponent<NewMiBaoSkill>();
+		mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou),lueDuoInfoRes.myFangShouId );
+		MainCityUI.TryAddToObjectList(mChoose_MiBao);
 	}
-
 	/// <summary>
 	/// 清除冷却cd按钮
 	/// </summary>
@@ -486,7 +437,7 @@ public class LueDuoManager : MonoBehaviour {
 		if (!LueDuoData.Instance.IsStop)
 		{
 			LueDuoData.Instance.IsStop = true;
-			ShowChangeSkillEffect (false);
+
 			LueDuoData.Instance.SetBtnType = LueDuoData.BtnMakeType.ClearCd;
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
 			                        BoxLoadCallBack);
@@ -501,7 +452,7 @@ public class LueDuoManager : MonoBehaviour {
 		if (!LueDuoData.Instance.IsStop)
 		{
 			LueDuoData.Instance.IsStop = true;
-			ShowChangeSkillEffect (false);
+
 			LueDuoData.Instance.SetBtnType = LueDuoData.BtnMakeType.AddNum;
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
 			                        BoxLoadCallBack);
@@ -551,7 +502,6 @@ public class LueDuoManager : MonoBehaviour {
 	void CantClearCd (int i)
 	{
 		LueDuoData.Instance.IsStop = false;
-		ShowChangeSkillEffect (true);
 	}
 
 	/// <summary>
@@ -570,7 +520,6 @@ public class LueDuoManager : MonoBehaviour {
 	}
 	public void DestroyRoot ()
 	{
-		ShowChangeSkillEffect (false);
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 
 		sEffectControl.CloseCompleteDelegate = DoCloseWindow;

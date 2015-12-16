@@ -32,35 +32,35 @@ public class PathHelper : MonoBehaviour {
 	/// p_path: file://E:/WorkSpace_External/DynastyMobile_2014/Assets/StreamingAssets/Android/Resources/Data/BattleField/BattleFlags/BattleFlags_-22f14f9d
 	/// 
 	/// return: BattleFlags_-22f14f9d
-	public static string GetFileNameFromPath(string p_path)
-	{
-		int t_index = p_path.LastIndexOf('/');
+	public static string GetFileNameFromPath( string p_path ){
+		if( string.IsNullOrEmpty( p_path ) ){
+			return "";
+		}
+
+		int t_index = p_path.LastIndexOf( '/' );
 		
-		if (t_index < 0)
-		{
+		if ( t_index < 0 ){
 			return p_path;
 		}
-		else
-		{
-			return p_path.Substring(t_index + 1);
+		else{
+			return p_path.Substring( t_index + 1 );
 		}
 	}
 	
-	/** Get full path for OS to acces files and folders.
+	/** Get full path for OS to access files and folders.
      * 
      * Params:
-     * 1.p_relative_path:		"StreamingAssets/UIResources/MemoryTrace/MemoryTrace";
+     * 1.p_relative_path:
+     *   "StreamingAssets/UIResources/MemoryTrace/MemoryTrace"
+     *   "Assets/StreamingAssets/UIResources/MemoryTrace/MemoryTrace"
      */
-	public static string GetFullPath_WithRelativePath(string p_res_relative_path)
-	{
+	public static string GetFullPath_WithRelativePath( string p_res_relative_path ){
 		// check first '/'
-		if (!p_res_relative_path.StartsWith("/"))
-		{
+		if( !p_res_relative_path.StartsWith( "/" ) ){
 			p_res_relative_path = "/" + p_res_relative_path;
 		}
 		
-		while (p_res_relative_path.StartsWith("/Assets"))
-		{
+		while( p_res_relative_path.StartsWith( "/Assets" ) ){
 			p_res_relative_path = StringHelper.RemovePrefix( p_res_relative_path, "/Assets" );
 		}
 		
@@ -96,8 +96,7 @@ public class PathHelper : MonoBehaviour {
 	/// 
 	/// return:
 	/// OS.dataPath/Platform/_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab
-	public static string GeStreamingAssetWWWPath(string p_res_asset_path)
-	{
+	public static string GeStreamingAssetWWWPath( string p_res_asset_path ){
 		{
 			p_res_asset_path = StringHelper.RemovePrefix(p_res_asset_path, "/");
 			
@@ -105,12 +104,10 @@ public class PathHelper : MonoBehaviour {
 		}
 		
 		#if UNITY_EDITOR
-		if (Application.platform == RuntimePlatform.WindowsEditor)
-		{
+		if ( Application.platform == RuntimePlatform.WindowsEditor ){
 			return "file://" + Application.streamingAssetsPath + p_res_asset_path;
 		}
-		else if (Application.platform == RuntimePlatform.OSXEditor)
-		{
+		else if( Application.platform == RuntimePlatform.OSXEditor ){
 			return "file://" + Application.dataPath + "/StreamingAssets" + p_res_asset_path;
 		}
 		#else
@@ -174,7 +171,48 @@ public class PathHelper : MonoBehaviour {
 
 
 
+	#region PC
+
+	private const string AndroidProjectFullPath = "E:\\WorkSpace_Eclipse\\qixiong\\七雄无双";
+
+	/// "E:\\WorkSpace_Eclipse\\qixiong\\七雄无双"
+	public static string GetAndroidProjectFullPath(){
+		return AndroidProjectFullPath;
+	}
+
+	#endregion
+
+
+
 	#region Bundle
+
+	/** Desc:
+	 * Bundle Path for local www.Load, Only Should be used in Editor's Debug Mode(No Bundle exist in real package).
+	 * 
+	 * Params(U5):
+	 * p_bundle_key:	"assets/resources/_data/config/config"
+	 * p_bundle_key:	""
+	 * 
+	 * return:
+	 * OS.dataPath/StreamingArchived/Platform/assets/resources/_data/config/config
+	 * OS.dataPath/StreamingArchived/Platform
+	 */
+	public static string GetLocalFileWWWPath_U5_Test_Use( string p_res_asset_path ){
+		if( !string.IsNullOrEmpty( p_res_asset_path ) ){
+			p_res_asset_path = StringHelper.RemovePrefix( p_res_asset_path, "/" );
+			
+			p_res_asset_path = "/" + p_res_asset_path;
+		}
+		
+		#if UNITY_EDITOR
+		return "file://" + Application.dataPath + "/StreamingArchived" + 
+					"/" + PlatformHelper.GetPlatformTag() + p_res_asset_path;
+		#else
+		Debug.LogError( "Never Should be Used In Real Package, only could be run under editor mode." );		
+		#endif
+		
+		return null;
+	}
 
 	/** Desc:
 	 * Bundle Path for WWW.Load.
@@ -184,10 +222,10 @@ public class PathHelper : MonoBehaviour {
 	 * p_bundle_key:	"_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab";
 	 * 
 	 * Params(U5):
-	 * p_bundle_key:	"2d/ui/ui_prefab"
+	 * p_bundle_key:	"assets/resources/_data/config/config"
 	 * 
 	 * return:
-	 * OS.dataPath/Platform/_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab
+	 * OS.dataPath/StreamingAssets/Platform/_Project/ArtAssets/UIs/_CommonAtlas/Atlases/Atlas_Dict/fnt_big_button_prefab
 	 */
 	public static string GetLocalBundleWWWPath( string p_res_asset_path ){
 		{

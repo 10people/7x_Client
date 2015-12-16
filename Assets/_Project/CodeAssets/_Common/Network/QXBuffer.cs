@@ -7,8 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Collections.Generic;
 
-public class QXBuffer
-{
+public class QXBuffer{
 	// protocol str
 	public int m_protocol_index = 0;
 
@@ -209,34 +208,18 @@ public class QXBuffer
 
 	#region Emulate Network Latency
 
-	private bool m_is_new_created = false;
-
-	private float m_create_time_tag		= 0.0f;
-
 	private long m_create_time_long		= 0;
 
 	private void ResetCreateTimeTag(){
-		m_is_new_created = true;
-
-		m_create_time_long = TimeHelper.GetCurrentTimeMillis();
+		m_create_time_long = TimeHelper.GetCurrentTime_MilliSecond();
 	}
 
-	public float GetTimeAfterCreate(){
-		if( m_is_new_created ){
-			m_create_time_tag = Time.realtimeSinceStartup;
-
-			m_is_new_created = false;
-		}
-
-		return Time.realtimeSinceStartup - m_create_time_tag;
-	}
-
-	public float GetCreateTimeTag(){
-		return m_create_time_tag;
-	}
-
-	public long GetTimeMillis(){
+	public long GetCreateTime_MilliSecond(){
 		return m_create_time_long;
+	}
+
+	public double GetCreateTime_Second(){
+		return m_create_time_long / 1000.0;
 	}
 
 	#endregion

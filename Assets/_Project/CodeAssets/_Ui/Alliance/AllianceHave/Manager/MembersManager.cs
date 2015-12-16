@@ -643,7 +643,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 	{
 		JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
 		AllianceData.Instance.RequestData();
-		SceneManager.EnterMainCity();
+		//SceneManager.EnterMainCity();
 		GameObject uirot = GameObject.Find("_My_Union(Clone)");
 		
 		if(uirot)

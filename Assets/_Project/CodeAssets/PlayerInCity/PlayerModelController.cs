@@ -68,7 +68,7 @@ public class PlayerModelController : MonoBehaviour
     {
         m_playerModelController = this;
 
-      //  CreatePlayerModel();
+        //  CreatePlayerModel();
         //		Debug.Log ("PlayerModelCol");
         //        JunZhuData.RequestJunZhuInfo();
     }
@@ -590,7 +590,7 @@ public class PlayerModelController : MonoBehaviour
                                 FunctionWindowsCreateManagerment.SetFenChengNum(CityGlobalData.m_iAllianceTenentsSceneNum);
                                 CityGlobalData.m_isAllianceScene = false;
                                 CityGlobalData.m_isAllianceTenentsScene = true;
-                              //  SceneManager.EnterAllianceCityTenentsCityOne();
+                                //  SceneManager.EnterAllianceCityTenentsCityOne();
                             }
                             else
                             {
@@ -628,7 +628,7 @@ public class PlayerModelController : MonoBehaviour
         if (m_moveDir != Vector3.zero)
         {
             MoveTurnToDestination(m_moveDir);
-           // m_transform.forward = m_moveDir;
+            // m_transform.forward = m_moveDir;
             m_animator.SetBool("inRun", true);
             if (CityGlobalData.m_selfNavigation)
             {
@@ -887,261 +887,13 @@ public class PlayerModelController : MonoBehaviour
 
         switch (template.m_iID)
         {
-            //House
-            case 7:
-                {
-
-                    foreach (KeyValuePair<int, HouseSimpleInfo> item in TenementData.Instance.m_AllianceCityTenementDic)
-                    {
-                        if (item.Value.jzId == JunZhuData.Instance().m_junzhuInfo.id && item.Value.locationId > 50)
-                        {
-                            BigHouseId = item.Value.locationId;
-                            break;
-                        }
-
-                    }
-                    if (BigHouseId == 0)
-                    {
-                        NpcManager.m_NpcManager.setGoToNpc(BigHouseId + 1000);
-                    }
-                    else
-                    {
-                        foreach (KeyValuePair<int, HouseSimpleInfo> item in TenementData.Instance.m_AllianceCityTenementDic)
-                        {
-                            if (item.Value.jzId == JunZhuData.Instance().m_junzhuInfo.id && item.Value.locationId <= 50)
-                            {
-                                break;
-                            }
-                        }
-                        NpcManager.m_NpcManager.setGoToNpc(BigHouseId + 1000);
-                    }
-                }
-                break;
-            //Battle
-            case 8:
-                {
-                    if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(8))
-                    {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FIGHT_TYPE_SELECT),
-                                         Battle_LoadCallBack);
-                    }
-                    else
-                    {
-                        FunctionWindowsCreateManagerment.ShowUnopen(8);
-                    }
-                }
-                break;
-            //Equip
-            case 12:
-                {
-
-                    if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(12))
-                    {
-                        if (equipObject == null)
-                        {
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.INTENSIFY_EQUIP_GROWTH_AMEND),
-                                            Equip_LoadCallback);
-                        }
-                        else
-                        {
-                            equipObject.SetActive(true);
-
-							// Manual show UI
-							{
-								UI2DTool.Instance.AddTopUI( equipObject );
-							}
-                        }
-                    }
-                    else
-                    {
-                        FunctionWindowsCreateManagerment.ShowUnopen(12);
-                    }
-                }
-                break;
-            //Pawnshop
-            case 9:
-                {
-                    if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(9))
-                    {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_PAWNSHOP),
-                                             PawnShop_LoadCallback);
-                    }
-                    else
-                    {
-                        FunctionWindowsCreateManagerment.ShowUnopen(9);
-                    }
-                }
-                break;
-            //Worship
-            case 400000:
-                {
-                    if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(400000))
-                    {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.WORSHIP_MAIN_LAYER),
-                                             Worship_LoadCallback);
-                    }
-                    else
-                    {
-                        FunctionWindowsCreateManagerment.ShowUnopen(400000);
-                    }
-                }
-                break;
-            //YouXia
-            case 300:
-                {
-                    if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(300))
-                    {
-                        //Add ranger here.
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YOUXIA), YouXia_LoadCallBack);
-                    }
-                    else
-                    {
-                        FunctionWindowsCreateManagerment.ShowUnopen(300);
-                    }
-                    break;
-                }
-            //Carriage
-            case 310:
-                {
-                    if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(310))
-                    {
-                        //Add carriage here.
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YUNBIAO_MAIN_PAGE),
-                                        YunBiao_LoadCallBack);
-                    }
-                    else
-                    {
-                        FunctionWindowsCreateManagerment.ShowUnopen(310);
-                    }
-                    break;
-                }
-            //LueDuo
-            case 211:
-                {
-                    if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(211))
-                    {
-                        //Add luo duo here.
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.LUEDUO), LueDuo_LoadCallBack);
-                    }
-                    else
-                    {
-                        FunctionWindowsCreateManagerment.ShowUnopen(211);
-                    }
-                    break;
-                }
-            //Nation
-            case 212:
-                {
-                    if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(212))
-                    {
-                        //Add carriage here.
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.NATION_ROOT), Nation_LoadCallback);
-                    }
-                    else
-                    {
-                        FunctionWindowsCreateManagerment.ShowUnopen(212);
-                    }
-                    break;
-                }
+            
             default:
                 break;
         }
     }
 
-    public void LueDuo_LoadCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject LueDuoObj = GameObject.Instantiate(p_object) as GameObject;
-        MainCityUI.TryAddToObjectList(LueDuoObj);
-        LueDuoObj.name = "LueDuo";
-
-        if (UIYindao.m_UIYindao.m_isOpenYindao)
-        {
-            CityGlobalData.m_isRightGuide = true;
-        }
-    }
-
-    public void Alliance_LoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject tempObject = (GameObject)Instantiate(p_object);
-
-        //  tempObject.transform.position = new Vector3(0, 500, 0);
-
-        MainCityUI.TryAddToObjectList(tempObject);
-    }
-
-    public void PawnShop_LoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject tempObject = (GameObject)Instantiate(p_object);
-        MainCityUI.TryAddToObjectList(tempObject);
-        tempObject.transform.position = new Vector3(0, 500, 0);
-    }
-
-    public void Worship_LoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject tempObject = (GameObject)Instantiate(p_object);
-        MainCityUI.TryAddToObjectList(tempObject);
-        UIYindao.m_UIYindao.CloseUI();
-    }
-
-    public void Nation_LoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject tempObject = (GameObject)Instantiate(p_object);
-        MainCityUI.TryAddToObjectList(tempObject);
-
-        if (UIYindao.m_UIYindao.m_isOpenYindao)
-        {
-            CityGlobalData.m_isRightGuide = true;
-        }
-    }
-
-    private void YouXia_LoadCallBack(ref WWW www, string path, Object loadedObject)
-    {
-        GameObject tempObject = Instantiate(loadedObject) as GameObject;
-        MainCityUI.TryAddToObjectList(tempObject);
-
-        if (UIYindao.m_UIYindao.m_isOpenYindao)
-        {
-            CityGlobalData.m_isRightGuide = true;
-        }
-    }
-
-    public void YunBiao_LoadCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject yunBiaoObj = (GameObject)Instantiate(p_object);
-        MainCityUI.TryAddToObjectList(yunBiaoObj);
-        yunBiaoObj.name = "YunBiaoMainPage";
-
-        if (UIYindao.m_UIYindao.m_isOpenYindao)
-        {
-            CityGlobalData.m_isRightGuide = true;
-        }
-    }
-
-    public void Battle_LoadCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject t_gb = (GameObject)Instantiate(p_object);
-        MainCityUI.TryAddToObjectList(t_gb);
-
-        if (IsDoAdditionalOperation)
-        {
-            IsDoAdditionalOperation = false;
-            m_Delegate(t_gb);
-            m_Delegate = null;
-        }
-    }
-
-    public void Equip_LoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        equipObject = (GameObject)Instantiate(p_object);
-        MainCityUI.TryAddToObjectList(equipObject);
-
-        if (IsDoAdditionalOperation)
-        {
-            IsDoAdditionalOperation = false;
-            m_Delegate(equipObject);
-            m_Delegate = null;
-        }
-    }
+    
 
     void OnDisable()
     {
@@ -1219,17 +971,17 @@ public class PlayerModelController : MonoBehaviour
 
         EquipSuoData.Instance();
 
-		NewEmailData.Instance ().LoadEmailPrefab ();
+        NewEmailData.Instance().LoadEmailPrefab();
 
-//		EmailData.Instance.EmailDataReq();
+        //		EmailData.Instance.EmailDataReq();
 
-//        QXTanBaoData.Instance().TBInfoReq();
+        //        QXTanBaoData.Instance().TBInfoReq();
 
-//        YunBiaoData.Instance.YunBiaoInfoReq();
+        //        YunBiaoData.Instance.YunBiaoInfoReq();
 
-//        LueDuoData.Instance.LueDuoInfoReq();
+        //        LueDuoData.Instance.LueDuoInfoReq();
 
-//        FuWenData.Instance.FuWenDataReq();
+        //        FuWenData.Instance.FuWenDataReq();
     }
 
 
@@ -1285,4 +1037,10 @@ public class PlayerModelController : MonoBehaviour
             }
         }
     }
+	public void Worship_LoadCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject tempObject = (GameObject)Instantiate(p_object);
+		MainCityUI.TryAddToObjectList(tempObject);
+		UIYindao.m_UIYindao.CloseUI();
+	}
 }

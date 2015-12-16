@@ -755,7 +755,7 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 
 	void BoxLoadBack (int i)
 	{
-		LueDuoManager.ldManager.ShowChangeSkillEffect (true);
+		//
 	}
 
 	private void LueDuoOpponentCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -863,7 +863,6 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 	void CantClearCd (int i)
 	{
 		IsStop = false;
-		LueDuoManager.ldManager.ShowChangeSkillEffect (true);
 	}
 
 	/// <summary>
@@ -874,7 +873,6 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 		IsStop = false;
 		if (i == 2)
 		{
-			LueDuoManager.ldManager.ShowChangeSkillEffect (false);
 			if (JunZhuData.Instance ().m_junzhuInfo.yuanBao < lueDuoData.clearCdYB)
 			{
 				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -887,7 +885,7 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 		}
 		else
 		{
-			LueDuoManager.ldManager.ShowChangeSkillEffect (true);
+			//
 		}
 	}
 
@@ -920,7 +918,7 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 		}
 		else
 		{
-			LueDuoManager.ldManager.ShowChangeSkillEffect (true);
+			//
 		}
 	}
 
@@ -932,7 +930,6 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 		IsStop = false;
 		if (i == 2)
 		{
-			LueDuoManager.ldManager.ShowChangeSkillEffect (false);
 			if (JunZhuData.Instance ().m_junzhuInfo.yuanBao < lueDuoData.buyNextBattleYB)
 			{
 				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -945,7 +942,7 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 		}
 		else
 		{
-			LueDuoManager.ldManager.ShowChangeSkillEffect (true);
+			//
 		}
 	}
 
@@ -1024,7 +1021,6 @@ public class LueDuoData : Singleton<LueDuoData>,SocketProcessor {
 		if (lueDuoObj != null)
 		{
 			LueDuoManager ldManager = lueDuoObj.GetComponent<LueDuoManager> ();
-			ldManager.ShowChangeSkillEffect (true);
 		}
 	}
 

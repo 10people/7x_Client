@@ -99,6 +99,8 @@
 <CanShu key="YUNBIAOASSISTANCE_GAIN_SUCCEED" value="50" desc="协助运镖成功帮贡收益" />
 <CanShu key="YUNBIAOASSISTANCE_GAIN_FAIL" value="0" desc="协助运镖失败帮贡收益" />
 <CanShu key="YUNBIAOASSISTANCE_HPBONUS" value="0.2" desc="协助运镖玩家血量对护盾血量加成系数" />
+<CanShu key="YUNBIAO_JIANSHE_ADD" value="50" desc="运镖成功获得建设值" />
+<CanShu key="JIEBIAO_JIANSHE_ADD" value="30" desc="劫镖成功获得建设值" />
 <CanShu key="LUEDUO_PROTECTTIME" value="600" desc="掠夺保护时间（秒）" />
 <CanShu key="LUEDUO_RECOVER_INTERVAL_TIME" value="720" desc="掠夺回血间隔（秒）" />
 <CanShu key="LUEDUO_RECOVER_PERCENT" value="5" desc="掠夺回血百分比" />
@@ -109,6 +111,18 @@
 <CanShu key="LUEDUO_HAND_WEEKMINNUM" value="3000" desc="掠夺上缴最小值" />
 <CanShu key="LUEDUO_DAYAWARD_GIVETIME" value="24:00" desc="日奖励发放时间" />
 <CanShu key="LUEDUO_WEEKWARD_GIVETIME" value="24:00" desc="周奖励发放时间" />
+<CanShu key="LUEDUO_PERSONRANKAWARD_GIVETIME" value="22:00" desc="贡金个人排行奖励发放时间" />
+<CanShu key="LUEDUO_LIANMENGRANKAWARD_GIVETIME" value="22:00" desc="贡金联盟排行奖励发放时间" />
+<CanShu key="LUEDUO_GONGJIN_INIT" value="500" desc="初始化贡金数" />
+<CanShu key="LUEDUO_CANSHU_L" value="30" desc="掠夺参数L" />
+<CanShu key="LUEDUO_CANSHU_N" value="0.15" desc="掠夺参数N" />
+<CanShu key="LUEDUO_CANSHU_M" value="0.3" desc="掠夺参数M" />
+<CanShu key="LUEDUO_CANSHU_X" value="10" desc="掠夺参数X" />
+<CanShu key="LUEDUO_CANSHU_Y" value="20" desc="掠夺参数Y" />
+<CanShu key="LUEDUO_CANSHU_Z" value="5" desc="掠夺参数Z" />
+<CanShu key="LUEDUO_CANSHU_A" value="10" desc="掠夺参数A" />
+<CanShu key="LUEDUO_CANSHU_B" value="20" desc="掠夺参数B" />
+<CanShu key="LUEDUO_CANSHU_C" value="5" desc="掠夺参数C" />
 <CanShu key="REFRESHTIME" value="0" desc="次数重置时间" />
 <CanShu key="RANK_MAXNUM" value="5000" desc="排行榜最大名次" />
 <CanShu key="RANK_MINLEVEL" value="20" desc="排行榜最低等级" />
@@ -129,4 +143,5 @@
 <CanShu key="JINENG_BAOJILV" value="0.2" desc="初始技能暴击率" />
 <CanShu key="GONGJICHOUHEN_ADD" value="30" desc="攻击仇恨值增量" />
 <CanShu key="GONGJICHOUHEN_TIME" value="5" desc="攻击仇恨值持续时间（秒）" />
+<CanShu key="ATTACK_LOCKENEMY_RANGE" value="10" desc="攻击锁敌范围（米）" />
 </dataset>

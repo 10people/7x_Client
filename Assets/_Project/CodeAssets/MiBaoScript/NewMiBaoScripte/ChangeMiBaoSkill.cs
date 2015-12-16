@@ -148,31 +148,31 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		my_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
 	
 
-		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
-		{
-			GameObject SKill = Instantiate( SkillGame ) as GameObject;
-
-			SKill.SetActive(true);
-
-			SKill.transform.parent = SkillGame.transform.parent;
-
-			SKill.transform.localPosition = SkillGame.transform.localPosition;
-
-			SKill.transform.localScale = Vector3.one;
-
-			MiBaoSkillTEm mMiBaoSkillTEm = SKill.GetComponent<MiBaoSkillTEm>();
-
-			mMiBaoSkillTEm.mMiBaoGroup =  my_MiBaoInfo.mibaoGroup[i];
-
-			if(my_MiBaoInfo.mibaoGroup[i].zuheId == ZH_ID)
-			{
-				mMiBaoSkillTEm.isChoosed = true;
-			}
-			mMiBaoSkillTEm.SetChooseType = SkillType;
-			mMiBaoSkillTEm.Init();
-
-			MiBaoSkillTEmList.Add(mMiBaoSkillTEm);
-		}
+//		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
+//		{
+//			GameObject SKill = Instantiate( SkillGame ) as GameObject;
+//
+//			SKill.SetActive(true);
+//
+//			SKill.transform.parent = SkillGame.transform.parent;
+//
+//			SKill.transform.localPosition = SkillGame.transform.localPosition;
+//
+//			SKill.transform.localScale = Vector3.one;
+//
+//			MiBaoSkillTEm mMiBaoSkillTEm = SKill.GetComponent<MiBaoSkillTEm>();
+//
+////			mMiBaoSkillTEm.mMiBaoGroup =  my_MiBaoInfo.mibaoGroup[i];
+////
+////			if(my_MiBaoInfo.mibaoGroup[i].zuheId == ZH_ID)
+////			{
+////				mMiBaoSkillTEm.isChoosed = true;
+////			}
+//			mMiBaoSkillTEm.SetChooseType = SkillType;
+//			mMiBaoSkillTEm.Init();
+//
+//			MiBaoSkillTEmList.Add(mMiBaoSkillTEm);
+//		}
 		 MibaoSkillRoot.GetComponent<UIGrid> ().repositionNow = true;
 
 		 ReFreshLeftData (newZuHe_id);
@@ -197,28 +197,28 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 			}
 		}
 		 int Pinzhi = 0;
-		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
-		{
-			if(my_MiBaoInfo.mibaoGroup[i].zuheId == zh_id)
-			{
-				if(my_MiBaoInfo.mibaoGroup[i].hasActive == 0)
-				{
-					Lock.SetActive(true);
-				}
-				if(my_MiBaoInfo.mibaoGroup[i].hasActive == 1)
-				{
-					Lock.SetActive(false);
-				}
-
-				for(int j = 0 ; j < my_MiBaoInfo.mibaoGroup[i].mibaoInfo.Count; j++)
-				{
-					if(my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level > 0 &&!my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].isLock)
-					{
-						Pinzhi += 1;
-					}
-				}
-			}
-		}
+//		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
+//		{
+//			if(my_MiBaoInfo.mibaoGroup[i].zuheId == zh_id)
+//			{
+//				if(my_MiBaoInfo.mibaoGroup[i].hasActive == 0)
+//				{
+//					Lock.SetActive(true);
+//				}
+//				if(my_MiBaoInfo.mibaoGroup[i].hasActive == 1)
+//				{
+//					Lock.SetActive(false);
+//				}
+//
+//				for(int j = 0 ; j < my_MiBaoInfo.mibaoGroup[i].mibaoInfo.Count; j++)
+//				{
+//					if(my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level > 0 &&!my_MiBaoInfo.mibaoGroup[i].mibaoInfo[j].isLock)
+//					{
+//						Pinzhi += 1;
+//					}
+//				}
+//			}
+//		}
 
 //		Debug.Log("zh_id =  " +zh_id);
 //
@@ -237,70 +237,70 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 			NameIdTemplate m_Skill_Name = NameIdTemplate.getNameIdTemplateByNameId (mskill_temp.skillName);
 
-			DescIdTemplate Skill_Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.shuxingDesc);
+			//DescIdTemplate Skill_Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.shuxingDesc);
 
 			ZuheName.text = m_Name.Name;
 			
 			SkillName.text = m_Skill_Name.Name;
 
-			DescIdTemplate SkillDes2 = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.shuxingDesc);
+			//DescIdTemplate SkillDes2 = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.shuxingDesc);
 			
-			Skillinstruction.text = SkillDes2.description;
+			//Skillinstruction.text = SkillDes2.description;
 			
-			DescIdTemplate DeliSkillDes2 = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.SkillDetail);
+		//	DescIdTemplate DeliSkillDes2 = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.SkillDetail);
 			
 			instruction.text = "激活两个及其以上秘宝开启技能";
 
-			if(LockSkill.desc1 != 0)
-			{
-				DescIdTemplate SHUXIng1Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.desc1);
-				
-				SHUXIng1.text = SHUXIng1Des.description;
-				
-				SHUXIng_1.text = "0%";
-			}
-			
-			if(LockSkill.desc2 != 0)
-			{
-				DescIdTemplate SHUXIng2Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.desc2);
-				
-				SHUXIng2.text = SHUXIng2Des.description;
-				
-				SHUXIng_2.text = "0%";
-			}
-			else{
-
-				SHUXIng2.gameObject.SetActive(false);
-
-			}
-			if(LockSkill.desc3 != 0)
-			{
-				DescIdTemplate SHUXIng3Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.desc3);
-				
-				SHUXIng3.text = SHUXIng3Des.description;
-				
-				SHUXIng_3.text = "0%";
-			}
-			else{
-				
-				SHUXIng3.gameObject.SetActive(false);
-				
-			}
-			if(LockSkill.desc4 != 0)
-			{
-				DescIdTemplate SHUXIng4Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.desc4);
-				
-				SHUXIng4.text = SHUXIng4Des.description;
-				
-				SHUXIng_4.text = "0%";
-			}
-			else{
-				
-				SHUXIng4.gameObject.SetActive(false);
-				
-			}
-			return;
-		}
+//			if(LockSkill.desc1 != 0)
+//			{
+//				DescIdTemplate SHUXIng1Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.desc1);
+//				
+//				SHUXIng1.text = SHUXIng1Des.description;
+//				
+//				SHUXIng_1.text = "0%";
+//			}
+//			
+//			if(LockSkill.desc2 != 0)
+//			{
+//				DescIdTemplate SHUXIng2Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.desc2);
+//				
+//				SHUXIng2.text = SHUXIng2Des.description;
+//				
+//				SHUXIng_2.text = "0%";
+//			}
+//			else{
+//
+//				SHUXIng2.gameObject.SetActive(false);
+//
+//			}
+//			if(LockSkill.desc3 != 0)
+//			{
+//				DescIdTemplate SHUXIng3Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.desc3);
+//				
+//				SHUXIng3.text = SHUXIng3Des.description;
+//				
+//				SHUXIng_3.text = "0%";
+//			}
+//			else{
+//				
+//				SHUXIng3.gameObject.SetActive(false);
+//				
+//			}
+//			if(LockSkill.desc4 != 0)
+//			{
+//				DescIdTemplate SHUXIng4Des = DescIdTemplate.getDescIdTemplateByNameId (LockSkill.desc4);
+//				
+//				SHUXIng4.text = SHUXIng4Des.description;
+//				
+//				SHUXIng_4.text = "0%";
+//			}
+//			else{
+//				
+//				SHUXIng4.gameObject.SetActive(false);
+//				
+//			}
+//			return;
+	}
 
 		SHUXIng1.gameObject.SetActive(true);
 		
@@ -322,7 +322,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		
 		NameIdTemplate mName = NameIdTemplate.getNameIdTemplateByNameId (mSkill.nameId);
 		
-		DescIdTemplate mDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.zuheDesc);
+	//	DescIdTemplate mDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.zuheDesc);
 
 		SkillTemplate mskilltemp = SkillTemplate.getSkillTemplateById (mSkill.skill);
 
@@ -334,48 +334,48 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 		SkillIcon1.spriteName = mSkill.icon.ToString();
 
-		DescIdTemplate SkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.shuxingDesc);
+		//DescIdTemplate SkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.shuxingDesc);
 
-		Skillinstruction.text = SkillDes.description;
+		//Skillinstruction.text = SkillDes.description;
 
-		DescIdTemplate DeliSkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.SkillDetail);
-		
-		instruction.text = DeliSkillDes.description;
-
-
-		if(mSkill.desc1 != 0)
-		{
-			DescIdTemplate SHUXIng1Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc1);
-			
-			SHUXIng1.text = SHUXIng1Des.description;
-			
-			SHUXIng_1.text = mSkill.value1;
-		}
-		
-		if(mSkill.desc2 != 0)
-		{
-			DescIdTemplate SHUXIng2Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc2);
-			
-			SHUXIng2.text = SHUXIng2Des.description;
-			
-			SHUXIng_2.text = mSkill.value2;
-		}
-		if(mSkill.desc3 != 0)
-		{
-			DescIdTemplate SHUXIng3Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc3);
-			
-			SHUXIng3.text = SHUXIng3Des.description;
-			
-			SHUXIng_3.text = mSkill.value3;
-		}
-		if(mSkill.desc4 != 0)
-		{
-			DescIdTemplate SHUXIng4Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc4);
-			
-			SHUXIng4.text = SHUXIng4Des.description;
-			
-			SHUXIng_4.text = mSkill.value4;
-		}
+//		DescIdTemplate DeliSkillDes = DescIdTemplate.getDescIdTemplateByNameId (mSkill.SkillDetail);
+//		
+//		instruction.text = DeliSkillDes.description;
+//
+//
+//		if(mSkill.desc1 != 0)
+//		{
+//			DescIdTemplate SHUXIng1Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc1);
+//			
+//			SHUXIng1.text = SHUXIng1Des.description;
+//			
+//			SHUXIng_1.text = mSkill.value1;
+//		}
+//		
+//		if(mSkill.desc2 != 0)
+//		{
+//			DescIdTemplate SHUXIng2Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc2);
+//			
+//			SHUXIng2.text = SHUXIng2Des.description;
+//			
+//			SHUXIng_2.text = mSkill.value2;
+//		}
+//		if(mSkill.desc3 != 0)
+//		{
+//			DescIdTemplate SHUXIng3Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc3);
+//			
+//			SHUXIng3.text = SHUXIng3Des.description;
+//			
+//			SHUXIng_3.text = mSkill.value3;
+//		}
+//		if(mSkill.desc4 != 0)
+//		{
+//			DescIdTemplate SHUXIng4Des = DescIdTemplate.getDescIdTemplateByNameId (mSkill.desc4);
+//			
+//			SHUXIng4.text = SHUXIng4Des.description;
+//			
+//			SHUXIng_4.text = mSkill.value4;
+//		}
 
 	}
 
@@ -414,17 +414,17 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 	public void SendSaveMiBaoMasege(int Type,int zuhe )//保存秘宝技能
 	{
-		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
-		{
-			if(my_MiBaoInfo.mibaoGroup[i].zuheId == zuhe)
-			{
-				if(my_MiBaoInfo.mibaoGroup[i].hasActive == 0)
-				{
-					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),OpenLockLoadBack);
-					return;
-				}
-			}
-		}
+//		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
+//		{
+//			if(my_MiBaoInfo.mibaoGroup[i].zuheId == zuhe)
+//			{
+//				if(my_MiBaoInfo.mibaoGroup[i].hasActive == 0)
+//				{
+//					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),OpenLockLoadBack);
+//					return;
+//				}
+//			}
+//		}
 
 		MibaoSelect Mibaoid = new MibaoSelect ();
 		
@@ -560,12 +560,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YaBiao_Fangshou ):
 					{
-						GameObject jieBiaoPage = GameObject.Find ("JieHuoMainPage");
-						if (jieBiaoPage)
-						{
-							JieBiaoMainPage jieBiaoMain = jieBiaoPage.GetComponent<JieBiaoMainPage> ();
-							jieBiaoMain.jieHuoMainRes.fangyuZuHeId = skillZuHeId;
-						}
+
 
 						break;
 					}
@@ -752,8 +747,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		}
 		case (int)(CityGlobalData.MibaoSkillType.YaBiao_Fangshou ):
 		{
-			JieBiaoMainPage.jieBiaoMain.IsOpenChangeMiBao = false;
-			JieBiaoMainPage.jieBiaoMain.ShowChangeSkillEffect (true);
+
 			break;
 		}
 		case (int)(CityGlobalData.MibaoSkillType.PvpSend ):
@@ -769,7 +763,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou ):
 		{
 			LueDuoData.Instance.IsStop = false;
-			LueDuoManager.ldManager.ShowChangeSkillEffect (true);
+		
 			break;
 		}
 		case (int)(CityGlobalData.MibaoSkillType.PveSend ):

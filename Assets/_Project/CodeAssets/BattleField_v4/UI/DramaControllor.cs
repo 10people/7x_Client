@@ -78,7 +78,7 @@ public class DramaControllor : MonoBehaviour
 
 	void init(GuideTemplate template)
 	{
-		if(template.para1 == 3)
+		if(template.actionType == 3)
 		{
 			if(template.pause == 1)
 			{
@@ -87,7 +87,7 @@ public class DramaControllor : MonoBehaviour
 				if(Gobj != null) Gobj.SendMessage ("release");
 			}
 		}
-		else if(template.para1 != 2 && template.para1 != 5 && template.para1 != 6 && template.para1 != 7 && template.para1 != 8)
+		else if(template.actionType != 2 && template.actionType != 5 && template.actionType != 6 && template.actionType != 7 && template.actionType != 8)
 		{
 			GameObject Gobj = GameObject.Find ("JoyStick");
 			
@@ -131,7 +131,7 @@ public class DramaControllor : MonoBehaviour
 
 		bool played = BattleControlor.Instance ().havePlayedGuide (template);
 
-		if (played == true || true) 
+		if (played == true) 
 		{
 			init (template);
 
@@ -152,7 +152,7 @@ public class DramaControllor : MonoBehaviour
 
 		m_templateCallback = template;
 
-		if (template.delay > 0 && template.type != 4) 
+		if (template.delay > 0 && template.actionType != 4) 
 		{
 			//yield return new WaitForSeconds (template.delay);
 
@@ -175,7 +175,7 @@ public class DramaControllor : MonoBehaviour
 
 		GuideTemplate template = m_templateCallback;
 
-		if(template.para1 == 2)
+		if(template.actionType == 2)
 		{
 			tempLevel = level;
 			
@@ -183,7 +183,7 @@ public class DramaControllor : MonoBehaviour
 			
 			mCallback = _callBack;
 
-			playmusic(template.para2);
+			playmusic(template.ap1);
 
 			dramaOver(false);
 
@@ -222,28 +222,25 @@ public class DramaControllor : MonoBehaviour
 
 		mCallback = _callBack;
 
-		if(template.differentiate == 1)
-		{
-//			Camera cam = (Camera)BattleControlor.Instance().getKing().gameCamera.GetComponent ("Camera");
-
-//			if(cam != null) cam.cullingMask = 1024;
-		}
-
 		bool returnFlag = true;
 
-		if(template.type == 6)
+		if(template.triggerType == 6)
 		{
 			dramaOver();
 
 			returnFlag = false;
 		}
-		else if(template.type == 7)
+		else if(template.triggerType == 7)
 		{
 			dramaOver();
 			
 			returnFlag = false;
 		}
-		else if(template.para1 == 1)
+		else if(template.actionType == 0)//对话
+		{
+			showDrama(template);
+		}
+		else if(template.actionType == 1)//小电影
 		{
 			foreach(BaseAI node in BattleControlor.Instance().selfNodes)
 			{
@@ -288,60 +285,60 @@ public class DramaControllor : MonoBehaviour
 				storyControllor.init ();
 			}
 
-			showStoryBoard(template.para2);
+			showStoryBoard(template.ap1);
 		}
-		else if(template.para1 == 2)
+		else if(template.actionType == 2)//背景音乐
 		{
-			playmusic(template.para2);
+			playmusic(template.ap1);
 
 			dramaOver(false);
 
 			returnFlag = false;
 		}
-		else if(template.para1 == 3)
+		else if(template.actionType == 3)//气泡引导
 		{
 			bool yindaoable = false;
 
-			if(template.content == 0)//无限制
+			if(template.ap2 == 0)//无限制
 			{
 				yindaoable = true;
 			}
-			else if(template.content == 1)//是重武器
+			else if(template.ap2 == 1)//是重武器
 			{
 				if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Heavy)
 				{
 					yindaoable = true;
 				}
 			}
-			else if(template.content == 2)//是轻武器
+			else if(template.ap2 == 2)//是轻武器
 			{
 				if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Light)
 				{
 					yindaoable = true;
 				}
 			}
-			else if(template.content == 3)//是弓武器
+			else if(template.ap2 == 3)//是弓武器
 			{
 				if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Ranged)
 				{
 					yindaoable = true;
 				}
 			}
-			else if(template.content == -1)//不是重武器
+			else if(template.ap2 == -1)//不是重武器
 			{
 				if(BattleControlor.Instance().getKing().weaponType != KingControllor.WeaponType.W_Heavy)
 				{
 					yindaoable = true;
 				}
 			}
-			else if(template.content == -2)//不是轻武器
+			else if(template.ap2 == -2)//不是轻武器
 			{
 				if(BattleControlor.Instance().getKing().weaponType != KingControllor.WeaponType.W_Light)
 				{
 					yindaoable = true;
 				}
 			}
-			else if(template.content == -3)//不是弓武器
+			else if(template.ap2 == -3)//不是弓武器
 			{
 				if(BattleControlor.Instance().getKing().weaponType != KingControllor.WeaponType.W_Ranged)
 				{
@@ -351,9 +348,9 @@ public class DramaControllor : MonoBehaviour
 
 			if(yindaoable == true)
 			{
-				yindaoId = template.para2;
+				yindaoId = template.ap1;
 
-				UIYindao.m_UIYindao.setOpenYindao(template.para2);
+				UIYindao.m_UIYindao.setOpenYindao(template.ap1);
 			}
 
 			dramaOver (yindaoable == true && template.pause == 1);
@@ -367,7 +364,11 @@ public class DramaControllor : MonoBehaviour
 				Time.timeScale = 0;
 			}
 		}
-		else if(template.para1 == 4)
+		else if(template.actionType == 4)//解锁界面功能
+		{
+			showGuide(template);
+		}
+		else if(template.actionType == 5)//清除技能CD
 		{
 			refreshCD(template);
 
@@ -375,25 +376,33 @@ public class DramaControllor : MonoBehaviour
 
 			returnFlag = false;
 		}
-		else if(template.para1 == 5)
+		else if(template.actionType == 6)//音效
 		{
-			playSound(template.para2);
+			playSound(template.ap1);
 			
 			dramaOver(false);
 			
 			returnFlag = false;
 		}
-		else if(template.para1 == 6)
+		else if(template.actionType == 7)//横幅提示
 		{
-			SceneGuideManager.Instance ().ShowSceneGuide (template.para2);
+			SceneGuideManager.Instance ().ShowSceneGuide (template.ap1);
 
 			dramaOver(false);
 
 			returnFlag = false;
 		}
-		else if(template.para1 == 7)
+		else if(template.actionType == 8)//语音
 		{
-			GameObject t_node = getNodeByName(template.cameraTarget);
+			playVoice(template.ap1);
+			
+			dramaOver(false);
+			
+			returnFlag = false;
+		}
+		else if(template.actionType == 9)//消除目标
+		{
+			GameObject t_node = getNodeByName(template.ap3);
 
 			if(t_node != null)
 			{
@@ -403,22 +412,6 @@ public class DramaControllor : MonoBehaviour
 			dramaOver(false);
 			
 			returnFlag = false;
-		}
-		else if(template.para1 == 8)
-		{
-			playVoice(template.para2);
-			
-			dramaOver(false);
-			
-			returnFlag = false;
-		}
-		else if(template.content == 0)
-		{
-			showDrama(template);
-		}
-		else
-		{
-			showGuide(template);
 		}
 
 		if(returnFlag == true)
@@ -493,7 +486,7 @@ public class DramaControllor : MonoBehaviour
 		onPressInDrama ();
 	}
 
-	private void showDrama(GuideTemplate template)
+	private void showDrama(GuideTemplate template)//对话
 	{
 		bg.SetActive (false);
 
@@ -501,21 +494,23 @@ public class DramaControllor : MonoBehaviour
 		
 		BattleUIControlor.Instance ().layerFight.SetActive (false);
 
-		if (template.para2 == 1)
-		{
-			GameObject focus = getNodeByName(template.cameraTarget);
+		PlotChatTemplate chatTemplate = PlotChatTemplate.getPlotChatTemplateById (template.ap1);
 
-			if(focus != null)
-			{
-				StartCoroutine(hideActor(focus));
-
-				//focus.SetActive(false);
-			}
-
-			DialogCallback();
-
-			return;
-		}
+//		if (template.para2 == 1)
+//		{
+//			GameObject focus = getNodeByName(chatTemplate.cameraTarget);
+//
+//			if(focus != null)
+//			{
+//				StartCoroutine(hideActor(focus));
+//
+//				//focus.SetActive(false);
+//			}
+//
+//			DialogCallback();
+//
+//			return;
+//		}
 
 		UIYindao.m_UIYindao.CloseUI ();
 
@@ -523,9 +518,9 @@ public class DramaControllor : MonoBehaviour
 
 		DialogData.dialogData dialogdata = new DialogData.dialogData();
 		
-		string text = template.pText;
+		string text = chatTemplate.pText;
 		
-		string textName = template.pName;
+		string textName = chatTemplate.pName;
 
 //		Debug.Log( "BattleControlor.Instance(): " + BattleControlor.Instance() );
 
@@ -539,13 +534,18 @@ public class DramaControllor : MonoBehaviour
 
 		labelName.text = textName;
 
-		dialogdata.iHeadID = template.icon;
+		dialogdata.iHeadID = chatTemplate.icon;
+
+		if(dialogdata.iHeadID == 0)//第0关缺少君主信息，将1003翻译为102
+		{
+			dialogdata.iHeadID = BattleControlor.Instance().getKing().modelId - 901;
+		}
 
 		dialogdata.sDialogData = text;
 
 		dialogdata.sName = textName;
 
-		dialogdata.isLeft = (template.position == 0);
+		dialogdata.isLeft = (chatTemplate.position == 0);
 
 		dialoglistdata.Add(dialogdata);
 
@@ -555,15 +555,15 @@ public class DramaControllor : MonoBehaviour
 
 		ClientMain.m_ClientMain.m_UIDialogSystem.setOpenDialog(dialoglistdata, autoTime, DialogCallback);
 
-		if(template.cameraTarget.Equals("") == false)
+		if(chatTemplate.cameraTarget.Equals("") == false)
 		{
-			GameObject focus = getNodeByName(template.cameraTarget);
+			GameObject focus = getNodeByName(chatTemplate.cameraTarget);
 
 			if(focus != null)
 			{
-				if(template.forwardFlagId != 0)
+				if(chatTemplate.forwardFlagId != 0)
 				{
-					BaseAI forwardNode = BattleControlor.Instance().getNodebyId(template.forwardFlagId);
+					BaseAI forwardNode = BattleControlor.Instance().getNodebyId(chatTemplate.forwardFlagId);
 
 					if(forwardNode != null)
 					{
@@ -573,7 +573,7 @@ public class DramaControllor : MonoBehaviour
 					{
 						BattleFlag bf = null;
 
-						BattleControlor.Instance().flags.TryGetValue(template.forwardFlagId, out bf);
+						BattleControlor.Instance().flags.TryGetValue(chatTemplate.forwardFlagId, out bf);
 
 						if(bf != null)
 						{
@@ -598,15 +598,15 @@ public class DramaControllor : MonoBehaviour
 
 				tempInner.transform.localScale = new Vector3(1, 1, 1);
 
-				tempInner.transform.localPosition = new Vector3(template.cameraPx, template.cameraPy, template.cameraPz);
+				tempInner.transform.localPosition = new Vector3(chatTemplate.cameraPx, chatTemplate.cameraPy, chatTemplate.cameraPz);
 
-				tempInner.transform.localEulerAngles = new Vector3(template.cameraRx, template.cameraRy, 0); 
+				tempInner.transform.localEulerAngles = new Vector3(chatTemplate.cameraRx, chatTemplate.cameraRy, 0); 
 
 				tempInner.transform.parent = tempObject.transform.parent;
 
 				gameCamera.targetChang(focus);
 
-				gameCamera.CameraChange(new Vector3(template.cameraPx, template.cameraPy, template.cameraPz), new Vector3(template.cameraRx, template.cameraRy, 0));
+				gameCamera.CameraChange(new Vector3(chatTemplate.cameraPx, chatTemplate.cameraPy, chatTemplate.cameraPz), new Vector3(chatTemplate.cameraRx, chatTemplate.cameraRy, 0));
 
 				Destroy(tempObject);
 
@@ -632,39 +632,39 @@ public class DramaControllor : MonoBehaviour
 		BattleControlor.Instance ().inDrama = true;
 	}
 
-	private void refreshCD(GuideTemplate template)
+	private void refreshCD(GuideTemplate template)//清除CD
 	{
-		if(template.content == 11)
+		if(template.ap1 == 11)
 		{
 			BattleUIControlor.Instance().cooldownHeavySkill_1.CoolDownComplate();
 		}
-		else if(template.content == 12)
+		else if(template.ap1 == 12)
 		{
 			BattleUIControlor.Instance().cooldownHeavySkill_2.CoolDownComplate();
 		}
-		else if(template.content == 21)
+		else if(template.ap1 == 21)
 		{
 			BattleUIControlor.Instance().cooldownLightSkill_1.CoolDownComplate();
 		}
-		else if(template.content == 22)
+		else if(template.ap1 == 22)
 		{
 			BattleUIControlor.Instance().cooldownLightSkill_2.CoolDownComplate();
 		}
-		else if(template.content == 31)
+		else if(template.ap1 == 31)
 		{
 			BattleUIControlor.Instance().cooldownRangeSkill_1.CoolDownComplate();
 		}
-		else if(template.content == 32)
+		else if(template.ap1 == 32)
 		{
 			BattleUIControlor.Instance().cooldownRangeSkill_2.CoolDownComplate();
 		}
-		else if(template.content == 41)
+		else if(template.ap1 == 41)
 		{
 			BattleUIControlor.Instance().cooldownMibaoSkill.CoolDownComplate();
 		}
 	}
 
-	private void showGuide(GuideTemplate template)
+	private void showGuide(GuideTemplate template)//解锁界面功能
 	{
 		inGuide = true;
 
@@ -682,7 +682,7 @@ public class DramaControllor : MonoBehaviour
 
 		LockControllor.LOCK_TYPE lockType = LockControllor.LOCK_TYPE.Attack;
 
-		if (template.content == 1)
+		if (template.ap1 == 1)
 		{
 			uigc = BattleUIControlor.Instance().m_gc_move;
 
@@ -690,7 +690,7 @@ public class DramaControllor : MonoBehaviour
 
 			//offset = BattleUIControlor.Instance().anchorBottomLeft.transform.localPosition;
 		}
-		else if(template.content == 2)
+		else if(template.ap1 == 2)
 		{
 			uigc = BattleUIControlor.Instance().m_gc_attack;
 
@@ -700,7 +700,7 @@ public class DramaControllor : MonoBehaviour
 
 			//offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
 		}
-		else if(template.content == 3)
+		else if(template.ap1 == 3)
 		{
 			if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Heavy)
 			{
@@ -729,7 +729,7 @@ public class DramaControllor : MonoBehaviour
 
 			offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
 		}
-		else if(template.content == 4)
+		else if(template.ap1 == 4)
 		{
 			if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Heavy)
 			{
@@ -758,7 +758,7 @@ public class DramaControllor : MonoBehaviour
 
 			offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
 		}
-		else if(template.content == 5)
+		else if(template.ap1 == 5)
 		{
 			uigc = BattleUIControlor.Instance().m_changeWeapon.btnHeavy.gameObject;
 
@@ -768,7 +768,7 @@ public class DramaControllor : MonoBehaviour
 
 			offset = BattleUIControlor.Instance().anchorBottom.transform.localPosition;
 		}
-		else if(template.content == 6)
+		else if(template.ap1 == 6)
 		{
 			uigc = BattleUIControlor.Instance().m_changeWeapon.btnLight.gameObject;
 
@@ -778,7 +778,7 @@ public class DramaControllor : MonoBehaviour
 
 			offset = BattleUIControlor.Instance().anchorBottom.transform.localPosition;
 		}
-		else if(template.content == 7)
+		else if(template.ap1 == 7)
 		{
 			uigc = BattleUIControlor.Instance().m_changeWeapon.btnRange.gameObject;
 
@@ -788,7 +788,7 @@ public class DramaControllor : MonoBehaviour
 
 			offset = BattleUIControlor.Instance().anchorBottom.transform.localPosition;
 		}
-		else if(template.content == 8)//暂停
+		else if(template.ap1 == 8)//暂停
 		{
 			uigc = BattleUIControlor.Instance().m_gc_pause;
 
@@ -798,7 +798,7 @@ public class DramaControllor : MonoBehaviour
 
 			//offset = BattleUIControlor.Instance().anchorTopLeft.transform.localPosition;
 		}
-		else if(template.content == 9)//自动
+		else if(template.ap1 == 9)//自动
 		{
 			uigc = BattleUIControlor.Instance().m_gc_autoFight;
 
@@ -808,7 +808,7 @@ public class DramaControllor : MonoBehaviour
 
 			//offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
 		}
-		else if(template.content == 10)//翻滚
+		else if(template.ap1 == 10)//翻滚
 		{
 			uigc = BattleUIControlor.Instance().m_gc_dodge;
 
@@ -818,7 +818,7 @@ public class DramaControllor : MonoBehaviour
 
 			//offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
 		}
-		else if(template.content == 11)
+		else if(template.ap1 == 11)
 		{
 			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Heavy);
 
@@ -830,7 +830,7 @@ public class DramaControllor : MonoBehaviour
 			
 			BattleUIControlor.Instance().b_skill_heavy_1 = true;
 		}
-		else if(template.content == 12)
+		else if(template.ap1 == 12)
 		{
 			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Heavy);
 
@@ -842,7 +842,7 @@ public class DramaControllor : MonoBehaviour
 			
 			BattleUIControlor.Instance().b_skill_heavy_2 = true;
 		}
-		else if(template.content == 13)
+		else if(template.ap1 == 13)
 		{
 			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Light);
 
@@ -854,7 +854,7 @@ public class DramaControllor : MonoBehaviour
 			
 			BattleUIControlor.Instance().b_skill_light_1 = true;
 		}
-		else if(template.content == 14)
+		else if(template.ap1 == 14)
 		{
 			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Light);
 
@@ -866,7 +866,7 @@ public class DramaControllor : MonoBehaviour
 			
 			BattleUIControlor.Instance().b_skill_light_2 = true;
 		}
-		else if(template.content == 15)
+		else if(template.ap1 == 15)
 		{
 			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Ranged);
 
@@ -878,7 +878,7 @@ public class DramaControllor : MonoBehaviour
 			
 			BattleUIControlor.Instance().b_skill_ranged_1 = true;
 		}
-		else if(template.content == 16)
+		else if(template.ap1 == 16)
 		{
 			//BattleUIControlor.Instance().changeWeaponTo(KingControllor.WeaponType.W_Ranged);
 
@@ -890,7 +890,7 @@ public class DramaControllor : MonoBehaviour
 			
 			BattleUIControlor.Instance().b_skill_ranged_2 = true;
 		}
-		else if(template.content == 17)
+		else if(template.ap1 == 17)
 		{
 			uigc = BattleUIControlor.Instance().btnMibaoSkill;
 
@@ -985,7 +985,7 @@ public class DramaControllor : MonoBehaviour
 
 				bool ff = BattleControlor.Instance().havePlayedGuide(template);
 
-				if(ff == false && template.type == 4)
+				if(ff == false && template.triggerType == 4)
 				{
 					if(template.delay > 0)
 					{

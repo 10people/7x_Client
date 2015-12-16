@@ -200,31 +200,22 @@ public class PveLeveType : MonoBehaviour {
 
 		PveLevelUImaneger.mPveLevelUImaneger.ColsePVEGuid ();
 
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), LoadBack);
-
+		Global.ResourcesDotLoad (Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeMiBaoSkillLoadBack);
 	}
 
-	void LoadBack(ref WWW p_www, string p_path, Object p_object)
+	void ChangeMiBaoSkillLoadBack (ref WWW p_www, string p_path, Object p_object)
 	{
 		GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
 		
-		mChoose_MiBao.SetActive(true);
-		
-		mChoose_MiBao.transform.parent = GameObject.Find("Mapss").transform;
-		
-		mChoose_MiBao.transform.localPosition = Vector3.zero;
+		mChoose_MiBao.transform.localPosition = new Vector3(0, -100, 0);
 		
 		mChoose_MiBao.transform.localScale = Vector3.one;
+		
+		NewMiBaoSkill mNewMiBaoSkill = mChoose_MiBao.GetComponent<NewMiBaoSkill>();
 
-		CityGlobalData.PveLevel_UI_is_OPen = false;
+		mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.PveSend ), GuanQia.zuheId );
 
-		ChangeMiBaoSkill mChangeMiBaoSkill = mChoose_MiBao.GetComponent<ChangeMiBaoSkill>();
-
-		mChangeMiBaoSkill.GetRootName (UIrootName.name);
-
-		mChangeMiBaoSkill.Init(1, PveLevelUImaneger.GuanqiaReq.zuheId);
-
-		PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
+		MainCityUI.TryAddToObjectList(mChoose_MiBao);
 	}
 
 	public void PVE_Fight()

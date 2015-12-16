@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<JiNengPeiYang id="1100" nameId="重击" descId="重击" icon="1100" wuqiType="1" jinengType="1" quality="0" nextId="1101" needLv="1" skillId="200001" needNum="0" />
+<JiNengPeiYang id="1101" nameId="重击" descId="重击" icon="1101" wuqiType="1" jinengType="1" quality="1" nextId="1102" needLv="5" skillId="201101" needNum="10000" />
+<JiNengPeiYang id="1102" nameId="重击" descId="重击" icon="1102" wuqiType="1" jinengType="1" quality="2" nextId="0" needLv="15" skillId="201102" needNum="30000" />
+<JiNengPeiYang id="1200" nameId="八荒裂日" descId="八荒裂日" icon="1200" wuqiType="1" jinengType="2" quality="0" nextId="1201" needLv="1" skillId="200011" needNum="0" />
+<JiNengPeiYang id="1201" nameId="八荒裂日" descId="八荒裂日" icon="1201" wuqiType="1" jinengType="2" quality="1" nextId="1202" needLv="8" skillId="201201" needNum="10000" />
+<JiNengPeiYang id="1202" nameId="八荒裂日" descId="八荒裂日" icon="1202" wuqiType="1" jinengType="2" quality="2" nextId="0" needLv="18" skillId="201202" needNum="30000" />
+<JiNengPeiYang id="1300" nameId="乾坤斗转" descId="乾坤斗转" icon="1300" wuqiType="1" jinengType="3" quality="0" nextId="1301" needLv="1" skillId="200012" needNum="0" />
+<JiNengPeiYang id="1301" nameId="乾坤斗转" descId="乾坤斗转" icon="1301" wuqiType="1" jinengType="3" quality="1" nextId="1302" needLv="11" skillId="201301" needNum="10000" />
+<JiNengPeiYang id="1302" nameId="乾坤斗转" descId="乾坤斗转" icon="1302" wuqiType="1" jinengType="3" quality="2" nextId="0" needLv="21" skillId="201302" needNum="30000" />
+<JiNengPeiYang id="2100" nameId="突刺" descId="突刺" icon="2100" wuqiType="2" jinengType="1" quality="0" nextId="2101" needLv="1" skillId="200002" needNum="0" />
+<JiNengPeiYang id="2101" nameId="突刺" descId="突刺" icon="2101" wuqiType="2" jinengType="1" quality="1" nextId="2102" needLv="14" skillId="202101" needNum="10000" />
+<JiNengPeiYang id="2102" nameId="突刺" descId="突刺" icon="2102" wuqiType="2" jinengType="1" quality="2" nextId="0" needLv="24" skillId="202102" needNum="30000" />
+<JiNengPeiYang id="2200" nameId="绝影星光斩" descId="绝影星光斩" icon="2200" wuqiType="2" jinengType="2" quality="0" nextId="2201" needLv="1" skillId="200021" needNum="0" />
+<JiNengPeiYang id="2201" nameId="绝影星光斩" descId="绝影星光斩" icon="2201" wuqiType="2" jinengType="2" quality="1" nextId="2202" needLv="17" skillId="202201" needNum="10000" />
+<JiNengPeiYang id="2202" nameId="绝影星光斩" descId="绝影星光斩" icon="2202" wuqiType="2" jinengType="2" quality="2" nextId="0" needLv="27" skillId="202202" needNum="30000" />
+<JiNengPeiYang id="2300" nameId="血祭烙印" descId="血祭烙印" icon="2300" wuqiType="2" jinengType="3" quality="0" nextId="2301" needLv="1" skillId="200022" needNum="0" />
+<JiNengPeiYang id="2301" nameId="血祭烙印" descId="血祭烙印" icon="2301" wuqiType="2" jinengType="3" quality="1" nextId="2302" needLv="20" skillId="202301" needNum="10000" />
+<JiNengPeiYang id="2302" nameId="血祭烙印" descId="血祭烙印" icon="2302" wuqiType="2" jinengType="3" quality="2" nextId="0" needLv="30" skillId="202302" needNum="30000" />
+<JiNengPeiYang id="3100" nameId="疾射" descId="疾射" icon="3100" wuqiType="3" jinengType="1" quality="0" nextId="3101" needLv="1" skillId="200003" needNum="0" />
+<JiNengPeiYang id="3101" nameId="疾射" descId="疾射" icon="3101" wuqiType="3" jinengType="1" quality="1" nextId="3102" needLv="23" skillId="203101" needNum="10000" />
+<JiNengPeiYang id="3102" nameId="疾射" descId="疾射" icon="3102" wuqiType="3" jinengType="1" quality="2" nextId="0" needLv="33" skillId="203102" needNum="30000" />
+<JiNengPeiYang id="3200" nameId="追星箭" descId="追星箭" icon="3200" wuqiType="3" jinengType="2" quality="0" nextId="3201" needLv="1" skillId="200031" needNum="0" />
+<JiNengPeiYang id="3201" nameId="追星箭" descId="追星箭" icon="3201" wuqiType="3" jinengType="2" quality="1" nextId="3202" needLv="26" skillId="203201" needNum="10000" />
+<JiNengPeiYang id="3202" nameId="追星箭" descId="追星箭" icon="3202" wuqiType="3" jinengType="2" quality="2" nextId="0" needLv="36" skillId="203202" needNum="30000" />
+<JiNengPeiYang id="3300" nameId="寒冰箭" descId="寒冰箭" icon="3300" wuqiType="3" jinengType="3" quality="0" nextId="3301" needLv="1" skillId="200032" needNum="0" />
+<JiNengPeiYang id="3301" nameId="寒冰箭" descId="寒冰箭" icon="3301" wuqiType="3" jinengType="3" quality="1" nextId="3302" needLv="29" skillId="203301" needNum="10000" />
+<JiNengPeiYang id="3302" nameId="寒冰箭" descId="寒冰箭" icon="3302" wuqiType="3" jinengType="3" quality="2" nextId="0" needLv="39" skillId="203302" needNum="30000" />
+</dataset>

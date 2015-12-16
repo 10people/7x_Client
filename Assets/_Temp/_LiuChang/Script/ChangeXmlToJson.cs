@@ -519,9 +519,11 @@ public class ChangeXmlToJson : MonoBehaviour
 		{
 			BattleWinFlag flag = transform.parent.gameObject.AddComponent<BattleWinFlag>();
 
-			flag.winId = 1;
+			flag.endId = template.winId;
 
-			flag.winType = template.winType;
+			flag.isWin = template.isWin;
+
+			flag.endType = template.winType;
 
 			flag.killNum = template.killNum;
 
@@ -536,11 +538,27 @@ public class ChangeXmlToJson : MonoBehaviour
 				flag.destinationObject = null;
 			}
 
-			flag.showOnUI = template.showOnUI != 0;
-
 			flag.destinationRadius = template.destinationRadius;
 
-			flag.protectNodeId = template.protectNodeId;
+			flag.activeNum = template.activeNum;
+
+			flag.activeList = new List<int>();
+
+			foreach(int i in template.activeList)
+			{
+				flag.activeList.Add(i);
+			}
+
+			flag.showOnUI = template.showOnUI != 0;
+
+			flag.protectNum = template.protectNum;
+
+			flag.protectList = new List<int>();
+
+			foreach(int pi in template.protectList)
+			{
+				flag.protectList.Add(pi);
+			}
 		}
 
 		{

@@ -9,7 +9,7 @@ public class BackgroundScaler : MonoBehaviour {
 
 	#region Mono
 
-	void Awake(){
+	void Start(){
 		ScaleBg();
 	}
 
@@ -26,7 +26,7 @@ public class BackgroundScaler : MonoBehaviour {
 			UITexture t_tex = GetComponent<UITexture>();
 			
 			if( t_tex != null ){
-	t_tex.width = (int)( m_designed_w * t_s );
+				t_tex.width = (int)( m_designed_w * t_s );
 				
 				t_tex.height = (int)( m_designed_h * t_s );
 

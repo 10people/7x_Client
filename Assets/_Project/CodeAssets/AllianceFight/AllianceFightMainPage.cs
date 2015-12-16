@@ -366,7 +366,8 @@ public class AllianceFightMainPage : MonoBehaviour
     //商店按钮
     public void StoreBtn()
     {
-        GeneralControl.Instance.GeneralStoreReq(GeneralControl.StoreType.ALLIANCE_FIGHT, GeneralControl.StoreReqType.FREE);
+//        GeneralControl.Instance.GeneralStoreReq(GeneralControl.StoreType.ALLIANCE_FIGHT, GeneralControl.StoreReqType.FREE);
+		ShopData.Instance.OpenShop (ShopData.ShopType.GONGXUN);
     }
 
     //规则按钮

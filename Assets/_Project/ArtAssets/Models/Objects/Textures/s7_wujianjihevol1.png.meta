@@ -42,16 +42,12 @@ TextureImporter:
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
-  alphaIsTransparency: 1
-  textureType: 5
+  alphaIsTransparency: 0
+  textureType: -1
   buildTargetSettings:
   - buildTarget: iPhone
-    maxTextureSize: 1024
-    textureFormat: 33
-    compressionQuality: 50
-  - buildTarget: Android
-    maxTextureSize: 1024
-    textureFormat: 47
+    maxTextureSize: 512
+    textureFormat: -2
     compressionQuality: 50
   spriteSheet:
     sprites: []

@@ -11,7 +11,9 @@ public class BattleWinTemplate : XmlLoadManager
 
 	public int winId;
 
-	public BattleWinFlag.WinType winType;
+	public bool isWin;
+
+	public BattleWinFlag.EndType winType;
 
 	public int killNum;
 
@@ -19,16 +21,24 @@ public class BattleWinTemplate : XmlLoadManager
 
 	public float destinationRadius;
 
+	public int activeNum;
+	
+	public List<int> activeList = new List<int> ();
+
 	public int showOnUI;
 
-	public int protectNodeId;
+	public int protectNum;
+
+	public List<int> protectList = new List<int>();
 
 
 	public static List<BattleWinTemplate> templates;
 
 
-	private static List<int> unpassList = new List<int>();
-	
+	private static List<int> unwinList = new List<int>();
+
+	private static List<int> unloseList = new List<int>();
+
 
 	public static void LoadTemplates( int chapterId, EventDelegate.Callback p_callback = null )
 	{
@@ -56,7 +66,9 @@ public class BattleWinTemplate : XmlLoadManager
 
 		bool t_has_items = true;
 
-		unpassList.Clear ();
+		unwinList.Clear ();
+
+		unloseList.Clear ();
 
 		do{
 			t_has_items = t_reader.ReadToFollowing( "BattleWin" );
@@ -70,7 +82,10 @@ public class BattleWinTemplate : XmlLoadManager
 				t_template.winId = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.winType = (BattleWinFlag.WinType)int.Parse( t_reader.Value );
+				t_template.isWin = int.Parse( t_reader.Value ) == 1;
+
+				t_reader.MoveToNextAttribute();
+				t_template.winType = (BattleWinFlag.EndType)int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
 				t_template.killNum = int.Parse( t_reader.Value );
@@ -90,29 +105,83 @@ public class BattleWinTemplate : XmlLoadManager
 				t_template.destinationRadius = float.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
+				t_template.activeNum = int.Parse( t_reader.Value );
+
+				//activeList
+				{
+					t_reader.MoveToNextAttribute();
+					string strActiveList = t_reader.Value;
+					
+					string[] sActiveList = strActiveList.Split(',');
+					
+					t_template.activeList = new List<int>();
+					
+					foreach(string st in sActiveList)
+					{
+						int i = int.Parse(st);
+
+						if(i != 0) t_template.activeList.Add(i);
+					}
+				}
+
+				t_reader.MoveToNextAttribute();
 				t_template.showOnUI = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.protectNodeId = int.Parse( t_reader.Value );
+				t_template.protectNum = int.Parse( t_reader.Value );
+
+				//protectList
+				{
+					t_reader.MoveToNextAttribute();
+					string strProtectist = t_reader.Value;
+					
+					string[] sProtectist = strProtectist.Split(',');
+					
+					t_template.protectList = new List<int>();
+					
+					foreach(string st in sProtectist)
+					{
+						int i = int.Parse(st);
+
+						if(i != 0) t_template.protectList.Add(i);
+					}
+				}
 			}
 
 			bool f = true;
 
-			foreach(int unpass in unpassList)
+			if(t_template.isWin == true)
 			{
-				if(unpass == t_template.winId)
+				foreach(int unwin in unwinList)
 				{
-					f = false;
+					if(unwin == t_template.winId)
+					{
+						f = false;
+					}
 				}
-			}
 
-			if(f == true) unpassList.Add(t_template.winId);
+				if(f == true) unwinList.Add(t_template.winId);
+			}
+			else
+			{
+				foreach(int unlose in unloseList)
+				{
+					if(unlose == t_template.winId)
+					{
+						f = false;
+					}
+				}
+				
+				if(f == true) unloseList.Add(t_template.winId);
+			}
 
 			templates.Add( t_template );
 		}
 		while( t_has_items );
 
 		refreshDesc ();
+
+		refreshDestinationEffect ();
 
 		if( m_load_callback != null )
 		{
@@ -139,6 +208,34 @@ public class BattleWinTemplate : XmlLoadManager
 		BattleUIControlor.Instance().setShowWinDesc(null);
 	}
 
+	private static void refreshDestinationEffect()
+	{
+		if (BattleUIControlor.Instance () == null) return;
+
+		foreach(BattleWinTemplate template in templates)
+		{
+			if(template.winType == BattleWinFlag.EndType.Reach_Destination)
+			{
+				BattleEffectControllor.Instance().LoadEffectByEffectId(600157, loadDestinationEffectLoadCallback);
+
+				return;
+			}
+		}
+	}
+
+	private static void loadDestinationEffectLoadCallback()
+	{
+		foreach(BattleWinTemplate template in templates)
+		{
+			if(template.winType == BattleWinFlag.EndType.Reach_Destination)
+			{
+				GameObject gc = BattleEffectControllor.Instance().PlayEffect(600157, template.destination, new Vector3(1, 0, 0), 9999);
+
+				gc.transform.parent = BattleControlor.Instance().transform;
+			}
+		}
+	}
+
 	private static Global.LoadResourceCallback m_load_callback = null;
 	
 	public static void SetLoadDoneCallback( Global.LoadResourceCallback p_callback )
@@ -146,11 +243,11 @@ public class BattleWinTemplate : XmlLoadManager
 		m_load_callback = p_callback;
 	}
 
-	public static BattleWinTemplate getWinTemplateContainsType(BattleWinFlag.WinType targetWinType)
+	public static BattleWinTemplate getWinTemplateContainsType(BattleWinFlag.EndType targetWinType, bool isWin)
 	{
 		foreach(BattleWinTemplate template in templates)
 		{
-			if(targetWinType == template.winType)
+			if(targetWinType == template.winType && isWin == template.isWin)
 			{
 				return template;
 			}
@@ -160,19 +257,19 @@ public class BattleWinTemplate : XmlLoadManager
 	}
 
 	//return: true-win beside reachTime, false-notWin
-	public static bool reachType(int winId)
+	public static bool reachTypeWin(int winId)
 	{
-		foreach(int unpass in unpassList)
+		foreach(int unwin in unwinList)
 		{
-			if(unpass == winId)
+			if(unwin == winId)
 			{
-				unpassList.Remove(winId);
+				unwinList.Remove(winId);
 
 				break;
 			}
 		}
 
-		if (unpassList.Count == 0)
+		if (unwinList.Count == 0)
 		{
 			return true;
 		}
@@ -180,9 +277,9 @@ public class BattleWinTemplate : XmlLoadManager
 		{
 			foreach(BattleWinTemplate template in templates)
 			{
-				if(template.winType == BattleWinFlag.WinType.Reach_Time)
+				if(template.isWin == true && template.winType == BattleWinFlag.EndType.Reach_Time)
 				{
-					if(unpassList.Count == 1) return true;
+					if(unwinList.Count == 1) return true;
 
 					break;
 				}
@@ -190,6 +287,57 @@ public class BattleWinTemplate : XmlLoadManager
 		}
 
 		return false;
+	}
+
+	public static bool reachTypeLose(int loseId)
+	{
+		foreach(int unlose in unloseList)
+		{
+			if(unlose == loseId)
+			{
+				unloseList.Remove(loseId);
+				
+				break;
+			}
+		}
+		
+		if (unloseList.Count == 0)
+		{
+			return true;
+		}
+		else
+		{
+			foreach(BattleWinTemplate template in templates)
+			{
+				if(template.isWin == false && template.winType == BattleWinFlag.EndType.Reach_Time)
+				{
+					if(unloseList.Count == 1) return true;
+					
+					break;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	public static BattleWinTemplate getNextWinTemplate()
+	{
+		BattleWinTemplate template = null;
+
+		int endId = -9999;
+
+		foreach(BattleWinTemplate _temp in templates)
+		{
+			if(_temp.winId > endId)
+			{
+				endId = _temp.winId;
+
+				template = _temp;
+			}
+		}
+
+		return template;
 	}
 
 }

@@ -677,19 +677,19 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		}
 		else
 		{
-			List<MibaoGroup> mibaoGroup = MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup;
-			for(int i = 0;i < mibaoGroup.Count;i ++)
-			{
-				if (mibaoGroup[i].hasActive == 1)
-				{
-					tiaoZhan.YinDaoState = 1;
-					break;
-				}
-				else
-				{
-					tiaoZhan.YinDaoState = 2;
-				}
-			}
+//			List<MibaoGroup> mibaoGroup = MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup;
+//			for(int i = 0;i < mibaoGroup.Count;i ++)
+//			{
+//				if (mibaoGroup[i].hasActive == 1)
+//				{
+//					tiaoZhan.YinDaoState = 1;
+//					break;
+//				}
+//				else
+//				{
+//					tiaoZhan.YinDaoState = 2;
+//				}
+//			}
 		}
 		tiaoZhan.InItPvpChallengePage (GeneralTiaoZhan.ZhenRongType.PVP,PvpChallengeResp);
 	}

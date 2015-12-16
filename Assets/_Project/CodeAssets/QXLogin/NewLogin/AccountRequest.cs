@@ -1,4 +1,4 @@
-﻿//#define DEBUG_REQUEST
+//#define DEBUG_REQUEST
 
 using UnityEngine;
 using System.Collections;
@@ -95,7 +95,7 @@ public class AccountRequest : MonoBehaviour {
 			isRemember = true;
 		}
 
-		selectUrlObj.SetActive (Prepare_Bundle_Config.ShowServerSelector ());
+		selectUrlObj.SetActive ( PrepareBundleHelper.ShowServerSelector ());
 	}
 
 	void OnDestroy(){
@@ -384,7 +384,7 @@ public class AccountRequest : MonoBehaviour {
 		Debug.Log ( "AddClientInfo: " + Time.realtimeSinceStartup );
 		#endif
 
-		p_dict.Add( "ClientVersion", VersionTool.GetSmallVersion() );
+		p_dict.Add( "ClientVersion", VersionTool_4.GetSmallVersion() );
 
 		p_dict.Add( "SystemSoftware", SystemInfo.operatingSystem );
 

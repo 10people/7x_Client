@@ -45,7 +45,7 @@ public class StaticLoading : MonoBehaviour {
 
 		m_instance = this;
 
-		ClearLoadingInfo( m_loading_sections );
+		LoadingHelper.ClearLoadingInfo( m_loading_sections );
 
 		SetTipsText();
 	}
@@ -82,9 +82,9 @@ public class StaticLoading : MonoBehaviour {
 
 		m_instance = null;
 		
-//		LogLoadingInfo();
+//		LoadingHelper.LogLoadingInfo();
 		
-		ClearLoadingInfo( m_loading_sections );
+		LoadingHelper.ClearLoadingInfo( m_loading_sections );
 	}
 
 	#endregion
@@ -118,79 +118,6 @@ public class StaticLoading : MonoBehaviour {
 
 	#region Loading
 
-	public class LoadingSection{
-		public string m_section_name;
-
-		private float m_weight = 1.0f;
-
-		private float m_percentage = 0.0f;
-		
-		private int m_items_loaded = 0;
-		
-		// -1 means unknown.
-		private int m_item_count = -1;
-		
-		public LoadingSection( string p_section_name, float p_weight = 1.0f, int p_item_count = -1 ){
-			m_section_name = p_section_name;
-
-			m_weight = p_weight;
-
-			SetTotalCount( p_item_count );
-		}
-
-		public void UpdatePercentage( float p_percentage ){
-			m_percentage = p_percentage;
-		}
-
-		public void ItemLoaded(){
-			m_items_loaded++;
-		}
-
-		public float GetLoadedWeight(){
-			float t_local_weight = 0;
-
-			if( m_item_count < 0 ){
-				t_local_weight = m_percentage * m_weight;
-			}
-			else if( m_item_count > 0 ){
-				t_local_weight = m_items_loaded * 1.0f / m_item_count * m_weight;
-			}
-			else{
-				Debug.LogError( "Error In GetLoadedWeight." );
-
-				Debug.Log( "Loading Section: " + 
-				          m_items_loaded + " / " + m_item_count + " - " + 
-				          m_weight + "   - " +
-				          "   " + m_section_name );
-
-				t_local_weight = 0.0f;
-			}
-
-			t_local_weight = Mathf.Clamp( t_local_weight, 0, m_weight );
-
-			return t_local_weight;
-		}
-
-		public float GetTotalWeight(){
-			return m_weight;
-		}
-
-        // reset total resources item count
-		public void SetTotalCount( int p_item_count ){
-//			Debug.Log( m_section_name + ".SetTotalCount( " + p_item_count + " )" );
-		
-			m_item_count = p_item_count;
-		}
-
-		public void Log(){
-			Debug.Log( "Loading Section( items.percent: " + 
-			          m_items_loaded + " / " + m_item_count + 
-			          " -    weight: " + m_weight + "   -    weight.percent: " +
-			          GetLoadedWeight() + " / " + GetTotalWeight() +
-			          "   " + m_section_name );
-		}
-	}
-
 	public static List<LoadingSection> m_loading_sections = new List<LoadingSection>();
 
 	private static string m_cur_loading_asset = "";
@@ -206,7 +133,7 @@ public class StaticLoading : MonoBehaviour {
 		else{
 			float t_delta = Time.realtimeSinceStartup - m_last_frame_time;
 
-			if( t_delta > ConfigTool.GetFloat( ConfigTool.CONST_LOADING_INTERVAL ) ){
+			if( t_delta > ConfigTool.GetFloat( ConfigTool.CONST_LOADING_INTERVAL, 1.0f ) ){
 				return false;
 			} 
 			else{
@@ -221,39 +148,7 @@ public class StaticLoading : MonoBehaviour {
 
 	#region Update Loading
 
-	public static void ItemLoaded( List<LoadingSection> p_list, string p_section_name, string p_item_name = "" ){
-		#if LOG_LOADING
-	//	Debug.Log( "ItemLoaded( " + p_section_name + ": " + p_item_name + " )" );
-		#endif
-
-		LoadingSection t_section = GetSection( p_list, p_section_name );
-
-		if( t_section == null ){
-			t_section = InitSectionInfo( p_list, p_section_name );
-			
-//			Debug.Log( "StaticLoading.ItemLoaded( Section Not Found )" );
-		}
-
-		t_section.ItemLoaded();
-
-		SetCurLoading( p_item_name );
-	}
-
-	public static void UpdatePercentag( List<LoadingSection> p_list, string p_section_name, float p_percentage ){
-//		Debug.Log( "UpdatePercentag( " + p_section_name + " - " + p_percentage + " )" );
-
-		LoadingSection t_section = GetSection( p_list, p_section_name );
-		
-		if( t_section == null ){
-			t_section = InitSectionInfo( p_list, p_section_name );
-			
-//			Debug.Log( "StaticLoading.UpdatePercentag( Section Not Found )" );
-		}
-		
-		t_section.UpdatePercentage( p_percentage );
-	}
-
-	private static void SetCurLoading( string p_cur_loading_name ){
+	public static void SetCurLoading( string p_cur_loading_name ){
 		#if LOG_LOADING
 		//Debug.Log( "SetCurLoading( " + p_cur_loading_name + " )" );
 		#endif
@@ -265,93 +160,6 @@ public class StaticLoading : MonoBehaviour {
 
 	public static string GetCurLoading(){
 		return m_cur_loading_asset;
-	}
-
-	#endregion
-
-
-
-	#region Utility
-
-	public static LoadingSection InitSectionInfo( List<LoadingSection> p_list, string p_section_name, float p_weight = 1.0f, int p_item_count = -1 ){
-		LoadingSection t_section = GetSection( p_list, p_section_name );
-		
-		if( t_section == null ){
-            #if LOG_LOADING
-          //  Debug.Log("InitSectionInfo: " + p_section_name + ", " + p_weight + ", " + p_item_count );
-            #endif
-
-            t_section = new LoadingSection( p_section_name, p_weight, p_item_count );
-			
-			p_list.Add( t_section );
-		}
-		else{
-			Debug.LogError( "Error, Loading Section Already Exist." );
-		}
-		
-		return t_section;
-	}
-
-	public static LoadingSection GetSection( List<LoadingSection> p_list, string p_section_name ){
-		if( string.IsNullOrEmpty( p_section_name ) ){
-			return null;
-		}
-		
-		if( p_list.Count == 0 ){
-			return null;
-		}
-		
-		for( int i = 0; i < p_list.Count; i++ ){
-			LoadingSection t_item = p_list[ i ];
-			
-			if( t_item.m_section_name == p_section_name ){
-				return t_item;
-			}
-		}
-		
-		return null;
-	}
-
-	public static float GetLoadingPercentage( List<LoadingSection> p_list ){
-		float t_loaded = 0.0f;
-		
-		float t_total = 0.0f;
-		
-		for( int i = 0; i < p_list.Count; i++ ){
-			LoadingSection t_section = p_list[ i ];
-			
-			t_loaded += t_section.GetLoadedWeight();
-
-			t_total += t_section.GetTotalWeight();
-
-//			t_section.Log();
-		}
-		
-		if( t_total <= 0.0f ){
-//			Debug.LogError( "Error In Total: " + t_total );
-			
-			t_total = 1.0f;
-		}
-		
-		return t_loaded / t_total;
-	}
-	
-	public static void ClearLoadingInfo( List<LoadingSection> p_list ){
-		p_list.Clear();
-	}
-
-	public static void LogLoadingInfo( List<LoadingSection> p_list ){
-		Debug.Log( "--------- StaticLoading.LogLoadingInfo --------" );
-
-		if( p_list == null ){
-			return;
-		}
-
-		for( int i = 0; i < p_list.Count; i++ ){
-			LoadingSection t_section = p_list[ i ];
-
-			t_section.Log();
-		}
 	}
 
 	#endregion

@@ -39,15 +39,35 @@ public class Config_Common {
 	private static void OnGUI_Common_Info(){
 		if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_VERSION ) ){
 			if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CONSOLE ) ) {
-				GUI.Label( new Rect( 0, ScreenHelper.GetY( 0.9f ), 250, 35 ), ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
+				{
+					SetPingColor();
+
+					GUI.Label( new Rect( ScreenHelper.GetX( 0.1f ), ScreenHelper.GetY( 0.8f ), 250, 35 ), 
+					          NetworkHelper.GetPingMS() + " ms", GUIHelper.m_gui_lb_style );
+					
+					RestoreColor();
+				}
+
+				GUI.Label( new Rect( 0, ScreenHelper.GetY( 0.9f ), 250, 35 ), 
+				          ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
 			}
 			else{
-				GUI.Label( new Rect( ScreenHelper.GetX( 0.0f ), ScreenHelper.GetY( 0.0f ), 250, 35 ), ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
+				GUI.Label( new Rect( ScreenHelper.GetX( 0.0f ), ScreenHelper.GetY( 0.0f ), 250, 35 ), 
+				          ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
+
+				{
+					SetPingColor();
+
+					GUI.Label( new Rect( ScreenHelper.GetX( 0.1f ), ScreenHelper.GetY( 0.9f ), 250, 35 ), 
+					          NetworkHelper.GetPingMS() + " ms", GUIHelper.m_gui_lb_style );
+
+					RestoreColor();
+				}
 			}
-			
-			//			GUI.Label( new Rect( 0, 25, 250, 35 ), "BV: " + Prepare_Bundle_Config.m_config_cached_small_version, m_gui_lb_style );
-			//
-			//			GUI.Label( new Rect( 0, 50, 250, 35 ), "SV: " + Prepare_Bundle_Config.CONFIG_BIG_VESION, m_gui_lb_style );
+
+//			GUI.Label( new Rect( 0, 25, 250, 35 ), "BV: " + Prepare_Bundle_Config.m_config_cached_small_version, m_gui_lb_style );
+//
+//			GUI.Label( new Rect( 0, 50, 250, 35 ), "SV: " + Prepare_Bundle_Config.CONFIG_BIG_VESION, m_gui_lb_style );
 		}
 		
 		if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_DEVICE_INFO ) ){
@@ -144,6 +164,42 @@ public class Config_Common {
 		}
 	}
 	
+	#endregion
+
+
+
+	#region GUI ping
+
+	private const long CONST_MAX_LOW_PING		= 150;
+
+	private const long CONST_MAIN_HIGH_PING		= 300;
+
+	private static Color m_low_color		= new Color( 55.0f / 255, 213f / 255, 7f / 255 );
+
+	private static Color m_mid_color		= new Color( 249.0f / 255, 196f / 255, 20f / 255 );
+
+	private static Color m_high_color		= new Color( 255.0f / 255, 25f / 255, 25f / 255 );
+
+	private static Color m_pre_color		= new Color( 55.0f / 255, 213f / 255, 7f / 255 );
+
+	private static void SetPingColor(){
+		m_pre_color = GUIHelper.m_gui_lb_style.normal.textColor;
+
+		if( NetworkHelper.GetPingMS() >= CONST_MAIN_HIGH_PING ){
+			GUIHelper.m_gui_lb_style.normal.textColor = m_high_color;
+		}
+		else if( NetworkHelper.GetPingMS() >= CONST_MAX_LOW_PING ){
+			GUIHelper.m_gui_lb_style.normal.textColor = m_mid_color;
+		}
+		else{
+			GUIHelper.m_gui_lb_style.normal.textColor = m_low_color;
+		}
+	}
+
+	private static void RestoreColor(){
+		GUIHelper.m_gui_lb_style.normal.textColor = m_pre_color;;
+	}
+
 	#endregion
 
 

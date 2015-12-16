@@ -9,8 +9,6 @@ public class BbuttonColorChangeManegerment : MonoBehaviour
     {
 	
 	}
-
-
     public void ButtonsControl(bool colliderEnable)
     {
         if (m_BackObj.GetComponent<TweenColor>() == null)

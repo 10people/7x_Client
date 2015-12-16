@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class GeneralReward : MonoBehaviour {
@@ -55,7 +56,7 @@ public class GeneralReward : MonoBehaviour {
 		MoveFirst ();
 	}
 
-	private void IconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
+	private void IconSampleLoadCallBack(ref WWW p_www, string p_path, UnityEngine.Object p_object)
 	{
 		if (iconSamplePrefab == null)
 		{
@@ -107,6 +108,23 @@ public class GeneralReward : MonoBehaviour {
 	void MoveStop ()
 	{
 		StartCoroutine ("MoveSecond");
+
+		//if mibao or blue equip
+
+		QXComData.XmlType xmlType = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (rewardData.itemId));
+
+		if (xmlType == QXComData.XmlType.MIBAO)
+		{
+			GeneralRewardManager.Instance ().CreateSpecialReward (rewardData);
+		}
+		else if (xmlType == QXComData.XmlType.EQUIP)
+		{
+			CommonItemTemplate comTemp = CommonItemTemplate.getCommonItemTemplateById (rewardData.itemId);
+			if (QXComData.GetEffectColorByXmlColorId (comTemp.color) >= 2)
+			{
+				GeneralRewardManager.Instance ().CreateSpecialReward (rewardData);
+			}
+		}
 	}
 	
 	IEnumerator MoveSecond ()

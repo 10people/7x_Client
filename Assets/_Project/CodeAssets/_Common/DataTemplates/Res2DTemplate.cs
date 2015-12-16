@@ -60,7 +60,7 @@ public class Res2DTemplate : XmlLoadManager
         BAG_BAG_LAYER,
         PAWN_SHOP,
         TAN_BAO,
-        TASK_LAYER_AMEND,
+        TASK_LAYER_AMEND = 51,
         MI_BAO_SECRET,
         JUN_ZHU_LAYER_AMEND,
         SHOP_QX_SHOP,
@@ -217,6 +217,10 @@ public class Res2DTemplate : XmlLoadManager
         OTHER_PLAYER_INFO = 205,
         SIGNAL_LAYER = 206,
 		QXSHOP = 207,
+        ONLINE_SKILL_ITEM = 208,
+        ONLINE_REWARD_DAY = 209,
+        ONLINE_REWARD_TIMES = 210,
+        SWITCH_COUNTRY_ROOT = 211,
     }
 
 
@@ -246,20 +250,17 @@ public class Res2DTemplate : XmlLoadManager
     {
         //		Debug.Log( "Res2DTemplate.LoadTemplates()" );
 
-        UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "Res2DTemp.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
+        UnLoadManager.DownLoad( PathManager.GetUrl(m_LoadPath + "Res2DTemp.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false );
     }
 
-    public static void CurLoad(ref WWW www, string path, Object obj)
-    {
-        if (m_templates.Count > 0)
-        {
+    public static void CurLoad( ref WWW www, string path, Object obj ){
+        if ( m_templates.Count > 0 ){
             return;
         }
 
         XmlReader t_reader = null;
 
-        if (obj != null)
-        {
+        if ( obj != null ){
             TextAsset t_text_asset = obj as TextAsset;
 
             t_reader = XmlReader.Create(new StringReader(t_text_asset.text));
@@ -288,9 +289,13 @@ public class Res2DTemplate : XmlLoadManager
 
                 t_reader.MoveToNextAttribute();
                 t_template.path = t_reader.Value;
+
+//				if( t_template.uiId == 4 ){
+//					Debug.Log( t_template.uiId + " : " + t_template.path );
+//				}
             }
 
-            m_templates.Add(t_template);
+            m_templates.Add( t_template );
         }
         while (t_has_items);
 
@@ -299,8 +304,7 @@ public class Res2DTemplate : XmlLoadManager
         }
     }
 
-    public static string GetResPath(Res p_ui_enum)
-    {
+    public static string GetResPath( Res p_ui_enum ){
         int t_id = (int)p_ui_enum;
 
         for (int i = 0; i < m_templates.Count; i++)

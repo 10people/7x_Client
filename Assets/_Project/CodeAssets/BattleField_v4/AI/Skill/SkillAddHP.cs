@@ -27,7 +27,7 @@ public class SkillAddHP : SkillDataBead
 //		m_HeroSkill.dis += "生效时间" + m_fTime[0].ToString();
 	}
 	
-	public override void activeSkill(int state)
+	public override void activeSkill(int state, GameObject skillEff)
 	{
 		//Debug.Log("调试成功");
 		

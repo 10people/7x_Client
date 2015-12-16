@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<PlotChat plotChatId="10101" seriestId="1" pName="神秘人" pText="点击[FF0000]摇杆按钮[-]操作角色移动，长按可以一直移动。" icon="201" position="0" forwardFlagId="0" cameraTarget="xxxxx" cameraPx="-0.00000166893" cameraPy="8.789899" cameraPz="10.74658" cameraRx="36.00004" cameraRy="180" />
+<PlotChat plotChatId="10102" seriestId="1" pName="神秘人" pText="点击[FF0000]攻击按钮[-]使用当前的武器发动攻击。[FFFF00]长按此按钮[-]可以持续攻击。" icon="201" position="0" forwardFlagId="0" cameraTarget="xxxxx" cameraPx="-0.00000166893" cameraPy="8.789899" cameraPz="10.74658" cameraRx="36.00004" cameraRy="180" />
+<PlotChat plotChatId="10103" seriestId="1" pName="神秘人" pText="[FF8000]长柄武器[-]适于应对多个敌人。[FFFF00]点击此按钮[-]释放[FF8000]八荒裂日[-]技能。" icon="201" position="0" forwardFlagId="0" cameraTarget="xxxxx" cameraPx="-0.00000166893" cameraPy="8.789899" cameraPz="10.74658" cameraRx="36.00004" cameraRy="180" />
+<PlotChat plotChatId="10104" seriestId="1" pName="神秘人" pText="双持武器对单个敌人有更高的杀伤力，快【切换武器】试试看！[FFFF00]点击此按钮[-]，更换[FF8000]双持武器[-]。" icon="201" position="0" forwardFlagId="0" cameraTarget="xxxxx" cameraPx="-0.00000166893" cameraPy="8.789899" cameraPz="10.74658" cameraRx="36.00004" cameraRy="180" />
+</dataset>

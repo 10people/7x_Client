@@ -25,6 +25,7 @@ public class FunctionOpenTemp : XmlLoadManager
     public int sceneType;
 
     public int type;
+	public int m_iPlay;//是否播放添加功能动画
     public int rank;
 	public string m_sNotOpenTips;
 
@@ -92,6 +93,8 @@ public class FunctionOpenTemp : XmlLoadManager
 
                 t_reader.MoveToNextAttribute();
                 t_template.key = t_reader.Value;
+
+				t_template.m_iPlay = ReadNextInt(t_reader);
 
                 t_reader.MoveToNextAttribute();
                 t_template.type = int.Parse(t_reader.Value);
@@ -212,14 +215,18 @@ public class FunctionOpenTemp : XmlLoadManager
 
     public static bool isAddFunction()
     {
-		if(FunctionUnlock.getGroudById(Global.m_iOpenFunctionIndex) != null)
+		if(FunctionOpenTemp.GetTemplateById(Global.m_iOpenFunctionIndex).m_iPlay == 1)
 		{
-			ClientMain.addPopUP(40, 1, "" + Global.m_iOpenFunctionIndex, null);
+			ClientMain.addPopUP(40, 2, "" + Global.m_iOpenFunctionIndex, null);
 		}
-        if (MainCityUIRB.ButtonSpriteNameTransferDic.ContainsKey(Global.m_iOpenFunctionIndex))
-        {
-            ClientMain.addPopUP(50, 2, "" + Global.m_iOpenFunctionIndex, null);
-        }
+//		if(FunctionUnlock.getGroudById(Global.m_iOpenFunctionIndex) != null)
+//		{
+//
+//		}
+//        if (MainCityUIRB.ButtonSpriteNameTransferDic.ContainsKey(Global.m_iOpenFunctionIndex))
+//        {
+//            ClientMain.addPopUP(50, 2, "" + Global.m_iOpenFunctionIndex, null);
+//        }
         return true;
     }
 
@@ -378,6 +385,27 @@ public class FunctionOpenTemp : XmlLoadManager
         return null;
     }
 
+	public static int GetParent(int id)
+	{
+		return GetParent(GetTemplateById(id));
+	}
+
+	public static int GetParent(FunctionOpenTemp temp)
+	{
+		if(temp.m_parent_menu_id == -1)
+		{
+			return -1;
+		}
+		else
+		{
+			while(temp.m_parent_menu_id != -1)
+			{
+				temp = GetTemplateById(temp.m_parent_menu_id);
+			}
+			return temp.m_iID;
+		}
+	}
+
     public static bool GetWhetherContainID(int id)
     {
         int size = m_EnableFuncIDList.Count;
@@ -481,7 +509,6 @@ public class FunctionOpenTemp : XmlLoadManager
     public static void UpdateRedSpotDataHierarchy()
     {
         UpdateIfSubRedSpotSetTrue();
-
         for (int i = 0; i < 4; i++)
         {
             UpdateIfSubRedSpotSetFalse();

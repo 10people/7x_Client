@@ -20,7 +20,8 @@ public class MainCityAddFunction : MYNGUIPanel
 	public GameObject m_objEff;
 	public GameObject m_objEff1;
 	public GameObject m_objThis;
-	public UISprite m_UISpriteButton;
+	public FunctionButtonManager m_FunctionButtonManager;
+	private FunctionOpenTemp m_FunctionOpenTemp;
 
 	// Use this for initialization
 	void Start ()
@@ -31,25 +32,16 @@ public class MainCityAddFunction : MYNGUIPanel
 	public void set(string data)
 	{
 		m_id = int.Parse(data);
+		m_FunctionOpenTemp = FunctionOpenTemp.GetTemplateById(m_id);
+		m_FunctionButtonManager.SetData(m_FunctionOpenTemp);
 		m_iNum = 0;
 		m_AddFunctionSatatae = AddFunctionSatatae.Eff;
 		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100178 ).path);
 		string spriteName = m_id + "";
-//		if(spriteName.IndexOf("Circle") != -1)
-//		{
-			UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff1, EffectTemplate.getEffectTemplateByEffectId( 100107 ).path);
-//		}
-//		else
-//		{
-//			UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, m_objEff1, EffectTemplate.getEffectTemplateByEffectId( 100106 ).path);
-//		}
-		m_UISpriteButton.spriteName = m_id + "";
 
-//		Debug.Log(FunctionUnlock.getGroudById(m_id));
-//		Debug.Log(FunctionUnlock.getGroudById(m_id).desID);
-//		Debug.Log(DescIdTemplate.GetDescriptionById(FunctionUnlock.getGroudById(m_id).desID));
+		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff1, EffectTemplate.getEffectTemplateByEffectId( 100107 ).path);
 
-		m_UILabelDes.text = DescIdTemplate.GetDescriptionById(FunctionUnlock.getGroudById(m_id).desID);
+		m_UILabelDes.text = m_FunctionOpenTemp.Des;
 	}
 	
 	// Update is called once per frame
@@ -61,11 +53,11 @@ public class MainCityAddFunction : MYNGUIPanel
 			m_iNum ++;
 			if(m_iNum <= 15)
 			{
-				m_UISpriteButton.gameObject.transform.localScale = new Vector3(m_iNum * 0.1f, m_iNum * 0.1f, m_iNum * 0.1f);
+				m_FunctionButtonManager.gameObject.transform.localScale = new Vector3(m_iNum * 0.1f, m_iNum * 0.1f, m_iNum * 0.1f);
 			}
 			else if(m_iNum <= 20)
 			{
-				m_UISpriteButton.gameObject.transform.localScale = new Vector3( 1 + (20 - m_iNum) * 0.1f, 1 + (20 - m_iNum) * 0.1f, 1 + (20 - m_iNum) * 0.1f);
+				m_FunctionButtonManager.gameObject.transform.localScale = new Vector3( 1 + (20 - m_iNum) * 0.1f, 1 + (20 - m_iNum) * 0.1f, 1 + (20 - m_iNum) * 0.1f);
 			}
 			else
 			{
@@ -83,8 +75,8 @@ public class MainCityAddFunction : MYNGUIPanel
 		if(m_AddFunctionSatatae == AddFunctionSatatae.Click)
 		{
 			MainCityUI.TryRemoveFromObjectList(MainCityUI.m_MainCityUI.m_AddFunction);
+			MainCityUI.m_MainCityUI.AddButton(m_FunctionButtonManager, m_FunctionOpenTemp);
 			Destroy(m_objThis);
-			ClientMain.closePopUp();
 		}
 	}
 	

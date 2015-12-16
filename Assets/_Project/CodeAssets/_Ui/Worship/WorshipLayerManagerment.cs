@@ -10,26 +10,35 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     public List<UILabel> m_ListCount;
     public List<GameObject> m_ListSignal;
     public List<GameObject> m_listParent;
-
+    public UIGrid m_YuJueSuffParent;
+    public List<EventIndexHandle> m_listRewardEvent;
     public EventIndexHandle m_EventTouch;
     public GameObject m_MainParent;
+    public GameObject m_Durable_UI;
+    public GameObject m_RewardObj;
+    public UIGrid m_RewardParent;
+
+    public List<EventIndexHandle> m_ListCancelEvent;
     private MoBaiInfo worshipShow = new MoBaiInfo();
     private List<string> listInsufficientYuJue = new List<string>();
 
     public UISprite m_PopSprite;
     public UILabel m_PopLabel;
     public UILabel m_LabelTopUp;
-
+ 
     public GameObject m_TanHao;
     public ScaleEffectController m_SEC;
     public UIGrid m_Gride;
     public GameObject m_HidenInfo;
+
+    public UIProgressBar m_ProgressBar;
     private int yuanBaoCost = 0;
     struct RewardYuJueInfo
     {
       public string icon;
       public string count;
     };
+    private List<RewardYuJueInfo> _listReward = new List<RewardYuJueInfo>();
     private List<RewardYuJueInfo> listRewardYuJue = new List<RewardYuJueInfo>();
     private List<Vector3> listEffectPos = new List<Vector3>();
     private List<Vector3> lisMoveTarget = new List<Vector3>();
@@ -38,7 +47,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 
     private bool isWorship = false;
     private int touchIndex = -1;
-
+    private int _mobaiCount = 0;
     public struct YuJueShow
     {
         public int icon;
@@ -58,13 +67,15 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     void Start()
     {
         m_ListEvent.ForEach(p => p.m_Handle += EventGet);
-        m_EventTouch.m_Handle += TopUp;
+        
+        m_listRewardEvent.ForEach(p => p.m_Handle += ShowReward);
         m_SEC.OpenCompleteDelegate += RequestData;
+        m_ListCancelEvent.ForEach(p => p.m_Handle += HiddenReward);
     }
 
     void ShowInfo()
     {
-        m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
+        //m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
         Vector3[] effect = { new Vector3(-265, -120, 0), new Vector3(28, -120, 0), new Vector3(350, -120, 0) };
         listEffectPos.AddRange(effect);
 
@@ -77,15 +88,96 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         m_HidenInfo.SetActive(true);
          TidyInsufficientYuJueInfo();
     }
-
-    void TopUp(int index)
+ 
+    void ShowReward(int index)
     {
-        MainCityUI.TryRemoveFromObjectList(m_MainParent);
-        TopUpLoadManagerment.m_instance.LoadPrefab(false);
+        m_RewardObj.SetActive(true);
+        switch (index)
+        {
+            case 0:
+                {
+                    if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes1)
+                    {
 
-        Destroy(m_MainParent);
+                    }
+                    else
+                    {
+                        TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(1).award1);
+                    }
+                }
+                break;
+            case 1:
+                {
+                    if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes2)
+                    {
+
+                    }
+                    else
+                    {
+                        TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(1).award2);
+                    }
+                }
+                break;
+            case 2:
+                {
+                    if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3)
+                    {
+
+                    }
+                    else
+                    {
+                        TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(1).award3);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 
+    void TuTengRewardData(string _award)
+    {
+        int size_all = m_RewardParent.transform.childCount;
+        for (int i = 0;i < size_all; i++)
+        {
+            Destroy(m_RewardParent.transform.GetChild(i).gameObject);
+        }
+
+        _listReward.Clear();
+
+        if (_award.IndexOf("#") > -1)
+        {
+            string[] ss = _award.Split('#');
+            for (int j = 0; j < ss.Length; j++)
+            {
+                string[] award = ss[j].Split(':');
+                RewardYuJueInfo reward = new RewardYuJueInfo();
+
+                reward.icon =  award[1];
+
+                reward.count =  award[2];
+                _listReward.Add(reward);
+            }
+        }
+        else
+        {
+            string[] award = _award.Split(':');
+            RewardYuJueInfo reward = new RewardYuJueInfo();
+            reward.icon = award[1];
+            reward.count = award[2];
+            _listReward.Add(reward);
+        }
+        CreateItem();
+    }
+    void HiddenReward(int index)
+    {
+        m_RewardObj.SetActive(false);
+        int size = m_RewardParent.transform.childCount;
+        for (int i = 0; i < size; i++)
+        {
+            Destroy(m_RewardParent.transform.GetChild(i).gameObject);
+        }
+    }
     void Update()
     {
         if (JunZhuData.Instance().m_RefreshCopperInfo)
@@ -98,7 +190,6 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             else
             {
                 m_ListCount[0].text = MyColorData.getColorString(5, LianmengMoBaiTemplate.GetShowInfoByType(1).needNum.ToString());
-
             }
         }
     }
@@ -106,7 +197,6 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     void EventGet(int index, GameObject gameobject)
     {
         touchIndex = index;
-     
         switch ((WorshipButtonEnumManegernent)index)
         {
             case WorshipButtonEnumManegernent.E_WORSHIP_COMMON_WORSHIP:
@@ -128,14 +218,12 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
                     {
                         if (JunZhuData.Instance().m_junzhuInfo.vipLv >= VipFuncOpenTemplate.GetNeedLevelByKey(7))
                         {
-
                             ConnectServer(index);
                         }
                         else
                         {
                             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoad);
                         }
-                      
                     }
                     else
                     {
@@ -262,7 +350,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 
                         t_qx.Deserialize(t_tream, worship, worship.GetType());
                         worshipShow = worship;
-                     
+
                         if (touchIndex > 0)
                         {
                             m_ListEvent[touchIndex].GetComponent<Collider>().enabled = true;
@@ -298,30 +386,12 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
                         ShowWorshipInfo();
                         return true;
                     }
-                //case ProtoIndexes.S_BUY_TIMES_INFO:
-                //    {
-                //        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
-                //        QiXiongSerializer t_qx = new QiXiongSerializer();
 
-                //        BuyTimesInfo tempInfo = new BuyTimesInfo();
-                //        t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-                //        m_ListCount[10].text = MyColorData.getColorString(1, tempInfo.tongBiHuaFei + NameIdTemplate.GetName_By_NameId(900002) + "!");
-                //        m_ListCount[11].text = MyColorData.getColorString(1, tempInfo.tongBiHuoDe + NameIdTemplate.GetName_By_NameId(990039) + "。");
-                //        m_ListCount[12].text = MyColorData.getColorString(1, tempInfo.tongBi + NameIdTemplate.GetName_By_NameId(990040));
-
-                //        yuanBaoCost = tempInfo.tongBiHuaFei;
-                //        m_ListSignal[0].SetActive(true);
-                //        if (touchIndex == 3)
-                //        {
-                //            m_ListSignal[0].SetActive(false);
-                //        }
-                //        else
-                //        {
-                //            m_ListSignal[0].SetActive(true);
-                //        }
-                //        return true;
-                //    }
+                case ProtoIndexes.IMMEDIATELY_JOIN_RESP:/** 返回领奖信息 **/
+                    {
+                        return true;
+                    }
             }
         }
         return false;
@@ -334,10 +404,14 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     }
     void ShowWorshipInfo()
     {
+        _mobaiCount = worshipShow.buffCount;
+        MainCityUI.m_MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         m_TanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(400010));
- 
-        m_ListCount[13].text = worshipShow.buffCount.ToString();
-       
+        m_listRewardEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes1 <= worshipShow.buffCount);
+        m_listRewardEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes2 <= worshipShow.buffCount);
+        m_listRewardEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3 <= worshipShow.buffCount);
+        m_ProgressBar.value = worshipShow.buffCount / float.Parse(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3.ToString());
+        m_ListCount[13].text = worshipShow.buffCount.ToString()+ "/" + LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3.ToString();
         m_ListGameobjectShow[6].GetComponent<UICamera>().enabled = true;
         if (GetCopperCoinWorshipEnable())
         {
@@ -605,17 +679,16 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     float pos_x2 = 0;
     void InsufficientYuJueCreate()
     {
-        if (m_listParent[0].transform.childCount > 0)
+        if (m_YuJueSuffParent.transform.childCount > 0)
         {
-            int childCount = m_listParent[0].transform.childCount;
+            int childCount = m_YuJueSuffParent.transform.childCount;
             for (int i = 0; i < childCount; i++)
             {
-                Destroy(m_listParent[0].transform.GetChild(i).gameObject);
+                Destroy(m_YuJueSuffParent.transform.GetChild(i).gameObject);
             }
         }
         int size = listInsufficientYuJue.Count;
-
-        m_listParent[0].transform.localPosition = new Vector3(ParentPosOffset(listInsufficientYuJue.Count, 56), 20, 0);
+        m_YuJueSuffParent.transform.localPosition = new Vector3(ParentPosOffset(listInsufficientYuJue.Count, 56), 20, 0);
         indexNum2 = 0;
         for (int i = 0; i < listInsufficientYuJue.Count; i++)
         {
@@ -751,10 +824,10 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 
     void ResLoaded2(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
-        if (m_listParent[0] != null)
+        if (m_YuJueSuffParent != null)
         {
             GameObject tempObject = (GameObject)Instantiate(p_object);
-            tempObject.transform.parent = m_listParent[0].transform;
+            tempObject.transform.parent = m_YuJueSuffParent.transform;
             tempObject.transform.localPosition = Vector3.zero;
             IconSampleManager iconSampleManager = tempObject.GetComponent<IconSampleManager>();
             iconSampleManager.SetIconByID(int.Parse(listInsufficientYuJue[indexNum2]), "1",8);
@@ -762,12 +835,11 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             iconSampleManager.SetIconPopText(int.Parse(listInsufficientYuJue[indexNum2]), NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(int.Parse(listInsufficientYuJue[indexNum2])).nameId), DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(int.Parse(listInsufficientYuJue[indexNum2])).descId));
 
             tempObject.transform.localScale = Vector3.one*0.5f;
-
             if (indexNum2 < listInsufficientYuJue.Count - 1)
             {
                 indexNum2++;
             }
-            m_listParent[0].GetComponent<UIGrid>().repositionNow = true;
+            m_YuJueSuffParent.repositionNow = true;
         }
         else
         {
@@ -800,6 +872,65 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         {
             p_object = null;
         }
+    }
 
+
+    void CreateItem()
+    {
+        int size_ReWard = _listReward.Count;
+        _indexNum22 = 0;
+        m_RewardParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size_ReWard - 1, 108), 0, 0);
+        for (int i = 0; i < size_ReWard; i++)
+        {
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
+                              ResLoaded22);
+        }
+    }
+    private int _indexNum22 = 0;
+    void ResLoaded22(ref WWW p_www, string p_path, UnityEngine.Object p_object)
+    {
+        if (m_RewardParent != null)
+        {
+            GameObject tempObject = (GameObject)Instantiate(p_object);
+            tempObject.name = _listReward[_indexNum22].icon;
+            tempObject.transform.parent = m_RewardParent.transform;
+            tempObject.transform.localPosition = Vector3.zero;
+            IconSampleManager iconSampleManager = tempObject.GetComponent<IconSampleManager>();
+            iconSampleManager.SetIconByID(int.Parse(_listReward[_indexNum22].icon), _listReward[_indexNum22].count.ToString(), 12);
+            iconSampleManager.SetIconPopText(int.Parse(_listReward[_indexNum22].icon)
+                , NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(int.Parse(_listReward[_indexNum22].icon)).nameId)
+                , DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(int.Parse(_listReward[_indexNum22].icon)).descId));
+            tempObject.transform.localScale = Vector3.one * 0.9f;
+        
+            if (_indexNum22 < _listReward.Count - 1)
+            {
+                _indexNum22++;
+            }
+            m_RewardParent.repositionNow = true;
+        }
+        else
+        {
+            p_object = null;
+        }
+    }
+
+    private void Ward(GameObject obj)
+    {
+        if ( int.Parse(obj.name) == 0)
+        {
+
+        }
+
+    }
+
+    private int ShowMaskInfo(int index)
+    {
+        int index_num = 0;
+        if (index / 99.0f < 0.5f)
+        {
+            index_num++;
+        }
+
+        return 0;
     }
 }

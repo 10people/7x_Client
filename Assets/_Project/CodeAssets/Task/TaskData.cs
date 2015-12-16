@@ -10,17 +10,19 @@ using ProtoBuf.Meta;
 
 public class TaskData : Singleton<TaskData>, SocketProcessor
 {
-    public int ShowId = 0;
+    public int ShowId = -1;
+	public int m_iShowOtherId = -1;
     public int m_iCurMissionIndex;
     public bool showTitleOn;
-    public bool isReload = false;
+    public bool m_MainReload = false;
+    public bool m_SideReload = false;
     public bool m_DailyQuestIsRefresh = false;
     public bool m_TaskGetAwardComplete = false;
     public bool m_DestroyMiBao = false;
     public bool isRefrsh = false;
     public ZhuXianTemp m_MainComplete;
+    public int m_ShowType = 0;// 0:main 1:side 2:daily
     private bool _isMainComplete = false;
-
 
     public Dictionary<int, ZhuXianTemp> m_TaskInfoDic = new Dictionary<int, ZhuXianTemp>();
 
@@ -139,6 +141,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
             switch (p_message.m_protocol_index)
             {
                 case ProtoIndexes.S_TaskList://返回任务列表
+				Debug.Log(ProtoIndexes.S_TaskList);
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
@@ -148,7 +151,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
 
                         t_qx.Deserialize(t_tream, TaskListReponse, TaskListReponse.GetType());
 
-
+                       
                         if (TaskListReponse.list != null && TaskListReponse.list.Count > 0)
                         {
                             for (int i = 0; i < TaskListReponse.list.Count; i++)
@@ -233,6 +236,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                         return true;
                     }
                 case ProtoIndexes.S_TaskSync://服务器向客户端发送任务进度
+				Debug.Log(ProtoIndexes.S_TaskSync);
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
@@ -255,7 +259,15 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
 
                             }
                             m_TaskInfoDic[TaskSyncReponse.task.id].progress = TaskSyncReponse.task.progress;
-                            isReload = true;
+                            if (ZhuXianTemp.getTemplateById(TaskSyncReponse.task.id).type == 0)
+                            {
+                                m_MainReload = true;
+                            }
+                            else
+                            {
+                                m_SideReload = true;
+                            }
+                          
                         }
                         else
                         {
@@ -263,30 +275,44 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                             list.Add(TaskSyncReponse.task);
                             RefreshTaskInfo(list);
 
-                            isReload = true;
+                            if (ZhuXianTemp.getTemplateById(TaskSyncReponse.task.id).type == 0)
+                            {
+                                m_MainReload = true;
+                            }
+                            else
+                            {
+                                m_SideReload = true;
+                            }
                         }
 
                         m_TagIsShow = true;
                         return true;
                     }
                 case ProtoIndexes.S_DAILY_TASK_LIST_RESP://返回日常任务列表
+				Debug.Log(ProtoIndexes.S_DAILY_TASK_LIST_RESP);
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
                         QiXiongSerializer t_qx = new QiXiongSerializer();
 
                         DailyTaskListResponse dailyTaskList = new DailyTaskListResponse();
+                
                         t_qx.Deserialize(t_tream, dailyTaskList, dailyTaskList.GetType());
-                        m_TaskDailyDic.Clear();
-                        listComplete.Clear();
-                        listUnComplete.Clear();
-                        RefreshDailyTaskInfo(dailyTaskList);
-                        m_TagIsShow = true;
-                        m_DailyQuestIsRefresh = true;
+               
+                        if (dailyTaskList.taskInfo != null)
+                        {
+                            m_TaskDailyDic.Clear();
+                            listComplete.Clear();
+                            listUnComplete.Clear();
+                            RefreshDailyTaskInfo(dailyTaskList);
+                            m_TagIsShow = true;
+                            m_DailyQuestIsRefresh = true;
+                        }
                         return true;
                     }
 
                 case ProtoIndexes.S_DAILY_TASK_FINISH_INFORM://返回日常任务更新
+				Debug.Log(ProtoIndexes.S_DAILY_TASK_FINISH_INFORM);
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
@@ -315,6 +341,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                         return true;
                     }
                 case ProtoIndexes.S_GetTaskRwardResult: //主线任务领取
+				Debug.Log(ProtoIndexes.S_GetTaskRwardResult);
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
@@ -341,7 +368,14 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                         }
                                         break;
                                     }
-                                    isReload = true;
+                                    if (ZhuXianTemp.getTemplateById(TaskSyncReponse.taskId).type == 0)
+                                    {
+                                        m_MainReload = true;
+                                    }
+                                    else
+                                    {
+                                        m_SideReload = true;
+                                    }
                                     m_TaskGetAwardComplete = true;
                                     if (!string.IsNullOrEmpty(award))
                                     {
@@ -369,6 +403,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                     }
 
                 case ProtoIndexes.S_DAILY_TASK_GET_REWARD_RESP://日常任务领取
+				Debug.Log(ProtoIndexes.S_DAILY_TASK_GET_REWARD_RESP);
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
                         QiXiongSerializer t_qx = new QiXiongSerializer();
@@ -475,6 +510,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
     void RefreshTaskInfo(List<TaskInfo> templist)
     {
         List<ZhuXianTemp> listMain = new List<ZhuXianTemp>();
+		List<ZhuXianTemp> listOther = new List<ZhuXianTemp>();
         List<ZhuXianTemp> listBranchComplete = new List<ZhuXianTemp>();
         List<ZhuXianTemp> listBranchUnComplete = new List<ZhuXianTemp>();
 
@@ -499,6 +535,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                     }
                     else
                     {
+						listOther.Add(ZhuXianTemp.tempTasks[i]);
                         if (templist[j].progress < 0)
                         {
                             listBranchComplete.Add(ZhuXianTemp.tempTasks[i]);
@@ -512,6 +549,25 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                 }
             }
         }
+		if(listMain.Count == 0)
+		{
+			//MainCityUI.m_MainCityUI.m_MainCityUILT.m_MainCityTaskManagerMain.closeShow();
+			ShowId = -1;
+		}
+		else
+		{
+			ShowId = listMain[0].id;
+		}
+		if(listOther.Count == 0)
+		{
+			m_iShowOtherId = -1;
+		}
+		else
+		{
+			m_iShowOtherId = listOther[0].id;
+
+		}
+
         int s_main = listMain.Count;
         for (int i = 0; i < listMain.Count; i++)
         {
@@ -520,17 +576,10 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                 showTitleOn = true;
                 ShowId = listMain[i].id;
             }
-
             if (listMain[0].progress < 0)
             {
-                ShowId = listMain[0].id;
                 _isMainComplete = true;
                 m_MainComplete = listMain[0];
-                SetTaskPopupInfo(true);
-            }
-            else
-            {
-                SetTaskPopupInfo(false);
             }
             ShowId = listMain[0].id;
             // Debug.Log("listMain[i].idlistMain[i].idlistMain[i].id ::" + listMain[i].id);
@@ -574,6 +623,14 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
             }
             m_TaskInfoDic.Add(listBranchUnComplete[i].id, listBranchUnComplete[i]);
         }
+
+		if(MainCityUI.m_MainCityUI != null)
+		{
+			MainCityUI.m_MainCityUI.m_MainCityUILT.m_MainCityTaskManagerMain.setData(ShowId);
+			MainCityUI.m_MainCityUI.m_MainCityUILT.m_MainCityTaskManagerOther.setData(m_iShowOtherId);
+			MainCityUI.m_MainCityUI.m_MainCityUILT.setLTPos(false);
+		}
+
         m_TagIsShow = true;
     }
     List<DailyTaskInfo> listComplete = new List<DailyTaskInfo>();
@@ -649,29 +706,6 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
         }
         m_TagIsShow = true;
     }
-
-    public void SetTaskPopupInfo(bool isfinish)// 设置主界面任务相关显示
-    {
-//		if(MainCityUI.m_MainCityUI.m_MainCityUIL.m_MainCityTaskManager.m_UILabelCur.text == "")
-//		{
-//			if(isfinish)
-//			{
-//				MainCityUI.m_MainCityUI.m_MainCityUIL.m_MainCityTaskManager.m_UILabelCur.text = "完成任务";
-//				MainCityUI.m_MainCityUI.m_MainCityUIL.m_MainCityTaskManager.m_UISpriteBG.gameObject.SetActive(true);
-//			}
-//			else
-//			{
-//				MainCityUI.m_MainCityUI.m_MainCityUIL.m_MainCityTaskManager.m_UILabelCur.text = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.ShowId].title;
-//			}
-//
-//		}
-//		else
-//		{
-			ClientMain.addPopUP(10, 2, "", null);
-//		}
-    }
-
-   
 
     void OnDestroy()
     {

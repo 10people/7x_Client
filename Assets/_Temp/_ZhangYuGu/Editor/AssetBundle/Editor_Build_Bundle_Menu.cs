@@ -40,21 +40,21 @@ public class Editor_Build_Bundle_Menu : MonoBehaviour {
 	#region Build All
 
 	#if UNITY_ANDROID
-	[MenuItem("Build/Bundles/Build All/Android", false, (int)MenuItemPriority.BUILD_ALL ) ]
+	[MenuItem("Build/Bundles/Build All 4/Android", false, (int)MenuItemPriority.BUILD_ALL ) ]
 	public static void Debug_Editor_Build_All_Android() {
 		Editor_Build_Bundle.Build_All( BuildTarget.Android );
 	}
 	#endif
 
 //	#if UNITY_ANDROID || UNITY_STANDALONE
-//	[MenuItem("Build/Bundles/Build All/Windows", false, (int)MenuItemPriority.BUILD_ALL )]
+//	[MenuItem("Build/Bundles/Build All 4/Windows", false, (int)MenuItemPriority.BUILD_ALL )]
 //	static void Debug_Editor_Build_All_Windows() {
 //		Editor_Build_Bundle.Build_All( BuildTarget.StandaloneWindows );
 //	}
 //	#endif
 
 	#if UNITY_IOS
-	[MenuItem("Build/Bundles/Build All/iOS", false, (int)MenuItemPriority.BUILD_ALL )]
+	[MenuItem("Build/Bundles/Build All 4/iOS", false, (int)MenuItemPriority.BUILD_ALL )]
 	public static void Debug_Editor_Build_All_iOS() {
 		Editor_Build_Bundle.Build_All( BuildTarget.iOS );
 	}

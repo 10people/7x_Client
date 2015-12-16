@@ -93,6 +93,14 @@ public class GameObjectHelper {
 					
 					continue;
 				}
+
+				if (t_items[i].GetType() == typeof(BundleHelper)){
+					//					Debug.Log( "Skip Bundle_Loader." );
+					
+					//					Bundle_Loader.CleanData();
+					
+					continue;
+				}
 				
 				if (t_items[i].GetType() == typeof(ThirdPlatform)){
 					continue;

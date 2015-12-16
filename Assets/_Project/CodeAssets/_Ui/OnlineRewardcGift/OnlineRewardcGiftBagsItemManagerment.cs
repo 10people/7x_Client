@@ -19,6 +19,7 @@ public class OnlineRewardcGiftBagsItemManagerment :  MonoBehaviour
     public int type = 0;
     public UILabel m_labelButton;
     public UILabel m_labelTitle;
+    
     public UIGrid m_Gride;
 
     public struct RewardInfo

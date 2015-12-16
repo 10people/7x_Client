@@ -64,7 +64,6 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     private int _WadhStoneCount = 0;
     void Start()
     {
-        _WadhStoneCount = BagData.Instance().GetCountByItemId(910002);
         m_MaskTouch.m_Handle += TouchEvent;
         listEvent.ForEach(p => p.m_Handle += TouchEvent);
         m_EventPress.m_Handle += PressEvent;
@@ -79,6 +78,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     }
     void OnEnable()
     {
+        _WadhStoneCount = BagData.Instance().GetCountByItemId(910002);
         SocketTool.RegisterMessageProcessor(this);
     }
     void PressEvent(int index)
@@ -269,7 +269,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                         if (buttonNum == 0)
                         {
                             ShowRangeInfo(WashInfo);
-                            ShowWashInfo();
+                         
                             buttonNum = 0;
                         }
                         else if (buttonNum == 1 || buttonNum == 2)
@@ -304,6 +304,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                             m_WashSuccesse.SetActive(false);
                             buttonNum = 0;
                         }
+                        ShowWashInfo();
                         _WashInfoSave = WashInfo;
                         return true;
                     }
@@ -580,7 +581,14 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
 
     private bool ShowWetherWash()
     {
-        if (EquipWashInfo.wqSHAdd == 0 && EquipWashInfo.wqJMAdd == 0 && EquipWashInfo.wqBJAdd == 0 && EquipWashInfo.wqRXAdd == 0 && EquipWashInfo.jnSHAdd == 0 && EquipWashInfo.jnJMAdd == 0 && EquipWashInfo.jnBJAdd == 0 && EquipWashInfo.jnRXAdd == 0)
+        if (EquipWashInfo.wqSHAdd == 0 
+            && EquipWashInfo.wqJMAdd == 0 
+            && EquipWashInfo.wqBJAdd == 0 
+            && EquipWashInfo.wqRXAdd == 0 
+            && EquipWashInfo.jnSHAdd == 0 
+            && EquipWashInfo.jnJMAdd == 0
+            && EquipWashInfo.jnBJAdd == 0 
+            && EquipWashInfo.jnRXAdd == 0)
         {
             return true;
         }
@@ -589,7 +597,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     void ShowWashSuccessInfo()
     {
         FreshLab();
-        m_WashSuccesse.SetActive(true);
+       // m_WashSuccesse.SetActive(true);
         if (buttonNum == 3 || buttonNum == 4)
         {
             m_WashSuccesse.SetActive(false);
@@ -814,11 +822,11 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
             m_MaskTouch.gameObject.SetActive(false); 
             listEvent[0].transform.GetComponent<Collider>().enabled = true;
             listEvent[1].transform.GetComponent<Collider>().enabled = true;
-            m_UnWashSuccesse.SetActive(true);
+           // m_UnWashSuccesse.SetActive(true);
             //m_labelStone.text = _WadhStoneCount.ToString();
             //listEvent[0].gameObject.SetActive(false);
             UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjNewAttribute, EffectIdTemplate.GetPathByeffectId(100180), null);
-            // m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().AppendAttributeUpdate(EquipWashInfo.zhuangbeiID);
+            m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().AppendAttributeUpdate(EquipWashInfo.zhuangbeiID);
             ShowRangeInfo(EquipWashInfo);
             StartCoroutine(WaitSecond());
         }

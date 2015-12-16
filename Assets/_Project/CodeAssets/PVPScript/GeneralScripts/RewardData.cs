@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 public class RewardData {
 
-	public int itemId;
-	public int itemCount;
+	public int itemId;//物品id
+	public int itemCount;//物品数量
+	public int xingJi;//秘宝星级
 
 	public float moveTime1 = 0.2f;
 	public float stopTime = 0.2f;
@@ -20,10 +21,11 @@ public class RewardData {
 	/// </summary>
 	/// <param name="tempItemId">Temp item identifier.</param>
 	/// <param name="tempItemCount">Temp item count.</param>
-	public RewardData (int tempItemId,int tempItemCount)
+	public RewardData (int tempItemId,int tempItemCount,int tempXingJi = -1)
 	{
 		itemId = tempItemId;
 		itemCount = tempItemCount;
+		xingJi = tempXingJi;
 	}
 
 	/// <summary>

@@ -194,19 +194,24 @@ public class EffectTemplate : XmlLoadManager
 		return EffectIdTemplate.getEffectTemplateByEffectId( effectId );
 	}
 
-//	public static EffectTemplate getEffectTemplateByEffectId( int effectId ){
-//		foreach( EffectTemplate template in templates ){
-//			if( template.effectId == effectId ){
-//				return template;
-//			}
-//		}
-//		
-//		Debug.LogError("XML ERROR: Can't get EffectTemplate with effectId " + effectId);
-//		
-//		return null;
-//	}
+    public static string GetEffectPathByID(int effectId)
+    {
+        return EffectIdTemplate.getEffectTemplateByEffectId(effectId).path;
+    }
 
-	public static string GetEffectPath( Effects p_effect_enum ){
+    //	public static EffectTemplate getEffectTemplateByEffectId( int effectId ){
+    //		foreach( EffectTemplate template in templates ){
+    //			if( template.effectId == effectId ){
+    //				return template;
+    //			}
+    //		}
+    //		
+    //		Debug.LogError("XML ERROR: Can't get EffectTemplate with effectId " + effectId);
+    //		
+    //		return null;
+    //	}
+
+    public static string GetEffectPath( Effects p_effect_enum ){
 		int t_id = (int)p_effect_enum;
 
 		return EffectIdTemplate.GetPathByeffectId( t_id );

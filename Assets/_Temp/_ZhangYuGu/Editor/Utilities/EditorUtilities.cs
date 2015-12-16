@@ -20,6 +20,7 @@ public class EditorUtilities : MonoBehaviour
 		OPEN_DRAMA_DIRECTOR,
 		OPEN_JSON,
 		OPEN_UI_2D,
+		OPEN_LOAD_TASK,
 		OPEN_OTHER,
         
 		UTILITIES___FIND_LARGE_TEX = 10,
@@ -60,6 +61,10 @@ public class EditorUtilities : MonoBehaviour
 		EditorWindow.GetWindow<UI2DWindow>( false, "2D UI Tool", true );
 	}
 
+	[MenuItem("Utility/Open/Load Task Tool", false, (int)MenuItemPriority.OPEN_LOAD_TASK)]
+	static void OpenUILoadTaskTool(){
+		EditorWindow.GetWindow<UILoadTaskWindow>( false, "Load Task Tool", true );
+	}
 
 	[MenuItem("Utility/Open/Open Other", false, (int)MenuItemPriority.OPEN_OTHER)]
 	static void OpenOther(){

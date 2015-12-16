@@ -1382,7 +1382,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public void devolopmentDebug()
 	{
-		BattleControlor.Instance ().battleTime = 85;
+		BattleControlor.Instance ().battleTime = 235;
 
 //		CityGlobalData.autoFightDebug = !CityGlobalData.autoFightDebug;
 //
@@ -1726,7 +1726,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		req.dropeenItemNpcs = BattleControlor.Instance ().droppenList;
 
-		req.score = BattleControlor.Instance ().bossKilled + BattleControlor.Instance ().heroKilled + BattleControlor.Instance ().soldierKilled + BattleControlor.Instance ().gearKilled;
+		req.score = BattleControlor.Instance ().battleCheck.bossKilled + BattleControlor.Instance ().battleCheck.heroKilled + BattleControlor.Instance ().battleCheck.soldierKilled + BattleControlor.Instance ().battleCheck.gearKilled;
 
 		MemoryStream tempStream = new MemoryStream();
 		
@@ -1839,7 +1839,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	private void OnSendExitBattle()
 	{
-		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+		LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 		                         PrepareForBattleField.CONST_BATTLE_LOADING_NETWORK, "SendEnterBattle" );
 		
 		PlayerState t_state = new PlayerState();
@@ -1997,43 +1997,43 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		int descLanguageId = 0;
 
-		if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_All)
+		if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_All)
 		{
 			descLanguageId = 1082;
 
 			winDescNum.text = "";
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_Boss)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Boss)
 		{
 			descLanguageId = 1083;
 
-			winDescNum.text = BattleControlor.Instance().bossKilled + "/" + winDescTemplate.killNum;
+			winDescNum.text = BattleControlor.Instance().battleCheck.bossKilled + "/" + winDescTemplate.killNum;
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_Hero)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Hero)
 		{
 			descLanguageId = 1092;
 
-			winDescNum.text = BattleControlor.Instance().heroKilled + "/" + winDescTemplate.killNum;
+			winDescNum.text = BattleControlor.Instance().battleCheck.heroKilled + "/" + winDescTemplate.killNum;
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_Soldier)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Soldier)
 		{
 			descLanguageId = 1090;
 
-			winDescNum.text = BattleControlor.Instance().soldierKilled + "/" + winDescTemplate.killNum;
+			winDescNum.text = BattleControlor.Instance().battleCheck.soldierKilled + "/" + winDescTemplate.killNum;
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_Gear)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Gear)
 		{
 			descLanguageId = 1088;
 
-			winDescNum.text = BattleControlor.Instance().gearKilled + "/" + winDescTemplate.killNum;
+			winDescNum.text = BattleControlor.Instance().battleCheck.gearKilled + "/" + winDescTemplate.killNum;
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Reach_Destination)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Destination)
 		{
 			descLanguageId = 1085;
 
 			winDescNum.text = ((int)Vector3.Distance(BattleControlor.Instance().getKing().transform.position, winDescTemplate.destination) - winDescTemplate.destinationRadius) + "m";
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Reach_Time)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Time)
 		{
 			descLanguageId = 1086;
 

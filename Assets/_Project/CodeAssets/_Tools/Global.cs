@@ -535,12 +535,15 @@ public class Global
 		Bundle_Loader.LoadAssetFromResources( p_resource_path, p_type, p_delegate, p_callback_list, p_open_simulate );
 		return;
 #elif BUNDLE_PATH
+		BundleHelper.LoadAsset( p_resource_path, p_type, p_delegate, p_callback_list );
+
+		/*
 		TimeHelper.ResetTaggedTime( TimeHelper.CONST_TIME_INFO_NOT_FOUND_IN_BUNDLE );
 
 		if( !Bundle_Loader.LoadAssetFromBundle( p_resource_path, p_type, p_delegate, p_callback_list ) ){
-			if( ConfigTool.GetBool( ConfigTool.CONST_LOG_BUNDLE_DOWNLOADING, false ) ){
-				Debug.LogError( "Resources not Contained: " + p_resource_path );
-			}
+//			if( ConfigTool.GetBool( ConfigTool.CONST_LOG_BUNDLE_DOWNLOADING, false ) ){
+//				Debug.LogError( "Resources not Contained: " + p_resource_path );
+//			}
 
 			TimeHelper.UpdateTimeInfo( TimeHelper.CONST_TIME_INFO_NOT_FOUND_IN_BUNDLE );
 			
@@ -548,6 +551,7 @@ public class Global
 
 			Bundle_Loader.LoadAssetFromResources( p_resource_path, p_type, p_delegate, p_callback_list, p_open_simulate );
 		}
+		*/
 		
 		return;
 #else
@@ -678,7 +682,7 @@ public class Global
 	#region Load Level
 
 	public static void LoadLevel( string p_level_name, Bundle_Loader.LoadResourceDone p_delegate ){
-		//		Debug.Log( "LoadLevel( " + p_level_name + " )" );
+//		Debug.Log( "Global.LoadLevel( " + p_level_name + " )" );
 		
 		#if RESOURCE_PATH
 		
@@ -686,14 +690,16 @@ public class Global
 		
 		return;
 		#elif BUNDLE_PATH
-		if( !Bundle_Loader.LoadLevelBundle( p_level_name, p_delegate ) ){
-			if( ConfigTool.GetBool( ConfigTool.CONST_LOG_BUNDLE_DOWNLOADING, true ) ){
-				Debug.LogError( "Level not Contained: " + p_level_name );
-			}
+		BundleHelper.LoadLevelAsset( p_level_name, p_delegate );
 
-			ExecLevelLoad( p_level_name, p_delegate );
-		}
-		
+//		if( !Bundle_Loader.LoadLevelBundle( p_level_name, p_delegate ) ){
+//			if( ConfigTool.GetBool( ConfigTool.CONST_LOG_BUNDLE_DOWNLOADING, true ) ){
+//				Debug.LogError( "Level not Contained: " + p_level_name );
+//			}
+//
+//			ExecLevelLoad( p_level_name, p_delegate );
+//		}
+//		
 		return;
 		#else
 		Debug.LogError( "Error, Path Not Defined." );

@@ -15,6 +15,8 @@ public class _Debug : MonoBehaviour {
 
 	private static _Debug m_instance = null;
 
+	public Color m_temp_color;
+
 	#region Mono
 
 	void Awake(){
@@ -32,8 +34,41 @@ public class _Debug : MonoBehaviour {
 	}
 
 	void OnGUI(){
+		{
+			GUIHelper.GUILayoutVerticalSpace( 0.1f );
+		}
+		
+		GUILayout.BeginVertical();
+		
+		{
+			string t_path = "_3D/Fx/Prefabs/BattleEffect/BOSSwudi";
 
+			if( GUILayout.Button( "Global Fx" ) ){
+				FxTool.PlayGlobalFx( t_path, FxLoadDelegate );
+			}
+
+			if( GUILayout.Button( "Global Fx X" ) ){
+				FxTool.PlayGlobalFx( t_path, FxLoadDelegate, new Vector3( 10, 10, 10 ), new Vector3( 30, 30, 30 ) );
+			}
+			
+			if( GUILayout.Button( "Local Fx" ) ){
+				FxTool.PlayLocalFx( t_path, gameObject, FxLoadDelegate );
+			}
+
+			if( GUILayout.Button( "Local Fx" ) ){
+				FxTool.PlayLocalFx( t_path, gameObject, FxLoadDelegate, new Vector3( -10, -10, -10 ), new Vector3( -30, -30, -30 ) );
+			}
+		}
+		
+		GUILayout.EndVertical();
 	}
+
+	public void FxLoadDelegate( GameObject p_fx ){
+		Debug.Log( "FxLoadDelegate( " + p_fx + " )" );
+
+		GameObjectHelper.LogGameObjectInfo( p_fx );
+	}
+
 
 	void Update () {
 //		Debug.Log ( "Update.TimeScale: " + Time.timeScale );

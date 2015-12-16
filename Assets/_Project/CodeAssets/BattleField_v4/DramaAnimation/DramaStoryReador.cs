@@ -123,9 +123,9 @@ public class DramaStoryReador : MonoBehaviour
 				{
 					flag = true;
 
-					if(gt.para1 == 1)
+					if(gt.triggerType == 1)
 					{
-						storyBoardIds.Add(gt.para2);
+						storyBoardIds.Add(gt.ap1);
 					}
 				}
 				else if(flag == true)
@@ -173,7 +173,7 @@ public class DramaStoryReador : MonoBehaviour
 
 	public void resLoadCallback(ref WWW p_www, string p_path, Object p_object)
 	{
-		StaticLoading.ItemLoaded( StaticLoading.m_loading_sections,
+		LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 		                         PrepareForBattleField.CONST_BATTLE_LOADING_DATA, p_path );
 
 		if (resList.ContainsKey (p_path) == false)

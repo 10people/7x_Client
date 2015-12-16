@@ -6,7 +6,17 @@ using System.Linq;
 
 public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonManager>
 {
-    #region xml data
+	[HideInInspector]public int m_iWantToX;
+	[HideInInspector]public int m_iWantToY;
+	[HideInInspector]public float m_iWantMoveX;
+	[HideInInspector]public float m_iWantMoveY;
+	[HideInInspector]public int m_iMoveIndex = 0;
+	[HideInInspector]public int m_iMoveNum = 10;
+	public int m_index;
+	public MYNGUIButtonMessage m_MYNGUIButtonMessage;
+	private FunctionOpenTemp m_FuncTemplate;
+	private int m_RankIndex;//排序
+	private int m_Type;
 
     public void SetData(FunctionOpenTemp template)
     {
@@ -19,27 +29,12 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
         }
         else
         {
-            //Set main sprite.
-            if (!MainCityUIRB.ButtonSpriteNameTransferDic.ContainsKey(m_index))
-            {
-                Debug.LogError("ButtonSpriteNameTransferDic donot contain key:" + m_index);
-                return;
-            }
-            m_ButtonSprite.spriteName = MainCityUIRB.ButtonSpriteNameTransferDic[m_index];
+            m_ButtonSprite.spriteName = "Function_" + m_index;
         }
 
-        m_button_name = template.key;
         m_RankIndex = template.rank;
-        m_Type = (MainCityUIRB.ButtonType)template.type;
+        m_Type = template.type;
     }
-
-    public int m_index;
-    private FunctionOpenTemp m_FuncTemplate;
-    private string m_button_name;
-    private int m_RankIndex;
-    private MainCityUIRB.ButtonType m_Type;
-
-    #endregion
 
     /// <summary>
     /// Locked item cannot be enabled.
@@ -50,53 +45,10 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
     public GameObject RedAlertObject;
 
     /// <summary>
-    /// Lock sprite
-    /// </summary>
-    public GameObject DenableObject;
-
-    /// <summary>
-    /// Button click component.
-    /// </summary>
-    public UIButton m_UiButton;
-
-    /// <summary>
-    /// Disable all buttons click manually.
-    /// </summary>
-    public static bool CanClick
-    {
-        get { return !ClientMain.m_isNewOpenFunction; }
-    }
-
-    /// <summary>
-    /// Is function button enabled or not.
-    /// </summary>
-    public bool IsEnabled;
-
-    /// <summary>
     /// Is red alert object showed or particle effect showed.
     /// </summary>
     [HideInInspector]
     public bool IsAlertShowed;
-
-    public void EnableButton()
-    {
-        IsEnabled = true;
-        m_UiButton.enabled = true;
-        m_ButtonSprite.color = Color.white;
-        DenableObject.SetActive(false);
-    }
-
-    public void DenableButton()
-    {
-        //Cancel show sprite when null button.
-        if (m_index < 0) return;
-
-        IsEnabled = false;
-        m_UiButton.enabled = false;
-        m_ButtonSprite.color = Color.grey;
-        DenableObject.SetActive(true);
-        HideRedAlert();
-    }
 
     /// <summary>
     /// Show red alert object.
@@ -109,12 +61,6 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
         //cancel show locked button
         if (s_LockedList.Contains(m_index)) return;
 
-        if (!m_UiButton.isEnabled)
-        {
-            Debug.LogWarning("============Cancel show redalert in button:" + m_index + " cause button not enabled.");
-            return;
-        }
-
         IsAlertShowed = true;
         RedAlertObject.SetActive(true);
     }
@@ -125,67 +71,34 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
         RedAlertObject.SetActive(false);
     }
 
-    public delegate void OnFuncBTNClick(int index);
+	public void GoToPos()
+	{
+		gameObject.transform.localPosition = new Vector3(m_iWantToX, m_iWantToY, 0);
+	}
 
-    public OnFuncBTNClick m_OnFuncBtnClick;
+	public bool Move()
+	{
+		if(m_iMoveIndex != m_iMoveNum)
+		{
+			gameObject.transform.localPosition = new Vector3(gameObject.transform.localPosition.x + m_iWantMoveX, gameObject.transform.localPosition.y + m_iWantMoveY, 0);
+			m_iMoveIndex ++;
+			return false;
+		}
+		else
+		{
+			GoToPos();
+			return true;
+		}
+	}
 
-    [HideInInspector]
-    public bool IsShowEffect;
+	public void setMoveDis()
+	{
+		m_iWantMoveX = (m_iWantToX - gameObject.transform.localPosition.x) / m_iMoveNum;
+		
+		m_iWantMoveY = (m_iWantToY - gameObject.transform.localPosition.y) / m_iMoveNum;
 
-    public void ShowEffect()
-    {
-        if (IsShowEffect)
-        {
-            //[FIX]open effect here
-            //UI3DEffectTool.Instance().ShowTopLayerEffect(gameObject, EffectTemplate.GetEffectPath(EffectTemplate.Effects.UI_FUNCTION_OPEN));
-        }
-    }
-
-    void OnDisable()
-    {
-        if (IsShowEffect)
-        {
-            //[FIX]open effect here
-            //UI3DEffectTool.Instance().ClearUIFx(gameObject);
-        }
-    }
-
-    private readonly Vector2 popLabelDistance = new Vector2(0, 25);
-    private const float popLabelDuration = 2.0f;
-    private const float popLabelProtectDuration = 1.5f;
-
-    private void OnClick()
-    {
-        //Disable all buttons click manually.
-        if (!CanClick) return;
-
-        if (!IsEnabled)
-        {
-            //get not open warning tips.
-            string str = m_FuncTemplate.m_sNotOpenTips;
-
-            if (!string.IsNullOrEmpty(str) && str != "-1")
-            {
-                ClientMain.m_UITextManager.createText(str);
-            }
-
-            return;
-        }
-
-        IsShowEffect = false;
-        //[FIX]open effect here
-        //UI3DEffectTool.Instance().ClearUIFx(gameObject);
-
-        if (m_OnFuncBtnClick != null)
-        {
-            m_OnFuncBtnClick(m_index);
-        }
-    }
-
-    /// <summary>
-    /// protection for pop up icon not open info.
-    /// </summary>
-    private bool canShowPopLabel = true;
+		m_iMoveIndex = 0;
+	}
 
     /// <summary>
     /// for buttons compare, not used in this version.

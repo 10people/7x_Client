@@ -81,11 +81,11 @@ public class Console_SetBattleFieldFx {
 
 	#region Support
 
-	private static bool m_enable_attack_fx 		= true;
+	private static bool m_enable_attack_fx = true;
 	
-	private static bool m_enable_skill_fx 		= true;
+	private static bool m_enable_skill_fx = true;
 
-	private static bool m_enable_bloodlabel 	= true;
+	private static bool m_enable_bloodlabel = true;
 	
 	private static void ExecSetAttackFx( bool p_enable ){
 		m_enable_attack_fx = p_enable;

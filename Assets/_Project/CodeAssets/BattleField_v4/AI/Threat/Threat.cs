@@ -35,7 +35,9 @@ public class Threat
 	{
 		get
 		{
-			return lengthThreat + skillThreat + actionThreat;
+			//return lengthThreat + skillThreat + actionThreat;
+
+			return skillThreat + actionThreat;
 		}
 	}
 

@@ -396,7 +396,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         m_EquipSaveInfo = "1:3";
     }
 
-    public static int ParentPosOffset(int count, int distance)
+    public static int ParentPosOffset(int count, int distance)//坐标计算
     {
         if (count % 2 == 0)
         {
@@ -504,5 +504,47 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         return;
     }
 
+    public struct RewardInfo
+    {
+        public int type;
+        public int count;
+        public int icon;
+    }
 
+    public static List<RewardInfo> GetRewardInfo(string _jiangli)
+    {
+        List<RewardInfo> listRewardInfo = new List<RewardInfo>();
+        if (!string.IsNullOrEmpty(_jiangli))
+        {
+            if (_jiangli.IndexOf('#') > -1)
+            {
+                string[] tempAwardList = _jiangli.Split('#');
+                for (int i = 0; i < tempAwardList.Length; i++)
+                {
+                    string[] tempAwardItemInfo = tempAwardList[i].Split(':');
+                    RewardInfo rInfo = new RewardInfo();
+                    rInfo.type = int.Parse(tempAwardItemInfo[0]);
+                    rInfo.icon = int.Parse(tempAwardItemInfo[1]);
+                    rInfo.count = int.Parse(tempAwardItemInfo[2]);
+                    listRewardInfo.Add(rInfo);
+                }
+            }
+            else
+            {
+                string[] tempAwardItemInfo = _jiangli.Split(':');
+                RewardInfo rInfo = new RewardInfo();
+                rInfo.type = int.Parse(tempAwardItemInfo[0]);
+                rInfo.icon = int.Parse(tempAwardItemInfo[1]);
+                rInfo.count = int.Parse(tempAwardItemInfo[2]);
+                listRewardInfo.Add(rInfo);
+            }
+
+            return listRewardInfo;
+        }
+        else
+        {
+            return null;
+            Debug.Log("Award is Null !!!");
+        }
+    }
 }

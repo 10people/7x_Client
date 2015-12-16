@@ -49,7 +49,10 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 			SocketTool.Instance ().Connect();
 
 			LoginReq loginReq = new LoginReq ();
-			
+
+			if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+				loginReq.name = ThirdPlatform.GetMyAppToken();
+			}
 			if( ThirdPlatform.IsPPPLatform() ){
 				loginReq.name = ThirdPlatform.GetPPToken();
 			}
@@ -175,9 +178,9 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
                                     //
                                     //						Application.LoadLevel ( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
 
-                                    SceneManager.EnterCreateRole();
+                                    //SceneManager.EnterCreateRole();
 
-                                    //					EnterBattleField.EnterBattlePve( 0, 0, LevelType.LEVEL_NORMAL );
+                                    					EnterBattleField.EnterBattlePve( 0, 1, LevelType.LEVEL_NORMAL );
                                     //	
                                     //					NGUIDebug.ClearLogs ();
 

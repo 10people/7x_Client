@@ -71,10 +71,10 @@ public class TanBaoReward : MonoBehaviour {
 	/// Blocks the controller.
 	/// </summary>
 	/// <param name="isActive">If set to <c>true</c> is active.</param>
-	public void BlockController (bool isActive)
+	public void BlockController (bool isActive,float alpha)
 	{
 		blockHandler.gameObject.SetActive (isActive);
-		blockHandler.GetComponent<UISprite> ().alpha = 0.1f;
+		blockHandler.GetComponent<UISprite> ().alpha = alpha;
 	}
 
 	/// <summary>
@@ -186,7 +186,7 @@ public class TanBaoReward : MonoBehaviour {
 		}
 		sureHandler.m_handler -= SureBtnHandlerBack;
 		sureHandler.gameObject.SetActive (false);
-		BlockController (false);
+		BlockController (false,0);
 	}
 
 	/// <summary>

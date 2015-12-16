@@ -274,13 +274,13 @@ public class UIBox : MonoBehaviour
 
     void OnEnable()
     {
-        MainCityUI.TryAddToObjectList(gameObject);
+//        MainCityUI.TryAddToObjectList(gameObject);
         HouseModelController.TryAddToHouseDimmer(gameObject);
     }
 
     void OnDisable()
     {
-        MainCityUI.TryRemoveFromObjectList(gameObject);
+//        MainCityUI.TryRemoveFromObjectList(gameObject);
         HouseModelController.TryRemoveFromHouseDimmer(gameObject);
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using qxmobile.protobuf;
+
 public class SignShadow : MonoBehaviour
 {
 	public GameObject signRing_B;
@@ -78,10 +80,10 @@ public class SignShadow : MonoBehaviour
 
 		signRing_R_B.SetActive (false);
 
-		refreshnextNode ();
+		LateUpdate ();
 	}
 
-	private void refreshnextNode()
+	private void refreshnextNode(int nodeType)
 	{
 		float length = 999;
 
@@ -92,10 +94,12 @@ public class SignShadow : MonoBehaviour
 				|| t_node.isAlive == false 
 				|| t_node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0 
 				|| t_node.targetNode == null
-				|| t_node.nodeData.nodeType == qxmobile.protobuf.NodeType.NPC
-				|| t_node.nodeData.nodeType == qxmobile.protobuf.NodeType.GOD;
+				|| t_node.nodeData.nodeType == NodeType.NPC
+				|| t_node.nodeData.nodeType == NodeType.GOD;
 
 			if(nFlag == true) continue;
+
+			if(nodeType != 0 && (int)t_node.nodeData.nodeType != nodeType) continue;
 
 			float t_length = Vector3.Distance(BattleControlor.Instance().getKing().transform.position, t_node.transform.position);
 
@@ -108,7 +112,7 @@ public class SignShadow : MonoBehaviour
 		}
 	}
 
-	private void refreshnextNodeById()
+	private void refreshnextNodeById(int nodeType)
 	{
 		int nodeId = 999;
 		
@@ -117,10 +121,12 @@ public class SignShadow : MonoBehaviour
 			bool nFlag = t_node == null 
 				|| t_node.isAlive == false 
 				|| t_node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0
-				|| t_node.nodeData.nodeType == qxmobile.protobuf.NodeType.NPC
-				|| t_node.nodeData.nodeType == qxmobile.protobuf.NodeType.GOD;
+				|| t_node.nodeData.nodeType == NodeType.NPC
+				|| t_node.nodeData.nodeType == NodeType.GOD;
 
 			if(nFlag == true) continue;
+
+			if(nodeType != 0 && (int)t_node.nodeData.nodeType != nodeType) continue;
 
 			int t_id = t_node.nodeId;
 
@@ -140,20 +146,20 @@ public class SignShadow : MonoBehaviour
 		UpdateRing ();
 	}
 
-	void UpdateArrow ()
+	Vector3 UpdateArrow_Node (int nodeType)
 	{
 		bool nFlag = nextNode == null || nextNode.gameObject.activeSelf == false || nextNode.isAlive == false || nextNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0;
 
 		if(nFlag == true)
 		{
-			refreshnextNode();
+			refreshnextNode(nodeType);
 		}
 
 		nFlag = nextNode == null || nextNode.gameObject.activeSelf == false || nextNode.isAlive == false || nextNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0;
 
 		if (nFlag == true)
 		{
-			refreshnextNodeById();
+			refreshnextNodeById(nodeType);
 		}
 
 		nFlag = nextNode == null || nextNode.isAlive == false || nextNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0;
@@ -165,7 +171,7 @@ public class SignShadow : MonoBehaviour
 				arrowObject.SetActive(false);
 			}
 
-			return;
+			return Vector3.zero;
 		}
 
 		foreach(GameObject arrowObject in signArrows)
@@ -173,14 +179,60 @@ public class SignShadow : MonoBehaviour
 			arrowObject.SetActive(true);
 		}
 
-		unrealObject.transform.forward = nextNode.transform.position - node.transform.position;
+		return nextNode.transform.position;
+	}
+
+	void UpdateArrow()
+	{
+		Vector3 targetPo = Vector3.zero;
+
+		BattleWinTemplate winTemplate = BattleWinTemplate.getNextWinTemplate ();
+
+		if(winTemplate.winType == BattleWinFlag.EndType.Kill_All)
+		{
+			targetPo = UpdateArrow_Node (0);
+		}
+		else if(winTemplate.winType == BattleWinFlag.EndType.Kill_Boss)
+		{
+			targetPo = UpdateArrow_Node ((int)NodeType.BOSS);
+		}
+		else if(winTemplate.winType == BattleWinFlag.EndType.Kill_Gear)
+		{
+			targetPo = UpdateArrow_Node ((int)NodeType.GEAR);
+		}
+		else if(winTemplate.winType == BattleWinFlag.EndType.Kill_Hero)
+		{
+			targetPo = UpdateArrow_Node ((int)NodeType.HERO);
+		}
+		else if(winTemplate.winType == BattleWinFlag.EndType.Kill_Soldier)
+		{
+			targetPo = UpdateArrow_Node ((int)NodeType.SOLDIER);
+		}
+		else if(winTemplate.winType == BattleWinFlag.EndType.PROTECT)
+		{
+			targetPo = BattleControlor.Instance().getNodebyId(winTemplate.protectList[0]).transform.position;
+		}
+		else if(winTemplate.winType == BattleWinFlag.EndType.Reach_Destination)
+		{
+			targetPo = winTemplate.destination;
+		}
+
+		if(Vector3.Distance(targetPo, Vector3.zero) < .2f)
+		{
+			return;
+		}
+
+		if(Vector3.Distance(targetPo - node.transform.position, Vector3.zero) > .2f)
+		{
+			unrealObject.transform.forward = targetPo - node.transform.position;
+		}
 
 		foreach(GameObject arrowObject in signArrows)
 		{
 			arrowObject.transform.localEulerAngles = new Vector3 (0, unrealObject.transform.localEulerAngles.y, 0);
 		}
 
-		float length = Vector3.Distance (nextNode.transform.position, node.transform.position);
+		float length = Vector3.Distance (targetPo, node.transform.position);
 
 		length = length > 10f ? 10f : length;
 
@@ -208,8 +260,8 @@ public class SignShadow : MonoBehaviour
 			bool nFlag = t_node == null 
 				|| t_node.isAlive == false 
 				|| t_node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0
-				|| t_node.nodeData.nodeType == qxmobile.protobuf.NodeType.NPC
-				|| t_node.nodeData.nodeType == qxmobile.protobuf.NodeType.GOD;
+				|| t_node.nodeData.nodeType == NodeType.NPC
+				|| t_node.nodeData.nodeType == NodeType.GOD;
 			
 			if(nFlag == true) continue;
 

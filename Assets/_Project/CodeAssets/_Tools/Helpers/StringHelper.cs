@@ -27,6 +27,62 @@ public class StringHelper {
 		}
 	}
 
+	/// <summary>
+	/// Get string before index by bytes.
+	/// </summary>
+	/// <param name="origStr">original string</param>
+	/// <param name="Index">get bytes before index</param>
+	/// <returns>cutted string</returns>
+	public static string GetSubStringWithByteIndex(string origStr, int Index){
+		if (string.IsNullOrEmpty(origStr) || Index < 0){
+			return null;
+		}
+
+		int bytesCount = System.Text.Encoding.GetEncoding("utf-8").GetByteCount(origStr);
+
+		if (bytesCount > Index){
+			int readyLength = 0;
+			for (int i = 0; i < origStr.Length; i++)
+			{
+				var byteLength = System.Text.Encoding.GetEncoding("utf-8").GetByteCount(new char[] { origStr[i] });
+				readyLength += byteLength;
+				if (readyLength == Index)
+				{
+					origStr = origStr.Substring(0, i + 1);
+					break;
+				}
+				else if (readyLength > Index)
+				{
+					origStr = origStr.Substring(0, i);
+					break;
+				}
+			}
+		}
+
+		return origStr;
+	}
+
+	#endregion
+
+
+
+	#region Prefix, Surfix, Extension
+
+	/// _Temp/_ZhangYuGu/Scenes/_Empty/_Empty
+	/// to
+	/// _Empty
+	public static string GetWWWFileName( string p_www_path ){
+		if( string.IsNullOrEmpty( p_www_path ) ){
+			return "";
+		}
+
+		if( p_www_path.LastIndexOf( "/" ) >= 0 ){
+			return p_www_path.Substring( p_www_path.LastIndexOf( "/" ) + 1 );
+		}
+
+		return p_www_path;
+	}
+
 	public static string AddPrefix( string p_string, string p_prefix ){
 		if (!p_string.StartsWith(p_prefix))
 		{
@@ -78,39 +134,13 @@ public class StringHelper {
 		return false;
 	}
 
-	/// <summary>
-	/// Get string before index by bytes.
-	/// </summary>
-	/// <param name="origStr">original string</param>
-	/// <param name="Index">get bytes before index</param>
-	/// <returns>cutted string</returns>
-	public static string GetSubStringWithByteIndex(string origStr, int Index){
-		if (string.IsNullOrEmpty(origStr) || Index < 0){
-			return null;
+	/// Remove any extension surfix if exist(.prefab/.mat/.fbx).
+	public static string RemoveExtension( string p_string ){
+		if( p_string.IndexOf( "." ) < 0 ){
+			return p_string;
 		}
 
-		int bytesCount = System.Text.Encoding.GetEncoding("utf-8").GetByteCount(origStr);
-
-		if (bytesCount > Index){
-			int readyLength = 0;
-			for (int i = 0; i < origStr.Length; i++)
-			{
-				var byteLength = System.Text.Encoding.GetEncoding("utf-8").GetByteCount(new char[] { origStr[i] });
-				readyLength += byteLength;
-				if (readyLength == Index)
-				{
-					origStr = origStr.Substring(0, i + 1);
-					break;
-				}
-				else if (readyLength > Index)
-				{
-					origStr = origStr.Substring(0, i);
-					break;
-				}
-			}
-		}
-
-		return origStr;
+		return p_string.Substring( 0, p_string.LastIndexOf( "." ) );
 	}
 
 	#endregion

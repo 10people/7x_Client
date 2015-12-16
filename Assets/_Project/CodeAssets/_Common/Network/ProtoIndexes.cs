@@ -28,7 +28,7 @@ public class ProtoIndexes
 	public const short C_DROP_CONN 			= 120;
 
 
-	/// send and receive
+	/// send and receive, ping
 	public const short DELAY_REQ 		= 110;
 	public const short DELAY_RET 		= 111;
 	
@@ -134,6 +134,8 @@ public class ProtoIndexes
     public const short ALLIANCE_BATTLE_RESULT = 4216;
 
     public const short BUFFER_INFO = 4217;
+
+    public const short PLAYER_REVIVE_REQUEST = 4218;
 
     // red notice info
     public const short RED_NOTICE_INFO = 4220;
@@ -1139,6 +1141,10 @@ public class ProtoIndexes
 	/// 推送押镖战斗记录
 	/// </summary>
 	public const short S_PUSH_YBRECORD_RESP = 3439;
+	//请求购买马车道具
+	public const short C_BUYHORSEPROP_REQ = 3440;
+	//请求购买马车道具返回
+	public const short S_BUYHORSEBUFF_RESP = 3441;
 
 	//------------------------------天赋协议-----------------------------
 	public const short C_TALENT_INFO_REQ = 30537;//发送获得初始化数据
@@ -1249,10 +1255,19 @@ public class ProtoIndexes
 	public const short C_FUWEN_OPERAT_REQ = 8003;//符文操作请求
 	public const short S_FUWEN_OPERAT_RES = 8004;//符文操作返回
 	public const short S_FUWEN_TIPS = 4221;//符文红点提醒
+
+	//**********************************君主技能进阶*****************************************
+	public const short C_HEROSKILLUP_DATA_REQ = 4250;//技能数据申请
+	public const short S_HEROSKILLUP_DATA_RES = 4251;//技能数据返回
+	public const short C_HEROSKILLUP_UP_REQ = 4252;//升级申请
+	public const short S_HEROSKILLUP_UP_RES = 4253;//升级返回
    
     //一键强化
     public const short C_EQUIP_UPALLGRADE = 24019;//一键强化
     public const short S_EQUIP_UPALLGRADE = 24020;//一键强化返回
 
-
+    // 请求兑换cdkey，协议号4230
+    // 相应兑换cskey，协议号4231
+    public const short C_CDKEY_REQ = 4230;//一键强化
+    public const short S_CDKEY_RES = 4231;//一键强化返回
 }

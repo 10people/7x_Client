@@ -23,43 +23,43 @@ public class BattlePauseControllor : MonoBehaviour
 			winDescTemplate = BattleWinTemplate.templates[0];
 		}
 
-		if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_All)
+		if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_All)
 		{
 			descLanguageId = 1082;
 			
 			strNum = "";
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_Boss)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Boss)
 		{
 			descLanguageId = 1083;
 			
-			strNum = BattleControlor.Instance().bossKilled + "/" + winDescTemplate.killNum;
+			strNum = BattleControlor.Instance().battleCheck.bossKilled + "/" + winDescTemplate.killNum;
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_Hero)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Hero)
 		{
 			descLanguageId = 1092;
 			
-			strNum = BattleControlor.Instance().heroKilled + "/" + winDescTemplate.killNum;
+			strNum = BattleControlor.Instance().battleCheck.heroKilled + "/" + winDescTemplate.killNum;
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_Soldier)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Soldier)
 		{
 			descLanguageId = 1090;
 			
-			strNum = BattleControlor.Instance().soldierKilled + "/" + winDescTemplate.killNum;
+			strNum = BattleControlor.Instance().battleCheck.soldierKilled + "/" + winDescTemplate.killNum;
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Kill_Gear)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Gear)
 		{
 			descLanguageId = 1088;
 			
-			strNum = BattleControlor.Instance().gearKilled + "/" + winDescTemplate.killNum;
+			strNum = BattleControlor.Instance().battleCheck.gearKilled + "/" + winDescTemplate.killNum;
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Reach_Destination)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Destination)
 		{
 			descLanguageId = 1085;
 			
 			strNum = ((int)Vector3.Distance(BattleControlor.Instance().getKing().transform.position, winDescTemplate.destination) - winDescTemplate.destinationRadius) + "m";
 		}
-		else if(winDescTemplate.winType == BattleWinFlag.WinType.Reach_Time)
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Time)
 		{
 			descLanguageId = 1086;
 			

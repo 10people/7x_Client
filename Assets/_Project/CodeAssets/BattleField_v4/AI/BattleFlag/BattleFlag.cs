@@ -356,7 +356,7 @@ public class BattleFlag : MonoBehaviour
 		
 		if (flag == true) return;
 		
-		BattleUIControlor.Instance ().showDaramControllor (level, template.eventId);
+		BattleUIControlor.Instance ().showDaramControllor (level, template.id);
 	}
 
 	private void OnTriggerHintLabel()

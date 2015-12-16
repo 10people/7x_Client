@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<BattleWin id="1" winType="5" killNum="80" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" showOnUI="1" protectNodeId="0" />
-<BattleWin id="1" winType="3" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" showOnUI="0" protectNodeId="0" />
+<BattleWin id="1" isWin="1" endType="0" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="0" protectList="0" />
+<BattleWin id="1" isWin="0" endType="7" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="1" protectList="1" />
+<BattleWin id="1" isWin="0" endType="3" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="0" protectList="0" />
 </dataset>

@@ -7,7 +7,7 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NpcManager : MonoBehaviour {
     public static NpcManager m_NpcManager;
-    public int m_depth = 1;
+    public int m_depth = 5;
 
     public GameObject m_wayHelp;
 
@@ -37,8 +37,6 @@ public class NpcManager : MonoBehaviour {
     LayerMask m_layerMask = 1 << 8;
 
     Ray m_ray;
-
-
 
     void Awake() {
         m_NpcManager = this;
@@ -941,9 +939,9 @@ public class NpcManager : MonoBehaviour {
 			}
 		}
 	}
-	
-	
-	void LateUpdate()
+
+ 
+    void LateUpdate()
 	{
 		if(UIYindao.m_UIYindao != null)
 		{
@@ -968,9 +966,8 @@ public class NpcManager : MonoBehaviour {
 			}
 		}
 
-		if( MainCityUI.m_MainCityUI == null ){
-//			Debug.Log( "MainCityUI.m_MainCityUI: " + MainCityUI.m_MainCityUI );
-
+		if( MainCityUI.m_MainCityUI == null )
+        {
 			return;
 		}
 
@@ -992,38 +989,31 @@ public class NpcManager : MonoBehaviour {
 				RaycastHit nguiHit;
 				if (Physics.Raycast(m_ray, out nguiHit)) return;//碰到主界面UI按钮
 
-				m_ray = m_camera.ScreenPointToRay(tempMousePosition);
-				RaycastHit hit;
+                //	m_ray = m_camera.ScreenPointToRay(tempMousePosition);
+                m_ray = Camera.main.ScreenPointToRay(tempMousePosition);
 
-                //  Debug.Log("Physics.Raycast(m_ray,out hit, 1000.0f,1) :::" + Physics.Raycast(m_ray, out hit, 1000.0f, m_depth));
-                // Debug.Log("Physics.Raycast(m_ray,out hit, 1000.0f,1) :::" + Physics.Raycast(m_ray, out hit, 1000.0f, 6));
-                //if (Physics.Raycast(m_ray, out hit, 1000.0f, 1)) //碰到3d世界中的npc
-                //{
+                RaycastHit hit;
+                int t_index = LayerMask.NameToLayer("CityRoles");
 
+                m_depth  = 1 << t_index;
 
-                /*
-                       if (Physics.Raycast(m_ray, out hit, 1000.0f, 1))
+                if (Physics.Raycast(m_ray, out hit, 1000.0f, m_depth))
                 {
                     if (hit.collider.transform.name.IndexOf("PlayerObject") > -1)
                     {
-                        string sss = hit.transform.name;
-                        Debug.Log("HITNAMEHITNAMEHITNAMEHITNAMEHITNAMEHITNAME ::" + sss);
-                        return;
+                        if (OtherPlayerInfoManagerment.m_OtherInfo == null)
+                        {
+                            EquipSuoData.CreateChaKan(hit.collider.transform.name);
+                            return;
+                        }
                     }
                 }
-                 */
-                //   Debug.Log("hit.collider.transform.name hit.collider.transform.name  :::  " + hit.collider.transform.name);
-                //}
-                //else 
+               
                 if (Physics.Raycast(m_ray,out hit, 1000.0f,1)) //碰到3d世界中的npc
 				{
-//                   Debug.Log("hit.collider.transform.name" + hit.collider.transform.name);
-
 					m_currentNpcTemplate = null;
-
-//                    Debug.Log(" hit.collider.transform.name hit.collider.transform.name hit.collider.transform.name ::" + hit.collider.transform.name);
-                   
-					if (hit.collider.transform.name == "NpcInCity")
+                    
+                    if (hit.collider.transform.name == "NpcInCity")
                     {
                         PlayerModelController.m_playerModelController.m_agent.enabled = true;
                         m_currentNpcTemplate = hit.collider.transform.GetComponent<NpcObjectItem>().m_template;
@@ -1050,12 +1040,12 @@ public class NpcManager : MonoBehaviour {
                                 PlayerModelController.m_playerModelController.TidyNpcInfo();
                             }
                         }
-                  
+
                     }
-                    else if (hit.collider.transform.name .Equals("RangCollider"))
+                    else if (hit.collider.transform.name.Equals("RangCollider"))
                     {
                         ///  hit.collider.transform.GetComponent<NpcObjectItem>()
-              
+
                         PlayerModelController.m_playerModelController.m_iMoveToNpcID = hit.collider.transform.parent.GetComponent<TenementEnterPortal>().m_indexNum;
                         if (Vector3.Distance(hit.collider.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 2)
                         {
@@ -1064,11 +1054,11 @@ public class NpcManager : MonoBehaviour {
                         }
                         else
                         {
-                             
+
                             {
                                 PlayerModelController.m_playerModelController.TidyTenementNpcInfo();
                             }
-                            
+
                         }
                     }
                     {
