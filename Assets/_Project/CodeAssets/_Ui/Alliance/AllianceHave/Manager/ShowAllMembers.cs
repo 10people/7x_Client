@@ -156,7 +156,7 @@ public class ShowAllMembers : MonoBehaviour {
 
 		}
 	
-		if(_MyAllianceManager.Instance().m_allianceHaveRes.identity == 2)
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 2)
 		{
 			if(mMemberInfo.identity == 0)
 			{
@@ -287,15 +287,15 @@ public class ShowAllMembers : MonoBehaviour {
 	public FloatButtonsController FloatButtonsController;
 	public void ShowBtnList()
 	{
-		if(_MyAllianceManager.Instance().m_allianceHaveRes.identity == 2)
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 2)
 		{
 
 		}
-		if(_MyAllianceManager.Instance().m_allianceHaveRes.identity == 1)
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 1)
 		{
 			
 		}
-		if(_MyAllianceManager.Instance().m_allianceHaveRes.identity == 0)
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 0)
 		{
 			
 		}
@@ -311,7 +311,7 @@ public class ShowAllMembers : MonoBehaviour {
 	{
 		UpTitle down = new UpTitle ();
 		
-		down.id = _MyAllianceManager.Instance().m_allianceHaveRes.id;
+		down.id = NewAlliancemanager.Instance().m_allianceHaveRes.id;
 		down.junzhuId = mMemberInfo.junzhuId;
 		
 		MemoryStream t_stream = new MemoryStream ();
@@ -329,7 +329,7 @@ public class ShowAllMembers : MonoBehaviour {
 	{
 		UpTitle up = new UpTitle ();
 		
-		up.id = _MyAllianceManager.Instance().m_allianceHaveRes.id;
+		up.id = NewAlliancemanager.Instance().m_allianceHaveRes.id;
 		up.junzhuId = mMemberInfo.junzhuId;
 		
 		MemoryStream t_stream = new MemoryStream ();
@@ -373,7 +373,7 @@ public class ShowAllMembers : MonoBehaviour {
 		{
 			TransferAlliance transReq = new TransferAlliance ();
 			
-			transReq.id = _MyAllianceManager.Instance().m_allianceHaveRes.id;
+			transReq.id = NewAlliancemanager.Instance().m_allianceHaveRes.id;
 			transReq.junzhuId = mMemberInfo.junzhuId;
 			
 			MemoryStream t_stream = new MemoryStream ();
@@ -418,7 +418,7 @@ public class ShowAllMembers : MonoBehaviour {
 		{
 			FireMember fire = new FireMember ();
 			
-			fire.id = _MyAllianceManager.Instance().m_allianceHaveRes.id;
+			fire.id = NewAlliancemanager.Instance().m_allianceHaveRes.id;
 			fire.junzhuId = mMemberInfo.junzhuId;
 			
 			MemoryStream t_stream = new MemoryStream ();

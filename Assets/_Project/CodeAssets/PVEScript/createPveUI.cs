@@ -26,6 +26,7 @@ public class createPveUI : MonoBehaviour {
 		CityGlobalData.PveLevel_UI_is_OPen = false;
 		EnterGuoGuanmap.Instance().ShouldOpen_id = 0;
 		MapData.mapinstance.OpenEffect();
+		PassLevelBtn.Instance ().OPenEffect ();
 		MapData.mapinstance.GuidLevel = 0;
 		if(UIYindao.m_UIYindao.m_isOpenYindao)
 		{

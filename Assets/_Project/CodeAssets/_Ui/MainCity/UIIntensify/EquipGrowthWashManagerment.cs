@@ -41,7 +41,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     private bool _isFull = false;
     private List<int> listConnect = new List<int>();
     private List<int> listSuoAdded = new List<int>();
-    private bool washYuanBao = false;
+    //private bool washYuanBao = false;
     private int pinzhiSaved = 0;
     private int YBXiLianLimited = 0;
     private int _yuanbaoConSume = 0;
@@ -109,18 +109,27 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                 }
                 else
                 {
-                    if (index == 2)
+                    if (FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress >= 0)
                     {
-                        washYuanBao = true;
+
+                        UIYindao.m_UIYindao.CloseUI();
                     }
-                    else if (index == 1)
+                    else
                     {
-                        washYuanBao = false;
+                        UIYindao.m_UIYindao.CloseUI();
                     }
+                    //if (index == 2)
+                    //{
+                    //    washYuanBao = true;
+                    //}
+                    //else if (index == 1)
+                    //{
+                    //    washYuanBao = false;
+                    //}
                     CreateMove(m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_11));
                     if (index == 2 && JunZhuData.Instance().m_junzhuInfo.yuanBao < EquipWashInfo.yuanBao && (_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0))
                     {
-                        EquipSuoData.TopUpLayerTip(m_MainParent);
+                        EquipSuoData.TopUpLayerTip(m_MainParent,true);
                         buttonNum = 0;
                     }
                     else
@@ -199,7 +208,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                 }
                 else if (index == 10)
                 {
-                    EquipSuoData.TopUpLayerTip(m_MainParent);
+                    EquipSuoData.TopUpLayerTip(m_MainParent,true);
                 }
                 else if (index == 99)
                 {

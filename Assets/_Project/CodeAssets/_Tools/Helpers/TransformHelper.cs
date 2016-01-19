@@ -63,7 +63,9 @@ public class TransformHelper : MonoBehaviour {
 
 
 	#region Transform
-	
+
+    public static readonly List<string> SpecificGridItemName = new List<string>() {"a_", "z_"};
+
 	/// <summary>
 	/// Set parent's child num to specific num, standardize automaticlly.
 	/// </summary>
@@ -159,6 +161,56 @@ public class TransformHelper : MonoBehaviour {
 		targetChild.gameObject.SetActive(true);
 	}
 	
+	#endregion
+
+
+
+	#region Logs
+
+	public static void LogPosition( GameObject p_gb, string p_prefex = "" ){
+		if( p_gb == null ){
+			Debug.Log( "gameobject is null." );
+
+			return;
+		}
+
+		Debug.Log( p_prefex + " local.pos: " + p_gb.transform.localPosition );
+
+		Debug.Log( p_prefex + " global.pos: " + p_gb.transform.localPosition );
+	}
+
+	
+	
+	public static void LogTransform( GameObject p_gb, string p_prefex = "" ){
+		if( p_gb == null ){
+			Debug.Log( "Object is null." );
+			
+			return;
+		}
+		
+		Transform t_tran = p_gb.transform;
+
+		Debug.Log( p_prefex + ": " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) );
+		
+		// global
+		{
+			Debug.Log( "Scale: " + t_tran.lossyScale );
+			
+			Debug.Log( "Pos: " + t_tran.position );
+			
+			Debug.Log( "Rot: " + t_tran.rotation );
+		}
+		
+		// local
+		{
+			Debug.Log( "Local.Scale: " + t_tran.localScale );
+			
+			Debug.Log( "Local.Pos: " + t_tran.localPosition );
+			
+			Debug.Log( "Local.Rot: " + t_tran.localRotation );
+		}
+	}
+
 	#endregion
 
 

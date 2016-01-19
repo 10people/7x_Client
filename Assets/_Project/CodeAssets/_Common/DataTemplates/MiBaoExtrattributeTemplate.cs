@@ -87,14 +87,14 @@ public class MiBaoExtrattributeTemplate : XmlLoadManager {
 			m_templates_text = null;
 		}
 	}
-	public static MiBaoExtrattributeTemplate GetMiBaoExtrattributeTemplate_By_Id( int id ){
+	public static MiBaoExtrattributeTemplate GetMiBaoExtrattributeTemplate_By_Id_and_level( int id,int leve){
 		{
 			ProcessAsset();
 		}
 		
 		foreach(MiBaoExtrattributeTemplate template in templates)
 		{
-			if( template.Id == id )
+			if( template.Id == id &&template.needlv == leve)
 			{
 				return template;
 			}

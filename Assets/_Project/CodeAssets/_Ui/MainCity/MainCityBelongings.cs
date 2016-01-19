@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// UI controller in main city ui right top.
@@ -9,6 +10,9 @@ public class MainCityBelongings : MYNGUIPanel , SocketListener
 	public UILabel m_MoneyNum;
 	public UILabel m_yuanbaoNuM;
 	public UILabel m_energyNuM;
+
+	public List<MYNGUIButtonMessage> m_listButtonMessage;
+
 	
 	void Start()
 	{
@@ -66,8 +70,8 @@ public class MainCityBelongings : MYNGUIPanel , SocketListener
 		}
 		else if(ui.name.IndexOf("RT_BuyRecharge") != -1)
 		{
-			TopUpLoadManagerment.m_instance.LoadPrefab(true);
-		}
+            EquipSuoData.TopUpLayerTip();
+        }
 		else if(ui.name.IndexOf("RT_BuyEnergy") != -1)
 		{
 			JunZhuData.Instance().BuyTiliAndTongBi(true, false, false);

@@ -445,7 +445,7 @@ public class TaskGridManager : MonoBehaviour
  
         //if (id == 0 && )
         //{
-        //    TopUpLoadManagerment.m_instance.LoadPrefab(false);
+ 
         //    MainCityUI.TryRemoveFromObjectList(m_MainObject);
         //}
         //else 

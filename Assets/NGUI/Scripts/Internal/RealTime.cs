@@ -20,7 +20,7 @@ public class RealTime : MonoBehaviour
 	/// Real time since startup.
 	/// </summary>
 
-	static public float time
+	public static float time
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class RealTime : MonoBehaviour
 	/// Real delta time.
 	/// </summary>
 
-	static public float deltaTime
+	public static float deltaTime
 	{
 		get
 		{

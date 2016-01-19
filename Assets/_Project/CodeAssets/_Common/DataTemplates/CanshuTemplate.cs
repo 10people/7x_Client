@@ -135,6 +135,18 @@ public class CanshuTemplate : XmlLoadManager
     public static string XILIANSHI_MAXTIMES = "XILIANSHI_MAXTIMES";
 	public static string GONGJICHOUHEN_ADD = "GONGJICHOUHEN_ADD";
 	public static string GONGJICHOUHEN_TIME = "GONGJICHOUHEN_TIME";
+	public static string NUQI_HEAVY = "NUQI_HEAVY";
+	public static string NUQI_LIGHT = "NUQI_LIGHT";
+	public static string NUQI_RANGE = "NUQI_RANGE";
+	public static string NUQI_HEAVY_SKILL1 = "NUQI_HEAVY_SKILL1";
+	public static string NUQI_HEAVY_SKILL2 = "NUQI_HEAVY_SKILL2";
+	public static string NUQI_LIGHT_SKILL1 = "NUQI_LIGHT_SKILL1";
+	public static string NUQI_LIGHT_SKILL2 = "NUQI_LIGHT_SKILL2";
+	public static string NUQI_RANGE_SKILL1 = "NUQI_RANGE_SKILL1";
+	public static string NUQI_RANGE_SKILL2 = "NUQI_RANGE_SKILL2";
+	public static string NUQI_SHENGMING_REDUCE = "NUQI_SHENGMING_REDUCE";
+	public static string NUQI_MAX = "NUQI_MAX";
+	public static string NUQI_MAX_0 = "NUQI_MAX_0";
 
 
     /// <summary>

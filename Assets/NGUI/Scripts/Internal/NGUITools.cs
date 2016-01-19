@@ -13,7 +13,7 @@ using System.Reflection;
 /// Helper class containing generic functions used throughout the UI library.
 /// </summary>
 
-static public class NGUITools
+public static class NGUITools
 {
 	static AudioListener mListener;
 
@@ -24,7 +24,7 @@ static public class NGUITools
 	/// Globally accessible volume affecting all sounds played via NGUITools.PlaySound().
 	/// </summary>
 
-	static public float soundVolume
+	public static float soundVolume
 	{
 		get
 		{
@@ -50,7 +50,7 @@ static public class NGUITools
 	/// Helper function -- whether the disk access is allowed.
 	/// </summary>
 
-	static public bool fileAccess
+	public static bool fileAccess
 	{
 		get
 		{
@@ -63,19 +63,19 @@ static public class NGUITools
 	/// Play the specified audio clip.
 	/// </summary>
 
-	static public AudioSource PlaySound (AudioClip clip) { return PlaySound(clip, 1f, 1f); }
+	public static AudioSource PlaySound (AudioClip clip) { return PlaySound(clip, 1f, 1f); }
 
 	/// <summary>
 	/// Play the specified audio clip with the specified volume.
 	/// </summary>
 
-	static public AudioSource PlaySound (AudioClip clip, float volume) { return PlaySound(clip, volume, 1f); }
+	public static AudioSource PlaySound (AudioClip clip, float volume) { return PlaySound(clip, volume, 1f); }
 
 	/// <summary>
 	/// Play the specified audio clip with the specified volume and pitch.
 	/// </summary>
 
-	static public AudioSource PlaySound (AudioClip clip, float volume, float pitch)
+	public static AudioSource PlaySound (AudioClip clip, float volume, float pitch)
 	{
 		volume *= soundVolume;
 
@@ -109,7 +109,7 @@ static public class NGUITools
 	/// New WWW call can fail if the crossdomain policy doesn't check out. Exceptions suck. It's much more elegant to check for null instead.
 	/// </summary>
 
-	static public WWW OpenURL (string url)
+	public static WWW OpenURL (string url)
 	{
 #if UNITY_FLASH
 		Debug.LogError("WWW is not yet implemented in Flash");
@@ -126,7 +126,7 @@ static public class NGUITools
 	/// New WWW call can fail if the crossdomain policy doesn't check out. Exceptions suck. It's much more elegant to check for null instead.
 	/// </summary>
 
-	static public WWW OpenURL (string url, WWWForm form)
+	public static WWW OpenURL (string url, WWWForm form)
 	{
 		if (form == null) return OpenURL(url);
 #if UNITY_FLASH
@@ -146,7 +146,7 @@ static public class NGUITools
 	/// This means Range(0,1) produces 0 instead of 0 or 1. That's unacceptable.
 	/// </summary>
 
-	static public int RandomRange (int min, int max)
+	public static int RandomRange (int min, int max)
 	{
 		if (min == max) return min;
 		return UnityEngine.Random.Range(min, max + 1);
@@ -156,7 +156,7 @@ static public class NGUITools
 	/// Returns the hierarchy of the object in a human-readable format.
 	/// </summary>
 
-	static public string GetHierarchy (GameObject obj)
+	public static string GetHierarchy (GameObject obj)
 	{
 		string path = obj.name;
 
@@ -172,7 +172,7 @@ static public class NGUITools
 	/// Find all active objects of specified type.
 	/// </summary>
 
-	static public T[] FindActive<T> () where T : Component
+	public static T[] FindActive<T> () where T : Component
 	{
 #if UNITY_3_5 || UNITY_4_0
 		return GameObject.FindSceneObjectsOfType(typeof(T)) as T[];
@@ -185,7 +185,7 @@ static public class NGUITools
 	/// Find the camera responsible for drawing the objects on the specified layer.
 	/// </summary>
 
-	static public Camera FindCameraForLayer (int layer)
+	public static Camera FindCameraForLayer (int layer)
 	{
 		int layerMask = 1 << layer;
 
@@ -216,13 +216,13 @@ static public class NGUITools
 	/// Add a collider to the game object containing one or more widgets.
 	/// </summary>
 
-	static public BoxCollider AddWidgetCollider (GameObject go) { return AddWidgetCollider(go, false); }
+	public static BoxCollider AddWidgetCollider (GameObject go) { return AddWidgetCollider(go, false); }
 
 	/// <summary>
 	/// Add a collider to the game object containing one or more widgets.
 	/// </summary>
 
-	static public BoxCollider AddWidgetCollider (GameObject go, bool considerInactive)
+	public static BoxCollider AddWidgetCollider (GameObject go, bool considerInactive)
 	{
 		if (go != null)
 		{
@@ -253,7 +253,7 @@ static public class NGUITools
 	/// Adjust the widget's collider based on the depth of the widgets, as well as the widget's dimensions.
 	/// </summary>
 
-	static public void UpdateWidgetCollider (GameObject go)
+	public static void UpdateWidgetCollider (GameObject go)
 	{
 		UpdateWidgetCollider(go, false);
 	}
@@ -262,7 +262,7 @@ static public class NGUITools
 	/// Adjust the widget's collider based on the depth of the widgets, as well as the widget's dimensions.
 	/// </summary>
 
-	static public void UpdateWidgetCollider (GameObject go, bool considerInactive)
+	public static void UpdateWidgetCollider (GameObject go, bool considerInactive)
 	{
 		if (go != null)
 		{
@@ -274,7 +274,7 @@ static public class NGUITools
 	/// Adjust the widget's collider based on the depth of the widgets, as well as the widget's dimensions.
 	/// </summary>
 
-	static public void UpdateWidgetCollider (BoxCollider bc)
+	public static void UpdateWidgetCollider (BoxCollider bc)
 	{
 		UpdateWidgetCollider(bc, false);
 	}
@@ -283,7 +283,7 @@ static public class NGUITools
 	/// Adjust the widget's collider based on the depth of the widgets, as well as the widget's dimensions.
 	/// </summary>
 
-	static public void UpdateWidgetCollider (BoxCollider box, bool considerInactive)
+	public static void UpdateWidgetCollider (BoxCollider box, bool considerInactive)
 	{
 		if (box != null)
 		{
@@ -312,7 +312,7 @@ static public class NGUITools
 	/// Helper function that returns the string name of the type.
 	/// </summary>
 
-	static public string GetTypeName<T> ()
+	public static string GetTypeName<T> ()
 	{
 		string s = typeof(T).ToString();
 		if (s.StartsWith("UI")) s = s.Substring(2);
@@ -324,7 +324,7 @@ static public class NGUITools
 	/// Helper function that returns the string name of the type.
 	/// </summary>
 
-	static public string GetTypeName (UnityEngine.Object obj)
+	public static string GetTypeName (UnityEngine.Object obj)
 	{
 		if (obj == null) return "Null";
 		string s = obj.GetType().ToString();
@@ -337,7 +337,7 @@ static public class NGUITools
 	/// Convenience method that works without warnings in both Unity 3 and 4.
 	/// </summary>
 
-	static public void RegisterUndo (UnityEngine.Object obj, string name)
+	public static void RegisterUndo (UnityEngine.Object obj, string name)
 	{
 #if UNITY_EDITOR
  #if UNITY_3_5 || UNITY_4_0 || UNITY_4_1 || UNITY_4_2
@@ -353,7 +353,7 @@ static public class NGUITools
 	/// Convenience function that marks the specified object as dirty in the Unity Editor.
 	/// </summary>
 
-	static public void SetDirty (UnityEngine.Object obj)
+	public static void SetDirty (UnityEngine.Object obj)
 	{
 #if UNITY_EDITOR
 		if (obj)
@@ -370,13 +370,13 @@ static public class NGUITools
 	/// Add a new child game object.
 	/// </summary>
 
-	static public GameObject AddChild (GameObject parent) { return AddChild(parent, true); }
+	public static GameObject AddChild (GameObject parent) { return AddChild(parent, true); }
 
 	/// <summary>
 	/// Add a new child game object.
 	/// </summary>
 
-	static public GameObject AddChild (GameObject parent, bool undo)
+	public static GameObject AddChild (GameObject parent, bool undo)
 	{
 		GameObject go = new GameObject();
 #if UNITY_EDITOR
@@ -398,7 +398,7 @@ static public class NGUITools
 	/// Instantiate an object and add it to the specified parent.
 	/// </summary>
 
-	static public GameObject AddChild (GameObject parent, GameObject prefab)
+	public static GameObject AddChild (GameObject parent, GameObject prefab)
 	{
 		GameObject go = GameObject.Instantiate(prefab) as GameObject;
 
@@ -422,7 +422,7 @@ static public class NGUITools
 	/// Calculate the game object's depth based on the widgets within, and also taking panel depth into consideration.
 	/// </summary>
 
-	static public int CalculateRaycastDepth (GameObject go)
+	public static int CalculateRaycastDepth (GameObject go)
 	{
 		UIWidget w = go.GetComponent<UIWidget>();
 		if (w != null) return w.raycastDepth;
@@ -444,7 +444,7 @@ static public class NGUITools
 	/// Gathers all widgets and calculates the depth for the next widget.
 	/// </summary>
 
-	static public int CalculateNextDepth (GameObject go)
+	public static int CalculateNextDepth (GameObject go)
 	{
 		int depth = -1;
 		UIWidget[] widgets = go.GetComponentsInChildren<UIWidget>();
@@ -457,7 +457,7 @@ static public class NGUITools
 	/// Gathers all widgets and calculates the depth for the next widget.
 	/// </summary>
 
-	static public int CalculateNextDepth (GameObject go, bool ignoreChildrenWithColliders)
+	public static int CalculateNextDepth (GameObject go, bool ignoreChildrenWithColliders)
 	{
 		if (ignoreChildrenWithColliders)
 		{
@@ -480,7 +480,7 @@ static public class NGUITools
 	/// Returns '0' if nothing was adjusted, '1' if panels were adjusted, and '2' if widgets were adjusted.
 	/// </summary>
 
-	static public int AdjustDepth (GameObject go, int adjustment)
+	public static int AdjustDepth (GameObject go, int adjustment)
 	{
 		if (go != null)
 		{
@@ -522,7 +522,7 @@ static public class NGUITools
 	/// Bring all of the widgets on the specified object forward.
 	/// </summary>
 
-	static public void BringForward (GameObject go)
+	public static void BringForward (GameObject go)
 	{
 		int val = AdjustDepth(go, 1000);
 		if (val == 1) NormalizePanelDepths();
@@ -533,7 +533,7 @@ static public class NGUITools
 	/// Push all of the widgets on the specified object back, making them appear behind everything else.
 	/// </summary>
 
-	static public void PushBack (GameObject go)
+	public static void PushBack (GameObject go)
 	{
 		int val = AdjustDepth(go, -1000);
 		if (val == 1) NormalizePanelDepths();
@@ -544,7 +544,7 @@ static public class NGUITools
 	/// Normalize the depths of all the widgets and panels in the scene, making them start from 0 and remain in order.
 	/// </summary>
 
-	static public void NormalizeDepths ()
+	public static void NormalizeDepths ()
 	{
 		NormalizeWidgetDepths();
 		NormalizePanelDepths();
@@ -554,7 +554,7 @@ static public class NGUITools
 	/// Normalize the depths of all the widgets in the scene, making them start from 0 and remain in order.
 	/// </summary>
 
-	static public void NormalizeWidgetDepths ()
+	public static void NormalizeWidgetDepths ()
 	{
 		UIWidget[] list = FindActive<UIWidget>();
 		int size = list.Length;
@@ -587,7 +587,7 @@ static public class NGUITools
 	/// Normalize the depths of all the panels in the scene, making them start from 0 and remain in order.
 	/// </summary>
 
-	static public void NormalizePanelDepths ()
+	public static void NormalizePanelDepths ()
 	{
 		UIPanel[] list = FindActive<UIPanel>();
 		int size = list.Length;
@@ -620,19 +620,19 @@ static public class NGUITools
 	/// Create a new UI.
 	/// </summary>
 
-	static public UIPanel CreateUI (bool advanced3D) { return CreateUI(null, advanced3D, -1); }
+	public static UIPanel CreateUI (bool advanced3D) { return CreateUI(null, advanced3D, -1); }
 
 	/// <summary>
 	/// Create a new UI.
 	/// </summary>
 
-	static public UIPanel CreateUI (bool advanced3D, int layer) { return CreateUI(null, advanced3D, layer); }
+	public static UIPanel CreateUI (bool advanced3D, int layer) { return CreateUI(null, advanced3D, layer); }
 
 	/// <summary>
 	/// Create a new UI.
 	/// </summary>
 
-	static public UIPanel CreateUI (Transform trans, bool advanced3D, int layer)
+	public static UIPanel CreateUI (Transform trans, bool advanced3D, int layer)
 	{
 		// Find the existing UI Root
 		UIRoot root = (trans != null) ? NGUITools.FindInParents<UIRoot>(trans.gameObject) : null;
@@ -750,7 +750,7 @@ static public class NGUITools
 	/// Helper function that recursively sets all children with widgets' game objects layers to the specified value.
 	/// </summary>
 
-	static public void SetChildLayer (Transform t, int layer)
+	public static void SetChildLayer (Transform t, int layer)
 	{
 		for (int i = 0; i < t.childCount; ++i)
 		{
@@ -764,7 +764,7 @@ static public class NGUITools
 	/// Add a child object to the specified parent and attaches the specified script to it.
 	/// </summary>
 
-	static public T AddChild<T> (GameObject parent) where T : Component
+	public static T AddChild<T> (GameObject parent) where T : Component
 	{
 		GameObject go = AddChild(parent);
 		go.name = GetTypeName<T>();
@@ -775,7 +775,7 @@ static public class NGUITools
 	/// Add a child object to the specified parent and attaches the specified script to it.
 	/// </summary>
 
-	static public T AddChild<T> (GameObject parent, bool undo) where T : Component
+	public static T AddChild<T> (GameObject parent, bool undo) where T : Component
 	{
 		GameObject go = AddChild(parent, undo);
 		go.name = GetTypeName<T>();
@@ -786,7 +786,7 @@ static public class NGUITools
 	/// Add a new widget of specified type.
 	/// </summary>
 
-	static public T AddWidget<T> (GameObject go) where T : UIWidget
+	public static T AddWidget<T> (GameObject go) where T : UIWidget
 	{
 		int depth = CalculateNextDepth(go);
 
@@ -804,7 +804,7 @@ static public class NGUITools
 	/// It will be sliced if the sprite has an inner rect, and a regular sprite otherwise.
 	/// </summary>
 
-	static public UISprite AddSprite (GameObject go, UIAtlas atlas, string spriteName)
+	public static UISprite AddSprite (GameObject go, UIAtlas atlas, string spriteName)
 	{
 		UISpriteData sp = (atlas != null) ? atlas.GetSprite(spriteName) : null;
 		UISprite sprite = AddWidget<UISprite>(go);
@@ -818,7 +818,7 @@ static public class NGUITools
 	/// Get the rootmost object of the specified game object.
 	/// </summary>
 
-	static public GameObject GetRoot (GameObject go)
+	public static GameObject GetRoot (GameObject go)
 	{
 		Transform t = go.transform;
 
@@ -835,7 +835,7 @@ static public class NGUITools
 	/// Finds the specified component on the game object or one of its parents.
 	/// </summary>
 
-	static public T FindInParents<T> (GameObject go) where T : Component
+	public static T FindInParents<T> (GameObject go) where T : Component
 	{
 		if (go == null) return null;
 #if UNITY_FLASH
@@ -864,7 +864,7 @@ static public class NGUITools
 	/// Finds the specified component on the game object or one of its parents.
 	/// </summary>
 
-	static public T FindInParents<T> (Transform trans) where T : Component
+	public static T FindInParents<T> (Transform trans) where T : Component
 	{
 		if (trans == null) return null;
 #if UNITY_FLASH
@@ -893,7 +893,7 @@ static public class NGUITools
 	/// Destroy the specified object, immediately if in edit mode.
 	/// </summary>
 
-	static public void Destroy (UnityEngine.Object obj)
+	public static void Destroy (UnityEngine.Object obj)
 	{
 		if (obj != null)
 		{
@@ -915,7 +915,7 @@ static public class NGUITools
 	/// Destroy the specified object immediately, unless not in the editor, in which case the regular Destroy is used instead.
 	/// </summary>
 
-	static public void DestroyImmediate (UnityEngine.Object obj)
+	public static void DestroyImmediate (UnityEngine.Object obj)
 	{
 		if (obj != null)
 		{
@@ -928,7 +928,7 @@ static public class NGUITools
 	/// Call the specified function on all objects in the scene.
 	/// </summary>
 
-	static public void Broadcast (string funcName)
+	public static void Broadcast (string funcName)
 	{
 		GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
 		for (int i = 0, imax = gos.Length; i < imax; ++i) gos[i].SendMessage(funcName, SendMessageOptions.DontRequireReceiver);
@@ -938,7 +938,7 @@ static public class NGUITools
 	/// Call the specified function on all objects in the scene.
 	/// </summary>
 
-	static public void Broadcast (string funcName, object param)
+	public static void Broadcast (string funcName, object param)
 	{
 		GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
 		for (int i = 0, imax = gos.Length; i < imax; ++i) gos[i].SendMessage(funcName, param, SendMessageOptions.DontRequireReceiver);
@@ -948,7 +948,7 @@ static public class NGUITools
 	/// Determines whether the 'parent' contains a 'child' in its hierarchy.
 	/// </summary>
 
-	static public bool IsChild (Transform parent, Transform child)
+	public static bool IsChild (Transform parent, Transform child)
 	{
 		if (parent == null || child == null) return false;
 
@@ -1014,7 +1014,7 @@ static public class NGUITools
 	/// and it tries to find a panel on its parent.
 	/// </summary>
 
-	static public void SetActive (GameObject go, bool state)
+	public static void SetActive (GameObject go, bool state)
 	{
 		if (go)
 		{
@@ -1048,7 +1048,7 @@ static public class NGUITools
 	/// Activate or deactivate children of the specified game object without changing the active state of the object itself.
 	/// </summary>
 
-	static public void SetActiveChildren (GameObject go, bool state)
+	public static void SetActiveChildren (GameObject go, bool state)
 	{
 		Transform t = go.transform;
 
@@ -1075,7 +1075,7 @@ static public class NGUITools
 	/// </summary>
 
 	[System.Obsolete("Use NGUITools.GetActive instead")]
-	static public bool IsActive (Behaviour mb)
+	public static bool IsActive (Behaviour mb)
 	{
 #if UNITY_3_5
 		return mb != null && mb.enabled && mb.gameObject.active;
@@ -1088,7 +1088,7 @@ static public class NGUITools
 	/// Helper function that returns whether the specified MonoBehaviour is active.
 	/// </summary>
 
-	static public bool GetActive (Behaviour mb)
+	public static bool GetActive (Behaviour mb)
 	{
 #if UNITY_3_5
 		return mb != null && mb.enabled && mb.gameObject.active;
@@ -1101,7 +1101,7 @@ static public class NGUITools
 	/// Unity4 has changed GameObject.active to GameObject.activeself.
 	/// </summary>
 
-	static public bool GetActive (GameObject go)
+	public static bool GetActive (GameObject go)
 	{
 #if UNITY_3_5
 		return go && go.active;
@@ -1114,7 +1114,7 @@ static public class NGUITools
 	/// Unity4 has changed GameObject.active to GameObject.SetActive.
 	/// </summary>
 
-	static public void SetActiveSelf (GameObject go, bool state)
+	public static void SetActiveSelf (GameObject go, bool state)
 	{
 #if UNITY_3_5
 		go.active = state;
@@ -1127,7 +1127,7 @@ static public class NGUITools
 	/// Recursively set the game object's layer.
 	/// </summary>
 
-	static public void SetLayer (GameObject go, int layer)
+	public static void SetLayer (GameObject go, int layer)
 	{
 		go.layer = layer;
 
@@ -1144,7 +1144,7 @@ static public class NGUITools
 	/// Helper function used to make the vector use integer numbers.
 	/// </summary>
 
-	static public Vector3 Round (Vector3 v)
+	public static Vector3 Round (Vector3 v)
 	{
 		v.x = Mathf.Round(v.x);
 		v.y = Mathf.Round(v.y);
@@ -1156,7 +1156,7 @@ static public class NGUITools
 	/// Make the specified selection pixel-perfect.
 	/// </summary>
 
-	static public void MakePixelPerfect (Transform t)
+	public static void MakePixelPerfect (Transform t)
 	{
 		UIWidget w = t.GetComponent<UIWidget>();
 		if (w != null) w.MakePixelPerfect();
@@ -1179,7 +1179,7 @@ static public class NGUITools
 	/// Save the specified binary data into the specified file.
 	/// </summary>
 
-	static public bool Save (string fileName, byte[] bytes)
+	public static bool Save (string fileName, byte[] bytes)
 	{
 #if UNITY_WEBPLAYER || UNITY_FLASH || UNITY_METRO || UNITY_WP8
 		return false;
@@ -1216,7 +1216,7 @@ static public class NGUITools
 	/// Load all binary data from the specified file.
 	/// </summary>
 
-	static public byte[] Load (string fileName)
+	public static byte[] Load (string fileName)
 	{
 #if UNITY_WEBPLAYER || UNITY_FLASH || UNITY_METRO || UNITY_WP8
 		return null;
@@ -1237,7 +1237,7 @@ static public class NGUITools
 	/// Pre-multiply shaders result in a black outline if this operation is done in the shader. It's better to do it outside.
 	/// </summary>
 
-	static public Color ApplyPMA (Color c)
+	public static Color ApplyPMA (Color c)
 	{
 		if (c.a != 1f)
 		{
@@ -1252,7 +1252,7 @@ static public class NGUITools
 	/// Inform all widgets underneath the specified object that the parent has changed.
 	/// </summary>
 
-	static public void MarkParentAsChanged (GameObject go)
+	public static void MarkParentAsChanged (GameObject go)
 	{
 		UIRect[] rects = go.GetComponentsInChildren<UIRect>();
 		for (int i = 0, imax = rects.Length; i < imax; ++i)
@@ -1263,7 +1263,7 @@ static public class NGUITools
 	/// Access to the clipboard via undocumented APIs.
 	/// </summary>
 
-	static public string clipboard
+	public static string clipboard
 	{
 		get
 		{
@@ -1281,20 +1281,20 @@ static public class NGUITools
 	}
 
 	[System.Obsolete("Use NGUIText.EncodeColor instead")]
-	static public string EncodeColor (Color c) { return NGUIText.EncodeColor(c); }
+	public static string EncodeColor (Color c) { return NGUIText.EncodeColor(c); }
 
 	[System.Obsolete("Use NGUIText.ParseColor instead")]
-	static public Color ParseColor (string text, int offset) { return NGUIText.ParseColor(text, offset); }
+	public static Color ParseColor (string text, int offset) { return NGUIText.ParseColor(text, offset); }
 
 	[System.Obsolete("Use NGUIText.StripSymbols instead")]
-	static public string StripSymbols (string text) { return NGUIText.StripSymbols(text); }
+	public static string StripSymbols (string text) { return NGUIText.StripSymbols(text); }
 
 	/// <summary>
 	/// Extension for the game object that checks to see if the component already exists before adding a new one.
 	/// If the component is already present it will be returned instead.
 	/// </summary>
 
-	static public T AddMissingComponent<T> (this GameObject go) where T : Component
+	public static T AddMissingComponent<T> (this GameObject go) where T : Component
 	{
 		T comp = go.GetComponent<T>();
 		if (comp == null)
@@ -1315,7 +1315,7 @@ static public class NGUITools
 	/// Get sides relative to the specified camera. The order is left, top, right, bottom.
 	/// </summary>
 
-	static public Vector3[] GetSides (this Camera cam)
+	public static Vector3[] GetSides (this Camera cam)
 	{
 		return cam.GetSides(Mathf.Lerp(cam.nearClipPlane, cam.farClipPlane, 0.5f), null);
 	}
@@ -1324,7 +1324,7 @@ static public class NGUITools
 	/// Get sides relative to the specified camera. The order is left, top, right, bottom.
 	/// </summary>
 
-	static public Vector3[] GetSides (this Camera cam, float depth)
+	public static Vector3[] GetSides (this Camera cam, float depth)
 	{
 		return cam.GetSides(depth, null);
 	}
@@ -1333,7 +1333,7 @@ static public class NGUITools
 	/// Get sides relative to the specified camera. The order is left, top, right, bottom.
 	/// </summary>
 
-	static public Vector3[] GetSides (this Camera cam, Transform relativeTo)
+	public static Vector3[] GetSides (this Camera cam, Transform relativeTo)
 	{
 		return cam.GetSides(Mathf.Lerp(cam.nearClipPlane, cam.farClipPlane, 0.5f), relativeTo);
 	}
@@ -1342,7 +1342,7 @@ static public class NGUITools
 	/// Get sides relative to the specified camera. The order is left, top, right, bottom.
 	/// </summary>
 
-	static public Vector3[] GetSides (this Camera cam, float depth, Transform relativeTo)
+	public static Vector3[] GetSides (this Camera cam, float depth, Transform relativeTo)
 	{
 		mSides[0] = cam.ViewportToWorldPoint(new Vector3(0f, 0.5f, depth));
 		mSides[1] = cam.ViewportToWorldPoint(new Vector3(0.5f, 1f, depth));
@@ -1361,7 +1361,7 @@ static public class NGUITools
 	/// Get the camera's world-space corners. The order is bottom-left, top-left, top-right, bottom-right.
 	/// </summary>
 
-	static public Vector3[] GetWorldCorners (this Camera cam)
+	public static Vector3[] GetWorldCorners (this Camera cam)
 	{
 		return cam.GetWorldCorners(Mathf.Lerp(cam.nearClipPlane, cam.farClipPlane, 0.5f), null);
 	}
@@ -1370,7 +1370,7 @@ static public class NGUITools
 	/// Get the camera's world-space corners. The order is bottom-left, top-left, top-right, bottom-right.
 	/// </summary>
 
-	static public Vector3[] GetWorldCorners (this Camera cam, float depth)
+	public static Vector3[] GetWorldCorners (this Camera cam, float depth)
 	{
 		return cam.GetWorldCorners(depth, null);
 	}
@@ -1379,7 +1379,7 @@ static public class NGUITools
 	/// Get the camera's world-space corners. The order is bottom-left, top-left, top-right, bottom-right.
 	/// </summary>
 
-	static public Vector3[] GetWorldCorners (this Camera cam, Transform relativeTo)
+	public static Vector3[] GetWorldCorners (this Camera cam, Transform relativeTo)
 	{
 		return cam.GetWorldCorners(Mathf.Lerp(cam.nearClipPlane, cam.farClipPlane, 0.5f), relativeTo);
 	}
@@ -1388,7 +1388,7 @@ static public class NGUITools
 	/// Get the camera's world-space corners. The order is bottom-left, top-left, top-right, bottom-right.
 	/// </summary>
 
-	static public Vector3[] GetWorldCorners (this Camera cam, float depth, Transform relativeTo)
+	public static Vector3[] GetWorldCorners (this Camera cam, float depth, Transform relativeTo)
 	{
 		mSides[0] = cam.ViewportToWorldPoint(new Vector3(0f, 0f, depth));
 		mSides[1] = cam.ViewportToWorldPoint(new Vector3(0f, 1f, depth));

@@ -72,7 +72,7 @@ public class TweenColor : UITweener
 	/// Start the tweening operation.
 	/// </summary>
 
-	static public TweenColor Begin (GameObject go, float duration, Color color)
+	public static TweenColor Begin (GameObject go, float duration, Color color)
 	{
 #if UNITY_EDITOR
 		if (!Application.isPlaying) return null;

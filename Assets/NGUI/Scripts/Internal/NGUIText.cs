@@ -14,7 +14,7 @@ using System.Text;
 /// Helper class containing functionality related to using dynamic fonts.
 /// </summary>
 
-static public class NGUIText
+public static class NGUIText
 {
 	public enum Alignment
 	{
@@ -48,50 +48,50 @@ static public class NGUIText
 	/// this data is not passed at all, but is rather set in a single place before calling the functions that use it.
 	/// </summary>
 
-	static public UIFont bitmapFont;
+	public static UIFont bitmapFont;
 #if DYNAMIC_FONT
-	static public Font dynamicFont;
+	public static Font dynamicFont;
 #endif
-	static public GlyphInfo glyph = new GlyphInfo();
+	public static GlyphInfo glyph = new GlyphInfo();
 
-	static public int fontSize = 16;
-	static public float fontScale = 1f;
-	static public float pixelDensity = 1f;
-	static public FontStyle fontStyle = FontStyle.Normal;
-	static public Alignment alignment = Alignment.Left;
-	static public Color tint = Color.white;
+	public static int fontSize = 16;
+	public static float fontScale = 1f;
+	public static float pixelDensity = 1f;
+	public static FontStyle fontStyle = FontStyle.Normal;
+	public static Alignment alignment = Alignment.Left;
+	public static Color tint = Color.white;
 
-	static public int rectWidth = 1000000;
-	static public int rectHeight = 1000000;
-	static public int maxLines = 0;
+	public static int rectWidth = 1000000;
+	public static int rectHeight = 1000000;
+	public static int maxLines = 0;
 
-	static public bool gradient = false;
-	static public Color gradientBottom = Color.white;
-	static public Color gradientTop = Color.white;
+	public static bool gradient = false;
+	public static Color gradientBottom = Color.white;
+	public static Color gradientTop = Color.white;
 
-	static public bool encoding = false;
-	static public float spacingX = 0f;
-	static public float spacingY = 0f;
-	static public bool premultiply = false;
-	static public SymbolStyle symbolStyle;
+	public static bool encoding = false;
+	public static float spacingX = 0f;
+	public static float spacingY = 0f;
+	public static bool premultiply = false;
+	public static SymbolStyle symbolStyle;
 
-	static public int finalSize = 0;
-	static public float finalSpacingX = 0f;
-	static public float finalLineHeight = 0f;
-	static public float baseline = 0f;
-	static public bool useSymbols = false;
-
-	/// <summary>
-	/// Recalculate the 'final' values.
-	/// </summary>
-
-	static public void Update () { Update(true); }
+	public static int finalSize = 0;
+	public static float finalSpacingX = 0f;
+	public static float finalLineHeight = 0f;
+	public static float baseline = 0f;
+	public static bool useSymbols = false;
 
 	/// <summary>
 	/// Recalculate the 'final' values.
 	/// </summary>
 
-	static public void Update (bool request)
+	public static void Update () { Update(true); }
+
+	/// <summary>
+	/// Recalculate the 'final' values.
+	/// </summary>
+
+	public static void Update (bool request)
 	{
 		finalSize = Mathf.RoundToInt(fontSize / pixelDensity);
 		finalSpacingX = spacingX * fontScale;
@@ -126,7 +126,7 @@ static public class NGUIText
 	/// Prepare to use the specified text.
 	/// </summary>
 
-	static public void Prepare (string text)
+	public static void Prepare (string text)
 	{
 #if DYNAMIC_FONT
 		if (dynamicFont != null)
@@ -138,7 +138,7 @@ static public class NGUIText
 	/// Get the specified symbol.
 	/// </summary>
 
-	static public BMSymbol GetSymbol (string text, int index, int textLength)
+	public static BMSymbol GetSymbol (string text, int index, int textLength)
 	{
 		return (bitmapFont != null) ? bitmapFont.MatchSymbol(text, index, textLength) : null;
 	}
@@ -147,7 +147,7 @@ static public class NGUIText
 	/// Get the width of the specified glyph. Returns zero if the glyph could not be retrieved.
 	/// </summary>
 
-	static public float GetGlyphWidth (int ch, int prev)
+	public static float GetGlyphWidth (int ch, int prev)
 	{
 		if (bitmapFont != null)
 		{
@@ -172,7 +172,7 @@ static public class NGUIText
 	/// Get the specified glyph.
 	/// </summary>
 
-	static public GlyphInfo GetGlyph (int ch, int prev)
+	public static GlyphInfo GetGlyph (int ch, int prev)
 	{
 		if (bitmapFont != null)
 		{
@@ -254,7 +254,7 @@ static public class NGUIText
 	/// Parse a RrGgBb color encoded in the string.
 	/// </summary>
 
-	static public Color ParseColor (string text, int offset)
+	public static Color ParseColor (string text, int offset)
 	{
 		int r = (NGUIMath.HexToDecimal(text[offset])     << 4) | NGUIMath.HexToDecimal(text[offset + 1]);
 		int g = (NGUIMath.HexToDecimal(text[offset + 2]) << 4) | NGUIMath.HexToDecimal(text[offset + 3]);
@@ -267,7 +267,7 @@ static public class NGUIText
 	/// The reverse of ParseColor -- encodes a color in RrGgBb format.
 	/// </summary>
 
-	static public string EncodeColor (Color c)
+	public static string EncodeColor (Color c)
 	{
 		int i = 0xFFFFFF & (NGUIMath.ColorToInt(c) >> 8);
 		return NGUIMath.DecimalToHex(i);
@@ -277,7 +277,7 @@ static public class NGUIText
 	/// Parse an embedded symbol, such as [FFAA00] (set color) or [-] (undo color change). Returns whether the index was adjusted.
 	/// </summary>
 
-	static public bool ParseSymbol (string text, ref int index)
+	public static bool ParseSymbol (string text, ref int index)
 	{
 		int n = 1;
 		bool bold = false;
@@ -291,7 +291,7 @@ static public class NGUIText
 	/// Parse the symbol, if possible. Returns 'true' if the 'index' was adjusted. Advanced symbol support contributed by Rudy Pangestu.
 	/// </summary>
 
-	static public bool ParseSymbol (string text, ref int index, BetterList<Color> colors, bool premultiply,
+	public static bool ParseSymbol (string text, ref int index, BetterList<Color> colors, bool premultiply,
 		ref int sub, ref bool bold, ref bool italic, ref bool underline, ref bool strike)
 	{
 		int length = text.Length;
@@ -445,7 +445,7 @@ static public class NGUIText
 	/// Runs through the specified string and removes all color-encoding symbols.
 	/// </summary>
 
-	static public string StripSymbols (string text)
+	public static string StripSymbols (string text)
 	{
 		if (text != null)
 		{
@@ -479,7 +479,7 @@ static public class NGUIText
 	/// Align the vertices to be right or center-aligned given the line width specified by NGUIText.lineWidth.
 	/// </summary>
 
-	static public void Align (BetterList<Vector3> verts, int indexOffset, float printedWidth)
+	public static void Align (BetterList<Vector3> verts, int indexOffset, float printedWidth)
 	{
 		switch (alignment)
 		{
@@ -574,7 +574,7 @@ static public class NGUIText
 	/// This function first sorts by Y, and only then by X.
 	/// </summary>
 
-	static public int GetClosestCharacter (BetterList<Vector3> verts, Vector2 pos)
+	public static int GetClosestCharacter (BetterList<Vector3> verts, Vector2 pos)
 	{
 		// First sort by Y, and only then by X
 		float bestX = float.MaxValue;
@@ -607,7 +607,7 @@ static public class NGUIText
 	/// Convenience function that ends the line by either appending a new line character or replacing a space with one.
 	/// </summary>
 
-	static public void EndLine (ref StringBuilder s)
+	public static void EndLine (ref StringBuilder s)
 	{
 		int i = s.Length - 1;
 		if (i > 0 && s[i] == ' ') s[i] = '\n';
@@ -628,7 +628,7 @@ static public class NGUIText
 	/// Get the printed size of the specified string. The returned value is in pixels.
 	/// </summary>
 
-	static public Vector2 CalculatePrintedSize (string text)
+	public static Vector2 CalculatePrintedSize (string text)
 	{
 		Vector2 v = Vector2.zero;
 
@@ -710,7 +710,7 @@ static public class NGUIText
 	/// Calculate the character index offset required to print the end of the specified text.
 	/// </summary>
 
-	static public int CalculateOffsetToFit (string text)
+	public static int CalculateOffsetToFit (string text)
 	{
 		if (string.IsNullOrEmpty(text) || rectWidth < 1) return 0;
 
@@ -755,7 +755,7 @@ static public class NGUIText
 	/// Get the end of line that would fit into a field of given width.
 	/// </summary>
 
-	static public string GetEndOfLineThatFits (string text)
+	public static string GetEndOfLineThatFits (string text)
 	{
 		int textLength = text.Length;
 		int offset = CalculateOffsetToFit(text);
@@ -766,7 +766,7 @@ static public class NGUIText
 	/// Text wrapping functionality. The 'width' and 'height' should be in pixels.
 	/// </summary>
 
-	static public bool WrapText (string text, out string finalText)
+	public static bool WrapText (string text, out string finalText)
 	{
 		return WrapText(text, out finalText, false);
 	}
@@ -775,7 +775,7 @@ static public class NGUIText
 	/// Text wrapping functionality. The 'width' and 'height' should be in pixels.
 	/// </summary>
 
-	static public bool WrapText (string text, out string finalText, bool keepCharCount)
+	public static bool WrapText (string text, out string finalText, bool keepCharCount)
 	{
 		if (rectWidth < 1 || rectHeight < 1 || finalLineHeight < 1f)
 		{
@@ -930,7 +930,7 @@ static public class NGUIText
 	/// Print the specified text into the buffers.
 	/// </summary>
 
-	static public void Print (string text, BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
+	public static void Print (string text, BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
 	{
 		if (string.IsNullOrEmpty(text)) return;
 
@@ -1365,7 +1365,7 @@ static public class NGUIText
 	/// Print character positions and indices into the specified buffer. Meant to be used with the "find closest vertex" calculations.
 	/// </summary>
 
-	static public void PrintCharacterPositions (string text, BetterList<Vector3> verts, BetterList<int> indices)
+	public static void PrintCharacterPositions (string text, BetterList<Vector3> verts, BetterList<int> indices)
 	{
 		if (string.IsNullOrEmpty(text)) text = " ";
 
@@ -1473,7 +1473,7 @@ static public class NGUIText
 	/// Print the caret and selection vertices. Note that it's expected that 'text' has been stripped clean of symbols.
 	/// </summary>
 
-	static public void PrintCaretAndSelection (string text, int start, int end, BetterList<Vector3> caret, BetterList<Vector3> highlight)
+	public static void PrintCaretAndSelection (string text, int start, int end, BetterList<Vector3> caret, BetterList<Vector3> highlight)
 	{
 		if (string.IsNullOrEmpty(text)) text = " ";
 

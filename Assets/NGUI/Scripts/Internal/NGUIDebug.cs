@@ -19,11 +19,11 @@ public class NGUIDebug : MonoBehaviour
 
 	static int m_max_line_count = 20;
 	
-	static public void ClearLogs(){
+	public static void ClearLogs(){
 		mLines.Clear();	
 	}
 	
-	static public void SetMaxLineCount( int p_line_count ){
+	public static void SetMaxLineCount( int p_line_count ){
 		m_max_line_count = p_line_count;	
 	}
 	
@@ -31,7 +31,7 @@ public class NGUIDebug : MonoBehaviour
 	/// Set by UICamera. Can be used to show/hide raycast information.
 	/// </summary>
 
-	static public bool debugRaycast
+	public static bool debugRaycast
 	{
 		get
 		{
@@ -51,7 +51,7 @@ public class NGUIDebug : MonoBehaviour
 	/// Ensure we have an instance present.
 	/// </summary>
 
-	static public void CreateInstance ()
+	public static void CreateInstance ()
 	{
 		if (mInstance == null)
 		{
@@ -83,7 +83,7 @@ public class NGUIDebug : MonoBehaviour
 	/// Add a new log entry, printing all of the specified parameters.
 	/// </summary>
 
-	static public void Log (params object[] objs)
+	public static void Log (params object[] objs)
 	{
 		string text = "";
 
@@ -105,7 +105,7 @@ public class NGUIDebug : MonoBehaviour
 	/// Draw bounds immediately. Won't be remembered for the next frame.
 	/// </summary>
 
-	static public void DrawBounds (Bounds b)
+	public static void DrawBounds (Bounds b)
 	{
 		Vector3 c = b.center;
 		Vector3 v0 = b.center - b.extents;

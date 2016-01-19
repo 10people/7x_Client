@@ -115,23 +115,22 @@ public class ChatBaseSendController : MonoBehaviour
             return;
         }
 
-        //[FIX] close ingot pay.
-        //if (m_ChatBaseWindow.CurrentChannel == ChatPct.Channel.SHIJIE)
-        //{
-        //    //Go to recharge info if not ingot enough.
-        //    if (JunZhuData.Instance().m_junzhuInfo.yuanBao < PurchaseTemplate.GetBuyWorldChat_Price(1))
-        //    {
-        //        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-        //            m_ChatBaseWindow.m_ChatUiBoxManager.ReChargeCallBack);
-        //    }
-        //    //Go to ingot pay info.
-        //    else
-        //    {
-        //        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-        //            m_ChatBaseWindow.m_ChatUiBoxManager.PayCallBack);
-        //    }
-        //}
-        //else
+        if ((m_ChatBaseWindow.CurrentChannel == ChatPct.Channel.SHIJIE && m_ChatBaseWindow.m_RemainingFreeTimes <= 0) || m_ChatBaseWindow.CurrentChannel == ChatPct.Channel.Broadcast)
+        {
+            //Go to recharge info if not ingot enough.
+            if (JunZhuData.Instance().m_junzhuInfo.yuanBao < PurchaseTemplate.GetBuyWorldChat_Price(1))
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
+                    m_ChatBaseWindow.m_ChatUiBoxManager.ReChargeCallBack);
+            }
+            //Go to ingot pay info.
+            else
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
+                    m_ChatBaseWindow.m_ChatUiBoxManager.PayCallBack);
+            }
+        }
+        else
         {
             SendMessageWithInputField();
         }

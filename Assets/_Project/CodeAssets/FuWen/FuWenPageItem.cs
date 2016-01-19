@@ -122,7 +122,7 @@ public class FuWenPageItem : MonoBehaviour {
 		for (int i = index;i < lanWeiCount + index;i ++)
 		{
 			FuShiItem fuShi = fuShiItemList[i - index].GetComponent<FuShiItem> ();
-			fuShi.GetLanWeiInfo (tempLanWeiList[i],i,m_ExceptList,g_ExceptList);
+			fuShi.GetLanWeiInfo (tempLanWeiList[i],m_ExceptList,g_ExceptList);
 		}
 
 		ShowFuShiEffect (bigItemIdList,bigFuWenList.Count,effectLabel_1,"宝石","主");

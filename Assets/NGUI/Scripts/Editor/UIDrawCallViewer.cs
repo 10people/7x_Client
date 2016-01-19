@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 public class UIDrawCallViewer : EditorWindow
 {
-	static public UIDrawCallViewer instance;
+	public static UIDrawCallViewer instance;
 
 	enum Visibility
 	{

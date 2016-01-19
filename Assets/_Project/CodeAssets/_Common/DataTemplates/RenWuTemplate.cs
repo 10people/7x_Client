@@ -34,6 +34,8 @@ public class RenWuTemplate : XmlLoadManager
     public int LinkNpcId;
 
     public int FunctionId;
+
+	public string m_sSprite;
     public static List<RenWuTemplate> templates = new List<RenWuTemplate>();
 
     public static void LoadTemplates(EventDelegate.Callback p_callback = null)
@@ -112,6 +114,8 @@ public class RenWuTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.title = t_reader.Value;
 
+				t_reader.MoveToNextAttribute();
+				t_template.m_sSprite = t_reader.Value;
             }
 
             //			t_template.Log();

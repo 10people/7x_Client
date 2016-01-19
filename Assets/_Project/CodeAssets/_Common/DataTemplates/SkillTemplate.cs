@@ -40,6 +40,9 @@ public class SkillTemplate : XmlLoadManager
 
 	public bool zhudong;
 
+	/// ModelId#Scale#offsetY#Color#Coef#TimeOffset#TimeLen
+	/// 3002#2.0#2.0#ff0000#0.74#0.0#10.0
+	public string Fx3D;
 
 	public static List<SkillTemplate> templates= new List<SkillTemplate>();
 
@@ -124,6 +127,9 @@ public class SkillTemplate : XmlLoadManager
 				t_reader.MoveToNextAttribute();
 				int t_zhudong = int.Parse( t_reader.Value );
 				t_template.zhudong = t_zhudong == 1;
+
+				t_reader.MoveToNextAttribute();
+				t_template.Fx3D = t_reader.Value;
 			}
 			
 			//			t_template.Log();
@@ -385,4 +391,37 @@ public class SkillTemplate : XmlLoadManager
 		}
 		return tempLoadEffID;
 	}
+
+	public static SkillTemplate getSkillTemplateByJiNengPeiYangId(int jiNengPeiYangId)
+	{
+		HeroSkillUpTemplate jinengpeiyangTemplate = HeroSkillUpTemplate.GetHeroSkillUpByID (jiNengPeiYangId);
+
+		return getSkillTemplateById (jinengpeiyangTemplate.m_iSkillID);
+	}
+
+	public static SkillTemplate getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId skillLevelIndex, KingControllor kingNode)
+	{
+		return getSkillTemplateByJiNengPeiYangId(kingNode.skillLevel [(int)skillLevelIndex]);
+	}
+
+	public static int getSkillLevelByJiNengPeiYangId(int jiNengPeiYangId)
+	{
+		HeroSkillUpTemplate jinengpeiyangTemplate = HeroSkillUpTemplate.GetHeroSkillUpByID (jiNengPeiYangId);
+
+		return jinengpeiyangTemplate.m_iQuality;
+	}
+
+	public static int getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId skillLevelIndex, KingControllor kingNode)
+	{
+		return getSkillLevelByJiNengPeiYangId (kingNode.skillLevel [(int)skillLevelIndex]);
+	}
+
+
+	#region Fx3D
+
+	public bool HaveFx3D(){
+		return Fx3D.Length > 0;
+	}
+
+	#endregion
 }

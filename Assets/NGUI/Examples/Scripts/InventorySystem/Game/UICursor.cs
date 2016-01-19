@@ -13,7 +13,7 @@ using UnityEngine;
 [AddComponentMenu("NGUI/Examples/UI Cursor")]
 public class UICursor : MonoBehaviour
 {
-	static public UICursor instance;
+	public static UICursor instance;
 
 	// Camera used to draw this cursor
 	public Camera uiCamera;
@@ -91,7 +91,7 @@ public class UICursor : MonoBehaviour
 	/// Clear the cursor back to its original value.
 	/// </summary>
 
-	static public void Clear ()
+	public static void Clear ()
 	{
 		if (instance != null && instance.mSprite != null)
 			Set(instance.mAtlas, instance.mSpriteName);
@@ -101,7 +101,7 @@ public class UICursor : MonoBehaviour
 	/// Override the cursor with the specified sprite.
 	/// </summary>
 
-	static public void Set (UIAtlas atlas, string sprite)
+	public static void Set (UIAtlas atlas, string sprite)
 	{
 		if (instance != null && instance.mSprite)
 		{

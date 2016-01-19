@@ -12,14 +12,14 @@ using System.Collections.Generic;
 /// This script adds the NGUI menu options to the Unity Editor.
 /// </summary>
 
-static public class NGUIMenu
+public static class NGUIMenu
 {
 #region Selection
 
-	static public GameObject SelectedRoot () { return NGUIEditorTools.SelectedRoot(); }
+	public static GameObject SelectedRoot () { return NGUIEditorTools.SelectedRoot(); }
 
 	[MenuItem("NGUI/Selection/Bring To Front &#=", false, 0)]
-	static public void BringForward2 ()
+	public static void BringForward2 ()
 	{
 		int val = 0;
 		for (int i = 0; i < Selection.gameObjects.Length; ++i)
@@ -35,10 +35,10 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Selection/Bring To Front &#=", true)]
-	static public bool BringForward2Validation () { return (Selection.activeGameObject != null); }
+	public static bool BringForward2Validation () { return (Selection.activeGameObject != null); }
 
 	[MenuItem("NGUI/Selection/Push To Back &#-", false, 0)]
-	static public void PushBack2 ()
+	public static void PushBack2 ()
 	{
 		int val = 0;
 		for (int i = 0; i < Selection.gameObjects.Length; ++i)
@@ -54,10 +54,10 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Selection/Push To Back &#-", true)]
-	static public bool PushBack2Validation () { return (Selection.activeGameObject != null); }
+	public static bool PushBack2Validation () { return (Selection.activeGameObject != null); }
 
 	[MenuItem("NGUI/Selection/Adjust Depth By +1 %=", false, 0)]
-	static public void BringForward ()
+	public static void BringForward ()
 	{
 		int val = 0;
 		for (int i = 0; i < Selection.gameObjects.Length; ++i)
@@ -67,10 +67,10 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Selection/Adjust Depth By +1 %=", true)]
-	static public bool BringForwardValidation () { return (Selection.activeGameObject != null); }
+	public static bool BringForwardValidation () { return (Selection.activeGameObject != null); }
 
 	[MenuItem("NGUI/Selection/Adjust Depth By -1 %-", false, 0)]
-	static public void PushBack ()
+	public static void PushBack ()
 	{
 		int val = 0;
 		for (int i = 0; i < Selection.gameObjects.Length; ++i)
@@ -80,7 +80,7 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Selection/Adjust Depth By -1 %-", true)]
-	static public bool PushBackValidation () { return (Selection.activeGameObject != null); }
+	public static bool PushBackValidation () { return (Selection.activeGameObject != null); }
 
 	[MenuItem("NGUI/Selection/Make Pixel Perfect &#p", false, 0)]
 	static void PixelPerfectSelection ()
@@ -99,7 +99,7 @@ static public class NGUIMenu
 #region Create
 
 	[MenuItem("NGUI/Create/Sprite &#s", false, 6)]
-	static public void AddSprite ()
+	public static void AddSprite ()
 	{
 		GameObject go = NGUIEditorTools.SelectedRoot(true);
 
@@ -117,7 +117,7 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Create/Label &#l", false, 6)]
-	static public void AddLabel ()
+	public static void AddLabel ()
 	{
 		GameObject go = NGUIEditorTools.SelectedRoot(true);
 
@@ -135,7 +135,7 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Create/Texture &#t", false, 6)]
-	static public void AddTexture ()
+	public static void AddTexture ()
 	{
 		GameObject go = NGUIEditorTools.SelectedRoot(true);
 
@@ -154,7 +154,7 @@ static public class NGUIMenu
 
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_1 && !UNITY_4_2
 	[MenuItem("NGUI/Create/Unity 2D Sprite &#r", false, 6)]
-	static public void AddSprite2D ()
+	public static void AddSprite2D ()
 	{
 		GameObject go = NGUIEditorTools.SelectedRoot(true);
 		if (go != null) Selection.activeGameObject = NGUISettings.Add2DSprite(go).gameObject;
@@ -163,7 +163,7 @@ static public class NGUIMenu
 #endif
 
 	[MenuItem("NGUI/Create/Widget &#w", false, 6)]
-	static public void AddWidget ()
+	public static void AddWidget ()
 	{
 		GameObject go = NGUIEditorTools.SelectedRoot(true);
 
@@ -251,7 +251,7 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Attach/Collider &#c", false, 7)]
-	static public void AddCollider ()
+	public static void AddCollider ()
 	{
 		GameObject go = Selection.activeGameObject;
 
@@ -270,55 +270,55 @@ static public class NGUIMenu
 	}
 
 	//[MenuItem("NGUI/Attach/Anchor", false, 7)]
-	//static public void Add1 () { AddIfMissing<UIAnchor>(); }
+	//public static void Add1 () { AddIfMissing<UIAnchor>(); }
 
 	//[MenuItem("NGUI/Attach/Anchor", true)]
-	//static public bool Add1a () { return !Exists<UIAnchor>(); }
+	//public static bool Add1a () { return !Exists<UIAnchor>(); }
 
 	//[MenuItem("NGUI/Attach/Stretch (Legacy)", false, 7)]
-	//static public void Add2 () { AddIfMissing<UIStretch>(); }
+	//public static void Add2 () { AddIfMissing<UIStretch>(); }
 
 	//[MenuItem("NGUI/Attach/Stretch (Legacy)", true)]
-	//static public bool Add2a () { return !Exists<UIStretch>(); }
+	//public static bool Add2a () { return !Exists<UIStretch>(); }
 
 	//[MenuItem("NGUI/Attach/", false, 7)]
-	//static public void Add3s () {}
+	//public static void Add3s () {}
 
 	[MenuItem("NGUI/Attach/Button Script", false, 7)]
-	static public void Add3 () { AddIfMissing<UIButton>(); }
+	public static void Add3 () { AddIfMissing<UIButton>(); }
 
 	[MenuItem("NGUI/Attach/Toggle Script", false, 7)]
-	static public void Add4 () { AddIfMissing<UIToggle>(); }
+	public static void Add4 () { AddIfMissing<UIToggle>(); }
 
 	[MenuItem("NGUI/Attach/Slider Script", false, 7)]
-	static public void Add5 () { AddIfMissing<UISlider>(); }
+	public static void Add5 () { AddIfMissing<UISlider>(); }
 
 	[MenuItem("NGUI/Attach/Scroll Bar Script", false, 7)]
-	static public void Add6 () { AddIfMissing<UIScrollBar>(); }
+	public static void Add6 () { AddIfMissing<UIScrollBar>(); }
 
 	[MenuItem("NGUI/Attach/Progress Bar Script", false, 7)]
-	static public void Add7 () { AddIfMissing<UIProgressBar>(); }
+	public static void Add7 () { AddIfMissing<UIProgressBar>(); }
 
 	[MenuItem("NGUI/Attach/Popup List Script", false, 7)]
-	static public void Add8 () { AddIfMissing<UIPopupList>(); }
+	public static void Add8 () { AddIfMissing<UIPopupList>(); }
 
 	[MenuItem("NGUI/Attach/Input Field Script", false, 7)]
-	static public void Add9 () { AddIfMissing<UIInput>(); }
+	public static void Add9 () { AddIfMissing<UIInput>(); }
 
 	[MenuItem("NGUI/Attach/Key Binding Script", false, 7)]
-	static public void Add10 () { AddIfMissing<UIKeyBinding>(); }
+	public static void Add10 () { AddIfMissing<UIKeyBinding>(); }
 
 	[MenuItem("NGUI/Attach/Play Tween Script", false, 7)]
-	static public void Add11 () { AddIfMissing<UIPlayTween>(); }
+	public static void Add11 () { AddIfMissing<UIPlayTween>(); }
 
 	[MenuItem("NGUI/Attach/Play Animation Script", false, 7)]
-	static public void Add12 () { AddIfMissing<UIPlayAnimation>(); }
+	public static void Add12 () { AddIfMissing<UIPlayAnimation>(); }
 
 	[MenuItem("NGUI/Attach/Play Sound Script", false, 7)]
-	static public void Add13 () { AddIfMissing<UIPlaySound>(); }
+	public static void Add13 () { AddIfMissing<UIPlaySound>(); }
 
 	[MenuItem("NGUI/Attach/Localization Script", false, 7)]
-	static public void Add14 () { AddIfMissing<UILocalize>(); }
+	public static void Add14 () { AddIfMissing<UILocalize>(); }
 
 #endregion
 #region Tweens
@@ -394,48 +394,48 @@ static public class NGUIMenu
 
 	[MenuItem("NGUI/Open/Atlas Maker", false, 9)]
 	[MenuItem("Assets/NGUI/Open Atlas Maker", false, 0)]
-	static public void OpenAtlasMaker ()
+	public static void OpenAtlasMaker ()
 	{
 		EditorWindow.GetWindow<UIAtlasMaker>(false, "Atlas Maker", true);
 	}
 
 	[MenuItem("NGUI/Open/Font Maker", false, 9)]
 	[MenuItem("Assets/NGUI/Open Bitmap Font Maker", false, 0)]
-	static public void OpenFontMaker ()
+	public static void OpenFontMaker ()
 	{
 		EditorWindow.GetWindow<UIFontMaker>(false, "Font Maker", true);
 	}
 
 	[MenuItem("NGUI/Open/", false, 9)]
 	[MenuItem("Assets/NGUI/", false, 0)]
-	static public void OpenSeparator2 () { }
+	public static void OpenSeparator2 () { }
 
 	[MenuItem("NGUI/Open/Panel Tool", false, 9)]
-	static public void OpenPanelWizard ()
+	public static void OpenPanelWizard ()
 	{
 		EditorWindow.GetWindow<UIPanelTool>(false, "Panel Tool", true);
 	}
 
 	[MenuItem("NGUI/Open/Draw Call Tool", false, 9)]
-	static public void OpenDCTool ()
+	public static void OpenDCTool ()
 	{
 		EditorWindow.GetWindow<UIDrawCallViewer>(false, "Draw Call Tool", true);
 	}
 
 	[MenuItem("NGUI/Open/Camera Tool", false, 9)]
-	static public void OpenCameraWizard ()
+	public static void OpenCameraWizard ()
 	{
 		EditorWindow.GetWindow<UICameraTool>(false, "Camera Tool", true);
 	}
 
 	[MenuItem("NGUI/Open/Widget Wizard (Legacy)", false, 9)]
-	static public void CreateWidgetWizard ()
+	public static void CreateWidgetWizard ()
 	{
 		EditorWindow.GetWindow<UICreateWidgetWizard>(false, "Widget Tool", true);
 	}
 
 	//[MenuItem("NGUI/Open/UI Wizard (Legacy)", false, 9)]
-	//static public void CreateUIWizard ()
+	//public static void CreateUIWizard ()
 	//{
 	//    EditorWindow.GetWindow<UICreateNewUIWizard>(false, "UI Tool", true);
 	//}
@@ -444,67 +444,67 @@ static public class NGUIMenu
 #region Options
 
 	[MenuItem("NGUI/Options/Handles/Turn On", false, 10)]
-	static public void TurnHandlesOn () { UIWidget.showHandlesWithMoveTool = true; }
+	public static void TurnHandlesOn () { UIWidget.showHandlesWithMoveTool = true; }
 
 	[MenuItem("NGUI/Options/Handles/Turn On", true, 10)]
-	static public bool TurnHandlesOnCheck () { return !UIWidget.showHandlesWithMoveTool; }
+	public static bool TurnHandlesOnCheck () { return !UIWidget.showHandlesWithMoveTool; }
 
 	[MenuItem("NGUI/Options/Handles/Turn Off", false, 10)]
-	static public void TurnHandlesOff () { UIWidget.showHandlesWithMoveTool = false; }
+	public static void TurnHandlesOff () { UIWidget.showHandlesWithMoveTool = false; }
 
 	[MenuItem("NGUI/Options/Handles/Turn Off", true, 10)]
-	static public bool TurnHandlesOffCheck () { return UIWidget.showHandlesWithMoveTool; }
+	public static bool TurnHandlesOffCheck () { return UIWidget.showHandlesWithMoveTool; }
 
 	[MenuItem("NGUI/Options/Handles/Set to Blue", false, 10)]
-	static public void SetToBlue () { NGUISettings.colorMode = NGUISettings.ColorMode.Blue; }
+	public static void SetToBlue () { NGUISettings.colorMode = NGUISettings.ColorMode.Blue; }
 
 	[MenuItem("NGUI/Options/Handles/Set to Blue", true, 10)]
-	static public bool SetToBlueCheck () { return UIWidget.showHandlesWithMoveTool && NGUISettings.colorMode != NGUISettings.ColorMode.Blue; }
+	public static bool SetToBlueCheck () { return UIWidget.showHandlesWithMoveTool && NGUISettings.colorMode != NGUISettings.ColorMode.Blue; }
 
 	[MenuItem("NGUI/Options/Handles/Set to Orange", false, 10)]
-	static public void SetToOrange () { NGUISettings.colorMode = NGUISettings.ColorMode.Orange; }
+	public static void SetToOrange () { NGUISettings.colorMode = NGUISettings.ColorMode.Orange; }
 
 	[MenuItem("NGUI/Options/Handles/Set to Orange", true, 10)]
-	static public bool SetToOrangeCheck () { return UIWidget.showHandlesWithMoveTool && NGUISettings.colorMode != NGUISettings.ColorMode.Orange; }
+	public static bool SetToOrangeCheck () { return UIWidget.showHandlesWithMoveTool && NGUISettings.colorMode != NGUISettings.ColorMode.Orange; }
 
 	[MenuItem("NGUI/Options/Handles/Set to Green", false, 10)]
-	static public void SetToGreen () { NGUISettings.colorMode = NGUISettings.ColorMode.Green; }
+	public static void SetToGreen () { NGUISettings.colorMode = NGUISettings.ColorMode.Green; }
 
 	[MenuItem("NGUI/Options/Handles/Set to Green", true, 10)]
-	static public bool SetToGreenCheck () { return UIWidget.showHandlesWithMoveTool && NGUISettings.colorMode != NGUISettings.ColorMode.Green; }
+	public static bool SetToGreenCheck () { return UIWidget.showHandlesWithMoveTool && NGUISettings.colorMode != NGUISettings.ColorMode.Green; }
 
 	[MenuItem("NGUI/Options/Snapping/Turn On", false, 10)]
-	static public void TurnSnapOn () { NGUISnap.allow = true; }
+	public static void TurnSnapOn () { NGUISnap.allow = true; }
 
 	[MenuItem("NGUI/Options/Snapping/Turn On", true, 10)]
-	static public bool TurnSnapOnCheck () { return !NGUISnap.allow; }
+	public static bool TurnSnapOnCheck () { return !NGUISnap.allow; }
 
 	[MenuItem("NGUI/Options/Snapping/Turn Off", false, 10)]
-	static public void TurnSnapOff () { NGUISnap.allow = false; }
+	public static void TurnSnapOff () { NGUISnap.allow = false; }
 
 	[MenuItem("NGUI/Options/Snapping/Turn Off", true, 10)]
-	static public bool TurnSnapOffCheck () { return NGUISnap.allow; }
+	public static bool TurnSnapOffCheck () { return NGUISnap.allow; }
 
 	[MenuItem("NGUI/Options/Guides/Always On", false, 10)]
-	static public void TurnGuidesOn () { NGUISettings.drawGuides = true; }
+	public static void TurnGuidesOn () { NGUISettings.drawGuides = true; }
 
 	[MenuItem("NGUI/Options/Guides/Always On", true, 10)]
-	static public bool TurnGuidesOnCheck () { return !NGUISettings.drawGuides; }
+	public static bool TurnGuidesOnCheck () { return !NGUISettings.drawGuides; }
 
 	[MenuItem("NGUI/Options/Guides/Only When Needed", false, 10)]
-	static public void TurnGuidesOff () { NGUISettings.drawGuides = false; }
+	public static void TurnGuidesOff () { NGUISettings.drawGuides = false; }
 
 	[MenuItem("NGUI/Options/Guides/Only When Needed", true, 10)]
-	static public bool TurnGuidesOffCheck () { return NGUISettings.drawGuides; }
+	public static bool TurnGuidesOffCheck () { return NGUISettings.drawGuides; }
 
 #endregion
 
 	[MenuItem("NGUI/Normalize Depth Hierarchy &#0", false, 11)]
-	static public void Normalize () { NGUITools.NormalizeDepths(); }
+	public static void Normalize () { NGUITools.NormalizeDepths(); }
 	
 	[MenuItem("NGUI/", false, 11)]
 	static void Breaker () { }
 
 	[MenuItem("NGUI/Help", false, 12)]
-	static public void Help () { NGUIHelp.Show(); }
+	public static void Help () { NGUIHelp.Show(); }
 }

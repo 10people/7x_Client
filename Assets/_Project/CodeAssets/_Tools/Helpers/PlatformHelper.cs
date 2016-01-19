@@ -9,6 +9,16 @@ using System.Xml;
 
 public class PlatformHelper {
 
+	#region Reset
+
+	public static void ResetPlatformSettings(){
+		TimeHelper.ResetTimeScale();
+	}
+
+	#endregion
+
+
+
 	#region Platform Path
 	
 	/* Return:	iOS/Android/Windows

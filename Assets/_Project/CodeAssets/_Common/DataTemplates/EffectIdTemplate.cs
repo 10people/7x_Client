@@ -11,6 +11,8 @@ public class EffectIdTemplate : XmlLoadManager
     public string sound;
 	public float m_fHeight;
 
+	public float ratio;
+
     public static List<EffectIdTemplate> templates = new List<EffectIdTemplate>();
 
     public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
@@ -64,6 +66,9 @@ public class EffectIdTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.m_fHeight = float.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.ratio = float.Parse(t_reader.Value);
 
                 templates.Add(t_template);
    

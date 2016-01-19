@@ -11,8 +11,10 @@ namespace Carriage
     {
         public UILabel MoneyLabel;
         public UILabel ProgressLabel;
-        public UILabel StateLabel;
+        public UILabel StateLabel1;
+        public UILabel StateLabel2;
         public UISprite HorseLevelSprite;
+        public UISprite QualitySprite;
 
         public int ProgressPercent;
         public int ProtectStateRemaining;
@@ -22,20 +24,22 @@ namespace Carriage
         {
             ProgressLabel.text = "进度" + ProgressPercent + "%";
             HorseLevelSprite.spriteName = "horseIcon" + HorseLevel;
+            QualitySprite.spriteName = "pinzhi" + HeadIconSetter.horseIconToQualityTransferDic[HorseLevel];
+
+            StateLabel1.gameObject.SetActive(false);
+            StateLabel2.gameObject.SetActive(false);
+
+            if (SpeedStateRemaining > 0)
+            {
+                StateLabel1.text = ColorTool.Color_Gold_ffb12a + "加速" + "[-]" + ColorTool.Color_Red_c40000 + SpeedStateRemaining + "[-]" + ColorTool.Color_Gold_ffb12a + "秒" + "[-]";
+                StateLabel1.gameObject.SetActive(true);
+            }
 
             if (ProtectStateRemaining > 0)
             {
-                StateLabel.text = ColorTool.Color_Gold_ffb12a + "保护" + "[-]" + ColorTool.Color_Red_c40000 + ProtectStateRemaining + "[-]" + ColorTool.Color_Gold_ffb12a + "秒" + "[-]";
-                StateLabel.gameObject.SetActive(true);
-            }
-            else if (SpeedStateRemaining > 0)
-            {
-                StateLabel.text = ColorTool.Color_Gold_ffb12a + "加速" + "[-]" + ColorTool.Color_Red_c40000 + SpeedStateRemaining + "[-]" + ColorTool.Color_Gold_ffb12a + "秒" + "[-]";
-                StateLabel.gameObject.SetActive(true);
-            }
-            else
-            {
-                StateLabel.gameObject.SetActive(false);
+                var temp = !StateLabel1.gameObject.activeInHierarchy ? StateLabel1 : StateLabel2;
+                temp.text = ColorTool.Color_Gold_ffb12a + "保护" + "[-]" + ColorTool.Color_Red_c40000 + ProtectStateRemaining + "[-]" + ColorTool.Color_Gold_ffb12a + "秒" + "[-]";
+                temp.gameObject.SetActive(true);
             }
         }
 

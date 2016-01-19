@@ -29,7 +29,7 @@ namespace Rank
         public void SetThis()
         {
             KingLabel.text = m_BaizhanInfo.name;
-            AllianceLabel.text = (m_BaizhanInfo.lianmeng == "无") ? "无联盟" : ("<" + m_BaizhanInfo.lianmeng + ">");
+            AllianceLabel.text = (string.IsNullOrEmpty(m_BaizhanInfo.lianmeng) || (m_BaizhanInfo.lianmeng == "无")) ? "无联盟" : ("<" + m_BaizhanInfo.lianmeng + ">");
 
             WinsNumLabel.text = m_BaizhanInfo.winCount.ToString();
 
@@ -138,7 +138,7 @@ namespace Rank
 
         public override void Rob()
         {
-            LueDuoData.Instance.LueDuoOpponentReq(m_BaizhanInfo.junZhuId, LueDuoData.WhichOpponent.RANKLIST);
+            PlunderData.Instance.PlunderOpponent(PlunderData.Entrance.RANKLIST, m_BaizhanInfo.junZhuId);
             m_ModuleController.ClampScrollView();
         }
     }

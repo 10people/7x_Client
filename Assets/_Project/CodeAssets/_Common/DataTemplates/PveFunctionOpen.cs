@@ -307,17 +307,17 @@ public class PveFunctionOpen : XmlLoadManager
 		
 		attack = refreshUnitData (t_attack, dramable);
 		
-		skill_light_1 = refreshUnitData (t_skill_light_1, dramable);
+		skill_light_1 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.jueyingxingguangzhan] > 0 && refreshUnitData (t_skill_light_1, dramable);
 		
-		skill_light_2 = refreshUnitData (t_skill_light_2, dramable);
+		skill_light_2 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.xuejilaoyin] > 0 && refreshUnitData (t_skill_light_2, dramable);
 
-		skill_heavy_1 = refreshUnitData (t_skill_heavy_1, dramable);
+		skill_heavy_1 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.bahuanglieri] > 0 && refreshUnitData (t_skill_heavy_1, dramable);
 		
-		skill_heavy_2 = refreshUnitData (t_skill_heavy_2, dramable);
+		skill_heavy_2 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.qiankundouzhuan] > 0 && refreshUnitData (t_skill_heavy_2, dramable);
 
-		skill_ranged_1 = refreshUnitData (t_skill_ranged_1, dramable);
+		skill_ranged_1 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.zhuixingjian] > 0 && refreshUnitData (t_skill_ranged_1, dramable);
 		
-		skill_ranged_2 = refreshUnitData (t_skill_ranged_2, dramable);
+		skill_ranged_2 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.hanbingjian] > 0 && refreshUnitData (t_skill_ranged_2, dramable);
 
 		skill_miBao = refreshUnitData (t_skill_miBao, dramable);
 

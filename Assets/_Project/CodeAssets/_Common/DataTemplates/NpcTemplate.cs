@@ -40,6 +40,18 @@ public class NpcTemplate : XmlLoadManager {
 
 	public int level;
 
+	public int ifTeammate;
+
+	public int lifebarNum;
+
+	public float modelSize;
+
+	public string strokecolor;
+
+	public float coefficient;
+
+
+
 	private static List<NpcTemplate> templates = new List<NpcTemplate>();
 
 	public void Log(){
@@ -134,6 +146,21 @@ public class NpcTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.level = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ifTeammate = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.lifebarNum = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.modelSize = float.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.strokecolor = t_reader.Value;
+
+				t_reader.MoveToNextAttribute();
+				t_template.coefficient = float.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

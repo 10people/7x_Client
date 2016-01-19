@@ -28,10 +28,9 @@ public class FuShiItem : MonoBehaviour {
 	/// 符石栏位信息
 	/// </summary>
 	/// <param name="tempLanWei">栏位信息</param>
-	/// <param name="tempIndex">显示解锁等级的符石下标</param>
 	/// <param name="m_TempExceptList">已镶嵌的主属性符石类型list</param>
 	/// <param name="g_TempExceptList">已镶嵌的高级属性符石类型list</param>
-	public void GetLanWeiInfo (FuwenLanwei tempLanWei,int tempIndex,List<int> m_TempExceptList,List<int> g_TempExceptList)
+	public void GetLanWeiInfo (FuwenLanwei tempLanWei,List<int> m_TempExceptList,List<int> g_TempExceptList)
 	{
 //		Debug.Log (tempIndex + "lanweiId:" + tempLanWei.lanweiId);
 //		Debug.Log (tempIndex + "itemId:" + tempIndex + "||" + tempLanWei.itemId);
@@ -52,14 +51,7 @@ public class FuShiItem : MonoBehaviour {
 			fuShiIcon.spriteName = "";
 			lockIcon.gameObject.SetActive (true);
 
-			if (tempIndex == FuWenMainPage.fuWenMainPage.GetOpenLanWeiCount)
-			{
-				openLevel.text = fuWenOpenTemp.level + "级解锁";
-			}
-			else
-			{
-				openLevel.text = "";
-			}
+			openLevel.text = fuWenOpenTemp.level == FuWenMainPage.fuWenMainPage.NextOpenLevel ? fuWenOpenTemp.level + "级解锁" : "";
 			return;
 		}
 

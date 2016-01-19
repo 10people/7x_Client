@@ -17,6 +17,8 @@ public class SetHorseItem : MonoBehaviour {
 	public EventHandler buyBtn;
 	public UILabel vipLevel;
 
+	private int costYuanBao;
+
 	public GameObject selectBox;
 
 	private string textStr;
@@ -39,16 +41,19 @@ public class SetHorseItem : MonoBehaviour {
 		costLabel.gameObject.SetActive (tempInfo.horseId > curId ? true : false);
 
 		shouYiLabel.text = tempInfo.shouYi.ToString ();
-		costLabel.text = tempInfo.upNeedMoney.ToString ();
+
+		CartTemplate cartTemp = CartTemplate.GetCartTemplateByType (BiaoJuPage.bjPage.CurHorseLevel);
+		costYuanBao = tempInfo.upNeedMoney - cartTemp.ShengjiCost;
+		costLabel.text = costYuanBao.ToString ();
 
 		if (tempInfo.horseId > curId)
 		{
-			UISprite btnSprite = buyBtn.GetComponent<UISprite> ();
-			btnSprite.color = tempInfo.needVipLevel < JunZhuData.Instance ().m_junzhuInfo.vipLv ? Color.white : Color.gray;
-			UIWidget btnLabel = buyBtn.GetComponentInChildren<UIWidget> ();
-			btnLabel.color = tempInfo.needVipLevel < JunZhuData.Instance ().m_junzhuInfo.vipLv ? Color.white : Color.gray;
-			
-			vipLevel.text = tempInfo.needVipLevel < JunZhuData.Instance ().m_junzhuInfo.vipLv ? "" : "VIP" + tempInfo.needVipLevel + "可购买";
+//			UISprite btnSprite = buyBtn.GetComponent<UISprite> ();
+//			btnSprite.color = tempInfo.needVipLevel < JunZhuData.Instance ().m_junzhuInfo.vipLv ? Color.white : Color.gray;
+//			UIWidget btnLabel = buyBtn.GetComponentInChildren<UIWidget> ();
+//			btnLabel.color = tempInfo.needVipLevel < JunZhuData.Instance ().m_junzhuInfo.vipLv ? Color.white : Color.gray;
+
+			vipLevel.text = tempInfo.needVipLevel <= JunZhuData.Instance ().m_junzhuInfo.vipLv ? "" : "VIP" + tempInfo.needVipLevel + "可购买";
 		}
 
 		buyBtn.m_handler -= BuyBtnHandlerClickBack;
@@ -57,14 +62,35 @@ public class SetHorseItem : MonoBehaviour {
 
 	void BuyBtnHandlerClickBack (GameObject obj)
 	{
-		if (horseInfo.upNeedMoney > JunZhuData.Instance ().m_junzhuInfo.yuanBao)
+		if (horseInfo.needVipLevel <= JunZhuData.Instance ().m_junzhuInfo.vipLv)
 		{
-			textStr = "元宝不足！是否跳转到充值？";
-			QXComData.CreateBox (1,textStr,false,null);
+			if (costYuanBao > JunZhuData.Instance ().m_junzhuInfo.yuanBao)
+			{
+//				textStr = "元宝不足！是否跳转到充值？";
+//				QXComData.CreateBox (1,textStr,false,null);
+				SetHorseWindow.setHorse.CloseSetHorseWindow (gameObject);
+				BiaoJuData.Instance.TurnToVip ();
+			}
+			else
+			{
+				BiaoJuData.Instance.UpHorseReq (horseInfo.horseId);
+			}
 		}
 		else
 		{
-			BiaoJuData.Instance.UpHorseReq (horseInfo.horseId);
+            EquipSuoData.TopUpLayerTip(null, false, 0, "VIP等级不足！是否跳转到充值？");
+			//textStr = "VIP等级不足！是否跳转到充值？";
+			//QXComData.CreateBox (1,textStr,false,LackVipLevel);
+			//SetHorseWindow.setHorse.CloseSetHorseWindow (gameObject);
+		}
+	}
+
+	void LackVipLevel (int i)
+	{
+		if (i == 2)
+		{
+			BiaoJuPage.bjPage.CloseBiaoJu ();
+			TopUpLoadManagerment.LoadPrefab();
 		}
 	}
 }

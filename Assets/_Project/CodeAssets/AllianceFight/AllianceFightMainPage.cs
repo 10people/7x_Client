@@ -33,8 +33,6 @@ public class AllianceFightMainPage : MonoBehaviour
 
     public GameObject enterFightBtn; //加入战斗按钮
 
-    private List<string> rulesList = new List<string>();
-
     public ScaleEffectController m_ScaleEffectController;
 
     void Awake()
@@ -44,20 +42,12 @@ public class AllianceFightMainPage : MonoBehaviour
 
     void Start()
     {
-        GetRulesList();
         AllianceFightData.Instance.AllianceFightDataReq();
     }
 
-    //挑战规则
-    private void GetRulesList()
-    {
-        string ruleStr = LanguageTemplate.GetText(LanguageTemplate.Text.UNIT_WAR_RULE).Replace(@"\n", "#");
-        string[] ruleStrLen = ruleStr.Split('#');
-        for (int i = 0; i < ruleStrLen.Length; i++)
-        {
-            rulesList.Add(ruleStrLen[i]);
-        }
-    }
+	void OnDestroy(){
+		fightMainPage = null;
+	}
 
     //获得联盟战首页信息
     public void GetAllianceFightResp(RequestFightInfoResp tempResp)
@@ -373,7 +363,7 @@ public class AllianceFightMainPage : MonoBehaviour
     //规则按钮
     public void RuleBtn()
     {
-        GeneralControl.Instance.LoadRulesPrefab(GeneralControl.RuleType.ALLIANCE_FIGHT, rulesList);
+		GeneralControl.Instance.LoadRulesPrefab(LanguageTemplate.GetText(LanguageTemplate.Text.UNIT_WAR_RULE));
     }
 
     //加入战斗按钮

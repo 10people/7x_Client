@@ -14,7 +14,7 @@ using UnityEngine;
 [AddComponentMenu("NGUI/Interaction/Drag and Drop Root")]
 public class UIDragDropRoot : MonoBehaviour
 {
-	static public Transform root;
+	public static Transform root;
 
 	void OnEnable () { root = transform; }
 	void OnDisable () { if (root == transform) root = null; }

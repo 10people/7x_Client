@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define LOG_LOADING
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -66,10 +68,20 @@ public class LoadingHelper{
 	}
 	
 	public static void ShowTotalLoadingInfo(){
-		Debug.Log( m_loading_items_list.Count + " Assets Loaded." );
+		{
+			double t_total_loading_time = 0.0f;
+			
+			for( int j = m_loading_items_list.Count - 1; j >= 0; j-- ){
+				LoadingItemInfo t_item = m_loading_items_list[ j ];
+				
+				t_total_loading_time = t_total_loading_time + t_item.GetLoadTime();
+			}
+			
+			Debug.Log( "--- " + m_loading_items_list.Count + " Assets Loaded: " + t_total_loading_time );
+		}
 		
 		for( int i = 0; i < m_loading_assets_dir.Length; i++ ){
-			float t_load_time = 0.0f;
+			double t_load_time = 0.0f;
 			
 			int t_load_count = 0;
 			
@@ -89,16 +101,16 @@ public class LoadingHelper{
 			          " Count: " + t_load_count + 
 			          "   Load Time: " + t_load_time );
 		}
-		
-		{
-			float t_load_time = 0.0f;
+
+		if( m_loading_items_list.Count > 0 ){
+			double t_load_time = 0.0f;
 			
 			for( int i = m_loading_items_list.Count - 1; i >= 0; i-- ){
 				LoadingItemInfo t_item = m_loading_items_list[ i ];
 				
 				t_load_time += t_item.GetLoadTime();
 				
-				Debug.Log( t_item.GetLoadTime() + " - Not Classified: " + t_item.GetAssetPath() );
+				Debug.Log( i + " - " + t_item.GetLoadTime() + " - Not Classified: " + t_item.GetAssetPath() );
 			}
 			
 			Debug.Log( m_loading_items_list.Count + " Other Asset, Loading Time: " + t_load_time );
@@ -255,7 +267,7 @@ public class LoadingHelper{
 		
 		if( t_section == null ){
 			#if LOG_LOADING
-			//  Debug.Log("InitSectionInfo: " + p_section_name + ", " + p_weight + ", " + p_item_count );
+			Debug.Log("InitSectionInfo: " + p_section_name + ", " + p_weight + ", " + p_item_count );
 			#endif
 			
 			t_section = new LoadingSection( p_section_name, p_weight, p_item_count );
@@ -290,7 +302,7 @@ public class LoadingHelper{
 	
 	public static void ItemLoaded( List<LoadingSection> p_list, string p_section_name, string p_item_name = "" ){
 		#if LOG_LOADING
-		//	Debug.Log( "ItemLoaded( " + p_section_name + ": " + p_item_name + " )" );
+		Debug.Log( "ItemLoaded( " + p_section_name + ": " + p_item_name + " )" );
 		#endif
 		
 		LoadingSection t_section = LoadingHelper.GetSection( p_list, p_section_name );
@@ -298,7 +310,7 @@ public class LoadingHelper{
 		if( t_section == null ){
 			t_section = InitSectionInfo( p_list, p_section_name );
 			
-			//			Debug.Log( "LoadingHelper.ItemLoaded( Section Not Found )" );
+//			Debug.Log( "LoadingHelper.ItemLoaded( Section Not Found )" );
 		}
 		
 		t_section.ItemLoaded();
@@ -374,9 +386,120 @@ public class LoadingHelper{
 
 
 	
+	#region Common Init
+	
+	private static float m_begin_loading_time	= 0.0f;
+	
+	private static float m_last_tagged_time		= 0.0f;
+	
+	private static int m_asset_load_count 		= 0;
+	
+	public static void ResetLoadingInfo(){
+		// reset local info
+		{
+			m_begin_loading_time = Time.realtimeSinceStartup;
+			
+			m_last_tagged_time = Time.realtimeSinceStartup;
+			
+			m_asset_load_count = 0;
+
+			ResetCoroutineInfo();
+		}
+		
+		// reset detail info
+		{
+			LoadingHelper.ClearLoadingItemInfo();
+		}
+	}
+	
+	public static int GetAssetLoadedCount(){
+		return m_asset_load_count;
+	}
+	
+	public static void AssetLoaded(){
+		m_asset_load_count++;
+	}
+	
+	public static float GetTimeSinceLoading(){
+		return Time.realtimeSinceStartup - m_begin_loading_time;
+	}
+	
+	public static float GetTimesinceLastTimeTag( bool p_retag = true ){
+		float t_delta = Time.realtimeSinceStartup - m_last_tagged_time;
+
+		if( p_retag ){
+			m_last_tagged_time = Time.realtimeSinceStartup;
+		}
+		
+		return t_delta;
+	}
+	
+	public static void LogTimeSinceLoading( string p_loading_tag ){
+		Debug.Log( MathHelper.FloatPrecision( GetTimesinceLastTimeTag(), 5 ) + 
+		          " / " + 
+		          MathHelper.FloatPrecision( GetTimeSinceLoading(), 5 ) + " - " + 
+		          p_loading_tag );
+	}
+	
+	#endregion
+
+
+
+	#region Coroutine Use
+	
+	private static float m_coroutine_time_tag = 0.0f;
+	
+	private static float m_total_coroutine_time = 0.0f;
+	
+	private static float m_total_prepare_load_next_asset_time = 0.0f;
+	
+	public static void ResetCoroutineInfo(){
+		ResetCoroutineTimeTag();
+		
+		m_total_coroutine_time = 0.0f;
+		
+		m_total_prepare_load_next_asset_time = 0.0f;
+	}
+	
+	public static void ResetCoroutineTimeTag(){
+		m_coroutine_time_tag = Time.realtimeSinceStartup;
+	}
+	
+	public static void BeforeStartCoroutine(){
+		ResetCoroutineTimeTag();
+	}
+	
+	public static void BeforeLoadRes(){
+		m_total_coroutine_time = m_total_coroutine_time + ( Time.realtimeSinceStartup - m_coroutine_time_tag );
+	}
+	
+	public static void BeforeReadyToLoadNextAsset(){
+		ResetCoroutineTimeTag();
+	}
+	
+	public static void AfterReadyToLoadNextAsset(){
+		m_total_prepare_load_next_asset_time = m_total_prepare_load_next_asset_time + ( Time.realtimeSinceStartup - m_coroutine_time_tag );
+	}
+	
+	public static void LogCoroutineInfo(){
+		Debug.Log( "Total Coroutine Time Cost: " + m_total_coroutine_time );
+		
+		Debug.Log( "Total Coroutine Wait Ready Time Cost: " + m_total_prepare_load_next_asset_time );
+	}
+	
+	#endregion
+
+
+
 	#region Utility
 	
 	public static void ClearLoadingInfo( List<LoadingSection> p_list ){
+		if( p_list == null ){
+			Debug.Log( "p_list should not be null." );
+
+			return;
+		}
+
 		p_list.Clear();
 	}
 	

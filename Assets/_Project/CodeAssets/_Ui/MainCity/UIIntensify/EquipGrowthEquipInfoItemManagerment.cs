@@ -23,13 +23,19 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
     public void ShowInfo(EquipGrowthEquipInfoManagerment.EquipBaseInfo baseInfo)
     {
         m_LabelName.text = baseInfo._Name;
-        m_LabelGong.text = baseInfo._Gong.ToString();
-        m_LabelFang.text = baseInfo._Gong.ToString();
-        m_LabelXue.text = baseInfo._Gong.ToString();
         m_LabelProgress.text = baseInfo._Progress;
-     //   m_LabelLevel.text = baseInfo._Level.ToString();
         m_SpriteIcon.spriteName = baseInfo._Icon.ToString();
-        m_SpritePinZhi.spriteName = baseInfo._PinZhi;
+
+        if (FunctionWindowsCreateManagerment.SpecialSizeFit(baseInfo._PinZhi))
+        {
+            m_SpritePinZhi.width = m_SpritePinZhi.height = 88;
+        }
+        else
+        {
+            m_SpritePinZhi.width = m_SpritePinZhi.height = 78;
+        }
+         
+            m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(baseInfo._PinZhi);
         m_PregressBar.value = baseInfo._PregressValue;
         if (baseInfo._Gong > 0)
         {

@@ -155,7 +155,7 @@ using UnityEditor;
 [CustomEditor(typeof(Transform), true)]
 public class NGUITransformInspector : Editor
 {
-	static public NGUITransformInspector instance;
+	public static NGUITransformInspector instance;
 
 	SerializedProperty mPos;
 	SerializedProperty mRot;

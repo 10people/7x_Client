@@ -6,7 +6,7 @@
 		
 		_SKColor( "Stroke Color", Color ) = ( 1, 0, 0, 1 )
 		
-		_Coef( "Coefficient", Range (0.0, 2.0 ) ) = 1.2
+		_Coef( "Coefficient", Range (0.0, 2.0 ) ) = 1.35
 		
 		_MainTex( "Base (RGB) Trans (A)", 2D ) = "white" {}
 	}
@@ -46,7 +46,7 @@
 				
 				uniform float4 _SKColor;
 				
-				float _Coef;
+				float _Coef = 1.35f;
 				
 				sampler2D _MainTex;
 				

@@ -29,6 +29,10 @@ public class UnionGeneralControllor : MonoBehaviour
 		}
 	}
 
+	void OnDestroy(){
+		_instance = null;
+	}
+
 	private void OnCloseLayer()
 	{
 		union_1.gameObject.SetActive(false);

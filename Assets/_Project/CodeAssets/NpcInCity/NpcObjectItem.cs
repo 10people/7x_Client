@@ -28,8 +28,8 @@ public class NpcObjectItem : MonoBehaviour {
 	public void InitWithNpc(NpcCityTemplate template) //初始化npc
 	{
 		m_template = template;
-
-		m_transform.localEulerAngles = new Vector3(0,m_template.m_Angles,0);
+        m_transform.localScale = Vector3.one * 1.5f;
+        m_transform.localEulerAngles = new Vector3(0,m_template.m_Angles,0);
         m_transform.gameObject.AddComponent<SoundPlayEff>();
 		m_transform.localPosition = m_template.m_position;
 		//m_nameLabel.text =MyColorData.getColorString(4,"[b]" + NameIdTemplate.GetName_By_NameId(template.m_npcName) + "[/b]");

@@ -9,7 +9,7 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
 public class SendMail : MonoBehaviour {
-	
+
 	public List<EventHandler> sendEmailBtnList = new List<EventHandler> ();
 	private Dictionary<string,EventHandler> btnDic = new Dictionary<string, EventHandler> ();
 
@@ -19,6 +19,8 @@ public class SendMail : MonoBehaviour {
 	public UILabel btnLabel;
 
 	private string textStr;
+
+	public GameObject selectFriendWindow;
 
 	/// <summary>
 	/// Gets the name of the reply.
@@ -75,6 +77,12 @@ public class SendMail : MonoBehaviour {
 		case "Block":
 
 			NameSubmit ();
+
+			break;
+		case "SelectFriendBtn":
+
+			selectFriendWindow.SetActive (true);
+			EmailSelectFriend.selectFriend.InItSelectFriendPage (nameLabel.value);
 
 			break;
 		default:

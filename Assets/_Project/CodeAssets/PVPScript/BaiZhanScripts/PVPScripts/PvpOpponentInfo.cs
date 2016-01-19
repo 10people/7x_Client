@@ -13,7 +13,7 @@ public class PvpOpponentInfo : MonoBehaviour {
 	private OpponentInfo opponentInfo;
 	
 	public UISprite junXianIcon;
-	public UILabel junXianLabel;
+	public UISprite junXianName;
 	public UILabel rankLabel;
 	public UILabel nameLabel;
 	public UILabel allianceLabel;
@@ -28,16 +28,14 @@ public class PvpOpponentInfo : MonoBehaviour {
 	public UISprite skillIcon;
 	public GameObject lockObj;
 	
-	public UILabel notActiveLabel;
+	public UILabel noSkillLabel;
 	public GameObject miBaoSkillInfoObj;
-	public UISprite titleSprite;
 	public UILabel skillName;
-	public UILabel activeNum;
+	public UILabel desLabel;
 	
 	public ScaleEffectController sEffectControl;
 	
 	public GameObject infoObj;
-	public GameObject iconObj;
 	public GameObject addFriendBtn;
 
 	public List<EventHandler> btnHandlerList = new List<EventHandler> ();
@@ -55,66 +53,45 @@ public class PvpOpponentInfo : MonoBehaviour {
 
 		int junXianId = tempInfo.junXianLevel;//军衔id
 		junXianIcon.spriteName = "junxian" + junXianId;
-		
-		BaiZhanTemplate baizhanTemp = BaiZhanTemplate.getBaiZhanTemplateById (junXianId);
-		junXianLabel.text = NameIdTemplate.GetName_By_NameId (baizhanTemp.templateName);
+		junXianName.spriteName = "JunXian_" + junXianId;
 		
 		rankLabel.text = tempInfo.rank.ToString ();
+
+		nameLabel.text = tempInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse (tempInfo.junZhuName)) : tempInfo.junZhuName;
+		allianceLabel.text = tempInfo.lianMengName.Equals ("") ? "无联盟" : "<" + tempInfo.lianMengName + ">";
 		
-		if (tempInfo.junZhuId < 0)
-		{
-			int nameId = int.Parse (tempInfo.junZhuName);
-			nameLabel.text = NameIdTemplate.GetName_By_NameId (nameId);
-		}
-		else
-		{
-			nameLabel.text = tempInfo.junZhuName;
-		}
-		
-		if (tempInfo.lianMengName.Equals (""))
-		{
-			allianceLabel.text = "无联盟";
-		}
-		else
-		{
-			allianceLabel.text = "<" + tempInfo.lianMengName + ">";
-		}
-		
-		zhanLiLabel.text = tempInfo.zhanLi.ToString ();
+		zhanLiLabel.text = "战力" + tempInfo.zhanLi.ToString ();
 		
 		country.spriteName = "nation_" + tempInfo.guojia;
 
-//		if (tempInfo.activateMiBaoCount >= 2)
-//		{
-//			lockObj.SetActive (false);
-//			skillIcon.gameObject.SetActive (true);
-//			miBaoSkillInfoObj.SetActive (true);
-//			notActiveLabel.text = "";
-//
-//			int miBaoCombId = tempInfo.zuheId;
-//			miBaoSkillBg.spriteName = PvpPage.pvpPage.MibaoSkillBgColor (miBaoCombId);
-//			titleSprite.spriteName = miBaoCombId.ToString ();
-//			
-//			MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (miBaoCombId);
-//			skillIcon.spriteName = miBaoSkillTemp.skill.ToString ();
-//			
-//			SkillTemplate skillTemp = SkillTemplate.getSkillTemplateById (miBaoSkillTemp.skill);
-//			skillName.text = NameIdTemplate.GetName_By_NameId (skillTemp.skillName);
-//			activeNum.text = NameIdTemplate.GetName_By_NameId (miBaoSkillTemp.nameId) + "(" + tempInfo.activateMiBaoCount + "/3)";
-//		}
-//		else
-//		{
-//			lockObj.SetActive (true);
-//			skillIcon.gameObject.SetActive (false);
-//			miBaoSkillInfoObj.SetActive (false);
-//			miBaoSkillBg.spriteName = PvpPage.pvpPage.MibaoSkillBgColor (4);
-//			notActiveLabel.text = "未选择可用的组合技能";
-//		}
-//		Debug.Log ("btnHandlerList:" + btnHandlerList.Count);
+		lockObj.SetActive (tempInfo.zuheId > 0 ? false : true);
+		noSkillLabel.text = tempInfo.zuheId <= 0 ? "未配置秘技" : "";
+		miBaoSkillInfoObj.SetActive (tempInfo.zuheId > 0 ? true : false);
+		
+		if (tempInfo.zuheId > 0)
+		{
+			MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id (tempInfo.zuheId);
+			skillIcon.spriteName = miBaoSkillTemp.icon.ToString ();
+			skillName.text = NameIdTemplate.GetName_By_NameId (miBaoSkillTemp.nameId);
+
+			MiBaoSkillLvTempLate miBaoSkillLvTemp = MiBaoSkillLvTempLate.GetMiBaoSkillLvTemplateByIdAndLevel (tempInfo.zuheId,tempInfo.zuHeLevel);
+			desLabel.text = DescIdTemplate.GetDescriptionById (miBaoSkillLvTemp.skillDesc);
+		}
+		else
+		{
+			skillIcon.spriteName = "";
+			skillName.text = "";
+			desLabel.text = "";
+		}
+		
+//		PvpPage.pvpPage.MibaoSkillBgColor (miBaoSkillTemp == null ? 0 : tempInfo.zuheId);
+
 		foreach (EventHandler handler in btnHandlerList)
 		{
+			handler.m_handler -= BtnHandlerCallBack;
 			handler.m_handler += BtnHandlerCallBack;
 		}
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 	}
 
 	void BtnHandlerCallBack (GameObject obj)
@@ -132,8 +109,6 @@ public class PvpOpponentInfo : MonoBehaviour {
 			break;
 		case "DisBtn":
 
-			PvpPage.pvpPage.SkillEffect (true);
-
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,3);
 			
 			DisActiveWindow ();
@@ -148,6 +123,13 @@ public class PvpOpponentInfo : MonoBehaviour {
 			                                         opponentInfo.junZhuId,opponentInfo.junZhuName);
 
 			break;
+		case "Zhezhao":
+
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,3);
+			
+			DisActiveWindow ();
+
+			break;
 		default:
 			break;
 		}
@@ -160,8 +142,7 @@ public class PvpOpponentInfo : MonoBehaviour {
 	{
 		if (!isShowFriend)
 		{
-			infoObj.transform.localPosition = Vector3.zero;
-			iconObj.transform.localPosition = new Vector3 (-125,45,0);
+			infoObj.transform.localPosition = new Vector3 (60,10,0);
 			addFriendBtn.SetActive (false);
 			return;
 		}
@@ -176,18 +157,13 @@ public class PvpOpponentInfo : MonoBehaviour {
 			{
 				isFriend = false;
 			}
-			infoObj.transform.localPosition = isFriend ? new Vector3 (55,0,0) : Vector3.zero;
-			iconObj.transform.localPosition = isFriend ? new Vector3 (-100,45,0) : new Vector3 (-125,45,0);
+			infoObj.transform.localPosition = isFriend ? new Vector3 (60,10,0) : new Vector3 (15,10,0);
 			addFriendBtn.SetActive (!isFriend);
 		}
 	}
 
 	void DisActiveWindow ()
 	{
-		foreach (EventHandler handler in btnHandlerList)
-		{
-			handler.m_handler -= BtnHandlerCallBack;
-		}
 		gameObject.SetActive (false);
 	}
 }

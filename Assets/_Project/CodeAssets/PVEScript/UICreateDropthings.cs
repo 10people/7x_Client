@@ -94,7 +94,7 @@ public class UICreateDropthings : MonoBehaviour
 				string t_item = t_item_strings[i];
 				
 				string[] t_finals = t_item.Split(t_item_id_delimiter);
-				if(t_finals[0] != "")
+				if(t_finals[0] != ""&&!t_items.Contains(int.Parse(t_finals[0])))
 				{
 					t_items.Add(int.Parse(t_finals[0]));
 				}
@@ -201,10 +201,12 @@ public class UICreateDropthings : MonoBehaviour
 			break;
 		}
 
-	
+//		Debug.Log("numPara = "+numPara );
+
 		for (int n = 0; n < numPara; n++)
         {
-			//Debug.Log("itemsPara[n] = "+itemsPara[n]);
+//			Debug.Log("itemsPara[n] = "+itemsPara[n]);
+
             List<AwardTemp> mAwardTemp = AwardTemp.getAwardTempList_By_AwardId(itemsPara[n]);
 
 //			foreach(AwardTemp mmAwardTemp in mAwardTemp)
@@ -272,7 +274,7 @@ public class UICreateDropthings : MonoBehaviour
     }
 	public void CreateFirsrAward()
 	{			
-//		Debug.Log ("Create FirstAward now !");
+		Debug.Log ("Create FirstAward now !");
 
 		GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
 		
@@ -304,7 +306,7 @@ public class UICreateDropthings : MonoBehaviour
 		
 		var popDesc = mdesc;
 
-        iconSampleManager.SetIconByID(mItemTemp.id, "", 15);
+        iconSampleManager.SetIconByID(mItemTemp.id, "", 10);
         iconSampleManager.SetIconPopText(mAwardTemp[0].itemId, popTitle, popDesc, 1);
 		iconSampleManager.FirstWinSpr.gameObject.SetActive(true);
 	}

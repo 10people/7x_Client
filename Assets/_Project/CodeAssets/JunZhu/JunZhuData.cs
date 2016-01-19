@@ -43,6 +43,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     private int Max_tili = 999;
 
 	public bool UI_IsOpen = false;
+    public bool m_LevelUpInfoSave = false;
 
     public static JunZhuData Instance()
     {
@@ -62,6 +63,12 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     {
         SocketTool.RegisterMessageProcessor(this);
     }
+
+	void OnDestroy(){
+		SocketTool.UnRegisterMessageProcessor(this);
+
+		m_junzhu_data_instance = null;
+	}
 
     void Start()
     {
@@ -91,12 +98,6 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 				ClientMain.addPopUP(20, 0, "", null);
             }
         }
-
-    }
-
-    void OnDestroy()
-    {
-        SocketTool.UnRegisterMessageProcessor(this);
     }
 
     #endregion
@@ -181,6 +182,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
                         }
                         else if (tempInfo.level > m_CurrentLevel)
                         {
+                            m_LevelUpInfoSave = true;
                             ShowLevelUpLayer = true;
                             CityGlobalData.m_isWhetherOpenLevelUp = false;
                             //ShowLevelUp();
@@ -211,8 +213,19 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 							{
 								Global.m_NewChenghao.Add(int.Parse(Global.NextCutting(ref saveString)));
 							}
-							Global.m_isNewChenghao = true;
-							MainCityUIRB.SetRedAlert(200, true);
+							MainCityUI.SetRedAlert(500015, true);
+						}
+						if(Global.m_iPZhanli == 0)
+						{
+							Global.m_iPZhanli = m_junzhuInfo.zhanLi;
+						}
+						else if(Global.m_iPZhanli + Global.m_iAddZhanli < m_junzhuInfo.zhanLi)
+						{
+							Global.m_iAddZhanli += m_junzhuInfo.zhanLi - (Global.m_iPZhanli + Global.m_iAddZhanli);
+							if(!Global.m_isZhanli)
+							{
+								ClientMain.addPopUP(70, 1, "", null);
+							}
 						}
                         return true;
                     }
@@ -246,24 +259,20 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
                         InitBuyUI();
                         return true;
                     }
-                case ProtoIndexes.S_BUY_TongBi: //请求tongbi购买信息 BuyTongbiResp
-                    {
-                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-
-                        QiXiongSerializer t_qx = new QiXiongSerializer();
-
-                        BuyTongbiResp BuyTongBiInfo = new BuyTongbiResp();
-
-                        t_qx.Deserialize(t_stream, BuyTongBiInfo, BuyTongBiInfo.GetType());
-
-                        m_Buy_TBpInfo = BuyTongBiInfo;
-                        InitBuyTongBiUI(m_Buy_TBpInfo);
-				       // SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
-                        return true;
-                    }
+				case ProtoIndexes.S_BUY_TongBi_Data://购买金币一级界面信息
+				{
+					MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+					QiXiongSerializer t_qx = new QiXiongSerializer();
+					BuyTongbiDataResp BuyTongbiData = new BuyTongbiDataResp();
+					t_qx.Deserialize(t_stream, BuyTongbiData, BuyTongbiData.GetType());
+					m_BuyTongBiData = BuyTongbiData;
+					// Debug.Log("Buy_TimespInfo tiLiHuaFei  = " + Buy_TimespInfo.tongBiHuaFei);
+					// Debug.Log("Buy_TimespInfo tiLiHuaFei  = " + Buy_TimespInfo.tongBiHuoDe);
+					InitBuyUI();
+				}
+					break;
                 case ProtoIndexes.S_BUY_MiBaoPoint: //请求tongbi购买信息 BuyTongbiResp
                     {
-
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
                         QiXiongSerializer t_qx = new QiXiongSerializer();
@@ -294,30 +303,9 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
             Debug.Log("跳转到充值！");
 
             MainCityUI.ClearObjectList();
-            TopUpLoadManagerment.m_instance.LoadPrefab(true);
-            QXTanBaoData.Instance().CheckFreeTanBao();
+            EquipSuoData.TopUpLayerTip();
+            //            QXTanBaoData.Instance().CheckFreeTanBao();
         }
-    }
-
-
-    void InitBuyTongBiUI(BuyTongbiResp inf)
-    {
-        // Debug.Log("请求购买铜币返回" + inf.baoji);
-        if (inf.result == 0)
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.BUY_TONGBI_BACKUI), LoadTongBiBack);
-        }
-        else if (inf.result == 1)
-        {
-            //购买失败
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_3);
-        }
-        else if (inf.result == 2)
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_2);
-        }
-
-
     }
 
     void InitBuyPointUI(BuyMibaoPointResp inf)
@@ -367,7 +355,6 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         mBuyTongBiUI.M_BuyTimespInfo = Buy_TimespInfo;
         mBuyTongBiUI.M_BuyTongBiInfo = m_Buy_TBpInfo;
         mBuyTongBiUI.Init();
-
     }
     BuyTongbiResp m_Buy_TBpInfo;
 
@@ -376,7 +363,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     public bool IsBuyTongBi = false;
 
     public bool IsBuyPoint = false;
-
+	BuyTongbiDataResp m_BuyTongBiData;
     BuyTimesInfo Buy_TimespInfo;
 
     void LoadBuyTiLiBack(ref WWW p_www, string p_path, Object p_object)
@@ -399,7 +386,8 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         string strbtn2 = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
         uibox.setBox(str1, str2 + str3 + str4 + str5 + str6 + str7 + str8 + str9, null, null, strbtn1, strbtn2, BuyTiLi, null, null, null);
-    }
+		MainCityUI.TryAddToObjectList(uibox.gameObject);
+	}
 
     void BuyPoint(int i)
     {
@@ -465,8 +453,16 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 			IsBuyTongBi = false;
 			IsBuyPoint = true;
         }
-		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_TIMES_REQ,(ProtoIndexes.S_BUY_TIMES_INFO).ToString());
-
+		if(tongBi)
+		{
+			Debug.Log(ProtoIndexes.C_BUY_TongBi_Data);
+			Global.ScendNull(ProtoIndexes.C_BUY_TongBi_Data);
+		}
+		else
+		{
+			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_TIMES_REQ,(ProtoIndexes.S_BUY_TIMES_INFO).ToString());
+		}
+		CityGlobalData.m_isRightGuide = true;
     }
     void InitBuyUI()
     {
@@ -475,24 +471,14 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 			return;
 		}
 		UI_IsOpen = true;
-		//Debug.Log ("IsBuyTongBi = "+IsBuyTongBi);
-		//Debug.Log ("IsBuyTiLi = "+IsBuyTiLi);
         if (IsBuyTongBi)
         {
             m_RefreshCopperInfo = true;
-
-            if (Buy_TimespInfo.tongBi <= 0)
-            {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBuyTongBiNoTimesBack);
-
-                return;
-            }
-
 			IsBuyTongBi = false;
 
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBuyTongBiBack);
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_BUYMONEY), LoadBuyTongBiBack);
         }
-        if (IsBuyTiLi)
+        else if (IsBuyTiLi)
         {
             if (Buy_TimespInfo.tiLi <= 0)
             {
@@ -505,7 +491,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBuyTiLiBack);
         }
 
-        if (IsBuyPoint)
+		else if (IsBuyPoint)
         {
             m_RefreshCopperInfo = true;
 
@@ -513,7 +499,10 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBuyPoint_Back);
         }
-
+		else
+		{
+			UI_IsOpen = false;
+		}
     }
 
     void LoadBuyTongBiNoTimesBack(ref WWW p_www, string p_path, Object p_object)
@@ -545,7 +534,6 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         {
             str3 = str33;
         }
-
         string strbtn = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
@@ -580,42 +568,11 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
     void LoadBuyTongBiBack(ref WWW p_www, string p_path, Object p_object)
     {
-//		Debug.Log ("tongbi.........");
-
-        string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_1) + LanguageTemplate.GetText(LanguageTemplate.Text.BUY_5);
-        string str2 = "\r\n" + LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_CONFIRM_DUIHUAN_USE_WEIWANG_ASKSTR1);
-        string str3 = Buy_TimespInfo.tongBiHuaFei.ToString();
-        string str4 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_2);
-        string str5 = Buy_TimespInfo.tongBiHuoDe.ToString();
-        string str6 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_5) + "？" + "\r\n" + "\r\n";
-        string str7 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_4);
-        string str8 = Buy_TimespInfo.tongBi.ToString();
-        string str9 = LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_ADDNUM_ASKSTR3);
-        string strbtn1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        string strbtn2 = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-        GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
-        UIBox uibox = m_Box.GetComponent<UIBox>();
-        uibox.setBox(str1, str2 + str3 + str4 + str5 + str6 + str7 + str8 + str9, null, null, strbtn1, strbtn2, BuyJinBi, null, null, null);
-    }
-    void BuyJinBi(int i)
-    {
-		UI_IsOpen = false;
-        if (i == 2)
-        {
-            // Debug.Log("发送购买金币的请求");
-            if (JunZhuData.Instance().m_junzhuInfo.yuanBao < Buy_TimespInfo.tongBiHuaFei)
-            {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_2);
-                return;
-            }
-            if (Buy_TimespInfo.tongBi <= 0)
-            {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_3);
-                return;
-            }
-			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_TongBi,(ProtoIndexes.S_BUY_TongBi).ToString());
-        }
-    }
+		GameObject tempObj = GameObject.Instantiate(p_object) as GameObject;
+		UIBuyMoneyPanel tempPanel = tempObj.GetComponent<UIBuyMoneyPanel>();
+		tempPanel.setData(m_BuyTongBiData);
+		MainCityUI.TryAddToObjectList(tempObj);
+	}
     void LoadmoreTiliBack_3(ref WWW p_www, string p_path, Object p_object)
     {
 
@@ -634,7 +591,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
         uibox.setBox(str1, null, str2, null, strbtn, null, null, null, null);
     }
-    void LoadBack_2(ref WWW p_www, string p_path, Object p_object)
+    public void LoadBack_2(ref WWW p_www, string p_path, Object p_object)
     {
 
         //string str1 = "元宝不足";
@@ -653,7 +610,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     }
     int MaxVIPLevel = 10;
 
-    void LoadBack_3(ref WWW p_www, string p_path, Object p_object)
+	public void LoadBack_3(ref WWW p_www, string p_path, Object p_object)
     {
 
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
@@ -767,7 +724,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     {
         if (m_junzhuInfo.level >= 5)
         {
-            QXTanBaoData.Instance().CheckFreeTanBao();
+//            QXTanBaoData.Instance().CheckFreeTanBao();
         }
 
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.JUN_ZHU_UPGRADE_LAYER),

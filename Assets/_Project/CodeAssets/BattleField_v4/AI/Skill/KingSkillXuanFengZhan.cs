@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 /*
-*  无敌斩
+*  旋风斩
 */
 public class KingSkillXuanFengZhan : MonoBehaviour
 {
@@ -13,15 +13,20 @@ public class KingSkillXuanFengZhan : MonoBehaviour
 
 	private int curCount;
 
+
 	void Start()
 	{
-		SkillTemplate skill = SkillTemplate.getSkillTemplateById (200011);
+		king = gameObject.GetComponent<KingControllor> ();
+		
+		SkillTemplate skill = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.bahuanglieri, king);
 
 		count = (int)skill.value2;
 
-		king = gameObject.GetComponent<KingControllor> ();
-
 		curCount = 0;
+	}
+
+	void OnDestroy(){
+		king = null;
 	}
 
 	public void resetXuanFengCount()

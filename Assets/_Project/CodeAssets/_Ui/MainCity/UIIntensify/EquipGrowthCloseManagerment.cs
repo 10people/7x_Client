@@ -22,32 +22,10 @@ public class EquipGrowthCloseManagerment : MonoBehaviour
 
     void DoCloseWindow()
     {
-        //if (UIYindao.m_UIYindao.m_isOpenYindao)
+        if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress < 0
+           || FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress < 0)
         {
-            if (FreshGuide.Instance().IsActive(100110) && TaskData.Instance.m_TaskInfoDic[100110].progress < 0)
-            {
-                UIYindao.m_UIYindao.CloseUI();
-            }
-            else if (FreshGuide.Instance().IsActive(100080) && TaskData.Instance.m_TaskInfoDic[100080].progress < 0)
-            {
-                UIYindao.m_UIYindao.CloseUI();
-            }
-            else if (FreshGuide.Instance().IsActive(100160) && TaskData.Instance.m_TaskInfoDic[100160].progress < 0)
-            {
-                UIYindao.m_UIYindao.CloseUI();
-            }
-            //else if (TaskData.Instance.m_iCurMissionIndex == 100270 && TaskData.Instance.m_TaskInfoDic[100270].progress >= 0)
-            //{
-            //    UIYindao.m_UIYindao.CloseUI();
-            //}
-            else if (FreshGuide.Instance().IsActive(100125) && TaskData.Instance.m_TaskInfoDic[100125].progress < 0)
-            {
-                UIYindao.m_UIYindao.CloseUI();
-            }
-            //else if (TaskData.Instance.m_iCurMissionIndex == 100270 && TaskData.Instance.m_TaskInfoDic[100270].progress < 0)
-            //{
-            //    UIYindao.m_UIYindao.CloseUI();
-            //}
+            UIYindao.m_UIYindao.CloseUI();
         }
 
         MainCityUI.TryRemoveFromObjectList(m_gameObject);

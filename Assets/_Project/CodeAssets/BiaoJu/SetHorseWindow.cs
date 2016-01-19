@@ -10,10 +10,12 @@ using ProtoBuf.Meta;
 
 public class SetHorseWindow : MonoBehaviour {
 
+	public static SetHorseWindow setHorse;
+
 	public GameObject horseItemObj;
 	private List<GameObject> horseItemList = new List<GameObject> ();
 
-	public EventHandler closeBtn;
+	public List<EventHandler> closeHandlerList = new List<EventHandler>();
 
 	public UILabel totleShouYiDes;
 	public UILabel totleShouYiNum;
@@ -21,6 +23,11 @@ public class SetHorseWindow : MonoBehaviour {
 	private bool isOpenFirst = true;
 
 	public ScaleEffectController sEffectController;
+
+	void Awake ()
+	{
+		setHorse = this;
+	}
 
 	public void InItSetHorseWindow (List<BiaoJuHorseInfo> tempList,int tempType)
 	{
@@ -54,13 +61,16 @@ public class SetHorseWindow : MonoBehaviour {
 		totleShouYiNum.text = "=" + MyColorData.getColorString (1, BiaoJuPage.bjPage.GetHorseAwardNum (1).ToString ()) 
 			+ MyColorData.getColorString (4,"+" + (BiaoJuPage.bjPage.GetHorseAwardNum (tempType) - BiaoJuPage.bjPage.GetHorseAwardNum (1)).ToString ());
 
-		closeBtn.m_handler += CloseSetHorseWindow;
+		foreach (EventHandler handler in closeHandlerList)
+		{
+			handler.m_handler -= CloseSetHorseWindow;
+			handler.m_handler += CloseSetHorseWindow;
+		}
 	}
 
-	void CloseSetHorseWindow (GameObject obj)
+	public void CloseSetHorseWindow (GameObject obj)
 	{
 		isOpenFirst = true;
-		closeBtn.m_handler -= CloseSetHorseWindow;
 		gameObject.SetActive (false);
 	}
 }

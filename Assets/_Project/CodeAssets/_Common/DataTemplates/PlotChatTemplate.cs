@@ -25,6 +25,10 @@ public class PlotChatTemplate : XmlLoadManager
 
 	public string cameraTarget;
 
+	public bool isLocal;
+
+	public int cameraId;
+
 	public float cameraPx;
 
 	public float cameraPy;
@@ -98,6 +102,12 @@ public class PlotChatTemplate : XmlLoadManager
 				t_template.cameraTarget = t_reader.Value;
 
 				t_reader.MoveToNextAttribute();
+				t_template.cameraId = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.isLocal = int.Parse( t_reader.Value ) != 0;
+
+				t_reader.MoveToNextAttribute();
 				t_template.cameraPx = float.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
@@ -126,6 +136,24 @@ public class PlotChatTemplate : XmlLoadManager
 		{
 			if(template.plotChatId == plotChatId)
 			{
+				if(template.cameraId != 0)
+				{
+					CameraTemplate ct = CameraTemplate.getCameraTemplateById(template.cameraId);
+
+					if(ct != null)
+					{
+						template.cameraPx = ct.cameraPx;
+
+						template.cameraPy = ct.cameraPy;
+
+						template.cameraPz = ct.cameraPz;
+
+						template.cameraRx = ct.cameraRx;
+
+						template.cameraRy = ct.cameraRy;
+					}
+				}
+
 				return template;
 			}
 		}

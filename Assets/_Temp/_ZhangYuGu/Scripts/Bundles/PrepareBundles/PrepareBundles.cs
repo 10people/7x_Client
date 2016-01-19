@@ -49,20 +49,26 @@ public class PrepareBundles : MonoBehaviour {
 		return m_instance;
 	}
 
-	void Awake(){
-		m_instance = this;
-
-		PrepareBundleHelper.PrepareBundles_Init_In_Awake();
-	}
-
 	#endregion
 
 
 
 	#region Mono
+	
+	void Awake(){
+//		Debug.Log( "PrepareBundles.Awake()" );
+		
+		m_instance = this;
+		
+		PrepareBundleHelper.PrepareBundles_Init_In_Awake();
+
+//		Debug.Log( "PrepareBundles.Awake.Done()" );
+	}
 
 	// Use this for initialization
 	void Start () {
+//		Debug.Log( "PrepareBundles.Start()" );
+
 		if( ThirdPlatform.IsThirdPlatform() ){
 			// waiting for 3rd login or direct update bundle
 			SetUpdateState( UpdateState.SELECT_UPDATE_SERVER );
@@ -96,6 +102,8 @@ public class PrepareBundles : MonoBehaviour {
 
 			BundleHelper.Instance().PreLoadResources();
 		#endif
+
+//		Debug.Log( "PrepareBundles.Start.Done()" );
 	}
 
 	// Update is called once per frame
@@ -114,9 +122,9 @@ public class PrepareBundles : MonoBehaviour {
 	#region Update Bundles
 
 	public void UpdateServerSelected( GameObject p_gb ){
-		#if DEBUG_BUNDLE
+//		#if DEBUG_BUNDLE
 		Debug.Log( "UpdateServerSelected()" );
-		#endif
+//		#endif
 		
 		SetUpdateState( UpdateState.CHECKING_UPDATE_INFO );
 		
@@ -418,21 +426,9 @@ public class PrepareBundles : MonoBehaviour {
 
 		SetUpdateState( UpdateState.PREPARE_START_GAME );
 
-		{
-			bool t_check_device = false;
-			
-			#if UNITY_ANDROID || UNITY_IOS
-			t_check_device = true;
-			#endif
-			
-			#if UNITY_EDITOR
-			t_check_device = true;
-			#endif
-			
-			if( t_check_device ){
-				if( !DeviceHelper.CheckIsDeviceSupported() ){
-					return;
-				}
+		if( PrepareBundleHelper.IsDeviceCheckOpen() ){
+			if( !DeviceHelper.CheckIsDeviceSupported() ){
+				return;
 			}
 		}
 
@@ -471,6 +467,8 @@ public class PrepareBundles : MonoBehaviour {
 	private static UpdateState m_bundle_update_state = UpdateState.SELECT_UPDATE_SERVER;
 
 	public static void SetUpdateState( UpdateState p_state ){
+		Debug.Log( "SetUpdateState( " + p_state + " )" );
+
 		m_bundle_update_state = p_state;
 	}
 

@@ -83,7 +83,7 @@ public static class EventDelegateEditor
 	/// Draw an editor field for the Unity Delegate.
 	/// </summary>
 
-	static public bool Field (Object undoObject, EventDelegate del)
+	public static bool Field (Object undoObject, EventDelegate del)
 	{
 		return Field(undoObject, del, true);
 	}
@@ -92,7 +92,7 @@ public static class EventDelegateEditor
 	/// Draw an editor field for the Unity Delegate.
 	/// </summary>
 
-	static public bool Field (Object undoObject, EventDelegate del, bool removeButton)
+	public static bool Field (Object undoObject, EventDelegate del, bool removeButton)
 	{
 		if (del == null) return false;
 		bool prev = GUI.changed;
@@ -183,7 +183,7 @@ public static class EventDelegateEditor
 	/// Draw a list of fields for the specified list of delegates.
 	/// </summary>
 
-	static public void Field (Object undoObject, List<EventDelegate> list)
+	public static void Field (Object undoObject, List<EventDelegate> list)
 	{
 		Field(undoObject, list, null, null);
 	}
@@ -192,7 +192,7 @@ public static class EventDelegateEditor
 	/// Draw a list of fields for the specified list of delegates.
 	/// </summary>
 
-	static public void Field (Object undoObject, List<EventDelegate> list, string noTarget, string notValid)
+	public static void Field (Object undoObject, List<EventDelegate> list, string noTarget, string notValid)
 	{
 		bool targetPresent = false;
 		bool isValid = false;

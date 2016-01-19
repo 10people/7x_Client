@@ -22,12 +22,13 @@ public class PvpRecord : MonoBehaviour {
 
 	public List<EventHandler> btnHandlerList = new List<EventHandler> ();
 
-	public ScaleEffectController sEffectControl;
+	void Start ()
+	{
+		QXComData.LoadYuanBaoInfo (this.transform.FindChild ("Camera").gameObject);
+	}
 
 	public void InItRecordPage (ZhandouRecordResp tempRecordResp)
 	{
-		sEffectControl.gameObject.transform.localScale = Vector3.one;
-
 		foreach (EventHandler handler in btnHandlerList)
 		{
 			handler.m_handler += BtnHandlerCallBack;
@@ -92,9 +93,10 @@ public class PvpRecord : MonoBehaviour {
 		{
 		case "CloseBtn":
 
-			PvpPage.pvpPage.CancelBtn ();
-			sEffectControl.OnCloseWindowClick ();
-			sEffectControl.CloseCompleteDelegate += DisActive;
+//			PvpPage.pvpPage.CancelBtn ();
+//			sEffectControl.OnCloseWindowClick ();
+//			sEffectControl.CloseCompleteDelegate += DisActive;
+			DisActive ();
 
 			break;
 		case "Backbtn":

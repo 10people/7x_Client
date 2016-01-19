@@ -22,6 +22,15 @@ using qxmobile.protobuf;
  */ 
 public class ProtoHelper : Singleton<ProtoHelper>{
 
+	#region Mono
+
+	void OnDestroy(){
+		base.OnDestroy();
+	}
+
+	#endregion
+
+
 	#region Send Proto
 
 	/// From LiangXiao.

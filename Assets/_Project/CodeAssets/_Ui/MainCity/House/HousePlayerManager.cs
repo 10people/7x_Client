@@ -82,10 +82,11 @@ public class HousePlayerManager : Singleton<HousePlayerManager>
         m_playrDic.Remove(tempPlayer.uid);
     }
 
-    void OnDestroy()
-    {
+    void OnDestroy(){
         m_playrDic.Clear();
-    }
+
+		base.OnDestroy();
+	}
 
     void LateUpdate()
     {

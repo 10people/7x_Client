@@ -253,11 +253,20 @@ public class KingWeapon : MonoBehaviour
 
 		KingControllor kc = (KingControllor)node.GetComponent ("KingControllor");
 
-		if(kc != null && kc.weaponType == KingControllor.WeaponType.W_Heavy) weaponRatio = kc.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_Heavy_weaponRatio_1 + kc.hitCount );
+		int hitCount = 0;
 
-		else if(kc != null && kc.weaponType == KingControllor.WeaponType.W_Light) weaponRatio = kc.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_Light_weaponRatio_1 + kc.hitCount );
+		if(kc != null)
+		{
+			hitCount = kc.hitCount - 1;
 
-		else if(kc != null && kc.weaponType == KingControllor.WeaponType.W_Ranged) weaponRatio = kc.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_Range_weaponRatio_1 + kc.hitCount );
+			hitCount = hitCount < 0 ? 3 : hitCount;
+		}
+
+		if(kc != null && kc.weaponType == KingControllor.WeaponType.W_Heavy) weaponRatio = kc.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_Heavy_weaponRatio_1 + hitCount );
+
+		else if(kc != null && kc.weaponType == KingControllor.WeaponType.W_Light) weaponRatio = kc.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_Light_weaponRatio_1 + hitCount );
+
+		else if(kc != null && kc.weaponType == KingControllor.WeaponType.W_Ranged) weaponRatio = kc.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_Range_weaponRatio_1 + hitCount );
 
 		BattleControlor.AttackType at = BattleControlor.AttackType.BASE_ATTACK;
 		
@@ -273,10 +282,12 @@ public class KingWeapon : MonoBehaviour
 			{
 				if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_SKILL)
 				{
-					node.attackHp(node, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, at);
+					node.attackHp(node, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.SKILL_REFLEX);
 					
 					fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
-					
+
+					t_node.showText(LanguageTemplate.GetText(LanguageTemplate.Text.BATTLE_SKILL_REFLEX_NAME), buff.supplement.getHeroSkill().template.id);
+
 					break;
 				}
 			}
@@ -289,10 +300,12 @@ public class KingWeapon : MonoBehaviour
 			{
 				if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_WEAPON)
 				{
-					node.attackHp(node, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, at);
+					node.attackHp(node, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX);
 					
 					fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
-					
+
+					t_node.showText(LanguageTemplate.GetText( LanguageTemplate.Text.BATTLE_BASE_REFLEX_NAME), buff.supplement.getHeroSkill().template.id);
+
 					break;
 				}
 			}
@@ -317,10 +330,12 @@ public class KingWeapon : MonoBehaviour
 		{
 			if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_WEAPON)
 			{
-				ba.attackHp(ba, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_ATTACK);
+				ba.attackHp(ba, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX);
 				
 				fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
-				
+
+				t_node.showText(LanguageTemplate.GetText( LanguageTemplate.Text.BATTLE_BASE_REFLEX_NAME), buff.supplement.getHeroSkill().template.id);
+
 				break;
 			}
 		}

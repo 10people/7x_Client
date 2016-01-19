@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 public class UIPanelTool : EditorWindow
 {
-	static public UIPanelTool instance;
+	public static UIPanelTool instance;
 
 	enum Visibility
 	{

@@ -80,7 +80,7 @@ public class MainCityUIRT : MYNGUIPanel
 		}
 		else if(ui.name.IndexOf("RT_BuyRecharge") != -1)
 		{
-			TopUpLoadManagerment.m_instance.LoadPrefab(true);
+            EquipSuoData.TopUpLayerTip();
 		}
 		else if(ui.name.IndexOf("RT_BuyEnergy") != -1)
 		{

@@ -81,7 +81,16 @@ public class BiaoJuData : Singleton<BiaoJuData>,SocketProcessor {
 	public void BeginYunBiaoReq ()
 	{
 		QXComData.SendQxProtoMessage (ProtoIndexes.C_YABIAO_REQ,ProtoIndexes.S_YABIAO_RESP.ToString ());
-		Debug.Log ("开始运镖请求：" + ProtoIndexes.C_YABIAO_REQ);
+
+        SocketHelper.SendQXMessage(ProtoIndexes.C_GETMABIANTYPE_REQ);
+
+        YaBiaoMoreInfoReq temp2 = new YaBiaoMoreInfoReq
+        {
+            type = 1
+        };
+        SocketHelper.SendQXMessage(temp2, ProtoIndexes.C_YABIAO_MOREINFO_RSQ);
+
+        Debug.Log ("开始运镖请求：" + ProtoIndexes.C_YABIAO_REQ);
 	}
 
 	/// <summary>
@@ -393,8 +402,17 @@ public class BiaoJuData : Singleton<BiaoJuData>,SocketProcessor {
 		BiaoJuPage.bjPage.GetBiaoJuResp (biaoJuMainResp);
 	}
 
-	void OnDestroy ()
+	/// <summary>
+	/// Turns to vip.
+	/// </summary>
+	public void TurnToVip ()
 	{
+		EquipSuoData.TopUpLayerTip (biaoJuPrefab,true);
+	}
+
+	void OnDestroy (){
 		SocketTool.UnRegisterMessageProcessor (this);
+
+		base.OnDestroy();
 	}
 }

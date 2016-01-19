@@ -46,12 +46,8 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	public GameObject m_PlayerLeft;
 	public GameObject m_PlayerRight;
     public GameObject m_Equip;
-    public GameObject m_SkillGameobj;
 	public GameObject m_MonetParentObj;
-	public List<SkillDescribe> m_SkillDescribe;
-	
-	private int[] m_strSkillTilsIndex = new int[]{301, 302, 303};
-	private int[] m_strSkillDisIndex = new int[]{311, 312, 313};
+
 	public List<UISprite> m_SkillIcon = new List<UISprite>();
 	public List<UISprite> m_SkillLock = new List<UISprite>();
 	public List<UILabel> m_SkillLabel = new List<UILabel>();
@@ -89,8 +85,10 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	
 	public UITianfu m_UITianfu;
 	public UIChenghao m_UIChenghao;
+	public UIHeroSkill m_UIHeroSkill;
 	public GameObject m_ZhuangBeiIcon;
 	public UISprite m_UIAlert;
+	public UISprite m_UIHeroAlert;
 	public UISprite m_UIFuwenAlert;
 	public UISprite m_UIChenghaoAlert;
 	public UISprite m_UIChenghaoSprite;
@@ -100,6 +98,16 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		m_UIJunzhu = this;
 		SocketTool.RegisterSocketListener(this);	
 	}
+
+
+    void OnEnable()
+    {
+        m_UIJunzhu = this;
+    }
+    void OnDisable()
+    {
+        m_UIJunzhu = null; 
+    }
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterSocketListener(this);
@@ -107,28 +115,47 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	
 	void Start ()
 	{
- 		MainCityUI.m_MainCityUI.setGlobalBelongings(m_MonetParentObj, 480 + ClientMain.m_iMoveX - 40, 320 + ClientMain.m_iMoveY - 5);
+		MainCityUI.setGlobalBelongings(m_MonetParentObj, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		m_ScaleEffectController.OpenCompleteDelegate = EndDelegate;
-		if (FreshGuide.Instance().IsActive(100380) && TaskData.Instance.m_TaskInfoDic[100380].progress >= 0)
+		if (FreshGuide.Instance().IsActive(100280) && TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
 		{
-			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
 			{
-				TaskData.Instance.m_iCurMissionIndex = 100380;
+				TaskData.Instance.m_iCurMissionIndex = 100280;
 				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-				tempTaskData.m_iCurIndex = 1;
+				tempTaskData.m_iCurIndex = 3;
 				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 			}
 		}
-		else if (FreshGuide.Instance().IsActive(100300) && TaskData.Instance.m_TaskInfoDic[100300].progress >= 0)
+		else if (FreshGuide.Instance().IsActive(100230) && TaskData.Instance.m_TaskInfoDic[100230].progress >= 0)
 		{
 			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
 			{
-				TaskData.Instance.m_iCurMissionIndex = 100300;
+				TaskData.Instance.m_iCurMissionIndex = 100230;
 				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-				tempTaskData.m_iCurIndex = 1;
+				tempTaskData.m_iCurIndex = 2;
 				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 			}
 		}
+		else if (FreshGuide.Instance().IsActive(100470) && TaskData.Instance.m_TaskInfoDic[100470].progress >= 0)
+		{
+			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				TaskData.Instance.m_iCurMissionIndex = 100470;
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+				tempTaskData.m_iCurIndex = 2;
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+			}
+		}
+//		else if (FreshGuide.Instance().IsActive(100300) && TaskData.Instance.m_TaskInfoDic[100300].progress >= 0)
+//		{
+//			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+//			{
+//				TaskData.Instance.m_iCurMissionIndex = 100300;
+//				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+//				tempTaskData.m_iCurIndex = 1;
+//				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+//			}
+//		}
 		else
 		{
 			CityGlobalData.m_isRightGuide = true;
@@ -176,12 +203,20 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			//			}
 		}
 		UIButton tempButton;
+		if(!FunctionOpenTemp.IsHaveID(500007))
+		{
+			m_SkillLabel[1].GetComponent<UILabelType>().setType(100);
+			m_SkillIcon[1].color = Color.black;
+		}
+		else
+		{
+			tempButton = m_SkillIcon[1].gameObject.transform.parent.gameObject.AddComponent<UIButton>();
+			tempButton.tweenTarget = m_SkillIcon[1].gameObject;
+		}
 		if(!FunctionOpenTemp.IsHaveID(500000))
 		{
 			m_SkillLabel[2].GetComponent<UILabelType>().setType(100);
 			m_SkillIcon[2].color = Color.black;
-//			m_SkillIcon[2].gameObject.SetActive(false);
-//			m_SkillLock[2].gameObject.SetActive(true);
 		}
 		else
 		{
@@ -192,8 +227,6 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		{
 			m_SkillLabel[3].GetComponent<UILabelType>().setType(100);
 			m_SkillIcon[3].color = Color.black;
-//			m_SkillIcon[3].gameObject.SetActive(false);
-//			m_SkillLock[3].gameObject.SetActive(true);
 		}
 		else
 		{
@@ -258,7 +291,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	// Update is called once per frame
 	void Update () 
 	{
-		if(Global.m_isTianfuUpCan && FunctionOpenTemp.IsHaveID(500000))
+		if(FunctionOpenTemp.IsHaveID(500000) && FunctionOpenTemp.GetTemplateById(500000).m_show_red_alert)
 		{
 			m_UIAlert.gameObject.SetActive(true);
 		}
@@ -275,13 +308,21 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			m_UIFuwenAlert.gameObject.SetActive(false);
 		}
 
-		if(Global.m_isNewChenghao)
+		if(FunctionOpenTemp.IsHaveID(500015) && FunctionOpenTemp.GetTemplateById(500015).m_show_red_alert)
 		{
 			m_UIChenghaoAlert.gameObject.SetActive(true);
 		}
 		else
 		{
 			m_UIChenghaoAlert.gameObject.SetActive(false);
+		}
+		if(FunctionOpenTemp.IsHaveID(500007) && FunctionOpenTemp.GetTemplateById(500007).m_show_red_alert)
+		{
+			m_UIHeroAlert.gameObject.SetActive(true);
+		}
+		else
+		{
+			m_UIHeroAlert.gameObject.SetActive(false);
 		}
 	}
 	
@@ -392,6 +433,18 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				m_JunzhuState = E_JUNZHUSTATE.E_CHENGHAO;
 				break;
 			}
+			case ProtoIndexes.S_HEROSKILLUP_DATA_RES:
+				m_XiangxiPanelLeft.SetActive(false);
+
+				MemoryStream t_stream1 = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				QiXiongSerializer t_qx1 = new QiXiongSerializer();
+				GetJiNengPeiYangQuality tempInfo1 = new GetJiNengPeiYangQuality();
+				t_qx1.Deserialize(t_stream1, tempInfo1, tempInfo1.GetType());
+				m_UIHeroSkill.setData(tempInfo1);
+				m_PlayerLeft.SetActive(false);
+				m_PlayerRight.SetActive(false);
+				m_JunzhuState = E_JUNZHUSTATE.E_SKILL;
+				break;
 			default: return false;
 			}
 			
@@ -438,12 +491,16 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 
 	public override void MYClick(GameObject ui)
 	{
-		Debug.Log(ui.name);
-
-		if(ui.name.IndexOf("Close") != -1 || ui.name.IndexOf ("FuWen(Clone)") != -1)
+        if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress < 0)
+        {
+            UIYindao.m_UIYindao.CloseUI();
+        }
+        if (ui.name.IndexOf("Close") != -1 || ui.name.IndexOf ("FuWen(Clone)") != -1)
 		{
 			GameObject temoObjClickName = new GameObject();
-			Debug.Log(m_JunzhuState);
+
+//			Debug.Log(m_JunzhuState);
+
 			switch(m_JunzhuState)
 			{
 			case E_JUNZHUSTATE.E_DEF:
@@ -453,20 +510,24 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			case E_JUNZHUSTATE.E_SKILL:
 				temoObjClickName.name = "skillback";
 				MYClick(temoObjClickName);
+				m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 				break;
 			case E_JUNZHUSTATE.E_XIANGXI:
 				temoObjClickName.name = "ArrBack";
 				MYClick(temoObjClickName);
+				m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 				break;
 			case E_JUNZHUSTATE.E_FUWEN:
 				break;
 			case E_JUNZHUSTATE.E_TIANFU:
 				temoObjClickName.name = "tianfuback";
 				m_UITianfu.MYClick(temoObjClickName);
+				m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 				break;
 			case E_JUNZHUSTATE.E_CHENGHAO:
 				temoObjClickName.name = "chenghaoback";
 				m_UIChenghao.MYClick(temoObjClickName);
+				m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 				break;
 			}
 		}
@@ -486,15 +547,14 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				m_PlayerRight.SetActive(false);
 				break;
 			case 1:
-//				for(int i = 0; i < 3; i ++)
-//				{
-//					m_SkillDescribe[i].m_SkillTile.text = DescIdTemplate.GetDescriptionById(m_strSkillTilsIndex[i]);
-//					m_SkillDescribe[i].m_SkillDis.text = DescIdTemplate.GetDescriptionById(m_strSkillDisIndex[i]);
-//					m_SkillDescribe[i].m_skillType = i + 1;
-//				}
-				m_SkillGameobj.SetActive(true);
-				m_XiangxiPanelLeft.SetActive(false);
-				m_JunzhuState = E_JUNZHUSTATE.E_SKILL;
+				if(FunctionOpenTemp.IsHaveID(500007))
+				{
+					Global.ScendNull(ProtoIndexes.C_HEROSKILLUP_DATA_REQ);
+				}
+				else
+				{
+					ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(500007).m_sNotOpenTips);
+				}
 				break;
 			case 2:
 				if(FunctionOpenTemp.IsHaveID(500000))
@@ -505,7 +565,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				{
 					ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(500000).m_sNotOpenTips);
 				}
-				if (FreshGuide.Instance().IsActive(100380) && TaskData.Instance.m_TaskInfoDic[100380].progress >= 0)
+				if (FreshGuide.Instance().IsActive(100280) && TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
 				{
 					UIYindao.m_UIYindao.CloseUI();
 				}
@@ -553,14 +613,13 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			m_XiangxiPanelLeft.SetActive(false);
 			m_PlayerLeft.SetActive(true);
 			m_PlayerRight.SetActive(true);
-			m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 		}
 		else if(ui.name.IndexOf("skillback") != -1)
 		{
-			m_SkillGameobj.SetActive(false);
-			m_XiangxiPanelLeft.SetActive(true);
-			m_JunzhuState = E_JUNZHUSTATE.E_XIANGXI;
-//			m_PlayerLeft.SetActive(true);
+			m_UIHeroSkill.clear();
+			m_UIHeroSkill.gameObject.SetActive(false);
+			m_PlayerLeft.SetActive(true);
+			m_PlayerRight.SetActive(true);
 		}
 		else if(ui.name.IndexOf("EquipTZBack") != -1)
 		{
@@ -573,7 +632,6 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			m_XiangxiPanelLeft.SetActive(false);
 			m_PlayerLeft.SetActive(true);
 			m_PlayerRight.SetActive(true);
-			m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 		}
 		else if(ui.name.IndexOf("Chenghao") != -1)
 		{
@@ -721,7 +779,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		
 		m_PlayerModel.transform.rotation = new Quaternion(0,163,0,0);
 
-
+//		m_PlayerModel.GetComponent<PlayerWeaponManagerment>().ShowWeapon(3);
 	}
 	public void setOpenWeapon(int index)
 	{

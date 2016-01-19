@@ -4,7 +4,7 @@ using System.Collections;
 public class WaypointCam : MonoBehaviour {
 	public Color WaypointsColor = new Color(1,0,0,1);
 	public bool draw = true;
-	static public Transform[] waypoints;
+	public static Transform[] waypoints;
 	
 	void Awake(){
 		waypoints = gameObject.GetComponentsInChildren<Transform>();

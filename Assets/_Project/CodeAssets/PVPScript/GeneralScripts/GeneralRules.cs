@@ -4,113 +4,52 @@ using System.Collections.Generic;
 
 public class GeneralRules : MonoBehaviour {
 
+	public delegate void OnRulesBtnClick ();
+
+	private OnRulesBtnClick onRulesBtnClick;
+
 	public UILabel rulesLabel;
 
-	public BoxCollider touchCol;
+	public UIDragScrollView dragArea;
 
-	private GeneralControl.RuleType ruleType;
+	public UIScrollView ruleSc;
+	public UIScrollBar ruleSb;
+
+	public List<EventHandler> closeHandlerList = new List<EventHandler>();
 
 	public ScaleEffectController m_ScaleEffectController;
 
 	/// <summary>
-	/// 规则
+	/// Shows the rules.
 	/// </summary>
-	/// <param name="type">挑战规则类型（需要自己添加，特殊处理需求）</param>
-	/// <param name="textList">规则list</param>
-	/// <param name="rootObjName">根prefab名字</param>
-	public void ShowRules (GeneralControl.RuleType type,List<string> textList)
+	/// <param name="textList">Text list.</param>
+	/// <param name="tempClick">Temp click.</param>
+	public void ShowRules (string ruleText,OnRulesBtnClick tempClick)
 	{
-		ruleType = type;
+		m_ScaleEffectController.OnOpenWindowClick ();
 
-		for (int i = 0;i < textList.Count;i ++)
-		{
-			if (i < textList.Count - 1)
-			{
-				rulesLabel.text += textList[i] + "\n\n";
-			}
-			else
-			{
-				rulesLabel.text += textList[i];
-			}
-		}
+//		rulesLabel.text = "[ffffff]" + ruleText + "[-]";
+		rulesLabel.text = ruleText;
+		ruleSc.UpdateScrollbars (true);
 
-		if (rulesLabel.height <= 476)
+		dragArea.enabled = rulesLabel.height > 326 ? true : false;
+
+		ruleSb.gameObject.SetActive (rulesLabel.height > 326 ? true : false);
+
+		onRulesBtnClick = tempClick;
+		foreach (EventHandler handler in closeHandlerList)
 		{
-			touchCol.enabled = false;
-		}
-		else
-		{
-			touchCol.enabled = true;
+			handler.m_handler += CloseHandlerClickBack;
 		}
 	}
 
-	/// <summary>
-	/// 返回按钮，关闭当前页面
-	/// </summary>
-	public void BackBtn ()
+	void CloseHandlerClickBack (GameObject obj)
 	{
-		switch (ruleType)
+		if (onRulesBtnClick != null)
 		{
-		case GeneralControl.RuleType.PVP:
-		{
-			PvpPage.pvpPage.PvpActiveState (true);
-//			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
-//			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
-			break;
-		}
-		case GeneralControl.RuleType.LUE_DUO:
-		{
-			LueDuoData.Instance.IsStop = false;
-			break;
-		}
-		default:
-			break;
-		}
-		Destroy (this.gameObject);
-	}
-
-	/// <summary>
-	/// 关闭按钮，关闭所有页面
-	/// </summary>
-	public void CloseBtn ()
-	{
-		switch (ruleType)
-		{
-		case GeneralControl.RuleType.PVP:
-
-//			BaiZhanData.Instance ().CloseBaiZhan ();
-			PvpPage.pvpPage.DisActiveObj ();
-		
-			break;
-
-		case GeneralControl.RuleType.ALLIANCE_FIGHT:
-
-			_MyAllianceManager.Instance().Closed();
-			AllianceFightMainPage.fightMainPage.CloseBtn ();
-
-			break;
-
-		case GeneralControl.RuleType.HUANGYE:
-
-			HY_UIManager.Instance().CloseUI();
-
-			break;
-
-		case GeneralControl.RuleType.LUE_DUO:
-
-			LueDuoManager.ldManager.DestroyRoot ();
-
-			break;
-		default:
-			break;
+			onRulesBtnClick ();
 		}
 
-		m_ScaleEffectController.CloseCompleteDelegate = OnCloseWindow;
-		m_ScaleEffectController.OnCloseWindowClick();
-	}
-
-	void OnCloseWindow()
-	{
-		Destroy (this.gameObject);
+		Destroy (gameObject);
 	}
 }

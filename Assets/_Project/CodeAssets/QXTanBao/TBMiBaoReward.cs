@@ -36,6 +36,11 @@ public class TBMiBaoReward : MonoBehaviour {
 		tbMibaoReward = this;
 	}
 
+	void OnDestroy ()
+	{
+		tbMibaoReward = null;
+	}
+
 	void Start ()
 	{
 		starList.Add (starObj);
@@ -215,6 +220,8 @@ public class TBMiBaoReward : MonoBehaviour {
 	/// </summary>
 	public void CloseMiBaoReward ()
 	{
+		Debug.Log ("QXComData.CheckYinDaoOpenState (100160):" + QXComData.CheckYinDaoOpenState (100160));
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,3);
 		blockHandler.gameObject.SetActive (false);
 		if (tbType == TanBaoData.TanBaoType.TONGBI_SPEND || tbType == TanBaoData.TanBaoType.YUANBAO_SPEND)
 		{

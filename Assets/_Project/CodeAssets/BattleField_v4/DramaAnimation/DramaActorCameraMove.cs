@@ -28,6 +28,20 @@ public class DramaActorCameraMove : DramaActor
 		}
 	}
 
+	protected override void OnDestroy(){
+		base.OnDestroy();
+
+		targetCamera = null;
+
+		if( m_Animator != null ){
+			m_Animator.runtimeAnimatorController = null;
+		}
+
+		m_Animator = null;
+
+		m_RunTimeAnimatorController = null;
+	}
+
 	public void LoadCallback(ref WWW p_www, string p_path, Object p_object)
 	{
 		m_RunTimeAnimatorController = p_object as RuntimeAnimatorController;
@@ -131,6 +145,17 @@ public class DramaActorCameraMove : DramaActor
 		}
 
 		return true;
+	}
+
+	public override void log()
+	{
+		Debug.Log ("DramaActorCameraMove data :");
+		
+		Debug.Log ("parentNodeId: " + parentNodeId);
+		
+		Debug.Log ("m_AnimationPath: " + m_AnimationPath);
+		
+		Debug.Log ("movingTime: " + movingTime);
 	}
 
 }

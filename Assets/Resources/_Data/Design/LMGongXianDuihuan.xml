@@ -1,87 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LMGongXianDuihuan id="1000" itemType="0" itemId="910002" itemNum="1" needNum="300" weight="10000" site="1" />
-<LMGongXianDuihuan id="1001" itemType="0" itemId="941001" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1002" itemType="0" itemId="941002" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1003" itemType="0" itemId="941003" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1004" itemType="0" itemId="941004" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1005" itemType="0" itemId="941005" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1006" itemType="0" itemId="942001" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1007" itemType="0" itemId="942002" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1008" itemType="0" itemId="942003" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1009" itemType="0" itemId="942004" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1010" itemType="0" itemId="942005" itemNum="1" needNum="200" weight="1000" site="2" />
-<LMGongXianDuihuan id="1011" itemType="0" itemId="943001" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1012" itemType="0" itemId="943002" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1013" itemType="0" itemId="943003" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1014" itemType="0" itemId="943004" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1015" itemType="0" itemId="943005" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1016" itemType="0" itemId="944001" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1017" itemType="0" itemId="944002" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1018" itemType="0" itemId="944003" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1019" itemType="0" itemId="944004" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1020" itemType="0" itemId="944005" itemNum="1" needNum="200" weight="1000" site="3" />
-<LMGongXianDuihuan id="1025" itemType="6" itemId="960201" itemNum="2" needNum="400" weight="3333" site="4" />
-<LMGongXianDuihuan id="1026" itemType="6" itemId="960202" itemNum="2" needNum="400" weight="3333" site="4" />
-<LMGongXianDuihuan id="1027" itemType="6" itemId="960203" itemNum="2" needNum="400" weight="3334" site="4" />
-<LMGongXianDuihuan id="1028" itemType="6" itemId="960211" itemNum="2" needNum="400" weight="3333" site="5" />
-<LMGongXianDuihuan id="1029" itemType="6" itemId="960212" itemNum="2" needNum="400" weight="3333" site="5" />
-<LMGongXianDuihuan id="1030" itemType="6" itemId="960213" itemNum="2" needNum="400" weight="3334" site="5" />
-<LMGongXianDuihuan id="1031" itemType="6" itemId="960214" itemNum="2" needNum="400" weight="3333" site="6" />
-<LMGongXianDuihuan id="1032" itemType="6" itemId="960215" itemNum="2" needNum="400" weight="3333" site="6" />
-<LMGongXianDuihuan id="1033" itemType="6" itemId="960216" itemNum="2" needNum="400" weight="3334" site="6" />
-<LMGongXianDuihuan id="1034" itemType="6" itemId="960301" itemNum="2" needNum="600" weight="3333" site="7" />
-<LMGongXianDuihuan id="1035" itemType="6" itemId="960302" itemNum="2" needNum="600" weight="3333" site="7" />
-<LMGongXianDuihuan id="1036" itemType="6" itemId="960303" itemNum="2" needNum="600" weight="3334" site="7" />
-<LMGongXianDuihuan id="1037" itemType="6" itemId="960311" itemNum="2" needNum="600" weight="3333" site="8" />
-<LMGongXianDuihuan id="1038" itemType="6" itemId="960312" itemNum="2" needNum="600" weight="3333" site="8" />
-<LMGongXianDuihuan id="1039" itemType="6" itemId="960313" itemNum="2" needNum="600" weight="3334" site="8" />
-<LMGongXianDuihuan id="1040" itemType="6" itemId="960314" itemNum="2" needNum="600" weight="3333" site="9" />
-<LMGongXianDuihuan id="1041" itemType="6" itemId="960315" itemNum="2" needNum="600" weight="3333" site="9" />
-<LMGongXianDuihuan id="1042" itemType="6" itemId="960316" itemNum="2" needNum="600" weight="3334" site="9" />
-<LMGongXianDuihuan id="1043" itemType="6" itemId="960401" itemNum="2" needNum="800" weight="3333" site="10" />
-<LMGongXianDuihuan id="1044" itemType="6" itemId="960402" itemNum="2" needNum="800" weight="3333" site="10" />
-<LMGongXianDuihuan id="1045" itemType="6" itemId="960403" itemNum="2" needNum="800" weight="3334" site="10" />
-<LMGongXianDuihuan id="1046" itemType="6" itemId="960411" itemNum="2" needNum="800" weight="3333" site="11" />
-<LMGongXianDuihuan id="1047" itemType="6" itemId="960412" itemNum="2" needNum="800" weight="3333" site="11" />
-<LMGongXianDuihuan id="1048" itemType="6" itemId="960413" itemNum="2" needNum="800" weight="3334" site="11" />
-<LMGongXianDuihuan id="1049" itemType="6" itemId="960414" itemNum="2" needNum="800" weight="3333" site="12" />
-<LMGongXianDuihuan id="1050" itemType="6" itemId="960415" itemNum="2" needNum="800" weight="3333" site="12" />
-<LMGongXianDuihuan id="1051" itemType="6" itemId="960416" itemNum="2" needNum="800" weight="3334" site="12" />
-<LMGongXianDuihuan id="1052" itemType="6" itemId="960501" itemNum="2" needNum="1000" weight="3333" site="13" />
-<LMGongXianDuihuan id="1053" itemType="6" itemId="960502" itemNum="2" needNum="1000" weight="3333" site="13" />
-<LMGongXianDuihuan id="1054" itemType="6" itemId="960503" itemNum="2" needNum="1000" weight="3334" site="13" />
-<LMGongXianDuihuan id="1055" itemType="6" itemId="960511" itemNum="2" needNum="1000" weight="3333" site="14" />
-<LMGongXianDuihuan id="1056" itemType="6" itemId="960512" itemNum="2" needNum="1000" weight="3333" site="14" />
-<LMGongXianDuihuan id="1057" itemType="6" itemId="960513" itemNum="2" needNum="1000" weight="3334" site="14" />
-<LMGongXianDuihuan id="1058" itemType="6" itemId="960514" itemNum="2" needNum="1000" weight="3333" site="15" />
-<LMGongXianDuihuan id="1059" itemType="6" itemId="960515" itemNum="2" needNum="1000" weight="3333" site="15" />
-<LMGongXianDuihuan id="1060" itemType="6" itemId="960516" itemNum="2" needNum="1000" weight="3334" site="15" />
-<LMGongXianDuihuan id="1061" itemType="6" itemId="960601" itemNum="2" needNum="1600" weight="3333" site="16" />
-<LMGongXianDuihuan id="1062" itemType="6" itemId="960602" itemNum="2" needNum="1600" weight="3333" site="16" />
-<LMGongXianDuihuan id="1063" itemType="6" itemId="960603" itemNum="2" needNum="1600" weight="3334" site="16" />
-<LMGongXianDuihuan id="1064" itemType="6" itemId="960611" itemNum="2" needNum="1600" weight="3333" site="17" />
-<LMGongXianDuihuan id="1065" itemType="6" itemId="960612" itemNum="2" needNum="1600" weight="3333" site="17" />
-<LMGongXianDuihuan id="1066" itemType="6" itemId="960613" itemNum="2" needNum="1600" weight="3334" site="17" />
-<LMGongXianDuihuan id="1067" itemType="6" itemId="960614" itemNum="2" needNum="1600" weight="3333" site="18" />
-<LMGongXianDuihuan id="1068" itemType="6" itemId="960615" itemNum="2" needNum="1600" weight="3333" site="18" />
-<LMGongXianDuihuan id="1069" itemType="6" itemId="960616" itemNum="2" needNum="1600" weight="3334" site="18" />
-<LMGongXianDuihuan id="1070" itemType="6" itemId="960701" itemNum="2" needNum="2000" weight="3333" site="19" />
-<LMGongXianDuihuan id="1071" itemType="6" itemId="960702" itemNum="2" needNum="2000" weight="3333" site="19" />
-<LMGongXianDuihuan id="1072" itemType="6" itemId="960703" itemNum="2" needNum="2000" weight="3334" site="19" />
-<LMGongXianDuihuan id="1073" itemType="6" itemId="960711" itemNum="2" needNum="2000" weight="3333" site="20" />
-<LMGongXianDuihuan id="1074" itemType="6" itemId="960712" itemNum="2" needNum="2000" weight="3333" site="20" />
-<LMGongXianDuihuan id="1075" itemType="6" itemId="960713" itemNum="2" needNum="2000" weight="3334" site="20" />
-<LMGongXianDuihuan id="1076" itemType="6" itemId="960714" itemNum="2" needNum="2000" weight="3333" site="21" />
-<LMGongXianDuihuan id="1077" itemType="6" itemId="960715" itemNum="2" needNum="2000" weight="3333" site="21" />
-<LMGongXianDuihuan id="1078" itemType="6" itemId="960716" itemNum="2" needNum="2000" weight="3334" site="21" />
-<LMGongXianDuihuan id="1079" itemType="6" itemId="960801" itemNum="2" needNum="2400" weight="3333" site="22" />
-<LMGongXianDuihuan id="1080" itemType="6" itemId="960802" itemNum="2" needNum="2400" weight="3333" site="22" />
-<LMGongXianDuihuan id="1081" itemType="6" itemId="960803" itemNum="2" needNum="2400" weight="3334" site="22" />
-<LMGongXianDuihuan id="1082" itemType="6" itemId="960811" itemNum="2" needNum="2400" weight="3333" site="23" />
-<LMGongXianDuihuan id="1083" itemType="6" itemId="960812" itemNum="2" needNum="2400" weight="3333" site="23" />
-<LMGongXianDuihuan id="1084" itemType="6" itemId="960813" itemNum="2" needNum="2400" weight="3334" site="23" />
-<LMGongXianDuihuan id="1085" itemType="6" itemId="960814" itemNum="2" needNum="2400" weight="3333" site="24" />
-<LMGongXianDuihuan id="1086" itemType="6" itemId="960815" itemNum="2" needNum="2400" weight="3333" site="24" />
-<LMGongXianDuihuan id="1087" itemType="6" itemId="960816" itemNum="2" needNum="2400" weight="3334" site="24" />
+<LMGongXianDuihuan id="1000" itemType="9" itemId="920002" itemNum="5" needNum="250" weight="5000" site="1" needLv="1" />
+<LMGongXianDuihuan id="1001" itemType="9" itemId="920003" itemNum="5" needNum="1000" weight="5000" site="1" needLv="1" />
+<LMGongXianDuihuan id="1002" itemType="9" itemId="921002" itemNum="5" needNum="250" weight="5000" site="2" needLv="1" />
+<LMGongXianDuihuan id="1003" itemType="9" itemId="921003" itemNum="5" needNum="1000" weight="5000" site="2" needLv="1" />
+<LMGongXianDuihuan id="1004" itemType="5" itemId="316001" itemNum="3" needNum="1800" weight="10000" site="3" needLv="2" />
+<LMGongXianDuihuan id="1005" itemType="0" itemId="910002" itemNum="3" needNum="1500" weight="10000" site="4" needLv="2" />
+<LMGongXianDuihuan id="1006" itemType="7" itemId="901037" itemNum="1" needNum="300" weight="3334" site="5" needLv="3" />
+<LMGongXianDuihuan id="1007" itemType="7" itemId="902037" itemNum="1" needNum="1200" weight="3333" site="5" needLv="3" />
+<LMGongXianDuihuan id="1008" itemType="7" itemId="903037" itemNum="1" needNum="4800" weight="3333" site="5" needLv="3" />
+<LMGongXianDuihuan id="1009" itemType="0" itemId="951001" itemNum="5" needNum="500" weight="3334" site="6" needLv="3" />
+<LMGongXianDuihuan id="1010" itemType="0" itemId="951002" itemNum="2" needNum="1000" weight="3333" site="6" needLv="3" />
+<LMGongXianDuihuan id="1011" itemType="0" itemId="951003" itemNum="1" needNum="2000" weight="3333" site="6" needLv="3" />
+<LMGongXianDuihuan id="1012" itemType="7" itemId="901027" itemNum="1" needNum="300" weight="3334" site="7" needLv="4" />
+<LMGongXianDuihuan id="1013" itemType="7" itemId="902027" itemNum="1" needNum="1200" weight="3333" site="7" needLv="4" />
+<LMGongXianDuihuan id="1014" itemType="7" itemId="903027" itemNum="1" needNum="4800" weight="3333" site="7" needLv="4" />
+<LMGongXianDuihuan id="1015" itemType="7" itemId="901017" itemNum="1" needNum="300" weight="3334" site="8" needLv="5" />
+<LMGongXianDuihuan id="1016" itemType="7" itemId="902017" itemNum="1" needNum="1200" weight="3333" site="8" needLv="5" />
+<LMGongXianDuihuan id="1017" itemType="7" itemId="903017" itemNum="1" needNum="4800" weight="3333" site="8" needLv="5" />
+<LMGongXianDuihuan id="1018" itemType="5" itemId="316002" itemNum="3" needNum="1800" weight="10000" site="9" needLv="6" />
+<LMGongXianDuihuan id="1019" itemType="0" itemId="900018" itemNum="1000" needNum="1000" weight="5000" site="10" needLv="7" />
+<LMGongXianDuihuan id="1020" itemType="0" itemId="900019" itemNum="1000" needNum="1000" weight="5000" site="10" needLv="7" />
+<LMGongXianDuihuan id="1021" itemType="5" itemId="316003" itemNum="3" needNum="1800" weight="10000" site="11" needLv="8" />
 </dataset>

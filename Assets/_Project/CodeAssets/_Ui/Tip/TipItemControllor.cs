@@ -48,7 +48,9 @@ public class TipItemControllor : MonoBehaviour
 	private int num;
 	
 	private BagItem bagItem;
-	
+
+	private GameObject itemTemple;
+
 	
 	public void refreshData(int _commonItemId)
 	{
@@ -79,7 +81,9 @@ public class TipItemControllor : MonoBehaviour
 		}
 
 		spriteIcon.spriteName = template.icon + "";
-		
+
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+
 		spriteQuality.spriteName = "pinzhi" + template.color;
 		
 		labelName.text = NameIdTemplate.GetName_By_NameId(template.nameId);
@@ -183,6 +187,29 @@ public class TipItemControllor : MonoBehaviour
 		}
 	}
 
+	private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
+	{
+		itemTemple = (GameObject)p_object;
+		
+		itemTemple.SetActive (false);
+		
+		GameObject gc = (GameObject)Instantiate(itemTemple.gameObject);
+		
+		gc.SetActive(true);
+
+		gc.transform.parent = transform;
+
+		gc.transform.localPosition = spriteIcon.transform.parent.localPosition;
+		
+		gc.transform.eulerAngles = itemTemple.transform.eulerAngles;
+		
+		gc.transform.localScale = itemTemple.transform.localScale;
+		
+		IconSampleManager ism = gc.GetComponent<IconSampleManager>();
+
+		ism.SetIconByID(commonItemId, "", 500);
+	}
+
 	private void refreshNum()
 	{
 		num = 0;
@@ -228,34 +255,28 @@ public class TipItemControllor : MonoBehaviour
 		}
 		else if(template.itemType == 4)//秘宝数量在秘宝列表中
 		{
-//			foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
-//			{
-//				foreach(MibaoInfo mibao in group.mibaoInfo)
-//				{
-//					if(mibao.miBaoId == template.id)
-//					{
-//						if(mibao.isLock == false)
-//						{
-//							num = 1;
-//						}
-//					}
-//				}
-//			}
+			foreach(MibaoInfo mibao in MiBaoGlobleData.Instance().G_MiBaoInfo.miBaoList)
+			{
+				if(mibao.miBaoId == template.id)
+				{
+					if(mibao.level != 0)
+					{
+						num = 1;
+					}
+				}
+			}
 
 			gotoBag = false;
 		}
 		else if(template.itemType == 5)//秘宝碎片数量在秘宝列表中
 		{
-//			foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
-//			{
-//				foreach(MibaoInfo mibao in group.mibaoInfo)
-//				{
-//					if(mibao.miBaoId == template.synItemID)
-//					{
-//						num = mibao.suiPianNum;
-//					}
-//				}
-//			}
+			foreach(MibaoInfo mibao in MiBaoGlobleData.Instance().G_MiBaoInfo.miBaoList)
+			{
+				if(mibao.miBaoId == template.synItemID)
+				{
+					num = mibao.suiPianNum;
+				}
+			}
 		}
 
 		if(gotoBag == true)
@@ -289,35 +310,32 @@ public class TipItemControllor : MonoBehaviour
 		bool isHave = false;
 
 		int numMax = 0;
-//		
-//		foreach(MibaoGroup group in MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup)
-//		{
-//			foreach(MibaoInfo mibao in group.mibaoInfo)
-//			{
-//				MiBaoXmlTemp mibaoTemplate = MiBaoXmlTemp.getMiBaoXmlTempById(mibao.miBaoId);
-//
-//				if(mibaoTemplate.suipianId == template.id)
-//				{
-//					if(mibao.star == 0)
-//					{
-//						isHave = false;
-//
-//						MiBaoSuipianXMltemp suipianTemplate = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById(mibaoTemplate.suipianId);
-//						
-//						//isLock = mibao.isLock;
-//						
-//						numMax = suipianTemplate.hechengNum;
-//					}
-//					else
-//					{
-//						isHave = true;
-//
-//						numMax = mibao.needSuipianNum;
-//					}
-//
-//				}
-//			}
-//		}
+		
+		foreach(MibaoInfo mibao in MiBaoGlobleData.Instance().G_MiBaoInfo.miBaoList)
+		{
+			MiBaoXmlTemp mibaoTemplate = MiBaoXmlTemp.getMiBaoXmlTempById(mibao.miBaoId);
+
+			if(mibaoTemplate.suipianId == template.id)
+			{
+				if(mibao.level == 0)
+				{
+					isHave = false;
+
+					MiBaoSuipianXMltemp suipianTemplate = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById(mibaoTemplate.suipianId);
+					
+//					isLock = mibao.isLock;
+					
+					numMax = suipianTemplate.hechengNum;
+				}
+				else
+				{
+					isHave = true;
+
+					numMax = mibao.needSuipianNum;
+				}
+
+			}
+		}
 
 		bar.value = (num * 1f) / (numMax * 1f);
 		
@@ -419,5 +437,6 @@ public class TipItemControllor : MonoBehaviour
 			}
 		}
 	}
+
 
 }

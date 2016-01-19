@@ -20,7 +20,7 @@ public class UICreateNewUIWizard : EditorWindow
 		Advanced3D,
 	}
 
-	static public CameraType camType = CameraType.Simple2D;
+	public static CameraType camType = CameraType.Simple2D;
 
 	/// <summary>
 	/// Refresh the window on selection.
@@ -66,7 +66,7 @@ public class UICreateNewUIWizard : EditorWindow
 	/// Create a brand-new UI hierarchy.
 	/// </summary>
 
-	static public GameObject CreateNewUI (CameraType type)
+	public static GameObject CreateNewUI (CameraType type)
 	{
 		UIPanel p = NGUITools.CreateUI(type == CameraType.Advanced3D, NGUISettings.layer);
 		Selection.activeGameObject = p.gameObject;

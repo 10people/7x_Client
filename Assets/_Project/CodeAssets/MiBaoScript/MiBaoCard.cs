@@ -60,7 +60,8 @@ public class MiBaoCard : MonoBehaviour,SocketProcessor {
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
-		
+
+		spriteText = null;
 	}
 
 

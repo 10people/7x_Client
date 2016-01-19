@@ -316,7 +316,7 @@ public class BattleEffectControllor : MonoBehaviour
 
 		BattleEffect effect = (BattleEffect)effectObject.AddComponent<BattleEffect>();
 
-		effect.refreshDate(group, host, _time, position, forward);
+		effect.refreshDate(group, host, _time, position, forward, et.ratio);
 
 		effect.realTime = Time.realtimeSinceStartup;
 

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/thrdcall_black"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thrdcall_toolbar_height"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/msdk_thrdcall_titlebar_bkg"
+        android:gravity="center_vertical" >
+        
+        <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_marginLeft="60dp"
+	        android:layout_marginRight="60dp"
+	        android:baselineAligned="false"
+	        android:orientation="horizontal" >
+	        
+	        <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="fill_parent"
+	            android:gravity="center"
+	            android:layout_weight="1" >
+		        <ImageButton
+		            android:id="@+id/fav"
+		            android:layout_width="fill_parent"
+		            android:layout_height="fill_parent"
+		            android:background="@drawable/msdk_thrdcall_toolbar_bg"
+		            android:src="@drawable/msdk_thrdcall_fav" />
+	       </LinearLayout>
+	
+	       <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="fill_parent"
+	            android:gravity="center"
+	            android:layout_weight="1" >
+		        <ImageButton
+		            android:id="@+id/open_by_qq_browser"
+		            android:layout_width="fill_parent"
+		            android:layout_height="fill_parent"
+		            android:background="@drawable/msdk_thrdcall_toolbar_bg"
+		            android:src="@drawable/msdk_thrdcall_qqbrowser" />
+	       </LinearLayout>
+	       
+	       <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="fill_parent"
+	            android:gravity="center"
+	            android:layout_weight="1" >
+		        <ImageButton
+		            android:id="@+id/more"
+		            android:layout_width="fill_parent"
+		            android:layout_height="fill_parent"
+		            android:background="@drawable/msdk_thrdcall_toolbar_bg"
+		            android:src="@drawable/msdk_thrdcall_more" />
+	       </LinearLayout>
+       </LinearLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/webview_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/toolbar_holder"
+        android:layout_below="@+id/titlebar"
+        android:background="@color/thrdcall_white" >
+         
+         <com.tencent.smtt.sdk.WebView
+             android:id="@+id/webview"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:paddingLeft="0dp"
+             android:paddingRight="0dp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@id/toolbar_holder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thrdcall_toolbar_height"
+        android:layout_alignParentBottom="true" >
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/r_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thrdcall_toolbar_height"
+        android:layout_alignParentBottom="true">
+            
+	     <LinearLayout
+	            android:id="@+id/s_back"
+	            android:layout_width="100dp"
+	            android:layout_height="fill_parent"
+	            android:layout_alignParentRight="true"
+	            android:background="#413e3e">
+		        <ImageButton
+		            android:id="@+id/return_app"
+		            android:layout_width="fill_parent"
+		            android:layout_height="fill_parent"
+		            android:background="@drawable/msdk_thrdcall_delete_fg"
+		            android:src="@drawable/msdk_thrdcall_close" />
+	    </LinearLayout>
+	   
+	    <LinearLayout
+	        android:id="@+id/toolbar"
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/thrdcall_toolbar_height"
+	        android:layout_toLeftOf="@+id/s_back"
+	        android:baselineAligned="false"
+	        android:orientation="horizontal" >
+		        
+	       <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="fill_parent"
+	            android:gravity="center"
+	            android:layout_weight="1" >
+	       	    <ImageButton
+		            android:id="@+id/back"
+		            android:layout_width="fill_parent"
+		            android:layout_height="fill_parent"
+		            android:background="@drawable/msdk_thrdcall_toolbar_bg"
+		            android:src="@drawable/msdk_thrdcall_left" 
+		            />
+	       </LinearLayout>
+	       
+	       <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="fill_parent"
+	            android:gravity="center"
+	            android:layout_weight="1" >
+		        <ImageButton
+		            android:id="@+id/forward"
+		            android:layout_width="fill_parent"
+		            android:layout_height="fill_parent"
+		            android:background="@drawable/msdk_thrdcall_toolbar_bg"
+		            android:src="@drawable/msdk_thrdcall_right" />
+	       </LinearLayout>
+	       
+	       <FrameLayout
+	            android:layout_width="0dp"
+	            android:layout_height="fill_parent"
+	            android:gravity="center"
+	            android:layout_weight="1" >
+	
+	            <ImageButton
+	                android:id="@+id/stop"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_gravity="center"
+	                android:background="@drawable/msdk_thrdcall_toolbar_bg"
+	                android:src="@drawable/msdk_thrdcall_stop" />
+	
+	            <ImageButton
+	                android:id="@+id/refresh"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_gravity="center"
+	                android:background="@drawable/msdk_thrdcall_toolbar_bg"
+	                android:src="@drawable/msdk_thrdcall_refresh"
+	                android:visibility="gone" />
+	        </FrameLayout>
+	              
+	       <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="fill_parent"
+	            android:gravity="center"
+	            android:layout_weight="1" >
+		        <ImageButton
+		            android:id="@+id/land_open_by_qq_browser"
+		            android:layout_width="fill_parent"
+		            android:layout_height="fill_parent"
+		            android:background="@drawable/msdk_thrdcall_toolbar_bg"
+		            android:src="@drawable/msdk_thrdcall_qqbrowser" />
+	       </LinearLayout>
+	       
+	      <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="fill_parent"
+	            android:gravity="center"
+	            android:layout_weight="1" >
+		        <ImageButton
+		            android:id="@+id/land_fav"
+		            android:layout_width="fill_parent"
+		            android:layout_height="fill_parent"
+		            android:background="@drawable/msdk_thrdcall_toolbar_bg"
+		            android:src="@drawable/msdk_thrdcall_fav" />
+	       </LinearLayout>
+	       
+	       <LinearLayout
+	             android:layout_width="0dp"
+	             android:layout_height="fill_parent"
+	             android:layout_weight="1"
+	             android:gravity="center" >
+	
+	             <ImageButton
+	                 android:id="@+id/land_more"
+	                 android:layout_width="fill_parent"
+	                 android:layout_height="fill_parent"
+	                 android:src="@drawable/msdk_thrdcall_more" 
+	                 android:background="@drawable/msdk_thrdcall_toolbar_bg"/>
+	       </LinearLayout>
+       </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

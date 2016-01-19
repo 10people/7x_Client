@@ -15,7 +15,7 @@ public class TaskSignalInfoShow : MonoBehaviour
     public GameObject m_grid;
     public GameObject m_ObjHidden;
     public UILabel m_labelTitle;
-
+    public static int m_TaskId = 0;
     public ScaleEffectController m_SEC;
     private string _rewardInfo = "";
     public GameObject m_ObjFinish;
@@ -29,6 +29,7 @@ public class TaskSignalInfoShow : MonoBehaviour
     private List<RewardInfo> listRewardInfo = new List<RewardInfo>();
     void Start()
     {
+        _listObj.Clear();
         m_TaskSignal = this;
         m_ListEvent.ForEach(item => item.m_handler += GetAwards);
         m_SEC.OpenCompleteDelegate += ShowInfo;
@@ -51,10 +52,10 @@ public class TaskSignalInfoShow : MonoBehaviour
         m_ObjFinish.SetActive(true);
         StartCoroutine(WaitSecond());
     }
- 
+
+    private List<GameObject> _listObj = new List<GameObject>();
     private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
     {
-
         if (m_grid != null)
         {
             GameObject iconSampleObject = Instantiate(p_object) as GameObject;
@@ -70,6 +71,7 @@ public class TaskSignalInfoShow : MonoBehaviour
             if (int.Parse(listRewardInfo[index_Num].icon) == 900006)
             {
                 UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, iconSampleObject, EffectIdTemplate.GetPathByeffectId(100112), null);
+                _listObj.Add(iconSampleObject);
             }
 
             if (index_Num < listRewardInfo.Count - 1)
@@ -86,23 +88,36 @@ public class TaskSignalInfoShow : MonoBehaviour
     IEnumerator WaitSecond()
     {
         //   yield return new WaitForSeconds(1.5f);
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.8f);
 
         if (!_isCancelEffect)
         {
-            m_ListEvent[1].gameObject.SetActive(false);
-            ShowAwardInfo();
+            // m_ListEvent[1].gameObject.SetActive(false);
+            ChargeData();
         }
     }
 
-    void ShowAwardInfo()
+    void ChargeData()
     {
+        if (TaskData.Instance.m_TaskInfoDic.ContainsKey(m_TaskId) && TaskData.Instance.m_TaskInfoDic[m_TaskId].type == 1)
+        {
+            ShowAwardInfo(TaskData.Instance.m_TaskInfoDic[m_TaskId]);
+        }
+        else
+        {
+            ShowAwardInfo(TaskData.Instance.m_MainComplete);
+        }
+    }
+
+    void ShowAwardInfo(ZhuXianTemp temp)
+    {
+        UI3DEffectTool.Instance().ClearUIFx(m_ObjFinish);
         m_ObjFinish.SetActive(false);
         m_ObjHidden.SetActive(true);
         m_TaskSignal = this;
-        taskId = TaskData.Instance.m_MainComplete.id;
-        _rewardInfo = TaskData.Instance.m_MainComplete.award;
-        m_labelTitle.text = TaskData.Instance.m_MainComplete.title;
+        taskId = temp.id;
+        _rewardInfo = temp.award;
+        m_labelTitle.text = temp.title;
         listRewardInfo.Clear();
 
         if (!string.IsNullOrEmpty(_rewardInfo) && _rewardInfo != "0")
@@ -145,10 +160,9 @@ public class TaskSignalInfoShow : MonoBehaviour
         if (obj.name.Equals("CancelEffect"))
         {
             _isCancelEffect = true;
-            m_ListEvent[1].gameObject.SetActive(false);
+        //    m_ListEvent[1].gameObject.SetActive(false);
             UI3DEffectTool.Instance().ClearUIFx(m_ObjFinish);
-
-           ShowAwardInfo();
+            ChargeData();
         }
         else
         {
@@ -190,5 +204,15 @@ public class TaskSignalInfoShow : MonoBehaviour
         }
 
         uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, confirmStr, null, null, null, null);
+    }
+
+
+    void OnDisable()
+    {
+        int size = _listObj.Count;
+        for (int i = 0; i < size; i++)
+        {
+            UI3DEffectTool.Instance().ClearUIFx(_listObj[i]);
+        }
     }
 }

@@ -7,6 +7,8 @@ public class BattleResultStar : MonoBehaviour
 
 	public UILabel labelDesc;
 
+	public AudioClip audioClip;
+
 
 	private bool m_enable;
 
@@ -61,13 +63,15 @@ public class BattleResultStar : MonoBehaviour
 	public void onShow()
 	{
 		gameObject.SetActive(true);
-		
+
 		if(m_enable == true)
 		{
 			iTween.ScaleTo(spriteStar.gameObject, iTween.Hash(
 				"scale", new Vector3(1, 1, 1),
 				"time", .3f,
-				"easeType", iTween.EaseType.linear
+				"easeType", iTween.EaseType.linear,
+				"oncomplete", "playSound",
+				"oncompletetarget", gameObject
 				));
 		}
 		else
@@ -93,7 +97,9 @@ public class BattleResultStar : MonoBehaviour
 			iTween.ScaleTo(spriteStar.gameObject, iTween.Hash(
 				"scale", new Vector3(1, 1, 1),
 				"time", .3f,
-				"easeType", iTween.EaseType.linear
+				"easeType", iTween.EaseType.linear,
+				"oncomplete", "playSound",
+				"oncompletetarget", gameObject
 				));
 		}
 		else
@@ -107,6 +113,11 @@ public class BattleResultStar : MonoBehaviour
 	public void OnItweenUpdataWidth(float width)
 	{
 		labelDesc.SetDimensions ((int)width, 36);
+	}
+
+	void playSound()
+	{
+		NGUITools.PlaySound(audioClip, 1, 1);
 	}
 
 }

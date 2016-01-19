@@ -17,34 +17,32 @@ public class PvpPage : MonoBehaviour {
 	public List<EventHandler> pvpBtnHandlerList = new List<EventHandler>();
 	private Dictionary<string,EventHandler> pvpBtnHandlerDic = new Dictionary<string, EventHandler> ();
 
-	private string[] mibaoSkillBgStr = new string[4]{"bulebg","redbg","yellowbg","greybg"};
-
-	private List<string> ruleList = new List<string> ();
+	private string[] mibaoSkillBgStr = new string[]{"redbg","greybg"};
 
 	public ScaleEffectController sEffectControl;
 
 	public GameObject pvpObj;
+	public GameObject topRightObj;
 
+	//variable
 	private bool yd_GetReward = false;
 	private bool yd_Store = false;
+	private bool isOpenFirst = false;
+	private bool isTurnToVipPage = false;//是否跳转到vip页面
 
 	void Awake ()
 	{
 		pvpPage = this;
 	}
 
+	void OnDestroy ()
+	{
+		pvpPage = null;
+	}
+
 	void Start ()
 	{
-		//LanguageTemp.xml:349-357  BAIZHAN_RULE_(1-9)
-		for (int i = 0;i < 9;i ++)
-		{
-			string s = "BAIZHAN_RULE_" + (i + 1);
-			LanguageTemplate.Text t = (LanguageTemplate.Text)System.Enum.Parse(typeof(LanguageTemplate.Text), s);
-			string ruleStr = LanguageTemplate.GetText (t);
-			
-			ruleList.Add (ruleStr);
-			//Debug.Log ("rule:" + ruleList[i]);
-		}
+		QXComData.LoadMoneyInfoPrefab (topRightObj,true);
 	}
 
 	/// <summary>
@@ -53,6 +51,12 @@ public class PvpPage : MonoBehaviour {
 	/// <param name="tempPvpResp">Temp pvp resp.</param>
 	public void InItPvpPage (BaiZhanInfoResp tempPvpResp)
 	{
+		if (!isOpenFirst)
+		{
+			isOpenFirst = true;
+			sEffectControl.OnOpenWindowClick ();
+		}
+
 		pvpResp = tempPvpResp;
 		pvpObj.SetActive (true);
 		pvpBtnHandlerDic.Clear ();
@@ -72,10 +76,11 @@ public class PvpPage : MonoBehaviour {
 
 		foreach (EventHandler handler in pvpBtnHandlerList)
 		{
+			handler.m_handler -= BtnHandlerCallBack;
 			handler.m_handler += BtnHandlerCallBack;
 		}
 
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,3);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
 	}
 
 	#region MyRankInfo Part
@@ -124,105 +129,45 @@ public class PvpPage : MonoBehaviour {
 	
 	public UILabel notActiveLabel;
 	public GameObject miBaoSkillInfoObj;
-	public UISprite titleSprite;
-	public UILabel skillName;
-	public UILabel activeNum;
+	public UISprite skillName;
+	public UILabel desLabel;
+	public UILabel noSkillLabel;
 	
 	public GameObject warringObj;
-
-	private bool isShowSkillBtnEffect;
 
 	//防守设置
 	public void DefensiveSetUp ()
 	{
-		zhanLiLabel.text = pvpResp.pvpInfo.zhanLi.ToString ();
-		
-		int miBaoCombId = pvpResp.pvpInfo.zuheId;
+		zhanLiLabel.text = "战力" + pvpResp.pvpInfo.zhanLi.ToString ();
 
-//		Dictionary<int,MibaoGroup> miBaoGroupDic = new Dictionary<int, MibaoGroup> ();
-//		foreach (MibaoGroup group in MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup)
-//		{
-//			if (!miBaoGroupDic.ContainsKey (group.zuheId))
-//			{
-//				miBaoGroupDic.Add (group.zuheId,group);
-//			}
-//		}
-//
-//		if (miBaoGroupDic.ContainsKey (miBaoCombId))
-//		{
-//			MibaoGroup miBaoGroup = miBaoGroupDic[miBaoCombId];
-//			if (miBaoGroup.hasActive == 1)//激活
-//			{
-//				int activeCount = 0;
-//				foreach (MibaoInfo mibaoInfo in miBaoGroup.mibaoInfo)
-//				{
-//					if (mibaoInfo.level > 0 && !mibaoInfo.isLock)
-//					{
-//						activeCount ++;
-//					}
-//				}
-//
-//				lockObj.SetActive (false);
-//				skillIcon.gameObject.SetActive (true);
-//				miBaoSkillInfoObj.SetActive (true);
-//
-//				BoxCollider skillBtnBox = pvpBtnHandlerDic["ChangeSkillBtn"].gameObject.GetComponent<BoxCollider> ();
-//				skillBtnBox.enabled = true;
-//				UISprite skillBtnSprite = pvpBtnHandlerDic["ChangeSkillBtn"].gameObject.GetComponent<UISprite> ();
-//				skillBtnSprite.color = Color.white;
-//
-//				notActiveLabel.text = "";
-//				miBaoSkillBg.spriteName = MibaoSkillBgColor (miBaoCombId);
-//				titleSprite.spriteName = miBaoCombId.ToString ();
-//				
-//				MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (miBaoCombId);
-//				skillIcon.spriteName = miBaoSkillTemp.skill.ToString ();
-//				
-//				SkillTemplate skillTemp = SkillTemplate.getSkillTemplateById (miBaoSkillTemp.skill);
-//				skillName.text = NameIdTemplate.GetName_By_NameId (skillTemp.skillName);
-//				activeNum.text = NameIdTemplate.GetName_By_NameId (miBaoSkillTemp.nameId) + "(" + activeCount + "/3)";
-//
-//				isShowSkillBtnEffect = false;
-//			}
-//			else
-//			{
-//				lockObj.SetActive (true);
-//				skillIcon.gameObject.SetActive (false);
-//				miBaoSkillInfoObj.SetActive (false);
-//				miBaoSkillBg.spriteName = MibaoSkillBgColor (4);
-//				notActiveLabel.text = "未选择可用的组合技能";
-//
-//				isShowSkillBtnEffect = true;
-//			}
-//		}
-//		else
-//		{
-//			lockObj.SetActive (true);
-//			skillIcon.gameObject.SetActive (false);
-//			miBaoSkillInfoObj.SetActive (false);
-//			miBaoSkillBg.spriteName = MibaoSkillBgColor (4);
-//			notActiveLabel.text = "未选择可用的组合技能";
-//
-//			isShowSkillBtnEffect = true;
-//		}
-		SkillEffect (true);
-		ShowRecordWarring (pvpResp.isShow);
-	}
+		lockObj.SetActive (pvpResp.pvpInfo.zuheId > 0 ? false : true);
+		noSkillLabel.text = pvpResp.pvpInfo.zuheId <= 0 ? "未配置秘技" : "";
+		miBaoSkillInfoObj.SetActive (pvpResp.pvpInfo.zuheId > 0 ? true : false);
 
-	//是否开启按钮特效
-	public void SkillEffect (bool isShow)
-	{
-		if (isShowSkillBtnEffect)
+		if (pvpResp.pvpInfo.zuheId > 0)
 		{
-			QXComData.ShowChangeSkillEffect (isShow,pvpBtnHandlerDic["ChangeSkillBtn"].gameObject,110006);
+			MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id (pvpResp.pvpInfo.zuheId);
+			skillIcon.spriteName = miBaoSkillTemp.icon.ToString ();
+			skillName.spriteName = miBaoSkillTemp.skill.ToString ();
+
+			MiBaoSkillLvTempLate miBaoSkillLvTemp = MiBaoSkillLvTempLate.GetMiBaoSkillLvTemplateByIdAndLevel (pvpResp.pvpInfo.zuheId,QXComData.GetMiBaoSkillLevel (pvpResp.pvpInfo.zuheId));
+			desLabel.text = DescIdTemplate.GetDescriptionById (miBaoSkillLvTemp.skillDesc);
 		}
+		else
+		{
+			skillIcon.spriteName = "";
+			skillName.spriteName = "";
+			desLabel.text = "";
+		}
+
+		ShowRecordWarring (pvpResp.isShow);
 	}
 
 	//是否有新的对战记录
 	void ShowRecordWarring (bool isFlag)
 	{
 		warringObj.SetActive (isFlag);
-		PushAndNotificationHelper.SetRedSpotNotification (300100,isFlag);
+//		PushAndNotificationHelper.SetRedSpotNotification (300100,isFlag);
 	}
 
 	/// <summary>
@@ -231,15 +176,7 @@ public class PvpPage : MonoBehaviour {
 	/// <param name="id">Identifier.</param>
 	public string MibaoSkillBgColor (int id)
 	{
-		string bgSpriteName = "";
-//		if (id <= 0 || id > MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup.Count)
-//		{
-//			bgSpriteName = mibaoSkillBgStr[3];
-//		}
-//		else
-//		{
-//			bgSpriteName = mibaoSkillBgStr[id - 1];
-//		}
+		string bgSpriteName = id > 0 ? mibaoSkillBgStr[id - 1] : mibaoSkillBgStr[3];
 		return bgSpriteName;
 	}
 	#endregion
@@ -251,91 +188,70 @@ public class PvpPage : MonoBehaviour {
 	public GameObject changeBtn;//换对手btn
 	
 	private List<GameObject> opponentObjList = new List<GameObject> ();
-	private float opponentSbValue;
-
-	private List<EventHandler> opponentHandlerList = new List<EventHandler> ();
 
 	public GameObject opponentWindow;
 
 	//对手信息
 	public void OpponentsInfo ()
 	{
-		if (opponentHandlerList.Count != 0)
+		int tempCount = pvpResp.oppoList.Count - opponentObjList.Count;
+		if (tempCount > 0)
 		{
-			foreach (EventHandler handler in opponentHandlerList)
+			for (int i = 0;i < tempCount;i ++)
 			{
-				handler.m_handler -= OpponentHandlerCallBack;
-			}
-
-			opponentHandlerList.Clear ();
-		}
-	
-		//按排名排序
-		for (int i = 0;i < pvpResp.oppoList.Count - 1;i ++)
-		{
-			for (int j = 0;j < pvpResp.oppoList.Count - i - 1;j ++)
-			{
-				if (pvpResp.oppoList[j].rank > pvpResp.oppoList[j + 1].rank)
-				{
-					OpponentInfo tempInfo = pvpResp.oppoList[j];
-					pvpResp.oppoList[j] = pvpResp.oppoList[j + 1];
-					pvpResp.oppoList[j + 1] = tempInfo;
-				}
-			}
-		}
-
-		int opponentCount = pvpResp.oppoList.Count - opponentObjList.Count;
-		int exitCount = opponentObjList.Count;
-		if (opponentCount > 0)
-		{
-			for (int i = 0;i < opponentCount;i ++)
-			{
-				GameObject opponent = (GameObject)Instantiate (opponentObj);
-				opponent.SetActive (true);
-				opponent.transform.parent = opponentObj.transform.parent;
-				opponent.transform.localPosition = new Vector3(0,-105 * (i + exitCount),0);
-				opponent.transform.localScale = opponentObj.transform.localScale;
+				GameObject obj = GameObject.Instantiate (opponentObj);
 				
-				opponentObjList.Add (opponent);
-
-				opponentSc.UpdateScrollbars (true);
+				obj.SetActive (true);
+				obj.transform.parent = opponentObj.transform.parent;
+				obj.transform.localPosition = Vector3.zero;
+				obj.transform.localScale = Vector3.one;
+				
+				opponentObjList.Add (obj);
 			}
 		}
 		else
 		{
-			for (int i = 0;i < Mathf.Abs(opponentCount);i ++)
+			for (int i = 0;i < Mathf.Abs (tempCount);i ++)
 			{
-				Destroy (opponentObjList[opponentObjList.Count - 1]);
+				GameObject.Destroy (opponentObjList[opponentObjList.Count - 1]);
 				opponentObjList.RemoveAt (opponentObjList.Count - 1);
-
-				opponentSc.UpdateScrollbars (true);
 			}
 		}
-		opponentSb.value = opponentSbValue;
+
+		//按排名排序
+//		for (int i = 0;i < pvpResp.oppoList.Count - 1;i ++)
+//		{
+//			for (int j = 0;j < pvpResp.oppoList.Count - i - 1;j ++)
+//			{
+//				if (pvpResp.oppoList[j].rank > pvpResp.oppoList[j + 1].rank)
+//				{
+//					OpponentInfo tempInfo = pvpResp.oppoList[j];
+//					pvpResp.oppoList[j] = pvpResp.oppoList[j + 1];
+//					pvpResp.oppoList[j + 1] = tempInfo;
+//				}
+//			}
+//		}
 
 		for (int i = 0;i < pvpResp.oppoList.Count;i ++)
 		{
+//			opponentObjList[i].transform.localPosition = new Vector3(0,-100 * i);
+
 			PvpOpponent opponentInfo = opponentObjList[i].GetComponent<PvpOpponent> (); 
 			opponentInfo.GetOpponentInfo (pvpResp.oppoList[i]);
 
-			EventHandler opponentHandler = opponentObjList[i].GetComponent<EventHandler> ();
-			opponentHandlerList.Add (opponentHandler);
-		}
+			SpringPosition.Begin(opponentObjList[i].gameObject, new Vector3(0,-100 * i), 30f).updateScrollView = true;
 
-		foreach (EventHandler handler in opponentHandlerList)
-		{
+			opponentSc.UpdateScrollbars (true);
+			EventHandler handler = opponentObjList[i].GetComponent<EventHandler> ();
+			handler.m_handler -= OpponentHandlerCallBack;
 			handler.m_handler += OpponentHandlerCallBack;
 		}
-
-		opponentSc.enabled = !QXComData.CheckYinDaoOpenState (100180);
-
-		changeBtn.SetActive (true);
-		changeBtn.transform.localPosition = new Vector3 (0,-pvpResp.oppoList.Count * 105,0);
+		changeBtn.transform.localPosition = new Vector3 (0,-pvpResp.oppoList.Count * 100 + 145,0);
+		opponentSc.enabled = !QXComData.CheckYinDaoOpenState (100200);
 	}
 
 	void OpponentHandlerCallBack (GameObject obj)
 	{
-		SkillEffect (false);
 		PvpOpponent opponent= obj.GetComponent<PvpOpponent> ();
 		//打开对手详情窗口
 		opponentWindow.SetActive (true);
@@ -343,8 +259,6 @@ public class PvpPage : MonoBehaviour {
 		opponentInfo.ScaleEffect ();
 		opponentInfo.InItOpponentWindow (opponent.OpponentInfo);
 		opponentInfo.ShowFriendState (true);
-
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,4);
 	}
 
 	//刷新百战对手好友状态
@@ -360,15 +274,10 @@ public class PvpPage : MonoBehaviour {
 	/// <summary>
 	/// 规则及挑战条件模块
 	/// </summary>
-	public GameObject haveNoTimeObj;
-	public GameObject haveNoTimeLabel1;
-	public UILabel haveNoTimeLabel2;//显示无挑战次数的label
-	
-	public GameObject timesObj;
-	public UILabel conditionsLabel;//当前挑战条件
-	public GameObject buyNumBtn;
-	public GameObject resetBtn;
-	
+	public UILabel numDesLabel;//挑战次数
+
+	public UILabel conditionsLabel;//显示时间
+
 	private int cdTime;//冷却时间
 	public int CdTime
 	{
@@ -379,26 +288,24 @@ public class PvpPage : MonoBehaviour {
 	//挑战规则相关
 	public void ChallangeRules ()
 	{
+		cdTime = pvpResp.pvpInfo.time;
+		StopCoroutine ("ChallangeCd");
+		StartCoroutine ("ChallangeCd");
+
 		if (pvpResp.pvpInfo.time > 0)
 		{
-			haveNoTimeObj.SetActive (false);
-			resetBtn.SetActive (true);
-			buyNumBtn.SetActive (false);
-			
-			if (cdTime == 0)
-			{
-				cdTime = pvpResp.pvpInfo.time;
-				
-				StartCoroutine (ChallangeCd ());
-			}
+			numDesLabel.text = "";
+			pvpBtnHandlerDic ["ResetBtn"].gameObject.SetActive (true);
+			pvpBtnHandlerDic ["BuyTimesBtn"].gameObject.SetActive (false);
 		}
 		
 		else if (pvpResp.pvpInfo.leftTimes > 0)
 		{
-			conditionsLabel.text = "今日剩余次数：" + pvpResp.pvpInfo.leftTimes + "/" + pvpResp.pvpInfo.totalTimes + "次";
-			haveNoTimeObj.SetActive (false);
-			resetBtn.SetActive (false);
-			buyNumBtn.SetActive (false);
+			numDesLabel.color = Color.white;
+			numDesLabel.text = "今日剩余次数：" + pvpResp.pvpInfo.leftTimes + "/" + pvpResp.pvpInfo.totalTimes + "次";
+			conditionsLabel.text = "";
+			pvpBtnHandlerDic ["ResetBtn"].gameObject.SetActive (false);
+			pvpBtnHandlerDic ["BuyTimesBtn"].gameObject.SetActive (false);
 		}
 		
 		else
@@ -406,26 +313,25 @@ public class PvpPage : MonoBehaviour {
 			if (pvpResp.pvpInfo.totalTimes < pvpResp.nowMaxBattleCount)
 			{
 				conditionsLabel.text = "今日剩余次数：" + pvpResp.pvpInfo.leftTimes + "/" + pvpResp.pvpInfo.totalTimes + "次";
-				haveNoTimeObj.SetActive (false);
-				resetBtn.SetActive (false);
-				buyNumBtn.SetActive (true);
+				numDesLabel.text = "";
+				pvpBtnHandlerDic ["ResetBtn"].gameObject.SetActive (false);
+				pvpBtnHandlerDic ["BuyTimesBtn"].gameObject.SetActive (true);
 			}
 			else //挑战次数用完
 			{
 				conditionsLabel.text = "";
-				haveNoTimeObj.SetActive (true);
-				resetBtn.SetActive (false);
-				buyNumBtn.SetActive (false);
+				numDesLabel.color = Color.red;
+				pvpBtnHandlerDic ["ResetBtn"].gameObject.SetActive (false);
+				pvpBtnHandlerDic ["BuyTimesBtn"].gameObject.SetActive (false);
 				
 				int vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv;
 				if (vipLevel < 10)
 				{
-					haveNoTimeLabel2.text = "达到VIP" + (vipLevel + 1) + "每日可最大挑战" + pvpResp.nextMaxBattleCount + "次";
+					numDesLabel.text = "今日挑战次数已用尽\n\n达到VIP" + (vipLevel + 1) + "每日可最大挑战" + pvpResp.nextMaxBattleCount + "次";
 				}
 				else
 				{
-					haveNoTimeLabel1.transform.localPosition = new Vector3(70,0,0);
-					haveNoTimeLabel2.text = "";
+					numDesLabel.text = "今日挑战次数已用尽";
 				}
 			}
 		}
@@ -461,25 +367,22 @@ public class PvpPage : MonoBehaviour {
 		{
 		case "GetRewardBtn":
 
+//			if (QXComData.CheckYinDaoOpenState (100210))
+//			{
+//				UIYindao.m_UIYindao.setCloseUIEff ();
+//			}
 			PvpData.Instance.CanGetWeiWang = pvpResp.canGetweiWang;
 			PvpData.Instance.ConfirmReq (PvpData.PVP_CONFIRM_TYPE.PVP_GET_REWARD);
 
 			break;
 		case "DuiHuanBtn":
 
-//			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.PVP,GeneralControl.StoreReqType.FREE);
 			ShopData.Instance.OpenShop (ShopData.ShopType.WEIWANG);
 
 			break;
 		case "RecordBtn":
 
 			PvpData.Instance.PvpRecordReq ();
-
-			break;
-		case "ChangeSkillBtn":
-
-			PvpActiveState (false);
-			Global.ResourcesDotLoad (Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeMiBaoSkillLoadBack);
 
 			break;
 		case "ChangePlayerBtn":
@@ -539,8 +442,9 @@ public class PvpPage : MonoBehaviour {
 			break;
 		case "RulesBtn":
 
-			PvpActiveState (false);
-			GeneralControl.Instance.LoadRulesPrefab (GeneralControl.RuleType.PVP,ruleList);
+//			GeneralControl.Instance.LoadRulesPrefab (GeneralControl.RuleType.PVP,ruleList);
+
+			GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.BAIZHAN_HELP_DESC));
 
 			break;
 		case "PvpClose":
@@ -598,7 +502,7 @@ public class PvpPage : MonoBehaviour {
 		}
 		else
 		{
-			SkillEffect (true);
+
 		}
 	}
 
@@ -621,7 +525,7 @@ public class PvpPage : MonoBehaviour {
 		}
 		else
 		{
-			SkillEffect (true);
+		
 		}
 	}
 	
@@ -640,17 +544,15 @@ public class PvpPage : MonoBehaviour {
 	//打开按钮特效
 	public void OpenSkillEffect (int i)
 	{
-		SkillEffect (true);
-	}
 
-	private bool isTurnToVipPage = false;
+	}
+	
 	//跳转到充值
 	public void TurnToVipPage (int i)
 	{
 		if (i == 1)
 		{
-			SkillEffect (true);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,4);
+
 		}
 		else
 		{
@@ -667,7 +569,7 @@ public class PvpPage : MonoBehaviour {
 	public void LoadPvpRecordPrefab (ZhandouRecordResp tempRecord)
 	{
 		pvpRecordResp = tempRecord;
-		PvpActiveState (false);
+//		PvpActiveState (false);
 		if (pvpResp.isShow)
 		{
 			pvpResp.isShow = false;
@@ -699,8 +601,8 @@ public class PvpPage : MonoBehaviour {
 	public void PvpActiveState (bool setActive)
 	{
 		pvpObj.SetActive (setActive);
-		SkillEffect (setActive);
 	}
+	
 
 	void Update ()
 	{
@@ -734,16 +636,16 @@ public class PvpPage : MonoBehaviour {
 			getTipObj.transform.localScale = Vector3.zero;
 		}
 
-		if (QXComData.CheckYinDaoOpenState (100190) && !yd_GetReward)
+		if (QXComData.CheckYinDaoOpenState (100210) && !yd_GetReward)
 		{
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100190,2);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100210,1);
 
 			yd_GetReward = true;
 		}
 
-		if (QXComData.CheckYinDaoOpenState (100200) && !yd_Store)
+		if (QXComData.CheckYinDaoOpenState (100220) && !yd_Store)
 		{
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100220,1);
 
 			yd_Store = true;
 		}
@@ -751,24 +653,21 @@ public class PvpPage : MonoBehaviour {
 
 	public void CancelBtn ()
 	{
-		SkillEffect (false);
 		sEffectControl.OnCloseWindowClick ();
 		sEffectControl.CloseCompleteDelegate += DisActiveObj;
 	}
 
 	public void DisActiveObj ()
 	{
-		foreach (EventHandler handler in pvpBtnHandlerList)
-		{
-			handler.m_handler -= BtnHandlerCallBack;
-		}
+		opponentSb.value = 0;
+		isOpenFirst = false;
 		Global.m_isOpenBaiZhan = false;
 		PvpData.Instance.IsOpenPvpByBtn = false;
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
 		if (isTurnToVipPage)
 		{
-			TopUpLoadManagerment.m_instance.LoadPrefab(false);
-		}
+            EquipSuoData.TopUpLayerTip();
+        }
 	}
 }

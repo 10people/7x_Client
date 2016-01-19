@@ -169,6 +169,10 @@ public class BaseAI : MonoBehaviour
 
 	[HideInInspector] public Dictionary<int, Threat> threatDict = new Dictionary<int, Threat> ();
 
+	[HideInInspector] public BubblePopNode bubblePopNode;
+
+	[HideInInspector] public BattleAppearanceTemplate appearanceTemplate;
+
 
 	protected CharacterController chongfengControllor;
 	
@@ -246,6 +250,20 @@ public class BaseAI : MonoBehaviour
 		}
 	}
 
+	public virtual void OnDestroy(){
+		body = null;
+		
+		m_Gameobj = null;
+		
+		flag = null;
+
+		if( mAnim != null ){
+			mAnim.runtimeAnimatorController = null;
+		}
+
+		mAnim = null;
+	}
+
 	public virtual void initStart()
 	{
 		isBlind = false;
@@ -286,6 +304,14 @@ public class BaseAI : MonoBehaviour
 		mAnim = GetComponentInChildren<Animator>();
 
 		character = this.GetComponent<CharacterController>();
+
+		setNavMeshRadius (appearanceTemplate.colliderRadius);
+		
+		character.radius = appearanceTemplate.colliderRadius;
+
+		setNavMeshPriority (appearanceTemplate.navPriority);
+
+		ObjectHelper.AddObjectTrace( mAnim.runtimeAnimatorController );
 
 		trails.Clear();
 
@@ -334,7 +360,7 @@ public class BaseAI : MonoBehaviour
 		threatDict.Clear ();
 	}
 
-	public void init(int _modelId)
+	public void init(int _modelId, Node _nodeData)
 	{
 		if(nodeData.nodeType == NodeType.PLAYER)
 		{
@@ -379,16 +405,7 @@ public class BaseAI : MonoBehaviour
 
 		float bloodRate = 1f;
 
-		float bloodY = 2.1f;
-
-		bloodY = ModelTemplate.getModelTemplateByModelId (_modelId).height;
-
-		if(nodeData.nodeType == NodeType.BOSS)
-		{
-			bloodY = bloodY * 1.5f;
-		}
-
-		bloodY += .2f;
+		float bloodY = appearanceTemplate.height * 2 + .2f;
 
 		if(nodeData.nodeType == NodeType.SOLDIER)
 		{
@@ -422,10 +439,10 @@ public class BaseAI : MonoBehaviour
 		if(nodeData.nodeType == NodeType.BOSS)
 		{
 			if(body != null) {
-				EffectTool.SetBossEffect( body );
+				EffectTool.SetBossEffect( body, appearanceTemplate.bossFxColor, appearanceTemplate.bossFxWidth );
 			}
 			else {
-				EffectTool.SetBossEffect( gameObject );
+				EffectTool.SetBossEffect( gameObject, appearanceTemplate.bossFxColor, appearanceTemplate.bossFxWidth );
 			}
 		}
 
@@ -451,6 +468,8 @@ public class BaseAI : MonoBehaviour
 		m_Gameobj = gameobj;
 
 		modelId = _modelId;
+
+		appearanceTemplate = BattleAppearanceTemplate.getBattleAppearanceTemplateById (_nodeData.appearanceId);
 
 		nodeData = new AIdata ();
 
@@ -517,14 +536,16 @@ public class BaseAI : MonoBehaviour
 
 				if(boxCol != null)
 				{
-					boxCol.size += new Vector3(0, 0, nodeData.GetAttribute((int)AIdata.AttributeType.ATTRTYPE_attackRange) - boxCol.size.z);
-				
+					float length = nodeData.GetAttribute((int)AIdata.AttributeType.ATTRTYPE_attackRange) + 1;
+
+					boxCol.size = new Vector3(length * .75f, 2, length);
+
 					boxCol.center += new Vector3(0, 0, boxCol.size.z / 2 - boxCol.center.z);
 				}
 			}
 		}
 
-		init(_modelId);
+		init(_modelId, _nodeData);
 
 		initSkill();
 	}
@@ -538,30 +559,46 @@ public class BaseAI : MonoBehaviour
 			BattleControlor.Instance().setMiBaoSkill(null, this);
 		}
 
-		if (nodeData.skills == null) return;
-
-		foreach( NodeSkill skill in nodeData.skills )
+		if (nodeData.skills != null)
 		{
-			if(skill == null) continue;
-
-			HeroSkill heroSkill = gameObject.AddComponent<HeroSkill>();
-
-			skills.Add(heroSkill);
-
-			skills[skills.Count - 1].init( skill , skills.Count - 1);
-
-			if(nodeData.nodeType == NodeType.PLAYER && skill.zhudong == true)
+			foreach( NodeSkill skill in nodeData.skills )
 			{
-				if(skill.id == 200012 || skill.id == 201301 || skill.id == 201302)
+				if(skill == null) continue;
+
+				HeroSkill heroSkill = gameObject.AddComponent<HeroSkill>();
+
+				skills.Add(heroSkill);
+
+				skills[skills.Count - 1].init( skill , skills.Count - 1);
+
+				if(nodeData.nodeType == NodeType.PLAYER && skill.zhudong == true)
 				{
-					BattleControlor.Instance().setHeavySkill_2(heroSkill, this);
-				}
-				else
-				{
-					BattleControlor.Instance().setMiBaoSkill(heroSkill, this);
+					if(skill.id == 200012 || skill.id == 201301 || skill.id == 201302)//旧机制乾坤斗转技能从服务器获取，改为前台读表
+					{
+						//BattleControlor.Instance().setHeavySkill_2(heroSkill, this);
+					}
+					else
+					{
+						BattleControlor.Instance().setMiBaoSkill(heroSkill, this);
+					}
 				}
 			}
 		}
+
+		if(nodeData.nodeType == NodeType.PLAYER)//手动添加乾坤斗转技能
+		{
+			if((this as KingControllor).skillLevel[(int)CityGlobalData.skillLevelId.qiankundouzhuan] > 0)
+			{
+				HeroSkill heroSkill = gameObject.AddComponent<HeroSkill>();
+				
+				skills.Add(heroSkill);
+
+				skills[skills.Count - 1].init( SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.qiankundouzhuan, this as KingControllor) , skills.Count - 1);
+
+				BattleControlor.Instance().setHeavySkill_2(heroSkill, this);
+			}
+		}
+
 		for(int i = 0; i < skills.Count; i ++)
 		{
 			skills[i].getSkillAssociated();
@@ -666,19 +703,30 @@ public class BaseAI : MonoBehaviour
 		if(m_iUseSkillIndex != -1)
 		{
 			skills[m_iUseSkillIndex].activeSkill(state);
-			Debug.Log (skills[m_iUseSkillIndex].m_otherSkill.Count);
+
+//			Debug.Log (skills[m_iUseSkillIndex].m_otherSkill.Count);
+
 			for(int i = 0; i < skills[m_iUseSkillIndex].m_otherSkill.Count; i ++)
 			{
 				skills[m_iUseSkillIndex].m_otherSkill[i].activeSkill(0);
 			}
+
+			BubblePopControllor.Instance().triggerFuncSkill(nodeId, skills[m_iUseSkillIndex].template.id);
+
+			StrEffectItem.OpenEffect(gameObject, SkillTemplate.getSkillTemplateById(skills[m_iUseSkillIndex].template.id).Fx3D, modelId);
 		}
+	}
+
+	public void skillEnd()
+	{
+		StrEffectItem.CloseEffect(gameObject);
 	}
 
 	public void openShow()
 	{
 		if (BattleControlor.Instance ().inDrama == true) return;
 		skills[m_iUseSkillIndex].setShowFanRand();
-		Debug.Log (skills[m_iUseSkillIndex].m_otherSkill.Count);
+//		Debug.Log (skills[m_iUseSkillIndex].m_otherSkill.Count);
 		for(int i = 0; i < skills[m_iUseSkillIndex].m_otherSkill.Count; i ++)
 		{
 			skills[m_iUseSkillIndex].m_otherSkill[i].setShowFanRand();
@@ -948,7 +996,7 @@ public class BaseAI : MonoBehaviour
 		
 		return false;
 	}
-	int tempnum = 0;
+
 	void FixedUpdate ()
 	{
 		updateThreats ();
@@ -982,7 +1030,6 @@ public class BaseAI : MonoBehaviour
 			}
 		}
 
-		tempnum ++;
 		for(int i = 0; i < skills.Count; i ++)
 		{
 			skills[i].upData();
@@ -1015,6 +1062,8 @@ public class BaseAI : MonoBehaviour
 	{
 		foreach(BaseAI node in enemysInRange)
 		{
+			if(node == null) continue;
+
 			if(node.gameObject.activeSelf == false) continue;
 
 			if(node.isAlive == false) continue;
@@ -1196,9 +1245,6 @@ public class BaseAI : MonoBehaviour
 
 		//List<BaseAI> tempList = stance == Stance.STANCE_ENEMY ? BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes;
 
-//		if (nodeId == 2)
-//			Debug.Log ("EEEEEEEEEEEEE    " + enemysInRange.Count);
-
 		foreach(BaseAI node in enemysInRange)
 		{
 			if(node == null || !node.isAlive || node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) <= 0) continue;
@@ -1237,6 +1283,42 @@ public class BaseAI : MonoBehaviour
 					tempThreast = threatNum;
 
 					tempLength = leng;
+				}
+			}
+		}
+
+		if(nodeData.nodeType == NodeType.PLAYER && targetNode == null)
+		{
+			if(stance == Stance.STANCE_SELF)
+			{
+				foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+				{
+					if(node == null || node.isAlive == false || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
+					{
+						continue;
+					}
+
+					if(node.nodeData.nodeType == NodeType.GOD || node.nodeData.nodeType == NodeType.NPC) continue;
+
+					targetNode = node;
+
+					return;
+				}
+			}
+			else if(stance == Stance.STANCE_ENEMY)
+			{
+				foreach(BaseAI node in BattleControlor.Instance().selfNodes)
+				{
+					if(node == null || node.isAlive == false || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
+					{
+						continue;
+					}
+
+					if(node.nodeData.nodeType == NodeType.GOD || node.nodeData.nodeType == NodeType.NPC) continue;
+
+					targetNode = node;
+					
+					return;
 				}
 			}
 		}
@@ -1341,7 +1423,19 @@ public class BaseAI : MonoBehaviour
 		}
 		else if(targetNode == null || nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_eyeRange) < 0) 
 		{
-			hover();
+			if(nodeId == 1)
+			{
+				BattleWinTemplate winTemp = BattleWinTemplate.getWinTemplateContainsType(BattleWinFlag.EndType.Reach_Destination, true);
+
+				if(winTemp != null)
+				{
+					setNavMeshDestination(winTemp.destination);
+				}
+			}
+			else
+			{
+				hover();
+			}
 
 			return;
 		}
@@ -1383,7 +1477,7 @@ public class BaseAI : MonoBehaviour
 				setTargetPosition(Vector3.zero);
 			}
 		}
-		else if(tempL < range)
+		else if(tempL < range && targetNode.gameObject.activeSelf == true)
 		{
 			runOrAttack = 1;
 
@@ -1697,7 +1791,7 @@ public class BaseAI : MonoBehaviour
 			if (nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) <= 0) shadowObject.SetActive(false);
 		}
 
-		float rate = nodeData.GetAttribute ((int)AIdata.AttributeType.ATTRTYPE_hp) / nodeData.GetAttribute ((int)AIdata.AttributeType.ATTRTYPE_hpMax);
+		float rate = nodeData.GetAttribute ((int)AIdata.AttributeType.ATTRTYPE_hp) / nodeData.GetAttribute ((int)AIdata.AttributeType.ATTRTYPE_hpMaxReal);
 
 		if (bloodbar != null)
 		{
@@ -1975,7 +2069,7 @@ public class BaseAI : MonoBehaviour
 		da.refreshdata(targetPos, di);
 	}
 
-	public virtual void die()
+	public virtual void die(bool slowDown)
 	{
 		if (isAlive == false) return;
 
@@ -1985,9 +2079,19 @@ public class BaseAI : MonoBehaviour
 
 		//dropItem ();
 
-		if(flag.dieable == true) mAnim.SetTrigger (getAnimationName(AniType.ANI_Dead));
-
-		else dieActionDone ();
+		if(flag.dieable == true)
+		{
+			mAnim.SetTrigger (getAnimationName(AniType.ANI_Dead));
+			
+			if(slowDown == true)
+			{
+				dieActionDone ();
+			}
+		}
+		else
+		{
+			dieActionDone ();
+		}
 
 		//if(flag.dieable == true) mAnim.Play (getAnimationName(AniType.ANI_Dead));
 	}
@@ -1997,6 +2101,8 @@ public class BaseAI : MonoBehaviour
 		if (BattleControlor.Instance ().inDrama == true) return;
 
 		if (isAlive == false) return;
+
+		BubblePopControllor.Instance ().triggerFuncDie (nodeId);
 
 		StartCoroutine(dieAction());
 	}
@@ -2229,6 +2335,64 @@ public class BaseAI : MonoBehaviour
 //		}
 	}
 
+	public void addNuqi(float addNuqi)
+	{
+		float nuqi = nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
+
+		nuqi += addNuqi;
+		
+		float nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX);
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
+		{
+			nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
+		}
+
+		nuqi = nuqi > nuqiMax ? nuqiMax : nuqi;
+
+		nuqi = nuqi < 0 ? 0 : nuqi;
+
+		float tempNuqi = nuqi - nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
+
+		nodeData.SetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI, nuqi);
+
+		if(nodeId == 1 && BattleControlor.Instance().getKing().kingSkillMibao != null && BattleControlor.Instance().getKing().kingSkillMibao.Count > 0)
+		{
+			BattleUIControlor.Instance ().spriteBarMibao.fillAmount = nuqi / nuqiMax;
+
+			float unityMax = nuqiMax / 3;
+
+			int count = (int)(nuqi / unityMax);
+
+			BattleUIControlor.Instance().spriteMibaoFrame.SetActive(count == 0);
+			
+			if(count == 0)
+			{
+				BattleUIControlor.Instance().labelBarMibao.text = "";
+			}
+			else if(count == 1)
+			{
+				BattleUIControlor.Instance().labelBarMibao.text = "x1";
+			}
+			else if(count == 2)
+			{
+				BattleUIControlor.Instance().labelBarMibao.text = "x2";
+			}
+			else if(count == 3)
+			{
+				BattleUIControlor.Instance().labelBarMibao.text = "MAX";
+
+				if(tempNuqi > 0)
+				{
+					UI3DEffectTool.Instance().ShowTopLayerEffect(
+	                    UI3DEffectTool.UIType.FunctionUI_1, 
+	                    BattleUIControlor.Instance().btnMibaoSkill,
+						EffectIdTemplate.GetPathByeffectId(100189) );
+				}
+			}
+		}
+	}
+
 	private IEnumerator minusTargetHp(BaseAI defender)
 	{
 		yield return new WaitForSeconds(0.7f);
@@ -2247,9 +2411,11 @@ public class BaseAI : MonoBehaviour
 			{
 				if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_WEAPON)
 				{
-					attackHp(this, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_ATTACK);
+					attackHp(this, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX);
 
 					fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
+
+					defender.showText(LanguageTemplate.GetText( LanguageTemplate.Text.BATTLE_BASE_REFLEX_NAME), buff.supplement.getHeroSkill().template.id);
 
 					break;
 				}
@@ -2323,13 +2489,17 @@ public class BaseAI : MonoBehaviour
 			return;
 		}
 
+		BubblePopControllor.Instance ().triggerFuncBATC (nodeId);
+
 		if(attackedType == BattleControlor.AttackType.BASE_ATTACK) m_listByAtk.Add (attacker);
 
 		else m_listBySkill.Add(attacker);
 
+		if(attackedType == BattleControlor.AttackType.BASE_ATTACK) addNuqi ((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_SHENGMING_REDUCE) * hpValue / nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMaxReal));
+
 		if(attacker.nodeData.nodeType != NodeType.GEAR && nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_eyeRange) > .1f) 
 		{
-			OnTriggerEnter ((Collider)attacker.GetComponent(typeof(Collider)));
+			OnTriggerEnterNode ((Collider)attacker.GetComponent(typeof(Collider)));
 		}
 
 		bool flag = nodeData.nodeType == NodeType.PLAYER;
@@ -2400,8 +2570,12 @@ public class BaseAI : MonoBehaviour
 			}
 		}
 
-		if( QualityTool.GetBool( QualityTool.CONST_CHARACTER_HITTED_FX ) ){
-			BattleEffectControllor.Instance().PlayEffect(67, transform.position + new Vector3(0, 1.2f, 0), transform.forward);
+		{
+			GameObject t_gb = BattleEffectControllor.Instance().PlayEffect(67, transform.position + new Vector3(0, 1.2f, 0), transform.forward);
+
+			if( !QualityTool.GetBool( QualityTool.CONST_CHARACTER_HITTED_FX ) ){
+				ComponentHelper.DisableAllVisibleObject( t_gb );
+			}
 		}
 
 		if(nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) > -hpValue
@@ -2536,6 +2710,12 @@ public class BaseAI : MonoBehaviour
 
 			BattleEffectControllor.Instance().PlayEffect(
 				67,
+				gameObject);
+		}
+		else
+		{
+			BattleEffectControllor.Instance().PlayEffect(
+				attackId,
 				gameObject);
 		}
 	}
@@ -2721,11 +2901,11 @@ public class BaseAI : MonoBehaviour
 
 		for(; nav.enabled == true;)
 		{
-			nav.Resume();
-			
-			nav.SetDestination(targetPosition);
+			//nav.Resume();
 
-			nav.Stop();
+			setNavDestination(targetPosition);
+
+			//nav.Stop();
 
 			if(tempPath != null && tempPath.Equals(nav.path) == false)
 			{
@@ -2771,12 +2951,22 @@ public class BaseAI : MonoBehaviour
 		{
 			nav.Resume();
 
-			nav.SetDestination(targetPosition);
+			setNavDestination(targetPosition);
 		}
 
 		yield return new WaitForSeconds (.5f);
 
 		inTurning = false;
+	}
+
+	private void setNavDestination(Vector3 destination)
+	{
+		if(Vector3.Distance(destination, nav.destination) < 1f)
+		{
+			return;
+		}
+
+		nav.SetDestination(destination);
 	}
 
 	public void addNavMeshSpeed(float tempSpeed)
@@ -2793,9 +2983,9 @@ public class BaseAI : MonoBehaviour
 		nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_moveSpeed, _speed );
 	}
 
-	public void setNavAvo(int avo)
+	public void setNavMeshPriority(int priority)
 	{
-		nav.avoidancePriority = avo;
+		nav.avoidancePriority = priority;
 	}
 
 	public void stopAllForSkill()
@@ -2827,7 +3017,9 @@ public class BaseAI : MonoBehaviour
 
 		inTurning = false;
 
-		mAnim.SetFloat("move_speed", 0);
+		if( mAnim.isActiveAndEnabled ){
+			mAnim.SetFloat("move_speed", 0);
+		}
 
 		moveZeroCount = 0;
 	}
@@ -2905,8 +3097,17 @@ public class BaseAI : MonoBehaviour
 
 	}
 
-	public void OnTriggerEnter(Collider other)
+	private void OnTriggerEnter(Collider other)
 	{
+		OnTriggerEnterNode (other);
+	}
+
+	public bool triggerable = true;
+
+	public void OnTriggerEnterNode(Collider other)
+	{
+		if (triggerable == false) return;
+
 		BaseAI node = (BaseAI)other.gameObject.GetComponent("BaseAI");
 
 		if(node == null || !node.isAlive) return;
@@ -2981,6 +3182,11 @@ public class BaseAI : MonoBehaviour
 					f.trigger(node);
 				}
 
+				foreach(BattleDoorFlag door in flag.doorFlags)
+				{
+					door.trigger();
+				}
+
 				List<BattleFlag> listEye = new List<BattleFlag>();
 				
 				foreach(BattleFlag f in flag.triggerFlagEye2eye)
@@ -2996,6 +3202,10 @@ public class BaseAI : MonoBehaviour
 				}
 			}
 		}
+
+		BubblePopControllor.Instance ().triggerFuncOpenEye (nodeId);
+
+		triggerable = false;
 	}
 
 	public void OnTriggerExit(Collider other)
@@ -3037,8 +3247,8 @@ public class BaseAI : MonoBehaviour
 
 		nodeData.SetAttribute( AIdata.AttributeType.ATTRTYPE_hp,
 				nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp )
-				> nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax )
-				? nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax )
+				> nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal )
+		        ? nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal )
 				: nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) );
 
 		BloodLabelControllor.Instance().showBloodEx(this, (int)hpValue, false, BattleControlor.AttackType.ADD_HP);
@@ -3066,12 +3276,14 @@ public class BaseAI : MonoBehaviour
 		{
 			BattleControlor.BattleResult fRes = BattleControlor.Instance ().battleCheck.checkResult (defender);
 
-			if(fRes != BattleControlor.BattleResult.RESULT_BATTLING)
+			bool slowdown = fRes != BattleControlor.BattleResult.RESULT_BATTLING;
+
+			if(slowdown)
 			{
 				BattleControlor.Instance().ResultSlowDown();
 			}
 
-			defender.die();
+			defender.die(slowdown);
 		}
 	}
 
@@ -3192,9 +3404,13 @@ public class BaseAI : MonoBehaviour
 
 	public void deleteBuff(SkillDeleteBuff skillDeleteBuff)
 	{
+		if (skillDeleteBuff == null) return;
+
 		for(int q = 0; q < buffs.Count; q ++)
 		{
-			if(skillDeleteBuff.m_iBuffType == buffs[q].supplement.m_iBuffType)
+			Buff buff = buffs[q];
+
+			if(buff != null && buff.supplement != null && skillDeleteBuff.m_iBuffType == buff.supplement.m_iBuffType)
 			{
 				//Debug.Log("DDDDDDDDDDDDDDD   " + nodeId + ", " + buffs[q].buffType);
 
@@ -3217,13 +3433,7 @@ public class BaseAI : MonoBehaviour
 
 	public float getHeight()
 	{
-		float tempHeight;
-		tempHeight = ModelTemplate.getModelTemplateByModelId(modelId).height;
-		if(nodeData.nodeType == NodeType.BOSS)
-		{
-			tempHeight *= 1.5f;
-		}
-		return tempHeight;
+		return appearanceTemplate.height * 2;
 	}
 
 }

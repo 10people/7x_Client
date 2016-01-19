@@ -21,6 +21,11 @@ public class ColorTool : MonoBehaviour {
 	// 1 107 197
     public const string Color_Blue_016bc5 = "[016bc5]";
 
+    // 0 0 0
+    public const string Color_Black_000000 = "[000000]";
+
+    //255 255 255
+    public const string Color_White_ffffff = "[ffffff]";
 
 	#region Mono
 

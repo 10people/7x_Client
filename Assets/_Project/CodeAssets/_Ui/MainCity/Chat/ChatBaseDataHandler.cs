@@ -8,9 +8,6 @@ using Object = UnityEngine.Object;
 
 public class ChatBaseDataHandler : MonoBehaviour, SocketListener
 {
-    public string ChatSelfLogItemStr;
-    public string ChatOtherLogItemStr;
-
     #region Components
 
     public ChatBaseWindow m_ChatBaseWindow;
@@ -42,6 +39,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
     public class ChatStruct
     {
         public bool isReceived;
+        public bool isComeFromBroadCast;
         public ChatPct m_ChatPct = new ChatPct();
         public ChatLogItem m_ChatLogItem;
     }
@@ -57,7 +55,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
     {
         while (storedChatStructList.Count > ChatStructListRestrictNum)
         {
-            PoolManagerListController.Instance.ReturnItem(storedChatStructList[0].m_ChatLogItem.IsLeftMode ? "ChatDataOtherItem" : "ChatDataSelfItem", storedChatStructList[0].m_ChatLogItem.gameObject);
+            PoolManagerListController.Instance.ReturnItem("ChatDataItem", storedChatStructList[0].m_ChatLogItem.gameObject);
             storedChatStructList[0].m_ChatLogItem = null;
             storedChatStructList.RemoveAt(0);
         }
@@ -72,7 +70,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
         {
             if (item.m_ChatLogItem != null)
             {
-                PoolManagerListController.Instance.ReturnItem(item.m_ChatLogItem.IsLeftMode ? "ChatDataOtherItem" : "ChatDataSelfItem", item.m_ChatLogItem.gameObject);
+                PoolManagerListController.Instance.ReturnItem("ChatDataItem", item.m_ChatLogItem.gameObject);
             }
         });
 
@@ -104,7 +102,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
 
         item.m_ChatStruct.m_ChatLogItem = null;
         storedChatStructList.Remove(item.m_ChatStruct);
-        PoolManagerListController.Instance.ReturnItem(item.IsLeftMode ? "ChatDataOtherItem" : "ChatDataSelfItem", item.gameObject);
+        PoolManagerListController.Instance.ReturnItem("ChatDataItem", item.gameObject);
     }
 
     /// <summary>
@@ -139,7 +137,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
                 {
                     bool isLeft = structItem.m_ChatPct.senderName != JunZhuData.Instance().m_junzhuInfo.name;
 
-                    var objectItem = PoolManagerListController.Instance.TakeItem(isLeft ? ChatOtherLogItemStr : ChatSelfLogItemStr);
+                    var objectItem = PoolManagerListController.Instance.TakeItem("ChatDataItem");
 
                     var chatItemManager = objectItem.GetComponent<ChatLogItem>();
                     chatItemManager.IsSimpleMode = isSimpleMode;
@@ -151,7 +149,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
                     //Set data.
                     chatItemManager.SetData();
                     //Set label type.
-                    chatItemManager.DetailLabel.overflowMethod = UILabel.Overflow.ResizeFreely;
+                    chatItemManager.DetailLabel.overflowMethod = UILabel.Overflow.ResizeHeight;
 
                     objectItem.transform.parent = table.transform;
                     objectItem.transform.localPosition = Vector3.zero;
@@ -174,9 +172,6 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
                 //Wait for a frame for detail label width takes effect.
                 yield return new WaitForEndOfFrame();
 
-                tempChatLogItemList.ForEach(item => item.SetTransform());
-                tempChatLogItemList.ForEach(item => item.AdaptButtons());
-
                 for (int i = 0; i < tempChatLogItemList.Count; i++)
                 {
                     if (!tempChatLogItemList[i].IsRefreshed)
@@ -187,7 +182,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
                         }
                         else
                         {
-                            tempChatLogItemList[i].transform.localPosition = new Vector3(0, tempChatLogItemList[i - 1].transform.localPosition.y - tempChatLogItemList[i - 1].DetailBG.height - 10, tempChatLogItemList[i - 1].transform.localPosition.z);
+                            tempChatLogItemList[i].transform.localPosition = new Vector3(0, tempChatLogItemList[i - 1].transform.localPosition.y - tempChatLogItemList[i - 1].DetailBgSprite.height - tempChatLogItemList[i].HeadBgSprite.height / 2f, tempChatLogItemList[i - 1].transform.localPosition.z);
                         }
 
                         //re-render to make sure NGUI render logs right, this is caused by idiot NGUI native bug.
@@ -246,6 +241,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
 
                         ChatPct tempChatPct = targetObject as ChatPct;
                         OnChatMessageReceived(tempChatPct);
+
                         return true;
                     }
                 case ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP:
@@ -272,7 +268,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
         return false;
     }
 
-    public void OnChatMessageReceived(ChatPct tempChatPct)
+    public void OnChatMessageReceived(ChatPct tempChatPct, bool p_isComeFromBroadCast = false)
     {
         //Check if in black list, abort execute message.
         if (BlockedData.Instance().m_BlockedInfoDic != null && BlockedData.Instance().m_BlockedInfoDic.Count != 0 &&
@@ -282,7 +278,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
             return;
         }
 
-        ChatStruct tempChatStruct = new ChatStruct { m_ChatPct = tempChatPct, isReceived = true };
+        ChatStruct tempChatStruct = new ChatStruct { m_ChatPct = tempChatPct, isReceived = true, isComeFromBroadCast = p_isComeFromBroadCast };
 
         //Stored data and execute restrict.
         if (m_ChannelList.Contains(tempChatPct.channel))
@@ -365,8 +361,8 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
     private void OnMailClick()
     {
         //go to mail sys.
-//		EmailData.Instance.ReplyLetter(m_JunzhuPlayerResp.name);
-		NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE,m_JunzhuPlayerResp.name);
+        //		EmailData.Instance.ReplyLetter(m_JunzhuPlayerResp.name);
+        NewEmailData.Instance().OpenEmail(NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE, m_JunzhuPlayerResp.name);
     }
 
     private void OnShieldClick()
@@ -391,6 +387,24 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
         }
     }
 
+    private void ItemLoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        PoolManagerListController.Instance.ItemDic.Add("ChatDataItem", (GameObject)p_object);
+        PoolManagerListController.Instance.Initialize();
+    }
+
+    private void SelfItemLoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        PoolManagerListController.Instance.ItemDic.Add("ChatDataSelfItem", (GameObject)p_object);
+        PoolManagerListController.Instance.Initialize();
+    }
+
+    private void OtherItemLoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        PoolManagerListController.Instance.ItemDic.Add("ChatDataOtherItem", (GameObject)p_object);
+        PoolManagerListController.Instance.Initialize();
+    }
+
     #region Mono
 
     public void OnDestroy()
@@ -411,6 +425,24 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
         {
             m_DragAreaListener.onPress += OnPressDragArea;
         }
+
+        if (!PoolManagerListController.Instance.ItemDic.ContainsKey("ChatDataItem"))
+        {
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_CHATITEM),
+                ItemLoadCallback);
+        }
+
+        //if (!PoolManagerListController.Instance.ItemDic.ContainsKey("ChatDataSelfItem"))
+        //{
+        //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_CHATITEM_SELF),
+        //        SelfItemLoadCallback);
+        //}
+
+        //if (!PoolManagerListController.Instance.ItemDic.ContainsKey("ChatDataOtherItem"))
+        //{
+        //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_CHATITEM_OTHER),
+        //        OtherItemLoadCallback);
+        //}
     }
 
     #endregion

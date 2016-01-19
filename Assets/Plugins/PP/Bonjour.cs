@@ -1,3 +1,11 @@
+//#define XG_PUSH
+
+
+
+//#define MYAPP_ANDROID_PLATFORM
+
+
+
 //#define PP_PLATFORM
 
 //#define XY_PLATFORM
@@ -16,10 +24,6 @@
 
 
 
-//#define XG_PUSH
-
-
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,8 +32,32 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
+#if MYAPP_ANDROID_PLATFORM
+using Msdk;
+using LitJson;
+#endif
+
+using SimpleJSON;
+
 
 public class Bonjour{
+
+	#region Default Calls
+
+	#if !XG_PUSH
+	public static void showSDKCenter(){
+
+	}
+
+	public static void logout(){
+
+	}
+
+	#endif
+
+	#endregion
+
+
 
 	#region XG
 
@@ -53,6 +81,32 @@ public class Bonjour{
 	                                             string p_push_content );
 	#endif
 
+	#if UNITY_ANDROID && XG_PUSH
+	private static void U3D_Android_XG_LocalPush( string p_push_key,
+	                                             int p_sec_since_now,
+	                                             string p_push_content ){
+		{
+			Debug.Log( "U3D_ANDROID_XG_LocalPush()" );
+			
+			Debug.Log( "p_push_key: " + p_push_key );
+			
+			Debug.Log( "p_sec_since_now: " + p_sec_since_now );
+			
+			Debug.Log( "p_push_content: " + p_push_content );
+		}
+
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "OnLocalPush", p_push_key, p_sec_since_now, p_push_content );
+		} 
+	}
+	#endif
+
 	public static void LocalPush( string p_push_key,
 	                             int p_sec_since_now,
 	                             string p_push_content ){
@@ -61,6 +115,10 @@ public class Bonjour{
 			U3D_XG_LocalPush( p_push_key, p_sec_since_now, p_push_content );
 			#endif
 //		}
+
+		#if UNITY_ANDROID && XG_PUSH
+		U3D_Android_XG_LocalPush( p_push_key, p_sec_since_now, p_push_content );
+		#endif
 	}
 
 	#endregion
@@ -814,4 +872,31 @@ public class Bonjour{
 	#endregion
 	
 	#endif
+
+
+
+	#if MYAPP_ANDROID_PLATFORM
+	
+	#region My App
+
+	public static void showSDKCenter(){
+		Debug.Log ( "ShowSDKCenter()" );
+		
+		if( Application.platform == RuntimePlatform.Android ){
+			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_None );
+		}
+	}
+	
+	public static void logout(){
+		Debug.Log ( "logout()" );
+		
+		if ( Application.platform == RuntimePlatform.Android ){
+			WGPlatform.Instance.WGLogout();
+		}
+	}
+	
+	#endregion
+	
+	#endif
+
 }

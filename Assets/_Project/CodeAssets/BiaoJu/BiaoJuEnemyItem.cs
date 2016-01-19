@@ -35,9 +35,14 @@ public class BiaoJuEnemyItem : MonoBehaviour {
 	public GameObject selectBoxObj;
 	public UILabel addLabel;
 
-	public void InItEnemyItem (EnemiesInfo tempInfo,long tempId)
+	public void InItEnemyItem (EnemiesInfo tempInfo,EnemiesInfo targetInfo)
 	{
 		enemyInfo = tempInfo;
+
+		if (targetInfo == null)
+		{
+			targetInfo = new EnemiesInfo();
+		}
 
 		iconSprite.atlas = BiaoJuPage.bjPage.GetAtlas (tempInfo.state == 10 ? BiaoJuPage.AtlasType.YUNBIAO : BiaoJuPage.AtlasType.MAINCITYLAYER);
 		iconSprite.spriteName = tempInfo.state == 10 ? "horseIcon" + tempInfo.horseType : "PlayerIcon" + tempInfo.roleId;
@@ -46,10 +51,10 @@ public class BiaoJuEnemyItem : MonoBehaviour {
 		levelLabel.text = "Lv" + tempInfo.jzLevel.ToString ();
 
 		nameLabel.text = tempInfo.junZhuName;
-		nameLabel.transform.localPosition = new Vector3(-80,tempInfo.state == 10 ? 25 : 10,0);
+		nameLabel.transform.localPosition = new Vector3(-80,25,0);//tempInfo.state == 10 ? 25 : 10
 
 		allianceLabel.text = tempInfo.lianMengName.Equals ("") ? "无联盟" : "<" + tempInfo.lianMengName + ">";
-		allianceLabel.transform.localPosition = new Vector3(-80,tempInfo.state == 10 ? 0 : -15,0);
+		allianceLabel.transform.localPosition = new Vector3(-80,0,0);
 
 		zhanLiLabel.text = tempInfo.zhanLi.ToString ();
 		zhanLiLabel.transform.parent.transform.localPosition = new Vector3(165,tempInfo.state == 10 ? 30 : 5,0);
@@ -58,7 +63,7 @@ public class BiaoJuEnemyItem : MonoBehaviour {
 
 		desLabel.text = tempInfo.state == 10 ? "" : "未在运镖";
 
-		SetSelectBox(tempInfo.junZhuId == tempId ? true : false);
+		SetSelectBox(tempInfo.junZhuId == targetInfo.junZhuId ? true : false);
 
 		processObj.SetActive (tempInfo.state == 10 ? true : false);
 

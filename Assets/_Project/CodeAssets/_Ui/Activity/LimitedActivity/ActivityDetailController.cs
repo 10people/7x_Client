@@ -15,7 +15,7 @@ namespace LimitActivity
         public UILabel m_ActivityDescLabelShort;
         public UILabel m_ActivityTimeCalcLabel;
         public UILabel m_ActivityStateLabel;
-        public UISprite m_ActivityDescSprite;
+        //public UISprite m_ActivityDescSprite;
 
         public UIScrollView m_ScrollView;
         public UIScrollBar m_ScrollBar;
@@ -71,15 +71,15 @@ namespace LimitActivity
             }
             else
             {
-                m_ActivityDescLabelTall.gameObject.SetActive(true);
+                //m_ActivityDescLabelTall.gameObject.SetActive(true);
                 m_ActivityDescLabelShort.gameObject.SetActive(false);
                 m_ActivityTimeCalcLabel.gameObject.SetActive(false);
 
-                m_ActivityDescLabelTall.text = tempControl.Desc;
+               // m_ActivityDescLabelTall.text = tempControl.Desc;
             }
-            m_ActivityStateLabel.text = ColorTool.Color_Gold_ffb12a + tempControl.jinduDesc.Replace("**", ColorTool.Color_Green_00ff00 + m_ShouXianShiInfo.beizhu + "[-]") + "[-]";
-            m_ActivityDescSprite.gameObject.SetActive(true);
-            m_ActivityDescSprite.spriteName = tempControl.PicId.ToString();
+            m_ActivityStateLabel.text = tempControl.jinduDesc.Replace("**", ColorTool.Color_Green_00ff00 + m_ShouXianShiInfo.beizhu + "[-]");
+//            m_ActivityDescSprite.gameObject.SetActive(true);
+//            m_ActivityDescSprite.spriteName = tempControl.PicId.ToString();
 
             //Set receive item list.
             while (m_Grid.transform.childCount > 0)

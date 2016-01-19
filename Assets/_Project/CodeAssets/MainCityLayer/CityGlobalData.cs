@@ -19,10 +19,6 @@ public class CityGlobalData  {
 		hanbingjian
 	}
 
-	public static int[] skillLevel = new int[9]{0, 1, 2, 0, 1, 2, 0, 1, 2};
-
-
-
 	public static bool autoFightDebug = false;//自动不停的战斗的测试
 
 	public static bool  PveLevel_UI_is_OPen = false;
@@ -144,7 +140,7 @@ public class CityGlobalData  {
 	public static bool m_JunZhuCreate;//君主预设物体自动创建控制
 	public static bool m_JunZhuAuto;
 
-
+	public static int m_MiBaoSkillId;//秘宝技能id
 
 
 	public static bool m_JunZhuTouXiangGuide;//头像上的引导控制
@@ -180,8 +176,6 @@ public class CityGlobalData  {
 
     public static Rect m_touchRect = new Rect(m_ScreenWidth * 0.02f,m_ScreenHeight * 0.02f,m_ScreenWidth * 0.2f,m_ScreenHeight*0.3f); //可点击区域
 
-	public static bool isTanBaoGet = false;//探宝判断条件
-
 	public static int countryId;//国家id
 
 	public  enum MibaoSkillType 
@@ -207,9 +201,11 @@ public class CityGlobalData  {
 
 		YX_Jingpo = 10,
 
-		LueDuo_FangShou = 11,
+		YX_WanbiGuizhao = 11,
 
-		LueDuo_GongJi = 12,
+		YX_ZongHengLiuHe = 12,
+
+		LueDuo_GongJi = 13,
 	}
 
 	/// <summary>

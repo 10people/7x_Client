@@ -119,7 +119,7 @@ public class PawnshopUIControllor : MonoBehaviour, SocketProcessor
 
     void TopUp(GameObject obj)
     {
-        TopUpLoadManagerment.m_instance.LoadPrefab(false); 
+        EquipSuoData.TopUpLayerTip();
     }
 
 	private void sendGetData()
@@ -290,7 +290,7 @@ public class PawnshopUIControllor : MonoBehaviour, SocketProcessor
 				                 null, null, "确定", null, null);
 				return true;
 			case 2:
-				Global.YuanbaoBuzu();
+                            EquipSuoData.TopUpLayerTip();
 				return true;
 			case 3:
 				int vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv;

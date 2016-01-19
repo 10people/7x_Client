@@ -65,7 +65,7 @@ public class ZhuangBei: XmlLoadManager
 
     public string jinjieNum;
 
-    public string jiejieId;
+    public int jiejieId;
 
     public string jinjieIcon;
 
@@ -215,7 +215,7 @@ public class ZhuangBei: XmlLoadManager
                 t_template.jinjieNum = t_reader.Value;
 
                 t_reader.MoveToNextAttribute();
-                t_template.jiejieId = t_reader.Value;
+                t_template.jiejieId = int.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
                 t_template.jinjieIcon = t_reader.Value;

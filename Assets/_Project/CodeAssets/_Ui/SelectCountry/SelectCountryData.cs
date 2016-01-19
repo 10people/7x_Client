@@ -27,10 +27,17 @@ public class SelectCountryData : MonoBehaviour, SocketProcessor
     {
         SocketTool.RegisterMessageProcessor(this);
     }
+
 	// Use this for initialization
 	void Start () 
     {
         RequestData();
+	}
+
+	void OnDestroy(){
+		SocketTool.UnRegisterMessageProcessor( this );
+
+		m_instance = null;
 	}
 
     public void RequestData()
@@ -63,9 +70,4 @@ public class SelectCountryData : MonoBehaviour, SocketProcessor
         return false;
  
 	}
-
-    void OnDestroy()
-    {
-        SocketTool.UnRegisterMessageProcessor(this);
-    }
 }

@@ -346,6 +346,17 @@ public class SinglePlayerController : MonoBehaviour
 
     #endregion
 
+    public void OnDestroy()
+    {
+        StopPlayerNavigation();
+
+		m_CharacterController = null;
+
+		m_NavMeshAgent = null;
+
+		m_Animator = null;
+    }
+
     public void Update()
     {
         #region Character Sync

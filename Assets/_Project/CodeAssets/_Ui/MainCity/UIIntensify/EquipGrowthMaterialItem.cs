@@ -100,14 +100,14 @@ public class EquipGrowthMaterialItem : MonoBehaviour
            // if (UIYindao.m_UIYindao.m_isOpenYindao)
             {
                 //    CityGlobalData.m_isRightGuide = false;
-                if (FreshGuide.Instance().IsActive(100160) && TaskData.Instance.m_TaskInfoDic[100160].progress >= 0)
+                if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress >= 0)
                 {
                  
-                    TaskData.Instance.m_iCurMissionIndex = 100160;
+                    //TaskData.Instance.m_iCurMissionIndex = 100040;
 
-                    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-                    tempTaskData.m_iCurIndex = 3;
-                    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+                    //ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+                    //tempTaskData.m_iCurIndex = 4;
+                    //UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
                 }
                 else if (FreshGuide.Instance().IsActive(100080) && TaskData.Instance.m_TaskInfoDic[100080].progress >= 0)
                 {

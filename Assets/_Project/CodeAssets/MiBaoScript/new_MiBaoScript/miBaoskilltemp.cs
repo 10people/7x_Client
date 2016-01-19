@@ -27,11 +27,11 @@ public class miBaoskilltemp : MonoBehaviour {
 	void Start () {
 
 		IsActive = false;
-		Lv.text = "Lv.1";
+
 		mLock.SetActive (true);
 
 		MiBaoSkillTemp mMiBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id (SKill_id);
-		
+		Lv.text = "Lv."+mMiBaoSkillTemp.lv.ToString();
 		Icon.spriteName = mMiBaoSkillTemp.icon;
 	}
 	void Update () {
@@ -66,26 +66,7 @@ public class miBaoskilltemp : MonoBehaviour {
 
 		if(IsActive)
 		{
-			SendSaveMiBaoMasege(NewMiBaoSkill.Instance ().S_Type,SKill_id);
+			//SendSaveMiBaoMasege(NewMiBaoSkill.Instance ().S_Type,SKill_id);
 		}
-	}
-	public void SendSaveMiBaoMasege(int Type,int id )//保存秘宝技能
-	{
-		MibaoSelect Mibaoid = new MibaoSelect ();
-		
-		MemoryStream miBaoStream = new MemoryStream ();
-		
-		QiXiongSerializer MiBaoSer = new QiXiongSerializer ();
-		
-		Mibaoid.type = Type;
-		
-		Mibaoid.zuheSkill = id;
-		
-		MiBaoSer.Serialize (miBaoStream,Mibaoid);
-		byte[] t_protof;
-		t_protof = miBaoStream.ToArray();
-		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_MIBAO_SELECT,ref t_protof);
-		
 	}
 }

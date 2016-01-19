@@ -49,7 +49,7 @@ public class TweenScale : UITweener
 	/// Start the tweening operation.
 	/// </summary>
 
-	static public TweenScale Begin (GameObject go, float duration, Vector3 scale)
+	public static TweenScale Begin (GameObject go, float duration, Vector3 scale)
 	{
 		TweenScale comp = UITweener.Begin<TweenScale>(go, duration);
 		comp.from = comp.value;

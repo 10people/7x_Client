@@ -38,6 +38,14 @@ public class DramaStoryReador : MonoBehaviour
 		_instance = this; 
 	}
 
+	void OnDestroy(){
+		resList.Clear();
+
+		_instance = null;
+		
+		m_storyControllor = null;
+	}
+
 	#region Load
 
 	public void checkinDebug(){
@@ -119,11 +127,11 @@ public class DramaStoryReador : MonoBehaviour
 		{
 			foreach( GuideTemplate gt in GuideTemplate.GetTemplates() )
 			{
-				if(gt.id == levelId)
+				if(gt.dungeonId == levelId)
 				{
 					flag = true;
 
-					if(gt.triggerType == 1)
+					if(gt.actionType == 1)
 					{
 						storyBoardIds.Add(gt.ap1);
 					}

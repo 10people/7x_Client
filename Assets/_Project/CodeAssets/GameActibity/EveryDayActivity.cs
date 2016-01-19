@@ -31,7 +31,11 @@ public class EveryDayActivity : MonoBehaviour,SocketProcessor {
 		RefreshLayer();
 	}
 
-    int index = 0;
+	void OnDestroy(){
+		m_spriteList.Clear();
+	}
+
+	int index = 0;
 	void RefreshLayer()
 	{
 		int tempCount = GetActivityData.m_activityData.m_awardInfo.dailyAward.items.Count;

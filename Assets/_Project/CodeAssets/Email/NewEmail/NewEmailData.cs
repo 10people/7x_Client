@@ -77,6 +77,12 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		SocketTool.RegisterMessageProcessor (this);
 	}
 
+	void OnDestroy(){
+		SocketTool.UnRegisterMessageProcessor (this);
+
+		emailData = null;
+	}
+
 	public void LoadEmailPrefab ()
 	{
 		if (emailObj == null)
@@ -265,7 +271,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 
 			case ProtoIndexes.S_MAIL_NEW://收到一封新邮件
 			{
-				Debug.Log ("NewEmail:" + ProtoIndexes.S_MAIL_NEW);
+//				Debug.Log ("NewEmail:" + ProtoIndexes.S_MAIL_NEW);
 				
 				NewMailResponse newEmailResp = new NewMailResponse ();
 				newEmailResp = QXComData.ReceiveQxProtoMessage (p_message,newEmailResp) as NewMailResponse;
@@ -292,7 +298,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 							EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
 						}
 					}
-					ExistNewEmail ();
+					SetMainCityUIRed (true);
 				}
 				return true;
 			}
@@ -575,13 +581,8 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		{
 			if (email.isRead == 0)
 			{
-				PushAndNotificationHelper.SetRedSpotNotification (41,true);
 				isExitNewEmail = true;
 				break;
-			}
-			else
-			{
-				PushAndNotificationHelper.SetRedSpotNotification (41,false);
 			}
 		}
 		if (!isExitNewEmail)
@@ -590,21 +591,22 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 			{
 				if (email.isRead == 0)
 				{
-					PushAndNotificationHelper.SetRedSpotNotification (10,true);
 					isExitNewEmail = true;
 					break;
 				}
-				else
-				{
-					PushAndNotificationHelper.SetRedSpotNotification (10,false);
-				}
 			}
 		}
-		MainCityUIL.SetRedAlert("email",isExitNewEmail);
+
+		SetMainCityUIRed (isExitNewEmail);
 	}
 
-	void OnDestroy ()
+	/// <summary>
+	/// Sets the main city user interface red.
+	/// </summary>
+	/// <param name="isRed">If set to <c>true</c> is red.</param>
+	void SetMainCityUIRed (bool isRed)
 	{
-		SocketTool.UnRegisterMessageProcessor (this);
+//		PushAndNotificationHelper.SetRedSpotNotification (10,isRed);//or 41
+		MainCityUIL.SetRedAlert("email",isRed);
 	}
 }

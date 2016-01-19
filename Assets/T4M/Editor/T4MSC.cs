@@ -8,7 +8,7 @@ using System.Text;
 	
 public class T4MSC : EditorWindow {
 	
-	static public Transform CurrentSelect ;
+	public static Transform CurrentSelect ;
 	public enum SM{
 		ShaderModel1,
 		ShaderModel2,
@@ -22,7 +22,7 @@ public class T4MSC : EditorWindow {
 	
 	GUIContent[] MenuIcon = new GUIContent[7];
 	
-	static public int T4MMenuToolbar = 0;
+	public static int T4MMenuToolbar = 0;
 	
 	enum EnumShaderGLES1{	
 		T4M_2_Textures_Auto_BeastLM_2DrawCall,
@@ -65,7 +65,7 @@ public class T4MSC : EditorWindow {
 	BillbAxe BillBoardAxis = BillbAxe.Y_Axis;
 	
 	
-	static public ViewD[] ViewDistance= {ViewD.Middle, ViewD.Middle,ViewD.Middle,ViewD.Middle,ViewD.Middle,ViewD.Middle};
+	public static ViewD[] ViewDistance= {ViewD.Middle, ViewD.Middle,ViewD.Middle,ViewD.Middle,ViewD.Middle,ViewD.Middle};
 	
 	enum EnumShaderGLES2{
 		T4M_2_Textures_Unlit_Lightmap_Compatible,
@@ -137,7 +137,7 @@ public class T4MSC : EditorWindow {
 	LODShaderStatus OldShaderLOD1S;
 	LODShaderStatus OldShaderLOD2S;
 	LODShaderStatus OldShaderLOD3S;
-	static public string T4MActived = "Activated";
+	public static string T4MActived = "Activated";
 	string terrainName = "";
 	string[] MyT4MMen = {"Painter", "Materials"};
 	string[] LODMenu = {"LOD Manager", "LOD Composer"};
@@ -168,13 +168,13 @@ public class T4MSC : EditorWindow {
 	float UpdateInterval = 1f;
 	int selBrush =0;
 	int selProcedural = 0;
-	static public int brushSize  = 16;
+	public static int brushSize  = 16;
 	int oldSelBrush;
 	int layerMask = 1 << 30;
 	int oldBrushSizeInPourcent;
 	int oldselTexture;	
-	static public int T4MPlantSel =0;
-	static public float T4MObjSize=1;
+	public static int T4MPlantSel =0;
+	public static float T4MObjSize=1;
 	 
 	T4MObjSC[] T4MObjCounter;
 	
@@ -198,8 +198,8 @@ public class T4MSC : EditorWindow {
 	Texture[] TexBrush;
 	Texture[] TexTexture;
 	Texture[] TexObject = new Texture[6];
-	static public GameObject[] T4MObjectPlant = new GameObject[6];
-	static public bool[] T4MBoolObj= new bool[6];
+	public static GameObject[] T4MObjectPlant = new GameObject[6];
+	public static bool[] T4MBoolObj= new bool[6];
 	Mesh LOD1;
 	Mesh LOD2;
 	Mesh LOD3;
@@ -241,25 +241,25 @@ public class T4MSC : EditorWindow {
 	EnumShaderGLES3 MenuTextureSM3 = EnumShaderGLES3.T4M_4_Textures_Diffuse;
 	SM ShaderModel = SM.ShaderModel2;
 	MaterialType MaterialTyp = MaterialType.Classic;
-	static public PlantMode T4MPlantMod = PlantMode.Classic;
+	public static PlantMode T4MPlantMod = PlantMode.Classic;
 	
-	static public int T4MBrushSizeInPourcent;
-	static public Color T4MtargetColor;
-	static public Color T4MtargetColor2;
-	static public Texture2D T4MMaskTex2;
-	static public Texture2D T4MMaskTex;
-	static public float[] T4MBrushAlpha;
-	static public float T4MStronger = 0.5f;
-	static public Projector T4MPreview;
+	public static int T4MBrushSizeInPourcent;
+	public static Color T4MtargetColor;
+	public static Color T4MtargetColor2;
+	public static Texture2D T4MMaskTex2;
+	public static Texture2D T4MMaskTex;
+	public static float[] T4MBrushAlpha;
+	public static float T4MStronger = 0.5f;
+	public static Projector T4MPreview;
 	static int T4MSelectID;
-	static public int T4MselTexture =0;
-	static public Projector T4MProjectorPlt;
+	public static int T4MselTexture =0;
+	public static Projector T4MProjectorPlt;
 	
 	string T4MEditorFolder = "Assets/T4M/Editor/";
 	string T4MFolder = "Assets/T4M/";
 	string T4MPrefabFolder = "Assets/T4MOBJ/";
 	string FinalExpName;
-	static public float T4MMaskTexUVCoord =1f;
+	public static float T4MMaskTexUVCoord =1f;
 	
 	Shader CustomShader;
 	float shiness0;
@@ -268,19 +268,19 @@ public class T4MSC : EditorWindow {
 	float shiness3;
 	Color ShinessColor;
 	Texture MaterialAdd;
-	static public float T4MDistanceMax = 15.0f;
-	static public float T4MDistanceMin = 15.0f;
-	static public float T4MrandX =0.0f;
-	static public float T4MrandY =1.0f;
-	static public float T4MrandZ =0.0f;
-	static public bool T4MRandomRot = true;
-	static public bool T4MRandomSpa;
-	static public float T4MYOrigin =0.02f;
-	static public float T4MSizeVar;
-	static public string T4MGroupName = "Group1";
-	static public bool T4MCreateColl;
-	static public bool T4MStaticObj = true;
-	static public int T4MselectObj;
+	public static float T4MDistanceMax = 15.0f;
+	public static float T4MDistanceMin = 15.0f;
+	public static float T4MrandX =0.0f;
+	public static float T4MrandY =1.0f;
+	public static float T4MrandZ =0.0f;
+	public static bool T4MRandomRot = true;
+	public static bool T4MRandomSpa;
+	public static float T4MYOrigin =0.02f;
+	public static float T4MSizeVar;
+	public static string T4MGroupName = "Group1";
+	public static bool T4MCreateColl;
+	public static bool T4MStaticObj = true;
+	public static int T4MselectObj;
 	LODMod LODModeControler = LODMod.Mass_Control;
 	bool NewPref=false;
 	bool ActivatedLayerCul = true;
@@ -295,8 +295,8 @@ public class T4MSC : EditorWindow {
 	static int nbrT4MObj;
 	bool initMaster;
 	int partofT4MObj=0;
-	static public bool billActivate = false;
-	static public bool LodActivate = false;
+	public static bool billActivate = false;
+	public static bool LodActivate = false;
 	bool keepTexture =false;
 	static bool oldActivBillb;
 	static bool oldActivLOD;
@@ -306,7 +306,7 @@ public class T4MSC : EditorWindow {
 		Follow_Normal_WireCircle,
 		Hide_preview
 	}	
-	static public PaintHandle PaintPrev = PaintHandle.Classic;
+	public static PaintHandle PaintPrev = PaintHandle.Classic;
 	
 	int OptimizeLevel =0;
 	Vector4 UpSideTile = new Vector4(0.5f,0.5f,0.5f,0.5f);
@@ -1428,7 +1428,7 @@ public class T4MSC : EditorWindow {
 		}
 	}
 	
-	static public void SaveTexture()
+	public static void SaveTexture()
 	{
 		var path = AssetDatabase.GetAssetPath (T4MMaskTex);
 		var bytes   = T4MMaskTex.EncodeToPNG ();

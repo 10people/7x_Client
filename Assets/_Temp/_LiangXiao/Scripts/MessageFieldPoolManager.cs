@@ -109,5 +109,7 @@ public class MessageFieldPoolManager : Singleton<MessageFieldPoolManager>
     void OnDestroy()
     {
         Cleanup();
-    }
+
+		base.OnDestroy();
+	}
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 using ProtoBuf;
 using qxmobile.protobuf;
@@ -35,14 +36,21 @@ public class FuWenMainPage : MonoBehaviour {
 
 	public ScaleEffectController m_ScaleEffectController;
 
+	public GameObject anchorTopRight;
+
 	void Awake ()
 	{
 		fuWenMainPage = this;
 	}
 
+	void OnDestroy ()
+	{
+		fuWenMainPage = null;
+	}
+
 	void Start ()
 	{
-//		FuWenData.Instance.FuWenDataReq ();
+		QXComData.LoadYuanBaoInfo (anchorTopRight);
 	}
 
 	/// <summary>
@@ -66,11 +74,8 @@ public class FuWenMainPage : MonoBehaviour {
 
 		FuWenListSort (tempResp);
 
-		if(FreshGuide.Instance().IsActive(100300) && TaskData.Instance.m_TaskInfoDic[100300].progress >= 0)
-		{
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100300];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-		}
+		Debug.Log ("QXComData.CheckYinDaoOpenState (100470):" + QXComData.CheckYinDaoOpenState (100470));
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100470,3);
 
 		btnsHandlerList[0].m_handler += XiangQianBtn;//镶嵌按钮
 		btnsHandlerList[1].m_handler += HeChengBtn;//合成按钮
@@ -192,11 +197,13 @@ public class FuWenMainPage : MonoBehaviour {
 	private JunzhuAttr totleAttributes;//总属性值
 	private JunzhuAttr bonuses;//属性加成值
 
-	private int openLanWeiCount = 0;//开启的栏位个数
-	public int GetOpenLanWeiCount
-	{
-		get{return openLanWeiCount;}
-	}
+//	private int openLanWeiCount = 0;//开启的栏位个数
+//	public int GetOpenLanWeiCount
+//	{
+//		get{return openLanWeiCount;}
+//	}
+	private int nextOpenLevel;//下几个栏位开启等级
+	public int NextOpenLevel {set{nextOpenLevel = value;} get{return nextOpenLevel;}}
 
 	private int curXiangQianId;//点击当前栏位上镶嵌的符石id
 	public int CurXiangQianId
@@ -243,22 +250,29 @@ public class FuWenMainPage : MonoBehaviour {
 		attributeLabels [9].text = MyColorData.getColorString (7,totleAttributes.jnJM.ToString () + "[00ff00](" + bonuses.jnJM.ToString () + ")[-]");//技能伤害抵抗
 		attributeLabels [10].text = MyColorData.getColorString (7,totleAttributes.jnRX.ToString () + "[00ff00](" + bonuses.jnRX.ToString () + ")[-]");//技能暴击抵抗
 	
-		openLanWeiCount = 0;//开启的栏位个数
-		for (int i = 0;i < tempResp.lanwei.Count;i ++)
-		{
-			if (tempResp.lanwei[i].itemId != -1)
-			{
-				openLanWeiCount ++;
-			}
-		}
+//		openLanWeiCount = 0;//开启的栏位个数
+//		for (int i = 0;i < tempResp.lanwei.Count;i ++)
+//		{
+//			if (tempResp.lanwei[i].itemId != -1)
+//			{
+//				openLanWeiCount ++;
+//			}
+//		}
 
 		//对符文栏位进行开启顺序排序
 		List<int> openLevelList = new List<int> ();
+		List<int> wOpenLevelList = new List<int> ();//未开启栏位开启等级list
+
 		for (int i = 0;i < tempResp.lanwei.Count;i ++)
 		{
 			FuWenOpenTemplate fuWenOpenTemp = FuWenOpenTemplate.GetFuWenOpenTemplateByLanWeiId (tempResp.lanwei[i].lanweiId);
 
 			openLevelList.Add (fuWenOpenTemp.level);
+
+			if (tempResp.lanwei[i].itemId == -1)
+			{
+				wOpenLevelList.Add (fuWenOpenTemp.level);
+			}
 		}
 		for (int i = 0;i < openLevelList.Count - 1;i ++)
 		{
@@ -277,13 +291,21 @@ public class FuWenMainPage : MonoBehaviour {
 			}
 		}
 
+		for (int i = 0;i < wOpenLevelList.Count;i ++)
+		{
+			if (i == 0)
+			{
+				NextOpenLevel = wOpenLevelList[i];
+			}
+			else
+			{
+				NextOpenLevel = NextOpenLevel < wOpenLevelList[i] ? NextOpenLevel : wOpenLevelList[i];
+			}
+		}
+		Debug.Log ("NextOpenLevel：" + NextOpenLevel);
+
 		int fuWenPageNum = tempResp.lanwei.Count % 11 > 0? (tempResp.lanwei.Count / 11) + 1 : tempResp.lanwei.Count / 11;
 		Debug.Log ("符文页：" + fuWenPageNum);
-//		foreach (GameObject obj in fuWenPageItemList)
-//		{
-//			Destroy (obj);
-//		}
-//		fuWenPageItemList.Clear ();
 
 		if (fuWenPageItemList.Count == 0)
 		{
@@ -307,17 +329,10 @@ public class FuWenMainPage : MonoBehaviour {
 			FuWenPageItem fuWenPage = fuWenPageItemList[i].GetComponent<FuWenPageItem> ();
 			fuWenPage.InItFuWenPageInfo (i + 1,tempResp.lanwei);
 		}
-
-		if(FreshGuide.Instance().IsActive(100300) && TaskData.Instance.m_TaskInfoDic[100300].progress >= 0)
-		{
-			pageSc.enabled = false;
-		}
-		else
-		{
-			pageSc.enabled = true;
-		}
-
+		pageSc.enabled = QXComData.CheckYinDaoOpenState (100470) ? false : true;
+		btnsHandlerList [2].m_handler -= FuShiMixBtn;
 		btnsHandlerList [2].m_handler += FuShiMixBtn;//普通合成
+		btnsHandlerList [3].m_handler -= FuShiYiJianMixBtn;
 		btnsHandlerList [3].m_handler += FuShiYiJianMixBtn;//一键合成
 	}
 	#endregion
@@ -814,10 +829,20 @@ public class FuWenMainPage : MonoBehaviour {
 		if (!isBtnClick)
 		{
 			FxController (FuWenMixBtn.FxType.CLEAR);
-			UIJunZhu.m_UIJunzhu.MYClick (gameObject);
-			m_ScaleEffectController.CloseCompleteDelegate = OnCloseWindow;
-			m_ScaleEffectController.OnCloseWindowClick();
+//			UIJunZhu.m_UIJunzhu.MYClick (gameObject);
+			UIJunZhu.m_UIJunzhu.closeFuwen ();
+			OnCloseWindow ();
+//			m_ScaleEffectController.CloseCompleteDelegate = OnCloseWindow;
+//			m_ScaleEffectController.OnCloseWindowClick();
 		}
+	}
+
+	/// <summary>
+	/// Ruleses the button.
+	/// </summary>
+	public void RulesBtn ()
+	{
+		GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.FUSHI_HELP_DESC));
 	}
 
 	void OnCloseWindow ()

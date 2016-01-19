@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define DEBUG_PREPARE_FOR_CITY_LOAD
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,21 +9,18 @@ using System.Text;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
+
 public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 {
-    private static PrepareForCityLoad m_instance = null;
-    //public static PrepareForCityLoad Instance()
-    //{
-    //    return m_instance;
-    //}
     private List<NpcCityTemplate> listNpcTempInfo = new List<NpcCityTemplate>();
-    public struct NpcInfo
-    {
+    
+	public struct NpcInfo{
         public int _Type;
         public string _Name;
         public NpcCityTemplate _NpcTemp;
         public GameObject _Obj;
     };
+
     public List<NpcInfo> m_listNpcTemp = new List<NpcInfo>();
 
     NpcInfo _PortSelf;
@@ -31,6 +30,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     public const string CONST_CITY_LOADING_2D_UI = "City_2D_UI";
 
     public const string CONST_CITY_LOADING_2D_NAME = "City_2D_Name";
+    public const string CONST_CITY_LOADING_2D_General_Reward = "City_2D_General_Reward";
 
     public const string CONST_CITY_LOADING_3D_NPC = "City_3D_NPC";
 
@@ -41,19 +41,18 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 
  
 
-    void Awake()
-    {
-      m_instance = this;
-    }
-    // Use this for initialization
+    void Awake(){
+    
+	}
+    
+	// Use this for initialization
     void Start()
     {
         SocketTool.RegisterSocketListener(this);
     }
  
-    void OnDestroy()
-    {
-        //m_instance = null;
+    void OnDestroy(){
+        base.OnDestroy();
     }
 
     private void InitCityLoading()
@@ -72,9 +71,9 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         }
         LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_JUNZHU_MODEL, 1, 1);
         LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_NAME, 1, 1);
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_General_Reward, 1, 1);
+
         LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_GENERAL_REWARD, 1, 1);
-        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, PrepareForBattleField.CONST_BATTLE_LOADING_SOUND, 1, 1);
- 
     }
 
 
@@ -87,7 +86,8 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     private GameObject m_CityJunZhuModel;
     private GameObject temple3D;
     private GameObject m_GeneralReward;
-
+ 
+    private bool _Load2dUIIsDone = false;
     private void Load_2D_UI()
     {
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_MAINUI),
@@ -103,6 +103,15 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 
     }
 
+    void Update()
+    {
+        if (UtilityTool.IsLevelLoaded(SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.MAIN_CITY)) && _Load2dUIIsDone)
+        {
+            _Load2dUIIsDone = false;
+            CityLoadDone();
+        }
+       
+    }
     void LoadCityNpc()
     {
         listNpcTempInfo.Clear();
@@ -216,7 +225,6 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 
         // CityLoadDone();
         LoadGeneralReward();
-
     }
 
     void LoadGeneralReward()
@@ -226,16 +234,19 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 
     private void ResourceLoadGeneralRewardCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
+        LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
+           CONST_CITY_LOADING_2D_General_Reward, "");
         m_GeneralReward = p_object as GameObject;
         LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
          CONST_CITY_LOADING_GENERAL_REWARD, "");
+        _Load2dUIIsDone = true;
 
-        StartCoroutine(WaitForLoadComplete());
+
+     //   StartCoroutine(WaitForLoadComplete());
     }
     IEnumerator WaitForLoadComplete()
     {
       yield return new WaitForEndOfFrame();
-        CityLoadDone();
     }
         void LoadJunZhuModel()
     {
@@ -252,6 +263,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     }
     public void CityLoadDone()
     {
+ 
         NpcManager.m_NpcManager.m_npcObjectItemDic.Clear();
         MainCityRoot.Instance().CreateMainCity(m_CitytempleUI);
         PlayerModelController.m_playerModelController.CreatePlayerModel(m_CityJunZhuModel);
@@ -295,10 +307,14 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     /// Prepare Data For Main City.
     public void Prepare_For_MainCity()
     {
-        //Debug.LogError("Prepare_For_MainCityPrepare_For_MainCityPrepare_For_MainCityPrepare_For_MainCity");
         InitCityLoading();
+
         // reset info
         {
+			#if DEBUG_PREPARE_FOR_CITY_LOAD
+			Debug.Log( "Prepare_For_MainCity()" );
+			#endif
+
             m_received_data_for_main_city = 0;
 
             StartCoroutine(CheckingDataForMainCity());
@@ -337,32 +353,44 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     IEnumerator CheckingDataForMainCity()
     {
    
-        while (m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY)
-        {
+        while ( m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY ){
+			#if DEBUG_PREPARE_FOR_CITY_LOAD
+			Debug.Log( "CheckingDataForMainCity( " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
+			#endif
+
             yield return new WaitForEndOfFrame();
         }
 
         // enter pve for 1st battle.
 		//if (Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103)
-		if (Global.m_iScreenID == 100001)
-		{
-            _isEnterMainCity = false;
+		//if (Global.m_iScreenID == 100001)
+		//{
+  //          _isEnterMainCity = false;
            
-            DestroyForNextLoading();
-            //UnRegister();
-            EnterBattleField.EnterBattlePve(0, Global.m_iScreenID % 10, LevelType.LEVEL_NORMAL);
-        }
-        else
-        {
-            _isEnterMainCity = true;
+  //          DestroyForNextLoading();
+  //          //UnRegister();
+  //          EnterBattleField.EnterBattlePve(0, Global.m_iScreenID % 10, LevelType.LEVEL_NORMAL);
+  //      }
+  //      else{
+		//	#if DEBUG_PREPARE_FOR_CITY_LOAD
+		//	Debug.Log( "skip 1st battle." );
+		//	#endif
+
+		//	_isEnterMainCity = true;
+
             EnterNextScene.DirectLoadLevel();
-        }
+  //      }
  
-        if (m_received_data_for_main_city == REQUEST_DATA_COUNT_FOR_MAINCITY && _isEnterMainCity)
-        {
+        if (m_received_data_for_main_city >= REQUEST_DATA_COUNT_FOR_MAINCITY ){
             UnRegister();
+
             Load_2D_UI();
         }
+		else{
+			#if DEBUG_PREPARE_FOR_CITY_LOAD
+			Debug.Log( "not entering main city." );
+			#endif
+		}
     }
     private static float m_preserve_percentage = 0.0f;
     private void DestroyForNextLoading()
@@ -384,9 +412,15 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         {
             case ProtoIndexes.PVE_PAGE_RET:
                 {
-                    ProcessPVEPageReturn(p_message);
+			        ProcessPVEPageReturn(p_message);
 
                     m_received_data_for_main_city++;
+
+					{
+						#if DEBUG_PREPARE_FOR_CITY_LOAD
+						Debug.Log( "OnSocketEvent( " + "PVE_PAGE_RET " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
+						#endif
+					}
 
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                             CONST_CITY_LOADING_CITY_NET, "PVE_PAGE_RET");
@@ -399,6 +433,13 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
                     //				Debug.Log( "获得君主数据: " + Global.m_iScreenID );
 
                     m_received_data_for_main_city++;
+
+					{
+						#if DEBUG_PREPARE_FOR_CITY_LOAD
+						Debug.Log( "OnSocketEvent( " + "JunZhuInfoRet " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
+						#endif
+					}
+
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "JunZhuInfoRet");
 
@@ -411,6 +452,13 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
                     //				Debug.Log ("获得有联盟信息");
 
                     m_received_data_for_main_city++;
+
+					{
+						#if DEBUG_PREPARE_FOR_CITY_LOAD
+						Debug.Log( "OnSocketEvent( " + "ALLIANCE_HAVE_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
+						#endif
+					}
+
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "ALLIANCE_HAVE_RESP");
 
@@ -422,6 +470,13 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 
                     //				Debug.Log ("获得无联盟信息");
                     m_received_data_for_main_city++;
+
+					{
+						#if DEBUG_PREPARE_FOR_CITY_LOAD
+						Debug.Log( "OnSocketEvent( " + "ALLIANCE_NON_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
+						#endif
+					}
+
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "ALLIANCE_NON_RESP");
                     return true;
@@ -430,6 +485,13 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
                 {
                     //				Debug.Log( "获得主线任务: " + Global.m_iScreenID );
                     m_received_data_for_main_city++;
+
+					{
+						#if DEBUG_PREPARE_FOR_CITY_LOAD
+						Debug.Log( "OnSocketEvent( " + "ALLIANCE_NON_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
+						#endif
+					}
+
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "TaskList");
                     return true;

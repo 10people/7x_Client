@@ -22,6 +22,8 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 
 	public string Youxia_Name;
 
+	public UIScrollView mScorview;
+
 	public UILabel YouxiaName;
 
 	public int l_id;
@@ -70,6 +72,12 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 
 	public PveSaoDangRet saodinfo;
 
+	public GameObject ScoreUI;
+
+	public GameObject SaodangUI;
+
+	public GameObject SaodangReMain;
+
 	public UISprite MiBaoSkillIcon;
 	void Awake()
 	{
@@ -91,7 +99,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	}
 	public void SaodangBtn()  // w未定协议7 23
 	{
-		if(EnterYouXiaBattle.GlobleEnterYouXiaBattle.m_Time == 1)
+		if(m_You_XiaInfo.remainTimes == 1)
 		{
 			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
 		}
@@ -140,8 +148,8 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YOUXIA_INFO_REQ);
 
-				ChooseYouXiaUIManager.mChooseYouXiaUIManager.mYouXia_Info.remainTimes -= 1;
-				ChooseYouXiaUIManager.mChooseYouXiaUIManager.Init();
+//				ChooseYouXiaUIManager.mChooseYouXiaUIManager.mYouXia_Info.remainTimes -= 1;
+//				ChooseYouXiaUIManager.mChooseYouXiaUIManager.Init();
 				return true;
 			}
 			case ProtoIndexes.S_YOUXIA_GUANQIA_RESP:
@@ -155,8 +163,29 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
 				m_YouXiaGuanQiaInfoResp = tempInfo;
-
-				showChengJi(tempInfo);
+				if(big_id != 1)
+				{
+					SaodangUI.transform.localPosition = new Vector3(0,130,0);
+					ScoreUI.SetActive(false);
+					SaodangReMain.GetComponent<UILabel>().text = "通关一次即可扫荡";
+				}
+				else
+				{
+					showChengJi(tempInfo);
+				}
+				if(tempInfo.saoDang && m_You_XiaInfo.remainTimes > 0)
+				{
+					obj_SaodangBtn.SetActive(true);
+				}
+				else
+				{
+					obj_SaodangBtn.SetActive(false);
+					
+				}
+				if(tempInfo.time > 0)
+				{
+					obj_EnterBattleBtn.SetActive(false);
+				}
 
 				Debug.Log("扫荡接收完毕。。。。");
 
@@ -180,19 +209,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		Debug.Log ("是否可以扫荡 = "+mtempInfo.saoDang);
 		Debug.Log ("剩余次数 = "+m_You_XiaInfo.remainTimes );
 		Debug.Log ("倒计时 = "+mtempInfo.time );
-		if(mtempInfo.saoDang && m_You_XiaInfo.remainTimes > 0)
-		{
-			obj_SaodangBtn.SetActive(true);
-		}
-		else
-		{
-			obj_SaodangBtn.SetActive(false);
 
-		}
-		if(mtempInfo.time > 0)
-		{
-			obj_EnterBattleBtn.SetActive(false);
-		}
 	}
 
 	void getSaoDangData(PveSaoDangRet mtempInfo)
@@ -229,6 +246,13 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		CreateEnemy ();
 	
 		CreateAward ();
+		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
+		{
+			Debug.Log("进入试练二阶界面333");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+			//mScorview.enabled = false;
+		}
 	}
 	void InitUIData()
 	{
@@ -291,7 +315,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	public void EnterBattleBtn()
 	{
 		Debug.Log ("big_id = "+big_id +"l_id%10 = " +l_id%10);
-		if(EnterYouXiaBattle.GlobleEnterYouXiaBattle.m_Time == 1)
+		if(m_You_XiaInfo.remainTimes == 1)
 		{
 			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
 		}
@@ -317,15 +341,16 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	}
 	public void CloseBtn()
 	{
-		GameObject desgameobj = GameObject.Find ("Enter_YouXiaBattle(Clone)");
-
-		MainCityUI.TryRemoveFromObjectList(desgameobj);
-
-		Destroy (desgameobj);
+//		GameObject desgameobj = GameObject.Find ("Enter_YouXiaBattle(Clone)");
+//
+//		MainCityUI.TryRemoveFromObjectList(desgameobj);
+//
+//		Destroy (desgameobj);
+		BackBtn ();
 	}
 	public void BackBtn()
 	{
-		EnterYouXiaBattle.GlobleEnterYouXiaBattle.ThirdShowOrClose ();
+		//EnterYouXiaBattle.GlobleEnterYouXiaBattle.ThirdShowOrClose ();
 		Destroy (this.gameObject);
 	}
 	private int NpcId;
@@ -782,7 +807,6 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		{
 			initNum = awardNum;
 		}
-		
 		numPara = initNum;
 		itemsPara = t_items;
 		
@@ -805,7 +829,6 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		for (int n = 0; n < numPara; n++)
 		{
 			//Debug.Log("itemsPara[n] = " +itemsPara[n]);
-			
 			List<AwardTemp> mAwardTemp = AwardTemp.getAwardTempList_By_AwardId(itemsPara[n]);
 			
 			for (int i = 0; i < mAwardTemp.Count; i++)
@@ -813,29 +836,23 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 				if(mAwardTemp[i].weight != 0)
 				{
 					pos += 1;
-
 					if(pos > 4)
 					{
 						return;
 					}
-
 					if (IconSamplePrefab == null)
 					{
 						IconSamplePrefab = p_object as GameObject;
 					}
-					
 					GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
 					m_AwardIcon.Add(iconSampleObject);
 					iconSampleObject.SetActive(true);
 					iconSampleObject.transform.parent = AwardRoot;
                     iconSampleObject.transform.localPosition = new Vector3(-240 + (pos - 1) * 120, 1, 1);
 					iconSampleObject.transform.localScale = Vector3.one;
-
                     var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-
                     NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mAwardTemp[i].itemId);
 					string mdesc = DescIdTemplate.GetDescriptionById(mAwardTemp[i].itemId);
-
                     iconSampleManager.SetIconByID(mAwardTemp[i].itemId, "", 10);
                     iconSampleManager.SetIconPopText(mAwardTemp[0].itemId, mNameIdTemplate.Name, mdesc, 1);
 				}

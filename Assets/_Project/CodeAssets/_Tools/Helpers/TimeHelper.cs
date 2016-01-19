@@ -6,94 +6,119 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TimeHelper : Singleton<TimeHelper>{
+public class TimeHelper : Singleton<TimeHelper>
+{
 
-	#region Current Time
+    #region Mono
 
-	/// "yyyy-MM-dd hh:mm:ss"
-	public static string GetCurrentTime_String(){
-		return DateTime.Now.ToLocalTime().ToString( "MMdd-hhmmss" );
-	}
+    void OnDestroy()
+    {
+        base.OnDestroy();
+    }
 
-	private static DateTime m_date_time = System.DateTime.Now;
+    #endregion
 
-	public static long GetCurrentTime_MilliSecond(){
-		return (long) ( ( DateTime.Now - m_date_time ).TotalMilliseconds );
-	}
+    #region Current Time
 
-	public static double GetCurrentTime_Second(){
-		return GetCurrentTime_MilliSecond() / 1000.0;
-	}
+    /// "yyyy-MM-dd hh:mm:ss"
+    public static string GetCurrentTime_String()
+    {
+        return DateTime.Now.ToLocalTime().ToString("MMdd-hhmmss");
+    }
 
-	#endregion
+    private static DateTime m_date_time = System.DateTime.Now;
 
+    public static long GetCurrentTime_MilliSecond()
+    {
+        return (long)((DateTime.Now - m_date_time).TotalMilliseconds);
+    }
 
+    public static double GetCurrentTime_Second()
+    {
+        return GetCurrentTime_MilliSecond() / 1000.0;
+    }
 
-	#region Time String Format
-
-	private static int m_temp_time_sec 		= 0;
-
-	private static int m_temp_time_min 		= 0;
-
-	private static int m_temp_time_hour		= 0;
-
-	/// 1）如果没超过小时，则显示
-	/// 分：秒
-	/// 01：01
-	/// 2）如果超过小时，则显示
-	/// 时：分：秒
-		/// 01：01：01
-	/// 3）如果小时数超过两位数
-	/// 时：分：秒
-		/// 101：01:01
-	/// 此为通用规则，游戏内时间的显示格式均遵循该规则
-	public static string GetUniformedTimeString( int p_int_sec ){
-		m_temp_time_sec = p_int_sec % 60;
-
-		m_temp_time_min = p_int_sec / 60;
-
-		m_temp_time_hour = m_temp_time_min / 60;
-
-		m_temp_time_min = m_temp_time_min % 60;
-
-		return m_temp_time_hour.ToString( "D2" ) + ":" + 
-			m_temp_time_min.ToString( "D2" ) + ":" +
-				m_temp_time_sec.ToString( "D2" );
-	}
-
-	/// 1）如果没超过小时，则显示
-	/// 分：秒
-	/// 01：01
-	/// 2）如果超过小时，则显示
-	/// 时：分：秒
-	/// 01：01：01
-	/// 3）如果小时数超过两位数
-	/// 时：分：秒
-	/// 101：01:01
-	/// 此为通用规则，游戏内时间的显示格式均遵循该规则
-	public static string GetUniformedTimeString( float p_float_sec ){
-		return GetUniformedTimeString( (int)p_float_sec );
-	}
-
-	/// 1）如果没超过小时，则显示
-	/// 分：秒
-	/// 01：01
-	/// 2）如果超过小时，则显示
-	/// 时：分：秒
-	/// 01：01：01
-	/// 3）如果小时数超过两位数
-	/// 时：分：秒
-	/// 101：01:01
-	/// 此为通用规则，游戏内时间的显示格式均遵循该规则
-	public static string GetUniformedTimeString( int p_int_hour, int p_int_min, int p_int_sec ){
-		return GetUniformedTimeString( p_int_hour * 3600 + p_int_min * 60 + p_int_sec );
-	}
-
-	#endregion
+    #endregion
 
 
 
-	#region ClockTime
+    #region Time String Format
+
+    private static int m_temp_time_sec = 0;
+
+    private static int m_temp_time_min = 0;
+
+    private static int m_temp_time_hour = 0;
+
+    /// 1）如果没超过小时，则显示
+    /// 分：秒
+    /// 01：01
+    /// 2）如果超过小时，则显示
+    /// 时：分：秒
+    /// 01：01：01
+    /// 3）如果小时数超过两位数
+    /// 时：分：秒
+    /// 101：01:01
+    /// 此为通用规则，游戏内时间的显示格式均遵循该规则
+    public static string GetUniformedTimeString(int p_int_sec)
+    {
+        m_temp_time_sec = p_int_sec % 60;
+
+        m_temp_time_min = p_int_sec / 60;
+
+        m_temp_time_hour = m_temp_time_min / 60;
+
+        m_temp_time_min = m_temp_time_min % 60;
+
+        if (m_temp_time_hour > 0)
+        {
+            return m_temp_time_hour.ToString("D2") + ":" +
+                m_temp_time_min.ToString("D2") + ":" +
+                    m_temp_time_sec.ToString("D2");
+        }
+        else
+        {
+            return m_temp_time_min.ToString("D2") + ":" +
+                    m_temp_time_sec.ToString("D2");
+        }
+
+    }
+
+    /// 1）如果没超过小时，则显示
+    /// 分：秒
+    /// 01：01
+    /// 2）如果超过小时，则显示
+    /// 时：分：秒
+    /// 01：01：01
+    /// 3）如果小时数超过两位数
+    /// 时：分：秒
+    /// 101：01:01
+    /// 此为通用规则，游戏内时间的显示格式均遵循该规则
+    public static string GetUniformedTimeString(float p_float_sec)
+    {
+        return GetUniformedTimeString((int)p_float_sec);
+    }
+
+    /// 1）如果没超过小时，则显示
+    /// 分：秒
+    /// 01：01
+    /// 2）如果超过小时，则显示
+    /// 时：分：秒
+    /// 01：01：01
+    /// 3）如果小时数超过两位数
+    /// 时：分：秒
+    /// 101：01:01
+    /// 此为通用规则，游戏内时间的显示格式均遵循该规则
+    public static string GetUniformedTimeString(int p_int_hour, int p_int_min, int p_int_sec)
+    {
+        return GetUniformedTimeString(p_int_hour * 3600 + p_int_min * 60 + p_int_sec);
+    }
+
+    #endregion
+
+
+
+    #region ClockTime
 
     public struct ClockTime
     {
@@ -174,7 +199,7 @@ public class TimeHelper : Singleton<TimeHelper>{
         return clockTime.hour * 3600 + clockTime.minute * 60 + clockTime.second;
     }
 
-	#endregion
+    #endregion
 
 
 
@@ -187,9 +212,14 @@ public class TimeHelper : Singleton<TimeHelper>{
         public bool IsOverTime;
         public float StartTime;
         public float OverTimeDuration;
-        public bool IsOneDelegate;
-        public TimeCalcVoidDelegate m_TimeCalcVoidDelegate;
-        public TimeCalcIntDelegate m_TimeCalcIntDelegate;
+        /// <summary>
+        /// 1: one deleagte, 2:per/s delegate, 3:per/frame delegate
+        /// </summary>
+        public int DelegateMode;
+        public DelegateUtil.VoidDelegate m_TimeCalcVoidDelegate;
+        public DelegateUtil.StringDelegate m_TimeCalcStringDelegate;
+        public DelegateUtil.IntDelegate m_TimeCalcIntDelegate;
+        public DelegateUtil.FloatDelegate m_TimeCalcFloatDelegate;
 
         public static bool ContainsKey(string key)
         {
@@ -208,6 +238,28 @@ public class TimeHelper : Singleton<TimeHelper>{
 
     public delegate void TimeCalcVoidDelegate();
     public delegate void TimeCalcIntDelegate(int time);
+    public delegate void TimeCalcFloatDelegate(float time);
+
+    /// <summary>
+    /// Add time calc dictionary item, delegate execute when time calc ends.
+    /// </summary>
+    /// <param name="key">item key</param>
+    /// <param name="duration">time over duration</param>
+    /// <param name="l_voidDelegate">delegate</param>
+    /// <returns>is add succeed</returns>
+    public bool AddOneDelegateToTimeCalc(string key, float duration, DelegateUtil.VoidDelegate l_voidDelegate = null)
+    {
+        if (TimeCalc.ContainsKey(key))
+        {
+            Debug.LogError("Cannot add key:" + key + " to time calc cause key already exist.");
+            return false;
+        }
+
+        TimeCalc.m_timeCalcList.Add(new TimeCalc() { key = key, IsOverTime = true, StartTime = -1, OverTimeDuration = duration, m_TimeCalcVoidDelegate = l_voidDelegate, DelegateMode = 1 });
+
+        StartCalc(key);
+        return true;
+    }
 
     /// <summary>
     /// Add time calc dictionary item, delegate execute when time calc ends.
@@ -216,7 +268,7 @@ public class TimeHelper : Singleton<TimeHelper>{
     /// <param name="duration">time over duration</param>
     /// <param name="l_timeCalcVoidDelegate">delegate</param>
     /// <returns>is add succeed</returns>
-    public bool AddOneDelegateToTimeCalc(string key, float duration, TimeCalcVoidDelegate l_timeCalcVoidDelegate = null)
+    public bool AddOneDelegateToTimeCalc(string key, float duration, DelegateUtil.StringDelegate l_stringDelegate = null)
     {
         if (TimeCalc.ContainsKey(key))
         {
@@ -224,7 +276,28 @@ public class TimeHelper : Singleton<TimeHelper>{
             return false;
         }
 
-        TimeCalc.m_timeCalcList.Add(new TimeCalc() { key = key, IsOverTime = true, StartTime = -1, OverTimeDuration = duration, m_TimeCalcVoidDelegate = l_timeCalcVoidDelegate, IsOneDelegate = true });
+        TimeCalc.m_timeCalcList.Add(new TimeCalc() { key = key, IsOverTime = true, StartTime = -1, OverTimeDuration = duration, m_TimeCalcStringDelegate = l_stringDelegate, DelegateMode = 2 });
+
+        StartCalc(key);
+        return true;
+    }
+
+    /// <summary>
+    /// Add time calc dictionary item, delegate execute every seconds.
+    /// </summary>
+    /// <param name="key">item key</param>
+    /// <param name="duration">time over duration</param>
+    /// <param name="l_intDelegate">delegate</param>
+    /// <returns>is add succeed</returns>
+    public bool AddEveryDelegateToTimeCalc(string key, float duration, DelegateUtil.IntDelegate l_intDelegate = null)
+    {
+        if (TimeCalc.ContainsKey(key))
+        {
+            Debug.LogError("Cannot add key:" + key + " to time calc cause key already exist.");
+            return false;
+        }
+
+        TimeCalc.m_timeCalcList.Add(new TimeCalc() { key = key, IsOverTime = true, StartTime = -1, OverTimeDuration = duration, m_TimeCalcIntDelegate = l_intDelegate, DelegateMode = 3 });
 
         StartCalc(key);
         return true;
@@ -237,7 +310,7 @@ public class TimeHelper : Singleton<TimeHelper>{
     /// <param name="duration">time over duration</param>
     /// <param name="l_timeCalcIntDelegate">delegate</param>
     /// <returns>is add succeed</returns>
-    public bool AddEveryDelegateToTimeCalc(string key, float duration, TimeCalcIntDelegate l_timeCalcIntDelegate = null)
+    public bool AddFrameDelegateToTimeCalc(string key, float duration, DelegateUtil.FloatDelegate l_floatDelegate = null)
     {
         if (TimeCalc.ContainsKey(key))
         {
@@ -245,7 +318,7 @@ public class TimeHelper : Singleton<TimeHelper>{
             return false;
         }
 
-        TimeCalc.m_timeCalcList.Add(new TimeCalc() { key = key, IsOverTime = true, StartTime = -1, OverTimeDuration = duration, m_TimeCalcIntDelegate = l_timeCalcIntDelegate, IsOneDelegate = false });
+        TimeCalc.m_timeCalcList.Add(new TimeCalc() { key = key, IsOverTime = true, StartTime = -1, OverTimeDuration = duration, m_TimeCalcFloatDelegate = l_floatDelegate, DelegateMode = 4 });
 
         StartCalc(key);
         return true;
@@ -258,7 +331,7 @@ public class TimeHelper : Singleton<TimeHelper>{
     /// <returns></returns>
     public static bool RemoveFromTimeCalcWhenDisable(string key)
     {
-        if ( GameObjectHelper.m_dont_destroy_on_load_gb != null)
+        if (GameObjectHelper.m_dont_destroy_on_load_gb != null)
         {
             return TimeHelper.Instance.RemoveFromTimeCalc(key);
         }
@@ -375,7 +448,7 @@ public class TimeHelper : Singleton<TimeHelper>{
     void Update()
     {
         //One delegate.
-        var tempList = TimeCalc.m_timeCalcList.Where(item => (item.IsOneDelegate) && (item.StartTime >= 0) && (!item.IsOverTime)).ToList();
+        var tempList = TimeCalc.m_timeCalcList.Where(item => (item.DelegateMode == 1) && (item.StartTime >= 0) && (!item.IsOverTime)).ToList();
         for (int i = 0; i < tempList.Count; i++)
         {
             if (Time.realtimeSinceStartup - tempList[i].StartTime > tempList[i].OverTimeDuration)
@@ -389,226 +462,277 @@ public class TimeHelper : Singleton<TimeHelper>{
             }
         }
 
-        //Every delegate.
+        //One Key string delegate.
+        var tempList2 = TimeCalc.m_timeCalcList.Where(item => (item.DelegateMode == 2) && (item.StartTime >= 0) && (!item.IsOverTime)).ToList();
+        for (int i = 0; i < tempList2.Count; i++)
+        {
+            if (Time.realtimeSinceStartup - tempList2[i].StartTime > tempList2[i].OverTimeDuration)
+            {
+                tempList2[i].IsOverTime = true;
+
+                if (tempList2[i].m_TimeCalcStringDelegate != null)
+                {
+                    tempList2[i].m_TimeCalcStringDelegate(tempList2[i].key);
+                }
+            }
+        }
+
+        //Per/s delegate.
         if (Time.realtimeSinceStartup - TimeCalcLastTime > 1.0f)
         {
-            var tempList2 = TimeCalc.m_timeCalcList.Where(item => (!item.IsOneDelegate) && (item.StartTime >= 0) && (!item.IsOverTime)).ToList();
+            var tempList3 = TimeCalc.m_timeCalcList.Where(item => (item.DelegateMode == 3) && (item.StartTime >= 0) && (!item.IsOverTime)).ToList();
 
-            for (int i = 0; i < tempList2.Count; i++)
+            for (int i = 0; i < tempList3.Count; i++)
             {
-                if (Time.realtimeSinceStartup - tempList2[i].StartTime > tempList2[i].OverTimeDuration)
+                if (Time.realtimeSinceStartup - tempList3[i].StartTime > tempList3[i].OverTimeDuration)
                 {
-                    tempList2[i].IsOverTime = true;
+                    tempList3[i].IsOverTime = true;
                 }
 
-                if (tempList2[i].m_TimeCalcIntDelegate != null)
+                if (tempList3[i].m_TimeCalcIntDelegate != null)
                 {
-                    tempList2[i].m_TimeCalcIntDelegate((int)GetCalcTime(tempList2[i].key));
+                    tempList3[i].m_TimeCalcIntDelegate((int)GetCalcTime(tempList3[i].key));
                 }
             }
 
             TimeCalcLastTime = Time.realtimeSinceStartup;
+        }
+
+        //Per/frame delegate.
+        var tempList4 = TimeCalc.m_timeCalcList.Where(item => (item.DelegateMode == 4) && (item.StartTime >= 0) && (!item.IsOverTime)).ToList();
+
+        for (int i = 0; i < tempList4.Count; i++)
+        {
+            if (Time.realtimeSinceStartup - tempList4[i].StartTime > tempList4[i].OverTimeDuration)
+            {
+                tempList4[i].IsOverTime = true;
+            }
+
+            if (tempList4[i].m_TimeCalcFloatDelegate != null)
+            {
+                tempList4[i].m_TimeCalcFloatDelegate(GetCalcTime(tempList4[i].key));
+            }
         }
     }
 
     #endregion
 
 
-	
-	#region Origin Utilities's time code
 
-	/// <summary>
-	/// Gets the current month day hour minute second.
-	/// </summary>
-	public static string GetCurMonthDayHourMinSec(){
-		System.DateTime t_time = new System.DateTime();
-		
-		t_time = System.DateTime.Now;
-		
-		string t_time_str = t_time.ToString("MM-dd HH:mm:ss");
-		
-		#if DEBUG_TIMER_HELPER
+    #region Origin Utilities's time code
+
+    /// <summary>
+    /// Gets the current month day hour minute second.
+    /// </summary>
+    public static string GetCurMonthDayHourMinSec()
+    {
+        System.DateTime t_time = new System.DateTime();
+
+        t_time = System.DateTime.Now;
+
+        string t_time_str = t_time.ToString("MM-dd HH:mm:ss");
+
+#if DEBUG_TIMER_HELPER
 		Debug.Log( "TimeHelper.GetCurMonthDayHourMinSec: " + t_time_str );
-		#endif
-		
-		return t_time_str;
-	}
-	
-	private static float m_signet_time = 0.0f;
-	
-	public static float SignetTime()
-	{
-		m_signet_time = Time.realtimeSinceStartup;
+#endif
 
-		return m_signet_time;
-	}
-	
-	public static float GetDeltaTimeSinceSignet()
-	{
-		return (Time.realtimeSinceStartup - m_signet_time);
-	}
-	
-	public static void LogDeltaTimeSinceSignet(string p_prefix)
-	{
-		float t_delta = GetDeltaTimeSinceSignet();
-		
-		Debug.Log( p_prefix + " : " + MathHelper.FloatPrecision( t_delta, 5 ) );
-		
-		SignetTime();
-	}
-	
-	public class TimeInfo
-	{
-		public string m_time_name;
-		
-		private float m_total_time = 0.0f;
-		
-		private int m_updated_count = 0;
-		
-		private float m_tagged_time = 0.0f;
-		
-		public TimeInfo(string p_time_name, float p_duration = 0.0f)
-		{
-			m_time_name = p_time_name;
-			
-			m_total_time = p_duration;
-			
-			ResetTaggedTime();
-		}
-		
-		public void Reset()
-		{
-			m_total_time = 0.0f;
-			
-			m_updated_count = 0;
-			
-			ResetTaggedTime();
-		}
-		
-		public void UpdateTotalTime(float p_delta)
-		{
-			m_total_time += p_delta;
-			
-			m_updated_count++;
-			
-			ResetTaggedTime();
-		}
-		
-		public int GetUpdatedCount()
-		{
-			return m_updated_count;
-		}
-		
-		public float GetTotalTime()
-		{
-			return m_total_time;
-		}
-		
-		public void ResetTaggedTime()
-		{
-			m_tagged_time = Time.realtimeSinceStartup;
-		}
-		
-		public float GetDeltaTime()
-		{
-			return Time.realtimeSinceStartup - m_tagged_time;
-		}
-	}
-	
-	private static Dictionary<string, TimeInfo> m_time_info_dict = new Dictionary<string, TimeInfo>();
-	
-	public static int GetTimeInfoUpdatedCount(string p_time_name)
-	{
-		TimeInfo t_info = GetTimeInfo(p_time_name);
-		
-		int t_count = t_info.GetUpdatedCount();
-		
-		return t_count;
-	}
-	
-	public static float GetTimeInfoTotalTime(string p_time_name)
-	{
-		TimeInfo t_info = GetTimeInfo(p_time_name);
-		
-		float t_duration = t_info.GetTotalTime();
-		
-		return t_duration;
-	}
-	
-	public static void UpdateTimeInfo(string p_time_name)
-	{
-		TimeInfo t_info = GetTimeInfo(p_time_name);
-		
-		UpdateTimeInfo(p_time_name, t_info.GetDeltaTime());
-	}
-	
-	public static float GetTimeInfoDeltaTime(string p_time_name)
-	{
-		TimeInfo t_info = GetTimeInfo(p_time_name);
-		
-		return t_info.GetDeltaTime();
-	}
-	
-	public static void UpdateTimeInfo(string p_time_name, float p_delta)
-	{
-		TimeInfo t_info = GetTimeInfo(p_time_name);
-		
-		t_info.UpdateTotalTime(p_delta);
-	}
-	
-	public static void ResetTimeInfo(string p_time_name)
-	{
-		TimeInfo t_info = GetTimeInfo(p_time_name);
-		
-		t_info.Reset();
-	}
-	
-	public static void ResetTaggedTime(string p_time_name)
-	{
-		TimeInfo t_info = GetTimeInfo(p_time_name);
-		
-		t_info.ResetTaggedTime();
-	}
-	
-	/** Desc:
+        return t_time_str;
+    }
+
+    private static float m_signet_time = 0.0f;
+
+    public static float SignetTime()
+    {
+        m_signet_time = Time.realtimeSinceStartup;
+
+        return m_signet_time;
+    }
+
+    public static float GetDeltaTimeSinceSignet()
+    {
+        return (Time.realtimeSinceStartup - m_signet_time);
+    }
+
+    public static void LogDeltaTimeSinceSignet(string p_prefix)
+    {
+        float t_delta = GetDeltaTimeSinceSignet();
+
+        Debug.Log(p_prefix + " : " + MathHelper.FloatPrecision(t_delta, 5));
+
+        SignetTime();
+    }
+
+    public class TimeInfo
+    {
+        public string m_time_name;
+
+        private float m_total_time = 0.0f;
+
+        private int m_updated_count = 0;
+
+        private float m_tagged_time = 0.0f;
+
+        public TimeInfo(string p_time_name, float p_duration = 0.0f)
+        {
+            m_time_name = p_time_name;
+
+            m_total_time = p_duration;
+
+            ResetTaggedTime();
+        }
+
+        public void Reset()
+        {
+            m_total_time = 0.0f;
+
+            m_updated_count = 0;
+
+            ResetTaggedTime();
+        }
+
+        public void UpdateTotalTime(float p_delta)
+        {
+            m_total_time += p_delta;
+
+            m_updated_count++;
+
+            ResetTaggedTime();
+        }
+
+        public int GetUpdatedCount()
+        {
+            return m_updated_count;
+        }
+
+        public float GetTotalTime()
+        {
+            return m_total_time;
+        }
+
+        public void ResetTaggedTime()
+        {
+            m_tagged_time = Time.realtimeSinceStartup;
+        }
+
+        public float GetDeltaTime()
+        {
+            return Time.realtimeSinceStartup - m_tagged_time;
+        }
+    }
+
+    private static Dictionary<string, TimeInfo> m_time_info_dict = new Dictionary<string, TimeInfo>();
+
+    public static int GetTimeInfoUpdatedCount(string p_time_name)
+    {
+        TimeInfo t_info = GetTimeInfo(p_time_name);
+
+        int t_count = t_info.GetUpdatedCount();
+
+        return t_count;
+    }
+
+    public static float GetTimeInfoTotalTime(string p_time_name)
+    {
+        TimeInfo t_info = GetTimeInfo(p_time_name);
+
+        float t_duration = t_info.GetTotalTime();
+
+        return t_duration;
+    }
+
+    public static void UpdateTimeInfo(string p_time_name)
+    {
+        TimeInfo t_info = GetTimeInfo(p_time_name);
+
+        UpdateTimeInfo(p_time_name, t_info.GetDeltaTime());
+    }
+
+    public static float GetTimeInfoDeltaTime(string p_time_name)
+    {
+        TimeInfo t_info = GetTimeInfo(p_time_name);
+
+        return t_info.GetDeltaTime();
+    }
+
+    public static void UpdateTimeInfo(string p_time_name, float p_delta)
+    {
+        TimeInfo t_info = GetTimeInfo(p_time_name);
+
+        t_info.UpdateTotalTime(p_delta);
+    }
+
+    public static void ResetTimeInfo(string p_time_name)
+    {
+        TimeInfo t_info = GetTimeInfo(p_time_name);
+
+        t_info.Reset();
+    }
+
+    public static void ResetTaggedTime(string p_time_name)
+    {
+        TimeInfo t_info = GetTimeInfo(p_time_name);
+
+        t_info.ResetTaggedTime();
+    }
+
+    /** Desc:
      * Find or Create.
      */
-	private static TimeInfo GetTimeInfo(string p_time_name)
-	{
-		TimeInfo t_info = null;
-		
-		m_time_info_dict.TryGetValue(p_time_name, out t_info);
-		
-		if (t_info == null)
-		{
-			t_info = new TimeInfo(p_time_name);
-			
-			m_time_info_dict.Add(p_time_name, t_info);
-		}
-		
-		{
-			return t_info;
-		}
+    private static TimeInfo GetTimeInfo(string p_time_name)
+    {
+        TimeInfo t_info = null;
+
+        m_time_info_dict.TryGetValue(p_time_name, out t_info);
+
+        if (t_info == null)
+        {
+            t_info = new TimeInfo(p_time_name);
+
+            m_time_info_dict.Add(p_time_name, t_info);
+        }
+
+        {
+            return t_info;
+        }
+    }
+
+    public static void LogTimeInfo(string p_desc, string p_time_info_name)
+    {
+        Debug.Log(TimeHelper.GetTimeInfoUpdatedCount(p_time_info_name) +
+                  " " + p_desc + ": " +
+                  GetTimeInfoDeltaTime(p_time_info_name).ToString("f8") + " - " +
+                  GetTimeInfoTotalTime(p_time_info_name).ToString("f8"));
+    }
+
+    public const string CONST_TIME_INFO_CHECK_SHADER = "CheckShader";
+
+    public const string CONST_TIME_INFO_NOT_FOUND_IN_BUNDLE = "BundleNotFound";
+
+    public const string CONST_TIME_INFO_CREATE_NODE = "CreateNode";
+
+    public const string CONST_TIME_INFO_CREATE_EFFECT = "CreateEffect";
+
+    #endregion
+
+
+
+	#region Log
+
+	public static void LogRealTimeSinceStartUp( string p_prefix = "" ){
+		Debug.Log( p_prefix + " : " + Time.realtimeSinceStartup );
 	}
-	
-	public static void LogTimeInfo(string p_desc, string p_time_info_name)
-	{
-		Debug.Log( TimeHelper.GetTimeInfoUpdatedCount(p_time_info_name) +
-		          " " + p_desc + ": " +
-		          GetTimeInfoDeltaTime(p_time_info_name).ToString("f8") + " - " +
-		          GetTimeInfoTotalTime(p_time_info_name).ToString("f8"));
-	}
-	
-	public const string CONST_TIME_INFO_CHECK_SHADER = "CheckShader";
-	
-	public const string CONST_TIME_INFO_NOT_FOUND_IN_BUNDLE = "BundleNotFound";
-	
-	public const string CONST_TIME_INFO_CREATE_NODE = "CreateNode";
-	
-	public const string CONST_TIME_INFO_CREATE_EFFECT = "CreateEffect";
-	
+
 	#endregion
 
 
+
+    #region Utilities
+
+    public static void ResetTimeScale()
+    {
+        Time.timeScale = 1.0f;
+    }
+
+    #endregion
 
 }

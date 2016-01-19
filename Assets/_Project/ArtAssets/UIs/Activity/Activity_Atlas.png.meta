@@ -1,13 +1,13 @@
 fileFormatVersion: 2
 guid: 4a31e962f2650cc49b96c3b13c7c3c91
-timeCreated: 1449804642
+timeCreated: 1452481932
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     linearTexture: 0
     correctGamma: 0
     fadeOut: 0
@@ -45,8 +45,12 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
-  textureType: -1
-  buildTargetSettings: []
+  textureType: 5
+  buildTargetSettings:
+  - buildTarget: Android
+    maxTextureSize: 4096
+    textureFormat: 4
+    compressionQuality: 50
   spriteSheet:
     sprites: []
   spritePackingTag: 

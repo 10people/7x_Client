@@ -7,10 +7,14 @@ public class Console_DebugFunction {
 	#region Debug Function
 	
 	public static void OnDebugFunction( string[] p_params ){
-		TestTimeString();
+//		TestTimeString();
+
+
 	}
 		
 	#endregion
+
+
 
 	#region Sub Debug
 
@@ -23,8 +27,6 @@ public class Console_DebugFunction {
 
 		Debug.Log( "27: " + TimeHelper.GetUniformedTimeString( 27 ) );
 	}
-
-
 
 	#endregion
 }

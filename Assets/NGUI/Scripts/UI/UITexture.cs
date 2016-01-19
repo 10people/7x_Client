@@ -211,4 +211,32 @@ public class UITexture : UIWidget
 		cols.Add(col);
 		cols.Add(col);
 	}
+
+	#region Mono
+
+	public void CustomReset(){
+		OnDisable();
+
+		OnEnable();
+	}
+	
+	protected override void OnDestroy(){
+		{
+			mTexture = null;
+			
+			mMat = null;
+			
+			mShader = null;
+
+			mainTexture = null;
+
+			material = null;
+
+			shader = null;
+		}
+		
+		base.OnDestroy();
+	}
+	
+	#endregion
 }

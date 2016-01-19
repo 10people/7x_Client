@@ -74,8 +74,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	public UISprite e_SkillIcon;//敌方秘宝技能icon
 
 	private int e_zuHeId;//敌方秘宝技能组合id
-
-	private int activeMibaoCount;//敌人激活秘宝数
 	//**********敌方阵容信息*********//
 
 	/// <summary>
@@ -94,8 +92,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	public GameObject myItemParent;
 	public GameObject enemyItemParent;
 
-	public GameObject backBtnObj;
-
 	public GameObject changeSkillBtn;//更换秘宝技能按钮
 
 	public ScaleEffectController sEffectController;
@@ -112,15 +108,14 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	/// <param name="yinDaoState">新手引导步骤</param>
 	public void InItPvpChallengePage (ZhenRongType tempType,ChallengeResp tempInfo)
 	{
+		sEffectController.OnOpenWindowClick ();
+
 		zhenRongType = tempType;
 
 		challengeInfo = tempInfo;
 
-		backBtnObj.SetActive (false);
-
 		m_zuHeId = tempInfo.myZuheId;
 		e_zuHeId = tempInfo.oppZuheId;
-//		activeMibaoCount = tempInfo.oppActivateMiBaoCount;
 
 		m_ZhanLi.text = tempInfo.myZhanli.ToString();//显示我的战力
 		e_ZhanLi.text = tempInfo.oppoZhanli.ToString();//显示敌方战力
@@ -138,40 +133,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 		ShowChangeSkillEffect (true);
 	}
 
-//	/// <summary>
-//	/// 荒野挑战阵容页面
-//	/// </summary>
-//	/// <param name="tempType">Temp type.</param>
-//	/// <param name="tempRes">Temp res.</param>
-//	/// <param name="tempInfo">Temp info.</param>
-//	public void InItHuangYeChallengePage(ZhenRongType tempType,BattleResouceResp tempRes,ResourceNpcInfo tempInfo,HuangYeResource tempResource,int resourceType,int eSkillId,int eZhanLi)
-//	{
-//		zhenRongType = tempType;
-//
-//		//hyBattleResourceRes = tempRes;
-//		//resourceNpcInfo = tempInfo;
-//		//hyResource = tempResource;
-//		
-//		//m_SkillId = tempRes.zuheId;
-//		e_SkillId = eSkillId;
-//		
-//		HuangyeTemplate mHuangyeTemplate = HuangyeTemplate.getHuangyeTemplate_byid (tempResource.fileId);//m描述
-//		
-//		string mDescIdTemplate = DescIdTemplate.GetDescriptionById (mHuangyeTemplate.descId);
-//		
-//		string mName = NameIdTemplate.GetName_By_NameId (mHuangyeTemplate.nameId);
-//		//Res_Name.text = mName;
-//		if (resourceType != 1)//1-我的资源点 2-敌方资源点
-//		{
-//			InItGuYongBingInfo ();
-//			ShowMyMiBaoSkill ();
-//
-//			m_ZhanLi.text = JunZhuData.Instance ().m_junzhuInfo.zhanLi.ToString();//显示我的战力
-//			
-//			e_ZhanLi.text = eZhanLi.ToString();//显示敌方战力
-//		}
-//	}
-
 	/// <summary>
 	/// 掠夺阵容页面
 	/// </summary>
@@ -179,13 +140,14 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	/// <param name="tempLueDuoRes">Temp lue duo res.</param>
 	public void InItLueDuoChallengePage (ZhenRongType tempType,LveGoLveDuoResp tempLueDuoRes)
 	{
+		sEffectController.OnOpenWindowClick ();
+
 		zhenRongType = tempType;
 
 		lueDuoOpponentRes = tempLueDuoRes;
 
 		m_zuHeId = tempLueDuoRes.myGongjiZuheId;
 		e_zuHeId = tempLueDuoRes.oppFangShouZuheId;
-		activeMibaoCount = tempLueDuoRes.oppoActivateMiBaoCount;
 
 		m_ZhanLi.text = tempLueDuoRes.myZhanli.ToString();//显示我的战力
 		
@@ -194,14 +156,15 @@ public class GeneralTiaoZhan : MonoBehaviour {
 		lueDuoObj.SetActive (true);
 		getGongJinNum.text = tempLueDuoRes.lostGongJin.ToString ();
 		mGongJinNum.text = tempLueDuoRes.gongJin.ToString ();
-		lueDuoTime.text = "剩余掠夺次数：" + (LueDuoData.Instance.lueDuoData.all - LueDuoData.Instance.lueDuoData.used) +
-						"/" + LueDuoData.Instance.lueDuoData.all;
+		lueDuoTime.text = "剩余掠夺次数：" 
+						+ (PlunderData.Instance.PlunderDataResp ().all - PlunderData.Instance.PlunderDataResp ().used) 
+						+ "/" + PlunderData.Instance.PlunderDataResp ().all;
 
 		InItGuYongBingInfo ();
 		ShowMyMiBaoSkill ();
 		ShowEnemyMiBaoInfo ();
 
-		LueDuoData.Instance.IsStop = false;
+//		LueDuoData.Instance.IsStop = false;
 		ShowChangeSkillEffect (true);
 	}
 
@@ -257,11 +220,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 			m_YongBingCount = challengeInfo.mySoldiers.Count;
 			break;
 		}
-//		case ZhenRongType.HUANG_YE:
-//		{
-//			m_YongBingCount = hyBattleResourceRes.yongBingList.Count;
-//			break;
-//		}
 		case ZhenRongType.LUE_DUO:
 		{
 			if (lueDuoOpponentRes.mySoldiers.Count > bingCount)
@@ -306,14 +264,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 
 				break;
 			}
-//			case ZhenRongType.HUANG_YE:
-//			{
-//				HY_GuYongBingTempTemplate hyYongBingTemp = HY_GuYongBingTempTemplate.GetHY_GuYongBingTempTemplate_By_id(hyBattleResourceRes.yongBingList[i]);
-//				profession = hyYongBingTemp.profession;
-//				iconId = hyYongBingTemp.icon;
-//				needLevel = hyYongBingTemp.needLv;
-//				break;
-//			}
 			case ZhenRongType.LUE_DUO:
 			{
 				GuYongBingTempTemplate yongBingTemp = GuYongBingTempTemplate.GetGuYongBingTempTemplate_By_id(lueDuoOpponentRes.mySoldiers[i].id);
@@ -349,14 +299,7 @@ public class GeneralTiaoZhan : MonoBehaviour {
 		e_Hero.SetActive(true);
 		IconSampleManager eHeroIconSample = e_Hero.GetComponent<IconSampleManager>();
 
-		if (zhenRongType == ZhenRongType.HUANG_YE)
-		{
-//			eHeroIconSample.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-//			//enemyHeroIconSample.SetIconDecoSprite(null, "boss");
-//			HuangyePvpNpcTemplate hyPvpNpcTemp = HuangyePvpNpcTemplate.getHuangyepvpNPCTemplate_by_Npcid(resourceNpcInfo.bossId);
-//			eHeroIconSample.SetIconBasic(iconBasicDepth,hyPvpNpcTemp.icon.ToString(),hyPvpNpcTemp.level.ToString());
-		}
-		else if (zhenRongType == ZhenRongType.PVP)
+		if (zhenRongType == ZhenRongType.PVP)
 		{
 			eHeroIconSample.SetIconType(IconSampleManager.IconType.mainCityAtlas);
 			//enemyHeroIconSample.SetIconDecoSprite(null, "boss");
@@ -382,11 +325,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 			e_YongBingCount = challengeInfo.oppoSoldiers.Count;
 			break;
 		}
-//		case ZhenRongType.HUANG_YE:
-//		{
-//			e_YongBingCount = resourceNpcInfo.yongBingId.Count;
-//			break;
-//		}
 		case ZhenRongType.LUE_DUO:
 		{
 			if (lueDuoOpponentRes.oppoSoldiers.Count > bingCount)
@@ -431,14 +369,6 @@ public class GeneralTiaoZhan : MonoBehaviour {
 
 				break;
 			}
-//			case ZhenRongType.HUANG_YE:
-//			{
-//				HY_GuYongBingTempTemplate hyYongBingTemp = HY_GuYongBingTempTemplate.GetHY_GuYongBingTempTemplate_By_id(resourceNpcInfo.yongBingId[i]);
-//				profession = hyYongBingTemp.profession;
-//				iconId = hyYongBingTemp.icon;
-//				needLevel = hyYongBingTemp.needLv;
-//				break;
-//			}
 			case ZhenRongType.LUE_DUO:
 			{
 				GuYongBingTempTemplate yongBingTemp = GuYongBingTempTemplate.GetGuYongBingTempTemplate_By_id(lueDuoOpponentRes.oppoSoldiers[i].id);
@@ -473,38 +403,28 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	/// </summary>
 	void ShowMyMiBaoSkill()
 	{
-		var miBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		var skillList = MiBaoGlobleData.Instance().G_MiBaoInfo.skillList;
 
-//		for(int i = 0;i < miBaoInfo.mibaoGroup.Count;i ++)
-//		{
-//			if(miBaoInfo.mibaoGroup[i].zuheId == m_zuHeId)
-//			{
-//				if (miBaoInfo.mibaoGroup[i].hasActive == 1)
-//				{
-//					//秘宝技能可用
-//					mLockIconObj.SetActive (false);
-//					MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (m_zuHeId);
-//
-////					Debug.Log ("mSkill.icon:" + mSkill.icon);
-//
-//					m_SkillIcon.spriteName = mSkill.icon.ToString();
-//
-//					break;
-//				}
-//				else
-//				{
-//					//秘宝技能不可用
-//					mLockIconObj.SetActive (true);
-//					m_SkillIcon.spriteName = "";
-//				}
-//			}
-//			else
-//			{
-//				//秘宝技能不可用
-//				mLockIconObj.SetActive (true);
-//				m_SkillIcon.spriteName = "";
-//			}
-//		}
+		if (skillList == null)
+		{
+			return;
+		}
+
+		for (int i = 0;i < skillList.Count;i ++)
+		{
+			if (m_zuHeId == skillList[i].activeZuheId)
+			{
+				mLockIconObj.SetActive (false);
+				MiBaoSkillTemp mSkill = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (m_zuHeId);
+				m_SkillIcon.spriteName = mSkill.icon.ToString();
+				break;
+			}
+			else
+			{
+				mLockIconObj.SetActive (true);
+				m_SkillIcon.spriteName = "";
+			}
+		}
 	}
 
 	/// <summary>
@@ -514,33 +434,30 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	{
 		if (isOpen)
 		{
-//			var mibaoGroupList = MiBaoGlobleData.Instance().G_MiBaoInfo.mibaoGroup;
-//			
-//			List<int> zuHeIdList = new List<int> ();
-//			
-//			for (int i = 0;i < mibaoGroupList.Count;i ++)
-//			{
-//				zuHeIdList.Add (mibaoGroupList[i].zuheId);
-//			}
+			var skillList = MiBaoGlobleData.Instance().G_MiBaoInfo.skillList;
 			
-//			if (zuHeIdList.Contains (m_zuHeId))
-//			{
-//				changeSkillBtn.SetActive (true);
-//				UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
-//			}
-//			else
-//			{
-//				if (MiBaoGlobleData.Instance ().GetMiBaoskillOpen ())
-//				{
-//					changeSkillBtn.SetActive (true);
-//					UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,changeSkillBtn,
-//					                                               EffectIdTemplate.GetPathByeffectId(100006));
-//				}
-//				else
-//				{
-//					UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
-//				}
-//			}
+			if (skillList != null)
+			{
+				List<int> skillIdList = new List<int>();
+				foreach (SkillInfo skill in skillList)
+				{
+					skillIdList.Add (skill.activeZuheId);
+				}
+
+				if (skillIdList.Contains (m_zuHeId))
+				{
+					UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
+				}
+				else
+				{
+					UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,changeSkillBtn,
+					                                               EffectIdTemplate.GetPathByeffectId(100006));
+				}
+			}
+			else
+			{
+				UI3DEffectTool.Instance ().ClearUIFx (changeSkillBtn);
+			}
 		}
 		else
 		{
@@ -553,17 +470,22 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	/// </summary>
 	void ShowEnemyMiBaoInfo ()
 	{
-		var miBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		var skillList = MiBaoGlobleData.Instance().G_MiBaoInfo.skillList;
+		for (int i = 0;i < skillList.Count;i ++)
+		{
+			if (e_zuHeId == skillList[i].activeZuheId)
+			{
+				eLockIconObj.SetActive(false);
+				MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (e_zuHeId);
+				e_SkillIcon.spriteName = miBaoSkillTemp.skill.ToString ();
 
-		if (activeMibaoCount >= 2)
-		{
-			MiBaoSkillTemp miBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (e_zuHeId);
-			e_SkillIcon.spriteName = miBaoSkillTemp.skill.ToString ();
-		}
-		else
-		{
-			e_SkillIcon.spriteName = "";
-			eLockIconObj.SetActive(true);
+				break;
+			}
+			else
+			{
+				e_SkillIcon.spriteName = "";
+				eLockIconObj.SetActive(true);
+			}
 		}
 	}
 
@@ -649,18 +571,9 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	public void EnterBattle ()
 	{
 		switch (zhenRongType)
-		{
-//		case ZhenRongType.HUANG_YE:
-//			
-//			//进入荒野资源点战斗
-//			HuangYePVPTemplate hyPvpTemp = HuangYePVPTemplate.getHuangYePVPTemplate_byid (hyResource.fileId);
-//			EnterBattleField.EnterBattleHYPvp (hyResource.id, resourceNpcInfo.bossId, hyPvpTemp);
-//			
-//			break;
-//			
+		{	
 		case ZhenRongType.PVP:
-			
-//			BaiZhanUnExpected.unExpected.TiaoZhanStateReq (null,2,challengeInfo);
+
 			PvpData.Instance.PvpChallengeResp = challengeInfo;
 			PvpData.Instance.PlayerStateCheck (PvpData.PlayerState.STATE_GENERAL_TIAOZHAN_PAGE);
 
@@ -677,36 +590,14 @@ public class GeneralTiaoZhan : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 返回按钮
-	/// </summary>
-	public void BackBtn ()
-	{
-		Destroy (this.gameObject);
-	}
-
-	/// <summary>
 	/// 关闭按钮
 	/// </summary>
 	public void DestroyRoot ()
 	{
 		switch (zhenRongType)
-		{
-//		case ZhenRongType.HUANG_YE:
-//
-//			GameObject HuangYe = GameObject.Find ("HuangYe_TiaoZhanZhengRong(Clone)");
-//			if (HuangYe)
-//			{
-//				Destroy (HuangYe);
-//			}
-//			break;
-			
+		{	
 		case ZhenRongType.PVP:
-			
-//			GameObject baizhan = GameObject.Find ("BaiZhan");
-//			if (baizhan)
-//			{
-//				Destroy (baizhan);
-//			}
+
 			Global.m_isOpenBaiZhan = false;
 			PvpData.Instance.IsOpenPvpByBtn = false;
 
@@ -717,54 +608,8 @@ public class GeneralTiaoZhan : MonoBehaviour {
 			
 		case ZhenRongType.LUE_DUO:
 
-			switch (LueDuoData.Instance.GetWhichType)
-			{
-			case LueDuoData.WhichOpponent.LUE_DUO:
-			{
-				GameObject lueDuo = GameObject.Find ("LueDuo");
-				if (lueDuo)
-				{
-					Destroy (lueDuo);
-				}
-				Destroy (gameObject);
-				break;
-			}
-			case LueDuoData.WhichOpponent.RANKLIST:
-			{
-				GameObject allianceMember = GameObject.Find ("AllianceMemberWindow(Clone)");
-				if (allianceMember)
-				{
-					Destroy (allianceMember);
-				}
+			Destroy (gameObject);
 
-				GameObject kingDetalInfo = GameObject.Find ("KingDetailInfoWindow(Clone)");
-				if (kingDetalInfo)
-				{
-					Destroy (kingDetalInfo);
-				}
-
-				GameObject rankObj = GameObject.Find ("RankWindow(Clone)");
-				if (rankObj)
-				{
-					Destroy (rankObj);
-				}
-				Destroy (gameObject);
-				break;
-			}
-			case LueDuoData.WhichOpponent.CHAT:
-			{
-				GameObject chatObj = GameObject.Find ("UIChat(Clone)");
-				if (chatObj)
-				{
-					ChatOpenCloseController chatOpen = chatObj.GetComponentInChildren <ChatOpenCloseController> ();
-					chatOpen.OnCloseWindowClick (gameObject);
-					Destroy (this.gameObject);
-				}
-				break;
-			}
-			default:
-				break;
-			}
 			break;
 		default:
 			break;

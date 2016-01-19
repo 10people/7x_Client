@@ -79,16 +79,16 @@ public class UITianfu : MYNGUIPanel
 			m_UIJunzhu.m_PlayerRight.SetActive(true);
 			m_UIJunzhu.m_PlayerLeft.SetActive(true);
 			
-			if (FreshGuide.Instance().IsActive(100380) && TaskData.Instance.m_TaskInfoDic[100380].progress >= 0)
-			{
-				//if(!UIYindao.m_UIYindao.m_isOpenYindao)
-				{
-					TaskData.Instance.m_iCurMissionIndex = 100380;
-					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-					tempTaskData.m_iCurIndex = 1;
-					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-				}
-			}
+//			if (FreshGuide.Instance().IsActive(100380) && TaskData.Instance.m_TaskInfoDic[100380].progress >= 0)
+//			{
+//				//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+//				{
+//					TaskData.Instance.m_iCurMissionIndex = 100380;
+//					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+//					tempTaskData.m_iCurIndex = 1;
+//					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+//				}
+//			}
 		}
 		else if(ui.name.IndexOf("tianfuicon") != -1)
 		{
@@ -113,12 +113,7 @@ public class UITianfu : MYNGUIPanel
 				t_protof = tempStream.ToArray();
 				
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_TALENT_UP_LEVEL_REQ, ref t_protof);
-				if(!(EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace() || Global.m_isNewChenghao || Global.m_isFuWen || BagData.AllUpgrade()))
-				{
-					MainCityUIRB.SetRedAlert(200, false);
-				}
-				Debug.Log("=============1");
-				Global.m_isTianfuUpCan = false;
+				MainCityUI.SetRedAlert(500000, false);
 			}
 			
 		}

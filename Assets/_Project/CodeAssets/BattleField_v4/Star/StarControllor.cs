@@ -55,7 +55,7 @@ public class StarControllor : MonoBehaviour
 		   || condition == 3 //剩余血量大于等于总血量的80%
 		   ) 
 		{
-			baseHp = BattleControlor.Instance().getKing().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax );
+			baseHp = BattleControlor.Instance().getKing().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal );
 		}
 		else if(condition == 4)//带着秘宝上阵
 		{

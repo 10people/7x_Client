@@ -32,4 +32,11 @@ public class DramaStorySimulation : MonoBehaviour {
 	public void setStand(){}
 	public void checkSkillDrama(int skillId){}
 	public void stopTime(string data){}
+	public void firstAtt(){}
+	public void updateAttackSpeed(){}
+	public void attackStart(){}
+	public void createArrow(int _actionId){}
+	public void swingStart(){}
+	public void swingEnd(){}
+	public void attackMove(){}
 }

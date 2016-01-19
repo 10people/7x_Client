@@ -73,7 +73,17 @@ public class PveTempTemplate : XmlLoadManager {
 
 	public int PowerLimit;
 
-	public int configId;
+	public int configId; //juqingNPC="100101" wanfaType="ÆÕÍ¨" recZhanli="1" recMibaoSkill="250101" />
+
+	public int	TeammateID;
+
+	public int juqingNPC;
+
+	public string wanfaType;
+
+	public int recZhanli;
+
+	public int recMibaoSkill;
 
 	public static List<PveTempTemplate> templates = new List<PveTempTemplate>();
 	
@@ -209,6 +219,21 @@ public class PveTempTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.configId = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.TeammateID = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.juqingNPC = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.wanfaType =  t_reader.Value ;
+
+				t_reader.MoveToNextAttribute();
+				t_template.recZhanli = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.recMibaoSkill = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();
@@ -227,7 +252,7 @@ public class PveTempTemplate : XmlLoadManager {
 			}
 		}
 
-		Debug.LogError( "PveTempTemplate not found: " + p_section + ", " + p_level );
+		//Debug.LogError( "PveTempTemplate not found: " + p_section + ", " + p_level );
 
 		return null;
 	}

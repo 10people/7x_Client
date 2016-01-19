@@ -99,5 +99,7 @@ public class PoolManagerListController : Singleton<PoolManagerListController>
     void OnDestroy()
     {
         Cleanup();
+
+		base.OnDestroy();
     }
 }

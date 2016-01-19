@@ -15,6 +15,10 @@ public class ReplayUIControllor : MonoBehaviour
 	
 	public static ReplayUIControllor Instance() { return _instance; }
 
+	void OnDestroy(){
+		_instance = null;
+	}
+
 	public void addAvatar()
 	{
 		troopAvatarTemple.gameObject.SetActive(false);

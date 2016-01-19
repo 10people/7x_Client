@@ -330,6 +330,8 @@ public abstract class UIRect : MonoBehaviour
 		return pos;
 	}
 
+	#region Mono
+
 	/// <summary>
 	/// Automatically find the parent rectangle.
 	/// </summary>
@@ -339,6 +341,12 @@ public abstract class UIRect : MonoBehaviour
 		mAnchorsCached = false;
 		if (mStarted) OnInit();
 	}
+
+	protected virtual void OnDestroy(){
+
+	}
+
+	#endregion
 
 	/// <summary>
 	/// Automatically find the parent rectangle.

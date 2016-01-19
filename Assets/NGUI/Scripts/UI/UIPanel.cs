@@ -22,7 +22,7 @@ public class UIPanel : UIRect
 	/// List of active panels.
 	/// </summary>
 
-	static public BetterList<UIPanel> list = new BetterList<UIPanel>();
+	public static BetterList<UIPanel> list = new BetterList<UIPanel>();
 
 	public enum DebugInfo
 	{
@@ -160,7 +160,7 @@ public class UIPanel : UIRect
 	/// Helper property that returns the first unused depth value.
 	/// </summary>
 
-	static public int nextUnusedDepth
+	public static int nextUnusedDepth
 	{
 		get
 		{
@@ -228,7 +228,7 @@ public class UIPanel : UIRect
 	/// Function that can be used to depth-sort panels.
 	/// </summary>
 
-	static public int CompareFunc (UIPanel a, UIPanel b)
+	public static int CompareFunc (UIPanel a, UIPanel b)
 	{
 		if (a != b && a != null && b != null)
 		{
@@ -1489,19 +1489,19 @@ public class UIPanel : UIRect
 	/// Find the UIPanel responsible for handling the specified transform.
 	/// </summary>
 
-	static public UIPanel Find (Transform trans) { return Find(trans, false, -1); }
+	public static UIPanel Find (Transform trans) { return Find(trans, false, -1); }
 
 	/// <summary>
 	/// Find the UIPanel responsible for handling the specified transform.
 	/// </summary>
 
-	static public UIPanel Find (Transform trans, bool createIfMissing) { return Find(trans, createIfMissing, -1); }
+	public static UIPanel Find (Transform trans, bool createIfMissing) { return Find(trans, createIfMissing, -1); }
 
 	/// <summary>
 	/// Find the UIPanel responsible for handling the specified transform.
 	/// </summary>
 
-	static public UIPanel Find (Transform trans, bool createIfMissing, int layer)
+	public static UIPanel Find (Transform trans, bool createIfMissing, int layer)
 	{
 		UIPanel panel = null;
 
@@ -1566,7 +1566,7 @@ public class UIPanel : UIRect
 	/// Major hax to get the size of the game view window.
 	/// </summary>
 
-	static public Vector2 GetMainGameViewSize ()
+	public static Vector2 GetMainGameViewSize ()
 	{
 		int frame = Time.frameCount;
 

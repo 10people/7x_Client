@@ -16,9 +16,23 @@ public class BattleWeapon : MonoBehaviour
 
 	public UISprite focusRange;
 
+	public BattleWeaponSkillDolt spriteHeavySkill_1;
+
+	public BattleWeaponSkillDolt spriteHeavySkill_2;
+
+	public BattleWeaponSkillDolt spriteLightSkill_1;
+
+	public BattleWeaponSkillDolt spriteLightSkill_2;
+
+	public BattleWeaponSkillDolt spriteRangeSkill_1;
+
+	public BattleWeaponSkillDolt spriteRangeSkill_2;
+
 
 	public void changeWeaponToHeavy()
 	{
+		DramaControllor.Instance ().closeYindao (5);
+
 		bool flag = precheck ();
 
 		if (flag == false) return;
@@ -31,12 +45,16 @@ public class BattleWeapon : MonoBehaviour
 
 		focusHeavy.gameObject.SetActive (true);
 
+		//spriteHeavySkill_1.gameObject.SetActive (false);
+		
+		//spriteHeavySkill_2.gameObject.SetActive (false);
+
 		//UIYindao.m_UIYindao.CloseUI ();
 	}
 
 	public void changeWeaponToLight()
 	{
-		DramaControllor.Instance ().closeYindao (20103);
+		DramaControllor.Instance ().closeYindao (6);
 
 		bool flag = precheck ();
 		
@@ -50,12 +68,16 @@ public class BattleWeapon : MonoBehaviour
 
 		focusLight.gameObject.SetActive (true);
 
+		//spriteLightSkill_1.gameObject.SetActive (false);
+		
+		//spriteLightSkill_2.gameObject.SetActive (false);
+
 		//UIYindao.m_UIYindao.CloseUI ();
 	}
 
 	public void changeWeaponToRange()
 	{
-		DramaControllor.Instance().closeYindao(20105);
+		DramaControllor.Instance().closeYindao(7);
 
 		bool flag = precheck ();
 
@@ -69,6 +91,10 @@ public class BattleWeapon : MonoBehaviour
 
 		focusRange.gameObject.SetActive (true);
 
+		//spriteRangeSkill_1.gameObject.SetActive (false);
+		
+		//spriteRangeSkill_2.gameObject.SetActive (false);
+
 		//UIYindao.m_UIYindao.CloseUI ();
 	}
 
@@ -79,29 +105,53 @@ public class BattleWeapon : MonoBehaviour
 		focusLight.gameObject.SetActive (false);
 
 		focusRange.gameObject.SetActive (false);
+
+//		spriteHeavySkill_1.gameObject.SetActive (true);
+//
+//		spriteHeavySkill_2.gameObject.SetActive (true);
+//
+//		spriteLightSkill_1.gameObject.SetActive (true);
+//
+//		spriteLightSkill_2.gameObject.SetActive (true);
+//
+//		spriteRangeSkill_1.gameObject.SetActive (true);
+//
+//		spriteRangeSkill_2.gameObject.SetActive (true);
 	}
 
 	public void refreshIcons()
 	{
 		lightOff ();
 
-		btnHeavy.SetActive (btnHeavy.activeSelf && BattleControlor.Instance().getKing().weaponDateHeavy != null);
-
-		btnLight.SetActive (btnLight.activeSelf && BattleControlor.Instance().getKing().weaponDateLight != null);
-
-		btnRange.SetActive (btnRange.activeSelf && BattleControlor.Instance().getKing().weaponDateRanged != null);
+//		btnHeavy.SetActive (btnHeavy.activeSelf && BattleControlor.Instance().getKing().weaponDateHeavy != null);
+//
+//		btnLight.SetActive (btnLight.activeSelf && BattleControlor.Instance().getKing().weaponDateLight != null);
+//
+//		btnRange.SetActive (btnRange.activeSelf && BattleControlor.Instance().getKing().weaponDateRanged != null);
 
 		if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Heavy)
 		{
 			focusHeavy.gameObject.SetActive (true);
+
+			//spriteHeavySkill_1.gameObject.SetActive (false);
+			
+			//spriteHeavySkill_2.gameObject.SetActive (false);
 		}
 		else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Light)
 		{
 			focusLight.gameObject.SetActive (true);
+
+			//spriteLightSkill_1.gameObject.SetActive (false);
+			
+			//spriteLightSkill_2.gameObject.SetActive (false);
 		}
 		else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Ranged)
 		{
 			focusRange.gameObject.SetActive (true);
+
+			//spriteRangeSkill_1.gameObject.SetActive (false);
+			
+			//spriteRangeSkill_2.gameObject.SetActive (false);
 		}
 	}
 

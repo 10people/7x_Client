@@ -79,7 +79,7 @@ public class TweenVolume : UITweener
 	/// Start the tweening operation.
 	/// </summary>
 
-	static public TweenVolume Begin (GameObject go, float duration, float targetVolume)
+	public static TweenVolume Begin (GameObject go, float duration, float targetVolume)
 	{
 		TweenVolume comp = UITweener.Begin<TweenVolume>(go, duration);
 		comp.from = comp.value;

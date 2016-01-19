@@ -77,6 +77,41 @@ public class ProtoIndexes
 
     public const short S_HEAD_STRING = 22101;//更新称号ok
 
+	/// <summary>
+	/// The Alliance Data
+	/// </summary>
+
+	public const short C_JIAN_ZHU_INFO = 27401;//请求联盟建筑信息，只发协议号
+
+	public const short S_JIAN_ZHU_INFO = 27402;//返回联盟建筑信息
+
+	public const short C_JIAN_ZHU_UP = 27403;//请求升级建筑
+
+	//消息体用ErrorMessage，errorCode值表示要升级什么，1客栈；2书院；3图腾；4商铺；5宗庙
+	
+	public const short S_JIAN_ZHU_UP = 27404;
+
+	//升级结果，消息体用ErrorMessage，errorCode值为0表示成功，其他表示失败
+
+	////////////////////////////////////////////////////////////////////////////////
+	public const short C_LMKJ_UP = 27503;//请求升级联盟科技
+	//消息体用ErrorMessage，errorCode值表示要升级什么，用表里面的type值。
+	
+	public const short S_LMKJ_UP = 27504;
+	//升级结果，消息体用ErrorMessage，errorCode值为0表示成功，其他表示失败
+	
+	//
+	public const short C_LMKJ_INFO = 27507;
+	public const short S_LMKJ_INFO = 27508;
+	//获取联盟科技信息，消息体是JianZhuList，按照配置表，每个type发一个等级
+
+	public const short C_LM_CHOU_JIANG_1 = 27510;// 宗庙抽奖一次
+	public const short C_LM_CHOU_JIANG_N = 27511;//宗庙连续抽奖
+	public const short S_LM_CHOU_JIANG = 27512;// 宗庙抽奖返回。
+
+	public const short C_LM_CHOU_JIANG_INFO = 27513; //请求宗庙信息
+	public const short S_LM_CHOU_JIANG_INFO = 27514;//宗庙信息返回
+
     /// <summary>
     /// 请求联盟战信息
     /// </summary>
@@ -140,6 +175,8 @@ public class ProtoIndexes
     // red notice info
     public const short RED_NOTICE_INFO = 4220;
 
+    public const short SAFE_AREA_BOOLD_RETURN_RESP = 4222;
+
     public const int PVE_PAGE_REQ = 23201;              //请求章节信息
     public const int PVE_PAGE_RET = 23202;              //服务器返回章节信息
 
@@ -175,6 +212,21 @@ public class ProtoIndexes
 	public const short PVE_MAX_ID_REQ = 23007;//请求打到的最大章节关卡
 
 	public const short PVE_MAX_ID_RESP = 23008; //请求关卡返回
+
+	/** 请求未领取过通关奖励章节列表 */
+	public const short C_NOT_GET_AWART_ZHANGJIE_REQ = 24156;
+	/** 返回未领取过通关奖励章节列表 */
+	public const short S_NOT_GET_AWART_ZHANGJIE_RESP = 24157;
+
+
+	/** 请求通章奖励*/
+	public const short has_get_zhangJie_award_req  = 24152;
+	public const short has_get_passZhangJie_award_req  = 24153;
+
+	/** 领取通章奖励*/
+	public const short get_zhangJie_award_req  = 24154;
+	public const short get_passZhangJie_award_req  = 24155;
+
 
     public const short C_YuJueHeChengRequest = 29509;
     public const short S_YuJueHeChengResult = 29510;
@@ -225,8 +277,13 @@ public class ProtoIndexes
     public const short C_BUY_TIMES_REQ = 28321;			//请求购买体力和铜币的次数.
     public const short S_BUY_TIMES_INFO = 28322;
     public const short C_BUY_TiLi = 28323;				//购买体力
+
+	//金币购买
+	public const short C_BUY_TongBi_Data = 2831;//界面数据请求
+	public const short S_BUY_TongBi_Data = 2830;//界面数据返回
     public const short C_BUY_TongBi = 28324;			//购买铜币
-	public const short S_BUY_TongBi = 28325;			//购买铜币fanhui
+	public const short C_BUY_TongBi_LiXu = 28329;
+	public const short S_BUY_TongBi_LiXu = 28330;
 
 	public const short C_BUY_MiBaoPoint = 28327;			//购买铜币
 	public const short S_BUY_MiBaoPoint = 28328;			//购买铜币fanhui
@@ -682,6 +739,10 @@ public class ProtoIndexes
 	/** 联盟解散 */
 	public const short ALLIANCE_DISMISS_NOTIFY = 30166;
 
+    /// <summary>
+    /// Alliance state change notify
+    /// </summary>
+    public const short ALLIANCE_STATE_NOTIFY = 30167;
 
     // 荒野求生
     /** 打开荒野 **/
@@ -1059,14 +1120,10 @@ public class ProtoIndexes
 	/// 请求运镖返回
 	/// </summary>
 	public const short S_YABIAO_RESP = 3408;
-	/// <summary>
-	/// 请求劫镖主界面
-	/// </summary>
-	public const short C_JIEBIAO_INFO_REQ= 3409;
-	/// <summary>
-	/// 请求劫镖主界面返回
-	/// </summary>
-	public const short S_JIEBIAO_INFO_RESP= 3410;
+
+	public const short C_BUY_XUEPING_REQ= 3409;
+	public const short S_BUY_XUEPING_RESP = 3410;
+
 	/// <summary>
 	/// 请求进入押镖场景
 	/// </summary>
@@ -1115,13 +1172,31 @@ public class ProtoIndexes
 	public const short C_YABIAO_HISTORY_RSQ = 3427;
 
 	public const short C_YABIAO_HELP_RSQ = 3429;//请求押镖协助
-	public const short S_YABIAO_HELP_RESP = 3430;//答复请求押镖协助返回 
-	public const short C_ANSWER_YBHELP_RSQ = 3431;//答复押镖协助
-	public const short S_ANSWER_YBHELP_RESP = 3432;//答复押镖协助返回
+	public const short S_YABIAO_HELP_RESP = 3430;//请求押镖协助返回 
+	public const short C_ANSWER_YBHELP_RSQ = 3431;//同意押镖协助
+	public const short S_ANSWER_YBHELP_RESP = 3432;//同意押镖协助返回
     public const short C_TICHU_YBHELP_RSQ = 3433;//踢出押镖协助
     public const short S_TICHU_YBHELP_RESP = 3434;//踢出押镖协助返回
     public const short S_TICHU_YBHELPXZ_RESP = 3438;//踢出押镖协助者给协助者返回
 	public const short S_ASK_YABIAO_HELP_RESP = 3435;//答复请求押镖协助返回 
+	public const short C_YABIAO_MOREINFO_RSQ = 3436; 
+	public const short S_YABIAO_MOREINFO_RESP = 3437;
+	public const short C_YABIAO_XIEZHU_LIST_REQ = 3446;//请求协助君主列表
+	public const short S_YABIAO_XIEZHU_LIST_RESP = 3447;//请求协助君主列表返回 
+
+    /// <summary>
+    /// Request I help others list.
+    /// </summary>
+	public const short C_CHECK_YABIAOHELP_RSQ = 3449;
+	public const short S_CHECK_YABIAOHELP_RESP = 3450;
+
+
+    //通知
+    public const short C_MengYouKuaiBao_Req = 4240;//请求盟友快报
+	public const short S_MengYouKuaiBao_Resq = 4241;//请求盟友快报返回
+	public const short S_MengYouKuaiBao_PUSH = 3448;//盟友快报推送
+	public const short C_Prompt_Action_Req = 4242; //快报中的行为请求
+	public const short S_Prompt_Action_Resp = 4243; //快报中行为请求返回
 
     /// <summary>
     /// 请求押镖协助次数
@@ -1145,6 +1220,12 @@ public class ProtoIndexes
 	public const short C_BUYHORSEPROP_REQ = 3440;
 	//请求购买马车道具返回
 	public const short S_BUYHORSEBUFF_RESP = 3441;
+
+    public const short C_GETMABIANTYPE_REQ = 3442;//请求马鞭类型
+    public const short S_GETMABIANTYPE_RESP = 3443;//请求马鞭类型返回
+
+    public const short C_CARTJIASU_REQ = 3444;
+    public const short S_CARTJIASU_RESP = 3445;
 
 	//------------------------------天赋协议-----------------------------
 	public const short C_TALENT_INFO_REQ = 30537;//发送获得初始化数据
@@ -1261,7 +1342,10 @@ public class ProtoIndexes
 	public const short S_HEROSKILLUP_DATA_RES = 4251;//技能数据返回
 	public const short C_HEROSKILLUP_UP_REQ = 4252;//升级申请
 	public const short S_HEROSKILLUP_UP_RES = 4253;//升级返回
-   
+
+    public const short C_BUY_FULL_REBIRTH_TIME_REQ = 4254;
+    public const short S_BUY_FULL_REBIRTH_TIME_RESP = 4255;
+
     //一键强化
     public const short C_EQUIP_UPALLGRADE = 24019;//一键强化
     public const short S_EQUIP_UPALLGRADE = 24020;//一键强化返回
@@ -1270,4 +1354,31 @@ public class ProtoIndexes
     // 相应兑换cskey，协议号4231
     public const short C_CDKEY_REQ = 4230;//一键强化
     public const short S_CDKEY_RES = 4231;//一键强化返回
+
+    public const short C_GET_MOBAI_AWARD = 4022;
+    //领取阶段奖励，消息体用MoBaiReq，cmd的值用1/2/3表示领取第1/2/3段奖励
+
+	public const short C_MAIN_SIMPLE_INFO_REQ = 23069;//战争选择窗口信息请求
+	public const short S_MAIN_SIMPLE_INFO_RESP = 23070;//战争选择窗口信息返回
+
+	public const short S_USE_ITEM = 11001; //使用物品后返回的列表
+
+    public const short dailyTask_get_huoYue_award_req = 28347;//活跃度奖励
+    public const short dailyTask_get_huoYue_award_resp = 28348;
+
+
+    public const short C_ALLIANCE_FENGSHAN_REQ = 30168;// 请求封禅信息
+    public const short S_ALLIANCE_FENGSHAN_RESP = 30169; // 请求封禅信息 返回  
+
+    public const short C_DO_ALLIANCE_FENGSHAN_REQ = 30170; //请求封禅
+    public const short S_DO_ALLIANCE_FENGSHAN_RESP = 30171; //请求封禅 返回 
+   ///////////套装///////////////////////
+    public const short tao_zhuang_Req = 30500;
+    public const short tao_zhuang_Resp = 30501;
+
+    //激活
+    public const short activate_tao_zhuang_req = 30502;
+    public const short activate_tao_zhuang_resp = 30503;
+
+
 }

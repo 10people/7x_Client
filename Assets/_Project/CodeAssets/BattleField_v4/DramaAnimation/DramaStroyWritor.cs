@@ -10,6 +10,9 @@ public class DramaStroyWritor : MonoBehaviour
 {
 	private DramaStoryControllor controllor;
 
+	void OnDestroy(){
+		controllor = null;
+	}
 
 	public void checkout()
 	{
@@ -145,6 +148,18 @@ public class DramaStroyWritor : MonoBehaviour
 
 					node["movingTime"].AsFloat = dam.movingTime;
 				}
+				else if(da.actorType == DramaActor.ACTOR_TYPE.ROTATE)
+				{
+					DramaActorRotate dar = (DramaActorRotate)da;
+
+					node["targetRotationx"].AsFloat = dar.targetRotation.x;
+					
+					node["targetRotationy"].AsFloat = dar.targetRotation.y;
+					
+					node["targetRotationz"].AsFloat = dar.targetRotation.z;
+					
+					node["rotateTime"].AsFloat = dar.rotateTime;
+				}
 				else if(da.actorType == DramaActor.ACTOR_TYPE.ALPHABG)
 				{
 					DramaActorAlpha dam = (DramaActorAlpha)da;
@@ -176,6 +191,12 @@ public class DramaStroyWritor : MonoBehaviour
 					node["fy"].AsFloat = dape.foward.y;
 					
 					node["fz"].AsFloat = dape.foward.z;
+
+					node["tx"].AsFloat = dape.targetLocalPosition.x;
+					
+					node["ty"].AsFloat = dape.targetLocalPosition.y;
+					
+					node["tz"].AsFloat = dape.targetLocalPosition.z;
 				}
 				else if(da.actorType == DramaActor.ACTOR_TYPE.SOUND)
 				{

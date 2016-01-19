@@ -8,4 +8,6 @@ public class DelegateUtil
     public delegate void IntDelegate(int p_int);
 
     public delegate void FloatDelegate(float p_float);
+
+    public delegate void StringDelegate(string p_str);
 }

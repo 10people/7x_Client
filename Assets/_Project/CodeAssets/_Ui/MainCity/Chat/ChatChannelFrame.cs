@@ -11,5 +11,10 @@ public class ChatChannelFrame : MonoBehaviour
     public UIInput EditInput;
     public UILabel EditLabel;
 
+    public GameObject CostInfoObject;
+    public GameObject IngotObject;
+    public UILabel IngotCostLabel;
+    public UILabel FreeLabel;
+
     public ChatBaseDataHandler m_ChatBaseDataHandler;
 }

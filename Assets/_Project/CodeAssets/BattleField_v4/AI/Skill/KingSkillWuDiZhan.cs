@@ -17,111 +17,271 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	private KingControllor king;
 
-	private List<BaseAI> nodeList = new List<BaseAI> ();
-
-	private List<BaseAI> deadList = new List<BaseAI> ();
-
 	private Vector3 tempPos;
 
+	private GameObject copyObject;
+
+	private Animator copyAnim;
+
+	private string colorName = "Main Color";
+
+	private Vector3 curNodePosition;
+
+	private Vector3[] offsetPos = new Vector3[]{
+		new Vector3(0f, 0f, 1f),
+		new Vector3(-1.01f, 0f, -0.36f),
+		new Vector3(0.98f, 0f, -0.49f),
+		new Vector3(-1.07f, 0f, 0.67f),
+		new Vector3(1.04f, 0f, 0.49f),
+		new Vector3(0f, 0f, -1f),
+	};
+
+
+	void Start()
+	{
+		king = gameObject.GetComponent<KingControllor> ();
+		
+		if(copyObject == null) copyObject = Instantiate (gameObject);
+
+		copyObject.name = "WuDiZhanCopy";
+
+		copyObject.SetActive (false);
+
+		copyObject.transform.parent = transform.parent;
+
+		copyObject.transform.localScale = transform.localScale;
+
+		copyObject.transform.position = new Vector3(0, -1000, 0);
+
+		KingControllor copyKing = copyObject.GetComponent<KingControllor> ();
+
+		DestroyObject (copyKing.m_weapon_Heavy);
+
+		DestroyObject (copyKing.m_weapon_Ranged);
+
+		Destroy (copyKing);
+
+		Destroy (copyObject.GetComponent<KingSkillWuDiZhan>());
+
+		Destroy (copyObject.GetComponent<KingSkillXuanFengZhan>());
+
+		Destroy (copyObject.GetComponent<CharacterController>());
+
+		Destroy (copyObject.GetComponent<NavMeshAgent>());
+
+		Destroy (copyObject.GetComponent<SphereCollider>());
+
+		copyObject.AddComponent<DramaStorySimulation>();
+
+		foreach(HeroSkill skill in copyObject.GetComponents<HeroSkill>())
+		{
+			Destroy(skill);
+		}
+
+		Global.ResourcesDotLoad("_3D/Models/BattleField/DramaControllor/DramaControllor_" + king.modelId,
+		                        loadControllorCallback );
+	}
+
+	
+	
+	void OnDestroy()
+	{
+		curNode = null;
+		
+		king = null;
+
+		copyObject = null;
+
+		if( copyAnim != null ){
+			copyAnim.runtimeAnimatorController = null;
+		}
+
+		copyAnim = null;
+	}
+
+	void loadControllorCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		copyAnim = copyObject.GetComponent<Animator>();
+
+		copyAnim.runtimeAnimatorController = (RuntimeAnimatorController)p_object;
+	}
 
 	private void init()
 	{
-		king = gameObject.GetComponent<KingControllor> ();
-
 		tempPos = gameObject.transform.position;
 
-		SkillTemplate template = SkillTemplate.getSkillTemplateById (200021);
+		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.jueyingxingguangzhan, king);
 
 		radius = template.value1;
+
+		curNodePosition = transform.position + (transform.forward * 3);
+
+		curNode = getCurNode ();
+
+		if(curNode != null) curNodePosition = curNode.transform.position;
+
+		king.signShadow.gameObject.SetActive (false);
+
+		iTween.ValueTo (gameObject, iTween.Hash(
+			"from", 1f,
+			"to", 0f,
+			"time", .2f,
+			"onupdate", "setAlphaSelf"
+			));
+
+		if(curNode != null) king.gameCamera.targetChang (curNode.gameObject);
 	}
 
 	public void chooseTarget_skill_1(int index)
 	{
-		if(index == 0)
-		{
-			init();
+		if(index == 0) init();
 
-			if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.dark();
-		}
-		else
+		if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.jueyingxingguangzhan, king) == 0)
 		{
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.jueyingxingguangzhan] == 0)
-			{
-				if((index + 1) % 3 == 0) return;
-			}
+			if((index + 1) % 3 == 0) return;
 		}
 
-		Vector3 vcZero = curNode == null ? king.transform.position : curNode.transform.position;
-
-		List<BaseAI> ns = king.stance == BaseAI.Stance.STANCE_SELF ? BattleControlor.Instance ().enemyNodes : BattleControlor.Instance ().selfNodes;
-
-		nodeList.Clear ();
-
-		deadList.Clear ();
-
-		foreach(BaseAI n in ns)
+		if(curNode == null || curNode.isAlive == false || curNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
 		{
-			if(n.gameObject.activeSelf == true
-			   && Vector3.Distance(n.transform.position, vcZero) < radius 
-			   && n.isAlive
-			   && n.nodeData.nodeType != NodeType.GOD
-			   && n.nodeData.nodeType != NodeType.NPC)
-			{
-				if( n.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) > 0)
-				{
-					nodeList.Add(n);
-				}
-				else
-				{
-					deadList.Add(n);
-				}
-			}
+			curNode = getCurNode();
+
+			if(curNode != null) curNodePosition = curNode.transform.position;
 		}
 
-		curNode = null;
+		float length = 5.5f;
 
-		if(nodeList.Count > 0) curNode = getCurNode(nodeList);
+		copyObject.SetActive (true);
 
-		else if(deadList.Count > 0) curNode = getCurNode(deadList);
+		copyObject.transform.position = (curNode != null ? curNode.transform.position : curNodePosition) + (offsetPos [index % offsetPos.Length].normalized * length);
 
-		if (curNode == null) return;
+		copyObject.transform.forward = (curNode != null ? curNode.transform.position : curNodePosition) - copyObject.transform.position;
 
-		transform.forward = curNode.transform.position - transform.position;
+		copyAnim.Play ("attack_" + ((index % 4) + 1));
 
-		float l = Vector3.Distance(transform.position, curNode.transform.position);
-
-		iTween.MoveTo(gameObject, iTween.Hash(
-			"name", "WuDiZhan",
-			"position", transform.position + transform.forward * (l - 1.2f),
-			"time", .05f,
-			"easeType", iTween.EaseType.easeOutQuint
+		iTween.ValueTo (gameObject, iTween.Hash(
+			"from", 0f,
+			"to", 1f,
+			"time", .15f,
+			"onupdate", "setAlphaCopy",
+			"easetype", iTween.EaseType.easeInExpo
 			));
+
+		iTween.MoveTo (copyObject, iTween.Hash(
+			"position", copyObject.transform.position + copyObject.transform.forward * (length - 1),
+			"time", 0.18f,
+			"easetype", iTween.EaseType.easeInOutQuart
+			));
+
+		BattleEffectControllor.Instance ().PlayEffect (600211, copyObject.transform.position, copyObject.transform.forward);
 	}
 
-	private BaseAI getCurNode(List<BaseAI> list)
+	private BaseAI getCurNode()
 	{
+		List<BaseAI> list = king.stance == BaseAI.Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
+
 		if(list.Count == 0) return null;
 
-		BaseAI t_node = list[0];
+		BaseAI t_node = null;
 
 		foreach(BaseAI node in list)
 		{
-			if(node.nodeData.nodeType > t_node.nodeData.nodeType)
+			if(node.gameObject.activeSelf == true
+			   && Vector3.Distance(node.transform.position, transform.position) < radius 
+			   && node.isAlive
+			   && node.nodeData.nodeType != NodeType.GOD
+			   && node.nodeData.nodeType != NodeType.NPC
+			   && node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) > 0)
 			{
-				t_node = node;
+				if(t_node == null || node.nodeData.nodeType > t_node.nodeData.nodeType)
+				{
+					t_node = node;
+				}
 			}
 		}
 
 		return t_node;
 	}
 
+	void setWeaponHurt(int _aid)
+	{
+		Vector3 effectPo = curNodePosition;
+
+		if (curNode != null) effectPo = curNode.transform.position;
+
+		if(curNode != null)
+		{
+			BattleEffectControllor.Instance ().PlayEffect (600210, curNode.gameObject);
+		}
+
+		SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.jueyingxingguangzhan, king);
+		
+		KingSkillWuDiZhan wudizhan = (KingSkillWuDiZhan)gameObject.GetComponent("KingSkillWuDiZhan");
+		
+		int count = 0;
+		
+		if(wudizhan.curNode != null)
+		{
+			foreach(Buff buff in wudizhan.curNode.buffs)
+			{
+				if(buff.buffType == AIdata.AttributeType.ATTRTYPE_Focus)
+				{
+					count++;
+				}
+			}
+			
+			count = count > (int)skillTemplate.value5 ? (int)skillTemplate.value5 : count;
+			
+			FloatBoolParam fbp = BattleControlor.Instance().getAttackValueSkill(
+				king, 
+				wudizhan.curNode, 
+				skillTemplate.value2 + count * skillTemplate.value4, 
+				0
+				);
+			
+			foreach(Buff buff in wudizhan.curNode.buffs)
+			{
+				if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_SKILL)
+				{
+					king.attackHp(king, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.SKILL_REFLEX);
+					
+					fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
+
+					wudizhan.curNode.showText(LanguageTemplate.GetText(LanguageTemplate.Text.BATTLE_SKILL_REFLEX_NAME), buff.supplement.getHeroSkill().template.id);
+
+					break;
+				}
+			}
+			
+			king.attackHp(wudizhan.curNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
+			
+			Buff.createBuff(wudizhan.curNode, AIdata.AttributeType.ATTRTYPE_Focus, 0, 5f);
+			
+			king.Shake(KingCamera.ShakeType.Cri);
+		}
+	}
+
 	public void skill_1_resetPosition()
 	{
+		king.signShadow.gameObject.SetActive (true);
+
+		copyObject.SetActive (false);
+		
+		copyObject.transform.position = new Vector3(0, -1000, 0);
+
+		king.gameCamera.targetChang (king.gameObject);
+
 		iTween.MoveTo(gameObject, iTween.Hash(
 			"name", "WuDiZhan",
 			"position", tempPos,
 			"time", .05f,
 			"easeType", iTween.EaseType.easeOutQuint
+			));
+
+		iTween.ValueTo (gameObject, iTween.Hash(
+			"from", 0f,
+			"to", 1f,
+			"time", .2f,
+			"onupdate", "setAlphaSelf"
 			));
 	}
 
@@ -131,7 +291,7 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		Vector3 tempFow = transform.forward;
 
-		SkillTemplate template = SkillTemplate.getSkillTemplateById (200021);
+		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.jueyingxingguangzhan, king);
 
 		foreach(BaseAI n in ns)
 		{
@@ -155,6 +315,38 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		}
 
 		transform.forward = tempFow;
+	}
+
+	void setAlphaSelf(float alpha)
+	{
+		Renderer[] rds = gameObject.GetComponentsInChildren<Renderer>();
+		
+		foreach (Renderer r in rds)
+		{
+			foreach (Material m in r.materials)
+			{
+				if(m.shader.name.Equals("Custom/Characters/Main Texture High Light"))
+				{
+					m.color = new Color( 0.537f, 0.537f, 0.537f, alpha);
+				}
+			}
+		}
+	}
+
+	void setAlphaCopy(float alpha)
+	{
+		Renderer[] rds = copyObject.GetComponentsInChildren<Renderer>();
+		
+		foreach (Renderer r in rds)
+		{
+			foreach (Material m in r.materials)
+			{
+				if(m.shader.name.Equals("Custom/Characters/Main Texture High Light"))
+				{
+					m.color = new Color( 0.537f, 0.537f, 0.537f, alpha);
+				}
+			}
+		}
 	}
 
 }

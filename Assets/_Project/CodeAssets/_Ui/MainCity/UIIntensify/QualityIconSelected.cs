@@ -37,7 +37,7 @@ public class QualityIconSelected : MonoBehaviour
 
             case 8:
 
-                return "pinzh7";
+                return "pinzhi7";
 
             case 9:
 

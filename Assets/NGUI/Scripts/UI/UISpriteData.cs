@@ -111,4 +111,31 @@ public class UISpriteData
 		borderTop = sd.borderTop;
 		borderBottom = sd.borderBottom;
 	}
+
+	public void Log(){
+		Debug.Log( "x: " + x );
+
+		Debug.Log( "y: " + y );
+
+		Debug.Log( "width: " + width );
+
+		Debug.Log( "height: " + height );
+
+		Debug.Log( "Border Left: " + borderLeft );
+
+		Debug.Log( "Border Right: " + borderRight );
+
+		Debug.Log( "Border Bottom: " + borderBottom );
+
+		Debug.Log( "Border Top: " + borderTop );
+
+		Debug.Log( "Padding Left: " + paddingLeft );
+		
+		Debug.Log( "Padding Right: " + paddingRight );
+		
+		Debug.Log( "Padding Bottom: " + paddingBottom );
+		
+		Debug.Log( "Padding Top: " + paddingTop );
+
+	}
 }

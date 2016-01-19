@@ -64,7 +64,7 @@ public class UI2DWindow : EditorWindow {
 				UI2DTool.UI2DToolItem t_ui = m_2d_tool.GetUI( i );
 
 				if( t_ui.GetRootGameObject() != null ){
-					EditorGUILayout.LabelField( i + " visible: " + t_ui.GetRootGameObject().activeSelf + "   - " + t_ui.GetRootGameObject().name,
+					EditorGUILayout.LabelField( i + " visible: " + t_ui.GetVisibility() + "   - " + t_ui.GetRootGameObject().name + " - " + t_ui.GetFlagItemCount(),
 					                           GUILayout.Width( 500f ) );
 				}
 				else{

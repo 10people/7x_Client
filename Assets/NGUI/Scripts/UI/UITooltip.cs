@@ -8,7 +8,7 @@ using System.Collections.Generic;
 [AddComponentMenu("NGUI/UI/Tooltip")]
 public class UITooltip : MonoBehaviour
 {
-	static protected UITooltip mInstance;
+	protected static UITooltip mInstance;
 
 	public Camera uiCamera;
 	public UILabel text;
@@ -28,7 +28,7 @@ public class UITooltip : MonoBehaviour
 	/// Whether the tooltip is currently visible.
 	/// </summary>
 
-	static public bool isVisible { get { return (mInstance != null && mInstance.mTarget == 1f); } }
+	public static bool isVisible { get { return (mInstance != null && mInstance.mTarget == 1f); } }
 
 	void Awake () { mInstance = this; }
 	void OnDestroy () { mInstance = null; }
@@ -165,7 +165,7 @@ public class UITooltip : MonoBehaviour
 	/// Show a tooltip with the specified text.
 	/// </summary>
 
-	static public void ShowText (string tooltipText)
+	public static void ShowText (string tooltipText)
 	{
 		if (mInstance != null)
 		{

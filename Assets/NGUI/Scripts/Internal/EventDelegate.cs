@@ -280,7 +280,7 @@ public class EventDelegate
 	/// Execute an entire list of delegates.
 	/// </summary>
 
-	static public void Execute (List<EventDelegate> list)
+	public static void Execute (List<EventDelegate> list)
 	{
 		if (list != null)
 		{
@@ -310,7 +310,7 @@ public class EventDelegate
 	/// Convenience function to check if the specified list of delegates can be executed.
 	/// </summary>
 
-	static public bool IsValid (List<EventDelegate> list)
+	public static bool IsValid (List<EventDelegate> list)
 	{
 		if (list != null)
 		{
@@ -328,7 +328,7 @@ public class EventDelegate
 	/// Assign a new event delegate.
 	/// </summary>
 
-	static public void Set (List<EventDelegate> list, Callback callback)
+	public static void Set (List<EventDelegate> list, Callback callback)
 	{
 		if (list != null)
 		{
@@ -341,13 +341,13 @@ public class EventDelegate
 	/// Append a new event delegate to the list.
 	/// </summary>
 
-	static public void Add (List<EventDelegate> list, Callback callback) { Add(list, callback, false); }
+	public static void Add (List<EventDelegate> list, Callback callback) { Add(list, callback, false); }
 
 	/// <summary>
 	/// Append a new event delegate to the list.
 	/// </summary>
 
-	static public void Add (List<EventDelegate> list, Callback callback, bool oneShot)
+	public static void Add (List<EventDelegate> list, Callback callback, bool oneShot)
 	{
 		if (list != null)
 		{
@@ -372,13 +372,13 @@ public class EventDelegate
 	/// Append a new event delegate to the list.
 	/// </summary>
 
-	static public void Add (List<EventDelegate> list, EventDelegate ev) { Add(list, ev, false); }
+	public static void Add (List<EventDelegate> list, EventDelegate ev) { Add(list, ev, false); }
 
 	/// <summary>
 	/// Append a new event delegate to the list.
 	/// </summary>
 
-	static public void Add (List<EventDelegate> list, EventDelegate ev, bool oneShot)
+	public static void Add (List<EventDelegate> list, EventDelegate ev, bool oneShot)
 	{
 		if (list != null)
 		{
@@ -403,7 +403,7 @@ public class EventDelegate
 	/// Remove an existing event delegate from the list.
 	/// </summary>
 
-	static public bool Remove (List<EventDelegate> list, Callback callback)
+	public static bool Remove (List<EventDelegate> list, Callback callback)
 	{
 		if (list != null)
 		{

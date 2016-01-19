@@ -59,13 +59,14 @@ public class PlayerController : MonoBehaviour
         m_CharacterController = GetComponent<CharacterController>();
     }
 
-    void Update()
+	void Update()
     {
-        var precentFromMove = (Time.realtimeSinceStartup - m_startMoveTime) / m_CharacterLerpDuration;
+	    var precentFromMove = (Time.realtimeSinceStartup - m_startMoveTime) / m_CharacterLerpDuration;
 
-        //Server sync check.
-        if (Time.realtimeSinceStartup - CarriageItemSyncManager.m_LatestServerSyncTime > NetworkHelper.GetPreRunC() * NetworkHelper.GetPingSec())
-        {
+	    //Server sync check.
+		if (Time.realtimeSinceStartup - CarriageItemSyncManager.m_LatestServerSyncTime > 
+		    NetworkHelper.GetPingSecWithMin( Console_SetNetwork.GetMinPingForPreRun() ) * NetworkHelper.GetPreRunC() )
+		{
 #if DEBUG_MOVE
             Debug.LogWarning("++++++++++++Limit other move");
 #endif
@@ -99,11 +100,15 @@ public class PlayerController : MonoBehaviour
                 m_animation.SetBool("Move", true);
             }
 
-            transform.localPosition = Vector3.Lerp(m_tryStartMovePosition, m_targetPosition, (float)precentFromMove);
-            if (Math.Abs(m_tryStartMoveRotation.y - m_targetRotation.y) > 180)
+			{
+				transform.localPosition = Vector3.Lerp(m_tryStartMovePosition, m_targetPosition, (float)precentFromMove);
+			}
+
+			if (Math.Abs(m_tryStartMoveRotation.y - m_targetRotation.y) > 180)
             {
                 m_tryStartMoveRotation = new Vector3(m_tryStartMoveRotation.x, (m_tryStartMoveRotation.y < m_targetRotation.y ? (m_tryStartMoveRotation.y + 360) : (m_tryStartMoveRotation.y - 360)), m_tryStartMoveRotation.z);
             }
+
             transform.localEulerAngles = Vector3.Lerp(m_tryStartMoveRotation, m_targetRotation, (float)precentFromMove);
         }
     }

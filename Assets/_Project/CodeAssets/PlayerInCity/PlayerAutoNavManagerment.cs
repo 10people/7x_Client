@@ -5,6 +5,10 @@ public class PlayerAutoNavManagerment : MonoBehaviour
 {
     public Animator m_NavAnim;
 
+	void OnDestroy(){
+		m_NavAnim = null;
+	}
+
     public void AnimController()
     {
         m_NavAnim.enabled = false;

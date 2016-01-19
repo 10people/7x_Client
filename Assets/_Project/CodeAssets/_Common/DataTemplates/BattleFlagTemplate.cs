@@ -55,6 +55,8 @@ public class BattleFlagTemplate : XmlLoadManager
 
 	public int hintLabelId;
 
+	public bool showOnUI;
+
 	public int groupId;
 
 	public List<int> nodeSkillAble = new List<int> ();
@@ -176,6 +178,9 @@ public class BattleFlagTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.hintLabelId = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.showOnUI = (int.Parse( t_reader.Value ) != 0);
 
 				t_reader.MoveToNextAttribute();
 				t_template.groupId = int.Parse( t_reader.Value );

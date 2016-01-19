@@ -45,6 +45,8 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 		{
 			UIRootAutoActivator.UnregisterAutoActivator( this );
 		}
+
+		m_instance = null;
 	}
 
 	public GameObject rewardItemObj;
@@ -69,8 +71,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 		get{return specialReward_index;}
 	}
 
-	private bool isExitReward = false;
-
+	#region GeneralReward
 	/// <summary>
 	/// Creates one reward.
 	/// </summary>
@@ -143,7 +144,9 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 			ClientMain.closePopUp();
 		}
 	}
+	#endregion
 
+	#region SpecialReward
 	/// <summary>
 	/// Gets the special reward.
 	/// </summary>
@@ -173,14 +176,14 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	/// </summary>
 	public void CheckSpecialReward ()
 	{
-		Debug.Log ("SpecialReward_Index:" + SpecialReward_Index);
+//		Debug.Log ("SpecialReward_Index:" + SpecialReward_Index);
 		if (SpecialReward_Index < specialRewardList.Count)
 		{
 			GameObject rewardObj = GameObject.Find ("SpecialItem" + SpecialReward_Index);
+
 			if(rewardObj == null)
 			{
 				rewardObj = GameObject.Instantiate ( specialItemObj );
-
 				rewardObj.name = "SpecialItem" + SpecialReward_Index;
 				
 				rewardObj.SetActive (true);
@@ -191,6 +194,10 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 				GeneralSpecialReward specialReward = rewardObj.GetComponent<GeneralSpecialReward> ();
 				specialReward.InItSpecialReward (specialRewardList[SpecialReward_Index]);
 			}
+
+			{
+				ShowRewardPanel ();
+			}
 		}
 	}
 
@@ -200,12 +207,12 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	/// <param name="obj">Object.</param>
 	public void RefreshSpecialItemList (GameObject obj)
 	{
-		Debug.Log ("obj:" + obj);
+//		Debug.Log ("obj:" + obj);
 		for (int i = 0;i < specialItemList.Count;i ++)
 		{
 			if (specialItemList[i] == obj)
 			{
-				Debug.Log ("specialItemList[i]:" + specialItemList[i]);
+//				Debug.Log ("specialItemList[i]:" + specialItemList[i]);
 				Destroy (specialItemList[i]);
 				specialItemList.RemoveAt (i);
 			}
@@ -217,6 +224,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 			ClientMain.closePopUp();
 		}
 	}
+	#endregion
 
 	/// <summary>
 	/// Clears the reward data.
@@ -241,23 +249,98 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	}
 
 	/// <summary>
+	/// 屏蔽其它ui
+	/// </summary>
+	void ShowRewardPanel ()
+	{
+		UI2DTool.Instance.AddTopUI( gameObject );
+
+		if (UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
+	}
+
+	/// <summary>
 	/// Determines whether this instance is exit reward.
 	/// </summary>
 	/// <returns><c>true</c> if this instance is exit reward; otherwise, <c>false</c>.</returns>
 	public bool IsExitReward ()
 	{
-		return isExitReward;
+		return rewardItemList.Count > 0 || specialItemList.Count > 0 ? true : false;
 	}
 	
-	void Update ()
-	{
-		isExitReward = rewardItemList.Count > 0 || specialItemList.Count > 0 ? true : false;
+	void Update (){
+
 	}
 
 	#region IUIRootAutoActivator
 	
-	public bool IsNGUIVisible(){
+	public bool IsNGUIVisible()
+	{
 		return IsExitReward();
 	}
 	#endregion
+}
+
+/// <summary>
+/// Reward data.
+/// </summary>
+public class RewardData {
+	
+	public int itemId;//物品id
+	public int itemCount;//物品数量
+
+	public int miBaoStar;//秘宝星级
+
+	public delegate void MiBaoClick ();
+	public MiBaoClick miBaoClick;
+	
+	public float moveTime1 = 0.2f;
+	public float stopTime = 0.2f;
+	public float moveTime2 = 0.1f;
+	
+	public iTween.EaseType itweenType1 = iTween.EaseType.easeOutBack;
+	public iTween.EaseType itweenType2 = iTween.EaseType.linear;
+	
+	/// <summary>
+	/// Initializes a new instance of the <see cref="RewardData"/> class.
+	/// Set RewardData's itemId and itemCount
+	/// </summary>
+	/// <param name="tempItemId">Temp item identifier.</param>
+	/// <param name="tempItemCount">Temp item count.</param>
+	public RewardData (int tempItemId,int tempItemCount,int tempStar = 0,MiBaoClick tempMiBaoClick = null)
+	{
+		itemId = tempItemId;
+		itemCount = tempItemCount;
+		miBaoStar = tempStar;
+		if (tempMiBaoClick != null)
+		{
+			miBaoClick = tempMiBaoClick;
+		}
+	}
+	
+	/// <summary>
+	/// Sets the reward move time.
+	/// </summary>
+	/// <param name="tempTime1">first move time</param>
+	/// <param name="tempStopTime">stop time.</param>
+	/// <param name="tempTime2">second move time</param>
+	public void SetRewardMoveTime (float tempTime1,float tempStopTime,float tempTime2)
+	{
+		moveTime1 = tempTime1;
+		stopTime = tempStopTime;
+		moveTime2 = tempTime2;
+	}
+	
+	/// <summary>
+	/// Sets the type of the reward itween.
+	/// </summary>
+	/// <param name="tempType1">firse itween.easetype</param>
+	/// <param name="tempType2">second itween.easetype</param>
+	public void SetRewardItweenType (iTween.EaseType tempType1,iTween.EaseType tempType2)
+	{
+		itweenType1 = tempType1;
+		itweenType2 = tempType2;
+	}
 }

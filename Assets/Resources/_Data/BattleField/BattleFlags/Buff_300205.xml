@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<BattleBuffFlag flagId="940" x="-12.7832" y="1.112019" z="14.27614" rx="0" ry="91.21051" rz="0" cx="1" cy="1" cz="1" refreshTime="15" />
+<BattleBuffFlag flagId="941" x="11.86804" y="1.112019" z="-13.43747" rx="0" ry="91.21051" rz="0" cx="1" cy="1" cz="1" refreshTime="15" />
+</dataset>

@@ -73,8 +73,7 @@ public class EmailItem : MonoBehaviour {
 		senderLabel.text = "发件人:" + emailInfo.senderName;
 		
 		timeLabel.text = QXComData.UTCToTimeString (emailInfo.time,"yyyy-MM-dd");
-		
-		//		Debug.Log ("ISREAD:" + emailInfo.isRead);
-		bgSprite.spriteName = emailInfo.isRead == 0 ? "bg2" : "backGround_Common_big";
+
+		bgSprite.color = emailInfo.isRead == 0 ? new Color (1,0.8f,0.54f) : Color.white;
 	}
 }

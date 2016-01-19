@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿#define DEBUG_ENTER_NEXT_SCENE
+
+#define SKIP_TEX_OPTIMIZE_ANDROID
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -96,9 +100,7 @@ public class PrepareForBattleField : MonoBehaviour {
 
 	private void Prepare_For_BattleField(){
 		#if DEBUG_ENTER_NEXT_SCENE
-		Debug.Log( "EnterNextScene.Prepare_For_BattleField()" );
-		
-		EnterNextScene.LogTimeSinceLoading( "Prepare_For_BattleField" );
+		LoadingHelper.LogTimeSinceLoading( "Prepare_For_BattleField" );
 		#endif
 		
 		InitBattleLoading();
@@ -111,12 +113,20 @@ public class PrepareForBattleField : MonoBehaviour {
 	}
 	
 	public void Load2DCallback( ref WWW p_www, string p_path, Object p_object ){
+		#if DEBUG_ENTER_NEXT_SCENE
+		LoadingHelper.LogTimeSinceLoading( "Load2DCallback()" );
+		#endif
+
 		temple2D = p_object as GameObject;
 		
 		enterBattleField();
 	}
 	
 	public void Load3DCallback( ref WWW p_www, string p_path, Object p_object ){
+		#if DEBUG_ENTER_NEXT_SCENE
+		LoadingHelper.LogTimeSinceLoading( "Load3DCallback()" );
+		#endif
+
 		temple3D = p_object as GameObject;
 		
 		enterBattleField();
@@ -133,7 +143,7 @@ public class PrepareForBattleField : MonoBehaviour {
 	
 	public void Prepare_For_BattleFieldCallback(){
 		#if DEBUG_ENTER_NEXT_SCENE
-		EnterNextScene.LogTimeSinceLoading( "Prepare_For_BattleFieldCallback" );
+		LoadingHelper.LogTimeSinceLoading( "Prepare_For_BattleFieldCallback" );
 		#endif
 		
 		// origin coroutine
@@ -207,15 +217,21 @@ public class PrepareForBattleField : MonoBehaviour {
 	private float m_battle_tex_time = 0.0f;
 	
 	public void BattleLoadDone(){
-		//		#if DEBUG_ENTER_NEXT_SCENE
-		//		EnterNextScene.LogTimeSinceLoading( "BattleLoadDone()" );
-		//		#endif
+		#if DEBUG_ENTER_NEXT_SCENE
+		LoadingHelper.LogTimeSinceLoading( "BattleLoadDone()" );
+		#endif
 		
 		m_battle_tex_time = Time.realtimeSinceStartup;
 		
 		m_battle_res_step++;
-		
-		{
+
+		bool t_exec_pre_load = true;
+
+		#if SKIP_TEX_OPTIMIZE_ANDROID && UNITY_ANDROID
+		t_exec_pre_load = false;
+		#endif
+
+		if( t_exec_pre_load ){
 			Dictionary<string, GameObject> t_dict = BattleEffectControllor.Instance().GetEffectDict();
 			
 			List<Texture> t_list = new List<Texture>();
@@ -254,7 +270,7 @@ public class PrepareForBattleField : MonoBehaviour {
 					
 					GameObject t_gb = ( GameObject )Instantiate( t_pair.Value );
 					
-					//					Debug.Log( t_pair.Key + ": " + t_gb.name );
+//					Debug.Log( t_pair.Key + ": " + t_gb.name );
 					
 					t_gb.SetActive( true );
 					
@@ -307,8 +323,17 @@ public class PrepareForBattleField : MonoBehaviour {
 				Destroy( t_template_gb );
 			}
 		}
+		else{
+			m_battle_res_step++;
+		}
 		
-		m_battle_tex_time = Time.realtimeSinceStartup - m_battle_tex_time;
+		{
+			m_battle_tex_time = Time.realtimeSinceStartup - m_battle_tex_time;
+			
+			#if DEBUG_ENTER_NEXT_SCENE
+			LoadingHelper.LogTimeSinceLoading( "Tex.Prepare( Optimize )" );
+			#endif
+		}
 		
 		StartCoroutine( CheckingResForBattleField() );
 	}
@@ -330,7 +355,7 @@ public class PrepareForBattleField : MonoBehaviour {
 		}
 		
 		#if DEBUG_ENTER_NEXT_SCENE
-		EnterNextScene.LogTimeSinceLoading( "CheckingResForBattleField.Done" );
+		LoadingHelper.LogTimeSinceLoading( "CheckingResForBattleField.Done" );
 		#endif
 		
 		{

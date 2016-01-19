@@ -15,7 +15,7 @@ public class FunctionOpenTemp : XmlLoadManager
 {
     public int m_iID;
     public string key;
-
+	public int m_iRedType;
     public string Des;
     public int Level;
     public int m_iMissionID;//开启新功能需要的完成的任务ID
@@ -28,6 +28,7 @@ public class FunctionOpenTemp : XmlLoadManager
 	public int m_iPlay;//是否播放添加功能动画
     public int rank;
 	public string m_sNotOpenTips;
+	public List<int> m_listNextID = new List<int>();
 
 
     /// parent menu id.
@@ -35,6 +36,9 @@ public class FunctionOpenTemp : XmlLoadManager
 
     /// use new red spot data or not
     public bool m_use_red_push_data;
+
+	/// destroy ui if true
+	public bool m_destroy_ui;
 
     /// custom data, show flag for red spot notification
     public bool m_show_red_alert;
@@ -91,6 +95,10 @@ public class FunctionOpenTemp : XmlLoadManager
 
                 t_template.m_use_red_push_data = ReadNextBool(t_reader);
 
+				t_template.m_destroy_ui = ReadNextBool(t_reader);
+
+				t_template.m_iRedType = ReadNextInt(t_reader);
+
                 t_reader.MoveToNextAttribute();
                 t_template.key = t_reader.Value;
 
@@ -143,6 +151,14 @@ public class FunctionOpenTemp : XmlLoadManager
             templates.Add(t_template);
         }
         while (t_has_items);
+
+		for(int i = 0; i < templates.Count; i ++)
+		{
+			if(templates[i].m_parent_menu_id != -1)
+			{
+				GetTemplateById(templates[i].m_parent_menu_id).m_listNextID.Add(templates[i].m_iID);
+			}
+		}
     }
 
     public static string GetDesByLevel(int level)
@@ -199,13 +215,13 @@ public class FunctionOpenTemp : XmlLoadManager
                     {
                         Global.m_iOpenFunctionIndex = templates[i].m_iID;
                     }
-					FunctionOpenTemp.isAddFunction();
                     if (!m_EnableFuncIDList.Contains(templates[i].m_iID))
                     {
+						FunctionOpenTemp.isAddFunction();
                         m_EnableFuncIDList.Add(templates[i].m_iID);
 
                         //Refresh comming soon button.
-                        MainCityUIRB.RefreshCommingSoonButton();
+//                        MainCityUIRB.RefreshCommingSoonButton();
                     }
                     return;
                 }
@@ -218,6 +234,7 @@ public class FunctionOpenTemp : XmlLoadManager
 		if(FunctionOpenTemp.GetTemplateById(Global.m_iOpenFunctionIndex).m_iPlay == 1)
 		{
 			ClientMain.addPopUP(40, 2, "" + Global.m_iOpenFunctionIndex, null);
+			Global.m_iOpenFunctionIndex = -1;
 		}
 //		if(FunctionUnlock.getGroudById(Global.m_iOpenFunctionIndex) != null)
 //		{
@@ -258,13 +275,13 @@ public class FunctionOpenTemp : XmlLoadManager
                     {
                         Global.m_iOpenFunctionIndex = templates[i].m_iID;
                     }
-					FunctionOpenTemp.isAddFunction();
                     if (!m_EnableFuncIDList.Contains(templates[i].m_iID))
                     {
+						FunctionOpenTemp.isAddFunction();
                         m_EnableFuncIDList.Add(templates[i].m_iID);
 
                         //Refresh comming soon button.
-                        MainCityUIRB.RefreshCommingSoonButton();
+//                        MainCityUIRB.RefreshCommingSoonButton();
                     }
                     return;
                 }
@@ -300,13 +317,13 @@ public class FunctionOpenTemp : XmlLoadManager
                     {
                         Global.m_iOpenFunctionIndex = templates[i].m_iID;
                     }
-					FunctionOpenTemp.isAddFunction();
                     if (!m_EnableFuncIDList.Contains(templates[i].m_iID))
                     {
+						FunctionOpenTemp.isAddFunction();
                         m_EnableFuncIDList.Add(templates[i].m_iID);
 
                         //Refresh comming soon button.
-                        MainCityUIRB.RefreshCommingSoonButton();
+//                        MainCityUIRB.RefreshCommingSoonButton();
                     }
                     return;
                 }
@@ -584,7 +601,7 @@ public class FunctionOpenTemp : XmlLoadManager
 
                     if (!t_cur_template.m_use_red_push_data)
                     {
-                        Debug.LogError("Child Red Spot not using push data: " + t_cur_template.m_iID);
+//                        Debug.LogError("Child Red Spot not using push data: " + t_cur_template.m_iID);
                     }
 
                     if (t_cur_template.m_show_red_alert)
@@ -671,4 +688,23 @@ public class FunctionOpenTemp : XmlLoadManager
     }
 
     #endregion
+
+
+
+	#region Destroy UI
+
+	/// Check if ui should be destroyed after close
+	public static bool IsDestroyUI( int p_function_open_id ){
+		for( int i = 0; i < templates.Count; i++ ){
+			if( templates[i].m_iID == p_function_open_id ){
+				return templates[i].m_destroy_ui;
+			}
+		}
+		
+		Debug.LogError( "Function id not eixst: " + p_function_open_id );
+		
+		return false;
+	}
+
+	#endregion
 }

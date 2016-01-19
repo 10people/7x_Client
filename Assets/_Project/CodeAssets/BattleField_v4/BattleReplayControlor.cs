@@ -101,6 +101,10 @@ public class BattleReplayControlor : MonoBehaviour
 		enemyTroops.Clear();
 	}
 
+	void OnDestroy(){
+		_instance = null;
+	}
+
 	public void createTroopEnemy(Troop troopDate, int positionIndex)
 	{
 		GameObject heroTemple = null;

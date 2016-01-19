@@ -24,13 +24,15 @@ public class HeroSkillUpTemplate : XmlLoadManager
 	public int m_iNeedLV;
 	public int m_iSkillID;
 	public int m_iNeedMoney;
+	public int m_iNeedParID;
+	public string m_sTupoDesc;
 
 
 	public static List<HeroSkillUpTemplate> templates = new List<HeroSkillUpTemplate>();
 
 	public static void LoadTemplates(EventDelegate.Callback p_callback = null)
 	{
-		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "FunctionOpen.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
+		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "JiNengPeiYang.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
 	}
 	
 	public static void CurLoad(ref WWW www, string path, Object obj)
@@ -38,7 +40,6 @@ public class HeroSkillUpTemplate : XmlLoadManager
 		{
 			templates.Clear();
 		}
-		
 		XmlReader t_reader = null;
 		
 		if (obj != null)
@@ -68,7 +69,6 @@ public class HeroSkillUpTemplate : XmlLoadManager
 			HeroSkillUpTemplate t_template = new HeroSkillUpTemplate();
 			
 			{
-				t_reader.MoveToNextAttribute();
 				t_template.m_iID = ReadNextInt(t_reader);
 				t_template.m_sName = ReadNextString(t_reader);
 				t_template.m_sDesc = ReadNextString(t_reader);
@@ -80,13 +80,13 @@ public class HeroSkillUpTemplate : XmlLoadManager
 				t_template.m_iNeedLV = ReadNextInt(t_reader);
 				t_template.m_iSkillID = ReadNextInt(t_reader);
 				t_template.m_iNeedMoney = ReadNextInt(t_reader);
+				t_template.m_iNeedParID = ReadNextInt(t_reader);
+				t_template.m_sTupoDesc = ReadNextString(t_reader);
 			}
-			
 			templates.Add(t_template);
 		}
 		while (t_has_items);
 	}
-	
 
 	public static HeroSkillUpTemplate GetHeroSkillUpByID(int id)
 	{
@@ -97,6 +97,9 @@ public class HeroSkillUpTemplate : XmlLoadManager
 				return templates[i];
 			}
 		}
+
+		Debug.LogError ("CAN NOT GET HeroSkillUpTemplate With ID " + id);
+
 		return null;
 	}
 }

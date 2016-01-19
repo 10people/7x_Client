@@ -20,6 +20,8 @@ public class FuWenBagItem : MonoBehaviour {
 	public UISprite lockIcon;
 
 	private int iconId;
+	private int pinZhiId;
+	private string nameStr;
 
 	private GameObject iconSamplePrefab;
 
@@ -31,13 +33,16 @@ public class FuWenBagItem : MonoBehaviour {
 		lockIcon.gameObject.SetActive (tempInfo.isLock == 1 ? true : false);
 
 		FuWenTemplate fuWenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (tempInfo.itemId);
-		nameLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
+
+		nameStr = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
+		nameLabel.text = nameStr;
 		desLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName);
 
 		numLabel.text = "x" + tempInfo.cnt;
 		shuXingLabel.text = "+" + fuWenTemp.shuxingValue;
 
 		iconId = fuWenTemp.icon;
+		pinZhiId = CommonItemTemplate.getCommonItemTemplateById (tempInfo.itemId).color - 1;
 
 		if (iconSamplePrefab == null)
 		{
@@ -46,10 +51,7 @@ public class FuWenBagItem : MonoBehaviour {
 		}
 		else
 		{
-			IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
-			fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-			fuShiIconSample.SetIconBasic(5,iconId.ToString ());
-			iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
+			InItIconSample ();
 		}
 	}
 
@@ -60,10 +62,18 @@ public class FuWenBagItem : MonoBehaviour {
 		iconSamplePrefab.SetActive(true);
 		iconSamplePrefab.transform.parent = this.transform;
 		iconSamplePrefab.transform.localPosition = new Vector3 (-145,0,0);
+
+		InItIconSample ();
+	}
+
+	void InItIconSample ()
+	{
+		string mdesc = DescIdTemplate.GetDescriptionById (fuWenInfo.itemId);
 		
 		IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
 		fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-		fuShiIconSample.SetIconBasic(5,iconId.ToString ());
+		fuShiIconSample.SetIconBasic(5,iconId.ToString (),"","pinzhi" + pinZhiId);
+		fuShiIconSample.SetIconPopText(fuWenInfo.itemId, nameStr, mdesc, 1);
 		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
 	}
 

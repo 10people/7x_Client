@@ -82,7 +82,7 @@ public class SaoDangManeger : MonoBehaviour {
 
 			PanleMove(i+1, mSaoDangTemp.transform.localPosition);
 		}
-
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 	}
 
 	void PanleMove(int mSaodangTime, Vector3 UiPosition)
@@ -109,14 +109,14 @@ public class SaoDangManeger : MonoBehaviour {
 
 	public void ConfrimBtn()
 	{
-		if(SaodangType == 1)
-		{
-			PveLevelUImaneger.mPveLevelUImaneger.IsSaodang = false;
-			
-			PveLevelUImaneger.mPveLevelUImaneger.ShowEffect ();
-
-			PveLevelUImaneger.mPveLevelUImaneger.ISCanSaodang = true;
-		}
+//		if(SaodangType == 1)
+//		{
+//			PveLevelUImaneger.mPveLevelUImaneger.IsSaodang = false;
+//			
+//			PveLevelUImaneger.mPveLevelUImaneger.ShowEffect ();
+//
+//			PveLevelUImaneger.mPveLevelUImaneger.ISCanSaodang = true;
+//		}
 
 		Destroy (this.gameObject);
 	}

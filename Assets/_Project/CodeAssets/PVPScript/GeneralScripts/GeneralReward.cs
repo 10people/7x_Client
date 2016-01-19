@@ -70,20 +70,7 @@ public class GeneralReward : MonoBehaviour {
 		iconSample.transform.localPosition = new Vector3 (10,0,0);
 
 		IconSampleManager fuShiIconSample = iconSample.GetComponent<IconSampleManager>();
-
-		//0普通道具;3当铺材料;5秘宝碎片;6进阶材料;7基础宝石;8高级宝石;9强化材料
-		CommonItemTemplate comTemplate = CommonItemTemplate.getCommonItemTemplateById (itemId);
-		if(comTemplate.itemType == 7 || comTemplate.itemType == 8)//符文
-		{
-			fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-		}
-		else
-		{
-			fuShiIconSample.SetIconType(IconSampleManager.IconType.equipment);;
-		}
-
-		fuShiIconSample.SetIconBasic(1,itemId.ToString ());
-
+		fuShiIconSample.SetIconByID (rewardData.itemId);
 		iconSample.transform.localScale = Vector3.one * 0.4f;
 	}
 

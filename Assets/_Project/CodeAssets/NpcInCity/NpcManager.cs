@@ -8,7 +8,6 @@ using ProtoBuf.Meta;
 public class NpcManager : MonoBehaviour {
     public static NpcManager m_NpcManager;
     public int m_depth = 5;
-
     public GameObject m_wayHelp;
 
     public Dictionary<int, NpcObjectItem> m_npcObjectItemDic = new Dictionary<int, NpcObjectItem>();
@@ -281,7 +280,7 @@ public class NpcManager : MonoBehaviour {
         GameObject tempOjbect = Instantiate(n_Info._Obj) as GameObject;
 
         tempOjbect.name = "NpcInCity";
-
+        tempOjbect.AddComponent<NpcAnimationManagerment>();
         tempOjbect.transform.parent = this.transform;
 
         NpcObjectItem tempItem = tempOjbect.GetComponent<NpcObjectItem>();
@@ -975,52 +974,47 @@ public class NpcManager : MonoBehaviour {
 		{
             if (Input.GetMouseButton(0))
 			{
-                if (MainCityUI.IsWindowsExist())
+                if (MainCityUI.IsWindowsExist() || UIYindao.m_UIYindao.m_isOpenYindao)
                 {
                     return;
                 }
 
-                //if (PlayerModelController.m_playerModelController.m_moveDir != Vector3.zero)
-                //{
-                //    return;
-                //}
-				Vector3 tempMousePosition = Input.mousePosition;
+               Vector3 tempMousePosition = Input.mousePosition;
 				m_ray = m_nguiCamera.ScreenPointToRay(tempMousePosition);// 从屏幕发射线
 				RaycastHit nguiHit;
-				if (Physics.Raycast(m_ray, out nguiHit)) return;//碰到主界面UI按钮
 
-                //	m_ray = m_camera.ScreenPointToRay(tempMousePosition);
+                if (Physics.Raycast(m_ray, out nguiHit)) return;//碰到主界面UI按钮
+
                 m_ray = Camera.main.ScreenPointToRay(tempMousePosition);
 
                 RaycastHit hit;
                 int t_index = LayerMask.NameToLayer("CityRoles");
 
                 m_depth  = 1 << t_index;
-
+ 
                 if (Physics.Raycast(m_ray, out hit, 1000.0f, m_depth))
                 {
                     if (hit.collider.transform.name.IndexOf("PlayerObject") > -1)
                     {
-                        if (OtherPlayerInfoManagerment.m_OtherInfo == null)
-                        {
-                            EquipSuoData.CreateChaKan(hit.collider.transform.name);
-                            return;
-                        }
+                       EquipSuoData.CreateChaKan(hit.collider.transform.name);
+                       return;
                     }
                 }
-               
-                if (Physics.Raycast(m_ray,out hit, 1000.0f,1)) //碰到3d世界中的npc
+                int  t_index2 = LayerMask.NameToLayer("Default");
+
+                int  depth2 = 1 << t_index2;
+
+                if (Physics.Raycast(m_ray,out hit, 10000.0f, depth2)) //碰到3d世界中的npc
 				{
 					m_currentNpcTemplate = null;
-                    
                     if (hit.collider.transform.name == "NpcInCity")
                     {
                         PlayerModelController.m_playerModelController.m_agent.enabled = true;
                         m_currentNpcTemplate = hit.collider.transform.GetComponent<NpcObjectItem>().m_template;
+  
                         PlayerModelController.m_playerModelController.m_iMoveToNpcID = m_currentNpcTemplate.m_npcId;
                         if (Vector3.Distance(hit.collider.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 2)
                         {
-
                             PlayerModelController.m_playerModelController.SelfNavigation(hit.collider.gameObject.transform.position);
                         }
                         else
@@ -1028,12 +1022,7 @@ public class NpcManager : MonoBehaviour {
                             //  Debug.Log("m_currentNpcTemplate.m_npcId m_currentNpcTemplate.m_npcId  ::" + m_currentNpcTemplate.m_npcId);
                             if (m_currentNpcTemplate.m_npcId == 801)
                             {
-                                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
-                                      EmailLoadCallback);
-                            }
-                            else if (m_currentNpcTemplate.m_npcId > 1000 || m_currentNpcTemplate.m_npcId == 10000)
-                            {
-                                PlayerModelController.m_playerModelController.TidyTenementNpcInfo();
+                                NewEmailData.Instance().OpenEmail(0);
                             }
                             else
                             {
@@ -1042,25 +1031,7 @@ public class NpcManager : MonoBehaviour {
                         }
 
                     }
-                    else if (hit.collider.transform.name.Equals("RangCollider"))
-                    {
-                        ///  hit.collider.transform.GetComponent<NpcObjectItem>()
-
-                        PlayerModelController.m_playerModelController.m_iMoveToNpcID = hit.collider.transform.parent.GetComponent<TenementEnterPortal>().m_indexNum;
-                        if (Vector3.Distance(hit.collider.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 2)
-                        {
-
-                            PlayerModelController.m_playerModelController.SelfNavigation(hit.collider.transform.parent.position);
-                        }
-                        else
-                        {
-
-                            {
-                                PlayerModelController.m_playerModelController.TidyTenementNpcInfo();
-                            }
-
-                        }
-                    }
+                   
                     {
                         if (PlayerModelController.m_playerModelController.AddFunaction())
                         {
@@ -1080,28 +1051,10 @@ public class NpcManager : MonoBehaviour {
             CityGlobalData.m_isRightGuide = true;
         }
     }
-	public void setGoToNpc(int id)
-    {
-     //   Debug.Log("idididididididididididididididid ::" + id);
-     //Debug.Log("7777777777777777777777777777777777777");
-//        if (CityGlobalData.m_isAllianceTenentsScene)
-//        {
-//            CityGlobalData.m_isNavToAllianCity = true;
-//            if (m_npcObjectItemDic.ContainsKey(1151))
-//            {
-//                CityGlobalData.m_AllianceCityIdSaved = id;
-//                NpcObjectItem temp = m_npcObjectItemDic[1151];
-//                m_currentNpcTemplate = temp.m_template;
-//                PlayerModelController.m_playerModelController.m_iMoveToNpcID = m_currentNpcTemplate.m_npcId;
-//                if (Vector3.Distance(temp.gameObject.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 0)
-//                {
- 
-//                    PlayerModelController.m_playerModelController.SelfNavigation(temp.gameObject.transform.position);
 
-//                }
-//            }
-//        }
-//        else
+    public void setGoToNpc(int id)
+    {
+
         {
             if (m_npcObjectItemDic.ContainsKey(id))
             {
@@ -1113,22 +1066,16 @@ public class NpcManager : MonoBehaviour {
                 {
                     PlayerModelController.m_playerModelController.SelfNavigation(temp.gameObject.transform.position);
                 }
-                else if (m_currentNpcTemplate.m_npcId == 10000)
-                {
-                    PlayerModelController.m_playerModelController.SelfNavigation(temp.gameObject.transform.position);
-
-                }
                 else
                 {
-                   
-                   // if (FunctionOpenTemp.GetTypeByNpcId(m_currentNpcTemplate.m_npcId) > 0)
+                    if (m_currentNpcTemplate.m_npcId == 801)
                     {
-                        // PlayerModelController.m_playerModelController.StopNavigation();
-                        {
-                            PlayerModelController.m_playerModelController.TidyNpcInfo();
-                        }
-
-
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
+                              EmailLoadCallback);
+                    }
+                    else
+                    {
+                        PlayerModelController.m_playerModelController.TidyNpcInfo();
                     }
                 }
 
@@ -1146,36 +1093,36 @@ public class NpcManager : MonoBehaviour {
     public void setGoToSelfTenement(int id)
     {
   
-        if (m_npcObjectItemDic.ContainsKey(id))
-        {
-            NpcObjectItem temp = m_npcObjectItemDic[id];
+        //if (m_npcObjectItemDic.ContainsKey(id))
+        //{
+        //    NpcObjectItem temp = m_npcObjectItemDic[id];
 
-            m_currentNpcTemplate = temp.m_template;
-            PlayerModelController.m_playerModelController.m_iMoveToNpcID = m_currentNpcTemplate.m_npcId;
+        //    m_currentNpcTemplate = temp.m_template;
+        //    PlayerModelController.m_playerModelController.m_iMoveToNpcID = m_currentNpcTemplate.m_npcId;
    
-            if (Vector3.Distance(temp.gameObject.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 2)
-            {
-                PlayerModelController.m_playerModelController.SelfNavigation(temp.gameObject.transform.position);
-            }
-            else
-            {
-                if ((m_currentNpcTemplate.m_npcId > 1000 || m_currentNpcTemplate.m_npcId == 10000) && m_currentNpcTemplate.m_npcId != 1151 && m_currentNpcTemplate.m_npcId < 10060)
-                {
-                    PlayerModelController.m_playerModelController.TidyTenementNpcInfo();
-                }
-                else if (FunctionOpenTemp.GetTypeByNpcId(m_currentNpcTemplate.m_npcId) > 0)
-                {
-                    PlayerModelController.m_playerModelController.TidyNpcInfo();
-                }
-            }
+        //    if (Vector3.Distance(temp.gameObject.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 2)
+        //    {
+        //        PlayerModelController.m_playerModelController.SelfNavigation(temp.gameObject.transform.position);
+        //    }
+        //    else
+        //    {
+        //        if ((m_currentNpcTemplate.m_npcId > 1000 || m_currentNpcTemplate.m_npcId == 10000) && m_currentNpcTemplate.m_npcId != 1151 && m_currentNpcTemplate.m_npcId < 10060)
+        //        {
+        //            PlayerModelController.m_playerModelController.TidyTenementNpcInfo();
+        //        }
+        //        else if (FunctionOpenTemp.GetTypeByNpcId(m_currentNpcTemplate.m_npcId) > 0)
+        //        {
+        //            PlayerModelController.m_playerModelController.TidyNpcInfo();
+        //        }
+        //    }
 
-            {
-                if (PlayerModelController.m_playerModelController.AddFunaction())
-                {
-                    PlayerModelController.m_playerModelController.m_showLayer += ShowNpcLayer;
-                }
-            }
-        }
+        //    {
+        //        if (PlayerModelController.m_playerModelController.AddFunaction())
+        //        {
+        //            PlayerModelController.m_playerModelController.m_showLayer += ShowNpcLayer;
+        //        }
+        //    }
+        //}
 
     }
 
@@ -1201,38 +1148,38 @@ public class NpcManager : MonoBehaviour {
         //}
         //if (m_npcObjectItemDic.ContainsKey(infectId))
  
-        if (m_npcObjectItemDic.ContainsKey(id))
-        {
-            NpcObjectItem temp = m_npcObjectItemDic[id];
-            m_currentNpcTemplate = temp.m_template;
-            PlayerModelController.m_playerModelController.m_iMoveToNpcID = m_currentNpcTemplate.m_npcId;
-            if (Vector3.Distance(temp.gameObject.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 3)
-            {
-                PlayerModelController.m_playerModelController.SelfNavigation(temp.gameObject.transform.position);
-            }
-            else
-            {
-            //    Debug.Log("1111111111111111111111111111111111111111111");
-                //if (infectId >= 10060)
-                //{
-                //  //  Debug.Log("22222222222222222222222222222222222222222222");
-                //    CityGlobalData.m_isAllianceTenentsScene = true;
-                //    SceneManager.EnterAllianceCityTenentsCityOne();
-                //}
-                //else
-                {
-                    //   Debug.Log("3333333333333333333333333333333333333333333333");
+        //if (m_npcObjectItemDic.ContainsKey(id))
+        //{
+        //    NpcObjectItem temp = m_npcObjectItemDic[id];
+        //    m_currentNpcTemplate = temp.m_template;
+        //    PlayerModelController.m_playerModelController.m_iMoveToNpcID = m_currentNpcTemplate.m_npcId;
+        //    if (Vector3.Distance(temp.gameObject.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 3)
+        //    {
+        //        PlayerModelController.m_playerModelController.SelfNavigation(temp.gameObject.transform.position);
+        //    }
+        //    else
+        //    {
+        //    //    Debug.Log("1111111111111111111111111111111111111111111");
+        //        //if (infectId >= 10060)
+        //        //{
+        //        //  //  Debug.Log("22222222222222222222222222222222222222222222");
+        //        //    CityGlobalData.m_isAllianceTenentsScene = true;
+        //        //    SceneManager.EnterAllianceCityTenentsCityOne();
+        //        //}
+        //        //else
+        //        {
+        //            //   Debug.Log("3333333333333333333333333333333333333333333333");
  
-                    PlayerModelController.m_playerModelController.TidyTenementNpcInfo(); 
-                }
-            }
+        //            PlayerModelController.m_playerModelController.TidyTenementNpcInfo(); 
+        //        }
+        //    }
 
-            {
-                if (PlayerModelController.m_playerModelController.AddFunaction())
-                {
-                    PlayerModelController.m_playerModelController.m_showLayer += ShowNpcLayer;
-                }
-            }
-        }
+        //    {
+        //        if (PlayerModelController.m_playerModelController.AddFunaction())
+        //        {
+        //            PlayerModelController.m_playerModelController.m_showLayer += ShowNpcLayer;
+        //        }
+        //    }
+        //}
     }
 }

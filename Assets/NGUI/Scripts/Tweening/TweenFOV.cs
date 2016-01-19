@@ -39,7 +39,7 @@ public class TweenFOV : UITweener
 	/// Start the tweening operation.
 	/// </summary>
 
-	static public TweenFOV Begin (GameObject go, float duration, float to)
+	public static TweenFOV Begin (GameObject go, float duration, float to)
 	{
 		TweenFOV comp = UITweener.Begin<TweenFOV>(go, duration);
 		comp.from = comp.value;

@@ -109,6 +109,9 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 			return;
 		}
 		m_iCurId = id;
+
+//		Debug.Log(m_iCurId);
+
 		if(id == 0)
 		{
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
@@ -387,7 +390,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		m_YindaoElenemt.m_Eff.eff.layer = LayerMask.NameToLayer("NGUI");
 		
 		m_YindaoElenemt.m_Eff.eff.transform.localPosition = new Vector3(x, y, 0);
-		
+
 		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YindaoElenemt.m_Eff.eff, EffectTemplate.getEffectTemplateByEffectId( m_YindaoElenemt.m_Eff.id ).path);
 	}
 
@@ -434,7 +437,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 
 	public void CloseUI()
 	{
-    //	Debug.Log("CloseYinDao");
+//    	Debug.Log("CloseYinDao");
 		if(!Global.m_isOpenJiaoxue)
 		{
 			return;
@@ -514,6 +517,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 				if(m_YindaoElenemt.m_Eff.eff != null)
 				{
 					m_YindaoElenemt.m_Eff.eff.SetActive(false);
+					UI3DEffectTool.Instance().ClearUIFx(m_YindaoElenemt.m_Eff.eff);
 				}
 			}
 		}

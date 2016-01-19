@@ -54,6 +54,10 @@ public class HighestUI : Singleton<HighestUI>, IUIRootAutoActivator
 		{
 			UIRootAutoActivator.UnregisterAutoActivator( this );
 		}
+
+		{
+			base.OnDestroy();
+		}
 	}
 
 

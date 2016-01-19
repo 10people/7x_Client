@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<BattleDramaFlag flagId="801" nodeId="1" triggerFlag="0" x="33.98181" y="0.8721552" z="-4.391704" cx="70" cy="1" cz="1" rx="0" ry="302.41" rz="0" />
-<BattleDramaFlag flagId="802" nodeId="1" triggerFlag="0" x="56.48183" y="0.8721552" z="-36.59172" cx="45" cy="1" cz="1" rx="0" ry="0" rz="0" />
-<BattleDramaFlag flagId="803" nodeId="1" triggerFlag="0" x="41.18182" y="0.8721552" z="-59.29173" cx="30" cy="1" cz="1" rx="0" ry="27.5" rz="0" />
-<BattleDramaFlag flagId="804" nodeId="1" triggerFlag="0" x="19.66181" y="0.8721552" z="-85.60175" cx="20" cy="1" cz="1" rx="0" ry="22.92" rz="0" />
-<BattleDramaFlag flagId="805" nodeId="1" triggerFlag="0" x="21.28181" y="0.8721552" z="-121.0818" cx="18" cy="1" cz="1" rx="0" ry="0" rz="0" />
-<BattleDramaFlag flagId="806" nodeId="2" triggerFlag="0" x="18.08181" y="0.8721552" z="-150.8918" cx="1" cy="1" cz="1" rx="0" ry="0" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="1" triggerFlag="301,302,303,304,305,306,307,308,309,310" x="-1.26004" y="5.91801" z="-41.95837" cx="34.3" cy="1" cz="1" rx="0" ry="159.5" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="2" triggerFlag="301,302,303,304,305,306,307,308,309,310" x="-1.26004" y="5.91801" z="-41.95837" cx="34.3" cy="1" cz="1" rx="0" ry="159.5" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="1" triggerFlag="401,402,403,404,405,406,407,408,409,410" x="-11.63004" y="5.10801" z="-1.108366" cx="42.2" cy="1" cz="1" rx="0" ry="9.80002" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="2" triggerFlag="401,402,403,404,405,406,407,408,409,410" x="-11.63004" y="5.10801" z="-1.108366" cx="42.2" cy="1" cz="1" rx="0" ry="9.80002" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="1" triggerFlag="501,502,503,504,505,506,507,508,509,510" x="1.469971" y="5.90801" z="27.39163" cx="25.1" cy="1" cz="1" rx="0" ry="214.6" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="2" triggerFlag="501,502,503,504,505,506,507,508,509,510" x="1.469971" y="5.90801" z="27.39163" cx="25.1" cy="1" cz="1" rx="0" ry="214.6" rz="0" />
 </dataset>

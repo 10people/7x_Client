@@ -56,10 +56,10 @@ public class ChuanQiType : MonoBehaviour,SocketProcessor {
 
 //		Debug.Log ("m_GuanQia.cqPassTimes  = "+m_GuanQia.cqPassTimes);
 		//Debug.Log ("tempLevelInfo.cqSaoDangUsedTimes  = "+m_GuanQia.cqSaoDangUsedTimes);
-		tiaoZhanNum = 3 - m_GuanQia.cqPassTimes;
+		tiaoZhanNum = m_GuanQia.cqDayTimes- m_GuanQia.cqPassTimes;
 		sdTotleTime = m_GuanQia.cqSaoDangDayTimes;
 		sdCountTime = sdTotleTime - m_GuanQia.cqSaoDangUsedTimes;
-		tiaoZhanTimes.text = (3-m_GuanQia.cqPassTimes).ToString ()+"/3";
+		tiaoZhanTimes.text = (m_GuanQia.cqDayTimes-m_GuanQia.cqPassTimes).ToString ()+"/"+m_GuanQia.cqDayTimes.ToString();
 
 		ResstingCost.text = PveLevelUImaneger.GuanqiaReq.cqResetPay.ToString();
 
@@ -72,15 +72,15 @@ public class ChuanQiType : MonoBehaviour,SocketProcessor {
 		else{
 			ResettingBtn.SetActive(true);
 		}
-		UICreateEnemy enemyCreate = enemyListObj.GetComponent<UICreateEnemy> ();
-
-		enemyCreate.InItEnemyList (tempLevelInfo.type);
-
-		UICreateDropthings awardCreate = awardListObj.GetComponent<UICreateDropthings> ();
-
-		awardCreate.mLevl = levelInfo;
-
-		awardCreate.GetAward (tempLevelInfo.type);
+//		UICreateEnemy enemyCreate = enemyListObj.GetComponent<UICreateEnemy> ();
+//
+//		enemyCreate.InItEnemyList (tempLevelInfo.type);
+//
+//		UICreateDropthings awardCreate = awardListObj.GetComponent<UICreateDropthings> ();
+//
+//		awardCreate.mLevl = levelInfo;
+//
+//		awardCreate.GetAward (tempLevelInfo.type);
 	}
 	int sdTotleTime = 0;
 	int sdCountTime = 0;

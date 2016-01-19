@@ -16,10 +16,18 @@ public class TanBaoReward : MonoBehaviour {
 
 	private TanBaoData.TanBaoType tbType;
 
-	private TanBaoPage.RewardType rewardType;
+	public enum RewardType
+	{
+		KUANGDONG,
+		KUANGJING,
+	}
+	private RewardType rewardType = RewardType.KUANGDONG;
 
 	private List<GameObject> cardList = new List<GameObject> ();
 	public GameObject cardObj;
+
+	private List<TBCardInfo> turnList = new List<TBCardInfo> ();//已翻转
+	private List<TBCardInfo> unTurnList = new List<TBCardInfo> ();//未翻转
 
 	private List<Vector3> cardPosList = new List<Vector3> ();
 
@@ -41,32 +49,32 @@ public class TanBaoReward : MonoBehaviour {
 		tbReward = this;
 	}
 
-	void Start ()
+	void OnDestroy ()
 	{
-		if (cardList.Count == 0)
-		{
-			for (int i = 0;i < 10;i ++)
-			{
-				GameObject card = (GameObject)Instantiate (cardObj);
-				
-				card.transform.parent = cardObj.transform.parent;
-				card.transform.localPosition = Vector3.zero;
-				card.transform.localScale = Vector3.zero;
-				
-				cardList.Add (card);
-			}
-		}
-		if (cardPosList.Count == 0)
-		{
-			for (int i = 0;i < 10;i ++)
-			{
-				cardPosList.Add (new Vector3(-340f + 170f * (i < 5 ? i : i - 5),
-				                             i < 5 ? 120f : -120f,
-				                             0f));
-			}
-		}
+		tbReward = null;
 	}
 
+	void Start ()
+	{
+		for (int i = 0;i < 10;i ++)
+		{
+			GameObject card = (GameObject)Instantiate (cardObj);
+			
+			card.transform.parent = cardObj.transform.parent;
+			card.transform.localPosition = Vector3.zero;
+			card.transform.localScale = Vector3.zero;
+			
+			cardList.Add (card);
+		}
+
+		for (int i = 0;i < 10;i ++)
+		{
+			cardPosList.Add (new Vector3(-340f + 170f * (i < 5 ? i : i - 5),
+			                             i < 5 ? 120f : -120f,
+			                             0f));
+		}
+	}
+	
 	/// <summary>
 	/// Blocks the controller.
 	/// </summary>
@@ -88,10 +96,12 @@ public class TanBaoReward : MonoBehaviour {
 		tbType = tempType;
 
 		cardTurnEndNum = 0;
+		turnList.Clear ();
+		unTurnList.Clear ();
 		MiBaoListClear ();
 
 		rewardType = tempType == TanBaoData.TanBaoType.TONGBI_SINGLE || tempType == TanBaoData.TanBaoType.TONGBI_SPEND ?
-			TanBaoPage.RewardType.KUANGDONG : TanBaoPage.RewardType.KUANGJING;
+			RewardType.KUANGDONG : RewardType.KUANGJING;
 
 		StopCoroutine ("BlockAlpha");
 		StartCoroutine ("BlockAlpha");
@@ -143,7 +153,7 @@ public class TanBaoReward : MonoBehaviour {
 	void InstanceCardObj (int tempIndex,Vector3 tempTargetPos)
 	{
 		cardList[tempIndex].SetActive (true);
-		cardList[tempIndex].transform.localPosition = new Vector3(rewardType == TanBaoPage.RewardType.KUANGDONG ? -225f : 225f,0f,0f);
+		cardList[tempIndex].transform.localPosition = new Vector3(rewardType == RewardType.KUANGDONG ? -225f : 225f,0f,0f);
 		cardList[tempIndex].transform.localScale = Vector3.zero;
 		
 		TBCardInfo cardInfo = cardList[tempIndex].GetComponent<TBCardInfo> ();
@@ -207,6 +217,27 @@ public class TanBaoReward : MonoBehaviour {
 		scale.Add ("oncomplete",tempMethod);
 		scale.Add ("oncompletetarget",tempTargetObj);
 		iTween.ScaleTo (tempObj,scale);
+	}
+
+	/// <summary>
+	/// Cards the info list control.
+	/// </summary>
+	/// <param name="isAdd">If set to <c>true</c> is add.</param>
+	/// <param name="tempInfo">Temp info.</param>
+	public void CardInfoListControl (bool isAdd,TBCardInfo tempInfo)
+	{
+		if (isAdd)
+		{
+			unTurnList.Add (tempInfo);
+		}
+		else
+		{
+			if (unTurnList.Contains (tempInfo))
+			{
+				turnList.Add (tempInfo);
+				unTurnList.Remove (tempInfo);
+			}
+		}
 	}
 
 	/// <summary>

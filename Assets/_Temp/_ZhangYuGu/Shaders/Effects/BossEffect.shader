@@ -1,8 +1,11 @@
 ﻿Shader "Custom/Effects/Boss Effect" {
 	Properties {
 		_TintColor( "Tint Color", Color ) = ( 0.72, 0.72, 0, 0.5 )
+		
 		_Coef( "Coefficient", Range (0.0, 1.0 ) ) = 0.4
+		
 		_MainTex( "Base (RGB) Trans (A)", 2D ) = "white" {}
+		
 		_Vec3("Vector3", Vector ) = ( 1, 0, 0, 1 )
 		
 		_FxColor("Fx Color", Color) = ( 0, 0, 0, 0 )

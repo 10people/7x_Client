@@ -19,6 +19,7 @@ namespace Carriage
         {
             public int m_UID;
             public int m_RoleID;
+            public long m_JunzhuID;
 
             public string m_KingName;
             public string m_AllianceName;
@@ -93,7 +94,17 @@ namespace Carriage
                                 tempBaseCultureController.transform.localPosition = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
 
                                 //Update self head icon info.
-                                m_RootManager.m_CarriageMain.SelfIconSetter.SetThis(tempMsg.roleId, true, tempMsg.level, tempMsg.senderName, tempMsg.allianceName, tempMsg.totalLife, tempMsg.currentLife, tempMsg.guojia, tempMsg.vipLevel, tempMsg.zhanli);
+                                m_RootManager.m_CarriageMain.SelfIconSetter.SetPlayer(tempMsg.roleId, true, tempMsg.level, tempMsg.senderName, tempMsg.allianceName, tempMsg.totalLife, tempMsg.currentLife, tempMsg.guojia, tempMsg.vipLevel, tempMsg.zhanli);
+
+                                //DoDelegate After Init Position.
+                                if (PlayerSceneSyncManager.Instance.m_DelegateAfterCarriage != null)
+                                {
+                                    PlayerSceneSyncManager.Instance.m_DelegateAfterCarriage();
+                                    PlayerSceneSyncManager.Instance.m_DelegateAfterCarriage = null;
+                                }
+
+                                //Set blood num.
+                                m_RootManager.m_CarriageMain.SetRemainingBloodNum(tempMsg.xuePingRemain);
                             }
                             //Other
                             else
@@ -108,11 +119,8 @@ namespace Carriage
 
                                 //Add gizmos.
                                 int typeID;
-                                if ((string.IsNullOrEmpty(tempMsg.allianceName) || AllianceData.Instance.IsAllianceNotExist || (tempMsg.allianceName != AllianceData.Instance.g_UnionInfo.name)))
-                                {
-                                    typeID = tempMsg.roleId >= 50000 ? 5 : 4;
-                                }
-                                else
+
+                                if ((!string.IsNullOrEmpty(tempMsg.allianceName) && !AllianceData.Instance.IsAllianceNotExist && (tempMsg.allianceName == AllianceData.Instance.g_UnionInfo.name)) || (JunZhuData.Instance().m_junzhuInfo.name == tempMsg.senderName))
                                 {
                                     if (tempMsg.roleId >= 50000)
                                     {
@@ -123,14 +131,16 @@ namespace Carriage
                                         typeID = tempMsg.senderName == JunZhuData.Instance().m_junzhuInfo.name ? 0 : 2;
                                     }
                                 }
+                                else
+                                {
+                                    typeID = tempMsg.roleId >= 50000 ? 5 : 4;
+                                }
                                 m_RootManager.m_CarriageMain.AddGizmos(tempMsg.uid, typeID);
                             }
 
                             tempBaseCultureController.TrackCamera = m_RootManager.TrackCamera;
                             tempBaseCultureController.KingName = tempMsg.senderName;
                             tempBaseCultureController.AllianceName = tempMsg.allianceName;
-                            tempBaseCultureController.IsEnemy =
-                                !(((!string.IsNullOrEmpty(tempMsg.allianceName) && !AllianceData.Instance.IsAllianceNotExist && (tempMsg.allianceName == AllianceData.Instance.g_UnionInfo.name))) || (tempMsg.senderName == JunZhuData.Instance().m_junzhuInfo.name));
                             tempBaseCultureController.AlliancePost = tempMsg.zhiWu;
                             tempBaseCultureController.Vip = tempMsg.vipLevel;
                             tempBaseCultureController.Title = tempMsg.chengHao;
@@ -143,10 +153,9 @@ namespace Carriage
                             tempBaseCultureController.TotalBlood = tempMsg.totalLife;
                             tempBaseCultureController.RoleID = tempMsg.roleId;
                             tempBaseCultureController.UID = tempMsg.uid;
+                            tempBaseCultureController.JunzhuID = tempMsg.jzId;
+                            tempBaseCultureController.IsChouRen = tempMsg.isEnemy;
                             tempBaseCultureController.SetThis();
-
-                            //Set blood num.
-                            m_RootManager.m_CarriageMain.SetRemainingBloodNum(tempMsg.xuePingRemain);
 
                             return true;
                         }
@@ -209,12 +218,13 @@ namespace Carriage
                             if (m_PlayerDic.ContainsKey(tempMsg.uid))
                             {
                                 //Only add player to dead dic
-                                if (m_PlayerDic[tempMsg.uid].m_RoleID < 50000)
+                                if (!m_PlayerDic[tempMsg.uid].IsCarriage)
                                 {
                                     AddToDeadDic(tempMsg.uid, new DeadInfoCollector()
                                     {
                                         m_RoleID = m_PlayerDic[tempMsg.uid].m_RoleID,
                                         m_UID = m_PlayerDic[tempMsg.uid].m_UID,
+                                        m_JunzhuID = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>().JunzhuID,
                                         m_KingName = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>().KingName,
                                         m_AllianceName = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>().AllianceName,
                                         m_VipLevel = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>().Vip,
@@ -226,6 +236,9 @@ namespace Carriage
                                         m_TotalBlood = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>().TotalBlood,
                                     });
                                 }
+
+                                //Disable move.
+                                m_PlayerDic[tempMsg.uid].IsCanMove = false;
                             }
 
                             //self player dead
@@ -234,6 +247,7 @@ namespace Carriage
                                 AddToDeadDic(tempMsg.uid, new DeadInfoCollector()
                                 {
                                     m_RoleID = CityGlobalData.m_king_model_Id,
+                                    m_JunzhuID = m_RootManager.m_SelfPlayerCultureController.JunzhuID,
                                     m_KingName = m_RootManager.m_SelfPlayerCultureController.KingName,
                                     m_AllianceName = m_RootManager.m_SelfPlayerCultureController.AllianceName,
                                     m_VipLevel = m_RootManager.m_SelfPlayerCultureController.Vip,
@@ -246,6 +260,9 @@ namespace Carriage
                                 });
 
                                 m_StoredPlayerDeadNotify = tempMsg;
+
+                                //Disable move.
+                                m_RootManager.m_SelfPlayerController.is_CanMove = false;
                             }
 
                             //Play dead animation.
@@ -322,60 +339,73 @@ namespace Carriage
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
 
-                            //Dead dic contains all data.
-                            if (m_DeadPlayerDic.ContainsKey(tempMsg.uid))
+                            switch (tempMsg.result)
                             {
-                                if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.uid)
-                                {
-                                    m_RootManager.CreateSelfPlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), m_DeadPlayerDic[tempMsg.uid].m_KingName, m_DeadPlayerDic[tempMsg.uid].m_AllianceName, m_DeadPlayerDic[tempMsg.uid].m_VipLevel, m_DeadPlayerDic[tempMsg.uid].m_Title, m_DeadPlayerDic[tempMsg.uid].m_AlliancePost, m_DeadPlayerDic[tempMsg.uid].m_Nation, m_DeadPlayerDic[tempMsg.uid].m_Level, m_DeadPlayerDic[tempMsg.uid].m_BattleValue, tempMsg.life, m_DeadPlayerDic[tempMsg.uid].m_TotalBlood);
-
-                                    //Show dead dimmer.
-                                    m_RootManager.m_CarriageMain.HideDeadWindows();
-                                }
-                                else
-                                {
-                                    CreatePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_UID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ));
-
-                                    var tempPlayerCultureController = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>();
-
-                                    tempPlayerCultureController.TrackCamera = m_RootManager.TrackCamera;
-                                    tempPlayerCultureController.KingName = m_DeadPlayerDic[tempMsg.uid].m_KingName;
-                                    tempPlayerCultureController.AllianceName = m_DeadPlayerDic[tempMsg.uid].m_AllianceName;
-                                    tempPlayerCultureController.Vip = m_DeadPlayerDic[tempMsg.uid].m_VipLevel;
-                                    tempPlayerCultureController.AlliancePost = m_DeadPlayerDic[tempMsg.uid].m_AlliancePost;
-                                    tempPlayerCultureController.Title = m_DeadPlayerDic[tempMsg.uid].m_Title;
-                                    tempPlayerCultureController.NationID = m_DeadPlayerDic[tempMsg.uid].m_Nation;
-                                    tempPlayerCultureController.Level = m_DeadPlayerDic[tempMsg.uid].m_Level;
-                                    tempPlayerCultureController.BattleValue = m_DeadPlayerDic[tempMsg.uid].m_BattleValue;
-                                    tempPlayerCultureController.IsEnemy = string.IsNullOrEmpty(m_DeadPlayerDic[tempMsg.uid].m_AllianceName) || AllianceData.Instance.IsAllianceNotExist || (m_DeadPlayerDic[tempMsg.uid].m_AllianceName != AllianceData.Instance.g_UnionInfo.name);
-                                    tempPlayerCultureController.TotalBlood = m_DeadPlayerDic[tempMsg.uid].m_TotalBlood;
-                                    tempPlayerCultureController.RemainingBlood = tempMsg.life;
-                                    tempPlayerCultureController.RoleID = m_DeadPlayerDic[tempMsg.uid].m_RoleID;
-                                    tempPlayerCultureController.UID = tempMsg.uid;
-
-                                    tempPlayerCultureController.SetThis();
-                                }
-
-                                //Add gizmos.
-                                int typeID;
-                                if ((string.IsNullOrEmpty(m_DeadPlayerDic[tempMsg.uid].m_AllianceName) || AllianceData.Instance.IsAllianceNotExist || (m_DeadPlayerDic[tempMsg.uid].m_AllianceName != AllianceData.Instance.g_UnionInfo.name)))
-                                {
-                                    typeID = m_DeadPlayerDic[tempMsg.uid].m_RoleID >= 50000 ? 5 : 4;
-                                }
-                                else
-                                {
-                                    if (m_DeadPlayerDic[tempMsg.uid].m_RoleID >= 50000)
+                                case 0:
                                     {
-                                        typeID = m_DeadPlayerDic[tempMsg.uid].m_KingName == JunZhuData.Instance().m_junzhuInfo.name ? 1 : 3;
-                                    }
-                                    else
-                                    {
-                                        typeID = m_DeadPlayerDic[tempMsg.uid].m_KingName == JunZhuData.Instance().m_junzhuInfo.name ? 0 : 2;
-                                    }
-                                }
-                                m_RootManager.m_CarriageMain.AddGizmos(tempMsg.uid, typeID);
+                                        //Dead dic contains all data.
+                                        if (m_DeadPlayerDic.ContainsKey(tempMsg.uid))
+                                        {
+                                            if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.uid)
+                                            {
+                                                m_RootManager.CreateSelfPlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_JunzhuID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), m_DeadPlayerDic[tempMsg.uid].m_KingName, m_DeadPlayerDic[tempMsg.uid].m_AllianceName, m_DeadPlayerDic[tempMsg.uid].m_VipLevel, m_DeadPlayerDic[tempMsg.uid].m_Title, m_DeadPlayerDic[tempMsg.uid].m_AlliancePost, m_DeadPlayerDic[tempMsg.uid].m_Nation, m_DeadPlayerDic[tempMsg.uid].m_Level, m_DeadPlayerDic[tempMsg.uid].m_BattleValue, tempMsg.life, m_DeadPlayerDic[tempMsg.uid].m_TotalBlood);
 
-                                RemoveFromDeadDic(tempMsg.uid);
+                                                //Show dead dimmer.
+                                                m_RootManager.m_CarriageMain.HideDeadWindows();
+                                            }
+                                            else
+                                            {
+                                                CreatePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_UID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ));
+
+                                                var tempPlayerCultureController = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>();
+
+                                                tempPlayerCultureController.TrackCamera = m_RootManager.TrackCamera;
+                                                tempPlayerCultureController.KingName = m_DeadPlayerDic[tempMsg.uid].m_KingName;
+                                                tempPlayerCultureController.AllianceName = m_DeadPlayerDic[tempMsg.uid].m_AllianceName;
+                                                tempPlayerCultureController.Vip = m_DeadPlayerDic[tempMsg.uid].m_VipLevel;
+                                                tempPlayerCultureController.AlliancePost = m_DeadPlayerDic[tempMsg.uid].m_AlliancePost;
+                                                tempPlayerCultureController.Title = m_DeadPlayerDic[tempMsg.uid].m_Title;
+                                                tempPlayerCultureController.NationID = m_DeadPlayerDic[tempMsg.uid].m_Nation;
+                                                tempPlayerCultureController.Level = m_DeadPlayerDic[tempMsg.uid].m_Level;
+                                                tempPlayerCultureController.BattleValue = m_DeadPlayerDic[tempMsg.uid].m_BattleValue;
+                                                tempPlayerCultureController.TotalBlood = m_DeadPlayerDic[tempMsg.uid].m_TotalBlood;
+                                                tempPlayerCultureController.RemainingBlood = tempMsg.life;
+                                                tempPlayerCultureController.RoleID = m_DeadPlayerDic[tempMsg.uid].m_RoleID;
+                                                tempPlayerCultureController.UID = tempMsg.uid;
+                                                tempPlayerCultureController.JunzhuID = m_DeadPlayerDic[tempMsg.uid].m_JunzhuID;
+
+                                                tempPlayerCultureController.SetThis();
+                                            }
+
+                                            //Add gizmos.
+                                            int typeID;
+
+                                            if ((!string.IsNullOrEmpty(m_DeadPlayerDic[tempMsg.uid].m_AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (m_DeadPlayerDic[tempMsg.uid].m_AllianceName == AllianceData.Instance.g_UnionInfo.name)) || (JunZhuData.Instance().m_junzhuInfo.name == m_DeadPlayerDic[tempMsg.uid].m_KingName))
+                                            {
+                                                if (m_DeadPlayerDic[tempMsg.uid].m_RoleID >= 50000)
+                                                {
+                                                    typeID = m_DeadPlayerDic[tempMsg.uid].m_KingName == JunZhuData.Instance().m_junzhuInfo.name ? 1 : 3;
+                                                }
+                                                else
+                                                {
+                                                    typeID = m_DeadPlayerDic[tempMsg.uid].m_KingName == JunZhuData.Instance().m_junzhuInfo.name ? 0 : 2;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                typeID = m_DeadPlayerDic[tempMsg.uid].m_RoleID >= 50000 ? 5 : 4;
+                                            }
+                                            m_RootManager.m_CarriageMain.AddGizmos(tempMsg.uid, typeID);
+
+                                            RemoveFromDeadDic(tempMsg.uid);
+                                        }
+                                        break;
+                                    }
+                                case 1:
+                                    {
+                                        ClientMain.m_UITextManager.createText("原地复活元宝不足");
+                                        break;
+                                    }
                             }
 
                             return true;

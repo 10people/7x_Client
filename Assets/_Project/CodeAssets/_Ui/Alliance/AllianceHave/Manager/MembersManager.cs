@@ -22,13 +22,13 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 
 	public GameObject MemberTemp;
 
-	public GameObject LeaderBtn;
+	//public GameObject LeaderBtn;
 
-	public UILabel Label_LeaderBtn;
+	//public UILabel Label_LeaderBtn;
 
-	public GameObject FuLeadrBtn;
+	//public GameObject FuLeadrBtn;
 
-	public UILabel Label_FuLeadrBtn;
+	//public UILabel Label_FuLeadrBtn;
 
 	private float Dis = 72;
 
@@ -61,7 +61,10 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
+
+		mInstance = null;
 	}
+
 	void Start () {
 
 		jieSanTitleStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIACNE_JIESAN_TITLE);
@@ -141,36 +144,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 	}
 	void ShowBtn()
 	{
-		//Debug.Log ("m_allianceHaveRes.status = "+m_allianceHaveRes.status );
-		if(m_allianceHaveRes.identity == 2)
-		{
-			LeaderBtn.SetActive(true);
 
-			FuLeadrBtn.SetActive(false);
-
-			Label_LeaderBtn.text = "解散联盟";
-		}
-		else
-		{
-			if(m_allianceHaveRes.status == 2)
-			{
-				FuLeadrBtn.SetActive(true);
-
-				LeaderBtn.SetActive(true);
-
-				Label_LeaderBtn.text = "退出联盟";
-
-				Label_FuLeadrBtn.text = "竞  选";
-			}
-			else if(m_allianceHaveRes.status == 1 || m_allianceHaveRes.status == 0)
-			{
-				FuLeadrBtn.SetActive(false);
-				
-				LeaderBtn.SetActive(true);
-				
-				Label_LeaderBtn.text = "退出联盟";
-			}
-		}
 	}
 
 	ExitAllianceResp m_exitResp;

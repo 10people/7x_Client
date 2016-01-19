@@ -22,7 +22,7 @@ public static class NGUISnap
 	/// Whether widgets will snap to edges of other widgets when dragged around.
 	/// </summary>
 
-	static public bool allow
+	public static bool allow
 	{
 		get
 		{
@@ -48,7 +48,7 @@ public static class NGUISnap
 	/// Recalculate all snapping edges.
 	/// </summary>
 
-	static public void Recalculate (Object obj)
+	public static void Recalculate (Object obj)
 	{
 		mSnapCenter.Clear();
 		mSnapCorners.Clear();
@@ -129,7 +129,7 @@ public static class NGUISnap
 	/// Snap the X coordinate using the previously calculated snapping edges.
 	/// </summary>
 
-	static public Vector3 Snap (Vector3 pos, Vector3[] local, bool snapToEdges)
+	public static Vector3 Snap (Vector3 pos, Vector3[] local, bool snapToEdges)
 	{
 		if (snapToEdges && allow)
 		{

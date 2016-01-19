@@ -19,6 +19,10 @@ public class EnterHuangyebtn : MonoBehaviour {
 	void Start () {
 	
 	}
+
+	void OnDestroy(){
+		HYMapData = null;
+	}
 	
 	// Update is called once per frame
 	void Update () {

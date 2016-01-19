@@ -1685,4 +1685,32 @@ public class UILabel : UIWidget
 
 		NGUIText.Update();
 	}
+
+
+
+	#region Mono
+	
+	protected override void OnDestroy(){
+		{
+			mFont = null;
+			
+			mTrueTypeFont = null;
+
+			material = null;
+
+			font = null;
+
+			bitmapFont = null;
+
+			trueTypeFont = null;
+
+			ambigiousFont = null;
+
+
+		}
+		
+		base.OnDestroy();
+	}
+	
+	#endregion
 }

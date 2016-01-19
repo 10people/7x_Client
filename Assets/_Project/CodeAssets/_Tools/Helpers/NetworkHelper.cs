@@ -10,9 +10,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-using UnityEngine;
-using System.Collections;
-
 public class NetworkHelper {
 
 	#region Network Status
@@ -21,6 +18,17 @@ public class NetworkHelper {
 
 	public static float GetPingSec(){
 		return m_ping_long_ms / 1000.0f;
+	}
+
+	public static float GetPingSecWithMin( float p_min_sec ){
+		float t_cur_sec = GetPingSec();
+
+		if( t_cur_sec > p_min_sec ){
+			return t_cur_sec;
+		}
+		else{
+			return p_min_sec;
+		}
 	}
 
 	public static long GetPingMS(){
@@ -90,6 +98,14 @@ public class NetworkHelper {
 		else{
 			Debug.LogError( "Error, Not Existed Server Type." );
 		}
+
+//		t_prefix = SERVER_CESHI_PREFIX;
+
+//		t_prefix = SERVER_TIYAN_PREFIX;
+
+//		t_prefix = SERVER_NEIWANG_PREFIX;
+
+//		Debug.Log( "GetPrefix: " + t_prefix );
 		
 		return t_prefix;
 	}
@@ -117,19 +133,32 @@ public class NetworkHelper {
 		TiYan,
 		CeShi,
 	}
-	
-	private static ServerType m_server_type_enum 	= ServerType.CeShi;
 
+	#if CLOSE_CE_SHI_SERVER
+	// Now is the same as NeiWang
+	private static ServerType m_server_type_enum 	= ServerType.NeiWang;
+	
+	private const string DEFAULT_SERVER_NAME 		= "内网服";
+
+	private const SelectUrl.UrlSeclect m_default_select_url	= SelectUrl.UrlSeclect.NeiWang;
+	#else
+	private static ServerType m_server_type_enum 	= ServerType.CeShi;
+	
 	private const string DEFAULT_SERVER_NAME 		= "测试服";
+
+	private const SelectUrl.UrlSeclect m_default_select_url	= SelectUrl.UrlSeclect.CeShi;
+	#endif
+
+
 	
 	// login use
 	public static ServerType GetDefaultServerType(){
-		return ServerType.CeShi;
+		return m_server_type_enum;
 	}
 	
 	// login use
 	public static SelectUrl.UrlSeclect GetDefaultLoginServerType(){
-		return SelectUrl.UrlSeclect.CeShi;
+		return m_default_select_url;
 	}
 	
 	// login use
@@ -161,7 +190,6 @@ public class NetworkHelper {
 	
 	
 	#if CLOSE_CE_SHI_SERVER
-	
 	// Now is the same as NeiWang
 	private const string SERVER_CESHI_PREFIX		= "http://192.168.3.80:8090/";
 	#else

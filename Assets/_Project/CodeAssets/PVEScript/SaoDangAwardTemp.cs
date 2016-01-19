@@ -86,10 +86,12 @@ public class SaoDangAwardTemp : MonoBehaviour {
 
 		}
 		else{
-			for (int n = 0; n < m_tempInfo.awardItems.Count; n++)
+			int Max = m_tempInfo.awardItems.Count;
+			if(Max > 4)Max =4;
+			for (int n = 0; n < Max; n++)
 			{
-				yield return new WaitForSeconds(0.5f);
-				
+				yield return new WaitForSeconds(0.2f);
+				Debug.Log("m_tempInfo.awardItems[n].itemId = "+m_tempInfo.awardItems[n].itemId);	
 				GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
 				iconSampleObject.SetActive(true);
 				iconSampleObject.transform.parent = RewardRoot.transform;
@@ -101,12 +103,12 @@ public class SaoDangAwardTemp : MonoBehaviour {
 				NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(m_tempInfo.awardItems[n].itemId);
 				string mdesc = DescIdTemplate.GetDescriptionById(m_tempInfo.awardItems[n].itemId);
 				
-				iconSampleManager.SetIconByID(m_tempInfo.awardItems[n].itemId, "", 10);
-				iconSampleManager.SetAwardNumber(m_tempInfo.awardItems[n].itemNum);
+				iconSampleManager.SetIconByID(m_tempInfo.awardItems[n].itemId, m_tempInfo.awardItems[n].itemNum.ToString(), 10);
+				//iconSampleManager.SetAwardNumber(m_tempInfo.awardItems[n].itemNum);
 				iconSampleManager.SetIconPopText(m_tempInfo.awardItems[n].itemId, mNameIdTemplate.Name, mdesc, 1);
 			}
+
 		}
-	
 	}
 }
 

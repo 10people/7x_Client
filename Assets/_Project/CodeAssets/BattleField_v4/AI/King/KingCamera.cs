@@ -51,7 +51,9 @@ public class KingCamera : MonoBehaviour
 	
 	private float totalLength = 0;
 
-
+	void OnDestroy(){
+		shakeControllor = null;
+	}
 
 	public void init ()
 	{

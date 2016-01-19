@@ -5,6 +5,8 @@ public class CoolDown : MonoBehaviour
 {
 	public UISprite spriteCD;
 
+	public BattleWeaponSkillDolt spriteWeaponDolt;
+
 
 	private float timeTotal;
 
@@ -27,20 +29,6 @@ public class CoolDown : MonoBehaviour
 
 		timeTotal = skillTemplate.timePeriod * 1f;
 		
-		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan 
-		   && CityGlobalData.m_tempSection == 1 
-		   && CityGlobalData.m_tempLevel == 1)
-		{
-			if(skillId == 200011 || skillId == 200021)
-			{
-				timeTotal = 999;
-			}
-			else
-			{
-				timeTotal = id == 2 ? 16 : 10;
-			}
-		}
-
 		spriteCD.gameObject.SetActive (false);
 
 		tempPosition = transform.localPosition;
@@ -70,6 +58,8 @@ public class CoolDown : MonoBehaviour
 			timeLst = curTimeTotal;
 		}
 
+		setSpriteDoltOn(false);
+
 		if(spriteCD.gameObject.activeSelf == false)
 		{
 			spriteCD.gameObject.SetActive (true);
@@ -88,6 +78,8 @@ public class CoolDown : MonoBehaviour
 		
 		if(timeLst <= 0)
 		{
+			setSpriteDoltOn(true);
+
 			spriteCD.gameObject.SetActive(false);
 
 			if(tempGc == null)
@@ -126,6 +118,8 @@ public class CoolDown : MonoBehaviour
 
 		if(timeLst <= 0)
 		{
+			setSpriteDoltOn(true);
+
 			spriteCD.gameObject.SetActive(false);
 
 			if(tempGc == null)
@@ -179,6 +173,11 @@ public class CoolDown : MonoBehaviour
 		if (show == true) transform.localPosition = tempPosition;
 
 		else transform.localPosition = new Vector3(100000, 0, 0);
+	}
+
+	private void setSpriteDoltOn(bool turnOn)
+	{
+		if (spriteWeaponDolt != null) spriteWeaponDolt.setCooldown (turnOn);
 	}
 
 }

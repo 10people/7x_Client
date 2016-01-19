@@ -107,7 +107,7 @@ public class ActivityLayerManagerment : MonoBehaviour, SocketProcessor
                     {
                         m_listObject[6].transform.FindChild("LabelLingQu").gameObject.SetActive(false);
                         m_listObject[6].transform.FindChild("LabelTopUp").gameObject.SetActive(true);
-                        TopUpLoadManagerment.m_instance.LoadPrefab(false);
+                        EquipSuoData.TopUpLayerTip();
                         Destroy(m_MainParent);
                     }
                     else

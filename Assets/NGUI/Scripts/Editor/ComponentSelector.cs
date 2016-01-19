@@ -36,7 +36,7 @@ public class ComponentSelector : ScriptableWizard
 	/// Draw a button + object selection combo filtering specified types.
 	/// </summary>
 
-	static public void Draw<T> (string buttonName, T obj, OnSelectionCallback cb, bool editButton, params GUILayoutOption[] options) where T : Object
+	public static void Draw<T> (string buttonName, T obj, OnSelectionCallback cb, bool editButton, params GUILayoutOption[] options) where T : Object
 	{
 		GUILayout.BeginHorizontal();
 		bool show = NGUIEditorTools.DrawPrefixButton(buttonName);
@@ -57,7 +57,7 @@ public class ComponentSelector : ScriptableWizard
 	/// Draw a button + object selection combo filtering specified types.
 	/// </summary>
 
-	static public void Draw<T> (T obj, OnSelectionCallback cb, bool editButton, params GUILayoutOption[] options) where T : Object
+	public static void Draw<T> (T obj, OnSelectionCallback cb, bool editButton, params GUILayoutOption[] options) where T : Object
 	{
 		Draw<T>(NGUITools.GetTypeName<T>(), obj, cb, editButton, options);
 	}
@@ -66,13 +66,13 @@ public class ComponentSelector : ScriptableWizard
 	/// Show the selection wizard.
 	/// </summary>
 
-	static public void Show<T> (OnSelectionCallback cb) where T : Object { Show<T>(cb, new string[] {".prefab"}); }
+	public static void Show<T> (OnSelectionCallback cb) where T : Object { Show<T>(cb, new string[] {".prefab"}); }
 
 	/// <summary>
 	/// Show the selection wizard.
 	/// </summary>
 
-	static public void Show<T> (OnSelectionCallback cb, string[] extensions) where T : Object
+	public static void Show<T> (OnSelectionCallback cb, string[] extensions) where T : Object
 	{
 		System.Type type = typeof(T);
 		string title = (type == typeof(UIAtlas) ? "Select an " : "Select a ") + GetName(type);

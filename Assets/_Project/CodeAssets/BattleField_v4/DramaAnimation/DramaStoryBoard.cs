@@ -25,6 +25,12 @@ public class DramaStoryBoard : MonoBehaviour
 
 	private GameObject target;
 
+	void OnDestroy(){
+		m_actorGc.Clear();
+
+		controllors.Clear();
+	}
+
 
 	public void init(GameObject _target)
 	{
@@ -249,6 +255,16 @@ public class DramaStoryBoard : MonoBehaviour
 					
 					dam.movingTime = actorJson["movingTime"].AsFloat;
 				}
+				else if(actorType == DramaActor.ACTOR_TYPE.ROTATE)
+				{
+					DramaActorRotate dar = (DramaActorRotate)m_actorGc[modelIndex].AddComponent<DramaActorRotate>();
+
+					dar.waittingTime = waittingTime;
+
+					dar.targetRotation = new Vector3(actorJson["targetRotationx"].AsFloat, actorJson["targetRotationy"].AsFloat, actorJson["targetRotationz"].AsFloat);
+					
+					dar.rotateTime = actorJson["rotateTime"].AsFloat;
+				}
 				else if(actorType == DramaActor.ACTOR_TYPE.ALPHABG)
 				{
 					DramaActorAlpha dacm = (DramaActorAlpha)m_actorGc[modelIndex].AddComponent<DramaActorAlpha>();
@@ -274,6 +290,8 @@ public class DramaStoryBoard : MonoBehaviour
 					dape.position = new Vector3(actorJson["px"].AsFloat, actorJson["py"].AsFloat, actorJson["pz"].AsFloat);
 
 					dape.foward = new Vector3(actorJson["fx"].AsFloat, actorJson["fy"].AsFloat, actorJson["fz"].AsFloat);
+
+					dape.targetLocalPosition = new Vector3(actorJson["tx"].AsFloat, actorJson["ty"].AsFloat, actorJson["tz"].AsFloat);
 				}
 				else if(actorType == DramaActor.ACTOR_TYPE.SOUND)
 				{
@@ -322,7 +340,7 @@ public class DramaStoryBoard : MonoBehaviour
 
 		for(;flag == false && target != null;)
 		{
-			yield return new WaitForSeconds(2f);
+			yield return new WaitForEndOfFrame();//WaitForSeconds(.5f);
 
 			flag = getCurActionDone ();
 
@@ -376,6 +394,13 @@ public class DramaStoryBoard : MonoBehaviour
 				foreach(UILabel label in labels)
 				{
 					Destroy(label.gameObject);
+				}
+
+				NavMeshAgent nav = m_actorGc[i].GetComponent<NavMeshAgent>();
+
+				if(nav != null)
+				{
+					nav.enabled = false;
 				}
 
 				m_actorGc[i].AddComponent<DramaStorySimulation>();

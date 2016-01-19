@@ -158,8 +158,9 @@ public class TenementData : Singleton<TenementData>, SocketProcessor
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LM_HOUSE_INFO);
     }
 
-    void OnDestroy()
-    {
+    void OnDestroy(){
         SocketTool.UnRegisterMessageProcessor(this);
-    }
+
+		base.OnDestroy();
+	}
 }

@@ -2639,8 +2639,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Skill_5
       takeName: Take 001
-      firstFrame: 433
-      lastFrame: 495
+      firstFrame: 398
+      lastFrame: 430
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2659,13 +2659,6 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .516432106
-        functionName: activeSkillStart
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 5
-        messageOptions: 0
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -2679,6 +2672,27 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
+        messageOptions: 0
+      - time: .0283223409
+        functionName: playPre
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 5
+        messageOptions: 0
+      - time: .230273828
+        functionName: openShow
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 5
+        messageOptions: 0
+      - time: .596057415
+        functionName: activeSkillStart
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 5
         messageOptions: 0
       transformMask:
       - path: 

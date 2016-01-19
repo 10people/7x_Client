@@ -49,6 +49,8 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 	public GameObject new_MiBaoTemp; //秘宝战力信息界面
 
+	public GameObject Art; //可以合成技能的红点
+
 	public static NewMiBaoManager mMiBaoData;
 
 	public List<MBTemp> mMBTempList = new List<MBTemp>();
@@ -62,16 +64,22 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 		
 		return mMiBaoData;
 	}
+
 	void Awake()
 	{
 		SocketTool.RegisterSocketListener(this);	
 	}
+
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterSocketListener(this);
+
+		mMiBaoData = null;
 	}
+
 	void Start () {
 	
+		TaskData.Instance.m_DestroyMiBao = true;
 
 	}
 
@@ -85,6 +93,16 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 	}
 	public void Init()
 	{
+		
+		if(Global.m_sPanelWantRun != null && Global.m_sPanelWantRun != "")
+		{
+			if(Global.m_sPanelWantRun == "Mibaoskill")
+			{
+				ShowAllSkillS_Btn();
+				
+				Global.m_sPanelWantRun = "";
+			}
+		}
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 	}
 	public bool OnSocketEvent(QXBuffer p_message)
@@ -105,10 +123,33 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 				m_MiBaoInfo = MiBaoInfo;
 
+				mtime = m_MiBaoInfo.remainTime;
+
+//				Debug.Log("秘宝信息返回！");
+
 				InitData();
-				
+				StopCoroutine("showTime");
+				StartCoroutine("showTime");
+
 				return true;
 			}
+			case ProtoIndexes.S_BUY_MiBaoPoint: //请求tongbi购买信息 BuyTongbiResp
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				BuyMibaoPointResp mBuyMibaoPointResp = new BuyMibaoPointResp();
+				
+				t_qx.Deserialize(t_stream, mBuyMibaoPointResp, mBuyMibaoPointResp.GetType());
+				if (mBuyMibaoPointResp.result == 0)
+				{
+					m_MiBaoInfo.levelPoint = 10;
+					MiBao_TempInfo.GetComponent<MiBaoDesInfo>().Init();
+				}
+				return true;
+			}
+
 			default: return false;
 			}
 			
@@ -119,7 +160,35 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 		
 		return false;
 	}
+	int mtime;
+	IEnumerator showTime()
+	{
+		VipTemplate mVip = VipTemplate.GetVipInfoByLevel (JunZhuData.Instance().m_junzhuInfo.vipLv);
+		
+		int MaxPoint = mVip.MiBaoLimit;
 
+		while (mtime > 0) {
+			yield return new WaitForSeconds (1.0f);
+			mtime -= 1;
+			m_MiBaoInfo.remainTime = mtime;
+		}
+		if(MaxPoint <= m_MiBaoInfo.levelPoint)
+		{
+			StopCoroutine("showTime");
+		}
+		else
+		{
+			m_MiBaoInfo.levelPoint += 1;
+			if(mtime <=0)
+			{
+				mtime = (int )CanshuTemplate.GetValueByKey("ADD_MIBAODIANSHU_INTERVAL_TIME");
+			}
+
+			StopCoroutine("showTime");
+			
+			StartCoroutine("showTime");
+		}
+	}
 	public void InitUI()
 	{
 		Money.text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString();
@@ -138,9 +207,16 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 			SkillName.text = mName;
 
-			DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoskill.skill2Desc);
+			DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoskill.briefDesc);
 
-			SkillInstruction.text = mDesc.description;
+			string []s = mDesc.description.Split('#');
+			string mRul = "";
+			for (int i = 0; i < s.Length; i++)
+			{
+				mRul += s[i]+"\r\n";	
+			}
+
+			SkillInstruction.text = mRul;
 
 			Num_of_ActiveMiBao.text = ActiveMiBaoList.Count.ToString()+"/"+ mMiBaoskill.needNum.ToString();
 
@@ -149,6 +225,15 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 			SkillIcon.spriteName = mMiBaoskill.icon;
 
 			AllMiBaoActive.SetActive(false);
+
+			if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
+			{
+				Art.SetActive(true);
+			}
+			else
+			{
+				Art.SetActive(false);
+			}
 		}
 		else
 		{
@@ -167,7 +252,7 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 				for(int i = 0; i < m_MiBaoInfo.skillList.Count; i++)
 				{
-					Debug.Log ("m_MiBaoInfo.skillList[i].activeZuheId = "+m_MiBaoInfo.skillList[i].activeZuheId);
+					//Debug.Log ("m_MiBaoInfo.skillList[i].activeZuheId = "+m_MiBaoInfo.skillList[i].activeZuheId);
 					if(m_MiBaoInfo.skillList[i].activeZuheId > MaxId)
 					{
 						MaxId = m_MiBaoInfo.skillList[i].activeZuheId;//找到最大值
@@ -175,34 +260,66 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 				}
 				MaxId  += 1  ;
 			}
-		
+
 			MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(MaxId);
 			
 			string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoskill.nameId);
 			
 			SkillName.text = mName;
 			
-			DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoskill.skill2Desc);
+			DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoskill.briefDesc);
 			
 			SkillIcon.spriteName = mMiBaoskill.icon;
+			string []s = mDesc.description.Split('#');
+			string mRul = "";
+			for (int i = 0; i < s.Length; i++)
+			{
+				mRul += s[i]+"\r\n";	
+			}
 			
-			SkillInstruction.text = mDesc.description;
-			
+			SkillInstruction.text = mRul;
+
 			Num_of_ActiveMiBao.text = ActiveMiBaoList.Count.ToString()+"/"+ mMiBaoskill.needNum.ToString();
 			
 			mSlider.value = (float)(ActiveMiBaoList.Count) / (float)(mMiBaoskill.needNum);
+			if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
+			{
+				Art.SetActive(true);
+			}
+			else
+			{
+				Art.SetActive(false);
+			}
 		}
-
-//		public UILabel SkillName;
-//		
-//		public UILabel SkillInstruction;
+		ShowMiBaoYInDao ();
+	}
+	/// <summary>
+	/// IShow yindao
+	/// </summary>
+	/// 
+	void ShowMiBaoYInDao()
+	{
+		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress >= 0)
+		{
+			Debug.Log("choose one mibao ");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100170];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(100330)&& TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
+		{
+			Debug.Log("Make one mibao ");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100330];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+			return;
+		}
 	}
 	public void InitData()
 	{
 		ActiveMiBaoList.Clear ();
 		DisActiveMiBaoList.Clear ();
 
-		Debug.Log ("m_MiBaoInfo.miBaoList.Count = "+m_MiBaoInfo.miBaoList.Count);
+		//Debug.Log ("m_MiBaoInfo.miBaoList.Count = "+m_MiBaoInfo.miBaoList.Count);
 
 		for(int i = 0 ; i < m_MiBaoInfo.miBaoList.Count; i++)
 		{
@@ -279,6 +396,22 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 		InitUI ();
 
 		InistanceMiBaoItem ();
+		SaodangBack ();
+	}
+	void SaodangBack()
+	{
+		if(MiBao_TempInfo.activeInHierarchy)
+		{
+			foreach(MibaoInfo minfo in m_MiBaoInfo.miBaoList )
+			{
+				if(minfo.miBaoId == MiBao_TempInfo.GetComponent<MiBaoDesInfo>().ShowmMiBaoinfo.miBaoId)
+				{
+					MiBao_TempInfo.GetComponent<MiBaoDesInfo>().ShowmMiBaoinfo = minfo;
+					MiBao_TempInfo.GetComponent<MiBaoDesInfo>().ShowSuipian();
+					Debug.Log("RefreshMiBao");
+				}
+			}
+		}
 	}
 	public float dis_x = 120f;
 
@@ -286,9 +419,9 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 	public void InistanceMiBaoItem()
 	{
-		Debug.Log ("ActiveMiBaoList.Count = "+ActiveMiBaoList.Count);
+		//Debug.Log ("ActiveMiBaoList.Count = "+ActiveMiBaoList.Count);
 
-		Debug.Log ("ActiveMiBaoList.Count = "+DisActiveMiBaoList.Count);
+		//Debug.Log ("ActiveMiBaoList.Count = "+DisActiveMiBaoList.Count);
 
 		foreach(MBTemp m in mMBTempList)
 		{
@@ -401,9 +534,9 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 	public void Buy_YuanBao()
 	{
 		MainCityUI.ClearObjectList();
-		TopUpLoadManagerment.m_instance.LoadPrefab(true);
-		QXTanBaoData.Instance().CheckFreeTanBao();
-	}
+        EquipSuoData.TopUpLayerTip();
+        //		QXTanBaoData.Instance().CheckFreeTanBao();
+    }
 	public void GoPropertyShow()
 	{
 		First_MiBao_UI.SetActive (false);
@@ -441,38 +574,17 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 		MiBao_TempInfo.SetActive (true);
 		MiBaoDesInfo mMiBaodes = MiBao_TempInfo.GetComponent<MiBaoDesInfo>();
 		mMiBaodes.ShowmMiBaoinfo = mMiBaoifon;
+		mMiBaodes.InitLevel ();
 		mMiBaodes.Init();
 	}
 
-	List<string> InstrctionList = new List<string>();
 	public void HelpBtn()
 	{
-		InstrctionList.Clear ();
-		
-		string st1 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_11);
-		string st2 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_12);
-		string st3 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_13);
-		string st4 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_14);
-		string st5 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_15);
-		string st6 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_16);
-		string st7 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_17);
-		string st8 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_18);
-		string st9 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_19);
-		
-		InstrctionList.Add (st1);
-		InstrctionList.Add (st2);
-		InstrctionList.Add (st3);
-		InstrctionList.Add (st4);
-		InstrctionList.Add (st5);
-		InstrctionList.Add (st6);
-		InstrctionList.Add (st7);
-		InstrctionList.Add (st8);
-		InstrctionList.Add (st9);
-		
-		GeneralControl.Instance.LoadRulesPrefab (GeneralControl.RuleType.MIBAO,InstrctionList);
+		GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.MIBAOINSTRCDUTION));
 	}
 	public void CloseBtn()
 	{
+		TaskData.Instance.m_DestroyMiBao = false;
 		MainCityUI.TryRemoveFromObjectList(this.gameObject);
 		Destroy (this.gameObject);
 	}

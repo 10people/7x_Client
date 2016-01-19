@@ -80,9 +80,9 @@ public class AccountRequest : MonoBehaviour {
 			NoticeDataRequest ();
 		}
 
-		if(!string.IsNullOrEmpty (PlayerPrefs.GetString ("UserNameAndPassWord")))
+		if(!string.IsNullOrEmpty (GetStoredUserNameAndPassWord()))
 		{
-			string[] loginInfo = PlayerPrefs.GetString ("UserNameAndPassWord").Split (';');
+			string[] loginInfo = GetStoredUserNameAndPassWord().Split (';');
 			userName.value = loginInfo[0]; 
 			password.value = loginInfo[1]; 
 
@@ -105,7 +105,7 @@ public class AccountRequest : MonoBehaviour {
 	void NoticeDataRequest ()
 	{
 		#if DEBUG_REQUEST
-		Debug.Log("HttpRequest.GetNoticeUrl ()HttpRequest.GetNoticeUrl () ::" + HttpRequest.GetNoticeUrl());
+		Debug.Log("HttpRequest.GetNoticeUrl ()HttpRequest.GetNoticeUrl() : " + "" );
 
 		Debug.Log ( Time.realtimeSinceStartup + "NoticeDataRequest()" );
 		#endif
@@ -138,9 +138,11 @@ public class AccountRequest : MonoBehaviour {
 	
 	void NoticeFail (string tempResponse) 
 	{
+		Debug.Log( Time.realtimeSinceStartup + "AccountRequest.NoticeFail: " + tempResponse );
+
         CreateReConnectWindow();
 
-		Debug.Log( Time.realtimeSinceStartup + "AccountRequest.NoticeFail: " + tempResponse );
+
 	}
 
 	#region Register
@@ -195,7 +197,7 @@ public class AccountRequest : MonoBehaviour {
 	{
 		if (isRemember)
 		{
-			if (string.IsNullOrEmpty (PlayerPrefs.GetString ("UserNameAndPassWord")))
+			if (string.IsNullOrEmpty (GetStoredUserNameAndPassWord()))
 			{
 				PlayerPrefs.SetString ("UserNameAndPassWord", userName.value + ";" + password.value);
 			}
@@ -313,7 +315,7 @@ public class AccountRequest : MonoBehaviour {
 
 		if (isRemember)
 		{
-			if( string.IsNullOrEmpty (PlayerPrefs.GetString ("UserNameAndPassWord")))
+			if( string.IsNullOrEmpty (GetStoredUserNameAndPassWord()))
 			{
 				PlayerPrefs.SetString ("UserNameAndPassWord", userName.value + ";" + password.value);
 			}
@@ -388,7 +390,13 @@ public class AccountRequest : MonoBehaviour {
 
 		p_dict.Add( "SystemSoftware", SystemInfo.operatingSystem );
 
-		p_dict.Add( "SystemHardware", SystemInfo.deviceModel );
+		#if UNITY_EDITOR || UNITY_STANDALONE
+		p_dict.Add( "SystemHardware", "" );
+		#else
+		p_dict.Add( "SystemHardware", SystemInfo.deviceModel + "|" + DeviceHelper.GetDeviceCompany() );
+		#endif
+
+//		Debug.Log( "SystemHardware: " + ( SystemInfo.deviceModel + "|" + DeviceHelper.GetDeviceCompany() ) );
 
 		// TODO
 		p_dict.Add( "TelecomOper", "" );
@@ -416,7 +424,7 @@ public class AccountRequest : MonoBehaviour {
 
 		p_dict.Add( "GLVersion", "" );
 
-		p_dict.Add( "DeviceId", SystemInfo.deviceName );
+		p_dict.Add( "DeviceId", SystemInfo.deviceUniqueIdentifier );
 	}
 
 	#endregion
@@ -510,6 +518,8 @@ public class AccountRequest : MonoBehaviour {
 
      void CreateReConnectWindow()
     {
+//		Debug.Log( "AccountRequest.CreateReConnectWindow()" );
+
         Global.CreateBox(LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_1),
                         LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_2),
                         "",
@@ -596,4 +606,14 @@ public class AccountRequest : MonoBehaviour {
 	{
 		TransDown ();
 	}
+
+	#region Utilities
+
+	private static string GetStoredUserNameAndPassWord(){
+		string  t_string = PlayerPrefs.GetString ("UserNameAndPassWord");
+
+		return t_string;
+	}
+
+	#endregion
 }

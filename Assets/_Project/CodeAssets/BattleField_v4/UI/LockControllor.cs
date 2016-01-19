@@ -59,38 +59,96 @@ public class LockControllor : MonoBehaviour
 	
 	private void Awake() { _instance = this; }
 
+	void OnDestroy(){
+		_instance = null;
+	}
 
 	public void refreshLock (LOCK_TYPE lockType, bool targetActive) 
 	{
+		BattleWeapon bw = BattleUIControlor.Instance ().m_changeWeapon;
+
 		if (controllor == null) controllor = BattleUIControlor.Instance ();
 
-		if(lockType == LOCK_TYPE.Attack) refreshLock(lockAttack, controllor.m_gc_attack, targetActive);
+		if(lockType == LOCK_TYPE.Attack)
+		{
+			refreshLock(lockAttack, controllor.m_gc_attack, targetActive);
+		}
+		else if(lockType == LOCK_TYPE.WeaponHeavy)
+		{
+			refreshLock(lockWeaponHeavy, controllor.m_changeWeapon.btnHeavy, targetActive);
 
-		else if(lockType == LOCK_TYPE.WeaponHeavy) refreshLock(lockWeaponHeavy, controllor.m_changeWeapon.btnHeavy, targetActive);
-		
-		else if(lockType == LOCK_TYPE.WeaponLight) refreshLock(lockWeaponLight, controllor.m_changeWeapon.btnLight, targetActive);
-		
-		else if(lockType == LOCK_TYPE.WeaponRange) refreshLock(lockWeaponRange, controllor.m_changeWeapon.btnRange, targetActive);
-		
-		else if(lockType == LOCK_TYPE.HeavySkill_1) refreshLock(lockHeavySkill_1, controllor.m_gc_skill_1[0], targetActive);
-		
-		else if(lockType == LOCK_TYPE.HeavySkill_2) refreshLock(lockHeavySkill_2, controllor.m_gc_skill_2[0], targetActive);
-		
-		else if(lockType == LOCK_TYPE.LightSkill_1) refreshLock(lockLightSkill_1, controllor.m_gc_skill_1[2], targetActive);
-		
-		else if(lockType == LOCK_TYPE.LightSkill_2) refreshLock(lockLightSkill_2, controllor.m_gc_skill_2[2], targetActive);
-		
-		else if(lockType == LOCK_TYPE.RangeSkill_1) refreshLock(lockRangeSkill_1, controllor.m_gc_skill_1[1], targetActive);
-		
-		else if(lockType == LOCK_TYPE.RangeSkill_2) refreshLock(lockRangeSkill_2, controllor.m_gc_skill_2[1], targetActive);
-		
-		else if(lockType == LOCK_TYPE.MiBaoSkill) refreshLock(lockMiBaoSkill, controllor.btnMibaoSkill, targetActive);
-		
-		else if(lockType == LOCK_TYPE.Dodge) refreshLock(lockDodge, controllor.m_gc_dodge, targetActive);
-		
-		else if(lockType == LOCK_TYPE.AutoFight) refreshLock(lockAutoFight, controllor.m_gc_autoFight, targetActive);
-		
-		else if(lockType == LOCK_TYPE.Pause) refreshLock(lockPause, controllor.m_gc_pause, targetActive);
+			bw.spriteHeavySkill_1.setWeaponUnlock(targetActive);
+
+			bw.spriteHeavySkill_2.setWeaponUnlock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.WeaponLight) 
+		{
+			refreshLock(lockWeaponLight, controllor.m_changeWeapon.btnLight, targetActive);
+
+			bw.spriteLightSkill_1.setWeaponUnlock(targetActive);
+
+			bw.spriteLightSkill_2.setWeaponUnlock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.WeaponRange) 
+		{
+			refreshLock(lockWeaponRange, controllor.m_changeWeapon.btnRange, targetActive);
+
+			bw.spriteRangeSkill_1.setWeaponUnlock(targetActive);
+
+			bw.spriteRangeSkill_2.setWeaponUnlock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.HeavySkill_1)
+		{
+			refreshLock(lockHeavySkill_1, controllor.m_gc_skill_1[0], targetActive);
+
+			bw.spriteHeavySkill_1.setSkillLock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.HeavySkill_2)
+		{
+			refreshLock(lockHeavySkill_2, controllor.m_gc_skill_2[0], targetActive);
+
+			bw.spriteHeavySkill_2.setSkillLock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.LightSkill_1)
+		{
+			refreshLock(lockLightSkill_1, controllor.m_gc_skill_1[2], targetActive);
+
+			bw.spriteLightSkill_1.setSkillLock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.LightSkill_2)
+		{
+			refreshLock(lockLightSkill_2, controllor.m_gc_skill_2[2], targetActive);
+
+			bw.spriteLightSkill_2.setSkillLock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.RangeSkill_1)
+		{
+			refreshLock(lockRangeSkill_1, controllor.m_gc_skill_1[1], targetActive);
+
+			bw.spriteRangeSkill_1.setSkillLock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.RangeSkill_2)
+		{
+			refreshLock(lockRangeSkill_2, controllor.m_gc_skill_2[1], targetActive);
+
+			bw.spriteRangeSkill_2.setSkillLock(targetActive);
+		}
+		else if(lockType == LOCK_TYPE.MiBaoSkill)
+		{
+			refreshLock(lockMiBaoSkill, controllor.btnMibaoSkill, targetActive);
+		}
+		else if(lockType == LOCK_TYPE.Dodge)
+		{
+			refreshLock(lockDodge, controllor.m_gc_dodge, targetActive);
+		}
+		else if(lockType == LOCK_TYPE.AutoFight)
+		{
+			refreshLock(lockAutoFight, controllor.m_gc_autoFight, targetActive);
+		}
+		else if(lockType == LOCK_TYPE.Pause)
+		{
+			refreshLock(lockPause, controllor.m_gc_pause, targetActive);
+		}
 	}
 
 	private void refreshLock(GameObject gc_lock, GameObject icon, bool targetActive)
@@ -104,6 +162,10 @@ public class LockControllor : MonoBehaviour
 		foreach(UISprite sprite in sprites)
 		{
 			if(sprite.gameObject.name.Equals("SpriteWEAPON")) continue;
+
+			if(sprite.gameObject.name.Contains("Skill_1")) continue;
+
+			if(sprite.gameObject.name.Contains("Skill_2")) continue;
 
 			sprite.color = new Color(rgb, rgb, rgb, sprite.color.a);
 		}

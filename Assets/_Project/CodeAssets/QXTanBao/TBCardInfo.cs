@@ -30,7 +30,6 @@ public class TBCardInfo : MonoBehaviour {
 
 	private GameObject iconSamplePrefab;
 
-	public UIWidget effectWidget;
 	private int pinZhiId;
 
 	private string[] bgSpriteName = new string[]{"CardBg_back","CardBg"};
@@ -38,7 +37,7 @@ public class TBCardInfo : MonoBehaviour {
 	private TanBaoData.TanBaoType tbType;
 	private Vector3 targetPos;
 
-	private float itweenTime = 1f;
+	private float itweenTime = .2f;
 
 	/// <summary>
 	/// Gets the TB card info.
@@ -222,14 +221,13 @@ public class TBCardInfo : MonoBehaviour {
 		switch (cState)
 		{
 		case ClickState.STATE_BEGIN:
-			Debug.Log ("hahahahah");
+
 			cardBox.enabled = false;
 			TanBaoReward.tbReward.ItweenScale (new Vector3(0,1,1),0.15f,iTween.EaseType.linear,"CardBgScaleEnd",gameObject,gameObject);
 
 			if (awardInfo.itemType == 4)
 			{
-				effectWidget.depth = -1;
-				QXComData.InstanceEffect (QXComData.EffectPos.MID,effectWidget.gameObject,100155);
+				QXComData.InstanceEffect (QXComData.EffectPos.MID,cardBg.gameObject,100155);
 
 				if (tbType == TanBaoData.TanBaoType.TONGBI_SPEND || tbType == TanBaoData.TanBaoType.YUANBAO_SPEND)
 				{
@@ -239,8 +237,7 @@ public class TBCardInfo : MonoBehaviour {
 			}
 			else
 			{
-				effectWidget.depth = 2;
-				QXComData.InstanceEffect (QXComData.EffectPos.TOP,effectWidget.gameObject,100141);
+				QXComData.InstanceEffect (QXComData.EffectPos.TOP,cardBg.gameObject,100141);
 			}
 
 			break;
@@ -304,7 +301,6 @@ public class TBCardInfo : MonoBehaviour {
 
 	public void ClearAllEffect ()
 	{
-		QXComData.ClearEffect (effectWidget.gameObject);
 		QXComData.ClearEffect (cardBg.gameObject);
 		gameObject.SetActive (false);
 	}

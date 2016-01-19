@@ -17,9 +17,9 @@ public class PveUImanager :MYNGUIPanel
 
     public UILabel TiliLabel;
 
-    public GameObject RecoverToliCips;
+   // public GameObject RecoverToliCips;
 
-    public UILabel showTiLiClips;
+    //public UILabel showTiLiClips;
     public UILabel show_All_TiLiClips;
     public GameObject RightBtn;
     public GameObject LeftBtn;
@@ -31,6 +31,8 @@ public class PveUImanager :MYNGUIPanel
 
     public GameObject CQ_btn;
 	public GameObject PT_btn;
+
+	public GameObject GetAwardBtn;
 
     public GameObject DontOpenLvTips;
 
@@ -48,11 +50,15 @@ public class PveUImanager :MYNGUIPanel
 
     void Start()
     {
-        RecoverToliCips.transform.localScale = new Vector3(0, 0, 0);
+      //  RecoverToliCips.transform.localScale = new Vector3(0, 0, 0);
         LeftBtn.SetActive(false);
         RightBtn.SetActive(true);
 
     }
+
+	void OnDestroy(){
+		instances = null;
+	}
 
 	public void ChangeStateBtn()
 	{
@@ -164,16 +170,20 @@ public class PveUImanager :MYNGUIPanel
 //        {
 //            CQ_btn.SetActive(true);
 //        }
-
-		if((CityGlobalData.m_LastSection > 2&& FunctionOpenTemp.GetWhetherContainID( 109))||CityGlobalData.m_temp_CQ_Section  > 2)
+//		Debug.Log("CityGlobalData.m_LastSection = "+CityGlobalData.m_LastSection);
+//		Debug.Log("FunctionOpenTemp.GetWhetherContainID( 109))= "+FunctionOpenTemp.GetWhetherContainID( 109));
+//		Debug.Log("CityGlobalData.m_temp_CQ_Section = "+CityGlobalData.m_temp_CQ_Section);
+		if((CityGlobalData.m_temp_CQ_Section  > 1 ||(CityGlobalData.m_LastSection > 1&& FunctionOpenTemp.GetWhetherContainID( 109))&&CityGlobalData.m_temp_CQ_Section  > 0))
 		{
+			//Debug.Log("CityGlobalData.m_LastSection = "+CityGlobalData.m_LastSection);
 			CQ_btn.SetActive(true);
 		}
 
       //  buyTimes = JunZhuData.Instance().m_junzhuInfo.tiLipurchaseTime;
 		if (!CityGlobalData.PT_Or_CQ )
         {
-			if (MapData.mapinstance.CurrChapter <= 2)
+			GetAwardBtn.SetActive(false);
+			if (MapData.mapinstance.CurrChapter < 2)
             {
                 LeftBtn.SetActive(false);
 				RightBtn.SetActive(true);
@@ -187,6 +197,7 @@ public class PveUImanager :MYNGUIPanel
         }
 		else
 		{
+			GetAwardBtn.SetActive(true);
 			if (MapData.mapinstance.CurrChapter <= 1)
 			{
 				LeftBtn.SetActive(false);
@@ -281,9 +292,34 @@ public class PveUImanager :MYNGUIPanel
 
 	void diseCoverTiLiClips()
 	{
-		RecoverToliCips.transform.localScale = new Vector3(0, 0, 1);
+		//RecoverToliCips.transform.localScale = new Vector3(0, 0, 1);
 	}
-	
+	public void GetPveSectionAward()
+	{
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_REMIND_MI_BAO ),OpenLockLoadBack);
+	}
+
+	GameObject AwardtempObject;
+
+	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
+	{
+		if(AwardtempObject != null)
+		{
+			return;
+		}
+		AwardtempObject = ( GameObject )Instantiate( p_object );
+		AwardtempObject.name = "PVELevelPass";
+		AwardtempObject.transform.parent = AwardRoot.transform.parent;
+
+		AwardtempObject.transform.localPosition = Vector3.zero;
+
+		AwardtempObject.transform.localScale  = Vector3.one;
+
+		PassLevelAward mPassLevelAward = AwardtempObject.GetComponent<PassLevelAward>();
+		mPassLevelAward.Init ();
+		MapData.mapinstance.CloseEffect();
+		PassLevelBtn.Instance ().CloseEffect ();
+	}
 	private IEnumerator discovertips()
 	{
 		yield return new WaitForSeconds(1.0f);
@@ -434,7 +470,7 @@ public class PveUImanager :MYNGUIPanel
         }
         else
         {
-			if (MapData.mapinstance.CurrChapter > 2)
+			if (MapData.mapinstance.CurrChapter > 1)
             {
                 choosemap.UpAndDownbtn = true;
                 MapData.mapinstance.JYLvs = 0;
@@ -457,7 +493,7 @@ public class PveUImanager :MYNGUIPanel
             StartCoroutine(CountTime());
         }
     }
-
+	public GameObject AwardRoot;
     public void ChooseChapterLoadResourceCallback(ref WWW p_www, string p_path, Object p_object)
     {
 		if(CityGlobalData.PveLevel_UI_is_OPen)
@@ -477,15 +513,6 @@ public class PveUImanager :MYNGUIPanel
 
 		if (CityGlobalData.PT_Or_CQ)
         {
-            if (FreshGuide.Instance().IsActive(100004) && TaskData.Instance.m_TaskInfoDic[100004].progress >= 0)
-            {
-                mChapterUImaneger.AllChapers = MapData.mapinstance.AllChapteres + 1;
-
-            }
-            else
-            {
-                mChapterUImaneger.AllChapers = MapData.mapinstance.AllChapteres;
-            }
 
             mChapterUImaneger.CurrChaper = MapData.mapinstance.nowCurrChapter;
         }
@@ -504,13 +531,22 @@ public class PveUImanager :MYNGUIPanel
         MapData.mapinstance.IsCloseGuid = true;
 
 		MapData.mapinstance.CloseEffect();
-
+		PassLevelBtn.Instance ().CloseEffect ();
 		MapData.mapinstance.ClosewPVEGuid ();
 
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVE_CHOOSE_CHAPTER), ChooseChapterLoadResourceCallback);
 
     }
+	public GameObject Art;
 
+	public void ShowArt()
+	{
+		Art.SetActive (true);
+	}
+	public void CloseArt()
+	{
+		Art.SetActive (false);
+	}
     public void BackToMainCity()//返回到主城中
     {
         m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
@@ -522,7 +558,7 @@ public class PveUImanager :MYNGUIPanel
 		EnterGuoGuanmap.Instance ().ShouldOpen_id = 0;
         MainCityUI.TryRemoveFromObjectList(desdroymap);
         Global.m_isOpenPVP = false;
-
+		CityGlobalData .PT_Or_CQ = true;
         if (UIYindao.m_UIYindao.m_isOpenYindao)
         {
             UIYindao.m_UIYindao.CloseUI();

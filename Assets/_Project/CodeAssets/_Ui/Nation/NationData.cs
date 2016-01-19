@@ -15,10 +15,15 @@ public class NationData : Singleton<NationData>,SocketProcessor
     public  GuoJiaMainInfoResp m_NationInfo;
     public bool m_DataGetComplete = false;
     public bool m_DataRequest = false;
-    void Start()
+    
+	void Start()
     {
       //  RequestData();
     }
+
+	void OnDestroy(){
+		base.OnDestroy();
+	}
  
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {

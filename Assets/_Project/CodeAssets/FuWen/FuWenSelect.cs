@@ -29,6 +29,8 @@ public class FuWenSelect : MonoBehaviour {
 	}
 	private SelectType selectType = SelectType.XIANGQIAN;//符石选择入口
 
+	public List<EventHandler> selectHandlerList = new List<EventHandler> ();
+
 	/// <summary>
 	/// 镶嵌符石的时候需要符石信息，符石镶嵌栏位id
 	/// </summary>
@@ -52,9 +54,13 @@ public class FuWenSelect : MonoBehaviour {
 
 	private float selectSbValue;
 
+	public ScaleEffectController sEffectController;
+
 	//获得选择符石列表
 	public void GetSelectFuWenInfo (SelectType tempType,List<Fuwen> tempList)
 	{
+		sEffectController.OnOpenWindowClick ();
+
 		selectType = tempType;
 
 		switch (tempType)
@@ -113,11 +119,13 @@ public class FuWenSelect : MonoBehaviour {
 
 		fuShiGrid.transform.parent.GetComponent<UIScrollView> ().enabled = tempList.Count < 4 ? false : true;
 
-		if(FreshGuide.Instance().IsActive(100300) && TaskData.Instance.m_TaskInfoDic[100300].progress >= 0)
+		foreach (EventHandler handler in selectHandlerList)
 		{
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100300];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+			handler.m_handler -= CloseBtn;
+			handler.m_handler += CloseBtn;
 		}
+
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100470,4);
 
 		isSelect = false;
 	}
@@ -134,7 +142,7 @@ public class FuWenSelect : MonoBehaviour {
 		}
 	}
 
-	public void CloseBtn ()
+	public void CloseBtn (GameObject obj)
 	{
 		if (curItemId != 0)
 		{

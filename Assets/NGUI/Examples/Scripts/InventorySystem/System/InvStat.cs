@@ -44,7 +44,7 @@ public class InvStat
 	/// Get the localized name of the stat.
 	/// </summary>
 
-	static public string GetName (Identifier i)
+	public static string GetName (Identifier i)
 	{
 		return i.ToString();
 	}
@@ -53,7 +53,7 @@ public class InvStat
 	/// Get the localized stat's description -- adjust this to fit your own stats.
 	/// </summary>
 
-	static public string GetDescription (Identifier i)
+	public static string GetDescription (Identifier i)
 	{
 		switch (i)
 		{
@@ -74,7 +74,7 @@ public class InvStat
 	/// Comparison function for sorting armor. Armor value will show up first, followed by damage.
 	/// </summary>
 
-	static public int CompareArmor (InvStat a, InvStat b)
+	public static int CompareArmor (InvStat a, InvStat b)
 	{
 		int ia = (int)a.id;
 		int ib = (int)b.id;
@@ -100,7 +100,7 @@ public class InvStat
 	/// Comparison function for sorting weapons. Damage value will show up first, followed by armor.
 	/// </summary>
 
-	static public int CompareWeapon (InvStat a, InvStat b)
+	public static int CompareWeapon (InvStat a, InvStat b)
 	{
 		int ia = (int)a.id;
 		int ib = (int)b.id;

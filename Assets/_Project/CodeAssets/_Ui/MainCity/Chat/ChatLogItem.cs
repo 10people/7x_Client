@@ -63,23 +63,12 @@ public class ChatLogItem : MonoBehaviour
     public ChatBaseDataHandler.ChatStruct m_ChatStruct = new ChatBaseDataHandler.ChatStruct();
 
     [HideInInspector]
-    public bool IsLeftMode = true;
-    [HideInInspector]
-    public bool IsCarriageHelpMode = false;
-    [HideInInspector]
     public bool IsRobMode = false;
 
     private long RobKingID;
 
     #region Const Variables
 
-    private const int GapBetweenDetailLabelAndBG = 20;
-    private const int GapBetweenMaxSenderLabelAndDetailBG = 20;
-
-    /// <summary>
-    /// Used as the right border in grid panel.
-    /// </summary>
-    private const int GapTidy = 20;
     private static readonly Color BasicLightYellow = new Color(1, 0.973f, 0.851f, 1);
     private static readonly Color BasicOrangeColor = new Color(1, 0.694f, 0.165f, 1);
     private static readonly Color BasicRedColor = new Color(0.769f, 0, 0, 1);
@@ -93,55 +82,45 @@ public class ChatLogItem : MonoBehaviour
     private const string DetailBGSpriteSelfName = "DialogSelf";
     private const string DetailBGSpriteOtherName = "DialogOther";
 
+    private const float DetailLabelRestrictWidth = 310f;
+    private const float DetailLabelRestrictHeight = 25f;
+
+    public static readonly Dictionary<ChatPct.Channel, string> ChannelToString = new Dictionary<ChatPct.Channel, string>()
+    {
+        {ChatPct.Channel.GUOJIA, "国家"}, {ChatPct.Channel.LIANMENG, "联盟"}, {ChatPct.Channel.SHIJIE, "世界"},
+        {ChatPct.Channel.SILIAO, "私聊"}, {ChatPct.Channel.SYSTEM, "系统"}, {ChatPct.Channel.XiaoWu, "小屋"},{ChatPct.Channel.Broadcast, "广播"},
+    };
+
+    public static readonly Dictionary<int, string> NationToString = new Dictionary<int, string>()
+    {
+        {1, "齐"}, {2, "楚"}, {3, "燕"}, {4, "韩"}, {5, "赵"}, {6, "魏"}, {7, "秦"},
+    };
+
     #endregion
 
     #region Components
 
-    [HideInInspector]
     public GameObject AlertBtn;
-    [HideInInspector]
-    public UIEventListener AlertListener;
-    [HideInInspector]
-    public GameObject CopyContainer;
-    [HideInInspector]
     public GameObject CopyBtn;
-    [HideInInspector]
-    public UISprite CopyContainerBG;
-    [HideInInspector]
-    public UIEventListener CopyListener;
 
     /// <summary>
     /// This button is not controlled by deactive method.
     /// </summary>
-    [HideInInspector]
     public GameObject CarriageHelpBtn;
-    [HideInInspector]
-    public UIEventListener CarriageHelpListener;
 
     /// <summary>
     /// This button is not controlled by deactive method.
     /// </summary>
-    [HideInInspector]
     public GameObject RobBtn;
-    [HideInInspector]
-    public UIEventListener RobListener;
 
-    [HideInInspector]
-    public UISprite DetailBG;
-    [HideInInspector]
+    public UISprite HeadSprite;
+    public UISprite HeadBgSprite;
+
     public UILabel DetailLabel;
-    [HideInInspector]
-    public UIEventListener DetailListener;
-    [HideInInspector]
+    public UISprite DetailBgSprite;
     public UILabel SenderLabel;
 
-    public UIWidget SenderWidget;
     public UISprite VipSprite;
-    public UISprite NationSprite;
-    public GameObject SenderContainer;
-
-    [HideInInspector]
-    public UIEventListener SenderListener;
 
     public FloatButtonsController AlertFloatButtonsController;
     public FloatButtonsController SenderFloatButtonsController;
@@ -149,89 +128,54 @@ public class ChatLogItem : MonoBehaviour
     #endregion
 
     /// <summary>
-    /// Set sender label and detail label transform, set left mode sender container's left border to 0 as base, set single line detail label's posY to 0 as base.
-    /// </summary>
-    public void SetTransform()
-    {
-        if (IsLeftMode)
-        {
-            SenderContainer.transform.localPosition = new Vector3(0 + SenderWidget.width / 2.0f - SenderWidget.transform.localPosition.x, 0, 0);
-
-            DetailLabel.transform.localPosition = new Vector3(0 + SenderWidget.width + DetailLabel.width / 2.0f + GapBetweenMaxSenderLabelAndDetailBG + GapBetweenDetailLabelAndBG,
-                0 - (DetailLabel.height - DetailLabel.fontSize) / 2.0f, 0);
-        }
-        else
-        {
-            if (IsCarriageHelpMode)
-            {
-                SenderContainer.transform.localPosition = new Vector3(m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width / 2.0f - SenderWidget.transform.localPosition.x - CarriageHelpBtn.GetComponent<UIWidget>().width, 0, 0);
-
-                DetailLabel.transform.localPosition = new Vector3(m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width - GapBetweenMaxSenderLabelAndDetailBG - GapBetweenDetailLabelAndBG - DetailLabel.width / 2.0f - CarriageHelpBtn.GetComponent<UIWidget>().width,
-                    0 - (DetailLabel.height - DetailLabel.fontSize) / 2.0f, 0);
-            }
-            else if (IsRobMode)
-            {
-                SenderContainer.transform.localPosition = new Vector3(m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width / 2.0f - SenderWidget.transform.localPosition.x - RobBtn.GetComponent<UIWidget>().width, 0, 0);
-
-                DetailLabel.transform.localPosition = new Vector3(m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width - GapBetweenMaxSenderLabelAndDetailBG - GapBetweenDetailLabelAndBG - DetailLabel.width / 2.0f - RobBtn.GetComponent<UIWidget>().width,
-                    0 - (DetailLabel.height - DetailLabel.fontSize) / 2.0f, 0);
-            }
-            else
-            {
-                SenderContainer.transform.localPosition = new Vector3(m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width / 2.0f - SenderWidget.transform.localPosition.x, 0, 0);
-
-                DetailLabel.transform.localPosition = new Vector3(m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width - GapBetweenMaxSenderLabelAndDetailBG - GapBetweenDetailLabelAndBG - DetailLabel.width / 2.0f,
-                    0 - (DetailLabel.height - DetailLabel.fontSize) / 2.0f, 0);
-            }
-        }
-    }
-
-    /// <summary>
     /// Set chat log item data.
     /// </summary>
     public void SetData()
     {
+        //Set normal or simple mode.
+        if (IsSimpleMode)
+        {
+            HeadSprite.gameObject.SetActive(false);
+            HeadBgSprite.gameObject.SetActive(false);
+        }
+        else
+        {
+            HeadSprite.gameObject.SetActive(true);
+            HeadBgSprite.gameObject.SetActive(true);
+        }
+
         //Set mode.
-        IsLeftMode = m_ChatStruct.m_ChatPct.senderName != JunZhuData.Instance().m_junzhuInfo.name;
-        IsCarriageHelpMode = m_ChatStruct.m_ChatPct.isYBHelp;
         IsRobMode = m_ChatStruct.m_ChatPct.isLveDuoHelp;
 
-        //Disable help btn if it is self send.
-        if (IsCarriageHelpMode && m_ChatStruct.m_ChatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id)
-        {
-            CarriageHelpBtn.GetComponent<UIButton>().isEnabled = false;
-        }
-
-        //Disable help btn if it is self send.
-        if (IsRobMode && m_ChatStruct.m_ChatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id)
-        {
-            CarriageHelpBtn.GetComponent<UIButton>().isEnabled = false;
-        }
-
-        //Set carriage help button.
-        CarriageHelpBtn.SetActive(IsCarriageHelpMode);
         //Set rob button.
         RobBtn.SetActive(IsRobMode);
 
         //Set optional data.
+        //TODO
+        //HeadBgSprite.spriteName;
         VipSprite.spriteName = "vip" + m_ChatStruct.m_ChatPct.vipLevel;
-        VipSprite.gameObject.SetActive(m_ChatStruct.m_ChatPct.vipLevel > 0);
-        NationSprite.spriteName = "nation_" + m_ChatStruct.m_ChatPct.guoJia;
 
         SenderLabel.gameObject.SetActive(true);
-        SenderLabel.text = m_ChatStruct.m_ChatPct.senderName;
         if (m_ChatStruct.m_ChatPct.channel == ChatPct.Channel.SYSTEM)
         {
             SenderLabel.color = BasicRedColor;
-        }
-        else if (SenderLabel.text == JunZhuData.Instance().m_junzhuInfo.name)
-        {
-            SenderLabel.color = BasicOrangeColor;
+            SenderLabel.text = m_ChatStruct.m_ChatPct.senderName;
         }
         else
         {
-            //[Add new color]Set label color to different color.
-            SenderLabel.color = BasicOrangeColor;
+            SenderLabel.color = Color.white;
+            SenderLabel.text = ColorTool.Color_Blue_016bc5 + "[" + ChannelToString[m_ChatStruct.m_ChatPct.channel] + "]" + "[-]" + ((m_ChatStruct.m_ChatPct.guoJia >= 1 && m_ChatStruct.m_ChatPct.guoJia <= 7) ? (ColorTool.Color_Gold_edc347 + "[" + NationToString[m_ChatStruct.m_ChatPct.guoJia] + "]" + "[-]") : "") + ColorTool.Color_Gold_ffb12a + m_ChatStruct.m_ChatPct.senderName + "[-]";
+        }
+
+        if (m_ChatStruct.m_ChatPct.senderName == JunZhuData.Instance().m_junzhuInfo.name)
+        {
+            DetailBgSprite.spriteName = DetailBGSpriteSelfName;
+            DetailBgSprite.transform.localScale = new Vector3(-1, 1, 1);
+        }
+        else
+        {
+            DetailBgSprite.spriteName = DetailBGSpriteOtherName;
+            DetailBgSprite.transform.localScale = Vector3.one;
         }
 
         DetailLabel.gameObject.SetActive(true);
@@ -254,7 +198,8 @@ public class ChatLogItem : MonoBehaviour
         //Set player name basic orange color.
         DetailLabel.text = oriStr.Replace(PlayerNamePrefixText, PlayerNamePrefixColor).Replace(PlayerNameSubfixText, PlayerNameSubfixColor);
 
-        CopyContainer.SetActive(false);
+        CopyBtn.SetActive(false);
+        CarriageHelpBtn.SetActive(false);
         AlertBtn.SetActive(!m_ChatStruct.isReceived);
     }
 
@@ -263,65 +208,15 @@ public class ChatLogItem : MonoBehaviour
     /// </summary>
     public void AdaptDetailText()
     {
-        //same restrict detail bg width in 2 modes.
-        //consider carriage help button.
-        float restrictDetailBGWidth;
-        if (IsCarriageHelpMode)
+        //TODO: optimize calc.
+        if (DetailLabel.height > DetailLabelRestrictHeight + 1)
         {
-            restrictDetailBGWidth = m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width - GapBetweenMaxSenderLabelAndDetailBG - AlertBtn.GetComponent<UISprite>().width - CarriageHelpBtn.GetComponent<UIWidget>().width;
+            DetailLabel.transform.localPosition = new Vector3(0, -(DetailLabel.height - DetailLabelRestrictHeight) / 2, 0);
         }
-        else if (IsRobMode)
-        {
-            restrictDetailBGWidth = m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width - GapBetweenMaxSenderLabelAndDetailBG - AlertBtn.GetComponent<UISprite>().width - RobBtn.GetComponent<UIWidget>().width;
-        }
-        else
-        {
-            restrictDetailBGWidth = m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width - GapBetweenMaxSenderLabelAndDetailBG - AlertBtn.GetComponent<UISprite>().width;
-        }
-
-        if (DetailBG.width > restrictDetailBGWidth)
-        {
-            DetailLabel.overflowMethod = UILabel.Overflow.ResizeHeight;
-            DetailLabel.width = (int)(restrictDetailBGWidth - 2 * GapBetweenDetailLabelAndBG);
-        }
-    }
-
-    /// <summary>
-    /// Set btns pos.
-    /// </summary>
-    public void AdaptButtons()
-    {
-        if (IsLeftMode)
-        {
-            //restrict btn pos with max value.
-            float maxPosXCopy = m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - CopyContainerBG.width / 2.0f;
-            //Set copy btn pos
-            float standradPosXCopy = SenderWidget.width + GapBetweenMaxSenderLabelAndDetailBG +
-                                 DetailBG.width + CopyContainerBG.width / 2.0f;
-
-            CopyBtn.transform.localPosition = new Vector3(standradPosXCopy < maxPosXCopy ? standradPosXCopy : maxPosXCopy, CopyBtn.transform.localPosition.y, 0);
-        }
-        else
-        {
-            //restrict btn pos with min value.
-            float minPosXCopy = 0 + CopyContainerBG.width / 2.0f;
-            //Set copy btn pos
-            float standradPosXCopy = m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - SenderWidget.width - GapBetweenMaxSenderLabelAndDetailBG - DetailBG.width - CopyContainerBG.width / 2.0f;
-
-            CopyBtn.transform.localPosition = new Vector3(standradPosXCopy > minPosXCopy ? standradPosXCopy : minPosXCopy, CopyBtn.transform.localPosition.y, 0);
-        }
-
-        //Set carriage help button position.
-        CarriageHelpBtn.transform.localPosition = new Vector3(m_ChatBaseDataHandler.ScrollViewWidth - CarriageHelpBtn.GetComponent<UIWidget>().width / 2.0f, 0, 0);
-
-        //Set rob button position.
-        RobBtn.transform.localPosition = new Vector3(m_ChatBaseDataHandler.ScrollViewWidth - RobBtn.GetComponent<UIWidget>().width / 2.0f, 0, 0);
     }
 
     public void DeActiveAllButtonsExpectAlert()
     {
-        CopyContainer.SetActive(false);
-
         DestroyFloatButtons();
     }
 
@@ -380,7 +275,7 @@ public class ChatLogItem : MonoBehaviour
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_ChatBaseDataHandler.m_ChatBaseWindow.m_ChatUiBoxManager.ShieldCallBack);
     }
 
-    private void OnCopyClick(GameObject go)
+    public void OnCopyClick()
     {
         //        CopyContainer.SetActive(false);
 
@@ -418,45 +313,15 @@ public class ChatLogItem : MonoBehaviour
 
     }
 
-    private void OnRobClick(GameObject go)
+    public void OnRobClick()
     {
-        LueDuoData.Instance.LueDuoOpponentReq(RobKingID, LueDuoData.WhichOpponent.CHAT);
+		PlunderData.Instance.PlunderOpponent (PlunderData.Entrance.CHAT,RobKingID);
     }
 
-    private void OnCarriageHelpClick(GameObject go)
+    [Obsolete("Do not use any more.")]
+    public void OnCarriageHelpClick()
     {
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnCarriageHelpCallBack);
-    }
 
-    private void OnCarriageHelpCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-        uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
-        uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-            null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_12).Replace("***", m_ChatStruct.m_ChatPct.senderName).Replace("X", CanshuTemplate.GetValueByKey(CanshuTemplate.YUNBIAOASSISTANCE_GAIN_SUCCEED).ToString()),
-            null,
-            LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL), LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM),
-            OnBoxCarriageHelp);
-    }
-
-    private void OnBoxCarriageHelp(int i)
-    {
-        switch (i)
-        {
-            case 1:
-                break;
-            case 2:
-                CarriageHelpBtn.GetComponent<UIButton>().isEnabled = false;
-
-                AnswerYaBiaoHelpReq temp = new AnswerYaBiaoHelpReq() { code = 10, jzId = m_ChatStruct.m_ChatPct.senderId };
-
-                SocketHelper.SendQXMessage(temp, ProtoIndexes.C_ANSWER_YBHELP_RSQ);
-
-                break;
-            default:
-                Debug.LogError("UIBox callback para:" + i + " is not correct.");
-                break;
-        }
     }
 
     private void OnResendClick()
@@ -490,15 +355,15 @@ public class ChatLogItem : MonoBehaviour
         m_ChatBaseDataHandler.Refresh(0);
         m_ChatStruct.m_ChatLogItem = null;
         m_ChatBaseDataHandler.storedChatStructList.Remove(m_ChatStruct);
-        PoolManagerListController.Instance.ReturnItem(IsLeftMode ? "ChatDataOtherItem" : "ChatDataSelfItem", gameObject);
+        PoolManagerListController.Instance.ReturnItem("ChatDataItem", gameObject);
     }
 
-    private void OnSenderClick(GameObject go)
+    public void OnSenderClick()
     {
         if (IsSimpleMode) return;
 
-        //disable when left mode or system message.
-        if (SenderLabel.text == JunZhuData.Instance().m_junzhuInfo.name ||
+        //disable when self or system message.
+        if (m_ChatStruct.m_ChatPct.senderName == JunZhuData.Instance().m_junzhuInfo.name ||
             m_ChatStruct.m_ChatPct.channel == ChatPct.Channel.SYSTEM)
         {
             return;
@@ -532,19 +397,15 @@ public class ChatLogItem : MonoBehaviour
             tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "屏蔽", m_VoidDelegate = OnShieldClick });
         }
 
-        SenderFloatButtonsController.Initialize(tempList, IsLeftMode);
+        SenderFloatButtonsController.Initialize(tempList, true);
 
         TransformHelper.ActiveWithStandardize(transform, tempObject.transform);
         //adapt transform position.
-        if (IsLeftMode)
-        {
-            SenderFloatButtonsController.transform.localPosition = new Vector3(VipSprite.width + SenderLabel.width + SenderFloatButtonsController.m_BGLeft.GetComponent<UIWidget>().width / 2.0f - SenderFloatButtonsController.m_BGLeft.transform.localPosition.x, SenderFloatButtonsController.transform.localPosition.y, SenderFloatButtonsController.transform.localPosition.z);
-        }
-        else
-        {
-            SenderFloatButtonsController.transform.localPosition = new Vector3(SenderLabel.transform.localPosition.x - SenderLabel.width / 2.0f - SenderFloatButtonsController.m_BGLeft.GetComponent<UIWidget>().width / 2.0f - SenderFloatButtonsController.m_BGLeft.transform.localPosition.x, SenderFloatButtonsController.transform.localPosition.y, SenderFloatButtonsController.transform.localPosition.z);
-        }
+        //TODO: complete adapt
+        SenderFloatButtonsController.transform.position = HeadSprite.transform.position;
+        SenderFloatButtonsController.transform.localPosition += new Vector3(HeadSprite.width, 0, 0);
 
+        //adapt to scroll view.
         StartCoroutine(AdjustSenderFloatButton());
     }
 
@@ -562,21 +423,12 @@ public class ChatLogItem : MonoBehaviour
         NGUIHelper.AdaptWidgetInScrollView(m_ChatBaseDataHandler.m_ScrollView, m_ChatBaseDataHandler.m_ScrollBar, SenderFloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
     }
 
-    private void OnDetailClick(GameObject go)
+    public void OnDetailClick()
     {
         if (IsSimpleMode) return;
-
-        ////Deactive all other buttons active copy.
-        //if (!CopyBtn.activeInHierarchy)
-        //{
-        //    var chatLogList = s_ChatWindow.m_ChatDataHandlerList.showingChatMsgList;
-        //    chatLogList.ForEach(item => item.DeActiveAllButtonObjectsExpectAlert());
-        //}
-
-        //CopyContainer.SetActive(!CopyContainer.activeSelf);
     }
 
-    private void OnAlertClick(GameObject go)
+    public void OnAlertClick()
     {
         if (IsSimpleMode) return;
 
@@ -597,23 +449,13 @@ public class ChatLogItem : MonoBehaviour
         tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "重发", m_VoidDelegate = OnResendClick });
         tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "删除", m_VoidDelegate = OnDeleteClick });
 
-        AlertFloatButtonsController.Initialize(tempList, IsLeftMode);
+        AlertFloatButtonsController.Initialize(tempList, true);
 
         TransformHelper.ActiveWithStandardize(transform, tempObject.transform);
         //adapt transform position.
-        if (IsLeftMode)
-        {
-            float maxPosXAlert = m_ChatBaseDataHandler.ScrollViewWidth - GapTidy - AlertFloatButtonsController.m_BGLeft.GetComponent<UIWidget>().width / 2.0f - AlertFloatButtonsController.m_BGLeft.transform.localPosition.x;
-            float standardPosXContainer = AlertBtn.transform.localPosition.x + AlertBtn.GetComponent<UISprite>().width / 2.0f + AlertFloatButtonsController.m_BGLeft.GetComponent<UIWidget>().width / 2.0f - AlertFloatButtonsController.m_BGLeft.transform.localPosition.x;
-            AlertFloatButtonsController.transform.localPosition = new Vector3(standardPosXContainer < maxPosXAlert ? standardPosXContainer : maxPosXAlert, AlertFloatButtonsController.transform.localPosition.y, 0);
-        }
-        else
-        {
-            float minPosXAlert = 0 + AlertFloatButtonsController.m_BGLeft.GetComponent<UIWidget>().width / 2.0f - AlertFloatButtonsController.m_BGLeft.transform.localPosition.x;
-            float standardPosXContainer = AlertBtn.transform.localPosition.x - AlertBtn.GetComponent<UISprite>().width / 2.0f - AlertFloatButtonsController.m_BGLeft.GetComponent<UIWidget>().width / 2.0f - AlertFloatButtonsController.m_BGLeft.transform.localPosition.x;
-            AlertFloatButtonsController.transform.localPosition = new Vector3(standardPosXContainer > minPosXAlert ? standardPosXContainer : minPosXAlert, AlertFloatButtonsController.transform.localPosition.y, 0);
-        }
+        AlertFloatButtonsController.transform.position = AlertBtn.transform.position;
 
+        //adapt to scroll view.
         StartCoroutine(AdjustAlertFloatButton());
     }
 
@@ -645,45 +487,6 @@ public class ChatLogItem : MonoBehaviour
     }
 
     #region Mono
-
-    private void OnEnable()
-    {
-        SenderListener.onClick = OnSenderClick;
-        DetailListener.onClick = OnDetailClick;
-        AlertListener.onClick = OnAlertClick;
-        CopyListener.onClick = OnCopyClick;
-        CarriageHelpListener.onClick = OnCarriageHelpClick;
-        RobListener.onClick = OnRobClick;
-    }
-
-    private void OnDisable()
-    {
-        SenderListener.onClick = null;
-        DetailListener.onClick = null;
-        AlertListener.onClick = null;
-        CopyListener.onClick = null;
-        CarriageHelpListener.onClick = null;
-        RobListener.onClick = null;
-    }
-
-    private void Awake()
-    {
-        SenderLabel = TransformHelper.FindChild(transform, "SenderText").GetComponent<UILabel>();
-        DetailLabel = TransformHelper.FindChild(transform, "DetailText").GetComponent<UILabel>();
-        CopyBtn = TransformHelper.FindChild(transform, "Copy").gameObject;
-        CarriageHelpBtn = TransformHelper.FindChild(transform, "CarriageHelp").gameObject;
-        RobBtn = TransformHelper.FindChild(transform, "Rob").gameObject;
-        CopyContainer = TransformHelper.FindChild(transform, "CopyContainer").gameObject;
-        CopyContainerBG = TransformHelper.FindChild(transform, "CopyContainerBG").GetComponent<UISprite>();
-        AlertBtn = TransformHelper.FindChild(transform, "Alert").gameObject;
-        DetailBG = TransformHelper.FindChild(transform, "DetailBG").GetComponent<UISprite>();
-        SenderListener = UIEventListener.Get(SenderLabel.gameObject);
-        DetailListener = UIEventListener.Get(DetailBG.gameObject);
-        CopyListener = UIEventListener.Get(CopyBtn.gameObject);
-        CarriageHelpListener = UIEventListener.Get(CarriageHelpBtn.gameObject);
-        RobListener = UIEventListener.Get(RobBtn.gameObject);
-        AlertListener = UIEventListener.Get(AlertBtn.gameObject);
-    }
 
     #endregion
 }

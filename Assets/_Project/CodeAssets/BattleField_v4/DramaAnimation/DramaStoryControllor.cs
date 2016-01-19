@@ -13,6 +13,13 @@ public class DramaStoryControllor : MonoBehaviour
 
 	private GameObject target;
 
+	void OnDestroy(){
+		storyBoardList.Clear();
+
+		curStroyBoard = null;
+
+		target = null;
+	}
 
 	public void init ()
 	{
@@ -116,8 +123,13 @@ public class DramaStoryControllor : MonoBehaviour
 
 		storyBoardList.TryGetValue(_index, out board);
 		
-		if (board == null) return;
-		
+		if (board == null)
+		{
+			Debug.LogError("CREATE DramaStoryBoard ERROR: " + _index + " is null");
+
+			return;
+		}
+
 		//if(board.getCurActionDone() == true)
 		{
 			if(curStroyBoard != null) curStroyBoard.gameObject.SetActive(false);

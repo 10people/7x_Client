@@ -10,23 +10,55 @@ namespace Carriage
         public RootManager m_RootManager;
 
         public List<YunBiaoSafeTemplate.SafeArea> m_SafeAreaList = new List<YunBiaoSafeTemplate.SafeArea>();
+        public List<GameObject> m_CarriageNPCList = new List<GameObject>();
         public GameObject m_SafeAreaParent;
+
+        public GameObject m_CarriageNPCPrefab;
+
+        private const int NumPerCircle = 12;
 
         void Start()
         {
-            //Create safe area effect.
+            m_CarriageNPCPrefab = Resources.Load<GameObject>("_3D/Models/Carriage/CarriageNPC");
+
             YunBiaoSafeTemplate.Templates.ForEach(item => m_SafeAreaList.Add(item.m_SafeArea));
-            m_SafeAreaList.ForEach(item => FxTool.PlayLocalFx(EffectTemplate.GetEffectPathByID(51020), m_SafeAreaParent, SetScale, new Vector3(item.AreaPos.x, -3.9f, item.AreaPos.y), Vector3.zero));
+            m_SafeAreaList.ForEach(item =>
+            {
+                //Create safe area effect.
+                for (int i = 0; i < NumPerCircle; i++)
+                {
+                    var pos = MathHelper.GetPointAtCircle(new Vector2(item.AreaPos.x, item.AreaPos.y), item.AreaRadius, NumPerCircle, i);
+
+                    FxTool.PlayLocalFx(EffectTemplate.GetEffectPathByID(600169), m_SafeAreaParent, SetScale, new Vector3(pos.x, RootManager.BasicYPosition, pos.y), Vector3.zero);
+                }
+
+                var temp = Instantiate(m_CarriageNPCPrefab);
+                temp.transform.position = new Vector3(m_SafeAreaList[m_CarriageNPCList.Count].AreaPos.x, RootManager.BasicYPosition, m_SafeAreaList[m_CarriageNPCList.Count].AreaPos.y);
+
+                m_CarriageNPCList.Add(temp);
+                //Create npc in safe area.
+                //Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(NpcCityTemplate.GetNpcItemById(301).m_npcShowId),
+                //                        LoadModelCallback);
+            });
+        }
+
+        private void LoadModelCallback(ref WWW p_www, string p_path, Object p_object)
+        {
+            var temp = Instantiate(p_object) as GameObject;
+            temp.transform.position = new Vector3(m_SafeAreaList[m_CarriageNPCList.Count].AreaPos.x, RootManager.BasicYPosition, m_SafeAreaList[m_CarriageNPCList.Count].AreaPos.y);
+
+            m_CarriageNPCList.Add(temp);
         }
 
         void SetScale(GameObject go)
         {
-            go.transform.localScale = Vector3.one * m_SafeAreaList.First().AreaRadius;
+            //go.transform.localScale = Vector3.one * m_SafeAreaList.First().AreaRadius;
         }
 
         void Awake()
         {
             YunBiaoSafeTemplate.LoadTemplates();
+            YunBiaoTemplate.LoadTemplates();
         }
     }
 }

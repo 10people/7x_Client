@@ -18,7 +18,9 @@
 <SceneTemplate sceneId="203" sceneName="BattleField_V4_203" isCheck="1" />
 <SceneTemplate sceneId="204" sceneName="BattleField_V4_204" isCheck="1" />
 <SceneTemplate sceneId="205" sceneName="BattleField_V4_205" isCheck="1" />
+<SceneTemplate sceneId="206" sceneName="BattleField_V4_206" isCheck="1" />
 <SceneTemplate sceneId="207" sceneName="BattleField_V4_207" isCheck="1" />
+<SceneTemplate sceneId="208" sceneName="BattleField_V4_208" isCheck="1" />
 <SceneTemplate sceneId="301" sceneName="BattleField_V4_301" isCheck="1" />
 <SceneTemplate sceneId="302" sceneName="BattleField_V4_302" isCheck="1" />
 <SceneTemplate sceneId="303" sceneName="BattleField_V4_303" isCheck="1" />
@@ -33,5 +35,4 @@
 <SceneTemplate sceneId="1503" sceneName="BattleField_V4_1503" isCheck="1" />
 <SceneTemplate sceneId="2008" sceneName="BattleField_V4_2008" isCheck="1" />
 <SceneTemplate sceneId="900" sceneName="BattleField_V4_900" isCheck="1" />
-<SceneTemplate sceneId="33" sceneName="Game_Scene_AllianceBattle" isCheck="0" />
 </dataset>

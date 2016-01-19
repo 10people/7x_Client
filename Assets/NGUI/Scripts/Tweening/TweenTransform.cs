@@ -59,13 +59,13 @@ public class TweenTransform : UITweener
 	/// Start the tweening operation from the current position/rotation/scale to the target transform.
 	/// </summary>
 
-	static public TweenTransform Begin (GameObject go, float duration, Transform to) { return Begin(go, duration, null, to); }
+	public static TweenTransform Begin (GameObject go, float duration, Transform to) { return Begin(go, duration, null, to); }
 
 	/// <summary>
 	/// Start the tweening operation.
 	/// </summary>
 
-	static public TweenTransform Begin (GameObject go, float duration, Transform from, Transform to)
+	public static TweenTransform Begin (GameObject go, float duration, Transform from, Transform to)
 	{
 		TweenTransform comp = UITweener.Begin<TweenTransform>(go, duration);
 		comp.from = from;

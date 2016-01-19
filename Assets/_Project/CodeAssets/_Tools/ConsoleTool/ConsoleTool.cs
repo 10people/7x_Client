@@ -68,21 +68,25 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 		}
 	}
 
-	private string m_text = "";
+	void OnDestroy(){
+		{
+			m_instance = null;
+		}
+		
+		{
+			SocketTool.UnRegisterMessageProcessor( this );
+			
+			SocketTool.UnRegisterSocketListener( this );
+		}
+	}
 
-	private bool m_enable_console = false;
+	private string m_text = "";
 
 	public void OnGUI(){
 		{
-			m_enable_console = false;
+			bool t_enable_console = IsOpenConsole();
 			
-			m_enable_console = ConfigTool.GetBool( ConfigTool.CONST_SHOW_CONSOLE );
-			
-			#if OPEN_CONSOLE
-			m_enable_console = true;
-			#endif
-			
-			if( !m_enable_console ) {
+			if( !t_enable_console ) {
 				return;
 			}
 		}
@@ -98,36 +102,12 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	// Update is called once per frame
 	void Update () {
-		{
-			m_enable_console = false;
-			
-			m_enable_console = ConfigTool.GetBool( ConfigTool.CONST_SHOW_CONSOLE );
-			
-			#if OPEN_CONSOLE
-			m_enable_console = true;
-			#endif
-			
-			if( !m_enable_console ) {
-				return;
-			}
-		}
+
 	}
 
 //	void LateUpdate(){
 //		ManualLateUpdate();
 //	}
-
-	void OnDestroy(){
-		{
-			m_instance = null;
-		}
-		
-		{
-			SocketTool.UnRegisterMessageProcessor( this );
-
-			SocketTool.UnRegisterSocketListener( this );
-		}
-	}
 
 	#endregion
 
@@ -135,20 +115,26 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	#region Mono's sub
 
+	private bool IsOpenConsole(){
+		bool t_enable_console = false;
+		
+		t_enable_console = ConfigTool.GetBool( ConfigTool.CONST_SHOW_CONSOLE );
+		
+		#if OPEN_CONSOLE
+		t_enable_console = true;
+		#endif
+
+		return t_enable_console;
+	}
+
 	/// <summary>
 	/// Manuals called LateUpdate, for Camera Reset Use.
 	/// </summary>
 	public void ManualLateUpdate(){
 		{
-			m_enable_console = false;
-			
-			m_enable_console = ConfigTool.GetBool( ConfigTool.CONST_SHOW_CONSOLE );
-			
-			#if OPEN_CONSOLE
-			m_enable_console = true;
-			#endif
-			
-			if( !m_enable_console ) {
+			bool t_enable_console = IsOpenConsole();
+
+			if( !t_enable_console ) {
 				return;
 			}
 		}
@@ -164,7 +150,6 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 		if( GUI.Button( new Rect( 0, 0, ScreenHelper.GetWidth( 0.15f ), ScreenHelper.GetHeight( 0.1f ) ), "go" ) ){
 			OnChatContent( m_text );
 		}
-		
 	}
 
 	#endregion
@@ -185,7 +170,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 			RegisterCommand ( LOG_DEVICE_INFO, DeviceHelper.LogDeviceInfo );
 		}
 
-		if ( ThirdPlatform.IsThirdPlatform () ) {
+		if( ThirdPlatform.IsThirdPlatform () && !IsOpenConsole() ){
 			return;
 		}
 
@@ -203,6 +188,10 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 				RegisterCommand ( SET_RED_SPOT_COUNT_DOWN_COMMAND, Console_RedSpot.OnRedSpotCountDown );
 				
 				RegisterCommand ( GET_RED_SPOT_CHILD_COMMAND, Console_RedSpot.OnGetRedSpotChild );
+
+
+
+				RegisterCommand ( SET_LOCAL_PUSH, Console_RedSpot.OnSetLocalPush );
 			}
 
 			{
@@ -223,6 +212,12 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 				RegisterCommand ( ENABLE_COMPONENT, Console_Component.EnableComponent );
 				
 				RegisterCommand ( DISABLE_COMPONENT, Console_Component.DisableComponent );
+
+				RegisterCommand ( FIND_OBJECT, Console_Component.FindObject );
+
+				RegisterCommand ( DESTROY_OBJECT, Console_Component.DestroyObject );
+
+				RegisterCommand ( LOG_REFS, Console_Component.LogRefs );
 			}
 
 			{
@@ -235,6 +230,8 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 			{
 				RegisterCommand( LOG_QUALITY, Console_SetQuality.LogQuality );
+
+				RegisterCommand( SET_QUALITY, Console_SetQuality.SetQuality );
 
 				RegisterCommand( SET_LIGHT, Console_SetQuality.SetLight );
 				
@@ -259,6 +256,8 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 				RegisterCommand( GC, Console_SetSystem.GC );
 
 				RegisterCommand( CONST_LOG_SCREEN, Console_SetSystem.LogScreen );
+
+				RegisterCommand( CONST_VIBRATE, Console_SetSystem.Vibrate );
 			}
 
 			{
@@ -271,6 +270,32 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 				RegisterCommand( SET_PRE_RUN_C, Console_SetNetwork.SetPreRunC );
 
 				RegisterCommand( SET_VALID_RUN_C, Console_SetNetwork.SetValidRunC );
+			}
+
+			{
+				RegisterCommand( INIT_MSDK, Console_ThirdPlatform.OnInitMSDK );
+
+				RegisterCommand( MSDK_LOGIN_QQ, Console_ThirdPlatform.OnMSDKLoginQQ );
+
+				RegisterCommand( MSDK_LOGIN_WX, Console_ThirdPlatform.OnMSDKLoginWX );
+
+				RegisterCommand( MSDK_LOGIN_GUEST, Console_ThirdPlatform.OnMSDKLoginGuest );
+
+				RegisterCommand( MSDK_AUTO_LOGIN, Console_ThirdPlatform.OnMSDKAutoLogin );
+
+				RegisterCommand( MSDK_LOGOUT, Console_ThirdPlatform.OnMSDKLogOut );
+			}
+
+			{
+				RegisterCommand( PLAY_VIDEO, Console_PlayVideo.PlayVideo );
+			}
+
+			{
+				RegisterCommand( UI_BG_EF, Console_Effect.UIBackgroundEffect );
+
+				RegisterCommand( STR_EF, Console_Effect.StrEffect );
+
+				RegisterCommand( CLOSE_STR_EF, Console_Effect.CloseStrEffect );
 			}
 		}
 	}
@@ -312,7 +337,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 		#endif
 
 		foreach( KeyValuePair<string, CommandDelegate> t_kv in m_command_delegate_dict ){
-			if( StringHelper.IsLowerEqual( t_contents[ 0], t_kv.Key ) ){
+			if( StringHelper.IsLowerEqual( t_contents[ 0 ], t_kv.Key ) ){
 				t_kv.Value( t_contents );
 
 				return true;
@@ -321,7 +346,7 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 
 		#if DEBUG_CONSOLE
-		Debug.LogError( "Command not found." );
+		Debug.LogError( "Command not found: " + p_chat_content );
 		#endif
 
 	    return false;
@@ -365,6 +390,10 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	#region Utilities
 
+	public void JavaInvoke( string p_param ){
+		Debug.Log( "JavaInVoke( " + p_param + " )" );
+	}
+
 	public static System.Type GetComponentType( string p_component_type_string ){
 		System.Type t_type = null;
 
@@ -391,6 +420,27 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 		}
 		else if( StringHelper.IsLowerEqual( p_component_type_string, COM_TYPE_CAMERA ) ){
 			t_type = typeof(Camera);
+		}
+		else if( StringHelper.IsLowerEqual( p_component_type_string, COM_TYPE_UI_ATLAS ) ){
+			t_type = typeof(UIAtlas);
+		}
+		else if( StringHelper.IsLowerEqual( p_component_type_string, COM_TYPE_ANIMATION_CLIP ) ){
+			t_type = typeof(AnimationClip);
+		}
+		else if( StringHelper.IsLowerEqual( p_component_type_string, COM_TYPE_ANIMATOR_CONTROLLER ) ){
+			t_type = typeof(RuntimeAnimatorController);
+		}
+		else if( StringHelper.IsLowerEqual( p_component_type_string, COM_TYPE_ANIMATOR ) ){
+			t_type = typeof(Animator);
+		}
+		else if( StringHelper.IsLowerEqual( p_component_type_string, COM_TYPE_MATERIAL ) ){
+			t_type = typeof(Material);
+		}
+		else if( StringHelper.IsLowerEqual( p_component_type_string, COM_TYPE_RENDERER ) ){
+			t_type = typeof(Renderer);
+		}
+		else if( StringHelper.IsLowerEqual( p_component_type_string, COM_SKINNED_MESH_RENDERER ) ){
+			t_type = typeof(SkinnedMeshRenderer);
 		}
 
 		return t_type;
@@ -435,6 +485,12 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public const string DISABLE_COMPONENT				= "/DisableComponent";
 
+	public const string FIND_OBJECT						= "/FindObject";
+
+	public const string DESTROY_OBJECT					= "/DestroyObject";
+
+	public const string LOG_REFS						= "/LogRefs";
+
 
 
 	public const string SET_CONFIG_TOOL 				= "/SetConfig";
@@ -456,6 +512,8 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public const string LOG_QUALITY						= "/LogQuality";
 
 	public const string SET_WEIGHT						= "/SetWeight";
+
+	public const string SET_QUALITY						= "/SetQuality";
 
 	public const string LOG_ROOT_AUTO_RELEASE			= "/LogRootAutoRelease";
 
@@ -481,11 +539,45 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public const string CONST_LOG_SCREEN				= "/LogScreen";
 
+	public const string CONST_VIBRATE					= "/Vibrate";
+
 
 
 	public const string SET_PRE_RUN_C					= "/SetPreRunC";
 
 	public const string SET_VALID_RUN_C					= "/SetValidRunC";
+
+
+
+	public const string SET_LOCAL_PUSH					= "/SetLocalPush";
+
+
+
+
+	public const string INIT_MSDK						= "/InitMSDK";
+
+	public const string MSDK_LOGIN_QQ					= "/MSDKLoginQQ";
+
+	public const string MSDK_LOGIN_WX					= "/MSDKLoginWX";
+
+	public const string MSDK_LOGIN_GUEST				= "/MSDKLoginGUEST";
+
+	public const string MSDK_AUTO_LOGIN					= "/MSDKAutoLogin";
+
+	public const string MSDK_LOGOUT						= "/MSDKLogOut";
+
+
+
+	public const string PLAY_VIDEO						= "/PlayVideo";
+
+
+
+	public const string UI_BG_EF						= "/UIBgEf";
+
+	public const string STR_EF							= "/StrEff";
+
+	public const string CLOSE_STR_EF					= "/CloseStrEff";
+
 
 	#endregion
 
@@ -508,6 +600,20 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public const string COM_TYPE_CAMERA	 				= "Camera";
 
 	public const string COM_TYPE_LIGHT					= "Light";
+
+	public const string COM_TYPE_UI_ATLAS				= "UIAtlas";
+
+	public const string COM_TYPE_ANIMATION_CLIP			= "AnimationClip";
+
+	public const string COM_TYPE_ANIMATOR_CONTROLLER	= "AnimatorController";
+
+	public const string COM_TYPE_ANIMATOR				= "Animator";
+
+	public const string COM_TYPE_MATERIAL				= "Material";
+
+	public const string COM_TYPE_RENDERER				= "Renderer";
+
+	public const string COM_SKINNED_MESH_RENDERER		= "SkinnedMeshRenderer";
 
 	#endregion
 }

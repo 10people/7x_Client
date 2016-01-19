@@ -33,6 +33,10 @@ public class SoundManager{
 	// whether new bg music could increase now
 	private bool m_isChange1Over = false;
 
+	private bool m_isSoundStop = false;
+
+	private bool m_isSoundPlay = false;
+
 	public struct shoudId{
 		public int iId;
 
@@ -111,6 +115,25 @@ public class SoundManager{
 				m_iCurMusicIndex = (m_iCurMusicIndex ^ 1);
 			}
 		}
+		if(m_isSoundStop)
+		{
+			m_ListMusic[m_iCurMusicIndex].volume -= m_fReduceSpeed;
+			if(m_ListMusic[m_iCurMusicIndex].volume <= 0)
+			{
+				m_isSoundStop = false;
+				m_ListMusic[m_iCurMusicIndex].volume = 0;
+				m_ListMusic[m_iCurMusicIndex].Stop();
+			}
+		}
+		if(m_isSoundPlay)
+		{
+			m_ListMusic[m_iCurMusicIndex].volume += m_fReduceSpeed;
+			if(m_ListMusic[m_iCurMusicIndex].volume >= m_fMaxVolume)
+			{
+				m_isSoundPlay = false;
+				m_ListMusic[m_iCurMusicIndex].volume = m_fMaxVolume;
+			}
+		}
 	}
 
 	// set background music
@@ -147,7 +170,15 @@ public class SoundManager{
 
 	public void shopBGSound()
 	{
-		m_ListMusic[m_iCurMusicIndex].Stop();
+		m_isSoundStop = true;
+		m_isSoundPlay = false;
+	}
+
+	public void playBGSound()
+	{
+		m_isSoundStop = false;
+		m_isSoundPlay = true;
+		m_ListMusic[m_iCurMusicIndex].Play();
 	}
 
 	public void setMaxVolume(float Volume)

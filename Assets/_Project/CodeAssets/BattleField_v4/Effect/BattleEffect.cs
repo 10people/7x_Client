@@ -12,15 +12,19 @@ public class BattleEffect : MonoBehaviour
 
 	[HideInInspector] public float realTime;
 
+	[HideInInspector] public Vector3 offset;
+
 
 	private Vector3 position;
+
+	private float ratio;
 
 	private Vector3 forward;
 
 	private float time;
 
 
-	public void refreshDate(EffectIdGroup _group, GameObject _host, float _time, Vector3 _position, Vector3 _forward)
+	public void refreshDate(EffectIdGroup _group, GameObject _host, float _time, Vector3 _position, Vector3 _forward, float _ratio)
 	{
 		group = _group;
 
@@ -32,7 +36,11 @@ public class BattleEffect : MonoBehaviour
 
 		time = _time;
 
+		ratio = _ratio;
+
 		des = false;
+
+		offset = Vector3.zero;
 
 		effectUpdate();
 	}
@@ -43,11 +51,21 @@ public class BattleEffect : MonoBehaviour
 		{
 			transform.position = host.transform.position;
 
+			if(ratio != 0)
+			{
+				BaseAI node = host.GetComponentInChildren<BaseAI>();
+
+				if(node != null)
+				{
+					transform.position += new Vector3(0, node.getHeight() * ratio, 0);
+				}
+			}
+
 			transform.forward = host.transform.forward;
 		}
 		else
 		{
-			transform.position = position;
+			transform.position = position + offset;
 
 			if(Vector3.Distance(Vector3.zero, forward) > .1f) transform.forward = forward;
 		}

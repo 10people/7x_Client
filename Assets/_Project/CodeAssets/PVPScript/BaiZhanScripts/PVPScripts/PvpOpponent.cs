@@ -33,34 +33,14 @@ public class PvpOpponent : MonoBehaviour {
 	{
 		opponentInfo = tempInfo;
 
-		if (opponentInfo.junZhuId < 0)
-		{
-			int nameId = int.Parse(opponentInfo.junZhuName);
-			
-			string name = NameIdTemplate.GetName_By_NameId (nameId);
-			
-			nameLabel.text = name;
-		}
-		else
-		{
-			nameLabel.text = opponentInfo.junZhuName;
-		}
+		nameLabel.text = opponentInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse(opponentInfo.junZhuName)) : opponentInfo.junZhuName;
 		
-		zhanLiLabel.text = opponentInfo.zhanLi.ToString ();
+		zhanLiLabel.text = "战力" + opponentInfo.zhanLi.ToString ();
 		
 		levelLabel.text = opponentInfo.level.ToString ();
-		
-		if (opponentInfo.rank < 4)
-		{
-			rankIcon.gameObject.SetActive (true);
-			rankLabel.text = "";
-			rankIcon.spriteName = "rank" + opponentInfo.rank;
-		}
-		else
-		{
-			rankIcon.gameObject.SetActive (false);
-			rankLabel.text = opponentInfo.rank.ToString ();
-		}
+
+		rankIcon.spriteName = opponentInfo.rank < 4 ? "rank" + opponentInfo.rank : ""; 
+		rankLabel.text = opponentInfo.rank < 4 ? "" : opponentInfo.rank.ToString ();
 
 		//		Debug.Log ("RoleId:" + opponentInfo.roleId);
 		headIcon.spriteName = "PlayerIcon" + opponentInfo.roleId;

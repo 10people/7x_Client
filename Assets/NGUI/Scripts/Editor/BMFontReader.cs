@@ -44,7 +44,7 @@ public static class BMFontReader
 	/// Reload the font data.
 	/// </summary>
 
-	static public void Load (BMFont font, string name, byte[] bytes)
+	public static void Load (BMFont font, string name, byte[] bytes)
 	{
 		font.Clear();
 

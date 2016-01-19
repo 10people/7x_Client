@@ -45,8 +45,20 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
         m_SEC.OpenCompleteDelegate += RequestData;
         m_ListEvent.ForEach(p => p.m_Handle += ShowInfo);
     }
+    private bool _isShowEnable = false;
+    void OnEnable()
+    {
+        if (_isShowEnable)
+        {
+           
+            _isShowEnable = false;
+            RequestData();
+        }
+
+    }
     public void RequestData()
     {
+        _isShowEnable = true;
         NationData.Instance.m_DataRequest = true;
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.GUO_JIA_MAIN_INFO_REQ);
     }
@@ -69,10 +81,10 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
                         + LanguageTemplate.GetText(LanguageTemplate.Text.ZHU_BU_RULE_2) + "\n"
                         + LanguageTemplate.GetText(LanguageTemplate.Text.ZHU_BU_RULE_3) + "\n"
                         + LanguageTemplate.GetText(LanguageTemplate.Text.ZHU_BU_RULE_4) + "\n";
-
-                    m_ListInfo[9].text = _sss;
+                    GeneralControl.Instance.LoadRulesPrefab(_sss);
+                   // m_ListInfo[9].text = _sss;
                    // m_AllInfo.SetActive(false);
-                    m_Introduce.SetActive(true);
+                   // m_Introduce.SetActive(true);
                 }
                 break;
             case 1:
@@ -176,7 +188,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     }
     void NationInfo(GuoJiaMainInfoResp temp)
     {
-        MainCityUI.m_MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
+		MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         _GuojiaInfo = temp;
         if (temp.nowRank != null)
         {
@@ -682,7 +694,13 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     }
     void OnDisable()
     {
-        SocketTool.UnRegisterMessageProcessor(this);
+        m_HiddenObj.SetActive(false);
+       // SocketTool.UnRegisterMessageProcessor(this);
+    }
+
+    void OnDestroy()
+    {
+       SocketTool.UnRegisterMessageProcessor(this);
     }
 
     private string ShowRewardInfo(string str)

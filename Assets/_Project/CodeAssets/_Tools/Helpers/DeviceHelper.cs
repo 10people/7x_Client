@@ -77,10 +77,14 @@ public class DeviceHelper {
 	private static string m_nonsupport_reason = "";
 	
 	public static bool CheckIsDeviceSupported(){
-		Debug.Log( "CheckIsDeviceSupported()" );
-		
 		bool t_is_supported = IsSupported ();
-		
+
+		#if DEBUG_DEVICE_INFO
+		Debug.Log( "CheckIsDeviceSupported( " + t_is_supported + " )" );
+
+		LogDeviceInfo();
+		#endif
+
 		if( !t_is_supported ){
 			if( AccountRequest.account != null && AccountRequest.account.loginObj != null ){
 				AccountRequest.account.loginObj.SetActive( false );
@@ -210,6 +214,24 @@ public class DeviceHelper {
 		return "Default";
 	}
 
+	public static string GetDeviceCompany(){
+		#if UNITY_EDITOR || UNITY_STANDALONE
+		return "PC";
+		#endif
+
+		string[] t_items = SystemInfo.deviceModel.Split( ' ' );
+
+		#if UNITY_ANDROID
+		return t_items[ 0 ];
+		#endif
+
+		#if UNITY_IOS
+		return "iPhone";
+		#endif
+		
+		return "Default";
+	}
+
 	public static string GetDeviceInfo(){
 		string t_info = CONST_DEVICE_NAME + "-" + SystemInfo.deviceName + " " +
 			CONST_DEVICE_MODEL + "-" + GetDeviceModelOrGen() + " " +
@@ -232,10 +254,10 @@ public class DeviceHelper {
 
 	#region Log
 
-	public static void LogDeviceInfo( string[] p_params ){
-		#if !DEBUG_DEVICE_INFO
-		return;
-		#endif
+	public static void LogDeviceInfo( string[] p_params = null ){
+//		#if !DEBUG_DEVICE_INFO
+//		return;
+//		#endif
 
 		#if UNITY_IOS
 		Debug.Log( "iGen: " + UnityEngine.iOS.Device.generation.ToString() );

@@ -1,4 +1,4 @@
-#define DEBUG_PLATFORM
+//#define DEBUG_PLATFORM
 
 using UnityEngine;
 using UnityEditor;
@@ -27,12 +27,12 @@ public class EditorMyApp_Android : MonoBehaviour {
 	public static void BuildPlatform(){
 		string t_src_project_path = Configured_MYAPP_Project;
 
-		{
-			EditorBuildAndroid3rd.ProcessFolder ( t_src_project_path, EditorBuildAndroid3rd.ANDROID_SRC_FOLDER_NAME );
-		}
+//		{
+//			EditorBuildAndroid3rd.ProcessXG ();
+//		}
 
 		{
-			EditorBuildAndroid3rd.ProcessXG ();
+			EditorBuildAndroid3rd.ProcessFolder ( t_src_project_path, EditorBuildAndroid3rd.ANDROID_SRC_FOLDER_NAME );
 		}
 	}
 
@@ -41,7 +41,7 @@ public class EditorMyApp_Android : MonoBehaviour {
 		string t_built_project_path = PathHelper.GetAndroidProjectFullPath();
 
 		{
-			OnProcessManifest( BuildTarget.Android, t_built_project_path );
+			OnProcessProject( BuildTarget.Android, t_built_project_path );
 		}
 	}
 	
@@ -56,38 +56,41 @@ public class EditorMyApp_Android : MonoBehaviour {
 		Debug.Log ( "OnPostBuildPlatform()" );
 		#endif
 
+//		if ( true ) {
+//			#if DEBUG_PLATFORM
+//			Debug.Log( "keep project the same." );
+//			#endif
+//
+//			return;
+//		}
+
 		{
 			BuildPlatform();
 		}
 
-		if ( true ) {
-			#if DEBUG_PLATFORM
-			Debug.Log( "keep manifest the same." );
-			#endif
-
-			return;
-		}
-
 		{
-			OnProcessManifest( p_target, p_path_to_built_project );
+			OnProcessProject( p_target, p_path_to_built_project );
 		}
 	}
 
-	private static void OnProcessManifest( BuildTarget p_target, string p_path_to_built_project ){
+	private static void OnProcessProject( BuildTarget p_target, string p_path_to_built_project ){
 		#if DEBUG_PLATFORM
-		Debug.Log ( "OnProcessPbx()" );
+		Debug.Log ( "OnProcessManifest()" );
 		#endif
 
 		{
-			FileHelper.FileBackUp( EditorBuildAndroid3rd.GetManifestPath() );
+			FileHelper.FileBackUp( EditorBuildAndroid3rd.GetDesManifestPath() );
+
+			{
+				FileHelper.FileCopy( GetMyAppManifestPath(), EditorBuildAndroid3rd.GetDesManifestPath() );
+				
+				FileHelper.FileCopy( GetMyAppProjectPath(), EditorBuildAndroid3rd.GetDesProjectPath() );
+
+				FileHelper.FileCopy( GetMyAppProjectPropertyPath(), EditorBuildAndroid3rd.GetDesProjectPropertyPath() );
+				
+				FileHelper.FileCopy( GetMyAppClassPath(), EditorBuildAndroid3rd.GetDesClassPath() );
+			}
 		}
-
-		{
-
-
-			FileHelper.FileCopy( GetMyAppManifestPath(), EditorBuildAndroid3rd.GetManifestPath() );
-		}
-
 
 		if( true ){
 			return;
@@ -131,11 +134,46 @@ public class EditorMyApp_Android : MonoBehaviour {
 
 
 
-	#region Utilities
+	#region Path
+
+	private static string GetMyAppRootPath(){
+		return "E:\\WorkSpace_Eclipse\\Build3rdProject\\Android\\MyApp";
+	}
 
 	private static string GetMyAppManifestPath(){
-		return "E:\\WorkSpace_Eclipse\\Build3rdProject\\Android\\MyApp\\AndroidManifest.xml";
+		return Path.Combine( GetMyAppRootPath(), "AndroidManifest.xml" );
 	}
+
+	public static string GetMyAppProjectPath(){
+		string t_path = GetMyAppRootPath();
+		
+		string t_desc_path = Path.Combine( t_path, ".project" );
+		
+		return t_desc_path;
+	}
+
+	public static string GetMyAppClassPath(){
+		string t_path = GetMyAppRootPath();
+		
+		string t_desc_path = Path.Combine( t_path, ".classpath" );
+		
+		return t_desc_path;
+	}
+
+	public static string GetMyAppProjectPropertyPath(){
+		string t_path = GetMyAppRootPath();
+		
+		string t_desc_path = Path.Combine( t_path, "project.properties" );
+		
+		return t_desc_path;
+	}
+
+	#endregion
+
+
+
+	#region Utilities
+
 
 	#endregion
 }

@@ -26,7 +26,7 @@ public class UIProgressBar : UIWidgetContainer
 	/// Current slider. This value is set prior to the callback function being triggered.
 	/// </summary>
 
-	static public UIProgressBar current;
+	public static UIProgressBar current;
 
 	/// <summary>
 	/// Delegate triggered when the scroll bar stops being dragged.

@@ -4,9 +4,25 @@ using Carriage;
 
 public class SmallMapController : MonoBehaviour
 {
-    public UIWidget MapBG;
+    public UITexture MapBG;
+    public Texture SmallMapTexture;
+    public Texture BigMapTexture;
 
-    public Vector4 MapBorderRange;
+    public Vector4 MapBorderRange
+    {
+        get { return m_IsMapInSmallMode ? SmallMapBorderRange : BigMapBorderRange; }
+    }
+
+    public Vector4 SmallMapBorderRange;
+    public Vector4 BigMapBorderRange;
+
+    public bool m_IsMapInSmallMode = true;
+
+	void OnDestroy(){
+		SmallMapTexture = null;
+
+		BigMapTexture = null;
+	}
 
     public void SetPositionInSmallMap(Transform target, Vector3 position)
     {
@@ -16,7 +32,7 @@ public class SmallMapController : MonoBehaviour
     public void SetPositionInSmallMap(Transform target, Vector3 position, float p_rotation)
     {
         SetPositionInSmallMap(target, position);
-        target.localEulerAngles = new Vector3(0, 0, p_rotation);
+        target.localEulerAngles = new Vector3(0, 0, -p_rotation);
     }
 
     /// <summary>

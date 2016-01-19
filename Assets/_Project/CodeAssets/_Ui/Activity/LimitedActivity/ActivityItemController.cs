@@ -14,6 +14,18 @@ namespace LimitActivity
         public UISprite m_CheckOutSprite;
         public UISprite m_RedAlertSprite;
 
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                isSelected = value;
+                m_CheckOutSprite.gameObject.SetActive(value);
+            }
+        }
+
+        private bool isSelected = false;
+
         /// <summary>
         /// Activity item data
         /// </summary>
@@ -41,14 +53,19 @@ namespace LimitActivity
         public void OnClick()
         {
             SetSelected();
-
             RequestData();
+
+            var tempList = RootController.CacheProtoActivityDetailList.Where(item => item.typeId == m_OpenXianShi.typeId).ToList();
+            if (tempList.Any())
+            {
+                m_ActivityListController.ProcessActivityDetail(tempList.First(), true);
+            }
         }
 
         public void SetSelected()
         {
-            m_ActivityListController.m_ActivityItemControllerList.ForEach(item => item.m_CheckOutSprite.gameObject.SetActive(false));
-            m_CheckOutSprite.gameObject.SetActive(true);
+            m_ActivityListController.m_ActivityItemControllerList.ForEach(item => item.IsSelected = false);
+            IsSelected = true;
         }
 
         public void RequestData()

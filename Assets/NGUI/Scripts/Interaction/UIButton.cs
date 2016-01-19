@@ -17,7 +17,7 @@ public class UIButton : UIButtonColor
 	/// Current button that sent out the onClick event.
 	/// </summary>
 
-	static public UIButton current;
+	public static UIButton current;
 
 	/// <summary>
 	/// Color that will be applied when the button is disabled.

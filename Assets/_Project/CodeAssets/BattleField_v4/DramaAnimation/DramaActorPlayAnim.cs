@@ -22,6 +22,12 @@ public class DramaActorPlayAnim : DramaActor
 		actorType = ACTOR_TYPE.ANIM;
 	}
 
+	protected override void OnDestroy(){
+		base.OnDestroy();
+
+		anim = null; 
+	}
+
 	protected override void funcAfterWait ()
 	{
 		anim = (Animator)gameObject.GetComponent ("Animator");
@@ -87,6 +93,17 @@ public class DramaActorPlayAnim : DramaActor
 //		}
 //
 //		return false;
+	}
+
+	public override void log()
+	{
+		Debug.Log ("DramaActorPlayAnim data :");
+
+		Debug.Log ("animName: " + animName);
+
+		Debug.Log ("playTime: " + playTime);
+
+		Debug.Log ("m_isStand: " + m_isStand);
 	}
 
 }

@@ -86,13 +86,10 @@ public class UIChenghao : MYNGUIPanel
 
 			for(int i = 0; i < Global.m_NewChenghao.Count; i ++)
 			{
-				Debug.Log(Global.m_NewChenghao[i]);
-				Debug.Log(m_chenghaoData.list[m_iSelectIndex].id);
 				if(Global.m_NewChenghao[i] == m_chenghaoData.list[m_iSelectIndex].id)
 				{
 					m_UIChenghaoList[m_iSelectIndex].m_SpriteNewOrIng.gameObject.SetActive(false);
 					Global.m_NewChenghao.RemoveAt(i);
-					Debug.Log(Global.m_NewChenghao.Count);
 					string saveString = "";
 					for(int q = 0; q < Global.m_NewChenghao.Count; q ++)
 					{
@@ -102,12 +99,7 @@ public class UIChenghao : MYNGUIPanel
 					PlayerPrefs.Save();
 					if(Global.m_NewChenghao.Count == 0)
 					{
-						Global.m_isNewChenghao = false;
-						
-						if(!(EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace() || Global.m_isTianfuUpCan || Global.m_isFuWen|| BagData.AllUpgrade()))
-						{
-							MainCityUIRB.SetRedAlert(200, false);
-						}
+						MainCityUI.SetRedAlert(500015, false);
 					}
 					break;
 				}
@@ -116,7 +108,6 @@ public class UIChenghao : MYNGUIPanel
 		else if(ui.name.IndexOf("OnChenghao") != -1)
 		{
 //			ErrorMessage
-			Debug.Log(m_iSelectIndex);
 			if(JunZhuData.m_iChenghaoID == m_chenghaoData.list[m_iSelectIndex].id)
 			{
 				JunZhuData.m_iChenghaoID = -1;

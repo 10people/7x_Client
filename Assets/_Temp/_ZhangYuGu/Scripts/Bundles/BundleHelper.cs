@@ -68,9 +68,17 @@ public class BundleHelper : MonoBehaviour{
 		UpdateLastFrameTime();
 	}
 
-//	void OnDestroy(){
+	void OnDestroy(){
 //		Debug.LogError( "BundleHelper.OnDestroy()" );
-//	}
+
+		m_instance = null;
+
+		m_manifest = null;
+			
+		m_bundle_dict.Clear();
+				
+		m_to_load_list.Clear();
+	}
 
 	#endregion
 
@@ -166,9 +174,17 @@ public class BundleHelper : MonoBehaviour{
 
 	/// Most Common use.
 	public static void LoadAsset( string p_resource_path, System.Type p_type, Bundle_Loader.LoadResourceDone p_delegate, List<EventDelegate> p_callback_list = null ){
+		#if DEBUG_BUNDLE_HELPER
+		Debug.Log( "BundleHelper.LoadAsset( " + p_resource_path + " )" );
+		#endif
+
 		string t_url = "";
 
 		string t_bundle_key = ManifestHelper.GetBundleKey( p_resource_path );
+
+		#if DEBUG_BUNDLE_HELPER
+		Debug.Log( "t_bundle_key( " + t_bundle_key + " )" );
+		#endif
 
 		if( !string.IsNullOrEmpty( t_bundle_key ) ){
 			t_url = GetUrlWithBundleKey( t_bundle_key );
@@ -193,7 +209,7 @@ public class BundleHelper : MonoBehaviour{
 									string p_bundle_key, string p_asset_path, 
 									Bundle_Loader.LoadResourceDone p_delegate, List<EventDelegate> p_callback_list = null,
 									System.Type p_type = null, bool p_active_dependence_load = true ){
-//		Debug.Log( m_to_load_list.Count + " Add_To_Load_List: " + p_res_asset_path + " - " + p_bundle_key );
+//		Debug.Log( m_to_load_list.Count + " Add_To_Load_List: " + p_asset_path + " - " + p_bundle_key );
 
 		if( p_active_dependence_load ){
 			if( !string.IsNullOrEmpty( p_bundle_key ) ){
@@ -214,9 +230,9 @@ public class BundleHelper : MonoBehaviour{
 	                                string p_asset_path, Bundle_Loader.LoadResourceDone p_delegate, 
 	                                List<EventDelegate> p_callback_list = null, 
 	                                System.Type p_type = null ){
-//		#if DEBUG_BUNDLE_HELPER
-//		Debug.Log( "AddLoadTask: " + p_asset_path + " , " + p_type + " , " + p_url + " , " + p_version );
-//		#endif
+		#if DEBUG_BUNDLE_HELPER
+		Debug.Log( "AddLoadTask: " + p_asset_path + " , " + p_type + " , " + p_url + " , " + p_version );
+		#endif
 
 		LoadTask t_task = new LoadTask( p_url, p_version, p_asset_path, p_delegate, p_callback_list, p_type );
 		
@@ -224,6 +240,10 @@ public class BundleHelper : MonoBehaviour{
 	}
 
 	private static void AddAssetDependence( string p_bundle_key ){
+		#if DEBUG_BUNDLE_HELPER
+		Debug.Log( "AddAssetDependence: " + p_bundle_key );
+		#endif
+
 		string[] t_dependence = GetBundleDependence( p_bundle_key );
 
 		if( t_dependence == null ){
@@ -233,6 +253,10 @@ public class BundleHelper : MonoBehaviour{
 		}
 
 		for( int i = 0; i < t_dependence.Length; i++ ){
+			#if DEBUG_BUNDLE_HELPER
+			Debug.Log( "AddAssetDependence Item: " + i + " : " + t_dependence[ i ] );
+			#endif
+
 			AddLoadTask( GetUrlWithBundleKey( t_dependence[ i ] ), PrepareBundleHelper.GetCurrentBundleVersion(),
 			            "", null );
 		}
@@ -247,15 +271,23 @@ public class BundleHelper : MonoBehaviour{
 	private static WWW m_www = null;
 
 	private static void DownloadTheToLoad(){
+		#if DEBUG_BUNDLE_HELPER
+		Debug.Log( "DownloadAndCache()" );
+		#endif
+
 		if( IsDownloading() ){
-//			Debug.Log( "IsDownloading." );
-			
+			#if DEBUG_BUNDLE_HELPER
+			Debug.Log( "IsDownloading." );
+			#endif
+
 			return;
 		}
 		
 		if( m_to_load_list.Count > 0 ){
-//			Debug.Log( "Try DownloadTheToLoad: " + m_to_load_list.Count );
-			
+			#if DEBUG_BUNDLE_HELPER
+			Debug.Log( "Try DownloadTheToLoad: " + m_to_load_list.Count );
+			#endif
+
 			LoadTask t_load_task = m_to_load_list[ 0 ];
 			
 			{
@@ -263,15 +295,19 @@ public class BundleHelper : MonoBehaviour{
 				
 				SetIsDownloading( true );
 			}
-			
-			BundleHelper.Instance().StartCoroutine( BundleHelper.Instance().DownloadAndCache( t_load_task ) );
+
+			{
+				LoadingHelper.BeforeStartCoroutine();
+				
+				BundleHelper.Instance().StartCoroutine( BundleHelper.Instance().DownloadAndCache( t_load_task ) );
+			}
 		}
 	}
 
 	IEnumerator DownloadAndCache ( LoadTask p_bundle_to_load ){
-//		#if DEBUG_BUNDLE_HELPER
-//		Debug.Log( "DownloadAndCache( " + p_bundle_to_load.GetDescription() + " )" );
-//		#endif
+		#if DEBUG_BUNDLE_HELPER
+		Debug.Log( "DownloadAndCache( " + p_bundle_to_load.GetDescription() + " )" );
+		#endif
 
 		bool t_is_local_res = string.IsNullOrEmpty( p_bundle_to_load.m_url ) ? true : false;
 
@@ -285,6 +321,12 @@ public class BundleHelper : MonoBehaviour{
 		
 		bool t_contains = m_bundle_dict.ContainsKey( p_url );
 
+		#if DEBUG_BUNDLE_HELPER
+		Debug.Log( "t_is_local_res: " + t_is_local_res );
+
+		Debug.Log( "t_contains: " + t_contains );
+		#endif
+
 		#if DEBUG_DELAY_LOAD
 		while( true ){
 			float t_wait = UtilityTool.GetRandom( 0.0f, m_delay_load_time );
@@ -294,6 +336,8 @@ public class BundleHelper : MonoBehaviour{
 			break;
 		}
 		#endif
+
+		LoadingHelper.BeforeLoadRes();
 
 		if( !t_is_local_res ){
 			if( !t_contains ){
@@ -364,30 +408,47 @@ public class BundleHelper : MonoBehaviour{
 		}
 		
 		{
+			LoadingHelper.BeforeReadyToLoadNextAsset();
+
 			while( !IsReadyToLoadNextAsset() ){
-//				Debug.Log( "WaitingToLoad: " + p_bundle_to_load.m_res_asset_path );
+				#if DEBUG_BUNDLE_HELPER
+				Debug.Log( "WaitingToLoad: " + p_bundle_to_load.m_res_asset_path );
+				#endif
 
 				yield return new WaitForEndOfFrame();
 			}
+
+			LoadingHelper.AfterReadyToLoadNextAsset();
 		}
-		
+
+		{
+			TimeHelper.SignetTime();
+		}
+
 		UnityEngine.Object t_object = null;
 
 		if( t_is_local_res ){
 			if( !string.IsNullOrEmpty( p_bundle_to_load.m_res_asset_path ) ){
 				if ( p_bundle_to_load.m_type != null){
-					//				Debug.Log( "Loading: " + p_load_task.m_res_asset_path + " - " + p_load_task.m_type );
-					
+					#if DEBUG_BUNDLE_HELPER
+					Debug.Log( "Loading: " + p_bundle_to_load.m_res_asset_path + " - " + p_bundle_to_load.m_type );
+					#endif
+
 					t_object = Resources.Load( p_bundle_to_load.m_res_asset_path, p_bundle_to_load.m_type );
 				}
 				else{
-					//				Debug.Log( "Loading: " + p_load_task.m_res_asset_path );
-					
+					#if DEBUG_BUNDLE_HELPER
+					Debug.Log( "Loading: " + p_bundle_to_load.m_res_asset_path );
+					#endif
+
 					t_object = Resources.Load( p_bundle_to_load.m_res_asset_path );
+
+//					#if DEBUG_BUNDLE_HELPER
+//					Debug.Log( "Loading Done: " + p_bundle_to_load.m_res_asset_path );
+//					#endif
 				}
 				
-				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) )
-				{
+				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) ){
 					Debug.Log( "Resources.Loaded: " + p_bundle_to_load.m_res_asset_path );
 				}
 
@@ -423,37 +484,78 @@ public class BundleHelper : MonoBehaviour{
 				}
 			}
 		}
+
+		{
+			LoadingHelper.AssetLoaded();
+
+			LoadingHelper.AddLoadingItemInfo(
+				p_bundle_to_load.m_res_asset_path,
+				LoadingHelper.GetAssetLoadedCount(),
+				TimeHelper.GetDeltaTimeSinceSignet() );
+
+			if ( ConfigTool.GetBool( ConfigTool.CONST_LOG_ITEM_LOADING_TIME, false ) ){
+				TimeHelper.LogDeltaTimeSinceSignet( LoadingHelper.GetAssetLoadedCount() + " - " + 
+				                                   LoadingHelper.GetTimeSinceLoading() + " - " + 
+				                                   p_bundle_to_load.m_res_asset_path );
+			}
+		}
 		
 		{
 			try{
 				if( p_bundle_to_load.m_delegate != null ){
 					if( string.IsNullOrEmpty( p_bundle_to_load.m_res_asset_path ) ){
-//						Debug.Log( "Executing delegate for: " + p_bundle_to_load.m_res_asset_path );
+//						#if DEBUG_BUNDLE_HELPER
+//						Debug.Log( "Executing delegate send url: " + p_bundle_to_load.m_res_asset_path );
+//						#endif
 
 						p_bundle_to_load.m_delegate( ref m_www, p_url, t_object );
 					} 
 					else{
+//						#if DEBUG_BUNDLE_HELPER
+//						Debug.Log( "Executing delegate send res path: " + p_bundle_to_load.m_res_asset_path );
+//						#endif
+
 						p_bundle_to_load.m_delegate( ref m_www, p_bundle_to_load.m_res_asset_path, t_object );
 					}
 				}
+
+//				#if DEBUG_BUNDLE_HELPER
+//				Debug.Log( "Before Execute callback list." );
+//				#endif
 				
 				{
 					EventDelegate.Execute( p_bundle_to_load.m_callback_list );
 				}
+
+//				#if DEBUG_BUNDLE_HELPER
+//				Debug.Log( "After Execute callback list." );
+//				#endif
 			}
 			catch( Exception t_e ){
 				Debug.LogError( "Exception In Exception: " + t_e );
 			}
-			
+
+//			#if DEBUG_BUNDLE_HELPER
+//			Debug.Log( "Before Execute Global.ResoucesLoaded." );
+//			#endif
+
 			{
 				Global.ResoucesLoaded( p_bundle_to_load.m_res_asset_path, t_object );
 			}
+
+//			#if DEBUG_BUNDLE_HELPER
+//			Debug.Log( "After Execute Global.ResoucesLoaded." );
+//			#endif
 		}
 
 		{
 			m_www = null;
 			
 			SetIsDownloading( false );
+
+//			#if DEBUG_BUNDLE_HELPER
+//			Debug.Log( "Before DownLoad Next." );
+//			#endif
 
 			DownloadTheToLoad();
 		}
@@ -475,7 +577,7 @@ public class BundleHelper : MonoBehaviour{
 		return m_is_downloading;
 	}
 
-	private static float m_last_frame_time = 0.0f;
+	private static float m_last_frame_time = -1.0f;
 
 	private static void UpdateLastFrameTime(){
 		m_last_frame_time = Time.realtimeSinceStartup;
@@ -489,8 +591,20 @@ public class BundleHelper : MonoBehaviour{
 		}
 		else{
 			float t_delta = Time.realtimeSinceStartup - m_last_frame_time;
-			
-			if( t_delta > ConfigTool.GetFloat( ConfigTool.CONST_LOADING_INTERVAL, 1.0f ) ){
+
+			float t_target_time = ConfigTool.GetFloat( ConfigTool.CONST_LOADING_INTERVAL, 1.0f );
+
+			if( t_delta > t_target_time && m_last_frame_time > 0 && Time.realtimeSinceStartup > 0 ){
+				#if DEBUG_BUNDLE_HELPER
+				Debug.Log( "t_delta: " + t_delta );
+
+				Debug.Log( "t_target_time: " + t_target_time );
+
+				Debug.Log( "Time.realtimeSinceStartup: " + Time.realtimeSinceStartup );
+
+				Debug.Log( "m_last_frame_time: " + m_last_frame_time );
+				#endif
+
 				return false;
 			} 
 			else{
@@ -711,6 +825,8 @@ public class BundleHelper : MonoBehaviour{
 	
 	#endregion
 
+
+
 	/// Container class for runtime bundle.
 	private class BundleContainer{
 		private string m_url;
@@ -831,6 +947,7 @@ public class BundleHelper : MonoBehaviour{
 			m_callback_list = p_callback_list;
 		}
 
+		/// asset_path + url + version
 		public string GetDescription(){
 			return m_res_asset_path + " - " + m_url + " - " + m_version;
 		}

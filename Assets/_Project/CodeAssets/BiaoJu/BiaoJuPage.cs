@@ -49,6 +49,11 @@ public class BiaoJuPage : MonoBehaviour {
 	public UIAtlas mainCityAtlas;
 	public UIAtlas biaoJuAtlas;
 
+	public GameObject recordRed;
+	public GameObject enemyRed;
+
+	public GameObject anchorTopRight;
+
 	void Awake ()
 	{
 		bjPage = this;
@@ -58,7 +63,7 @@ public class BiaoJuPage : MonoBehaviour {
 	{
 		//mainPage rules
 		//LanguageTemp LID:533-538 LanguageTemplate:YUN_BIAO_78-YUN_BIAO_83
-		rulesLabel.fontSize = 30;
+		rulesLabel.fontSize = 20;
 		List<string> ruleList = new List<string> ();
 		string ybTimeStr = "";
 		for (int i = 0;i < 6;i ++)
@@ -120,7 +125,7 @@ public class BiaoJuPage : MonoBehaviour {
 		string[] enemyRuleLength = enemyRule.Split ('：');
 		enemyRules.text = enemyRuleLength[0] + "：\n       " + enemyRuleLength[1];
 
-		MainCityUI.m_MainCityUI.setGlobalBelongings (mainPageObj.transform.parent.gameObject, 420, 314);
+		QXComData.LoadYuanBaoInfo (anchorTopRight);
 	}
 
 	void SwitchPage (BiaoJuPageType tempType)
@@ -193,6 +198,9 @@ public class BiaoJuPage : MonoBehaviour {
 			handler.m_handler -= BiaoJuBtnHandlerClickBack;
 			handler.m_handler += BiaoJuBtnHandlerClickBack;
 		}
+
+		SetPlunderRed (1,tempResp.isNew4History);
+		SetPlunderRed (2,tempResp.isNew4Enemy);
 	}
 
 	void BiaoJuBtnHandlerClickBack (GameObject obj)
@@ -273,6 +281,7 @@ public class BiaoJuPage : MonoBehaviour {
 		case "RecordBtn":
 
 			BiaoJuData.Instance.BiaoJuRecordReq ();
+			SetPlunderRed (1,false);
 
 			break;
 		case "EnemyBtn":
@@ -376,6 +385,9 @@ public class BiaoJuPage : MonoBehaviour {
 	private int shiningCount;//闪烁次数
 	private float alphaCount;
 
+	private int curHorseLevel;
+	public int CurHorseLevel {set{curHorseLevel = value;} get{return curHorseLevel;}}//当前马等级
+
 	public void GetHorseResp (YabiaoMenuResp tempResp)
 	{
 		//reset info
@@ -396,6 +408,8 @@ public class BiaoJuPage : MonoBehaviour {
 		SwitchPage (BiaoJuPageType.HORSE_PAGE);
 	
 		horsePageInfo = tempResp;
+
+		CurHorseLevel = tempResp.horse;
 
 		if (horseList.Count <= 0)
 		{
@@ -491,6 +505,13 @@ public class BiaoJuPage : MonoBehaviour {
 						horsePropInfoList.Add (propInfo);
 					}
 				}
+			}
+		}
+		else
+		{
+			foreach (HorsePropInfo propInfo in allPropInfoList)
+			{
+				propInfo.isBuy = false;
 			}
 		}
 
@@ -618,6 +639,8 @@ public class BiaoJuPage : MonoBehaviour {
 	public void RefreshHorsePage (int tempEndType)
 	{
 		horsePageInfo.horse = tempEndType;
+		CurHorseLevel = tempEndType;
+
 		OpenSetHorseWindow ();
 
 		HorseRandomAnimation (false,horsePageInfo.horse);
@@ -861,7 +884,7 @@ public class BiaoJuPage : MonoBehaviour {
 		for (int i = 0;i < enemyItemList.Count;i ++)
 		{
 			BiaoJuEnemyItem enemy = enemyItemList[i].GetComponent<BiaoJuEnemyItem> ();
-			enemy.InItEnemyItem (tempResp.enemyList[i],targetEnemy.junZhuId);
+			enemy.InItEnemyItem (tempResp.enemyList[i],targetEnemy);
 
 			EventHandler handler = enemyItemList[i].GetComponent<EventHandler> ();
 			handler.m_handler -= EnemyHandlerClickBack;
@@ -888,7 +911,38 @@ public class BiaoJuPage : MonoBehaviour {
 	{
 		switch (obj.name)
 		{
+		case "EnemyZheZhao":
+
+			foreach (EnemiesInfo enemyInfo in enemyResp.enemyList)
+			{
+				if (enemyInfo.state == 10)
+				{
+					SetPlunderRed (2,true);
+					break;
+				}
+				else
+				{
+					SetPlunderRed (2,false);
+				}
+			}
+			
+			CloseEnemyPage ();
+
+			break;
 		case "CloseBtn":
+
+			foreach (EnemiesInfo enemyInfo in enemyResp.enemyList)
+			{
+				if (enemyInfo.state == 10)
+				{
+					SetPlunderRed (2,true);
+					break;
+				}
+				else
+				{
+					SetPlunderRed (2,false);
+				}
+			}
 
 			CloseEnemyPage ();
 
@@ -957,6 +1011,30 @@ public class BiaoJuPage : MonoBehaviour {
 	}
 
 	#endregion
+
+	/// <summary>
+	/// Sets the plunder red.
+	/// </summary>
+	/// <param name="type">Type.</param>
+	/// <param name="isRed">If set to <c>true</c> is red.</param>
+	public void SetPlunderRed (int type,bool isRed)
+	{
+		switch (type)
+		{
+		case 1:
+
+			recordRed.SetActive (isRed);
+
+			break;
+		case 2:
+
+			enemyRed.SetActive (isRed);
+
+			break;
+		default:
+			break;
+		}
+	}
 
 	public void CloseBiaoJu ()
 	{

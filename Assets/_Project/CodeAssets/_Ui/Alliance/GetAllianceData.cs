@@ -25,20 +25,25 @@ public class GetAllianceData : MonoBehaviour , SocketListener{
 		
 		return m_instance;
 	}
+
 	void Awake()
 	{
 		SocketTool.RegisterSocketListener(this);	
 		
 	}
+
 	void Start()
 	{
 	
 	}
+
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterSocketListener(this);
-		
+
+		m_instance = null;
 	}
+
 	public bool OnSocketEvent(QXBuffer p_message)
 	{
 		if (p_message != null)
@@ -72,7 +77,7 @@ public class GetAllianceData : MonoBehaviour , SocketListener{
 
 							if(applicateResp.applicanInfo.Count > 0)
 							{
-								MainCityUIRB.SetRedAlert(index,true);
+								MainCityUI.SetRedAlert(index,true);
 
 								return true;
 							}
@@ -80,7 +85,7 @@ public class GetAllianceData : MonoBehaviour , SocketListener{
 					}
 				}
 			
-				MainCityUIRB.SetRedAlert(index,false);
+				MainCityUI.SetRedAlert(index,false);
 				return true;
 			}
 			default: return false;

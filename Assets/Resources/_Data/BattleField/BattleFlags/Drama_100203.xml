@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+<BattleDramaFlag flagId="0" nodeId="1" triggerFlag="301,302,303,304,305,306,307,308,309,310" x="0.8699646" y="-5.60199" z="-39.63835" cx="30" cy="1" cz="1" rx="0" ry="8.860001" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="2" triggerFlag="301,302,303,304,305,306,307,308,309,310" x="0.8699646" y="-5.60199" z="-39.63835" cx="30" cy="1" cz="1" rx="0" ry="8.86" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="1" triggerFlag="410,401,402,403,404,405,406,407,408,409" x="10.36996" y="-5.60199" z="-16.40836" cx="30" cy="1" cz="1" rx="0" ry="359.3" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="2" triggerFlag="410,401,402,403,404,405,406,407,408,409" x="10.36996" y="-5.60199" z="-16.40836" cx="30" cy="1" cz="1" rx="0" ry="359.3" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="1" triggerFlag="510,501,502,503,504,505,506,507,508,509" x="2.269958" y="-5.811991" z="17.09164" cx="30" cy="1" cz="1" rx="0" ry="355.8" rz="0" />
+<BattleDramaFlag flagId="0" nodeId="2" triggerFlag="510,501,502,503,504,505,506,507,508,509" x="2.269958" y="-5.811991" z="17.09164" cx="30" cy="1" cz="1" rx="0" ry="355.8" rz="0" />
 </dataset>

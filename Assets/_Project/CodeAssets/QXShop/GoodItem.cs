@@ -18,6 +18,9 @@ public class GoodItem : MonoBehaviour {
 
 	public UISprite moneyIcon;
 	public UILabel moneyLabel;
+	public UILabel desLabel;
+
+	private bool isAllianceCanBuy;
 
 	private GameObject iconSamplePrefab;
 
@@ -33,8 +36,11 @@ public class GoodItem : MonoBehaviour {
 	{
 		shopType = tempType;
 		duiHuanInfo = tempInfo;
-
+//		Debug.Log ("tempInfo.isChange:" + tempInfo.isChange + "||" + tempInfo.site);
 		goodInfo.xmlId = tempInfo.id;
+
+		desLabel.text = "";
+		moneyIcon.transform.parent.gameObject.SetActive (true);
 
 		switch (tempType)
 		{
@@ -47,7 +53,8 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.itemNum = template.itemNum;
 			goodInfo.needMoney = template.needNum;
 			goodInfo.moneyType = (QXComData.MoneyType)Enum.ToObject (typeof (QXComData.MoneyType),template.needType);
-		
+			goodInfo.countBuyTime = tempInfo.remainCount;
+
 			break;
 		}
 		case ShopData.ShopType.MYSTRERT:
@@ -83,6 +90,12 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.itemNum = template.itemNum;
 			goodInfo.needMoney = template.needNum;
 			goodInfo.moneyType = ShopData.Instance.MoneyType (tempType);
+			goodInfo.site = template.site;
+
+			isAllianceCanBuy = ShopData.Instance.GetAllianceLevel () >= template.needLv ? true : false;
+//			Debug.Log ("isAllianceCanBuy:" + isAllianceCanBuy);
+			desLabel.text = isAllianceCanBuy ? "" : MyColorData.getColorString (5,"商铺升至" + template.needLv + "级可购买");
+			moneyIcon.transform.parent.gameObject.SetActive (isAllianceCanBuy);
 
 			break;
 		}
@@ -113,6 +126,8 @@ public class GoodItem : MonoBehaviour {
 		default:
 			break;
 		}
+
+		goodInfo.site = tempInfo.site;
 
 		moneyIcon = QXComData.MoneySprite (goodInfo.moneyType,moneyIcon);
 		moneyLabel.text = goodInfo.needMoney.ToString ();
@@ -147,38 +162,37 @@ public class GoodItem : MonoBehaviour {
 		//0普通道具;3当铺材料;5秘宝碎片;6进阶材料;7基础宝石;8高级宝石;9强化材料
 		IconSampleManager iconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
 
-		if (goodInfo.itemType == 5)//秘宝碎片 MibaoSuiPian表
-		{
-			MiBaoSuipianXMltemp miBaoSuiPian = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById (goodInfo.itemId);
-			iconSample.SetIconType(IconSampleManager.IconType.MiBaoSuiPian);
-		}
-		else
-		{
-			ItemTemp item = ItemTemp.getItemTempById (goodInfo.itemId);
-			if (goodInfo.itemType == 0 || goodInfo.itemType == 3 || goodInfo.itemType == 6 || goodInfo.itemType == 9)
-			{
-				iconSample.SetIconType(IconSampleManager.IconType.equipment);
-			}
-			else if (goodInfo.itemType == 7 || goodInfo.itemType == 8)
-			{
-				iconSample.SetIconType(IconSampleManager.IconType.FuWen);
-			}
-		}
+		iconSample.SetIconByID (goodInfo.itemId);
 
-		iconSample.SetIconBasic(0,goodInfo.itemId.ToString (),"x" + goodInfo.itemNum.ToString ());
-		
 		string mdesc = DescIdTemplate.GetDescriptionById(goodInfo.itemId);
 		
 		iconSample.SetIconBasicDelegate (true,true,ClickItem);
 		iconSample.SetIconPopText(goodInfo.itemId, goodInfo.itemName, mdesc, 1);
-		iconSamplePrefab.transform.localScale = Vector3.one * 0.9f;
+//		iconSamplePrefab.transform.localScale = Vector3.one * 0.9f;
+
+		//if shopType == GongXian : SetBgColor to grey
+		UISprite[] sprites = this.GetComponentsInChildren<UISprite> ();
+		foreach (UISprite sprite in sprites)
+		{
+			sprite.color = shopType == ShopData.ShopType.GONGXIAN ? (isAllianceCanBuy ? Color.white : Color.black) : Color.white;
+		}
 	}
 	
 	void ClickItem (GameObject obj)
 	{
 		if (duiHuanInfo.isChange)
 		{
-			ShopPage.shopPage.OpenShopBuyWindow (goodInfo);
+			if (shopType == ShopData.ShopType.GONGXIAN)
+			{
+				if (isAllianceCanBuy)
+				{
+					ShopPage.shopPage.OpenShopBuyWindow (goodInfo);
+				}
+			}
+			else
+			{
+				ShopPage.shopPage.OpenShopBuyWindow (goodInfo);
+			}
 		}
 	}
 }

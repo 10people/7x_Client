@@ -6,18 +6,19 @@ using qxmobile.protobuf;
 public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 {
     public List<EventSuoHandle> m_ListEvent;
+    public static int m_bulidingLevel = 0;
     public List<GameObject> m_ListGameobjectShow;
     public List<UILabel> m_ListCount;
     public List<GameObject> m_ListSignal;
     public List<GameObject> m_listParent;
     public UIGrid m_YuJueSuffParent;
-    public List<EventIndexHandle> m_listRewardEvent;
-    public EventIndexHandle m_EventTouch;
+    public List<WorshipStepAwardManangerment> m_listRewardEvent;
+
     public GameObject m_MainParent;
     public GameObject m_Durable_UI;
     public GameObject m_RewardObj;
     public UIGrid m_RewardParent;
-
+    public List<EventIndexHandle> m_ListTypeEvent;
     public List<EventIndexHandle> m_ListCancelEvent;
     private MoBaiInfo worshipShow = new MoBaiInfo();
     private List<string> listInsufficientYuJue = new List<string>();
@@ -25,12 +26,24 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     public UISprite m_PopSprite;
     public UILabel m_PopLabel;
     public UILabel m_LabelTopUp;
- 
+    public UILabel m_LabelSignal;
     public GameObject m_TanHao;
+    public GameObject m_YuanBaoTanHao;
+    public GameObject m_YuJueTanHao;
+
     public ScaleEffectController m_SEC;
     public UIGrid m_Gride;
     public GameObject m_HidenInfo;
 
+    public GameObject m_MoBai;
+    public GameObject m_FengChan;
+
+
+    public GameObject m_DaDianTanHao;
+    public GameObject m_ShengDianTanHao;
+
+    public GameObject m_TanHaoMoBai;
+    public GameObject m_TanHaoFengShan;
     public UIProgressBar m_ProgressBar;
     private int yuanBaoCost = 0;
     struct RewardYuJueInfo
@@ -40,6 +53,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     };
     private List<RewardYuJueInfo> _listReward = new List<RewardYuJueInfo>();
     private List<RewardYuJueInfo> listRewardYuJue = new List<RewardYuJueInfo>();
+ 
     private List<Vector3> listEffectPos = new List<Vector3>();
     private List<Vector3> lisMoveTarget = new List<Vector3>();
     private List<Vector3> lisMoveStart = new List<Vector3>();
@@ -57,25 +71,31 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     };
     private List<YuJueShow> _listYJ = new List<YuJueShow>();
     private bool _isShowHide = false;
+    private bool _isGetReward = false;
+    private int _TouchRewardNum = 0;
+ 
     void Awake()
     {
         SocketTool.RegisterMessageProcessor(this);
-
     }
 
 
     void Start()
     {
+        m_ListTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+        // m_LabelSignal.text = LanguageTemplate.GetText();
         m_ListEvent.ForEach(p => p.m_Handle += EventGet);
-        
-        m_listRewardEvent.ForEach(p => p.m_Handle += ShowReward);
+        m_listRewardEvent.ForEach(p => p.OnNormalPress += RewardGet);
+        m_listRewardEvent.ForEach(p => p.OnLongPress += ShowReward);
+        m_listRewardEvent.ForEach(p => p.OnLongPressFinish += LongFinish);
+        m_ListTypeEvent.ForEach(p => p.m_Handle += TypeInfo);
+        //m_listRewardEvent.ForEach(p => p.m_TouchEvent.m_Handle += ShowReward);
         m_SEC.OpenCompleteDelegate += RequestData;
         m_ListCancelEvent.ForEach(p => p.m_Handle += HiddenReward);
     }
 
     void ShowInfo()
     {
-        //m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
         Vector3[] effect = { new Vector3(-265, -120, 0), new Vector3(28, -120, 0), new Vector3(350, -120, 0) };
         listEffectPos.AddRange(effect);
 
@@ -83,58 +103,124 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         Vector3[] moveS = { new Vector3(-228, -150, 0), new Vector3(66, -150, 0), new Vector3(350, -150, 0) };
         lisMoveStart.AddRange(moveS);
         lisMoveTarget.AddRange(moveT);
-   
-        //ShowWorshipInfo();
+ 
         m_HidenInfo.SetActive(true);
          TidyInsufficientYuJueInfo();
     }
- 
-    void ShowReward(int index)
+
+    int type_Touch_index = 0;
+    void TypeInfo(int index)
     {
-        m_RewardObj.SetActive(true);
-        switch (index)
+        if (type_Touch_index != index)
         {
-            case 0:
-                {
-                    if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes1)
-                    {
-
-                    }
-                    else
-                    {
-                        TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(1).award1);
-                    }
-                }
-                break;
-            case 1:
-                {
-                    if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes2)
-                    {
-
-                    }
-                    else
-                    {
-                        TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(1).award2);
-                    }
-                }
-                break;
-            case 2:
-                {
-                    if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3)
-                    {
-
-                    }
-                    else
-                    {
-                        TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(1).award3);
-                    }
-                }
-                break;
-            default:
-                break;
+            type_Touch_index = index;
+            if (index == 0)
+            {
+                m_ListTypeEvent[index].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                m_ListTypeEvent[index + 1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                m_MoBai.SetActive(true);
+                m_FengChan.SetActive(false);
+            }
+            else
+            {
+                m_ListTypeEvent[index - 1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                m_ListTypeEvent[index].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                m_MoBai.SetActive(false);
+                m_FengChan.SetActive(true);
+            }
         }
+
+    }
+    void LongFinish(GameObject obj)
+    {
+        m_RewardObj.SetActive(false);
     }
 
+    void ShowReward(GameObject obj)
+    {
+        if (obj.name.IndexOf('_') > -1)
+        {
+            string[] ss = obj.name.Split('_');
+            switch (int.Parse(ss[1]))
+            {
+                case 0:
+                    {
+                       
+                        {
+                            TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).award1);
+                        }
+                    }
+                    break;
+                case 1:
+                    {
+                  
+                        {
+                            TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).award2);
+                        }
+                    }
+                    break;
+                case 2:
+                    {
+                        {
+                            TuTengRewardData(LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).award3);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    void  RewardGet(GameObject obj)
+    {
+        if (obj.name.IndexOf('_') > -1)
+        {
+            string[] ss = obj.name.Split('_');
+            switch (int.Parse(ss[1]))
+            {
+                case 0:
+                    {
+                        if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes1 && worshipShow.bigStep0 == 1)
+                        {
+                            GetReward(int.Parse(ss[1]) + 1);
+                        }
+                    }
+                    break;
+                case 1:
+                    {
+                        if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes2 && worshipShow.bigStep1 == 1)
+                        {
+                            GetReward(int.Parse(ss[1]) + 1);
+                        }
+                    }
+                    break;
+                case 2:
+                    {
+                        if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes3 && worshipShow.bigStep2 == 1)
+                        {
+                            GetReward(int.Parse(ss[1]) + 1);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    void GetReward(int index)
+    {
+        _TouchRewardNum = index;
+        _isGetReward = true;
+        MemoryStream t_tream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        MoBaiReq tempRequest = new MoBaiReq();
+        tempRequest.cmd = index;
+        t_qx.Serialize(t_tream, tempRequest);
+
+        byte[] t_protof;
+        t_protof = t_tream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_MOBAI_AWARD, ref t_protof);
+    }
     void TuTengRewardData(string _award)
     {
         int size_all = m_RewardParent.transform.childCount;
@@ -227,7 +313,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
                     }
                     else
                     {
-                        EquipSuoData.TopUpLayerTip(m_MainParent);
+                        EquipSuoData.TopUpLayerTip(m_MainParent,true);
                     }
                 }
                 break;
@@ -269,7 +355,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 			        else 
                     {
                         m_ListSignal[0].SetActive(false);
-                        EquipSuoData.TopUpLayerTip(m_MainParent);
+                        EquipSuoData.TopUpLayerTip(m_MainParent,true);
                     }
                 }
                 break;
@@ -277,20 +363,6 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
                 break;
         }
     }
-
-    //public void UIBoxLoadDingLi(ref WWW p_www, string p_path, Object p_object)
-    //{
-    //    GameObject boxObj = Instantiate(p_object) as GameObject;
-    //    UIBox uibox = boxObj.GetComponent<UIBox>();
-    //    string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-    //    string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-    //    string str = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_DINGLI_TIP);
-    //    // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-    //    uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null, titleFont, btn1Font);
-
-    //}
-
-   
     public void UIBoxLoad(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject boxObj = Instantiate(p_object) as GameObject;
@@ -349,8 +421,66 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
                         MoBaiInfo worship = new MoBaiInfo();
 
                         t_qx.Deserialize(t_tream, worship, worship.GetType());
-                        worshipShow = worship;
 
+                        m_TanHaoMoBai.SetActive(worship.tongBiOpen || worship.yuanBaoOpen || worship.yuOpen);
+                        m_YuanBaoTanHao.SetActive(worship.yuanBaoOpen);
+                        m_YuJueTanHao.SetActive(worship.yuOpen);
+                        m_TanHaoFengShan.SetActive(false);
+
+                        m_TanHaoMoBai.SetActive(false);
+                        m_TanHaoFengShan.SetActive(false);
+                        worshipShow = worship;
+                        m_listRewardEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(worship.bigStep0 == 1 ? true : false, 1);
+                        if (worship.bigStep0 != 2)
+                        {
+                            m_listRewardEvent[0].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_0) + LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes1.ToString() + LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_1);
+                        }
+                        else
+                        {
+                            m_listRewardEvent[0].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                        }
+                        //m_listRewardEvent[0].m_LabTitle.gameObject.SetActive(worship.bigStep0 == 2);
+                        m_listRewardEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(worship.bigStep1 == 1, 1);
+
+                        if (worship.bigStep1 != 2)
+                        {
+                            m_listRewardEvent[1].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_0) + LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes2.ToString() + LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_1);
+
+                        }
+                        else
+                        {
+                            m_listRewardEvent[1].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                        }
+
+                        //   m_listRewardEvent[1].m_LabTitle.gameObject.SetActive(worship.bigStep1 == 2);
+                        m_listRewardEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(worship.bigStep2 == 1, 1);
+                        if (worship.bigStep2 != 2)
+                        {
+                            m_listRewardEvent[2].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_0) + LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes3.ToString() + LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_1);
+
+                        }
+                        else
+                        {
+                            m_listRewardEvent[2].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                        }
+                        // m_listRewardEvent[2].m_LabTitle.gameObject.SetActive(worship.bigStep2 == 2);
+
+                        if (_isGetReward)
+                        {
+                            _isGetReward = false;
+                            if (_TouchRewardNum == 1)
+                            {
+                                FunctionWindowsCreateManagerment.ShowRAwardInfo(LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).award1);
+                            }
+                            else if (_TouchRewardNum == 2)
+                            {
+                                FunctionWindowsCreateManagerment.ShowRAwardInfo(LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).award2);
+                            }
+                            else if (_TouchRewardNum == 3)
+                            {
+                                FunctionWindowsCreateManagerment.ShowRAwardInfo(LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).award3);
+                            }
+                        }
                         if (touchIndex > 0)
                         {
                             m_ListEvent[touchIndex].GetComponent<Collider>().enabled = true;
@@ -405,11 +535,8 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     void ShowWorshipInfo()
     {
         _mobaiCount = worshipShow.buffCount;
-        MainCityUI.m_MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
+		MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         m_TanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(400010));
-        m_listRewardEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes1 <= worshipShow.buffCount);
-        m_listRewardEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes2 <= worshipShow.buffCount);
-        m_listRewardEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3 <= worshipShow.buffCount);
         m_ProgressBar.value = worshipShow.buffCount / float.Parse(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3.ToString());
         m_ListCount[13].text = worshipShow.buffCount.ToString()+ "/" + LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3.ToString();
         m_ListGameobjectShow[6].GetComponent<UICamera>().enabled = true;
@@ -688,7 +815,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             }
         }
         int size = listInsufficientYuJue.Count;
-        m_YuJueSuffParent.transform.localPosition = new Vector3(ParentPosOffset(listInsufficientYuJue.Count, 56), 20, 0);
+        m_YuJueSuffParent.transform.localPosition = new Vector3(ParentPosOffset(listInsufficientYuJue.Count, 80), 20, 0);
         indexNum2 = 0;
         for (int i = 0; i < listInsufficientYuJue.Count; i++)
         {
@@ -879,7 +1006,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     {
         int size_ReWard = _listReward.Count;
         _indexNum22 = 0;
-        m_RewardParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size_ReWard - 1, 108), 0, 0);
+        m_RewardParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size_ReWard, 82), 0, 0);
         for (int i = 0; i < size_ReWard; i++)
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
@@ -900,11 +1027,15 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             iconSampleManager.SetIconPopText(int.Parse(_listReward[_indexNum22].icon)
                 , NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(int.Parse(_listReward[_indexNum22].icon)).nameId)
                 , DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(int.Parse(_listReward[_indexNum22].icon)).descId));
-            tempObject.transform.localScale = Vector3.one * 0.9f;
-        
+            tempObject.transform.localScale = Vector3.one * 0.8f;
+
             if (_indexNum22 < _listReward.Count - 1)
             {
                 _indexNum22++;
+            }
+            else
+            {
+                m_RewardObj.SetActive(true);
             }
             m_RewardParent.repositionNow = true;
         }

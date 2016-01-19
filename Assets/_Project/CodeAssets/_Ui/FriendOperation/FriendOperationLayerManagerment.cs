@@ -18,7 +18,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
     public List<UIScrollView> m_listScrollView;
     public List<UILabel> m_listLabel;
     public UIScrollView m_ScrollView;
-
+    public GameObject m_Durable_UI;
     public UIScrollView m_ScrollView2;
 
     public List<GameObject> listGameobject;
@@ -53,66 +53,71 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
     }
 	void Start () 
     {
+        MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         listInfo.Clear();
         friendItenDic.Clear();
         index = 0;
         m_listEvent.ForEach(p => p.m_Handle += TouchEvent);
-        m_listEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+        m_listEvent[1].GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(false);
         //  pageIndex = 1;
         RequestData(pageIndex);
 	}
-
+    private int _index_Touch = 0;
     void TouchEvent(int index)
     {
-        switch (index)
+        if (_index_Touch != index)
         {
-            case 0:
-                {
-                    foreach(EventIndexHandle item in m_listEvent)
+            _index_Touch = index;
+            switch (index)
+            {
+                case 0:
                     {
-                        if (item.m_SendIndex == index)
+                        foreach (EventIndexHandle item in m_listEvent)
                         {
-                            item.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                            if (item.m_SendIndex == index)
+                            {
+                                item.GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(true);
+                            }
+                            else
+                            {
+                                item.GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(false);
+                            }
                         }
-                        else 
-                        {
-                            item.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        }
+                        listForbidInfor.Clear();
+                        listGameobject[0].SetActive(false);
+                        listGameobject[1].SetActive(true);
+                        RefreshFriendsInfo();
                     }
-                    listForbidInfor.Clear();
-                    listGameobject[0].SetActive(false);
-                    listGameobject[1].SetActive(true);
-                    RefreshFriendsInfo();
-                }
-                break;
-            case 1:
-                {
-                    foreach (EventIndexHandle item in m_listEvent)
+                    break;
+                case 1:
                     {
-                        if (item.m_SendIndex == index)
+                        foreach (EventIndexHandle item in m_listEvent)
                         {
-                            item.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                            if (item.m_SendIndex == index)
+                            {
+                                item.GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(true);
+                            }
+                            else
+                            {
+                                item.GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(false);
+                            }
                         }
-                        else
+
+                        foreach (KeyValuePair<int, GameObject> item in friendItenDic)
                         {
-                            item.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                            item.Value.GetComponent<FriendOperationItemManagerment>().m_ShowGameobject.SetActive(false);
                         }
+
+                        listForbidInfor.Clear();
+                        listGameobject[0].SetActive(true);
+                        listGameobject[1].SetActive(false);
+
+                        ShowForbidInfo();
                     }
-
-                    foreach (KeyValuePair<int, GameObject> item in friendItenDic)
-                    {
-                      item.Value.GetComponent<FriendOperationItemManagerment>().m_ShowGameobject.SetActive(false);
-                    }
-
-                    listForbidInfor.Clear();
-                    listGameobject[0].SetActive(true);
-                    listGameobject[1].SetActive(false);
-
-                    ShowForbidInfo();
-                }
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

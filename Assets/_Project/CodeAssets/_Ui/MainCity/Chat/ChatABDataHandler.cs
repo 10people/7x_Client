@@ -28,18 +28,6 @@ public class ChatABDataHandler : ChatBaseDataHandler
         }
     }
 
-    private void SelfItemLoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        PoolManagerListController.Instance.ItemDic.Add("ChatDataSelfItem", (GameObject)p_object);
-        PoolManagerListController.Instance.Initialize();
-    }
-
-    private void OtherItemLoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        PoolManagerListController.Instance.ItemDic.Add("ChatDataOtherItem", (GameObject)p_object);
-        PoolManagerListController.Instance.Initialize();
-    }
-
     private void OnDragAreaClick(GameObject go)
     {
 
@@ -55,21 +43,6 @@ public class ChatABDataHandler : ChatBaseDataHandler
     new void Awake()
     {
         base.Awake();
-
-        if (!PoolManagerListController.Instance.ItemDic.ContainsKey("ChatDataSelfItem"))
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_CHATITEM_SELF),
-                SelfItemLoadCallback);
-        }
-
-        if (!PoolManagerListController.Instance.ItemDic.ContainsKey("ChatDataOtherItem"))
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_CHATITEM_OTHER),
-                OtherItemLoadCallback);
-        }
-
-        ChatSelfLogItemStr = "ChatDataSelfItem";
-        ChatOtherLogItemStr = "ChatDataOtherItem";
 
         m_Channel = ChatPct.Channel.LIANMENG;
         m_ChannelList.AddRange(new List<ChatPct.Channel>() { m_Channel, ChatPct.Channel.SYSTEM });

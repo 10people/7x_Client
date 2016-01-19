@@ -27,6 +27,14 @@ public class DramaActorControllor : MonoBehaviour
 
 	private Vector3 tempScale;
 
+	void OnDestroy(){
+		tempControllor = null;
+
+		storyBoard = null;
+
+		actors.Clear();
+	}
+
 
 	public void init(DramaStoryBoard _storyBoard)
 	{
@@ -58,7 +66,7 @@ public class DramaActorControllor : MonoBehaviour
 
 		tempScale = transform.localScale;
 
-		if(startScale > .1f && BattleControlor.Instance() == null)
+		if(startScale > .1f && m_isJuqing == true)
 		{
 			transform.localScale = new Vector3 (startScale, startScale, startScale);
 		}
@@ -113,6 +121,13 @@ public class DramaActorControllor : MonoBehaviour
 		}
 
 		actors.Clear ();
+
+		NavMeshAgent nav = gameObject.GetComponent<NavMeshAgent>();
+		
+		if(nav != null)
+		{
+			nav.enabled = true;
+		}
 	}
 
 	public void resetControllor(int modleId)

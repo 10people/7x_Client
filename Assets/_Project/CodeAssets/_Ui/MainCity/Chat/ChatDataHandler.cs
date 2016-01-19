@@ -102,18 +102,12 @@ public class ChatDataHandler : ChatBaseDataHandler
         {
             Refresh(1);
         }
-    }
 
-    private void SelfItemLoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        PoolManagerListController.Instance.ItemDic.Add("ChatDataSelfItem", (GameObject)p_object);
-        PoolManagerListController.Instance.Initialize();
-    }
-
-    private void OtherItemLoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        PoolManagerListController.Instance.ItemDic.Add("ChatDataOtherItem", (GameObject)p_object);
-        PoolManagerListController.Instance.Initialize();
+        //Refresh broadcast in broadcast channel.
+        if (m_Channel == ChatPct.Channel.Broadcast && storedChatStructList.Any() && !storedChatStructList.Last().isComeFromBroadCast)
+        {
+            HighestUI.Instance.m_BroadCast.ShowBroadCast(((storedChatStructList.Last().m_ChatPct.guoJia >= 1 && storedChatStructList.Last().m_ChatPct.guoJia <= 7) ? (ColorTool.Color_Gold_edc347 + "[" + ChatLogItem.NationToString[storedChatStructList.Last().m_ChatPct.guoJia] + "]" + "[-]") : "") + ColorTool.Color_Gold_ffb12a + storedChatStructList.Last().m_ChatPct.senderName + "[-]" + storedChatStructList.Last().m_ChatPct.content);
+        }
     }
 
     new void OnDestroy()
@@ -132,21 +126,6 @@ public class ChatDataHandler : ChatBaseDataHandler
         IsAwaked = true;
 
         base.Awake();
-
-        if (!PoolManagerListController.Instance.ItemDic.ContainsKey("ChatDataSelfItem"))
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_CHATITEM_SELF),
-                SelfItemLoadCallback);
-        }
-
-        if (!PoolManagerListController.Instance.ItemDic.ContainsKey("ChatDataOtherItem"))
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_CHATITEM_OTHER),
-                OtherItemLoadCallback);
-        }
-
-        ChatSelfLogItemStr = "ChatDataSelfItem";
-        ChatOtherLogItemStr = "ChatDataOtherItem";
 
         m_ChannelList.AddRange(new List<ChatPct.Channel>() { m_Channel, ChatPct.Channel.SYSTEM });
         m_DataReceivedEvent += OnDataReceived;

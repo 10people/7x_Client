@@ -9,7 +9,7 @@ public class OnlineRewardGiftSkillItemManangerment : MonoBehaviour
 
     public void ShowInfo(OnlineRewardcGiftDayManagerment.SkillsInfo skillinfo)
     {
-        m_labName.text = LanguageTemplate.GetText(int.Parse(skillinfo.name));
+        m_labName.text = MyColorData.getColorString(22, LanguageTemplate.GetText(int.Parse(skillinfo.name)));
         m_labDes.text = LanguageTemplate.GetText(int.Parse(skillinfo.des));
         m_SkillIcon.spriteName = skillinfo.icon.ToString();
     }

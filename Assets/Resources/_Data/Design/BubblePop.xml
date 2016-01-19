@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<BubblePop levelId="100001" nodeId="102" triggerFunc="4" tp1="1" tp2="6" tp3="0" textList="1" triggerNum="1" />
+<BubblePop levelId="100001" nodeId="201" triggerFunc="4" tp1="1" tp2="4" tp3="0" textList="2" triggerNum="1" />
+<BubblePop levelId="100001" nodeId="301" triggerFunc="4" tp1="1" tp2="4" tp3="0" textList="3" triggerNum="1" />
+<BubblePop levelId="100001" nodeId="410" triggerFunc="0" tp1="0" tp2="0" tp3="0" textList="4" triggerNum="1" />
+<BubblePop levelId="100001" nodeId="410" triggerFunc="1" tp1="240011" tp2="0" tp3="0" textList="5" triggerNum="2" />
+<BubblePop levelId="100001" nodeId="410" triggerFunc="2" tp1="0" tp2="0" tp3="0" textList="6" triggerNum="1" />
+<BubblePop levelId="100101" nodeId="310" triggerFunc="0" tp1="0" tp2="0" tp3="0" textList="7" triggerNum="1" />
+<BubblePop levelId="100101" nodeId="310" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="8" triggerNum="2" />
+<BubblePop levelId="100102" nodeId="310" triggerFunc="1" tp1="237303" tp2="0" tp3="0" textList="9" triggerNum="2" />
+<BubblePop levelId="100202" nodeId="2" triggerFunc="0" tp1="0" tp2="0" tp3="0" textList="10|11" triggerNum="2" />
+<BubblePop levelId="100202" nodeId="3" triggerFunc="0" tp1="0" tp2="0" tp3="0" textList="10|11" triggerNum="2" />
+<BubblePop levelId="100202" nodeId="101" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="12" triggerNum="1" />
+<BubblePop levelId="100203" nodeId="2" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="13|14" triggerNum="4" />
+<BubblePop levelId="100203" nodeId="2" triggerFunc="3" tp1="1" tp2="12" tp3="0" textList="15|16" triggerNum="3" />
+<BubblePop levelId="100203" nodeId="110" triggerFunc="4" tp1="1" tp2="6" tp3="0" textList="17|18" triggerNum="3" />
+<BubblePop levelId="100203" nodeId="110" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="19" triggerNum="3" />
+</dataset>

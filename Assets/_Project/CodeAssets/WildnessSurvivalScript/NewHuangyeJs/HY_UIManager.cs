@@ -574,27 +574,15 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	{
 		InstrctionList.Clear ();
 
-		string st1 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_11);
-		string st2 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_12);
-		string st3 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_13);
-		string st4 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_14);
-		string st5 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_15);
-		string st6 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_16);
-		string st7 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_17);
-		string st8 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_18);
-		string st9 = LanguageTemplate.GetText (LanguageTemplate.Text.HUANG_YE_TIPS_19);
+		string st1 = LanguageTemplate.GetText (LanguageTemplate.Text.HY_HELP_DESC);
 
-		InstrctionList.Add (st1);
-		InstrctionList.Add (st2);
-		InstrctionList.Add (st3);
-		InstrctionList.Add (st4);
-		InstrctionList.Add (st5);
-		InstrctionList.Add (st6);
-		InstrctionList.Add (st7);
-		InstrctionList.Add (st8);
-		InstrctionList.Add (st9);
-	
-		GeneralControl.Instance.LoadRulesPrefab (GeneralControl.RuleType.HUANGYE,InstrctionList);
+		string [] s = st1.Split ('#');
+
+		for(int i = 0 ; i<s.Length; i ++)
+		{
+			InstrctionList.Add (s[i]);
+		}
+		GeneralControl.Instance.LoadRulesPrefab (InstrctionList);
 	}
 
 	List<DuiHuanInfo> tempHuangyeList = new List<DuiHuanInfo>();
@@ -682,7 +670,8 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		{
 			if(mMoney < m_OpenHuangYeResp.buyNextMoney)
 			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),NoMoney);
+                EquipSuoData.TopUpLayerTip();
+                
 			}
 			else
 			{
@@ -690,27 +679,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 			}
 		}
 	}
-	void NoMoney(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = "元宝不足";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str = "您的元宝不足了！是否充值？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,SureChongZhi,null,null);
-	}
-	void SureChongZhi(int i)
-	{
-		if(i == 2)
-		{
-			Debug.Log("跳转到充值！");
-			
-			MainCityUI.ClearObjectList();
-			TopUpLoadManagerment.m_instance.LoadPrefab(true);
-			QXTanBaoData.Instance().CheckFreeTanBao();
-		}
-	}
+	 
 	
 	public void CloseUI()
 	{

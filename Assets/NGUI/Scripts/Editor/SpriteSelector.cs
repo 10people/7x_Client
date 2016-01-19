@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 public class SpriteSelector : ScriptableWizard
 {
-	static public SpriteSelector instance;
+	public static SpriteSelector instance;
 
 	void OnEnable () { instance = this; }
 	void OnDisable () { instance = null; }
@@ -247,7 +247,7 @@ public class SpriteSelector : ScriptableWizard
 	/// Show the sprite selection wizard.
 	/// </summary>
 
-	static public void ShowSelected ()
+	public static void ShowSelected ()
 	{
 		if (NGUISettings.atlas != null)
 		{
@@ -259,7 +259,7 @@ public class SpriteSelector : ScriptableWizard
 	/// Show the sprite selection wizard.
 	/// </summary>
 
-	static public void Show (SerializedObject ob, SerializedProperty pro, UIAtlas atlas)
+	public static void Show (SerializedObject ob, SerializedProperty pro, UIAtlas atlas)
 	{
 		if (instance != null)
 		{
@@ -283,7 +283,7 @@ public class SpriteSelector : ScriptableWizard
 	/// Show the selection wizard.
 	/// </summary>
 
-	static public void Show (Callback callback)
+	public static void Show (Callback callback)
 	{
 		if (instance != null)
 		{

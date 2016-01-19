@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define DEBUG_BATTLE_LOADING
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -37,6 +39,10 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 	private int guangQiangTempCount;
 
+	private int doorCount;
+
+	private int doorTempCount;
+
 	private InitProc curSecretResp;
 
 
@@ -50,6 +56,8 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor( this );
+
+		_instance = null;
 	}
 
 	public static BattleNet Instance() { return _instance; }
@@ -59,8 +67,11 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 	}
 
-	public void getData()
-	{
+	public void getData(){
+		#if DEBUG_BATTLE_LOADING
+		LoadingHelper.LogTimeSinceLoading( "BattleNet.GetdData()" );
+		#endif
+
 		m_data_loaded = 0;
 
 		CityGlobalData.m_showLevelupEnable = false;
@@ -108,20 +119,23 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 	private const int BATTLE_DATA_TO_LOAD_COUNT	= 4;
 
-	private void LoadFlagsDone()
-	{
+	private void LoadFlagsDone(){
+		#if DEBUG_BATTLE_LOADING
+		LoadingHelper.LogTimeSinceLoading( "BattleNet.LoadFlagsDone()" );
+		#endif
+
 		BattleControlor.Instance().loadFlags();
 
 		BattleControlor.Instance ().loadBuffFlags ();
 
-		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
-		{
+		BattleControlor.Instance ().loadDoorFlag ();
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1){
 			OnSendPve();
 	
 			OnSendEnterBattle();
 		}
-		else
-		{
+		else{
 			//CityGlobalData.t_resp.selfTroop.nodes[0].modleId = 1;
 
 			loadModelEff (CityGlobalData.t_resp);
@@ -177,9 +191,16 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 	private void LoadBattleFlag()
 	{
-		BattleFlagTemplate.SetLoadDoneCallback( LoadGuangQiang );
+		BattleFlagTemplate.SetLoadDoneCallback( loadDoorFlag );
 
 		BattleFlagTemplate.LoadTemplates(CityGlobalData.m_configId);
+	}
+
+	private void loadDoorFlag()
+	{
+		BattleDoorTemplate.SetLoadDoneCallback (LoadGuangQiang);
+
+		BattleDoorTemplate.LoadTemplates (CityGlobalData.m_configId);
 	}
 
 	public void LoadGuangQiang()
@@ -255,6 +276,15 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 		Global.ResourcesDotLoad( EffectTemplate.getEffectTemplateByEffectId( 76 ).path, 
 		                        LoadGuangQiangDone_2);
+
+
+		doorCount = BattleDoorTemplate.templates.Count;
+
+		foreach(BattleDoorTemplate doorFlag in BattleDoorTemplate.templates)
+		{
+			Global.ResourcesDotLoad( ModelTemplate.getModelTemplateByModelId(doorFlag.modelId).path, 
+			                        LoadDoorDone);
+		}
 	}
 
 	public void LoadGuangQiangDone( ref WWW p_www, string p_path, Object p_object )
@@ -272,7 +302,7 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 		guangQiangTempCount ++;
 
-		if(BattleControlor.Instance ().GuangQiang_Forever != null && guangQiangTempCount >= guangQiangCount)
+		if(BattleControlor.Instance ().GuangQiang_Forever != null && guangQiangTempCount >= guangQiangCount && doorTempCount >= doorCount)
 		{
 			LoadBattleFlagDone();
 		}
@@ -285,7 +315,27 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 		BattleControlor.Instance ().GuangQiang_Forever = (GameObject)p_object;
 
-		if(guangQiangTempCount >= guangQiangCount)
+		if(guangQiangTempCount >= guangQiangCount && doorTempCount >= doorCount)
+		{
+			LoadBattleFlagDone();
+		}
+	}
+
+	public void LoadDoorDone(ref WWW p_www, string p_path, Object p_object)
+	{
+		foreach(BattleDoorTemplate doorFlag in BattleDoorTemplate.templates)
+		{
+			if(p_path.Equals(ModelTemplate.getModelTemplateByModelId(doorFlag.modelId).path))
+			{
+				doorFlag.gcModel = (GameObject)p_object;
+			}
+		}
+
+		doorTempCount ++;
+
+		if (doorTempCount < doorCount) return;
+
+		if(BattleControlor.Instance ().GuangQiang_Forever != null && guangQiangTempCount >= guangQiangCount)
 		{
 			LoadBattleFlagDone();
 		}
@@ -344,6 +394,37 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 			buffBf.refreshTime = template.refreshTime;
 		}
 
+		List<BattleDoorFlag> doorFlags = new List<BattleDoorFlag> ();
+
+		foreach(BattleDoorTemplate template in BattleDoorTemplate.templates)
+		{
+			GameObject gc = Instantiate(template.gcModel);
+			
+			gc.transform.parent = BattleControlor.Instance().transform;
+			
+			gc.name = "Door_" + template.flagId;
+			
+			gc.transform.position = new Vector3(template.x, template.y, template.z);
+			
+			gc.transform.eulerAngles = new Vector3(template.rx, template.ry, template.rz);
+			
+			gc.transform.localScale = new Vector3(1, 1, 1);
+			
+			BattleDoorFlag doorBF = gc.AddComponent<BattleDoorFlag>();
+			
+			doorBF.flagId = template.flagId;
+			
+			doorBF.modelId = template.modelId;
+			
+			doorBF.triggerCount = template.triggerCount;
+			
+			DoorAI doorai = gc.GetComponent<DoorAI>();
+			
+			doorai.init();
+
+			doorFlags.Add(doorBF);
+		}
+
 		List<BattleFlag> flags = new List<BattleFlag>();
 		
 		foreach( BattleFlagTemplate template in BattleFlagTemplate.templates )
@@ -383,6 +464,8 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 			bf.guideId = template.guideId;
 
 			bf.hintLabelId = template.hintLabelId;
+
+			bf.showOnUI = template.showOnUI;
 
 			{
 				if(template.groupId == 0)
@@ -487,8 +570,17 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 			{
 				BattleFlag temp = getFlagById(flags, enteri);
 				
-				if(temp == null) continue;
-				
+				if(temp == null)
+				{
+					BattleDoorFlag tempDoor = getDoorFlagById(doorFlags, enteri);
+
+					if(tempDoor == null) continue;
+
+					bf.doorFlags.Add(tempDoor);
+
+					continue;
+				}
+
 				bf.triggerFlagEnter.Add(temp);
 			}
 			
@@ -648,12 +740,27 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 		return null;
 	}
 
+	private BattleDoorFlag getDoorFlagById(List<BattleDoorFlag> flags, int flagId)
+	{
+		foreach(BattleDoorFlag bf in flags)
+		{
+			if(bf.flagId == flagId)
+			{
+				return bf;
+			}
+		}
+		
+		return null;
+	}
+
 	private void OnSendSecret()
 	{
 		sendingSecret = true;
 
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_InitProc);
 	}
+
+	#region Network
 
 	public bool OnProcessSocketMessage( QXBuffer p_message )
 	{
@@ -712,6 +819,8 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 		return false;
 	}
+
+	#endregion
 
 	private void initError(ZhanDouInitError resp)
 	{
@@ -830,6 +939,10 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	private void loadModelEff( ZhanDouInitResp resp )
 	{
 		//CityGlobalData.t_resp = resp;
+
+		#if DEBUG_BATTLE_LOADING
+		LoadingHelper.LogTimeSinceLoading( "BattleNet.loadModelEff()" );
+		#endif
 
 		CityGlobalData.m_pve_max_level = resp.selfTroop.maxLevel;
 
@@ -1167,6 +1280,10 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 	public void initData(){
 //		Debug.Log( "initData()" );
 
+		#if DEBUG_BATTLE_LOADING
+		LoadingHelper.LogTimeSinceLoading( "BattleNet.initData()" );
+		#endif
+
 		BattleControlor.Instance ().BattleStart();
 
 		{
@@ -1178,8 +1295,11 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 		}
 	}
 
-	public void LoadOtherData()
-	{
+	public void LoadOtherData(){
+		#if DEBUG_BATTLE_LOADING
+		LoadingHelper.LogTimeSinceLoading( "BattleNet.LoadOtherData()" );
+		#endif
+
 		EnterNextScene.Instance ().AddLoadingDoneCallback (loadComplete);
 
 		BattleControlor.Instance ().battleId = CityGlobalData.t_resp.zhandouId;
@@ -1319,10 +1439,11 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 
 	private List<NodeToLoad> m_load_nodes_list = new List<NodeToLoad>();
 	
-	private void LoadNodes()
-	{
+	private void LoadNodes(){
 		{
-//			EnterNextScene.LogTimeSinceLoading( "LoadNodes" );
+			#if DEBUG_BATTLE_LOADING
+			LoadingHelper.LogTimeSinceLoading( "BattleNet.LoadNodes()" );
+			#endif
 
 			SetIsLogNodeLoading( true );
 		}
@@ -1378,11 +1499,16 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 		StartCoroutine( LoadingNodes() );
 	}
 
-	IEnumerator LoadingNodes()
-	{
+	IEnumerator LoadingNodes(){
+		#if DEBUG_BATTLE_LOADING
+		LoadingHelper.LogTimeSinceLoading( "BattleNet.LoadingNodes()" );
+		#endif
+
 		int t_loaded_count = 0;
 
 		NodeToLoad t_cur_load = LoadNextNode();
+
+		float t_time_cost = 0;
 
 		while( t_cur_load != null )
 		{
@@ -1399,22 +1525,39 @@ public class BattleNet : MonoBehaviour, SocketProcessor
 				t_cur_load = LoadNextNode();
 			}
 
-			yield return new WaitForFixedUpdate();
+			float t_cur = Time.realtimeSinceStartup;
+
+			while( !BundleHelper.IsReadyToLoadNextAsset() ){
+//				#if DEBUG_BATTLE_LOADING
+//				Debug.Log( "WaitingToLoad Node." );
+//				#endif
+
+				yield return new WaitForEndOfFrame();
+			}
+
+			t_time_cost = t_time_cost + ( Time.realtimeSinceStartup - t_cur );
 		}
+
+		#if DEBUG_BATTLE_LOADING
+		Debug.Log( "Waiting Time Cost: " + t_time_cost );
+		#endif
+
+		#if DEBUG_BATTLE_LOADING
+		LoadingHelper.LogTimeSinceLoading( "BattleNet.LoadNodes.Done()" );
+		#endif
+
+		yield return null;
 	}
 
-	public NodeToLoad LoadNextNode()
-	{
-		if( m_load_nodes_list.Count > 0 )
-		{
+	public NodeToLoad LoadNextNode(){
+		if( m_load_nodes_list.Count > 0 ){
 			NodeToLoad t_to_load = m_load_nodes_list[ 0 ];
 
-			t_to_load.Exec(this);
+			t_to_load.Exec( this );
 
 			return t_to_load;
 		}
-		else
-		{
+		else{
 //			Debug.Log( "All Nodes Loaded." );
 
 			{

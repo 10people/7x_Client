@@ -106,11 +106,11 @@ public class OnlineRewardcGiftBagsManagerment : MonoBehaviour, SocketProcessor
 
                         if (CityGlobalData.m_Limite_Activity_Type == 1542000)
                         {
-                            MainCityUIRB.SetRedAlert(15, false);
+                            MainCityUI.SetRedAlert(15, false);
                         }
                         else if (CityGlobalData.m_Limite_Activity_Type != 1542000 && WetherComplete())
                         {
-                            MainCityUIRB.SetRedAlert(16, false);
+                            MainCityUI.SetRedAlert(16, false);
                         }
 
                     

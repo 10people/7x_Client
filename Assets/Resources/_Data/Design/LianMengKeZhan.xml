@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LianMengKeZhan id="101001" keZhanLevel="1" alliance_lv_needed="1" keZhan_lvUp_value="250" renshuMax="15" />
+<LianMengKeZhan id="101002" keZhanLevel="2" alliance_lv_needed="2" keZhan_lvUp_value="700" renshuMax="20" />
+<LianMengKeZhan id="101003" keZhanLevel="3" alliance_lv_needed="3" keZhan_lvUp_value="1400" renshuMax="25" />
+<LianMengKeZhan id="101004" keZhanLevel="4" alliance_lv_needed="4" keZhan_lvUp_value="2100" renshuMax="30" />
+<LianMengKeZhan id="101005" keZhanLevel="5" alliance_lv_needed="5" keZhan_lvUp_value="4000" renshuMax="35" />
+<LianMengKeZhan id="101006" keZhanLevel="6" alliance_lv_needed="6" keZhan_lvUp_value="9000" renshuMax="40" />
+<LianMengKeZhan id="101007" keZhanLevel="7" alliance_lv_needed="7" keZhan_lvUp_value="17500" renshuMax="45" />
+<LianMengKeZhan id="101008" keZhanLevel="8" alliance_lv_needed="8" keZhan_lvUp_value="28000" renshuMax="50" />
+<LianMengKeZhan id="101009" keZhanLevel="9" alliance_lv_needed="9" keZhan_lvUp_value="42000" renshuMax="55" />
+<LianMengKeZhan id="101010" keZhanLevel="10" alliance_lv_needed="10" keZhan_lvUp_value="42000" renshuMax="60" />
+</dataset>

@@ -97,7 +97,7 @@ ModelImporter:
     7400032: attack_4
     7400034: attack_1_done
     7400036: attack_2_done
-    7400038: attack_3_done
+    7400038: gongjian_4_wan
     9500000: //RootNode
     13700000: qixiongwushuang_xinnanzhujue(1)
   materials:
@@ -248,7 +248,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: 0
         functionName: ResetHitCount
         data: 
@@ -467,7 +467,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: 0
         functionName: ResetHitCount
         data: 
@@ -594,7 +594,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0068838466
         functionName: PlaySound
         data: 4228|4229|4230
@@ -696,7 +696,7 @@ ModelImporter:
       name: attack
       takeName: Take 001
       firstFrame: 405
-      lastFrame: 513
+      lastFrame: 492
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -862,7 +862,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: 0
         functionName: firstAtt
         data: 
@@ -1038,7 +1038,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0210969169
         functionName: attackForward
         data: 
@@ -1207,7 +1207,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -1369,7 +1369,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00843887124
         functionName: winActionStart
         data: 
@@ -1489,7 +1489,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00758963823
         functionName: PlaySound
         data: 4218
@@ -1715,7 +1715,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00707808929
         functionName: PlaySound
         data: 4225|4226|4227|0|0
@@ -1817,7 +1817,7 @@ ModelImporter:
       name: attack_1
       takeName: Take 001
       firstFrame: 405
-      lastFrame: 424
+      lastFrame: 414
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1835,7 +1835,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0232849736
         functionName: firstAtt
         data: 
@@ -1876,7 +1876,7 @@ ModelImporter:
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 263
         messageOptions: 0
       - time: .799319685
         functionName: playAttackEffect
@@ -1978,8 +1978,8 @@ ModelImporter:
     - serializedVersion: 16
       name: attack_2
       takeName: Take 001
-      firstFrame: 424
-      lastFrame: 449
+      firstFrame: 414
+      lastFrame: 433
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1997,7 +1997,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0170858838
         functionName: updateAttackSpeed
         data: 
@@ -2038,7 +2038,7 @@ ModelImporter:
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 262
         messageOptions: 0
       - time: .947204947
         functionName: attackDone
@@ -2133,8 +2133,8 @@ ModelImporter:
     - serializedVersion: 16
       name: attack_3
       takeName: Take 001
-      firstFrame: 449
-      lastFrame: 479
+      firstFrame: 433
+      lastFrame: 456
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2152,7 +2152,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0129706562
         functionName: updateAttackSpeed
         data: 
@@ -2193,7 +2193,7 @@ ModelImporter:
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 262
         messageOptions: 0
       - time: .956521988
         functionName: attackDone
@@ -2288,8 +2288,8 @@ ModelImporter:
     - serializedVersion: 16
       name: attack_4
       takeName: Take 001
-      firstFrame: 479
-      lastFrame: 513
+      firstFrame: 456
+      lastFrame: 492
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2307,7 +2307,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0129706562
         functionName: updateAttackSpeed
         data: 
@@ -2462,7 +2462,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0842094421
         functionName: swingStart
         data: 
@@ -2582,7 +2582,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .081577301
         functionName: swingStart
         data: 
@@ -2681,7 +2681,7 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: attack_3_done
+      name: gongjian_4_wan
       takeName: Take 001
       firstFrame: 554
       lastFrame: 569
@@ -2702,7 +2702,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0986824036
         functionName: swingStart
         data: 

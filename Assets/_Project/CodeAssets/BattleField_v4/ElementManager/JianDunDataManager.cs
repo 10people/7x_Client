@@ -6,8 +6,13 @@ public class JianDunDataManager
 {
 	public List<string> descs = new List<string> ();
 
+
 	private List<List<int>> m_listData = new List<List<int>>(){new List<int>(), new List<int>(), new List<int>()};
-	private List<bool> m_listBool = new List<bool>(){false, false, false};
+
+
+	//bool改为int型，0-未达成，1-已达成，-1-无法达成
+	private List<int> m_listBool = new List<int>(){0, 0, 0};
+
 
 	public JianDunDataManager(List<int> dataID)
 	{
@@ -28,9 +33,36 @@ public class JianDunDataManager
 		}
 	}
 
+	//掉血
+	public void lostHp()
+	{
+		for(int i = 0; i < m_listData.Count; i ++)
+		{
+			if(m_listData[i][0] == 11)
+			{
+				float maxHP = BattleControlor.Instance().getKing().nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMaxReal);
+				float curHP = BattleControlor.Instance().getKing().nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp);
+				if(((curHP / maxHP) * 100) < m_listData[i][1])
+				{
+					if(m_listBool[i] != -1)
+					{
+						m_listBool[i] = -1;
+						BattleControlor.Instance().achivementCallback(i, -1);
+					}
+				}
+			}
+		}
+
+	}
+	//	11HP
+	//	12击退,最大击退次数
+	//	13击倒,最大击倒次数
+	//	14击晕,最大击晕次数
+
 	//击杀怪物
 	public void KillMonster(int id)
 	{
+		int temp = 1;
 		for(int i = 0; i < m_listData.Count; i ++)
 		{
 			if(m_listData[i][0] == 2)
@@ -43,6 +75,15 @@ public class JianDunDataManager
 
 						break;
 					}
+					if(m_listData[i][2 + q] != 0)
+					{
+						temp = 0;
+					}
+				}
+				if(temp == 1 && m_listBool[i] != 1)
+				{
+					m_listBool[i] = 1;
+					BattleControlor.Instance().achivementCallback(i, temp);
 				}
 			}
 		}
@@ -51,6 +92,7 @@ public class JianDunDataManager
 	//使用技能
 	public void UseSkill(int skillId, int monsterId)
 	{
+		int temp = 1;
 		for(int i = 0; i < m_listData.Count; i ++)
 		{
 			if(m_listData[i][0] == 3)
@@ -63,10 +105,20 @@ public class JianDunDataManager
 
 						break;
 					}
+					if(m_listData[i][2 + q] == 0)
+					{
+						temp = -1;
+					}
+				}
+				if(temp == -1 && m_listBool[i] != -1)
+				{
+					m_listBool[i] = -1;
+					BattleControlor.Instance().achivementCallback(i, temp);
 				}
 			}
 			if(m_listData[i][0] == 6)
 			{
+				temp = 1;
 				if(m_listData[i][1] == monsterId)
 				{
 					for(int q = 0; q < m_listData[i][2]; q ++)
@@ -77,6 +129,15 @@ public class JianDunDataManager
 
 							break;
 						}
+						if(m_listData[i][4 + (q * 2) - 1] != 0)
+						{
+							temp = 0;
+						}
+					}
+					if(temp == 1 && m_listBool[i] != 1)
+					{
+						m_listBool[i] = 1;
+						BattleControlor.Instance().achivementCallback(i, temp);
 					}
 				}
 			}
@@ -105,6 +166,11 @@ public class JianDunDataManager
 					{
 						m_listData[i][2 + q] = -1;
 					}
+					if(m_listBool[i] != -1)
+					{
+						m_listBool[i] = -1;
+						BattleControlor.Instance().achivementCallback(i, -1);
+					}
 				}
 			}
 		}
@@ -118,6 +184,14 @@ public class JianDunDataManager
 			if(m_listData[i][0] == 5)
 			{
 				m_listData[i][1] -= num;
+				if(m_listData[i][1] <= 0)
+				{
+					if(m_listBool[i] != 1)
+					{
+						m_listBool[i] = 1;
+						BattleControlor.Instance().achivementCallback(i, 1);
+					}
+				}
 			}
 		}
 	}
@@ -132,6 +206,14 @@ public class JianDunDataManager
 				if(m_listData[i][1] == -1 || m_listData[i][1] == monterId)
 				{
 					m_listData[i][2] --;
+					if(m_listData[i][2] <= 0)
+					{
+						if(m_listBool[i] != 1)
+						{
+							m_listBool[i] = 1;
+							BattleControlor.Instance().achivementCallback(i, 1);
+						}
+					}
 				}
 			}
 		}
@@ -147,6 +229,14 @@ public class JianDunDataManager
 				if(m_listData[i][2] == -1 || m_listData[i][2] == skillId)
 				{
 					m_listData[i][1] --;
+					if(m_listData[i][1] <= 0)
+					{
+						if(m_listBool[i] != 1)
+						{
+							m_listBool[i] = 1;
+							BattleControlor.Instance().achivementCallback(i, 1);
+						}
+					}
 				}
 			}
 		}
@@ -164,6 +254,14 @@ public class JianDunDataManager
 			if(m_listData[i][0] == 12)
 			{
 				m_listData[i][1] --;
+				if(m_listData[i][1] <= 0)
+				{
+					if(m_listBool[i] != -1)
+					{
+						m_listBool[i] = -1;
+						BattleControlor.Instance().achivementCallback(i, 1);
+					}
+				}
 			}
 		}
 	}
@@ -176,6 +274,14 @@ public class JianDunDataManager
 			if(m_listData[i][0] == 13)
 			{
 				m_listData[i][1] --;
+				if(m_listData[i][1] <= 0)
+				{
+					if(m_listBool[i] != -1)
+					{
+						m_listBool[i] = -1;
+						BattleControlor.Instance().achivementCallback(i, 1);
+					}
+				}
 			}
 		}
 	}
@@ -188,22 +294,30 @@ public class JianDunDataManager
 			if(m_listData[i][0] == 14)
 			{
 				m_listData[i][1] --;
+				if(m_listData[i][1] <= 0)
+				{
+					if(m_listBool[i] != -1)
+					{
+						m_listBool[i] = -1;
+						BattleControlor.Instance().achivementCallback(i, 1);
+					}
+				}
 			}
 		}
 	}
 
 	//结束时调用
-	public List<bool> EndBattle()
+	public List<int> EndBattle()
 	{
 		for(int i = 0; i < m_listData.Count; i ++)
 		{
-			bool temp = true;
+			int temp = 1;
 			switch(m_listData[i][0])
 			{
 			case 1:
 				if(BattleControlor.Instance().battleTime > m_listData[i][1])
 				{
-					temp = false;
+					temp = 0;
 				}
 				break;
 			case 2:
@@ -211,7 +325,7 @@ public class JianDunDataManager
 				{
 					if(m_listData[i][2 + q] != 0)
 					{
-						temp = false;
+						temp = 0;
 						break;
 					}
 				}
@@ -221,7 +335,7 @@ public class JianDunDataManager
 				{
 					if(m_listData[i][2 + q] == 0)
 					{
-						temp = false;
+						temp = 0;
 						break;
 					}
 				}
@@ -229,13 +343,13 @@ public class JianDunDataManager
 			case 4:
 				if(m_listData[i][2] == -1)
 				{
-					temp = false;
+					temp = 0;
 				}
 				break;
 			case 5:
 				if(m_listData[i][1] > 0)
 				{
-					temp = false;
+					temp = 0;
 				}
 				break;
 			case 6:
@@ -243,7 +357,7 @@ public class JianDunDataManager
 				{
 					if(m_listData[i][4 + (q * 2) - 1] > 0)
 					{
-						temp = false;
+						temp = 0;
 						break;
 					}
 				}
@@ -251,13 +365,13 @@ public class JianDunDataManager
 			case 7:
 				if(m_listData[i][2] > 0)
 				{
-					temp = false;
+					temp = 0;
 				}
 				break;
 			case 8:
 				if(m_listData[i][1] > 0)
 				{
-					temp = false;
+					temp = 0;
 				}
 				break;
 			case 9:
@@ -276,7 +390,7 @@ public class JianDunDataManager
 				{
 					if(m_listData[i][2 + q] == 0)
 					{
-						temp = false;
+						temp = 0;
 						break;
 					}
 				}
@@ -311,17 +425,17 @@ public class JianDunDataManager
 				{
 					if(m_listData[i][2 + q] != 0)
 					{
-						temp = false;
+						temp = 0;
 						break;
 					}
 				}
 				break;
 			case 11:
-				float maxHP = BattleControlor.Instance().getKing().nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMax);
+				float maxHP = BattleControlor.Instance().getKing().nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMaxReal);
 				float curHP = BattleControlor.Instance().getKing().nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp);
 				if(((curHP / maxHP) * 100) < m_listData[i][1])
 				{
-					temp = false;
+					temp = 0;
 				}
 				break;
 			case 12:
@@ -329,27 +443,29 @@ public class JianDunDataManager
 			case 14:
 				if(m_listData[i][1] < 0)
 				{
-					temp = false;
+					temp = 0;
 				}
 				break;
 			}
-			m_listBool[i] = temp;
+			if(m_listBool[i] != -1)
+			{
+				m_listBool[i] = temp;
+			}
 		}
 		return m_listBool;
 	}
 
-//	1时间类型,X时间
-//	2打怪类型,X打怪数量,怪物ID(与数量匹配)
-//	3不使用技能,X数量,技能ID(与数量匹配)
-//	4只使用武器类型,X数量,武器类型(与数量匹配)
-//	5造成伤害类型,X伤害总数
-//	6技能使用类型,X怪物的ID,X技能的数量,(X使用次数,技能ID)
-//	7打断类型,怪物ID(-1为任意怪),打断次数
-//	8承受技能类型,技能数量,技能ID
-//	9结算BUFF,buff数量,buff类型(与数量匹配)
-//	10秘宝,秘宝数量,秘宝ID(与数量匹配)
-//	11HP
-//	12击退,最大击退次数
-//	13击倒,最大击倒次数
-//	14击晕,最大击晕次数
+	public List<int> getListBool()
+	{
+		return m_listBool;
+	}
+
+	public void setListBool(int achi_1, int achi_2, int achi_3)
+	{
+		m_listBool [0] = achi_1;
+
+		m_listBool [1] = achi_2;
+
+		m_listBool [2] = achi_3;
+	}
 }

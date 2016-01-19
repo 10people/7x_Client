@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -10,6 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 using SimpleJSON;
+
 public class SettingData : MonoBehaviour, SocketProcessor
 {
     private static SettingData m_SettingData;
@@ -38,11 +37,13 @@ public class SettingData : MonoBehaviour, SocketProcessor
         RequestSettingsInfo();
 	}
  
-
 	void OnDestroy()
     {
 		SocketTool.UnRegisterMessageProcessor( this );
+
+		m_SettingData = null;
 	}
+
     public void RequestSettingsInfo( )
     {
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_SETTINGS_GET);

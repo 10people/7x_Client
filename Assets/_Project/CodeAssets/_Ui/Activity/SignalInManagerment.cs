@@ -15,7 +15,8 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     public UILabel m_LabSignalTop;
     public UILabel m_LabSignalBottom;
     public UILabel m_LabDes;
-    public UISprite m_SpriteMiBao;
+    //public UISprite m_SpriteMiBao;
+    public UITexture m_TextureIcon;
     public UILabel m_LabSignalInButton;
     public UILabel m_LabSignalInButtonRight;
     public List<EventIndexHandle> m_listEvent;
@@ -67,9 +68,10 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                 break;
             case 1:
                 {
-                    m_ObjDesInfo.SetActive(true);
+                  // m_ObjDesInfo.SetActive(true);
+                    GeneralControl.Instance.LoadRulesPrefab(DescIdTemplate.GetDescriptionById(QianDaoMonthTemplate.getDescIdTemplateByMonth(currentMonth)));
                     //m_ObjSignal.SetActive(false);
-                    ShowQianDaoDes();
+                    //ShowQianDaoDes();
                 }
                 break;
             case 2:
@@ -209,31 +211,38 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         }
         return true;
     }
+    private MiBaoXmlTemp mmibaoxml;
     private void Show(string iconName)
     {
         m_LabName.text = NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).nameId);
         //0普通道具;2装备;3玉玦;4秘宝；5秘宝碎片；6进阶材料；9强化材料
-        if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 5)
-        {
-            m_SpriteMiBao.atlas = m_Atlas_Pieces;
-            m_SpriteMiBao.spriteName = iconName;
-        }
-        else if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 4)
-        {
-            m_SpriteMiBao.atlas = m_Atlas_MiBao;
-            m_SpriteMiBao.spriteName = iconName;
-        }
-        else if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 7 || CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 8)
-        {
-            m_SpriteMiBao.atlas = m_Atlas_FuShi;
-            m_SpriteMiBao.type = UISprite.Type.Simple;
-            m_SpriteMiBao.spriteName = iconName;
-        }
-        else
-        {
-            m_SpriteMiBao.atlas = m_Atlas_Commom;
-            m_SpriteMiBao.spriteName = iconName;
-        }
+       mmibaoxml = MiBaoXmlTemp.getMiBaoXmlTempById(int.Parse(iconName));
+
+
+
+
+        m_TextureIcon.mainTexture = (Texture)Resources.Load(Res2DTemplate.GetResPath(Res2DTemplate.Res.MIBAO_BIGICON) + mmibaoxml.icon.ToString());
+        //if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 5)
+        //{
+        //    m_SpriteMiBao.atlas = m_Atlas_Pieces;
+        //    m_SpriteMiBao.spriteName = iconName;
+        //}
+        //else if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 4)
+        //{
+        //    m_SpriteMiBao.atlas = m_Atlas_MiBao;
+        //    m_SpriteMiBao.spriteName = iconName;
+        //}
+        //else if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 7 || CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 8)
+        //{
+        //    m_SpriteMiBao.atlas = m_Atlas_FuShi;
+        //    m_SpriteMiBao.type = UISprite.Type.Simple;
+        //    m_SpriteMiBao.spriteName = iconName;
+        //}
+        //else
+        //{
+        //    m_SpriteMiBao.atlas = m_Atlas_Commom;
+        //    m_SpriteMiBao.spriteName = iconName;
+        //}
     }
     Vector3 pos_start = Vector3.zero;
     void ShowSignalIn()

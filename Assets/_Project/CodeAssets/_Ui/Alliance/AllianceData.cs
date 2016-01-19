@@ -221,7 +221,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                     {
                         Debug.Log("联盟动态：" + ProtoIndexes.ALLIANCE_HAVE_NEW_APPLYER);
                         Debug.Log("联盟index：" + 104);
-                        MainCityUIRB.SetRedAlert(104, true);
+                        MainCityUI.SetRedAlert(104, true);
                         return true;
                     }
 
@@ -268,8 +268,37 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         return true;
                         break;
                     }
+			case ProtoIndexes.S_JIAN_ZHU_INFO:
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				JianZhuList mJianZhuList = new JianZhuList();
+				
+				t_qx.Deserialize(t_stream, mJianZhuList, mJianZhuList.GetType());
+
+//				Debug.Log("请求建筑返回11");
+
+				return true;
+			}
+			case ProtoIndexes.S_JIAN_ZHU_UP :
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				ErrorMessage BuildUpback = new ErrorMessage();
+				
+				t_qx.Deserialize(t_stream, BuildUpback, BuildUpback.GetType());
+				
+				Debug.Log("BuildUpback main - -   ");
+				
+				return true;
+			}
                 default: return false;
             }
+		
         }
         return false;
     }
@@ -352,8 +381,10 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
 //		Debug.Log ("ApplicateReq" + ProtoIndexes.LOOK_APPLICANTS);
 	}
-    void OnDestroy()
-    {
+
+	void OnDestroy(){
         SocketTool.UnRegisterMessageProcessor(this);
-    }
+
+		base.OnDestroy();
+	}
 }

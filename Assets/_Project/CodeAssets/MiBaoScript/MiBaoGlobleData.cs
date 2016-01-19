@@ -47,17 +47,22 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
+
+		m_instance = null;
 	}
+
 	void Start()
 	{
 	
 		SendMiBaoIfoMessage();
 	}
+
 	//发送秘宝请求
 	public static void SendMiBaoIfoMessage()
 	{
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 	}
+
 	void Update()
 	{
 //		{
@@ -232,6 +237,10 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 
 				return true;
 			}
+			case ProtoIndexes.S_MIBAO_SELECT_RESP: //      密保保存返回
+			{
+				return true;
+			}
 			case ProtoIndexes.MIBAO_DEAL_SKILL_RESP://m秘宝技能激活或者进阶返回
 			{
 				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -386,24 +395,73 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		switch(temp.star)
 		{
 		case 1:
-			returnStart = "pinzhi3";
+			returnStart = "pinzhi6";
 			break;
 		case 2:
-			returnStart = "pinzhi6";
+			returnStart = "pinzhi7";
 			break;
 		case 3:
 			returnStart = "pinzhi9";
 			break;
 		case 4:
-			returnStart = "pinzhi9";
+			returnStart = "pinzhi10";
 			break;
 		case 5:
-			returnStart = "pinzhi9";
+			returnStart = "pinzhi11";
 			break;
 		default:
 			returnStart = "";
 			break;
 		}
 		return returnStart;
+	}
+	private int Type;
+
+	private int Skill_id;
+	public void OpenMiBaoSkillUI( int type , int id)
+	{
+		Type = type;
+		Skill_id = id;
+		Global.ResourcesDotLoad (Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeMiBaoSkillLoadBack);
+		
+	}
+	void ChangeMiBaoSkillLoadBack (ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject mChoose_MiBao = Instantiate(p_object) as GameObject;
+		
+		mChoose_MiBao.transform.localPosition = new Vector3(0, -100, 0);
+		
+		mChoose_MiBao.transform.localScale = Vector3.one;
+		
+		NewMiBaoSkill mNewMiBaoSkill = mChoose_MiBao.GetComponent<NewMiBaoSkill>();
+		
+		//mNewMiBaoSkill.COmeMiBaoUI = true;
+		
+		mNewMiBaoSkill.Init ( Type,Skill_id );
+		MainCityUI.TryAddToObjectList(mChoose_MiBao);
+	}
+	public void OpenAllianceUI()
+	{
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_HAVE_ROOT),
+		                        AllianceHaveLoadCallback);
+	}
+	public void AllianceHaveLoadCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject tempObject = Instantiate(p_object) as GameObject;
+		MainCityUI.TryAddToObjectList(tempObject);
+		
+	}
+	public void OpenHYMap_UI()
+	{
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.HY_MAP),
+		                        HYMapLoadCallback);
+	}
+	public void HYMapLoadCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject tempObject = Instantiate(p_object) as GameObject;
+		MainCityUI.TryAddToObjectList(tempObject);
+		HY_UIManager mWildnessManager = tempObject.GetComponent<HY_UIManager>();
+		mWildnessManager.init();
+		
 	}
 }

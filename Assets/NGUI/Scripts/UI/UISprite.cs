@@ -1254,4 +1254,21 @@ public class UISprite : UIWidget
 		cols.Add(col);
 	}
 #endregion
+
+	
+	
+	#region Mono
+	
+	protected override void OnDestroy(){
+		{
+			mAtlas = null;
+			
+			mSprite = null;
+		}
+
+		base.OnDestroy();
+	}
+	
+	#endregion
+
 }

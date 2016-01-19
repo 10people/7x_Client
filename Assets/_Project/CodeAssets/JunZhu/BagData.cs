@@ -70,6 +70,8 @@ public class BagData : MonoBehaviour, SocketProcessor
     void OnDestroy()
     {
         SocketTool.UnRegisterMessageProcessor(this);
+
+		m_BatData = null;
     }
 
     public static void RefreshData()
@@ -116,8 +118,9 @@ public class BagData : MonoBehaviour, SocketProcessor
                             GetCardBagCount();
                         }
 
-				// Removed By YuGu, red alert auto updated by PushHelper.
-//                        MainCityUIRB.SetRedAlert(12, AllIntensify() || AllUpgrade() || PushAndNotificationHelper.IsShowRedSpotNotification(1210));
+                        // Removed By YuGu, red alert auto updated by PushHelper.
+                        //Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+                        //MainCityUI.SetRedAlert(12, AllIntensify() || PushAndNotificationHelper.IsShowRedSpotNotification(1210));
                     }
                     return true;
                 default: return false;
@@ -202,19 +205,25 @@ public class BagData : MonoBehaviour, SocketProcessor
                 if (m_bagItemList[i].itemType == CityGlobalData.m_equipFalg)
                 {
                     m_playerEquipDic.Add(i, m_bagItemList[i]);
-
                     //Debug.Log("装备在背包中数据：" + m_bagItemList[i].qiangHuaLv + " " + m_bagItemList[i].gongJi + " " + m_bagItemList[i].fangYu + " " + m_bagItemList[i].shengMing + " " +m_bagItemList[i].tongShuai + " " + m_bagItemList[i].wuYi + " " + m_bagItemList[i].mouLi);
                 }
+              
             }
+
+            WetherHaveEquipsLowPinZhi();
             CityGlobalData.m_JunZhuTouJinJieTag = true;
         }
 
-        if (!Global.m_isTianfuUpCan && !Global.m_isNewChenghao && !Global.m_isFuWen)
-        {
-//            Debug.Log("BagData.AllUpgrade()BagData.AllUpgrade() ::" + BagData.AllUpgrade());
+		MainCityUI.SetRedAlert(500005, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace());
+		MainCityUI.SetRedAlert(1211, BagData.AllUpgrade());
 
-            MainCityUIRB.SetRedAlert(200, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace() || BagData.AllUpgrade());
-        }
+
+//        if (!Global.m_isTianfuUpCan && !Global.m_isNewChenghao && !Global.m_isFuWen)
+//        {
+////            Debug.Log("BagData.AllUpgrade()BagData.AllUpgrade() ::" + BagData.AllUpgrade());
+//
+//            MainCityUI.SetRedAlert(200, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace() || BagData.AllUpgrade());
+//        }
               //Set junzhu data after setting equipment info.
 //		Debug.Log ("BagData");
 
@@ -245,15 +254,22 @@ public class BagData : MonoBehaviour, SocketProcessor
                     {
                         m_playerCaiLiaoDic[tempBagItem.dbId].Add(tempBagItem);
                     }
+					if (tempBagItem.itemType >= 101 && tempBagItem.itemType <= 103)
+					{
+						MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(tempBagItem.itemId, tempBagItem.cnt);
+					}
                 }
             }
-        }
-        if (!Global.m_isTianfuUpCan && !Global.m_isNewChenghao && !Global.m_isFuWen)
-        {
-//            Debug.Log("BagData.AllUpgrade()BagData.AllUpgrade() ::" + BagData.AllUpgrade());
 
-            MainCityUIRB.SetRedAlert(200, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace() || BagData.AllUpgrade());
+//			Debug.Log("AllIntensifyAllIntensifyAllIntensifyAllIntensify ::" + AllIntensify());
+
+            MainCityUI.SetRedAlert(12, AllIntensify() || PushAndNotificationHelper.IsShowRedSpotNotification(1210));
+            
+			MainCityUI.SetRedAlert(500005, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace());
+            
+			MainCityUI.SetRedAlert(1211, BagData.AllUpgrade());
         }
+
     }
 
     public void RefreshPlayerEquips(List<BagItem> tempBagItemList) //刷新玩家装备
@@ -276,102 +292,8 @@ public class BagData : MonoBehaviour, SocketProcessor
 //        Debug.Log("卡箱数量：" + m_cardBagCount);
     }
 
-    public void destoryItem(long itemInstId)
-    {
-        bool flag = false;
-
-        foreach (BagItem tempItem in m_bagItemList)
-        {
-            if (tempItem.instId == itemInstId)
-            {
-                if (tempItem.itemType == CityGlobalData.m_equipFalg) flag = true;
-
-                m_bagItemList.Remove(tempItem);
-
-                break;
-            }
-        }
-
-        if (flag == false) return;
-
-        int tempIndex = 0;
-        foreach (int tempKey in m_playerEquipDic.Keys)
-        {
-            if (m_playerEquipDic[tempKey].instId == itemInstId)
-            {
-                tempIndex = tempKey;
-
-                break;
-            }
-        }
-        m_playerEquipDic.Remove(tempIndex);
-
-    }
-
-    public void updateItem(BagItem item)
-    {
-        bool flag = false;
-
-        foreach (BagItem tempItem in m_bagItemList)
-        {
-            if (tempItem.instId == item.instId)
-            {
-                if (tempItem.itemType == CityGlobalData.m_equipFalg) flag = true;
-
-                tempItem.itemId = item.itemId;
-
-                tempItem.itemType = item.itemType;
-
-                tempItem.name = item.name;
-
-                tempItem.instId = item.instId;
-
-                tempItem.cnt = item.cnt;
-
-                tempItem.gongJi = item.gongJi;
-
-                tempItem.fangYu = item.fangYu;
-
-                tempItem.shengMing = item.shengMing;
-
-                tempItem.buWei = item.buWei;
-
-                tempItem.pinZhi = item.pinZhi;
-
-                break;
-            }
-        }
-
-        if (flag == false) return;
-
-        foreach (BagItem tempItem in m_playerEquipDic.Values)
-        {
-            if (tempItem.instId == item.instId)
-            {
-                tempItem.itemId = item.itemId;
-
-                tempItem.itemType = item.itemType;
-
-                tempItem.name = item.name;
-
-                tempItem.instId = item.instId;
-
-                tempItem.cnt = item.cnt;
-
-                tempItem.gongJi = item.gongJi;
-
-                tempItem.fangYu = item.fangYu;
-
-                tempItem.shengMing = item.shengMing;
-
-                tempItem.buWei = item.buWei;
-
-                tempItem.pinZhi = item.pinZhi;
-
-                break;
-            }
-        }
-    }
+   
+   
 
     public BagItem GetBagEquip_With_InstId(long p_inst_id)
     {
@@ -408,11 +330,12 @@ public class BagData : MonoBehaviour, SocketProcessor
     }
 
 
-    public bool WetherHaveEquipsLowPinZhi(int buwei, int pinzhi)
+    public void WetherHaveEquipsLowPinZhi()
     {
+        int tempBuwei = 0;
         foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
         {
-            int tempBuwei = 0;
+        
             switch (item.Value.buWei)
             {
                 case 1: tempBuwei = 3; break;//重武器
@@ -426,13 +349,17 @@ public class BagData : MonoBehaviour, SocketProcessor
                 case 16: tempBuwei = 6; break;//鞋子
                 default: break;
             }
-            if (tempBuwei == buwei && item.Value.pinZhi <= pinzhi)
-            {
 
-                return true;
+            if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei) && item.Value.pinZhi > EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].pinZhi)
+            {
+                MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
+            }
+            else if(!EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei))
+            {
+                MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
             }
         }
-        return false;
+ 
     }
 
 
@@ -587,81 +514,6 @@ public class BagData : MonoBehaviour, SocketProcessor
     
     #endregion
 
-
-    private bool AllIntensify()
-    {
-        int EquipType = 0;
-        int EquipExp = 0;
-        int equipLevel = 0;
-        foreach (KeyValuePair<int, BagItem> equip in EquipsOfBody.Instance().m_equipsOfBodyDic)
-        {
-            equipLevel = equip.Value.qiangHuaLv;
-            EquipExp = equip.Value.qiangHuaExp;
-            if (equip.Value.buWei == 3 || equip.Value.buWei == 4 || equip.Value.buWei == 5)
-            {
-                EquipType = 1;
-            }
-            else
-            {
-                EquipType = 0;
-            }
-
-            foreach (KeyValuePair<long, List<BagItem>> item in BagData.Instance().m_playerCaiLiaoDic)
-            {
-                for (int i = 0; i < ItemTemp.templates.Count; i++)
-                {
-                    if (item.Value[0].itemId == ItemTemp.templates[i].id && ItemTemp.templates[i].quality != 0 && item.Value[0].cnt > 0)
-                    {
-                        if (item.Value[0].itemType != 10000)
-                        {
-                            if (EquipType == 0 && item.Value[0].itemType == 2)
-                            {
-                                EquipExp += ItemTemp.templates[i].effectId;
-                            }
-                            else if (EquipType == 1 && item.Value[0].itemType == 1)
-                            {
-                                EquipExp += ItemTemp.templates[i].effectId;
-                            }
-                        }
-                        else
-                        {
-                            EquipExp += ItemTemp.templates[i].effectId;
-                        }
-                    }
-                }
-            }
-
-            foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
-            {
-                int tempBuwei = 0;
-                switch (item.Value.buWei)
-                {
-                    case 1: tempBuwei = 3; break;//重武器
-                    case 2: tempBuwei = 4; break;//轻武器
-                    case 3: tempBuwei = 5; break;//弓
-                    case 11: tempBuwei = 0; break;//头盔
-                    case 12: tempBuwei = 8; break;//肩膀
-                    case 13: tempBuwei = 1; break;//铠甲
-                    case 14: tempBuwei = 7; break;//手套
-                    case 15: tempBuwei = 2; break;//裤子
-                    case 16: tempBuwei = 6; break;//鞋子
-                    default: break;
-                }
-                if (tempBuwei == equip.Value.buWei && item.Value.pinZhi <= equip.Value.pinZhi)
-                {
-
-                    EquipExp += ZhuangBei.GetItemByID(item.Value.itemId).exp;
-                }
-            }
-
-            if (EquipExp >= ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(equip.Value.itemId).expId, equipLevel).needExp)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static bool AllUpgrade()
     {
         foreach (KeyValuePair<int, BagItem> equip in EquipsOfBody.Instance().m_equipsOfBodyDic)
@@ -690,4 +542,133 @@ public class BagData : MonoBehaviour, SocketProcessor
         return 0;
     }
 
+    private bool AllIntensify()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            if (AllIntensify(i) != 99)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private int AllIntensify(int index)
+    {
+        int EquipType = 0;
+        int EquipExp = 0;
+        int equipLevel = 0;
+        int pinzhi = 0;
+        if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(index))
+        {
+            equipLevel = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaLv;
+            EquipExp = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaExp;
+            pinzhi = EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi;
+            if (EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 3 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 4 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 5)
+            {
+                EquipType = 1;
+            }
+            else
+            {
+                EquipType = 0;
+            }
+
+            foreach (KeyValuePair<long, List<BagItem>> item in BagData.Instance().m_playerCaiLiaoDic)
+            {
+                for (int i = 0; i < ItemTemp.templates.Count; i++)
+                {
+                    if (item.Value[0].itemId == ItemTemp.templates[i].id)
+                    {
+                        if (EquipType == 0 && item.Value[0].itemType == 2)
+                        {
+                            EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
+                        }
+                        else if (EquipType == 1 && item.Value[0].itemType == 1)
+                        {
+                            EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
+                        }
+                        else if (item.Value[0].itemType == 6 && pinzhi > item.Value[0].pinZhi)
+                        {
+
+                            int tempBuwei = 0;
+                            switch (ZhuangBei.GetBuWeiByItemId(item.Value[0].itemId))
+                            {
+                                case 1: tempBuwei = 3; break;//重武器
+                                case 2: tempBuwei = 4; break;//轻武器
+                                case 3: tempBuwei = 5; break;//弓
+                                case 11: tempBuwei = 0; break;//头盔
+                                case 12: tempBuwei = 8; break;//肩膀
+                                case 13: tempBuwei = 1; break;//铠甲
+                                case 14: tempBuwei = 7; break;//手套
+                                case 15: tempBuwei = 2; break;//裤子
+                                case 16: tempBuwei = 6; break;//鞋子
+                                default: break;
+                            }
+                            if (EquipType == 1)
+                            {
+                                if (tempBuwei == 3 || tempBuwei == 4 || tempBuwei == 5)
+                                {
+                                    if (tempBuwei == index && EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi > item.Value[0].pinZhi)
+                                    {
+                                        EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (tempBuwei != 3 && tempBuwei != 4 && tempBuwei != 5)
+                                {
+                                    if (tempBuwei == index && EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi > item.Value[0].pinZhi)
+                                    {
+                                        EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
+            {
+                int tempBuwei = 0;
+                switch (item.Value.buWei)
+                {
+                    case 1: tempBuwei = 3; break;//重武器
+                    case 2: tempBuwei = 4; break;//轻武器
+                    case 3: tempBuwei = 5; break;//弓
+                    case 11: tempBuwei = 0; break;//头盔
+                    case 12: tempBuwei = 8; break;//肩膀
+                    case 13: tempBuwei = 1; break;//铠甲
+                    case 14: tempBuwei = 7; break;//手套
+                    case 15: tempBuwei = 2; break;//裤子
+                    case 16: tempBuwei = 6; break;//鞋子
+                    default: break;
+                }
+                if (tempBuwei == EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei && item.Value.pinZhi <= EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi)
+                {
+                    //  Debug.Log("EquipExpEquipExpEquipExpEquipExpEquipExpEquipExpEquipExpEquipExpEquipExpEquipExpEquipExp ::" + EquipExp);
+                    EquipExp += ZhuangBei.GetItemByID(item.Value.itemId).exp;
+                }
+            }
+
+            if (ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp > 0)
+            {
+                if (EquipExp >= ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp)
+                {
+                    if (equipLevel < JunZhuData.Instance().m_junzhuInfo.level)
+                    {
+                        return EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei;
+                    }
+                    else
+                    {
+                        return 99;
+                    }
+                }
+            }
+        }
+        return 99;
+    }
 }

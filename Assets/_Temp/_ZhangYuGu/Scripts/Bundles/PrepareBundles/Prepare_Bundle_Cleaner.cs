@@ -34,7 +34,7 @@ public class Prepare_Bundle_Cleaner : MonoBehaviour {
 
 	private static void CleanBundleVersionPrefs(){
 //		Debug.Log( "CleanBundleVersionPrefs()" );
-		
+
 		PlayerPrefs.DeleteKey( ConstInGame.CONST_PLAYER_PREFS_KEY_CACHED_BUNDLE_SMALL_VERSION );
 		
 		PlayerPrefs.DeleteKey( ConstInGame.CONST_FIRST_TIME_TO_PLAY_VIDEO );

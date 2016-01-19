@@ -1,10 +1,10 @@
-//#define FX_ART_USE
+#define ALWAYS_RETAIN
+
+
 
 //#define DEBUG_UI_EFFECT
 
-
-
-#define ALWAYS_RETAIN
+//#define FX_ART_USE
 
 using UnityEngine;
 using System;
@@ -180,12 +180,18 @@ public class UI3DEffectTool : MonoBehaviour {
 
 	private int t_dyset = 0;
 
+	private void ForceDynamicSetNow(){
+		t_dyset = -1;
+
+		DynamicSet();
+	}
+
 	/// Dynamic active and deactive cameras.
 	private void DynamicSet(){
 		{
 			t_dyset++;
 
-			if( t_dyset %30 != 0 ){
+			if( t_dyset %10 != 0 ){
 				return;
 			}
 
@@ -292,6 +298,29 @@ public class UI3DEffectTool : MonoBehaviour {
 
 
 
+	#region Utilities
+
+	/// Whether p_ngui_gb have any fx on it.
+	public bool HaveAnyFx( GameObject p_ngui_gb  ){
+		FxWatcher t_watcher = GetFxWatcher( p_ngui_gb );
+
+		if( t_watcher != null ){
+			if( t_watcher.HaveFx() ){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+	}
+
+	#endregion
+
+
+
 	#region Top Layer Effect
 
 	/// Desc:
@@ -315,7 +344,9 @@ public class UI3DEffectTool : MonoBehaviour {
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "ShowTopLayerEffect: " + p_ui_type + " - " + p_target_ngui_gb );
 
-		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
+//		DebugNGUIObject( p_target_ngui_gb );
+//
+//		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
 		AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, TopEffectLoadCallback, p_target_ngui_center_gb );
@@ -369,8 +400,10 @@ public class UI3DEffectTool : MonoBehaviour {
 	public void ShowBottomLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null ){
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "ShowBottomLayerEffect: " + p_ui_type + " - " + p_target_ngui_gb );
-		
-		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
+
+//		DebugNGUIObject( p_target_ngui_gb );
+//
+//		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
 		AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, BottomEffectLoadCallback, p_target_ngui_center_gb );
@@ -424,8 +457,10 @@ public class UI3DEffectTool : MonoBehaviour {
 	public void ShowMidLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null  ){
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "ShowMidLayerEffect: " + p_ui_type + " - " + p_target_ngui_gb );
-		
-		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
+
+//		DebugNGUIObject( p_target_ngui_gb );
+//		
+//		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
 		AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, MidEffectLoadCallback, p_target_ngui_center_gb );
@@ -691,6 +726,8 @@ public class UI3DEffectTool : MonoBehaviour {
 		FxWatcher t_watcher = GetOrCreateFxWatcher( p_ngui_gb );
 
 		t_watcher.AddWatchItem( p_param_gb, p_sync_ngui_tran, p_target_ngui_center_gb );
+
+		t_watcher.ForceUpdateVisibility();
 	}
 
 	private FxWatcher GetFxWatcher( GameObject p_ngui_gb ){
@@ -843,6 +880,10 @@ public class UI3DEffectTool : MonoBehaviour {
 
 		private GameObject m_target_ngui_ui_root_gb = null;
 
+		private List<Camera> m_target_ngui_ui_root_cams = new List<Camera>();
+
+
+
 		private Vector3 m_cached_target_local_ngui_pos = Vector3.zero;
 
 		private Vector3 m_cached_target_ngui_rot = Vector3.zero;
@@ -856,11 +897,24 @@ public class UI3DEffectTool : MonoBehaviour {
 		public FxWatcher( GameObject p_target_ngui_gb ){
 			m_target_ngui_gb = p_target_ngui_gb;
 
-			m_target_ngui_ui_root_gb = NGUIHelper.GetUIRoot( m_target_ngui_gb );
+			{
+				m_target_ngui_ui_root_gb = NGUIHelper.GetUIRoot( m_target_ngui_gb );
+
+				Camera[] t_cams = m_target_ngui_ui_root_gb.GetComponentsInChildren<Camera>();
+				
+				for( int i = 0; i < t_cams.Length; i++ ){
+					m_target_ngui_ui_root_cams.Add( t_cams[ i ] );
+				}
+			}
 
 			UpdateCachedVisibility();
 
 			UpdateCachedTransform();
+		}
+
+		/// if we have fx for this target.
+		public bool HaveFx(){
+			return m_shadow_list.Count > 0 ? true : false;
 		}
 
 		public void AddWatchItem( GameObject p_watch_shadow, bool p_sync_ngui_tran, GameObject p_target_ngui_center_gb ){
@@ -926,22 +980,55 @@ public class UI3DEffectTool : MonoBehaviour {
 				return;
 			}
 
-			if( m_cached_visibility == m_target_ngui_gb.activeInHierarchy ){
+			if( m_cached_visibility == GetTargetNGUIVisibility() ){
 				return;
 			}
 			else{
-				m_cached_visibility = m_target_ngui_gb.activeInHierarchy;
+				m_cached_visibility = GetTargetNGUIVisibility();
 			}
 
+			{
+				ForceUpdateVisibility();
+			}
+		}
+
+		private bool GetTargetNGUIVisibility(){
+//			return m_target_ngui_gb.activeInHierarchy;
+
+			if( m_target_ngui_ui_root_cams.Count > 0 ){
+				bool t_cam_gb_visible = m_target_ngui_ui_root_cams[ 0 ].gameObject.activeInHierarchy;
+
+				bool t_cam_visible = m_target_ngui_ui_root_cams[ 0 ].enabled;
+				
+				if( !t_cam_gb_visible ){
+					return false;
+				}
+				else{
+					if( t_cam_visible ){
+						return m_target_ngui_gb.activeInHierarchy;
+					}
+					else{
+						return false;
+					}
+				}
+			}
+			else{
+				Debug.LogError( "Error, no cam exist." );
+				
+				return m_target_ngui_gb.activeInHierarchy;
+			}
+		}
+
+		public void ForceUpdateVisibility(){
 			int t_count = m_shadow_list.Count;
 			
 			for( int i = t_count - 1; i >= 0; i-- ){
 				FxWatcherShadow t_shadow = m_shadow_list[ i ];
-
-				#if DEBUG_UI_EFFECT
-				Debug.Log( "Update Visibility to: " + m_cached_visibility );						
-				#endif
-
+				
+//				#if DEBUG_UI_EFFECT
+//				Debug.Log( "Update Visibility to: " + m_cached_visibility );						
+//				#endif
+				
 				t_shadow.UpdateVisibility( m_cached_visibility );
 			}
 		}
@@ -1002,7 +1089,9 @@ public class UI3DEffectTool : MonoBehaviour {
 		}
 
 		private void UpdateCachedVisibility(){
-			m_cached_visibility = m_target_ngui_gb.activeInHierarchy;
+			m_cached_visibility = GetTargetNGUIVisibility();
+
+			ForceUpdateVisibility();
 		}
 
 		private void UpdateCachedTransform(){
@@ -1035,9 +1124,9 @@ public class UI3DEffectTool : MonoBehaviour {
 				return true;
 			}
 
-			if( !m_target_ngui_gb.activeInHierarchy ){
+			if( !GetTargetNGUIVisibility() ){
 #if DEBUG_UI_EFFECT
-                Debug.Log("m_target_ngui_gb.activeInHierarchy = false.");
+				Debug.Log("GetTargetNGUIVisibility() = false.");
 #endif
 
 				return true;
@@ -1066,19 +1155,27 @@ public class UI3DEffectTool : MonoBehaviour {
 			return;
 		}
 
-		FxToLoad t_task = m_fx_to_load_list[ 0 ];
+		while( true ){
+			FxToLoad t_task = m_fx_to_load_list[ 0 ];
+			
+			if( t_task.IsReadyToLoad() ){
+				t_task.ExeLoad();
+			}
+			
+			if( !t_task.IsDone() ){
+				#if DEBUG_UI_EFFECT
+				Debug.Log( "Waiting For Fx to Load." );
+				#endif
 
-		if( t_task.IsReadyToLoad() ){
-			t_task.ExeLoad();
+				return;
+			}
 
-			return;
+			m_fx_to_load_list.Remove( t_task );
+
+			if( m_fx_to_load_list.Count == 0 ){
+				break;
+			}
 		}
-
-		if( !t_task.IsDone() ){
-			return;
-		}
-
-		m_fx_to_load_list.Remove( t_task );
 	}
 
 	private void ClearAllFxInToLoad(){
@@ -1203,6 +1300,9 @@ public class UI3DEffectTool : MonoBehaviour {
 				Debug.LogError( "Error In: " + p_e );
 			}
 
+			{
+				UI3DEffectTool.Instance().ForceDynamicSetNow();
+			}
 
 			{
 				Vector3 t_delta_pos = Vector3.zero;
@@ -1257,14 +1357,26 @@ public class UI3DEffectTool : MonoBehaviour {
 						return;
 					}
 
-					Renderer t_renderer = p_gb.GetComponent<Renderer>();
-
-					if( t_renderer != null ){
+//					Renderer t_renderer = p_gb.GetComponent<Renderer>();
+//
+//					if( t_renderer != null ){
 //						t_renderer.gameObject.transform.localScale = t_renderer.gameObject.transform.localScale * UI3DEffectTool.Instance().m_c_factor;
-					}
+//					}
 				}
 			}
 		}
+	}
+
+	#endregion
+
+
+
+	#region Utilities
+
+	private static void DebugNGUIObject( GameObject p_ngui_gb ){
+		GameObjectHelper.LogGameObjectHierarchy( p_ngui_gb );
+
+		TransformHelper.LogPosition( p_ngui_gb, "UI3DEffectTool" );
 	}
 
 	#endregion

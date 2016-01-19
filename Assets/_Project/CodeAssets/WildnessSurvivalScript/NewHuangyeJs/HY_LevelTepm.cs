@@ -152,8 +152,6 @@ public class HY_LevelTepm : MonoBehaviour {
 
 		ZhengRongUI = Instantiate(p_object) as GameObject;
 		
-		ZhengRongUI.transform.parent = GameObject.Find("HY_UI(Clone)").transform;
-		
 		ZhengRongUI.transform.localPosition = new Vector3(0,0,0);
 		
 		ZhengRongUI.transform.localScale = new Vector3(1,1,1);
@@ -163,8 +161,8 @@ public class HY_LevelTepm : MonoBehaviour {
 		m_HuangyeZhengRong.mHuangYeTreasure = mHuangYeTreasure;
 		
 		m_HuangyeZhengRong.Init();
-
-		HY_UIManager.Instance ().NeedCloseObg = ZhengRongUI;
+		MainCityUI.TryAddToObjectList (ZhengRongUI);
+		//HY_UIManager.Instance ().NeedCloseObg = ZhengRongUI;
 		//Debug.Log ("HY_UIManager.Instance ().NeedCloseObg = " +HY_UIManager.Instance ().NeedCloseObg);
 	}
 

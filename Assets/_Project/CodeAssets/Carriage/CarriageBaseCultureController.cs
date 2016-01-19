@@ -24,7 +24,18 @@ namespace Carriage
 
         public void OnDeadFinish()
         {
-            if (UID == PlayerSceneSyncManager.Instance.m_MyselfUid)
+            if (TimeHelper.Instance.IsTimeCalcKeyExist("CarriageBaseDeadAnim" + UID))
+            {
+                TimeHelper.Instance.RemoveFromTimeCalc("CarriageBaseDeadAnim" + UID);
+            }
+            TimeHelper.Instance.AddOneDelegateToTimeCalc("CarriageBaseDeadAnim" + UID, 1f, PlayDeadAnim);
+        }
+
+        private void PlayDeadAnim(string key)
+        {
+            int l_uId = int.Parse(key.Replace("CarriageBaseDeadAnim", ""));
+
+            if (l_uId == PlayerSceneSyncManager.Instance.m_MyselfUid)
             {
                 Destroy(RootManager.Instance.m_SelfPlayerController.gameObject);
 
@@ -37,7 +48,7 @@ namespace Carriage
             }
             else
             {
-                RootManager.Instance.m_CarriageItemSyncManager.DestroyPlayer(UID);
+                RootManager.Instance.m_CarriageItemSyncManager.DestroyPlayer(l_uId);
             }
         }
 
@@ -106,12 +117,19 @@ namespace Carriage
         public int BattleValue;
         public float TotalBlood;
         public float RemainingBlood;
-        public bool IsEnemy;
+
+        public bool IsEnemy
+        {
+            get { return !(((!string.IsNullOrEmpty(AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (AllianceName == AllianceData.Instance.g_UnionInfo.name))) || (KingName == JunZhuData.Instance().m_junzhuInfo.name)); }
+        }
+
         public int Money;
         public int HorseLevel;
+        public bool IsChouRen;
 
         public int UID;
         public int RoleID;
+        public long JunzhuID;
 
         public GameObject PlayerSelectedSign;
 
@@ -180,13 +198,36 @@ namespace Carriage
             ProgressBar.value = RemainingBlood / TotalBlood;
         }
 
+        private readonly Vector3 originalPos = new Vector3(0, 470, 0);
+        private readonly Vector3 halfPos = new Vector3(0, 520, 0);
+        private readonly Vector3 finalPos = new Vector3(0, 570, 0);
+        private const float moveDuration = 0.5f;
+        private const float stayDuration = 0.25f;
+
         private IEnumerator ShowBloodChange(float change, bool isSub)
         {
             PopupLabel.text = (isSub ? "-" : "+") + change;
-            PopupLabel.gameObject.SetActive(true);
+            PopupLabel.color = isSub ? Color.white : Color.green;
 
-            yield return new WaitForSeconds(1.0f);
+            PopupLabel.transform.localPosition = originalPos;
+            PopupLabel.color = new Color(PopupLabel.color.r, PopupLabel.color.g, PopupLabel.color.b, 1);
+            PopupLabel.gameObject.SetActive(true);
+            iTween.MoveTo(PopupLabel.gameObject, iTween.Hash("position", halfPos, "time", moveDuration, "easetype", "easeOutQuint", "islocal", true));
+
+            yield return new WaitForSeconds(moveDuration);
+
+            PopupLabel.transform.localPosition = halfPos;
+            iTween.MoveTo(PopupLabel.gameObject, iTween.Hash("position", finalPos, "time", stayDuration, "easetype", "easeOutQuint", "islocal", true));
+            iTween.ValueTo(gameObject, iTween.Hash("from", 1, "to", 0, "time", stayDuration, "easetype", "linear", "onupdate", "OnUpdateBloodColor"));
+
+            yield return new WaitForSeconds(stayDuration);
+
             DeactivePopupLabel();
+        }
+
+        private void OnUpdateBloodColor(float p_a)
+        {
+            PopupLabel.color = new Color(PopupLabel.color.r, PopupLabel.color.g, PopupLabel.color.b, p_a);
         }
 
         private void DeactivePopupLabel()

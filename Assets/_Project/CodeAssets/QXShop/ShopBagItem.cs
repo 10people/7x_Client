@@ -10,7 +10,7 @@ using ProtoBuf.Meta;
 
 public class ShopBagItem : MonoBehaviour {
 
-	private BagItem bagItemInfo;
+	private ShopSellGoodInfo sellGoodInfo;
 
 	private IconSampleManager iconSample;
 
@@ -22,23 +22,19 @@ public class ShopBagItem : MonoBehaviour {
 	/// Gets the bag item info.
 	/// </summary>
 	/// <param name="tempBagItemInfo">Temp bag item info.</param>
-	public void GetBagItemInfo (BagItem tempBagItemInfo)
+	public void GetBagItemInfo (ShopSellGoodInfo tempInfo)
 	{
-		bagItemInfo = tempBagItemInfo;
+		sellGoodInfo = tempInfo;
 		iconSample = gameObject.GetComponent<IconSampleManager> ();
 		isAdding = false;
 		sellNum = 0;
 
-		var itemTemp = ItemTemp.getItemTempById (bagItemInfo.itemId);
-		var fgSprite = !string.IsNullOrEmpty(itemTemp.icon) ? itemTemp.icon : "";
-		var qualitySprite = itemTemp.color != 0 ? IconSampleManager.QualityPrefix + (itemTemp.color - 1) : "";
-
 		iconSample.SubButton.SetActive (false);
-		iconSample.SetIconType(IconSampleManager.IconType.item);
-		iconSample.SetIconBasic(2, fgSprite, "x" + bagItemInfo.cnt, qualitySprite);
-		iconSample.SetIconBasicDelegate(true, true, AddCount, StartAddContinue, StopAddContinue);
-		iconSample.SetIconButtonDelegate(null, null, DelateSellNum);
-		iconSample.SetIconEffect(true,true);
+
+		iconSample.SetIconByID (sellGoodInfo.itemId,"x" + sellGoodInfo.itemNum,2);
+		iconSample.SetIconBasicDelegate (true, true, AddCount, StartAddContinue, StopAddContinue);
+		iconSample.SetIconButtonDelegate (null, null, DelateSellNum);
+		iconSample.SetIconEffect (true,true);
 	}
 
 	/// <summary>
@@ -47,14 +43,14 @@ public class ShopBagItem : MonoBehaviour {
 	/// <param name="obj">Object.</param>
 	private void AddCount (GameObject obj)
 	{
-		if (sellNum < bagItemInfo.cnt)
+		if (sellNum < sellGoodInfo.itemNum)
 		{
-			sellNum = sellNum > bagItemInfo.cnt ? bagItemInfo.cnt : sellNum + 1;
+			sellNum = sellNum > sellGoodInfo.itemNum ? sellGoodInfo.itemNum : sellNum + 1;
 			
 			iconSample.SubButton.SetActive(true);
-			iconSample.RightButtomCornorLabel.text = sellNum + "/" + bagItemInfo.cnt;
+			iconSample.RightButtomCornorLabel.text = sellNum + "/" + sellGoodInfo.itemNum;
 			
-			ShopPage.shopPage.GetSellBagItem (bagItemInfo,1);
+			ShopPage.shopPage.GetSellBagItem (sellGoodInfo,1);
 		}
 	}
 
@@ -87,9 +83,9 @@ public class ShopBagItem : MonoBehaviour {
 			sellNum--;
 			
 			iconSample.SubButton.SetActive (sellNum > 0);
-			iconSample.RightButtomCornorLabel.text = sellNum > 0 ? sellNum + "/" + bagItemInfo.cnt : "x" + bagItemInfo.cnt;
+			iconSample.RightButtomCornorLabel.text = sellNum > 0 ? sellNum + "/" + sellGoodInfo.itemNum : "x" + sellGoodInfo.itemNum;
 			
-			ShopPage.shopPage.GetSellBagItem (bagItemInfo,2);
+			ShopPage.shopPage.GetSellBagItem (sellGoodInfo,2);
 		}
 	}
 

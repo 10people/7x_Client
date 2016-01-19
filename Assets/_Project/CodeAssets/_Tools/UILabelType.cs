@@ -5,8 +5,17 @@ using System.Collections;
 [AddComponentMenu("Tools/UILabelType")]
 public class UILabelType : MonoBehaviour 
 {
-	public int m_iType = 0;//0一级标题 1二级标题 2按钮的黄色文字 3按钮的红色文字 4黄色影子文字 6 2好字体+粗 100灰色未开启时使用 101  2号类型的暗色未选择时使用
+	//0		一级标题 
+	//1		二级标题 
+	//2		按钮的黄色文字 
+	//3		按钮的红色文字 
+	//4		黄色影子文字 
+	//6		2好字体+粗 
+	//100	灰色未开启时使用 
+	//101	2号类型的暗色未选择时使用
+	public int m_iType = 0;
 	public int m_iSize = 0;//Font Size
+	public FontStyle m_iFontStype = FontStyle.Normal;//Font Style
 	UILabel m_UILabel;
 	// Use this for initialization
 	void Start () 
@@ -29,15 +38,17 @@ public class UILabelType : MonoBehaviour
 		switch(m_iType)
 		{
 		case 0:
-			if(m_UILabel.text.Length == 2)
-			{
-				m_UILabel.text = m_UILabel.text.Substring(0,1) + " " + m_UILabel.text.Substring(1,1);
-			}
-			m_UILabel.fontSize = 37;
+//			if(m_UILabel.text.Length == 2)
+//			{
+//				m_UILabel.text = "[b]" + m_UILabel.text.Substring(0,1) + " " + m_UILabel.text.Substring(1,1) + "[-]";
+//			}
+			m_UILabel.text = "[b]" + m_UILabel.text + "[-]";
+
+			m_UILabel.fontSize = 31;
 			m_UILabel.fontStyle = FontStyle.Normal;
 			m_UILabel.applyGradient = true;
-			m_UILabel.gradientTop = new Color(1.0f, 245f/255f, 135f/255f);
-			m_UILabel.gradientBottom = new Color(235f/255f, 168f/255f, 0f/255f);
+			m_UILabel.gradientTop = new Color(1.0f, 1.0f, 225f/255f);
+			m_UILabel.gradientBottom = new Color(1.0f, 181f/255f, 38f/255f);
 			m_UILabel.effectStyle = UILabel.Effect.Shadow;
 			m_UILabel.effectColor = Color.black;
 			m_UILabel.effectDistance = new Vector2(3, 3);
@@ -102,6 +113,16 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.effectColor = new Color(37f/255f, 17f/255f, 2f/255f);
 			m_UILabel.effectDistance = new Vector2(1, 1);
 			break;
+		case 7:
+			m_UILabel.fontSize = 18;
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.applyGradient = true;
+			m_UILabel.gradientTop = new Color(247f/255f, 101f/255f, 56f/255f);
+			m_UILabel.gradientBottom = new Color(253/255f, 220/255f, 201/255f);
+			m_UILabel.effectStyle = UILabel.Effect.Outline;
+			m_UILabel.effectColor = new Color(45/255f, 21/255f, 4/255f);
+			m_UILabel.effectDistance = new Vector2(2, 2);
+			break;
 		case 100:
 			m_UILabel.fontSize = 25;
 			m_UILabel.fontStyle = FontStyle.Normal;
@@ -125,6 +146,10 @@ public class UILabelType : MonoBehaviour
 		if(m_iSize != 0)
 		{
 			m_UILabel.fontSize = m_iSize;
+		}
+		if (m_iFontStype != FontStyle.Normal)
+		{
+			m_UILabel.fontStyle = m_iFontStype;
 		}
 	}
 

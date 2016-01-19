@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -16,6 +15,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
     public UIGrid m_MidParent;
     public UIGrid m_BottomParent;
     public UILabel m_LabTopTitle;
+    public UILabel m_LabTopTitleLeft;
     public UILabel m_LabMiddleTitle;
     public UILabel m_LabMiddleCount;
     public UILabel m_LabMiddleBottom;
@@ -24,8 +24,11 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
     public UILabel m_LabButton;
     public UILabel m_LabTimeDown;
 
+    public GameObject m_MidObj;
+
     public GameObject m_HiddenObject;
-    public EventIndexHandle m_TouchEvent;
+    public List<EventIndexHandle> m_listTouchEvent;
+
     private List<HuoDongInfo> _listOnlineInfo = new List<HuoDongInfo>();
     public struct SkillsInfo
     {
@@ -61,7 +64,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
     {
         _MainInfo.listSkills = new List<SkillsInfo>();
         m_SEC.OpenCompleteDelegate += RequestRewardcGiftDay;
-        m_TouchEvent.m_Handle += TouchEvent;
+        m_listTouchEvent.ForEach(p=>p.m_Handle += TouchEvent);
     }
     private bool _isTimeDown = false;
     private int _TimeCount = 0;
@@ -86,7 +89,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
     IEnumerator TimeDown()
     {
         yield return new WaitForSeconds(1.0f);
-        m_LabTimeDown.text = TimeHelper.GetUniformedTimeString(_TimeCount);
+        m_LabTimeDown.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(_TimeCount)) + "后可领取";
         if (_TimeCount > 0)
         {
             _isTimeDown = true;
@@ -95,7 +98,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
         {
             m_LabTimeDown.gameObject.SetActive(false);
             m_LabButton.gameObject.SetActive(true);
-            m_TouchEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(true);
+            m_listTouchEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
         }
     }
     void RequestRewardcGiftDay()
@@ -123,7 +126,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                         t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
                         _TimeCount = ReponseInfo.beizhu/1000;
                         TidyData(ReponseInfo);
-                        m_HiddenObject.SetActive(true);
+                  
                         return true;
                     }
                     break;
@@ -150,6 +153,10 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                             int size = m_CenterParent.transform.childCount;
                             for (int i = 0; i < size; i++)
                             {
+                                if (i == 0)
+                                {
+                                    UI3DEffectTool.Instance().ClearUIFx(m_CenterParent.transform.GetChild(i).gameObject);
+                                }
                                 Destroy(m_CenterParent.transform.GetChild(i).gameObject);
                             }
 
@@ -169,12 +176,13 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                             {
                                 _TimeCount = 86400;
                             }
-                       
+                          //  MainCityUI.SetRedAlert(16,false);
                             ShowData(_listOnlineInfo[0]);
                         }
                         else
                         {
                             Destroy(m_MainParent);
+							ClientMain.closePopUp();
                         }
                   
                         return true;
@@ -189,11 +197,24 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
     {
         if (index == 0)
         {
-
+            GetAward();
         }
-        else
+        else if (index == 4 && _listOnlineInfo[0].state == 10)
         {
             GetAward();
+        }
+        else if (index != 4)
+        {
+//            Debug.Log("statestatestatestate ::" + _listOnlineInfo[0].state);
+            if (_listOnlineInfo[0].state == 10)
+            {
+                GetAward();
+            }
+            else
+            {
+                Destroy(m_MainParent);
+				ClientMain.closePopUp();
+            }
         }
     }
     void TidyData(XinShouXianShiInfo data)
@@ -225,16 +246,22 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
         _listReward.Clear();
         if (hdinfo.state == 10) //奖励状态10：未领取 20：已领取 30：超时不能领取 40:不可领取
         {
-            m_TouchEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(true);
+         //   UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listTouchEvent[0].gameObject, EffectIdTemplate.GetPathByeffectId(600207), null);
+            m_LabMiddleBottom.gameObject.SetActive(false);
+            m_LabTopTitleLeft.text = LanguageTemplate.GetText(1499);
+            m_listTouchEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
             m_LabButton.gameObject.SetActive(true);
             m_LabTimeDown.gameObject.SetActive(false);
         }
         else if (hdinfo.state == 40)
         {
-            m_TouchEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+            UI3DEffectTool.Instance().ClearUIFx(m_listTouchEvent[0].gameObject);
+            m_LabMiddleBottom.gameObject.SetActive(true);
+            m_LabTopTitleLeft.text = LanguageTemplate.GetText(1498);
+            m_listTouchEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
             m_LabTimeDown.gameObject.SetActive(true);
             m_LabButton.gameObject.SetActive(false);
-            m_LabTimeDown.text = TimeHelper.GetUniformedTimeString(_TimeCount);
+            m_LabTimeDown.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(_TimeCount)) + "后可领取";
             _isTimeDown = true;
         }
        // m_LabMiddleTitle.text = XianshiHuodongTemp.GetXianShiHuoDongById(hdinfo.huodongId).desc;
@@ -276,11 +303,17 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                         _MainInfo.listSkills.Add(si);
                     }
                 }
-                _MainInfo.rewardInfo = QiriQiandaoTemplate.templates[i].award;
+            _MainInfo.rewardInfo = QiriQiandaoTemplate.templates[i].award;
          
                 break;
             }
         }
+        m_HiddenObject.SetActive(true);
+
+		{
+			UI2DTool.Instance.AddTopUI( GameObjectHelper.GetRootGameObject( gameObject  ) );
+		}
+
         RewardData();
 
     }
@@ -289,21 +322,38 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
     {
         switch (_MainInfo.huodongType)
         {
-            case 1:
+            case 0:
                 {
                     m_LabTopTitle.text = "";
+                    m_LabMiddleTitle.text = "";
+                    m_LabMiddleCount.text = "";
+                }
+                break;
+            case 1:
+                {
+                    m_LabTopTitle.text = MyColorData.getColorString(1, LanguageTemplate.GetText(int.Parse(_MainInfo.topTitle)));
+                    m_LabMiddleTitle.text = "";
+                    m_LabMiddleCount.text = "";
                 }
                 break;
             case 2:
                 {
-                    m_LabTopTitle.text = LanguageTemplate.GetText(int.Parse(_MainInfo.topTitle));
+                    m_LabTopTitle.text = MyColorData.getColorString(1, LanguageTemplate.GetText(int.Parse(_MainInfo.topTitle)));
+                    m_LabMiddleTitle.text = MyColorData.getColorString(1, LanguageTemplate.GetText(int.Parse(_MainInfo.midTitle)));
+                    m_LabMiddleCount.text = LanguageTemplate.GetText(int.Parse(_MainInfo.midCount));
+                }
+                break;
+            case 3:
+                {
+                    m_LabTopTitle.text = "";
+                    m_LabMiddleTitle.text = MyColorData.getColorString(1, LanguageTemplate.GetText(int.Parse(_MainInfo.midTitle)));
+                    m_LabMiddleCount.text = LanguageTemplate.GetText(int.Parse(_MainInfo.midCount));
                 }
                 break;
             default:
                 break;
         }
-        m_LabMiddleTitle.text = LanguageTemplate.GetText(int.Parse(_MainInfo.midTitle));
-        m_LabMiddleCount.text = LanguageTemplate.GetText(int.Parse(_MainInfo.midCount));
+
         m_LabMiddleBottom.text = _MainInfo.bottomTitle;
         m_LabBottomTitle.text = LanguageTemplate.GetText(int.Parse(_MainInfo.bottomTitle2));
         if (_MainInfo.rewardInfo.IndexOf("#") > -1)
@@ -334,7 +384,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
     {
         _indexNum = 0;
         int size = _listReward.Count;
-        m_BottomParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size - 1, 120), 0, 0);
+        m_BottomParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size - 1, 50), 0, 0);
     
         for (int i = 0; i < size; i++)
         {
@@ -347,7 +397,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
         MemoryStream t_tream = new MemoryStream();
         QiXiongSerializer t_qx = new QiXiongSerializer();
         GainAward xinshou = new GainAward();
-        xinshou.typeId = 1542000;
+        xinshou.typeId = 1543000;
         xinshou.huodongId = _listOnlineInfo[0].huodongId;
         t_qx.Serialize(t_tream, xinshou);
         byte[] t_protof;
@@ -400,6 +450,12 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
             IconSampleManager iconSampleManager = tempObject.GetComponent<IconSampleManager>();
             if (_indexNum == 0)
             {
+                // UI3DEffectTool.Instance().ShowMidLayerEffect()
+                //UI3DEffectTool.Instance().ShowMidLayerEffect(UI3DEffectTool.UIType.FunctionUI_1,
+                //                                            tempObject,
+                //                                            EffectIdTemplate.GetPathByeffectId(100154));
+
+               //UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, tempObject, EffectIdTemplate.GetPathByeffectId(600206), null);
                 if (_listReward[_indexNum].count > 1)
                 {
                     iconSampleManager.SetIconByID(_listReward[_indexNum].id, _listReward[_indexNum].count.ToString(), 10);
@@ -418,11 +474,11 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
 
             if (_indexNum == 0)
             {
-                tempObject.transform.localScale = Vector3.one * 0.8f;
+                tempObject.transform.localScale = Vector3.one * 1.5f;
             }
             else
             {
-                tempObject.transform.localScale = Vector3.one * 0.55f;
+                tempObject.transform.localScale = Vector3.one * 0.4f;
                 m_BottomParent.repositionNow = true;
             }
 
@@ -432,10 +488,15 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
             }
             else
             {
+                index_Attr = 0;
                 if (_MainInfo.listSkills.Count > 0)
                 {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ONLINE_SKILL_ITEM),
-                                   ResLoaded_Attribute);
+                    int size = _MainInfo.listSkills.Count;
+                    for (int i = 0; i < size; i++)
+                    {
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ONLINE_SKILL_ITEM),
+                                       ResLoaded_Attribute);
+                    }
                 }
             }
         }

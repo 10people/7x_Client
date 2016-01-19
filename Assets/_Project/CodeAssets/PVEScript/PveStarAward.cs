@@ -188,17 +188,10 @@ public class PveStarAward : MonoBehaviour, SocketProcessor {
 		if(Opentype == 1)
 		{
 			MapData.mapinstance.OpenEffect ();
-
+			PassLevelBtn.Instance ().OPenEffect ();
 			MapData.mapinstance.ShowPVEGuid ();
 		}
-		if(Opentype == 2)
-		{
-			PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
 
-			PveLevelUImaneger.mPveLevelUImaneger.ShowEffect();
-
-			PveLevelUImaneger.mPveLevelUImaneger.ShowPVEGuid ();
-		}
 		Destroy (this.gameObject);
 	}
 }

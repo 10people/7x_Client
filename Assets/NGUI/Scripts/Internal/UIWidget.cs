@@ -743,7 +743,7 @@ public class UIWidget : UIRect
 
 	[System.Diagnostics.DebuggerHidden]
 	[System.Diagnostics.DebuggerStepThrough]
-	static public int FullCompareFunc (UIWidget left, UIWidget right)
+	public static int FullCompareFunc (UIWidget left, UIWidget right)
 	{
 		int val = UIPanel.CompareFunc(left.panel, right.panel);
 		return (val == 0) ? PanelCompareFunc(left, right) : val;
@@ -755,7 +755,7 @@ public class UIWidget : UIRect
 
 	[System.Diagnostics.DebuggerHidden]
 	[System.Diagnostics.DebuggerStepThrough]
-	static public int PanelCompareFunc (UIWidget left, UIWidget right)
+	public static int PanelCompareFunc (UIWidget left, UIWidget right)
 	{
 		if (left.mDepth < right.mDepth) return -1;
 		if (left.mDepth > right.mDepth) return 1;
@@ -1210,22 +1210,6 @@ public class UIWidget : UIRect
 	void OnApplicationPause (bool paused) { if (!paused) MarkAsChanged(); }
 #endif
 
-	/// <summary>
-	/// Clear references.
-	/// </summary>
-
-	protected override void OnDisable ()
-	{
-		RemoveFromPanel();
-		base.OnDisable();
-	}
-
-	/// <summary>
-	/// Unregister this widget.
-	/// </summary>
-
-	void OnDestroy () { RemoveFromPanel(); }
-
 #if UNITY_EDITOR
 	static int mHandles = -1;
 
@@ -1233,7 +1217,7 @@ public class UIWidget : UIRect
 	/// Whether widgets will show handles with the Move Tool, or just the View Tool.
 	/// </summary>
 
-	static public bool showHandlesWithMoveTool
+	public static bool showHandlesWithMoveTool
 	{
 		get
 		{
@@ -1259,7 +1243,7 @@ public class UIWidget : UIRect
 	/// Whether the widget should have some form of handles shown.
 	/// </summary>
 
-	static public bool showHandles
+	public static bool showHandles
 	{
 		get
 		{
@@ -1509,4 +1493,40 @@ public class UIWidget : UIRect
 	/// </summary>
 
 	virtual public void OnFill(BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols) { }
+
+
+
+	#region Mono
+		
+	/// <summary>
+	/// Clear references.
+	/// </summary>
+	
+	protected override void OnDisable ()
+	{
+		RemoveFromPanel();
+		base.OnDisable();
+	}
+	
+	/// <summary>
+	/// Unregister this widget.
+	/// </summary>
+	
+	protected override void OnDestroy(){
+		{
+			RemoveFromPanel();
+		}
+
+		{
+			drawCall = null;
+			
+			panel = null;
+			
+			geometry = null;
+		}
+
+		base.OnDestroy();
+	}
+	
+	#endregion
 }

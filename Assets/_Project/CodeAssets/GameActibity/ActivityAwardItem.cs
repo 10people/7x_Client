@@ -19,6 +19,10 @@ public class ActivityAwardItem : MonoBehaviour {
 	public UILabel m_stateLabel;
     int index = 0;
 
+	void OnDestroy(){
+		m_awardIconList.Clear();
+	}
+
 	public void InitWith(DailyAwardArr tempAwardArr)
 	{
 		int tempCount = tempAwardArr.items.Count;

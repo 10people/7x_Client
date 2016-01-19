@@ -19,9 +19,14 @@ public class QXComData {
 
 	public static int maxVipLevel = 10;
 
+	public static void LoadMoneyInfoPrefab (GameObject obj,bool isHaveHelpBtn)
+	{
+		MainCityUI.setGlobalBelongings (obj,isHaveHelpBtn ? 435 : 475,320);
+	}
+
 	public static void LoadYuanBaoInfo (GameObject obj)
 	{
-		MainCityUI.m_MainCityUI.setGlobalBelongings (obj, 420, 314);
+		MainCityUI.setGlobalBelongings (obj, -30, 0);
 	}
 
 	#endregion
@@ -30,7 +35,13 @@ public class QXComData {
 
 	private static readonly Dictionary<int,int> colorDic = new Dictionary<int, int>()//0-null | 1-0白 | 2.3-1绿 | 4.5.6-2蓝 | 7.8.9-3紫 | 10.11-橙
 	{
-		{0,-1},{1,0},{2,1},{3,1},{4,2},{5,2},{6,2},{7,3},{8,3},{9,3},{10,4},{11,4}
+		{0,-1},
+		{1,0},
+		{2,1},{3,1},
+		{4,2},{5,2},{6,2},
+		{7,3},{8,3},{9,3},
+		{10,4},{11,4},{12,4},
+		{21,0},{22,1},{23,2},{24,3},{25,4}
 	};
 
 	/// <summary>
@@ -43,6 +54,53 @@ public class QXComData {
 		return colorDic [xmlColorId];
 	}
 
+	private static readonly int[] differentColor = new int[]{3,5,6,8,9,11,12};
+	public static bool IsDifferent (int color)
+	{
+		foreach (int id in differentColor)
+		{
+			if (id == color)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	#endregion
+
+	#region Nation
+
+	private static readonly Dictionary<int,string[]> nationDic = new Dictionary<int, string[]>()
+	{
+		{1,new string[]{"齐","nation_1"}},
+		{2,new string[]{"楚","nation_2"}},
+		{3,new string[]{"燕","nation_3"}},
+		{4,new string[]{"韩","nation_4"}},
+		{5,new string[]{"赵","nation_5"}},
+		{6,new string[]{"魏","nation_6"}},
+		{7,new string[]{"秦","nation_7"}}
+	};
+
+	/// <summary>
+	/// Gets the name of the nation.
+	/// </summary>
+	/// <returns>The nation name.</returns>
+	/// <param name="nationId">Nation identifier.</param>
+	public static string GetNationName (int nationId)
+	{
+		return nationDic [nationId][0];
+	}
+
+	/// <summary>
+	/// Gets the name of the nation sprite.
+	/// </summary>
+	/// <returns>The nation sprite name.</returns>
+	/// <param name="nationId">Nation identifier.</param>
+	public static string GetNationSpriteName (int nationId)
+	{
+		return nationDic [nationId][1];
+	}
 
 	#endregion
 
@@ -59,6 +117,9 @@ public class QXComData {
 		BAOSHI = 7,//宝石
 		FUSHI = 8,//符石
 		STRENGTH_MATERIALS = 9,//强化材料
+		CAN_USE_PROP = 101,//可使用道具
+		GENERAL_BAOXIANG = 102,//普通包厢
+		GAOJI_BAOXIANG = 103,//精致宝箱
 	}
 
 	/// <summary>
@@ -121,6 +182,29 @@ public class QXComData {
 	}
 	#endregion
 
+	#region MiBaoSkillLevel
+	public static int GetMiBaoSkillLevel (int tempSkillId)
+	{
+		var skillList = MiBaoGlobleData.Instance ().G_MiBaoInfo.skillList;
+		foreach (SkillInfo skill in skillList)
+		{
+			if (skill.activeZuheId == tempSkillId)
+			{
+				return skill.level;
+			}
+		}
+
+		return 0;
+	}
+
+	public static bool CanSelectMiBaoSkill ()
+	{
+		var skillList = MiBaoGlobleData.Instance ().G_MiBaoInfo.skillList;
+		return skillList == null ? false : true;
+	}
+
+	#endregion
+
 	#region ShowBtnEffect
 	public static void ShowChangeSkillEffect (bool tempOpen,GameObject tempSkillBtn,int tempEffectId)
 	{
@@ -163,6 +247,7 @@ public class QXComData {
 			if(FreshGuide.Instance().IsActive(tempTaskId) && TaskData.Instance.m_TaskInfoDic[tempTaskId].progress >= 0)
 			{
 				//ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[tempTaskId];
+				CityGlobalData.m_isRightGuide = false;
 				UIYindao.m_UIYindao.setOpenYindao(ZhuXianTemp.getTemplateById(tempTaskId).m_listYindaoShuju[tempState]);
 			}
 
@@ -172,11 +257,13 @@ public class QXComData {
 			if(FreshGuide.Instance().IsActive(tempTaskId) && TaskData.Instance.m_TaskInfoDic[tempTaskId].progress < 0)
 			{
 				//ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[tempTaskId];
+				CityGlobalData.m_isRightGuide = false;
 				UIYindao.m_UIYindao.setOpenYindao(ZhuXianTemp.getTemplateById(tempTaskId).m_listYindaoShuju[tempState]);
 			}
 
 			break;
 		default:
+			CityGlobalData.m_isRightGuide = true;
 			break;
 		}
 	}
@@ -255,17 +342,30 @@ public class QXComData {
 	#endregion
 
 	#region CreateBox
-	public static GameObject CreateBox (int tempColorId,string tempText,bool isOneBtn,UIBox.onclick onClcik)
+	public static GameObject CreateBox (int tempColorId,string tempText,bool isOneBtn,UIBox.onclick onClick)
 	{
 		return isOneBtn ? UtilityTool.Instance.CreateBox (titleStr,
                                                MyColorData.getColorString (tempColorId,"\n\n" + tempText),null,null,
                                                confirmStr,null,
-		                                       onClcik) 
+		                                       onClick) 
 						: UtilityTool.Instance.CreateBox (titleStr,
 		                                       MyColorData.getColorString (tempColorId,"\n\n" + tempText),null,null,
 		                                       cancelStr,confirmStr,
-		                                       onClcik);
+			                                   onClick);
 	}
+
+	public static GameObject CreateBoxDiy (string tempText,bool isOneBtn,UIBox.onclick onClick)
+	{
+		return isOneBtn ? UtilityTool.Instance.CreateBox (titleStr,
+                                               "\n\n" + tempText,null,null,
+                                               confirmStr,null,
+                                               onClick) 
+						: UtilityTool.Instance.CreateBox (titleStr,
+			                                   "\n\n" + tempText,null,null,
+			                                   cancelStr,confirmStr,
+                                  			   onClick);
+	}
+
 	#endregion
 
 	#region Instance Obj Effect
@@ -389,9 +489,39 @@ public class QXComData {
 		return tempObjList;
 	}
 
+	public static List<GameObject> CreateGameObjectList (GameObject tempObj,int tempResCount,List<GameObject> tempObjList)
+	{
+		int tempCount = tempResCount - tempObjList.Count;
+		if (tempCount > 0)
+		{
+			for (int i = 0;i < tempCount;i ++)
+			{
+				GameObject obj = GameObject.Instantiate (tempObj);
+				
+				obj.SetActive (true);
+				obj.transform.parent = tempObj.transform.parent;
+				obj.transform.localPosition = Vector3.zero;
+				obj.transform.localScale = Vector3.one;
+				
+				tempObjList.Add (obj);
+			}
+		}
+		else
+		{
+			for (int i = 0;i < Mathf.Abs (tempCount);i ++)
+			{
+				GameObject.Destroy (tempObjList[tempObjList.Count - 1]);
+				tempObjList.RemoveAt (tempObjList.Count - 1);
+			}
+		}
+		
+		return tempObjList;
+	}
+
 	#endregion
 }
 
+#region ShopGoodInfo
 /// <summary>
 /// Shop good info.
 /// </summary>
@@ -400,26 +530,28 @@ public class ShopGoodInfo
 	public int xmlId;//xmlId
 	public int itemId;//兑换物品id
 	public int itemType;//物品类型
+	public int site;//物品位置
 	public string itemName;//兑换物品名字
 	public int itemNum;//兑换的数量
 	public int needMoney;//需要的钱币数量
+	public int countBuyTime;//剩余购买次数
 	public QXComData.MoneyType moneyType;//币种
-	
-	public static ShopGoodInfo CreateShopGood (int tempXmlId,int tempId,int tempItemType,string tempName,int tempMoney,QXComData.MoneyType tempType,int tempNum)
-	{
-		ShopGoodInfo tempGood = new ShopGoodInfo ();
-		tempGood.xmlId = tempXmlId;
-		tempGood.itemId = tempId;
-		tempGood.itemType = tempItemType;
-		tempGood.itemName = tempName;
-		tempGood.needMoney = tempMoney;
-		tempGood.moneyType = tempType;
-		tempGood.itemNum = tempNum;
-		
-		return tempGood;
-	}
 }
 
+/// <summary>
+/// Shop sell good info.
+/// </summary>
+public class ShopSellGoodInfo
+{
+	public int sellType;
+	public int itemId;
+	public long dbId;
+	public QXComData.XmlType itemType;
+	public int itemNum;
+}
+#endregion
+
+#region BiaoJu
 /// <summary>
 /// Biao ju horse info.
 /// </summary>
@@ -474,3 +606,36 @@ public class HorsePropInfo
 		return propInfo;
 	}
 }
+#endregion
+
+#region YongBingInfo
+
+public class YongBingInfo
+{
+	public int yongBingId;//id
+	public int yongBingHp;//hp
+
+	public int profession = 0;//佣兵职业
+	public int iconId = 0;//佣兵头像id
+	public int level = 0;//等级
+	public int nameId = 0;//名字id
+	public int desId = 0;//描述
+}
+
+#endregion
+
+#region ChatInfo
+
+public class ChatMessage
+{
+	public enum SendState
+	{
+		SENDING,
+		SEND_FAIL,
+		SEND_SUCCESS
+	}
+	public SendState sendState;
+	public ChatPct chatPct;
+}
+
+#endregion

@@ -38,14 +38,14 @@ public class Localization : MonoBehaviour
 	/// List of loaded languages. Available if a single Localization.csv file was used.
 	/// </summary>
 
-	static public string[] knownLanguages;
+	public static string[] knownLanguages;
 
 	/// <summary>
 	/// Localization dictionary. Dictionary key is the localization key. Dictionary value is the list of localized values (columns in the CSV file).
 	/// Be very careful editing this via code, and be sure to set the "KEY" to the list of languages, and set localizationHasBeenSet to 'true'.
 	/// </summary>
 
-	static public Dictionary<string, string[]> dictionary
+	public static Dictionary<string, string[]> dictionary
 	{
 		get
 		{
@@ -58,19 +58,19 @@ public class Localization : MonoBehaviour
 	/// Whether the localization dictionary has been set already.
 	/// </summary>
 
-	static public bool localizationHasBeenSet = false;
+	public static bool localizationHasBeenSet = false;
 
 	/// <summary>
 	/// Whether there is an instance of the localization class present.
 	/// </summary>
 
-	static public bool isActive { get { return mInstance != null; } }
+	public static bool isActive { get { return mInstance != null; } }
 
 	/// <summary>
 	/// The instance of the localization class. Will create it if one isn't already around.
 	/// </summary>
 
-	static public Localization instance
+	public static Localization instance
 	{
 		get
 		{
@@ -199,7 +199,7 @@ public class Localization : MonoBehaviour
 	/// Name of the currently active language.
 	/// </summary>
 
-	static public string language
+	public static string language
 	{
 		get
 		{
@@ -260,7 +260,7 @@ public class Localization : MonoBehaviour
 	/// Load the specified asset and activate the localization.
 	/// </summary>
 
-	static public void Load (TextAsset asset)
+	public static void Load (TextAsset asset)
 	{
 		ByteReader reader = new ByteReader(asset);
 		Set(asset.name, reader.ReadDictionary());
@@ -270,7 +270,7 @@ public class Localization : MonoBehaviour
 	/// Load the specified CSV file.
 	/// </summary>
 
-	static public bool LoadCSV (TextAsset asset)
+	public static bool LoadCSV (TextAsset asset)
 	{
 #if SHOW_REPORT
 		mUsed.Clear();
@@ -359,7 +359,7 @@ public class Localization : MonoBehaviour
 	/// Load the specified asset and activate the localization.
 	/// </summary>
 
-	static public void Set (string languageName, Dictionary<string, string> dictionary)
+	public static void Set (string languageName, Dictionary<string, string> dictionary)
 	{
 #if SHOW_REPORT
 		mUsed.Clear();
@@ -377,7 +377,7 @@ public class Localization : MonoBehaviour
 	/// Localize the specified value.
 	/// </summary>
 
-	static public string Get (string key)
+	public static string Get (string key)
 	{
 		// Ensure we have a language to work with
 		if (!localizationHasBeenSet) language = PlayerPrefs.GetString("Language", "English");
@@ -415,13 +415,13 @@ public class Localization : MonoBehaviour
 	/// </summary>
 
 	[System.Obsolete("Use Localization.Get instead")]
-	static public string Localize (string key) { return Get(key); }
+	public static string Localize (string key) { return Get(key); }
 
 	/// <summary>
 	/// Returns whether the specified key is present in the localization dictionary.
 	/// </summary>
 
-	static public bool Exists (string key)
+	public static bool Exists (string key)
 	{
 		if (mLanguageIndex != -1) return mDictionary.ContainsKey(key);
 		return mOldDictionary.ContainsKey(key);

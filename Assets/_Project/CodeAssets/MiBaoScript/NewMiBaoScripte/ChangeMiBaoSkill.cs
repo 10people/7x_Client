@@ -79,6 +79,8 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
+
+		mMiBaoSkillData = null;
 	}
 
 	void Start () 
@@ -593,17 +595,17 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 						YouXiaEnemyUI.mYouXiaEnemyUI.ShowMiBaoSkillIcon();
 						break;
 					}
-					case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou):
-					{
-						LueDuoData.Instance.IsStop = false;
-						GameObject lueDuoObj = GameObject.Find ("LueDuo");
-						if (lueDuoObj != null)
-						{
-							LueDuoManager ldManager = lueDuoObj.GetComponent<LueDuoManager> ();
-							ldManager.lueDuoInfoRes.myFangShouId = skillZuHeId;
-						}
-						break;
-					}
+//					case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou):
+//					{
+//						LueDuoData.Instance.IsStop = false;
+//						GameObject lueDuoObj = GameObject.Find ("LueDuo");
+//						if (lueDuoObj != null)
+//						{
+//							LueDuoManager ldManager = lueDuoObj.GetComponent<LueDuoManager> ();
+//							ldManager.lueDuoInfoRes.myFangShouId = skillZuHeId;
+//						}
+//						break;
+//					}
 					case (int)(CityGlobalData.MibaoSkillType.LueDuo_GongJi):
 					{
 						GameObject tiaozhanObj = GameObject.Find ("GeneralChallengePage");
@@ -656,7 +658,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 	public void ClosBtn()
 	{
 		YinDaoCol ();
-		LueDuoData.Instance.IsStop = false;
+//		LueDuoData.Instance.IsStop = false;
 		if (Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) ){
             //CarriageMsgManager.Instance.m_RootManager.m_CarriageUi.RefreshAllEffect();
         }
@@ -684,10 +686,10 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 			{
 				break;
 			}
-			case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou ):
-			{
-				break;
-			}
+//			case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou ):
+//			{
+//				break;
+//			}
 			case (int)(CityGlobalData.MibaoSkillType.PveSend ):
 			{
 				PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
@@ -760,12 +762,12 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 			GeneralTiaoZhan.generalTiaoZhan.ShowChangeSkillEffect (true);
 			break;
 		}
-		case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou ):
-		{
-			LueDuoData.Instance.IsStop = false;
-		
-			break;
-		}
+//		case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou ):
+//		{
+//			LueDuoData.Instance.IsStop = false;
+//		
+//			break;
+//		}
 		case (int)(CityGlobalData.MibaoSkillType.PveSend ):
 		{
 			PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();

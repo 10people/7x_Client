@@ -51,8 +51,9 @@ BladeEffect:false
 BossEffect:true
 AntiAlias:None
 Bloom:false
-HittedPS:false
+HittedFx:false
 SceneFx:Low
+MemLevel:High
 
 Quality=Medium
 InCityShadow:High
@@ -61,8 +62,9 @@ BladeEffect:false
 BossEffect:true
 AntiAlias:Low
 Bloom:true
-HittedPS:true
+HittedFx:true
 SceneFx:Medium
+MemLevel:High
 
 Quality=High
 InCityShadow:High
@@ -71,6 +73,7 @@ BladeEffect:true
 BossEffect:true
 AntiAlias:Low
 Bloom:true
-HittedPS:true
+HittedFx:true
 SceneFx:High
+MemLevel:High
 -------------------------------------------</Config>

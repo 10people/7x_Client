@@ -428,7 +428,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
    
     void OnDestroy()
     {
-        TopUpLoadManagerment.m_instance.m_isLoaded = false;
+        TopUpLoadManagerment.m_isLoaded = false;
         SocketTool.UnRegisterMessageProcessor(this);
     }
 }

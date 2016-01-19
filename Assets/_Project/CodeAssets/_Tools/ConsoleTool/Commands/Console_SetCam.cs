@@ -10,6 +10,10 @@ public class Console_SetCam {
 
 	private static Camera m_main_cam 	= null;
 
+	void OnDestroy(){
+		m_main_cam = null;
+	}
+
 	public static void OnGUI(){
 		if( !m_enable_cam_tour ){
 			return;

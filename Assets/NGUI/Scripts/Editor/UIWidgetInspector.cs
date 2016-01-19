@@ -19,7 +19,7 @@ using System.Collections.Generic;
 #endif
 public class UIWidgetInspector : UIRectEditor
 {
-	static public UIWidgetInspector instance;
+	public static UIWidgetInspector instance;
 
 	public enum Action
 	{
@@ -35,7 +35,7 @@ public class UIWidgetInspector : UIRectEditor
 
 	protected UIWidget mWidget;
 
-	static protected bool mUseShader = false;
+	protected static bool mUseShader = false;
 	static GUIStyle mBlueDot = null;
 	static GUIStyle mYellowDot = null;
 	static GUIStyle mRedDot = null;
@@ -44,7 +44,7 @@ public class UIWidgetInspector : UIRectEditor
 	static GUIStyle mGreyDot = null;
 	static MouseCursor mCursor = MouseCursor.Arrow;
 
-	static public UIWidget.Pivot[] pivotPoints =
+	public static UIWidget.Pivot[] pivotPoints =
 	{
 		UIWidget.Pivot.BottomLeft,
 		UIWidget.Pivot.TopLeft,
@@ -75,7 +75,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Raycast into the screen.
 	/// </summary>
 
-	static public bool Raycast (Vector3[] corners, out Vector3 hit)
+	public static bool Raycast (Vector3[] corners, out Vector3 hit)
 	{
 		Plane plane = new Plane(corners[0], corners[1], corners[2]);
 		Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
@@ -89,7 +89,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Color used by the handles based on the current color scheme.
 	/// </summary>
 
-	static public Color handlesColor
+	public static Color handlesColor
 	{
 		get
 		{
@@ -109,7 +109,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Draw a control dot at the specified world position.
 	/// </summary>
 
-	static public void DrawKnob (Vector3 point, bool selected, bool canResize, int id)
+	public static void DrawKnob (Vector3 point, bool selected, bool canResize, int id)
 	{
 		if (mGreyDot == null) mGreyDot = "sv_label_0";
 		if (mBlueDot == null) mBlueDot = "sv_label_1";
@@ -155,7 +155,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Screen-space distance from the mouse position to the specified world position.
 	/// </summary>
 
-	static public float GetScreenDistance (Vector3 worldPos, Vector2 mousePos)
+	public static float GetScreenDistance (Vector3 worldPos, Vector2 mousePos)
 	{
 		Vector2 screenPos = HandleUtility.WorldToGUIPoint(worldPos);
 		return Vector2.Distance(mousePos, screenPos);
@@ -165,7 +165,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Closest screen-space distance from the mouse position to one of the specified world points.
 	/// </summary>
 
-	static public float GetScreenDistance (Vector3[] worldPoints, Vector2 mousePos, out int index)
+	public static float GetScreenDistance (Vector3[] worldPoints, Vector2 mousePos, out int index)
 	{
 		float min = float.MaxValue;
 		index = 0;
@@ -187,7 +187,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Set the mouse cursor rectangle, refreshing the screen when it gets changed.
 	/// </summary>
 
-	static public void SetCursorRect (Rect rect, MouseCursor cursor)
+	public static void SetCursorRect (Rect rect, MouseCursor cursor)
 	{
 		EditorGUIUtility.AddCursorRect(rect, cursor);
 
@@ -211,7 +211,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Convert the specified 4 corners into 8 pivot points (adding left, top, right, bottom -- in that order).
 	/// </summary>
 
-	static public Vector3[] GetHandles (Vector3[] corners)
+	public static Vector3[] GetHandles (Vector3[] corners)
 	{
 		Vector3[] v = new Vector3[8];
 
@@ -232,7 +232,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Determine what kind of pivot point is under the mouse and update the cursor accordingly.
 	/// </summary>
 
-	static public UIWidget.Pivot GetPivotUnderMouse (Vector3[] worldPos, Event e, bool[] resizable, bool movable, ref Action action)
+	public static UIWidget.Pivot GetPivotUnderMouse (Vector3[] worldPos, Event e, bool[] resizable, bool movable, ref Action action)
 	{
 		// Time to figure out what kind of action is underneath the mouse
 		UIWidget.Pivot pivotUnderMouse = UIWidget.Pivot.Center;
@@ -299,7 +299,7 @@ public class UIWidgetInspector : UIRectEditor
 	/// Draw the specified anchor point.
 	/// </summary>
 
-	static public void DrawAnchorHandle (UIRect.AnchorPoint anchor, Transform myTrans, Vector3[] myCorners, int side, int id)
+	public static void DrawAnchorHandle (UIRect.AnchorPoint anchor, Transform myTrans, Vector3[] myCorners, int side, int id)
 	{
 		if (!anchor.target) return;
 

@@ -98,7 +98,7 @@ public class UICamera : MonoBehaviour
 	/// List of all active cameras in the scene.
 	/// </summary>
 
-	static public BetterList<UICamera> list = new BetterList<UICamera>();
+	public static BetterList<UICamera> list = new BetterList<UICamera>();
 
 	public delegate void OnScreenResize ();
 
@@ -107,7 +107,7 @@ public class UICamera : MonoBehaviour
 	/// Subscribe to it if you don't want to compare Screen.width and Screen.height each frame.
 	/// </summary>
 
-	static public OnScreenResize onScreenResize;
+	public static OnScreenResize onScreenResize;
 
 	/// <summary>
 	/// Event type -- use "UI" for your user interfaces, and "World" for your game camera.
@@ -237,62 +237,62 @@ public class UICamera : MonoBehaviour
 	/// Use UICamera.current to get the current camera.
 	/// </summary>
 
-	static public OnCustomInput onCustomInput;
+	public static OnCustomInput onCustomInput;
 
 	/// <summary>
 	/// Whether tooltips will be shown or not.
 	/// </summary>
 
-	static public bool showTooltips = true;
+	public static bool showTooltips = true;
 
 	/// <summary>
 	/// Position of the last touch (or mouse) event.
 	/// </summary>
 
-	static public Vector2 lastTouchPosition = Vector2.zero;
+	public static Vector2 lastTouchPosition = Vector2.zero;
 
 	/// <summary>
 	/// Last raycast hit prior to sending out the event. This is useful if you want detailed information
 	/// about what was actually hit in your OnClick, OnHover, and other event functions.
 	/// </summary>
 
-	static public RaycastHit lastHit;
+	public static RaycastHit lastHit;
 
 	/// <summary>
 	/// UICamera that sent out the event.
 	/// </summary>
 
-	static public UICamera current = null;
+	public static UICamera current = null;
 
 	/// <summary>
 	/// Last camera active prior to sending out the event. This will always be the camera that actually sent out the event.
 	/// </summary>
 
-	static public Camera currentCamera = null;
+	public static Camera currentCamera = null;
 
 	/// <summary>
 	/// Current control scheme. Set automatically when events arrive.
 	/// </summary>
 
-	static public ControlScheme currentScheme = ControlScheme.Mouse;
+	public static ControlScheme currentScheme = ControlScheme.Mouse;
 
 	/// <summary>
 	/// ID of the touch or mouse operation prior to sending out the event. Mouse ID is '-1' for left, '-2' for right mouse button, '-3' for middle.
 	/// </summary>
 
-	static public int currentTouchID = -1;
+	public static int currentTouchID = -1;
 
 	/// <summary>
 	/// Key that triggered the event, if any.
 	/// </summary>
 
-	static public KeyCode currentKey = KeyCode.None;
+	public static KeyCode currentKey = KeyCode.None;
 
 	/// <summary>
 	/// Ray projected into the screen underneath the current touch.
 	/// </summary>
 
-	static public Ray currentRay
+	public static Ray currentRay
 	{
 		get
 		{
@@ -305,25 +305,25 @@ public class UICamera : MonoBehaviour
 	/// Current touch, set before any event function gets called.
 	/// </summary>
 
-	static public MouseOrTouch currentTouch = null;
+	public static MouseOrTouch currentTouch = null;
 
 	/// <summary>
 	/// Whether an input field currently has focus.
 	/// </summary>
 
-	static public bool inputHasFocus = false;
+	public static bool inputHasFocus = false;
 
 	/// <summary>
 	/// If set, this game object will receive all events regardless of whether they were handled or not.
 	/// </summary>
 
-	static public GameObject genericEventHandler;
+	public static GameObject genericEventHandler;
 
 	/// <summary>
 	/// If events don't get handled, they will be forwarded to this game object.
 	/// </summary>
 
-	static public GameObject fallThrough;
+	public static GameObject fallThrough;
 
 	// Selected widget (for input)
 	static GameObject mCurrentSelection = null;
@@ -337,7 +337,7 @@ public class UICamera : MonoBehaviour
 	static GameObject mHover;
 
 	// Joystick/controller/keyboard event
-	static public MouseOrTouch controller = new MouseOrTouch();
+	public static MouseOrTouch controller = new MouseOrTouch();
 
 	// Used to ensure that joystick-based controls don't trigger that often
 	static float mNextEvent = 0f;
@@ -373,19 +373,19 @@ public class UICamera : MonoBehaviour
 	/// Set to 'true' just before OnDrag-related events are sent. No longer needed, but kept for backwards compatibility.
 	/// </summary>
 
-	static public bool isDragging = false;
+	public static bool isDragging = false;
 
 	/// <summary>
 	/// The object hit by the last Raycast that was the result of a mouse or touch event.
 	/// </summary>
 
-	static public GameObject hoveredObject;
+	public static GameObject hoveredObject;
 
 	/// <summary>
 	/// Option to manually set the selected game object.
 	/// </summary>
 
-	static public GameObject selectedObject
+	public static GameObject selectedObject
 	{
 		get
 		{
@@ -401,7 +401,7 @@ public class UICamera : MonoBehaviour
 	/// Change the selection.
 	/// </summary>
 
-	static protected void SetSelection (GameObject go, ControlScheme scheme)
+	protected static void SetSelection (GameObject go, ControlScheme scheme)
 	{
 		if (mNextSelection != null)
 		{
@@ -461,7 +461,7 @@ public class UICamera : MonoBehaviour
 	/// Number of active touches from all sources.
 	/// </summary>
 
-	static public int touchCount
+	public static int touchCount
 	{
 		get
 		{
@@ -490,7 +490,7 @@ public class UICamera : MonoBehaviour
 	/// Number of active drag events from all sources.
 	/// </summary>
 
-	static public int dragCount
+	public static int dragCount
 	{
 		get
 		{
@@ -515,7 +515,7 @@ public class UICamera : MonoBehaviour
 	/// Convenience function that returns the main HUD camera.
 	/// </summary>
 
-	static public Camera mainCamera
+	public static Camera mainCamera
 	{
 		get
 		{
@@ -528,7 +528,7 @@ public class UICamera : MonoBehaviour
 	/// Event handler for all types of events.
 	/// </summary>
 
-	static public UICamera eventHandler
+	public static UICamera eventHandler
 	{
 		get
 		{
@@ -568,7 +568,7 @@ public class UICamera : MonoBehaviour
 	/// Returns the object under the specified position.
 	/// </summary>
 
-	static public bool Raycast (Vector3 inPos, out RaycastHit hit)
+	public static bool Raycast (Vector3 inPos, out RaycastHit hit)
 	{
 		for (int i = 0; i < list.size; ++i)
 		{
@@ -728,7 +728,7 @@ public class UICamera : MonoBehaviour
 	/// Whether the specified object should be highlighted.
 	/// </summary>
 
-	static public bool IsHighlighted (GameObject go)
+	public static bool IsHighlighted (GameObject go)
 	{
 		if (UICamera.currentScheme == UICamera.ControlScheme.Mouse)
 			return (UICamera.hoveredObject == go);
@@ -743,7 +743,7 @@ public class UICamera : MonoBehaviour
 	/// Find the camera responsible for handling events on objects of the specified layer.
 	/// </summary>
 
-	static public UICamera FindCameraForLayer (int layer)
+	public static UICamera FindCameraForLayer (int layer)
 	{
 		int layerMask = 1 << layer;
 
@@ -809,7 +809,7 @@ public class UICamera : MonoBehaviour
 	/// Generic notification function. Used in place of SendMessage to shorten the code and allow for more than one receiver.
 	/// </summary>
 
-	static public void Notify (GameObject go, string funcName, object obj)
+	public static void Notify (GameObject go, string funcName, object obj)
 	{
 		if (go != null)
 		{
@@ -826,13 +826,13 @@ public class UICamera : MonoBehaviour
 	/// Get the details of the specified mouse button.
 	/// </summary>
 
-	static public MouseOrTouch GetMouse (int button) { return mMouse[button]; }
+	public static MouseOrTouch GetMouse (int button) { return mMouse[button]; }
 
 	/// <summary>
 	/// Get or create a touch event.
 	/// </summary>
 
-	static public MouseOrTouch GetTouch (int id)
+	public static MouseOrTouch GetTouch (int id)
 	{
 		MouseOrTouch touch = null;
 
@@ -851,7 +851,7 @@ public class UICamera : MonoBehaviour
 	/// Remove a touch event from the list.
 	/// </summary>
 
-	static public void RemoveTouch (int id) { mTouches.Remove(id); }
+	public static void RemoveTouch (int id) { mTouches.Remove(id); }
 
 	/// <summary>
 	/// Add this camera to the list.

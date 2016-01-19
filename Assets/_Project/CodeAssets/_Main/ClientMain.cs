@@ -69,6 +69,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 
 	public static UIAddZhanliManager m_UIAddZhanliManager = null;
 
+	public static bool m_isOpenQIRI = false;
+
 	public SoundPlayYuyin m_SoundPlayEff;
 
 	/** Get Instance, if null report error.
@@ -89,7 +91,18 @@ public class ClientMain : MonoBehaviour , SocketListener
 	public static float m_fScale = 0f;
 	public static int m_iMoveX = 0;
 	public static int m_iMoveY = 0;
-	public AudioSource m_sound1;
+
+    public static float m_TotalWidthInCoordinate
+    {
+        get { return 960 + 2*m_iMoveX; }
+    }
+
+    public static float m_TotalHeightInCoordinate
+    {
+        get { return 640 + 2*m_iMoveY; }
+    }
+
+    public AudioSource m_sound1;
 	public AudioSource m_sound2;
 	public bool debugModel = false;
 
@@ -110,7 +123,6 @@ public class ClientMain : MonoBehaviour , SocketListener
 	#region Mono
 	
 	void Awake(){
-
 #if PROTO_TOOL
 
         var prefab = Resources.Load("_Remove_When_Build/ProtoToolRoot");
@@ -158,6 +170,10 @@ public class ClientMain : MonoBehaviour , SocketListener
 		m_ClientMain = this;
 
 		m_ClientMainObj = gameObject;
+
+		{
+			PlatformHelper.ResetPlatformSettings();
+		}
 
 		if( m_UnLoadManager == null ){
 			m_UnLoadManager = new UnLoadManager( this );
@@ -293,21 +309,9 @@ public class ClientMain : MonoBehaviour , SocketListener
 						}
 						break;
 					case 50:
-						if(MainCityUI.m_MainCityUI.m_MainCityUIRB.PlayAddButton(m_listPopUpData[i].sData))
-						{
-							m_isNewOpenFunction = true;
-							m_listPopUpData.RemoveAt(i);
-							break;
-						}
 						break;
 					
 					case 70:
-						if(MainCityUI.m_MainCityUI.m_MainCityUILT.m_MainCityZhanliChange.setAnimation(m_listPopUpData[i].sData))
-						{
-							m_isNewOpenFunction = true;
-							m_listPopUpData.RemoveAt(i);
-							break;
-						}
 						break;
 					}
 				}
@@ -361,68 +365,68 @@ public class ClientMain : MonoBehaviour , SocketListener
 	#endif
 
 	IEnumerator PlayVideo(){
-		int t_default = 0;
-
-		#if SHOW_VIDEO_EVERY_TIME
-		PlayerPrefs.DeleteKey( ConstInGame.CONST_FIRST_TIME_TO_PLAY_VIDEO );
-		#endif
-
-		if( PlayerPrefs.GetInt( ConstInGame.CONST_FIRST_TIME_TO_PLAY_VIDEO, t_default ) != t_default ){
-			VideoPlayedDone();
-
-			yield break;
-		}
-		else{
-			PlayerPrefs.SetInt( ConstInGame.CONST_FIRST_TIME_TO_PLAY_VIDEO, 1 );
-			
-			PlayerPrefs.Save();
-		}
-
-		string t_path = "Video/x7.mp4";
-
-		#if PC_VIDEO
-		{
-			if( m_movie_texture == null ){
-				Debug.LogError( "Error, No Available Movie Assigned, please Install \"QuickTimeInstaller.exe\"." );
-
-				VideoPlayedDone();
-
-				yield break;
-			}
-
-			m_movie_texture.loop = false;
-
-			AudioSource t_audio = gameObject.AddComponent<AudioSource>();
-
-			t_audio.clip = m_movie_texture.audioClip;
-
-			t_audio.Play();
-			
-			m_movie_texture.Play();
-			
-			m_stream_ready = true;
-
-			while( m_stream_ready ){
-				yield return new WaitForEndOfFrame();
-			}
-
-			yield return new WaitForEndOfFrame();
-		}
-		#elif UNITY_IOS || UNITY_ANDROID
-		{
-//			Handheld.PlayFullScreenMovie( t_path, Color.black, FullScreenMovieControlMode.CancelOnInput );
-
-			Handheld.PlayFullScreenMovie( t_path, Color.black );
-
-			yield return new WaitForEndOfFrame();
-
-			yield return new WaitForEndOfFrame();
-
-			yield return new WaitForEndOfFrame();
-		}
-		#endif
+//		int t_default = 0;
+//
+//		#if SHOW_VIDEO_EVERY_TIME
+//		PlayerPrefs.DeleteKey( ConstInGame.CONST_FIRST_TIME_TO_PLAY_VIDEO );
+//		#endif
+//
+//		if( PlayerPrefs.GetInt( ConstInGame.CONST_FIRST_TIME_TO_PLAY_VIDEO, t_default ) != t_default ){
+//			VideoPlayedDone();
+//
+//			yield break;
+//		}
+//		else{
+//			PlayerPrefs.SetInt( ConstInGame.CONST_FIRST_TIME_TO_PLAY_VIDEO, 1 );
+//			
+//			PlayerPrefs.Save();
+//		}
+//
+//		string t_path = "Video/x7.mp4";
+//
+//		#if PC_VIDEO
+//		{
+//			if( m_movie_texture == null ){
+//				Debug.LogError( "Error, No Available Movie Assigned, please Install \"QuickTimeInstaller.exe\", then restart your computer, and finally reimport all videos." );
+//
+//				VideoPlayedDone();
+//
+//				yield break;
+//			}
+//
+//			m_movie_texture.loop = false;
+//
+//			AudioSource t_audio = gameObject.AddComponent<AudioSource>();
+//
+//			t_audio.clip = m_movie_texture.audioClip;
+//
+//			t_audio.Play();
+//			
+//			m_movie_texture.Play();
+//			
+//			m_stream_ready = true;
+//
+//			while( m_stream_ready ){
+//				yield return new WaitForEndOfFrame();
+//			}
+//
+//			yield return new WaitForEndOfFrame();
+//		}
+//		#elif UNITY_IOS || UNITY_ANDROID
+//		{
+//			Handheld.PlayFullScreenMovie( t_path, Color.black );
+//
+//			yield return new WaitForEndOfFrame();
+//
+//			yield return new WaitForEndOfFrame();
+//
+//			yield return new WaitForEndOfFrame();
+//		}
+//		#endif
 
 		VideoPlayedDone();
+
+		yield return null;
 	}
 
 	private void VideoPlayedDone(){
@@ -573,7 +577,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 
 	private const int CONST_TEMPLATES_COUNT		= 104;
 
-	public static bool m_is_templates_loaded = false;
+	public static bool m_is_templates_loaded 	= false;
 
 	public static void LoadSoundTemplate(){
 //		Debug.Log ( Time.realtimeSinceStartup + ".LoadSoundTemplate()" );
@@ -582,12 +586,13 @@ public class ClientMain : MonoBehaviour , SocketListener
 	}
 
 	public static void LoadTemplates(){
-		ClientMain.Instance ().StartCoroutine ( ClientMain.Instance ().ExeLoadTemplates() );
+//		Debug.Log ( Time.realtimeSinceStartup + ".LoadTemplates()" );
+
+		ClientMain.Instance ().StartCoroutine ( ClientMain.Instance().ExeLoadTemplates() );
 	}
 
-	IEnumerator ExeLoadTemplates()
-	{
-		if (m_ClientMain.debugModel == true) {
+	IEnumerator ExeLoadTemplates(){
+		if ( m_ClientMain.debugModel == true ) {
 			yield break;
 		}
 
@@ -624,6 +629,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 			SkillTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			ExpXxmlTemp.LoadTemplates( TemplateLoadedCallback );
+
+			BattleConfigTemplate.LoadTemplates( TemplateLoadedCallback );
 		}
 
 		// 11 - 20
@@ -690,12 +697,10 @@ public class ClientMain : MonoBehaviour , SocketListener
 
 
 
-			QiangHuaTemplate.LoadTemplates( TemplateLoadedCallback );
-			
-			GuideTemplate.LoadTemplates( TemplateLoadedCallback );
-
 			PlotChatTemplate.LoadTemplates( TemplateLoadedCallback );
-			
+
+			CameraTemplate.LoadTemplates( TemplateLoadedCallback );
+
 			NameKuTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			DialogData.LoadTemplates( TemplateLoadedCallback );
@@ -715,6 +720,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 			
 			GongJiTypeTemplate.LoadTemplates ( TemplateLoadedCallback );
 
+			BattleAppearanceTemplate.LoadTemplates( TemplateLoadedCallback );
+
 
 
 			SysparaTemplate.LoadTemplates( TemplateLoadedCallback );
@@ -726,8 +733,6 @@ public class ClientMain : MonoBehaviour , SocketListener
 			TaoZhuangTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			DiaoLuoTemplate.LoadTemplates( TemplateLoadedCallback );
-
-			MaJuTemplate.LoadTemplates( TemplateLoadedCallback );
 		}
 
 //			UnLoadManager.startLoad( TemplateLoadedCallback );
@@ -852,7 +857,10 @@ public class ClientMain : MonoBehaviour , SocketListener
             LMZBuildingTemplate.LoadTemplates(TemplateLoadedCallback);
 
             XiLianShuXingTemp.LoadTemplates(TemplateLoadedCallback);
+
+			YouXiaOpenTimeTemplate.LoadTemplates(TemplateLoadedCallback);
         }
+
 		//101-110
 		{
 			MiBaoJiXingTemplate.LoadTemplates(TemplateLoadedCallback);
@@ -864,25 +872,77 @@ public class ClientMain : MonoBehaviour , SocketListener
 			SceneTemplate.LoadTemplates( TemplateLoadedCallback );
 			
             RTActionTemplate.LoadTemplates(TemplateLoadedCallback);
-        }
+        
 
-		//111-115
-		{
+
 			RTBuffTemplate.LoadTemplates(TemplateLoadedCallback);
            
 			RTSkillTemplate.LoadTemplates(TemplateLoadedCallback);
 
 			YunBiaoSafeTemplate.LoadTemplates(TemplateLoadedCallback);
+
             QiriQiandaoTemplate.LoadTemplates(TemplateLoadedCallback);
 
 			MiBaoExtrattributeTemplate.LoadTemplates(TemplateLoadedCallback);
+		{
+
+		//111-120
+		}
             LianMengTuTengTemplate.LoadTemplates(TemplateLoadedCallback);
 
-            
 			HeroSkillUpTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			LianmengEventTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			LianMengKeJiTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			LianMengKeZhanTemplate.LoadTemplates(TemplateLoadedCallback);
+       
+
+
+			LianMengShangPuTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			LianMengShuYuanTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			LianMengZongMiaoTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			LianMengTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			ReportTemplate.LoadTemplates(TemplateLoadedCallback);
+		}
+
+		//121-130
+		{
+			FunctionUnlock.LoadTemplates(TemplateLoadedCallback);
+
+			PveAwardTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			MiBaoSkillLvTempLate.LoadTemplates(TemplateLoadedCallback);
+
+		    YunBiaoTemplate.LoadTemplates(TemplateLoadedCallback);
+		
+			MaJuTemplate.LoadTemplates( TemplateLoadedCallback );
+
+
+
+			QiangHuaTemplate.LoadTemplates( TemplateLoadedCallback );
+			
+			GuideTemplate.LoadTemplates( TemplateLoadedCallback );
+            
+			HuoYueTempTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			BubblePopTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			BubbleTextTemplate.LoadTemplates( TemplateLoadedCallback );
         }
 
-        m_is_templates_loaded = true;
+		//131-140
+		{
+			AnnounceTemplate.LoadTemplates( TemplateLoadedCallback );
+            LianmengFengshanTemplate.LoadTemplates(TemplateLoadedCallback);
+        }
+
+	    m_is_templates_loaded = true;
 	}
 
 	public static void TemplateLoadedCallback(){
@@ -956,23 +1016,14 @@ public class ClientMain : MonoBehaviour , SocketListener
 			{
 			case ProtoIndexes.S_TALENT_UP_CAN:
 			{
-				//Debug.Log("===================1");
 				if(FunctionOpenTemp.IsHaveID(500000))
 				{
-					MainCityUIRB.SetRedAlert(200, true);
-
-//					Debug.Log("===========1");
-
-					Global.m_isTianfuUpCan = true;
+					MainCityUI.SetRedAlert(500000, true);
 				}
 				break;
 			}
 			case ProtoIndexes.S_NOTICE_TALENT_CAN_NOT_UP:
-				if(!(EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace() || Global.m_isNewChenghao || Global.m_isFuWen || BagData.AllUpgrade()))
-				{
-					MainCityUIRB.SetRedAlert(200, false);
-				}
-				Global.m_isTianfuUpCan = false;
+				MainCityUI.SetRedAlert(500000, false);
 				break;
 			case ProtoIndexes.S_GET_CUR_CHENG_HAO:
 				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -996,12 +1047,10 @@ public class ClientMain : MonoBehaviour , SocketListener
 				{
 					saveString += Global.m_NewChenghao[i] + ",";
 				}
-				Debug.Log(saveString);
 				PlayerPrefs.SetString( ConstInGame.CONST_NEW_CHENGHAO + JunZhuData.Instance().m_junzhuInfo.id, saveString );
 				PlayerPrefs.Save();
 
-				Global.m_isNewChenghao = true;
-				MainCityUIRB.SetRedAlert(200, true);
+				MainCityUI.SetRedAlert(500015, true);
 				return true;
 			default: return false;
 			}
@@ -1011,6 +1060,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 	private int m_iCurPopUpID = -1;
 	public static void addPopUP(int Level, int type, string data, AddPopUpCallback callback)
 	{
+//		Debug.Log(Level);
+
 		for(int i = 0; i < m_listPopUpData.Count; i++)
 		{
 			if(m_listPopUpData[i].iLevel == Level && (Level != 40 && Level != 50))

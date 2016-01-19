@@ -13,6 +13,8 @@ public class FuWenSelectItem : MonoBehaviour {
 	private Fuwen fuWenInfo;
 
 	private int iconId;
+	private int pinZhiId;
+	private string nameStr;
 
 	public UILabel nameLabel;
 	public UILabel numLabel;
@@ -31,14 +33,17 @@ public class FuWenSelectItem : MonoBehaviour {
 		fuWenInfo = tempInfo;
 
 		FuWenTemplate fuWenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (tempInfo.itemId);
-		nameLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
+
+		nameStr = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
+		nameLabel.text = nameStr;
 		desLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName);
 		
 		numLabel.text = "x" + tempInfo.cnt;
 		shuXingLabel.text = "+" + fuWenTemp.shuxingValue;
 		
 		iconId = fuWenTemp.icon;
-		
+		pinZhiId = CommonItemTemplate.getCommonItemTemplateById (tempInfo.itemId).color - 1;
+
 		if (iconSamplePrefab == null)
 		{
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
@@ -46,21 +51,10 @@ public class FuWenSelectItem : MonoBehaviour {
 		}
 		else
 		{
-			IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
-			fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-			fuShiIconSample.SetIconBasic(3,iconId.ToString ());
-			
-			iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
+			InItIconSample ();
 		}
 
-		if(FreshGuide.Instance().IsActive(100300) && TaskData.Instance.m_TaskInfoDic[100300].progress >= 0)
-		{
-			this.gameObject.GetComponent<UIDragScrollView> ().enabled = false;
-		}
-		else
-		{
-			this.gameObject.GetComponent<UIDragScrollView> ().enabled = true;
-		}
+		this.gameObject.GetComponent<UIDragScrollView> ().enabled = QXComData.CheckYinDaoOpenState (100470) ? false : true;
 	}
 
 	//当前符石是否选择
@@ -77,26 +71,35 @@ public class FuWenSelectItem : MonoBehaviour {
 		iconSamplePrefab.transform.parent = this.transform;
 		iconSamplePrefab.transform.localPosition = new Vector3 (-175,0,0);
 
+		InItIconSample ();
+	}
+
+	void InItIconSample ()
+	{
+		string mdesc = DescIdTemplate.GetDescriptionById (fuWenInfo.itemId);
+		
 		IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
 		fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-		fuShiIconSample.SetIconBasic(3,iconId.ToString ());
-
+		fuShiIconSample.SetIconBasic(3,iconId.ToString (),"","pinzhi" + pinZhiId);
+		fuShiIconSample.SetIconPopText(fuWenInfo.itemId, nameStr, mdesc, 1);
+		
 		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
 	}
 
 	void OnClick ()
 	{
-		if(FreshGuide.Instance().IsActive(100300) && TaskData.Instance.m_TaskInfoDic[100300].progress >= 0)
+		if (QXComData.CheckYinDaoOpenState (100470))
 		{
 			UIYindao.m_UIYindao.CloseUI ();
 		}
+
 		FuWenSelect fuWenSelect = fuWenSelectWindow.GetComponent<FuWenSelect> ();
 		if (!fuWenSelect.IsSelect)
 		{
 			fuWenSelect.IsSelect = true;
 			fuWenSelect.RefreshSelectFuShiItem (fuWenInfo.itemId);
 			fuWenSelect.GetFuWenInfo = fuWenInfo;
-			fuWenSelect.CloseBtn ();
+			fuWenSelect.CloseBtn (gameObject);
 		}
 	}
 }

@@ -13,6 +13,7 @@ public class DramaActor : MonoBehaviour
 		ALPHABG,
 		EFFECT,
 		SOUND,
+		ROTATE,
 	}
 
 	public float waittingTime;
@@ -22,6 +23,9 @@ public class DramaActor : MonoBehaviour
 
 	[HideInInspector] public bool actionDone;
 
+	protected virtual void OnDestroy(){
+
+	}
 
 	public void action()
 	{
@@ -76,6 +80,11 @@ public class DramaActor : MonoBehaviour
 	protected virtual bool funcDone ()
 	{
 		return true;
+	}
+
+	public virtual void log()
+	{
+
 	}
 
 }

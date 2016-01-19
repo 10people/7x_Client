@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -48,7 +48,7 @@ public class KingControllor : HeroAI
 	
 	[HideInInspector] public int actionId;
 	
-	[HideInInspector] public HeroSkill kingSkillMibao;
+	[HideInInspector] public List<HeroSkill> kingSkillMibao;
 
 	[HideInInspector] public HeroSkill kingSkillHeavy_2;
 
@@ -58,8 +58,12 @@ public class KingControllor : HeroAI
 
 	[HideInInspector] public SignShadow signShadow;
 
-	public bool comboable;
-	
+	[HideInInspector] public bool comboable;
+
+	[HideInInspector] public int[] skillLevel = new int[9]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+	[HideInInspector] public List<int> playUnlockEffList = new List<int> ();
+
 
 	private bool moving;
 	
@@ -87,6 +91,11 @@ public class KingControllor : HeroAI
 
 	private bool b_resetHit;
 
+
+	void Awake()
+	{
+		m_play_attack_effect = new DevelopUtility.PlayAttackEffectReturn();
+	}
 
 	public override void Start()
 	{
@@ -137,10 +146,65 @@ public class KingControllor : HeroAI
 		inAttackPos = Vector3.zero;
 	}
 
+	public override void OnDestroy(){
+		{
+			lightControllor = null;
+			
+			heavyConrollor = null;
+			
+			rangedConrollor = null;
+
+			m_play_attack_effect = null;
+		}
+
+		base.OnDestroy();
+	}
+
 	public override void initStart()
 	{
 		base.initStart ();
+
+		for(int i = 0; i < 3; i++)
+		{
+			if(weaponDateHeavy != null)
+			{
+				skillLevel[i] = weaponDateHeavy.skillLevel[i];
+			}
+		}
 		
+		for(int i = 3; i < 6; i++)
+		{
+			if(weaponDateLight != null)
+			{
+				skillLevel[i] = weaponDateLight.skillLevel[i - 3];
+			}
+		}
+		
+		for(int i = 6; i < 9; i++)
+		{
+			if(weaponDateRanged != null)
+			{
+				skillLevel[i] = weaponDateRanged.skillLevel[i - 6];
+			}
+		}
+
+		playUnlockEffList.Clear ();
+
+		for(int i = 0; weaponDateHeavy != null && weaponDateHeavy.skillFirstActive != null && i < weaponDateHeavy.skillFirstActive.Count; i++)
+		{
+			playUnlockEffList.Add(weaponDateHeavy.skillFirstActive[i]);
+		}
+
+		for(int i = 0; weaponDateLight != null && weaponDateLight.skillFirstActive != null && i < weaponDateLight.skillFirstActive.Count; i++)
+		{
+			playUnlockEffList.Add(weaponDateLight.skillFirstActive[i] + 3);
+		}
+
+		for(int i = 0; weaponDateRanged != null && weaponDateRanged.skillFirstActive != null && i < weaponDateRanged.skillFirstActive.Count; i++)
+		{
+			playUnlockEffList.Add(weaponDateRanged.skillFirstActive[i] + 6);
+		}
+
 		gameCamera = (KingCamera) Camera.main.GetComponent(typeof(KingCamera));
 
 		gameCamera.init ();
@@ -235,9 +299,6 @@ public class KingControllor : HeroAI
 		}
 		
 		updataAttackRange();
-
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
 	}
 	
 	public void initWeaponData()
@@ -396,6 +457,9 @@ public class KingControllor : HeroAI
 			}
 		}
 
+		autoWeaponCD = 0;
+
+		if(BattleControlor.Instance().completed == true && stance == Stance.STANCE_SELF) BattleUIControlor.Instance ().centerLabelControllor.changeWeapon (weaponType);
 	}
 
 	string playingAnimationName = "";
@@ -404,6 +468,8 @@ public class KingControllor : HeroAI
 	{
 		try
 		{
+			if(!isAlive || !aiable) return;
+			
 			string playing = IsPlaying();
 
 			if(playingAnimationName.Equals(playing) == false)
@@ -456,9 +522,9 @@ public class KingControllor : HeroAI
 		}
 		catch(System.Exception e)
 		{
-			Debug.Log("ERROR! BUG ID: 31279");
+			Debug.LogError("ERROR! BUG ID: 31279");
 
-			Debug.LogError("ERROR! BUG ID: 31279 \\n" + e.Message);
+			Debug.LogError(e);
 		}
 	}
 
@@ -492,9 +558,11 @@ public class KingControllor : HeroAI
 	{
 		autoWeaponCD += Time.deltaTime;
 
-		if (autoWeaponCD < 4.0f) return;
+		if (autoWeaponCD < 2.0f) return;
 
-		if (isPlayingAttack () == true) return;
+		string isplaying = IsPlaying ();
+
+		if (isPlayingAttack () == true && isplaying.Contains("done") == false) return;
 
 		if (isPlayingSkill () == true) return;
 
@@ -634,6 +702,21 @@ public class KingControllor : HeroAI
 
 		bool flag = false;
 
+		if(stance == Stance.STANCE_SELF)
+		{
+			flag = BattleUIControlor.Instance().useMiBaoSkill();
+			
+			if(flag == true) skillCD = 1;
+		}
+		else
+		{
+			flag = BattleUIControlor.Instance().useMiBaoSkill_Enemy(this);
+			
+			if(flag == true) skillCD = 1;
+		}
+
+		if (flag == true) return;
+
 		if(weaponType == WeaponType.W_Heavy)
 		{
 			if(stance == Stance.STANCE_SELF)
@@ -724,21 +807,6 @@ public class KingControllor : HeroAI
 				if(flag == true) skillCD = 1;
 			}
 		}
-
-		if (flag == true) return;
-
-		if(stance == Stance.STANCE_SELF)
-		{
-			flag = BattleUIControlor.Instance().useMiBaoSkill();
-
-			if(flag == true) skillCD = 1;
-		}
-		else
-		{
-			flag = BattleUIControlor.Instance().useMiBaoSkill_Enemy(this);
-			
-			if(flag == true) skillCD = 1;
-		}
 	}
 
 	protected override void runaway(float time)
@@ -806,7 +874,7 @@ public class KingControllor : HeroAI
 
 	public void move(Vector3 offset)
 	{
-		if (Vector3.Distance(offset, Vector3.zero) > .2f) DramaControllor.Instance ().closeYindao (20109);
+		if (Vector3.Distance(offset, Vector3.zero) > .2f) DramaControllor.Instance ().closeYindao (1);
 
 		if (BattleControlor.Instance ().autoFight == true && BattleUIControlor.Instance().pressedJoystick == false) return;
 
@@ -1043,11 +1111,13 @@ public class KingControllor : HeroAI
 
 		if (playing.IndexOf(getAnimationName( AniType.ANI_BATCDown)) != -1) return;
 
+		if (BattleControlor.Instance ().achivement != null) BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+
 		//BattleReplayorWrite.Instance().addReplayKingAttack(nodeId, weaponFoward);
 
-		bool checkWeapon = checkWeaponRange ();
-
-		if(checkWeapon == false) return;
+//		bool checkWeapon = checkWeaponRange ();
+//
+//		if(checkWeapon == false) return;
 
 		setNavMeshStop ();
 
@@ -1059,7 +1129,6 @@ public class KingControllor : HeroAI
 			mAnim.SetBool(getAnimationName(AniType.ANI_Attack_0), true);
 
 			attackForward ();
-
 		}
 	}
 
@@ -1144,7 +1213,19 @@ public class KingControllor : HeroAI
 		else
 		{
 			hitCount = 0;
+
+			CityGlobalData.skillLevelId id = CityGlobalData.skillLevelId.tuci;
+
+			if(weaponType == WeaponType.W_Light) id = CityGlobalData.skillLevelId.tuci;
+
+			else if(weaponType == WeaponType.W_Heavy) id = CityGlobalData.skillLevelId.zhongji;
+
+			else if(weaponType == WeaponType.W_Heavy) id = CityGlobalData.skillLevelId.jishe;
+
+			SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (id, this);
 			
+			StrEffectItem.OpenEffect(gameObject, template.Fx3D, modelId);
+
 			//BattleUIControlor.Instance().attackJoystick.reset();
 		}
 	}
@@ -1153,14 +1234,18 @@ public class KingControllor : HeroAI
 	{
 		KingMovementTemplate template = KingMovementTemplate.getKingMovementById (actionId);
 
+		float length = template.length;
+
 		iTween.EaseType easeType = iTween.EaseType.linear;
 
 		if(actionId == 401)
 		{
 			easeType = iTween.EaseType.easeOutSine;
+
+			length = nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_moveSpeed);
 		}
 
-		moveAction (transform.forward * template.length + transform.position, easeType, template.time, false);
+		moveAction (transform.forward * length + transform.position, easeType, template.time, false);
 
 //		iTween.ValueTo(gameObject, iTween.Hash(
 //			"name", "action_" + actionId,
@@ -1195,11 +1280,7 @@ public class KingControllor : HeroAI
 
 		if(_actionId == 260)//穿云箭
 		{
-			int skillId = 200031;
-
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.zhuixingjian] > 0) skillId = 203200 + CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.zhuixingjian];
-
-			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateById(skillId);
+			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.zhuixingjian, this);
 			
 			KingArrow arrow = KingArrow.createArrow(this, BattleControlor.AttackType.SKILL_ATTACK, 68);
 
@@ -1215,11 +1296,7 @@ public class KingControllor : HeroAI
 		}
 		else if(_actionId == 261)//寒冰箭
 		{
-			int skillId = 200032;
-
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.hanbingjian] > 0) skillId = 203300 + CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.hanbingjian];
-
-			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateById(skillId);
+			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.hanbingjian, this);
 
 			Vector3 tempForward = transform.forward;
 
@@ -1256,7 +1333,7 @@ public class KingControllor : HeroAI
 			}
 		}
 
-		if(_actionId == 262 && CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.jishe] > 0)//普攻第四击
+		if(_actionId == 262 && SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.jishe, this) > 0)//普攻第四击
 		{
 			KingArrow arrow = KingArrow.createArrow(this, BattleControlor.AttackType.BASE_ATTACK);
 
@@ -1284,11 +1361,7 @@ public class KingControllor : HeroAI
 		}
 		else if(_aid == 261)//寒冰箭
 		{
-			int skillId = 200032;
-			
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.hanbingjian] > 0) skillId = 203300 + CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.hanbingjian];
-			
-			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateById(skillId);
+			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.hanbingjian, this);
 
 			Buff.createBuff(defenderNode, AIdata.AttributeType.ATTRTYPE_moveSpeed, -defenderNode.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_moveSpeed ) * skillTemplate.value2, skillTemplate.value3);
 
@@ -1309,20 +1382,67 @@ public class KingControllor : HeroAI
 			EffectTool.Instance.SetHittedEffect (node.gameObject); 
 		}
 
-		if (weaponType == WeaponType.W_Heavy)
+		if(actionId == 200 || actionId == 201 || actionId == 202 || actionId == 203)//重武器普攻
 		{
-
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_HEAVY));
 		}
+		else if(actionId == 250)//重武器技能1-八荒烈日
+		{
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_HEAVY_SKILL1));
+		}
+		else if(actionId == 252)//重武器技能2-乾坤斗转
+		{
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_HEAVY_SKILL2));
+		}
+		else if(actionId == 101 || actionId == 103 || actionId == 105 || actionId == 106)//轻武器普攻
+		{
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT));
+		}
+		else if(actionId >= 140 && actionId <= 151)//轻武器技能1-绝影星光斩
+		{
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT_SKILL1));
+		}
+		else if(actionId ==160)//轻武器技能2-血迹烙印
+		{
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT_SKILL2));
+		}
+		else if(actionId == 262 || actionId == 263)//弓武器普攻
+		{
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE));
+		}
+		else if(actionId == 260)//弓武器节能1-追星箭
+		{
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE_SKILL1));
+		}
+		else if(actionId == 261)//弓武器技能2-寒冰箭
+		{
+			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE_SKILL2));
+		}
+
+//		if (weaponType == WeaponType.W_Heavy)
+//		{
+//			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_HEAVY));
+//		}
+//		else if(weaponType == WeaponType.W_Light)
+//		{
+//			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT));
+//		}
+//		else if(weaponType == WeaponType.W_Ranged)
+//		{
+//			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE));
+//		}
+
+
 
 		bool f = false;
 
 		if(actionId == 101)//双刀第一击
 		{
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.tuci] > 0)
+			if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.tuci, this) > 0)
 			{
-				SkillTemplate st = SkillTemplate.getSkillTemplateById(202100 + CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.tuci]);
+				SkillTemplate st = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.tuci, this);
 
-		 		Buff.createBuff(node, AIdata.AttributeType.ATTRTYPE_weaponReduction_Light, -st.value5, st.value6);
+		 		//Buff.createBuff(node, AIdata.AttributeType.ATTRTYPE_weaponReduction_Light, -st.value5, st.value6);
 			}
 		}
 		else if(actionId == 103
@@ -1378,9 +1498,9 @@ public class KingControllor : HeroAI
 
 		if(actionId == 260)//穿云箭
 		{
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.zhuixingjian] > 0)
+			if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.zhuixingjian, this) > 0)
 			{
-				SkillTemplate st = SkillTemplate.getSkillTemplateById(203200 + CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.zhuixingjian]);
+				SkillTemplate st = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.zhuixingjian, this);
 
 				Vector3 tempForward = transform.forward;
 
@@ -1397,11 +1517,15 @@ public class KingControllor : HeroAI
 		}
 		else if(actionId == 261)//寒冰箭
 		{
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.hanbingjian] > 1)
+			if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.hanbingjian, this) > 1)
 			{
 				SkillTemplate st = SkillTemplate.getSkillTemplateById(203302);
 
 				Buff.createBuff(node, AIdata.AttributeType.ATTRTYPE_skillReduction_Range, -st.value4, st.value5);
+
+				BattleEffectControllor.Instance().PlayEffect(600164, node.gameObject);
+
+				//600164
 			}
 		}
 
@@ -1420,7 +1544,7 @@ public class KingControllor : HeroAI
 			}
 			else if(actionId == 203)//大刀最后一击
 			{
-				if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.zhongji] > 0)
+				if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.zhongji, this) > 0)
 				{
 					node.beatDown(100);
 
@@ -1450,9 +1574,12 @@ public class KingControllor : HeroAI
 			StartCoroutine(node.attackedMovement(d, e, iTween.EaseType.easeOutCubic, t));
 		}
 
-		if(QualityTool.GetBool(QualityTool.CONST_CHARACTER_HITTED_FX))
 		{
-			BattleEffectControllor.Instance ().PlayEffect (1010, node.transform.position + new Vector3(0, 1.2f, 0), node.transform.forward);
+			GameObject t_gb = BattleEffectControllor.Instance ().PlayEffect (1010, node.transform.position + new Vector3(0, 1.2f, 0), node.transform.forward);
+
+			if( !QualityTool.GetBool( QualityTool.CONST_CHARACTER_HITTED_FX ) ){
+				ComponentHelper.DisableAllVisibleObject( t_gb );
+			}
 		}
 
 		if (BattleControlor.Instance ().achivement != null)
@@ -1504,6 +1631,8 @@ public class KingControllor : HeroAI
 
 			character.enabled = true;
 		}
+
+		StrEffectItem.CloseEffect (gameObject);
 	}
 
 	public override bool isPlayingSkill()
@@ -1562,9 +1691,12 @@ public class KingControllor : HeroAI
 		return base.isPlayingSwing();
 	}
 
-	private static DevelopUtility.PlayAttackEffectReturn m_play_attack_effect = new DevelopUtility.PlayAttackEffectReturn();
+	private static DevelopUtility.PlayAttackEffectReturn m_play_attack_effect = null;
 
-	public static DevelopUtility.PlayAttackEffectReturn GetPlayAttackEffectParams( int attackId ){
+	public static DevelopUtility.PlayAttackEffectReturn GetPlayAttackEffectParams( int attackId )
+	{
+		if(m_play_attack_effect == null) m_play_attack_effect = new DevelopUtility.PlayAttackEffectReturn();
+
 		m_play_attack_effect.m_will_play_effect = false;
 
 		if( attackId == 100 )
@@ -1970,12 +2102,9 @@ public class KingControllor : HeroAI
 
 		if(attackId == 150)//血迹烙印
 		{
-			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateById(200022);
+			actionId = 160;
 
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.xuejilaoyin] > 0)
-			{
-				skillTemplate = SkillTemplate.getSkillTemplateById(202300 + CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.xuejilaoyin]);
-			}
+			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this);
 
 			float length = skillTemplate.value1;
 
@@ -2030,18 +2159,28 @@ public class KingControllor : HeroAI
 
 				attackHp(focusNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
 
-				if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.xuejilaoyin] > 0)//流血效果
+				BattleEffectControllor.Instance().PlayEffect(104, focusNode.gameObject);
+
+				BattleEffectControllor.Instance().PlayEffect(600162, focusNode.gameObject);
+
+				if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this) > 0)//流血效果
 				{
 					fbp = BattleControlor.Instance().getAttackValueSkill(this, focusNode, skillTemplate.value3, 0, false);
 
 					Buff buff = Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_hpDelay, fbp.Float, time);
 
 					buff.setEffect(BattleEffectControllor.Instance().PlayEffect(104, focusNode.gameObject, time));
+
+					BattleEffectControllor.Instance().PlayEffect(600163, focusNode.gameObject);
 				}
 
-				if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.xuejilaoyin] > 1)//抗性下降效果
+				if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this) > 1)//抗性下降效果
 				{
-					Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_skillReduction_Light, -skillTemplate.value6, time);
+					Buff buff = Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_skillReduction_Light, -skillTemplate.value6, time);
+
+					GameObject gc = BattleEffectControllor.Instance().PlayEffect(600165, focusNode.gameObject);
+
+					buff.setEffect(gc);
 				}
 			}
 		}
@@ -2148,7 +2287,16 @@ public class KingControllor : HeroAI
 		if (BattleControlor.Instance ().achivement != null)
 			BattleControlor.Instance ().achivement.UseSkill (200011, nodeId);
 
+		if (BattleControlor.Instance ().achivement != null)
+			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+
 		checkSkillDrama (200011);
+
+		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.bahuanglieri, this);
+
+		BubblePopControllor.Instance().triggerFuncSkill(nodeId, template.id);
+
+		StrEffectItem.OpenEffect(gameObject, template.Fx3D, modelId);
 
 		return true;
 	}
@@ -2184,6 +2332,16 @@ public class KingControllor : HeroAI
 
 		kingSkillHeavy_2.m_isDeadOverSkill = 0;
 
+		if (BattleControlor.Instance ().achivement != null)
+			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+
+		if(kingSkillHeavy_2.m_isUseThisSkill == true)
+		{
+			BubblePopControllor.Instance().triggerFuncSkill(nodeId, kingSkillHeavy_2.template.id);
+
+			StrEffectItem.OpenEffect(gameObject, SkillTemplate.getSkillTemplateById(kingSkillHeavy_2.template.id).Fx3D, modelId);
+		}
+
 		return true;
 	}
 
@@ -2197,6 +2355,15 @@ public class KingControllor : HeroAI
 
 		if (BattleControlor.Instance ().achivement != null)
 			BattleControlor.Instance ().achivement.UseSkill (200021, nodeId);
+
+		if (BattleControlor.Instance ().achivement != null)
+			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+
+		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.jueyingxingguangzhan, this);
+
+		BubblePopControllor.Instance().triggerFuncSkill(nodeId, template.id);
+
+		StrEffectItem.OpenEffect(gameObject, template.Fx3D, modelId);
 
 		checkSkillDrama (200021);
 	}
@@ -2212,6 +2379,13 @@ public class KingControllor : HeroAI
 		if (BattleControlor.Instance ().achivement != null)
 			BattleControlor.Instance ().achivement.UseSkill (200022, nodeId);
 
+		if (BattleControlor.Instance ().achivement != null)
+			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+
+		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.xuejilaoyin, this);
+
+		BubblePopControllor.Instance().triggerFuncSkill(nodeId, template.id);
+
 		checkSkillDrama (200022);
 	}
 
@@ -2225,6 +2399,15 @@ public class KingControllor : HeroAI
 
 		if (BattleControlor.Instance ().achivement != null)
 			BattleControlor.Instance ().achivement.UseSkill (200031, nodeId);
+
+		if (BattleControlor.Instance ().achivement != null)
+			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+
+		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.zhuixingjian, this);
+
+		BubblePopControllor.Instance().triggerFuncSkill(nodeId, template.id);
+
+		StrEffectItem.OpenEffect(gameObject, template.Fx3D, modelId);
 
 		checkSkillDrama (200031);
 
@@ -2242,6 +2425,15 @@ public class KingControllor : HeroAI
 		if (BattleControlor.Instance ().achivement != null)
 			BattleControlor.Instance ().achivement.UseSkill (200032, nodeId);
 
+		if (BattleControlor.Instance ().achivement != null)
+			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+
+		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.hanbingjian, this);
+
+		BubblePopControllor.Instance().triggerFuncSkill(nodeId, template.id);
+
+		StrEffectItem.OpenEffect(gameObject, template.Fx3D, modelId);
+
 		checkSkillDrama (200032);
 
 		return true;
@@ -2251,21 +2443,40 @@ public class KingControllor : HeroAI
 	{
 		swingEnd ();
 
-		if (kingSkillMibao == null) return;
+		if (kingSkillMibao == null || kingSkillMibao.Count == 0) return;
 
-		kingSkillMibao.template.zhudong = false;
+		float nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX);
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
+		{
+			nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
+		}
+
+		float nuqi = nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
+
+		if(nodeId == 1) BattleUIControlor.Instance ().spriteBarMibao.fillAmount = nuqi / nuqiMax;
+		
+		float unityMax = nuqiMax / 3;
+		
+		int count = (int)(nuqi / unityMax);
+
+		if (count < 1) return;
+
+		HeroSkill skillMibao = kingSkillMibao [count - 1];
+
+		skillMibao.template.zhudong = false;
 
 		kingSkillHeavy_2.m_isDeadOverSkill = 1;
 
-		kingSkillMibao.upData ();
+		skillMibao.upData ();
 
-		kingSkillMibao.template.zhudong = true;
+		skillMibao.template.zhudong = true;
 
 		kingSkillHeavy_2.template.zhudong = true;
 		
 		kingSkillHeavy_2.m_isDeadOverSkill = 0;
 
-		if (kingSkillMibao.m_isUseThisSkill) 
+		if (skillMibao.m_isUseThisSkill) 
 		{
 			comboable = false;
 
@@ -2275,7 +2486,13 @@ public class KingControllor : HeroAI
 			}
 			
 			hitCount = 0;
+
+			BubblePopControllor.Instance().triggerFuncSkill(nodeId, skillMibao.template.id);
+
+			StrEffectItem.OpenEffect(gameObject, SkillTemplate.getSkillTemplateById(skillMibao.template.id).Fx3D, modelId);
 		}
+
+		if(stance == Stance.STANCE_SELF) BattleUIControlor.Instance ().centerLabelControllor.useSkill (skillMibao.template.name);
 	}
 
 	public void refreshCDTime(int id)
@@ -2318,6 +2535,17 @@ public class KingControllor : HeroAI
 		}
 		else if(id == 100)//秘宝技能
 		{
+			float nuqiMax = (float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_MAX);
+
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
+			{
+				nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
+			}
+
+			addNuqi(-nuqiMax);
+
+			UI3DEffectTool.Instance().ClearUIFx(BattleUIControlor.Instance().btnMibaoSkill);
+
 			if(stance == Stance.STANCE_SELF) BattleUIControlor.Instance().cooldownMibaoSkill.refreshCDTime ();
 			
 			else BattleUIControlor.Instance().cooldownMibaoSkill_enemy.refreshCDTime ();
@@ -2436,60 +2664,7 @@ public class KingControllor : HeroAI
 
 		if(actionId >= 140 && actionId <= 151)//绝影星光斩
 		{
-			playAttackEffect(140);
 
-			//playAttackEffect(141);
-
-			actionId = _aid % 1000;
-
-			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateById(200021);
-
-			if(CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.jueyingxingguangzhan] > 0)
-			{
-				skillTemplate = SkillTemplate.getSkillTemplateById(202200 + CityGlobalData.skillLevel[(int)CityGlobalData.skillLevelId.jueyingxingguangzhan]);
-			}
-
-			KingSkillWuDiZhan wudizhan = (KingSkillWuDiZhan)gameObject.GetComponent("KingSkillWuDiZhan");
-
-			int count = 0;
-
-			if(wudizhan.curNode != null)
-			{
-				foreach(Buff buff in wudizhan.curNode.buffs)
-				{
-					if(buff.buffType == AIdata.AttributeType.ATTRTYPE_Focus)
-					{
-						count++;
-					}
-				}
-
-				count = count > (int)skillTemplate.value5 ? (int)skillTemplate.value5 : count;
-
-				FloatBoolParam fbp = BattleControlor.Instance().getAttackValueSkill(
-					this, 
-					wudizhan.curNode, 
-					skillTemplate.value2 + count * skillTemplate.value4, 
-					0
-					);
-
-				foreach(Buff buff in wudizhan.curNode.buffs)
-				{
-					if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_SKILL)
-					{
-						attackHp(this, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
-						
-						fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
-						
-						break;
-					}
-				}
-
-				attackHp(wudizhan.curNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
-
-				Buff.createBuff(wudizhan.curNode, AIdata.AttributeType.ATTRTYPE_Focus, 0, 5f);
-
-				Shake(KingCamera.ShakeType.Cri);
-			}
 		}
 		else if(_aid == 3250)//旋风斩
 		{

@@ -35,7 +35,8 @@ namespace Carriage
         {
             base.Update();
 
-            if (Time.realtimeSinceStartup - CarriageItemSyncManager.m_LatestServerSyncTime > NetworkHelper.GetPingSec() * NetworkHelper.GetValidRunC())
+			if (Time.realtimeSinceStartup - CarriageItemSyncManager.m_LatestServerSyncTime > 
+			    NetworkHelper.GetPingSecWithMin( Console_SetNetwork.GetMinPingForPreRun() ) * NetworkHelper.GetValidRunC() )
             {
 #if DEBUG_MOVE
                 Debug.LogWarning("+++++++++++++Limit self msg.");
@@ -75,5 +76,11 @@ namespace Carriage
             TrackCameraOffsetPosBack = 4.96f;
             TrackCameraOffsetUpDownRotation = 26.4f;
         }
+
+		void OnDestroy(){
+			base.OnDestroy();
+
+			m_RootManager = null;
+		}
     }
 }

@@ -132,7 +132,7 @@ namespace Rank
 
         public override void Rob()
         {
-            LueDuoData.Instance.LueDuoOpponentReq(m_JunZhuInfo.junZhuId, LueDuoData.WhichOpponent.RANKLIST);
+			PlunderData.Instance.PlunderOpponent (PlunderData.Entrance.RANKLIST,m_JunZhuInfo.junZhuId);
             m_ModuleController.ClampScrollView();
         }
 

@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+<BattleDramaFlag flagId="801" nodeId="1" triggerFlag="301,302,303,304,305,306,307,308,309,310" x="0.1726227" y="6.008835" z="-13.92342" cx="15.15" cy="1" cz="1" rx="0" ry="19.52" rz="0" />
+<BattleDramaFlag flagId="802" nodeId="1" triggerFlag="301,302,303,304,305,306,307,308,309,310" x="-7.257446" y="6.008835" z="-13.12009" cx="5" cy="1" cz="1" rx="0" ry="112.3" rz="0" />
+<BattleDramaFlag flagId="803" nodeId="1" triggerFlag="301,302,303,304,305,306,307,308,309,310" x="7.830627" y="6.008835" z="-13.11453" cx="5" cy="1" cz="1" rx="0" ry="112.3" rz="0" />
 </dataset>

@@ -56,6 +56,12 @@ public class AllianceApplicationData : MonoBehaviour,SocketProcessor {
 		cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 	}
 
+	void OnDestroy(){
+		applicateData = null;
+
+		SocketTool.UnRegisterMessageProcessor( this );
+	}
+
 	//获得自己联盟信息
 	public void GetAllianceInfo (AllianceHaveResp allianceInfo)
 	{
@@ -351,10 +357,5 @@ public class AllianceApplicationData : MonoBehaviour,SocketProcessor {
 		}
 
 		Destroy (GameObject.Find ("My_Union(Clone)"));
-	}
-
-	void OnDestroy ()
-	{
-		SocketTool.UnRegisterMessageProcessor (this);
 	}
 }

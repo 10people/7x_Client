@@ -73,6 +73,8 @@ public class HYResoureEnemy : MonoBehaviour , SocketProcessor {
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
+
+		g_HYResoureEnemy = null;
 	}
 	void Start () {
 	

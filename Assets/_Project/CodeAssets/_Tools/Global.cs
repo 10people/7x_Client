@@ -2,8 +2,6 @@
 
 #define BUNDLE_PATH
 
-#define DEBUG_LOADING
-
 
 using UnityEngine;
 using System;
@@ -30,21 +28,26 @@ public class Global
 	public static int m_iScreenNoID = 0;
 
 	public static bool m_isOpenJiaoxue = true;
-	public static bool m_isTianfuUpCan = false;
 
 	public static int m_sMainCityWantOpenPanel = -1;
 	public static string m_sPanelWantRun = "";
 	public static bool m_isShowBianqiang = false;
 	public static string m_sBianqiangClick = "";
 	public static List<int> m_NewChenghao = new List<int>();
-	public static bool m_isNewChenghao = false;
-	public static int m_iZhanli = 0;
+	public static int m_iPZhanli = 0;
+	public static int m_iAddZhanli = 0;
 	public static int m_iCenterZhanli = 0;
 
 	public static bool m_isFuWen = false;
 	public static bool m_isOpenFuWen = false;
 
 	public static bool m_isOpenShop = false;
+
+	public static bool m_isOpenPlunder = false;
+
+	public static List<TongzhiData> m_listAllTheData = new List<TongzhiData>();
+	public static List<TongzhiData> m_listMainCityData = new List<TongzhiData>();
+	public static List<TongzhiData> m_listJiebiaoData = new List<TongzhiData>();
 
 	public static int getBili(int w, float curNum, float maxNum)
 	{
@@ -496,21 +499,21 @@ public class Global
 		return tempReturnString;
 	}
 
-	public static void YuanbaoBuzu()
-	{
-		Global.CreateBox("元宝不足",
-		                 "是否购买元宝",
-		                 null, null, "确定", "取消", YuanbaoClick);
-	}
+	//public static void YuanbaoBuzu()
+	//{
+	//	Global.CreateBox("元宝不足",
+	//	                 "是否购买元宝",
+	//	                 null, null, "确定", "取消", YuanbaoClick);
+	//}
 
-	public static void YuanbaoClick(int i)
-	{
-		Debug.Log(i);
-		if(i == 1)
-		{
-			TopUpLoadManagerment.m_instance.LoadPrefab(true);
-		}
-	}
+	//public static void YuanbaoClick(int i)
+	//{
+	//	Debug.Log(i);
+	//	if(i == 1)
+	//	{
+	//		TopUpLoadManagerment.LoadPrefab(true);
+	//	}
+	//}
 
 	#endregion
 
@@ -713,12 +716,17 @@ public class Global
 	public static GameObject getEffAtkWaring(GameObject obj)
 	{
 		GameObject returnTemp = GameObject.Instantiate(obj) as GameObject;
-		AudioSource temp;
-		temp = returnTemp.GetComponentInChildren<AudioSource>();
-		if(temp != null)
-		{
-			temp.volume = ClientMain.m_sound_manager.m_fMaxEffVolume;
-		}
+
+		SoundPlayEff spe = returnTemp.AddComponent<SoundPlayEff>();
+
+		spe.PlaySound("410000");
+
+//		AudioSource temp;
+//		temp = returnTemp.GetComponentInChildren<AudioSource>();
+//		if(temp != null)
+//		{
+//			temp.volume = ClientMain.m_sound_manager.m_fMaxEffVolume;
+//		}
 		return returnTemp;
 	}
 
@@ -744,6 +752,51 @@ public class Global
 		t_protof = tempStream.ToArray();
 		
 		SocketTool.Instance().SendSocketMessage(sendID, ref t_protof);
+	}
+
+	public static void upDataTongzhiData(List<TongzhiData> listData)
+	{
+		if(listData != null)
+		{
+			for(int i = 0; i < listData.Count; i ++)
+			{
+				bool tempBool = false;
+				if(getTongzhiData(m_listAllTheData, listData[i].m_SuBaoMSG.subaoId) != null)
+				{
+					tempBool = true;
+				}
+				if(!tempBool)
+				{
+					m_listAllTheData.Add(listData[i]);
+				}
+			}
+		}
+		m_listJiebiaoData = new List<TongzhiData>();
+		m_listMainCityData = new List<TongzhiData>();
+		for(int i = 0; i < m_listAllTheData.Count; i ++)
+		{
+//			int tempState = m_listAllTheData[i].m_iSceneType;
+			if((m_listAllTheData[i].m_ReceiveSceneType & 1) != 0)
+			{
+				m_listJiebiaoData.Add(m_listAllTheData[i]);
+			}
+			if((m_listAllTheData[i].m_ReceiveSceneType & 2) != 0)
+			{
+				m_listMainCityData.Add(m_listAllTheData[i]);
+			}
+		}
+	}
+
+	public static TongzhiData getTongzhiData(List<TongzhiData> listData, long id)
+	{
+		for(int i = 0; i < listData.Count; i ++)
+		{
+			if(listData[i].m_SuBaoMSG.subaoId == id)
+			{
+				return listData[i];
+			}
+		}
+		return null;
 	}
 
 	#endregion

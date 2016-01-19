@@ -56,7 +56,7 @@ public class Console_Component {
 					}
 					
 					{
-						ComponentHelper.LogUISprite( t_sprite );
+						ComponentHelper.LogUISprite( t_sprite, t_count + "" );
 					}
 				}
 				else if( t_type == typeof(UITexture) ){
@@ -67,7 +67,7 @@ public class Console_Component {
 					}
 					
 					{
-						ComponentHelper.LogUITexutre( t_tex );
+						ComponentHelper.LogUITexture( t_tex, t_count + "" );
 					}
 				}
 				else if( t_type == typeof(ParticleSystem) ){
@@ -81,9 +81,45 @@ public class Console_Component {
 						//						ComponentHelper.LogParticleSystem( t_ps );
 					}
 				}
-				
-				GameObjectHelper.LogGameObjectHierarchy( ( (Component)( t_objects[ i ] ) ).gameObject, t_count + "" );
-				
+				else if( t_type == typeof(UIAtlas) ){
+					UIAtlas t_atlas = (UIAtlas)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogUIAtlas( t_atlas, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(Animator) ){
+					Animator t_animator = (Animator)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogAnimator( t_animator, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(Material) ){
+					Material t_mat = (Material)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogMaterial( t_mat, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(Renderer) ){
+					Renderer t_renderer = (Renderer)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogRenderer( t_renderer, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(SkinnedMeshRenderer) ){
+					SkinnedMeshRenderer t_renderer = (SkinnedMeshRenderer)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogSkinnedMeshRenderer( t_renderer, t_count + "" );
+					}
+				}
+				else{
+					GameObjectHelper.LogGameObjectHierarchy( ( (Component)( t_objects[ i ] ) ).gameObject, t_count + "" );
+				}
+
 				t_count++;
 			}
 			
@@ -93,7 +129,7 @@ public class Console_Component {
 			Debug.LogError( "type not found: " + t_type );
 		}
 	}
-	
+
 	#endregion
 
 
@@ -157,7 +193,7 @@ public class Console_Component {
 					}
 					
 					{
-						ComponentHelper.LogUITexutre( t_tex );
+						ComponentHelper.LogUITexture( t_tex );
 					}
 				}
 				else if( t_type == typeof(UILabel) ){
@@ -193,7 +229,21 @@ public class Console_Component {
 						ComponentHelper.LogCamera( t_cam );
 					}
 				}
-				
+				else if( t_type == typeof(Renderer) ){
+					Renderer t_renderer = (Renderer)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogRenderer( t_renderer, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(SkinnedMeshRenderer) ){
+					SkinnedMeshRenderer t_renderer = (SkinnedMeshRenderer)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogSkinnedMeshRenderer( t_renderer, t_count + "" );
+					}
+				}
+
 				{
 					GameObjectHelper.LogGameObjectHierarchy( ( (Component)( t_objects[ i ] ) ).gameObject, t_count + "" );
 					
@@ -285,7 +335,7 @@ public class Console_Component {
 					}
 					
 					{
-						ComponentHelper.LogUITexutre( t_tex );
+						ComponentHelper.LogUITexture( t_tex );
 					}
 				}
 				else if( t_type == typeof(UILabel) ){
@@ -366,6 +416,277 @@ public class Console_Component {
 		}
 	}
 	
+	#endregion
+
+
+
+	#region Object
+
+	public static void LogRefs( string[] p_params ){
+		ObjectHelper.LogRefs();
+	}
+
+	public static void DestroyObject( string[] p_params ){
+		if( p_params.Length <= 1 ){
+			Debug.LogError( "Error, params not enough." );
+			
+			return;
+		}
+		
+		string t_param_1_mono_type = "";
+		
+		string t_param_2 = "";
+		
+		string t_param_3 = "";
+		
+		try{
+			t_param_1_mono_type = p_params[ 1 ];
+			
+			if( p_params.Length >= 3 ){
+				t_param_2 = p_params[ 2 ];
+			}
+			
+			if( p_params.Length >= 4 ){
+				t_param_3 = p_params[ 3 ];
+			}
+		}
+		catch( Exception e ){
+			StringHelper.LogStringArray( p_params );
+			
+			Debug.LogError( "Error, params error: " + e );
+			
+			return;
+		}
+		
+		System.Type t_type = null;
+		
+		t_type = ConsoleTool.GetComponentType( t_param_1_mono_type );
+		
+		if( t_type != null ){
+			UnityEngine.Object[] t_objects = Resources.FindObjectsOfTypeAll( t_type );
+			
+			int t_count = 0;
+			
+			for( int i = 0; i < t_objects.Length; i++ ){
+				if( t_type == typeof(UIAtlas) ){
+					UIAtlas t_atlas = (UIAtlas)t_objects[ i ];
+
+					if( !string.IsNullOrEmpty( t_param_2 ) && !StringHelper.IsLowerEqual( t_atlas.name, t_param_2 ) ){
+						continue;
+					}
+
+					{
+						ComponentHelper.LogUIAtlas( t_atlas );
+					}
+
+					Debug.Log( "Atals's tex destroyed: " + t_atlas );
+
+					Resources.UnloadAsset( t_atlas.texture );
+				}
+				else if( t_type == typeof(AnimationClip) ){
+					AnimationClip t_clip = (AnimationClip)t_objects[ i ];
+
+					{
+						ComponentHelper.LogAnimationClip( t_clip );
+					}
+					
+					Debug.Log( "Clip destroyed: " + t_clip );
+					
+					Resources.UnloadAsset( t_clip );
+				}
+				else if( t_type == typeof(Animator) ){
+					Animator t_animator = (Animator)t_objects[ i ];
+
+//					if( t_animator.runtimeAnimatorController == null ){
+//						Debug.Log( "skip empty animator: " + t_animator );
+//
+//						continue;
+//					}
+
+					{
+						ComponentHelper.LogAnimator( t_animator );
+					}
+					
+					Debug.Log( "Animator destroyed: " + t_animator );
+
+					if( t_animator.runtimeAnimatorController != null ){
+						Resources.UnloadAsset( t_animator.runtimeAnimatorController );
+					}
+
+					Resources.UnloadAsset( t_animator );
+				}
+				else if( t_type == typeof(RuntimeAnimatorController) ){
+					RuntimeAnimatorController t_controller = (RuntimeAnimatorController)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogAnimatorController( t_controller, t_count + "" );
+					}
+
+					Debug.Log( "RuntimeAnimatorController destroyed: " + t_controller );
+
+					Resources.UnloadAsset( t_controller );
+				}
+				else if( t_type == typeof(Material) ){
+					Material t_mat = (Material)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogMaterial( t_mat, t_count + "" );
+					}
+
+					Debug.Log( "material destroyed: " + t_mat );
+
+					Resources.UnloadAsset( t_mat );
+				}
+				else if( t_type == typeof(Renderer) ){
+					Renderer t_renderer = (Renderer)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogRenderer( t_renderer, t_count + "" );
+					}
+
+					Debug.Log( "Renderer destroyed: " + t_renderer );
+					
+					Resources.UnloadAsset( t_renderer );
+				}
+				else if( t_type == typeof(SkinnedMeshRenderer) ){
+					SkinnedMeshRenderer t_renderer = (SkinnedMeshRenderer)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogSkinnedMeshRenderer( t_renderer, t_count + "" );
+					}
+
+					Debug.Log( "SkinnedMeshRenderer destroyed: " + t_renderer );
+					
+					Resources.UnloadAsset( t_renderer );
+				}
+
+				if( t_objects[ i ] is Component ){
+					GameObjectHelper.LogGameObjectHierarchy( ( (Component)( t_objects[ i ] ) ).gameObject, t_count + "" );
+				}
+				else{
+					ObjectHelper.LogObject( t_objects[ i ], t_count + "" );
+				}
+
+				
+				t_count++;
+			}
+			
+			Debug.Log( t_type + " count: " + t_count );
+		}
+		else{
+			Debug.LogError( "type not found: " + t_type );
+		}
+	}
+
+	public static void FindObject( string[] p_params ){
+		if( p_params.Length <= 1 ){
+			Debug.LogError( "Error, params not enough." );
+			
+			return;
+		}
+		
+		string t_param_1_mono_type = "";
+		
+		string t_param_2 = "";
+		
+		string t_param_3 = "";
+		
+		try{
+			t_param_1_mono_type = p_params[ 1 ];
+			
+			if( p_params.Length >= 3 ){
+				t_param_2 = p_params[ 2 ];
+			}
+			
+			if( p_params.Length >= 4 ){
+				t_param_3 = p_params[ 3 ];
+			}
+		}
+		catch( Exception e ){
+			StringHelper.LogStringArray( p_params );
+			
+			Debug.LogError( "Error, params error: " + e );
+			
+			return;
+		}
+		
+		System.Type t_type = null;
+		
+		t_type = ConsoleTool.GetComponentType( t_param_1_mono_type );
+		
+		if( t_type != null ){
+			UnityEngine.Object[] t_objects = Resources.FindObjectsOfTypeAll( t_type );
+			
+			int t_count = 0;
+			
+			for( int i = 0; i < t_objects.Length; i++ ){
+				if( t_type == typeof(UIAtlas) ){
+					UIAtlas t_atlas = (UIAtlas)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogUIAtlas( t_atlas, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(Animator) ){
+					Animator t_animator = (Animator)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogAnimator( t_animator, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(AnimationClip) ){
+					AnimationClip t_clip = (AnimationClip)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogAnimationClip( t_clip, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(RuntimeAnimatorController) ){
+					RuntimeAnimatorController t_controller = (RuntimeAnimatorController)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogAnimatorController( t_controller, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(Material) ){
+					Material t_mat = (Material)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogMaterial( t_mat, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(Renderer) ){
+					Renderer t_renderer = (Renderer)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogRenderer( t_renderer, t_count + "" );
+					}
+				}
+				else if( t_type == typeof(SkinnedMeshRenderer) ){
+					SkinnedMeshRenderer t_renderer = (SkinnedMeshRenderer)t_objects[ i ];
+					
+					{
+						ComponentHelper.LogSkinnedMeshRenderer( t_renderer, t_count + "" );
+					}
+				}
+
+				if( t_objects[ i ] is Component ){
+					GameObjectHelper.LogGameObjectHierarchy( ( (Component)( t_objects[ i ] ) ).gameObject, t_count + "" );
+				}
+				else{
+					ObjectHelper.LogObject( t_objects[ i ], t_count + "" );
+				}
+				
+				t_count++;
+			}
+			
+			Debug.Log( t_type + " count: " + t_count );
+		}
+		else{
+			Debug.LogError( "type not found: " + t_type );
+		}
+	}
+
 	#endregion
 
 

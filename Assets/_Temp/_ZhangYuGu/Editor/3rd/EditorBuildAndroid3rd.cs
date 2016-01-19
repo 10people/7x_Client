@@ -1,4 +1,4 @@
-#define DEBUG_THIRD_PLATFORM
+//#define DEBUG_THIRD_PLATFORM
 
 using UnityEngine;
 using UnityEditor;
@@ -83,7 +83,7 @@ public class EditorBuildAndroid3rd {
 			break;
 			
 		default:
-			Debug.Log ( "Default Platform Build." );
+//			Debug.Log ( "Default Platform Build." );
 			break;
 		}
 		#endif
@@ -93,15 +93,45 @@ public class EditorBuildAndroid3rd {
 
 
 
-	#region Utilities
+	#region Path
 
-	public static string GetManifestPath(){
+	public static string GetDesManifestPath(){
 		string t_path = PathHelper.GetAndroidProjectFullPath();
 
 		string t_manifest_path = Path.Combine( t_path, "AndroidManifest.xml" );
 
 		return t_manifest_path;
 	}
+
+	public static string GetDesProjectPath(){
+		string t_path = PathHelper.GetAndroidProjectFullPath();
+		
+		string t_desc_path = Path.Combine( t_path, ".project" );
+		
+		return t_desc_path;
+	}
+	
+	public static string GetDesClassPath(){
+		string t_path = PathHelper.GetAndroidProjectFullPath();
+		
+		string t_desc_path = Path.Combine( t_path, ".classpath" );
+		
+		return t_desc_path;
+	}
+
+	public static string GetDesProjectPropertyPath(){
+		string t_path = PathHelper.GetAndroidProjectFullPath();
+		
+		string t_desc_path = Path.Combine( t_path, "project.properties" );
+		
+		return t_desc_path;
+	}
+
+	#endregion
+
+
+
+	#region Utilities
 
 	public static void ProcessFile( string p_src_project_path, string p_relative_path ){
 		string t_des = Path.Combine( PathHelper.GetAndroidProjectFullPath(), p_relative_path );

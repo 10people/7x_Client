@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LianMengTuTeng id="103001" tuTengLevel="1" alliance_lv_needed="1" tuTeng_lvUp_value="50" moBaiTimes1="6" award1="0:900001:10000" moBaiTimes2="12" award2="0:900001:10000" moBaiTimes3="18" award3="0:900001:10000" />
-<LianMengTuTeng id="103002" tuTengLevel="2" alliance_lv_needed="2" tuTeng_lvUp_value="140" moBaiTimes1="8" award1="0:900001:10000" moBaiTimes2="16" award2="0:900001:10000" moBaiTimes3="24" award3="0:900001:10000" />
-<LianMengTuTeng id="103003" tuTengLevel="3" alliance_lv_needed="3" tuTeng_lvUp_value="280" moBaiTimes1="10" award1="0:900001:10000" moBaiTimes2="20" award2="0:900001:10000" moBaiTimes3="30" award3="0:900001:10000" />
-<LianMengTuTeng id="103004" tuTengLevel="4" alliance_lv_needed="4" tuTeng_lvUp_value="420" moBaiTimes1="12" award1="0:900001:10000" moBaiTimes2="24" award2="0:900001:10000" moBaiTimes3="36" award3="0:900001:10000" />
-<LianMengTuTeng id="103005" tuTengLevel="5" alliance_lv_needed="5" tuTeng_lvUp_value="800" moBaiTimes1="14" award1="0:900001:10000" moBaiTimes2="28" award2="0:900001:10000" moBaiTimes3="42" award3="0:900001:10000" />
-<LianMengTuTeng id="103006" tuTengLevel="6" alliance_lv_needed="6" tuTeng_lvUp_value="1800" moBaiTimes1="16" award1="0:900001:10000" moBaiTimes2="32" award2="0:900001:10000" moBaiTimes3="48" award3="0:900001:10000" />
-<LianMengTuTeng id="103007" tuTengLevel="7" alliance_lv_needed="7" tuTeng_lvUp_value="3500" moBaiTimes1="18" award1="0:900001:10000" moBaiTimes2="36" award2="0:900001:10000" moBaiTimes3="54" award3="0:900001:10000" />
-<LianMengTuTeng id="103008" tuTengLevel="8" alliance_lv_needed="8" tuTeng_lvUp_value="5600" moBaiTimes1="20" award1="0:900001:10000" moBaiTimes2="40" award2="0:900001:10000" moBaiTimes3="60" award3="0:900001:10000" />
-<LianMengTuTeng id="103009" tuTengLevel="9" alliance_lv_needed="9" tuTeng_lvUp_value="8400" moBaiTimes1="22" award1="0:900001:10000" moBaiTimes2="44" award2="0:900001:10000" moBaiTimes3="66" award3="0:900001:10000" />
-<LianMengTuTeng id="103010" tuTengLevel="10" alliance_lv_needed="10" tuTeng_lvUp_value="8400" moBaiTimes1="24" award1="0:900001:10000" moBaiTimes2="48" award2="0:900001:10000" moBaiTimes3="72" award3="0:900001:10000" />
+<LianMengTuTeng id="103001" tuTengLevel="1" alliance_lv_needed="1" tuTeng_lvUp_value="200" moBaiTimes1="8" award1="0:920001:10#0:921001:20" moBaiTimes2="16" award2="0:900018:200#0:900019:200" moBaiTimes3="24" award3="0:955021:3" />
+<LianMengTuTeng id="103002" tuTengLevel="2" alliance_lv_needed="2" tuTeng_lvUp_value="500" moBaiTimes1="8" award1="0:920001:20#0:921001:40" moBaiTimes2="16" award2="0:900018:300#0:900019:300" moBaiTimes3="24" award3="0:955021:4" />
+<LianMengTuTeng id="103003" tuTengLevel="3" alliance_lv_needed="3" tuTeng_lvUp_value="1400" moBaiTimes1="8" award1="0:920002:6#0:921002:12" moBaiTimes2="16" award2="0:900018:400#0:900019:400" moBaiTimes3="24" award3="0:955021:5" />
+<LianMengTuTeng id="103004" tuTengLevel="4" alliance_lv_needed="4" tuTeng_lvUp_value="2400" moBaiTimes1="8" award1="0:920002:8#0:921002:16" moBaiTimes2="16" award2="0:900018:500#0:900019:500" moBaiTimes3="24" award3="0:955021:6" />
+<LianMengTuTeng id="103005" tuTengLevel="5" alliance_lv_needed="5" tuTeng_lvUp_value="5700" moBaiTimes1="8" award1="0:920002:10#0:921002:20" moBaiTimes2="16" award2="0:900018:600#0:900019:600" moBaiTimes3="24" award3="0:955021:7" />
+<LianMengTuTeng id="103006" tuTengLevel="6" alliance_lv_needed="6" tuTeng_lvUp_value="13500" moBaiTimes1="8" award1="0:920003:3#0:921003:6" moBaiTimes2="16" award2="0:900018:800#0:900019:800" moBaiTimes3="24" award3="0:955021:8" />
+<LianMengTuTeng id="103007" tuTengLevel="7" alliance_lv_needed="7" tuTeng_lvUp_value="30400" moBaiTimes1="8" award1="0:920003:4#0:921003:8" moBaiTimes2="16" award2="0:900018:1000#0:900019:1000" moBaiTimes3="24" award3="0:955021:9" />
+<LianMengTuTeng id="103008" tuTengLevel="8" alliance_lv_needed="8" tuTeng_lvUp_value="54000" moBaiTimes1="8" award1="0:920003:5#0:921003:10" moBaiTimes2="16" award2="0:900018:1200#0:900019:1200" moBaiTimes3="24" award3="0:955021:10" />
+<LianMengTuTeng id="103009" tuTengLevel="9" alliance_lv_needed="9" tuTeng_lvUp_value="89100" moBaiTimes1="8" award1="0:920003:6#0:921003:12" moBaiTimes2="16" award2="0:900018:1400#0:900019:1400" moBaiTimes3="24" award3="0:955021:11" />
+<LianMengTuTeng id="103010" tuTengLevel="10" alliance_lv_needed="10" tuTeng_lvUp_value="0" moBaiTimes1="8" award1="0:920003:7#0:921003:14" moBaiTimes2="16" award2="0:900018:1600#0:900019:1600" moBaiTimes3="24" award3="0:955021:12" />
 </dataset>

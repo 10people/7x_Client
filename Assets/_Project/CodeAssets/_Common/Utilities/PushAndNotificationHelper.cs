@@ -310,7 +310,7 @@ public class PushAndNotificationHelper : MonoBehaviour, SocketProcessor{
 			}
 
 			// all new red spot are under MainCityUIRB
-			MainCityUIRB.SetRedAlert( t_target.m_iID, t_target.m_show_red_alert, false );
+			MainCityUI.SetRedAlert( t_target.m_iID, t_target.m_show_red_alert, false );
 		}
 	}
 
@@ -361,7 +361,7 @@ public class PushAndNotificationHelper : MonoBehaviour, SocketProcessor{
 		          p_push_content );
 	}
 
-	private static void LocalPush( string p_key, int p_push_sec_since_now, string p_push_content ){
+	public static void LocalPush( string p_key, int p_push_sec_since_now, string p_push_content ){
 		Debug.Log( "local push: " + p_key + ", " +
 		                p_push_sec_since_now + ", " +
 		                p_push_content );

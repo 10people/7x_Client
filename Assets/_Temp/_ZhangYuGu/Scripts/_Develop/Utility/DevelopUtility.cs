@@ -120,6 +120,17 @@ public class DevelopUtility : MonoBehaviour {
 
 		public VoidDelegateVoid OnAddXuanFengCount;
 
+		public void swingStart(){
+
+		}
+		
+		public void swingEnd(){
+
+		}
+
+		public void refreshCDTime(int id){
+
+		}
 
 		public void ResetHitCount(){
 			#if DEBUG_ANIMATION_CALLBACKS
@@ -136,6 +147,8 @@ public class DevelopUtility : MonoBehaviour {
 				OnPlaySound( p_path );
 			}
 		}
+
+
 
 		public void attackDone( int actionId ){}
 

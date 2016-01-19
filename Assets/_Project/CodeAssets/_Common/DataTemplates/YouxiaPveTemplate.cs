@@ -51,8 +51,16 @@ public class YouxiaPveTemplate : XmlLoadManager
 
 	public int frontPoint;
 
-	public int maxNum;
+	public int maxNum; // wanfaType="百战" recZhanli="1" recMibaoSkill="250101" vicConDescID="1525" />
 
+	public string wanfaType;
+
+	public int recZhanli;
+
+	public int recMibaoSkill;
+
+	public int vicConDescID;
+	
 	public static List<YouxiaPveTemplate> templates = new List<YouxiaPveTemplate>();
 
 
@@ -159,7 +167,26 @@ public class YouxiaPveTemplate : XmlLoadManager
 				t_template.maxNum = int.Parse(t_reader.Value);
 
 				templates.Add(t_template);
+
+				t_reader.MoveToNextAttribute();
+				t_template.wanfaType = t_reader.Value;
 				
+				templates.Add(t_template);
+
+				t_reader.MoveToNextAttribute();
+				t_template.recZhanli = int.Parse(t_reader.Value);
+				
+				templates.Add(t_template);
+
+				t_reader.MoveToNextAttribute();
+				t_template.recMibaoSkill = int.Parse(t_reader.Value);
+				
+				templates.Add(t_template);
+
+				t_reader.MoveToNextAttribute();
+				t_template.vicConDescID = int.Parse(t_reader.Value);
+				
+				templates.Add(t_template);
 			}
 		}
 		while (t_has_items);

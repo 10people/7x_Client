@@ -68,8 +68,25 @@ Shader "Unlit/Transparent Colored (SoftClip)"
 				float2 factor = (float2(1.0, 1.0) - abs(IN.worldPos)) * _ClipSharpness;
 			
 				// Sample the texture
-				half4 col = tex2D(_MainTex, IN.texcoord) * IN.color;
+//				half4 col = tex2D(_MainTex, IN.texcoord) * IN.color;
+//				col.a *= clamp( min(factor.x, factor.y), 0.0, 1.0);
+				
+				//*******Set GreyColor ,Add by LiuLeiLei
+				half4 col;
+				if (IN.color.r < 0.001) 
+				{ 
+				    col = tex2D(_MainTex, IN.texcoord); 
+				    float grey = dot(col.rgb, float3(0.299, 0.587, 0.114)); 
+				    col.rgb = float3(grey, grey, grey); 
+				} 
+				else 
+				{ 
+				    col = tex2D(_MainTex, IN.texcoord) * IN.color; 
+				}
+				
 				col.a *= clamp( min(factor.x, factor.y), 0.0, 1.0);
+				//*******Set GreyColor
+				
 				return col;
 			}
 			ENDCG

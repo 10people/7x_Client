@@ -392,13 +392,9 @@ public class Pve_Level_Info : MonoBehaviour {
 		if(!litter_Lv.s_pass)
 		{
 
-			BoxBtn.GetComponent<BoxChangeScale>().enabled = false;
+			BoxBtn.GetComponent<BoxCollider>().enabled = false;
 
-			BoxBtn.SetActive (true);
-
-			BoxBtn.gameObject.transform.localScale = new Vector3(0.7f,0.7f,1);
-
-			Boxsprite.color = new Color(0,0,0,255);
+			BoxBtn.SetActive (false);
 
 		}
 		else
@@ -417,7 +413,11 @@ public class Pve_Level_Info : MonoBehaviour {
 					}
 				}
 			}
-
+			if(Getrawardnum >= passFinishnum)
+			{
+				BoxBtn.SetActive (false);
+				return;
+			}
 			if(passFinishnum == litter_Lv.starInfo.Count)
 			{
 				if(Getrawardnum == passFinishnum)
@@ -427,13 +427,13 @@ public class Pve_Level_Info : MonoBehaviour {
 				else
 				{
 					BoxBtn.SetActive (true);
-					BoxBtn.GetComponent<BoxChangeScale>().enabled = true;
+					BoxBtn.GetComponent<BoxCollider>().enabled = false;
 				}
 			}else
 			{
 				if(Getrawardnum == passFinishnum)
 				{
-					BoxBtn.GetComponent<BoxChangeScale>().enabled = false;
+					BoxBtn.GetComponent<BoxCollider>().enabled = false;
 
 					BoxBtn.SetActive (true);
 
@@ -444,11 +444,11 @@ public class Pve_Level_Info : MonoBehaviour {
 				else
 				{
 					BoxBtn.SetActive (true);
-					BoxBtn.GetComponent<BoxChangeScale>().enabled = true;
+					BoxBtn.GetComponent<BoxCollider>().enabled = false;
 				}
 			}
 		}
-
+		BoxBtn.GetComponent<BoxCollider>().enabled = false;
 	}
 
 	void ShowStar()
@@ -734,7 +734,7 @@ public class Pve_Level_Info : MonoBehaviour {
 		// 领取奖励按钮 宝箱
 		//UI3DEffectTool.Instance ().ClearUIFx (BoxBtn);
 		MapData.mapinstance.CloseEffect();
-
+		PassLevelBtn.Instance ().CloseEffect ();
 		MapData.mapinstance.ClosewPVEGuid ();
 
 		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.PVE_GRADE_REWARD),LoadResourceCallback2);
@@ -950,28 +950,19 @@ public class Pve_Level_Info : MonoBehaviour {
 		{
 			return;
 		}
+		tempOjbect_PVEUI = Instantiate (p_object)as GameObject;
 		CityGlobalData.PveLevel_UI_is_OPen = true;
-
+		MainCityUI.TryAddToObjectList (tempOjbect_PVEUI);
 		MapData.mapinstance.CloseEffect();
-
-		tempOjbect_PVEUI = Instantiate(p_object)as GameObject;
-		
-		GameObject mtran = GameObject.Find ("Mapss");
-		
-		tempOjbect_PVEUI.transform.parent = mtran.transform;
-		
-		tempOjbect_PVEUI.transform.localPosition = new Vector3(0,0,0);
+		PassLevelBtn.Instance ().CloseEffect ();
+	
+		tempOjbect_PVEUI.transform.localPosition = new Vector3(0,400,0);
 		
 		tempOjbect_PVEUI.transform.localScale = new Vector3 (1,1,1);
 		
-		PveLevelUImaneger mPveLevelUImaneger = tempOjbect_PVEUI.GetComponent<PveLevelUImaneger>();
+		NewPVEUIManager mNewPVEUIManager = tempOjbect_PVEUI.GetComponent<NewPVEUIManager>();
 
-		mPveLevelUImaneger.Lv_Info = litter_Lv;
-
-		mPveLevelUImaneger.Create_No_Disdroy = true;
-		
-		mPveLevelUImaneger.m_guidnotes = MapData.mapinstance.GuidLevel;
-
-		mPveLevelUImaneger.init ();
+		mNewPVEUIManager.mLevel = litter_Lv;
+		mNewPVEUIManager.Init ();
 	}
 }

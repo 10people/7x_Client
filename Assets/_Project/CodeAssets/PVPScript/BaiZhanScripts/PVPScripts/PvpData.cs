@@ -26,6 +26,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 	#region PVP_DataReq
 	private BaiZhanInfoResp pvpInfoResp;//百战info
 	private GameObject pvpObj;
+
 	/// <summary>
 	/// Pvps the data req.
 	/// </summary>
@@ -216,13 +217,8 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 						else
 						{
 							pvpObj.SetActive (true);
-//							PvpPage.pvpPage.sEffectControl.OnOpenWindowClick ();
-							PvpPage.pvpPage.InItPvpPage (pvpInfo);
 
-							// ui 2d tool
-							{
-								UI2DTool.Instance.AddTopUI( GameObjectHelper.GetRootGameObject( pvpObj ) );
-							}
+							InItPvpPage ();
 						}
 					}
 				}
@@ -316,6 +312,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 								PvpPage.pvpPage.pvpResp.cdYuanBao = confirm.cleanCDInfo.nextCDYB;
 								PvpPage.pvpPage.pvpResp.pvpInfo.time = 0;
 								PvpPage.pvpPage.CdTime = 0;
+								StopCoroutine ("PvpCd");
 								PvpPage.pvpPage.ChallangeRules ();
 								
 								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
@@ -351,7 +348,11 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 							PvpPage.pvpPage.pvpResp.hasWeiWang += CanGetWeiWang;
 							PvpPage.pvpPage.InItMyRank ();
 							//关闭按钮特效
-							UIYindao.m_UIYindao.setCloseUIEff ();
+							if (QXComData.CheckYinDaoOpenState (100210))
+							{
+								UIYindao.m_UIYindao.setCloseUIEff ();
+							}
+
 							RewardData data = new RewardData (900011,CanGetWeiWang);
 							GeneralRewardManager.Instance ().CreateReward (data);
 						}
@@ -479,6 +480,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 
 							Global.m_isOpenBaiZhan = true;
 
+							UIYindao.m_UIYindao.CloseUI ();
 							EnterBattleField.EnterBattlePvp (enemyId);
 
 							break;
@@ -596,18 +598,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 
 					if (IsOpenPvpByBtn)
 					{
-						if (challengeObj == null)
-						{
-							Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_CHALLENGE_PAGE ),
-							                        ChallengeLoadCallback );
-						}
-						else
-						{
-							challengeObj.SetActive (true);
-							
-							GeneralTiaoZhan tiaoZhan = challengeObj.GetComponent<GeneralTiaoZhan> ();
-							tiaoZhan.InItPvpChallengePage (GeneralTiaoZhan.ZhenRongType.PVP,PvpChallengeResp);
-						}
+						GeneralControl.Instance.OpenPvpChallengePage (PvpChallengeResp);
 					}
 				}
 				
@@ -623,9 +614,22 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 	{
 		pvpObj = Instantiate (p_object) as GameObject;
 
-		PvpPage.pvpPage.InItPvpPage (pvpInfoResp);
+		InItPvpPage ();
+	}
 
+	void InItPvpPage ()
+	{
 		MainCityUI.TryAddToObjectList(pvpObj);
+		{
+			UI2DTool.Instance.AddTopUI( GameObjectHelper.GetRootGameObject( pvpObj ) );
+		}
+
+		if (UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			CityGlobalData.m_isRightGuide = true;
+		}
+
+		PvpPage.pvpPage.InItPvpPage (pvpInfoResp);
 	}
 
 	//挑战验证失败回调
@@ -634,7 +638,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		if (playerState == PlayerState.STATE_PVP_MAIN_PAGE)
 		{
 			PvpPage.pvpPage.OpenSkillEffect (2);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,3);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
 			switch (PlayerStateCheckFaillType)
 			{
 			case 2:
@@ -643,6 +647,11 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 				break;
 			case 3:
 				//关闭百战
+				UIYindao.m_UIYindao.CloseUI ();
+				PvpPage.pvpPage.CancelBtn ();
+				break;
+			case 6:
+				ConfirmReq (PVP_CONFIRM_TYPE.PVP_REFRESH_OPPO_RANK);//刷新对手名次
 				break;
 			case 7:
 				ConfirmReq (PVP_CONFIRM_TYPE.PVP_REFRESH_OPPO_RANK);//刷新对手名次
@@ -657,41 +666,12 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		else
 		{
 			//关闭挑战阵容页面，刷新百战首页
-			GeneralTiaoZhan tiaoZhan = challengeObj.GetComponent<GeneralTiaoZhan> ();
-			tiaoZhan.PvpReset = true;
-			tiaoZhan.DestroyRoot ();
+//			GeneralTiaoZhan tiaoZhan = challengeObj.GetComponent<GeneralTiaoZhan> ();
+//			tiaoZhan.PvpReset = true;
+//			tiaoZhan.DestroyRoot ();
+			GeneralChallengePage.gcPage.PvpReset = true;
+			GeneralChallengePage.gcPage.DisActiveObj ();
 		}
-	}
-	
-	void ChallengeLoadCallback( ref WWW p_www, string p_path,  Object p_object )
-	{
-		challengeObj = Instantiate (p_object) as GameObject;
-
-		MainCityUI.TryAddToObjectList (challengeObj);
-
-		GeneralTiaoZhan tiaoZhan = challengeObj.GetComponent<GeneralTiaoZhan> ();
-		
-		if (PvpChallengeResp.myZuheId > 0)
-		{
-			tiaoZhan.YinDaoState = 2;
-		}
-		else
-		{
-//			List<MibaoGroup> mibaoGroup = MiBaoGlobleData.Instance ().G_MiBaoInfo.mibaoGroup;
-//			for(int i = 0;i < mibaoGroup.Count;i ++)
-//			{
-//				if (mibaoGroup[i].hasActive == 1)
-//				{
-//					tiaoZhan.YinDaoState = 1;
-//					break;
-//				}
-//				else
-//				{
-//					tiaoZhan.YinDaoState = 2;
-//				}
-//			}
-		}
-		tiaoZhan.InItPvpChallengePage (GeneralTiaoZhan.ZhenRongType.PVP,PvpChallengeResp);
 	}
 	#endregion
 
@@ -702,8 +682,9 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		PvpDataReq ();
 	}
 
-	void OnDestroy () 
-	{	
+	void OnDestroy (){	
 		SocketTool.UnRegisterMessageProcessor (this);
+
+		base.OnDestroy();
 	}
 }

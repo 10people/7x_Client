@@ -129,7 +129,7 @@ ModelImporter:
     7400032: attack_4
     7400034: attack_1_done
     7400036: attack_2_done
-    7400038: attack_3_done
+    7400038: gongji_4_wan
     9500000: //RootNode
     13700000: boss_luolijunzhu
   materials:
@@ -156,7 +156,7 @@ ModelImporter:
       name: attack
       takeName: Take 001
       firstFrame: 375
-      lastFrame: 554
+      lastFrame: 552
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -945,7 +945,7 @@ ModelImporter:
     - serializedVersion: 16
       name: OnTheStage
       takeName: Take 001
-      firstFrame: 321
+      firstFrame: 319
       lastFrame: 365
       wrapMode: 0
       orientationOffsetY: 0
@@ -2350,7 +2350,7 @@ ModelImporter:
       name: attack_1
       takeName: Take 001
       firstFrame: 375
-      lastFrame: 394
+      lastFrame: 384
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2416,7 +2416,7 @@ ModelImporter:
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 263
         messageOptions: 0
       - time: .957734525
         functionName: attackDone
@@ -2769,7 +2769,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0379743576
+      - time: .0464134216
         functionName: attackStart
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -2783,28 +2783,28 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .789350688
+      - time: .751315236
         functionName: PlaySound
         data: 33061
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .795906126
+      - time: .757817924
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 304
         messageOptions: 0
-      - time: .797813654
+      - time: .762651742
         functionName: createArrow
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 262
         messageOptions: 0
-      - time: .938206971
+      - time: .956521988
         functionName: attackDone
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -2936,7 +2936,7 @@ ModelImporter:
       name: attack_4
       takeName: Take 001
       firstFrame: 521
-      lastFrame: 554
+      lastFrame: 546
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3128,8 +3128,8 @@ ModelImporter:
     - serializedVersion: 16
       name: attack_1_done
       takeName: Take 001
-      firstFrame: 394
-      lastFrame: 410
+      firstFrame: 384
+      lastFrame: 398
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3280,7 +3280,7 @@ ModelImporter:
       name: attack_2_done
       takeName: Take 001
       firstFrame: 443
-      lastFrame: 458
+      lastFrame: 451
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3435,10 +3435,10 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: attack_3_done
+      name: gongji_4_wan
       takeName: Take 001
       firstFrame: 497
-      lastFrame: 513
+      lastFrame: 505
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

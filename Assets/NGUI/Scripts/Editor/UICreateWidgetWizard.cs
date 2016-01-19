@@ -163,7 +163,7 @@ public class UICreateWidgetWizard : EditorWindow
 	/// Convenience function -- creates the "Add To" button and the parent object field to the right of it.
 	/// </summary>
 
-	static public bool ShouldCreate (GameObject go, bool isValid)
+	public static bool ShouldCreate (GameObject go, bool isValid)
 	{
 		GUI.color = isValid ? Color.green : Color.grey;
 

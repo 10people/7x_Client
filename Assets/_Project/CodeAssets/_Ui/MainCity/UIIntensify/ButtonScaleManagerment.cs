@@ -7,7 +7,7 @@ public class ButtonScaleManagerment : MonoBehaviour
     {
 	
 	}
-    public void ButtonsControl(bool colliderEnable)
+    public void ButtonsControl(bool colliderEnable,float scale = 1.2f)
     {
         if (gameObject.GetComponent<TweenScale>() == null)
         {
@@ -17,11 +17,11 @@ public class ButtonScaleManagerment : MonoBehaviour
         if (colliderEnable)
         {
             gameObject.GetComponent<TweenScale>().from = new Vector3(1.0f, 1.0f, 1.0f);
-            gameObject.GetComponent<TweenScale>().to = new Vector3(1.2f, 1.2f, 1.0f);
+            gameObject.GetComponent<TweenScale>().to = new Vector3(scale, scale, 1.0f);
         }
         else
         {
-            gameObject.GetComponent<TweenScale>().from = new Vector3(1.2f, 1.2f, 1.0f);
+            gameObject.GetComponent<TweenScale>().from = new Vector3(scale, scale, 1.0f);
             gameObject.GetComponent<TweenScale>().to = new Vector3(1.0f, 1.0f, 1.0f);
         }
 

@@ -19,11 +19,11 @@ using System.Collections.Generic;
 #endif
 public class UIRectEditor : Editor
 {
-	static protected string[] PrefixName = new string[] { "Left", "Right", "Bottom", "Top" };
-	static protected string[] FieldName = new string[] { "leftAnchor", "rightAnchor", "bottomAnchor", "topAnchor" };
-	static protected string[] HorizontalList = new string[] { "Target's Left", "Target's Center", "Target's Right", "Custom", "Set to Current Position" };
-	static protected string[] VerticalList = new string[] { "Target's Bottom", "Target's Center", "Target's Top", "Custom", "Set to Current Position" };
-	static protected bool[] IsHorizontal = new bool[] { true, true, false, false };
+	protected static string[] PrefixName = new string[] { "Left", "Right", "Bottom", "Top" };
+	protected static string[] FieldName = new string[] { "leftAnchor", "rightAnchor", "bottomAnchor", "topAnchor" };
+	protected static string[] HorizontalList = new string[] { "Target's Left", "Target's Center", "Target's Right", "Custom", "Set to Current Position" };
+	protected static string[] VerticalList = new string[] { "Target's Bottom", "Target's Center", "Target's Top", "Custom", "Set to Current Position" };
+	protected static bool[] IsHorizontal = new bool[] { true, true, false, false };
 
 	protected enum AnchorType
 	{
@@ -40,13 +40,13 @@ public class UIRectEditor : Editor
 	/// Whether the specified relative offset is a common value (0, 0.5, or 1)
 	/// </summary>
 
-	static protected bool IsCommon (float relative) { return (relative == 0f || relative == 0.5f || relative == 1f); }
+	protected static bool IsCommon (float relative) { return (relative == 0f || relative == 0.5f || relative == 1f); }
 
 	/// <summary>
 	/// Returns 'true' if the specified serialized property reference is a UIRect.
 	/// </summary>
 
-	static protected bool IsRect (SerializedProperty sp)
+	protected static bool IsRect (SerializedProperty sp)
 	{
 		if (sp.hasMultipleDifferentValues) return true;
 		return (GetRect(sp) != null);
@@ -56,7 +56,7 @@ public class UIRectEditor : Editor
 	/// Pass something like leftAnchor.target to get its rectangle reference.
 	/// </summary>
 
-	static protected UIRect GetRect (SerializedProperty sp)
+	protected static UIRect GetRect (SerializedProperty sp)
 	{
 		Transform target = sp.objectReferenceValue as Transform;
 		if (target == null) return null;
@@ -67,7 +67,7 @@ public class UIRectEditor : Editor
 	/// Pass something like leftAnchor.target to get its rectangle reference.
 	/// </summary>
 
-	static protected Camera GetCamera (SerializedProperty sp)
+	protected static Camera GetCamera (SerializedProperty sp)
 	{
 		Transform target = sp.objectReferenceValue as Transform;
 		if (target == null) return null;
@@ -485,7 +485,7 @@ public class UIRectEditor : Editor
 	/// Convenience function that switches the anchor mode and ensures that dimensions are kept intact.
 	/// </summary>
 
-	static public void UpdateHorizontalAnchor (UIRect r, UIRect.AnchorPoint anchor, bool resetRelative)
+	public static void UpdateHorizontalAnchor (UIRect r, UIRect.AnchorPoint anchor, bool resetRelative)
 	{
 		// Update the target
 		if (anchor.target == null) return;
@@ -564,7 +564,7 @@ public class UIRectEditor : Editor
 	/// Convenience function that switches the anchor mode and ensures that dimensions are kept intact.
 	/// </summary>
 
-	static public void UpdateVerticalAnchor (UIRect r, UIRect.AnchorPoint anchor, bool resetRelative)
+	public static void UpdateVerticalAnchor (UIRect r, UIRect.AnchorPoint anchor, bool resetRelative)
 	{
 		// Update the target
 		if (anchor.target == null) return;

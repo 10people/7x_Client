@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using qxmobile.protobuf;
 
 namespace LimitActivity
@@ -11,37 +12,42 @@ namespace LimitActivity
         /// Used for auto click first activity item.
         /// </summary>
         [HideInInspector]
-        public bool IsClickFirstActivityItem;
+        public bool IsClickAndShowFirstActivityItemDetail;
 
         public ActivityListController m_ActivityListController;
         public ActivityDetailController m_ActivityDetailController;
+        public GameObject gcRoot;
 
         public static OpenXianShiResp CacheProtoActivityList;
-        public static XinShouXianShiInfo CacheProtoActivityDetail;
+        public static List<XinShouXianShiInfo> CacheProtoActivityDetailList = new List<XinShouXianShiInfo>();
 
         private void Refresh()
         {
-            m_ActivityListController.Refresh();
+            LimitActivityData.Instance.RequestData();
         }
 
         private void LoadFromCache()
         {
-            LimitActivityData.Instance.ProcessActivityListData(CacheProtoActivityList);
+            LimitActivityData.Instance.ProcessActivityListData(CacheProtoActivityList, true);
         }
 
         void OnEnable()
         {
-            IsClickFirstActivityItem = true;
+            IsClickAndShowFirstActivityItemDetail = true;
             Refresh();
         }
 
         void Start()
         {
-            if (CacheProtoActivityList != null && CacheProtoActivityDetail != null)
+            if (CacheProtoActivityList != null && CacheProtoActivityDetailList != null && CacheProtoActivityDetailList.Any())
             {
-                IsClickFirstActivityItem = true;
                 LoadFromCache();
             }
+        }
+
+        public void Close()
+        {
+            Destroy(gcRoot);
         }
     }
 }

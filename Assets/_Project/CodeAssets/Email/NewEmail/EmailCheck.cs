@@ -162,30 +162,15 @@ public class EmailCheck : MonoBehaviour {
 			}
 		}
 
-		foreach (NGUILongPress press in longPressList)
-		{
-			press.OnLongPress -= ActiveTips;
-		}
-		longPressList.Clear ();
-
 		for (int i = 0;i < tempList.Count;i ++)
 		{
 			rewardItemList[i].SetActive (true);
 			rewardItemList[i].transform.localPosition = new Vector3 (i * 115f - (tempList.Count - 1) * 57.5f + (tempList.Count < 7 ? 35f : 0f),0,0);
 			rewardItemList[i].name = i.ToString ();
+			Debug.Log ("tempList[i].id:" + tempList[i].id);
 
-			UISprite iconSprite = rewardItemList[i].GetComponentInChildren<UISprite> ();
-			iconSprite.atlas = tempList[i].type == 7 ? fuWenAtlas : equipAtlas;
-			int w = tempList[i].type == 7 ? 60 : 40;
-			iconSprite.SetDimensions (w, w);
-			iconSprite.spriteName = tempList[i].id.ToString ();
-
-			UILabel numLabel = rewardItemList[i].GetComponentInChildren<UILabel> ();
-			numLabel.text = "x" + tempList[i].count.ToString ();
-
-			NGUILongPress longPress = rewardItemList[i].GetComponent<NGUILongPress> ();
-			longPress.OnLongPress += ActiveTips;
-			longPressList.Add (longPress);
+			EmailReward reward = rewardItemList[i].GetComponent<EmailReward> ();
+			reward.GetRewardInfo (tempList[i]);
 		}
 	}
 
@@ -202,12 +187,6 @@ public class EmailCheck : MonoBehaviour {
 		box.enabled = !isJoin;
 		UISprite btnSprite = btnList[0].GetComponent<UISprite> ();
 		btnSprite.color = isJoin ? Color.gray : Color.white;
-	}
-
-	void ActiveTips (GameObject go)
-	{
-		Debug.Log ("go:" + go.name);
-		ShowTip.showTip(emailInfo.goodsList[int.Parse (go.name)].id);
 	}
 
 	void BtnHandlerCallBack (GameObject obj)

@@ -99,6 +99,10 @@ public class HttpRequest : MonoBehaviour{
         if( !string.IsNullOrEmpty( t_www.error ) ){
 			Debug.LogError( Time.realtimeSinceStartup + "WWW.error: " + t_www.error + " : " + p_url );
 
+			{
+				OnHttpError();
+			}
+
 			if( error_callback != null ){
 				error_callback( t_www.error + " : " + p_url  );
 			}
@@ -164,6 +168,10 @@ public class HttpRequest : MonoBehaviour{
         if( !string.IsNullOrEmpty( t_www.error ) ){
 			Debug.LogError( Time.realtimeSinceStartup + "WWW.Error: " + t_www.error + " : " + p_url );
 
+			{
+				OnHttpError();
+			}
+
 			if( error_callback != null ){
 				error_callback( t_www.error + " : " + p_url  );
 			}
@@ -185,7 +193,15 @@ public class HttpRequest : MonoBehaviour{
 
 	#region Utilities
 
+	private static void OnHttpError(){
+		#if DEBUG_HTTP
+		Debug.Log( "OnHttpError()" );
 
+		PlayerPrefs.DeleteKey( "选服" );
+
+		PlayerPrefs.Save();
+		#endif
+	}
 
 	#endregion
 }

@@ -30,14 +30,24 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
 		set{parentGameObjName = value;}
 	}
 
+	#region Mono
+
     void Awake()
 	{
 		SocketTool.RegisterMessageProcessor(this);
 	}
+
 	void Start ()
     {
  
     }
+
+	void OnDestroy(){
+		base.OnDestroy();
+	}
+
+	#endregion
+
     public void RequestData()
     {
         MemoryStream t_tream = new MemoryStream();

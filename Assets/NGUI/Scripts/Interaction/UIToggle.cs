@@ -19,13 +19,13 @@ public class UIToggle : UIWidgetContainer
 	/// List of all the active toggles currently in the scene.
 	/// </summary>
 
-	static public BetterList<UIToggle> list = new BetterList<UIToggle>();
+	public static BetterList<UIToggle> list = new BetterList<UIToggle>();
 
 	/// <summary>
 	/// Current toggle that sent a state change notification.
 	/// </summary>
 
-	static public UIToggle current;
+	public static UIToggle current;
 
 	/// <summary>
 	/// If set to anything other than '0', all active toggles in this group will behave as radio buttons.
@@ -100,7 +100,7 @@ public class UIToggle : UIWidgetContainer
 	/// Return the first active toggle within the specified group.
 	/// </summary>
 
-	static public UIToggle GetActiveToggle (int group)
+	public static UIToggle GetActiveToggle (int group)
 	{
 		for (int i = 0; i < list.size; ++i)
 		{

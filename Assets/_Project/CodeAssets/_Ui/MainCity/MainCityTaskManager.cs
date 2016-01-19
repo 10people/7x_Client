@@ -22,6 +22,7 @@ public class MainCityTaskManager : MonoBehaviour
 	public GameObject m_objFinishEff;
 	public GameObject m_objRefreshEff;
 	public GameObject m_objAnimationEnd;
+	public GameObject m_objAlret;
 	private int m_iRefreshNum = 0;
 	private int m_iShowID = -1;
 	private int m_iState;
@@ -154,6 +155,7 @@ public class MainCityTaskManager : MonoBehaviour
 
 	public void setData(int taskID)
 	{
+		m_objAlret.SetActive(false);
 		m_iShowID = taskID;
 		if(m_iShowID == -1)
 		{
@@ -161,7 +163,6 @@ public class MainCityTaskManager : MonoBehaviour
 			return;
 		}
 		m_iState = TaskData.Instance.m_TaskInfoDic[m_iShowID].progress;
-
 		m_UILabelState.text = TaskData.Instance.m_TaskInfoDic[m_iShowID].desc;
 		if(m_iThisPanelState == 0)
 		{
@@ -174,6 +175,10 @@ public class MainCityTaskManager : MonoBehaviour
 		if(m_iState < 0)
 		{
 			m_UILabelClick.text = "点击领奖";
+			if(m_iThisPanelState != 0)
+			{
+				m_objAlret.SetActive(true);
+			}
 		}
 		else
 		{

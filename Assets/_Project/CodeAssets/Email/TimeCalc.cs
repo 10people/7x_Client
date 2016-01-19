@@ -42,7 +42,7 @@ public class TimeCalc : Singleton<TimeCalc>
             //Safety check.
             if (tempChatStruct.m_ChatLogItem != null)
             {
-                PoolManagerListController.Instance.ReturnItem(tempChatStruct.m_ChatLogItem.IsLeftMode ? "ChatDataOtherItem" : "ChatDataSelfItem", tempChatStruct.m_ChatLogItem.gameObject);
+                PoolManagerListController.Instance.ReturnItem("ChatDataItem", tempChatStruct.m_ChatLogItem.gameObject);
 
                 tempChatStruct.m_ChatLogItem = null;
             }

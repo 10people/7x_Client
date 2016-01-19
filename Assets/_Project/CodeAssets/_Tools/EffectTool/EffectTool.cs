@@ -20,6 +20,23 @@ using System.Collections.Generic;
 
 public class EffectTool : Singleton<EffectTool> {
 
+
+	#region Mono
+
+	void Update(){
+	
+	}
+
+	void OnDestroy(){
+		ClearBoss();
+
+		base.OnDestroy();
+	}
+
+	#endregion
+
+
+
 	#region Occlusion City
 
 	public static void DisableCityOcclusion( GameObject p_object ){
@@ -322,8 +339,16 @@ public class EffectTool : Singleton<EffectTool> {
 	private static List<GameObject> m_boss_target_list = new List<GameObject> ();
 	
 	private static Material m_boss_mat = null;
-	
-	public static void SetBossEffect( GameObject p_gb ){
+
+	private static void ClearBoss(){
+		m_boss_target_list.Clear();
+
+		m_sl_boss_effect = null;
+
+		m_boss_mat = null;
+	}
+
+	public static void SetBossEffect( GameObject p_gb, string p_color_str = "", float p_coef = 1.39f ){
 		if ( p_gb == null ){
 			Debug.Log("Error, p_gb = null.");
 			
@@ -334,19 +359,61 @@ public class EffectTool : Singleton<EffectTool> {
 			return;
 		}
 
-		#if DEBUG_BOSS
-		Debug.Log( "SetBossEffect( " + p_gb + " )" );
-		#endif
+//		#if DEBUG_BOSS
+//		Debug.Log( "SetBossEffect( " + p_gb + " )" );
+//		#endif
 				
-		m_boss_target_list.Add ( p_gb );
-		
-		string t_path = EffectIdTemplate.GetPathByeffectId ( 51021 );
-		
-		if (string.IsNullOrEmpty (t_path)) {
-			return;
-		}
+//		{
+//			m_boss_target_list.Add ( p_gb );
+//			
+//			string t_path = EffectIdTemplate.GetPathByeffectId ( 51021 );
+//			
+//			if (string.IsNullOrEmpty (t_path)) {
+//				return;
+//			}
+//			
+//			Global.ResourcesDotLoad( t_path, BossMatLoadCallback );
+//		}
 
-		Global.ResourcesDotLoad( t_path, BossMatLoadCallback );
+		{
+			Shader t_origin = Shader.Find( "Custom/Characters/Main Texture High Light" );
+
+			Shader t_new = Shader.Find( "Custom/Characters/Stroke High Light" );
+
+			{
+				Material t_mat = ShaderHelper.Replace<SkinnedMeshRenderer>( p_gb, t_origin, t_new );
+			}
+			
+			{
+				Material t_mat = ShaderHelper.Replace<MeshRenderer>( p_gb, t_origin, t_new );
+			}
+
+			{
+				Color p_color = Color.red;
+
+				MathHelper.ParseHexString( p_color_str, out p_color, Color.red );
+
+				{
+					Material t_mat = ComponentHelper.GetMaterialWithShader<SkinnedMeshRenderer>( p_gb, t_new );
+					
+					if( t_mat != null ){
+						t_mat.SetFloat( "_Coef", 1.39f );
+					
+						t_mat.SetColor( "_SKColor", p_color );
+					}
+				}
+
+				{
+					Material t_mat = ComponentHelper.GetMaterialWithShader<MeshRenderer>( p_gb, t_new );
+					
+					if( t_mat != null ){
+						t_mat.SetFloat( "_Coef", 1.39f );
+
+						t_mat.SetColor( "_SKColor", p_color );
+					}
+				}
+			}
+		}
 
 		#if DEBUG_BOSS
 		Debug.Log( "SetBossEffect.Done." );

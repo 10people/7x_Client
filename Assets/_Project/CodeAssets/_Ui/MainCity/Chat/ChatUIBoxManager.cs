@@ -140,7 +140,7 @@ public class ChatUIBoxManager : MonoBehaviour
                 break;
             case 2:
                 //goto recharge.
-                TopUpLoadManagerment.m_instance.LoadPrefab(true);
+                EquipSuoData.TopUpLayerTip();
                 break;
             default:
                 Debug.LogError("UIBox callback para:" + i + " is not correct.");

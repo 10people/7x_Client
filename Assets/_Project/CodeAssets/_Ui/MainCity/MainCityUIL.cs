@@ -130,19 +130,6 @@ public class MainCityUIL : MYNGUIPanel
 
     void Start()
     {
-        if (chatUI == null)
-        {
-            if (ChatWindow.s_ChatWindow != null && ChatWindow.s_ChatWindow.gameObject != null)
-            {
-                chatUI = ChatWindow.s_ChatWindow.ChatRoot.gameObject;
-            }
-            else
-            {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_CHAT_WINDOW),
-                    ChatWindowLoadCallBack);
-            }
-        }
-
         if (m_MainCityUILDelegate != null)
         {
             m_MainCityUILDelegate();
@@ -256,7 +243,7 @@ public class MainCityUIL : MYNGUIPanel
             return true;
         }
 
-		MainCityUI.m_MainCityUI.m_MainCityUIL.EmailRedAlertObject.transform.parent.gameObject.SetActive(isActive);
+        MainCityUI.m_MainCityUI.m_MainCityUIL.EmailRedAlertObject.transform.parent.gameObject.SetActive(isActive);
         return true;
     }
 
@@ -274,134 +261,73 @@ public class MainCityUIL : MYNGUIPanel
 
     #endregion
 
-    #region Chat Click Control
-
-    private GameObject chatUI;
-    /// <summary>
-    /// Can only be called when chatUI is not null and actived.
-    /// </summary>
-    private ChatWindow chatWindow
-    {
-        get
-        {
-            if (chatWindow_Value != null)
-            {
-                return chatWindow_Value;
-            }
-            else
-            {
-                return chatWindow_Value = chatUI.GetComponentInChildren<ChatWindow>();
-            }
-        }
-    }
-    private ChatWindow chatWindow_Value;
-
-    public void OnChatClick()
-    {
-        ChatWindow.s_ChatWindow.m_ChatChannelFrameList.ForEach(item => item.m_ChatBaseDataHandler.ClearUnUsedChatStructList());
-
-        chatUI.SetActive(true);
-        MainCityUI.TryAddToObjectList(chatUI);
-
-        chatWindow.m_ChatOpenCloseController.OnOpenWindowClick(gameObject);
-    }
-
-    private void ChatWindowLoadCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        chatUI = Instantiate(p_object) as GameObject;
-        DontDestroyOnLoad(chatUI);
-
-        chatUI.GetComponentInChildren<ChatWindow>().m_ChatChannelFrameList.ForEach(item =>
-        {
-            var temp = item.m_ChatBaseDataHandler.GetComponent<ChatDataHandler>();
-            if (temp.m_Channel == ChatPct.Channel.SHIJIE || (temp.m_Channel == ChatPct.Channel.LIANMENG 
-					&& !AllianceData.Instance.IsAllianceNotExist) || (temp.m_Channel == ChatPct.Channel.XiaoWu 
-			      	&& Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) ))
-            {
-                item.m_ChatBaseDataHandler.GetComponent<ChatDataHandler>().Awake();
-            }
-        });
-
-        chatUI.SetActive(false);
-    }
-
-    private void ChatWindowOpenCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        chatUI = Instantiate(p_object) as GameObject;
-        DontDestroyOnLoad(chatUI);
-        MainCityUI.TryAddToObjectList(chatUI);
-
-        chatWindow.m_ChatOpenCloseController.OnOpenWindowClick(gameObject);
-    }
-
     public void changeTaskData(string data)
     {
 
     }
-    #endregion
 
-	public override void MYClick(GameObject ui)
-	{
-		if (MainCityUI.IsWindowsExist())
-		{
-			return;
-		}
-		if(ui.name.IndexOf("L_Task") != -1)
-		{
+    public override void MYClick(GameObject ui)
+    {
+        if (MainCityUI.IsWindowsExist())
+        {
+            return;
+        }
+        if (ui.name.IndexOf("L_Task") != -1)
+        {
 
-		}
-//		switch (i)
-//		{
-//		case 1:
-//		{
-//			break;
-//		}
-//		case 2:
-//		{
-//
-//			//                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
-//			//                        EmailLoadCallback);
-//			break;
-//		}
-//		case 3:
-//		{
-//			OnChatClick();
-//			break;
-//		}
-//		default:
-//		{
-//			Debug.LogError("Error index clicked, index:" + i);
-//			break;
-//		}
-//		}
-	}
+        }
+        //		switch (i)
+        //		{
+        //		case 1:
+        //		{
+        //			break;
+        //		}
+        //		case 2:
+        //		{
+        //
+        //			//                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
+        //			//                        EmailLoadCallback);
+        //			break;
+        //		}
+        //		case 3:
+        //		{
+        //			OnChatClick();
+        //			break;
+        //		}
+        //		default:
+        //		{
+        //			Debug.LogError("Error index clicked, index:" + i);
+        //			break;
+        //		}
+        //		}
+    }
 
-	public override void MYMouseOver(GameObject ui)
-	{
-	}
-	
-	public override void MYMouseOut(GameObject ui)
-	{
-	}
-	
-	public override void MYPress(bool isPress, GameObject ui)
-	{
-	}
-	
-	public override void MYelease(GameObject ui)
-	{
-	}
-	
-	public override void MYondrag(Vector2 delta)
-	{
-		
-	}
-	
-	public override void MYoubleClick(GameObject ui)
-	{
-	}
-	
-	public override void MYonInput(GameObject ui, string c)
-	{
-	}
+    public override void MYMouseOver(GameObject ui)
+    {
+    }
+
+    public override void MYMouseOut(GameObject ui)
+    {
+    }
+
+    public override void MYPress(bool isPress, GameObject ui)
+    {
+    }
+
+    public override void MYelease(GameObject ui)
+    {
+    }
+
+    public override void MYondrag(Vector2 delta)
+    {
+
+    }
+
+    public override void MYoubleClick(GameObject ui)
+    {
+    }
+
+    public override void MYonInput(GameObject ui, string c)
+    {
+    }
 }

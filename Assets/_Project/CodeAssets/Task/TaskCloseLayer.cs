@@ -24,7 +24,13 @@ public class TaskCloseLayer : MonoBehaviour
 
     void DoCloseWindow()
     {
-            if (m_isDestroy == true)
+        if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress < 0
+            || FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress < 0
+            || FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress < 0)
+        {
+            UIYindao.m_UIYindao.CloseUI();
+        }
+        if (m_isDestroy == true)
             {
                 MainCityUI.TryRemoveFromObjectList(m_gameObject);
                 Destroy(m_gameObject);
@@ -205,7 +211,8 @@ public class TaskCloseLayer : MonoBehaviour
                 }
                 else
                 {
-                    m_gameObject.SetActive(false);
+                  MainCityUI.TryRemoveFromObjectList(m_gameObject);
+                  m_gameObject.SetActive(false);
                 }
             }
     }

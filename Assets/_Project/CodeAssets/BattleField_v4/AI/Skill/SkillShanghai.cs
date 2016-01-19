@@ -58,10 +58,12 @@ public class SkillShanghai : SkillDataBead
 				{
 					if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_SKILL)
 					{
-						m_HeroSkill.node.attackHp(m_HeroSkill.node, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
+						m_HeroSkill.node.attackHp(m_HeroSkill.node, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.SKILL_REFLEX);
 						
 						fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
-						
+
+						defender.showText(LanguageTemplate.GetText(LanguageTemplate.Text.BATTLE_SKILL_REFLEX_NAME), buff.supplement.getHeroSkill().template.id);
+
 						break;
 					}
 				}

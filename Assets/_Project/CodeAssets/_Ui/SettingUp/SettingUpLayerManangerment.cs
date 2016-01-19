@@ -11,7 +11,7 @@ using ProtoBuf.Meta;
 public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 {
     public ScaleEffectController m_ScaleEffectController;
-
+    public GameObject m_Durable_UI; 
     public GameObject m_DestroyTarget;
     public GameObject m_AllianceHave;
     public GameObject m_MainParent;
@@ -47,9 +47,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     private string CDkeyInfo = "";
 
     private string NameSave = "";
-    public UIFont titleFont;//标题字体
-    public UIFont btn1Font;//按钮1字体
-    public UIFont btn2Font;//按钮2字体
+ 
 
     private Dictionary<long, GameObject> BloakedEleDic = new Dictionary<long, GameObject>();
     void Awake()
@@ -60,7 +58,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
  
 	void Start ()
     {
-        m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
+        MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
+      //  m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
         listEventMainLayer.ForEach(p => p.m_Handle += EventReception);
         listRenameEvent.ForEach(p => p.m_Handle += RenameReception);
         m_listSwitchAccountEvent.m_Handle += SwitchAccountController;
@@ -73,22 +72,22 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 	}
     public void OnInput()
     {
-        UIInput input = listRenameObject[6].GetComponent<UILabel>().parent.GetComponent<UIInput>();
+        UIInput input = listRenameObject[1].GetComponent<UILabel>().parent.GetComponent<UIInput>();
         RenameInfo = FunctionWindowsCreateManagerment.GetNeedString(input.value);
  
-        listRenameObject[6].GetComponent<UILabel>().text = RenameInfo;
+        listRenameObject[1].GetComponent<UILabel>().text = RenameInfo;
         if (string.IsNullOrEmpty(RenameInfo))
         {
-            listRenameObject[9].SetActive(true);
+            listRenameObject[2].SetActive(true);
         }
         else
         {
-            listRenameObject[9].SetActive(false);
+            listRenameObject[2].SetActive(false);
         }
     }
     void Update()
     {
-        UIInput input = listRenameObject[6].GetComponent<UILabel>().parent.GetComponent<UIInput>();
+        UIInput input = listRenameObject[1].GetComponent<UILabel>().parent.GetComponent<UIInput>();
         if (!string.IsNullOrEmpty(input.value))
         {
             OnInput();
@@ -101,13 +100,13 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     bool createNameIsOff = false;
     void CreateNameControl()
     {
-       int size = listRenameObject[6].transform.childCount;
+       int size = listRenameObject[1].transform.childCount;
        if (size > 0)
        {
            if (!createNameIsOff)
            {
                createNameIsOff = true;
-               listRenameObject[9].SetActive(false);
+               listRenameObject[2].SetActive(false);
            }
 
        }
@@ -116,7 +115,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
            if (createNameIsOff && string.IsNullOrEmpty(RenameInfo))
            {
                createNameIsOff = false;
-               listRenameObject[9].SetActive(true);
+               listRenameObject[2].SetActive(true);
            }
        }
     
@@ -126,7 +125,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
            if (createNameIsOn)
            {
                createNameIsOn = false;
-               listRenameObject[9].SetActive(false);
+               listRenameObject[2].SetActive(false);
                listRenameEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
               // ButtonsControl(listRenameEvent[0].gameObject, true);
            }
@@ -298,13 +297,14 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 break;
             case 1:
                 {
-                  //  listBlockedChatObject[0].SetActive(true);
-                m_ChangeCountryLayer.SetActive(true);
-                   //m_SpriteCountryHuang.SetActive(true);
-                   //m_SpriteCountryHuangBack.SetActive(true);
-                   ChangeCountryInfo(JunZhuData.Instance().m_junzhuInfo.guoJiaId);
-                    m_listChangeCountryEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
-                    m_SpriteCountryCurrent.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
+      
+                   Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SWITCH_COUNTRY_ROOT),
+                                                                                         SwitchCountry_LoadCallback);
+                    // m_ChangeCountryLayer.SetActive(true);
+
+                    //ChangeCountryInfo(JunZhuData.Instance().m_junzhuInfo.guoJiaId);
+                    // m_listChangeCountryEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+                    // m_SpriteCountryCurrent.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
                 }
                 break;
             case 2:
@@ -328,7 +328,15 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 break;
         }
     }
+    public void SwitchCountry_LoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject tempObject = (GameObject)Instantiate(p_object);
+        MainCityUI.TryAddToObjectList(tempObject);
+        tempObject.transform.position = new Vector3(0, 1500, 0);
+      //  UI2DTool.Instance.AddTopUI(tempObject);
 
+        UIYindao.m_UIYindao.CloseUI();
+    }
     void DoCloseWindow()
     {
         MainCityUI.TryRemoveFromObjectList(m_DestroyTarget);
@@ -346,7 +354,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         string str = LanguageTemplate.GetText(LanguageTemplate.Text.VIP_SIGNAL_TAG) + VipFuncOpenTemplate.GetNeedLevelByKey(4).ToString() + NameIdTemplate.GetName_By_NameId(990019) + NameIdTemplate.GetName_By_NameId(990044);
 
         // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null, titleFont, btn1Font);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null);
 
     }
     public bool OnProcessSocketMessage(QXBuffer p_message)
@@ -371,22 +379,36 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         {
                             listMainLab[1].text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString() + "   " + tempInfo.name;
                             JunZhuData.Instance().m_junzhuInfo.name = NameSave;
-                            listRenameObject[7].GetComponent<UILabel>().text = NameSave;
-                            listRenameObject[4].SetActive(true);
+                            listRenameObject[0].SetActive(false);
+                            _content1 = LanguageTemplate.GetText(1506);
+                            _content2 = "\n" + NameSave;
+                            _SignalType = 2;
+                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
                         }
                         else if (tempInfo.code == -200)
                         {
-                            listRenameObject[0].SetActive(false);
-                            listRenameObject[3].SetActive(true);
+                            _content1 = LanguageTemplate.GetText(1507);
+                            _content2 = "";
+                            _SignalType = 2;
+                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
                         }
                         else if (tempInfo.code == -300)
                         {
-                            listRenameObject[0].SetActive(false);
-                            listRenameObject[2].SetActive(true);
+                            _content1 = LanguageTemplate.GetText(1508);
+                            _content2 = "";
+                            _SignalType = 2;
+                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                        }
+                        else if (tempInfo.code == -400)
+                        {
+                            _content1 = LanguageTemplate.GetText(1509);
+                            _content2 = "";
+                            _SignalType = 2;
+                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
                         }
                         else if (tempInfo.code > 0)
                         {
-                            listRenameObject[5].SetActive(true);
+                            EquipSuoData.TopUpLayerTip(m_MainParent);
                         }
 
                         return true;
@@ -400,8 +422,10 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         GetCDKeyAwardResp tempResponse = new GetCDKeyAwardResp();
                      
                         t_qx.Deserialize(t_stream, tempResponse, tempResponse.GetType());
+
                         if (tempResponse.result == 0)
                         {
+                            listCDKeyObject[0].SetActive(false);
                             string _award = "";
                           for (int i = 0; i < tempResponse.awards.Count;i++)
                           {
@@ -428,32 +452,32 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                     }
 
 
-                case ProtoIndexes.S_ChangeCountry_RESP:
-                    {
-                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                //case ProtoIndexes.S_ChangeCountry_RESP:
+                //    {
+                //        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
-                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                //        QiXiongSerializer t_qx = new QiXiongSerializer();
 
-                        ChangeGuojiaResp tempResponse = new ChangeGuojiaResp();
+                //        ChangeGuojiaResp tempResponse = new ChangeGuojiaResp();
 
-                        t_qx.Deserialize(t_stream, tempResponse, tempResponse.GetType());
+                //        t_qx.Deserialize(t_stream, tempResponse, tempResponse.GetType());
  
-                        if (tempResponse.result == 0)
-                        {
-                            RefreshCountryInfo(SaveNum);
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadZhuangGuoSuccess);
+                //        if (tempResponse.result == 0)
+                //        {
+                //            RefreshCountryInfo(SaveNum);
+                //            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadZhuangGuoSuccess);
                             
-                        }
-                        else if (tempResponse.result == 101)
-                        {
-                          Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadHaveLianMeng);
-                        }
-                        else if (tempResponse.result == 102)
-                        {
+                //        }
+                //        else if (tempResponse.result == 101)
+                //        {
+                //          Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadHaveLianMeng);
+                //        }
+                //        else if (tempResponse.result == 102)
+                //        {
                            
-                        }
-                        return true;
-                    }
+                //        }
+                //        return true;
+                //    }
                 default:
                      return false;
             }
@@ -471,79 +495,34 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                     {
                         listRenameObject[0].SetActive(false);
                         listRenameObject[8].SetActive(true);
+                        _content1 = LanguageTemplate.GetText(1503);
+                        _content2 = "";
+                        _SignalType = 2;
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+
                     }
                     else
                     {
-                        listRenameObject[0].SetActive(false);
-                        listRenameObject[1].SetActive(true);
+                        //listRenameObject[0].SetActive(false);
+                       // listRenameObject[1].SetActive(true);
+                        _content1 = LanguageTemplate.GetText(1504) + "100" + LanguageTemplate.GetText(1505);
+                        _content2 = "";
+                       _SignalType = 1;
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
                     }   
                 }
                 break;
-            case 1:
-                {
-                    if (JunZhuData.Instance().m_junzhuInfo.yuanBao >= 100)
-                    {
-                        listRenameEvent[1].GetComponent<Collider>().enabled = false;
-                        MemoryStream tempStream = new MemoryStream();
-                        QiXiongSerializer t_serializer = new QiXiongSerializer();
-                        ChangeName temp = new ChangeName();
-                        temp.name = RenameInfo;
-                        t_serializer.Serialize(tempStream, temp);
 
-                        byte[] t_protof = tempStream.ToArray();
-
-                        t_protof = tempStream.ToArray();
-                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_change_name, ref t_protof);
-                    }
-                    else
-                    {
-                        listRenameObject[1].SetActive(false);
-                        listRenameObject[5].SetActive(true);
-                    }
-                }
-                break;
-            case 2:
-                {
-                    MainCityUI.TryRemoveFromObjectList(m_MainParent);
-                    TopUpLoadManagerment.m_instance.LoadPrefab(false);
-                 
-                    Destroy(m_MainParent);
-                }
-                break;
-            case 3:
-                {
-                    listRenameObject[3].SetActive(false);
-                    listRenameObject[0].SetActive(true);
-                }
-                break;
-            case 4:
-                {
-                    listRenameObject[2].SetActive(false);
-                    listRenameObject[0].SetActive(true);
-                }
-                break;
-            case 5:
-                {
-                    listRenameObject[1].SetActive(false);
-                    listRenameObject[0].SetActive(true);
-                }
-                break;
-            case 6:
-                {
-                    listRenameObject[8].SetActive(false);
-                    listRenameObject[0].SetActive(true);
-                }
-                break;
             case 12:
                 {
                     OnInput();
-                    listRenameEvent[7].gameObject.SetActive(false);
+                    listRenameEvent[1].gameObject.SetActive(false);
                 }
                 break;
             case 13:
                 {
-                    listRenameObject[9].SetActive(false);
-                    listRenameEvent[7].gameObject.SetActive(true);
+                    listRenameObject[2].SetActive(false);
+                    listRenameEvent[1].gameObject.SetActive(true);
                 }
                 break;
 
@@ -617,36 +596,41 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     }
 
     private int SaveNum = 0;
+    private int _index_Touch_num = 0;
     void ChangeCountryReception(int index)
     {
-        switch (index)
+        if (_index_Touch_num != index)
         {
-            case 0:
-                {
-                    if (JunZhuData.Instance().m_junzhuInfo.lianMengId  > 0)
+            _index_Touch_num = index;
+            switch (index)
+            {
+                case 0:
                     {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadHaveLianMeng);
-                    }
-                    else
-                    {
-                        if (BagData.Instance().GetCountItemShiYongId(910001) == 0)
+                        if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
                         {
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadNOZhuanGuoKa);
+                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadHaveLianMeng);
                         }
                         else
                         {
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadZhuanGuoKaUse);
+                            if (BagData.Instance().GetCountItemShiYongId(910001) == 0)
+                            {
+                                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadNOZhuanGuoKa);
+                            }
+                            else
+                            {
+                                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadZhuanGuoKaUse);
+                            }
+
                         }
-                       
                     }
-                }
-                break;
-            default:
-                {
-                    SaveNum = index;
-                    ChangeCountryInfo(index);
-                }
-                break;
+                    break;
+                default:
+                    {
+                        SaveNum = index;
+                        ChangeCountryInfo(index);
+                    }
+                    break;
+            }
         }
     }
     public void UIBoxLoadHaveLianMeng(ref WWW p_www, string p_path, Object p_object)
@@ -659,7 +643,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         string str = LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_ALLIANCE_1) + AllianceData.Instance.g_UnionInfo.name +  LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_ALLIANCE_2);
         string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_ALLIANCE_3);
         // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), MyColorData.getColorString(1, str2), null, confirmStr, null, null, titleFont, btn1Font);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), MyColorData.getColorString(1, str2), null, confirmStr, null, null);
 
     }
 
@@ -674,7 +658,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         string str = "\n\n" + LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_CARD_1);
 
         // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null, titleFont, btn1Font);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null);
 
     }
     public void UIBoxLoadZhuanGuoKaUse(ref WWW p_www, string p_path, Object p_object)
@@ -687,7 +671,57 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         string str = "\n\n" + LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_CARD_USE);
 
         // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, cancelStr, confirmStr, ZhuanGuo, titleFont, btn1Font);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, cancelStr, confirmStr, ZhuanGuo);
+
+    }
+    private string _title = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
+    private string _content1 = "";
+    private string _content2 = "";
+    private int _SignalType = 0;
+    public void UIBoxLoadRename(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject boxObj = Instantiate(p_object) as GameObject;
+        UIBox uibox = boxObj.GetComponent<UIBox>();
+        string  TitleStr = _title;
+        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
+        string cancelStr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+        string str1 = _content1;
+
+        string str2 = _content2;
+        if (_SignalType == 1)
+        {
+            uibox.setBox(TitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, cancelStr, confirmStr, Rename_Cost);
+        }
+        else if (_SignalType == 2)
+        {
+            uibox.setBox(TitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, null, confirmStr,null);
+        }
+
+    }
+    void Rename_Cost(int index)
+    {
+        if (index == 2)
+        {
+            if (JunZhuData.Instance().m_junzhuInfo.yuanBao >= 100)
+            {
+                MemoryStream tempStream = new MemoryStream();
+                QiXiongSerializer t_serializer = new QiXiongSerializer();
+                ChangeName temp = new ChangeName();
+                temp.name = RenameInfo;
+                t_serializer.Serialize(tempStream, temp);
+
+                byte[] t_protof = tempStream.ToArray();
+
+                t_protof = tempStream.ToArray();
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_change_name, ref t_protof);
+            }
+            else
+            {
+               // listRenameObject[1].SetActive(false);
+               // listRenameObject[5].SetActive(true);
+                EquipSuoData.TopUpLayerTip(m_MainParent);
+            }
+        }
 
     }
 
@@ -724,7 +758,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         string str = LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_SUCCESS);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null, titleFont, btn1Font);
+        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null);
 
     }
 
@@ -732,7 +766,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     void ChangeCountryInfo(int index)
     {
         m_listChangeCountryEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(JunZhuData.Instance().m_junzhuInfo.guoJiaId == index ? false : true);
-        int size  = m_listCountrySelect.Count;
+        int size = m_listCountrySelect.Count;
         for (int i = 0; i < size; i++)
         {
             if (i == index - 1)
@@ -744,7 +778,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 m_listCountrySelect[i].SelectedShow(false);
             }
         }
-    
+
     }
     void RefreshCountryInfo(int index)
     {

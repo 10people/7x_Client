@@ -16,7 +16,7 @@ public static class NGUIHandles
 	/// Given a plane the rectangle lies upon, convert the given screen coordinates to world coordinates.
 	/// </summary>
 
-	static public bool ScreenToWorldPoint (Plane p, Vector2 screenPos, out Vector3 worldPos)
+	public static bool ScreenToWorldPoint (Plane p, Vector2 screenPos, out Vector3 worldPos)
 	{
 		float dist;
 		Ray ray = HandleUtility.GUIPointToWorldRay(screenPos);
@@ -34,7 +34,7 @@ public static class NGUIHandles
 	/// Given the widget's corners, convert the given screen coordinates to world coordinates.
 	/// </summary>
 
-	static public bool ScreenToWorldPoint (Vector3[] corners, Vector2 screenPos, out Vector3 worldPos)
+	public static bool ScreenToWorldPoint (Vector3[] corners, Vector2 screenPos, out Vector3 worldPos)
 	{
 		Plane p = new Plane(corners[0], corners[1], corners[3]);
 		return ScreenToWorldPoint(p, screenPos, out worldPos);
@@ -44,7 +44,7 @@ public static class NGUIHandles
 	/// Draw width and height around the rectangle specified by the four world-space corners.
 	/// </summary>
 
-	static public void DrawSize (Vector3[] worldPos, int width, int height)
+	public static void DrawSize (Vector3[] worldPos, int width, int height)
 	{
 		Vector2[] screenPos = new Vector2[4];
 
@@ -85,7 +85,7 @@ public static class NGUIHandles
 	/// Draw a shadowed line in the scene view.
 	/// </summary>
 
-	static public void DrawShadowedLine (Plane p, Vector2 screenPos0, Vector2 screenPos1, Color c)
+	public static void DrawShadowedLine (Plane p, Vector2 screenPos0, Vector2 screenPos1, Color c)
 	{
 		Handles.color = new Color(0f, 0f, 0f, 0.5f);
 		DrawLine(p, screenPos0 + Vector2.one, screenPos1 + Vector2.one);
@@ -97,7 +97,7 @@ public static class NGUIHandles
 	/// Draw a shadowed line in the scene view.
 	/// </summary>
 
-	static public void DrawShadowedLine (Plane p, Vector3 worldPos0, Vector3 worldPos1, Color c)
+	public static void DrawShadowedLine (Plane p, Vector3 worldPos0, Vector3 worldPos1, Color c)
 	{
 		Vector2 s0 = HandleUtility.WorldToGUIPoint(worldPos0);
 		Vector2 s1 = HandleUtility.WorldToGUIPoint(worldPos1);
@@ -108,7 +108,7 @@ public static class NGUIHandles
 	/// Draw a shadowed line in the scene view.
 	/// </summary>
 
-	static public void DrawShadowedLine (Vector3[] corners, Vector3 worldPos0, Vector3 worldPos1, Color c)
+	public static void DrawShadowedLine (Vector3[] corners, Vector3 worldPos0, Vector3 worldPos1, Color c)
 	{
 		Plane p = new Plane(corners[0], corners[1], corners[3]);
 		Vector2 s0 = HandleUtility.WorldToGUIPoint(worldPos0);
@@ -120,7 +120,7 @@ public static class NGUIHandles
 	/// Draw a line in the scene view.
 	/// </summary>
 
-	static public void DrawLine (Plane p, Vector2 v0, Vector2 v1)
+	public static void DrawLine (Plane p, Vector2 v0, Vector2 v1)
 	{
 #if UNITY_3_5
 		// Unity 3.5 exhibits a strange offset...
@@ -138,13 +138,13 @@ public static class NGUIHandles
 	/// Draw a centered label at the specified world coordinates.
 	/// </summary>
 
-	static public void DrawCenteredLabel (Vector3 worldPos, string text) { DrawCenteredLabel(worldPos, text, 60f); }
+	public static void DrawCenteredLabel (Vector3 worldPos, string text) { DrawCenteredLabel(worldPos, text, 60f); }
 
 	/// <summary>
 	/// Draw a centered label at the specified world coordinates.
 	/// </summary>
 
-	static public void DrawCenteredLabel (Vector3 worldPos, string text, float width)
+	public static void DrawCenteredLabel (Vector3 worldPos, string text, float width)
 	{
 		Vector2 screenPoint = HandleUtility.WorldToGUIPoint(worldPos);
 		DrawCenteredLabel(screenPoint, text, width);
@@ -154,14 +154,14 @@ public static class NGUIHandles
 	/// Draw a centered label at the specified screen coordinates.
 	/// </summary>
 
-	static public void DrawCenteredLabel (Vector2 screenPos, string text) { DrawCenteredLabel(screenPos, text, 60f); }
+	public static void DrawCenteredLabel (Vector2 screenPos, string text) { DrawCenteredLabel(screenPos, text, 60f); }
 
 	/// <summary>
 	/// Draw a centered label at the specified screen coordinates.
 	/// It's expected that this call happens inside Handles.BeginGUI() / Handles.EndGUI().
 	/// </summary>
 
-	static public void DrawCenteredLabel (Vector2 screenPos, string text, float width)
+	public static void DrawCenteredLabel (Vector2 screenPos, string text, float width)
 	{
 		if (Event.current.type == EventType.Repaint)
 		{

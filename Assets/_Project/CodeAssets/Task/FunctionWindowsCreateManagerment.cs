@@ -6,7 +6,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
 {
    private static int BigHouseId = 0;
    private static int SmallHouseId = 0;
-
+   private readonly static List<int> FrameQuality = new List<int>() { 2, 4, 5, 7, 8, 10 };
     public enum SettingType
     {
         NONE = -1,
@@ -15,147 +15,175 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         SWITCH_USER = 2,
     }
     public static SettingType m_SettingUpTYpe = SettingType.NONE;
-    public static void FunctionWindowCreate(int id)
+    //public static void FunctionWindowCreate(int id)
+    //{
+    //    switch (id)
+    //    {
+    //        //setting up
+    //        case 2:
+    //            {
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_LAYER),
+    //                                 SettingUpLoadCallback);
+    //            }
+    //            break;
+    //        //goto rank
+    //        case 210:
+    //            {
+    //                //Add rank sys here.
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.RANK_WINDOW),
+    //                                RankWindowLoadBack);
+    //            }
+    //            break;
+    //        //Recharge
+    //        case 13:
+    //            {
+ 
+    //            }
+    //            break;
+    //        //bag sys
+    //        case 3:
+    //            {
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_BAG),
+    //                                    BagLoadCallback);
+    //            }
+    //            break;
+    //        //friend sys
+    //        case 4:
+    //            {
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FRIEND_OPERATION),
+    //                                  FriendLoadCallback);
+    //            }
+    //            break;
+    //        //serach treasure
+    //        case 11:
+    //            {
+
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TANBAO),
+    //                                        SerachTreasureLoadCallback);
+    //            }
+    //            break;
+    //        //task sys
+    //        case 5:
+    //            {
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TASK),
+    //                              TaskLoadCallback);
+    //            }
+    //            break;
+    //        //treasure sys
+    //        case 6:
+    //            {
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_SECRET),
+    //                                        TreasureLoadCallback);
+    //            }
+    //            break;
+    //        //alliance sys
+    //        case 104:
+    //            {
+    //                //                        AllianceData.Instance.RequestData();
+
+    //                if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+    //                {
+    //                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_NO_SELF_ALLIANCE),
+    //                                             NoAllianceLoadCallback);
+    //                }
+    //                if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
+    //                {
+    //                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_HAVE_ROOT),
+    //                                            AllianceHaveLoadCallback);
+    //                }
+    //            }
+    //            break;
+    //        case 14:
+    //            {
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ACTIVITY_LAYER), OnActivityLoadCallBack);
+    //            }
+    //            break;
+    //        //新手在线礼包
+    //        case 15:
+    //            {
+    //                CityGlobalData.m_Limite_Activity_Type = 1542000;
+
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ONLINE_REWARD_ROOT),
+    //                            RewardCallback);
+
+    //            }
+    //            break;
+    //        //新手七日礼包
+    //        case 16:
+    //            {
+    //                CityGlobalData.m_Limite_Activity_Type = 1543000;
+
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ONLINE_REWARD_ROOT),
+    //                              RewardCallback);
+    //            }
+    //            break;
+    //        //king
+    //        case 200:
+    //            {
+    //                //Add king here.
+
+
+    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.JUN_ZHU_LAYER_AMEND),
+    //                                        JunzhuLayerLoadCallback);
+    //                break;
+    //            }
+    //        case 900001: //买铜币 900001
+    //            {
+    //                //Add king here.
+
+    //                JunZhuData.Instance().BuyTiliAndTongBi(false, true, false);
+
+    //                break;
+    //            }
+    //        case 900002: //买体力  900002
+    //            {
+    //                //Add king here.
+
+
+    //                JunZhuData.Instance().BuyTiliAndTongBi(true, false, false);
+    //                break;
+    //            }
+    //        case 7: //买体力  900002
+    //            {
+    //                //Add king here.
+
+
+    //                DoGoHome();
+    //                break;
+    //            }
+    //        default:
+
+    //            break;
+    //    }
+
+    //}
+
+    public static bool WetherHaveEquipsWearIsLowQuality(int buwei)
     {
-        switch (id)
+        foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
         {
-            //setting up
-            case 2:
-                {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_LAYER),
-                                     SettingUpLoadCallback);
-                }
-                break;
-            //goto rank
-            case 210:
-                {
-                    //Add rank sys here.
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.RANK_WINDOW),
-                                    RankWindowLoadBack);
-                }
-                break;
-            //Recharge
-            case 13:
-                {
-                    TopUpLoadManagerment.m_instance.LoadPrefab(true);
-                }
-                break;
-            //bag sys
-            case 3:
-                {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_BAG),
-                                        BagLoadCallback);
-                }
-                break;
-            //friend sys
-            case 4:
-                {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FRIEND_OPERATION),
-                                      FriendLoadCallback);
-                }
-                break;
-            //serach treasure
-            case 11:
-                {
+            int tempBuwei = 0;
+            switch (item.Value.buWei)
+            {
+                case 1: tempBuwei = 3; break;//重武器
+                case 2: tempBuwei = 4; break;//轻武器
+                case 3: tempBuwei = 5; break;//弓
+                case 11: tempBuwei = 0; break;//头盔
+                case 12: tempBuwei = 8; break;//肩膀
+                case 13: tempBuwei = 1; break;//铠甲
+                case 14: tempBuwei = 7; break;//手套
+                case 15: tempBuwei = 2; break;//裤子
+                case 16: tempBuwei = 6; break;//鞋子
+                default: break;
+            }
 
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TANBAO),
-                                            SerachTreasureLoadCallback);
-                }
-                break;
-            //task sys
-            case 5:
-                {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TASK),
-                                  TaskLoadCallback);
-                }
-                break;
-            //treasure sys
-            case 6:
-                {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_SECRET),
-                                            TreasureLoadCallback);
-                }
-                break;
-            //alliance sys
-            case 104:
-                {
-                    //                        AllianceData.Instance.RequestData();
-
-                    if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
-                    {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_NO_SELF_ALLIANCE),
-                                                 NoAllianceLoadCallback);
-                    }
-                    if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
-                    {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_HAVE_ROOT),
-                                                AllianceHaveLoadCallback);
-                    }
-                }
-                break;
-            case 14:
-                {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ACTIVITY_LAYER), OnActivityLoadCallBack);
-                }
-                break;
-            //新手在线礼包
-            case 15:
-                {
-                    CityGlobalData.m_Limite_Activity_Type = 1542000;
-
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ONLINE_REWARD_ROOT),
-                                RewardCallback);
-
-                }
-                break;
-            //新手七日礼包
-            case 16:
-                {
-                    CityGlobalData.m_Limite_Activity_Type = 1543000;
-
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ONLINE_REWARD_ROOT),
-                                  RewardCallback);
-                }
-                break;
-            //king
-            case 200:
-                {
-                    //Add king here.
-               
-
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.JUN_ZHU_LAYER_AMEND),
-                                            JunzhuLayerLoadCallback);
-                    break;
-                }
-            case 900001: //买铜币 900001
-                {
-                    //Add king here.
-
-                    JunZhuData.Instance().BuyTiliAndTongBi(false, true, false);
-
-                    break;
-                }
-            case 900002: //买体力  900002
-                {
-                    //Add king here.
-
-
-                    JunZhuData.Instance().BuyTiliAndTongBi(true, false, false);
-                    break;
-                }
-            case 7: //买体力  900002
-                {
-                    //Add king here.
-
-
-                    DoGoHome();
-                    break;
-                }
-            default:
-
-                break;
+            if (tempBuwei == buwei && item.Value.pinZhi > EquipsOfBody.Instance().m_equipsOfBodyDic[buwei].pinZhi)
+            {
+                MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
+                return true;
+            }
         }
-
+        return false;
     }
 
     private static void DoGoHome()
@@ -546,5 +574,13 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
             return null;
             Debug.Log("Award is Null !!!");
         }
+    }
+    public static bool SpecialSizeFit(int quality)
+    {
+        if (FrameQuality.Contains(quality - 1))
+        {
+            return true;
+        }
+        return false;
     }
 }

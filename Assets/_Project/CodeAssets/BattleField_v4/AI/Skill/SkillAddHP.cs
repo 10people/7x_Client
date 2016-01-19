@@ -40,7 +40,7 @@ public class SkillAddHP : SkillDataBead
 				
 				if(m_iAddType == 1)
 				{
-					va = m_iAddXishu * defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax );
+					va = m_iAddXishu * defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal );
 				}
 				
 				defender.addHp(va);

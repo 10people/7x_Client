@@ -23,12 +23,7 @@ namespace LimitActivity
         /// </summary>
         public static List<OpenXianShi> m_openXianShiList = new List<OpenXianShi>();
 
-        public void Refresh()
-        {
-            LimitActivityData.Instance.RequestData();
-        }
-
-        public void DoRefresh(bool isLoadLimitActivityCache)
+        public void Refresh(bool isLoadFromCache)
         {
             while (m_Grid.transform.childCount > 0)
             {
@@ -64,18 +59,32 @@ namespace LimitActivity
                 }
                 m_Grid.Reposition();
 
-				NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
+                NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
             }
 
-            if (m_RootController.IsClickFirstActivityItem && m_ActivityItemControllerList != null && m_ActivityItemControllerList.Count > 0)
+            if (!isLoadFromCache)
             {
-                m_RootController.IsClickFirstActivityItem = false;
+                m_ActivityItemControllerList.ForEach(item => item.RequestData());
+            }
 
-                if (isLoadLimitActivityCache)
+            if (m_RootController.IsClickAndShowFirstActivityItemDetail && m_ActivityItemControllerList != null && m_ActivityItemControllerList.Count > 0)
+            {
+                m_RootController.IsClickAndShowFirstActivityItemDetail = false;
+
+                if (isLoadFromCache)
                 {
                     //goto refresh manually if loading cache.
-                    m_ActivityItemControllerList[0].SetSelected();
-                    ProcessActivityDetail(RootController.CacheProtoActivityDetail);
+                    var itemControllers = m_ActivityItemControllerList.Where(item => RootController.CacheProtoActivityDetailList.Select(item2 => item2.typeId).ToList().Contains(item.m_OpenXianShi.typeId)).ToList();
+
+                    if (itemControllers.Any())
+                    {
+                        itemControllers.First().SetSelected();
+                        ProcessActivityDetail(RootController.CacheProtoActivityDetailList.Where(item => item.typeId == itemControllers.First().m_OpenXianShi.typeId).First(), true);
+                    }
+                    else
+                    {
+                        m_ActivityItemControllerList[0].SendMessage("OnClick", SendMessageOptions.RequireReceiver);
+                    }
                 }
                 else
                 {
@@ -115,10 +124,19 @@ namespace LimitActivity
             }
         }
 
-        public void ProcessActivityDetail(XinShouXianShiInfo data)
+        public void ProcessActivityDetail(XinShouXianShiInfo data, bool isLoadFromCache = false)
         {
-            //Store cache.
-            RootController.CacheProtoActivityDetail = data;
+            if (!isLoadFromCache)
+            {
+                //Store cache.
+                var tempList = RootController.CacheProtoActivityDetailList.Where(item => item.typeId == data.typeId).ToList();
+
+                if (tempList.Any())
+                {
+                    RootController.CacheProtoActivityDetailList.Remove(tempList.First());
+                }
+                RootController.CacheProtoActivityDetailList.Add(data);
+            }
 
             var controllers = m_ActivityItemControllerList.Where(item => item.m_OpenXianShi.typeId == data.typeId).ToList();
 
@@ -126,7 +144,11 @@ namespace LimitActivity
             {
                 controllers[0].m_ShouXianShiInfo = data;
                 controllers[0].Refresh();
-                controllers[0].RefreshActivityDetail();
+
+                if (controllers[0].IsSelected)
+                {
+                    controllers[0].RefreshActivityDetail();
+                }
             }
         }
 

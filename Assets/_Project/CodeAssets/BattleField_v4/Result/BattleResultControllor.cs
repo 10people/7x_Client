@@ -93,7 +93,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
     [HideInInspector] public GameObject itemTemple;
 
-	[HideInInspector] public List<bool> bList_achivment;
+	[HideInInspector] public List<int> bList_achivment;
 
 	[HideInInspector] public List<AwardItem> lmAwards = new List<AwardItem>();
 
@@ -459,6 +459,10 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		refreshDate((int)BattleControlor.Instance().battleTime, BattleControlor.Instance().timeLast + (int)BattleControlor.Instance().battleTime);
 
 		StartCoroutine(resultAction());
+
+		{
+			UI2DTool.OnBattleV4ResultShow();
+		}
     }
 
 	IEnumerator resultAction()
@@ -580,7 +584,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 				{
 					BattleResultStar star = stars[i];
 
-					star.refreshData(bList_achivment[i] && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN,
+					star.refreshData(bList_achivment[i] == 1 && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN,
 					                 BattleControlor.Instance().achivement.descs[i]);
 				}
 
@@ -614,7 +618,9 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 			winDesc.gameObject.SetActive(true);
 
-			winDescNum.gameObject.SetActive(true);
+			//winDescNum.gameObject.SetActive(true);
+
+			winDescNum.gameObject.SetActive(false);
 		}
 
 		yield return new WaitForSeconds (actionTime);
@@ -876,7 +882,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
         IconSampleManager ism = gc.GetComponent<IconSampleManager>();
 
-        ism.SetIconByID(awardItem.awardIconId, awardItem.awardNum + "", 500);
+        ism.SetIconByID(awardItem.awardId, awardItem.awardNum + "", 500);
 
 		GameObject gcTip = ism.SetIconPopText (awardItem.awardId);
 

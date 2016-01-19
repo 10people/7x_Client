@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ObjectName : MonoBehaviour {
 
+    public GameObject m_ObjController;
 	public UILabel m_playerName;
     public UILabel m_LabAllianceName;
     public UISprite m_SpriteChengHao;
@@ -63,7 +64,7 @@ public class ObjectName : MonoBehaviour {
         }
         else
         {
-            m_playerName.alignment = NGUIText.Alignment.Automatic; 
+           // m_playerName.alignment = NGUIText.Alignment.Automatic; 
             m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
         }
         ShowOrHide(true);

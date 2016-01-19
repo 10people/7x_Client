@@ -329,6 +329,10 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 		fuWenObj = GameObject.Instantiate( p_object ) as GameObject;
 		FuWenMainPage fuWenMainPage = fuWenObj.GetComponent<FuWenMainPage> ();
 		fuWenMainPage.InItFuWenPage (fuWenDataResp);
+
+		{
+			UI2DTool.Instance.AddTopUI( fuWenObj );
+		}
 	}
 	
 	/// <summary>
@@ -339,25 +343,13 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 		if (FunctionOpenTemp.IsHaveID(500010))
 		{
 			Global.m_isFuWen = isRed;
-			if (!isRed)
-			{
-				if(!(EquipsOfBody.Instance().EquipUnWear() || 
-				     EquipsOfBody.Instance().EquipReplace() || 
-				     Global.m_isNewChenghao || 
-				     Global.m_isTianfuUpCan || BagData.AllUpgrade()))
-				{
-					MainCityUIRB.SetRedAlert(200, false);
-				}
-			}
-			else
-			{
-				MainCityUIRB.SetRedAlert(200, true);
-			}
+			MainCityUI.SetRedAlert(500010, isRed);
 		}
 	}
 	
-	void OnDestroy ()
-	{
+	void OnDestroy (){
 		SocketTool.UnRegisterMessageProcessor (this);
+
+		base.OnDestroy();
 	}
 }

@@ -141,8 +141,17 @@ public class NoticeManager : MonoBehaviour {
 				Debug.LogError( "Error, instance not exist." );
 			}
 		}
+		else{
+			// on 3rd platform, check is in update state
+			// if not, check here
+			if( PrepareBundleHelper.IsDeviceCheckOpen() ){
+				if( !DeviceHelper.CheckIsDeviceSupported() ){
+					return;
+				}
+			}
+		}
 
-		if (!ClientMain.m_is_templates_loaded) {
+		if( !ClientMain.m_is_templates_loaded ){
 			Debug.Log( "Data Not Loaded." );
 
 			return;

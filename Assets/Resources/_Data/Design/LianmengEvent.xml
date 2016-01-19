@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LianmengEvent ID="1" str="%d创建了联盟！" />
+<LianmengEvent ID="2" str="%d加入了联盟！" />
+<LianmengEvent ID="3" str="%d被盟主%d开除出联盟！" />
+<LianmengEvent ID="4" str="%d退出了联盟！" />
+<LianmengEvent ID="5" str="盟主%d将联盟转让给%d！" />
+<LianmengEvent ID="6" str="盟主将%d从%d升职到%d！" />
+<LianmengEvent ID="7" str="盟主将%d从%d降职到%d！" />
+<LianmengEvent ID="8" str="盟主%d发布了新的联盟公告！" />
+<LianmengEvent ID="9" str="%d捐献了%d个虎符，联盟获得%d建设值！" />
+<LianmengEvent ID="10" str="经过各位成员努力，联盟等级提升到%d级！" />
+<LianmengEvent ID="11" str="盟主%d开启了%d藏宝点，快去参加！" />
+<LianmengEvent ID="12" str="经过各位成员努力，%d藏宝点已被攻破！" />
+<LianmengEvent ID="13" str="联盟资源点%d被%d联盟占领！" />
+<LianmengEvent ID="14" str="%d被%d掠夺成功，联盟损失%d建设值！" />
+<LianmengEvent ID="15" str="%d上缴了%d点贡金，联盟获得%d声望值！" />
+<LianmengEvent ID="16" str="副盟主%d发布了新的联盟公告！" />
+<LianmengEvent ID="17" str="%d掠夺d%成功，联盟获得%d建设值！" />
+</dataset>

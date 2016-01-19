@@ -44,6 +44,10 @@ public class MainCityRoot : MonoBehaviour
         ClientMain.m_sound_manager.chagneBGSound(1001);
     }
 
+	void OnDestroy(){
+		m_instance = null;
+	}
+
     #endregion
 
     #region Utilities

@@ -171,9 +171,9 @@ public class HeroSkill : MonoBehaviour
 
 	public List<BaseAI> m_listATTTarget = new List<BaseAI>();
 
-	private GameObject m_PreElement;
+	private List<GameObject> m_PreElement = new List<GameObject>();
 
-	private float m_PreTime;
+	private List<float> m_PreTime = new List<float>();
 
 	private List<GameObject> m_listFirstElement = new List<GameObject>();
 
@@ -207,6 +207,42 @@ public class HeroSkill : MonoBehaviour
 	public float ceshi_endTime;
 
 	public string dis;
+
+
+	public void init(SkillTemplate _template, int index)
+	{
+		NodeSkill _temp = new NodeSkill ();
+
+		_temp.id = _template.id;
+
+		_temp.name = NameIdTemplate.GetName_By_NameId(_template.skillName);
+
+		_temp.zhiye = _template.zhiye;
+
+		_temp.skillType = _template.skillType;
+
+		_temp.value1 = _template.value1;
+
+		_temp.value2 = _template.value2;
+
+		_temp.value3 = _template.value3;
+
+		_temp.value4 = _template.value4;
+
+		_temp.value5 = _template.value5;
+
+		_temp.value6 = _template.value6;
+
+		_temp.value7 = _template.value7;
+
+		_temp.timePeriod = _template.timePeriod;
+
+		_temp.endtime = _template.endTime;
+
+		_temp.zhudong = _template.zhudong;
+
+		init (_temp, index);
+	}
 
 	public void init(NodeSkill _template, int index)
 	{
@@ -379,7 +415,6 @@ public class HeroSkill : MonoBehaviour
 			m_iCollValue3 = float.Parse(Global.NextCutting(ref temptemptempString));
 			m_iCollValue4 = int.Parse(Global.NextCutting(ref temptemptempString));
 			m_iCollValue5 = float.Parse(Global.NextCutting(ref temptemptempString));
-			Debug.Log(m_iCollValue5);
 			dis += "射线，";
 			break;
 		}
@@ -433,8 +468,9 @@ public class HeroSkill : MonoBehaviour
 
 		if(m_iEffLockID != 0)
 		{
-			Debug.Log("skillid=" + template.value7);
-			Debug.Log(m_sAnimName);
+//			Debug.Log("skillid=" + template.value7);
+//			Debug.Log(m_sAnimName);
+
 			GameObject tempEffobj = BattleEffectControllor.Instance().getInstantiateEffect(m_iEffLockID);
 			tempEffobj.SetActive(true);
 			tempEffobj.transform.position = node.gameObject.transform.position;
@@ -601,7 +637,7 @@ public class HeroSkill : MonoBehaviour
 					tempTarget.Remove(node);
 					for(int i = 0; i < tempTarget.Count; i ++)
 					{
-						if(tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) / tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) > m_iUseValue1 )
+						if(tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) / tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal ) > m_iUseValue1 )
 						{
 							tempTarget.RemoveAt(i);
 							i --;
@@ -617,7 +653,7 @@ public class HeroSkill : MonoBehaviour
 						{
 							if(m_listUseNodeID[q] == tempTarget[i].nodeId)
 							{
-								if(tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) / tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) <= m_iUseValue1 )
+								if(tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) / tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal ) <= m_iUseValue1 )
 								{
 									return true;
 								}
@@ -632,7 +668,7 @@ public class HeroSkill : MonoBehaviour
 					tempTarget.Add(node);
 					for(int i = 0; i < tempTarget.Count; i ++)
 					{
-						if(tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) / tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) > m_iUseValue1 )
+						if(tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) / tempTarget[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal ) > m_iUseValue1 )
 						{
 							tempTarget.RemoveAt(i);
 							i --;
@@ -876,12 +912,13 @@ public class HeroSkill : MonoBehaviour
 			m_VForWard.y = 0;
 			m_VForWard.Normalize();
 		}
-
 		switch(m_ATTTYPE)
 		{
 		case ATTTYPE.ONE:
 			if(m_isEffPlaySelf)
 			{
+//				Debug.Log(m_iEffID);
+
 				tempEffobj = BattleEffectControllor.Instance().getInstantiateEffect(m_iEffID);
 				tempEffobj.SetActive(false);
 				tempEffobj.transform.position = node.gameObject.transform.position;
@@ -904,7 +941,7 @@ public class HeroSkill : MonoBehaviour
 					tempEffobj.transform.parent = node.gameObject.transform;
 				}
 				tempEffobj.transform.localPosition = new Vector3(tempEffobj.transform.localPosition.x, (tempEffobj.transform.localPosition.y + (node.getHeight() * EffectIdTemplate.GetHeight(m_iEffID))), tempEffobj.transform.localPosition.z);
-				tempEffobj.name = "skill" + m_iIndex;
+//				tempEffobj.name = "skill" + m_iIndex;
 			}
 			else
 			{
@@ -916,7 +953,7 @@ public class HeroSkill : MonoBehaviour
 					tempEffobj.transform.parent = tempTargetOne.gameObject.transform;
 					tempEffobj.transform.localPosition = new Vector3(tempEffobj.transform.localPosition.x, (tempEffobj.transform.localPosition.y + (node.getHeight() * EffectIdTemplate.GetHeight(m_iEffID))), tempEffobj.transform.localPosition.z);
 				}
-				tempEffobj.name = "skill" + m_iIndex;
+//				tempEffobj.name = "skill" + m_iIndex;
 			}
 			m_listMyEffElement.Add(tempEffobj);
 			m_AttBaseAI.Add(new List<BaseAI>());
@@ -997,7 +1034,8 @@ public class HeroSkill : MonoBehaviour
 
 	public void setShow()
 	{
-		Debug.Log (template.id);
+//		Debug.Log (template.id);
+
 		if(m_iShow == 0)
 		{
 			GameObject tempobjColl;
@@ -1029,7 +1067,9 @@ public class HeroSkill : MonoBehaviour
 					tempobjColl.transform.localRotation = Quaternion.Euler(90,tempRotation.y + 90,0);
 
 					tempobjColl.transform.localScale = new Vector3(m_iCollValue1, m_iCollValue2, 1);
-					Debug.Log(node.transform.localEulerAngles);
+
+//					Debug.Log(node.transform.localEulerAngles);
+
 					node.transform.localEulerAngles += new Vector3(0, m_iCollValue5, 0);
 					Vector3 moveat = node.transform.forward;
 					node.transform.localEulerAngles -= new Vector3(0, m_iCollValue5, 0);
@@ -1220,7 +1260,7 @@ public class HeroSkill : MonoBehaviour
 
 					if(m_sAnimName == "null")
 					{
-						Debug.Log("===============1");
+//						Debug.Log("===============1");
 						if(template.id / 1000 == 250)//开头是250的技能是主动秘宝技能
 						{
 							if(node.nodeId == 1)
@@ -1232,11 +1272,11 @@ public class HeroSkill : MonoBehaviour
 								BattleUIControlor.Instance().cooldownMibaoSkill_enemy.refreshCDTime();
 							}
 						}
-						Debug.Log("===============2");
+//						Debug.Log("===============2");
 						node.openShow();
-						Debug.Log("===============3");
+//						Debug.Log("===============3");
 						node.activeSkillStart(0);
-						Debug.Log("===============4");
+//						Debug.Log("===============4");
 //						setShowFanRand();
 //						activeSkill(0);
 //						for(int i = 0; i < m_otherSkill.Count; i ++)
@@ -1285,11 +1325,17 @@ public class HeroSkill : MonoBehaviour
 					continue;
 				}
 			}
-			if(m_PreElement != null && (tempTime - m_PreTime) > m_iPlayPreTime)
+			for(int i = 0; i < m_PreElement.Count; i ++)
 			{
-				Destroy(m_PreElement);
-				m_PreElement = null;
+				if(m_PreElement[i] != null && (tempTime - m_PreTime[i]) > m_iPlayPreTime)
+				{
+					Destroy(m_PreElement[i]);
+					m_PreElement.RemoveAt(i);
+					m_PreTime.RemoveAt(i);
+					i --;
+				}
 			}
+
 			if(m_isUseThisSkill)
 			{
 				//Debug.Log(m_listMyEffCutTime.Count);
@@ -1332,8 +1378,6 @@ public class HeroSkill : MonoBehaviour
 
 					if(m_iEffMoveIndex < m_ListAngleEffMove.Count)
 					{
-						Debug.Log(m_iEffMoveIndex);
-						Debug.Log(m_ListAngleEffMove.Count);
 						m_fEffMovePassageTime = tempTime;
 						m_listMyEffElement[i].transform.position += m_listMyEffElement[i].transform.forward.normalized * (((tempTime - m_fEffMovePassageTime) / m_ListEffMoveTime[m_iEffMoveIndex]) * m_ListEffMoveDistance[m_iEffMoveIndex]);
 //						m_fEffMovePassageTime
@@ -1741,6 +1785,7 @@ public class HeroSkill : MonoBehaviour
 				tempEffobj.transform.position = ai.gameObject.transform.position;
 				tempEffobj.transform.rotation = ai.gameObject.transform.rotation;
 				tempEffobj.transform.parent = ai.gameObject.transform;
+//				tempEffobj.transform.localPosition = new Vector3(tempEffobj.transform.localPosition.x, (tempEffobj.transform.localPosition.y + (ai.getHeight() * EffectIdTemplate.GetHeight(m_iPlayFirstID))), tempEffobj.transform.localPosition.z);
 			}
 			m_listFirstElement.Add(tempEffobj);
 			m_listFirstTime.Add(Time.time);
@@ -1754,13 +1799,15 @@ public class HeroSkill : MonoBehaviour
 		{
 			if( Console_SetBattleFieldFx.IsEnableSkillFx() )
 			{
-				m_PreElement = BattleEffectControllor.Instance().getInstantiateEffect(m_iPlayPreID);
-				m_PreElement.SetActive(true);
-				m_PreElement.transform.position = node.gameObject.transform.position;
-				m_PreElement.transform.rotation = node.gameObject.transform.rotation;
-				m_PreElement.transform.parent = node.gameObject.transform;
+				m_PreElement.Add(BattleEffectControllor.Instance().getInstantiateEffect(m_iPlayPreID));
+				m_PreElement[m_PreElement.Count - 1].SetActive(true);
+				m_PreElement[m_PreElement.Count - 1].transform.position = node.gameObject.transform.position;
+
+				m_PreElement[m_PreElement.Count - 1].transform.rotation = node.gameObject.transform.rotation;
+//				m_PreElement[m_PreElement.Count - 1].transform.parent = node.gameObject.transform;
+				m_PreElement[m_PreElement.Count - 1].transform.localPosition = new Vector3(m_PreElement[m_PreElement.Count - 1].transform.localPosition.x, (m_PreElement[m_PreElement.Count - 1].transform.localPosition.y + (node.getHeight() * EffectIdTemplate.GetHeight(m_iPlayPreID))), m_PreElement[m_PreElement.Count - 1].transform.localPosition.z);
+				m_PreTime.Add(Time.time);
 			}
-			m_PreTime = Time.time;
 		}
 	}
 
@@ -1795,11 +1842,13 @@ public class HeroSkill : MonoBehaviour
 			m_listFirstAI.RemoveAt(i);
 			i --;
 		}
-		
-		if(m_PreElement != null)
+
+		for(int i = 0; i < m_PreElement.Count; i ++)
 		{
-			Destroy(m_PreElement);
-			m_PreElement = null;
+			Destroy(m_PreElement[i]);
+			m_PreElement.RemoveAt(i);
+			m_PreTime.RemoveAt(i);
+			 i --;
 		}
 
 		if(m_listShowRange != null)
@@ -1857,6 +1906,7 @@ public class HeroSkill : MonoBehaviour
 		{
 			m_UnLockSkill[i].m_isCurSeal = true;
 		}
+		node.skillEnd ();
 	}
 
 	public void getSkillAssociated()

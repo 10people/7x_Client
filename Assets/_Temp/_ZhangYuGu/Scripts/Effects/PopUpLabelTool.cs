@@ -11,8 +11,6 @@ public class PopUpLabelTool : MonoBehaviour, IUIRootAutoActivator {
 
 	public GameObject m_ngui_parent = null;
 
-
-
 	private static PopUpLabelTool m_instance = null;
 	
 	public static PopUpLabelTool Instance(){

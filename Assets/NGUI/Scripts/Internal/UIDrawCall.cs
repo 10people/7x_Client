@@ -20,19 +20,19 @@ public class UIDrawCall : MonoBehaviour
 	static BetterList<UIDrawCall> mInactiveList = new BetterList<UIDrawCall>();
 
 	[System.Obsolete("Use UIDrawCall.activeList")]
-	static public BetterList<UIDrawCall> list { get { return mActiveList; } }
+	public static BetterList<UIDrawCall> list { get { return mActiveList; } }
 
 	/// <summary>
 	/// List of active draw calls.
 	/// </summary>
 
-	static public BetterList<UIDrawCall> activeList { get { return mActiveList; } }
+	public static BetterList<UIDrawCall> activeList { get { return mActiveList; } }
 
 	/// <summary>
 	/// List of inactive draw calls. Only used at run-time in order to avoid object creation/destruction.
 	/// </summary>
 
-	static public BetterList<UIDrawCall> inactiveList { get { return mInactiveList; } }
+	public static BetterList<UIDrawCall> inactiveList { get { return mInactiveList; } }
 
 	public enum Clipping : int
 	{
@@ -590,7 +590,7 @@ public class UIDrawCall : MonoBehaviour
 	/// Return an existing draw call.
 	/// </summary>
 
-	static public UIDrawCall Create (UIPanel panel, Material mat, Texture tex, Shader shader)
+	public static UIDrawCall Create (UIPanel panel, Material mat, Texture tex, Shader shader)
 	{
 #if UNITY_EDITOR
 		string name = null;
@@ -661,7 +661,7 @@ public class UIDrawCall : MonoBehaviour
 	/// Clear all draw calls.
 	/// </summary>
 
-	static public void ClearAll ()
+	public static void ClearAll ()
 	{
 		bool playing = Application.isPlaying;
 
@@ -682,7 +682,7 @@ public class UIDrawCall : MonoBehaviour
 	/// Immediately destroy all draw calls.
 	/// </summary>
 
-	static public void ReleaseAll ()
+	public static void ReleaseAll ()
 	{
 		ClearAll();
 		ReleaseInactive();
@@ -692,7 +692,7 @@ public class UIDrawCall : MonoBehaviour
 	/// Immediately destroy all inactive draw calls (draw calls that have been recycled and are waiting to be re-used).
 	/// </summary>
 
-	static public void ReleaseInactive()
+	public static void ReleaseInactive()
 	{
 		for (int i = mInactiveList.size; i > 0; )
 		{
@@ -706,7 +706,7 @@ public class UIDrawCall : MonoBehaviour
 	/// Count all draw calls managed by the specified panel.
 	/// </summary>
 
-	static public int Count (UIPanel panel)
+	public static int Count (UIPanel panel)
 	{
 		int count = 0;
 		for (int i = 0; i < mActiveList.size; ++i)
@@ -718,7 +718,7 @@ public class UIDrawCall : MonoBehaviour
 	/// Destroy the specified draw call.
 	/// </summary>
 
-	static public void Destroy (UIDrawCall dc)
+	public static void Destroy (UIDrawCall dc)
 	{
 		if (dc)
 		{

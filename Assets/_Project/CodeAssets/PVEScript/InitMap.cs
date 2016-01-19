@@ -7,13 +7,20 @@ public class InitMap : MonoBehaviour {
 
 	[HideInInspector]public int map_num;
 
+	void OnDestroy(){
+		mapTextrue = null;
+	}
+
 	public void LoadmapBack(ref WWW p_www,string p_path,UnityEngine.Object p_object)
 	{
 		mapTextrue.mainTexture = (Texture)p_object;
 	}
+
 	public void init()
 	{
 		//Debug.Log ("map_num  = " +map_num);
 		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.MAPPIC)+map_num.ToString(),LoadmapBack);
 	}
+
+
 }

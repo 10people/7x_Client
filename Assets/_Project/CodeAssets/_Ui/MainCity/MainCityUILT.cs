@@ -37,11 +37,9 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     public GameObject m_objLabelHero;
     //public GameObject m_objMoney;
     public GameObject m_objLianmengbg;
+	public GameObject m_objRedEmali;
     //public GameObject m_objWulianmengbg;
 
-    public NGUILongPress MoneyDetailLongPress;
-    public NGUILongPress IngotDetailLongPress;
-    public NGUILongPress EnergyDetailLongPress;
 
     public MainCityZhanliChange m_MainCityZhanliChange;
 	public MainCityTaskManager m_MainCityTaskManagerMain;
@@ -51,19 +49,6 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
 	void Awake()
 	{
-		MoneyDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
-		MoneyDetailLongPress.NormalPressTriggerWhenLongPress = false;
-		IngotDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
-		IngotDetailLongPress.NormalPressTriggerWhenLongPress = false;
-		EnergyDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
-		EnergyDetailLongPress.NormalPressTriggerWhenLongPress = false;
-		
-		MoneyDetailLongPress.OnLongPress = OnMoneyDetailClick;
-		IngotDetailLongPress.OnLongPress = OnIngotDetailClick;
-		EnergyDetailLongPress.OnLongPress = OnEnergyDetailClick;
-		MoneyDetailLongPress.OnLongPressFinish = OnCloseDetail;
-		IngotDetailLongPress.OnLongPressFinish = OnCloseDetail;
-		EnergyDetailLongPress.OnLongPressFinish = OnCloseDetail;
 		
 		SocketTool.RegisterSocketListener(this);
 	}
@@ -72,7 +57,7 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 	void Start()
 	{
 		StartCoroutine(Init());
-		Debug.Log(m_MainCityTaskManagerMain);
+//		Debug.Log(m_MainCityTaskManagerMain);
 		m_MainCityTaskManagerMain.setData(TaskData.Instance.ShowId);
 		m_MainCityTaskManagerOther.setData(TaskData.Instance.m_iShowOtherId);
 		setLTPos(true);
@@ -113,27 +98,18 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
         NationSprite.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
 		m_SpriteExp.SetDimensions(Global.getBili(122, (float)JunZhuData.Instance().m_junzhuInfo.exp, (float)JunZhuData.Instance().m_junzhuInfo.expMax), 8);
 		//m_SpriteExp
-        if (Global.m_iZhanli == 0)
-        {
-            Global.m_iZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
-        }
-        m_ZhanLiLabel.text = Global.m_iZhanli.ToString();
-
+		m_ZhanLiLabel.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
+		
 		MainCityUI.m_MainCityUI.m_MainCityUIRT.RefreshJunZhuInfo();
     }
 
     public void RefreshBattleValue()
     {
         //		Debug.Log("Global.m_iZhanli="+Global.m_iZhanli);
-
-        if (Global.m_iZhanli == 0)
-        {
-            Global.m_iZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
-        }
-        m_ZhanLiLabel.text = Global.m_iZhanli.ToString();
-    }
-
-    public void RefreshAllianceInfo()
+		m_ZhanLiLabel.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
+	}
+	
+	public void RefreshAllianceInfo()
     {
         //alliance exist
         if (!AllianceData.Instance.IsAllianceNotExist)
@@ -207,19 +183,24 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
 	public void setLTPos(bool init)
 	{
+		if(MainCityUI.m_MainCityUI.m_MainCityListButton_L == null)
+		{
+			return;
+		}
 		int BY = 200;
 		if(m_MainCityTaskManagerMain.gameObject.activeSelf)
 		{
 			m_MainCityTaskManagerMain.gameObject.transform.localPosition = new Vector3(0f, (float)-BY, 0f);
-			BY += 75;
+			BY += 65;
 		}
 		if(m_MainCityTaskManagerOther.gameObject.activeSelf)
 		{
 			m_MainCityTaskManagerOther.gameObject.transform.localPosition = new Vector3(0f, (float)-BY, 0f);
-			BY += 75;
+			BY += 65;
 		}
-		BY += 30;
-		MainCityUI.m_MainCityUI.m_MainCityListButton_L.setBPos(30, -BY, 0, -100);
+		BY += 10;
+
+		MainCityUI.m_MainCityUI.m_MainCityListButton_L.setBPos(50, -BY, 0, -80);
 		MainCityUI.m_MainCityUI.m_MainCityListButton_L.setPos();
 		if(init)
 		{
@@ -279,41 +260,57 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 	{
 		if (TaskData.Instance.m_TaskInfoDic.ContainsKey(id))
 		{
-			if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId == -1)
+			if(TaskData.Instance.m_TaskInfoDic[id].m_sSprite != "null")
 			{
-				NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskInfoDic[id].LinkNpcId);
+				Global.m_sPanelWantRun = TaskData.Instance.m_TaskInfoDic[id].m_sSprite;
 			}
-			else if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId != -1)
+			if(TaskData.Instance.m_TaskInfoDic[id].progress < 0)
 			{
-				GameObject tempObj = new GameObject();
-				tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskInfoDic[id].FunctionId;
-				MainCityUI.m_MainCityUI.MYClick(tempObj);
+				overMission(id);
 			}
+			else
+			{
+				if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId == -1)
+				{
+					NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskInfoDic[id].LinkNpcId);
+				}
+				else if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId != -1)
+				{
+					GameObject tempObj = new GameObject();
+					tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskInfoDic[id].FunctionId;
+					MainCityUI.m_MainCityUI.MYClick(tempObj);
+				}
+			}
+
 		}
 		else if(TaskData.Instance.m_TaskDailyDic.ContainsKey(id))
 		{
+			if(TaskData.Instance.m_TaskDailyDic[id].m_sSprite != "null")
+			{
+				Global.m_sPanelWantRun = TaskData.Instance.m_TaskDailyDic[id].m_sSprite;
+			}
 			if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId == -1)
-	        {
-	            NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskDailyDic[id].LinkNpcId);
-	        }
-	        else if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId != -1)
-	        {
+			{
+				NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskDailyDic[id].LinkNpcId);
+			}
+			else if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId != -1)
+			{
 				GameObject tempObj = new GameObject();
 				tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskDailyDic[id].FunctionId;
+				
 				MainCityUI.m_MainCityUI.MYClick(tempObj);
-	        }
+			}
 		}
+	}
+
+	public void overMission(int id)
+	{
+		TaskSignalInfoShow.m_TaskId = id;
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), MainCityUI.m_MainCityUI.AddUIPanel);
 	}
 
     void OnDestroy()
     {
-        MoneyDetailLongPress.OnLongPress = null;
-        IngotDetailLongPress.OnLongPress = null;
-        EnergyDetailLongPress.OnLongPress = null;
-        MoneyDetailLongPress.OnLongPressFinish = null;
-        IngotDetailLongPress.OnLongPressFinish = null;
-        EnergyDetailLongPress.OnLongPressFinish = null;
-
         SocketTool.UnRegisterSocketListener(this);
     }
 
@@ -327,6 +324,8 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     /// <param name="ui"></param>
     public override void MYClick(GameObject ui)
     {
+//		Debug.Log(ui.name);
+
 		if(MainCityUI.IsWindowsExist())
 		{
 			return;
@@ -350,7 +349,7 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
         }
 		else if (ui.name.IndexOf("LT_VIPButton") != -1)
 		{
-			TopUpLoadManagerment.m_instance.LoadPrefabSpecial(true, true);
+            EquipSuoData.TopUpLayerTip(null,false,1,null,true);
 		}
 		else if(ui.name.IndexOf("LT_TaskMainButton") != -1)
 		{

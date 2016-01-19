@@ -36,6 +36,8 @@ public class LMDuiHuanTemplate : XmlLoadManager {
 	public int weight;
 	
 	public int site;
+
+	public int needLv;
 	
 	public static List<LMDuiHuanTemplate> templates = new List<LMDuiHuanTemplate>();
 	
@@ -93,6 +95,9 @@ public class LMDuiHuanTemplate : XmlLoadManager {
 				
 				t_reader.MoveToNextAttribute();
 				t_template.site = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.needLv = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

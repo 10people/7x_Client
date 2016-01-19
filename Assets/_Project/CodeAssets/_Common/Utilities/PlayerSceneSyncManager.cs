@@ -66,7 +66,7 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     #endregion
 
-    #region
+    #region Carriage
 
     public void EnterCarriage()
     {
@@ -90,6 +90,15 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
         //else
         //{
         //    SceneManager.EnterAllianceCity();
+    }
+
+    public DelegateUtil.VoidDelegate m_DelegateAfterCarriage;
+
+    public Vector2 m_MovePosAfterCarriage;
+
+    public void m_MoveToPosAfterCarriageInit()
+    {
+        Carriage.RootManager.Instance.m_CarriageMain.TPToPosition(m_MovePosAfterCarriage);
     }
 
     #endregion

@@ -67,7 +67,10 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	public GameObject mCollectBtn;
 
-	public GameObject Art;
+	public GameObject UpArt;
+
+	public GameObject StarAndMaker_UpArt;
+
 	private int mibaolevel;
 	public bool IsCloseArt;
 
@@ -129,25 +132,45 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			}
 			MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(ShowmMiBaoinfo.miBaoId);
 		
-//			if(MiBaoManager.Instance().G_MiBaoInfo.levelPoint > 0 && JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp &&
-//			   mibaolevel < JunZhuData.Instance().m_junzhuInfo.level&&mibaolevel < 100)
-//			{
-//				Art.SetActive(true);
-//				IsCloseArt =false ;
-//			}
-//			else
-//			{
-//				if(!IsCloseArt)
-//				{
-//					IsCloseArt = true;
-//					//Debug.Log("Close Art ----- ");
-//					//CantUpMiBao();
-//					Art.SetActive(false);
-//				}
-//			}
+			if(NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint > 0 && JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp &&
+			   ShowmMiBaoinfo.level < JunZhuData.Instance().m_junzhuInfo.level&&ShowmMiBaoinfo.level < 100 )
+			{
+				UpArt.SetActive(true);
+				IsCloseArt =false ;
+			}
+			else
+			{
+				if(!IsCloseArt)
+				{
+					IsCloseArt = true;
+					//Debug.Log("Close Art ----- ");
+					CantUpMiBao();
+					UpArt.SetActive(false);
+				}
+			}
 		}
-	}
 
+		if(MaxPoint > NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint)
+		{
+			mtime = NewMiBaoManager.Instance().m_MiBaoInfo.remainTime;
+			int M = (int)(mtime/60);
+			int S = (int)(mtime%60);
+			string s = "";
+			if( S < 10)
+			{
+				s = "0"+S.ToString();
+			}
+			else
+			{
+				s = S.ToString();
+			}
+			CountTime.text = "("+M.ToString()+":"+s+")";
+		}else{
+			CountTime.text = "("+"已满"+")";
+		}
+		PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
+	}
+	
 	void CreateLifeMove(GameObject move, int content)
 	{
 		GameObject clone = NGUITools.AddChild(move.transform.parent.gameObject, move);
@@ -178,13 +201,11 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	IEnumerator showTime()
 	{
-		//float t_id = Random.Range (-1000.0f, 1000.0f );
-		
 		while(mtime > 0)
 		{
 			yield return new WaitForSeconds (1.0f);
 			mtime -= 1;
-			
+			NewMiBaoManager.Instance().m_MiBaoInfo.remainTime = mtime;
 			int M = (int)(mtime/60);
 			
 			int S = (int)(mtime%60);
@@ -199,35 +220,31 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			{
 				s = S.ToString();
 			}
-			
-			CountTime.text = "("+M.ToString()+":"+s+")";
-			
-			//Debug.Log( t_id + ": " + s );
+			CountTime.text = "("+M.ToString()+":"+s+")";	
 		}
-		
 		NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint += 1;
-		
-		// Debug.Log ("G_MiBaoInfo.levelPoint = " +G_MiBaoInfo.levelPoint);
-		
-		PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
-		
+	
 		if(MaxPoint > NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint)
 		{
-			mtime = 10*60;
-			
+			//mtime = 10*60;
+			mtime = (int )CanshuTemplate.GetValueByKey("ADD_MIBAODIANSHU_INTERVAL_TIME");
 			StopCoroutine("showTime");
-			
 			StartCoroutine("showTime");
 			
 		}else{
-			
 			CountTime.text = "("+"已满"+")";
-			
-			//StopCoroutine("showTime");
-			
 		}
 	}
 	int mtime = 0 ;
+	/// <summary>
+	/// 升级临时参数
+	/// </summary>
+	/// 
+	public int LinShi_ZhanLi;
+	public void InitLevel()
+	{
+		mibaolevel = 0;
+	}
 	public void Init()
 	{
 		//JunzhuZhaoli = JunZhuData.Instance ().m_junzhuInfo.zhanLi;
@@ -237,32 +254,16 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		MaxPoint = mVip.MiBaoLimit;
 
 		MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(ShowmMiBaoinfo.miBaoId);
-
-		 mibaolevel = ShowmMiBaoinfo.level;
-
-		PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
-
-		mtime = NewMiBaoManager.Instance().m_MiBaoInfo.remainTime;
-
-		if(mtime < 0)
+		if(ShowmMiBaoinfo.level>mibaolevel)
 		{
-			StopCoroutine("showTime");
-			
-			CountTime.text = "("+"已满"+")";
-			
-		}else
-		{
-
-			StopCoroutine("showTime");
-			
-			StartCoroutine("showTime");
+			mibaolevel = ShowmMiBaoinfo.level;
 		}
-	
+
 		if(!Is_LevelUp)
 		{
 			Cru_MiBao_Zhanli = ShowmMiBaoinfo.zhanLi;
 			
-			MiBaoZl.text = "战力:"+ShowmMiBaoinfo.zhanLi.ToString();
+			MiBaoZl.text = "战力: "+ShowmMiBaoinfo.zhanLi.ToString();
 
 			m_Life = ShowmMiBaoinfo.shengMing;
 
@@ -298,29 +299,59 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 				m_Fangyu = ShowmMiBaoinfo.fangYu;
 			}
+			if(LinShi_ZhanLi < ShowmMiBaoinfo.zhanLi)
+			{
+				LinShi_ZhanLi = ShowmMiBaoinfo.zhanLi;
+			}
+
 			StopCoroutine("Update_ZhanliAndLevel");
 			
 			StartCoroutine("Update_ZhanliAndLevel");
 		}
+
+		ShowSuipian ();
+
+		GongJi.text = MyColorData.getColorString(10, m_Gongji.ToString ());
+
+		FangYu.text = MyColorData.getColorString(10, m_Fangyu.ToString ());
+
+		Life.text = MyColorData.getColorString(10, m_Life.ToString ());
+
+		ShowStar ();
+	
+		ShowGetAward ();
+		ShowMiBaoYInDao (tems);
+		ShowMiBaoYInDao2 (tems);
+	}
+
+	public void ShowSuipian()
+	{
 		MiBaoSuipianXMltemp m_Mibaosuipian = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid (ShowmMiBaoinfo.tempId);
 		if(ShowmMiBaoinfo.level < 1)
 		{
 			ActiveBtn.SetActive(true);
 			mLock.SetActive(true);
-
+			
 			LevelUp.SetActive(false);
 			
 			Gre_dLevelUp.SetActive(true);
-
+			
 			Gre_dLevelUp.GetComponent<BoxCollider>().enabled = false;
-
+			
 			StarUpbtn.SetActive(false);
-
+			
 			SuipianNum.text = ShowmMiBaoinfo.suiPianNum.ToString()+"/"+m_Mibaosuipian.hechengNum.ToString();
-
+			
 			mUISlider.value = (float)( ShowmMiBaoinfo.suiPianNum )/ (float)(m_Mibaosuipian.hechengNum);
 			
-			
+			if(ShowmMiBaoinfo.suiPianNum >= m_Mibaosuipian.hechengNum)
+			{
+				StarAndMaker_UpArt.SetActive(true);
+			}
+			else
+			{
+				StarAndMaker_UpArt.SetActive(false);
+			}
 			if(mUISlider.value > 1f)mUISlider.value = 1f;
 		}
 		else
@@ -341,24 +372,26 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				mUISlider.value = (float)( ShowmMiBaoinfo.suiPianNum )/ (float)(ShowmMiBaoinfo.needSuipianNum);
 			}
 			if(mUISlider.value > 1f)mUISlider.value = 1f;
-
+			
 			if(ShowmMiBaoinfo.suiPianNum >= ShowmMiBaoinfo.needSuipianNum && ShowmMiBaoinfo.star < 5)
 			{
 				StarUpbtn.SetActive(true);
-				ShowEffect();
+				//ShowEffect();   暂时先关闭特效
+				StarAndMaker_UpArt.SetActive(true);
 			}
 			else
 			{
 				if(ShowmMiBaoinfo.star < 5)
 				{
-					StarUpbtn.SetActive(false);
+					StarUpbtn.SetActive(true);
 				}
-
+				
+				StarAndMaker_UpArt.SetActive(false);	
 			}
 			if(mibaolevel >= JunZhuData.Instance().m_junzhuInfo.level)
 			{
 				LevelUp.SetActive(false);
-				
+				UpArt.SetActive(false);
 				Gre_dLevelUp.SetActive(true);
 			}
 			else
@@ -369,66 +402,73 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			}
 		}
 		mmibaoxml = MiBaoXmlTemp.getMiBaoXmlTempById (ShowmMiBaoinfo.miBaoId);
-
+		
 		MiBaoSuipianIcon.spriteName = m_Mibaosuipian.icon.ToString ();
-
+		
 		DescIdTemplate mDescIdTemplate = DescIdTemplate.getDescIdTemplateByNameId (mmibaoxml.descId);
-
+		
 		MiBaoInstrution.text = mDescIdTemplate.description;
-	
+		
 		MiBao_Icon.mainTexture = (Texture)Resources.Load (Res2DTemplate.GetResPath (Res2DTemplate.Res.MIBAO_BIGICON) + mmibaoxml.icon.ToString ());
-
+		
 		miBaoName.text = NameIdTemplate.GetName_By_NameId (mmibaoxml.nameId);
-
+		
 		miBaobig_Name.text = miBaoName.text;
-
+		
 		MiBaoLevel.text = mibaolevel.ToString ();
 
+	}
 
-		GongJi.text = MyColorData.getColorString(10, ShowmMiBaoinfo.gongJi.ToString ());
-
-		FangYu.text = MyColorData.getColorString(10, ShowmMiBaoinfo.fangYu.ToString ());
-
-		Life.text = MyColorData.getColorString(10, ShowmMiBaoinfo.shengMing.ToString ());
-
-		ShowStar ();
-		if(MiBaoScrollView.IsOPenPath)
+	/// <summary>
+	/// IShow yindao
+	/// </summary>
+	/// 
+	void ShowMiBaoYInDao(int times)
+	{
+		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress >= 0)
 		{
-			
-			if(MiBaoScrollView.OpenMiBaoId == ShowmMiBaoinfo.miBaoId)
-			{
-				
-				if(!MiBaoScrollView.FirstOPenPath)
-				{
-					CloseEffect();
-					ConllectMiBao();
-				}
-			}
+			//Debug.Log("choose one mibao222 ");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100170];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[times]);
+			return;
 		}
-		ShowGetAward ();
+		if(FreshGuide.Instance().IsActive(100330)&& TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
+		{
+			Debug.Log("Make one mibao222 ");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100330];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
+			return;
+		}
+	}
+	void ShowMiBaoYInDao2(int times)
+	{//4 5
+		//Debug.Log("choose one mibaolianxu =  "+times);
+		if(times > 6)
+		{
+			times = 6;
+		}
+		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress < 0)
+		{
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100170];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[times]);
+			return;
+		}
 	}
 	public void ShowGetAward()
 	{
-		//public UILabel[] AwardforGrad;
-		
-		//public UILabel[] Proprety
-
 		int mGrad = 10;
-
 		for(int i = 0 ; i < Proprety.Length ; i++)
 		{
 			string mstr = "等级升到";
-
-			MiBaoExtrattributeTemplate mMiBaoExt = MiBaoExtrattributeTemplate.GetMiBaoExtrattributeTemplate_By_Id(ShowmMiBaoinfo.miBaoId);
 			if((i+1)*10 <= ShowmMiBaoinfo.level)
 			{
-				//AwardforGrad[i].color = new Color(0,0,0,255);
-				//Proprety[i].color = new Color(0,0,0,255);
+				MiBaoExtrattributeTemplate mMiBaoExt = MiBaoExtrattributeTemplate.GetMiBaoExtrattributeTemplate_By_Id_and_level(ShowmMiBaoinfo.miBaoId,(i+1)*10);
 				AwardforGrad[i].text =MyColorData.getColorString (4,mstr+mGrad.ToString()+"级");
 				Proprety[i].text = MyColorData.getColorString (4,mMiBaoExt.Name +"+"+mMiBaoExt.Num.ToString());
 			}
 			else
 			{
+				MiBaoExtrattributeTemplate mMiBaoExt = MiBaoExtrattributeTemplate.GetMiBaoExtrattributeTemplate_By_Id_and_level(ShowmMiBaoinfo.miBaoId,(i+1)*10);
 				AwardforGrad[i].text =MyColorData.getColorString (8,mstr+mGrad.ToString()+"级");
 				Proprety[i].text = MyColorData.getColorString (8,mMiBaoExt.Name +"+"+mMiBaoExt.Num.ToString());
 			}
@@ -446,74 +486,11 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		IsOPenEffect = false;
 		UI3DEffectTool.Instance ().ClearUIFx (StarUpbtn);
 	}
-	public void OpenLock()
-	{
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),OpenLockLoadBack);
-	}
-
-	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-
-		string str2 = "";
-
-		string str1 = "\r\n"+"解锁此秘宝需要达成以下条件："+"\r\n"+"\r\n";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-		
-		MiBaoXmlTemp mMiBaoXML = MiBaoXmlTemp.getMiBaoXmlTempById ( ShowmMiBaoinfo.miBaoId );
-		
-		switch(mMiBaoXML.unlockType)
-		{
-		case 1:
-			
-			str2 = "君主等级达到"+mMiBaoXML.unlockValue.ToString();
-			
-			break;
-		case 2:
-			
-			PveTempTemplate mPve = PveTempTemplate.GetPveTemplate_By_id(mMiBaoXML.unlockValue);
-			
-			string mName = NameIdTemplate.GetName_By_NameId(mPve.smaName);
-			
-			str2 = "完成普通关卡： "+mName;
-			
-			break;
-		case 3:
-			
-			LegendPveTemplate mLegendPve = LegendPveTemplate.GetlegendPveTemplate_By_id(mMiBaoXML.unlockValue);
-			
-			string m_Name = NameIdTemplate.GetName_By_NameId(mLegendPve.smaName);
-			
-			str2 = "完成传奇关卡： "+m_Name;
-			
-			break;
-			
-		case 4:
-			
-			ZhuXianTemp mZHuxian = ZhuXianTemp.getTemplateById(mMiBaoXML.unlockValue);
-			
-			str2 = "完成主线任务： "+mZHuxian.title;
-			break;
-			
-			
-		default:
-			break;
-			
-		}
-		
-		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
-		
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str1+str2), null,null,confirmStr,null,null,null,null);
-	}
 	IEnumerator Update_ZhanliAndLevel()
 	{
-		if(ShowmMiBaoinfo.zhanLi > Cru_MiBao_Zhanli+1)
+		if(LinShi_ZhanLi > Cru_MiBao_Zhanli+1)
 		{
-			int m = (ShowmMiBaoinfo.zhanLi - Cru_MiBao_Zhanli);
-
+			int m = (LinShi_ZhanLi - Cru_MiBao_Zhanli);
 			float mTime = 0.01f;
 
 			while(m > 0)
@@ -544,31 +521,33 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 					m -= 1;
 					Cru_MiBao_Zhanli += 1;
 				}
-
-			    MiBaoZl.text = "战力"+ (Cru_MiBao_Zhanli).ToString();
+			    MiBaoZl.text = "战力: "+ (Cru_MiBao_Zhanli).ToString();
 
 				MiBaoZl.gameObject.transform.localScale = new Vector3(1.2f,1.2f,1.2f);
 
 				yield return new WaitForSeconds(mTime);
 			}
-
 			MiBaoZl.gameObject.transform.localScale = Vector3.one;
 		}
 		else{
-	
-			MiBaoZl.text = "战力"+ ShowmMiBaoinfo.zhanLi.ToString();
+			MiBaoZl.text = "战力: "+ LinShi_ZhanLi.ToString();
 		}
 	}
-
+	int Stas;
 	void ShowStar()
 	{
-//		Debug.Log ("star = "+ShowmMiBaoinfo.star);
-
+		if(ShowmMiBaoinfo.star >Stas)
+		{
+			Stas = ShowmMiBaoinfo.star;
+		}
+		else
+		{
+			return;
+		}
 		foreach(UISprite s in Stars)
 		{
 			Destroy(s.gameObject);
 		}
-		
 		Stars.Clear ();
 		
 		for(int i = 0 ; i < ShowmMiBaoinfo.star; i ++)
@@ -593,28 +572,14 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	IEnumerator countNunber()
 	{
 		yield return new WaitForSeconds (1.0f);
-			
-		MibaoUpCallback = true;
-
-		StartUsecountNunber = false;
-		Debug.Log("22222222222222222222");
 	}
+
+	int tems = 3; 
 
 	public void MibaoUp() //秘宝升级
 	{
-		if(!MibaoUpCallback )
-		{
-			Debug.Log("99999999999");
-			if(!StartUsecountNunber)
-			{
-				StartUsecountNunber = true;
+	    tems++;
 
-				StartCoroutine("countNunber");
-			}
-
-			return;
-		}
-		MibaoUpCallback = false;
 		MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(ShowmMiBaoinfo.miBaoId);
 
 		ExpXxmlTemp mExpXxmlTemp = ExpXxmlTemp.getExpXxmlTemp_By_expId (mMiBaoXmlTemp.expId,mibaolevel);
@@ -646,7 +611,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				CloseEffect ();
 			}
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadMiBaolvBack);
-
 			return;
 		}
 		if(mibaolevel>= 100)
@@ -661,7 +625,22 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		JunZhuData.Instance().m_junzhuInfo.jinBi -= mExpXxmlTemp.needExp;
 
 		NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint  -= 1;
+		PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
 
+		int zhanli = GetMiBaoInfo.Initance ().JiSuanZhanLi(ShowmMiBaoinfo.miBaoId,ShowmMiBaoinfo.level+1,ShowmMiBaoinfo.star,4);
+		int gongji = GetMiBaoInfo.Initance ().JiSuanZhanLi (ShowmMiBaoinfo.miBaoId,ShowmMiBaoinfo.level+1,ShowmMiBaoinfo.star,1);
+		int fangyu = GetMiBaoInfo.Initance ().JiSuanZhanLi (ShowmMiBaoinfo.miBaoId,ShowmMiBaoinfo.level+1,ShowmMiBaoinfo.star,2);
+		int shengming = GetMiBaoInfo.Initance ().JiSuanZhanLi (ShowmMiBaoinfo.miBaoId,ShowmMiBaoinfo.level+1,ShowmMiBaoinfo.star,3);
+		ShowmMiBaoinfo.zhanLi = zhanli;
+		ShowmMiBaoinfo.gongJi = gongji;
+		ShowmMiBaoinfo.fangYu = fangyu;
+		ShowmMiBaoinfo.shengMing = shengming;
+		ShowmMiBaoinfo.level += 1;
+//		Debug.Log ("ShowmMiBaoinfo.zhanLi = "+ShowmMiBaoinfo.zhanLi);
+//		Debug.Log ("ShowmMiBaoinfo.gongJi = "+ShowmMiBaoinfo.gongJi);
+//		Debug.Log ("ShowmMiBaoinfo.fangYu = "+ShowmMiBaoinfo.fangYu);
+//		Debug.Log ("ShowmMiBaoinfo.shengMing = "+ShowmMiBaoinfo.shengMing);
+		Init ();
 		MibaoLevelupReq MiBaoshengJ = new MibaoLevelupReq ();
 		
 		MemoryStream MiBaoStream = new MemoryStream ();
@@ -675,7 +654,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		byte[] t_protof;
 		t_protof = MiBaoStream.ToArray();
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_LEVELUP_REQ,ref t_protof);
-
+		Debug.Log ("秘宝升级发送");
 	}
     
 	void CloseYInDao()
@@ -731,19 +710,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				MibaoLevelupResp Levelup = new MibaoLevelupResp();
 				
 				t_qx.Deserialize(t_stream, Levelup, Levelup.GetType());
-
-				if(UIYindao.m_UIYindao.m_isOpenYindao)
-				{
-					if(FreshGuide.Instance().IsActive(100050)&& TaskData.Instance.m_TaskInfoDic[100050].progress < 0)
-					{
-						
-						ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100050];
-						
-						Debug.Log("密保升级");
-						
-						UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]); //密保升级
-					}
-				}
+				Debug.Log("密保升级返回");
 				if(Levelup.mibaoInfo != null)
 				{
 					Debug.Log("518  dataBack");
@@ -758,6 +725,10 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 					Init();
 					//MiBaoManager.Instance().ShowZhanLiAnmition();
+				}
+				else
+				{
+					Debug.Log("Levelup.mibaoInfo == null");
 				}
 				return true;
 			 }
@@ -807,15 +778,16 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 					ShowmMiBaoinfo = MiBaoActiveInfo.mibaoInfo;
 					
 					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_CARD_TEMP ),LoadBck_2);
-					
-					if(UIYindao.m_UIYindao.m_isOpenYindao)
-					{
-						UIYindao.m_UIYindao.CloseUI();
-					}
+
 					Init();
+
 				}
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);		
-	
+
+				if(UIYindao.m_UIYindao.m_isOpenYindao)
+				{
+					UIYindao.m_UIYindao.CloseUI();
+				}
 				return true;
 			}
 			default: return false;
@@ -939,7 +911,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				
 				uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,confirm,null,null);
 			}
-
 			else 
 			{
 				MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (ShowmMiBaoinfo.star);
@@ -1009,7 +980,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		mLockPiece.my_Diaoluomibao = ShowmMiBaoinfo; 
 		
 		mLockPiece.Init ();
-
+		CloseEffect ();
 		//MiBaoScrollView.FirstOPenPath = false;
 	}
 	private int Mony;
@@ -1024,41 +995,13 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		Debug.Log ("mMiBaoSuipianXMltemp.hechengNum = "+mMiBaoSuipianXMltemp.hechengNum);
 
 		if (ShowmMiBaoinfo.suiPianNum >= mMiBaoSuipianXMltemp.hechengNum) {
-			
-//			if(FreshGuide.Instance().IsActive(100210)&& TaskData.Instance.m_TaskInfoDic[100210].progress>= 0)
-//			{
-//				
-//				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100210];
-//				
-//				Debug.Log("秘宝合成引导2");
-//				
-//				MiBaoScrollView mMiBaoScrollView = m_MIBaoScorllview.GetComponent<MiBaoScrollView>();
-//				
-//				mMiBaoScrollView.ActiveScrollViewPanlemove();
-//				
-//				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]); //选择秘宝
-//			}
-//			if(FreshGuide.Instance().IsActive(100350)&& TaskData.Instance.m_TaskInfoDic[100350].progress>= 0)
-//			{
-//				
-//				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100350];
-//				
-//				Debug.Log("秘宝第二次合成2");
-//				
-//				MiBaoScrollView mMiBaoScrollView = m_MIBaoScorllview.GetComponent<MiBaoScrollView>();
-//				
-//				mMiBaoScrollView.ActiveScrollViewPanlemove();
-//				
-//				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]); //选择秘宝
-//				
-//			}
+			CloseYInDao();
 			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), ShowCHAT_UIBOX_INFO);
 		} 
 		else 
 		{
 			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LockOFPices);
 		}
-	
 	}
 
 	void ShowCHAT_UIBOX_INFO(ref WWW p_www,string p_path, Object p_object)
@@ -1112,15 +1055,25 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				t_protof = MiBaoinfoStream.ToArray();
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_ACTIVATE_REQ,ref t_protof,ProtoIndexes.S_MIBAO_ACTIVATE_RESP.ToString());//秘宝激活
 				PushAndNotificationHelper.SetRedSpotNotification (605, false);
+
 			}
 			else
 			{
 				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTongBiLoadBack);
 			}
 		}
+		else
+		{
+			ShowMiBaoYInDao(0);
+		}
 	}
 	public void CloseBtn()
 	{
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+		}
+		CloseEffect ();
 		NewMiBaoManager.Instance ().BackToFirstPage (this.gameObject);
 	}
 }

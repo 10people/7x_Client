@@ -186,35 +186,34 @@ public class SignShadow : MonoBehaviour
 	{
 		Vector3 targetPo = Vector3.zero;
 
-		BattleWinTemplate winTemplate = BattleWinTemplate.getNextWinTemplate ();
+		targetPo = UpdateArrow_Node (0);
 
-		if(winTemplate.winType == BattleWinFlag.EndType.Kill_All)
+		if(Vector3.Distance(targetPo, Vector3.zero) < .2f)
 		{
-			targetPo = UpdateArrow_Node (0);
+			BattleWinTemplate winTemplate = BattleWinTemplate.getWinTemplateContainsType(BattleWinFlag.EndType.PROTECT, true);
+
+			if(winTemplate != null)
+			{
+				foreach(int nodeId in winTemplate.protectList)
+				{
+					if(nodeId != 1)
+					{
+						targetPo = BattleControlor.Instance().getNodebyId(nodeId).transform.position;
+
+						break;
+					}
+				}
+			}
 		}
-		else if(winTemplate.winType == BattleWinFlag.EndType.Kill_Boss)
+
+		if(Vector3.Distance(targetPo, Vector3.zero) < .2f)
 		{
-			targetPo = UpdateArrow_Node ((int)NodeType.BOSS);
-		}
-		else if(winTemplate.winType == BattleWinFlag.EndType.Kill_Gear)
-		{
-			targetPo = UpdateArrow_Node ((int)NodeType.GEAR);
-		}
-		else if(winTemplate.winType == BattleWinFlag.EndType.Kill_Hero)
-		{
-			targetPo = UpdateArrow_Node ((int)NodeType.HERO);
-		}
-		else if(winTemplate.winType == BattleWinFlag.EndType.Kill_Soldier)
-		{
-			targetPo = UpdateArrow_Node ((int)NodeType.SOLDIER);
-		}
-		else if(winTemplate.winType == BattleWinFlag.EndType.PROTECT)
-		{
-			targetPo = BattleControlor.Instance().getNodebyId(winTemplate.protectList[0]).transform.position;
-		}
-		else if(winTemplate.winType == BattleWinFlag.EndType.Reach_Destination)
-		{
-			targetPo = winTemplate.destination;
+			BattleWinTemplate winTemplate = BattleWinTemplate.getWinTemplateContainsType(BattleWinFlag.EndType.Reach_Destination, true);
+
+			if(winTemplate != null)
+			{
+				targetPo = winTemplate.destination;
+			}
 		}
 
 		if(Vector3.Distance(targetPo, Vector3.zero) < .2f)

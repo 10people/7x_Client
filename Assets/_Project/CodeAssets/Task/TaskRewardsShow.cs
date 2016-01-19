@@ -14,8 +14,10 @@ public class TaskRewardsShow : MonoBehaviour
     private int taskId = 0;
     public UIGrid m_grid;
     public UILabel m_labelTitle;
+
+    public TaskLayerManager m_TaskLA;
     private List<FunctionWindowsCreateManagerment.RewardInfo> listRewardInfo = new List<FunctionWindowsCreateManagerment.RewardInfo>();
- 
+  private int _TaskTYpe = 0;
     void Start()
     {
         m_listEvent.ForEach(item => item.m_Handle += GetAwards);
@@ -70,6 +72,7 @@ public class TaskRewardsShow : MonoBehaviour
         index_Num = 0;
         index_Num2 = 0;
         taskId = taskInfo._TaskId;
+        _TaskTYpe = taskInfo._Type;
         objEffect = obj;
         m_labelTitle.text = taskInfo._Name;
         listRewardInfo = taskInfo._listReward;
@@ -126,6 +129,7 @@ public class TaskRewardsShow : MonoBehaviour
     }
     void GetAwards(int index)
     {
+         
         if (index == 0)
         {
             for (int i = 0; i < m_grid.transform.childCount; i++)
@@ -163,16 +167,32 @@ public class TaskRewardsShow : MonoBehaviour
         {
             MemoryStream t_tream = new MemoryStream();
             QiXiongSerializer t_qx = new QiXiongSerializer();
-            GetTaskReward tempRequest = new GetTaskReward();
-            tempRequest.taskId = taskId;
-            t_qx.Serialize(t_tream, tempRequest);
-            byte[] t_protof;
-            t_protof = t_tream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_DAILY_TASK_GET_REWARD_REQ, ref t_protof);
+            if (_TaskTYpe == 1)
+            {
+            
+                GetTaskReward tempRequest = new GetTaskReward();
+                tempRequest.taskId = taskId;
+                t_qx.Serialize(t_tream, tempRequest);
+
+                byte[] t_protof;
+                t_protof = t_tream.ToArray();
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GetTaskReward, ref t_protof);
+            }
+            else
+             {
+                GetTaskReward tempRequest = new GetTaskReward();
+                tempRequest.taskId = taskId;
+                t_qx.Serialize(t_tream, tempRequest);
+                byte[] t_protof;
+                t_protof = t_tream.ToArray();
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_DAILY_TASK_GET_REWARD_REQ, ref t_protof);
+            }
+           
         }
     }
     void OnDisable()
     {
+        m_TaskLA.FreshVitality();
         int size_All = m_grid.transform.childCount;
         for (int i = 0; i < size_All; i++)
         {

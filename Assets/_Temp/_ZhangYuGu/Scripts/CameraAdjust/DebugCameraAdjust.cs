@@ -75,6 +75,10 @@ public class DebugCameraAdjust : MonoBehaviour
 	
 	}
 
+	void OnDestroy(){
+		m_instance = null;
+	}
+
 	#endregion
 
 

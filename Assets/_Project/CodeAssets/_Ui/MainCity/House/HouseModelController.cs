@@ -251,6 +251,11 @@ public class HouseModelController : MonoBehaviour, SocketListener
             item.Key.GetComponent<EventIndexHandle>().m_Handle -= OnTreasureClick;
         }
         m_bookObject.GetComponent<EventIndexHandle>().m_Handle -= OnBookClick;
+
+		// added by YuGu, 2016.1.5
+		Debug.LogError( "Is it clear DimmerObjectList ok?" );
+
+		DimmerObjectList.Clear();
     }
 
     void Update()

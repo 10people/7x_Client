@@ -23,6 +23,8 @@ public class EmailPage : MonoBehaviour {
 	public List<GameObject> emailPageList = new List<GameObject> ();//0-mainPage 1-checkPage 2-writePage
 	private Dictionary<EmailShowPage,GameObject> pageDic = new Dictionary<EmailShowPage, GameObject>();
 
+	private NewEmailData.EmailOpenType emailOpenType;
+
 	public enum EmailShowType
 	{
 		SYSTEM,
@@ -46,9 +48,16 @@ public class EmailPage : MonoBehaviour {
 
 	public ScaleEffectController m_ScaleEffectController;
 
+	public GameObject anchorTopRight;
+
 	void Awake ()
 	{
 		emailPage = this;
+	}
+
+	void Start ()
+	{
+		QXComData.LoadYuanBaoInfo (anchorTopRight.gameObject);
 	}
 
 	/// <summary>
@@ -56,8 +65,12 @@ public class EmailPage : MonoBehaviour {
 	/// </summary>
 	public void GetEmailResp (NewEmailData.EmailOpenType tempOpenType,List<EmailInfo> tempSystemList,List<EmailInfo> tempPrivateList)
 	{
+		m_ScaleEffectController.OnOpenWindowClick ();
+
 		systemList = tempSystemList;
 		privateList = tempPrivateList;
+
+		emailOpenType = tempOpenType;
 
 		if (pageDic.Count == 0)
 		{
@@ -71,6 +84,7 @@ public class EmailPage : MonoBehaviour {
 		{
 			foreach (EventHandler handler in btnHandlerList)
 			{
+				handler.m_handler -= EmailBtnHandlerCallBack;
 				handler.m_handler += EmailBtnHandlerCallBack;
 				btnObjDic.Add (handler.name,handler.gameObject);
 			}
@@ -100,14 +114,8 @@ public class EmailPage : MonoBehaviour {
 
 		if (tempPage == EmailShowPage.EMAIL_SEND)
 		{
-			btnObjDic["BackBtn"].SetActive (NewEmailData.Instance ().SendEmailType == NewEmailData.SendType.REPLY_FROM_FRIEND ? 
-			                                false : true);
 			SendMail send = emailPageList[2].GetComponent<SendMail> ();
 			send.GetReplyName ();
-		}
-		else
-		{
-			btnObjDic["BackBtn"].SetActive (tempPage == EmailShowPage.EMAIL_MAINPGE ? false : true);
 		}
 	}
 
@@ -275,9 +283,37 @@ public class EmailPage : MonoBehaviour {
 			break;
 		case "CloseBtn":
 
-			m_ScaleEffectController.OnCloseWindowClick ();
-			m_ScaleEffectController.CloseCompleteDelegate -= CloseEmail;
-			m_ScaleEffectController.CloseCompleteDelegate += CloseEmail;
+			if (emailOpenType == NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE)
+			{
+				m_ScaleEffectController.OnCloseWindowClick ();
+				m_ScaleEffectController.CloseCompleteDelegate += CloseEmail;
+			}
+			else
+			{
+				if (showPage == EmailShowPage.EMAIL_MAINPGE)
+				{
+					m_ScaleEffectController.OnCloseWindowClick ();
+					m_ScaleEffectController.CloseCompleteDelegate += CloseEmail;
+				}
+				else
+				{
+					if (NewEmailData.Instance ().SendEmailType == NewEmailData.SendType.DEFAULT)
+					{
+						GetSendEmailInfo ();
+						ShowEmailPage (EmailShowPage.EMAIL_MAINPGE);
+						if (NewEmailData.Instance ().SendEmailType == NewEmailData.SendType.DEFAULT)
+						{
+							SwitchEmailType (ShowType);
+							CheckUnSendEmail ();
+						}
+					}
+					else
+					{
+						ShowEmailPage (EmailShowPage.EMAIL_CHECK);
+						NewEmailData.Instance ().SendEmailType = NewEmailData.SendType.DEFAULT;
+					}
+				}
+			}
 
 			break;
 		default:

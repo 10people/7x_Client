@@ -96,7 +96,7 @@ public class SocketHelper {
 	public static void ClearNetWorkCheckQueue(){
 		m_socket_check_send_queue.Clear();
 
-		m_last_socket_check_time = 0.0f;
+		m_last_socket_check_time = Time.realtimeSinceStartup;
 	}
 	
 	public static void UpdateNetworkStatusCheck(){
@@ -127,7 +127,17 @@ public class SocketHelper {
 		if( Time.realtimeSinceStartup - m_last_socket_check_time < t_time ){
 			return;
 		}
-		
+
+		#if DEBUG_SOCKET_HELPER
+		Debug.Log( "TrySendNetworkCheck()" );
+
+		Debug.Log( "Time.realtimeSinceStartup: " + Time.realtimeSinceStartup );
+
+		Debug.Log( "m_last_socket_check_time: " + m_last_socket_check_time );
+
+		Debug.Log( "t_time: " + t_time );
+		#endif
+
 		m_last_socket_check_time = Time.realtimeSinceStartup;
 		
 		if( m_socket_check_send_queue.Count >= MAX_SOCKET_CHECK_QUEUE_COUNT ){
@@ -198,10 +208,10 @@ public class SocketHelper {
 
 	private static float m_last_ping_time	= 0.0f;
 
-	private const float PING_INTERVAL		= 3.0f;
-
 	private static void UpdateNetworkPing(){
-		if( Time.realtimeSinceStartup - m_last_ping_time >= PING_INTERVAL ){
+		float t_time = ConfigTool.GetFloat( ConfigTool.CONST_NETWORK_PING_TIME );
+
+		if( Time.realtimeSinceStartup - m_last_ping_time >= t_time ){
 			Console_SetNetwork.OnPing( null, false );
 
 			m_last_ping_time = Time.realtimeSinceStartup;

@@ -234,16 +234,20 @@ public class KingArrow : MonoBehaviour {
 					{
 						if(attackType == BattleControlor.AttackType.BASE_ATTACK)
 						{
-							FloatBoolParam fbp = BattleControlor.Instance().getAttackValue(attackerNode, node, BattleControlor.Instance().getKing().weaponDateRanged.weaponRatio[BattleControlor.Instance().getKing().hitCount]);
+							KingControllor kingNode = attackerNode as KingControllor;
+
+							FloatBoolParam fbp = BattleControlor.Instance().getAttackValue(attackerNode, node, kingNode.weaponDateRanged.weaponRatio[kingNode.hitCount]);
 
 							foreach(Buff buff in node.buffs)
 							{
 								if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_WEAPON)
 								{
-									attackerNode.attackHp(attackerNode, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, attackType);
+									attackerNode.attackHp(attackerNode, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX);
 									
 									fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
-									
+
+									node.showText(LanguageTemplate.GetText( LanguageTemplate.Text.BATTLE_BASE_REFLEX_NAME), buff.supplement.getHeroSkill().template.id);
+
 									break;
 								}
 							}
@@ -265,10 +269,12 @@ public class KingArrow : MonoBehaviour {
 						{
 							if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_WEAPON)
 							{
-								attackerNode.attackHp(attackerNode, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, attackType);
+								attackerNode.attackHp(attackerNode, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX);
 								
 								fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
-								
+
+								node.showText(LanguageTemplate.GetText( LanguageTemplate.Text.BATTLE_BASE_REFLEX_NAME), buff.supplement.getHeroSkill().template.id);
+
 								break;
 							}
 						}

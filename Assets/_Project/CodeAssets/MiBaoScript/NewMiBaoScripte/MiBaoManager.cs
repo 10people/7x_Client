@@ -88,6 +88,8 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 		SocketTool.UnRegisterSocketListener(this);
 
 		//Debug.Log ( "MiBaoManager.OnDestroy()" );
+
+		mMiBaoData = null;
 	}
 
 	void Start () 

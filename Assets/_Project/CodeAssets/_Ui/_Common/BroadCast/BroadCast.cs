@@ -37,11 +37,11 @@ public class BroadCast : MonoBehaviour, SocketListener
     private const float StartStayDuration = 1;
     private const float CompleteStayDuration = 3;
 
-    private List<string> m_storedDataList = new List<string>();
+    public List<string> m_storedDataList = new List<string>();
 
     public bool IsInBroadCast;
 
-    public void StartBroadCast()
+    private void StartBroadCast()
     {
         if (!IsInBroadCast && m_storedDataList.Count != 0)
         {
@@ -155,6 +155,12 @@ public class BroadCast : MonoBehaviour, SocketListener
         }
     }
 
+    public void ShowBroadCast(string info)
+    {
+        m_storedDataList.Add(info);
+        StartBroadCast();
+    }
+
     public bool OnSocketEvent(QXBuffer p_message)
     {
         if (p_message != null)
@@ -174,8 +180,21 @@ public class BroadCast : MonoBehaviour, SocketListener
                         ErrorMessage tempResp = new ErrorMessage();
                         t_qx.Deserialize(t_tream, tempResp, tempResp.GetType());
 
-                        m_storedDataList.Add(tempResp.errorDesc);
-                        StartBroadCast();
+                        ShowBroadCast(tempResp.errorDesc);
+
+                        //Add to chat broadcast channel.
+//                        if (ChatWindow.s_ChatWindow != null)
+//                        {
+//                            ChatWindow.s_ChatWindow.GetChannelFrame(ChatPct.Channel.Broadcast).m_ChatBaseDataHandler.OnChatMessageReceived(new ChatPct()
+//                            {
+//                                channel = ChatPct.Channel.Broadcast,
+//                                content = tempResp.errorDesc,
+//                                senderName = "系统"
+//                            }, true);
+//                        }
+
+						//add chatmsg to broadcastlist
+						QXChatData.Instance.AddBroadcastMsgInToChatList (tempResp);
 
                         return true;
                     }

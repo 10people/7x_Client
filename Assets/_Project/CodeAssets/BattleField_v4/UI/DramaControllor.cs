@@ -21,6 +21,11 @@ public class DramaControllor : MonoBehaviour
 
 	public KingCamera gameCamera;
 
+	public GameObject spriteVedioBG;
+
+
+	[HideInInspector] public bool stopAction;
+
 
 	private int yindaoId = 0;
 
@@ -76,6 +81,10 @@ public class DramaControllor : MonoBehaviour
 
 	public static DramaControllor Instance() { return _instance; }
 
+	void OnDestroy(){
+		_instance = null;
+	}
+
 	void init(GuideTemplate template)
 	{
 		if(template.actionType == 3)
@@ -87,7 +96,7 @@ public class DramaControllor : MonoBehaviour
 				if(Gobj != null) Gobj.SendMessage ("release");
 			}
 		}
-		else if(template.actionType != 2 && template.actionType != 5 && template.actionType != 6 && template.actionType != 7 && template.actionType != 8)
+		else if(template.actionType != 2 && template.actionType != 4 && template.actionType != 5 && template.actionType != 6 && template.actionType != 7 && template.actionType != 8)
 		{
 			GameObject Gobj = GameObject.Find ("JoyStick");
 			
@@ -152,7 +161,7 @@ public class DramaControllor : MonoBehaviour
 
 		m_templateCallback = template;
 
-		if (template.delay > 0 && template.actionType != 4) 
+		if (template.delay > 0 && template.triggerType != 4) 
 		{
 			//yield return new WaitForSeconds (template.delay);
 
@@ -216,6 +225,8 @@ public class DramaControllor : MonoBehaviour
 
 		inDrama = true;
 
+		stopAction = false;
+
 		tempLevel = level;
 
 		tempEventId = eventId;
@@ -239,9 +250,13 @@ public class DramaControllor : MonoBehaviour
 		else if(template.actionType == 0)//对话
 		{
 			showDrama(template);
+
+			stopAction = true;
 		}
 		else if(template.actionType == 1)//小电影
 		{
+			stopAction = true;
+
 			foreach(BaseAI node in BattleControlor.Instance().selfNodes)
 			{
 				node.setNavMeshStop();
@@ -348,7 +363,7 @@ public class DramaControllor : MonoBehaviour
 
 			if(yindaoable == true)
 			{
-				yindaoId = template.ap1;
+				yindaoId = int.Parse(template.ap3);
 
 				UIYindao.m_UIYindao.setOpenYindao(template.ap1);
 			}
@@ -367,6 +382,8 @@ public class DramaControllor : MonoBehaviour
 		else if(template.actionType == 4)//解锁界面功能
 		{
 			showGuide(template);
+
+			returnFlag = false;
 		}
 		else if(template.actionType == 5)//清除技能CD
 		{
@@ -413,6 +430,10 @@ public class DramaControllor : MonoBehaviour
 			
 			returnFlag = false;
 		}
+		else if(template.actionType == 10)//播放视频
+		{
+			playVideo(template.ap1);
+		}
 
 		if(returnFlag == true)
 		{
@@ -427,6 +448,8 @@ public class DramaControllor : MonoBehaviour
 
 	private void showStoryBoard(int index)
 	{
+		BubblePopControllor.Instance ().closeAllBubble ();
+
 		inGuide = true;
 
 		bg.SetActive (false);
@@ -466,6 +489,15 @@ public class DramaControllor : MonoBehaviour
 		ClientMain.m_ClientMain.m_SoundPlayEff.PlaySound (soundId + "");
 	}
 
+	private void playVideo(int videoId)
+	{
+		EffectIdTemplate template = EffectIdTemplate.getEffectTemplateByEffectId (videoId);
+
+		VideoHelper.PlayDramaVideo (template.path, onPressInDrama);
+
+		spriteVedioBG.SetActive (true);
+	}
+
 	public void dramaStoryDone()
 	{
 		foreach(BaseAI node in BattleControlor.Instance().selfNodes)
@@ -488,13 +520,13 @@ public class DramaControllor : MonoBehaviour
 
 	private void showDrama(GuideTemplate template)//对话
 	{
+		BubblePopControllor.Instance ().closeAllBubble ();
+
 		bg.SetActive (false);
 
 		guideDrama.SetActive(false);
 		
 		BattleUIControlor.Instance ().layerFight.SetActive (false);
-
-		PlotChatTemplate chatTemplate = PlotChatTemplate.getPlotChatTemplateById (template.ap1);
 
 //		if (template.para2 == 1)
 //		{
@@ -515,6 +547,8 @@ public class DramaControllor : MonoBehaviour
 		UIYindao.m_UIYindao.CloseUI ();
 
 		List<DialogData.dialogData> dialoglistdata = new List<DialogData.dialogData>();
+
+		PlotChatTemplate chatTemplate = PlotChatTemplate.getPlotChatTemplateById (template.ap1);
 
 		DialogData.dialogData dialogdata = new DialogData.dialogData();
 		
@@ -582,35 +616,70 @@ public class DramaControllor : MonoBehaviour
 					}
 				}
 
-				GameObject tempObject = new GameObject();
+				Vector3 cameraPosition = new Vector3(chatTemplate.cameraPx, chatTemplate.cameraPy, chatTemplate.cameraPz);
 
-				tempObject.transform.parent = gameCamera.transform.parent;
+				Vector3 cameraRotation = new Vector3(chatTemplate.cameraRx, chatTemplate.cameraRy, 0);
 
-				tempObject.transform.localScale = new Vector3(1, 1, 1);
+				if(chatTemplate.isLocal == true)
+				{
+					Vector3 tempFocusFowrad = focus.transform.forward;
 
-				tempObject.transform.position = Vector3.zero;
+					GameObject tempObject = new GameObject();
+					
+					tempObject.transform.parent = focus.transform;
 
-				tempObject.transform.eulerAngles = focus.transform.localEulerAngles;
+					tempObject.transform.localScale = new Vector3(1, 1, 1);
+	
+					tempObject.transform.localPosition = cameraPosition;
+	
+					tempObject.transform.localEulerAngles = cameraRotation;
 
-				GameObject tempInner = new GameObject();
+					tempObject.transform.parent = focus.transform.parent;
 
-				tempInner.transform.parent = tempObject.transform;
+					focus.transform.eulerAngles = Vector3.zero;
 
-				tempInner.transform.localScale = new Vector3(1, 1, 1);
+					tempObject.transform.parent = focus.transform;
 
-				tempInner.transform.localPosition = new Vector3(chatTemplate.cameraPx, chatTemplate.cameraPy, chatTemplate.cameraPz);
+					focus.transform.forward = tempFocusFowrad;
 
-				tempInner.transform.localEulerAngles = new Vector3(chatTemplate.cameraRx, chatTemplate.cameraRy, 0); 
+					//tempObject.transform.parent = focus.transform.parent;
 
-				tempInner.transform.parent = tempObject.transform.parent;
+					cameraPosition = tempObject.transform.localPosition;
+
+					cameraRotation = tempObject.transform.localEulerAngles;
+
+					Destroy(tempObject);
+				}
+
+//				GameObject tempObject = new GameObject();
+//
+//				tempObject.transform.parent = gameCamera.transform.parent;
+//
+//				tempObject.transform.localScale = new Vector3(1, 1, 1);
+//
+//				tempObject.transform.position = Vector3.zero;
+//
+//				tempObject.transform.eulerAngles = focus.transform.localEulerAngles;
+//
+//				GameObject tempInner = new GameObject();
+//
+//				tempInner.transform.parent = tempObject.transform;
+//
+//				tempInner.transform.localScale = new Vector3(1, 1, 1);
+//
+//				tempInner.transform.localPosition = new Vector3(chatTemplate.cameraPx, chatTemplate.cameraPy, chatTemplate.cameraPz);
+//
+//				tempInner.transform.localEulerAngles = new Vector3(chatTemplate.cameraRx, chatTemplate.cameraRy, 0); 
+//
+//				tempInner.transform.parent = tempObject.transform.parent;
 
 				gameCamera.targetChang(focus);
 
-				gameCamera.CameraChange(new Vector3(chatTemplate.cameraPx, chatTemplate.cameraPy, chatTemplate.cameraPz), new Vector3(chatTemplate.cameraRx, chatTemplate.cameraRy, 0));
+				gameCamera.CameraChange(cameraPosition, cameraRotation);
 
-				Destroy(tempObject);
-
-				Destroy(tempInner);
+//				Destroy(tempObject);
+//
+//				Destroy(tempInner);
 			}
 			else
 			{
@@ -666,11 +735,11 @@ public class DramaControllor : MonoBehaviour
 
 	private void showGuide(GuideTemplate template)//解锁界面功能
 	{
-		inGuide = true;
+		//inGuide = true;
 
-		BattleControlor.Instance ().inDrama = true;
+		//BattleControlor.Instance ().inDrama = true;
 
-		bg.SetActive (true);
+		bg.SetActive (false);
 
 		guideDrama.SetActive(false);
 
@@ -903,9 +972,11 @@ public class DramaControllor : MonoBehaviour
 		{
 			//LockControllor.Instance ().refreshLock(lockType, true);
 
+			GetComponent<BoxCollider> ().enabled = false;
+
 			StartCoroutine(_showGuide(lockType));
 
-			UI3DEffectTool.Instance().ShowBottomLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100170));
+			UI3DEffectTool.Instance().ShowBottomLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100169));
 
 			UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100009));
 		}
@@ -923,7 +994,7 @@ public class DramaControllor : MonoBehaviour
 
 		yield return new WaitForSeconds (1f);
 
-		dramaOver ();
+		dramaOver (false);
 	}
 
 	public void DialogCallback()
@@ -936,6 +1007,8 @@ public class DramaControllor : MonoBehaviour
 		if (pressed == false) return;
 
 		if (inGuide == true) return;
+
+		if (m_templateCallback.actionType == 10) return;
 
 		//if (inDrama == true) return;
 
@@ -952,21 +1025,49 @@ public class DramaControllor : MonoBehaviour
 		dramaOver ();
 	}
 
-	private void dramaOver(bool stopAction = true)
+	private void clearDelTarget()
+	{
+		if (m_templateCallback.delTarget == 0) return;
+
+		BaseAI delNode = BattleControlor.Instance ().getNodebyId (m_templateCallback.delTarget);
+
+		if (delNode == null) return;
+
+		if(delNode.stance == BaseAI.Stance.STANCE_ENEMY)
+		{
+			BattleControlor.Instance().enemyNodes.Remove(delNode);
+		}
+		else if(delNode.stance == BaseAI.Stance.STANCE_SELF)
+		{
+			BattleControlor.Instance().selfNodes.Remove(delNode);
+		}
+		else if(delNode.stance == BaseAI.Stance.STANCE_MID)
+		{
+			BattleControlor.Instance().midNodes.Remove(delNode);
+		}
+
+		DestroyObject (delNode.gameObject);
+	}
+
+	private void dramaOver(bool _stopAction = true)
 	{
 		inDrama = false;
 
 		inGuide = false;
 
 		openEye ();
-		
+
+		clearDelTarget ();
+
 		int e = tempEventId + 1;
 
 		bool guideFlag = GuideTemplate.HaveId (tempLevel, e);
 		
 		Time.timeScale = 1;
 
-		if(stopAction == true)
+		spriteVedioBG.SetActive (false);
+
+		if(_stopAction == true)
 		{
 			BattleUIControlor.Instance ().m_gc_attack.SendMessage ("Start");
 
@@ -1039,7 +1140,7 @@ public class DramaControllor : MonoBehaviour
 
 		if(mCallback != null) mCallback();
 
-		if(tempAutoFight == true && stopAction == true)
+		if(tempAutoFight == true && _stopAction == true)
 		{
 			BattleUIControlor.Instance().changeAutoFight();
 
@@ -1053,11 +1154,9 @@ public class DramaControllor : MonoBehaviour
 		{
 			UIYindao.m_UIYindao.CloseUI();
 
-			int curYindaoId = DramaControllor.Instance().yindaoId;
-
 			DramaControllor.Instance().yindaoId = 0;
 
-			dramaOver(curYindaoId != 20109);
+			dramaOver(false);
 		}
 	}
 

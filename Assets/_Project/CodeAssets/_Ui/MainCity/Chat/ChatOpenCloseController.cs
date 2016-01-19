@@ -5,12 +5,7 @@ public class ChatOpenCloseController : MonoBehaviour
 {
     public UIRoot m_Root;
     public ChatWindow m_ChatWindow;
-    public ScaleEffectController m_ScaleEffectController;
-
-    public GameObject CloseButton;
-
-    [HideInInspector]
-    private UIEventListener CloseButtonLis;
+    //public ScaleEffectController m_ScaleEffectController;
 
     [HideInInspector]
     public bool isOpen
@@ -32,23 +27,17 @@ public class ChatOpenCloseController : MonoBehaviour
     /// </summary>
     public static bool IsChatWindowOpened = false;
 
-    public void OnOpenWindowClick(GameObject go)
+    public void OnOpenWindowClick()
     {
         m_Root.gameObject.SetActive(true);
 
         isOpen = true;
         m_ChatWindow.isEnterToggleByOpeningWindow = true;
 
-        if (Application.loadedLevelName == SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.CARRIAGE))
-        {
-            //CarriageMsgManager.Instance.m_RootManager.m_CarriageUi.m_ChatRedAlert.SetActive(false);
-        }
-        else
-        {
-            MainCityUIL.SetRedAlert("chat", false);
-        }
+        MainCityUIL.SetRedAlert("chat", false);
 
-        m_ScaleEffectController.OnOpenWindowClick();
+        m_ChatWindow.transform.localPosition = new Vector3(-650, 0, 0);
+        iTween.MoveTo(m_ChatWindow.gameObject, iTween.Hash("position", Vector3.zero, "time", 0.5f, "easetype", "easeOutBack", "islocal", true, "oncomplete", "OnOpenChatWindowComplete"));
     }
 
     void OnOpenChatWindowComplete()
@@ -96,12 +85,13 @@ public class ChatOpenCloseController : MonoBehaviour
         }
     }
 
-    public void OnCloseWindowClick(GameObject go)
+    public void OnCloseWindowClick()
     {
         isOpen = false;
         MainCityUI.TryRemoveFromObjectList(gameObject);
 
-        m_ScaleEffectController.OnCloseWindowClick();
+        m_ChatWindow.transform.localPosition = Vector3.zero;
+        iTween.MoveTo(m_ChatWindow.gameObject, iTween.Hash("position", new Vector3(-650, 0, 0), "time", 0.5f, "easetype", "easeInBack", "islocal", true, "oncomplete", "OnCloseChatWindowComplete"));
     }
 
     void OnCloseChatWindowComplete()
@@ -113,26 +103,14 @@ public class ChatOpenCloseController : MonoBehaviour
         MainCityUI.TryRemoveFromObjectList(m_Root.gameObject);
     }
 
-    void OnEnable()
-    {
-        CloseButtonLis.onClick = OnCloseWindowClick;
-    }
-
-    void OnDisable()
-    {
-        CloseButtonLis.onClick = null;
-    }
-
     void Start()
     {
-        m_ScaleEffectController.OpenCompleteDelegate = OnOpenChatWindowComplete;
-        m_ScaleEffectController.CloseCompleteDelegate = OnCloseChatWindowComplete;
+        //m_ScaleEffectController.OpenCompleteDelegate = OnOpenChatWindowComplete;
+        //m_ScaleEffectController.CloseCompleteDelegate = OnCloseChatWindowComplete;
     }
 
     void Awake()
     {
-        CloseButtonLis = UIEventListener.Get(CloseButton);
-
         m_Root = TransformHelper.GetComponentInParent<UIRoot>(transform);
     }
 }

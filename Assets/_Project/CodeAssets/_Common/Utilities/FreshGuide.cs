@@ -16,7 +16,7 @@ public class FreshGuide {
 	}
 
 
-	// 请@雷庆 帮忙将任务的引导id于此判断，并返回
+	// 请@雷庆 将任务的引导id于此判断，并返回
 	public bool IsActive(int  taskid )
 	{
 		foreach(KeyValuePair<int,ZhuXianTemp> taskifo in TaskData.Instance.m_TaskInfoDic){

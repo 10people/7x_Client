@@ -201,9 +201,9 @@ public class ChooseYouXiaUIManager : MonoBehaviour,SocketProcessor {
 			// Debug.Log("发送购买金币的请求");
 			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < M_tempInfo.cost)
 			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_2);
-
-				return;
+                //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_2);
+                EquipSuoData.TopUpLayerTip();
+                return;
 			}
 			YouXiaTimesBuyReq mYouXiaTimesInfoReq = new YouXiaTimesBuyReq ();
 			
@@ -304,8 +304,8 @@ public class ChooseYouXiaUIManager : MonoBehaviour,SocketProcessor {
 			Debug.Log ("跳转到充值！");
 
 			MainCityUI.ClearObjectList();
-			TopUpLoadManagerment.m_instance.LoadPrefab(true);
-			QXTanBaoData.Instance ().CheckFreeTanBao ();
+ 
+//			QXTanBaoData.Instance ().CheckFreeTanBao ();
 		}
 	}
 	public void Back()

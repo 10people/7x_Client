@@ -17,6 +17,10 @@ public class NpcAnimationManagerment : MonoBehaviour
 //        InvokeRepeating("NpcAnimation", m_iRandomNum, 2.0f);
     }
 
+	void OnDestroy(){
+		m_Animator = null;
+	}
+
 //    void NpcAnimation()
 //    {
 //		Debug.Log("=====================1");

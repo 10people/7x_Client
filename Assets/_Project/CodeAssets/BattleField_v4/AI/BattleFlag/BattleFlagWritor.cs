@@ -10,6 +10,8 @@ public class BattleFlagWritor : MonoBehaviour
 
 	public bool canWriteBattleFlag = true;
 
+	public bool canWriteBattleDoorFlag = true;
+
 	public bool canWriteBattleBuffFlag = true;
 
 	public bool canWriteBattleCameraFlag = true;
@@ -22,6 +24,8 @@ public class BattleFlagWritor : MonoBehaviour
 	private List<BattleWinFlag> winFlags = new List<BattleWinFlag>();
 
 	private List<BattleFlag> flags = new List<BattleFlag>();
+
+	private List<BattleDoorFlag> doorFlags = new List<BattleDoorFlag> ();
 
 	private List<BattleBuffFlag> buffFlags = new List<BattleBuffFlag> ();
 
@@ -54,6 +58,12 @@ public class BattleFlagWritor : MonoBehaviour
 			getBattleFlag();
 
 			if(canWriteBattleFlag == true) writeBattleFlag();
+		}
+
+		{
+			getBattleDoorFlag();
+
+			if(canWriteBattleDoorFlag == true) writeBattleDoorFlag();
 		}
 
 		{
@@ -229,6 +239,8 @@ public class BattleFlagWritor : MonoBehaviour
 			str += " guideId=\"" + bf.guideId + "\"";
 
 			str += " hintLabelId=\"" + bf.hintLabelId + "\"";
+
+			str += " showOnUI=\"" + (bf.showOnUI ? 1 : 0) + "\"";
 
 			str += " groupId=\"" + (bf.flagGroup == null ? 0 :  bf.flagGroup.groupId) + "\"";
 
@@ -466,6 +478,68 @@ public class BattleFlagWritor : MonoBehaviour
 		
 		sw.Dispose();
 
+		Debug.Log ("Write Battle Flag !  " + pa);
+	}
+
+	private void getBattleDoorFlag()
+	{
+		doorFlags.Clear();
+		
+		Component[] coms = GetComponentsInChildren(typeof(BattleDoorFlag));
+		
+		foreach(Component temp in coms)
+		{
+			BattleDoorFlag bf = (BattleDoorFlag)temp;
+			
+			doorFlags.Add(bf);
+		}
+	}
+
+	private void writeBattleDoorFlag()
+	{
+		string pa = Application.dataPath + "/Resources/_Data/BattleField/BattleFlags" + "//" + "Door_" + chapterId + ".xml";
+		
+		FileInfo t = new FileInfo(pa);
+		
+		StreamWriter sw = t.CreateText();
+		
+		sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		
+		sw.WriteLine("<dataset>");
+		
+		foreach(BattleDoorFlag bf in doorFlags)
+		{
+			string str = "<BattleDoorFlag";
+			
+			str += " flagId=\"" + bf.flagId + "\"";
+			
+			str += " x=\"" + bf.transform.position.x + "\"";
+			
+			str += " y=\"" + bf.transform.position.y + "\"";
+			
+			str += " z=\"" + bf.transform.position.z + "\"";
+			
+			str += " rx=\"" + bf.transform.eulerAngles.x + "\"";
+			
+			str += " ry=\"" + bf.transform.eulerAngles.y + "\"";
+			
+			str += " rz=\"" + bf.transform.eulerAngles.z + "\"";
+
+			str += " modelId=\"" + bf.modelId + "\"";
+
+			str += " triggerCount=\"" + bf.triggerCount + "\"";
+			
+			str += " />";
+			
+			sw.WriteLine(str);
+		}
+		
+		sw.WriteLine("</dataset>");
+		
+		sw.Close();
+		
+		sw.Dispose();
+		
 		Debug.Log ("Write Battle Flag !  " + pa);
 	}
 

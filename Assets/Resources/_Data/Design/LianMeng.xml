@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LianMeng id="1001" lv="1" exp="5000" renshuMax="15" fumeng="5" statueType="0" mobaiAward="100" buffNum="30" />
+<LianMeng id="1002" lv="2" exp="14000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+<LianMeng id="1003" lv="3" exp="28000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+<LianMeng id="1004" lv="4" exp="42000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+<LianMeng id="1005" lv="5" exp="80000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+<LianMeng id="1006" lv="6" exp="180000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+<LianMeng id="1007" lv="7" exp="350000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+<LianMeng id="1008" lv="8" exp="560000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+<LianMeng id="1009" lv="9" exp="840000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+<LianMeng id="1010" lv="10" exp="840000" renshuMax="20" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" />
+</dataset>

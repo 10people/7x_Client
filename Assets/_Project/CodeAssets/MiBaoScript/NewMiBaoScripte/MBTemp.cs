@@ -36,6 +36,8 @@ public class MBTemp : MonoBehaviour {
 
 	public GameObject m_MIBaoScorllview;
 	public GameObject Proess;
+
+	public int SuipianNum;
 	void Start () {
 	
 	}
@@ -59,19 +61,20 @@ public class MBTemp : MonoBehaviour {
 
 			if(mMiBaoinfo.suiPianNum <= 0)
 			{
+				Tips.gameObject.SetActive(false);
 				HechengNum.text = MyColorData.getColorString(5, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoSuipianXMltemp.hechengNum.ToString();
 			}
 			else if(mMiBaoinfo.suiPianNum >= mMiBaoSuipianXMltemp.hechengNum)
 			{
+				Tips.gameObject.SetActive(true);
 				HechengNum.text = MyColorData.getColorString(6, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoSuipianXMltemp.hechengNum.ToString();
 			}
 			else
 			{
+				Tips.gameObject.SetActive(false);
 				HechengNum.text = mMiBaoinfo.suiPianNum.ToString()+"/"+mMiBaoSuipianXMltemp.hechengNum.ToString();
 			}
 			MiBaoSuipianIcon.spriteName = mMiBaoSuipianXMltemp.icon.ToString();
-
-			MiBaoSuipianIcon.color = new Color(0,0,0,255);
 
 			UISlider mSlider = Proess.GetComponent<UISlider>();
 			
@@ -93,39 +96,40 @@ public class MBTemp : MonoBehaviour {
 			MiBaopinZi.spriteName = "";
 			ExpXxmlTemp mExpXxmlTemp = ExpXxmlTemp.getExpXxmlTemp_By_expId (mmibao.expId,mMiBaoinfo.level);
 
-//			if(MiBaoManager.Instance().G_MiBaoInfo.levelPoint > 0 && JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp &&
-//			   mMiBaoinfo.level < JunZhuData.Instance().m_junzhuInfo.level&&mMiBaoinfo.level < 100 && !mMiBaoinfo.isLock)
-//			{
-//				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LOCkPoint);
-//				Tips.gameObject.SetActive(true);
-//			}
-//		
+			if(NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint > 0 && JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp &&
+			   mMiBaoinfo.level < JunZhuData.Instance().m_junzhuInfo.level&&mMiBaoinfo.level < 100 )
+			{
+				Tips.gameObject.SetActive(true);
+			}
+			else{
+				Tips.gameObject.SetActive(false);
+			}
 
 			switch(mMiBaoinfo.star)
 			{
 			case 1:
 
-				MiBaopinZi.spriteName = "pinzhi3";
-
+				MiBaopinZi.spriteName = "pinzhi6";
+				MiBaopinZi.SetDimensions(99,99);
 				break;
 			case 2:
-				
-				MiBaopinZi.spriteName = "pinzhi6";
+				MiBaopinZi.SetDimensions(112,112);
+				MiBaopinZi.spriteName = "pinzhi7";
 				
 				break;
 			case 3:
 				
 				MiBaopinZi.spriteName = "pinzhi9";
-				
+				MiBaopinZi.SetDimensions(99,99);
 				break;
 			case 4:
 				
-				MiBaopinZi.spriteName = "pinzhi9";
-				
+				MiBaopinZi.spriteName = "pinzhi10";
+				MiBaopinZi.SetDimensions(112,112);
 				break;
 			case 5:
-				
-				MiBaopinZi.spriteName = "pinzhi9";
+				MiBaopinZi.SetDimensions(112,112);
+				MiBaopinZi.spriteName = "pinzhi11";
 				
 				break;
 			default:
@@ -134,32 +138,13 @@ public class MBTemp : MonoBehaviour {
 			}
 			CreateStar (Star);
 		}
-
-
+	
 		if(Global.m_sPanelWantRun != null&&Global.m_sPanelWantRun != "")
 		{
 			if(int.Parse(Global.m_sPanelWantRun)  == mMiBaoinfo.miBaoId)
 			{
 				//ShowActiveInfo();
 				Global.m_sPanelWantRun = "";
-			}
-		}
-
-		if(MiBaoScrollView.IsOPenPath)
-		{
-
-			if(MiBaoScrollView.OpenMiBaoId == mMiBaoinfo.miBaoId)
-			{
-
-				if(MiBaoScrollView.FirstOPenPath)
-				{
-					ShowDisActiveInfo();
-				}
-				else
-				{
-					//ShowActiveInfo();
-				}
-
 			}
 		}
 	}
@@ -204,15 +189,6 @@ public class MBTemp : MonoBehaviour {
 
 	public void ShowActiveInfo()
 	{
-		if(FreshGuide.Instance().IsActive(100050)&& TaskData.Instance.m_TaskInfoDic[100050].progress>= 0)
-		{
-			
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100050];
-
-			Debug.Log("秘宝升级引导2");
-
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]); //选择秘宝
-		}
 		NewMiBaoManager.Instance ().ShowMiBaoDeilInf (mMiBaoinfo);
 	}
 
@@ -226,34 +202,6 @@ public class MBTemp : MonoBehaviour {
 
 		if(mMiBaoinfo.suiPianNum >= mMiBaoSuipianXMltemp.hechengNum)
 		{
-
-			if(FreshGuide.Instance().IsActive(100210)&& TaskData.Instance.m_TaskInfoDic[100210].progress>= 0)
-			{
-				
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100210];
-				
-				Debug.Log("秘宝合成引导2");
-
-				MiBaoScrollView mMiBaoScrollView = m_MIBaoScorllview.GetComponent<MiBaoScrollView>();
-
-				mMiBaoScrollView.ActiveScrollViewPanlemove();
-
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]); //选择秘宝
-			}
-			if(FreshGuide.Instance().IsActive(100350)&& TaskData.Instance.m_TaskInfoDic[100350].progress>= 0)
-			{
-				
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100350];
-				
-				Debug.Log("秘宝第二次合成2");
-
-				MiBaoScrollView mMiBaoScrollView = m_MIBaoScorllview.GetComponent<MiBaoScrollView>();
-
-				mMiBaoScrollView.ActiveScrollViewPanlemove();
-
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]); //选择秘宝
-
-			}
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),ShowCHAT_UIBOX_INFO);
 		}
 		else
@@ -261,7 +209,6 @@ public class MBTemp : MonoBehaviour {
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_NOT_ENOUGH_PIECE ),ShowPicecPath);
 		}
 	}
-
 
 	void ShowPicecPath(ref WWW p_www,string p_path, Object p_object)
 	{

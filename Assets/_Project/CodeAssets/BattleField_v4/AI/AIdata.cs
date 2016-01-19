@@ -16,7 +16,7 @@ public class AIdata
 		ATTRTYPE_eyeRange = 3,				//视野范围
 		ATTRTYPE_attackValue = 4,			//攻击力
 		ATTRTYPE_defenceValue = 5,			//防御力
-		ATTRTYPE_hpMax = 6,					//血量上限
+		ATTRTYPE_hpMax = 6,					//当前血条血量上限
 		ATTRTYPE_hp = 7,					//当前血量
 		ATTRTYPE_attackAmplify = 8,			//伤害加深_物理不暴击
 		ATTRTYPE_attackReduction = 9,		//伤害减免_物理不暴击
@@ -88,13 +88,16 @@ public class AIdata
 		ATTRTYPE_ReductionBTAC = 71,		//被击抗性
 		ATTRTYPE_ReductionDisable = 72,		//击晕抗性
 
-
-		ATTRTYPE_Threat = 73,				//增加的仇恨值，用于BUFF计算
+		ATTRTYPE_hpNum = 73,				//血条数量
+		ATTRTYPE_hpMaxReal = 74,			//总血量上限
+		
+		ATTRTYPE_Threat = 75,				//增加的仇恨值，用于BUFF计算
 
 		//////////////////////////////////
 
-		ATTRTYPE_Ice = 74,              	//冰箭射中后的短暂免疫
-		ATTRTYPE_Focus = 75,				//轻武器技能2的标记
+		ATTRTYPE_Ice = 76,              	//冰箭射中后的短暂免疫
+		ATTRTYPE_Focus = 77,				//轻武器技能2的标记
+		ATTRTYPE_NUQI = 78,					//怒气
 		ATTRTYPE_isIdle = 100,				//眩晕
 		ATTRTYPE_hpDelay = 101,				//减少生命
 		ATTRTYPE_Blind = 102,				//致盲，恐惧
@@ -257,10 +260,15 @@ public class AIdata
 		AddAttribute (0);//ATTRTYPE_ReductionBTAC
 		AddAttribute (0);//ATTRTYPE_ReductionDisable
 
+		AddAttribute (nodeData.hpNum);//ATTRTYPE_hpNum = 73,血条数量
+		AddAttribute (nodeData.hpMax * nodeData.hpNum);//ATTRTYPE_hpMaxReal = 74,总血量上限
+
 		AddAttribute (0);//ATTRTYPE_Ice = 60,
 		AddAttribute (0);//ATTRTYPE_Focus = 61,
 
 		AddAttribute (0);
+
+		AddAttribute (0);//78,怒气
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan 
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao

@@ -22,6 +22,8 @@ public class BattleControlor : MonoBehaviour
 		MIBAO_ATTACK,
 		ADD_HP,
 		DEFAULT,
+		BASE_REFLEX,
+		SKILL_REFLEX,
 	}
 
 	public GameObject selfTeam;
@@ -69,6 +71,8 @@ public class BattleControlor : MonoBehaviour
 
 	[HideInInspector] public Dictionary<int, BattleBuffFlag> buffFlags = new Dictionary<int, BattleBuffFlag> ();
 
+	[HideInInspector] public Dictionary<int, BattleDoorFlag> doorFlags = new Dictionary<int, BattleDoorFlag>();
+
 	[HideInInspector] public bool inDrama;
 
 	[HideInInspector] public int timeLast;
@@ -96,8 +100,6 @@ public class BattleControlor : MonoBehaviour
 
 	private KingControllor king;
 
-	private static BattleControlor _instance;
-
 	private GameObject shadowTemple;
 	
 	private GameObject shadowTemple_2;
@@ -123,12 +125,28 @@ public class BattleControlor : MonoBehaviour
 	private int preLoadEffCount;
 
 
+	private static BattleControlor _instance;
+
 	void Awake()
 	{
 		_instance = this; 
 	}
 
-	public static BattleControlor Instance() { return _instance; }
+	public static BattleControlor Instance() { 
+		return _instance; 
+	}
+
+	void OnDestroy(){
+		doorFlags.Clear();
+
+		doorFlags.Clear();
+
+		battleCheck = null;
+
+		king = null;
+
+		_instance = null;
+	}
 
 
 	#region Prepare Battle Field
@@ -207,18 +225,9 @@ public class BattleControlor : MonoBehaviour
 		
 		if(ClientMain.m_ClientMainObj != null) 
 		{
-			if(CityGlobalData.m_tempSection == 0 || CityGlobalData.m_tempLevel == 0)
-			{
-				PveTempTemplate pt = PveTempTemplate.GetPVETemplate(1, 1);
-				
-				if(pt != null) ClientMain.m_sound_manager.chagneBGSound (pt.soundId);
-			}
-			else
-			{
-				PveTempTemplate pt = PveTempTemplate.GetPVETemplate(CityGlobalData.m_tempSection, CityGlobalData.m_tempLevel);
-				
-				if(pt != null) ClientMain.m_sound_manager.chagneBGSound (pt.soundId);
-			}
+			PveTempTemplate pt = PveTempTemplate.GetPVETemplate(CityGlobalData.m_tempSection, CityGlobalData.m_tempLevel);
+
+			if(pt != null) ClientMain.m_sound_manager.chagneBGSound (pt.soundId);
 		}
 	}
 
@@ -236,7 +245,7 @@ public class BattleControlor : MonoBehaviour
 
 		if(template.retriggerable == false)
 		{
-			if(template.id <= CityGlobalData.m_pve_max_level)
+			if(template.dungeonId <= CityGlobalData.m_pve_max_level)
 			{
 				return true;
 			}
@@ -422,6 +431,25 @@ public class BattleControlor : MonoBehaviour
 
 	#endregion
 
+	public void loadDoorFlag()
+	{
+		BattleDoorFlag[] dfs = GetComponentsInChildren<BattleDoorFlag>();
+
+		foreach(BattleDoorFlag doorFlag in dfs)
+		{
+			bool f = doorFlags.ContainsKey(doorFlag.flagId);
+			
+			if(f == false) 
+			{
+				doorFlags.Add(doorFlag.flagId, doorFlag);
+			}
+			else
+			{
+				Debug.LogError( "Battle Door Flag Already Contained Key: " + doorFlag.flagId );
+			}
+		}
+	}
+
 	public void loadBuffFlags()
 	{
 		BattleBuffFlag[] bfs = flagRoot.GetComponentsInChildren<BattleBuffFlag>();
@@ -477,7 +505,7 @@ public class BattleControlor : MonoBehaviour
 //		           + ", attackSpeed: " + nodeData.attackSpeed + ", attackRange: " + nodeData.attackRange
 //		           + ", eyeRange: " + nodeData.eyeRange + ", attackValue: " + nodeData.attackValue
 //		           + ", defenceValue: " + nodeData.defenceValue 
-//		           + ", hp: " + nodeData.hp + ", hpMax: " + nodeData.hpMax
+//		           + ", hp: " + nodeData.hp + ", hpMax: " + nodeData.hpMax + ", hpNum: " + nodeData.hpNum
 //		           + ", attackAmplify: " + nodeData.attackAmplify + ", attackReduction: " + nodeData.attackReduction
 //		           + ", attackAmplify_cri: " + nodeData.attackAmplify_cri + ", attackReduction_cri: " + nodeData.attackReduction_cri
 //		           + ", skillAmplify: " + nodeData.skillAmplify + ", skillReduction: " + nodeData.skillReduction
@@ -485,14 +513,28 @@ public class BattleControlor : MonoBehaviour
 //		           + ", criX: " + nodeData.criX + ", criY: " + nodeData.criY
 //		           + ", criSkillX: " + nodeData.criSkillX + ", criSkillY: " + nodeData.criSkillY
 //  		           + ", droppenItem: " + (nodeData.droppenItems == null ? 0 : nodeData.droppenItems.Count)
+//		           + ", appearance: " + nodeData.appearanceId
 //		          );
 
 		float t_cur_time = Time.realtimeSinceStartup;
 
 		if(nodeData.nodeType == NodeType.PLAYER)
 		{
-//			if(nodeData.weaponHeavy != null)
-//			{
+			if(nodeData.weaponHeavy != null)
+			{
+				string strSkillLevelHeavy = "[";
+
+				for(int i = 0; i < nodeData.weaponHeavy.skillLevel.Count; i++)
+				{
+					int level = nodeData.weaponHeavy.skillLevel[i];
+
+					strSkillLevelHeavy += "" + i;
+
+					if(i < nodeData.weaponHeavy.skillLevel.Count - 1) strSkillLevelHeavy += ",";
+				}
+
+				strSkillLevelHeavy += "]";
+
 //				Debug.Log("Player Weapon Heavy     flagId: " + flag 
 //				           + ", weaponId: " + nodeData.weaponHeavy.weaponId
 //				           + ", moveSpeed: " + nodeData.weaponHeavy.moveSpeed
@@ -506,11 +548,25 @@ public class BattleControlor : MonoBehaviour
 //				           + ", criY: " + nodeData.weaponHeavy.criY
 //				           + ", criSkillX: " + nodeData.weaponHeavy.criSkillX
 //				           + ", criSkillY: " + nodeData.weaponHeavy.criSkillY
+//				           + ", skillLevel: " + strSkillLevelHeavy
 //				          );
-//			}
-//
-//			if(nodeData.weaponLight != null)
-//			{
+			}
+
+			if(nodeData.weaponLight != null)
+			{
+				string strSkillLevelLight = "[";
+				
+				for(int i = 0; i < nodeData.weaponLight.skillLevel.Count; i++)
+				{
+					int level = nodeData.weaponLight.skillLevel[i];
+					
+					strSkillLevelLight += "" + i;
+					
+					if(i < nodeData.weaponHeavy.skillLevel.Count - 1) strSkillLevelLight += ",";
+				}
+				
+				strSkillLevelLight += "]";
+
 //				Debug.Log("Player Weapon Light     flagId: " + flag 
 //				           + ", weaponId: " + nodeData.weaponLight.weaponId
 //				           + ", moveSpeed: " + nodeData.weaponLight.moveSpeed
@@ -524,11 +580,25 @@ public class BattleControlor : MonoBehaviour
 //				           + ", criY: " + nodeData.weaponLight.criY
 //				           + ", criSkillX: " + nodeData.weaponLight.criSkillX
 //				           + ", criSkillY: " + nodeData.weaponLight.criSkillY
+//				           + ", skillLevel: " + strSkillLevelLight
 //				          );
-//			}
-//
-//			if(nodeData.weaponRanged != null)
-//			{
+			}
+
+			if(nodeData.weaponRanged != null)
+			{
+				string strSkillLevelRange = "[";
+				
+				for(int i = 0; i < nodeData.weaponRanged.skillLevel.Count; i++)
+				{
+					int level = nodeData.weaponRanged.skillLevel[i];
+					
+					strSkillLevelRange += "" + i;
+					
+					if(i < nodeData.weaponHeavy.skillLevel.Count - 1) strSkillLevelRange += ",";
+				}
+				
+				strSkillLevelRange += "]";
+
 //				Debug.Log("Player Weapon Ranged     flagId: " + flag 
 //				           + ", weaponId: " + nodeData.weaponRanged.weaponId
 //				           + ", moveSpeed: " + nodeData.weaponRanged.moveSpeed
@@ -542,8 +612,9 @@ public class BattleControlor : MonoBehaviour
 //				           + ", criY: " + nodeData.weaponRanged.criY
 //				           + ", criSkillX: " + nodeData.weaponRanged.criSkillX
 //				           + ", criSkillY: " + nodeData.weaponRanged.criSkillY
+//				           + ", skillLevel: " + strSkillLevelRange
 //				          );
-//			}
+			}
 
 			if(nodeData.weaponHeavy == null && nodeData.weaponLight == null && nodeData.weaponRanged == null)
 			{
@@ -587,8 +658,10 @@ public class BattleControlor : MonoBehaviour
 
 		if( bf == null && buffbf == null)
 		{
+			#if UNITY_EDITOR
 			Debug.LogError( "NO FLAG " + flag + " IN SCENE ! " + flags.Count + ", " + buffFlags.Count );
-			
+			#endif
+
 			return null;
 		}
 		
@@ -679,16 +752,12 @@ public class BattleControlor : MonoBehaviour
 		if (t_ai.buffFlag != null)
 						t_ai.buffFlag.setNode (t_ai);
 
-		if(nodeData.nodeType == NodeType.BOSS)
+		if(t_ai.body != null)
 		{
-			if(t_ai.body != null)
-			{
-				float sc = 1.5f;
+			float sc = t_ai.appearanceTemplate.height;
 
-				t_ai.body.transform.localScale = new Vector3(sc, sc, sc);
-			}
+			t_ai.body.transform.localScale = t_ai.body.transform.localScale * sc;
 		}
-
 
 		if(bf != null)
 		{
@@ -733,9 +802,9 @@ public class BattleControlor : MonoBehaviour
 
 		list.Add( t_ai );
 		
-		ModelTemplate modelTemplate = ModelTemplate.getModelTemplateByModelId (model);
-		
-		t_ai.setNavMeshRadius( modelTemplate.radius );
+//		ModelTemplate modelTemplate = ModelTemplate.getModelTemplateByModelId (model);
+//		
+//		t_ai.setNavMeshRadius( modelTemplate.radius );
 		
 		int outValue = 0;
 
@@ -993,6 +1062,8 @@ public class BattleControlor : MonoBehaviour
 			return;
 		}
 
+		BattleUIControlor.Instance ().barAPC.gameObject.SetActive (false);
+
 		battleCheck = new BattleCheckResult ();
 
 		UIYindao.m_UIYindao.CloseUI ();
@@ -1017,9 +1088,16 @@ public class BattleControlor : MonoBehaviour
 
 		foreach(BaseAI node in selfNodes)
 		{
-			totalBloodSelf += node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax );
+			totalBloodSelf += node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal );
 
 			node.transform.forward = enemyNodes[0].transform.position - node.transform.position;
+
+			if(node.flag.showOnUI == true)
+			{
+				BattleUIControlor.Instance().barAPC.setFocusNode(node);
+			}
+
+			BubblePopControllor.Instance().createBubblePopNode(node);
 		}
 
 		foreach(BaseAI node in enemyNodes)
@@ -1031,7 +1109,7 @@ public class BattleControlor : MonoBehaviour
 				_k.initWeaponDataEnemy();
 			}
 
-			totalBloodEnemey += node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax );
+			totalBloodEnemey += node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal );
 
 			if(node.flag.forwardFlagId == 1)
 			{
@@ -1043,6 +1121,8 @@ public class BattleControlor : MonoBehaviour
 
 				node.transform.forward = new Vector3(forward.x, node.transform.forward.y, forward.z);
 			}
+
+			BubblePopControllor.Instance().createBubblePopNode(node);
 		}
 
 		foreach(BattleFlag flag in flags.Values)
@@ -1138,6 +1218,8 @@ public class BattleControlor : MonoBehaviour
 				showSceneName ();
 			}
 		}
+
+		BattleUIControlor.Instance ().achivementHintControllor.init ();
 	}
 
 	private void showLockEff()
@@ -1172,7 +1254,9 @@ public class BattleControlor : MonoBehaviour
 		}
 		else if(template.skill_light_1_eff == 1)
 		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_1, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
+			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.jueyingxingguangzhan);
+
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_1, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
 		}
 
 		if(template.skill_light_2_eff == -1)
@@ -1181,7 +1265,9 @@ public class BattleControlor : MonoBehaviour
 		}
 		else if(template.skill_light_2_eff == 1)
 		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_2, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
+			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.xuejilaoyin);
+
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_2, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
 		}
 
 		if(template.skill_heavy_1_eff == -1)
@@ -1190,7 +1276,9 @@ public class BattleControlor : MonoBehaviour
 		}
 		else if(template.skill_heavy_1_eff == 1)
 		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_1, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
+			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.bahuanglieri);
+
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_1, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
 		}
 
 		if(template.skill_heavy_2_eff == -1)
@@ -1199,7 +1287,9 @@ public class BattleControlor : MonoBehaviour
 		}
 		else if(template.skill_heavy_2_eff == 1)
 		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_2, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
+			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.qiankundouzhuan);
+
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_2, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
 		}
 
 		if(template.skill_ranged_1_eff == -1)
@@ -1208,7 +1298,9 @@ public class BattleControlor : MonoBehaviour
 		}
 		else if(template.skill_ranged_1_eff == 1)
 		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_1, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
+			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.zhuixingjian);
+
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_1, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
 		}
 
 		if(template.skill_ranged_2_eff == -1)
@@ -1217,7 +1309,9 @@ public class BattleControlor : MonoBehaviour
 		}
 		else if(template.skill_ranged_2_eff == 1)
 		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
+			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.hanbingjian);
+
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
 		}
 
 		if(template.weaponHeavy_eff == -1)
@@ -1281,6 +1375,59 @@ public class BattleControlor : MonoBehaviour
 		else if(template.dodge_eff == 1)
 		{
 			StartCoroutine(playUnlockEff(LockControllor.Instance().lockDodge, BattleUIControlor.Instance().m_gc_dodge));
+		}
+
+		showUnlockEffByNet ();
+	}
+
+	public void showUnlockEffByNet()
+	{
+		if(BattleUIControlor.Instance().m_gc_skill_1[2].gameObject.activeSelf == true
+		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.jueyingxingguangzhan) == true)
+		{
+			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.jueyingxingguangzhan);
+			
+			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_1, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
+		}
+
+		if(BattleUIControlor.Instance().m_gc_skill_2[2].gameObject.activeSelf == true
+		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.xuejilaoyin) == true)
+		{
+			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.xuejilaoyin);
+			
+			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_2, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
+		}
+
+		if(BattleUIControlor.Instance().m_gc_skill_1[0].gameObject.activeSelf == true
+		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.bahuanglieri) == true)
+		{
+			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.bahuanglieri);
+			
+			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_1, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
+		}
+
+		if(BattleUIControlor.Instance().m_gc_skill_2[0].gameObject.activeSelf == true
+		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.qiankundouzhuan) == true)
+		{
+			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.qiankundouzhuan);
+			
+			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_2, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
+		}
+
+		if(BattleUIControlor.Instance().m_gc_skill_1[1].gameObject.activeSelf == true
+		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.zhuixingjian) == true)
+		{
+			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.zhuixingjian);
+			
+			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_1, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
+		}
+
+		if(BattleUIControlor.Instance().m_gc_skill_2[1].gameObject.activeSelf == true
+		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.hanbingjian) == true)
+		{
+			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.hanbingjian);
+			
+			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
 		}
 	}
 
@@ -1356,7 +1503,9 @@ public class BattleControlor : MonoBehaviour
 	{
 		if(BattleUIControlor.Instance().b_autoFight == true && autoFight == false)
 		{
-			BattleUIControlor.Instance().changeAutoFight();
+			BattleConfigTemplate configTemp = BattleConfigTemplate.getBattleConfigTemplateByConfigId(CityGlobalData.m_configId);
+
+			if(configTemp.autoFight == 1) BattleUIControlor.Instance().changeAutoFight();
 		}
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)
@@ -1492,6 +1641,8 @@ public class BattleControlor : MonoBehaviour
 
 				BattleUIControlor.Instance().labelTime.text = strFen + ":" + strMiao;
 
+				BattleUIControlor.Instance().labelTime.color = Color.red;
+
 				if(timeLast <= lastTime && miao % 2 == 0)
 				{
 					BattleUIControlor.Instance().labelTime.color = Color.red;
@@ -1535,7 +1686,12 @@ public class BattleControlor : MonoBehaviour
 
 		KingControllor _king = node as KingControllor;
 
-		_king.kingSkillMibao = skillMiBao;
+		if(_king.kingSkillMibao == null)
+		{
+			_king.kingSkillMibao = new List<HeroSkill>();
+		}
+
+		_king.kingSkillMibao.Add(skillMiBao);
 	}
 
 	public void setHeavySkill_2(HeroSkill skillHeavy_2, BaseAI node)
@@ -1573,6 +1729,11 @@ public class BattleControlor : MonoBehaviour
 		achivement = new JianDunDataManager (list);
 	}
 
+	public void achivementCallback(int index, int state)
+	{
+		BattleUIControlor.Instance ().achivementHintControllor.achivementCallback (index, state);
+	}
+
 	public int getLabelType(BaseAI defender, AttackType _type)
 	{
 		if(_type == AttackType.ADD_HP)
@@ -1589,7 +1750,7 @@ public class BattleControlor : MonoBehaviour
 			return 5;
 		}
 		
-		if(_type == AttackType.BASE_ATTACK)
+		if(_type == AttackType.BASE_ATTACK || _type == AttackType.BASE_REFLEX)
 		{
 			return (int)AttackType.BASE_ATTACK;
 		}
@@ -1597,7 +1758,7 @@ public class BattleControlor : MonoBehaviour
 		{
 			return (int)AttackType.MIBAO_ATTACK;
 		}
-		else if(_type == AttackType.SKILL_ATTACK)
+		else if(_type == AttackType.SKILL_ATTACK || _type == AttackType.SKILL_REFLEX)
 		{
 			return (int)AttackType.SKILL_ATTACK;
 		}
@@ -1703,13 +1864,13 @@ public class BattleControlor : MonoBehaviour
 			{
 				GuideTemplate gt_win = GuideTemplate.getTemplateByLevelAndType(level, 2);
 				
-				StartCoroutine(showDramaControllor(level, gt_win.dungeonId, showResult));
+				StartCoroutine(showDramaControllor(level, gt_win.id, showResult));
 			}
 			else if(fLose == true && result == BattleResult.RESULT_LOSE && f == true)
 			{
 				GuideTemplate gt_lose = GuideTemplate.getTemplateByLevelAndType(level, 3);
 				
-				StartCoroutine(showDramaControllor(level, gt_lose.dungeonId, showResult));
+				StartCoroutine(showDramaControllor(level, gt_lose.id, showResult));
 			}
 			else
 			{
@@ -1768,11 +1929,18 @@ public class BattleControlor : MonoBehaviour
 
 	public void showResult()
 	{
-		Debug.Log ("showResult showResult");
+		if (CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1) 
+		{
+			BattleUIControlor.Instance ().ExecQuit ();
+
+			return;
+		}
+
+//		Debug.Log ("showResult showResult");
 
 		BattleUIControlor.Instance ().addDebugText ("showResult()");
 
-		UtilityTool.Instance.DelayedUnloadUnusedAssets();
+//		UtilityTool.Instance.DelayedUnloadUnusedAssets();
 
 		ClientMain.m_sound_manager.RemoveAllSound();
 
@@ -1803,9 +1971,9 @@ public class BattleControlor : MonoBehaviour
 
 	IEnumerator showResultAction()
 	{
-		Debug.Log ("showResultAction showResultAction");
+//		Debug.Log ("showResultAction showResultAction");
 
-		UtilityTool.UnloadUnusedAssets ();
+//		UtilityTool.UnloadUnusedAssets ();
 
 		BattleUIControlor.Instance ().LoadResultRes ();
 

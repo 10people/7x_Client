@@ -1,6 +1,6 @@
-#define SYNC_LOAD
+//#define SYNC_LOAD
 
-#define SIMULATE_BUNDLE_LOAD
+//#define SIMULATE_BUNDLE_LOAD
 
 
 //#define DEBUG_DELAY_LOAD
@@ -872,7 +872,7 @@ public class Bundle_Loader : MonoBehaviour {
 		{
 			AfterResDotLoad();
 
-			EnterNextScene.AssetLoaded();
+			LoadingHelper.AssetLoaded();
 		}
 		
 		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING ) ){
@@ -882,13 +882,13 @@ public class Bundle_Loader : MonoBehaviour {
 		{
 			LoadingHelper.AddLoadingItemInfo(
 				p_load_task.m_res_asset_path,
-				EnterNextScene.GetAssetLoadedCount(),
+				LoadingHelper.GetAssetLoadedCount(),
 				TimeHelper.GetDeltaTimeSinceSignet() );
 		}
 		
 		if ( ConfigTool.GetBool( ConfigTool.CONST_LOG_ITEM_LOADING_TIME, false ) ){
-			TimeHelper.LogDeltaTimeSinceSignet( EnterNextScene.GetAssetLoadedCount() + " - " + 
-			                                    EnterNextScene.GetTimeSinceLoading() + " - " + 
+			TimeHelper.LogDeltaTimeSinceSignet( LoadingHelper.GetAssetLoadedCount() + " - " + 
+			                                   LoadingHelper.GetTimeSinceLoading() + " - " + 
 			                                    p_load_task.m_res_asset_path );
 		}
 		#else
@@ -903,13 +903,13 @@ public class Bundle_Loader : MonoBehaviour {
 		
 		yield return t_request;
 		
-		if( ConfigTool.m_is_log_asset_loading ){
-			Debug.Log( "Resources.LoadAsync: " + p_load_task.m_res_asset_path );
-		}
-		
-		if( ConfigTool.m_is_log_item_loading_time ){
-			ConfigTool.LogItemLoadingTime( p_load_task.m_res_asset_path );
-		}
+//		if( ConfigTool.m_is_log_asset_loading ){
+//			Debug.Log( "Resources.LoadAsync: " + p_load_task.m_res_asset_path );
+//		}
+//		
+//		if( ConfigTool.m_is_log_item_loading_time ){
+//			ConfigTool.LogItemLoadingTime( p_load_task.m_res_asset_path );
+//		}
 		
 		t_object = t_request.asset;
 		#endif
@@ -1104,7 +1104,7 @@ public class Bundle_Loader : MonoBehaviour {
 					}
 
 				{
-					EnterNextScene.AssetLoaded();
+					LoadingHelper.AssetLoaded();
 				}
 
 				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) ){
@@ -1117,36 +1117,36 @@ public class Bundle_Loader : MonoBehaviour {
 				{
 					LoadingHelper.AddLoadingItemInfo(
 						p_bundle_to_load.m_res_asset_path,
-						EnterNextScene.GetAssetLoadedCount(),
+						LoadingHelper.GetAssetLoadedCount(),
 						TimeHelper.GetDeltaTimeSinceSignet() );
 				}
 
 				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ITEM_LOADING_TIME, false ) ){
-					TimeHelper.LogDeltaTimeSinceSignet( EnterNextScene.GetAssetLoadedCount() + " - " + 
-					                                    EnterNextScene.GetTimeSinceLoading() + " - " + 
+					TimeHelper.LogDeltaTimeSinceSignet( LoadingHelper.GetAssetLoadedCount() + " - " + 
+					                                   LoadingHelper.GetTimeSinceLoading() + " - " + 
 					                                    p_bundle_to_load.m_res_asset_path );
 				}
 #else
 				AssetBundleRequest t_request = null;
 				
 				if( p_bundle_to_load.m_type != null ){
-					t_request = m_bundle_dict[ p_bundle_dict_key ].LoadAsync( t_asset_name, p_bundle_to_load.m_type );
+					t_request = m_bundle_dict[ p_bundle_dict_key ].LoadAssetAsync( t_asset_name, p_bundle_to_load.m_type );
 				}
 				else{
-					t_request = m_bundle_dict[ p_bundle_dict_key ].LoadAsync( t_asset_name, typeof(Object) );
+					t_request = m_bundle_dict[ p_bundle_dict_key ].LoadAssetAsync( t_asset_name, typeof(UnityEngine.Object) );
 				}
 				
 				yield return t_request;
 
-				if( ConfigTool.m_is_log_asset_loading ){
-					Debug.Log( "BundleLoader.LoadAsync: " + t_asset_name + " - " + 
-					          p_bundle_to_load.m_res_asset_path + " - " +
-					          p_bundle_dict_key );
-				}
-
-				if( ConfigTool.m_is_log_item_loading ){
-					ConfigTool.LogItemLoadingTime( p_bundle_to_load.m_res_asset_path );
-				}
+//				if( ConfigTool.m_is_log_asset_loading ){
+//					Debug.Log( "BundleLoader.LoadAsync: " + t_asset_name + " - " + 
+//					          p_bundle_to_load.m_res_asset_path + " - " +
+//					          p_bundle_dict_key );
+//				}
+//
+//				if( ConfigTool.m_is_log_item_loading ){
+//					ConfigTool.LogItemLoadingTime( p_bundle_to_load.m_res_asset_path );
+//				}
 
 				t_object = t_request.asset;
 #endif
@@ -1216,16 +1216,16 @@ public class Bundle_Loader : MonoBehaviour {
 
 	private static float m_total_prepare_load_next_asset_time = 0.0f;
 
-	private static void ResetCoroutineTimeTag(){
-		m_coroutine_time_tag = Time.realtimeSinceStartup;
-	}
-
 	public static void ResetCoroutineInfo(){
 		ResetCoroutineTimeTag();
-
+		
 		m_total_coroutine_time = 0.0f;
-
+		
 		m_total_prepare_load_next_asset_time = 0.0f;
+	}
+
+	private static void ResetCoroutineTimeTag(){
+		m_coroutine_time_tag = Time.realtimeSinceStartup;
 	}
 
 	private void BeforeStartCoroutine(){
@@ -1234,10 +1234,6 @@ public class Bundle_Loader : MonoBehaviour {
 
 	private void BeforeResDotLoad(){
 		m_total_coroutine_time = m_total_coroutine_time + ( Time.realtimeSinceStartup - m_coroutine_time_tag );
-	}
-
-	private void AfterResDotLoad(){
-		ResetCoroutineTimeTag();
 	}
 
 	private void BeforeReadyToLoadNextAsset(){
@@ -1249,9 +1245,9 @@ public class Bundle_Loader : MonoBehaviour {
 	}
 
 	public static void LogCoroutineInfo(){
-		Debug.Log( "Total Coroutine: " + m_total_coroutine_time );
+		Debug.Log( "--- Total Coroutine Time Cost: " + m_total_coroutine_time );
 
-		Debug.Log( "Total Prepare Next Asset: " + m_total_prepare_load_next_asset_time );
+		Debug.Log( "--- Total Coroutine Wait Ready Time Cost: " + m_total_prepare_load_next_asset_time );
 	}
 
 	#endregion

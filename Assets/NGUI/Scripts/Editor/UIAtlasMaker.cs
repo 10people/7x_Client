@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 public class UIAtlasMaker : EditorWindow
 {
-	static public UIAtlasMaker instance;
+	public static UIAtlasMaker instance;
 
 	public class SpriteEntry : UISpriteData
 	{
@@ -200,7 +200,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Add a new sprite to the atlas, given the texture it's coming from and the packed rect within the atlas.
 	/// </summary>
 
-	static public UISpriteData AddSprite (List<UISpriteData> sprites, SpriteEntry se)
+	public static UISpriteData AddSprite (List<UISpriteData> sprites, SpriteEntry se)
 	{
 		// See if this sprite already exists
 		foreach (UISpriteData sp in sprites)
@@ -222,7 +222,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Create a list of sprites using the specified list of textures.
 	/// </summary>
 
-	static public List<SpriteEntry> CreateSprites (List<Texture> textures)
+	public static List<SpriteEntry> CreateSprites (List<Texture> textures)
 	{
 		List<SpriteEntry> list = new List<SpriteEntry>();
 
@@ -334,7 +334,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Release all temporary textures created for the sprites.
 	/// </summary>
 
-	static public void ReleaseSprites (List<SpriteEntry> sprites)
+	public static void ReleaseSprites (List<SpriteEntry> sprites)
 	{
 		foreach (SpriteEntry se in sprites)
 		{
@@ -351,7 +351,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Replace the sprites within the atlas.
 	/// </summary>
 
-	static public void ReplaceSprites (UIAtlas atlas, List<SpriteEntry> sprites)
+	public static void ReplaceSprites (UIAtlas atlas, List<SpriteEntry> sprites)
 	{
 		// Get the list of sprites we'll be updating
 		List<UISpriteData> spriteList = atlas.spriteList;
@@ -381,7 +381,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Extract the specified sprite from the atlas.
 	/// </summary>
 
-	static public SpriteEntry ExtractSprite (UIAtlas atlas, string spriteName)
+	public static SpriteEntry ExtractSprite (UIAtlas atlas, string spriteName)
 	{
 		if (atlas.texture == null) return null;
 		UISpriteData sd = atlas.GetSprite(spriteName);
@@ -451,7 +451,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Extract sprites from the atlas, adding them to the list.
 	/// </summary>
 
-	static public void ExtractSprites (UIAtlas atlas, List<SpriteEntry> finalSprites)
+	public static void ExtractSprites (UIAtlas atlas, List<SpriteEntry> finalSprites)
 	{
 		ShowProgress(0f);
 
@@ -501,7 +501,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Combine all sprites into a single texture and save it to disk.
 	/// </summary>
 
-	static public bool UpdateTexture (UIAtlas atlas, List<SpriteEntry> sprites)
+	public static bool UpdateTexture (UIAtlas atlas, List<SpriteEntry> sprites)
 	{
 		Debug.Log( "UIAtlasMaker.UpdateTexture." );
 
@@ -590,7 +590,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Show a progress bar.
 	/// </summary>
 
-	static public void ShowProgress (float val)
+	public static void ShowProgress (float val)
 	{
 		EditorUtility.DisplayProgressBar("Updating", "Updating the atlas, please wait...", val);
 	}
@@ -599,7 +599,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Add the specified texture to the atlas, or update an existing one.
 	/// </summary>
 
-	static public void AddOrUpdate (UIAtlas atlas, Texture2D tex)
+	public static void AddOrUpdate (UIAtlas atlas, Texture2D tex)
 	{
 		if (atlas != null && tex != null)
 		{
@@ -645,7 +645,7 @@ public class UIAtlasMaker : EditorWindow
 	/// Update the sprite atlas, keeping only the sprites that are on the specified list.
 	/// </summary>
 
-	static public void UpdateAtlas (UIAtlas atlas, List<SpriteEntry> sprites)
+	public static void UpdateAtlas (UIAtlas atlas, List<SpriteEntry> sprites)
 	{
 		if (sprites.Count > 0)
 		{

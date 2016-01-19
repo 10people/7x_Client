@@ -13,6 +13,8 @@ public class DramaActorPlayEffect : DramaActor
 
 	public bool follow;
 
+	public Vector3 targetLocalPosition;
+
 
 	void Start()
 	{
@@ -96,8 +98,10 @@ public class DramaActorPlayEffect : DramaActor
 		
 		BattleEffect effect = (BattleEffect)effectObject.AddComponent<BattleEffect>();
 		
-		effect.refreshDate(null, follow ? gameObject : null, playTime, position, foward);
-		
+		effect.refreshDate(null, follow ? gameObject : null, playTime, position, foward, 0);
+
+		effect.offset = position;
+
 		effect.realTime = Time.realtimeSinceStartup;
 		
 		if(et.sound.Equals("-1") == false)
@@ -106,6 +110,20 @@ public class DramaActorPlayEffect : DramaActor
 			
 			spe.PlaySound(et.sound);
 		}
+
+		float length = Vector3.Distance (Vector3.zero, targetLocalPosition);
+
+		if(length > .1f)
+		{
+			iTween.MoveTo(effectObject, iTween.Hash(
+				"name", "Effect",
+				"position", targetLocalPosition,
+				"time", playTime,
+				"easeType", iTween.EaseType.linear,
+				"islocal", true
+				));
+		}
+
 	}
 
 }

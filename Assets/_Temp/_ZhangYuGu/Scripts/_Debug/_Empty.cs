@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class _Empty : MonoBehaviour {
 
-	#region Mono
-
 	public Vector3 m_vec		= new Vector3( 0, 0, 0);
 
 	public UITexture m_tex;
@@ -14,56 +12,62 @@ public class _Empty : MonoBehaviour {
 
 	public Shader m_shader;
 
+	public static _Empty m_instance = null;
+
+	private _EmptyScript m_empty_script = null;
+
+	#region Mono
+
 	void Awake(){
-		Debug.Log( "Awake()" );
+		Debug.Log( "_Empty.Awake()" );
 
-		m_tex = gameObject.GetComponent<UITexture>();
+		m_instance = this;
 
-		if( m_tex == null ){
-			Debug.LogError( "m_tex = null." );
+		_EmptyScript.Instance();
 
-			return;
-		}
-
-		m_tex.material = new Material( m_tex.material );
-
-		m_mat = m_tex.material;
-
-		m_shader = m_mat.shader;
+//		m_tex = gameObject.GetComponent<UITexture>();
+//
+//		if( m_tex == null ){
+//			Debug.LogError( "m_tex = null." );
+//
+//			return;
+//		}
+//
+//		m_tex.material = new Material( m_tex.material );
+//
+//		m_mat = m_tex.material;
+//
+//		m_shader = m_mat.shader;
 	}
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log( "Start()" );
+		Debug.Log( "_Empty.Start()" );
 	}
 
 	void OnEnable(){
-		Debug.Log( "OnEnable()" );
+		Debug.Log( "_Empty.OnEnable()" );
 
 	}
-	
+
+	void OnDestroy(){
+		Debug.Log( "_Empty.OnDestroy()" );
+
+		m_empty_script = null;
+	}
+
 	// Update is called once per frame
 	void Update () {
-		if( m_mat == null ){
-			Debug.LogError( "m_mat = null." );
 
-			return;
-		}
-
-		m_mat.SetFloat( "_x", m_vec.x );
-
-		m_mat.SetFloat( "_y", m_vec.y );
-
-		m_mat.SetFloat( "_z", m_vec.z );
 	}
 
 	void OnGUI(){
-		{
-			GUIHelper.GUILayoutVerticalSpace( 0.1f );
-		}
-
-		GUILayout.BeginVertical();
-
+//		{
+//			GUIHelper.GUILayoutVerticalSpace( 0.1f );
+//		}
+//
+//		GUILayout.BeginVertical();
+//
 //		{
 //			if( GUILayout.Button( "Clean" ) ){
 //				BundleHelper.CleanCache();
@@ -78,10 +82,19 @@ public class _Empty : MonoBehaviour {
 //				Application.LoadLevel( "_Empty" );
 //			}
 //		}
-
-		GUILayout.EndVertical();
+//
+//		GUILayout.EndVertical();
 	}
 
 	#endregion
 
+
+
+	#region Utilities
+
+	public int GetFrameCount(){
+		return Time.frameCount;
+	}
+
+	#endregion
 }

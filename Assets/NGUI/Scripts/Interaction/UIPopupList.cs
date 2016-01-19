@@ -18,7 +18,7 @@ public class UIPopupList : UIWidgetContainer
 	/// Current popup list. Only available during the OnSelectionChange event callback.
 	/// </summary>
 
-	static public UIPopupList current;
+	public static UIPopupList current;
 
 	const float animSpeed = 0.15f;
 

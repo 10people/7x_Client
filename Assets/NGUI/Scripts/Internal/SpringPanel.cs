@@ -13,7 +13,7 @@ using UnityEngine;
 [AddComponentMenu("NGUI/Internal/Spring Panel")]
 public class SpringPanel : MonoBehaviour
 {
-	static public SpringPanel current;
+	public static SpringPanel current;
 
 	/// <summary>
 	/// Target position to spring the panel to.
@@ -106,7 +106,7 @@ public class SpringPanel : MonoBehaviour
 	/// Start the tweening process.
 	/// </summary>
 
-	static public SpringPanel Begin (GameObject go, Vector3 pos, float strength)
+	public static SpringPanel Begin (GameObject go, Vector3 pos, float strength)
 	{
 		SpringPanel sp = go.GetComponent<SpringPanel>();
 		if (sp == null) sp = go.AddComponent<SpringPanel>();

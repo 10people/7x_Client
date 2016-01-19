@@ -9,7 +9,6 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝点
 
-
 	public HuangYeTreasure mHuangYeTreasure;
 
 	public UILabel TimeAndAllTimes;//剩余次数和总次数
@@ -19,7 +18,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 	public GameObject ShowPlayerDoingTiaoZhan;
 	public GameObject ShowBtnBox; //遮罩
-	public GameObject ChangeMiBaoBtn;
+	//public GameObject ChangeMiBaoBtn;
 
 	public UILabel Lv_Instruction;//描述
 
@@ -30,9 +29,9 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 	List<int> Bosses = new List<int>();
 	List<int> Zhi_Ye = new List<int>();
 	
-	int EnemyNumBers = 6;//显示敌人数量
-	int distance = 120;//敌人头像距离
-	int countDistance = 240;//偏移量
+	int EnemyNumBers = 4;//显示敌人数量
+	int distance = 100;//敌人头像距离
+	int countDistance = 250;//偏移量
 	
 	private int awardNum;//掉落物品个数
 	
@@ -53,7 +52,13 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 	private static HYRetearceEnemy g_HYRetearceEnemy;
 
-	public GameObject ChangeMiBaoSKillBtn;
+	public UILabel mTiLi;
+	
+	public UILabel mTongBi;
+	
+	public UILabel mYuanBao;
+
+	public UISprite TuiJianMiBaoicon;
 
 	public static HYRetearceEnemy Instance ()
 	{
@@ -75,7 +80,10 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
+
+		g_HYRetearceEnemy = null;
 	}
+
 	void Start () {
 	
 		CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
@@ -85,22 +93,22 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 	
 
 	void Update () {
+
+		mTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tili.ToString();
+		
+		mTongBi.text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString();
+		
+		mYuanBao.text = JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString();
 	
 	}
 
 	public void Init()
 	{
-		EnemyNumBers = 6;
+		EnemyNumBers = 4;
 		initHYTreasureBattleUI ();
 		RefreshRetearce();
-		if(!MiBaoGlobleData.Instance ().GetEnterChangeMiBaoSkill_Oder ())
-		{
-			ChangeMiBaoSKillBtn.SetActive(false);
-		}
-		else
-		{
-			ChangeMiBaoSKillBtn.SetActive(true);
-		}
+		ShowBtnBox.SetActive(false);
+
 	}
 
 	public void initHYTreasureBattleUI()
@@ -113,7 +121,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 		string mName = NameIdTemplate.GetName_By_NameId (mHuangYePveTemplate.nameId);
 
-		
+		TuiJianMiBaoicon.spriteName = "";
 		char[] separator = new char[]{'#'};
 		
 		string[] s = mHuangYeDesc.Split (separator);
@@ -206,7 +214,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 				{
 					pos += 1;
 
-					if(pos > 6)
+					if(pos > 4)
 					{
 						return;
 					}
@@ -219,7 +227,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 					GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
 					iconSampleObject.SetActive(true);
 					iconSampleObject.transform.parent = DropthingsRoot.transform;
-                    iconSampleObject.transform.localPosition = new Vector3(-240 + (pos - 1) * 120, 1, 1);
+                    iconSampleObject.transform.localPosition = new Vector3(-150 + (pos - 1) * 100, -20, 1);
 
                     var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 					CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(mAwardTemp[i].itemId);
@@ -228,6 +236,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 				    iconSampleManager.SetIconByID(mItemTemp.id, "", 7);
                     iconSampleManager.SetIconPopText(mAwardTemp[i].itemId, mNameIdTemplate.Name, mdesc);
+					iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
 				}
 			}
 		}
@@ -325,9 +334,10 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		int heronum = heros.Count;
 		int solder = soldires.Count;
 		
-		//		Debug.Log ("boss个数：" + bossnum);
-		//		Debug.Log ("hero个数：" + heronum);
-		//		Debug.Log ("soldier个数：" + solder);
+		Debug.Log ("boss个数：" + bossnum);
+		Debug.Log ("hero个数：" + heronum);
+		Debug.Log ("soldier个数：" + solder);
+		Debug.Log ("EnemyNumBers：" + EnemyNumBers);
 		
 		if (bossnum > 0)//BOSS个数不为0
 		{
@@ -462,11 +472,11 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 			
 			if (allenemy >= EnemyNumBers)
 			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, 0, 0);
+				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, -20, 0);
 			}
 			else
 			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, 0, 0);
+				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
 			}
 			
 			HuangyeNPCTemplate mHuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id(Bosses[n]);
@@ -501,6 +511,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 			//iconSampleManager.SetIconPopText(popTextTitle, popTextDesc);
 			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
 		}
 	}
 	
@@ -546,13 +557,13 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 			
 			if (allenemy >= EnemyNumBers)
 			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - Bosses.Count - n) * distance - countDistance, 0, 0);
+				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - Bosses.Count - n) * distance - countDistance, -20, 0);
 			}
 			else
 			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - Bosses.Count - n) * distance - countDistance, 0, 0);
+				iconSampleObject.transform.localPosition = new Vector3((allenemy - Bosses.Count - n) * distance - countDistance, -20, 0);
 			}
-			
+			Debug.Log("heros[n] = "+heros[n]);
 			HuangyeNPCTemplate mHuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id(heros[n]);
 			float boold = 1.0f;
 			for(int i = 0 ; i < M_Treas_info.npcInfos.Count; i ++)
@@ -583,6 +594,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
             iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
 			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
 		}
 	}
 	
@@ -621,12 +633,12 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 			if (allenemy >= EnemyNumBers)
 			{
 				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, 0, 0);
+				                                                        - n) * distance - countDistance, -20, 0);
 			}
 			else
 			{
 				iconSampleObject.transform.localPosition = new Vector3((allenemy - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, 0, 0);
+				                                                        - n) * distance - countDistance, -20, 0);
 			}
 			iconSampleObject.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
 			
@@ -660,6 +672,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
             iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
 			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
 		}
 	}
 	
@@ -742,8 +755,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		RankUI = Instantiate (p_object) as GameObject;
 		
 		RankUI.SetActive (true);
-		
-		RankUI.transform.parent = this.transform.parent;
+		RankUI.transform.parent = this.transform;
 		
 		RankUI.transform.localPosition = Vector3.zero;
 		
@@ -755,7 +767,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 		mMy_DamageRank.Init ();
 
-		HY_UIManager.Instance ().ShowOrClose ();
+		//HY_UIManager.Instance ().ShowOrClose ();
 	}
 
 	IEnumerator CountTime()
@@ -774,8 +786,8 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 		}
 		CloseTime.text = "0"+LanguageTemplate.GetText(LanguageTemplate.Text.DAY)+"0"+LanguageTemplate.GetText(LanguageTemplate.Text.HOUR)+"0"+LanguageTemplate.GetText(LanguageTemplate.Text.MINUTE)+"0"+LanguageTemplate.GetText(LanguageTemplate.Text.SECOND);
-		ChangeMiBaoBtn.SetActive(false);
-		//ShowBtnBox.SetActive(true);
+		//ChangeMiBaoBtn.SetActive(false);
+		ShowBtnBox.SetActive(false);
 
 	}
 	public HYTreasureBattleResp M_Treas_info;
@@ -812,7 +824,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 			}
 			else
 			{
-				ChangeMiBaoBtn.SetActive(true);
+				//ChangeMiBaoBtn.SetActive(true);
 				ShowPlayerDoingTiaoZhan.SetActive(false);
 
 				m_objInBattle.SetActive(true);
@@ -1019,39 +1031,38 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		{
 			if(mMoney < M_Treas_info.buyNextMoney)
 			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),NoMoney);
-			}
+                EquipSuoData.TopUpLayerTip();
+            }
 			else
 			{
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.HY_BUY_BATTLE_TIMES_REQ);
 			}
 		}
 	}
-	void NoMoney(ref WWW p_www,string p_path, Object p_object)
+	public void BuyTiLi()
 	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = "元宝不足";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str = "您的元宝不足了！是否充值？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,SureChongZhi,null,null);
+		JunZhuData.Instance().BuyTiliAndTongBi(true, false, false);
 	}
-	void SureChongZhi(int i)
+	/// <summary>
+	/// Buy_s the money.
+	/// </summary>
+	public void Buy_Money()
 	{
-		if(i == 2)
-		{
-			Debug.Log("跳转到充值！");
-			
-			MainCityUI.ClearObjectList();
-			TopUpLoadManagerment.m_instance.LoadPrefab(true);
-			QXTanBaoData.Instance().CheckFreeTanBao();
-		}
+		JunZhuData.Instance().BuyTiliAndTongBi(false,true,false);
+	}
+	/// <summary>
+	/// Buy_s the yuan bao.
+	/// </summary>
+	public void Buy_YuanBao()
+	{
+		MainCityUI.ClearObjectList();
+		EquipSuoData.TopUpLayerTip();
+		//		QXTanBaoData.Instance().CheckFreeTanBao();
 	}
 	public void Backbtn()
 	{
 		CityGlobalData.IsOPenHyLeveUI = false;
-
+		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Destroy (this.gameObject);
 	}
 

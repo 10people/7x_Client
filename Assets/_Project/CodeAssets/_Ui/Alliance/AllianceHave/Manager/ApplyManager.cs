@@ -29,6 +29,13 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 
 	public GameObject ReCruitBtn;
 	public List<AppMember> m_AppMemberList = new List<AppMember>();
+
+	public UILabel mTiLi;
+	
+	public UILabel mTongBi;
+	
+	public UILabel mYuanBao;
+
 	void Awake()
 	{ 
 		SocketTool.RegisterMessageProcessor(this);
@@ -47,6 +54,11 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 
 	void Update () {
 	
+//		mTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tili.ToString();
+//		
+//		mTongBi.text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString();
+//		
+//		mYuanBao.text = JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString();
 	}
 
 	public void Init()
@@ -357,5 +369,21 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			
 			m_AppMemberList.Add(mm__AppMember);
 		}
+	}
+	public void BuyTiLi()
+	{
+		
+	}
+	public void BuyTongBi()
+	{
+		
+	}
+	public void BuyYuanBao()
+	{
+		
+	}
+	public void Close()
+	{
+		NewAlliancemanager.Instance ().BackToThis (this.gameObject);
 	}
 }

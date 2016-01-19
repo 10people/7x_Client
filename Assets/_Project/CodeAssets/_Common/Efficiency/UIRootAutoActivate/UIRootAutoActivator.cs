@@ -10,7 +10,7 @@ using System.Threading;
 using System.Text;
 using System.IO;
 
-public class UIRootAutoActivator {
+public class UIRootAutoActivator : MonoBehaviour{
 
 	#region Instance
 
@@ -18,7 +18,8 @@ public class UIRootAutoActivator {
 
 	public static UIRootAutoActivator Instance(){
 		if( m_instance == null ){
-			m_instance = new UIRootAutoActivator();
+
+			m_instance = GameObjectHelper.GetDontDestroyOnLoadGameObject().AddComponent<UIRootAutoActivator>();
 		}
 
 		return m_instance;
@@ -28,9 +29,21 @@ public class UIRootAutoActivator {
 
 
 
+	#region Mono
+
+	public void OnDestroy(){
+		m_instance = null;
+
+		m_activator_list.Clear();
+	}
+
+	#endregion
+
+
+
 	#region Functions
 
-	public void Update(){
+	public void ManualUpdate(){
 		for( int i = m_activator_list.Count - 1; i >= 0; i-- ){
 			ActivatorContainer t_container = m_activator_list[ i ];
 
@@ -183,6 +196,4 @@ public class UIRootAutoActivator {
 			m_activator_list.Remove( this );
 		}
 	}
-
-
 }

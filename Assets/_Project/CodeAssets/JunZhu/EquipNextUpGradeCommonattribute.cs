@@ -18,7 +18,7 @@ public class EquipNextUpGradeCommonattribute : MonoBehaviour
         EquipUpgradeInfo equipupgrade = new EquipUpgradeInfo();
         int qiangHuaLv = item.qiangHuaLv;
         int qiangHuaExp = item.qiangHuaExp;
-        int jinJieZbId = int.Parse(ZhuangBei.getZhuangBeiById(zhuangbeiid).jiejieId);
+        int jinJieZbId =  ZhuangBei.getZhuangBeiById(zhuangbeiid).jiejieId;
         List<ExpTempTemp> expTempList = ExpTempTemp.GetEquipUpgradeInfo(ZhuangBei.GetExpIdBy_EquipId(item.itemId));
         if (expTempList == null)
         {

@@ -22,6 +22,8 @@ public class ChatWindow : ChatBaseWindow, SocketListener
                 return m_ChatChannelFrameList[1];
             case ChatPct.Channel.XiaoWu:
                 return m_ChatChannelFrameList[2];
+            case ChatPct.Channel.Broadcast:
+                return m_ChatChannelFrameList[3];
             default:
                 Debug.LogError("Not correct channel num:" + CurrentChannel);
                 return null;
@@ -40,6 +42,22 @@ public class ChatWindow : ChatBaseWindow, SocketListener
     [HideInInspector]
     public GameObject m_RootChatOpenObject;
 
+    public void RefreshWorldChannelCostInfo()
+    {
+        m_ChatChannelFrameList[0].CostInfoObject.SetActive(true);
+        if (m_RemainingFreeTimes <= 0)
+        {
+            m_ChatChannelFrameList[0].FreeLabel.gameObject.SetActive(false);
+            m_ChatChannelFrameList[0].IngotObject.SetActive(true);
+            m_ChatChannelFrameList[0].IngotCostLabel.text = PurchaseTemplate.GetBuyWorldChat_Price(1).ToString();
+        }
+        else
+        {
+            m_ChatChannelFrameList[0].FreeLabel.gameObject.SetActive(true);
+            m_ChatChannelFrameList[0].IngotObject.SetActive(false);
+        }
+    }
+
     #endregion
 
     #region Toggle Control
@@ -52,6 +70,7 @@ public class ChatWindow : ChatBaseWindow, SocketListener
     public GameObject WorldAlert;
     public GameObject AllianceAlert;
     public GameObject PrivateAlert;
+    public GameObject BroadCastAlert;
 
     public void OnToggleClick(int index)
     {
@@ -62,6 +81,8 @@ public class ChatWindow : ChatBaseWindow, SocketListener
                 {
                     CurrentChannel = ChatPct.Channel.SHIJIE;
                     WorldAlert.SetActive(false);
+
+                    RefreshWorldChannelCostInfo();
                     break;
                 }
             //alliance
@@ -74,6 +95,8 @@ public class ChatWindow : ChatBaseWindow, SocketListener
                     }
                     CurrentChannel = ChatPct.Channel.LIANMENG;
                     AllianceAlert.SetActive(false);
+
+                    GetChannelFrame(CurrentChannel).CostInfoObject.SetActive(false);
                     break;
                 }
             //house
@@ -86,6 +109,20 @@ public class ChatWindow : ChatBaseWindow, SocketListener
                     }
                     CurrentChannel = ChatPct.Channel.XiaoWu;
                     PrivateAlert.SetActive(false);
+
+                    GetChannelFrame(CurrentChannel).CostInfoObject.SetActive(false);
+                    break;
+                }
+            //broadcast
+            case 3:
+                {
+                    CurrentChannel = ChatPct.Channel.Broadcast;
+                    BroadCastAlert.SetActive(false);
+
+                    GetChannelFrame(CurrentChannel).CostInfoObject.SetActive(true);
+                    GetChannelFrame(CurrentChannel).FreeLabel.gameObject.SetActive(false);
+                    GetChannelFrame(CurrentChannel).IngotObject.SetActive(true);
+                    GetChannelFrame(CurrentChannel).IngotCostLabel.text = PurchaseTemplate.GetBuyWorldChat_Price(1).ToString();
                     break;
                 }
         }
@@ -95,8 +132,10 @@ public class ChatWindow : ChatBaseWindow, SocketListener
 
         isEnterToggleByOpeningWindow = false;
 
-        m_ChatChannelFrameList.ForEach(item => item.gameObject.SetActive(false));
+        m_ChatChannelFrameList.Where(item => item != GetChannelFrame(CurrentChannel)).ToList().ForEach(item => item.gameObject.SetActive(false));
         GetChannelFrame(CurrentChannel).gameObject.SetActive(true);
+
+        //Refresh data handler.
         GetChannelFrame(CurrentChannel).m_ChatBaseDataHandler.Refresh(2);
     }
 
@@ -114,9 +153,7 @@ public class ChatWindow : ChatBaseWindow, SocketListener
     {
         SocketTool.UnRegisterSocketListener(this);
 
-        TogglesControl.TogglesEvents[0].m_Handle -= OnToggleClick;
-        TogglesControl.TogglesEvents[1].m_Handle -= OnToggleClick;
-        TogglesControl.TogglesEvents[2].m_Handle -= OnToggleClick;
+        TogglesControl.TogglesEvents.ForEach(item => item.m_Handle -= OnToggleClick);
     }
 
     new void Awake()
@@ -127,9 +164,7 @@ public class ChatWindow : ChatBaseWindow, SocketListener
 
         SocketTool.RegisterSocketListener(this);
 
-        TogglesControl.TogglesEvents[0].m_Handle += OnToggleClick;
-        TogglesControl.TogglesEvents[1].m_Handle += OnToggleClick;
-        TogglesControl.TogglesEvents[2].m_Handle += OnToggleClick;
+        TogglesControl.TogglesEvents.ForEach(item => item.m_Handle += OnToggleClick);
     }
 
     void OnLevelWasLoaded(int level)

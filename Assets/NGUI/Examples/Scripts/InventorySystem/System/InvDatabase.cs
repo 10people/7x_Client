@@ -13,7 +13,7 @@ public class InvDatabase : MonoBehaviour
 	/// Retrieves the list of item databases, finding all instances if necessary.
 	/// </summary>
 
-	static public InvDatabase[] list
+	public static InvDatabase[] list
 	{
 		get
 		{
@@ -89,7 +89,7 @@ public class InvDatabase : MonoBehaviour
 	/// Find the specified item given its full 32-bit ID (not to be confused with individual 16-bit item IDs).
 	/// </summary>
 
-	static public InvBaseItem FindByID (int id32)
+	public static InvBaseItem FindByID (int id32)
 	{
 		InvDatabase db = GetDatabase(id32 >> 16);
 		return (db != null) ? db.GetItem(id32 & 0xFFFF) : null;
@@ -99,7 +99,7 @@ public class InvDatabase : MonoBehaviour
 	/// Find the item with the specified name.
 	/// </summary>
 
-	static public InvBaseItem FindByName (string exact)
+	public static InvBaseItem FindByName (string exact)
 	{
 		for (int i = 0, imax = list.Length; i < imax; ++i)
 		{
@@ -123,7 +123,7 @@ public class InvDatabase : MonoBehaviour
 	/// Use this to get a list of items on the character that can get saved out to an external database or file.
 	/// </summary>
 
-	static public int FindItemID (InvBaseItem item)
+	public static int FindItemID (InvBaseItem item)
 	{
 		for (int i = 0, imax = list.Length; i < imax; ++i)
 		{

@@ -1,8 +1,45 @@
-﻿using UnityEngine;
+
+using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
+using System.Text;
+using System.IO;
+
+
 
 public class Console_SetQuality {
+
+	#region Set Quality Tool
+
+	public static void SetQuality( string[] p_params ){
+		if( p_params.Length < 3 ){
+			Debug.Log( "Length Not Enough." );
+			
+			return;
+		}
+		
+		string t_target_key = p_params[ 1 ].ToLowerInvariant();
+		
+		foreach( KeyValuePair<string, ConfigTool.ConfigValue> t_pair in QualityTool.m_quality_value_dict ){
+			string t_key = t_pair.Key.ToLowerInvariant();
+			
+			if( t_key == t_target_key ){
+				Debug.Log( "Quality.Set( " + t_key + " - " + p_params[ 2 ] + " )" );
+				
+				t_pair.Value.AutoSet( p_params[ 2 ] );
+				
+				return;
+			}
+		}
+		
+		{
+			Debug.LogError( "Key Not Found: " + p_params[ 1 ] );
+		}
+	}
+
+	#endregion
+
 
 	#region Set FPS
 	
@@ -143,7 +180,7 @@ public class Console_SetQuality {
 		{
 			Quality_Common.ConfigBloom( t_param_1_show );
 			
-			QualityTool.m_quality_dict[ QualityTool.CONST_BLOOM ].AutoSet( p_params[ 1 ] );
+			QualityTool.m_quality_value_dict[ QualityTool.CONST_BLOOM ].AutoSet( p_params[ 1 ] );
 		}
 	}
 	
@@ -176,9 +213,9 @@ public class Console_SetQuality {
 		{
 			Quality_Shadow.ConfigLights( t_param_1_show );
 			
-			QualityTool.m_quality_dict[ QualityTool.CONST_IN_CITY_SHADOW ].AutoSet( p_params[ 1 ] );
+			QualityTool.m_quality_value_dict[ QualityTool.CONST_IN_CITY_SHADOW ].AutoSet( p_params[ 1 ] );
 			
-			QualityTool.m_quality_dict[ QualityTool.CONST_BATTLE_FIELD_SHADOW ].AutoSet( p_params[ 1 ] );
+			QualityTool.m_quality_value_dict[ QualityTool.CONST_BATTLE_FIELD_SHADOW ].AutoSet( p_params[ 1 ] );
 		}
 	}
 	

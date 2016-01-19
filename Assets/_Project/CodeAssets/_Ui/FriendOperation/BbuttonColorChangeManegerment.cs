@@ -9,7 +9,7 @@ public class BbuttonColorChangeManegerment : MonoBehaviour
     {
 	
 	}
-    public void ButtonsControl(bool colliderEnable)
+    public void ButtonsControl(bool colliderEnable,int type = 0)
     {
         if (m_BackObj.GetComponent<TweenColor>() == null)
         {
@@ -21,10 +21,15 @@ public class BbuttonColorChangeManegerment : MonoBehaviour
             m_BackObj.GetComponent<TweenColor>().from = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
             m_BackObj.GetComponent<TweenColor>().to = new Color(1.0f, 1.0f, 1.0f);
         }
-        else
+        else if (type == 0)
         {
             m_BackObj.GetComponent<TweenColor>().from = new Color(1.0f, 1.0f, 1.0f);
             m_BackObj.GetComponent<TweenColor>().to = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
+        }
+        else
+        {
+            m_BackObj.GetComponent<TweenColor>().from = new Color(1.0f, 1.0f, 1.0f);
+            m_BackObj.GetComponent<TweenColor>().to = new Color(0 / 255.0f, 0 / 255.0f, 0 / 255.0f);
         }
 
         m_BackObj.GetComponent<TweenColor>().duration = 0.08f;

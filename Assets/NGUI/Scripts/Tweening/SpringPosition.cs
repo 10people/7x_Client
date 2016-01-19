@@ -13,7 +13,7 @@ using System.Collections.Generic;
 [AddComponentMenu("NGUI/Tween/Spring Position")]
 public class SpringPosition : MonoBehaviour
 {
-	static public SpringPosition current;
+	public static SpringPosition current;
 
 	/// <summary>
 	/// Target position to tween to.
@@ -128,7 +128,7 @@ public class SpringPosition : MonoBehaviour
 	/// Start the tweening process.
 	/// </summary>
 
-	static public SpringPosition Begin (GameObject go, Vector3 pos, float strength)
+	public static SpringPosition Begin (GameObject go, Vector3 pos, float strength)
 	{
 		SpringPosition sp = go.GetComponent<SpringPosition>();
 		if (sp == null) sp = go.AddComponent<SpringPosition>();

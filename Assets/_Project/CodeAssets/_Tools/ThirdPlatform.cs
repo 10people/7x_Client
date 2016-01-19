@@ -1,5 +1,7 @@
 //#define MYAPP_ANDROID_PLATFORM
 
+
+
 //#define PP_PLATFORM
 
 //#define XY_PLATFORM
@@ -31,6 +33,11 @@ using System.Runtime.InteropServices;
 using System.Linq;
 using System.Text;
 using System.IO;
+
+#if MYAPP_ANDROID_PLATFORM
+using Msdk;
+using LitJson;
+#endif
 
 using SimpleJSON;
 
@@ -89,15 +96,24 @@ public class ThirdPlatform : MonoBehaviour {
 	#region Mono
 
 	void Awake(){
+//		Debug.Log( "ThirdPlatform.Awake()" );
+
 		m_instance = this;
 
 		SetPlatformStatus( PlatformStatus.LogOut );
 	}
 	
 	void Start () {
+//		Debug.Log( "ThirdPlatform.Start()" );
 
-		// pp
-		if ( IsPPPLatform () ) {
+		if( IsMyAppAndroidPlatform() ){
+			#if MYAPP_ANDROID_PLATFORM
+			Debug.Log( "WGPlatform.Init()" );
+
+			WGPlatform.Instance.Init ();
+			#endif
+		}
+		else if ( IsPPPLatform () ) {
 			#if PP_PLATFORM
 			Bonjour.initSDK( 6469,"34deda633a232a335d363ef4520b770e", UtilityTool.GetDontDestroyGameObjectName() );
 			
@@ -500,9 +516,7 @@ public class ThirdPlatform : MonoBehaviour {
 		ThirdPlatform.Instance().SetPlatformStatus( PlatformStatus.Verifying );
 		#endif
 
-		#if PP_PLATFORM || XY_PLATFORM || TONGBU_PLATFORM || I4_PLATFORM || KUAIYONG_PLATFORM || HAIMA_PLATFORM || I_APPLE_PLATFORM || ITOOLS_PLATFORM
 		Bonjour.showSDKCenter();
-		#endif
 	}
 
 	public static void LogOut(){
@@ -515,210 +529,142 @@ public class ThirdPlatform : MonoBehaviour {
 			Debug.LogError( "Error, instance = null." );
 		}
 
-		#if PP_PLATFORM || XY_PLATFORM || TONGBU_PLATFORM || I4_PLATFORM || KUAIYONG_PLATFORM || HAIMA_PLATFORM || I_APPLE_PLATFORM || ITOOLS_PLATFORM
 		Bonjour.logout();
-		#endif
 	}
 	
 	#endregion
 
 
 
-	#region XG
-
-	private static string m_xg_token = "";
-
-	private static bool m_xg_token_sended = false;
-
-	private void ProcessToken(){
-		if ( m_xg_token_sended ) {
-//			Debug.Log( "Already Sended." );
-
-			return;
-		}
-
-		if ( !SocketTool.IsConnected () ) {
-//			Debug.Log( "Waiting For Socket Connection." );
-
-			return;
-		}
-
-		if ( !IsXGTokeGetted ()) {
-//			Debug.Log( "Waiting For XG Token." );
-
-			return;
-		}
-
-		{
-			ErrorMessage t_error_message = new ErrorMessage();
-			
-			t_error_message.errorDesc = m_xg_token;
-
-			t_error_message.cmd = 0;
-
-			t_error_message.errorCode = 0;
-			
-			SocketHelper.SendQXMessage( t_error_message, ProtoIndexes.C_XG_TOKEN );
-			
-			Debug.Log( "Upload XG Token: " + t_error_message.errorCode + 
-			               "   Desc: " + t_error_message.errorDesc +
-			               "   Client: " + t_error_message.cmd );
-		}
-
-		{
-			m_xg_token_sended = true;
-		}
-	}
-
-	public static bool IsXGTokeGetted(){
-		if (string.IsNullOrEmpty (m_xg_token)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public static string GetXGToken(){
-		return m_xg_token;
-	}
-
-	public void XGSetToken( string p_token ){
-		Debug.Log ( "ThirdPlatform.XGSetToken( " + p_token + " )" );
+	#region MyApp Platform
+	private string m_myapp_login_state;
+	
+	private string m_myapp_login_message;
+	
+	public const string PLATFORM_MY_APP_ANDROID_TAG 		= "MyApp";
+	
+	private Msdk.LoginRet m_my_app_login_ret	= null;
+	
+	//TODO GAME 回调实现，游戏可以参考下面代码
+	
+	/// <summary>
+	///  登陆回调
+	/// </summary>
+	/// <param name="jsonRet">Json ret.</param>
+	void OnLoginNotify( string jsonRet ){
+		Debug.Log( "OnLoginNotify=" + jsonRet );
 		
-		m_xg_token = p_token;
-
-		m_xg_token_sended = false;
-	}
-
-	#endregion
-
-
-
-	#region Platform Type
-
-	public static PlatformType GetPlatformType(){
-		#if PP_PLATFORM
-		return PlatformType.PP_Platform;
-		#elif XY_PLATFORM
-		return PlatformType.XY_Platform;
-		#elif TONGBU_PLATFORM
-		return PlatformType.TongBu_Platform;
-		#elif I4_PLATFORM
-		return PlatformType.I4_Platform;
-		#elif KUAIYONG_PLATFORM
-		return PlatformType.KuaiYong_Platform;
-		#elif HAIMA_PLATFORM
-		return PlatformType.HaiMa_Platform;
-		#elif I_APPLE_PLATFORM
-		return PlatformType.I_Apple_Platform;
-		#elif ITOOLS_PLATFORM
-		return PlatformType.ITools_Platform;
-		#else
-		return PlatformType.None;
+		#if MYAPP_ANDROID_PLATFORM
+		
+		Msdk.LoginRet ret = Msdk.LoginRet.ParseJson( jsonRet );
+		
+		{
+			m_my_app_login_ret = ret;
+		}
+		
+		if ( ret == null ) {
+			
+			m_myapp_login_state = "登陆失败";
+			
+			m_myapp_login_message = " ";
+			
+			return;
+		}
+		
+		Debug.Log ( "MyApp.OnLoginNotify( " + ret + " )" );
+		
+		/*
+		 *  loginRet.platform表示当前的授权平台, 值类型为ePlatform, 可能值为ePlatform_QQ, ePlatform_Weixin
+	 	 *     loginRet.flag值表示返回状态, 可能值(eFlag枚举)如下：
+		 *       eFlag_Succ: 返回成功, 游戏接收到此flag以后直接读取LoginRet结构体中的票据进行游戏授权流程.
+		 *       eFlag_QQ_NoAcessToken: 手Q授权失败, 游戏接收到此flag以后引导用户去重新授权(重试)即可.
+		 *       eFlag_QQ_UserCancel: 用户在授权过程中
+		 *       eFlag_QQ_LoginFail: 手Q授权失败, 游戏接收到此flag以后引导用户去重新授权(重试)即可.
+		 *       eFlag_QQ_NetworkErr: 手Q授权过程中出现网络错误, 游戏接收到此flag以后引导用户去重新授权(重试)即可.
+		 *     loginRet.token是一个List<TokenRet>, 其中存放的TokenRet有type和value, 通过遍历Vector判断type来读取需要的票据. type(TokenType)类型定义如下:
+		 *       eToken_QQ_Access,
+		 *       eToken_QQ_Pay,
+		 *       eToken_WX_Access,
+		 *       eToken_WX_Refresh
+		 */
+		switch ( ret.flag ){
+		case eFlag.eFlag_Succ:				
+			// 登陆成功, 可以读取各种票据				
+			int platform= ret.platform;
+			
+			if(ePlatform.ePlatform_Weixin == platform){
+				m_myapp_login_state = "微信登陆成功";
+			}
+			else if(ePlatform.ePlatform_QQ == platform){
+				m_myapp_login_state = "QQ登陆成功";
+			}
+			else if(ePlatform.ePlatform_QQHall == platform){
+				m_myapp_login_state = "大厅登陆成功";
+			}
+			
+			m_myapp_login_message = ret.ToString();
+			
+			{
+				ThirdPlatformLoginSuccess();
+			}
+			
+			break;
+			
+		case eFlag.eFlag_WX_RefreshTokenSucc:
+			Debug.Log( "微信票据刷新成功." );
+			break;
+			
+		case eFlag.eFlag_WX_AccessTokenExpired:
+			Debug.Log( "微信票据过期，重刷新token." );
+			
+			WGPlatform.Instance.WGRefreshWXToken();
+			break;
+			
+			
+			// 游戏逻辑，对登陆失败情况分别进行处理
+		case eFlag.eFlag_Local_Invalid:
+			// 自动登录失败, 需要重新授权, 包含本地票据过期, 刷新失败登所有错误
+			m_myapp_login_state = "自动登陆失败";
+			m_myapp_login_message = ret.desc;
+			break;
+			
+		case eFlag.eFlag_WX_UserCancel:
+		case eFlag.eFlag_WX_NotInstall:
+		case eFlag.eFlag_WX_NotSupportApi:
+		case eFlag.eFlag_WX_LoginFail:
+			
+		default:
+			m_myapp_login_state = "登陆失败";
+			m_myapp_login_message = ret.desc;
+			
+			{
+				Debug.Log( "LoginFail.flag: " + ret.flag );
+				
+				LogOutCallback ( true );
+				
+				CheckLoginToShowSDK();
+			}
+			
+			break;
+		}
+		
+		Debug.Log( "MyApp.Login.State: " + m_myapp_login_state );
+		
+		Debug.Log( "MyApp.Login.Message: " + m_myapp_login_message );
+		
 		#endif
 	}
 	
-	public static string GetPlatformTag(){
-		#if PP_PLATFORM
-		return PLATFORM_PP_TAG;
-		#elif XY_PLATFORM
-		return PLATFORM_XY_TAG;
-		#elif TONGBU_PLATFORM
-		return PLATFORM_TONGBU_TAG;
-		#elif I4_PLATFORM
-		return PLATFORM_AISI_TAG;
-		#elif KUAIYONG_PLATFORM
-		return PLATFORM_KUAIYONG_TAG;
-		#elif HAIMA_PLATFORM
-		return PLATFORM_HAIMA_TAG;
-		#elif I_APPLE_PLATFORM
-		return PLATFORM_I_APPLE_TAG;
-		#elif ITOOLS_PLATFORM
-		return PLATFORM_ITOOLS_TAG;
+	public static string GetMyAppToken(){
+		#if MYAPP_ANDROID_PLATFORM
+		return Instance().m_my_app_login_ret.GetAccessToken();
 		#else
-		return "Default";
+		return "";
 		#endif
 	}
 	
-	public static string GetPlatformSession(){
-		if ( IsPPPLatform() ){
-			return GetPPToken();
-		} 
-		else if( IsMyAppAndroidPlatform() ){
-			return GetMyAppToken();
-		}
-		else if ( IsXYPlatform() ) {
-			return GetXYToken();
-		} 
-		else if ( IsTongBuPlatform() ) {
-			return GetTongBuSession();
-		}
-		else if ( IsI4Platform()) {
-			return GetI4Token();
-		} 
-		else if ( IsKuaiYongPlatform() ) {
-			return GetKuaiYongToken();
-		} 
-		else if ( IsHaiMaPlatform() ) {
-			return GetHaiMaToken();
-		}
-		else if ( IsIApplePlatform() ){
-			return GetIAppleToken();
-		}
-		else if( IsIToolsPlatform() ){
-			return GetIToolsToken();
-		}
-		else{
-			return "Default";
-		}
-	}
-
-	public static bool IsThirdPlatform(){
-		return !( GetPlarformType () == PlatformType.None );
-	}
-
-	public static bool IsMyAppAndroidPlatform(){
-		return GetPlarformType() == PlatformType.MyApp_Android_Platform;
-	}
-
-	public static bool IsPPPLatform(){
-		return GetPlarformType() == PlatformType.PP_Platform;
-	}
-	
-	public static bool IsXYPlatform(){
-		return GetPlarformType() == PlatformType.XY_Platform;
-	}
-	
-	public static bool IsTongBuPlatform(){
-		return GetPlarformType() == PlatformType.TongBu_Platform;
-	}
-	
-	public static bool IsI4Platform(){
-		return GetPlarformType() == PlatformType.I4_Platform;
-	}
-	
-	public static bool IsKuaiYongPlatform(){
-		return GetPlarformType () == PlatformType.KuaiYong_Platform;
-	}
-
-	public static bool IsHaiMaPlatform(){
-		return GetPlatformType () == PlatformType.HaiMa_Platform;
-	}
-
-	public static bool IsIApplePlatform(){
-		return GetPlarformType () == PlatformType.I_Apple_Platform;
-	}
-
-	public static bool IsIToolsPlatform(){
-		return GetPlarformType () == PlatformType.ITools_Platform;
-	}
-	
-	public static PlatformType GetPlarformType(){
-		if( m_instance == null ){
-			return PlatformType.None;
-		}
-		
-		return Instance().m_platform_type;
+	public void AndroidCallString( string p_param ){
+		Debug.Log( "AndroidCallString( " + p_param + " )" );
 	}
 	
 	#endregion
@@ -1252,48 +1198,211 @@ public class ThirdPlatform : MonoBehaviour {
 	#endregion
 
 
-
-	#region MyApp Platform
 	
-	public const string PLATFORM_MYAPP_TAG 		= "MyApp";
+	#region XG
 	
-	private string m_my_app_token 				= "";
+	private static string m_xg_token = "";
 	
-	public static string GetMyAppToken(){
-		return Instance().m_my_app_token;
-	}
+	private static bool m_xg_token_sended = false;
 	
-	public void MyAppSetToken( string p_msg ){
-		Debug.Log ( "ThirdPlatform.MyAppSetToken( " + p_msg + " )" );
+	private void ProcessToken(){
+		if ( m_xg_token_sended ) {
+			//			Debug.Log( "Already Sended." );
+			
+			return;
+		}
 		
-		m_my_app_token = p_msg;
+		if ( !SocketTool.IsConnected () ) {
+			//			Debug.Log( "Waiting For Socket Connection." );
+			
+			return;
+		}
+		
+		if ( !IsXGTokeGetted ()) {
+			//			Debug.Log( "Waiting For XG Token." );
+			
+			return;
+		}
 		
 		{
-			ThirdPlatformLoginSuccess();
+			ErrorMessage t_error_message = new ErrorMessage();
+			
+			t_error_message.errorDesc = m_xg_token;
+			
+			t_error_message.cmd = 0;
+			
+			t_error_message.errorCode = 0;
+			
+			SocketHelper.SendQXMessage( t_error_message, ProtoIndexes.C_XG_TOKEN );
+			
+			Debug.Log( "Upload XG Token: " + t_error_message.errorCode + 
+			          "   Desc: " + t_error_message.errorDesc +
+			          "   Client: " + t_error_message.cmd );
+		}
+		
+		{
+			m_xg_token_sended = true;
 		}
 	}
 	
-//	public void KuaiYongSubAccountLogoutFinish(){
-//		Debug.Log ( "ThirdPlatform.KuaiYongSubAccountLogoutFinish( " + " )" );
-//
-//		KuaiYongLogout ( false );
-//	}
-	
-	public void MyAppLogoutFinish(){
-		Debug.Log ( "ThirdPlatform.MyAppLogoutFinish( " + " )" );
+	public static bool IsXGTokeGetted(){
+		if (string.IsNullOrEmpty (m_xg_token)) {
+			return false;
+		}
 		
-		LogOutCallback ( true );
+		return true;
 	}
 	
-//	private void IToolsLogout( bool p_check_sdk ){
-//		LogOutCallback ( p_check_sdk );
-//	}
+	public static string GetXGToken(){
+		return m_xg_token;
+	}
 	
-	public void MyAppLeavePlatform(){
-		Debug.Log ( "ThirdPlatform.MyAppLeavePlatform( " + " )" );
+	public void XGSetToken( string p_token ){
+		Debug.Log ( "ThirdPlatform.XGSetToken( " + p_token + " )" );
 		
-		CheckLoginToShowSDK();
+		m_xg_token = p_token;
+		
+		m_xg_token_sended = false;
 	}
 	
 	#endregion
+	
+	
+	
+	#region Platform Type
+	
+	public static PlatformType GetPlatformType(){
+		#if MYAPP_ANDROID_PLATFORM
+		return PlatformType.MyApp_Android_Platform;
+		#elif PP_PLATFORM
+		return PlatformType.PP_Platform;
+		#elif XY_PLATFORM
+		return PlatformType.XY_Platform;
+		#elif TONGBU_PLATFORM
+		return PlatformType.TongBu_Platform;
+		#elif I4_PLATFORM
+		return PlatformType.I4_Platform;
+		#elif KUAIYONG_PLATFORM
+		return PlatformType.KuaiYong_Platform;
+		#elif HAIMA_PLATFORM
+		return PlatformType.HaiMa_Platform;
+		#elif I_APPLE_PLATFORM
+		return PlatformType.I_Apple_Platform;
+		#elif ITOOLS_PLATFORM
+		return PlatformType.ITools_Platform;
+		#else
+		return PlatformType.None;
+		#endif
+	}
+	
+	public static string GetPlatformTag(){
+		#if MYAPP_ANDROID_PLATFORM
+		return PLATFORM_MY_APP_ANDROID_TAG;
+		#elif PP_PLATFORM
+		return PLATFORM_PP_TAG;
+		#elif XY_PLATFORM
+		return PLATFORM_XY_TAG;
+		#elif TONGBU_PLATFORM
+		return PLATFORM_TONGBU_TAG;
+		#elif I4_PLATFORM
+		return PLATFORM_AISI_TAG;
+		#elif KUAIYONG_PLATFORM
+		return PLATFORM_KUAIYONG_TAG;
+		#elif HAIMA_PLATFORM
+		return PLATFORM_HAIMA_TAG;
+		#elif I_APPLE_PLATFORM
+		return PLATFORM_I_APPLE_TAG;
+		#elif ITOOLS_PLATFORM
+		return PLATFORM_ITOOLS_TAG;
+		#else
+		return "Default";
+		#endif
+	}
+	
+	public static string GetPlatformSession(){
+		if ( IsPPPLatform() ){
+			return GetPPToken();
+		} 
+		else if( IsMyAppAndroidPlatform() ){
+			return GetMyAppToken();
+		}
+		else if ( IsXYPlatform() ) {
+			return GetXYToken();
+		} 
+		else if ( IsTongBuPlatform() ) {
+			return GetTongBuSession();
+		}
+		else if ( IsI4Platform()) {
+			return GetI4Token();
+		} 
+		else if ( IsKuaiYongPlatform() ) {
+			return GetKuaiYongToken();
+		} 
+		else if ( IsHaiMaPlatform() ) {
+			return GetHaiMaToken();
+		}
+		else if ( IsIApplePlatform() ){
+			return GetIAppleToken();
+		}
+		else if( IsIToolsPlatform() ){
+			return GetIToolsToken();
+		}
+		else{
+			return "Default";
+		}
+	}
+	
+	public static bool IsThirdPlatform(){
+		return !( GetPlarformType () == PlatformType.None );
+	}
+	
+	public static bool IsMyAppAndroidPlatform(){
+		return GetPlarformType() == PlatformType.MyApp_Android_Platform;
+	}
+	
+	public static bool IsPPPLatform(){
+		return GetPlarformType() == PlatformType.PP_Platform;
+	}
+	
+	public static bool IsXYPlatform(){
+		return GetPlarformType() == PlatformType.XY_Platform;
+	}
+	
+	public static bool IsTongBuPlatform(){
+		return GetPlarformType() == PlatformType.TongBu_Platform;
+	}
+	
+	public static bool IsI4Platform(){
+		return GetPlarformType() == PlatformType.I4_Platform;
+	}
+	
+	public static bool IsKuaiYongPlatform(){
+		return GetPlarformType () == PlatformType.KuaiYong_Platform;
+	}
+	
+	public static bool IsHaiMaPlatform(){
+		return GetPlatformType () == PlatformType.HaiMa_Platform;
+	}
+	
+	public static bool IsIApplePlatform(){
+		return GetPlarformType () == PlatformType.I_Apple_Platform;
+	}
+	
+	public static bool IsIToolsPlatform(){
+		return GetPlarformType () == PlatformType.ITools_Platform;
+	}
+	
+	public static PlatformType GetPlarformType(){
+		if( m_instance == null ){
+			return PlatformType.None;
+		}
+		
+		return Instance().m_platform_type;
+	}
+	
+	#endregion
+	
+	
+	
+
 }

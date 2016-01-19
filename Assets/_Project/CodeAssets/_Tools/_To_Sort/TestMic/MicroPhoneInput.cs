@@ -48,6 +48,12 @@ public class MicroPhoneInput : MonoBehaviour {
 		return m_instance;
 	}
 
+	void OnDestroy(){
+		m_instance = null;
+
+		micArray = null;
+	}
+
 	void OnGUI()
     {
 		GUI.Label(new Rect(10,10,200,100),"loudness = "+loudness);

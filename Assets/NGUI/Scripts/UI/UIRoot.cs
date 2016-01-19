@@ -21,7 +21,7 @@ using System.Collections.Generic;
 [AddComponentMenu("NGUI/UI/Root")]
 public class UIRoot : MonoBehaviour
 {
-	static public List<UIRoot> list = new List<UIRoot>();
+	public static List<UIRoot> list = new List<UIRoot>();
 
 	/// <summary>
 	/// List of all UIRoots present in the scene.
@@ -126,7 +126,7 @@ public class UIRoot : MonoBehaviour
 	/// Helper function that figures out the pixel size adjustment for the specified game object.
 	/// </summary>
 
-	static public float GetPixelSizeAdjustment (GameObject go)
+	public static float GetPixelSizeAdjustment (GameObject go)
 	{
 		UIRoot root = NGUITools.FindInParents<UIRoot>(go);
 		return (root != null) ? root.pixelSizeAdjustment : 1f;
@@ -204,7 +204,7 @@ public class UIRoot : MonoBehaviour
 	/// Broadcast the specified message to the entire UI.
 	/// </summary>
 
-	static public void Broadcast (string funcName)
+	public static void Broadcast (string funcName)
 	{
 #if UNITY_EDITOR
 		if (Application.isPlaying)
@@ -222,7 +222,7 @@ public class UIRoot : MonoBehaviour
 	/// Broadcast the specified message to the entire UI.
 	/// </summary>
 
-	static public void Broadcast (string funcName, object param)
+	public static void Broadcast (string funcName, object param)
 	{
 		if (param == null)
 		{

@@ -51,6 +51,8 @@ public class ZhuXianTemp : XmlLoadManager
 
     public int FunctionId = 0;
 
+	public string m_sSprite;
+
     public List<int> m_listYindaoShuju = new List<int>();
 
     public static List<int> taskShowIdList = new List<int>();
@@ -160,6 +162,8 @@ public class ZhuXianTemp : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.FunctionId = int.Parse(t_reader.Value);
 
+				t_reader.MoveToNextAttribute();
+				t_template.m_sSprite = t_reader.Value;
 
 
                 //			Debug.Log(_template.yindaoId);

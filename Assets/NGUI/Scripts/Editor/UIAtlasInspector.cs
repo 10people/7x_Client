@@ -15,7 +15,7 @@ using System.IO;
 [CustomEditor(typeof(UIAtlas))]
 public class UIAtlasInspector : Editor
 {
-	static public UIAtlasInspector instance;
+	public static UIAtlasInspector instance;
 
 	enum AtlasType
 	{

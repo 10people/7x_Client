@@ -1,4 +1,4 @@
-﻿//#define DEBUG_BUNDLE
+﻿#define DEBUG_BUNDLE
 
 #define SHOW_SERVER_SELECTOR
 
@@ -17,6 +17,9 @@ public class PrepareBundleHelper {
 
 	/// Init for prepare bundle class.
 	public static void PrepareBundles_Init_In_Awake(){
+//		#if DEBUG_BUNDLE
+//		Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake()" );
+//		#endif
 
 		if ( !ShowServerSelector ()) {
 			if( PrepareBundles.Instance().m_pop_update_server != null ){
@@ -31,6 +34,10 @@ public class PrepareBundleHelper {
 				PrepareBundles.Instance().m_lb_tips.gameObject.SetActive( false );
 			}
 		}
+
+//		#if DEBUG_BUNDLE
+//		Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.1()" );
+//		#endif
 		
 		// set default http server prefix
 		if( ShowServerSelector() ){
@@ -43,28 +50,52 @@ public class PrepareBundleHelper {
 			
 			PrepareBundleHelper.SetCeshiServer();
 		}
-		
+
+//		#if DEBUG_BUNDLE
+//		Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.2()" );
+//		#endif
+
 		// init and clean
 		{
 			VersionTool.Instance().Init();
+
+//			#if DEBUG_BUNDLE
+//			Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.After.VersionTool()" );
+//			#endif
 			
 			UtilityTool.LoadBox();
+
+//			#if DEBUG_BUNDLE
+//			Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.After.UtilityTool()" );
+//			#endif
 			
 			Bundle_Loader.m_bundle_list_info = null;
+
+//			#if DEBUG_BUNDLE
+//			Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.After.Bundle_Loader()" );
+//			#endif
 			
 			PrepareBundleHelper.ClearLoadingSections();
 		}
+
+//		#if DEBUG_BUNDLE
+//		Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.3()" );
+//		#endif
 		
 		// 1st & 2nd test in third platform
 		{
-			GameObject t_gb = GameObjectHelper.GetDontDestroyOnLoadGameObject();
-			
-			ThirdPlatform t_3rd = t_gb.GetComponent<ThirdPlatform>();
-			
-			if( t_3rd == null ){
-				t_3rd = t_gb.AddComponent<ThirdPlatform>();
+			{
+				GameObject t_gb = GameObjectHelper.GetDontDestroyOnLoadGameObject();
+				
+				ComponentHelper.AddIfNotExist( t_gb, typeof(ThirdPlatform) );
 			}
+
+			GameObjectHelper.RegisterGlobalComponents();
 		}
+
+//		#if DEBUG_BUNDLE
+//		Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.4()" );
+//		#endif
 		
 		{
 			PathHelper.LogPath();
@@ -73,7 +104,11 @@ public class PrepareBundleHelper {
 		{
 			DeviceHelper.LogDeviceInfo( null );
 		}
-		
+
+//		#if DEBUG_BUNDLE
+//		Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.5()" );
+//		#endif
+
 		// log
 		{
 			FileHelper.DeleteLogFile();
@@ -85,6 +120,10 @@ public class PrepareBundleHelper {
 		{
 			OperationSupport.ReportClientAction( OperationSupport.ClientAction.LAUNCH_GAME );
 		}
+
+//		#if DEBUG_BUNDLE
+//		Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.Done()" );
+//		#endif
 	}
 
 	#endregion
@@ -390,6 +429,20 @@ public class PrepareBundleHelper {
 	
 	
 	#region Utilities
+
+	public static bool IsDeviceCheckOpen(){
+		bool t_check_device = false;
+		
+		#if UNITY_ANDROID || UNITY_IOS
+		t_check_device = true;
+		#endif
+		
+		#if UNITY_EDITOR
+		t_check_device = true;
+		#endif
+
+		return t_check_device;
+	}
 
 	public static bool IsBigVersionUpdated(){
 		return VersionTool.GetPackageSmallVersion() == PrepareBundleHelper.GetServerSmallVersion();

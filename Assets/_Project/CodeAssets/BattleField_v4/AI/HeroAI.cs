@@ -14,4 +14,8 @@ public class HeroAI : BaseAI
 
 		updataAttackRange();
 	}
+
+	public override void OnDestroy(){
+		base.OnDestroy();
+	}
 }

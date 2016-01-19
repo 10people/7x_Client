@@ -105,7 +105,7 @@ public class UITable : UIWidgetContainer
 	/// Function that sorts items by name.
 	/// </summary>
 
-	static protected int SortByName (Transform a, Transform b) { return string.Compare(a.name, b.name); }
+	protected static int SortByName (Transform a, Transform b) { return string.Compare(a.name, b.name); }
 
 	/// <summary>
 	/// Want your own custom sorting logic? Override this function.

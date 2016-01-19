@@ -308,7 +308,7 @@ namespace Rank
         /// </summary>
         private void Rob()
         {
-            LueDuoData.Instance.LueDuoOpponentReq(m_JunzhuPlayerResp.junZhuId, LueDuoData.WhichOpponent.RANKLIST);
+			PlunderData.Instance.PlunderOpponent (PlunderData.Entrance.RANKLIST,m_JunzhuPlayerResp.junZhuId);
         }
 
         public string AddFriendName = "";

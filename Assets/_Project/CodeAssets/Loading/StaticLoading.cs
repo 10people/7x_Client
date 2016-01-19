@@ -1,6 +1,5 @@
 ﻿//#define LOG_LOADING
 
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,6 +47,10 @@ public class StaticLoading : MonoBehaviour {
 		LoadingHelper.ClearLoadingInfo( m_loading_sections );
 
 		SetTipsText();
+
+		{
+			InitBackgroundTexture();
+		}
 	}
 
 	void OnGUI(){
@@ -61,6 +64,9 @@ public class StaticLoading : MonoBehaviour {
 	void OnDestroy(){
 //		Debug.Log( "StaticLoadingBg.OnDestroy()" );
 
+		m_loading_bg = null;
+
+		m_loading_bg_root = null;
 	}
 
 	#endregion
@@ -140,6 +146,31 @@ public class StaticLoading : MonoBehaviour {
 				return true;
 			}
 		}
+	}
+
+	private static void InitBackgroundTexture(){
+		string t_ui_path = "";
+
+		if( LoadingHelper.IsLoadingMainCity() || LoadingHelper.IsLoadingMainCityYeWan() ){
+			t_ui_path = Res2DTemplate.GetResPath( Res2DTemplate.Res.LOADING_BG_FOR_MAINCITY );
+		}
+		else{
+			return;
+		}
+
+		Global.ResourcesDotLoad( t_ui_path, BackgroundLoadCallback );
+	}
+
+	public static void BackgroundLoadCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
+		Texture t_tex = (Texture)( p_object );
+		
+		if( t_tex == null ){
+			Debug.LogError( "Texture to null." );
+			
+			return;
+		}
+
+		Instance().m_loading_bg.mainTexture = t_tex;
 	}
 
 	#endregion

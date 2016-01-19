@@ -26,7 +26,7 @@ namespace Rank
         public void SetThis()
         {
             KingLabel.text = m_BattleInfo.name;
-            AllianceLabel.text = (m_BattleInfo.lianmeng == "无") ? "无联盟" : ("<" + m_BattleInfo.lianmeng + ">");
+            AllianceLabel.text = (string.IsNullOrEmpty(m_BattleInfo.lianmeng) || (m_BattleInfo.lianmeng == "无")) ? "无联盟" : ("<" + m_BattleInfo.lianmeng + ">");
 
             //Remove first 0 char in battle.
             var putongStr = m_BattleInfo.putong;
@@ -132,7 +132,7 @@ namespace Rank
 
         public override void Rob()
         {
-            LueDuoData.Instance.LueDuoOpponentReq(m_BattleInfo.junZhuId, LueDuoData.WhichOpponent.RANKLIST);
+            PlunderData.Instance.PlunderOpponent(PlunderData.Entrance.RANKLIST, m_BattleInfo.junZhuId);
             m_ModuleController.ClampScrollView();
         }
     }

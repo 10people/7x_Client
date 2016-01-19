@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections;
 public class LabelMovePosManagerment : MonoBehaviour {
      
     private static GameObject _Clone = null;

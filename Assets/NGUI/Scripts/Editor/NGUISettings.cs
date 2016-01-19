@@ -26,43 +26,43 @@ public class NGUISettings
 	/// Save the specified boolean value in settings.
 	/// </summary>
 
-	static public void SetBool (string name, bool val) { EditorPrefs.SetBool(name, val); }
+	public static void SetBool (string name, bool val) { EditorPrefs.SetBool(name, val); }
 
 	/// <summary>
 	/// Save the specified integer value in settings.
 	/// </summary>
 
-	static public void SetInt (string name, int val) { EditorPrefs.SetInt(name, val); }
+	public static void SetInt (string name, int val) { EditorPrefs.SetInt(name, val); }
 
 	/// <summary>
 	/// Save the specified float value in settings.
 	/// </summary>
 
-	static public void SetFloat (string name, float val) { EditorPrefs.SetFloat(name, val); }
+	public static void SetFloat (string name, float val) { EditorPrefs.SetFloat(name, val); }
 
 	/// <summary>
 	/// Save the specified string value in settings.
 	/// </summary>
 
-	static public void SetString (string name, string val) { EditorPrefs.SetString(name, val); }
+	public static void SetString (string name, string val) { EditorPrefs.SetString(name, val); }
 
 	/// <summary>
 	/// Save the specified color value in settings.
 	/// </summary>
 
-	static public void SetColor (string name, Color c) { SetString(name, c.r + " " + c.g + " " + c.b + " " + c.a); }
+	public static void SetColor (string name, Color c) { SetString(name, c.r + " " + c.g + " " + c.b + " " + c.a); }
 
 	/// <summary>
 	/// Save the specified enum value to settings.
 	/// </summary>
 
-	static public void SetEnum (string name, System.Enum val) { SetString(name, val.ToString()); }
+	public static void SetEnum (string name, System.Enum val) { SetString(name, val.ToString()); }
 
 	/// <summary>
 	/// Save the specified object in settings.
 	/// </summary>
 
-	static public void Set (string name, Object obj)
+	public static void Set (string name, Object obj)
 	{
 		if (obj == null)
 		{
@@ -91,31 +91,31 @@ public class NGUISettings
 	/// Get the previously saved boolean value.
 	/// </summary>
 
-	static public bool GetBool (string name, bool defaultValue) { return EditorPrefs.GetBool(name, defaultValue); }
+	public static bool GetBool (string name, bool defaultValue) { return EditorPrefs.GetBool(name, defaultValue); }
 
 	/// <summary>
 	/// Get the previously saved integer value.
 	/// </summary>
 
-	static public int GetInt (string name, int defaultValue) { return EditorPrefs.GetInt(name, defaultValue); }
+	public static int GetInt (string name, int defaultValue) { return EditorPrefs.GetInt(name, defaultValue); }
 
 	/// <summary>
 	/// Get the previously saved float value.
 	/// </summary>
 
-	static public float GetFloat (string name, float defaultValue) { return EditorPrefs.GetFloat(name, defaultValue); }
+	public static float GetFloat (string name, float defaultValue) { return EditorPrefs.GetFloat(name, defaultValue); }
 
 	/// <summary>
 	/// Get the previously saved string value.
 	/// </summary>
 
-	static public string GetString (string name, string defaultValue) { return EditorPrefs.GetString(name, defaultValue); }
+	public static string GetString (string name, string defaultValue) { return EditorPrefs.GetString(name, defaultValue); }
 	
 	/// <summary>
 	/// Get a previously saved color value.
 	/// </summary>
 
-	static public Color GetColor (string name, Color c)
+	public static Color GetColor (string name, Color c)
 	{
 		string strVal = GetString(name, c.r + " " + c.g + " " + c.b + " " + c.a);
 		string[] parts = strVal.Split(' ');
@@ -134,7 +134,7 @@ public class NGUISettings
 	/// Get a previously saved enum from settings.
 	/// </summary>
 
-	static public T GetEnum<T> (string name, T defaultValue)
+	public static T GetEnum<T> (string name, T defaultValue)
 	{
 		string val = GetString(name, defaultValue.ToString());
 		string[] names = System.Enum.GetNames(typeof(T));
@@ -152,7 +152,7 @@ public class NGUISettings
 	/// Get a previously saved object from settings.
 	/// </summary>
 
-	static public T Get<T> (string name, T defaultValue) where T : Object
+	public static T Get<T> (string name, T defaultValue) where T : Object
 	{
 		string path = EditorPrefs.GetString(name);
 		if (string.IsNullOrEmpty(path)) return null;
@@ -171,19 +171,19 @@ public class NGUISettings
 
 #region Convenience accessor properties
 
-	static public Color color
+	public static Color color
 	{
 		get { return GetColor("NGUI Color", Color.white); }
 		set { SetColor("NGUI Color", value); }
 	}
 
-	static public ColorMode colorMode
+	public static ColorMode colorMode
 	{
 		get { return GetEnum("NGUI Color Mode", ColorMode.Blue); }
 		set { SetEnum("NGUI Color Mode", value); }
 	}
 
-	static public Object ambigiousFont
+	public static Object ambigiousFont
 	{
 		get
 		{
@@ -211,39 +211,39 @@ public class NGUISettings
 		}
 	}
 
-	static public UIAtlas atlas
+	public static UIAtlas atlas
 	{
 		get { return Get<UIAtlas>("NGUI Atlas", null); }
 		set { Set("NGUI Atlas", value); }
 	}
 
-	static public Texture texture
+	public static Texture texture
 	{
 		get { return Get<Texture>("NGUI Texture", null); }
 		set { Set("NGUI Texture", value); }
 	}
 
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_1 && !UNITY_4_2
-	static public Sprite sprite2D
+	public static Sprite sprite2D
 	{
 		get { return Get<Sprite>("NGUI Sprite2D", null); }
 		set { Set("NGUI Sprite2D", value); }
 	}
 #endif
 
-	static public string selectedSprite
+	public static string selectedSprite
 	{
 		get { return GetString("NGUI Sprite", null); }
 		set { SetString("NGUI Sprite", value); }
 	}
 
-	static public UIWidget.Pivot pivot
+	public static UIWidget.Pivot pivot
 	{
 		get { return GetEnum("NGUI Pivot", UIWidget.Pivot.Center); }
 		set { SetEnum("NGUI Pivot", value); }
 	}
 
-	static public int layer
+	public static int layer
 	{
 		get
 		{
@@ -258,85 +258,85 @@ public class NGUISettings
 		}
 	}
 
-	static public TextAsset fontData
+	public static TextAsset fontData
 	{
 		get { return Get<TextAsset>("NGUI Font Data", null); }
 		set { Set("NGUI Font Data", value); }
 	}
 
-	static public Texture2D fontTexture
+	public static Texture2D fontTexture
 	{
 		get { return Get<Texture2D>("NGUI Font Texture", null); }
 		set { Set("NGUI Font Texture", value); }
 	}
 
-	static public int fontSize
+	public static int fontSize
 	{
 		get { return GetInt("NGUI Font Size", 16); }
 		set { SetInt("NGUI Font Size", value); }
 	}
 
-	static public FontStyle fontStyle
+	public static FontStyle fontStyle
 	{
 		get { return GetEnum("NGUI Font Style", FontStyle.Normal); }
 		set { SetEnum("NGUI Font Style", value); }
 	}
 
-	static public UILabel.Overflow overflowStyle
+	public static UILabel.Overflow overflowStyle
 	{
 		get { return GetEnum("NGUI Overflow", UILabel.Overflow.ShrinkContent); }
 		set { SetEnum("NGUI Overflow", value); }
 	}
 
-	static public string partialSprite
+	public static string partialSprite
 	{
 		get { return GetString("NGUI Partial", null); }
 		set { SetString("NGUI Partial", value); }
 	}
 
-	static public int atlasPadding
+	public static int atlasPadding
 	{
 		get { return GetInt("NGUI Padding", 1); }
 		set { SetInt("NGUI Padding", value); }
 	}
 
-	static public bool atlasTrimming
+	public static bool atlasTrimming
 	{
 		get { return GetBool("NGUI Trim", true); }
 		set { SetBool("NGUI Trim", value); }
 	}
 
-	static public bool atlasPMA
+	public static bool atlasPMA
 	{
 		get { return GetBool("NGUI PMA", false); }
 		set { SetBool("NGUI PMA", value); }
 	}
 
-	static public bool unityPacking
+	public static bool unityPacking
 	{
 		get { return GetBool("NGUI Packing", true); }
 		set { SetBool("NGUI Packing", value); }
 	}
 
-	static public bool forceSquareAtlas
+	public static bool forceSquareAtlas
 	{
 		get { return GetBool("NGUI Square", false); }
 		set { SetBool("NGUI Square", value); }
 	}
 
-	static public bool allow4096
+	public static bool allow4096
 	{
 		get { return GetBool("NGUI 4096", true); }
 		set { SetBool("NGUI 4096", value); }
 	}
 
-	static public bool showAllDCs
+	public static bool showAllDCs
 	{
 		get { return GetBool("NGUI DCs", true); }
 		set { SetBool("NGUI DCs", value); }
 	}
 
-	static public bool drawGuides
+	public static bool drawGuides
 	{
 		get { return GetBool("NGUI Guides", false); }
 		set { SetBool("NGUI Guides", value); }
@@ -347,7 +347,7 @@ public class NGUISettings
 	/// Convenience method -- add a widget.
 	/// </summary>
 
-	static public UIWidget AddWidget (GameObject go)
+	public static UIWidget AddWidget (GameObject go)
 	{
 		UIWidget w = NGUITools.AddWidget<UIWidget>(go);
 		w.name = "Container";
@@ -361,7 +361,7 @@ public class NGUISettings
 	/// Convenience method -- add a texture.
 	/// </summary>
 
-	static public UITexture AddTexture (GameObject go)
+	public static UITexture AddTexture (GameObject go)
 	{
 		UITexture w = NGUITools.AddWidget<UITexture>(go);
 		w.name = "Texture";
@@ -377,7 +377,7 @@ public class NGUISettings
 	/// Convenience method -- add a UnityEngine.Sprite.
 	/// </summary>
 
-	static public UI2DSprite Add2DSprite (GameObject go)
+	public static UI2DSprite Add2DSprite (GameObject go)
 	{
 		UI2DSprite w = NGUITools.AddWidget<UI2DSprite>(go);
 		w.name = "2D Sprite";
@@ -392,7 +392,7 @@ public class NGUISettings
 	/// Convenience method -- add a sprite.
 	/// </summary>
 
-	static public UISprite AddSprite (GameObject go)
+	public static UISprite AddSprite (GameObject go)
 	{
 		UISprite w = NGUITools.AddWidget<UISprite>(go);
 		w.name = "Sprite";
@@ -417,7 +417,7 @@ public class NGUISettings
 	/// Convenience method -- add a label with default parameters.
 	/// </summary>
 
-	static public UILabel AddLabel (GameObject go)
+	public static UILabel AddLabel (GameObject go)
 	{
 		UILabel w = NGUITools.AddWidget<UILabel>(go);
 		w.name = "Label";
@@ -438,7 +438,7 @@ public class NGUISettings
 	/// Convenience method -- add a new panel.
 	/// </summary>
 
-	static public UIPanel AddPanel (GameObject go)
+	public static UIPanel AddPanel (GameObject go)
 	{
 		if (go == null) return null;
 		int depth = UIPanel.nextUnusedDepth;
@@ -451,7 +451,7 @@ public class NGUISettings
 	/// Copy the specified widget's parameters.
 	/// </summary>
 
-	static public void CopyWidget (UIWidget widget)
+	public static void CopyWidget (UIWidget widget)
 	{
 		SetInt("Width", widget.width);
 		SetInt("Height", widget.height);
@@ -467,7 +467,7 @@ public class NGUISettings
 	/// Paste the specified widget's style.
 	/// </summary>
 
-	static public void PasteWidget (UIWidget widget, bool fully)
+	public static void PasteWidget (UIWidget widget, bool fully)
 	{
 		widget.color = GetColor("Widget Color", widget.color);
 		widget.pivot = GetEnum<UIWidget.Pivot>("Widget Pivot", widget.pivot);

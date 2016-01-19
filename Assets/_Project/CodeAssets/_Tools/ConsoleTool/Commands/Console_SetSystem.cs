@@ -13,6 +13,14 @@ public class Console_SetSystem {
 	public static void LogScreen( string[] p_params ){
 		ScreenHelper.LogScreen();
 	}
+
+	public static void Vibrate( string[] p_params ){
+#if UNITY_ANDROID || UNITY_IOS
+		Debug.Log( "Vibrate()" );
+
+		Handheld.Vibrate();
+#endif
+	}
 	
 	#endregion
 }

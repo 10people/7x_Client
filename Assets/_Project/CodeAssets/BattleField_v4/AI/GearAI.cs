@@ -11,7 +11,7 @@ public class GearAI : BaseAI
 
 	}
 
-	public override void die()
+	public override void die(bool slowDown)
 	{
 		if (isAlive == false) return;
 

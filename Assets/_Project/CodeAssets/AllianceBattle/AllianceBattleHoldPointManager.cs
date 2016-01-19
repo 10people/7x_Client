@@ -137,5 +137,9 @@ namespace AllianceBattle
                 id = item.Id
             }));
         }
+
+		void OnDestroy(){
+			HoldPointList.Clear();
+		}
     }
 }

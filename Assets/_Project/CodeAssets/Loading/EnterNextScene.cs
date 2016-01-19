@@ -1,6 +1,6 @@
-﻿//#define DEBUG_ENTER_NEXT_SCENE
+﻿//#define DEBUG_SHOW_LOADING_INFO
 
-//#define DEBUG_SHOW_LOADING_INFO
+//#define DEBUG_ENTER_NEXT_SCENE
 
 using UnityEngine;
 using System.Collections;
@@ -31,9 +31,6 @@ public class EnterNextScene : MonoBehaviour{
 	/// Background Image
 	private UITexture m_background_image;
 
-//	private AsyncOperation m_async;
-
-
 	private static EnterNextScene m_instance;
 
 	public static EnterNextScene Instance(){
@@ -58,7 +55,7 @@ public class EnterNextScene : MonoBehaviour{
 				          "------------------" );
 			}
 
-			ResetLoadingInfo();
+			LoadingHelper.ResetLoadingInfo();
 		}
 
 		// Find Real Background
@@ -85,18 +82,11 @@ public class EnterNextScene : MonoBehaviour{
 		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "EnterNextScene.OnDestroy()" );
 		#endif
+
+		m_background_image = null;
 	}
 
 	void Update(){
-//		if( m_async != null ){
-//			Debug.Log( "m_async.progress: " + m_async.progress );
-//
-//			m_slider_progress.value = m_async.progress * 100;
-//
-//			StaticLoading.UpdatePercentage( StaticLoading.m_loading_sections,
-//			                              StaticLoading.CONST_COMMON_LOADING_SCENE, m_async.progress );
-//		}
-
 		{
 			float t_percentage = LoadingHelper.GetLoadingPercentage( StaticLoading.m_loading_sections );
 
@@ -113,12 +103,6 @@ public class EnterNextScene : MonoBehaviour{
 				m_slider_progress.value = t_percentage;
 			}
 		}
-
-        // progress log
-//        {
-// 				LoadingHelper.LogLoadingInfo(StaticLoading.m_loading_sections);
-//        }
-
 
         if ( ConfigTool.GetBool( ConfigTool.CONST_SHOW_CURRENT_LOADING ) ){
 			if( m_loading_asset_changed ){
@@ -160,7 +144,7 @@ public class EnterNextScene : MonoBehaviour{
 //			Debug.LogError( "Error, Socket not Connected." );
 		}
 
-		if ( LoadingHelper.IsLoadingLogin()) {
+		if ( LoadingHelper.IsLoadingLogin() ){
             Prepare_For_Login();
         }
 		else if ( LoadingHelper.IsLoadingMainCity() || LoadingHelper.IsLoadingMainCityYeWan() ){
@@ -200,7 +184,7 @@ public class EnterNextScene : MonoBehaviour{
 	private static float m_load_level_time = 0.0f;
 
 	private void ShowLoadLevelTime(){
-		Debug.Log( "Load Level Time: " + m_load_level_time );
+		Debug.Log( "--- Load Level Time: " + m_load_level_time );
 	}
 	
 	/// Load the Scene Directly.
@@ -226,13 +210,21 @@ public class EnterNextScene : MonoBehaviour{
 		Debug.Log( "---------------- LoadLevelNow( " + GetSceneToLoad() + " ) ---------------" );
 		#endif
 
-		m_load_level_time = Time.realtimeSinceStartup;
+		#if DEBUG_SHOW_LOADING_INFO
+		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.LoadLevelNow()" );
+		#endif
 
 		{
+			m_load_level_time = Time.realtimeSinceStartup;
+
 			SceneManager.LoadLevel( GetSceneToLoad() );
+
+			m_load_level_time = Time.realtimeSinceStartup - m_load_level_time;
 		}
 
-		m_load_level_time = Time.realtimeSinceStartup - m_load_level_time;
+		#if DEBUG_SHOW_LOADING_INFO
+		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.LoadLevelNow.Done( LoadLevel )" );
+		#endif
 
 		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "LoadLevelAsync.Level.Load.Done()" );
@@ -247,7 +239,8 @@ public class EnterNextScene : MonoBehaviour{
 		}
 
 		{
-            CityGlobalData.m_PlayerInCity = true;
+			CityGlobalData.m_PlayerInCity = true;
+
             PrepareWhenSceneLoaded();
 		}
 
@@ -282,7 +275,9 @@ public class EnterNextScene : MonoBehaviour{
 
 	// TODO, check if is for new player use.
 	private void DestroyForNextLoading(){
-//		Debug.Log( "EnterNextScene.DestroyForNextLoading()" );
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.DestroyForNextLoading()" );
+		#endif
 
 		// only for loading & loading
 		{
@@ -313,7 +308,9 @@ public class EnterNextScene : MonoBehaviour{
 
 	// unregister and destroy UI if needed.
 	private void ManualDestroy(){
-//		Debug.Log( "EnterNextScene.ManualDestroy()" );
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.ManualDestroy()" );
+		#endif
 
 		{
 			m_preserve_percentage = 0.0f;
@@ -345,6 +342,10 @@ public class EnterNextScene : MonoBehaviour{
 
 	/// call this to destroy loading UI when loading is done.
 	public void DestroyUI(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.DestroyUI()" );
+		#endif
+
 		{
 			m_instance = null;
 		}
@@ -385,19 +386,27 @@ public class EnterNextScene : MonoBehaviour{
 		Debug.Log( "PrepareWhenSceneLoaded()" );
 		#endif
 
+		#if DEBUG_SHOW_LOADING_INFO
+		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.PrepareWhenSceneLoaded()" );
+		#endif
+
 		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_TOTAL_LOADING_TIME, true ) ){
 			Debug.Log( "------------------" + 
 			          " EnterNextScene: " + GetSceneToLoad() + " - " +
-			          GetTimeSinceLoading() + 
+			          LoadingHelper.GetTimeSinceLoading() + 
 			          " ------------------" );
-		
-			#if DEBUG_SHOW_LOADING_INFO
-			ShowTotalLoadingInfo();
 
-			Bundle_Loader.LogCoroutineInfo();
-			
+			#if DEBUG_SHOW_LOADING_INFO
+			LoadingHelper.ShowTotalLoadingInfo();
+
 			ShowLoadLevelTime();
+
+//			Bundle_Loader.LogCoroutineInfo();
 			#endif
+
+//			#if DEBUG_SHOW_LOADING_INFO
+//			LoadingHelper.LogLoadingInfo( StaticLoading.m_loading_sections );
+//			#endif
 		}
 
 		if( Global.m_is_loading_from_bundle ){
@@ -413,77 +422,14 @@ public class EnterNextScene : MonoBehaviour{
 		}
 
 		#if DEBUG_ENTER_NEXT_SCENE
-		Debug.Log( "PrepareWhenSceneLoaded.Before.AA()" );
-		#endif
-
-		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "PrepareWhenSceneLoaded.Before.Callback()" );
 		#endif
 
 		EventDelegate.Execute( m_loading_done_callback_list );
 
-		#if DEBUG_ENTER_NEXT_SCENE
-		EnterNextScene.LogTimeSinceLoading( "PrepareWhenSceneLoaded" );
+		#if DEBUG_SHOW_LOADING_INFO
+		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.PrepareWhenSceneLoaded.Done()" );
 		#endif
-	}
-
-	#endregion
-
-
-
-	#region Common Init
-
-	private static float m_begin_loading_time	= 0.0f;
-
-	private static float m_last_tagged_time		= 0.0f;
-
-	private static int m_asset_load_count 		= 0;
-
-	private static void ResetLoadingInfo(){
-		// reset local info
-		{
-			m_begin_loading_time = Time.realtimeSinceStartup;
-			
-			m_last_tagged_time = Time.realtimeSinceStartup;
-			
-			m_asset_load_count = 0;
-			
-			Bundle_Loader.ResetCoroutineInfo();
-		}
-
-		// reset detail info
-		{
-			LoadingHelper.ClearLoadingItemInfo();
-		}
-	}
-
-	public static int GetAssetLoadedCount(){
-		return m_asset_load_count;
-	}
-
-	public static void AssetLoaded(){
-		m_asset_load_count++;
-	}
-
-	public static float GetTimeSinceLoading(){
-		return Time.realtimeSinceStartup - m_begin_loading_time;
-	}
-
-	public static float GetTimesinceLastTimeTag( bool p_retag = true ){
-		float t_delta = Time.realtimeSinceStartup - m_last_tagged_time;
-
-		if( p_retag ){
-			m_last_tagged_time = Time.realtimeSinceStartup;
-		}
-
-		return t_delta;
-	}
-
-	public static void LogTimeSinceLoading( string p_loading_tag ){
-		Debug.Log( MathHelper.FloatPrecision( GetTimesinceLastTimeTag(), 5 ) + 
-		          " / " + 
-		          MathHelper.FloatPrecision( GetTimeSinceLoading(), 5 ) + " - " + 
-		          p_loading_tag );
 	}
 
 	#endregion
@@ -544,8 +490,6 @@ public class EnterNextScene : MonoBehaviour{
 	private const int REQUEST_DATA_COUNT_FOR_MAINCITY = 4;
 
 	private void InitMainCityLoading(){
-//		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 2, -1 );
-
 		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_MAINCITY );
 	}
  
@@ -558,7 +502,7 @@ public class EnterNextScene : MonoBehaviour{
 		// enter pve for 1st battle.
 		if( Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103)
 		{
-            			Debug.Log( "CheckingDataForMainCity.EnterBattlePve()" );
+			Debug.Log( "CheckingDataForMainCity.EnterBattlePve()" );
             _isEnterMainCity = false;
             DestroyForNextLoading();
 
@@ -570,8 +514,7 @@ public class EnterNextScene : MonoBehaviour{
 			DirectLoadLevel();
 		}
 
-        if (m_received_data_for_main_city == REQUEST_DATA_COUNT_FOR_MAINCITY && _isEnterMainCity)
-        {
+        if (m_received_data_for_main_city == REQUEST_DATA_COUNT_FOR_MAINCITY && _isEnterMainCity){
    
         }
 	}
@@ -587,10 +530,9 @@ public class EnterNextScene : MonoBehaviour{
 	private const int REQUEST_DATA_COUNT_FOR_ALLIANCECITY = 4;
 	
 	private void InitAllianceCityLoading(){
-//		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 2, -1 );
-		
 		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_MAINCITY_NETWORK, 1, REQUEST_DATA_COUNT_FOR_ALLIANCECITY );
 	}
+
 	private void Prepare_For_AllianceCity(){
 		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "EnterNextScene.Prepare_For_AllianceCity()" );
@@ -604,8 +546,7 @@ public class EnterNextScene : MonoBehaviour{
 			
 			StartCoroutine( CheckingDataForMainCity() );
 		}
- 
-		
+ 		
 		// request PVE Info
 		{
 			JunZhuDiaoLuoManager.RequestMapInfo( -1 );
@@ -617,9 +558,7 @@ public class EnterNextScene : MonoBehaviour{
 			JunZhuData.Instance();
 			JunZhuData.RequestJunZhuInfo();
 		}
-		
- 
-		
+
 		{
 //			Debug.Log ("AllianceCityTask");
 			TaskData.Instance.RequestData();
@@ -638,8 +577,6 @@ public class EnterNextScene : MonoBehaviour{
         {
             FriendOperationData.Instance.RequestData();
         }
-
-      
     }
 
 	#endregion
@@ -648,143 +585,11 @@ public class EnterNextScene : MonoBehaviour{
 
 	#region Common Network
 
-	///	Every Proto Only Could Have 1 Processor, but Many Listener.
-	/// MainCity MAY Have Processors.
-//	public bool OnSocketEvent( QXBuffer p_message ){
-////		Debug.Log ("p_message:" + p_message);
-//		if( p_message == null ){
-//			return false;
-//		}
-
-//		switch( p_message.m_protocol_index ){
-////			case ProtoIndexes.S_MIBAO_INFO_RESP:{
-////
-////			    MiBaoGlobleData.Instance().OnProcessSocketMessage(p_message);
-////				Debug.Log ("秘宝info：" + ProtoIndexes.S_MIBAO_INFO_RESP);
-////				m_received_data_for_main_city++;
-////
-////			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
-////			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_MIBAO_INFO_RESP" );
-////
-////				return true;
-////			}
-
-//			case ProtoIndexes.PVE_PAGE_RET:{
-////				Debug.Log( "PveInfoResp:" + ProtoIndexes.PVE_PAGE_RET );
-
-//				ProcessPVEPageReturn( p_message );
-
-//				m_received_data_for_main_city++;
-
-//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
-//			                         StaticLoading.CONST_MAINCITY_NETWORK, "PVE_PAGE_RET" );
-				
-//				return true;
-//			}
-				
-////			case ProtoIndexes.S_EquipInfo:{
-////				Debug.Log( "OnSocketEvent: TanBaoYinDaoCol()" );
-////
-////				EquipsOfBody.Instance().ProcessEquipInfo( p_message );
-////
-////				m_received_data_for_main_city++;
-////
-////			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
-////			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_EquipInfo" );
-////
-////				return true;
-////			}
-
-//			case ProtoIndexes.JunZhuInfoRet:{
-
-////				Debug.Log( "获得君主数据: " + Global.m_iScreenID );
-				
-//				m_received_data_for_main_city++;
-
-//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
-//			                         StaticLoading.CONST_MAINCITY_NETWORK, "JunZhuInfoRet" );
-				
-//				return true;
-//			}
-
-//		    case ProtoIndexes.ALLIANCE_HAVE_RESP:{
-				
-////				Debug.Log ("获得有联盟信息");
-				
-//				m_received_data_for_main_city++;
-
-//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
-//			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_HAVE_RESP" );
-				
-//				return true;
-//			}
-
-//			case ProtoIndexes.ALLIANCE_NON_RESP:{
-			
-////				Debug.Log ("获得无联盟信息");
-			
-//				m_received_data_for_main_city++;
-			
-//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
-//			                         StaticLoading.CONST_MAINCITY_NETWORK, "ALLIANCE_NON_RESP" );
-			
-//			return true;
-//			}
-
-//			case ProtoIndexes.S_TaskList:{
-			
-////				Debug.Log( "获得主线任务: " + Global.m_iScreenID );
-			
-//				m_received_data_for_main_city++;
-			
-//			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
-//			                         StaticLoading.CONST_MAINCITY_NETWORK, "S_TaskList" );
-			
-//			return true;
-//		}
-
-//			default:{
-//				return false;
-//			}
-//		}
-//	}
-
 	#endregion
 
 
 
 	#region Network Listeners
-
-	/// Refresh PVE Data
-	private void ProcessPVEPageReturn( QXBuffer p_buffer ){
-//		Debug.Log( "ProcessPVEPageReturn( 获得了管卡数据 )" );
-
-		MemoryStream t_stream = new MemoryStream( p_buffer.m_protocol_message, 0, p_buffer.position );
-		
-		QiXiongSerializer t_qx = new QiXiongSerializer();
-		
-		Section tempInfo = new Section();
-		
-		t_qx.Deserialize( t_stream, tempInfo, tempInfo.GetType() );
-
-		if(tempInfo.s_allLevel == null)
-		{
-			Debug.Log( "tempInfo.s_allLevel == null" );
-		}
-		if(tempInfo.maxCqPassId > CityGlobalData.m_temp_CQ_Section)
-		{
-			CityGlobalData.m_temp_CQ_Section = tempInfo.maxCqPassId;
-		}
-
-		foreach( Level tempLevel in tempInfo.s_allLevel ){
-			if( !tempLevel.s_pass ){
-
-				Global.m_iScreenID = tempLevel.guanQiaId;
-				
-				break;
-			}
-		}
-	}
 
 	#endregion
 

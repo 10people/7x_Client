@@ -2924,6 +2924,20 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0168777592
+        functionName: refreshCDTime
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 21
+        messageOptions: 0
+      - time: .021097118
+        functionName: firstAtt
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 10
+        messageOptions: 0
       - time: .0379745513
         functionName: PlaySound
         data: 3319
@@ -2939,7 +2953,7 @@ ModelImporter:
         intParameter: 0
         messageOptions: 0
       - time: .0895318091
-        functionName: setWeaponTriggerTrue
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -2960,7 +2974,7 @@ ModelImporter:
         intParameter: 1
         messageOptions: 0
       - time: .151515216
-        functionName: setWeaponTriggerTrue
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -2988,7 +3002,7 @@ ModelImporter:
         intParameter: 2
         messageOptions: 0
       - time: .220449299
-        functionName: setWeaponTriggerTrue
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -3016,7 +3030,7 @@ ModelImporter:
         intParameter: 3
         messageOptions: 0
       - time: .289383352
-        functionName: setWeaponTriggerTrue
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -3044,7 +3058,7 @@ ModelImporter:
         intParameter: 4
         messageOptions: 0
       - time: .359504104
-        functionName: setWeaponTriggerTrue
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -3072,7 +3086,7 @@ ModelImporter:
         intParameter: 5
         messageOptions: 0
       - time: .420300871
-        functionName: setWeaponTriggerTrue
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -3100,7 +3114,7 @@ ModelImporter:
         intParameter: 6
         messageOptions: 0
       - time: .494617224
-        functionName: setWeaponTriggerTrue
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -3128,7 +3142,7 @@ ModelImporter:
         intParameter: 7
         messageOptions: 0
       - time: .562047005
-        functionName: setWeaponTriggerTrue
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -3148,56 +3162,56 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: .625344515
-        functionName: setWeaponTriggerTrue
+      - time: .628600776
+        functionName: chooseTarget_skill_1
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 8
+        messageOptions: 0
+      - time: .640986979
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1149
         messageOptions: 0
-      - time: .633608937
+      - time: .644012988
+        functionName: PlaySound
+        data: 3203
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .647016764
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: .672176182
+      - time: .709273815
         functionName: chooseTarget_skill_1
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 9
         messageOptions: 0
-      - time: .68319571
-        functionName: setWeaponTriggerTrue
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 1150
-        messageOptions: 0
-      - time: .694214821
-        functionName: setWeaponTriggerFalse
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 1
-        messageOptions: 0
-      - time: .759493649
-        functionName: chooseTarget_skill_1
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 10
-        messageOptions: 0
-      - time: .767274022
-        functionName: setWeaponTriggerTrue
+      - time: .738481581
+        functionName: setWeaponHurt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1151
         messageOptions: 0
-      - time: .781249464
+      - time: .743080378
+        functionName: PlaySound
+        data: 3203
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .747002661
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -3224,20 +3238,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 10
-        messageOptions: 0
-      - time: .021097118
-        functionName: firstAtt
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 10
-        messageOptions: 0
-      - time: .0168777592
-        functionName: refreshCDTime
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 21
         messageOptions: 0
       transformMask:
       - path: 

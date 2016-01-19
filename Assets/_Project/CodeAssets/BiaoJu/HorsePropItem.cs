@@ -15,7 +15,7 @@ public class HorsePropItem : MonoBehaviour {
 	public void InItHorsePropItem (HorsePropInfo tempInfo)
 	{
 		propInfo = tempInfo;
-
+//		Debug.Log ("propInfo.isBuy:" + propInfo.isBuy);
 		propIcon.spriteName = tempInfo.iconId.ToString ();
 
 		desLabel.text = tempInfo.desc;
@@ -40,11 +40,14 @@ public class HorsePropItem : MonoBehaviour {
 				//发送购买请求
 				if (JunZhuData.Instance ().m_junzhuInfo.yuanBao >= propInfo.cost)
 				{
+//					QXComData.CreateBox (1,"元宝不足！",true,null);
+//					return;
 					BiaoJuData.Instance.BuyHorsePropReq (propInfo.id);
 				}
 				else
 				{
 					//元宝不足
+					QXComData.CreateBox (1,"元宝不足！",true,null);
 				}
 			}
 		}

@@ -98,7 +98,8 @@ public class EquipSuoData:MonoBehaviour
     };
     public LockedSignal m_LockedInfo;
     public Dictionary<int, LockedSignal> m_listLockedSignal = new Dictionary<int, LockedSignal>();
-    public static EquipSuoData Instance(){
+    
+	public static EquipSuoData Instance(){
 		if ( m_EquipSuoData == null ){
 			GameObject t_gameobject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
@@ -107,6 +108,23 @@ public class EquipSuoData:MonoBehaviour
 
         return m_EquipSuoData;
     }
+
+	void OnDestroy(){
+		m_EquipSuoData = null;
+
+		m_listEquipWash.Clear();
+
+		m_listEffectInfo.Clear();
+			
+		m_equipsLevelSave.Clear();
+				
+		m_listNewAttribute.Clear();
+				
+		m_listEquipWash.Clear();
+				
+		_MainParent = null;
+	}
+
     public static int GetNameIDByIndex(int index)
     {
         int[] allName = { 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013};
@@ -133,24 +151,48 @@ public class EquipSuoData:MonoBehaviour
         return tempBuwei;
     }
 
-    public static void TopUpLayerTip(GameObject obj)
+    public static void TopUpLayerTip(GameObject obj = null,bool is_Hidden = false,int type = 0, string Des = "",bool SpecialNeed = false)//0 chongzhi  1 chongzhitongyong  
     {
         _MainParent = obj;
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                    UITopUp);
+        _IsHidden = is_Hidden;
+        _ShowType = type;
+        _vipInfo = Des;
+        _IsSpecial = SpecialNeed;
+         
+        if (type == 1 && string.IsNullOrEmpty(Des))
+        {
+            TopUpLoadManagerment.LoadPrefab(SpecialNeed);
+        }
+        else
+        {
+            ShowSignal("", LanguageTemplate.GetText(1514), "");
+            //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
+            //                            UITopUp);
+        }
     }
     private static GameObject _MainParent;
+    private static int _ShowType = 0;
+    private static bool _IsHidden;
+    private static string _vipInfo = "";
+    private static bool _IsSpecial = false;
     private static void UITopUp(ref WWW p_www, string p_path, Object p_object)
     {
-    
         GameObject boxObj = Instantiate(p_object) as GameObject;
-
         UIBox uibox = boxObj.GetComponent<UIBox>();
         string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.HUANGYE_19);
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         string cancelStr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
         // string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
-        string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SS);
+        string str1 = "";
+        if (!string.IsNullOrEmpty(_vipInfo))
+        {
+            str1 = _vipInfo;
+        }
+        else
+        {
+            str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SS);
+        }
+      
         uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, cancelStr,confirmStr, OnComfirm, null, null);
     }
 
@@ -159,8 +201,18 @@ public class EquipSuoData:MonoBehaviour
         if (index == 2)
         {
             MainCityUI.TryRemoveFromObjectList(_MainParent);
-            _MainParent.SetActive(false);
-            TopUpLoadManagerment.m_instance.LoadPrefab(false);
+            if (_MainParent != null)
+            {
+                if (!_IsHidden)
+                {
+                    Destroy(_MainParent);
+                }
+                else
+                {
+                    _MainParent.SetActive(false);
+                }
+            }
+            TopUpLoadManagerment.LoadPrefab(_IsSpecial);
         }
     }
 
@@ -182,9 +234,17 @@ public class EquipSuoData:MonoBehaviour
     private static string _strTitle = "";
     private static string _strContent1 = "";
     private static string _strContent2 = "";
-    public static void ShowSignal(string title, string content1,string content2)//tanchukuang 
+    public static void ShowSignal(string title = null , string content1 = null,string content2 = null)//tanchukuang 
     {
-        _strTitle = title;
+        if (string.IsNullOrEmpty(title))
+        {
+            _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO);
+        }
+        else
+        {
+            _strTitle = title;
+        }
+       
         _strContent1 = content1;
         _strContent2 = content2;
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -203,14 +263,23 @@ public class EquipSuoData:MonoBehaviour
     public static void CreateChaKan(string _playerInfo)
     {
         _OtherPlayerInfo = _playerInfo;
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.OTHER_PLAYER_INFO),
+        if (OtherPlayerInfoManagerment.m_OtherInfo == null)
+        {
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.OTHER_PLAYER_INFO),
                            UIBoxLoadCallback_ChaKan);
+        }
+        else
+        {
+            OtherPlayerInfoManagerment.m_OtherInfo.m_OtherPlayerId = _OtherPlayerInfo;
+            OtherPlayerInfoManagerment.m_OtherInfo.gameObject.SetActive(true);
+        }
     }
 
     private static void UIBoxLoadCallback_ChaKan(ref WWW p_www, string p_path, Object p_object)
     {
-        GameObject boxObj = Instantiate(p_object) as GameObject;
-        boxObj.GetComponent<OtherPlayerInfoManagerment>().m_OtherPlayerId = _OtherPlayerInfo;
+        GameObject tempObject = Instantiate(p_object) as GameObject;
+        tempObject.GetComponent<OtherPlayerInfoManagerment>().m_OtherPlayerId = _OtherPlayerInfo;
+         MainCityUI.TryAddToObjectList(tempObject, false);
     }
     public static bool AllUpgrade()
     {

@@ -117,21 +117,25 @@ public class PlayerModelController : MonoBehaviour
                     if (CityGlobalData.m_CreateRoleCurrent)
                     {
                         CityGlobalData.m_CreateRoleCurrent = false;
-                        m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
+                        //Vector2  vec_random = Random.insideUnitCircle * 10;
+
+                        //m_ObjHero.transform.position = new Vector3(0.0f + vec_random.x, 4.62f,-9.8f + vec_random.y);
+                        m_ObjHero.transform.position = new Vector3(0.38f, 2.1f, -29.5f);
                     }
                     else
                     {
-                        if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
+                       if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
                         {
                             m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                            if (m_ObjHero.transform.position.y < 150 || m_ObjHero.transform.position.y > 177)
+                              if (m_ObjHero.transform.position.y > 10 )
                             {
-                                m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
+                                m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
                             }
                         }
                         else
                         {
-                            m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
+                            m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
+                            ///   m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
                         }
                     }
                 }
@@ -141,14 +145,14 @@ public class PlayerModelController : MonoBehaviour
                     if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
                     {
                         m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                        if (m_ObjHero.transform.position.y > 177.0f || m_ObjHero.transform.position.y < 150.0f)
-                        {
-                            m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
-                        }
+                        //if (m_ObjHero.transform.position.y > 177.0f || m_ObjHero.transform.position.y < 150.0f)
+                        //{
+                        //    m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
+                        //}
                     }
                     else
                     {
-                        m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
+                    //    m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
                     }
                 }
                 break;
@@ -170,7 +174,7 @@ public class PlayerModelController : MonoBehaviour
         m_isSetPos = true;
         m_ObjHero.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
-        m_ObjHero.transform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
+        m_ObjHero.transform.localScale = Vector3.one*1.5f;
 
         m_character = m_ObjHero.GetComponent<CharacterController>();
 
@@ -454,6 +458,7 @@ public class PlayerModelController : MonoBehaviour
 
         CityGlobalData.m_selfNavigation = false;
 
+        _isArrived = false;
         //stay character, disable right buttom btns.
         m_animator.SetBool("inRun", false);
         //  m_animator.Play("zhuchengdile");
@@ -498,17 +503,8 @@ public class PlayerModelController : MonoBehaviour
         m_fPDistance = 0f;
         PlayerSelfNameManagerment.DestroyAutoNav();
         if (!CityGlobalData.m_selfNavigation) return;
-
+    
         CityGlobalData.m_selfNavigation = false;
-        //        if (isMoving)
-        //        {
-        //            isMoving = false;
-        //
-        //            MainCityUIRB.IsCanClickButtons = true;
-        //            MainCityUI.m_MainCityUI.m_MainCityUIRB.SetPanel(true);
-        //            UIYindao.m_UIYindao.setOpenUIEff();
-        //        }
-
         m_agent.Stop();
         m_isNavMesh = false;
         m_character.enabled = true;
@@ -522,6 +518,7 @@ public class PlayerModelController : MonoBehaviour
         }
     }
     private bool _IsSetPos = false;
+    private bool _isArrived = false;
     void Update()
     {
         if (m_ObjHero == null || m_joystick == null)
@@ -549,69 +546,18 @@ public class PlayerModelController : MonoBehaviour
         {
             if (m_agent.remainingDistance <= 2.1f && m_fPDistance != 0f)
             {
-                if (m_iMoveToNpcID != -1 && !MainCityUI.IsWindowsExist())
+
+                if (m_iMoveToNpcID == 801)
                 {
-                    if (m_iMoveToNpcID != 10000 && Vector3.Distance(vec_TargetPos, m_ObjHero.transform.position) <= 3.0f)
-                    {
-                        if ((m_iMoveToNpcID > 1000 || m_iMoveToNpcID == 10000) && m_iMoveToNpcID != 1151 && m_iMoveToNpcID < 10060)
-                        {
-                            TidyTenementNpcInfo();
-                        }
-                        //else if (CityGlobalData.m_isAllianceTenentsScene)
-                        //{
-                        //    CityGlobalData.m_isAllianceTenentsScene = false;
-                        //    CityGlobalData.m_isAllianceScene = true;
-                        //    //  SceneManager.EnterAllianceCity();
-                        //    SceneManager.EnterMainCity();
-                        //}
-                        else
-                        {
-                            if (m_iMoveToNpcID >= 10060)
-                            {
-                                if (m_iMoveToNpcID == 10060)
-                                {
-                                    CityGlobalData.m_iAllianceTenentsSceneNum = 0;
-
-                                }
-                                else if (m_iMoveToNpcID == 10061)
-                                {
-                                    CityGlobalData.m_iAllianceTenentsSceneNum = 1;
-
-                                }
-                                else if (m_iMoveToNpcID == 10062)
-                                {
-                                    CityGlobalData.m_iAllianceTenentsSceneNum = 2;
-
-                                }
-                                else if (m_iMoveToNpcID == 10063)
-                                {
-                                    CityGlobalData.m_iAllianceTenentsSceneNum = 3;
-                                }
-                                FunctionWindowsCreateManagerment.SetFenChengNum(CityGlobalData.m_iAllianceTenentsSceneNum);
-                                CityGlobalData.m_isAllianceScene = false;
-                                CityGlobalData.m_isAllianceTenentsScene = true;
-                                //  SceneManager.EnterAllianceCityTenentsCityOne();
-                            }
-                            else
-                            {
-                                if (m_iMoveToNpcID == 801)
-                                {
-                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EMAIL),
-                                   EmailLoadCallback);
-                                }
-                                else
-                                {
-                                    TidyNpcInfo();
-                                }
-                            }
-                        }
-                    }
-                    else if (m_iMoveToNpcID == 10000)
-                    {
-                        TidyNpcInfo();
-                    }
+                    NewEmailData.Instance().OpenEmail(0);
                 }
+                else if (m_iMoveToNpcID != -1 && !MainCityUI.IsWindowsExist() && !_isArrived)
+                {
 
+                    _isArrived = true ;
+                                    TidyNpcInfo();
+                 
+                }
                 StopPlayerNavigation();
             }
             else
@@ -673,17 +619,6 @@ public class PlayerModelController : MonoBehaviour
             PlayerPrefs.SetString("IsCurrentJunZhuPos", value);
         }
     }
-
-    //void FixedUpdate()
-    //{
-    //    Debug.Log("FixedUpdate. m_ObjHero.transform.position :" + m_ObjHero.transform.position);
-    //}
-
-    //void LateUpdate() {
-    //    Debug.Log("LateUpdate. m_ObjHero.transform.position :" + m_ObjHero.transform.position);
-    //}
-
-
     public void EmailLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject tempObject = Instantiate(p_object) as GameObject;
@@ -807,66 +742,20 @@ public class PlayerModelController : MonoBehaviour
             }
 
         }
-
         for (int i = 0; i < FunctionOpenTemp.templates.Count; i++)
         {
             if (FunctionOpenTemp.templates[i].m_iNpcID == PlayerModelController.m_playerModelController.m_iMoveToNpcID)
             {
-                //show all function ui when open all function.
-                if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION))
+                if (FunctionOpenTemp.GetWhetherContainID(FunctionOpenTemp.templates[i].m_iID))
                 {
                     ShowUIInfo(FunctionOpenTemp.templates[i]);
                     return;
                 }
-
-                if (FunctionOpenTemp.templates[i].Level < 0 && FunctionOpenTemp.templates[i].m_iMissionID < 0)
+                else if (!FunctionOpenTemp.GetWhetherContainID(FunctionOpenTemp.templates[i].m_iID))
                 {
-                    if (FunctionOpenTemp.templates[i].type == 2)
+                    if (!FunctionOpenTemp.templates[i].m_sNotOpenTips.Equals("-1"))
                     {
-                        ShowUIInfo(FunctionOpenTemp.templates[i]);
-                        return;
-                    }
-                }
-                else
-                {
-                    if (FunctionOpenTemp.templates[i].Level >= 0 && FunctionOpenTemp.templates[i].m_iMissionID < 0)
-                    {
-                        if (JunZhuData.Instance().m_junzhuInfo.level >= FunctionOpenTemp.templates[i].Level)
-                        {
-
-
-                            if (FunctionOpenTemp.templates[i].type == 2)
-                            {
-                                ShowUIInfo(FunctionOpenTemp.templates[i]);
-                                return;
-                            }
-                            return;
-                        }
-
-                    }
-                    else if (FunctionOpenTemp.templates[i].Level < 0 && FunctionOpenTemp.templates[i].m_iMissionID > 0)
-                    {
-                        if (TaskData.Instance.m_TaskInfoDic.ContainsKey(FunctionOpenTemp.templates[i].m_iMissionID))
-                        {
-                            if (TaskData.Instance.m_TaskInfoDic[FunctionOpenTemp.templates[i].m_iMissionID].progress == -1)
-                            {
-                                if (FunctionOpenTemp.templates[i].type == 2)
-                                {
-                                    ShowUIInfo(FunctionOpenTemp.templates[i]);
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (FunctionOpenTemp.templates[i].type == 2)
-                            {
-                                ShowUIInfo(FunctionOpenTemp.templates[i]);
-                                return;
-
-                            }
-
-                        }
+                        EquipSuoData.ShowSignal(null, FunctionOpenTemp.templates[i].m_sNotOpenTips);
                     }
                 }
             }
@@ -878,19 +767,14 @@ public class PlayerModelController : MonoBehaviour
     void ShowUIInfo(FunctionOpenTemp template)
     {
         TaskData.Instance.SendData(template.m_iMissionOpenID, 1);
-
-        //return if window opened.
         if (MainCityUI.IsWindowsExist())
         {
             return;
         }
-
-        switch (template.m_iID)
-        {
-            
-            default:
-                break;
-        }
+        GameObject obj = new GameObject();
+        obj.name = "MainCityUIButton_" + template.m_iID;
+        MainCityUI.m_MainCityUI.MYClick(obj);
+        
     }
 
     
@@ -963,8 +847,6 @@ public class PlayerModelController : MonoBehaviour
 
         EquipsOfBody.Instance();
 
-        TopUpLoadManagerment.Instance();
-
         SettingData.Instance();
 
         BlockedData.Instance();
@@ -973,15 +855,7 @@ public class PlayerModelController : MonoBehaviour
 
         NewEmailData.Instance().LoadEmailPrefab();
 
-        //		EmailData.Instance.EmailDataReq();
-
-        //        QXTanBaoData.Instance().TBInfoReq();
-
-        //        YunBiaoData.Instance.YunBiaoInfoReq();
-
-        //        LueDuoData.Instance.LueDuoInfoReq();
-
-        //        FuWenData.Instance.FuWenDataReq();
+		QXChatData.Instance.LoadChatPrefab ();
     }
 
 

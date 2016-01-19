@@ -17,7 +17,7 @@ public abstract class UITweener : MonoBehaviour
 	/// Current tween that triggered the callback function.
 	/// </summary>
 
-	static public UITweener current;
+	public static UITweener current;
 
 	public enum Method
 	{
@@ -407,7 +407,7 @@ public abstract class UITweener : MonoBehaviour
 	/// Starts the tweening operation.
 	/// </summary>
 
-	static public T Begin<T> (GameObject go, float duration) where T : UITweener
+	public static T Begin<T> (GameObject go, float duration) where T : UITweener
 	{
 		T comp = go.GetComponent<T>();
 #if UNITY_FLASH

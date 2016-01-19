@@ -37,10 +37,22 @@ public class MainCityAddFunction : MYNGUIPanel
 		m_iNum = 0;
 		m_AddFunctionSatatae = AddFunctionSatatae.Eff;
 		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100178 ).path);
+
+		EffectIdTemplate et = EffectIdTemplate.getEffectTemplateByEffectId(100178);
+		if(et.sound.Equals("-1") == false)
+		{
+			SoundPlayEff spe = m_objEff.AddComponent<SoundPlayEff>();
+			spe.PlaySound(et.sound);
+		}
 		string spriteName = m_id + "";
 
 		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff1, EffectTemplate.getEffectTemplateByEffectId( 100107 ).path);
-
+		et = EffectIdTemplate.getEffectTemplateByEffectId(100107);
+		if(et.sound.Equals("-1") == false)
+		{
+			SoundPlayEff spe = m_objEff1.AddComponent<SoundPlayEff>();
+			spe.PlaySound(et.sound);
+		}
 		m_UILabelDes.text = m_FunctionOpenTemp.Des;
 	}
 	

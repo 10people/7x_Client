@@ -65,5 +65,7 @@ public class FriendData : Singleton<FriendData>, SocketProcessor
     void OnDestroy()
     {
         SocketTool.UnRegisterMessageProcessor(this);
+
+		base.OnDestroy();
     }
 }

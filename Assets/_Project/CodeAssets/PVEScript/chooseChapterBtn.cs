@@ -15,15 +15,31 @@ public class chooseChapterBtn : MonoBehaviour {
 	public GameObject NoShowBtn;
 
 	public GameObject ParTrans;
-	//[HideInInspector]public string Chapters;
+
 	[HideInInspector]public string ChapterName;
-	//public UILabel ChaptersGB;
+
 	public UILabel ChapterNameGB;
-//	public List<Level> AllLvs = new List<Level> ();
-//	public List<Level> PassLvs = new List<Level> ();
+
+	public GameObject Art;
+
 	public void init()
 	{
 		//ChaptersGB.text = Chapters;
+		List<int > zhangjieid = PassLevelBtn.Instance ().Sec_idlist;
+		Art.SetActive(false);
+		Debug.Log("Chapternumber = "+Chapternumber);
+		if(zhangjieid != null )
+		{
+			foreach(int id in zhangjieid)
+			{
+				Debug.Log("id = "+id);
+				if(id == Chapternumber)
+				{
+					Art.SetActive(true);
+					break;
+				}
+			}
+		}
 		ChapterNameGB.text = ChapterName;
 	}
 

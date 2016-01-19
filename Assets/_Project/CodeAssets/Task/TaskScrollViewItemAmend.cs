@@ -91,7 +91,7 @@ public class TaskScrollViewItemAmend : MonoBehaviour
                     break;
                 case TaskType.SideQuest:
                     {
-                        m_progressLabel.text = taskInfo._Progress + "/" + RenWuTemplate.GetRenWuById(taskInfo._TaskId).condition.ToString();
+                        m_progressLabel.text = taskInfo._Progress + "/1"; //ZhuXianTemp.getTemplateById(taskInfo._TaskId).condition.ToString();
                     }
                     break;
             }

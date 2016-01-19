@@ -73,7 +73,6 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
         QiXiongSerializer t_qx = new QiXiongSerializer();
         XinShouXSActivity xinshou = new XinShouXSActivity();
         xinshou.typeId = 1542000;
-
         t_qx.Serialize(t_tream, xinshou);
         byte[] t_protof;
         t_protof = t_tream.ToArray();
@@ -94,6 +93,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
 
                         XinShouXianShiInfo ReponseInfo = new XinShouXianShiInfo();
                         t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
+                        _TimeCount = ReponseInfo.remainTime;
                         TidyData(ReponseInfo);
                         m_HiddenObject.SetActive(true);
                         return true;
@@ -114,6 +114,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
                                 break;
                             }
                         }
+
                         if (_listOnlineInfo.Count > 0)
                         {
                             int size = m_RewardParent.transform.childCount;
@@ -121,7 +122,9 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
                             {
                                 Destroy(m_RewardParent.transform.GetChild(i).gameObject);
                             }
-                        
+                            _TimeCount = _listOnlineInfo[0].shengTime;
+                            MainCityUI.SetRedAlert(15, false);
+                            MainCityUIRB.ShowTimeCalc(int.Parse(XianshiHuodongTemp.GetXianShiHuoDongById(_listOnlineInfo[0].huodongId).doneCondition));
                             RewardData(_listOnlineInfo[0]);
                         }
                         else
@@ -148,7 +151,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
             {
                 id = data.huodong[i].huodongId;
                 _listOnlineInfo.Add(data.huodong[i]);
-                break;
+ 
             }
             else if (data.huodong[i].state == 40)
             {
@@ -166,7 +169,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
     IEnumerator TimeDown()
     {
         yield return new WaitForSeconds(1.0f);
-        m_LabBottomCount.text = TimeHelper.GetUniformedTimeString(_TimeCount);
+        m_LabBottomCount.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(_TimeCount));
         if (_TimeCount > 0)
         {
             _isTimeDown = true;
@@ -190,8 +193,8 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
         {
             m_BottomLabParent.gameObject.SetActive(true);
             m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
-            _TimeCount = info.shengTime;
-            m_LabBottomCount.text = TimeHelper.GetUniformedTimeString(_TimeCount);
+          //  _TimeCount = info.shengTime;
+            m_LabBottomCount.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(_TimeCount));
             _isTimeDown = true;
         }
         m_LabMiddleTitle.text = XianshiHuodongTemp.GetXianShiHuoDongById(info.huodongId).desc;
@@ -224,7 +227,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
     {
         _indexNum = 0;
         int size = _listReward.Count;
-        m_RewardParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size, 120), 0, 0);
+        m_RewardParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size, 60), 0, 0);
         for (int i = 0; i < size; i++)
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
@@ -279,7 +282,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
 
             iconSampleManager.SetIconPopText(_listReward[_indexNum].id, NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(_listReward[_indexNum].id).nameId), DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(_listReward[_indexNum].id).descId));
 
-            tempObject.transform.localScale = Vector3.one * 0.8f;
+            tempObject.transform.localScale = Vector3.one * 0.4f;
 
             if (_indexNum < _listReward.Count - 1)
             {

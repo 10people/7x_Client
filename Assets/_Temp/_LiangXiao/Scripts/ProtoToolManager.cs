@@ -299,7 +299,9 @@ public class ProtoToolManager : Singleton<ProtoToolManager>, SocketListener
         SendIndexHandler.m_handler -= OnSendIndexClick;
 
         SocketTool.UnRegisterSocketListener(this);
-    }
+
+		base.OnDestroy();
+	}
 
     void Start()
     {

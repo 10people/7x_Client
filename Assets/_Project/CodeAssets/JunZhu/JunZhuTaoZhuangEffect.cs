@@ -12,6 +12,7 @@ public class JunZhuTaoZhuangEffect : MonoBehaviour
     public UIGrid m_gridRight;
     public UIScrollView m_ScrollViewLeft;
     public UIScrollView m_ScrollViewRight;
+    public GameObject m_Back;
     public struct TaoZHuang
     {
         public string _Title;
@@ -27,10 +28,12 @@ public class JunZhuTaoZhuangEffect : MonoBehaviour
 	}
 	void OnEnable()
 	{
-	   ShowInfo ();
+        m_Back.SetActive(true);
+       ShowInfo ();
 	}
     void OnDisable()
     {
+        m_Back.SetActive(false);
         int size = m_gridLeft.transform.childCount;
         for (int i = 0; i < size; i++)
         {

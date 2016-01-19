@@ -24,6 +24,12 @@ public class BattleReplayorReader : MonoBehaviour, SocketProcessor
 		SocketTool.RegisterMessageProcessor( this );
 	}
 
+	void OnDestroy(){
+		SocketTool.UnRegisterMessageProcessor( this );
+
+		_instance = null;
+	}
+
 	void Start()
 	{
 //		SocketTool.Instance().Connect();
@@ -43,11 +49,6 @@ public class BattleReplayorReader : MonoBehaviour, SocketProcessor
 		t_protof = tempStream.ToArray();
 		
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_Request_battle_replay, ref t_protof);
-	}
-
-	void OnDestroy()
-	{
-		SocketTool.UnRegisterMessageProcessor( this );
 	}
 
 	public bool OnProcessSocketMessage( QXBuffer p_message )

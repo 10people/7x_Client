@@ -205,6 +205,13 @@ public class Console_SetNetwork {
 	public static float GetValidRunC(){
 		return m_valid_run_c;
 	}
+
+	/// Min ping by default for pre run use.
+	private static float m_min_ping_for_run_c		= 0.3f;
+
+	public static float GetMinPingForPreRun(){
+		return m_min_ping_for_run_c;
+	}
 	
 	#endregion
 }

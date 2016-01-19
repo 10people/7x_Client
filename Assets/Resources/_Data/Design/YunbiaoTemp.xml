@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<YunbiaoTemp key="centerX" desc="中心点X坐标" value="50" />
+<YunbiaoTemp key="centerY" desc="中心点Z坐标" value="50" />
+<YunbiaoTemp key="saveArea_recoveryPro" desc="安全区血量回复速率" value="0.416667" />
+<YunbiaoTemp key="saveArea_recovery_interval" desc="安全区血量回复时间间隔（秒）" value="15" />
+<YunbiaoTemp key="saveArea_people_max" desc="单个安全区人数上限" value="30" />
+<YunbiaoTemp key="yunbiaoScene_modelNum_max" desc="运镖场景模型数量上限" value="200" />
+<YunbiaoTemp key="bloodVial_recoveryPro" desc="血瓶血量回复速率" value="5" />
+<YunbiaoTemp key="bloodVialCD" desc="血瓶CD（秒）" value="30" />
+<YunbiaoTemp key="bloodVial_freeTimes" desc="每日免费血瓶数量" value="2" />
+<YunbiaoTemp key="resurgenceTimes" desc="每日满血复活次数" value="5" />
+<YunbiaoTemp key="resTimes_buy_ViplvlMin" desc="购买满血复活所需VIP等级" value="0" />
+<YunbiaoTemp key="onSiteresTimes_buy_ViplvlMin" desc="购买原地复活所需VIP等级" value="2" />
+<YunbiaoTemp key="incomeAddPro" desc="时间段内运镖收益倍数" value="200" />
+<YunbiaoTemp key="incomeAdd_startTime1" desc="运镖收益加成起始时间1" value="12:00" />
+<YunbiaoTemp key="incomeAdd_endTime1" desc="运镖收益加成结束时间1" value="14:00" />
+<YunbiaoTemp key="incomeAdd_startTime2" desc="运镖收益加成起始时间2" value="20:00" />
+<YunbiaoTemp key="incomeAdd_endTime2" desc="运镖收益加成结束时间2" value="23:00" />
+<YunbiaoTemp key="income_lossless_price" desc="100%收益价格" value="40" />
+<YunbiaoTemp key="protectDuration" desc="镖马保护罩持续时间（秒）" value="10" />
+<YunbiaoTemp key="protectionCD" desc="镖马保护罩冷却时间（秒）" value="20" />
+<YunbiaoTemp key="speedUpDuration" desc="马鞭加速时间（秒）" value="5" />
+<YunbiaoTemp key="speedUpEffect" desc="马鞭加速效果（%）" value="1000" />
+<YunbiaoTemp key="speedUpCD" desc="马鞭加速冷却时间（秒）" value="10" />
+<YunbiaoTemp key="speedUpPrice" desc="马鞭价格" value="5" />
+<YunbiaoTemp key="cart_attribute_pro" desc="镖马属性系数" value="100" />
+<YunbiaoTemp key="foeCart_incomeAdd_pro" desc="劫获仇人镖马收益加成(%)" value="5" />
+<YunbiaoTemp key="killFoeAward_k" desc="杀死单个仇人奖励系数k" value="3" />
+<YunbiaoTemp key="killFoeAward_b" desc="杀死单个仇人奖励系数b" value="0" />
+<YunbiaoTemp key="rewarding_killFoe_max" desc="（有奖励）杀死仇人上限" value="5" />
+<YunbiaoTemp key="cartAI_refresh_interval" desc="机器人镖马刷新时间间隔（min)" value="1" />
+<YunbiaoTemp key="cartAI_appear_interval" desc="机器人镖马出现时间间隔（s）" value="100" />
+<YunbiaoTemp key="cartAImax" desc="场景内AI镖马数量上限" value="20" />
+<YunbiaoTemp key="cartAILvlMin" desc="AI镖马最低等级" value="20" />
+<YunbiaoTemp key="cartAILvlMax" desc="AI镖马最高等级" value="100" />
+<YunbiaoTemp key="cartNPCIDmin" desc="镖马NPC最小ID" value="902001" />
+<YunbiaoTemp key="cartNPCIDmax" desc="镖马NPC最大ID" value="910005" />
+<YunbiaoTemp key="autoResurgenceTime" desc="死亡后自动安全复活时间(秒）" value="10" />
+<YunbiaoTemp key="yunbiao_start_broadcast" desc="运镖开始广播" value="多倍运镖开启，现在运镖有更高收益。" />
+<YunbiaoTemp key="yunbiao_end_broadcast" desc="运镖结束广播" value="多倍运镖结束。" />
+<YunbiaoTemp key="yunbiao_comforted_award_k" desc="运镖被安慰奖励系数k" value="0.01" />
+<YunbiaoTemp key="yunbiao_comforted_award_b" desc="运镖被安慰奖励参数b" value="0" />
+<YunbiaoTemp key="TP_duration" desc="传送所需时间（秒）" value="5" />
+<YunbiaoTemp key="cartTime" desc="马车正常到达时间（秒）" value="600" />
+</dataset>

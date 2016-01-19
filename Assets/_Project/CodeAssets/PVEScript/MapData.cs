@@ -59,7 +59,6 @@ public class MapData : MonoBehaviour, SocketProcessor {
 
 	//List <GameObject> UIs = new List<GameObject>();
 
-
 	void Awake()
 	{ 
 		SocketTool.RegisterMessageProcessor(this);
@@ -68,9 +67,13 @@ public class MapData : MonoBehaviour, SocketProcessor {
 
 	void Start ()
 	{
-
 		StartCoroutine (Changestatebtn());
+	}
 
+	void OnDestroy(){
+		SocketTool.UnRegisterMessageProcessor( this );
+
+		mapinstance = null;
 	}
 
 	IEnumerator Changestatebtn()
@@ -96,16 +99,16 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			CityGlobalData.m_isRightGuide = false;
 			ShowPVEGuid();
 		}
-		if(CityGlobalData.PveLevel_UI_is_OPen)
-		{
-			if(ShowYinDaoBackToCity)
-			{
-				if(UIYindao.m_UIYindao.m_isOpenYindao)
-				{
-					UIYindao.m_UIYindao.CloseUI();
-				}
-			}
-		}
+//		if(CityGlobalData.PveLevel_UI_is_OPen)
+//		{
+//			if(ShowYinDaoBackToCity)
+//			{
+//				if(UIYindao.m_UIYindao.m_isOpenYindao)
+//				{
+//					UIYindao.m_UIYindao.CloseUI();
+//				}
+//			}
+//		}
 	}
 	[HideInInspector]public int ShowEffectLevelid;
 
@@ -144,238 +147,195 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			UIYindao.m_UIYindao.CloseUI();
 		}
 	}
-    public	void ShowPVEGuid()
+	public void ShowPve_PT_GuidSection1() // 第一章节引导
 	{
-		ShowYinDaoBackToCity = false;
-		if(FreshGuide.Instance().IsActive(100020)&& TaskData.Instance.m_TaskInfoDic[100020].progress >= 0&&CurrChapter == 1&&GuidLevel == 0)
+		//CityGlobalData.m_isRightGuide = false;
+		//Debug.Log("进入第一张引导");
+		if(FreshGuide.Instance().IsActive(100020)&& TaskData.Instance.m_TaskInfoDic[100020].progress >= 0)
 		{
-//			Debug.Log("进入PVE 第一个任务 点击右边按钮翻页");
-
-			ShowYinDao = false;
+//			Debug.Log("进入PVE 第一个任务 1-1");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100020];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100020)&& TaskData.Instance.m_TaskInfoDic[100020].progress >= 0&&CurrChapter == 2&&GuidLevel == 0)
-		{
-			//Debug.Log("指向2-1");
-
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100020];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
 			ShowYinDao = false;
 			return;
 		}
-//		Debug.Log();
-		if(FreshGuide.Instance().IsActive(100030)&& TaskData.Instance.m_TaskInfoDic[100030].progress >= 0&&CurrChapter == 2&&GuidLevel == 0)
-		{     
-//			Debug.Log("指向2-2");
-
+		if(FreshGuide.Instance().IsActive(100030)&& TaskData.Instance.m_TaskInfoDic[100030].progress >= 0)
+		{
+//			Debug.Log("进入PVE 第一个任务 1-2");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100030];
-			tempTaskData.m_iCurIndex = 2;
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
-		    ShowYinDao = false;
-
-		    return; 
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+			ShowYinDao = false;
+			return;
 		}
-		if(FreshGuide.Instance().IsActive(100040)&& TaskData.Instance.m_TaskInfoDic[100040].progress >= 0&&CurrChapter == 2&&GuidLevel == 0)
+		if(FreshGuide.Instance().IsActive(100040)&& TaskData.Instance.m_TaskInfoDic[100040].progress >= 0)
 		{
-//			Debug.Log("Back!");
-
-			ShowYinDaoBackToCity = true;
+//			Debug.Log("引导返回主城");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100040];
-			tempTaskData.m_iCurIndex = 0;
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
-			ShowYinDao = false;
-			return;
-		}
-
-
-		//Debug.Log("wancheng 2-3 fanhui");
-		if(FreshGuide.Instance().IsActive(100060)&& TaskData.Instance.m_TaskInfoDic[100060].progress >= 0&&CurrChapter == 2&&GuidLevel == 0)
-		{       
-//			Debug.Log("wancheng 2-3 fanhui");
-
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100060];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-			ShowYinDao = false;
-			return;
-		}
-
-		//Debug.Log("wancheng  2-4 fanhui");
-		if(FreshGuide.Instance().IsActive(100070)&& TaskData.Instance.m_TaskInfoDic[100070].progress >= 0&&CurrChapter == 2&&GuidLevel == 0)
-		{      
-//			Debug.Log("wancheng  2-4 fanhui");
-
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100070];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-			ShowYinDao = false;
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100080)&& TaskData.Instance.m_TaskInfoDic[100080].progress >= 0&&GuidLevel == 0)
-		{
-//			Debug.Log("回成了");
-
-			ShowYinDaoBackToCity = true;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100080];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
 			ShowYinDao = false;
 			return;
 		}
-
-		//Debug.Log("wancheng  2-5 fanhui");
-		if(FreshGuide.Instance().IsActive(100090)&& TaskData.Instance.m_TaskInfoDic[100090].progress >= 0&&CurrChapter == 2&&GuidLevel == 0)
-		{      
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100090];
-
-//			Debug.Log( "task1:" + tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
-
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+		if(FreshGuide.Instance().IsActive(100050)&& TaskData.Instance.m_TaskInfoDic[100050].progress >= 0)
+		{
+//			Debug.Log("进入PVE 第一个任务 1-3");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100050];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
 			ShowYinDao = false;
 			return;
 		}
-
-		if(FreshGuide.Instance().IsActive(100100)&& TaskData.Instance.m_TaskInfoDic[100100].progress >= 0&&GuidLevel == 0)
+		if(FreshGuide.Instance().IsActive(100060)&& TaskData.Instance.m_TaskInfoDic[100060].progress >= 0)
 		{
-//			Debug.Log("有一次返回城中");
-
-			ShowYinDaoBackToCity = true;
+//			Debug.Log("引导返回主城");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100060];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			ShowYinDao = false;
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(100080)&& TaskData.Instance.m_TaskInfoDic[100080].progress >= 0)
+		{
+//			Debug.Log("进入PVE 第一个任务 1-4");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100080];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+			ShowYinDao = false;
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(100090)&& TaskData.Instance.m_TaskInfoDic[100090].progress >= 0)
+		{
+//			Debug.Log("进入PVE 第一个任务 1-5");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100090];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+			ShowYinDao = false;
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(100100)&& TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
+		{
+			Debug.Log("引导返回主城");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100100];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
 			ShowYinDao = false;
 			return;
 		}
-
-
-
-		if(FreshGuide.Instance().IsActive(100120)&& TaskData.Instance.m_TaskInfoDic[100120].progress >= 0&&CurrChapter == 2&&GuidLevel == 0)
+		if(FreshGuide.Instance().IsActive(100120)&& TaskData.Instance.m_TaskInfoDic[100120].progress >= 0)
 		{
-			//			Debug.Log("2-6");
-
+//			Debug.Log("进入PVE 第一个任务 1-6");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100120];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
 			ShowYinDao = false;
 			return;
 		}
-
-		if(FreshGuide.Instance().IsActive(100130)&& TaskData.Instance.m_TaskInfoDic[100130].progress >= 0&&CurrChapter == 2&&GuidLevel == 0)
+		if(FreshGuide.Instance().IsActive(100130)&& TaskData.Instance.m_TaskInfoDic[100130].progress >= 0)
 		{
-			//			Debug.Log("2-7");
-			
+//			Debug.Log("进入PVE 第一个任务 1-7");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100130];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
 			ShowYinDao = false;
 			return;
 		}
-		if(FreshGuide.Instance().IsActive(100140)&& TaskData.Instance.m_TaskInfoDic[100140].progress >= 0&&GuidLevel == 0)
+		if(FreshGuide.Instance().IsActive(100140)&& TaskData.Instance.m_TaskInfoDic[100140].progress >= 0)
 		{
-			//			Debug.Log("Back   ");
-			ShowYinDaoBackToCity = true;
+//			Debug.Log("指向宝箱");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100140];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-			ShowYinDao = false;
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress >= 0&&CurrChapter == 3&&GuidLevel == 0)
-		{
-			//			Debug.Log("3-1   ");
-			
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100170];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			ShowYinDao = false;
 			return;
 		}
-		if(FreshGuide.Instance().IsActive(100180)&& TaskData.Instance.m_TaskInfoDic[100180].progress >= 0&&GuidLevel == 0)
+
+		ClosewPVEGuid ();
+	}
+	public void BackToCity()
+	{
+//		Debug.Log("回程");
+		if (FreshGuide.Instance ().IsActive (100145) && TaskData.Instance.m_TaskInfoDic [100145].progress >= 0) {
+
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100145];
+
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+		}
+	}
+	public void ShowPve_PT_GuidSection2() // 第二章节引导
+	{
+		//Debug.Log("进入第2张引导");
+		if(FreshGuide.Instance().IsActive(100140)&& TaskData.Instance.m_TaskInfoDic[100140].progress >= 0)
 		{
-			//			Debug.Log("Back ");
-			ShowYinDaoBackToCity = true;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100180];
+//			Debug.Log("指向宝箱");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100140];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+			ShowYinDao = false;
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(100200)&& TaskData.Instance.m_TaskInfoDic[100200].progress >= 0)
+		{
+//			Debug.Log("在第二张中完成2-2返回主城");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100200];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
 			ShowYinDao = false;
 			return;
 		}
-
-		if(FreshGuide.Instance().IsActive(100230)&& TaskData.Instance.m_TaskInfoDic[100230].progress >= 0&&CurrChapter == 3&&GuidLevel == 0)
+		if(FreshGuide.Instance().IsActive(100250)&& TaskData.Instance.m_TaskInfoDic[100250].progress >= 0)
 		{
-			//			Debug.Log("3-2 ");
-			
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100230];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-			ShowYinDao = false;
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100240)&& TaskData.Instance.m_TaskInfoDic[100240].progress >= 0&&CurrChapter == 3&&GuidLevel == 0)
-		{
-//			Debug.Log("3-3 ");
-
-			ShowYinDao = false;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100240];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-
-			return;
-		}
-
-		if(FreshGuide.Instance().IsActive(100290)&& TaskData.Instance.m_TaskInfoDic[100290].progress >= 0&&GuidLevel == 0)
-		{
-			//			Debug.Log("back ");
-			ShowYinDaoBackToCity = true;
-			ShowYinDao = false;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100290];
+//			Debug.Log("在第二张中完成2-3返回主城");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100250];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-
+			ShowYinDao = false;
 			return;
 		}
-//		if(FreshGuide.Instance().IsActive(100310)&& TaskData.Instance.m_TaskInfoDic[100310].progress >= 0&&GuidLevel == 0)
-//		{
-//			Debug.Log("3-7 ");
-//			ShowYinDao = false;
-//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100310];
-//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-//
-//			return;
-//		}
-		//Debug.Log("传奇1 CityGlobalData.PT_Or_CQ =  "+CityGlobalData.PT_Or_CQ);
-		if(FreshGuide.Instance().IsActive(100340)&& TaskData.Instance.m_TaskInfoDic[100340].progress >= 0&&GuidLevel == 0&&CityGlobalData.PT_Or_CQ&&EnterGuoGuanmap.Instance().ShouldOpen_id < 1)
+		if(FreshGuide.Instance().IsActive(100280)&& TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
 		{
-			Debug.Log("传奇 = "+EnterGuoGuanmap.Instance().ShouldOpen_id);
-			ShowYinDao = false;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100340];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-
-			return;
-		}
-		//Debug.Log("传奇 2 GuidLevel = " +GuidLevel);
-		if(FreshGuide.Instance().IsActive(100340)&& TaskData.Instance.m_TaskInfoDic[100340].progress >= 0&&GuidLevel == 0&&!CityGlobalData.PT_Or_CQ)
-		{
-//			Debug.Log("传奇 2-3");
-
-			ShowYinDao = false;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100340];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100350)&& TaskData.Instance.m_TaskInfoDic[100350].progress >= 0&&GuidLevel == 0&&!CityGlobalData.PT_Or_CQ)
-		{
-			//			Debug.Log("传奇back ");
-			ShowYinDaoBackToCity = true;
-			ShowYinDao = false;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100350];
+//			Debug.Log("在第二张中完成2-5返回主城");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100280];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-
+			ShowYinDao = false;
 			return;
 		}
-
+		if(FreshGuide.Instance().IsActive(100305)&& TaskData.Instance.m_TaskInfoDic[100305].progress >= 0)
+		{
+//			Debug.Log("在第二张中完成2-7返回主城");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100305];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			ShowYinDao = false;
+			return;
+		}
+		ClosewPVEGuid ();
+	}
+	public void GuidTO_CQ() // 引导第一次攻打传奇关卡
+	{
+		int _Dex = 1;
+		//Debug.Log("攻打传奇关卡");
+		if(!CityGlobalData.PT_Or_CQ)
+		{
+			_Dex = 2;
+		}
+		if(FreshGuide.Instance().IsActive(100320)&& TaskData.Instance.m_TaskInfoDic[100320].progress >= 0)
+		{
+//			Debug.Log("攻打传奇关卡");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100320];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[_Dex]);
+			ShowYinDao = false;
+			return;
+		}
+	}
+    public	void ShowPVEGuid()
+	{
+		//return;
+		ShowYinDaoBackToCity = false;
+		//Debug.Log ("myMapinfo.s_section = "+myMapinfo.s_section);
+		switch(myMapinfo.s_section)
+		{
+		case 1:
+			ShowPve_PT_GuidSection1();
+			break;
+		case 2:
+			ShowPve_PT_GuidSection2();
+			break;
+		default:
+			break;
+		}
+		GuidTO_CQ();
 	}
 	public bool IsChoosedMiBao;
 	public void  startsendinfo(int Currchapter)
 	{
-		YinDaoId1_3 = 1;
-		if(FreshGuide.Instance().IsActive(100020)&& TaskData.Instance.m_TaskInfoDic[100020].progress >= 0)
-		{
-//			Debug.Log("进入PVE 第一个任务 点击右边按钮翻页");
-			sendmapMessage (1);
-			return;
-		}
+		ClosewPVEGuid ();
 		sendmapMessage( Currchapter );
 	}
 
@@ -399,11 +359,13 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			     	myMapinfo = tempInfo;
 
 				    CurrChapter = myMapinfo.s_section;
-					if(UIYindao.m_UIYindao.m_isOpenYindao)
-					{
-						UIYindao.m_UIYindao.CloseUI();
-					}
+				   
+//					if(UIYindao.m_UIYindao.m_isOpenYindao)
+//					{
+//						UIYindao.m_UIYindao.CloseUI();
+//					}
 				    ShowYinDao = true;
+
 
 				    CityGlobalData.m_temp_CQ_Section = tempInfo.maxCqPassId;
 
@@ -426,6 +388,7 @@ public class MapData : MonoBehaviour, SocketProcessor {
 				   if(CityGlobalData.PT_Or_CQ){
 
 						Initmapinfo();  
+					    PassLevelBtn.Instance().InitData(CurrChapter);
 					}
 					else{
 						Init_Cqmapinfo();
@@ -528,17 +491,19 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			mchoosemap.AddCurMap (CurrChapter);
 		}
 
-		//StartCoroutine(ShowLvs());
+		ShowLvs();
 	}
 	
-	IEnumerator ShowLvs()
+	void  ShowLvs()
 	{
-		if(choosemap.UpAndDownbtn)
+		if(Global.m_sPanelWantRun != null && Global.m_sPanelWantRun != "")
 		{
-			yield return new WaitForSeconds(0.1f);
+			if(Global.m_sPanelWantRun == "chuanqi")
+			{
+				PveUImanager.instances.CQ_Gamelv();
 
-		}else{
-			yield return new WaitForSeconds(0.5f);
+				Global.m_sPanelWantRun = "";
+			}
 		}
 	}
 
@@ -563,10 +528,5 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			ref t_protof,
 			true,
 			ProtoIndexes.PVE_PAGE_RET );
-	}
-
-	void OnDestroy()
-	{
-		SocketTool.UnRegisterMessageProcessor(this);
 	}
 }

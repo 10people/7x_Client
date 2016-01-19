@@ -121,7 +121,7 @@ public static class NGUIContextMenu
 	/// Clear the context menu list.
 	/// </summary>
 
-	static public void Clear ()
+	public static void Clear ()
 	{
 		mEntries.Clear();
 		mMenu = null;
@@ -131,7 +131,7 @@ public static class NGUIContextMenu
 	/// Add a new context menu entry.
 	/// </summary>
 
-	static public void AddItem (string item, bool isChecked, GenericMenu.MenuFunction2 callback, object param)
+	public static void AddItem (string item, bool isChecked, GenericMenu.MenuFunction2 callback, object param)
 	{
 		if (callback != null)
 		{
@@ -155,7 +155,7 @@ public static class NGUIContextMenu
 	/// Wrapper function called by the menu that in turn calls the correct callback.
 	/// </summary>
 
-	static public void AddChild (object obj)
+	public static void AddChild (object obj)
 	{
 		AddFunc func = obj as AddFunc;
 		UIWidget widget = func(Selection.activeGameObject);
@@ -166,7 +166,7 @@ public static class NGUIContextMenu
 	/// Add a new context menu entry.
 	/// </summary>
 
-	static public void AddChildWidget (string item, bool isChecked, AddFunc callback)
+	public static void AddChildWidget (string item, bool isChecked, AddFunc callback)
 	{
 		if (callback != null)
 		{
@@ -190,7 +190,7 @@ public static class NGUIContextMenu
 	/// Wrapper function called by the menu that in turn calls the correct callback.
 	/// </summary>
 
-	static public void AddSibling (object obj)
+	public static void AddSibling (object obj)
 	{
 		AddFunc func = obj as AddFunc;
 		UIWidget widget = func(Selection.activeTransform.parent.gameObject);
@@ -201,7 +201,7 @@ public static class NGUIContextMenu
 	/// Add a new context menu entry.
 	/// </summary>
 
-	static public void AddSiblingWidget (string item, bool isChecked, AddFunc callback)
+	public static void AddSiblingWidget (string item, bool isChecked, AddFunc callback)
 	{
 		if (callback != null)
 		{
@@ -225,7 +225,7 @@ public static class NGUIContextMenu
 	/// Add commonly NGUI context menu options.
 	/// </summary>
 
-	static public void AddCommonItems (GameObject target)
+	public static void AddCommonItems (GameObject target)
 	{
 		if (target != null)
 		{
@@ -465,7 +465,7 @@ public static class NGUIContextMenu
 	/// Add help options based on the components present on the specified game object.
 	/// </summary>
 
-	static public void AddHelp (GameObject go, bool addSeparator)
+	public static void AddHelp (GameObject go, bool addSeparator)
 	{
 		MonoBehaviour[] comps = Selection.activeGameObject.GetComponents<MonoBehaviour>();
 
@@ -511,7 +511,7 @@ public static class NGUIContextMenu
 	/// Add a new disabled context menu entry.
 	/// </summary>
 
-	static public void AddDisabledItem (string item)
+	public static void AddDisabledItem (string item)
 	{
 		if (mMenu == null) mMenu = new GenericMenu();
 		mMenu.AddDisabledItem(new GUIContent(item));
@@ -521,7 +521,7 @@ public static class NGUIContextMenu
 	/// Add a separator to the menu.
 	/// </summary>
 
-	static public void AddSeparator (string path)
+	public static void AddSeparator (string path)
 	{
 		if (mMenu == null) mMenu = new GenericMenu();
 
@@ -534,7 +534,7 @@ public static class NGUIContextMenu
 	/// Show the context menu with all the added items.
 	/// </summary>
 
-	static public void Show ()
+	public static void Show ()
 	{
 		if (mMenu != null)
 		{

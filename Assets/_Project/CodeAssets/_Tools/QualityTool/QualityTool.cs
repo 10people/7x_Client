@@ -26,7 +26,7 @@ public class QualityTool : Singleton<QualityTool>{
 	}
 
 	/// Quality values dict.
-	public static Dictionary<string, ConfigTool.ConfigValue> m_quality_dict = new Dictionary<string, ConfigTool.ConfigValue>();
+	public static Dictionary<string, ConfigTool.ConfigValue> m_quality_value_dict = new Dictionary<string, ConfigTool.ConfigValue>();
 
 	/// Config txt dict.
 	public static Dictionary<string, string> m_config_xml_dict = new Dictionary<string, string>();
@@ -43,6 +43,8 @@ public class QualityTool : Singleton<QualityTool>{
 		CleanQualityData();
 
 		DeviceHelper.CleanDeviceData();
+
+		base.OnDestroy();
 	}
 
 	#endregion
@@ -58,7 +60,7 @@ public class QualityTool : Singleton<QualityTool>{
 	}
 
 	private void CleanQualityData(){
-		m_quality_dict.Clear();
+		m_quality_value_dict.Clear();
 		
 		m_config_xml_dict.Clear();
 	}
@@ -70,7 +72,7 @@ public class QualityTool : Singleton<QualityTool>{
 //			return;
 //		}
 		
-		if (m_quality_dict.Count > 0 && m_config_xml_dict.Count > 0) {
+		if (m_quality_value_dict.Count > 0 && m_config_xml_dict.Count > 0) {
 			return;
 		}
 
@@ -243,9 +245,9 @@ public class QualityTool : Singleton<QualityTool>{
 	}
 
 	private void LoadQualityItems(){
-		ConfigTool.LoadValues( m_quality_dict, CONST_DEFAULT_QUALITY, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_DEFAULT_QUALITY ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_DEFAULT_QUALITY, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_DEFAULT_QUALITY ) );
 		
-		ConfigTool.LoadValues( m_quality_dict, CONST_DEVICE_TAG, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_DEVICE_TAG ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_DEVICE_TAG, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_DEVICE_TAG ) );
 
 		if( ConfigTool.GetBool( ConfigTool.CONST_LOG_QUALITY_CONFIG, false ) ){
 			#if UNITY_ANDROID
@@ -259,21 +261,23 @@ public class QualityTool : Singleton<QualityTool>{
 			Debug.Log( "Mobile.Device.G.Name: " + SystemInfo.graphicsDeviceName );
 		}
 		
-		ConfigTool.LoadValues( m_quality_dict, CONST_IN_CITY_SHADOW, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_IN_CITY_SHADOW ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_IN_CITY_SHADOW, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_IN_CITY_SHADOW ) );
 		
-		ConfigTool.LoadValues( m_quality_dict, CONST_BATTLE_FIELD_SHADOW, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_BATTLE_FIELD_SHADOW ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_BATTLE_FIELD_SHADOW, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_BATTLE_FIELD_SHADOW ) );
 		
-		ConfigTool.LoadValues( m_quality_dict, CONST_BLADE_EFFECT, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_BLADE_EFFECT ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_BLADE_EFFECT, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_BLADE_EFFECT ) );
 		
-		ConfigTool.LoadValues( m_quality_dict, CONST_BOSS_EFFECT, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_BOSS_EFFECT ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_BOSS_EFFECT, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_BOSS_EFFECT ) );
 
-		ConfigTool.LoadValues( m_quality_dict, CONST_AA, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_AA ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_AA, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_AA ) );
 
-		ConfigTool.LoadValues( m_quality_dict, CONST_BLOOM, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_BLOOM ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_BLOOM, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_BLOOM ) );
 
-		ConfigTool.LoadValues( m_quality_dict, CONST_CHARACTER_HITTED_FX, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_CHARACTER_HITTED_FX ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_CHARACTER_HITTED_FX, ConfigTool.LoadBoolValue( m_config_xml_dict, CONST_CHARACTER_HITTED_FX ) );
 
-		ConfigTool.LoadValues( m_quality_dict, CONST_SCNE_FX_LEVEL, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_SCNE_FX_LEVEL ) );
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_SCENE_FX_LEVEL, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_SCENE_FX_LEVEL ) );
+
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_MEM_LEVEL, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_MEM_LEVEL ) );
 	}
 
 	private static void LogQualityItem( string p_quality_item ){
@@ -301,7 +305,9 @@ public class QualityTool : Singleton<QualityTool>{
 
 		LogQualityItem( CONST_CHARACTER_HITTED_FX );
 
-		LogQualityItem( CONST_SCNE_FX_LEVEL );
+		LogQualityItem( CONST_SCENE_FX_LEVEL );
+
+		LogQualityItem( CONST_MEM_LEVEL );
 	}
 
 	private void ExecQualityItems(){
@@ -329,7 +335,11 @@ public class QualityTool : Singleton<QualityTool>{
 		}
 
 		{
-			Quality_SceneFx.LoadSceneFxLevel( GetString( QualityTool.CONST_SCNE_FX_LEVEL ) );
+			Quality_SceneFx.LoadSceneFxLevel( GetString( QualityTool.CONST_SCENE_FX_LEVEL ) );
+		}
+
+		{
+			Quality_MemLevel.LoadMemLevel( GetString( QualityTool.CONST_MEM_LEVEL ) );
 		}
 	}
 
@@ -445,11 +455,17 @@ public class QualityTool : Singleton<QualityTool>{
 
 		m_config_xml_dict[ CONST_AA ] = "None";
 
+
+
 		m_config_xml_dict[ CONST_BLOOM ] = "false";
 
-		m_config_xml_dict[ CONST_CHARACTER_HITTED_FX ] = "false";
+		m_config_xml_dict[ CONST_CHARACTER_HITTED_FX ] = "true";
 
-		m_config_xml_dict[ CONST_SCNE_FX_LEVEL ] = Quality_SceneFx.CONST_SCENE_FX_LEVEL_NONE;
+		m_config_xml_dict[ CONST_SCENE_FX_LEVEL ] = Quality_SceneFx.CONST_SCENE_FX_LEVEL_NONE;
+
+		m_config_xml_dict[ CONST_MEM_LEVEL ] = Quality_MemLevel.CONST_MEM_LEVEL_LOW;
+
+//		LogQualityItem( CONST_MEM_LEVEL );
 	}
 
 	/// Highest quality for all platform.
@@ -468,11 +484,15 @@ public class QualityTool : Singleton<QualityTool>{
 
 		m_config_xml_dict[ CONST_AA ] = "Low";
 
+
+
 		m_config_xml_dict[ CONST_BLOOM ] = "true";
 
 		m_config_xml_dict[ CONST_CHARACTER_HITTED_FX ] = "true";
 
-		m_config_xml_dict[ CONST_SCNE_FX_LEVEL ] = Quality_SceneFx.CONST_SCENE_FX_LEVEL_HIGH;
+		m_config_xml_dict[ CONST_SCENE_FX_LEVEL ] = Quality_SceneFx.CONST_SCENE_FX_LEVEL_HIGH;
+
+		m_config_xml_dict[ CONST_MEM_LEVEL ] = Quality_MemLevel.CONST_MEM_LEVEL_HIGH;
 	}
 
 	#endregion
@@ -510,23 +530,23 @@ public class QualityTool : Singleton<QualityTool>{
 	#region Get Config Value
 	
 	public static bool GetBool( string p_key, bool p_default_value = false ){
-		return UtilityTool.GetBool( m_quality_dict, p_key, p_default_value );
+		return UtilityTool.GetBool( m_quality_value_dict, p_key, p_default_value );
 	}
 	
 	public static int GetInt( string p_key, int p_default_value = 0 ){
-		return UtilityTool.GetInt( m_quality_dict, p_key, p_default_value );
+		return UtilityTool.GetInt( m_quality_value_dict, p_key, p_default_value );
 	}
 	
 	public static float GetFloat( string p_key, float p_default_value = 0f ){
-		return UtilityTool.GetFloat( m_quality_dict, p_key, p_default_value );
+		return UtilityTool.GetFloat( m_quality_value_dict, p_key, p_default_value );
 	}
 	
 	public static string GetString( string p_key, string p_default_value = "" ){
-		return UtilityTool.GetString( m_quality_dict, p_key, p_default_value );
+		return UtilityTool.GetString( m_quality_value_dict, p_key, p_default_value );
 	}
 	
 	public static string ValueToString( string p_key, string p_default_value = "" ){
-		return UtilityTool.ValueToString( m_quality_dict, p_key, p_default_value );
+		return UtilityTool.ValueToString( m_quality_value_dict, p_key, p_default_value );
 	}
 	
 	#endregion
@@ -591,9 +611,12 @@ public class QualityTool : Singleton<QualityTool>{
 	// diabled
 	public const string CONST_BLOOM						= "Bloom";
 
-	public const string CONST_CHARACTER_HITTED_FX		= "HittedPS";
+	// currently the hitted only have 1 ps fx, here is where to switch it.
+	public const string CONST_CHARACTER_HITTED_FX		= "HittedFx";
 
-	public const string CONST_SCNE_FX_LEVEL				= "SceneFx";
+	public const string CONST_SCENE_FX_LEVEL			= "SceneFx";
+
+	public const string CONST_MEM_LEVEL					= "MemLevel";
 
 	#endregion
 

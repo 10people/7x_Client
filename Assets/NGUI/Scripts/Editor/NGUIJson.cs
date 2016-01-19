@@ -43,7 +43,7 @@ public class NGUIJson
 	/// Parse the specified JSon file, loading sprite information for the specified atlas.
 	/// </summary>
 
-	static public void LoadSpriteData (UIAtlas atlas, TextAsset asset)
+	public static void LoadSpriteData (UIAtlas atlas, TextAsset asset)
 	{
 		if (asset == null || atlas == null) return;
 
@@ -65,7 +65,7 @@ public class NGUIJson
 	/// Parse the specified JSon file, loading sprite information for the specified atlas.
 	/// </summary>
 
-	static public void LoadSpriteData (UIAtlas atlas, string jsonData)
+	public static void LoadSpriteData (UIAtlas atlas, string jsonData)
 	{
 		if (string.IsNullOrEmpty(jsonData) || atlas == null) return;
 

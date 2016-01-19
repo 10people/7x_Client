@@ -109,7 +109,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	private static Queue<QXBuffer> m_sending_messages 		= new Queue<QXBuffer>();
 
 	/// processor list
-	private static List<SocketProcessor> m_socket_message_processors 	= new List<SocketProcessor>();
+	private static List<SocketProcessor> m_socket_processors 	= new List<SocketProcessor>();
 
 	/// listener list
 	private static List<SocketListener> m_socket_listeners 				= new List<SocketListener>();
@@ -208,6 +208,10 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 			{
 				Process_Network_Waiting();
+			}
+
+			{
+				UpdateProcessorsAndListeners();
 			}
 
 			#if DEBUG_PROCESSOR_COST
@@ -621,7 +625,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	#region Error Process
 
 	public static void CreateTimeOutReConnectWindow( UIBox.onclick p_on_click, UIBox.OnBoxCreated p_on_create = null ){
-		Debug.Log ( "CreateTimeOutReConnectWindow()" );
+//		Debug.Log ( "CreateTimeOutReConnectWindow()" );
 
 
 		Global.CreateBox( LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_3 ),
@@ -642,7 +646,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	public static void CreateConnectionLostOrFailWindow(){
-		Debug.Log ( "CreateConnectionLostOrFailWindow()" );
+//		Debug.Log ( "CreateConnectionLostOrFailWindow()" );
 
 
 		Global.CreateBox( LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_1 ),
@@ -661,7 +665,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	public static void ReLoginClickCallback( int p_i ){
-		Debug.Log("ReLoginClickCallback( " + p_i + " )");
+//		Debug.Log("ReLoginClickCallback( " + p_i + " )");
 
 		{
 //			if( SocketTool.WillReconnect() )
@@ -712,7 +716,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		m_sending_messages.Clear();
 
 		{
-			m_socket_message_processors.Clear();
+			m_socket_processors.Clear();
 		}
 
 		{
@@ -1311,6 +1315,10 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		// receiving tips
 		if( NetworkWaiting.Instance().IsHiding() ){
 			if( m_receiving_waiting_list.Count > 0 ){
+				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_SOCKET_WAITING ) ){
+					Debug.Log( "m_receiving_waiting_list: " + m_receiving_waiting_list.Count + " - " + m_receiving_waiting_list[ 0 ].GetReceivingString() );
+				}
+
 				#if DEBUG_WAITING
 				Debug.Log( "m_receiving_waiting_list: " + m_receiving_waiting_list.Count + " - " + m_receiving_waiting_list[ 0 ].GetReceivingString() );
 				#endif
@@ -1471,7 +1479,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	/// 1.a processor is responsible for target proto message, return true, means target proto is consumed.
 	/// 2.if a proto message is never processed, and it also not being listened, will raise a warning log.
 	public static void RegisterMessageProcessor( SocketProcessor p_processor ){
-		if( m_socket_message_processors.Contains( p_processor ) ){
+		if( m_socket_processors.Contains( p_processor ) ){
 			Debug.LogWarning( "Already Contained: " + p_processor );
 
 			return;
@@ -1481,7 +1489,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			Debug.Log( "--- RegisterMessageProcessor: " + p_processor );
 		}
 
-		m_socket_message_processors.Add( p_processor );
+		m_socket_processors.Add( p_processor );
 	}
 
 	/// Desc:
@@ -1491,7 +1499,30 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			Debug.Log( "--- UnRegisterMessageProcessor: " + p_processor );
 		}
 
-		m_socket_message_processors.Remove( p_processor );
+		m_socket_processors.Remove( p_processor );
+	}
+
+	// validate
+	private void UpdateProcessorsAndListeners(){
+		if( Time.frameCount % 30 != 0 ){
+			return;
+		}
+
+		for( int i = m_socket_processors.Count - 1; i >= 0; i-- ){
+			SocketProcessor t_processor = m_socket_processors[ i ];
+
+			if( t_processor == null ){
+				m_socket_processors.RemoveAt( i );
+			}
+		}
+
+		for( int i = m_socket_listeners.Count - 1; i >= 0; i-- ){
+			SocketListener t_listener = m_socket_listeners[ i ];
+			
+			if( t_listener == null ){
+				m_socket_listeners.RemoveAt( i );
+			}
+		}
 	}
 
 	private void Process_Received_Messages(){
@@ -1534,8 +1565,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 				SocketProcessor t_pre_processor	= null;
 
-				for( int i = 0; i < m_socket_message_processors.Count; i++ ){
-					SocketProcessor t_processor = m_socket_message_processors[ i ];
+				for( int i = 0; i < m_socket_processors.Count; i++ ){
+					SocketProcessor t_processor = m_socket_processors[ i ];
 
 					try{
 						if( t_processor.OnProcessSocketMessage( t_buffer ) ){
@@ -1574,6 +1605,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 				Debug.Log( t_buffer.m_protocol_index + " Status, Processed - Listened: " + t_message_processed + "-" + t_message_listended  );
 				#endif
 
+				#if UNITY_EDITOR
 				if( !ThirdPlatform.IsThirdPlatform() ){
 					if( !t_message_processed ){
 						if( !t_message_listened ){
@@ -1582,14 +1614,15 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 							                 ", byte len: " + t_buffer.position +
 							                 ", message queue len:" + t_message_count );
 						}
-	//					else{
-	//						Debug.LogWarning( "Error, Message Listened, but not processed: " + 
-	//						                 t_buffer.m_protocol_index + 
-	//						                 ", byte len: " + t_buffer.position +
-	//						                 ", message queue len:" + t_message_count );
-	//					}
+//						else{
+//							Debug.LogWarning( "Error, Message Listened, but not processed: " + 
+//							                 t_buffer.m_protocol_index + 
+//							                 ", byte len: " + t_buffer.position +
+//							                 ", message queue len:" + t_message_count );
+//						}
 					}
 				}
+				#endif
 
 				// update waiting view
 				{
@@ -1647,10 +1680,10 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	#region Utilities
 
 	public static void LogSocketProcessor(){
-		Debug.Log( "Socket.Processor.Count: " + m_socket_message_processors.Count );
+		Debug.Log( "Socket.Processor.Count: " + m_socket_processors.Count );
 
-		for( int i = 0; i < m_socket_message_processors.Count; i++ ){
-			SocketProcessor t_processor = m_socket_message_processors[ i ];
+		for( int i = 0; i < m_socket_processors.Count; i++ ){
+			SocketProcessor t_processor = m_socket_processors[ i ];
 
 			Debug.Log( i + ": " + t_processor );
 		}

@@ -46,6 +46,8 @@ public class BattleFlag : MonoBehaviour
 
 	public int hintLabelId;
 
+	public bool showOnUI;
+
 	public List<int> nodeSkillAble = new List<int> ();
 
 	public List<GameObject> hoverPathGc = new List<GameObject>();
@@ -93,6 +95,25 @@ public class BattleFlag : MonoBehaviour
 
 	[HideInInspector] public BattleFlagGroup flagGroup;
 
+	[HideInInspector] public List<BattleDoorFlag> doorFlags = new List<BattleDoorFlag>();
+
+	void OnDestroy(){
+		triggerFlagEye2eye.Clear();
+		
+		triggerFlagEnter.Clear();
+		
+		triggerFlagAttack.Clear();
+		
+		triggerFlagKill.Clear();
+		
+		triggerFlagBlood.Clear();
+
+		doorFlags.Clear();
+
+		node = null;
+		
+		flagGroup = null;
+	}
 
 	public void refreshEye2eyeFlags()
 	{
@@ -291,7 +312,7 @@ public class BattleFlag : MonoBehaviour
 		}
 		else
 		{
-			node.die();
+			node.die(false);
 		}
 	}
 
@@ -303,7 +324,7 @@ public class BattleFlag : MonoBehaviour
 
 		SphereCollider collider = (SphereCollider)nodeEnter.GetComponent("SphereCollider");
 
-		node.OnTriggerEnter(collider);
+		node.OnTriggerEnterNode(collider);
 	}
 
 	private void OnTriggerFadeIn()

@@ -12,6 +12,8 @@ public class ChangeXmlToJson : MonoBehaviour
 
 	public GameObject dramaFlagRoot;
 	
+	public GameObject doorFlagRoot;
+
 
 	private int level;
 
@@ -23,7 +25,7 @@ public class ChangeXmlToJson : MonoBehaviour
 
 	private static int m_data_loaded = 0;
 	
-	private const int BATTLE_DATA_TO_LOAD_COUNT	= 5;
+	private const int BATTLE_DATA_TO_LOAD_COUNT	= 6;
 
 	
 	void Start()
@@ -34,15 +36,16 @@ public class ChangeXmlToJson : MonoBehaviour
 		
 		levels.Add (900);
 
-		for(int i = 0; i < 14; i++) levels.Add (100001 + i);
 
-		levels.Add (100101);
+		for(int i = 0; i < 1; i++) levels.Add (100001 + i);
+
+		for(int i = 0; i < 7; i++) levels.Add (100101 + i);
 
 		for(int i = 0; i < 7; i++) levels.Add (100201 + i);
 
 		for(int i = 0; i < 7; i++) levels.Add (100301 + i);
 
-		for(int i = 0; i < 7; i++) levels.Add (100401 + i);
+		for(int i = 0; i < 9; i++) levels.Add (100401 + i);
 
 		for(int i = 0; i < 9; i++) levels.Add (100501 + i);
 
@@ -56,11 +59,26 @@ public class ChangeXmlToJson : MonoBehaviour
 
 		for(int i = 0; i < 9; i++) levels.Add (101001 + i);
 
-		for(int i = 0; i < 3; i++) levels.Add (300101 + i);
+		for(int i = 0; i < 9; i++) levels.Add (101101 + i);
 
-		for(int i = 0; i < 3; i++) levels.Add (300201 + i);
+		for(int i = 0; i < 9; i++) levels.Add (101201 + i);
 
-		for(int i = 0; i < 3; i++) levels.Add (300301 + i);
+		for(int i = 0; i < 9; i++) levels.Add (101301 + i);
+
+
+		for(int i = 0; i < 14; i++) levels.Add (200001 + i);
+
+
+		for(int i = 0; i < 10; i++) levels.Add (300101 + i);
+
+		for(int i = 0; i < 10; i++) levels.Add (300201 + i);
+
+		for(int i = 0; i < 10; i++) levels.Add (300301 + i);
+
+		for(int i = 0; i < 5; i++) levels.Add (300401 + i);
+
+		for(int i = 0; i < 5; i++) levels.Add (300501 + i);
+
 
 		writeNext ();
 	}
@@ -87,6 +105,8 @@ public class ChangeXmlToJson : MonoBehaviour
 		clearRoot (cameraFlagRoot);
 
 		clearRoot (dramaFlagRoot);
+
+		clearRoot (doorFlagRoot);
 
 		clearWinFlag ();
 
@@ -132,6 +152,8 @@ public class ChangeXmlToJson : MonoBehaviour
 		LoadDramaFlag ();
 
 		LoadWinFlag ();
+
+		loadDoorFlag ();
 	}
 	
 	IEnumerator LoadingBattleFlags()
@@ -237,6 +259,8 @@ public class ChangeXmlToJson : MonoBehaviour
 			bf.guideId = template.guideId;
 			
 			bf.hintLabelId = template.hintLabelId;
+
+			bf.showOnUI = template.showOnUI;
 
 			{
 				if(template.groupId == 0)
@@ -559,6 +583,43 @@ public class ChangeXmlToJson : MonoBehaviour
 			{
 				flag.protectList.Add(pi);
 			}
+		}
+
+		{
+			m_data_loaded++;
+		}
+	}
+
+	private void loadDoorFlag()
+	{
+		BattleDoorTemplate.SetLoadDoneCallback( LoadDoorFlagDone );
+		
+		BattleDoorTemplate.LoadTemplates(level);
+	}
+
+	public void LoadDoorFlagDone()
+	{
+		foreach(BattleDoorTemplate template in BattleDoorTemplate.templates)
+		{
+			GameObject gc = new GameObject();
+			
+			gc.transform.parent = doorFlagRoot.transform;
+			
+			gc.name = "DoorFlag_" + template.flagId;
+			
+			gc.transform.localScale = new Vector3(1, 1, 1);
+			
+			gc.transform.position = new Vector3(template.x, template.y, template.z);
+			
+			gc.transform.localEulerAngles = new Vector3(template.rx, template.ry, template.rz);
+
+			BattleDoorFlag flag = transform.parent.gameObject.AddComponent<BattleDoorFlag>();
+			
+			flag.flagId = template.flagId;
+			
+			flag.modelId = template.modelId;
+			
+			flag.triggerCount = template.triggerCount;
 		}
 
 		{

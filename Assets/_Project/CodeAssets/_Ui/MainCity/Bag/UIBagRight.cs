@@ -33,7 +33,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
     public UIPanel m_ThisPanel;
 
     private float m_eAlpha = 1.0f;
-    private int[] useItemID = { };
+    private int[] useItemID = { 101, 102, 103 };
     private int[] useAllItemID = { };
 
     void Start()
@@ -91,6 +91,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
 
     public void setProp(BagItem bagItem)
     {
+        Debug.Log("========1");
         foreach (GameObject item in m_ListGameObject)
         {
             Destroy(item);
@@ -114,14 +115,14 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
         m_ListGameObject = new List<GameObject>();
 
         CreateIcon(bagItem);
-
-        if (useAllItemID.Contains(bagItem.itemId))
+        Debug.Log(bagItem.itemType);
+        if (useAllItemID.Contains(bagItem.itemType))
         {
             m_UseButton.gameObject.SetActive(true);
             m_UseAllButton.gameObject.SetActive(true);
             m_OKButton.gameObject.SetActive(false);
         }
-        else if (useItemID.Contains(bagItem.itemId))
+        else if (useItemID.Contains(bagItem.itemType))
         {
             m_UseButton.gameObject.SetActive(true);
             m_UseAllButton.gameObject.SetActive(false);
@@ -160,6 +161,8 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
         var m_heiht = 0;
 
         tempManager.SetIconByID(m_BagItem.itemId, "x" + m_BagItem.cnt);
+        tempManager.RightButtomCornorLabel.effectStyle = UILabel.Effect.Outline;
+        tempManager.RightButtomCornorLabel.effectColor = new Color(1, 0, 0, 1);
 
         //Set gameobject name and transform info.
         tempObject.name = "icon";
@@ -171,7 +174,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
 
     void CheckUseBTNInfo(GameObject tempObject)
     {
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YuJueHeChengRequest);
+        Global.ScendID(ProtoIndexes.C_EquipAdd, m_UiBagLeft.m_iIndex);
     }
 
     void CheckOKBTNInfo(GameObject tempObject)

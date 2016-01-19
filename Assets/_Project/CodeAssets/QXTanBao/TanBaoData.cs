@@ -10,7 +10,7 @@ using ProtoBuf.Meta;
 
 public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 
-	public ExploreInfoResp tbInfoResp;
+	private ExploreInfoResp tbInfoResp;
 
 	public enum TanBaoType
 	{
@@ -22,7 +22,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 	private TanBaoType tbType = TanBaoType.TONGBI_SINGLE;
 
 	private GameObject tbObj;
-
+	
 	private string textStr;
 
 	void Awake ()
@@ -106,8 +106,13 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 						}
 						Debug.Log ("TypeInfo.money:" + tbGetRewardRes.info.money + 
 						           "\nCd:" + tbGetRewardRes.info.cd);
-						TanBaoPage.tbPage.RefreshTanBaoInfo (tbType,tbGetRewardRes.info);
-						TanBaoReward.tbReward.GetTBRewardInfo (tbType,tbGetRewardRes);
+
+						Debug.Log ("QXComData.CheckYinDaoOpenState (100160)：" + QXComData.CheckYinDaoOpenState (100160));
+						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100160,2);
+						Debug.Log ("tbGetRewardRes.info.cd:" + tbGetRewardRes.info.cd);
+						TanBaoPage.tbPage.RefreshTanBaoInfo (tbType,tbGetRewardRes);
+						TanBaoPage.tbPage.CheckTBRed ();
+						TBReward.tbReward.GetTBReward (tbType,tbGetRewardRes);
 					}
 					else
 					{
@@ -138,7 +143,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 
 	void TanBaoRespCallBack (int i)
 	{
-		TanBaoReward.tbReward.BlockController (false,0);
+		TBReward.tbReward.BlockController (false,0);
 	}
 
 	void LoadTanBaoPrefab ()
@@ -170,8 +175,9 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 		TanBaoPage.tbPage.GetTBInfoResp (tbInfoResp);
 	}
 
-	void OnDestroy ()
-	{
+	void OnDestroy (){
 		SocketTool.UnRegisterMessageProcessor (this);
+
+		base.OnDestroy();
 	}
 }

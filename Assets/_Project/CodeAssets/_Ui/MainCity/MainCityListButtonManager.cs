@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class MainCityListButtonManager
 {
@@ -27,28 +28,28 @@ public class MainCityListButtonManager
 		switch(m_iState)
 		{
 		case 0:
-			m_iBX = 30;
+			m_iBX = 50;
 			m_iBY = -100;
 			m_iTX = 0;
-			m_iTY = -100;
+			m_iTY = -75;
 			break;
 		case 1:
 			m_iBX = 960 + ClientMain.m_iMoveX * 2 - 50;
 			m_iBY = -100;
-			m_iTX = -100;
+			m_iTX = -75;
 			m_iTY = 0;
 			break;
 		case 2:
 			m_iBX = 960 + ClientMain.m_iMoveX * 2 - 150;
-			m_iBY = -(640 + ClientMain.m_iMoveY * 2 - 50);
-			m_iTX = -100;
+			m_iBY = -(640 + ClientMain.m_iMoveY * 2 - 45);
+			m_iTX = -75;
 			m_iTY = 0;
 			break;
 		case 3:
 			m_iBX = 960 + ClientMain.m_iMoveX * 2 - 50;
 			m_iBY = -(640 + ClientMain.m_iMoveY * 2 - 150);
 			m_iTX = 0;
-			m_iTY = 100;
+			m_iTY = 75;
 			break;
 		}
 //		if(state == 2)
@@ -129,11 +130,18 @@ public class MainCityListButtonManager
 		GameObject tempObject = GameObject.Instantiate(MainCityUI.m_MainCityUI.ButtonPrefab) as GameObject;
 		tempObject.transform.parent = m_objThis.transform;
 		tempObject.transform.localScale = Vector3.one;
-        tempObject.transform.name = "MainCityUIButton_" + index;
+
+		tempObject.transform.name = "MainCityUIButton_" + index;
+
 		FunctionButtonManager tempButtonManager = tempObject.GetComponent<FunctionButtonManager>();
 		tempObject.SetActive(true);
 		tempButtonManager.SetData(button);
 		m_listFunctionButtonManager.Add(tempButtonManager);
+		if(button.m_show_red_alert)
+		{
+			tempButtonManager.ShowRedAlert();
+		}
+		tempButtonManager.Teshu();
 	}
 
 	public void addButton(FunctionButtonManager tempObject)
@@ -143,16 +151,17 @@ public class MainCityListButtonManager
 		tempObject.transform.localScale = Vector3.one;
 		tempObject.transform.name = "MainCityUIButton_" + tempObject.m_index;
 		m_listFunctionButtonManager.Add(tempObject);
-		if(tempObject.m_MYNGUIButtonMessage.panel == null)
+		if(tempObject.m_MYNGUIButtonMessage.panel == null || tempObject.m_MYNGUIButtonMessage.panel != MainCityUI.m_MainCityUI)
 		{
 			tempObject.m_MYNGUIButtonMessage.panel = MainCityUI.m_MainCityUI;
 		}
 	}
 
-	public void reMoveButton(FunctionButtonManager tempObject)
+	public void reMoveButton(int id)
 	{
-		m_listFunctionButtonManager.Remove(tempObject);
-		GameObject.Destroy(tempObject);
+		FunctionButtonManager temp = getButtonManagerByID(id);
+		m_listFunctionButtonManager.Remove(temp);
+		GameObject.Destroy(temp.gameObject);
 	}
 	
 	public void sortButtonS()

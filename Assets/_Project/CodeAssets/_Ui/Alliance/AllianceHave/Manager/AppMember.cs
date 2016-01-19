@@ -15,7 +15,7 @@ public class AppMember : MonoBehaviour {
 
 	public GameObject DisAgreeBtnobj;
 
-	public UISprite Agree_orDis;
+	public UILabel Agree_orDis;
 
 	public int  IsAgree;// 1 2 3 拒绝 同意  失败
 
@@ -81,15 +81,15 @@ public class AppMember : MonoBehaviour {
 
 		if(IsAgree == 1)
 		{
-			Agree_orDis.spriteName = "DisAgree";
+			Agree_orDis.text  = "已拒绝";
 		}
 		if(IsAgree == 2)
 		{
-			Agree_orDis.spriteName = "Passed";
+			Agree_orDis.text = "已通过";
 		}
 		if(IsAgree == 3)
 		{
-			Agree_orDis.spriteName = "AppFetrue";
+			Agree_orDis.text = "审核失败";
 		}
 
 	}

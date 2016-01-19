@@ -114,7 +114,7 @@ public class UIGrid : UIWidgetContainer
 		enabled = false;
 	}
 
-	static protected int SortByName (Transform a, Transform b) { return string.Compare(a.name, b.name); }
+	protected static int SortByName (Transform a, Transform b) { return string.Compare(a.name, b.name); }
 
 	/// <summary>
 	/// Want your own custom sorting logic? Override this function.

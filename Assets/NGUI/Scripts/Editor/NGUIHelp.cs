@@ -12,13 +12,13 @@ using System.Collections.Generic;
 /// This script adds the NGUI menu options to the Unity Editor.
 /// </summary>
 
-static public class NGUIHelp
+public static class NGUIHelp
 {
 	/// <summary>
 	/// Get the URL pointing to the documentation for the specified component.
 	/// </summary>
 
-	static public string GetHelpURL (Type type)
+	public static string GetHelpURL (Type type)
 	{
 		if (type == typeof(UITexture))		return "http://www.tasharen.com/forum/index.php?topic=6703";
 		if (type == typeof(UISprite))		return "http://www.tasharen.com/forum/index.php?topic=6704";
@@ -64,7 +64,7 @@ static public class NGUIHelp
 	/// Show generic help.
 	/// </summary>
 
-	static public void Show ()
+	public static void Show ()
 	{
 		Application.OpenURL("http://www.tasharen.com/forum/index.php?topic=6754");
 	}
@@ -73,7 +73,7 @@ static public class NGUIHelp
 	/// Show help for the specific topic.
 	/// </summary>
 
-	static public void Show (Type type)
+	public static void Show (Type type)
 	{
 		string url = GetHelpURL(type);
 		if (url == null) url = "http://www.tasharen.com/ngui/doc.php?topic=" + type;
@@ -84,7 +84,7 @@ static public class NGUIHelp
 	/// Show help for the specific topic.
 	/// </summary>
 
-	static public void Show (object obj)
+	public static void Show (object obj)
 	{
 		if (obj is GameObject)
 		{

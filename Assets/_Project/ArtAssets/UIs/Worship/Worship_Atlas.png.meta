@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 3377a4e54b2c93742944fb9bae230683
+timeCreated: 1450246121
+licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
   serializedVersion: 2
@@ -27,7 +29,7 @@ TextureImporter:
   textureFormat: 5
   maxTextureSize: 4096
   textureSettings:
-    filterMode: 2
+    filterMode: 1
     aniso: 4
     mipBias: -1
     wrapMode: 1
@@ -47,7 +49,7 @@ TextureImporter:
   buildTargetSettings:
   - buildTarget: Android
     maxTextureSize: 1024
-    textureFormat: 46
+    textureFormat: 34
     compressionQuality: 50
   spriteSheet:
     sprites: []

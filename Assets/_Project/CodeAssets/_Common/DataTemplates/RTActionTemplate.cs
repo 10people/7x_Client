@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 public class RTActionTemplate : XmlLoadManager
@@ -15,7 +16,8 @@ public class RTActionTemplate : XmlLoadManager
     public int Param5;
     public int TSR;
     public int TTR;
-    public int CeOnHit;
+    public string CeOnHit;
+    public int CsOnHit;
     public int Prob;
 
     public static List<RTActionTemplate> templates = new List<RTActionTemplate>();
@@ -77,7 +79,9 @@ public class RTActionTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.TTR = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
-                t_template.CeOnHit = int.Parse(t_reader.Value);
+                t_template.CeOnHit = t_reader.Value == "0" ? "" : t_reader.Value;
+                t_reader.MoveToNextAttribute();
+                t_template.CsOnHit = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
                 t_template.Prob = int.Parse(t_reader.Value);
             }
@@ -85,5 +89,19 @@ public class RTActionTemplate : XmlLoadManager
             templates.Add(t_template);
         }
         while (t_has_items);
+    }
+
+    public static RTActionTemplate GetTemplateByID(int id)
+    {
+        var temp = templates.Where(item => item.Id == id).ToList();
+
+        if (temp.Any())
+        {
+            return temp.First();
+        }
+        else
+        {
+            return null;
+        }
     }
 }

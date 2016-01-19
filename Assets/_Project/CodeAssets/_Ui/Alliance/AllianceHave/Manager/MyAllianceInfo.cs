@@ -47,7 +47,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	
 	//public GameObject editNoticeObj;//公告编辑obj
 	
-	public UILabel OnLineMenbers;
+	//public UILabel OnLineMenbers;
 
 	public GameObject JuanXianObj;//公告编辑obj
 
@@ -55,7 +55,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
 	public int Maxhufunum;
 
-	public GameObject noticeBtn;//公告编辑按钮
+	//public GameObject noticeBtn;//公告编辑按钮
 
 	UpdateNoticeResp m_noticeResp ;
 
@@ -241,17 +241,22 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
 		ShowMyGongXianZhi (m_Alliance.contribution);
 
-		ShoweditInfo.text = m_Alliance.notice;
-		
-		InitMenbers ();
+		if(m_Alliance.notice != null &&m_Alliance.notice != "")
+		{
+			ShoweditInfo.text = m_Alliance.notice;
+		}
+
+//		Debug.Log("m_Alliance.notice = "+m_Alliance.notice);
+
+		//InitMenbers ();
 
 		if(m_Alliance.identity == 1|| m_Alliance.identity == 2)
 		{
-			noticeBtn.SetActive(true);
+			//noticeBtn.SetActive(true);
 		}
 		else
 		{
-			noticeBtn.SetActive(false);
+			//noticeBtn.SetActive(false);
 		}
 	}
 
@@ -275,7 +280,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 				memb++;
 			}
 		}
-		OnLineMenbers.text = memb.ToString()+ "/"+m_Alliance.memberInfo.Count.ToString();
+		//OnLineMenbers.text = memb.ToString()+ "/"+m_Alliance.memberInfo.Count.ToString();
 	}
 
 	public UILabel Have_HufuLabel;
@@ -299,6 +304,8 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	}
 	public void initHufuData()
 	{
+		Debug.Log("mHufuNum = "+HufuNum);
+
 
 		Have_HufuLabel.text = "您现在拥有"+Maxhufunum.ToString()+"个虎符";
 

@@ -338,8 +338,7 @@ public class SmallHouseSelf : HouseBasic, IHouseSelf, SocketListener
         SocketTool.RegisterSocketListener(this);
     }
 
-    void OnDestroy()
-    {
+	public void OnDestroy(){
         base.OnDestroy();
         SocketTool.UnRegisterSocketListener(this);
     }

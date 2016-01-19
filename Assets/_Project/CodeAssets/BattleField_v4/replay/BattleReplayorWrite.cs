@@ -22,6 +22,10 @@ public class BattleReplayorWrite : MonoBehaviour, SocketProcessor
 
 	public static BattleReplayorWrite Instance() { return _instance; }
 
+	void OnDestroy(){
+		_instance = null;
+	}
+
 	public void initWritor()
 	{
 		for(int i = 0; i < BattleControlor.Instance().enemyNodes.Count; i++)

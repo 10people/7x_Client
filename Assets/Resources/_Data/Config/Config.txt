@@ -1,8 +1,9 @@
 
 -------------------------------------------------------------------- <Version Config>
+// show version code and lag
 ShowVersion:		true
 
-Version:1209-2012
+Version:0118-1454
 ------------------------------------------------------------------- </Version Config>
 
 
@@ -67,7 +68,7 @@ OpenGuideEditor: 			false
 ShowGuideSwitcher:			false
 
 // for Master Zhu
-OpenAllTheFunction:			true
+OpenAllTheFunction:			false
 --------------------------------------------------------------------- </Guide Config>
 
 
@@ -89,6 +90,9 @@ ShowBattleCameraOps:		false
 // Network Status Check
 SocketCheckTime:			10.0
 
+// Network Ping interval
+SocketPingTime:				3.0
+
 // Time Out Limit
 SocketTimeOut:				15.0
 
@@ -96,8 +100,8 @@ SocketTimeOut:				15.0
 // NEVER USE THIS, after lock updated
 NetworkLatency:				0.0
 
-// show network status
-ShowNetworkStatus:			true
+// show network detail status
+ShowNetworkStatus:			false
 ------------------------------------------------------------------- </Network Config>
 
 
@@ -110,6 +114,8 @@ LogSocketSendDetail:		false
 
 LogSocketReceive:			false
 LogSocketReceiveDetail:		false
+
+LogSocketWaiting:			false
 
 LogSocketProcessorListener:	false
 

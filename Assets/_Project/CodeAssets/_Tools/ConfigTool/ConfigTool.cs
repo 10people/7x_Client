@@ -14,6 +14,16 @@ using System.Collections.Generic;
  * 1. All Config Key MUST be listed here.
  */ 
 public class ConfigTool : Singleton<ConfigTool>{
+	
+	/// Config values dict.
+	public static Dictionary<string, ConfigValue> m_config_value_dict = new Dictionary<string, ConfigValue>();
+	
+	/// Config txt dict.
+	private static Dictionary<string, string> m_config_xml_dict = new Dictionary<string, string>();
+	
+	public const char CONST_LINE_SPLITTER		= ':';
+
+
 
 	public class ConfigValue{
 		public enum ValueType{
@@ -132,16 +142,6 @@ public class ConfigTool : Singleton<ConfigTool>{
 		}
 	}
 
-	/// Config values dict.
-	public static Dictionary<string, ConfigValue> m_config_value_dict = new Dictionary<string, ConfigValue>();
-
-	/// Config txt dict.
-	private static Dictionary<string, string> m_config_dict = new Dictionary<string, string>();
-
-	public const char CONST_LINE_SPLITTER		= ':';
-
-
-
 	#region Instance
 	
 	public FPSCounter_CS m_fps_counter = null;
@@ -173,11 +173,11 @@ public class ConfigTool : Singleton<ConfigTool>{
 			}
 		}
 		
-		{
-			if( NetworkWaiting.GetShowWaiting() != GetBool( CONST_NETWORK_SHOW_STATUS ) ){
-				ResetNetworkShowWaiting();
-			}
-		}
+//		{
+//			if( NetworkWaiting.GetShowWaiting() != GetBool( CONST_NETWORK_SHOW_STATUS ) ){
+//				ResetNetworkShowWaiting();
+//			}
+//		}
 	}
 
 	void OnDestroy(){
@@ -224,7 +224,7 @@ public class ConfigTool : Singleton<ConfigTool>{
 		Debug.Log( "ConfigTool.CleanData()" );
 		#endif
 
-		m_config_dict.Clear();
+		m_config_xml_dict.Clear();
 		
 		m_config_value_dict.Clear();
 	}
@@ -242,14 +242,14 @@ public class ConfigTool : Singleton<ConfigTool>{
 		Debug.Log( "ConfigTool.ResourceLoadCallback( " + ((TextAsset)p_object).text + " )" );
 		#endif
 
-		if ( m_config_dict.Count > 0 && m_config_value_dict.Count > 0 ) {
+		if ( m_config_xml_dict.Count > 0 && m_config_value_dict.Count > 0 ) {
 			return;
 		}
 
 		{
 			TextAsset t_text = ( TextAsset )p_object;
 
-			UtilityTool.LoadStringStringDict( m_config_dict, t_text, CONST_LINE_SPLITTER );
+			UtilityTool.LoadStringStringDict( m_config_xml_dict, t_text, CONST_LINE_SPLITTER );
 		}
 
 		// Load Items
@@ -267,51 +267,51 @@ public class ConfigTool : Singleton<ConfigTool>{
 //		Debug.Log( "ConfigTool.LoadConfigItems." );
 
 		// version
-		if( ContainsKey( m_config_dict, CONST_VERSION ) ){
-			LoadValues( m_config_value_dict, CONST_VERSION, LoadStringValue( m_config_dict, CONST_VERSION ) );
+		if( ContainsKey( m_config_xml_dict, CONST_VERSION ) ){
+			LoadValues( m_config_value_dict, CONST_VERSION, LoadStringValue( m_config_xml_dict, CONST_VERSION ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_VERSION, LoadBoolValue( m_config_dict, CONST_SHOW_VERSION ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_VERSION, LoadBoolValue( m_config_xml_dict, CONST_SHOW_VERSION ) );
 		}
 
 		// debug
 		{
-			LoadValues( m_config_value_dict, CONST_SHOW_CONSOLE, LoadBoolValue( m_config_dict, CONST_SHOW_CONSOLE ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_CONSOLE, LoadBoolValue( m_config_xml_dict, CONST_SHOW_CONSOLE ) );
 
-			LoadValues( m_config_value_dict, CONST_COMMON_CODE_EXCEPTION, LoadBoolValue( m_config_dict, CONST_COMMON_CODE_EXCEPTION ) );
+			LoadValues( m_config_value_dict, CONST_COMMON_CODE_EXCEPTION, LoadBoolValue( m_config_xml_dict, CONST_COMMON_CODE_EXCEPTION ) );
 
-			LoadValues( m_config_value_dict, CONST_NETWORK_CLOSE_SWITCHER, LoadBoolValue( m_config_dict, CONST_NETWORK_CLOSE_SWITCHER ) );
+			LoadValues( m_config_value_dict, CONST_NETWORK_CLOSE_SWITCHER, LoadBoolValue( m_config_xml_dict, CONST_NETWORK_CLOSE_SWITCHER ) );
 
-			LoadValues( m_config_value_dict, CONST_MANUAL_CLEAN, LoadBoolValue( m_config_dict, CONST_MANUAL_CLEAN ) );
+			LoadValues( m_config_value_dict, CONST_MANUAL_CLEAN, LoadBoolValue( m_config_xml_dict, CONST_MANUAL_CLEAN ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_MAIN_CAMERA_INFO, LoadBoolValue( m_config_dict, CONST_SHOW_MAIN_CAMERA_INFO ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_MAIN_CAMERA_INFO, LoadBoolValue( m_config_xml_dict, CONST_SHOW_MAIN_CAMERA_INFO ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_PARTICLE_CONTROLLERS, LoadBoolValue( m_config_dict, CONST_SHOW_PARTICLE_CONTROLLERS ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_PARTICLE_CONTROLLERS, LoadBoolValue( m_config_xml_dict, CONST_SHOW_PARTICLE_CONTROLLERS ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_CAMERA_SUPERIOR, LoadBoolValue( m_config_dict, CONST_SHOW_CAMERA_SUPERIOR ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_CAMERA_SUPERIOR, LoadBoolValue( m_config_xml_dict, CONST_SHOW_CAMERA_SUPERIOR ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_QUALITY_SWITCH, LoadBoolValue( m_config_dict, CONST_SHOW_QUALITY_SWITCH ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_QUALITY_SWITCH, LoadBoolValue( m_config_xml_dict, CONST_SHOW_QUALITY_SWITCH ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_CURRENT_LOADING, LoadBoolValue( m_config_dict, CONST_SHOW_CURRENT_LOADING ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_CURRENT_LOADING, LoadBoolValue( m_config_xml_dict, CONST_SHOW_CURRENT_LOADING ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_DEVICE_INFO, LoadBoolValue( m_config_dict, CONST_SHOW_DEVICE_INFO ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_DEVICE_INFO, LoadBoolValue( m_config_xml_dict, CONST_SHOW_DEVICE_INFO ) );
 
 			//LoadValues( m_config_value_dict, CONST_OPEN_CHECK_XML_TOOL, LoadBoolValue( m_config_dict, CONST_OPEN_CHECK_XML_TOOL ) );
 
-			LoadValues( m_config_value_dict, CONST_QUICK_PAUSE, LoadBoolValue( m_config_dict, CONST_QUICK_PAUSE ) );
+			LoadValues( m_config_value_dict, CONST_QUICK_PAUSE, LoadBoolValue( m_config_xml_dict, CONST_QUICK_PAUSE ) );
 			
-			LoadValues( m_config_value_dict, CONST_QUICK_FX, LoadBoolValue( m_config_dict, CONST_QUICK_FX ) );
+			LoadValues( m_config_value_dict, CONST_QUICK_FX, LoadBoolValue( m_config_xml_dict, CONST_QUICK_FX ) );
 		}
 
 		// fps
 		{
 			// show fps
 			{
-				LoadValues( m_config_value_dict, CONST_SHOW_FPS, LoadBoolValue( m_config_dict, CONST_SHOW_FPS ) );
+				LoadValues( m_config_value_dict, CONST_SHOW_FPS, LoadBoolValue( m_config_xml_dict, CONST_SHOW_FPS ) );
 			}
 			
 			// target fps
-			if( ContainsKey( m_config_dict, CONST_TARGET_FPS ) ){
-				LoadValues( m_config_value_dict, CONST_TARGET_FPS, LoadIntValue( m_config_dict, CONST_TARGET_FPS ) );
+			if( ContainsKey( m_config_xml_dict, CONST_TARGET_FPS ) ){
+				LoadValues( m_config_value_dict, CONST_TARGET_FPS, LoadIntValue( m_config_xml_dict, CONST_TARGET_FPS ) );
 
 				ResetFPS();
 			}
@@ -322,32 +322,34 @@ public class ConfigTool : Singleton<ConfigTool>{
 				Application.targetFrameRate = 60;
 			}
 
-			LoadValues( m_config_value_dict, CONST_LOADING_INTERVAL, LoadFloatValue( m_config_dict, CONST_LOADING_INTERVAL ) );
+			LoadValues( m_config_value_dict, CONST_LOADING_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_LOADING_INTERVAL ) );
 		}
 
 		// guide
 		{
-			LoadValues( m_config_value_dict, CONST_OPEN_GUIDE_EDITOR, LoadBoolValue( m_config_dict, CONST_OPEN_GUIDE_EDITOR ) );
+			LoadValues( m_config_value_dict, CONST_OPEN_GUIDE_EDITOR, LoadBoolValue( m_config_xml_dict, CONST_OPEN_GUIDE_EDITOR ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_GUIDE_SWITCHER, LoadBoolValue( m_config_dict, CONST_SHOW_GUIDE_SWITCHER ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_GUIDE_SWITCHER, LoadBoolValue( m_config_xml_dict, CONST_SHOW_GUIDE_SWITCHER ) );
 
-			LoadValues( m_config_value_dict, CONST_OPEN_ALLTHE_FUNCTION, LoadBoolValue( m_config_dict, CONST_OPEN_ALLTHE_FUNCTION ) );
+			LoadValues( m_config_value_dict, CONST_OPEN_ALLTHE_FUNCTION, LoadBoolValue( m_config_xml_dict, CONST_OPEN_ALLTHE_FUNCTION ) );
 		}
 		
 		// battle field
 		{
-			LoadValues( m_config_value_dict, CONST_QUICK_CHOOSE_LEVEL, LoadBoolValue( m_config_dict, CONST_QUICK_CHOOSE_LEVEL ) );
+			LoadValues( m_config_value_dict, CONST_QUICK_CHOOSE_LEVEL, LoadBoolValue( m_config_xml_dict, CONST_QUICK_CHOOSE_LEVEL ) );
 
-			LoadValues( m_config_value_dict, CONST_QUICK_FIGHT, LoadBoolValue( m_config_dict, CONST_QUICK_FIGHT ) );
+			LoadValues( m_config_value_dict, CONST_QUICK_FIGHT, LoadBoolValue( m_config_xml_dict, CONST_QUICK_FIGHT ) );
 
-			LoadValues( m_config_value_dict, CONST_SHOW_BATTLE_CAMERA_OPS, LoadBoolValue( m_config_dict, CONST_SHOW_BATTLE_CAMERA_OPS ) );
+			LoadValues( m_config_value_dict, CONST_SHOW_BATTLE_CAMERA_OPS, LoadBoolValue( m_config_xml_dict, CONST_SHOW_BATTLE_CAMERA_OPS ) );
 		}
 		
 		// network emulate
 		{
-			LoadValues( m_config_value_dict, CONST_NETWORK_CHECK_TIME, LoadFloatValue( m_config_dict, CONST_NETWORK_CHECK_TIME ) );
+			LoadValues( m_config_value_dict, CONST_NETWORK_CHECK_TIME, LoadFloatValue( m_config_xml_dict, CONST_NETWORK_CHECK_TIME ) );
 
-			LoadValues( m_config_value_dict, CONST_NETOWRK_SOCKET_TIME_OUT, LoadFloatValue( m_config_dict, CONST_NETOWRK_SOCKET_TIME_OUT ) );
+			LoadValues( m_config_value_dict, CONST_NETWORK_PING_TIME, LoadFloatValue( m_config_xml_dict, CONST_NETWORK_PING_TIME ) );
+
+			LoadValues( m_config_value_dict, CONST_NETOWRK_SOCKET_TIME_OUT, LoadFloatValue( m_config_xml_dict, CONST_NETOWRK_SOCKET_TIME_OUT ) );
 
 			#if UNITY_EDITOR || UNITY_STANDALONE
 			m_is_emulating_latency = IsEmulatingNetworkLatency();
@@ -363,53 +365,53 @@ public class ConfigTool : Singleton<ConfigTool>{
 			Debug.Log( "#else()" );
 			#endif
 
-			LoadValues( m_config_value_dict, CONST_NETWORK_SHOW_STATUS, LoadBoolValue( m_config_dict, CONST_NETWORK_SHOW_STATUS ) );
+			LoadValues( m_config_value_dict, CONST_NETWORK_SHOW_STATUS, LoadBoolValue( m_config_xml_dict, CONST_NETWORK_SHOW_STATUS ) );
 		}
 		
 		// logs
 		{
-			LoadValues( m_config_value_dict, CONST_LOG_HTTP_STATUS, LoadBoolValue( m_config_dict, CONST_LOG_HTTP_STATUS ) );
+			LoadValues( m_config_value_dict, CONST_LOG_HTTP_STATUS, LoadBoolValue( m_config_xml_dict, CONST_LOG_HTTP_STATUS ) );
 
-			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_SEND, LoadBoolValue( m_config_dict, CONST_LOG_SOCKET_SEND ) );
+			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_SEND, LoadBoolValue( m_config_xml_dict, CONST_LOG_SOCKET_SEND ) );
 
-			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_SEND_DETIAL, LoadBoolValue( m_config_dict, CONST_LOG_SOCKET_SEND_DETIAL ) );
-
-
-			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_RECEIVE, LoadBoolValue( m_config_dict, CONST_LOG_SOCKET_RECEIVE ) );
-
-			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_RECEIVE_DETAIL, LoadBoolValue( m_config_dict, CONST_LOG_SOCKET_RECEIVE_DETAIL ) );
+			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_SEND_DETIAL, LoadBoolValue( m_config_xml_dict, CONST_LOG_SOCKET_SEND_DETIAL ) );
 
 
-			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER, LoadBoolValue( m_config_dict, CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER ) );
+			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_RECEIVE, LoadBoolValue( m_config_xml_dict, CONST_LOG_SOCKET_RECEIVE ) );
 
-			LoadValues( m_config_value_dict, CONST_LOG_MAINCITY_SPRITE_MOVE, LoadBoolValue( m_config_dict, CONST_LOG_MAINCITY_SPRITE_MOVE ) );
-
-			LoadValues( m_config_value_dict, CONST_LOG_ASSET_LOADING, LoadBoolValue( m_config_dict, CONST_LOG_ASSET_LOADING ) );
+			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_RECEIVE_DETAIL, LoadBoolValue( m_config_xml_dict, CONST_LOG_SOCKET_RECEIVE_DETAIL ) );
 
 
-			LoadValues( m_config_value_dict, CONST_LOG_TOTAL_LOADING_TIME, LoadBoolValue( m_config_dict, CONST_LOG_TOTAL_LOADING_TIME ) );
+			LoadValues( m_config_value_dict, CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER, LoadBoolValue( m_config_xml_dict, CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER ) );
 
-			LoadValues( m_config_value_dict, CONST_LOG_ITEM_LOADING_TIME, LoadBoolValue( m_config_dict, CONST_LOG_ITEM_LOADING_TIME ) );
+			LoadValues( m_config_value_dict, CONST_LOG_MAINCITY_SPRITE_MOVE, LoadBoolValue( m_config_xml_dict, CONST_LOG_MAINCITY_SPRITE_MOVE ) );
 
-			LoadValues( m_config_value_dict, CONST_LOG_BUNDLE_DOWNLOADING, LoadBoolValue( m_config_dict, CONST_LOG_BUNDLE_DOWNLOADING ) );
-
-			LoadValues( m_config_value_dict, CONST_LOG_DIALOG_BOX, LoadBoolValue( m_config_dict, CONST_LOG_DIALOG_BOX ) );
+			LoadValues( m_config_value_dict, CONST_LOG_ASSET_LOADING, LoadBoolValue( m_config_xml_dict, CONST_LOG_ASSET_LOADING ) );
 
 
-			LoadValues( m_config_value_dict, CONST_LOG_QUALITY_CONFIG, LoadBoolValue( m_config_dict, CONST_LOG_QUALITY_CONFIG ) );
+			LoadValues( m_config_value_dict, CONST_LOG_TOTAL_LOADING_TIME, LoadBoolValue( m_config_xml_dict, CONST_LOG_TOTAL_LOADING_TIME ) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_ITEM_LOADING_TIME, LoadBoolValue( m_config_xml_dict, CONST_LOG_ITEM_LOADING_TIME ) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_BUNDLE_DOWNLOADING, LoadBoolValue( m_config_xml_dict, CONST_LOG_BUNDLE_DOWNLOADING ) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_DIALOG_BOX, LoadBoolValue( m_config_xml_dict, CONST_LOG_DIALOG_BOX ) );
+
+
+			LoadValues( m_config_value_dict, CONST_LOG_QUALITY_CONFIG, LoadBoolValue( m_config_xml_dict, CONST_LOG_QUALITY_CONFIG ) );
 		}
 		
 		// bundle
 		{
-			LoadValues( m_config_value_dict, CONST_CLEAN_EDITOR_CACHE, LoadBoolValue( m_config_dict, CONST_CLEAN_EDITOR_CACHE ) );
+			LoadValues( m_config_value_dict, CONST_CLEAN_EDITOR_CACHE, LoadBoolValue( m_config_xml_dict, CONST_CLEAN_EDITOR_CACHE ) );
 		}
 	}
 
 	private void ExeConfigItems(){
 		// network
-		{
-			ResetNetworkShowWaiting();
-		}
+//		{
+//			ResetNetworkShowWaiting();
+//		}
 		
 		// bundle
 		{
@@ -421,9 +423,9 @@ public class ConfigTool : Singleton<ConfigTool>{
 		}
 	}
 
-	private void ResetNetworkShowWaiting(){
-		NetworkWaiting.SetShowWaiting( GetBool( CONST_NETWORK_SHOW_STATUS ) );
-	}
+//	private void ResetNetworkShowWaiting(){
+//		NetworkWaiting.SetShowWaiting( GetBool( CONST_NETWORK_SHOW_STATUS ) );
+//	}
 
 	private void ResetFPS(){
 		int t_fps = GetInt( CONST_TARGET_FPS );
@@ -610,8 +612,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 	public static bool IsEmulatingNetworkLatency(){
 		bool t_emulating = false;
 
-		if( ContainsKey( m_config_dict, CONST_NETWORK_LATENCY ) ){
-			float t_latency = LoadFloatValue( m_config_dict, CONST_NETWORK_LATENCY );
+		if( ContainsKey( m_config_xml_dict, CONST_NETWORK_LATENCY ) ){
+			float t_latency = LoadFloatValue( m_config_xml_dict, CONST_NETWORK_LATENCY );
 
 			if( t_latency > 0 ){
 				t_emulating = true;
@@ -627,8 +629,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 	#region Get Target Value
 
 	public static float GetEmulatingNetworkLatency(){
-		if( ContainsKey( m_config_dict, CONST_NETWORK_LATENCY ) ){
-			return LoadFloatValue( m_config_dict, CONST_NETWORK_LATENCY );
+		if( ContainsKey( m_config_xml_dict, CONST_NETWORK_LATENCY ) ){
+			return LoadFloatValue( m_config_xml_dict, CONST_NETWORK_LATENCY );
 		}
 
 		return 0;
@@ -777,6 +779,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 	public const string CONST_NETWORK_CHECK_TIME		= "SocketCheckTime";
 
+	public const string CONST_NETWORK_PING_TIME			= "SocketPingTime";
+
 	public const string CONST_NETOWRK_SOCKET_TIME_OUT	= "SocketTimeOut";
 	
 	public const string CONST_NETWORK_LATENCY			= "NetworkLatency";
@@ -796,6 +800,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 	public const string CONST_LOG_SOCKET_RECEIVE		= "LogSocketReceive";
 	public const string CONST_LOG_SOCKET_RECEIVE_DETAIL	= "LogSocketReceiveDetail";
+
+	public const string CONST_LOG_SOCKET_WAITING		= "LogSocketWaiting";
 
 	public const string CONST_LOG_SOCKET_PROCESSOR_AND_LISTENER		= "LogSocketProcessorListener";
 

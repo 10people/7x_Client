@@ -12,11 +12,11 @@ public class EnterFuWen : MonoBehaviour {
 		List<RewardData> rewardDataList = new List<RewardData> ();
 		for (int i = 0;i < 3;i ++)
 		{
-			RewardData data = new RewardData (105001,1);
+			RewardData data = new RewardData (301013,1);//108105,920001,301013
 			rewardDataList.Add (data);
 		}
 
-		GeneralRewardManager.Instance ().CreateReward (rewardDataList);
-//		GeneralRewardManager.Instance ().CreateSpecialReward (rewardDataList);
+//		GeneralRewardManager.Instance ().CreateReward (rewardDataList);
+		GeneralRewardManager.Instance ().CreateSpecialReward (rewardDataList);
 	}
 }

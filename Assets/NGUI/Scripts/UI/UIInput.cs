@@ -59,13 +59,13 @@ public class UIInput : MonoBehaviour
 	/// Currently active input field. Only valid during callbacks.
 	/// </summary>
 
-	static public UIInput current;
+	public static UIInput current;
 
 	/// <summary>
 	/// Currently selected input field, if any.
 	/// </summary>
 
-	static public UIInput selection;
+	public static UIInput selection;
 
 	/// <summary>
 	/// Text label used to display the input's value.
@@ -157,10 +157,10 @@ public class UIInput : MonoBehaviour
 	protected bool mDoInit = true;
 	protected UIWidget.Pivot mPivot = UIWidget.Pivot.TopLeft;
 
-	static protected int mDrawStart = 0;
+	protected static int mDrawStart = 0;
 
 #if MOBILE
-	static protected TouchScreenKeyboard mKeyboard;
+	protected static TouchScreenKeyboard mKeyboard;
 #else
 	protected int mSelectionStart = 0;
 	protected int mSelectionEnd = 0;
@@ -169,7 +169,7 @@ public class UIInput : MonoBehaviour
 	protected Texture2D mBlankTex = null;
 	protected float mNextBlink = 0f;
 
-	static protected string mLastIME = "";
+	protected static string mLastIME = "";
 #endif
 
 	/// <summary>

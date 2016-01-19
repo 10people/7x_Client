@@ -23,7 +23,6 @@ public class ChatBaseWindow : MonoBehaviour
         return false;
     }
 
-
     //SendChatMessage
     public ChatBaseSendController m_ChatBaseSendController;
 
@@ -35,6 +34,9 @@ public class ChatBaseWindow : MonoBehaviour
     [HideInInspector]
     public ChatPct.Channel CurrentChannel = ChatPct.Channel.SHIJIE;
 
+    [HideInInspector]
+    public int m_RemainingFreeTimes;
+
     public void ClearObject()
     {
         //Remove grid's children and objectList.
@@ -42,7 +44,7 @@ public class ChatBaseWindow : MonoBehaviour
         {
             if (item2.m_ChatLogItem != null)
             {
-                PoolManagerListController.Instance.ReturnItem(item2.m_ChatLogItem.IsLeftMode ? "ChatDataOtherItem" : "ChatDataSelfItem", item2.m_ChatLogItem.gameObject);
+                PoolManagerListController.Instance.ReturnItem("ChatDataItem", item2.m_ChatLogItem.gameObject);
                 item2.m_ChatLogItem = null;
             }
         }));

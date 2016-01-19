@@ -28,16 +28,32 @@ public class GameObjectHelper {
 
 
 
+	#region Temp GameObject
+
+	private static GameObject m_temp_gbs_root_gb = null;
+
+	private static string CONST_TEMP_GAMEOBJECTS_ROOT_GAME_OBJECT_NAME = "_Temps_GB_Root";
+
+	public static GameObject GetTempGameObjectsRoot(){
+		if( m_temp_gbs_root_gb == null ){
+			m_temp_gbs_root_gb = new GameObject();
+			
+			m_temp_gbs_root_gb.name = CONST_TEMP_GAMEOBJECTS_ROOT_GAME_OBJECT_NAME;
+		}
+		
+		return m_temp_gbs_root_gb;
+	}
+
+	#endregion
+
+
+
 	#region Dont Destroy On Load
 	
 	public static GameObject m_dont_destroy_on_load_gb = null;
 
-	private static GameObject m_temp_gbs_root_gb = null;
-	
 	private static string CONST_DONT_DESTROY_ON_LOAD_GAME_OBJECT_NAME = "_Dont_Destroy_On_Load";
 	
-	private static string CONST_TEMP_GAMEOBJECTS_ROOT_GAME_OBJECT_NAME = "_Temps_GB_Root";
-
 	public static string GetDontDestroyGameObjectName(){
 		return CONST_DONT_DESTROY_ON_LOAD_GAME_OBJECT_NAME;
 	}
@@ -54,18 +70,6 @@ public class GameObjectHelper {
 		return m_dont_destroy_on_load_gb;
 	}
 	
-	public static GameObject GetTempGameObjectsRootGameObject(){
-		if( m_temp_gbs_root_gb == null ){
-			m_temp_gbs_root_gb = new GameObject();
-			
-			m_temp_gbs_root_gb.name = CONST_TEMP_GAMEOBJECTS_ROOT_GAME_OBJECT_NAME;
-			
-			GameObject.DontDestroyOnLoad(m_temp_gbs_root_gb);
-		}
-		
-		return m_temp_gbs_root_gb;
-	}
-	
 	public static void ClearDontDestroyGameObject(){
 		//		Debug.Log( "UtilityTool.ClearDontDestroyGameObject()" );
 		
@@ -74,42 +78,20 @@ public class GameObjectHelper {
 			MonoBehaviour[] t_items = m_dont_destroy_on_load_gb.GetComponents<MonoBehaviour>();
 			
 			for (int i = 0; i < t_items.Length; i++){
-				if (t_items[i].GetType() == typeof(UtilityTool)){
-					//					Debug.Log( "Skip UtilityTool." );
-					
-					continue;
-				}
-				
-				if (t_items[i].GetType() == typeof(ConfigTool)){
-					//					Debug.Log( "Skip ConfigTool." );
-					
-					continue;
-				}
-				
-				if (t_items[i].GetType() == typeof(Bundle_Loader)){
-					//					Debug.Log( "Skip Bundle_Loader." );
-					
-					//					Bundle_Loader.CleanData();
-					
+				if( t_items[i].GetType() == typeof(UtilityTool) ||
+				    t_items[i].GetType() == typeof(ConfigTool) ||
+				   	t_items[i].GetType() == typeof(Bundle_Loader) ||
+				   	t_items[i].GetType() == typeof(BundleHelper) ||
+				   	t_items[i].GetType() == typeof(ThirdPlatform) ||
+				   	t_items[i].GetType() == typeof(UIRootAutoActivator) ){
 					continue;
 				}
 
-				if (t_items[i].GetType() == typeof(BundleHelper)){
-					//					Debug.Log( "Skip Bundle_Loader." );
+				{
+					t_items[i].enabled = false;
 					
-					//					Bundle_Loader.CleanData();
-					
-					continue;
+					GameObject.Destroy( t_items[i] );
 				}
-				
-				if (t_items[i].GetType() == typeof(ThirdPlatform)){
-					continue;
-				}
-				
-				
-				t_items[i].enabled = false;
-
-				GameObject.Destroy( t_items[i] );
 			}
 			
 			//			m_dont_destroy_on_load_gb.SetActive( false );
@@ -199,6 +181,12 @@ public class GameObjectHelper {
 		}
 	}
 
+	#endregion
+
+
+
+	#region Logs
+
 	public static void LogGameObjectInfo( GameObject p_gb ){
 		Debug.Log( "-------- LogGameObjectInfo: " + p_gb + "------------" );
 
@@ -211,36 +199,6 @@ public class GameObjectHelper {
 		Debug.Log( "GameObject.Name: " + p_gb.name );
 
 		LogGameObjectHierarchy( p_gb );
-	}
-
-	public static void LogGameObjectTransform( GameObject p_gb, string p_prefex = "" ){
-		if( p_gb == null ){
-			Debug.Log( "Object is null." );
-			
-			return;
-		}
-
-		Transform t_tran = p_gb.transform;
-
-		Debug.Log( p_prefex + ": " + GetGameObjectHierarchy( p_gb ) );
-
-		// global
-		{
-			Debug.Log( "Scale: " + t_tran.lossyScale );
-			
-			Debug.Log( "Pos: " + t_tran.position );
-			
-			Debug.Log( "Rot: " + t_tran.rotation );
-		}
-
-		// local
-		{
-			Debug.Log( "Local.Scale: " + t_tran.localScale );
-
-			Debug.Log( "Local.Pos: " + t_tran.localPosition );
-
-			Debug.Log( "Local.Rot: " + t_tran.localRotation );
-		}
 	}
 
 	#endregion
@@ -334,5 +292,38 @@ public class GameObjectHelper {
 		}
 	}
 	
+	#endregion
+
+
+
+	#region Mono
+
+	public static bool HaveMissingMono( GameObject t_gb ){
+		MonoBehaviour[] t_monos = t_gb.GetComponents<MonoBehaviour>();
+
+		for( int i = 0; i < t_monos.Length; i++ ){
+			if( t_monos[ i ] == null ){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static void LogComponents( GameObject p_gb ){
+		MonoBehaviour[] t_monos = p_gb.GetComponentsInChildren<MonoBehaviour>();
+
+		for( int i = 0; i < t_monos.Length; i++ ){
+			MonoBehaviour t_mono = t_monos[ i ];
+
+			if( t_mono != null ){
+				Debug.Log( i + " : " + t_monos[ i ] + " - " + t_mono.GetType() );
+			}
+			else{
+				Debug.Log( i + " : " + t_monos[ i ] + " is null." );
+			}
+		}
+	}
+
 	#endregion
 }

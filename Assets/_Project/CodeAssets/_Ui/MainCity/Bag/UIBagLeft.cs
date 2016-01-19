@@ -55,7 +55,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
 
     [HideInInspector]
     public bool m_IsPanelToLeft;
-    private int m_iIndex;
+    public int m_iIndex;
     private GameObject m_objCopyEquip;
     private Transform m_transform;
 
@@ -183,6 +183,8 @@ public class UIBagLeft : MonoBehaviour, SocketListener
             {
                 tempManager.SetIconByID(m_ListBag[i].itemId, m_ListBag[i].cnt.ToString());
                 tempManager.SetIconBasicDelegate(false, true, CheckInfo);
+                tempManager.RightButtomCornorLabel.effectStyle = UILabel.Effect.Outline;
+                tempManager.RightButtomCornorLabel.effectColor = new Color(1, 0, 0, 1);
 
                 m_IconSampleManagers.Add(tempManager);
             }
@@ -190,6 +192,8 @@ public class UIBagLeft : MonoBehaviour, SocketListener
             {
                 tempManager.SetIconType(IconSampleManager.IconType.null_type);
                 tempManager.SetIconBasic(0, "", "", "");
+                tempManager.RightButtomCornorLabel.effectStyle = UILabel.Effect.Outline;
+                tempManager.RightButtomCornorLabel.effectColor = new Color(1, 0, 0, 1);
             }
 
             //Set gameobject name and transform info.

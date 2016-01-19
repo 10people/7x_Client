@@ -34,7 +34,7 @@ public class DroppenAI : MonoBehaviour
 			EffectIdTemplate.getEffectTemplateByEffectId(200001).path, 
 			out effectTemple);
 
-		body.SetActive (true);
+		body.SetActive (false);
 
 		StartCoroutine (actionStart());
 	}
@@ -45,11 +45,11 @@ public class DroppenAI : MonoBehaviour
 
 		yield return new WaitForSeconds (delay);
 
-		float dropTime = 1.5f;
+		float dropTime = .7f;
 		
-		float dropHeight = 1f;
+		float dropHeight = -1f;
 
-		BattleEffectControllor.Instance ().PlayEffect (200000, startPos, (targetPos - startPos).normalized);
+		BattleEffectControllor.Instance ().PlayEffect (200000, startPos, (targetPos - startPos).normalized, dropTime + 1f);
 		
 		iTween.ValueTo (gameObject, iTween.Hash(
 			"from", 0,
@@ -97,7 +97,9 @@ public class DroppenAI : MonoBehaviour
 	{
 		float targetY = y + targetPos.y;
 
-		targetY = targetY < targetPos.y ? targetPos.y : targetY;
+//		targetY = targetY < targetPos.y ? targetPos.y : targetY;
+
+		targetY = targetY > targetPos.y ? targetPos.y : targetY;
 
 		transform.position = new Vector3 (transform.position.x, targetY, transform.position.z);
 	}
@@ -144,7 +146,7 @@ public class DroppenAI : MonoBehaviour
 		{
 			Vector3 forward = (targetP - transform.position).normalized;
 			
-			Vector3 step = forward * 10 * Time.deltaTime;
+			Vector3 step = forward * 20 * Time.deltaTime;
 
 			transform.position += step;
 		}
@@ -152,6 +154,15 @@ public class DroppenAI : MonoBehaviour
 
 	IEnumerator des()
 	{
+		if(item.commonItemId == 900001)//铜币
+		{
+			BattleUIControlor.Instance().droppenLayerCoin.addItem(item.num);
+		}
+		else
+		{
+			BattleUIControlor.Instance().droppenLayerBox.addItem(item.num);
+		}
+
 		yield return new WaitForSeconds(.5f);
 
 		DestroyObject (gameObject);

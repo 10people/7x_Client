@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define TestGeneralReward
+
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,12 +42,18 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 
 	private readonly Dictionary<ShopType,string[]> shopReqDic = new Dictionary<ShopType,string[]>()
 	{
-		{ShopType.HUANGYE,new string[]{"10,11","荒野币","1","4"}},//string[0]:商铺刷新类型（免费，花钱） string[1]:商铺按钮名字 string[2]:商铺购买类型 string[3]:币种
-		{ShopType.GONGXIAN,new string[]{"20,21","贡献","2","2"}},
-		{ShopType.GONGXUN,new string[]{"30,31","功勋","3","5"}},
-		{ShopType.WEIWANG,new string[]{"40,41","威望","4","3"}},
-		{ShopType.ORDINARY,new string[]{"50,51","普通","5","1"}},
-		{ShopType.MYSTRERT,new string[]{"60,61","神秘","6","1"}},
+		//string[0]:商铺刷新类型（免费，花钱）
+		//string[1]:商铺按钮名字 
+		//string[2]:商铺购买类型 
+		//string[3]:币种(QXCombData.cs:MoneyType)
+		//string[4]:功能名称
+		//string[5]:功能开启id(FunctionOpen.xml)
+		{ShopType.HUANGYE,new string[]{"10,11","荒野币","1","4","联盟","104"}},//"荒野求生","300200"
+		{ShopType.GONGXIAN,new string[]{"20,21","贡献","2","2","联盟","104"}},
+		{ShopType.GONGXUN,new string[]{"30,31","功勋","3","5","联盟","104"}},
+		{ShopType.WEIWANG,new string[]{"40,41","威望","4","3","百战千军","300100"}},
+		{ShopType.ORDINARY,new string[]{"50,51","普通","5","1","商铺","9"}},
+		{ShopType.MYSTRERT,new string[]{"60,61","神秘","6","1","商铺","9"}},
 	};
 
 	private Dictionary<ShopType,ShopResp> shopDic = new Dictionary<ShopType, ShopResp>();
@@ -66,6 +74,11 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		set{isOpenFirstTime = value;}
 	}
 
+	/// <summary>
+	/// The alliance level.
+	/// </summary>
+	private int allianceLevel;
+
 	void Awake ()
 	{
 		shopData = this;
@@ -82,11 +95,58 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	}
 
 	/// <summary>
+	/// Gets the alliance level.
+	/// </summary>
+	/// <returns>The alliance level.</returns>
+	public int GetAllianceLevel ()
+	{
+		return allianceLevel;
+	}
+
+	/// <summary>
+	/// Determines whether this instance is shop open the specified tempType.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is shop open the specified tempType; otherwise, <c>false</c>.</returns>
+	/// <param name="tempType">Temp type.</param>
+	public bool IsShopFunctionOpen (ShopType tempType)
+	{
+		return FunctionOpenTemp.IsHaveID(int.Parse (shopReqDic[tempType][5]));
+	}
+
+	/// <summary>
 	/// Opens the shop.
 	/// </summary>
 	/// <param name="tempType">Temp type.</param>
 	public void OpenShop (ShopType tempType)
 	{
+		#if TestGeneralReward
+		List<RewardData> rewardDataList = new List<RewardData> ();
+		for (int i = 0;i < 3;i ++)
+		{
+			RewardData data = new RewardData (301013,1);//108105,920001,301013
+			rewardDataList.Add (data);
+		}
+		
+		//		GeneralRewardManager.Instance ().CreateReward (rewardDataList);
+		GeneralRewardManager.Instance ().CreateSpecialReward (rewardDataList);
+
+		return;
+		#endif
+
+//		if (!FunctionOpenTemp.IsHaveID (9))
+//		{
+//			Debug.Log ("商铺未开启");
+//			ClientMain.m_UITextManager.createText(MyColorData.getColorString (5,"商铺未开启"));
+//			return;
+//		}
+//
+//		if (!IsShopFunctionOpen (tempType)) 
+//		{
+//			Debug.Log (shopReqDic[tempType][4] + "未开启");
+//			ClientMain.m_UITextManager.createText(MyColorData.getColorString (5,shopReqDic[tempType][4] + "功能未开启"));
+//			return;
+//		}
+
 		if (!Global.m_isOpenShop)
 		{
 			shopDic.Clear ();
@@ -100,25 +160,28 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		{
 			if (!shopDic.ContainsKey (tempType))
 			{
-//				ShopInfoReq (tempType,ShopReqType.FREE);
+				ShopInfoReq (tempType,ShopReqType.FREE);
 
-				ShopResp ordinaryShop = new ShopResp();
-				ordinaryShop.goodsInfos = new List<DuiHuanInfo>();
-
-				int tempLateCount = DangpuItemCommonTemplate.templates.Count;
-				foreach (DangpuItemCommonTemplate tempLate in DangpuItemCommonTemplate.dangpuItemTemplateList ())
-				{
-					DuiHuanInfo duiHuanInfo = new DuiHuanInfo();
-					duiHuanInfo.id = tempLate.id;
-					duiHuanInfo.isChange = true;
-					duiHuanInfo.site = tempLate.site;
-					ordinaryShop.goodsInfos.Add (duiHuanInfo);
-				}
-
-				shopDic.Add (tempType,ordinaryShop);
+//				ShopResp ordinaryShop = new ShopResp();
+//				ordinaryShop.goodsInfos = new List<DuiHuanInfo>();
+//
+//				int tempLateCount = DangpuItemCommonTemplate.templates.Count;
+//				foreach (DangpuItemCommonTemplate tempLate in DangpuItemCommonTemplate.dangpuItemTemplateList ())
+//				{
+//					DuiHuanInfo duiHuanInfo = new DuiHuanInfo();
+//					duiHuanInfo.id = tempLate.id;
+//					duiHuanInfo.isChange = true;
+//					duiHuanInfo.site = tempLate.site;
+//					ordinaryShop.goodsInfos.Add (duiHuanInfo);
+//				}
+//
+//				shopDic.Add (tempType,ordinaryShop);
 			}
-			//打开商铺
-			LoadShopPrefab ();
+			else
+			{
+				//打开商铺
+				LoadShopPrefab ();
+			}
 		}
 		else
 		{
@@ -205,6 +268,9 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	{
 		goodInfo = tempInfo;
 		Debug.Log ("goodInfo.needMoney:" + goodInfo.needMoney);
+		Debug.Log ("goodInfo.xmlId:" + goodInfo.xmlId);
+		Debug.Log ("goodInfo.itemId:" + goodInfo.itemId);
+		Debug.Log ("goodInfo.site:" + goodInfo.site);
 		int moneyNum = 0;
 		if (goodInfo.moneyType == QXComData.MoneyType.YUANBAO)
 		{
@@ -244,6 +310,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	{
 		PawnShopGoodsSell shopSellReq = new PawnShopGoodsSell();
 		shopSellReq.sellGinfo = tempList;
+
 		foreach (SellGoodsInfo s in tempList)
 		{
 			Debug.Log ("s" + s.bagId + "|||" + s.count);
@@ -275,6 +342,11 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 					Debug.Log ("shopRes.goodsInfos:" + shopRes.goodsInfos.Count);
 					Debug.Log ("shopRes.money:" + shopRes.money);
 					Debug.Log ("shopRes.nextRefreshNeedMoney:" + shopRes.nextRefreshNeedMoney);
+
+					if (shopType == ShopType.GONGXIAN)
+					{
+						allianceLevel = shopRes.lmshopLv;
+					}
 
 					switch (shopReqType)
 					{
@@ -349,7 +421,15 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 
 						if (shopType == ShopType.ORDINARY)
 						{
-							//刷新元宝
+							foreach (DuiHuanInfo duiHuan in shopDic[shopType].goodsInfos)
+							{
+								if (goodInfo.xmlId == duiHuan.id && goodInfo.site == duiHuan.site)
+								{
+									duiHuan.remainCount -= 1;
+									break;
+								}
+							}
+							ShopPage.shopPage.InItShopPage (shopType,shopDic[shopType]);
 						}
 						else
 						{
@@ -378,7 +458,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 							}
 							foreach (DuiHuanInfo duiHuan in shopDic[shopType].goodsInfos)
 							{
-								if (goodInfo.xmlId == duiHuan.id)
+								if (goodInfo.xmlId == duiHuan.id && goodInfo.site == duiHuan.site)
 								{
 									duiHuan.isChange = false;
 									break;
@@ -387,13 +467,18 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 							ShopPage.shopPage.InItShopPage (shopType,shopDic[shopType]);
 						}
 
+						RewardData data = new RewardData(goodInfo.itemId,goodInfo.itemNum);
+						GeneralRewardManager.Instance ().CreateReward (data);
+
 						break;
 					case 2:
 
 						foreach (DuiHuanInfo duiHuan in shopDic[shopType].goodsInfos)
 						{
-							if (goodInfo.itemId == duiHuan.id)
+							if (goodInfo.xmlId == duiHuan.id && goodInfo.site == duiHuan.site)
 							{
+								Debug.Log ("goodInfo.xmlId:" + goodInfo.xmlId + "||goodInfo.site:" + goodInfo.site);
+								Debug.Log ("duiHuan.id:" + duiHuan.id + "||duiHuan.site:" + duiHuan.site);
 								duiHuan.isChange = false;
 								break;
 							}
@@ -490,10 +575,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	}
 	void InItShopInfo ()
 	{
-		if (!MainCityUI.IsExitInObjectList (ShopPrefab))
-		{
-			MainCityUI.TryAddToObjectList (ShopPrefab);
-		}
+		MainCityUI.TryAddToObjectList (ShopPrefab);
 		ShopPage.shopPage.InItShopPage (shopType,shopDic[shopType]);
 	}
 
@@ -570,8 +652,9 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		return (QXComData.MoneyType)Enum.ToObject (typeof(QXComData.MoneyType),int.Parse (shopReqDic [tempType] [3]));
 	}
 
-	void OnDestroy ()
-	{
+	void OnDestroy (){
 		SocketTool.UnRegisterMessageProcessor (this);
+
+		base.OnDestroy();
 	}
 }

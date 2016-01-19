@@ -5,11 +5,10 @@ public class MainCityZhanliChange : MYNGUIPanel
 {
 	private int m_iNum;
 	private float m_iCurZhanli;
-	private float m_iWantChangeZhanli;
 	private float m_iChangeNum;
-	public UILabel m_UILabelZhanli;
+	public UILabel m_UILabelHeroZhanli;
+	public UILabel m_UILabelUpZhanli;
 	public GameObject m_objEff;
-	public GameObject m_objEndAnimation;
 
 	public enum ZhanliAnimationSatatae
 	{
@@ -21,8 +20,16 @@ public class MainCityZhanliChange : MYNGUIPanel
 	public ZhanliAnimationSatatae m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Def;
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start () 
+	{
+		m_UILabelHeroZhanli.text = Global.m_iPZhanli.ToString();
+		m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
+
+		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100191 ).path);
+		m_iCurZhanli = Global.m_iPZhanli;
+		m_iChangeNum = (JunZhuData.Instance().m_junzhuInfo.zhanLi - m_iCurZhanli) / 20f;
+
+		Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 	}
 	
 	// Update is called once per frame
@@ -30,60 +37,60 @@ public class MainCityZhanliChange : MYNGUIPanel
 	{
 		switch(m_ZhanliAnimationSatatae)
 		{
-		case ZhanliAnimationSatatae.Eff:
+		case ZhanliAnimationSatatae.Def:
 			m_iNum ++;
-			if(m_iNum == 5)
+			if(m_iNum == 10)
 			{
 				m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Label;
-				m_iWantChangeZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
-				m_iCurZhanli = Global.m_iZhanli;
-				m_iChangeNum = (m_iWantChangeZhanli - m_iCurZhanli) / 40f;
 				m_iNum = 0;
 			}
 			break;
+		case ZhanliAnimationSatatae.Eff:
+			if(Global.m_iPZhanli < JunZhuData.Instance().m_junzhuInfo.zhanLi)
+			{
+				m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
+				m_iChangeNum = (JunZhuData.Instance().m_junzhuInfo.zhanLi - m_iCurZhanli) / 20f;
+				Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
+				m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Label;
+				m_iNum = 0;
+			}
+			m_iNum ++;
+			if(m_iNum == 30)
+			{
+//				Debug.Log("===========1");
+
+				GameObject.Destroy(gameObject);
+				ClientMain.closePopUp();
+				Global.m_isZhanli = false;
+				Global.m_iAddZhanli = 0;
+			}
+
+			break;
 		case ZhanliAnimationSatatae.Label:
+			if(Global.m_iPZhanli < JunZhuData.Instance().m_junzhuInfo.zhanLi)
+			{
+				m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
+				m_iChangeNum = (JunZhuData.Instance().m_junzhuInfo.zhanLi - m_iCurZhanli) / 20f;
+				Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
+				m_iNum = 0;
+			}
 			m_iNum ++;
 			m_iCurZhanli += m_iChangeNum;
-			if(m_iNum == 40)
+
+			m_UILabelHeroZhanli.text = (int)m_iCurZhanli + "";
+			if(m_iNum == 20)
 			{
-				Global.m_iZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
-				m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Def;
-				Global.m_isZhanli = false;
-				m_objEff.SetActive(false);
-				m_objEndAnimation.SetActive(false);
-				ClientMain.closePopUp();
+				m_iNum = 0;
+				m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Eff;
+				m_UILabelHeroZhanli.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
 			}
-			else
-			{
-				Global.m_iZhanli = (int)m_iCurZhanli;
-			}
-			MainCityUI.m_MainCityUI.m_MainCityUILT.m_ZhanLiLabel.text = Global.m_iZhanli.ToString();
 			break;
 		}
 	}
 
-	public bool setAnimation(string data)
-	{
-		m_iNum = 0;
-		m_objEff.SetActive(true);
-		m_objEndAnimation.SetActive(true);
-
-		m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Eff;
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100176 ).path);
-		return true;
-	}
-
 	public override void MYClick(GameObject ui)
 	{
-//		Global.m_iZhanli = 20000;
-		m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Def;
-		Global.m_isZhanli = false;
-		m_objEff.SetActive(false);
-		m_objEndAnimation.SetActive(false);
 
-		Global.m_iZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
-		MainCityUI.m_MainCityUI.m_MainCityUILT.m_ZhanLiLabel.text = Global.m_iZhanli.ToString();
-		ClientMain.closePopUp();
 	}
 
 	public override void MYMouseOver(GameObject ui)

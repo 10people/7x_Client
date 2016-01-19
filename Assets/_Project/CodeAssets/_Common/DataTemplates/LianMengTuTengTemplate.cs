@@ -100,14 +100,10 @@ public class LianMengTuTengTemplate :XmlLoadManager
 
     public static LianMengTuTengTemplate getTuTengAwardByLevel(int tuTengLevel)
     {
-        Debug.Log("templatestemplatestemplatestemplates ::" + templates.Count);
         foreach (LianMengTuTengTemplate template in templates)
         {
-            Debug.Log("template.tuTengLeveltemplate.tuTengLevel ::" + template.tuTengLevel);
-            Debug.Log("tuTengLeveltuTengLeveltuTengLeveltuTengLevel ::" + template.tuTengLevel);
             if (template.tuTengLevel == tuTengLevel)
             {
-                Debug.Log("templatetemplatetemplatetemplate ::" + template.award1);
                 return template;
             }
         }

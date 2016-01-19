@@ -35,6 +35,12 @@ public class BlockedData : MonoBehaviour, SocketProcessor
         RequestBlockedInfo();
     }
 
+	void OnDestroy(){
+		SocketTool.UnRegisterMessageProcessor( this );
+
+		m_BlockedData = null;
+	}
+
     public void RequestBlockedInfo()
     {
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_BLACKLIST);
@@ -70,10 +76,5 @@ public class BlockedData : MonoBehaviour, SocketProcessor
             }
         }
         return false;
-    }
-
-    void OnDestroy()
-    {
-        SocketTool.UnRegisterMessageProcessor(this);
     }
 }

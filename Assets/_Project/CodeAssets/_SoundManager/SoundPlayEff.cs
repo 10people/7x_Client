@@ -65,6 +65,8 @@ public class SoundPlayEff : MonoBehaviour
 		
 		for(int i = 0; i < tempAudio.Length; i ++)
 		{
+//			Debug.Log( "Sound Stop." );
+
 			tempAudio[i].Stop();
 		}
 	}

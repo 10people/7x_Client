@@ -190,8 +190,9 @@ public class AllianceFightData : Singleton<AllianceFightData>,SocketProcessor {
 		return MyColorData.getColorString (1,result);
 	}
 
-	void OnDestroy ()
-	{
+	public void OnDestroy (){
 		SocketTool.UnRegisterMessageProcessor (this);
+
+		base.OnDestroy();
 	}
 }

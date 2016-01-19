@@ -106,4 +106,47 @@ public class Console_RedSpot {
 	}
 	
 	#endregion
+
+
+
+	#region Push
+
+	public static void OnSetLocalPush( string[] p_params ){
+		if( p_params.Length < 4 ){
+			Debug.LogError( "Error, params not enough." );
+			
+			return;
+		}
+
+		string t_param_1_key = "";
+
+		int t_param_2_sec_since_now = 0;
+
+		string t_param_3_push_content = "";
+		
+		try{
+			t_param_1_key = p_params[ 1 ];
+
+			t_param_2_sec_since_now = int.Parse( p_params[ 2 ] );
+			
+			t_param_3_push_content = p_params[ 3 ];
+		}
+		catch( Exception e ){
+			StringHelper.LogStringArray( p_params );
+			
+			Debug.LogError( "Error, params error: " + e );
+			
+			return;
+		}
+		
+		Debug.Log ( "t_param_1_key: " + t_param_1_key );
+
+		Debug.Log ( "t_param_2_sec_since_now: " + t_param_2_sec_since_now );
+
+		Debug.Log ( "t_param_3_push_content: " + t_param_3_push_content );
+
+		PushAndNotificationHelper.LocalPush( t_param_1_key, t_param_2_sec_since_now, t_param_3_push_content );
+	}
+
+	#endregion
 }

@@ -183,11 +183,15 @@ public class SceneManager{
 		Debug.Log("EnterMainCity( " + m_MainSceneIndex + " )" );
 #endif
 
-        //		Debug.Log("EnterMainCity.m_MainSceneIndex: " + m_MainSceneIndex);
-        FunctionWindowsCreateManagerment.SceneNumSet(0);
-        MainCityUI.m_PlayerPlace=MainCityUI.PlayerPlace.MainCity;
-        m_AllianceSceneIndex = 0;
-        if (m_MainSceneIndex == 0)
+//    	Debug.Log("EnterMainCity.m_MainSceneIndex: " + m_MainSceneIndex);
+    
+		FunctionWindowsCreateManagerment.SceneNumSet(0);
+        
+		MainCityUI.m_PlayerPlace=MainCityUI.PlayerPlace.MainCity;
+        
+		m_AllianceSceneIndex = 0;
+        
+		if (m_MainSceneIndex == 0)
         {
             m_MainSceneIndex++;
     
@@ -207,7 +211,7 @@ public class SceneManager{
         //}
         //else
         {
-			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.MAIN_CITY ), false );
+			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.MAIN_CITY), false );
            // EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN);
         }
 
@@ -299,23 +303,23 @@ public class SceneManager{
 			Global.m_isOpenBaiZhan = false;
 			Global.m_isOpenHuangYe = false;
 			Global.m_iOpenFunctionIndex = -1;
-			Global.m_isZhanli = false;
 			
 			Global.m_iScreenID = 0;
 			
 			Global.m_iScreenNoID = 0;
 			
 			Global.m_isOpenJiaoxue = true;
-			Global.m_isTianfuUpCan = false;
+			Global.m_isZhanli = false;
+			Global.m_iAddZhanli = 0;
 			
 			Global.m_sMainCityWantOpenPanel = -1;
 			Global.m_sPanelWantRun = "";
 			Global.m_NewChenghao = new List<int>();
-			Global.m_isNewChenghao = false;
-			Global.m_iZhanli = 0;
+			Global.m_iAddZhanli = 0;
 			Global.m_isFuWen = false;
 			Global.m_isOpenFuWen = false;
 			Global.m_isOpenShop = false;
+			Global.m_isOpenPlunder = false;
 
             //Clear highest ui and chat objects.
 			if( ClientMain.Instance() != null ){
@@ -428,14 +432,14 @@ public class SceneManager{
 
     #region Utilities
 
-	public static void LoadLevel( string p_level_name ){
+	public static void LoadLevel( string p_level_name, bool p_clean_anim = false ){
 		#if DEBUG_LOADING_SCENE
 		Debug.Log( "LoadLevel( " + p_level_name + " )" );
 		#endif
 
 		Application.LoadLevel( p_level_name );
 		
-		UtilityTool.UnloadUnusedAssets();
+		UtilityTool.UnloadUnusedAssets( p_clean_anim );
 	}
 
 	public static bool IsInBattleScene(){
@@ -447,7 +451,7 @@ public class SceneManager{
 		Debug.Log( "SceneManager.LoadLoadinglDone( " + p_path + " )" );
 		#endif
 
-		LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
+		LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE, true );
     }
 
     #endregion

@@ -34,7 +34,12 @@ public class FuShiOperate : MonoBehaviour {
 	public GameObject xiangQianBtnsObj;
 	public GameObject heChengBtnsObj;
 
+	private int pinZhiId;
+	private string nameStr;
+
 	public List<EventHandler> btnHandlerList = new List<EventHandler> ();
+
+	public ScaleEffectController sEffectController;
 
 	/// <summary>
 	/// 获得符石信息
@@ -44,6 +49,7 @@ public class FuShiOperate : MonoBehaviour {
 	/// <param name="tempLanWeiInfo">栏位信息</param>
 	public void GetOperateInfo (OperateType tempType,int tempItemId,int tempLanWeiId)
 	{
+		sEffectController.OnOpenWindowClick ();
 		lanWeiId = tempLanWeiId;
 
 		List<Fuwen> fuWenList = FuWenData.Instance.fuWenDataResp.fuwens;
@@ -103,12 +109,15 @@ public class FuShiOperate : MonoBehaviour {
 		}
 
 		FuWenTemplate fuWenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (fuWenInfo.itemId);
-		nameLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
+
+		nameStr = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
+		nameLabel.text = nameStr;
 		desLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName);
-		
+
 		numLabel.text = "x" + fuWenInfo.cnt;
 		shuXingLabel.text = "+" + fuWenTemp.shuxingValue;
-		
+
+		pinZhiId = CommonItemTemplate.getCommonItemTemplateById (fuWenInfo.itemId).color - 1;
 		iconId = fuWenTemp.icon;
 
 		if (iconSamplePrefab == null)
@@ -118,11 +127,7 @@ public class FuShiOperate : MonoBehaviour {
 		}
 		else
 		{
-			IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
-			fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-			fuShiIconSample.SetIconBasic(4,iconId.ToString ());
-
-			iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
+			InItIconSample ();
 		}
 	}
 
@@ -134,10 +139,18 @@ public class FuShiOperate : MonoBehaviour {
 		iconSamplePrefab.transform.parent = fuShiInfoObj.transform;
 		iconSamplePrefab.transform.localPosition = new Vector3 (-145,0,0);
 
+		InItIconSample ();
+	}
+
+	void InItIconSample ()
+	{
+		string mdesc = DescIdTemplate.GetDescriptionById (fuWenInfo.itemId);
+		
 		IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
 		fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-		fuShiIconSample.SetIconBasic(4,iconId.ToString ());
-
+		fuShiIconSample.SetIconBasic(4,iconId.ToString (),"","pinzhi" + pinZhiId);
+		fuShiIconSample.SetIconPopText(iconId, nameStr, mdesc, 1);
+		
 		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
 	}
 
@@ -170,6 +183,10 @@ public class FuShiOperate : MonoBehaviour {
 			DestroyOperateWindow ();
 			break;
 		case "CloseBtn":
+			FuWenMainPage.fuWenMainPage.IsBtnClick = false;
+			DestroyOperateWindow ();
+			break;
+		case "ZheZhao":
 			FuWenMainPage.fuWenMainPage.IsBtnClick = false;
 			DestroyOperateWindow ();
 			break;

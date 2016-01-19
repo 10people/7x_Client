@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class ConstInGame : MonoBehaviour {
@@ -57,21 +58,30 @@ public class ConstInGame : MonoBehaviour {
 
 	public const string CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE	= "Game_Scene_Loading";
 
+    public const string CONST_SCENE_NAME_MAINCITY = "Game_Scene_MainCity";
+    public const string CONST_SCENE_NAME_MAINCITY_YEWAN = "Game_Scene_MainCity_YeWan";
+    public const string CONST_SCENE_NAME_ALLIANCECITY = "Game_Scene_AllianceCity";
+    public const string CONST_SCENE_NAME_ALLIANCECITY_YEWAN = "Game_Scene_AllianceCity_YeWan";
 
-	/// deprecated
+
+    [Obsolete]
 	public const string CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE 	= "Game_Scene_AllianceTenentsCity_One";
 
-	/// deprecated
+    [Obsolete]
     public const string CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN 	= "Game_Scene_AllianceTenentsCity_One_YeWan";
 
-	#endregion
+    #endregion
 
+    #region Carriage
 
+    public const string CONST_SCENE_NAME_CARRIAGE = "Game_Scene_Carriage";
 
-	#region Battle Field
+    #endregion
 
-	/// Every Battle Scene MUST Start With "BattleField_V4_".
-	public const string CONST_SCENE_NAME_BATTLE_FIELD_PREFIX		= "BattleField_V4_";
+    #region Battle Field
+
+    /// Every Battle Scene MUST Start With "BattleField_V4_".
+    public const string CONST_SCENE_NAME_BATTLE_FIELD_PREFIX		= "BattleField_V4_";
 
 	#endregion
 

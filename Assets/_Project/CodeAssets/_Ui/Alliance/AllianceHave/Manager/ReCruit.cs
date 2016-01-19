@@ -164,7 +164,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	AllianceHaveResp mAllianceHaveResp;
 	public void ChangeNum()
 	{
-		mAllianceHaveResp = _MyAllianceManager.Instance ().m_allianceHaveRes;
+		mAllianceHaveResp = NewAlliancemanager.Instance ().m_allianceHaveRes;
 		if(mAllianceHaveResp.attchCndition == null)
 		{
 			Debug.Log ("mAllianceHaveResp.attchCndition =  null");
@@ -239,9 +239,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	}
 	public void CancleBtn()//取消按钮
 	{
-		GameObject m_My_Union = GameObject.Find ("_My_Union(Clone)");
-		MainCityUI.TryRemoveFromObjectList(m_My_Union);
-		Destroy (m_My_Union);
+		Destroy (this.gameObject);
 	}
 	public bool IsSava = true;
 	public void All_ComfrimBtm()//确定发布按钮
@@ -326,7 +324,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 					{
 						//SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);//刷新页面
 						AllianceData.Instance.RequestData ();
-						GameObject leaderSetObj = GameObject.Find("ApplyManager");
+						GameObject leaderSetObj = GameObject.Find("AllaniceApply");
 						if(leaderSetObj)
 						{
 							ApplyManager mLeaderSetting = leaderSetObj.GetComponent<ApplyManager>();
@@ -350,7 +348,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 				
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);
 				
-				GameObject leaderSetObj = GameObject.Find("ApplyManager");
+				GameObject leaderSetObj = GameObject.Find("AllaniceApply");
 				if(leaderSetObj)
 				{
 					ApplyManager mLeaderSetting = leaderSetObj.GetComponent<ApplyManager>();

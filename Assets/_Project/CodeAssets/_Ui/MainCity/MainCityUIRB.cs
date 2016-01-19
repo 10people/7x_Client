@@ -24,7 +24,6 @@ public class MainCityUIRB : MYNGUIPanel
 	public UILabel m_UILabelPropUse;
 	public List<int> m_listPropUseID = new List<int>();
 	public List<int> m_listPropUseNum = new List<int>();
-    #region Buttons Initialize and Enable
 
     public enum ButtonType
     {
@@ -32,38 +31,6 @@ public class MainCityUIRB : MYNGUIPanel
         Navigation,
         Stick
     }
-
-    public static readonly Dictionary<int, string> ButtonSpriteNameTransferDic = new Dictionary<int, string>()
-    {
-        {14,"IconActivityCircle"},
-        {104,"IconAlliacneSqaure"},
-        {3,"IconBagSqaure"},
-        {310,"IconCarriageCircle"},
-        {4,"IconFriendSquare"},
-        {2001,"IconGetOutCircle"},
-        {2002,"IconGetOutCircle"},
-        {7,"IconGoHomeCircle"},
-        {12,"IconIronsMithCircle"},
-        {200,"IconKingSquare"},
-        {2000,"IconOperationCircle"},
-        {8,"IconRaidCircle"},
-        {300,"IconRangerCircle"},
-        {210,"IconRankSquare"},
-        {13,"IconRechargeCircle"},
-        {11,"IconSerarchTreasureSquare"},
-        {2,"IconSettingCircle"},
-        {9,"IconStoreCircle"},
-        {5,"IconTaskSquare"},
-        {6,"IconTreasureSquare"},
-        {400000,"IconWorshipCircle"},
-        {15,"IconZaixianCircle"},
-        {16,"IconQiriCircle"},
-        {211,"IconRobCircle"},
-        {212,"IconNationCircle"},
-        {17,"NULLCircle"},
-		{1210,"IconQiriCircle"},
-		{250,"IconQiriCircle"},
-    };
 
     private bool isShowBtnEffect;
 
@@ -94,11 +61,6 @@ public class MainCityUIRB : MYNGUIPanel
 //                continue;
 //            }
 //
-//            //Set alliance related btns as specially.
-//            if (template.m_iID == 7 || template.m_iID == 400000)
-//            {
-//                continue;
-//            }
 //
 //            //Set Zaixian, Qiri acitivity specifically.
 //            if (template.m_iID == 15 || template.m_iID == 16)
@@ -123,15 +85,8 @@ public class MainCityUIRB : MYNGUIPanel
 //
 //            AddButton(template.m_iID);
 //        }
-
-        //Set alliance related btns as specially.
-//        if (m_FunctionState == FunctionState.AllianceCity)
-//        {
-//            AddButton(7);
-//            AddButton(400000);
-//        }
-
-        //Set Zaixian, Qiri acitivity specifically.
+//
+//        Set Zaixian, Qiri acitivity specifically.
 //        if (!LimitActivityData.Instance.IsDataReceived)
 //        {
 //            Debug.LogWarning("Cannot init Zaixian, Qiri acitivty when data not received");
@@ -197,145 +152,11 @@ public class MainCityUIRB : MYNGUIPanel
 //            }
 //        }
     }
-
-    private bool isButtonAdded(int id)
-    {
-        MainCityUIRB tempUIRB = MainCityUI.m_MainCityUI.m_MainCityUIRB;
-
-//		var tempList;
-
-//        return tempList != null && tempList.Count() == 1;
-		return false;
-    }
-
-    public static bool isButtonEnabled(int id)
-    {
-        MainCityUIRB tempUIRB = MainCityUI.m_MainCityUI.m_MainCityUIRB;
-
-//        var tempList = tempUIRB.m_fastButtonManagerlist.Concat(tempUIRB.m_navigationButtonManagerlist)
-//            .Concat(tempUIRB.m_houseButtonManagerlist)
-//            .Concat(tempUIRB.m_middleStickButtonManagerlist)
-//            .Concat(tempUIRB.m_rightStickButtonManagerlist)
-//            .Where(item => item.m_index == id).ToList();
-
-//        if (tempList != null && tempList.Count() == 1)
-//        {
-//            return tempList[0].m_UiButton.isEnabled;
-//        }
-//        else
-//        {
-//            Debug.LogError("Cannot find button:" + id + " in get enable state.");
-            return false;
-//        }
-    }
-
-    /// <summary>
-    /// Outter call for add/remove button with enable and rank.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="isAdd"></param>
-    public static void AddOrRemoveButton(int id, bool isAdd = true)
-    {
-        if (MainCityUI.m_MainCityUI == null || MainCityUI.m_MainCityUI.m_MainCityUIRB == null)
-        {
-            m_AddOrRemoveButtonCommandList.Add(new AddOrRemoveButtonCommand { IsAdd = isAdd, index = id });
-            m_MainCityUIRBDelegate += ExecuteStoredAddOrRemoveButtonCommand;
-            return;
-        }
-
-        MainCityUIRB tempUIRB = MainCityUI.m_MainCityUI.m_MainCityUIRB;
-
-        if (isAdd)
-        {
-            if (!tempUIRB.isButtonAdded(id))
-            {
-                tempUIRB.AddButton(id);
-            }
-        }
-        else
-        {
-            if (tempUIRB.isButtonAdded(id))
-            {
-                tempUIRB.AddButton(id, false);
-            }
-        }
-
-//        tempUIRB.RankButtons();
-    }
-
-    public class AddOrRemoveButtonCommand
-    {
-        public int index;
-        public bool IsAdd;
-    }
-    public static List<AddOrRemoveButtonCommand> m_AddOrRemoveButtonCommandList = new List<AddOrRemoveButtonCommand>();
-
-    private static void ExecuteStoredAddOrRemoveButtonCommand()
-    {
-        m_MainCityUIRBDelegate -= ExecuteStoredAddOrRemoveButtonCommand;
-
-        foreach (var item in m_AddOrRemoveButtonCommandList)
-        {
-            AddOrRemoveButton(item.index, item.IsAdd);
-        }
-        m_AddOrRemoveButtonCommandList.Clear();
-    }
-
-    private const string CommingSoonSpriteNamePrefix = "commingSoon_";
-
-    public static void RefreshCommingSoonButton()
-    {
-        if (MainCityUI.m_MainCityUI == null || MainCityUI.m_MainCityUI.m_MainCityUIRB == null)
-        {
-            m_RefreshCommingSoonButtonCommandList.Add(new RefreshCommingSoonButtonCommand());
-            m_MainCityUIRBDelegate += ExecuteStoredRefreshCommingSoonButtonCommand;
-            return;
-        }
-
-        MainCityUIRB tempUIRB = MainCityUI.m_MainCityUI.m_MainCityUIRB;
-
-        var temp = FunctionUnlock.templates.Where(item => !FunctionOpenTemp.m_EnableFuncIDList.Contains(item.id));
-        if (temp.Any())
-        {
-            AddOrRemoveButton(17);
-//            tempUIRB.m_totalButtonManagerlist.Where(item => item.m_index == 17).First().m_ButtonSprite.spriteName = CommingSoonSpriteNamePrefix + temp.First().spriteName;
-        }
-        else
-        {
-            AddOrRemoveButton(17, false);
-        }
-    }
-
-    public class RefreshCommingSoonButtonCommand
-    {
-
-    }
-    public static List<RefreshCommingSoonButtonCommand> m_RefreshCommingSoonButtonCommandList = new List<RefreshCommingSoonButtonCommand>();
-
-    private static void ExecuteStoredRefreshCommingSoonButtonCommand()
-    {
-        m_MainCityUIRBDelegate -= ExecuteStoredRefreshCommingSoonButtonCommand;
-
-        if (m_RefreshCommingSoonButtonCommandList.Any())
-        {
-            RefreshCommingSoonButton();
-        }
-        m_RefreshCommingSoonButtonCommandList.Clear();
-    }
-
-    #endregion
-
-    #region Buttons rank controller
-
+	
     private const float rankGap = 90;
 
     private const int fastColumnNum = 4;
     private const int navigationColumnNum = 2;
-
-    #endregion
-
-    #region Buttons Click Trigger
-
 
 
     /// <summary>
@@ -356,9 +177,6 @@ public class MainCityUIRB : MYNGUIPanel
         }
 
     }
-    #endregion
-
-    #region Red Alert and Panel Control
 
     public delegate void MainCityUIRBDelegate();
     public static MainCityUIRBDelegate m_MainCityUIRBDelegate;
@@ -434,7 +252,7 @@ public class MainCityUIRB : MYNGUIPanel
 
         foreach (var item in m_RedAlertCommandList)
         {
-            SetRedAlert(item.index, item.IsShow, item.m_manual_set);
+            MainCityUI.SetRedAlert(item.index, item.IsShow, item.m_manual_set);
         }
         m_RedAlertCommandList.Clear();
     }
@@ -447,73 +265,6 @@ public class MainCityUIRB : MYNGUIPanel
     /// <param name="isShow">active or deactive, true: active, false: deactive</param>
     /// <returns>set successfully or not, true: succeed, false: fail</returns>
     /// p_manual_set: if it's called by old red spot sys.
-    public static bool SetRedAlert(int id, bool isShow, bool p_manual_set = true)
-    {
-        // if red spot is manual setted, then check if it could be manually changed.
-        if (p_manual_set)
-        {
-            if (!PushAndNotificationHelper.IsManualSetRedNotificationOK(id, isShow))
-            {
-                return true;
-            }
-        }
-
-        try
-        {
-            //Add to command list if UI not inited, then return true.
-            if (MainCityUI.m_MainCityUI == null || MainCityUI.m_MainCityUI.m_MainCityUIRB == null)
-            {
-                m_RedAlertCommandList.Add(new RedAlertCommand { IsShow = isShow, index = id, m_manual_set = p_manual_set });
-                m_MainCityUIRBDelegate += ExecuteStoredRedAlertCommand;
-                return true;
-            }
-
-            MainCityUIRB tempUIRB = MainCityUI.m_MainCityUI.m_MainCityUIRB;
-
-//            var tempList = tempUIRB.m_fastButtonManagerlist.Concat(tempUIRB.m_navigationButtonManagerlist)
-//                .Concat(tempUIRB.m_houseButtonManagerlist)
-//                .Concat(tempUIRB.m_middleStickButtonManagerlist)
-//                .Concat(tempUIRB.m_rightStickButtonManagerlist)
-//                .Where(item => item.m_index == id).ToList();
-
-//            if (tempList != null && tempList.Count == 1)
-//            {
-//                if (isShow)
-//                {
-//                    if (tempList[0].m_index == 15 || tempList[0].m_index == 16)
-//                    {
-//                        tempList[0].IsAlertShowed = true;
-//                        UI3DEffectTool.Instance().ClearUIFx(tempList[0].gameObject);
-//                        UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, tempList[0].gameObject, EffectTemplate.getEffectTemplateByEffectId(100185).path);
-//                    }
-//                    else
-//                    {
-//                        tempList[0].ShowRedAlert();
-//                    }
-//                    tempUIRB.CheckActiveSlideRedAlert();
-//                }
-//                else
-//                {
-//                    if (tempList[0].m_index == 15 || tempList[0].m_index == 16)
-//                    {
-//                        tempList[0].IsAlertShowed = false;
-//                        UI3DEffectTool.Instance().ClearUIFx(tempList[0].gameObject);
-//                    }
-//                    else
-//                    {
-//                        tempList[0].HideRedAlert();
-//                    }
-//                }
-//            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError("Got exception in setting alert, ex:" + ex.Message + ", \nstackTrace:" + ex.StackTrace);
-            return false;
-        }
-    }
 
     public static bool LockRedAlert(int id, bool isRemove = false)
     {
@@ -538,10 +289,6 @@ public class MainCityUIRB : MYNGUIPanel
         }
     }
 
-    #endregion
-
-    #region OpenClose Controller
-
     private const float MovingDuration = 0.5f;
 
     private bool isNoiTween = false;
@@ -555,12 +302,7 @@ public class MainCityUIRB : MYNGUIPanel
     {
 
     }
-
-
-    #endregion
-
-    #region Time Calc Controller
-
+	
     public GameObject TimeCalcRoot;
     public UILabel TimeCalcLabel;
 
@@ -599,7 +341,7 @@ public class MainCityUIRB : MYNGUIPanel
         TimeHelper.Instance.AddEveryDelegateToTimeCalc("MainCityUIRBTimeCalc", second, RefreshTimeCalc);
 
         //hide red alert in zaixian activity
-        SetRedAlert(15, false);
+		MainCityUI.SetRedAlert(15, false);
     }
 
     void RefreshTimeCalc(int second)
@@ -610,84 +352,21 @@ public class MainCityUIRB : MYNGUIPanel
         }
         else
         {
-            TimeCalcRoot.gameObject.SetActive(false);
-
+			TimeCalcLabel.text = ColorTool.Color_Green_00ff00 + "领取[-]";
+//            TimeCalcRoot.gameObject.SetActive(false);
             TimeHelper.Instance.RemoveFromTimeCalc("MainCityUIRBTimeCalc");
 
             //Show red alert in zaixian activity
-            SetRedAlert(15, true);
+            MainCityUI.SetRedAlert(15, true);
         }
-    }
-
-    #endregion
-
-    #region Play Add Button Effect
-
-    public bool PlayAddButton(string id)
-    {
-        StartCoroutine(DoPlayAddButton(int.Parse(id)));
-        return true;
     }
 
     private int PlayAddButtonID;
     private GameObject PlayAddButtonObject;
 
-    private IEnumerator DoPlayAddButton(int id)
-    {
-        //Wait for initialize finished.
-        while (!IsInitialized)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
-//        var temp = m_totalButtonManagerlist.Where(item => item.m_index == id);
-//        if (temp != null && temp.Count() == 1)
-//        {
-//            PlayAddButtonID = id;
-//            PlayAddButtonObject = temp.First().gameObject;
-//
-//            if (m_fastButtonManagerlist.Select(item => item.m_index).Contains(id))
-//            {
-//                ButtonOpenDelegate = PlayAddButtonEffect;
-//                OnOpenCloseClick(1);
-//                yield break;
-//            }
-//            else if (m_navigationButtonManagerlist.Select(item => item.m_index).Contains(id))
-//            {
-//                ButtonOpenDelegate = PlayAddButtonEffect;
-//                OnOpenCloseClick(3);
-//                yield break;
-//            }
-//
-//            PlayAddButtonEffect();
-//        }
-    }
-
-    private void PlayAddButtonEffect()
-    {
-        StartCoroutine(DoPlayAddButtonEffect());
-    }
-
-    private IEnumerator DoPlayAddButtonEffect()
-    {
-        UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, PlayAddButtonObject, EffectTemplate.getEffectTemplateByEffectId(100166).path);
-        yield return new WaitForSeconds(0.5f);
-
-//        EnableButton(PlayAddButtonID);
-//        yield return new WaitForSeconds(0.5f);
-
-        UI3DEffectTool.Instance().ClearUIFx(PlayAddButtonObject);
-
-        UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, PlayAddButtonObject, EffectTemplate.getEffectTemplateByEffectId(ButtonSpriteNameTransferDic[PlayAddButtonID].Contains("Square") ? 100167 : 100168).path);
-        yield return new WaitForSeconds(1.0f);
-        UI3DEffectTool.Instance().ClearUIFx(PlayAddButtonObject);
-
-        Global.m_iOpenFunctionIndex = -1;
-        ClientMain.closePopUp();
-    }
-
 	public void setPropUse(int id, int num = 0)
 	{
+//		Debug.Log("setPropUse id=" + id);
 		bool tempAdd = true;
 		for(int i = 0; i < m_listPropUseID.Count; i ++)
 		{
@@ -739,8 +418,6 @@ public class MainCityUIRB : MYNGUIPanel
 //		NameIdTemplate.GetName_By_NameId (commonItemTemplate.nameId) + "x" + _item.num;
 	}
 
-    #endregion
-
 
     void OnDisable()
     {
@@ -761,22 +438,22 @@ public class MainCityUIRB : MYNGUIPanel
 //			ClientMain.addPopUP(40, 2, "1210", null);
 //			ClientMain.addPopUP(40, 2, "250", null);
 //		}
+		if(!MainCityUIRB.isOpen)
+		{
+			QXChatUIBox.chatUIBox.SetChatUIBoxPos(false);
+		}
 		if(m_ObjPropUse.activeSelf)
 		{
 			if(!MainCityUIRB.isOpen)
 			{
 				m_ObjPropUse.transform.localPosition = new Vector3(-190, 50, 0);
+
 			}
 //			else
 //			{
 //				m_ObjPropUse.transform.localPosition = new Vector3(-190, 150, 0);
 //			}
 		}
-
-//		if(Global.m_iOpenFunctionIndex != -1)
-//		{
-//
-//		}
 	}
 
 	public override void MYClick(GameObject ui)
@@ -787,10 +464,12 @@ public class MainCityUIRB : MYNGUIPanel
 			if(isOpen)
 			{
 				m_SpriteOpen.spriteName = "Open";
-				MainCityUI.m_MainCityUI.m_MainCityListButton_RB.setBPos(960 + ClientMain.m_iMoveX * 2 - 150, -(640 + ClientMain.m_iMoveY * 2 - 50), -100, 0);
+				MainCityUI.m_MainCityUI.m_MainCityListButton_RB.setBPos(960 + ClientMain.m_iMoveX * 2 - 150, -(640 + ClientMain.m_iMoveY * 2 - 45), -75, 0);
+				QXChatUIBox.chatUIBox.SetChatUIBoxPos(true);
 				if(m_ObjPropUse.activeSelf)
 				{
 					m_ObjPropUse.transform.localPosition = new Vector3(-190, 150, 0);
+
 //					if(MainCityUIRB.isOpen)
 //					{
 //						m_ObjPropUse.transform.localPosition = new Vector3(-190, 50, 0);
@@ -805,7 +484,7 @@ public class MainCityUIRB : MYNGUIPanel
 			{
 				m_SpriteOpen.spriteName = "Close";
 //				MainCityUI.m_MainCityUI.m_MainCityListButton_RB.setBPos(960 + ClientMain.m_iMoveX * 2 - 50 + 150, -(640 + ClientMain.m_iMoveY * 2 - 50), 100, 0);
-				MainCityUI.m_MainCityUI.m_MainCityListButton_RB.setBPos(960 + ClientMain.m_iMoveX * 2 - 50 + (MainCityUI.m_MainCityUI.m_MainCityListButton_RB.m_listFunctionButtonManager.Count * 100), -(640 + ClientMain.m_iMoveY * 2 - 50), -100, 0);
+				MainCityUI.m_MainCityUI.m_MainCityListButton_RB.setBPos(960 + ClientMain.m_iMoveX * 2 - 50 + (MainCityUI.m_MainCityUI.m_MainCityListButton_RB.m_listFunctionButtonManager.Count * 75), -(640 + ClientMain.m_iMoveY * 2 - 45), -75, 0);
 			}
 			MainCityUI.m_MainCityUI.m_MainCityListButton_RB.setPos();
 			MainCityUI.m_MainCityUI.m_MainCityListButton_RB.setMove(EndRB);
@@ -813,11 +492,25 @@ public class MainCityUIRB : MYNGUIPanel
 		else if(ui.name.IndexOf("RB_UseProp") != -1)
 		{
 			m_ObjPropUse.SetActive(false);
+			UseProp(m_listPropUseID[0]);
 			m_listPropUseID.RemoveAt(0);
 			m_listPropUseNum.RemoveAt(0);
 			if(m_listPropUseID.Count > 0)
 			{
 				setPropUse(m_listPropUseID[0], m_listPropUseNum[0]);
+			}
+		}
+	}
+
+	public void UseProp(int id)
+	{
+		List<BagItem> bagItemList = BagData.Instance().m_bagItemList;
+		for(int i = 0; i < bagItemList.Count; i ++)
+		{
+			if (bagItemList[i].itemId == id)
+			{
+				Global.ScendID(ProtoIndexes.C_EquipAdd, bagItemList[i].bagIndex);
+				break;
 			}
 		}
 	}

@@ -1,0 +1,315 @@
+fileFormatVersion: 2
+guid: 1d7d6a01dc315ed42b73733fa70ed4f0
+timeCreated: 1450174369
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: s7_jianzhu_pingmiani001
+    100002: s7_jianzhu_pingmiani002
+    100004: s7_jianzhu_pingtai001
+    100006: s7_new_3d_zhucheng_chengmen001
+    100008: s7_new_3d_zhucheng_chengqiang001
+    100010: s7_new_3d_zhucheng_chitang001
+    100012: s7_new_3d_zhucheng_denglong001
+    100014: s7_new_3d_zhucheng_denglong001 1
+    100016: s7_new_3d_zhucheng_denglong002
+    100018: s7_new_3d_zhucheng_dideng001
+    100020: s7_new_3d_zhucheng_dideng002
+    100022: s7_new_3d_zhucheng_dimian001
+    100024: s7_new_3d_zhucheng_dimian002
+    100026: s7_new_3d_zhucheng_door001
+    100028: s7_new_3d_zhucheng_gongdian001
+    100030: s7_new_3d_zhucheng_gongdian001 1
+    100032: s7_new_3d_zhucheng_gongdian001_01
+    100034: s7_new_3d_zhucheng_gongdian002
+    100036: s7_new_3d_zhucheng_gongdian003
+    100038: s7_new_3d_zhucheng_gongdian003 1
+    100040: s7_new_3d_zhucheng_gongdian003_01
+    100042: s7_new_3d_zhucheng_gongdian004
+    100044: s7_new_3d_zhucheng_gongdian005
+    100046: s7_new_3d_zhucheng_gongdian005 1
+    100048: s7_new_3d_zhucheng_gongdian005_01
+    100050: s7_new_3d_zhucheng_gongdiandizuo001
+    100052: s7_new_3d_zhucheng_hehua001
+    100054: s7_new_3d_zhucheng_huopan001
+    100056: s7_new_3d_zhucheng_huopan002
+    100058: s7_new_3d_zhucheng_langan001
+    100060: s7_new_3d_zhucheng_longzhuzi001
+    100062: s7_new_3d_zhucheng_louti001
+    100064: s7_new_3d_zhucheng_louti001 1
+    100066: s7_new_3d_zhucheng_louti002
+    100068: s7_new_3d_zhucheng_minju002
+    100070: s7_new_3d_zhucheng_minju002 1
+    100072: s7_new_3d_zhucheng_minju002_01
+    100074: s7_new_3d_zhucheng_minjun001
+    100076: s7_new_3d_zhucheng_minjuweiqiang001
+    100078: s7_new_3d_zhucheng_minjuweiqiang002
+    100080: s7_new_3d_zhucheng_muju001
+    100082: s7_new_3d_zhucheng_taijie002
+    100084: s7_new_3d_zhucheng_taizi001
+    100086: s7_new_3d_zhucheng_weilan001
+    100088: s7_new_3d_zhucheng_weilan002
+    100090: //RootNode
+    100092: s7_new_3d_zhucheng_zhuzi001
+    100094: s7_new_3d_zhucheng_zhuzi002
+    100096: s7_new_3d_zhucheng_zuozi001
+    100098: s7_new_3d_zhucheng_dimian003
+    100100: s7_new_3d_zhucheng_gongdianlangan001
+    100102: s7_new_3d_zhucheng_lu001
+    100104: s7_new_3d_zhucheng_lu002
+    400000: s7_jianzhu_pingmiani001
+    400002: s7_jianzhu_pingmiani002
+    400004: s7_jianzhu_pingtai001
+    400006: s7_new_3d_zhucheng_chengmen001
+    400008: s7_new_3d_zhucheng_chengqiang001
+    400010: s7_new_3d_zhucheng_chitang001
+    400012: s7_new_3d_zhucheng_denglong001
+    400014: s7_new_3d_zhucheng_denglong001 1
+    400016: s7_new_3d_zhucheng_denglong002
+    400018: s7_new_3d_zhucheng_dideng001
+    400020: s7_new_3d_zhucheng_dideng002
+    400022: s7_new_3d_zhucheng_dimian001
+    400024: s7_new_3d_zhucheng_dimian002
+    400026: s7_new_3d_zhucheng_door001
+    400028: s7_new_3d_zhucheng_gongdian001
+    400030: s7_new_3d_zhucheng_gongdian001 1
+    400032: s7_new_3d_zhucheng_gongdian001_01
+    400034: s7_new_3d_zhucheng_gongdian002
+    400036: s7_new_3d_zhucheng_gongdian003
+    400038: s7_new_3d_zhucheng_gongdian003 1
+    400040: s7_new_3d_zhucheng_gongdian003_01
+    400042: s7_new_3d_zhucheng_gongdian004
+    400044: s7_new_3d_zhucheng_gongdian005
+    400046: s7_new_3d_zhucheng_gongdian005 1
+    400048: s7_new_3d_zhucheng_gongdian005_01
+    400050: s7_new_3d_zhucheng_gongdiandizuo001
+    400052: s7_new_3d_zhucheng_hehua001
+    400054: s7_new_3d_zhucheng_huopan001
+    400056: s7_new_3d_zhucheng_huopan002
+    400058: s7_new_3d_zhucheng_langan001
+    400060: s7_new_3d_zhucheng_longzhuzi001
+    400062: s7_new_3d_zhucheng_louti001
+    400064: s7_new_3d_zhucheng_louti001 1
+    400066: s7_new_3d_zhucheng_louti002
+    400068: s7_new_3d_zhucheng_minju002
+    400070: s7_new_3d_zhucheng_minju002 1
+    400072: s7_new_3d_zhucheng_minju002_01
+    400074: s7_new_3d_zhucheng_minjun001
+    400076: s7_new_3d_zhucheng_minjuweiqiang001
+    400078: s7_new_3d_zhucheng_minjuweiqiang002
+    400080: s7_new_3d_zhucheng_muju001
+    400082: s7_new_3d_zhucheng_taijie002
+    400084: s7_new_3d_zhucheng_taizi001
+    400086: s7_new_3d_zhucheng_weilan001
+    400088: s7_new_3d_zhucheng_weilan002
+    400090: //RootNode
+    400092: s7_new_3d_zhucheng_zhuzi001
+    400094: s7_new_3d_zhucheng_zhuzi002
+    400096: s7_new_3d_zhucheng_zuozi001
+    400098: s7_new_3d_zhucheng_dimian003
+    400100: s7_new_3d_zhucheng_gongdianlangan001
+    400102: s7_new_3d_zhucheng_lu001
+    400104: s7_new_3d_zhucheng_lu002
+    2300000: s7_jianzhu_pingmiani001
+    2300002: s7_jianzhu_pingmiani002
+    2300004: s7_jianzhu_pingtai001
+    2300006: s7_new_3d_zhucheng_chengmen001
+    2300008: s7_new_3d_zhucheng_chengqiang001
+    2300010: s7_new_3d_zhucheng_chitang001
+    2300012: s7_new_3d_zhucheng_denglong001
+    2300014: s7_new_3d_zhucheng_denglong001 1
+    2300016: s7_new_3d_zhucheng_denglong002
+    2300018: s7_new_3d_zhucheng_dideng001
+    2300020: s7_new_3d_zhucheng_dideng002
+    2300022: s7_new_3d_zhucheng_dimian001
+    2300024: s7_new_3d_zhucheng_dimian002
+    2300026: s7_new_3d_zhucheng_door001
+    2300028: s7_new_3d_zhucheng_gongdian001 1
+    2300030: s7_new_3d_zhucheng_gongdian001_01
+    2300032: s7_new_3d_zhucheng_gongdian002
+    2300034: s7_new_3d_zhucheng_gongdian003 1
+    2300036: s7_new_3d_zhucheng_gongdian003_01
+    2300038: s7_new_3d_zhucheng_gongdian004
+    2300040: s7_new_3d_zhucheng_gongdian005 1
+    2300042: s7_new_3d_zhucheng_gongdian005_01
+    2300044: s7_new_3d_zhucheng_hehua001
+    2300046: s7_new_3d_zhucheng_huopan001
+    2300048: s7_new_3d_zhucheng_huopan002
+    2300050: s7_new_3d_zhucheng_langan001
+    2300052: s7_new_3d_zhucheng_longzhuzi001
+    2300054: s7_new_3d_zhucheng_louti001 1
+    2300056: s7_new_3d_zhucheng_louti002
+    2300058: s7_new_3d_zhucheng_minju002 1
+    2300060: s7_new_3d_zhucheng_minju002_01
+    2300062: s7_new_3d_zhucheng_minjun001
+    2300064: s7_new_3d_zhucheng_minjuweiqiang001
+    2300066: s7_new_3d_zhucheng_minjuweiqiang002
+    2300068: s7_new_3d_zhucheng_muju001
+    2300070: s7_new_3d_zhucheng_taijie002
+    2300072: s7_new_3d_zhucheng_taizi001
+    2300074: s7_new_3d_zhucheng_weilan001
+    2300076: s7_new_3d_zhucheng_weilan002
+    2300078: s7_new_3d_zhucheng_zhuzi001
+    2300080: s7_new_3d_zhucheng_zhuzi002
+    2300082: s7_new_3d_zhucheng_zuozi001
+    2300084: s7_new_3d_zhucheng_dimian003
+    2300086: s7_new_3d_zhucheng_gongdianlangan001
+    2300088: s7_new_3d_zhucheng_lu001
+    2300090: s7_new_3d_zhucheng_lu002
+    3300000: s7_jianzhu_pingmiani001
+    3300002: s7_jianzhu_pingmiani002
+    3300004: s7_jianzhu_pingtai001
+    3300006: s7_new_3d_zhucheng_chengmen001
+    3300008: s7_new_3d_zhucheng_chengqiang001
+    3300010: s7_new_3d_zhucheng_chitang001
+    3300012: s7_new_3d_zhucheng_denglong001
+    3300014: s7_new_3d_zhucheng_denglong001 1
+    3300016: s7_new_3d_zhucheng_denglong002
+    3300018: s7_new_3d_zhucheng_dideng001
+    3300020: s7_new_3d_zhucheng_dideng002
+    3300022: s7_new_3d_zhucheng_dimian001
+    3300024: s7_new_3d_zhucheng_dimian002
+    3300026: s7_new_3d_zhucheng_door001
+    3300028: s7_new_3d_zhucheng_gongdian001 1
+    3300030: s7_new_3d_zhucheng_gongdian001_01
+    3300032: s7_new_3d_zhucheng_gongdian002
+    3300034: s7_new_3d_zhucheng_gongdian003 1
+    3300036: s7_new_3d_zhucheng_gongdian003_01
+    3300038: s7_new_3d_zhucheng_gongdian004
+    3300040: s7_new_3d_zhucheng_gongdian005 1
+    3300042: s7_new_3d_zhucheng_gongdian005_01
+    3300044: s7_new_3d_zhucheng_hehua001
+    3300046: s7_new_3d_zhucheng_huopan001
+    3300048: s7_new_3d_zhucheng_huopan002
+    3300050: s7_new_3d_zhucheng_langan001
+    3300052: s7_new_3d_zhucheng_longzhuzi001
+    3300054: s7_new_3d_zhucheng_louti001 1
+    3300056: s7_new_3d_zhucheng_louti002
+    3300058: s7_new_3d_zhucheng_minju002 1
+    3300060: s7_new_3d_zhucheng_minju002_01
+    3300062: s7_new_3d_zhucheng_minjun001
+    3300064: s7_new_3d_zhucheng_minjuweiqiang001
+    3300066: s7_new_3d_zhucheng_minjuweiqiang002
+    3300068: s7_new_3d_zhucheng_muju001
+    3300070: s7_new_3d_zhucheng_taijie002
+    3300072: s7_new_3d_zhucheng_taizi001
+    3300074: s7_new_3d_zhucheng_weilan001
+    3300076: s7_new_3d_zhucheng_weilan002
+    3300078: s7_new_3d_zhucheng_zhuzi001
+    3300080: s7_new_3d_zhucheng_zhuzi002
+    3300082: s7_new_3d_zhucheng_zuozi001
+    3300084: s7_new_3d_zhucheng_dimian003
+    3300086: s7_new_3d_zhucheng_gongdianlangan001
+    3300088: s7_new_3d_zhucheng_lu001
+    3300090: s7_new_3d_zhucheng_lu002
+    4300000: s7_new_3d_zhucheng_dimian001
+    4300002: s7_new_3d_zhucheng_dimian002
+    4300004: s7_new_3d_zhucheng_weilan002
+    4300006: s7_new_3d_zhucheng_weilan001
+    4300008: s7_new_3d_zhucheng_dideng001
+    4300010: s7_new_3d_zhucheng_huopan002
+    4300012: s7_new_3d_zhucheng_taijie002
+    4300014: s7_new_3d_zhucheng_taizi001
+    4300016: s7_new_3d_zhucheng_chitang001
+    4300018: s7_new_3d_zhucheng_denglong001
+    4300020: s7_new_3d_zhucheng_denglong002
+    4300022: s7_new_3d_zhucheng_langan001
+    4300024: s7_new_3d_zhucheng_denglong001
+    4300026: s7_new_3d_zhucheng_chengqiang001
+    4300028: s7_new_3d_zhucheng_chengmen001
+    4300030: s7_new_3d_zhucheng_huopan001
+    4300032: s7_new_3d_zhucheng_dideng002
+    4300034: s7_new_3d_zhucheng_muju001
+    4300036: s7_new_3d_zhucheng_longzhuzi001
+    4300038: s7_new_3d_zhucheng_gongdian002
+    4300040: s7_new_3d_zhucheng_minjun001
+    4300042: s7_new_3d_zhucheng_gongdian004
+    4300044: s7_new_3d_zhucheng_zuozi001
+    4300046: s7_new_3d_zhucheng_zhuzi002
+    4300048: s7_new_3d_zhucheng_zhuzi001
+    4300050: s7_new_3d_zhucheng_hehua001
+    4300052: s7_new_3d_zhucheng_minjuweiqiang002
+    4300054: s7_new_3d_zhucheng_minjuweiqiang001
+    4300056: s7_new_3d_zhucheng_door001
+    4300058: s7_new_3d_zhucheng_minju002
+    4300060: s7_new_3d_zhucheng_minju002_01
+    4300062: s7_new_3d_zhucheng_louti002
+    4300064: s7_new_3d_zhucheng_louti001
+    4300066: s7_new_3d_zhucheng_gongdian001
+    4300068: s7_new_3d_zhucheng_gongdian001_01
+    4300070: s7_jianzhu_pingmiani001
+    4300072: s7_jianzhu_pingmiani002
+    4300074: s7_jianzhu_pingtai001
+    4300076: s7_new_3d_zhucheng_gongdian003_01
+    4300078: s7_new_3d_zhucheng_gongdian003
+    4300080: s7_new_3d_zhucheng_gongdian005
+    4300082: s7_new_3d_zhucheng_gongdian005_01
+    4300084: s7_new_3d_zhucheng_gongdianlangan001
+    4300086: s7_new_3d_zhucheng_dimian003
+    4300088: s7_new_3d_zhucheng_lu001
+    4300090: s7_new_3d_zhucheng_lu002
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -43,6 +43,8 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 	public bool COmeMiBaoUI = false;
 
+	public GameObject SaveBtn;
+
 	public static NewMiBaoSkill Instance ()
 	{
 		if (!mMiBaoData)
@@ -57,10 +59,14 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 	{
 		SocketTool.RegisterSocketListener(this);	
 	}
+
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterSocketListener(this);
+
+		mMiBaoData = null;
 	}
+
 	void Start () {
 	
 
@@ -76,14 +82,19 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		if (!COmeMiBaoUI)
 		{
 			CHoseRemaind.gameObject.SetActive (true);
+
 		}
 		else
 		{
+			SaveBtn.SetActive(false);
 			CHoseRemaind.gameObject.SetActive (false);
 		}
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 	
 	}
+	private bool isMiBaoSkillActive = false;
+	private int skillZuHeId;
+	public int yinDaoId;//百战引导技能判定id
 	public bool OnSocketEvent(QXBuffer p_message)
 	{
 		if (p_message != null)
@@ -123,12 +134,150 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 //				}
 				if(mMiBaoDealSkillResp.message == 0)
 				{
+					isMiBaoSkillActive = true;
 					Debug.Log ("激活技能成功");
 				}
 				else{
 					Debug.Log ("碎片不足");
 				}
 			//	UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillTemp,EffectIdTemplate.GetPathByeffectId(100178));
+				return true;
+			}
+
+			case ProtoIndexes.S_MIBAO_SELECT_RESP: //      秘宝保存返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				MibaoSelectResp Sava_MiBao = new MibaoSelectResp();
+				
+				t_qx.Deserialize(t_stream, Sava_MiBao, Sava_MiBao.GetType());
+				
+				Debug.Log ("Sava_MiBao.success = "+Sava_MiBao.success);
+				if(Sava_MiBao.success == 1)//保存成功
+				{
+					skillZuHeId = Sava_MiBao.zuheSkill;
+					Debug.Log ("Sava_MiBao.type:" + Sava_MiBao.type);
+					yinDaoId = Sava_MiBao.zuheSkill;
+					switch(Sava_MiBao.type)
+					{
+					case (int)(CityGlobalData.MibaoSkillType.PveSend ):
+					{
+						NewPVEUIManager.Instance().GuanqiaReq.zuheId = skillZuHeId ;
+						
+						NewPVEUIManager.Instance().ShowMiBaoIcon();
+
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.PvpSend ):
+					{
+//						GameObject tiaozhanObj = GameObject.Find ("GeneralChallengePage");
+//						Debug.Log ("GeneralChallengePage:" + tiaozhanObj);
+//						if (tiaozhanObj != null)
+//						{
+//							GeneralTiaoZhan tiaozhan = tiaozhanObj.GetComponent<GeneralTiaoZhan> ();
+//							
+//							tiaozhan.RefreshMiBaoSkillInfo (skillZuHeId);
+//							
+//							YinDaoCol ();
+//						}
+						
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.HY_TreSend ):
+					{
+						HY_UIManager.Instance ().ShowOrClose ();
+						
+						HYRetearceEnemy.Instance().M_Treas_info.zuheId =  skillZuHeId;
+						
+						HYRetearceEnemy.Instance().ShowMiBaoSkill();
+						
+						
+						break;
+					}
+
+					case (int)(CityGlobalData.MibaoSkillType.PVP_Fangshou ):
+					{
+//						GameObject baizhanObj = GameObject.Find ("BaiZhanMain");
+//						if (baizhanObj != null)
+//						{
+//							BaiZhanMainPage baizhanMain = baizhanObj.GetComponent<BaiZhanMainPage> ();
+//							baizhanMain.baiZhanResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
+//							baizhanMain.DefensiveSetUp ();
+//							baizhanMain.IsOpenOpponent = false;
+//						}
+						PvpPage.pvpPage.pvpResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
+						PvpPage.pvpPage.PvpActiveState (true);
+						PvpPage.pvpPage.DefensiveSetUp ();
+						
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.YaBiao_Fangshou ):
+					{
+						
+						
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.YaBiao_Gongji) :
+					{
+						//CarriageMsgManager.Instance.s_YabiaoJunZhuList.gongjiZuHeId = skillZuHeId;
+						//CarriageMsgManager.Instance.m_RootManager.m_CarriageUi.RefreshMibaoSkillEffect();
+						
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.YX_JinBi) :
+					{
+						//EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
+						NewYXUI.Instance().ShowMiBaoSkillIcon();
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.YX_Cailiao) :
+					{
+						//EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
+						NewYXUI.Instance().ShowMiBaoSkillIcon();
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.YX_Jingpo) :
+					{
+						//EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
+						NewYXUI.Instance().ShowMiBaoSkillIcon();
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.YX_WanbiGuizhao):
+					{
+						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
+						NewYXUI.Instance().ShowMiBaoSkillIcon();
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.YX_ZongHengLiuHe):
+					{
+						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
+						NewYXUI.Instance().ShowMiBaoSkillIcon();
+						break;
+					}
+					case (int)(CityGlobalData.MibaoSkillType.LueDuo_GongJi):
+					{
+						GameObject tiaozhanObj = GameObject.Find ("GeneralChallengePage");
+						
+						if (tiaozhanObj != null)
+						{
+							GeneralTiaoZhan tiaozhan = tiaozhanObj.GetComponent<GeneralTiaoZhan> ();
+							tiaozhan.RefreshMiBaoSkillInfo (skillZuHeId);
+						}
+						
+						break;
+					}
+					default:
+						break;
+					}
+					
+					Destroy(this.gameObject);
+				}
+				
 				return true;
 			}
 			default: return false;
@@ -155,8 +304,14 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 				ShowBeChoosed_MiBao(SaveId,true);
 			}
 			else
-			{    
-				ShowBeChoosed_MiBao(m_Skill_MiBaoInfo.skillList[m_Skill_MiBaoInfo.skillList.Count -1].activeZuheId,true);
+			{   if(m_Skill_MiBaoInfo.skillList.Count < 7)
+				{
+					ShowBeChoosed_MiBao( m_Skill_Gbj[m_Skill_MiBaoInfo.skillList.Count].GetComponent<miBaoskilltemp>().SKill_id,false);
+				}
+				else
+				{
+					ShowBeChoosed_MiBao( m_Skill_Gbj[m_Skill_MiBaoInfo.skillList.Count-1].GetComponent<miBaoskilltemp>().SKill_id,true);
+				}
 				Debug.Log ("bbbbbbbbbb ");
 				Debug.Log("activeZuheId = "+m_Skill_MiBaoInfo.skillList[m_Skill_MiBaoInfo.skillList.Count -1].activeZuheId);
 			}
@@ -174,9 +329,15 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 						m_miBaoskilltemp.IsActive = true;
 						
 						m_miBaoskilltemp.Init();
+
+						if(isMiBaoSkillActive)
+						{
+							UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,m_Skill_Gbj[i],EffectIdTemplate.GetPathByeffectId(100166));
+						}
 					}
 				}
 			}
+			isMiBaoSkillActive = false;
 		}
 		else
 		{
@@ -220,15 +381,15 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 				m_miBaoskilltemp.Be_CHoosed();
 			}
 		}
+		MiBaoSkillLvTempLate m_MiBaoSkillTemp = MiBaoSkillLvTempLate.GetMiBaoSkillLvTemplateByIdAndLevel (m_Skllinfo_id,1);
 		MiBaoSkillTemp mMiBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id (m_Skllinfo_id);
-	
 		string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoSkillTemp.nameId);
 		
 		SKillName.text = mName;
 		
-		DescIdTemplate mDesc1 = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoSkillTemp.detailDesc);
+		DescIdTemplate mDesc1 = DescIdTemplate.getDescIdTemplateByNameId(m_MiBaoSkillTemp.skillDesc);
 		DescIdTemplate mDesc2 = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoSkillTemp.skillDesc);
-		DescIdTemplate mDesc3 = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoSkillTemp.skill2Desc);
+		DescIdTemplate mDesc3 = DescIdTemplate.getDescIdTemplateByNameId(m_MiBaoSkillTemp.skill2Desc);
 		Skill_Icon.spriteName = mMiBaoSkillTemp.icon;
 		
 		SKill_Instroduction.text = mDesc1.description;
@@ -245,10 +406,19 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			DisActiveMiBaoUISkill.SetActive(true);
 			mSilder.value = (float)(Acmibaonuber) / (float)(mMiBaoSkillTemp.needNum);
 			NeedMiBaonum.text = Acmibaonuber.ToString()+"/"+mMiBaoSkillTemp.needNum.ToString();
+			SaveBtn.SetActive(false);
 		}
 		else
 		{
 			Instroduction.gameObject.SetActive(true);
+			if (!COmeMiBaoUI)
+			{
+				SaveBtn.SetActive(true);
+			}
+			else
+			{
+				SaveBtn.SetActive(false);
+			}
 			int level = 0;
 			for(int j = 0; j < m_Skill_MiBaoInfo.skillList.Count; j ++)
 			{
@@ -269,17 +439,37 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		{
 			bool iscanactive = false;
 
-			miBaoskilltemp m_miBaoskilltemp = m_Skill_Gbj [SaveId-2].GetComponent<miBaoskilltemp> ();
-			
-			for(int j = 0; j < m_Skill_MiBaoInfo.skillList.Count; j ++)
+			Debug.Log("SaveId = "+SaveId);
+
+			int x_n = SaveId;
+
+			if(x_n < 2)
 			{
-				if(m_Skill_MiBaoInfo.skillList[j].activeZuheId == m_miBaoskilltemp.SKill_id)
+				x_n = 2;
+			}
+
+			miBaoskilltemp m_miBaoskilltemp = m_Skill_Gbj [x_n-2].GetComponent<miBaoskilltemp> ();
+			if(m_Skill_MiBaoInfo.skillList != null)
+			{
+				for(int j = 0; j < m_Skill_MiBaoInfo.skillList.Count; j ++)
+				{
+					if(m_Skill_MiBaoInfo.skillList[j].activeZuheId == m_miBaoskilltemp.SKill_id)
+					{
+						iscanactive = true;
+						break;
+					}
+				}
+			}else
+			{
+				if(SaveId == 1)
 				{
 					iscanactive = true;
-					break;
+				}else
+				{
+					iscanactive = false;
 				}
 			}
-			
+
 			if(!iscanactive)
 			{
 				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),DontActive);
@@ -364,6 +554,28 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.MIBAO_DEAL_SKILL_REQ,ref t_protof);
 		}
 	}
+
+	public void SendSaveMiBaoMasege( )//保存秘宝技能
+	{
+		MibaoSelect Mibaoid = new MibaoSelect ();
+		
+		MemoryStream miBaoStream = new MemoryStream ();
+		
+		QiXiongSerializer MiBaoSer = new QiXiongSerializer ();
+		
+		Mibaoid.type = S_Type;
+		
+		Mibaoid.zuheSkill = SaveId;
+		
+		MiBaoSer.Serialize (miBaoStream, Mibaoid);
+		byte[] t_protof;
+		t_protof = miBaoStream.ToArray ();
+		
+		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_MIBAO_SELECT, ref t_protof);
+		
+		//CityGlobalData.m_MiBaoSkillId = SaveId;
+	}
+
 	public void Buy_Money()
 	{
 		JunZhuData.Instance().BuyTiliAndTongBi(false,true,false);

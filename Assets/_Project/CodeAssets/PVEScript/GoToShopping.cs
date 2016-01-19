@@ -16,7 +16,7 @@ public class GoToShopping : MonoBehaviour {
 	}
 	void GoShopping()
 	{
-		//Debug.Log ("前往商店购买体力");//待处理
-        TopUpLoadManagerment.m_instance.LoadPrefab(false);
-	}
+        //Debug.Log ("前往商店购买体力");//待处理
+        EquipSuoData.TopUpLayerTip();
+    }
 }

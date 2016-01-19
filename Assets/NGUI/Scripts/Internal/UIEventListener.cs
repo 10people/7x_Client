@@ -51,7 +51,7 @@ public class UIEventListener : MonoBehaviour
 	/// Get or add an event listener to the specified game object.
 	/// </summary>
 
-	static public UIEventListener Get (GameObject go)
+	public static UIEventListener Get (GameObject go)
 	{
 		UIEventListener listener = go.GetComponent<UIEventListener>();
 		if (listener == null) listener = go.AddComponent<UIEventListener>();

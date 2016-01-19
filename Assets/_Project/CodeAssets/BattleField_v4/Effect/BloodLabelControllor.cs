@@ -26,7 +26,9 @@ public class BloodLabelControllor : MonoBehaviour
 	
 	void Awake() { m_instance = this; }
 	
-	void OnDestroy() { m_instance = null; }
+	void OnDestroy() { 
+		m_instance = null;
+	}
 	
 
 	public void initStart ()
@@ -244,6 +246,15 @@ public class BloodLabelControllor : MonoBehaviour
 		else 
 		{
 			labelObject.transform.localScale = labelTempleList[labelType].transform.localScale * .7f;
+
+			if(_type == BattleControlor.AttackType.BASE_REFLEX)
+			{
+				text = LanguageTemplate.GetText(LanguageTemplate.Text.BATTLE_BASE_REFLEX) + text;
+			}
+			else if(_type == BattleControlor.AttackType.SKILL_REFLEX)
+			{
+				text = LanguageTemplate.GetText(LanguageTemplate.Text.BATTLE_SKILL_REFLEX) + text;
+			}
 
 			label.text = text;
 		}

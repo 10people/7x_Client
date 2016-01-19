@@ -25,6 +25,12 @@ public class EnterGuoGuanmap : MonoBehaviour {
 
 	}
 
+	void OnDestroy(){
+		m_instance = null;
+
+		tempObject = null;
+	}
+
 	void OnClick(){
 		EnterPveUI (-1);
 	}

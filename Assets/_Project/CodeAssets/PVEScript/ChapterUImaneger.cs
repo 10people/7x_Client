@@ -39,10 +39,7 @@ public class ChapterUImaneger : MonoBehaviour {
 	{
 		//getName_and_Chapers ();
 		int j = 0;
-		if(!CityGlobalData.PT_Or_CQ)
-		{
-			j = 1;
-		}
+	
 		for( int i = j; i<AllChapers ; i++)
 		{
 			//Debug.Log("看看章节名字    "+ChaptesName[i]);
@@ -99,7 +96,7 @@ public class ChapterUImaneger : MonoBehaviour {
 		iTween.ScaleTo (childgb,iTween.Hash("scale",scale2,"time",time));
 
 		MapData.mapinstance.OpenEffect();
-
+		PassLevelBtn.Instance ().OPenEffect ();
 		Destroy (this.gameObject,time);
 	}
 	void PopUI()

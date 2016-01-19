@@ -127,7 +127,7 @@ public class IconSampleManager : MonoBehaviour
     /// </summary>
     public NGUILongPress NguiLongPress;
 
-	public UILabel AwardNum;//number of awards
+    public UILabel AwardNum;//number of awards
     #endregion
 
     #region Used atlas
@@ -230,6 +230,20 @@ public class IconSampleManager : MonoBehaviour
 
     private const string YellowSelectedSpriteName = "CheckBox";
 
+    private readonly List<int> FrameQualityFrameSpriteName = new List<int>() { 2, 4, 5, 7, 8, 10 };
+    private readonly List<int> FreeQualityFrameSpriteName = new List<int>() { 0, 1, 3, 6, 9 };
+    private readonly List<int> MibaoPieceQualityFrameSpriteName = new List<int>() { 20, 21, 22, 23, 24 };
+    private const int FrameQualityFrameLength = 105;
+    private const int FreeQualityFrameLength = 93;
+    private const int MibaoPieceQualityFrameLength = 93;
+
+    private const int NormalForeLength = 87;
+    private const int MibaoForeLength = 105;
+    private const int MibaoPieceForeLength = 83;
+
+    private const string NormalBgSpriteName = "item_bg";
+    private const string MibaoPieceBgSpriteName = "item_bg_mibao";
+
     /// <summary>
     /// Set icon by id, replace SetIconType and SetIconBasic.
     /// </summary>
@@ -250,6 +264,9 @@ public class IconSampleManager : MonoBehaviour
             case 3:
             case 6:
             case 9:
+            case 101:
+            case 102:
+            case 103:
                 type = IconType.item;
                 break;
             case 4:
@@ -296,6 +313,13 @@ public class IconSampleManager : MonoBehaviour
         m_type = type;
         string fgSpriteName = "";
         string qualityFrameSpriteName = "";
+
+        //Reset child objects, deactive all if not bg sprite.
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(child == BgSprite.transform);
+        }
+
         switch (m_type)
         {
             case IconType.null_type:
@@ -314,9 +338,21 @@ public class IconSampleManager : MonoBehaviour
                     }
 
                     fgSpriteName = !string.IsNullOrEmpty(itemTemp.icon) ? itemTemp.icon : "";
+                    FgSprite.width = FgSprite.height = NormalForeLength;
+
+                    BgSprite.spriteName = NormalBgSpriteName;
+
                     qualityFrameSpriteName = itemTemp.color != 0
                        ? QualityPrefix + (itemTemp.color - 1)
                        : "";
+                    if (FreeQualityFrameSpriteName.Contains(itemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                    }
+                    else if (FrameQualityFrameSpriteName.Contains(itemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                    }
                     break;
                 }
             case IconType.exchangeBox:
@@ -325,7 +361,7 @@ public class IconSampleManager : MonoBehaviour
 
                     //Set select frame.
                     SelectFrameSprite.spriteName = YellowSelectedSpriteName;
-                    SelectFrameSprite.width = SelectFrameSprite.height = 135;
+                    SelectFrameSprite.width = SelectFrameSprite.height = 128;
 
                     //Set fgSprite and quality frame.
                     var itemTemp = ItemTemp.getItemTempById(id);
@@ -336,9 +372,21 @@ public class IconSampleManager : MonoBehaviour
                     }
 
                     fgSpriteName = !string.IsNullOrEmpty(itemTemp.icon) ? itemTemp.icon : "";
+                    FgSprite.width = FgSprite.height = NormalForeLength;
+
+                    BgSprite.spriteName = NormalBgSpriteName;
+
                     qualityFrameSpriteName = itemTemp.color != 0
                        ? QualityPrefix + (itemTemp.color - 1)
                        : "";
+                    if (FreeQualityFrameSpriteName.Contains(itemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                    }
+                    else if (FrameQualityFrameSpriteName.Contains(itemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                    }
                     break;
                 }
             case IconType.equipment:
@@ -354,20 +402,45 @@ public class IconSampleManager : MonoBehaviour
                 }
 
                 fgSpriteName = !string.IsNullOrEmpty(equipmentTemp.icon) ? equipmentTemp.icon : "";
+                FgSprite.width = FgSprite.height = NormalForeLength;
+
+                BgSprite.spriteName = NormalBgSpriteName;
+
                 qualityFrameSpriteName = equipmentTemp.color != 0
                     ? QualityPrefix + (equipmentTemp.color - 1)
                     : "";
+                if (FreeQualityFrameSpriteName.Contains(equipmentTemp.color - 1))
+                {
+                    QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                }
+                else if (FrameQualityFrameSpriteName.Contains(equipmentTemp.color - 1))
+                {
+                    QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                }
                 break;
             case IconType.MiBao:
                 {
                     FgSprite.atlas = MibaoLitterAtlas;
+
                     fgSpriteName = id.ToString();
+                    FgSprite.width = FgSprite.height = MibaoForeLength;
+
+                    BgSprite.spriteName = NormalBgSpriteName;
+
                     CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
                     if (temp != null)
                     {
                         qualityFrameSpriteName = temp.color > 0
-                            ? QualityPrefix + temp.color
+                            ? QualityPrefix + (temp.color - 1)
                             : "";
+                        if (FreeQualityFrameSpriteName.Contains(temp.color - 1))
+                        {
+                            QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                        }
+                        else if (FrameQualityFrameSpriteName.Contains(temp.color - 1))
+                        {
+                            QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                        }
                     }
                     break;
                 }
@@ -376,13 +449,24 @@ public class IconSampleManager : MonoBehaviour
                     FgSprite.atlas = MibaoSuiPianAtlas;
 
                     fgSpriteName = id.ToString();
+                    FgSprite.width = FgSprite.height = MibaoPieceForeLength;
+
+                    BgSprite.spriteName = MibaoPieceBgSpriteName;
+
+                    RightTopCornorSprite.atlas = ComAtlas_0;
+                    RightTopCornorSprite.spriteName = "mibaoPieceLogo";
+                    RightTopCornorSprite.transform.localPosition = new Vector3(26, 26, 0);
+                    RightTopCornorSprite.gameObject.SetActive(true);
 
                     CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
                     if (temp != null)
                     {
                         qualityFrameSpriteName = temp.color > 0
-                            ? QualityPrefix + temp.color
+                            ? QualityPrefix + (temp.color - 1)
                             : "";
+
+                        QualityFrameSprite.width = QualityFrameSprite.height = MibaoPieceQualityFrameLength;
+                        QualityFrameSprite.SetDimensions(MibaoPieceQualityFrameLength, MibaoPieceQualityFrameLength);
                     }
                     break;
                 }
@@ -399,7 +483,19 @@ public class IconSampleManager : MonoBehaviour
                     }
 
                     fgSpriteName = id.ToString();
+                    FgSprite.width = FgSprite.height = NormalForeLength;
+
+                    BgSprite.spriteName = NormalBgSpriteName;
+
                     qualityFrameSpriteName = temp.color != 0 ? QualityPrefix + (temp.color - 1) : "";
+                    if (FreeQualityFrameSpriteName.Contains(temp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                    }
+                    else if (FrameQualityFrameSpriteName.Contains(temp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                    }
                     break;
                 }
             default:
@@ -452,16 +548,16 @@ public class IconSampleManager : MonoBehaviour
         DimmerSprite.gameObject.SetActive(isShowDimmer);
     }
 
-	public void SetAwardNumber(int num)
-	{
-		if(num > 0)
-		{
-			AwardNum.gameObject.SetActive(true);
+    public void SetAwardNumber(int num)
+    {
+        if (num > 0)
+        {
+            AwardNum.gameObject.SetActive(true);
 
-			AwardNum.text = "x"+num.ToString();
-		}
+            AwardNum.text = "x" + num.ToString();
+        }
 
-	}
+    }
 
     /// <summary>
     /// Can not call this with SetIconByID at same time.
@@ -486,7 +582,7 @@ public class IconSampleManager : MonoBehaviour
                 FgSprite.atlas = EquipAtlas;
                 //Set select frame.
                 SelectFrameSprite.spriteName = YellowSelectedSpriteName;
-                SelectFrameSprite.width = SelectFrameSprite.height = 135;
+                SelectFrameSprite.width = SelectFrameSprite.height = 128;
                 break;
 
             case IconType.pveHeroAtlas:
@@ -496,6 +592,7 @@ public class IconSampleManager : MonoBehaviour
                 LeftTopCornorSprite.atlas = IconDecoAtlas;
                 break;
 
+            //TODO: numbers may not be right.
             case IconType.oldMiBao:
                 //Set atlas.
                 FgSprite.atlas = MibaoLitterAtlas;
@@ -506,9 +603,6 @@ public class IconSampleManager : MonoBehaviour
                 RightButtomCornorSprite.atlas = ComAtlas_0;
                 RightButtomCornorSprite.SetDimensions(50, 50);
                 RightButtomCornorSprite.transform.localPosition = new Vector3(16, -16, 0);
-
-                BgSprite.atlas = IconDecoAtlas;
-                BgSprite.spriteName = "MiBaodikuang";
 
                 break;
 
@@ -524,18 +618,6 @@ public class IconSampleManager : MonoBehaviour
                 FgSprite.atlas = MibaoSuiPianAtlas;
                 break;
 
-            case IconType.Carriage:
-                FgSprite.atlas = CarriageAtlas;
-                LeftTopCornorSprite.atlas = IconDecoAtlas;
-                LeftTopCornorSprite.width = LeftTopCornorSprite.height = 70;
-                LeftTopCornorSprite.transform.localPosition = new Vector3(-25, 25, 0);
-
-                //[FIX] add new icon sample with buttom darken sprite.
-                //ButtomSprite.atlas = ComAtlas_0;
-                //ButtomSprite.spriteName = "mask_darken";
-                //ButtomSprite.transform.localPosition = new Vector3(0, -37, 0);
-                //ButtomSprite.SetDimensions(96, 22);
-                break;
             case IconType.HuangyeMonster:
                 MiddleSprite.atlas = ComAtlas_0;
                 break;
@@ -591,6 +673,19 @@ public class IconSampleManager : MonoBehaviour
         {
             FgSprite.gameObject.SetActive(true);
             FgSprite.spriteName = fgSpriteName;
+
+            if (m_type == IconType.MiBao)
+            {
+                FgSprite.SetDimensions(105, 105);
+            }
+            else if (m_type == IconType.MiBaoSuiPian)
+            {
+                FgSprite.SetDimensions(83, 83);
+            }
+            else
+            {
+                FgSprite.SetDimensions(87, 87);
+            }
         }
         else
         {
@@ -606,6 +701,21 @@ public class IconSampleManager : MonoBehaviour
         {
             QualityFrameSprite.gameObject.SetActive(true);
             QualityFrameSprite.spriteName = qualityFrameSpriteName;
+
+            var color = int.Parse(qualityFrameSpriteName.Replace("pinzhi", ""));
+
+            if (FreeQualityFrameSpriteName.Contains(color))
+            {
+                QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+            }
+            else if (FrameQualityFrameSpriteName.Contains(color))
+            {
+                QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+            }
+            else if (MibaoPieceQualityFrameSpriteName.Contains(color))
+            {
+                QualityFrameSprite.width = QualityFrameSprite.height = MibaoPieceQualityFrameLength;
+            }
         }
         else
         {

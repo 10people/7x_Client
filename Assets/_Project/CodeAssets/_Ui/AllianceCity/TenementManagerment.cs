@@ -21,10 +21,23 @@ public class TenementManagerment : Singleton<TenementManagerment>
 
     public static List<GameObject> m_HouseObjectList = new List<GameObject>();
 
+	#region Mono
+
     void Start()
     {
         m_listTenementEvent.ForEach(p => p.m_Handle += TenementLocalPosition);
     }
+
+	void OnDestroy(){
+		// added by YuGu, 2016.1.5
+		Debug.LogError( "Is it clear m_HouseObjectList ok?" );
+
+		m_HouseObjectList.Clear();
+
+		base.OnDestroy();
+	}
+
+	#endregion
 
     void TenementLocalPosition(int index)
     {

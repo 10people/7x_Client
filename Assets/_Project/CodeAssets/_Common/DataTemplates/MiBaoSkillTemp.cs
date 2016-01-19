@@ -179,4 +179,18 @@ UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "MibaoSkill.xml"), CurLoa
 		
 		return null;
 	}
+
+	public static bool IsMiBaoSkillTempContainsId (int skillId)
+	{
+		foreach( MiBaoSkillTemp template in templates )
+		{
+			//Debug.Log("template.skill = "+template.skill +"template.pinzhi = "+template.pinzhi);
+			if( template.id == skillId)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

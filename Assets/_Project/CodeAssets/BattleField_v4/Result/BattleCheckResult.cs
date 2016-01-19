@@ -19,6 +19,8 @@ public class BattleCheckResult
 
 	private int proNum_lose;
 
+	private int proNum_win;
+
 
 	public BattleCheckResult()
 	{
@@ -31,6 +33,8 @@ public class BattleCheckResult
 		heroKilled = 0;
 
 		proNum_lose = 0;
+
+		proNum_win = 0;
 	}
 
 	public BattleControlor.BattleResult checkResult(BaseAI _node)
@@ -200,26 +204,21 @@ public class BattleCheckResult
 		}
 		
 		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.EndType.PROTECT, true);
-		
+
 		if(winTemplate != null)
 		{
-			int proNum = 0;
-
-			foreach(int nodeId in winTemplate.protectList)
+			if(_node != null)
 			{
-				BaseAI node = BattleControlor.Instance().getNodebyId(nodeId);
-
-				if(node != null)
+				foreach(int nodeId in winTemplate.protectList)
 				{
-					if(node.isAlive && node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) > 0)
+					if(nodeId == _node.nodeId)
 					{
-						proNum ++;
+						proNum_win ++;
 					}
 				}
-
 			}
-
-			if(proNum >= winTemplate.protectNum)
+			
+			if(proNum_win >= winTemplate.protectNum)
 			{
 				fWin = true;
 			}
@@ -240,7 +239,7 @@ public class BattleCheckResult
 		}
 
 		if (fWin == true) return BattleControlor.BattleResult.RESULT_WIN;
-		
+
 		return BattleControlor.BattleResult.RESULT_BATTLING;
 	}
 
@@ -331,7 +330,7 @@ public class BattleCheckResult
 				fLose = true;
 			}
 			
-			if(fLose == true) fLose = BattleWinTemplate.reachTypeWin(loseTemplate.winId);
+			if(fLose == true) fLose = BattleWinTemplate.reachTypeLose(loseTemplate.winId);
 		}
 
 		if (fLose == true) return BattleControlor.BattleResult.RESULT_LOSE;

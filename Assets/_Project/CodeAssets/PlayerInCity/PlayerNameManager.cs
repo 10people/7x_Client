@@ -14,7 +14,7 @@ public class PlayerNameManager : MonoBehaviour
 
     public Camera m_mainCamera;
 
-    public static float m_NameHeightOffset = 4.74f;
+    public static float m_NameHeightOffset =3.82f;
     [HideInInspector]
     public static GameObject m_PlayerNamesParent;
     [HideInInspector]
@@ -54,10 +54,11 @@ public class PlayerNameManager : MonoBehaviour
 
         m_playrNameDic.Clear();
     }
-  
 
-    public static void CreatePlayerName(EnterScene p_player_data)
+    private static float _ScaleSize = 0f;
+    public static void CreatePlayerName(EnterScene p_player_data,float scale = 0.01f)
     {
+        _ScaleSize = scale;
         int size = _PlayerNameInfo.Count;
         for (int i = 0; i < size; i++)
         {
@@ -70,72 +71,21 @@ public class PlayerNameManager : MonoBehaviour
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_PLAYER_NAME),
                                LoadCallback);
     }
-
-
-    //创建玩家名字 并添加到集合中
-    //IEnumerator LoadingPlayerName(EnterScene p_player_data)
-    // {
-    //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_PLAYER_NAME),
-    //                        LoadCallback);
-
-    //while (m_player_name_obj == null)
-    //{
-    //    yield return new WaitForEndOfFrame();
-    //}
-
-    ////		Debug.Log( "PlayerName.Loaded: " + p_player_data.uid );
-
-    //GameObject tempPlayerName = (GameObject)Instantiate(m_player_name_obj);
-
-    //tempPlayerName.transform.parent = GameObject.Find("MainCity").transform.FindChild("PlayerNamesInCityManager");
-
-    //tempPlayerName.transform.position = Vector3.zero;
-
-    //tempPlayerName.transform.localScale = new Vector3(0.03f, 0.03f, 1);
-
-    //PlayerNameInCity tempName = tempPlayerName.GetComponent<PlayerNameInCity>();
-
-    //tempName.Init(p_player_data.senderName, "");
-
-    //m_playrNameDic.Add(p_player_data.uid, tempName);
-    //  }
-    //void PlayerNameShow()
-    //{
-    //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_PLAYER_NAME),
-    //                               LoadCallback);
-
-    //}
+ 
     private Object m_player_name_obj = null;
-
     private static void LoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
-        //if (GameObject.Find("MainCity").transform.FindChild("PlayerNamesInCityManager") && !m_playrNameDic.ContainsKey(_PlayerNameInfo[indexName_Num].uid))
-
-        //		Debug.Log("_PlayerNameInfo[0].uid=" + _PlayerNameInfo[0].uid);
-
         if (!m_playrNameDic.ContainsKey(_PlayerNameInfo[0].uid))
         {
             GameObject tempPlayerName = (GameObject)Instantiate(p_object);
             tempPlayerName.transform.parent = m_PlayerNamesParent.transform;
             tempPlayerName.transform.position = Vector3.zero;
-
-            tempPlayerName.transform.localScale = new Vector3(1.0f, 1.0f, 1);
-
+ 
             PlayerNameInCity tempName = tempPlayerName.GetComponent<PlayerNameInCity>();
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(0,-0.1f,0);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_playerName.transform.localScale = new Vector3(0.01f, 0.01f, 1);
-
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_playerVip.transform.localPosition = new Vector3(-3.16f, -0.1f, 0);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_playerVip.transform.localScale = new Vector3(0.01f, 0.01f, 1);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_LabAllianceName.transform.localPosition = new Vector3(0,-0.75f,0);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_LabAllianceName.transform.localScale = new Vector3(0.0094f, 0.0094f, 1);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_SpriteChengHao.transform.localPosition = new Vector3(0, 0.94f, 0);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_SpriteChengHao.transform.localScale = new Vector3(0.021f, 0.021f, 1);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_SpriteChengHao.transform.localEulerAngles = new Vector3(38, 0, 0);
-
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_SpriteVip.transform.localPosition = new Vector3(-0.64f, -0.1f, 0);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_SpriteVip.transform.localScale = new Vector3(0.014f, 0.012f, 1);
-            tempPlayerName.GetComponent<PlayerNameInCity>().m_SpriteVip.transform.localEulerAngles = new Vector3(38, 0, 0);
+            tempPlayerName.GetComponent<PlayerNameInCity>().m_ObjController.GetComponent<UIWidget>().m_camera_oriented = true;
+             tempPlayerName.GetComponent<PlayerNameInCity>().m_ObjController.transform.localScale = new Vector3(_ScaleSize, _ScaleSize, 1.0f);
+        //     tempPlayerName.GetComponent<PlayerNameInCity>().m_ObjController.transform.localEulerAngles = new Vector3(40, 311, 0);
+        
 
             tempName.Init(_PlayerNameInfo[0].senderName, "", "","",0);
             m_playrNameDic.Add(_PlayerNameInfo[0].uid, tempPlayerName);
@@ -202,12 +152,12 @@ public class PlayerNameManager : MonoBehaviour
                     if (int.Parse(vp[1]) > 0)
                     {
                         m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Left;
-                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(2.88f, -0.1f, 0);
+                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(289, 0,0);
                     }
                     else
                     {
-                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Center;
-                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(0, -0.1f, 0);
+                       m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Center;
+                       m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = Vector3.zero;
                     }
                     if (!string.IsNullOrEmpty(vp[1]) && int.Parse(vp[1]) > 0)
                     {
@@ -257,39 +207,44 @@ public class PlayerNameManager : MonoBehaviour
         v.y += m_NameHeightOffset;
         tempPlayerName.transform.position = v;
     }
-
-    public static void CreateSelfeName(Object p_object)
+ 
+    public static void CreateSelfeName(Object p_object,float pos_Y = 107.0f,float scale = 0.6f)
     {
         //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_PLAYER_NAME),
         //                       LoadSelfCallback);
         GameObject tempPlayerName = (GameObject)Instantiate(p_object);
         tempPlayerName.transform.parent = m_SelfName.transform;
         m_ObjSelfName = tempPlayerName;
-        tempPlayerName.transform.localPosition = new Vector3(0, 70, 0);
+        tempPlayerName.transform.localPosition = new Vector3(0, pos_Y, 0);
         tempPlayerName.transform.localScale = Vector3.one;
         PlayerNameInCity tempName = tempPlayerName.GetComponent<PlayerNameInCity>();
+        tempPlayerName.GetComponent<PlayerNameInCity>().m_ObjController.transform.localScale = new Vector3(scale, scale, 1.0f);
+        //tempName.m_playerName.transform.localScale = new Vector3(0.36f, 0.36f, 1);
+        //tempName.m_playerName.transform.localPosition = new Vector3(9.32f, -24f, 1);
 
-        tempName.m_playerVip.transform.localPosition = new Vector3(-144, -22f, 0);
-        tempName.m_LabAllianceName.transform.localPosition = new Vector3(0, -45.2f, 0);
-        tempName.m_SpriteChengHao.transform.localPosition = new Vector3(0, 20, 0);
-        tempName.m_SpriteVip.transform.localPosition = new Vector3(-40, -20, 0);
-        tempName.m_playerName.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-        tempName.m_playerVip.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-        tempName.m_LabAllianceName.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-        tempName.m_SpriteVip.transform.localScale = new Vector3(0.68f, 0.52f, 1);
-        tempPlayerName.GetComponent<PlayerNameInCity>().m_playerName.transform.localEulerAngles = Vector3.zero;
-        tempPlayerName.GetComponent<PlayerNameInCity>().m_playerVip.transform.localEulerAngles = Vector3.zero;
-        tempPlayerName.GetComponent<PlayerNameInCity>().m_LabAllianceName.transform.localEulerAngles = Vector3.zero;
-        if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
-        {
-            tempName.m_playerName.alignment = NGUIText.Alignment.Left;
-            tempName.m_playerName.transform.localPosition = new Vector3(132, -22f, 0);
-        }
-        else
-        {
-            tempName.m_playerName.alignment = NGUIText.Alignment.Center;
-            tempName.m_playerName.transform.localPosition = new Vector3(0, -22f, 0);
-        }
+        //tempName.m_SpriteChengHao.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+        //tempName.m_SpriteChengHao.transform.localPosition = new Vector3(0, 7.87f, 0);
+
+
+        //tempName.m_LabAllianceName.transform.localPosition = new Vector3(0, -45.2f, 0);
+        //tempName.m_LabAllianceName.transform.localScale = new Vector3(0.3f, 0.3f, 1);
+
+        //tempName.m_SpriteVip.transform.localPosition = new Vector3(-33.1f, -24, 0);
+        //tempName.m_SpriteVip.transform.localScale = new Vector3(0.45f, 0.42f, 1);
+
+        //tempPlayerName.GetComponent<PlayerNameInCity>().m_playerName.transform.localEulerAngles = Vector3.zero;
+        //tempPlayerName.GetComponent<PlayerNameInCity>().m_playerVip.transform.localEulerAngles = Vector3.zero;
+        //tempPlayerName.GetComponent<PlayerNameInCity>().m_LabAllianceName.transform.localEulerAngles = Vector3.zero;
+        //if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
+        //{
+        //   tempName.m_playerName.alignment = NGUIText.Alignment.Left;
+        // tempName.m_playerName.transform.localPosition = new Vector3(90, -22f, 0);
+        //}
+        //else
+        //{
+        //    tempName.m_playerName.alignment = NGUIText.Alignment.Center;
+        //    tempName.m_playerName.transform.localPosition = new Vector3(0, -22f, 0);
+        //}
 
         if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
         {
@@ -304,64 +259,41 @@ public class PlayerNameManager : MonoBehaviour
                , "", JunZhuData.m_iChenghaoID.ToString(), JunZhuData.Instance().m_junzhuInfo.vipLv.ToString(), 0);
         }
     }
-    private static void LoadSelfCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject tempPlayerName = (GameObject)Instantiate(p_object);
-        tempPlayerName.transform.parent = m_SelfName.transform;
-        m_ObjSelfName = tempPlayerName;
-        tempPlayerName.transform.localPosition = new Vector3(0,70,0);
-        tempPlayerName.transform.localScale = Vector3.one;
-        PlayerNameInCity tempName = tempPlayerName.GetComponent<PlayerNameInCity>();
-
-        tempName.m_playerVip.transform.localPosition = new Vector3(-144, -22f, 0);
-        tempName.m_LabAllianceName.transform.localPosition = new Vector3(0, -45.2f, 0);
-        tempName.m_SpriteChengHao.transform.localPosition = new Vector3(0, 20, 0);
-        tempName.m_SpriteVip.transform.localPosition = new Vector3(-40,-20,0);
-        tempName.m_playerName.transform.localScale = new Vector3(0.5f,0.5f,1);
-        tempName.m_playerVip.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-        tempName.m_LabAllianceName.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-        tempName.m_SpriteVip.transform.localScale = new Vector3(0.68f, 0.52f,1);
-        tempPlayerName.GetComponent<PlayerNameInCity>().m_playerName.transform.localEulerAngles = Vector3.zero;
-        tempPlayerName.GetComponent<PlayerNameInCity>().m_playerVip.transform.localEulerAngles = Vector3.zero;
-        tempPlayerName.GetComponent<PlayerNameInCity>().m_LabAllianceName.transform.localEulerAngles = Vector3.zero;
-        if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
-        {
-            tempName.m_playerName.alignment = NGUIText.Alignment.Left;
-            tempName.m_playerName.transform.localPosition = new Vector3(132, -22f, 0);
-        }
-        else
-        {
-            tempName.m_playerName.alignment = NGUIText.Alignment.Center;
-            tempName.m_playerName.transform.localPosition = new Vector3(0, -22f, 0);
-        }
-        
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
-        { 
-             tempName.Init(JunZhuData.Instance().m_junzhuInfo.name
-                , AllianceData.Instance.g_UnionInfo.name, JunZhuData.m_iChenghaoID.ToString()
-                ,JunZhuData.Instance().m_junzhuInfo.vipLv.ToString()
-                , AllianceData.Instance.g_UnionInfo.identity);
-        }
-        else
-        {
-            tempName.Init(JunZhuData.Instance().m_junzhuInfo.name
-               , "", JunZhuData.m_iChenghaoID.ToString(), JunZhuData.Instance().m_junzhuInfo.vipLv.ToString(),0);
-        }
-    }
-
+ 
     public static void UpdateSelfName()
     {
         if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0 && AllianceData.Instance.g_UnionInfo != null)
         {
             m_ObjSelfName.GetComponent<PlayerNameInCity>().Init(JunZhuData.Instance().m_junzhuInfo.name
-            , AllianceData.Instance.g_UnionInfo.name, JunZhuData.m_iChenghaoID.ToString(), 
-            JunZhuData.Instance().m_junzhuInfo.vipLv.ToString(), AllianceData.Instance.g_UnionInfo.identity);
+            , AllianceData.Instance.g_UnionInfo.name, JunZhuData.m_iChenghaoID.ToString()
+            , JunZhuData.Instance().m_junzhuInfo.vipLv.ToString(), AllianceData.Instance.g_UnionInfo.identity);
+            if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
+            {
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Left;
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(289.0f, 0, 0);
+            }
+            else
+            {
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Center;
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = Vector3.zero;
+            }
         }
         else
         {
             m_ObjSelfName.GetComponent<PlayerNameInCity>().Init(JunZhuData.Instance().m_junzhuInfo.name
-          ,"", JunZhuData.m_iChenghaoID.ToString(), JunZhuData.Instance().m_junzhuInfo.vipLv.ToString(),0);
+               , ""
+               , JunZhuData.m_iChenghaoID.ToString(), JunZhuData.Instance().m_junzhuInfo.vipLv.ToString(), 0);
+
+            if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
+            {
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Left;
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(289, 0, 0);
+            }
+            else
+            {
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Center;
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = Vector3.zero;
+            }
         }
     }
-   
 }

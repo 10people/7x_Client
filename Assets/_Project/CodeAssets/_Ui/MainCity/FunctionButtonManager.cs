@@ -31,10 +31,29 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
         {
             m_ButtonSprite.spriteName = "Function_" + m_index;
         }
-
         m_RankIndex = template.rank;
         m_Type = template.type;
+		if(m_FuncTemplate.m_iRedType != 0)
+		{
+			GameObject.Destroy(m_RedAlertObject.GetComponent<UISprite>());
+		}
     }
+
+	public void Teshu()
+	{
+		if(m_FuncTemplate.m_iID == 17)
+		{
+			var temp = FunctionUnlock.templates.Where(item => !FunctionOpenTemp.m_EnableFuncIDList.Contains(item.id));
+			m_ButtonSprite.spriteName = "commingSoon_" + temp.First().id;
+		}
+		if(m_FuncTemplate.m_iID == 15)
+		{
+			MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.SetActive(true);
+			MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.transform.position = m_ButtonSprite.transform.position;
+			MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.transform.parent = m_ButtonSprite.transform.parent;
+//			MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.transform.position = new Vector3(MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.transform.position.x, MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.transform.position.y - 20,MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.transform.position.z);
+		}
+	}
 
     /// <summary>
     /// Locked item cannot be enabled.
@@ -42,7 +61,7 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
     public static List<int> s_LockedList = new List<int>();
 
     public UISprite m_ButtonSprite;
-    public GameObject RedAlertObject;
+    public GameObject m_RedAlertObject;
 
     /// <summary>
     /// Is red alert object showed or particle effect showed.
@@ -61,14 +80,33 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
         //cancel show locked button
         if (s_LockedList.Contains(m_index)) return;
 
+		m_RedAlertObject.SetActive(true);
+		if(m_FuncTemplate.m_iRedType != 0)
+		{
+//			UI3DEffectTool.Instance().ClearUIFx(m_RedAlertObject);
+			m_RedAlertObject.transform.localPosition = Vector3.zero;
+			if( !UI3DEffectTool.Instance().HaveAnyFx( m_RedAlertObject ) ){
+				UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_RedAlertObject, EffectTemplate.getEffectTemplateByEffectId(100185).path);
+			}
+		}
+		else
+		{
+			m_RedAlertObject.transform.localPosition = new Vector3(-22, 30, 0);
+		}
+
         IsAlertShowed = true;
-        RedAlertObject.SetActive(true);
+        
     }
 
     public void HideRedAlert()
     {
         IsAlertShowed = false;
-        RedAlertObject.SetActive(false);
+		m_RedAlertObject.SetActive(false);
+		if(m_FuncTemplate.m_iRedType != 0)
+		{
+			UI3DEffectTool.Instance().ClearUIFx(m_RedAlertObject);
+//			m_RedAlertObject
+		}
     }
 
 	public void GoToPos()
@@ -116,4 +154,16 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
             return m_RankIndex.CompareTo(other.m_RankIndex);
         }
     }
+
+	public void setRed(bool show)
+	{
+		if(show)
+		{
+			ShowRedAlert();
+		}
+		else
+		{
+			HideRedAlert();
+		}
+	}
 }

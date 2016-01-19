@@ -44,7 +44,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     public ToExchange OtherToExchange;
 
     public UIEventListener ShowFriendsOldBookBTN;
-    public UIEventListener BackBTN;
+    public UIEventListener ShowSelfOldBookBTN;
     public UIEventListener CloseBTN;
 
     public GameObject InfoLabel;
@@ -52,9 +52,17 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     public UIScrollView m_ScrollView;
     public UIScrollBar m_ScrollBar;
     public UIGrid m_Grid;
+    public UISlider mSlider;
 
+    public UILabel MaxExp;
+
+    public UILabel CurExp;
+
+    public GameObject LingQuBtn;
     private GameObject OldBookSelfPrefab;
     private GameObject ExchangeOtherPrefab;
+
+    public UILabel HouseTechAdditionLabel;
 
     public class ExchangeInfo
     {
@@ -110,7 +118,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         switch (OldBookMode)
         {
             case Mode.OldBookSelf:
-                BackBTN.gameObject.SetActive(false);
+                ShowSelfOldBookBTN.gameObject.SetActive(false);
                 ShowFriendsOldBookBTN.gameObject.SetActive(true);
 
                 //init old book fragment list.
@@ -118,7 +126,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                 InitOldBookSelf();
                 break;
             case Mode.ExchangeBoxOther:
-                BackBTN.gameObject.SetActive(true);
+                ShowSelfOldBookBTN.gameObject.SetActive(true);
 
                 ShowFriendsOldBookBTN.gameObject.SetActive(false);
                 //init others' exchange box list.
@@ -195,10 +203,10 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
         //reposition
         m_Grid.cellHeight = OldBookSelfPrefab.GetComponent<UISprite>().height;
-        
-		m_Grid.Reposition();
 
-		NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
+        m_Grid.Reposition();
+
+        NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
     }
 
     #endregion
@@ -210,6 +218,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     /// </summary>
     private void RefreshExchangeBoxOther()
     {
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LM_HOUSE_INFO);
         if (ExchangeOtherPrefab != null)
         {
             WWW temp = null;
@@ -270,10 +279,10 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
         //reposition
         m_Grid.cellHeight = ExchangeOtherPrefab.GetComponent<UISprite>().height;
-       
-		m_Grid.Reposition();
 
-		NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
+        m_Grid.Reposition();
+
+        NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
     }
 
     #endregion
@@ -310,7 +319,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         }
     }
 
-    private void OnBackClick(GameObject go)
+    private void OnShowSelfClick(GameObject go)
     {
         if (IsSelfHouse)
         {
@@ -325,10 +334,10 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
     private void OnCloseClick(GameObject go)
     {
-        gameObject.SetActive(false);
-
+        //  gameObject.SetActive(false);
+        NewAlliancemanager.Instance().BackToThis(this.gameObject);
         //[FIX]Destroy all.
-        Destroy(m_House.gameObject);
+        // Destroy(m_House.gameObject);
     }
 
     private void OnShowFriendsClick(GameObject go)
@@ -339,16 +348,16 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
     void OnEnable()
     {
-        BackBTN.onClick = OnBackClick;
+        ShowSelfOldBookBTN.onClick = OnShowSelfClick;
         CloseBTN.onClick = OnCloseClick;
         ShowFriendsOldBookBTN.onClick = OnShowFriendsClick;
-
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LM_HOUSE_INFO);
         HouseModelController.TryAddToHouseDimmer(gameObject);
     }
 
     void OnDisable()
     {
-        BackBTN.onClick = null;
+        ShowSelfOldBookBTN.onClick = null;
         CloseBTN.onClick = null;
         ShowFriendsOldBookBTN.onClick = null;
 
@@ -394,11 +403,11 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                     {
                         ExchangeOtherInfoList = AllianceExchanges.boxList;
                     }
-                    else
-                    {
-                        var temp = AllianceExchanges.boxList == null ? null : AllianceExchanges.boxList.FirstOrDefault(item => item.jzId == m_House.m_HouseSimpleInfo.jzId);
-                        ExchangeOtherInfoList = temp != null ? new List<HuanWuInfo> { temp } : new List<HuanWuInfo>();
-                    }
+                    //                    else
+                    //                    {
+                    //                        var temp = AllianceExchanges.boxList == null ? null : AllianceExchanges.boxList.FirstOrDefault(item => item.jzId == m_House.m_HouseSimpleInfo.jzId);
+                    //                        ExchangeOtherInfoList = temp != null ? new List<HuanWuInfo> { temp } : new List<HuanWuInfo>();
+                    //                    }
 
                     RefreshExchangeBoxOther();
                     return true;
@@ -452,10 +461,69 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                         InitOldBookSelf();
                     }
                     return true;
+                case ProtoIndexes.S_LM_HOUSE_INFO:
+                    {
+                        MemoryStream t_tream5 = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        QiXiongSerializer t_qx5 = new QiXiongSerializer();
+                        BatchSimpleInfo AllianceTenementInfo = new BatchSimpleInfo();
+                        t_qx5.Deserialize(t_tream5, AllianceTenementInfo, AllianceTenementInfo.GetType());
+                        SetHouseExp(AllianceTenementInfo.expInfo);
+                        Debug.Log("请求经验返回");
+#if HOUSE_TEST
+					
+					if (MainCityUI.m_MainCityUI != null){
+						GameObject temp = TransformHelper.FindChild(MainCityUI.m_MainCityUI.transform, "HouseEnter").gameObject;
+						
+						BTNTest temp2 = temp.GetComponent<BTNTest>();
+						
+						temp2.DicKeyStr = string.Join(",", m_AllianceCityTenementDic.Keys.Select(item => item.ToString()).ToArray());
+					}
+					
+#endif
+
+                        return true;
+                    }
+                case ProtoIndexes.S_GET_HOUSE_EXP:
+                    {
+                        MemoryStream t_tream6 = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        QiXiongSerializer t_qx6 = new QiXiongSerializer();
+                        HouseExpInfo houseExpInfo = new HouseExpInfo();
+                        t_qx6.Deserialize(t_tream6, houseExpInfo, houseExpInfo.GetType());
+
+                        SetHouseExp(houseExpInfo);
+                        Debug.Log("领取经验返回");
+                        return true;
+                    }
                 default:
                     return false;
             }
         }
         return false;
+    }
+    private float totalValueBar2;
+    private float currentValueBar2;
+
+    void SetHouseExp(HouseExpInfo mmHouseExpInfo)
+    {
+        totalValueBar2 = mmHouseExpInfo.max;
+        currentValueBar2 = mmHouseExpInfo.cur;
+        mSlider.value = currentValueBar2 / totalValueBar2;
+        MaxExp.text = mmHouseExpInfo.max.ToString();
+        CurExp.text = mmHouseExpInfo.cur.ToString();
+        if (currentValueBar2 == 0)
+        {
+            LingQuBtn.SetActive(false);
+        }
+        else
+        {
+            LingQuBtn.SetActive(true);
+        }
+
+        HouseTechAdditionLabel.text = "受联盟科技影响\n" + LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel);
+    }
+
+    public void LingQu()
+    {
+        SocketHelper.SendQXMessage(ProtoIndexes.C_GET_SMALLHOUSE_EXP);
     }
 }

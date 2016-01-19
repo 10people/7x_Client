@@ -63,12 +63,18 @@ public class NetworkWaiting : MonoBehaviour {
 				
 				m_instance_exist = true;
 
-				UpdateShowWaiting();
+//				UpdateShowWaiting();
 			}
 			
-			DontDestroyOnLoad( t_sending_tips );
-			
-			t_sending_tips.SetActive( false );
+			{
+				DontDestroyOnLoad( t_sending_tips );
+				
+				t_sending_tips.SetActive( false );
+				
+				#if DEBUG_WAITING
+				Debug.Log( "Set NetworkWaiting GameObject inactive." );
+				#endif
+			}
 		}
 	}
 
@@ -76,19 +82,25 @@ public class NetworkWaiting : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		#if DEBUG_WAITING
-			m_lb_title.gameObject.SetActive( true );
-		
-			m_lb_time.gameObject.SetActive( true );
-			
-			m_lb_tips.gameObject.SetActive( true );
-		#else 
-			m_lb_title.gameObject.SetActive( false );
-			
-			m_lb_time.gameObject.SetActive( false );
+		{
+			bool t_enable_detail = ConfigTool.GetBool( ConfigTool.CONST_NETWORK_SHOW_STATUS );
+
+			#if DEBUG_WAITING
+			t_enable_detail = true;
+			#endif
+
+			{
+				m_spt_bg.gameObject.SetActive( true );	
+			}
+
+			{
+				m_lb_title.gameObject.SetActive( t_enable_detail );
 				
-			m_lb_tips.gameObject.SetActive( false );
-		#endif
+				m_lb_time.gameObject.SetActive( t_enable_detail );
+				
+				m_lb_tips.gameObject.SetActive( t_enable_detail );
+			}
+		}
 	}
 	
 	// Update is called once per frame
@@ -99,14 +111,18 @@ public class NetworkWaiting : MonoBehaviour {
 			CheckTimeOut();
 		}
 
-		if( m_going_to_hide && Instance().gameObject.activeSelf ){
+		if( Instance().gameObject.activeSelf && IsHiding() ){
+			#if DEBUG_WAITING
+			Debug.Log( "NetworkWaiting.Hide.GameObject( " + 
+			          IsHiding() + " , " + 
+			          Instance().gameObject.activeSelf + " )" );
+			#endif
+
 			Instance().gameObject.SetActive( false );
 
 			if( m_lb_tips != null ){
 				m_lb_tips.text = "";
 			}
-			
-			m_going_to_hide = false;
 		}
 
 		{
@@ -146,7 +162,7 @@ public class NetworkWaiting : MonoBehaviour {
 				if( m_reconnect_gb == null ){
 //					Debug.Log( "Create Reconnect Box." );
 
-					Debug.Log( "Show ReconnectUI, proto waiting: " + GetWaitingProtoDesc() );
+//					Debug.Log( "Show ReconnectUI, proto waiting: " + GetWaitingProtoDesc() );
 
 					SocketTool.CreateTimeOutReConnectWindow( ReConnectCallback, OnReconnectBoxCreated );
 				}
@@ -160,13 +176,13 @@ public class NetworkWaiting : MonoBehaviour {
 	private GameObject m_reconnect_gb = null;
 
 	public void OnReconnectBoxCreated( GameObject p_gb ){
-		Debug.Log( "OnReconnectBoxCreated( " + p_gb + " )" );
+//		Debug.Log( "OnReconnectBoxCreated( " + p_gb + " )" );
 
 		m_reconnect_gb = p_gb;
 	}
 
 	public void ReConnectCallback( int p_i ){
-		Debug.Log( "NetworkWaiting.ReConnectCallback( " + p_i + " )" );
+//		Debug.Log( "NetworkWaiting.ReConnectCallback( " + p_i + " )" );
 
 		m_reconnect_gb = null;
 
@@ -262,37 +278,37 @@ public class NetworkWaiting : MonoBehaviour {
 
 	#region Waiting Config
 
-	private static bool m_show_waiting_state = true;
-
-	public static void SetShowWaiting( bool p_show_status ){
-		m_show_waiting_state = p_show_status;
-	}
-
-	public static bool GetShowWaiting(){
-		return m_show_waiting_state;
-	}
-
-	private static void UpdateShowWaiting(){
-		if( Instance().m_lb_time != null ){
-			Instance().m_lb_time.gameObject.SetActive( m_show_waiting_state );
-		}
-		
-		if( Instance().m_lb_tips != null ){
-			Instance().m_lb_tips.gameObject.SetActive( m_show_waiting_state );
-		}
-		
-		if( Instance().m_lb_title != null ){
-			Instance().m_lb_title.gameObject.SetActive( m_show_waiting_state );
-		}
-		
-		if( Instance().m_spt_bg != null ){
-			Instance().m_spt_bg.gameObject.SetActive( m_show_waiting_state );
-		}
-	}
+//	private static bool m_show_waiting_state = true;
+//
+//	public static void SetShowWaiting( bool p_show_status ){
+//		m_show_waiting_state = p_show_status;
+//	}
+//
+//	public static bool GetShowWaiting(){
+//		return m_show_waiting_state;
+//	}
+//
+//	private static void UpdateShowWaiting(){
+//		if( Instance().m_lb_time != null ){
+//			Instance().m_lb_time.gameObject.SetActive( m_show_waiting_state );
+//		}
+//		
+//		if( Instance().m_lb_tips != null ){
+//			Instance().m_lb_tips.gameObject.SetActive( m_show_waiting_state );
+//		}
+//		
+//		if( Instance().m_lb_title != null ){
+//			Instance().m_lb_title.gameObject.SetActive( m_show_waiting_state );
+//		}
+//		
+//		if( Instance().m_spt_bg != null ){
+//			Instance().m_spt_bg.gameObject.SetActive( m_show_waiting_state );
+//		}
+//	}
 
 	public void ShowNetworkSending( string p_sending ){
 		#if DEBUG_WAITING
-		Debug.Log( "ShowNetworkSending( " + p_sending + " )" );
+		Debug.Log( "ShowNetworkSending( " + p_sending + " )" + Time.frameCount );
 		#endif
 
 		{
@@ -308,7 +324,7 @@ public class NetworkWaiting : MonoBehaviour {
 
 	public void ShowNetworkSending( int p_proto_index ){
 		#if DEBUG_WAITING
-		Debug.Log( "ShowNetworkSending( " + p_proto_index + " )" + Time.realtimeSinceStartup );
+		Debug.Log( "ShowNetworkSending( " + p_proto_index + " )" + Time.frameCount );
 		#endif
 
 		{
@@ -331,6 +347,10 @@ public class NetworkWaiting : MonoBehaviour {
 	}
 
 	public void ShowNetworkReceiving( string p_proto_waiting ){
+		#if DEBUG_WAITING
+		Debug.Log( "ShowNetworkReceiving( " + p_proto_waiting + " )" + Time.frameCount );
+		#endif
+
 		{
 			m_waiting_state = ENUM_NETWORK_WAITING.RECEIVING_WAITING;
 			
@@ -344,6 +364,10 @@ public class NetworkWaiting : MonoBehaviour {
 
 
 	public void HideNeworkWaiting(){
+		#if DEBUG_WAITING
+		Debug.Log( "HideNeworkWaiting()" + Time.frameCount );
+		#endif
+
 		if( !m_instance_exist ){
 			Debug.LogError( "Error, HideNeworkTips.NetworkSending not found." );
 			
@@ -352,8 +376,6 @@ public class NetworkWaiting : MonoBehaviour {
 		
 		// update state
 		{
-			m_going_to_hide = true;
-
 //			Instance().gameObject.SetActive( false );
 
 //			if( m_lb_tips != null ){
@@ -363,8 +385,6 @@ public class NetworkWaiting : MonoBehaviour {
 			m_waiting_state = ENUM_NETWORK_WAITING.HIDING;
 		}
 	}
-
-	private bool m_going_to_hide = false;
 
 	#endregion
 

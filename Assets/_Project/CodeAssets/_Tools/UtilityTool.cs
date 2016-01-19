@@ -40,44 +40,54 @@ public class UtilityTool : Singleton<UtilityTool>{
     }
 
     // Use this for initialization
-    void Start()
-    {
+    void Start(){
 
     }
 
-    void FixedUpdate()
-    {
+    void FixedUpdate(){
 
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update(){
 		{
 			ComponentHelper.GlobalClassUpdate();
+
+			ObjectHelper.OnUpdate();
 		}
+
+		#if UNITY_ANDROID
+		if( Input.GetKeyDown( KeyCode.Escape ) ){
+			Debug.Log( "Android KeyCode.Escape()" );
+		
+			OnQuitTips();
+		}
+		#endif
+
+		#if UNITY_STANDALONE || UNITY_EDITOR
+		if( Input.GetKeyDown( KeyCode.Escape ) ){
+//			Debug.Log( "StandAlone KeyCode.Escape()" );
+			
+			OnQuitTips();
+		}
+		#endif
+
     }
 
-    void LateUpdate()
-    {
+    void LateUpdate(){
 
     }
 
-    void OnGUI()
-    {
+    void OnGUI(){
 
     }
 
-    void OnApplicationFocus(bool p_focused)
-    {
-        //		Debug.Log( "UtilityTool.OnApplicationFocus( " + p_focused + " )" );
-
-
+    void OnApplicationFocus( bool p_focused ){
+//		Debug.Log( "UtilityTool.OnApplicationFocus( " + p_focused + " )" );
     }
 
-    void OnApplicationPause(bool p_pause)
-    {
-        //		Debug.Log( "UtilityTool.OnApplicationPause( " + p_pause + " )" );
+    void OnApplicationPause(bool p_pause){
+//		Debug.Log( "UtilityTool.OnApplicationPause( " + p_pause + " )" );
 
         if ( p_pause ){
 			// clean
@@ -89,16 +99,13 @@ public class UtilityTool : Singleton<UtilityTool>{
 
         // send message
         {
-            if (SocketTool.IsConnected())
-            {
-                if (p_pause)
-                {
+            if (SocketTool.IsConnected()){
+                if (p_pause){
                     //					Debug.Log( "Socket Send Game Pause." );
 
                     SocketTool.Instance().SendSocketMessage(ProtoIndexes.GAME_PAUSE, "");
                 }
-                else
-                {
+                else{
                     //					Debug.Log( "Socket Send Game Continue." );
 
                     SocketTool.Instance().SendSocketMessage(ProtoIndexes.GAME_CONTINUE, "");
@@ -107,12 +114,11 @@ public class UtilityTool : Singleton<UtilityTool>{
         }
     }
 
-    void OnDestroy()
-    {
-        
-    }
-
-    #endregion
+    void OnDestroy(){
+		base.OnDestroy();
+	}
+	
+	#endregion
 
 
 
@@ -120,8 +126,7 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     private bool m_is_game_paused = false;
 
-    public void ManualGamePause()
-    {
+    public void ManualGamePause(){
         m_is_game_paused = !m_is_game_paused;
 
         OnApplicationPause(m_is_game_paused);
@@ -136,8 +141,7 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     private static Object m_cached_box_obj;
 
-    public static void LoadBox()
-    {
+    public static void LoadBox(){
         //		Global.ResourcesDotLoad( Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), CachedBoxCallback );
 
 //		Debug.Log( "UtilityTool.LoadBox()" );
@@ -152,8 +156,7 @@ public class UtilityTool : Singleton<UtilityTool>{
         m_cached_box_obj = p_object;
     }
 
-	public GameObject CreateBox(string p_title, string p_des_1, string p_des_2, List<BagItem> p_bag_item, string p_btn_name_1, string p_btn_name_2, UIBox.onclick p_click_delegate, UIBox.OnBoxCreated p_on_create = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true)
-    {
+	public GameObject CreateBox( string p_title, string p_des_1, string p_des_2, List<BagItem> p_bag_item, string p_btn_name_1, string p_btn_name_2, UIBox.onclick p_click_delegate, UIBox.OnBoxCreated p_on_create = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true ){
 		bool t_debug_box = false;
 
 		if ( ConfigTool.GetBool (ConfigTool.CONST_LOG_DIALOG_BOX) ) {
@@ -209,8 +212,7 @@ public class UtilityTool : Singleton<UtilityTool>{
 	                   isBagItemTop);
     }
 
-    GameObject ExecLoadBox(string tile, string dis1, string dis2, List<BagItem> bagItem, string buttonname1, string buttonname2, UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true)
-    {
+    GameObject ExecLoadBox(string tile, string dis1, string dis2, List<BagItem> bagItem, string buttonname1, string buttonname2, UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true){
         if ( m_cached_box_obj == null ){
             Debug.LogError("Error, No Cached box.");
 
@@ -221,8 +223,7 @@ public class UtilityTool : Singleton<UtilityTool>{
 
         GameObject t_gb = GameObject.Instantiate(m_cached_box_obj) as GameObject;
 
-        if (p_on_create != null)
-        {
+        if (p_on_create != null){
             p_on_create(t_gb);
         }
 
@@ -248,13 +249,11 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 	}
 
-    public void ExecResourcesLoad(string p_resource_path, System.Type p_type, Bundle_Loader.LoadResourceDone p_delegate, List<EventDelegate> p_callback_list, bool p_open_simulate)
-    {
+    public void ExecResourcesLoad(string p_resource_path, System.Type p_type, Bundle_Loader.LoadResourceDone p_delegate, List<EventDelegate> p_callback_list, bool p_open_simulate){
         StartCoroutine(ResoucesDotLoad(p_resource_path, p_type, p_delegate, p_callback_list, p_open_simulate));
     }
 
-    private IEnumerator ResoucesDotLoad(string p_resource_path, System.Type p_type, Bundle_Loader.LoadResourceDone p_delegate, List<EventDelegate> p_callback_list, bool p_open_simulate)
-    {
+    private IEnumerator ResoucesDotLoad(string p_resource_path, System.Type p_type, Bundle_Loader.LoadResourceDone p_delegate, List<EventDelegate> p_callback_list, bool p_open_simulate){
 
 
         yield return null;
@@ -270,8 +269,7 @@ public class UtilityTool : Singleton<UtilityTool>{
 	 * Get List<EventDelegate>, if p_callback = null, then list.size = 0.
 	 * if not null, return the p_callback conained list.
 	 */
-    public static List<EventDelegate> GetEventDelegateList(EventDelegate.Callback p_callback)
-    {
+    public static List<EventDelegate> GetEventDelegateList(EventDelegate.Callback p_callback){
         List<EventDelegate> t_list = new List<EventDelegate>();
 
         EventDelegate.Add(t_list, p_callback);
@@ -279,18 +277,15 @@ public class UtilityTool : Singleton<UtilityTool>{
         return t_list;
     }
 
-    public void ExecLoadCallback(Bundle_Loader.LoadResourceDone p_delegate, UnityEngine.Object t_object, string p_resource, List<EventDelegate> p_callback_list)
-    {
+    public void ExecLoadCallback(Bundle_Loader.LoadResourceDone p_delegate, UnityEngine.Object t_object, string p_resource, List<EventDelegate> p_callback_list){
         WWW t_www = null;
 
-        if (p_delegate != null)
-        {
+        if (p_delegate != null){
             //				Debug.Log( "Exec Callback." );
 
             p_delegate(ref t_www, p_resource, t_object);
         }
-        else
-        {
+        else{
             //				Debug.Log( "Callback Null." );
         }
 
@@ -314,8 +309,7 @@ public class UtilityTool : Singleton<UtilityTool>{
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>
-    public static int GetBytesNumOfString(string str)
-    {
+    public static int GetBytesNumOfString(string str){
         byte[] bytes = System.Text.Encoding.Unicode.GetBytes(str);
         int n = 0;
         for (int i = 0; i < bytes.GetLength(0); i++)
@@ -364,15 +358,19 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     #region GC
 
-	public static void UnloadUnusedAssets(){
+	public static void UnloadUnusedAssets( bool p_clean_anim = false ){
 //		Debug.Log( "UtilityTool.UnloadUnusedAssets()" );
 		
 		Resources.UnloadUnusedAssets();
+
+		ComponentHelper.UnloadUseless( p_clean_anim );
 		
 		System.GC.Collect();
 	}
 
     public void DelayedUnloadUnusedAssets(){
+//		Debug.Log( "UtilityTool.DelayedUnloadUnusedAssets()" );
+
         StartCoroutine( Exec_DelayedUnloadUnusedAssets( 0.5f ) );
     }
 
@@ -498,10 +496,47 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 
 
+	#region Android
+
+	private GameObject m_android_quit_tips_gb = null;
+
+	private void OnQuitTips(){
+		if( m_android_quit_tips_gb != null ){
+//			Debug.Log( "Tips still there." );
+
+			return;
+		}
+
+		m_android_quit_tips_gb = Global.CreateBox( LanguageTemplate.GetText( LanguageTemplate.Text.EXIT_GAME_TIPS_TITLE ), 
+						LanguageTemplate.GetText( LanguageTemplate.Text.EXIT_GAME_TIPS ), 
+						"",
+						null,
+						LanguageTemplate.GetText( LanguageTemplate.Text.CONFIRM ), 
+						LanguageTemplate.GetText( LanguageTemplate.Text.CANCEL ), 
+						OnConfirmQuit,
+						null,
+						null,
+						null,
+						false,
+						false,
+						false );
+	}
+
+	public void OnConfirmQuit( int p_int ){
+//		Debug.Log( "OnConfirmQuit( " + p_int + " )" );
+
+		if( p_int == 1 ){
+			QuitGame();
+		}
+	}
+
+	#endregion
+
+
+
     #region Utilities
 
-    public static string GetStringTime(int p_sec)
-    {
+    public static string GetStringTime(int p_sec){
         int t_sec = p_sec % 60;
 
         int t_min = p_sec / 60;
@@ -513,8 +548,7 @@ public class UtilityTool : Singleton<UtilityTool>{
         return t_hour + ":" + t_min + ":" + t_sec;
     }
 
-    public static float GetRandom(float p_min_inc, float p_max_inc)
-    {
+    public static float GetRandom(float p_min_inc, float p_max_inc){
         return (p_max_inc - p_min_inc) * Random.value + p_min_inc;
     }
 
@@ -532,21 +566,18 @@ public class UtilityTool : Singleton<UtilityTool>{
 #endif
     }
 
-    public static string FullNumWithZeroDigit(int ori, int maxLength)
-    {
+    public static string FullNumWithZeroDigit(int ori, int maxLength){
         int length = ori.ToString().Length;
         int zeroToAdd = maxLength - length;
 
-        if (zeroToAdd < 0)
-        {
+        if (zeroToAdd < 0){
             Debug.LogError("Length error when full number.");
             return null;
         }
 
         string returnStr = "";
 
-        while (zeroToAdd > 0)
-        {
+        while (zeroToAdd > 0){
             returnStr += "0";
             zeroToAdd--;
         }

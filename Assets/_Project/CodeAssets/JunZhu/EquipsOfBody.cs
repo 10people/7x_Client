@@ -47,6 +47,12 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
         SocketTool.RegisterMessageProcessor(this);
     }
 
+	void OnDestroy(){
+		SocketTool.UnRegisterMessageProcessor(this);
+
+		m_equipsOfBody = null;
+	}
+
     /// 请求君主身上装备信息
     void OnEnable()
     {
@@ -121,9 +127,12 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
                                 }
                            
                         }
-                        m_RefrsehEquipsInfo = true;
+                        if (UIJunZhu.m_UIJunzhu != null)
+                        {
+                            m_RefrsehEquipsInfo = true;
 
-                        m_isRefrsehEquips = true;
+                            m_isRefrsehEquips = true;
+                        }
                     } return true;
                 default: return false;
             }
@@ -377,12 +386,6 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
         }
         return false;
     }
-
-    void OnDestroy()
-    {
-        SocketTool.UnRegisterMessageProcessor(this);
-    }
-
 
     #region Utilities
 

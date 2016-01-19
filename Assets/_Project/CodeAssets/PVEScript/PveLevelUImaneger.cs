@@ -51,6 +51,8 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 
 	public bool ShowYinDao ;
 	public bool IsChooseMiBao = false ;
+	public UICreateEnemy mUICreateEnemy;
+	public UICreateDropthings mUICreateAward;
 	void Awake()
 	{ 
 		SocketTool.RegisterMessageProcessor(this);
@@ -66,11 +68,9 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 
 	void Update()
 	{
-		if(ShowYinDao)
-		{
-			ShowPVEGuid();
-		}
+
 	}
+
 	public void ColsePVEGuid()
 	{
 		if(UIYindao.m_UIYindao.m_isOpenYindao)
@@ -82,117 +82,61 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 	{
 		if(FreshGuide.Instance().IsActive(100020)&& TaskData.Instance.m_TaskInfoDic[100020].progress >= 0)
 		{
-//			Debug.Log("攻打2-1");
-
+//			Debug.Log("进入PVE 第一个任务 1-1");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100020];
-		    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
-			ShowYinDao = false;
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			return;
 		}
 		if(FreshGuide.Instance().IsActive(100030)&& TaskData.Instance.m_TaskInfoDic[100030].progress >= 0)
 		{
-//			Debug.Log("攻打2-2");
-
+//			Debug.Log("进入PVE 第一个任务 1-2");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100030];
-			tempTaskData.m_iCurIndex = 3;
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
-			ShowYinDao = false;
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			return;
 		}
-		if(FreshGuide.Instance().IsActive(100060)&& TaskData.Instance.m_TaskInfoDic[100060].progress >=0)
-		{     
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100060];
+	
+		if(FreshGuide.Instance().IsActive(100050)&& TaskData.Instance.m_TaskInfoDic[100050].progress >= 0)
+		{
+//			Debug.Log("进入PVE 第一个任务 1-3");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100050];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			return;
+		}
 
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			ShowYinDao = false;
+		if(FreshGuide.Instance().IsActive(100080)&& TaskData.Instance.m_TaskInfoDic[100080].progress >= 0)
+		{
+//			Debug.Log("进入PVE 第一个任务 1-4");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100080];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			return;
 		}
-		if(FreshGuide.Instance().IsActive(100070)&& TaskData.Instance.m_TaskInfoDic[100070].progress >= 0)
-		{      
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100070];
-
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			ShowYinDao = false;
-			return;
-		}
-        //Debug.Log("wancheng 2-5 fanhui");
 		if(FreshGuide.Instance().IsActive(100090)&& TaskData.Instance.m_TaskInfoDic[100090].progress >= 0)
-		{      
+		{
+//			Debug.Log("进入PVE 第一个任务 1-5");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100090];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			ShowYinDao = false;
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			return;
 		}
-
+	
 		if(FreshGuide.Instance().IsActive(100120)&& TaskData.Instance.m_TaskInfoDic[100120].progress >= 0)
 		{
-			Debug.Log("2-6");
-			
+//			Debug.Log("进入PVE 第一个任务 1-6");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100120];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			ShowYinDao = false;
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			return;
 		}
 		if(FreshGuide.Instance().IsActive(100130)&& TaskData.Instance.m_TaskInfoDic[100130].progress >= 0)
 		{
-			Debug.Log("2-7");
-			ShowYinDao = false;
+//			Debug.Log("进入PVE 第一个任务 1-7");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100130];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(100320)&& TaskData.Instance.m_TaskInfoDic[100320].progress >= 0)
+		{
+//			Debug.Log("攻打传奇关卡");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100320];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress >= 0)
-		{
-			Debug.Log("3-1   ");
-			ShowYinDao = false;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100170];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100230)&& TaskData.Instance.m_TaskInfoDic[100230].progress >= 0 && !IsChooseMiBao)
-		{
-			Debug.Log("3-2 ");
-			
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100230];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			ShowYinDao = false;
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100230)&& TaskData.Instance.m_TaskInfoDic[100230].progress >= 0 && IsChooseMiBao)
-		{
-			Debug.Log("3-2 ");
-			
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100230];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[7]);
-			ShowYinDao = false;
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100240)&& TaskData.Instance.m_TaskInfoDic[100240].progress >= 0)
-		{
-			Debug.Log("3-3 ");
-			
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100240];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			ShowYinDao = false;
-			return;
-		}
-		//Debug.Log("扫当2 ");
-		if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
-		{
-			Debug.Log("扫当 ");
-			
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[5]);
-			ShowYinDao = false;
-			return;
-		}
-	
-		if(FreshGuide.Instance().IsActive(100340)&& TaskData.Instance.m_TaskInfoDic[100340].progress >= 0&&!CityGlobalData.PT_Or_CQ)
-		{
-			//			Debug.Log("传奇 ");
-			
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100340];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
 			ShowYinDao = false;
 			return;
 		}
@@ -259,8 +203,12 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 			LevelName.text = s[1];
 		}
 		sendLevelDrop (Lv_Info.guanQiaId);
-
+		ShowPVEGuid ();
 		//SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ,ProtoIndexes.S_MIBAO_INFO_RESP.ToString());
+
+		mUICreateEnemy.InItEnemyList (Lv_Info.type);
+		mUICreateAward.mLevl = Lv_Info;
+		mUICreateAward.GetAward (Lv_Info.type);
 	}
 	public void loadback1(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -296,7 +244,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
     void TopUpShow(int index)
     {
 
-        TopUpLoadManagerment.m_instance.LoadPrefab(false);
+        EquipSuoData.TopUpLayerTip();
     }
 
 	void ShowResettingLv(int i)

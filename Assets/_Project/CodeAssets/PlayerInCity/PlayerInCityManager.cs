@@ -79,7 +79,7 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
            GameObject t_gb = Instantiate(player_object, t_pos, Quaternion.Euler(Vector3.zero)) as GameObject;
 
             //GameObject t_gb = Instantiate(player_object) as GameObject;
-            t_gb.name = "PlayerObject:" + p_enter_scene.uid;
+            t_gb.name = "PlayerObject:" + p_enter_scene.jzId;
            //t_gb.GetComponent<CharacterController>().enabled = false;
             t_gb.transform.parent = this.transform;
           //  Debug.Log(t_gb.transform.localPosition);
@@ -91,7 +91,7 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
 
             //Debug.Log("t_post_post_post_post_post_post_post_post_post_post_post_post_post_post_post_pos" + t_pos);
           //  Debug.Log(" t_gb.transform t_gb.transform t_gb.transform X ::" + t_gb.transform.localPosition.x + "YYYYYY ::" + t_gb.transform.localPosition.y + "ZZZZZZZZZZZZZZZZZ ::" + t_gb.transform.localPosition.z);
-            t_gb.transform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
+            t_gb.transform.localScale = Vector3.one*1.5f;
 
             PlayerInCity tempItem = t_gb.AddComponent<PlayerInCity>();
 

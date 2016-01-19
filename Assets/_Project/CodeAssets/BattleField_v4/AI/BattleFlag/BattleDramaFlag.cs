@@ -56,7 +56,7 @@ public class BattleDramaFlag : MonoBehaviour
 
 		if (node == null) return;
 
-		bool f = collider (node);
+		bool f = IsColliderWith (node);
 
 		if(f == true)
 		{
@@ -64,7 +64,7 @@ public class BattleDramaFlag : MonoBehaviour
 		}
 	}
 
-	private bool collider(BaseAI t_node)
+	private bool IsColliderWith(BaseAI t_node)
 	{
 		Vector3 pos2 = t_node.transform.position;
 		
