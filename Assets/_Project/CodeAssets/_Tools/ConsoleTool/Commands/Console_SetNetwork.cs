@@ -23,8 +23,12 @@ public class Console_SetNetwork {
 	private static long m_on_ping_time_long		= 0;
 
 	private static bool m_log_ping				= true;
+
+	public static void OnPing( string[] p_params ){
+		OnPingManual( p_params, true );
+	}
 	
-	public static void OnPing( string[] p_params, bool p_log_ping = true ){
+	public static void OnPingManual( string[] p_params, bool p_log_ping ){
 		#if DEBUG_CONSOLE
 		Debug.Log( "OnPing() " + Time.realtimeSinceStartup );
 		#endif

@@ -21,9 +21,17 @@ public class TaskCloseLayer : MonoBehaviour
             m_ScaleEffectController.OnCloseWindowClick();
         }
     }
-
-    void DoCloseWindow()
+    //void OnDrag(Vector2 delta)
+    //{
+    //    if (m_gameObject != null)
+    //    {
+    //        m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
+    //        m_ScaleEffectController.OnCloseWindowClick();
+    //    }
+    //}
+        void DoCloseWindow()
     {
+        ClientMain.m_isNewOpenFunction = false;
         if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress < 0
             || FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress < 0
             || FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress < 0)

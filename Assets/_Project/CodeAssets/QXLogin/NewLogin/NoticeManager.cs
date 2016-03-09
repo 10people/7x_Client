@@ -5,7 +5,8 @@ public class NoticeManager : MonoBehaviour {
 
 	public UILabel m_labelContent;
     public UIGrid m_TableObject;
-	public GameObject loginObj;
+	public GameObject loginObj1;
+	public GameObject loginObj2;
 
     public GameObject m_AnnounceItem;
     public GameObject m_Parent;
@@ -30,7 +31,7 @@ public class NoticeManager : MonoBehaviour {
         int size = ss.Length;
         for (int i = 0; i < size; i++)
         {
-            if (!ss[i].Equals(" "))
+            if (!string.IsNullOrEmpty(ss[i]))
             {
                 if (ss[i].IndexOf('#') > -1)
                 {
@@ -129,12 +130,14 @@ public class NoticeManager : MonoBehaviour {
 	public void CloseBtn (){
 		if ( ThirdPlatform.IsThirdPlatform () ) {
 			if( ThirdPlatform.Instance() != null ){
-				if( ThirdPlatform.Instance().GetPlatformStatus() != ThirdPlatform.PlatformStatus.LogIn ){
-					ThirdPlatform.CheckLoginToShowSDK();
+				if( !ThirdPlatform.IsMyAppAndroidPlatform() ){
+					if( ThirdPlatform.Instance().GetPlatformStatus() != ThirdPlatform.PlatformStatus.LogIn ){
+						ThirdPlatform.CheckLoginToShowSDK();
 
-					Debug.Log( "Not In Login Status, CheckSDK and return" );
+						Debug.Log( "Not In Login Status, CheckSDK and return" );
 
-					return;
+						return;
+					}
 				}
 			}
 			else{
@@ -158,13 +161,30 @@ public class NoticeManager : MonoBehaviour {
 		}
 
 //		Debug.Log( Time.realtimeSinceStartup +  "NoticeManager.CloseBtn()" );
+//		Debug.Log ("ThirdPlatform.IsMyAppAndroidPlatform():" + ThirdPlatform.IsMyAppAndroidPlatform());
 
-		loginObj.SetActive (true);
+		loginObj1.SetActive (ThirdPlatform.IsMyAppAndroidPlatform());
+		loginObj2.SetActive (!ThirdPlatform.IsMyAppAndroidPlatform());
 
 		Destroy (this.gameObject);
 
 		if( ThirdPlatform.IsThirdPlatform() ){
-			AccountRequest.account.DengLuRequestSuccess( ThirdPlatform.Instance().GetLoginInfo() );
+			if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+				// temporary use the same code
+				// MyApp have two entrance, 1st is here, 2nd is after 1st time login success
+				if( string.IsNullOrEmpty( ThirdPlatform.Instance().GetLoginInfo() ) ){
+
+					Debug.Log( "1st time enter game, show login type UI." );
+				}
+				else{
+					Debug.Log( "enter game when already logged in, direct goto server select." );
+
+					AccountRequest.account.DengLuRequestSuccess( ThirdPlatform.Instance().GetLoginInfo() );		
+				}
+			}
+			else{
+				AccountRequest.account.DengLuRequestSuccess( ThirdPlatform.Instance().GetLoginInfo() );	
+			}
 		}
 	}
 

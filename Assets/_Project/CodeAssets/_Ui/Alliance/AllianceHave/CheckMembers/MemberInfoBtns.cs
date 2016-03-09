@@ -30,11 +30,11 @@ public class MemberInfoBtns : MonoBehaviour {
 	{
 		mainInfoObj = this.gameObject.transform.FindChild ("MainInfo").gameObject;
 
-		kaiChuBtn.m_handler += KaiChu;
-		shengZhiBtn.m_handler += ShengZhi;
-		jiangZhiBtn.m_handler += JiangZhi;
+		kaiChuBtn.m_click_handler += KaiChu;
+		shengZhiBtn.m_click_handler += ShengZhi;
+		jiangZhiBtn.m_click_handler += JiangZhi;
 
-		sureBtn.m_handler += SureBtnClick;
+		sureBtn.m_click_handler += SureBtnClick;
 	}
 
 	//确定按钮
@@ -96,7 +96,7 @@ public class MemberInfoBtns : MonoBehaviour {
 			
 			byte[] t_protof = t_stream.ToArray ();
 			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.FIRE_MEMBER,ref t_protof,"30118");
+			SocketTool.Instance().SendSocketMessage (ProtoIndexes.FIRE_MEMBER,ref t_protof,"30118");
 		}
 		DestroyThisObj ();
 	}
@@ -117,7 +117,7 @@ public class MemberInfoBtns : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.UP_TITLE,ref t_protof,"30120");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.UP_TITLE,ref t_protof,"30120");
 
 		DestroyThisObj ();
 	}
@@ -138,7 +138,7 @@ public class MemberInfoBtns : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.DOWN_TITLE,ref t_protof,"30122");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.DOWN_TITLE,ref t_protof,"30122");
 
 		DestroyThisObj ();
 	}

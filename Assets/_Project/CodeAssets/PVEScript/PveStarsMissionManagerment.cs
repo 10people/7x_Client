@@ -18,7 +18,7 @@ public class PveStarsMissionManagerment : MonoBehaviour, SocketProcessor
     void Awake()
     {
         SocketTool.RegisterMessageProcessor(this);
-        m_Event.m_handler += CloseThisLayer;
+        m_Event.m_click_handler += CloseThisLayer;
     }
     void Start () 
     {

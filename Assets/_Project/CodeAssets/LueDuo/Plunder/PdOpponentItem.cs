@@ -65,8 +65,8 @@ public class PdOpponentItem : MonoBehaviour {
 		UILabel plunderLabel = plunderHandler.GetComponentInChildren<UILabel> ();
 		plunderLabel.color = protectTime <= 0 ? Color.white : Color.gray;
 
-		plunderHandler.m_handler -= PlunderHandlerClickBack;
-		plunderHandler.m_handler += PlunderHandlerClickBack;
+		plunderHandler.m_click_handler -= PlunderHandlerClickBack;
+		plunderHandler.m_click_handler += PlunderHandlerClickBack;
 	}
 	
 	IEnumerator ProtectTimeShow ()

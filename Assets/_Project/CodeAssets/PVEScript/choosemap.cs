@@ -18,7 +18,7 @@ public class choosemap : MonoBehaviour {
 	Vector3 vectLeft = new Vector3(-960,0,0);
 	public GameObject Lev;
 	public static bool UpAndDownbtn;
-
+	public GameObject MapRoot;
 	private int my_mapnum;
 	void Start () {
 
@@ -31,7 +31,7 @@ public class choosemap : MonoBehaviour {
 	{
 		CurMap = Instantiate(p_object ) as GameObject;
 		
-		CurMap.transform.parent = this.gameObject.transform;
+		CurMap.transform.parent = MapRoot.transform;
 		
 		CurMap.transform.localScale = new Vector3 (1,1,1);
 		
@@ -56,7 +56,7 @@ public class choosemap : MonoBehaviour {
 	{
 		NextMap = Instantiate(p_object ) as GameObject;
 		
-		NextMap.transform.parent = this.gameObject.transform;
+		NextMap.transform.parent = CurMap.transform.parent = MapRoot.transform;;
 		
 		NextMap.transform.localScale = new Vector3 (1,1,1);
 		
@@ -126,7 +126,7 @@ public class choosemap : MonoBehaviour {
 	{
 		NextMap = Instantiate( p_object ) as GameObject;
 		
-		NextMap.transform.parent = this.gameObject.transform;
+		NextMap.transform.parent = CurMap.transform.parent = MapRoot.transform;;
 		
 		NextMap.transform.localScale = new Vector3 (1,1,1);
 		
@@ -158,7 +158,7 @@ public class choosemap : MonoBehaviour {
 	{
 		NextMap = Instantiate( p_object ) as GameObject;
 
-		NextMap.transform.parent = this.gameObject.transform;
+		NextMap.transform.parent = CurMap.transform.parent = MapRoot.transform;;
 
 		NextMap.transform.localScale = new Vector3 (1,1,1);
 
@@ -253,8 +253,8 @@ public class choosemap : MonoBehaviour {
 
 			LvChild.Init();
 
-
 		}
+		Global.m_isOpenPVP = false;
 		MapData.mapinstance.nowCurrChapter = MapData.mapinstance.CurrChapter;
 	}
 	void CreateLvs(GameObject UIroot)//创建普通关卡的小关卡
@@ -306,6 +306,7 @@ public class choosemap : MonoBehaviour {
 			LvChild.Init();
 
 		}
+		Global.m_isOpenPVP = false;
 		MapData.mapinstance.nowCurrChapter = MapData.mapinstance.CurrChapter;
 	}
 

@@ -72,6 +72,10 @@ public class SoundPlayEff : MonoBehaviour
 	}
 
 	public void ResourceLoadCallback( ref WWW p_www, string p_path, Object p_object){
+		if( p_object == null ){
+			return;
+		}
+
 		ClientMain.m_sound_manager.getIdClipResLoad( ref p_www, p_path, p_object );
 		int tempIndex = -1;
 		
@@ -84,21 +88,23 @@ public class SoundPlayEff : MonoBehaviour
 				break;
 			}
 		}
+
 		if(tempIndex == -1){
 			AudioSource m_AudioSource = gameObject.AddComponent<AudioSource>();
+
 			m_AudioSource.rolloffMode = AudioRolloffMode.Linear;
-			m_AudioSource.clip = (AudioClip)p_object;
+
 			m_AudioSource.maxDistance = 20;
-			if(ClientMain.m_ClientMain.m_SoundPlayEff.m_isPlay)
-			{
+
+			if(ClientMain.m_ClientMain.m_SoundPlayEff.m_isPlay){
 				m_AudioSource.volume = ClientMain.m_sound_manager.m_fMaxEffVolume / 2;
 			}
-			else
-			{
+			else{
 				m_AudioSource.volume = ClientMain.m_sound_manager.m_fMaxEffVolume;
 			}
-			m_AudioSource.Play();
+
 			m_AudioSource.playOnAwake = false;
+
 			if(m_SoundData.iLoop == 1)
 			{
 				m_AudioSource.loop = true;
@@ -106,27 +112,33 @@ public class SoundPlayEff : MonoBehaviour
 
 			m_AudioSource.spatialBlend = m_SoundData.iStereo;
 
+			m_AudioSource.clip = (AudioClip)p_object;
+
 			SoundManager.addEffSound(m_AudioSource);
+
+			m_AudioSource.Play();
 		}
 		else{
 			tempAudio[tempIndex].rolloffMode = AudioRolloffMode.Linear;
-			tempAudio[tempIndex].clip = (AudioClip)p_object;
+
 			tempAudio[tempIndex].maxDistance = 20;
-			if(ClientMain.m_ClientMain.m_SoundPlayEff.m_isPlay)
-			{
+
+			if(ClientMain.m_ClientMain.m_SoundPlayEff.m_isPlay){
 				tempAudio[tempIndex].volume = ClientMain.m_sound_manager.m_fMaxEffVolume / 2;
 			}
-			else
-			{
+			else{
 				tempAudio[tempIndex].volume = ClientMain.m_sound_manager.m_fMaxEffVolume;
 			}
 
-			tempAudio[tempIndex].Play();
-			if(m_SoundData.iLoop == 1)
-			{
+			if(m_SoundData.iLoop == 1){
 				tempAudio[tempIndex].loop = true;
 			}
+
 			tempAudio[tempIndex].spatialBlend = m_SoundData.iStereo;
+
+			tempAudio[tempIndex].clip = (AudioClip)p_object;
+
+			tempAudio[tempIndex].Play();
 		}
 	}
 

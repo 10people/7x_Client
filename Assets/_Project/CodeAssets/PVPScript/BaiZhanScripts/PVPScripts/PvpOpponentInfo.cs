@@ -75,7 +75,7 @@ public class PvpOpponentInfo : MonoBehaviour {
 			skillName.text = NameIdTemplate.GetName_By_NameId (miBaoSkillTemp.nameId);
 
 			MiBaoSkillLvTempLate miBaoSkillLvTemp = MiBaoSkillLvTempLate.GetMiBaoSkillLvTemplateByIdAndLevel (tempInfo.zuheId,tempInfo.zuHeLevel);
-			desLabel.text = DescIdTemplate.GetDescriptionById (miBaoSkillLvTemp.skillDesc);
+			desLabel.text = DescIdTemplate.GetDescriptionById (miBaoSkillLvTemp.Desc);
 		}
 		else
 		{
@@ -88,10 +88,11 @@ public class PvpOpponentInfo : MonoBehaviour {
 
 		foreach (EventHandler handler in btnHandlerList)
 		{
-			handler.m_handler -= BtnHandlerCallBack;
-			handler.m_handler += BtnHandlerCallBack;
+			handler.m_click_handler -= BtnHandlerCallBack;
+			handler.m_click_handler += BtnHandlerCallBack;
 		}
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,3);
 	}
 
 	void BtnHandlerCallBack (GameObject obj)
@@ -109,7 +110,8 @@ public class PvpOpponentInfo : MonoBehaviour {
 			break;
 		case "DisBtn":
 
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,3);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,2);
 			
 			DisActiveWindow ();
 
@@ -125,7 +127,8 @@ public class PvpOpponentInfo : MonoBehaviour {
 			break;
 		case "Zhezhao":
 
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100180,3);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,2);
 			
 			DisActiveWindow ();
 

@@ -268,11 +268,12 @@ public class AIdata
 
 		AddAttribute (0);
 
-		AddAttribute (0);//78,怒气
+		AddAttribute (nodeData.nuQiZhi);//78,怒气
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan 
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao
-		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo)
+		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo
+		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YuanZhu)
 		{
 			_nodeName = nodeData.nodeName;
 		}

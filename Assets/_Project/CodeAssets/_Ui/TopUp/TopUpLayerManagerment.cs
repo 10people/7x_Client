@@ -15,7 +15,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
     public List<GameObject> m_listGameObject = new List<GameObject>();
     public List<EventHandler> m_listEvent = new List<EventHandler>();
     public EventIndexHandle m_Confirm;
-
+    public GameObject m_Durable_UI;
     public GameObject m_TeQuan;
     public GameObject m_ItemParent;
     public UIProgressBar m_ProgressBar;
@@ -23,7 +23,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_NeedObject;
     [HideInInspector]
     public bool isSpecial = false;
-
+    public GameObject m_ObjTopLeft;
     private bool istouched = false;
     private int vipLevelUseed = 1;
     private int earnYuabao = 0;
@@ -36,7 +36,9 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
     }
 	void Start ()
     {
-        m_listEvent.ForEach(p=>p.m_handler += EventTouch);
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "充值", 0, 0);
+        MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
+        m_listEvent.ForEach(p=>p.m_click_handler += EventTouch);
         m_Confirm.m_Handle += ConFirmTouch;
         RequestData();
 	}
@@ -95,7 +97,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
                         if (ReponseInfo.isMax)
                         {
                             vipLevelCurrent = ReponseInfo.vipLevel;
-                            m_listLab[0].text = "VIP" + ReponseInfo.vipLevel.ToString();
+                            m_listLab[0].text = "[b]VIP" + ReponseInfo.vipLevel.ToString() + "[-]";
                             m_listGameObject[4].SetActive(false);
                             m_listLab[3].text = "";
                             m_ProgressBar.value = 1.0f;
@@ -103,8 +105,8 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
                         else
                         {
                             vipLevelCurrent = ReponseInfo.vipLevel;
-                            m_listLab[0].text = "VIP" + ReponseInfo.vipLevel.ToString();
-                            m_listLab[1].text = "VIP" + (ReponseInfo.vipLevel + 1).ToString();
+                            m_listLab[0].text = "[b]VIP" + ReponseInfo.vipLevel.ToString() + "[-]";
+                            m_listLab[1].text = "[b]VIP" + (ReponseInfo.vipLevel + 1).ToString() + "[-]";
                             m_listLab[2].text = (ReponseInfo.needYb - ReponseInfo.hasYb).ToString();
                             m_listLab[3].text = ReponseInfo.hasYb.ToString() + "/" + ReponseInfo.needYb.ToString();
                             m_ProgressBar.value = ReponseInfo.hasYb / float.Parse(ReponseInfo.needYb.ToString());
@@ -216,7 +218,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
         if (obj.name.Equals("ButtonLeft"))
         {
             vipLevelUseed--;
-            m_listLab[5].text = "VIP" + vipLevelUseed.ToString() + NameIdTemplate.GetName_By_NameId(990047);
+            m_listLab[5].text = "[b]VIP" + vipLevelUseed.ToString() + NameIdTemplate.GetName_By_NameId(990047) + "[-]";
             ShowTeQuanItem();
         }
         else if (obj.name.Equals("ButtonRight"))
@@ -339,7 +341,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
         tempObject.name = ChongZhiTemplate.templates[index].id.ToString();
         tempObject.transform.parent = m_ItemParent.transform;
         tempObject.transform.localScale = Vector3.one;
-        tempObject.transform.localPosition = new Vector3(row*290,-col * 200,-10);
+        tempObject.transform.localPosition = new Vector3(row*270,-col * 200,-10);
         if (BuyInfoDic.ContainsKey(ChongZhiTemplate.templates[index].id) && BuyInfoDic[ChongZhiTemplate.templates[index].id].times > 0)
         {
             if (ChongZhiTemplate.templates[index].extraYuanbao > 0)
@@ -392,7 +394,7 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
         tempObject.transform.parent = m_TeQuan.transform;
         tempObject.transform.localScale = Vector3.one;
         tempObject.transform.localPosition = Vector3.zero;
-        string[] ss = DescIdTemplate.GetDescriptionById(VipTemplate.GetVipInfoByLevel(vipLevelUseed).desc).Split('。');
+        string[] ss = DescIdTemplate.GetDescriptionById(VipTemplate.GetVipInfoByLevel(vipLevelUseed).desc).Split('#');
         string content = "";
         int size = ss.Length;
         for (int i = 0; i < size; i++)

@@ -29,6 +29,8 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 
 	private GameObject fuWenObj;
 
+	[HideInInspector]public string colorCode = "[047501]";
+
 	void Awake ()
 	{
 		SocketTool.RegisterMessageProcessor (this);
@@ -59,7 +61,7 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 		OperateFuwenReq operateFuWenReq = new OperateFuwenReq ();
 
 		operateFuWenReq.type = (int)tempType;
-		Debug.Log ("operateFuWenReq.type:" + operateFuWenReq.type);
+//		Debug.Log ("operateFuWenReq.type:" + operateFuWenReq.type);
 		if (operateFuWenReq.type == 5 || operateFuWenReq.type == 6 || operateFuWenReq.type == 3)
 		{
 			operateFuWenReq.lanweiId = tempLanWeiId;
@@ -75,7 +77,7 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 		}
 
 		QXComData.SendQxProtoMessage (operateFuWenReq,ProtoIndexes.C_FUWEN_OPERAT_REQ,"8004");
-		Debug.Log ("符文操作请求:" + ProtoIndexes.C_FUWEN_OPERAT_REQ);
+//		Debug.Log ("符文操作请求:" + ProtoIndexes.C_FUWEN_OPERAT_REQ);
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)
@@ -177,8 +179,8 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 
 				if (fuWenOperate != null)
 				{
-					Debug.Log ("操作结果：" + fuWenOperate.result + "//0-成功 1-失败");
-					Debug.Log ("战力：" + fuWenOperate.zhanli);
+//					Debug.Log ("操作结果：" + fuWenOperate.result + "//0-成功 1-失败");
+//					Debug.Log ("战力：" + fuWenOperate.zhanli);
 
 //					GameObject fuWenObj = GameObject.Find ("FuWen(Clone)");
 
@@ -217,15 +219,13 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 								break;
 								
 							case FuWenOperateType.EQUIP_FUWEN:
-								
-								fuWenMainPage.CurXiangQianId = 0;
+
 								fuWenMainPage.SuccessTips (fuWenOperateType);
 
 								break;
 								
 							case FuWenOperateType.REMOVE_FUWEN:
-								
-								fuWenMainPage.CurXiangQianId = 0;
+
 								if (operateItemId == fuWenMainPage.CurHeChengItemId)
 								{
 									fuWenMainPage.CurHeChengItemId = 0;
@@ -243,7 +243,7 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 							
 						case 1:
 							
-							Debug.Log ("失败原因：" + fuWenOperate.reason);
+//							Debug.Log ("失败原因：" + fuWenOperate.reason);
 							failMsg = fuWenOperate.reason;
 							
 							switch (fuWenOperateType)
@@ -274,7 +274,7 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 			}
 			case ProtoIndexes.S_FUWEN_TIPS://符文红点推送
 			{
-				Debug.Log ("符石红点提示");
+//				Debug.Log ("符石红点提示");
 
 				FuShiRedTips (true);
 
@@ -342,7 +342,6 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 	{
 		if (FunctionOpenTemp.IsHaveID(500010))
 		{
-			Global.m_isFuWen = isRed;
 			MainCityUI.SetRedAlert(500010, isRed);
 		}
 	}

@@ -35,6 +35,11 @@ public class Config_Common {
 	}
 	
 	private static bool m_device_info_logged = false;
+
+	private static string GetVersionString(){
+		return LocalCacheTool.Instance().GetStringValue( LocalCacheTool.CONST_VERSION_CODE ) + " " +
+			LocalCacheTool.Instance().GetStringValue( LocalCacheTool.CONST_VERSION );
+	}
 	
 	private static void OnGUI_Common_Info(){
 		if( ConfigTool.GetBool( ConfigTool.CONST_SHOW_VERSION ) ){
@@ -49,11 +54,11 @@ public class Config_Common {
 				}
 
 				GUI.Label( new Rect( 0, ScreenHelper.GetY( 0.9f ), 250, 35 ), 
-				          ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
+					GetVersionString(), GUIHelper.m_gui_lb_style );
 			}
 			else{
 				GUI.Label( new Rect( ScreenHelper.GetX( 0.0f ), ScreenHelper.GetY( 0.0f ), 250, 35 ), 
-				          ConfigTool.GetString( ConfigTool.CONST_VERSION ), GUIHelper.m_gui_lb_style );
+					GetVersionString(), GUIHelper.m_gui_lb_style );
 
 				{
 					SetPingColor();
@@ -106,7 +111,7 @@ public class Config_Common {
 			}
 		}
 	}
-	
+    
 	private static void OnGUI_Common_Debug(){
 		{
 			GUIHelper.m_btn_rect_params[ 0 ] = Screen.width * 0.8f;
@@ -137,7 +142,7 @@ public class Config_Common {
 				Resources.UnloadUnusedAssets();
 			}
 		}
-		
+
 		if( ConfigTool.GetBool( ConfigTool.CONST_COMMON_CODE_EXCEPTION ) ){
 			string t_error = DebugHelper.GetCommonCodeError();
 			

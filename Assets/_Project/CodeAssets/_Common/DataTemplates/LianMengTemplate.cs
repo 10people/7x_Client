@@ -22,7 +22,10 @@ public class LianMengTemplate : XmlLoadManager {
 	public int mobaiAward;
 
 	public int buffNum;
-	
+
+	public int jiansheMax;
+
+	public string targetAward;
 	public static List<LianMengTemplate> templates = new List<LianMengTemplate>();
 	
 	
@@ -86,6 +89,12 @@ public class LianMengTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.buffNum = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.jiansheMax = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.targetAward =  t_reader.Value ;
 				
 			}
 			
@@ -95,7 +104,49 @@ public class LianMengTemplate : XmlLoadManager {
 		}
 		while( t_has_items );
 	}
-	
+
+	public static int  GetLianMengTemplate_AllExp_by_lv(int mLv)
+	{
+		int m_Exp = 0;
+		for (int i = 0; i < templates.Count; i++)
+		{
+			if (templates[i].lv <= mLv)
+			{
+				m_Exp+= templates[i].exp;
+			}
+			else
+			{
+				break;
+			}
+		}
+		return m_Exp;
+		
+	}
+
+	public static int  GetLianMengTemplate_Exp_by_lv(int mLv)
+	{
+		for (int i = 0; i < templates.Count; i++)
+		{
+			if (templates[i].lv == mLv)
+			{
+				return templates[i].exp;
+			}
+		}
+		return 0;
+		
+	}
+	public static LianMengTemplate  GetLianMengTemplate_by_lv(int mLv)
+	{
+		for (int i = 0; i < templates.Count; i++)
+		{
+			if (templates[i].lv == mLv)
+			{
+				return templates[i];
+			}
+		}
+		return null;
+		
+	}
 	public static LianMengTemplate GetLianMengTemplate_by_id(int id)
 	{
 		for (int i = 0; i < templates.Count; i++)

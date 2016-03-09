@@ -95,11 +95,11 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		}
 		if(MiBaoDataBack)
 		{
-			if(JUNZHULevel != JunZhuData.Instance ().m_junzhuInfo.level || JunZhuJinBi != JunZhuData.Instance ().m_junzhuInfo.jinBi ||Point != G_MiBaoInfo.levelPoint)
+			if(JUNZHULevel != JunZhuData.Instance().m_junzhuInfo.level || JunZhuJinBi != JunZhuData.Instance().m_junzhuInfo.jinBi ||Point != G_MiBaoInfo.levelPoint)
 			{
-				JUNZHULevel = JunZhuData.Instance ().m_junzhuInfo.level;
+				JUNZHULevel = JunZhuData.Instance().m_junzhuInfo.level;
 				
-				JunZhuJinBi = JunZhuData.Instance ().m_junzhuInfo.jinBi;
+				JunZhuJinBi = JunZhuData.Instance().m_junzhuInfo.jinBi;
 				if(G_MiBaoInfo.levelPoint != null)
 				{
 					Point = G_MiBaoInfo.levelPoint;
@@ -251,7 +251,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 				
 				t_qx.Deserialize(t_stream, mMiBaoDealSkillResp, mMiBaoDealSkillResp.GetType());
 
-				//	UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillTemp,EffectIdTemplate.GetPathByeffectId(100178));
+				//	UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillTemp,EffectIdTemplate.GetPathByeffectId(100178));
 				return true;
 			}
 			default: return false;
@@ -261,7 +261,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		
 		else
 		{
-			Debug.Log("p_message == null");
+			//Debug.Log("p_message == null");
 		}
 		
 		return false;
@@ -398,16 +398,16 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 			returnStart = "pinzhi6";
 			break;
 		case 2:
-			returnStart = "pinzhi7";
+			returnStart = "pinzhi6";
 			break;
 		case 3:
-			returnStart = "pinzhi9";
+			returnStart = "pinzhi6";
 			break;
 		case 4:
-			returnStart = "pinzhi10";
+			returnStart = "pinzhi6";
 			break;
 		case 5:
-			returnStart = "pinzhi11";
+			returnStart = "pinzhi6";
 			break;
 		default:
 			returnStart = "";

@@ -37,8 +37,13 @@ public class LegendNpcTemplate : XmlLoadManager {
 
 	public string icon;
 
-	public int level;
+	public int level; //ifTeammate="0" lifebarNum="1" modelSize="10121080" />
 
+	public int ifTeammate;
+
+	public int lifebarNum;
+
+	public float modelSize;
 	private static List<LegendNpcTemplate> templates = new List<LegendNpcTemplate>();
 	
 	public void Log(){
@@ -134,6 +139,15 @@ public class LegendNpcTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.level = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ifTeammate = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.lifebarNum = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.modelSize = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();
@@ -193,12 +207,11 @@ public class LegendNpcTemplate : XmlLoadManager {
 		{
 			LegendNpcTemplate t_item = templates[ i ];
 			
-			if( t_item.NpcId == npc_id ){
-				
+			if( t_item.NpcId == npc_id && t_item.ifTeammate != 1&&t_item.icon != "0" &&t_item.type < 6)
+			{
 				temps.Add(t_item);
 			}
 		}
-		
 		return temps;
 	}
 	

@@ -31,7 +31,7 @@ public class AchivementHintControllor : MonoBehaviour
 
 		int achive_3 = CityGlobalData.t_resp.starArrive % 10;
 
-		//BattleControlor.Instance ().achivement.setListBool (achive_1, achive_2, achive_3);
+		//BattleControlor.Instance().achivement.setListBool (achive_1, achive_2, achive_3);
 
 		int[] list = new int[]{achive_1, achive_2, achive_3};
 

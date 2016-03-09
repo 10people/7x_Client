@@ -79,7 +79,7 @@ public class SelectYouXiaEntertype : MonoBehaviour {
 
 		string [] mtime = open_Time.Split (apretion);
 
-		Debug.Log ("mYouXiaInfo.open = " +mYouXiaInfo.open);
+		//Debug.Log ("mYouXiaInfo.open = " +mYouXiaInfo.open);
 
 		if(mYouXiaInfo.open)
 		{

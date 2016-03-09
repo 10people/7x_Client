@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 11b66fc73333d5c48b731ad4c7a84f09
-timeCreated: 1451294271
+timeCreated: 1453372423
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName:
@@ -27,7 +27,7 @@ TextureImporter:
   cubemapConvolutionSteps: 8
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: 5
   maxTextureSize: 4096
   textureSettings:
     filterMode: 2
@@ -50,7 +50,11 @@ TextureImporter:
   buildTargetSettings:
   - buildTarget: Android
     maxTextureSize: 1024
-    textureFormat: 45
+    textureFormat: 47
+    compressionQuality: 50
+  - buildTarget: Standalone
+    maxTextureSize: 4096
+    textureFormat: 5
     compressionQuality: 50
   spriteSheet:
     sprites: []

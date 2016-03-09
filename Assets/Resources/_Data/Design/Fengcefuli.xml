@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Fengcefuli key="YBTitle" desc="封测元宝界面标题" value="封测元宝" />
+<Fengcefuli key="YBStartTime1" desc="元宝赠送起始时间 1" value="9:00" />
+<Fengcefuli key="YBaward1" desc="元宝赠送奖励1" value="0:900002:288" />
+<Fengcefuli key="YBStartTime2" desc="元宝赠送起始时间 2" value="17:30" />
+<Fengcefuli key="YBaward2" desc="元宝赠送奖励2" value="0:900002:288" />
+<Fengcefuli key="Ybmessage" desc="元宝福利推送消息" value="主人，现在有封测元宝可以领哦，快进游戏领取吧~" />
+<Fengcefuli key="TiliTitle" desc="体力赠送界面标题" value="体力赠送" />
+<Fengcefuli key="TiliStartTime1" desc="体力赠送起始时间 1" value="12:00" />
+<Fengcefuli key="TiliEndTime1" desc="体力赠送结束时间 1" value="14:00" />
+<Fengcefuli key="Tiliaward1" desc="体力赠送奖励1" value="0:900003:50" />
+<Fengcefuli key="TiliStartTime2" desc="体力赠送起始时间 2" value="18:00" />
+<Fengcefuli key="TiliEndTime2" desc="体力赠送结束时间 2" value="20:00" />
+<Fengcefuli key="Tiliaward2" desc="体力赠送奖励2" value="0:900003:50" />
+<Fengcefuli key="TiliStartTime3" desc="体力赠送起始时间 3" value="21:00" />
+<Fengcefuli key="TiliEndTime3" desc="体力赠送结束时间 3" value="24:00" />
+<Fengcefuli key="Tiliaward3" desc="体力赠送奖励3" value="0:900003:50" />
+<Fengcefuli key="Tilimessage" desc="体力赠送奖励2" value="主人，现在有体力可以领哦，快进游戏领取吧~" />
+<Fengcefuli key="YuekaTitle" desc="月卡福利界面标题" value="月卡福利" />
+<Fengcefuli key="YuekaRefreshTime" desc="月卡刷新时间" value="4:00" />
+<Fengcefuli key="Yuekaaward" desc="月卡赠送奖励" value="0:900002:120" />
+</dataset>

@@ -90,7 +90,7 @@ public class DebugCameraAdjust : MonoBehaviour
 
 		UpdateLabels();
 
-		if (m_target == null) m_target = BattleControlor.Instance ().getKing ().gameCamera.gameObject;
+		if (m_target == null) m_target = BattleControlor.Instance().getKing ().gameCamera.gameObject;
 
 		m_target.SendMessage( m_func_name, t_param, SendMessageOptions.RequireReceiver );
 	}

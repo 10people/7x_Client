@@ -1,3 +1,13 @@
+/// <summary>
+/// Change With Bonjour
+/// </summary>
+
+//#define DEBUG_HUGE_LOGIN
+
+//#define DEBUG_THIRD_PLATFORM
+
+
+
 //#define MYAPP_ANDROID_PLATFORM
 
 
@@ -20,12 +30,6 @@
 
 
 
-//#define DEBUG_THIRD_PLATFORM
-
-//#define DEBUG_HUGE_LOGIN
-
-
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +48,17 @@ using SimpleJSON;
 using qxmobile;
 using qxmobile.protobuf;
 
+
+
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2015.8.1
+ * @since:		Unity 5.1
+ * Function:	Third Platform Use.
+ * 
+ * Notes:
+ * None.
+ */ 
 public class ThirdPlatform : MonoBehaviour {
 
 	public enum PlatformType{
@@ -196,15 +211,14 @@ public class ThirdPlatform : MonoBehaviour {
 	public static void ThirdPlatformLoginSuccess(){
 		Debug.Log( "ThirdPlatform.ThirdPlatformLoginSuccess()" );
 
-
-		if ( PrepareBundles.GetBundleUpdateState () < PrepareBundles.UpdateState.CHECKING_UPDATE_INFO ) {
+		if ( PrepareBundles.GetBundleUpdateState () == PrepareBundles.UpdateState.SELECT_UPDATE_SERVER ) {
 			if( PrepareBundles.Instance() == null ){
 				Debug.LogError( "Prepare_Bundle_Config.instance == null, Error, in Wrong Place." );
 				
 				return;
 			}
 
-			PrepareBundles.Instance ().UpdateServerSelected ( null );
+			PrepareBundles.Instance().UpdateServerSelected ( null );
 		}
 		else if ( PrepareBundles.GetBundleUpdateState () == PrepareBundles.UpdateState.PREPARE_START_GAME ) {
 			PrepareBundles.BundleUpdateDone ();
@@ -227,9 +241,9 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 
 	public void LogOutCallback( bool p_check_sdk ){
-		#if DEBUG_THIRD_PLATFORM
-		Debug.Log( "LogOutCallback()" );
-		#endif
+//		#if DEBUG_THIRD_PLATFORM
+		Debug.Log( "LogOutCallback( " + p_check_sdk + " )" );
+//		#endif
 
 		SetPlatformStatus( PlatformStatus.LogOut );
 
@@ -238,10 +252,9 @@ public class ThirdPlatform : MonoBehaviour {
 			if( ThirdPlatform.IsKuaiYongPlatform() ){
 				CheckLoginToShowSDK();
 			}
-
 		}
 
-		if ( PrepareBundles.Instance () != null ) {
+		if ( PrepareBundles.HaveInstance() != null ) {
 			Debug.Log( "Still In Version Check, Skip ReLogin Ops." );
 			
 			return;
@@ -257,7 +270,7 @@ public class ThirdPlatform : MonoBehaviour {
 	#region Game UI
 	
 	private static void ShowErrorBox( string p_error_string, UIBox.onclick p_click ){
-		Global.CreateBox( PrepareBundleHelper.POPUP_TIPS_TITLE,
+		Global.CreateBox( PrepareBundleHelper.LOGIN_FAIL_TITLE,
 		                 p_error_string,
 		                 "",
 		                 null,
@@ -292,6 +305,7 @@ public class ThirdPlatform : MonoBehaviour {
 
 	string m_login_info = "";
 
+	/// Get Cached Login Info.
 	public string GetLoginInfo(){
 		return m_login_info;
 	}
@@ -300,7 +314,7 @@ public class ThirdPlatform : MonoBehaviour {
 //		qxrouter/channel/checkLogin.jsp?channel=XY&sid=80a5fe53d3540300005a17e308a4b1fb
 
 		#if DEBUG_HUGE_LOGIN
-		string t_url = HttpRequest.SERVER_HUGE_PREFIX + "qxrouter/channel/checkLogin.jsp";
+		string t_url = NetworkHelper.SERVER_HUGE_PREFIX + "qxrouter/channel/checkLogin.jsp";
 		#else
 		string t_url = NetworkHelper.GetPrefix() + NetworkHelper.THIRD_PLATFORM_LOGIN_URL;
 		#endif
@@ -314,7 +328,46 @@ public class ThirdPlatform : MonoBehaviour {
 			
 			{
 				// add 3rd platform info
-				if( IsPPPLatform() ){
+				if( IsMyAppAndroidPlatform() ){
+					if( m_my_app_login_ret == null ){
+					Debug.Log( "MyApp's ret is null, Start Game, and login there." );
+
+//						CheckLoginToShowSDK();
+
+						StartGame();
+
+						return;
+					}
+
+					t_request_params.Add( "channel", GetPlatformTag() );
+
+					// use msdk.open_id to check it if right
+					t_request_params.Add( "openid", m_my_app_login_ret.open_id );
+
+					// use token to check it if right
+					t_request_params.Add( "openkey", m_my_app_login_ret.GetAccessToken() );
+
+//					Debug.Log( "UploadToken.openkey: " + m_my_app_login_ret.GetAccessToken() );
+//
+//					Debug.Log( "Prelog.AccessToken: " + ThirdPlatform.GetMyAppToken() );
+					
+					{
+						if( m_my_app_login_ret.platform == Msdk.ePlatform.ePlatform_Weixin ){
+							// wx
+							t_request_params.Add( "type", "1" );
+						}
+						else if( m_my_app_login_ret.platform == Msdk.ePlatform.ePlatform_QQ ){
+							// qq
+							t_request_params.Add( "type", "2" );
+						}
+						else{
+							Debug.Log( "Platform not processed." );
+
+							t_request_params.Add( "type", "Not Defined" );
+						}
+					}
+				}
+				else if( IsPPPLatform() ){
 					t_request_params.Add( "channel", GetPlatformTag() );
 					
 					t_request_params.Add( "sid", GetPPToken() );
@@ -394,9 +447,9 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 
 	public void TokenUploadSuccessCallback( string p_response ){
-		Debug.Log( "TokenUploadSuccessCallback()" );
+		Debug.Log( "TokenUploadSuccessCallback( " + p_response + " )" );
 
-		m_login_info = p_response;
+		m_login_info = "";
 
 		JSONNode t_node = JSON.Parse( p_response );
 
@@ -415,40 +468,78 @@ public class ThirdPlatform : MonoBehaviour {
 		#endif
 
 		if( t_code == 1 ){
-			SetPlatformStatus( PlatformStatus.LogIn );
+			Debug.Log( "t_code: " + t_code + " LogIn Success." );
 
-			StartGame();
+			m_login_info = p_response;
+
+			SetPlatformStatus( PlatformStatus.LogIn );
+			
+			if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+				// only 1st time login will be called here
+				if( AccountRequest.account != null ){
+					Debug.Log( "1st Time Login Success." );
+
+					AccountRequest.account.DengLuRequestSuccess( GetLoginInfo() );	
+				}
+				else{
+					Debug.LogError( "2nd Time Login Success." );
+				}			
+			}
+			else{
+				// other will goto login scene
+				StartGame();
+			}
 		}
 		else if( t_code == -2 ){
+			Debug.Log( "t_code: " + t_code + " LogOut Normal Fail." );
+
 			#if DEBUG_THIRD_PLATFORM
 			Debug.Log( "TokenUploadSuccessCallback: " + t_code );
 			#endif
 
 			SetPlatformStatus( PlatformStatus.LogOut );
 
-			ShowErrorBox( "登录失败.", BoxDoNone );
+			ShowErrorBox( PrepareBundleHelper.LOGIN_FAIL_CONTENT_LOGIN_FAIL, BoxDoNone );
 		}
 		else{
+			Debug.Log( "t_code: " + t_code + " LogOut Other Fail." );
+
 			#if DEBUG_THIRD_PLATFORM
 			Debug.Log( "TokenUploadSuccessCallback: " + t_code );
 			#endif
 
 			SetPlatformStatus( PlatformStatus.LogOut );
 
-			ShowErrorBox( "其他失败.", BoxDoNone );
+			ShowErrorBox( PrepareBundleHelper.LOGIN_FAIL_CONTENT_OTHER_FAIL, BoxDoNone );
 		}
 	}
 	
 	public void TokenUploadFailCallback( string p_response ){
 		Debug.LogError ( "TokenUploadFailCallback( " + p_response + " )" );
 
+		m_login_info = "";
+
 //		ShowErrorBox( p_response, BoxDoNone );
 
-		ShowErrorBox( p_response, TokenLoadFailExec );
+		// other 3rd platform will continue uploading, because some platform gives token faster than there server's update
+		if( IsMyAppAndroidPlatform() ){
+			ShowErrorBox( p_response, TokenLoadFailCallback );
+		}
+		else{
+			ShowErrorBox( p_response, TokenLoadFailRepeatUpload );
+		}
 	}
 
-	public void TokenLoadFailExec( int p_int ){
-		Debug.Log( "TokenLoadFailExec( " + p_int + " )" );
+	public void TokenLoadFailCallback( int p_int ){
+		Debug.Log( "TokenLoadFailCallback( " + p_int + " )" );
+
+		Bonjour.logout();
+
+		SceneManager.EnterLogin();
+	}
+
+	public void TokenLoadFailRepeatUpload( int p_int ){
+		Debug.Log( "TokenLoadFailRepeatUpload( " + p_int + " )" );
 		
 		BoxDoNone( p_int );
 
@@ -493,18 +584,18 @@ public class ThirdPlatform : MonoBehaviour {
 	public static void CheckLoginToShowSDK(){
 		Debug.Log( "ThirdPlatform.CheckLoginToShowSDK()" );
 
-		if (m_instance == null) {
+		if( m_instance == null ) {
 			Debug.Log( "ThirdPlatform not initialized." );
 
 			return;
 		}
 
-		if ( Instance ().GetPlatformStatus() == PlatformStatus.LogOut ) {
+		if( Instance().GetPlatformStatus() == PlatformStatus.LogOut ) {
 			Debug.Log( "Ready for next login turn( " + Instance().GetPlatformStatus() + " )" );
 
-			ShowSDKCenter ();
+			ShowSDKCenter();
 		}
-		else {
+		else{
 			Debug.Log( "Previous Login turn not done: " + Instance().GetPlatformStatus() );
 		}
 	}
@@ -540,11 +631,50 @@ public class ThirdPlatform : MonoBehaviour {
 	private string m_myapp_login_state;
 	
 	private string m_myapp_login_message;
-	
-	public const string PLATFORM_MY_APP_ANDROID_TAG 		= "MyApp";
+
+	// Confirmed by KangJiangHu, if ios will be published, ios will use TXIOS
+	public const string PLATFORM_MY_APP_ANDROID_TAG 		= "TX";
 	
 	private Msdk.LoginRet m_my_app_login_ret	= null;
-	
+
+	public static string GetMyAppToken(){
+		#if MYAPP_ANDROID_PLATFORM
+		return Instance().m_my_app_login_ret.GetAccessToken();
+		#else
+		return "";
+		#endif
+	}
+
+	public static void ShowQQLogin(){
+		Debug.Log ( "ShowQQLogin()" );
+
+		#if MYAPP_ANDROID_PLATFORM
+		if( Application.platform == RuntimePlatform.Android ){
+			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_QQ );
+		}
+		#endif
+	}
+
+	public static void ShowWXLogin(){
+		Debug.Log ( "ShowWXLogin()" );
+
+		#if MYAPP_ANDROID_PLATFORM
+		if( Application.platform == RuntimePlatform.Android ){
+			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_Weixin );
+		}
+		#endif
+	}
+
+	public static void ShowGuestLogin(){
+		Debug.Log ( "ShowGuestLogin()" );
+
+		#if MYAPP_ANDROID_PLATFORM
+		if( Application.platform == RuntimePlatform.Android ){
+			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_Guest );
+		}
+		#endif
+	}
+
 	//TODO GAME 回调实现，游戏可以参考下面代码
 	
 	/// <summary>
@@ -605,7 +735,9 @@ public class ThirdPlatform : MonoBehaviour {
 			m_myapp_login_message = ret.ToString();
 			
 			{
-				ThirdPlatformLoginSuccess();
+//				ThirdPlatformLoginSuccess();
+
+				UploadToken();
 			}
 			
 			break;
@@ -654,15 +786,7 @@ public class ThirdPlatform : MonoBehaviour {
 		
 		#endif
 	}
-	
-	public static string GetMyAppToken(){
-		#if MYAPP_ANDROID_PLATFORM
-		return Instance().m_my_app_login_ret.GetAccessToken();
-		#else
-		return "";
-		#endif
-	}
-	
+
 	public void AndroidCallString( string p_param ){
 		Debug.Log( "AndroidCallString( " + p_param + " )" );
 	}
@@ -747,7 +871,7 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 
 	public static string GetXYUid(){
-		return Instance ().m_xy_uid;
+		return Instance().m_xy_uid;
 	}
 
 	public void XYSetToken( string p_msg ){
@@ -844,7 +968,7 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 
 	public static string GetI4Id(){
-		return Instance ().m_i4_id;
+		return Instance().m_i4_id;
 	}
 
 	public void I4SetId( string p_msg ){
@@ -1110,7 +1234,7 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 
 	public static string GetIAppleUserId(){
-		return Instance ().m_i_apple_user_id;
+		return Instance().m_i_apple_user_id;
 	}
 
 	public void IAppleSetUserId( string p_msg ){

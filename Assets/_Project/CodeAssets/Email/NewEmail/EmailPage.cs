@@ -84,8 +84,8 @@ public class EmailPage : MonoBehaviour {
 		{
 			foreach (EventHandler handler in btnHandlerList)
 			{
-				handler.m_handler -= EmailBtnHandlerCallBack;
-				handler.m_handler += EmailBtnHandlerCallBack;
+				handler.m_click_handler -= EmailBtnHandlerCallBack;
+				handler.m_click_handler += EmailBtnHandlerCallBack;
 				btnObjDic.Add (handler.name,handler.gameObject);
 			}
 		}
@@ -206,7 +206,7 @@ public class EmailPage : MonoBehaviour {
 
 		foreach (EventHandler handler in emailItemHandlerList)
 		{
-			handler.m_handler -= EmailItemHandlerCallBack;
+			handler.m_click_handler -= EmailItemHandlerCallBack;
 		}
 		emailItemHandlerList.Clear ();
 
@@ -216,7 +216,7 @@ public class EmailPage : MonoBehaviour {
 			email.GetEmailItemInfo (tempList[i]);
 
 			EventHandler emailHandler = emailItemList[i].GetComponent<EventHandler> ();
-			emailHandler.m_handler += EmailItemHandlerCallBack;
+			emailHandler.m_click_handler += EmailItemHandlerCallBack;
 			emailItemHandlerList.Add (emailHandler);
 		}
 
@@ -230,7 +230,7 @@ public class EmailPage : MonoBehaviour {
 		{
 		case 0:
 
-			NewEmailData.Instance ().ReadEmail (email.EmailItemInfo.id,email.EmailItemInfo.type == 80000 ? 
+			NewEmailData.Instance().ReadEmail (email.EmailItemInfo.id,email.EmailItemInfo.type == 80000 ? 
 			                                    EmailShowType.PRIVATE : EmailShowType.SYSTEM);
 
 			break;
@@ -272,7 +272,7 @@ public class EmailPage : MonoBehaviour {
 			break;
 		case "WriteBtn":
 
-			NewEmailData.Instance ().SendEmailType = NewEmailData.SendType.DEFAULT;
+			NewEmailData.Instance().SendEmailType = NewEmailData.SendType.DEFAULT;
 			ShowEmailPage (EmailShowPage.EMAIL_SEND);
 	
 			break;
@@ -297,11 +297,11 @@ public class EmailPage : MonoBehaviour {
 				}
 				else
 				{
-					if (NewEmailData.Instance ().SendEmailType == NewEmailData.SendType.DEFAULT)
+					if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
 					{
 						GetSendEmailInfo ();
 						ShowEmailPage (EmailShowPage.EMAIL_MAINPGE);
-						if (NewEmailData.Instance ().SendEmailType == NewEmailData.SendType.DEFAULT)
+						if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
 						{
 							SwitchEmailType (ShowType);
 							CheckUnSendEmail ();
@@ -310,7 +310,7 @@ public class EmailPage : MonoBehaviour {
 					else
 					{
 						ShowEmailPage (EmailShowPage.EMAIL_CHECK);
-						NewEmailData.Instance ().SendEmailType = NewEmailData.SendType.DEFAULT;
+						NewEmailData.Instance().SendEmailType = NewEmailData.SendType.DEFAULT;
 					}
 				}
 			}
@@ -323,11 +323,11 @@ public class EmailPage : MonoBehaviour {
 
 	public void BackBtnCallBack ()
 	{
-		if (NewEmailData.Instance ().SendEmailType == NewEmailData.SendType.DEFAULT)
+		if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
 		{
 			GetSendEmailInfo ();
 			ShowEmailPage (EmailShowPage.EMAIL_MAINPGE);
-			if (NewEmailData.Instance ().SendEmailType == NewEmailData.SendType.DEFAULT)
+			if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
 			{
 				SwitchEmailType (ShowType);
 				CheckUnSendEmail ();
@@ -336,7 +336,7 @@ public class EmailPage : MonoBehaviour {
 		else
 		{
 			ShowEmailPage (EmailShowPage.EMAIL_CHECK);
-			NewEmailData.Instance ().SendEmailType = NewEmailData.SendType.DEFAULT;
+			NewEmailData.Instance().SendEmailType = NewEmailData.SendType.DEFAULT;
 		}
 	}
 
@@ -452,16 +452,16 @@ public class EmailPage : MonoBehaviour {
 	public void GetSendEmailInfo ()
 	{
 		SendMail send = emailPageList [2].GetComponent<SendMail> ();
-		NewEmailData.Instance ().SendName = send.nameLabel.value;
-		NewEmailData.Instance ().SendContent = send.contentLabel.value;
-//		Debug.Log ("SendName:" + NewEmailData.Instance ().SendName + "//SendContent:" + NewEmailData.Instance ().SendContent);
+		NewEmailData.Instance().SendName = send.nameLabel.value;
+		NewEmailData.Instance().SendContent = send.contentLabel.value;
+//		Debug.Log ("SendName:" + NewEmailData.Instance().SendName + "//SendContent:" + NewEmailData.Instance().SendContent);
 	}
 
 	public void CloseEmail ()
 	{
 		ShowType = EmailShowType.SYSTEM;
 		GetSendEmailInfo ();
-		NewEmailData.Instance ().ExistNewEmail ();
+//		NewEmailData.Instance().ExistNewEmail ();
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
 	}
@@ -474,6 +474,7 @@ public class EmailPage : MonoBehaviour {
 		if (systemList.Count == 0)
 		{
 			redObjList[0].SetActive (false);
+			PushAndNotificationHelper.SetRedSpotNotification (41,false);
 		}
 		else
 		{
@@ -482,11 +483,13 @@ public class EmailPage : MonoBehaviour {
 				if (email.isRead == 0)
 				{
 					redObjList[0].SetActive (true);
+					PushAndNotificationHelper.SetRedSpotNotification (41,true);
 					break;
 				}
 				else
 				{
 					redObjList[0].SetActive (false);
+					PushAndNotificationHelper.SetRedSpotNotification (41,false);
 				}
 			}
 		}
@@ -494,6 +497,7 @@ public class EmailPage : MonoBehaviour {
 		if (privateList.Count == 0)
 		{
 			redObjList[1].SetActive (false);
+			PushAndNotificationHelper.SetRedSpotNotification (10,false);
 		}
 		else
 		{
@@ -502,15 +506,17 @@ public class EmailPage : MonoBehaviour {
 				if (email.isRead == 0)
 				{
 					redObjList[1].SetActive (true);
+					PushAndNotificationHelper.SetRedSpotNotification (10,true);
 					break;
 				}
 				else
 				{
 					redObjList[1].SetActive (false);
+					PushAndNotificationHelper.SetRedSpotNotification (10,false);
 				}
 			}
 		}
-		redObjList[2].SetActive (string.IsNullOrEmpty (NewEmailData.Instance ().SendName) && string.IsNullOrEmpty (NewEmailData.Instance ().SendContent) ?
+		redObjList[2].SetActive (string.IsNullOrEmpty (NewEmailData.Instance().SendName) && string.IsNullOrEmpty (NewEmailData.Instance().SendContent) ?
 		                         false : true);
 	}
 }

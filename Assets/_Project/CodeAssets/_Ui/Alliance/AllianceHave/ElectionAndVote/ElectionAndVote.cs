@@ -223,7 +223,7 @@ public class ElectionAndVote : MonoBehaviour,SocketProcessor {
 	//参加选举请求
 	void ElectionReq ()
 	{
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.MENGZHU_APPLY,"30140");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.MENGZHU_APPLY,"30140");
 	}
 	
 	public bool OnProcessSocketMessage (QXBuffer p_message)

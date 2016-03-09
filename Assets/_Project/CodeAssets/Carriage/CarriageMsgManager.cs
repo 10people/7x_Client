@@ -165,19 +165,25 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                                         ClientMain.m_UITextManager.createText("目标不在技能距离范围内");
                                         return true;
                                     }
-                                case Result.SKILL_COOL_TIME:
-                                    {
-                                        ClientMain.m_UITextManager.createText("技能正在冷却中");
-                                        return true;
-                                    }
+                                //case Result.SKILL_COOL_TIME:
+                                //    {
+                                //        //Show cd if not normal attack.
+                                //        if (tempInfo.skillId != 101)
+                                //        {
+                                //            ClientMain.m_UITextManager.createText("技能正在冷却中");
+                                //        }
+                                //        return true;
+                                //    }
                                 case Result.SKILL_NOT_EXIST:
                                     {
                                         ClientMain.m_UITextManager.createText("技能不存在");
+                                        m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
                                         return true;
                                     }
                                 case Result.TARGET_NOT_EXIST:
                                     {
                                         ClientMain.m_UITextManager.createText("目标不存在");
+                                        m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
                                         return true;
                                     }
                                 case Result.TARGET_IN_SAFE_AREA:
@@ -187,27 +193,38 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                                     }
                                 case Result.SKILL_TARGET_NOT_SELF:
                                     {
-                                        ClientMain.m_UITextManager.createText("技能不能对自己使用");
+                                        ClientMain.m_UITextManager.createText("不能对自己使用");
+                                        m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
                                         return true;
                                     }
                                 case Result.SKILL_TARGET_NOT_OTHER:
                                     {
-                                        ClientMain.m_UITextManager.createText("技能不能对他人使用");
+                                        ClientMain.m_UITextManager.createText("不能对他人使用");
+                                        m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
                                         return true;
                                     }
                                 case Result.SKILL_TARGET_NOT_TEAMMATE:
                                     {
-                                        ClientMain.m_UITextManager.createText("技能不能对友方使用");
+                                        ClientMain.m_UITextManager.createText("不能对友方使用");
+                                        m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
                                         return true;
                                     }
                                 case Result.SKILL_TARGET_NOT_ENEMY:
                                     {
-                                        ClientMain.m_UITextManager.createText("技能不能对敌方使用");
+                                        ClientMain.m_UITextManager.createText("不能对敌方使用");
+                                        m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
                                         return true;
                                     }
                                 case Result.CART_IN_PROTECT_TIME:
                                     {
-                                        ClientMain.m_UITextManager.createText("马车处于保护期");
+                                        ClientMain.m_UITextManager.createText("本马使用了带保护效果的马具,在马具生效期间无法被攻击");
+                                        m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
+                                        return true;
+                                    }
+                                case Result.DAY_NOT_GET_AWARD_TIMES:
+                                    {
+                                        ClientMain.m_UITextManager.createText("今日的劫镖次数已用完,可与其他玩家切磋身手");
+                                        m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
                                         return true;
                                     }
                             }
@@ -384,8 +401,14 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                             case 0:
                                 CommonBuy.Instance.ShowBuy(tempInfo.cost, tempInfo.getTimes, "次数", m_RootManager.m_CarriageMain.DoBuyRebirthFullTime);
                                 break;
+                            case 2:
+                                ClientMain.m_UITextManager.createText("元宝不足");
+                                break;
                             case 3:
                                 CommonBuy.Instance.ShowVIP(tempInfo.vipLevel);
+                                break;
+                            case 4:
+                                ClientMain.m_UITextManager.createText("今日购买次数已用完");
                                 break;
                             case 100:
                                 ClientMain.m_UITextManager.createText("购买成功");
@@ -420,9 +443,23 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                         YaBiaoMoreInfoResp tempInfo = new YaBiaoMoreInfoResp();
                         t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                        if (tempInfo.type == 1)
+                        switch (tempInfo.type)
                         {
-                            m_RootManager.m_CarriageMain.RemainingStartCarriageTimes = tempInfo.count;
+                            case 1:
+                                {
+                                    m_RootManager.m_CarriageMain.RemainingStartCarriageTimes = tempInfo.count;
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    m_RootManager.m_CarriageMain.RemainingRobCarriageTimes = tempInfo.count;
+                                    break;
+                                }
+                            case 3:
+                                {
+                                    m_RootManager.m_CarriageMain.RemainingAdditionalStartTimes = tempInfo.count;
+                                    break;
+                                }
                         }
 
                         return true;
@@ -469,6 +506,29 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                                 item.SetThis();
                             }
                         });
+
+                        return true;
+                    }
+                //Receive alliance tech info.
+                case ProtoIndexes.S_LMKJ_INFO:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                        JianZhuList tempInfo = new JianZhuList();
+                        t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+                        //Get recover tech.
+                        try
+                        {
+                            //204, recovering
+                            m_RootManager.m_CarriageMain.m_SafeAresRecoveringLevel = tempInfo.list[12 - 1].lv;
+                            //205, carriage buff.
+                            m_RootManager.m_CarriageMain.m_CarriageBuffLevel = tempInfo.list[13 - 1].lv;
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError("Error when try get alliance tech.");
+                        }
 
                         return true;
                     }

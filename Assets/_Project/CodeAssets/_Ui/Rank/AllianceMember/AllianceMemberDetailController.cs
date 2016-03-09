@@ -53,13 +53,13 @@ namespace Rank
                 m_AllianceMemberController.m_AllianceMemberDetailControllerList.ForEach(item => item.DestroyFloatButtons());
             }
 
-            if (m_AllianceMemberController.m_RootController.FloatButtonPrefab == null)
+            if (m_AllianceMemberController == null || m_AllianceMemberController.FloatButtonPrefab == null)
             {
                 return;
             }
 
             //Create object and set.
-            GameObject tempObject = (GameObject)Instantiate(m_AllianceMemberController.m_RootController.FloatButtonPrefab);
+            GameObject tempObject = (GameObject)Instantiate(m_AllianceMemberController.FloatButtonPrefab);
             FloatButtonsController = tempObject.GetComponent<FloatButtonsController>();
 
             List<FloatButtonsController.ButtonInfo> tempList = new List<FloatButtonsController.ButtonInfo>();
@@ -97,7 +97,7 @@ namespace Rank
                 yield break;
             }
 
-			NGUIHelper.AdaptWidgetInScrollView(m_AllianceMemberController.m_ScrollView, m_AllianceMemberController.m_ScrollBar, FloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
+            NGUIHelper.AdaptWidgetInScrollView(m_AllianceMemberController.m_ScrollView, m_AllianceMemberController.m_ScrollBar, FloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
         }
 
         public override void GetInfo()
@@ -107,33 +107,39 @@ namespace Rank
                 junzhuId = m_JunZhuInfo.junZhuId
             };
             SocketHelper.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
-            m_ModuleController.ClampScrollView();
+            m_AllianceMemberController.ClampScrollView();
         }
 
         public override void AddFriend()
         {
-            m_AllianceMemberController.m_RootController.AddFriendName = m_JunZhuInfo.name;
+            if (!m_AllianceMemberController.isOutterCall)
+            {
+                m_AllianceMemberController.m_RootController.AddFriendName = m_JunZhuInfo.name;
+            }
 
             FriendOperationLayerManagerment.AddFriends((int)m_JunZhuInfo.junZhuId);
-            m_ModuleController.ClampScrollView();
+            m_AllianceMemberController.ClampScrollView();
         }
 
         public override void Shield()
         {
-            m_AllianceMemberController.m_RootController.ShieldName = m_JunZhuInfo.name;
+            if (!m_AllianceMemberController.isOutterCall)
+            {
+                m_AllianceMemberController.m_RootController.ShieldName = m_JunZhuInfo.name;
+            }
 
             JoinToBlacklist tempMsg = new JoinToBlacklist
             {
                 junzhuId = m_JunZhuInfo.junZhuId
             };
             SocketHelper.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
-            m_ModuleController.ClampScrollView();
+            m_AllianceMemberController.ClampScrollView();
         }
 
         public override void Rob()
         {
-			PlunderData.Instance.PlunderOpponent (PlunderData.Entrance.RANKLIST,m_JunZhuInfo.junZhuId);
-            m_ModuleController.ClampScrollView();
+            PlunderData.Instance.PlunderOpponent(PlunderData.Entrance.RANKLIST, m_JunZhuInfo.junZhuId);
+            m_AllianceMemberController.ClampScrollView();
         }
 
         /// <summary>

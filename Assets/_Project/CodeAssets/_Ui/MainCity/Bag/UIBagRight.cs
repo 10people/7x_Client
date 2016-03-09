@@ -39,8 +39,8 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
     void Start()
     {
         m_arrPosIndex = new int[5] { 1, 3, 4, 5, 7 };
-        m_UseButton.gameObject.GetComponent<EventHandler>().m_handler += CheckUseBTNInfo;
-        m_OKButton.gameObject.GetComponent<EventHandler>().m_handler += CheckOKBTNInfo;
+        m_UseButton.gameObject.GetComponent<EventHandler>().m_click_handler += CheckUseBTNInfo;
+        m_OKButton.gameObject.GetComponent<EventHandler>().m_click_handler += CheckOKBTNInfo;
     }
 
     void Awake()
@@ -91,7 +91,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
 
     public void setProp(BagItem bagItem)
     {
-        Debug.Log("========1");
+//        Debug.Log("========1");
         foreach (GameObject item in m_ListGameObject)
         {
             Destroy(item);
@@ -174,7 +174,9 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
 
     void CheckUseBTNInfo(GameObject tempObject)
     {
-        Global.ScendID(ProtoIndexes.C_EquipAdd, m_UiBagLeft.m_iIndex);
+//        Global.ScendID(ProtoIndexes.C_EquipAdd, m_UiBagLeft.m_iIndex);
+
+		Global.ScendID(ProtoIndexes.C_EquipAdd, m_BagItem.bagIndex);
     }
 
     void CheckOKBTNInfo(GameObject tempObject)

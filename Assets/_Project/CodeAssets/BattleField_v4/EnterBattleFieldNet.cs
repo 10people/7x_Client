@@ -68,6 +68,12 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 
 			OnSendEnterBattle();
 		}
+		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YuanZhu)
+		{
+			OnSendYuanZhu();
+			
+			OnSendEnterBattle();
+		}
 	}
 
 	private void OnSendPvp()
@@ -206,7 +212,26 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 		
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.ZHANDOU_INIT_LVE_DUO_REQ, ref t_protof, ProtoIndexes.ZhanDou_Init_Resp + "|" + ProtoIndexes.S_ZHANDOU_INIT_ERROR);
 	}
-	
+
+	private void OnSendYuanZhu()
+	{
+		PvpZhanDouInitReq req = new PvpZhanDouInitReq();
+		
+		req.userId = CityGlobalData.m_tempEnemy;
+		
+		MemoryStream tempStream = new MemoryStream();
+		
+		QiXiongSerializer t_qx = new QiXiongSerializer();
+		
+		t_qx.Serialize(tempStream, req);
+		
+		byte[] t_protof;
+		
+		t_protof = tempStream.ToArray();
+		
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.ZHANDOU_INIT_YUAN_ZHU_REQ, ref t_protof, ProtoIndexes.ZhanDou_Init_Resp + "|" + ProtoIndexes.S_ZHANDOU_INIT_ERROR);
+	}
+
 	private void OnSendEnterBattle()
 	{
 		LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,

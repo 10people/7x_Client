@@ -54,7 +54,7 @@ public class ShopBuyWindow : MonoBehaviour {
 
 		moneyIcon.transform.localPosition = new Vector3 (shopType == ShopData.ShopType.ORDINARY ? -90 : 10,0,0);
 
-		moneyIcon = QXComData.MoneySprite (tempInfo.moneyType,moneyIcon);
+		moneyIcon = QXComData.MoneySprite (tempInfo.moneyType,moneyIcon,0.66f);
 		numLabel.text = MyColorData.getColorString (1,"购买" + tempInfo.itemNum + "件");
 		needMoney.text = MyColorData.getColorString (1,tempInfo.needMoney.ToString ());
 		nameLabel.text = tempInfo.itemName;
@@ -74,12 +74,13 @@ public class ShopBuyWindow : MonoBehaviour {
 
 		foreach (EventHandler handler in buyHandlerList)
 		{
-			handler.m_handler -= BuyHandlerClickBack;
-			handler.m_handler += BuyHandlerClickBack;
+			handler.m_click_handler -= BuyHandlerClickBack;
+			handler.m_click_handler += BuyHandlerClickBack;
 		}
 
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100220,3);
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100460,3);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100220, 3);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100460, 3);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 2);
 	}
 
 	void LoadIconSamplePrefab (ref WWW p_www, string p_path, UnityEngine.Object p_object)
@@ -113,7 +114,7 @@ public class ShopBuyWindow : MonoBehaviour {
 			break;
 		case "SureBtn":
 		
-			if (QXComData.CheckYinDaoOpenState (100220) || QXComData.CheckYinDaoOpenState (100460))
+			if (QXComData.CheckYinDaoOpenState (100220) || QXComData.CheckYinDaoOpenState (100460) || QXComData.CheckYinDaoOpenState (400040))
 			{
 				UIYindao.m_UIYindao.CloseUI ();
 			}

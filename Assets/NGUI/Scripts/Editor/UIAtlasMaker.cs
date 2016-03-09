@@ -503,7 +503,7 @@ public class UIAtlasMaker : EditorWindow
 
 	public static bool UpdateTexture (UIAtlas atlas, List<SpriteEntry> sprites)
 	{
-		Debug.Log( "UIAtlasMaker.UpdateTexture." );
+//		Debug.Log( "UIAtlasMaker.UpdateTexture." );
 
 		// Get the texture for the atlas
 		Texture2D tex = atlas.texture as Texture2D;
@@ -547,7 +547,7 @@ public class UIAtlasMaker : EditorWindow
 
 			// refresh Atlas Width & Height
 			{
-				Debug.Log( "Reset Atlas Width & Height: " + tex.width + ", " + tex.height );
+//				Debug.Log( "Reset Atlas Width & Height: " + tex.width + ", " + tex.height );
 				
 				atlas.AtlasWidth = tex.width;
 				

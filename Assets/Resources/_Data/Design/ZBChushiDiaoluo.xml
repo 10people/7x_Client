@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-  <ZBChushiDiaoluo id="1" content="完成新手关可获得" />
-  <ZBChushiDiaoluo id="2" content="完成新手关可获得" />
-  <ZBChushiDiaoluo id="3" content="第2天登录可获得" />
-  <ZBChushiDiaoluo id="11" content="通关1-3可获得" />
-  <ZBChushiDiaoluo id="12" content="通关第1章可获得" />
-  <ZBChushiDiaoluo id="13" content="通关2-3可获得" />
-  <ZBChushiDiaoluo id="14" content="通关2-7可获得" />
-  <ZBChushiDiaoluo id="15" content="通关3-5可获得" />
-  <ZBChushiDiaoluo id="16" content="通关第3章可获得" />
+<ZBChushiDiaoluo id="1" content="完成新手关可获得" />
+<ZBChushiDiaoluo id="2" content="完成新手关可获得" />
+<ZBChushiDiaoluo id="3" content="第2天登录奖励" />
+<ZBChushiDiaoluo id="11" content="通关1-3可获得" />
+<ZBChushiDiaoluo id="12" content="第1章通章奖励" />
+<ZBChushiDiaoluo id="13" content="通关2-3可获得" />
+<ZBChushiDiaoluo id="14" content="通关2-7可获得" />
+<ZBChushiDiaoluo id="15" content="通关3-5可获得" />
+<ZBChushiDiaoluo id="16" content="第3章通章奖励" />
 </dataset>

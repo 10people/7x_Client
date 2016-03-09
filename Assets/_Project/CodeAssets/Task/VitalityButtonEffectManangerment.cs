@@ -7,6 +7,7 @@ public class VitalityButtonEffectManangerment : MonoBehaviour
     public NGUILongPress NguiLongPress;
     public GameObject m_FirstObj;
     public GameObject m_SecondObj;
+    public EventIndexHandle m_TouchLQEvent;
     public UIEventListener.VoidDelegate OnLongPressFinish
     {
         get { return NguiLongPress.OnLongPressFinish; }

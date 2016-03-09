@@ -13,7 +13,7 @@ public class DramaDirector : SingletonMono<DramaDirector> {
 	#region Mono
 
 	void Awake(){
-		if ( HaveInstance () ) {
+		if ( HaveInstance() ) {
 			#if DEBUG_DRAMA_DIRECTOR
 			Debug.Log( "DramaDirector.Destroy.Instance()" );
 			#endif

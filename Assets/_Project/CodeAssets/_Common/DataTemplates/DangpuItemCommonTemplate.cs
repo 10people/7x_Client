@@ -25,6 +25,9 @@ public class DangpuItemCommonTemplate : XmlLoadManager
 
 	public int flag;
 
+	public int max;
+
+	public int VIP;
 
 	public static List<DangpuItemCommonTemplate> templates;
 
@@ -88,6 +91,12 @@ public class DangpuItemCommonTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.flag = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.max = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.VIP = int.Parse( t_reader.Value );
 			}
 			
 			templates.Add( t_template );

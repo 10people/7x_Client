@@ -6,6 +6,9 @@ public class EnterFuWen : MonoBehaviour {
 
 	void OnClick ()
 	{
+		Carriage.BiaoJuRecordData.Instance.BiaoJuRecordReq (Carriage.BiaoJuRecordData.RecordType.HISTORY);
+		return;
+
 //		FuWenData.Instance.OpenFuWen ();
 //		ShopData.Instance.OpenShop (ShopData.ShopType.ORDINARY);
 
@@ -16,7 +19,7 @@ public class EnterFuWen : MonoBehaviour {
 			rewardDataList.Add (data);
 		}
 
-//		GeneralRewardManager.Instance ().CreateReward (rewardDataList);
-		GeneralRewardManager.Instance ().CreateSpecialReward (rewardDataList);
+//		GeneralRewardManager.Instance().CreateReward (rewardDataList);
+		GeneralRewardManager.Instance().CreateSpecialReward (rewardDataList);
 	}
 }

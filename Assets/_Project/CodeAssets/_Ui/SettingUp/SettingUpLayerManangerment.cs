@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -41,8 +41,10 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     public GameObject m_SpriteCountryHuang;
     public GameObject m_SpriteCountryHuangBack;
     public GameObject m_ChangeCountryLayer;
-
+    public GameObject m_ObjTopLeft;
     public UILabel m_LabelTopUp;
+
+    public UILabel m_LabRenameSignal;
     private string RenameInfo = "";
     private string CDkeyInfo = "";
 
@@ -58,6 +60,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
  
 	void Start ()
     {
+        m_LabRenameSignal.text = LanguageTemplate.GetText(20006) + MyColorData.getColorString(5, "100") + "元宝";
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, LanguageTemplate.GetText(1528), 0, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
       //  m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
         listEventMainLayer.ForEach(p => p.m_Handle += EventReception);
@@ -74,8 +78,10 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     {
         UIInput input = listRenameObject[1].GetComponent<UILabel>().parent.GetComponent<UIInput>();
         RenameInfo = FunctionWindowsCreateManagerment.GetNeedString(input.value);
- 
+
+        listRenameObject[1].SetActive(true);
         listRenameObject[1].GetComponent<UILabel>().text = RenameInfo;
+        input.value = RenameInfo;
         if (string.IsNullOrEmpty(RenameInfo))
         {
             listRenameObject[2].SetActive(true);
@@ -351,7 +357,10 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.VIP_SIGNAL_TAG) + VipFuncOpenTemplate.GetNeedLevelByKey(4).ToString() + NameIdTemplate.GetName_By_NameId(990019) + NameIdTemplate.GetName_By_NameId(990044);
+        string str = LanguageTemplate.GetText(600) 
+                    + VipFuncOpenTemplate.GetNeedLevelByKey(4).ToString()
+                    + LanguageTemplate.GetText(601)
+                    + "\n\n" + LanguageTemplate.GetText(700);
 
         // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
         uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null);
@@ -373,44 +382,64 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 
                         t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
                         NameSave = tempInfo.name;
-                        listRenameObject[1].SetActive(false);
+                     
                         listRenameEvent[1].GetComponent<Collider>().enabled = true;
+                        
                         if (tempInfo.code == 0)
                         {
+                         //   listRenameObject[1].SetActive(false);
+                           // RenameInfo = "";
+                          //  listRenameEvent[2].GetComponent<UIInput>().value = "";
+                           // listRenameObject[2].SetActive(true);
                             listMainLab[1].text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString() + "   " + tempInfo.name;
                             JunZhuData.Instance().m_junzhuInfo.name = NameSave;
                             listRenameObject[0].SetActive(false);
-                            _content1 = LanguageTemplate.GetText(1506);
-                            _content2 = "\n" + NameSave;
-                            _SignalType = 2;
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            //_content1 = LanguageTemplate.GetText(1506);
+                            //_content2 = "\n" + NameSave;
+                            //_SignalType = 2;
+                            // EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+                            // Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            //EquipSuoData.ShowSignal(null, _content1, _content2);//tanchukuang 
+
+                            ClientMain.m_UITextManager.createText(  "改名成功！");
+
                         }
                         else if (tempInfo.code == -200)
                         {
-                            _content1 = LanguageTemplate.GetText(1507);
-                            _content2 = "";
-                            _SignalType = 2;
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            //_content1 = LanguageTemplate.GetText(1507);
+                            //_content2 = "";
+                            //_SignalType = 2;
+                            //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+                            //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            ClientMain.m_UITextManager.createText( LanguageTemplate.GetText(1507));
                         }
                         else if (tempInfo.code == -300)
                         {
-                            _content1 = LanguageTemplate.GetText(1508);
-                            _content2 = "";
-                            _SignalType = 2;
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            //_content1 = LanguageTemplate.GetText(1508);
+                            //_content2 = "";
+                            //_SignalType = 2;
+                            //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+                            //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+
+                            ClientMain.m_UITextManager.createText(LanguageTemplate.GetText(1508));
                         }
                         else if (tempInfo.code == -400)
                         {
-                            _content1 = LanguageTemplate.GetText(1509);
-                            _content2 = "";
-                            _SignalType = 2;
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            //_content1 = LanguageTemplate.GetText(1509);
+                            //_content2 = "";
+                            //_SignalType = 2;
+                            //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+                            //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            ClientMain.m_UITextManager.createText(  LanguageTemplate.GetText(1509));
                         }
                         else if (tempInfo.code > 0)
                         {
                             EquipSuoData.TopUpLayerTip(m_MainParent);
                         }
-
+                        if (tempInfo.code < 0 || tempInfo.code > 0)
+                        {
+                            listRenameObject[1].SetActive(true);
+                        }
                         return true;
                     }
                 case ProtoIndexes.S_CDKEY_RES:
@@ -498,17 +527,22 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         _content1 = LanguageTemplate.GetText(1503);
                         _content2 = "";
                         _SignalType = 2;
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                        EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+
+                      //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
 
                     }
                     else
                     {
-                        //listRenameObject[0].SetActive(false);
-                       // listRenameObject[1].SetActive(true);
-                        _content1 = LanguageTemplate.GetText(1504) + "100" + LanguageTemplate.GetText(1505);
-                        _content2 = "";
-                       _SignalType = 1;
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                        //   //listRenameObject[0].SetActive(false);
+                        //  // listRenameObject[1].SetActive(true);
+                        //   _content1 = LanguageTemplate.GetText(1504) + "100" + LanguageTemplate.GetText(1505);
+                        //   _content2 = "";
+                        //  _SignalType = 1;
+                        ////   EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+
+                        //   Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                        Rename_Cost(2);
                     }   
                 }
                 break;
@@ -521,8 +555,14 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 break;
             case 13:
                 {
+                   
                     listRenameObject[2].SetActive(false);
                     listRenameEvent[1].gameObject.SetActive(true);
+                }
+                break;
+            case 1:
+                {
+                    listRenameObject[0].SetActive(false);
                 }
                 break;
 
@@ -574,7 +614,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_CDKEY_REQ, ref t_protof);
     }
 
-    void SwitchAccountController(int index)
+    public static void SwitchAccountController( int index = 0 )
     {
         WindowBackShowController.m_SaveEquipBuWei = 0;
         PlayerPrefs.DeleteKey("UserNameAndPassWord");
@@ -694,7 +734,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         }
         else if (_SignalType == 2)
         {
-            uibox.setBox(TitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, null, confirmStr,null);
+            EquipSuoData.ShowSignal(TitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2));
+           //ibox.setBox(TitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, null, confirmStr,null);
         }
 
     }

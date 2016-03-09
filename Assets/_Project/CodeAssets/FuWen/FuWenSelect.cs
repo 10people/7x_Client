@@ -10,7 +10,7 @@ using ProtoBuf.Meta;
 
 public class FuWenSelect : MonoBehaviour {
 
-	private int curItemId;//符石itemid
+	public static FuWenSelect fuWenSelect;
 
 	public UIScrollView selectSc;
 	public UIScrollBar selectSb;
@@ -31,149 +31,94 @@ public class FuWenSelect : MonoBehaviour {
 
 	public List<EventHandler> selectHandlerList = new List<EventHandler> ();
 
-	/// <summary>
-	/// 镶嵌符石的时候需要符石信息，符石镶嵌栏位id
-	/// </summary>
-	private Fuwen fuWenInfo;
-	public Fuwen GetFuWenInfo
-	{
-		set{fuWenInfo = value;}
-	}
-	private int lanWeiId;
-	public int GetXiangQianLanWeiId
-	{
-		set{lanWeiId = value;}
-	}
-
-	private bool isSelect = false;//是否已选择符石
-	public bool IsSelect
-	{
-		set{isSelect = value;}
-		get{return isSelect;}
-	}
-
-	private float selectSbValue;
+	private FuwenLanwei lanWeiInfo;
+	private int curItemId;//符石itemid
 
 	public ScaleEffectController sEffectController;
 
-	//获得选择符石列表
-	public void GetSelectFuWenInfo (SelectType tempType,List<Fuwen> tempList)
+	void Awake ()
+	{
+		fuWenSelect = this;
+	}
+
+	void OnDestroy ()
+	{
+		fuWenSelect = null;
+	}
+
+	/// <summary>
+	/// Gets the select fu wen info.
+	/// </summary>
+	/// <param name="tempType">Temp type.</param>
+	/// <param name="tempList">Temp list.</param>
+	public void GetSelectFuWenInfo (SelectType tempType,List<Fuwen> tempList,FuwenLanwei tempLanWeiInfo)
 	{
 		sEffectController.OnOpenWindowClick ();
 
 		selectType = tempType;
+		lanWeiInfo = tempLanWeiInfo;
 
-		switch (tempType)
-		{
-		case SelectType.XIANGQIAN:
+		titleLabel.text = tempType == SelectType.HECHENG ? "选择符石" : "镶嵌";
+		titleLabel.GetComponent<UILabelType> ().init ();
 
-			titleLabel.text = "镶嵌";
+		desLabel.text = tempList.Count > 0 ? "" : LanguageTemplate.GetText (LanguageTemplate.Text.SET_1);
 
-			desLabel.text = tempList.Count > 0 ? "" : "没有可镶嵌的符石";
+		fuShiItemList = QXComData.CreateGameObjectList (fuShiItemObj,tempList.Count,fuShiItemList);
 
-			break;
-
-		case SelectType.HECHENG:
-			
-			titleLabel.text = "选择符石";
-
-			desLabel.text = tempList.Count > 0 ? "" : "没有可合成的符石";
-			
-			break;
-
-		default:
-			break;
-		}
-		int selectCount = tempList.Count - fuShiItemList.Count;
-		if (selectCount > 0)
-		{
-			for (int i = 0;i < selectCount;i ++)
-			{
-				GameObject fuShiItem = (GameObject)Instantiate (fuShiItemObj);
-				
-				fuShiItem.SetActive (true);
-				fuShiItem.transform.parent = fuShiGrid.transform;
-				fuShiItem.transform.localPosition = Vector3.zero;
-				fuShiItem.transform.localScale = Vector3.one;
-				fuShiItemList.Add (fuShiItem);
-				selectSc.UpdateScrollbars (true);
-				fuShiGrid.GetComponent<UIGrid> ().repositionNow = true;
-			}
-		}
-		else if (selectCount < 0)
-		{
-			for (int i = 0;i < Mathf.Abs (selectCount);i ++)
-			{
-				Destroy (fuShiItemList[0]);
-				fuShiItemList.RemoveAt (0);
-				selectSc.UpdateScrollbars (true);
-				fuShiGrid.GetComponent<UIGrid> ().repositionNow = true;
-			}
-		}
-		selectSb.value = selectSbValue;
+		List<Fuwen> sortList = new List<Fuwen> ();
 		for (int i = 0;i < tempList.Count;i ++)
 		{
-			FuWenSelectItem fuWenSelect = fuShiItemList[i].GetComponent<FuWenSelectItem> ();
-			fuWenSelect.GetFuWenInfo (tempList[i]);
+			if (tempList[i].itemId == tempLanWeiInfo.itemId)
+			{
+				sortList.Add (tempList[i]);
+			}
 		}
 
-		fuShiGrid.transform.parent.GetComponent<UIScrollView> ().enabled = tempList.Count < 4 ? false : true;
+		for (int i = 0;i < tempList.Count - 1;i ++)
+		{
+			for (int j = 0;j < tempList.Count - i - 1;j ++)
+			{
+				if (FuWenTemplate.GetFuWenTemplateByFuWenId (tempList[j].itemId).fuwenLevel < FuWenTemplate.GetFuWenTemplateByFuWenId (tempList[j + 1].itemId).fuwenLevel)
+				{
+					Fuwen tempFuWen = tempList[j];
+					tempList[j] = tempList[j + 1];
+					tempList[j + 1] = tempFuWen;
+				}
+			}
+		}
+
+		for (int i = 0;i < tempList.Count;i ++)
+		{
+			if (tempList[i].itemId != tempLanWeiInfo.itemId)
+			{
+				sortList.Add (tempList[i]);
+			}
+		}
+
+		for (int i = 0;i < sortList.Count;i ++)
+		{
+			fuShiItemList[i].transform.localPosition = new Vector3(0,-107 * i,0);
+			selectSc.UpdateScrollbars (true);
+
+			FuWenSelectItem fuWenSelect = fuShiItemList[i].GetComponent<FuWenSelectItem> ();
+			fuWenSelect.GetFuWenInfo (tempType,sortList[i],tempLanWeiInfo);
+		}
+
+		selectSc.enabled = tempList.Count <= 4 ? false : true;
+		selectSb.gameObject.SetActive (tempList.Count <= 4 ? false : true);
 
 		foreach (EventHandler handler in selectHandlerList)
 		{
-			handler.m_handler -= CloseBtn;
-			handler.m_handler += CloseBtn;
+			handler.m_click_handler -= CloseBtn;
+			handler.m_click_handler += CloseBtn;
 		}
 
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100470,4);
-
-		isSelect = false;
-	}
-
-	//刷新选择的符石
-	public void RefreshSelectFuShiItem (int itemId)
-	{
-		curItemId = itemId;
-
-		for (int i = 0;i < fuShiItemList.Count;i ++)
-		{
-			FuWenSelectItem fuWenItem = fuShiItemList[i].GetComponent<FuWenSelectItem> ();
-			fuWenItem.IsCurFuShi (itemId);
-		}
 	}
 
 	public void CloseBtn (GameObject obj)
 	{
-		if (curItemId != 0)
-		{
-			switch (selectType)
-			{
-			case SelectType.XIANGQIAN:
-
-				FuWenMainPage.fuWenMainPage.CurXiangQianId = curItemId;
-				//发送镶嵌符石请求
-				FuWenData.Instance.FuWenOperateReq (FuWenData.FuWenOperateType.EQUIP_FUWEN,fuWenInfo.itemId,lanWeiId);
-				
-				break;
-				
-			case SelectType.HECHENG:
-				
-				FuWenMainPage.fuWenMainPage.CurHeChengItemId = curItemId;
-				FuWenMainPage.fuWenMainPage.ShowMixBtns ();
-				FuWenMainPage.fuWenMainPage.FxController (FuWenMixBtn.FxType.OPEN);
-				FuWenMainPage.fuWenMainPage.EffectPanel (true);
-
-				break;
-				
-			default:
-				break;
-			}
-		}
-		else
-		{
-			FuWenMainPage.fuWenMainPage.IsBtnClick = false;
-		}
-		selectSbValue = selectSb.value;
+		FuWenMainPage.fuWenMainPage.IsBtnClick = false;
 		gameObject.SetActive (false);
 	}
 }

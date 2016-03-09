@@ -284,11 +284,11 @@ public class ReplayNodeKing : ReplayNode {
 
 		m_cur_weapons[ 0 ] = (GameObject)Instantiate( m_weapon_dao, m_pos_dao.transform.position, m_pos_dao.transform.rotation );
 		m_cur_weapons[ 0 ].transform.parent = m_pos_dao.parent;
-		m_cur_weapons[ 0 ].layer = gameObject.layer;
+		GameObjectHelper.SetGameObjectLayer( m_cur_weapons[ 0 ], gameObject.layer );
 
 		m_cur_weapons[ 1 ] = (GameObject)Instantiate( m_weapon_dun, m_pos_dun.transform.position, m_pos_dun.transform.rotation  );
 		m_cur_weapons[ 1 ].transform.parent = m_pos_dun.parent;
-		m_cur_weapons[ 1 ].layer = gameObject.layer;
+		GameObjectHelper.SetGameObjectLayer( m_cur_weapons[ 1 ], gameObject.layer );
 	}
 
 	private void ChangeWeapon_ChangMao()
@@ -297,7 +297,7 @@ public class ReplayNodeKing : ReplayNode {
 
 		m_cur_weapons[ 0 ] = (GameObject)Instantiate( m_weapon_chang_mao, m_pos_chang_mao.transform.position, m_pos_chang_mao.transform.rotation );
 		m_cur_weapons[ 0 ].transform.parent = m_pos_chang_mao.parent;
-		m_cur_weapons[ 0 ].layer = gameObject.layer;
+		GameObjectHelper.SetGameObjectLayer( m_cur_weapons[ 0 ], gameObject.layer );
 	}
 
 	private void ChangeWeapon_GongJian()
@@ -306,7 +306,7 @@ public class ReplayNodeKing : ReplayNode {
 
 		m_cur_weapons[ 0 ] = (GameObject)Instantiate( m_weapon_gong, m_pos_gong.transform.position, m_pos_gong.transform.rotation );
 		m_cur_weapons[ 0 ].transform.parent = m_pos_gong.parent;
-		m_cur_weapons[ 0 ].layer = gameObject.layer;
+		GameObjectHelper.SetGameObjectLayer( m_cur_weapons[ 0 ], gameObject.layer );
 	}
 
 

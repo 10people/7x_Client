@@ -122,7 +122,7 @@ public class EnterYouXiaBattle : MonoBehaviour,SocketProcessor
 	public GameObject NeedCloseObg;
 	public void ShowOrClose()
 	{
-		Debug.Log ("NeedCloseObg = " +NeedCloseObg);
+		//Debug.Log ("NeedCloseObg = " +NeedCloseObg);
 		if(NeedCloseObg == null)
 		{
 			return;
@@ -140,7 +140,7 @@ public class EnterYouXiaBattle : MonoBehaviour,SocketProcessor
 
 	public void SecondShowOrClose()
 	{
-		Debug.Log ("SecendNeedCloseObg = " +SecendNeedCloseObg);
+		//Debug.Log ("SecendNeedCloseObg = " +SecendNeedCloseObg);
 		if(SecendNeedCloseObg == null)
 		{
 			return;
@@ -158,7 +158,7 @@ public class EnterYouXiaBattle : MonoBehaviour,SocketProcessor
 	
 	public void ThirdShowOrClose()
 	{
-		Debug.Log ("ThirdNeedCloseObg = " +ThirdNeedCloseObg);
+		//Debug.Log ("ThirdNeedCloseObg = " +ThirdNeedCloseObg);
 		if(ThirdNeedCloseObg == null)
 		{
 			return;

@@ -36,7 +36,7 @@ public class NpcManager : MonoBehaviour {
     LayerMask m_layerMask = 1 << 8;
 
     Ray m_ray;
-
+    private UICamera.MouseOrTouch m_MouseOrTouch;
     void Awake() {
         m_NpcManager = this;
     }
@@ -297,7 +297,34 @@ public class NpcManager : MonoBehaviour {
         }
     }
 
-    public void CreateHousePortal(PrepareForCityLoad.NpcInfo h_Self, PrepareForCityLoad.NpcInfo h_Other)
+    public void CreateHousePortal(PrepareForCityLoad.NpcInfo portal)
+    {
+        GameObject tempOjbect = null;
+        foreach (NpcCityTemplate _template in NpcCityTemplate.m_templates)
+        {
+            if (_template.m_Id == 3 && _template.m_Type == 1)
+            {
+                tempOjbect = Instantiate(portal._Obj) as GameObject;
+                tempOjbect.name = "EffectPortal";
+                _listBigHouse.Add(tempOjbect);
+                tempOjbect.transform.parent = this.transform;
+                tempOjbect.GetComponent<TenementEnterPortal>().m_indexNum = _template.m_npcId;
+                tempOjbect.GetComponent<TenementEnterPortal>().m_labName.gameObject.SetActive(true);
+                tempOjbect.GetComponent<TenementEnterPortal>().m_labName.text = MyColorData.getColorString(4, "[b]" + NameIdTemplate.GetName_By_NameId(_template.m_npcName) + "[/b]");
+                NpcObjectItem tempItem = tempOjbect.GetComponent<NpcObjectItem>();
+                tempItem.InitWithTenementNpc(_template);
+                m_npcObjectItemDic.Add(_template.m_Id, tempItem);
+                PlayerEnterCollider[] tempEnterList = tempOjbect.GetComponentsInChildren<PlayerEnterCollider>();
+                foreach (PlayerEnterCollider tempCollider in tempEnterList)
+                {
+                    tempCollider.m_colliser += TriggerEnter;
+                }
+                break;
+            }
+        }
+    }
+    /*
+       public void CreateHousePortal(PrepareForCityLoad.NpcInfo h_Self, PrepareForCityLoad.NpcInfo h_Other)
     {
         int house_id = 0;
         GameObject tempOjbect = null;
@@ -356,9 +383,8 @@ public class NpcManager : MonoBehaviour {
             }
         }
 
-        AllianceEffigyManagerment.m_Instance.SetNpcInfo();
-    }
-
+        //AllianceEffigyManagerment.m_Instance.SetNpcInfo();
+    }*/
     void WorshipNPCInCityLoadCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
         GameObject tempOjbect = Instantiate(p_object) as GameObject;
@@ -849,8 +875,8 @@ public class NpcManager : MonoBehaviour {
 			tempItem.m_nameLabel.transform.LookAt(m_camera.transform);
 		}
 	}*/
-	
-	private Transform m_trigger_transform = null; 
+
+    private Transform m_trigger_transform = null; 
 
 	/// npc有两个碰撞提 进入外圈 显示npc对话 进入npc内圈 显示功能性ui
 	void TriggerEnter(int tempColliderIndex,bool tempEnterState,Transform tempCollider,Transform tempTransform){
@@ -862,17 +888,17 @@ public class NpcManager : MonoBehaviour {
 		
 		if(tempColliderIndex == 0){
 			if(tempEnterState == true){
-				Debug.Log("进入内圈");
+				//Debug.Log("进入内圈");
 			}
 			else{
-				Debug.Log("退出内圈");
+				//Debug.Log("退出内圈");
 			}
 			
 		}else
 		{
 			if(tempEnterState == true)
 			{
-				Debug.Log("进入外圈");
+				//Debug.Log("进入外圈");
 				
 				if(m_currentNpcTransformDic.ContainsKey(t_npc_city_template.m_Id)) return;
 
@@ -890,7 +916,7 @@ public class NpcManager : MonoBehaviour {
 				
 				m_currentNpcTransformDic.Remove(t_npc_city_template.m_Id);
 				
-				Debug.Log("退出外圈");
+				//Debug.Log("退出外圈");
 			}
 		}
 	}
@@ -916,12 +942,12 @@ public class NpcManager : MonoBehaviour {
 
 	void ShowNpcLayer() //显示UI方法
 	{
-		Debug.Log("调用显示UI的方法");
+		//Debug.Log("调用显示UI的方法");
 
         if (MainCityUI.IsWindowsExist()) return;
 		
 		if( m_currentNpcTemplate != null ){
-			Debug.Log("现在显示的UI： " + (m_currentNpcTemplate.m_npcName - CityGlobalData.m_npcBaseNum));
+			//Debug.Log("现在显示的UI： " + (m_currentNpcTemplate.m_npcName - CityGlobalData.m_npcBaseNum));
 			
 			switch (m_currentNpcTemplate.m_npcName - CityGlobalData.m_npcBaseNum)
 			{
@@ -970,7 +996,7 @@ public class NpcManager : MonoBehaviour {
 			return;
 		}
 
-        if (CityGlobalData.m_joystickControl || MainCityUI.IsWindowsExist() || JunZhuLevelUpManagerment.m_JunZhuLevelUp != null  || TaskSignalInfoShow.m_TaskSignal != null) return; //现在在操纵摇杆 or 有ui界面弹出  npc不响应点击事件
+        if (QXChatData.Instance.SetOpenChat || CityGlobalData.m_joystickControl || MainCityUI.IsWindowsExist() || JunZhuLevelUpManagerment.m_JunZhuLevelUp != null  || TaskSignalInfoShow.m_TaskSignal != null) return; //现在在操纵摇杆 or 有ui界面弹出  npc不响应点击事件
 		{
             if (Input.GetMouseButton(0))
 			{
@@ -978,9 +1004,9 @@ public class NpcManager : MonoBehaviour {
                 {
                     return;
                 }
-
-               Vector3 tempMousePosition = Input.mousePosition;
-				m_ray = m_nguiCamera.ScreenPointToRay(tempMousePosition);// 从屏幕发射线
+               
+                Vector3 tempMousePosition = Input.mousePosition;
+                m_ray = m_nguiCamera.ScreenPointToRay(tempMousePosition);// 从屏幕发射线
 				RaycastHit nguiHit;
 
                 if (Physics.Raycast(m_ray, out nguiHit)) return;//碰到主界面UI按钮
@@ -996,7 +1022,8 @@ public class NpcManager : MonoBehaviour {
                 {
                     if (hit.collider.transform.name.IndexOf("PlayerObject") > -1)
                     {
-                       EquipSuoData.CreateChaKan(hit.collider.transform.name);
+                        m_MouseOrTouch = UICamera.GetTouch(UICamera.currentTouchID);
+                        EquipSuoData.CreateChaKan(hit.collider.transform.name, m_MouseOrTouch.pos);
                        return;
                     }
                 }
@@ -1007,7 +1034,7 @@ public class NpcManager : MonoBehaviour {
                 if (Physics.Raycast(m_ray,out hit, 10000.0f, depth2)) //碰到3d世界中的npc
 				{
 					m_currentNpcTemplate = null;
-                    if (hit.collider.transform.name == "NpcInCity")
+                    if (hit.collider.transform.name == "NpcInCity" || hit.collider.transform.name == "EffectPortal")
                     {
                         PlayerModelController.m_playerModelController.m_agent.enabled = true;
                         m_currentNpcTemplate = hit.collider.transform.GetComponent<NpcObjectItem>().m_template;

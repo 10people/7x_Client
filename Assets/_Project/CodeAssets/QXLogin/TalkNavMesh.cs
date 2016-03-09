@@ -9,7 +9,7 @@ public class TalkNavMesh : MonoBehaviour
 
     void OnClick()
     {
-        UI3DEffectTool.Instance().ClearUIFx(gameObject);
+        UI3DEffectTool.ClearUIFx(gameObject);
         showid = TaskData.Instance.ShowId;
        // TaskData.Instance.OtherSceneShow();
         FindNpc(showid);

@@ -44,6 +44,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
     public bool isNewLeader;//是否提示新盟主即位
     private bool Isdismissed = false;
 
+	public int  Hy_Bi;
     void Awake()
     {
         SocketTool.RegisterMessageProcessor(this);
@@ -115,6 +116,10 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             MainCityUI.m_MainCityUI.m_MainCityUILT.RefreshAllianceInfo();
                         }
 
+                        if (PlayerNameManager.m_ObjSelfName != null)
+                        {
+                            PlayerNameManager.UpdateSelfName();
+                        }
                         return true;
                     }
 
@@ -191,6 +196,10 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             MainCityUI.m_MainCityUI.m_MainCityUILT.RefreshAllianceInfo();
                         }
 
+                        if (PlayerNameManager.m_ObjSelfName != null)
+                        {
+                            PlayerNameManager.UpdateSelfName();
+                        }
                         return true;
                     }
 
@@ -219,8 +228,8 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
                 case ProtoIndexes.ALLIANCE_HAVE_NEW_APPLYER://主界面联盟按钮提示
                     {
-                        Debug.Log("联盟动态：" + ProtoIndexes.ALLIANCE_HAVE_NEW_APPLYER);
-                        Debug.Log("联盟index：" + 104);
+//                        Debug.Log("联盟动态：" + ProtoIndexes.ALLIANCE_HAVE_NEW_APPLYER);
+//                        Debug.Log("联盟index：" + 104);
                         MainCityUI.SetRedAlert(104, true);
                         return true;
                     }
@@ -240,7 +249,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                     }
                 case ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY://主界面联盟按钮提示
                     {
-                        Debug.Log("联盟升级：" + ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY);
+//                        Debug.Log("联盟升级：" + ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY);
 
                         IsAllianceUP = true;
 
@@ -292,7 +301,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 				
 				t_qx.Deserialize(t_stream, BuildUpback, BuildUpback.GetType());
 				
-				Debug.Log("BuildUpback main - -   ");
+//				Debug.Log("BuildUpback main - -   ");
 				
 				return true;
 			}
@@ -328,7 +337,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 			MainCityUI.TryRemoveFromObjectList(uirot);
 			Destroy(uirot);
 		}
-		 JunZhuData.Instance ().m_junzhuInfo.lianMengId = 0;
+		 JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
 		CityGlobalData.m_isAllianceScene = false;
 		CityGlobalData.m_isMainScene = true;
 
@@ -377,7 +386,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof,"30124");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof,"30124");
 
 //		Debug.Log ("ApplicateReq" + ProtoIndexes.LOOK_APPLICANTS);
 	}

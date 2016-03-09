@@ -51,7 +51,7 @@ public class NGUIDebug : MonoBehaviour
 	/// Ensure we have an instance present.
 	/// </summary>
 
-	public static void CreateInstance ()
+	public static void CreateInstance()
 	{
 		if (mInstance == null)
 		{

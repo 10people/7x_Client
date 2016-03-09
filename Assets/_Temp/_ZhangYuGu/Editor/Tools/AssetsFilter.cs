@@ -18,12 +18,12 @@ public class AssetsFilter : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
 	#endregion
@@ -54,37 +54,37 @@ public class AssetsFilter : MonoBehaviour {
 		}
 
 		TextAsset t_text = (TextAsset)AssetDatabase.LoadAssetAtPath( ASSET_FILTER, typeof(TextAsset) );
-		
+
 		if( t_text == null ){
 			Debug.LogError( "Error, Text = null." );
-			
+
 			return false;
 		}
-		
+
 		StringReader t_reader = new StringReader( t_text.text );
-		
+
 		int t_line_count = 0;
-		
+
 		while( true ){
 			string t_line = t_reader.ReadLine();
-			
+
 			if( t_line == null ){
 				#if DEBUG_FILTER
 				Debug.Log( "AssetFilter.File.End()" );
 				#endif
-				
+
 				break;
 			}
-			
+
 			t_line_count++;
-			
+
 			LoadLine( t_line );
 		}
 
 		Debug.Log( "AssetFilter.Detail.Count: " + m_info_list.Count );
-		
+
 		Debug.Log( "AssetFilter.Detail.Total.PCT: " + GetTotalPCT( m_info_list ) );
-		
+
 		Debug.Log( "AssetFilter.Detail.Total.Size: " + GetTotalSize( m_info_list ) );
 
 		return true;
@@ -115,41 +115,54 @@ public class AssetsFilter : MonoBehaviour {
 			LoadClassifyItems();
 		}
 
+		// detail file
 		{
 			OutputClassifyItems( CLASSIFY_TEX );
-			
+
 			OutputClassifyItems( CLASSIFY_FBX );
-			
+
+			OutputClassifyItems( CLASSIFY_MAT );
+
+			OutputClassifyItems( CLASSIFY_CONTROLLER );
+
+			OutputClassifyItems( CLASSIFY_ANIM );
+
 //			OutputClassifyItems( CLASSIFY_SOUND );
-			
+//
 //			OutputClassifyItems( CLASSIFY_SHADER );
-			
+//
 //			OutputClassifyItems( CLASSIFY_SCENE );
-			
+//
 //			OutputClassifyItems( CLASSIFY_SCRIPTS );
-			
+//
 //			OutputClassifyItems( CLASSIFY_TEXT );
-			
-//			OutputClassifyItems( CLASSIFY_OTHER );
+
+			OutputClassifyItems( CLASSIFY_OTHER );
 		}
 
+		// report
 		{
-
 			t_report_info += LogClassifyListInfo( CLASSIFY_TEX );
 
 			t_report_info += LogClassifyListInfo( CLASSIFY_FBX );
 
-//			t_report_info += LogClassifyListInfo( CLASSIFY_SOUND );
+			t_report_info += LogClassifyListInfo( CLASSIFY_MAT );
+
+			t_report_info += LogClassifyListInfo( CLASSIFY_CONTROLLER );
+
+			t_report_info += LogClassifyListInfo( CLASSIFY_ANIM );
+
+			t_report_info += LogClassifyListInfo( CLASSIFY_SOUND );
 
 //			t_report_info += LogClassifyListInfo( CLASSIFY_SHADER );
 
 //			t_report_info += LogClassifyListInfo( CLASSIFY_SCENE );
 
-//			t_report_info += LogClassifyListInfo( CLASSIFY_SCRIPTS );
+			t_report_info += LogClassifyListInfo( CLASSIFY_SCRIPTS );
 
-//			t_report_info += LogClassifyListInfo( CLASSIFY_TEXT );
+			t_report_info += LogClassifyListInfo( CLASSIFY_TEXT );
 
-//			t_report_info += LogClassifyListInfo( CLASSIFY_OTHER );
+			t_report_info += LogClassifyListInfo( CLASSIFY_OTHER );
 		}
 
 		{
@@ -160,7 +173,7 @@ public class AssetsFilter : MonoBehaviour {
 
 		{
 			string t_path = Application.dataPath + OUTPUT_FOLDER;
-			
+
 			OutputFile( t_path + CLASSIFY_REPORT + ".txt", t_report_info );
 		}
 
@@ -176,74 +189,98 @@ public class AssetsFilter : MonoBehaviour {
 	private static void LoadClassifyItems(){
 		for( int i = 0; i < m_info_list.Count; i++ ){
 			DetailInfo t_info = m_info_list[ i ];
-			
+
 			if( t_info.IsTex() ){
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_TEX );
-				
+
 				t_list.Add( t_info );
-				
+
 				continue;
 			}
-			
+
 			if( t_info.IsFbx() ){
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_FBX );
-				
+
 				t_list.Add( t_info );
-				
+
 				continue;
 			}
-			
+
+			if( t_info.IsMat() ){
+				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_MAT );
+
+				t_list.Add( t_info );
+
+				continue;
+			}
+
+			if( t_info.IsController() ){
+				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_CONTROLLER );
+
+				t_list.Add( t_info );
+
+				continue;
+			}
+
+			if( t_info.IsAnim() ){
+				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_ANIM );
+
+				t_list.Add( t_info );
+
+				continue;
+			}
+
 			if( t_info.IsSound() ){
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_SOUND );
-				
+
 				t_list.Add( t_info );
-				
+
 				continue;
 			}
-			
+
 			if( t_info.IsShader() ){
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_SHADER );
-				
+
 				t_list.Add( t_info );
-				
+
 				continue;
 			}
-			
+
 			if( t_info.IsScene() ){
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_SCENE );
-				
+
 				t_list.Add( t_info );
-				
+
 				continue;
 			}
-			
+
 			if( t_info.IsScripts() ){
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_SCRIPTS );
-				
+
 				t_list.Add( t_info );
-				
+
 				continue;
 			}
 
 			if( t_info.IsText() ){
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_TEXT );
-				
+
 				t_list.Add( t_info );
-				
+
 				continue;
 			}
 
 			if( t_info.IsPrefab() ){
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_PREFAB );
-				
+
 				t_list.Add( t_info );
-				
+
 				continue;
 			}
 
 			{
 				List<DetailInfo> t_list = GetClassifyList( CLASSIFY_OTHER );
-				
+
 				t_list.Add( t_info );
 			}
 		}
@@ -299,25 +336,25 @@ public class AssetsFilter : MonoBehaviour {
 
 			{
 				string t_path = Application.dataPath + OUTPUT_FOLDER;
-				
+
 				string t_text = GetDetailInfoListString( t_other_list );
-				
+
 				OutputFile( t_path + CLASSIFY_TEX_OTHER + ".txt", t_text );
 			}
 		}
 
 		{
 			t_return_text += LogClassifyTexDetail( CLASSIFY_TEX_UI, t_tex_ui_list );
-			
+
 			t_return_text += LogClassifyTexDetail( CLASSIFY_TEX_SCENE, t_tex_scene_list );
-			
+
 			t_return_text += LogClassifyTexDetail( CLASSIFY_TEX_CHAR, t_tex_char_list );
-			
+
 			t_return_text += LogClassifyTexDetail( CLASSIFY_TEX_FX, t_tex_fx_list );
 
 			t_return_text += LogClassifyTexDetail( CLASSIFY_TEX_OTHER, t_other_list );
 		}
-		
+
 
 
 		return t_return_text;
@@ -329,7 +366,7 @@ public class AssetsFilter : MonoBehaviour {
 		List<DetailInfo> t_list = GetClassifyList( CLASSIFY_TEX );
 
 		string t_path = Application.dataPath + OUTPUT_FOLDER;
-		
+
 		string t_text = "";
 
 		for( int i = 0; i < t_list.Count; i++ ){
@@ -357,9 +394,9 @@ public class AssetsFilter : MonoBehaviour {
 
 	private static string LogClassifyTexDetail( string p_key, List<DetailInfo> p_list ){
 		string t_info_str = p_key + 
-//				" Total.PCT: " + GetTotalPCT( p_list ) + " --- " + 
-				"Total.Size: " + GetTotalSize( p_list ) + " M --- " + 
-				"Count: " + p_list.Count + " --- ";
+			//				" Total.PCT: " + GetTotalPCT( p_list ) + " --- " + 
+			"Total.Size: " + GetTotalSize( p_list ) + " M --- " + 
+			"Count: " + p_list.Count + " --- ";
 
 		#if DEBUG_FILTER
 		Debug.Log( t_info_str );
@@ -381,9 +418,9 @@ public class AssetsFilter : MonoBehaviour {
 
 		{
 			List<DetailInfo> t_info_list = new List<DetailInfo>();
-			
+
 			m_dict_classify[ p_key ] = t_info_list;
-			
+
 			return t_info_list;
 		}
 	}
@@ -402,9 +439,9 @@ public class AssetsFilter : MonoBehaviour {
 		List<DetailInfo> t_list = GetClassifyList( p_classify_key );
 
 		string t_info_str = "--- " + p_classify_key + " --- " + 
-//			"Total.PCT: " + GetTotalPCT( t_list ) + " --- " + 
-				"Total.Size: " + GetTotalSize( t_list ) + " M --- " + 
-				"Count: " + t_list.Count + " --- ";
+			//			"Total.PCT: " + GetTotalPCT( t_list ) + " --- " + 
+			"Total.Size: " + GetTotalSize( t_list ) + " M --- " + 
+			"Count: " + t_list.Count + " --- ";
 
 		#if DEBUG_FILTER
 		Debug.Log( t_info_str );
@@ -472,10 +509,10 @@ public class AssetsFilter : MonoBehaviour {
 
 	private static float GetTotalSize( List<DetailInfo> p_info_list ){
 		float m_size = 0.0f;
-		
+
 		for( int i = 0; i < p_info_list.Count; i++ ){
 			DetailInfo t_info = p_info_list[ i ];
-			
+
 			m_size = m_size + t_info.GetSizeInMB();
 		}
 
@@ -559,13 +596,13 @@ public class AssetsFilter : MonoBehaviour {
 			if( string.Equals( m_unit, UNIT_MB ) ){
 				return m_size + " M";
 			}
-			
+
 			if( string.Equals( m_unit, UNIT_KB ) ){
 				return m_size + " K";
 			}
-			
+
 			Debug.LogError( "Error In Unit: " + m_unit );
-			
+
 			return "0.0 " + m_unit;
 		}
 
@@ -584,7 +621,35 @@ public class AssetsFilter : MonoBehaviour {
 		}
 
 		public bool IsFbx(){
-			if( m_path_lower.EndsWith( ".fbx" ) ){
+			for( int i = 0; i < D3_FILES.Length; i++ ){
+				if( m_path_lower.EndsWith( D3_FILES[ i ] ) ){
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool IsMat(){
+			for( int i = 0; i < MAT_FILES.Length; i++ ){
+				if( m_path_lower.EndsWith( MAT_FILES[ i ] ) ){
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool IsController(){
+			if( m_path_lower.EndsWith( ".controller" ) ){
+				return true;
+			}
+
+			return false;
+		}
+
+		public bool IsAnim(){
+			if( m_path_lower.EndsWith( ".anim" ) ){
 				return true;
 			}
 
@@ -605,7 +670,7 @@ public class AssetsFilter : MonoBehaviour {
 			if( m_path_lower.EndsWith( ".shader" ) ){
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -613,7 +678,7 @@ public class AssetsFilter : MonoBehaviour {
 			if( m_path_lower.EndsWith( ".scene" ) ){
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -625,7 +690,7 @@ public class AssetsFilter : MonoBehaviour {
 			if( m_path_lower.EndsWith( ".js" ) ){
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -635,7 +700,7 @@ public class AssetsFilter : MonoBehaviour {
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
 
@@ -643,7 +708,7 @@ public class AssetsFilter : MonoBehaviour {
 			if( m_path_lower.EndsWith( ".prefab" ) ){
 				return true;
 			}
-			
+
 			return false;
 		}
 	}
@@ -654,7 +719,7 @@ public class AssetsFilter : MonoBehaviour {
 
 	#region CONST Common
 
-	private const string ASSET_FILTER	= "Assets/_Temp/_ZhangYuGu/CustomResources/AssetsFilter/AssetsList.txt";
+	private const string ASSET_FILTER	= "Assets/_Temp/_ZhangYuGu/CustomResources/AssetsFilter/AssetsFilter.txt";
 
 	private const string OUTPUT_FOLDER	= "/_Temp/_ZhangYuGu/CustomResources/AssetsFilter/";
 
@@ -687,6 +752,12 @@ public class AssetsFilter : MonoBehaviour {
 	private const string CLASSIFY_TEX		= "tex";
 
 	private const string CLASSIFY_FBX		= "fbx";
+
+	private const string CLASSIFY_MAT		= "mat";
+
+	private const string CLASSIFY_CONTROLLER	= "controller";
+
+	private const string CLASSIFY_ANIM		= "anim";
 
 	private const string CLASSIFY_SOUND		= "sound";
 
@@ -723,6 +794,18 @@ public class AssetsFilter : MonoBehaviour {
 		".tga",
 		".tif",
 		".exr",
+		".bmp",
+		".dds",
+	};
+
+	private static string[] D3_FILES	= {
+		".fbx",
+		".obj",
+	};
+
+	private static string[] MAT_FILES	= {
+		".mat",	
+		".cubemap",
 	};
 
 	private static string[] SOUND_FILES	= {

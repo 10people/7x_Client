@@ -35,7 +35,7 @@ public class RTSkillController : BaseSkillController
             m_Template = temp.First();
         }
 
-        SelfCD = m_Template.BaseCD / 1000f;
+        SelfCD = m_Template.BaseCD;
     }
 
     new void Awake()

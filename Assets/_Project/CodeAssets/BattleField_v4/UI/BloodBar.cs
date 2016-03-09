@@ -13,9 +13,12 @@ public class BloodBar : MonoBehaviour
 
 	private float speed;
 
+	private Camera m_cached_camera_main = null;
 
 	void Update ()
 	{
+		m_cached_camera_main = Camera.main;
+
 		UpdateForward ();
 
 		updateValue ();
@@ -23,11 +26,11 @@ public class BloodBar : MonoBehaviour
 
 	void UpdateForward ()
 	{
-		if (Camera.main == null) return;
+		if ( m_cached_camera_main == null) return;
 
-		if (Camera.main.gameObject.activeSelf == false) return;
+		if ( m_cached_camera_main.gameObject.activeSelf == false) return;
 
-		transform.forward = Camera.main.transform.forward;
+		transform.forward = m_cached_camera_main.transform.forward;
 	}
 
 	void updateValue()

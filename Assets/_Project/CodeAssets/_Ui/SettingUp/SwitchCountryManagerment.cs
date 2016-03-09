@@ -20,6 +20,7 @@ public class SwitchCountryManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_Durable_UI;
     public UISprite m_SpriteCountry;
     public UIGrid m_ItemParent;
+    public GameObject m_ObjTopLeft;
     private List<GameObject> _listCountryObj  = new List<GameObject>();
     private int SaveNum = 0;
  
@@ -36,7 +37,8 @@ public class SwitchCountryManagerment : MonoBehaviour, SocketProcessor
 
     void ShowInfo()
     {
-		MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "转国", 0, 0);
+        MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         TidyData();
         m_listChangeCountryEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
         m_SpriteCountryCurrent.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();

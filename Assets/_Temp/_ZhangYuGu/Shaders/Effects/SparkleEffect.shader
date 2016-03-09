@@ -88,7 +88,7 @@ Shader "Custom/Effects/Sparkle Effect"{
 					}
 					
 					half4 tex = tex2D(_MainTex, i.texcoord);
-										
+														
 					half4 col =  lerp( tex, i.m_color * tex.w, clamp( t_og_x * 1.1, 0.0, 1.0 ) );
 
 					return col;

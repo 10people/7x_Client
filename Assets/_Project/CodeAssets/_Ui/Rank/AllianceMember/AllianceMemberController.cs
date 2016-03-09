@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using qxmobile.protobuf;
+using Object = UnityEngine.Object;
 
 namespace Rank
 {
     public class AllianceMemberController : MonoBehaviour
     {
+        [HideInInspector]
+        public bool isOutterCall = false;
+
         public RootController m_RootController;
         public ScaleEffectController m_ScaleEffectController;
 
@@ -20,6 +25,28 @@ namespace Rank
         public UILabel m_AllianceLabel;
 
         public GameObject m_Prefab;
+
+        public GameObject FloatButtonPrefab
+        {
+            get
+            {
+                return isOutterCall ? floatButtonPrefab : m_RootController.FloatButtonPrefab;
+            }
+
+            set
+            {
+                if (isOutterCall)
+                {
+                    floatButtonPrefab = value;
+                }
+                else
+                {
+                    Debug.LogError("Cannot set cause using prefab in RootController in rank sys mode.");
+                }
+            }
+        }
+
+        private GameObject floatButtonPrefab;
 
         [HideInInspector]
         public List<AllianceMemberDetailController> m_AllianceMemberDetailControllerList = new List<AllianceMemberDetailController>();
@@ -59,15 +86,13 @@ namespace Rank
             }
         }
 
-        public EventHandler m_CloseHandler;
-        public EventHandler m_BackHandler;
         public UIEventListener DragAreaHandler;
 
         /// <summary>
         /// Close current window.
         /// </summary>
         /// <param name="go"></param>
-        private void OnBackClick(GameObject go)
+        public void OnBackClick()
         {
             m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
             m_ScaleEffectController.OnCloseWindowClick();
@@ -85,11 +110,15 @@ namespace Rank
         /// Close current and root window.
         /// </summary>
         /// <param name="go"></param>
-        private void OnCloseClick(GameObject go)
+        [Obsolete("Close function not exist any more.")]
+        public void OnCloseClick()
         {
-            OnBackClick(null);
+            OnBackClick();
 
-            m_RootController.OnCloseClick(null);
+            if (!isOutterCall)
+            {
+                m_RootController.OnCloseClick(null);
+            }
         }
 
         private void DoCloseWindow()
@@ -97,17 +126,46 @@ namespace Rank
             Destroy(gameObject);
         }
 
+        public void ClampScrollView()
+        {
+            //clamp scroll bar value.
+            //set 0.99 and 0.01 cause same bar value not taken in execute.
+            StartCoroutine(DoClampScrollView());
+        }
+
+        IEnumerator DoClampScrollView()
+        {
+            yield return new WaitForEndOfFrame();
+
+            m_ScrollView.UpdateScrollbars(true);
+            float scrollValue = m_ScrollView.GetSingleScrollViewValue();
+            if (scrollValue >= 1) m_ScrollBar.value = 0.99f;
+            if (scrollValue <= 0) m_ScrollBar.value = 0.01f;
+        }
+
+        public GameObject TopLeftAnchor;
+
         void Awake()
         {
-            m_CloseHandler.m_handler += OnCloseClick;
-            m_BackHandler.m_handler += OnBackClick;
             DragAreaHandler.onPress += OnDragAreaPress;
+
+            MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
+            MainCityUI.setGlobalTitle(TopLeftAnchor, "成员信息", 0, 0);
+
+            //Load float button prefab if outter call.
+            if (isOutterCall)
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FLOAT_BUTTON), FloatButtonLoadCallBack);
+            }
+        }
+
+        void FloatButtonLoadCallBack(ref WWW p_www, string p_path, Object p_object)
+        {
+            FloatButtonPrefab = p_object as GameObject;
         }
 
         void OnDestroy()
         {
-            m_CloseHandler.m_handler -= OnCloseClick;
-            m_BackHandler.m_handler -= OnBackClick;
             DragAreaHandler.onPress -= OnDragAreaPress;
         }
     }

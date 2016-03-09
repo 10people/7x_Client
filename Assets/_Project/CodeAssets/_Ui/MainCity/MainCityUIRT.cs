@@ -43,7 +43,14 @@ public class MainCityUIRT : MYNGUIPanel
 		//energy info
 		string energyText = JunZhuData.Instance().m_junzhuInfo.tili > 10000 ? JunZhuData.Instance().m_junzhuInfo.tili / 10000 + "万" : JunZhuData.Instance().m_junzhuInfo.tili.ToString();
 		string energyMaxText = JunZhuData.Instance().m_junzhuInfo.tiLiMax > 10000 ? JunZhuData.Instance().m_junzhuInfo.tiLiMax / 10000 + "万" : JunZhuData.Instance().m_junzhuInfo.tiLiMax.ToString();
-		m_energyNuM.text = energyText + "/" + energyMaxText;
+		if(int.Parse(energyText) >= int.Parse(energyMaxText) && JunZhuData.Instance().m_junzhuInfo.level > Global.TILILVMAX)
+		{
+			m_energyNuM.text = MyColorData.getColorString(18, energyText + "/" + energyMaxText);
+		}
+		else
+		{
+			m_energyNuM.text = energyText + "/" + energyMaxText;
+		}
 	}
 
     public static void OutterShowPopupDetail(string text, float duration)

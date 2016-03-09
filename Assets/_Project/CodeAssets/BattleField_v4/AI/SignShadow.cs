@@ -23,16 +23,20 @@ public class SignShadow : MonoBehaviour
 
 	private GameObject unrealObject;
 
-	private List<Renderer> arrowRender = new List<Renderer>();
+	public List<Renderer> arrowRender = new List<Renderer>();
 
 	private bool enterFight;
+
+	private float jumpOnTime = .25f;
+
+	private float jumpDownTime = .6f;
 
 
 	public static SignShadow create()
 	{
 		GameObject gc = (GameObject) Instantiate (BattleEffectControllor.Instance().getEffect(1030));
 
-		gc.transform.parent = BattleControlor.Instance ().getKing ().transform;
+		gc.transform.parent = BattleControlor.Instance().getKing ().transform;
 
 		gc.transform.localPosition = Vector3.zero;
 
@@ -49,7 +53,7 @@ public class SignShadow : MonoBehaviour
 
 	private void init()
 	{
-		node = BattleControlor.Instance ().getKing ();
+		node = BattleControlor.Instance().getKing ();
 
 		node.signShadow = this;
 
@@ -235,11 +239,28 @@ public class SignShadow : MonoBehaviour
 
 		length = length > 10f ? 10f : length;
 
-		float alpha = 0f;
+		float maxAlpha = 0f;
 
 		if(length > 5f)
 		{
-			alpha = .5f * (length - 5f) / 5f;
+			maxAlpha = .5f * (length - 5f) / 5f;
+		}
+
+		float alpha = 0;
+
+		float time_1 = jumpOnTime * 1000;
+
+		float time_2 = jumpDownTime * 1000;
+
+		int now = ((int)(Time.realtimeSinceStartup * 1000)) % (int)(time_1 + time_2);
+
+		if(now <= time_1)
+		{
+			alpha = maxAlpha / (now / time_1);
+		}
+		else
+		{
+			alpha = ( - maxAlpha / time_2) * (now - time_1 - time_2);
 		}
 
 		foreach(Renderer renderer in arrowRender)

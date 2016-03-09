@@ -34,9 +34,9 @@ public class PvpRecordItem : MonoBehaviour {
 	{
 		recordInfo = tempRecordInfo;
 
-		resultIcon.spriteName = resultLength[recordInfo.win + 1];//1-攻击胜利 , 2-攻击失败 , 3-防守胜利 , 4-防守失败
+		resultIcon.spriteName = resultLength[recordInfo.win - 1];//1-攻击胜利 , 2-攻击失败 , 3-防守胜利 , 4-防守失败
 		
-		Debug.Log ("guojiaId:" + recordInfo.enemyGuoJiaId);
+//		Debug.Log ("guojiaId:" + recordInfo.enemyGuoJiaId);
 		country.spriteName = "nation_" + recordInfo.enemyGuoJiaId;
 		
 		headIcon.spriteName = "PlayerIcon" + recordInfo.enemyRoleId;
@@ -49,30 +49,32 @@ public class PvpRecordItem : MonoBehaviour {
 			
 			string name = NameIdTemplate.GetName_By_NameId (nameId);
 			
-			nameLabel.text = name;
+			nameLabel.text = MyColorData.getColorString (3,name);
 		}
 		else
 		{
-			nameLabel.text = recordInfo.enemyName;
+			nameLabel.text = MyColorData.getColorString (3,recordInfo.enemyName);
 		}
-		
+
+		string timeStr = "";
 		if (recordInfo.time < 60)
 		{
-			timeLabel.text = "小于1分钟";
+			timeStr = "<1分钟";
 		}
 		else if (recordInfo.time > 60 && recordInfo.time < 3600)
 		{
-			timeLabel.text = (recordInfo.time / 60) + "分钟前";
+			timeStr = (recordInfo.time / 60) + "分钟前";
 		}
 		else if (recordInfo.time / 3600 > 1 && recordInfo.time / 3600 < 24)
 		{
-			timeLabel.text = (recordInfo.time / 3600) + "小时前";
+			timeStr = (recordInfo.time / 3600) + "小时前";
 		}
 		else if (recordInfo.time / 3600 >= 24)
 		{
-			timeLabel.text = (recordInfo.time / (3600 * 24)) + "天前";
+			timeStr = (recordInfo.time / (3600 * 24)) + "天前";
 		}
-		
+		timeLabel.text = MyColorData.getColorString (3,timeStr);
+
 		if (recordInfo.junRankChangeV == 0)
 		{
 			up_downIcon.spriteName = "";
@@ -89,7 +91,7 @@ public class PvpRecordItem : MonoBehaviour {
 				up_downIcon.spriteName = "rankdown";
 			}
 			
-			up_downLabel.text = recordInfo.junRankChangeV.ToString ();
+			up_downLabel.text = MyColorData.getColorString (3,recordInfo.junRankChangeV.ToString ());
 		}
 	}
 }

@@ -60,10 +60,19 @@ public class EquipGrowthMaterialItem : MonoBehaviour
         bool isNoMaterial = (string.IsNullOrEmpty(icon) || string.IsNullOrEmpty(count));
 
         //Set iconSample.
-        IconSampleManager.SetIconType(IconSampleManager.IconType.equipment);
-        IconSampleManager.SetIconBasic(0,
-            icon, !string.IsNullOrEmpty(icon) ? count : "",
-            pinzhi == 200 ? "" : IconSampleManager.QualityPrefix + QualityIconSelected.SelectQualityNum(pinzhi));
+        if (!string.IsNullOrEmpty(count))
+        {
+            IconSampleManager.SetIconByID(int.Parse(icon), count);
+        }
+        else 
+        {
+            IconSampleManager.SetIconByID(-1);
+        }
+
+    //IconSampleManager.SetIconType(IconSampleManager.IconType.equipment);
+    //    IconSampleManager.SetIconBasic(0,
+    //        icon, !string.IsNullOrEmpty(icon) ? count : "",
+    //        pinzhi == 200 ? "" : IconSampleManager.QualityPrefix + QualityIconSelected.SelectQualityNum(pinzhi));
 
         if (isNoMaterial)
         {

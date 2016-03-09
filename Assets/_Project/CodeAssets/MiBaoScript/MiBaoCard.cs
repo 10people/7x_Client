@@ -296,8 +296,8 @@ public class MiBaoCard : MonoBehaviour,SocketProcessor {
 
 	public void MiBaoshengXing()//秘宝升星
 	{
-		Debug.Log ("My_mibaoinfo.suiPianNum   " +My_mibaoinfo.suiPianNum);
-		Debug.Log ("My_mibaoinfo.needSuipianNum   " +My_mibaoinfo.needSuipianNum);
+		//Debug.Log ("My_mibaoinfo.suiPianNum   " +My_mibaoinfo.suiPianNum);
+		//Debug.Log ("My_mibaoinfo.needSuipianNum   " +My_mibaoinfo.needSuipianNum);
 		if(My_mibaoinfo.suiPianNum < My_mibaoinfo.needSuipianNum)
 		{
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadMibaoUpBack);
@@ -363,7 +363,7 @@ public class MiBaoCard : MonoBehaviour,SocketProcessor {
 		}
 		conut = 1;
 		StartCoroutine(countNunber());
-		Debug.Log ("UpLvDataBack = "+UpLvDataBack);
+		//Debug.Log ("UpLvDataBack = "+UpLvDataBack);
 		if(UpLvDataBack)
 		{
 			UpLvDataBack = false;
@@ -404,7 +404,7 @@ public class MiBaoCard : MonoBehaviour,SocketProcessor {
 		{
 			
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[300110];
-			Debug.Log("显示秘宝引导第四步");
+			//Debug.Log("显示秘宝引导第四步");
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
 			UpTask = true;
 		}

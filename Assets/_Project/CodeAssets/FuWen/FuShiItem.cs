@@ -16,21 +16,19 @@ public class FuShiItem : MonoBehaviour {
 
 	public UISprite fuShiIcon;
 	public UISprite lockIcon;
+	public UISprite colorIcon;
 
 	public GameObject redObj;
 
 	public UILabel openLevel;
 
-	private List<int> m_exceptList = new List<int> ();//已镶嵌的主属性符石类型list
-	private List<int> g_exceptList = new List<int> ();//已镶嵌的高级属性符石类型list
+	private List<int> exceptList = new List<int> ();//已镶嵌的符石属性list
 
 	/// <summary>
 	/// 符石栏位信息
 	/// </summary>
 	/// <param name="tempLanWei">栏位信息</param>
-	/// <param name="m_TempExceptList">已镶嵌的主属性符石类型list</param>
-	/// <param name="g_TempExceptList">已镶嵌的高级属性符石类型list</param>
-	public void GetLanWeiInfo (FuwenLanwei tempLanWei,List<int> m_TempExceptList,List<int> g_TempExceptList)
+	public void GetLanWeiInfo (FuwenLanwei tempLanWei,List<int> tempExistList)
 	{
 //		Debug.Log (tempIndex + "lanweiId:" + tempLanWei.lanweiId);
 //		Debug.Log (tempIndex + "itemId:" + tempIndex + "||" + tempLanWei.itemId);
@@ -40,50 +38,33 @@ public class FuShiItem : MonoBehaviour {
 		FuWenOpenTemplate fuWenOpenTemp = FuWenOpenTemplate.GetFuWenOpenTemplateByLanWeiId (tempLanWei.lanweiId);
 		lanWeiType = fuWenOpenTemp.lanweiType;
 
-		m_exceptList = m_TempExceptList;
-		g_exceptList = g_TempExceptList;
+		exceptList = tempExistList;
 
 		redObj.SetActive (tempLanWei.flag);
 
 		//有符文为itemId，没有为0，未解锁为-1
-		if (tempLanWei.itemId == -1)
-		{
-			fuShiIcon.spriteName = "";
-			lockIcon.gameObject.SetActive (true);
+		fuShiIcon.spriteName = tempLanWei.itemId > 0 ? tempLanWei.itemId.ToString () : "";
+		lockIcon.gameObject.SetActive (tempLanWei.itemId == -1 ? true : false);
+		colorIcon.spriteName = tempLanWei.itemId == 0 ? "inlayColor" + fuWenOpenTemp.inlayColor : "";
+		openLevel.text = tempLanWei.itemId == -1 ? (fuWenOpenTemp.level == FuWenMainPage.fuWenMainPage.NextOpenLevel ? fuWenOpenTemp.level + "级解锁" : "") : "";
 
-			openLevel.text = fuWenOpenTemp.level == FuWenMainPage.fuWenMainPage.NextOpenLevel ? fuWenOpenTemp.level + "级解锁" : "";
-			return;
-		}
-
-		lockIcon.gameObject.SetActive (false);
-
-		fuShiIcon.spriteName = tempLanWei.itemId.ToString ();
-
-		openLevel.text = "";
+		this.GetComponent<EventHandler> ().m_click_handler -= FuShiHandlerClickBack;
+		this.GetComponent<EventHandler> ().m_click_handler += FuShiHandlerClickBack;
 	}
 
-	void OnClick ()
+	void FuShiHandlerClickBack (GameObject obj)
 	{
 		if (!FuWenMainPage.fuWenMainPage.IsBtnClick && fuWenLanWeiInfo.itemId >= 0)
 		{
 			FuWenMainPage.fuWenMainPage.IsBtnClick = true;
 //			Debug.Log ("fuWenLanWeiInfo.itemId:" + fuWenLanWeiInfo.itemId);
-			if (fuWenLanWeiInfo.itemId == 0)
-			{
-				FuWenMainPage.fuWenMainPage.CurXiangQianId = fuWenLanWeiInfo.itemId;
-				if (lanWeiType == 1 || lanWeiType == 2 || lanWeiType == 3)
-				{
-					FuWenMainPage.fuWenMainPage.SelectFuWen (FuWenSelect.SelectType.XIANGQIAN,fuWenLanWeiInfo.lanweiId,FuWenMainPage.FuShiType.MAIN_FUSHI,m_exceptList);
-				}
-				else
-				{
-					FuWenMainPage.fuWenMainPage.SelectFuWen (FuWenSelect.SelectType.XIANGQIAN,fuWenLanWeiInfo.lanweiId,FuWenMainPage.FuShiType.GAOJI_FUSHI,g_exceptList);
-				}
-			}
-			else if (fuWenLanWeiInfo.itemId > 0)
-			{
-				FuWenMainPage.fuWenMainPage.OperateFuWen (FuShiOperate.OperateType.XIANGQIAN,fuWenLanWeiInfo.itemId,fuWenLanWeiInfo.lanweiId);
-			}
+
+			bool isMainShuXing = lanWeiType == 1 || lanWeiType == 2 || lanWeiType == 3 ? true : false;
+
+			FuWenMainPage.fuWenMainPage.SelectFuWen (FuWenSelect.SelectType.XIANGQIAN,
+			                                         fuWenLanWeiInfo,
+			                                         isMainShuXing ? FuWenMainPage.FuShiType.MAIN_FUSHI : FuWenMainPage.FuShiType.GAOJI_FUSHI,
+			                                         exceptList);
 		}
 	}
 }

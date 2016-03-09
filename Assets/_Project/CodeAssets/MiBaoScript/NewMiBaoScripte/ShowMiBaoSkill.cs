@@ -266,7 +266,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 		//特效加载
 
-		//UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,SkillFIX,
+		//UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,SkillFIX,
 		                                              // EffectIdTemplate.GetPathByeffectId(effectId));
 	}
 //	IEnumerator BtnShake()
@@ -310,7 +310,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 	{
 		Activetype = 1;
 
-		Debug.Log ("CanActive = "+CanActive);
+		//Debug.Log ("CanActive = "+CanActive);
 		if(CanActive)
 		{
 			if(FreshGuide.Instance().IsActive(100220)&& TaskData.Instance.m_TaskInfoDic[100220].progress>= 0)
@@ -353,9 +353,9 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 	}
 	public void ShowAllInfo()
 	{
-		MiBaoManager.Instance ().CurrSkill_id = SkillId;;
+		MiBaoManager.Instance().CurrSkill_id = SkillId;;
 		
-		MiBaoManager.Instance ().SortUI ("MiBaoSkillZuheInfo");
+		MiBaoManager.Instance().SortUI ("MiBaoSkillZuheInfo");
 
 	}
 
@@ -400,7 +400,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 //			byte[] t_protof;
 //			t_protof = miBaoStream.ToArray();
 //			
-//			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.MIBAO_DEAL_SKILL_REQ,ref t_protof);
+//			SocketTool.Instance().SendSocketMessage (ProtoIndexes.MIBAO_DEAL_SKILL_REQ,ref t_protof);
 //		}
 	}
 
@@ -430,23 +430,23 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 				{
 				case 10:
 
-					Debug.Log("激活失败");
+				//	Debug.Log("激活失败");
 					break;
 				case 11:
 
 					//ShowMiBaoGroup.hasActive = 1;
 					PushAndNotificationHelper.SetRedSpotNotification (610, false);
-					Debug.Log("激活成功");
+				//	Debug.Log("激活成功");
 					Init();
 					break;
 
 				case 20:
 
-					Debug.Log("进阶失败");
+				//	Debug.Log("进阶失败");
 					break;
 
 				case 21:
-					Debug.Log("激活成功");
+				//	Debug.Log("激活成功");
 					//ShowMiBaoGroup.hasJinjie = 1;
 					//SkillId = mMiBaoDealSkillResp.skillId;
 					Init();
@@ -456,7 +456,7 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 					break;
 
 				}
-				UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillTemp,EffectIdTemplate.GetPathByeffectId(100178));
+				UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillTemp,EffectIdTemplate.GetPathByeffectId(100178));
 				return true;
 			}
 				

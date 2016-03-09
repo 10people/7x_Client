@@ -15,9 +15,8 @@ public class SelectServeTwo : MonoBehaviour {
 
 	public GameObject lastLoginObj;
 
-	public GameObject lastLoginBtnObj;
-	public UILabel btn1Label;
-	public UILabel btn2Label;
+	public UISprite lastLoginBtnSprite;
+	public UILabel lastLoginBtnLabel;
 
 	public TriggerHandler leftTriggerBox;
 	public TriggerHandler rightTriggerBox;
@@ -50,7 +49,7 @@ public class SelectServeTwo : MonoBehaviour {
 
 		fenQuCount = loginList.Count % serveNum > 0? loginList.Count / serveNum + 1 : loginList.Count / serveNum;
 
-		Debug.Log ("fenQuCount:" + fenQuCount);
+//		Debug.Log ("fenQuCount:" + fenQuCount);
 
 		for (int i = 0;i < fenQuCount;i ++)
 		{
@@ -108,8 +107,8 @@ public class SelectServeTwo : MonoBehaviour {
 
 		leftGrid.GetComponent<UICenterOnChild> ().enabled = true;
 		rightGrid.GetComponent<UICenterOnChild> ().enabled = true;
-
-		AccountRequest.account.ShowLastLoginBtn (lastLoginBtnObj,btn1Label,btn2Label);
+	
+		AccountRequest.account.ShowLastLoginBtn (lastLoginBtnSprite,lastLoginBtnLabel);
 	}
 
 	void DestroyItems (List<GameObject> tempList)

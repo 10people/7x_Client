@@ -1,6 +1,14 @@
-﻿//#define DEBUG_BUNDLE_HELPER
+﻿//#define DEBUG_LOADING_DETAIL
+
+//#define DEBUG_BUNDLE_LEVEL
+
+//#define DEBUG_BUNDLE_HELPER
+
+
 
 //#define DEBUG_DELAY_LOAD
+
+//#define SKIP_NULL_ERROR
 
 
 
@@ -165,7 +173,7 @@ public class BundleHelper : MonoBehaviour{
 			p_scene_path = "";
 		}
 		
-		#if DEBUG_BUNDLE_HELPER
+		#if DEBUG_BUNDLE_HELPER || DEBUG_BUNDLE_LEVEL
 		Debug.Log( "BundleHelper.LoadLevelAsset( " + p_scene_path + " )" );
 		#endif
 		
@@ -288,277 +296,319 @@ public class BundleHelper : MonoBehaviour{
 			Debug.Log( "Try DownloadTheToLoad: " + m_to_load_list.Count );
 			#endif
 
-			LoadTask t_load_task = m_to_load_list[ 0 ];
-			
-			{
-				m_to_load_list.RemoveAt( 0 );
-				
-				SetIsDownloading( true );
-			}
-
 			{
 				LoadingHelper.BeforeStartCoroutine();
 				
-				BundleHelper.Instance().StartCoroutine( BundleHelper.Instance().DownloadAndCache( t_load_task ) );
+				BundleHelper.Instance().StartCoroutine( BundleHelper.Instance().DownloadAndCache() );
 			}
 		}
 	}
 
-	IEnumerator DownloadAndCache ( LoadTask p_bundle_to_load ){
+	IEnumerator DownloadAndCache (){
 		#if DEBUG_BUNDLE_HELPER
-		Debug.Log( "DownloadAndCache( " + p_bundle_to_load.GetDescription() + " )" );
+		Debug.Log( "DownloadAndCache()" + Time.realtimeSinceStartup );
 		#endif
 
-		bool t_is_local_res = string.IsNullOrEmpty( p_bundle_to_load.m_url ) ? true : false;
-
-		string p_url = p_bundle_to_load.m_url;
-
-		int p_version = p_bundle_to_load.m_version;
-		
-		AssetBundle t_bundle = null;
-
-		bool load_bundle_success = false;
-		
-		bool t_contains = m_bundle_dict.ContainsKey( p_url );
-
-		#if DEBUG_BUNDLE_HELPER
-		Debug.Log( "t_is_local_res: " + t_is_local_res );
-
-		Debug.Log( "t_contains: " + t_contains );
-		#endif
-
-		#if DEBUG_DELAY_LOAD
-		while( true ){
-			float t_wait = UtilityTool.GetRandom( 0.0f, m_delay_load_time );
-			
-			yield return new WaitForSeconds( t_wait );
-			
-			break;
+		if( m_to_load_list.Count <= 0 ){
+			yield break;
 		}
-		#endif
 
-		LoadingHelper.BeforeLoadRes();
+//		#if DEBUG_LOADING_DETAIL
+//		LoadingHelper.LogTimeSinceLoading( "BundleHelper.DownloadAndCache()" );
+//		#endif
 
-		if( !t_is_local_res ){
-			if( !t_contains ){
-				{
-	//				Debug.Log( "Load From Server Bundle: " + p_url );
-					
-					if( Caching.enabled ) { 
-						while ( !Caching.ready ){
-							Debug.LogError( "Caching is not ready." );
+		{
+			SetIsDownloading( true );
+		}
+
+		do{
+			LoadTask p_bundle_to_load = m_to_load_list[ 0 ];
+			
+			{
+				m_to_load_list.RemoveAt( 0 );
+			}
+
+			bool t_is_local_res = string.IsNullOrEmpty( p_bundle_to_load.m_url ) ? true : false;
+			
+			string p_url = p_bundle_to_load.m_url;
+			
+			int p_version = p_bundle_to_load.m_version;
+			
+			AssetBundle t_bundle = null;
+			
+			bool load_bundle_success = false;
+			
+			bool t_contains = m_bundle_dict.ContainsKey( p_url );
+			
+			#if DEBUG_BUNDLE_HELPER
+			Debug.Log( "t_is_local_res: " + t_is_local_res );
+			
+			Debug.Log( "t_contains: " + t_contains );
+			#endif
+			
+			#if DEBUG_DELAY_LOAD
+			while( true ){
+				float t_wait = UtilityTool.GetRandom( 0.0f, m_delay_load_time );
+				
+				yield return new WaitForSeconds( t_wait );
+				
+				break;
+			}
+			#endif
+			
+			LoadingHelper.BeforeLoadRes();
+			
+			if( !t_is_local_res ){
+				if( !t_contains ){
+					{
+						//				Debug.Log( "Load From Server Bundle: " + p_url );
+						
+						if( Caching.enabled ) { 
+							while ( !Caching.ready ){
+								Debug.LogError( "Caching is not ready." );
+								
+								yield return null;
+							}
 							
-							yield return null;
+							m_www = WWW.LoadFromCacheOrDownload( p_url, p_version );
+						}
+						else {
+							m_www = new WWW( p_url );
 						}
 						
-						m_www = WWW.LoadFromCacheOrDownload( p_url, p_version );
-					}
-					else {
-						m_www = new WWW( p_url );
-					}
-					
-					yield return m_www;
-					
-					if( ConfigTool.GetBool( ConfigTool.CONST_LOG_BUNDLE_DOWNLOADING, false ) ){
-						Debug.Log( "WWW.LoadFromCacheOrDownload( " + " - " + 
-						          PathHelper.GetFileNameFromPath( p_url ) + " - " +
-						          p_version + " - " + p_url + " )" );
-					}
-					
-					if( m_www.error != null ) {
-						Debug.LogError( m_www.error + " : " + p_version + ", " + p_url );
+						yield return m_www;
 						
-						m_www.Dispose();
+						if( ConfigTool.GetBool( ConfigTool.CONST_LOG_BUNDLE_DOWNLOADING, false ) ){
+							Debug.Log( "WWW.LoadFromCacheOrDownload( " + " - " + 
+							          PathHelper.GetFileNameFromPath( p_url ) + " - " +
+							          p_version + " - " + p_url + " )" );
+						}
+						
+						if( m_www.error != null ) {
+							Debug.LogError( m_www.error + " : " + p_version + ", " + p_url );
+							
+							m_www.Dispose();
+						}
+						else if( m_www.assetBundle == null ){
+							Debug.LogError ("t_www.assetBundle = null.");
+						}
+						else{
+							load_bundle_success = true;
+							
+							t_bundle = m_www.assetBundle;
+							
+							{
+								BundleContainer t_container = new BundleContainer( p_url, p_version, t_bundle );
+								
+								m_bundle_dict.Add( p_url, t_container );
+								
+	//							#if DEBUG_BUNDLE_HELPER
+	//							Debug.Log( "-------- Bundle Loaded: " + t_container.GetBundleDescription() );
+	//
+	//							t_container.LogAllAssetNames();
+	//							
+	//							t_container.LogAllScenePaths();
+	//							#endif
+							}
+						}
 					}
-					else if( m_www.assetBundle == null ){
-						Debug.LogError ("t_www.assetBundle = null.");
+				}
+				else{
+					load_bundle_success = true;
+					
+					t_bundle = m_bundle_dict[ p_url ].GetBundle();
+				}
+				
+				if( !load_bundle_success ){
+					Debug.LogError( "DownloadAndCache fail." );
+					
+					m_www = null;
+				}
+			}
+			
+			{
+				LoadingHelper.BeforeReadyToLoadNextAsset();
+				
+				while( !IsReadyToLoadNextAsset() ){
+					#if DEBUG_BUNDLE_HELPER
+					Debug.Log( "WaitingToLoad: " + p_bundle_to_load.m_res_asset_path );
+					#endif
+					
+					yield return new WaitForEndOfFrame();
+				}
+				
+				LoadingHelper.AfterReadyToLoadNextAsset();
+			}
+			
+			float t_start_time = Time.realtimeSinceStartup;
+			
+			UnityEngine.Object t_object = null;
+			
+			if( t_is_local_res ){
+				if( !string.IsNullOrEmpty( p_bundle_to_load.m_res_asset_path ) ){
+					if ( p_bundle_to_load.m_type != null){
+						#if DEBUG_BUNDLE_HELPER
+						Debug.Log( "Loading: " + p_bundle_to_load.m_res_asset_path + " - " + p_bundle_to_load.m_type );
+						#endif
+						
+						t_object = Resources.Load( p_bundle_to_load.m_res_asset_path, p_bundle_to_load.m_type );
 					}
 					else{
-						load_bundle_success = true;
+						#if DEBUG_BUNDLE_HELPER
+						Debug.Log( "Loading: " + p_bundle_to_load.m_res_asset_path );
+						#endif
 						
-						t_bundle = m_www.assetBundle;
+						t_object = Resources.Load( p_bundle_to_load.m_res_asset_path );
 						
-						{
-							BundleContainer t_container = new BundleContainer( p_url, p_version, t_bundle );
-							
-							m_bundle_dict.Add( p_url, t_container );
-							
-//							#if DEBUG_BUNDLE_HELPER
-//							Debug.Log( "-------- Bundle Loaded: " + t_container.GetBundleDescription() );
-//
-//							t_container.LogAllAssetNames();
-//							
-//							t_container.LogAllScenePaths();
-//							#endif
-						}
+						//					#if DEBUG_BUNDLE_HELPER
+						//					Debug.Log( "Loading Done: " + p_bundle_to_load.m_res_asset_path );
+						//					#endif
+					}
+					
+					if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) ){
+						Debug.Log( "Resources.Loaded: " + p_bundle_to_load.m_res_asset_path );
+					}
+					
+					if( t_object == null ){
+						#if !SKIP_NULL_ERROR
+						Debug.LogError( "Resources.Load null: " + 
+						               p_bundle_to_load.m_res_asset_path + " - " +
+						               p_url + " - " + p_version );
+						#endif
 					}
 				}
 			}
-			else{
-				load_bundle_success = true;
+			else if( load_bundle_success ){
+				string t_asset_name = PathHelper.GetFileNameFromPath( p_bundle_to_load.m_res_asset_path );
 				
-				t_bundle = m_bundle_dict[ p_url ].GetBundle();
-			}
-
-			if( !load_bundle_success ){
-				Debug.LogError( "DownloadAndCache fail." );
-				
-				m_www = null;
-			}
-		}
-		
-		{
-			LoadingHelper.BeforeReadyToLoadNextAsset();
-
-			while( !IsReadyToLoadNextAsset() ){
-				#if DEBUG_BUNDLE_HELPER
-				Debug.Log( "WaitingToLoad: " + p_bundle_to_load.m_res_asset_path );
-				#endif
-
-				yield return new WaitForEndOfFrame();
-			}
-
-			LoadingHelper.AfterReadyToLoadNextAsset();
-		}
-
-		{
-			TimeHelper.SignetTime();
-		}
-
-		UnityEngine.Object t_object = null;
-
-		if( t_is_local_res ){
-			if( !string.IsNullOrEmpty( p_bundle_to_load.m_res_asset_path ) ){
-				if ( p_bundle_to_load.m_type != null){
-					#if DEBUG_BUNDLE_HELPER
-					Debug.Log( "Loading: " + p_bundle_to_load.m_res_asset_path + " - " + p_bundle_to_load.m_type );
-					#endif
-
-					t_object = Resources.Load( p_bundle_to_load.m_res_asset_path, p_bundle_to_load.m_type );
-				}
-				else{
-					#if DEBUG_BUNDLE_HELPER
-					Debug.Log( "Loading: " + p_bundle_to_load.m_res_asset_path );
-					#endif
-
-					t_object = Resources.Load( p_bundle_to_load.m_res_asset_path );
-
-//					#if DEBUG_BUNDLE_HELPER
-//					Debug.Log( "Loading Done: " + p_bundle_to_load.m_res_asset_path );
-//					#endif
-				}
-				
-				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) ){
-					Debug.Log( "Resources.Loaded: " + p_bundle_to_load.m_res_asset_path );
-				}
-
-				if( t_object == null ){
-					Debug.LogError( "Resources.Load null: " + 
-					               p_bundle_to_load.m_res_asset_path + " - " +
-					               p_url + " - " + p_version );
+				if( !string.IsNullOrEmpty( t_asset_name ) ){
+					if( p_bundle_to_load.m_type != null ){
+						t_object = m_bundle_dict[ p_url ].LoadBundleAsset( t_asset_name, p_bundle_to_load.m_type );
+					}
+					else{
+						t_object = m_bundle_dict[ p_url ].LoadBundleAsset( t_asset_name );
+					}
+					
+					if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) )
+					{
+						Debug.Log( "BundleHelper.Load: " + t_asset_name + " - " + 
+						          p_bundle_to_load.m_res_asset_path + " - " +
+						          p_url + " - " + p_version );
+					}
+					
+					if( t_object == null ){
+						#if !SKIP_NULL_ERROR
+						Debug.LogError( "BundleHelper.Load null: " + t_asset_name + " - " + 
+						               p_bundle_to_load.m_res_asset_path + " - " +
+						               p_url + " - " + p_version );
+						#endif
+					}
 				}
 			}
-		}
-		else if( load_bundle_success ){
-			string t_asset_name = PathHelper.GetFileNameFromPath( p_bundle_to_load.m_res_asset_path );
 
-			if( !string.IsNullOrEmpty( t_asset_name ) ){
-				if( p_bundle_to_load.m_type != null ){
-					t_object = m_bundle_dict[ p_url ].LoadBundleAsset( t_asset_name, p_bundle_to_load.m_type );
-				}
-				else{
-					t_object = m_bundle_dict[ p_url ].LoadBundleAsset( t_asset_name );
-				}
-				
-				if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) )
-				{
-					Debug.Log( "BundleHelper.Load: " + t_asset_name + " - " + 
-					          p_bundle_to_load.m_res_asset_path + " - " +
-					          p_url + " - " + p_version );
-				}
-				
-				if( t_object == null ){
-					Debug.LogError( "BundleHelper.Load null: " + t_asset_name + " - " + 
-					               p_bundle_to_load.m_res_asset_path + " - " +
-					               p_url + " - " + p_version );
-				}
-			}
-		}
+			float t_load_done_time = Time.realtimeSinceStartup;
 
-		{
-			LoadingHelper.AssetLoaded();
+			float t_delegate_done_time = 0;
 
-			LoadingHelper.AddLoadingItemInfo(
-				p_bundle_to_load.m_res_asset_path,
-				LoadingHelper.GetAssetLoadedCount(),
-				TimeHelper.GetDeltaTimeSinceSignet() );
+			float t_watcher_done_time = 0;
 
-			if ( ConfigTool.GetBool( ConfigTool.CONST_LOG_ITEM_LOADING_TIME, false ) ){
-				TimeHelper.LogDeltaTimeSinceSignet( LoadingHelper.GetAssetLoadedCount() + " - " + 
-				                                   LoadingHelper.GetTimeSinceLoading() + " - " + 
-				                                   p_bundle_to_load.m_res_asset_path );
-			}
-		}
-		
-		{
-			try{
-				if( p_bundle_to_load.m_delegate != null ){
-					if( string.IsNullOrEmpty( p_bundle_to_load.m_res_asset_path ) ){
+			{
+				try{
+					if( p_bundle_to_load.m_delegate != null ){
+						if( string.IsNullOrEmpty( p_bundle_to_load.m_res_asset_path ) ){
 //						#if DEBUG_BUNDLE_HELPER
 //						Debug.Log( "Executing delegate send url: " + p_bundle_to_load.m_res_asset_path );
 //						#endif
-
-						p_bundle_to_load.m_delegate( ref m_www, p_url, t_object );
-					} 
-					else{
+							
+							p_bundle_to_load.m_delegate( ref m_www, p_url, t_object );
+						} 
+						else{
 //						#if DEBUG_BUNDLE_HELPER
 //						Debug.Log( "Executing delegate send res path: " + p_bundle_to_load.m_res_asset_path );
 //						#endif
-
-						p_bundle_to_load.m_delegate( ref m_www, p_bundle_to_load.m_res_asset_path, t_object );
+							
+							p_bundle_to_load.m_delegate( ref m_www, p_bundle_to_load.m_res_asset_path, t_object );
+						}
 					}
-				}
-
+					
 //				#if DEBUG_BUNDLE_HELPER
 //				Debug.Log( "Before Execute callback list." );
 //				#endif
+					
+					{
+						EventDelegate.Execute( p_bundle_to_load.m_callback_list );
+					}
+					
+//					#if DEBUG_BUNDLE_HELPER
+//					Debug.Log( "After Execute callback list." );
+//					#endif
+				}
+				catch( Exception t_e ){
+					Debug.LogError( "Exception In Exception: " + t_e );
+				}
 				
+//				#if DEBUG_BUNDLE_HELPER
+//				Debug.Log( "Before Execute Global.ResoucesLoaded." );
+//				#endif
+
+				t_delegate_done_time = Time.realtimeSinceStartup;
+
 				{
-					EventDelegate.Execute( p_bundle_to_load.m_callback_list );
+					Global.ResoucesLoaded( p_bundle_to_load.m_res_asset_path, t_object );
 				}
 
+				t_watcher_done_time = Time.realtimeSinceStartup;
+				
 //				#if DEBUG_BUNDLE_HELPER
-//				Debug.Log( "After Execute callback list." );
+//				Debug.Log( "After Execute Global.ResoucesLoaded." );
 //				#endif
 			}
-			catch( Exception t_e ){
-				Debug.LogError( "Exception In Exception: " + t_e );
-			}
-
-//			#if DEBUG_BUNDLE_HELPER
-//			Debug.Log( "Before Execute Global.ResoucesLoaded." );
-//			#endif
 
 			{
-				Global.ResoucesLoaded( p_bundle_to_load.m_res_asset_path, t_object );
+				if ( ConfigTool.GetBool( ConfigTool.CONST_LOG_ITEM_LOADING_TIME, false ) ){
+					#if DEBUG_LOADING_DETAIL
+					Debug.Log( "Load Cost: " + ( t_load_done_time - t_start_time ) + " - " + 
+								"Delegate Cost: " + ( t_delegate_done_time - t_load_done_time ) + " - " + 
+					          	"Watcher Cost: " + ( t_watcher_done_time - t_delegate_done_time ) + " - " +
+								LoadingHelper.GetTimeSinceLoading() + " - " + 
+								p_bundle_to_load.m_res_asset_path + " - " + 
+								"still waiting: " + m_to_load_list.Count +
+								" - " + Time.realtimeSinceStartup );
+					#else
+					Debug.Log( "Total Time: " + ( t_watcher_done_time - t_start_time ) + " - " + 
+								LoadingHelper.GetTimeSinceLoading() + " - " + 
+								p_bundle_to_load.m_res_asset_path );
+					#endif
+				}
 			}
 
-//			#if DEBUG_BUNDLE_HELPER
-//			Debug.Log( "After Execute Global.ResoucesLoaded." );
-//			#endif
+			{
+				LoadingHelper.AssetLoaded();
+				
+				LoadingHelper.AddLoadingItemInfo(
+					p_bundle_to_load.m_res_asset_path,
+					LoadingHelper.GetAssetLoadedCount(),
+					t_load_done_time - t_start_time,
+					t_watcher_done_time - t_load_done_time );
+			}
+			
+			{
+				m_www = null;
+				
+//				#if DEBUG_BUNDLE_HELPER
+//				Debug.Log( "Before DownLoad Next." );
+//				#endif
+			}
 		}
+		while( m_to_load_list.Count > 0 );
 
 		{
-			m_www = null;
-			
 			SetIsDownloading( false );
-
-//			#if DEBUG_BUNDLE_HELPER
-//			Debug.Log( "Before DownLoad Next." );
-//			#endif
-
-			DownloadTheToLoad();
 		}
+
+//		#if DEBUG_LOADING_DETAIL
+//		LoadingHelper.LogTimeSinceLoading( "BundleHelper.DownloadAndCache() Done." );
+//		#endif
 
 //		#if DEBUG_BUNDLE_HELPER
 //		Debug.Log( "DownloadAndCache.Finish( " + p_bundle_to_load.GetDescription() + " )" );
@@ -783,6 +833,7 @@ public class BundleHelper : MonoBehaviour{
 
 
 			// remember to update data count after you add somthing here: PREPARE_DATA_COUNT_FOR_LOADING
+			LocalCacheTool.Instance().LoadConfig();
 		}
 	}
 
@@ -805,6 +856,10 @@ public class BundleHelper : MonoBehaviour{
 	}
 	
 	void CheckLoadingResources(){
+//		#if DEBUG_LOADING_DETAIL
+//		Debug.Log( "CheckLoadingResources( " + m_data_for_loading_loaded + PREPARE_DATA_COUNT_FOR_LOADING + " )" );
+//		#endif
+
 		if( m_data_for_loading_loaded < PREPARE_DATA_COUNT_FOR_LOADING ){
 			return;
 		}

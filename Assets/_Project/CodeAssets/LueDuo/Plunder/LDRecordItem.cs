@@ -96,7 +96,7 @@ public class LDRecordItem : MonoBehaviour {
 				break;
 			}
 		}
-		else if (tempInfo.gongJiId == JunZhuData.Instance ().m_junzhuInfo.id)//我是攻击者
+		else if (tempInfo.gongJiId == JunZhuData.Instance().m_junzhuInfo.id)//我是攻击者
 		{
 			headIcon.parent.transform.localPosition = new Vector3(-130,0,0);
 			attackLabel.transform.localPosition = new Vector3(-265,15,0);
@@ -132,8 +132,8 @@ public class LDRecordItem : MonoBehaviour {
 			}
 		}
 
-		fightHandler.m_handler -= FightBtn;
-		fightHandler.m_handler += FightBtn;
+		fightHandler.m_click_handler -= FightBtn;
+		fightHandler.m_click_handler += FightBtn;
 	}
 
 	void FightBtn (GameObject obj)

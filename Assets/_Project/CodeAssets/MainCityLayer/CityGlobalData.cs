@@ -140,9 +140,6 @@ public class CityGlobalData  {
 	public static bool m_JunZhuCreate;//君主预设物体自动创建控制
 	public static bool m_JunZhuAuto;
 
-	public static int m_MiBaoSkillId;//秘宝技能id
-
-
 	public static bool m_JunZhuTouXiangGuide;//头像上的引导控制
 
 //	public static bool m_LingQuJiangLi;//领取奖励引导控制
@@ -201,11 +198,11 @@ public class CityGlobalData  {
 
 		YX_Jingpo = 10,
 
-		YX_WanbiGuizhao = 11,
+		YX_WanbiGuizhao = 13,
 
-		YX_ZongHengLiuHe = 12,
+		YX_ZongHengLiuHe = 14,
 
-		LueDuo_GongJi = 13,
+		LueDuo_GongJi = 12,
 	}
 
 	/// <summary>

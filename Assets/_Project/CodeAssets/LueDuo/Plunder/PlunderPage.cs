@@ -19,6 +19,7 @@ public class PlunderPage : MonoBehaviour {
 		MAIN_PAGE = 0,
 		RANK_PAGE = 1,
 		RECORD_PAGE = 2,
+		REWARD_PAGE = 3,
 	}
 	private SwitchPageType pageType;
 
@@ -60,6 +61,7 @@ public class PlunderPage : MonoBehaviour {
 		pageObjList [(int)SwitchPageType.MAIN_PAGE].SetActive (tempType == SwitchPageType.MAIN_PAGE ? true : false);
 		pageObjList [(int)SwitchPageType.RANK_PAGE].SetActive (tempType == SwitchPageType.RANK_PAGE ? true : false);
 		pageObjList [(int)SwitchPageType.RECORD_PAGE].SetActive (tempType == SwitchPageType.RECORD_PAGE ? true : false);
+		pageObjList [(int)SwitchPageType.REWARD_PAGE].SetActive (tempType == SwitchPageType.REWARD_PAGE ? true : false);
 
 		switch (tempType)
 		{
@@ -72,9 +74,14 @@ public class PlunderPage : MonoBehaviour {
 		case SwitchPageType.RECORD_PAGE:
 			titleLabel.text = "掠夺记录";
 			break;
+		case SwitchPageType.REWARD_PAGE:
+			titleLabel.text = "结算奖励";
+			break;
 		default:
 			break;
 		}
+
+		titleLabel.GetComponent<UILabelType> ().init ();
 	}
 
 	#region MainPage
@@ -104,7 +111,7 @@ public class PlunderPage : MonoBehaviour {
 	public UILabel numsLabel;
 	public UILabel gongJinLabel;
 	public UILabel timeLabel;
-	private int cdTime;
+	private int cdTime;//掠夺cd
 
 	public List<EventHandler> plunderBtnList = new List<EventHandler> ();
 	private Dictionary<string,EventHandler> plunderBtnDic = new Dictionary<string, EventHandler> ();
@@ -113,14 +120,14 @@ public class PlunderPage : MonoBehaviour {
 	private int startNationIndex = 0;
 	private int startAllianceIndex = 0;
 
-	private bool isOpponentToTop;
-	public bool IsOpponentToTop//对手列表是否回到顶端
-	{
-		get{return isOpponentToTop;}
-		set{isOpponentToTop = value;}
-	}
+	private bool isOpponentToTop;//对手列表是否回到顶端
+	public bool IsOpponentToTop { get{return isOpponentToTop;} set{isOpponentToTop = value;} }
 
 	public UILabel getRewardTimeLabel;
+	private int getRewardCdTime;//领取每日奖励cd
+
+	public GameObject recordRedObj;
+	public GameObject situationRedObj;
 
 	/// <summary>
 	/// Ins it plunder page.
@@ -161,21 +168,23 @@ public class PlunderPage : MonoBehaviour {
 			ldNationBtn.InItNationBtn (tempRes.guoLianInfos[i],i,new Vector3(0,-60 * i,0));
 			
 			EventHandler handler = nationBtnsList[i].GetComponent<EventHandler> ();
-			handler.m_handler -= NationBtnHandlerClickBack;
-			handler.m_handler += NationBtnHandlerClickBack;
+			handler.m_click_handler -= NationBtnHandlerClickBack;
+			handler.m_click_handler += NationBtnHandlerClickBack;
 		}
 
 		plunderBtnDic.Clear ();
 		foreach (EventHandler handler in plunderBtnList)
 		{
 			plunderBtnDic.Add (handler.name,handler);
-			handler.m_handler -= PlunderHandlerClickBack;
-			handler.m_handler += PlunderHandlerClickBack;
+			handler.m_click_handler -= PlunderHandlerClickBack;
+			handler.m_click_handler += PlunderHandlerClickBack;
 		}
 
 		InItPlunderAlliance ();
 		InItPlunderOpponent ();
 		SetPlunderState ();
+		SetGetRewardState ();
+		SetRedPoint (tempRes.hasRecord);
 
 		if (isFirstOpen)
 		{
@@ -233,8 +242,8 @@ public class PlunderPage : MonoBehaviour {
 			pdAlliance.InItAllianceItem (plunderResp.mengInfos[i]);
 
 			EventHandler handler = allianceItemList[i].GetComponent<EventHandler> ();
-			handler.m_handler -= AllianceItemClickBack;
-			handler.m_handler += AllianceItemClickBack;
+			handler.m_click_handler -= AllianceItemClickBack;
+			handler.m_click_handler += AllianceItemClickBack;
 		}
 
 		startAllianceIndex = 0;
@@ -321,6 +330,7 @@ public class PlunderPage : MonoBehaviour {
 		{
 		case "RecordBtn":
 
+			SetRedPoint (false);
 			PlunderData.Instance.PlunderRecordReq ();
 
 			break;
@@ -335,7 +345,7 @@ public class PlunderPage : MonoBehaviour {
 			break;
 		case "ResetBtn":
 
-			if (JunZhuData.Instance ().m_junzhuInfo.vipLv < plunderResp.canClearCdVIP)
+			if (JunZhuData.Instance().m_junzhuInfo.vipLv < plunderResp.canClearCdVIP)
 			{
 				textStr = MyColorData.getColorString (1,"达到VIP") + MyColorData.getColorString (5,plunderResp.canClearCdVIP.ToString ()) + MyColorData.getColorString (1,"级可清除冷却！");
 				
@@ -387,9 +397,52 @@ public class PlunderPage : MonoBehaviour {
 				SwitchPlunderPage (SwitchPageType.MAIN_PAGE);
 
 				break;
+			case SwitchPageType.REWARD_PAGE:
+
+				SwitchPlunderPage (SwitchPageType.MAIN_PAGE);
+
+				break;
 			default:
 				break;
 			}
+
+			break;
+		case "GetAwardBtn":
+//			Debug.Log ("getRewardCdTime:" + getRewardCdTime);
+			if (getRewardCdTime ==0)
+			{
+				LueDuoPersonRankTemplate lueDuoRankTemp = LueDuoPersonRankTemplate.GetLueDuoPersonRankTemplateByRank (plunderResp.gongJinRank);
+				string[] rewardLength = lueDuoRankTemp.award.Split ('#');
+				
+				List<RewardData> rewardDataList = new List<RewardData>();
+				foreach (string reward in rewardLength)
+				{
+					string[] rewardStr = reward.Split(':');
+					RewardData data = new RewardData(int.Parse (rewardStr[1]),int.Parse (rewardStr[2]));
+					rewardDataList.Add (data);
+				}
+
+				LueDuoLianmengRankTemplate tempLate = LueDuoLianmengRankTemplate.GetLueDuoLianmengRankTemplateByRank (plunderResp.gongJinMengRank);
+				RewardData data1 = new RewardData(900017,tempLate.award);
+				rewardDataList.Add (data1);
+
+				PlunderData.Instance.RewardDataList = rewardDataList;
+				PlunderData.Instance.PlunderOperate (PlunderData.OperateType.GET_REWARD);
+			}
+			else
+			{
+				//open getRewardWindow
+//				Debug.Log ("back");
+				SwitchPlunderPage (SwitchPageType.REWARD_PAGE);
+				PlunderReward.plunderReward.InItPlunderPRewardPage (plunderResp.gongJinRank);
+				PlunderReward.plunderReward.InItPlunderARewardPage (plunderResp.gongJinMengRank);
+			}
+
+			break;
+		case "SituationBtn":
+
+			SetSituationRedPoint (false);
+			WarSituationData.Instance.OpenWarSituation ();
 
 			break;
 		default:
@@ -402,7 +455,7 @@ public class PlunderPage : MonoBehaviour {
 	{
 		if (i == 2)
 		{
-			if (JunZhuData.Instance ().m_junzhuInfo.yuanBao < plunderResp.clearCdYB)
+			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < plunderResp.clearCdYB)
 			{
 				textStr = "元宝不足！\n\n是否跳转到充值？";
 				QXComData.CreateBox (1,textStr,false,TurnToVip);
@@ -419,7 +472,7 @@ public class PlunderPage : MonoBehaviour {
 	{
 		if (i == 2)
 		{
-			if (JunZhuData.Instance ().m_junzhuInfo.yuanBao < plunderResp.buyNextBattleYB)
+			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < plunderResp.buyNextBattleYB)
 			{
 				textStr = "元宝不足！\n\n是否跳转到充值？";
 				QXComData.CreateBox (1,textStr,false,TurnToVip);
@@ -548,7 +601,7 @@ public class PlunderPage : MonoBehaviour {
 			}
 		}
 	}
-	
+
 	IEnumerator PlunderCdTime ()
 	{
 		string minuteStr = "";
@@ -558,28 +611,7 @@ public class PlunderPage : MonoBehaviour {
 		{
 			cdTime --;
 			
-			int minute = (cdTime / 60) % 60;
-			int second = cdTime % 60;
-			
-			if (minute < 10)
-			{
-				minuteStr = "0" + minute;
-			}
-			else
-			{
-				minuteStr = minuteStr.ToString ();
-			}
-			
-			if (second < 10) 
-			{
-				secondStr = "0" + second;
-			} 
-			else 
-			{
-				secondStr = second.ToString ();
-			}
-			
-			timeLabel.text = "掠夺冷却：" + minuteStr + "：" + secondStr;
+			timeLabel.text = "掠夺冷却：" + TimeHelper.GetUniformedTimeString (cdTime);
 			
 			if (cdTime == 0) 
 			{
@@ -592,22 +624,80 @@ public class PlunderPage : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Sets the state of the get reward.
+	/// </summary>
+	void SetGetRewardState ()
+	{
+//		Debug.Log ("plunderResp.timeToNight：" + plunderResp.timeToNight);
+		StopCoroutine ("GetRewardCd");
+
+		if (plunderResp.timeToNight <= 0)
+		{
+			getRewardTimeLabel.text = "";
+		}
+		else
+		{
+			getRewardCdTime = plunderResp.timeToNight;
+			StartCoroutine ("GetRewardCd");
+		}
+	}
+
+	IEnumerator GetRewardCd ()
+	{
+		while (getRewardCdTime > 0)
+		{
+			getRewardCdTime --;
+
+			getRewardTimeLabel.text = MyColorData.getColorString (5,TimeHelper.GetUniformedTimeString (getRewardCdTime));
+
+			if (getRewardCdTime <= 0)
+			{
+				plunderResp.timeToNight = 0;
+				SetGetRewardState ();
+			}
+
+			yield return new WaitForSeconds (1);
+		}
+	}
+
+	/// <summary>
 	/// Refreshs the state of the plunder.
 	/// </summary>
 	/// <param name="tempRes">Temp res.</param>
 	public void RefreshPlunderState (LveConfirmResp tempRes)
 	{
-		plunderResp.CdTime = tempRes.leftCD;
-		plunderResp.clearCdYB = tempRes.nextCDYuanBao;
-		plunderResp.all = tempRes.all;
-		plunderResp.used = tempRes.used;
-		plunderResp.gongJin = tempRes.gongJin;
-		plunderResp.buyNextBattleCount = tempRes.buyNextBattleCount;
-		plunderResp.buyNextBattleYB = tempRes.buyNextBattleYB;
-		plunderResp.remainBuyHuiShi = tempRes.remainBuyHuiShi;
-		plunderResp.nowMaxBattleCount = tempRes.nowMaxBattleCount;
+		switch (tempRes.isOk)
+		{
+		case 1:
 
-		SetPlunderState ();
+			plunderResp.CdTime = tempRes.leftCD;
+			plunderResp.clearCdYB = tempRes.nextCDYuanBao;
+			plunderResp.all = tempRes.all;
+			plunderResp.used = tempRes.used;
+			plunderResp.gongJin = tempRes.gongJin;
+			plunderResp.buyNextBattleCount = tempRes.buyNextBattleCount;
+			plunderResp.buyNextBattleYB = tempRes.buyNextBattleYB;
+			plunderResp.remainBuyHuiShi = tempRes.remainBuyHuiShi;
+			plunderResp.nowMaxBattleCount = tempRes.nowMaxBattleCount;
+			
+			SetPlunderState ();
+
+			//set warpage plunder times
+			{
+				PushAndNotificationHelper.SetRedSpotNotification (215, tempRes.all - tempRes.used > 0 ? true : false);
+				WarPage.warPage.SetPlunderTimes (tempRes.all - tempRes.used,tempRes.all);
+			}
+
+			break;
+		case 8:
+
+			plunderResp.timeToNight = -1;
+			SetGetRewardState ();
+
+			break;
+		default:
+			break;
+		}
 	}
 
 	/// <summary>
@@ -622,6 +712,32 @@ public class PlunderPage : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Sets the red point.
+	/// </summary>
+	/// <param name="isRed">If set to <c>true</c> is red.</param>
+	void SetRedPoint (bool isRed)
+	{
+		plunderResp.hasRecord = isRed;
+		recordRedObj.SetActive (isRed);
+		PushAndNotificationHelper.SetRedSpotNotification (220, plunderResp.hasRecord);
+		WarPage.warPage.CheckRedPoint ();
+	}
+
+	/// <summary>
+	/// Sets the situation red point.
+	/// </summary>
+	/// <param name="isRed">If set to <c>true</c> is red.</param>
+	void SetSituationRedPoint (bool isRed)
+	{
+		situationRedObj.SetActive (isRed);
+		PushAndNotificationHelper.SetRedSpotNotification (220, plunderResp.hasRecord);
+//		WarPage.warPage.CheckRedPoint ();
+	}
+
+	/// <summary>
+	/// Closes the plunder page.
+	/// </summary>
 	public void ClosePlunderPage ()
 	{
 		allianceSb.value = 0;
@@ -629,7 +745,20 @@ public class PlunderPage : MonoBehaviour {
 		isOpenFirst = true;
 		gameObject.SetActive (false);
 	}
-	
+
+	/// <summary>
+	/// Checks the plunder times.
+	/// </summary>
+	public void CheckPlunderTimes ()
+	{
+//		Debug.Log ("plunderResp.all - plunderResp.used:" + (plunderResp.all - plunderResp.used));
+		if (plunderResp.all - plunderResp.used == 1)
+		{
+			PushAndNotificationHelper.SetRedSpotNotification (215, false);
+			WarPage.warPage.CheckRedPoint ();
+		}
+	}
+
 	#endregion
 
 	private bool canTap = false;
@@ -839,7 +968,7 @@ public class PlunderPage : MonoBehaviour {
 
 			for (int i = 0;i < tempResp.gongInfoList.Count;i ++)
 			{
-				if (JunZhuData.Instance ().m_junzhuInfo.id == tempResp.gongInfoList[i].id)
+				if (JunZhuData.Instance().m_junzhuInfo.id == tempResp.gongInfoList[i].id)
 				{
 					personalRank = tempResp.gongInfoList[i].rank;
 					break;
@@ -898,7 +1027,7 @@ public class PlunderPage : MonoBehaviour {
 
 			for (int i = 0;i < tempResp.gongInfoList.Count;i ++)
 			{
-				if ((long)JunZhuData.Instance ().m_junzhuInfo.lianMengId == tempResp.gongInfoList[i].id)
+				if ((long)JunZhuData.Instance().m_junzhuInfo.lianMengId == tempResp.gongInfoList[i].id)
 				{
 					allianceRank = tempResp.gongInfoList[i].rank;
 					aRankCount = tempResp.gongInfoList.Count;
@@ -959,8 +1088,8 @@ public class PlunderPage : MonoBehaviour {
 
 		foreach (EventHandler handler in rankHandlerList)
 		{
-			handler.m_handler -= RankHandlerClickBack;
-			handler.m_handler += RankHandlerClickBack;
+			handler.m_click_handler -= RankHandlerClickBack;
+			handler.m_click_handler += RankHandlerClickBack;
 		}
 	}
 
@@ -970,7 +1099,7 @@ public class PlunderPage : MonoBehaviour {
 		{
 		case "PersonalBtn":
 
-			if (JunZhuData.Instance ().m_junzhuInfo.lianMengId <= 0)
+			if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 			{
 				break;
 			}
@@ -980,7 +1109,7 @@ public class PlunderPage : MonoBehaviour {
 			break;
 		case "AllianceBtn":
 
-			if (JunZhuData.Instance ().m_junzhuInfo.lianMengId <= 0)
+			if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 			{
 				break;
 			}

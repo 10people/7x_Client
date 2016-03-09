@@ -83,7 +83,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     }
     void PressEvent(int index)
     {
-        if (UICamera.GetTouches().Count == 1 && (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.Android) || Application.platform == RuntimePlatform.WindowsEditor)
+		if (DeviceHelper.IsSingleTouching() )
         {
             if (index != 99)
             {
@@ -126,6 +126,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
                     //{
                     //    washYuanBao = false;
                     //}
+              
                     CreateMove(m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_11));
                     if (index == 2 && JunZhuData.Instance().m_junzhuInfo.yuanBao < EquipWashInfo.yuanBao && (_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0))
                     {
@@ -173,7 +174,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
             }
         }
 
-        if (UICamera.GetTouches().Count == 1 && (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.Android) || Application.platform == RuntimePlatform.WindowsEditor)
+		if (DeviceHelper.IsSingleTouching() )
         {
             if (index < 10)
             {
@@ -834,7 +835,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
            // m_UnWashSuccesse.SetActive(true);
             //m_labelStone.text = _WadhStoneCount.ToString();
             //listEvent[0].gameObject.SetActive(false);
-            UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjNewAttribute, EffectIdTemplate.GetPathByeffectId(100180), null);
+            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjNewAttribute, EffectIdTemplate.GetPathByeffectId(100180), null);
             m_EquipInfo.GetComponent<EquipGrowthEquipInfoManagerment>().AppendAttributeUpdate(EquipWashInfo.zhuangbeiID);
             ShowRangeInfo(EquipWashInfo);
             StartCoroutine(WaitSecond());
@@ -849,7 +850,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     {
         yield return new WaitForSeconds(1.2f);
         m_ObjNewAttribute.SetActive(false);
-        UI3DEffectTool.Instance().ClearUIFx(m_ObjNewAttribute);
+        UI3DEffectTool.ClearUIFx(m_ObjNewAttribute);
         if (_StoneWashTImes == int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) && _WashType == 2)
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),

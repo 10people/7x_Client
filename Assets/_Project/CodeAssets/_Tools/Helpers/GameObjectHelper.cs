@@ -4,30 +4,7 @@ using UnityEngine;
 using System.Collections;
 
 public class GameObjectHelper {
-
-	#region Register Global Component
 	
-	/// <summary>
-	/// Register global components which never destroyed here.
-	/// </summary>
-	public static void RegisterGlobalComponents(){
-		#if DEBUG_GAME_OBJECT_HELPER
-		Debug.Log( "RegisterGlobalComponents()" );
-		#endif
-
-		GameObject t_dont_destroy = GameObjectHelper.GetDontDestroyOnLoadGameObject();
-
-		ComponentHelper.AddIfNotExist( t_dont_destroy, typeof(UtilityTool) );
-
-		ComponentHelper.AddIfNotExist( t_dont_destroy, typeof(PushAndNotificationHelper) );
-
-		ComponentHelper.AddIfNotExist( t_dont_destroy, typeof(ConsoleTool) );
-	}
-
-	#endregion
-
-
-
 	#region Temp GameObject
 
 	private static GameObject m_temp_gbs_root_gb = null;
@@ -42,6 +19,22 @@ public class GameObjectHelper {
 		}
 		
 		return m_temp_gbs_root_gb;
+	}
+
+	private static GameObject m_temp_fx_root_gb = null;
+
+	private static string CONST_TEMP_GAMEOBJECT_FX_ROOT_GAME_OBJECT_NAME	= "_Temp_Fx_GB_Root";
+
+	public static GameObject GetTempFxGameObjectRoot(){
+		if( m_temp_fx_root_gb == null ){
+			m_temp_fx_root_gb = new GameObject();
+
+			m_temp_fx_root_gb.transform.parent = GetTempGameObjectsRoot().transform;
+
+			m_temp_fx_root_gb.name = CONST_TEMP_GAMEOBJECT_FX_ROOT_GAME_OBJECT_NAME;
+		}
+
+		return m_temp_fx_root_gb;
 	}
 
 	#endregion
@@ -136,6 +129,28 @@ public class GameObjectHelper {
 		return t_name;
 	}
 
+	public static string GetGameObjectHierarchy( Component p_com ){
+		if( p_com == null ){
+			return "<Null Component>";
+		}
+
+		GameObject p_gb = p_com.gameObject;
+
+		if( p_gb == null ){
+			return "<Null GameObject>";
+		}
+
+		string t_name = p_gb.name;
+
+		while( p_gb.transform.parent != null ){
+			t_name = p_gb.transform.parent.name + "/" + t_name;
+
+			p_gb = p_gb.transform.parent.gameObject;
+		}
+
+		return t_name;
+	}
+
 	#endregion
 
 
@@ -225,8 +240,8 @@ public class GameObjectHelper {
 			t.localRotation = Quaternion.identity;
 			
 			t.localScale = Vector3.one;
-			
-			t_gb.layer = p_parent.layer;
+
+			GameObjectHelper.SetGameObjectLayer( t_gb, p_parent.layer );
 		}
 		
 		return t_gb;
@@ -261,34 +276,38 @@ public class GameObjectHelper {
 
 	
 	#region Layer
-	
-	public static void SetGameObjectLayer(GameObject p_target_layer_gb, GameObject p_gameobject)
-	{
-		if( p_gameobject == null ){
+	public static void SetGameObjectLayer( GameObject p_target_gb, int p_layer ){
+		if( p_target_gb == null ){
+			Debug.LogError( "p_target_gb = null." );
+
+			return;
+		}
+
+//		Debug.Log( "SetGameObjectLayer( " + p_target_gb + " - " + p_layer + " )" );
+
+		p_target_gb.layer = p_layer;
+	}
+
+	public static void SetGameObjectLayerRecursive( GameObject p_game_object, int p_target_layer ){
+		if( p_game_object == null ){
 			Debug.LogError( "p_gameobject = null." );
 			
 			return;
 		}
 		
-		if(p_target_layer_gb == null ){
-			Debug.LogError( "p_target_layer_gb = null." );
-			
-			return;
-		}
-		
-		int t_child_count = p_gameobject.transform.childCount;
+		int t_child_count = p_game_object.transform.childCount;
 		
 		{
 			for (int i = 0; i < t_child_count; i++)
 			{
-				Transform t_child = p_gameobject.transform.GetChild(i);
+				Transform t_child = p_game_object.transform.GetChild( i );
 				
-				t_child.gameObject.layer = p_target_layer_gb.layer;
+				t_child.gameObject.layer = p_target_layer;
 				
-				SetGameObjectLayer(p_target_layer_gb, t_child.gameObject);
+				SetGameObjectLayerRecursive( t_child.gameObject, p_target_layer );
 			}
-			
-			p_gameobject.layer = p_target_layer_gb.layer;
+
+			SetGameObjectLayer( p_game_object, p_target_layer );
 		}
 	}
 	

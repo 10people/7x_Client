@@ -176,7 +176,7 @@ public class TaskGridManager : MonoBehaviour
                 {
                     //if (_SaveObject != null)
                     //{
-                    //    UI3DEffectTool.Instance().ClearUIFx(_SaveObject);
+                    //    UI3DEffectTool.ClearUIFx(_SaveObject);
                     //}
                     index_Num = 0;
                     listTaskShowInfo.Clear();

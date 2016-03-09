@@ -24,6 +24,7 @@ public class UIBox : MYNGUIPanel
     private int m_ButtonYUp = -12;
     private int m_LabelY = -30;
     private float m_fScale = 0.1f;
+	private bool m_isFunction;
 
 	public UIFont UI_TitleFont;
 
@@ -103,8 +104,8 @@ public class UIBox : MYNGUIPanel
             {
                 if (1 - m_fScale < 0.1f)
                 {
-                    m_button1.GetComponent<EventHandler>().m_handler += OnClick;
-                    m_button2.GetComponent<EventHandler>().m_handler += OnClick;
+                    m_button1.GetComponent<EventHandler>().m_click_handler += OnClick;
+                    m_button2.GetComponent<EventHandler>().m_click_handler += OnClick;
                     m_fScale = 1;
                 }
                 else
@@ -127,8 +128,9 @@ public class UIBox : MYNGUIPanel
         string buttonname1, string buttonname2,
         UIBox.onclick onClick,
         UIFont uifontTile = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null,
-        bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true)
+        bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false)
     {
+		m_isFunction = isFunction;
         m_onclick = onClick;
         m_ButtonX = 0;
 
@@ -267,7 +269,10 @@ public class UIBox : MYNGUIPanel
     {
 		if( gameObject.activeSelf ){
 			gameObject.SetActive( false );
-
+			if(GameObject.Find("Map(Clone)"))
+			{
+				MapData.mapinstance.ShowPVEGuid ();
+			}
 			Destroy(gameObject);
 		}
     }
@@ -288,7 +293,20 @@ public class UIBox : MYNGUIPanel
 	{
 		if(ui.name.IndexOf("Dimmer") != -1)
 		{
-			DoCloseWindow();
+			if(m_isFunction)
+			{
+				if (m_onclick != null)
+				{
+					m_button1.GetComponent<BoxCollider> ().enabled = false;
+					m_button2.GetComponent<BoxCollider> ().enabled = false;
+					m_onclick(1);
+					DoCloseWindow();
+				}
+			}
+			else
+			{
+				DoCloseWindow();
+			}
 		}
 	}
 	

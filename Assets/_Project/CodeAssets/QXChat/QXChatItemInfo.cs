@@ -25,13 +25,13 @@ public class QXChatItemInfo : MonoBehaviour {
 	public GameObject chatBtnObj;
 	private List<GameObject> chatBtnList = new List<GameObject>();
 
-	private int dis = 55;
+	private int dis = 45;
 
 	public void InItChatBtn (List<ChatBtnInfo> tempInfoList)
 	{
 		chatBtnInfoList = tempInfoList;
 
-		chatBtnBg.height = 70 + (tempInfoList.Count - 1) * dis;
+		chatBtnBg.height = 60 + (tempInfoList.Count - 1) * dis;
 
 		foreach (GameObject obj in chatBtnList)
 		{
@@ -47,7 +47,7 @@ public class QXChatItemInfo : MonoBehaviour {
 			chatBtn.SetActive (true);
 
 			chatBtn.transform.parent = chatBtnObj.transform.parent;
-			chatBtn.transform.localPosition = new Vector3(95,-35 - dis * i,0);
+			chatBtn.transform.localPosition = new Vector3(80,-30 - dis * i,0);
 			chatBtn.transform.localScale = Vector3.one;
 
 			chatBtnList.Add (chatBtn);
@@ -56,8 +56,8 @@ public class QXChatItemInfo : MonoBehaviour {
 			btnLabel.text = tempInfoList[i].btnString;
 
 			EventHandler handler = chatBtn.GetComponent<EventHandler> ();
-			handler.m_handler -= ChatBtnHandlerClickBack;
-			handler.m_handler += ChatBtnHandlerClickBack;
+			handler.m_click_handler -= ChatBtnHandlerClickBack;
+			handler.m_click_handler += ChatBtnHandlerClickBack;
 		}
 	}
 

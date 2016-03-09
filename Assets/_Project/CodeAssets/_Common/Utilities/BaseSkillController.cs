@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class BaseSkillController : MonoBehaviour
@@ -37,8 +38,8 @@ public class BaseSkillController : MonoBehaviour
             IsInCD = true;
             m_ShieldSprite.gameObject.SetActive(true);
 
-            m_CDLabel.text = ActivedCD + "s";
-            m_CDLabel.gameObject.SetActive(true);
+            //m_CDLabel.text = ActivedCD + "s";
+            //m_CDLabel.gameObject.SetActive(true);
         }
     }
 
@@ -62,11 +63,11 @@ public class BaseSkillController : MonoBehaviour
         //if cd ends.
         if (IsInCD && IsShowCdEndEffect)
         {
-            if (UI3DEffectTool.Instance().HaveAnyFx(gameObject))
+            if (UI3DEffectTool.HaveAnyFx(gameObject))
             {
-                UI3DEffectTool.Instance().ClearUIFx(gameObject);
+                UI3DEffectTool.ClearUIFx(gameObject);
             }
-            UI3DEffectTool.Instance().ShowBottomLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, gameObject, EffectTemplate.getEffectTemplateByEffectId(110000).path);
+            UI3DEffectTool.ShowBottomLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, gameObject, EffectTemplate.getEffectTemplateByEffectId(110000).path);
         }
 
         IsInCD = false;
@@ -85,7 +86,7 @@ public class BaseSkillController : MonoBehaviour
         if (elapseTime <= ActivedCD)
         {
             m_ShieldSprite.fillAmount = (1 - elapseTime / ActivedCD);
-            m_CDLabel.text = (int)(ActivedCD - elapseTime) + "s";
+            m_CDLabel.text = (int)Math.Ceiling(ActivedCD - elapseTime) + "s";
         }
         else
         {

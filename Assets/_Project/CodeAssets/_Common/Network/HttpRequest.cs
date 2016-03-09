@@ -2,9 +2,13 @@
 
 //#define DEBUG_HTTP_PARAMS
 
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+
 
 public class HttpRequest : MonoBehaviour{
 
@@ -37,7 +41,7 @@ public class HttpRequest : MonoBehaviour{
 			#endif
 			
 			if( p_log ){
-				Debug.Log( Time.realtimeSinceStartup + "HttpRequest.Connect: " + p_url );
+				Debug.Log( Time.realtimeSinceStartup + " HttpRequest.Connect: " + p_url );
 			}
 		}
 
@@ -81,10 +85,10 @@ public class HttpRequest : MonoBehaviour{
 			
 			if( p_log ){
 				if( !string.IsNullOrEmpty( t_www.error ) ){
-					Debug.Log( Time.realtimeSinceStartup + "WWW.error: " + t_www.error + " : " + p_url );
+					Debug.Log( Time.realtimeSinceStartup + " WWW.error: " + t_www.error + " : " + p_url );
 				}
 				else{
-					Debug.Log( Time.realtimeSinceStartup + "Get.Response: " + t_www.text );
+					Debug.Log( Time.realtimeSinceStartup + " Get.Response: " + t_www.text );
 				}
 			}
 		}
@@ -150,7 +154,7 @@ public class HttpRequest : MonoBehaviour{
 			#endif
 			
 			if( p_log ){
-				Debug.Log( Time.realtimeSinceStartup + "POST.Response: " + t_www.text );
+				Debug.Log( Time.realtimeSinceStartup + " POST.Response: " + t_www.text );
 				
 				if( !string.IsNullOrEmpty( t_www.error ) ){
 					Debug.Log( Time.realtimeSinceStartup + "WWW.error: " + t_www.error + " : " + p_url );
@@ -166,7 +170,7 @@ public class HttpRequest : MonoBehaviour{
 		}
 
         if( !string.IsNullOrEmpty( t_www.error ) ){
-			Debug.LogError( Time.realtimeSinceStartup + "WWW.Error: " + t_www.error + " : " + p_url );
+			Debug.LogError( "WWW.Error: " + t_www.error + " : " + p_url );
 
 			{
 				OnHttpError();
@@ -194,13 +198,13 @@ public class HttpRequest : MonoBehaviour{
 	#region Utilities
 
 	private static void OnHttpError(){
-		#if DEBUG_HTTP
-		Debug.Log( "OnHttpError()" );
+//		#if DEBUG_HTTP
+//		Debug.Log( "OnHttpError( Restore Default Server )" );
 
 		PlayerPrefs.DeleteKey( "选服" );
 
 		PlayerPrefs.Save();
-		#endif
+//		#endif
 	}
 
 	#endregion

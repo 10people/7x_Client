@@ -215,9 +215,13 @@ public class UITexture : UIWidget
 	#region Mono
 
 	public void CustomReset(){
-		OnDisable();
+		enabled = false;
 
-		OnEnable();
+		enabled = true;
+
+//		OnDisable();
+//
+//		OnEnable();
 	}
 	
 	protected override void OnDestroy(){

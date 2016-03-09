@@ -52,6 +52,8 @@ public class YouXiaItem : MonoBehaviour {
 
 	public UISprite DiffcultNameID;
 
+	public GameObject Win;
+
 	void Start () {
 	
 	}
@@ -62,7 +64,16 @@ public class YouXiaItem : MonoBehaviour {
 
 	public void Init()
 	{
-	
+		Win.SetActive (false);
+		//Debug.Log ("YxChooseDefcult.Instance().PassedId.count = "+YxChooseDefcult.Instance().PassedId);
+		foreach(int id in YxChooseDefcult.Instance().PassedId)
+		{
+			if(L_id == id)
+			{
+				Win.SetActive(true);
+				break;
+			}
+		}
 		YouxiaPveTemplate myouxia = YouxiaPveTemplate.getYouXiaPveTemplateById (L_id);
 
 		string difficult = NameIdTemplate.GetName_By_NameId (myouxia.smaName);
@@ -203,24 +214,24 @@ public class YouXiaItem : MonoBehaviour {
 	public void EnterBattleBtn()
 	{
 
-		foreach(YouXiaItem myoux in YxChooseDefcult.mmmYxChooseDefcult.YouXiaItemmList)
-		{
-			if(myoux.mYou_XiaInfo.id == mYou_XiaInfo.id)
-			{
-				CountTime = mYou_XiaInfo.remainTimes;
-			}
-		}
-
-		Debug.Log ("CountTime = " +CountTime);
-
-		if(CountTime > 0)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YOUXIAENEMY_UI), LoadYouXiaEnemyUIBack);
-		}
-		else
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_2);
-		}
+//		foreach(YouXiaItem myoux in YxChooseDefcult.Instance().YouXiaItemmList)
+//		{
+//			if(myoux.mYou_XiaInfo.id == mYou_XiaInfo.id)
+//			{
+//				CountTime = mYou_XiaInfo.remainTimes;
+//			}
+//		}
+//
+//		Debug.Log ("CountTime = " +CountTime);
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YOUXIAENEMY_UI), LoadYouXiaEnemyUIBack);
+//		if(CountTime > 0)
+//		{
+//
+//		}
+//		else
+//		{
+//			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_2);
+//		}
 	}
 
 	private GameObject tempOjbect;

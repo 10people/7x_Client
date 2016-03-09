@@ -42,11 +42,11 @@ public class BossSkillTianLei : HeroSkill
 			targetPosition = node.targetNode.transform.position;
 		}
 
-		BattleEffectControllor.Instance ().PlayEffect (
+		BattleEffectControllor.Instance().PlayEffect (
 			66,
 			targetPosition, node.transform.forward, 2f);
 
-		BattleEffectControllor.Instance ().PlayEffect (
+		BattleEffectControllor.Instance().PlayEffect (
 			46,
 			gameObject);
 
@@ -63,7 +63,7 @@ public class BossSkillTianLei : HeroSkill
 	public void skillTianLeiCallback_2()
 	{
 		List<BaseAI> nodeList = node.stance == BaseAI.Stance.STANCE_ENEMY ? 
-			BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes; 
+			BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes; 
 
 		foreach(BaseAI t_node in nodeList)
 		{
@@ -79,7 +79,7 @@ public class BossSkillTianLei : HeroSkill
 				template.value1,
 				0);
 
-			node.attackHp(t_node, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
+			node.attackHp(t_node, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
 		}
 	}
 

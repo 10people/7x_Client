@@ -16,14 +16,20 @@ public class _Empty : MonoBehaviour {
 
 	private _EmptyScript m_empty_script = null;
 
+	public int m_ui_source_effect_id = 223;
+
+	public int m_ui_mirror_effect_id = 224;
+
+	public int m_ui_fx_id = 225;
+
 	#region Mono
 
 	void Awake(){
-		Debug.Log( "_Empty.Awake()" );
+//		Debug.Log( Time.realtimeSinceStartup + " _Empty.Awake() " + gameObject.name );
 
 		m_instance = this;
 
-		_EmptyScript.Instance();
+//		_EmptyScript.Instance();
 
 //		m_tex = gameObject.GetComponent<UITexture>();
 //
@@ -42,18 +48,34 @@ public class _Empty : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log( "_Empty.Start()" );
+//		Debug.Log( Time.realtimeSinceStartup + " _Empty.Start() " + gameObject.name );
+
+		EffectTool.OpenUIEffect_ById( gameObject, m_ui_source_effect_id, m_ui_mirror_effect_id, m_ui_fx_id );
+
+//		UISprite t_sprite = GetComponent<UISprite>();
+//
+//		if( t_sprite == null ){
+//			return;
+//		}
+//
+//		ComponentHelper.LogUISprite( t_sprite, "UI.Sprite" );
+//
+//		UISpriteData t_sprite_data = t_sprite.atlas.GetSprite( t_sprite.spriteName );
+//
+//		ComponentHelper.LogUISpriteData( t_sprite_data, "UI.Sprite.Data" );
 	}
 
 	void OnEnable(){
-		Debug.Log( "_Empty.OnEnable()" );
+//		Debug.Log( "_Empty.OnEnable()" );
 
 	}
 
 	void OnDestroy(){
-		Debug.Log( "_Empty.OnDestroy()" );
+//		Debug.Log( "_Empty.OnDestroy()" );
 
-		m_empty_script = null;
+//		m_empty_script = null;
+
+		EffectTool.CloseUIEffect_ById( gameObject, m_ui_source_effect_id, m_ui_mirror_effect_id, m_ui_fx_id );
 	}
 
 	// Update is called once per frame

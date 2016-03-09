@@ -88,7 +88,7 @@ public class KingArrow : MonoBehaviour {
 		bulletObject.SetActive(true);
 
 
-		BattleEffectControllor.Instance ().PlayEffect (effectId, bulletObject);
+		BattleEffectControllor.Instance().PlayEffect (effectId, bulletObject);
 
 		KingArrow arrow = (KingArrow)bulletObject.AddComponent<KingArrow>();
 
@@ -135,7 +135,7 @@ public class KingArrow : MonoBehaviour {
 
 		bulletObject.SetActive(true);
 		
-		BattleEffectControllor.Instance ().PlayEffect (effectId, bulletObject);
+		BattleEffectControllor.Instance().PlayEffect (effectId, bulletObject);
 
 		KingArrow arrow = (KingArrow)bulletObject.AddComponent<KingArrow>();
 
@@ -198,18 +198,26 @@ public class KingArrow : MonoBehaviour {
 
 		float r2 = 1.2f;
 
+		BattleControlor.NuqiAddType nuqiType = BattleControlor.NuqiAddType.RANGE_BASE;
+
 		if(aid == 260)
 		{
 			r1 = 3f;
 
 			r2 = 3f;
+
+			nuqiType = BattleControlor.NuqiAddType.RANGE_SKILL_1;
+		}
+		else if(aid == 261)
+		{
+			nuqiType = BattleControlor.NuqiAddType.RANGE_SKILL_2;
 		}
 
 		if (targetNode != null)
 		{
 			if(Vector3.Distance(targetNode.transform.position, attackerNode.transform.position) < r1)
 			{
-				attackerNode.attackHp(targetNode, hurtValue, cri, attackType);
+				attackerNode.attackHp(targetNode, hurtValue, cri, attackType, nuqiType);
 			}
 
 			playBoom(targetNode);
@@ -242,7 +250,7 @@ public class KingArrow : MonoBehaviour {
 							{
 								if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_WEAPON)
 								{
-									attackerNode.attackHp(attackerNode, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX);
+									attackerNode.attackHp(attackerNode, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX, BattleControlor.NuqiAddType.NULL);
 									
 									fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
 
@@ -252,13 +260,13 @@ public class KingArrow : MonoBehaviour {
 								}
 							}
 
-							attackerNode.attackHp(node, fbp.Float, fbp.Bool, attackType);
+							attackerNode.attackHp(node, fbp.Float, fbp.Bool, attackType, nuqiType);
 						}
 						else if(attackType == BattleControlor.AttackType.SKILL_ATTACK)
 						{
 							FloatBoolParam fbp = BattleControlor.Instance().getAttackValueSkill(attackerNode, node, shanghaixishu, gudingshanghai);
 							
-							attackerNode.attackHp(node, fbp.Float, fbp.Bool, attackType);
+							attackerNode.attackHp(node, fbp.Float, fbp.Bool, attackType, nuqiType);
 						}
 					}
 					else
@@ -269,7 +277,7 @@ public class KingArrow : MonoBehaviour {
 						{
 							if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_WEAPON)
 							{
-								attackerNode.attackHp(attackerNode, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX);
+								attackerNode.attackHp(attackerNode, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX, BattleControlor.NuqiAddType.NULL);
 								
 								fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
 
@@ -279,7 +287,7 @@ public class KingArrow : MonoBehaviour {
 							}
 						}
 
-						attackerNode.attackHp(node, fbp.Float, fbp.Bool, attackType);
+						attackerNode.attackHp(node, fbp.Float, fbp.Bool, attackType, nuqiType);
 					}
 
 					playBoom(node);

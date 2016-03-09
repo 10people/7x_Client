@@ -124,9 +124,11 @@ public class SceneTemplate : XmlLoadManager
 				return t_template.sceneName;
 			}
 		}
-		
-		Debug.LogError( "XML ERROR: Can't get SceneTemplate with SceneId: " + p_scene_id );
-		
+
+//		#if UNITY_EDITOR
+//		Debug.LogWarning( "XML ERROR: Can't get SceneTemplate with SceneId: " + p_scene_id );
+//		#endif
+
 		return "";
 	}
 }

@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+using ProtoBuf;
+using qxmobile.protobuf;
+using ProtoBuf.Meta;
+
 public class BattleDroppenLayer : MonoBehaviour 
 {
 	public UILabel labelNum;

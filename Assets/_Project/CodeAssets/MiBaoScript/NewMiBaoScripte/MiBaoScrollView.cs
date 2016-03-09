@@ -55,7 +55,7 @@ public class MiBaoScrollView : MonoBehaviour,SocketProcessor {
 
 //	void OnEnable()
 //	{
-//		mMiBaoGroupTemp = MiBaoManager.Instance ().G_MiBaoInfo;
+//		mMiBaoGroupTemp = MiBaoManager.Instance().G_MiBaoInfo;
 //
 //		Init ();
 //	}
@@ -223,12 +223,12 @@ public class MiBaoScrollView : MonoBehaviour,SocketProcessor {
 	{
 		int effectid = 600154;
 
-		UI3DEffectTool.Instance ().ShowMidLayerEffect (UI3DEffectTool.UIType.PopUI_2,EffectTempt,EffectIdTemplate.GetPathByeffectId(effectid));
+		UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.PopUI_2,EffectTempt,EffectIdTemplate.GetPathByeffectId(effectid));
 
 	}
 	public void CloseEffect()
 	{
-		UI3DEffectTool.Instance ().ClearUIFx (EffectTempt);
+		UI3DEffectTool.ClearUIFx (EffectTempt);
 	}
 	public void GetStarAward()
 	{
@@ -308,7 +308,7 @@ public class MiBaoScrollView : MonoBehaviour,SocketProcessor {
 			
 		}else
 		{
-			Debug.Log ("p_message == null");
+			//Debug.Log ("p_message == null");
 		}
 		
 		return false;

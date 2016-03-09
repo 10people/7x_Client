@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<Dangpu id="6001" itemType="8" itemId="902048" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" />
-<Dangpu id="6002" itemType="8" itemId="902058" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" />
-<Dangpu id="6003" itemType="8" itemId="902068" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" />
-<Dangpu id="6004" itemType="8" itemId="902078" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" />
-<Dangpu id="6005" itemType="8" itemId="902088" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" />
-<Dangpu id="6006" itemType="8" itemId="902098" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" />
-<Dangpu id="6007" itemType="8" itemId="902108" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" />
-<Dangpu id="6008" itemType="8" itemId="902118" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" />
-<Dangpu id="6101" itemType="8" itemId="902048" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" />
-<Dangpu id="6102" itemType="8" itemId="902058" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" />
-<Dangpu id="6103" itemType="8" itemId="902068" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" />
-<Dangpu id="6104" itemType="8" itemId="902078" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" />
-<Dangpu id="6105" itemType="8" itemId="902088" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" />
-<Dangpu id="6106" itemType="8" itemId="902098" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" />
-<Dangpu id="6107" itemType="8" itemId="902108" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" />
-<Dangpu id="6108" itemType="8" itemId="902118" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" />
-<Dangpu id="6201" itemType="8" itemId="903048" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" />
-<Dangpu id="6202" itemType="8" itemId="903058" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" />
-<Dangpu id="6203" itemType="8" itemId="903068" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" />
-<Dangpu id="6204" itemType="8" itemId="903078" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" />
-<Dangpu id="6205" itemType="8" itemId="903088" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" />
-<Dangpu id="6206" itemType="8" itemId="903098" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" />
-<Dangpu id="6207" itemType="8" itemId="903108" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" />
-<Dangpu id="6208" itemType="8" itemId="903118" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" />
-<Dangpu id="3000" itemType="9" itemId="920001" itemNum="5" type="0" needNum="2500" weight="3333" site="3" flag="1" />
-<Dangpu id="3001" itemType="9" itemId="921001" itemNum="5" type="0" needNum="2500" weight="6667" site="3" flag="1" />
-<Dangpu id="3100" itemType="9" itemId="920002" itemNum="5" type="0" needNum="12500" weight="3333" site="4" flag="1" />
-<Dangpu id="3101" itemType="9" itemId="921002" itemNum="5" type="0" needNum="12500" weight="6667" site="4" flag="1" />
-<Dangpu id="4000" itemType="9" itemId="920002" itemNum="5" type="1" needNum="25" weight="3333" site="5" flag="1" />
-<Dangpu id="4001" itemType="9" itemId="921002" itemNum="5" type="1" needNum="25" weight="6667" site="5" flag="1" />
-<Dangpu id="4100" itemType="9" itemId="920003" itemNum="5" type="1" needNum="100" weight="3333" site="6" flag="1" />
-<Dangpu id="4101" itemType="9" itemId="921003" itemNum="5" type="1" needNum="100" weight="6667" site="6" flag="1" />
-<Dangpu id="5001" itemType="3" itemId="950001" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" />
-<Dangpu id="5002" itemType="3" itemId="950002" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" />
-<Dangpu id="5003" itemType="3" itemId="950003" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" />
-<Dangpu id="5004" itemType="3" itemId="950004" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" />
-<Dangpu id="5005" itemType="3" itemId="950005" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" />
-<Dangpu id="1001" itemType="5" itemId="313003" itemNum="2" type="1" needNum="120" weight="10000" site="8" flag="1" />
+<Dangpu id="6001" itemType="8" itemId="902048" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" VIP="0" />
+<Dangpu id="6002" itemType="8" itemId="902058" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" VIP="0" />
+<Dangpu id="6003" itemType="8" itemId="902068" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" VIP="0" />
+<Dangpu id="6004" itemType="8" itemId="902078" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" VIP="0" />
+<Dangpu id="6005" itemType="8" itemId="902088" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" VIP="0" />
+<Dangpu id="6006" itemType="8" itemId="902098" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" VIP="0" />
+<Dangpu id="6007" itemType="8" itemId="902108" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" VIP="0" />
+<Dangpu id="6008" itemType="8" itemId="902118" itemNum="1" type="0" needNum="20000" weight="1250" site="1" flag="1" VIP="0" />
+<Dangpu id="6101" itemType="8" itemId="902048" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6102" itemType="8" itemId="902058" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6103" itemType="8" itemId="902068" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6104" itemType="8" itemId="902078" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6105" itemType="8" itemId="902088" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6106" itemType="8" itemId="902098" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6107" itemType="8" itemId="902108" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6108" itemType="8" itemId="902118" itemNum="1" type="1" needNum="80" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6201" itemType="8" itemId="903048" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6202" itemType="8" itemId="903058" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6203" itemType="8" itemId="903068" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6204" itemType="8" itemId="903078" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6205" itemType="8" itemId="903088" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6206" itemType="8" itemId="903098" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6207" itemType="8" itemId="903108" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="6208" itemType="8" itemId="903118" itemNum="1" type="1" needNum="320" weight="625" site="2" flag="1" VIP="0" />
+<Dangpu id="3000" itemType="9" itemId="920001" itemNum="5" type="0" needNum="2500" weight="3333" site="3" flag="1" VIP="0" />
+<Dangpu id="3001" itemType="9" itemId="921001" itemNum="5" type="0" needNum="2500" weight="6667" site="3" flag="1" VIP="0" />
+<Dangpu id="3100" itemType="9" itemId="920002" itemNum="5" type="0" needNum="12500" weight="3333" site="4" flag="1" VIP="0" />
+<Dangpu id="3101" itemType="9" itemId="921002" itemNum="5" type="0" needNum="12500" weight="6667" site="4" flag="1" VIP="0" />
+<Dangpu id="4000" itemType="9" itemId="920002" itemNum="5" type="1" needNum="25" weight="3333" site="5" flag="1" VIP="0" />
+<Dangpu id="4001" itemType="9" itemId="921002" itemNum="5" type="1" needNum="25" weight="6667" site="5" flag="1" VIP="0" />
+<Dangpu id="4100" itemType="9" itemId="920003" itemNum="5" type="1" needNum="100" weight="3333" site="6" flag="1" VIP="0" />
+<Dangpu id="4101" itemType="9" itemId="921003" itemNum="5" type="1" needNum="100" weight="6667" site="6" flag="1" VIP="0" />
+<Dangpu id="5001" itemType="3" itemId="950001" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" VIP="2" />
+<Dangpu id="5002" itemType="3" itemId="950002" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" VIP="2" />
+<Dangpu id="5003" itemType="3" itemId="950003" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" VIP="2" />
+<Dangpu id="5004" itemType="3" itemId="950004" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" VIP="2" />
+<Dangpu id="5005" itemType="3" itemId="950005" itemNum="1" type="1" needNum="50" weight="2000" site="7" flag="1" VIP="2" />
+<Dangpu id="1001" itemType="5" itemId="313003" itemNum="3" type="1" needNum="180" weight="10000" site="8" flag="1" VIP="2" />
 </dataset>

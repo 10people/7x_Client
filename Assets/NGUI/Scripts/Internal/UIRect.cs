@@ -379,6 +379,7 @@ public abstract class UIRect : MonoBehaviour
 
 	protected void Start ()
 	{
+//		GameObjectHelper.LogGameObjectHierarchy( gameObject, "UIRect.Start() " );
 		mStarted = true;
 		OnInit();
 		OnStart();

@@ -45,7 +45,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	public GameObject RightBtn;
 
 	public int IsactiveID ;
-	public static HY_UIManager Instance ()
+	public static HY_UIManager Instance()
 	{
 		if (!HuangYeData)
 		{
@@ -78,17 +78,29 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	void Update () {
 	
 	}
+	//public GameObject NeedScoleUI;
 	public void init()
 	{
 //		Debug.Log("0000000000请求荒野信息 。。。。");
-
+//		UIRoot root = GameObject.FindObjectOfType<UIRoot>();
+//		if (root != null) {
+//			float s = (float)root.activeHeight / Screen.height;
+//			int height = Mathf.CeilToInt (Screen.height * s);
+//			int width = Mathf.CeilToInt (Screen.width * s);
+//			float v1 = (float)height / (float)640;
+//			float v2 = (float)width / (float)960;
+//			NeedScoleUI.transform.localScale = new Vector3(v2,v1,1);
+//			//Debug.Log ("NeedScoleUI.localScale = " + NeedScoleUI.transform.localScale);
+//		} else {
+//			//Debug.Log ("root == null");
+//		}
 		M_UnionInfo = AllianceData.Instance.g_UnionInfo;//获取联盟的信息
 		
-
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		
 		if(M_UnionInfo == null )
 		{
-//			Debug.Log("M_UnionInfo为空。。。。");
+			//Debug.Log("M_UnionInfo为空。。。。");
 			
 			return;
 		}
@@ -141,7 +153,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 				
 				t_qx.Deserialize(t_stream, HuangyeFog_resp, HuangyeFog_resp.GetType());
 
-				Debug.Log("激活反回来了 = "+HuangyeFog_resp.id);
+				//Debug.Log("激活反回来了 = "+HuangyeFog_resp.id);
 				if(HuangyeFog_resp.result == 0 ) // 开乌成功
 				{
 					AllianceData.Instance.RequestData();
@@ -172,7 +184,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 				}
 				else
 				{
-					Debug.Log("建设值不足了--- 开启失败");
+					//Debug.Log("建设值不足了--- 开启失败");
 
 					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),IsOpenFailLoadBack);
 
@@ -191,7 +203,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 				
 				t_qx.Deserialize(t_stream, mOpenHuangYeTreasureResp, mOpenHuangYeTreasureResp.GetType());
 				
-				Debug.Log("重置反回来了 = "+mOpenHuangYeTreasureResp.id);
+				//Debug.Log("重置反回来了 = "+mOpenHuangYeTreasureResp.id);
 				if(mOpenHuangYeTreasureResp.result == 0 ) // 重置成功
 				{
 
@@ -225,7 +237,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 				}
 				else
 				{
-					Debug.Log("建设值不足了--- 开启失败");
+					//Debug.Log("建设值不足了--- 开启失败");
 					
 					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),IsOpenFailLoadBack);
 					
@@ -244,9 +256,9 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 				
 				t_qx.Deserialize(t_stream, mHyBuyBattleTimesResp, mHyBuyBattleTimesResp.GetType());
 				
-				Debug.Log("购买次数返回了0 wei chenggong = "+mHyBuyBattleTimesResp.isSuccess);
+				//Debug.Log("购买次数返回了0 wei chenggong = "+mHyBuyBattleTimesResp.isSuccess);
 
-				Debug.Log("mHyBuyBattleTimesResp.buyCiShuInfo = "+mHyBuyBattleTimesResp.buyCiShuInfo);
+				//Debug.Log("mHyBuyBattleTimesResp.buyCiShuInfo = "+mHyBuyBattleTimesResp.buyCiShuInfo);
 				if(mHyBuyBattleTimesResp.isSuccess == 0)
 				{
 					if( mHyBuyBattleTimesResp.buyCiShuInfo == 1)
@@ -295,6 +307,11 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	public void ShowRemainTime()
 	{
 		Builds.text = M_UnionInfo.build.ToString();
+		if(m_Huangye_resp.remianTimes <= 0)
+		{
+			int Hyid = 300200;
+			PushAndNotificationHelper.SetRedSpotNotification(Hyid,false);
+		}
 		Hy_ReMainTimes.text = m_Huangye_resp.remianTimes.ToString () + "/" + m_Huangye_resp.allTimes.ToString ();
 	}
 
@@ -314,6 +331,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	{
 		m_Huangye_resp.hYMoney = money;
 		Hy_JinBi.text = m_Huangye_resp.hYMoney.ToString ();
+		AllianceData.Instance.Hy_Bi = m_Huangye_resp.hYMoney;
 	}
 
 	int curMaxlevel = 0;
@@ -343,11 +361,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		{
 			MaxMap = (mHuangye_resp.treasure.Count / Levelsnum)+1;//总的章节数
 		}
-
-
-
-
-		int count = 0;
+		int count = 0; // 激活个数
 
 		for(int i = 0; i < mHuangye_resp.treasure.Count; i++)
 		{
@@ -356,10 +370,14 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 			{
 			    count += 1;
 				MaxLevel  = i+1;
-				if( mHuangye_resp.treasure[i+1].isActive == 1) //后面换成isactive
+				if(i < mHuangye_resp.treasure.Count-1)
 				{
-					MaxLevel  = i+2;
+					if( mHuangye_resp.treasure[i+1].isActive == 1) //后面换成isactive
+					{
+						MaxLevel  = i+2;
+					}
 				}
+
 			}
 		}
 //		Debug.Log ("MaxLevel = " + MaxLevel);
@@ -534,7 +552,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		}
 		else
 		{
-			Debug.Log("暂时没有新的关卡可开启");
+			//Debug.Log("暂时没有新的关卡可开启");
 		}
 
 	}
@@ -548,7 +566,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		}
 		else
 		{
-			Debug.Log("暂时没有新的关卡可开启");
+			//Debug.Log("暂时没有新的关卡可开启");
 		}
 		
 	}
@@ -634,8 +652,14 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = "购买失败";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str = "Vip等级不足，提升Vip等级可增加购买次数！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		int vip = 3;
+		if (vip <= JunZhuData.Instance().m_junzhuInfo.vipLv) {
+			
+			vip = 7;
+		} 
+		string str = "V特权等级不足，V特权等级提升到"+(vip).ToString()+"级即可购买挑战次数。参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+
+		//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
@@ -645,9 +669,18 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = "购买失败";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str = "对不起，您今日购买次数已用尽！改日再来吧";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-		
+		int vip = 3;
+
+		if (vip <= JunZhuData.Instance().m_junzhuInfo.vipLv) {
+
+			vip = 7;
+		} 
+	
+		string str = "V特权等级不足，V特权等级提升到"+(vip).ToString()+"级即可购买挑战次数。参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		if (7 <= JunZhuData.Instance().m_junzhuInfo.vipLv) {
+			
+			str = "今日的购买次数已经用完了，请明日再来吧";
+		} 
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
 
@@ -684,15 +717,27 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	public void CloseUI()
 	{
 		CityGlobalData.CurrentHY_Capter = 0;
+		GameObject mLianmeng = GameObject.Find ("New_My_Union(Clone)");
+		if(mLianmeng == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_HAVE_ROOT),
+			                        AllianceHaveLoadCallback);
+		}
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Global.m_isOpenHuangYe = false;
 		Destroy (this.gameObject);
+	}
+	public void AllianceHaveLoadCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject tempObject = Instantiate(p_object) as GameObject;
+		MainCityUI.TryAddToObjectList(tempObject);
+		
 	}
 	public GameObject NeedCloseObg;
 
 	public void ShowOrClose()
 	{
-		Debug.Log ("NeedCloseObg = " +NeedCloseObg);
+		//Debug.Log ("NeedCloseObg = " +NeedCloseObg);
 		if(NeedCloseObg == null)
 		{
 			return;

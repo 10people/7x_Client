@@ -268,7 +268,7 @@ public class PopUpLabelTool : MonoBehaviour, IUIRootAutoActivator {
 				{
 					m_target_ngui_gb.transform.parent = PopUpLabelTool.Instance().m_ngui_parent.transform;
 					
-					GameObjectHelper.SetGameObjectLayer( PopUpLabelTool.Instance().m_ngui_parent, m_target_ngui_gb );
+					GameObjectHelper.SetGameObjectLayerRecursive( m_target_ngui_gb, PopUpLabelTool.Instance().m_ngui_parent.layer );
 				}
 
 				{

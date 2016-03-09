@@ -71,8 +71,8 @@ public class mbCardTemp : MonoBehaviour {
 	}
 	void ShowEffect()
 	{
-		UI3DEffectTool.Instance ().ShowMidLayerEffect (UI3DEffectTool.UIType.PopUI_2,this.gameObject,EffectIdTemplate.GetPathByeffectId(100157));
-		UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,this.gameObject,EffectIdTemplate.GetPathByeffectId(100148));
+		UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.PopUI_2,this.gameObject,EffectIdTemplate.GetPathByeffectId(100157));
+		//UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,this.gameObject,EffectIdTemplate.GetPathByeffectId(100148));
 	}
 	void showStar()
 	{
@@ -92,6 +92,7 @@ public class mbCardTemp : MonoBehaviour {
 	}
 	public void CloseFun()
 	{
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);	
 		Destroy (this.gameObject);
 	}
 }

@@ -7,7 +7,7 @@ public class HittedEffect : MonoBehaviour {
 
 	private Renderer[] m_renderers;
 
-	private float m_c = 0.0f;
+	private const float DELAY_MAX	= 0.15f;
 
 	private const float BLINK_DUR	= 0.25f;
 
@@ -34,9 +34,12 @@ public class HittedEffect : MonoBehaviour {
 			return;
 		}
 
+		float t_delay = Random.value * DELAY_MAX;
+
 		iTween.ValueTo( gameObject, iTween.Hash( 
 		                                              "from", 0,
 		                                              "to", 0.5f,
+														"delay", t_delay,
 		                                              "time", BLINK_DUR / 2,
 		                                        		"easetype", iTween.EaseType.easeOutQuart,
 		                                              "onupdate", "OnUpdate" ) );
@@ -44,7 +47,7 @@ public class HittedEffect : MonoBehaviour {
 		iTween.ValueTo( gameObject, iTween.Hash( 
 		                                              "from", 1,
 		                                              "to", 0.5f,
-		                                              "delay", BLINK_DUR /2,
+														"delay", BLINK_DUR /2 + t_delay,
 		                                              "time", BLINK_DUR / 2,
 		                                        		"easetype", iTween.EaseType.easeOutQuart,
 		                                              "onupdate", "OnUpdate",
@@ -56,8 +59,6 @@ public class HittedEffect : MonoBehaviour {
 			return;
 		}
 		
-		Color t_c = new Color( m_c, m_c, m_c, m_c );
-		
 		for( int i = 0; i < m_renderers.Length; i++ ){
 			Renderer t_render = m_renderers[ i ];
 
@@ -67,18 +68,33 @@ public class HittedEffect : MonoBehaviour {
 
 			for( int j = 0; j < t_render.materials.Length; j++ ){
 				Material t_mat = t_render.materials[ j ];
-				
-				t_mat.SetColor( "_FxColor", t_c );
+				if( t_mat.HasProperty( "_FxColor" ) ){
+					t_mat.SetColor( "_FxColor", m_color );	
+				}
 			}
 		}
 	}
 
+	private float m_c = 0.0f;
+
+	private Color m_color = new Color( 0.0f, 0.0f, 0.0f );
+
+	private void UpdateColor( float p_c ){
+		m_c = p_c;
+
+		m_color.r = m_c;
+
+		m_color.g = m_c;
+
+		m_color.b = m_c;
+	}
+
 	public void OnUpdate( float p_value ){
-		m_c = p_value;
+		UpdateColor( p_value );
 	}
 
 	public void Done(){
-		m_c = 0;
+		UpdateColor( 0 );
 		
 		UpdateMat();
 

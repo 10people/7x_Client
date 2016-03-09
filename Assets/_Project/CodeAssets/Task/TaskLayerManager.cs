@@ -9,8 +9,11 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class TaskLayerManager : MonoBehaviour
 {
+    public static TaskLayerManager m_TaskLayerM;
     public List<EventIndexHandle> m_listEvent;
-
+    public UISprite m_MoveSprite;
+    public UILabel m_LabelNullSignal;
+    public UISprite m_ForeSprite;
     public List<EventIndexHandle> m_listEventVitality;
     public List<EventIndexHandle> m_listMainTaskEvent;
     public List<VitalityButtonEffectManangerment> m_listVitalityInfo;
@@ -49,6 +52,8 @@ public class TaskLayerManager : MonoBehaviour
 
     public UILabel m_labVitalityRewardShow;
     public UILabel m_labVitalityRewardGet;
+    public GameObject m_ObjTopLeft;
+    public bool m_isDailyVitilityFresh = false;
     public struct TaskType
     {
         public int _type;
@@ -78,12 +83,16 @@ public class TaskLayerManager : MonoBehaviour
    
     void Start()
     {
+        m_TaskLayerM = this;
+        _touchIndex = TaskData.Instance.m_ShowType;
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "任务", 0, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         m_listMainTaskEvent.ForEach(p => p.m_Handle += MainTaskTouch);
         m_listEvent.ForEach(p => p.m_Handle += TouchInfo);
         m_SEC.OpenCompleteDelegate += ShowInfo;
         m_listEventVitality.ForEach(p => p.m_Handle += VitalityGet);
-        m_listVitalityInfo.ForEach(p => p.OnNormalPress += NormalTouch);
+        // m_listVitalityInfo.ForEach(p => p.OnNormalPress += NormalTouch);
+         m_listVitalityInfo.ForEach(p => p.m_TouchLQEvent.m_Handle += NormalTouch);
         m_listVitalityInfo.ForEach(p => p.OnLongPress += LongTouch);
         m_listVitalityInfo.ForEach(p => p.OnLongPressFinish += LongTouchFinish);
     }
@@ -92,7 +101,7 @@ public class TaskLayerManager : MonoBehaviour
         MemoryStream t_tream = new MemoryStream();
         QiXiongSerializer t_qx = new QiXiongSerializer();
         ErrorMessage tempRequest = new ErrorMessage();
-        tempRequest.errorCode = _Vitality_index;
+        tempRequest.errorCode = _Vitality_index + 1;
 
         //_Vitality_index
         t_qx.Serialize(t_tream, tempRequest);
@@ -112,28 +121,49 @@ public class TaskLayerManager : MonoBehaviour
     }
     void Update()
     {
-        if(TaskData.Instance.m_isDailyTimeDown)
+        //if(TaskData.Instance.m_isDailyTimeDown)
+        //{
+        //    m_labTimeDown.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(TaskData.Instance.m_RemainTime)) + "后刷新";
+        //}
+        if (m_isDailyVitilityFresh)
         {
-            m_labTimeDown.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(TaskData.Instance.m_RemainTime)) + "后刷新";
+            m_isDailyVitilityFresh = false;
+            FreshVitality();
         }
 
         if (TaskData.Instance.m_MainReload || TaskData.Instance.m_SideReload || TaskData.Instance.m_DailyQuestIsRefresh)
         {
             ShowLeftButton();
         }
-        if (TaskData.Instance.m_MainReload)
+
+        //if (_touchIndex == 0)
+        //{
+        //    TaskData.Instance.m_SideReload = false;
+        //    TaskData.Instance.m_DailyQuestIsRefresh = false;
+        //}
+        //else if (_touchIndex == 1)
+        //{
+        //    TaskData.Instance.m_MainReload = false;
+        //    TaskData.Instance.m_DailyQuestIsRefresh = false;
+        //}
+        //else if (_touchIndex == 2)
+        //{
+        //    TaskData.Instance.m_MainReload = false;
+        //    TaskData.Instance.m_SideReload = false;
+        //}
+        if (TaskData.Instance.m_MainReload && _touchIndex == 0)
         {
             TaskData.Instance.m_MainReload = false;
             TidyMainTaskInfo();
         }
 
 
-        if (TaskData.Instance.m_SideReload)
+        if (TaskData.Instance.m_SideReload && _touchIndex == 1)
         {
             TaskData.Instance.m_SideReload = false;
             TidySideTaskInfo();
         }
-        if (TaskData.Instance.m_DailyQuestIsRefresh)
+        if (TaskData.Instance.m_DailyQuestIsRefresh && _touchIndex == 2)
         {
             TaskData.Instance.m_DailyQuestIsRefresh = false;
             TidyDailyTaskInfo();
@@ -156,15 +186,7 @@ public class TaskLayerManager : MonoBehaviour
         }
         else
         {
-            MemoryStream t_tream = new MemoryStream();
-            QiXiongSerializer t_qx = new QiXiongSerializer();
-            GetTaskReward tempRequest = new GetTaskReward();
-            tempRequest.taskId = _listTaskInfo[0]._TaskId;
-            t_qx.Serialize(t_tream, tempRequest);
-
-            byte[] t_protof;
-            t_protof = t_tream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GetTaskReward, ref t_protof);
+            TaskData.Instance.GetQuestAward(_listTaskInfo[0]._TaskId);
         }
     }
     void TouchInfo(int index)
@@ -173,9 +195,9 @@ public class TaskLayerManager : MonoBehaviour
         {
            
             _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(true);
-          
+            _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_Guang.SetActive(true);
             _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(false);
-
+            _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Guang.SetActive(false);
             _touchIndex = index;
             if (index == 0)
             {
@@ -308,6 +330,10 @@ public class TaskLayerManager : MonoBehaviour
         else
         {
             if (TaskData.Instance.m_TaskDailyDic.Count > 0 && FunctionOpenTemp.GetWhetherContainID(106))
+            {
+                return true;
+            }
+            else if(TaskData.Instance.m_TaskDailyDic.Count == 0 && FunctionOpenTemp.GetWhetherContainID(106))
             {
                 return true;
             }
@@ -465,9 +491,23 @@ public class TaskLayerManager : MonoBehaviour
             tni._listReward = FunctionWindowsCreateManagerment.GetRewardInfo(item.Value.jiangli);
             _listTaskInfo.Add(tni);
         }
-
+        if (_listTaskInfo.Count > 0)
+        {
+            m_LabelNullSignal.gameObject.SetActive(false);
+        }
         FreshVitality();
-        m_labTimeDown.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(TaskData.Instance.m_RemainTime)) + "后刷新";
+
+        if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue > 0 && TaskData.Instance.m_VitalityShowInfo._todaylHuoYue <= 100)
+        {
+            m_MoveSprite.gameObject.SetActive(true);
+            m_MoveSprite.transform.localPosition = new Vector3(-390 + GetLengthMove(float.Parse(TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString()) / HuoYueTempTemplate.GetHuoYueTempById(5).needNum), 164, 0);
+        }
+        else
+        {
+            m_MoveSprite.gameObject.SetActive(false);
+        }
+
+       
         m_UIProgressDaily.value = float.Parse(TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString()) / HuoYueTempTemplate.GetHuoYueTempById(5).needNum;
         m_labVitalityCurrent.text = TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString();
         m_labVitalityWeekly.text = TaskData.Instance.m_VitalityShowInfo._weekHuoYue.ToString();
@@ -489,6 +529,11 @@ public class TaskLayerManager : MonoBehaviour
         for (int i = 0; i < size_a; i++)
         {
             CreateDailyScrollViewItem();
+        }
+        if (size_a == 0)
+        {
+            m_DailyQuestObj.SetActive(true);
+            m_LabelNullSignal.gameObject.SetActive(true);
         }
     }
     void CreateDailyScrollViewItem()
@@ -645,16 +690,45 @@ public class TaskLayerManager : MonoBehaviour
     {
         if (taskInfo._Progress < 0)
         {
-            m_ObjFinish.SetActive(true);
-            StartCoroutine(WaitSecond(taskInfo, obj));
+            if (TaskData.Instance.m_TaskDailyDic.ContainsKey(taskInfo._TaskId))
+            {
+                CleartVitalityEffect();
+            }
+            overMission(taskInfo._TaskId);
+            //m_ObjFinish.SetActive(true);
+            //StartCoroutine(WaitSecond(taskInfo, obj));
         }
         else
         {
-            m_MainParent.SetActive(false);
-            MainCityUI.m_MainCityUI.m_MainCityUILT.ClickTasID(taskInfo._TaskId);
+            if (RenWuTemplate.GetWetherContainId(taskInfo._TaskId) && !FunctionOpenTemp.GetWhetherContainID(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID) && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != -1 && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900002 && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900001)
+            {
+                ClientMain.m_UITextManager.createText(MyColorData.getColorString(1, FunctionOpenTemp.GetTemplateById(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID).m_sNotOpenTips));
+              //  EquipSuoData.ShowSignal(null, FunctionOpenTemp.GetTemplateById(104).m_sNotOpenTips);
+            }
+            else
+            {
+              
+                MainCityUI.TryRemoveFromObjectList(m_MainParent);
+               
+                MainCityUI.m_MainCityUI.m_MainCityUILT.ClickTasID(taskInfo._TaskId);
+                Destroy(m_MainParent);
+                //m_MainParent.SetActive(false);
+
+            }
         }
     }
 
+    void overMission(int id)
+    {
+        TaskSignalInfoShow.m_TaskId = id;
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), RewardCallback);
+    }
+
+    public void RewardCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject tempObject = (GameObject)Instantiate(p_object);
+        UIYindao.m_UIYindao.CloseUI();
+    }
     IEnumerator WaitSecond(TaskLayerManager.TaskNeedInfo taskInfo, GameObject obj)
     {
         yield return new WaitForSeconds(0.4f);
@@ -662,7 +736,7 @@ public class TaskLayerManager : MonoBehaviour
         m_RewardPanel.SetActive(true);
         for (int i = 0; i < 7; i++)
         {
-           UI3DEffectTool.Instance().ClearUIFx(m_listVitalityInfo[i].gameObject);
+           UI3DEffectTool.ClearUIFx(m_listVitalityInfo[i].gameObject);
         }
         m_RewardPanel.GetComponent<TaskRewardsShow>().Show(taskInfo, obj);
     }
@@ -712,6 +786,11 @@ public class TaskLayerManager : MonoBehaviour
         TaskData.Instance.m_ShowType = 0;
     }
 
+    void OnDestroy()
+    {
+        m_TaskLayerM = null; ;
+    }
+
     int index_button = 0;
     public void ResourcesButtonLoad_CallBack(ref WWW p_www, string p_path, Object p_object)
     {
@@ -731,6 +810,7 @@ public class TaskLayerManager : MonoBehaviour
             else
             {
                 _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(true);
+                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Guang.SetActive(true);
                 foreach (KeyValuePair<int, GameObject> item in _QuestButtonDic)
                 {
                   item.Value.GetComponent<TaskButtonItemController>().m_TanHao.SetActive(IsProgressDone(item.Key));
@@ -840,23 +920,35 @@ public class TaskLayerManager : MonoBehaviour
 
     public void FreshVitality()
     {
+ 
         for (int i = 0; i < 7; i++)
         {
             m_listVitalityInfo[i].m_LabTitle.text = HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum.ToString();
-             
             if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
             {
-                UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listVitalityInfo[i].gameObject, EffectIdTemplate.GetPathByeffectId(100111), null);
+                m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(true);
+                m_listVitalityInfo[i].m_FirstObj.SetActive(true);
+                m_listVitalityInfo[i].m_SecondObj.SetActive(false);
+                UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listVitalityInfo[i].gameObject, EffectIdTemplate.GetPathByeffectId(600154), null);
+            }
+            else if (TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
+            {
+                m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(false);
+                m_listVitalityInfo[i].m_FirstObj.SetActive(true);
+                m_listVitalityInfo[i].m_SecondObj.SetActive(false);
             }
             else
             {
-                UI3DEffectTool.Instance().ClearUIFx(m_listVitalityInfo[i].gameObject);
+                m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(false);
+                m_listVitalityInfo[i].m_FirstObj.SetActive(false);
+                m_listVitalityInfo[i].m_SecondObj.SetActive(true);
+                UI3DEffectTool.ClearUIFx(m_listVitalityInfo[i].gameObject);
             }
         }
     }
-    void NormalTouch(GameObject obj)
+    void NormalTouch(int index)
     {
-        _Vitality_index = int.Parse(obj.name);
+        _Vitality_index = index;
         int count0 = m_VitalityRewardGetParent.transform.childCount;
         if (count0 > 0)
         {
@@ -865,21 +957,24 @@ public class TaskLayerManager : MonoBehaviour
                 Destroy(m_VitalityRewardGetParent.transform.GetChild(i).gameObject);
             }
         }
+        CleartVitalityEffect();
 
-        for (int i = 0; i < 7; i++)
+        if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(index + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[index] != 1)
         {
-          UI3DEffectTool.Instance().ClearUIFx(m_listVitalityInfo[i].gameObject);
-        }
-
-        if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(int.Parse(obj.name)+1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[int.Parse(obj.name)] != 1)
-        {
-            m_labVitalityRewardGet.text = "[今日]活跃度达到" + HuoYueTempTemplate.GetHuoYueTempById(int.Parse(obj.name) + 1).needNum.ToString();
+            m_labVitalityRewardGet.text = "[今日]活跃度达到" + HuoYueTempTemplate.GetHuoYueTempById(index + 1).needNum.ToString();
             _listVitalityReward.Clear();
-            _listVitalityReward = FunctionWindowsCreateManagerment.GetRewardInfo(HuoYueTempTemplate.GetHuoYueTempById(int.Parse(obj.name) + 1).award);
+            _listVitalityReward = FunctionWindowsCreateManagerment.GetRewardInfo(HuoYueTempTemplate.GetHuoYueTempById(index + 1).award);
             Vitality_RewardGet();
         }
     }
 
+    void CleartVitalityEffect()
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            UI3DEffectTool.ClearUIFx(m_listVitalityInfo[i].gameObject);
+        }
+    }
     private int index_Touch_Save = 0;
     void LongTouch(GameObject obj)
     {
@@ -889,7 +984,7 @@ public class TaskLayerManager : MonoBehaviour
             int size = TaskData.Instance.m_VitalityShowInfo._listawardStatus.Count;
             if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
             {
-                UI3DEffectTool.Instance().ClearUIFx(m_listVitalityInfo[i].gameObject);
+                UI3DEffectTool.ClearUIFx(m_listVitalityInfo[i].gameObject);
             }
 
         }
@@ -918,5 +1013,11 @@ public class TaskLayerManager : MonoBehaviour
         }
         m_listVitalityInfo[int.Parse(obj.name)].GetComponent<ButtonScaleManagerment>().ButtonsControl(false, 0.9f);
         m_VitalityRewardShow.SetActive(false);
+    }
+
+
+    private float GetLengthMove(float tt)
+    {
+        return m_ForeSprite.width*tt;
     }
 }

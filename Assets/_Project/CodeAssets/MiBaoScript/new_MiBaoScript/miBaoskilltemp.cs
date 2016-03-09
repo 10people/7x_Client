@@ -23,7 +23,7 @@ public class miBaoskilltemp : MonoBehaviour {
 	public bool IsActive;
 
 	public bool beChoosed;
-
+	public GameObject NewAddMiBaoShangZhen;
 	void Start () {
 
 		IsActive = false;
@@ -58,15 +58,19 @@ public class miBaoskilltemp : MonoBehaviour {
 	}
 	public void ShowDeilInfo()
 	{
-		if(NewMiBaoSkill.Instance ().SaveId == SKill_id)
+		if(NewMiBaoSkill.Instance().SaveId == SKill_id)
 		{
 			return;
 		}
-		NewMiBaoSkill.Instance ().ShowBeChoosed_MiBao (SKill_id,IsActive);
-
+		NewMiBaoSkill.Instance().ShowBeChoosed_MiBao (SKill_id,IsActive);
+		if(NewMiBaoSkill.Instance().COmeMiBaoUI)
+		{
+			return;
+		}
 		if(IsActive)
 		{
-			//SendSaveMiBaoMasege(NewMiBaoSkill.Instance ().S_Type,SKill_id);
+			NewAddMiBaoShangZhen.SetActive(true);
+			NewAddMiBaoShangZhen.transform.localPosition = this.gameObject.transform.localPosition;
 		}
 	}
 }

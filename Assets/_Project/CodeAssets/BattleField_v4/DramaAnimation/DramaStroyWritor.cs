@@ -178,6 +178,8 @@ public class DramaStroyWritor : MonoBehaviour
 
 					node["playTime"].AsFloat = dape.playTime;
 
+					node["moveTime"].AsFloat = dape.moveTime;
+
 					node["follow"].AsBool = dape.follow;
 
 					node["px"].AsFloat = dape.position.x;
@@ -203,6 +205,116 @@ public class DramaStroyWritor : MonoBehaviour
 					DramaActorPlaySound daps = (DramaActorPlaySound)da;
 
 					node["soundId"].AsInt = daps.soundId;
+				}
+				else if(da.actorType == DramaActor.ACTOR_TYPE.UISprite)
+				{
+					DramaActorSprite das = (DramaActorSprite)da;
+
+					das.refreshDatasWhenCheckout();
+
+					node["anchor"].AsInt = (int)das.anchor;
+
+					node["spriteName"] = das.spriteName;
+
+					node["localPositionx"].AsFloat = das.localPosition.x;
+
+					node["localPositiony"].AsFloat = das.localPosition.y;
+
+					node["localPositionz"].AsFloat = das.localPosition.z;
+
+					node["localRotationx"].AsFloat = das.localRotation.x;
+					
+					node["localRotationy"].AsFloat = das.localRotation.y;
+					
+					node["localRotationz"].AsFloat = das.localRotation.z;
+
+					node["dimensionsx"].AsFloat = das.dimensions.x;
+
+					node["dimensionsy"].AsFloat = das.dimensions.y;
+
+					node["depth"].AsInt = das.depth;
+
+					foreach(DramaActorUIData data in das.datas)
+					{
+						node["datas"].AsArray.Add( data.getJson());
+					}
+				}
+				else if(da.actorType == DramaActor.ACTOR_TYPE.UILabel)
+				{
+					DramaActorLabel dal = (DramaActorLabel)da;
+					
+					dal.refreshDatasWhenCheckout();
+					
+					node["anchor"].AsInt = (int)dal.anchor;
+					
+					node["text"] = dal.text;
+					
+					node["localPositionx"].AsFloat = dal.localPosition.x;
+					
+					node["localPositiony"].AsFloat = dal.localPosition.y;
+					
+					node["localPositionz"].AsFloat = dal.localPosition.z;
+					
+					node["localRotationx"].AsFloat = dal.localRotation.x;
+					
+					node["localRotationy"].AsFloat = dal.localRotation.y;
+					
+					node["localRotationz"].AsFloat = dal.localRotation.z;
+
+					node["fontSize"].AsInt = dal.fontSize;
+
+					node["fontStyle"].AsInt = (int)dal.fontStyle;
+
+					node["applyGradient"].AsBool = dal.applyGradient;
+
+					node["gradientTopx"].AsFloat = dal.gradientTop.r;
+
+					node["gradientTopy"].AsFloat = dal.gradientTop.g;
+
+					node["gradientTopz"].AsFloat = dal.gradientTop.b;
+
+					node["gradientTopw"].AsFloat = dal.gradientTop.a;
+
+					node["gradientBottomx"].AsFloat = dal.gradientBottom.r;
+					
+					node["gradientBottomy"].AsFloat = dal.gradientBottom.g;
+
+					node["gradientBottomz"].AsFloat = dal.gradientBottom.b;
+
+					node["gradientBottomw"].AsFloat = dal.gradientBottom.a;
+					
+					node["labelEffect"].AsInt = (int)dal.labelEffect;
+
+					node["effectColorx"].AsFloat = dal.effectColor.r;
+
+					node["effectColory"].AsFloat = dal.effectColor.g;
+					
+					node["effectColorz"].AsFloat = dal.effectColor.b;
+					
+					node["effectColorw"].AsFloat = dal.effectColor.a;
+					
+					node["effectDistancex"].AsFloat = dal.effectDistance.x;
+					
+					node["effectDistancey"].AsFloat = dal.effectDistance.y;
+
+					node["labelColorx"].AsFloat = dal.labelColor.r;
+					
+					node["labelColory"].AsFloat = dal.labelColor.g;
+
+					node["labelColorz"].AsFloat = dal.labelColor.b;
+					
+					node["labelColorw"].AsFloat = dal.labelColor.a;
+
+					node["dimensionsx"].AsFloat = dal.dimensions.x;
+					
+					node["dimensionsy"].AsFloat = dal.dimensions.y;
+					
+					node["depth"].AsInt = dal.depth;
+					
+					foreach(DramaActorUIData data in dal.datas)
+					{
+						node["datas"].AsArray.Add( data.getJson());
+					}
 				}
 
 				jsonActor["actors"].AsArray.Add(node);

@@ -196,7 +196,7 @@
 <AnnounceTemp id="194" type="10" condition="300103" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]通关了[-][0dbce8]【折磨】[-][ffffff]难度的[-][0dbce8]【洗劫权贵】[-][ffffff]！[-]" />
 <AnnounceTemp id="195" type="10" condition="300203" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]通关了[-][0dbce8]【折磨】[-][ffffff]难度的[-][0dbce8]【讨伐山贼】[-][ffffff]！[-]" />
 <AnnounceTemp id="196" type="10" condition="300303" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]通关了[-][0dbce8]【折磨】[-][ffffff]难度的[-][0dbce8]【剿灭叛军】[-][ffffff]！[-]" />
-<AnnounceTemp id="197" type="11" condition="-1" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]于[-][0dbce8]百战千军[-][ffffff]中击败了[-][dbba8f]#玩家名字七个字#[-][ffffff]，排名上升为第[-][d80202]$N$[-][ffffff]名！[-]" />
+<AnnounceTemp id="197" type="11" condition="-1" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]于[-][0dbce8]竞技[-][ffffff]中击败了[-][dbba8f]#玩家名字七个字#[-][ffffff]，排名上升为第[-][d80202]$N$[-][ffffff]名！[-]" />
 <AnnounceTemp id="198" type="12" condition="5" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]秘宝总星数达到[-][d80202]5[-][ffffff]，获得大量[-][00e1c4]元宝[-][ffffff]奖励！[-]" />
 <AnnounceTemp id="199" type="12" condition="10" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]秘宝总星数达到[-][d80202]10[-][ffffff]，获得大量[-][00e1c4]元宝[-][ffffff]奖励！[-]" />
 <AnnounceTemp id="200" type="12" condition="15" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]秘宝总星数达到[-][d80202]15[-][ffffff]，获得大量[-][00e1c4]元宝[-][ffffff]奖励！[-]" />
@@ -215,4 +215,17 @@
 <AnnounceTemp id="213" type="12" condition="80" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]秘宝总星数达到[-][d80202]80[-][ffffff]，获得大量[-][00e1c4]元宝[-][ffffff]奖励！[-]" />
 <AnnounceTemp id="214" type="12" condition="85" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]秘宝总星数达到[-][d80202]85[-][ffffff]，获得大量[-][00e1c4]元宝[-][ffffff]奖励！[-]" />
 <AnnounceTemp id="215" type="12" condition="90" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]秘宝总星数达到[-][d80202]90[-][ffffff]，获得大量[-][00e1c4]元宝[-][ffffff]奖励！[-]" />
+<AnnounceTemp id="216" type="13" condition="3" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]合成[-][0dbce8]3星[-][ffffff]秘宝[-][f5aa29]#秘宝名字#[-][ffffff]！[-]" />
+<AnnounceTemp id="217" type="14" condition="10" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]购买[-][f5aa29]铜币[-][ffffff]时获得[-][d80202]10倍[-][ffffff]暴击！[-]" />
+<AnnounceTemp id="218" type="15" condition="316001" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟商店[-][ffffff]兑换获得[-][f5aa29]女娲补天石的碎片[-][ffffff]！[-]" />
+<AnnounceTemp id="219" type="15" condition="316002" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟商店[-][ffffff]兑换获得[-][f5aa29]女娲鹿鸣笙的碎片[-][ffffff]！[-]" />
+<AnnounceTemp id="220" type="15" condition="316003" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟商店[-][ffffff]兑换获得[-][f5aa29]女娲天心佩的碎片[-][ffffff]！[-]" />
+<AnnounceTemp id="221" type="16" condition="955022" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟祭拜[-][ffffff]时获得[-][f5aa29]大宝石盒[-][ffffff]！[-]" />
+<AnnounceTemp id="222" type="16" condition="955032" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟祭拜[-][ffffff]时获得[-][f5aa29]大符文盒[-][ffffff]！[-]" />
+<AnnounceTemp id="223" type="16" condition="900002" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟祭拜[-][ffffff]时获得[-][f5aa29]大量元宝[-][ffffff]！[-]" />
+<AnnounceTemp id="224" type="16" condition="900002" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟祭拜[-][ffffff]时获得[-][f5aa29]大量元宝[-][ffffff]！[-]" />
+<AnnounceTemp id="225" type="16" condition="900002" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟祭拜[-][ffffff]时获得[-][f5aa29]大量元宝[-][ffffff]！[-]" />
+<AnnounceTemp id="226" type="16" condition="951022" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟祭拜[-][ffffff]时获得[-][f5aa29]中精气瓶[-][ffffff]！[-]" />
+<AnnounceTemp id="227" type="16" condition="955011" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟祭拜[-][ffffff]时获得[-][f5aa29]小钱袋[-][ffffff]！[-]" />
+<AnnounceTemp id="228" type="16" condition="951003" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟祭拜[-][ffffff]时获得[-][f5aa29]鎏金钱匣[-][ffffff]！[-]" />
 </dataset>

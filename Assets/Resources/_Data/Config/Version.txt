@@ -5,4 +5,7 @@ SmallVersion	= 2015_1209_2012
 
 // changed every big build with small version
 BigVersion		= 2015_1209_2012
+
+// only used when http login
+ClientVersionString	= 1.1.0
 ------------------------------------------------------------------- </Version Config>

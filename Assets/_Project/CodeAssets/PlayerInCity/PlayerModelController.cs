@@ -105,7 +105,7 @@ public class PlayerModelController : MonoBehaviour
 
         m_ObjHero.SetActive(true);
 
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
+        //if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
         {
             m_ObjHero.AddComponent<TenementPortal>();
         }
@@ -126,11 +126,20 @@ public class PlayerModelController : MonoBehaviour
                     {
                        if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
                         {
-                            m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                              if (m_ObjHero.transform.position.y > 10 )
+                            if (FunctionWindowsCreateManagerment.m_isJieBiao)
                             {
-                                m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
+                                FunctionWindowsCreateManagerment.m_isJieBiao = false;
+                                m_ObjHero.transform.position = new Vector3(30.3f, 2.39f, -18.9f);
                             }
+                            else
+                            {
+                                m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
+                                if (m_ObjHero.transform.position.y > 10)
+                                {
+                                    m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
+                                }
+                            }
+                            
                         }
                         else
                         {
@@ -240,7 +249,13 @@ public class PlayerModelController : MonoBehaviour
                         if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
                         {
                             m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                            if (m_ObjHero.transform.position.y < 150 || m_ObjHero.transform.position.y > 177)
+
+                            if (FunctionWindowsCreateManagerment.m_isJieBiao)
+                            {
+                                FunctionWindowsCreateManagerment.m_isJieBiao = false;
+                                m_ObjHero.transform.position = new Vector3(26.610f, 2.39f, -10.0f);
+                            }   
+                            else if (m_ObjHero.transform.position.y < 150 || m_ObjHero.transform.position.y > 177)
                             {
                                 m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
                             }
@@ -519,6 +534,7 @@ public class PlayerModelController : MonoBehaviour
     }
     private bool _IsSetPos = false;
     private bool _isArrived = false;
+    public bool m_isSendPos = true;
     void Update()
     {
         if (m_ObjHero == null || m_joystick == null)
@@ -534,7 +550,7 @@ public class PlayerModelController : MonoBehaviour
         m_timeInterval += Time.deltaTime;
 
         //0.24秒刷新一次玩家位置  提交数据        
-        if (m_timeInterval >= 0.05f && m_ObjHero != null)
+        if (m_timeInterval >= 0.05f && m_ObjHero != null && m_isSendPos)
         {
             m_timeInterval = 0.0f;
             m_targetPosition = m_transform.position;
@@ -755,6 +771,7 @@ public class PlayerModelController : MonoBehaviour
                 {
                     if (!FunctionOpenTemp.templates[i].m_sNotOpenTips.Equals("-1"))
                     {
+                       
                         EquipSuoData.ShowSignal(null, FunctionOpenTemp.templates[i].m_sNotOpenTips);
                     }
                 }
@@ -763,7 +780,7 @@ public class PlayerModelController : MonoBehaviour
     }
 
     private GameObject equipObject;
-
+    private int _TouchNum = 0;
     void ShowUIInfo(FunctionOpenTemp template)
     {
         TaskData.Instance.SendData(template.m_iMissionOpenID, 1);
@@ -771,10 +788,10 @@ public class PlayerModelController : MonoBehaviour
         {
             return;
         }
+
         GameObject obj = new GameObject();
         obj.name = "MainCityUIButton_" + template.m_iID;
         MainCityUI.m_MainCityUI.MYClick(obj);
-        
     }
 
     
@@ -841,7 +858,7 @@ public class PlayerModelController : MonoBehaviour
         MiBaoGlobleData.Instance();
 
         GetAllianceData.Instance();
-        //CheckXml.Instance ();
+        //CheckXml.Instance();
 
         BagData.Instance();
 

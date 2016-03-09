@@ -320,7 +320,7 @@ public class MyAllianceMain : MonoBehaviour, SocketProcessor
 			
 			byte[] t_protof = exitStream.ToArray ();
 			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.EXIT_ALLIANCE, ref t_protof, "30114");
+			SocketTool.Instance().SendSocketMessage (ProtoIndexes.EXIT_ALLIANCE, ref t_protof, "30114");
 		}
 	}
 

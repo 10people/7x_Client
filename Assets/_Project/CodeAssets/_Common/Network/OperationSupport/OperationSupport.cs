@@ -51,7 +51,7 @@ public class OperationSupport {
 			// add uuid param
 			AppendHttpParamUUID( p_params );
 			
-			HttpRequest.Instance ().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.OPERATION_SUPPORT_REPORT_ACTION_URL, 
+			HttpRequest.Instance().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.OPERATION_SUPPORT_REPORT_ACTION_URL, 
 			                                 p_params, 
 			                                 ReportSuccess, 
 			                                 ReportFail );

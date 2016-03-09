@@ -22,13 +22,25 @@ public class _Debug : MonoBehaviour {
 	#region Mono
 
 	void Awake(){
-		Debug.Log ( "_Debug.Awake()" );
+//		{
+//			DateTime t_time = DateTime.Parse( "2008-05-01 21:34:42" );
+//
+//			Debug.Log( t_time.ToString( "yyyy MM dd   HH mm ss" ) );
+//		}
+//
+//		{
+//			TimeHelper.SetServerDateTime( "2016-02-28 21:16:21" );
+//
+//			PlayerInfoCache.SetRegisterTime( "2016-02-27 21:16:21" );
+//		}
 
-		m_instance = this;
+//		Debug.Log ( "_Debug.Awake()" );
 
-		DontDestroyOnLoad( gameObject );
+//		m_instance = this;
 
-		ComponentHelper.HideComponent( transform );
+//		DontDestroyOnLoad( gameObject );
+
+//		ComponentHelper.HideComponent( transform );
 
 //		{
 //			Debug.Log( "01:01:01: " + TimeHelper.GetUniformedTimeString( 1 *60 * 60 + 1 * 60 + 1 ) );
@@ -46,12 +58,12 @@ public class _Debug : MonoBehaviour {
 //			DestroyObject( _EmptyScript.Instance() );
 //		}
 
-		GameObjectHelper.LogComponents( gameObject );
+//		GameObjectHelper.LogComponents( gameObject );
 	}
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log ( "_Debug.Start()" );
+//		Debug.Log ( "_Debug.Start()" );
 
 //		NavTest();
 	}
@@ -62,7 +74,50 @@ public class _Debug : MonoBehaviour {
 	
 	public bool m_button_status = false;
 
+	public bool m_debug_log = false;
+
+	[Range(0, 1)]
+	public float m_anim_normalized_time = 0.0f;
+
+	public Vector3 m_delta_move = new Vector3( 0.001f, 0, 0 );
+
 	void Update () {
+		{
+			Debug.Log( "Server Time: " + TimeHelper.GetCurServerDateTimeString() + "   IsFirstDay: " + LoadingTemplate.IsFirstDay() );
+		}
+
+//		{
+//			CharacterController t_control = GetComponent<CharacterController>();
+//
+//			if( t_control != null ){
+//				t_control.Move( m_delta_move );
+//			}
+//		}
+
+//		{
+//			Animator t_anim = gameObject.GetComponent<Animator>();
+//
+//			if( t_anim == null ){
+//				return;
+//			}
+//
+//			t_anim.Play( t_anim.GetCurrentAnimatorStateInfo( 0 ).shortNameHash, 
+//				-1, 
+//				m_anim_normalized_time );
+//			
+//			t_anim.Update( 0.0f );
+//		}
+
+//		TraceAudioSource();
+
+//		AutoLogin();
+
+//		if( m_debug_log ){
+//			Debug.Log( "HaveInstance: " + UI3DEffectTool.HaveInstance() );
+//
+//			m_debug_log = false;
+//		}
+
 		//		Debug.Log ( "Update.TimeScale: " + Time.timeScale );
 		
 		//		ConTest();
@@ -81,21 +136,21 @@ public class _Debug : MonoBehaviour {
 //			Debug.Log( "_Empty's instance is null." );
 //		}
 
-		if (m_execute) {
-			m_execute = false;
-			
-			UIButton t_btn = GetComponent<UIButton>();
-			
-			t_btn.isEnabled = m_button_status;
-		}
-		
-		if (m_log_button_status) {
-			m_log_button_status = false;
-			
-			UIButton t_btn = GetComponent<UIButton>();
-			
-			Debug.Log( "Log btn status: " + t_btn.isEnabled );
-		}
+//		if (m_execute) {
+//			m_execute = false;
+//			
+//			UIButton t_btn = GetComponent<UIButton>();
+//			
+//			t_btn.isEnabled = m_button_status;
+//		}
+//		
+//		if (m_log_button_status) {
+//			m_log_button_status = false;
+//			
+//			UIButton t_btn = GetComponent<UIButton>();
+//			
+//			Debug.Log( "Log btn status: " + t_btn.isEnabled );
+//		}
 	}
 	
 	void LateUpdate() {
@@ -139,9 +194,130 @@ public class _Debug : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		Debug.Log ( "_Debug.OnDestroy()" );
+//		Debug.Log ( "_Debug.OnDestroy()" );
 
 		m_instance = null;
+	}
+
+	#endregion
+
+
+
+	#region AudioSource Trace
+
+	private void TraceAudioSource(){
+		AudioSource[] t_sources = GetComponents<AudioSource>();
+
+		for( int i = t_sources.Length - 1; i >= 0; i-- ){
+			if( SoundHelper.IsRemovable( t_sources[ i ] ) ){
+				Debug.Log( "AudioSoource Removable: " + t_sources[ i ] );
+			}
+			else{
+				ComponentHelper.LogAudioSource( 
+					t_sources[ i ], 
+					"",
+					i + ": " + GameObjectHelper.GetGameObjectHierarchy( t_sources[ i ] ) );
+			}
+		}
+	}
+
+	#endregion
+
+
+
+	#region Auto Login
+
+	private int m_login_count = 0;
+
+	private enum AutoLoginFlow{
+		LogOut_Confirmed,
+		Notice_Confirmed,
+		AC_PN_Confirmed,
+		Login_Confirmed,
+		Enter_Game_Confirmed,
+	}
+
+	private AutoLoginFlow m_flow = AutoLoginFlow.LogOut_Confirmed;
+
+	private void AutoLogin(){
+		if( Time.frameCount % 3 != 0 ){
+			return;
+		}
+
+		if( SceneManager.IsInLoginScene() &&
+		   m_flow == AutoLoginFlow.LogOut_Confirmed ){
+			NoticeManager t_notice = Component.FindObjectOfType<NoticeManager>();
+		
+			if( t_notice != null ){
+				if( t_notice.gameObject.activeInHierarchy ){
+					t_notice.gameObject.SendMessage( "CloseBtn" );
+					
+//					Debug.Log( "Notice Confirmed." );
+					
+					m_flow = AutoLoginFlow.Notice_Confirmed;
+				}
+			}
+		}
+
+		if( SceneManager.IsInLoginScene() &&
+		   m_flow == AutoLoginFlow.Notice_Confirmed ){
+			AccountRequest t_cs = Component.FindObjectOfType<AccountRequest>();
+
+			if( t_cs != null ){
+//				t_cs.userName.value = "110";
+//				
+//				t_cs.password.value = "110";
+
+				t_cs.userName.value = "q123";
+				
+				t_cs.password.value = "q123";
+				
+//				Debug.Log( "Account&Password Confirmed." );
+				
+				m_flow = AutoLoginFlow.AC_PN_Confirmed;
+			}
+		}
+
+		if( SceneManager.IsInLoginScene() &&
+		   m_flow == AutoLoginFlow.AC_PN_Confirmed ){
+			AccountRequest t_cs = Component.FindObjectOfType<AccountRequest>();
+			
+			t_cs.SendMessage( "DengLuRequestSend" );
+				
+//			Debug.Log( "Login Confirmed." );
+
+			m_flow = AutoLoginFlow.Login_Confirmed;
+		}
+
+		if( SceneManager.IsInLoginScene() &&
+		   m_flow == AutoLoginFlow.Login_Confirmed ){
+			EnterGame t_cs = Component.FindObjectOfType<EnterGame>();
+
+			if( t_cs != null ){
+				t_cs.SendMessage( "EnterGameReq" );
+				
+//				Debug.Log( "Enter Game Confirmed." );
+				
+				m_flow = AutoLoginFlow.Enter_Game_Confirmed;
+				
+				{
+					m_login_count++;
+					
+					Debug.Log( "LoginCount: " + m_login_count );
+				}
+			}
+		}
+
+		if( SceneManager.IsInMainCityScene() &&
+		   m_flow == AutoLoginFlow.Enter_Game_Confirmed ){
+			if( EnterNextScene.Instance() == null && !StaticLoading.HaveInstance() ){
+				SettingUpLayerManangerment.SwitchAccountController();
+		
+//				Debug.Log( "Account LogOut." );
+
+				m_flow = AutoLoginFlow.LogOut_Confirmed;
+			}
+		}
 	}
 
 	#endregion

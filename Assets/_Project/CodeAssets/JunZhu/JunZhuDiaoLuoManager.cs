@@ -42,7 +42,7 @@ public class JunZhuDiaoLuoManager : MonoBehaviour ,SocketProcessor
   }
   void Start()
   {
-	m_TouchEvent.m_handler += EventBack;
+	m_TouchEvent.m_click_handler += EventBack;
    // JunZhuDiaoLuoManager.RequestMapInfo(-1);
   }
 

@@ -24,7 +24,8 @@ public class SparkleEffectItem : MonoBehaviour {
 
 	protected MenuItemStyle m_style =  MenuItemStyle.None;
 
-	public Color m_color = new Color( 1f, 1f, 1f, 1f );
+	// target sparkle circle count, -1 means loop forever
+	private int m_sparkle_count = -1;
 
 	public static Color[] DefinedColors = {
 		new Color( 1f, 1f, 1f, 1f ),								// Default
@@ -33,7 +34,15 @@ public class SparkleEffectItem : MonoBehaviour {
 		new Color( 255f / 255, 236f / 255, 201f / 255, 1.0f ),		// Cancel_Button
 	};
 
-	private float m_start_time 	= 0.0f;
+	private Color m_color = new Color( 1f, 1f, 1f, 1f );
+
+
+	private enum SparkleType{
+		Sprite,
+		Texture,
+	}
+
+	private SparkleType m_sparkle_type = SparkleType.Sprite;
 
 	#region Mono
 
@@ -41,50 +50,58 @@ public class SparkleEffectItem : MonoBehaviour {
 		m_start_time = Time.realtimeSinceStartup;
 
 		{
-			m_color = DefinedColors[ (int)m_style ];
+			UpdateSparkleParam();
 		}
 
 		{
 			m_sprite = GetComponent<UISprite>();
-			
+
 			if( m_sprite == null ){
-				Debug.Log( "No UISprite Attached." );
+				m_ui_tex = GetComponent<UITexture>();
 
-				return;
+				if( m_ui_tex == null ){
+					Debug.Log( "No UISprite Attached." );
+
+					Destroy( this );
+
+					return;	
+				}
+				else{
+					m_sparkle_type = SparkleType.Texture;
+				}
 			}
+			else{
+				m_sparkle_type = SparkleType.Sprite;
 
-			{
-				m_tex = m_sprite.mainTexture;
-				
-				m_sprite_data = m_sprite.atlas.GetSprite( m_sprite.spriteName );
+				{
+					m_tex = m_sprite.mainTexture;
 
-				if( m_sprite_data == null ){
-					Debug.Log( "No Sprite data setted." );
+					m_sprite_data = m_sprite.atlas.GetSprite( m_sprite.spriteName );
 
-					return;
+					if( m_sprite_data == null ){
+						Debug.Log( "No Sprite data setted." );
+
+						return;
+					}
 				}
 			}
 		}
 
-		{
-			m_ui_tex = GetComponent<UITexture>();
-
-			if( m_ui_tex != null ){
-				Debug.Log( "Error, uitexture already exist." );
-
-				return;
-			}
-
+		if( m_sparkle_type == SparkleType.Sprite ){
 			m_ui_tex = gameObject.AddComponent<UITexture>();
+
+			m_ui_tex.panel = m_sprite.panel;
 
 			m_ui_tex.depth = m_sprite.depth;
 
 			m_sprite.enabled = false;
 
 			{
-				m_ui_tex.width = m_sprite.width;
-				
-				m_ui_tex.height = m_sprite.height;
+				Vector4 t_dd = m_sprite.drawingDimensions;
+
+				m_ui_tex.width = (int)( t_dd.z - t_dd.x );
+
+				m_ui_tex.height = (int)( t_dd.w - t_dd.y );
 
 				Vector3 t_vec3 = m_sprite.gameObject.transform.localPosition;
 
@@ -101,6 +118,15 @@ public class SparkleEffectItem : MonoBehaviour {
 				m_ui_tex.material.SetVector( "_Tex_ST", t_vec_4 );
 			}
 		}
+		else if( m_sparkle_type == SparkleType.Texture ){
+			m_origin_sh = m_ui_tex.shader;
+
+			m_tex = m_ui_tex.mainTexture;
+
+			m_ui_tex.material = new Material( Shader.Find( "Custom/Effects/Sparkle Effect" ) );
+
+			m_ui_tex.material.mainTexture = m_tex;
+		}
 	}
 
 	void Update(){
@@ -114,15 +140,18 @@ public class SparkleEffectItem : MonoBehaviour {
 
 				m_ui_tex.material.SetFloat( "_T", m_t );
 
-				m_ui_tex.CustomReset();
+				if( m_sparkle_type == SparkleType.Sprite ){
+					m_ui_tex.CustomReset();	
+				}
+				else if( m_sparkle_type == SparkleType.Texture ){
+					m_ui_tex.CustomReset();	
+				}
 			}
 		}
 	}
 
 	void OnDestroy(){
-		m_sprite.enabled = true;
-
-		Destroy( m_ui_tex );
+		Clean();
 	}
 
 	#endregion
@@ -130,6 +159,39 @@ public class SparkleEffectItem : MonoBehaviour {
 
 
 	#region Use
+
+	public void Clean(){
+//		Debug.Log( "Sparkle.Clean()" );
+
+		if( m_sparkle_type == SparkleType.Sprite ){
+			if( m_sprite != null ){
+				m_sprite.enabled = true;	
+
+				m_sprite = null;
+			}
+
+			if( m_ui_tex != null ){
+				m_ui_tex.enabled = false;
+
+				//			DestroyImmediate( m_ui_tex );
+
+				Destroy( m_ui_tex );
+
+				m_ui_tex = null;
+			}
+		}
+		else if( m_sparkle_type == SparkleType.Texture ){
+			if( m_ui_tex != null ){
+				m_ui_tex.material = null;
+
+				m_ui_tex.shader = m_origin_sh;
+
+				m_origin_sh = null;
+
+				m_ui_tex = null;
+			}
+		}
+	}
 
 	public static void CloseSparkle( GameObject p_ui_sprite_gb ){
 		if( p_ui_sprite_gb == null ){
@@ -141,7 +203,9 @@ public class SparkleEffectItem : MonoBehaviour {
 		SparkleEffectItem t_sparkle = p_ui_sprite_gb.GetComponent<SparkleEffectItem>();
 		
 		if( t_sparkle == null ){
-			Debug.Log( "No Sprite found for: " + p_ui_sprite_gb );
+//			Debug.Log( "No Sparkle found for: " + p_ui_sprite_gb );
+
+//			GameObjectHelper.LogGameObjectHierarchy( p_ui_sprite_gb );
 			
 			return;
 		}
@@ -149,27 +213,66 @@ public class SparkleEffectItem : MonoBehaviour {
 		Destroy( t_sparkle );
 	}
 
-	/// Pass gameobject with target UISprite here
-	public static void OpenSparkle( GameObject p_ui_sprite_gb, MenuItemStyle p_style ){
+	/** Desc:
+	 * Pass gameobject with target UISprite here.
+	 * 
+	 * Params:
+	 * p_sparkle_count: -1 means always sparkling, 1-int.max means sparkle only defined times.
+	 */ 
+	public static void OpenSparkle( GameObject p_ui_sprite_gb, MenuItemStyle p_style, int p_sparkle_count = -1 ){
 		if( p_ui_sprite_gb == null ){
 			Debug.Log( "No gameobject passed." );
 
 			return;
 		}
 
-		UISprite t_sprite = p_ui_sprite_gb.GetComponent<UISprite>();
+		{
+			UISprite t_sprite = p_ui_sprite_gb.GetComponent<UISprite>();
 
-		if( t_sprite == null ){
-			Debug.Log( "No Sprite found for: " + p_ui_sprite_gb );
+			UITexture t_tex = p_ui_sprite_gb.GetComponent<UITexture>();
 
-			return;
+			if( t_sprite == null ){
+				if( t_tex == null ){
+					Debug.Log( "No sprite or texture found for: " + p_ui_sprite_gb );
+
+					return;
+				}
+			}
 		}
 
-		ComponentHelper.RemoveIfExist( p_ui_sprite_gb, typeof(SparkleEffectItem) );
+		{
+			SparkleEffectItem t_effect = (SparkleEffectItem)ComponentHelper.RemoveIfExist( p_ui_sprite_gb, typeof(SparkleEffectItem) );
+
+			if( t_effect != null ){
+				t_effect.Clean();
+			}
+		}
 
 		SparkleEffectItem t_sparkle = p_ui_sprite_gb.AddComponent<SparkleEffectItem>();
 
-		t_sparkle.m_style = p_style;
+		t_sparkle.SetSparkleItemType( p_style );
+
+		t_sparkle.SetSparkleCount( p_sparkle_count );
+	}
+
+	#endregion
+
+
+
+	#region Set
+
+	public void SetSparkleCount( int p_sparkle_count = -1 ){
+		m_sparkle_count = p_sparkle_count;
+	}
+
+	private void SetSparkleItemType( MenuItemStyle p_style ){
+		m_style = p_style;
+
+		UpdateSparkleParam();
+	}
+
+	private void UpdateSparkleParam(){
+		m_color = DefinedColors[ (int)m_style ];
 	}
 
 	#endregion
@@ -178,13 +281,29 @@ public class SparkleEffectItem : MonoBehaviour {
 	
 	#region Utilities
 
+	private int m_done_circle_count = 0;
+
 	private void UpdateSparkle(){
 		if( Time.realtimeSinceStartup - m_start_time - m_duration - m_interval > 0 ){
 			m_start_time = Time.realtimeSinceStartup;
+
+			m_done_circle_count++;
 		}
 
 		{
 			m_t = Mathf.Lerp( 1, m_min_t, ( Time.realtimeSinceStartup - m_start_time ) / m_duration );
+		}
+
+		if( m_sparkle_count > 0 ){
+			if( m_done_circle_count < 0 ){
+				m_done_circle_count = 0;
+			}
+
+			if( m_done_circle_count >= m_sparkle_count ){
+//				Debug.Log( m_done_circle_count + " / " + m_sparkle_count );
+
+				Destroy( this );
+			}
 		}
 	}
 
@@ -213,11 +332,30 @@ public class SparkleEffectItem : MonoBehaviour {
 	}
 
 	private Vector4 GetVec4(){
-		return new Vector4( 
-		                   1.0f * ( m_sprite_data.width + m_sprite_data.paddingLeft + m_sprite_data.paddingRight ) / m_sprite.atlas.AtlasWidth,
-		                   1.0f * ( m_sprite_data.height + m_sprite_data.paddingTop + m_sprite_data.paddingBottom ) / m_sprite.atlas.AtlasHeight,
-		                   1.0f * ( m_sprite_data.x - m_sprite_data.paddingLeft ) / m_sprite.atlas.AtlasWidth,
-		                   1 - 1.0f * ( m_sprite_data.y + m_sprite_data.height + m_sprite_data.paddingBottom ) / m_sprite.atlas.AtlasHeight );
+		if( m_sparkle_type == SparkleType.Sprite ){
+			return new Vector4( 
+				1.0f * ( m_sprite_data.width ) / m_sprite.atlas.AtlasWidth,
+				1.0f * ( m_sprite_data.height ) / m_sprite.atlas.AtlasHeight,
+				1.0f * ( m_sprite_data.x ) / m_sprite.atlas.AtlasWidth,
+				1 - 1.0f * ( m_sprite_data.y + m_sprite_data.height ) / m_sprite.atlas.AtlasHeight );	
+		}
+		else if( m_sparkle_type == SparkleType.Texture ){
+			return new Vector4( 
+				1.0f,
+				1.0f,
+				0.0f,
+				0.0f );
+		}
+		else{
+			return new Vector4( 0, 0, 1, 1 );
+		}
+
+
+//		return new Vector4( 
+//		                   1.0f * ( m_sprite_data.width + m_sprite_data.paddingLeft + m_sprite_data.paddingRight ) / m_sprite.atlas.AtlasWidth,
+//		                   1.0f * ( m_sprite_data.height + m_sprite_data.paddingTop + m_sprite_data.paddingBottom ) / m_sprite.atlas.AtlasHeight,
+//		                   1.0f * ( m_sprite_data.x - m_sprite_data.paddingLeft ) / m_sprite.atlas.AtlasWidth,
+//		                   1 - 1.0f * ( m_sprite_data.y + m_sprite_data.height + m_sprite_data.paddingBottom ) / m_sprite.atlas.AtlasHeight );
 	}
 
 	#endregion
@@ -232,6 +370,8 @@ public class SparkleEffectItem : MonoBehaviour {
 
 	#region Utilities
 
+	private float m_start_time 	= 0.0f;
+
 	private float m_duration	= 0.3f;
 	
 	private float m_interval	= 2.5f;
@@ -241,14 +381,18 @@ public class SparkleEffectItem : MonoBehaviour {
 	private float m_coef 		= 1.0f;
 	
 	private float m_t 			= -1;
-	
+
+	// self or mirror
 	private UITexture m_ui_tex 	= null;
-	
+
 	private Texture m_tex 		= null;
-	
+
 	private UISprite m_sprite 	= null;
 	
 	private UISpriteData m_sprite_data 	= null;
+
+
+	private Shader m_origin_sh	= null;
 
 	#endregion
 

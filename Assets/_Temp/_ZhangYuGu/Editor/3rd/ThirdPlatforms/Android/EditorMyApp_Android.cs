@@ -91,43 +91,6 @@ public class EditorMyApp_Android : MonoBehaviour {
 				FileHelper.FileCopy( GetMyAppClassPath(), EditorBuildAndroid3rd.GetDesClassPath() );
 			}
 		}
-
-		if( true ){
-			return;
-		}
-
-		string t_pbx = EditorBuildiOS3rd.GetPBXContent( p_target, p_path_to_built_project );
-
-		// backup
-		{
-			EditorBuildiOS3rd.BackUpPbx( p_path_to_built_project );
-		}
-
-		{
-			// flag
-			EditorBuildiOS3rd.UpdatePbx( ref t_pbx,
-			                         "OTHER_LDFLAGS = (\n" +
-			                 	 	 "					\"-weak_framework\",\n" +
-			                  		 "					CoreMotion,\n" +
-			                  		 "					\"-weak-lSystem\",\n" + 
-			                  		 "				);",
-			                         
-			                         "OTHER_LDFLAGS = (\n" +
-			                         "\"-ObjC\",\n" +
-			                         "\"-lz\",\n" +
-			                         ");"
-			                         );
-
-
-			//Debug.Log( "Processed t_pbx: " + t_pbx );
-		}
-
-
-		
-		{
-			// save
-			EditorBuildiOS3rd.SavePbx( p_path_to_built_project, t_pbx );
-		}
 	}
 	
 	#endregion

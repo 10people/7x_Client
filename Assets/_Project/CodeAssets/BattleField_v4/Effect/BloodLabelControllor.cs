@@ -13,6 +13,8 @@ public class BloodLabelControllor : MonoBehaviour
 
 	private Dictionary<int, List<BloodLabel>> dictDroppen = new Dictionary<int, List<BloodLabel>>();
 
+	private Dictionary<int, List<BloodLabel>> dictGenaral = new Dictionary<int, List<BloodLabel>>();
+
 	private Dictionary<int, Dictionary<int, GameObject>> objectList = new Dictionary<int, Dictionary<int, GameObject>>();
 
 	private Dictionary<int, int> listIndexList = new Dictionary<int, int> ();
@@ -41,7 +43,7 @@ public class BloodLabelControllor : MonoBehaviour
 		{
 			Dictionary<int, GameObject> list = new Dictionary<int, GameObject>();
 
-			GameObject labelTemple = BattleControlor.Instance ().getLabelTemplate (i);
+			GameObject labelTemple = BattleControlor.Instance().getLabelTemplate (i);
 
 			for(int j = 0; j < 20; j++)
 			{
@@ -107,6 +109,68 @@ public class BloodLabelControllor : MonoBehaviour
 		}
 	}
 
+	public void initStartGenarl (List<GameObject> _labelTempleList)
+	{
+		objectList.Clear ();
+		
+		labelTempleList.Clear ();
+		
+		for(int i = 0; i < _labelTempleList.Count; i++ )
+		{
+			Dictionary<int, GameObject> list = new Dictionary<int, GameObject>();
+			
+			GameObject labelTemple = _labelTempleList[i];
+			
+			for(int j = 0; j < 20; j++)
+			{
+				GameObject labelObject = (GameObject)Instantiate (labelTemple.gameObject);
+				
+				labelObject.name = labelTemple.name + "_" + j;
+				
+				labelObject.transform.parent = transform;
+				
+				labelObject.transform.localScale = labelTemple.transform.localScale;
+				
+				list.Add(j, labelObject);
+			}
+			
+			objectList.Add(i, list);
+			
+			labelTempleList.Add(i, labelTemple);
+		}
+
+		listIndexList.Clear ();
+		
+		for(int i = 0; i <= 5; i++)
+		{
+			listIndexList.Add (i, 0);
+		}
+		
+		randomList.Clear ();
+		
+		for(float x = 0; x < 1; x += .1f)
+		{
+			for(float z = 0; z < 1; z += .1f)
+			{
+				randomList.Add(new Vector3(x, 0, z));
+			}
+		}
+		
+		foreach(Dictionary<int, GameObject> list in objectList.Values)
+		{
+			foreach(GameObject labelObject in list.Values)
+			{
+				BloodLabel label = labelObject.GetComponent<BloodLabel>();
+				
+				labelObject.transform.localScale = labelTempleList[0].transform.localScale * 1.1f;
+				
+				label.text = "";
+				
+				label.showBloodEx (1, -50, null, null);
+			}
+		}
+	}
+
 	public void showBloodEx(BaseAI defender, int hpValue, bool cri, BattleControlor.AttackType _type)
 	{
 		List<BloodLabel> list = null;
@@ -128,7 +192,7 @@ public class BloodLabelControllor : MonoBehaviour
 		}
 		else
 		{
-			text = "-" + hpValue;
+			text = "  " + hpValue;
 		}
 
 		BloodLabel label = createBloodLabel (defender, text, cri, _type, list);
@@ -201,7 +265,7 @@ public class BloodLabelControllor : MonoBehaviour
 
 	private BloodLabel createBloodLabel(BaseAI defender, string text, bool cri, BattleControlor.AttackType _type, List<BloodLabel> list, EventDelegate.Callback p_callback = null)
 	{
-		int labelType = BattleControlor.Instance ().getLabelType (defender, _type);
+		int labelType = BattleControlor.Instance().getLabelType (defender, _type);
 
 		GameObject labelObject = objectList[labelType][listIndexList[labelType]];
 
@@ -211,7 +275,7 @@ public class BloodLabelControllor : MonoBehaviour
 
 		if(labelObject == null)
 		{
-			GameObject labelTemple = BattleControlor.Instance ().getLabelTemplate (defender, _type);
+			GameObject labelTemple = BattleControlor.Instance().getLabelTemplate (defender, _type);
 		
 			labelObject = (GameObject)Instantiate (labelTemple.gameObject);
 
@@ -231,7 +295,7 @@ public class BloodLabelControllor : MonoBehaviour
 		
 		float time = 0.5f;
 		
-		float ty = 1.7f;
+		float ty = defender.getHeight();
 		
 		BloodLabel label = (BloodLabel)labelObject.GetComponent ("BloodLabel");
 		
@@ -264,10 +328,67 @@ public class BloodLabelControllor : MonoBehaviour
 		return label;
 	}
 
-	// Update is called once per frame
-	void Update () 
+	public BloodLabel createBloodLabelGenarl(GameObject host, string text, float height, bool cri, int labelType, EventDelegate.Callback p_callback = null)
 	{
-	
+		GameObject labelObject = objectList[(int)labelType][listIndexList[(int)labelType]];
+		
+		listIndexList [(int)labelType] ++;
+		
+		listIndexList [(int)labelType] = listIndexList [(int)labelType] >= 20 ? 0 : listIndexList [(int)labelType];
+		
+		if(labelObject == null)
+		{
+			GameObject labelTemple = labelTempleList[labelType];
+			
+			labelObject = (GameObject)Instantiate (labelTemple.gameObject);
+			
+			labelObject.transform.parent = transform;
+			
+			labelObject.transform.localScale = labelTemple.transform.localScale;
+		}
+		
+		labelObject.SetActive (Console_SetBattleFieldFx.IsEnableBloodLabel());
+		
+		labelObject.transform.localPosition = host.transform.localPosition + new Vector3 (0, 1.5f, 0);
+		
+		if(Camera.main != null && Camera.main.gameObject.activeSelf == true)
+		{
+			labelObject.transform.forward = Camera.main.transform.position - labelObject.transform.position;
+		}
+		
+		float time = 0.5f;
+		
+		BloodLabel label = (BloodLabel)labelObject.GetComponent ("BloodLabel");
+		
+		if(cri == true)
+		{
+			labelObject.transform.localScale = labelTempleList[(int)labelType].transform.localScale * 1.1f;
+			
+			label.text = LanguageTemplate.GetText((LanguageTemplate.Text)1232) + text;
+			
+			time = 1f;
+		}
+		else 
+		{
+			labelObject.transform.localScale = labelTempleList[(int)labelType].transform.localScale * .7f;
+			
+			label.text = text;
+		}
+
+		List<BloodLabel> list = null;
+		
+		dictGenaral.TryGetValue (host.GetInstanceID(), out list);
+		
+		if(list == null)
+		{
+			list = new List<BloodLabel>();
+
+			dictGenaral.Add(host.GetInstanceID(), list);
+		}
+
+		if(Console_SetBattleFieldFx.IsEnableBloodLabel()) label.showBloodEx (time, height, list, p_callback);
+		
+		return label;
 	}
 
 }

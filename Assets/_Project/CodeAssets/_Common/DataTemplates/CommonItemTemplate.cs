@@ -27,6 +27,8 @@ public class CommonItemTemplate : XmlLoadManager
 
 	public int synItemID;
 
+	public int effectShow;
+
 
 	public static List<CommonItemTemplate> templates = new List<CommonItemTemplate>();
 	
@@ -91,6 +93,9 @@ public class CommonItemTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.synItemID = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.effectShow = int.Parse( t_reader.Value );
 			}
 			
 			templates.Add( t_template );
@@ -100,6 +105,7 @@ public class CommonItemTemplate : XmlLoadManager
 
 	public static CommonItemTemplate getCommonItemTemplateById(int id)
 	{
+     
 		foreach(CommonItemTemplate template in templates)
 		{
 			if(template.id == id)
@@ -107,8 +113,8 @@ public class CommonItemTemplate : XmlLoadManager
 				return template;
 			}
 		}
-		
-		Debug.LogError("XML ERROR: Can't get CommonItemTemplate with id " + id);
+        Debug.Log("idididididididididididid ::: " + id);
+        Debug.LogError("XML ERROR: Can't get CommonItemTemplate with id " + id);
 		
 		return null;
 	}

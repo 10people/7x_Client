@@ -13,7 +13,9 @@ public class HeadIconSetter : MonoBehaviour
     public UIProgressBar Bar;
     public UISprite NationSprite;
     public UILabel AllianceLabel;
+    public GameObject VipObject;
     public UILabel VipLabel;
+    public GameObject BattleValueParent;
     public UILabel BattleValueLabel;
 
     private string playerIconPrefix = "PlayerIcon";
@@ -29,7 +31,7 @@ public class HeadIconSetter : MonoBehaviour
     private string expLogo = "exp";
     private string nationLogoPrefix = "nation_";
 
-    private string vipPrefix = "VIP";
+    private string vipPrefix = "V";
     private string levelPrefix = "Lv";
 
     public void SetPlayer(int roleID, bool isHP, int level, string name, string allianceName, float totalValue, float currentValue, int nationID, int vipID, int battleValue)
@@ -46,11 +48,20 @@ public class HeadIconSetter : MonoBehaviour
 
         NationSprite.spriteName = nationLogoPrefix + nationID;
         AllianceLabel.text = (string.IsNullOrEmpty(allianceName) || allianceName == "***") ? "无联盟" : allianceName;
-        VipLabel.text = vipPrefix + vipID;
+        if (vipID > 0)
+        {
+            VipLabel.text = vipPrefix + vipID;
+            VipObject.SetActive(true);
+        }
+        else
+        {
+            VipObject.SetActive(false);
+        }
+        BattleValueParent.SetActive(true);
         BattleValueLabel.text = battleValue.ToString();
     }
 
-    public void SetHorse(int horseLevel, bool isHP, int level, string name, string allianceName, float totalValue, float currentValue, int nationID, int vipID, int battleValue)
+    public void SetHorse(int horseLevel, bool isHP, int level, string name, string allianceName, float totalValue, float currentValue, int nationID, int vipID)
     {
         PlayerHeadSprite.gameObject.SetActive(false);
         HorseHeadSprite.gameObject.SetActive(true);
@@ -65,8 +76,18 @@ public class HeadIconSetter : MonoBehaviour
 
         NationSprite.spriteName = nationLogoPrefix + nationID;
         AllianceLabel.text = (string.IsNullOrEmpty(allianceName) || allianceName == "***") ? "无联盟" : allianceName;
-        VipLabel.text = vipPrefix + vipID;
-        BattleValueLabel.text = battleValue.ToString();
+
+        if (vipID > 0)
+        {
+            VipLabel.text = vipPrefix + vipID;
+            VipObject.SetActive(true);
+        }
+        else
+        {
+            VipObject.SetActive(false);
+        }
+
+        BattleValueParent.SetActive(false);
     }
 
     public float TotalValue = -1;

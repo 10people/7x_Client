@@ -51,6 +51,7 @@ public class HousePlayerManager : Singleton<HousePlayerManager>
         }
 
         PlayerInCity tempPlayer = m_playrDic[tempMove.uid];
+
         tempMove.posY = 0;
 
         Vector3 targetPosition = new Vector3(tempMove.posX, tempMove.posY, tempMove.posZ);

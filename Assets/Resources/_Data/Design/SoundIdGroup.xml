@@ -5,4 +5,8 @@
 <SoundIdGroup Id="3" Group="400200" Count="1" />
 <SoundIdGroup Id="4" Group="400210" Count="2" />
 <SoundIdGroup Id="5" Group="420160" Count="1" />
+<SoundIdGroup Id="6" Group="33801" Count="2" />
+<SoundIdGroup Id="7" Group="3317" Count="2" />
+<SoundIdGroup Id="8" Group="210955" Count="1" />
+<SoundIdGroup Id="9" Group="410000" Count="2" />
 </dataset>

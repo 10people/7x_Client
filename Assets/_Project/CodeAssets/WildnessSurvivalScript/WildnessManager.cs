@@ -41,7 +41,7 @@ public class WildnessManager :  MonoBehaviour{
 //
 //	public UIPanel m_Panel;
 //
-//	public static WildnessManager Instance ()
+//	public static WildnessManager Instance()
 //	{
 //		if (!HuangYeData)
 //		{

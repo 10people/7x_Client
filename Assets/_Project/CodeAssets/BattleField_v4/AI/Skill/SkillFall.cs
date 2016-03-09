@@ -43,7 +43,7 @@ public class SkillFall : SkillDataBead
 
 		//		m_HeroSkill.m_listATTTarget
 		
-		//		BattleEffectControllor.Instance ().PlayEffect (
+		//		BattleEffectControllor.Instance().PlayEffect (
 		//			BattleEffectControllor.EffectType.EFFECT_KING_CESHI_SKILL_BAOQI,
 		//			m_BaseAI.targetNode.gameObject);
 		//		Buff.createBuff(m_BaseAI.targetNode, Buff.BuffType.BUFF_HP, m_NodeSkill.value1, m_NodeSkill.value2);

@@ -1,26 +1,32 @@
 ﻿//#define LOG_LOADING
 
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
-public class LoadingHelper{
+public class LoadingHelper {
 
 	#region Loading Item Info
 
-	public class LoadingItemInfo{
+	public class LoadingItemInfo: IComparable<LoadingItemInfo>{
 		private int m_loading_asset_index = -1;
 		
 		private string m_loading_asset_path = "";
 		
 		private float m_loading_asset_time = 0.0f;
+
+		private float m_delegate_time = 0.0f;
 		
-		public LoadingItemInfo( string p_asset_path, int p_asset_index, float p_loading_time ){
+		public LoadingItemInfo( string p_asset_path, int p_asset_index, float p_loading_time, float p_delegate_time ){
 			m_loading_asset_index = p_asset_index;
 			
 			m_loading_asset_path = p_asset_path;
 			
 			m_loading_asset_time = p_loading_time;
+
+			m_delegate_time = p_delegate_time;
 		}
 		
 		public bool IsInDir( string p_dir ){
@@ -38,11 +44,27 @@ public class LoadingHelper{
 		public float GetLoadTime(){
 			return m_loading_asset_time;
 		}
+
+		public float GetDelegateTime(){
+			return m_delegate_time;
+		}
+
+		public float GetTotalTime(){
+			return m_loading_asset_time + m_delegate_time;
+		}
+
+		public int CompareTo( LoadingItemInfo p_target ){
+			if( p_target == null ){
+				return -1;
+			}
+
+			return -GetTotalTime().CompareTo( p_target.GetTotalTime() );
+		}
 	}
-
+	
 	#endregion
-
-
+	
+	
 	#region Loading Info
 	
 	private static string[] m_loading_assets_dir = {
@@ -61,59 +83,199 @@ public class LoadingHelper{
 	}
 
 	// Record detail loading info, prepare to analyse.
-	public static void AddLoadingItemInfo( string p_asset_path, int p_asset_index, float p_loading_time ){
-		LoadingItemInfo t_info = new LoadingItemInfo( p_asset_path, p_asset_index, p_loading_time );
+	public static void AddLoadingItemInfo( string p_asset_path, int p_asset_index, float p_loading_time, float p_delegate_time  ){
+		LoadingItemInfo t_info = new LoadingItemInfo( p_asset_path, p_asset_index, p_loading_time, p_delegate_time  );
 		
 		m_loading_items_list.Add( t_info );
 	}
-	
-	public static void ShowTotalLoadingInfo(){
+
+	private static int SortLoadingInfo( LoadingItemInfo p_info_0, LoadingItemInfo p_info_1 ){
+		if( p_info_0 == null || p_info_1 == null ){
+			return 0;
+		}
+
+		if( p_info_0.GetTotalTime() > p_info_1.GetTotalTime() ){
+			return 1;
+		}
+		else{
+			return -1;
+		}
+	}
+
+	public static void ShowDetailLoadingInfo( bool p_log_raw_data = false ){
+		Debug.Log( "---------------------------- Detail Loading Info ------------------------------" );
+
+		List<LoadingItemInfo> t_loading_items_list = new List<LoadingItemInfo>();
+		
 		{
-			double t_total_loading_time = 0.0f;
+			m_loading_items_list.ForEach( i => t_loading_items_list.Add( i ) );
+		}
+
+		t_loading_items_list.Sort();
+
+		// each item log
+		if( p_log_raw_data ){
+			float t_loading_time = 0.0f;
 			
-			for( int j = m_loading_items_list.Count - 1; j >= 0; j-- ){
-				LoadingItemInfo t_item = m_loading_items_list[ j ];
+			float t_delegate_time = 0.0f;
+			
+			for( int j = 0; j < t_loading_items_list.Count; j++ ){
+				LoadingItemInfo t_item = t_loading_items_list[ j ];
 				
-				t_total_loading_time = t_total_loading_time + t_item.GetLoadTime();
+				t_loading_time = t_item.GetLoadTime();
+				
+				t_delegate_time = t_item.GetDelegateTime();
+
+				Debug.Log( "--- " + j + " / " + t_loading_items_list.Count + 
+				          " Total Time: " + MathHelper.FloatToString( t_loading_time + t_delegate_time, 7 ) + 
+				          " " + t_item.GetAssetPath() + 
+				          " Load Time: " + MathHelper.FloatToString( t_loading_time, 7 ) +
+				          " Delegate Time: " + MathHelper.FloatToString( t_delegate_time, 7 ) );
+			}
+		}
+
+		int t_unique_index = 0;
+
+		List<LoadingItemInfo> t_unique_list = new List<LoadingItemInfo>();
+
+		Debug.Log( "--------------- Detail Repeat Loading Info -----------" );
+
+		// repeat log
+		while( t_loading_items_list.Count > 0 ){
+			List<LoadingItemInfo> t_item_list = new List<LoadingItemInfo>();
+
+			LoadingItemInfo t_target_item = t_loading_items_list[ 0 ];
+
+			t_unique_list.Add( t_target_item );
+
+			float t_total_time = 0;
+
+			for( int i = t_loading_items_list.Count - 1; i >= 0; i-- ){
+				LoadingItemInfo t_item = t_loading_items_list[ i ];
+
+				if( t_item.GetAssetPath() == t_target_item.GetAssetPath() ){
+					t_item_list.Add( t_item );
+
+					t_total_time = t_total_time + t_item.GetTotalTime();
+
+					t_loading_items_list.RemoveAt( i );
+				}
+			}
+
+			Debug.Log( "--- " + t_unique_index + " - " + t_total_time + " - " +
+			          t_item_list.Count + "x " + t_target_item.GetAssetPath() );
+
+			t_unique_index++;
+
+			for( int i = 0; i < t_item_list.Count; i++ ){
+				LoadingItemInfo t_item = t_item_list[ i ];
+
+				Debug.Log( i + ": " +
+				          " Total Time: " + MathHelper.FloatToString( t_item.GetLoadTime() + t_item.GetDelegateTime(), 7 ) + 
+				          " Load Time: " + MathHelper.FloatToString( t_item.GetLoadTime(), 7 ) +
+				          " Delegate Time: " + MathHelper.FloatToString( t_item.GetDelegateTime(), 7 ) );
+			}
+		}
+
+		Debug.Log( "--------------- Detail Unique Dir Loading Info -----------" );
+
+		// dir classified unique log
+		for( int i = 0; i < m_loading_assets_dir.Length; i++ ){
+			int t_load_count = 0;
+			
+			for( int j = t_unique_list.Count - 1; j >= 0; j-- ){
+				LoadingItemInfo t_item = t_unique_list[ j ];
+				
+				if( t_item.IsInDir( m_loading_assets_dir[ i ] ) ){
+					t_load_count++;
+					
+					t_unique_list.Remove( t_item );
+				}
 			}
 			
-			Debug.Log( "--- " + m_loading_items_list.Count + " Assets Loaded: " + t_total_loading_time );
+			Debug.Log( m_loading_assets_dir[ i ] + 
+			          " Unique Asset Loadded Count: " + t_load_count );
+		}
+
+		if( t_unique_list.Count > 0 ){
+			Debug.Log( t_unique_list.Count + " Other Asset." );
+			
+			for( int i = t_unique_list.Count - 1; i >= 0; i-- ){
+				LoadingItemInfo t_item = t_unique_list[ i ];
+				
+				Debug.Log( i + " - Not Classified: " + t_item.GetAssetPath() );
+			}
+		}
+	}
+	
+	public static void ShowTotalLoadingInfo(){
+		Debug.Log( "-------------------------- Total Loading Info ---------------------------" );
+
+		List<LoadingItemInfo> t_loading_items_list = new List<LoadingItemInfo>();
+
+		{
+			m_loading_items_list.ForEach( i => t_loading_items_list.Add( i ) );
+		}
+
+		{
+			float t_total_loading_time = 0.0f;
+
+			float t_total_delegate_time = 0.0f;
+			
+			for( int j = t_loading_items_list.Count - 1; j >= 0; j-- ){
+				LoadingItemInfo t_item = t_loading_items_list[ j ];
+				
+				t_total_loading_time = t_total_loading_time + t_item.GetLoadTime();
+
+				t_total_delegate_time = t_total_delegate_time + t_item.GetDelegateTime();
+			}
+			
+			Debug.Log( "--- " + t_loading_items_list.Count + 
+			          " Total Time: " + MathHelper.FloatToString( t_total_loading_time + t_total_delegate_time, 5 ) + 
+			          " Load Time: " + MathHelper.FloatToString( t_total_loading_time, 5 ) +
+			          " Delegate Time: " + MathHelper.FloatToString( t_total_delegate_time, 5 ) );
 		}
 		
 		for( int i = 0; i < m_loading_assets_dir.Length; i++ ){
-			double t_load_time = 0.0f;
+			float t_load_time = 0.0f;
+
+			float t_delegate_time = 0.0f;
 			
 			int t_load_count = 0;
 			
-			for( int j = m_loading_items_list.Count - 1; j >= 0; j-- ){
-				LoadingItemInfo t_item = m_loading_items_list[ j ];
+			for( int j = t_loading_items_list.Count - 1; j >= 0; j-- ){
+				LoadingItemInfo t_item = t_loading_items_list[ j ];
 				
 				if( t_item.IsInDir( m_loading_assets_dir[ i ] ) ){
 					t_load_time = t_load_time + t_item.GetLoadTime();
+
+					t_delegate_time = t_delegate_time + t_item.GetDelegateTime();
 					
 					t_load_count++;
 					
-					m_loading_items_list.Remove( t_item );
+					t_loading_items_list.Remove( t_item );
 				}
 			}
 			
 			Debug.Log( m_loading_assets_dir[ i ] + 
 			          " Count: " + t_load_count + 
-			          "   Load Time: " + t_load_time );
+			          "   Total Time: " + ( t_load_time + t_delegate_time ) +
+			          "   Load Time: " + t_load_time +
+			          "   Delegate Time: " + t_delegate_time );
 		}
 
-		if( m_loading_items_list.Count > 0 ){
-			double t_load_time = 0.0f;
+		if( t_loading_items_list.Count > 0 ){
+			float t_total_time = 0.0f;
 			
-			for( int i = m_loading_items_list.Count - 1; i >= 0; i-- ){
-				LoadingItemInfo t_item = m_loading_items_list[ i ];
+			for( int i = t_loading_items_list.Count - 1; i >= 0; i-- ){
+				LoadingItemInfo t_item = t_loading_items_list[ i ];
 				
-				t_load_time += t_item.GetLoadTime();
+				t_total_time = t_total_time + t_item.GetTotalTime();
 				
 				Debug.Log( i + " - " + t_item.GetLoadTime() + " - Not Classified: " + t_item.GetAssetPath() );
 			}
 			
-			Debug.Log( m_loading_items_list.Count + " Other Asset, Loading Time: " + t_load_time );
+			Debug.Log( t_loading_items_list.Count + " Other Asset, Total Time: " + t_total_time );
 		}
 	}
 	
@@ -435,10 +597,11 @@ public class LoadingHelper{
 	}
 	
 	public static void LogTimeSinceLoading( string p_loading_tag ){
-		Debug.Log( MathHelper.FloatPrecision( GetTimesinceLastTimeTag(), 5 ) + 
+		Debug.Log( MathHelper.FloatToString( GetTimesinceLastTimeTag(), 5 ) + 
 		          " / " + 
-		          MathHelper.FloatPrecision( GetTimeSinceLoading(), 5 ) + " - " + 
-		          p_loading_tag );
+		          MathHelper.FloatToString( GetTimeSinceLoading(), 5 ) + " - " + 
+		          p_loading_tag + " - " +
+		          Time.realtimeSinceStartup );
 	}
 	
 	#endregion

@@ -54,16 +54,16 @@ public class BTNTest : MonoBehaviour, SocketListener
 
     void Awake()
     {
-        EnterHouseBTN.m_handler += OnEnterHouse;
-        RefreshHouseBTN.m_handler += OnRefresh;
+        EnterHouseBTN.m_click_handler += OnEnterHouse;
+        RefreshHouseBTN.m_click_handler += OnRefresh;
 
         SocketTool.RegisterSocketListener(this);
     }
 
     void OnDestroy()
     {
-        EnterHouseBTN.m_handler -= OnEnterHouse;
-        RefreshHouseBTN.m_handler -= OnRefresh;
+        EnterHouseBTN.m_click_handler -= OnEnterHouse;
+        RefreshHouseBTN.m_click_handler -= OnRefresh;
 
         SocketTool.UnRegisterSocketListener(this);
     }

@@ -1,9 +1,10 @@
 ﻿//#define SKIP_BUNDLE_UPDATE
 
-//#define LOCAL_BUNDLE_UPDATE
-
 //#define DEBUG_BUNDLE
 
+
+
+//#define LOCAL_BUNDLE_UPDATE
 
 
 using UnityEngine;
@@ -20,7 +21,11 @@ using SimpleJSON;
  * Function:	Update Bundle files.
  * 
  * Notes:
- * 1.None.
+ * 1.In Development, update -> login scene -> login -> server select;
+ * 2.In Third Platform(except MSDK), 3rd login -> update -> upload token -> login scene -> server select;
+ * 3.In MSDK,
+ * update -> login scene -> 3rd login -> upload token -> server select;
+ * or update & 3rd login -> login scene -> upload token -> server select;
  */ 
 public class PrepareBundles : MonoBehaviour {
 
@@ -49,6 +54,10 @@ public class PrepareBundles : MonoBehaviour {
 		return m_instance;
 	}
 
+	public static bool HaveInstance(){
+		return ( m_instance != null );
+	}
+
 	#endregion
 
 
@@ -69,7 +78,21 @@ public class PrepareBundles : MonoBehaviour {
 	void Start () {
 //		Debug.Log( "PrepareBundles.Start()" );
 
+		bool t_wait_for_notice = false;
+
 		if( ThirdPlatform.IsThirdPlatform() ){
+			if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+				t_wait_for_notice = false;
+			}
+			else{
+				t_wait_for_notice = true;
+			}
+		}
+		else{
+			t_wait_for_notice = false;
+		}
+
+		if( t_wait_for_notice ){
 			// waiting for 3rd login or direct update bundle
 			SetUpdateState( UpdateState.SELECT_UPDATE_SERVER );
 		}
@@ -125,6 +148,12 @@ public class PrepareBundles : MonoBehaviour {
 //		#if DEBUG_BUNDLE
 		Debug.Log( "UpdateServerSelected()" );
 //		#endif
+
+		if( GetBundleUpdateState() != UpdateState.SELECT_UPDATE_SERVER ){
+			Debug.Log( "Flow Error, UpdateServerSelected is triggered twice." );
+
+			return;
+		}
 		
 		SetUpdateState( UpdateState.CHECKING_UPDATE_INFO );
 		
@@ -140,7 +169,7 @@ public class PrepareBundles : MonoBehaviour {
 	private void StartUpdate(){
 		{
 			#if SKIP_BUNDLE_UPDATE
-			if( ThirdPlatform.IsThirdPlatform() ){
+			if( ThirdPlatform.IsThirdPlatform() && !Debug.isDebugBuild ){
 				for( int i = 0; i < 5; i++ ){
 					Debug.Log( "Skipping Update Now, Please Confirm." );
 
@@ -428,17 +457,29 @@ public class PrepareBundles : MonoBehaviour {
 
 		if( PrepareBundleHelper.IsDeviceCheckOpen() ){
 			if( !DeviceHelper.CheckIsDeviceSupported() ){
+				Debug.Log( "Device not supported, return." );
+
 				return;
 			}
 		}
 
-		if ( ThirdPlatform.IsThirdPlatform () ) {
-			Debug.Log( "PrepareBundleConfig( wait for third to start game )" );
-			
-			ThirdPlatform.Instance().UploadToken();
+		bool t_start_game = false;
+
+		if( !ThirdPlatform.IsThirdPlatform () ){
+			t_start_game = true;
 		}
-		else {
+
+		if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+			t_start_game = true;
+		}
+
+		if( t_start_game ){
 			StartGame ();
+		}
+		else{
+			Debug.Log( "PrepareBundleConfig( wait for third to start game )" );
+
+			ThirdPlatform.Instance().UploadToken();
 		}
 	}
 

@@ -13,6 +13,7 @@ using System.Linq;
 public class IconSampleManager : MonoBehaviour
 {
     private bool isSetted = false;
+    public int iconID = -1;
 
     public static int TransferOldQualityID(int oldID)
     {
@@ -157,6 +158,8 @@ public class IconSampleManager : MonoBehaviour
     /// </summary>
     public UIAtlas FuWenAtlas;
 
+    public UIAtlas AllianceAtlas;
+
     #endregion
 
     #region EventDelegates
@@ -218,10 +221,12 @@ public class IconSampleManager : MonoBehaviour
         exchangeBox,
         mainCityAtlas,
         MiBao,
+        MiBaoSkill,
         MiBaoSuiPian,
         Carriage,
         HuangyeMonster,
         FuWen,
+        AllianceTech
     }
     private IconType m_type;
 
@@ -230,12 +235,12 @@ public class IconSampleManager : MonoBehaviour
 
     private const string YellowSelectedSpriteName = "CheckBox";
 
-    private readonly List<int> FrameQualityFrameSpriteName = new List<int>() { 2, 4, 5, 7, 8, 10 };
-    private readonly List<int> FreeQualityFrameSpriteName = new List<int>() { 0, 1, 3, 6, 9 };
-    private readonly List<int> MibaoPieceQualityFrameSpriteName = new List<int>() { 20, 21, 22, 23, 24 };
-    private const int FrameQualityFrameLength = 105;
-    private const int FreeQualityFrameLength = 93;
-    private const int MibaoPieceQualityFrameLength = 93;
+    public static readonly List<int> FrameQualityFrameSpriteName = new List<int>() { 2, 4, 5, 7, 8, 10 };
+    public static readonly List<int> FreeQualityFrameSpriteName = new List<int>() { 0, 1, 3, 6, 9 };
+    public static readonly List<int> MibaoPieceQualityFrameSpriteName = new List<int>() { 20, 21, 22, 23, 24 };
+    public const int FrameQualityFrameLength = 105;
+    public const int FreeQualityFrameLength = 93;
+    public const int MibaoPieceQualityFrameLength = 93;
 
     private const int NormalForeLength = 87;
     private const int MibaoForeLength = 105;
@@ -247,47 +252,65 @@ public class IconSampleManager : MonoBehaviour
     /// <summary>
     /// Set icon by id, replace SetIconType and SetIconBasic.
     /// </summary>
-    /// <param name="id">icon id</param>
+    /// <param name="id">icon id, process negative number for empty icon</param>
     /// <param name="labelText">icon label text</param>
     /// <param name="basicDepth">basic depth set for every widget in icon</param>
     /// <param name="isShowDimmer">is show shield dimmer</param>
-    public void SetIconByID(int id, string labelText = "", int basicDepth = 0, bool isShowDimmer = false)
+    /// <param name="isSparkShader">is using spark shader</param>
+    public void SetIconByID(int id, string labelText = "", int basicDepth = 0, bool isShowDimmer = false, bool isSparkShader = true)
     {
-        int typeID = CommonItemTemplate.getCommonItemTemplateById(id).itemType;
         IconType type = new IconType();
 
-        switch (typeID)
+        if (id < 0)
         {
-            case 2:
-                type = IconType.equipment;
-                break;
-            case 3:
-            case 6:
-            case 9:
-            case 101:
-            case 102:
-            case 103:
-                type = IconType.item;
-                break;
-            case 4:
-                type = IconType.MiBao;
-                break;
-            case 5:
-                type = IconType.MiBaoSuiPian;
-                break;
-            case 7:
-            case 8:
-                type = IconType.FuWen;
-                break;
-            case 0:
-                type = IconType.item;
-                break;
-            default:
-                Debug.LogError("Not defined icon type, check or use SetIconType instead.");
-                break;
+            type = IconType.null_type;
+        }
+        else
+        {
+            int typeID = CommonItemTemplate.getCommonItemTemplateById(id).itemType;
+
+            switch (typeID)
+            {
+                case 2:
+                    type = IconType.equipment;
+                    break;
+                case 3:
+                case 6:
+                case 9:
+                case 101:
+                case 102:
+                case 103:
+                    type = IconType.item;
+                    break;
+                case 4:
+                    type = IconType.MiBao;
+                    break;
+                case 5:
+                    type = IconType.MiBaoSuiPian;
+                    break;
+                case 211:
+                    type = IconType.MiBaoSkill;
+                    break;
+                case 7:
+                case 8:
+                    type = IconType.FuWen;
+                    break;
+                case 0:
+                    type = IconType.item;
+                    break;
+                case 201:
+                case 202:
+                case 203:
+                    type = IconType.AllianceTech;
+                    break;
+                default:
+                    Debug.LogError("Not defined icon type: " + typeID + ", id: " + id + ", check or use SetIconType instead.");
+                    break;
+            }
         }
 
-        SetIconByID(type, id, labelText, basicDepth, isShowDimmer);
+
+        SetIconByID(type, id, labelText, basicDepth, isShowDimmer, isSparkShader);
     }
 
     /// <summary>
@@ -298,17 +321,23 @@ public class IconSampleManager : MonoBehaviour
     /// <param name="labelText">icon label text</param>
     /// <param name="basicDepth">basic depth set for every widget in icon</param>
     /// <param name="isShowDimmer">is show shield dimmer</param>
+    /// <param name="isSparkShader">is using spark shader</param>
     [Obsolete("Do not use anymore, use SetIconByID without IconType")]
-    public void SetIconByID(IconType type, int id, string labelText = "", int basicDepth = 0, bool isShowDimmer = false)
+    public void SetIconByID(IconType type, int id, string labelText = "", int basicDepth = 0, bool isShowDimmer = false, bool isSparkShader = true)
     {
 
-#if DEBUG_DUPLICATE
         if (isSetted)
         {
+#if DEBUG_DUPLICATE
+
             Debug.LogError("Set icon duplicate! Cannot call SetIconBasic and SetIconByID at the same time.");
+#endif
+            basicDepth = 0;
         }
         isSetted = true;
-#endif
+
+        //Stored icon id.
+        iconID = id;
 
         m_type = type;
         string fgSpriteName = "";
@@ -331,7 +360,8 @@ public class IconSampleManager : MonoBehaviour
 
                     //Set fgSprite and quality frame.
                     var itemTemp = ItemTemp.getItemTempById(id);
-                    if (itemTemp == null)
+                    var commonItemTemp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    if (itemTemp == null || commonItemTemp == null)
                     {
                         Debug.LogError("Can't set icon sample cause item:" + id + " not found");
                         return;
@@ -342,17 +372,49 @@ public class IconSampleManager : MonoBehaviour
 
                     BgSprite.spriteName = NormalBgSpriteName;
 
-                    qualityFrameSpriteName = itemTemp.color != 0
-                       ? QualityPrefix + (itemTemp.color - 1)
+                    qualityFrameSpriteName = commonItemTemp.color != 0
+                       ? QualityPrefix + (commonItemTemp.color - 1)
                        : "";
-                    if (FreeQualityFrameSpriteName.Contains(itemTemp.color - 1))
+                    if (FreeQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
                     {
                         QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
                     }
-                    else if (FrameQualityFrameSpriteName.Contains(itemTemp.color - 1))
+                    else if (FrameQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
                     {
                         QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
                     }
+                    break;
+                }
+            case IconType.AllianceTech:
+                {
+                    var tempList = LianMengKeJiTemplate.templates.Where(item => item.id == id).ToList();
+                    if (tempList.Any())
+                    {
+                        FgSprite.atlas = AllianceAtlas;
+
+                        fgSpriteName = tempList.First().Icon.ToString();
+
+                        CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
+                        if (temp != null)
+                        {
+                            qualityFrameSpriteName = temp.color > 0
+                                ? QualityPrefix + (temp.color - 1)
+                                : "";
+                            if (FreeQualityFrameSpriteName.Contains(temp.color - 1))
+                            {
+                                QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                            }
+                            else if (FrameQualityFrameSpriteName.Contains(temp.color - 1))
+                            {
+                                QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Cannot show icon cause id: " + id + " not exist in LianMengKeJiTemplate.");
+                    }
+
                     break;
                 }
             case IconType.exchangeBox:
@@ -365,7 +427,8 @@ public class IconSampleManager : MonoBehaviour
 
                     //Set fgSprite and quality frame.
                     var itemTemp = ItemTemp.getItemTempById(id);
-                    if (itemTemp == null)
+                    var commonItemTemp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    if (itemTemp == null || commonItemTemp == null)
                     {
                         Debug.LogError("Can't set icon sample cause item:" + id + " not found");
                         return;
@@ -376,53 +439,56 @@ public class IconSampleManager : MonoBehaviour
 
                     BgSprite.spriteName = NormalBgSpriteName;
 
-                    qualityFrameSpriteName = itemTemp.color != 0
-                       ? QualityPrefix + (itemTemp.color - 1)
+                    qualityFrameSpriteName = commonItemTemp.color != 0
+                       ? QualityPrefix + (commonItemTemp.color - 1)
                        : "";
-                    if (FreeQualityFrameSpriteName.Contains(itemTemp.color - 1))
+                    if (FreeQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
                     {
                         QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
                     }
-                    else if (FrameQualityFrameSpriteName.Contains(itemTemp.color - 1))
+                    else if (FrameQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
                     {
                         QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
                     }
                     break;
                 }
             case IconType.equipment:
-                //Set atlas.
-                FgSprite.atlas = EquipAtlas;
-
-                //Set fgSprite and quality frame.
-                var equipmentTemp = ZhuangBei.getZhuangBeiById(id);
-                if (equipmentTemp == null)
                 {
-                    Debug.LogError("Can't set icon sample cause equipment:" + id + " not found");
-                    return;
-                }
+                    //Set atlas.
+                    FgSprite.atlas = EquipAtlas;
 
-                fgSpriteName = !string.IsNullOrEmpty(equipmentTemp.icon) ? equipmentTemp.icon : "";
-                FgSprite.width = FgSprite.height = NormalForeLength;
+                    //Set fgSprite and quality frame.
+                    var equipmentTemp = ZhuangBei.getZhuangBeiById(id);
+                    var commonItemTemp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    if (equipmentTemp == null || commonItemTemp == null)
+                    {
+                        Debug.LogError("Can't set icon sample cause equipment:" + id + " not found");
+                        return;
+                    }
 
-                BgSprite.spriteName = NormalBgSpriteName;
+                    fgSpriteName = !string.IsNullOrEmpty(equipmentTemp.icon) ? equipmentTemp.icon : "";
+                    FgSprite.width = FgSprite.height = NormalForeLength;
 
-                qualityFrameSpriteName = equipmentTemp.color != 0
-                    ? QualityPrefix + (equipmentTemp.color - 1)
-                    : "";
-                if (FreeQualityFrameSpriteName.Contains(equipmentTemp.color - 1))
-                {
-                    QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                    BgSprite.spriteName = NormalBgSpriteName;
+
+                    qualityFrameSpriteName = commonItemTemp.color != 0
+                       ? QualityPrefix + (commonItemTemp.color - 1)
+                       : "";
+                    if (FreeQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                    }
+                    else if (FrameQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                    }
+                    break;
                 }
-                else if (FrameQualityFrameSpriteName.Contains(equipmentTemp.color - 1))
-                {
-                    QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
-                }
-                break;
             case IconType.MiBao:
                 {
                     FgSprite.atlas = MibaoLitterAtlas;
 
-                    fgSpriteName = id.ToString();
+                    fgSpriteName = MiBaoXmlTemp.getMiBaoXmlTempById(id).icon.ToString();
                     FgSprite.width = FgSprite.height = MibaoForeLength;
 
                     BgSprite.spriteName = NormalBgSpriteName;
@@ -448,7 +514,7 @@ public class IconSampleManager : MonoBehaviour
                 {
                     FgSprite.atlas = MibaoSuiPianAtlas;
 
-                    fgSpriteName = id.ToString();
+                    fgSpriteName = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById(id).icon.ToString();
                     FgSprite.width = FgSprite.height = MibaoPieceForeLength;
 
                     BgSprite.spriteName = MibaoPieceBgSpriteName;
@@ -467,6 +533,38 @@ public class IconSampleManager : MonoBehaviour
 
                         QualityFrameSprite.width = QualityFrameSprite.height = MibaoPieceQualityFrameLength;
                         QualityFrameSprite.SetDimensions(MibaoPieceQualityFrameLength, MibaoPieceQualityFrameLength);
+                    }
+                    break;
+                }
+            case IconType.MiBaoSkill:
+                {
+                    //Set atlas.
+                    FgSprite.atlas = MibaoLitterAtlas;
+
+                    //Set fgSprite and quality frame.
+                    var skillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id(id);
+                    var commonItemTemp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    if (skillTemp == null || commonItemTemp == null)
+                    {
+                        Debug.LogError("Can't set icon sample cause item:" + id + " not found");
+                        return;
+                    }
+
+                    fgSpriteName = !string.IsNullOrEmpty(skillTemp.icon) ? skillTemp.icon : "";
+                    FgSprite.width = FgSprite.height = NormalForeLength;
+
+                    BgSprite.spriteName = NormalBgSpriteName;
+
+                    qualityFrameSpriteName = commonItemTemp.color != 0
+                       ? QualityPrefix + (commonItemTemp.color - 1)
+                       : "";
+                    if (FreeQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                    }
+                    else if (FrameQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
                     }
                     break;
                 }
@@ -546,6 +644,16 @@ public class IconSampleManager : MonoBehaviour
 
         //Set dimmer.
         DimmerSprite.gameObject.SetActive(isShowDimmer);
+
+        //Set spark shader.
+        if (isSparkShader && id > 0)
+        {
+            var temp = CommonItemTemplate.getCommonItemTemplateById(id);
+            if (temp != null && temp.effectShow > 0)
+            {
+                SparkleEffectItem.OpenSparkle(FgSprite.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
+            }
+        }
     }
 
     public void SetAwardNumber(int num)
@@ -643,13 +751,14 @@ public class IconSampleManager : MonoBehaviour
         string fgSpriteName = "", string labelText = "", string qualityFrameSpriteName = "",
         bool isShowDimmer = false)
     {
-#if DEBUG_DUPLICATE
         if (isSetted)
         {
+#if DEBUG_DUPLICATE
             Debug.LogError("Set icon duplicate! Cannot call SetIconBasic and SetIconByID at the same time.");
+#endif
+            basicDepth = 0;
         }
         isSetted = true;
-#endif
 
         m_iconName = fgSpriteName;//@author LiuChang
 
@@ -900,6 +1009,8 @@ public class IconSampleManager : MonoBehaviour
     /// <returns>pop up gameobject</returns>
     public GameObject SetIconPopText(int commonId = 0, string popTextTitle = "", string popTextDesc = "", int popMode = 0, Vector3 offsetVec3 = new Vector3())
     {
+        //Debug.Log("============Set icon pop text: " + popTextTitle + "in: " + gameObject.name);
+
         m_commonId = commonId;//@author LiuChang
 
         m_enemyName = popTextTitle;//@author LiuChang
@@ -951,6 +1062,8 @@ public class IconSampleManager : MonoBehaviour
     /// <param name="go"></param>
     private void ActivePopFrame(GameObject go)
     {
+        //Debug.Log("===========active pop frame in: " + gameObject.name);
+
         if (m_commonId != 0) ShowTip.showTip(m_commonId);//@author LiuChang
 
         else ShowTip.showTipEnemy(m_iconName, m_enemyName, m_enemyDesc);//@author LiuChang
@@ -1162,7 +1275,13 @@ public class IconSampleManager : MonoBehaviour
         //        PopFrameSprite.gameObject.SetActive(false);
         //        PopFrameSprite.transform.parent = transform;
     }
-
+    public UILabel BossName;
+    public UISprite BossNamebg;
+    public void ShowBOssName(string m_name)
+    {
+        BossNamebg.gameObject.SetActive(true);
+        BossName.text = m_name;
+    }
     void OnDestroy()
     {
         if (PopFrameSprite.transform.parent != transform)

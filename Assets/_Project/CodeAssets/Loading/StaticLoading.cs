@@ -1,8 +1,16 @@
 ﻿//#define LOG_LOADING
 
+
+
+#define USE_LOADING_RES_CONFIG
+
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+
 
 /** 
  * @author:		Zhang YuGu
@@ -22,6 +30,8 @@ public class StaticLoading : MonoBehaviour {
 
 	public UILabel m_lb_tips;
 
+	public GameObject m_fx_gb_parent;
+
 	private static StaticLoading m_instance = null;
 
 	public static StaticLoading Instance(){
@@ -30,6 +40,10 @@ public class StaticLoading : MonoBehaviour {
 		}
 
 		return m_instance;
+	}
+
+	public static bool HaveInstance(){
+		return m_instance != null;
 	}
 
 
@@ -50,6 +64,8 @@ public class StaticLoading : MonoBehaviour {
 
 		{
 			InitBackgroundTexture();
+
+			InitLoadingFx();
 		}
 	}
 
@@ -87,9 +103,14 @@ public class StaticLoading : MonoBehaviour {
 		Destroy( m_loading_bg_root );
 
 		m_instance = null;
-		
+
+		{
+			// restore default loading for next loading
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.COMMON );
+		}
+
 //		LoadingHelper.LogLoadingInfo();
-		
+
 		LoadingHelper.ClearLoadingInfo( m_loading_sections );
 	}
 
@@ -101,7 +122,7 @@ public class StaticLoading : MonoBehaviour {
 
 	private LanguageTemplate.Text m_begin_id = LanguageTemplate.Text.LOADING_TIPS_1;
 
-	private LanguageTemplate.Text m_end_id = LanguageTemplate.Text.LOADING_TIPS_18;
+	private LanguageTemplate.Text m_end_id = LanguageTemplate.Text.LOADING_TIPS_49;
 
 	private void SetTipsText(){
 		int t_begin_id = (int)m_begin_id;
@@ -148,13 +169,54 @@ public class StaticLoading : MonoBehaviour {
 		}
 	}
 
+	private static void InitLoadingFx(){
+		string t_path = EffectIdTemplate.GetPathByeffectId( 620217 );
+
+		Global.ResourcesDotLoad( t_path, LoadingFxLoadCallback );
+	}
+
+	public static void LoadingFxLoadCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
+		if( p_object == null ){
+			Debug.LogError( "Fx is null." );
+
+			return;
+		}
+
+		if( Instance().m_fx_gb_parent == null ){
+			Debug.LogError( "Error, gb parent is null." );
+
+			return;
+		}
+
+		GameObject t_gb = (GameObject)GameObject.Instantiate( p_object );
+
+		t_gb.transform.parent = Instance().m_fx_gb_parent.transform;
+
+		GameObjectHelper.SetGameObjectLayerRecursive( t_gb, Instance().m_fx_gb_parent.layer );
+
+		TransformHelper.ResetLocalPosAndLocalRotAndLocalScale( t_gb );
+	}
+
 	private static void InitBackgroundTexture(){
 		string t_ui_path = "";
 
+		#if USE_LOADING_RES_CONFIG
+		t_ui_path = LoadingTemplate.GetResPath();
+		#else
 		if( LoadingHelper.IsLoadingMainCity() || LoadingHelper.IsLoadingMainCityYeWan() ){
 			t_ui_path = Res2DTemplate.GetResPath( Res2DTemplate.Res.LOADING_BG_FOR_MAINCITY );
 		}
+		else if( LoadingHelper.IsLoadingBattleField() || LoadingHelper.IsLoadingCarriage() || LoadingHelper.IsLoadingAllianceBattle() ){
+			t_ui_path = Res2DTemplate.GetResPath( Res2DTemplate.Res.LOADING_BG_FOR_BATTLE_FIELD );
+		}
 		else{
+			return;
+		}
+		#endif
+
+		if( string.IsNullOrEmpty( t_ui_path ) ){
+			Debug.Log( "Loading Res not configged." );
+
 			return;
 		}
 

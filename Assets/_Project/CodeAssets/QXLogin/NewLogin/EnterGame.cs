@@ -31,7 +31,7 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 	{
 		if (state == 4)
 		{
-			Debug.Log ("维护");
+//			Debug.Log ("维护");
 
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
 			                        FailLoadBack);
@@ -46,14 +46,16 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 //		}
 
 		if ( SocketTool.WillReconnect() ){
-			SocketTool.Instance ().Connect();
+			SocketTool.Instance().Connect();
 
 			LoginReq loginReq = new LoginReq ();
 
 			if( ThirdPlatform.IsMyAppAndroidPlatform() ){
 				loginReq.name = ThirdPlatform.GetMyAppToken();
+
+//				Debug.Log( "Socket.LoginReq.name: " + loginReq.name );
 			}
-			if( ThirdPlatform.IsPPPLatform() ){
+			else if( ThirdPlatform.IsPPPLatform() ){
 				loginReq.name = ThirdPlatform.GetPPToken();
 			}
 			else if( ThirdPlatform.IsXYPlatform() ){
@@ -88,8 +90,10 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 			t_serializer.Serialize ( t_tream, loginReq );
 			
 			byte[] t_bytes = t_tream.ToArray();
+
+//			Debug.Log( "Final Socket.LoginReq.name: " + loginReq.name );
 			
-			SocketTool.Instance ().SendSocketMessage ( ProtoIndexes.LOGIN_ACCOUNT, ref t_bytes ,"23104");
+			SocketTool.Instance().SendSocketMessage ( ProtoIndexes.LOGIN_ACCOUNT, ref t_bytes ,"23104");
 			
 			{
 				UtilityTool.Instance.ManualGamePause();
@@ -136,6 +140,17 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
                             CityGlobalData.m_SeverTime = loginRet.serTime;
                             CityGlobalData.m_king_model_Id = loginRet.roleId;
 
+							{
+								// 2008-05-01 21:34:42
+//								Debug.Log( "ServerTime: " + loginRet.serverTime );
+
+								TimeHelper.SetServerDateTime( loginRet.serverTime );
+
+//								Debug.Log( "RegisterTime: " + loginRet.accountRegisterTime );
+
+								PlayerInfoCache.SetRegisterTime( loginRet.accountRegisterTime );
+							}
+
                             //CityGlobalData.m_EnterCityPosition = new Vector3(loginRet.x,
                             //                                                   loginRet.y,
                             //                                                   loginRet.z);
@@ -144,7 +159,7 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
                             PlayerPrefs.SetString("IsCurrentJunZhuPos", value);
                             if (!ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION))
                             {
-                                FunctionOpenTemp.m_EnableFuncIDList = loginRet.openFunctionID;
+								FunctionOpenTemp.AssignFunctionIds( loginRet.openFunctionID );
 
                                 //		                for (int i = 0; i < FunctionOpenTemp.m_EnableFuncIDList.Count; i++)
                                 //		                {
@@ -188,8 +203,8 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 
                                 case 3:
 
-                                    Debug.Log("登录失败");
-
+//                                    Debug.Log("登录失败");
+//
                                     Debug.Log("失败原因：" + loginRet.msg);
 
 									Global.CreateBox( "登录失败",
@@ -244,7 +259,7 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
     }
 
 	public static void AccPwdErrorClickCallback( int p_i ){
-		Debug.Log("ReLoginClickCallback( " + p_i + " )");
+//		Debug.Log("ReLoginClickCallback( " + p_i + " )");
 		
 		{
 //			SceneManager.CleanGuideAndDialog();
@@ -262,7 +277,21 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 
 		string textStr = "您所选的服务器正在关闭维护中...\n请稍后再次尝试，或选择其他服务器。";
 
-		uibox.setBox(titleStr,"\n" + MyColorData.getColorString (1,textStr),null,null,confirmStr,null,null);
+		uibox.setBox(
+			titleStr,
+			"\n" + MyColorData.getColorString (1,textStr),
+			null,
+			null,
+			confirmStr,
+
+			null,
+			OnServerMaintenance );
+	}
+
+	void OnServerMaintenance(int i ){
+//		Debug.Log( "OnServerMaintenance( " + i + " )" );
+
+		SceneManager.EnterLogin();
 	}
 
 	void OnDestroy ()

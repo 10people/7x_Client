@@ -23,7 +23,7 @@ public class DramaDirectorWindow : EditorWindow {
 			DramaTargetGUI();
 		}
 
-		if ( DramaDirector.HaveInstance () && m_drama_director == null ) {
+		if ( DramaDirector.HaveInstance() && m_drama_director == null ) {
 //			#if DEBUG_DRAMA_DIRECTOR
 //			Debug.Log( "Auto Set DramaDirector Instance." );
 //			#endif

@@ -79,6 +79,8 @@ public class EditorBuildAndroid3rd {
 		#if UNITY_ANDROID
 		switch ( ThirdPlatform.GetPlatformType() ) {
 		case ThirdPlatform.PlatformType.MyApp_Android_Platform:
+//			Debug.Log ( "MyApp Platform Build." );
+
 			EditorMyApp_Android.OnPostBuildPlatform( p_target, p_path_to_built_project );
 			break;
 			

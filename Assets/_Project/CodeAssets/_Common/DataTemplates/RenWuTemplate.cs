@@ -6,13 +6,10 @@ using System.IO;
 
 public class RenWuTemplate : XmlLoadManager
 {
-    //<RenWu id="100001" name="710001" funDesc="710001" type="1" condition="1" jiangli="9:900001:1000#9:900006:400#10:9101:1" />
-
     public int id;
 
     public int m_name;
-    public string title;
-
+ 
     public int funDesc;
 
     public int type;
@@ -34,8 +31,16 @@ public class RenWuTemplate : XmlLoadManager
     public int LinkNpcId;
 
     public int FunctionId;
+    public string Title;
+    public string Script;
 
-	public string m_sSprite;
+    public string huoyue;
+
+    public string award;
+    public int site;
+    public int funcID;
+    public string doneTitle;
+
     public static List<RenWuTemplate> templates = new List<RenWuTemplate>();
 
     public static void LoadTemplates(EventDelegate.Callback p_callback = null)
@@ -112,11 +117,30 @@ public class RenWuTemplate : XmlLoadManager
                 t_template.FunctionId = int.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
-                t_template.title = t_reader.Value;
+                t_template.Title = t_reader.Value;
 
-				t_reader.MoveToNextAttribute();
-				t_template.m_sSprite = t_reader.Value;
-            }
+				//t_reader.MoveToNextAttribute();
+				//t_template.m_sSprite = t_reader.Value;
+
+                t_reader.MoveToNextAttribute();
+                t_template.Script = t_reader.Value;
+
+                t_reader.MoveToNextAttribute();
+                t_template.huoyue =  t_reader.Value;
+
+                t_reader.MoveToNextAttribute();
+                t_template.award = t_reader.Value;
+
+                t_reader.MoveToNextAttribute();
+                t_template.site = int.Parse(t_reader.Value);
+
+          
+                t_reader.MoveToNextAttribute();
+                t_template.funcID = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.doneTitle =  t_reader.Value;
+}
 
             //			t_template.Log();
 
@@ -151,5 +175,15 @@ public class RenWuTemplate : XmlLoadManager
         return null;
     }
 
-
+    public static bool GetWetherContainId(int id)
+    {
+        foreach (RenWuTemplate _template in templates)
+        {
+            if (_template.id == id)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

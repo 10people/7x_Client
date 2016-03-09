@@ -10,7 +10,8 @@ using ProtoBuf.Meta;
 public class EquipSuoData:MonoBehaviour
 {
     private static EquipSuoData m_EquipSuoData;
-
+    public delegate void Confirm_CallBack();
+    public static Confirm_CallBack Dele_CallBack;
     public struct StrengthEffect
     {
         public int _num;
@@ -234,8 +235,14 @@ public class EquipSuoData:MonoBehaviour
     private static string _strTitle = "";
     private static string _strContent1 = "";
     private static string _strContent2 = "";
-    public static void ShowSignal(string title = null , string content1 = null,string content2 = null)//tanchukuang 
+    private static GameObject _BoxObj = null;
+    public static void ShowSignal(string title = null , string content1 = null,string content2 = null,int type = 0, Confirm_CallBack _CallBack = null)//tanchukuang 
     {
+        Dele_CallBack = _CallBack;
+        if (_BoxObj != null)
+        {
+            return;
+        }
         if (string.IsNullOrEmpty(title))
         {
             _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO);
@@ -244,33 +251,104 @@ public class EquipSuoData:MonoBehaviour
         {
             _strTitle = title;
         }
-       
+        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
+        string concelStr = LanguageTemplate.GetText(12);
         _strContent1 = content1;
         _strContent2 = content2;
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                              UIBoxLoadCallback);
+        if (_CallBack != null)
+        {
+            _BoxObj = Global.CreateBox(
+                 title,
+                 MyColorData.getColorString(1, _strContent1),
+                 MyColorData.getColorString(1, _strContent2),
+                 null,
+                  concelStr,
+                  confirmStr,
+                  TouchConConfirm,
+                  null,
+                  null,
+                  null,
+                  false,
+                  false,
+                 true
+                  );
+        }
+        else
+        {
+            if (type == 0)
+            {
+                _BoxObj = Global.CreateBox(
+                   title,
+                   MyColorData.getColorString(1, _strContent1),
+                   MyColorData.getColorString(1, _strContent2),
+                    null,
+                    confirmStr,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    false,
+                    false,
+                   true
+                    );
+            }
+            else
+            {
+                _BoxObj = Global.CreateBox(
+                     title,
+                     MyColorData.getColorString(1, _strContent1),
+                     MyColorData.getColorString(1, _strContent2),
+                     null,
+                      concelStr,
+                      confirmStr,
+                      null,
+                      null,
+                      null,
+                      null,
+                      false,
+                      false,
+                     true
+                      );
+            }
+        }
+    }
+
+    private static void TouchConConfirm(int index)
+    {
+        if (index == 2)
+        {
+            Dele_CallBack();
+        }
     }
 
     private static void UIBoxLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
+  
         GameObject boxObj = Instantiate(p_object) as GameObject;
+        _BoxObj = boxObj;
         UIBox uibox = boxObj.GetComponent<UIBox>();
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         uibox.setBox(_strTitle, MyColorData.getColorString(1, _strContent1), MyColorData.getColorString(1, _strContent2), null, confirmStr, null, null);
     }
 
     private static string _OtherPlayerInfo = "";
-    public static void CreateChaKan(string _playerInfo)
+    public static void CreateChaKan(string _playerInfo,Vector3 vec_pos)
     {
+     //   Debug.Log("vec_posvec_posvec_posvec_pos ::: " + vec_pos);
         _OtherPlayerInfo = _playerInfo;
         if (OtherPlayerInfoManagerment.m_OtherInfo == null)
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.OTHER_PLAYER_INFO),
                            UIBoxLoadCallback_ChaKan);
+            OtherPlayerInfoManagerment.m_OtherInfo.m_OtherPlayerId = _OtherPlayerInfo;
+            OtherPlayerInfoManagerment.m_OtherInfo.m_NowPos = vec_pos;//Camera.main.WorldToScreenPoint(vec_pos);
+            OtherPlayerInfoManagerment.m_OtherInfo.gameObject.SetActive(true);
         }
         else
         {
             OtherPlayerInfoManagerment.m_OtherInfo.m_OtherPlayerId = _OtherPlayerInfo;
+            OtherPlayerInfoManagerment.m_OtherInfo.m_NowPos = Camera.main.WorldToScreenPoint(vec_pos); 
             OtherPlayerInfoManagerment.m_OtherInfo.gameObject.SetActive(true);
         }
     }

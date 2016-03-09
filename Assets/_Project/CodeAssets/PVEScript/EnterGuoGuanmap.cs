@@ -54,7 +54,7 @@ public class EnterGuoGuanmap : MonoBehaviour {
 		tempObject = ( GameObject )Instantiate( p_object );
 		MainCityUI.TryAddToObjectList(tempObject);
 		tempObject.transform.position = new Vector3( 0,500,0 );
-		Global.m_isOpenPVP = false;
+
 		//Debug.Log ("Global.m_isOpenPVP= " +Global.m_isOpenPVP );
 		MapData mMapinfo = tempObject.GetComponent<MapData>();
 

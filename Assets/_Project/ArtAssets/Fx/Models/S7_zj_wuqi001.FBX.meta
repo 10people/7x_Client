@@ -1,0 +1,207 @@
+fileFormatVersion: 2
+guid: 0e870217bac4ae64da2a7b537ac273f9
+timeCreated: 1456279002
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: S7_wq_gutongchanggong001
+    100002: S7_wq_gutongshuangren001
+    100004: S7_wq_gutongzhanmadao001
+    100006: S7_wq_huhunchanggong001
+    100008: S7_wq_huhunlianhuandao001
+    100010: S7_wq_huhunshuangren001
+    100012: S7_wq_liegong001
+    100014: S7_wq_nilingong001
+    100016: S7_wq_nilinshuangren001
+    100018: S7_wq_nilinzhanmadao001
+    100020: S7_wq_qingtonggong001
+    100022: S7_wq_qingtongshuangjian001
+    100024: S7_wq_qingtongzhanmadao001
+    100026: S7_wq_shihouchanggong001
+    100028: S7_wq_shihoulianhuandao001
+    100030: S7_wq_shihoushuangren001
+    100032: S7_wq_shuangdao001
+    100034: S7_wq_yunhechanggong001
+    100036: S7_wq_yunhelianhuandao001
+    100038: S7_wq_yunheshuangren001
+    100040: S7_wq_yuntiegong001
+    100042: S7_wq_yuntieshuangjian001
+    100044: S7_wq_yuntiezhanmadao001
+    100046: S7_wq_zhanmadao001
+    100048: S7_wq_zhuixingsheyuegong001
+    100050: S7_wq_zhuixingshuangren001
+    100052: S7_wq_zhuixingzhuorichui001
+    100054: //RootNode
+    400000: S7_wq_gutongchanggong001
+    400002: S7_wq_gutongshuangren001
+    400004: S7_wq_gutongzhanmadao001
+    400006: S7_wq_huhunchanggong001
+    400008: S7_wq_huhunlianhuandao001
+    400010: S7_wq_huhunshuangren001
+    400012: S7_wq_liegong001
+    400014: S7_wq_nilingong001
+    400016: S7_wq_nilinshuangren001
+    400018: S7_wq_nilinzhanmadao001
+    400020: S7_wq_qingtonggong001
+    400022: S7_wq_qingtongshuangjian001
+    400024: S7_wq_qingtongzhanmadao001
+    400026: S7_wq_shihouchanggong001
+    400028: S7_wq_shihoulianhuandao001
+    400030: S7_wq_shihoushuangren001
+    400032: S7_wq_shuangdao001
+    400034: S7_wq_yunhechanggong001
+    400036: S7_wq_yunhelianhuandao001
+    400038: S7_wq_yunheshuangren001
+    400040: S7_wq_yuntiegong001
+    400042: S7_wq_yuntieshuangjian001
+    400044: S7_wq_yuntiezhanmadao001
+    400046: S7_wq_zhanmadao001
+    400048: S7_wq_zhuixingsheyuegong001
+    400050: S7_wq_zhuixingshuangren001
+    400052: S7_wq_zhuixingzhuorichui001
+    400054: //RootNode
+    2300000: S7_wq_gutongchanggong001
+    2300002: S7_wq_gutongshuangren001
+    2300004: S7_wq_gutongzhanmadao001
+    2300006: S7_wq_huhunchanggong001
+    2300008: S7_wq_huhunlianhuandao001
+    2300010: S7_wq_huhunshuangren001
+    2300012: S7_wq_liegong001
+    2300014: S7_wq_nilingong001
+    2300016: S7_wq_nilinshuangren001
+    2300018: S7_wq_nilinzhanmadao001
+    2300020: S7_wq_qingtonggong001
+    2300022: S7_wq_qingtongshuangjian001
+    2300024: S7_wq_qingtongzhanmadao001
+    2300026: S7_wq_shihouchanggong001
+    2300028: S7_wq_shihoulianhuandao001
+    2300030: S7_wq_shihoushuangren001
+    2300032: S7_wq_shuangdao001
+    2300034: S7_wq_yunhechanggong001
+    2300036: S7_wq_yunhelianhuandao001
+    2300038: S7_wq_yunheshuangren001
+    2300040: S7_wq_yuntiegong001
+    2300042: S7_wq_yuntieshuangjian001
+    2300044: S7_wq_yuntiezhanmadao001
+    2300046: S7_wq_zhanmadao001
+    2300048: S7_wq_zhuixingsheyuegong001
+    2300050: S7_wq_zhuixingshuangren001
+    2300052: S7_wq_zhuixingzhuorichui001
+    3300000: S7_wq_gutongchanggong001
+    3300002: S7_wq_gutongshuangren001
+    3300004: S7_wq_gutongzhanmadao001
+    3300006: S7_wq_huhunchanggong001
+    3300008: S7_wq_huhunlianhuandao001
+    3300010: S7_wq_huhunshuangren001
+    3300012: S7_wq_liegong001
+    3300014: S7_wq_nilingong001
+    3300016: S7_wq_nilinshuangren001
+    3300018: S7_wq_nilinzhanmadao001
+    3300020: S7_wq_qingtonggong001
+    3300022: S7_wq_qingtongshuangjian001
+    3300024: S7_wq_qingtongzhanmadao001
+    3300026: S7_wq_shihouchanggong001
+    3300028: S7_wq_shihoulianhuandao001
+    3300030: S7_wq_shihoushuangren001
+    3300032: S7_wq_shuangdao001
+    3300034: S7_wq_yunhechanggong001
+    3300036: S7_wq_yunhelianhuandao001
+    3300038: S7_wq_yunheshuangren001
+    3300040: S7_wq_yuntiegong001
+    3300042: S7_wq_yuntieshuangjian001
+    3300044: S7_wq_yuntiezhanmadao001
+    3300046: S7_wq_zhanmadao001
+    3300048: S7_wq_zhuixingsheyuegong001
+    3300050: S7_wq_zhuixingshuangren001
+    3300052: S7_wq_zhuixingzhuorichui001
+    4300000: S7_wq_shuangdao001
+    4300002: S7_wq_qingtongshuangjian001
+    4300004: S7_wq_huhunshuangren001
+    4300006: S7_wq_zhanmadao001
+    4300008: S7_wq_yuntiezhanmadao001
+    4300010: S7_wq_nilinzhanmadao001
+    4300012: S7_wq_gutongzhanmadao001
+    4300014: S7_wq_huhunlianhuandao001
+    4300016: S7_wq_liegong001
+    4300018: S7_wq_qingtonggong001
+    4300020: S7_wq_yuntiegong001
+    4300022: S7_wq_nilingong001
+    4300024: S7_wq_gutongchanggong001
+    4300026: S7_wq_yuntieshuangjian001
+    4300028: S7_wq_nilinshuangren001
+    4300030: S7_wq_zhuixingsheyuegong001
+    4300032: S7_wq_yunhechanggong001
+    4300034: S7_wq_shihouchanggong001
+    4300036: S7_wq_shihoulianhuandao001
+    4300038: S7_wq_yunhelianhuandao001
+    4300040: S7_wq_zhuixingshuangren001
+    4300042: S7_wq_yunheshuangren001
+    4300044: S7_wq_shihoushuangren001
+    4300046: S7_wq_zhuixingzhuorichui001
+    4300048: S7_wq_gutongshuangren001
+    4300050: S7_wq_qingtongzhanmadao001
+    4300052: S7_wq_huhunchanggong001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

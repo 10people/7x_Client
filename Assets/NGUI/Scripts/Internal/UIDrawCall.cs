@@ -610,7 +610,8 @@ public class UIDrawCall : MonoBehaviour
 	static UIDrawCall Create (string name, UIPanel pan, Material mat, Texture tex, Shader shader)
 	{
 		UIDrawCall dc = Create(name);
-		dc.gameObject.layer = pan.cachedGameObject.layer;
+		GameObjectHelper.SetGameObjectLayer( dc.gameObject, pan.cachedGameObject.layer );
+
 		dc.clipping = pan.clipping;
 		dc.baseMaterial = mat;
 		dc.mainTexture = tex;

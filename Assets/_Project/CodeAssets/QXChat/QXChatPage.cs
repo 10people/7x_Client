@@ -47,7 +47,29 @@ public class QXChatPage : MonoBehaviour {
 	{
 		chatChannel = tempChannel;
 
+		if (tempChatList.Count > 50)
+		{
+			for (int i = 0;i < tempChatList.Count - 50;i ++)
+			{
+				tempChatList.RemoveAt (0);
+			}
+		}
+
 		CreateChatList (tempChatList);
+
+		if (inputList.Count == 0)
+		{
+			for (int i = 0;i < QXChatData.Instance.GetChannelCount ();i ++)
+			{
+				GameObject chatInput = (GameObject)Instantiate (chatInputObj);
+
+				chatInput.transform.parent = chatInputObj.transform.parent;
+				chatInput.transform.localPosition = Vector3.zero;
+				chatInput.transform.localScale = Vector3.one;
+
+				inputList.Add (chatInput);
+			}
+		}
 
 		switch (tempChannel)
 		{
@@ -66,15 +88,18 @@ public class QXChatPage : MonoBehaviour {
 
 		foreach (EventHandler handler in chatBtnHandlerList)
 		{
-			handler.m_handler -= ChatBtnHandlerClickBack;
-			handler.m_handler += ChatBtnHandlerClickBack;
+			handler.m_click_handler -= ChatBtnHandlerClickBack;
+			handler.m_click_handler += ChatBtnHandlerClickBack;
 		}
 
 		foreach (EventHandler handler in sendBtnHandlerList)
 		{
-			handler.m_handler -= SendBtnHandlerClickBack;
-			handler.m_handler += SendBtnHandlerClickBack;
+			handler.m_click_handler -= SendBtnHandlerClickBack;
+			handler.m_click_handler += SendBtnHandlerClickBack;
 		}
+
+		CityGlobalData.m_isRightGuide = true;
+//		MainCityUI.TryAddToObjectList (gameObject);
 	}
 	
 	void CreateChatList (List<ChatMessage> tempChatList)
@@ -200,12 +225,12 @@ public class QXChatPage : MonoBehaviour {
 				{
 					chatSbValue = 1;
 				}
-				PutChatInfoInToDic (0);
+
 				QXChatData.Instance.SetChatChannel (ChatPct.Channel.SHIJIE);
 			}
 			break;
 		case "AllianceBtn":
-			if (JunZhuData.Instance ().m_junzhuInfo.lianMengId <= 0)
+			if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 			{
 				ClientMain.m_UITextManager.createText (MyColorData.getColorString (5, "请先加入一个联盟！"));
 				return;
@@ -216,7 +241,7 @@ public class QXChatPage : MonoBehaviour {
 				{
 					chatSbValue = 1;
 				}
-				PutChatInfoInToDic (1);
+
 				QXChatData.Instance.SetChatChannel (ChatPct.Channel.LIANMENG);
 			}
 			break;
@@ -227,7 +252,7 @@ public class QXChatPage : MonoBehaviour {
 				{
 					chatSbValue = 1;
 				}
-				PutChatInfoInToDic (2);
+
 				QXChatData.Instance.SetChatChannel (ChatPct.Channel.Broadcast);
 			}
 			break;
@@ -256,30 +281,17 @@ public class QXChatPage : MonoBehaviour {
 	#endregion
 
 	#region InputChatInfo
-	public UIInput chatInput;
+	public GameObject chatInputObj;
+	private List<GameObject> inputList = new List<GameObject> ();
 
 	public UILabel costLabel;
 	public UILabel freeLabel;
 
 	public List<EventHandler> sendBtnHandlerList = new List<EventHandler>();
 
-	private Dictionary<int,string> chatInputDic = new Dictionary<int, string>();
+	private int chatInputIndex;
 
-	/// <summary>
-	/// Puts the chat info in to dic.
-	/// </summary>
-	/// <param name="tempIndex">Temp index.</param>
-	void PutChatInfoInToDic (int tempIndex)
-	{
-		if (!chatInputDic.ContainsKey (tempIndex))
-		{
-			chatInputDic.Add (tempIndex,chatInput.value);
-		}
-		else
-		{
-			chatInputDic[tempIndex] = chatInput.value;
-		}
-	}
+	public UILabel sendCdLabel;
 
 	/// <summary>
 	/// Switchs the chat input.
@@ -287,29 +299,44 @@ public class QXChatPage : MonoBehaviour {
 	/// <param name="tempIndex">Temp index.</param>
 	void SwitchChatInput (int tempIndex)
 	{
-		chatInput.value = "";
-		if (!chatInputDic.ContainsKey (tempIndex))
-		{
-			chatInputDic.Add (tempIndex,"");
-		}
-		else
-		{
-			chatInput.value = chatInputDic [tempIndex];
-		}
-
 		freeLabel.transform.parent.gameObject.SetActive (tempIndex == 1 ? false : true);
+
+		for (int i = 0;i < inputList.Count;i ++)
+		{
+			inputList[i].SetActive (i == tempIndex ? true : false);
+		}
+		
+		chatInputIndex = tempIndex;
+
 		switch (tempIndex)
 		{
 		case 0:
-			freeLabel.text = "";
-			costLabel.gameObject.SetActive (true);
-			costLabel.text = "10";
+
+			freeLabel.text = QXChatData.Instance.FreeTimes > 0 ? "免费\n（" + QXChatData.Instance.FreeTimes + "）" : "";
+			costLabel.gameObject.SetActive (QXChatData.Instance.FreeTimes > 0 ? false : true);
+			costLabel.text = CanshuTemplate.GetStrValueByKey (CanshuTemplate.WORLDCHAT_PRICE);
+
 			break;
 		case 2:
+
+			freeLabel.text = "";
+			costLabel.gameObject.SetActive (true);
+			costLabel.text = CanshuTemplate.GetStrValueByKey (CanshuTemplate.BROADCAST_PRICE);
+
 			break;
 		default:
 			break;
 		}
+	}
+
+	/// <summary>
+	/// Clears the input text.
+	/// </summary>
+	/// <param name="index">Index.</param>
+	public void ClearInputText (int index)
+	{
+		UIInput input = inputList[index].GetComponent<UIInput> ();
+		input.value = "";
 	}
 
 	void SendBtnHandlerClickBack (GameObject obj)
@@ -318,8 +345,9 @@ public class QXChatPage : MonoBehaviour {
 		switch (obj.name)
 		{
 		case "SendBtn":
-			
-			if (string.IsNullOrEmpty (chatInput.value))
+
+			UIInput input = inputList[chatInputIndex].GetComponent<UIInput> ();
+			if (string.IsNullOrEmpty (input.value))
 			{
 				ClientMain.m_UITextManager.createText (MyColorData.getColorString (5, "发送内容不能为空！"));
 			}
@@ -330,12 +358,12 @@ public class QXChatPage : MonoBehaviour {
 					sendState = ChatMessage.SendState.SENDING,
 					chatPct = new ChatPct()
 					{
-						senderName = JunZhuData.Instance ().m_junzhuInfo.name,
-						senderId = JunZhuData.Instance ().m_junzhuInfo.id,
+						senderName = JunZhuData.Instance().m_junzhuInfo.name,
+						senderId = JunZhuData.Instance().m_junzhuInfo.id,
 						channel = chatChannel,
-						content = chatInput.value,
-						guoJia = JunZhuData.Instance ().m_junzhuInfo.guoJiaId,
-						vipLevel = JunZhuData.Instance ().m_junzhuInfo.vipLv,
+						content = input.value,
+						guoJia = JunZhuData.Instance().m_junzhuInfo.guoJiaId,
+						vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv,
 					},
 				};
 
@@ -410,6 +438,19 @@ public class QXChatPage : MonoBehaviour {
 
 	#endregion
 
+	void Update ()
+	{
+		if (QXChatData.Instance.SendWaitTime > 0)
+		{
+			sendCdLabel.text = "冷却" + MyColorData.getColorString (5,QXChatData.Instance.SendWaitTime + "s");
+		}
+		else
+		{
+			sendCdLabel.text = "";
+		}
+	}
+
+	#region ChatPageAnimation
 	public GameObject chatPageObj;
 	public GameObject chatWindowBtn;
 	private bool isOpenChat;
@@ -431,6 +472,14 @@ public class QXChatPage : MonoBehaviour {
 		chatWindowBtn.transform.localRotation = Quaternion.Euler (0,0,isOpenChat ? 90 : -90);
 		if (!isOpenChat)
 		{
+			//open yindao
+			{
+				if (MainCityUI.m_MainCityUI != null)
+				{
+					MainCityUI.m_MainCityUI.setInit ();
+				}
+			}
+
 			chatSbValue = 1;
 			chatSb.value = 0;
 //			MainCityUI.TryRemoveFromObjectList (gameObject);
@@ -438,4 +487,24 @@ public class QXChatPage : MonoBehaviour {
 			gameObject.SetActive (false);
 		}
 	}
+	#endregion
+
+	#region ChatPageRedPoint
+	public List<GameObject> redList = new List<GameObject> ();
+
+	/// <summary>
+	/// Sets the chat button red point.
+	/// </summary>
+	/// <param name="tempChannel">Temp channel.</param>
+	public void SetChatBtnRedPoint ()
+	{
+		foreach (KeyValuePair<ChatPct.Channel,string[]> pair in QXChatData.Instance.GetChatInfoDic ())
+		{
+//			Debug.Log ("pair.Key:" + pair.Key + "||chatChannel:" + chatChannel);
+			pair.Value[2] = pair.Key == chatChannel ? "-1" : pair.Value[2];
+			redList[int.Parse (pair.Value[1])].SetActive (pair.Value[2] == "-1" ? false : true);
+		}
+	}
+
+	#endregion
 }

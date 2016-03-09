@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<BattleWin id="1" isWin="1" endType="0" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="0" protectList="0" />
-<BattleWin id="1" isWin="0" endType="7" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="1" protectList="1" />
-<BattleWin id="1" isWin="0" endType="3" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="0" protectList="0" />
+<BattleWin id="1" isWin="1" endType="1" killNum="1" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="0" protectList="0" />
+<BattleWin id="2" isWin="0" endType="2" killNum="0" destinationx="-2.331802" destinationy="0.8500004" destinationz="71.599" destinationRadius="2.5" activeNum="1" activeList="110" showOnUI="0" protectNum="0" protectList="0" />
+<BattleWin id="2" isWin="0" endType="3" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="0" protectList="0" />
+<BattleWin id="2" isWin="0" endType="7" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="1" protectList="1" />
 </dataset>

@@ -59,6 +59,16 @@ public class Pve_Level_Info : MonoBehaviour {
 	public static Pve_Level_Info G_Pve_Level_Info;
 
 	public bool IsRotation = false;
+
+	public UILabel mLanguage;
+
+	public UILabel mLanguageLabel;
+
+	public UILabel OpebSkillLanguage;
+
+	public UISprite mBossIcon;
+	public UISprite mBossIconbg;
+	public UISprite mBossIconbg1;
 	public enum m_Level_Type 
 	{ 
 		Putong = 0, 
@@ -96,12 +106,63 @@ public class Pve_Level_Info : MonoBehaviour {
 				litter_Lv.renWuId = -1;
 			}
 		}
+		if(mLanguage.gameObject.activeInHierarchy)
+		{
+			if(PlayLanguage)
+			{
+				Vector3 tempScale = mLanguage.gameObject.transform.localScale;
+				float addNum = 0.05f;
+				if (tempScale == Vector3.one)
+				{
+					//tempScale = Vector3.zero;
+					PlayLanguage = false;
+					addNum = 0.05f;
+//					StopCoroutine ("ChangeTimeTolanguage");
+//					StartCoroutine ("ChangeTimeTolanguage");
+					ChangeTimeTolanguage ();
+				}
+				if (tempScale.x < 1&&PlayLanguage)
+				{
+//					if (tempScale.x >= 0.95f)
+//					{
+//						addNum = 0.0005f;
+//					}
+					
+					tempScale.x += addNum;
+					tempScale.y += addNum;
+					tempScale.z += addNum;
+				}
+				mLanguage.gameObject.transform.localScale = tempScale;
+			}
 
+		}
+	
 	}
-
+	int STarTime;
+	bool PlayLanguage = false;
+	void  StopTime()
+	{
+		STarTime = Random.Range (5,20);
+		mLanguage.gameObject.transform.localScale = Vector3.zero;
+		Invoke ("PoP_QiPao",STarTime);
+	}
+	void  ChangeTimeTolanguage()
+	{
+		Invoke ("StopTime",3f);
+	}
+	private void PoP_QiPao()
+	{
+		PlayLanguage = true;
+	}
 	public void Init()
 	{
-		needjunzhuLevel = JunZhuData.Instance ().m_junzhuInfo.level;
+		StopTime ();
+		PlayLanguage = false;
+		if(mLanguage.gameObject.activeInHierarchy)
+		{
+			mLanguage.gameObject.transform.localScale = Vector3.zero;
+		}
+		needjunzhuLevel = JunZhuData.Instance().m_junzhuInfo.level;
 
 		int levelState = litter_Lv.type;  
 
@@ -112,6 +173,23 @@ public class Pve_Level_Info : MonoBehaviour {
 
 			PT_Level.SetActive(true);
 
+			if(litter_Lv.s_pass)
+			{
+				OpebSkillLanguage.gameObject.SetActive(false);
+			}
+			else
+			{
+				PveTempTemplate mPveTemp = PveTempTemplate.GetPveTemplate_By_id (litter_Lv.guanQiaId);
+				if(mPveTemp.OPenSkillLabel != "")
+				{
+					OpebSkillLanguage.gameObject.SetActive(true);
+					OpebSkillLanguage.text = mPveTemp.OPenSkillLabel;
+				}
+				else{
+					OpebSkillLanguage.gameObject.SetActive(false);
+				}
+
+			}
 			if(litter_Lv.guanQiaId%10 == 1)
 			{
 
@@ -192,16 +270,73 @@ public class Pve_Level_Info : MonoBehaviour {
 
 				}
 			}
+			if(litter_Lv.s_pass)
+			{
+				PT_DisPass.SetActive(true);
+				PT_DisPass.GetComponent<UISprite>().color = new Color(255,255,255,255);
+			}
+			if(Lv_IsOpen)
+			{
+				PT_DisPass.SetActive(false);
+				int effectId =  100171;
+				MapData.mapinstance.ShowEffectLevelid = litter_Lv.guanQiaId;
+				MapData.mapinstance.OpenEffect();
+			}
 
 		}
 		////////////////////////////
 	
 		if(levelState == (int)m_Level_Type.JingYing)
 		{
+			PveTempTemplate mPveTemp = PveTempTemplate.GetPveTemplate_By_id (litter_Lv.guanQiaId);
+		
+			List<NpcTemplate> mNpcTemplate = new List<NpcTemplate>();
+			mNpcTemplate = NpcTemplate.GetNpcTemplates_By_npcid(mPveTemp.npcId);
+			foreach(NpcTemplate mNpc in mNpcTemplate)
+			{
+				if(mNpc.type == 4)
+				{
+					mBossIcon.spriteName = mNpc.icon.ToString();
+					break;
+				}
+			}
+
+			if(mPveTemp.BigIcon == 1)
+			{
+				mBossIconbg.spriteName = "BossLevel";
+				mBossIconbg.SetDimensions(105,105);
+				mBossIcon.gameObject.transform.localPosition = new Vector3(-1.5f,2.9f,0);
+
+				mBossIconbg1.spriteName = "BossLevel";
+				mBossIconbg1.SetDimensions(105,105);
+			}
+			else
+			{
+				mBossIconbg.spriteName = "JingYinLevel";
+				mBossIcon.gameObject.transform.localPosition = new Vector3(-0.5f,-3f,0);
+			}
 			PT_Level.SetActive(false);
 			
 			JY_CQ_Level.SetActive(true);
-
+			mLanguage.gameObject.SetActive(true);
+			if(!litter_Lv.s_pass)
+			{
+				if(mPveTemp.bubble == "" || mPveTemp.bubble ==null)
+				{
+					mLanguage.gameObject.SetActive(true);
+				}
+				else
+				{
+					mLanguage.gameObject.SetActive(true);
+					mLanguageLabel.text = mPveTemp.bubble;
+				}
+				mBossIcon.color = new Color(0,0,0,255);
+			}
+			else
+			{
+				mBossIcon.color = new Color(255,255,255,255);
+				mLanguage.gameObject.SetActive(false);
+			}
 			if(litter_Lv.guanQiaId%10 != 1)
 			{
 				if(litter_Lv.s_pass)
@@ -250,19 +385,69 @@ public class Pve_Level_Info : MonoBehaviour {
 
 				}
 			}
+			if(Lv_IsOpen)
+			{
+				mBossIcon.color = new Color(255,255,255,255);
+			}
 			if(litter_Lv.s_pass)
 			{
 				ShowStar();
 				
 				Show_Win_Type(true);
 			}
-			ShowBox ();
+			ShowBox (true);
 		}
 		if(levelState == (int)m_Level_Type.ChuanQi)
 		{
 			PT_Level.SetActive(false);
 			
 			JY_CQ_Level.SetActive(true);
+
+			LegendPveTemplate L_pvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(litter_Lv.guanQiaId);
+			List<LegendNpcTemplate> mLegendNpcTemplateList = new List<LegendNpcTemplate>();
+			mLegendNpcTemplateList = LegendNpcTemplate.GetLegendNpcTemplates_By_npcid(L_pvetemp.npcId);
+			mLanguage.gameObject.SetActive(true);
+			if(!litter_Lv.chuanQiPass)
+			{
+				mBossIcon.color = new Color(0,0,0,255);
+				if(L_pvetemp.bubble == "" || L_pvetemp.bubble ==null)
+				{
+					mLanguage.gameObject.SetActive(true);
+				}
+				else
+				{
+					mLanguage.gameObject.SetActive(true);
+					mLanguageLabel.text = L_pvetemp.bubble;
+				}
+			}
+			else
+			{
+				mBossIcon.color = new Color(255,255,255,255);
+				mLanguage.gameObject.SetActive(false);
+			}
+			foreach(LegendNpcTemplate mNpc in mLegendNpcTemplateList)
+			{
+				if(mNpc.type == 4)
+				{
+					mBossIcon.spriteName = mNpc.icon.ToString();
+					break;
+				}
+			}
+			
+			if(L_pvetemp.BigIcon == 1)
+			{
+				mBossIconbg.spriteName = "BossLevel";
+				mBossIconbg.SetDimensions(105,105);
+				mBossIcon.gameObject.transform.localPosition = new Vector3(-1.5f,2.9f,0);
+				
+				mBossIconbg1.spriteName = "BossLevel";
+				mBossIconbg1.SetDimensions(105,105);
+			}
+			else
+			{
+				mBossIconbg.spriteName = "JingYinLevel";
+				mBossIcon.gameObject.transform.localPosition = new Vector3(-0.5f,-3f,0);
+			}
 
 			int Lvpos = 0;
 
@@ -349,24 +534,30 @@ public class Pve_Level_Info : MonoBehaviour {
 
 			if(litter_Lv.chuanQiPass)
 			{
+				ShowStar();
 				Show_Win_Type(false);
 			}
+			if(Lv_IsOpen)
+			{
+				mBossIcon.color = new Color(255,255,255,255);
+			}
+			ShowBox (false);
 		}
 
 		if(Lv_IsOpen)
 		{
 //			Debug.Log("EnterGuoGuanmap.Instance().ShouldOpen_id  = " +EnterGuoGuanmap.Instance().ShouldOpen_id);
 
-			Cur_levelTops.SetActive(true);
+			//Cur_levelTops.SetActive(true);
+//
+//			MapData.mapinstance.ShowEffectLevelid = litter_Lv.guanQiaId;
+//
+//			if(EnterGuoGuanmap.Instance().ShouldOpen_id != 1)
+//			{
+//				MapData.mapinstance.OpenEffect();
+//			}
 
-			MapData.mapinstance.ShowEffectLevelid = litter_Lv.guanQiaId;
-
-			if(EnterGuoGuanmap.Instance().ShouldOpen_id != 1)
-			{
-				MapData.mapinstance.OpenEffect();
-			}
-
-			//UI3DEffectTool.Instance ().ClearUIFx (ChangeMiBaobtn);
+			//UI3DEffectTool.ClearUIFx (ChangeMiBaobtn);
 		}
 
 		ShowLevel ();
@@ -386,69 +577,134 @@ public class Pve_Level_Info : MonoBehaviour {
 		}
 	}
 	public UISprite Boxsprite;
-	public void ShowBox()
+	public void ShowBox(bool jingyin)
 	{
-
-		if(!litter_Lv.s_pass)
+		//Debug.Log ("jingyin = "+jingyin);
+		if(jingyin)
 		{
-
-			BoxBtn.GetComponent<BoxCollider>().enabled = false;
-
-			BoxBtn.SetActive (false);
-
-		}
-		else
-		{
-			int passFinishnum = 0;
-
-			int Getrawardnum = 0;
-			for(int j = 0 ; j < litter_Lv.starInfo.Count; j++)
+			if(!litter_Lv.s_pass)
 			{
-				if(litter_Lv.starInfo[j].finished)
+				BoxBtn.GetComponent<BoxCollider>().enabled = false;
+				
+				BoxBtn.SetActive (false);
+				
+			}
+			else
+			{
+				int passFinishnum = 0;
+				
+				int Getrawardnum = 0;
+				for(int j = 0 ; j < litter_Lv.starInfo.Count; j++)
 				{
-					passFinishnum += 1;
-					if(litter_Lv.starInfo[j].getRewardState)
+					if(litter_Lv.starInfo[j].finished)
 					{
-						Getrawardnum +=1;
+						passFinishnum += 1;
+						if(litter_Lv.starInfo[j].getRewardState)
+						{
+							Getrawardnum +=1;
+						}
+					}
+				}
+				if(Getrawardnum >= passFinishnum)
+				{
+					BoxBtn.SetActive (false);
+					return;
+				}
+				if(passFinishnum == litter_Lv.starInfo.Count)
+				{
+					if(Getrawardnum == passFinishnum)
+					{
+						BoxBtn.SetActive (false);
+					}
+					else
+					{
+						BoxBtn.SetActive (true);
+						BoxBtn.GetComponent<BoxCollider>().enabled = true;
+					}
+				}else
+				{
+					if(Getrawardnum == passFinishnum)
+					{
+						BoxBtn.GetComponent<BoxCollider>().enabled = true;
+						
+						BoxBtn.SetActive (true);
+						
+						BoxBtn.gameObject.transform.localScale = new Vector3(0.7f,0.7f,1);
+						
+						Boxsprite.color = new Color(0,0,0,255);
+					}
+					else
+					{
+						BoxBtn.SetActive (true);
+						BoxBtn.GetComponent<BoxCollider>().enabled = true;
 					}
 				}
 			}
-			if(Getrawardnum >= passFinishnum)
+		}
+		else
+		{
+			if(!litter_Lv.chuanQiPass)
 			{
+				BoxBtn.GetComponent<BoxCollider>().enabled = false;
+				
 				BoxBtn.SetActive (false);
-				return;
+				
 			}
-			if(passFinishnum == litter_Lv.starInfo.Count)
+			else
 			{
-				if(Getrawardnum == passFinishnum)
+				int passFinishnum = 0;
+				
+				int Getrawardnum = 0;
+				for(int j = 0 ; j < litter_Lv.cqStarInfo.Count; j++)
+				{
+					if(litter_Lv.cqStarInfo[j].finished)
+					{
+						passFinishnum += 1;
+						if(litter_Lv.cqStarInfo[j].getRewardState)
+						{
+							Getrawardnum +=1;
+						}
+					}
+				}
+				if(Getrawardnum >= passFinishnum)
 				{
 					BoxBtn.SetActive (false);
+					return;
 				}
-				else
+				if(passFinishnum == litter_Lv.cqStarInfo.Count)
 				{
-					BoxBtn.SetActive (true);
-					BoxBtn.GetComponent<BoxCollider>().enabled = false;
-				}
-			}else
-			{
-				if(Getrawardnum == passFinishnum)
+					if(Getrawardnum == passFinishnum)
+					{
+						BoxBtn.SetActive (false);
+					}
+					else
+					{
+						//Debug.Log("aaaa");
+						BoxBtn.SetActive (true);
+						BoxBtn.GetComponent<BoxCollider>().enabled = true;
+					}
+				}else
 				{
-					BoxBtn.GetComponent<BoxCollider>().enabled = false;
-
-					BoxBtn.SetActive (true);
-
-					BoxBtn.gameObject.transform.localScale = new Vector3(0.7f,0.7f,1);
-					
-					Boxsprite.color = new Color(0,0,0,255);
-				}
-				else
-				{
-					BoxBtn.SetActive (true);
-					BoxBtn.GetComponent<BoxCollider>().enabled = false;
+					if(Getrawardnum == passFinishnum)
+					{
+						BoxBtn.GetComponent<BoxCollider>().enabled = true;
+						//Debug.Log("bbbbbbb");
+						BoxBtn.SetActive (true);
+						
+						BoxBtn.gameObject.transform.localScale = new Vector3(0.7f,0.7f,1);
+						
+						Boxsprite.color = new Color(0,0,0,255);
+					}
+					else
+					{
+						//Debug.Log("ccccc");
+						BoxBtn.SetActive (true);
+						BoxBtn.GetComponent<BoxCollider>().enabled = true;
+					}
 				}
 			}
 		}
-		BoxBtn.GetComponent<BoxCollider>().enabled = false;
+
 	}
 
 	void ShowStar()
@@ -732,9 +988,13 @@ public class Pve_Level_Info : MonoBehaviour {
 	public void GetAwardBtn()
 	{
 		// 领取奖励按钮 宝箱
-		//UI3DEffectTool.Instance ().ClearUIFx (BoxBtn);
+		//UI3DEffectTool.ClearUIFx (BoxBtn);
 		MapData.mapinstance.CloseEffect();
-		PassLevelBtn.Instance ().CloseEffect ();
+		if(CityGlobalData.PT_Or_CQ)
+		{
+			PassLevelBtn.Instance().CloseEffect ();
+		}
+
 		MapData.mapinstance.ClosewPVEGuid ();
 
 		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.PVE_GRADE_REWARD),LoadResourceCallback2);
@@ -742,8 +1002,8 @@ public class Pve_Level_Info : MonoBehaviour {
 
 	public void LoadResourceCallback2(ref WWW p_www,string p_path, Object p_object)
 	{
-//		Debug.Log ("0000000000 0-0");
-
+////		Debug.Log ("0000000000 0-0");
+//
 		GameObject tempOjbect = Instantiate(p_object)as GameObject;
 
 		tempOjbect.transform.parent = GameObject.Find ("Mapss").transform;
@@ -752,13 +1012,11 @@ public class Pve_Level_Info : MonoBehaviour {
 
 		tempOjbect.transform.localPosition = Vector3.zero;
 		
-		PveStarAward mPveStarAward = tempOjbect.GetComponent<PveStarAward>();
+		PveStarAwardpanel mPveStarAwardpanel = tempOjbect.GetComponent<PveStarAwardpanel>();
 
-		mPveStarAward.M_Level = litter_Lv;
+		mPveStarAwardpanel.M_Level = litter_Lv;
 
-		mPveStarAward.Opentype = 1;
-
-		mPveStarAward.Init ();
+		mPveStarAwardpanel.Init ();
 	}
 	public void POPLevelInfo()
 	{
@@ -803,6 +1061,7 @@ public class Pve_Level_Info : MonoBehaviour {
 
 		if (issended)
 		{
+			UIYindao.m_UIYindao.CloseUI ();
 			Startsendmasg = false;
 			if(CityGlobalData.PT_Or_CQ)
 			{
@@ -954,8 +1213,11 @@ public class Pve_Level_Info : MonoBehaviour {
 		CityGlobalData.PveLevel_UI_is_OPen = true;
 		MainCityUI.TryAddToObjectList (tempOjbect_PVEUI);
 		MapData.mapinstance.CloseEffect();
-		PassLevelBtn.Instance ().CloseEffect ();
-	
+		if(CityGlobalData.PT_Or_CQ)
+		{
+			PassLevelBtn.Instance().CloseEffect ();
+		}
+		MapData.mapinstance.ClosewPVEGuid ();
 		tempOjbect_PVEUI.transform.localPosition = new Vector3(0,400,0);
 		
 		tempOjbect_PVEUI.transform.localScale = new Vector3 (1,1,1);

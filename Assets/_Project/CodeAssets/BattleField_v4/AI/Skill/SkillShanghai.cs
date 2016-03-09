@@ -58,7 +58,7 @@ public class SkillShanghai : SkillDataBead
 				{
 					if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_SKILL)
 					{
-						m_HeroSkill.node.attackHp(m_HeroSkill.node, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.SKILL_REFLEX);
+						m_HeroSkill.node.attackHp(m_HeroSkill.node, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.SKILL_REFLEX, BattleControlor.NuqiAddType.NULL);
 						
 						fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
 
@@ -68,7 +68,23 @@ public class SkillShanghai : SkillDataBead
 					}
 				}
 
-				m_HeroSkill.node.attackHp(defender, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
+				BattleControlor.NuqiAddType niquType = BattleControlor.NuqiAddType.NULL;
+
+				KingControllor kc = m_HeroSkill.node as KingControllor;
+
+				if(kc != null)
+				{
+					SkillTemplate st = SkillTemplate.getSkillTemplateById(200012);
+
+					string heavySkillName_2 = NameIdTemplate.getNameIdTemplateByNameId(st.skillName).Name;
+
+					if(heavySkillName_2.Equals(m_HeroSkill.template.name))//乾坤斗转
+					{
+						niquType = BattleControlor.NuqiAddType.HEAVY_SKILL_2;
+					}
+				}
+
+				m_HeroSkill.node.attackHp(defender, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, niquType);
 			
 				m_HeroSkill.isFirse(defender);
 
@@ -80,7 +96,7 @@ public class SkillShanghai : SkillDataBead
 		}
 //		m_HeroSkill.m_listATTTarget
 
-//		BattleEffectControllor.Instance ().PlayEffect (
+//		BattleEffectControllor.Instance().PlayEffect (
 //			BattleEffectControllor.EffectType.EFFECT_KING_CESHI_SKILL_BAOQI,
 //			m_BaseAI.targetNode.gameObject);
 //		Buff.createBuff(m_BaseAI.targetNode, Buff.BuffType.BUFF_HP, m_NodeSkill.value1, m_NodeSkill.value2);

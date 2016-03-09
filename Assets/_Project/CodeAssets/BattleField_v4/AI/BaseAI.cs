@@ -1,3 +1,5 @@
+//#define REMOVE_MIBAO_CD
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -173,6 +175,8 @@ public class BaseAI : MonoBehaviour
 
 	[HideInInspector] public BattleAppearanceTemplate appearanceTemplate;
 
+	[HideInInspector] public string m_sPlaySkillAnimation = "";
+	
 
 	protected CharacterController chongfengControllor;
 	
@@ -227,8 +231,6 @@ public class BaseAI : MonoBehaviour
 
 	private int droppenIndex;
 
-	public string m_sPlaySkillAnimation = "";
-
 	private string m_sPAnimationName = "";
 
 	private int tempSkillId;
@@ -237,9 +239,20 @@ public class BaseAI : MonoBehaviour
 
 	private Vector3 pathPos;
 
+	#if UNITY_EDITOR && REMOVE_MIBAO_CD
+	private static bool m_log_tips = true;
+	#endif
 
 	public virtual void Start()
 	{
+		#if UNITY_EDITOR && REMOVE_MIBAO_CD
+		if( m_log_tips ){
+			m_log_tips = false;
+
+			Debug.Log( "Temporary Remove CD(For CaoKai)." );
+		}
+		#endif
+
 		DisableOcclusion ();
 
 		m_isStart = true;
@@ -532,16 +545,22 @@ public class BaseAI : MonoBehaviour
 
 			if(kw != null)
 			{
-				BoxCollider boxCol = kw.gameObject.GetComponent<BoxCollider>();
+				float length = nodeData.GetAttribute((int)AIdata.AttributeType.ATTRTYPE_attackRange) + 1;
 
-				if(boxCol != null)
-				{
-					float length = nodeData.GetAttribute((int)AIdata.AttributeType.ATTRTYPE_attackRange) + 1;
+				kw.boxSize = new Vector3(length * .75f, 2, length);
 
-					boxCol.size = new Vector3(length * .75f, 2, length);
+				kw.colliderCenter += new Vector3(0, 0, kw.boxSize.z / 2 - kw.colliderCenter.z);
 
-					boxCol.center += new Vector3(0, 0, boxCol.size.z / 2 - boxCol.center.z);
-				}
+//				BoxCollider boxCol = kw.gameObject.GetComponent<BoxCollider>();
+//
+//				if(boxCol != null)
+//				{
+//					float length = nodeData.GetAttribute((int)AIdata.AttributeType.ATTRTYPE_attackRange) + 1;
+//
+//					boxCol.size = new Vector3(length * .75f, 2, length);
+//
+//					boxCol.center += new Vector3(0, 0, boxCol.size.z / 2 - boxCol.center.z);
+//				}
 			}
 		}
 
@@ -691,7 +710,7 @@ public class BaseAI : MonoBehaviour
 
 	public void activeSkillStart(int state)
 	{
-		//if (BattleControlor.Instance ().inDrama == true) return;
+		//if (BattleControlor.Instance().inDrama == true) return;
 
 		if(nodeData.nodeType == NodeType.PLAYER)
 		{
@@ -724,7 +743,7 @@ public class BaseAI : MonoBehaviour
 
 	public void openShow()
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 		skills[m_iUseSkillIndex].setShowFanRand();
 //		Debug.Log (skills[m_iUseSkillIndex].m_otherSkill.Count);
 		for(int i = 0; i < skills[m_iUseSkillIndex].m_otherSkill.Count; i ++)
@@ -735,7 +754,7 @@ public class BaseAI : MonoBehaviour
 
 	public void playPre()
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		skills[m_iUseSkillIndex].isPlayPer();
 		for(int i = 0; i < skills[m_iUseSkillIndex].m_otherSkill.Count; i ++)
@@ -746,7 +765,7 @@ public class BaseAI : MonoBehaviour
 
 	public void setStand()
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		if(gameObject.activeSelf == true && nav != null && nav.enabled == true)
 		{
@@ -776,13 +795,13 @@ public class BaseAI : MonoBehaviour
 
 		GuideTemplate template = GuideTemplate.getTemplateByLevelAndType (level, 6, skillId);
 
-		bool flag = BattleControlor.Instance ().havePlayedGuide (template);
+		bool flag = BattleControlor.Instance().havePlayedGuide (template);
 
 		if (flag == true) return;
 
 		if(template.flagId.Count == 0)
 		{
-			BattleUIControlor.Instance ().showDaramControllor (level, template.dungeonId);
+			BattleUIControlor.Instance().showDaramControllor (level, template.id);
 		}
 		else
 		{
@@ -997,7 +1016,9 @@ public class BaseAI : MonoBehaviour
 		return false;
 	}
 
-	void FixedUpdate ()
+	// use Update() to make it faster.
+//	void FixedUpdate ()
+	void Update()
 	{
 		updateThreats ();
 
@@ -1009,12 +1030,12 @@ public class BaseAI : MonoBehaviour
 			return;
 		}
 
-		if(BattleControlor.Instance ().inDrama)
+		if(BattleControlor.Instance().inDrama)
 		{
 			return;
 		}
 
-		if (BattleControlor.Instance ().completed == false)
+		if (BattleControlor.Instance().completed == false)
 		{
 			return;
 		}
@@ -1120,7 +1141,7 @@ public class BaseAI : MonoBehaviour
 			isStopTimeOver();
 			
 			alarmUpdate ();
-			
+
 			if (alarmState != 1)
 			{
 				uptateTarget();
@@ -1243,11 +1264,11 @@ public class BaseAI : MonoBehaviour
 
 		float tempLength = 999;
 
-		//List<BaseAI> tempList = stance == Stance.STANCE_ENEMY ? BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes;
+		//List<BaseAI> tempList = stance == Stance.STANCE_ENEMY ? BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes;
 
 		foreach(BaseAI node in enemysInRange)
 		{
-			if(node == null || !node.isAlive || node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) <= 0) continue;
+			if(node == null || !node.isAlive || node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0) continue;
 
 			if(node.nodeData.nodeType == NodeType.GOD || node.nodeData.nodeType == NodeType.NPC) continue;
 
@@ -1336,22 +1357,22 @@ public class BaseAI : MonoBehaviour
 
 		if(stance == Stance.STANCE_ENEMY)
 		{
-			templist = BattleControlor.Instance ().selfNodes;
+			templist = BattleControlor.Instance().selfNodes;
 		}
 		else if(stance == Stance.STANCE_SELF)
 		{
-			templist = BattleControlor.Instance ().enemyNodes;
+			templist = BattleControlor.Instance().enemyNodes;
 		}
 		else
 		{
 			templist = new List<BaseAI>();
 
-			foreach(BaseAI n in BattleControlor.Instance ().selfNodes)
+			foreach(BaseAI n in BattleControlor.Instance().selfNodes)
 			{
 				templist.Add(n);
 			}
 
-			foreach(BaseAI n in BattleControlor.Instance ().enemyNodes)
+			foreach(BaseAI n in BattleControlor.Instance().enemyNodes)
 			{
 				templist.Add(n);
 			}
@@ -1447,7 +1468,7 @@ public class BaseAI : MonoBehaviour
 			pathPos = transform.position;
 		}
 
-		List<BaseAI> nodeList = stance == Stance.STANCE_ENEMY ? BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes;
+		List<BaseAI> nodeList = stance == Stance.STANCE_ENEMY ? BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes;
 
 		if(nodeList.Count == 0)
 		{
@@ -1876,6 +1897,8 @@ public class BaseAI : MonoBehaviour
 
 	public void moveAction(Vector3 targetPosition, iTween.EaseType easeType, float time, bool colliderEnable = true)
 	{
+//		return;
+
 		if(colliderEnable == true)
 		{
 			tempMovePostion = Vector3.zero;
@@ -2016,7 +2039,7 @@ public class BaseAI : MonoBehaviour
 	{
 		if (nodeData.droppenItems == null) return;
 
-		BattleControlor.Instance ().droppenList.Add (nodeId);
+		BattleControlor.Instance().droppenList.Add (nodeId);
 
 		if(nodeData.droppenType == 0)
 		{
@@ -2098,11 +2121,16 @@ public class BaseAI : MonoBehaviour
 
 	public void dieActionDone()
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		_dieActionDone ();
+	}
+
+	public void _dieActionDone(bool force = false)
+	{
+		if (BattleControlor.Instance().inDrama == true && force == false) return;
 
 		if (isAlive == false) return;
 
-		BubblePopControllor.Instance ().triggerFuncDie (nodeId);
+		BubblePopControllor.Instance().triggerFuncDie (nodeId);
 
 		StartCoroutine(dieAction());
 	}
@@ -2141,15 +2169,15 @@ public class BaseAI : MonoBehaviour
 
 		if(nodeId > 0)
 		{
-			if (BattleControlor.Instance ().achivement != null && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance ().achivement.KillMonster (nodeId);
+			if (BattleControlor.Instance().achivement != null && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().achivement.KillMonster (nodeId);
 
-			if (nodeData.nodeType == NodeType.BOSS && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance ().battleCheck.bossKilled ++;
+			if (nodeData.nodeType == NodeType.BOSS && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().battleCheck.bossKilled ++;
 
-			if (nodeData.nodeType == NodeType.GEAR && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance ().battleCheck.gearKilled ++;
+			if (nodeData.nodeType == NodeType.GEAR && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().battleCheck.gearKilled ++;
 
-			if (nodeData.nodeType == NodeType.HERO && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance ().battleCheck.heroKilled ++;
+			if (nodeData.nodeType == NodeType.HERO && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().battleCheck.heroKilled ++;
 
-			if (nodeData.nodeType == NodeType.SOLDIER && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance ().battleCheck.soldierKilled ++;
+			if (nodeData.nodeType == NodeType.SOLDIER && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().battleCheck.soldierKilled ++;
 		}
 
 		if(stance == Stance.STANCE_SELF)
@@ -2175,7 +2203,7 @@ public class BaseAI : MonoBehaviour
 
 			if(flag.willRelive == false)
 			{
-				Destroy(shadowObject);
+				Destroy(shadowObject_2);
 
 				BattleControlor.Instance().deadNodes.Add(nodeId);
 			}
@@ -2340,9 +2368,13 @@ public class BaseAI : MonoBehaviour
 		float nuqi = nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
 
 		nuqi += addNuqi;
-		
+
 		float nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX);
 
+		#if UNITY_EDITOR && REMOVE_MIBAO_CD
+		nuqi = nuqiMax;
+		#endif
+			
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
 		{
 			nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
@@ -2358,7 +2390,7 @@ public class BaseAI : MonoBehaviour
 
 		if(nodeId == 1 && BattleControlor.Instance().getKing().kingSkillMibao != null && BattleControlor.Instance().getKing().kingSkillMibao.Count > 0)
 		{
-			BattleUIControlor.Instance ().spriteBarMibao.fillAmount = nuqi / nuqiMax;
+			BattleUIControlor.Instance().spriteBarMibao.fillAmount = nuqi / nuqiMax;
 
 			float unityMax = nuqiMax / 3;
 
@@ -2382,15 +2414,33 @@ public class BaseAI : MonoBehaviour
 			{
 				BattleUIControlor.Instance().labelBarMibao.text = "MAX";
 
-				if(tempNuqi > 0)
+				if(tempNuqi > 0 && BattleUIControlor.Instance().b_skill_miBao == true)
 				{
-					UI3DEffectTool.Instance().ShowTopLayerEffect(
+					UI3DEffectTool.ShowTopLayerEffect(
 	                    UI3DEffectTool.UIType.FunctionUI_1, 
 	                    BattleUIControlor.Instance().btnMibaoSkill,
 						EffectIdTemplate.GetPathByeffectId(100189) );
 				}
 			}
 		}
+	}
+
+	protected void clearNuQi()
+	{
+		float nuqi = nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
+
+		float nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX);
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
+		{
+			nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
+		}
+
+		float unityMax = nuqiMax / 3;
+
+		int count = (int)(nuqi / unityMax);
+
+		addNuqi ( -unityMax * count );
 	}
 
 	private IEnumerator minusTargetHp(BaseAI defender)
@@ -2411,7 +2461,7 @@ public class BaseAI : MonoBehaviour
 			{
 				if(buff.buffType == AIdata.AttributeType.ATTRTYPE_ECHO_WEAPON)
 				{
-					attackHp(this, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX);
+					attackHp(this, fbp.Float * buff.supplement.m_fValue2, fbp.Bool, BattleControlor.AttackType.BASE_REFLEX, BattleControlor.NuqiAddType.NULL);
 
 					fbp.Float = buff.supplement.m_fValue1 * fbp.Float;
 
@@ -2421,9 +2471,20 @@ public class BaseAI : MonoBehaviour
 				}
 			}
 
-			attackHp(defender, fbp.Float, fbp.Bool, BattleControlor.AttackType.BASE_ATTACK);
-		
-			//attackHp(defender, 8, false, BattleControlor.AttackType.BASE_ATTACK);
+			BattleControlor.NuqiAddType nuqiType = BattleControlor.NuqiAddType.NULL;
+
+			if(nodeData.nodeType == NodeType.PLAYER)
+			{
+				KingControllor king = (KingControllor)this;
+
+				if(king.weaponType == KingControllor.WeaponType.W_Heavy) nuqiType = BattleControlor.NuqiAddType.HEAVY_BASE;
+
+				else if(king.weaponType == KingControllor.WeaponType.W_Light) nuqiType = BattleControlor.NuqiAddType.LIGHT_BASE;
+
+				else if(king.weaponType == KingControllor.WeaponType.W_Ranged) nuqiType = BattleControlor.NuqiAddType.RANGE_BASE;
+			}
+
+			attackHp(defender, fbp.Float, fbp.Bool, BattleControlor.AttackType.BASE_ATTACK, nuqiType);
 		}
 	}
 
@@ -2478,7 +2539,7 @@ public class BaseAI : MonoBehaviour
 		return false;
 	}
 
-	public void attacked(BaseAI attacker, float hpValue, bool cri, BattleControlor.AttackType attackedType)
+	public void attacked(BaseAI attacker, float hpValue, bool cri, BattleControlor.AttackType attackedType, BattleControlor.NuqiAddType nuqiType)
 	{
 		//BattleReplayorWrite.Instance().addReplayNodeAttacked(nodeId, hpValue);
 
@@ -2489,13 +2550,16 @@ public class BaseAI : MonoBehaviour
 			return;
 		}
 
-		BubblePopControllor.Instance ().triggerFuncBATC (nodeId);
+		BubblePopControllor.Instance().triggerFuncBATC (nodeId);
 
 		if(attackedType == BattleControlor.AttackType.BASE_ATTACK) m_listByAtk.Add (attacker);
 
 		else m_listBySkill.Add(attacker);
 
-		if(attackedType == BattleControlor.AttackType.BASE_ATTACK) addNuqi ((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_SHENGMING_REDUCE) * hpValue / nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMaxReal));
+		//if(attackedType == BattleControlor.AttackType.BASE_ATTACK)
+		{
+			addNuqi ((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_SHENGMING_REDUCE) * hpValue / nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMaxReal));
+		}
 
 		if(attacker.nodeData.nodeType != NodeType.GEAR && nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_eyeRange) > .1f) 
 		{
@@ -2528,7 +2592,7 @@ public class BaseAI : MonoBehaviour
 			{
 				KingControllor king = (KingControllor)attacker;
 
-				f = king.attackBaseAI(this, hpValue, cri);
+				f = king.attackBaseAI(this, hpValue, cri, nuqiType);
 			}
 
 			if(f == false && nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) > 0)
@@ -2691,26 +2755,26 @@ public class BaseAI : MonoBehaviour
 			}
 		}
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.Interrupt (nodeId);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.Interrupt (nodeId);
 	}
 
 	public void refreshRupt()//已废弃
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 	}
 
 	protected virtual void playAttackEffect(int attackId)
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		if(attackId == 90)
 		{
 			//被击
 
-			BattleEffectControllor.Instance().PlayEffect(
-				67,
-				gameObject);
+//			BattleEffectControllor.Instance().PlayEffect(
+//				67,
+//				gameObject);
 		}
 		else
 		{
@@ -2722,7 +2786,7 @@ public class BaseAI : MonoBehaviour
 
 	private void attackedActionStart()
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		if(curCrashData == null) return;
 
@@ -2733,7 +2797,7 @@ public class BaseAI : MonoBehaviour
 	{
 		if (true) return;
 
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		if (aiable == false) return;
 
@@ -2798,7 +2862,7 @@ public class BaseAI : MonoBehaviour
 
 	public void clearTrails()
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		foreach(GameObject trailObject in trails)
 		{
@@ -2811,6 +2875,13 @@ public class BaseAI : MonoBehaviour
 	public List<Buff> getBuffs()
 	{
 		return buffs;
+	}
+
+	public void setNavMeshDestinationReal(Vector3 targetPosition)
+	{
+		nav.SetDestination(targetPosition);
+
+		nav.Resume ();
 	}
 
 	public void setNavMeshDestination(Vector3 targetPosition)
@@ -2983,6 +3054,11 @@ public class BaseAI : MonoBehaviour
 		nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_moveSpeed, _speed );
 	}
 
+	public void setNavMeshSpeedReal(float _speed)
+	{
+		nav.speed = _speed;
+	}
+
 	public void setNavMeshPriority(int priority)
 	{
 		nav.avoidancePriority = priority;
@@ -3010,7 +3086,7 @@ public class BaseAI : MonoBehaviour
 	{
 		if(gameObject.activeSelf == true && nav != null && nav.enabled == true)
 		{
-			nav.destination = new Vector3(0, -1000, 0);
+			nav.destination = transform.position;
 			
 			nav.Stop();
 		}
@@ -3018,7 +3094,9 @@ public class BaseAI : MonoBehaviour
 		inTurning = false;
 
 		if( mAnim.isActiveAndEnabled ){
-			mAnim.SetFloat("move_speed", 0);
+			if( AnimatorHelper.HaveParameter( mAnim, "move_speed" ) ){
+				mAnim.SetFloat("move_speed", 0);	
+			}
 		}
 
 		moveZeroCount = 0;
@@ -3027,6 +3105,11 @@ public class BaseAI : MonoBehaviour
 	public float getNavMeshSpeed()
 	{
 		return nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_moveSpeed );
+	}
+
+	public float getNavMeshSpeedReal()
+	{
+		return nav.speed;
 	}
 
 	public void setNavMeshRadius(float _radius)
@@ -3067,7 +3150,7 @@ public class BaseAI : MonoBehaviour
 
 	public virtual void setWeaponTriggerTrue(int _aid)
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		weapon.gameObject.SetActive(false);
 		
@@ -3078,11 +3161,11 @@ public class BaseAI : MonoBehaviour
 
 	public virtual void setWeaponTriggerFalse(int hand)
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		weapon.gameObject.SetActive(false);
 
-		if (BattleControlor.Instance ().completed == false) return;
+		if (BattleControlor.Instance().completed == false) return;
 
 		weapon.setTriggerable(false);
 	}
@@ -3102,7 +3185,7 @@ public class BaseAI : MonoBehaviour
 		OnTriggerEnterNode (other);
 	}
 
-	public bool triggerable = true;
+	private bool triggerable = true;
 
 	public void OnTriggerEnterNode(Collider other)
 	{
@@ -3124,7 +3207,7 @@ public class BaseAI : MonoBehaviour
 			}
 		}
 
-		BattleUIControlor.Instance ().barEnemy.setFocusNode (this);
+		BattleUIControlor.Instance().barEnemy.setFocusNode (this);
 
 		if(targetNode == null && stance == Stance.STANCE_ENEMY)
 		{
@@ -3203,7 +3286,7 @@ public class BaseAI : MonoBehaviour
 			}
 		}
 
-		BubblePopControllor.Instance ().triggerFuncOpenEye (nodeId);
+		BubblePopControllor.Instance().triggerFuncOpenEye (nodeId);
 
 		triggerable = false;
 	}
@@ -3256,7 +3339,7 @@ public class BaseAI : MonoBehaviour
 		updataBloodBar ();
 	}
 
-	public void attackHp(BaseAI defender, float hpValue, bool cri, BattleControlor.AttackType attackedType)
+	public void attackHp(BaseAI defender, float hpValue, bool cri, BattleControlor.AttackType attackedType, BattleControlor.NuqiAddType nuqiType)
 	{
 		if ( defender == null ) return;
 
@@ -3270,11 +3353,11 @@ public class BaseAI : MonoBehaviour
 
 		else m_listSkill.Add (defender);
 
-		defender.attacked(this, hpValue, cri, attackedType);
+		defender.attacked(this, hpValue, cri, attackedType, nuqiType);
 
 		if( defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0 )
 		{
-			BattleControlor.BattleResult fRes = BattleControlor.Instance ().battleCheck.checkResult (defender);
+			BattleControlor.BattleResult fRes = BattleControlor.Instance().battleCheck.checkResult (defender);
 
 			bool slowdown = fRes != BattleControlor.BattleResult.RESULT_BATTLING;
 
@@ -3427,7 +3510,7 @@ public class BaseAI : MonoBehaviour
 		
 		foreach(Renderer ren in rens)
 		{
-			ren.gameObject.layer = layer;
+			GameObjectHelper.SetGameObjectLayer( ren.gameObject, layer );
 		}
 	}
 

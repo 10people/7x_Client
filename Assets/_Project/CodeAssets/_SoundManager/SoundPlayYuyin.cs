@@ -7,7 +7,7 @@ public class SoundPlayYuyin : MonoBehaviour
 	public AudioSource m_AudioSource;
 	SoundManager.shoudId m_SoundData;
 	private int m_iCurPlayID = -1;
-	public bool m_isPlay = false;
+	public bool m_isPlay = false;//是否播放语音中
 	// Use this for initialization
 	void Start () 
 	{

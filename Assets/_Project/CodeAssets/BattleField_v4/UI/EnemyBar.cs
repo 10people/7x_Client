@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using qxmobile.protobuf;
 
@@ -13,9 +14,9 @@ public class EnemyBar : MonoBehaviour
 
 	public UILabel labelPlayerName;
 
-	public UIProgressBar barBoss;
+	public UIProgressBar barBossTemple;
 
-	public UIProgressBar barBoss_2;
+	public UIProgressBar barBoss_white;
 
 	public UIProgressBar barPlayer;
 
@@ -23,21 +24,41 @@ public class EnemyBar : MonoBehaviour
 
 	public UILabel LabelBloodNum;
 
+	public UISprite barNuqi;
+
 
 	private BaseAI focusNode = null;
+
+	private KingControllor focusKing = null;
 
 	private float targetValue;
 
 	private float curValue;
+
+	private float tempTargetValue;
+
+	private float whiteRefreshTime;
+
+	private float preTime = 1f;
+
+	private float whiteRate = .5f;
+
+	private float boosStep;
+
+	private List<UIProgressBar> bosBarList = new List<UIProgressBar>();
 
 
 	void Start ()
 	{
 		targetValue = 1;
 
+		tempTargetValue = 1;
+
 		focusNode = null;
 
 		curValue = 1;
+
+		boosStep = 0;
 
 		gc_barBoss.SetActive (false);
 
@@ -74,13 +95,44 @@ public class EnemyBar : MonoBehaviour
 
 			if(nodeType == NodeType.BOSS)
 			{
-				barBoss_2.gameObject.SetActive(focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpNum) > 1);
+				barBossTemple.gameObject.SetActive(false);
+
+				bosBarList.Clear();
+
+				for(int i = 0; i < focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpNum); i++)
+				{
+					GameObject barObject = Instantiate(barBossTemple.gameObject) as GameObject;
+
+					barObject.transform.parent = barBossTemple.transform.parent;
+
+					barObject.transform.localScale = barBossTemple.transform.localScale;
+
+					barObject.transform.localPosition = barBossTemple.transform.localPosition;
+
+					barObject.SetActive(true);
+
+					UIProgressBar bar = barObject.GetComponent<UIProgressBar>();
+
+					bar.foregroundWidget.depth = 307 + i * 2;
+
+					UISprite sprite = bar.foregroundWidget as UISprite;
+
+					sprite.spriteName = "battleBarBoss_" + (i % 5);
+
+					bosBarList.Add(bar);
+				}
+
+				//barBoss_2.gameObject.SetActive(focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpNum) > 1);
 			}
 		}
 
 		if(nodeType == NodeType.PLAYER)
 		{
 			spriteAvatar.spriteName = "PlayerIcon" + _node.nodeData.modleId;
+		}
+		else if(nodeType == NodeType.BOSS)
+		{
+			boosStep = 0;
 		}
 	}
 	
@@ -100,6 +152,8 @@ public class EnemyBar : MonoBehaviour
 			
 			UpdateBarBoss ();
 		}
+
+		tempTargetValue = targetValue;
 	}
 
 	void UpdateBarPlayer()
@@ -124,6 +178,26 @@ public class EnemyBar : MonoBehaviour
 		}
 
 		barPlayer.value = value;
+
+		if (barNuqi.gameObject.activeSelf == false) return;
+
+		if(focusKing == null) focusKing = focusNode as KingControllor;
+
+		if(focusKing == null || focusKing.kingSkillMibao == null || focusKing.kingSkillMibao.Count == 0)
+		{
+			barNuqi.gameObject.SetActive(false);
+		}
+
+		float nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX);
+		
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
+		{
+			nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
+		}
+		
+		float nuqi = focusNode.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
+
+		barNuqi.fillAmount = nuqi / nuqiMax;
 	}
 
 	void UpdateBarBoss()
@@ -132,7 +206,7 @@ public class EnemyBar : MonoBehaviour
 
 		int indexMax = (int)focusNode.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hpNum);
 
-		float step = (1 / (indexMax * .3f)) / 30f;
+		float step = (1 / (indexMax * preTime)) / 30f;
 
 		float unity = 1f / indexMax;
 
@@ -144,6 +218,8 @@ public class EnemyBar : MonoBehaviour
 		}
 
 		float _curValue = (targetValue - (curIndex * unity)) / unity;
+
+		if(boosStep == 0) boosStep = step;
 
 		if(curValue - step > targetValue)
 		{
@@ -170,17 +246,22 @@ public class EnemyBar : MonoBehaviour
 
 		float curIndexValue = (_curValue - (curIndex * unity)) / unity;
 
-		if(curIndex < 1)
-		{
-			barBoss_2.value = 0f;
+		updataBarWhitBoss (boosStep, curIndex);
 
-			barBoss.value = curIndexValue;
-		}
-		else
+		for(int i = 0; i < bosBarList.Count; i++)
 		{
-			barBoss_2.value = curIndexValue;
-
-			barBoss.value = 1f;
+			if( i == curIndex)
+			{
+				bosBarList[i].value = curIndexValue;
+			}
+			else if(i > curIndex)
+			{
+				bosBarList[i].value = 0;
+			}
+			else
+			{
+				bosBarList[i].value = 1;
+			}
 		}
 
 		string[] strTempNums = LabelBloodNum.text.Split ('x');
@@ -199,4 +280,31 @@ public class EnemyBar : MonoBehaviour
 		LabelBloodNum.text = "x" + (curIndex + 1);
 	}
 
+	private void updataBarWhitBoss(float step, int curIndex)
+	{
+		barBoss_white.foregroundWidget.depth = 306 + curIndex * 2;
+
+		if(tempTargetValue != targetValue)
+		{
+			whiteRefreshTime = Time.realtimeSinceStartup;
+
+			if(curIndex < bosBarList.Count) barBoss_white.value = bosBarList[curIndex].value;
+		}
+
+		if(Time.realtimeSinceStartup - whiteRefreshTime < preTime * whiteRate)
+		{
+			return;
+		}
+
+		if(barBoss_white.value > bosBarList[curIndex].value )
+		{
+			barBoss_white.value -= step;
+		}
+		else
+		{
+			barBoss_white.value = bosBarList[curIndex].value;
+		}
+
+	}
+	
 }

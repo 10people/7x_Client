@@ -25,7 +25,9 @@ public class VersionTool {
 
 	/// Config txt dict.
 	private static Dictionary<string, string> m_version_dict = new Dictionary<string, string>();
-	
+
+	private TextAsset m_text_asset = null;
+
 	public const char CONST_LINE_SPLITTER		= '=';
 
 
@@ -89,13 +91,17 @@ public class VersionTool {
 		Debug.Log( "InitBuildAsset()" );
 		#endif
 
-		TextAsset t_text = (TextAsset)Resources.Load( "_Data/Config/Version" );
+		if( m_text_asset != null ){
+			return;
+		}
 
-		LoadAsset( t_text );
+		m_text_asset = (TextAsset)Resources.Load( "_Data/Config/Version" );
+
+		LoadAsset( m_text_asset );
 	}
 
 	private void LoadAsset( TextAsset p_text ){
-		if (p_text == null) {
+		if( p_text == null ) {
 			Debug.LogError( "Error, p_text = null." );
 
 			return;
@@ -118,12 +124,34 @@ public class VersionTool {
 
 	/// Small Version When Building The Package, never changed in update.
 	public static string GetPackageSmallVersion(){
+		if( !m_version_dict.ContainsKey( CONST_SMALL_VERSION ) ){
+			Debug.LogError( "Error, no package small version found in dict." );
+
+			return "";
+		}
+
 		return m_version_dict[ CONST_SMALL_VERSION ];
 	}
 
 	/// Big Version for this build when Building The Package., never changed in update.
 	public static string GetPackageBigVersion(){
+		if( !m_version_dict.ContainsKey( CONST_BIG_VERSION ) ){
+			Debug.LogError( "Error, no package big version found in dict." );
+
+			return "";
+		}
+
 		return m_version_dict[ CONST_BIG_VERSION ];
+	}
+
+	public static string GetClientVersionString(){
+		if( !m_version_dict.ContainsKey( CONST_CLIENT_VERSION_STRING ) ){
+			Debug.LogError( "Error, no client version string found in dict." );
+
+			return "0.99";
+		}
+
+		return m_version_dict[ CONST_CLIENT_VERSION_STRING ];
 	}
 	
 	#endregion
@@ -132,9 +160,11 @@ public class VersionTool {
 
 	#region Const Keys
 
-	public const string CONST_SMALL_VERSION		= "SmallVersion";
+	public const string CONST_SMALL_VERSION			= "SmallVersion";
 
-	public const string CONST_BIG_VERSION		= "BigVersion";
+	public const string CONST_BIG_VERSION			= "BigVersion";
+
+	public const string CONST_CLIENT_VERSION_STRING	= "ClientVersionString";
 
 	#endregion
 }

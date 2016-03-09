@@ -29,6 +29,10 @@ public class NGUILongPress : MonoBehaviour
     }
     [HideInInspector]
     public TriggerType LongTriggerType = TriggerType.Press;
+
+    /// <summary>
+    /// Usually, u should set this to false, donot modify unless u know what u r doing.
+    /// </summary>
     [HideInInspector]
     public bool NormalPressTriggerWhenLongPress = false;
 
@@ -41,7 +45,7 @@ public class NGUILongPress : MonoBehaviour
     private bool isInPress;
     private Vector3 cachedClickPos;
     private const float MinDeviation = 0.01f;
-    private const float LongClickDuration = 0.2f;
+    private const float LongClickDuration = 0.01f;
 
     #endregion
 

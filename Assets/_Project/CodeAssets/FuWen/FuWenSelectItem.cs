@@ -11,38 +11,42 @@ using ProtoBuf.Meta;
 public class FuWenSelectItem : MonoBehaviour {
 
 	private Fuwen fuWenInfo;
+	private FuwenLanwei lanWeiInfo;
+	private FuWenSelect.SelectType selectType;
 
-	private int iconId;
-	private int pinZhiId;
-	private string nameStr;
-
+	public UISprite itemBg;
 	public UILabel nameLabel;
 	public UILabel numLabel;
 	public UILabel desLabel;
 	public UILabel shuXingLabel;
-
 	private GameObject iconSamplePrefab;
 
-	public UISprite select;
+	public List<EventHandler> operateHandlerList = new List<EventHandler> ();
 
-	public GameObject fuWenSelectWindow;
+	public UILabel selectBtnLabel;
+
+	private string nameStr;
+	private bool isCurFuWen = false;
+
+	private int fuWenCnt;
 
 	//获得符文信息
-	public void GetFuWenInfo (Fuwen tempInfo)
+	public void GetFuWenInfo (FuWenSelect.SelectType tempType,Fuwen tempInfo,FuwenLanwei tempLanWeiInfo)
 	{
 		fuWenInfo = tempInfo;
+		lanWeiInfo = tempLanWeiInfo;
+		selectType = tempType;
+
+		fuWenCnt = tempInfo.cnt + 1;
 
 		FuWenTemplate fuWenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (tempInfo.itemId);
 
 		nameStr = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
-		nameLabel.text = nameStr;
-		desLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName);
+		nameLabel.text = MyColorData.getColorString (3,nameStr);
+		desLabel.text = FuWenData.Instance.colorCode + NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName) + "[-]";
 		
-		numLabel.text = "x" + tempInfo.cnt;
-		shuXingLabel.text = "+" + fuWenTemp.shuxingValue;
-		
-		iconId = fuWenTemp.icon;
-		pinZhiId = CommonItemTemplate.getCommonItemTemplateById (tempInfo.itemId).color - 1;
+		numLabel.text = MyColorData.getColorString (3,"x" + fuWenCnt);
+		shuXingLabel.text = FuWenData.Instance.colorCode + "+" + fuWenTemp.shuxingValue  + "[-]";
 
 		if (iconSamplePrefab == null)
 		{
@@ -54,13 +58,27 @@ public class FuWenSelectItem : MonoBehaviour {
 			InItIconSample ();
 		}
 
-		this.gameObject.GetComponent<UIDragScrollView> ().enabled = QXComData.CheckYinDaoOpenState (100470) ? false : true;
-	}
+		isCurFuWen = fuWenInfo.itemId == lanWeiInfo.itemId ? true : false;
+		bool isCanMix = fuWenCnt >= 4 && fuWenInfo.isLock == 2;
 
-	//当前符石是否选择
-	public void IsCurFuShi (int itemId)
-	{
-		select.gameObject.SetActive (fuWenInfo.itemId == itemId ? true : false);
+		itemBg.color = isCurFuWen ? QXComData.lightColor : Color.white;
+		//选择框
+		operateHandlerList [0].gameObject.SetActive (tempType == FuWenSelect.SelectType.HECHENG ? true : false);
+		selectBtnLabel.text = tempType == FuWenSelect.SelectType.HECHENG ? (isCurFuWen ? "当前选择" : "选择") : "";
+		//卸下按钮
+		operateHandlerList [2].gameObject.SetActive (tempType == FuWenSelect.SelectType.XIANGQIAN ? (isCurFuWen ? (isCanMix ? false : true) : false) : false);
+		//合成按钮
+		operateHandlerList [1].gameObject.SetActive (tempType == FuWenSelect.SelectType.XIANGQIAN ? ((isCanMix && isCurFuWen) ? true : false) : false);
+		//镶嵌按钮
+		operateHandlerList [3].gameObject.SetActive (tempType == FuWenSelect.SelectType.XIANGQIAN ? (isCurFuWen ? false : true) : false);
+
+		foreach (EventHandler handler in operateHandlerList)
+		{
+			handler.m_click_handler -= OperateHandlerClickBack;
+			handler.m_click_handler += OperateHandlerClickBack;
+		}
+
+		this.gameObject.GetComponent<UIDragScrollView> ().enabled = QXComData.CheckYinDaoOpenState (100470) ? false : true;
 	}
 
 	private void IconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -79,27 +97,53 @@ public class FuWenSelectItem : MonoBehaviour {
 		string mdesc = DescIdTemplate.GetDescriptionById (fuWenInfo.itemId);
 		
 		IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
-		fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-		fuShiIconSample.SetIconBasic(3,iconId.ToString (),"","pinzhi" + pinZhiId);
+		fuShiIconSample.SetIconByID (fuWenInfo.itemId,"",3);
 		fuShiIconSample.SetIconPopText(fuWenInfo.itemId, nameStr, mdesc, 1);
 		
 		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
 	}
 
-	void OnClick ()
+	void OperateHandlerClickBack (GameObject obj)
 	{
-		if (QXComData.CheckYinDaoOpenState (100470))
+		switch (obj.name)
 		{
-			UIYindao.m_UIYindao.CloseUI ();
+		case "MixBtn":
+
+			FuWenData.Instance.FuWenOperateReq (FuWenData.FuWenOperateType.GENERAL_HECHENG,fuWenInfo.itemId,lanWeiInfo.lanweiId);
+
+			break;
+		case "RemoveBtn":
+
+			FuWenData.Instance.FuWenOperateReq (FuWenData.FuWenOperateType.REMOVE_FUWEN,fuWenInfo.itemId,lanWeiInfo.lanweiId);
+
+			break;
+		case "SelectBtn":
+
+			FuWenMainPage.fuWenMainPage.CurHeChengItemId = fuWenInfo.itemId;
+			FuWenMainPage.fuWenMainPage.ShowMixBtns ();
+			FuWenMainPage.fuWenMainPage.FxController (FuWenMixBtn.FxType.OPEN);
+			FuWenMainPage.fuWenMainPage.EffectPanel (true);
+
+			break;
+		case "EquipBtn":
+
+			if (QXComData.CheckYinDaoOpenState (100470))
+			{
+				UIYindao.m_UIYindao.CloseUI ();
+			}
+
+			//发送镶嵌符石请求
+			if (lanWeiInfo.itemId > 0)
+			{
+				FuWenData.Instance.FuWenOperateReq (FuWenData.FuWenOperateType.REMOVE_FUWEN,fuWenInfo.itemId,lanWeiInfo.lanweiId);
+			}
+			FuWenData.Instance.FuWenOperateReq (FuWenData.FuWenOperateType.EQUIP_FUWEN,fuWenInfo.itemId,lanWeiInfo.lanweiId);
+
+			break;
+		default:
+			break;
 		}
 
-		FuWenSelect fuWenSelect = fuWenSelectWindow.GetComponent<FuWenSelect> ();
-		if (!fuWenSelect.IsSelect)
-		{
-			fuWenSelect.IsSelect = true;
-			fuWenSelect.RefreshSelectFuShiItem (fuWenInfo.itemId);
-			fuWenSelect.GetFuWenInfo = fuWenInfo;
-			fuWenSelect.CloseBtn (gameObject);
-		}
+		FuWenSelect.fuWenSelect.CloseBtn (gameObject);
 	}
 }

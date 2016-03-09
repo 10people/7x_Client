@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-  <ZBChushiDiaoluo id="101001" content="通关千重楼可获得" />
-  <ZBChushiDiaoluo id="101002" content="通关千重楼可获得" />
-  <ZBChushiDiaoluo id="101003" content="通关千重楼可获得" />
-  <ZBChushiDiaoluo id="101101" content="通关2-7后可获得" />
-  <ZBChushiDiaoluo id="101102" content="通关4-3后可获得" />
-  <ZBChushiDiaoluo id="101103" content="通关4-5后可获得" />
-  <ZBChushiDiaoluo id="101104" content="通关3-5后可获得" />
-  <ZBChushiDiaoluo id="101105" content="通关3-7后可获得" />
-  <ZBChushiDiaoluo id="101106" content="通关4-7后可获得" />
+  <ZBChushiDiaoluo id="1" content="完成新手关可获得" />
+  <ZBChushiDiaoluo id="2" content="完成新手关可获得" />
+  <ZBChushiDiaoluo id="3" content="第2天登录可获得" />
+  <ZBChushiDiaoluo id="11" content="通关1-3可获得" />
+  <ZBChushiDiaoluo id="12" content="通关第1章可获得" />
+  <ZBChushiDiaoluo id="13" content="通关2-3可获得" />
+  <ZBChushiDiaoluo id="14" content="通关2-7可获得" />
+  <ZBChushiDiaoluo id="15" content="通关3-5可获得" />
+  <ZBChushiDiaoluo id="16" content="通关第3章可获得" />
 </dataset>

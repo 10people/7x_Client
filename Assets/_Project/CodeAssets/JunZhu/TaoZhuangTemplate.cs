@@ -25,7 +25,9 @@ public class TaoZhuangTemplate : XmlLoadManager
 	public int num3;
 
     public int targetShow;
-    public int Maxcondition;
+    public int conditionMax;
+    public int neededNum;
+    public int color;
 
     public static List<TaoZhuangTemplate> templates = new List<TaoZhuangTemplate>();
 	
@@ -34,75 +36,85 @@ public class TaoZhuangTemplate : XmlLoadManager
 	{
 		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "TaoZhuang.xml"), CurLoad, UtilityTool.GetEventDelegateList( p_callback ), false );
 	}
-	
-	public static void CurLoad(ref WWW www, string path, Object obj){
-		{
-			templates.Clear();
-		}
 
-		XmlReader t_reader = null;
-		
-		if( obj != null ){
-			TextAsset t_text_asset = obj as TextAsset;
-			
-			t_reader = XmlReader.Create( new StringReader( t_text_asset.text ) );
-			
-			//			Debug.Log( "Text: " + t_text_asset.text );
-		}
-		else{
-			t_reader = XmlReader.Create( new StringReader( www.text ) );
-		}
-		
-		bool t_has_items = true;
-		
-		do{
-			t_has_items = t_reader.ReadToFollowing( "TaoZhuang" );
-			
-			if( !t_has_items ){
-				break;
-			}
-			
-			TaoZhuangTemplate t_template = new TaoZhuangTemplate();
-			
-			{
-				t_reader.MoveToNextAttribute();
-				t_template.id = int.Parse( t_reader.Value );
-				
-				t_reader.MoveToNextAttribute();
-				t_template.type = int.Parse( t_reader.Value );
-				
-				t_reader.MoveToNextAttribute();
-				t_template.condition = int.Parse( t_reader.Value );
+    public static void CurLoad(ref WWW www, string path, Object obj)
+    {
+        {
+            templates.Clear();
+        }
 
-				t_reader.MoveToNextAttribute();
-				t_template.shuxing1 = int.Parse( t_reader.Value );
-				
-				t_reader.MoveToNextAttribute();
-				t_template.num1 = int.Parse( t_reader.Value );
+        XmlReader t_reader = null;
 
-				t_reader.MoveToNextAttribute();
-				t_template.shuxing2 = int.Parse( t_reader.Value );
-				
-				t_reader.MoveToNextAttribute();
-				t_template.num2 = int.Parse( t_reader.Value );
+        if (obj != null)
+        {
+            TextAsset t_text_asset = obj as TextAsset;
 
-				t_reader.MoveToNextAttribute();
-				t_template.shuxing3 = int.Parse( t_reader.Value );
-				
-				t_reader.MoveToNextAttribute();
-				t_template.num3 = int.Parse( t_reader.Value );
- 
+            t_reader = XmlReader.Create(new StringReader(t_text_asset.text));
+
+            //			Debug.Log( "Text: " + t_text_asset.text );
+        }
+        else
+        {
+            t_reader = XmlReader.Create(new StringReader(www.text));
+        }
+
+        bool t_has_items = true;
+
+        do
+        {
+            t_has_items = t_reader.ReadToFollowing("TaoZhuang");
+
+            if (!t_has_items)
+            {
+                break;
+            }
+
+            TaoZhuangTemplate t_template = new TaoZhuangTemplate();
+
+            {
+                t_reader.MoveToNextAttribute();
+                t_template.id = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.type = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.condition = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.shuxing1 = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.num1 = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.shuxing2 = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.num2 = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.shuxing3 = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.num3 = int.Parse(t_reader.Value);
+
                 t_reader.MoveToNextAttribute();
                 t_template.targetShow = int.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
-                t_template.Maxcondition = int.Parse(t_reader.Value);
-                
-            }	
-			templates.Add( t_template );
-		}
-		while( t_has_items );
-	}
+                t_template.conditionMax = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.neededNum = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.color = int.Parse(t_reader.Value);
+            }
+            templates.Add(t_template);
+        }
+        while (t_has_items);
+    }
 
     public static TaoZhuangTemplate GetTaoZhuangById(int id)
     {
@@ -121,9 +133,13 @@ public class TaoZhuangTemplate : XmlLoadManager
         int size = templates.Count;
         for (int i = 0; i < size; i++)
         {
-            if (templates[i].id == id)
+            if (id == 0)
             {
-                if (i + 1 < size)
+                return templates[0];
+            }
+            else if (templates[i].id == id)
+            {
+                if (i + 1 < size && templates[i + 1].type == 1)
                 {
                     return templates[i + 1];
                 }

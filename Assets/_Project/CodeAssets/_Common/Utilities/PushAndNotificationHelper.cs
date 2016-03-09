@@ -321,10 +321,10 @@ public class PushAndNotificationHelper : MonoBehaviour, SocketProcessor{
 	#region local push and notification
 
 	public static void UpdateLocalPush(){
-		Debug.Log ( "UpdateLocalPush()" );
+//		Debug.Log ( "UpdateLocalPush()" );
 
 		if ( !SocketTool.IsConnected () ) {
-			Debug.Log( "Network not established, skip local push." );
+//			Debug.Log( "Network not established, skip local push." );
 
 			return;
 		}
@@ -334,7 +334,7 @@ public class PushAndNotificationHelper : MonoBehaviour, SocketProcessor{
 	}
 
 	public static void ClearAllPush(){
-		Debug.Log( "ClearAllPush()" );
+//		Debug.Log( "ClearAllPush()" );
 
 		Bonjour.ClearAllPush();
 	}

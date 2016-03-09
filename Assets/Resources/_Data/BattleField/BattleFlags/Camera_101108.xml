@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<BattleCameraFlag flagId="1" radius="41.6" x="32.96545" y="5.262657" z="-115.185" px="-3.89" py="5.2" pz="-8.1" rx="23" ry="25.63" rz="0" ex="0" ey="0" ez="0" ew="0" killMin="0" killMax="1000" />
-<BattleCameraFlag flagId="2" radius="32.5" x="6.514414" y="5.262657" z="-59.22326" px="-3.89" py="5.2" pz="-8.1" rx="23" ry="25.63" rz="0" ex="0" ey="0" ez="0" ew="0" killMin="0" killMax="1000" />
-<BattleCameraFlag flagId="3" radius="32.5" x="-9.772518" y="5.262657" z="-11.6276" px="4.416049" py="9.735859" pz="-9.377987" rx="35.35628" ry="334.7845" rz="-1.570265E-06" ex="35.35628" ey="205.2155" ez="12.70979" ew="2.381222" killMin="0" killMax="1000" />
-<BattleCameraFlag flagId="4" radius="44" x="10.85382" y="5.262657" z="49.94483" px="-3.89" py="5.2" pz="-8.1" rx="23" ry="25.63" rz="0" ex="0" ey="0" ez="0" ew="0" killMin="0" killMax="1000" />
+<BattleCameraFlag flagId="1" radius="41.6" x="-9.31921" y="5.262657" z="-4.797924" px="-3.89" py="5.2" pz="-8.1" rx="23" ry="25.63" rz="0" ex="0" ey="0" ez="0" ew="0" killMin="0" killMax="1000" />
 </dataset>

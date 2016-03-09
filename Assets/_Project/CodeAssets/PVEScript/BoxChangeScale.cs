@@ -18,12 +18,20 @@ public class BoxChangeScale : MonoBehaviour {
 	}
 	void OnEnable()
 	{
+//		Debug.Log("=========1");
+//		Debug.Log("enabled="+enabled);
 		StartCoroutine ("BtnShake");
+	}
+	void OnDisable()
+	{
+//		Debug.Log("=========2");
+//		Debug.Log("enabled="+enabled);
+		StopCoroutine("BtnShake");
+		this.transform.localScale = Vector3.one;
+		this.transform.localEulerAngles = Vector3.zero;
 	}
 	IEnumerator BtnShake()
 	{
-
-
 		while(m_scale <= 1.1f)
 		{
 			m_scale += Time.deltaTime*0.4f;

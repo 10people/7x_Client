@@ -64,6 +64,9 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
     public UILabel HouseTechAdditionLabel;
 
+    public GameObject TopLeftManualAnchor;
+    public GameObject TopRightManualAnchor;
+
     public class ExchangeInfo
     {
         public int itemId;
@@ -353,6 +356,12 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         ShowFriendsOldBookBTN.onClick = OnShowFriendsClick;
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LM_HOUSE_INFO);
         HouseModelController.TryAddToHouseDimmer(gameObject);
+
+        //Add guide here.
+        if (FreshGuide.Instance().IsActive(400010) && TaskData.Instance.m_TaskInfoDic[400010].progress >= 0)
+        {
+            UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[400010].m_listYindaoShuju[1]);
+        }
     }
 
     void OnDisable()
@@ -364,9 +373,18 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         HouseModelController.TryRemoveFromHouseDimmer(gameObject);
     }
 
+    void Start()
+    {
+        TopLeftManualAnchor.transform.localPosition = new Vector3(-480 - ClientMain.m_iMoveX, 320 + ClientMain.m_iMoveY, 0);
+        TopRightManualAnchor.transform.localPosition = new Vector3(480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY, 0);
+    }
+
     void Awake()
     {
         SocketTool.RegisterSocketListener(this);
+
+        MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
+        MainCityUI.setGlobalTitle(TopLeftManualAnchor, "古卷", 0, 0);
     }
 
     void OnDestroy()
@@ -436,7 +454,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
                     if (exchangeItemResult.code == 0)
                     {
-                        Debug.Log("Old book fragment exchange succeed.");
+                        //                        Debug.Log("Old book fragment exchange succeed.");
                         RefreshUI();
                     }
                     else if (exchangeItemResult.code == 2)
@@ -455,7 +473,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                     return true;
                 //bag data changed.
                 case ProtoIndexes.S_BagInfo:
-                    Debug.Log("Update old book self cause bag data changed.");
+                    //                    Debug.Log("Update old book self cause bag data changed.");
                     if (oldBookMode == Mode.OldBookSelf)
                     {
                         InitOldBookSelf();
@@ -468,7 +486,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                         BatchSimpleInfo AllianceTenementInfo = new BatchSimpleInfo();
                         t_qx5.Deserialize(t_tream5, AllianceTenementInfo, AllianceTenementInfo.GetType());
                         SetHouseExp(AllianceTenementInfo.expInfo);
-                        Debug.Log("请求经验返回");
+                        //                        Debug.Log("请求经验返回");
 #if HOUSE_TEST
 					
 					if (MainCityUI.m_MainCityUI != null){
@@ -491,7 +509,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                         t_qx6.Deserialize(t_tream6, houseExpInfo, houseExpInfo.GetType());
 
                         SetHouseExp(houseExpInfo);
-                        Debug.Log("领取经验返回");
+                        //                        Debug.Log("领取经验返回");
                         return true;
                     }
                 default:
@@ -519,11 +537,15 @@ public class OldBookWindow : MonoBehaviour, SocketListener
             LingQuBtn.SetActive(true);
         }
 
-        HouseTechAdditionLabel.text = "受联盟科技影响\n" + LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel);
+        HouseTechAdditionLabel.text = "受联盟科技影响\n" + LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel).desc;
     }
 
     public void LingQu()
     {
         SocketHelper.SendQXMessage(ProtoIndexes.C_GET_SMALLHOUSE_EXP);
+
+        //Remove red alert.
+        PushAndNotificationHelper.SetRedSpotNotification(600800, false);
+        NewAlliancemanager.Instance().Refreshtification();
     }
 }

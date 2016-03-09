@@ -33,7 +33,7 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 
 	public GameObject GameObj_Camera;
 
-	public static _MyAllianceManager Instance ()
+	public static _MyAllianceManager Instance()
 	{
 		if (!m_MyAllianceManager)
 		{
@@ -87,7 +87,7 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 			}
 			case ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY://主界面联盟按钮提示
 			{
-				Debug.Log ("联盟升级：" + ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY);
+				//Debug.Log ("联盟升级：" + ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY);
 
 				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.Alliance_UP ),
 				                        ResLoaded );
@@ -99,7 +99,7 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 			
 		}else
 		{
-			Debug.Log ("p_message == null");
+			//Debug.Log ("p_message == null");
 		}
 		
 		return false;
@@ -231,13 +231,13 @@ public class _MyAllianceManager : MonoBehaviour  , SocketListener{
 	}
 	public void Closed()
 	{
-		Debug.Log ("Close---1");
+		//Debug.Log ("Close---1");
 		m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
 		m_ScaleEffectController.OnCloseWindowClick();
 	}
 	public void DoCloseWindow()
 	{
-		Debug.Log ("Close---2");
+		//Debug.Log ("Close---2");
 		MainCityUI.TryRemoveFromObjectList(gameObject);
 		Destroy (this.gameObject);
 	}

@@ -90,7 +90,7 @@ public class DevelopCharacters : MonoBehaviour {
 	#region Model Callbacks
 	
 	private void UpdateCallbacks( GameObject p_gb ){
-		DevelopUtility.DevelopAnimationCallback t_callback = p_gb.AddComponent<DevelopUtility.DevelopAnimationCallback>();
+		DevelopAnimationCallback t_callback = p_gb.AddComponent<DevelopAnimationCallback>();
 
 		t_callback.OnResetHitCount = OnResetHitCount;
 
@@ -138,7 +138,7 @@ public class DevelopCharacters : MonoBehaviour {
 		//		Debug.Log( "OnPlayAttackEffect( " + p_attack_id + " )" );
 		#endif
 		
-		DevelopUtility.PlayAttackEffectReturn m_play_attack_effect = KingControllor.GetPlayAttackEffectParams( p_attack_id );
+		DevelopAnimationCallback.PlayAttackEffectReturn m_play_attack_effect = KingControllor.GetPlayAttackEffectParams( p_attack_id );
 		
 		//		Debug.Log( "OnPlayAttackEffect( " + p_attack_id + " - " + m_play_attack_effect.m_effect_id + " )" );
 		
@@ -311,7 +311,7 @@ public class DevelopCharacters : MonoBehaviour {
 
 	private GameObject m_temp_gb_root = null;
 
-	public void PlayFx( DevelopUtility.PlayAttackEffectReturn p_attack_effect ){
+	public void PlayFx( DevelopAnimationCallback.PlayAttackEffectReturn p_attack_effect ){
 		if( !p_attack_effect.m_will_play_effect ){
 			return;
 		}

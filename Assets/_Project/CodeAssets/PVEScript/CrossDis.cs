@@ -26,7 +26,7 @@ public class CrossDis : MonoBehaviour {
 	{
 		ShowDis ();
 		
-		sureBtn.m_handler += ClickBtn;
+		sureBtn.m_click_handler += ClickBtn;
 	}
 
 //	public void GetPingJiaInFo (Vector3 pos1,Vector3 pos2,float time)

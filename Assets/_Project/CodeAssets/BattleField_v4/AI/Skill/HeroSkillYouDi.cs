@@ -36,7 +36,7 @@ public class HeroSkillYouDi : HeroSkill
 
 	public void activeSkillYouDi()
 	{
-		List<BaseAI> list = node.stance == BaseAI.Stance.STANCE_ENEMY ? BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes;
+		List<BaseAI> list = node.stance == BaseAI.Stance.STANCE_ENEMY ? BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes;
 		
 		foreach(BaseAI n in list)
 		{

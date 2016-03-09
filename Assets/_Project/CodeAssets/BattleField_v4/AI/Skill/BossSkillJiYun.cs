@@ -34,7 +34,7 @@ public class BossSkillJiYun : HeroSkill
 			targetPosition = node.targetNode.transform.position;
 		}
 		
-		BattleEffectControllor.Instance ().PlayEffect (
+		BattleEffectControllor.Instance().PlayEffect (
 			60,
 			targetPosition, node.transform.forward);
 
@@ -51,7 +51,7 @@ public class BossSkillJiYun : HeroSkill
 	public void skillJiYunCallback_2()
 	{
 		List<BaseAI> nodeList = node.stance == BaseAI.Stance.STANCE_ENEMY ? 
-			BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes; 
+			BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes; 
 		
 		foreach(BaseAI t_node in nodeList)
 		{
@@ -67,7 +67,7 @@ public class BossSkillJiYun : HeroSkill
 				template.value1,
 				0);
 			
-			node.attackHp(t_node, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
+			node.attackHp(t_node, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
 		}
 	}
 	

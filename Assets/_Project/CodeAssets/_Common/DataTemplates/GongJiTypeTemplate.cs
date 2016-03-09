@@ -11,7 +11,7 @@ public class GongJiTypeTemplate : XmlLoadManager
 
 	public int typeId;
 
-	public int moveSpeed;
+	public float moveSpeed;
 
 	public int attackSpeed;
 
@@ -70,7 +70,7 @@ public class GongJiTypeTemplate : XmlLoadManager
 				t_template.typeId = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
-				t_template.moveSpeed = int.Parse( t_reader.Value );
+				t_template.moveSpeed = float.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
 				t_template.attackSpeed = int.Parse( t_reader.Value );

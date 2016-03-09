@@ -5,8 +5,9 @@ using System.Collections.Generic;
 public class WorshipMoveItemManagerment : MonoBehaviour 
 {
     public UILabel m_LabCount;
-    
-	void Start () 
+    public Vector3 m_Target = new Vector3(-390, 190, 0);
+
+    void Start () 
     {
 	
 	}
@@ -23,12 +24,11 @@ public class WorshipMoveItemManagerment : MonoBehaviour
       
    
         {
-            transform.GetComponent<TweenPosition>().to = new Vector3(-390, 190, 0);
+            transform.GetComponent<TweenPosition>().to = m_Target;
         }
         transform.GetComponent<TweenPosition>().duration = 0.6f;
         transform.GetComponent<TweenPosition>().enabled = true;
         EventDelegate.Add(transform.GetComponent<TweenPosition>().onFinished, DestroySelf);
-     
     }
 
     void DestroySelf()

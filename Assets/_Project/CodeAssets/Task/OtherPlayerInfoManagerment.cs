@@ -7,7 +7,11 @@ using System.Linq;
 public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
 {
     public static OtherPlayerInfoManagerment m_OtherInfo;
+    public Camera m_currentCamera;
+    public UILabel m_LabName;
+    public UILabel m_LabLevel;
     public string m_OtherPlayerId;
+    public Vector3  m_NowPos;
     public EventIndexHandle m_ChaKan;
     public ScaleEffectController m_SEC;
     public GameObject m_ObjChaKan;
@@ -20,6 +24,7 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
 
 	void Start ()
     {
+        m_ObjChaKan.transform.position = m_currentCamera.ScreenToWorldPoint(m_NowPos);
         m_ChaKan.m_Handle += ChaKan;
         m_SEC.OpenCompleteDelegate += ShowInfo;
     }
@@ -29,10 +34,11 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
     }
     void ShowInfo()
     {
-        m_ObjChaKan.SetActive(true);
+
+        Request();
     }
 
-    void ChaKan (int index)
+    void Request()
     {
         string[] ss = m_OtherPlayerId.Split(':');
         JunZhuInfoSpecifyReq mJunZhuInfoSpecifyReq = new JunZhuInfoSpecifyReq();
@@ -49,6 +55,12 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
 
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ, ref t_protof);
     }
+    void ChaKan (int index)
+    {
+        MainCityUI.TryRemoveFromObjectList(m_MainParent);
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
+        Destroy(m_MainParent);
+    }
 
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
@@ -58,16 +70,17 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
             {
                 case ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP:
                     {
-                        MainCityUI.TryRemoveFromObjectList(m_MainParent);
-                     
                         object junzhuResp = new JunZhuInfo();
                         if (SocketHelper.ReceiveQXMessage(ref junzhuResp, p_message, ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP))
                         {
+            
                             m_JunzhuPlayerResp = junzhuResp as JunZhuInfo;
-
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
+                            m_LabName.text = m_JunzhuPlayerResp.name;
+                            m_LabLevel.text = "LV." + m_JunzhuPlayerResp.level.ToString();
+                            m_ObjChaKan.SetActive(true);
+                            //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
                         }
-                        Destroy(m_MainParent);
+                      //  
                         return false;
                     }
             }

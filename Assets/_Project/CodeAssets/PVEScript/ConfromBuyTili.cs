@@ -28,7 +28,7 @@ public class ConfromBuyTili : MonoBehaviour,SocketProcessor {
 	}
 	void Start()
 	{
-//		Yuanbao = JunZhuData.Instance ().m_junzhuInfo.yuanBao;
+//		Yuanbao = JunZhuData.Instance().m_junzhuInfo.yuanBao;
 		JunZhuData.Instance().IsBuyTiLi = true;
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_TIMES_REQ);
 	}
@@ -80,8 +80,8 @@ public class ConfromBuyTili : MonoBehaviour,SocketProcessor {
 	void ConformBuyTiliMessage()//确认购买体力
 	{
 		//Debug.Log ("huafei......."+buyInfo.tiLiHuaFei);
-		//Debug.Log ("Yuanbao......."+JunZhuData.Instance ().m_junzhuInfo.yuanBao);
-		if(buyInfo.tiLiHuaFei <= JunZhuData.Instance ().m_junzhuInfo.yuanBao)
+		//Debug.Log ("Yuanbao......."+JunZhuData.Instance().m_junzhuInfo.yuanBao);
+		if(buyInfo.tiLiHuaFei <= JunZhuData.Instance().m_junzhuInfo.yuanBao)
 		{
 			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_TiLi);
 		}

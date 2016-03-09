@@ -18,23 +18,75 @@ public class TimeHelper : Singleton<TimeHelper>
 
     #endregion
 
+
+
+	#region Parse Server Time
+
+	private static DateTime m_server_time;
+
+	// Time.realtimeSinceStartup
+	private static float m_local_time_when_server_time_update;
+
+
+	/** Param:
+	 * yyyy-MM-dd HH:mm:ss
+	 * 2008-05-01 21:34:42
+	 */
+	public const string DEFAULT_DATETIME_FORMAT		= "yyyy-MM-dd HH:mm:ss";
+
+	// 2008-05-01 21:34:42
+	public static DateTime SetServerDateTime( string p_server_time_str ){
+		if( string.IsNullOrEmpty( p_server_time_str ) ){
+//			Debug.Log( "Please Check Server Time: " + p_server_time_str );
+
+//			Debug.Log( "Server Time Null, return local time." );
+
+			return DateTime.Now;
+		}
+
+		m_server_time = DateTime.Parse( p_server_time_str );
+
+		m_local_time_when_server_time_update = Time.realtimeSinceStartup;
+
+		return m_server_time;
+	}
+
+	public static DateTime GetCurServerDateTime(){
+		if( m_server_time == null ){
+			Debug.Log( "Server Time Null, return local time." );
+
+			return DateTime.Now;
+		}
+
+		return m_server_time.AddSeconds( Time.realtimeSinceStartup - m_local_time_when_server_time_update );
+	}
+
+	public static string GetCurServerDateTimeString( string p_format = DEFAULT_DATETIME_FORMAT ){
+		if( GetCurServerDateTime() == null ){
+			return "";
+		}
+
+		return GetCurServerDateTime().ToString( p_format );
+	}
+
+	#endregion
+
+
+
     #region Current Time
 
-    /// "yyyy-MM-dd hh:mm:ss"
-    public static string GetCurrentTime_String()
-    {
-        return DateTime.Now.ToLocalTime().ToString("MMdd-hhmmss");
+    /// "yyyy-MM-dd-HHmmss"
+	public static string GetCurrentTime_String( string p_format = "yyyy-MM-dd-HHmmss" ){
+		return DateTime.Now.ToLocalTime().ToString( p_format );
     }
 
     private static DateTime m_date_time = System.DateTime.Now;
 
-    public static long GetCurrentTime_MilliSecond()
-    {
+    public static long GetCurrentTime_MilliSecond(){
         return (long)((DateTime.Now - m_date_time).TotalMilliseconds);
     }
 
-    public static double GetCurrentTime_Second()
-    {
+    public static double GetCurrentTime_Second(){
         return GetCurrentTime_MilliSecond() / 1000.0;
     }
 
@@ -519,6 +571,43 @@ public class TimeHelper : Singleton<TimeHelper>
 
 
 
+	#region System Time Tag
+
+	private static double m_signet_time_system = 0.0;
+
+	/// not recommend
+	public static double SignetTimeSystem()
+	{
+		m_signet_time_system = GetCurrentTime_Second();
+
+		return m_signet_time_system;
+	}
+
+	public static double GetDeltaTimeSinceSignetSystem()
+	{
+		return ( GetCurrentTime_Second() - m_signet_time_system );
+	}
+
+	public static void LogDeltaTimeSinceSignetSystem( string p_prefix ="", string p_surfix = "" ){
+		double t_delta = GetDeltaTimeSinceSignetSystem();
+
+		if( !string.IsNullOrEmpty( p_prefix ) ){
+			p_prefix = p_prefix + " - ";
+		}
+
+		if( !string.IsNullOrEmpty( p_surfix ) ){
+			p_surfix = " - " + p_surfix;
+		}
+
+		Debug.Log( p_prefix + t_delta + p_surfix );
+
+		SignetTimeSystem();
+	}
+
+	#endregion
+
+
+
     #region Origin Utilities's time code
 
     /// <summary>
@@ -553,11 +642,18 @@ public class TimeHelper : Singleton<TimeHelper>
         return (Time.realtimeSinceStartup - m_signet_time);
     }
 
-    public static void LogDeltaTimeSinceSignet(string p_prefix)
-    {
+    public static void LogDeltaTimeSinceSignet( string p_prefix ="", string p_surfix = "" ){
         float t_delta = GetDeltaTimeSinceSignet();
 
-        Debug.Log(p_prefix + " : " + MathHelper.FloatPrecision(t_delta, 5));
+		if( !string.IsNullOrEmpty( p_prefix ) ){
+			p_prefix = p_prefix + " - ";
+		}
+
+		if( !string.IsNullOrEmpty( p_surfix ) ){
+			p_surfix = " - " + p_surfix;
+		}
+
+		Debug.Log( p_prefix + MathHelper.FloatToString( t_delta, 5 ) + p_surfix );
 
         SignetTime();
     }

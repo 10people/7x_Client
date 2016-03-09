@@ -17,12 +17,6 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 	
 	public GameObject m_Technology3;
 
-	public UILabel mTiLi;
-	
-	public UILabel mTongBi;
-	
-	public UILabel mYuanBao;
-
 	public UILabel Builds;
 	public JianZhuList m_JianZhuList;
 	public static TechnologyManager m_TechnologyManager;
@@ -30,7 +24,9 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 
 	public List<Technologytemp> mTechnologytempList = new List<Technologytemp>();
 
- 	public static TechnologyManager Instance ()
+	public GameObject StudyVctry;
+	public int JianZhu_InDex;
+ 	public static TechnologyManager Instance()
 	{
 		if (!m_TechnologyManager)
 		{
@@ -56,7 +52,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 
 	void Update () {
 
-		Builds.text = NewAlliancemanager.Instance ().m_allianceHaveRes.build.ToString ();
+		Builds.text = NewAlliancemanager.Instance().m_allianceHaveRes.build.ToString ();
 	}
 	
 	public void Init()
@@ -85,8 +81,14 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				t_qx.Deserialize(application_stream, mJianZhuList, mJianZhuList.GetType());
 				
 				m_JianZhuList = mJianZhuList;
-				
-				Debug.Log("请求科技返回");
+
+				//Debug.Log("请求科技返回");
+
+				m_Technology1.SetActive(true);
+				Technology1 mTechnology1 = m_Technology1.GetComponent<Technology1>();
+				mTechnology1.m_JianZhuKeji = m_JianZhuList;
+				mTechnology1.Card = 1;
+				mTechnology1.Init ();
 
 				InitData();
 
@@ -103,7 +105,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				
 				t_qx.Deserialize(application_stream, mErrorMessage, mErrorMessage.GetType());
 		
-				Debug.Log("科技升级");
+				//Debug.Log("科技升级");
 				
 				foreach(Technologytemp temp in mTechnologytempList)
 				{
@@ -113,7 +115,12 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 						temp.Init();
 					}
 				}
-				
+				m_JianZhuList.list[JianZhu_InDex].lv += 1;
+				StudyVctry.SetActive(true);
+				int effectid = 100180;
+				UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,StudyVctry,EffectIdTemplate.GetPathByeffectId(effectid));
+				StopCoroutine("closeEffect");
+				StartCoroutine( "closeEffect");
 				return true;
 			}	
 			default:return false;
@@ -122,13 +129,21 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 		
 		return false;
 	}
+
+	IEnumerator closeEffect()
+	{
+		yield return new WaitForSeconds (1f);
+		StudyVctry.SetActive(false);
+	}
+
 	bool isfirst = false;
 	public UIToggle mUItoggle;
 	public void InitData()
 	{
 		isfirst = true;
+
+		//StartCoroutine (getvalue());
 		//m_TechnologyBtn1 ();
-		StartCoroutine (getvalue());
 	}
 	IEnumerator getvalue()
 	{
@@ -139,7 +154,9 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 	}
 	public void m_TechnologyBtn1()
 	{
-		if(!isfirst||m_Technology1.activeInHierarchy)
+		//Debug.Log ("isfirst = "+isfirst);
+
+		if(!isfirst||m_Technology2.activeInHierarchy)
 		{
 			return;
 		}
@@ -149,11 +166,12 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 		mTechnology1.m_JianZhuKeji = m_JianZhuList;
 		mTechnology1.Card = 1;
 		mTechnology1.Init ();
-		Debug.Log ("this................111");
+		//Debug.Log ("this................111");
 
 	}
 	public void m_TechnologyBtn2()
 	{
+		//Debug.Log ("isfirst2 = "+isfirst);
 		if(!isfirst||m_Technology2.activeInHierarchy)
 		{
 			return;
@@ -167,6 +185,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 	}
 	public void m_TechnologyBtn3()
 	{
+		//Debug.Log ("isfirst33 = "+isfirst);
 		if(!isfirst||m_Technology3.activeInHierarchy)
 		{
 			return;
@@ -202,6 +221,12 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 	}
 	public void Close()
 	{
-		NewAlliancemanager.Instance ().BackToThis (this.gameObject);
+		HidAllGameobj ();
+		foreach(Technologytemp mTe in mTechnologytempList)
+		{
+			Destroy(mTe.gameObject);
+		}
+		mTechnologytempList.Clear ();
+		NewAlliancemanager.Instance().BackToThis (this.gameObject);
 	}
 }

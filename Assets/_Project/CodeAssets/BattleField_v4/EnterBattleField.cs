@@ -13,10 +13,24 @@ public class EnterBattleField : ScriptableObject
 		Type_YaBiao,
 		Type_YouXia,
 		Type_LueDuo,
+		Type_YuanZhu,
 	}
 
 	public static void EnterBattlePve( int section, int level, LevelType levelType )
 	{
+		if( section == 0 && level == 1 ){
+			// notice loading
+			{
+				LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.ENTER_GUIDE_LEVEL );
+			}
+		}
+		else{
+			// notice loading
+			{
+				LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVE_GUO_GUAN, section + "-" + level );
+			}
+		}
+
 		CityGlobalData.m_battleType = BattleType.Type_GuoGuan;
 
 		CityGlobalData.m_tempSection = section;
@@ -53,6 +67,11 @@ public class EnterBattleField : ScriptableObject
 
 	public static void EnterBattlePvp(long enemyId)
 	{
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVP_BAI_ZHAN, enemyId + "" );
+		}
+
 		CityGlobalData.m_battleType = BattleType.Type_BaiZhan;
 
 		CityGlobalData.m_tempSection = 0;
@@ -78,8 +97,45 @@ public class EnterBattleField : ScriptableObject
 		sendData ();
 	}
 
+	public static void EnterBattleYuanZhu(long enemyId)
+	{
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVP_BAI_ZHAN, enemyId + "" );
+		}
+		
+		CityGlobalData.m_battleType = BattleType.Type_YuanZhu;
+		
+		CityGlobalData.m_tempSection = 0;
+		
+		CityGlobalData.m_tempLevel = 0;
+		
+		CityGlobalData.m_tempEnemy = enemyId;
+		
+		CityGlobalData.m_save = 0;
+		
+		int chapterId = 900;
+		
+		CityGlobalData.battleTemplateId = 0;
+		
+		//		CityGlobalData.m_nextSceneName = "BattleField_V4_" + chapterId;
+		
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( chapterId );
+		
+		CityGlobalData.m_configId = 900;
+		
+		//SceneManager.EnterBattleField( CityGlobalData.t_next_battle_field_scene );
+		
+		sendData ();
+	}
+
 	public static void EnterBattleHYPve(long pointId, HuangYePveTemplate template)
 	{
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVP_HUANG_YE, pointId + "" );
+		}
+
 		CityGlobalData.m_battleType = BattleType.Type_HuangYe_Pve;
 		
 		CityGlobalData.m_tempEnemy = pointId;
@@ -157,6 +213,11 @@ public class EnterBattleField : ScriptableObject
 	
 	public static void EnterBattleYouXia( int section, int level )
 	{
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVE_SHI_LIAN, section + "-" + level );
+		}
+
 		CityGlobalData.m_battleType = BattleType.Type_YouXia;
 		
 		CityGlobalData.m_tempSection = section;
@@ -188,6 +249,11 @@ public class EnterBattleField : ScriptableObject
 
 	public static void EnterBattleLueDuo(long enemyId)
 	{
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVP_LUE_DUO, enemyId + "" );
+		}
+
 		CityGlobalData.m_battleType = BattleType.Type_LueDuo;
 		
 		CityGlobalData.m_tempSection = 0;

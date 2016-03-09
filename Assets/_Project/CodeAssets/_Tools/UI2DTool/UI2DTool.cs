@@ -2,14 +2,18 @@
 
 
 
-#define ENABLE_OPTIMIZE
-
 #define SHOW_UIBGEF_ALL_THE_TIME
+
+//#define ENABLE_OPTIMIZE
+
+
 
 using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
+
 
 /** 
  * @author:		Zhang YuGu
@@ -42,9 +46,7 @@ public class UI2DTool : Singleton<UI2DTool>{
 	
 	// Update is called once per frame
 	void Update () {
-		#if ENABLE_OPTIMIZE
 		Update2DUI();
-		#endif
 	}
 
 	void OnDestroy(){
@@ -131,10 +133,6 @@ public class UI2DTool : Singleton<UI2DTool>{
 	/// Notice:
 	/// 1.p_gb MUST be Function's UI.
 	public void AddTopUI( GameObject p_gb ){
-		#if !ENABLE_OPTIMIZE
-		return;
-		#endif
-
 		if( p_gb == null ){
 			Debug.LogError( "Error, p_gb is null." );
 
@@ -171,18 +169,20 @@ public class UI2DTool : Singleton<UI2DTool>{
 		#endif
 
 		// hide origin top
+		#if ENABLE_OPTIMIZE
 		if( GetTopUI() != null ){
 			if( GetTopUI().GetRootGameObject() != null ){
 				GetTopUI().SetActive( false );
 			}
 		}
+		#endif
 
 		{
 			AddToTop( t_manager );
 		}
 
 		// refresh new top
-		UpdateTopUI();
+		ForceUpdateTopUI();
 	}
 
 //	public static void RemoveUI(){
@@ -216,7 +216,7 @@ public class UI2DTool : Singleton<UI2DTool>{
 		UI2DToolItem t_top = GetTopUI();
 
 		if( m_cached_gb == null ){
-			UpdateTopUI();
+			ForceUpdateTopUI();
 
 			return;
 		}
@@ -228,13 +228,13 @@ public class UI2DTool : Singleton<UI2DTool>{
 		}
 
 		if( m_cached_gb != t_top.GetRootGameObject() ){
-			UpdateTopUI();
+			ForceUpdateTopUI();
 
 			return;
 		}
 
 		if( m_cached_visibility != t_top.GetVisibility() ){
-			UpdateTopUI();
+			ForceUpdateTopUI();
 
 			return;
 		}
@@ -264,7 +264,11 @@ public class UI2DTool : Singleton<UI2DTool>{
 		m_2d_manager_list.RemoveAt( m_2d_manager_list.Count - 1 );
 
 		// make new toppest visible
+		#if ENABLE_OPTIMIZE
 		MakeTopUIVisible();
+		#else
+		MakeTopUIVisible();
+		#endif
 
 		if( Quality_MemLevel.IsMemLevelLow() ){
 			UtilityTool.UnloadUnusedAssets();
@@ -296,7 +300,7 @@ public class UI2DTool : Singleton<UI2DTool>{
 	}
 
 	/// Update Top UI, if Top UI is invisible, Remove it.
-	private static void UpdateTopUI(){
+	private static void ForceUpdateTopUI(){
 		if( m_2d_manager_list.Count <= 0 ){
 			return;
 		}
@@ -366,12 +370,44 @@ public class UI2DTool : Singleton<UI2DTool>{
 		return;
 		#endif
 
+		#if DEBUG_UI_2D_TOOL
+		Debug.Log( "UpdateUIBackground() : " + m_2d_manager_list.Count );
+		#endif
+
+		#if ENABLE_OPTIMIZE 
 		if( m_2d_manager_list.Count > 1 ){
 			Console_Effect.SetUIBackground( true );
 		}
 		else{
 			Console_Effect.SetUIBackground( false );
 		}
+		#else
+		if( m_2d_manager_list.Count > 1 ){
+			Console_Effect.SetUIBackground( true );
+		}
+		else{
+			Console_Effect.SetUIBackground( false );
+		}
+
+		for( int i = 0; i < m_2d_manager_list.Count; i++ ){
+			GameObject t_gb = m_2d_manager_list[ i ].GetRootGameObject();
+
+            if (t_gb == null) {
+                continue;
+            }
+
+			Camera[] t_cams = t_gb.GetComponentsInChildren<Camera>();
+
+			for( int j = 0; j < t_cams.Length; j++ ){
+				if( i == m_2d_manager_list.Count - 1 ){
+					EffectTool.SetUIBackgroundEffect( t_cams[ j ].gameObject, false );
+				}
+				else{
+					EffectTool.SetUIBackgroundEffect( t_cams[ j ].gameObject, true );
+				}
+			}
+		}
+		#endif
 	}
 
 	#endregion
@@ -571,6 +607,10 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 			m_is_active = p_is_active;
 
+			#if DEBUG_UI_2D_TOOL
+			Debug.Log( m_ui_root_gb + ".SetActive( " + m_is_active + " )" );
+			#endif
+
 			ExecuteSetActive();
 		}
 
@@ -602,8 +642,6 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 						if( t_ui_cam != null ){
 							t_ui_cam.enabled = m_is_active;
-
-
 						}
 					}
 

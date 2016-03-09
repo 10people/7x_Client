@@ -126,7 +126,7 @@ public class JingYingType : MonoBehaviour {
 		{
 			Person_name.text = s [1];
 		}
-		vipLevel = JunZhuData.Instance ().m_junzhuInfo.vipLv;
+		vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv;
 
 		if (levelInfo.s_pass)
 		{

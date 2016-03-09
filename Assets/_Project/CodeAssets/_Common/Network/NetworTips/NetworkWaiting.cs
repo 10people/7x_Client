@@ -164,7 +164,7 @@ public class NetworkWaiting : MonoBehaviour {
 
 //					Debug.Log( "Show ReconnectUI, proto waiting: " + GetWaitingProtoDesc() );
 
-					SocketTool.CreateTimeOutReConnectWindow( ReConnectCallback, OnReconnectBoxCreated );
+					SocketHelper.CreateTimeOutReConnectWindow( ReConnectCallback, OnReconnectBoxCreated );
 				}
 				else{
 //					Debug.Log( "Reconnect Box Already Exist." );
@@ -195,7 +195,7 @@ public class NetworkWaiting : MonoBehaviour {
 		{
 			SocketTool.CloseSocket();
 
-			SocketTool.ReLoginClickCallback( 0 );
+			SocketHelper.ReLoginClickCallback( 0 );
 		}
 	}
 

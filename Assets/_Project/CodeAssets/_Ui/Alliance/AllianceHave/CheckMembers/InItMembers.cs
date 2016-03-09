@@ -89,9 +89,9 @@ public class InItMembers : MonoBehaviour {
 			}
 		}
 
-		Debug.Log ("memberInfoList1:" + memberInfoList.Count);
-		Debug.Log ("leaderList:" + leaderList.Count);
-		Debug.Log ("generalList" + generalList.Count);
+//		Debug.Log ("memberInfoList1:" + memberInfoList.Count);
+//		Debug.Log ("leaderList:" + leaderList.Count);
+//		Debug.Log ("generalList" + generalList.Count);
 
 		//副盟主列表排序
 		for (int i = 0;i < leaderList.Count - 1;i ++)
@@ -112,7 +112,7 @@ public class InItMembers : MonoBehaviour {
 			memberInfoList.Add (leader);
 		}
 
-		Debug.Log ("memberInfoList2:" + memberInfoList.Count);
+	//	Debug.Log ("memberInfoList2:" + memberInfoList.Count);
 
 		//普通成员列表排序 by level
 		for (int i = 0;i < generalList.Count - 1;i ++)
@@ -133,7 +133,7 @@ public class InItMembers : MonoBehaviour {
 			memberInfoList.Add (general);
 		}
 
-		Debug.Log ("memberInfoList3:" + memberInfoList.Count);
+		//Debug.Log ("memberInfoList3:" + memberInfoList.Count);
 
 		CreateMembers (memberInfoList);
 
@@ -153,7 +153,7 @@ public class InItMembers : MonoBehaviour {
 		}
 		
 		memberItemList.Clear ();
-		Debug.Log ("item列表个数：" + memberItemList.Count);
+	//	Debug.Log ("item列表个数：" + memberItemList.Count);
 
 		foreach (MemberInfo m_info in m_memberList)
 		{
@@ -248,8 +248,8 @@ public class InItMembers : MonoBehaviour {
 			}
 			else
 			{
-				Debug.Log("moveX" +moveX);
-				Debug.Log("scrollor.cacx" +scrollViewPanel.cachedGameObject.transform.localPosition.x);
+				//Debug.Log("moveX" +moveX);
+				//Debug.Log("scrollor.cacx" +scrollViewPanel.cachedGameObject.transform.localPosition.x);
 				SpringPanel.Begin (scrollViewPanel.cachedGameObject,
 				                   new Vector3(scrollViewPanel.cachedGameObject.transform.localPosition.x - moveX, -30f, 0f), 8f);
 				yield return new WaitForSeconds(0.2f);

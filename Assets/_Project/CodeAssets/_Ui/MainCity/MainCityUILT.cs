@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.IO;
 
 using ProtoBuf;
@@ -38,18 +40,19 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
     //public GameObject m_objMoney;
     public GameObject m_objLianmengbg;
 	public GameObject m_objRedEmali;
+	public BoxChangeScale m_BoxChangeScale;
     //public GameObject m_objWulianmengbg;
 
 
     public MainCityZhanliChange m_MainCityZhanliChange;
 	public MainCityTaskManager m_MainCityTaskManagerMain;
 	public MainCityTaskManager m_MainCityTaskManagerOther;
+	public MainCityOpenFunction m_MainCityOpenFunction;
 
     private bool m_isLianmeng = true;
 
 	void Awake()
 	{
-		
 		SocketTool.RegisterSocketListener(this);
 	}
 	
@@ -60,6 +63,7 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 //		Debug.Log(m_MainCityTaskManagerMain);
 		m_MainCityTaskManagerMain.setData(TaskData.Instance.ShowId);
 		m_MainCityTaskManagerOther.setData(TaskData.Instance.m_iShowOtherId);
+		m_MainCityOpenFunction.upShow();
 		setLTPos(true);
 	}
 
@@ -94,7 +98,7 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
         m_UISpriteHeroIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id;
         m_playerName.text = JunZhuData.Instance().m_junzhuInfo.name;
         m_playrLevel.text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString();
-        m_playrVipLevel.text = "VIP" + JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
+        m_playrVipLevel.text = "V" + JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
         NationSprite.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
 		m_SpriteExp.SetDimensions(Global.getBili(122, (float)JunZhuData.Instance().m_junzhuInfo.exp, (float)JunZhuData.Instance().m_junzhuInfo.expMax), 8);
 		//m_SpriteExp
@@ -190,12 +194,17 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 		int BY = 200;
 		if(m_MainCityTaskManagerMain.gameObject.activeSelf)
 		{
-			m_MainCityTaskManagerMain.gameObject.transform.localPosition = new Vector3(0f, (float)-BY, 0f);
+			m_MainCityTaskManagerMain.gameObject.transform.localPosition = new Vector3(11f, (float)-BY, 0f);
 			BY += 65;
 		}
 		if(m_MainCityTaskManagerOther.gameObject.activeSelf)
 		{
-			m_MainCityTaskManagerOther.gameObject.transform.localPosition = new Vector3(0f, (float)-BY, 0f);
+			m_MainCityTaskManagerOther.gameObject.transform.localPosition = new Vector3(11f, (float)-BY, 0f);
+			BY += 65;
+		}
+		if(m_MainCityOpenFunction.gameObject.activeSelf)
+		{
+			m_MainCityOpenFunction.gameObject.transform.localPosition = new Vector3(11f, (float)-BY, 0f);
 			BY += 65;
 		}
 		BY += 10;
@@ -276,18 +285,25 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 				}
 				else if (TaskData.Instance.m_TaskInfoDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskInfoDic[id].FunctionId != -1)
 				{
-					GameObject tempObj = new GameObject();
-					tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskInfoDic[id].FunctionId;
-					MainCityUI.m_MainCityUI.MYClick(tempObj);
+					if(FunctionOpenTemp.IsHaveID(TaskData.Instance.m_TaskInfoDic[id].FunctionId))
+					{
+						GameObject tempObj = new GameObject();
+						tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskInfoDic[id].FunctionId;
+						MainCityUI.m_MainCityUI.MYClick(tempObj);
+					}
+					else
+					{
+						ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(TaskData.Instance.m_TaskInfoDic[id].FunctionId).m_sNotOpenTips);
+					}
 				}
 			}
 
 		}
 		else if(TaskData.Instance.m_TaskDailyDic.ContainsKey(id))
 		{
-			if(TaskData.Instance.m_TaskDailyDic[id].m_sSprite != "null")
+			if(TaskData.Instance.m_TaskDailyDic[id].Script != "null")
 			{
-				Global.m_sPanelWantRun = TaskData.Instance.m_TaskDailyDic[id].m_sSprite;
+				Global.m_sPanelWantRun = TaskData.Instance.m_TaskDailyDic[id].Script;
 			}
 			if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId == -1)
 			{
@@ -332,7 +348,7 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 		}
 		if(ui.name.IndexOf("LT_Email") != -1)
 		{
-			NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_MAIN_PAGE);
+			NewEmailData.Instance().OpenEmail (NewEmailData.EmailOpenType.EMAIL_MAIN_PAGE);
 		}
 		else if(ui.name.IndexOf("LT_Bianqiang") != -1)
 		{

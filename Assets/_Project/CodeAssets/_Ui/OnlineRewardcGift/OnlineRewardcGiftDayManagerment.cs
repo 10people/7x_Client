@@ -10,6 +10,8 @@ using ProtoBuf.Meta;
 public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
 {
     public ScaleEffectController m_SEC;
+
+    public UISprite m_SpriteLQ;
     public GameObject m_MainParent;
     public GameObject m_CenterParent;
     public UIGrid m_MidParent;
@@ -98,6 +100,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
         {
             m_LabTimeDown.gameObject.SetActive(false);
             m_LabButton.gameObject.SetActive(true);
+            SparkleEffectItem.OpenSparkle(m_SpriteLQ.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
             m_listTouchEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
         }
     }
@@ -155,7 +158,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                             {
                                 if (i == 0)
                                 {
-                                    UI3DEffectTool.Instance().ClearUIFx(m_CenterParent.transform.GetChild(i).gameObject);
+                                    UI3DEffectTool.ClearUIFx(m_CenterParent.transform.GetChild(i).gameObject);
                                 }
                                 Destroy(m_CenterParent.transform.GetChild(i).gameObject);
                             }
@@ -246,18 +249,20 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
         _listReward.Clear();
         if (hdinfo.state == 10) //奖励状态10：未领取 20：已领取 30：超时不能领取 40:不可领取
         {
-         //   UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listTouchEvent[0].gameObject, EffectIdTemplate.GetPathByeffectId(600207), null);
+          //  UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listTouchEvent[0].gameObject, EffectIdTemplate.GetPathByeffectId(600207), null);
             m_LabMiddleBottom.gameObject.SetActive(false);
             m_LabTopTitleLeft.text = LanguageTemplate.GetText(1499);
+            SparkleEffectItem.OpenSparkle(m_SpriteLQ.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
             m_listTouchEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
             m_LabButton.gameObject.SetActive(true);
             m_LabTimeDown.gameObject.SetActive(false);
         }
         else if (hdinfo.state == 40)
         {
-            UI3DEffectTool.Instance().ClearUIFx(m_listTouchEvent[0].gameObject);
+            UI3DEffectTool.ClearUIFx(m_listTouchEvent[0].gameObject);
             m_LabMiddleBottom.gameObject.SetActive(true);
             m_LabTopTitleLeft.text = LanguageTemplate.GetText(1498);
+            SparkleEffectItem.CloseSparkle(m_SpriteLQ.gameObject);
             m_listTouchEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
             m_LabTimeDown.gameObject.SetActive(true);
             m_LabButton.gameObject.SetActive(false);
@@ -450,12 +455,12 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
             IconSampleManager iconSampleManager = tempObject.GetComponent<IconSampleManager>();
             if (_indexNum == 0)
             {
-                // UI3DEffectTool.Instance().ShowMidLayerEffect()
-                //UI3DEffectTool.Instance().ShowMidLayerEffect(UI3DEffectTool.UIType.FunctionUI_1,
+                // UI3DEffectTool.ShowMidLayerEffect()
+                //UI3DEffectTool.ShowMidLayerEffect(UI3DEffectTool.UIType.FunctionUI_1,
                 //                                            tempObject,
                 //                                            EffectIdTemplate.GetPathByeffectId(100154));
 
-               //UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, tempObject, EffectIdTemplate.GetPathByeffectId(600206), null);
+               UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, tempObject, EffectIdTemplate.GetPathByeffectId(600206), null);
                 if (_listReward[_indexNum].count > 1)
                 {
                     iconSampleManager.SetIconByID(_listReward[_indexNum].id, _listReward[_indexNum].count.ToString(), 10);
@@ -474,11 +479,11 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
 
             if (_indexNum == 0)
             {
-                tempObject.transform.localScale = Vector3.one * 1.5f;
+                tempObject.transform.localScale = Vector3.one * 0.95f;
             }
             else
             {
-                tempObject.transform.localScale = Vector3.one * 0.4f;
+                tempObject.transform.localScale = Vector3.one * 0.5f;
                 m_BottomParent.repositionNow = true;
             }
 

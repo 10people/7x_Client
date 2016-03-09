@@ -16,6 +16,8 @@ namespace Carriage
         public CarriageSafeArea m_CarriageSafeArea;
         public BiaoJuPage m_BiaoJuPage;
 
+        public CarriageBloodLabelController m_CarriageBloodLabelController;
+
         public List<TongzhiData> m_CarriageTongzhiDataList
         {
             get { return Global.m_listJiebiaoData; }
@@ -30,7 +32,36 @@ namespace Carriage
 
         public Transform originalPosition;
 
+        public GameObject PlayerParentObject
+        {
+            get
+            {
+                int i = 0;
+
+                while (i < playerParentObjectList.Count && playerParentObjectList[i].transform.childCount >= PlayerParentChildLimit)
+                {
+                    i++;
+                }
+
+                if (i >= playerParentObjectList.Count)
+                {
+                    var temp = Instantiate(PlayerParentObjectPrefab);
+                    TransformHelper.ActiveWithStandardize(null, temp.transform);
+                    playerParentObjectList.Add(temp);
+                }
+
+                return playerParentObjectList[i];
+            }
+        }
+
+        private const int PlayerParentChildLimit = 100;
+        public GameObject PlayerParentObjectPrefab;
+        private List<GameObject> playerParentObjectList = new List<GameObject>();
+
+
         public List<GameObject> PlayerPrefabList = new List<GameObject>();
+        public GameObject LinePointParent;
+        public GameObject LinePointPrefab;
 
         public CarriagePlayerController m_SelfPlayerController;
         public CarriagePlayerCultureController m_SelfPlayerCultureController;
@@ -40,6 +71,7 @@ namespace Carriage
         public void CreateSelfPlayer(int p_roleID, long p_junzhuID, Vector3 p_position, string p_kingName, string p_allianceName, int p_vipLevel, int p_TitleIndex, int p_alliancePost, int p_nation, int p_level, int p_battleValue, float p_remainBlood = -1, float p_totalBlood = -1)
         {
             var tempObject = Instantiate(PlayerPrefabList[p_roleID - 1]) as GameObject;
+            TransformHelper.ActiveWithStandardize(PlayerParentObject.transform, tempObject.transform);
             tempObject.transform.localPosition = p_position;
 
             m_SelfPlayerController = tempObject.GetComponent<CarriagePlayerController>() ?? tempObject.AddComponent<CarriagePlayerController>();
@@ -139,6 +171,10 @@ namespace Carriage
                 return false;
             }
 
+            if (p_uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
+            {
+                Debug.LogWarning("Play animation: " + animationName + " in self.");
+            }
             l_animator.Play(animationName);
 
             return true;
@@ -149,7 +185,7 @@ namespace Carriage
         private void BiaoJuLoadCallBack(ref WWW p_www, string p_path, Object p_object)
         {
             var biaojuObject = (GameObject)Instantiate(p_object);
-            NGUICameraList.Add(biaojuObject.GetComponentInChildren<Camera>());
+            NGUICameraList.Add(biaojuObject.GetComponentsInChildren<Camera>(true).First());
             biaojuObject.name = "BiaoJu";
             m_BiaoJuPage = biaojuObject.GetComponent<BiaoJuPage>();
             biaojuObject.SetActive(false);
@@ -186,15 +222,37 @@ namespace Carriage
 
             CreateSelfPlayer(CityGlobalData.m_king_model_Id, JunZhuData.Instance().m_junzhuInfo.id, new Vector3(PlayerSceneSyncManager.Instance.m_MyselfPosition.z, BasicYPosition, PlayerSceneSyncManager.Instance.m_MyselfPosition.z), JunZhuData.Instance().m_junzhuInfo.name, AllianceData.Instance.IsAllianceNotExist ? "" : AllianceData.Instance.g_UnionInfo.name, JunZhuData.Instance().m_junzhuInfo.vipLv, JunZhuData.m_iChenghaoID, AllianceData.Instance.IsAllianceNotExist ? -1 : AllianceData.Instance.g_UnionInfo.identity, JunZhuData.Instance().m_junzhuInfo.guoJiaId, JunZhuData.Instance().m_junzhuInfo.level, JunZhuData.Instance().m_junzhuInfo.zhanLi);
 
+            //Create line point.
+            CartRouteTemplate.Templates.ForEach(item =>
+            {
+                var linePoint = Instantiate(LinePointPrefab);
+                TransformHelper.ActiveWithStandardize(LinePointParent.transform, linePoint.transform);
+                linePoint.transform.localPosition = new Vector3(item.Position.Last().x, BasicYPosition, item.Position.Last().y);
+            });
+
             //Play carriage music.
-            ClientMain.m_sound_manager.chagneBGSound(100101);
+            BattleConfigTemplate temp = BattleConfigTemplate.getBattleConfigTemplateByConfigId(600);
+            if (temp != null && temp.soundID != 0)
+            {
+                ClientMain.m_sound_manager.chagneBGSound(temp.soundID);
+            }
 
             //Close yindao UI.
             UIYindao.m_UIYindao.CloseUI();
+
+            //Add guide here.
+            if (FreshGuide.Instance().IsActive(100370) && TaskData.Instance.m_TaskInfoDic[100370].progress >= 0)
+            {
+                UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[100370].m_listYindaoShuju[2]);
+            }
         }
 
         void Awake()
         {
+            YunBiaoSafeTemplate.LoadTemplates();
+            YunBiaoTemplate.LoadTemplates();
+            RobCartXishuTemplate.LoadTemplates();
+
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YUNBIAO_MAIN_PAGE),
                         BiaoJuLoadCallBack);
 
@@ -202,6 +260,7 @@ namespace Carriage
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageQinglan"));
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageQiangwei"));
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageLuoli"));
+            LinePointPrefab = Resources.Load<GameObject>("_3D/Models/Carriage/CarriageLinePoint");
 
             PlayerState temp = new PlayerState
             {
@@ -211,17 +270,36 @@ namespace Carriage
 
             SocketHelper.SendQXMessage(ProtoIndexes.C_GETMABIANTYPE_REQ);
 
+            //Request start carriage times.
             YaBiaoMoreInfoReq temp2 = new YaBiaoMoreInfoReq
             {
                 type = 1
             };
             SocketHelper.SendQXMessage(temp2, ProtoIndexes.C_YABIAO_MOREINFO_RSQ);
 
+            // Request I help others list.
             AnswerYaBiaoHelpReq temp3 = new AnswerYaBiaoHelpReq
             {
                 ybUid = PlayerSceneSyncManager.Instance.m_MyselfUid
             };
             SocketHelper.SendQXMessage(temp3, ProtoIndexes.C_CHECK_YABIAOHELP_RSQ);
+
+            //Request rob carriage times.
+            YaBiaoMoreInfoReq temp4 = new YaBiaoMoreInfoReq
+            {
+                type = 2
+            };
+            SocketHelper.SendQXMessage(temp4, ProtoIndexes.C_YABIAO_MOREINFO_RSQ);
+
+            //Request additional start carriage times.
+            YaBiaoMoreInfoReq temp5 = new YaBiaoMoreInfoReq
+            {
+                type = 3
+            };
+            SocketHelper.SendQXMessage(temp5, ProtoIndexes.C_YABIAO_MOREINFO_RSQ);
+
+            //Request alliance tech info.
+            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LMKJ_INFO);
         }
 
         new void OnDestroy()

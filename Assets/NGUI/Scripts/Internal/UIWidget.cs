@@ -405,7 +405,10 @@ public class UIWidget : UIRect
 		get
 		{
 			if (panel == null) CreatePanel();
-			return (panel != null) ? mDepth + panel.depth * 1000 : mDepth;
+
+			int t_depth = (panel != null) ? mDepth + panel.depth * 1000 : mDepth;
+
+			return t_depth;
 		}
 	}
 
@@ -936,6 +939,7 @@ public class UIWidget : UIRect
 				Invalidate(true);
 			}
 		}
+
 		return panel;
 	}
 
@@ -949,7 +953,7 @@ public class UIWidget : UIRect
 		{
 //			Debug.LogWarning("You can't place widgets on a layer different than the UIPanel that manages them.\n" +
 //				"If you want to move widgets to a different layer, parent them to a new panel instead.", this);
-			gameObject.layer = panel.gameObject.layer;
+			GameObjectHelper.SetGameObjectLayer( gameObject, panel.gameObject.layer );
 		}
 	}
 

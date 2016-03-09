@@ -393,7 +393,7 @@ public class Buff : MonoBehaviour
 
 			if(buffValue > 0)
 			{
-				ai.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK);
+				ai.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
 			}
 			else 
 			{

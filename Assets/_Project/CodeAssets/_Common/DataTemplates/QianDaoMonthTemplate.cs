@@ -69,7 +69,7 @@ public class QianDaoMonthTemplate : XmlLoadManager
 
     public static int getDescIdTemplateByMonth(int month)
     {
-        Debug.Log("templates.CountQianDaoMonthQianDaoMonth ::" + templates.Count);
+//        Debug.Log("templates.CountQianDaoMonthQianDaoMonth ::" + templates.Count);
         foreach (QianDaoMonthTemplate template in templates)
         {
             if (template.month == month)

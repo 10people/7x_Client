@@ -44,7 +44,7 @@ public class My_DamageRank : MonoBehaviour {
 
 		if(mRankList.damageInfo == null  || mRankList.damageInfo.Count == 0)
 		{
-			Debug.Log("_____排行榜 = null");
+			//Debug.Log("_____排行榜 = null");
 			return;
 		}
 		for(int i = 0 ; i < mRankList.damageInfo.Count; i ++)
@@ -84,7 +84,7 @@ public class My_DamageRank : MonoBehaviour {
 		if(m_Scollview.transform.localPosition.y - MRankPosition + 112 > 0 )
 		{
 
-			Debug.Log("11");
+			//Debug.Log("11");
 			float S_y = m_Scollview.transform.localPosition.y-(m_Scollview.transform.localPosition.y -MRankPosition + 112);
 
 			mmFixUniform.offset = new Vector3(0,S_y,0);
@@ -97,7 +97,7 @@ public class My_DamageRank : MonoBehaviour {
 		}
 		else if(m_Scollview.transform.localPosition.y + MRankPosition < -172)
 		{
-			Debug.Log("22");
+			//Debug.Log("22");
 			float X_y = m_Scollview.transform.localPosition.y -(m_Scollview.transform.localPosition.y +MRankPosition+ 172);
 
 			mmFixUniform.offset = new Vector3(0,X_y,0);
@@ -122,7 +122,7 @@ public class My_DamageRank : MonoBehaviour {
 	}
 	public void Close()
 	{
-		HY_UIManager.Instance ().ShowOrClose ();
+		HY_UIManager.Instance().ShowOrClose ();
 		Destroy (this.gameObject);
 	}
 }

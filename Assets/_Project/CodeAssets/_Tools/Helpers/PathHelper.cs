@@ -340,4 +340,25 @@ public class PathHelper : MonoBehaviour {
 	}
 
 	#endregion
+
+
+
+	#region Utilities
+
+	public static string GetParentPath( string p_path ){
+		if( string.IsNullOrEmpty( p_path ) ){
+			return "";
+		}
+
+		int t_index = p_path.LastIndexOf( "/" );
+
+		if( t_index > 0 ){
+			return p_path.Substring( 0, t_index );
+		}
+		else{
+			return p_path;
+		}
+	}
+
+	#endregion
 }

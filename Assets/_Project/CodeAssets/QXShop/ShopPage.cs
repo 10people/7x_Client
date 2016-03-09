@@ -57,7 +57,7 @@ public class ShopPage : MonoBehaviour {
 		
 		if (spType == ShopData.ShopPageType.MAIN_PAGE)
 		{
-			Debug.Log ("Open");
+//			Debug.Log ("Open");
 			ShopData.Instance.OpenShop (shopType);
 		}
 	}
@@ -106,8 +106,8 @@ public class ShopPage : MonoBehaviour {
 		{
 			EventHandler handler0 = shopBtnObj.GetComponent<EventHandler> ();
 			handler0.name = "1";
-			handler0.m_handler -= ShopBtnClickBack;
-			handler0.m_handler += ShopBtnClickBack;
+			handler0.m_click_handler -= ShopBtnClickBack;
+			handler0.m_click_handler += ShopBtnClickBack;
 			shopBtnList.Add (handler0);
 			
 			UILabel btn0Label = handler0.GetComponentInChildren<UILabel> ();
@@ -128,18 +128,19 @@ public class ShopPage : MonoBehaviour {
 				
 				EventHandler shopBtnHandler = shopBtn.GetComponent<EventHandler> ();
 				shopBtnList.Add (shopBtnHandler);
-				shopBtnHandler.m_handler -= ShopBtnClickBack;
-				shopBtnHandler.m_handler += ShopBtnClickBack;
+				shopBtnHandler.m_click_handler -= ShopBtnClickBack;
+				shopBtnHandler.m_click_handler += ShopBtnClickBack;
 			}
 		}
 
+		int activeCount = 0;
 		for (int i = 0;i < shopBtnList.Count;i ++)
 		{
-			if (i > 1)
-			{
-				ShopData.ShopType sType = (ShopData.ShopType)Enum.ToObject (typeof (ShopData.ShopType),i + 1);
-				shopBtnList[i].gameObject.SetActive (ShopData.Instance.IsShopFunctionOpen (sType));
-			}
+			ShopData.ShopType sType = (ShopData.ShopType)Enum.ToObject (typeof (ShopData.ShopType),i + 1);
+			shopBtnList[i].gameObject.SetActive (ShopData.Instance.IsShopFunctionOpen (sType));
+
+			shopBtnList[i].transform.localPosition = new Vector3(0,-75 * activeCount,0);
+			activeCount += ShopData.Instance.IsShopFunctionOpen (sType) ? 1 : 0;
 		}
 
 		moneyInfoObj.SetActive (tempType == ShopData.ShopType.ORDINARY ? false : true);
@@ -158,11 +159,13 @@ public class ShopPage : MonoBehaviour {
 
 		foreach (EventHandler handler in otherBtnList)
 		{
-			handler.m_handler -= OtherHandlerClickBack;
-			handler.m_handler += OtherHandlerClickBack;
+			handler.m_click_handler -= OtherHandlerClickBack;
+			handler.m_click_handler += OtherHandlerClickBack;
 		}
 
 		CreateGoodList ();
+
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 1);
 	}
 	
 	/// <summary>
@@ -176,7 +179,7 @@ public class ShopPage : MonoBehaviour {
 			goodSbValue = 0;
 			
 			shopType = tempType;
-			Debug.Log ("ShopType:" + shopType);
+//			Debug.Log ("ShopType:" + shopType);
 			for (int i = 0;i < shopBtnList.Count;i ++)
 			{
 				UIWidget[] btnWidgets = shopBtnList[i].GetComponentsInChildren<UIWidget> ();
@@ -190,7 +193,7 @@ public class ShopPage : MonoBehaviour {
 	
 	void ShopBtnClickBack (GameObject obj)
 	{
-		Debug.Log (obj.name + "||" + ((int)shopType).ToString ());
+//		Debug.Log (obj.name + "||" + ((int)shopType).ToString ());
 		if (((int)shopType).ToString () != obj.name)
 		{
 			int btnIndex = int.Parse (obj.name);
@@ -251,7 +254,6 @@ public class ShopPage : MonoBehaviour {
 	
 	private Dictionary<long,SellGoodsInfo> sellDic = new Dictionary<long, SellGoodsInfo>();
 	private int sellTongBi;
-	private int sellYuanBao;
 	
 	public UILabel sellLabel;
 	
@@ -262,7 +264,6 @@ public class ShopPage : MonoBehaviour {
 	public void InItBagSellPage (int tempSellState)
 	{
 		sellTongBi = 0;
-		sellYuanBao = 0;
 
 		if (tempSellState == 0)
 		{
@@ -281,7 +282,7 @@ public class ShopPage : MonoBehaviour {
 				}
 			}
 			
-			var miBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+			var miBaoInfo = MiBaoGlobleData.Instance().G_MiBaoInfo;
 			foreach (MibaoInfo miBao in miBaoInfo.miBaoList)
 			{
 				if (miBao.star == 5 && miBao.suiPianNum > 0)
@@ -360,8 +361,8 @@ public class ShopPage : MonoBehaviour {
 			break;
 		}
 		
-		sellGoodBtn.m_handler -= SellGoodBtnClickBack;
-		sellGoodBtn.m_handler += SellGoodBtnClickBack;
+		sellGoodBtn.m_click_handler -= SellGoodBtnClickBack;
+		sellGoodBtn.m_click_handler += SellGoodBtnClickBack;
 	}
 	
 	void LoadIconSamplePrefab (ref WWW p_www, string p_path, UnityEngine.Object p_object)
@@ -382,12 +383,11 @@ public class ShopPage : MonoBehaviour {
 	public void GetSellBagItem (ShopSellGoodInfo tempItem,int type)
 	{
 		int tongBi = 0;
-		int yuanBao = 0;
 
 		switch (tempItem.itemType)
 		{
 		case QXComData.XmlType.YUJUE:
-			yuanBao = ItemTemp.getItemTempById (tempItem.itemId).sellNum;
+			tongBi = ItemTemp.getItemTempById (tempItem.itemId).sellNum;
 			break;
 		case QXComData.XmlType.MIBAO_PIECE:
 			tongBi = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById (tempItem.itemId).recyclePrice;
@@ -413,17 +413,7 @@ public class ShopPage : MonoBehaviour {
 				sellDic[tempItem.dbId].count += 1;
 			}
 
-			switch (tempItem.itemType)
-			{
-			case QXComData.XmlType.YUJUE:
-				sellYuanBao += yuanBao;
-				break;
-			case QXComData.XmlType.MIBAO_PIECE:
-				sellTongBi += tongBi;
-				break;
-			default:
-				break;
-			}
+			sellTongBi += tongBi;
 			
 			break;
 		case 2://减少
@@ -436,17 +426,7 @@ public class ShopPage : MonoBehaviour {
 					sellDic.Remove (tempItem.dbId);
 				}
 				
-				switch (tempItem.itemType)
-				{
-				case QXComData.XmlType.YUJUE:
-					sellYuanBao -= yuanBao;
-					break;
-				case QXComData.XmlType.MIBAO_PIECE:
-					sellTongBi -= tongBi;
-					break;
-				default:
-					break;
-				}
+				sellTongBi -= tongBi;
 			}
 			
 			break;
@@ -454,27 +434,13 @@ public class ShopPage : MonoBehaviour {
 			break;
 		}
 		
-		if (sellDic.Count == 0)
+		if (sellDic.Count <= 0)
 		{
 			RefreshSellState (1);
 		}
 		else
 		{
-			if (sellYuanBao > 0 && sellTongBi > 0)
-			{
-				RefreshSellState (0,sellYuanBao.ToString (),sellTongBi.ToString ());
-			}
-			else
-			{
-				if (sellTongBi == 0)
-				{
-					RefreshSellState (0,sellYuanBao.ToString ());
-				}
-				else if (sellYuanBao == 0)
-				{
-					RefreshSellState (0,sellTongBi.ToString (),"0");
-				}
-			}
+			RefreshSellState (0,sellTongBi.ToString ());
 		}
 	}
 	
@@ -492,7 +458,7 @@ public class ShopPage : MonoBehaviour {
 	/// Refreshs the state of the sell.//0 - 正在出售 1-未选择物品 2-无可选物品
 	/// </summary>
 	/// <param name="tempIndex">Temp index.</param>
-	void RefreshSellState (int tempIndex,string tempSell1 = null,string tempSell2 = null)
+	void RefreshSellState (int tempIndex,string tempSell = null)
 	{
 		desLabel.transform.localPosition = new Vector3 (140,posY[tempIndex],0);
 		sellGoodBtn.gameObject.SetActive (tempIndex == 0 ? true : false);
@@ -501,18 +467,7 @@ public class ShopPage : MonoBehaviour {
 		{
 		case 0:
 
-			if (tempSell1 != null && tempSell2 == null)
-			{
-				desLabel.text = "本次出售可获得" + tempSell1 + "元宝";
-			}
-			else if (tempSell1 != null && tempSell2 != null && int.Parse (tempSell2) == 0)
-			{
-				desLabel.text = "本次出售可获得" + tempSell1 + "铜币";
-			}
-			else
-			{
-				desLabel.text = "本次出售可获得" + tempSell1 + "元宝," + tempSell2 + "铜币";
-			}
+			desLabel.text = "本次出售可获得" + tempSell + "铜币";
 
 			break;
 		case 1:
@@ -522,7 +477,7 @@ public class ShopPage : MonoBehaviour {
 			break;
 		case 2:
 			
-			desLabel.text = "没有可以出售的物品...\n\n\n参与百战千军可在每日奖励中领取玉珏";
+			desLabel.text = "没有可以出售的物品...\n\n参与百战千军可在每日奖励中领取玉珏";
 			
 			break;
 		default:

@@ -68,7 +68,6 @@ public class NpcObjectItem : MonoBehaviour {
         }
         else
         {
-
             m_transform.localEulerAngles = new Vector3(270, 0, 0);
         }
 

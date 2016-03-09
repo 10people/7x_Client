@@ -11,12 +11,6 @@ public class AllianceKeZhanManager : MonoBehaviour {
 
 	public	AllianceHaveResp m_AllianceHaveRes; 
 
-	public UILabel mTiLi;
-	
-	public UILabel mTongBi;
-	
-	public UILabel mYuanBao;
-
 	public UILabel MaxPersonNum;
 
 	public GameObject m_Memberobj;
@@ -24,6 +18,8 @@ public class AllianceKeZhanManager : MonoBehaviour {
 	public GameObject m_Eventobj;
 
 	public bool isfirst;
+
+	public GameObject Arelt;
 	void Start () {
 	
 	}
@@ -39,9 +35,7 @@ public class AllianceKeZhanManager : MonoBehaviour {
 
 		m_Memberobj.SetActive(true);
 		m_Eventobj.SetActive (false);
-		Debug.Log ("---------22---------"+m_Memberobj.activeInHierarchy);
-
-		Debug.Log ("-----------333-------"+m_Eventobj.activeInHierarchy);
+	
 		MembersManager mMembersManager = m_Memberobj.GetComponent<MembersManager>();
 		
 		mMembersManager.m_allianceHaveRes = m_AllianceHaveRes;
@@ -51,6 +45,16 @@ public class AllianceKeZhanManager : MonoBehaviour {
 		StartCoroutine (getvalue());
 
 		isfirst = true;
+		int id = 600505;
+		//Debug.Log ("PushAndNotificationHelper.IsShowRedSpotNotification(id) = "+PushAndNotificationHelper.IsShowRedSpotNotification(id));
+		if(PushAndNotificationHelper.IsShowRedSpotNotification(id))
+		{
+			Arelt.SetActive(true);
+		}
+		else
+		{
+			Arelt.SetActive(false);
+		}
 	}
 	public UIToggle mUItoggle;
 	IEnumerator getvalue()
@@ -80,8 +84,10 @@ public class AllianceKeZhanManager : MonoBehaviour {
 		m_Eventobj.SetActive(true);
 		m_Memberobj.SetActive(false);
 		EventManager mEventManager = m_Eventobj.GetComponent<EventManager>();
-		
+		Arelt.SetActive(false);
+		PushAndNotificationHelper.SetRedSpotNotification (600505, false); //关闭联盟主界面的红点
 		mEventManager.Init ();
+		NewAlliancemanager.Instance().Refreshtification ();
 	
 	}
 	public void BuyTiLi()
@@ -98,6 +104,6 @@ public class AllianceKeZhanManager : MonoBehaviour {
 	}
 	public void Close()
 	{
-		NewAlliancemanager.Instance ().BackToThis (this.gameObject);
+		NewAlliancemanager.Instance().BackToThis (this.gameObject);
 	}
 }

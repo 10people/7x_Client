@@ -37,6 +37,10 @@ public class APCBar : MonoBehaviour
 
 		labelName.text = focusNode.nodeData.nodeName + LanguageTemplate.GetText(LanguageTemplate.Text.BATTLE_PROTECT_NAME);
 
+		ModelTemplate modelTemp = ModelTemplate.getModelTemplateByModelId (focusNode.modelId, true);
+
+		spriteIcon.spriteName = modelTemp.icon + "";
+
 		labelBubble.gameObject.SetActive (false);
 	}
 

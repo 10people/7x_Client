@@ -10,7 +10,7 @@ using ProtoBuf.Meta;
 
 public class NewAlliancemanager : MonoBehaviour , SocketListener{
 
-	public GameObject Buttons;
+	//public GameObject Buttons;
 
 	private string titleStr;
 	private string str2;
@@ -23,11 +23,6 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 
 	public JianZhuList m_JianZhu;
 
-	public UILabel mTiLi;
-
-	public UILabel mTongBi;
-
-	public UILabel mYuanBao;
 
 	public UILabel AllianceName;
 
@@ -44,7 +39,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	public GameObject JuanXianUI;
 
 	public GameObject Appbtn;
-
+	public GameObject AppbtnAlert;
 	public GameObject NoticeBox;
 
 	ExitAllianceResp mexitResp;
@@ -54,6 +49,8 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	public GameObject All_ReadRoom;
 	public GameObject All_Temples;
 	public GameObject All_Apply;
+
+	public GameObject NeedScoleUI;
 
 	public List<AllBuildsTmp> AllBuildsTmp_List = new List<AllBuildsTmp>();
 
@@ -67,7 +64,14 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	public MyAllianceInfo mMyAllianceInfo;
 	public int Up_id;
 
-	public static NewAlliancemanager Instance ()
+	public GameObject KeZhan;
+	public GameObject Temples;
+	public GameObject Apply;
+	public GameObject XiaoWu;
+	public GameObject HyQs;
+
+	public GameObject BuildUpVecotry;
+	public static NewAlliancemanager Instance()
 	{
 		if (!m_NewAlliancemanager)
 		{
@@ -100,18 +104,67 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 
 	void Update()
 	{
-		mTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tili.ToString();
-
-		mTongBi.text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString();
-
-		mYuanBao.text = JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString();
-
 		//Shownotice ();
 	}
+	/// <summary>
+	/// Shows the alliance GUID.联盟引导
+	/// </summary>
+	void ShowAllianceGuid()
+	{
+		UIYindao.m_UIYindao.CloseUI();
+		//Debug.Log("联盟引导");
+		if(FreshGuide.Instance().IsActive(400010)&& TaskData.Instance.m_TaskInfoDic[400010].progress >= 0)
+		{
+			//			Debug.Log("去小屋领经验");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400010];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
 
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(400020)&& TaskData.Instance.m_TaskInfoDic[400020].progress >= 0)
+		{
+			//			Debug.Log("去寺庙祭拜");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400020];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(400030)&& TaskData.Instance.m_TaskInfoDic[400030].progress >= 0)
+		{
+			//			Debug.Log("去图腾祭拜");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400030];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(400040)&& TaskData.Instance.m_TaskInfoDic[400040].progress >= 0)
+		{
+			//			Debug.Log("去商店购买东西");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400040];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			
+			return;
+		}
+	}
 	public void GetAllianceBuildsMessege()
 	{
+		//CityGlobalData.m_isRightGuide = true;
+		ShowAllianceGuid ();
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO);
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
+		// Ui等比放缩
+//		UIRoot root = GameObject.FindObjectOfType<UIRoot>();
+//		if (root != null) {
+//			float s = (float)root.activeHeight / Screen.height;
+//			int height = Mathf.CeilToInt (Screen.height * s);
+//			int width = Mathf.CeilToInt (Screen.width * s);
+//			float v1 = (float)height / (float)640;
+//			float v2 = (float)width / (float)960;
+//			NeedScoleUI.transform.localScale = new Vector3(v2,v1,1);
+//			//Debug.Log ("NeedScoleUI.localScale = " + NeedScoleUI.transform.localScale);
+//		} else {
+//			//Debug.Log ("root == null");
+//		}
 	}
 
 	public bool OnSocketEvent(QXBuffer p_message){
@@ -131,7 +184,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 				
 				t_qx.Deserialize(t_tream, allianceHaveRes, allianceHaveRes.GetType());
 				
-//				Debug.Log ("监听到联盟信息返回了");
+    			//Debug.Log ("监听到联盟信息返回了");
 				
 				m_allianceHaveRes = allianceHaveRes;
 
@@ -182,7 +235,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 				
 				t_qx.Deserialize(t_stream, BuildUpback, BuildUpback.GetType());
 
-				Debug.Log("BuildUpback   ");
+				//Debug.Log("BuildUpback   ");
 
 				if(BuildUpback.errorCode == 0)
 				{
@@ -193,12 +246,19 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 							AllBuildsTmp_List[i].lv += 1;
 							
 							AllBuildsTmp_List[i].Init();
+
+							int effectid = 100180;
+							BuildUpVecotry.SetActive(true);
+							BuildUpVecotry.transform.localPosition = AllBuildsTmp_List[i].gameObject.transform.localPosition;
+							UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,BuildUpVecotry,EffectIdTemplate.GetPathByeffectId(effectid));
+							StartCoroutine( closeEffect());
 						}
 					}
+
 				}
 				else
 				{
-					Debug.Log("升级失败");
+					//Debug.Log("升级失败");
 				}
 				return true;
 			}
@@ -245,27 +305,30 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		}
 		return false;
 	}
-
+	IEnumerator closeEffect()
+	{
+		yield return new WaitForSeconds (1f);
+		BuildUpVecotry.SetActive(false);
+	}
 	public void InitAlliance()
 	{
-		int Online = 0;
+		//int Online = 0;
 		if(m_allianceHaveRes.memberInfo != null)
 		{
-			for(int i = 0 ; i < m_allianceHaveRes.memberInfo.Count; i++)
-			{
-				if(m_allianceHaveRes.memberInfo[i].offlineTime < 0)
-				{
-					Online += 1 ;
-				}
-			}
-			OnlineNum.text = "在线人数："+Online.ToString()+"/"+m_allianceHaveRes.memberInfo.Count.ToString();
+//			for(int i = 0 ; i < m_allianceHaveRes.memberInfo.Count; i++)
+//			{
+//				if(m_allianceHaveRes.memberInfo[i].offlineTime < 0)//之前为显示在线人数 后改为显示目前人数和最多能容纳人数
+//				{
+//					Online += 1 ;
+//				}
+//			}
+			OnlineNum.text = "目前人数/最高容纳人数："+m_allianceHaveRes.memberInfo.Count.ToString()+"/"+m_allianceHaveRes.memberMax.ToString();
 		}
 		else{
-			OnlineNum.text = "在线人数：0/0";
+			OnlineNum.text = "目前人数/最高容纳人数： 0/"+m_allianceHaveRes.memberMax.ToString();
 		}
-
 	
-		AllianceName.text = m_allianceHaveRes.name;
+		AllianceName.text = m_allianceHaveRes.name+"(LV."+m_allianceHaveRes.level.ToString()+")";
 		ShowJianSheZhi ();
 		ShowBtn ();
 		//Noitice.text = m_allianceHaveRes.notice;
@@ -292,7 +355,28 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 
 			mAllBuildsTmp.Init();
 		}
-
+		for(int i = 0; i < 2; i++)
+		{
+			AllBuildsTmp mAllBuildsTmp = mBUILDS[i+5].GetComponent<AllBuildsTmp>();
+		
+			mAllBuildsTmp.id = i+6;
+	
+			mAllBuildsTmp.Init();
+		}
+		Refreshtification ();
+	}
+	public void Refreshtification()
+	{
+		HYInterface mHYInterface1 = KeZhan.GetComponent<HYInterface>();
+		mHYInterface1.Init ();
+		HYInterface mHYInterface4 = Temples.GetComponent<HYInterface>();
+		mHYInterface4.Init ();
+		HYInterface mHYInterface5 = Apply.GetComponent<HYInterface>();
+		mHYInterface5.Init ();
+		HYInterface mHYInterface6 = XiaoWu.GetComponent<HYInterface>();
+		mHYInterface6.Init ();
+		HYInterface mHYInterface7 = HyQs.GetComponent<HYInterface>();
+		mHYInterface7.Init ();
 	}
 	public void ExitAllianceLoadCallback( ref WWW p_www, string p_path,  Object p_object )
 	{
@@ -311,7 +395,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		}
 		else
 		{
-			Debug.Log("退出失败");
+			//Debug.Log("退出失败");
 			
 			string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_FAIL);
 			string str2 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_FAIL_REASON);
@@ -329,35 +413,50 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	void ShowBtn()
 	{
 		//Debug.Log ("m_allianceHaveRes.status = "+m_allianceHaveRes.status );
+		JuanXianUI.SetActive(false);
 		if(m_allianceHaveRes.identity == 2)
 		{
 			Label_LeaderBtn.text = "解散联盟";
 
-			JuanXianUI.SetActive(true);
+//			JuanXianUI.SetActive(true);
 
 			Appbtn.SetActive(true);
-
+			int mEvent_id = 410000; // 联盟申请
+			if(PushAndNotificationHelper.IsShowRedSpotNotification(mEvent_id))
+			{
+				AppbtnAlert.SetActive(true);
+			}
+			else
+			{
+				AppbtnAlert.SetActive(false);
+			}
 			NoticeBox.GetComponent<BoxCollider>().enabled = true;
 		}
 		else if(m_allianceHaveRes.identity == 1)
 		{
 			Label_LeaderBtn.text = "退出联盟";
-			
-			JuanXianUI.SetActive(true);
-			
+			//JuanXianUI.SetActive(false);
 			Appbtn.SetActive(true);
-
+			int mEvent_id = 410000;
+			if(PushAndNotificationHelper.IsShowRedSpotNotification(mEvent_id))
+			{
+				AppbtnAlert.SetActive(true);
+			}
+			else
+			{
+				AppbtnAlert.SetActive(false);
+			}
 			NoticeBox.GetComponent<BoxCollider>().enabled = true;
 
 		}
 		else
 		{
-			JuanXianUI.SetActive(true);
-
-			JuanXianUI.transform.localPosition = new Vector3(0,-290,0);
+//			JuanXianUI.SetActive(false);
+//
+//			JuanXianUI.transform.localPosition = new Vector3(0,-290,0);
 
 			Appbtn.SetActive(false);
-
+			Label_LeaderBtn.text = "退出联盟";
 			NoticeBox.GetComponent<BoxCollider>().enabled = false;
 		}
 
@@ -396,12 +495,14 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	{
 		All_Apply.SetActive (true);
 		All_FirstUI.SetActive (false);
-		Buttons.transform.localPosition = new Vector3(50,298,0);
+		//Buttons.transform.localPosition = new Vector3(50,298,0);
 		ApplyManager mApplyManager = All_Apply.GetComponent<ApplyManager>();
 		
 		mApplyManager.m_tempInfo = m_allianceHaveRes;
 		
 		mApplyManager.Init ();
+
+		//AppbtnAlert.SetActive(false);
 	}
 
 
@@ -463,7 +564,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 			
 			byte[] t_protof = exitStream.ToArray ();
 			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.EXIT_ALLIANCE, ref t_protof, "30114");
+			SocketTool.Instance().SendSocketMessage (ProtoIndexes.EXIT_ALLIANCE, ref t_protof, "30114");
 		}
 	}
 
@@ -508,13 +609,13 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 			byte[] t_protof = dis_stream.ToArray();;
 			
 			SocketTool.Instance().SendSocketMessage (ProtoIndexes.DISMISS_ALLIANCE,ref t_protof,"30132");
-			Debug.Log ("jiesanReq:" + ProtoIndexes.DISMISS_ALLIANCE);
+			//Debug.Log ("jiesanReq:" + ProtoIndexes.DISMISS_ALLIANCE);
 		}
 	}
 	public void ENterOtherUI(int m_id)
 	{
-		Debug.Log ("m_id = " +m_id );
-		Buttons.transform.localPosition = new Vector3(50,298,0);
+		//Debug.Log ("m_id = " +m_id );
+		//Buttons.transform.localPosition = new Vector3(50,298,0);
 		switch(m_id)
 		{
 		case 1:
@@ -548,7 +649,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	{
 		if(m_allianceHaveRes.level >= 2)
 		{
-			MiBaoGlobleData.Instance ().OpenHYMap_UI ();
+			MiBaoGlobleData.Instance().OpenHYMap_UI ();
 		}
 		else
 		{
@@ -576,7 +677,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	public OldBookWindow m_OldBookWindow;
 	public void ENterAllianceHorse()
 	{
-		Buttons.transform.localPosition = new Vector3(50,298,0);
+		//Buttons.transform.localPosition = new Vector3(50,298,0);
 		All_FirstUI.SetActive (false);
 		if (m_OldBookWindow != null)
 		{
@@ -619,11 +720,12 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
     }
     public void BackToThis(GameObject m_game)
 	{
-		Buttons.transform.localPosition = new Vector3(0,298,0);
+		//Buttons.transform.localPosition = new Vector3(0,298,0);
 	    m_game.SetActive (false);
 		All_FirstUI.SetActive (true);
 
 	}
+
 	public void Close()
 	{
 		MainCityUI.TryRemoveFromObjectList(this.gameObject);

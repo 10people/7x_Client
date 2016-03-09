@@ -13,6 +13,28 @@ public class BackgroundScaler : MonoBehaviour {
 		ScaleBg();
 	}
 
+	void OnEnable(){
+//		UpdateMainC( false );
+	}
+
+	void OnDisable(){
+//		UpdateMainC( true );
+	}
+
+	void OnDestroy(){
+		
+	}
+
+	#endregion
+
+
+
+	#region UpdateMainC
+
+//	private void UpdateMainC( bool p_enable ){
+//		CameraHelper.SetMainCamera( p_enable );
+//	}
+
 	#endregion
 
 

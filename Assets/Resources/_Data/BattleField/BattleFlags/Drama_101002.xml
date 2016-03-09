@@ -1,3 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+<BattleDramaFlag flagId="0" nodeId="1" triggerFlag="301,302,303,304,305,306,307,308,309,310" x="-59.59607" y="85.407" z="-103.52" cx="1" cy="1" cz="20" rx="0" ry="312.9" rz="0" />
 </dataset>

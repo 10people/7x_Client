@@ -74,7 +74,7 @@ public class HY_Awarditem : MYNGUIPanel {
 		int a = int.Parse (id);
 		
 		CommonItemTemplate m_com = CommonItemTemplate.getCommonItemTemplateById(a);
-		Debug.Log (" m_com.id = "+ m_com.id);
+	//	Debug.Log (" m_com.id = "+ m_com.id);
 		ShowTip.showTip( m_com.id);
 		//        RecoverToliCips.transform.localScale = new Vector3(1, 1, 1);
 		//        Invoke("diseCoverTiLiClips", 1.5f);

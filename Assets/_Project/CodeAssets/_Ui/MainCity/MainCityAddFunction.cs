@@ -36,7 +36,7 @@ public class MainCityAddFunction : MYNGUIPanel
 		m_FunctionButtonManager.SetData(m_FunctionOpenTemp);
 		m_iNum = 0;
 		m_AddFunctionSatatae = AddFunctionSatatae.Eff;
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100178 ).path);
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100178 ).path);
 
 		EffectIdTemplate et = EffectIdTemplate.getEffectTemplateByEffectId(100178);
 		if(et.sound.Equals("-1") == false)
@@ -46,7 +46,7 @@ public class MainCityAddFunction : MYNGUIPanel
 		}
 		string spriteName = m_id + "";
 
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff1, EffectTemplate.getEffectTemplateByEffectId( 100107 ).path);
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff1, EffectTemplate.getEffectTemplateByEffectId( 100107 ).path);
 		et = EffectIdTemplate.getEffectTemplateByEffectId(100107);
 		if(et.sound.Equals("-1") == false)
 		{
@@ -89,6 +89,9 @@ public class MainCityAddFunction : MYNGUIPanel
 			MainCityUI.TryRemoveFromObjectList(MainCityUI.m_MainCityUI.m_AddFunction);
 			MainCityUI.m_MainCityUI.AddButton(m_FunctionButtonManager, m_FunctionOpenTemp);
 			Destroy(m_objThis);
+
+			MainCityUI.m_MainCityUI.m_MainCityUILT.m_MainCityOpenFunction.upShow();
+			MainCityUI.m_MainCityUI.m_MainCityUILT.setLTPos(false);
 		}
 	}
 	

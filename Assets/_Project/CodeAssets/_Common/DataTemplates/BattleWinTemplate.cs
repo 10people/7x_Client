@@ -193,7 +193,7 @@ public class BattleWinTemplate : XmlLoadManager
 
 	private static void refreshDesc()
 	{
-		if (BattleUIControlor.Instance () == null) return;
+		if (BattleUIControlor.Instance() == null) return;
 
 		foreach(BattleWinTemplate template in templates)
 		{
@@ -210,7 +210,7 @@ public class BattleWinTemplate : XmlLoadManager
 
 	private static void refreshDestinationEffect()
 	{
-		if (BattleUIControlor.Instance () == null) return;
+		if (BattleUIControlor.Instance() == null) return;
 
 		foreach(BattleWinTemplate template in templates)
 		{

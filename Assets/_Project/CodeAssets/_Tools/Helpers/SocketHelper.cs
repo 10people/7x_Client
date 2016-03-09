@@ -101,7 +101,7 @@ public class SocketHelper {
 	
 	public static void UpdateNetworkStatusCheck(){
 		if( !SocketTool.IsConnected() ){
-			Debug.Log( "Should only see this int low rate." );
+//			Debug.Log( "Should only see this int low rate." );
 			
 			ClearNetWorkCheckQueue();
 			
@@ -212,10 +212,109 @@ public class SocketHelper {
 		float t_time = ConfigTool.GetFloat( ConfigTool.CONST_NETWORK_PING_TIME );
 
 		if( Time.realtimeSinceStartup - m_last_ping_time >= t_time ){
-			Console_SetNetwork.OnPing( null, false );
+			Console_SetNetwork.OnPingManual( null, false );
 
 			m_last_ping_time = Time.realtimeSinceStartup;
 		}
+	}
+
+	#endregion
+
+
+
+	#region Boxes
+
+	public static void UpdateErrorBoxes(){
+		if( m_to_create_lost_or_fail_window ){
+			m_to_create_lost_or_fail_window = false;
+
+			UtilityTool.StartCorutineBox( LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_1 ),
+				LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_2 ),
+				"",
+				null,
+				LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_3 ),
+				null,
+				ReLoginClickCallback,
+				null,
+				null,
+				null,
+				false,
+				false,
+				true );
+		}
+
+		if( m_to_create_time_out_window ){
+			m_to_create_time_out_window = false;
+
+			UtilityTool.StartCorutineBox( LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_3 ),
+				LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_1 ),
+				"",
+				null,
+				LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_4 ), 
+
+				null, 
+				m_time_out_click,
+				m_time_out_create,
+				null,
+				null,
+
+				false,
+				false,
+				true);
+		}
+	}
+
+	private static bool m_to_create_time_out_window = false;
+
+	private static UIBox.onclick m_time_out_click = null;
+
+	private static UIBox.OnBoxCreated m_time_out_create = null;
+
+	public static void CreateTimeOutReConnectWindow( UIBox.onclick p_on_click, UIBox.OnBoxCreated p_on_create = null ){
+		//		Debug.Log ( "CreateTimeOutReConnectWindow()" );
+
+		m_to_create_time_out_window = true;
+
+		m_time_out_click = p_on_click;
+
+		m_time_out_create = p_on_create;
+	}
+
+	private static bool m_to_create_lost_or_fail_window = false;
+
+	public static void CreateConnectionLostOrFailWindow(){
+	//		Debug.Log ( "CreateConnectionLostOrFailWindow()" );
+
+		m_to_create_lost_or_fail_window = true;
+	}
+
+	public static void ReLoginClickCallback( int p_i ){
+		//		Debug.Log("ReLoginClickCallback( " + p_i + " )");
+
+		{
+			//			if( SocketTool.WillReconnect() )
+			{
+				//				SceneManager.CleanGuideAndDialog();
+
+				SceneManager.RequestEnterLogin();
+			}
+		}
+	}
+
+	/// called only in OnProcessProto
+	public static void CreateGeneralErrorWindow( int p_error_code, string p_error_desc, int p_client_cmd ){
+		Global.CreateBox("System Error",
+			"code: " + p_error_code + "\n" +
+			"desc: " + p_error_desc + "\n" +
+			"client cmd: " + p_client_cmd,
+			null, null, 
+			"OK",
+			null, null, null,
+			null,
+			null,
+			false,
+			false,
+			true);
 	}
 
 	#endregion

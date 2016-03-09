@@ -13,7 +13,8 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     public List<GameObject> m_listParent;
     public UIGrid m_YuJueSuffParent;
     public List<WorshipStepAwardManangerment> m_listRewardEvent;
-
+    public List<WorshipFengChanManagerment> m_listFengShanInfo;
+   
     public GameObject m_MainParent;
     public GameObject m_Durable_UI;
     public GameObject m_RewardObj;
@@ -45,6 +46,12 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_TanHaoMoBai;
     public GameObject m_TanHaoFengShan;
     public UIProgressBar m_ProgressBar;
+
+    public List<GameObject> m_listMoBaiPiao;
+    public List<GameObject> m_listFengShanPiao;
+
+    public GameObject m_ObjTopLeft;
+    public UILabel m_LabDingLiSignal;
     private int yuanBaoCost = 0;
     struct RewardYuJueInfo
     {
@@ -62,12 +69,12 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     private bool isWorship = false;
     private int touchIndex = -1;
     private int _mobaiCount = 0;
+    private Vector3 vec_pos = new Vector3(332, 235, 0);
     public struct YuJueShow
     {
         public int icon;
         public int color;
         public int count;
-
     };
     private List<YuJueShow> _listYJ = new List<YuJueShow>();
     private bool _isShowHide = false;
@@ -82,18 +89,52 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 
     void Start()
     {
+        if (FreshGuide.Instance().IsActive(400030) && TaskData.Instance.m_TaskInfoDic.ContainsKey(400030) && TaskData.Instance.m_TaskInfoDic[400030].progress >= 0)
+        {
+            //CityGlobalData.m_isRightGuide = false;
+            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400030];
+            tempTaskData.m_iCurIndex = 1;
+            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
+        }
+        else
+        {
+            UIYindao.m_UIYindao.CloseUI();
+           // UIYindao.m_UIYindao.CloseJiantou();
+        }
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "联盟图腾", 0, 0);
         m_ListTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-        // m_LabelSignal.text = LanguageTemplate.GetText();
+        m_LabelSignal.text = LanguageTemplate.GetText(1520);
         m_ListEvent.ForEach(p => p.m_Handle += EventGet);
-        m_listRewardEvent.ForEach(p => p.OnNormalPress += RewardGet);
+        m_listRewardEvent.ForEach(p =>p.m_TouchLQEvent.m_Handle += RewardGet);
         m_listRewardEvent.ForEach(p => p.OnLongPress += ShowReward);
         m_listRewardEvent.ForEach(p => p.OnLongPressFinish += LongFinish);
         m_ListTypeEvent.ForEach(p => p.m_Handle += TypeInfo);
         //m_listRewardEvent.ForEach(p => p.m_TouchEvent.m_Handle += ShowReward);
         m_SEC.OpenCompleteDelegate += RequestData;
         m_ListCancelEvent.ForEach(p => p.m_Handle += HiddenReward);
+        m_listFengShanInfo.ForEach(p =>p.m_Event.m_Handle += FengShan);
     }
 
+
+    void FengShan(int index)
+    {
+        UIYindao.m_UIYindao.CloseUI();
+        if (JunZhuData.Instance().m_junzhuInfo.tili >= 999)
+        {
+            EquipSuoData.ShowSignal(null, LanguageTemplate.GetText(800));
+            return;
+
+        }
+        MemoryStream t_tream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        FengShanReq fens = new FengShanReq();
+        fens.confId = LianmengFengshanTemplate.GetFengshanById(index + 1).id;
+        t_qx.Serialize(t_tream, fens);
+        byte[] t_protof;
+        t_protof = t_tream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_DO_ALLIANCE_FENGSHAN_REQ, ref t_protof);
+
+    }
     void ShowInfo()
     {
         Vector3[] effect = { new Vector3(-265, -120, 0), new Vector3(28, -120, 0), new Vector3(350, -120, 0) };
@@ -111,11 +152,13 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     int type_Touch_index = 0;
     void TypeInfo(int index)
     {
+        touchIndex = 0;
         if (type_Touch_index != index)
         {
             type_Touch_index = index;
             if (index == 0)
             {
+                m_LabelSignal.text = LanguageTemplate.GetText(1520);
                 m_ListTypeEvent[index].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
                 m_ListTypeEvent[index + 1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
                 m_MoBai.SetActive(true);
@@ -123,10 +166,12 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             }
             else
             {
+                m_LabelSignal.text = LanguageTemplate.GetText(1603);
                 m_ListTypeEvent[index - 1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
                 m_ListTypeEvent[index].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
                 m_MoBai.SetActive(false);
-                m_FengChan.SetActive(true);
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_FENGSHAN_REQ);
+             
             }
         }
 
@@ -134,6 +179,11 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     void LongFinish(GameObject obj)
     {
         m_RewardObj.SetActive(false);
+        int size = m_RewardParent.transform.childCount;
+        for (int i = 0; i < size; i++)
+        {
+            Destroy(m_RewardParent.transform.GetChild(i).gameObject);
+        }
     }
 
     void ShowReward(GameObject obj)
@@ -171,34 +221,34 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             }
         }
     }
-    void  RewardGet(GameObject obj)
+    void  RewardGet(int index)
     {
-        if (obj.name.IndexOf('_') > -1)
+      //  if (obj.name.IndexOf('_') > -1)
         {
-            string[] ss = obj.name.Split('_');
-            switch (int.Parse(ss[1]))
+          ///  string[] ss = obj.name.Split('_');
+            switch (index)
             {
                 case 0:
                     {
-                        if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes1 && worshipShow.bigStep0 == 1)
+                        if (_mobaiCount >= LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes1 && worshipShow.bigStep0 == 1)
                         {
-                            GetReward(int.Parse(ss[1]) + 1);
+                            GetReward(index + 1);
                         }
                     }
                     break;
                 case 1:
                     {
-                        if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes2 && worshipShow.bigStep1 == 1)
+                        if (_mobaiCount >= LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes2 && worshipShow.bigStep1 == 1)
                         {
-                            GetReward(int.Parse(ss[1]) + 1);
+                            GetReward(index + 1);
                         }
                     }
                     break;
                 case 2:
                     {
-                        if (_mobaiCount == LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes3 && worshipShow.bigStep2 == 1)
+                        if (_mobaiCount >= LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes3 && worshipShow.bigStep2 == 1)
                         {
-                            GetReward(int.Parse(ss[1]) + 1);
+                            GetReward(index + 1);
                         }
                     }
                     break;
@@ -228,7 +278,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         {
             Destroy(m_RewardParent.transform.GetChild(i).gameObject);
         }
-
+        m_RewardParent.repositionNow = true;
         _listReward.Clear();
 
         if (_award.IndexOf("#") > -1)
@@ -263,9 +313,12 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         {
             Destroy(m_RewardParent.transform.GetChild(i).gameObject);
         }
+        m_RewardParent.transform.localPosition = Vector3.zero;
     }
     void Update()
     {
+        // m_TanHaoFengShan.SetActive();
+    
         if (JunZhuData.Instance().m_RefreshCopperInfo)
         {
             JunZhuData.Instance().m_RefreshCopperInfo = false;
@@ -282,6 +335,13 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 
     void EventGet(int index, GameObject gameobject)
     {
+        UIYindao.m_UIYindao.CloseUI();
+        if (JunZhuData.Instance().m_junzhuInfo.tili >= 999)
+        {
+            EquipSuoData.ShowSignal(null, LanguageTemplate.GetText(800));
+            return;
+
+        }
         touchIndex = index;
         switch ((WorshipButtonEnumManegernent)index)
         {
@@ -323,7 +383,6 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
                     {
                         if (JunZhuData.Instance().m_junzhuInfo.vipLv >= VipFuncOpenTemplate.GetNeedLevelByKey(11))
                         {
-                            //Debug.Log("worshipShow.yuOpenworshipShow.yuOpen ::" + worshipShow.yuOpen);
                             if (worshipShow.yuOpen)
                             {
                                 ConnectServer(index);
@@ -372,7 +431,9 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         string str = "";
         if (touchIndex == 1)
         {
-            str = LanguageTemplate.GetText(LanguageTemplate.Text.VIP_SIGNAL_TAG) + VipFuncOpenTemplate.GetNeedLevelByKey(7).ToString() + NameIdTemplate.GetName_By_NameId(990019) + NameIdTemplate.GetName_By_NameId(990044);
+            str = LanguageTemplate.GetText(600)
+                + VipFuncOpenTemplate.GetNeedLevelByKey(7).ToString() 
+                + LanguageTemplate.GetText(603) + "\n\n" + LanguageTemplate.GetText(700);
         }
         else
         {
@@ -403,7 +464,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         t_protof = t_tream.ToArray();
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MoBai, ref t_protof);
     }
-
+    FengShanInfoResp _FengShanTemple;
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
         if (p_message != null)
@@ -422,46 +483,74 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 
                         t_qx.Deserialize(t_tream, worship, worship.GetType());
 
-                        m_TanHaoMoBai.SetActive(worship.tongBiOpen || worship.yuanBaoOpen || worship.yuOpen);
-                        m_YuanBaoTanHao.SetActive(worship.yuanBaoOpen);
-                        m_YuJueTanHao.SetActive(worship.yuOpen);
-                        m_TanHaoFengShan.SetActive(false);
+                        m_TanHaoMoBai.SetActive(worship.tongBiOpen || worship.yuanBaoOpen || (worship.yuOpen && YuJueIsEnough()));
 
-                        m_TanHaoMoBai.SetActive(false);
-                        m_TanHaoFengShan.SetActive(false);
-                        worshipShow = worship;
-                        m_listRewardEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(worship.bigStep0 == 1 ? true : false, 1);
+                        MainCityUI.SetRedAlert(400010, worship.tongBiOpen);
+                        MainCityUI.SetRedAlert(400012, worship.yuanBaoOpen);
+                        MainCityUI.SetRedAlert(400015, worship.yuOpen && YuJueIsEnough());
+ 
+                        m_YuanBaoTanHao.SetActive(worship.yuanBaoOpen);
+                        m_YuJueTanHao.SetActive(worship.yuOpen && YuJueIsEnough());
+                        m_TanHao.SetActive(worship.tongBiOpen);
+                            worshipShow = worship;
+                        m_listRewardEvent[0].GetComponent<ButtonColorManagerment>().ShakeEffectShow(worship.bigStep0 == 1 ? true : false);
                         if (worship.bigStep0 != 2)
                         {
+                            m_listRewardEvent[0].m_TouchLQEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(worship.bigStep0 == 0 ? false : true);
+                            m_listRewardEvent[0].m_ObjFirst.SetActive(true);
+                            m_listRewardEvent[0].m_ObjScecond.SetActive(false);
                             m_listRewardEvent[0].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_0) + LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes1.ToString() + LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_1);
                         }
                         else
                         {
-                            m_listRewardEvent[0].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                            m_listRewardEvent[0].m_TouchLQEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+                            m_listRewardEvent[0].m_LabLQ.gameObject.SetActive(false);
+                            m_listRewardEvent[0].m_LabYLQ.gameObject.SetActive(true);
+                            m_listRewardEvent[0].m_ObjFirst.SetActive(false);
+                            m_listRewardEvent[0].m_ObjScecond.SetActive(true);
+                            //   m_listRewardEvent[0].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                            m_listRewardEvent[0].m_LabTitle.text = "";
                         }
                         //m_listRewardEvent[0].m_LabTitle.gameObject.SetActive(worship.bigStep0 == 2);
-                        m_listRewardEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(worship.bigStep1 == 1, 1);
+                        m_listRewardEvent[1].GetComponent<ButtonColorManagerment>().ShakeEffectShow(worship.bigStep1 == 1);
 
                         if (worship.bigStep1 != 2)
                         {
+                            m_listRewardEvent[1].m_TouchLQEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(worship.bigStep1 == 0 ? false:true);
+                            m_listRewardEvent[1].m_ObjFirst.SetActive(true);
+                            m_listRewardEvent[1].m_ObjScecond.SetActive(false);
                             m_listRewardEvent[1].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_0) + LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes2.ToString() + LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_1);
-
                         }
                         else
                         {
-                            m_listRewardEvent[1].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                            m_listRewardEvent[1].m_TouchLQEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+                            m_listRewardEvent[1].m_LabLQ.gameObject.SetActive(false);
+                            m_listRewardEvent[1].m_LabYLQ.gameObject.SetActive(true);
+                            m_listRewardEvent[1].m_ObjFirst.SetActive(false);
+                            m_listRewardEvent[1].m_ObjScecond.SetActive(true);
+                            //m_listRewardEvent[1].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                            m_listRewardEvent[1].m_LabTitle.text = "";
                         }
 
                         //   m_listRewardEvent[1].m_LabTitle.gameObject.SetActive(worship.bigStep1 == 2);
-                        m_listRewardEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(worship.bigStep2 == 1, 1);
+                        m_listRewardEvent[2].GetComponent<ButtonColorManagerment>().ShakeEffectShow(worship.bigStep2 == 1);
                         if (worship.bigStep2 != 2)
                         {
+                            m_listRewardEvent[2].m_TouchLQEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(worship.bigStep2 == 0 ? false : true);
+                            m_listRewardEvent[2].m_ObjFirst.SetActive(true);
+                            m_listRewardEvent[2].m_ObjScecond.SetActive(false);
                             m_listRewardEvent[2].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_0) + LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes3.ToString() + LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_1);
 
                         }
                         else
-                        {
-                            m_listRewardEvent[2].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                        { 
+                            m_listRewardEvent[2].m_TouchLQEvent.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+                            m_listRewardEvent[2].m_LabLQ.gameObject.SetActive(false);
+                            m_listRewardEvent[2].m_LabYLQ.gameObject.SetActive(true);
+                            m_listRewardEvent[2].m_ObjFirst.SetActive(false);
+                            m_listRewardEvent[2].m_ObjScecond.SetActive(true);
+                            //  m_listRewardEvent[2].m_LabTitle.text = LanguageTemplate.GetText(LanguageTemplate.Text.WORSHIP_TITI_2);
+                            m_listRewardEvent[2].m_LabTitle.text = "";
                         }
                         // m_listRewardEvent[2].m_LabTitle.gameObject.SetActive(worship.bigStep2 == 2);
 
@@ -513,15 +602,110 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
                             _isShowHide = false;
                             ShowInfo();
                         }
+                        m_TanHaoFengShan.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(400100) || PushAndNotificationHelper.IsShowRedSpotNotification(400110));
+                        NewAlliancemanager.Instance().Refreshtification();
                         ShowWorshipInfo();
                         return true;
                     }
-
-
-                case ProtoIndexes.IMMEDIATELY_JOIN_RESP:/** 返回领奖信息 **/
+ 
+                case ProtoIndexes.S_ALLIANCE_FENGSHAN_RESP:/** 封禅信息 **/
                     {
+                        MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                        FengShanInfoResp FengShan = new FengShanInfoResp();
+                        t_qx.Deserialize(t_tream, FengShan, FengShan.GetType());
+                        if (FengShan.fsInfo != null)
+                        {
+                            _FengShanTemple = FengShan;
+                            int size = FengShan.fsInfo.Count;
+                            for (int i = 0; i < size; i++)
+                            {
+                                m_listFengShanInfo[i].m_TopTitle.text = LianmengFengshanTemplate.GetFengshanById(FengShan.fsInfo[i].confId).desc1;
+                                m_listFengShanInfo[i].m_MidTitle.text = LianmengFengshanTemplate.GetFengshanById(FengShan.fsInfo[i].confId).desc2;
+
+                                if (FengShan.fsInfo[i].state == 2)
+                                {
+                                    m_listFengShanInfo[i].m_TanHao.SetActive(true);
+                                    m_listFengShanInfo[i].m_Event.transform.GetComponent<ButtonColorManagerment>().ButtonsControl(true);
+                                }
+                                else
+                                {
+                                    m_listFengShanInfo[i].m_TanHao.SetActive(false);
+                                    m_listFengShanInfo[i].m_Event.transform.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+                                    if (FengShan.fsInfo[i].state == 3)
+                                    {
+                                        m_listFengShanInfo[i].m_UnFengChan.SetActive(false);
+                                        m_listFengShanInfo[i].m_FengChanSuccess.SetActive(true);
+                                    }
+                                }
+                            }
+                          //  m_TanHaoFengShan.SetActive(WetherCanFengShan());
+                            m_FengChan.SetActive(true);
+                        }
+
+                            return true;
+                    }
+                case ProtoIndexes.S_DO_ALLIANCE_FENGSHAN_RESP:/** 封禅领奖信息 **/
+                    {
+                        MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+
+                        FengShanResp FengShan = new FengShanResp();
+
+                        t_qx.Deserialize(t_tream, FengShan, FengShan.GetType());
+                        if (FengShan.result == 10)
+                        {
+                            NewAlliancemanager.Instance().Refreshtification();
+                            worshipShow.buffCount++;
+                            m_ListCount[13].text = worshipShow.buffCount.ToString() + "/" + LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3.ToString() + "（每日重置归零）";
+                            int size = _FengShanTemple.fsInfo.Count;
+                            for (int i = 0; i < size; i++)
+                            {
+                                if (FengShan.confId == _FengShanTemple.fsInfo[i].confId)
+                                {
+                                    if (FengShan.confId == 1)
+                                    {
+                                        MainCityUI.SetRedAlert(400100, false);
+                                        PushAndNotificationHelper.SetRedSpotNotification(400100, false);
+                                    }
+                                    else
+                                    {
+                                        MainCityUI.SetRedAlert(40110, false);
+                                        PushAndNotificationHelper.SetRedSpotNotification(400110, false);
+                                    }
+                                    MoveActionAlong(m_listFengShanPiao[i].transform);
+                                    _FengShanTemple.fsInfo[i].state = 3;
+
+                                    m_listFengShanInfo[i].m_UnFengChan.SetActive(false);
+                                    m_listFengShanInfo[i].m_FengChanSuccess.SetActive(true);
+                                }
+                            }
+                            NewAlliancemanager.Instance().Refreshtification();
+
+                            m_TanHaoFengShan.SetActive(WetherCanFengShan());
+                            m_listFengShanInfo[FengShan.confId - 1].m_TanHao.SetActive(false);
+                            m_listFengShanInfo[FengShan.confId -1].m_Event.GetComponentInChildren<ButtonColorManagerment>().ButtonsControl(false);
+                           FunctionWindowsCreateManagerment.ShowRAwardInfo(LianmengFengshanTemplate.GetFengshanById(FengShan.confId).award);
+
+                        }
+
                         return true;
                     }
+
+            }
+        }
+        return false;
+    }
+
+    private bool WetherCanFengShan()
+    {
+        int size = _FengShanTemple.fsInfo.Count;
+        for (int i = 0; i < size; i++)
+        {
+            if (_FengShanTemple.fsInfo[i].state == 2)
+            {
+              return true;
             }
         }
         return false;
@@ -536,9 +720,9 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     {
         _mobaiCount = worshipShow.buffCount;
 		MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
-        m_TanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(400010));
+      //  m_TanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(400010));
         m_ProgressBar.value = worshipShow.buffCount / float.Parse(LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3.ToString());
-        m_ListCount[13].text = worshipShow.buffCount.ToString()+ "/" + LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3.ToString();
+        m_ListCount[13].text = worshipShow.buffCount.ToString()+ "/" + LianMengTuTengTemplate.getTuTengAwardByLevel(1).moBaiTimes3.ToString() + "（每日重置归零）";
         m_ListGameobjectShow[6].GetComponent<UICamera>().enabled = true;
         if (GetCopperCoinWorshipEnable())
         {
@@ -556,7 +740,8 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             m_ListGameobjectShow[1].SetActive(true);
         }
 
-        m_ListCount[1].text = MyColorData.getColorString(1, NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(1).tili + NameIdTemplate.GetName_By_NameId(990036));
+        m_ListCount[1].text = MyColorData.getColorString(1, NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(1).tili + LanguageTemplate.GetText(1529)
+                              + "\n           " + NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(1).gongxian + LanguageTemplate.GetText(1530));
         if (GetYuanBaoWorshipEnable())
         {
             m_ListCount[2].text = MyColorData.getColorString(1, LianmengMoBaiTemplate.GetShowInfoByType(2).needNum.ToString());
@@ -565,7 +750,8 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         {
             m_ListCount[2].text = MyColorData.getColorString(5, LianmengMoBaiTemplate.GetShowInfoByType(2).needNum.ToString());
         }
-        m_ListCount[3].text = MyColorData.getColorString(1, NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(2).tili + NameIdTemplate.GetName_By_NameId(990036));
+        m_ListCount[3].text = MyColorData.getColorString(1, NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(2).tili + LanguageTemplate.GetText(1529)
+                                                            + "\n           " + NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(2).gongxian + LanguageTemplate.GetText(1530));
 
 
         if (!worshipShow.yuanBaoOpen)
@@ -573,10 +759,23 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             m_ListGameobjectShow[2].SetActive(false);
             m_ListGameobjectShow[3].SetActive(true);
         }
+        m_LabDingLiSignal.text = MyColorData.getColorString(1, NameIdTemplate.GetName_By_NameId(990035) + GetString(LianmengMoBaiTemplate.GetShowInfoByType(3).award) + LanguageTemplate.GetText(1531) +"\n" +NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(3).tili + LanguageTemplate.GetText(1529)
+                                                            +"  "+ NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(3).gongxian + LanguageTemplate.GetText(1530)
+                                                           
 
+                                                            );
+        ;
         ButtonEnable(1, worshipShow.yuanBaoOpen);
 
         YuJueInfo();
+    }
+
+    private string GetString(string award)
+    {
+        string info = "";
+        string[] ss = award.Split(':');
+        info = ss[2].ToString();
+        return info;
     }
 
     void ButtonEnable(int index, bool ison)
@@ -770,8 +969,6 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
             }
         }
         return false;
-        
-        //return BagData.Instance().GetCountByItemId(950001) >= 1 && BagData.Instance().GetCountByItemId(950002) >= 1 && BagData.Instance().GetCountByItemId(950003) >= 1 && BagData.Instance().GetCountByItemId(950004) >= 1 && BagData.Instance().GetCountByItemId(950005) >= 1;
     }
 
     int row = 5;
@@ -876,7 +1073,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
    
       //for (int i = 0; i < yujueInfo.Length; i++)
       //{
-      //    Debug.Log(yujueInfo[i]);
+ 
       //    string[] ss = yujueInfo[i].Split(':');
       //    RewardYuJueInfo ryji = new RewardYuJueInfo();
       //    ryji.icon = ss[1];
@@ -889,6 +1086,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     void RewardMoveEffect(int index)
     {
         indexNum3 = index;
+        MoveActionAlong(m_listMoBaiPiao[touchIndex].transform);
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.WORSHIP_EFFECT_ITEM), ResourcesLoadCallBack3);
     }
 
@@ -906,9 +1104,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     void WorshipMoveEffect(int index)
     {
         index_Num4 = index;
-        //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.WORSHIP_REWARD_MOVE_ITEM), ResourcesLoadCallBack4);
         FunctionWindowsCreateManagerment.ShowRAwardInfo(LianmengMoBaiTemplate.GetShowInfoByType(index_Num4 + 1).awardShow);
-        //LianmengMoBaiTemplate.GetShowInfoByType(index_Num4 + 1)
     }
 
     public void ResourcesLoadCallBack4(ref WWW p_www, string p_path, Object p_object)
@@ -933,7 +1129,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 
             iconSampleManager.SetIconPopText(_listYJ[_indexNum].icon, NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(_listYJ[_indexNum].icon).nameId), DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(_listYJ[_indexNum].icon).descId));
 
-            tempObject.transform.localScale = Vector3.one*0.5f;
+            tempObject.transform.localScale = Vector3.one*0.45f;
 
             if (_indexNum < _listYJ.Count - 1)
             {
@@ -1063,5 +1259,36 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
         }
 
         return 0;
+    }
+    Vector3 vec_target = new Vector3(75, 232, 0);
+    private GameObject _PiaoLingObject;
+    void MoveActionAlong(Transform trans)
+    {
+        _PiaoLingObject = trans.gameObject;
+      UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, trans.gameObject, EffectIdTemplate.GetPathByeffectId(620216), null);
+        iTween.MoveTo(trans.transform.gameObject, iTween.Hash("position", vec_target, "islocal", true, "delay", 0, "easeType", "linear", "time", 0.5f, "oncomplete", "SendName", "oncompletetarget", gameObject));
+    }
+
+    void SendName()
+    {
+       UI3DEffectTool.ClearUIFx(_PiaoLingObject.gameObject);
+        if (touchIndex == 2)
+        {
+            m_listMoBaiPiao[touchIndex].transform.localPosition = new Vector3(332,-235,0);
+        }
+    }
+
+    private bool YuJueIsEnough()
+    {
+        if (BagData.Instance().GetCountByItemId(950002) >= 1
+            && BagData.Instance().GetCountByItemId(950005) >= 1
+            && BagData.Instance().GetCountByItemId(950001) >= 1
+            && BagData.Instance().GetCountByItemId(950004) >= 1
+            && BagData.Instance().GetCountByItemId(950003) >= 1)
+        {
+            return true;
+        }
+ 
+            return false;
     }
 }

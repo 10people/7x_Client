@@ -83,7 +83,18 @@ public class PveTempTemplate : XmlLoadManager {
 
 	public int recZhanli;
 
-	public int recMibaoSkill;
+	public string recMibaoSkill;
+
+	public string OPenSkillLabel;
+
+	public int bossIcon; //0 为没有bossicon  1 wei you boss
+
+	public string bubble; // 气泡
+
+	public int BigIcon; // 1wei bigicon
+
+	public string enddingRemind;
+
 
 	public static List<PveTempTemplate> templates = new List<PveTempTemplate>();
 	
@@ -233,7 +244,22 @@ public class PveTempTemplate : XmlLoadManager {
 				t_template.recZhanli = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.recMibaoSkill = int.Parse( t_reader.Value );
+				t_template.recMibaoSkill =  t_reader.Value ;
+
+				t_reader.MoveToNextAttribute();
+				t_template.OPenSkillLabel =  t_reader.Value ;
+
+				t_reader.MoveToNextAttribute();
+				t_template.bossIcon = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.bubble =  t_reader.Value ;
+
+				t_reader.MoveToNextAttribute();
+				t_template.BigIcon = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.enddingRemind = t_reader.Value;
 			}
 			
 			//			t_template.Log();

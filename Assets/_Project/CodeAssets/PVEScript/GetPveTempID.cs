@@ -77,7 +77,7 @@ public class GetPveTempID : MonoBehaviour {
 	}
 	public void Init ()
 	{  
-		needjunzhuLevel = JunZhuData.Instance ().m_junzhuInfo.level;
+		needjunzhuLevel = JunZhuData.Instance().m_junzhuInfo.level;
 
 		currentID = litter_Lv.guanQiaId;
 
@@ -266,7 +266,7 @@ public class GetPveTempID : MonoBehaviour {
 
 					RenWuId = litter_Lv.renWuId;
 				
-					Debug.Log("RenWuId = " +RenWuId);
+					//Debug.Log("RenWuId = " +RenWuId);
 
 					if(RenWuId <= 0)
 					{
@@ -338,10 +338,10 @@ public class GetPveTempID : MonoBehaviour {
 		string Contain1 = LanguageTemplate.GetText(LanguageTemplate.Text.RENWU_LIMIT);
 
 		string Contain2 = ZhuXianTemp.GeTaskTitleById (RenWuId);
+		//
+	//	Debug.Log (" RenWuId = " +RenWuId);
 
-		Debug.Log (" RenWuId = " +RenWuId);
-
-		Debug.Log (" RenWuId = " +Contain2);
+		//.Log (" RenWuId = " +Contain2);
 
 		string Contain3 = LanguageTemplate.GetText(LanguageTemplate.Text.FINGHT_CONDITON);
 		string Comfirm = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);

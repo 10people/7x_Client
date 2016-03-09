@@ -1,14 +1,15 @@
-﻿using UnityEngine;
+﻿using ProtoBuf;
+using ProtoBuf.Meta;
+using qxmobile.protobuf;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using ProtoBuf;
-using qxmobile.protobuf;
-using ProtoBuf.Meta;
+using UnityEngine;
 public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventListener
 {
-
+    public UISprite m_SpriteJinJie;
     public List<EventHandler> ListEventHandler;
     public GameObject m_ButtonClose;
     public UILabel m_EquipName;
@@ -62,6 +63,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
     public UIGrid m_ObjGrid;
     public UIGrid m_ObjGrid2;
     public List<GameObject> m_listSignal;
+    private float _ValueSave = 0;
     public struct DiaoLuoGuanQia
     {
         public string GuanQiaName;
@@ -105,12 +107,16 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
     private GuanQiaMaxId MapCurrentInfo = null;
     void Start()
     {
-        ListEventHandler.ForEach(item => item.m_handler += Touched);
+        ListEventHandler.ForEach(item => item.m_click_handler += Touched);
     }
     void OnEnable()
     {
         m_ButtonClose.SetActive(true);
         if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
+        {
+
+        }
+        else if (FreshGuide.Instance().IsActive(100405) && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
         {
             
         }
@@ -124,9 +130,13 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
 
     void OnDisable()
     {
-        m_ButtonClose.SetActive(false);
-        UI3DEffectTool.Instance().ClearUIFx(m_SpritePinZhi.gameObject);
- 
+	    if (m_ButtonClose != null)
+        {
+            m_ButtonClose.SetActive(false);
+        }
+
+            UI3DEffectTool.ClearUIFx(m_SpritePinZhi.gameObject);
+
         SocketTool.UnRegisterMessageProcessor(this);
     }
     public void OnUI2DShow()
@@ -137,26 +147,77 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
     {
         if (EquipsOfBody.Instance().m_RefrsehEquipsInfo)
         {
-            UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_AdvanceSuccess, EffectIdTemplate.GetPathByeffectId(100180), null);
+            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_AdvanceSuccess, EffectIdTemplate.GetPathByeffectId(100180), null);
             StartCoroutine(WaitSecond());
-            m_AdvanceSuccess.SetActive(true);
+          //  m_AdvanceSuccess.SetActive(true);
             EquipsOfBody.Instance().m_RefrsehEquipsInfo = false;
+
+            if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
+            {
+                TaskData.Instance.m_iCurMissionIndex = 100100;
+                ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+                tempTaskData.m_iCurIndex = 5;
+                UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+            }
+            else
+            {
+                UIYindao.m_UIYindao.CloseUI();
+            }
+
             isUpgrade = true;
             PushAndNotificationHelper.SetRedSpotNotification(1211, EquipSuoData.AllUpgrade());
             ShowEffert(m_SpritePinZhi.gameObject, 100166);
             ShowEffert(m_SpritePinZhi.gameObject, 600155);
+            DataInfo();
             EquipSaveId = EquipsOfBody.Instance().m_equipsOfBodyDic[BuWeiSave].itemId;
             //  EquipsInfoTidy(EquipsOfBody.Instance().m_equipsOfBodyDic[BuWeiSave]);
             GetEquipInfo(EquipSaveId, BuWeiSave);
-
+            Global.m_isZhanli = true;
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_ADVANCE),
+                            ResLoadedSimple);
         }
     }
 
-    IEnumerator WaitSecond()
+    void DataInfo()
+    {
+        if (ZhuangBei.GetItemByID(EquipSaveId).jiejieId != 0)
+        {
+            FunctionWindowsCreateManagerment.EquipAdvanceInfo ainfo = new FunctionWindowsCreateManagerment.EquipAdvanceInfo();
+            ainfo._equipid = EquipSaveId;
+            ainfo._nextid = ZhuangBei.GetItemByID(EquipSaveId).jiejieId;
+
+
+            if (!string.IsNullOrEmpty(exInfo.NextGong))
+            {
+                ainfo._gong = int.Parse(exInfo.Gong);
+                ainfo._fang = 0;
+                ainfo._ming = 0;
+                ainfo._gongadd = int.Parse(exInfo.NextGong) - int.Parse(exInfo.Gong);
+                ainfo._fanggadd = 0;
+                ainfo._minggadd = 0;
+            }
+            else
+            {
+                ainfo._gong = 0;
+                ainfo._fang = int.Parse(exInfo.Fang);
+                ainfo._ming = int.Parse(exInfo.Ming);
+                ainfo._gongadd = 0;
+                ainfo._fanggadd = int.Parse(exInfo.NextFang) - int.Parse(exInfo.Fang);
+                ainfo._minggadd = int.Parse(exInfo.NextMing) - int.Parse(exInfo.Ming);
+            }
+            FunctionWindowsCreateManagerment.m_AdvanceInfo = ainfo;
+        }
+    }
+    void ResLoadedSimple(ref WWW p_www, string p_path, UnityEngine.Object p_object)
+    {
+        GameObject tempObject = (GameObject)Instantiate(p_object);
+    }
+
+            IEnumerator WaitSecond()
     {
         //   yield return new WaitForSeconds(1.5f);
         yield return new WaitForSeconds(1.0f);
-        UI3DEffectTool.Instance().ClearUIFx(m_AdvanceSuccess);
+        UI3DEffectTool.ClearUIFx(m_AdvanceSuccess);
         m_AdvanceSuccess.SetActive(false);
 
     }
@@ -218,10 +279,18 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                     }
               
                     exInfo.EquipMaterialId = ZhuangBei.templates[i].jinjieItem;
+
+//					Debug.Log( "Ned Id: " + int.Parse(ZhuangBei.templates[i].jinjieItem) );
+
                     int MaterialCount = GetMaterialCountByID(int.Parse(ZhuangBei.templates[i].jinjieItem));
                     exInfo.EquipMaterialIcon = ZhuangBei.templates[i].jinjieItem;
                     exInfo.EquipMaterialCount = MaterialCount.ToString() + "/" + ZhuangBei.templates[i].jinjieNum;
                     exInfo._Value = MaterialCount / float.Parse(ZhuangBei.templates[i].jinjieNum);
+
+//					Debug.Log( "MaterialCount: " + MaterialCount );
+//
+//					Debug.Log( "Need: " + float.Parse(ZhuangBei.templates[i].jinjieNum) );
+
                     exInfo._isProgress = true;
                 }
                 else
@@ -260,7 +329,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
         }
         else
         {
-            m_Hidden.SetActive(true);
+           
             exInfo._isDiaoLuo = false;
             EquipsInfoTidy(EquipsOfBody.Instance().m_equipsOfBodyDic[buwei]);
         }
@@ -558,10 +627,21 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
  
         if (exInfo.PinZhi > 8 || exInfo._Value < 1 || JunZhuData.Instance().m_junzhuInfo.level < int.Parse(exInfo.Condition))
         {
+            //			Debug.Log( "exInfo.PinZhi: " + exInfo.PinZhi );
+            //
+            //			Debug.Log( "exInfo._Value: " + exInfo._Value );
+            //
+            //			Debug.Log( "JunZhuData.Instance().m_junzhuInfo.level: " + JunZhuData.Instance().m_junzhuInfo.level );
+            //
+            //			Debug.Log( "int.Parse(exInfo.Condition): " + int.Parse(exInfo.Condition) );
+            SparkleEffectItem.CloseSparkle(m_SpriteJinJie.gameObject);
+ 
             ListEventHandler[1].transform.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
         }
         else
         {
+
+            SparkleEffectItem.OpenSparkle(m_SpriteJinJie.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
             ListEventHandler[1].transform.GetComponent<ButtonColorManagerment>().ButtonsControl(true);
         }
         if (m_TopRight.transform.childCount > 0)
@@ -604,30 +684,17 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                                             ResourcesLoadCallBack);
             }
         }
+        m_Hidden.SetActive(true);
     }
 
     private void ShowEffert(GameObject obj,int index)
     {
-        UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, obj, EffectIdTemplate.GetPathByeffectId(index), null);
+        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, obj, EffectIdTemplate.GetPathByeffectId(index), null);
     }
  
     private void Touched(GameObject obj)
     {
-        if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
-        {
-            TaskData.Instance.m_iCurMissionIndex = 100100;
-            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 5;
-            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        }
-        else
-        {
-            UIYindao.m_UIYindao.CloseUI();
-        }
-
-        if (UICamera.GetTouches().Count == 1 && (Application.platform == RuntimePlatform.IPhonePlayer 
-            || Application.platform == RuntimePlatform.Android) 
-            || Application.platform == RuntimePlatform.WindowsEditor)
+		//if (DeviceHelper.IsSingleTouching() )
         {
             if (obj.name.Equals("ButtondAdvance"))
             {
@@ -746,9 +813,8 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                 gameObject.SetActive(false);
             }
         }
-
     }
-    public void UIBoxLoadCallback(ref WWW p_www, string p_path, Object p_object)
+    public void UIBoxLoadCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
         GameObject boxObj = Instantiate(p_object) as GameObject;
 
@@ -845,7 +911,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
     }
 
     int index_ShuXing = 0;
-    public void ResourcesLoadCallBack2(ref WWW p_www, string p_path, Object p_object)
+    public void ResourcesLoadCallBack2(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
         if (m_ObjGrid != null)
         {
@@ -942,7 +1008,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
 
     }
     int index_DiaoLuoNum = 0;
-    public void ResourcesLoadCallBack(ref WWW p_www, string p_path, Object p_object)
+    public void ResourcesLoadCallBack(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
         if (m_ObjGrid2 != null)
         {

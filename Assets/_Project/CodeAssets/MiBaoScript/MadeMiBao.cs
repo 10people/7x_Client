@@ -54,7 +54,7 @@ public class MadeMiBao : MonoBehaviour ,SocketProcessor{
 		MibaoActivate MiBaoinfo = new MibaoActivate ();
 		MemoryStream MiBaoinfoStream = new MemoryStream ();
 		QiXiongSerializer MiBaoinfoer = new QiXiongSerializer ();
-		Debug.Log ("myZuHe_mibao.tempId"+myZuHe_mibao.tempId);
+		//Debug.Log ("myZuHe_mibao.tempId"+myZuHe_mibao.tempId);
 		MiBaoinfo.tempId = myZuHe_mibao.tempId;
 		MiBaoinfoer.Serialize (MiBaoinfoStream,MiBaoinfo);
 		
@@ -118,7 +118,7 @@ public class MadeMiBao : MonoBehaviour ,SocketProcessor{
 						MiBaoXmlTemp mMiBao = MiBaoXmlTemp.getMiBaoXmlTempById(MiBaoActiveInfo.mibaoInfo.miBaoId);
 						if(mMiBao.zuheId == SecretPageManeger.localSkill[i].MiBaoZuHeId)
 						{
-							Debug.Log("ssssssssssssss"+SecretPageManeger.localSkill[i].Activenums);
+							//Debug.Log("ssssssssssssss"+SecretPageManeger.localSkill[i].Activenums);
 							SecretPageManeger.localSkill[i].Activenums += 1;
 							SecretPageManeger.localSkill[i].InitSkill();
 						}
@@ -135,7 +135,7 @@ public class MadeMiBao : MonoBehaviour ,SocketProcessor{
 				}
 				else{
 					
-					Debug.Log("m_MiBaoInfo.mibaiInfo == null" );
+					//Debug.Log("m_MiBaoInfo.mibaiInfo == null" );
 					return  false;
 				}
 			//	InitData();
@@ -148,7 +148,7 @@ public class MadeMiBao : MonoBehaviour ,SocketProcessor{
 			
 		}else
 		{
-			Debug.Log ("p_message == null");
+			//Debug.Log ("p_message == null");
 		}
 		
 		return false;

@@ -57,11 +57,10 @@ public class CartRouteTemplate : XmlLoadManager
                 t_template.Id = int.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
-                string[] splited = t_reader.Value.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < splited.Count(); i++)
+                string[] splited = t_reader.Value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < splited.Count() - 1; i = i + 2)
                 {
-                    string[] splited2 = splited[i].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                    t_template.Position.Add(new Vector2(float.Parse(splited2[0]), float.Parse(splited2[1])));
+                    t_template.Position.Add(new Vector2(float.Parse(splited[i]), float.Parse(splited[i + 1])));
                 }
             }
 

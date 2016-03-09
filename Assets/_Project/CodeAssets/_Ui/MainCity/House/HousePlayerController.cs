@@ -53,7 +53,7 @@ public class HousePlayerController : SinglePlayerController, SocketListener
                         SpriteMove tempMove = new SpriteMove();
                         QiXiongSerializer t_qx = new QiXiongSerializer();
                         t_qx.Deserialize(t_stream, tempMove, tempMove.GetType());
-                        Debug.Log("uiduiduiduiduiduiduiduiduiduid ::: " + tempMove.uid);
+//                        Debug.Log("uiduiduiduiduiduiduiduiduiduid ::: " + tempMove.uid);
                         HousePlayerManager.Instance.UpdatePlayerPosition(tempMove);
 
                         return true;

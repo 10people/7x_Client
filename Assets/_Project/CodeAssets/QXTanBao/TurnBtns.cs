@@ -91,8 +91,8 @@ public class TurnBtns : MonoBehaviour {
 			}
 			else
 			{
-				Debug.Log("moveX" +moveX);
-				Debug.Log("scrollor.cacx" +scrollViewPanel.cachedGameObject.transform.localPosition.x);
+//				Debug.Log("moveX" +moveX);
+//				Debug.Log("scrollor.cacx" +scrollViewPanel.cachedGameObject.transform.localPosition.x);
 				SpringPanel.Begin (scrollViewPanel.cachedGameObject,
 				                   new Vector3(scrollViewPanel.cachedGameObject.transform.localPosition.x - moveX, 0f, 0f), 8f);
 				yield return new WaitForSeconds(0.2f);

@@ -20,7 +20,7 @@ public class ActivityGuideController : MonoBehaviour
 	void Update (){
 //		if(m_TechnologyBtn.GetComponent<JunZhuChangeLayer> ().m_IsOn)
 //		{
-////		   if (FreshGuide.Instance ().IsActive ((FreshGuide.GuideState)6)) 
+////		   if (FreshGuide.Instance().IsActive ((FreshGuide.GuideState)6)) 
 ////		  {
 ////			this.gameObject.SetActive(true);
 ////			m_TechnologyBtn.GetComponent<JunZhuChangeLayer> ().m_IsOn = false;

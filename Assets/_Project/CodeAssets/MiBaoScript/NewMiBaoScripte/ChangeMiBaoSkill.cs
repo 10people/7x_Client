@@ -61,7 +61,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 	public string RootName;
 
-	public static ChangeMiBaoSkill Instance ()
+	public static ChangeMiBaoSkill Instance()
 	{
 		if (!mMiBaoSkillData)
 		{
@@ -133,7 +133,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
 		}
 
-		Zhanli.text = JunZhuData.Instance ().m_junzhuInfo.zhanLi.ToString ();
+		Zhanli.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ();
 
 		newZuHe_id = ZH_ID;
 
@@ -147,7 +147,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 		MiBaoSkillTEmList.Clear ();
 
-		my_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		my_MiBaoInfo = MiBaoGlobleData.Instance().G_MiBaoInfo;
 	
 
 //		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
@@ -406,9 +406,9 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 	public void SaveSkill()
 	{
-		Debug.Log ("SkillType = " +SkillType);
+		//Debug.Log ("SkillType = " +SkillType);
 
-		Debug.Log ("newZuHe_id = " +newZuHe_id);
+		//Debug.Log ("newZuHe_id = " +newZuHe_id);
 
 		SendSaveMiBaoMasege (SkillType,newZuHe_id);
 	}
@@ -442,7 +442,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		byte[] t_protof;
 		t_protof = miBaoStream.ToArray();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_MIBAO_SELECT,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_MIBAO_SELECT,ref t_protof);
 
 	}
 	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
@@ -480,9 +480,9 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 				if(Sava_MiBao.success == 1)//保存成功
 				{
-					Debug.Log ("Sava_MiBao.success");
+					//Debug.Log ("Sava_MiBao.success");
 					skillZuHeId = Sava_MiBao.zuheSkill;
-					Debug.Log ("Sava_MiBao.type:" + Sava_MiBao.type);
+					//Debug.Log ("Sava_MiBao.type:" + Sava_MiBao.type);
 					yinDaoId = Sava_MiBao.zuheSkill;
 					switch(Sava_MiBao.type)
 					{
@@ -504,12 +504,12 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 					case (int)(CityGlobalData.MibaoSkillType.PvpSend ):
 					{
 						GameObject tiaozhanObj = GameObject.Find ("GeneralChallengePage");
-						Debug.Log ("GeneralChallengePage:" + tiaozhanObj);
+						//Debug.Log ("GeneralChallengePage:" + tiaozhanObj);
 						if (tiaozhanObj != null)
 						{
-							GeneralTiaoZhan tiaozhan = tiaozhanObj.GetComponent<GeneralTiaoZhan> ();
-
-							tiaozhan.RefreshMiBaoSkillInfo (skillZuHeId);
+//							GeneralTiaoZhan tiaozhan = tiaozhanObj.GetComponent<GeneralTiaoZhan> ();
+//
+//							tiaozhan.RefreshMiBaoSkillInfo (skillZuHeId);
 
 							YinDaoCol ();
 						}
@@ -518,7 +518,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 					}
 					case (int)(CityGlobalData.MibaoSkillType.HY_TreSend ):
 					{
-						HY_UIManager.Instance ().ShowOrClose ();
+						HY_UIManager.Instance().ShowOrClose ();
 
 						HYRetearceEnemy.Instance().M_Treas_info.zuheId =  skillZuHeId;
 
@@ -554,9 +554,9 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 //							baizhanMain.DefensiveSetUp ();
 //							baizhanMain.IsOpenOpponent = false;
 //						}
-						PvpPage.pvpPage.pvpResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
-						PvpPage.pvpPage.PvpActiveState (true);
-						PvpPage.pvpPage.DefensiveSetUp ();
+//						PvpPage.pvpPage.pvpResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
+//						PvpPage.pvpPage.PvpActiveState (true);
+//						PvpPage.pvpPage.DefensiveSetUp ();
 
 						break;
 					}
@@ -575,7 +575,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YX_JinBi) :
 					{
-						Debug.Log("(int)(CityGlobalData.MibaoSkillType.YX_JinBi) = "+(int)(CityGlobalData.MibaoSkillType.YX_JinBi));
+						//Debug.Log("(int)(CityGlobalData.MibaoSkillType.YX_JinBi) = "+(int)(CityGlobalData.MibaoSkillType.YX_JinBi));
 						EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
 						YouXiaEnemyUI.mYouXiaEnemyUI.m_You_XiaInfo.zuheId = skillZuHeId;
 						YouXiaEnemyUI.mYouXiaEnemyUI.ShowMiBaoSkillIcon();
@@ -612,8 +612,8 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 
 						if (tiaozhanObj != null)
 						{
-							GeneralTiaoZhan tiaozhan = tiaozhanObj.GetComponent<GeneralTiaoZhan> ();
-							tiaozhan.RefreshMiBaoSkillInfo (skillZuHeId);
+//							GeneralTiaoZhan tiaozhan = tiaozhanObj.GetComponent<GeneralTiaoZhan> ();
+//							tiaozhan.RefreshMiBaoSkillInfo (skillZuHeId);
 						}
 
 						break;
@@ -664,7 +664,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
         }
 		if (SkillType == (int)CityGlobalData.MibaoSkillType.PVP_Fangshou)
 		{
-			PvpPage.pvpPage.DisActiveObj ();
+//			PvpPage.pvpPage.DisActiveObj ();
 		}
 		else
 		{
@@ -698,7 +698,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 			}
 			case (int)(CityGlobalData.MibaoSkillType.HY_TreSend ):
 			{
-				HY_UIManager.Instance ().ShowOrClose ();
+				HY_UIManager.Instance().ShowOrClose ();
 				
 				break;
 			}
@@ -744,7 +744,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		{
 //			BaiZhanMainPage.baiZhanMianPage.ShowChangeSkillEffect (true);
 //			BaiZhanMainPage.baiZhanMianPage.IsOpenOpponent = false;
-			PvpPage.pvpPage.PvpActiveState (true);
+//			PvpPage.pvpPage.PvpActiveState (true);
 			break;
 		}
 		case (int)(CityGlobalData.MibaoSkillType.YaBiao_Fangshou ):
@@ -754,12 +754,12 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		}
 		case (int)(CityGlobalData.MibaoSkillType.PvpSend ):
 		{
-			GeneralTiaoZhan.generalTiaoZhan.ShowChangeSkillEffect (true);
+//			GeneralTiaoZhan.generalTiaoZhan.ShowChangeSkillEffect (true);
 			break;
 		}
 		case (int)(CityGlobalData.MibaoSkillType.LueDuo_GongJi ):
 		{
-			GeneralTiaoZhan.generalTiaoZhan.ShowChangeSkillEffect (true);
+//			GeneralTiaoZhan.generalTiaoZhan.ShowChangeSkillEffect (true);
 			break;
 		}
 //		case (int)(CityGlobalData.MibaoSkillType.LueDuo_FangShou ):
@@ -776,7 +776,7 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		}
 		case (int)(CityGlobalData.MibaoSkillType.HY_TreSend ):
 		{
-			HY_UIManager.Instance ().ShowOrClose ();
+			HY_UIManager.Instance().ShowOrClose ();
 			
 			break;
 		}

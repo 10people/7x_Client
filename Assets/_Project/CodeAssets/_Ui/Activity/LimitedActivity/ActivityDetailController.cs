@@ -22,7 +22,7 @@ namespace LimitActivity
         public UIGrid m_Grid;
         public GameObject m_ReceiveItemPrefab;
 
-        public List<ReceiveItemController> m_ReceiveItemControllerList = new List<ReceiveItemController>();
+        public ReceiveItemController m_ReceiveItemController = new ReceiveItemController();
 
         /// <summary>
         /// Activity item data
@@ -75,11 +75,11 @@ namespace LimitActivity
                 m_ActivityDescLabelShort.gameObject.SetActive(false);
                 m_ActivityTimeCalcLabel.gameObject.SetActive(false);
 
-               // m_ActivityDescLabelTall.text = tempControl.Desc;
+                // m_ActivityDescLabelTall.text = tempControl.Desc;
             }
             m_ActivityStateLabel.text = tempControl.jinduDesc.Replace("**", ColorTool.Color_Green_00ff00 + m_ShouXianShiInfo.beizhu + "[-]");
-//            m_ActivityDescSprite.gameObject.SetActive(true);
-//            m_ActivityDescSprite.spriteName = tempControl.PicId.ToString();
+            //            m_ActivityDescSprite.gameObject.SetActive(true);
+            //            m_ActivityDescSprite.spriteName = tempControl.PicId.ToString();
 
             //Set receive item list.
             while (m_Grid.transform.childCount > 0)
@@ -89,28 +89,32 @@ namespace LimitActivity
                 child.parent = null;
                 Destroy(child.gameObject);
             }
-            m_ReceiveItemControllerList.Clear();
+            m_ReceiveItemController = null;
 
             List<HuoDongInfo> tempList = m_ShouXianShiInfo.huodong;
             tempList.Sort((item, item2) => item.huodongId.CompareTo(item2.huodongId));
             for (int i = 0; i < tempList.Count; i++)
             {
-                var temp = Instantiate(m_ReceiveItemPrefab) as GameObject;
-                TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                if (tempList[i].state == 10 || tempList[i].state == 40)
+                {
+                    var temp = Instantiate(m_ReceiveItemPrefab) as GameObject;
 
-                var controller = temp.GetComponent<ReceiveItemController>();
-                controller.m_ActivityDetailController = this;
-                controller.m_OpenXianShi = m_OpenXianShi;
-                controller.m_HuoDongInfo = tempList[i];
+                    temp.name = temp.name + " " + i;
 
-                controller.Refresh();
+                    TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
 
-                m_ReceiveItemControllerList.Add(controller);
+                    var controller = temp.GetComponent<ReceiveItemController>();
+                    controller.m_ActivityDetailController = this;
+                    controller.m_OpenXianShi = m_OpenXianShi;
+                    controller.m_HuoDongInfo = tempList[i];
+
+                    controller.Refresh();
+
+                    m_ReceiveItemController = controller;
+
+                    break;
+                }
             }
-
-            m_Grid.Reposition();
-
-			NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
         }
 
         public bool OnSocketEvent(QXBuffer p_message)
@@ -137,17 +141,16 @@ namespace LimitActivity
 
                                         lock (temp)
                                         {
-                                            var tempList = m_ReceiveItemControllerList.Where(item => item.m_HuoDongInfo.huodongId == tempInfo.huodongId).ToList();
-                                            if (tempList != null && tempList.Count == 1)
+                                            if (m_ReceiveItemController != null && m_ReceiveItemController.m_HuoDongInfo.huodongId == tempInfo.huodongId)
                                             {
                                                 //Set received sprite.
-                                                tempList[0].m_ReceiveButtonHandler.gameObject.SetActive(false);
-                                                tempList[0].ReceiveInfoSprite.gameObject.SetActive(true);
-                                                tempList[0].ReceiveInfoSprite.spriteName = ReceiveItemController.ReceivedSpriteName;
+                                                m_ReceiveItemController.m_ReceiveButtonHandler.gameObject.SetActive(false);
+                                                m_ReceiveItemController.ReceiveInfoSprite.gameObject.SetActive(true);
+                                                m_ReceiveItemController.ReceiveInfoSprite.spriteName = ReceiveItemController.ReceivedSpriteName;
 
                                                 //Pop up received response.
                                                 var iconList = new List<RewardData>();
-                                                tempList[0].m_IconList.ForEach(item =>
+                                                m_ReceiveItemController.m_IconList.ForEach(item =>
                                                 {
                                                     iconList.Add(new RewardData(item.id, item.num));
                                                 });
@@ -156,6 +159,7 @@ namespace LimitActivity
 
                                             //Refresh limit activity data.
                                             LimitActivityData.Instance.RequestData();
+                                            Refresh();
                                         }
 
                                         break;

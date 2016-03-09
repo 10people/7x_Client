@@ -17,17 +17,13 @@ public class SelectServeOne : MonoBehaviour {
 	/// </summary>
 	public GameObject gridObj;
 	/// <summary>
-	/// 上次登陆按钮obj
+	/// 上次登陆按钮sprite
 	/// </summary>
-	public GameObject lastLoginBtnObj;
+	public UISprite lastLoginBtnSprite;
 	/// <summary>
 	/// 上次登录按钮label
 	/// </summary>
-	public UILabel btn1Label;
-	/// <summary>
-	/// 上次登录按钮label
-	/// </summary>
-	public UILabel btn2Label;
+	public UILabel lastLoginBtnLabel;
 
 	public GameObject lastLoginObj;
 
@@ -90,7 +86,7 @@ public class SelectServeOne : MonoBehaviour {
 			loginItemList[2].GetComponent<UICenterOnClick> ().UICenterMove ();
 		}
 
-		AccountRequest.account.ShowLastLoginBtn (lastLoginBtnObj,btn1Label,btn2Label);
+		AccountRequest.account.ShowLastLoginBtn (lastLoginBtnSprite,lastLoginBtnLabel);
 	}
 
 	/// <summary>

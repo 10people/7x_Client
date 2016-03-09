@@ -133,7 +133,7 @@ public class AllianceDonation : MonoBehaviour,SocketProcessor {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.ALLIANCE_HUFU_DONATE,ref t_protof,"30150");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.ALLIANCE_HUFU_DONATE,ref t_protof,"30150");
 		Debug.Log ("DonationReq:" + ProtoIndexes.C_HYRESOURCE_CHANGE);
 	}
 

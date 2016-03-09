@@ -11,7 +11,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 {
     public UILabel m_TotalGold;
     private static GameObject IconSamplePrefab;
-    public static bool m_WetherIsIntensify = false;
+    public bool m_WetherIsIntensify = false;
     public GameObject m_IntensifyTanHao;
     public GameObject m_WashTanHao;
     public UILabel m_labelIntensify;
@@ -81,7 +81,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         public float _PregressValue;
         public int _AttrCount;
     };
-    private EquipBaseInfo _EquipBInfo;
+    private EquipBaseInfo _EquipBInfo = new EquipBaseInfo();
     private bool _isUsed = false;
     public EquipGrowthEquipInfoItemManagerment m_EquipItenm = null;
     void Start()
@@ -190,8 +190,8 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     public void ShowEquipInfo(ZhuangBei equipment, string gong, string fang, string xue, int max, int curr, int pinzhi, int level)
     {
         _CurrSave = curr;
-        _PinZhiSave = level;
-        _LevelSave = pinzhi;
+        _PinZhiSave = pinzhi;
+        _LevelSave = level;
         _MaxSave = max;
         equipmentShowed = equipment;
         ei.gong = gong;
@@ -267,8 +267,24 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         {
             m_EquipItenm.ShowInfo(_EquipBInfo);
             LoadAttrbuite();
-        } 
-        ShowLevel(ei.level, 0, 0, 0);
+        }
+    }
+
+    void ShowInfo()
+    {
+        if (EquipInfo.gongJiAdd > 0)
+        {
+            ShowLevel(ei.level, EquipInfo.gongJiAdd, 0, 0);
+        }
+        else if (EquipInfo.fangYuAdd > 0)
+        {
+            ShowLevel(ei.level, 0, EquipInfo.fangYuAdd, EquipInfo.shengMingAdd);
+        }
+        else
+        {
+            ShowLevel(ei.level, 0, 0, 0);
+        }
+
         m_MianInfo.SetActive(true);
         m_SharePart.SetActive(true);
 
@@ -276,7 +292,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         {
             _isUsed = true;
 
-			ManualAddToTop();
+            ManualAddToTop();
         }
     }
 
@@ -312,12 +328,14 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             {
                 WashEquipInfoShow();
             }
+
         }
         else
         {
             p_object = null;
         }
        LoadAttrbuite();
+        ShowInfo();
     }
 
     void LoadAttrbuite()
@@ -372,6 +390,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
             }
         }
+        ShowInfo();
     }
     private readonly Vector3 BasicIconPos = new Vector3(-110, 0, 0);
     private const int BasicIconDepth = 10;
@@ -380,10 +399,10 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private List<int> _Show_Fang = new List<int>();
     public void ShowLevel(int index, int gong, int fang, int xue)
     {
-      
-        m_EquipItenm.m_LabelLevel.text = MyColorData.getColorString(4, " +" + index.ToString());
+        m_EquipItenm.m_LabelName.text = _EquipBInfo._Name +MyColorData.getColorString(4, " +" + index.ToString());
         if (ShowType == 0)
         {
+
             if (gong > 0)
             {
                 CreateClone(m_EquipItenm.m_LabelGong.gameObject, gong);
@@ -433,6 +452,8 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                 int xx = int.Parse(ei.xue) + xue;
         
                 ei.xue = xx.ToString();
+              
+
                 CreateClone(m_EquipItenm.m_LabelXue.gameObject, xue);
                 CreateClone(m_EquipItenm.m_LabelFang.gameObject, fang);
                 if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), _EquipBInfo._Level + 1) != null)
@@ -590,19 +611,34 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                             if (!m_WetherIsIntensify)
                             {
                                 EquipInfoSave = Equip;
+                             
                             }
                             else
                             {
-                                UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_SpritePinZhi.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
+                                if (Equip.level > _LevelSave)
+                                {
+                                    {
+                                        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_ObjEffectTop, EffectIdTemplate.GetPathByeffectId(620213), null);
+                                        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_ObjEffectBottom, EffectIdTemplate.GetPathByeffectId(620212), null);
+                                    }
+                                    m_EquipItenm.m_LevelSave = Equip.level;
+                                    m_EquipItenm.m_listEffect.Add(Equip.level - _LevelSave);
+                                   
+                                }
+                                UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_SpritePinZhi.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
                                 m_WetherIsIntensify = false;
-                                CreateMove(m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
+
+                               
                                 if (EquipInfo.expMax == -1)
                                 {
                                     _isMaxLevel = true;
                                 }
-                                EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
-                                EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
-                                EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
+                             
+                                    CreateMove(m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
+                                    EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
+                                    EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
+                                    EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
+                               
                                 EquipInfoSave = Equip;
                             }
                         }
@@ -631,7 +667,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
  
                         if (Equip.allResp != null)
                         {
-                            UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YiJianQHEffect, EffectIdTemplate.GetPathByeffectId(100180), null);
+                            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YiJianQHEffect, EffectIdTemplate.GetPathByeffectId(100180), null);
                             m_YiJianQHEffect.SetActive(true);
                             StartCoroutine(WaitSecond());
 
@@ -652,6 +688,11 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                                 {
                                     StrengthenIndex = 0;
                                     EquipInfo = Equip.allResp[i];
+                                    if (Equip.allResp[i].level > _LevelSave)
+                                    {
+                                        m_EquipItenm.m_LevelSave = Equip.allResp[i].level;
+                                        m_EquipItenm.m_listEffect.Add(Equip.allResp[i].level - _LevelSave);
+                                    }
                                 }
                             }
                             EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
@@ -690,7 +731,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     {
         //   yield return new WaitForSeconds(1.5f);
         yield return new WaitForSeconds(1.0f);
-        UI3DEffectTool.Instance().ClearUIFx(m_YiJianQHEffect);
+        UI3DEffectTool.ClearUIFx(m_YiJianQHEffect);
         m_YiJianQHEffect.SetActive(false);
 
     }
@@ -698,7 +739,9 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     {
         //   yield return new WaitForSeconds(1.5f);
         yield return new WaitForSeconds(1.0f);
-        UI3DEffectTool.Instance().ClearUIFx(m_EquipItenm.m_SpritePinZhi.gameObject);
+        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_ObjEffectBottom);
+        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_ObjEffectTop);
+        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_SpritePinZhi.gameObject);
     }
     void OnDisable()
     {
@@ -832,10 +875,14 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     void CreateClone(GameObject move, int content)
     {
         GameObject clone = NGUITools.AddChild(move.transform.parent.gameObject, move);
-        clone.transform.localPosition = move.transform.localPosition;
+        clone.transform.localPosition = new Vector3(-220,move.transform.localPosition.y,0);
         clone.transform.localRotation = move.transform.localRotation;
+
         clone.transform.localScale = move.transform.localScale;
         clone.GetComponent<UILabel>().text = "";
+        clone.GetComponent<UILabel>().effectStyle = UILabel.Effect.Outline;
+        clone.GetComponent<UILabel>().effectColor = Color.black;
+       
         if (content < 0)
         {
             clone.GetComponent<UILabel>().text = MyColorData.getColorString(5, content.ToString());
@@ -847,8 +894,8 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 
         clone.AddComponent<TweenPosition>();
         clone.AddComponent<TweenAlpha>();
-        clone.GetComponent<TweenPosition>().from = move.transform.localPosition;
-        clone.GetComponent<TweenPosition>().to = move.transform.localPosition + Vector3.up * 40;
+        clone.GetComponent<TweenPosition>().from = clone.transform.localPosition;
+        clone.GetComponent<TweenPosition>().to = clone.transform.localPosition + Vector3.up * 40;
         clone.GetComponent<TweenPosition>().duration = 0.5f;
         clone.GetComponent<TweenAlpha>().from = 1.0f;
         clone.GetComponent<TweenAlpha>().to = 0;
@@ -863,7 +910,8 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         clone.transform.localRotation = move.transform.localRotation;
         clone.transform.localScale = move.transform.localScale;
         clone.GetComponent<UILabel>().text = "";
-      
+        clone.GetComponent<UILabel>().effectStyle = UILabel.Effect.Outline;
+        clone.GetComponent<UILabel>().effectColor = Color.black;
         clone.GetComponent<UILabel>().text = MyColorData.getColorString(4, content);
        
 
@@ -880,7 +928,10 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     IEnumerator WatiFor(GameObject obj)
     {
         yield return new WaitForSeconds(0.8f);
-        UI3DEffectTool.Instance().ClearUIFx(m_EquipItenm.m_SpritePinZhi.gameObject);
+        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelXue.gameObject);
+        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelFang.gameObject);
+        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelGong.gameObject);
+        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_SpritePinZhi.gameObject);
         Destroy(obj);
     }
 
@@ -1076,48 +1127,47 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         }
     }
 
-    public void Intensify(EquipStrengthResp Equip)
-    {
-        EquipInfo = Equip;
+    //public void Intensify(EquipStrengthResp Equip)
+    //{
+    //    EquipInfo = Equip;
 
-        EquipGrowthMaterialUseManagerment.listTouchedId.Clear();
-        EquipInfo.gongJiAdd = 0;
-        EquipInfo.fangYuAdd = 0;
-        EquipInfo.shengMingAdd = 0;
-        if (ShowType == 0)
-        {
-            m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowEquipTanHao();
-            if (!m_WetherIsIntensify)
-            {
-                EquipInfoSave = Equip;
-            }
-            else
-            {
-                UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_SpritePinZhi.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
-                m_WetherIsIntensify = false;
-                CreateMove(m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
-                if (EquipInfo.expMax == -1)
-                {
-                    _isMaxLevel = true;
-                }
-                EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
-                EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
-                EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
-                EquipInfoSave = Equip;
-            }
-        }
-        StartCoroutine(WaitSecondIntensify());
-        if (Equip.level < JunZhuData.Instance().m_junzhuInfo.level)
-        {
-            EquipGrowthMaterialUseManagerment.touchIsEnable = true;
-        }
-        else
-        {
-            EquipGrowthMaterialUseManagerment.touchIsEnable = false;
-        }
-        m_IntensifyTanHao.SetActive(AllIntensify());
-        m_WashTanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(1210) && FunctionOpenTemp.GetWhetherContainID(1210));
-        PushAndNotificationHelper.SetRedSpotNotification(1212, AllIntensify());
-        EquipsInfoTidy(EquipInfo);
-    }
+    //    EquipGrowthMaterialUseManagerment.listTouchedId.Clear();
+    //    EquipInfo.gongJiAdd = 0;
+    //    EquipInfo.fangYuAdd = 0;
+    //    EquipInfo.shengMingAdd = 0;
+    //    if (ShowType == 0)
+    //    {
+    //        m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowEquipTanHao();
+    //        if (!m_WetherIsIntensify)
+    //        {
+    //            EquipInfoSave = Equip;
+    //        }
+    //        else
+    //        {
+    //            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_SpritePinZhi.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
+    //            CreateMove(m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
+    //            if (EquipInfo.expMax == -1)
+    //            {
+    //                _isMaxLevel = true;
+    //            }
+    //            EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
+    //            EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
+    //            EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
+    //            EquipInfoSave = Equip;
+    //        }
+    //    }
+    //    StartCoroutine(WaitSecondIntensify());
+    //    if (Equip.level < JunZhuData.Instance().m_junzhuInfo.level)
+    //    {
+    //        EquipGrowthMaterialUseManagerment.touchIsEnable = true;
+    //    }
+    //    else
+    //    {
+    //        EquipGrowthMaterialUseManagerment.touchIsEnable = false;
+    //    }
+    //    m_IntensifyTanHao.SetActive(AllIntensify());
+    //    m_WashTanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(1210) && FunctionOpenTemp.GetWhetherContainID(1210));
+    //    PushAndNotificationHelper.SetRedSpotNotification(1212, AllIntensify());
+    //    EquipsInfoTidy(EquipInfo);
+    //}
 }

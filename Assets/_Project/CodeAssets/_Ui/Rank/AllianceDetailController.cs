@@ -71,10 +71,7 @@ namespace Rank
 
         public override void GetInfo()
         {
-            m_ModuleController.m_RootController.SelectedAllianceName = m_AllianceInfo.mengName;
-
-            AlliancePlayerReq temp = new AlliancePlayerReq() { mengId = m_AllianceInfo.mengId };
-            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_ALLIANCE_MEMBER_REQ);
+            AllianceMemberWindowManager.Instance.OpenAllianceMemberWindowInRank(m_AllianceInfo.mengId, m_AllianceInfo.mengName, m_ModuleController.m_RootController, "UseInRank");
         }
 
         public override void AddFriend()

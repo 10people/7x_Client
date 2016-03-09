@@ -25,16 +25,16 @@ public class TopUpItemManagerment : MonoBehaviour
       saveCost = int.Parse(cost);
       saveID = id;
       CallBackTouch = callback;
-      m_ListLab[1].text = "[b]" + earn + NameIdTemplate.GetName_By_NameId(900002) + "[/b]";
-      m_ListLab[2].text = "[b]" +  cost + NameIdTemplate.GetName_By_NameId(990046) + "[/b]"; ;
+      m_ListLab[1].text = MyColorData.getColorString(41,"[b]" + earn + NameIdTemplate.GetName_By_NameId(900002) + "[/b]");
+      m_ListLab[2].text =MyColorData.getColorString(42 ,"[b]" +  cost + NameIdTemplate.GetName_By_NameId(990046) + "[/b]"); ;
       if (type == 1 && times == 0)
       {
-          m_ListLab[0].text = MyColorData.getColorString(5, "[b]" + des + "[/b]");
+          m_ListLab[0].text = MyColorData.getColorString(43, "[b]" + des + "[/b]");
           m_ListSprite[0].gameObject.SetActive(true);
       }
       else
       {
-          m_ListLab[0].text = MyColorData.getColorString(11, "[b]" + des + "[/b]");
+          m_ListLab[0].text = MyColorData.getColorString(43, "[b]" + des + "[/b]");
       }
       if (id > 6)
       {

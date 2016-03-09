@@ -145,7 +145,9 @@ public class Prepare_Bundle_Config_4 : MonoBehaviour {
 		{
 			FileHelper.DeleteLogFile();
 
-			Application.logMessageReceived += FileHelper.LogFile;
+			FileHelper.RegisterLog();
+
+//			DebugHelper.RegisterLog();
 		}
 
 		// report when game launched

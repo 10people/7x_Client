@@ -32,7 +32,7 @@ public class MailWindowManager : MonoBehaviour
     /// </summary>
     public void RequestMessage()
     {
-        Debug.Log("Sending mail request message to server.");
+//        Debug.Log("Sending mail request message to server.");
 
         //Used for testing.
         ReceiveMessage();
@@ -67,7 +67,7 @@ public class MailWindowManager : MonoBehaviour
     /// </summary>
     private void ReceiveMessage()
     {
-        Debug.Log("Receive mail message from server.");
+//        Debug.Log("Receive mail message from server.");
 
         //Used for testing.
         CachedMailItems.Clear();

@@ -1,6 +1,8 @@
-﻿//#define DEBUG_SHOW_LOADING_INFO
+﻿//#define DEBUG_ENTER_NEXT_SCENE
 
-//#define DEBUG_ENTER_NEXT_SCENE
+//#define DEBUG_SHOW_LOADING_INFO
+
+
 
 using UnityEngine;
 using System.Collections;
@@ -11,6 +13,8 @@ using System.Text;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
+
+
 
 /** 
  * @author:		Zhang YuGu
@@ -30,6 +34,9 @@ public class EnterNextScene : MonoBehaviour{
 
 	/// Background Image
 	private UITexture m_background_image;
+
+	// wait frame count when loading done
+	private static int m_loading_done_waiting_frame	= 3;
 
 	private static EnterNextScene m_instance;
 
@@ -51,8 +58,9 @@ public class EnterNextScene : MonoBehaviour{
 		{
 			if( ConfigTool.GetBool( ConfigTool.CONST_LOG_TOTAL_LOADING_TIME, true ) ){
 				Debug.Log( "------------------" +
-				          "Reset Loading Time" +
-				          "------------------" );
+				          "Reset Loading Time( " + GetSceneToLoad() + " )" + 
+				          "------------------" +
+				          Time.realtimeSinceStartup );
 			}
 
 			LoadingHelper.ResetLoadingInfo();
@@ -214,29 +222,35 @@ public class EnterNextScene : MonoBehaviour{
 		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.LoadLevelNow()" );
 		#endif
 
+		string t_to_load_scene_name = GetSceneToLoad();
+
 		{
 			m_load_level_time = Time.realtimeSinceStartup;
 
-			SceneManager.LoadLevel( GetSceneToLoad() );
+			SceneManager.LoadLevel( t_to_load_scene_name );
 
 			m_load_level_time = Time.realtimeSinceStartup - m_load_level_time;
 		}
 
 		#if DEBUG_SHOW_LOADING_INFO
-		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.LoadLevelNow.Done( LoadLevel )" );
+		LoadingHelper.LogTimeSinceLoading( "LoadLevel - EnterNextScene.LoadLevelNow.Done()" );
 		#endif
 
 		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "LoadLevelAsync.Level.Load.Done()" );
 		#endif
 
-		while( Application.loadedLevelName != GetSceneToLoad() ){
-			#if DEBUG_ENTER_NEXT_SCENE
-			Debug.Log( "Waiting For Loading." );
-			#endif
-
-			yield return new WaitForEndOfFrame();
-		}
+//		float t_wait_start = Time.realtimeSinceStartup;
+//
+//		while( Application.loadedLevelName != t_to_load_scene_name ){
+//			#if DEBUG_ENTER_NEXT_SCENE
+//			Debug.Log( "Waiting For Loading." );
+//			#endif
+//
+//			yield return new WaitForEndOfFrame();
+//		}
+//
+//		Debug.Log( "Wait For ApplicationLevelNameChange: " + ( Time.realtimeSinceStartup - t_wait_start ) );
 
 		{
 			CityGlobalData.m_PlayerInCity = true;
@@ -245,7 +259,7 @@ public class EnterNextScene : MonoBehaviour{
 		}
 
 		{
-			SceneManager.UpdateSceneStateByLevel();
+			SceneManager.UpdateSceneStateByLevel( t_to_load_scene_name );
 		}
 
 		#if DEBUG_ENTER_NEXT_SCENE
@@ -309,7 +323,7 @@ public class EnterNextScene : MonoBehaviour{
 	// unregister and destroy UI if needed.
 	private void ManualDestroy(){
 		#if DEBUG_ENTER_NEXT_SCENE
-		Debug.Log( "EnterNextScene.ManualDestroy()" );
+		Debug.Log( "EnterNextScene.ManualDestroy( " +  IsDestroyUIWhenLevelLoaded() + " )" );
 		#endif
 
 		{
@@ -323,13 +337,26 @@ public class EnterNextScene : MonoBehaviour{
 		if( IsDestroyUIWhenLevelLoaded() ){
 			StartCoroutine( DelayDestroy() );
 		}
+		else{
+			ExecuteLoadingDoneCallback();
+		}
 	}
 
 	IEnumerator DelayDestroy(){
-		yield return new WaitForEndOfFrame();
-		
+		if( m_loading_done_waiting_frame <= 0 ){
+			m_loading_done_waiting_frame = 1;
+		}
+
+		for( int i = 0; i < m_loading_done_waiting_frame; i++ ){
+			#if DEBUG_ENTER_NEXT_SCENE
+			Debug.Log( "Waiting Frame Count: " + i );
+			#endif
+
+			yield return new WaitForEndOfFrame();	
+		}
+
 		{
-			DestroyUI();
+			DestroyUIImmediately();
 		}
 	}
 
@@ -346,12 +373,20 @@ public class EnterNextScene : MonoBehaviour{
 		Debug.Log( "EnterNextScene.DestroyUI()" );
 		#endif
 
+		StartCoroutine( DelayDestroy() );
+	}
+
+	private void DestroyUIImmediately(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.DestroyUIImmediately()" );
+		#endif
+
 		{
 			m_instance = null;
 		}
 
-		if ( StaticLoading.Instance () != null ) {
-			StaticLoading.Instance ().ManualDestroy ();
+		if ( StaticLoading.Instance() != null ) {
+			StaticLoading.Instance().ManualDestroy ();
 		}
 		else {
 			Debug.LogError( "Never Should be Here." );
@@ -361,6 +396,10 @@ public class EnterNextScene : MonoBehaviour{
 			gameObject.SetActive( false );
 			
 			Destroy( gameObject );
+		}
+
+		{
+			ExecuteLoadingDoneCallback();
 		}
 
 		{
@@ -378,6 +417,16 @@ public class EnterNextScene : MonoBehaviour{
 
 	public void AddLoadingDoneCallback( EventDelegate.Callback p_callback ){
 		EventDelegate.Add( m_loading_done_callback_list, p_callback );
+	}
+
+	public void ExecuteLoadingDoneCallback(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "PrepareWhenSceneLoaded.Before.Callback()" );
+		#endif
+
+		//		LogDelegate();
+
+		EventDelegate.Execute( m_loading_done_callback_list );
 	}
 
 	/// Called when Next Scene Loaded.
@@ -401,6 +450,8 @@ public class EnterNextScene : MonoBehaviour{
 
 			ShowLoadLevelTime();
 
+			LoadingHelper.ShowDetailLoadingInfo();
+
 //			Bundle_Loader.LogCoroutineInfo();
 			#endif
 
@@ -421,15 +472,21 @@ public class EnterNextScene : MonoBehaviour{
 			LoadingHelper.ConfigBloomAndLight();
 		}
 
-		#if DEBUG_ENTER_NEXT_SCENE
-		Debug.Log( "PrepareWhenSceneLoaded.Before.Callback()" );
+		#if DEBUG_SHOW_LOADING_INFO
+		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.PrepareWhenSceneLoaded.After.Check()" );
 		#endif
-
-		EventDelegate.Execute( m_loading_done_callback_list );
 
 		#if DEBUG_SHOW_LOADING_INFO
 		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.PrepareWhenSceneLoaded.Done()" );
 		#endif
+	}
+
+	private void LogDelegate(){
+		Debug.Log( "delegate count: " + m_loading_done_callback_list.Count );
+
+		for( int i = 0; i <= m_loading_done_callback_list.Count - 1; i++ ){
+			Debug.Log( i + " : " + m_loading_done_callback_list[ i ].ToString() );
+		}
 	}
 
 	#endregion
@@ -609,6 +666,9 @@ public class EnterNextScene : MonoBehaviour{
 		//		Debug.Log( "-------------- EnterNextScene.SetSceneToLoad( " + 
 		//						p_to_load_scene_name + " - " + p_auto_activation + 
 		//						" ) --------------" );
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.SetSceneToLoad( " + p_to_load_scene_name + " )" );
+		#endif
 
 		if( string.IsNullOrEmpty( p_to_load_scene_name ) ){
 			Debug.LogError( "Error, Scene Name is NullorEmpty." );

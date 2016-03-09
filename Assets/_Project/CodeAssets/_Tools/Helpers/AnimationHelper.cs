@@ -8,7 +8,6 @@ public class AnimationHelper
         return p_animator.GetCurrentAnimatorStateInfo(0).shortNameHash;
     }
 
-
 	public static string IsPlaying(Animator mAnim)
 	{
 		if (mAnim == null) return "";

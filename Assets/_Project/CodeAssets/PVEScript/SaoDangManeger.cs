@@ -13,15 +13,19 @@ public class SaoDangManeger : MonoBehaviour {
 
 	public GameObject SaoDangTemp;
 
-	private float mDistance = -230;
+	private float mDistance = -170;
 
 	public GameObject mPanle;
 
+	public GameObject Skip;
+	public GameObject SaoDangAgain;
 	public GameObject ConfirmBtn;
 
 	public GameObject SaoDangfinshed;
 
 	public int SaodangType ;// 1 为pve 2为游侠
+	public int SaodangTime ;
+	public UILabel BtnLabel;
 	void Start () {
 	
 	}
@@ -33,21 +37,30 @@ public class SaoDangManeger : MonoBehaviour {
 
 	public void Init()
 	{
-
+		Global.m_isZhanli = true;
 		StartCoroutine ( CreateAwardTemp() );
 	}
-
+	float mTime = 0;
 	IEnumerator CreateAwardTemp()
 	{
 		if(m_PveSaoDangRet == null ||m_PveSaoDangRet.awards.Count == 0)
 		{
-			Debug.Log("m_PveSaoDangRet == null");
+			//Debug.Log("m_PveSaoDangRet == null");
 			SaoDangfinshed.SetActive(true);
 		}
+		if (m_PveSaoDangRet.awards.Count > 1) {
+			Skip.SetActive (true);
+			ConfirmBtn.SetActive (false);
+			SaoDangAgain.SetActive (false);
+		} else {
+			Skip.SetActive (false);
+			ConfirmBtn.SetActive (false);
+			SaoDangAgain.SetActive (false);
+		}
+		mTime = 0.80f;
+		SaodangTime = m_PveSaoDangRet.awards.Count;
 		for (int i = 0; i< m_PveSaoDangRet.awards.Count; i++)
 		{
-			yield return new WaitForSeconds(0.2f);
-
 			GameObject mSaoDangTemp = Instantiate(SaoDangTemp) as GameObject;
 
 			mSaoDangTemp.SetActive(true);
@@ -56,7 +69,7 @@ public class SaoDangManeger : MonoBehaviour {
 			
 			mSaoDangTemp.transform.localScale = SaoDangTemp.transform.localScale;
 			
-			mSaoDangTemp.transform.localPosition = new Vector3(0 , mDistance*i, 0);
+			mSaoDangTemp.transform.localPosition = new Vector3(0 , 55+mDistance*i, 0);
 
 			SaoDangAwardTemp mSaoDangAwardTemp = mSaoDangTemp.GetComponent<SaoDangAwardTemp>();
 
@@ -67,27 +80,35 @@ public class SaoDangManeger : MonoBehaviour {
 
 			mSaoDangAwardTemp.Init();
 
-			float mTime = 0;
-
-			if(m_PveSaoDangRet.awards[i].awardItems == null||m_PveSaoDangRet.awards[i].awardItems.Count == 0)
-			{
-				mTime = 1.0f;
-			}
-			else{
-
-				mTime = m_PveSaoDangRet.awards[i].awardItems.Count*0.4f+0.6f;
-			}
-
 			yield return new WaitForSeconds(mTime);
+			if(SaodangTime > 1)
+			{
+				if(i>0)
+				{
+					PanleMove(i+1, mSaoDangTemp.transform.localPosition);
+				}
+			}
+			else
+			{
+				PanleMove(i+1, mSaoDangTemp.transform.localPosition);
+			}
 
-			PanleMove(i+1, mSaoDangTemp.transform.localPosition);
+
 		}
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
+		if(SaodangTime == 1)
+		{
+			BtnLabel.text = "再扫1次";
+		}
+		if(SaodangTime == 10)
+		{
+			BtnLabel.text = "再扫10次";
+		}
 	}
 
 	void PanleMove(int mSaodangTime, Vector3 UiPosition)
 	{
-
+	
 		Vector3 v1 = mPanle.transform.localPosition;
 
 		Vector3 v2 = v1 + new Vector3 (0 ,-mDistance, 0);
@@ -96,29 +117,67 @@ public class SaoDangManeger : MonoBehaviour {
 
 		if(mSaodangTime == m_PveSaoDangRet.awards.Count)
 		{
-			SaoDangfinshed.SetActive(true);
-
-			SaoDangfinshed.transform.localPosition  = UiPosition + new Vector3 (0 ,mDistance, 0);
-
-			ConfirmBtn.SetActive(true);
+			if(SaodangType == 1)
+			{
+				Skip.SetActive (false);
+				ConfirmBtn.SetActive (true);
+				SaoDangAgain.SetActive (true);
+				SaoDangfinshed.SetActive(true);
+			}
+			else
+			{
+				Skip.SetActive (false);
+				ConfirmBtn.SetActive (true);
+				ConfirmBtn.transform.localPosition = new Vector3(0,-208,0);
+				SaoDangAgain.SetActive (false);
+				SaoDangfinshed.SetActive(true);
+			}
+			int id = 100178;
+			SaoDangfinshed.transform.localPosition  = new Vector3 (0 ,-60, 0);
+			UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.PopUI_2,SaoDangfinshed,EffectIdTemplate.GetPathByeffectId(id));
+			StartCoroutine("mCloseEffect");
+		}else
+		{
+			iTween.MoveTo(mPanle, iTween.Hash("position", v2,	"easeType", iTween.EaseType.easeInOutQuad,"time",0.4f,"islocal",true));
 		}
-
-		iTween.MoveTo(mPanle, iTween.Hash("position", v2,	"easeType", iTween.EaseType.easeInOutQuad,"time",0.4f,"islocal",true));
-
 	}
 
+	public void SaodangAngainBtn()
+	{
+		if(SaodangType == 1)
+		{
+			if(SaodangTime > 1)
+			{
+				NewPVEUIManager.Instance().SaoDangBtn(10);
+			}
+			else
+			{
+				NewPVEUIManager.Instance().SaoDangBtn(1);
+			}
+		}
+	
+		ConfrimBtn ();
+	}
+	public void SkipBtn()
+	{
+		mTime = 0.0f;
+	}
 	public void ConfrimBtn()
 	{
-//		if(SaodangType == 1)
-//		{
-//			PveLevelUImaneger.mPveLevelUImaneger.IsSaodang = false;
-//			
-//			PveLevelUImaneger.mPveLevelUImaneger.ShowEffect ();
-//
-//			PveLevelUImaneger.mPveLevelUImaneger.ISCanSaodang = true;
-//		}
-
+		Global.m_isZhanli = false;
+		FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
 		Destroy (this.gameObject);
+	}
+	IEnumerator mCloseEffect()
+	{
+		yield return new WaitForSeconds (1.9f);
+		SaoDangfinshed.SetActive (false);
+		UI3DEffectTool.ClearUIFx (SaoDangfinshed);
+	}
+	public void CloseEffect()
+	{
+		SaoDangfinshed.SetActive (false);
+		UI3DEffectTool.ClearUIFx (SaoDangfinshed);
 	}
 }
 

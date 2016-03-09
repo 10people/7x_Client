@@ -17,7 +17,7 @@ public class BossSkillDiaoXue : HeroSkill
 	
 	public override void activeSkill(int state)
 	{
-		BattleEffectControllor.Instance ().PlayEffect (
+		BattleEffectControllor.Instance().PlayEffect (
 			46,
 			node.targetNode.gameObject);
 		Buff.createBuff(node.targetNode, AIdata.AttributeType.ATTRTYPE_hp, template.value1, template.value2);

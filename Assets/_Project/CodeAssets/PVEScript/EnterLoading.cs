@@ -91,7 +91,7 @@ public class EnterLoading : MonoBehaviour {
 		byte[] t_protof;
 		t_protof = miBaoStream.ToArray();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_MIBAO_SELECT,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_MIBAO_SELECT,ref t_protof);
 	}
 
 }

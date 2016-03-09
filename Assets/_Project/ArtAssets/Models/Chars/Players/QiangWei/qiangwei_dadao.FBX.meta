@@ -303,26 +303,19 @@ ModelImporter:
         floatParameter: 0
         intParameter: 2200
         messageOptions: 0
-      - time: .499400139
-        functionName: firstAtt
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .546465099
-        functionName: PlaySound
-        data: 3300
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: .49529928
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 300
+        messageOptions: 0
+      - time: .499400139
+        functionName: firstAtt
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       - time: .559030712
         functionName: attackMove
@@ -331,14 +324,21 @@ ModelImporter:
         floatParameter: 0
         intParameter: 230
         messageOptions: 0
-      - time: .608129621
+      - time: .571633279
         functionName: PlaySound
         data: 520101|520102|520103|0|0|0|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .621512949
+      - time: .57858187
+        functionName: PlaySound
+        data: 3300
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .586476445
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -629,26 +629,12 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .11544659
-        functionName: PlaySound
-        data: 3300
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: .126488492
         functionName: setWeaponTriggerTrue
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 2201
-        messageOptions: 0
-      - time: .175013483
-        functionName: PlaySound
-        data: 520101|520102|520103|0|0|0|0
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
         messageOptions: 0
       - time: .184006855
         functionName: playAttackEffect
@@ -657,6 +643,20 @@ ModelImporter:
         floatParameter: 0
         intParameter: 301
         messageOptions: 0
+      - time: .24829331
+        functionName: PlaySound
+        data: 3300
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .255305439
+        functionName: PlaySound
+        data: 520101|520102|520103|0|0|0|0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .264641494
         functionName: attackMove
         data: 
@@ -664,7 +664,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 232
         messageOptions: 0
-      - time: .277033538
+      - time: .279953241
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -962,14 +962,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 2202
         messageOptions: 0
-      - time: .179644614
-        functionName: PlaySound
-        data: 520101|520102|520103|0|0|0|0
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .189955801
+      - time: .187036097
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -983,7 +976,21 @@ ModelImporter:
         floatParameter: 0
         intParameter: 234
         messageOptions: 0
-      - time: .260022908
+      - time: .258476734
+        functionName: PlaySound
+        data: 520101|520102|520103|0|0|0|0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .265496016
+        functionName: PlaySound
+        data: 3300|3301
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .27316159
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -996,13 +1003,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 235
-        messageOptions: 0
-      - time: .627539814
-        functionName: PlaySound
-        data: 3300|3301
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
         messageOptions: 0
       - time: .632911742
         functionName: attackMove
@@ -1330,19 +1330,19 @@ ModelImporter:
         floatParameter: 0
         intParameter: 238
         messageOptions: 0
+      - time: .364819109
+        functionName: setWeaponTriggerFalse
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 4
+        messageOptions: 0
       - time: .369716644
         functionName: PlaySound
         data: 33000
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .376497954
-        functionName: setWeaponTriggerFalse
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 4
         messageOptions: 0
       - time: .874804795
         functionName: attackDone

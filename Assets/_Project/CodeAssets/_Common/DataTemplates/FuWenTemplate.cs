@@ -29,6 +29,8 @@ public class FuWenTemplate : XmlLoadManager {
 	public int fuwenNext;//后一级符文
 
 	public int shuXingName;//属性名字
+
+	public int inlayColor;//镶嵌对应颜色
 	
 	public static List<FuWenTemplate> templates = new List<FuWenTemplate>();
 	
@@ -105,6 +107,9 @@ public class FuWenTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.shuXingName = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.inlayColor = int.Parse(t_reader.Value);
 			}
 			
 			//			t_template.Log();

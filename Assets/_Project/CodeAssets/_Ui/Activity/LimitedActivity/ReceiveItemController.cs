@@ -130,9 +130,6 @@ namespace LimitActivity
                     controller.SetIconPopText(m_IconList[i].id);
 
                     m_ItemIconManagerList.Add(controller);
-
-                    //Set icon scale to 0.5
-                    temp.transform.localScale = Vector3.one * 0.5f;
                 }
                 m_Grid.Reposition();
             }
@@ -145,6 +142,10 @@ namespace LimitActivity
                     {
                         m_ReceiveButtonHandler.gameObject.SetActive(true);
                         m_ReceiveButtonHandler.GetComponent<UIButton>().isEnabled = true;
+
+                        //Show receive effect.
+                        SparkleEffectItem.OpenSparkle(m_ReceiveButtonHandler.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
+
                         ReceiveInfoSprite.gameObject.SetActive(false);
                         break;
                     }
@@ -152,6 +153,10 @@ namespace LimitActivity
                 case 20:
                     {
                         m_ReceiveButtonHandler.gameObject.SetActive(false);
+
+                        //Hide receive effect.
+                        SparkleEffectItem.CloseSparkle(m_ReceiveButtonHandler.gameObject);
+
                         ReceiveInfoSprite.gameObject.SetActive(true);
                         ReceiveInfoSprite.spriteName = ReceivedSpriteName;
                         break;
@@ -160,6 +165,10 @@ namespace LimitActivity
                 case 30:
                     {
                         m_ReceiveButtonHandler.gameObject.SetActive(false);
+
+                        //Hide receive effect.
+                        SparkleEffectItem.CloseSparkle(m_ReceiveButtonHandler.gameObject);
+
                         ReceiveInfoSprite.gameObject.SetActive(true);
                         ReceiveInfoSprite.spriteName = OutOfTimeSpriteName;
                         break;
@@ -169,6 +178,10 @@ namespace LimitActivity
                     {
                         m_ReceiveButtonHandler.gameObject.SetActive(true);
                         m_ReceiveButtonHandler.GetComponent<UIButton>().isEnabled = false;
+
+                        //Hide receive effect.
+                        SparkleEffectItem.CloseSparkle(m_ReceiveButtonHandler.gameObject);
+
                         ReceiveInfoSprite.gameObject.SetActive(false);
                         break;
                     }
@@ -203,12 +216,12 @@ namespace LimitActivity
 
         void Awake()
         {
-            m_ReceiveButtonHandler.m_handler += OnReceiveButtonClick;
+            m_ReceiveButtonHandler.m_click_handler += OnReceiveButtonClick;
         }
 
         void OnDestroy()
         {
-            m_ReceiveButtonHandler.m_handler -= OnReceiveButtonClick;
+            m_ReceiveButtonHandler.m_click_handler -= OnReceiveButtonClick;
         }
     }
 }

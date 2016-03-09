@@ -49,7 +49,7 @@ public class EquipDragDropItem : UIDragDropItem { //拖拽玩家身上或背包�
                     {
                         EquipRemoveReq tempRemoveReq = new EquipRemoveReq();
                         tempRemoveReq.gridIndex = m_bagIndex;
-                        Debug.Log("tempBagIndex" + m_bagIndex);
+//                        Debug.Log("tempBagIndex" + m_bagIndex);
                         MemoryStream tempStream = new MemoryStream();
                         QiXiongSerializer t_qx = new QiXiongSerializer();
                         t_qx.Serialize(tempStream, tempRemoveReq);

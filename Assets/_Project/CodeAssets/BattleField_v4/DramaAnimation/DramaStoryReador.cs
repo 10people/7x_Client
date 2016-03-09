@@ -1,4 +1,6 @@
-﻿//#define DEBUG_DRAMA_STORY_READER
+﻿#define DEBUG_DRAMA_LOADING
+
+//#define DEBUG_DRAMA_STORY_READER
 
 using UnityEngine;
 using System.Collections;
@@ -221,9 +223,9 @@ public class DramaStoryReador : MonoBehaviour
 
 		List<string> tempLoadModel = new List<string>();
 
-		foreach(DramaStoryBoard board in m_storyControllor.storyBoardList.Values )
+		foreach( DramaStoryBoard board in m_storyControllor.storyBoardList.Values )
 		{
-			for(int i = 0; i < board.m_loadPath.Count; i ++)
+			for( int i = 0; i < board.m_loadPath.Count; i ++ )
 			{
 				if(board.m_loadIsJuqing[i])
 				{
@@ -351,8 +353,7 @@ public class DramaStoryReador : MonoBehaviour
 
 	private Global.LoadResourceCallback m_load_callback = null;
 
-	public void SetLoadDoneCallback( Global.LoadResourceCallback p_callback )
-	{
+	public void SetLoadDoneCallback( Global.LoadResourceCallback p_callback ){
 		m_load_callback = p_callback;
 	}
 

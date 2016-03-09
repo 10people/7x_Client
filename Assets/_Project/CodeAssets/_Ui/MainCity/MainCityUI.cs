@@ -17,6 +17,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     /// </summary>
     public static MainCityUIDelegate m_MainCityUiDelegate;
     public static GameObject m_objBelongings;
+	public static GameObject m_objTitle;
     public enum PlayerPlace
     {
         MainCity,
@@ -34,7 +35,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     public MainCityUIRT m_MainCityUIRT;
     public Joystick m_MainCityUILB;
     public GameObject m_AddFunction;
-    public GameObject m_MainGlobalBelongings;
     public GameObject m_ObjMainCityButtonS;
 
     public MainCityListButtonManager m_MainCityListButton_L;
@@ -58,12 +58,15 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 	/// 1.access not allowed;
 	/// 2.After negotiation, all objects contained here are only Functions' Main UI, not sub UI popped.
     /// </summary>
-    private List<GameObject> m_WindowObjectList = new List<GameObject>();
+    public List<GameObject> m_WindowObjectList = new List<GameObject>();
+
+	public FuLiHuoDongResp m_FuLiHuoDongResp;
 
     void Awake()
     {
         SocketTool.RegisterSocketListener(this);
         Global.ScendNull(ProtoIndexes.C_MengYouKuaiBao_Req);
+
         m_MainCityUI = this;
         m_MYNGUIPanel.Add(m_MainCityUILT);
         m_MYNGUIPanel.Add(m_MainCityUIRT);
@@ -74,46 +77,64 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     void Start()
     {
-//		Global.CreateBox("11111", "22222", null, null, "1", "2", null);
+		for(int i = 0; i < ClientMain.m_listPopUpData.Count; i ++)
+		{
+			if(ClientMain.m_listPopUpData[i].iLevel == 40)
+			{
+				ClientMain.m_listPopUpData.RemoveAt(i);
+				i--;
+			}
+		}
+
         ClientMain.m_isNewOpenFunction = false;
-        //        m_MainCityUIRB.Initialize();
+
         if (Global.m_isOpenJiaoxue)
         {
-            //Debug.Log ("m_gameObjectList.Count = " + m_gameObjectList.Count);
+			if(Global.m_isZhanli)
+			{
+				ClientMain.closePopUp();
+			}
             if (m_WindowObjectList.Count != 0)
             {
-                //				return;
+
             }
 
             if (Global.m_isOpenBaiZhan)
             {
-                //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_PAGE),
-                //                                        BaiZhanLoadCallback);
                 PvpData.Instance.OpenPvp();
-                //				return;
             }
 
             if (Global.m_isOpenHuangYe)
             {
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.HY_MAP),
                                         LoadHY_Map);
-                //				return;
             }
         }
 
         m_isInited = true;
+
+		Global.m_isZhanli = false;
+		Global.m_iAddZhanli = 0;
+		Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
+
         setInit();
         setInitButtons();
 
         Global.ScendID(ProtoIndexes.C_ADD_TILI_INTERVAL, 1);
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_Belongings), OnLoadCallBack);
-
-        
-
+		Global.ScendNull(ProtoIndexes.C_FULIINFO_REQ);
+		if(m_objBelongings == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_Belongings), OnLoadCallBack);
+		}
+		if(m_objTitle == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_Titile ), OnLoadCallBackTitle);
+		}
         //		Global.m_isZhanli = true;
-        //		ClientMain.addPopUP(40, 2, "11", null);
+//		ClientMain.addPopUP(40, 2, "500010", null);
         //		ClientMain.addPopUP(40, 2, "12", null);
-        //		ClientMain.addPopUP(40, 2, "1210", null);
+//		FunctionOpenTemp.m_EnableFuncIDList.Add(140);
+//        		ClientMain.addPopUP(40, 2, "140", null);
         //		m_MainCityUIRB.setPropUse(103103,30);
         //		m_MainCityUIRB.setPropUse(103104,20);
         //		m_MainCityUIRB.setPropUse(103105,0);
@@ -309,13 +330,15 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     private void OnLoadCallBack(ref WWW www, string str, object obj)
     {
-        m_MainGlobalBelongings = obj as GameObject;
-
-		if (m_objBelongings == null)
-		{
-			m_objBelongings = m_MainGlobalBelongings;
-		}
+		m_objBelongings = obj as GameObject;
     }
+
+	private void OnLoadCallBackTitle(ref WWW www, string str, object obj)
+	{
+//		Debug.Log("============1");
+
+		m_objTitle = obj as GameObject;
+	}
     /// <summary>
     ///  通用资源显示
     /// </summary>
@@ -325,14 +348,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     public static void setGlobalBelongings(GameObject parent, float x, float y, MYNGUIPanel panel = null)
     {
         GameObject tempObj;
-        if (m_objBelongings == null)
-        {
-            tempObj = GameObject.Instantiate(MainCityUI.m_MainCityUI.m_MainGlobalBelongings);
-        }
-        else
-        {
-            tempObj = GameObject.Instantiate(m_objBelongings);
-        }
+		tempObj = GameObject.Instantiate(m_objBelongings);
 
         tempObj.transform.parent = parent.transform;
         tempObj.transform.localScale = Vector3.one;
@@ -345,15 +361,31 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 		}
     }
 
-    private int[] m_mission = new int[]
+	public static void setGlobalTitle(GameObject parent, string data, float x, float y, MYNGUIPanel panel = null)
+	{
+		GameObject tempObj;
+
+		tempObj = GameObject.Instantiate(m_objTitle);
+		
+		tempObj.transform.parent = parent.transform;
+		tempObj.transform.localScale = Vector3.one;
+		tempObj.transform.localPosition = new Vector3(x, y, 0);
+
+		MainCityLTTitle tempMainCityTitle = tempObj.GetComponent<MainCityLTTitle>();
+		tempMainCityTitle.m_labelTitle.text = data;
+//		tempMainCityTitle.m_labelType.setType(0);
+	}
+
+	private int[] m_mission = new int[]
     {
-        100010,0,100020,0,100040,1,100050,0,100060,1,100080,0,100090,0,
-        100100,1,100110,0,100120,0,100130,0,100140,0,100145,1,100150,0,
-        100160,0,100170,0,100180,0,100190,0,100200,1,100210,0,100220,0,
-        100230,0,100240,0,100250,1,100260,0,100270,0,100280,1,100285,0,
-        100290,0,100300,0,100305,1,100310,0,100315,0,100320,0,100330,1,
-        100340,0,100350,0,100360,0,100370,0,100410,0,100440,0,100460,0,
-        100470,0,100705,0,
+		100010,0,100020,0,100030,0,100040,1,100050,0,100055,0,100060,1,100080,0,
+		100090,0,100100,1,100110,0,100120,0,100130,0,100140,0,100145,1,
+		100150,0,100160,1,100170,0,100173,0,100175,1,100177,0,100180,0,
+		100190,0,100200,1,100210,0,100220,0,100230,1,100240,0,100250,1,
+		100255,1,100257,0,100259,0,100260,0,
+		100270,0,100280,1,100285,1,100290,0,100300,0,100305,1,100307,0,100310,0,
+		100315,0,100320,0,100330,1,100340,0,100350,0,100360,0,100370,0,100405,1,100407,0,100409,0,
+		100410,0,100440,0,100460,0,100470,0,100705,0,
     };
     public void setInit()
     {
@@ -429,6 +461,18 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             {
                 FunctionOpenTemp openTemp = FunctionOpenTemp.GetTemplateById(FunctionOpenTemp.m_EnableFuncIDList[q]);
 
+				if( m_listMainCityButtons[i] == null ){
+//					Debug.Log( "Error, button i is null: " + i );
+
+					continue;
+				}
+
+				if( openTemp == null ){
+//					Debug.Log( "Error, FunctionOpen is null: " + openTemp );
+
+					continue;
+				}
+
                 if (m_listMainCityButtons[i].m_iState == openTemp.type && openTemp.m_iPlay == 1 && openTemp.m_parent_menu_id == -1)
                 {
                     if (openTemp.m_iID == 17)
@@ -439,7 +483,8 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                             m_listMainCityButtons[i].addButton(openTemp);
                         }
                     }
-                    else if (openTemp.m_iID == 15)
+//                    else 
+					if (openTemp.m_iID == 15)
                     {
                         if (LimitActivityData.Instance.IsOpenZaixianActivity)
                         {
@@ -463,10 +508,13 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             m_listMainCityButtons[i].setPos();
             m_listMainCityButtons[i].setEndPos();
         }
+//		Debug.Log("===============1");
+
     }
 
     public void AddButton(int id)
     {
+//		Debug.Log("===========1");
         if (getButton(id) == null)
         {
             FunctionOpenTemp openTemp = FunctionOpenTemp.GetTemplateById(id);
@@ -505,17 +553,16 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         }
         else
         {
+			for(int i = 0; i < m_listMainCityButtons[tempType].m_listFunctionButtonManager.Count; i ++)
+			{
+				m_listMainCityButtons[tempType].m_listFunctionButtonManager[i].setMoveDis();
+			}
             FunctionButtonManager tempButtonManager = m_listMainCityButtons[tempType].getButtonManagerByID(tempID);
             functionButtonManager.m_iWantToX = (int)tempButtonManager.gameObject.transform.localPosition.x;
             functionButtonManager.m_iWantToY = (int)tempButtonManager.gameObject.transform.localPosition.y;
             functionButtonManager.setMoveDis();
         }
         m_listMainCityButtons[tempType].setMove(overAnim);
-        var temp = FunctionUnlock.templates.Where(item => !FunctionOpenTemp.m_EnableFuncIDList.Contains(item.id));
-        if (!temp.Any())
-        {
-            deleteMaincityUIButton(17);
-        }
     }
 
     public void deleteMaincityUIButton(int id)
@@ -547,6 +594,19 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     public static bool SetRedAlert(int id, bool isShow, bool p_manual_set = true)
     {
+		if(id == 140 && isShow)
+		{
+//			Debug.Log(FunctionOpenTemp.IsHaveID(140));
+
+			if(FunctionOpenTemp.IsHaveID(140))
+			{
+				if(!ClientMain.m_isOpenQianDao)
+				{
+					ClientMain.m_isOpenQianDao = true;
+					ClientMain.addPopUP(4, 2, "1", null);
+				}
+			}
+		}
         FunctionOpenTemp temp = FunctionOpenTemp.GetTemplateById(id);
         if (temp == null)
         {
@@ -555,6 +615,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         else
         {
             temp.m_show_red_alert = isShow;
+			if(!FunctionOpenTemp.IsHaveID(id))
+			{
+				return false;
+			}
             if(temp.m_parent_menu_id != -1)
             {
                 temp = FunctionOpenTemp.GetTemplateById(temp.m_parent_menu_id);
@@ -571,7 +635,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                     {
                         temp1 = FunctionOpenTemp.GetTemplateById(temp.m_listNextID[i]);
 
-                        if (temp1.m_show_red_alert)
+						if (temp1.m_show_red_alert && FunctionOpenTemp.IsHaveID(temp.m_listNextID[i]))
                         {
                             tempShowRed = true;
                             break;
@@ -600,7 +664,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                 }
                 else if (id == 22)
                 {
+//					Debug.Log("===========isShow="+isShow);
+//					isShow = true;
                     m_MainCityUI.m_MainCityUILT.m_objRedEmali.SetActive(isShow);
+					m_MainCityUI.m_MainCityUILT.m_BoxChangeScale.enabled = isShow;
                 }
             }
         }
@@ -722,6 +789,9 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                 {
                     return;
                 }
+//				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_FULI),
+//				                        AddUIPanel);
+//				return;
                 switch (id)
                 {
                     //setting up
@@ -985,6 +1055,19 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                             FunctionWindowsCreateManagerment.ShowUnopen(310);
                         }
                         break;
+					//运镖福利按钮
+					case 311:
+                        {
+							if(!FunctionOpenTemp.IsHaveID(8))
+							{
+								ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(8).m_sNotOpenTips);
+							}
+                            else
+							{
+								PlayerSceneSyncManager.Instance.EnterCarriage();
+							}
+                            break;
+                        }
                     //house operation
                     case 2000:
                         IHouseSelf temp = FindObjectOfType<SmallHouseSelf>();
@@ -1155,142 +1238,210 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         }
         switch (p_message.m_protocol_index)
         {
-            case ProtoIndexes.S_TICHU_YBHELPXZ_RESP:
-                {
-                    object tiChuXieZhuRsq = new TiChuXieZhuResp();
-                    if (SocketHelper.ReceiveQXMessage(ref tiChuXieZhuRsq, p_message, ProtoIndexes.S_TICHU_YBHELPXZ_RESP))
+        case ProtoIndexes.S_TICHU_YBHELPXZ_RESP:
+        {
+            object tiChuXieZhuRsq = new TiChuXieZhuResp();
+            if (SocketHelper.ReceiveQXMessage(ref tiChuXieZhuRsq, p_message, ProtoIndexes.S_TICHU_YBHELPXZ_RESP))
+            {
+                TiChuXieZhuResp temp = tiChuXieZhuRsq as TiChuXieZhuResp;
+
+                Global.CreateBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
+                    null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_10).Replace("***", temp.name),
+                    null,
+                    LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
+                    null);
+                return true;
+            }
+            return false;
+        }
+        case ProtoIndexes.S_MengYouKuaiBao_Resq:
+		{
+			//			Debug.Log("=============1");
+			MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+			
+			QiXiongSerializer t_qx = new QiXiongSerializer();
+			
+			PromptMSGResp tempInfo = new PromptMSGResp();
+			
+			t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+			
+			//			Debug.Log("=============2");
+			List<TongzhiData> tempListTongzhiData = new List<TongzhiData>();
+			if (tempInfo.msgList != null)
+			{
+				for (int i = 0; i < tempInfo.msgList.Count; i++)
+				{
+					TongzhiData tempTongzhiData = new TongzhiData(tempInfo.msgList[i]);
+					tempListTongzhiData.Add(tempTongzhiData);
+				}
+			}
+			
+			//			SuBaoMSG tempsubao = new SuBaoMSG();
+			//			tempsubao.subaoId = 10000;
+			//			tempsubao.subao = "aaaaa";
+			//			tempsubao.configId = 6;
+			//			TongzhiData tempTongzhiData11 = new TongzhiData(tempsubao);
+			//			tempListTongzhiData.Add(tempTongzhiData11);
+			//			tempsubao = new SuBaoMSG();
+			//			tempsubao.subaoId = 10001;
+			//			tempsubao.subao = "bbbb";
+			//			tempsubao.configId = 7;
+			//			tempTongzhiData11 = new TongzhiData(tempsubao);
+			//			tempListTongzhiData.Add(tempTongzhiData11);
+			//			tempsubao = new SuBaoMSG();
+			//			tempsubao.subaoId = 10002;
+			//			tempsubao.subao = "ccccc";
+			//			tempsubao.configId = 32;
+			//			tempTongzhiData11 = new TongzhiData(tempsubao);
+			//			tempListTongzhiData.Add(tempTongzhiData11);
+			//			tempsubao = new SuBaoMSG();
+			//			tempsubao.subaoId = 10003;
+			//			tempsubao.subao = "ddddd";
+			//			tempsubao.configId = 33;
+			//			tempTongzhiData11 = new TongzhiData(tempsubao);
+			//			tempListTongzhiData.Add(tempTongzhiData11);
+			//			tempsubao = new SuBaoMSG();
+			//			tempsubao.subaoId = 10004;
+			//			tempsubao.subao = "eeeeee";
+			//			tempsubao.configId = 2;
+			//			tempTongzhiData11 = new TongzhiData(tempsubao);
+			//			tempListTongzhiData.Add(tempTongzhiData11);
+			//			Global.m_listMainCityData[i].m_SuBaoMSG
+			//			Debug.Log("=============3");
+			Global.upDataTongzhiData(tempListTongzhiData);
+			m_MainCityUITongzhi.upDataShow();
+			//			ReportTemplate temp = ReportTemplate.GetHeroSkillUpByID();
+			//			Global.NextCutting();
+			break;
+		}
+
+        
+        case ProtoIndexes.S_MengYouKuaiBao_PUSH:
+		{
+			MemoryStream t_stream1 = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+			
+			QiXiongSerializer t_qx1 = new QiXiongSerializer();
+			
+			SuBaoMSG tempInfo1 = new SuBaoMSG();
+			
+			t_qx1.Deserialize(t_stream1, tempInfo1, tempInfo1.GetType());
+			
+			TongzhiData tempTongzhiData1 = new TongzhiData(tempInfo1);
+			
+			List<TongzhiData> tempListTongzhiData1 = new List<TongzhiData>();
+			
+			tempListTongzhiData1.Add(tempTongzhiData1);
+			
+			Global.upDataTongzhiData(tempListTongzhiData1);
+			m_MainCityUITongzhi.upDataShow();
+			break;
+		}
+        case ProtoIndexes.S_Prompt_Action_Resp:
+        {
+            MemoryStream stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+            QiXiongSerializer xiongSerializer = new QiXiongSerializer();
+            PromptActionResp msg = new PromptActionResp();
+            xiongSerializer.Deserialize(stream, msg, msg.GetType());
+
+            if (msg.result != 10) return true;
+
+            switch (msg.subaoType)
+            {
+                //transport to position.
+                case 101:
+                case 102:
+                case 104:
+                case 105:
                     {
-                        TiChuXieZhuResp temp = tiChuXieZhuRsq as TiChuXieZhuResp;
+                        PlayerSceneSyncManager.Instance.m_MovePosAfterCarriage = new Vector2(msg.posX, msg.posZ);
+                        PlayerSceneSyncManager.Instance.m_DelegateAfterCarriage = PlayerSceneSyncManager.Instance.m_MoveToPosAfterCarriageInit;
 
-                        Global.CreateBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-                            null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_10).Replace("***", temp.name),
-                            null,
-                            LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
-                            null);
-                        return true;
+                        PlayerSceneSyncManager.Instance.EnterCarriage();
+                        break;
                     }
-                    return false;
-                }
-            case ProtoIndexes.S_MengYouKuaiBao_Resq:
-                MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-
-                QiXiongSerializer t_qx = new QiXiongSerializer();
-
-                PromptMSGResp tempInfo = new PromptMSGResp();
-
-                t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-
-
-                List<TongzhiData> tempListTongzhiData = new List<TongzhiData>();
-                if (tempInfo.msgList != null)
-                {
-                    for (int i = 0; i < tempInfo.msgList.Count; i++)
+                default:
                     {
-                        TongzhiData tempTongzhiData = new TongzhiData(tempInfo.msgList[i]);
-                        tempListTongzhiData.Add(tempTongzhiData);
+                        break;
                     }
-                }
+            }
+			if(msg.fujian == null || msg.fujian == "")
+			{
+				break;
+			}
 
-                //			SuBaoMSG tempsubao = new SuBaoMSG();
-                //			tempsubao.subaoId = 10000;
-                //			tempsubao.subao = "aaaaa";
-                //			tempsubao.configId = 6;
-                //			TongzhiData tempTongzhiData11 = new TongzhiData(tempsubao);
-                //			tempListTongzhiData.Add(tempTongzhiData11);
-                //			tempsubao = new SuBaoMSG();
-                //			tempsubao.subaoId = 10001;
-                //			tempsubao.subao = "bbbb";
-                //			tempsubao.configId = 7;
-                //			tempTongzhiData11 = new TongzhiData(tempsubao);
-                //			tempListTongzhiData.Add(tempTongzhiData11);
-                //			tempsubao = new SuBaoMSG();
-                //			tempsubao.subaoId = 10002;
-                //			tempsubao.subao = "ccccc";
-                //			tempsubao.configId = 32;
-                //			tempTongzhiData11 = new TongzhiData(tempsubao);
-                //			tempListTongzhiData.Add(tempTongzhiData11);
-                //			tempsubao = new SuBaoMSG();
-                //			tempsubao.subaoId = 10003;
-                //			tempsubao.subao = "ddddd";
-                //			tempsubao.configId = 33;
-                //			tempTongzhiData11 = new TongzhiData(tempsubao);
-                //			tempListTongzhiData.Add(tempTongzhiData11);
-                //			tempsubao = new SuBaoMSG();
-                //			tempsubao.subaoId = 10004;
-                //			tempsubao.subao = "eeeeee";
-                //			tempsubao.configId = 2;
-                //			tempTongzhiData11 = new TongzhiData(tempsubao);
-                //			tempListTongzhiData.Add(tempTongzhiData11);
-                //			Global.m_listMainCityData[i].m_SuBaoMSG
+			string tempFujian = msg.fujian;
+			List<string> funjianlist = new List<string>();
+			
+			while(tempFujian.IndexOf("#") != -1)
+			{
+				funjianlist.Add(Global.NextCutting(ref tempFujian, "#"));
+			}
+			funjianlist.Add(Global.NextCutting(ref tempFujian, "#"));
+			List<RewardData> RewardDataList = new List<RewardData>();
+			for(int i = 0; i < funjianlist.Count; i ++)
+			{
+				tempFujian = funjianlist[i];
+				Global.NextCutting(ref tempFujian, ":");
+				RewardData Rewarddata = new RewardData ( int.Parse(Global.NextCutting(ref tempFujian, ":")), int.Parse(Global.NextCutting(ref tempFujian, ":"))); 
+				RewardDataList.Add(Rewarddata);
+			}
+			GeneralRewardManager.Instance().CreateReward (RewardDataList);
+            break;
+        }
+        case ProtoIndexes.S_USE_ITEM:
+        {
+            ExploreResp tbGetRewardRes = new ExploreResp();
+            tbGetRewardRes = QXComData.ReceiveQxProtoMessage(p_message, tbGetRewardRes) as ExploreResp;
 
-                Global.upDataTongzhiData(tempListTongzhiData);
-                m_MainCityUITongzhi.upDataShow();
-                //			ReportTemplate temp = ReportTemplate.GetHeroSkillUpByID();
-                //			Global.NextCutting();
-                break;
-            case ProtoIndexes.S_MengYouKuaiBao_PUSH:
-                MemoryStream t_stream1 = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+            List<RewardData> dataList = new List<RewardData>();
+            for (int m = 0; m < tbGetRewardRes.awardsList.Count; m++)
+            {
+                RewardData data = new RewardData(tbGetRewardRes.awardsList[m].itemId, tbGetRewardRes.awardsList[m].itemNumber);
+                dataList.Add(data);
+            }
+            GeneralRewardManager.Instance().CreateReward(dataList);
+            break;
+        }
+		case ProtoIndexes.S_FULIINFO_RESP:
+		{
+			MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+			QiXiongSerializer t_qx = new QiXiongSerializer();
+			FuLiHuoDongResp tempInfo = new FuLiHuoDongResp();
+			t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                QiXiongSerializer t_qx1 = new QiXiongSerializer();
-
-                SuBaoMSG tempInfo1 = new SuBaoMSG();
-
-                t_qx1.Deserialize(t_stream1, tempInfo1, tempInfo1.GetType());
-
-                TongzhiData tempTongzhiData1 = new TongzhiData(tempInfo1);
-
-                List<TongzhiData> tempListTongzhiData1 = new List<TongzhiData>();
-
-                tempListTongzhiData1.Add(tempTongzhiData1);
-
-                Global.upDataTongzhiData(tempListTongzhiData1);
-                m_MainCityUITongzhi.upDataShow();
-                break;
-            case ProtoIndexes.S_Prompt_Action_Resp:
-                {
-                    MemoryStream stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-                    QiXiongSerializer xiongSerializer = new QiXiongSerializer();
-                    PromptActionResp msg = new PromptActionResp();
-                    xiongSerializer.Deserialize(stream, msg, msg.GetType());
-
-                    if (msg.result != 10) return true;
-
-                    switch (msg.subaoType)
-                    {
-                        //transport to position.
-                        case 101:
-                        case 102:
-                        case 104:
-                        case 105:
-                            {
-                                PlayerSceneSyncManager.Instance.m_MovePosAfterCarriage = new Vector2(msg.posX, msg.posZ);
-                                PlayerSceneSyncManager.Instance.m_DelegateAfterCarriage = PlayerSceneSyncManager.Instance.m_MoveToPosAfterCarriageInit;
-
-                                PlayerSceneSyncManager.Instance.EnterCarriage();
-                                break;
-                            }
-                        default:
-                            {
-                                break;
-                            }
-                    }
-
-                    break;
-                }
-            case ProtoIndexes.S_USE_ITEM:
-                {
-                    ExploreResp tbGetRewardRes = new ExploreResp();
-                    tbGetRewardRes = QXComData.ReceiveQxProtoMessage(p_message, tbGetRewardRes) as ExploreResp;
-
-                    List<RewardData> dataList = new List<RewardData>();
-                    for (int m = 0; m < tbGetRewardRes.awardsList.Count; m++)
-                    {
-                        RewardData data = new RewardData(tbGetRewardRes.awardsList[m].itemId, tbGetRewardRes.awardsList[m].itemNumber);
-                        dataList.Add(data);
-                    }
-                    GeneralRewardManager.Instance().CreateReward(dataList);
-                    break;
-                }
+			FunctionButtonManager tempButton = getButton(139);
+			if(tempButton == null)
+			{
+				return false;
+			}
+			m_FuLiHuoDongResp = tempInfo;
+			int time = 100000;
+			for(int i = 0; i < m_FuLiHuoDongResp.xianshi.Count; i ++)
+			{
+				if(m_FuLiHuoDongResp.xianshi[i].isCanGet)
+				{
+					TimeLabelHelper.Instance.setTimeLabel(tempButton.m_LabelTime, "领取", -1);
+					return true;
+				}
+				else
+				{
+					if(m_FuLiHuoDongResp.xianshi[i].remainTime < time)
+					{
+						time = m_FuLiHuoDongResp.xianshi[i].remainTime;
+					}
+				}
+			}
+			TimeLabelHelper.Instance.setTimeLabel(tempButton.m_LabelTime, "领取", time);
+//			if(tempButton == null)
+//			{
+//				m_FuLiHuoDongResp = tempInfo;
+//			}
+//			else
+//			{
+//
+//			}
+			break;
+		}
         }
         return false;
     }
@@ -1328,6 +1479,17 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                 }
                 switch (ClientMain.m_listPopUpData[i].iLevel)
                 {
+					case 1:
+					{
+						if(SignalInManagerment.m_SignalIn)
+						{
+							SignalInManagerment.m_SignalIn.VipEffect();
+							ClientMain.m_isNewOpenFunction = true;
+							ClientMain.m_listPopUpData.RemoveAt(i);
+							return true;
+						}
+					}
+						break;
                     case 2:
                         CityGlobalData.m_Limite_Activity_Type = 1543000;
 
@@ -1336,6 +1498,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                         ClientMain.m_isNewOpenFunction = true;
                         ClientMain.m_listPopUpData.RemoveAt(i);
                         return true;
+
                     case 5:
                         //					Debug.Log(TaskData.Instance.ShowMainTaskGet(ClientMain.m_listPopUpData[i].sData));
                         if (TaskData.Instance.ShowMainTaskGet(ClientMain.m_listPopUpData[i].sData))
@@ -1345,6 +1508,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                             return true;
                         }
                         break;
+                   
                     case 10:
                         if (MainCityUI.m_MainCityUI.m_MainCityUIL.m_MainCityTaskManager.setChange(ClientMain.m_listPopUpData[i].sData))
                         {
@@ -1362,6 +1526,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                         }
                         break;
                     case 40:
+						int tempFunctionID = int.Parse(ClientMain.m_listPopUpData[i].sData);
                         if (MainCityUI.m_MainCityUI.openAddFunction(ClientMain.m_listPopUpData[i].sData))
                         {
                             ClientMain.m_isNewOpenFunction = true;
@@ -1369,14 +1534,27 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                             return true;
                         }
                         break;
+					case 4:
+						ClientMain.m_isNewOpenFunction = true;
+						ClientMain.m_listPopUpData.RemoveAt(i);
+						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SIGNAL_LAYER),
+						                        MainCityUI.m_MainCityUI.AddUIPanel);
+						break;
                     case 70:
                         {
-                            Global.m_isZhanli = true;
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_ADDZHANLI),
-                                            AddUIPanelNotCloseAndNotCloseYindao);
-                            ClientMain.m_isNewOpenFunction = true;
-                            ClientMain.m_listPopUpData.RemoveAt(i);
-                            return true;
+							if(!Global.m_isZhanli)
+							{
+								Global.m_isZhanli = true;
+								Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_ADDZHANLI),
+								                        AddUIPanelNotCloseAndNotCloseYindao);
+								ClientMain.m_isNewOpenFunction = true;
+								ClientMain.m_listPopUpData.RemoveAt(i);
+								return true;
+							}
+							else
+							{
+								return false;
+							}
                         }
                         break;
                 }

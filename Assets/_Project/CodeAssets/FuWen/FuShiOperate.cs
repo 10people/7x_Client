@@ -105,17 +105,17 @@ public class FuShiOperate : MonoBehaviour {
 
 		foreach (EventHandler handler in btnHandlerList)
 		{
-			handler.m_handler += HandlerCallBack;
+			handler.m_click_handler += HandlerCallBack;
 		}
 
 		FuWenTemplate fuWenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (fuWenInfo.itemId);
 
 		nameStr = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
-		nameLabel.text = nameStr;
-		desLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName);
+		nameLabel.text = MyColorData.getColorString (3,nameStr);
+		desLabel.text = FuWenData.Instance.colorCode + NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName) + "[-]";
 
-		numLabel.text = "x" + fuWenInfo.cnt;
-		shuXingLabel.text = "+" + fuWenTemp.shuxingValue;
+		numLabel.text = MyColorData.getColorString (3,"x" + fuWenInfo.cnt);
+		shuXingLabel.text = FuWenData.Instance.colorCode + "+" + fuWenTemp.shuxingValue + "[-]";
 
 		pinZhiId = CommonItemTemplate.getCommonItemTemplateById (fuWenInfo.itemId).color - 1;
 		iconId = fuWenTemp.icon;
@@ -200,7 +200,7 @@ public class FuShiOperate : MonoBehaviour {
 //		Destroy (this.gameObject);
 		foreach (EventHandler handler in btnHandlerList)
 		{
-			handler.m_handler -= HandlerCallBack;
+			handler.m_click_handler -= HandlerCallBack;
 		}
 		fuWenInfo = null;
 		gameObject.SetActive (false);

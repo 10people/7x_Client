@@ -6,154 +6,75 @@ public class UICreateEnemy : MonoBehaviour
 {
     [HideInInspector]
     public GameObject IconSamplePrefab;
+	
+    int distance = 97;//敌人头像距离
+    int countDistance = 250;//偏移量
 
-    List<int> GetPveEnemyId = new List<int>();
-
-    List<int> soldires = new List<int>();
-    List<int> heros = new List<int>();
-    List<int> Bosses = new List<int>();
-    List<int> Zhi_Ye = new List<int>();
-
-    int EnemyNumBers = 0;//显示敌人数量
-    int distance = 120;//敌人头像距离
-    int countDistance = 360;//偏移量
-	List <GameObject> mHerosIcon = new List<GameObject> (); 
-
+	List<LegendNpcTemplate> mLegendNpcTemplateList = new List<LegendNpcTemplate>();
+	List<NpcTemplate> mNpcTemplate = new List<NpcTemplate>();
     void Start()
     {
        
     }
 
-    public void InItEnemyList(int leveType)
+    public void InItEnemyList(int levelID)
     {
-		foreach(GameObject con in mHerosIcon)
-		{
-			Destroy(con);
-
-		}
-		mHerosIcon.Clear ();
-
-		soldires.Clear();
-		heros.Clear();
-		Bosses.Clear();
-		Zhi_Ye.Clear();
-		if (leveType == 0)
-        {
-            EnemyNumBers = 6;
-        }
-
-        else if (leveType == 1 || leveType == 2)
-        {
-            EnemyNumBers = 4;
-        }
-		//Debug.Log ("GetPveTempID.CurLev = "+GetPveTempID.CurLev);
+		mLegendNpcTemplateList.Clear();
+		mNpcTemplate.Clear();
+//		Debug.Log ("levelID = "+levelID);
 		if(!CityGlobalData.PT_Or_CQ)
 		{
-			LegendPveTemplate L_pvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(Pve_Level_Info.CurLev);
+			LegendPveTemplate L_pvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(levelID);
 			
 			int npcid = L_pvetemp.npcId;
 		
-			List<LegendNpcTemplate> mLegendNpcTemplateList = LegendNpcTemplate.GetLegendNpcTemplates_By_npcid(npcid);
+			mLegendNpcTemplateList = LegendNpcTemplate.GetLegendNpcTemplates_By_npcid(npcid);
+			for (int i = 0; i < mLegendNpcTemplateList.Count-1; i ++)
+			{
+				for(int j = i+1; j < mLegendNpcTemplateList.Count; )
+				{
+					if(mLegendNpcTemplateList[i].modelId == mLegendNpcTemplateList[j].modelId)
+					{
+						
+						mLegendNpcTemplateList.RemoveAt(j);
+					}
+					else{
+						j ++;
+					}
+				}
+				
+			}
 			//Debug.Log("npcid t = " +npcid);
-			foreach(LegendNpcTemplate mLegendNpcTemplate in mLegendNpcTemplateList)
+			for (int i = 0; i < mLegendNpcTemplateList.Count-1; i ++)
 			{
-				int icn = int.Parse(mLegendNpcTemplate.icon);
-
-				if(icn != 0 && mLegendNpcTemplate.type == 4&& !Bosses.Contains(mLegendNpcTemplate.EnemyId)) // boss
+				for(int j = i+1 ; j < mLegendNpcTemplateList.Count; j++)
 				{
-					Bosses.Add(mLegendNpcTemplate.id);
-				}
-				if(icn != 0 && mLegendNpcTemplate.type == 3&& !heros.Contains(mLegendNpcTemplate.id)) // hero
-				{				
-						heros.Add(mLegendNpcTemplate.id);
-				}
-				if(icn != 0 && mLegendNpcTemplate.type == 2&& !soldires.Contains(mLegendNpcTemplate.id)) // Solider
-				{
-						soldires.Add(mLegendNpcTemplate.id);
-				}
-			}
-
-			for (int i = 0; i < soldires.Count-1; i ++)
-			{
-				
-				LegendNpcTemplate m_LegendNpcTemplate = LegendNpcTemplate.GetLegendNpcTemplate_By_id (soldires [i]);
-				
-				for(int j = i+1; j < soldires.Count; )
-				{
-					LegendNpcTemplate j_LegendNpcTemplate = LegendNpcTemplate.GetLegendNpcTemplate_By_id (soldires [j]);
-					if(m_LegendNpcTemplate.profession == j_LegendNpcTemplate.profession)
+					if(mLegendNpcTemplateList[i].type < mLegendNpcTemplateList[j].type)
 					{
-						
-						soldires.RemoveAt(j);
-					}
-					else{
-						j ++;
+						LegendNpcTemplate mLegendNpc = mLegendNpcTemplateList[i];
+						mLegendNpcTemplateList[i] = mLegendNpcTemplateList[j];
+						mLegendNpcTemplateList[j] = mLegendNpc ;
 					}
 				}
-				
 			}
-
-			for (int i = 0; i < heros.Count-1; i ++)
-			{
-				//Debug.Log("heros[i] = "+heros[i]);
-				LegendNpcTemplate m_LegendNpcTemplate = LegendNpcTemplate.GetLegendNpcTemplate_By_id (heros [i]);
-				
-				for(int j = i+1; j < heros.Count; )
-				{
-					LegendNpcTemplate j_LegendNpcTemplate = LegendNpcTemplate.GetLegendNpcTemplate_By_id (heros [j]);
-					if(m_LegendNpcTemplate.profession == j_LegendNpcTemplate.profession)
-					{
-						
-						heros.RemoveAt(j);
-					}
-					else{
-						j ++;
-					}
-				}
-				
-			}
-			//GetPveEnemyId = LegendNpcTemplate.GetEnemyId_By_npcid(npcid);
+		
 		}
 		else
 		{
-			PveTempTemplate pvetemp = PveTempTemplate.GetPveTemplate_By_id(Pve_Level_Info.CurLev);
+			PveTempTemplate pvetemp = PveTempTemplate.GetPveTemplate_By_id(levelID);
 			
 			int npcid = pvetemp.npcId;
-			//Debug.Log("npcid  = " +npcid);
-			//Debug.Log("npcid = " +npcid);
-			List<NpcTemplate> mNpcTemplateList = NpcTemplate.GetNpcTemplates_By_npcid(npcid);
 
-			//Debug.Log("mNpcTemplateList.count = "+mNpcTemplateList.Count);
+			mNpcTemplate = NpcTemplate.GetNpcTemplates_By_npcid(npcid);
 
-			foreach(NpcTemplate mNpcTemplate in mNpcTemplateList)
+			for (int i = 0; i < mNpcTemplate.Count-1; i ++)
 			{
-				int icn = int.Parse(mNpcTemplate.icon);
-				if(icn != 0&&mNpcTemplate.type == 4&& !Bosses.Contains(mNpcTemplate.id)) // boss
+				for(int j = i+1; j < mNpcTemplate.Count; )
 				{
-					Bosses.Add(mNpcTemplate.id);
-				}	
-				if(icn != 0 && mNpcTemplate.type == 3&& !heros.Contains(mNpcTemplate.id)) // hero
-				{
-					heros.Add(mNpcTemplate.id);
-				}
-				if(icn != 0 && mNpcTemplate.type == 2&& !soldires.Contains(mNpcTemplate.id)) // Solider
-				{
-					   soldires.Add(mNpcTemplate.id);
-
-				}
-			}
-			for (int i = 0; i < soldires.Count-1; i ++)
-			{
-				
-				NpcTemplate m_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id (soldires [i]);
-				
-				for(int j = i+1; j < soldires.Count; )
-				{
-					NpcTemplate j_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id (soldires [j]);
-					if(m_NpcTemplate.profession == j_NpcTemplate.profession)
+					if(mNpcTemplate[i].modelId == mNpcTemplate[j].modelId)
 					{
 						
-						soldires.RemoveAt(j);
+						mNpcTemplate.RemoveAt(j);
 					}
 					else{
 						j ++;
@@ -161,400 +82,179 @@ public class UICreateEnemy : MonoBehaviour
 				}
 				
 			}
-			
-			
-			for (int i = 0; i < heros.Count-1; i ++)
+			for (int i = 0; i < mNpcTemplate.Count-1; i ++)
 			{
-				//Debug.Log("heros[i] = "+heros[i]);
-				NpcTemplate m_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id (heros [i]);
-				
-				for(int j = i+1; j < heros.Count; )
+				for(int j = i+1 ; j < mNpcTemplate.Count; j++)
 				{
-					NpcTemplate j_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id (heros [j]);
-					if(m_NpcTemplate.profession == j_NpcTemplate.profession)
+					if(mNpcTemplate[i].type < mNpcTemplate[j].type)
 					{
-						heros.Remove(heros [j]);
-					}else
-					{
-						j ++;
+						NpcTemplate m_mNpcTemplate = mNpcTemplate[i];
+						mNpcTemplate[i] = mNpcTemplate[j];
+						mNpcTemplate[j] = m_mNpcTemplate ;
 					}
 				}
-				
 			}
 
 		}
 
-       
         getEnemyData();
     }
 
     void getEnemyData()
     {
-        //List<string> EyName = new List<string>(GetPveTempID.NewEnemy.Keys);
+//		List<LegendNpcTemplate> mLegendNpcTemplateList = new List<LegendNpcTemplate>();
+//		List<NpcTemplate> mNpcTemplate = new List<NpcTemplate>();
+		if (CityGlobalData.PT_Or_CQ) {
 
-        int bossnum = Bosses.Count;
-        int heronum = heros.Count;
-        int solder = soldires.Count;
-
-		//Debug.Log ("boss个数：" + bossnum);
-		//Debug.Log ("hero个数：" + heronum);
-		//Debug.Log ("soldier个数：" + solder);
-
-        if (bossnum > 0)//BOSS个数不为0
-        {
-            if (bossnum < EnemyNumBers)//boss不大于大于6个
-            {
-                if (heronum > 0)//w武将个数大于0
-                {
-                    if (heronum + bossnum < EnemyNumBers)//w武将和bpss的总个数小于6
-                    {
-                        if (solder > 0)
-                        {
-                            if (heronum + bossnum + solder > EnemyNumBers)
-                            {
-                                createBoss(bossnum);
-                                createHeros(heronum);
-                                createSoliders(EnemyNumBers - (bossnum + heronum));
-                            }
-                            else
-                            {
-                                createBoss(bossnum);
-                                createHeros(heronum);
-                                createSoliders(solder);
-                            }
-                        }
-                        else
-                        {
-                            createBoss(bossnum);
-                            createHeros(heronum);
-                        }
-                    }
-                    else
-                    {//boss和武将的和大于6了 只创建6个
-                        createBoss(bossnum);
-                        createHeros(EnemyNumBers - bossnum);
-                    }
-                }
-                else
-                {
-                    //ww武将为0
-                    if (solder > 0)
-                    {
-                        if (solder + bossnum > EnemyNumBers)
-                        {
-                            createBoss(bossnum);
-                            createSoliders(EnemyNumBers - bossnum);
-                        }
-                        else
-                        {
-                            createBoss(bossnum);
-                            createSoliders(solder);
-                        }
-                    }
-                    else
-                    {
-                        createBoss(bossnum);
-                    }
-                }
-            }
-            else
-            {
-                //boss的个数大于6
-                createBoss(EnemyNumBers);
-            }
-        }
-        else
-        {
-            //假如boss的个数为0000000000
-            if (heronum > 0)//w武将个数大于0
-            {
-                if (heronum < EnemyNumBers)//w武将和bpss的总个数小于6
-                {
-                    if (solder > 0)
-                    {
-                        if (heronum + solder <= EnemyNumBers)
-                        {
-                            createHeros(heronum);
-                            createSoliders(solder);
-                        }
-                        else
-                        {
-                            createHeros(heronum);
-                            createSoliders(EnemyNumBers - heronum);
-                        }
-                    }
-                    else
-                    {
-                        createHeros(heronum);
-                    }
-                }
-                else
-                {
-                    createHeros(EnemyNumBers);
-                }
-            }
-            else
-            {
-                if (solder > EnemyNumBers)
-                {
-                    createSoliders(EnemyNumBers);
-                }
-                else
-                {
-                    createSoliders(solder);
-                }
-            }
-        }
-        //this.gameObject.GetComponent<UIGrid>().repositionNow = true;
-    }
-
-    private void OnCreateBossCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        if (IconSamplePrefab == null)
-        {
-            IconSamplePrefab = p_object as GameObject;
-        }
-
-        for (int n = 0; n < createBossPara; n++)
-        {
-
-            GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			mHerosIcon.Add(iconSampleObject);
-			iconSampleObject.SetActive (true);
-            iconSampleObject.transform.parent = transform;
-            var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-
-            if (allenemy >= EnemyNumBers)
-            {
-                iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, 0, 0);
-            }
-            else
-            {
-                iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, 0, 0);
-            }
-
-			if(!CityGlobalData.PT_Or_CQ)
+			if (IconSamplePrefab == null)
 			{
-				//EnemyNameid = LegendNpcTemplate.GetEnemyNameId_By_EnemyId(Bosses[n]);
-
-				LegendNpcTemplate mLeGendNpcTemp = LegendNpcTemplate.GetLegendNpcTemplate_By_id(Bosses[n]);
-
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mLeGendNpcTemp.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mLeGendNpcTemp.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mLeGendNpcTemp.desc).description;
-
-				string leftTopSpriteName = null;
-
-				var rightButtomSpriteName = "boss";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(10, mLeGendNpcTemp.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreatePuTong_Enemys);
 			}
-			else{
-
-				NpcTemplate mNpcTemplate = NpcTemplate.GetNpcTemplate_By_id(Bosses[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mNpcTemplate.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mNpcTemplate.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mNpcTemplate.desc).description;
-				
-				string leftTopSpriteName = null;
-
-				var rightButtomSpriteName = "boss";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(10, mNpcTemplate.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-
-			}
-    
-        }
-    }
-
-    private int createBossPara;
-
-    private int allenemy
-    {
-        get { return Bosses.Count + heros.Count + soldires.Count; }
-    }
-
-    void createBoss(int i)
-    {
-        createBossPara = i;
-
-        if (IconSamplePrefab == null)
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateBossCallBack);
-        }
-        else
-        {
-            WWW temp = null;
-            OnCreateBossCallBack(ref temp, null, IconSamplePrefab);
-        }
-    }
-
-    private void OnCreateHeroCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        if (IconSamplePrefab == null)
-        {
-            IconSamplePrefab = p_object as GameObject;
-        }
-
-        for (int n = 0; n < createHeroPara; n++)
-        {
-            GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			mHerosIcon.Add(iconSampleObject);
-			iconSampleObject.SetActive (true);
-            iconSampleObject.transform.parent = transform;
-            var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-
-            if (allenemy >= EnemyNumBers)
-            {
-                iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - Bosses.Count - n) * distance - countDistance, 0, 0);
-            }
-            else
-            {
-                iconSampleObject.transform.localPosition = new Vector3((allenemy - Bosses.Count - n) * distance - countDistance, 0, 0);
-            }
-
-			if(!CityGlobalData.PT_Or_CQ)
+			else
 			{
-
-				LegendNpcTemplate mLeGendNpcTemp = LegendNpcTemplate.GetLegendNpcTemplate_By_id(heros[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mLeGendNpcTemp.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mLeGendNpcTemp.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mLeGendNpcTemp.desc).description;
-				
-				string leftTopSpriteName = null;
-				var rightButtomSpriteName = "";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(10, mLeGendNpcTemp.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+				WWW temp = null;
+				OnCreatePuTong_Enemys(ref temp, null, IconSamplePrefab);
 			}
-			else{
-				NpcTemplate mNpcTemplate = NpcTemplate.GetNpcTemplate_By_id(heros[n]);
-
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mNpcTemplate.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mNpcTemplate.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mNpcTemplate.desc).description;
-				
-				string leftTopSpriteName = null;
-				var rightButtomSpriteName = "";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(10, mNpcTemplate.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-				
+		} 
+		else 
+		{
+			if (IconSamplePrefab == null)
+			{
+				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateCQ_Enemys);
 			}
-            
-        }
+			else
+			{
+				WWW temp = null;
+				OnCreateCQ_Enemys(ref temp, null, IconSamplePrefab);
+			}
+		}
+       
     }
 
-    private int createHeroPara;
-
-    void createHeros(int i)
-    {
-        createHeroPara = i;
-
-        if (IconSamplePrefab == null)
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateHeroCallBack);
-        }
-        else
-        {
-            WWW temp = null;
-            OnCreateHeroCallBack(ref temp, null, IconSamplePrefab);
-        }
-    }
-
-    private void OnCreateSoldierCallBack(ref WWW p_www, string p_path, Object p_object)
+    private void OnCreatePuTong_Enemys(ref WWW p_www, string p_path, Object p_object)
     {
         if (IconSamplePrefab == null)
         {
             IconSamplePrefab = p_object as GameObject;
         }
-
-        for (int n = 0; n < createSoldierPara; n++)
+		int count = mNpcTemplate.Count;
+		if(count > 4)
+		{
+			count =  4;
+		}
+		for (int n = 0; n < count; n++)
         {
             GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			mHerosIcon.Add(iconSampleObject);
-
+		
 			iconSampleObject.SetActive (true);
             iconSampleObject.transform.parent = transform;
+			int allenemy = mNpcTemplate.Count;
+			if(allenemy > 4)
+			{
+				allenemy = 4;
+			}
+
+			iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
             var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-
-            if (allenemy >= EnemyNumBers)
-            {
-                iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - (Bosses.Count + heros.Count)
-                                                                   - n) * distance - countDistance, 0, 0);
-            }
-            else
-            {
-                iconSampleObject.transform.localPosition = new Vector3((allenemy - (Bosses.Count + heros.Count)
-                                                                    - n) * distance - countDistance, 0, 0);
-            }
-            iconSampleObject.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
-
-			int EnemyNameid = 0;
+		
+			NpcTemplate m_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id(mNpcTemplate[n].id);
 			
-			if(!CityGlobalData.PT_Or_CQ)
+			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(m_NpcTemplate.EnemyName);
+			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + m_NpcTemplate.level.ToString();
+			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(m_NpcTemplate.desc).description;
+			
+			string leftTopSpriteName = null;
+			var rightButtomSpriteName = "";
+
+			if(m_NpcTemplate.type == 4)
 			{
-				LegendNpcTemplate mLeGendNpcTemp = LegendNpcTemplate.GetLegendNpcTemplate_By_id(soldires[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mLeGendNpcTemp.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mLeGendNpcTemp.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mLeGendNpcTemp.desc).description;
-				
-				string leftTopSpriteName = null;
-				var rightButtomSpriteName = "";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(10, mLeGendNpcTemp.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			}
-			else{
+//				Debug.Log("boss");
+				rightButtomSpriteName = "boss";
 
-				NpcTemplate mNpcTemplate = NpcTemplate.GetNpcTemplate_By_id(soldires[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mNpcTemplate.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mNpcTemplate.level.ToString();;
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mNpcTemplate.desc).description;
-				
-				string leftTopSpriteName = null;
-				var rightButtomSpriteName = "";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(10, mNpcTemplate.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-				
 			}
-           
+			if(m_NpcTemplate.type == 5)
+			{
+				rightButtomSpriteName = "JunZhu";
+			}
+			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
+			iconSampleManager.SetIconBasic(3, m_NpcTemplate.icon.ToString());
+			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
+			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+			if(m_NpcTemplate.type == 4)
+			{
+				iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+				iconSampleManager.ShowBOssName(Enemy_Namestr.Name);
+			}
+			else
+			{
+				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -23, 0);
+				iconSampleObject.transform.localScale = new Vector3(0.8f,0.8f,1);
+			}
         }
     }
 
-    private int createSoldierPara;
+	private void OnCreateCQ_Enemys(ref WWW p_www, string p_path, Object p_object)
+	{
+		if (IconSamplePrefab == null)
+		{
+			IconSamplePrefab = p_object as GameObject;
+		}
+		int count = mLegendNpcTemplateList.Count;
+		if(count > 4)
+		{
+			count = 4;
+		}
+		for (int n = 0; n < count; n++)
+		{
+			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
+			
+			iconSampleObject.SetActive (true);
+			iconSampleObject.transform.parent = transform;
 
-    void createSoliders(int i)
-    {
-        createSoldierPara = i;
+			int allenemy = mLegendNpcTemplateList.Count;
+			if(allenemy > 4)
+			{
+				allenemy = 4;
+			}
 
-        if (IconSamplePrefab == null)
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateSoldierCallBack);
-        }
-        else
-        {
-            WWW temp = null;
-            OnCreateSoldierCallBack(ref temp, null, IconSamplePrefab);
-        }
-    }
+			iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
+			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+			
+			LegendNpcTemplate m_LegendNpcTemplate= LegendNpcTemplate.GetLegendNpcTemplate_By_id(mLegendNpcTemplateList[n].id);
+
+			string leftTopSpriteName = null;
+			var rightButtomSpriteName = "";
+
+			if(m_LegendNpcTemplate.type == 4)
+			{
+				rightButtomSpriteName = "boss";
+
+			}
+			if(m_LegendNpcTemplate.type == 5)
+			{
+				rightButtomSpriteName = "JunZhu";
+			}
+	
+			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(m_LegendNpcTemplate.EnemyName);
+			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + m_LegendNpcTemplate.level.ToString();
+			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(m_LegendNpcTemplate.desc).description;
+		
+
+			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
+			iconSampleManager.SetIconBasic(3, m_LegendNpcTemplate.icon.ToString());
+			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
+			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+			if(m_LegendNpcTemplate.type == 4)
+			{
+				iconSampleManager.ShowBOssName(Enemy_Namestr.Name);
+				iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+			}
+			else
+			{
+				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -23, 0);
+				iconSampleObject.transform.localScale = new Vector3(0.8f,0.8f,1);
+			}
+		}
+	}
+
 }

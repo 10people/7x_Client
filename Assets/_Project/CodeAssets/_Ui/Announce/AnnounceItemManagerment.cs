@@ -13,7 +13,7 @@ public class AnnounceItemManagerment : MonoBehaviour
 
 	void Start () 
     {
-        m_TouchEvent.m_handler += ShowEvent;
+        m_TouchEvent.m_click_handler += ShowEvent;
 	}
 
 

@@ -431,11 +431,19 @@ public class JianDunDataManager
 				}
 				break;
 			case 11:
-				float maxHP = BattleControlor.Instance().getKing().nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMaxReal);
-				float curHP = BattleControlor.Instance().getKing().nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp);
-				if(((curHP / maxHP) * 100) < m_listData[i][1])
+				BaseAI tempBaseAI = BattleControlor.Instance().getNodebyId(m_listData[i][2]);
+				if(tempBaseAI == null)
 				{
 					temp = 0;
+				}
+				else
+				{
+					float maxHP = tempBaseAI.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMaxReal);
+					float curHP = tempBaseAI.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp);
+					if(((curHP / maxHP) * 100) < m_listData[i][1])
+					{
+						temp = 0;
+					}
 				}
 				break;
 			case 12:

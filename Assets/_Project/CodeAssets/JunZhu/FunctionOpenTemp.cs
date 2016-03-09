@@ -2,6 +2,7 @@
 
 //#define DEBUG_USE_PUSH_DATA
 
+//#define DEBUG_FUNCTION_OPEND
 
 
 using UnityEngine;
@@ -17,6 +18,7 @@ public class FunctionOpenTemp : XmlLoadManager
     public string key;
 	public int m_iRedType;
     public string Des;
+	public int m_iShowDesc;//1显示0不显示
     public int Level;
     public int m_iMissionID;//开启新功能需要的完成的任务ID
     public int m_iDoneMissionID;//完成领奖的任务ID
@@ -27,6 +29,8 @@ public class FunctionOpenTemp : XmlLoadManager
     public int type;
 	public int m_iPlay;//是否播放添加功能动画
     public int rank;
+	public int m_iImageW;
+	public int m_iImageH;
 	public string m_sNotOpenTips;
 	public List<int> m_listNextID = new List<int>();
 
@@ -110,6 +114,8 @@ public class FunctionOpenTemp : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.Des = t_reader.Value;
 
+				t_template.m_iShowDesc = ReadNextInt(t_reader);
+
                 t_reader.MoveToNextAttribute();
                 t_template.rank = int.Parse(t_reader.Value);
 
@@ -134,6 +140,10 @@ public class FunctionOpenTemp : XmlLoadManager
 				t_reader.MoveToNextAttribute();
 
 				t_template.m_sNotOpenTips = ReadNextString(t_reader);
+
+				t_template.m_iImageW = ReadNextInt(t_reader);
+
+				t_template.m_iImageH = ReadNextInt(t_reader);
 
                 // init custom data
                 {
@@ -218,7 +228,8 @@ public class FunctionOpenTemp : XmlLoadManager
                     if (!m_EnableFuncIDList.Contains(templates[i].m_iID))
                     {
 						FunctionOpenTemp.isAddFunction();
-                        m_EnableFuncIDList.Add(templates[i].m_iID);
+
+						EnableFunctionId( templates[i].m_iID );
 
                         //Refresh comming soon button.
 //                        MainCityUIRB.RefreshCommingSoonButton();
@@ -228,6 +239,26 @@ public class FunctionOpenTemp : XmlLoadManager
             }
         }
     }
+
+	public static void AssignFunctionIds( List<int> p_ids ){
+		#if DEBUG_FUNCTION_OPEND
+		Debug.Log( "AssignFunctionIds: " + p_ids );
+
+		for( int i = 0; i < p_ids.Count; i++ ){
+			Debug.Log( i + " : " + p_ids[ i ] );
+		}
+		#endif
+
+		m_EnableFuncIDList = p_ids;
+	}
+
+	public static void EnableFunctionId( int p_id ){
+		#if DEBUG_FUNCTION_OPEND
+		Debug.Log( "EnableFunctionId: " + p_id );
+		#endif
+
+		m_EnableFuncIDList.Add( p_id );
+	}
 
     public static bool isAddFunction()
     {
@@ -278,7 +309,8 @@ public class FunctionOpenTemp : XmlLoadManager
                     if (!m_EnableFuncIDList.Contains(templates[i].m_iID))
                     {
 						FunctionOpenTemp.isAddFunction();
-                        m_EnableFuncIDList.Add(templates[i].m_iID);
+
+						EnableFunctionId( templates[i].m_iID );
 
                         //Refresh comming soon button.
 //                        MainCityUIRB.RefreshCommingSoonButton();
@@ -320,12 +352,14 @@ public class FunctionOpenTemp : XmlLoadManager
                     if (!m_EnableFuncIDList.Contains(templates[i].m_iID))
                     {
 						FunctionOpenTemp.isAddFunction();
-                        m_EnableFuncIDList.Add(templates[i].m_iID);
+
+						EnableFunctionId( templates[i].m_iID );
 
                         //Refresh comming soon button.
 //                        MainCityUIRB.RefreshCommingSoonButton();
                     }
-                    return;
+                    
+					continue;
                 }
             }
         }

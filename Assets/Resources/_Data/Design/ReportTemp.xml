@@ -34,7 +34,8 @@
 <ReportTemp ID="32" event="114" sendCondition="-1" receiveObject="1" recveiveScence="1" popupable="0" DescID="3011401" button="5" clickAward="" showType="2" reportTitle="成功击杀仇敌镖马" buttonfeedback="-1" />
 <ReportTemp ID="33" event="115" sendCondition="-1" receiveObject="1" recveiveScence="1" popupable="1" DescID="3011501" button="5" clickAward="" showType="2" reportTitle="成功劫杀镖马" buttonfeedback="-1" />
 <ReportTemp ID="34" event="116" sendCondition="-1" receiveObject="1" recveiveScence="1" popupable="0" DescID="3011601" button="6" clickAward="" showType="2" reportTitle="您已加入协助" buttonfeedback="-1" />
-<ReportTemp ID="35" event="201" sendCondition="-1" receiveObject="2" recveiveScence="2" popupable="2" DescID="3020101" button="2,1" clickAward="" showType="1" reportTitle="" buttonfeedback="3100101,3100002" />
-<ReportTemp ID="36" event="202" sendCondition="-1" receiveObject="2" recveiveScence="2" popupable="2" DescID="3020201" button="4" clickAward="0:900001:100" showType="1" reportTitle="" buttonfeedback="3100005" />
-<ReportTemp ID="37" event="203" sendCondition="-1" receiveObject="1" recveiveScence="2" popupable="2" DescID="3020301" button="5" clickAward="" showType="1" reportTitle="" buttonfeedback="-1" />
+<ReportTemp ID="35" event="117" sendCondition="-1" receiveObject="1" recveiveScence="1" popupable="0" DescID="3011701" button="5" clickAward="0:900031:2" showType="2" reportTitle="已领取活动时段奖励" buttonfeedback="3100006" />
+<ReportTemp ID="36" event="201" sendCondition="-1" receiveObject="2" recveiveScence="2" popupable="2" DescID="3020101" button="2,1" clickAward="" showType="1" reportTitle="" buttonfeedback="3100101,3100002" />
+<ReportTemp ID="37" event="202" sendCondition="-1" receiveObject="2" recveiveScence="2" popupable="2" DescID="3020201" button="4" clickAward="0:900001:100" showType="1" reportTitle="" buttonfeedback="3100005" />
+<ReportTemp ID="38" event="203" sendCondition="-1" receiveObject="1" recveiveScence="2" popupable="2" DescID="3020301" button="5" clickAward="" showType="1" reportTitle="" buttonfeedback="-1" />
 </dataset>

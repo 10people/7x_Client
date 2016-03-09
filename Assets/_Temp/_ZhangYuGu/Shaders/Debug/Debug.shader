@@ -1,3 +1,3 @@
 ﻿Shader "Debug/Debug" {
-	
+
 }

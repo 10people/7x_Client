@@ -2,57 +2,82 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class HorsePropWindow : MonoBehaviour {
+namespace Carriage
+{
+	public class HorsePropWindow : MonoBehaviour {
 
-	public UIScrollView propSc;
-	public UIScrollBar propSb;
+		public static HorsePropWindow propWindow;
 
-	public UIGrid propGrid;
+		public UIScrollView propSc;
+		public UIScrollBar propSb;
 
-	public GameObject propItemObj;
-	private List<GameObject> propItemList = new List<GameObject> ();
+		public UIGrid propGrid;
 
-	public UILabel yuanBaoLabel;
+		public GameObject propItemObj;
+		private List<GameObject> propItemList = new List<GameObject> ();
 
-	public List<EventHandler> closeHandlerList = new List<EventHandler>();
+		public UILabel yuanBaoLabel;
 
-	public ScaleEffectController sEffectController;
+		public List<EventHandler> closeHandlerList = new List<EventHandler>();
 
-	private bool isOpenFirst = true;
+		public ScaleEffectController sEffectController;
 
-	public void InItHorsePropWindow (List<HorsePropInfo> tempTotleList)
-	{
-		if (isOpenFirst)
+		private bool isOpenFirst = true;
+
+		void Awake ()
 		{
-			isOpenFirst = false;
-			sEffectController.OnOpenWindowClick ();
+			propWindow = this;
 		}
 
-		propItemList = QXComData.CreateGameObjectList (propItemObj,propGrid,tempTotleList.Count,propItemList);
-
-		for (int i = 0;i < tempTotleList.Count;i ++)
+		void OnDestroy ()
 		{
-			HorsePropItem horseProp = propItemList[i].GetComponent<HorsePropItem> ();
-			horseProp.InItHorsePropItem (tempTotleList[i]);
-
-			propGrid.repositionNow = true;
+			propWindow = null;
 		}
 
-		propSc.enabled = tempTotleList.Count > 3 ? true : false;
-		propSb.gameObject.SetActive (tempTotleList.Count > 3 ? true : false);
-
-		yuanBaoLabel.text = "您拥有" + MyColorData.getColorString (1,JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString ()) + "元宝";
-
-		foreach (EventHandler handler in closeHandlerList)
+		public void InItHorsePropWindow (List<HorsePropInfo> tempTotleList)
 		{
-			handler.m_handler -= CloseBtnHandlerClickBack;
-			handler.m_handler += CloseBtnHandlerClickBack;
-		}
-	}
+			if (isOpenFirst)
+			{
+				isOpenFirst = false;
+				sEffectController.OnOpenWindowClick ();
+			}
 
-	void CloseBtnHandlerClickBack (GameObject obj)
-	{
-		isOpenFirst = true;
-		gameObject.SetActive (false);
+			propItemList = QXComData.CreateGameObjectList (propItemObj,propGrid,tempTotleList.Count,propItemList);
+
+			for (int i = 0;i < tempTotleList.Count;i ++)
+			{
+				HorsePropItem horseProp = propItemList[i].GetComponent<HorsePropItem> ();
+				horseProp.InItHorsePropItem (tempTotleList[i]);
+
+				propGrid.repositionNow = true;
+			}
+
+			propSc.enabled = tempTotleList.Count > 3 ? true : false;
+			propSb.gameObject.SetActive (tempTotleList.Count > 3 ? true : false);
+
+			yuanBaoLabel.text = "您拥有" + MyColorData.getColorString (1,JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString ()) + "元宝";
+
+			foreach (EventHandler handler in closeHandlerList)
+			{
+				handler.m_click_handler -= CloseBtnHandlerClickBack;
+				handler.m_click_handler += CloseBtnHandlerClickBack;
+			}
+
+			if (BiaoJuPage.bjPage.CheckGaoJiMaBian ())
+			{
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,9);
+			}
+			else
+			{
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,8);
+			}
+		}
+
+		public void CloseBtnHandlerClickBack (GameObject obj)
+		{
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,10);
+			isOpenFirst = true;
+			gameObject.SetActive (false);
+		}
 	}
 }

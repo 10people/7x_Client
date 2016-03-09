@@ -19,12 +19,23 @@ namespace LimitActivity
         public List<ActivityItemController> m_ActivityItemControllerList = new List<ActivityItemController>();
 
         /// <summary>
-        /// Activity list data.
+        /// Activity list data, contains all activities that opened and closed.
         /// </summary>
         public static List<OpenXianShi> m_openXianShiList = new List<OpenXianShi>();
 
         public void Refresh(bool isLoadFromCache)
         {
+            //Store select status.
+            int storedSelectedId = 0;
+            if (m_ActivityItemControllerList.Any())
+            {
+                var temp = m_ActivityItemControllerList.Where(item => item.IsSelected).Select(item => item.m_OpenXianShi.typeId).ToList();
+                if (temp.Any())
+                {
+                    storedSelectedId = temp.First();
+                }
+            }
+
             while (m_Grid.transform.childCount > 0)
             {
                 var child = m_Grid.transform.GetChild(0);
@@ -62,12 +73,25 @@ namespace LimitActivity
                 NGUIHelper.SetScrollBarValue(m_ScrollView, m_ScrollBar, 0.01f);
             }
 
+            //Restore select status.
+            if (storedSelectedId != 0)
+            {
+                foreach (var item in m_ActivityItemControllerList)
+                {
+                    if (storedSelectedId == item.m_OpenXianShi.typeId)
+                    {
+                        item.SetSelected();
+                        break;
+                    }
+                }
+            }
+
             if (!isLoadFromCache)
             {
                 m_ActivityItemControllerList.ForEach(item => item.RequestData());
             }
 
-            if (m_RootController.IsClickAndShowFirstActivityItemDetail && m_ActivityItemControllerList != null && m_ActivityItemControllerList.Count > 0)
+            if ((m_RootController.IsClickAndShowFirstActivityItemDetail || (m_RootController.m_ActivityDetailController.m_OpenXianShi != null && !m_openXianShiList.Where(item => item.state == 10).Select(item => item.typeId).Contains(m_RootController.m_ActivityDetailController.m_OpenXianShi.typeId))) && m_ActivityItemControllerList != null && m_ActivityItemControllerList.Count > 0)
             {
                 m_RootController.IsClickAndShowFirstActivityItemDetail = false;
 

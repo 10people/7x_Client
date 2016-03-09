@@ -232,17 +232,17 @@ public class NpcTemplate : XmlLoadManager {
 		}
 
 		List<NpcTemplate> temps = new List<NpcTemplate> ();
-
+//		Debug.Log ("npc_id  = "+npc_id);
 		for( int i = 0; i < templates.Count; i++ )
 		{
 			NpcTemplate t_item = templates[ i ];
-			
-			if( t_item.NpcId == npc_id ){
-				
+
+			if( t_item.NpcId == npc_id && t_item.ifTeammate != 1&&t_item.icon != "0"&&t_item.type < 6){
+
 				temps.Add(t_item);
 			}
 		}
-		
+//		Debug.Log ("temps.count  = "+temps.Count);
 		return temps;
 	}
 

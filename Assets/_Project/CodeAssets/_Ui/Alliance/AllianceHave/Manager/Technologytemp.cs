@@ -36,44 +36,35 @@ public class Technologytemp : MonoBehaviour {
 	public int ShuYuanLevel;
 
 	public int Identity;
+
+	public UILabel KeJiName;
+
 	LianMengKeJiTemplate mLianMengKeJiTemplate;
+
+	public int Keji_Index;
 	void Start () {
 	
 	}
 	
 
 	void Update () {
-		Alliance_Builds = NewAlliancemanager.Instance ().m_allianceHaveRes.build;
+		Alliance_Builds = NewAlliancemanager.Instance().m_allianceHaveRes.build;
 	}
 	public void Init()
 	{
-		Identity = NewAlliancemanager.Instance ().m_allianceHaveRes.identity;
-		ShuYuanLevel = NewAlliancemanager.Instance ().KejiLev;
+		Identity = NewAlliancemanager.Instance().m_allianceHaveRes.identity;
+		ShuYuanLevel = NewAlliancemanager.Instance().KejiLev;
 //		Debug.Log ("Identity = "+Identity);
-//		Debug.Log ("ShuYuanLevel = "+ShuYuanLevel);
-		if(Identity == 0)
-		{
-			Green_ResearchBtn.SetActive(false);
-			ResearchBtn.SetActive(false);
-		}
-		else
-		{
-			Green_ResearchBtn.SetActive(true);
-			if(Keji_level >= ShuYuanLevel )
-			{
-				ResearchBtn.SetActive(false);
-			}
-			else
-			{
-				ResearchBtn.SetActive(true);
-			}
-		}
-		level.text = "Lv " + Keji_level.ToString ();
+		//Debug.Log ("ShuYuanLevel = "+ShuYuanLevel);
 
-		 mLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,Keji_level);
+		level.text = "Lv " + Keji_level.ToString ();
 //		Debug.Log ("Keji_type = "+Keji_type);
 //		Debug.Log ("Keji_level = "+Keji_level);
-//		Debug.Log ("mLianMengKeJiTemplate.desc = "+mLianMengKeJiTemplate.desc);
+	
+		 mLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,Keji_level);
+		//Debug.Log ("mLianMengKeJiTemplate.desc = "+mLianMengKeJiTemplate.desc);
+		KeJiName.text = mLianMengKeJiTemplate.name;
+
 		CurrInstrudction.text = mLianMengKeJiTemplate.desc;
 		Icon.spriteName = mLianMengKeJiTemplate.Icon.ToString ();
 		if(Keji_level < MaxKeji_level)
@@ -86,10 +77,50 @@ public class Technologytemp : MonoBehaviour {
 			NextInstrudction.gameObject.SetActive(false);
 		}
 		CostBuilds.text = "消耗建设值："+mLianMengKeJiTemplate.lvUpValue.ToString ();
+		if(Identity == 0)
+		{
+			Green_ResearchBtn.SetActive(false);
+			ResearchBtn.SetActive(false);
+		}
+		else
+		{
+			if(Keji_level >= MaxKeji_level)
+			{
+				Green_ResearchBtn.SetActive(true);
+				ResearchBtn.SetActive(false);
+			}
+			else
+			{
+				Green_ResearchBtn.SetActive(false);
+				ResearchBtn.SetActive(true);
+			}
+			
+		}
 	}
 	public void Research()
 	{
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),UpComform);
+		if(Keji_level>= ShuYuanLevel)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),DOnt_UpComform);
+		}
+		else
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),UpComform);
+		}
+	}
+	void DOnt_UpComform(ref WWW p_www,string p_path, Object p_object)
+	{
+		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+		
+		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
+		
+		string str1 = "\r\n"+"建筑等级不可超过书院等级,请先升级书院";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		
+		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
+		
+		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+		
+		uibox.setBox(titleStr,MyColorData.getColorString (1,str1), null,null,confirmStr,null,null,null);
 	}
 	void UpComform(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -114,18 +145,18 @@ public class Technologytemp : MonoBehaviour {
 			}
 			else
 			{
-				NewAlliancemanager.Instance ().m_allianceHaveRes.build = NewAlliancemanager.Instance ().m_allianceHaveRes.build -mLianMengKeJiTemplate.lvUpValue;
-				NewAlliancemanager.Instance ().ShowJianSheZhi();
+				NewAlliancemanager.Instance().m_allianceHaveRes.build = NewAlliancemanager.Instance().m_allianceHaveRes.build -mLianMengKeJiTemplate.lvUpValue;
+				NewAlliancemanager.Instance().ShowJianSheZhi();
 				ErrorMessage KeJiUp = new ErrorMessage ();
 				
 				MemoryStream MiBaoStream = new MemoryStream ();
 				
 				QiXiongSerializer MiBaoer = new QiXiongSerializer ();
-				Debug.Log ("bulids  = "+NewAlliancemanager.Instance ().m_allianceHaveRes.build);
+			//	Debug.Log ("bulids  = "+NewAlliancemanager.Instance().m_allianceHaveRes.build);
 				KeJiUp.errorCode = Keji_type;
 				TechnologyManager.Instance().CurKejiType = Keji_type;
-				//NewAlliancemanager.Instance ().Up_id = id;
-				
+				//NewAlliancemanager.Instance().Up_id = id;
+				TechnologyManager.Instance().JianZhu_InDex = Keji_Index;
 				MiBaoer.Serialize (MiBaoStream,KeJiUp);
 				
 				byte[] t_protof;

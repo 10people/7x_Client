@@ -30,6 +30,8 @@ public class MaJuTemplate : XmlLoadManager
 
 	public int priceId;
 
+	public float profitPara;
+
 	public static List<MaJuTemplate> templates = new List<MaJuTemplate>();
 
 	public static void LoadTemplates(EventDelegate.Callback p_callback = null)
@@ -104,6 +106,9 @@ public class MaJuTemplate : XmlLoadManager
 				
 				t_reader.MoveToNextAttribute();
 				t_template.priceId = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.profitPara = float.Parse(t_reader.Value);
 			}
 			
 			//			t_template.Log();

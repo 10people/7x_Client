@@ -9,6 +9,22 @@ namespace Rank
 {
     public class RootController : MonoBehaviour, SocketListener
     {
+        #region Call Interface
+
+        public static void CreateRankWindow()
+        {
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.RANK_WINDOW),
+                        RankWindowLoadBack);
+        }
+
+        private static void RankWindowLoadBack(ref WWW p_www, string p_path, Object p_object)
+        {
+            GameObject temp = (GameObject)Instantiate(p_object) as GameObject;
+            MainCityUI.TryAddToObjectList(temp);
+        }
+
+        #endregion
+
         public GameObject FloatButtonPrefab;
 
         public void RequestAllInModule(int pageID, int nationID)
@@ -101,6 +117,8 @@ namespace Rank
 
         #endregion
 
+        public GameObject TopLeftAnchor;
+
         private void Start()
         {
             //Initialize
@@ -127,10 +145,13 @@ namespace Rank
             }
             m_ModuleTogglesControl.TogglesEvents.ForEach(item => item.m_Handle += OnModulesClick);
 
-            CloseEventHandler.m_handler += OnCloseClick;
+            CloseEventHandler.m_click_handler += OnCloseClick;
 
             //Load float button
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FLOAT_BUTTON), FloatButtonLoadCallBack);
+
+            MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
+            MainCityUI.setGlobalTitle(TopLeftAnchor, "排行榜", 0, 0);
         }
 
         void FloatButtonLoadCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -145,7 +166,7 @@ namespace Rank
             m_NationTogglesControl.TogglesEvents.ForEach(item => item.m_Handle -= OnNationsClick);
             m_ModuleTogglesControl.TogglesEvents.ForEach(item => item.m_Handle -= OnModulesClick);
 
-            CloseEventHandler.m_handler -= OnCloseClick;
+            CloseEventHandler.m_click_handler -= OnCloseClick;
         }
 
         public string SelectedAllianceName;
@@ -183,50 +204,24 @@ namespace Rank
                             }
                             return false;
                         }
-                    //Alliance member info request.
-                    case ProtoIndexes.RANKING_ALLIANCE_MEMBER_RESP:
-                        {
-                            object playerRespObject = new AlliancePlayerResp();
-                            if (SocketHelper.ReceiveQXMessage(ref playerRespObject, p_message, ProtoIndexes.RANKING_ALLIANCE_MEMBER_RESP))
-                            {
-                                m_AlliancePlayerResp = playerRespObject as AlliancePlayerResp;
-
-                                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_MEMBER_WINDOW), AllianceMemberWindowCallBack);
-
-                                return true;
-                            }
-                            return false;
-                        }
                     case ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP:
-                    {
                         {
-                            object junzhuResp = new JunZhuInfo();
-                            if (SocketHelper.ReceiveQXMessage(ref junzhuResp, p_message, ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP))
                             {
-                                m_JunzhuPlayerResp = junzhuResp as JunZhuInfo;
+                                object junzhuResp = new JunZhuInfo();
+                                if (SocketHelper.ReceiveQXMessage(ref junzhuResp, p_message, ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP))
+                                {
+                                    m_JunzhuPlayerResp = junzhuResp as JunZhuInfo;
 
-                                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
+                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
 
-                                return true;
+                                    return true;
+                                }
+                                return false;
                             }
-                            return false;
                         }
-                    }
                 }
             }
             return false;
-        }
-
-        public void AllianceMemberWindowCallBack(ref WWW p_www, string p_path, Object p_object)
-        {
-            var tempObject = Instantiate(p_object) as GameObject;
-            var controller = tempObject.GetComponent<AllianceMemberController>();
-
-            controller.m_AllianceName = SelectedAllianceName;
-            controller.m_AlliancePlayerResp = m_AlliancePlayerResp;
-            controller.m_RootController = this;
-
-            controller.SetThis();
         }
 
         /// <summary>
@@ -308,7 +303,7 @@ namespace Rank
         /// </summary>
         private void Rob()
         {
-			PlunderData.Instance.PlunderOpponent (PlunderData.Entrance.RANKLIST,m_JunzhuPlayerResp.junZhuId);
+            PlunderData.Instance.PlunderOpponent(PlunderData.Entrance.RANKLIST, m_JunzhuPlayerResp.junZhuId);
         }
 
         public string AddFriendName = "";

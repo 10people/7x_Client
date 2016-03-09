@@ -236,9 +236,18 @@ namespace Carriage
                                         m_TotalBlood = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>().TotalBlood,
                                     });
                                 }
+                                else
+                                {
+                                    //Play dead particle for carriage.
+                                    FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(600221 + m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>().HorseLevel), gameObject, null);
+                                }
 
-                                //Disable move.
-                                m_PlayerDic[tempMsg.uid].IsCanMove = false;
+                                //Play dead animation.
+                                if (m_RootManager.TryPlayAnimationInAnimator(tempMsg.uid, "Dead"))
+                                {
+                                    //Disable move.
+                                    m_PlayerDic[tempMsg.uid].DeactiveMove();
+                                }
                             }
 
                             //self player dead
@@ -261,12 +270,13 @@ namespace Carriage
 
                                 m_StoredPlayerDeadNotify = tempMsg;
 
-                                //Disable move.
-                                m_RootManager.m_SelfPlayerController.is_CanMove = false;
+                                //Play dead animation.
+                                if (m_RootManager.TryPlayAnimationInAnimator(tempMsg.uid, "Dead"))
+                                {
+                                    //Disable move.
+                                    m_RootManager.m_SelfPlayerController.DeactiveMove();
+                                }
                             }
-
-                            //Play dead animation.
-                            m_RootManager.TryPlayAnimationInAnimator(tempMsg.uid, "Dead");
 
                             //Remove gizmos.
                             m_RootManager.m_CarriageMain.RemoveGizmos(tempMsg.uid);
@@ -277,7 +287,7 @@ namespace Carriage
 
                             if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.killerUid)
                             {
-                                l_killerName = ColorTool.Color_Blue_016bc5 + m_RootManager.m_SelfPlayerCultureController.KingName + "[-]";
+                                l_killerName = ColorTool.Color_Green_00ff00 + m_RootManager.m_SelfPlayerCultureController.KingName + "[-]";
                             }
                             else if (m_PlayerDic.ContainsKey(tempMsg.killerUid))
                             {
@@ -293,17 +303,28 @@ namespace Carriage
                                 }
                                 else
                                 {
-                                    l_killerName = ColorTool.Color_Blue_016bc5 + controller.KingName + "[-]";
-                                    if (controller.RoleID >= 50000)
+                                    if (controller.KingName == JunZhuData.Instance().m_junzhuInfo.name)
                                     {
-                                        l_killerName += "的" + ColorTool.Color_Blue_016bc5 + "镖马" + "[-]";
+                                        l_killerName = ColorTool.Color_Green_00ff00 + controller.KingName + "[-]";
+                                        if (controller.RoleID >= 50000)
+                                        {
+                                            l_killerName += "的" + ColorTool.Color_Green_00ff00 + "镖马" + "[-]";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        l_killerName = ColorTool.Color_Blue_016bc5 + controller.KingName + "[-]";
+                                        if (controller.RoleID >= 50000)
+                                        {
+                                            l_killerName += "的" + ColorTool.Color_Blue_016bc5 + "镖马" + "[-]";
+                                        }
                                     }
                                 }
                             }
 
                             if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.uid)
                             {
-                                l_targetName = ColorTool.Color_Blue_016bc5 + m_RootManager.m_SelfPlayerCultureController.KingName + "[-]";
+                                l_targetName = ColorTool.Color_Green_00ff00 + m_RootManager.m_SelfPlayerCultureController.KingName + "[-]";
                             }
                             else if (m_PlayerDic.ContainsKey(tempMsg.uid))
                             {
@@ -319,10 +340,21 @@ namespace Carriage
                                 }
                                 else
                                 {
-                                    l_targetName = ColorTool.Color_Blue_016bc5 + controller.KingName + "[-]";
-                                    if (controller.RoleID >= 50000)
+                                    if (controller.KingName == JunZhuData.Instance().m_junzhuInfo.name)
                                     {
-                                        l_targetName += "的" + ColorTool.Color_Blue_016bc5 + "镖马" + "[-]";
+                                        l_targetName = ColorTool.Color_Green_00ff00 + controller.KingName + "[-]";
+                                        if (controller.RoleID >= 50000)
+                                        {
+                                            l_targetName += "的" + ColorTool.Color_Green_00ff00 + "镖马" + "[-]";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        l_targetName = ColorTool.Color_Blue_016bc5 + controller.KingName + "[-]";
+                                        if (controller.RoleID >= 50000)
+                                        {
+                                            l_targetName += "的" + ColorTool.Color_Blue_016bc5 + "镖马" + "[-]";
+                                        }
                                     }
                                 }
                             }

@@ -10,7 +10,7 @@ public class TopUpLoadManagerment : MonoBehaviour
 
     public static void LoadPrefab(bool ison = false)//是否需要特殊处理
     {
-        Debug.Log("LoadPrefabLoadPrefabLoadPrefabLoadPrefabLoadPrefabLoadPrefab");
+//        Debug.Log("LoadPrefabLoadPrefabLoadPrefabLoadPrefabLoadPrefabLoadPrefab");
         //if (MainCityUI.IsWindowsExist())
         //{
         //    return;

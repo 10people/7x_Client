@@ -1,6 +1,9 @@
 ﻿//#define DEBUG_PREPARE_FOR_CITY_LOAD
 
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -15,8 +18,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     private List<NpcCityTemplate> listNpcTempInfo = new List<NpcCityTemplate>();
     
 	public struct NpcInfo{
-        public int _Type;
-        public string _Name;
+        public bool _IsEffect;
         public NpcCityTemplate _NpcTemp;
         public GameObject _Obj;
     };
@@ -58,8 +60,10 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     private void InitCityLoading()
     {
         SocketTool.RegisterSocketListener(this);
-        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_CITY_NET, 1, 4);
-        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_UI, 1, 1);
+        
+		LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_CITY_NET, 3, 4);
+
+		LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_UI, 3, 1);
 
         //if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1)
         //{
@@ -67,13 +71,16 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         //}
         //else
         {
-            LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 1, 13);
+            LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 15, 13);
         }
-        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_JUNZHU_MODEL, 1, 1);
-        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_NAME, 1, 1);
-        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_General_Reward, 1, 1);
 
-        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_GENERAL_REWARD, 1, 1);
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_JUNZHU_MODEL, 2, 1);
+
+		LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_NAME, 1, 1);
+        
+		LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_2D_General_Reward, 2, 1);
+
+        LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_GENERAL_REWARD, 2, 1);
     }
 
 
@@ -92,7 +99,32 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     {
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_MAINUI),
                                 Load2DCallback);
+
+		// preload online reward
+		{
+			Global.ResourcesDotLoad( Res2DTemplate.GetResPath(Res2DTemplate.Res.PRE_LOAD_EQUIP_ATLAS),
+				LoadEquipAtlasCallback );
+
+			Global.ResourcesDotLoad( Res2DTemplate.GetResPath(Res2DTemplate.Res.PRE_LOAD_ACTIVITY_ATLAS),
+				LoadOnLineRewardCallback );
+		}
     }
+
+	public void LoadEquipAtlasCallback(ref WWW p_www, string p_path, Object p_object){
+		GameObject t_gb = (GameObject)GameObject.Instantiate( p_object );
+
+		ComponentHelper.AddIfNotExist( t_gb, typeof(DestroyAfterRendered) );
+	}
+
+	public void LoadOnLineRewardCallback(ref WWW p_www, string p_path, Object p_object){
+		GameObject t_gb = (GameObject)GameObject.Instantiate( p_object );
+
+		ComponentHelper.AddIfNotExist( t_gb, typeof(DestroyAfterRendered) );
+
+//		#if UNITY_EDITOR
+//		EditorApplication.isPaused = true;
+//		#endif
+	}
 
     public void Load2DCallback(ref WWW p_www, string p_path, Object p_object)
     {
@@ -121,7 +153,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         {
             foreach (NpcCityTemplate _template in NpcCityTemplate.m_templates)
             {
-                if (_template.m_Type == 1)
+                if (_template.m_Type == 1 && _template.m_Id != 3)
                 {
                     listNpcTempInfo.Add(_template);
                 }
@@ -157,7 +189,6 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         if (ModelTemplate.GetModelIdByPath(p_path) == listNpcTempInfo[_IndexNum].m_npcShowId)
         {
             NpcInfo no = new NpcInfo();
-            no._Type = 0;
             no._NpcTemp = listNpcTempInfo[_IndexNum];
             no._Obj = p_object as GameObject;
             m_listNpcTemp.Add(no);
@@ -170,15 +201,9 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         }
         else
         {
-            if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 1)
-            {
+   
                 Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202), LoadHousePort);
-                Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100201), LoadHousePort);
-            }
-            else
-            {
-                LoadJunZhuModel();
-            }
+ 
         }
         index_Port_Num = 0;
 
@@ -191,21 +216,13 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     {
         index_Port_Num++;
         NpcInfo no = new NpcInfo();
-        no._Type = 1;
-        if (p_path.IndexOf("chuansongmen11") > -1)
-        {
-            no._Name = "chuansongmen11";
-        }
-        else if (p_path.IndexOf("chuansongmen22") > -1)
-        {
-            no._Name = "chuansongmen22";
-        }
-        no._NpcTemp = listNpcTempInfo[_IndexNum];
+        no._IsEffect = true;
+        no._NpcTemp = listNpcTempInfo[2];
         no._Obj = p_object as GameObject;
         m_listNpcTemp.Add(no);
         LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                  CONST_CITY_LOADING_3D_NPC, "");
-        if (index_Port_Num == 2)
+        //if (index_Port_Num == 2)
         {
             LoadJunZhuModel();
         }
@@ -270,27 +287,19 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         PlayerSelfNameManagerment.ShowSelfeName(m_CitySelfName);
         for (int i = 0; i < m_listNpcTemp.Count; i++)
         {
-            if (m_listNpcTemp[i]._Type == 0)
+            if (!m_listNpcTemp[i]._IsEffect)
             {
                 NpcManager.m_NpcManager.CreateNPC(m_listNpcTemp[i]);
             }
             else
             {
-                if (m_listNpcTemp[i]._Name.IndexOf("11") > -1)
-                {
-                    _PortSelf = m_listNpcTemp[i];
-                }
-                if (m_listNpcTemp[i]._Name.IndexOf("22") > -1)
-                {
                     _PortOther = m_listNpcTemp[i];
-                }
-
             }
         }
 
         if (_PortOther._Obj != null)
         {
-            NpcManager.m_NpcManager.CreateHousePortal(_PortSelf, _PortOther);
+            NpcManager.m_NpcManager.CreateHousePortal(_PortOther);
         }
         if (GeneralRewardManager.Instance() == null)
         {
@@ -517,7 +526,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
 
         if (tempInfo.s_allLevel == null)
         {
-            Debug.Log("tempInfo.s_allLevel == null");
+//            Debug.Log("tempInfo.s_allLevel == null");
         }
         if (tempInfo.maxCqPassId > CityGlobalData.m_temp_CQ_Section)
         {

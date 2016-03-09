@@ -1,11 +1,12 @@
-﻿//#define DEBUG_SCENE_STATE
+﻿//#define DEBUG_LOADING_SCENE
 
-//#define DEBUG_LOADING_SCENE
+//#define DEBUG_SCENE_STATE
 
 using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+
 
 
 /** 
@@ -31,7 +32,7 @@ public class SceneManager{
 		Debug.Log( "SceneManager.EnterLoading()" );
 		#endif
 		
-		if ( EnterNextScene.Instance () != null ) {
+		if ( EnterNextScene.Instance() != null ) {
 			Debug.Log( "Loading loading." );
 			
 			EnterNextScene.Instance().ManualDestroyImmediate();
@@ -41,12 +42,14 @@ public class SceneManager{
 		{
 			// ui fx
 			if( UI3DEffectTool.HaveInstance() ){
-				UI3DEffectTool.Instance().ClearAllUI3DEffect();
+				UI3DEffectTool.ClearAllUI3DEffect();
 			}
 
 			// 3d fx
 			{
-				FxTool.CleanFxToLoad();
+				FxHelper.CleanFxToLoad();
+
+				FxHelper.CleanCachedFx();
 			}
 		}
 		
@@ -116,6 +119,11 @@ public class SceneManager{
 			OnLogin();
 		}
 
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.ENTER_LOGIN );
+		}
+
         EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_LOGIN );
 
         EnterLoading();
@@ -130,6 +138,11 @@ public class SceneManager{
 		#if DEBUG_LOADING_SCENE
 		Debug.Log("EnterCreateRole()" );
 		#endif
+
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.ENTER_CREATE_ROLE );
+		}
 
 		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CREATE_ROLE ) );
 
@@ -158,6 +171,11 @@ public class SceneManager{
 		#if DEBUG_LOADING_SCENE
 		Debug.Log("EnterCarriage()" );
         #endif
+
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVP_YUN_BIAO );
+		}
 
 		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) );
 		
@@ -203,6 +221,10 @@ public class SceneManager{
             m_isSequencer = true;
         }
 
+		// notice loading
+		{
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.ENTER_MAIN_CITY );
+		}
 
         //if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
         //{
@@ -293,6 +315,10 @@ public class SceneManager{
 	#region Clean
 	
 	private static void OnLogin(){
+		#if DEBUG_LOADING_SCENE
+		Debug.Log( "SceneManager.OnLogin()" );
+		#endif
+
 		// clear
 		{
 			Global.m_isOpenPVP = false;
@@ -307,7 +333,7 @@ public class SceneManager{
 			Global.m_iScreenID = 0;
 			
 			Global.m_iScreenNoID = 0;
-			
+//		Debug.Log("===========1");
 			Global.m_isOpenJiaoxue = true;
 			Global.m_isZhanli = false;
 			Global.m_iAddZhanli = 0;
@@ -316,7 +342,7 @@ public class SceneManager{
 			Global.m_sPanelWantRun = "";
 			Global.m_NewChenghao = new List<int>();
 			Global.m_iAddZhanli = 0;
-			Global.m_isFuWen = false;
+
 			Global.m_isOpenFuWen = false;
 			Global.m_isOpenShop = false;
 			Global.m_isOpenPlunder = false;
@@ -325,7 +351,10 @@ public class SceneManager{
 			if( ClientMain.Instance() != null ){
 				ClientMain.Instance().ClearObjectsWhenReconnect();
 			}
-
+			if (QXChatData.Instance != null)
+			{
+				QXChatData.Instance.ResetChatInfo ();
+			}
 			GameObjectHelper.ClearDontDestroyGameObject();
 			
 			MainCityUI.m_PlayerPlace=MainCityUI.PlayerPlace.MainCity;
@@ -339,9 +368,9 @@ public class SceneManager{
 				}
 			}
 
-			if (GeneralRewardManager.Instance () != null)
+			if (GeneralRewardManager.Instance() != null)
 			{
-				GeneralRewardManager.Instance ().ClearRewardData ();
+				GeneralRewardManager.Instance().ClearRewardData ();
 			}
 			
 			SocketTool.CloseSocket();
@@ -440,6 +469,10 @@ public class SceneManager{
 		Application.LoadLevel( p_level_name );
 		
 		UtilityTool.UnloadUnusedAssets( p_clean_anim );
+
+		#if DEBUG_LOADING_SCENE
+		Debug.Log( "LoadLevel( " + p_level_name + " ) Done" );
+		#endif
 	}
 
 	public static bool IsInBattleScene(){
@@ -486,8 +519,8 @@ public class SceneManager{
 		m_scene_state = p_scene_state;
 	}
 
-	public static void UpdateSceneStateByLevel(){
-		string t_level = Application.loadedLevelName;
+	public static void UpdateSceneStateByLevel( string p_new_level_name ){
+		string t_level = p_new_level_name;
 
 		if ( t_level == ConstInGame.CONST_SCENE_NAME_LOGIN ) {
 			SetSceneState( SceneState.Login );

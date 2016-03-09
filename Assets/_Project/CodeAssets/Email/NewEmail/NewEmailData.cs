@@ -12,7 +12,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 
 	private static NewEmailData emailData;
 
-	public static NewEmailData Instance ()
+	public static NewEmailData Instance()
 	{
 		if (emailData == null)
 		{
@@ -47,28 +47,18 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		REPLY_FROM_FRIEND,
 	}
 	private SendType sendType = SendType.DEFAULT;//发送邮件打开方式
-	public SendType SendEmailType
-	{
-		set{sendType = value;}
-		get{return sendType;}
-	}
+	public SendType SendEmailType { set{sendType = value;} get{return sendType;} }
 
-	private string sendName;
-	public string SendName
-	{
-		set{sendName = value;}
-		get{return sendName;}
-	}
-	private string sendContent;
-	public string SendContent
-	{
-		set{sendContent = value;}
-		get{return sendContent;}
-	}
+	private string sendName;//发送目标人名字
+	public string SendName { set{sendName = value;} get{return sendName;} }
+
+	private string sendContent;//发送内容
+	public string SendContent { set{sendContent = value;} get{return sendContent;} }
 
 	private string[] sendFailLength = new string[]{"失败，玩家名空！","失败，内容为空！",
 												   "失败，找不到玩家！","失败，有非法字符！","你被对方屏蔽！",
-												   "不能给自己发邮件！","间隔时间不到1分钟！","收件人在黑名单中！"};
+												   "不能给自己发邮件！","间隔时间不到1分钟！","收件人在黑名单中！",
+												   "邮件内容字数超出限制！"};
 
 	private string textStr;
 	
@@ -77,7 +67,8 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		SocketTool.RegisterMessageProcessor (this);
 	}
 
-	void OnDestroy(){
+	void OnDestroy()
+	{
 		SocketTool.UnRegisterMessageProcessor (this);
 
 		emailData = null;
@@ -156,7 +147,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		readReq.id = tempId;
 
 		QXComData.SendQxProtoMessage (readReq,ProtoIndexes.C_READED_EAMIL,ProtoIndexes.S_READED_EAMIL.ToString ());
-		Debug.Log ("ReadEmail:" + ProtoIndexes.C_READED_EAMIL);
+//		Debug.Log ("ReadEmail:" + ProtoIndexes.C_READED_EAMIL);
 	}
 	#endregion
 
@@ -170,7 +161,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		GetRewardRequest getAwardReq = new GetRewardRequest();
 		getAwardReq.id = tempId;
 		QXComData.SendQxProtoMessage (getAwardReq,ProtoIndexes.C_MAIL_GET_REWARD,ProtoIndexes.S_MAIL_GET_REWARD.ToString ());
-		Debug.Log("GetAwardEmail:" + ProtoIndexes.C_MAIL_GET_REWARD);
+//		Debug.Log("GetAwardEmail:" + ProtoIndexes.C_MAIL_GET_REWARD);
 	}
 	#endregion
 
@@ -198,7 +189,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		responseReq.emailId = tempEmail.id;
 		responseReq.operCode = (int)tempType;
 		QXComData.SendQxProtoMessage (responseReq,ProtoIndexes.C_EMAIL_RESPONSE,ProtoIndexes.S_EMAIL_RESPONSE.ToString ());
-		Debug.Log("EmailResponseReq:" + ProtoIndexes.C_EMAIL_RESPONSE);
+//		Debug.Log("EmailResponseReq:" + ProtoIndexes.C_EMAIL_RESPONSE);
 	}
 	#endregion
 
@@ -241,7 +232,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 			
 			case ProtoIndexes.S_READED_EAMIL://读取邮件返回
 			{
-				Debug.Log ("ReadEmailBack:" + ProtoIndexes.S_READED_EAMIL);
+//				Debug.Log ("ReadEmailBack:" + ProtoIndexes.S_READED_EAMIL);
 				ReadEmailResp readResp = new ReadEmailResp ();
 				readResp = QXComData.ReceiveQxProtoMessage (p_message,readResp) as ReadEmailResp;
 
@@ -298,14 +289,14 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 							EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
 						}
 					}
-					SetMainCityUIRed (true);
+//					ExistNewEmail ();
 				}
 				return true;
 			}
 
 			case ProtoIndexes.S_MAIL_GET_REWARD://领奖返回
 			{
-				Debug.Log("GetRewardRes：" + ProtoIndexes.S_MAIL_GET_REWARD);
+//				Debug.Log("GetRewardRes：" + ProtoIndexes.S_MAIL_GET_REWARD);
 
 				GetRewardResponse getAwardResp = new GetRewardResponse ();
 				getAwardResp = QXComData.ReceiveQxProtoMessage (p_message,getAwardResp) as GetRewardResponse;
@@ -323,7 +314,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 
 			case ProtoIndexes.S_EMAIL_RESPONSE://邮件响应操作返回
 			{
-				Debug.Log("EmailResponse：" + ProtoIndexes.S_EMAIL_RESPONSE);
+//				Debug.Log("EmailResponse：" + ProtoIndexes.S_EMAIL_RESPONSE);
 
 				EmailResponseResult responseResp = new EmailResponseResult();
 				responseResp = QXComData.ReceiveQxProtoMessage (p_message,responseResp) as EmailResponseResult;
@@ -338,7 +329,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 							{
 								tempJunZhu.junzhuId = operateEmail.jzId;
 							}
-							BlockedData.Instance ().m_BlockedInfoDic.Add (tempJunZhu.junzhuId,tempJunZhu);
+							BlockedData.Instance().m_BlockedInfoDic.Add (tempJunZhu.junzhuId,tempJunZhu);
 							//刷新查看邮件界面
 							EmailPage.emailPage.RefreshEmailCheck (EmailPage.RefreshType.SHIELD_FRIEND);
 							textStr = "您已将" + operateEmail.senderName + "加入黑名单！\n\n您可以在【好友】-【屏蔽名单】功能中解除黑名单设置";
@@ -365,13 +356,13 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 
 			case ProtoIndexes.S_SEND_EAMIL://发送邮件返回
 			{
-				Debug.Log("EmailSendResp：" + ProtoIndexes.S_SEND_EAMIL);
+//				Debug.Log("EmailSendResp：" + ProtoIndexes.S_SEND_EAMIL);
 				SendEmailResp sendResp = new SendEmailResp();
 				sendResp = QXComData.ReceiveQxProtoMessage (p_message,sendResp) as SendEmailResp;
 				
 				if (sendResp != null)
 				{
-					Debug.Log ("发送结果：" + sendResp.result);
+//					Debug.Log ("发送结果：" + sendResp.result);
 					SendEmailCallBack (sendResp.result);
 				}
 				
@@ -458,7 +449,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 				dataList.Add (data);
 			}
 			
-			GeneralRewardManager.Instance ().CreateReward (dataList);
+			GeneralRewardManager.Instance().CreateReward (dataList);
 		}
 		else
 		{
@@ -543,7 +534,8 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		//6-不能给自己发
 		//7-间隔时间不到1分钟
 		//8-收件人在黑名单中
-		
+		//9-邮件内容字数超出限制
+
 		if (tempResult == 0)
 		{
 			textStr = "发送成功！";
@@ -571,42 +563,5 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 			EmailPage.emailPage.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
 			EmailPage.emailPage.CheckUnSendEmail ();
 		}
-	}
-
-	//判断是否存在未读邮件
-	public void ExistNewEmail ()
-	{
-		bool isExitNewEmail = false;
-		foreach (EmailInfo email in systemList)
-		{
-			if (email.isRead == 0)
-			{
-				isExitNewEmail = true;
-				break;
-			}
-		}
-		if (!isExitNewEmail)
-		{
-			foreach (EmailInfo email in privateList)
-			{
-				if (email.isRead == 0)
-				{
-					isExitNewEmail = true;
-					break;
-				}
-			}
-		}
-
-		SetMainCityUIRed (isExitNewEmail);
-	}
-
-	/// <summary>
-	/// Sets the main city user interface red.
-	/// </summary>
-	/// <param name="isRed">If set to <c>true</c> is red.</param>
-	void SetMainCityUIRed (bool isRed)
-	{
-//		PushAndNotificationHelper.SetRedSpotNotification (10,isRed);//or 41
-		MainCityUIL.SetRedAlert("email",isRed);
 	}
 }

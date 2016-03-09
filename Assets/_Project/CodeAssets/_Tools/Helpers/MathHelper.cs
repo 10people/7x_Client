@@ -7,8 +7,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-public class MathHelper
-{
+using Random = UnityEngine.Random;
+
+public class MathHelper{
+	
+	#region Random
+
+	public static float GetRandom(float p_min_inc, float p_max_inc){
+		return (p_max_inc - p_min_inc) * Random.value + p_min_inc;
+	}
+
+	public static int GetRandom( int p_min_inc, int p_max_inc ){
+		return (int)( ( p_max_inc - p_min_inc ) * Random.value + p_min_inc );
+	}
+
+	#endregion
+
+
+    #region Basic Math
+
+    public static void SwapValue(ref float a, ref float b)
+    {
+        var temp = a;
+        a = b;
+        b = temp;
+    }
+
+    #endregion
+
+
 
     #region float Convert
 
@@ -19,26 +46,34 @@ public class MathHelper
      * Example:
      * FloatPrecision( 0.123456f, 2 ) -> 0.12
      */
-    public static float FloatPrecision(float p_float, int p_precision)
-    {
-        if (p_precision < 0)
-        {
+    public static float FloatPrecision( float p_float, int p_precision ){
+        if ( p_precision < 0 ){
             return p_float;
         }
 
         int t_count = 1;
 
-        for (int i = 0; i < p_precision; i++)
-        {
+        for( int i = 0; i < p_precision; i++ ){
             t_count *= 10;
         }
 
-        int t_time_int = (int)(p_float * t_count);
+        int t_time_int = (int)( p_float * t_count );
 
         float t_time = t_time_int * 1.0f / t_count;
 
         return t_time;
     }
+
+	/** Params:
+     * p_float:		origin float
+     * p_precision:	precision count
+ 	 *
+     * Example:
+     * FloatPrecision( 0.123456f, 2 ) -> 0.12
+     */
+	public static string FloatToString( float p_float, int p_precision ){
+		return p_float.ToString( "f" + p_precision );
+	}
 
     #endregion
 
@@ -165,7 +200,7 @@ public class MathHelper
 
 		Debug.Log( "x: " + p_vec4.x );
 
-		Debug.Log( "x: " + p_vec4.y );
+		Debug.Log( "y: " + p_vec4.y );
 
 		Debug.Log( "z: " + p_vec4.z );
 

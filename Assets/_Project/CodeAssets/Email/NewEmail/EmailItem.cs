@@ -74,6 +74,6 @@ public class EmailItem : MonoBehaviour {
 		
 		timeLabel.text = QXComData.UTCToTimeString (emailInfo.time,"yyyy-MM-dd");
 
-		bgSprite.color = emailInfo.isRead == 0 ? new Color (1,0.8f,0.54f) : Color.white;
+		bgSprite.color = emailInfo.isRead == 0 ? QXComData.lightColor : Color.white;
 	}
 }

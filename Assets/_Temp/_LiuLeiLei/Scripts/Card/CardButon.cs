@@ -20,7 +20,7 @@ public class CardButon : MonoBehaviour {
 	{
 		cardClick = tempClick;
 
-		this.gameObject.GetComponent<EventHandler> ().m_handler += OnCardClick;
+		this.gameObject.GetComponent<EventHandler> ().m_click_handler += OnCardClick;
 	}
 
 	void OnCardClick (GameObject obj)

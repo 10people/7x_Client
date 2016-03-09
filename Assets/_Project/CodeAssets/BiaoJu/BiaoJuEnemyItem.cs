@@ -8,106 +8,84 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class BiaoJuEnemyItem : MonoBehaviour {
+namespace Carriage
+{
+	public class BiaoJuEnemyItem : MonoBehaviour {
 
-	private EnemiesInfo enemyInfo;
+		private EnemiesInfo enemyInfo;
 
-	public UISprite iconSprite;
-	public UISprite border;
-	public UISprite nation;
-	public UILabel levelLabel;
-	public UILabel nameLabel;
-	public UILabel allianceLabel;
+		public UIAtlas playerAtlas;
+		public UIAtlas biaoJuAtlas;
 
-	public UIScrollBar hpBar;
-	public UILabel hpLabel;
+		public UISprite iconBgSprite;
+		public UISprite iconSprite;
+		public UISprite border;
+		public UISprite nation;
+		public UILabel levelLabel;
+		public UILabel nameLabel;
+		public UILabel allianceLabel;
 
-	public UIScrollBar jinDuBar;
-	public UILabel jinDuLabel;
+		public UIScrollBar hpBar;
+		public UILabel hpLabel;
 
-	public UILabel desLabel;
-	public UILabel zhanLiLabel;
+		public UIScrollBar jinDuBar;
+		public UILabel jinDuLabel;
 
-	public UILabel awardLabel;
+		public GameObject desObj;
+		public UILabel zhanLiLabel;
 
-	public GameObject processObj;
+		public UILabel awardLabel;
 
-	public GameObject selectBoxObj;
-	public UILabel addLabel;
+		public GameObject processObj;
 
-	public void InItEnemyItem (EnemiesInfo tempInfo,EnemiesInfo targetInfo)
-	{
-		enemyInfo = tempInfo;
-
-		if (targetInfo == null)
+		public void InItEnemyItem (EnemiesInfo tempInfo)
 		{
-			targetInfo = new EnemiesInfo();
+			enemyInfo = tempInfo;
+
+			iconBgSprite.spriteName = tempInfo.state == 10 ? "item_bg" : "yuankuang";
+			iconSprite.atlas = tempInfo.state == 10 ? biaoJuAtlas : playerAtlas;
+			iconSprite.spriteName = tempInfo.state == 10 ? "horseIcon" + tempInfo.horseType : "PlayerIcon" + tempInfo.roleId;
+
+			border.spriteName = tempInfo.state == 10 ? "pinzhi" + QXComData.HorsePinZhiId (tempInfo.horseType) : "";
+			levelLabel.text = "Lv" + tempInfo.jzLevel.ToString ();
+
+			nameLabel.text = tempInfo.junZhuName;
+
+			allianceLabel.text = MyColorData.getColorString (6,tempInfo.lianMengName.Equals ("") ? "无联盟" : "<" + tempInfo.lianMengName + ">");
+
+			zhanLiLabel.text = "战力" + tempInfo.zhanLi.ToString ();
+
+			nation.spriteName = "nation_" + tempInfo.guojia;
+
+			desObj.SetActive (tempInfo.state == 10 ? false : true);
+
+			processObj.SetActive (tempInfo.state == 10 ? true : false);
+
+			if (tempInfo.state == 10)
+			{
+				int jinDu = (int)((tempInfo.usedTime / (float)tempInfo.totalTime) * 100);
+				jinDuLabel.text = "进度" + jinDu.ToString () + "%";
+				QXComData.InItScrollBarValue (jinDuBar,jinDu);
+
+				int hpNum = (int)((tempInfo.hp / (float)tempInfo.maxHp) * 100);
+				hpLabel.text = tempInfo.hp.ToString () + "/" + tempInfo.maxHp.ToString ();
+				QXComData.InItScrollBarValue (hpBar,hpNum);
+
+				awardLabel.text = BiaoJuPage.bjPage.GetHorseAwardNum (tempInfo.horseType).ToString ();
+			}
+
+			this.GetComponent<EventHandler> ().m_click_handler -= ClickBack;
+			this.GetComponent<EventHandler> ().m_click_handler += ClickBack;
 		}
 
-		iconSprite.atlas = BiaoJuPage.bjPage.GetAtlas (tempInfo.state == 10 ? BiaoJuPage.AtlasType.YUNBIAO : BiaoJuPage.AtlasType.MAINCITYLAYER);
-		iconSprite.spriteName = tempInfo.state == 10 ? "horseIcon" + tempInfo.horseType : "PlayerIcon" + tempInfo.roleId;
-
-		border.spriteName = tempInfo.state == 10 ? "pinzhi" + (tempInfo.horseType - 1) : "";
-		levelLabel.text = "Lv" + tempInfo.jzLevel.ToString ();
-
-		nameLabel.text = tempInfo.junZhuName;
-		nameLabel.transform.localPosition = new Vector3(-80,25,0);//tempInfo.state == 10 ? 25 : 10
-
-		allianceLabel.text = tempInfo.lianMengName.Equals ("") ? "无联盟" : "<" + tempInfo.lianMengName + ">";
-		allianceLabel.transform.localPosition = new Vector3(-80,0,0);
-
-		zhanLiLabel.text = tempInfo.zhanLi.ToString ();
-		zhanLiLabel.transform.parent.transform.localPosition = new Vector3(165,tempInfo.state == 10 ? 30 : 5,0);
-
-		nation.spriteName = "nation_" + tempInfo.guojia;
-
-		desLabel.text = tempInfo.state == 10 ? "" : "未在运镖";
-
-		SetSelectBox(tempInfo.junZhuId == targetInfo.junZhuId ? true : false);
-
-		processObj.SetActive (tempInfo.state == 10 ? true : false);
-
-		if (tempInfo.state == 10)
+		void ClickBack (GameObject obj)
 		{
-			addLabel.text = MyColorData.getColorString (6, "+" + tempInfo.hudun) + "%";
-
-			int jinDu = (int)((tempInfo.usedTime / (float)tempInfo.totalTime) * 100);
-			jinDuLabel.text = "进度" + jinDu.ToString () + "%";
-			InItScrollBarValue (jinDuBar,jinDu);
-
-			int hpNum = (int)((tempInfo.hp / (float)tempInfo.maxHp) * 100);
-			hpLabel.text = tempInfo.hp.ToString () + "/" + tempInfo.maxHp.ToString ();
-			InItScrollBarValue (hpBar,hpNum);
-
-			awardLabel.text = BiaoJuPage.bjPage.GetHorseAwardNum (tempInfo.horseType).ToString ();
+			//关闭记录弹窗，自动寻路
+			if (enemyInfo.state == 10)
+			{
+				RootManager.Instance.m_CarriageMain.NavigateToCarriage ((int)enemyInfo.junZhuId);
+				BiaoJuRecordPage.bjRecordPage.CloseRecord ();
+			}
 		}
-	}
-
-	/// <summary>
-	/// Ins it scroll bar value.
-	/// </summary>
-	/// <param name="scrollBar">Scroll bar.</param>
-	/// <param name="value">Value.</param>
-	void InItScrollBarValue (UIScrollBar scrollBar,int value)
-	{
-		scrollBar.barSize = (float)value/100;
-	}
-
-	/// <summary>
-	/// Gets the enemies info.
-	/// </summary>
-	/// <returns>The enemies info.</returns>
-	public EnemiesInfo GetEnemiesInfo ()
-	{
-		return enemyInfo;
-	}
-
-	/// <summary>
-	/// Sets the select box.
-	/// </summary>
-	/// <param name="isActive">If set to <c>true</c> is active.</param>
-	public void SetSelectBox (bool isActive)
-	{
-		selectBoxObj.SetActive (isActive);
 	}
 }

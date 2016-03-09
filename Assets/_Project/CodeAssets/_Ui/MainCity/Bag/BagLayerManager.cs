@@ -2,47 +2,30 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class BagLayerManager : MonoBehaviour {
+public class BagLayerManager : MonoBehaviour
+{
+    public GameObject RootGameObject;
 
-    //public List<EventHandler> m_eventHandlerList = new List<EventHandler>();
+    public GameObject TopLeftAnchor;
 
-	public UIBagLeft m_UIBagLeft;
+    public ScaleEffectController m_ScaleEffectController;
 
-	void Start()
-	{
-        //foreach(EventHandler tempHandler in m_eventHandlerList)
-        //{
-        //    tempHandler.m_handler += ChangeLayer;
-        //}
-	}
+    public void CloseBagModule()
+    {
+        m_ScaleEffectController.CloseCompleteDelegate = DoClose;
+        m_ScaleEffectController.OnCloseWindowClick();
+    }
 
-    //void ChangeLayer(GameObject tempObject)
-    //{
-    //    //Reset uiscrollview for possible error.
-    //    var targetTransform = m_UIBagLeft.transform.parent;
-    //    var springPanel = targetTransform.GetComponent<SpringPanel>();
-    //    var panel = targetTransform.GetComponent<UIPanel>();
-    //    if (springPanel != null)
-    //    {
-    //        Vector3 endPos = new Vector3(springPanel.transform.localPosition.x, -13, 0);
-    //        SpringPanel.Begin(targetTransform.gameObject, endPos, springPanel.strength);
-    //    }
+    void DoClose()
+    {
+        MainCityUI.TryRemoveFromObjectList(RootGameObject);
 
-    //    string tempString = tempObject.name;
+        RootGameObject.SetActive(false);
+    }
 
-
-    //    if(tempString == "Button_Equip")
-    //    {
-
-    //        m_UIBagLeft.m_itemType = UIBagLeft.ItemType.Equip;
-    //    }
-    //    else if(tempString == "Button_CaiLiao")
-    //    {
-
-    //        m_UIBagLeft.m_itemType = UIBagLeft.ItemType.Material;
-    //    }
-	
-    //    m_UIBagLeft.InitWithLayer();
-
-    //}
+    void Awake()
+    {
+        MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
+        MainCityUI.setGlobalTitle(TopLeftAnchor, "背包", 0, 0);
+    }
 }

@@ -305,7 +305,7 @@ public class ChooseYouXiaUIManager : MonoBehaviour,SocketProcessor {
 
 			MainCityUI.ClearObjectList();
  
-//			QXTanBaoData.Instance ().CheckFreeTanBao ();
+//			QXTanBaoData.Instance().CheckFreeTanBao ();
 		}
 	}
 	public void Back()

@@ -7,21 +7,15 @@ using System.Reflection;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class NewMiBaoManager : MonoBehaviour ,SocketListener {
+public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 	public GameObject First_MiBao_UI; //秘宝UI
 	
 	public GameObject MiBao_TempInfo; //秘宝信息
 	
-	public GameObject MiBao_ZhanLiInfo; //秘宝战力信息界面
+	//public GameObject MiBao_ZhanLiInfo; //秘宝战力信息界面
 
 	public MibaoInfoResp m_MiBaoInfo;
-
-	public UILabel Money;
-
-	public UILabel YuanBao;
-
-	public UILabel ZhanLi;
 
 	public UILabel SkillName;
 
@@ -41,7 +35,7 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 	public GameObject UIsilder;
 
-	public GameObject AllMiBaoActive;
+	//public GameObject AllMiBaoActive;
 
 	public List<MibaoInfo> ActiveMiBaoList = new List<MibaoInfo> (); //已经激活秘宝
 
@@ -55,7 +49,26 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 	public List<MBTemp> mMBTempList = new List<MBTemp>();
 
-	public static NewMiBaoManager Instance ()
+	public UILabel MiBaoSkillNum;
+
+	public UILabel LockofMiBaonum;
+
+	public  GameObject OpenLockBtn ;
+
+	public  GameObject NuqiObg ;
+
+	public UILabel MiBaonunber;
+	public UILabel NuqiZhi;
+
+	public  GameObject mLock ;
+
+	public NGUILongPress EnergyDetailLongPress1;
+
+	public GameObject OPenSkillEffect;
+	public UISprite OPenSkillICon1;
+	public UISprite OPenSkillICon2;
+	public UIScrollView mUIscrolview;
+	public static NewMiBaoManager Instance()
 	{
 		if (!mMiBaoData)
 		{
@@ -67,9 +80,21 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 	void Awake()
 	{
-		SocketTool.RegisterSocketListener(this);	
+		SocketTool.RegisterSocketListener(this);
+		EnergyDetailLongPress1.LongTriggerType = NGUILongPress.TriggerType.Press;
+		EnergyDetailLongPress1.NormalPressTriggerWhenLongPress = false;
+		EnergyDetailLongPress1.OnLongPressFinish = OnCloseDetail;
+		EnergyDetailLongPress1.OnLongPress = OnEnergyDetailClick1;
 	}
-
+	private void OnCloseDetail(GameObject go)
+	{
+		ShowTip.close();
+	}
+	public void OnEnergyDetailClick1(GameObject go)
+	{
+		int MiBaoSkillId = MaxId;
+		ShowTip.showTip (MiBaoSkillId);
+	}
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterSocketListener(this);
@@ -103,6 +128,8 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 				Global.m_sPanelWantRun = "";
 			}
 		}
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
+
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 	}
 	public bool OnSocketEvent(QXBuffer p_message)
@@ -149,22 +176,67 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 				}
 				return true;
 			}
-
+			case ProtoIndexes.MIBAO_DEAL_SKILL_RESP://m秘宝技能激活或者进阶返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				MiBaoDealSkillResp mMiBaoDealSkillResp = new MiBaoDealSkillResp();
+				
+				t_qx.Deserialize(t_stream, mMiBaoDealSkillResp, mMiBaoDealSkillResp.GetType());
+				
+				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
+		
+				if(mMiBaoDealSkillResp.message == 0)
+				{
+//					Debug.Log ("激活技能成功");
+					OPenSkillEffect.SetActive(true);
+					UIYindao.m_UIYindao.CloseUI ();
+					int x   =  MaxId;
+					if(x < 1)
+					{
+						x = 1;
+					}
+					//100108
+					//620215
+					MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(x);
+					OPenSkillICon1.spriteName =mMiBaoskill.icon;
+					OPenSkillICon2.spriteName =mMiBaoskill.icon;
+				}
+				else{
+//					Debug.Log ("碎片不足");
+				}
+				//UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillIcon.gameObject,EffectIdTemplate.GetPathByeffectId(100166));
+				return true;
+			}
 			default: return false;
 			}
 			
 		}else
 		{
-			Debug.Log ("p_message == null");
+//			Debug.Log ("p_message == null");
 		}
 		
 		return false;
 	}
+
+	public void CloseOPenEffect()
+	{
+		UI3DEffectTool.ClearUIFx (OPenSkillICon1.gameObject);
+		OPenSkillEffect.SetActive(false);
+	}
 	int mtime;
 	IEnumerator showTime()
 	{
-		VipTemplate mVip = VipTemplate.GetVipInfoByLevel (JunZhuData.Instance().m_junzhuInfo.vipLv);
-		
+		int viplv = JunZhuData.Instance().m_junzhuInfo.vipLv;
+		if(viplv > 7)
+		{
+			viplv = 7;
+		}
+		VipTemplate mVip = VipTemplate.GetVipInfoByLevel (viplv);
+//		Debug.Log ("JunZhuData.Instance().m_junzhuInfo.vipLv = "+JunZhuData.Instance().m_junzhuInfo.vipLv);
+//		Debug.Log ("mVip = "+mVip.MiBaoLimit);
 		int MaxPoint = mVip.MiBaoLimit;
 
 		while (mtime > 0) {
@@ -189,14 +261,9 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 			StartCoroutine("showTime");
 		}
 	}
+	int MaxId;
 	public void InitUI()
 	{
-		Money.text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString();
-		
-		YuanBao.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
-		
-		ZhanLi.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
-
 		UISlider mSlider = UIsilder.GetComponent<UISlider>();
 
 		if(m_MiBaoInfo.skillList == null|| m_MiBaoInfo.skillList.Count == 0 )
@@ -206,7 +273,7 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 			string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoskill.nameId);
 
 			SkillName.text = mName;
-
+			MiBaoSkillNum.text = "0/7";
 			DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoskill.briefDesc);
 
 			string []s = mDesc.description.Split('#');
@@ -216,16 +283,38 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 				mRul += s[i]+"\r\n";	
 			}
 
-			SkillInstruction.text = mRul;
+			SkillInstruction.text = "[f64b00]"+mRul;
 
 			Num_of_ActiveMiBao.text = ActiveMiBaoList.Count.ToString()+"/"+ mMiBaoskill.needNum.ToString();
+			if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
+			{
+				string mstr = "当前秘宝技能可解锁";
+				LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
+				OpenLockBtn.SetActive(true);
+				NuqiObg.SetActive(false);
+			}
+			else
+			{
+				OpenLockBtn.SetActive(false);
+				NuqiObg.SetActive(true);
 
+				MiBaonunber.text = ActiveMiBaoList.Count.ToString();
+
+				ChuShiNuQiTemplate mNiqi = ChuShiNuQiTemplate.getChuShiNuQiTemplate_by_Num(ActiveMiBaoList.Count);
+
+				NuqiZhi.text = mNiqi.nuqiRatioc.ToString();
+				string mstr1 = (mMiBaoskill.needNum -ActiveMiBaoList.Count).ToString();
+				string mstr2 = "再激活 ";
+				string mstr3 = " 个秘宝可解锁该技能";
+				PushAndNotificationHelper.SetRedSpotNotification (610, false);
+				LockofMiBaonum.text = MyColorData.getColorString(10,mstr2)+MyColorData.getColorString(5,mstr1)+MyColorData.getColorString(10,mstr3);
+			}
 			mSlider.value = (float)(ActiveMiBaoList.Count) / (float)(mMiBaoskill.needNum);
 
 			SkillIcon.spriteName = mMiBaoskill.icon;
 
-			AllMiBaoActive.SetActive(false);
-
+			//AllMiBaoActive.SetActive(false);
+			mLock.SetActive(true);
 			if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
 			{
 				Art.SetActive(true);
@@ -234,21 +323,54 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 			{
 				Art.SetActive(false);
 			}
+			MaxId = 1;
 		}
 		else
 		{
-			int MaxId = 0;
+			MiBaoSkillNum.text = m_MiBaoInfo.skillList.Count.ToString()+"/7";
+			 MaxId = 0;
+//			Debug.Log("m_MiBaoInfo.skillList.Count = "+m_MiBaoInfo.skillList.Count);
 			if(m_MiBaoInfo.skillList.Count >= 7)
 			{
+				Art.SetActive(false);
+				OpenLockBtn.SetActive(false);
+				NuqiObg.SetActive(true);
+				MiBaonunber.text = ActiveMiBaoList.Count.ToString();
+				
+				ChuShiNuQiTemplate mNiqi = ChuShiNuQiTemplate.getChuShiNuQiTemplate_by_Num(ActiveMiBaoList.Count);
+				
+				NuqiZhi.text = mNiqi.nuqiRatioc.ToString();
 				UIsilder.SetActive(false);
-				MaxId = 6;
-				AllMiBaoActive.SetActive(true);
+				MaxId = 7;
+				//AllMiBaoActive.SetActive(true);
+				string mstr ="秘宝技能已全部解锁";
+				LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
+				mLock.SetActive(false);
+
+				MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(MaxId);
+				
+				string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoskill.nameId);
+				
+				SkillName.text = mName;
+				
+				DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoskill.briefDesc);
+				
+				SkillIcon.spriteName = mMiBaoskill.icon;
+				string []s = mDesc.description.Split('#');
+				string mRul = "";
+				for (int i = 0; i < s.Length; i++)
+				{
+					mRul += s[i]+"\r\n";	
+				}
+				
+				SkillInstruction.text = mRul;;
 			}
 			else
 			{
+				mLock.SetActive(true);
 				UIsilder.SetActive(true);
 
-				AllMiBaoActive.SetActive(false);
+				//AllMiBaoActive.SetActive(false);
 
 				for(int i = 0; i < m_MiBaoInfo.skillList.Count; i++)
 				{
@@ -259,37 +381,58 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 					}
 				}
 				MaxId  += 1  ;
+				MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(MaxId);
+				
+				string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoskill.nameId);
+				
+				SkillName.text = mName;
+				
+				DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoskill.briefDesc);
+				
+				SkillIcon.spriteName = mMiBaoskill.icon;
+				string []s = mDesc.description.Split('#');
+				string mRul = "";
+				for (int i = 0; i < s.Length; i++)
+				{
+					mRul += s[i]+"\r\n";	
+				}
+				
+				SkillInstruction.text = mRul;
+				
+				Num_of_ActiveMiBao.text = ActiveMiBaoList.Count.ToString()+"/"+ mMiBaoskill.needNum.ToString();
+				if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
+				{
+					OpenLockBtn.SetActive(true);
+					NuqiObg.SetActive(false);
+					string mstr = "当前秘宝技能可解锁";
+					LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
+				}
+				else
+				{
+					OpenLockBtn.SetActive(false);
+					NuqiObg.SetActive(true);
+					MiBaonunber.text = ActiveMiBaoList.Count.ToString();
+					
+					ChuShiNuQiTemplate mNiqi = ChuShiNuQiTemplate.getChuShiNuQiTemplate_by_Num(ActiveMiBaoList.Count);
+					
+					NuqiZhi.text = mNiqi.nuqiRatioc.ToString();
+					PushAndNotificationHelper.SetRedSpotNotification (610, false);
+					string mstr2 = "再激活 ";
+					string mstr3 = " 个秘宝可解锁该技能";
+					string mstr1 = (mMiBaoskill.needNum -ActiveMiBaoList.Count).ToString();
+					LockofMiBaonum.text = MyColorData.getColorString(10,mstr2)+MyColorData.getColorString(5,mstr1)+MyColorData.getColorString(10,mstr3);
+				}
+				mSlider.value = (float)(ActiveMiBaoList.Count) / (float)(mMiBaoskill.needNum);
+				if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
+				{
+					Art.SetActive(true);
+				}
+				else
+				{
+					Art.SetActive(false);
+				}
 			}
 
-			MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(MaxId);
-			
-			string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoskill.nameId);
-			
-			SkillName.text = mName;
-			
-			DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoskill.briefDesc);
-			
-			SkillIcon.spriteName = mMiBaoskill.icon;
-			string []s = mDesc.description.Split('#');
-			string mRul = "";
-			for (int i = 0; i < s.Length; i++)
-			{
-				mRul += s[i]+"\r\n";	
-			}
-			
-			SkillInstruction.text = mRul;
-
-			Num_of_ActiveMiBao.text = ActiveMiBaoList.Count.ToString()+"/"+ mMiBaoskill.needNum.ToString();
-			
-			mSlider.value = (float)(ActiveMiBaoList.Count) / (float)(mMiBaoskill.needNum);
-			if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
-			{
-				Art.SetActive(true);
-			}
-			else
-			{
-				Art.SetActive(false);
-			}
 		}
 		ShowMiBaoYInDao ();
 	}
@@ -299,50 +442,148 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 	/// 
 	void ShowMiBaoYInDao()
 	{
+//		Debug.Log (FreshGuide.Instance().IsActive(100330));
+//		Debug.Log (TaskData.Instance.m_TaskInfoDic[100330].progress);
 		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress >= 0)
 		{
-			Debug.Log("choose one mibao ");
+//			Debug.Log("choose one mibao ");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100170];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			mUIscrolview.enabled = false;
+			if(ActiveMiBaoList.Count > 1)
+			{
+				if(ActiveMiBaoList[0].miBaoId != 301011)
+				{
+					MibaoInfo mMiBaoIf = ActiveMiBaoList[0];
+
+					ActiveMiBaoList[0] = ActiveMiBaoList[1];
+
+					ActiveMiBaoList[1] = mMiBaoIf;
+				}
+			}
 			return;
 		}
 		if(FreshGuide.Instance().IsActive(100330)&& TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
 		{
-			Debug.Log("Make one mibao ");
+//			Debug.Log("Make one mibao ");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100330];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+			mUIscrolview.enabled = false;
 			return;
 		}
+		if(FreshGuide.Instance().IsActive(100360)&& TaskData.Instance.m_TaskInfoDic[100360].progress >= 0)
+		{
+			//Debug.Log("进度条满了110081 ");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100360];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			//mUIscrolview.enabled = false;
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(100259)&& TaskData.Instance.m_TaskInfoDic[100259].progress >= 0)
+		{
+			//Debug.Log("秘宝技能激活");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100259];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+			//mUIscrolview.enabled = false;
+			return;
+		}
+		mUIscrolview.enabled = true;
 	}
 	public void InitData()
 	{
 		ActiveMiBaoList.Clear ();
 		DisActiveMiBaoList.Clear ();
-
-		//Debug.Log ("m_MiBaoInfo.miBaoList.Count = "+m_MiBaoInfo.miBaoList.Count);
-
+		bool isHeCheng = false;
+		bool isupStar = false;
+		bool isLevel = false;
 		for(int i = 0 ; i < m_MiBaoInfo.miBaoList.Count; i++)
 		{
 			if(m_MiBaoInfo.miBaoList[i].level > 0)
 			{
 				ActiveMiBaoList.Add(m_MiBaoInfo.miBaoList[i]);
+				MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(m_MiBaoInfo.miBaoList[i].miBaoId);
+				ExpXxmlTemp mExpXxmlTemp = ExpXxmlTemp.getExpXxmlTemp_By_expId (mMiBaoXmlTemp.expId,m_MiBaoInfo.miBaoList[i].level);
+				MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (m_MiBaoInfo.miBaoList[i].star);
+				if(m_MiBaoInfo.miBaoList[i].suiPianNum >= m_MiBaoInfo.miBaoList[i].needSuipianNum && m_MiBaoInfo.miBaoList[i].star < 5 
+				   &&mMiBaoStarTemp.needMoney <= JunZhuData.Instance().m_junzhuInfo.jinBi)
+				{
+					isupStar = true;
+				}
+//				Debug.Log ("level = "+m_MiBaoInfo.miBaoList[i].level);
+//				Debug.Log ("levelPoint = "+ m_MiBaoInfo.levelPoint);
+//				Debug.Log ("jinBi = "+JunZhuData.Instance().m_junzhuInfo.jinBi);
+//				Debug.Log ("mExpXxmlTemp.needExp = "+mExpXxmlTemp.needExp);
+				if(m_MiBaoInfo.miBaoList[i].level <  JunZhuData.Instance().m_junzhuInfo.level && 
+				   m_MiBaoInfo.levelPoint > 0&&JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp&&m_MiBaoInfo.miBaoList[i].level < 100)
+				{
+					isLevel = true;
+				}
 			}
 			else
 			{
 				DisActiveMiBaoList.Add(m_MiBaoInfo.miBaoList[i]);
+				MiBaoSuipianXMltemp mMiBaosuipian1 = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid(m_MiBaoInfo.miBaoList[i].tempId);
+			    int Mony = mMiBaosuipian1.money;
+				if(m_MiBaoInfo.miBaoList[i].suiPianNum >= mMiBaosuipian1.hechengNum  && Mony <= JunZhuData.Instance().m_junzhuInfo.jinBi)
+				{
+					isHeCheng = true;
+				}
 			}
+		}
+
+//		Debug.Log ("isHeCheng = "+isHeCheng);
+//		Debug.Log ("isLevel = "+isLevel);
+//		Debug.Log ("isupStar = "+isupStar);
+
+		if(!isHeCheng)
+		{
+			PushAndNotificationHelper.SetRedSpotNotification (605, false);
+		}
+		if(!isupStar)
+		{
+			PushAndNotificationHelper.SetRedSpotNotification (602, false);
+		}
+		if(!isLevel)
+		{
+			PushAndNotificationHelper.SetRedSpotNotification (600, false);
 		}
 		for(int i = 0 ; i < ActiveMiBaoList.Count; i++)
 		{
 			for(int j = i+1 ; j < ActiveMiBaoList.Count; j++)
 			{
-				if(ActiveMiBaoList[i].star < ActiveMiBaoList[j].star)
+				float suipian1 = (float)ActiveMiBaoList[i].suiPianNum / (float)ActiveMiBaoList[i].needSuipianNum;
+				float suipian2 = (float)ActiveMiBaoList[j].suiPianNum / (float)ActiveMiBaoList[j].needSuipianNum;
+
+				if(suipian1 < suipian2 )
 				{
 					MibaoInfo mbTemp = ActiveMiBaoList[i];
-
+					
 					ActiveMiBaoList[i] = ActiveMiBaoList[j];
 					
 					ActiveMiBaoList[j] = mbTemp;
+
+				}
+				else if(suipian1 == suipian2 )
+				{
+					if(ActiveMiBaoList[i].star < ActiveMiBaoList[j].star)
+					{
+						MibaoInfo mbTemp = ActiveMiBaoList[i];
+						
+						ActiveMiBaoList[i] = ActiveMiBaoList[j];
+						
+						ActiveMiBaoList[j] = mbTemp;
+					}
+					else if(ActiveMiBaoList[i].star == ActiveMiBaoList[j].star)
+					{
+						if(ActiveMiBaoList[i].level < ActiveMiBaoList[j].level)
+						{
+							MibaoInfo mbTemp = ActiveMiBaoList[i];
+							
+							ActiveMiBaoList[i] = ActiveMiBaoList[j];
+							
+							ActiveMiBaoList[j] = mbTemp;
+						}
+					}
 				}
 			}
 		}
@@ -354,43 +595,17 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 			{
 				MiBaoSuipianXMltemp mMiBaosuipian2 = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid(DisActiveMiBaoList[j].tempId);
 
-				if(DisActiveMiBaoList[i].suiPianNum < DisActiveMiBaoList[j].suiPianNum )
+				float a = (float)DisActiveMiBaoList[i].suiPianNum/(float)mMiBaosuipian1.hechengNum;
+				float b = (float)DisActiveMiBaoList[j].suiPianNum/(float)mMiBaosuipian2.hechengNum;
+				if(a < b)
 				{
-					if(DisActiveMiBaoList[i].suiPianNum < mMiBaosuipian1.hechengNum)
-					{
-						MibaoInfo mbTemp = DisActiveMiBaoList[i];
-						
-						DisActiveMiBaoList[i] = DisActiveMiBaoList[j];
-						
-						DisActiveMiBaoList[j] = mbTemp;
-					}
-					else
-					{
-						if(DisActiveMiBaoList[j].suiPianNum >= mMiBaosuipian2.hechengNum)
-						{
-							MibaoInfo mbTemp = DisActiveMiBaoList[i];
-							
-							DisActiveMiBaoList[i] = DisActiveMiBaoList[j];
-							
-							DisActiveMiBaoList[j] = mbTemp;
-						}
-					}
-
+					MibaoInfo mbTemp = DisActiveMiBaoList[i];
+					
+					DisActiveMiBaoList[i] = DisActiveMiBaoList[j];
+					
+					DisActiveMiBaoList[j] = mbTemp;
 				}
-				else
-				{
-					if(DisActiveMiBaoList[i].suiPianNum >= DisActiveMiBaoList[j].suiPianNum )
-					{
-						if(DisActiveMiBaoList[i].suiPianNum < mMiBaosuipian1.hechengNum && DisActiveMiBaoList[j].suiPianNum >= mMiBaosuipian2.hechengNum)
-						{
-							MibaoInfo mbTemp = DisActiveMiBaoList[i];
-							
-							DisActiveMiBaoList[i] = DisActiveMiBaoList[j];
-							
-							DisActiveMiBaoList[j] = mbTemp;
-						}
-					}
-				}
+	
 			}
 		}
 		InitUI ();
@@ -408,7 +623,7 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 				{
 					MiBao_TempInfo.GetComponent<MiBaoDesInfo>().ShowmMiBaoinfo = minfo;
 					MiBao_TempInfo.GetComponent<MiBaoDesInfo>().ShowSuipian();
-					Debug.Log("RefreshMiBao");
+					//Debug.Log("RefreshMiBao");
 				}
 			}
 		}
@@ -440,7 +655,7 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 
 			int m_y = (int)(i/4);
 
-			mMiBaotep.transform.localPosition = new Vector3(-180+m_x*dis_x,-m_y*dis_y+150,0);
+			mMiBaotep.transform.localPosition = new Vector3(-180+m_x*dis_x,-m_y*(dis_y+10)+130,0);
 
 			mMiBaotep.transform.localScale = Vector3.one;
 
@@ -452,9 +667,9 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 		}
 		if(ActiveMiBaoList.Count >= 21)
 		{
-			ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,150-(6-1)*60,0);
+			ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,130-(6-1)*70,0);
 			
-			ActiveMibaoBackGroud.SetDimensions(486,120*6);
+			ActiveMibaoBackGroud.SetDimensions(486,140*6);
 
 			DisactiveLabel.gameObject.SetActive(false);
 
@@ -475,11 +690,11 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 			{
 				int n = (int)((ActiveMiBaoList.Count-1)/4)+1;
 
-				DisactiveLabel.gameObject.transform.localPosition = new Vector3(-150,-50 -dis_y*n,0);
+				DisactiveLabel.gameObject.transform.localPosition = new Vector3(-150,-60 -(dis_y+20)*n,0);
 
-				ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,150-(n-1)*60,0);
+				ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,130-(n-1)*70,0);
 
-				ActiveMibaoBackGroud.SetDimensions(486,120*n);
+				ActiveMibaoBackGroud.SetDimensions(486,140*n);
 			}
 		}
 
@@ -500,10 +715,10 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 			{
 				n = (int)((ActiveMiBaoList.Count-1)/4)+1;
 			}
-			mMiBaotep.transform.localPosition = new Vector3(-180+m_x*dis_x,-m_y*(dis_y+10)+150 -(n*120+60),0);
+			mMiBaotep.transform.localPosition = new Vector3(-180+m_x*dis_x,-m_y*(dis_y+10)+130 -(n*140+60),0);
 			if( i == 0)
 			{
-				Sprite_y = -m_y*dis_y+150 -n*120+60;
+				Sprite_y = -m_y*dis_y+130 -n*140+60;
 			}
 			mMiBaotep.transform.localScale = Vector3.one;
 			
@@ -540,7 +755,7 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 	public void GoPropertyShow()
 	{
 		First_MiBao_UI.SetActive (false);
-		MiBao_ZhanLiInfo.SetActive (true);
+		//MiBao_ZhanLiInfo.SetActive (true);
 	}
 	public void BackToFirstPage(GameObject Nextgme) // 返回首页
 	{
@@ -586,6 +801,72 @@ public class NewMiBaoManager : MonoBehaviour ,SocketListener {
 	{
 		TaskData.Instance.m_DestroyMiBao = false;
 		MainCityUI.TryRemoveFromObjectList(this.gameObject);
+
 		Destroy (this.gameObject);
 	}
+	public void JIeSuo()
+	{
+		MiBaoDealSkillReq mMiBaoDealSkillReq = new MiBaoDealSkillReq ();
+		
+		MemoryStream miBaoStream = new MemoryStream ();
+		
+		QiXiongSerializer MiBaoSer = new QiXiongSerializer ();
+		
+		//Debug.Log("MaxId  = "+MaxId);
+		
+		mMiBaoDealSkillReq.zuheId =  MaxId;
+
+		MiBaoSer.Serialize (miBaoStream,mMiBaoDealSkillReq);
+		byte[] t_protof;
+		t_protof = miBaoStream.ToArray();
+		UIYindao.m_UIYindao.CloseUI ();
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.MIBAO_DEAL_SKILL_REQ,ref t_protof);
+	}
+	#region fulfil my ngui panel
+	
+	/// <summary>
+	/// my click in my ngui panel
+	/// </summary>
+	/// <param name="ui"></param>
+	public override void MYClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOver(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+		
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+		
+	}
+	
+	#endregion
 }

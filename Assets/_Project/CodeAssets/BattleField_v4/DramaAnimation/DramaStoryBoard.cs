@@ -107,8 +107,10 @@ public class DramaStoryBoard : MonoBehaviour
 					if(m_actorGc[modelIndex] == null)
 					{
 						Debug.LogError(actorModelId + " IS NULL IN STORYBOARD " + storyBoardId);
-						
-						continue;
+
+						m_actorGc[modelIndex] = new GameObject();
+
+						//continue;
 					}
 					
 					m_actorGc[modelIndex].transform.parent = transform;
@@ -133,7 +135,7 @@ public class DramaStoryBoard : MonoBehaviour
 					if(tempNode == null)
 					{
 						Debug.LogError("THERE IS NO BASEAI WITH NODEID " + actorModelId);
-						
+
 						continue;
 					}
 
@@ -285,6 +287,8 @@ public class DramaStoryBoard : MonoBehaviour
 
 					dape.playTime = actorJson["playTime"].AsFloat;
 
+					dape.moveTime = actorJson["moveTime"].AsFloat;
+
 					dape.follow = actorJson["follow"].AsBool;
 
 					dape.position = new Vector3(actorJson["px"].AsFloat, actorJson["py"].AsFloat, actorJson["pz"].AsFloat);
@@ -298,6 +302,78 @@ public class DramaStoryBoard : MonoBehaviour
 					DramaActorPlaySound daps = (DramaActorPlaySound)m_actorGc[modelIndex].AddComponent<DramaActorPlaySound>();
 
 					daps.soundId = actorJson["soundId"].AsInt;
+				}
+				else if(actorType == DramaActor.ACTOR_TYPE.UISprite)
+				{
+					DramaActorSprite das = m_actorGc[modelIndex].AddComponent<DramaActorSprite>();
+
+					das.waittingTime = waittingTime;
+
+					das.anchor = (UIAnchor.Side)actorJson["anchor"].AsInt;
+
+					das.spriteName = actorJson["spriteName"];
+
+					das.localPosition = new Vector3(actorJson["localPositionx"].AsFloat, actorJson["localPositiony"].AsFloat, actorJson["localPositionz"].AsFloat);
+
+					das.localRotation = new Vector3(actorJson["localRotationx"].AsFloat, actorJson["localRotationy"].AsFloat, actorJson["localRotationz"].AsFloat);
+
+					das.dimensions = new Vector2(actorJson["dimensionsx"].AsFloat, actorJson["dimensionsy"].AsFloat);
+
+					das.depth = actorJson["depth"].AsInt;
+
+					das.datas.Clear();
+
+					JSONArray array = actorJson["datas"].AsArray;
+
+					foreach(JSONClass json in array)
+					{
+						das.datas.Add(DramaActorUIData.getDaraByJson(json, das.gameObject));
+					}
+				}
+				else if(actorType == DramaActor.ACTOR_TYPE.UILabel)
+				{
+					DramaActorLabel dal = m_actorGc[modelIndex].AddComponent<DramaActorLabel>();
+					
+					dal.waittingTime = waittingTime;
+					
+					dal.anchor = (UIAnchor.Side)actorJson["anchor"].AsInt;
+					
+					dal.text = actorJson["text"];
+					
+					dal.localPosition = new Vector3(actorJson["localPositionx"].AsFloat, actorJson["localPositiony"].AsFloat, actorJson["localPositionz"].AsFloat);
+					
+					dal.localRotation = new Vector3(actorJson["localRotationx"].AsFloat, actorJson["localRotationy"].AsFloat, actorJson["localRotationz"].AsFloat);
+
+					dal.fontSize = actorJson["fontSize"].AsInt;
+
+					dal.fontStyle = (FontStyle)actorJson["fontStyle"].AsInt;
+
+					dal.applyGradient = actorJson["applyGradient"].AsBool;
+
+					dal.gradientTop = new Color(actorJson["gradientTopx"].AsFloat, actorJson["gradientTopy"].AsFloat, actorJson["gradientTopz"].AsFloat, actorJson["gradientTopw"].AsFloat);
+
+					dal.gradientBottom = new Color(actorJson["gradientBottomx"].AsFloat, actorJson["gradientBottomy"].AsFloat, actorJson["gradientBottomz"].AsFloat, actorJson["gradientBottomw"].AsFloat);
+
+					dal.labelEffect = (UILabel.Effect)actorJson["labelEffect"].AsInt;
+
+					dal.effectColor = new Color(actorJson["effectColorx"].AsFloat, actorJson["effectColory"].AsFloat, actorJson["effectColorz"].AsFloat, actorJson["effectColorw"].AsFloat);
+
+					dal.effectDistance = new Vector2(actorJson["effectDistancex"].AsFloat, actorJson["effectDistancey"].AsFloat);
+
+					dal.labelColor = new Color(actorJson["labelColorx"].AsFloat, actorJson["labelColory"].AsFloat, actorJson["labelColorz"].AsFloat, actorJson["labelColorw"].AsFloat);
+
+					dal.dimensions = new Vector2(actorJson["dimensionsx"].AsFloat, actorJson["dimensionsy"].AsFloat);
+					
+					dal.depth = actorJson["depth"].AsInt;
+					
+					dal.datas.Clear();
+					
+					JSONArray array = actorJson["datas"].AsArray;
+					
+					foreach(JSONClass json in array)
+					{
+						dal.datas.Add(DramaActorUIData.getDaraByJson(json, dal.gameObject));
+					}
 				}
 			}
 

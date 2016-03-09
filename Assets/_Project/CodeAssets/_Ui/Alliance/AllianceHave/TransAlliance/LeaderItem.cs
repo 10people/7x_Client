@@ -75,13 +75,13 @@ public class LeaderItem : MonoBehaviour {
 
 		if (i == 1)
 		{
-			Debug.Log ("不转让了");
+			//Debug.Log ("不转让了");
 			TransAlliance.trans.DestroySelect ();
 		}
 
 		if (i == 2)
 		{
-			Debug.Log ("确定转让");
+			//Debug.Log ("确定转让");
 			TransAllianceReq ();
 		}
 	}
@@ -102,6 +102,6 @@ public class LeaderItem : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.TRANSFER_ALLIANCE,ref t_protof,"30138");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.TRANSFER_ALLIANCE,ref t_protof,"30138");
 	}
 }

@@ -292,11 +292,11 @@ public class ProtoToolManager : Singleton<ProtoToolManager>, SocketListener
     {
         ShowError(false, "");
 
-        GetProtoHandler.m_handler -= OnGetProtoClick;
-        SendMessageHandler.m_handler -= OnSendMessageClick;
-        ClearProtoHandler.m_handler -= OnClearProtoAreaClick;
-        ReceiveIndexHandler.m_handler -= OnReceiveIndexClick;
-        SendIndexHandler.m_handler -= OnSendIndexClick;
+        GetProtoHandler.m_click_handler -= OnGetProtoClick;
+        SendMessageHandler.m_click_handler -= OnSendMessageClick;
+        ClearProtoHandler.m_click_handler -= OnClearProtoAreaClick;
+        ReceiveIndexHandler.m_click_handler -= OnReceiveIndexClick;
+        SendIndexHandler.m_click_handler -= OnSendIndexClick;
 
         SocketTool.UnRegisterSocketListener(this);
 
@@ -305,11 +305,11 @@ public class ProtoToolManager : Singleton<ProtoToolManager>, SocketListener
 
     void Start()
     {
-        GetProtoHandler.m_handler += OnGetProtoClick;
-        SendMessageHandler.m_handler += OnSendMessageClick;
-        ClearProtoHandler.m_handler += OnClearProtoAreaClick;
-        ReceiveIndexHandler.m_handler += OnReceiveIndexClick;
-        SendIndexHandler.m_handler += OnSendIndexClick;
+        GetProtoHandler.m_click_handler += OnGetProtoClick;
+        SendMessageHandler.m_click_handler += OnSendMessageClick;
+        ClearProtoHandler.m_click_handler += OnClearProtoAreaClick;
+        ReceiveIndexHandler.m_click_handler += OnReceiveIndexClick;
+        SendIndexHandler.m_click_handler += OnSendIndexClick;
     }
 
     // Use this for initialization

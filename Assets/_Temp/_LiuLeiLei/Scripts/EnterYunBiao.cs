@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnterYunBiao : MonoBehaviour {
+namespace Carriage
+{
+	public class EnterYunBiao : MonoBehaviour {
 
-	void OnClick ()
-	{
-		BiaoJuData.Instance.OpenBiaoJu ();
+		void OnClick ()
+		{
+			BiaoJuData.Instance.OpenBiaoJu ();
+		}
 	}
 }

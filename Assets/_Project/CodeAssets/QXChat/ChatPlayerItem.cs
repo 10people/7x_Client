@@ -25,14 +25,20 @@ public class ChatPlayerItem : MonoBehaviour {
 	private const int minTextBgHeigh = 34;
 	private const int dis = 20;
 
-	private const int bgDis = 37;
+//	private const int bgDis = -37;
 	private const int textLabelMixWidth = 144;
 
+	private const int colorCharNum = 33;//发送的内容包含的颜色代码字符长度
+
 	public EventHandler playerHandler;
+
+	public EventHandler allianceInfoHandler;
 
 	private bool isPlayer;
 
 	private int itemHeigh;
+
+	private string textStr;
 
 	void Start ()
 	{
@@ -58,10 +64,10 @@ public class ChatPlayerItem : MonoBehaviour {
 		titleLabel.text = isPlayer ? "" : (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "[00e1c4]【广播】[-]" : MyColorData.getColorString (5,"【系统】"));
 		textBg.transform.localPosition = new Vector3 (-60,isPlayer ? 6 : 15,0);
 
-		textBg.color = isPlayer ? (tempChatMsg.chatPct.senderId == JunZhuData.Instance ().m_junzhuInfo.id ? new Color (0.7f,1,0.6f) : Color.white) : Color.white;
+		textBg.color = isPlayer ? (tempChatMsg.chatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id ? new Color (0.7f,1,0.6f) : Color.white) : Color.white;
 
 		textLabel.text = "[dbba8f]" + tempChatMsg.chatPct.content + "[-]";
-		Debug.Log ("nationId:" + tempChatMsg.chatPct.guoJia);
+//		Debug.Log ("nationId:" + tempChatMsg.chatPct.guoJia);
 
 		if (isPlayer)
 		{
@@ -73,17 +79,39 @@ public class ChatPlayerItem : MonoBehaviour {
 		}
 
 		int row = textLabel.height / 19;
-		textBg.height = minTextBgHeigh + (row - 1) * dis;
 
+		allianceInfoHandler.gameObject.SetActive (tempChatMsg.chatPct.type == 2 ? true : false);
+		int num = System.Text.Encoding.Default.GetBytes (tempChatMsg.chatPct.content).Length;
+//		Debug.Log ("numnum:" + num);
+		bool add = false;
+		if (tempChatMsg.chatPct.type == 2)
+		{
+			if (num - colorCharNum <= 29)
+			{
+				allianceInfoHandler.transform.localPosition = new Vector3(60 + (num - colorCharNum - 19) * 8,-39,0);
+			}
+			else
+			{
+				allianceInfoHandler.transform.localPosition = new Vector3(60 + ((num - colorCharNum - 38) > 0 ? (num - colorCharNum - 38) * 8 : 0),-59,0);
+				add = true;
+			}
+		}
+
+		textBg.height = minTextBgHeigh + (row - 1 + (add ? 1 : 0)) * dis;
 		itemHeigh = textBg.height;
 
-		playerHandler.m_handler -= PlayerHandlerClickBack;
-		playerHandler.m_handler += PlayerHandlerClickBack;
+		playerHandler.m_click_handler -= PlayerHandlerClickBack;
+		playerHandler.m_click_handler += PlayerHandlerClickBack;
+
+		allianceInfoHandler.gameObject.SetActive (chatMsg.chatPct.lianmengId > 0 ? true : false);
+
+		allianceInfoHandler.m_click_handler -= AllianceInfoHandlerClickBack;
+		allianceInfoHandler.m_click_handler += AllianceInfoHandlerClickBack;
 	}
 
 	void PlayerHandlerClickBack (GameObject obj)
 	{
-		if (JunZhuData.Instance ().m_junzhuInfo.id == chatMsg.chatPct.senderId)
+		if (JunZhuData.Instance().m_junzhuInfo.id == chatMsg.chatPct.senderId)
 		{
 			QXChatPage.chatPage.SetChatItemInfoClose (true);
 			return;	
@@ -103,7 +131,7 @@ public class ChatPlayerItem : MonoBehaviour {
 
 			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "邮件",chatBtnDelegate = SendEmail});
 
-			if (!BlockedData.Instance ().m_BlockedInfoDic.ContainsKey (chatMsg.chatPct.senderId))
+			if (!BlockedData.Instance().m_BlockedInfoDic.ContainsKey (chatMsg.chatPct.senderId))
 			{
 				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "屏蔽",chatBtnDelegate = Shield});
 			}
@@ -121,6 +149,47 @@ public class ChatPlayerItem : MonoBehaviour {
 		}
 
 		QXChatPage.chatPage.InItChatItemInfo (gameObject,chatBtnInfoList);
+	}
+
+	void AllianceInfoHandlerClickBack (GameObject obj)
+	{
+//		Debug.Log ("chatMsg.chatPct.lianmengId:" + chatMsg.chatPct.lianmengId);
+		if (chatMsg.chatPct.lianmengId <= 0)
+		{
+			return;
+		}
+
+		if (!FunctionOpenTemp.IsHaveID (104))
+		{
+			textStr = FunctionOpenTemp.GetTemplateById (104).m_sNotOpenTips;
+			QXComData.CreateBox (1,textStr,true,null);
+			return;
+		}
+		int m_allianceId = JunZhuData.Instance().m_junzhuInfo.lianMengId;
+//		Debug.Log ("m_allianceId:" + m_allianceId);
+
+		if (m_allianceId <= 0)
+		{
+			//跳转到加入联盟页面（无联盟）
+			var noAllianceDic = AllianceData.Instance.m_AllianceInfoDic;
+			if (noAllianceDic.ContainsKey (chatMsg.chatPct.lianmengId))
+			{
+				FunctionWindowsCreateManagerment.CreateAllianceLayer (chatMsg.chatPct.lianmengId);
+			}
+			else
+			{
+				textStr = "此联盟不存在！";
+				QXComData.CreateBox (1,textStr,true,null);
+				return;
+			}
+		}
+		else
+		{
+			//跳转到查看联盟信息页面（有联盟）
+			AllianceMemberWindowManager.Instance.OpenAllianceMemeberWindow (chatMsg.chatPct.lianmengId,chatMsg.chatPct.lianmengName);
+		}
+
+		QXChatPage.chatPage.ChatPageAnimation (false);
 	}
 
 	/// <summary>

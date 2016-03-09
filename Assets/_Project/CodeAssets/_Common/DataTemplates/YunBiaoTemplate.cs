@@ -9,6 +9,10 @@ using Object = UnityEngine.Object;
 
 public class YunBiaoTemplate : XmlLoadManager
 {
+    public static string incomeAdd_startTime2 = "incomeAdd_startTime2";
+    public static string incomeAdd_endTime2 = "incomeAdd_endTime2";
+    public static string enemyCartBonus = "foeCart_incomeAdd_pro";
+
     public string m_Key;
     public string m_Desc;
     public string m_Value;

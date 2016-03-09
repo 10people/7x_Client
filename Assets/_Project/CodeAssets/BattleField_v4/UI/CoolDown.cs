@@ -21,6 +21,11 @@ public class CoolDown : MonoBehaviour
 	private GameObject tempGc;
 
 
+
+	void Awake(){
+
+	}
+
 	public void init(int skillId)
 	{
 		id = skillId % 10;
@@ -75,7 +80,7 @@ public class CoolDown : MonoBehaviour
 		if(spriteCD.gameObject.activeSelf == false) return;	
 
 		timeLst -= timeLst;
-		
+
 		if(timeLst <= 0)
 		{
 			setSpriteDoltOn(true);
@@ -96,11 +101,14 @@ public class CoolDown : MonoBehaviour
 				
 				label.text = "";
 			}
-			
-			UI3DEffectTool.Instance().ShowTopLayerEffect( 
-	             UI3DEffectTool.UIType.FunctionUI_1, 
-	             tempGc, 
-	             EffectIdTemplate.GetPathByeffectId(110000) );
+
+			if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING)
+			{
+				UI3DEffectTool.ShowTopLayerEffect( 
+		             UI3DEffectTool.UIType.FunctionUI_1, 
+		             tempGc, 
+		             EffectIdTemplate.GetPathByeffectId(110000) );
+			}
 		}
 		else
 		{
@@ -136,11 +144,14 @@ public class CoolDown : MonoBehaviour
 				
 				label.text = "";
 			}
-			
-			UI3DEffectTool.Instance().ShowTopLayerEffect( 
-	             UI3DEffectTool.UIType.FunctionUI_1, 
-	             tempGc, 
-	             EffectIdTemplate.GetPathByeffectId(110000) );
+
+			if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING)
+			{
+				UI3DEffectTool.ShowTopLayerEffect( 
+		             UI3DEffectTool.UIType.FunctionUI_1, 
+		             tempGc, 
+		             EffectIdTemplate.GetPathByeffectId(110000) );
+			}
 		}
 		else
 		{

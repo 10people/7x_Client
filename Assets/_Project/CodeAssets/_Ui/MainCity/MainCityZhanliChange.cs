@@ -3,9 +3,10 @@ using System.Collections;
 
 public class MainCityZhanliChange : MYNGUIPanel 
 {
-	private int m_iNum;
-	private float m_iCurZhanli;
-	private float m_iChangeNum;
+	public int m_iNum;
+	public float m_iCurZhanli;
+	public float m_iChangeNum;
+	public int m_iWantToZhanli;
 	public UILabel m_UILabelHeroZhanli;
 	public UILabel m_UILabelUpZhanli;
 	public GameObject m_objEff;
@@ -25,11 +26,11 @@ public class MainCityZhanliChange : MYNGUIPanel
 		m_UILabelHeroZhanli.text = Global.m_iPZhanli.ToString();
 		m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
 
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100191 ).path);
-		m_iCurZhanli = Global.m_iPZhanli;
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100191 ).path);
+		m_iCurZhanli = Global.m_iPChangeZhanli;
 		m_iChangeNum = (JunZhuData.Instance().m_junzhuInfo.zhanLi - m_iCurZhanli) / 20f;
 
-		Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
+		m_iWantToZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 	}
 	
 	// Update is called once per frame
@@ -46,11 +47,11 @@ public class MainCityZhanliChange : MYNGUIPanel
 			}
 			break;
 		case ZhanliAnimationSatatae.Eff:
-			if(Global.m_iPZhanli < JunZhuData.Instance().m_junzhuInfo.zhanLi)
+			if(m_iWantToZhanli < JunZhuData.Instance().m_junzhuInfo.zhanLi)
 			{
 				m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
 				m_iChangeNum = (JunZhuData.Instance().m_junzhuInfo.zhanLi - m_iCurZhanli) / 20f;
-				Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
+				m_iWantToZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 				m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Label;
 				m_iNum = 0;
 			}
@@ -58,20 +59,20 @@ public class MainCityZhanliChange : MYNGUIPanel
 			if(m_iNum == 30)
 			{
 //				Debug.Log("===========1");
-
-				GameObject.Destroy(gameObject);
 				ClientMain.closePopUp();
 				Global.m_isZhanli = false;
 				Global.m_iAddZhanli = 0;
+				GameObject.Destroy(gameObject);
+				Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 			}
 
 			break;
 		case ZhanliAnimationSatatae.Label:
-			if(Global.m_iPZhanli < JunZhuData.Instance().m_junzhuInfo.zhanLi)
+			if(m_iWantToZhanli < JunZhuData.Instance().m_junzhuInfo.zhanLi)
 			{
 				m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
 				m_iChangeNum = (JunZhuData.Instance().m_junzhuInfo.zhanLi - m_iCurZhanli) / 20f;
-				Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
+				m_iWantToZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 				m_iNum = 0;
 			}
 			m_iNum ++;

@@ -160,7 +160,7 @@ public class MiBaoStarAwardUI : MonoBehaviour,SocketProcessor {
 			
 		}else
 		{
-			Debug.Log ("p_message == null");
+			//Debug.Log ("p_message == null");
 		}
 		
 		return false;

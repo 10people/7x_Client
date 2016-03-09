@@ -34,13 +34,13 @@ public class EmailFriendItem : MonoBehaviour {
 		nameLabel.text = tempInfo.name + (string.IsNullOrEmpty (tempInfo.lianMengName) ? "\n无联盟" : "\n<" + tempInfo.lianMengName + ">");
 
 		EventHandler handler = this.GetComponent<EventHandler> ();
-		handler.m_handler -= FriendItemHandlerClickBack;
-		handler.m_handler += FriendItemHandlerClickBack;
+		handler.m_click_handler -= FriendItemHandlerClickBack;
+		handler.m_click_handler += FriendItemHandlerClickBack;
 	}
 
 	void FriendItemHandlerClickBack (GameObject obj)
 	{
-		NewEmailData.Instance ().SendName = friendInfo.name;
+		NewEmailData.Instance().SendName = friendInfo.name;
 		SendMail send = sendObj.GetComponent<SendMail> ();
 		send.GetReplyName ();
 

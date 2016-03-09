@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,7 +7,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 
 	private static GeneralRewardManager m_instance = null;
 
-	public static GeneralRewardManager Instance ()
+	public static GeneralRewardManager Instance()
 	{
 		//if( m_instance == null )
 		//{
@@ -88,12 +89,44 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	/// <param name="tempDataList">Temp data list.</param>
 	public void CreateReward (List<RewardData> tempDataList)
 	{
+		RankRewardDataList (tempDataList);
+		Dictionary<int,RewardData> rewardDic = new Dictionary<int, RewardData> ();
 		for (int i = 0;i < tempDataList.Count;i ++)
 		{
-			rewardDataList.Add (tempDataList[i]);
+			if (!rewardDic.ContainsKey (tempDataList[i].itemId))
+			{
+				rewardDic.Add (tempDataList[i].itemId,tempDataList[i]);
+			}
+			else
+			{
+				rewardDic[tempDataList[i].itemId].itemCount += tempDataList[i].itemCount;
+			}
+		}
+	
+		foreach (KeyValuePair<int,RewardData> pair in rewardDic)
+		{
+			rewardDataList.Add (pair.Value);
 		}
 
 		CheckReward ();
+	}
+
+	void RankRewardDataList (List<RewardData> tempDataList)
+	{
+		for (int i = 0;i < tempDataList.Count;i ++)
+		{
+			for (int j = 0;j < tempDataList.Count - i - 1;j ++)
+			{
+				QXComData.XmlType xmlType1 = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (tempDataList[j].itemId));
+				QXComData.XmlType xmlType2 = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (tempDataList[j + 1].itemId));
+				if (xmlType1 != xmlType2 && (xmlType1 == QXComData.XmlType.EQUIP || xmlType1 == QXComData.XmlType.MIBAO))
+				{
+					RewardData tempData = tempDataList[j];
+					tempDataList[j] = tempDataList[j + 1];
+					tempDataList[j + 1] = tempData;
+				}
+			}
+		}
 	}
 
 	/// <summary>
@@ -220,7 +253,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 		if (rewardItemList.Count == 0 && specialItemList.Count == 0)
 		{
 			//			Debug.Log ("ClientMain.closePopUp();");
-			
+
 			ClientMain.closePopUp();
 		}
 	}
@@ -254,11 +287,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	void ShowRewardPanel ()
 	{
 		UI2DTool.Instance.AddTopUI( gameObject );
-
-		if (UIYindao.m_UIYindao.m_isOpenYindao)
-		{
-			UIYindao.m_UIYindao.CloseUI ();
-		}
+//		CityGlobalData.m_isRightGuide = true;
 	}
 
 	/// <summary>

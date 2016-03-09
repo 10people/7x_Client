@@ -86,7 +86,7 @@ public class HYRewardBtnsCol : MonoBehaviour,SocketProcessor{
 			junZhuIdList.Add (applyer.junzhuId);
 		}
 		
-		if (junZhuIdList.Contains (JunZhuData.Instance ().m_junzhuInfo.id))
+		if (junZhuIdList.Contains (JunZhuData.Instance().m_junzhuInfo.id))
 		{
 			Debug.Log ("Have Applied!");
 			titleStr = "申请失败";
@@ -141,7 +141,7 @@ public class HYRewardBtnsCol : MonoBehaviour,SocketProcessor{
 			junZhuIdList.Add (applyer.junzhuId);
 		}
 
-		if (junZhuIdList.Contains (JunZhuData.Instance ().m_junzhuInfo.id))
+		if (junZhuIdList.Contains (JunZhuData.Instance().m_junzhuInfo.id))
 		{
 			Debug.Log ("Have Applied!");
 			titleStr = "取消申请";
@@ -233,7 +233,7 @@ public class HYRewardBtnsCol : MonoBehaviour,SocketProcessor{
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_APPLY_REWARD,ref t_protof,"30410");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_APPLY_REWARD,ref t_protof,"30410");
 		Debug.Log ("申请奖励:" + ProtoIndexes.C_APPLY_REWARD);
 	}
 	
@@ -252,7 +252,7 @@ public class HYRewardBtnsCol : MonoBehaviour,SocketProcessor{
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_CANCEL_APPLY_REWARD,ref t_protof,"30412");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_CANCEL_APPLY_REWARD,ref t_protof,"30412");
 		Debug.Log ("取消奖励申请:" + ProtoIndexes.C_CANCEL_APPLY_REWARD);
 	}
 
@@ -272,7 +272,7 @@ public class HYRewardBtnsCol : MonoBehaviour,SocketProcessor{
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_GIVE_REWARD,ref t_protof,"30414");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_GIVE_REWARD,ref t_protof,"30414");
 		Debug.Log ("RewardApplyReq:" + ProtoIndexes.C_GIVE_REWARD);
 	}
 

@@ -101,7 +101,7 @@ public class BattleFlagWritor : MonoBehaviour
 
 	public void rewriteCameraFlag()
 	{
-		chapterId = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
+		chapterId = CityGlobalData.m_configId;
 
 		getBattleCameraFlag();
 		

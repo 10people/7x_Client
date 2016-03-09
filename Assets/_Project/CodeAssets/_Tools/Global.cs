@@ -16,10 +16,12 @@ using ProtoBuf.Meta;
 
 public class Global
 {
-	public static bool m_isOpenPVP = false;
+	public static bool m_isOpenPVP = false;//pve
 
-    public static bool m_isOpenBaiZhan = false;
-	public static bool m_isOpenHuangYe = false;
+    public static bool m_isOpenBaiZhan = false;//pvp
+
+	public static bool m_isOpenHuangYe = false;//huangye
+
 	public static int m_iOpenFunctionIndex = -1;
 	public static bool m_isZhanli = false;
 
@@ -34,20 +36,22 @@ public class Global
 	public static bool m_isShowBianqiang = false;
 	public static string m_sBianqiangClick = "";
 	public static List<int> m_NewChenghao = new List<int>();
+	public static int m_iPChangeZhanli = 0;
 	public static int m_iPZhanli = 0;
 	public static int m_iAddZhanli = 0;
 	public static int m_iCenterZhanli = 0;
 
-	public static bool m_isFuWen = false;
-	public static bool m_isOpenFuWen = false;
+	public static bool m_isOpenFuWen = false;//fu wen
 
-	public static bool m_isOpenShop = false;
+	public static bool m_isOpenShop = false;//shang pu
 
-	public static bool m_isOpenPlunder = false;
+	public static bool m_isOpenPlunder = false;//lue duo
 
 	public static List<TongzhiData> m_listAllTheData = new List<TongzhiData>();
 	public static List<TongzhiData> m_listMainCityData = new List<TongzhiData>();
 	public static List<TongzhiData> m_listJiebiaoData = new List<TongzhiData>();
+
+	public const int TILILVMAX = 14;
 
 	public static int getBili(int w, float curNum, float maxNum)
 	{
@@ -158,7 +162,7 @@ public class Global
             return;
         }
 
-        obj.layer = newLayer;
+		GameObjectHelper.SetGameObjectLayer( obj, newLayer );
 
         foreach (Transform child in obj.transform)
         {
@@ -229,7 +233,7 @@ public class Global
         NewRenderer.bones = MyBones;
         NewRenderer.sharedMesh = ThisRenderer.sharedMesh;
         NewRenderer.materials = ThisRenderer.materials;
-        NewRenderer.gameObject.layer = root.gameObject.layer;
+		GameObjectHelper.SetGameObjectLayer( NewRenderer.gameObject, root.gameObject.layer );
 
         return newObject;
     }
@@ -290,6 +294,7 @@ public class Global
 //        hero.transform.localScale = new Vector3(localScale, localScale, localScale);
         return tempG;
     }
+
 	/****
 	 * @tile 标题
 	 * @dis1 上介绍
@@ -298,6 +303,9 @@ public class Global
 	 * @buttonname1 按钮1的名字
 	 * @buttonname2 按钮2的名字
 	 * @onClcik 点击后的回调
+	 * 
+	 * isSetDepth: true ---> Cam.Depth = 45
+	 * isSetDepth: false ---> Cam.Depth = 100
 	 */
 	public static GameObject CreateBox(string tile, string dis1, string dis2, List<BagItem> bagItem, string buttonname1, string buttonname2, UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true){
 		return UtilityTool.Instance.CreateBox(
@@ -485,17 +493,17 @@ public class Global
 		m_total_download_time = m_total_download_time + p_delta;
 	}
 
-	public static string NextCutting(ref string data)
+	public static string NextCutting(ref string data, string fuhao = ",")
 	{
 		string tempReturnString;
-		if(data.IndexOf(",") == -1)
+		if(data.IndexOf(fuhao) == -1)
 		{
 			tempReturnString = data.Substring(0, data.Length);
 			data = "";
 			return tempReturnString;
 		}
-		tempReturnString = data.Substring(0, data.IndexOf(","));
-		data = data.Substring(data.IndexOf(",") + 1, data.Length - (data.IndexOf(",") + 1));
+		tempReturnString = data.Substring(0, data.IndexOf(fuhao));
+		data = data.Substring(data.IndexOf(fuhao) + 1, data.Length - (data.IndexOf(fuhao) + 1));
 		return tempReturnString;
 	}
 
@@ -756,6 +764,8 @@ public class Global
 
 	public static void upDataTongzhiData(List<TongzhiData> listData)
 	{
+//		Debug.Log("m_listMainCityData.cout="+m_listMainCityData.Count);
+
 		if(listData != null)
 		{
 			for(int i = 0; i < listData.Count; i ++)
@@ -785,6 +795,7 @@ public class Global
 				m_listMainCityData.Add(m_listAllTheData[i]);
 			}
 		}
+//		Debug.Log("m_listMainCityData.cout="+m_listMainCityData.Count);
 	}
 
 	public static TongzhiData getTongzhiData(List<TongzhiData> listData, long id)

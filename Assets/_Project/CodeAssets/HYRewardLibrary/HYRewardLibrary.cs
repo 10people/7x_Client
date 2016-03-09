@@ -69,7 +69,7 @@ public class HYRewardLibrary : MonoBehaviour {
 			{
 				for (int j = 0;j < m_rewardResp.itemInfo[i].applyerInfo.Count && flag;j ++)
 				{
-					if (JunZhuData.Instance ().m_junzhuInfo.id == m_rewardResp.itemInfo[i].applyerInfo[j].junzhuId)
+					if (JunZhuData.Instance().m_junzhuInfo.id == m_rewardResp.itemInfo[i].applyerInfo[j].junzhuId)
 					{
 						HuangYeAwardTemplete hyAwardTemp = HuangYeAwardTemplete.getHuangYeAwardTemplateBySiteId (m_rewardResp.itemInfo[i].site);
 						int itemId = hyAwardTemp.itemId;

@@ -39,8 +39,8 @@ namespace Carriage
 
         public void OnOpenListClick()
         {
-            transform.localPosition = new Vector3(-160, -280, 0);
-            iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(0, -280, 0), "time", 0.5f, "easetype", "easeOutBack", "islocal", true, "oncomplete", "OnOpenListComplete"));
+            transform.localPosition = new Vector3(-160, -320, 0);
+            iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(0, -320, 0), "time", 0.5f, "easetype", "easeOutBack", "islocal", true, "oncomplete", "OnOpenListComplete"));
         }
 
         void OnOpenListComplete()
@@ -51,8 +51,8 @@ namespace Carriage
 
         public void OnCloseListClick()
         {
-            transform.localPosition = new Vector3(0, -280, 0);
-            iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(-160, -280, 0), "time", 0.5f, "easetype", "easeInBack", "islocal", true, "oncomplete", "OnCloseListComplete"));
+            transform.localPosition = new Vector3(0, -320, 0);
+            iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(-160, -320, 0), "time", 0.5f, "easetype", "easeInBack", "islocal", true, "oncomplete", "OnCloseListComplete"));
         }
 
         void OnCloseListComplete()
@@ -167,7 +167,7 @@ namespace Carriage
 
             storedControllers.Clear();
 
-            if (m_StoredXieZhuJunZhuResp != null)
+            if (m_StoredXieZhuJunZhuResp != null && m_StoredXieZhuJunZhuResp.xiezhuJz != null)
             {
                 foreach (var item in m_StoredXieZhuJunZhuResp.xiezhuJz)
                 {

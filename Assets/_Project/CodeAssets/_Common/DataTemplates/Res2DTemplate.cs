@@ -230,6 +230,29 @@ public class Res2DTemplate : XmlLoadManager
         TASK_BUTTON_ITEM = 218,
 		UI_ADDZHANLI = 219,
 		LOADING_BG_FOR_MAINCITY = 220,
+		GLOBAL_Titile = 221,
+		LOADING_BG_FOR_BATTLE_FIELD = 222,
+		UI_FX_SELF_ANIM = 223,
+		UI_FX_MIRROR_ANIM = 224,
+		UI_FX_RING = 225,
+
+
+		BIAOJU_RECORD_PAGE = 231,
+        EQUIP_ADVANCE = 232,
+        EQUIP_TAO = 233,
+		
+		LOADING_BG_BAI_ZHAN = 234,
+		LOADING_BG_MI_JI = 235,
+		LOADING_BG_NEXT_DAY = 236,
+		LOADING_BG_SHANG_YANG = 237,
+		LOADING_BG_SUIT = 238,
+		LOADING_BG_TAN_BAO = 239,
+		LOADING_BG_WEAPON = 240,
+
+		CHASE_ATTACK_NAV = 241,
+		WARSITUATION = 242,
+		PRE_LOAD_EQUIP_ATLAS = 243,
+		PRE_LOAD_ACTIVITY_ATLAS = 244,
 
     }
 
@@ -314,8 +337,8 @@ public class Res2DTemplate : XmlLoadManager
         }
     }
 
-    public static string GetResPath( Res p_ui_enum ){
-        int t_id = (int)p_ui_enum;
+    public static string GetResPath( int p_ui_id ){
+		int t_id = p_ui_id;
 
         for (int i = 0; i < m_templates.Count; i++)
         {
@@ -327,10 +350,14 @@ public class Res2DTemplate : XmlLoadManager
             }
         }
 
-        Debug.LogError("XML ERROR: Can't get UITemplate with UIs: " + t_id +
-                        "   UIs: " + p_ui_enum);
+        Debug.LogError("XML ERROR: Can't get UITemplate with UIs: " + t_id );
 
         return "";
     }
 
+	public static string GetResPath( Res p_ui_enum ){
+		int t_id = (int)p_ui_enum;
+
+		return GetResPath( t_id );
+	}
 }

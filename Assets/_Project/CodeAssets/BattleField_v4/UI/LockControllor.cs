@@ -63,11 +63,11 @@ public class LockControllor : MonoBehaviour
 		_instance = null;
 	}
 
-	public void refreshLock (LOCK_TYPE lockType, bool targetActive) 
+	public void refreshLock (LOCK_TYPE lockType, bool targetActive, bool showLabel = true) 
 	{
-		BattleWeapon bw = BattleUIControlor.Instance ().m_changeWeapon;
+		BattleWeapon bw = BattleUIControlor.Instance().m_changeWeapon;
 
-		if (controllor == null) controllor = BattleUIControlor.Instance ();
+		if (controllor == null) controllor = BattleUIControlor.Instance();
 
 		if(lockType == LOCK_TYPE.Attack)
 		{
@@ -80,6 +80,8 @@ public class LockControllor : MonoBehaviour
 			bw.spriteHeavySkill_1.setWeaponUnlock(targetActive);
 
 			bw.spriteHeavySkill_2.setWeaponUnlock(targetActive);
+
+			bw.labelHeavy.SetActive(targetActive);
 		}
 		else if(lockType == LOCK_TYPE.WeaponLight) 
 		{
@@ -88,6 +90,8 @@ public class LockControllor : MonoBehaviour
 			bw.spriteLightSkill_1.setWeaponUnlock(targetActive);
 
 			bw.spriteLightSkill_2.setWeaponUnlock(targetActive);
+
+			bw.labelLight.SetActive(targetActive);
 		}
 		else if(lockType == LOCK_TYPE.WeaponRange) 
 		{
@@ -96,6 +100,15 @@ public class LockControllor : MonoBehaviour
 			bw.spriteRangeSkill_1.setWeaponUnlock(targetActive);
 
 			bw.spriteRangeSkill_2.setWeaponUnlock(targetActive);
+
+			if(targetActive == false)
+			{
+				UILabel label = lockWeaponRange.GetComponentInChildren<UILabel>();
+				
+				if(label != null) label.gameObject.SetActive(showLabel);
+			}
+
+			bw.labelRange.SetActive(targetActive);
 		}
 		else if(lockType == LOCK_TYPE.HeavySkill_1)
 		{
@@ -136,6 +149,34 @@ public class LockControllor : MonoBehaviour
 		else if(lockType == LOCK_TYPE.MiBaoSkill)
 		{
 			refreshLock(lockMiBaoSkill, controllor.btnMibaoSkill, targetActive);
+
+			if(targetActive == true && BattleControlor.Instance().getKing() != null)
+			{
+				float nuqi = BattleControlor.Instance().getKing().nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
+
+				float nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX);
+
+				if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
+				{
+					nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
+				}
+
+				if(nuqi == nuqiMax)
+				{
+					UI3DEffectTool.ShowTopLayerEffect(
+						UI3DEffectTool.UIType.FunctionUI_1, 
+						BattleUIControlor.Instance().btnMibaoSkill,
+						EffectIdTemplate.GetPathByeffectId(100189) );
+				}
+			}
+
+			if(targetActive == false)
+			{
+				UILabel label = lockMiBaoSkill.GetComponentInChildren<UILabel>();
+
+				if(label != null) label.gameObject.SetActive(showLabel);
+			}
+
 		}
 		else if(lockType == LOCK_TYPE.Dodge)
 		{

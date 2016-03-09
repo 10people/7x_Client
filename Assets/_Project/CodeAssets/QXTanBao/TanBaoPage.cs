@@ -15,7 +15,6 @@ public class TanBaoPage : MonoBehaviour {
 	private ExploreInfoResp tanBaoResp;
 
 	public List<EventHandler> tbBtnHandlerList = new List<EventHandler> ();
-	private Dictionary<string,EventHandler> tbBtnDic = new Dictionary<string, EventHandler> ();
 
 	public List<UILabel> labelList = new List<UILabel> ();
 	private Dictionary<string,UILabel> labelDic = new Dictionary<string, UILabel> ();
@@ -36,6 +35,9 @@ public class TanBaoPage : MonoBehaviour {
 	public GameObject kdRedObj;
 	public GameObject kjRedObj;
 
+	public GameObject kdTenBtnObj;
+	public GameObject kjTenBtnObj;
+
 	private int kdCdTime;
 	private int kjCdTime;
 
@@ -44,6 +46,9 @@ public class TanBaoPage : MonoBehaviour {
 	public GameObject anchorTopRight;
 
 	private bool isOpenFirst = true;
+
+	private string tenFunctionDes;
+	private bool isTenTimesOpen = false;
 
 	void Awake ()
 	{
@@ -75,16 +80,6 @@ public class TanBaoPage : MonoBehaviour {
 			isOpenFirst = false;
 		}
 
-		if (tbBtnDic.Count == 0)
-		{
-			foreach (EventHandler handler in tbBtnHandlerList)
-			{
-				tbBtnDic.Add (handler.name,handler);
-				handler.m_handler -= TBBtnHandlerCallBack;
-				handler.m_handler += TBBtnHandlerCallBack;
-			}
-		}
-
 		if (labelDic.Count == 0)
 		{
 			for (int i = 0;i < labelList.Count;i ++)
@@ -96,12 +91,35 @@ public class TanBaoPage : MonoBehaviour {
 		labelDic ["Kd_Spend"].text = TanBaoCost (costDic ["KdSpend"]).ToString ();
 		labelDic ["Kj_Spend"].text = TanBaoCost (costDic ["KjSpend"]).ToString ();
 
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100160,1);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100160,2);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100257,1);
 
 		InItKuangDong ();
 		InItKuangJing ();
 
+		tenFunctionDes = FunctionOpenTemp.GetTemplateById (1103).m_sNotOpenTips;
+
+		TenTimesBtn (kdTenBtnObj);
+		TenTimesBtn (kjTenBtnObj);
+
 		CheckTBRed ();
+
+		foreach (EventHandler handler in tbBtnHandlerList)
+		{
+			handler.m_click_handler -= TBBtnHandlerCallBack;
+			handler.m_click_handler += TBBtnHandlerCallBack;
+		}
+	}
+
+	void TenTimesBtn (GameObject obj)
+	{
+		isTenTimesOpen = FunctionOpenTemp.IsHaveID (1103);
+
+		UIWidget[] widgets = obj.GetComponentsInChildren<UIWidget> ();
+		foreach (UIWidget widget in widgets)
+		{
+			widget.color = isTenTimesOpen ? Color.white : Color.grey;
+		}
 	}
 
 	/// <summary>
@@ -128,6 +146,8 @@ public class TanBaoPage : MonoBehaviour {
 			labelDic["Kd_Des"].text = "本日免费次数已用完";
 			labelDic["Kd_Single"].text = TanBaoCost (costDic["KdSingle"]);
 		}
+
+
 	}
 
 	IEnumerator KuangDongCd ()
@@ -136,7 +156,7 @@ public class TanBaoPage : MonoBehaviour {
 		{
 			kdCdTime --;
 
-			labelDic["Kd_Des"].text = QXComData.TimeFormat (kdCdTime) + "后免费";
+			labelDic["Kd_Des"].text = TimeHelper.GetUniformedTimeString (kdCdTime) + "后免费";
 
 			yield return new WaitForSeconds (1);
 
@@ -171,8 +191,8 @@ public class TanBaoPage : MonoBehaviour {
 		while (kjCdTime > 0)
 		{
 			kjCdTime --;
-			
-			labelDic["Kj_Des"].text = QXComData.TimeFormat (kjCdTime) + "后免费";
+
+			labelDic["Kj_Des"].text = TimeHelper.GetUniformedTimeString (kjCdTime) + "后免费";
 
 			yield return new WaitForSeconds (1);
 
@@ -206,7 +226,7 @@ public class TanBaoPage : MonoBehaviour {
 			
 			break;
 		case TanBaoData.TanBaoType.YUANBAO_SINGLE:
-			Debug.Log ("tempResp.info.cd:" + tempResp.info.cd);
+//			Debug.Log ("tempResp.info.cd:" + tempResp.info.cd);
 			tanBaoResp.yuanBao = tempResp.info.money;
 			tanBaoResp.yuanBaoCd = tempResp.info.cd;
 			InItKuangJing ();
@@ -230,11 +250,12 @@ public class TanBaoPage : MonoBehaviour {
 	private string TanBaoCost (int tempCostId)
 	{
 		PurchaseTemplate purchase = PurchaseTemplate.GetPurchaseTempById (tempCostId);
-		return purchase.price.ToString ();
+		return MyColorData.getColorString (1,purchase.price.ToString ());
 	}
 
 	void TBBtnHandlerCallBack (GameObject obj)
 	{
+		UIYindao.m_UIYindao.CloseUI ();
 		switch (obj.name)
 		{
 		case "KDSingleBtn":
@@ -246,7 +267,14 @@ public class TanBaoPage : MonoBehaviour {
 		case "KDSpendBtn":
 
 			TBReward.tbReward.BlockController (true,0.1f);
-			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.TONGBI_SPEND);
+			if (isTenTimesOpen)
+			{
+				TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.TONGBI_SPEND);
+			}
+			else
+			{
+				QXComData.CreateBox (1,tenFunctionDes,true,TanBaoData.Instance.TanBaoRespCallBack,true);
+			}
 
 			break;
 		case "KJSingleBtn":
@@ -258,12 +286,17 @@ public class TanBaoPage : MonoBehaviour {
 		case "KJSpendBtn":
 
 			TBReward.tbReward.BlockController (true,0.1f);
-			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.YUANBAO_SPEND);
+			if (isTenTimesOpen)
+			{
+				TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.YUANBAO_SPEND);
+			}
+			else
+			{
+				QXComData.CreateBox (1,tenFunctionDes,true,TanBaoData.Instance.TanBaoRespCallBack,true);
+			}
 
 			break;
 		case "CloseBtn":
-
-			UIYindao.m_UIYindao.CloseUI ();
 
 			sEffectController.OnCloseWindowClick ();
 			sEffectController.CloseCompleteDelegate += CloseTanBao;
@@ -271,12 +304,19 @@ public class TanBaoPage : MonoBehaviour {
 			break;
 		case "RulesBtn":
 
-			GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.TANBAO_HELP_DESC));
+			TBReward.tbReward.BlockController (true,0.1f);
+			GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.TANBAO_HELP_DESC),ActiveGuide);
 
 			break;
 		default:
 			break;
 		}
+	}
+
+	void ActiveGuide ()
+	{
+		TBReward.tbReward.BlockController (false);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,4);
 	}
 
 	/// <summary>
@@ -360,7 +400,8 @@ public class TanBaoPage : MonoBehaviour {
 		kdRedObj.SetActive (tongBiRed);
 		kjRedObj.SetActive (yuanBaoRed);
 
-		PushAndNotificationHelper.SetRedSpotNotification (1101,tongBiRed || yuanBaoRed ? true : false);//1102
+		PushAndNotificationHelper.SetRedSpotNotification (1101,tongBiRed ? true : false);//1102
+		PushAndNotificationHelper.SetRedSpotNotification (1102,yuanBaoRed ? true : false);//1102
 	}
 
 	public void CloseTanBao ()

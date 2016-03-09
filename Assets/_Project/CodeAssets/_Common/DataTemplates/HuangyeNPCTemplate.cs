@@ -34,8 +34,15 @@ public class HuangyeNPCTemplate : XmlLoadManager {
 
 	public string icon;
 
-	public int level;
+	public int level;//boCi="3" ifTeammate="0" lifebarNum="1" modelApID="10121080" />
 
+	public int boCi;
+
+	public int ifTeammate;
+
+	public int lifebarNum;
+
+	public int modelApID;
 	private static List<HuangyeNPCTemplate> templates = new List<HuangyeNPCTemplate>();
 
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
@@ -121,6 +128,18 @@ public class HuangyeNPCTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.level = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.boCi = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ifTeammate = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.lifebarNum = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.modelApID = int.Parse( t_reader.Value );
 			
 			}
 			
@@ -183,7 +202,7 @@ public class HuangyeNPCTemplate : XmlLoadManager {
 		{
 			HuangyeNPCTemplate t_item = templates[ i ];
 			
-			if( t_item.npcId == npc_id ){
+			if( t_item.npcId == npc_id && t_item.ifTeammate != 1&&t_item.icon != "0"){
 				
 				temps.Add(t_item);
 			}

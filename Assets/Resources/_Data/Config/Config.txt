@@ -2,13 +2,14 @@
 -------------------------------------------------------------------- <Version Config>
 // show version code and lag
 ShowVersion:		true
-
-Version:0118-1454
 ------------------------------------------------------------------- </Version Config>
 
 
 
 ---------------------------------------------------------------------- <Debug Config>
+// screen log
+ShowScreenLog:				false
+
 // control center
 ShowConsole:				false
 
@@ -94,7 +95,7 @@ SocketCheckTime:			10.0
 SocketPingTime:				3.0
 
 // Time Out Limit
-SocketTimeOut:				15.0
+SocketTimeOut:				10.0
 
 // emulate network latency
 // NEVER USE THIS, after lock updated
@@ -139,3 +140,4 @@ LogQuality:					false
 -------------------------------------------------------------------- <Bundle Config>
 CleanEditorCache:			false
 ------------------------------------------------------------------- </Bundle Config>
+

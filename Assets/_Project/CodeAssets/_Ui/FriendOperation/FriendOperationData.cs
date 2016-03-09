@@ -140,7 +140,7 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
 							}
 							case AddFriendType.BaiZhan:
 							{
-								PvpPage.pvpPage.RefreshOpponentFriendState ();
+								BaiZhanPage.baiZhanPage.RefreshOpponentFriendState ();
 								break;
 							}
 							case AddFriendType.Email:

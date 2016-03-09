@@ -9,8 +9,13 @@ public class LabelColorTool : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		UILabel label = gameObject.GetComponent<UILabel>();
+		InItLabelColor ();
+	}
 
+	public void InItLabelColor ()
+	{
+		UILabel label = gameObject.GetComponent<UILabel>();
+		
 		if( label != null ){
 			label.color = Global.getStringColor( MyColorData.getColor( m_ColorID ) );
 			
@@ -19,7 +24,7 @@ public class LabelColorTool : MonoBehaviour {
 			}
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 	

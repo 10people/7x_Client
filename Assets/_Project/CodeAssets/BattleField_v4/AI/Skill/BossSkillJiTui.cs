@@ -13,7 +13,7 @@ public class BossSkillJiTui : HeroSkill
 	public override bool castSkill()
 	{
 		List<BaseAI> nodeList = node.stance == BaseAI.Stance.STANCE_ENEMY ? 
-			BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes; 
+			BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes; 
 
 		foreach(BaseAI t_node in nodeList)
 		{
@@ -31,7 +31,7 @@ public class BossSkillJiTui : HeroSkill
 	public override void activeSkill(int state)
 	{
 		List<BaseAI> nodeList = node.stance == BaseAI.Stance.STANCE_ENEMY ? 
-			BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes; 
+			BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes; 
 
 		Vector3 tempFow = transform.forward;
 

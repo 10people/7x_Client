@@ -121,7 +121,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		
 		t_protof = saodangstream.ToArray();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_YOUXIA_SAO_DANG_REQ,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_YOUXIA_SAO_DANG_REQ,ref t_protof);
 
 	}
 	public   bool OnProcessSocketMessage(QXBuffer p_message){
@@ -187,7 +187,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 					obj_EnterBattleBtn.SetActive(false);
 				}
 
-				Debug.Log("扫荡接收完毕。。。。");
+				//Debug.Log("扫荡接收完毕。。。。");
 
 				return true;
 			}
@@ -206,9 +206,9 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 
 		All_Num.text = myouxia.maxNum.ToString ();
 
-		Debug.Log ("是否可以扫荡 = "+mtempInfo.saoDang);
-		Debug.Log ("剩余次数 = "+m_You_XiaInfo.remainTimes );
-		Debug.Log ("倒计时 = "+mtempInfo.time );
+//		Debug.Log ("是否可以扫荡 = "+mtempInfo.saoDang);
+//		Debug.Log ("剩余次数 = "+m_You_XiaInfo.remainTimes );
+//		Debug.Log ("倒计时 = "+mtempInfo.time );
 
 	}
 
@@ -248,7 +248,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		CreateAward ();
 		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
 		{
-			Debug.Log("进入试练二阶界面333");
+		//	Debug.Log("进入试练二阶界面333");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
 			//mScorview.enabled = false;
@@ -272,7 +272,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		
 		t_protof = YouXiaGuanQiaInfoReqtream.ToArray();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_YOUXIA_GUANQIA_REQ,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_YOUXIA_GUANQIA_REQ,ref t_protof);
 		
 		Difficult.text = StrDifficult;
 		
@@ -284,11 +284,11 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		
 		Instruction.text = mDesc;
 
-		Debug.Log ("m_You_XiaInfo.zuheId = "+m_You_XiaInfo.zuheId);
+		//Debug.Log ("m_You_XiaInfo.zuheId = "+m_You_XiaInfo.zuheId);
 
 		ShowMiBaoSkillIcon ();
 
-		if(!MiBaoGlobleData.Instance ().GetEnterChangeMiBaoSkill_Oder ())
+		if(!MiBaoGlobleData.Instance().GetEnterChangeMiBaoSkill_Oder ())
 		{
 			ChangeMiBaoSKillBtn.SetActive(false);
 		}
@@ -314,7 +314,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	}
 	public void EnterBattleBtn()
 	{
-		Debug.Log ("big_id = "+big_id +"l_id%10 = " +l_id%10);
+		//Debug.Log ("big_id = "+big_id +"l_id%10 = " +l_id%10);
 		if(m_You_XiaInfo.remainTimes == 1)
 		{
 			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
@@ -356,95 +356,95 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	private int NpcId;
 	private void CreateEnemy()
 	{
-		foreach(GameObject con in mHerosIcon)
-		{
-			Destroy(con);
-			
-		}
-		mHerosIcon.Clear ();
-		
-		soldires.Clear();
-		heros.Clear();
-		Bosses.Clear();
-		Zhi_Ye.Clear();
-
-		EnemyNumBers = 4;
-
-		YouxiaPveTemplate mYouxiaPveTemplate = YouxiaPveTemplate.getYouXiaPveTemplateById (l_id);
-		 
-		List<YouXiaNpcTemplate> mYouXiaNpcTemplateList = YouXiaNpcTemplate.GetYouXiaNpcTemplates_By_npcid(mYouxiaPveTemplate.npcId);
-
-		Debug.Log ("l_id = " +l_id);
-
-		NpcId = mYouxiaPveTemplate.npcId;
-
-		Debug.Log ("mYouxiaPveTemplate.npcId = " +mYouxiaPveTemplate.npcId);
-
-		Debug.Log ("mYouXiaNpcTemplateList.conut = " +mYouXiaNpcTemplateList.Count);
-
-		foreach(YouXiaNpcTemplate mYouXiaNpcTemplate in mYouXiaNpcTemplateList)
-		{
-			int icn = int.Parse(mYouXiaNpcTemplate.icon);
-
-			if(mYouXiaNpcTemplate.type == 4&& !Bosses.Contains(mYouXiaNpcTemplate.EnemyId) && icn != 0) // boss
-			{
-				Bosses.Add(mYouXiaNpcTemplate.id);
-			}
-
-			if(mYouXiaNpcTemplate.type == 3&& !heros.Contains(mYouXiaNpcTemplate.id)&& icn != 0) // hero
-			{
-
-				heros.Add(mYouXiaNpcTemplate.id);
-				
-			}
-			
-			if(mYouXiaNpcTemplate.type == 2&& !soldires.Contains(mYouXiaNpcTemplate.id)&& icn != 0) // Solider
-			{
-				
-				soldires.Add(mYouXiaNpcTemplate.id);
-				
-			}
-		}
-	
-		for (int i = 0; i < soldires.Count-1; i ++)
-		{
-			
-			YouXiaNpcTemplate m_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (soldires [i],NpcId);
-			
-			for(int j = i+1; j < soldires.Count; )
-			{
-				YouXiaNpcTemplate j_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (soldires [j],NpcId);
-
-				if(m_YouXiaNpcTemplate.profession == j_YouXiaNpcTemplate.profession)
-				{
-					soldires.RemoveAt(j);
-				}
-				else{
-					j ++;
-				}
-			}
-			
-		}
-				
-		for (int i = 0; i < heros.Count-1; i ++)
-		{
-			//Debug.Log("heros[i] = "+heros[i]);
-			YouXiaNpcTemplate m_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (heros [i],NpcId);
-			
-			for(int j = i+1; j < heros.Count; )
-			{
-				YouXiaNpcTemplate j_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (heros [j],NpcId);
-
-				if(m_YouXiaNpcTemplate.profession == j_YouXiaNpcTemplate.profession)
-				{
-					heros.RemoveAt(j);
-				}
-				else{
-					j ++;
-				}
-			}
-		
-		}
+//		foreach(GameObject con in mHerosIcon)
+//		{
+//			Destroy(con);
+//			
+//		}
+//		mHerosIcon.Clear ();
+//		
+//		soldires.Clear();
+//		heros.Clear();
+//		Bosses.Clear();
+//		Zhi_Ye.Clear();
+//
+//		EnemyNumBers = 4;
+//
+//		YouxiaPveTemplate mYouxiaPveTemplate = YouxiaPveTemplate.getYouXiaPveTemplateById (l_id);
+//		 
+//		List<YouXiaNpcTemplate> mYouXiaNpcTemplateList = YouXiaNpcTemplate.GetYouXiaNpcTemplates_By_npcid(mYouxiaPveTemplate.npcId);
+//
+//		Debug.Log ("l_id = " +l_id);
+//
+//		NpcId = mYouxiaPveTemplate.npcId;
+//
+//		Debug.Log ("mYouxiaPveTemplate.npcId = " +mYouxiaPveTemplate.npcId);
+//
+//		Debug.Log ("mYouXiaNpcTemplateList.conut = " +mYouXiaNpcTemplateList.Count);
+//
+//		foreach(YouXiaNpcTemplate mYouXiaNpcTemplate in mYouXiaNpcTemplateList)
+//		{
+//			int icn = int.Parse(mYouXiaNpcTemplate.icon);
+//
+//			if(mYouXiaNpcTemplate.type == 4&& !Bosses.Contains(mYouXiaNpcTemplate.EnemyId) && icn != 0) // boss
+//			{
+//				Bosses.Add(mYouXiaNpcTemplate.id);
+//			}
+//
+//			if(mYouXiaNpcTemplate.type == 3&& !heros.Contains(mYouXiaNpcTemplate.id)&& icn != 0) // hero
+//			{
+//
+//				heros.Add(mYouXiaNpcTemplate.id);
+//				
+//			}
+//			
+//			if(mYouXiaNpcTemplate.type == 2&& !soldires.Contains(mYouXiaNpcTemplate.id)&& icn != 0) // Solider
+//			{
+//				
+//				soldires.Add(mYouXiaNpcTemplate.id);
+//				
+//			}
+//		}
+//	
+//		for (int i = 0; i < soldires.Count-1; i ++)
+//		{
+//			
+//			YouXiaNpcTemplate m_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (soldires [i],NpcId);
+//			
+//			for(int j = i+1; j < soldires.Count; )
+//			{
+//				YouXiaNpcTemplate j_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (soldires [j],NpcId);
+//
+//				if(m_YouXiaNpcTemplate.profession == j_YouXiaNpcTemplate.profession)
+//				{
+//					soldires.RemoveAt(j);
+//				}
+//				else{
+//					j ++;
+//				}
+//			}
+//			
+//		}
+//				
+//		for (int i = 0; i < heros.Count-1; i ++)
+//		{
+//			//Debug.Log("heros[i] = "+heros[i]);
+//			YouXiaNpcTemplate m_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (heros [i],NpcId);
+//			
+//			for(int j = i+1; j < heros.Count; )
+//			{
+//				YouXiaNpcTemplate j_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (heros [j],NpcId);
+//
+//				if(m_YouXiaNpcTemplate.profession == j_YouXiaNpcTemplate.profession)
+//				{
+//					heros.RemoveAt(j);
+//				}
+//				else{
+//					j ++;
+//				}
+//			}
+//		
+//		}
 
 		getEnemyData();
 	}
@@ -457,9 +457,9 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 		int heronum = heros.Count;
 		int solder = soldires.Count;
 		
-		Debug.Log ("boss个数：" + bossnum);
-		Debug.Log ("hero个数：" + heronum);
-		Debug.Log ("soldier个数：" + solder);
+//		Debug.Log ("boss个数：" + bossnum);
+//		Debug.Log ("hero个数：" + heronum);
+//		Debug.Log ("soldier个数：" + solder);
 		
 		if (bossnum > 0)//BOSS个数不为0
 		{
@@ -571,50 +571,50 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	
 	private void OnCreateBossCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-		
-		for (int n = 0; n < createBossPara; n++)
-		{
-			
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-
-			mHerosIcon.Add(iconSampleObject);
-
-			iconSampleObject.SetActive (true);
-
-			iconSampleObject.transform.parent = EnemyRoot;
-
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, 0, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, 0, 0);
-			}
-
-				//EnemyNameid = LegendNpcTemplate.GetEnemyNameId_By_EnemyId(Bosses[n]);
-				
-			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(Bosses[n],NpcId);
-				
-		    NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
-		    var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
-		    var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
-			
-		    string leftTopSpriteName = null;
-			var rightButtomSpriteName = "boss";
-			
-			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-		    iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
-			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-	
-		}
+//		if (IconSamplePrefab == null)
+//		{
+//			IconSamplePrefab = p_object as GameObject;
+//		}
+//		
+//		for (int n = 0; n < createBossPara; n++)
+//		{
+//			
+//			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
+//
+//			mHerosIcon.Add(iconSampleObject);
+//
+//			iconSampleObject.SetActive (true);
+//
+//			iconSampleObject.transform.parent = EnemyRoot;
+//
+//			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+//			
+//			if (allenemy >= EnemyNumBers)
+//			{
+//				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, 0, 0);
+//			}
+//			else
+//			{
+//				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, 0, 0);
+//			}
+//
+//				//EnemyNameid = LegendNpcTemplate.GetEnemyNameId_By_EnemyId(Bosses[n]);
+//				
+//			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(Bosses[n],NpcId);
+//				
+//		    NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
+//		    var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
+//		    var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
+//			
+//		    string leftTopSpriteName = null;
+//			var rightButtomSpriteName = "boss";
+//			
+//			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
+//		    iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
+//			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
+//			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+//	
+//		}
 	}
 	
 	private int createBossPara;
@@ -641,44 +641,44 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	
 	private void OnCreateHeroCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-		
-		for (int n = 0; n < createHeroPara; n++)
-		{
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			mHerosIcon.Add(iconSampleObject);
-			iconSampleObject.SetActive (true);
-			iconSampleObject.transform.parent = EnemyRoot;
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - Bosses.Count - n) * distance - countDistance, 0, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - Bosses.Count - n) * distance - countDistance, 0, 0);
-			}
-			
-			Debug.Log("eros[n] = " +heros[n]);
-			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(heros[n],NpcId);
-			
-			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
-			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
-			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
-			
-			string leftTopSpriteName = null;
-			var rightButtomSpriteName = "";
-			Debug.Log("mYouXiaNpcTemplate.icon.ToString() = " +mYouXiaNpcTemplate.icon.ToString());
-			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-			iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
-			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			
-		}
+//		if (IconSamplePrefab == null)
+//		{
+//			IconSamplePrefab = p_object as GameObject;
+//		}
+//		
+//		for (int n = 0; n < createHeroPara; n++)
+//		{
+//			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
+//			mHerosIcon.Add(iconSampleObject);
+//			iconSampleObject.SetActive (true);
+//			iconSampleObject.transform.parent = EnemyRoot;
+//			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+//			
+//			if (allenemy >= EnemyNumBers)
+//			{
+//				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - Bosses.Count - n) * distance - countDistance, 0, 0);
+//			}
+//			else
+//			{
+//				iconSampleObject.transform.localPosition = new Vector3((allenemy - Bosses.Count - n) * distance - countDistance, 0, 0);
+//			}
+//			
+//			Debug.Log("eros[n] = " +heros[n]);
+//			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(heros[n],NpcId);
+//			
+//			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
+//			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
+//			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
+//			
+//			string leftTopSpriteName = null;
+//			var rightButtomSpriteName = "";
+//			Debug.Log("mYouXiaNpcTemplate.icon.ToString() = " +mYouXiaNpcTemplate.icon.ToString());
+//			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
+//			iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
+//			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
+//			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+//			
+//		}
 	}
 	
 	private int createHeroPara;
@@ -700,52 +700,52 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	
 	private void OnCreateSoldierCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-		
-		for (int n = 0; n < createSoldierPara; n++)
-		{
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-
-			mHerosIcon.Add(iconSampleObject);
-			
-			iconSampleObject.SetActive (true);
-
-			iconSampleObject.transform.parent = EnemyRoot;
-
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, 0, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, 0, 0);
-			}
-			iconSampleObject.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
-			
-			int EnemyNameid = 0;
-
-			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(soldires[n],NpcId);
-			
-			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
-			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
-			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
-			
-			string leftTopSpriteName = null;
-			var rightButtomSpriteName = "";
-
-			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-			iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
-			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			
-		}
+//		if (IconSamplePrefab == null)
+//		{
+//			IconSamplePrefab = p_object as GameObject;
+//		}
+//		
+//		for (int n = 0; n < createSoldierPara; n++)
+//		{
+//			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
+//
+//			mHerosIcon.Add(iconSampleObject);
+//			
+//			iconSampleObject.SetActive (true);
+//
+//			iconSampleObject.transform.parent = EnemyRoot;
+//
+//			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+//			
+//			if (allenemy >= EnemyNumBers)
+//			{
+//				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - (Bosses.Count + heros.Count)
+//				                                                        - n) * distance - countDistance, 0, 0);
+//			}
+//			else
+//			{
+//				iconSampleObject.transform.localPosition = new Vector3((allenemy - (Bosses.Count + heros.Count)
+//				                                                        - n) * distance - countDistance, 0, 0);
+//			}
+//			iconSampleObject.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
+//			
+//			int EnemyNameid = 0;
+//
+//			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(soldires[n],NpcId);
+//			
+//			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
+//			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
+//			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
+//			
+//			string leftTopSpriteName = null;
+//			var rightButtomSpriteName = "";
+//
+//			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
+//			iconSampleManager.SetIconBasic(10, mYouXiaNpcTemplate.icon.ToString());
+//			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
+//			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+//			
+//		}
 	}
 	
 	private int createSoldierPara;
@@ -824,7 +824,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	{
 		int pos = 0;
 		
-		Debug.Log("numPara = " +numPara);
+		//Debug.Log("numPara = " +numPara);
 		
 		for (int n = 0; n < numPara; n++)
 		{

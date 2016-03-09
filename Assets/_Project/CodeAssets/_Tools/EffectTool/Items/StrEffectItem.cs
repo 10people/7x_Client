@@ -8,6 +8,15 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2016.2.2
+ * @since:		Unity 5.1.3
+ * Function:	QuanMinWuSHuang's XiaHou Skill, a large sprite on his head.
+ * 
+ * Notes:
+ * None.
+ */ 
 public class StrEffectItem : MonoBehaviour {
 
 	private const float m_scale_time = 0.2f;
@@ -334,7 +343,7 @@ public class StrEffectItem : MonoBehaviour {
 			{
 				t_ef_gb.transform.parent = GameObjectHelper.GetTempGameObjectsRoot().transform;
 				
-				t_ef_gb.AddComponent<DevelopUtility.DevelopAnimationCallback>();
+				t_ef_gb.AddComponent<DevelopAnimationCallback>();
 			}
 
 			StrEffectItem t_eff = t_ef_gb.AddComponent<StrEffectItem>();

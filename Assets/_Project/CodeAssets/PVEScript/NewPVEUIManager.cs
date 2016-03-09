@@ -8,24 +8,32 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
+	public GameObject NoMiBaoSkill;
+
+	public GameObject mChangemibaobtn;
+
+	public UILabel SaodangConditions;
+
+	public GameObject SaodangBtns;
+
 	public static NewPVEUIManager mNewPVEUIManager;
 
 	[HideInInspector]public Level mLevel;
 
 	public  GuanQiaInfo GuanqiaReq;
 
-	public UILabel mTiLi;
-	
-	public UILabel mTongBi;
-	
-	public UILabel mYuanBao;
-
 	public PveSaoDangRet saodinfo;
-
+	public List<MiBaoSkillTips> mMibaoTips = new List<MiBaoSkillTips> ();
+	public MiBaoSkillTips mMiBaoSkillTips;
 	public NGUILongPress EnergyDetailLongPress1;
-	public NGUILongPress EnergyDetailLongPress2;
-	public NGUILongPress EnergyDetailLongPress3;
-	public static NewPVEUIManager Instance ()
+
+	public GameObject LingQuBtn;
+	[HideInInspector]public GameObject OpenBxo;
+	public GameObject XingJiJianglIUI;
+	public SparkleEffectItem mSparkleEffectItem;
+	public GameObject OnStrongBtn;
+	[HideInInspector]public bool YinDaoOpen = false;
+	public static NewPVEUIManager Instance()
 	{
 		if (!mNewPVEUIManager)
 		{
@@ -40,16 +48,6 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		EnergyDetailLongPress1.NormalPressTriggerWhenLongPress = false;
 		EnergyDetailLongPress1.OnLongPressFinish = OnCloseDetail;
 		EnergyDetailLongPress1.OnLongPress = OnEnergyDetailClick1;
-
-		EnergyDetailLongPress2.LongTriggerType = NGUILongPress.TriggerType.Press;
-		EnergyDetailLongPress2.NormalPressTriggerWhenLongPress = false;
-		EnergyDetailLongPress2.OnLongPressFinish = OnCloseDetail;
-		EnergyDetailLongPress2.OnLongPress = OnEnergyDetailClick2;
-
-		EnergyDetailLongPress3.LongTriggerType = NGUILongPress.TriggerType.Press;
-		EnergyDetailLongPress3.NormalPressTriggerWhenLongPress = false;
-		EnergyDetailLongPress3.OnLongPressFinish = OnCloseDetail;
-		EnergyDetailLongPress3.OnLongPress = OnEnergyDetailClick3;
 		SocketTool.RegisterMessageProcessor(this);
 	}
 	void OnDestroy()
@@ -66,12 +64,12 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	}
 	public void OnEnergyDetailClick1(GameObject go)//显示体力恢复提示
 	{
-
-		int Star_Id = mLevel.starInfo [0].starId;
-		string[] Awardlist = PveStarTemplate.GetAwardInfo (Star_Id);
-		int awardid = int.Parse(Awardlist[1]);
-
-		ShowTip.showTip (awardid);
+		int mibaoid = GuanqiaReq.zuheId;
+		if(mibaoid<=0)
+		{
+			return;
+		}
+		ShowTip.showTip (mibaoid);
 	}
 	public void OnEnergyDetailClick2(GameObject go)//显示体力恢复提示
 	{
@@ -91,11 +89,6 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	}
 	void Update () {
 	
-		mTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tili.ToString();
-		
-		mTongBi.text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString();
-		
-		mYuanBao.text = JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString();
 	}
 	#region fulfil my ngui panel
 	
@@ -142,13 +135,35 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	{
 		
 	}
-	
 	#endregion
+	public void OPenBox()
+	{
+		if(OpenBxo == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.PVE_SAO_DANG ),OpenLockLoadBack);
+		}
+
+	}
+	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
+	{
+		OpenBxo = ( GameObject )Instantiate( p_object );
+		
+		OpenBxo.transform.parent = XingJiJianglIUI.transform;
+		
+		OpenBxo.transform.localPosition = Vector3.zero;
+		
+		OpenBxo.transform.localScale  = Vector3.one;
+
+		PveStarAward mPveStarAward = OpenBxo.GetComponent<PveStarAward> ();
+		mPveStarAward.mLevel = mLevel;
+		mPveStarAward.Init ();
+	}
+
 	public void Init()
 	{
 		InitStarUI ();
 		sendLevelDrop ();
-		InItEnemyList (mLevel.type);
+		InItEnemyList ();
 		GetAward (mLevel.type);
 
 		if( ConfigTool.GetBool(ConfigTool.CONST_QUICK_CHOOSE_LEVEL))
@@ -158,6 +173,15 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		else
 		{
 			TestBtn.SetActive(false);
+		}
+//		Debug.Log ("FunctionOpenTemp.GetWhetherContainID(3000010) = "+FunctionOpenTemp.GetWhetherContainID(3000010));
+		if(!FunctionOpenTemp.GetWhetherContainID(3000010))
+		{
+			SaodangBtns.SetActive(false);
+		}
+		else
+		{
+			SaodangBtns.SetActive(true);
 		}
 	}
 	public void  sendLevelDrop()
@@ -214,7 +238,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				
 				saodinfo = tempInfo;
 				
-				Debug.Log("请求扫荡是数据返回了。。。");
+			//	Debug.Log("请求扫荡是数据返回了。。。");
 		
 				if(UIYindao.m_UIYindao.m_isOpenYindao)
 				{
@@ -229,7 +253,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			case ProtoIndexes.S_PVE_Reset_CQ:
 			{
 				sendLevelDrop();
-				Debug.Log("重置成功了。。。");
+			
 				return true;
 			}
 			case ProtoIndexes.PVE_STAR_REWARD_GET_RET: 
@@ -241,30 +265,68 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				PveStarGetSuccess tempInfo = new PveStarGetSuccess();
 				
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-				
+					Debug.Log("领奖返回。。。");
+				LingQuBtn.SetActive(false);
 				if (tempInfo != null)
 				{
-					foreach(StarInfo  m_item in mLevel.starInfo )
+					if(CityGlobalData.PT_Or_CQ)
 					{
-						if(m_item.starId == tempInfo.s_starNum)
+						foreach(StarInfo  m_item in mLevel.starInfo )
 						{
-							string[] Awardlist = PveStarTemplate.GetAwardInfo (tempInfo.s_starNum);
-							
-							PveStarTemplate mPveStarTemplate = PveStarTemplate.getPveStarTemplateByStarId (tempInfo.s_starNum);
-						
-							CommonItemTemplate mCom = CommonItemTemplate.getCommonItemTemplateById (int.Parse(Awardlist[1]));
-							
-							int Awardsnum = int.Parse(Awardlist[2]);
-
-							int Award_id = mCom.icon;
-
-							RewardData data = new RewardData ( Award_id, Awardsnum); 
-
-							GeneralRewardManager.Instance ().CreateReward (data); 
-							
-							break;
+							if(m_item.starId == tempInfo.s_starNum)
+							{
+								string[] Awardlist = PveStarTemplate.GetAwardInfo (tempInfo.s_starNum);
+								
+								PveStarTemplate mPveStarTemplate = PveStarTemplate.getPveStarTemplateByStarId (tempInfo.s_starNum);
+								
+								CommonItemTemplate mCom = CommonItemTemplate.getCommonItemTemplateById (int.Parse(Awardlist[1]));
+								
+								int Awardsnum = int.Parse(Awardlist[2]);
+								
+								int Award_id = mCom.id;
+								
+								RewardData data = new RewardData ( Award_id, Awardsnum); 
+								
+								GeneralRewardManager.Instance().CreateReward (data); 
+								
+								break;
+							}
 						}
 					}
+					else
+					{
+						foreach(StarInfo  m_item in mLevel.cqStarInfo )
+						{
+							if(m_item.starId == tempInfo.s_starNum)
+							{
+								string[] Awardlist = PveStarTemplate.GetAwardInfo (tempInfo.s_starNum);
+								
+								PveStarTemplate mPveStarTemplate = PveStarTemplate.getPveStarTemplateByStarId (tempInfo.s_starNum);
+								
+								CommonItemTemplate mCom = CommonItemTemplate.getCommonItemTemplateById (int.Parse(Awardlist[1]));
+								
+								int Awardsnum = int.Parse(Awardlist[2]);
+								
+								int Award_id = mCom.id;
+								
+								RewardData data = new RewardData ( Award_id, Awardsnum); 
+								
+								GeneralRewardManager.Instance().CreateReward (data); 
+								
+								break;
+							}
+						}
+					}
+
+					foreach(BoxBtn m_Box in mBoxBtnList)
+					{
+						if(m_Box.Star_Id == tempInfo.s_starNum)
+						{
+							m_Box.IsLingQu = 3;
+							m_Box.Init();
+						}
+					}
+					//sendLevelDrop();
 					foreach(Pve_Level_Info m_Lv in MapData.mapinstance.Pve_Level_InfoList )
 					{
 						if(m_Lv.litter_Lv.guanQiaId == tempInfo.guanQiaId)
@@ -274,8 +336,12 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 								if(m_Lv.litter_Lv.starInfo[j].starId == tempInfo.s_starNum)
 								{
 									m_Lv.litter_Lv.starInfo[j].getRewardState = true;
-									
-									m_Lv.ShowBox();
+									bool jingying = false ;
+									if(CityGlobalData.PT_Or_CQ)
+									{
+										jingying = true;
+									}
+									m_Lv.ShowBox(jingying);
 									
 									break;
 								}
@@ -357,12 +423,26 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	{
 		if(GuanqiaReq.zuheId <= 0)
 		{
+			if(!MiBaoGlobleData.Instance().GetMiBaoskillOpen())
+			{
+				mSparkleEffectItem.enabled = false ;
+				NoMiBaoSkill.SetActive(true);
+				mChangemibaobtn.SetActive(false);
+			}
+			else
+			{
+				NoMiBaoSkill.SetActive(false);
+				mSparkleEffectItem.enabled = true ;
+				mChangemibaobtn.SetActive(true);
+			}
+			MiBaoIcon.gameObject.SetActive(false);
 			MiBaoIcon.spriteName = "";
 		}
 		else
 		{
+			MiBaoIcon.gameObject.SetActive(true);
 			MiBaoSkillTemp mMiBaoSkill  = MiBaoSkillTemp.getMiBaoSkillTempBy_id(GuanqiaReq.zuheId);
-			
+			mSparkleEffectItem.enabled = false ;
 			MiBaoIcon.spriteName = mMiBaoSkill.icon.ToString();
 		}
 	}
@@ -379,7 +459,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	public UILabel my_Zhanli;
 	public UILabel[] Conditions;
 	public UISprite recMibaoSkill;
-	public GameObject[] DisAble_Boxs;
+	//public GameObject[] DisAble_Boxs;
 	public GameObject[] Active_Boxs;
 	public UISprite WinType;
 
@@ -394,6 +474,14 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
 	public GameObject BtnRoot;
 
+	public UISprite saodang1sprite;
+	public UISprite saodang10sprite;
+	public UISprite saodangsprite;
+
+	public UILabel saodang1UILabel;
+	public UILabel saodang10UILabel;
+	public UILabel saodangUILabel;
+
 	public GameObject Saodang1;
 
 	public GameObject  Saodang10;
@@ -403,29 +491,12 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
 	public void InitStarUI()
 	{
-		PveTempTemplate m_item = PveTempTemplate.GetPveTemplate_By_id (mLevel.guanQiaId);
-		
-		string M_Name = NameIdTemplate.GetName_By_NameId(m_item.smaName);
-
-		LevelWanFa.text = m_item.wanfaType;
-		IntroZHanLi.text = m_item.recZhanli.ToString ();
-		my_Zhanli.text = JunZhuData.Instance ().m_junzhuInfo.zhanLi.ToString ();
-
-		string []s = M_Name.Split(' ');
-		if(s.Length > 1)
-		{
-			LevelName.text = "[b]"+s[1];
-		}
-		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
-	
-		desLabel.text = descStr;
-	
-		recMibaoSkill.spriteName = m_item.recMibaoSkill.ToString ();
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 
 		switch (mLevel.type)
 		{
 		case 0:
-			
+			LingQuBtn.SetActive(false);
 			Putong();
 			break;
 		case 1:
@@ -433,62 +504,133 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			break;
 		case 2:
 			Chuanqi();
-			
 			break;
 			
 		default:break;
 		}
+		ColsePVEGuid ();
 		ShowPVEGuid ();
 	}
 	private void Putong()
 	{
+		PveTempTemplate m_item = PveTempTemplate.GetPveTemplate_By_id (mLevel.guanQiaId);
+		
+		string M_Name = NameIdTemplate.GetName_By_NameId(m_item.smaName);
+		
+		LevelWanFa.text = m_item.wanfaType;
+		IntroZHanLi.text = m_item.recZhanli.ToString ();
+		if(JunZhuData.Instance().m_junzhuInfo.zhanLi < m_item.recZhanli )
+		{
+			OnStrongBtn.SetActive(true);
+			my_Zhanli.text = MyColorData.getColorString(5, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
+		}
+		else
+		{
+			OnStrongBtn.SetActive(false);
+			my_Zhanli.text = MyColorData.getColorString(4, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
+		}
+		
+		//		Debug.Log ("M_Name = "+M_Name);
+		
+		string []s = M_Name.Split(' ');
+		if(s.Length > 1)
+		{
+			LevelName.text = "[b]"+s[1];
+		}
+		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
+		
+		desLabel.text = descStr;
+		string TuiJiAnMiBAo = m_item.recMibaoSkill;
+		string []mstr = TuiJiAnMiBAo.Split(',');
+		for (int i = 0; i < mstr.Length; i++)
+		{
+//			Debug.Log("mstr [i] = "+mstr[i]);
+			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
+			mobg.SetActive(true);
+			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
+			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
+			mobg.transform.localScale = Vector3.one;
+			if(mstr[i] != ""&&mstr[i] != null)
+			{
+				mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
+				mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
+
+			}
+			mobg.GetComponent<MiBaoSkillTips>().Init();
+		}
+
 		notCrossIcon.SetActive (false);
 		BtnRoot.SetActive (false);
 		LevelTypeLabel.text = "[b]普通关卡";
 		int count = 3;
 		for(int i = 0; i< count; i++)
 		{
-			Conditions[i].text = "无星级条件";
-			DisAble_Boxs[i].SetActive(false);
+			starSpriteList[i].enabled = false;
+			if(i == 1)
+			{
+				Conditions[i].text = "普通关无星级奖励";
+			}
+			else{
+				Conditions[i].text = "";
+			}
+			//DisAble_Boxs[i].SetActive(false);
 			Active_Boxs[i].SetActive(false);
 		}
 	}
 	private void JingYIng()
 	{
+		PveTempTemplate m_item = PveTempTemplate.GetPveTemplate_By_id (mLevel.guanQiaId);
+		
+		string M_Name = NameIdTemplate.GetName_By_NameId(m_item.smaName);
+		
+		LevelWanFa.text = m_item.wanfaType;
+		IntroZHanLi.text = m_item.recZhanli.ToString ();
+		if(JunZhuData.Instance().m_junzhuInfo.zhanLi < m_item.recZhanli )
+		{
+			OnStrongBtn.SetActive(true);
+			my_Zhanli.text = MyColorData.getColorString(5, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
+		}
+		else
+		{
+			OnStrongBtn.SetActive(false);
+			my_Zhanli.text = MyColorData.getColorString(4, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
+		}
+		
+		//		Debug.Log ("M_Name = "+M_Name);
+		
+		string []s = M_Name.Split(' ');
+		if(s.Length > 1)
+		{
+			LevelName.text = "[b]"+s[1];
+		}
+		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
+		
+		desLabel.text = descStr;
+		string TuiJiAnMiBAo = m_item.recMibaoSkill;
+		string []mstr = TuiJiAnMiBAo.Split(',');
+		for (int i = 0; i < mstr.Length; i++)
+		{
+			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
+			mobg.SetActive(true);
+			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
+			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
+			mobg.transform.localScale = Vector3.one;
+			if(mstr[i] != ""&&mstr[i] != null)
+			{
+				mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
+				mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
+				
+			}
+			mobg.GetComponent<MiBaoSkillTips>().Init();
+		}
+
 		BtnRoot.SetActive (true);
 		Saodang1.SetActive (true);
 		Saodang10.SetActive (true);
 		Saodang.SetActive (false);
 	
 		LevelTypeLabel.text = "[b]精英关卡";
-		int count = mLevel.starInfo.Count;
-		if(count > 3 )
-		{
-			count = 3;
-		}
-		for(int i = 0; i< count; i++)
-		{
-			int Star_Id = mLevel.starInfo [i].starId;
-			
-			PveStarTemplate mPveStarTemplate = PveStarTemplate.getPveStarTemplateByStarId (Star_Id);
-			
-			string mDes = DescIdTemplate.GetDescriptionById (mPveStarTemplate.desc);
-			
-			Conditions[i].text = mDes;
-			if(mLevel.starInfo [i].finished)
-			{
-				starSpriteList[i].spriteName = "BigStar";
-				if(!mLevel.starInfo [i].getRewardState)
-				{
-					Active_Boxs[i].SetActive(true);
-					BoxBtn mBoxBtn = Active_Boxs[i].GetComponent<BoxBtn>();
-					mBoxBtn.m_Lev = mLevel;
-					mBoxBtn.Star_Id = mLevel.starInfo [i].starId;
-				}
-				DisAble_Boxs[i].SetActive(true);
-			}
-
-		}
+		RefreshStar ();
 		if(mLevel.s_pass)
 		{
 			notCrossIcon.SetActive (true);
@@ -511,21 +653,95 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			notCrossIcon.SetActive (false);
 		}
 	}
+	List<BoxBtn> mBoxBtnList = new List<BoxBtn>();
+	private void RefreshStar()
+	{
+		int count = mLevel.starInfo.Count;
+		if(count > 3 )
+		{
+			count = 3;
+		}
+		mBoxBtnList.Clear ();
+		LingQuBtn.SetActive(false);
+		int starsnum = 0;
+		for(int i = 0; i< count; i++)
+		{
+			int Star_Id = mLevel.starInfo [i].starId;
+			
+			PveStarTemplate mPveStarTemplate = PveStarTemplate.getPveStarTemplateByStarId (Star_Id);
+			
+			string mDes = DescIdTemplate.GetDescriptionById (mPveStarTemplate.desc);
+			
+			//Conditions[i].text = mDes;
+			BoxBtn mBoxBtn = Active_Boxs[i].GetComponent<BoxBtn>();
+			mBoxBtn.m_Lev = mLevel;
+			mBoxBtn.Star_Id = mLevel.starInfo [i].starId;
+			if(mLevel.starInfo [i].finished)
+			{
+				starsnum += 1;
+				Conditions[i].text = MyColorData.getColorString(4,mDes);
+				starSpriteList[i].spriteName = "BigStar";
+				
+				if(!mLevel.starInfo [i].getRewardState)
+				{
+					mBoxBtn.IsLingQu = 2;
+					LingQuBtn.SetActive(true);
+				}
+				else
+				{
+					mBoxBtn.IsLingQu = 3;
+				}
+			}
+			else
+			{
+				Conditions[i].text = MyColorData.getColorString(8,mDes);
+				mBoxBtn.IsLingQu = 1;
+			}
+			mBoxBtn.Init();
+			mBoxBtnList.Add(mBoxBtn);
+		}
+		if (starsnum >= 3) {
+			saodang1sprite.color = new Color(255,255,255,255);
+			saodang10sprite.color = new Color(255,255,255,255);
+			Saodang1.GetComponent<UIButton>().enabled = true;
+			Saodang10.GetComponent<UIButton>().enabled = true;
+			SaodangConditions.gameObject.SetActive (false);
+		} else {
+
+			Saodang1.GetComponent<UIButton>().enabled = false;
+			Saodang10.GetComponent<UIButton>().enabled = false;
+			SaodangConditions.gameObject.SetActive (true);
+			saodang1sprite.color = new Color(0,0,0,255);
+			saodang10sprite.color = new Color(0,0,0,255);
+			saodang1UILabel.GetComponent<UILabelType>().m_iType = 100;
+			saodang1UILabel.GetComponent<UILabelType>().init();
+			saodang10UILabel.GetComponent<UILabelType>().m_iType = 100;
+			saodang10UILabel.GetComponent<UILabelType>().init();
+		}
+	}
+
 	private void Chuanqi()
 	{
 		BtnRoot.SetActive (true);
 		Saodang1.SetActive (false);
 		Saodang10.SetActive (false);
 		Saodang.SetActive (true);
-
+		ChuanQi_RefreshStar ();
 		LevelTypeLabel.text = "[b]传奇关卡";
-		int count = 3;
-		for(int i = 0; i< count; i++)
-		{
-			Conditions[i].text = "无星级条件";
-			DisAble_Boxs[i].SetActive(false);
-			Active_Boxs[i].SetActive(false);
-		}
+//		int count = 3;
+//		for(int i = 0; i< count; i++)
+//		{
+//			starSpriteList[i].enabled = false;
+//			if(i == 1)
+//			{
+//				Conditions[i].text = "传奇关无星级奖励";
+//			}
+//			else{
+//				Conditions[i].text = "";
+//			}
+//			//DisAble_Boxs[i].SetActive(false);
+//			Active_Boxs[i].SetActive(false);
+//		}
 		if(mLevel.chuanQiPass)
 		{
 			notCrossIcon.SetActive (true);
@@ -546,6 +762,118 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		else
 		{
 			notCrossIcon.SetActive (false);
+		}
+		LegendPveTemplate m_item = LegendPveTemplate.GetlegendPveTemplate_By_id (mLevel.guanQiaId);
+		
+		string M_Name = NameIdTemplate.GetName_By_NameId(m_item.smaName);
+		
+		LevelWanFa.text = m_item.wanfaType;
+		IntroZHanLi.text = m_item.recZhanli.ToString ();
+		if(JunZhuData.Instance().m_junzhuInfo.zhanLi < m_item.recZhanli )
+		{
+			OnStrongBtn.SetActive(true);
+			my_Zhanli.text = MyColorData.getColorString(5, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
+		}
+		else
+		{
+			OnStrongBtn.SetActive(false);
+			my_Zhanli.text = MyColorData.getColorString(4, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
+		}
+		
+		//		Debug.Log ("M_Name = "+M_Name);
+		
+		string []s = M_Name.Split(' ');
+		if(s.Length > 1)
+		{
+			LevelName.text = "[b]"+s[1];
+		}
+		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
+		
+		desLabel.text = descStr;
+		string TuiJiAnMiBAo = m_item.recMibaoSkill;
+		string []mstr = TuiJiAnMiBAo.Split(',');
+		for (int i = 0; i < mstr.Length; i++)
+		{
+			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
+			mobg.SetActive(true);
+			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
+			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
+			mobg.transform.localScale = Vector3.one;
+			if(mstr[i] != ""&&mstr[i] != null)
+			{
+				mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
+				mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
+				
+			}
+			mobg.GetComponent<MiBaoSkillTips>().Init();
+		}
+		
+		recMibaoSkill.spriteName = m_item.recMibaoSkill;
+	}
+	/// <summary>
+	/// Chuans the qi_ refresh star.
+	/// </summary>
+	private void ChuanQi_RefreshStar()
+	{
+		int count = mLevel.cqStarInfo.Count;
+	//	Debug.Log("mmLevel.cqStarInfo.Count = "+mLevel.cqStarInfo.Count);
+		if(count > 3 )
+		{
+			count = 3;
+		}
+		mBoxBtnList.Clear ();
+		LingQuBtn.SetActive(false);
+		int starsnum = 0;
+		for(int i = 0; i< count; i++)
+		{
+			int Star_Id = mLevel.cqStarInfo [i].starId;
+			
+			PveStarTemplate mPveStarTemplate = PveStarTemplate.getPveStarTemplateByStarId (Star_Id);
+			
+			string mDes = DescIdTemplate.GetDescriptionById (mPveStarTemplate.desc);
+			
+			//Conditions[i].text = mDes;
+			BoxBtn mBoxBtn = Active_Boxs[i].GetComponent<BoxBtn>();
+			mBoxBtn.m_Lev = mLevel;
+			mBoxBtn.Star_Id = mLevel.cqStarInfo [i].starId;
+		//	Debug.Log("mLevel.cqStarInfo [i].finished = "+mLevel.cqStarInfo [i].finished);
+			if(mLevel.cqStarInfo [i].finished)
+			{
+				starsnum += 1;
+				Conditions[i].text = MyColorData.getColorString(4,mDes);
+				starSpriteList[i].spriteName = "BigStar";
+				//Debug.Log("mLevel.cqStarInfo [i].getRewardState = "+mLevel.cqStarInfo [i].getRewardState);
+				if(!mLevel.cqStarInfo [i].getRewardState)
+				{
+					mBoxBtn.IsLingQu = 2;
+					LingQuBtn.SetActive(true);
+				}
+				else
+				{
+					mBoxBtn.IsLingQu = 3;
+				}
+			}
+			else
+			{
+				Conditions[i].text = MyColorData.getColorString(8,mDes);
+				mBoxBtn.IsLingQu = 1;
+			}
+			mBoxBtn.Init();
+			mBoxBtnList.Add(mBoxBtn);
+		}
+		//Debug.Log("starsnum = "+starsnum);
+		if (starsnum >= 3) {
+			saodangsprite.color = new Color(255,255,255,255);
+			Saodang.GetComponent<UIButton>().enabled = true;
+			SaodangConditions.gameObject.SetActive (false);
+		} else {
+		//	Debug.Log("starsnum = "+starsnum);
+			Saodang.GetComponent<UIButton>().enabled = false;
+			SaodangConditions.gameObject.SetActive (true);
+			saodangsprite.color = new Color(0,0,0,255);
+
+			saodangUILabel.GetComponent<UILabelType>().m_iType = 100;
+			saodangUILabel.GetComponent<UILabelType>().init();
 		}
 	}
 
@@ -609,12 +937,13 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		int  my_tempSection = MapData.mapinstance.myMapinfo.s_section;
 		
 		int a = mLevel.guanQiaId;
-		
+
 		int my_tempLevel = a%10;
-		
+
 		CityGlobalData.m_tempSection = my_tempSection;
 		
 		CityGlobalData.m_tempLevel = my_tempLevel;
+
 		Global.m_isOpenPVP = true;
 
 //		Debug.Log ("my_tempSection = "+my_tempSection);
@@ -651,7 +980,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-		string str = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_DESC);
+		string str = "V特权等级不足，V特权等级提升到4级即可重置关卡挑战次数。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";//LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_DESC);
 		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
 		uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,btnStr,null,null);
@@ -784,6 +1113,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			//			Debug.Log("进入PVE 第一个任务 1-1");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100020];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			YinDaoOpen = true;
 			return;
 		}
 		if(FreshGuide.Instance().IsActive(100030)&& TaskData.Instance.m_TaskInfoDic[100030].progress >= 0)
@@ -791,6 +1121,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			//			Debug.Log("进入PVE 第一个任务 1-2");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100030];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			YinDaoOpen = true;
 			return;
 		}
 		
@@ -799,14 +1130,23 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			//			Debug.Log("进入PVE 第一个任务 1-3");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100050];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			YinDaoOpen = true;
 			return;
 		}
-		
+		if(FreshGuide.Instance().IsActive(100055)&& TaskData.Instance.m_TaskInfoDic[100055].progress >= 0)
+		{
+//			Debug.Log("点击box领奖励");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100055];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			YinDaoOpen = true;
+			return;
+		}
 		if(FreshGuide.Instance().IsActive(100080)&& TaskData.Instance.m_TaskInfoDic[100080].progress >= 0)
 		{
 			//			Debug.Log("进入PVE 第一个任务 1-4");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100080];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			YinDaoOpen = true;
 			return;
 		}
 		if(FreshGuide.Instance().IsActive(100090)&& TaskData.Instance.m_TaskInfoDic[100090].progress >= 0)
@@ -814,6 +1154,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			//			Debug.Log("进入PVE 第一个任务 1-5");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100090];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			YinDaoOpen = true;
 			return;
 		}
 		
@@ -822,11 +1163,13 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			//			Debug.Log("进入PVE 第一个任务 1-6");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100120];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			YinDaoOpen = true;
 			return;
 		}
 		if(FreshGuide.Instance().IsActive(100130)&& TaskData.Instance.m_TaskInfoDic[100130].progress >= 0)
 		{
 			//			Debug.Log("进入PVE 第一个任务 1-7");
+			YinDaoOpen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100130];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			return;
@@ -834,11 +1177,31 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		if(FreshGuide.Instance().IsActive(100320)&& TaskData.Instance.m_TaskInfoDic[100320].progress >= 0)
 		{
 			//			Debug.Log("攻打传奇关卡");
+			YinDaoOpen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100320];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
 		
 			return;
 		}
+		if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
+		{
+			//	Debug.Log("切换秘技)
+			YinDaoOpen = true;
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+
+			return;
+		}
+		if(FreshGuide.Instance().IsActive(100405)&& TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
+		{
+			//	Debug.Log("扫荡引导)
+			YinDaoOpen = true;
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100405];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
+			
+			return;
+		}
+		YinDaoOpen = false;
 	}
 	/// <summary>
 	/// Ins it enemy list.
@@ -862,540 +1225,14 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
 	public GameObject EnemyRoot;
 	public GameObject AwardRoot;
-	public void InItEnemyList(int leveType)
+	public void InItEnemyList()
 	{
-		foreach(GameObject con in mHerosIcon)
-		{
-			Destroy(con);
-			
-		}
-		mHerosIcon.Clear ();
+
+		UICreateEnemy mUIcreate = EnemyRoot.GetComponent<UICreateEnemy>();
 		
-		soldires.Clear();
-		heros.Clear();
-		Bosses.Clear();
-		Zhi_Ye.Clear();
-//		if (leveType == 0)
-//		{
-//			EnemyNumBers = 6;
-//		}
-//		
-//		else if (leveType == 1 || leveType == 2)
-//		{
-//			EnemyNumBers = 4;
-//		}
-		EnemyNumBers = 4;
-		//Debug.Log ("GetPveTempID.CurLev = "+GetPveTempID.CurLev);
-		if(!CityGlobalData.PT_Or_CQ)
-		{
-			LegendPveTemplate L_pvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(Pve_Level_Info.CurLev);
-			
-			int npcid = L_pvetemp.npcId;
-			
-			List<LegendNpcTemplate> mLegendNpcTemplateList = LegendNpcTemplate.GetLegendNpcTemplates_By_npcid(npcid);
-			//Debug.Log("npcid t = " +npcid);
-			foreach(LegendNpcTemplate mLegendNpcTemplate in mLegendNpcTemplateList)
-			{
-				int icn = int.Parse(mLegendNpcTemplate.icon);
-				
-				if(icn != 0 && mLegendNpcTemplate.type == 4&& !Bosses.Contains(mLegendNpcTemplate.EnemyId)) // boss
-				{
-					Bosses.Add(mLegendNpcTemplate.id);
-				}
-				if(icn != 0 && mLegendNpcTemplate.type == 3&& !heros.Contains(mLegendNpcTemplate.id)) // hero
-				{				
-					heros.Add(mLegendNpcTemplate.id);
-				}
-				if(icn != 0 && mLegendNpcTemplate.type == 2&& !soldires.Contains(mLegendNpcTemplate.id)) // Solider
-				{
-					soldires.Add(mLegendNpcTemplate.id);
-				}
-			}
-			
-			for (int i = 0; i < soldires.Count-1; i ++)
-			{
-				
-				LegendNpcTemplate m_LegendNpcTemplate = LegendNpcTemplate.GetLegendNpcTemplate_By_id (soldires [i]);
-				
-				for(int j = i+1; j < soldires.Count; )
-				{
-					LegendNpcTemplate j_LegendNpcTemplate = LegendNpcTemplate.GetLegendNpcTemplate_By_id (soldires [j]);
-					if(m_LegendNpcTemplate.profession == j_LegendNpcTemplate.profession)
-					{
-						
-						soldires.RemoveAt(j);
-					}
-					else{
-						j ++;
-					}
-				}
-				
-			}
-			
-			for (int i = 0; i < heros.Count-1; i ++)
-			{
-				//Debug.Log("heros[i] = "+heros[i]);
-				LegendNpcTemplate m_LegendNpcTemplate = LegendNpcTemplate.GetLegendNpcTemplate_By_id (heros [i]);
-				
-				for(int j = i+1; j < heros.Count; )
-				{
-					LegendNpcTemplate j_LegendNpcTemplate = LegendNpcTemplate.GetLegendNpcTemplate_By_id (heros [j]);
-					if(m_LegendNpcTemplate.profession == j_LegendNpcTemplate.profession)
-					{
-						
-						heros.RemoveAt(j);
-					}
-					else{
-						j ++;
-					}
-				}
-				
-			}
-			//GetPveEnemyId = LegendNpcTemplate.GetEnemyId_By_npcid(npcid);
-		}
-		else
-		{
-			PveTempTemplate pvetemp = PveTempTemplate.GetPveTemplate_By_id(Pve_Level_Info.CurLev);
-			
-			int npcid = pvetemp.npcId;
-			//Debug.Log("npcid  = " +npcid);
-			//Debug.Log("npcid = " +npcid);
-			List<NpcTemplate> mNpcTemplateList = NpcTemplate.GetNpcTemplates_By_npcid(npcid);
-			
-			//Debug.Log("mNpcTemplateList.count = "+mNpcTemplateList.Count);
-			
-			foreach(NpcTemplate mNpcTemplate in mNpcTemplateList)
-			{
-				int icn = int.Parse(mNpcTemplate.icon);
-				if(icn != 0&&mNpcTemplate.type == 4&& !Bosses.Contains(mNpcTemplate.id)) // boss
-				{
-					Bosses.Add(mNpcTemplate.id);
-				}	
-				if(icn != 0 && mNpcTemplate.type == 3&& !heros.Contains(mNpcTemplate.id)) // hero
-				{
-					heros.Add(mNpcTemplate.id);
-				}
-				if(icn != 0 && mNpcTemplate.type == 2&& !soldires.Contains(mNpcTemplate.id)) // Solider
-				{
-					soldires.Add(mNpcTemplate.id);
-					
-				}
-			}
-			for (int i = 0; i < soldires.Count-1; i ++)
-			{
-				
-				NpcTemplate m_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id (soldires [i]);
-				
-				for(int j = i+1; j < soldires.Count; )
-				{
-					NpcTemplate j_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id (soldires [j]);
-					if(m_NpcTemplate.profession == j_NpcTemplate.profession)
-					{
-						
-						soldires.RemoveAt(j);
-					}
-					else{
-						j ++;
-					}
-				}
-				
-			}
-			
-			
-			for (int i = 0; i < heros.Count-1; i ++)
-			{
-				//Debug.Log("heros[i] = "+heros[i]);
-				NpcTemplate m_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id (heros [i]);
-				
-				for(int j = i+1; j < heros.Count; )
-				{
-					NpcTemplate j_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id (heros [j]);
-					if(m_NpcTemplate.profession == j_NpcTemplate.profession)
-					{
-						heros.Remove(heros [j]);
-					}else
-					{
-						j ++;
-					}
-				}
-				
-			}
-			
-		}
-		
-		
-		getEnemyData();
+		mUIcreate.InItEnemyList(mLevel.guanQiaId);
 	}
-	
-	void getEnemyData()
-	{
-		//List<string> EyName = new List<string>(GetPveTempID.NewEnemy.Keys);
-		
-		int bossnum = Bosses.Count;
-		int heronum = heros.Count;
-		int solder = soldires.Count;
-		
-		//Debug.Log ("boss个数：" + bossnum);
-		//Debug.Log ("hero个数：" + heronum);
-		//Debug.Log ("soldier个数：" + solder);
-		
-		if (bossnum > 0)//BOSS个数不为0
-		{
-			if (bossnum < EnemyNumBers)//boss不大于大于6个
-			{
-				if (heronum > 0)//w武将个数大于0
-				{
-					if (heronum + bossnum < EnemyNumBers)//w武将和bpss的总个数小于6
-					{
-						if (solder > 0)
-						{
-							if (heronum + bossnum + solder > EnemyNumBers)
-							{
-								createBoss(bossnum);
-								createHeros(heronum);
-								createSoliders(EnemyNumBers - (bossnum + heronum));
-							}
-							else
-							{
-								createBoss(bossnum);
-								createHeros(heronum);
-								createSoliders(solder);
-							}
-						}
-						else
-						{
-							createBoss(bossnum);
-							createHeros(heronum);
-						}
-					}
-					else
-					{//boss和武将的和大于6了 只创建6个
-						createBoss(bossnum);
-						createHeros(EnemyNumBers - bossnum);
-					}
-				}
-				else
-				{
-					//ww武将为0
-					if (solder > 0)
-					{
-						if (solder + bossnum > EnemyNumBers)
-						{
-							createBoss(bossnum);
-							createSoliders(EnemyNumBers - bossnum);
-						}
-						else
-						{
-							createBoss(bossnum);
-							createSoliders(solder);
-						}
-					}
-					else
-					{
-						createBoss(bossnum);
-					}
-				}
-			}
-			else
-			{
-				//boss的个数大于6
-				createBoss(EnemyNumBers);
-			}
-		}
-		else
-		{
-			//假如boss的个数为0000000000
-			if (heronum > 0)//w武将个数大于0
-			{
-				if (heronum < EnemyNumBers)//w武将和bpss的总个数小于6
-				{
-					if (solder > 0)
-					{
-						if (heronum + solder <= EnemyNumBers)
-						{
-							createHeros(heronum);
-							createSoliders(solder);
-						}
-						else
-						{
-							createHeros(heronum);
-							createSoliders(EnemyNumBers - heronum);
-						}
-					}
-					else
-					{
-						createHeros(heronum);
-					}
-				}
-				else
-				{
-					createHeros(EnemyNumBers);
-				}
-			}
-			else
-			{
-				if (solder > EnemyNumBers)
-				{
-					createSoliders(EnemyNumBers);
-				}
-				else
-				{
-					createSoliders(solder);
-				}
-			}
-		}
-		//this.gameObject.GetComponent<UIGrid>().repositionNow = true;
-	}
-	
-	private void OnCreateBossCallBack(ref WWW p_www, string p_path, Object p_object)
-	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-		
-		for (int n = 0; n < createBossPara; n++)
-		{
-			
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			mHerosIcon.Add(iconSampleObject);
-			iconSampleObject.SetActive (true);
-			iconSampleObject.transform.parent = EnemyRoot.transform;
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
-			}
-			
-			if(!CityGlobalData.PT_Or_CQ)
-			{
-				//EnemyNameid = LegendNpcTemplate.GetEnemyNameId_By_EnemyId(Bosses[n]);
-				
-				LegendNpcTemplate mLeGendNpcTemp = LegendNpcTemplate.GetLegendNpcTemplate_By_id(Bosses[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mLeGendNpcTemp.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mLeGendNpcTemp.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mLeGendNpcTemp.desc).description;
-				
-				string leftTopSpriteName = null;
-				
-				var rightButtomSpriteName = "boss";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(3, mLeGendNpcTemp.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			}
-			else{
-				
-				NpcTemplate mNpcTemplate = NpcTemplate.GetNpcTemplate_By_id(Bosses[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mNpcTemplate.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mNpcTemplate.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mNpcTemplate.desc).description;
-				
-				string leftTopSpriteName = null;
-				
-				var rightButtomSpriteName = "boss";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(3, mNpcTemplate.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-				
-			}
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
-		}
-	}
-	
-	private int createBossPara;
-	
-	private int allenemy
-	{
-		get { return Bosses.Count + heros.Count + soldires.Count; }
-	}
-	
-	void createBoss(int i)
-	{
-		createBossPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateBossCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnCreateBossCallBack(ref temp, null, IconSamplePrefab);
-		}
-	}
-	
-	private void OnCreateHeroCallBack(ref WWW p_www, string p_path, Object p_object)
-	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-		
-		for (int n = 0; n < createHeroPara; n++)
-		{
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			mHerosIcon.Add(iconSampleObject);
-			iconSampleObject.SetActive (true);
-			iconSampleObject.transform.parent = EnemyRoot.transform;
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - Bosses.Count - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - Bosses.Count - n) * distance - countDistance, -20, 0);
-			}
-			
-			if(!CityGlobalData.PT_Or_CQ)
-			{
-				
-				LegendNpcTemplate mLeGendNpcTemp = LegendNpcTemplate.GetLegendNpcTemplate_By_id(heros[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mLeGendNpcTemp.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mLeGendNpcTemp.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mLeGendNpcTemp.desc).description;
-				
-				string leftTopSpriteName = null;
-				var rightButtomSpriteName = "";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(3, mLeGendNpcTemp.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			}
-			else{
-				NpcTemplate mNpcTemplate = NpcTemplate.GetNpcTemplate_By_id(heros[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mNpcTemplate.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mNpcTemplate.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mNpcTemplate.desc).description;
-				
-				string leftTopSpriteName = null;
-				var rightButtomSpriteName = "";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(3, mNpcTemplate.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-				
-			}
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
-		}
-	}
-	
-	private int createHeroPara;
-	
-	void createHeros(int i)
-	{
-		createHeroPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateHeroCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnCreateHeroCallBack(ref temp, null, IconSamplePrefab);
-		}
-	}
-	
-	private void OnCreateSoldierCallBack(ref WWW p_www, string p_path, Object p_object)
-	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-		
-		for (int n = 0; n < createSoldierPara; n++)
-		{
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			mHerosIcon.Add(iconSampleObject);
-			
-			iconSampleObject.SetActive (true);
-			iconSampleObject.transform.parent = EnemyRoot.transform;
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, -20, 0);
-			}
-			iconSampleObject.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
-			
-			int EnemyNameid = 0;
-			
-			if(!CityGlobalData.PT_Or_CQ)
-			{
-				LegendNpcTemplate mLeGendNpcTemp = LegendNpcTemplate.GetLegendNpcTemplate_By_id(soldires[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mLeGendNpcTemp.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mLeGendNpcTemp.level.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mLeGendNpcTemp.desc).description;
-				
-				string leftTopSpriteName = null;
-				var rightButtomSpriteName = "";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(3, mLeGendNpcTemp.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			}
-			else{
-				
-				NpcTemplate mNpcTemplate = NpcTemplate.GetNpcTemplate_By_id(soldires[n]);
-				
-				NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mNpcTemplate.EnemyName);
-				var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mNpcTemplate.level.ToString();;
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mNpcTemplate.desc).description;
-				
-				string leftTopSpriteName = null;
-				var rightButtomSpriteName = "";
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-				iconSampleManager.SetIconBasic(3, mNpcTemplate.icon.ToString());
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-				iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-				
-			}
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
-		}
-	}
-	
-	private int createSoldierPara;
-	
-	void createSoliders(int i)
-	{
-		createSoldierPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateSoldierCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnCreateSoldierCallBack(ref temp, null, IconSamplePrefab);
-		}
-	}
+
 	/// <summary>
 	/// CreateAward
 	/// </summary>
@@ -1703,11 +1540,13 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	/// </summary>
 	public void SaoDangBtn(int Times)
 	{
+
 		if(mLevel.type == 1)
 		{
 			if(!mLevel.s_pass||mLevel.win_Level !=3)
 			{
-				string data = "完胜通关后，才能扫荡！";
+				//血量剩余≥60%可完胜
+				string data = "完胜[c40000](血量剩余≥60%可完胜)[-]通关后，才能扫荡！";
 				ClientMain.m_UITextManager.createText( data);
 				return;
 			}
@@ -1722,17 +1561,23 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			}
 		}else
 		{
+			if(tiaoZhanNum <= 0)
+			{
+				ReSettingLv();
+				
+				return;
+			}
 			if(!mLevel.chuanQiPass||mLevel.pingJia !=3)
 			{
-				string data = "完胜通关后，才能扫荡！";
+				string data = "完胜[c40000](血量剩余≥60%可完胜)[-]通关后，才能扫荡！";
 				ClientMain.m_UITextManager.createText( data);
 				return;
 			}
 		}
 
-		Vipgrade = JunZhuData.Instance ().m_junzhuInfo.vipLv;
-		junZhuLevel = JunZhuData.Instance ().m_junzhuInfo.level;
-		ExistingPower = JunZhuData.Instance ().m_junzhuInfo.tili;
+		Vipgrade = JunZhuData.Instance().m_junzhuInfo.vipLv;
+		junZhuLevel = JunZhuData.Instance().m_junzhuInfo.level;
+		ExistingPower = JunZhuData.Instance().m_junzhuInfo.tili;
 		if(!FunctionOpenTemp.GetWhetherContainID(3000010))
 		{
 			string Contain1 = LanguageTemplate.GetText(LanguageTemplate.Text.RENWU_LIMIT);
@@ -1758,7 +1603,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				if(Times>1&&Vipgrade<viplv)
 				{
 					//ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(500000).m_sNotOpenTips);
-					string data = "Vip等级不够！"+viplv.ToString()+"级Vip开启连续扫荡！";
+					string data = LanguageTemplate.GetText(LanguageTemplate.Text.VIPDesc3);
 					ClientMain.m_UITextManager.createText( data);
 				}else{
 					//Debug.Log ("发送扫荡请求。。。");
@@ -1770,7 +1615,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	}
 	void SendSaoDangInfo(int id,int howTimes)
 	{
-		
+		FunctionWindowsCreateManagerment.m_IsSaoDangNow = true;
 		PveSaoDangReq saodanginfo = new PveSaoDangReq ();
 		
 		MemoryStream saodangstream = new MemoryStream ();
@@ -1795,7 +1640,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 		t_protof = saodangstream.ToArray();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_PVE_SAO_DANG,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_PVE_SAO_DANG,ref t_protof);
 		
 	}
 	/// <summary>
@@ -1844,10 +1689,34 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 //	{
 //		GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCEINSTRCDUTION)); // 
 //	}
+	public void OnStronger()
+	{
+
+		 MainCityUILT.ShowMainTipWindow();
+		
+		Global.m_isOpenPVP = false;
+
+	}
 	public void CloseUI()
 	{
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+		}
+		MapData.mapinstance.ShowPVEGuid();
 		CityGlobalData.PveLevel_UI_is_OPen = false;
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
+		if(EnterGuoGuanmap.Instance().ShouldOpen_id == 1)
+		{
+			EnterGuoGuanmap.Instance().ShouldOpen_id = 0;
+
+			GameObject map = GameObject.Find("Map(Clone)");
+			if(map)
+			{
+				MainCityUI.TryRemoveFromObjectList (map);
+				Destroy(map);
+			}
+		}
 		Destroy (this.gameObject);
 	}
 	/// <summary>

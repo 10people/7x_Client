@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<FunctionUnlock id="8" funName="[000000]出征[-]" icon="8" funDesc="[2b180a]战斗玩法。包含[-][c40000]过关斩将[-][2b180a]、[-][c40000]百战千军[-][2b180a]、[-][c40000]荒野求生[-][2b180a]等玩法。[-]" rank="1" descID="890010" />
-<FunctionUnlock id="11" funName="[000000]探宝[-]" icon="11" funDesc="[2b180a]可以[-][c40000]随机[-][2b180a]抽取宝物的功能。每隔一段时间可以[-][c40000]免费探宝[-][2b180a]一次。[-]" rank="2" descID="890003" />
-<FunctionUnlock id="6" funName="[000000]秘宝[-]" icon="6" funDesc="[2b180a]每三个一组的传奇宝物，可以提升[-][c40000]战力[-][2b180a]。同组收集两个即可解锁[-][c40000]秘技[-][2b180a]。[-]" rank="3" descID="890002" />
-<FunctionUnlock id="12" funName="[000000]铁匠[-]" icon="12" funDesc="[2b180a]可在铁匠处提升装备的属性，包含[-][c40000]强化[-][2b180a]、[-][c40000]洗练[-][2b180a]、[-][2b180a]等玩法。[-]" rank="4" descID="890007" />
-<FunctionUnlock id="1211" funName="[000000]进阶[-]" icon="1211" funDesc="[c40000]君主界面[-][2b180a]下的二级功能，可以提升[-][c40000]装备属性[-][2b180a]。[-]" rank="5" descID="890009" />
-<FunctionUnlock id="300100" funName="[000000]百战千军[-]" icon="300100" funDesc="[2b180a]PVP单人对战玩法。通过提升[-][c40000]排名[-][2b180a]，可以获取[-][c40000]威望[-][2b180a]奖励。[-]" rank="6" descID="890011" />
-<FunctionUnlock id="3000010" funName="[000000]扫荡[-]" icon="3000010" funDesc="[2b180a]以[-][c40000]完胜通关[-][2b180a]的关卡可以一键重复扫荡。[-]" rank="7" descID="890014" />
-<FunctionUnlock id="106" funName="[000000]每日任务[-]" icon="106" funDesc="[2b180a]每天都可以自由挑战的任务内容，完成任务可以获取[-][c40000]经验奖励[-][2b180a]。[-]" rank="8" descID="890006" />
-<FunctionUnlock id="9" funName="[000000]商铺[-]" icon="9" funDesc="[2b180a]可以使用元宝[-][c40000]购买[-][2b180a]所需的各种物品。[-]" rank="9" descID="890015" />
-<FunctionUnlock id="500010" funName="[000000]符石[-]" icon="500010" funDesc="[2b180a]包含各种战斗相关的属性。获取高级符石可以提升[-][c40000]君主战力[-][2b180a]。[-]" rank="10" descID="890005" />
-<FunctionUnlock id="1210" funName="[000000]洗练[-]" icon="1210" funDesc="[c40000]铁匠功能[-][2b180a]下的二级功能，可以随机提升或降低[-][c40000]装备的属性[-][2b180a]。[-]" rank="11" descID="890008" />
-<FunctionUnlock id="109" funName="[000000]传奇关卡[-]" icon="109" funDesc="[2b180a]过关斩将玩法的[-][c40000]高难度[-][2b180a]模式。可以获取[-][c40000]秘宝碎片[-][2b180a]。[-]" rank="12" descID="890013" />
-<FunctionUnlock id="310" funName="[000000]行镖[-]" icon="310" funDesc="[2b180a]PVP趣味玩法，通过[-][c40000]运镖[-][2b180a]和[-][c40000]劫镖[-][2b180a]可以获取[-][c40000]大量铜币[-][2b180a]。[-]" rank="13" descID="890017" />
-<FunctionUnlock id="500000" funName="[000000]天赋[-]" icon="500000" funDesc="[2b180a]包含各种战斗相关的属性。提升相关天赋可以增强[-][c40000]君主战力[-][2b180a]。[-]" rank="14" descID="890004" />
-<FunctionUnlock id="300" funName="[000000]游侠[-]" icon="300" funDesc="[2b180a]PVE趣味关卡玩法，包含三种挑战模式，获取不同的奖励。[-]" rank="15" descID="890016" />
-<FunctionUnlock id="104" funName="[000000]联盟[-]" icon="104" funDesc="[2b180a]玩家社交公会系统，加入或者创建联盟即可拥有自己的[-][c40000]联盟城[-][2b180a]和[-][c40000]房屋[-][2b180a]。[-]" rank="16" descID="890001" />
-<FunctionUnlock id="400000" funName="[000000]膜拜[-]" icon="400000" funDesc="[c40000]联盟功能[-][2b180a]下的二级功能，通过[-][c40000]膜拜[-][2b180a]可以获取[-][c40000]体力[-][2b180a]和[-][c40000]君主经验[-][2b180a]。[-]" rank="17" descID="890019" />
-<FunctionUnlock id="7" funName="[000000]回家[-]" icon="7" funDesc="[2b180a]加入[-][c40000]联盟[-][2b180a]后凭贡献获得、包含[-][c40000]装修[-][2b180a]、[-][c40000]古卷[-][2b180a]等玩法。[-]" rank="18" descID="890021" />
-<FunctionUnlock id="211" funName="[000000]掠夺[-]" icon="211" funDesc="[2b180a]PVP对战玩法，通过掠夺[-][c40000]贡金[-][2b180a]并向主簿[-][c40000]缴纳贡金[-][2b180a]可以获得奖励。[-]" rank="23" descID="890018" />
-<FunctionUnlock id="500020" funName="[000000]上缴[-]" icon="500020" funDesc="[2b180a]贡金积累到一定数量并向主簿[-][c40000]缴纳贡金[-][2b180a]可以获得奖励。[-]" rank="21" descID="890018" />
-<FunctionUnlock id="300200" funName="[000000]荒野求生[-]" icon="300200" funDesc="[2b180a]PVE联盟关卡挑战玩法。以[-][c40000]联盟[-][2b180a]为单位挑战来赢取[-][c40000]奖励[-][2b180a]。[-]" rank="22" descID="890012" />
+<FunctionUnlock id="300000" funName="剧情玩法，可获得经验、强化材料、装备进阶材料等奖励。" icon="300000" funDesc="[FF0000]与鬼谷子对话[-]" rank="1" descID="890010" />
+<FunctionUnlock id="12" funName="可在铁匠处提升装备的属性，包含强化、洗练功能。" icon="12" funDesc="[FF0000]通关1-3[-]" rank="2" descID="890007" />
+<FunctionUnlock id="140" funName="每日登入游戏后签到，即可轻松领取当日签到奖励。" icon="140" funDesc="[FF0000]通关1-5[-]" rank="3" descID="890026" />
+<FunctionUnlock id="11" funName="可以随机抽取宝物的功能。\n每隔一段时间可以免费探宝一次。" icon="11" funDesc="[FF0000]装备强化至5级[-]" rank="4" descID="890003" />
+<FunctionUnlock id="6" funName="传奇宝物，可以提升迅速战力。\n收集满一定数量即可解锁秘技。" icon="6" funDesc="[FF0000]获得首个秘宝[-]" rank="5" descID="890002" />
+<FunctionUnlock id="144" funName="达成条件即可获得游戏成就，轻松领取丰富奖励。" icon="144" funDesc="[FF0000]升级1次秘宝[-]" rank="6" descID="890027" />
+<FunctionUnlock id="300100" funName="PVP单人对战玩法。\n通过提升排名，可以获取威望奖励。" icon="300100" funDesc="[FF0000]探望孙膑[-]" rank="7" descID="890011" />
+<FunctionUnlock id="210" funName="查阅玩家、联盟的详细排名。\n主人加油提升排名吧！" icon="210" funDesc="[FF0000]合成1件秘宝[-]" rank="8" descID="890027" />
+<FunctionUnlock id="500007" funName="技能进阶可提升角色的武器技能效果。" icon="500007" funDesc="[FF0000]通关2-2[-]" rank="9" descID="890025" />
+<FunctionUnlock id="250" funName="PVE趣味关卡玩法，包含五种挑战模式，\n获取不同的丰厚奖励。" icon="250" funDesc="[FF0000]任意2个技能进阶[-]" rank="10" descID="890016" />
+<FunctionUnlock id="500000" funName="提升相关天赋可增强角色各方面战斗属性。" icon="500000" funDesc="[FF0000]完成首次试练[-]" rank="11" descID="890004" />
+<FunctionUnlock id="212" funName="于国家上缴贡金即可获得丰厚奖励" icon="212" funDesc="[FF0000]通关2-7[-]" rank="18" descID="890027" />
+<FunctionUnlock id="104" funName="玩家社交公会系统，\n加入或者创建联盟即可拥有自己的房屋。" icon="104" funDesc="[FF0000]向孙膑道贺升迁[-]" rank="19" descID="890001" />
+<FunctionUnlock id="8" funName="包含行镖（实时多人对战）、掠夺等PVP玩法。" icon="8" funDesc="[FF0000]任意秘宝10级[-]" rank="12" descID="890024" />
+<FunctionUnlock id="3000010" funName="已完胜通关的关卡可以一键重复扫荡。" icon="3000010" funDesc="[FF0000]通关3-3[-]" rank="13" descID="890014" />
+<FunctionUnlock id="500010" funName="获取高级符石可以快速提升角色属性和战力。" icon="500010" funDesc="[FF0000]挑战试练II难度[-]" rank="14" descID="890005" />
+<FunctionUnlock id="109" funName="过关斩将玩法的高难度模式。\n成功挑战后可获取珍贵的秘宝碎片。" icon="109" funDesc="[FF0000]通关3-7[-]" rank="15" descID="890013" />
+<FunctionUnlock id="9" funName="可以使用元宝购买所需的各种物品。" icon="9" funDesc="[FF0000]装备强化至15级[-]" rank="16" descID="890015" />
+<FunctionUnlock id="106" funName="每天都可自由挑战的任务内容，\n完成每日任务可以获取大量经验奖励。" icon="106" funDesc="[FF0000]装备强化至18级[-]" rank="17" descID="890006" />
+<FunctionUnlock id="211" funName="PVP对战玩法，掠夺更多贡金可以兑换丰富奖励。" icon="211" funDesc="[FF0000]等级达到28级[-]" rank="20" descID="890018" />
+<FunctionUnlock id="1210" funName="铁匠功能下的二级功能，\n可随机提升或降低装备的属性。" icon="1210" funDesc="[FF0000]等级达到30级[-]" rank="21" descID="890008" />
 </dataset>

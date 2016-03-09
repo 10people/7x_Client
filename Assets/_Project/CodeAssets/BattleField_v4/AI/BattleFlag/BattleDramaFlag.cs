@@ -47,7 +47,7 @@ public class BattleDramaFlag : MonoBehaviour
 
 	void FixedUpdate ()
 	{
-		if (BattleControlor.Instance () == null) return;
+		if (BattleControlor.Instance() == null) return;
 
 		if(node == null)
 		{

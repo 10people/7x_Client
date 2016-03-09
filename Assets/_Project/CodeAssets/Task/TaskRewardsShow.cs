@@ -14,10 +14,10 @@ public class TaskRewardsShow : MonoBehaviour
     private int taskId = 0;
     public UIGrid m_grid;
     public UILabel m_labelTitle;
-
+    private bool _isShowOn = false;
     public TaskLayerManager m_TaskLA;
     private List<FunctionWindowsCreateManagerment.RewardInfo> listRewardInfo = new List<FunctionWindowsCreateManagerment.RewardInfo>();
-  private int _TaskTYpe = 0;
+    private int _TaskTYpe = 0;
     void Start()
     {
         m_listEvent.ForEach(item => item.m_Handle += GetAwards);
@@ -69,19 +69,24 @@ public class TaskRewardsShow : MonoBehaviour
 
     public void Show(TaskLayerManager.TaskNeedInfo taskInfo, GameObject obj)
     {
-        index_Num = 0;
-        index_Num2 = 0;
-        taskId = taskInfo._TaskId;
-        _TaskTYpe = taskInfo._Type;
-        objEffect = obj;
-        m_labelTitle.text = taskInfo._Name;
-        listRewardInfo = taskInfo._listReward;
-        int sizeAll = listRewardInfo.Count;
-        m_grid.transform.localPosition = new Vector3(ParentPosOffset(sizeAll, 84), 0, 0);
-        for (int i = 0; i < sizeAll; i++)
+        if (!_isShowOn)
         {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+            _isShowOn = true;
+            index_Num = 0;
+            index_Num2 = 0;
+            taskId = taskInfo._TaskId;
+            _TaskTYpe = taskInfo._Type;
+            objEffect = obj;
+            m_labelTitle.text = taskInfo._Name;
+            listRewardInfo = taskInfo._listReward;
+            int sizeAll = listRewardInfo.Count;
+            m_grid.transform.localPosition = new Vector3(ParentPosOffset(sizeAll, 84), 0, 0);
+            for (int i = 0; i < sizeAll; i++)
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+            }
         }
+
     }
     private int ParentPosOffset(int count, int distance)
     {
@@ -169,29 +174,18 @@ public class TaskRewardsShow : MonoBehaviour
             QiXiongSerializer t_qx = new QiXiongSerializer();
             if (_TaskTYpe == 1)
             {
-            
-                GetTaskReward tempRequest = new GetTaskReward();
-                tempRequest.taskId = taskId;
-                t_qx.Serialize(t_tream, tempRequest);
-
-                byte[] t_protof;
-                t_protof = t_tream.ToArray();
-                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GetTaskReward, ref t_protof);
+                TaskData.Instance.GetQuestAward(taskId);
             }
             else
              {
-                GetTaskReward tempRequest = new GetTaskReward();
-                tempRequest.taskId = taskId;
-                t_qx.Serialize(t_tream, tempRequest);
-                byte[] t_protof;
-                t_protof = t_tream.ToArray();
-                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_DAILY_TASK_GET_REWARD_REQ, ref t_protof);
+                TaskData.Instance.GetDailyQuestAward(taskId);
             }
            
         }
     }
     void OnDisable()
     {
+        _isShowOn = false;
         m_TaskLA.FreshVitality();
         int size_All = m_grid.transform.childCount;
         for (int i = 0; i < size_All; i++)

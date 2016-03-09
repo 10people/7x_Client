@@ -85,6 +85,11 @@ public class BubblePopNode : MonoBehaviour
 		tempTime = Time.realtimeSinceStartup;
 
 		gc.SetActive (true);
+
+		if(template.soundID != 0)
+		{
+			ClientMain.m_ClientMain.m_SoundPlayEff.PlaySound(template.soundID + "");
+		}
 	}
 
 	void Update ()
@@ -111,7 +116,7 @@ public class BubblePopNode : MonoBehaviour
 	{
 		if(distanceOutTemplate == null) return;
 
-		BaseAI t_node = BattleControlor.Instance ().getNodebyId ((int)distanceOutTemplate.tp1);
+		BaseAI t_node = BattleControlor.Instance().getNodebyId ((int)distanceOutTemplate.tp1);
 
 		if (t_node == null || t_node.gameObject.activeSelf == false || t_node.isAlive == false || t_node.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) <= 0) 
 		{
@@ -130,7 +135,7 @@ public class BubblePopNode : MonoBehaviour
 	{
 		if(distanceInTemplate == null) return;
 		
-		BaseAI t_node = BattleControlor.Instance ().getNodebyId ((int)distanceInTemplate.tp1);
+		BaseAI t_node = BattleControlor.Instance().getNodebyId ((int)distanceInTemplate.tp1);
 		
 		if (t_node == null || t_node.gameObject.activeSelf == false || t_node.isAlive == false || t_node.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) <= 0) 
 		{

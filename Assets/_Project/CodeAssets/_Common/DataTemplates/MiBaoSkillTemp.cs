@@ -163,7 +163,22 @@ UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "MibaoSkill.xml"), CurLoa
 		
 		return null;
 	}
-
+	public static MiBaoSkillTemp getMiBaoSkillTempBy_Icon(int icon)
+	{
+		string icon1 = icon.ToString ();
+		foreach( MiBaoSkillTemp template in templates )
+		{
+			//Debug.Log("template.skill = "+template.skill +"template.pinzhi = "+template.pinzhi);
+			if( template.icon == icon1)
+			{
+				return template;
+			}
+		}
+		
+		Debug.LogError("XML ERROR: Can't get MiBaoSkillTemp with id and pz " + icon);
+		
+		return null;
+	}
 	public static MiBaoSkillTemp getMiBaoSkillTempByZuHeId (int zuHeId)
 	{
 		foreach( MiBaoSkillTemp template in templates )

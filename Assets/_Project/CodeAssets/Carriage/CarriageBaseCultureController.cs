@@ -12,6 +12,8 @@ namespace Carriage
         public CarriagePlayerController m_CarriagePlayerController;
         public PlayerController m_PlayerController;
 
+        public Animator m_Animator;
+
         public void OnSkillFinish()
         {
             EnableMove();
@@ -28,10 +30,10 @@ namespace Carriage
             {
                 TimeHelper.Instance.RemoveFromTimeCalc("CarriageBaseDeadAnim" + UID);
             }
-            TimeHelper.Instance.AddOneDelegateToTimeCalc("CarriageBaseDeadAnim" + UID, 1f, PlayDeadAnim);
+            TimeHelper.Instance.AddOneDelegateToTimeCalc("CarriageBaseDeadAnim" + UID, 1f, ExecuteAfterDeadFinish);
         }
 
-        private void PlayDeadAnim(string key)
+        private void ExecuteAfterDeadFinish(string key)
         {
             int l_uId = int.Parse(key.Replace("CarriageBaseDeadAnim", ""));
 
@@ -85,7 +87,7 @@ namespace Carriage
 
         public Camera TrackCamera;
 
-        public UIPanel NguiPanel;
+        public GameObject m_UIParentObject;
 
         public UIProgressBar ProgressBar;
         public UISprite ProgressBarForeSprite;
@@ -97,15 +99,31 @@ namespace Carriage
         public UISprite VIPSprite;
         public UILabel LevelLabel;
 
-        public UILabel PopupLabel
+        public bool IsSelf
         {
-            get
-            {
-                return JunZhuData.Instance().m_junzhuInfo.name == KingName ? PopupLabel_Important : PopupLabel_Basic;
-            }
+            get { return JunZhuData.Instance().m_junzhuInfo.name == KingName; }
         }
+
+        [Obsolete]
+        public void SetActivedPopupLabel(bool isSub)
+        {
+            m_activedPopupLabel = isSub ? (IsSelf ? PopupLabel_Important : PopupLabel_Basic) : PopupLabel_Recover;
+        }
+
+        private UILabel m_activedPopupLabel;
+
+        /// <summary>
+        /// white color
+        /// </summary>
         public UILabel PopupLabel_Basic;
+        /// <summary>
+        /// red color
+        /// </summary>
         public UILabel PopupLabel_Important;
+        /// <summary>
+        /// green color
+        /// </summary>
+        public UILabel PopupLabel_Recover;
 
         public string KingName;
         public string AllianceName;
@@ -135,7 +153,6 @@ namespace Carriage
 
         public virtual void SetThis()
         {
-            NameLabel.text = string.IsNullOrEmpty(KingName) ? "" : MyColorData.getColorString(9, "[b]" + KingName + "[/b]");
             AllianceLabel.text = (string.IsNullOrEmpty(AllianceName) || AllianceName == "***") ? MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT)) : (MyColorData.getColorString(12, "<" + AllianceName + ">") + FunctionWindowsCreateManagerment.GetIdentityById(AlliancePost));
             VIPSprite.spriteName = "vip" + Vip;
             ProgressBarForeSprite.spriteName = IsEnemy ? redBarName : greenBarName;
@@ -170,11 +187,14 @@ namespace Carriage
         /// 
         /// </summary>
         /// <param name="damage">damage</param>
-        public void OnDamage(float damage, float remaining)
+        /// <param name="remaining"></param>
+        /// <param name="isSPDamage"></param>
+        public void OnDamage(float damage, float remaining, bool isSPDamage = false)
         {
             StopAllCoroutines();
             DeactivePopupLabel();
-            StartCoroutine(ShowBloodChange(damage, true));
+            //StartCoroutine(ShowBloodChange(damage, true));
+            ShowBloodChange(damage, true, isSPDamage);
 
             UpdateBloodBar(remaining);
         }
@@ -183,11 +203,13 @@ namespace Carriage
         /// 
         /// </summary>
         /// <param name="recover">recover</param>
+        /// <param name="remaining"></param>
         public void OnRecover(float recover, float remaining)
         {
             StopAllCoroutines();
             DeactivePopupLabel();
-            StartCoroutine(ShowBloodChange(recover, false));
+            //StartCoroutine(ShowBloodChange(recover, false));
+            ShowBloodChange(recover, false, false);
 
             UpdateBloodBar(remaining);
         }
@@ -204,20 +226,45 @@ namespace Carriage
         private const float moveDuration = 0.5f;
         private const float stayDuration = 0.25f;
 
+        private void ShowBloodChange(float change, bool isSub, bool isSPDamage)
+        {
+            string labelText = (isSub ? "-" : "+") + change;
+
+            CarriageBloodLabelController.BloodLabelType type;
+            if (!isSub)
+            {
+                type = CarriageBloodLabelController.BloodLabelType.Recover;
+            }
+            else if (IsSelf)
+            {
+                type = CarriageBloodLabelController.BloodLabelType.PlayerAttack;
+            }
+            else
+            {
+                type = CarriageBloodLabelController.BloodLabelType.EnemyAttack;
+            }
+
+            RootManager.Instance.m_CarriageBloodLabelController.ShowBloodLabel(gameObject, labelText, type, isSPDamage);
+        }
+
+        [Obsolete]
         private IEnumerator ShowBloodChange(float change, bool isSub)
         {
-            PopupLabel.text = (isSub ? "-" : "+") + change;
-            PopupLabel.color = isSub ? Color.white : Color.green;
+            SetActivedPopupLabel(isSub);
 
-            PopupLabel.transform.localPosition = originalPos;
-            PopupLabel.color = new Color(PopupLabel.color.r, PopupLabel.color.g, PopupLabel.color.b, 1);
-            PopupLabel.gameObject.SetActive(true);
-            iTween.MoveTo(PopupLabel.gameObject, iTween.Hash("position", halfPos, "time", moveDuration, "easetype", "easeOutQuint", "islocal", true));
+            m_activedPopupLabel.text = (isSub ? "-" : "+") + change;
+
+            //Move
+            m_activedPopupLabel.transform.localPosition = originalPos;
+            m_activedPopupLabel.color = new Color(m_activedPopupLabel.color.r, m_activedPopupLabel.color.g, m_activedPopupLabel.color.b, 1);
+            m_activedPopupLabel.gameObject.SetActive(true);
+            iTween.MoveTo(m_activedPopupLabel.gameObject, iTween.Hash("position", halfPos, "time", moveDuration, "easetype", "easeOutQuint", "islocal", true));
 
             yield return new WaitForSeconds(moveDuration);
 
-            PopupLabel.transform.localPosition = halfPos;
-            iTween.MoveTo(PopupLabel.gameObject, iTween.Hash("position", finalPos, "time", stayDuration, "easetype", "easeOutQuint", "islocal", true));
+            //Fade.
+            m_activedPopupLabel.transform.localPosition = halfPos;
+            iTween.MoveTo(m_activedPopupLabel.gameObject, iTween.Hash("position", finalPos, "time", stayDuration, "easetype", "easeOutQuint", "islocal", true));
             iTween.ValueTo(gameObject, iTween.Hash("from", 1, "to", 0, "time", stayDuration, "easetype", "linear", "onupdate", "OnUpdateBloodColor"));
 
             yield return new WaitForSeconds(stayDuration);
@@ -227,19 +274,50 @@ namespace Carriage
 
         private void OnUpdateBloodColor(float p_a)
         {
-            PopupLabel.color = new Color(PopupLabel.color.r, PopupLabel.color.g, PopupLabel.color.b, p_a);
+            m_activedPopupLabel.color = new Color(m_activedPopupLabel.color.r, m_activedPopupLabel.color.g, m_activedPopupLabel.color.b, p_a);
         }
 
         private void DeactivePopupLabel()
         {
-            PopupLabel.gameObject.SetActive(false);
+            PopupLabel_Basic.gameObject.SetActive(false);
+            PopupLabel_Important.gameObject.SetActive(false);
+            PopupLabel_Recover.gameObject.SetActive(false);
+        }
+
+        private float checkTime;
+        private readonly List<int> m_canMoveHashList = new List<int>()
+        {
+            Animator.StringToHash("Run"), Animator.StringToHash("BATC"), Animator.StringToHash("Stand")
+        };
+
+        void Update()
+        {
+            if (Time.realtimeSinceStartup - checkTime > 0.5f)
+            {
+                if (m_CarriagePlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_Animator)))
+                {
+                    m_CarriagePlayerController.ActiveMove();
+                }
+
+                if (m_PlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_Animator)))
+                {
+                    m_PlayerController.ActiveMove();
+                }
+
+                checkTime = Time.realtimeSinceStartup;
+            }
         }
 
         void LateUpdate()
         {
             if (TrackCamera == null) return;
 
-            NguiPanel.transform.eulerAngles = new Vector3(TrackCamera.transform.eulerAngles.x, TrackCamera.transform.eulerAngles.y, 0);
+            m_UIParentObject.transform.eulerAngles = new Vector3(TrackCamera.transform.eulerAngles.x, TrackCamera.transform.eulerAngles.y, 0);
+        }
+
+        void Awake()
+        {
+            m_Animator = GetComponent<Animator>();
         }
     }
 }

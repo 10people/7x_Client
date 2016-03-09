@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class DramaStoryControllor : MonoBehaviour
 {
+
 	[HideInInspector] public Dictionary<int, DramaStoryBoard> storyBoardList = new Dictionary<int, DramaStoryBoard>();
 
 
@@ -13,7 +14,9 @@ public class DramaStoryControllor : MonoBehaviour
 
 	private GameObject target;
 
-	void OnDestroy(){
+
+	void OnDestroy()
+	{
 		storyBoardList.Clear();
 
 		curStroyBoard = null;
@@ -146,6 +149,8 @@ public class DramaStoryControllor : MonoBehaviour
 
 	public void storyBoardDone()
 	{
+		GameObject.Find("UISpirteAlphaBG").GetComponent<UISprite>().alpha = 0;
+
 		if (target != null) target.SendMessage ("dramaStoryDone");
 	}
 

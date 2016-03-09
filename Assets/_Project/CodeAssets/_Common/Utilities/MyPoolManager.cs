@@ -168,7 +168,7 @@ public class MyPoolManager : MonoBehaviour
             if (ObjectList[i] == null)
             {
                 ObjectList.RemoveAt(i);
-                Debug.Log("[MyPoolManager]Remove a null item in objectList.");
+//                Debug.Log("[MyPoolManager]Remove a null item in objectList.");
             }
         }
     }

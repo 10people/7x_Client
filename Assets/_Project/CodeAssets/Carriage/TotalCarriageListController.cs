@@ -36,8 +36,8 @@ namespace Carriage
 
         public void OnOpenListClick()
         {
-            transform.localPosition = new Vector3(-160, -280, 0);
-            iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(0, -280, 0), "time", 0.5f, "easetype", "easeOutBack", "islocal", true, "oncomplete", "OnOpenListComplete"));
+            transform.localPosition = new Vector3(-160, -320, 0);
+            iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(0, -320, 0), "time", 0.5f, "easetype", "easeOutBack", "islocal", true, "oncomplete", "OnOpenListComplete"));
         }
 
         void OnOpenListComplete()
@@ -48,8 +48,8 @@ namespace Carriage
 
         public void OnCloseListClick()
         {
-            transform.localPosition = new Vector3(0, -280, 0);
-            iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(-160, -280, 0), "time", 0.5f, "easetype", "easeInBack", "islocal", true, "oncomplete", "OnCloseListComplete"));
+            transform.localPosition = new Vector3(0, -320, 0);
+            iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(-160, -320, 0), "time", 0.5f, "easetype", "easeInBack", "islocal", true, "oncomplete", "OnCloseListComplete"));
         }
 
         void OnCloseListComplete()
@@ -115,6 +115,11 @@ namespace Carriage
                 Destroy(child.gameObject);
             }
             m_CarriageItemControllerList.Clear();
+
+            //Set recommanded one.
+            m_StoredCarriageControllerList.ForEach(item => item.IsRecommandedOne = false);
+            m_StoredCarriageControllerList.Where(item => item.KingName != JunZhuData.Instance().m_junzhuInfo.name && item.BattleValue < RootManager.Instance.m_CarriageMain.RecommandedScale * JunZhuData.Instance().m_junzhuInfo.zhanLi).OrderByDescending(item => item.Money).Take(RootManager.Instance.m_CarriageMain.RecommandedNum).ToList().ForEach(item => item.IsRecommandedOne = true);
+            m_StoredCarriageControllerList = m_StoredCarriageControllerList.OrderByDescending(item => item.HorseLevel).ThenByDescending(item => CarriageValueCalctor.GetRealValueOfCarriage(item.Money, item.Level, item.BattleValue, item.HorseLevel, item.IsChouRen)).ToList();
 
             foreach (var item in m_StoredCarriageControllerList)
             {

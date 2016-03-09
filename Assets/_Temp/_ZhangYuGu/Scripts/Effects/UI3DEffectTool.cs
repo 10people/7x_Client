@@ -94,19 +94,17 @@ public class UI3DEffectTool : MonoBehaviour {
 			return;
 		}
 
-//		{
-//			m_instance = t_gb.GetComponentInChildren<UI3DEffectTool>();
-//		}
-
 		DontDestroyOnLoad( t_gb );
 	}
 	
 	#region Mono
 
 	void Awake(){
+		#if DEBUG_UI_EFFECT
+		Debug.Log( "UI3DEffectTool.Make.Instance()" );
+		#endif
+
 		m_instance = this;
-
-
 	}
 	
 	// Use this for initialization
@@ -122,7 +120,7 @@ public class UI3DEffectTool : MonoBehaviour {
 #endif
 
 		{
-			FxTool.UpdateFx();
+			FxHelper.UpdateFx();
 		}
 
 		{
@@ -140,10 +138,6 @@ public class UI3DEffectTool : MonoBehaviour {
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "UI3DEffectTool.OnDestroy()" );
 		#endif
-
-		{
-			m_instance = null;
-		}
 
 		{
 			for( int i = 0; i < m_ngui_layer_root.Length; i++ ){
@@ -275,10 +269,10 @@ public class UI3DEffectTool : MonoBehaviour {
 			for( int i = 0; i < t_child_count; i++ ){
 				Transform t_child = p_gameobject.transform.GetChild( i );
 				
-				t_child.gameObject.layer = p_target_layer_gb.layer;
+				GameObjectHelper.SetGameObjectLayer( t_child.gameObject, p_target_layer_gb.layer );
 			}
 			
-			p_gameobject.layer = p_target_layer_gb.layer;
+			GameObjectHelper.SetGameObjectLayer( p_gameobject, p_target_layer_gb.layer );
 		}
 	}
 
@@ -288,7 +282,13 @@ public class UI3DEffectTool : MonoBehaviour {
 
 	#region Clean 3D Effect
 
-	public void ClearAllUI3DEffect(){
+	public static void ClearAllUI3DEffect(){
+		if( !HaveInstance() ){
+			Debug.LogError( "No UI3DInstance Exist." );
+
+			return;
+		}
+
 		ClearAllUIFx();
 
 		ClearAllFxInToLoad();
@@ -301,7 +301,13 @@ public class UI3DEffectTool : MonoBehaviour {
 	#region Utilities
 
 	/// Whether p_ngui_gb have any fx on it.
-	public bool HaveAnyFx( GameObject p_ngui_gb  ){
+	public static bool HaveAnyFx( GameObject p_ngui_gb  ){
+		if( !HaveInstance() ){
+			Debug.LogError( "No UI3DInstance Exist." );
+			
+			return false;
+		}
+
 		FxWatcher t_watcher = GetFxWatcher( p_ngui_gb );
 
 		if( t_watcher != null ){
@@ -340,7 +346,13 @@ public class UI3DEffectTool : MonoBehaviour {
 	/// 
 	/// 4.p_3d_effect_path: 
 	///       "_3D/Fx/_To_Sort/beibao";
-	public void ShowTopLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null  ){
+	public static void ShowTopLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null  ){
+		if( !HaveInstance() ){
+			Debug.LogError( "No UI3DInstance Exist." );
+			
+			return;
+		}
+
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "ShowTopLayerEffect: " + p_ui_type + " - " + p_target_ngui_gb );
 
@@ -349,7 +361,7 @@ public class UI3DEffectTool : MonoBehaviour {
 //		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
-		AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, TopEffectLoadCallback, p_target_ngui_center_gb );
+		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().TopEffectLoadCallback, p_target_ngui_center_gb );
 	}
 
 	public void TopEffectLoadCallback( UIType p_ui_type, GameObject p_ngui_gb, GameObject p_effect_object, GameObject p_target_ngui_center_gb = null  ){
@@ -359,7 +371,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			#if FX_ART_USE && UNITY_EDITOR
 			SetGameObjectLayer( GetTopRoot( p_ui_type ), t_gb );
 			#else
-			GameObjectHelper.SetGameObjectLayer( GetTopRoot( p_ui_type ), t_gb );
+			GameObjectHelper.SetGameObjectLayerRecursive( t_gb, GetTopRoot( p_ui_type ).layer );
 			#endif
 
 			#if DEBUG_UI_EFFECT
@@ -397,7 +409,13 @@ public class UI3DEffectTool : MonoBehaviour {
 	/// 
 	/// 4.p_3d_effect_path: 
 	///       "_3D/Fx/_To_Sort/beibao";
-	public void ShowBottomLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null ){
+	public static void ShowBottomLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null ){
+		if( !HaveInstance() ){
+			Debug.LogError( "No UI3DInstance Exist." );
+
+			return;
+		}
+
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "ShowBottomLayerEffect: " + p_ui_type + " - " + p_target_ngui_gb );
 
@@ -406,7 +424,7 @@ public class UI3DEffectTool : MonoBehaviour {
 //		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
-		AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, BottomEffectLoadCallback, p_target_ngui_center_gb );
+		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().BottomEffectLoadCallback, p_target_ngui_center_gb );
 	}
 	
 	public void BottomEffectLoadCallback( UIType p_ui_type, GameObject p_ngui_gb, GameObject p_effect_object, GameObject p_target_ngui_center_gb = null ){
@@ -416,7 +434,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			#if FX_ART_USE && UNITY_EDITOR
 			SetGameObjectLayer( GetBotRoot( p_ui_type ), t_gb );
 			#else
-			GameObjectHelper.SetGameObjectLayer( GetBotRoot( p_ui_type ), t_gb );
+			GameObjectHelper.SetGameObjectLayerRecursive( t_gb, GetBotRoot( p_ui_type ).layer );
 			#endif
 
 			#if DEBUG_UI_EFFECT
@@ -454,7 +472,13 @@ public class UI3DEffectTool : MonoBehaviour {
 	/// 
 	/// 4.p_3d_effect_path: 
 	///       "_3D/Fx/_To_Sort/beibao";
-	public void ShowMidLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null  ){
+	public static void ShowMidLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null  ){
+		if( !HaveInstance() ){
+			Debug.LogError( "No UI3DInstance Exist." );
+			
+			return;
+		}
+
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "ShowMidLayerEffect: " + p_ui_type + " - " + p_target_ngui_gb );
 
@@ -463,7 +487,7 @@ public class UI3DEffectTool : MonoBehaviour {
 //		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
-		AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, MidEffectLoadCallback, p_target_ngui_center_gb );
+		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().MidEffectLoadCallback, p_target_ngui_center_gb );
 	}
 
 	/// Desc:
@@ -483,7 +507,13 @@ public class UI3DEffectTool : MonoBehaviour {
 	/// 
 	/// 3.p_overlay_ngui_gb: 
 	///       Another ngui gb need to be overlaying.
-	public void ShowMidLayerOverLayNGUI( UIType p_ui_type, GameObject p_target_ngui_gb, GameObject p_overlay_ngui_gb, GameObject p_target_ngui_center_gb = null  ){
+	public static void ShowMidLayerOverLayNGUI( UIType p_ui_type, GameObject p_target_ngui_gb, GameObject p_overlay_ngui_gb, GameObject p_target_ngui_center_gb = null  ){
+		if( !HaveInstance() ){
+			Debug.LogError( "No UI3DInstance Exist." );
+			
+			return;
+		}
+
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "ShowMidLayerOverLayNGUI: " + p_ui_type + " - " + p_target_ngui_gb );
 		
@@ -501,11 +531,11 @@ public class UI3DEffectTool : MonoBehaviour {
 			
 			return;
 		}
-		
-		GameObject t_obj = GameObjectHelper.AddChild( GetNGUIRoot( p_ui_type ), p_overlay_ngui_gb );
+
+		GameObject t_obj = GameObjectHelper.AddChild( Instance().GetNGUIRoot( p_ui_type ), p_overlay_ngui_gb );
 
 		{
-			ClearShadow( t_obj );
+			Instance().ClearShadow( t_obj );
 		}
 
 		{
@@ -514,7 +544,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			t_obj.transform.localPosition = t_local_pos;
 		}
 		
-		AddFxWatcher( p_overlay_ngui_gb, t_obj, true, p_target_ngui_center_gb );
+		Instance().AddFxWatcher( p_overlay_ngui_gb, t_obj, true, p_target_ngui_center_gb );
 	}
 	
 	public void MidEffectLoadCallback( UIType p_ui_type, GameObject p_ngui_gb, GameObject p_effect_object, GameObject p_target_ngui_center_gb = null  ){
@@ -524,7 +554,7 @@ public class UI3DEffectTool : MonoBehaviour {
 			#if FX_ART_USE && UNITY_EDITOR
 			SetGameObjectLayer( GetMidRoot( p_ui_type ), t_gb );
 			#else
-			GameObjectHelper.SetGameObjectLayer( GetMidRoot( p_ui_type ), t_gb );
+			GameObjectHelper.SetGameObjectLayerRecursive( t_gb, GetMidRoot( p_ui_type ).layer );
 			#endif
 
 			#if DEBUG_UI_EFFECT
@@ -564,14 +594,22 @@ public class UI3DEffectTool : MonoBehaviour {
 		{
 			Vector3 t_local_pos = Vector3.zero;
 
+			Vector3 t_local_scale = Vector3.one;
+
 			if( p_target_ngui_center_gb == null ){
 				t_local_pos = TransformHelper.GetLocalPositionInUIRoot( p_overlay_ngui_gb );
+
+				t_local_scale = TransformHelper.GetLocalScaleInUIRoot( p_overlay_ngui_gb );
 			}
 			else{
 				t_local_pos = TransformHelper.GetLocalPositionInUIRoot( p_target_ngui_center_gb );
+
+				t_local_scale = TransformHelper.GetLocalScaleInUIRoot( p_target_ngui_center_gb );
 			}
 
 			t_obj.transform.localPosition = t_local_pos;
+
+			t_obj.transform.localScale = t_local_scale;
 		}
 
 		AddFxWatcher( p_overlay_ngui_gb, t_obj, true, p_target_ngui_center_gb );
@@ -725,14 +763,24 @@ public class UI3DEffectTool : MonoBehaviour {
 
 		FxWatcher t_watcher = GetOrCreateFxWatcher( p_ngui_gb );
 
+		if( t_watcher == null ){
+			Debug.Log( "Watcher is Null." );
+		}
+
 		t_watcher.AddWatchItem( p_param_gb, p_sync_ngui_tran, p_target_ngui_center_gb );
 
 		t_watcher.ForceUpdateVisibility();
 	}
 
-	private FxWatcher GetFxWatcher( GameObject p_ngui_gb ){
-		for( int i = 0; i < m_fx_watcher_list.Count; i++ ){
-			FxWatcher t_watcher = m_fx_watcher_list[ i ];
+	private static FxWatcher GetFxWatcher( GameObject p_ngui_gb ){
+		if( !HaveInstance() ){
+			Debug.Log( "UI3DEffectTool.Not.Exist." );
+
+			return null;
+		}
+
+		for( int i = 0; i < Instance().m_fx_watcher_list.Count; i++ ){
+			FxWatcher t_watcher = Instance().m_fx_watcher_list[ i ];
 
 			if( t_watcher.m_target_ngui_gb == p_ngui_gb ){
 				return t_watcher;
@@ -742,7 +790,13 @@ public class UI3DEffectTool : MonoBehaviour {
 		return null;
 	}
 
-	private FxWatcher GetOrCreateFxWatcher( GameObject p_ngui_gb ){
+	private static FxWatcher GetOrCreateFxWatcher( GameObject p_ngui_gb ){
+		if( !HaveInstance() ){
+			Debug.Log( "UI3DEffectTool.Not.Exist." );
+
+			return null;
+		}
+
 		FxWatcher t_watcher = GetFxWatcher( p_ngui_gb );
 
 		if( t_watcher != null ){
@@ -750,8 +804,8 @@ public class UI3DEffectTool : MonoBehaviour {
 		}
 
 		t_watcher = new FxWatcher( p_ngui_gb );
-		
-		m_fx_watcher_list.Add( t_watcher );
+
+		Instance().m_fx_watcher_list.Add( t_watcher );
 
 		return t_watcher;
 	}
@@ -766,18 +820,30 @@ public class UI3DEffectTool : MonoBehaviour {
 		}
 	}
 
-	private void ClearAllUIFx(){
-		for( int i = m_fx_watcher_list.Count - 1; i >= 0; i-- ){
-			FxWatcher t_watcher = m_fx_watcher_list[ i ];
+	private static void ClearAllUIFx(){
+		if( !HaveInstance() ){
+			Debug.Log( "UI3DEffectTool.Not.Exist." );
+
+			return;
+		}
+
+		for( int i = Instance().m_fx_watcher_list.Count - 1; i >= 0; i-- ){
+			FxWatcher t_watcher = Instance().m_fx_watcher_list[ i ];
 			
 			t_watcher.Clear();
 		}
 	}
 
-	public void ClearUIFx( GameObject p_ngui_gb ){
+	public static void ClearUIFx( GameObject p_ngui_gb ){
 		#if DEBUG_UI_EFFECT
 		Debug.Log( "ClearUIFx: " + p_ngui_gb );
 		#endif
+
+		if( !HaveInstance() ){
+			Debug.Log( "UI3DEffectTool.Not.Exist." );
+
+			return;
+		}
 
 		{
 			ClearFxInToLoad( p_ngui_gb );
@@ -841,6 +907,14 @@ public class UI3DEffectTool : MonoBehaviour {
 			}
 
 			m_shadow_gb.SetActive( p_visible );
+		}
+
+		public string GetShadowVisibility(){
+			if( m_shadow_gb == null ){
+				return "Null";
+			}
+
+			return m_shadow_gb.activeInHierarchy + "";
 		}
 
 		/// Update Fx GameObject.
@@ -992,8 +1066,25 @@ public class UI3DEffectTool : MonoBehaviour {
 			}
 		}
 
-		private bool GetTargetNGUIVisibility(){
+		public string GetTargetDesc(){
+			if( m_target_ngui_gb == null ){
+				return "";
+			}
+			else{
+				return GameObjectHelper.GetGameObjectHierarchy( m_target_ngui_gb );
+			}
+		}
+
+		public bool GetCachedVisibility(){
+			return m_cached_visibility;
+		}
+
+		public bool GetTargetNGUIVisibility(){
 //			return m_target_ngui_gb.activeInHierarchy;
+
+			if( m_target_ngui_gb == null ){
+				return false;
+			}
 
 			if( m_target_ngui_ui_root_cams.Count > 0 ){
 				bool t_cam_gb_visible = m_target_ngui_ui_root_cams[ 0 ].gameObject.activeInHierarchy;
@@ -1005,7 +1096,21 @@ public class UI3DEffectTool : MonoBehaviour {
 				}
 				else{
 					if( t_cam_visible ){
-						return m_target_ngui_gb.activeInHierarchy;
+//						return m_target_ngui_gb.activeInHierarchy;	
+
+						if( m_target_ngui_ui_root_cams[ 0 ].cullingMask == 0 ){
+							return false;
+						}
+						else{
+							return m_target_ngui_gb.activeInHierarchy;	
+						}
+
+//						if( ( m_target_ngui_ui_root_cams[ 0 ].cullingMask & m_target_ngui_gb.layer ) > 0 ){
+//							return m_target_ngui_gb.activeInHierarchy;	
+//						}
+//						else{
+//							return false;
+//						}
 					}
 					else{
 						return false;
@@ -1178,18 +1283,30 @@ public class UI3DEffectTool : MonoBehaviour {
 		}
 	}
 
-	private void ClearAllFxInToLoad(){
-		m_fx_to_load_list.Clear();
+	private static void ClearAllFxInToLoad(){
+		if( !HaveInstance() ){
+			Debug.Log( "UI3DEffectTool.Not.Exist." );
+
+			return;
+		}
+
+		Instance().m_fx_to_load_list.Clear();
 	}
 
-	private void ClearFxInToLoad( GameObject p_gb ){
-		for (int i = m_fx_to_load_list.Count - 1; i >= 0; i--) {
-			FxToLoad t_task = m_fx_to_load_list[ i ];
+	private static void ClearFxInToLoad( GameObject p_gb ){
+		if( !HaveInstance() ){
+			Debug.Log( "UI3DEffectTool.Not.Exist." );
+
+			return;
+		}
+
+		for (int i = Instance().m_fx_to_load_list.Count - 1; i >= 0; i--) {
+			FxToLoad t_task = Instance().m_fx_to_load_list[ i ];
 
 			if( t_task.GetNGUIGameObject() == p_gb ){
 //				Debug.Log( "Remove loading and not loaded 3d fx." );
 
-				m_fx_to_load_list.Remove( t_task );
+				Instance().m_fx_to_load_list.Remove( t_task );
 			}
 		}
 	}
@@ -1386,17 +1503,17 @@ public class UI3DEffectTool : MonoBehaviour {
 //	#region Debug Labels
 //
 //	public static void SetDebugInfo( int p_lb_index, string p_info ){
-//		if (p_lb_index < 0 || p_lb_index >= Instance ().m_lb_debug.Length) {
+//		if (p_lb_index < 0 || p_lb_index >= Instance().m_lb_debug.Length) {
 //			Debug.Log( "Error, str: " + p_lb_index + " - " + p_info );
 //
 //			return;
 //		}
 //
-//		Instance ().m_lb_debug [p_lb_index].text = p_info;
+//		Instance().m_lb_debug [p_lb_index].text = p_info;
 //
 //		{
-//			for( int i = Instance ().m_lb_debug.Length - 1; i >= 0; i-- ){
-//				Instance ().m_lb_debug[ i ].gameObject.SetActive( ConfigTool.GetBool (ConfigTool.CONST_SHOW_DEBUG_INFO ) );
+//			for( int i = Instance().m_lb_debug.Length - 1; i >= 0; i-- ){
+//				Instance().m_lb_debug[ i ].gameObject.SetActive( ConfigTool.GetBool (ConfigTool.CONST_SHOW_DEBUG_INFO ) );
 //			}
 //		}
 //	}

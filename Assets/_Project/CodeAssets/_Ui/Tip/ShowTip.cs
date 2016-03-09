@@ -48,9 +48,9 @@ public class ShowTip : ScriptableObject
 
 	public static void showTip(int commonItemId)
 	{
-//		Debug.Log ("Show Tips With Id " + commonItemId);
+        //Debug.Log("=========Show Tips With Id: " + commonItemId);
 
-		bool flag = CommonItemTemplate.haveCommonItemTemplateById (commonItemId);
+        bool flag = CommonItemTemplate.haveCommonItemTemplateById (commonItemId);
 
 		if (flag == false) return;
 
@@ -61,6 +61,8 @@ public class ShowTip : ScriptableObject
 
 	private static void LoadResultResCallbackItem(ref WWW p_www, string p_path, Object p_object)
 	{
+        //Debug.Log("=========== load tip prefab.");
+
 		if (tipObject != null) return;
 		
 		tipObject = (GameObject)Instantiate(p_object);

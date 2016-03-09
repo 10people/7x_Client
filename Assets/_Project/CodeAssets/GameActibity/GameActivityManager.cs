@@ -15,10 +15,10 @@ public class GameActivityManager : MonoBehaviour {
 
 	void Start()
 	{
-		m_EhLQ.m_handler += LingQu;
+		m_EhLQ.m_click_handler += LingQu;
 		foreach(EventHandler tempHand in m_eventHanderList)
 		{
-			tempHand.m_handler += ClickEvent;
+			tempHand.m_click_handler += ClickEvent;
 		}
 	}
 

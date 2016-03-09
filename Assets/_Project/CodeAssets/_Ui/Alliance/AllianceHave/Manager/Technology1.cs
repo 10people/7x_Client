@@ -48,7 +48,7 @@ public class Technology1 : MonoBehaviour {
 		{
 			Destroy(mTe.gameObject);
 		}
-		TechnologyManager.Instance ().mTechnologytempList.Clear ();
+		TechnologyManager.Instance().mTechnologytempList.Clear ();
 		for(int i =0 ; i < m_LianMengKeJiTemplate.Count ; i++)
 		{
 			kejiNumber = 0;
@@ -80,6 +80,7 @@ public class Technology1 : MonoBehaviour {
 			{
 				kejiNumber = i+13;
 			}
+			mTechnologytemp.Keji_Index = kejiNumber;
 			mTechnologytemp.Keji_level = m_JianZhuKeji.list[kejiNumber].lv;
 			mTechnologytemp.Init();
 			TechnologyManager.Instance().mTechnologytempList.Add(mTechnologytemp);

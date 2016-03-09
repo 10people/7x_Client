@@ -28,7 +28,7 @@ public class PveUImanager :MYNGUIPanel
     private float mTime;
 
     public UILabel MapName;
-
+	//public UILabel JiangLi_Name;
     public GameObject CQ_btn;
 	public GameObject PT_btn;
 
@@ -39,6 +39,8 @@ public class PveUImanager :MYNGUIPanel
 	public NGUILongPress EnergyDetailLongPress;
 
 	public UILabel m_DontOpenLvTips;
+
+//	public GameObject NeedScoleUI;
     void Awake()
     {
         instances = this;
@@ -53,7 +55,18 @@ public class PveUImanager :MYNGUIPanel
       //  RecoverToliCips.transform.localScale = new Vector3(0, 0, 0);
         LeftBtn.SetActive(false);
         RightBtn.SetActive(true);
-
+//		UIRoot root = GameObject.FindObjectOfType<UIRoot>();
+//		if (root != null) {
+//			float s = (float)root.activeHeight / Screen.height;
+//			int height = Mathf.CeilToInt (Screen.height * s);
+//			int width = Mathf.CeilToInt (Screen.width * s);
+//			float v1 = (float)height / (float)640;
+//			float v2 = (float)width / (float)960;
+//			NeedScoleUI.transform.localScale = new Vector3(v2,v1,1);
+//			//Debug.Log ("NeedScoleUI.localScale = " + NeedScoleUI.transform.localScale);
+//		} else {
+//			//Debug.Log ("root == null");
+//		}
     }
 
 	void OnDestroy(){
@@ -131,7 +144,7 @@ public class PveUImanager :MYNGUIPanel
 	{
 		
 		TiliLabel.text = JunZhuData.Instance().m_junzhuInfo.tili.ToString() + "/" + JunZhuData.Instance().m_junzhuInfo.tiLiMax.ToString();
-        //AllTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tiLiMax.ToString();//修改为  体力上线
+        //AllTiLi.text = JunZhuData.Instance().m_junzhuInfo.tiLiMax.ToString();//修改为  体力上线
 
 //        if (JunZhuData.Instance().m_junzhuInfo.tili >= JunZhuData.Instance().m_junzhuInfo.tiLiMax)
 //        {
@@ -237,7 +250,7 @@ public class PveUImanager :MYNGUIPanel
 
 		choosemap.UpAndDownbtn = true;
 
-
+	    CloseArt();
 		if (!CityGlobalData.PT_Or_CQ )
         {
             return;
@@ -246,7 +259,7 @@ public class PveUImanager :MYNGUIPanel
        // MapData.mapinstance.Is_Com_Lv = false;
 		MapData.mapinstance.GuidLevel = 0;
 
-		Debug.Log ("CityGlobalData.m_temp_CQ_Section =  "+CityGlobalData.m_temp_CQ_Section);
+		//Debug.Log ("CityGlobalData.m_temp_CQ_Section =  "+CityGlobalData.m_temp_CQ_Section);
 
 		MapData.sendmapMessage(CityGlobalData.m_temp_CQ_Section);
 	}
@@ -259,7 +272,20 @@ public class PveUImanager :MYNGUIPanel
     {
         PveTempTemplate mPveTempTemplate = PveTempTemplate.GetPveTemplate_By_Chapter_Id(mChaper);
         string Map_Name = NameIdTemplate.GetName_By_NameId(mPveTempTemplate.bigName);
+
         MapName.text = Map_Name;
+
+//		if (CityGlobalData.PT_Or_CQ) {
+//
+//			string [] s = Map_Name.Split (' ');
+//			Debug.Log ("s[0] = " + s [0]);
+//			JiangLi_Name.text = "("+s [0]+")";
+//
+//		} else
+//		{
+//			JiangLi_Name.gameObject.SetActive(false);
+//		}
+
     }
 
     public void BuyEnergyLoadResourceCallback(ref WWW p_www, string p_path, Object p_object)
@@ -275,7 +301,7 @@ public class PveUImanager :MYNGUIPanel
     public void BuyTiLi()
     {
        
-		JunZhuData.Instance ().BuyTiliAndTongBi (true,false,false);
+		JunZhuData.Instance().BuyTiliAndTongBi (true,false,false);
 
     }
 
@@ -318,7 +344,7 @@ public class PveUImanager :MYNGUIPanel
 		PassLevelAward mPassLevelAward = AwardtempObject.GetComponent<PassLevelAward>();
 		mPassLevelAward.Init ();
 		MapData.mapinstance.CloseEffect();
-		PassLevelBtn.Instance ().CloseEffect ();
+		PassLevelBtn.Instance().CloseEffect ();
 	}
 	private IEnumerator discovertips()
 	{
@@ -510,9 +536,11 @@ public class PveUImanager :MYNGUIPanel
         tempOjbect.transform.localScale = new Vector3(1, 1, 1);
 
         ChapterUImaneger mChapterUImaneger = tempOjbect.GetComponent<ChapterUImaneger>();
-
+		//Debug.Log ("CityGlobalData.PT_Or_CQ = "+CityGlobalData.PT_Or_CQ);
 		if (CityGlobalData.PT_Or_CQ)
         {
+
+			mChapterUImaneger.AllChapers = MapData.mapinstance.AllChapteres;
 
             mChapterUImaneger.CurrChaper = MapData.mapinstance.nowCurrChapter;
         }
@@ -531,7 +559,7 @@ public class PveUImanager :MYNGUIPanel
         MapData.mapinstance.IsCloseGuid = true;
 
 		MapData.mapinstance.CloseEffect();
-		PassLevelBtn.Instance ().CloseEffect ();
+		PassLevelBtn.Instance().CloseEffect ();
 		MapData.mapinstance.ClosewPVEGuid ();
 
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVE_CHOOSE_CHAPTER), ChooseChapterLoadResourceCallback);
@@ -547,6 +575,20 @@ public class PveUImanager :MYNGUIPanel
 	{
 		Art.SetActive (false);
 	}
+	/// <summary>
+	/// Helps the button.
+	/// </summary>
+	public void HelpBtn()
+	{
+		GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.PVE_HELP_DESC),ActiveGuide);
+		UIYindao .m_UIYindao.CloseUI ();
+	}
+	void ActiveGuide ()
+	{
+
+		MapData.mapinstance.ShowPVEGuid();
+
+	}
     public void BackToMainCity()//返回到主城中
     {
         m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
@@ -555,7 +597,7 @@ public class PveUImanager :MYNGUIPanel
 
     void DoCloseWindow()
     {
-		EnterGuoGuanmap.Instance ().ShouldOpen_id = 0;
+		EnterGuoGuanmap.Instance().ShouldOpen_id = 0;
         MainCityUI.TryRemoveFromObjectList(desdroymap);
         Global.m_isOpenPVP = false;
 		CityGlobalData .PT_Or_CQ = true;
@@ -566,10 +608,6 @@ public class PveUImanager :MYNGUIPanel
         MapData.mapinstance.IsCloseGuid = true;
 //		WindowBackShowController.CreateSaveWindow("Secret(Clone)");
 //		WindowBackShowController.CreateSaveWindow("JUN_ZHU_LAYER_AMEND");
-		if(UIYindao.m_UIYindao.m_isOpenYindao)
-		{
-			UIYindao.m_UIYindao.CloseUI();
-		}
         Destroy(desdroymap);
     }
 }

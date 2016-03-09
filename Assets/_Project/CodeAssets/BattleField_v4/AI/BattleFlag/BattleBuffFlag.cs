@@ -71,7 +71,7 @@ public class BattleBuffFlag : MonoBehaviour
 	{
 		if (node == null) return;
 
-		if (BattleControlor.Instance ().completed == false) return;
+		if (BattleControlor.Instance().completed == false) return;
 
 		if(count == 0 && state == FlagState.state_null)
 		{

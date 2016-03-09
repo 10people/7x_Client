@@ -34,7 +34,7 @@ public class QXChatUIBox : MonoBehaviour {
 	void Start ()
 	{
 		SetRedAlert (false);
-		chatUIBoxHandler.m_handler += ChatUIBoxClickBack;
+		chatUIBoxHandler.m_click_handler += ChatUIBoxClickBack;
 	}
 
 	/// <summary>
@@ -86,7 +86,7 @@ public class QXChatUIBox : MonoBehaviour {
 		}
 	}
 
-	void ChatUIBoxClickBack (GameObject obj)
+	public void ChatUIBoxClickBack (GameObject obj)
 	{
 		QXChatData.Instance.OpenChatPage ();
 		SetRedAlert (false);

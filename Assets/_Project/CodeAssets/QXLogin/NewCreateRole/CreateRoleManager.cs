@@ -33,6 +33,8 @@ public class CreateRoleManager : MonoBehaviour {
 
 	void Start ()
 	{
+		ClientMain.m_sound_manager.chagneBGSound (1000);
+
 		loadSize = Vector3.one;
 		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.SELECT_ROLE ),
 		                        SelectRoleUILoadBack );
@@ -145,7 +147,7 @@ public class CreateRoleManager : MonoBehaviour {
 
 		selectRole = selectRoleUIObj.GetComponent<NewSelectRole> ();
 
-		selectRole.roleHanderList.ForEach(item => item.m_handler += Select);
+		selectRole.roleHanderList.ForEach(item => item.m_click_handler += Select);
 
 //		Debug.Log ("可选人物角色数：" + selectRole.roleHanderList.Count);
 
@@ -216,7 +218,7 @@ public class CreateRoleManager : MonoBehaviour {
 	IEnumerator ShowRoleAnim ()
 	{
 		yield return new WaitForSeconds (10);
-		Debug.Log ("hehehe");
+//		Debug.Log ("hehehe");
 		Animator roleAnimat = roleObjList[curRole].GetComponent<Animator> ();
 		roleAnimat.SetTrigger ("Show");
 	}

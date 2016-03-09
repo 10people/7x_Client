@@ -43,7 +43,7 @@ public class HyRewardLibraryData : MonoBehaviour,SocketProcessor {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		Debug.Log ("allianceResp.id:" + allianceResp.id);
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_REQ_REWARD_STORE,ref t_protof,"30408");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_REQ_REWARD_STORE,ref t_protof,"30408");
 		Debug.Log ("RewardLibraryReq:" + ProtoIndexes.C_REQ_REWARD_STORE);
 	}
 

@@ -7,8 +7,10 @@ using System.Text;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝点
+public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
+	public SparkleEffectItem mSparkleEffectItem;
+	public UILabel Boci;
 	public HuangYeTreasure mHuangYeTreasure;
 
 	public UILabel TimeAndAllTimes;//剩余次数和总次数
@@ -52,15 +54,12 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 	private static HYRetearceEnemy g_HYRetearceEnemy;
 
-	public UILabel mTiLi;
-	
-	public UILabel mTongBi;
-	
-	public UILabel mYuanBao;
+	public NGUILongPress EnergyDetailLongPress1;
+	public MiBaoSkillTips mMiBaoSkillTips;
 
-	public UISprite TuiJianMiBaoicon;
+	public GameObject KuaiSuAwardRoot;
 
-	public static HYRetearceEnemy Instance ()
+	public static HYRetearceEnemy Instance()
 	{
 		if (!g_HYRetearceEnemy)
 		{
@@ -74,9 +73,24 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 	void Awake()
 	{ 
 		SocketTool.RegisterMessageProcessor(this);
-
+		EnergyDetailLongPress1.LongTriggerType = NGUILongPress.TriggerType.Press;
+		EnergyDetailLongPress1.NormalPressTriggerWhenLongPress = false;
+		EnergyDetailLongPress1.OnLongPressFinish = OnCloseDetail;
+		EnergyDetailLongPress1.OnLongPress = OnEnergyDetailClick1;
 	}
-	
+	private void OnCloseDetail(GameObject go)
+	{
+		ShowTip.close();
+	}
+	public void OnEnergyDetailClick1(GameObject go)//显示体力恢复提示
+	{
+		int mibaoid = M_Treas_info.zuheId;
+		if(mibaoid<=0)
+		{
+			return;
+		}
+		ShowTip.showTip (mibaoid);
+	}
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
@@ -93,27 +107,83 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 	
 
 	void Update () {
-
-		mTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tili.ToString();
-		
-		mTongBi.text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString();
-		
-		mYuanBao.text = JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString();
 	
 	}
+	List <int > awardidlist = new List<int> ();
+	List <string > awardNumlist = new List<string> ();
+	private void ShowFastAward()
+	{
+		HuangYePveTemplate mHYtemp = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+		awardidlist.Clear ();
+		awardNumlist.Clear ();
 
+		string m_AwardString = mHYtemp.fastAward;
+
+		string [] s = m_AwardString.Split ('#');
+
+		for(int i = 0; i < s.Length; i ++)
+		{
+			string [] h = s[i].Split (':');
+			int mid = int.Parse(h[1]);
+			awardidlist.Add(mid);
+			awardNumlist.Add(h[2]);
+
+		}
+		if (IconSamplePrefab == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), m_OnIconSampleCallBack);
+		}
+		else
+		{
+			WWW temp = null;
+			m_OnIconSampleCallBack(ref temp, null, IconSamplePrefab);
+		}
+	}
+	private void m_OnIconSampleCallBack(ref WWW p_www, string p_path, Object p_object)
+	{
+		//		Debug.Log ("numPara = " +numPara);
+	
+		for(int m = 0; m < awardidlist.Count ; m ++)
+		{
+			if (IconSamplePrefab == null)
+			{
+				IconSamplePrefab = p_object as GameObject;
+			}
+			
+			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
+			iconSampleObject.SetActive(true);
+			iconSampleObject.transform.parent = KuaiSuAwardRoot.transform;
+			iconSampleObject.transform.localPosition = new Vector3(0+50*m, 0, 0);
+			
+			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+			CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(awardidlist[m]);
+			NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mItemTemp.nameId);
+			string mdesc = DescIdTemplate.GetDescriptionById(awardidlist[m]);
+
+			iconSampleManager.SetIconByID(mItemTemp.id, awardNumlist[m].ToString(), 3);
+			iconSampleManager.SetIconPopText(awardidlist[m], mNameIdTemplate.Name, mdesc);
+			iconSampleObject.transform.localScale = new Vector3(0.4f,0.4f,1);
+			
+		 }
+	}
 	public void Init()
 	{
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		EnemyNumBers = 4;
 		initHYTreasureBattleUI ();
 		RefreshRetearce();
 		ShowBtnBox.SetActive(false);
-
+		ShowFastAward ();
 	}
 
 	public void initHYTreasureBattleUI()
 	{
 		//BooldNumb.text = mHuangYeTreasure.jindu+"%";
+		if(M_Treas_info.thisBoCi != null && M_Treas_info.allBoCi != null)
+		{
+			Boci.text = "当前波次("+M_Treas_info.thisBoCi.ToString()+"/"+M_Treas_info.allBoCi.ToString()+")";
+		}
+		//Boci.text = "当前波次("+M_Treas_info.thisBoCi.ToString()+"/"+M_Treas_info.allBoCi.ToString()+")";
 
 		HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
 
@@ -121,7 +191,24 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 		string mName = NameIdTemplate.GetName_By_NameId (mHuangYePveTemplate.nameId);
 
-		TuiJianMiBaoicon.spriteName = "";
+		//TuiJianMiBaoicon.spriteName = "";
+
+		string TuiJiAnMiBAo = mHuangYePveTemplate.recMibaoSkill;
+		string []m_str = TuiJiAnMiBAo.Split(',');
+		for (int i = 0; i < m_str.Length; i++)
+		{
+			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
+			mobg.SetActive(true);
+			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
+			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (m_str.Length - 1) * 35, 0, 0);
+			mobg.transform.localScale = Vector3.one;
+			if(m_str[i] != ""&&m_str[i] != null){
+				mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(m_str[i]);
+				mobg.GetComponent<MiBaoSkillTips>().mibao_name = m_str[i];
+			}
+			mobg.GetComponent<MiBaoSkillTips>().Init();
+		}
+
 		char[] separator = new char[]{'#'};
 		
 		string[] s = mHuangYeDesc.Split (separator);
@@ -236,462 +323,200 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 				    iconSampleManager.SetIconByID(mItemTemp.id, "", 7);
                     iconSampleManager.SetIconPopText(mAwardTemp[i].itemId, mNameIdTemplate.Name, mdesc);
-					iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+					iconSampleObject.transform.localScale = new Vector3(0.82f,0.82f,1);
 				}
 			}
 		}
 	}
+	List<HuangyeNPCTemplate> mHuangyeNPCTemplateList = new List<HuangyeNPCTemplate> ();
 	void initEnemy( )
 	{
-	     	
-		List<HuangyeNPCTemplate> mHuangyeNPCTemplateList = new List<HuangyeNPCTemplate> ();
-
 		mHuangyeNPCTemplateList.Clear ();
+
 
 		for(int i = 0 ; i < M_Treas_info.npcInfos.Count; i ++)
 		{
 			//Debug.Log(" M_Treas_info.npcInfos = "+ M_Treas_info.npcInfos[i].npcId);
-
 			HuangyeNPCTemplate m_HuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id(M_Treas_info.npcInfos[i].npcId);
 
 			mHuangyeNPCTemplateList.Add(m_HuangyeNPCTemplate);
 		}
-
-//			HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (m_id);
-//		    int npcid = mHuangYePveTemplate.npcId;
-
-//		List<HuangyeNPCTemplate> mHuangyeNPCTemplateList = HuangyeNPCTemplate.GetHuangyeNPCTemplates_By_npcid(npcid);
-		
-		foreach(HuangyeNPCTemplate mHuangyeNPCTemplate in mHuangyeNPCTemplateList)
+//		for (int i = 0; i < mHuangyeNPCTemplateList.Count-1; i ++)
+//		{
+//			for(int j = i+1; j < mHuangyeNPCTemplateList.Count; )
+//			{
+//				if(mHuangyeNPCTemplateList[i].modelId == mHuangyeNPCTemplateList[j].modelId)
+//				{
+//					
+//					mHuangyeNPCTemplateList.RemoveAt(j);
+//				}
+//				else{
+//					j ++;
+//				}
+//			}
+//		}
+		for (int i = 0; i < mHuangyeNPCTemplateList.Count-1; i ++)
 		{
-			int icom = int.Parse(mHuangyeNPCTemplate.icon);
-			if(icom != 0&& mHuangyeNPCTemplate.type == 4&& !Bosses.Contains(mHuangyeNPCTemplate.id)) // boss
+			for(int j = i+1 ; j < mHuangyeNPCTemplateList.Count; j++)
 			{
-				Bosses.Add(mHuangyeNPCTemplate.id);
-			}
-			
-			if(icom != 0&& mHuangyeNPCTemplate.type == 3&& !heros.Contains(mHuangyeNPCTemplate.id)) // hero
-			{
-
-				heros.Add(mHuangyeNPCTemplate.id);
-
-			}
-			
-			if(icom != 0&& mHuangyeNPCTemplate.type == 2&& !soldires.Contains(mHuangyeNPCTemplate.id)) // Solider
-			{
-
-				soldires.Add(mHuangyeNPCTemplate.id);
-
+				if(mHuangyeNPCTemplateList[i].type > mHuangyeNPCTemplateList[j].type)
+				{
+					HuangyeNPCTemplate mLegendNpc = mHuangyeNPCTemplateList[i];
+					mHuangyeNPCTemplateList[i] = mHuangyeNPCTemplateList[j];
+					mHuangyeNPCTemplateList[j] = mLegendNpc ;
+				}
 			}
 		}
-//		for (int i = 0; i < soldires.Count-1; i ++)
-//		{
-//			
-//			HuangyeNPCTemplate m_HuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id (soldires [i]);
-//			
-//			for(int j = i+1; j < soldires.Count; )
-//			{
-//				HuangyeNPCTemplate j_HuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id (soldires [j]);
-//				if(m_HuangyeNPCTemplate.profession == j_HuangyeNPCTemplate.profession)
-//				{
-//					
-//					soldires.RemoveAt(j);
-//				}
-//				else{
-//					j ++;
-//				}
-//			}
-//			
-//		}
-//		
-//		
-//		for (int i = 0; i < heros.Count-1; i ++)
-//		{
-//			HuangyeNPCTemplate m_HuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id (heros [i]);
-//			
-//			for(int j = i+1; j < heros.Count; )
-//			{
-//				HuangyeNPCTemplate j_HuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id (heros [j]);
-//				if(m_HuangyeNPCTemplate.profession == j_HuangyeNPCTemplate.profession)
-//				{
-//					
-//					heros.RemoveAt(j);
-//				}
-//				else{
-//					j ++;
-//				}
-//			}
-//			
-//		}
 		getEnemyData ();
 	}
 	
 	void getEnemyData()
 	{
-		//List<string> EyName = new List<string>(GetPveTempID.NewEnemy.Keys);
-		
-		int bossnum = Bosses.Count;
-		int heronum = heros.Count;
-		int solder = soldires.Count;
-		
-		Debug.Log ("boss个数：" + bossnum);
-		Debug.Log ("hero个数：" + heronum);
-		Debug.Log ("soldier个数：" + solder);
-		Debug.Log ("EnemyNumBers：" + EnemyNumBers);
-		
-		if (bossnum > 0)//BOSS个数不为0
+		if (IconSamplePrefab == null)
 		{
-			if (bossnum < EnemyNumBers)//boss不大于大于6个
-			{
-				if (heronum > 0)//w武将个数大于0
-				{
-					if (heronum + bossnum < EnemyNumBers)//w武将和bpss的总个数小于6
-					{
-						if (solder > 0)
-						{
-							if (heronum + bossnum + solder > EnemyNumBers)
-							{
-								createBoss(bossnum);
-								Debug.Log("1ci");
-								createHeros(heronum);
-								createSoliders(EnemyNumBers - (bossnum + heronum));
-							}
-							else
-							{
-								createBoss(bossnum);
-								Debug.Log("2ci");
-								createHeros(heronum);
-								createSoliders(solder);
-							}
-						}
-						else
-						{
-							createBoss(bossnum);
-							Debug.Log("3ci");
-							createHeros(heronum);
-						}
-					}
-					else
-					{//boss和武将的和大于6了 只创建6个
-						createBoss(bossnum);
-						Debug.Log("4ci");
-						createHeros(EnemyNumBers - bossnum);
-					}
-				}
-				else
-				{
-					//ww武将为0
-					if (solder > 0)
-					{
-						if (solder + bossnum > EnemyNumBers)
-						{
-							createBoss(bossnum);
-							createSoliders(EnemyNumBers - bossnum);
-						}
-						else
-						{
-							createBoss(bossnum);
-							createSoliders(solder);
-						}
-					}
-					else
-					{
-						createBoss(bossnum);
-					}
-				}
-			}
-			else
-			{
-				//boss的个数大于6
-				createBoss(EnemyNumBers);
-			}
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreatePuTong_Enemys);
 		}
 		else
 		{
-			//假如boss的个数为0000000000
-			if (heronum > 0)//w武将个数大于0
-			{
-				if (heronum < EnemyNumBers)//w武将和bpss的总个数小于6
-				{
-					if (solder > 0)
-					{
-						if (heronum + solder <= EnemyNumBers)
-						{
-							createHeros(heronum);
-//							Debug.Log("5ci");
-							createSoliders(solder);
-						}
-						else
-						{
-//							Debug.Log("6ci");
-							createHeros(heronum);
-							createSoliders(EnemyNumBers - heronum);
-						}
-					}
-					else
-					{
-//						Debug.Log("7ci");
-						createHeros(heronum);
-					}
-				}
-				else
-				{
-//					Debug.Log("8ci");
-					createHeros(EnemyNumBers);
-				}
-			}
-			else
-			{
-				if (solder > EnemyNumBers)
-				{
-					createSoliders(EnemyNumBers);
-				}
-				else
-				{
-					createSoliders(solder);
-				}
-			}
+			WWW temp = null;
+			OnCreatePuTong_Enemys(ref temp, null, IconSamplePrefab);
 		}
-		//this.gameObject.GetComponent<UIGrid>().repositionNow = true;
 	}
-	private void OnCreateBossCallBack(ref WWW p_www, string p_path, Object p_object)
+	private void OnCreatePuTong_Enemys(ref WWW p_www, string p_path, Object p_object)
 	{
 		if (IconSamplePrefab == null)
 		{
 			IconSamplePrefab = p_object as GameObject;
 		}
-//		Debug.Log ("createBossPara = " +createBossPara);
-		for (int n = 0; n < createBossPara; n++)
+		int count = mHuangyeNPCTemplateList.Count;
+		if(count > 10)
 		{
-			//Debug.Log ("bossnum = " +n);
-
+			count =  10;
+		}
+		for (int n = 0; n < count; n++)
+		{
 			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			iconSampleObject.SetActive(true);
+			
+			iconSampleObject.SetActive (true);
 			iconSampleObject.transform.parent = EnemyRoot.transform;
+			int allenemy = mHuangyeNPCTemplateList.Count;
+//			if(allenemy > 4)
+//			{
+//				allenemy = 4;
+//			}
+			
+			//iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
 			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
-			}
-			
-			HuangyeNPCTemplate mHuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id(Bosses[n]);
+			HuangyeNPCTemplate mHuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id(mHuangyeNPCTemplateList[n].id);
 			float boold = 1.0f;
 			for(int i = 0 ; i < M_Treas_info.npcInfos.Count; i ++)
 			{
-				if(Bosses[n] == M_Treas_info.npcInfos[i].npcId)
+				if(mHuangyeNPCTemplateList[n].id == M_Treas_info.npcInfos[i].npcId)
 				{
+//					Debug.Log("M_Treas_info.npcInfos[i].remainHP = " +M_Treas_info.npcInfos[i].remainHP);
+//					Debug.Log("M_Treas_info.npcInfos[i].totalHP = " +M_Treas_info.npcInfos[i].totalHP);
 					boold = (float)M_Treas_info.npcInfos[i].remainHP/(float)M_Treas_info.npcInfos[i].totalHP;
-
-					Debug.Log("boold = " +boold);
+					
+//					Debug.Log("boold = " +boold);
 				}
 			}
-
+			
 			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mHuangyeNPCTemplate.name);
 			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mHuangyeNPCTemplate.level.ToString();
 			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mHuangyeNPCTemplate.desc).description;
 			
 			string leftTopSpriteName = null;
-			var rightButtomSpriteName = "boss";
+			var rightButtomSpriteName = "";
+		
+			if(mHuangyeNPCTemplate.type == 4)
+			{
+				//Debug.Log("boss");
+				rightButtomSpriteName = "boss";
+			}
+			if(mHuangyeNPCTemplate.type == 5)
+			{
+				rightButtomSpriteName = "JunZhu";
+			}
 			if(boold > 0)
 			{
 				iconSampleManager.SetProgressBar(boold);
 			}
 			else
 			{
-			    iconSampleManager.MiddleSprite.gameObject.SetActive(true);
+				iconSampleManager.MiddleSprite.gameObject.SetActive(true);
 			}
-
+			
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-            iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
+			iconSampleManager.SetIconBasic(3, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
 			//iconSampleManager.SetIconPopText(popTextTitle, popTextDesc);
 			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+			iconSampleObject.transform.localScale = new Vector3(0.6f,0.6f,1);
 		}
+		EnemyRoot.GetComponent<UIGrid>().repositionNow = true;
 	}
-	
-	private int createBossPara;
-	
-	private int allenemy
+	private void OnCreateBossCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
-		get { return Bosses.Count + heros.Count + soldires.Count; }
-	}
-	
-	void createBoss(int i)
-	{
-		createBossPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateBossCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnCreateBossCallBack(ref temp, null, IconSamplePrefab);
-		}
-	}
-	
-	private void OnCreateHeroCallBack(ref WWW p_www, string p_path, Object p_object)
-	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-//		Debug.Log ("createHeroPara = " +createHeroPara);
-		for (int n = 0; n < createHeroPara; n++)
-		{
-
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-
-			iconSampleObject.transform.parent = EnemyRoot.transform;
-
-			iconSampleObject.SetActive(true);
-
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - Bosses.Count - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - Bosses.Count - n) * distance - countDistance, -20, 0);
-			}
-			Debug.Log("heros[n] = "+heros[n]);
-			HuangyeNPCTemplate mHuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id(heros[n]);
-			float boold = 1.0f;
-			for(int i = 0 ; i < M_Treas_info.npcInfos.Count; i ++)
-			{
-				if(heros[n] == M_Treas_info.npcInfos[i].npcId)
-				{
-					boold = (float)M_Treas_info.npcInfos[i].remainHP/(float)M_Treas_info.npcInfos[i].totalHP;
-					
+//		if (IconSamplePrefab == null)
+//		{
+//			IconSamplePrefab = p_object as GameObject;
+//		}
+////		Debug.Log ("createBossPara = " +createBossPara);
+//		for (int n = 0; n < createBossPara; n++)
+//		{
+//			//Debug.Log ("bossnum = " +n);
+//
+//			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
+//			iconSampleObject.SetActive(true);
+//			iconSampleObject.transform.parent = EnemyRoot.transform;
+//			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+//			
+//			if (allenemy >= EnemyNumBers)
+//			{
+//				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, -20, 0);
+//			}
+//			else
+//			{
+//				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
+//			}
+//			
+//			HuangyeNPCTemplate mHuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id(Bosses[n]);
+//			float boold = 1.0f;
+//			for(int i = 0 ; i < M_Treas_info.npcInfos.Count; i ++)
+//			{
+//				if(Bosses[n] == M_Treas_info.npcInfos[i].npcId)
+//				{
+//					boold = (float)M_Treas_info.npcInfos[i].remainHP/(float)M_Treas_info.npcInfos[i].totalHP;
+//
 //					Debug.Log("boold = " +boold);
-				}
-			}
-			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mHuangyeNPCTemplate.name);
-			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mHuangyeNPCTemplate.level.ToString();
-			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mHuangyeNPCTemplate.desc).description;
-			
-			string leftTopSpriteName = null;
-			var rightButtomSpriteName = "";
-			if(boold > 0)
-			{
-				iconSampleManager.SetProgressBar(boold);
-			}
-            else
-            {
-                iconSampleManager.MiddleSprite.gameObject.SetActive(true);
-            }
+//				}
+//			}
+//
+//			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mHuangyeNPCTemplate.name);
+//			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mHuangyeNPCTemplate.level.ToString();
+//			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mHuangyeNPCTemplate.desc).description;
+//			
+//			string leftTopSpriteName = null;
+//			var rightButtomSpriteName = "boss";
+//			if(boold > 0)
+//			{
+//				iconSampleManager.SetProgressBar(boold);
+//			}
+//			else
+//			{
+//			    iconSampleManager.MiddleSprite.gameObject.SetActive(true);
+//			}
+//
+//			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
+//            iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
+//			//iconSampleManager.SetIconPopText(popTextTitle, popTextDesc);
+//			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
+//			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
+//			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+//		}
+	}
 
-			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-            iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
-			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
-			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
-		}
-	}
-	
-	private int createHeroPara;
-	
-	void createHeros(int i)
-	{
-		createHeroPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateHeroCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnCreateHeroCallBack(ref temp, null, IconSamplePrefab);
-		}
-	}
-	
-	private void OnCreateSoldierCallBack(ref WWW p_www, string p_path, Object p_object)
-	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-//		Debug.Log ("createSoldierPara = " +createSoldierPara);
-		for (int n = 0; n < createSoldierPara; n++)
-		{
-			//Debug.Log ("solder = " +n);
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			iconSampleObject.transform.parent = EnemyRoot.transform;
-			iconSampleObject.SetActive(true);
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, -20, 0);
-			}
-			iconSampleObject.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
-			
-			HuangyeNPCTemplate mHuangyeNPCTemplate = HuangyeNPCTemplate.GetHuangyeNPCTemplate_By_id(soldires[n]);
-			float boold = 1.0f;
-			for(int i = 0 ; i < M_Treas_info.npcInfos.Count; i ++)
-			{
-				if(soldires[n] == M_Treas_info.npcInfos[i].npcId)
-				{
-					boold = (float)M_Treas_info.npcInfos[i].remainHP/(float)M_Treas_info.npcInfos[i].totalHP;
-					
-//					Debug.Log("boold = " +boold);
-				}
-			}
-			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mHuangyeNPCTemplate.name);
-			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mHuangyeNPCTemplate.level.ToString();
-			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mHuangyeNPCTemplate.desc).description;
-			
-			string leftTopSpriteName = null;
-			var rightButtomSpriteName = "";
-			if(boold > 0)
-			{
-				iconSampleManager.SetProgressBar(boold);
-			}
-            else
-            {
-                iconSampleManager.MiddleSprite.gameObject.SetActive(true);
-            }
-
-			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-            iconSampleManager.SetIconBasic(7, mHuangyeNPCTemplate.icon.ToString(), "", "", boold <= 0);
-			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
-			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
-		}
-	}
-	
-	private int createSoldierPara;
-	
-	void createSoliders(int i)
-	{
-		createSoldierPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateSoldierCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnCreateSoldierCallBack(ref temp, null, IconSamplePrefab);
-		}
-	}
 	public bool OnProcessSocketMessage(QXBuffer p_message){
 		
 		if (p_message != null)
@@ -723,7 +548,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 				
 				t_qx.Deserialize(t_stream, mMaxDamageRankResp, mMaxDamageRankResp.GetType());
 
-				Debug.Log("_____排行榜");
+				//Debug.Log("_____排行榜");
 				InitRankUI(mMaxDamageRankResp);
 				return true;
 			}	
@@ -767,7 +592,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 
 		mMy_DamageRank.Init ();
 
-		//HY_UIManager.Instance ().ShowOrClose ();
+		//HY_UIManager.Instance().ShowOrClose ();
 	}
 
 	IEnumerator CountTime()
@@ -796,68 +621,71 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		M_Treas_info = Treas_info;
 
 		m_Time = Treas_info.remainTime ;
-
-		initEnemy( );
-
-		ShowMiBaoSkill ();
-
-//		Debug.Log (" 1 somebody Treas_info.status == "+Treas_info.status);
-
-		StopCoroutine ("CountTime");
-
-		StartCoroutine("CountTime");
-
-		ShowRemainTime ();
-
-//		Debug.Log(Treas_info.timesOfDay);
-
-
-//			Debug.Log(Treas_info.status);
-
-			if(Treas_info.status == 1 ) //有人在挑战中
-			{
-				ShowPlayerDoingTiaoZhan.SetActive(true);
-		
-				m_objInBattle.SetActive(false);
+		if (!m_isEnterBattle) {
+			initEnemy( );
+			
+			ShowMiBaoSkill ();
+			
+			StopCoroutine ("CountTime");
+			
+			StartCoroutine("CountTime");
+			
+			ShowRemainTime ();
+		}
+		if(Treas_info.status == 1 ) //有人在挑战中
+		{
+			ShowPlayerDoingTiaoZhan.SetActive(true);
+	
+			m_objInBattle.SetActive(false);
 
 //				Debug.Log (" Treas_info.battleName== "+Treas_info.battleName);
-			}
-			else
-			{
-				//ChangeMiBaoBtn.SetActive(true);
-				ShowPlayerDoingTiaoZhan.SetActive(false);
+		}
+		else
+		{
+			//ChangeMiBaoBtn.SetActive(true);
+			ShowPlayerDoingTiaoZhan.SetActive(false);
 
-				m_objInBattle.SetActive(true);
+			m_objInBattle.SetActive(true);
 
 //				Debug.Log(m_isEnterBattle);
 
-				if(m_isEnterBattle)
-				{
+			if(m_isEnterBattle)
+			{
 //					Debug.Log("asdasd");
-					if(Treas_info.conditionIsOk)
-					{
-						HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
-						EnterBattleField.EnterBattleHYPve (mHuangYeTreasure.id, mHuangYePveTemplate);
-					}
-					else
-					{
-						Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),NoCondiction);
-					}
+				if(Treas_info.conditionIsOk)
+				{
+				    Global.m_isOpenHuangYe = true;
+					HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+					EnterBattleField.EnterBattleHYPve (mHuangYeTreasure.id, mHuangYePveTemplate);
+				}
+				else
+				{
+					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),NoCondiction);
 				}
 			}
+		}
 
 		m_isEnterBattle = false;
 	}
+
 	public void ShowMiBaoSkill()
 	{
 
 		if(M_Treas_info.zuheId < 1 )
 		{
+			if(!MiBaoGlobleData.Instance().GetMiBaoskillOpen())
+			{
+				mSparkleEffectItem.enabled = false ;
+			}
+			else
+			{
+				mSparkleEffectItem.enabled = true ;
+			}
 			MiBaoicon.spriteName = "";
 			return;
 		}
 		MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(M_Treas_info.zuheId);
-
+		mSparkleEffectItem.enabled = false ;
 		MiBaoicon.spriteName = mMiBaoskill.icon.ToString ();
 		//TimeAndAllTimes.text = M_Treas_info.timesOfDay.ToString () + "/" + M_Treas_info.totalTimes.ToString ();
 	}
@@ -891,9 +719,9 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		
 		string titleStr = "提示";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = "您今日的挑战次数已经用完，请先购买挑战次数";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "您今日的挑战次数已经用完，是否购买挑战次数？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
+		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,AddTimes,null,null);
 	}
 	public void HY_EnterBattle() //  进入战斗接口
 	{
@@ -941,7 +769,7 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		
 		QiXiongSerializer HYTreasureBattleper = new QiXiongSerializer ();
 
-		Debug.Log ("mHuangYeTreasure.id = "+mHuangYeTreasure.id);
+		//Debug.Log ("mHuangYeTreasure.id = "+mHuangYeTreasure.id);
 
 		mMaxDamageRankReq.id = mHuangYeTreasure.id;
 		
@@ -958,25 +786,29 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 			ProtoIndexes.MAX_DAMAGE_RANK_RESP );
 	}
 
-	public void AddTimes()
+	public void AddTimes(int i)
 	{
-		if(M_Treas_info.buyCiShuInfo == 1)
+	   if(i == 2)
 		{
-			if(M_Treas_info.leftBuyCiShu <= 0)
+			//Debug.Log("M_Treas_info.buyCiShuInfo = "+M_Treas_info.buyCiShuInfo);
+			if(M_Treas_info.buyCiShuInfo == 1)
+			{
+				if(M_Treas_info.leftBuyCiShu <= 0)
+				{
+					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),buyFailLoad);
+				}
+				else{
+					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),OpenBuyUILoadBack);
+				}
+			}
+			if(M_Treas_info.buyCiShuInfo == 2)
+			{
+				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),UpVipLoadBack);
+			}
+			if(M_Treas_info.buyCiShuInfo == 3)
 			{
 				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),buyFailLoad);
 			}
-			else{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),OpenBuyUILoadBack);
-			}
-		}
-		if(M_Treas_info.buyCiShuInfo == 2)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),UpVipLoadBack);
-		}
-		if(M_Treas_info.buyCiShuInfo == 3)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),buyFailLoad);
 		}
 	}
 	void UpVipLoadBack(ref WWW p_www,string p_path, Object p_object)
@@ -984,8 +816,20 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = "购买失败";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str = "Vip等级不足，提升Vip等级可增加购买次数！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		int vip = 3;
+		if(JunZhuData.Instance().m_junzhuInfo.vipLv > 3)
+		{
+			vip = 7;
+		}
+//		if(JunZhuData.Instance().m_junzhuInfo.vipLv > 7)
+//		{
+//			vip = 11;
+//		}
+//		if(JunZhuData.Instance().m_junzhuInfo.vipLv > 7)
+//		{
+//			vip = 15;
+//		}
+		string str =LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc0)+vip.ToString()+LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc1)+LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
 		
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
@@ -1006,9 +850,22 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = "购买失败";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str = "对不起，您今日购买次数已用尽！改日再来吧";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-		
+		int vip = 3;
+		string str = "";
+		if (JunZhuData.Instance().m_junzhuInfo.vipLv < 3) {
+			str = LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc0)+vip.ToString()+LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc1)+LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
+
+		}
+		if(JunZhuData.Instance().m_junzhuInfo.vipLv >= 3&& JunZhuData.Instance().m_junzhuInfo.vipLv<7)
+		{
+			vip = 7;
+			str = LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc0)+vip.ToString()+LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc1)+LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
+		}
+
+		if (JunZhuData.Instance().m_junzhuInfo.vipLv >= 7) {
+
+			str  = "今日的购买次数已经用完了，请明日再来吧";
+		}
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
 	
@@ -1059,11 +916,65 @@ public class HYRetearceEnemy : MonoBehaviour , SocketProcessor { //突袭藏宝�
 		EquipSuoData.TopUpLayerTip();
 		//		QXTanBaoData.Instance().CheckFreeTanBao();
 	}
+	public void OnStronger()
+	{
+		
+		MainCityUILT.ShowMainTipWindow();
+		
+		Global.m_isOpenPVP = false;
+		
+	}
 	public void Backbtn()
 	{
 		CityGlobalData.IsOPenHyLeveUI = false;
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Destroy (this.gameObject);
 	}
-
+	#region fulfil my ngui panel
+	
+	/// <summary>
+	/// my click in my ngui panel
+	/// </summary>
+	/// <param name="ui"></param>
+	public override void MYClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOver(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+		
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+		
+	}
+	
+	#endregion
 }

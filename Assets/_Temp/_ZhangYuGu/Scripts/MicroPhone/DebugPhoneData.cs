@@ -248,7 +248,7 @@ public class DebugPhoneData : MonoBehaviour, SocketProcessor {
 
     public void SendPhoneData()
     {
-        Debug.Log("SendPhoneData()");
+//        Debug.Log("SendPhoneData()");
 
         PlayerSound tempSound = new PlayerSound();
         int tempCount = 60000;

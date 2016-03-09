@@ -31,7 +31,7 @@ public class VideoHelper : MonoBehaviour {
 
 	#if PC_VIDEO && UNITY_EDITOR
 	public void OnGUI(){
-		if ( m_stream_ready && m_movie_texture != null ){
+		if ( m_playing_pc_video && m_movie_texture != null ){
 			GUI.DrawTexture (new Rect( 0, 0, Screen.width, Screen.height ), m_movie_texture );
 		}
 	}
@@ -39,17 +39,58 @@ public class VideoHelper : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+//		#if DEBUG_VIDEO
+//		ComponentHelper.LogMovieTexture( m_movie_texture );
+//
+//		ComponentHelper.LogAudioSource( m_movie_audio );
+//		#endif
+
 		#if PC_VIDEO && UNITY_EDITOR
 		if( m_movie_texture != null ){
 			if( Input.anyKeyDown ){
-				m_stream_ready = false;
+				#if DEBUG_VIDEO
+				Debug.Log( "Input Cancelled." );
+				#endif
+
+				m_playing_pc_video = false;
 				
 				m_movie_texture.Stop();
 				
 				m_movie_texture = null;
 			}
 			else if( !m_movie_texture.isPlaying ){
-				m_stream_ready = false;
+				if( m_movie_audio.clip != null ){
+					if( m_movie_audio.time < m_movie_audio.clip.length ){
+						#if DEBUG_VIDEO
+						Debug.Log( "Error Found, Replay Movie." );
+						#endif
+
+						m_movie_texture.Play();
+
+						m_movie_audio.time = 0.0f;
+
+						return;
+					}
+				}
+				else if( m_pc_video_status == PCVideoStatus.Loaded ){
+					#if DEBUG_VIDEO
+					Debug.Log( "Error Found, Replay Movie." );
+					#endif
+
+					m_pc_video_status = PCVideoStatus.WaitForDone;
+
+					m_movie_texture.Play();
+
+					m_movie_audio.time = 0.0f;
+
+					return;
+				}
+
+				#if DEBUG_VIDEO
+				Debug.Log( "Movie Stop Cancelled." );
+				#endif
+				
+				m_playing_pc_video = false;
 				
 				m_movie_texture = null;
 			}
@@ -66,13 +107,27 @@ public class VideoHelper : MonoBehaviour {
 	/// All mp4 file must be put under "StreamingAssets\Video" and "ResourcesCache\Video".
 	/// path: Video/x7.mp4
 	public static void PlayDramaVideo( string p_path, EventDelegate.Callback p_callback = null ){
+		#if DEBUG_VIDEO
+		Debug.Log( "PlayDramaVideo( " + p_path + " )" );
+		#endif
+
 		PlayVideo( p_path, VideoControlMode.None, p_callback );
 	}
 
 	#if PC_VIDEO && UNITY_EDITOR
 	public MovieTexture m_movie_texture;
 
-	private bool m_stream_ready = false;
+	public AudioSource m_movie_audio;
+
+	private bool m_playing_pc_video = false;
+
+	private enum PCVideoStatus{
+		None,
+		Loaded,
+		WaitForDone
+	}
+
+	private PCVideoStatus m_pc_video_status = PCVideoStatus.None;
 	#endif
 
 	private static string m_video_path = "";
@@ -83,6 +138,10 @@ public class VideoHelper : MonoBehaviour {
 
 	/// Debug and Internal use, please use PlayDramaVideo() instead.
 	public static void PlayVideo( string p_path, VideoControlMode p_mode, EventDelegate.Callback p_callback = null ){
+		#if DEBUG_VIDEO
+		Debug.Log( "PlayVideo( " + p_path + " - " + p_mode + " )" );
+		#endif
+
 		{
 			m_video_path = p_path;
 
@@ -98,18 +157,15 @@ public class VideoHelper : MonoBehaviour {
 
 	public IEnumerator PlayVideo(){
 		#if PC_VIDEO && UNITY_EDITOR
-		string t_win_path = "Assets/ResourcesCache/" + m_video_path;
-
-		m_movie_texture = (MovieTexture)AssetDatabase.LoadAssetAtPath( t_win_path, typeof(MovieTexture) );
-
-		if( m_movie_texture == null ){
-			Debug.Log( "Move Texture not loaded: " + t_win_path );
-		}
-
-		#endif
-
-		#if PC_VIDEO && UNITY_EDITOR
 		{
+			string t_win_path = "Assets/ResourcesCache/" + m_video_path;
+
+			m_movie_texture = (MovieTexture)AssetDatabase.LoadAssetAtPath( t_win_path, typeof(MovieTexture) );
+
+			if( m_movie_texture == null ){
+				Debug.Log( "Move Texture not loaded: " + t_win_path );
+			}
+
 			if( m_movie_texture == null ){
 				Debug.LogError( "Error, No Available Movie Assigned, please Install \"QuickTimeInstaller.exe\", then restart your computer, and finally reimport all videos." );
 				
@@ -117,22 +173,40 @@ public class VideoHelper : MonoBehaviour {
 				
 				yield break;
 			}
+
+			m_playing_pc_video = true;
 			
 			m_movie_texture.loop = false;
 
-			AudioSource t_audio = (AudioSource)ComponentHelper.AddIfNotExist( 
+			m_movie_audio = (AudioSource)ComponentHelper.AddIfNotExist( 
 					GameObjectHelper.GetDontDestroyOnLoadGameObject(),
 					typeof(AudioSource) );
+
+			if( m_movie_texture.audioClip == null ){
+				Debug.LogError( "Error, Movie Has no Audio." );
+			}
+
+			m_movie_audio.clip = m_movie_texture.audioClip;
+
+			m_pc_video_status = PCVideoStatus.Loaded;
+
+			#if DEBUG_VIDEO
+			ComponentHelper.LogMovieTexture( m_movie_texture, "After Loaded" );
+			#endif
 			
-			t_audio.clip = m_movie_texture.audioClip;
-			
-			t_audio.Play();
-			
+			m_movie_audio.Play();
+
 			m_movie_texture.Play();
+
+			#if DEBUG_VIDEO
+			ComponentHelper.LogMovieTexture( m_movie_texture, "After Played" );
+			#endif
 			
-			m_stream_ready = true;
-			
-			while( m_stream_ready ){
+			while( m_playing_pc_video ){
+//				#if DEBUG_VIDEO
+//				Debug.Log( "Waiting For Play End or Cancelled." );
+//				#endif
+				
 				yield return new WaitForEndOfFrame();
 			}
 			
@@ -158,6 +232,10 @@ public class VideoHelper : MonoBehaviour {
 	}
 
 	private void VideoPlayedDone(){
+		#if DEBUG_VIDEO
+		Debug.Log( "VideoPlayedDone()" );
+		#endif
+
 		{
 			AudioSource t_audio = gameObject.GetComponent<AudioSource>();
 			

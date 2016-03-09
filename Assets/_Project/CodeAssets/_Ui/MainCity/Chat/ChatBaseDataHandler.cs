@@ -274,7 +274,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
         if (BlockedData.Instance().m_BlockedInfoDic != null && BlockedData.Instance().m_BlockedInfoDic.Count != 0 &&
             BlockedData.Instance().m_BlockedInfoDic.Select(item => item.Value.name).Contains(tempChatPct.senderName))
         {
-            Debug.Log("Abort execute chat message cause black list shield, JunZhu name:" + tempChatPct.senderName);
+//            Debug.Log("Abort execute chat message cause black list shield, JunZhu name:" + tempChatPct.senderName);
             return;
         }
 

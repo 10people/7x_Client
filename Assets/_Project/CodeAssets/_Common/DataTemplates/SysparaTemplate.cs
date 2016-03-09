@@ -26,6 +26,11 @@ public class SysparaTemplate : XmlLoadManager
 		}
 		
 		m_templates_text = obj as TextAsset;
+
+		{
+			ProcessAsset ();
+			ReplaceSensitiveStr.LoadSensitiveWord (templates);
+		}
 	}
 
 	private static void ProcessAsset(){
@@ -68,11 +73,8 @@ public class SysparaTemplate : XmlLoadManager
 		}
     }
 
-    public static bool CompareSyeParaWord(string word){
-		{
-			ProcessAsset();
-		}
-
+    public static bool CompareSyeParaWord(string word)
+	{
         foreach (SysparaTemplate tem in templates)
         {
             if (tem.word.Equals(word))

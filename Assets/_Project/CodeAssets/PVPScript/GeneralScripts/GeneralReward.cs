@@ -31,7 +31,7 @@ public class GeneralReward : MonoBehaviour {
 
 		if (tempData.moveTime1 == 0 || tempData.moveTime2 == 0)
 		{
-			Debug.Log ("Do not moveTime set to 0");
+//			Debug.Log ("Do not moveTime set to 0");
 			return;
 		}
 
@@ -102,14 +102,14 @@ public class GeneralReward : MonoBehaviour {
 
 		if (xmlType == QXComData.XmlType.MIBAO)
 		{
-			GeneralRewardManager.Instance ().CreateSpecialReward (rewardData);
+			GeneralRewardManager.Instance().CreateSpecialReward (rewardData);
 		}
 		else if (xmlType == QXComData.XmlType.EQUIP)
 		{
 			CommonItemTemplate comTemp = CommonItemTemplate.getCommonItemTemplateById (rewardData.itemId);
 			if (QXComData.GetEffectColorByXmlColorId (comTemp.color) >= 2)
 			{
-				GeneralRewardManager.Instance ().CreateSpecialReward (rewardData);
+				GeneralRewardManager.Instance().CreateSpecialReward (rewardData);
 			}
 		}
 	}
@@ -118,8 +118,8 @@ public class GeneralReward : MonoBehaviour {
 	{
 		yield return new WaitForSeconds (stopTime);
 
-		GeneralRewardManager.Instance ().Reward_Index ++;
-		GeneralRewardManager.Instance ().CheckReward ();
+		GeneralRewardManager.Instance().Reward_Index ++;
+		GeneralRewardManager.Instance().CheckReward ();
 
 		Hashtable move = new Hashtable ();
 		move.Add ("time",moveSecondTime * 2);
@@ -133,7 +133,7 @@ public class GeneralReward : MonoBehaviour {
 	
 	void DestroyObj ()
 	{
-		GeneralRewardManager.Instance ().RefreshItemList (this.gameObject);
+		GeneralRewardManager.Instance().RefreshItemList (this.gameObject);
 	}
 
 	void Update ()

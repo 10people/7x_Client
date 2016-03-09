@@ -136,7 +136,6 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		}
 
 //		FreshGuide.Instance().LogActiveTask();
-
 		if( MainCityUIRB.isOpen&&(id == 603 || id == 6030)){
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
 
@@ -183,6 +182,10 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		if(!Global.m_isOpenJiaoxue)
 		{
 			return;
+		}
+		if(m_isOpenYindao)
+		{
+			CloseUI();
 		}
 		iTween[] tempiTewwn = gameObject.GetComponents<iTween>();
 		for(int i = 0; i < tempiTewwn.Length; i ++)
@@ -292,6 +295,14 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 			m_UISpriteRight.gameObject.GetComponent<BoxCollider>().size = new Vector3(tempCollW,h,1);
 			m_UISpriteRight.gameObject.GetComponent<BoxCollider>().center = new Vector3((tempCollW / 2),0,0);
 		}
+		else
+		{
+			m_UISpriteCenter.gameObject.SetActive(false);
+			m_UISpriteTop.gameObject.SetActive(false);
+			m_UISpriteBom.gameObject.SetActive(false);
+			m_UISpriteLeft.gameObject.SetActive(false);
+			m_UISpriteRight.gameObject.SetActive(false);
+		}
 		if(yindaoElenemt.m_ImageMove != null)
 		{
 			moveData tempMove = new moveData();
@@ -391,7 +402,15 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		
 		m_YindaoElenemt.m_Eff.eff.transform.localPosition = new Vector3(x, y, 0);
 
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YindaoElenemt.m_Eff.eff, EffectTemplate.getEffectTemplateByEffectId( m_YindaoElenemt.m_Eff.id ).path);
+		if( UI3DEffectTool.Instance() == null ){
+			Debug.LogError( UI3DEffectTool.Instance() );
+
+			Debug.LogError( m_YindaoElenemt.m_Eff );
+		
+			Debug.LogError( EffectTemplate.getEffectTemplateByEffectId( m_YindaoElenemt.m_Eff.id ) );
+		}
+
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YindaoElenemt.m_Eff.eff, EffectTemplate.getEffectTemplateByEffectId( m_YindaoElenemt.m_Eff.id ).path);
 	}
 
 	public void MoveImage(Vector3 tempData)
@@ -502,7 +521,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 				if(m_YindaoElenemt.m_Eff.eff != null)
 				{
 					m_YindaoElenemt.m_Eff.eff.SetActive(true);
-					UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YindaoElenemt.m_Eff.eff, EffectTemplate.getEffectTemplateByEffectId( m_YindaoElenemt.m_Eff.id ).path);
+					UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YindaoElenemt.m_Eff.eff, EffectTemplate.getEffectTemplateByEffectId( m_YindaoElenemt.m_Eff.id ).path);
 				}
 			}
 		}
@@ -517,7 +536,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 				if(m_YindaoElenemt.m_Eff.eff != null)
 				{
 					m_YindaoElenemt.m_Eff.eff.SetActive(false);
-					UI3DEffectTool.Instance().ClearUIFx(m_YindaoElenemt.m_Eff.eff);
+					UI3DEffectTool.ClearUIFx(m_YindaoElenemt.m_Eff.eff);
 				}
 			}
 		}

@@ -261,20 +261,25 @@ public class ConfigTool : Singleton<ConfigTool>{
 		{
 			ExeConfigItems();
 		}
+
+		// Log Items
+		{
+			LogConfigItems();
+		}
 	}
 	
 	private void LoadConfigItems(){
 //		Debug.Log( "ConfigTool.LoadConfigItems." );
 
 		// version
-		if( ContainsKey( m_config_xml_dict, CONST_VERSION ) ){
-			LoadValues( m_config_value_dict, CONST_VERSION, LoadStringValue( m_config_xml_dict, CONST_VERSION ) );
-
+		if( ContainsKey( m_config_xml_dict, CONST_SHOW_VERSION ) ){
 			LoadValues( m_config_value_dict, CONST_SHOW_VERSION, LoadBoolValue( m_config_xml_dict, CONST_SHOW_VERSION ) );
 		}
 
 		// debug
 		{
+			LoadValues( m_config_value_dict, CONST_SHOW_SCREEN_LOG, LoadBoolValue( m_config_xml_dict, CONST_SHOW_SCREEN_LOG ) );
+
 			LoadValues( m_config_value_dict, CONST_SHOW_CONSOLE, LoadBoolValue( m_config_xml_dict, CONST_SHOW_CONSOLE ) );
 
 			LoadValues( m_config_value_dict, CONST_COMMON_CODE_EXCEPTION, LoadBoolValue( m_config_xml_dict, CONST_COMMON_CODE_EXCEPTION ) );
@@ -420,6 +425,17 @@ public class ConfigTool : Singleton<ConfigTool>{
 				BundleHelper.CleanCache();
 			}
 			#endif
+		}
+	}
+
+	private void LogConfigItems(){
+		// log all
+		{
+//			LogConfigs();
+		}
+
+		{
+			
 		}
 	}
 
@@ -701,13 +717,13 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 	public const string CONST_SHOW_VERSION			= "ShowVersion";
 
-	public const string CONST_VERSION				= "Version";
-
 	#endregion
 
 
 
 	#region Debug Keys
+
+	public const string CONST_SHOW_SCREEN_LOG			= "ShowScreenLog";
 
 	public const string CONST_SHOW_CONSOLE				= "ShowConsole";
 

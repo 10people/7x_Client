@@ -14,7 +14,7 @@ public class EffectNWayMotion : MonoBehaviour {
 
   void CreateWayMotion() {
     if (WayChild == null) {
-      Debug.Log("WayChild is Null!");
+//      Debug.Log("WayChild is Null!");
       return;
     }
 

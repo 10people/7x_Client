@@ -35,8 +35,8 @@ public class SendMail : MonoBehaviour {
 		RefreshBtnState (1);
 		foreach (EventHandler handler in sendEmailBtnList)
 		{
-			handler.m_handler -= BtnHandlerCallBack;
-			handler.m_handler += BtnHandlerCallBack;
+			handler.m_click_handler -= BtnHandlerCallBack;
+			handler.m_click_handler += BtnHandlerCallBack;
 			if (btnDic.Count < sendEmailBtnList.Count)
 			{
 				btnDic.Add (handler.name,handler);
@@ -45,10 +45,10 @@ public class SendMail : MonoBehaviour {
 
 		btnDic["Block"].GetComponent<UISprite> ().alpha = 0.1f;
 
-		bool isDefault = NewEmailData.Instance ().SendEmailType == NewEmailData.SendType.DEFAULT ? true : false;
+		bool isDefault = NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT ? true : false;
 
-		nameLabel.value = NewEmailData.Instance ().SendName;
-		contentLabel.value = isDefault ? NewEmailData.Instance ().SendContent : "";
+		nameLabel.value = NewEmailData.Instance().SendName;
+		contentLabel.value = isDefault ? NewEmailData.Instance().SendContent : "";
 
 		nameLabel.GetComponent<BoxCollider> ().enabled = isDefault;
 	}
@@ -108,7 +108,7 @@ public class SendMail : MonoBehaviour {
 		sendReq.content = contentLabel.text;
 		
 		QXComData.SendQxProtoMessage (sendReq,ProtoIndexes.C_SEND_EAMIL,ProtoIndexes.S_SEND_EAMIL.ToString ());
-		Debug.Log ("SendEmail:" + ProtoIndexes.C_SEND_EAMIL);
+//		Debug.Log ("SendEmail:" + ProtoIndexes.C_SEND_EAMIL);
 
 		RefreshBtnState (2);
 	}

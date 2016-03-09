@@ -10,6 +10,7 @@ public class AllianceItemManagerment : MonoBehaviour {
     public UILabel m_LabCountry;
     public UILabel m_LabShengWang;
     public UILabel m_LabMengZhu;
+    public UISprite m_SpriteCountry;
     public List<EventIndexHandle> m_listEvent;
     private int ItemId = 0;
     public UILabel m_labButtonName;
@@ -67,13 +68,28 @@ public class AllianceItemManagerment : MonoBehaviour {
     public void ShowAllianceItem(AllianceLayerManagerment.AllianceItemInfo aii, OnClick_Touch callback,OnClick_Application application)
     {
         ItemId = aii.id;
-        _Country = aii.country;
+        _Country = aii.country; 
         _isCanApply = aii.isCanApply;
-        m_labButtonName.text = !aii.isApply ? "申请":"已申请";
-        m_listEvent[1].GetComponent<ButtonColorManagerment>().ButtonsControl(!aii.isApply);
+        m_SpriteCountry.spriteName = "nation_" + aii.country;
+        if (!aii.isApply)
+        {
+            if (aii.Ren_Now < aii.Ren_Max)
+            {
+                m_labButtonName.text = !aii.isApply && aii.ShenPiId == 0 ? "申请" : "立即加入";
+            }
+            else
+            {
+                m_labButtonName.text = "成员已满";
+            }
+        }
+        else
+        {
+            m_labButtonName.text = "已申请";
+        }
+        m_listEvent[1].GetComponent<ButtonColorManagerment>().ButtonsControl(!aii.isApply && aii.Ren_Now < aii.Ren_Max);
         m_LabName.text = "<" + aii.name + ">";
         m_LabLevel.text = aii.level.ToString();
-        m_LabCountry.text = NameIdTemplate.GetName_By_NameId(aii.country);
+        m_LabCountry.text = aii.Ren_Now.ToString() + "/" + aii.Ren_Max.ToString();//NameIdTemplate.GetName_By_NameId(aii.country);
         m_LabShengWang.text = aii.shengwang.ToString();
         m_LabMengZhu.text = aii.mengzhu;
         if (callback != null)

@@ -12,12 +12,14 @@ public class MiBaoSkillLvTempLate : XmlLoadManager {
 	
 	public string skill;
 	
-	public int skillDesc;
+	public int ZhuDongskillDesc;
 	
 	public int skill2;
 	
-	public int skill2Desc;
-	
+	public int BeDongskillDesc;
+
+	public int Desc;
+
 	public static List<MiBaoSkillLvTempLate> templates = new List<MiBaoSkillLvTempLate>();
 	
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null )
@@ -67,13 +69,16 @@ public class MiBaoSkillLvTempLate : XmlLoadManager {
 				t_template.skill = t_reader.Value;
 				
 				t_reader.MoveToNextAttribute();
-				t_template.skillDesc = int.Parse(t_reader.Value);
+				t_template.ZhuDongskillDesc = int.Parse(t_reader.Value);
 				
 				t_reader.MoveToNextAttribute();
 				t_template.skill2 = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
-				t_template.skill2Desc = int.Parse(t_reader.Value);
+				t_template.BeDongskillDesc = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.Desc = int.Parse(t_reader.Value);
 			}
 			
 			//			t_template.Log();

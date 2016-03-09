@@ -4,7 +4,12 @@ using System.Collections;
 public class WorshipStepAwardManangerment : MonoBehaviour
 {
     public UILabel m_LabTitle;
+    public UILabel m_LabLQ;
+    public UILabel m_LabYLQ;
+    public GameObject m_ObjFirst;
+    public GameObject m_ObjScecond;
     public EventIndexHandle m_TouchEvent;
+    public EventIndexHandle m_TouchLQEvent;
     public NGUILongPress NguiLongPress;
     public UIEventListener.VoidDelegate OnLongPressFinish
     {

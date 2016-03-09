@@ -8,7 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class KingDetailInfo : MYNGUIPanel
+public class KingDetailInfo : MonoBehaviour
 {
     public static int TransferBuwei(int original)
     {
@@ -123,6 +123,14 @@ public class KingDetailInfo : MYNGUIPanel
         }
     }
 
+    public GameObject TopLeftAnchor;
+
+    void Awake()
+    {
+        MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
+        MainCityUI.setGlobalTitle(TopLeftAnchor, "玩家信息", 0, 0);
+    }
+
     void Start()
     {
         m_ScaleEffectController.OpenCompleteDelegate = EndDelegate;
@@ -133,48 +141,10 @@ public class KingDetailInfo : MYNGUIPanel
         Destroy(gameObject);
     }
 
-    public override void MYClick(GameObject ui)
+    public void OnCloseClick()
     {
-        if (ui.name.IndexOf("Close") != -1)
-        {
-            m_ScaleEffectController.CloseCompleteDelegate = OnCloseWindow;
-            m_ScaleEffectController.OnCloseWindowClick();
-        }
-    }
-
-    public override void MYMouseOver(GameObject ui)
-    {
-
-    }
-
-    public override void MYMouseOut(GameObject ui)
-    {
-
-    }
-
-    public override void MYPress(bool isPress, GameObject ui)
-    {
-
-    }
-
-    public override void MYelease(GameObject ui)
-    {
-
-    }
-
-    public override void MYondrag(Vector2 delta)
-    {
-
-    }
-
-    public override void MYoubleClick(GameObject ui)
-    {
-
-    }
-
-    public override void MYonInput(GameObject ui, string c)
-    {
-
+        m_ScaleEffectController.CloseCompleteDelegate = OnCloseWindow;
+        m_ScaleEffectController.OnCloseWindowClick();
     }
 
     public void PlayerLoadCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -194,7 +164,7 @@ public class KingDetailInfo : MYNGUIPanel
 
     public void EndDelegate()
     {
-//        Debug.Log("===1");
+        //        Debug.Log("===1");
 
         Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + m_KingInfo.RoleID),
                                 PlayerLoadCallBack);

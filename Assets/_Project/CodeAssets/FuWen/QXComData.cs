@@ -17,11 +17,27 @@ public class QXComData {
 	public static string cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);//取消按钮
 	public static string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);//提示
 
-	public static int maxVipLevel = 10;
+	public static Color lightColor = new Color (1,0.8f,0.54f);
 
-	public static void LoadMoneyInfoPrefab (GameObject obj,bool isHaveHelpBtn)
+	public static int maxVipLevel = 7;
+
+	/// <summary>
+	/// Players the icon.
+	/// </summary>
+	/// <returns>The icon.</returns>
+	/// <param name="roleId">Role identifier.</param>
+	public static string PlayerIcon (int roleId)
 	{
-		MainCityUI.setGlobalBelongings (obj,isHaveHelpBtn ? 435 : 475,320);
+		return "PlayerIcon" + roleId;
+	}
+
+	/// <summary>
+	/// Nation the specified nationId.
+	/// </summary>
+	/// <param name="nationId">Nation identifier.</param>
+	public static string Nation (int nationId)
+	{
+		return "nation_" + nationId;
 	}
 
 	public static void LoadYuanBaoInfo (GameObject obj)
@@ -65,6 +81,16 @@ public class QXComData {
 			}
 		}
 		return false;
+	}
+
+	private static readonly Dictionary<int,int> horseColorDic = new Dictionary<int, int>()
+	{
+		{1,0},{2,1},{3,3},{4,6},{5,9}
+	};
+
+	public static int HorsePinZhiId (int id)
+	{
+		return horseColorDic [id];
 	}
 
 	#endregion
@@ -151,7 +177,7 @@ public class QXComData {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage ((short)(protoA),ref t_protof,protoB);
+		SocketTool.Instance().SendSocketMessage ((short)(protoA),ref t_protof,protoB);
 	}
 
 	/// <summary>
@@ -161,7 +187,7 @@ public class QXComData {
 	/// <param name="protoB">S_Protoindex</param>
 	public static void SendQxProtoMessage (int protoA ,string protoB = null)
 	{	
-		SocketTool.Instance ().SendSocketMessage ((short)(protoA),protoB);
+		SocketTool.Instance().SendSocketMessage ((short)(protoA),protoB);
 	}
 
 	/// <summary>
@@ -185,7 +211,7 @@ public class QXComData {
 	#region MiBaoSkillLevel
 	public static int GetMiBaoSkillLevel (int tempSkillId)
 	{
-		var skillList = MiBaoGlobleData.Instance ().G_MiBaoInfo.skillList;
+		var skillList = MiBaoGlobleData.Instance().G_MiBaoInfo.skillList;
 		foreach (SkillInfo skill in skillList)
 		{
 			if (skill.activeZuheId == tempSkillId)
@@ -199,7 +225,7 @@ public class QXComData {
 
 	public static bool CanSelectMiBaoSkill ()
 	{
-		var skillList = MiBaoGlobleData.Instance ().G_MiBaoInfo.skillList;
+		var skillList = MiBaoGlobleData.Instance().G_MiBaoInfo.skillList;
 		return skillList == null ? false : true;
 	}
 
@@ -208,25 +234,25 @@ public class QXComData {
 	#region ShowBtnEffect
 	public static void ShowChangeSkillEffect (bool tempOpen,GameObject tempSkillBtn,int tempEffectId)
 	{
-		UI3DEffectTool.Instance ().ClearUIFx (tempSkillBtn);
+		UI3DEffectTool.ClearUIFx (tempSkillBtn);
 		if (tempOpen)
 		{
-			if (MiBaoGlobleData.Instance ().GetMiBaoskillOpen ())
+			if (MiBaoGlobleData.Instance().GetMiBaoskillOpen ())
 			{
-				UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,tempSkillBtn,
+				UI3DEffectTool.ShowTopLayerEffect ( UI3DEffectTool.UIType.FunctionUI_1,tempSkillBtn,
 				                                               EffectIdTemplate.GetPathByeffectId(tempEffectId));
 			}
 			
 			BoxCollider btnBox = tempSkillBtn.GetComponent<BoxCollider> ();
 			if (btnBox != null)
 			{
-				btnBox.enabled = MiBaoGlobleData.Instance ().GetMiBaoskillOpen ();
+				btnBox.enabled = MiBaoGlobleData.Instance().GetMiBaoskillOpen ();
 			}
 			
 			UISprite btnSprite = tempSkillBtn.GetComponent<UISprite> ();	 
 			if (btnSprite != null)
 			{
-				btnSprite.color = MiBaoGlobleData.Instance ().GetMiBaoskillOpen () ? Color.white : Color.black;
+				btnSprite.color = MiBaoGlobleData.Instance().GetMiBaoskillOpen () ? Color.white : Color.black;
 			}
 		}
 	}
@@ -342,19 +368,33 @@ public class QXComData {
 	#endregion
 
 	#region CreateBox
-	public static GameObject CreateBox (int tempColorId,string tempText,bool isOneBtn,UIBox.onclick onClick)
+	public static GameObject CreateBox (int tempColorId,string tempText,bool isOneBtn,UIBox.onclick onClick,bool isFunction = false)
 	{
 		return isOneBtn ? UtilityTool.Instance.CreateBox (titleStr,
-                                               MyColorData.getColorString (tempColorId,"\n\n" + tempText),null,null,
-                                               confirmStr,null,
-		                                       onClick) 
+                                               			  MyColorData.getColorString (tempColorId,"\n" + tempText),null,null,
+                                               			  confirmStr,null,
+		                                      			  onClick,
+		                                                  null,
+		                                                  null,
+		                                                  null,
+		                                                  false,
+		                                                  true,
+		                                                  true,
+		                                                  isFunction) 
 						: UtilityTool.Instance.CreateBox (titleStr,
-		                                       MyColorData.getColorString (tempColorId,"\n\n" + tempText),null,null,
-		                                       cancelStr,confirmStr,
-			                                   onClick);
+			                                  			  MyColorData.getColorString (tempColorId,"\n" + tempText),null,null,
+		                                       			  cancelStr,confirmStr,
+			                                   			  onClick,
+			                                  			  null,
+			                                 			  null,
+			                                			  null,
+			                                			  false,
+			                                			  true,
+			                                			  true,
+			                                			  isFunction);
 	}
 
-	public static GameObject CreateBoxDiy (string tempText,bool isOneBtn,UIBox.onclick onClick)
+	public static GameObject CreateBoxDiy (string tempText,bool isOneBtn,UIBox.onclick onClick,bool isFunction = false)
 	{
 		return isOneBtn ? UtilityTool.Instance.CreateBox (titleStr,
                                                "\n\n" + tempText,null,null,
@@ -381,21 +421,21 @@ public class QXComData {
 		{
 		case EffectPos.TOP:
 
-			UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
+			UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
 			                                               obj,
 			                                               EffectIdTemplate.GetPathByeffectId(effectId));
 
 			break;
 		case EffectPos.MID:
 
-			UI3DEffectTool.Instance ().ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
+			UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
 			                                               obj,
 			                                               EffectIdTemplate.GetPathByeffectId(effectId));
 
 			break;
 		case EffectPos.BOTTOM:
 
-			UI3DEffectTool.Instance ().ShowBottomLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
+			UI3DEffectTool.ShowBottomLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,
 			                                               obj,
 			                                               EffectIdTemplate.GetPathByeffectId(effectId));
 
@@ -407,7 +447,7 @@ public class QXComData {
 	
 	public static void ClearEffect (GameObject obj)
 	{
-		UI3DEffectTool.Instance ().ClearUIFx (obj);
+		UI3DEffectTool.ClearUIFx (obj);
 	}
 	#endregion
 
@@ -436,13 +476,12 @@ public class QXComData {
 	/// </summary>
 	/// <returns>The sprite.</returns>
 	/// <param name="tempType">Temp type.</param>
-	public static UISprite MoneySprite (MoneyType tempType,UISprite tempSprite)
+	public static UISprite MoneySprite (MoneyType tempType,UISprite tempSprite,float tempScaleTimes = 1)
 	{
-		tempSprite.transform.localScale = Vector3.one;
 //		tempSprite.transform.localRotation = new Quaternion (0,0,tempType == MoneyType.YUANBAO ? 15 : 0,0);
 		tempSprite.spriteName = moneyDic [tempType] [0];
 		string[] scale = moneyDic [tempType] [2].Split (',');
-		tempSprite.SetDimensions (int.Parse (scale[0]),int.Parse (scale[1]));
+		tempSprite.SetDimensions ((int)(float.Parse (scale[0]) * tempScaleTimes),(int)(float.Parse (scale[1]) * tempScaleTimes));
 		return tempSprite;
 	}
 	/// <summary>
@@ -516,6 +555,37 @@ public class QXComData {
 		}
 		
 		return tempObjList;
+	}
+
+	#endregion
+
+	#region SetWidgetValueRelativeToScrollView
+
+	public static void SetWidget (UIScrollView sc,UIScrollBar sb,GameObject obj)
+	{
+		UIWidget widget = obj.GetComponent<UIWidget>();
+		
+		float widgetValue = sc.GetWidgetValueRelativeToScrollView (widget).y;
+		if (widgetValue < 0 || widgetValue > 1)
+		{
+			sc.SetWidgetValueRelativeToScrollView(widget, 0);
+			
+			//clamp scroll bar value.
+			//donot update scroll bar cause SetWidgetValueRelativeToScrollView has updated.
+			//set 0.99 and 0.01 cause same bar value not taken in execute.
+			float scrollValue = sc.GetSingleScrollViewValue();
+			if (scrollValue >= 1) sb.value = 0.99f;
+			if (scrollValue <= 0) sb.value = 0.01f;
+		}
+	}
+
+	#endregion
+
+	#region UIScrollBar Value
+
+	public static void InItScrollBarValue (UIScrollBar scrollBar,int value)
+	{
+		scrollBar.barSize = (float)value/100;
 	}
 
 	#endregion

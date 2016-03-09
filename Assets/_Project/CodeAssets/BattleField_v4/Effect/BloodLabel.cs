@@ -73,9 +73,9 @@ public class BloodLabel : UILabel
 	{
 		TweenAlpha.Begin (gameObject, 0, 1);
 
-		int random = (int)(Random.value * 1000) % BloodLabelControllor.Instance ().randomList.Count;
+		int random = (int)(Random.value * 1000) % BloodLabelControllor.Instance().randomList.Count;
 
-		Vector3 randomVector3 = BloodLabelControllor.Instance ().randomList [random];
+		Vector3 randomVector3 = BloodLabelControllor.Instance().randomList [random];
 
 		randomVector3.y = _ty;
 

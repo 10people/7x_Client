@@ -7,15 +7,10 @@ using System.Reflection;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class YxChooseDefcult : MonoBehaviour {
+public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	[HideInInspector]
 	
 	public int BigId;
-	public UILabel mTiLi;
-	
-	public UILabel mTongBi;
-	
-	public UILabel mYuanBao;
 
 	public GameObject Item;
 
@@ -25,32 +20,100 @@ public class YxChooseDefcult : MonoBehaviour {
 	public List <YouXiaItem> YouXiaItemmList = new List<YouXiaItem>();
 	public static YxChooseDefcult mmmYxChooseDefcult;
 	public UIScrollView mScorview;
-	void Awake()
+	public List<int > PassedId = new List<int>();
+
+	public static YxChooseDefcult Instance()
 	{
-		mmmYxChooseDefcult = this;
+		if (!mmmYxChooseDefcult)
+		{
+			mmmYxChooseDefcult = (YxChooseDefcult)GameObject.FindObjectOfType (typeof(YxChooseDefcult));
+		}
+		
+		return mmmYxChooseDefcult;
 	}
+
 	void Start () {
 	
 	}
 	
-
+	void Awake()
+	{
+		SocketTool.RegisterMessageProcessor(this);
+	}
+	void OnDestroy()
+	{
+		mmmYxChooseDefcult = null;
+		SocketTool.UnRegisterMessageProcessor(this);
+	}
 	void Update () {
 	
-		mTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tili.ToString();
-		
-		mTongBi.text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString();
-		
-		mYuanBao.text = JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString();
 	}
 	public void Init()
 	{
+		SetMessegae ();
+	}
+	private void SetMessegae()
+	{
+
+		YouXiaTypeInfoReq saodanginfo = new YouXiaTypeInfoReq ();
+		
+		MemoryStream saodangstream = new MemoryStream ();
+		
+		QiXiongSerializer saodangSer = new QiXiongSerializer ();
+	
+		saodanginfo.type = BigId;
+		//Debug.Log ("saodanginfo.type = "+saodanginfo.type);
+		saodangSer.Serialize (saodangstream, saodanginfo);
+		
+		byte[] t_protof;
+		
+		t_protof = saodangstream.ToArray();
+		
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_YOUXIA_TYPE_INFO_REQ,ref t_protof);
+	}
+	public   bool OnProcessSocketMessage(QXBuffer p_message){
+		
+		if (p_message != null)
+		{
+			switch (p_message.m_protocol_index)
+			{
+			case ProtoIndexes.S_YOUXIA_TYPE_INFO_RESP:
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				YouXiaTypeInfoResp tempInfo = new YouXiaTypeInfoResp();
+				
+				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+				//Debug.Log ("以战胜关卡Id返回 tempInfo passGuanQiaId.Count = "+tempInfo.passGuanQiaId.Count);
+				if(tempInfo.passGuanQiaId != null)
+				{
+					PassedId = tempInfo.passGuanQiaId;
+				}
+				InitData();
+
+				return true;
+			}
+
+			default: return false;
+			}
+		}
+		
+		return false;
+	}
+	void InitData()
+	{
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
 		{
-			Debug.Log("进入试练二阶界面222");
+			//Debug.Log("进入试练二阶界面222");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			mScorview.enabled = false;
 		}
+		//Debug.Log ("BigId.Count = "+BigId);
 		List<YouxiaPveTemplate> mYouxiaPveTemplateList = YouxiaPveTemplate.getYouXiaPveTemplateListBy_BigId (BigId);
 		YouxiaPveTemplate myouxia = YouxiaPveTemplate.getYouXiaPveTemplateBy_BigId (BigId);
 		YxName.text = NameIdTemplate.GetName_By_NameId (myouxia.bigName);
@@ -59,7 +122,7 @@ public class YxChooseDefcult : MonoBehaviour {
 			Destroy(m_YXItem.gameObject);
 		}
 		YouXiaItemmList.Clear ();
-
+		//Debug.Log ("mYouxiaPveTemplateList.Count = "+mYouxiaPveTemplateList.Count);
 		for(int i = 0 ; i < mYouxiaPveTemplateList.Count; i++)
 		{
 			GameObject m_UI = Instantiate(Item) as GameObject;

@@ -23,6 +23,9 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     public UIGrid m_ObjectRewardParent;
     public GameObject m_HiddenObj;
     public ScaleEffectController m_SEC;
+
+
+    public GameObject m_ObjTopLeft;
     private List<GameObject> _listitem = new List<GameObject>();
     private List<GuojiaRankInfo> _listNationInfo = new List<GuojiaRankInfo>();
     private string _strTitle = "";
@@ -41,6 +44,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     }
     void Start()
     {
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "国家", 0, 0);
         NationData.Instance.m_DataGetComplete = false;
         m_SEC.OpenCompleteDelegate += RequestData;
         m_ListEvent.ForEach(p => p.m_Handle += ShowInfo);

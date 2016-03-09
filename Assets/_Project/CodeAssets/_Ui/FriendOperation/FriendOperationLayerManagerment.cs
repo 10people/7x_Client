@@ -36,7 +36,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
 
     public UILabel m_labelFriedsTag;
     public UILabel m_labelForbidTag;
-
+    public GameObject m_ObjTopLeft;
     private bool isget = false;
     private Dictionary<int, GameObject> friendItenDic = new Dictionary<int, GameObject>();
     private Dictionary<int, GameObject> friendForbidItenDic = new Dictionary<int, GameObject>();
@@ -53,6 +53,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
     }
 	void Start () 
     {
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "好友", 0, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         listInfo.Clear();
         friendItenDic.Clear();
@@ -612,7 +613,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketProcessor
         if (!string.IsNullOrEmpty(name))
         {
 //			EmailData.Instance.ReplyLetter (name);
-			NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE,name);
+			NewEmailData.Instance().OpenEmail (NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE,name);
         	Destroy(m_MainParent);
         }       
     }

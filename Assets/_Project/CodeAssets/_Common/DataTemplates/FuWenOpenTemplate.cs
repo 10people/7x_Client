@@ -22,6 +22,8 @@ public class FuWenOpenTemplate : XmlLoadManager {
 
 	public float positionZ;
 
+	public int inlayColor;
+
 	public static List<FuWenOpenTemplate> templates = new List<FuWenOpenTemplate>();
 
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
@@ -82,6 +84,9 @@ public class FuWenOpenTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.positionZ = float.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.inlayColor = int.Parse(t_reader.Value);
 			}
 			
 			//			t_template.Log();

@@ -73,8 +73,6 @@ public class GeneralChallengePage : MonoBehaviour {
 
 	public GameObject topRightObj;
 
-	private bool isFirseOpen = true;
-
 	void Awake ()
 	{
 		gcPage = this;
@@ -82,7 +80,7 @@ public class GeneralChallengePage : MonoBehaviour {
 
 	void Start ()
 	{
-		QXComData.LoadMoneyInfoPrefab (topRightObj,false);
+		QXComData.LoadYuanBaoInfo (topRightObj);
 	}
 
 	/// <summary>
@@ -118,9 +116,11 @@ public class GeneralChallengePage : MonoBehaviour {
 
 		foreach (EventHandler handler in challengehandlerList)
 		{
-			handler.m_handler -= ChallengeHandlerClickBack;
-			handler.m_handler += ChallengeHandlerClickBack;
+			handler.m_click_handler -= ChallengeHandlerClickBack;
+			handler.m_click_handler += ChallengeHandlerClickBack;
 		}
+
+		Global.m_isOpenBaiZhan = false;
 	}
 
 	/// <summary>
@@ -141,9 +141,8 @@ public class GeneralChallengePage : MonoBehaviour {
 		plunderInfoObj.SetActive (true);
 		getGongJinNum.text = tempResp.lostGongJin.ToString ();
 		mGongJinNum.text = tempResp.gongJin.ToString ();
-		lueDuoTime.text = "剩余掠夺次数：" 
-			+ (0 - 0) 
-				+ "/" + 0;
+//		Debug.Log ("tempResp.all:" + tempResp.all + "|||||tempResp.all:" + tempResp.used);
+		lueDuoTime.text = "剩余掠夺次数：" + (tempResp.all - tempResp.used) + "/" + tempResp.all;
 
 		mSkillId = tempResp.myGongjiZuheId;
 		eSkillId = tempResp.oppFangShouZuheId;
@@ -159,8 +158,8 @@ public class GeneralChallengePage : MonoBehaviour {
 
 		foreach (EventHandler handler in challengehandlerList)
 		{
-			handler.m_handler -= ChallengeHandlerClickBack;
-			handler.m_handler += ChallengeHandlerClickBack;
+			handler.m_click_handler -= ChallengeHandlerClickBack;
+			handler.m_click_handler += ChallengeHandlerClickBack;
 		}
 	}
 
@@ -169,7 +168,7 @@ public class GeneralChallengePage : MonoBehaviour {
 	/// </summary>
 	void InItMiBaoInfo ()
 	{
-		Debug.Log ("mSkillId:" + mSkillId + "||eSkillId:" + eSkillId);
+//		Debug.Log ("mSkillId:" + mSkillId + "||eSkillId:" + eSkillId);
 		mLockObj.SetActive (mSkillId > 0 ? false : true);
 		mSkillIcon.spriteName = mSkillId > 0 ? MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (mSkillId).icon.ToString () : "";
 
@@ -177,8 +176,6 @@ public class GeneralChallengePage : MonoBehaviour {
 		eSkillIcon.spriteName = eSkillId > 0 ? MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (eSkillId).icon.ToString () : "";
 
 		ShowMiBaoSkillBtnEffect (true);
-
-		isFirseOpen = false;
 	}
 
 	void ShowMiBaoSkillBtnEffect (bool isActive)
@@ -189,7 +186,8 @@ public class GeneralChallengePage : MonoBehaviour {
 		if (mSkillId > 0)
 		{
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-			UI3DEffectTool.Instance ().ClearUIFx (challengehandlerList[0].gameObject);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
+			UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
 			sprite.color = Color.white;
 			label.color = Color.white;
 		}
@@ -204,21 +202,24 @@ public class GeneralChallengePage : MonoBehaviour {
 					if (mSkillId <= 0)
 					{
 						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
-						UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,challengehandlerList[0].gameObject,
-						                                               EffectIdTemplate.GetPathByeffectId(100006));
+						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,4);
+						UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,challengehandlerList[0].gameObject,
+						                                   EffectIdTemplate.GetPathByeffectId(600151));
 					}
 					else
 					{
 						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-						UI3DEffectTool.Instance ().ClearUIFx (challengehandlerList[0].gameObject);
+						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
+						UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
 					}
 				}
 				else
 				{
 					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
 					sprite.color = Color.black;
 					sprite.color = Color.black;
-					UI3DEffectTool.Instance ().ClearUIFx (challengehandlerList[0].gameObject);
+					UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
 				}
 			}
 		}
@@ -415,6 +416,7 @@ public class GeneralChallengePage : MonoBehaviour {
 	public void RefreshMyMiBaoSkillInfo (int tempSkillId)
 	{
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
 		mSkillId = tempSkillId;
 		InItMiBaoInfo ();
 	}
@@ -425,16 +427,37 @@ public class GeneralChallengePage : MonoBehaviour {
 		{
 		case "ChangeSkillBtn":
 
-			if(!MiBaoGlobleData.Instance ().GetEnterChangeMiBaoSkill_Oder ())
+			if(!MiBaoGlobleData.Instance().GetEnterChangeMiBaoSkill_Oder ())
 			{
+//				Debug.Log ("return");
 				return;
 			}
-			MiBaoGlobleData.Instance ().OpenMiBaoSkillUI ((int)(CityGlobalData.MibaoSkillType.PvpSend ), mSkillId);
+//			Debug.Log ("mSkillId:" + mSkillId);
+
+			int openId = -1;
+
+			switch (challengeType)
+			{
+			case GeneralControl.ChallengeType.PVP:
+
+				openId = (int)CityGlobalData.MibaoSkillType.PvpSend;
+				UIYindao.m_UIYindao.CloseUI ();
+
+				break;
+			case GeneralControl.ChallengeType.PLUNDER:
+
+				openId = (int)CityGlobalData.MibaoSkillType.LueDuo_GongJi;
+
+				break;
+			default:
+				break;
+			}
+
+			MiBaoGlobleData.Instance().OpenMiBaoSkillUI (openId,mSkillId);
 
 			break;
 		case "EnterFight":
 
-			CityGlobalData.m_MiBaoSkillId = 0;
 			switch (challengeType)
 			{	
 			case GeneralControl.ChallengeType.PVP:
@@ -447,7 +470,8 @@ public class GeneralChallengePage : MonoBehaviour {
 			case GeneralControl.ChallengeType.PLUNDER:
 				
 				EnterBattleField.EnterBattleLueDuo (plunderResp.oppoId);
-				
+				PlunderPage.plunderPage.CheckPlunderTimes ();
+
 				break;
 			default:
 				break;
@@ -459,10 +483,7 @@ public class GeneralChallengePage : MonoBehaviour {
 			switch (challengeType)
 			{	
 			case GeneralControl.ChallengeType.PVP:
-				
-				Global.m_isOpenBaiZhan = false;
-				PvpData.Instance.IsOpenPvpByBtn = false;
-				
+
 				sEffectController.OnCloseWindowClick ();
 				sEffectController.CloseCompleteDelegate += DisActiveObj;
 				
@@ -483,15 +504,6 @@ public class GeneralChallengePage : MonoBehaviour {
 		}
 	}
 
-	void OnEnable ()
-	{
-		if (!isFirseOpen)
-		{
-			mSkillId = CityGlobalData.m_MiBaoSkillId;
-			InItMiBaoInfo ();
-		}
-	}
-
 	private bool pvpReset = false;//是否重置百战
 	public bool PvpReset
 	{
@@ -502,7 +514,7 @@ public class GeneralChallengePage : MonoBehaviour {
 	{
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
-		CityGlobalData.m_MiBaoSkillId = 0;
+	
 		if (PvpReset)
 		{
 			PvpData.Instance.PvpDataReq ();

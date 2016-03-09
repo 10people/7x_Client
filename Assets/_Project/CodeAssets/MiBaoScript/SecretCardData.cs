@@ -26,7 +26,7 @@ public class SecretCardData : MonoBehaviour
 
     void Start()
     {
-		m_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		m_MiBaoInfo = MiBaoGlobleData.Instance().G_MiBaoInfo;
 		InitData();
     }
 

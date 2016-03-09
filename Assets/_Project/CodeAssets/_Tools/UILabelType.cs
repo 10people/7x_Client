@@ -38,20 +38,25 @@ public class UILabelType : MonoBehaviour
 		switch(m_iType)
 		{
 		case 0:
-//			if(m_UILabel.text.Length == 2)
-//			{
-//				m_UILabel.text = "[b]" + m_UILabel.text.Substring(0,1) + " " + m_UILabel.text.Substring(1,1) + "[-]";
-//			}
-			m_UILabel.text = "[b]" + m_UILabel.text + "[-]";
+			if(m_UILabel.text.Length == 2)
+			{
+				m_UILabel.spacingX = 13;
 
-			m_UILabel.fontSize = 31;
+//				m_UILabel.text = "[b]" + m_UILabel.text.Substring(0,1) + " " + m_UILabel.text.Substring(1,1) + "[-]";
+			}
+			else
+			{
+				m_UILabel.spacingX = 2;
+			}
+			m_UILabel.text = "[b]" + m_UILabel.text + "[-]";
+			m_UILabel.fontSize = 32;
 			m_UILabel.fontStyle = FontStyle.Normal;
 			m_UILabel.applyGradient = true;
 			m_UILabel.gradientTop = new Color(1.0f, 1.0f, 225f/255f);
 			m_UILabel.gradientBottom = new Color(1.0f, 181f/255f, 38f/255f);
 			m_UILabel.effectStyle = UILabel.Effect.Shadow;
 			m_UILabel.effectColor = Color.black;
-			m_UILabel.effectDistance = new Vector2(3, 3);
+			m_UILabel.effectDistance = new Vector2(2, 2);
 			break;
 		case 1:
 			m_UILabel.fontSize = 31;

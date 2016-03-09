@@ -55,17 +55,28 @@ public class JunZhuTaoZhuangEffect : MonoBehaviour
             tz._Type = TaoZhuangTemplate.templates[i].type;
             if (TaoZhuangTemplate.templates[i].type == 1)
             {
-                if (EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.templates[i].condition) < 9)
+                if (EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.templates[i].condition) < TaoZhuangTemplate.templates[i].neededNum)
                 {
                     tz._Title = NameIdTemplate.GetName_By_NameId(TaoZhuangTemplate.templates[i].targetShow)
-                        + "  (" + EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.templates[i].condition).ToString() + "/9)";
+                        + "  (" + EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.templates[i].condition).ToString() + "/" + TaoZhuangTemplate.templates[i].neededNum + ")";
                     tz._Des = ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing1) + TaoZhuangTemplate.templates[i].num1 + "、" + ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing2) + TaoZhuangTemplate.templates[i].num2 + "、" + ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing3) + TaoZhuangTemplate.templates[i].num3;
+
+                }
+                else if (EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.templates[i].condition) >= TaoZhuangTemplate.templates[i].neededNum)
+                {
+                    tz._Title = MyColorData.getColorString(4, NameIdTemplate.GetName_By_NameId(TaoZhuangTemplate.templates[i].targetShow)
+                       + "  (" + TaoZhuangTemplate.templates[i].neededNum.ToString() + "/" + TaoZhuangTemplate.templates[i].neededNum.ToString() + ")");
+                    tz._Des = MyColorData.getColorString(4, ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing1)
+                        + TaoZhuangTemplate.templates[i].num1 + "、" + ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing2)
+                        + TaoZhuangTemplate.templates[i].num2 + "、" + ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing3)
+                        + TaoZhuangTemplate.templates[i].num3);
+                    tz._IsMax = true;
 
                 }
                 else
                 {
                     tz._Title = MyColorData.getColorString(4, NameIdTemplate.GetName_By_NameId(TaoZhuangTemplate.templates[i].targetShow)
-                        + "  (" + EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.templates[i].condition).ToString() + "/9)");
+                        + "  (" + EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.templates[i].condition).ToString() + "/" + TaoZhuangTemplate.templates[i].neededNum + ")");
                     tz._Des = MyColorData.getColorString(4, ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing1)
                         + TaoZhuangTemplate.templates[i].num1 + "、" + ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing2)
                         + TaoZhuangTemplate.templates[i].num2 + "、" + ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing3)
@@ -75,10 +86,10 @@ public class JunZhuTaoZhuangEffect : MonoBehaviour
             }
             else if (TaoZhuangTemplate.templates[i].type == 2)
             {
-                if (EquipsOfBody.Instance().GetEquipCountByStrengthLevel(TaoZhuangTemplate.templates[i].condition) < 9)
+                if (EquipsOfBody.Instance().GetEquipCountByStrengthLevel(TaoZhuangTemplate.templates[i].condition) < TaoZhuangTemplate.templates[i].neededNum)
                 {
                     tz._Title = NameIdTemplate.GetName_By_NameId(TaoZhuangTemplate.templates[i].targetShow)
-                        + "  (" + EquipsOfBody.Instance().GetEquipCountByStrengthLevel(TaoZhuangTemplate.templates[i].condition).ToString() + "/9)";
+                        + "  (" + EquipsOfBody.Instance().GetEquipCountByStrengthLevel(TaoZhuangTemplate.templates[i].condition).ToString() + "/" + TaoZhuangTemplate.templates[i] .neededNum+ ")";
                     tz._Des = ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing1) 
                         + TaoZhuangTemplate.templates[i].num1 + "、" 
                         + ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing2) 
@@ -90,7 +101,7 @@ public class JunZhuTaoZhuangEffect : MonoBehaviour
                 else
                 {
                     tz._Title = MyColorData.getColorString(4, NameIdTemplate.GetName_By_NameId(TaoZhuangTemplate.templates[i].targetShow)
-                        + "  (" + EquipsOfBody.Instance().GetEquipCountByStrengthLevel(TaoZhuangTemplate.templates[i].condition).ToString() + "/9)");
+                        + "  (" + EquipsOfBody.Instance().GetEquipCountByStrengthLevel(TaoZhuangTemplate.templates[i].condition).ToString() + "/" + TaoZhuangTemplate.templates[i].neededNum + ")");
                     tz._Des = MyColorData.getColorString(4, ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing1)
                         + TaoZhuangTemplate.templates[i].num1 + "、"
                         + ShuXingTemp.GetShuXingName(TaoZhuangTemplate.templates[i].shuxing2)
@@ -197,6 +208,11 @@ public class JunZhuTaoZhuangEffect : MonoBehaviour
             if (index_num < _listInfo.Count - 1)
             {
                 index_num++;
+            }
+            else
+            {
+                m_ScrollViewLeft.UpdateScrollbars(true);
+                m_ScrollViewRight.UpdateScrollbars(true);
             }
 
         }

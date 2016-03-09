@@ -131,9 +131,9 @@ public class MiBaoSkillTEm : MonoBehaviour {
 	{
 //		Debug.Log ("ZUHE_id  = " +ZUHE_id);
 
-		ChangeMiBaoSkill.Instance ().newZuHe_id = ZUHE_id;
+		ChangeMiBaoSkill.Instance().newZuHe_id = ZUHE_id;
 
-		ChangeMiBaoSkill.Instance ().ReFreshLeftData (ZUHE_id);
+		ChangeMiBaoSkill.Instance().ReFreshLeftData (ZUHE_id);
 
 		if(FreshGuide.Instance().IsActive(100230)&& TaskData.Instance.m_TaskInfoDic[100230].progress >= 0 && chooseType == (int)(CityGlobalData.MibaoSkillType.PveSend))
 		{

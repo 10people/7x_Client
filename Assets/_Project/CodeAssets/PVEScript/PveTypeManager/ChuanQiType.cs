@@ -90,7 +90,7 @@ public class ChuanQiType : MonoBehaviour,SocketProcessor {
 		{
 			tiaoZhanTimes.text = "3"+"/3";
 		}
-		vipLevel =  JunZhuData.Instance ().m_junzhuInfo.vipLv;
+		vipLevel =  JunZhuData.Instance().m_junzhuInfo.vipLv;
 		if (levelInfo.chuanQiPass)
 		{
 			notCrossIcon.SetActive (false);

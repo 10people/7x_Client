@@ -154,7 +154,7 @@ public class MiBaodelIfon : MonoBehaviour {
 	}
 	public void hitDisActiveMiBao()
 	{
-		Debug.Log ("没有呗激活。。。。。。。。");
+		//Debug.Log ("没有呗激活。。。。。。。。");
 		if(theRoot)
 		{
 

@@ -40,18 +40,20 @@ public class MainCityUITongzhi : MYNGUIPanel
         }
     }
 
+	void Awake()
+	{
+		m_listObjButton.Add(m_objButton0);
+		m_listObjButton.Add(m_objButton1);
+		m_listButtonDes.Add(m_labelButtonDes0);
+		m_listButtonDes.Add(m_labelButtonDes1);
+	}
+
     void Start()
     {
-        m_listObjButton.Add(m_objButton0);
-        m_listObjButton.Add(m_objButton1);
-        m_listButtonDes.Add(m_labelButtonDes0);
-        m_listButtonDes.Add(m_labelButtonDes1);
     }
 
     public void upDataShow()
     {
-//		Debug.Log("=========1");
-
 		bool isHave = false;
 
 //		m_isOpen = false;
@@ -60,7 +62,15 @@ public class MainCityUITongzhi : MYNGUIPanel
 //        {
 //            m_listObjButton[i].SetActive(false);
 //        }
-
+		if(m_CurrentTongzhiDataList == null || m_CurrentTongzhiDataList.Count == 0)
+		{
+			gameObject.SetActive(false);
+			return;
+		}
+		else
+		{
+			gameObject.SetActive(true);
+		}
         for (int i = m_CurrentTongzhiDataList.Count - 1; i >= 0; i--)
         {
             if (m_CurrentTongzhiDataList[i].IsInReceiveScene() && m_CurrentTongzhiDataList[i].IsReportShowType())
@@ -93,6 +103,9 @@ public class MainCityUITongzhi : MYNGUIPanel
                             tempShowText = "知道了";
                             break;
                     }
+//					Debug.Log(q);
+//					Debug.Log(m_listObjButton);
+//					Debug.Log(m_listObjButton.Count);
                     m_listObjButton[q].SetActive(true);
                     m_listButtonDes[q].text = tempShowText;
                 }
@@ -224,7 +237,6 @@ public class MainCityUITongzhi : MYNGUIPanel
 
 	public void moveOver()
 	{
-		Debug.Log("===========3");
 		upDataShow();
 	}
 }

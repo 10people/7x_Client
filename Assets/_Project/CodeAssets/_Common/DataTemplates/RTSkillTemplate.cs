@@ -12,9 +12,9 @@ public class RTSkillTemplate : XmlLoadManager
     public int EffectTarget;
     public int ST_TypeRejectU;
     public int CRRejectU;
-    public int Range_Min;
-    public int Range_Max;
-    public int BaseCD;
+    public float Range_Min;
+    public float Range_Max;
+    public float BaseCD;
     public int IsInGCD;
     public int Action1;
     public string CsOnShot;
@@ -71,11 +71,11 @@ public class RTSkillTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.CRRejectU = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
-                t_template.Range_Min = int.Parse(t_reader.Value);
+                t_template.Range_Min = float.Parse(t_reader.Value) / 100;
                 t_reader.MoveToNextAttribute();
-                t_template.Range_Max = int.Parse(t_reader.Value);
+                t_template.Range_Max = float.Parse(t_reader.Value) / 100;
                 t_reader.MoveToNextAttribute();
-                t_template.BaseCD = int.Parse(t_reader.Value);
+                t_template.BaseCD = float.Parse(t_reader.Value) / 1000;
                 t_reader.MoveToNextAttribute();
                 t_template.IsInGCD = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();

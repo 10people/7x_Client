@@ -34,7 +34,7 @@ public class OnlineRewardcGiftBagsItemManagerment :  MonoBehaviour
  
     void Start()
     {
-        m_EventTouch.m_handler += Touch;
+        m_EventTouch.m_click_handler += Touch;
     }
     public void ShowInfo(HuoDongInfo info,OnClick_Touch callback)
     {

@@ -1,59 +1,68 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HorsePropItem : MonoBehaviour {
+namespace Carriage
+{
+	public class HorsePropItem : MonoBehaviour {
 
-	private HorsePropInfo propInfo;
+		private HorsePropInfo propInfo;
 
-	public UISprite propIcon;
+		public UISprite propIcon;
 
-	public UILabel desLabel;
-	public UILabel costLabel;
+		public UILabel desLabel;
+		public UILabel costLabel;
 
-	public EventHandler buyBtn;
+		public EventHandler buyBtn;
 
-	public void InItHorsePropItem (HorsePropInfo tempInfo)
-	{
-		propInfo = tempInfo;
-//		Debug.Log ("propInfo.isBuy:" + propInfo.isBuy);
-		propIcon.spriteName = tempInfo.iconId.ToString ();
+		private string textStr;
 
-		desLabel.text = tempInfo.desc;
+		public void InItHorsePropItem (HorsePropInfo tempInfo)
+		{
+			propInfo = tempInfo;
+	//		Debug.Log ("propInfo.isBuy:" + propInfo.isBuy);
+			propIcon.spriteName = tempInfo.iconId.ToString ();
 
-		costLabel.text = tempInfo.cost.ToString ();
+			desLabel.text = MyColorData.getColorString (3, tempInfo.desc);
 
-		UISprite btnSprite = buyBtn.GetComponent<UISprite> ();
-		btnSprite.color = BiaoJuPage.bjPage.HavePropCount () >= 3 ? Color.gray : (tempInfo.isBuy ? Color.gray : Color.white);
-		UIWidget btnWidget = buyBtn.transform.FindChild ("BtnLabel").gameObject.GetComponent<UIWidget> ();
-		btnWidget.color = BiaoJuPage.bjPage.HavePropCount () >= 3 ? Color.gray : (tempInfo.isBuy ? Color.gray : Color.white);
+			costLabel.text = tempInfo.cost.ToString ();
 
-		buyBtn.m_handler -= BuyBtnHandlerClickBack;
-		buyBtn.m_handler += BuyBtnHandlerClickBack;
-	}
+			UISprite btnSprite = buyBtn.GetComponent<UISprite> ();
+			btnSprite.color = BiaoJuPage.bjPage.HavePropCount () >= 3 ? Color.gray : (tempInfo.isBuy ? Color.gray : Color.white);
+			UIWidget btnWidget = buyBtn.transform.FindChild ("BtnLabel").gameObject.GetComponent<UIWidget> ();
+			btnWidget.color = BiaoJuPage.bjPage.HavePropCount () >= 3 ? Color.gray : (tempInfo.isBuy ? Color.gray : Color.white);
 
-	void BuyBtnHandlerClickBack (GameObject obj)
-	{
-		if (BiaoJuPage.bjPage.HavePropCount () < 3)
+			buyBtn.m_click_handler -= BuyBtnHandlerClickBack;
+			buyBtn.m_click_handler += BuyBtnHandlerClickBack;
+		}
+
+		void BuyBtnHandlerClickBack (GameObject obj)
 		{
 			if (!propInfo.isBuy)
 			{
-				//发送购买请求
-				if (JunZhuData.Instance ().m_junzhuInfo.yuanBao >= propInfo.cost)
+				if (BiaoJuPage.bjPage.HavePropCount () < 3)
 				{
-//					QXComData.CreateBox (1,"元宝不足！",true,null);
-//					return;
-					BiaoJuData.Instance.BuyHorsePropReq (propInfo.id);
+					//发送购买请求
+					if (JunZhuData.Instance().m_junzhuInfo.yuanBao >= propInfo.cost)
+					{
+						//					QXComData.CreateBox (1,"元宝不足！",true,null);
+						//					return;
+						BiaoJuData.Instance.BuyHorsePropReq (propInfo.id);
+					}
+					else
+					{
+						HorsePropWindow.propWindow.CloseBtnHandlerClickBack (gameObject);
+						//元宝不足
+						textStr = "元宝不足！是否前往充值？";
+						QXComData.CreateBox (1,textStr,false,BiaoJuPage.bjPage.TurnToVip);
+					}
 				}
 				else
 				{
-					//元宝不足
-					QXComData.CreateBox (1,"元宝不足！",true,null);
+					//道具栏已满
+					textStr = "道具栏已满";
+					QXComData.CreateBox (1,textStr,true,null);
 				}
 			}
-		}
-		else
-		{
-			//道具栏已满
 		}
 	}
 }

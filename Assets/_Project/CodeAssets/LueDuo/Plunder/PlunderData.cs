@@ -11,7 +11,8 @@ using ProtoBuf.Meta;
 
 public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 
-	public enum NextPageReqType{
+	public enum NextPageReqType
+	{
 		ALLIANCE = 1,
 		JUNZHU = 2,
 	}
@@ -21,6 +22,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 	{
 		CLEAR_CD = 1,
 		ADD_NUM = 2,
+		GET_REWARD = 3,
 	}
 	private OperateType operateType;//掠夺操作类型
 
@@ -48,25 +50,16 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 	private LveDuoInfoResp plunderResp;
 
 	private int pdAlliancePage;//联盟页
-	public int PdAlliancePage
-	{
-		get{return pdAlliancePage;}
-		set{pdAlliancePage = value;}
-	}
+	public int PdAlliancePage { get{return pdAlliancePage;} set{pdAlliancePage = value;} }
 
 	private int pRankPage;//个人排行页
-	public int PRankPage
-	{
-		get{return pRankPage;}
-		set{pRankPage = value;}
-	}
+	public int PRankPage { get{return pRankPage;} set{pRankPage = value;} }
 
 	private int aRankPage;//联盟排行页
-	public int ARankPage
-	{
-		get{return aRankPage;}
-		set{aRankPage = value;}
-	}
+	public int ARankPage { get{return aRankPage;} set{aRankPage = value;} }
+
+	private List<RewardData> rewardDataList;//每日排名结算奖励
+	public List<RewardData> RewardDataList { set{rewardDataList = value;} get{return rewardDataList;} }
 
 	private GameObject plunderObj;
 
@@ -89,13 +82,13 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 	/// </summary>
 	public void OpenPlunder ()
 	{
-		if (JunZhuData.Instance ().m_junzhuInfo.lianMengId <= 0)
+		if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{
 			//无联盟
 			ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"去加入一个联盟再来掠夺对手吧！"));
 			return;
 		}
-		else if (JunZhuData.Instance ().m_junzhuInfo.level < FunctionOpenTemp.GetTemplateById (211).Level)
+		else if (JunZhuData.Instance().m_junzhuInfo.level < FunctionOpenTemp.GetTemplateById (211).Level)
 		{
 			//未到掠夺开启等级
 			ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"[dc0600]" + FunctionOpenTemp.GetTemplateById (211).Level + "[-]级开启掠夺！"));
@@ -157,7 +150,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 	{
 		tempEntrance = entrance;
 
-		if (JunZhuData.Instance ().m_junzhuInfo.lianMengId <= 0)
+		if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{
 			textStr = "您还没有联盟，请先加入一个联盟后再来掠夺对手！";
 			QXComData.CreateBox (1,textStr,true,null);
@@ -166,7 +159,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 		
 		FunctionOpenTemp functionTemp = FunctionOpenTemp.GetTemplateById (211);
 		
-		if (JunZhuData.Instance ().m_junzhuInfo.level >= functionTemp.Level)
+		if (JunZhuData.Instance().m_junzhuInfo.level >= functionTemp.Level)
 		{
 			LveGoLveDuoReq plunderReq = new LveGoLveDuoReq ();
 			plunderReq.enemyId = tempJunZhuId;
@@ -198,7 +191,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 	{
 		rankType = tempType;
 		serchType = tempSerchType;
-		Debug.Log (PRankPage + ":" + ARankPage);
+//		Debug.Log (PRankPage + ":" + ARankPage);
 		RankingReq rank = new RankingReq ();
 		rank.rankType = (int)tempType;
 		rank.pageNo = tempType == PlunderRankType.PERSONAL_RANK ? PRankPage : ARankPage;
@@ -225,7 +218,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 //					Debug.Log ("是否有新的战斗记录：" + plunderDataRes.hasRecord );
 //					Debug.Log ("掠夺cdTime：" + plunderDataRes.CdTime);
 //					Debug.Log ("最大可掠夺次数：" + plunderDataRes.nowMaxBattleCount);
-					Debug.Log ("贡金：" + plunderDataRes.gongJin);
+//					Debug.Log ("贡金：" + plunderDataRes.gongJin);
 //					Debug.Log ("国家id：" + plunderDataRes.showGuoId);
 //					Debug.Log ("可以清除冷却的vip等级：" + plunderDataRes.canClearCdVIP);
 //					Debug.Log ("购买下次掠夺所花费的元宝数：" + plunderDataRes.buyNextBattleYB);
@@ -342,6 +335,20 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 						QXComData.CreateBox (1,textStr,true,null);
 						
 						break;
+					case 7:
+
+						textStr = "今天已领取过奖励！";
+
+						QXComData.CreateBox (1,textStr,true,null);
+
+						break;
+					case 8:
+
+//						Debug.Log ("领奖成功！");
+						GeneralRewardManager.Instance().CreateReward (RewardDataList);
+						PlunderPage.plunderPage.RefreshPlunderState (confirmRes);
+
+						break;
 					default:
 						break;
 					}
@@ -363,17 +370,6 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 					{
 						//跳转到对战阵容页面
 						GeneralControl.Instance.OpenPlunderChallengePage (plunderOpRes);
-//						GameObject challengeObj = GameObject.Find ("ChallengePage");
-//						if (challengeObj != null)
-//						{
-//							GeneralTiaoZhan tiaoZhan = challengeObj.GetComponent<GeneralTiaoZhan> ();
-//							
-//							tiaoZhan.InItLueDuoChallengePage (GeneralTiaoZhan.ZhenRongType.LUE_DUO,plunderOpRes);
-//						}
-//						else
-//						{
-//							CloneGeneralTiaoZhan ();
-//						}
 					}
 					else
 					{
@@ -397,7 +393,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 							QXComData.CreateBox (1,textStr,true,null);
 							break;
 						case 2:
-							if (JunZhuData.Instance ().m_junzhuInfo.vipLv < plunderResp.canClearCdVIP)
+							if (JunZhuData.Instance().m_junzhuInfo.vipLv < plunderResp.canClearCdVIP)
 							{
 								textStr = "掠夺冷却中！\n\n达到VIP" + plunderResp.canClearCdVIP + "级可清除冷却！";
 								QXComData.CreateBox (1,textStr,true,null);
@@ -418,9 +414,9 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 							}
 							else
 							{
-								if (JunZhuData.Instance ().m_junzhuInfo.vipLv < 10)
+								if (JunZhuData.Instance().m_junzhuInfo.vipLv < 10)
 								{
-									textStr = "今日掠夺次数已用尽！\n\n升级到VIP" + (JunZhuData.Instance ().m_junzhuInfo.vipLv + 1)
+									textStr = "今日掠夺次数已用尽！\n\n升级到VIP" + (JunZhuData.Instance().m_junzhuInfo.vipLv + 1)
 											+ "级可购买更多掠夺次数！";
 								}
 								else
@@ -491,7 +487,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 					{
 						rankResp.gongInfoList = new List<GongJinInfo>();
 					}
-					Debug.Log (rankResp.gongInfoList.Count);
+//					Debug.Log (rankResp.gongInfoList.Count);
 					PlunderRankType tempType = (PlunderRankType)Enum.ToObject (typeof (PlunderRankType),rankResp.rankType);
 
 					switch (tempType)
@@ -576,21 +572,6 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 		PlunderPage.plunderPage.InItPlunderPage (plunderResp);
 	}
 
-	//实例化挑战页面
-	void CloneGeneralTiaoZhan ()
-	{
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_CHALLENGE_PAGE ),
-		                        ChallengeLoadCallback );
-	}
-	
-	void ChallengeLoadCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object )
-	{
-		GameObject challenge = Instantiate (p_object) as GameObject;
-		GeneralTiaoZhan tiaoZhan = challenge.GetComponent<GeneralTiaoZhan> ();
-		
-		tiaoZhan.InItLueDuoChallengePage (GeneralTiaoZhan.ZhenRongType.LUE_DUO,plunderOpResp);
-	}
-	
 	void OnDestroy (){
 		SocketTool.UnRegisterMessageProcessor (this);
 

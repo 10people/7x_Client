@@ -51,7 +51,9 @@ public class BattleWeaponSkillDolt : MonoBehaviour
 
 	private void updataSprite()
 	{
-		if(coolDown == true && skillUnlock == true && weaponUnlock == true)
+		gameObject.SetActive(weaponUnlock);
+
+		if(coolDown == true && skillUnlock == true)
 		{
 			sprite.spriteName = "battle_dolt_green";
 		}

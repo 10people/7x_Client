@@ -149,11 +149,11 @@ public class MibaoZuheTemp : MonoBehaviour {
 
 	public void ShowSkillInfo()
 	{
-		//MiBaoManager.Instance ().MiBaoManager_mMiBaoGroup = mMiBaoGroup;
+		//MiBaoManager.Instance().MiBaoManager_mMiBaoGroup = mMiBaoGroup;
 
-		MiBaoManager.Instance ().CurrSkill_id = Skill_id;
+		MiBaoManager.Instance().CurrSkill_id = Skill_id;
 
-		MiBaoManager.Instance ().SortUI ("MiBaoSkillInfo");
+		MiBaoManager.Instance().SortUI ("MiBaoSkillInfo");
 
 	}
 }

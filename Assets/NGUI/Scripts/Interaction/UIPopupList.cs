@@ -624,8 +624,7 @@ public class UIPopupList : UIWidgetContainer
 
 			// Create the root object for the list
 			mChild = new GameObject("Drop-down List");
-			mChild.layer = gameObject.layer;
-
+			GameObjectHelper.SetGameObjectLayer( mChild, gameObject.layer );
 			Transform t = mChild.transform;
 			t.parent = myTrans.parent;
 			t.localPosition = bounds.min;

@@ -236,7 +236,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .239619851
         functionName: setWeaponTriggerTrue
         data: 
@@ -345,7 +345,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .456017703
         functionName: setWeaponTriggerTrue
         data: 
@@ -447,7 +447,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00343588996
         functionName: playAttackEffect
         data: 
@@ -556,7 +556,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .779999614
         functionName: checkDieInKnockdown
         data: 
@@ -746,7 +746,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00317460322
         functionName: PlaySound
         data: 4003|4004|4005|0|0|0|0
@@ -1119,7 +1119,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00769078359
         functionName: PlaySound
         data: 3022|3023|3024|3025|3026|3027|3028|3029
@@ -1221,13 +1221,13 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
-      - time: .0126580643
-        functionName: refreshRupt
+      events:
+      - time: .00871731434
+        functionName: playPre
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 3
         messageOptions: 0
       - time: .0126580643
         functionName: checkSkillDrama
@@ -1236,12 +1236,12 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0186510757
-        functionName: playPre
+      - time: .0126580643
+        functionName: refreshRupt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 3
+        intParameter: 0
         messageOptions: 0
       - time: .0377981327
         functionName: openShow
@@ -1249,13 +1249,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .0718498081
-        functionName: stopTime
-        data: 1.29,0.3
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 3
         messageOptions: 0
       - time: .471126825
         functionName: activeSkillStart
@@ -1351,7 +1344,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -1366,28 +1359,21 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0186510757
-        functionName: playPre
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 3
-        messageOptions: 0
-      - time: .0377981327
+      - time: .0324072987
         functionName: openShow
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0718498081
-        functionName: stopTime
-        data: 1.29,0.3
+      - time: .138054073
+        functionName: playPre
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 3
         messageOptions: 0
-      - time: .471126825
+      - time: .716409862
         functionName: activeSkillStart
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -1481,7 +1467,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -1510,14 +1496,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0718498081
-        functionName: stopTime
-        data: 1.29,0.3
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 3
-        messageOptions: 0
-      - time: .471126825
+      - time: .666491091
         functionName: activeSkillStart
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -1611,7 +1590,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -1741,7 +1720,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -1871,7 +1850,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -2001,7 +1980,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -2131,7 +2110,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -2261,7 +2240,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -2391,7 +2370,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0168776382
         functionName: setStand
         data: 
@@ -2486,7 +2465,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0168776382
         functionName: setStand
         data: 

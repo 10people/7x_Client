@@ -92,4 +92,25 @@ public class ExpTempTemp : XmlLoadManager
 
         return list;
     }
+
+    public static int GetEquipUpgradeInfo(int expId,int leve)
+    {
+        List<ExpTempTemp> list = new List<ExpTempTemp>();
+        for (int i = 0; i < templates.Count; i++)
+        {
+            ExpTempTemp t_item = templates[i];
+
+            if (t_item.expId == expId && t_item.level == leve)
+            {
+                list.Add(t_item);
+            }
+        }
+
+
+
+        return 0;
+    }
+
+
+
 }

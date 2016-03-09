@@ -41,6 +41,7 @@ public class YindaoEditor : MonoBehaviour
 
 	private string[] m_sPosShow = new string[]{ "＼", "↑", "／", "←", "〇", "→", "／", "↓", "＼" };
 
+	private int m_iGUIMoveX = 0;
 //	private List<YindaoElenemt> m_listYindaoElenemt;
 
 	public static YindaoEditor Instance(){
@@ -127,15 +128,23 @@ public class YindaoEditor : MonoBehaviour
 		if( !m_open_guide_editor ){
 			return;
 		}
-		if(GUI.Button(new Rect(Screen.width - 175,0,50,25), "开启"))
+		if(GUI.Button(new Rect(Screen.width / 2 - 50,590,50,25), "左"))
+		{
+			m_iGUIMoveX -= 50;
+		}
+		else if(GUI.Button(new Rect(Screen.width /2 + 50,590,50,25), "右"))
+		{
+			m_iGUIMoveX += 50;
+		}
+		else if(GUI.Button(new Rect(Screen.width - 175 + m_iGUIMoveX,0,50,25), "开启"))
 		{
 			openEditorYindao();
 		}
-		else if(GUI.Button(new Rect(130,0,50,25), "取消"))
+		else if(GUI.Button(new Rect(130 + m_iGUIMoveX,0,50,25), "取消"))
 		{
 			m_iSelectType = -1;
 		}
-		else if(GUI.Button(new Rect(Screen.width - 125,0,50,25), "关闭"))
+		else if(GUI.Button(new Rect(Screen.width - 125 + m_iGUIMoveX,0,50,25), "关闭"))
 		{
 			m_UIYindao.CloseUI();
 			if(m_open_guide_editor)
@@ -144,16 +153,16 @@ public class YindaoEditor : MonoBehaviour
 				m_iSelectType = -1;
 			}
 		}
-		else if(m_ObjBox.activeSelf && GUI.Button(new Rect(Screen.width - 75,25,75,25), "关闭Box"))
+		else if(m_ObjBox.activeSelf && GUI.Button(new Rect(Screen.width - 75 + m_iGUIMoveX,25,75,25), "关闭Box"))
 		{
 			m_ObjBox.SetActive(false);
 			m_iSelectType = -1;
 		}
-		else if(!m_ObjBox.activeSelf && GUI.Button(new Rect(Screen.width - 75,25,75,25), "开启Box"))
+		else if(!m_ObjBox.activeSelf && GUI.Button(new Rect(Screen.width - 75 + m_iGUIMoveX,25,75,25), "开启Box"))
 		{
 			m_ObjBox.SetActive(true);
 		}
-		else if(GUI.Button(new Rect(Screen.width - 75,0,75,25), "保存文档"))
+		else if(GUI.Button(new Rect(Screen.width - 75 + m_iGUIMoveX,0,75,25), "保存文档"))
 		{
 			if(m_iSelectYindaoIndex != -1)
 			{
@@ -244,15 +253,15 @@ public class YindaoEditor : MonoBehaviour
 			temp.Close();
 		}
 
-		GUI.Box(new Rect(0,0,50,20),"click");
-		GUI.Box(new Rect(0,20,50,20),"image");
-		GUI.Box(new Rect(0,40,50,20),"label");
-		GUI.Box(new Rect(0,60,50,20),"eff");
+		GUI.Box(new Rect(0 + m_iGUIMoveX,0,50,20),"click");
+		GUI.Box(new Rect(0 + m_iGUIMoveX,20,50,20),"image");
+		GUI.Box(new Rect(0 + m_iGUIMoveX,40,50,20),"label");
+		GUI.Box(new Rect(0 + m_iGUIMoveX,60,50,20),"eff");
 
 
 		if(m_curYindaoElenemt.m_Click == null)
 		{
-			if(GUI.Button(new Rect(50,0,30,20),"add") && m_iSelectYindaoIndex != -1)
+			if(GUI.Button(new Rect(50 + m_iGUIMoveX,0,30,20),"add") && m_iSelectYindaoIndex != -1)
 			{
 				m_UIYindao.CloseUI();
 				m_curYindaoElenemt.m_Click = new Click();
@@ -269,7 +278,7 @@ public class YindaoEditor : MonoBehaviour
 		}
 		if(m_curYindaoElenemt.m_ImageMove == null)
 		{
-			if(GUI.Button(new Rect(50,20,30,20),"add") && m_iSelectYindaoIndex != -1)
+			if(GUI.Button(new Rect(50 + m_iGUIMoveX,20,30,20),"add") && m_iSelectYindaoIndex != -1)
 			{
 				m_UIYindao.CloseUI();
 				m_curYindaoElenemt.m_ImageMove = new ImageMove();
@@ -288,7 +297,7 @@ public class YindaoEditor : MonoBehaviour
 		}
 		if(m_curYindaoElenemt.m_Label == null)
 		{
-			if(GUI.Button(new Rect(50,40,30,20),"add") && m_iSelectYindaoIndex != -1)
+			if(GUI.Button(new Rect(50 + m_iGUIMoveX,40,30,20),"add") && m_iSelectYindaoIndex != -1)
 			{
 				m_UIYindao.CloseUI();
 				m_curYindaoElenemt.m_Label = new Label();
@@ -308,7 +317,7 @@ public class YindaoEditor : MonoBehaviour
 		}
 		if(m_curYindaoElenemt.m_Eff == null)
 		{
-			if(GUI.Button(new Rect(50,60,30,20),"add") && m_iSelectYindaoIndex != -1)
+			if(GUI.Button(new Rect(50 + m_iGUIMoveX,60,30,20),"add") && m_iSelectYindaoIndex != -1)
 			{
 				m_UIYindao.CloseUI();
 				m_curYindaoElenemt.m_Eff = new Eff();
@@ -324,7 +333,7 @@ public class YindaoEditor : MonoBehaviour
 		}
 		for(int i = 0; i < 4; i ++)
 		{
-			if(GUI.Button(new Rect(80,i * 20 ,20,20), m_iSelectType == i ? "●" : ""))
+			if(GUI.Button(new Rect(80 + m_iGUIMoveX,i * 20 ,20,20), m_iSelectType == i ? "●" : ""))
 			{
 				if(!m_ObjBox.activeSelf)
 				{
@@ -367,7 +376,7 @@ public class YindaoEditor : MonoBehaviour
 				}
 				m_iSelectType = i;
 			}
-			else if(GUI.Button(new Rect(100,i * 20 ,30,20), "X"))
+			else if(GUI.Button(new Rect(100 + m_iGUIMoveX,i * 20 ,30,20), "X"))
 			{
 				m_iSelectType = -1;
 				m_UIYindao.CloseUI();
@@ -386,7 +395,7 @@ public class YindaoEditor : MonoBehaviour
 				m_UIYindao.setOpenYindao(m_curYindaoElenemt);
 			}
 		}
-		m_sId = GUI.TextArea(new Rect(Screen.width / 2 - 50,0,100,20),m_sId);
+		m_sId = GUI.TextArea(new Rect(Screen.width / 2 - 50 + m_iGUIMoveX,0,100,20),m_sId);
 		switch(m_iSelectType)
 		{
 		case 0:
@@ -394,7 +403,7 @@ public class YindaoEditor : MonoBehaviour
 			{
 				if(i != getPosIndex(m_curYindaoElenemt.m_Click.pos))
 				{
-					if(GUI.Button(new Rect(((i % 3) * 30), Screen.height - 90 + ((int)(i / 3)) * 30,30,30), m_sPosShow[i]))
+					if(GUI.Button(new Rect(((i % 3) * 30) + m_iGUIMoveX, Screen.height - 90 + ((int)(i / 3)) * 30,30,30), m_sPosShow[i]))
 					{
 						m_curYindaoElenemt.m_Click.pos = getPosString(i);
 						Debug.Log(m_curYindaoElenemt.m_Click.pos);
@@ -403,7 +412,7 @@ public class YindaoEditor : MonoBehaviour
 			}
 			if(!m_isMouse)
 			{
-				if(GUI.Button(new Rect(Screen.width - 50,50,50,50), "鼠标框"))
+				if(GUI.Button(new Rect(Screen.width - 50 + m_iGUIMoveX,50,50,50), "鼠标框"))
 				{
 					m_isMouse = true;
 				}
@@ -536,7 +545,7 @@ public class YindaoEditor : MonoBehaviour
 		case 2:
 			if(!m_isMouse)
 			{
-				if(GUI.Button(new Rect(Screen.width - 50,50,50,50), "鼠标框"))
+				if(GUI.Button(new Rect(Screen.width - 50 + m_iGUIMoveX,50,50,50), "鼠标框"))
 				{
 					m_isMouse = true;
 				}
@@ -652,7 +661,7 @@ public class YindaoEditor : MonoBehaviour
 			{
 				if(i != getPosIndex(m_curYindaoElenemt.m_Eff.pos))
 				{
-					if(GUI.Button(new Rect(((i % 3) * 30), Screen.height - 90 + ((int)(i / 3)) * 30,30,30), m_sPosShow[i]))
+					if(GUI.Button(new Rect(((i % 3) * 30) + m_iGUIMoveX, Screen.height - 90 + ((int)(i / 3)) * 30,30,30), m_sPosShow[i]))
 					{
 						m_curYindaoElenemt.m_Eff.pos = getPosString(i);
 						Debug.Log(m_curYindaoElenemt.m_Click.pos);
@@ -697,23 +706,23 @@ public class YindaoEditor : MonoBehaviour
 		switch(m_iSelectType)
 		{
 		case 0:
-			GUI.Box(new Rect(0,80 ,25,20), "○");
-			GUI.Box(new Rect(50,80 ,25,20), "□");
+			GUI.Box(new Rect(0 + m_iGUIMoveX,80 ,25,20), "○");
+			GUI.Box(new Rect(50 + m_iGUIMoveX,80 ,25,20), "□");
 
-			GUI.Label(new Rect(0,80 ,100,20), "isColl");
-			if(GUI.Button(new Rect(25,80 ,25,20), m_curYindaoElenemt.m_Click.type == 0 ? "●" : ""))
+			GUI.Label(new Rect(0 + m_iGUIMoveX,80 ,100,20), "isColl");
+			if(GUI.Button(new Rect(25 + m_iGUIMoveX,80 ,25,20), m_curYindaoElenemt.m_Click.type == 0 ? "●" : ""))
 			{
 				m_curYindaoElenemt.m_Click.type = 0;
 				m_UIYindao.CloseUI();
 				m_UIYindao.setOpenYindao(m_curYindaoElenemt);
 			}
-			else if(GUI.Button(new Rect(75,80 ,25,20), m_curYindaoElenemt.m_Click.type == 1 ? "●" : ""))
+			else if(GUI.Button(new Rect(75 + m_iGUIMoveX,80 ,25,20), m_curYindaoElenemt.m_Click.type == 1 ? "●" : ""))
 			{
 				m_curYindaoElenemt.m_Click.type = 1;
 				m_UIYindao.CloseUI();
 				m_UIYindao.setOpenYindao(m_curYindaoElenemt);
 			}
-			else if(GUI.Button(new Rect(75,100 ,25,20), m_curYindaoElenemt.m_Click.isColl == 0 ? "●" : "○"))
+			else if(GUI.Button(new Rect(75 + m_iGUIMoveX,100 ,25,20), m_curYindaoElenemt.m_Click.isColl == 0 ? "●" : "○"))
 			{
 				m_curYindaoElenemt.m_Click.isColl = ++m_curYindaoElenemt.m_Click.isColl % 2;
 				m_UIYindao.CloseUI();
@@ -733,7 +742,7 @@ public class YindaoEditor : MonoBehaviour
 					Debug.Log("continue=" + i);
 					continue;
 				}
-				if(GUI.Button(new Rect(((i % 3) * 30), 300 + ((int)(i / 3)) * 30,30,30), m_sPosShow[i]))
+				if(GUI.Button(new Rect(((i % 3) * 30) + m_iGUIMoveX, 300 + ((int)(i / 3)) * 30,30,30), m_sPosShow[i]))
 				{
 					m_UIYindao.CloseUI();
 					switch(i)
@@ -766,8 +775,8 @@ public class YindaoEditor : MonoBehaviour
 					m_UIYindao.setOpenYindao(m_curYindaoElenemt);
 				}
 			}
-			m_sYinDaoDialogID = GUI.TextArea(new Rect(0,400,100,20),m_sYinDaoDialogID);
-			if(GUI.Button(new Rect(100,400 ,50,20), "确定"))
+			m_sYinDaoDialogID = GUI.TextArea(new Rect(0 + m_iGUIMoveX,400,100,20),m_sYinDaoDialogID);
+			if(GUI.Button(new Rect(100 + m_iGUIMoveX,400 ,50,20), "确定"))
 			{
 				m_curYindaoElenemt.m_ImageMove.desID = int.Parse(m_sYinDaoDialogID);
 				m_UIYindao.CloseUI();
@@ -775,8 +784,8 @@ public class YindaoEditor : MonoBehaviour
 			}
 			break;
 		case 2:
-			m_sOpenDialogID = GUI.TextArea(new Rect(0,80,100,20),m_sOpenDialogID);
-			if(GUI.Button(new Rect(100, 80 ,30,20), ""))
+			m_sOpenDialogID = GUI.TextArea(new Rect(0 + m_iGUIMoveX,80,100,20),m_sOpenDialogID);
+			if(GUI.Button(new Rect(100 + m_iGUIMoveX, 80 ,30,20), ""))
 			{
 				m_UIYindao.CloseUI();
 				m_curYindaoElenemt.m_Label.dialogid = int.Parse(m_sOpenDialogID);
@@ -784,8 +793,8 @@ public class YindaoEditor : MonoBehaviour
 			}
 			break;
 		case 3:
-			m_sEffID = GUI.TextArea(new Rect(0,80,100,20),m_sEffID);
-			if(GUI.Button(new Rect(100, 80 ,30,20), ""))
+			m_sEffID = GUI.TextArea(new Rect(0 + m_iGUIMoveX,80,100,20),m_sEffID);
+			if(GUI.Button(new Rect(100 + m_iGUIMoveX, 80 ,30,20), ""))
 			{
 				m_UIYindao.CloseUI();
 				m_curYindaoElenemt.m_Eff.id = int.Parse(m_sEffID);

@@ -6,7 +6,7 @@ public class EnterHuangyebtn : MonoBehaviour {
 	//public GameObject HuangYe;
 
 	public static EnterHuangyebtn HYMapData;
-	public static EnterHuangyebtn Instance ()
+	public static EnterHuangyebtn Instance()
 	{
 		if (!HYMapData)
 		{

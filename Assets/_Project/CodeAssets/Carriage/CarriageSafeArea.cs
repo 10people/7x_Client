@@ -29,10 +29,12 @@ namespace Carriage
                 {
                     var pos = MathHelper.GetPointAtCircle(new Vector2(item.AreaPos.x, item.AreaPos.y), item.AreaRadius, NumPerCircle, i);
 
-                    FxTool.PlayLocalFx(EffectTemplate.GetEffectPathByID(600169), m_SafeAreaParent, SetScale, new Vector3(pos.x, RootManager.BasicYPosition, pos.y), Vector3.zero);
+                    FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(600169), m_SafeAreaParent, SetScale, new Vector3(pos.x, RootManager.BasicYPosition, pos.y), Vector3.zero);
                 }
 
                 var temp = Instantiate(m_CarriageNPCPrefab);
+                TransformHelper.ActiveWithStandardize(m_RootManager.PlayerParentObject.transform, temp.transform);
+
                 temp.transform.position = new Vector3(m_SafeAreaList[m_CarriageNPCList.Count].AreaPos.x, RootManager.BasicYPosition, m_SafeAreaList[m_CarriageNPCList.Count].AreaPos.y);
 
                 m_CarriageNPCList.Add(temp);
@@ -53,12 +55,6 @@ namespace Carriage
         void SetScale(GameObject go)
         {
             //go.transform.localScale = Vector3.one * m_SafeAreaList.First().AreaRadius;
-        }
-
-        void Awake()
-        {
-            YunBiaoSafeTemplate.LoadTemplates();
-            YunBiaoTemplate.LoadTemplates();
         }
     }
 }

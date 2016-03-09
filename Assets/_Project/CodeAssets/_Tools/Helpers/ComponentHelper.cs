@@ -9,6 +9,37 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ComponentHelper{
+	
+	#region Register Global Component
+
+	/// <summary>
+	/// Register global components which never destroyed here.
+	/// </summary>
+	public static void RegisterGlobalComponents(){
+		#if DEBUG_GAME_OBJECT_HELPER
+		Debug.Log( "RegisterGlobalComponents()" );
+		#endif
+
+		GameObject t_dont_destroy = GameObjectHelper.GetDontDestroyOnLoadGameObject();
+
+		ComponentHelper.AddIfNotExist( t_dont_destroy, typeof(UtilityTool) );
+
+		ComponentHelper.AddIfNotExist( t_dont_destroy, typeof(PushAndNotificationHelper) );
+
+		ComponentHelper.AddIfNotExist( t_dont_destroy, typeof(ConsoleTool) );
+
+		ComponentHelper.AddIfNotExist(t_dont_destroy, typeof(InGameLog));
+
+		{
+			FileHelper.RegisterLog();
+
+//			DebugHelper.RegisterLog();
+		}
+	}
+
+	#endregion
+
+
 
 	#region Global Class Update
 
@@ -107,6 +138,12 @@ public class ComponentHelper{
 
 	/// Add type to a gameobject, if not exist on it.
 	public static Component AddIfNotExist( GameObject p_gb, System.Type p_type ){
+		if( p_gb == null ){
+			Debug.LogError( "Error, gb is null: " + p_gb );
+
+			return null;
+		}
+
 		Component t_com = p_gb.GetComponent( p_type );
 		
 		if( t_com == null ) {
@@ -116,12 +153,14 @@ public class ComponentHelper{
 		return t_com;
 	}
 
-	public static void RemoveIfExist( GameObject p_gb, System.Type p_type ){
+	public static Component RemoveIfExist( GameObject p_gb, System.Type p_type ){
 		Component t_com = p_gb.GetComponent( p_type );
 
 		if( t_com != null ){
 			Destroy( t_com );
 		}
+
+		return t_com;
 	}
 
 	#endregion
@@ -131,8 +170,34 @@ public class ComponentHelper{
 	#region Log Component
 
 	public static void LogUISprite( UISprite p_sprite, string p_prefix = "" ){
-		Debug.Log( p_prefix + " " + p_sprite.spriteName + " : " + p_sprite.width + ", " + p_sprite.height + 
-		          " - " + p_sprite.atlas.name + " - " + p_sprite.atlas.AtlasWidth + ", " + p_sprite.atlas.AtlasHeight );
+		if( p_sprite == null ){
+			Debug.Log( "UISprite is null." );
+
+			return;
+		}
+
+		Debug.Log( p_prefix + " " + p_sprite.spriteName + " : " + p_sprite.type );
+
+		Debug.Log( "w.h: " + p_sprite.width + ", " + p_sprite.height + " - " + 
+			p_sprite.atlas.name + " - " + 
+			"atlas.pixelSize: " + p_sprite.atlas.pixelSize +
+			"atlas.w.h: " + p_sprite.atlas.AtlasWidth + ", " + p_sprite.atlas.AtlasHeight );
+
+		Vector4 t_draw = p_sprite.drawingDimensions;
+
+		Debug.Log( "drawRegion: " + t_draw );
+	}
+
+	public static void LogUISpriteData( UISpriteData p_spriteData, string p_prefix = "" ){
+		if( p_spriteData == null ){
+			Debug.Log( "UISpriteData is null." );
+
+			return;
+		}
+
+		Debug.Log( p_prefix + " " + p_spriteData.name );
+
+		p_spriteData.Log();
 	}
 
 	public static void LogUITexture( UITexture p_tex, string p_prefix = "" ){
@@ -323,6 +388,41 @@ public class ComponentHelper{
 		Debug.Log( "Path: " + AssetDatabase.GetAssetPath( p_renderer ) );
 		#endif
 	}
+
+	public static void LogAudioSource( AudioSource p_source, string p_prefix = "", string t_surfix = ""  ){
+		if( p_source == null ){
+			Debug.Log( "AudioSource is Null: " + p_source );
+
+			return;
+		}
+
+		if( p_source.clip == null ){
+			Debug.Log( "Clip is Null: " + p_source );
+
+			return;
+		}
+
+		Debug.Log( p_prefix + " " + p_source + ": " + 
+			"IsPlaying: " + p_source.isPlaying + ", " +
+			"Gb.Active: " + p_source.gameObject.activeInHierarchy + "," +
+			"Enable: " + p_source.enabled + ", " +
+			"Volume: " + p_source.volume + ", " +
+			p_source.time + " / " + p_source.clip.length + " " + t_surfix );
+	}
+
+	#if UNITY_EDITOR
+	public static void LogMovieTexture( MovieTexture p_movie, string p_prefix = "", string t_surfix = ""  ){
+		if( p_movie == null ){
+			Debug.Log( "MovieTexture is null." );
+		}
+
+		Debug.Log( p_prefix + "  " +  
+			"playing: " + p_movie.isPlaying + " - " +
+			"duration: " + p_movie.duration + " - " +
+			"isReadyToPlay: " + p_movie.isReadyToPlay + " - " +
+			" " + t_surfix );
+	}
+	#endif
 
 	#endregion
 
@@ -832,6 +932,10 @@ public class ComponentHelper{
 	#region Mesh & PS
 
 	public static void DisableAllVisibleObject( GameObject p_gb ){
+		if (p_gb == null) {
+			return;
+		}
+
 		Renderer[] t_renderers = p_gb.GetComponentsInChildren<Renderer>();
 		
 		for( int i = 0; i < t_renderers.Length; i++ ){
@@ -955,6 +1059,110 @@ public class ComponentHelper{
 		}
 		
 		return m_list.ToArray();
+	}
+
+	#endregion
+
+
+
+	#region UIWidget
+
+	public static bool IsNGUIWidget( UIWidget p_widget ){
+		if( p_widget == null ){
+			Debug.Log( "Widget is null: " + p_widget );
+
+			return false;
+		}
+
+		if( p_widget is UITexture ||
+			p_widget is UISprite ||
+			p_widget is UILabel ){
+			return true;
+		}
+
+		return false;
+	}
+
+	public static UIWidget GetActiveWidget( GameObject p_gb ){
+		UIWidget[] t_widgets = p_gb.GetComponents<UIWidget>();
+
+		for( int i = 0; i < t_widgets.Length; i++ ){
+			if( t_widgets[ i ] != null ){
+				if( t_widgets[ i ].enabled ){
+					return t_widgets[ i ];
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public static void ShiftWidgetDepth( GameObject p_gb, int p_offset ){
+		UIWidget[] t_widgets = p_gb.GetComponentsInChildren<UIWidget>();
+
+		for( int i = 0; i < t_widgets.Length; i++ ){
+			UIWidget t_widget = t_widgets[ i ];
+
+			if( t_widget == null ){
+				continue;
+			}
+
+			if( IsNGUIWidget( t_widget ) ){
+				t_widget.depth += p_offset;
+			}
+		}
+	}
+
+	public static int GetNGUIMinDepth( GameObject p_gb ){
+		UIWidget[] t_widgets = p_gb.GetComponentsInChildren<UIWidget>();
+
+		if( t_widgets == null || t_widgets.Length == 0 ){
+			return int.MinValue;
+		}
+
+		int t_min = t_widgets[ 0 ].depth;
+
+		for( int i = 1; i < t_widgets.Length; i++ ){
+			UIWidget t_widget = t_widgets[ i ];
+
+			if( t_widget == null ){
+				continue;
+			}
+
+			if( IsNGUIWidget( t_widget ) ){
+				if( t_widget.depth < t_min ){
+					t_min = t_widget.depth;
+				}
+			}
+		}
+
+		return t_min;
+	}
+
+	public static int GetNGUIMaxDepth( GameObject p_gb ){
+		UIWidget[] t_widgets = p_gb.GetComponentsInChildren<UIWidget>();
+
+		if( t_widgets == null || t_widgets.Length == 0 ){
+			return int.MinValue;
+		}
+
+		int t_max = t_widgets[ 0 ].depth;
+
+		for( int i = 1; i < t_widgets.Length; i++ ){
+			UIWidget t_widget = t_widgets[ i ];
+
+			if( t_widget == null ){
+				continue;
+			}
+
+			if( IsNGUIWidget( t_widget ) ){
+				if( t_widget.depth > t_max ){
+					t_max = t_widget.depth;
+				}
+			}
+		}
+
+		return t_max;
 	}
 
 	#endregion

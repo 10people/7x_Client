@@ -8,7 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class JiBaiAward : MonoBehaviour {
+public class JiBaiAward : MYNGUIPanel {
 	public UISprite icon;
 
 	public UISprite IsChoosed;
@@ -18,20 +18,46 @@ public class JiBaiAward : MonoBehaviour {
 	public int Itemid;
 
 	public Award mAwardinfo;
+
+	public string PinZhi = "pinzhi";
+
+	public UISprite PinZhikuang;
+
+	public NGUILongPress EnergyDetailLongPress1;
+
+	public UILabel Num;
+
+	void Awake()
+	{
+		EnergyDetailLongPress1.LongTriggerType = NGUILongPress.TriggerType.Press;
+		EnergyDetailLongPress1.NormalPressTriggerWhenLongPress = false;
+		EnergyDetailLongPress1.OnLongPressFinish = OnCloseDetail;
+		EnergyDetailLongPress1.OnLongPress = OnEnergyDetailClick1;
+	}
 	void Start () {
 	
 	}
 	
-
+	private void OnCloseDetail(GameObject go)
+	{
+		ShowTip.close();
+	}
+	public void OnEnergyDetailClick1(GameObject go)//显示体力恢复提示
+	{
+		
+		int Star_Id = mAwardinfo.itemId;
+//		Debug.Log ("Star_Id = "+Star_Id);
+		ShowTip.showTip (Star_Id);
+	}
 	void Update () {
 	
 	}
 	public void Init()
 	{
 		CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(mAwardinfo.itemId);
-		
+		Num.text = mAwardinfo.itemNumber.ToString ();
 		icon.spriteName = mItemTemp.icon.ToString();
-
+		PinZhikuang.spriteName = mItemTemp.color !=0 ?PinZhi+(mItemTemp.color-1).ToString():"";
 		if (mAwardinfo.miBaoStar == 0) {
 			Box.SetActive (false);
 		} else
@@ -76,4 +102,51 @@ public class JiBaiAward : MonoBehaviour {
 		yield return new WaitForSeconds(0.1f);
 		IsChoosed.gameObject.SetActive (false);
 	}
+	#region fulfil my ngui panel
+	
+	/// <summary>
+	/// my click in my ngui panel
+	/// </summary>
+	/// <param name="ui"></param>
+	public override void MYClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOver(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+		
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+		
+	}
+	
+	#endregion
 }

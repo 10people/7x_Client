@@ -14,6 +14,7 @@ public class InitMap : MonoBehaviour {
 	public void LoadmapBack(ref WWW p_www,string p_path,UnityEngine.Object p_object)
 	{
 		mapTextrue.mainTexture = (Texture)p_object;
+		mapTextrue.SetDimensions (959,570);
 	}
 
 	public void init()

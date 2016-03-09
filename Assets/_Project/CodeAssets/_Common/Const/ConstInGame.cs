@@ -38,6 +38,8 @@ public class ConstInGame : MonoBehaviour {
 
 	#endregion
 
+
+
 	// First Time To Play Video
 	public const string CONST_FIRST_TIME_TO_PLAY_VIDEO = "FirstTimePlayVideo";
 

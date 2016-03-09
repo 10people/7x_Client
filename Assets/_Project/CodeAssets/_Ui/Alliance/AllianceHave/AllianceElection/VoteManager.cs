@@ -86,7 +86,7 @@ public class VoteManager : MonoBehaviour,SocketProcessor {
 	//弃权请求
 	void WaiverReq ()
 	{
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.GIVEUP_VOTE,"30144");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.GIVEUP_VOTE,"30144");
 	}
 
 	//确定投票
@@ -139,7 +139,7 @@ public class VoteManager : MonoBehaviour,SocketProcessor {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.MENGZHU_VOTE,ref t_protof,"30142");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.MENGZHU_VOTE,ref t_protof,"30142");
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)

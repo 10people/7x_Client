@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using qxmobile.protobuf;
 public class FunctionWindowsCreateManagerment : MonoBehaviour
 {
-   private static int BigHouseId = 0;
-   private static int SmallHouseId = 0;
-   private readonly static List<int> FrameQuality = new List<int>() { 2, 4, 5, 7, 8, 10 };
+    public static bool m_isJieBiao = false;
+    private static int BigHouseId = 0;
+    private static int SmallHouseId = 0;
+    public static int m_AllianceID = -1;
+    private readonly static List<int> FrameQuality = new List<int>() { 2, 4, 5, 7, 8, 10 };
     public enum SettingType
     {
         NONE = -1,
@@ -15,148 +17,63 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         SWITCH_USER = 2,
     }
     public static SettingType m_SettingUpTYpe = SettingType.NONE;
-    //public static void FunctionWindowCreate(int id)
-    //{
-    //    switch (id)
-    //    {
-    //        //setting up
-    //        case 2:
-    //            {
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_LAYER),
-    //                                 SettingUpLoadCallback);
-    //            }
-    //            break;
-    //        //goto rank
-    //        case 210:
-    //            {
-    //                //Add rank sys here.
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.RANK_WINDOW),
-    //                                RankWindowLoadBack);
-    //            }
-    //            break;
-    //        //Recharge
-    //        case 13:
-    //            {
- 
-    //            }
-    //            break;
-    //        //bag sys
-    //        case 3:
-    //            {
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_BAG),
-    //                                    BagLoadCallback);
-    //            }
-    //            break;
-    //        //friend sys
-    //        case 4:
-    //            {
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FRIEND_OPERATION),
-    //                                  FriendLoadCallback);
-    //            }
-    //            break;
-    //        //serach treasure
-    //        case 11:
-    //            {
 
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TANBAO),
-    //                                        SerachTreasureLoadCallback);
-    //            }
-    //            break;
-    //        //task sys
-    //        case 5:
-    //            {
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TASK),
-    //                              TaskLoadCallback);
-    //            }
-    //            break;
-    //        //treasure sys
-    //        case 6:
-    //            {
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_SECRET),
-    //                                        TreasureLoadCallback);
-    //            }
-    //            break;
-    //        //alliance sys
-    //        case 104:
-    //            {
-    //                //                        AllianceData.Instance.RequestData();
+    public struct EquipAdvanceInfo
+    {
+        public int _equipid;
+        public int _nextid;
+        public int _gong;
+        public int _fang;
+        public int _ming;
+        public int _gongadd;
+        public int _fanggadd;
+        public int _minggadd;
+    }
+    public static EquipAdvanceInfo m_AdvanceInfo;
+    public static bool m_IsEquipAdvance = false;
+    public struct EquipTaoJiHuo
+    {
+        public int _quality;
+        public int _gong;
+        public int _fang;
+        public int _ming;
+        public int _gongadd;
+        public int _fanggadd;
+        public int _minggadd;
+    }
+    public static EquipTaoJiHuo m_JiHuoInfo;
+    public static bool m_IsEquipJihuoShow = false;
+    public static bool m_IsSaoDangNow = false;
+    public static void CreateAllianceLayer(int id)
+    {
+        m_AllianceID = id;
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_NO_SELF_ALLIANCE),
+                                                       LoadCallback);
+    }
+    private static void LoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject tempObject = Instantiate(p_object) as GameObject;
+        MainCityUI.TryAddToObjectList(tempObject);
+    }
+    public static void FunctionWindowShow(int id)
+    {
+        switch (id)
+        {
+            //Alliance
+            case 104:
+                {
+                    if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
+                    {
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_HAVE_ROOT),
+                                                AllianceHaveLoadCallback);
+                    }
+                }
+                break;
+            default:
 
-    //                if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
-    //                {
-    //                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_NO_SELF_ALLIANCE),
-    //                                             NoAllianceLoadCallback);
-    //                }
-    //                if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
-    //                {
-    //                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_HAVE_ROOT),
-    //                                            AllianceHaveLoadCallback);
-    //                }
-    //            }
-    //            break;
-    //        case 14:
-    //            {
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ACTIVITY_LAYER), OnActivityLoadCallBack);
-    //            }
-    //            break;
-    //        //新手在线礼包
-    //        case 15:
-    //            {
-    //                CityGlobalData.m_Limite_Activity_Type = 1542000;
-
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ONLINE_REWARD_ROOT),
-    //                            RewardCallback);
-
-    //            }
-    //            break;
-    //        //新手七日礼包
-    //        case 16:
-    //            {
-    //                CityGlobalData.m_Limite_Activity_Type = 1543000;
-
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ONLINE_REWARD_ROOT),
-    //                              RewardCallback);
-    //            }
-    //            break;
-    //        //king
-    //        case 200:
-    //            {
-    //                //Add king here.
-
-
-    //                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.JUN_ZHU_LAYER_AMEND),
-    //                                        JunzhuLayerLoadCallback);
-    //                break;
-    //            }
-    //        case 900001: //买铜币 900001
-    //            {
-    //                //Add king here.
-
-    //                JunZhuData.Instance().BuyTiliAndTongBi(false, true, false);
-
-    //                break;
-    //            }
-    //        case 900002: //买体力  900002
-    //            {
-    //                //Add king here.
-
-
-    //                JunZhuData.Instance().BuyTiliAndTongBi(true, false, false);
-    //                break;
-    //            }
-    //        case 7: //买体力  900002
-    //            {
-    //                //Add king here.
-
-
-    //                DoGoHome();
-    //                break;
-    //            }
-    //        default:
-
-    //            break;
-    //    }
-
-    //}
+                break;
+        }
+    }
 
     public static bool WetherHaveEquipsWearIsLowQuality(int buwei)
     {
@@ -333,21 +250,21 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
     public static bool IsCurrentJunZhuID(long id)
     {
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("IsCurrentJunZhuID")))
-        { 
+        {
             if (long.Parse(PlayerPrefs.GetString("IsCurrentJunZhuID")) == id)
             {
                 return true;
             }
         }
- 
+
         PlayerPrefs.SetString("IsCurrentJunZhuID", id.ToString());
         return false;
     }
 
     public static Vector3 IsCurrentJunZhuPos()
     {
-       string [] value = PlayerPrefs.GetString("IsCurrentJunZhuPos").Split(':');
-       return new Vector3(float.Parse(value[0]), float.Parse(value[1]), float.Parse(value[2]));
+        string[] value = PlayerPrefs.GetString("IsCurrentJunZhuPos").Split(':');
+        return new Vector3(float.Parse(value[0]), float.Parse(value[1]), float.Parse(value[2]));
     }
 
     public static int IsCurrentJunZhuScene()
@@ -380,11 +297,11 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
 
     private static int GetSceneNum()
     {
-      return PlayerPrefs.GetInt("SceneNumSave");
+        return PlayerPrefs.GetInt("SceneNumSave");
     }
 
 
-    public static void SetChangeSceneInfo( bool change)
+    public static void SetChangeSceneInfo(bool change)
     {
         PlayerPrefs.SetString("IsChangeScene", change.ToString());
     }
@@ -398,17 +315,17 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         return false;
     }
 
-    public static void  SetFenChengNum(int num)
+    public static void SetFenChengNum(int num)
     {
         PlayerPrefs.SetInt("IsFenChengNum", num);
     }
 
     public static int IsFenChengNum()
     {
-      return  PlayerPrefs.GetInt("IsFenChengNum");
+        return PlayerPrefs.GetInt("IsFenChengNum");
     }
     public static string m_EquipSaveInfo = "1:3";
-    public static void SetSelectEquipInfo(int index,int equip_num)
+    public static void SetSelectEquipInfo(int index, int equip_num)
     {
         if (IsCurrentJunZhuID(JunZhuData.Instance().m_junzhuInfo.id))
         {
@@ -443,7 +360,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         }
     }
 
-    public static string  GetNeedString(string content)
+    public static string GetNeedString(string content)
     {
         if (!string.IsNullOrEmpty(content))
         {
@@ -463,8 +380,8 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
     }
     public static Vector3 GetCurrentPosition()
     {
-      string [] pos = PlayerPrefs.GetString("IsCurrentJunZhuPos").Split(':');
-      return new Vector3(float.Parse(pos[0]), float.Parse(pos[1]), float.Parse(pos[2]));
+        string[] pos = PlayerPrefs.GetString("IsCurrentJunZhuPos").Split(':');
+        return new Vector3(float.Parse(pos[0]), float.Parse(pos[1]), float.Parse(pos[2]));
     }
 
     public static string GetIdentityById(int id)
@@ -479,7 +396,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
                 break;
             case 1:
                 {
-                    return "(" +LanguageTemplate.GetText(LanguageTemplate.Text.IDENTITY_1) +")";
+                    return "(" + LanguageTemplate.GetText(LanguageTemplate.Text.IDENTITY_1) + ")";
                 }
                 break;
             case 2:
@@ -523,9 +440,9 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
     public static void ShowUnopen(int _id)
     {
         FunctionOpenTemp template = FunctionOpenTemp.GetTemplateById(_id);
-         string str = template.m_sNotOpenTips;
+        string str = template.m_sNotOpenTips;
 
-        if (!string.IsNullOrEmpty(str) && !str .Equals("-1"))
+        if (!string.IsNullOrEmpty(str) && !str.Equals("-1"))
         {
             ClientMain.m_UITextManager.createText(str);
         }
@@ -572,7 +489,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         else
         {
             return null;
-            Debug.Log("Award is Null !!!");
+//            Debug.Log("Award is Null !!!");
         }
     }
     public static bool SpecialSizeFit(int quality)
@@ -582,5 +499,25 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public static float DistanceCount(string name)
+    {
+        float distance = 0;
+        string ss = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        char[] dd = name.ToCharArray();
+        int size = dd.Length;
+        for (int i = 0; i < size; i++)
+        {
+            if (ss.IndexOf(dd[i]) > -1)
+            {
+                distance += 0.5f;
+            }
+            else
+            {
+                distance += 1.0f;
+            }
+        }
+        return distance;
     }
 }

@@ -25,7 +25,10 @@ public class BubblePopTemplate : XmlLoadManager
 
 	public int triggerNum;
 
+	public int soundID;
+
 	public int triggerCurNum;
+
 
 
 	public static List<BubblePopTemplate> templates;
@@ -94,6 +97,9 @@ public class BubblePopTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.triggerNum = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.soundID = int.Parse( t_reader.Value );
 			}
 			
 			templates.Add( t_template );

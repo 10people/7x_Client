@@ -127,15 +127,12 @@ public class Console_Effect : MonoBehaviour {
 			if( t_cams[ i ] == Camera.main ){
 				t_main_count++;
 
-				if( p_active ){
-					UIBackgroundEffect t_ef = (UIBackgroundEffect)ComponentHelper.AddIfNotExist( t_cams[ i ].gameObject, typeof(UIBackgroundEffect) );
+				UIBackgroundEffect t_ef = EffectTool.SetUIBackgroundEffect( t_cams[ i ].gameObject, p_active );
 
+				if( p_active ){
 					if( p_coef > 0 ){
 						t_ef.SetRtSize( p_coef );
 					}
-				}
-				else{
-					ComponentHelper.RemoveIfExist( t_cams[ i ].gameObject, typeof(UIBackgroundEffect) );
 				}
 			}
 		}
@@ -144,9 +141,6 @@ public class Console_Effect : MonoBehaviour {
 			Debug.LogError( "Error, more than one main cam." );
 		}
 	}
-
+	
 	#endregion
-
-
-
 }

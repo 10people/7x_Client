@@ -23,12 +23,12 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 		//		{ChatPct.Channel.XiaoWu,new List<ChatMessage> ()},
 	};
 
-	private readonly Dictionary<ChatPct.Channel,string> chatInfoDic = new Dictionary<ChatPct.Channel, string>()
+	private Dictionary<ChatPct.Channel,string[]> chatInfoDic = new Dictionary<ChatPct.Channel, string[]>()
 	{
-		{ChatPct.Channel.SHIJIE,"世"},
-		{ChatPct.Channel.LIANMENG,"盟"},
-		{ChatPct.Channel.Broadcast,"播"},
-		{ChatPct.Channel.XiaoWu,"屋"},
+		{ChatPct.Channel.SHIJIE,new string[]{"世","0","-1"}},
+		{ChatPct.Channel.LIANMENG,new string[]{"盟","1","-1"}},
+		{ChatPct.Channel.Broadcast,new string[]{"播","2","-1"}},
+		{ChatPct.Channel.XiaoWu,new string[]{"屋","3","-1"}},
 	};
 
 	private JunZhuInfo junZhuInfo;
@@ -49,8 +49,16 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	}
 
 	private int sendWaitTime;
+	public int SendWaitTime {set{sendWaitTime = value;} get{return sendWaitTime;}}
+
 	private int unReceiveWaitTime;
+
 	private List<ChatMessage> receiveList = new List<ChatMessage>();
+
+	private int freeTimes;
+	public int FreeTimes {set{freeTimes = value;} get{return freeTimes;}}
+
+	private ChatMessage willSendChatMsg;
 
 	void Awake ()
 	{
@@ -62,12 +70,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	/// </summary>
 	public void LoadChatPrefab ()
 	{
-		sendWaitTime = 0;
-		StopCoroutine ("SendWait");
-		foreach (KeyValuePair<ChatPct.Channel,List<ChatMessage>> pair in chatDic)
-		{
-			pair.Value.Clear ();
-		}
+//		Debug.Log ("LoadChatPrefab");
 
 		if (chatPrefab == null)
 		{
@@ -78,6 +81,21 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 		{
 			chatPrefab.SetActive (false);
 		}
+
+		ReqChatTimes ();
+	}
+
+	/// <summary>
+	/// Resets the chat info.
+	/// </summary>
+	public void ResetChatInfo ()
+	{
+		SendWaitTime = 0;
+		StopCoroutine ("SendWait");
+		foreach (KeyValuePair<ChatPct.Channel,List<ChatMessage>> pair in chatDic)
+		{
+			pair.Value.Clear ();
+		}
 	}
 
 	private void LoadChatPrefabCallBack (ref WWW p_www, string p_path, UnityEngine.Object p_object)
@@ -85,6 +103,14 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 		chatPrefab = Instantiate (p_object) as GameObject;
 		chatPrefab.SetActive (false);
 		DontDestroyOnLoad (chatPrefab);
+	}
+
+	/// <summary>
+	/// Reqs the chat times.
+	/// </summary>
+	void ReqChatTimes ()
+	{
+		QXComData.SendQxProtoMessage (ProtoIndexes.C_GET_CHAT_CONF);
 	}
 
 	/// <summary>
@@ -97,6 +123,8 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 //		MainCityUI.TryAddToObjectList (chatPrefab);
 		QXChatPage.chatPage.ChatPageAnimation (true);
 		SetChatChannel (ChatPct.Channel.SHIJIE);
+
+		UIYindao.m_UIYindao.CloseUI ();
 	}
 
 	/// <summary>
@@ -106,8 +134,10 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	public void SetChatChannel (ChatPct.Channel tempChannel)
 	{
 		chatChannel = tempChannel;
-		
+
 		QXChatPage.chatPage.InItChatPage (chatChannel,chatDic[chatChannel]);
+
+		QXChatPage.chatPage.SetChatBtnRedPoint ();
 	}
 
 	/// <summary>
@@ -116,17 +146,71 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	/// <param name="tempChatMsg">Temp chat message.</param>
 	public void SendChatData (ChatMessage tempChatMsg)
 	{
-		if (sendWaitTime > 0) 
+		if (SendWaitTime > 0) 
 		{
 			ClientMain.m_UITextManager.createText (MyColorData.getColorString (5, "您发言太快！"));
+			setOpen = false;
 			return;
 		}
 
+		willSendChatMsg = tempChatMsg;
+
+		switch (tempChatMsg.chatPct.channel)
+		{
+		case ChatPct.Channel.SHIJIE:
+			
+			if (FreeTimes <= 0 && int.Parse (CanshuTemplate.GetStrValueByKey (CanshuTemplate.WORLDCHAT_PRICE)) > 0)
+			{
+				QXComData.CreateBox (1,"是否花费" + MyColorData.getColorString (5,CanshuTemplate.GetStrValueByKey (CanshuTemplate.WORLDCHAT_PRICE)) + "元宝发送本条消息到世界频道？",false,ShiJieSendCallBack);
+			}
+			else
+			{
+				SendChatMessage (tempChatMsg);
+			}
+
+			break;
+		case ChatPct.Channel.LIANMENG:
+			SendChatMessage (tempChatMsg);
+			break;
+		case ChatPct.Channel.Broadcast:
+			QXComData.CreateBox (1,"是否花费" + MyColorData.getColorString (5,CanshuTemplate.GetStrValueByKey (CanshuTemplate.BROADCAST_PRICE)) + "元宝发送本条消息到广播频道？",false,BroadCastSendCallBack);
+			break;
+		case ChatPct.Channel.XiaoWu:
+			SendChatMessage (tempChatMsg);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void ShiJieSendCallBack (int i)
+	{
+		if (i == 2)
+		{
+			SendChatMessage (willSendChatMsg);
+		}
+		else
+		{
+			setOpen = false;
+		}
+	}
+
+	void BroadCastSendCallBack (int i)
+	{
+		if (i == 2)
+		{
+			SendChatMessage (willSendChatMsg);
+		}
+	}
+
+	void SendChatMessage (ChatMessage tempChatMsg)
+	{
 		string sendStr = tempChatMsg.chatPct.content.Replace ("\n", "");
 		
 		// notice console tool what were typed
 		{
-			if (ConsoleTool.Instance ().OnChatContent (sendStr)) {
+			if (ConsoleTool.Instance().OnChatContent (sendStr)) {
+				setOpen = false;
 				return;
 			}
 		}
@@ -135,26 +219,31 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 		{
 			sendStr = sendStr.Substring (0, (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_MAX_WORDS));
 		}
-
+		
 		tempChatMsg.chatPct.content = sendStr;
-
+		
 		//add sendchat into chatlist and show in chatwinow
+		tempChatMsg.chatPct.content = ReplaceSensitiveStr.Filter (tempChatMsg.chatPct.content);
+		//		Debug.Log ("tempChatMsg.chatPct.content;" + tempChatMsg.chatPct.content);
 		chatDic [tempChatMsg.chatPct.channel].Add (tempChatMsg);
 		if (tempChatMsg.chatPct.channel == chatChannel)
 		{
 			QXChatPage.chatPage.InItChatPage (chatChannel,chatDic[chatChannel]);
 		}
-
+		
 		receiveList.Add (tempChatMsg);
-
-		sendWaitTime = (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_INTERVAL_TIME);
+		
+		SendWaitTime = (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_INTERVAL_TIME);
+//		Debug.Log ("SendWaitTime:" + SendWaitTime);
 		StartCoroutine ("SendWait");
-
+		QXChatPage.chatPage.ClearInputText (int.Parse (chatInfoDic[chatChannel][1]));
+		
 		QXComData.SendQxProtoMessage (tempChatMsg.chatPct,ProtoIndexes.C_Send_Chat);
-		Debug.Log ("聊天发送：" + ProtoIndexes.C_Send_Chat);
-
+//		Debug.Log ("聊天发送：" + ProtoIndexes.C_Send_Chat);
+		
 		//计算发送时间，***秒后未收到判定为发送失败(断线时间 + 策划配)
 		unReceiveWaitTime = (int)(ConfigTool.GetFloat(ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT));
+//		Debug.Log ("unReceiveWaitTime:" + unReceiveWaitTime);
 		StartCoroutine ("ReceiveWait");
 	}
 
@@ -166,7 +255,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 			{
 			case ProtoIndexes.S_Send_Chat:
 			{
-				Debug.Log ("聊天返回：" + ProtoIndexes.S_Send_Chat);
+//				Debug.Log ("聊天返回：" + ProtoIndexes.S_Send_Chat);
 				ChatPct chatData = new ChatPct();
 				chatData = QXComData.ReceiveQxProtoMessage (p_message,chatData) as ChatPct;
 
@@ -180,11 +269,21 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 //					Debug.Log ("chatData.dateTime:" + chatData.dateTime);
 //					Debug.Log ("chatData.seq:" + chatData.seq);
 //					Debug.Log ("chatData.vipLevel:" + chatData.vipLevel);
+					#region ShowIn HighestUI
 					if (chatData.channel == ChatPct.Channel.Broadcast)
 					{
 						HighestUI.Instance.m_BroadCast.ShowBroadCast (((chatData.guoJia >= 1 && chatData.guoJia <= 7) ? 
 						                                               (ColorTool.Color_Gold_edc347 + "[" + QXComData.GetNationName (chatData.guoJia) + "][-]") : "") + ColorTool.Color_Gold_ffb12a + chatData.senderName + "[-]" + chatData.content);
 					}
+					#endregion
+
+					#region Set Btn And ChatUIBox RedState
+					ChatPct.Channel tempChannel = ChatPct.Channel.SHIJIE;
+					tempChannel = chatData.channel == ChatPct.Channel.SYSTEM ? ChatPct.Channel.Broadcast : chatData.channel;
+					chatInfoDic[tempChannel][2] = "0";
+//					Debug.Log ("tempChannel:" + chatInfoDic[tempChannel][2]);
+					QXChatUIBox.chatUIBox.SetRedAlert (!SetOpenChat);
+					#endregion
 
 					ChatMessage chatMsg = new ChatMessage()
 					{
@@ -192,7 +291,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 						chatPct = chatData
 					};
 
-					if (chatMsg.chatPct.senderId == JunZhuData.Instance ().m_junzhuInfo.id)
+					if (chatMsg.chatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id)
 					{
 						for (int i = 0;i < receiveList.Count;i ++)
 						{
@@ -216,15 +315,24 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 						QXChatUIBox.chatUIBox.InItChatUIBox (chatMsg);
 					}
 
+					if (chatChannel == ChatPct.Channel.SHIJIE)
+					{
+						if (FreeTimes > 0)
+						{
+							FreeTimes --;
+						}
+					}
+
 					if (chatData.channel != ChatPct.Channel.SYSTEM)
 					{
 						chatDic[chatData.channel].Add (chatMsg);
-						if (chatData.channel == chatChannel)
+						if (SetOpenChat)
 						{
-							if (SetOpenChat)
+							if (chatData.channel == chatChannel)
 							{
 								QXChatPage.chatPage.InItChatPage (chatChannel,chatDic[chatChannel]);
 							}
+							QXChatPage.chatPage.SetChatBtnRedPoint ();
 						}
 					}
 					else
@@ -233,8 +341,18 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 
 						if (SetOpenChat)
 						{
-							QXChatPage.chatPage.InItChatPage (chatChannel,chatDic[chatChannel]);
+							if (chatChannel == ChatPct.Channel.Broadcast)
+							{
+								QXChatPage.chatPage.InItChatPage (chatChannel,chatDic[chatChannel]);
+							}
+							QXChatPage.chatPage.SetChatBtnRedPoint ();
 						}
+					}
+
+					if (setOpen)
+					{
+						setOpen = false;
+						QXChatUIBox.chatUIBox.ChatUIBoxClickBack (gameObject);
 					}
 				}
 
@@ -246,7 +364,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 				{
 					return false;
 				}
-				Debug.Log ("查看君主信息返回：" + ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP);
+//				Debug.Log ("查看君主信息返回：" + ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP);
 				JunZhuInfo junZhuResp = new JunZhuInfo();
 				junZhuResp = QXComData.ReceiveQxProtoMessage (p_message,junZhuResp) as JunZhuInfo;
 				
@@ -256,6 +374,19 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 					SetOpenJunZhuInfo = false;
 					Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
 				}
+				return true;
+			}
+			case ProtoIndexes.S_GET_CHAT_CONF:
+			{
+				ErrorMessage errorMsg = new ErrorMessage();
+				errorMsg = QXComData.ReceiveQxProtoMessage (p_message,errorMsg) as ErrorMessage;
+
+				if (errorMsg != null)
+				{
+//					Debug.Log ("errorMsg.errorCode:" + errorMsg.errorCode);
+					FreeTimes = errorMsg.errorCode;
+				}
+
 				return true;
 			}
 			}
@@ -270,7 +401,26 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	/// <param name="tempChannel">Temp channel.</param>
 	public string GetChannelTitleStr (ChatPct.Channel tempChannel)
 	{
-		return chatInfoDic [tempChannel];
+		return chatInfoDic [tempChannel][0];
+	}
+
+	/// <summary>
+	/// Gets the index of the channel.
+	/// </summary>
+	/// <returns>The channel index.</returns>
+	/// <param name="tempChannel">Temp channel.</param>
+	public Dictionary<ChatPct.Channel,string[]> GetChatInfoDic ()
+	{
+		return chatInfoDic;
+	}
+
+	/// <summary>
+	/// Gets the index of the channel.
+	/// </summary>
+	/// <returns>The channel index.</returns>
+	public int GetChannelCount ()
+	{
+		return chatInfoDic.Count;
 	}
 
 	/// <summary>
@@ -290,14 +440,21 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 			}
 		};
 
+		if (QXChatUIBox.chatUIBox != null)
+		{
+			QXChatUIBox.chatUIBox.InItChatUIBox (chatMsg);
+		}
 
 		chatDic [ChatPct.Channel.Broadcast].Add (chatMsg);
-		if (chatChannel == ChatPct.Channel.Broadcast)
+		chatInfoDic[ChatPct.Channel.Broadcast][2] = "0";
+
+		if (SetOpenChat)
 		{
-			if (SetOpenChat)
+			if (chatChannel == ChatPct.Channel.Broadcast)
 			{
 				QXChatPage.chatPage.InItChatPage (chatChannel,chatDic[chatChannel]);
 			}
+			QXChatPage.chatPage.SetChatBtnRedPoint ();
 		}
 	}
 	
@@ -402,14 +559,14 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	/// <returns>The wait.</returns>
 	IEnumerator SendWait ()
 	{
-		while (sendWaitTime > 0)
+		while (SendWaitTime > 0)
 		{
-			sendWaitTime --;
 			yield return new WaitForSeconds (1);
+			SendWaitTime --;
 
-			if (sendWaitTime <= 0)
+			if (SendWaitTime <= 0)
 			{
-				sendWaitTime = 0;
+				SendWaitTime = 0;
 				StopCoroutine ("SendWait");
 			}
 		}
@@ -423,7 +580,6 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	{
 		while (unReceiveWaitTime > 0)
 		{
-			Debug.Log ("unReceiveWaitTime:" + unReceiveWaitTime);
 			unReceiveWaitTime --;
 			yield return new WaitForSeconds (1);
 			if (unReceiveWaitTime <= 0)
@@ -450,12 +606,47 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 		}
 	}
 
-	public void CheckRedPoint (ChatPct.Channel tempChannel)
+	#region SendAllianceInfo
+	private bool setOpen = false;
+	/// <summary>
+	/// Sends the alliance info.
+	/// </summary>
+	/// <param name="tempText">Temp text.</param>
+	/// <param name="tempLevel">Temp level.</param>
+	public void SendAllianceInfo ()
 	{
+		setOpen = true;
 
+		if (AllianceData.Instance.g_UnionInfo == null)
+		{
+			Debug.LogError ("AllianceInfo is Null!");
+			return;
+		}
+		var allianceInfo = AllianceData.Instance.g_UnionInfo;
+		var junZhuInfo = JunZhuData.Instance().m_junzhuInfo;
+
+		ChatMessage chatMsg = new ChatMessage()
+		{
+			sendState = ChatMessage.SendState.SENDING,
+			chatPct = new ChatPct()
+			{
+				senderName = junZhuInfo.name,
+				senderId = junZhuInfo.id,
+				channel = ChatPct.Channel.SHIJIE,
+				content = "[ffffff]联盟：[-][06de34]" + allianceInfo.name + "(Lv." + allianceInfo.level + ")[-][ffffff]" + "正在招募人手[-]",
+				guoJia = junZhuInfo.guoJiaId,
+				vipLevel = junZhuInfo.vipLv,
+				lianmengId = junZhuInfo.lianMengId,
+				lianmengName = allianceInfo.name,
+				type = 2,
+			},
+		};
+
+		QXChatData.Instance.SendChatData (chatMsg);
 	}
+	#endregion
 
-	void OnDestroy ()
+	new void OnDestroy ()
 	{
 		SocketTool.UnRegisterMessageProcessor (this);
 		base.OnDestroy ();

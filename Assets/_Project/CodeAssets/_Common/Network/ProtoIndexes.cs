@@ -112,6 +112,16 @@ public class ProtoIndexes
 	public const short C_LM_CHOU_JIANG_INFO = 27513; //请求宗庙信息
 	public const short S_LM_CHOU_JIANG_INFO = 27514;//宗庙信息返回
 
+	/// <summary>
+	/// 联盟目标
+	/// </summary>
+
+	public const short C_ALLIANCE_TARGET_INFO_Resp  = 30173; // 联盟目标信息
+	public const short S_ALLIANCE_TARGET_INFO_Resp  = 30174; // 联盟目标信息返回 
+	public const short C_GET_ALLIANCEL_LEVEL_AWARD = 30175;// 领取联盟等级目标奖励
+
+	public const short S_GET_ALLIANCEL_LEVEL_AWARD_RESP = 30176;//领取联盟等级目标奖励结果返回
+
     /// <summary>
     /// 请求联盟战信息
     /// </summary>
@@ -269,6 +279,11 @@ public class ProtoIndexes
 
     public const short C_Send_Chat = 20001; 			//客户端发送聊天
     public const short S_Send_Chat = 20002; 			//服务器通知客户端聊天消息
+	public const short C_GET_CHAT_CONF = 20104;			//请求聊天剩余免费次数
+	public const short S_GET_CHAT_CONF = 20105;			//剩余免费次数返回
+
+	public const short C_CLOSE_TAN_BAO_UI = 29531;		//抽中秘宝发送广播
+
     public const short C_Join_BlackList = 30151; 		//客户端加入聊天黑名单
     public const short S_Join_BlackList_Resp = 30152;   //服务器返回加入聊天黑名单
     public const short C_get_sound = 23505;				//获取语音信息
@@ -437,6 +452,12 @@ public class ProtoIndexes
 
     public const int C_Report_battle_replay = 23310;
     public const int C_Request_battle_replay = 23311;
+/// <summary>
+/// 游侠战斗请求
+/// </summary>
+
+	public const int C_YOUXIA_TYPE_INFO_REQ   = 615; //游侠战斗请求
+	public const int S_YOUXIA_TYPE_INFO_RESP  = 616; //游侠战斗请求
 
 	public const int C_YOUXIA_INIT_REQ = 601; //游侠战斗请求
 	public const int C_YOUXIA_BATTLE_OVER_REQ = 603; //游侠战斗结果
@@ -450,6 +471,8 @@ public class ProtoIndexes
 	public const int S_YOUXIA_GUANQIA_RESP = 614;
 
 	public const int LVE_BATTLE_END_RESP = 26071;
+
+	public const int C_YUAN_HU_END_REQ = 26077;
 
     /* --------------- 战斗proto< 23000-26003 > --------------- */
     /* ---------------------------------------------------------- */
@@ -1242,8 +1265,13 @@ public class ProtoIndexes
 	public const short S_LIST_CHENG_HAO = 5112;//服务器返回称号列表，消息体ChengHaoList
 	public const short C_USE_CHENG_HAO = 5121;//客户端选择称号
 	public const short S_NEW_CHENGHAO = 29520;
-	//-------------------------------变强协议----------------------------
-	public const short C_GET_UPACTION_DATA = 5131;//发送我要变强请求
+
+    //Highlight item for bag sys.
+    public const short C_GET_HighLight_item_ids = 29523;//客户端请求
+    public const short S_GET_HighLight_item_ids = 29524;//服务器返回
+
+    //-------------------------------变强协议----------------------------
+    public const short C_GET_UPACTION_DATA = 5131;//发送我要变强请求
 	public const short S_UPACTION_DATA_0 = 5132;//接收到第一页消息
 	public const short S_UPACTION_DATA_1 = 5133;//接收到第二页消息
 	public const short S_UPACTION_DATA_2 = 5134;//接收到第三页消息
@@ -1299,6 +1327,8 @@ public class ProtoIndexes
 	//**********掠夺**********//
 	/** 掠夺战斗请求**/
 	public const int ZHANDOU_INIT_LVE_DUO_REQ = 24203;
+
+	public const int ZHANDOU_INIT_YUAN_ZHU_REQ = 24204;
 	
 	/** pve、pvp, 掠夺，战斗请求返回数据 **/
 	public const int ZHANDOU_INIT_RESP = 24151;
@@ -1320,6 +1350,12 @@ public class ProtoIndexes
 
 	public const short LVE_HELP_REQ = 26073;//掠夺失败求助
 	public const short LVE_HELP_RESP = 26074;//掠夺失败求助
+
+	public const short alliance_junQing_req = 26075;
+	public const short alliance_junQing_resq = 26076;
+
+	public const short go_qu_zhu_req = 26078; // 驱逐
+	public const short go_qu_zhu_resp = 26079; // 驱逐返回
 
    //国家信息
     public const short GUO_JIA_MAIN_INFO_REQ = 6003;
@@ -1380,5 +1416,16 @@ public class ProtoIndexes
     public const short activate_tao_zhuang_req = 30502;
     public const short activate_tao_zhuang_resp = 30503;
 
+    /////////////累计签到达到一定次数，领取vip礼包//////////////
 
+    public const short qianDao_get_vip_present_req =  31999;
+    public const short qianDao_get_vip_present_resp = 32000;
+
+	public const short FUNCTION_OPEN_NOTICE = 4223;//通知前台开启或者关闭功能 -为关闭
+
+	//**********************************福利*****************************************
+	public const short C_FULIINFO_REQ = 4020;//请求福利信息
+	public const short S_FULIINFO_RESP = 4021;//请求福利信息返回
+	public const short C_FULIINFOAWARD_REQ = 4030;//请求福利奖励
+	public const short S_FULIINFOAWARD_RESP = 4031;//请求福利奖励返回
 }

@@ -241,6 +241,8 @@ public class HeroSkill : MonoBehaviour
 
 		_temp.zhudong = _template.zhudong;
 
+		_temp.immediately = _template.immediately;
+
 		init (_temp, index);
 	}
 
@@ -1202,26 +1204,21 @@ public class HeroSkill : MonoBehaviour
 					if(node.gameObject.name == "Node_1" && template.id == 250101 && m_NumStop == 0)
 					{
 						m_NumStop = 1;
-						BattleUIControlor.Instance().enterPause();
+						//BattleUIControlor.Instance().enterPause();
 					}
 				}
 			}
-			if((tempTime - cooldown) >= template.timePeriod 
+			if(
+				(tempTime - cooldown) >= template.timePeriod 
 			   && !m_isCurSeal
 			   && !template.zhudong
 			   && m_iUseNum > 0
 			   && !m_isUseThisSkill
 			   && node.m_sPlaySkillAnimation == ""
-			   && ((
-				(m_sAnimName == "null" || 
-			 node.IsPlaying() == "Run" || 
-			 node.IsPlaying() == "Walk" ||
-			 node.IsPlaying() == "Stand0" ||
-			 node.IsPlaying() == "Stand1" || 
-			 node.isPlayingSwing()) ||
-				m_isDeadOverSkill == 1))
-			   )
+			   && ((m_sAnimName == "null" || node.IsPlaying() == "Run" || node.IsPlaying() == "Walk" || node.IsPlaying() == "Stand0" ||node.IsPlaying() == "Stand1" || node.isPlayingSwing())
+			    ||(m_isDeadOverSkill == 1 ||(template.immediately == 1 && node.isPlayingAttack()))))
 			{
+
 				bool flag = false;
 				if(castSkill())
 				{
@@ -1251,8 +1248,6 @@ public class HeroSkill : MonoBehaviour
 					{
 						m_CloseSkill[i].ForcedTermination();
 					}
-					//							BaseAI.checkSkillDrama();
-//					Debug.Log("设定技能播放名称="+m_sAnimName);
 					if(node.gameObject.name == "Node_1" && template.id == 250101)
 					{
 						m_Nummmmm ++;
@@ -1260,7 +1255,6 @@ public class HeroSkill : MonoBehaviour
 
 					if(m_sAnimName == "null")
 					{
-//						Debug.Log("===============1");
 						if(template.id / 1000 == 250)//开头是250的技能是主动秘宝技能
 						{
 							if(node.nodeId == 1)
@@ -1272,11 +1266,8 @@ public class HeroSkill : MonoBehaviour
 								BattleUIControlor.Instance().cooldownMibaoSkill_enemy.refreshCDTime();
 							}
 						}
-//						Debug.Log("===============2");
 						node.openShow();
-//						Debug.Log("===============3");
 						node.activeSkillStart(0);
-//						Debug.Log("===============4");
 //						setShowFanRand();
 //						activeSkill(0);
 //						for(int i = 0; i < m_otherSkill.Count; i ++)
@@ -1308,7 +1299,9 @@ public class HeroSkill : MonoBehaviour
 			{
 				if(m_listFirstAI[i] == null || m_listFirstAI[i].gameObject == null || !m_listFirstAI[i].gameObject.activeSelf)
 				{
-					Destroy(m_listFirstElement[i]);
+//					Destroy(m_listFirstElement[i]);
+					DestroyFx( m_listFirstElement[i] );
+
 					m_listFirstElement.RemoveAt(i);
 					m_listFirstTime.RemoveAt(i);
 					m_listFirstAI.RemoveAt(i);
@@ -1317,7 +1310,9 @@ public class HeroSkill : MonoBehaviour
 				}
 				if((tempTime - m_listFirstTime[i]) > m_iPlayFirstTime)
 				{
-					Destroy(m_listFirstElement[i]);
+//					Destroy(m_listFirstElement[i]);
+					DestroyFx( m_listFirstElement[i] );
+
 					m_listFirstElement.RemoveAt(i);
 					m_listFirstTime.RemoveAt(i);
 					m_listFirstAI.RemoveAt(i);
@@ -1329,7 +1324,9 @@ public class HeroSkill : MonoBehaviour
 			{
 				if(m_PreElement[i] != null && (tempTime - m_PreTime[i]) > m_iPlayPreTime)
 				{
-					Destroy(m_PreElement[i]);
+//					Destroy(m_PreElement[i]);
+					DestroyFx( m_PreElement[i] );
+
 					m_PreElement.RemoveAt(i);
 					m_PreTime.RemoveAt(i);
 					i --;
@@ -1345,7 +1342,9 @@ public class HeroSkill : MonoBehaviour
 					if(m_listMyEffElement[i] == null)
 					{
 //						Debug.Log("null");
-						Destroy(m_listMyEffElement[i]);
+//						Destroy( m_listMyEffElement[i] );
+						DestroyFx( m_listMyEffElement[i] );
+
 						m_listMyEffElement.RemoveAt(i);
 						m_listMyEffCutTime.RemoveAt(i);
 						m_AttBaseAI.RemoveAt(i);
@@ -1363,7 +1362,9 @@ public class HeroSkill : MonoBehaviour
 						if((tempTime - m_listMyEffCutTime[i]) > template.endtime)//结束消失特效
 						{
 //							Debug.Log("shanchu");
-							Destroy(m_listMyEffElement[i]);
+//							Destroy(m_listMyEffElement[i]);
+							DestroyFx( m_listMyEffElement[i] );
+
 							m_listMyEffElement.RemoveAt(i);
 							m_listMyEffCutTime.RemoveAt(i);
 							m_AttBaseAI.RemoveAt(i);
@@ -1470,7 +1471,9 @@ public class HeroSkill : MonoBehaviour
 					if((tempTime - m_listMyEffCutTime[i]) > template.endtime)//结束消失特效
 					{
 //						Debug.Log("shanchu");
-						Destroy(m_listMyEffElement[i]);
+//						Destroy(m_listMyEffElement[i]);
+						DestroyFx( m_listMyEffElement[i] );
+
 						m_listMyEffElement.RemoveAt(i);
 						m_listMyEffCutTime.RemoveAt(i);
 						m_AttBaseAI.RemoveAt(i);
@@ -1836,7 +1839,9 @@ public class HeroSkill : MonoBehaviour
 	{
 		for(int i = 0; i < m_listFirstAI.Count; i ++)//判定每个技能特效里 元素组的第几个攻击时间
 		{
-			Destroy(m_listFirstElement[i]);
+//			Destroy(m_listFirstElement[i]);
+			DestroyFx( m_listFirstElement[i] );
+
 			m_listFirstElement.RemoveAt(i);
 			m_listFirstTime.RemoveAt(i);
 			m_listFirstAI.RemoveAt(i);
@@ -1845,7 +1850,9 @@ public class HeroSkill : MonoBehaviour
 
 		for(int i = 0; i < m_PreElement.Count; i ++)
 		{
-			Destroy(m_PreElement[i]);
+//			Destroy(m_PreElement[i]);
+			DestroyFx( m_PreElement[i] );
+
 			m_PreElement.RemoveAt(i);
 			m_PreTime.RemoveAt(i);
 			 i --;
@@ -1881,7 +1888,9 @@ public class HeroSkill : MonoBehaviour
 		}
 		for(int i = 0; i < m_listMyEffElement.Count; i ++)//判定每个技能特效里 元素组的第几个攻击时间
 		{
-			Destroy(m_listMyEffElement[i]);
+//			Destroy(m_listMyEffElement[i]);
+			DestroyFx( m_listMyEffElement[i] );
+
 			m_listMyEffElement.RemoveAt(i);
 			if(m_listMyEffCutTime.Count > i)
 			{
@@ -1943,6 +1952,21 @@ public class HeroSkill : MonoBehaviour
 					m_CloseSkill.Add(node.skills[q]);
 				}
 			}
+		}
+	}
+
+	private void DestroyFx( GameObject p_gb ){
+//		Destroy( p_gb );
+
+		FxCacheItem t_fx_cache = GetComponent<FxCacheItem>();
+
+		if( t_fx_cache != null ){
+			t_fx_cache.FreeFx();
+		}
+		else{
+//			Debug.LogError( "ERROR, Should not manual destroy here: " + gameObject );
+
+			Destroy( p_gb );	
 		}
 	}
 }

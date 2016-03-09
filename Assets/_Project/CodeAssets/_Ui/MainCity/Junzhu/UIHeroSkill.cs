@@ -21,6 +21,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 	public List<UISprite> m_listSkillIcon = new List<UISprite>();
 	public List<GameObject> m_listSkillTupo = new List<GameObject>();
 	public List<UILabel> m_listSkillUpNeedLv = new List<UILabel>();
+	public List<GameObject> m_listSkillAlert = new List<GameObject>();
 	public GetJiNengPeiYangQuality m_heroSkillData;
 
 	public List<HeroData> m_listCurPageHeroData = new List<HeroData>();
@@ -38,6 +39,8 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 	public GameObject m_objUpHui;
 	public GameObject m_eff;
 	public GameObject m_effTupo;
+	public GameObject m_effTupoWenzi;
+	public GameObject m_selectSpirte;
 	private bool m_isCreateEff;
 
 	public GameObject m_objHeroSkillUpPanel;
@@ -46,6 +49,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 	public UISprite m_spriteHeroSkillUp0Icon;
 	public UISprite m_spriteHeroSkillUp1Bg;
 	public UISprite m_spriteHeroSkillUp1Icon;
+	public int m_Num = 0;
 	// Use this for initialization
 	void Start () 
 	{
@@ -54,7 +58,15 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 
 	// Update is called once per frame
 	void Update () {
-		
+		if(m_effTupo.activeSelf)
+		{
+			m_Num ++;
+			if(m_Num == 30)
+			{
+				m_effTupo.SetActive(false);
+				m_Num = 0;
+			}
+		}
 	}
 
 	public void setData(GetJiNengPeiYangQuality data)
@@ -65,7 +77,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 			{
 				TaskData.Instance.m_iCurMissionIndex = 100230;
 				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-				tempTaskData.m_iCurIndex = 3;
+				tempTaskData.m_iCurIndex = 4;
 				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 			}
 		}
@@ -152,6 +164,10 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 					clear();
 					MainCityUI.SetRedAlert(500007, setAlert());
 				}
+				else
+				{
+					TaskData.Instance.m_DestroyMiBao = false;
+				}
 				if (FreshGuide.Instance().IsActive(100230))
 				{
 					UIYindao.m_UIYindao.CloseUI();
@@ -194,6 +210,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 			m_listSkillIcon[i].spriteName = m_listCurPageHeroSkillUpTemplate[i].m_sSpriteName;
 
 			m_listSkillTupo[i].SetActive(false);
+			m_listSkillAlert[i].SetActive(false);
 			m_listSkillUpNeedLv[i].gameObject.SetActive(false);
 
 			if(m_listCurPageHeroData[i].isUp)
@@ -203,6 +220,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 			else
 			{
 				m_listSkillIcon[i].color = Color.black;
+
 				switch(getIsTupo(m_listCurPageHeroSkillUpTemplate[i]))
 				{
 				case 1:
@@ -211,6 +229,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 					break;
 				case 2:
 					m_listSkillTupo[i].SetActive(true);
+					m_listSkillAlert[i].SetActive(true);
 					break;
 				}
 			}
@@ -298,35 +317,42 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 
 	public void setEff()
 	{
-
-		if(m_isCreateEff)
-		{
-			clear();
-		}
-		UI3DEffectTool.Instance().ShowMidLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listSkillIcon[m_iSelectIndex].gameObject, EffectTemplate.getEffectTemplateByEffectId( 100113 ).path);
-		m_isCreateEff = true;
+//		if(m_isCreateEff)
+//		{
+//			clear();
+//		}
+		m_selectSpirte.transform.position = m_listSkillIcon[m_iSelectIndex].transform.position;
+//		UI3DEffectTool.ShowMidLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listSkillIcon[m_iSelectIndex].gameObject, EffectTemplate.getEffectTemplateByEffectId( 100113 ).path);
+//		m_isCreateEff = true;
 	}
 
 	public void clear()
 	{
-		m_isCreateEff = false;
-		UI3DEffectTool.Instance().ClearUIFx(m_listSkillIcon[m_iSelectIndex].gameObject);
+//		m_isCreateEff = false;
+//		UI3DEffectTool.ClearUIFx(m_listSkillIcon[m_iSelectIndex].gameObject);
 	}
 
 	public void setEffUP()
 	{
 		m_eff.transform.position = m_listSkillIcon[m_iSelectIndex].transform.position;
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_eff, EffectTemplate.getEffectTemplateByEffectId( 100009 ).path);
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_eff, EffectTemplate.getEffectTemplateByEffectId( 100009 ).path);
+
 	}
 
 	public void clearTupo()
 	{
-		UI3DEffectTool.Instance().ClearUIFx(m_effTupo);
+		m_effTupo.SetActive(false);
+//		UI3DEffectTool.ClearUIFx(m_effTupo);
+		UI3DEffectTool.ClearUIFx(m_effTupoWenzi);
+		m_Num = 0;
 	}
 	
 	public void setEffUPTupo()
 	{
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_effTupo, EffectTemplate.getEffectTemplateByEffectId( 100009 ).path);
+		m_Num = 0;
+		m_effTupo.SetActive(true);
+//		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_effTupo, EffectTemplate.getEffectTemplateByEffectId( 100009 ).path);
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_effTupoWenzi, EffectTemplate.getEffectTemplateByEffectId( 100180 ).path);
 	}
 
 	public void setHeroSkillUp(int id)
@@ -394,7 +420,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 				{
 					TaskData.Instance.m_iCurMissionIndex = 100230;
 					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-					tempTaskData.m_iCurIndex = 4;
+					tempTaskData.m_iCurIndex = 5;
 					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 				}
 			}
@@ -407,6 +433,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 			}
 			else
 			{
+				TaskData.Instance.m_DestroyMiBao = true;
 				m_iSelectId = m_listCurPageHeroData[m_iSelectIndex].skillId;
 				Global.ScendID(ProtoIndexes.C_HEROSKILLUP_UP_REQ, m_iSelectId);
 			}
@@ -417,6 +444,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 			setEff();
 			setEffUP();
 			clearTupo();
+			TaskData.Instance.m_DestroyMiBao = false;
 		}
 		//		Debug.Log(ui.name);
 		//		if(ui.name.IndexOf("tianfuback") != -1)

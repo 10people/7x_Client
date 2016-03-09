@@ -39,7 +39,7 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 	//获得联盟信息
 	public void InItSetting ()
 	{
-		Debug.Log ("isOpen:" + m_UnionInfo.isAllow);
+		//Debug.Log ("isOpen:" + m_UnionInfo.isAllow);
 		int isOpen = m_UnionInfo.isAllow;// 0为关闭  1为开启
 
 		if(isOpen == 0)
@@ -160,7 +160,7 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 			byte[] t_protof = dis_stream.ToArray();;
 			
 			SocketTool.Instance().SendSocketMessage (ProtoIndexes.DISMISS_ALLIANCE,ref t_protof,"30132");
-			Debug.Log ("jiesanReq:" + ProtoIndexes.DISMISS_ALLIANCE);
+			//Debug.Log ("jiesanReq:" + ProtoIndexes.DISMISS_ALLIANCE);
 		}
 	}
 
@@ -223,7 +223,7 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 			
 			byte[] t_protof = closeStream.ToArray ();
 			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.CLOSE_APPLY, ref t_protof, "30136");
+			SocketTool.Instance().SendSocketMessage (ProtoIndexes.CLOSE_APPLY, ref t_protof, "30136");
 		}
 	}
 
@@ -237,7 +237,7 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 			{
 			case ProtoIndexes.DISMISS_ALLIANCE_OK://无法判断是否解散成功
 			{
-				Debug.Log ("jiesan:" + ProtoIndexes.DISMISS_ALLIANCE_OK);
+				//Debug.Log ("jiesan:" + ProtoIndexes.DISMISS_ALLIANCE_OK);
 				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
 				                        DisAllianceLoadCallback );
 		 		return true;
@@ -245,7 +245,7 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 				
 			case ProtoIndexes.CLOSE_APPLY_OK://关闭招募信息返回
 			{
-				Debug.Log ("guanbi:" + ProtoIndexes.CLOSE_APPLY_OK);
+			//	Debug.Log ("guanbi:" + ProtoIndexes.CLOSE_APPLY_OK);
 				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
 				                        CloseRecuritLoadCallback );
 
@@ -303,7 +303,7 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 
 	void DisAllianceSuccessBack (int i)
 	{
-        //JunZhuData.Instance ().m_junzhuInfo.lianMengId = 0;
+        //JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
         //CityGlobalData.m_isAllianceScene = false;
         //CityGlobalData.m_isMainScene = true;
 

@@ -115,11 +115,6 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
                     t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
                     m_junzhuInfo = tempInfo;
-      
-                    if (PlayerNameManager.m_ObjSelfName != null)
-                    {
-                        PlayerNameManager.UpdateSelfName();
-                    }
                     return true;
             }
         }
@@ -190,10 +185,6 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
                             FunctionOpenTemp.GetLVAddOpenFunction(tempInfo.level);
                         }
                         CityGlobalData.m_JunZhuTouJinJieTag = true;
-                        if (PlayerNameManager.m_ObjSelfName != null)
-                        {
-                            PlayerNameManager.UpdateSelfName();
-                        }
 
 						if(Global.m_iCenterZhanli < JunZhuData.Instance().m_junzhuInfo.zhanLi)
 						{
@@ -221,11 +212,13 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 						}
 						else if(Global.m_iPZhanli + Global.m_iAddZhanli < m_junzhuInfo.zhanLi)
 						{
-							Global.m_iAddZhanli += m_junzhuInfo.zhanLi - (Global.m_iPZhanli + Global.m_iAddZhanli);
+							Global.m_iAddZhanli = m_junzhuInfo.zhanLi - Global.m_iPZhanli;
 							if(!Global.m_isZhanli)
 							{
+								Global.m_iPChangeZhanli = Global.m_iPZhanli;
 								ClientMain.addPopUP(70, 1, "", null);
 							}
+							Global.m_iPZhanli = m_junzhuInfo.zhanLi;
 						}
                         return true;
                     }
@@ -300,7 +293,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     {
         if (i == 2)
         {
-            Debug.Log("跳转到充值！");
+//            Debug.Log("跳转到充值！");
 
             MainCityUI.ClearObjectList();
             EquipSuoData.TopUpLayerTip();
@@ -318,11 +311,11 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBack_2);
 
-            Debug.Log("购买失败");
+            //Debug.Log("购买失败");
         }
         else if (inf.result == 2)
         {
-            Debug.Log("VIP等级不足");
+            //Debug.Log("VIP等级不足");
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), BuyPointFail);
         }
     }
@@ -391,7 +384,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
     void BuyPoint(int i)
     {
-		UI_IsOpen = false;
+		//UI_IsOpen = false;
         if (i == 2)
         {
             // Debug.Log("发送购买体力的请求");
@@ -407,10 +400,10 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
     void BuyTiLi(int i)
     {
-		UI_IsOpen = false;
+		//UI_IsOpen = false;
         if (i == 2)
         {
-            // Debug.Log("发送购买体力的请求");
+             //Debug.Log("发送购买体力的请求");
 
             if (JunZhuData.Instance().m_junzhuInfo.tili >= Max_tili)
             {
@@ -466,11 +459,14 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     }
     void InitBuyUI()
     {
-		if(UI_IsOpen )
-		{
-			return;
-		}
-		UI_IsOpen = true;
+//		Debug.Log ("IsBuyTongBi = "+IsBuyTongBi);
+//		Debug.Log ("IsBuyTiLi = "+IsBuyTiLi);
+//		Debug.Log ("IsBuyPoint = "+IsBuyPoint);
+//		if(UI_IsOpen )
+//		{
+//			return;
+//		}
+//		UI_IsOpen = true;
         if (IsBuyTongBi)
         {
             m_RefreshCopperInfo = true;
@@ -501,21 +497,25 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         }
 		else
 		{
-			UI_IsOpen = false;
+			//UI_IsOpen = false;
 		}
     }
 
-    void LoadBuyTongBiNoTimesBack(ref WWW p_www, string p_path, Object p_object)
+   public  void LoadBuyTongBiNoTimesBack(ref WWW p_www, string p_path, Object p_object)
     {
-
+		string str3 = "";
         string title = "";
+//		Debug.Log ("IsBuyTongBi = "+IsBuyTongBi);
+//		Debug.Log ("IsBuyTiLi = "+IsBuyTiLi);
         if (IsBuyTongBi)
         {
             IsBuyTongBi = false;
             title = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_1) + LanguageTemplate.GetText(LanguageTemplate.Text.BUY_5);
+			str3 = "V特权等级不足，V特权等级提升到" + (m_junzhuInfo.vipLv + 1).ToString()+"级即可购买更多铜币。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
         }
         else if (IsBuyTiLi)
         {
+			str3 = "V特权等级不足，V特权等级提升到" + (m_junzhuInfo.vipLv + 1).ToString()+"级即可购买更多体力。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
             IsBuyTiLi = false;
             title = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_1) + LanguageTemplate.GetText(LanguageTemplate.Text.BUY_6);
         }
@@ -524,16 +524,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         string str33 = LanguageTemplate.GetText(LanguageTemplate.Text.YOU_XIA_15);
         string[] s = str22.Split('*');
 
-        string str3 = "";
-
-        if (m_junzhuInfo.vipLv < MaxVIPLevel)
-        {
-            str3 = s[0] + (m_junzhuInfo.vipLv + 1).ToString() + s[1];
-        }
-        else
-        {
-            str3 = str33;
-        }
+    
         string strbtn = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
@@ -545,7 +536,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
     void LoadBuyPoint_Back(ref WWW p_www, string p_path, Object p_object)
     {
-
+//		Debug.Log ("弹出购买点数的UI");
         string str1 = "购买点数";//LanguageTemplate.GetText(LanguageTemplate.Text.BUY_1) + LanguageTemplate.GetText(LanguageTemplate.Text.BUY_5);
         string str2 = "\r\n" + "你的升级点数不足了" + "\r\n" + "\r\n" + "是否花费" + Buy_TimespInfo.mibaoHuaFei.ToString() + "元宝购买点数？";//LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_CONFIRM_DUIHUAN_USE_WEIWANG_ASKSTR1);
        
@@ -612,7 +603,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
 	public void LoadBack_3(ref WWW p_www, string p_path, Object p_object)
     {
-
+//		Debug.Log ("Buywhta");
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
 
         string str22 = LanguageTemplate.GetText(LanguageTemplate.Text.YOU_XIA_14);
@@ -622,16 +613,9 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         string[] s = str22.Split('*');
 
         string str3 = "";
-
-        if (m_junzhuInfo.vipLv < MaxVIPLevel)
-        {
-            str3 = s[0] + (m_junzhuInfo.vipLv + 1).ToString() + s[1];
-        }
-        else
-        {
-            str3 = str33;
-        }
-
+	
+		str3 = "V特权等级不足，V特权等级提升到" + (m_junzhuInfo.vipLv + 1).ToString()+"级即可购买更多体力。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
+   
         string strbtn = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
@@ -743,6 +727,6 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     }
 	void ChangeState(int i)
 	{
-		UI_IsOpen = false;
+		//UI_IsOpen = false;
 	}
 }

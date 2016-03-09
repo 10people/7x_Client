@@ -7,7 +7,7 @@ public class AllianceUp : MonoBehaviour {
 	public UILabel UpInsrtruction;
 	void Start () {
 	
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EffectObj, EffectIdTemplate.GetPathByeffectId(100020), null);
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EffectObj, EffectIdTemplate.GetPathByeffectId(100020), null);
 
 		StartCoroutine(WaitForUpgaade());
 	}

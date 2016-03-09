@@ -8,7 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class YXItem : MonoBehaviour {
+public class YXItem : MonoBehaviour  {
 
 	public UILabel Itname;
 
@@ -25,6 +25,7 @@ public class YXItem : MonoBehaviour {
 	public UISprite Icon;
 	public GameObject CDBox;
 	private int LimitLevel ;
+
 	void Start () {
 	
 	}
@@ -33,6 +34,7 @@ public class YXItem : MonoBehaviour {
 	void Update () {
 	
 	}
+
 	public void Init()
 	{
 		int m_bigid = mYouXiaInfo.id;
@@ -48,7 +50,7 @@ public class YXItem : MonoBehaviour {
 			Re_AllTimes.gameObject.SetActive(false);
 			OpenLevel.gameObject.SetActive(true);
 			OpenLevel.text = mYouxiaoOPen.openLevel.ToString()+"级开放";
-			this.gameObject.GetComponent<BoxCollider>().enabled = false;
+			this.gameObject.GetComponent<UIButton>().enabled = false;
 			Box.gameObject.SetActive(true);
 			CDBox.gameObject.SetActive(true);
 			Art.gameObject.SetActive(false);
@@ -74,7 +76,7 @@ public class YXItem : MonoBehaviour {
 			}
 		}
 
-		Debug.Log ("m_bigid.m_bigid = "+m_bigid);
+		//Debug.Log ("m_bigid.m_bigid = "+m_bigid);
 		Icon.spriteName = m_bigid.ToString ();
 	}
 
@@ -84,8 +86,8 @@ public class YXItem : MonoBehaviour {
 	{
 		Re_AllTimes.gameObject.SetActive(false);
 		T = mYouXiaInfo.remainColdTime;
-		CDBox.gameObject.SetActive(true);
-		this.gameObject.GetComponent<BoxCollider>().enabled = false;
+		CDBox.SetActive(false);
+
 		while(T > 0)
 		{
 			T -= 1;
@@ -107,7 +109,7 @@ public class YXItem : MonoBehaviour {
 			yield return new WaitForSeconds(1f);
 		}
 		//this.gameObject.GetComponent<BoxCollider>().enabled = true;
-		CDBox.SetActive(false);
+
 		CountTime.gameObject.SetActive(false);
 		Art.gameObject.SetActive(true);
 		ShowTime ();
@@ -122,20 +124,22 @@ public class YXItem : MonoBehaviour {
 		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (mYouXiaInfo.id);
 		if(mYouXiaInfo.remainTimes >0 )
 		{
-			this.gameObject.GetComponent<BoxCollider>().enabled = true;
+			this.gameObject.GetComponent<UIButton>().enabled = true;
 			Re_AllTimes.text = MyColorData.getColorString(1, str) +MyColorData.getColorString(4, mYouXiaInfo.remainTimes.ToString()+"/"+mYouxiaoOPen.maxTimes.ToString());
 		}
 		else
 		{
 			Art.gameObject.SetActive(false);
-			this.gameObject.GetComponent<BoxCollider>().enabled = false;
+			this.gameObject.GetComponent<UIButton>().enabled = true;
 			Re_AllTimes.text = MyColorData.getColorString(1, str) +MyColorData.getColorString(5, mYouXiaInfo.remainTimes.ToString()+"/"+mYouxiaoOPen.maxTimes.ToString());
 		}
 	}
 	public void Enter()
 	{
-		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.CHOOSEYOUXIA),LoadResourceCallback);
+       Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.CHOOSEYOUXIA),LoadResourceCallback);
 	}
+
+
 	private GameObject tempOjbect;
 	void LoadResourceCallback(ref WWW p_www,string p_path, Object p_object)
 	{

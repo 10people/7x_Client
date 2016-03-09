@@ -96,7 +96,7 @@ public class KingCamera : MonoBehaviour
 
 	void LateUpdate()
 	{
-		if (DramaControllor.Instance () != null && DramaControllor.Instance ().getInDrama () == true) return;
+		if (DramaControllor.Instance() != null && DramaControllor.Instance().getInDrama () == true) return;
 
 		updateCameraFlags ();
 
@@ -109,7 +109,7 @@ public class KingCamera : MonoBehaviour
 
 	public void targetChang(GameObject _target)
 	{
-		if (_target == null) _target = BattleControlor.Instance ().getKing ().gameObject;
+		if (_target == null) _target = BattleControlor.Instance().getKing ().gameObject;
 
 		if (_target.Equals (target)) return;
 
@@ -246,7 +246,7 @@ public class KingCamera : MonoBehaviour
 		
 		//cam.cullingMask = 1280;
 
-		targetChang (BattleControlor.Instance ().getKing ().gameObject);
+		targetChang (BattleControlor.Instance().getKing ().gameObject);
 
 		CameraChange (cur_cam_position, cur_cam_rotation);
 	}
@@ -272,7 +272,7 @@ public class KingCamera : MonoBehaviour
 
 		flag.cameraRotation = m_cam_rotation;
 
-		flag.camera4Param = DebugCameraAdjust.Instance ().get4Param();
+		flag.camera4Param = DebugCameraAdjust.Instance().get4Param();
 
 		BattleFlagWritor writor = (BattleFlagWritor)flag.transform.parent.gameObject.AddComponent <BattleFlagWritor>();
 
@@ -293,14 +293,14 @@ public class KingCamera : MonoBehaviour
 
 	public void updateCamera()
 	{
-		if (BattleControlor.Instance ().getKing () == null) return;
+		if (BattleControlor.Instance().getKing () == null) return;
 
-		if(BattleControlor.Instance().lastCameraEffect == true || cameraLock == true) 
-		{
-			cameraLock = true;
-
-			return;
-		}
+//		if(BattleControlor.Instance().lastCameraEffect == true || cameraLock == true) 
+//		{
+//			cameraLock = true;
+//
+//			return;
+//		}
 
 		Camera cam = gameObject.GetComponent<Camera> ();
 
@@ -314,7 +314,7 @@ public class KingCamera : MonoBehaviour
 				}
 				else
 				{
-					targetChang(BattleControlor.Instance ().getKing ().gameObject);
+					targetChang(BattleControlor.Instance().getKing ().gameObject);
 				}
 			}
 
@@ -337,6 +337,11 @@ public class KingCamera : MonoBehaviour
 //			}
 
 			Vector3 targetPos = target.transform.position + m_cam_position;
+
+			if(BattleControlor.Instance().lastCameraEffect == true)
+			{
+				targetPos = targetPos + (transform.forward * Vector3.Distance(targetPos, target.transform.position) * .25f);
+			}
 
 			Vector3 targetRotation = m_cam_rotation;
 
@@ -517,7 +522,7 @@ public class KingCamera : MonoBehaviour
 	{
 		if (flags.Count == 0) return;
 
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		listCurCam.Clear ();
 

@@ -25,6 +25,7 @@ public class Editor_Build_Bundle_5 {
 	#region Debug Bundle
 	
 	#if DEBUG_BUNDLE
+	/// 1st.
 	[MenuItem("Build/Bundles/Build All", false, (int)Editor_Build_Bundle_Menu.MenuItemPriority.BUILD_DEBUG - 2 ) ]
 	public static void Debug_Editor_Build_All() {
 		{
@@ -41,6 +42,7 @@ public class Editor_Build_Bundle_5 {
 		}
 	}
 
+	/// 1st.
 	[MenuItem("Build/Bundles/Build Bundle", false, (int)Editor_Build_Bundle_Menu.MenuItemPriority.BUILD_DEBUG - 1 ) ]
 	public static void Debug_Editor_Debug_Bundle() {
 		{
@@ -62,6 +64,7 @@ public class Editor_Build_Bundle_5 {
 		}
 	}
 
+	/// 2nd.
 	[MenuItem("Build/Bundles/Build Manifest", false, (int)Editor_Build_Bundle_Menu.MenuItemPriority.BUILD_DEBUG ) ]
 	public static void Debug_Editor_Debug_Bundle_2nd() {
 		{

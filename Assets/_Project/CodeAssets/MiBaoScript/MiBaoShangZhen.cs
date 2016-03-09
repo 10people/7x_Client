@@ -23,7 +23,7 @@ public class MiBaoShangZhen : MonoBehaviour {
 			//Debug.Log("myScrollVeiw == null");
 			return ;
 		}
-		m_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		m_MiBaoInfo = MiBaoGlobleData.Instance().G_MiBaoInfo;
 		//Debug.Log("_MiBaoInfo.mibaoInfo.count   "+m_MiBaoInfo.mibaoInfo.Count);
 		MiBaoShangZhenScrollView mMiBaoShangZhenScrollView = myScrollVeiw.GetComponent<MiBaoShangZhenScrollView>();
 //		if(m_MiBaoInfo.mibaoInfo != null)

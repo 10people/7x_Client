@@ -20,75 +20,42 @@ public class PvpRecord : MonoBehaviour {
 
 	public UILabel recordDes;
 
+	public GameObject topRightObj;
+
 	public List<EventHandler> btnHandlerList = new List<EventHandler> ();
 
 	void Start ()
 	{
-		QXComData.LoadYuanBaoInfo (this.transform.FindChild ("Camera").gameObject);
+		QXComData.LoadYuanBaoInfo (topRightObj);
 	}
 
 	public void InItRecordPage (ZhandouRecordResp tempRecordResp)
 	{
-		foreach (EventHandler handler in btnHandlerList)
-		{
-			handler.m_handler += BtnHandlerCallBack;
-		}
-
-		if (tempRecordResp.info.Count == 0)
-		{
-			foreach (GameObject obj in recordItemList)
-			{
-				Destroy (obj);
-			}
-			recordItemList.Clear ();
-
-			recordDes.text = "战斗记录为空！";
-			return;
-		}
-
-		int recordCount = tempRecordResp.info.Count - recordItemList.Count;
-
-		if (recordCount > 0)
-		{
-			int exitCount = recordItemList.Count;
-
-			for (int i = 0;i < recordCount;i ++)
-			{
-				GameObject recordItem = (GameObject)Instantiate (recordItemObj);
-				
-				recordItem.SetActive (true);
-				recordItem.transform.parent = recordItemObj.transform.parent;
-				recordItem.transform.localPosition = new Vector3(0,-130 * (i + exitCount),0);
-				recordItem.transform.localScale = recordItemObj.transform.localScale;
-
-				recordItemList.Add (recordItem);
-			}
-		}
-		else
-		{
-			for (int i = 0;i < Mathf.Abs (recordCount);i ++)
-			{
-				Destroy (recordItemList[recordItemList.Count - 1]);
-				recordItemList.RemoveAt (recordItemList.Count - 1);
-			}
-		}
-
-		recordSc.UpdateScrollbars (true);
+		recordItemList = QXComData.CreateGameObjectList (recordItemObj,tempRecordResp.info.Count,recordItemList);
 
 		for (int i = 0;i < recordItemList.Count;i ++)
 		{
+			recordItemList[i].transform.localPosition = new Vector3(0,-113 * i,0);
+			recordSc.UpdateScrollbars (true);
 			PvpRecordItem record = recordItemList[i].GetComponent<PvpRecordItem> ();
 			record.InItRecordItemInfo (tempRecordResp.info[i]);
 		}
 
-		recordDes.text = "";
+		recordSc.enabled = recordItemList.Count < 5 ? false : true;
+		recordSb.gameObject.SetActive (recordItemList.Count < 5 ? false : true);
 
-		recordSc.enabled = recordItemList.Count < 4 ? false : true;
+		recordDes.text = recordItemList.Count == 0 ? "战斗记录为空！" : "";
+
+		foreach (EventHandler handler in btnHandlerList)
+		{
+			handler.m_click_handler -= BtnHandlerCallBack;
+			handler.m_click_handler += BtnHandlerCallBack;
+		}
 	}
 
 	void BtnHandlerCallBack (GameObject obj)
 	{
-		Debug.Log (obj.name);
+//		Debug.Log (obj.name);
 		switch (obj.name)
 		{
 		case "CloseBtn":
@@ -101,7 +68,6 @@ public class PvpRecord : MonoBehaviour {
 			break;
 		case "Backbtn":
 
-			PvpPage.pvpPage.PvpActiveState (true);
 			DisActive ();
 
 			break;
@@ -112,10 +78,6 @@ public class PvpRecord : MonoBehaviour {
 
 	void DisActive ()
 	{
-		foreach (EventHandler handler in btnHandlerList)
-		{
-			handler.m_handler -= BtnHandlerCallBack;
-		}
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
 	}

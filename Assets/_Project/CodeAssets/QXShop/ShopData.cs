@@ -48,9 +48,10 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		//string[3]:币种(QXCombData.cs:MoneyType)
 		//string[4]:功能名称
 		//string[5]:功能开启id(FunctionOpen.xml)
+		//string[6]:商铺位置排序
 		{ShopType.HUANGYE,new string[]{"10,11","荒野币","1","4","联盟","104"}},//"荒野求生","300200"
 		{ShopType.GONGXIAN,new string[]{"20,21","贡献","2","2","联盟","104"}},
-		{ShopType.GONGXUN,new string[]{"30,31","功勋","3","5","联盟","104"}},
+		{ShopType.GONGXUN,new string[]{"30,31","功勋","3","5","联盟战","104"}},
 		{ShopType.WEIWANG,new string[]{"40,41","威望","4","3","百战千军","300100"}},
 		{ShopType.ORDINARY,new string[]{"50,51","普通","5","1","商铺","9"}},
 		{ShopType.MYSTRERT,new string[]{"60,61","神秘","6","1","商铺","9"}},
@@ -127,8 +128,8 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 			rewardDataList.Add (data);
 		}
 		
-		//		GeneralRewardManager.Instance ().CreateReward (rewardDataList);
-		GeneralRewardManager.Instance ().CreateSpecialReward (rewardDataList);
+		//		GeneralRewardManager.Instance().CreateReward (rewardDataList);
+		GeneralRewardManager.Instance().CreateSpecialReward (rewardDataList);
 
 		return;
 		#endif
@@ -140,12 +141,11 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 //			return;
 //		}
 //
-//		if (!IsShopFunctionOpen (tempType)) 
-//		{
-//			Debug.Log (shopReqDic[tempType][4] + "未开启");
-//			ClientMain.m_UITextManager.createText(MyColorData.getColorString (5,shopReqDic[tempType][4] + "功能未开启"));
-//			return;
-//		}
+		if (tempType == ShopType.GONGXUN) 
+		{
+			ClientMain.m_UITextManager.createText(MyColorData.getColorString (5,shopReqDic[tempType][4] + "功能未开启"));
+			return;
+		}
 
 		if (!Global.m_isOpenShop)
 		{
@@ -153,7 +153,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 			Global.m_isOpenShop = true;
 			SetShopPageType (ShopPageType.MAIN_PAGE);
 		}
-		Debug.Log ("shopDic.Count:" + shopDic.Count);
+//		Debug.Log ("shopDic.Count:" + shopDic.Count);
 		shopType = tempType;
 
 		if (tempType == ShopType.ORDINARY)
@@ -223,7 +223,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 			int moneyNum = 0;
 			if (shopType == ShopType.MYSTRERT)
 			{
-				moneyNum = JunZhuData.Instance ().m_junzhuInfo.yuanBao;
+				moneyNum = JunZhuData.Instance().m_junzhuInfo.yuanBao;
 			}
 			else
 			{
@@ -257,7 +257,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		shopReq.type = tempReqType == ShopReqType.FREE ? int.Parse (reqType[0]) : int.Parse (reqType[1]);
 		
 		QXComData.SendQxProtoMessage (shopReq,ProtoIndexes.HY_SHOP_REQ,ProtoIndexes.HY_SHOP_RESP.ToString ());
-		Debug.Log ("商铺信息请求:" + ProtoIndexes.HY_SHOP_REQ);
+//		Debug.Log ("商铺信息请求:" + ProtoIndexes.HY_SHOP_REQ);
 	}
 
 	/// <summary>
@@ -267,24 +267,24 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	public void ShopGoodsBuyReq (ShopGoodInfo tempInfo)
 	{
 		goodInfo = tempInfo;
-		Debug.Log ("goodInfo.needMoney:" + goodInfo.needMoney);
-		Debug.Log ("goodInfo.xmlId:" + goodInfo.xmlId);
-		Debug.Log ("goodInfo.itemId:" + goodInfo.itemId);
-		Debug.Log ("goodInfo.site:" + goodInfo.site);
+//		Debug.Log ("goodInfo.needMoney:" + goodInfo.needMoney);
+//		Debug.Log ("goodInfo.xmlId:" + goodInfo.xmlId);
+//		Debug.Log ("goodInfo.itemId:" + goodInfo.itemId);
+//		Debug.Log ("goodInfo.site:" + goodInfo.site);
 		int moneyNum = 0;
 		if (goodInfo.moneyType == QXComData.MoneyType.YUANBAO)
 		{
-			moneyNum = JunZhuData.Instance ().m_junzhuInfo.yuanBao;
+			moneyNum = JunZhuData.Instance().m_junzhuInfo.yuanBao;
 		}
 		else if (goodInfo.moneyType == QXComData.MoneyType.TONGBI)
 		{
-			moneyNum = JunZhuData.Instance ().m_junzhuInfo.jinBi;
+			moneyNum = JunZhuData.Instance().m_junzhuInfo.jinBi;
 		}
 		else
 		{
 			moneyNum = shopDic[shopType].money;
 		}
-		Debug.Log ("moneyNum:" + moneyNum);
+//		Debug.Log ("moneyNum:" + moneyNum);
 		if (goodInfo.needMoney > moneyNum)
 		{
 			//缺钱
@@ -298,7 +298,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 			storeBuyReq.goodId = tempInfo.xmlId;
 			
 			QXComData.SendQxProtoMessage (storeBuyReq,ProtoIndexes.HY_BUY_GOOD_REQ,ProtoIndexes.HY_BUY_GOOD_RESP.ToString ());
-			Debug.Log ("购买物品：" + ProtoIndexes.HY_BUY_GOOD_REQ);
+//			Debug.Log ("购买物品：" + ProtoIndexes.HY_BUY_GOOD_REQ);
 		}
 	}
 
@@ -311,12 +311,13 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		PawnShopGoodsSell shopSellReq = new PawnShopGoodsSell();
 		shopSellReq.sellGinfo = tempList;
 
-		foreach (SellGoodsInfo s in tempList)
-		{
-			Debug.Log ("s" + s.bagId + "|||" + s.count);
-		}
+//		foreach (SellGoodsInfo s in tempList)
+//		{
+//			Debug.Log ("s" + s.bagId + "|||" + s.count);
+//		}
+
 		QXComData.SendQxProtoMessage (shopSellReq,ProtoIndexes.PAWN_SHOP_GOODS_SELL,ProtoIndexes.PAWN_SHOP_GOODS_SELL_OK.ToString ());
-		Debug.Log ("商铺出售物品请求:" + ProtoIndexes.PAWN_SHOP_GOODS_SELL);
+//		Debug.Log ("商铺出售物品请求:" + ProtoIndexes.PAWN_SHOP_GOODS_SELL);
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)
@@ -327,7 +328,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 			{
 			case ProtoIndexes.HY_SHOP_RESP://商铺返回信息
 			{
-				Debug.Log ("商铺信息返回:" + ProtoIndexes.HY_SHOP_RESP);
+//				Debug.Log ("商铺信息返回:" + ProtoIndexes.HY_SHOP_RESP);
 				ShopResp shopRes = new ShopResp();
 				shopRes = QXComData.ReceiveQxProtoMessage (p_message,shopRes) as ShopResp;
 				
@@ -338,10 +339,10 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 						shopRes.goodsInfos = new List<DuiHuanInfo>();
 					}
 
-					Debug.Log ("shopRes.msg:" + shopRes.msg);
-					Debug.Log ("shopRes.goodsInfos:" + shopRes.goodsInfos.Count);
-					Debug.Log ("shopRes.money:" + shopRes.money);
-					Debug.Log ("shopRes.nextRefreshNeedMoney:" + shopRes.nextRefreshNeedMoney);
+//					Debug.Log ("shopRes.msg:" + shopRes.msg);
+//					Debug.Log ("shopRes.goodsInfos:" + shopRes.goodsInfos.Count);
+//					Debug.Log ("shopRes.money:" + shopRes.money);
+//					Debug.Log ("shopRes.nextRefreshNeedMoney:" + shopRes.nextRefreshNeedMoney);
 
 					if (shopType == ShopType.GONGXIAN)
 					{
@@ -369,6 +370,8 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 							shopDic[shopType].money = shopRes.money;
 						}
 
+						RefreshMoney (shopType,shopRes.money);
+
 						LoadShopPrefab ();
 
 						break;
@@ -389,6 +392,8 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 							shopDic[shopType].nextRefreshNeedMoney = shopRes.nextRefreshNeedMoney;
 							shopDic[shopType].money = shopRes.money;
 
+							RefreshMoney (shopType,shopRes.money);
+
 							LoadShopPrefab ();
 						}
 
@@ -402,14 +407,14 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 			}
 			case ProtoIndexes.HY_BUY_GOOD_RESP://购买物品返回
 			{
-				Debug.Log ("商铺物品购买返回:" + ProtoIndexes.HY_BUY_GOOD_RESP);
+//				Debug.Log ("商铺物品购买返回:" + ProtoIndexes.HY_BUY_GOOD_RESP);
 				
 				BuyGoodResp shopBuyRes = new BuyGoodResp();
 				shopBuyRes = QXComData.ReceiveQxProtoMessage (p_message,shopBuyRes) as BuyGoodResp;
 				
 				if (shopBuyRes != null)
 				{
-					Debug.Log ("购买结果：" + shopBuyRes.msg + "//0:金钱不足 1:购买成功 2:已经售罄 3:购买商品不存在");
+//					Debug.Log ("购买结果：" + shopBuyRes.msg + "//0:金钱不足 1:购买成功 2:已经售罄 3:购买商品不存在");
 					switch (shopBuyRes.msg)
 					{
 					case 0:
@@ -455,6 +460,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 							else
 							{
 								shopDic[shopType].money = shopBuyRes.remianMoney;
+								RefreshMoney (shopType,shopBuyRes.remianMoney);
 							}
 							foreach (DuiHuanInfo duiHuan in shopDic[shopType].goodsInfos)
 							{
@@ -468,7 +474,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 						}
 
 						RewardData data = new RewardData(goodInfo.itemId,goodInfo.itemNum);
-						GeneralRewardManager.Instance ().CreateReward (data);
+						GeneralRewardManager.Instance().CreateReward (data);
 
 						break;
 					case 2:
@@ -477,8 +483,8 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 						{
 							if (goodInfo.xmlId == duiHuan.id && goodInfo.site == duiHuan.site)
 							{
-								Debug.Log ("goodInfo.xmlId:" + goodInfo.xmlId + "||goodInfo.site:" + goodInfo.site);
-								Debug.Log ("duiHuan.id:" + duiHuan.id + "||duiHuan.site:" + duiHuan.site);
+//								Debug.Log ("goodInfo.xmlId:" + goodInfo.xmlId + "||goodInfo.site:" + goodInfo.site);
+//								Debug.Log ("duiHuan.id:" + duiHuan.id + "||duiHuan.site:" + duiHuan.site);
 								duiHuan.isChange = false;
 								break;
 							}
@@ -515,6 +521,30 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 			}
 		}
 		return false;
+	}
+
+	/// <summary>
+	/// Refreshs the money.
+	/// </summary>
+	/// <param name="tempType">Temp type.</param>
+	/// <param name="tempMoney">Temp money.</param>
+	public void RefreshMoney (ShopType tempType,int tempMoney)
+	{
+		switch (tempType)
+		{
+		case ShopType.WEIWANG:
+			if (PvpData.Instance.IsPvpPageOpen)
+			{
+				BaiZhanPage.baiZhanPage.RefreshWeiWang (tempMoney);
+			}
+			break;
+		case ShopType.HUANGYE:
+			break;
+		case ShopType.GONGXIAN:
+			break;
+		default:
+			break;
+		}
 	}
 
 	/// <summary>
@@ -652,7 +682,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		return (QXComData.MoneyType)Enum.ToObject (typeof(QXComData.MoneyType),int.Parse (shopReqDic [tempType] [3]));
 	}
 
-	void OnDestroy (){
+	new void OnDestroy (){
 		SocketTool.UnRegisterMessageProcessor (this);
 
 		base.OnDestroy();

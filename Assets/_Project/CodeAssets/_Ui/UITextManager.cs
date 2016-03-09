@@ -10,6 +10,7 @@ public class UITextManager
 
 	public void createText(string data)
 	{
+//        Debug.Log("datadatadatadatadatadatadatadata ::" + data);
 		m_listData.Add(data);
 		if(m_ObjText == null)
 		{

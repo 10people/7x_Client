@@ -61,14 +61,14 @@ public class FuWenMixBtn : MonoBehaviour {
 			effectId = 100163;
 		}
 		
-		UI3DEffectTool.Instance ().ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,fuWenIcon.gameObject,EffectIdTemplate.GetPathByeffectId(effectId));
+		UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,fuWenIcon.gameObject,EffectIdTemplate.GetPathByeffectId(effectId));
 
 		FuWenMainPage.fuWenMainPage.ShowEffectCount (1);
 	}
 
 	public void ClearFx ()
 	{
-		UI3DEffectTool.Instance ().ClearUIFx (fuWenIcon.gameObject);
+		UI3DEffectTool.ClearUIFx (fuWenIcon.gameObject);
 	}
 
 	void OnClick ()
@@ -78,7 +78,9 @@ public class FuWenMixBtn : MonoBehaviour {
 			FuWenMainPage.fuWenMainPage.IsBtnClick = true;
 			
 			FuWenMainPage.fuWenMainPage.FxController (FxType.CLEAR);
-			FuWenMainPage.fuWenMainPage.SelectFuWen (FuWenSelect.SelectType.HECHENG,0,FuWenMainPage.FuShiType.OTHER,null);
+
+			FuwenLanwei tempInfo = new FuwenLanwei(){itemId = itemId};
+			FuWenMainPage.fuWenMainPage.SelectFuWen (FuWenSelect.SelectType.HECHENG,tempInfo,FuWenMainPage.FuShiType.OTHER,null);
 		}
 	}
 }

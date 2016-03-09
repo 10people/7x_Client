@@ -23,14 +23,15 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     public static T Instance{
         get
         {
-            var editMode = Application.isEditor && !Application.isPlaying;
-            if (!editMode && m_ApplicationIsQuitting)
-            {
-                Debug.LogWarning("[Singleton] Instance:" + typeof(T) +
-                    " already destroyed on application quit." +
-                    " Won't create again - returning null.");
-                return null;
-            }
+			// removed for auto test.
+//            var editMode = Application.isEditor && !Application.isPlaying;
+//            if (!editMode && m_ApplicationIsQuitting)
+//            {
+//                Debug.LogWarning("[Singleton] Instance:" + typeof(T) +
+//                    " already destroyed on application quit." +
+//                    " Won't create again - returning null.");
+//                return null;
+//            }
 
             if (m_instance == null)
             {

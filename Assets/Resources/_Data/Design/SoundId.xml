@@ -7,10 +7,12 @@
 <SoundList id="100100" name="Battle1" path="Sounds/BGM/Battle1" loops="1" type="mp3" stereo="0" />
 <SoundList id="100101" name="Battle2" path="Sounds/BGM/Battle2" loops="1" type="mp3" stereo="0" />
 <SoundList id="100102" name="Battle3_Night" path="Sounds/BGM/Battle3_Night" loops="1" type="mp3" stereo="0" />
-<SoundList id="100103" name="Battle4_Desert" path="Sounds/BGM/Battle4_Desert" loops="1" type="mp3" stereo="0" />
+<SoundList id="100103" name="Battle3_Night2" path="Sounds/BGM/Battle3_Night2" loops="1" type="mp3" stereo="0" />
+<SoundList id="100110" name="Battle4_Desert" path="Sounds/BGM/Battle4_Desert" loops="1" type="mp3" stereo="0" />
 <SoundList id="100200" name="Battle_boss" path="Sounds/BGM/Battle_boss" loops="1" type="mp3" stereo="0" />
 <SoundList id="100201" name="Battle_boss2" path="Sounds/BGM/Battle_boss2" loops="1" type="mp3" stereo="0" />
 <SoundList id="100203" name="Battle_boss3_Metal" path="Sounds/BGM/Battle_boss3_Metal" loops="1" type="mp3" stereo="0" />
+<SoundList id="150000" name="Drama1_YingZheng" path="Sounds/BGM/Drama1_YingZheng" loops="0" type="mp3" stereo="0" />
 <SoundList id="200000" name="Win" path="Sounds/BGM/Win" loops="0" type="mp3" stereo="0" />
 <SoundList id="200100" name="Lose" path="Sounds/BGM/Lose" loops="0" type="mp3" stereo="0" />
 <SoundList id="1500" name="Wind1_BgmPKG" path="Sounds/BGM/Wind1_BgmPKG" loops="1" type="mp3" stereo="1" />
@@ -26,6 +28,7 @@
 <SoundList id="900020" name="Dove_Whistle1" path="Sounds/Sfx/Dove_Whistle1" loops="0" type="mp3" stereo="1" />
 <SoundList id="900021" name="Dove_Whistle2" path="Sounds/Sfx/Dove_Whistle2" loops="0" type="mp3" stereo="1" />
 <SoundList id="900022" name="Dove_Whistle3" path="Sounds/Sfx/Dove_Whistle3" loops="0" type="mp3" stereo="1" />
+<SoundList id="900100" name="Ground_Cylinder" path="Sounds/Sfx/Ground_Cylinder" loops="0" type="mp3" stereo="1" />
 <SoundList id="210000" name="UI_Start_Game" path="Sounds/UI/UI_Start_Game" loops="0" type="mp3" stereo="0" />
 <SoundList id="210010" name="UI_Start" path="Sounds/UI/UI_Start" loops="0" type="mp3" stereo="0" />
 <SoundList id="210020" name="UI_Open" path="Sounds/UI/UI_Open" loops="0" type="mp3" stereo="0" />
@@ -39,6 +42,7 @@
 <SoundList id="210210" name="UI_Equip_UpgradeBTN" path="Sounds/UI/UI_Equip_UpgradeBTN" loops="0" type="mp3" stereo="0" />
 <SoundList id="210220" name="UI_Equip_UpgradeRefine" path="Sounds/UI/UI_Equip_UpgradeRefine" loops="0" type="mp3" stereo="0" />
 <SoundList id="210230" name="UI_Equip_UpgradeResult" path="Sounds/UI/UI_Equip_UpgradeResult" loops="0" type="mp3" stereo="0" />
+<SoundList id="210231" name="UI_UnLock_Chain" path="Sounds/UI/UI_UnLock_Chain" loops="0" type="mp3" stereo="0" />
 <SoundList id="210300" name="UI_Lottery_Card" path="Sounds/UI/UI_Lottery_Card" loops="0" type="mp3" stereo="0" />
 <SoundList id="210310" name="UI_Lottery_Item_Click" path="Sounds/UI/UI_Lottery_Item_Click" loops="0" type="mp3" stereo="0" />
 <SoundList id="210320" name="UI_Lottery_Treasure_Click" path="Sounds/UI/UI_Lottery_Treasure_Click" loops="0" type="mp3" stereo="0" />
@@ -57,6 +61,7 @@
 <SoundList id="210950" name="UI_FunctionOpen" path="Sounds/UI/UI_FunctionOpen" loops="0" type="mp3" stereo="0" />
 <SoundList id="210955" name="UI_Star" path="Sounds/UI/UI_Star" loops="0" type="mp3" stereo="0" />
 <SoundList id="210957" name="UI_Victory" path="Sounds/UI/UI_Victory" loops="0" type="mp3" stereo="0" />
+<SoundList id="210959" name="UI_Coin_1s" path="Sounds/UI/UI_Coin_1s" loops="0" type="mp3" stereo="0" />
 <SoundList id="3000" name="Cha_BodyFall1" path="Sounds/Sfx/Cha_BodyFall1" loops="0" type="mp3" stereo="1" />
 <SoundList id="3001" name="Cha_BodyFall2" path="Sounds/Sfx/Cha_BodyFall2" loops="0" type="mp3" stereo="1" />
 <SoundList id="3002" name="Cha_BodyFall3" path="Sounds/Sfx/Cha_BodyFall3" loops="0" type="mp3" stereo="1" />
@@ -149,6 +154,7 @@
 <SoundList id="3318" name="Skill_BigSword_Roll" path="Sounds/Sfx/Skill_BigSword_Roll" loops="0" type="mp3" stereo="1" />
 <SoundList id="3319" name="Skill_Sword_Buff" path="Sounds/Sfx/Skill_Sword_Buff" loops="0" type="mp3" stereo="1" />
 <SoundList id="400000" name="Skill_Thunder" path="Sounds/Sfx/Skill_Thunder" loops="0" type="mp3" stereo="1" />
+<SoundList id="400099" name="Skill_Fire_Qianyao" path="Sounds/Sfx/Skill_Fire_Qianyao" loops="0" type="mp3" stereo="1" />
 <SoundList id="400100" name="Skill_Fire_Shot" path="Sounds/Sfx/Skill_Fire_Shot" loops="0" type="mp3" stereo="1" />
 <SoundList id="400110" name="Skill_Fire_Impact" path="Sounds/Sfx/Skill_Fire_Impact" loops="0" type="mp3" stereo="1" />
 <SoundList id="400120" name="Skill_Fire_Impact_Loops" path="Sounds/Sfx/Skill_Fire_Impact_Loops" loops="1" type="mp3" stereo="1" />
@@ -162,6 +168,7 @@
 <SoundList id="420140" name="MiBao_Skill_Shot4" path="Sounds/Sfx/MiBao_Skill_Shot4" loops="0" type="mp3" stereo="0" />
 <SoundList id="420150" name="MiBao_Skill_Shot5" path="Sounds/Sfx/MiBao_Skill_Shot5" loops="0" type="mp3" stereo="0" />
 <SoundList id="420160" name="MiBao_Skill_Shot6" path="Sounds/Sfx/MiBao_Skill_Shot6" loops="0" type="mp3" stereo="0" />
+<SoundList id="420170" name="MiBao_Skill_Shot7" path="Sounds/Sfx/MiBao_Skill_Shot7" loops="0" type="mp3" stereo="0" />
 <SoundList id="4000" name="VO_BOSS_Male_A_Hurt1" path="Sounds/Sfx/VO_BOSS_Male_A_Hurt1" loops="0" type="mp3" stereo="1" />
 <SoundList id="4001" name="VO_BOSS_Male_A_Hurt2" path="Sounds/Sfx/VO_BOSS_Male_A_Hurt2" loops="0" type="mp3" stereo="1" />
 <SoundList id="4002" name="VO_BOSS_Male_A_Hurt3" path="Sounds/Sfx/VO_BOSS_Male_A_Hurt3" loops="0" type="mp3" stereo="1" />
@@ -187,6 +194,13 @@
 <SoundList id="42057" name="VO_BOSS_Male_D_Die1" path="Sounds/Sfx/VO_BOSS_Male_D_Die1" loops="0" type="mp3" stereo="1" />
 <SoundList id="42058" name="VO_BOSS_Male_D_Hurt1" path="Sounds/Sfx/VO_BOSS_Male_D_Hurt1" loops="0" type="mp3" stereo="1" />
 <SoundList id="42059" name="VO_BOSS_Male_D_Hurt2" path="Sounds/Sfx/VO_BOSS_Male_D_Hurt2" loops="0" type="mp3" stereo="1" />
+<SoundList id="43000" name="VO_BOSS_Male_E_Attack1" path="Sounds/Sfx/VO_BOSS_Male_E_Attack1" loops="0" type="mp3" stereo="1" />
+<SoundList id="43002" name="VO_BOSS_Male_E_Attack2" path="Sounds/Sfx/VO_BOSS_Male_E_Attack2" loops="0" type="mp3" stereo="1" />
+<SoundList id="43005" name="VO_BOSS_Male_E_Hurt1" path="Sounds/Sfx/VO_BOSS_Male_E_Hurt1" loops="0" type="mp3" stereo="1" />
+<SoundList id="43010" name="VO_BOSS_Male_E_Hurt2" path="Sounds/Sfx/VO_BOSS_Male_E_Hurt2" loops="0" type="mp3" stereo="1" />
+<SoundList id="43012" name="VO_BOSS_Male_E_Hurt3" path="Sounds/Sfx/VO_BOSS_Male_E_Hurt3" loops="0" type="mp3" stereo="1" />
+<SoundList id="43020" name="VO_BOSS_Male_E_Die1" path="Sounds/Sfx/VO_BOSS_Male_E_Die1" loops="0" type="mp3" stereo="1" />
+<SoundList id="43021" name="VO_BOSS_Male_E_Die2" path="Sounds/Sfx/VO_BOSS_Male_E_Die2" loops="0" type="mp3" stereo="1" />
 <SoundList id="4006" name="VO_Horse_Death01" path="Sounds/Sfx/VO_Horse_Death01" loops="0" type="mp3" stereo="1" />
 <SoundList id="4007" name="VO_Horse_Death02" path="Sounds/Sfx/VO_Horse_Death02" loops="0" type="mp3" stereo="1" />
 <SoundList id="4008" name="VO_Horse_Death03" path="Sounds/Sfx/VO_Horse_Death03" loops="0" type="mp3" stereo="1" />

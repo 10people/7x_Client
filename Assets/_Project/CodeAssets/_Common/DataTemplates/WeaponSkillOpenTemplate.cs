@@ -107,17 +107,17 @@ public class WeaponSkillOpenTemplate : XmlLoadManager
 	{
 		WeaponSkillOpenTemplate template = templates [0];
 
-		template.b_skill_light_1 = (maxLevel >= template.skill_light_1);
+		template.b_skill_light_1 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.jueyingxingguangzhan] > 0 && (maxLevel >= template.skill_light_1);
 
-		template.b_skill_light_2 = (maxLevel >= template.skill_light_2);
+		template.b_skill_light_2 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.xuejilaoyin] > 0 && (maxLevel >= template.skill_light_2);
 
-		template.b_skill_heavy_1 = (maxLevel >= template.skill_heavy_1);
+		template.b_skill_heavy_1 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.bahuanglieri] > 0 && (maxLevel >= template.skill_heavy_1);
 
-		template.b_skill_heavy_2 = (maxLevel >= template.skill_heavy_2);
+		template.b_skill_heavy_2 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.qiankundouzhuan] > 0 && (maxLevel >= template.skill_heavy_2);
 
-		template.b_skill_ranged_1 = (maxLevel >= template.skill_ranged_1);
+		template.b_skill_ranged_1 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.zhuixingjian] > 0 && (maxLevel >= template.skill_ranged_1);
 
-		template.b_skill_ranged_2 = (maxLevel >= template.skill_ranged_2);
+		template.b_skill_ranged_2 = BattleControlor.Instance().getKing().skillLevel [(int)CityGlobalData.skillLevelId.hanbingjian] > 0 && (maxLevel >= template.skill_ranged_2);
 
 		template.b_dodge = (maxLevel >= template.dodge);
 		

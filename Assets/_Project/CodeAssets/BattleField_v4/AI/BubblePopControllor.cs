@@ -134,7 +134,7 @@ public class BubblePopControllor : MonoBehaviour
 			bubble.close();
 		}
 
-		BattleUIControlor.Instance ().barAPC.closeBubble ();
+		BattleUIControlor.Instance().barAPC.closeBubble ();
 	}
 
 }

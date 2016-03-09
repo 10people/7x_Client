@@ -63,16 +63,16 @@ public class Huangyetearce : MonoBehaviour {
 		//int Open_stas = m_HuangYeTreasure.status;// 判断宝藏是否有人在攻打 0为正常 1 为有人在攻打
 
 
-		Debug.Log("stas        "+stas);
+	//	Debug.Log("stas        "+stas);
 		//Debug.Log("Open_stas        "+Open_stas);
 		if(stas == 0) // 未开启 如果是盟主则提示是否开启 如果是普通玩家就显示未开启
 		{
 			int identity = AllianceData.Instance.g_UnionInfo.identity; // 身份
-			Debug.Log("identity        "+identity);
+			//Debug.Log("identity        "+identity);
 			if(identity == 2||identity == 1)
 			{
 				//盟主
-				Debug.Log("盟主        ");
+			//	Debug.Log("盟主        ");
 				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),loodBoxBack);
 
 				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.HUANGYE_ZHENGROONG ),LoadBack);
@@ -141,7 +141,7 @@ public class Huangyetearce : MonoBehaviour {
 
 	void loodBoxBack(ref WWW p_www,string p_path, Object p_object)
 	{
-		Debug.Log("盟主22222        ");
+	//	Debug.Log("盟主22222        ");
 		HuangYePveTemplate mhuangyeTemp = HuangYePveTemplate.getHuangYePveTemplatee_byid( m_HuangYeTreasure.fileId);
 		string str1 = "是否要花费"+mhuangyeTemp.openCost.ToString()+"建设值开启宝藏?";
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
@@ -154,14 +154,14 @@ public class Huangyetearce : MonoBehaviour {
 	}
 	void IsOpenmHuangYeTreasure(int i)
 	{
-		Debug.Log (" i = "+i );
+		//Debug.Log (" i = "+i );
 		if(i == 2)
 		{
 			int builddata  = AllianceData.Instance.g_UnionInfo.build;
 			HuangYePveTemplate mhuangyeTemp = HuangYePveTemplate.getHuangYePveTemplatee_byid( m_HuangYeTreasure.fileId);
-			Debug.Log("mHuangYeTreasure.fileIdt"+m_HuangYeTreasure.fileId);
-			Debug.Log("AllianceData.Instance.g_UnionInfo.build"+AllianceData.Instance.g_UnionInfo.build);
-			Debug.Log("mhuangyeTemp.openCost"+mhuangyeTemp.openCost);
+//			Debug.Log("mHuangYeTreasure.fileIdt"+m_HuangYeTreasure.fileId);
+//			Debug.Log("AllianceData.Instance.g_UnionInfo.build"+AllianceData.Instance.g_UnionInfo.build);
+//			Debug.Log("mhuangyeTemp.openCost"+mhuangyeTemp.openCost);
 			if(builddata >= mhuangyeTemp.openCost)
 			{
 				OpenHuangYeTreasure OpenTrea = new OpenHuangYeTreasure ();

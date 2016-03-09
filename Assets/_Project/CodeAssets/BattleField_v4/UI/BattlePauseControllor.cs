@@ -16,7 +16,7 @@ public class BattlePauseControllor : MonoBehaviour
 
 		string strNum = "";
 
-		BattleWinTemplate winDescTemplate = BattleUIControlor.Instance ().winDescTemplate;
+		BattleWinTemplate winDescTemplate = BattleUIControlor.Instance().winDescTemplate;
 
 		if(winDescTemplate == null)
 		{
@@ -80,7 +80,7 @@ public class BattlePauseControllor : MonoBehaviour
 	{
 		close ();
 
-		BattleUIControlor.Instance ().devolopmentLose ();
+		BattleUIControlor.Instance().devolopmentLose ();
 	}
 
 	public void runaway()
@@ -95,7 +95,7 @@ public class BattlePauseControllor : MonoBehaviour
 
 		Destroy (root2d);
 
-//		BattleNet bn = (BattleNet)BattleControlor.Instance ().gameObject.GetComponent ("BattleNet");
+//		BattleNet bn = (BattleNet)BattleControlor.Instance().gameObject.GetComponent ("BattleNet");
 
 		//SceneManager.EnterMainCity();
 

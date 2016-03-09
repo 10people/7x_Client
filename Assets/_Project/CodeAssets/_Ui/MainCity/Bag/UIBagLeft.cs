@@ -61,7 +61,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
 
     private float panelMovePosX
     {
-        get { return m_IsPanelToLeft ? -60 : 56; }
+        get { return m_IsPanelToLeft ? 0 : 142.53f; }
     }
 
     private int m_temp_count
@@ -78,7 +78,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
     /// <summary>
     /// Initialize bag grid and items.
     /// </summary>
-    public void InitWithLayer()
+    public void Refresh()
     {
         //delete old gameobject and iconsample manager.
         var tempObjectList = (from Transform tempTrs in m_transform select tempTrs.gameObject).ToList();
@@ -109,9 +109,9 @@ public class UIBagLeft : MonoBehaviour, SocketListener
         m_ListBag.AddRange(tempItems);
 
         //Add equipments enforce to bag list.
-        tempItems = showedBagItems.Where(item => BagData.Instance().getXmlType(item) == 1).OrderByDescending(item => item.itemId).ToList(); ;
+        tempItems = showedBagItems.Where(item => BagData.Instance().getXmlType(item) == 1).OrderByDescending(item => item.itemId).ToList();
         m_ListBag.AddRange(tempItems);
-        tempItems = showedBagItems.Where(item => BagData.Instance().getXmlType(item) == 2).OrderByDescending(item => item.itemId).ToList(); ;
+        tempItems = showedBagItems.Where(item => BagData.Instance().getXmlType(item) == 2).OrderByDescending(item => item.itemId).ToList();
         m_ListBag.AddRange(tempItems);
 
         if (m_iIndex < m_ListBag.Count)
@@ -140,6 +140,21 @@ public class UIBagLeft : MonoBehaviour, SocketListener
         isInited = true;
     }
 
+    private void RefreshHighLightState()
+    {
+        m_IconSampleManagers.ForEach(item =>
+        {
+            if (BagData.Instance().m_HighlightItemList.Contains(item.iconID))
+            {
+                SparkleEffectItem.OpenSparkle(item.FgSprite.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
+            }
+            else
+            {
+                SparkleEffectItem.CloseSparkle(item.FgSprite.gameObject);
+            }
+        });
+    }
+
     public bool OnSocketEvent(QXBuffer p_message)
     {
         if (p_message == null)
@@ -153,7 +168,19 @@ public class UIBagLeft : MonoBehaviour, SocketListener
                 {
                     isInited = false;
 
-                    if (gameObject.activeInHierarchy) InitWithLayer();
+                    if (gameObject.activeInHierarchy)
+                    {
+                        Refresh();
+                    }
+
+                    return true;
+                }
+            case ProtoIndexes.S_GET_HighLight_item_ids:
+                {
+                    if (gameObject.activeInHierarchy)
+                    {
+                        RefreshHighLightState();
+                    }
 
                     return true;
                 }
@@ -181,7 +208,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
             //Set label text, sprite name and event.
             if (i < m_ListBag.Count)
             {
-                tempManager.SetIconByID(m_ListBag[i].itemId, m_ListBag[i].cnt.ToString());
+                tempManager.SetIconByID(m_ListBag[i].itemId, m_ListBag[i].cnt.ToString(), 0, false, false);
                 tempManager.SetIconBasicDelegate(false, true, CheckInfo);
                 tempManager.RightButtomCornorLabel.effectStyle = UILabel.Effect.Outline;
                 tempManager.RightButtomCornorLabel.effectColor = new Color(1, 0, 0, 1);
@@ -205,6 +232,9 @@ public class UIBagLeft : MonoBehaviour, SocketListener
         StartCoroutine(DoReposition());
 
         MovePanel();
+
+        //Refresh highlight.
+        RefreshHighLightState();
     }
 
     public void MovePanel()
@@ -247,21 +277,26 @@ public class UIBagLeft : MonoBehaviour, SocketListener
 
     #region Mono
 
-    private void Awake()
+    void Awake()
     {
         m_transform = transform;
 
         SocketTool.RegisterSocketListener(this);
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         SocketTool.UnRegisterSocketListener(this);
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
-        if (!isInited) InitWithLayer();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_HighLight_item_ids);
+
+        if (!isInited)
+        {
+            Refresh();
+        }
     }
 
     #endregion

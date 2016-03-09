@@ -57,9 +57,9 @@ public class DeviceHelper {
 			
 			ConfigTool.LoadValues( m_device_dict, CONST_MIN_SL, ConfigTool.LoadIntValue( m_device_xml_dict, CONST_MIN_SL ) );
 			
-			ConfigTool.LoadValues( m_device_dict, CONST_MIN_CCOUNT, ConfigTool.LoadIntValue( m_device_xml_dict, CONST_MIN_CCOUNT ) );
+//			ConfigTool.LoadValues( m_device_dict, CONST_MIN_CCOUNT, ConfigTool.LoadIntValue( m_device_xml_dict, CONST_MIN_CCOUNT ) );
 			
-			ConfigTool.LoadValues( m_device_dict, CONST_IE, ConfigTool.LoadBoolValue( m_device_xml_dict, CONST_IE ) );
+//			ConfigTool.LoadValues( m_device_dict, CONST_IE, ConfigTool.LoadBoolValue( m_device_xml_dict, CONST_IE ) );
 			
 			ConfigTool.LoadValues( m_device_dict, CONST_RT, ConfigTool.LoadBoolValue( m_device_xml_dict, CONST_RT ) );
 			
@@ -86,8 +86,17 @@ public class DeviceHelper {
 		#endif
 
 		if( !t_is_supported ){
-			if( AccountRequest.account != null && AccountRequest.account.loginObj != null ){
-				AccountRequest.account.loginObj.SetActive( false );
+			if (ThirdPlatform.IsMyAppAndroidPlatform())
+			{
+				if( AccountRequest.account != null && AccountRequest.account.loginObj1 != null ){
+					AccountRequest.account.loginObj1.SetActive( false );
+				}
+			}
+			else
+			{
+				if( AccountRequest.account != null && AccountRequest.account.loginObj2 != null ){
+					AccountRequest.account.loginObj2.SetActive( false );
+				}
 			}
 			
 			Global.CreateBox( LanguageTemplate.GetText( LanguageTemplate.Text.CHAT_UIBOX_INFO ),
@@ -115,7 +124,7 @@ public class DeviceHelper {
 				
 				tempUrl.Add ( "UnSupport" , m_nonsupport_reason + " - " + GetDeviceInfo() );
 				
-				HttpRequest.Instance ().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.REPORT_UNSUPPORT_DEVICE_URL, 
+				HttpRequest.Instance().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.REPORT_UNSUPPORT_DEVICE_URL, 
 				                                 tempUrl, 
 				                                 ReportSuccess, 
 				                                 ReportFail );
@@ -170,13 +179,14 @@ public class DeviceHelper {
 //			
 //			return false;
 //		}
-		
-		if( SystemInfo.supportsImageEffects != UtilityTool.GetBool( m_device_dict, CONST_IE ) ){
-			m_nonsupport_reason = SystemInfo.supportsImageEffects + " : " + 
-				CONST_IE + " = " + UtilityTool.GetBool( m_device_dict, CONST_IE );
-			
-			return false;
-		}
+
+		// Remove IE Check
+//		if( SystemInfo.supportsImageEffects != UtilityTool.GetBool( m_device_dict, CONST_IE ) ){
+//			m_nonsupport_reason = SystemInfo.supportsImageEffects + " : " + 
+//				CONST_IE + " = " + UtilityTool.GetBool( m_device_dict, CONST_IE );
+//			
+//			return false;
+//		}
 		
 		if( SystemInfo.supportsRenderTextures != UtilityTool.GetBool( m_device_dict, CONST_RT ) ){
 			m_nonsupport_reason = SystemInfo.supportsRenderTextures + " : " + 
@@ -239,8 +249,8 @@ public class DeviceHelper {
 				CONST_MIN_G_MEM + "-" + SystemInfo.graphicsMemorySize + " " +
 				CONST_MIN_MEM + "-" + SystemInfo.systemMemorySize + " " +
 				CONST_MIN_SL + "-" + SystemInfo.graphicsShaderLevel + " " +
-				CONST_MIN_CCOUNT + "-" + SystemInfo.processorCount + " " +
-				CONST_IE + "-" + SystemInfo.supportsImageEffects + " " +
+//				CONST_MIN_CCOUNT + "-" + SystemInfo.processorCount + " " +
+//				CONST_IE + "-" + SystemInfo.supportsImageEffects + " " +
 				CONST_RT + "-" + SystemInfo.supportsRenderTextures + " " +
 				CONST_CHANNEL_TAG + "-" + ThirdPlatform.GetPlatformTag () + " " +
 				CONST_SESSION_TAG + "-" + ThirdPlatform.GetPlatformSession ();
@@ -430,6 +440,13 @@ public class DeviceHelper {
 
 
 	#region Utilities
+
+	/// For LeiQing Use
+	public static bool IsSingleTouching(){
+		return ( UICamera.GetTouches().Count == 1 && ( Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.Android ) 
+		        || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer );
+
+	}
 
 	public static bool Is_iOS_Target_Device(){
 		#if UNITY_IOS

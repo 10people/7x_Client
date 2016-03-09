@@ -1,5 +1,7 @@
 //#define DEBUG_BOX
 
+
+
 using System;
 using UnityEngine;
 using System.IO;
@@ -13,6 +15,8 @@ using qxmobile.protobuf;
 
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
+
+
 
 /** 
  * @author:		Zhang YuGu
@@ -54,6 +58,10 @@ public class UtilityTool : Singleton<UtilityTool>{
 			ComponentHelper.GlobalClassUpdate();
 
 			ObjectHelper.OnUpdate();
+
+			SocketHelper.UpdateErrorBoxes();
+
+//			SoundHelper.OnUpdate();
 		}
 
 		#if UNITY_ANDROID
@@ -156,7 +164,7 @@ public class UtilityTool : Singleton<UtilityTool>{
         m_cached_box_obj = p_object;
     }
 
-	public GameObject CreateBox( string p_title, string p_des_1, string p_des_2, List<BagItem> p_bag_item, string p_btn_name_1, string p_btn_name_2, UIBox.onclick p_click_delegate, UIBox.OnBoxCreated p_on_create = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true ){
+	public GameObject CreateBox( string p_title, string p_des_1, string p_des_2, List<BagItem> p_bag_item, string p_btn_name_1, string p_btn_name_2, UIBox.onclick p_click_delegate, UIBox.OnBoxCreated p_on_create = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false ){
 		bool t_debug_box = false;
 
 		if ( ConfigTool.GetBool (ConfigTool.CONST_LOG_DIALOG_BOX) ) {
@@ -194,6 +202,8 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 			Debug.Log( "isBagItemTop: " + isBagItemTop );
 
+			Debug.Log( "isBagItemTop: " + isFunction );
+
             Debug.Log("------ CreateBox ------");
         }
 
@@ -209,10 +219,11 @@ public class UtilityTool : Singleton<UtilityTool>{
 	                   uifontButton2,
 	                   isShowBagItemNumBelow,
 	                   isSetDepth,
-	                   isBagItemTop);
+	                   isBagItemTop,
+		               isFunction);
     }
 
-    GameObject ExecLoadBox(string tile, string dis1, string dis2, List<BagItem> bagItem, string buttonname1, string buttonname2, UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true){
+	GameObject ExecLoadBox(string tile, string dis1, string dis2, List<BagItem> bagItem, string buttonname1, string buttonname2, UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false ){
         if ( m_cached_box_obj == null ){
             Debug.LogError("Error, No Cached box.");
 
@@ -234,7 +245,8 @@ public class UtilityTool : Singleton<UtilityTool>{
 		             uifontButton2,
 		             isShowBagItemNumBelow,
 		             isSetDepth,
-		             isBagItemTop);
+		             isBagItemTop,
+		             isFunction);
 
 		return t_gb;
     }
@@ -333,10 +345,39 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 
 
-    #region Load
+    #region Dictionary
 
-    public static void LoadStringStringDict( Dictionary<string, string> p_dict, TextAsset p_text, char p_splitter ){
-        string[] t_lines = p_text.text.Split('\n');
+	public static void UpdateStringStringDictKeyValue( Dictionary<string, string> p_dict, string p_key, string p_value ){
+		if( p_dict == null ){
+			return;
+		}
+
+		if( !p_dict.ContainsKey( p_key ) ){
+			p_dict.Add( p_key, p_value );
+		}
+		else{
+			p_dict[ p_key ] = p_value;
+		}
+	}
+
+	public static void LoadStringStringDict( Dictionary<string, string> p_dict, TextAsset p_text, char p_splitter ){
+		LoadStringStringDict( p_dict, p_text.text, p_splitter );
+	}
+
+    public static void LoadStringStringDict( Dictionary<string, string> p_dict, string p_text, char p_splitter ){
+		if( p_dict == null ){
+			return;
+		}
+
+		if( string.IsNullOrEmpty( p_text ) ){
+			return;
+		}
+
+        string[] t_lines = p_text.Split('\n');
+
+		if( t_lines.Length <= 0 ){
+			return;
+		}
 
         foreach ( string t_line in t_lines ){
             string[] t_pair = t_line.Split( p_splitter );
@@ -532,6 +573,80 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 	#endregion
 
+
+	#region Coroutine Box
+
+	public static void StartCorutineBox(
+					string tile, 
+					string dis1, 
+					string dis2, 
+					List<BagItem> bagItem, 
+					string buttonname1,
+
+					string buttonname2, 
+					UIBox.onclick onClcik, 
+					UIBox.OnBoxCreated p_on_create = null, 
+					UIFont uifontButton1 = null, 
+					UIFont uifontButton2 = null, 
+
+					bool isShowBagItemNumBelow = false, 
+					bool isSetDepth = true, 
+					bool isBagItemTop = true ){
+		UtilityTool.Instance.StartCoroutine(
+			UtilityTool.Instance.CoroutineBox( tile,
+				dis1,
+				dis2,
+				bagItem,
+				buttonname1,
+
+				buttonname2, 
+				onClcik, 
+				p_on_create, 
+				uifontButton1, 
+				uifontButton2, 
+
+				isShowBagItemNumBelow, 
+				isSetDepth, 
+				isBagItemTop ) );
+	}
+
+	private IEnumerator CoroutineBox(
+					string tile, 
+					string dis1, 
+					string dis2, 
+					List<BagItem> bagItem, 
+					string buttonname1,
+
+					string buttonname2, 
+					UIBox.onclick onClcik, 
+					UIBox.OnBoxCreated p_on_create = null, 
+					UIFont uifontButton1 = null, 
+					UIFont uifontButton2 = null, 
+
+					bool isShowBagItemNumBelow = false, 
+					bool isSetDepth = true, 
+					bool isBagItemTop = true ){
+		yield return new WaitForEndOfFrame();
+
+		Global.CreateBox( 
+			tile,
+			dis1,
+			dis2,
+			bagItem,
+			buttonname1,
+
+			buttonname2, 
+			onClcik, 
+			p_on_create, 
+			uifontButton1, 
+			uifontButton2, 
+
+			isShowBagItemNumBelow, 
+			isSetDepth, 
+			isBagItemTop );
+	}
+
+	#endregion
 
 
     #region Utilities

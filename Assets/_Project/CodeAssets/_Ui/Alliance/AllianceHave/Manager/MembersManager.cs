@@ -98,7 +98,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		
 		m_ShowAllMemberList.Clear ();
 
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_GET_FRIEND_IDS);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_GET_FRIEND_IDS);
 
 		for(int i = 0; i < m_allianceHaveRes.memberInfo.Count-1; i++)
 		{
@@ -200,6 +200,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		}
 
 		temp.SetActive(true);
+		MainCityUI.TryAddToObjectList (temp);
 	}
 
 	public int TransferBuwei(int original)
@@ -240,7 +241,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 				
 				exit_qx.Deserialize(exit_stream, mJunZhuInfo, mJunZhuInfo.GetType());
 
-				Debug.Log ("查看君主信息返回:" + ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP);
+				//Debug.Log ("查看君主信息返回:" + ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP);
 
 				m_JunZhuInfo = mJunZhuInfo;
 
@@ -299,14 +300,14 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 				{
 					fireMemberResp = fireResp;
 					
-					Debug.Log ("开除：" + fireResp.junzhuId);
+					//Debug.Log ("开除：" + fireResp.junzhuId);
 					for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
 					{
 						if (fireResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
 						{
 							backName = m_allianceHaveRes.memberInfo[i].name;
-							Debug.Log ("BackName:" + backName);
-							Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
+						//	Debug.Log ("BackName:" + backName);
+					//		Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
 							m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
 						}
 					}
@@ -339,13 +340,13 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 						if (upResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
 						{
 							backName = m_allianceHaveRes.memberInfo[i].name;
-							Debug.Log ("BackName:" + backName);
-							Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
+						//	Debug.Log ("BackName:" + backName);
+						//	Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
 							
 							if (upResp.code == 0)
 							{
-								Debug.Log ("地位：" + upResp.title);
-								Debug.Log ("升职成功");
+							//	Debug.Log ("地位：" + upResp.title);
+							//	Debug.Log ("升职成功");
 								m_allianceHaveRes.memberInfo[i].identity = upResp.title;
 								
 							}
@@ -387,18 +388,18 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 						if (downResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
 						{
 							backName = m_allianceHaveRes.memberInfo[i].name;
-							Debug.Log ("BackName:" + backName);
-							Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
+						//	Debug.Log ("BackName:" + backName);
+						//	Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
 							if (downResp.code == 0)
 							{
-								Debug.Log ("你被降职了");
-								Debug.Log ("identy:" + downResp.title);
+							//	Debug.Log ("你被降职了");
+							//	Debug.Log ("identy:" + downResp.title);
 								m_allianceHaveRes.memberInfo[i].identity = downResp.title;
 							}
 							
 							else if (downResp.code == 1)
 							{
-								Debug.Log ("该玩家已经不在联盟中");
+								//Debug.Log ("该玩家已经不在联盟中");
 								m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
 							}
 						}
@@ -429,7 +430,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 
 					if (transResp.result == 0)
 					{
-						Debug.Log ("转让成功！");
+					//	Debug.Log ("转让成功！");
 
 						for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
 						{
@@ -449,7 +450,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 					
 					else if (transResp.result == 1)
 					{
-						Debug.Log ("不在联盟列表里！");
+						//Debug.Log ("不在联盟列表里！");
 						
 						for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
 						{
@@ -512,7 +513,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		
 		if (fireMemberResp.result == 0)
 		{
-			Debug.Log ("开除成功");
+			//Debug.Log ("开除成功");
 			
 			titleStr = "开除成功";
 			
@@ -605,7 +606,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		}
 		else
 		{
-			Debug.Log("退出失败");
+		//	Debug.Log("退出失败");
 			
 			string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_FAIL);
 			string str2 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_FAIL_REASON);
@@ -657,7 +658,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			MainCityUI.TryRemoveFromObjectList(uirot);
 			Destroy(uirot);
 		}
-		JunZhuData.Instance ().m_junzhuInfo.lianMengId = 0;
+		JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
         CityGlobalData.m_isAllianceScene = false;
         CityGlobalData.m_isMainScene = true;
         SceneManager.EnterMainCity();
@@ -716,7 +717,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			
 			byte[] t_protof = exitStream.ToArray ();
 			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.EXIT_ALLIANCE, ref t_protof, "30114");
+			SocketTool.Instance().SendSocketMessage (ProtoIndexes.EXIT_ALLIANCE, ref t_protof, "30114");
 		}
 	}
 	
@@ -774,7 +775,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			byte[] t_protof = dis_stream.ToArray();;
 			
 			SocketTool.Instance().SendSocketMessage (ProtoIndexes.DISMISS_ALLIANCE,ref t_protof,"30132");
-			Debug.Log ("jiesanReq:" + ProtoIndexes.DISMISS_ALLIANCE);
+		//	Debug.Log ("jiesanReq:" + ProtoIndexes.DISMISS_ALLIANCE);
 		}
 	}
 	public void GetInfo()

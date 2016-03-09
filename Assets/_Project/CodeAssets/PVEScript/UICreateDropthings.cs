@@ -274,7 +274,7 @@ public class UICreateDropthings : MonoBehaviour
     }
 	public void CreateFirsrAward()
 	{			
-		Debug.Log ("Create FirstAward now !");
+		//Debug.Log ("Create FirstAward now !");
 
 		GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
 		

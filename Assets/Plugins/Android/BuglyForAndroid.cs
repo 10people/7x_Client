@@ -16,12 +16,12 @@ namespace com.tencent.bugly.unity3d.android
 		/// <param name="enable">If set to <c>true</c> enable.</param>
 		public static void EnableLog (bool enable)
 		{
-			BuglyAgent.GetInstance ().EnableLog (enable);
+			BuglyAgent.GetInstance().EnableLog (enable);
 		}
         
 		public static void SetDelayReportTime (long delay)
 		{
-			BuglyAgent.GetInstance ().SetDelayReportTime (delay);
+			BuglyAgent.GetInstance().SetDelayReportTime (delay);
 		}
         
 		/// <summary>
@@ -30,7 +30,7 @@ namespace com.tencent.bugly.unity3d.android
 		/// <param name="channel">Channel.</param>
 		public static void SetChannel (string channel)
 		{
-			BuglyAgent.GetInstance ().SetChannel (channel);
+			BuglyAgent.GetInstance().SetChannel (channel);
 		}
         
 		/// <summary>
@@ -39,7 +39,7 @@ namespace com.tencent.bugly.unity3d.android
 		/// <param name="version">Version.</param>
 		public static void SetVersion (string version)
 		{
-			BuglyAgent.GetInstance ().SetVersion (version);
+			BuglyAgent.GetInstance().SetVersion (version);
 		}
         
 		/// <summary>
@@ -48,12 +48,12 @@ namespace com.tencent.bugly.unity3d.android
 		/// <param name="autoExit">If set to <c>true</c> auto exit.</param>
 		public static void SetAutoQuitApplication (bool autoExit)
 		{
-			BuglyAgent.GetInstance ().SetAutoQuitApplication (autoExit);
+			BuglyAgent.GetInstance().SetAutoQuitApplication (autoExit);
 		}
 		
 		public static bool IsAutoQuitApplication ()
 		{
-			return BuglyAgent.GetInstance ().IsAutoQuitApplication ();
+			return BuglyAgent.GetInstance().IsAutoQuitApplication ();
 		}
         
 		/// <summary>
@@ -62,7 +62,7 @@ namespace com.tencent.bugly.unity3d.android
 		/// <param name="appId">App identifier.</param>
 		public static void InitWithAppId (string appId)
 		{   
-			BuglyAgent.GetInstance ().InitWithAppId (appId);
+			BuglyAgent.GetInstance().InitWithAppId (appId);
 		}
         
 		/// <summary>
@@ -71,7 +71,7 @@ namespace com.tencent.bugly.unity3d.android
 		/// <param name="userId">User identifier.</param>
 		public static void SetUserId (string userId)
 		{
-			BuglyAgent.GetInstance ().SetUserId (userId);
+			BuglyAgent.GetInstance().SetUserId (userId);
 		}
         
 		/// <summary>
@@ -81,7 +81,7 @@ namespace com.tencent.bugly.unity3d.android
 		/// <param name="message">Message attached the exception</param>
 		public static void OnExceptionCaught (System.Exception e, string message)
 		{
-			BuglyAgent.GetInstance ().OnExceptionCaught (e, message);
+			BuglyAgent.GetInstance().OnExceptionCaught (e, message);
 		}
         
 		/// <summary>
@@ -89,7 +89,7 @@ namespace com.tencent.bugly.unity3d.android
 		/// </summary>
 		public static void UnregisterExceptionHandler ()
 		{
-			BuglyAgent.GetInstance ().UnregisterExceptionHandler ();
+			BuglyAgent.GetInstance().UnregisterExceptionHandler ();
 		}
         
 		/// <summary>
@@ -99,19 +99,19 @@ namespace com.tencent.bugly.unity3d.android
 		/// <param name="callback">Callback.</param>
 		public static void RegisterExceptionHandler (LogSeverity level, LogCallbackDelegate callback)
 		{
-			BuglyAgent.GetInstance ().RegisterExceptionHandler (level, callback);
+			BuglyAgent.GetInstance().RegisterExceptionHandler (level, callback);
 		}
         
 		public static void PrintLog (LogSeverity level, string msg)
 		{
-			BuglyAgent.GetInstance ().PrintLog (level, msg);
+			BuglyAgent.GetInstance().PrintLog (level, msg);
 		}
         
 		private sealed class BuglyAgent : ExceptionHandler
 		{
 			public static readonly BuglyAgent instance = new BuglyAgent ();
             
-			public static BuglyAgent GetInstance ()
+			public static BuglyAgent GetInstance()
 			{
 				return instance;
 			}

@@ -36,12 +36,12 @@ public class AllianceFightRecord : MonoBehaviour,SocketProcessor {
 	//本届战况请求
 	void CurrentReq ()
 	{
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.ALLIANCE_FIGHT_HISTORY_REQ,"4210");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.ALLIANCE_FIGHT_HISTORY_REQ,"4210");
 	}
 	//上届排名请求
 	void NextReq ()
 	{
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.ALLIANCE_FIGTH_LASTTIME_RANK,"4212");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.ALLIANCE_FIGTH_LASTTIME_RANK,"4212");
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)

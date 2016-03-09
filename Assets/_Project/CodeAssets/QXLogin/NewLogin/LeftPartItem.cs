@@ -23,6 +23,6 @@ public class LeftPartItem : MonoBehaviour {
 	void OnPress (bool isPress)
 	{
 		SelectServeTwo.SetIsLeft = true;
-		Debug.Log ("isLeft:" + SelectServeTwo.GetIsLeft);
+//		Debug.Log ("isLeft:" + SelectServeTwo.GetIsLeft);
 	}
 }

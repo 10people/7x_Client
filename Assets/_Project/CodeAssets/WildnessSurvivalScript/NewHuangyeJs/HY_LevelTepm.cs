@@ -162,8 +162,8 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		m_HuangyeZhengRong.Init();
 		MainCityUI.TryAddToObjectList (ZhengRongUI);
-		//HY_UIManager.Instance ().NeedCloseObg = ZhengRongUI;
-		//Debug.Log ("HY_UIManager.Instance ().NeedCloseObg = " +HY_UIManager.Instance ().NeedCloseObg);
+		//HY_UIManager.Instance().NeedCloseObg = ZhengRongUI;
+		//Debug.Log ("HY_UIManager.Instance().NeedCloseObg = " +HY_UIManager.Instance().NeedCloseObg);
 	}
 
 	void ResettingLoadBack(ref WWW p_www,string p_path, Object p_object)

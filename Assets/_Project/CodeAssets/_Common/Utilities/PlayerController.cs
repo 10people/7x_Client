@@ -10,12 +10,12 @@ public class PlayerController : MonoBehaviour
 {
     #region Move Controller
 
-    public bool IsCanMove = true;
-    public bool IsInMove = false;
+    private bool IsCanMove = true;
+    private bool IsInMove = false;
 
     public void DeactiveMove()
     {
-        Debug.LogWarning("--------------other deactive move.");
+        //Debug.LogWarning("--------------other deactive move.");
 
         PlayerStop();
         IsCanMove = false;
@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 
     public void ActiveMove()
     {
-        Debug.LogWarning("+++++++++++++++other active move.");
+        //Debug.LogWarning("+++++++++++++++other active move.");
 
         IsCanMove = true;
     }

@@ -7,6 +7,7 @@ using qxmobile.protobuf;
 public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
 {
     public GameObject m_MainObj;
+    public UILabel m_LabMainSignal;
     public UILabel m_LabelTitle0;
     public UILabel m_LabelTitle1;
     public GameObject m_Durable_UI;
@@ -15,7 +16,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     public UIScrollView m_ScrollView;
     public GameObject m_HidenObject;
     public List<EventIndexHandle> m_listEvent;
-    public List<GameObject> m_ListObj;
+    //public List<GameObject> m_ListObj;
     public GameObject m_ObjInputName;
     public GameObject m_ObjCreateSucess;
     public GameObject m_ObjSearchAlliance;
@@ -23,7 +24,12 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     public UISprite m_SpriteCountry;
 
     public GameObject m_ObjAllianceHave;
-   
+    public GameObject m_EnoughObj;
+    public GameObject m_NoEnoughObj;
+    public UILabel m_LabNoETopLeft;
+    public UILabel m_LabNoEBottomLeft;
+    public UILabel m_LabNoEBottomRight;
+
     public GameObject m_ObjTitleInfo;
     public GameObject m_ObjTitleMain;
     public GameObject m_ObjCloseInfo;
@@ -45,11 +51,15 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     public UILabel m_LabsignalUp;
     public UILabel m_LabsignalDown;
     public ScaleEffectController m_SEC;
+
+    public GameObject m_ObjTopLeft;
     private int TouchedItemId = 0;
 
     public List<UILabel> m_ListApplicationInfo;
     public List<UILabel> m_ListApplicationName;
     public UILabel m_LabPrice;
+    public UILabel m_LabInputSignal;
+
     private int IconSave = 0;
     private int removeIndex = 0;
     private bool isUnInput = false;
@@ -71,6 +81,9 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         public int country;
         public bool isApply;
         public int ShenPiId;
+        public int Exp;
+        public int Ren_Now;
+        public int Ren_Max;
         public bool isCanApply;
     };
 
@@ -85,7 +98,9 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     void Start()
     {
         UIYindao.m_UIYindao.CloseUI();
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "联盟", 0, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
+        m_LabInputSignal.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL);
         m_LabInputName.text = "";
         m_LabInputAllianceID.text = "";
         m_listEvent.ForEach(p => p.m_Handle += Touch);
@@ -105,6 +120,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         {
             InputName = FunctionWindowsCreateManagerment.GetNeedString(Input.value);
             m_LabInputName.text = InputName;
+            Input.value = InputName;
         }
     }
     void Update()
@@ -155,13 +171,14 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
 
     void CreateNameButtonControl()
     {
-        if (!InputName.Equals(LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL)) && !string.IsNullOrEmpty(InputName) && isUnInput && IconSave != 0) 
+        //  !InputName.Equals(LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL)) &&
+        // && (InputName.Equals(LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL))
+        if ( !string.IsNullOrEmpty(InputName) && isUnInput && IconSave != 0) 
         {
             isUnInput = false;
-            
             ButtonsControl(6, true);
         }
-        else if (!isUnInput && (InputName.Equals(LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL)) || string.IsNullOrEmpty(InputName) || IconSave == 0))
+        else if (!isUnInput && (string.IsNullOrEmpty(InputName) || IconSave == 0))
         {
             isUnInput = true;
             ButtonsControl(6, false);
@@ -221,7 +238,8 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         {
             case 0:
                 {
-                    m_LabInputName.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL);
+                    m_LabInputSignal.gameObject.SetActive(true);
+                    // m_LabInputName.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL);
                     IconSave = 0;
                     isUnInput = false;
                     isUnSlelectIcon = false;
@@ -291,10 +309,19 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                 break;
             case 7:
                 {
-                    _content1 = "确定花费" + AllianceData.Instance.m_AllianceCreatePrice.ToString() + "元宝创建一个名字叫" + "\n\n\n<" + CreateNameSave + ">"; ;
-                    _content2 = "的联盟？";
-                    _SignalIndex = 8;
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                    if (JunZhuData.Instance().m_junzhuInfo.yuanBao >= AllianceData.Instance.m_AllianceCreatePrice)
+                    {
+                        //_content1 = "确定花费" + AllianceData.Instance.m_AllianceCreatePrice.ToString() + "元宝创建一个名字叫" + "\n\n\n<" + CreateNameSave + ">"; ;
+                        //_content2 = "的联盟？";
+                        //_SignalIndex = 8;
+                        //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                        ConFirm(2);
+                    }
+                    else
+                    {
+                        EquipSuoData.ShowSignal(null,"您的元宝不足！");
+                    }
+                   
                 }
                 break;
             case 8:
@@ -323,7 +350,9 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                     m_ObjAllianceInfo.SetActive(false);
                     m_ObjButtonParent.SetActive(true);
                     m_ObjTitleMain.SetActive(true);
-                    m_ObjTitleInfo.SetActive(false);
+                    ShowInfo();
+
+
                     m_ObjCloseInfo.SetActive(false);
                 }
                 break;
@@ -331,17 +360,23 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                 {
                     MainCityUI.TryRemoveFromObjectList(m_MainObj);
                     JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
+                    GameObject obj = new GameObject();
+                    obj.name = "MainCityUIButton_104";
+                    MainCityUI.m_MainCityUI.MYClick(obj);
+                    Destroy(obj);
                     Destroy(m_MainObj);
                 }
                 break;
             case 12:
                 {
                     OnSelect();
-                    m_listEvent[9].gameObject.SetActive(false);
+                    m_LabInputSignal.gameObject.SetActive(false);
+                  //  m_listEvent[9].gameObject.SetActive(false);
                 }
                 break;
             case 13:
                 {
+                    m_LabInputSignal.gameObject.SetActive(false);
                     m_listEvent[9].gameObject.SetActive(true);
                 }
                 break;
@@ -350,7 +385,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                     m_ObjAllianceInfo.SetActive(false);
                     m_ObjButtonParent.SetActive(true);
                     m_ObjTitleMain.SetActive(true);
-                    m_ObjTitleInfo.SetActive(false);
+                    ShowInfo();
                     m_ObjCloseInfo.SetActive(false);
                 }
                 break;
@@ -557,7 +592,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(true);
                                     m_ObjButtonParent.SetActive(false);
                                     m_ObjTitleMain.SetActive(false);
-                                    m_ObjTitleInfo.SetActive(true);
+                                    ShowInfo(1);
                                     m_ObjCloseInfo.SetActive(true);
                                     ShowAllianceSearchInfo(AllianceFindInfo);
                                   
@@ -606,7 +641,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
                                     UIBoxLoadCallbackZero);
@@ -618,7 +653,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
 
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -629,7 +664,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                 {
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
                                     _title = "申请失败";
                                     _content1 = "很遗憾，找不到这个联盟...";
@@ -643,7 +678,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
                                     _title = "申请失败";
                                     _content1 = "联盟人数已满...";
@@ -657,7 +692,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
 
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -669,7 +704,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
 
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -682,7 +717,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
                                     _title = "申请失败";
                                     _content1 = " 您同时只能提出3份入盟申请！";
@@ -696,7 +731,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
 
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -748,13 +783,13 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
                                 }
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_ONE:
                                 {
-                                    m_ListObj[15].SetActive(true);
+                                  //  m_ListObj[15].SetActive(true);
                                 }
                                 break;
                          
@@ -777,11 +812,14 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                 {
                                     MainCityUI.TryRemoveFromObjectList(m_MainObj);
                                     JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
-                                    _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.HUANGYE_19);
-                                    _strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_5);
-                                   _strContent2 = "";
-                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                  UIBoxLoadCallbackJoined);
+                                    // _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.HUANGYE_19);
+                                    // _strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_5);
+                                    //_strContent2 = "";
+                                    //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
+                                    //UIBoxLoadCallbackJoined);
+                                    GameObject obj = new GameObject();
+                                    obj.name = "MainCityUIButton_104";
+                                    MainCityUI.m_MainCityUI.MYClick(obj);
                                     Destroy(m_MainObj);
                                    
                                 }
@@ -791,7 +829,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
 
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -803,7 +841,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
                                     _title = "查找失败";
                                     _content1 = "很遗憾，找不到这个联盟...";
@@ -816,9 +854,9 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                 {
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
-                                    m_ListObj[14].SetActive(true);
+                                   // m_ListObj[14].SetActive(true);
                                 }
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_FOUR:
@@ -826,7 +864,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
 
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -838,9 +876,9 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
-                                    m_ListObj[15].SetActive(true);
+                                  //  m_ListObj[15].SetActive(true);
                                 }
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_SIX:
@@ -848,7 +886,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
 
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -860,7 +898,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     m_ObjAllianceInfo.SetActive(false);
                                     m_ObjButtonParent.SetActive(true);
                                     m_ObjTitleMain.SetActive(true);
-                                    m_ObjTitleInfo.SetActive(false);
+                                    ShowInfo();
                                     m_ObjCloseInfo.SetActive(false);
 
                                     Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -883,7 +921,21 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         }
         return false;
     }
+    public void ShowInfo(int index= 0)
+    {
+        if (index == 1)
+        {
+            m_ObjTopLeft.GetComponentInChildren<MainCityLTTitle>().m_labelTitle.spacingX = 0;
+            m_ObjTopLeft.GetComponentInChildren<MainCityLTTitle>().m_labelTitle.text = "[b]联盟信息[-]";
+        }
+        else
+        {
+            m_ObjTopLeft.GetComponentInChildren<MainCityLTTitle>().m_labelTitle.spacingX = 13;
+            m_ObjTopLeft.GetComponentInChildren<MainCityLTTitle>().m_labelTitle.text = "[b]联盟[-]";
+        }
 
+
+    }
     public void UIBoxLoadCallbackJoined(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject boxObj = Instantiate(p_object) as GameObject;
@@ -1051,17 +1103,27 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         {
             for (int j = 0; j < listAllianceInfo.Count - 1 - i; j++)
             {
-
-                if (listAllianceInfo[j].exp > listAllianceInfo[j + 1].exp)
+                if (listAllianceInfo[j].exp < listAllianceInfo[j + 1].exp)
                 {
-
                     NonAllianceInfo aliance = new NonAllianceInfo();
                     aliance = listAllianceInfo[j];
                     listAllianceInfo[j] = listAllianceInfo[j + 1];
                     listAllianceInfo[j + 1] = aliance;
                 }
+                else if (listAllianceInfo[j].exp == listAllianceInfo[j + 1].exp)
+                {
+                    if (listAllianceInfo[j].reputation < listAllianceInfo[j + 1].reputation)
+                    {
+                        NonAllianceInfo aliance = new NonAllianceInfo();
+                        aliance = listAllianceInfo[j];
+                        listAllianceInfo[j] = listAllianceInfo[j + 1];
+                        listAllianceInfo[j + 1] = aliance;
+                    }
+                }
             }
         }
+
+    
         NeedInfTidy();
     }
 
@@ -1078,15 +1140,17 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             aii.shengwang = item.reputation;
             aii.mengzhu = item.creatorName;
             aii.country = item.country;
-           
             aii.isApply = item.isApplied;
             aii.ShenPiId = item.isShenPi;
-
             aii.isCanApply = item.isCanApply;
+            aii.Ren_Now = item.members;
+            aii.Ren_Max = item.memberMax;
+           aii.Exp = item.exp;
             listItemNeedInfo.Add(aii);
         }
         listAllianceInfo.Clear();
-        CreateAllianceItem();
+       
+            CreateAllianceItem();
     }
     int index_Nu = 0;
     void CreateAllianceItem()
@@ -1126,10 +1190,15 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             tempObject.transform.localPosition = Vector3.zero;
             tempObject.transform.localScale = Vector3.one;
             tempObject.transform.GetComponent<AllianceItemManagerment>().ShowAllianceItem(listItemNeedInfo[index_Nu], ShowAllianceApplicationInfo, TouchedAppLication);
-            m_GrideAllianceList.repositionNow = true; 
+            m_GrideAllianceList.repositionNow = true;
             if (index_Nu < listItemNeedInfo.Count - 1)
             {
                 index_Nu++;
+            }
+            else if(FunctionWindowsCreateManagerment.m_AllianceID > 0)
+            {
+                ShowAllianceApplicationInfo(FunctionWindowsCreateManagerment.m_AllianceID);
+                FunctionWindowsCreateManagerment.m_AllianceID = -1;
             }
         }
         else
@@ -1149,7 +1218,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             m_ObjAllianceInfo.SetActive(true);
             m_ObjTitleMain.SetActive(false);
             m_ObjButtonParent.SetActive(false);
-            m_ObjTitleInfo.SetActive(true);
+            ShowInfo(1);
             m_ObjCloseInfo.SetActive(true);
             m_listEvent[3].gameObject.SetActive(false);
             m_listEvent[4].gameObject.SetActive(false);
@@ -1166,7 +1235,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                 m_ObjAllianceInfo.SetActive(true);
                 m_ObjButtonParent.SetActive(false);
                 m_ObjTitleMain.SetActive(false);
-                m_ObjTitleInfo.SetActive(true);
+                ShowInfo(1);
                 m_ObjCloseInfo.SetActive(true);
                 m_listEvent[3].gameObject.SetActive(false);
                 m_listEvent[4].gameObject.SetActive(false);
@@ -1181,7 +1250,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                     m_ObjAllianceInfo.SetActive(true);
                     m_ObjButtonParent.SetActive(false);
                     m_ObjTitleMain.SetActive(false);
-                    m_ObjTitleInfo.SetActive(true);
+                    ShowInfo(1);
                     m_ObjCloseInfo.SetActive(true);
                     m_listEvent[3].gameObject.SetActive(false);
                     m_listEvent[4].gameObject.SetActive(true);
@@ -1194,7 +1263,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                     m_ObjAllianceInfo.SetActive(true);
                     m_ObjButtonParent.SetActive(false);
                     m_ObjTitleMain.SetActive(false);
-                    m_ObjTitleInfo.SetActive(true);
+                    ShowInfo(1);
                     m_ObjCloseInfo.SetActive(true);
 
                     if (tempinfo.allianceInfo.isShenPi == 1)
@@ -1235,89 +1304,89 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     }
     void ShowAllianceApplicationInfo(int id)
     {
-        TouchedItemId = id;
-        _AllianceCountry = AllianceData.Instance.m_AllianceInfoDic[id].country;
-        m_SpriteCountry.spriteName = "nation_" + AllianceData.Instance.m_AllianceInfoDic[id].country.ToString();
+        if (AllianceData.Instance.m_AllianceInfoDic.ContainsKey(id))
         {
-            if (JunZhuData.Instance().m_junzhuInfo.level <AllianceData.Instance.m_AllianceInfoDic[id].applyLevel
-                   || JunZhuData.Instance().m_junzhuInfo.junXian < AllianceData.Instance.m_AllianceInfoDic[id].junXian
-                   || AllianceData.Instance.m_AllianceInfoDic[id].members >= AllianceData.Instance.m_AllianceInfoDic[id].memberMax)
+            TouchedItemId = id;
+            _AllianceCountry = AllianceData.Instance.m_AllianceInfoDic[id].country;
+            m_SpriteCountry.spriteName = "nation_" + AllianceData.Instance.m_AllianceInfoDic[id].country.ToString();
             {
-
-                m_ObjAllianceInfo.SetActive(true);
-                m_ObjButtonParent.SetActive(false);
-                m_ObjTitleMain.SetActive(false);
-                m_ObjTitleInfo.SetActive(true);
-                m_ObjCloseInfo.SetActive(true);
-                m_listEvent[3].gameObject.SetActive(false);
-                m_listEvent[4].gameObject.SetActive(false);
-                m_listEvent[5].gameObject.SetActive(false);
-                m_listEvent[7].gameObject.SetActive(true);
-            }
-            else
-            {
-                if (AllianceData.Instance.m_AllianceInfoDic[id].isApplied)
+                if (JunZhuData.Instance().m_junzhuInfo.level < AllianceData.Instance.m_AllianceInfoDic[id].applyLevel
+                       || JunZhuData.Instance().m_junzhuInfo.junXian < AllianceData.Instance.m_AllianceInfoDic[id].junXian
+                       || AllianceData.Instance.m_AllianceInfoDic[id].members >= AllianceData.Instance.m_AllianceInfoDic[id].memberMax)
                 {
-
                     m_ObjAllianceInfo.SetActive(true);
                     m_ObjButtonParent.SetActive(false);
                     m_ObjTitleMain.SetActive(false);
-                    m_ObjTitleInfo.SetActive(true);
+                    ShowInfo(1);
                     m_ObjCloseInfo.SetActive(true);
-
                     m_listEvent[3].gameObject.SetActive(false);
-
-                    m_listEvent[4].gameObject.SetActive(true);
+                    m_listEvent[4].gameObject.SetActive(false);
                     m_listEvent[5].gameObject.SetActive(false);
-                    m_listEvent[7].gameObject.SetActive(false);
+                    m_listEvent[7].gameObject.SetActive(true);
                 }
                 else
                 {
-
-                    m_ObjAllianceInfo.SetActive(true);
-                    m_ObjButtonParent.SetActive(false);
-                    m_ObjTitleMain.SetActive(false);
-                    m_ObjTitleInfo.SetActive(true);
-                    m_ObjCloseInfo.SetActive(true);
-
-                    if (AllianceData.Instance.m_AllianceInfoDic[id].isShenPi == 1)
+                    if (AllianceData.Instance.m_AllianceInfoDic[id].isApplied)
                     {
+
+                        m_ObjAllianceInfo.SetActive(true);
+                        m_ObjButtonParent.SetActive(false);
+                        m_ObjTitleMain.SetActive(false);
+                        ShowInfo(1);
+                        m_ObjCloseInfo.SetActive(true);
+
                         m_listEvent[3].gameObject.SetActive(false);
-                        m_listEvent[4].gameObject.SetActive(false);
-                        m_listEvent[5].gameObject.SetActive(true);
+
+                        m_listEvent[4].gameObject.SetActive(true);
+                        m_listEvent[5].gameObject.SetActive(false);
                         m_listEvent[7].gameObject.SetActive(false);
                     }
                     else
                     {
-                        m_listEvent[3].gameObject.SetActive(true);
-                        m_listEvent[4].gameObject.SetActive(false);
-                        m_listEvent[5].gameObject.SetActive(false);
-                        m_listEvent[10].gameObject.SetActive(false);
+
+                        m_ObjAllianceInfo.SetActive(true);
+                        m_ObjButtonParent.SetActive(false);
+                        m_ObjTitleMain.SetActive(false);
+                        ShowInfo(1);
+                        m_ObjCloseInfo.SetActive(true);
+
+                        if (AllianceData.Instance.m_AllianceInfoDic[id].isShenPi == 1)
+                        {
+                            m_listEvent[3].gameObject.SetActive(false);
+                            m_listEvent[4].gameObject.SetActive(false);
+                            m_listEvent[5].gameObject.SetActive(true);
+                            m_listEvent[7].gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            m_listEvent[3].gameObject.SetActive(true);
+                            m_listEvent[4].gameObject.SetActive(false);
+                            m_listEvent[5].gameObject.SetActive(false);
+                            m_listEvent[10].gameObject.SetActive(false);
+                        }
                     }
                 }
             }
-        }
-        m_ListApplicationInfo[0].text = "<" + AllianceData.Instance.m_AllianceInfoDic[id].name + ">\n" + "(ID:" + AllianceData.Instance.m_AllianceInfoDic[id].id + ")";
-        //m_ListApplicationInfo[0].text = AllianceData.Instance.m_AllianceInfoDic[id].name;
-        m_ListApplicationInfo[1].text = AllianceData.Instance.m_AllianceInfoDic[id].level.ToString() + NameIdTemplate.GetName_By_NameId(990019);
-        m_ListApplicationInfo[4].text = AllianceData.Instance.m_AllianceInfoDic[id].reputation.ToString();
-        m_ListApplicationInfo[3].text = AllianceData.Instance.m_AllianceInfoDic[id].members.ToString() + "/" + AllianceData.Instance.m_AllianceInfoDic[id].memberMax.ToString();
-        m_ListApplicationInfo[2].text = AllianceData.Instance.m_AllianceInfoDic[id].creatorName;
-        m_ListApplicationInfo[5].text = AllianceData.Instance.m_AllianceInfoDic[id].applyLevel.ToString();
-        m_ListApplicationInfo[6].text = NameIdTemplate.GetName_By_NameId(BaiZhanTemplate.getBaiZhanTemplateById(AllianceData.Instance.m_AllianceInfoDic[id].junXian).templateName);
+            m_ListApplicationInfo[0].text = "<" + AllianceData.Instance.m_AllianceInfoDic[id].name + ">\n" + "(ID:" + AllianceData.Instance.m_AllianceInfoDic[id].id + ")";
+            m_ListApplicationInfo[1].text = AllianceData.Instance.m_AllianceInfoDic[id].level.ToString() + NameIdTemplate.GetName_By_NameId(990019);
+            m_ListApplicationInfo[4].text = AllianceData.Instance.m_AllianceInfoDic[id].reputation.ToString();
+            m_ListApplicationInfo[3].text = AllianceData.Instance.m_AllianceInfoDic[id].members.ToString() + "/" + AllianceData.Instance.m_AllianceInfoDic[id].memberMax.ToString();
+            m_ListApplicationInfo[2].text = AllianceData.Instance.m_AllianceInfoDic[id].creatorName;
+            m_ListApplicationInfo[5].text = AllianceData.Instance.m_AllianceInfoDic[id].applyLevel.ToString();
+            m_ListApplicationInfo[6].text = NameIdTemplate.GetName_By_NameId(BaiZhanTemplate.getBaiZhanTemplateById(AllianceData.Instance.m_AllianceInfoDic[id].junXian).templateName);
 
 
-        if (!string.IsNullOrEmpty( AllianceData.Instance.m_AllianceInfoDic[id].attchCndition))
-        {
-            m_ListApplicationInfo[7].text =  AllianceData.Instance.m_AllianceInfoDic[id].attchCndition;
+            if (!string.IsNullOrEmpty(AllianceData.Instance.m_AllianceInfoDic[id].attchCndition))
+            {
+                m_ListApplicationInfo[7].text = AllianceData.Instance.m_AllianceInfoDic[id].attchCndition;
+            }
+            else
+            {
+                m_ListApplicationInfo[7].text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_NOTICE_DEFAULT);
+            }
+
+            m_ListAllianceIcon[0].spriteName = AllianceData.Instance.m_AllianceInfoDic[id].icon.ToString();
         }
-        else
-        {
-            m_ListApplicationInfo[7].text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_NOTICE_DEFAULT);
-        }
-        
-       // Debug.Log(" AllianceData.Instance.m_AllianceInfoDic[id].attchCndition ::" + AllianceData.Instance.m_AllianceInfoDic[id].attchCndition);
-        m_ListAllianceIcon[0].spriteName = AllianceData.Instance.m_AllianceInfoDic[id].icon.ToString();
     }
 
     void SelectedObj(GameObject obj, int id)
@@ -1355,7 +1424,22 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             if (country_id >= 0)
             {
                 _guojiaId = country_id;
-                ShowSwitch(_guojiaId);
+                for (int i = 0; i < listItemNeedInfo.Count; i++)
+                {
+                    if (listItemNeedInfo[i].id == alliance_id)
+                    {
+                        if (listItemNeedInfo[i].level <= JunZhuData.Instance().m_junzhuInfo.level)
+                        {
+                            ShowSwitch(_guojiaId);
+                        }
+                        else
+                        {
+                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
+                               UIBoxLoadCallbackFive);
+                        }
+                        return;
+                    }
+                }
             }
             else
             {
@@ -1387,24 +1471,45 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     }
     private void ShowSwitch(int _country_id)
     {
-        m_SwitchCountry.SetActive(true);
         if (BagData.GetMaterialCountByID(910001) > 0)
         {
-            m_LabsignalUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD);
-            m_LabsignalDown.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_1)
-                + NameIdTemplate.GetName_By_NameId(_country_id)
-            + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_2); ;
+            m_LabNoETopLeft.text = LanguageTemplate.GetText(20008);
+            m_LabNoEBottomLeft.text = LanguageTemplate.GetText(20009);
+            m_LabNoEBottomRight.text = "X" + BagData.GetMaterialCountByID(910001);
+            m_EnoughObj.SetActive(false);
+            m_NoEnoughObj.SetActive(true);
         }
         else
         {
-
             m_LabsignalUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_3)
-                + DangpuItemCommonTemplate.getDangpuItemCommonById(1003).needNum / DangpuItemCommonTemplate.getDangpuItemCommonById(1003).itemNum
-                + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_4);
-            m_LabsignalDown.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_1)
-                + NameIdTemplate.GetName_By_NameId(_country_id)
-            + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_2);
+               + DangpuItemCommonTemplate.getDangpuItemCommonById(1003).needNum / DangpuItemCommonTemplate.getDangpuItemCommonById(1003).itemNum
+               + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_4);
+          m_LabsignalDown.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_1)
+               + NameIdTemplate.GetName_By_NameId(_country_id)
+               + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_2);
+            m_NoEnoughObj.SetActive(false);
+            m_EnoughObj.SetActive(true);
         }
+        m_SwitchCountry.SetActive(true);
+        //if (BagData.GetMaterialCountByID(910001) > 0)
+        {
+            //  m_LabsignalUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD);
+           
+            //m_LabsignalDown.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_1)
+            //    + NameIdTemplate.GetName_By_NameId(_country_id)
+            //+ LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_2); ;
+           
+        }
+        //else
+        //{
+
+        //    m_LabsignalUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_3)
+        //        + DangpuItemCommonTemplate.getDangpuItemCommonById(1003).needNum / DangpuItemCommonTemplate.getDangpuItemCommonById(1003).itemNum
+        //        + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_4);
+        //    m_LabsignalDown.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_1)
+        //        + NameIdTemplate.GetName_By_NameId(_country_id)
+        //    + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_2);
+        //}
     }
     public void UIBoxLoadCallback_Time(ref WWW p_www, string p_path, Object p_object)
     {
@@ -1503,7 +1608,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         {
             if (AllianceData.Instance.m_AllianceCreatePrice <= JunZhuData.Instance().m_junzhuInfo.yuanBao)
             {
-                ConnectServer(_SignalIndex);
+                ConnectServer(8);
             }
             else
             {

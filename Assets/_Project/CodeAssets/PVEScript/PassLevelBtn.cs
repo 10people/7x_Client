@@ -17,7 +17,7 @@ public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
 
 	public static PassLevelBtn mPaaseBtn;
 	[HideInInspector]public bool IsOPenEffect;
-	public static PassLevelBtn Instance ()
+	public static PassLevelBtn Instance()
 	{
 		if (!mPaaseBtn)
 		{
@@ -46,7 +46,7 @@ public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
 	void Sendmassege()
 	{
 		//Debug.Log("CNOT_GET_AWART_ZHANGJIE_RESP = 24156");
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_NOT_GET_AWART_ZHANGJIE_REQ);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_NOT_GET_AWART_ZHANGJIE_REQ);
 	}
 	void Update () {
 	
@@ -91,6 +91,8 @@ public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
 			PveUImanager.instances.CloseArt();
 			CloseEffect();
 			StopCoroutine ("BtnShake");
+			int hongdian_id = 300001;
+			PushAndNotificationHelper.SetRedSpotNotification (hongdian_id, false);
 		}
 		else
 		{
@@ -116,12 +118,12 @@ public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
 	{
 		if(IsOPenEffect)
 		{
-			UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,this.gameObject,EffectIdTemplate.GetPathByeffectId(100168));
+			UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,this.gameObject,EffectIdTemplate.GetPathByeffectId(100168));
 		}
 	}
 	public void CloseEffect()
 	{
-		UI3DEffectTool.Instance ().ClearUIFx (this.gameObject);
+		UI3DEffectTool.ClearUIFx (this.gameObject);
 	}
 	IEnumerator BtnShake()
 	{

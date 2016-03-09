@@ -14,6 +14,8 @@ public class DramaActor : MonoBehaviour
 		EFFECT,
 		SOUND,
 		ROTATE,
+		UISprite,
+		UILabel,
 	}
 
 	public float waittingTime;
@@ -38,7 +40,7 @@ public class DramaActor : MonoBehaviour
 
 		funcStart ();
 
-		DramaActorControllor controllor = (DramaActorControllor)gameObject.GetComponent ("DramaActorControllor");
+		DramaActorControllor controllor = gameObject.GetComponent<DramaActorControllor>();
 
 		yield return new WaitForSeconds(waittingTime);
 

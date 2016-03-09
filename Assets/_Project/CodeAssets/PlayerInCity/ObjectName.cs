@@ -9,7 +9,8 @@ public class ObjectName : MonoBehaviour {
     public UISprite m_SpriteChengHao;
     public UILabel m_playerVip;
     public UISprite m_SpriteVip;
-
+    [HideInInspector]
+    public string m_NameSend = "";
     protected Transform m_transform;
 	
 	void Start()
@@ -19,7 +20,7 @@ public class ObjectName : MonoBehaviour {
 	
 	public void Init(string tempPlayerName,string tempAllianceName,string tempChengHao,string vip_level,int zhiwei)//初始化玩家名字
 	{
-		
+        m_NameSend = tempPlayerName;
         if (!string.IsNullOrEmpty(tempAllianceName))
         {
             m_LabAllianceName.text = MyColorData.getColorString(12, "<" + tempAllianceName + ">") + FunctionWindowsCreateManagerment.GetIdentityById(zhiwei);
@@ -52,6 +53,7 @@ public class ObjectName : MonoBehaviour {
             //}
             if (int.Parse(vip_level) > 0)
             {
+                m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(tempPlayerName) - 1) * 17, -11, 0);
                 m_SpriteVip.gameObject.SetActive(true);
                 m_SpriteVip.spriteName = "vip" + vip_level;
                 m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");

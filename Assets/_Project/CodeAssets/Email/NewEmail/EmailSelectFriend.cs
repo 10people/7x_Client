@@ -19,6 +19,7 @@ public class EmailSelectFriend : MonoBehaviour {
 	private List<GameObject> friendItemList = new List<GameObject> ();
 
 	public EventHandler closeHandler;
+	public EventHandler zheZhao;
 
 	public UILabel desLabel;
 
@@ -54,8 +55,10 @@ public class EmailSelectFriend : MonoBehaviour {
 
 		desLabel.text = friendList.Count > 0 ? "" : "还没有好友";
 
-		closeHandler.m_handler -= CloseHandlerClickBack;
-		closeHandler.m_handler += CloseHandlerClickBack;
+		closeHandler.m_click_handler -= CloseHandlerClickBack;
+		closeHandler.m_click_handler += CloseHandlerClickBack;
+		zheZhao.m_click_handler -= CloseHandlerClickBack;
+		zheZhao.m_click_handler += CloseHandlerClickBack;
 	}
 
 	public void CloseHandlerClickBack (GameObject obj)

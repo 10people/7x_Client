@@ -19,7 +19,7 @@ public class JunZhuDiaoLuoItem : MonoBehaviour
    // private int[] sectionNameID = {1, 30001,30002,30003,30004,30005,30006,30007,30008,30009,30010,30011,30012,30013,30014,30015};
 	void Start () 
 	{
-	   m_TouchEvent.m_handler += SkipScence;
+	   m_TouchEvent.m_click_handler += SkipScence;
 	}
 
     public void ShowInfo(JunZhuZhuangBeiInfo.DiaoLuoGuanQia diaoluoguanqia, OnClick_Touch callback)
@@ -38,7 +38,7 @@ public class JunZhuDiaoLuoItem : MonoBehaviour
 	GameObject DiaoluoShow;
 	private void SkipScence(GameObject obj)
     {
-        if (UICamera.GetTouches().Count == 1 && (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.Android) || Application.platform == RuntimePlatform.WindowsEditor)
+		if (DeviceHelper.IsSingleTouching() )
         {
             if (_isChuangQi)
             {

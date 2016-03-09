@@ -60,7 +60,7 @@ public class ApplicationInfoWindow : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.REFUSE_APPLY,ref t_protof,"30126");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.REFUSE_APPLY,ref t_protof,"30126");
 		Debug.Log ("拒绝请求");
 		DestroyWin ();
 	}
@@ -81,7 +81,7 @@ public class ApplicationInfoWindow : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.AGREE_APPLY,ref t_protof,"30128");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.AGREE_APPLY,ref t_protof,"30128");
 		Debug.Log ("同意请求");
 		DestroyWin ();
 	}
@@ -94,8 +94,8 @@ public class ApplicationInfoWindow : MonoBehaviour {
 
 	void DestroyWin ()
 	{
-		AllianceApplicationData.Instance ().DestroySelect ();
-		AllianceApplicationData.Instance ().MakeZheZhao (false);
+		AllianceApplicationData.Instance().DestroySelect ();
+		AllianceApplicationData.Instance().MakeZheZhao (false);
 		Destroy (this.gameObject);
 	}
 }

@@ -27,11 +27,11 @@ public class SinglePlayerController : MonoBehaviour
 
     #region Move Controller
 
-    public bool is_CanMove = true;
+    private bool is_CanMove = true;
 
     public void DeactiveMove()
     {
-        Debug.LogWarning("--------------self deactive move.");
+        //Debug.LogWarning("--------------self deactive move.");
 
         StopPlayerNavigation();
         is_CanMove = false;
@@ -39,7 +39,7 @@ public class SinglePlayerController : MonoBehaviour
 
     public void ActiveMove()
     {
-        Debug.LogWarning("+++++++++++++++++self active move.");
+        //Debug.LogWarning("+++++++++++++++++self active move.");
 
         is_CanMove = true;
     }
@@ -88,6 +88,7 @@ public class SinglePlayerController : MonoBehaviour
 
     [HideInInspector]
     public Vector3 NavigationEndPosition;
+    private float navigateDistance = 1f;
 
     public CharacterController m_CharacterController;
     public NavMeshAgent m_NavMeshAgent;
@@ -133,7 +134,12 @@ public class SinglePlayerController : MonoBehaviour
     public float m_LastNavigateTime;
     public Transform m_NavigationTransform;
 
-    public void StartNavigation(Vector3 tempPosition)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tempPosition"></param>
+    /// <param name="tempDistance">navigate distance, 1f for default.</param>
+    public void StartNavigation(Vector3 tempPosition, float tempDistance = 1f)
     {
         if (!is_CanMove)
         {
@@ -152,6 +158,9 @@ public class SinglePlayerController : MonoBehaviour
             m_LastNavigateTime = Time.realtimeSinceStartup;
 
             m_IsTurning = true;
+
+            navigateDistance = tempDistance;
+
             StartCoroutine(DoStartNavigation(tempPosition));
 
             if (m_StartNavDelegate != null)
@@ -200,7 +209,7 @@ public class SinglePlayerController : MonoBehaviour
             }
         }
 
-        Debug.Log("Start navigate to position:" + tempPosition);
+//        Debug.Log("Start navigate to position:" + tempPosition);
 
         m_NavMeshAgent.Resume();
 
@@ -350,11 +359,11 @@ public class SinglePlayerController : MonoBehaviour
     {
         StopPlayerNavigation();
 
-		m_CharacterController = null;
+        m_CharacterController = null;
 
-		m_NavMeshAgent = null;
+        m_NavMeshAgent = null;
 
-		m_Animator = null;
+        m_Animator = null;
     }
 
     public void Update()
@@ -507,7 +516,7 @@ public class SinglePlayerController : MonoBehaviour
         if (IsInNavigate)
         {
             //Check navigation remaining destination
-            if (Vector3.Distance(m_Transform.position, NavigationEndPosition) <= 1f)
+            if (Vector3.Distance(m_Transform.position, NavigationEndPosition) <= navigateDistance)
             {
                 StopPlayerNavigation();
                 if (m_CompleteNavDelegate != null)

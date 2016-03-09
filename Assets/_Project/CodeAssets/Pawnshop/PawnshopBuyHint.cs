@@ -144,7 +144,7 @@ public class PawnshopBuyHint : MonoBehaviour
 		{
 			if(needNum > JunZhuData.Instance().m_junzhuInfo.jinBi)
 			{
-				JunZhuData.Instance ().BuyTiliAndTongBi (false , true,false );
+				JunZhuData.Instance().BuyTiliAndTongBi (false , true,false );
 //				controllor.showCoinErrorHint();
 
 				return;

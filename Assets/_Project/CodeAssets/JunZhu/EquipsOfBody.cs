@@ -27,7 +27,7 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
     public int m_EquipBuWeiWearing = 0;
     public bool m_Advance = false;
     public EquipJinJieResp m_EquipUpgradeInfo = new EquipJinJieResp();
-
+    public int m_EquipAddId = 0;
     public static EquipsOfBody Instance()
     {
         if (m_equipsOfBody == null)
@@ -133,6 +133,7 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
 
                             m_isRefrsehEquips = true;
                         }
+                        FunctionWindowsCreateManagerment.m_IsEquipAdvance = true;
                     } return true;
                 default: return false;
             }

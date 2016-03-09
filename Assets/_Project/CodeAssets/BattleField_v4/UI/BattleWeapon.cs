@@ -16,6 +16,12 @@ public class BattleWeapon : MonoBehaviour
 
 	public UISprite focusRange;
 
+	public GameObject labelHeavy;
+
+	public GameObject labelLight;
+
+	public GameObject labelRange;
+
 	public BattleWeaponSkillDolt spriteHeavySkill_1;
 
 	public BattleWeaponSkillDolt spriteHeavySkill_2;
@@ -28,22 +34,26 @@ public class BattleWeapon : MonoBehaviour
 
 	public BattleWeaponSkillDolt spriteRangeSkill_2;
 
+	public GameObject layerMibaoAnim;
+
 
 	public void changeWeaponToHeavy()
 	{
-		DramaControllor.Instance ().closeYindao (5);
+		DramaControllor.Instance().closeYindao (5);
 
 		bool flag = precheck ();
 
 		if (flag == false) return;
 
-		flag = BattleUIControlor.Instance ().changeWeaponTo (KingControllor.WeaponType.W_Heavy);
+		flag = BattleUIControlor.Instance().changeWeaponTo (KingControllor.WeaponType.W_Heavy);
 
 		if (flag == false) return;
 
 		lightOff ();
 
 		focusHeavy.gameObject.SetActive (true);
+
+		BattleControlor.Instance().getKing ().setAutoWeapon (false);
 
 		//spriteHeavySkill_1.gameObject.SetActive (false);
 		
@@ -54,19 +64,21 @@ public class BattleWeapon : MonoBehaviour
 
 	public void changeWeaponToLight()
 	{
-		DramaControllor.Instance ().closeYindao (6);
+		DramaControllor.Instance().closeYindao (6);
 
 		bool flag = precheck ();
 		
 		if (flag == false) return;
 
-		flag = BattleUIControlor.Instance ().changeWeaponTo (KingControllor.WeaponType.W_Light);
+		flag = BattleUIControlor.Instance().changeWeaponTo (KingControllor.WeaponType.W_Light);
 
 		if (flag == false) return;
 
 		lightOff ();
 
 		focusLight.gameObject.SetActive (true);
+
+		BattleControlor.Instance().getKing ().setAutoWeapon (false);
 
 		//spriteLightSkill_1.gameObject.SetActive (false);
 		
@@ -83,13 +95,15 @@ public class BattleWeapon : MonoBehaviour
 
 		if (flag == false) return;
 		
-		flag = BattleUIControlor.Instance ().changeWeaponTo (KingControllor.WeaponType.W_Ranged);
+		flag = BattleUIControlor.Instance().changeWeaponTo (KingControllor.WeaponType.W_Ranged);
 
 		if (flag == false) return;
 
 		lightOff ();
 
 		focusRange.gameObject.SetActive (true);
+
+		BattleControlor.Instance().getKing ().setAutoWeapon (false);
 
 		//spriteRangeSkill_1.gameObject.SetActive (false);
 		
@@ -157,21 +171,34 @@ public class BattleWeapon : MonoBehaviour
 
 	private bool precheck()
 	{
-		//if (BattleControlor.Instance ().getKing ().isPlayingAttack ()) return false;
+		//if (BattleControlor.Instance().getKing ().isPlayingAttack ()) return false;
 
-		string playing = BattleControlor.Instance ().getKing ().IsPlaying ();
+		string playing = BattleControlor.Instance().getKing ().IsPlaying ();
 
-		if (BattleControlor.Instance ().getKing ().isPlayingSwing ()) return true;
+		if (BattleControlor.Instance().getKing ().isPlayingSwing ()) return true;
 
-		if (BattleControlor.Instance ().getKing ().isPlayingSkill ()) return false;
+		if (BattleControlor.Instance().getKing ().isPlayingSkill ()) return false;
 
 		if (playing.Equals ("XuanFengZhan") == true) return false;
 
-		if (playing.Equals (BattleControlor.Instance ().getKing ().getAnimationName(BaseAI.AniType.ANI_BATCDown)) == true) return false;
+		if (playing.Equals (BattleControlor.Instance().getKing ().getAnimationName(BaseAI.AniType.ANI_BATCDown)) == true) return false;
 
-		if (playing.Equals (BattleControlor.Instance ().getKing ().getAnimationName(BaseAI.AniType.ANI_BATCUp)) == true) return false;
+		if (playing.Equals (BattleControlor.Instance().getKing ().getAnimationName(BaseAI.AniType.ANI_BATCUp)) == true) return false;
 
 		return true;
+	}
+
+	public int getUnlockCount()
+	{
+		int count = 0;
+
+		if (labelHeavy.gameObject.activeSelf == true) count ++;
+
+		if (labelLight.gameObject.activeSelf == true) count ++;
+
+		if (labelRange.gameObject.activeSelf == true) count ++;
+
+		return count;
 	}
 
 }

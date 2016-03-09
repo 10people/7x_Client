@@ -18,6 +18,8 @@ public class MBTemp : MonoBehaviour {
 
 	public UILabel HechengNum;
 
+	public UILabel ActiveHechengNum;
+
 	public UISprite Tips;
 
 	public MibaoInfo mMiBaoinfo;
@@ -36,7 +38,7 @@ public class MBTemp : MonoBehaviour {
 
 	public GameObject m_MIBaoScorllview;
 	public GameObject Proess;
-
+	public GameObject ActiveProess;
 	public int SuipianNum;
 	void Start () {
 	
@@ -93,6 +95,23 @@ public class MBTemp : MonoBehaviour {
 
 			MiBaoIcon.spriteName = mmibao.icon.ToString();
 
+			MiBaoSuipianXMltemp mMiBaoSuipianXMltemp = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid (mMiBaoinfo.tempId);
+			if(mMiBaoinfo.suiPianNum <= 0)
+			{
+				ActiveHechengNum.text = MyColorData.getColorString(5, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoinfo.needSuipianNum.ToString();
+			}
+			else if(mMiBaoinfo.suiPianNum >= mMiBaoinfo.needSuipianNum)
+			{
+				ActiveHechengNum.text = MyColorData.getColorString(6, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoinfo.needSuipianNum.ToString();
+			}
+			else
+			{
+				ActiveHechengNum.text = mMiBaoinfo.suiPianNum.ToString()+"/"+mMiBaoinfo.needSuipianNum.ToString();
+			}
+			UISlider mSlider = ActiveProess.GetComponent<UISlider>();
+			
+			mSlider.value = (float)(mMiBaoinfo.suiPianNum)/(float)(mMiBaoinfo.needSuipianNum);
+
 			MiBaopinZi.spriteName = "";
 			ExpXxmlTemp mExpXxmlTemp = ExpXxmlTemp.getExpXxmlTemp_By_expId (mmibao.expId,mMiBaoinfo.level);
 
@@ -102,7 +121,15 @@ public class MBTemp : MonoBehaviour {
 				Tips.gameObject.SetActive(true);
 			}
 			else{
-				Tips.gameObject.SetActive(false);
+				if(mMiBaoinfo.needSuipianNum <= mMiBaoinfo.suiPianNum&&mMiBaoinfo.star < 5)
+				{
+					Tips.gameObject.SetActive(true);
+				}
+				else
+				{
+					Tips.gameObject.SetActive(false);
+				}
+
 			}
 
 			switch(mMiBaoinfo.star)
@@ -113,23 +140,23 @@ public class MBTemp : MonoBehaviour {
 				MiBaopinZi.SetDimensions(99,99);
 				break;
 			case 2:
-				MiBaopinZi.SetDimensions(112,112);
-				MiBaopinZi.spriteName = "pinzhi7";
+				MiBaopinZi.spriteName = "pinzhi6";
+				MiBaopinZi.SetDimensions(99,99);
 				
 				break;
 			case 3:
 				
-				MiBaopinZi.spriteName = "pinzhi9";
+				MiBaopinZi.spriteName = "pinzhi6";
 				MiBaopinZi.SetDimensions(99,99);
 				break;
 			case 4:
 				
-				MiBaopinZi.spriteName = "pinzhi10";
-				MiBaopinZi.SetDimensions(112,112);
+				MiBaopinZi.spriteName = "pinzhi6";
+				MiBaopinZi.SetDimensions(99,99);
 				break;
 			case 5:
-				MiBaopinZi.SetDimensions(112,112);
-				MiBaopinZi.spriteName = "pinzhi11";
+				MiBaopinZi.spriteName = "pinzhi6";
+				MiBaopinZi.SetDimensions(99,99);
 				
 				break;
 			default:
@@ -189,7 +216,7 @@ public class MBTemp : MonoBehaviour {
 
 	public void ShowActiveInfo()
 	{
-		NewMiBaoManager.Instance ().ShowMiBaoDeilInf (mMiBaoinfo);
+		NewMiBaoManager.Instance().ShowMiBaoDeilInf (mMiBaoinfo);
 	}
 
 	private int Mony;
@@ -258,7 +285,7 @@ public class MBTemp : MonoBehaviour {
 
 				QiXiongSerializer MiBaoinfoer = new QiXiongSerializer ();
 
-				Debug.Log ("mMiBaoinfo.tempId"+mMiBaoinfo.tempId);
+				//Debug.Log ("mMiBaoinfo.tempId"+mMiBaoinfo.tempId);
 
 				MiBaoinfo.tempId = mMiBaoinfo.tempId;
 

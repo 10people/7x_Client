@@ -70,7 +70,7 @@ public class TaskScrollViewItemAmend : MonoBehaviour
         if (taskInfo._Progress < 0)
         {
             m_LingQu.gameObject.SetActive(true);
-            m_backGround.spriteName = "bg2";
+            m_backGround.spriteName = "Cmplete";
             m_flag_finish.SetActive(false);
             m_progressLabel.gameObject.SetActive(true);
             //  m_progressLabel.text = "完成";
@@ -98,7 +98,7 @@ public class TaskScrollViewItemAmend : MonoBehaviour
 
         }
 
-        m_Kuang.SetActive(taskInfo._Progress < 0);
+      //  m_Kuang.SetActive(taskInfo._Progress < 0);
    
 
         m_nameLabel.text = taskInfo._Name;

@@ -88,7 +88,7 @@ public class MainCityTaskManager : MonoBehaviour
 //				if(m_iNum == 10)
 //				{
 //					m_UISpriteBG.gameObject.transform.localScale = new Vector3(1,1,1);
-//					UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objFinishEff, EffectTemplate.getEffectTemplateByEffectId( 100175 ).path);
+//					UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objFinishEff, EffectTemplate.getEffectTemplateByEffectId( 100175 ).path);
 //				}
 //			}
 //			else if(m_iNum == 60)
@@ -112,7 +112,7 @@ public class MainCityTaskManager : MonoBehaviour
 //			if(m_iRefreshNum == 500)
 //			{
 //				m_iRefreshNum = 0;
-//				UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objRefreshEff, EffectTemplate.getEffectTemplateByEffectId( 100184 ).path);
+//				UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objRefreshEff, EffectTemplate.getEffectTemplateByEffectId( 100184 ).path);
 //			}
 //		}
 	}
@@ -138,11 +138,11 @@ public class MainCityTaskManager : MonoBehaviour
 			m_UISpriteBG.gameObject.SetActive(true);
 			m_UISpriteBG.gameObject.transform.localScale = new Vector3(2,2,2);
 			m_TaskAnimationSatatae = TaskAnimationSatatae.Finish;
-			UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objChangeEff, EffectTemplate.getEffectTemplateByEffectId( 100177 ).path);
+			UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objChangeEff, EffectTemplate.getEffectTemplateByEffectId( 100177 ).path);
 		}
 		else
 		{
-			UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objChangeEff, EffectTemplate.getEffectTemplateByEffectId( 100177 ).path);
+			UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objChangeEff, EffectTemplate.getEffectTemplateByEffectId( 100177 ).path);
 			m_UILabelChange.gameObject.SetActive(true);
 			m_UILabelChange.transform.localPosition = new Vector3(-291, 0 , 0);
 			m_UILabelChange.text = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.ShowId].title;
@@ -166,11 +166,11 @@ public class MainCityTaskManager : MonoBehaviour
 		m_UILabelState.text = TaskData.Instance.m_TaskInfoDic[m_iShowID].desc;
 		if(m_iThisPanelState == 0)
 		{
-			m_UILabelCur.text = "主线：" + TaskData.Instance.m_TaskInfoDic[m_iShowID].title;
+			m_UILabelCur.text = TaskData.Instance.m_TaskInfoDic[m_iShowID].title;
 		}
 		else
 		{
-			m_UILabelCur.text = "支线：" + TaskData.Instance.m_TaskInfoDic[m_iShowID].title;
+			m_UILabelCur.text = TaskData.Instance.m_TaskInfoDic[m_iShowID].title;
 		}
 		if(m_iState < 0)
 		{

@@ -156,7 +156,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 	{
 		if (IsSaodang)
 						return;
-		MibaoInfoResp my_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		MibaoInfoResp my_MiBaoInfo = MiBaoGlobleData.Instance().G_MiBaoInfo;
 		//IsShowEffect = true;
 //		for(int i = 0 ; i < my_MiBaoInfo.mibaoGroup.Count; i++)
 //		{
@@ -180,13 +180,13 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		{
 			int effectId =  100006;
 			
-			UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,ChangeMiBaobtn,
+			UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,ChangeMiBaobtn,
 			                                               EffectIdTemplate.GetPathByeffectId(effectId));		
 		}
 	}
 	public void CloseEffect()
 	{
-		UI3DEffectTool.Instance ().ClearUIFx (ChangeMiBaobtn);
+		UI3DEffectTool.ClearUIFx (ChangeMiBaobtn);
 	}
 	public void init(){
 
@@ -428,7 +428,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 				
 				saodinfo = tempInfo;
 				
-				Debug.Log("请求扫荡是数据返回了。。。");
+			//	Debug.Log("请求扫荡是数据返回了。。。");
 				
 				pveW_item.Clear();
 
@@ -500,12 +500,12 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 			return;
 		}
 		ISCanSaodang = false;
-		Vipgrade = JunZhuData.Instance ().m_junzhuInfo.vipLv;
-		junZhuLevel = JunZhuData.Instance ().m_junzhuInfo.level;
-		ExistingPower = JunZhuData.Instance ().m_junzhuInfo.tili;
+		Vipgrade = JunZhuData.Instance().m_junzhuInfo.vipLv;
+		junZhuLevel = JunZhuData.Instance().m_junzhuInfo.level;
+		ExistingPower = JunZhuData.Instance().m_junzhuInfo.tili;
 		
 		
-		Debug.Log ("FunctionOpenTemp.GetWhetherContainID(3000010) = " +FunctionOpenTemp.GetWhetherContainID(3000010));
+		//Debug.Log ("FunctionOpenTemp.GetWhetherContainID(3000010) = " +FunctionOpenTemp.GetWhetherContainID(3000010));
 		
 		if(!FunctionOpenTemp.GetWhetherContainID(3000010))
 		{
@@ -595,7 +595,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		
 		t_protof = saodangstream.ToArray();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_PVE_SAO_DANG,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_PVE_SAO_DANG,ref t_protof);
 		
 	}
 	public void LoadResourceCallback1(ref WWW p_www,string p_path, Object p_object)
@@ -679,7 +679,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 
 	public void SHow_OrClose()
 	{
-		Debug.Log ("Close = "+Child.activeInHierarchy);
+		//Debug.Log ("Close = "+Child.activeInHierarchy);
 		if(Child.activeInHierarchy)
 		{
 			Child.SetActive(false);

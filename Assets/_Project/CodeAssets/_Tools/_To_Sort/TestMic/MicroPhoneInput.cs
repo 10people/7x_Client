@@ -33,10 +33,10 @@ public class MicroPhoneInput : MonoBehaviour {
             {
                 Debug.LogError ("Microphone.devices is null");
             }
-            foreach (string deviceStr in Microphone.devices)
-            {
-                Debug.Log("device name = " + deviceStr);
-            }
+//            foreach (string deviceStr in Microphone.devices)
+//            {
+//                Debug.Log("device name = " + deviceStr);
+//            }
 			if(micArray.Length==0)
 			{
 				Debug.LogError("no mic device");
@@ -65,7 +65,7 @@ public class MicroPhoneInput : MonoBehaviour {
         GetComponent<AudioSource>().Stop();
         if (micArray.Length == 0)
         {
-            Debug.Log("No Record Device!");
+//            Debug.Log("No Record Device!");
             return;
         }
 		GetComponent<AudioSource>().loop = false;
@@ -74,7 +74,7 @@ public class MicroPhoneInput : MonoBehaviour {
 		while (!(Microphone.GetPosition(null)>0)) {
 		}
 		GetComponent<AudioSource>().Play ();
-        Debug.Log("StartRecord");
+//        Debug.Log("StartRecord");
         //倒计时
         StartCoroutine(TimeDown());
        
@@ -84,7 +84,7 @@ public class MicroPhoneInput : MonoBehaviour {
 	{
         if (micArray.Length == 0)
         {
-            Debug.Log("No Record Device!");
+//            Debug.Log("No Record Device!");
             return;
         }
         if (!Microphone.IsRecording(null))
@@ -94,7 +94,7 @@ public class MicroPhoneInput : MonoBehaviour {
 		Microphone.End (null);
         GetComponent<AudioSource>().Stop();
 
-        Debug.Log("StopRecord");
+//        Debug.Log("StopRecord");
        // PlayRecord();
 
         //调试Int16[] 数据的转化与播放
@@ -106,7 +106,7 @@ public class MicroPhoneInput : MonoBehaviour {
     {
         if (GetComponent<AudioSource>().clip == null)
         {
-            Debug.Log("GetClipData audio.clip is null");
+//            Debug.Log("GetClipData audio.clip is null");
             return null; 
         }
 
@@ -134,7 +134,7 @@ public class MicroPhoneInput : MonoBehaviour {
         }
 		if (outData == null || outData.Length <= 0)
         {
-            Debug.Log("GetClipData intData is null");
+//            Debug.Log("GetClipData intData is null");
             return null; 
         }
         //return intData;
@@ -153,7 +153,7 @@ public class MicroPhoneInput : MonoBehaviour {
 
         if (intArr.Length == 0)
         {
-            Debug.Log("get intarr clipdata is null");
+//            Debug.Log("get intarr clipdata is null");
             return;
         }
         //从Int16[]到float[]
@@ -178,13 +178,13 @@ public class MicroPhoneInput : MonoBehaviour {
 	{
         if (GetComponent<AudioSource>().clip == null)
         {
-            Debug.Log("audio.clip=null");
+//            Debug.Log("audio.clip=null");
             return;
         }
 		GetComponent<AudioSource>().mute = false;
 		GetComponent<AudioSource>().loop = false;
 		GetComponent<AudioSource>().Play ();
-        Debug.Log("PlayRecord");
+//        Debug.Log("PlayRecord");
 
 	}
 
@@ -220,7 +220,7 @@ public class MicroPhoneInput : MonoBehaviour {
 
     private IEnumerator TimeDown()
     {
-        Debug.Log(" IEnumerator TimeDown()");
+//        Debug.Log(" IEnumerator TimeDown()");
 
         int time = 0;
         while (time < RECORD_TIME)
@@ -230,13 +230,13 @@ public class MicroPhoneInput : MonoBehaviour {
 				Debug.Log ("IsRecording false");
 				yield break;
 			}
-            Debug.Log("yield return new WaitForSeconds "+time);
+//            Debug.Log("yield return new WaitForSeconds "+time);
             yield return new WaitForSeconds(1);
             time++;
         }
         if (time >= 10)
         {
-            Debug.Log("RECORD_TIME is out! stop record!");
+//            Debug.Log("RECORD_TIME is out! stop record!");
             StopRecord();
         }
         yield return 0;

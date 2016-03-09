@@ -17,12 +17,12 @@ public class BossSkillJianMian : HeroSkill
 	
 	public override void activeSkill(int state)
 	{
-//		BattleEffectControllor.Instance ().PlayEffect (
+//		BattleEffectControllor.Instance().PlayEffect (
 //			BattleEffectControllor.EffectType.EFFECT_KING_CESHI_SKILL_BAOQI,
 //			node.targetNode.gameObject);
 //		Buff.createBuff(node.targetNode, Buff.BuffType.BUFF_HP, template.value1, template.value2);
 
-		BattleEffectControllor.Instance ().PlayEffect (
+		BattleEffectControllor.Instance().PlayEffect (
 			69,
 			gameObject);
 

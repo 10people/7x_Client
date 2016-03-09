@@ -75,7 +75,7 @@ public class TenementData : Singleton<TenementData>, SocketProcessor
                         HouseUpdateInfo AllianceTenementInfo = new HouseUpdateInfo();
                         t_qx.Deserialize(t_tream, AllianceTenementInfo, AllianceTenementInfo.GetType());
 
-                        Debug.Log("Receive house update data.");
+//                        Debug.Log("Receive house update data.");
 
                         //return if no data existed.
                         if (AllianceTenementInfo.infos == null || AllianceTenementInfo.infos.Count == 0)
@@ -143,7 +143,7 @@ public class TenementData : Singleton<TenementData>, SocketProcessor
                         }
 
 #endif
-                        Debug.Log("ChangePortColorChangePortColorChangePortColorChangePortColorChangePortColor");
+//                        Debug.Log("ChangePortColorChangePortColorChangePortColorChangePortColorChangePortColor");
                         NpcManager.m_NpcManager.ChangePortColor();
                         return true;
                     }

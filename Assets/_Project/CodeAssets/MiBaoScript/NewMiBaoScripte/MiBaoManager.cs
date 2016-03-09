@@ -63,7 +63,7 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 
 	public NGUILongPress EnergyDetailLongPress;
 
-	public static MiBaoManager Instance ()
+	public static MiBaoManager Instance()
 	{
 		if (!mMiBaoData)
 		{
@@ -164,7 +164,7 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 	public void InitStart ()
 	{
 
-		//G_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		//G_MiBaoInfo = MiBaoGlobleData.Instance().G_MiBaoInfo;
 
 		VipTemplate mVip = VipTemplate.GetVipInfoByLevel (JunZhuData.Instance().m_junzhuInfo.vipLv);
 
@@ -206,14 +206,14 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 		Curr_UIName = "MiBaoScrollView";
 	
 		//Init(G_MiBaoInfo);
-		ZhanLiNum.text = JunZhuData.Instance ().m_junzhuInfo.zhanLi.ToString();
+		ZhanLiNum.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
 
-		JunzhuZhaoli = JunZhuData.Instance ().m_junzhuInfo.zhanLi;
+		JunzhuZhaoli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 	}
 
 	void Update () {
 		
-		TongBiNum .text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString ();
+		TongBiNum .text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString ();
 
 	}
 
@@ -227,13 +227,13 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 	{
 		yield return new WaitForSeconds(0.1f);
 
-//		Debug.Log("JunZhuData.Instance ().m_junzhuInfo.zhanLi  = "+JunZhuData.Instance ().m_junzhuInfo.zhanLi);
+//		Debug.Log("JunZhuData.Instance().m_junzhuInfo.zhanLi  = "+JunZhuData.Instance().m_junzhuInfo.zhanLi);
 //		
 //		Debug.Log("JunzhuZhaoli  = "+JunzhuZhaoli);
 
-		if(JunZhuData.Instance ().m_junzhuInfo.zhanLi > JunzhuZhaoli)
+		if(JunZhuData.Instance().m_junzhuInfo.zhanLi > JunzhuZhaoli)
 		{
-			int m = (JunZhuData.Instance ().m_junzhuInfo.zhanLi - JunzhuZhaoli);
+			int m = (JunZhuData.Instance().m_junzhuInfo.zhanLi - JunzhuZhaoli);
 			
 			float mTime = 0.01f;
 			
@@ -279,7 +279,7 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 		else{
 //			Debug.Log("MiBao Animation2");
 			
-			ZhanLiNum.text = JunZhuData.Instance ().m_junzhuInfo.zhanLi.ToString();
+			ZhanLiNum.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
 		}
 	}
 	public void SortUI(string UI_Name)
@@ -401,7 +401,7 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 			
 		}else
 		{
-			Debug.Log ("p_message == null");
+			//Debug.Log ("p_message == null");
 		}
 		
 		return false;
@@ -501,7 +501,7 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 
 	public void AddBtn ()
 	{
-		JunZhuData.Instance ().BuyTiliAndTongBi(false,true,false);
+		JunZhuData.Instance().BuyTiliAndTongBi(false,true,false);
 
 	}
 

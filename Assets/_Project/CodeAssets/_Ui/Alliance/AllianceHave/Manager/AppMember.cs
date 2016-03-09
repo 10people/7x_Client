@@ -108,8 +108,8 @@ public class AppMember : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.AGREE_APPLY,ref t_protof,"30128");
-		Debug.Log ("同意请求");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.AGREE_APPLY,ref t_protof,"30128");
+		//Debug.Log ("同意请求");
 	}
 
 	public void DisAgreeBtn()
@@ -127,7 +127,7 @@ public class AppMember : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.REFUSE_APPLY,ref t_protof,"30126");
-		Debug.Log ("拒绝请求");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.REFUSE_APPLY,ref t_protof,"30126");
+		//Debug.Log ("拒绝请求");
 	}
 }

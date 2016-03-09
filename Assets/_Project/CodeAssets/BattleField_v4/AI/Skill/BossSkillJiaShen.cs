@@ -17,7 +17,7 @@ public class BossSkillJiaShen : HeroSkill
 
 	public override void activeSkill(int state)
 	{
-		BattleEffectControllor.Instance ().PlayEffect (
+		BattleEffectControllor.Instance().PlayEffect (
 			70,
 			gameObject);
 

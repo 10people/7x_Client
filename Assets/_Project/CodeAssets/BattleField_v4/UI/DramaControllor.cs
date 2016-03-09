@@ -23,6 +23,28 @@ public class DramaControllor : MonoBehaviour
 
 	public GameObject spriteVedioBG;
 
+	public GameObject spriteTemple;
+
+	public GameObject labelTemple;
+
+	public UIAnchor anchorTop;
+	
+	public UIAnchor anchorTopLeft;
+	
+	public UIAnchor anchorTopRight;
+	
+	public UIAnchor anchorLeft;
+	
+	public UIAnchor anchorRight;
+	
+	public UIAnchor anchorBottom;
+	
+	public UIAnchor anchorBottomLeft;
+	
+	public UIAnchor anchorBottomRight;
+	
+	public UIAnchor anchorCenter;
+
 
 	[HideInInspector] public bool stopAction;
 
@@ -109,7 +131,7 @@ public class DramaControllor : MonoBehaviour
 
 		enemyRoot = GameObject.Find ("Enemy");
 
-		tempAutoFight = BattleControlor.Instance ().autoFight || tempAutoFight;
+		tempAutoFight = BattleControlor.Instance().autoFight || tempAutoFight;
 
 		bg.SetActive (true);
 
@@ -138,7 +160,7 @@ public class DramaControllor : MonoBehaviour
 
 		GuideTemplate template = GuideTemplate.getTemplateByLevelAndEvent (level, eventId);
 
-		bool played = BattleControlor.Instance ().havePlayedGuide (template);
+		bool played = BattleControlor.Instance().havePlayedGuide (template);
 
 		if (played == true) 
 		{
@@ -151,7 +173,7 @@ public class DramaControllor : MonoBehaviour
 			return;
 		}
 
-		BattleControlor.Instance ().guidePlayed.Add (template);
+		BattleControlor.Instance().guidePlayed.Add (template);
 
 		m_levelCallback = level;
 
@@ -165,7 +187,7 @@ public class DramaControllor : MonoBehaviour
 		{
 			//yield return new WaitForSeconds (template.delay);
 
-			BattleControlor.Instance ().clockWithCallback (template.delay, showEventCallback);
+			BattleControlor.Instance().clockWithCallback (template.delay, showEventCallback);
 		}
 		else
 		{
@@ -403,7 +425,7 @@ public class DramaControllor : MonoBehaviour
 		}
 		else if(template.actionType == 7)//横幅提示
 		{
-			SceneGuideManager.Instance ().ShowSceneGuide (template.ap1);
+			SceneGuideManager.Instance().ShowSceneGuide (template.ap1);
 
 			dramaOver(false);
 
@@ -434,6 +456,14 @@ public class DramaControllor : MonoBehaviour
 		{
 			playVideo(template.ap1);
 		}
+		else if(template.actionType == 11)//强制死亡
+		{
+			nodeDie(template.ap1);
+
+			dramaOver(false);
+
+			returnFlag = false;
+		}
 
 		if(returnFlag == true)
 		{
@@ -448,7 +478,11 @@ public class DramaControllor : MonoBehaviour
 
 	private void showStoryBoard(int index)
 	{
-		BubblePopControllor.Instance ().closeAllBubble ();
+		BubblePopControllor.Instance().closeAllBubble ();
+
+		UIYindao.m_UIYindao.CloseUI ();
+
+		UI3DEffectTool.ClearUIFx(BattleUIControlor.Instance().autoFight_1);
 
 		inGuide = true;
 
@@ -456,9 +490,10 @@ public class DramaControllor : MonoBehaviour
 
 		guideDrama.SetActive(false);
 
-		BattleUIControlor.Instance ().layerFight.SetActive (false);
+		BattleUIControlor.Instance().layerFight.SetActive (false);
 
 		storyControllor.init ();
+
 
 		storyControllor.recreateModel (index);
 
@@ -466,7 +501,7 @@ public class DramaControllor : MonoBehaviour
 
 		storyControllor.playAction (gameObject, index);
 
-		BattleControlor.Instance ().inDrama = true;
+		BattleControlor.Instance().inDrama = true;
 	}
 
 	private void playmusic(int musicId)
@@ -498,6 +533,15 @@ public class DramaControllor : MonoBehaviour
 		spriteVedioBG.SetActive (true);
 	}
 
+	private void nodeDie(int nodeId)
+	{
+		BaseAI node = BattleControlor.Instance().getNodebyId (nodeId);
+		
+		if (node == null) return;
+
+		node._dieActionDone (true);
+	}
+
 	public void dramaStoryDone()
 	{
 		foreach(BaseAI node in BattleControlor.Instance().selfNodes)
@@ -520,13 +564,13 @@ public class DramaControllor : MonoBehaviour
 
 	private void showDrama(GuideTemplate template)//对话
 	{
-		BubblePopControllor.Instance ().closeAllBubble ();
+		BubblePopControllor.Instance().closeAllBubble ();
 
 		bg.SetActive (false);
 
 		guideDrama.SetActive(false);
 		
-		BattleUIControlor.Instance ().layerFight.SetActive (false);
+		BattleUIControlor.Instance().layerFight.SetActive (false);
 
 //		if (template.para2 == 1)
 //		{
@@ -545,6 +589,8 @@ public class DramaControllor : MonoBehaviour
 //		}
 
 		UIYindao.m_UIYindao.CloseUI ();
+
+		UI3DEffectTool.ClearUIFx(BattleUIControlor.Instance().autoFight_1);
 
 		List<DialogData.dialogData> dialoglistdata = new List<DialogData.dialogData>();
 
@@ -698,7 +744,7 @@ public class DramaControllor : MonoBehaviour
 			Time.timeScale = 0;
 		}
 
-		BattleControlor.Instance ().inDrama = true;
+		BattleControlor.Instance().inDrama = true;
 	}
 
 	private void refreshCD(GuideTemplate template)//清除CD
@@ -737,7 +783,7 @@ public class DramaControllor : MonoBehaviour
 	{
 		//inGuide = true;
 
-		//BattleControlor.Instance ().inDrama = true;
+		//BattleControlor.Instance().inDrama = true;
 
 		bg.SetActive (false);
 
@@ -970,15 +1016,15 @@ public class DramaControllor : MonoBehaviour
 
 		if(uigc != null)
 		{
-			//LockControllor.Instance ().refreshLock(lockType, true);
+			//LockControllor.Instance().refreshLock(lockType, true);
 
 			GetComponent<BoxCollider> ().enabled = false;
 
 			StartCoroutine(_showGuide(lockType));
 
-			UI3DEffectTool.Instance().ShowBottomLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100169));
+			UI3DEffectTool.ShowBottomLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100169));
 
-			UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100009));
+			UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, uigc, EffectIdTemplate.GetPathByeffectId(100009));
 		}
 		else
 		{
@@ -988,13 +1034,67 @@ public class DramaControllor : MonoBehaviour
 
 	IEnumerator _showGuide(LockControllor.LOCK_TYPE lockType)
 	{
-		yield return new WaitForSeconds (1f);
+		//yield return new WaitForSeconds (.2f);
 
-		LockControllor.Instance ().refreshLock(lockType, true);
+		LockControllor.Instance().refreshLock(lockType, true);
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection <= 1 && CityGlobalData.m_tempLevel <= 1)
+		{
+			float x = 0;
+			
+			if(BattleUIControlor.Instance().m_changeWeapon.getUnlockCount() <= 1)
+			{
+				x = -100;
+			}
+
+			if(x == 0)
+			{
+				iTween.ValueTo(gameObject, iTween.Hash(
+					"from", -100,
+					"to", 0,
+					"time", .5f,
+					"onupdate", "setAnchorLeftOffsetX",
+					"easetype", iTween.EaseType.linear
+					));
+
+				yield return new WaitForSeconds (2f);
+			}
+
+			//BattleUIControlor.Instance().anchorLeft.pixelOffset.x = x;
+		}
+
+		if(lockType == LockControllor.LOCK_TYPE.WeaponHeavy || lockType == LockControllor.LOCK_TYPE.WeaponLight || lockType == LockControllor.LOCK_TYPE.WeaponRange)
+		{
+			if(BattleUIControlor.Instance().m_changeWeapon.labelHeavy.activeSelf == true)
+			{
+				SparkleEffectItem.OpenSparkle(BattleUIControlor.Instance().m_changeWeapon.btnHeavy.GetComponentInChildren<UISprite>().gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon, 1);
+			
+				SparkleEffectItem.OpenSparkle(BattleUIControlor.Instance().m_changeWeapon.focusHeavy.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon, 1);
+			}
+
+			if(BattleUIControlor.Instance().m_changeWeapon.labelLight.activeSelf == true)
+			{
+				SparkleEffectItem.OpenSparkle(BattleUIControlor.Instance().m_changeWeapon.btnLight.GetComponentInChildren<UISprite>().gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon, 1);
+			
+				SparkleEffectItem.OpenSparkle(BattleUIControlor.Instance().m_changeWeapon.focusLight.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon, 1);
+			}
+
+			if(BattleUIControlor.Instance().m_changeWeapon.labelRange.activeSelf == true)
+			{
+				SparkleEffectItem.OpenSparkle(BattleUIControlor.Instance().m_changeWeapon.btnRange.GetComponentInChildren<UISprite>().gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon, 1);
+			
+				SparkleEffectItem.OpenSparkle(BattleUIControlor.Instance().m_changeWeapon.focusRange.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon, 1);
+			}
+		}
 
 		yield return new WaitForSeconds (1f);
 
 		dramaOver (false);
+	}
+
+	public void setAnchorLeftOffsetX(float x)
+	{
+		BattleUIControlor.Instance ().m_changeWeapon.transform.localPosition += new Vector3 (-BattleUIControlor.Instance ().m_changeWeapon.transform.localPosition.x, 0, 0);
 	}
 
 	public void DialogCallback()
@@ -1027,26 +1127,29 @@ public class DramaControllor : MonoBehaviour
 
 	private void clearDelTarget()
 	{
-		if (m_templateCallback.delTarget == 0) return;
+		if (m_templateCallback.delTarget.Count == 0) return;
 
-		BaseAI delNode = BattleControlor.Instance ().getNodebyId (m_templateCallback.delTarget);
-
-		if (delNode == null) return;
-
-		if(delNode.stance == BaseAI.Stance.STANCE_ENEMY)
+		foreach(int delTarget in m_templateCallback.delTarget)
 		{
-			BattleControlor.Instance().enemyNodes.Remove(delNode);
-		}
-		else if(delNode.stance == BaseAI.Stance.STANCE_SELF)
-		{
-			BattleControlor.Instance().selfNodes.Remove(delNode);
-		}
-		else if(delNode.stance == BaseAI.Stance.STANCE_MID)
-		{
-			BattleControlor.Instance().midNodes.Remove(delNode);
-		}
+			BaseAI delNode = BattleControlor.Instance().getNodebyId (delTarget);
 
-		DestroyObject (delNode.gameObject);
+			if (delNode == null) continue;
+
+			if(delNode.stance == BaseAI.Stance.STANCE_ENEMY)
+			{
+				BattleControlor.Instance().enemyNodes.Remove(delNode);
+			}
+			else if(delNode.stance == BaseAI.Stance.STANCE_SELF)
+			{
+				BattleControlor.Instance().selfNodes.Remove(delNode);
+			}
+			else if(delNode.stance == BaseAI.Stance.STANCE_MID)
+			{
+				BattleControlor.Instance().midNodes.Remove(delNode);
+			}
+
+			DestroyObject (delNode.gameObject);
+		}
 	}
 
 	private void dramaOver(bool _stopAction = true)
@@ -1069,11 +1172,11 @@ public class DramaControllor : MonoBehaviour
 
 		if(_stopAction == true)
 		{
-			BattleUIControlor.Instance ().m_gc_attack.SendMessage ("Start");
+			BattleUIControlor.Instance().m_gc_attack.SendMessage ("Start");
 
-			BattleUIControlor.Instance ().m_gc_move.SendMessage ("release");
+			BattleUIControlor.Instance().m_gc_move.SendMessage ("release");
 
-			BattleUIControlor.Instance ().resetKeyBoard ();
+			BattleUIControlor.Instance().resetKeyBoard ();
 		}
 
 		if(guideFlag == true)
@@ -1136,7 +1239,7 @@ public class DramaControllor : MonoBehaviour
 			gameCamera.updateCamera();
 		}
 
-		BattleControlor.Instance ().inDrama = false;
+		BattleControlor.Instance().inDrama = false;
 
 		if(mCallback != null) mCallback();
 
@@ -1190,11 +1293,11 @@ public class DramaControllor : MonoBehaviour
 
 	private void openEye()
 	{
-		if( BattleUIControlor.Instance () == null ) return;
+		if( BattleUIControlor.Instance() == null ) return;
 
-		if( BattleUIControlor.Instance ().layerFight == null ) return;
+		if( BattleUIControlor.Instance().layerFight == null ) return;
 
-		BattleUIControlor.Instance ().layerFight.SetActive (true);
+		BattleUIControlor.Instance().layerFight.SetActive (true);
 
 		bool have = GuideTemplate.HaveId (tempLevel, tempEventId);
 

@@ -1,3 +1,5 @@
+#define DEBUG_BATTLE_LOADING
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +26,20 @@ public class BattleControlor : MonoBehaviour
 		DEFAULT,
 		BASE_REFLEX,
 		SKILL_REFLEX,
+	}
+
+	public enum NuqiAddType
+	{
+		NULL,
+		HEAVY_BASE,
+		HEAVY_SKILL_1,
+		HEAVY_SKILL_2,
+		LIGHT_BASE,
+		LIGHT_SKILL_1,
+		LIGHT_SKILL_2,
+		RANGE_BASE,
+		RANGE_SKILL_1,
+		RANGE_SKILL_2,
 	}
 
 	public GameObject selfTeam;
@@ -98,6 +114,7 @@ public class BattleControlor : MonoBehaviour
 	[HideInInspector] public BattleCheckResult battleCheck;
 
 
+
 	private KingControllor king;
 
 	private GameObject shadowTemple;
@@ -132,11 +149,13 @@ public class BattleControlor : MonoBehaviour
 		_instance = this; 
 	}
 
-	public static BattleControlor Instance() { 
+	public static BattleControlor Instance() 
+	{ 
 		return _instance; 
 	}
 
-	void OnDestroy(){
+	void OnDestroy()
+	{
 		doorFlags.Clear();
 
 		doorFlags.Clear();
@@ -225,9 +244,9 @@ public class BattleControlor : MonoBehaviour
 		
 		if(ClientMain.m_ClientMainObj != null) 
 		{
-			PveTempTemplate pt = PveTempTemplate.GetPVETemplate(CityGlobalData.m_tempSection, CityGlobalData.m_tempLevel);
+			BattleConfigTemplate bct = BattleConfigTemplate.getBattleConfigTemplateByConfigId(CityGlobalData.m_configId);
 
-			if(pt != null) ClientMain.m_sound_manager.chagneBGSound (pt.soundId);
+			if(bct != null && bct.soundID != 0) ClientMain.m_sound_manager.chagneBGSound (bct.soundID);
 		}
 	}
 
@@ -823,7 +842,7 @@ public class BattleControlor : MonoBehaviour
 			
 			BattleUIControlor.Instance().labelName.text = t_ai.nodeData.nodeName;
 
-			BattleUIControlor.Instance ().spriteAvatar.spriteName = "PlayerIcon" + nodeData.modleId;
+			BattleUIControlor.Instance().spriteAvatar.spriteName = "PlayerIcon" + nodeData.modleId;
 		}
 		
 		{
@@ -1062,7 +1081,7 @@ public class BattleControlor : MonoBehaviour
 			return;
 		}
 
-		BattleUIControlor.Instance ().barAPC.gameObject.SetActive (false);
+		BattleUIControlor.Instance().barAPC.gameObject.SetActive (false);
 
 		battleCheck = new BattleCheckResult ();
 
@@ -1179,13 +1198,25 @@ public class BattleControlor : MonoBehaviour
 			}
 		}
 
-		BloodLabelControllor.Instance ().initStart ();
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			if(node.nodeData.nodeType == NodeType.PLAYER)
+			{
+				BattleUIControlor.Instance().droppenLayerBox.gameObject.SetActive(false);
+
+				BattleUIControlor.Instance().droppenLayerCoin.gameObject.SetActive(false);
+
+				break;
+			}
+		}
+
+		BloodLabelControllor.Instance().initStart ();
 
 		SignShadow.create ();
 
-		SceneGuideManager.Instance ().OnSceneTipsHide ();
+		SceneGuideManager.Instance().OnSceneTipsHide ();
 
-		completed = true;
+		//completed = true;
 
 		if(CityGlobalData.m_debugPve == true)
 		{
@@ -1210,172 +1241,170 @@ public class BattleControlor : MonoBehaviour
 			else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
 			{
 				showLockEff();
-
-				showSceneName ();
 			}
 			else
 			{
-				showSceneName ();
+				StartCoroutine (showMibaoEff());
 			}
 		}
 
-		BattleUIControlor.Instance ().achivementHintControllor.init ();
+		BattleUIControlor.Instance().achivementHintControllor.init ();
 	}
 
 	private void showLockEff()
 	{
 		//StartCoroutine (showLockEffAction());
 
-		showSceneName ();
+		StartCoroutine (showMibaoEff());
 
 		PveFunctionOpen template = PveFunctionOpen.getPveFunctionOpenById (CityGlobalData.m_configId);
 
-		if(template.joystick_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockAttack, BattleUIControlor.Instance().attackJoystick.gameObject));
-		}
-		else if(template.joystick_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockAttack, BattleUIControlor.Instance().attackJoystick.gameObject));
-		}
-
-		if(template.attack_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockAttack, BattleUIControlor.Instance().attackJoystick.gameObject));
-		}
-		else if(template.attack_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockAttack, BattleUIControlor.Instance().attackJoystick.gameObject));
-		}
-
-		if(template.skill_light_1_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockLightSkill_1, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
-		}
-		else if(template.skill_light_1_eff == 1)
-		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.jueyingxingguangzhan);
-
-//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_1, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
-		}
-
-		if(template.skill_light_2_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockLightSkill_2, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
-		}
-		else if(template.skill_light_2_eff == 1)
-		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.xuejilaoyin);
-
-//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_2, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
-		}
-
-		if(template.skill_heavy_1_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockHeavySkill_1, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
-		}
-		else if(template.skill_heavy_1_eff == 1)
-		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.bahuanglieri);
-
-//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_1, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
-		}
-
-		if(template.skill_heavy_2_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockHeavySkill_2, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
-		}
-		else if(template.skill_heavy_2_eff == 1)
-		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.qiankundouzhuan);
-
-//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_2, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
-		}
-
-		if(template.skill_ranged_1_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockRangeSkill_1, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
-		}
-		else if(template.skill_ranged_1_eff == 1)
-		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.zhuixingjian);
-
-//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_1, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
-		}
-
-		if(template.skill_ranged_2_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
-		}
-		else if(template.skill_ranged_2_eff == 1)
-		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.hanbingjian);
-
-//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
-		}
-
-		if(template.weaponHeavy_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockWeaponHeavy, BattleUIControlor.Instance().m_changeWeapon.btnHeavy));
-		}
-		else if(template.weaponHeavy_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockWeaponHeavy, BattleUIControlor.Instance().m_changeWeapon.btnHeavy));
-		}
-
-		if(template.weaponLight_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockWeaponLight, BattleUIControlor.Instance().m_changeWeapon.btnLight));
-		}
-		else if(template.weaponLight_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockWeaponLight, BattleUIControlor.Instance().m_changeWeapon.btnLight));
-		}
-
-		if(template.weaponRange_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockWeaponRange, BattleUIControlor.Instance().m_changeWeapon.btnRange));
-		}
-		else if(template.weaponRange_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockWeaponRange, BattleUIControlor.Instance().m_changeWeapon.btnRange));
-		}
-
-		if(template.skill_miBao_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockMiBaoSkill, BattleUIControlor.Instance().btnMibaoSkillIcon.gameObject));
-		}
-		else if(template.skill_miBao_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockMiBaoSkill, BattleUIControlor.Instance().btnMibaoSkillIcon.gameObject));
-		}
-
-		if(template.autoFight_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockAutoFight, BattleUIControlor.Instance().m_gc_autoFight));
-		}
-		else if(template.autoFight_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockAutoFight, BattleUIControlor.Instance().m_gc_autoFight));
-		}
-
-		if(template.pause_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockPause, BattleUIControlor.Instance().m_gc_pause));
-		}
-		else if(template.pause_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockPause, BattleUIControlor.Instance().m_gc_pause));
-		}
-
-		if(template.dodge_eff == -1)
-		{
-			StartCoroutine(playLockEff(LockControllor.Instance().lockDodge, BattleUIControlor.Instance().m_gc_dodge));
-		}
-		else if(template.dodge_eff == 1)
-		{
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockDodge, BattleUIControlor.Instance().m_gc_dodge));
-		}
+//		if(template.joystick_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockAttack, BattleUIControlor.Instance().attackJoystick.gameObject));
+//		}
+//		else if(template.joystick_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockAttack, BattleUIControlor.Instance().attackJoystick.gameObject));
+//		}
+//
+//		if(template.attack_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockAttack, BattleUIControlor.Instance().attackJoystick.gameObject));
+//		}
+//		else if(template.attack_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockAttack, BattleUIControlor.Instance().attackJoystick.gameObject));
+//		}
+//
+//		if(template.skill_light_1_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockLightSkill_1, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
+//		}
+//		else if(template.skill_light_1_eff == 1)
+//		{
+//			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.jueyingxingguangzhan);
+//
+////			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_1, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
+//		}
+//
+//		if(template.skill_light_2_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockLightSkill_2, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
+//		}
+//		else if(template.skill_light_2_eff == 1)
+//		{
+//			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.xuejilaoyin);
+//
+////			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_2, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
+//		}
+//
+//		if(template.skill_heavy_1_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockHeavySkill_1, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
+//		}
+//		else if(template.skill_heavy_1_eff == 1)
+//		{
+//			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.bahuanglieri);
+//
+////			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_1, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
+//		}
+//
+//		if(template.skill_heavy_2_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockHeavySkill_2, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
+//		}
+//		else if(template.skill_heavy_2_eff == 1)
+//		{
+//			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.qiankundouzhuan);
+//
+////			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_2, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
+//		}
+//
+//		if(template.skill_ranged_1_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockRangeSkill_1, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
+//		}
+//		else if(template.skill_ranged_1_eff == 1)
+//		{
+//			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.zhuixingjian);
+//
+////			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_1, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
+//		}
+//
+//		if(template.skill_ranged_2_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
+//		}
+//		else if(template.skill_ranged_2_eff == 1)
+//		{
+//			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.hanbingjian);
+//
+////			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
+//		}
+//
+//		if(template.weaponHeavy_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockWeaponHeavy, BattleUIControlor.Instance().m_changeWeapon.btnHeavy));
+//		}
+//		else if(template.weaponHeavy_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockWeaponHeavy, BattleUIControlor.Instance().m_changeWeapon.btnHeavy));
+//		}
+//
+//		if(template.weaponLight_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockWeaponLight, BattleUIControlor.Instance().m_changeWeapon.btnLight));
+//		}
+//		else if(template.weaponLight_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockWeaponLight, BattleUIControlor.Instance().m_changeWeapon.btnLight));
+//		}
+//
+//		if(template.weaponRange_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockWeaponRange, BattleUIControlor.Instance().m_changeWeapon.btnRange));
+//		}
+//		else if(template.weaponRange_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockWeaponRange, BattleUIControlor.Instance().m_changeWeapon.btnRange));
+//		}
+//
+//		if(template.skill_miBao_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockMiBaoSkill, BattleUIControlor.Instance().btnMibaoSkillIcon.gameObject));
+//		}
+//		else if(template.skill_miBao_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockMiBaoSkill, BattleUIControlor.Instance().btnMibaoSkillIcon.gameObject));
+//		}
+//
+//		if(template.autoFight_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockAutoFight, BattleUIControlor.Instance().m_gc_autoFight));
+//		}
+//		else if(template.autoFight_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockAutoFight, BattleUIControlor.Instance().m_gc_autoFight));
+//		}
+//
+//		if(template.pause_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockPause, BattleUIControlor.Instance().m_gc_pause));
+//		}
+//		else if(template.pause_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockPause, BattleUIControlor.Instance().m_gc_pause));
+//		}
+//
+//		if(template.dodge_eff == -1)
+//		{
+//			StartCoroutine(playLockEff(LockControllor.Instance().lockDodge, BattleUIControlor.Instance().m_gc_dodge));
+//		}
+//		else if(template.dodge_eff == 1)
+//		{
+//			StartCoroutine(playUnlockEff(LockControllor.Instance().lockDodge, BattleUIControlor.Instance().m_gc_dodge));
+//		}
 
 		showUnlockEffByNet ();
 	}
@@ -1429,6 +1458,12 @@ public class BattleControlor : MonoBehaviour
 			
 			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
 		}
+
+		if(BattleUIControlor.Instance().m_gc_skill_2[1].gameObject.activeSelf == true
+			&& BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.jishe) == true)
+		{
+			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.jishe);
+		}
 	}
 
 	private IEnumerator playLockEff(GameObject lockObject, GameObject effectRoot)
@@ -1436,28 +1471,76 @@ public class BattleControlor : MonoBehaviour
 		yield return new WaitForSeconds (.2f);
 
 		LockControllor.Instance().lightOff(lockObject, false);
-		
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, 
+
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, 
 		                                             effectRoot, 
-		                                             EffectIdTemplate.GetPathByeffectId(100169) );
+		                                  EffectIdTemplate.GetPathByeffectId(100170) );
 		yield return new WaitForSeconds (.3f);
 
-		LockControllor.Instance ().lightOn (lockObject, false);
+		LockControllor.Instance().lightOn (lockObject, false);
 	}
 
 	private IEnumerator playUnlockEff(GameObject lockObject, GameObject effectRoot)
 	{
 		yield return new WaitForSeconds (.2f);
 
-		LockControllor.Instance ().lightOn (lockObject, true);
+		LockControllor.Instance().lightOn (lockObject, true);
 
-		UI3DEffectTool.Instance().ShowBottomLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100170));
-		
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100009));
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100169));
+
+		yield return new WaitForSeconds (.8f);
+
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100009));
 
 		yield return new WaitForSeconds (.3f);
 
-		LockControllor.Instance ().lightOff (lockObject, true);
+		LockControllor.Instance().lightOff (lockObject, true);
+	}
+
+	public void playUnLockEffWeaponRange()
+	{
+		StartCoroutine(playUnLockEffWeaponRange(LockControllor.Instance().lockWeaponRange, BattleUIControlor.Instance().m_changeWeapon.btnRange));
+	}
+
+	IEnumerator playUnLockEffWeaponRange(GameObject lockObject, GameObject effectRoot)
+	{
+		yield return new WaitForSeconds (.2f);
+		
+		LockControllor.Instance().lightOn (lockObject, true);
+		
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100169));
+		
+		yield return new WaitForSeconds (.8f);
+		
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100009));
+		
+		yield return new WaitForSeconds (.3f);
+		
+		LockControllor.Instance().lightOff (lockObject, true);
+
+		UISprite[] sprites = effectRoot.GetComponentsInChildren<UISprite>();
+
+		BattleUIControlor.Instance ().m_changeWeapon.layerMibaoAnim.SetActive (true);
+
+		effectRoot.GetComponentInChildren<Animator> ().enabled = true;
+
+		for(;BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.jishe);)
+		{
+//			yield return new WaitForSeconds(.3f);
+//
+//			foreach(UISprite sprite in sprites)
+//			{
+//				SparkleEffectItem.OpenSparkle( sprite.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon, 1);
+//			}
+//
+//			yield return new WaitForSeconds(.7f);
+
+			yield return new WaitForEndOfFrame();
+		}
+
+		BattleUIControlor.Instance ().m_changeWeapon.layerMibaoAnim.SetActive (false);
+
+		effectRoot.GetComponentInChildren<Animator> ().enabled = false;
 	}
 
 	private void ChatWindowLoadCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -1499,8 +1582,26 @@ public class BattleControlor : MonoBehaviour
 		//EnterBattleField.EnterBattlePveDebug();
 	}
 
+	private IEnumerator showMibaoEff()
+	{
+		float time = 0;
+
+		if(false)
+		{
+			BattleUIControlor.Instance ().mibaoShowControllor.gameObject.SetActive (true);
+
+			time = 3f;
+		}
+
+		yield return new WaitForSeconds (time);
+
+		showSceneName ();
+	}
+
 	private void showSceneName()
 	{
+		completed = true;
+
 		if(BattleUIControlor.Instance().b_autoFight == true && autoFight == false)
 		{
 			BattleConfigTemplate configTemp = BattleConfigTemplate.getBattleConfigTemplateByConfigId(CityGlobalData.m_configId);
@@ -1516,47 +1617,64 @@ public class BattleControlor : MonoBehaviour
 
 			string pn = pveName.Split(' ')[1];
 
-			SceneGuideManager.Instance ().ShowSceneGuide (1070001, pn);
+			SceneGuideManager.Instance().ShowSceneGuide (1070001, pn);
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan)
 		{
-			SceneGuideManager.Instance ().ShowSceneGuide (1050001);
+			SceneGuideManager.Instance().ShowSceneGuide (1050001);
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
 			HuangYePveTemplate template = HuangYePveTemplate.getHuangYePveTemplatee_byid(CityGlobalData.battleTemplateId);
 
-			SceneGuideManager.Instance ().ShowSceneGuide (1060001, NameIdTemplate.GetName_By_NameId(template.nameId));
+			SceneGuideManager.Instance().ShowSceneGuide (1060001, NameIdTemplate.GetName_By_NameId(template.nameId));
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pvp)
 		{
 			HuangyeTemplate template = HuangyeTemplate.getHuangyeTemplate_byid(CityGlobalData.battleTemplateId);
 
-			SceneGuideManager.Instance ().ShowSceneGuide (1060001, NameIdTemplate.GetName_By_NameId(template.nameId));
+			SceneGuideManager.Instance().ShowSceneGuide (1060001, NameIdTemplate.GetName_By_NameId(template.nameId));
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao)
 		{
-			SceneGuideManager.Instance ().ShowSceneGuide (1090001);
+			SceneGuideManager.Instance().ShowSceneGuide (1090001);
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
 		{
 			if(CityGlobalData.m_tempSection == 1)
 			{
-				SceneGuideManager.Instance ().ShowSceneGuide (1100001);
+				SceneGuideManager.Instance().ShowSceneGuide (1100001);
 			}
 			else if(CityGlobalData.m_tempSection == 2)
 			{
-				SceneGuideManager.Instance ().ShowSceneGuide (1110001);
+				SceneGuideManager.Instance().ShowSceneGuide (1110001);
 			}
 			else
 			{
-				SceneGuideManager.Instance ().ShowSceneGuide (1120001);
+				SceneGuideManager.Instance().ShowSceneGuide (1120001);
 			}
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo)
 		{
 
 		}
+
+		StartCoroutine (showPreDesc());
+	}
+
+	IEnumerator showPreDesc() 
+	{
+		BattleConfigTemplate configTemplate = BattleConfigTemplate.getBattleConfigTemplateByConfigId (CityGlobalData.m_configId);
+		
+		BattleUIControlor.Instance().labelWinType.text = DescIdTemplate.GetDescriptionById (configTemplate.preDesc);
+
+		yield return new WaitForSeconds (1f);
+
+		BattleUIControlor.Instance().labelWinType.transform.parent.gameObject.SetActive (true);
+
+		yield return new WaitForSeconds (4.5f);
+
+		BattleUIControlor.Instance().labelWinType.transform.parent.gameObject.SetActive (false);
 	}
 
 	private void checkStartDrama()
@@ -1574,7 +1692,7 @@ public class BattleControlor : MonoBehaviour
 
 		GuideTemplate template = GuideTemplate.getTemplateByLevelAndType (level, 1);
 
-		BattleUIControlor.Instance ().showDaramControllor (level, template.id, showLockEff);
+		BattleUIControlor.Instance().showDaramControllor (level, template.id, showLockEff);
 	}
 
 	IEnumerator showHintBox()
@@ -1680,7 +1798,7 @@ public class BattleControlor : MonoBehaviour
 
 	public void setMiBaoSkill(HeroSkill skillMiBao, BaseAI node)
 	{
-		BattleUIControlor.Instance ().setMiBaoSkillIcon (skillMiBao, node.nodeId != 1);
+		BattleUIControlor.Instance().setMiBaoSkillIcon (skillMiBao, node.nodeId != 1);
 
 		if (skillMiBao == null) return;
 
@@ -1715,7 +1833,7 @@ public class BattleControlor : MonoBehaviour
 	{
 		timeLast = timeLimit;
 
-		BattleUIControlor.Instance ().labelLeave.gameObject.SetActive (false);
+		BattleUIControlor.Instance().labelLeave.gameObject.SetActive (false);
 
 		StartCoroutine(battleTimeClock());
 	}
@@ -1731,7 +1849,7 @@ public class BattleControlor : MonoBehaviour
 
 	public void achivementCallback(int index, int state)
 	{
-		BattleUIControlor.Instance ().achivementHintControllor.achivementCallback (index, state);
+		BattleUIControlor.Instance().achivementHintControllor.achivementCallback (index, state);
 	}
 
 	public int getLabelType(BaseAI defender, AttackType _type)
@@ -1749,7 +1867,7 @@ public class BattleControlor : MonoBehaviour
 		{
 			return 5;
 		}
-		
+
 		if(_type == AttackType.BASE_ATTACK || _type == AttackType.BASE_REFLEX)
 		{
 			return (int)AttackType.BASE_ATTACK;
@@ -1832,7 +1950,7 @@ public class BattleControlor : MonoBehaviour
 
 	void FixedUpdate ()
 	{
-		BattleUIControlor.Instance ().addDebugText ("completed " + completed + ", result " + result);
+		BattleUIControlor.Instance().addDebugText ("completed " + completed + ", result " + result);
 
 		if(completed == false) return;
 
@@ -1931,20 +2049,20 @@ public class BattleControlor : MonoBehaviour
 	{
 		if (CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1) 
 		{
-			BattleUIControlor.Instance ().ExecQuit ();
+			BattleUIControlor.Instance().ExecQuit ();
 
 			return;
 		}
 
 //		Debug.Log ("showResult showResult");
 
-		BattleUIControlor.Instance ().addDebugText ("showResult()");
+		BattleUIControlor.Instance().addDebugText ("showResult()");
 
 //		UtilityTool.Instance.DelayedUnloadUnusedAssets();
 
 		ClientMain.m_sound_manager.RemoveAllSound();
 
-		BattleEffectControllor.Instance ().removeAllEffect ();
+		BattleEffectControllor.Instance().removeAllEffect ();
 
 		UIYindao.m_UIYindao.CloseUI ();
 
@@ -1975,7 +2093,7 @@ public class BattleControlor : MonoBehaviour
 
 //		UtilityTool.UnloadUnusedAssets ();
 
-		BattleUIControlor.Instance ().LoadResultRes ();
+		BattleUIControlor.Instance().LoadResultRes ();
 
 		double waitTime = 2f;
 
@@ -2009,14 +2127,14 @@ public class BattleControlor : MonoBehaviour
 
 		if(waitTime > 1)
 		{
-			BattleUIControlor.Instance ().labelTime.gameObject.SetActive (false);
+			BattleUIControlor.Instance().labelTime.gameObject.SetActive (false);
 
-			BattleUIControlor.Instance ().labelLeave.gameObject.SetActive (true);
+			BattleUIControlor.Instance().labelLeave.gameObject.SetActive (true);
 		}
 
-		//BattleUIControlor.Instance ().layerFight.SetActive (false);
+		//BattleUIControlor.Instance().layerFight.SetActive (false);
 
-		BattleUIControlor.Instance ().labelLeave.text = (int)waitTime + LanguageTemplate.GetText((LanguageTemplate.Text)425);
+		BattleUIControlor.Instance().labelLeave.text = (int)waitTime + LanguageTemplate.GetText((LanguageTemplate.Text)425);
 
 		for(;;)
 		{
@@ -2024,7 +2142,7 @@ public class BattleControlor : MonoBehaviour
 
 			waitTime --;
 
-			BattleUIControlor.Instance ().labelLeave.text = (int)waitTime + LanguageTemplate.GetText((LanguageTemplate.Text)425);
+			BattleUIControlor.Instance().labelLeave.text = (int)waitTime + LanguageTemplate.GetText((LanguageTemplate.Text)425);
 
 			if(waitTime <= 0) break;
 		}
@@ -2112,6 +2230,8 @@ public class BattleControlor : MonoBehaviour
 
 	IEnumerator slowDownClock()
 	{
+		lastCameraEffect = true;
+
 		float scale = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.BATTLE_SLOWDOWN_VALUE);
 
 		float keepTime = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.BATTLE_SLOWDOWN_TIME);
@@ -2133,6 +2253,8 @@ public class BattleControlor : MonoBehaviour
 		}
 
 		Time.timeScale = 1f;
+
+		lastCameraEffect = false;
 	}
 
 	private float getBaseAttackValue(BaseAI attacker, BaseAI defender)
@@ -2169,7 +2291,7 @@ public class BattleControlor : MonoBehaviour
 		{
 			if(fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
 			{
-				fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
+				//fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
 			}
 
 			return fbp;
@@ -2188,7 +2310,7 @@ public class BattleControlor : MonoBehaviour
 		{
 			if(fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
 			{
-				fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
+				//fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
 			}
 
 			return fbp;
@@ -2297,6 +2419,11 @@ public class BattleControlor : MonoBehaviour
 			fbp.Float = pt;
 
 			fbp.Bool = false;
+			
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
+			{
+				fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
+			}
 
 			return fbp;
 		}
@@ -2306,6 +2433,8 @@ public class BattleControlor : MonoBehaviour
 		float attackReduction_cri = defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_attackReduction_cri );
 
 		float WB = (L / M + attackAmplify_cri) / (L / M + attackReduction_cri);
+
+
 
 		int bj = pt + (int)(JC * weaponRatio * WE * WB * SJ);
 
@@ -2323,6 +2452,11 @@ public class BattleControlor : MonoBehaviour
 		fbp.Float = bj;
 		
 		fbp.Bool = true;
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && fbp.Float >= 2 * HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
+		{
+			fbp.Float = (fbp.Float / (fbp.Float + 2 * HYK)) * 4 * HYK;
+		}
 		
 		return fbp;
 	}
@@ -2425,6 +2559,11 @@ public class BattleControlor : MonoBehaviour
 			
 			fbp.Bool = false;
 
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
+			{
+				fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
+			}
+
 			return fbp;
 		}
 		
@@ -2452,6 +2591,11 @@ public class BattleControlor : MonoBehaviour
 		fbp.Float = bj;
 		
 		fbp.Bool = true;
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && fbp.Float >= 2 * HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
+		{
+			fbp.Float = (fbp.Float / (fbp.Float + 2 * HYK)) * 4 * HYK;
+		}
 
 		return fbp;
 	}

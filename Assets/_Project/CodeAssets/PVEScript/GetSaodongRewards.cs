@@ -81,7 +81,7 @@ public class GetSaodongRewards : MonoBehaviour {
 			}
 			else
 			{
-				Debug.Log ("m_tempInfo.awards[i].awardItems = null" );
+				//Debug.Log ("m_tempInfo.awards[i].awardItems = null" );
 				StartCoroutine (AwardMove(page,tempOjbectRoot));
 			}
 		
@@ -93,7 +93,7 @@ public class GetSaodongRewards : MonoBehaviour {
 	IEnumerator AwardMove(int p, GameObject mroot)
 	{
 
-		Debug.Log ("P = " +p);
+		//Debug.Log ("P = " +p);
 		Vector3 newpos = new Vector3(0,150*(p+1),0);
 		if(mtimes >= m_tempInfo.awards.Count)
 		{

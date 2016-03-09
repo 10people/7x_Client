@@ -196,7 +196,7 @@ public class SelectUrl : MonoBehaviour {
 			selectType = NetworkHelper.GetDefaultServerType();
 		}
 
-		Debug.Log ("SelectUrl.GetServerType:" + selectType);
+//		Debug.Log ("SelectUrl.GetServerType:" + selectType);
 
 		return selectType;
 	}

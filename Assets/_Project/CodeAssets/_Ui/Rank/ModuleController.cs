@@ -167,21 +167,21 @@ namespace Rank
 
         public void Awake()
         {
-            MyDataHandler.m_handler += OnMyDataClick;
-            AllDataHandler.m_handler += OnAllDataClick;
-            OpenSearchHandler.m_handler += OnOpenSearchClick;
-            SearchButtonHandler.m_handler += OnSearchButtonClick;
-            SearchDimmerHandler.m_handler += OnSearchDimmerClick;
+            MyDataHandler.m_click_handler += OnMyDataClick;
+            AllDataHandler.m_click_handler += OnAllDataClick;
+            OpenSearchHandler.m_click_handler += OnOpenSearchClick;
+            SearchButtonHandler.m_click_handler += OnSearchButtonClick;
+            SearchDimmerHandler.m_click_handler += OnSearchDimmerClick;
             DragAreaHandler.onPress += OnDragAreaPress;
         }
 
         public void OnDestroy()
         {
-            MyDataHandler.m_handler -= OnMyDataClick;
-            AllDataHandler.m_handler -= OnAllDataClick;
-            OpenSearchHandler.m_handler -= OnOpenSearchClick;
-            SearchButtonHandler.m_handler -= OnSearchButtonClick;
-            SearchDimmerHandler.m_handler -= OnSearchDimmerClick;
+            MyDataHandler.m_click_handler -= OnMyDataClick;
+            AllDataHandler.m_click_handler -= OnAllDataClick;
+            OpenSearchHandler.m_click_handler -= OnOpenSearchClick;
+            SearchButtonHandler.m_click_handler -= OnSearchButtonClick;
+            SearchDimmerHandler.m_click_handler -= OnSearchDimmerClick;
             DragAreaHandler.onPress -= OnDragAreaPress;
         }
 

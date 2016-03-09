@@ -47,7 +47,7 @@ public class BuyTiLiUIManager : MonoBehaviour
             childgb.transform.localScale = new Vector3(my_locScolx, my_locScolx, 1);
             if (my_locScolx < 0)
             {
-                Debug.Log("销毁UI");
+//                Debug.Log("销毁UI");
                 Destroy(this.gameObject);
             }
         }

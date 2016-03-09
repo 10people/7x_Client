@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<MaJu id="910006" nameID="910006" descID="910006" icon="910006" color="7" FunctionType="1" value1="80" value2="0" value3="0" value4="0" price="100" />
-<MaJu id="910007" nameID="910007" descID="910007" icon="910007" color="4" FunctionType="2" value1="3" value2="200" value3="6" value4="0" price="0" />
-<MaJu id="910008" nameID="910008" descID="910008" icon="910008" color="7" FunctionType="2" value1="3" value2="800" value3="6" value4="0" price="120" />
-<MaJu id="910009" nameID="910009" descID="910009" icon="910009" color="7" FunctionType="3" value1="60" value2="0" value3="0" value4="0" price="50" />
+<MaJu id="910006" nameID="910006" descID="910006" icon="910006" color="7" FunctionType="1" value1="80" value2="0" value3="0" value4="0" price="100" profitPara="0" />
+<MaJu id="910007" nameID="910007" descID="910007" icon="910007" color="4" FunctionType="2" value1="3" value2="200" value3="6" value4="0" price="0" profitPara="0" />
+<MaJu id="910008" nameID="910008" descID="910008" icon="910008" color="7" FunctionType="2" value1="3" value2="800" value3="6" value4="0" price="70" profitPara="1.19" />
+<MaJu id="910009" nameID="910009" descID="910009" icon="910009" color="7" FunctionType="3" value1="180" value2="0" value3="0" value4="0" price="50" profitPara="1.19" />
 </dataset>

@@ -40,7 +40,7 @@ public class MiBaoAddStar : MonoBehaviour,SocketProcessor {
 	public void init()
 	{
 		int star = showMiBao.star;
-		Debug.Log ("star = "+star);
+		//Debug.Log ("star = "+star);
 		MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (star);
 		//Debug.Log ("mMiBaoStarTemp.money = "+mMiBaoStarTemp.needMoney);
 		needMoney.text = mMiBaoStarTemp.needMoney.ToString ();
@@ -72,7 +72,7 @@ public class MiBaoAddStar : MonoBehaviour,SocketProcessor {
 		int star = showMiBao.star;
 		
 		MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (star);
-		int jibi = JunZhuData.Instance ().m_junzhuInfo.jinBi;
+		int jibi = JunZhuData.Instance().m_junzhuInfo.jinBi;
 		//Debug.Log("jinBi        = "+jibi );
 		//Debug.Log ("needMoney        = "+mMiBaoStarTemp.needMoney );
 

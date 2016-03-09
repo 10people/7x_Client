@@ -99,9 +99,9 @@ public class EquipGrowthUpgradeManagerment : MonoBehaviour
     {
  
  
-        m_EventUpgrade.m_handler += Touched;
-        //  UI3DEffectTool.Instance().ShowTopLayerEffect(m_EffectObj, EffectIdTemplate.GetPathByeffectId(100021), null);
-        // UI3DEffectTool.Instance().ClearUIFx(m_EffectObj);    
+        m_EventUpgrade.m_click_handler += Touched;
+        //  UI3DEffectTool.ShowTopLayerEffect(m_EffectObj, EffectIdTemplate.GetPathByeffectId(100021), null);
+        // UI3DEffectTool.ClearUIFx(m_EffectObj);    
     }
 
     void Update()

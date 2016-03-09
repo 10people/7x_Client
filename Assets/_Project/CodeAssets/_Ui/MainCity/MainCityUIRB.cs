@@ -418,6 +418,22 @@ public class MainCityUIRB : MYNGUIPanel
 //		NameIdTemplate.GetName_By_NameId (commonItemTemplate.nameId) + "x" + _item.num;
 	}
 
+	public void deleteProp(int id)
+	{
+		m_ObjPropUse.SetActive(false);
+		for(int i = 0; i < m_listPropUseID.Count; i ++)
+		{
+			if(m_listPropUseID[i] == id)
+			{
+				m_listPropUseID.RemoveAt(i);
+				m_listPropUseNum.RemoveAt(i);
+			}
+		}
+		if(m_listPropUseID.Count > 0)
+		{
+			setPropUse(m_listPropUseID[0], m_listPropUseNum[0]);
+		}
+	}
 
     void OnDisable()
     {
@@ -454,6 +470,7 @@ public class MainCityUIRB : MYNGUIPanel
 //				m_ObjPropUse.transform.localPosition = new Vector3(-190, 150, 0);
 //			}
 		}
+		MainCityUI.m_MainCityUI.setInit();
 	}
 
 	public override void MYClick(GameObject ui)
@@ -478,6 +495,11 @@ public class MainCityUIRB : MYNGUIPanel
 //					{
 //
 //					}
+				}
+				if(UIYindao.m_UIYindao.m_isOpenYindao && (UIYindao.m_UIYindao.m_iCurId == 603 || UIYindao.m_UIYindao.m_iCurId == 6030))
+				{
+					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+//					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 				}
 			}
 			else

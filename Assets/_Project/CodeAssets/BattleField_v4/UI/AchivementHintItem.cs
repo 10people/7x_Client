@@ -19,7 +19,7 @@ public class AchivementHintItem : MonoBehaviour
 
 		state = 0;
 
-		label.text = BattleControlor.Instance ().achivement.descs [index];
+		label.text = BattleControlor.Instance().achivement.descs [index];
 
 		setState (_state);
 	}

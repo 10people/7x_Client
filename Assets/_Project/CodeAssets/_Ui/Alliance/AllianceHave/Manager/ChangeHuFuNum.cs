@@ -45,7 +45,7 @@ public class ChangeHuFuNum : MonoBehaviour {
 		if (BtnType == 1) {
 			if (mMyAllianceInfo.HufuNum > 1) {
 				mMyAllianceInfo.HufuNum -= 1;
-				Debug.Log("ispress111    "+BtnType);
+				//Debug.Log("ispress111    "+BtnType);
 				if (mMyAllianceInfo.HufuNum == 1) 
 				{
 				   ispress = false;
@@ -60,7 +60,7 @@ public class ChangeHuFuNum : MonoBehaviour {
 			if (mMyAllianceInfo.HufuNum < mMyAllianceInfo.Maxhufunum) 
 			{
 				mMyAllianceInfo.HufuNum += 1;
-				Debug.Log("ispress222    "+BtnType);
+				//Debug.Log("ispress222    "+BtnType);
 				if (mMyAllianceInfo.HufuNum == mMyAllianceInfo.Maxhufunum) 
 				{
 					ispress = false;

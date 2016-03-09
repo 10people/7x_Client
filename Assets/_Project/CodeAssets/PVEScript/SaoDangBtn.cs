@@ -48,7 +48,7 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 
 	void Update ()
 	{
-		junZhuLevel = JunZhuData.Instance ().m_junzhuInfo.level;
+		junZhuLevel = JunZhuData.Instance().m_junzhuInfo.level;
 
 
 	}
@@ -147,7 +147,7 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 
 		t_protof = saodangstream.ToArray();
 
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_PVE_SAO_DANG,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_PVE_SAO_DANG,ref t_protof);
 
 	}
 
@@ -212,12 +212,12 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 			return;
 		}
 		ISCanSaodang = false;
-		Vipgrade = JunZhuData.Instance ().m_junzhuInfo.vipLv;
+		Vipgrade = JunZhuData.Instance().m_junzhuInfo.vipLv;
 
-		ExistingPower = JunZhuData.Instance ().m_junzhuInfo.tili;
+		ExistingPower = JunZhuData.Instance().m_junzhuInfo.tili;
 
 
-		Debug.Log ("FunctionOpenTemp.GetWhetherContainID(3000010) = " +FunctionOpenTemp.GetWhetherContainID(3000010));
+		//Debug.Log ("FunctionOpenTemp.GetWhetherContainID(3000010) = " +FunctionOpenTemp.GetWhetherContainID(3000010));
 
 		if(!FunctionOpenTemp.GetWhetherContainID(3000010))
 		{

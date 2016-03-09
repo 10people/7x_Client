@@ -65,7 +65,10 @@ public class ShowAllMembers : MonoBehaviour {
 		ShowDownTime ();
 
 		ZhanLi.text = mMemberInfo.zhanLi.ToString ();
-
+		if(mMemberInfo.gongJin < 0)
+		{
+			mMemberInfo.gongJin = 0;
+		}
 		GongJin.text = mMemberInfo.gongJin.ToString ();
 	}
 
@@ -109,7 +112,7 @@ public class ShowAllMembers : MonoBehaviour {
 //		{
 //			Destroy(n);
 //		}
-//		_MyAllianceManager.Instance ().m_BtnList.Clear ();
+//		_MyAllianceManager.Instance().m_BtnList.Clear ();
 
 		if(m_tempObject)
 		{
@@ -182,12 +185,12 @@ public class ShowAllMembers : MonoBehaviour {
 		float m_y = 0;
 
 		m_y = this.transform.localPosition.y + this.transform.parent.parent.localPosition.y;
-	
+		//Debug.Log ("m_y = "+m_y);
 		if(tempList.Count > 3)
 		{
-			if(m_y < -100)
+			if(m_y < -80)
 			{
-				m_y += (tempList.Count-3)*50;
+				m_y += (tempList.Count-3)*20;
 			}
 		}
 
@@ -216,7 +219,7 @@ public class ShowAllMembers : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ,ref t_protof,"23068");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ,ref t_protof,"23068");
 		DestroyFloatButtons();
 
 		//Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
@@ -225,7 +228,7 @@ public class ShowAllMembers : MonoBehaviour {
 	{
 		FriendOperationLayerManagerment.AddFriends((int)mMemberInfo.junzhuId);
 
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_GET_FRIEND_IDS);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_GET_FRIEND_IDS);
 
 		DestroyFloatButtons();
 	}
@@ -322,7 +325,7 @@ public class ShowAllMembers : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.DOWN_TITLE,ref t_protof,"30122");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.DOWN_TITLE,ref t_protof,"30122");
 		DestroyFloatButtons();
 	}
 	public void ShengZhiMemberInfo()
@@ -340,7 +343,7 @@ public class ShowAllMembers : MonoBehaviour {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.UP_TITLE,ref t_protof,"30120");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.UP_TITLE,ref t_protof,"30120");
 		DestroyFloatButtons();
 
 	}
@@ -384,7 +387,7 @@ public class ShowAllMembers : MonoBehaviour {
 			
 			byte[] t_protof = t_stream.ToArray ();
 			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.TRANSFER_ALLIANCE,ref t_protof,"30138");
+			SocketTool.Instance().SendSocketMessage (ProtoIndexes.TRANSFER_ALLIANCE,ref t_protof,"30138");
 		}
 
 	}
@@ -429,7 +432,7 @@ public class ShowAllMembers : MonoBehaviour {
 			
 			byte[] t_protof = t_stream.ToArray ();
 			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.FIRE_MEMBER,ref t_protof,"30118");
+			SocketTool.Instance().SendSocketMessage (ProtoIndexes.FIRE_MEMBER,ref t_protof,"30118");
 		}
 	}
 }

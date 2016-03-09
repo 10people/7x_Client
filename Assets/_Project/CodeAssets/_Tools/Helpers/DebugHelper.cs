@@ -5,11 +5,16 @@
 
 
 using System;
+using System.Text;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 using System.Reflection;
 #endif
+using System.Collections;
+using System.Collections.Generic;
+
+
 
 public class DebugHelper{
 
@@ -53,6 +58,58 @@ public class DebugHelper{
 		return m_common_code_error;
 	}
 	
+	#endregion
+
+
+
+	#region Screen Log
+
+	public static Vector2 m_screen_log_scroll_pos 	= Vector2.zero;
+
+	private static List<string> m_screen_log_list	= new List<string>();
+
+	private const int MAX_LIST_LEN					= 100;
+
+	private static string m_str_final				= "";
+
+	public static void LogScreen( string p_log, string p_stack, LogType p_type ){
+		if( !ConfigTool.GetBool( ConfigTool.CONST_SHOW_SCREEN_LOG ) ){
+			return;
+		}
+
+		if( m_screen_log_list.Count >= MAX_LIST_LEN ){
+			m_screen_log_list.RemoveAt( 0 );
+		}
+
+		string t_log_string = p_type + ": " + p_log + 
+			"\n" + p_stack + 
+			"\n";
+
+		m_screen_log_list.Add( t_log_string );
+
+		UpdateStrFinal();
+	}
+
+	public static string GetLogString(){
+		return m_str_final;
+	}
+
+	private static void UpdateStrFinal(){
+		StringBuilder t_builder = new StringBuilder();
+
+		for( int i = m_screen_log_list.Count - 1; i >= 0; i-- ){
+			t_builder.Append( m_screen_log_list[ i ] );
+		}
+
+		m_str_final = t_builder.ToString();
+	}
+
+	public static void RegisterLog(){
+		Application.logMessageReceived -= DebugHelper.LogScreen;
+
+		Application.logMessageReceived += DebugHelper.LogScreen;
+	}
+
 	#endregion
 
 

@@ -78,14 +78,14 @@ public class AllianceMember : MonoBehaviour,SocketProcessor {
 				{
 					fireMemberResp = fireResp;
 
-					Debug.Log ("开除：" + fireResp.junzhuId);
+				//	Debug.Log ("开除：" + fireResp.junzhuId);
 					for (int i = 0;i < m_membersInfo.memberInfo.Count;i ++)
 					{
 						if (fireResp.junzhuId == m_membersInfo.memberInfo[i].junzhuId)
 						{
 							backName = m_membersInfo.memberInfo[i].name;
-							Debug.Log ("BackName:" + backName);
-							Debug.Log ("id:::::" + m_membersInfo.memberInfo[i].junzhuId);
+							//Debug.Log ("BackName:" + backName);
+							//Debug.Log ("id:::::" + m_membersInfo.memberInfo[i].junzhuId);
 							m_membersInfo.memberInfo.Remove (m_membersInfo.memberInfo[i]);
 						}
 					}
@@ -121,13 +121,13 @@ public class AllianceMember : MonoBehaviour,SocketProcessor {
 						if (upResp.junzhuId == m_membersInfo.memberInfo[i].junzhuId)
 						{
 							backName = m_membersInfo.memberInfo[i].name;
-							Debug.Log ("BackName:" + backName);
-							Debug.Log ("id:::::" + m_membersInfo.memberInfo[i].junzhuId);
+							//Debug.Log ("BackName:" + backName);
+							//Debug.Log ("id:::::" + m_membersInfo.memberInfo[i].junzhuId);
 
 							if (upResp.code == 0)
 							{
-								Debug.Log ("地位：" + upResp.title);
-								Debug.Log ("升职成功");
+							//	Debug.Log ("地位：" + upResp.title);
+							//	Debug.Log ("升职成功");
 								m_membersInfo.memberInfo[i].identity = upResp.title;
 								isMemberChange = true;
 							}
@@ -170,18 +170,18 @@ public class AllianceMember : MonoBehaviour,SocketProcessor {
 						if (downResp.junzhuId == m_membersInfo.memberInfo[i].junzhuId)
 						{
 							backName = m_membersInfo.memberInfo[i].name;
-							Debug.Log ("BackName:" + backName);
-							Debug.Log ("id:::::" + m_membersInfo.memberInfo[i].junzhuId);
+							//Debug.Log ("BackName:" + backName);
+						//	Debug.Log ("id:::::" + m_membersInfo.memberInfo[i].junzhuId);
 							if (downResp.code == 0)
 							{
-								Debug.Log ("你被降职了");
-								Debug.Log ("identy:" + downResp.title);
+							//	Debug.Log ("你被降职了");
+							//	Debug.Log ("identy:" + downResp.title);
 								m_membersInfo.memberInfo[i].identity = downResp.title;
 							}
 							
 							else if (downResp.code == 1)
 							{
-								Debug.Log ("该玩家已经不在联盟中");
+								//Debug.Log ("该玩家已经不在联盟中");
 								m_membersInfo.memberInfo.Remove (m_membersInfo.memberInfo[i]);
 							}
 						}
@@ -212,7 +212,7 @@ public class AllianceMember : MonoBehaviour,SocketProcessor {
 
 		if (fireMemberResp.result == 0)
 		{
-			Debug.Log ("开除成功");
+			//Debug.Log ("开除成功");
 
 			titleStr = "开除成功";
 

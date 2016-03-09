@@ -85,13 +85,13 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 
 			case ProtoIndexes.EXPLORE_RESP:
 			{
-				Debug.Log ("TBGetRewardResp:" + ProtoIndexes.EXPLORE_RESP);
+//				Debug.Log ("TBGetRewardResp:" + ProtoIndexes.EXPLORE_RESP);
 				ExploreResp tbGetRewardRes = new ExploreResp();
 				tbGetRewardRes = QXComData.ReceiveQxProtoMessage (p_message,tbGetRewardRes) as ExploreResp;
 
 				if (tbGetRewardRes != null)
 				{
-					Debug.Log ("探宝结果：" + tbGetRewardRes.success + "//0-成功 1-铜币不足 2-元宝不足 3-数据错误");
+//					Debug.Log ("探宝结果：" + tbGetRewardRes.success + "//0-成功 1-铜币不足 2-元宝不足 3-数据错误");
 					if (tbGetRewardRes.awardsList == null)
 					{
 						tbGetRewardRes.awardsList = new List<Award>();
@@ -99,17 +99,15 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 
 					if (tbGetRewardRes.success == 0)
 					{
-						Debug.Log ("TypeInfo:" + tbGetRewardRes.info);
+//						Debug.Log ("TypeInfo:" + tbGetRewardRes.info);
 						if (tbGetRewardRes.info == null)
 						{
 							tbGetRewardRes.info = new TypeInfo();
 						}
-						Debug.Log ("TypeInfo.money:" + tbGetRewardRes.info.money + 
-						           "\nCd:" + tbGetRewardRes.info.cd);
+//						Debug.Log ("TypeInfo.money:" + tbGetRewardRes.info.money + 
+//						           "\nCd:" + tbGetRewardRes.info.cd);
 
-						Debug.Log ("QXComData.CheckYinDaoOpenState (100160)：" + QXComData.CheckYinDaoOpenState (100160));
-						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100160,2);
-						Debug.Log ("tbGetRewardRes.info.cd:" + tbGetRewardRes.info.cd);
+//						Debug.Log ("tbGetRewardRes.info.cd:" + tbGetRewardRes.info.cd);
 						TanBaoPage.tbPage.RefreshTanBaoInfo (tbType,tbGetRewardRes);
 						TanBaoPage.tbPage.CheckTBRed ();
 						TBReward.tbReward.GetTBReward (tbType,tbGetRewardRes);
@@ -119,10 +117,10 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 						switch (tbGetRewardRes.success)
 						{
 						case 1:
-							textStr = "铜币不足...";
+							textStr = LanguageTemplate.GetText (LanguageTemplate.Text.TAN_BAO_TIPS_2);//铜币不足
 							break;
 						case 2:
-							textStr = "元宝不足...";
+							textStr = LanguageTemplate.GetText (LanguageTemplate.Text.TAN_BAO_TIPS_1);//元宝不足
 							break;
 						case 3:
 							textStr = "数据错误...";
@@ -130,7 +128,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 						default:
 							break;
 						}
-						QXComData.CreateBox (1,textStr,true,TanBaoRespCallBack);
+						QXComData.CreateBox (1,textStr,true,TanBaoRespCallBack,true);
 					}
 				}
 
@@ -141,9 +139,10 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 		return false;
 	}
 
-	void TanBaoRespCallBack (int i)
+	public void TanBaoRespCallBack (int i)
 	{
-		TBReward.tbReward.BlockController (false,0);
+		TBReward.tbReward.BlockController (false);
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,4);
 	}
 
 	void LoadTanBaoPrefab ()

@@ -1,6 +1,6 @@
-﻿#define DEBUG_ENTER_NEXT_SCENE
+﻿//#define DEBUG_PREPARE_FOR_BATTLE_FIELD
 
-#define SKIP_TEX_OPTIMIZE_ANDROID
+//#define SKIP_TEX_OPTIMIZE_ANDROID
 
 using UnityEngine;
 using System.Collections;
@@ -68,21 +68,21 @@ public class PrepareForBattleField : MonoBehaviour {
 	private void InitBattleLoading(){
 		//		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, StaticLoading.CONST_COMMON_LOADING_SCENE, 1, -1 );
 		
-		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_2D, 1, 1 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_2D, 5, 1 );
 		
-		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_NETWORK, 1, 1 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_NETWORK, 6, 1 );
 		
-		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_DATA, 1, 1 );
-		
-		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_3D, 10, 42 );
-		
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_DATA, 3, 1 );
+
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_3D, 50, 42 );
+
 		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_FX, 20, 55 );
 		
-		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_SOUND, 20, 95 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_LOADING_SOUND, 5, 95 );
 		
-		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_CREATE_FLAGS, 1, 2 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_CREATE_FLAGS, 2, 2 );
 		
-		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_RENDER, 2, 1 );
+		LoadingHelper.InitSectionInfo( StaticLoading.m_loading_sections, CONST_BATTLE_RENDER, 5, 1 );
 	}
 
 	#endregion
@@ -99,10 +99,10 @@ public class PrepareForBattleField : MonoBehaviour {
 	private GameObject temple3D;
 
 	private void Prepare_For_BattleField(){
-		#if DEBUG_ENTER_NEXT_SCENE
-		LoadingHelper.LogTimeSinceLoading( "Prepare_For_BattleField" );
+		#if DEBUG_PREPARE_FOR_BATTLE_FIELD
+		Debug.Log( "Prepare_For_BattleField()" );
 		#endif
-		
+
 		InitBattleLoading();
 		
 		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.BATTLEFIELD_V4_2D_UI ), 
@@ -113,20 +113,12 @@ public class PrepareForBattleField : MonoBehaviour {
 	}
 	
 	public void Load2DCallback( ref WWW p_www, string p_path, Object p_object ){
-		#if DEBUG_ENTER_NEXT_SCENE
-		LoadingHelper.LogTimeSinceLoading( "Load2DCallback()" );
-		#endif
-
 		temple2D = p_object as GameObject;
 		
 		enterBattleField();
 	}
 	
 	public void Load3DCallback( ref WWW p_www, string p_path, Object p_object ){
-		#if DEBUG_ENTER_NEXT_SCENE
-		LoadingHelper.LogTimeSinceLoading( "Load3DCallback()" );
-		#endif
-
 		temple3D = p_object as GameObject;
 		
 		enterBattleField();
@@ -142,10 +134,10 @@ public class PrepareForBattleField : MonoBehaviour {
 	}
 	
 	public void Prepare_For_BattleFieldCallback(){
-		#if DEBUG_ENTER_NEXT_SCENE
-		LoadingHelper.LogTimeSinceLoading( "Prepare_For_BattleFieldCallback" );
+		#if DEBUG_PREPARE_FOR_BATTLE_FIELD
+		Debug.Log( "Prepare_For_BattleFieldCallback()" );
 		#endif
-		
+
 		// origin coroutine
 		{
 			GameObject gc2d = (GameObject)Instantiate( temple2D );
@@ -217,10 +209,6 @@ public class PrepareForBattleField : MonoBehaviour {
 	private float m_battle_tex_time = 0.0f;
 	
 	public void BattleLoadDone(){
-		#if DEBUG_ENTER_NEXT_SCENE
-		LoadingHelper.LogTimeSinceLoading( "BattleLoadDone()" );
-		#endif
-		
 		m_battle_tex_time = Time.realtimeSinceStartup;
 		
 		m_battle_res_step++;
@@ -267,8 +255,9 @@ public class PrepareForBattleField : MonoBehaviour {
 					{
 						t_index++;
 					}
-					
-					GameObject t_gb = ( GameObject )Instantiate( t_pair.Value );
+
+//					GameObject t_gb = ( GameObject )Instantiate( t_pair.Value );
+					GameObject t_gb = FxHelper.ObtainFreeFxGameObject( t_pair.Key, t_pair.Value );
 					
 //					Debug.Log( t_pair.Key + ": " + t_gb.name );
 					
@@ -315,7 +304,9 @@ public class PrepareForBattleField : MonoBehaviour {
 					
 					t_gb.SetActive( false );
 					
-					Destroy( t_gb );
+//					Destroy( t_gb );
+
+					FxHelper.FreeFxGameObject( t_pair.Key, t_gb );
 				}
 				
 				t_template_gb.SetActive( false );
@@ -329,34 +320,34 @@ public class PrepareForBattleField : MonoBehaviour {
 		
 		{
 			m_battle_tex_time = Time.realtimeSinceStartup - m_battle_tex_time;
-			
-			#if DEBUG_ENTER_NEXT_SCENE
-			LoadingHelper.LogTimeSinceLoading( "Tex.Prepare( Optimize )" );
-			#endif
 		}
 		
 		StartCoroutine( CheckingResForBattleField() );
 	}
 	
 	IEnumerator CheckingResForBattleField(){
-		//		Debug.Log( "CheckingResForBattleField()" );
-		
+		#if DEBUG_PREPARE_FOR_BATTLE_FIELD
+		Debug.Log( "CheckingResForBattleField()" );
+		#endif
+
 		while ( m_battle_res_step < BATTLE_RES_STEP_TOTAL ){
-			//			Debug.Log( "CheckingResForBattleField( " + 
-			//			          m_battle_res_step + " / " + BATTLE_RES_STEP_TOTAL + 
-			//			          " )" );
+			#if DEBUG_PREPARE_FOR_BATTLE_FIELD
+			Debug.Log( "CheckingResForBattleField( " + 
+			          m_battle_res_step + " / " + BATTLE_RES_STEP_TOTAL + 
+			          " )" );
+			#endif
 			
 			yield return new WaitForEndOfFrame();
 		}
+
+		#if DEBUG_PREPARE_FOR_BATTLE_FIELD
+		Debug.Log( "CheckingResForBattleField.Wait.Done()" );
+		#endif
 		
 		// report when battle field is ready
 		{
 			OperationSupport.ReportClientAction( OperationSupport.ClientAction.ENTER_GAME );
 		}
-		
-		#if DEBUG_ENTER_NEXT_SCENE
-		LoadingHelper.LogTimeSinceLoading( "CheckingResForBattleField.Done" );
-		#endif
 		
 		{
 			//			SetAutoActivation( true );

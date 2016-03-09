@@ -1468,7 +1468,8 @@ public class PrefabPool
     /// <param name="layer">The new layer</param>
     private void SetRecursively(Transform xform, int layer)
     {
-        xform.gameObject.layer = layer;
+		GameObjectHelper.SetGameObjectLayer( xform.gameObject, layer );
+
         foreach (Transform child in xform)
             SetRecursively(child, layer);
     }

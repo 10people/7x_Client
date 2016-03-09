@@ -67,11 +67,11 @@ public class HeroSkillChongZhuang : HeroSkill
 
 	public void activeSkillChongZhuang()
 	{
-		FloatBoolParam fbp = BattleControlor.Instance ().getAttackValueSkill (node, node.targetNode, template.value1, 0);
+		FloatBoolParam fbp = BattleControlor.Instance().getAttackValueSkill (node, node.targetNode, template.value1, 0);
 
 		float v = fbp.Float;
 
-		node.attackHp(node.targetNode, v, fbp.Bool ,BattleControlor.AttackType.SKILL_ATTACK);
+		node.attackHp(node.targetNode, v, fbp.Bool ,BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
 	}
 
 	public void activeSkillChongZhuangDone()

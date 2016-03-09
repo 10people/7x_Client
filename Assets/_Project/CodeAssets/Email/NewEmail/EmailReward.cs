@@ -51,7 +51,7 @@ public class EmailReward : MonoBehaviour {
 		string mdesc = DescIdTemplate.GetDescriptionById (goodInfo.id);
 
 		IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
-		fuShiIconSample.SetIconByID (goodInfo.id);
+		fuShiIconSample.SetIconByID (goodInfo.id,"",3);
 		fuShiIconSample.SetIconPopText(goodInfo.id, nameStr, mdesc, 1);
 		iconSamplePrefab.transform.localScale = Vector3.one * 0.5f;
 	}

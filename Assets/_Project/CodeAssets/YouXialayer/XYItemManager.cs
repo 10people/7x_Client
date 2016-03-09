@@ -111,7 +111,9 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 			YXItem mYXItem = m_UI.GetComponent<YXItem>();
 			
 			mYXItem.mYouXiaInfo = mYouXiaInfoResp.youXiaInfos[i];
-			
+
+//			Debug.Log("mYouXiaInfoResp.youXiaInfos[i].zuheId = "+mYouXiaInfoResp.youXiaInfos[i].zuheId);
+//			Debug.Log("mYouXiaInfoResp.youXiaInfos[i].id = "+mYouXiaInfoResp.youXiaInfos[i].id);
 			mYXItem.Init();
 			
 			YXItemList.Add(mYXItem);
@@ -119,12 +121,25 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 		mGid.repositionNow = true;
 		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
 		{
-			Debug.Log("进入试练二阶界面1");
+		//	Debug.Log("进入试练二阶界面1");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
 			mScorview.enabled = false;
 			return;
 
+		}
+		bool idshow_alert = false;
+		foreach(YXItem mXY in YXItemList)
+		{
+			if(mXY.Art.gameObject.activeInHierarchy)
+			{
+				idshow_alert = true;
+				break;
+			}
+		}
+		if(!idshow_alert)
+		{
+			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
 		}
 	}
 	public void Close()

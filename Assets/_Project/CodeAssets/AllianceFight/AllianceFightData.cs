@@ -22,14 +22,14 @@ public class AllianceFightData : Singleton<AllianceFightData>,SocketProcessor {
 	//联盟战信息请求
 	public void AllianceFightDataReq ()
 	{
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.ALLIANCE_FIGHT_INFO_REQ,"4202");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.ALLIANCE_FIGHT_INFO_REQ,"4202");
 		Debug.Log ("联盟战信息请求：" + ProtoIndexes.ALLIANCE_FIGHT_INFO_REQ);
 	}
 
 	//联盟战报名请求
 	public void AllianceFightApplyReq ()
 	{
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.ALLIANCE_FIGHT_APPLY,"4204");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.ALLIANCE_FIGHT_APPLY,"4204");
 		Debug.Log ("联盟战报名请求：" + ProtoIndexes.ALLIANCE_FIGHT_INFO_REQ);
 	}
 
@@ -115,7 +115,7 @@ public class AllianceFightData : Singleton<AllianceFightData>,SocketProcessor {
 	{
 //		ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"[dc0600]暂未开启，敬请期待[-]"));
 //		return;
-		if (JunZhuData.Instance ().m_junzhuInfo.lianMengId <= 0)
+		if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{
 			ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"请先加入一个联盟"));
 		}

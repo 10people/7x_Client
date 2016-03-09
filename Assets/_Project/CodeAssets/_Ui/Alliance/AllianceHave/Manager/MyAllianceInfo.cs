@@ -9,6 +9,16 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
+	public UIButton mButton;
+
+	public UILabel allianceExp;// 联盟经验进度
+
+	public UILabel alliance_Lv ;// 联盟等级到达
+
+	public UISlider mSlider;
+
+	public GameObject BianjiGonggangTishi;
+
 	public AllianceHaveResp m_Alliance;
 
 	public UILabel Alliance_Name;
@@ -41,6 +51,8 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
 	public UILabel editInfo;//编辑的公告内容
 
+	//public UIInput mUIInput;//编辑的公告内容
+
 	public UILabel ShoweditInfo;//编辑的公告内容
 	
 	private string noticeInfo;//公告内容
@@ -69,7 +81,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	}
 	void OnDestroy()
 	{
-	
+		m_MyAllianceInfo = null;
 		SocketTool.UnRegisterMessageProcessor(this);
 		//Debug.Log ( "MiBaoManager.OnDestroy()" );
 	}
@@ -175,11 +187,95 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str), 
 		             null,confirmStr,null,null);
 	}
+	public UILabel mLabel_Font;
 	void Update () {
 	
+		if(EditUI.activeInHierarchy)
+		{
+			int length = ShoweditInfo.text.Length;
+			if(length > 50)
+			{
+				length = 50;
+			}
+			mLabel_Font.text = (50-length).ToString();
+		}
+	}
+	public void EnterKuanJieUI()
+	{
+		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.ALLIANCE_LEADER_SETTINGS ),
+		                        LeaderSettingsLoadCallback );
+	}
+	GameObject LederSet;
+	public void LeaderSettingsLoadCallback( ref WWW p_www, string p_path,  Object p_object )
+	{
+		if(LederSet == null)
+		{
+			LederSet = Instantiate( p_object ) as GameObject;
+		
+			LederSet.transform.localScale = Vector3.one;
+			LederSet.transform.localPosition = new Vector3 (500,200,0);
+			LianmengMuBiaomanager mLianmengMuBiaomanager = LederSet.GetComponent<LianmengMuBiaomanager>();
+			mLianmengMuBiaomanager.Lianmeng_Alliance = m_Alliance;
+			mLianmengMuBiaomanager.Init();
+			MainCityUI.TryAddToObjectList(LederSet,false);
+		}
+
 	}
 	public void InitUI()
 	{
+		int LmMuBiaoLevel = m_Alliance.lmTargetLevel;
+
+		if(LmMuBiaoLevel == -1)
+		{
+			LmMuBiaoLevel = m_Alliance.level;
+		}
+		int mLMExp = 0;
+		int FontmLMExp = 0;
+		if(m_Alliance.level > 1)
+		{
+			int AllExp1 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level-1);
+
+			//Debug.Log("AllExp1 = "+AllExp1);
+			//Debug.Log("m_Alliance.level = "+m_Alliance.level);
+			int AllExp3 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (LmMuBiaoLevel-1);
+			mLMExp = AllExp3;
+			allianceExp.text = "联盟经验: " + (AllExp1+m_Alliance.exp).ToString()+ "/" + (AllExp3).ToString ();
+			FontmLMExp = AllExp1+m_Alliance.exp;
+		}
+		else
+		{
+			int AllExp3 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (LmMuBiaoLevel-1);
+			allianceExp.text = "联盟经验: " + (m_Alliance.exp).ToString()+ "/" + (AllExp3).ToString ();
+			mLMExp = AllExp3; 
+			FontmLMExp = m_Alliance.exp;
+		}
+
+		int MaxLv = 10; //临时用的变量 等策划确定
+
+		int curexp = LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level - 1) + m_Alliance.exp;
+		int needexp = LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level);
+		Exp.text = curexp.ToString () + "/" + needexp.ToString ();
+
+		//Debug.Log ("m_Alliance.lmTargetLevel = "+m_Alliance.lmTargetLevel);
+		if(m_Alliance.lmTargetLevel != -1)
+		{
+			if(m_Alliance.level >= LmMuBiaoLevel)
+			{
+				alliance_Lv.text = "联盟等级到达Lv "+(m_Alliance.lmTargetLevel).ToString()+"(已完成)";
+			}
+			else
+			{
+				alliance_Lv.text = "联盟等级到达Lv "+(m_Alliance.lmTargetLevel).ToString()+"(未完成)";;
+			}
+		}
+		else
+		{
+			alliance_Lv.text = "联盟等级已满";
+
+			//mButton.enabled = false;
+		}
+		mSlider.value = (float)FontmLMExp / (float)mLMExp;
+
 		Alliance_Name.text = m_Alliance.name+"("+m_Alliance.id.ToString()+")";
 		
 		Level.text = m_Alliance.level.ToString();
@@ -216,11 +312,11 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		
 		leader.text = m_Alliance.mengzhuName;
 		
-		Exp.text = m_Alliance.exp.ToString ()+"/"+m_Alliance.needExp.ToString();
+
 		
 		Shengwang.text = m_Alliance.shengWang.ToString();
 		
-		Menbers.text = m_Alliance.members.ToString () + "/" + m_Alliance.memberMax.ToString ();
+		Menbers.text = m_Alliance.memberInfo.Count.ToString () + "/" + m_Alliance.memberMax.ToString ();
 		
 		if(m_Alliance.identity == 0)
 		{
@@ -243,7 +339,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
 		if(m_Alliance.notice != null &&m_Alliance.notice != "")
 		{
-			ShoweditInfo.text = m_Alliance.notice;
+			editInfo.text = m_Alliance.notice;
 		}
 
 //		Debug.Log("m_Alliance.notice = "+m_Alliance.notice);
@@ -252,11 +348,11 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
 		if(m_Alliance.identity == 1|| m_Alliance.identity == 2)
 		{
-			//noticeBtn.SetActive(true);
+			BianjiGonggangTishi.SetActive(true);
 		}
 		else
 		{
-			//noticeBtn.SetActive(false);
+			BianjiGonggangTishi.SetActive(false);
 		}
 	}
 
@@ -379,7 +475,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.ALLIANCE_HUFU_DONATE,ref t_protof,"30150");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.ALLIANCE_HUFU_DONATE,ref t_protof,"30150");
 
 	}
 
@@ -389,7 +485,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	{
 		EditUI.SetActive (true);
 	
-		editInfo.text = m_Alliance.notice ;
+		ShoweditInfo.text = m_Alliance.notice ;
+		UIInput mUIInput = ShoweditInfo.gameObject.GetComponent<UIInput>();
+		mUIInput.value = m_Alliance.notice;
 	}
 	public void  CloseEditnoticeUI()
 	{
@@ -403,10 +501,10 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		
 		noticeReq.id = m_Alliance.id;
 		
-		noticeReq.notice = editInfo.text;
+		noticeReq.notice = ShoweditInfo.text;
 		
-		noticeInfo = editInfo.text;
-		
+		noticeInfo = ShoweditInfo.text;
+		//Debug.Log ("noticeInfo ="+noticeInfo);
 		MemoryStream noticeStream = new MemoryStream ();
 		
 		QiXiongSerializer noticeQx = new QiXiongSerializer ();
@@ -435,7 +533,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 			Debug.Log("修改成功");
 			
 			ShoweditInfo.text = noticeInfo;
-
+			editInfo.text = noticeInfo;
 			m_Alliance.notice = noticeInfo;
 
 			string changeSuccessStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_GONGGAO_CHANGE_SUCCESS);

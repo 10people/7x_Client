@@ -294,11 +294,11 @@ public class BattleEffectControllor : MonoBehaviour
 
 		if(canCreate == true)
 		{
-			effectObject = (GameObject)Instantiate(temple);
+			effectObject = FxHelper.ObtainFreeFxGameObject( et.path, temple );
 		}
 		else
 		{
-			effectObject = new GameObject();
+			return null;
 		}
 
 		effectObject.SetActive(true);
@@ -314,17 +314,24 @@ public class BattleEffectControllor : MonoBehaviour
 
 		effectObject.transform.localScale = temple.transform.localScale;
 
-		BattleEffect effect = (BattleEffect)effectObject.AddComponent<BattleEffect>();
+		BattleEffect effect = (BattleEffect)ComponentHelper.AddIfNotExist( effectObject, typeof(BattleEffect) );
 
 		effect.refreshDate(group, host, _time, position, forward, et.ratio);
 
 		effect.realTime = Time.realtimeSinceStartup;
 
+		Renderer[] rens = effect.gameObject.GetComponentsInChildren<Renderer>();
+		
+		foreach(Renderer ren in rens)
+		{
+			GameObjectHelper.SetGameObjectLayer( ren.gameObject, 8 );
+		}
+
 		effects.Add(effect);
 
 		if(et.sound.Equals("-1") == false)
 		{
-			SoundPlayEff spe = effectObject.AddComponent<SoundPlayEff>();
+			SoundPlayEff spe = (SoundPlayEff)ComponentHelper.AddIfNotExist( effectObject, typeof(SoundPlayEff) );
 
 			spe.PlaySound(et.sound);
 		}
@@ -431,7 +438,9 @@ public class BattleEffectControllor : MonoBehaviour
 			return null;
 		}
 
-		GameObject tempObj = GameObject.Instantiate( temple ) as GameObject;
+//		GameObject tempObj = GameObject.Instantiate( temple ) as GameObject;
+
+		GameObject tempObj = FxHelper.ObtainFreeFxGameObject( et.path, temple );
 
 //		Debug.Log( "getInstantiateEffect: " + id + " - " + temple.name );
 

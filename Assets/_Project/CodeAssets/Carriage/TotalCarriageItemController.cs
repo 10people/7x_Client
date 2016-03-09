@@ -21,6 +21,7 @@ namespace Carriage
         public UILabel BarNumLabel;
         public UILabel ProgressLabel;
         public UILabel MoneyLabel;
+        public UILabel RecommandedLabel;
         public GameObject HelpBTNObject;
 
         public void SetThis(CarriageCultureController info)
@@ -46,13 +47,13 @@ namespace Carriage
                 HeadDecoSprite.spriteName = "Self";
                 HeadDecoSprite.gameObject.SetActive(true);
 
-                KingNameLabel.color = Color.white;
+                KingNameLabel.color = Color.black;
             }
             else
             {
                 HeadDecoSprite.gameObject.SetActive(false);
 
-                KingNameLabel.color = Color.white;
+                KingNameLabel.color = Color.black;
             }
             if (!string.IsNullOrEmpty(m_StoredCarriageInfo.AllianceName) && !AllianceData.Instance.IsAllianceNotExist && m_StoredCarriageInfo.AllianceName == AllianceData.Instance.g_UnionInfo.name && m_StoredCarriageInfo.KingName != JunZhuData.Instance().m_junzhuInfo.name)
             {
@@ -76,13 +77,27 @@ namespace Carriage
             Bar.value = m_StoredCarriageInfo.RemainingBlood / m_StoredCarriageInfo.TotalBlood;
             BarNumLabel.text = m_StoredCarriageInfo.RemainingBlood + "/" + m_StoredCarriageInfo.TotalBlood;
             ProgressLabel.text = "进度" + m_StoredCarriageInfo.ProgressPercent + "%";
-            MoneyLabel.text = m_StoredCarriageInfo.Money.ToString();
+            MoneyLabel.text = CarriageValueCalctor.GetRealValueOfCarriage(m_StoredCarriageInfo.Money, m_StoredCarriageInfo.Level, m_StoredCarriageInfo.BattleValue, m_StoredCarriageInfo.HorseLevel, m_StoredCarriageInfo.IsChouRen).ToString();
+
+            //Set recommanded.
+            if (m_StoredCarriageInfo.IsRecommandedOne)
+            {
+                RecommandedLabel.text = "建议攻打";
+                RecommandedLabel.gameObject.SetActive(true);
+            }
+            else
+            {
+                RecommandedLabel.gameObject.SetActive(false);
+            }
         }
 
         public void OnNavigateClick()
         {
             if (RootManager.Instance.m_SelfPlayerController != null && RootManager.Instance.m_SelfPlayerCultureController != null && RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(m_StoredCarriageInfo.UID))
             {
+                //Cancel chase.
+                RootManager.Instance.m_CarriageMain.TryCancelChaseToAttack();
+
                 RootManager.Instance.m_SelfPlayerController.StartNavigation(RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic[m_StoredCarriageInfo.UID].transform.position);
 
                 m_TotalCarriageListController.OnCloseWindowClick();

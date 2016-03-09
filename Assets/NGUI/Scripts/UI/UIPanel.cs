@@ -1215,12 +1215,14 @@ public class UIPanel : UIRect
 		if (mLayer != cachedGameObject.layer)
 		{
 			mLayer = mGo.layer;
+
 			UICamera uic = UICamera.FindCameraForLayer(mLayer);
 			mCam = (uic != null) ? uic.cachedCamera : NGUITools.FindCameraForLayer(mLayer);
 			NGUITools.SetChildLayer(cachedTransform, mLayer);
 
-			for (int i = 0; i < drawCalls.size; ++i)
-				drawCalls.buffer[i].gameObject.layer = mLayer;
+			for (int i = 0; i < drawCalls.size; ++i){
+				GameObjectHelper.SetGameObjectLayer( drawCalls.buffer[i].gameObject, mLayer );
+			}
 		}
 	}
 

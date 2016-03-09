@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<MibaoSkillLv id="1" lv="1" skill="250101,250111,250121" skillDesc="394101" skill2="251301" skill2Desc="395001" />
-<MibaoSkillLv id="1" lv="2" skill="250201,250211,250221" skillDesc="394201" skill2="251301" skill2Desc="395001" />
-<MibaoSkillLv id="1" lv="3" skill="250301,250311,250321" skillDesc="394301" skill2="251301" skill2Desc="395001" />
-<MibaoSkillLv id="1" lv="4" skill="250401,250411,250421" skillDesc="394401" skill2="251301" skill2Desc="395001" />
-<MibaoSkillLv id="1" lv="5" skill="250501,250511,250521" skillDesc="394501" skill2="251301" skill2Desc="395001" />
-<MibaoSkillLv id="1" lv="6" skill="250601,250611,250621" skillDesc="394601" skill2="251301" skill2Desc="395001" />
-<MibaoSkillLv id="1" lv="7" skill="250701,250711,250721" skillDesc="394701" skill2="251301" skill2Desc="395001" />
-<MibaoSkillLv id="2" lv="1" skill="250103,250113,250123" skillDesc="394103" skill2="251303" skill2Desc="395003" />
-<MibaoSkillLv id="2" lv="2" skill="250203,250213,250223" skillDesc="394203" skill2="251303" skill2Desc="395003" />
-<MibaoSkillLv id="2" lv="3" skill="250303,250313,250323" skillDesc="394303" skill2="251303" skill2Desc="395003" />
-<MibaoSkillLv id="2" lv="4" skill="250403,250413,250423" skillDesc="394403" skill2="251303" skill2Desc="395003" />
-<MibaoSkillLv id="2" lv="5" skill="250503,250513,250523" skillDesc="394503" skill2="251303" skill2Desc="395003" />
-<MibaoSkillLv id="2" lv="6" skill="250603,250613,250623" skillDesc="394603" skill2="251303" skill2Desc="395003" />
-<MibaoSkillLv id="2" lv="7" skill="250703,250713,250723" skillDesc="394703" skill2="251303" skill2Desc="395003" />
-<MibaoSkillLv id="3" lv="1" skill="250102,250112,250122" skillDesc="394102" skill2="251302" skill2Desc="395002" />
-<MibaoSkillLv id="3" lv="2" skill="250202,250212,250222" skillDesc="394202" skill2="251302" skill2Desc="395002" />
-<MibaoSkillLv id="3" lv="3" skill="250302,250312,250322" skillDesc="394302" skill2="251302" skill2Desc="395002" />
-<MibaoSkillLv id="3" lv="4" skill="250402,250412,250422" skillDesc="394402" skill2="251302" skill2Desc="395002" />
-<MibaoSkillLv id="3" lv="5" skill="250502,250512,250522" skillDesc="394502" skill2="251302" skill2Desc="395002" />
-<MibaoSkillLv id="3" lv="6" skill="250602,250612,250622" skillDesc="394602" skill2="251302" skill2Desc="395002" />
-<MibaoSkillLv id="3" lv="7" skill="250702,250712,250722" skillDesc="394702" skill2="251302" skill2Desc="395002" />
-<MibaoSkillLv id="4" lv="1" skill="250104,250114,250124" skillDesc="394104" skill2="251304" skill2Desc="395004" />
-<MibaoSkillLv id="4" lv="2" skill="250204,250214,250224" skillDesc="394204" skill2="251304" skill2Desc="395004" />
-<MibaoSkillLv id="4" lv="3" skill="250304,250314,250324" skillDesc="394304" skill2="251304" skill2Desc="395004" />
-<MibaoSkillLv id="4" lv="4" skill="250404,250414,250424" skillDesc="394404" skill2="251304" skill2Desc="395004" />
-<MibaoSkillLv id="4" lv="5" skill="250504,250514,250524" skillDesc="394504" skill2="251304" skill2Desc="395004" />
-<MibaoSkillLv id="4" lv="6" skill="250604,250614,250624" skillDesc="394604" skill2="251304" skill2Desc="395004" />
-<MibaoSkillLv id="4" lv="7" skill="250704,250714,250724" skillDesc="394704" skill2="251304" skill2Desc="395004" />
-<MibaoSkillLv id="5" lv="1" skill="250105,250115,250125" skillDesc="394105" skill2="251305" skill2Desc="395005" />
-<MibaoSkillLv id="5" lv="2" skill="250205,250215,250225" skillDesc="394205" skill2="251305" skill2Desc="395005" />
-<MibaoSkillLv id="5" lv="3" skill="250305,250315,250325" skillDesc="394305" skill2="251305" skill2Desc="395005" />
-<MibaoSkillLv id="5" lv="4" skill="250405,250415,250425" skillDesc="394405" skill2="251305" skill2Desc="395005" />
-<MibaoSkillLv id="5" lv="5" skill="250505,250515,250525" skillDesc="394505" skill2="251305" skill2Desc="395005" />
-<MibaoSkillLv id="5" lv="6" skill="250605,250615,250625" skillDesc="394605" skill2="251305" skill2Desc="395005" />
-<MibaoSkillLv id="5" lv="7" skill="250705,250715,250725" skillDesc="394705" skill2="251305" skill2Desc="395005" />
-<MibaoSkillLv id="6" lv="1" skill="250106,250116,250126" skillDesc="394106" skill2="251306" skill2Desc="395006" />
-<MibaoSkillLv id="6" lv="2" skill="250206,250216,250226" skillDesc="394206" skill2="251306" skill2Desc="395006" />
-<MibaoSkillLv id="6" lv="3" skill="250306,250316,250326" skillDesc="394306" skill2="251306" skill2Desc="395006" />
-<MibaoSkillLv id="6" lv="4" skill="250406,250416,250426" skillDesc="394406" skill2="251306" skill2Desc="395006" />
-<MibaoSkillLv id="6" lv="5" skill="250506,250516,250526" skillDesc="394506" skill2="251306" skill2Desc="395006" />
-<MibaoSkillLv id="6" lv="6" skill="250606,250616,250626" skillDesc="394606" skill2="251306" skill2Desc="395006" />
-<MibaoSkillLv id="6" lv="7" skill="250706,250716,250726" skillDesc="394706" skill2="251306" skill2Desc="395006" />
-<MibaoSkillLv id="7" lv="1" skill="250107,250117,250127" skillDesc="394107" skill2="251307" skill2Desc="395007" />
-<MibaoSkillLv id="7" lv="2" skill="250207,250217,250227" skillDesc="394207" skill2="251307" skill2Desc="395007" />
-<MibaoSkillLv id="7" lv="3" skill="250307,250317,250327" skillDesc="394307" skill2="251307" skill2Desc="395007" />
-<MibaoSkillLv id="7" lv="4" skill="250407,250417,250427" skillDesc="394407" skill2="251307" skill2Desc="395007" />
-<MibaoSkillLv id="7" lv="5" skill="250507,250517,250527" skillDesc="394507" skill2="251307" skill2Desc="395007" />
-<MibaoSkillLv id="7" lv="6" skill="250607,250617,250627" skillDesc="394607" skill2="251307" skill2Desc="395007" />
-<MibaoSkillLv id="7" lv="7" skill="250707,250717,250727" skillDesc="394707" skill2="251307" skill2Desc="395007" />
+<MibaoSkillLv id="1" lv="1" skill="250101,250111,250121" skillDesc="394101" skill2="251301" skill2Desc="395001" desc="391001" />
+<MibaoSkillLv id="1" lv="2" skill="250201,250211,250221" skillDesc="394201" skill2="251301" skill2Desc="395001" desc="391001" />
+<MibaoSkillLv id="1" lv="3" skill="250301,250311,250321" skillDesc="394301" skill2="251301" skill2Desc="395001" desc="391001" />
+<MibaoSkillLv id="1" lv="4" skill="250401,250411,250421" skillDesc="394401" skill2="251301" skill2Desc="395001" desc="391001" />
+<MibaoSkillLv id="1" lv="5" skill="250501,250511,250521" skillDesc="394501" skill2="251301" skill2Desc="395001" desc="391001" />
+<MibaoSkillLv id="1" lv="6" skill="250601,250611,250621" skillDesc="394601" skill2="251301" skill2Desc="395001" desc="391001" />
+<MibaoSkillLv id="1" lv="7" skill="250701,250711,250721" skillDesc="394701" skill2="251301" skill2Desc="395001" desc="391001" />
+<MibaoSkillLv id="2" lv="1" skill="250103,250113,250123" skillDesc="394103" skill2="251303" skill2Desc="395003" desc="391002" />
+<MibaoSkillLv id="2" lv="2" skill="250203,250213,250223" skillDesc="394203" skill2="251303" skill2Desc="395003" desc="391002" />
+<MibaoSkillLv id="2" lv="3" skill="250303,250313,250323" skillDesc="394303" skill2="251303" skill2Desc="395003" desc="391002" />
+<MibaoSkillLv id="2" lv="4" skill="250403,250413,250423" skillDesc="394403" skill2="251303" skill2Desc="395003" desc="391002" />
+<MibaoSkillLv id="2" lv="5" skill="250503,250513,250523" skillDesc="394503" skill2="251303" skill2Desc="395003" desc="391002" />
+<MibaoSkillLv id="2" lv="6" skill="250603,250613,250623" skillDesc="394603" skill2="251303" skill2Desc="395003" desc="391002" />
+<MibaoSkillLv id="2" lv="7" skill="250703,250713,250723" skillDesc="394703" skill2="251303" skill2Desc="395003" desc="391002" />
+<MibaoSkillLv id="3" lv="1" skill="250102,250112,250122" skillDesc="394102" skill2="251302" skill2Desc="395002" desc="391003" />
+<MibaoSkillLv id="3" lv="2" skill="250202,250212,250222" skillDesc="394202" skill2="251302" skill2Desc="395002" desc="391003" />
+<MibaoSkillLv id="3" lv="3" skill="250302,250312,250322" skillDesc="394302" skill2="251302" skill2Desc="395002" desc="391003" />
+<MibaoSkillLv id="3" lv="4" skill="250402,250412,250422" skillDesc="394402" skill2="251302" skill2Desc="395002" desc="391003" />
+<MibaoSkillLv id="3" lv="5" skill="250502,250512,250522" skillDesc="394502" skill2="251302" skill2Desc="395002" desc="391003" />
+<MibaoSkillLv id="3" lv="6" skill="250602,250612,250622" skillDesc="394602" skill2="251302" skill2Desc="395002" desc="391003" />
+<MibaoSkillLv id="3" lv="7" skill="250702,250712,250722" skillDesc="394702" skill2="251302" skill2Desc="395002" desc="391003" />
+<MibaoSkillLv id="4" lv="1" skill="250104,250114,250124" skillDesc="394104" skill2="251304" skill2Desc="395004" desc="391004" />
+<MibaoSkillLv id="4" lv="2" skill="250204,250214,250224" skillDesc="394204" skill2="251304" skill2Desc="395004" desc="391004" />
+<MibaoSkillLv id="4" lv="3" skill="250304,250314,250324" skillDesc="394304" skill2="251304" skill2Desc="395004" desc="391004" />
+<MibaoSkillLv id="4" lv="4" skill="250404,250414,250424" skillDesc="394404" skill2="251304" skill2Desc="395004" desc="391004" />
+<MibaoSkillLv id="4" lv="5" skill="250504,250514,250524" skillDesc="394504" skill2="251304" skill2Desc="395004" desc="391004" />
+<MibaoSkillLv id="4" lv="6" skill="250604,250614,250624" skillDesc="394604" skill2="251304" skill2Desc="395004" desc="391004" />
+<MibaoSkillLv id="4" lv="7" skill="250704,250714,250724" skillDesc="394704" skill2="251304" skill2Desc="395004" desc="391004" />
+<MibaoSkillLv id="5" lv="1" skill="250105,250115,250125" skillDesc="394105" skill2="251305" skill2Desc="395005" desc="391005" />
+<MibaoSkillLv id="5" lv="2" skill="250205,250215,250225" skillDesc="394205" skill2="251305" skill2Desc="395005" desc="391005" />
+<MibaoSkillLv id="5" lv="3" skill="250305,250315,250325" skillDesc="394305" skill2="251305" skill2Desc="395005" desc="391005" />
+<MibaoSkillLv id="5" lv="4" skill="250405,250415,250425" skillDesc="394405" skill2="251305" skill2Desc="395005" desc="391005" />
+<MibaoSkillLv id="5" lv="5" skill="250505,250515,250525" skillDesc="394505" skill2="251305" skill2Desc="395005" desc="391005" />
+<MibaoSkillLv id="5" lv="6" skill="250605,250615,250625" skillDesc="394605" skill2="251305" skill2Desc="395005" desc="391005" />
+<MibaoSkillLv id="5" lv="7" skill="250705,250715,250725" skillDesc="394705" skill2="251305" skill2Desc="395005" desc="391005" />
+<MibaoSkillLv id="6" lv="1" skill="250106,250116,250126" skillDesc="394106" skill2="251306" skill2Desc="395006" desc="391006" />
+<MibaoSkillLv id="6" lv="2" skill="250206,250216,250226" skillDesc="394206" skill2="251306" skill2Desc="395006" desc="391006" />
+<MibaoSkillLv id="6" lv="3" skill="250306,250316,250326" skillDesc="394306" skill2="251306" skill2Desc="395006" desc="391006" />
+<MibaoSkillLv id="6" lv="4" skill="250406,250416,250426" skillDesc="394406" skill2="251306" skill2Desc="395006" desc="391006" />
+<MibaoSkillLv id="6" lv="5" skill="250506,250516,250526" skillDesc="394506" skill2="251306" skill2Desc="395006" desc="391006" />
+<MibaoSkillLv id="6" lv="6" skill="250606,250616,250626" skillDesc="394606" skill2="251306" skill2Desc="395006" desc="391006" />
+<MibaoSkillLv id="6" lv="7" skill="250706,250716,250726" skillDesc="394706" skill2="251306" skill2Desc="395006" desc="391006" />
+<MibaoSkillLv id="7" lv="1" skill="250107,250117,250127" skillDesc="394107" skill2="251307" skill2Desc="395007" desc="391007" />
+<MibaoSkillLv id="7" lv="2" skill="250207,250217,250227" skillDesc="394207" skill2="251307" skill2Desc="395007" desc="391007" />
+<MibaoSkillLv id="7" lv="3" skill="250307,250317,250327" skillDesc="394307" skill2="251307" skill2Desc="395007" desc="391007" />
+<MibaoSkillLv id="7" lv="4" skill="250407,250417,250427" skillDesc="394407" skill2="251307" skill2Desc="395007" desc="391007" />
+<MibaoSkillLv id="7" lv="5" skill="250507,250517,250527" skillDesc="394507" skill2="251307" skill2Desc="395007" desc="391007" />
+<MibaoSkillLv id="7" lv="6" skill="250607,250617,250627" skillDesc="394607" skill2="251307" skill2Desc="395007" desc="391007" />
+<MibaoSkillLv id="7" lv="7" skill="250707,250717,250727" skillDesc="394707" skill2="251307" skill2Desc="395007" desc="391007" />
 </dataset>

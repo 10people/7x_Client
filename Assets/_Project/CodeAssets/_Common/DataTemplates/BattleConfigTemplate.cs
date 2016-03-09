@@ -13,6 +13,10 @@ public class BattleConfigTemplate : XmlLoadManager
 
 	public int autoFight;
 
+	public int soundID;
+
+	public int preDesc;
+
 
 	public static List<BattleConfigTemplate> templates;
 
@@ -61,6 +65,12 @@ public class BattleConfigTemplate : XmlLoadManager
 				
 				t_reader.MoveToNextAttribute();
 				t_template.autoFight = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.soundID = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.preDesc = int.Parse( t_reader.Value );
 			}
 			
 			templates.Add( t_template );

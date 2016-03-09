@@ -9,12 +9,19 @@ using ProtoBuf.Meta;
 public class ActivitySignalInItemManagerment : MonoBehaviour 
 {
     public List<GameObject> m_listGameobject;
+    public Animation m_GouAnimation;
    // public UISprite m_Icon;
      public List<UILabel> m_listLabel;
   //  public EventIndexHandle m_Event;
     public delegate void OnClick_TouchEachDay();
     OnClick_TouchEachDay CallBackSignalIn;
+
+    public delegate void dele_AnimationFinish();
+    dele_AnimationFinish CallBackAnimationFinish;
+
     private bool _isTouchEnable = false;
+    [HideInInspector]
+    public bool m_NowSignalIn = false;
 	void Start ()
     {
 	}
@@ -23,25 +30,30 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
     {
       public int iconType;
       public int count;
-      public string icon;
+      public int id;
       public bool isTouch;
 
     };
     private ItemInfo rewardInfo = new ItemInfo();
-
-    public void ShowInfo(QiandaoAward reward, bool isGuang, bool isMesh, OnClick_TouchEachDay callback)
+    private int _state = 0;
+    private bool _isSpark = false;
+    public void ShowInfo(QiandaoAward reward, bool isGuang, bool isMesh, OnClick_TouchEachDay callback, dele_AnimationFinish callback_finish = null)
     {
-//        Debug.Log("isMeshisMeshisMeshisMesh ::" + isMesh);
+        if (callback_finish != null)
+        {
+            CallBackAnimationFinish = callback_finish;
+        }
         CallBackSignalIn = callback;
+        m_NowSignalIn = reward.state == 1;
         m_listGameobject[0].gameObject.SetActive(reward.state == 1);
+        _state = reward.state;
+        _isSpark = isMesh && reward.state == 0;
         m_listGameobject[2].gameObject.SetActive(isMesh && reward.state == 0);
         _isTouchEnable = isMesh && reward.state == 0 ? true : false;
         rewardInfo.isTouch = (reward.state == 1);
         rewardInfo.count = reward.awardNum;
-        rewardInfo.icon = reward.awardId.ToString();
+        rewardInfo.id = reward.awardId;
         rewardInfo.iconType = reward.awardType;
-
-
         if (reward.vipDouble > 0)
         {
             m_listLabel[0].text = "[b]V" + reward.vipDouble.ToString() + NameIdTemplate.GetName_By_NameId(990052) + "[/b]";
@@ -52,17 +64,33 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
 
     private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
     {
-
-
         GameObject iconSampleObject = Instantiate(p_object) as GameObject;
         iconSampleObject.SetActive(true);
         iconSampleObject.transform.parent = transform;
         iconSampleObject.transform.localPosition = Vector3.zero;
         iconSampleObject.transform.localScale = Vector3.one;
         IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+        int color = CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).color;
+        //if (color >= 20)
+        //{
+        //    color -= 20;
+        //}       
+        //iconSampleManager.SetIconByID(rewardInfo.id, rewardInfo.count.ToString(), 0, false,
+        //     _state != 1 && !_isSpark && color >= 7);
 
-       iconSampleManager.SetIconByID(int.Parse(rewardInfo.icon), rewardInfo.count.ToString());
-		iconSampleManager.SetIconPopText(int.Parse(rewardInfo.icon), NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(int.Parse(rewardInfo.icon)).nameId), DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(int.Parse(rewardInfo.icon)).descId));
+        iconSampleManager.SetIconByID(rewardInfo.id, rewardInfo.count.ToString());
+        iconSampleManager.SetIconPopText(rewardInfo.id, NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).nameId), DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).descId));
+        //if (_state == 1)
+        //{
+        //    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2
+        //        , iconSampleObject
+        //        , EffectIdTemplate.GetPathByeffectId(620211)
+        //        , null);
+        //}
+        //else
+        //{
+        //    UI3DEffectTool.ClearUIFx(iconSampleObject);
+        //}
         if (rewardInfo.isTouch)
         {
             iconSampleManager.NguiLongPress.OnNormalPress = OnTouchEvent;
@@ -75,6 +103,10 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         {
             CallBackSignalIn();
         }
+    }
+    public void AnimationPlay()
+    {
+        CallBackAnimationFinish();
     }
 
 }

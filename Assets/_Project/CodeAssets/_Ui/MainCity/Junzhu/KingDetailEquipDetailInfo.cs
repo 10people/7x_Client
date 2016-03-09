@@ -87,7 +87,7 @@ public class KingDetailEquipDetailInfo : MonoBehaviour
 
     void Start()
     {
-        m_EventHandler.m_handler += Touched;
+        m_EventHandler.m_click_handler += Touched;
     }
 
     void Update()

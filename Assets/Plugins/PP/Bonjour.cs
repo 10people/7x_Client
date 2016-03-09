@@ -1,3 +1,9 @@
+/// <summary>
+/// Change With ThirdPlatform
+/// </summary>
+
+
+
 //#define XG_PUSH
 
 
@@ -40,6 +46,16 @@ using LitJson;
 using SimpleJSON;
 
 
+
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2015.8.1
+ * @since:		Unity 5.1
+ * Function:	Cross Platform Use.
+ * 
+ * Notes:
+ * None.
+ */ 
 public class Bonjour{
 
 	#region Default Calls
@@ -880,13 +896,13 @@ public class Bonjour{
 	#region My App
 
 	public static void showSDKCenter(){
-		Debug.Log ( "ShowSDKCenter()" );
+		Debug.Log ( "MyApp.ShowSDKCenter(), do Nothing." );
 		
-		if( Application.platform == RuntimePlatform.Android ){
-			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_None );
-		}
+//		if( Application.platform == RuntimePlatform.Android ){
+//			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_None );
+//		}
 	}
-	
+
 	public static void logout(){
 		Debug.Log ( "logout()" );
 		

@@ -131,8 +131,8 @@ public class EmailCheck : MonoBehaviour {
 
 		foreach (EventHandler handler in btnList)
 		{
-			handler.m_handler -= BtnHandlerCallBack;
-			handler.m_handler += BtnHandlerCallBack;
+			handler.m_click_handler -= BtnHandlerCallBack;
+			handler.m_click_handler += BtnHandlerCallBack;
 		}
 	}
 
@@ -167,7 +167,7 @@ public class EmailCheck : MonoBehaviour {
 			rewardItemList[i].SetActive (true);
 			rewardItemList[i].transform.localPosition = new Vector3 (i * 115f - (tempList.Count - 1) * 57.5f + (tempList.Count < 7 ? 35f : 0f),0,0);
 			rewardItemList[i].name = i.ToString ();
-			Debug.Log ("tempList[i].id:" + tempList[i].id);
+//			Debug.Log ("tempList[i].id:" + tempList[i].id);
 
 			EmailReward reward = rewardItemList[i].GetComponent<EmailReward> ();
 			reward.GetRewardInfo (tempList[i]);
@@ -197,7 +197,7 @@ public class EmailCheck : MonoBehaviour {
 			{
 			case "Btn1"://屏蔽
 
-				NewEmailData.Instance ().EmailOperate (NewEmailData.LetterOperateType.SHIELD,emailInfo);
+				NewEmailData.Instance().EmailOperate (NewEmailData.LetterOperateType.SHIELD,emailInfo);
 
 				break;
 			case "Btn2"://加好友
@@ -207,8 +207,8 @@ public class EmailCheck : MonoBehaviour {
 				break;
 			case "Btn3"://回复
 
-				NewEmailData.Instance ().SendName = emailInfo.senderName;
-				NewEmailData.Instance ().SendEmailType = NewEmailData.SendType.REPLY;
+				NewEmailData.Instance().SendName = emailInfo.senderName;
+				NewEmailData.Instance().SendEmailType = NewEmailData.SendType.REPLY;
 				EmailPage.emailPage.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_SEND);
 
 				break;
@@ -225,14 +225,14 @@ public class EmailCheck : MonoBehaviour {
 				case "Btn1":
 					
 					//DELATE_AFTER_OPERATE :拒绝
-					NewEmailData.Instance ().EmailOperate (NewEmailData.LetterOperateType.REFUSE,emailInfo);
+					NewEmailData.Instance().EmailOperate (NewEmailData.LetterOperateType.REFUSE,emailInfo);
 					
 					break;
 					
 				case "Btn3":
 					
 					//DELATE_AFTER_OPERATE : 同意
-					NewEmailData.Instance ().EmailOperate (NewEmailData.LetterOperateType.AGREE,emailInfo);
+					NewEmailData.Instance().EmailOperate (NewEmailData.LetterOperateType.AGREE,emailInfo);
 					
 					break;
 				default:
@@ -254,7 +254,7 @@ public class EmailCheck : MonoBehaviour {
 						if (operateType == EmailOperateType.DELATE_AFTER_GET)
 						{
 							//发送领取奖励请求
-							NewEmailData.Instance ().GetEmailReward (emailInfo.id);
+							NewEmailData.Instance().GetEmailReward (emailInfo.id);
 						}
 						EmailPage.emailPage.BackBtnCallBack ();
 					}

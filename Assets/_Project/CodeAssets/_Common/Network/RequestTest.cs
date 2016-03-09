@@ -15,7 +15,7 @@ public class RequestTest : MonoBehaviour {
 
     void RequestSuccess(string tempResponse)
     {
-        Debug.Log("数据返回：" + tempResponse);
+//        Debug.Log("数据返回：" + tempResponse);
 
         JSONNode tempNode = JSON.Parse(tempResponse);
 
@@ -26,10 +26,10 @@ public class RequestTest : MonoBehaviour {
 
         JSONArray loginList = tempNode["loginList"].AsArray;
 
-        foreach (JSONNode tempItemNode in loginList)
-        {
-            Debug.Log(tempItemNode["id"].AsInt);
-        }
+//        foreach (JSONNode tempItemNode in loginList)
+//        {
+//            Debug.Log(tempItemNode["id"].AsInt);
+//        }
     }
 
     void RequestFail(string tempResponse)

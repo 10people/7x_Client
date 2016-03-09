@@ -10,6 +10,7 @@ using ProtoBuf.Meta;
 
 public class PveStarItem : MonoBehaviour {
 
+	public UISprite mStar;
 	public UISprite Item_Icon;
 
 	public UILabel Instction;
@@ -36,6 +37,7 @@ public class PveStarItem : MonoBehaviour {
 
 	public GameObject AwardIcon_Bg;
 
+
 	void Start () {
 	
 	}
@@ -59,9 +61,12 @@ public class PveStarItem : MonoBehaviour {
 			UiSpriteBg.gameObject.SetActive(false);
 
 			mBtn.enabled = false;
+
+			mStar.spriteName = "KongStar"; 
 		}
 		else
 		{
+			mStar.spriteName = "BigStar"; 
 			if(!mStarInfo.getRewardState)
 			{
 				getAwardSpite.gameObject.SetActive(true);
@@ -70,7 +75,7 @@ public class PveStarItem : MonoBehaviour {
 
 				UiSpriteBg.gameObject.SetActive(false);
 
-				Item_Icon.spriteName = "bg2";
+				Item_Icon.spriteName = "tint_back";
 			}
 			else
 			{
@@ -80,7 +85,7 @@ public class PveStarItem : MonoBehaviour {
 				
 				UiSpriteBg.gameObject.SetActive(true);
 
-				Item_Icon.spriteName = "backGround_Common_big";
+				Item_Icon.spriteName = "Cmplete";
 
 				mBtn.enabled = false;
 			}
@@ -132,6 +137,13 @@ public class PveStarItem : MonoBehaviour {
 
 		award.guanQiaId = m_Level.guanQiaId;
 
+		if(CityGlobalData.PT_Or_CQ)
+		{
+			award.isChuanQi = false;
+		}
+		else{
+			award.isChuanQi = true;
+		}
 		t_qx.Serialize(t_tream, award);
 
 		byte[] t_protof;

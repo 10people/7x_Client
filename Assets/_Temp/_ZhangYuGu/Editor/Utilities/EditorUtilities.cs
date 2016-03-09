@@ -8,6 +8,11 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using UnityEditor.Callbacks;
+using System.Data;
+using Mono.Data.Sqlite;
+using System.Linq;  
+using System.Text;  
+//using System.Threading.Tasks;  
 
 [InitializeOnLoad]
 public class EditorUtilities : MonoBehaviour
@@ -17,22 +22,25 @@ public class EditorUtilities : MonoBehaviour
     {
         BUILD_DEBUG = 1,
 
-		OPEN_DRAMA_DIRECTOR,
-		OPEN_JSON,
-		OPEN_UI_2D,
-		OPEN_LOAD_TASK,
-		OPEN_OTHER,
-        
 		UTILITIES___FIND_LARGE_TEX = 10,
 		UTILITIES___FIND_TEX_IN_RES,
 		UTILITIES___ASSETS_FILTER,
 		UTILITIES___COMBINE_MESH,
 		UTILITIES___FIND_MISSING_MONO,
 
-		UPGRADE___NAV_UPGRADE = 20,
+		OPEN_DRAMA_DIRECTOR = 100,
+		OPEN_JSON,
+		OPEN_UI_2D,
+		OPEN_LOAD_TASK,
+		OPEN_FX_CACHE,
+		OPEN_SPOT_VIEW,
+		OPEN_FX_VIEW,
+		OPEN_OTHER,
+
+		UPGRADE___NAV_UPGRADE = 200,
 		UPGRADE___LIGHTMAP_UPGRADE,
 
-		NEW_CHAR_DEVELOP = 30,
+		NEW_CHAR_DEVELOP = 300,
     }
 
     static EditorUtilities()
@@ -57,14 +65,29 @@ public class EditorUtilities : MonoBehaviour
 		EditorWindow.GetWindow<JsonViewer>( false, "View Json", true );
 	}
 
-	[MenuItem("Utility/Open/2D UI Tool", false, (int)MenuItemPriority.OPEN_UI_2D)]
+	[MenuItem("Utility/Open/2D UI", false, (int)MenuItemPriority.OPEN_UI_2D)]
 	static void OpenUI2DTool(){
-		EditorWindow.GetWindow<UI2DWindow>( false, "2D UI Tool", true );
+		EditorWindow.GetWindow<UI2DWindow>( false, "2D UI", true );
 	}
 
-	[MenuItem("Utility/Open/Load Task Tool", false, (int)MenuItemPriority.OPEN_LOAD_TASK)]
+	[MenuItem("Utility/Open/Load Task", false, (int)MenuItemPriority.OPEN_LOAD_TASK)]
 	static void OpenUILoadTaskTool(){
-		EditorWindow.GetWindow<UILoadTaskWindow>( false, "Load Task Tool", true );
+		EditorWindow.GetWindow<UILoadTaskWindow>( false, "Load Task", true );
+	}
+
+	[MenuItem("Utility/Open/Fx Cache", false, (int)MenuItemPriority.OPEN_FX_CACHE)]
+	static void OpenFxCacheWindowTool(){
+		EditorWindow.GetWindow<FxCacheWindow>( false, "Fx Cache", true );
+	}
+
+	[MenuItem("Utility/Open/Fx View", false, (int)MenuItemPriority.OPEN_FX_VIEW)]
+	static void OpenFxViewWindowTool(){
+		EditorWindow.GetWindow<FxViewWindow>( false, "Fx View", true );
+	}
+
+	[MenuItem("Utility/Open/View Spot", false, (int)MenuItemPriority.OPEN_SPOT_VIEW)]
+	static void OpenViewSpotWindowTool(){
+		EditorWindow.GetWindow<ViewSpotWindow>( false, "View Spot", true );
 	}
 
 	[MenuItem("Utility/Open/Open Other", false, (int)MenuItemPriority.OPEN_OTHER)]
@@ -306,7 +329,7 @@ public class EditorUtilities : MonoBehaviour
 
         if (new DirectoryInfo(XmlFolder).GetFiles("*.xml").Where(item => item.Name == "HeroGrow.xml").Select(item => item.FullName).Contains(path))
         {
-            Debug.Log("");
+//            Debug.Log("");
         }
 
         var xmlDicList = XMLFileIO.ReadXML(path);
@@ -469,6 +492,8 @@ public class EditorUtilities : MonoBehaviour
 
 
 	#region Utilities
+
+	
 
 	#endregion
 }

@@ -30,11 +30,10 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 	public GameObject nationBtnObj;//选择国家按钮
 	private List<GameObject> nationBtnsList = new List<GameObject> ();
 	public UILabel nationDes;//国家描述
+	public UISprite countryDesSprite;
 	private int currentNationId;//当前国家id
 	
 	public EventHandler zheZhaoHandler;
-
-	public GameObject tipWinObj;
 	
 	void Awake () 
 	{	
@@ -50,9 +49,9 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 			OperationSupport.ReportClientAction( OperationSupport.ClientAction.CREATE_ROLE );
 		}
 
-		nameInputList.ForEach(item => item.GetComponent<EventHandler> ().m_handler += InputHandlerCallBack);
+		nameInputList.ForEach(item => item.GetComponent<EventHandler> ().m_click_handler += InputHandlerCallBack);
 
-		zheZhaoHandler.m_handler += ZheZhaoHandlerCallBack;
+		zheZhaoHandler.m_click_handler += ZheZhaoHandlerCallBack;
 		
 		currentNationId = CityGlobalData.countryId;
 
@@ -124,6 +123,7 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 	/// <param name="countryId">Country identifier.</param>
 	void ShowCountryDes (int countryId)
 	{
+		countryDesSprite.spriteName = "CountryDes" + countryId;
 		switch (countryId)
 		{
 		case 1:
@@ -272,7 +272,7 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 		if (SysparaTemplate.CompareSyeParaWord (nameInputList[roleId].text))
 		{
 			string des = LanguageTemplate.GetText (LanguageTemplate.Text.Name_2);
-			TipWindow (des);
+			QXComData.CreateBox (1,des,true,RandomAgain);
 		}
 		else
 		{
@@ -338,8 +338,8 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 					case false:
 						
 						//创建失败
-						TipWindow (creatRes.msg);
-						Debug.Log("creatRes.msg:" + creatRes.msg);
+						QXComData.CreateBox (1,creatRes.msg,true,RandomAgain);
+//						Debug.Log("creatRes.msg:" + creatRes.msg);
 						
 						break;
 					}
@@ -350,7 +350,12 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 		}
 		return false;
 	}
-	
+
+	void RandomAgain (int i)
+	{
+		RandomNameBtn ();
+	}
+
 	public void OnNameSubmit ()
 	{
 		zheZhaoHandler.gameObject.SetActive (false);
@@ -439,22 +444,9 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 		OnNameSubmit ();
 	}
 
-	void TipWindow (string msg)
-	{
-		GameObject win = (GameObject)Instantiate (tipWinObj);
-		
-		win.SetActive (true);
-		win.transform.parent = this.transform;
-		win.transform.localPosition = new Vector3 (0,0,-500);
-		win.transform.localScale = Vector3.one;
-		
-		CreateRoleTips tip = win.GetComponent<CreateRoleTips> ();
-		tip.ScaleAnim ();
-		tip.GetDesLabelType (msg);
-	}
-
 	void OnDestroy () 
 	{	
 		SocketTool.UnRegisterMessageProcessor (this);
+		selectRole = this;
 	}
 }

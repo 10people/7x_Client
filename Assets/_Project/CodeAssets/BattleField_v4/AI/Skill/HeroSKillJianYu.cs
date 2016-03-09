@@ -26,7 +26,7 @@ public class HeroSKillJianYu : HeroSkill
 
 	public void activeSkill()
 	{
-		BattleEffectControllor.Instance ().PlayEffect (49, tempPosition, node.transform.forward);
+		BattleEffectControllor.Instance().PlayEffect (49, tempPosition, node.transform.forward);
 
 		StartCoroutine (hurt());
 	}
@@ -39,9 +39,9 @@ public class HeroSKillJianYu : HeroSkill
 
 		float av = fbp.Float;
 
-		node.attackHp(node.targetNode, av, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
+		node.attackHp(node.targetNode, av, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
 
-		List<BaseAI> list = node.stance == BaseAI.Stance.STANCE_ENEMY ? BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes;
+		List<BaseAI> list = node.stance == BaseAI.Stance.STANCE_ENEMY ? BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes;
 
 		foreach(BaseAI n in list)
 		{
@@ -53,7 +53,7 @@ public class HeroSKillJianYu : HeroSkill
 			{
 				fbp = BattleControlor.Instance().getAttackValueSkill(node, n, template.value2, 0);
 
-				node.attackHp(n, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
+				node.attackHp(n, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
 			}
 		}
 	}

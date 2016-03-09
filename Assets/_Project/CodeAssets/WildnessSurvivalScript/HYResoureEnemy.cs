@@ -54,7 +54,7 @@ public class HYResoureEnemy : MonoBehaviour , SocketProcessor {
 	private bool m_isEnterBattle = false;
 	private int m_iEnterIndex = 0;
 
-	public static HYResoureEnemy Instance ()
+	public static HYResoureEnemy Instance()
 	{
 		if (!g_HYResoureEnemy)
 		{

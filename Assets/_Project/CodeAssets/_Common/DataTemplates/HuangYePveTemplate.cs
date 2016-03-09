@@ -40,7 +40,7 @@ public class HuangYePveTemplate : XmlLoadManager {
 
 	public int rank5Award;
 
-	public int fastAward;
+	public string fastAward;
 
 	public int killAward;
 
@@ -54,7 +54,13 @@ public class HuangYePveTemplate : XmlLoadManager {
 
 	public int positionX;
 
-	public int positionY;
+	public int positionY; //pveId="101509" paraK="2193" />
+
+	public int pveId;
+
+	public int paraK;
+
+	public string recMibaoSkill;
 
 	public static List<HuangYePveTemplate> templates = new List<HuangYePveTemplate>();
 
@@ -137,7 +143,7 @@ public class HuangYePveTemplate : XmlLoadManager {
 				t_template.rank5Award = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.fastAward = int.Parse( t_reader.Value );
+				t_template.fastAward =  t_reader.Value ;
 			
 				t_reader.MoveToNextAttribute();
 				t_template.killAward = int.Parse( t_reader.Value );
@@ -160,6 +166,14 @@ public class HuangYePveTemplate : XmlLoadManager {
 				t_reader.MoveToNextAttribute();
 				t_template.positionY = int.Parse( t_reader.Value );
 
+				t_reader.MoveToNextAttribute();
+				t_template.pveId = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.paraK = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.recMibaoSkill =  t_reader.Value ;
 				#if DEBUG_TEMPLATE
 				Log( t_template );
 				#endif

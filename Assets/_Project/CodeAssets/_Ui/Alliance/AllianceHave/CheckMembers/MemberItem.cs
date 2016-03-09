@@ -62,7 +62,7 @@ public class MemberItem : MonoBehaviour {
 	//弹出成员信息详情窗口
 	void CheckMemberInfo ()
 	{
-		Debug.Log ("就不给你看");
+		//Debug.Log ("就不给你看");
 
 		Vector3 localPos = new Vector3 (40f,-60f,0);
 		AllianceMember.a_member.Select (this.gameObject,localPos);

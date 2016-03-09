@@ -446,6 +446,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 				m_socket.Shutdown( SocketShutdown.Both );
 				
 				m_socket.Close();
+
+				m_socket = null;
 			}	
 		}
 		catch( Exception e ){
@@ -465,7 +467,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	/// No response from server.
 	/// </summary>
 	public static void ConnectionTimeOut(){
-		CreateTimeOutReConnectWindow( ReLoginClickCallback );
+		SocketHelper.CreateTimeOutReConnectWindow( SocketHelper.ReLoginClickCallback );
 		
 		m_state = SocketState.DisConnected;
 	}
@@ -474,7 +476,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	/// Connection exception.
 	/// </summary>
 	private void ConnectionLostOrFail(){
-		CreateConnectionLostOrFailWindow();
+		SocketHelper.CreateConnectionLostOrFailWindow();
 		
 		m_state = SocketState.DisConnected;
 	}
@@ -490,7 +492,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			return;
 		}
 
-		if ( Instance ().m_socket == null ) {
+		if ( Instance().m_socket == null ) {
 			Debug.LogError( "Socket.m_instance.m_socket = null." );
 			
 			return;
@@ -521,7 +523,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			               "   Desc: " + t_error_message.errorDesc +
 			               "   Client: " + t_error_message.cmd );
 			
-			CreateGeneralErrorWindow( t_error_message.errorCode,
+			SocketHelper.CreateGeneralErrorWindow( t_error_message.errorCode,
 			                         t_error_message.errorDesc,
 			                         t_error_message.cmd );
 			
@@ -616,80 +618,6 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		default:
 			return false;
 		}
-	}
-
-	#endregion
-
-
-
-	#region Error Process
-
-	public static void CreateTimeOutReConnectWindow( UIBox.onclick p_on_click, UIBox.OnBoxCreated p_on_create = null ){
-//		Debug.Log ( "CreateTimeOutReConnectWindow()" );
-
-
-		Global.CreateBox( LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_3 ),
-		                 LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_1 ),
-		                 "",
-		                 null,
-		                 LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_4 ), 
-
-		                 null, 
-		                 p_on_click,
-		                 p_on_create,
-		                 null,
-		                 null,
-
-		                 false,
-		                 false,
-		                 true);
-	}
-
-	public static void CreateConnectionLostOrFailWindow(){
-//		Debug.Log ( "CreateConnectionLostOrFailWindow()" );
-
-
-		Global.CreateBox( LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_1 ),
-						LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_2 ),
-		              	"",
-		                null,
-		                 LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_3 ),
-		       			null,
-		         		ReLoginClickCallback,
-		                 null,
-		                 null,
-		                 null,
-		                 false,
-		                 false,
-		                 true);
-	}
-
-	public static void ReLoginClickCallback( int p_i ){
-//		Debug.Log("ReLoginClickCallback( " + p_i + " )");
-
-		{
-//			if( SocketTool.WillReconnect() )
-			{
-//				SceneManager.CleanGuideAndDialog();
-				
-				SceneManager.RequestEnterLogin();
-			}
-		}
-	}
-
-	public static void CreateGeneralErrorWindow( int p_error_code, string p_error_desc, int p_client_cmd ){
-		Global.CreateBox("System Error",
-		                 "code: " + p_error_code + "\n" +
-		                 "desc: " + p_error_desc + "\n" +
-		                 "client cmd: " + p_client_cmd,
-		                 null, null, 
-		                 "OK",
-		                 null, null, null,
-		                 null,
-		                 null,
-		                 false,
-		                 false,
-		                 true);
 	}
 
 	#endregion
@@ -1213,7 +1141,14 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		int t_bytes_sent = 0;
 
 		try{
-			t_bytes_sent = m_socket.EndSend( p_send );
+			if( m_socket != null ){
+				t_bytes_sent = m_socket.EndSend( p_send );
+			}
+			else{
+				CloseSocket();
+
+				ManualLostConnection();
+			}
 
 			m_cur_sending = null;
 		}
@@ -1228,6 +1163,10 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 			return;
 		}
+
+		#if DEBUG_SEND
+		Debug.Log( "Send Done." );
+		#endif
 
 		lock( m_sending_messages ){
 			QXBuffer t_buffer = m_sending_messages.Dequeue();
@@ -1480,7 +1419,9 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	/// 2.if a proto message is never processed, and it also not being listened, will raise a warning log.
 	public static void RegisterMessageProcessor( SocketProcessor p_processor ){
 		if( m_socket_processors.Contains( p_processor ) ){
+			#if UNITY_EDITOR
 			Debug.LogWarning( "Already Contained: " + p_processor );
+			#endif
 
 			return;
 		}
@@ -1602,7 +1543,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 				}
 
 				#if DEBUG_RECEIVE
-				Debug.Log( t_buffer.m_protocol_index + " Status, Processed - Listened: " + t_message_processed + "-" + t_message_listended  );
+				Debug.Log( t_buffer.m_protocol_index + " Status, Processed - Listened: " + t_message_processed + "-" + t_message_listened  );
 				#endif
 
 				#if UNITY_EDITOR
@@ -1784,7 +1725,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		ShutDown();
 
 		{
-			CreateConnectionLostOrFailWindow();
+			SocketHelper.CreateConnectionLostOrFailWindow();
 		}
 	}
 	
@@ -1805,7 +1746,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		ShutDown();
 
 		{
-			CreateConnectionLostOrFailWindow();
+			SocketHelper.CreateConnectionLostOrFailWindow();
 		}
 	}
 

@@ -10,4 +10,6 @@
 <CameraTemplate id="8" cameraPx="2.43" cameraPy="1.67" cameraPz="1.04" cameraRx="9.46" cameraRy="-474.7" />
 <CameraTemplate id="9" cameraPx="1.41" cameraPy="1.67" cameraPz="1.96" cameraRx="9.46" cameraRy="-497.9" />
 <CameraTemplate id="10" cameraPx="0.91" cameraPy="1.64" cameraPz="2.2" cameraRx="9.46" cameraRy="-514.4" />
+<CameraTemplate id="11" cameraPx="-0.26" cameraPy="4.65" cameraPz="4.45" cameraRx="7.93" cameraRy="-188.28" />
+<CameraTemplate id="12" cameraPx="-0.12" cameraPy="2.59" cameraPz="2.66" cameraRx="7.93" cameraRy="-188.28" />
 </dataset>

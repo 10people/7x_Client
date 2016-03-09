@@ -25,14 +25,14 @@ public class chooseChapterBtn : MonoBehaviour {
 	public void init()
 	{
 		//ChaptersGB.text = Chapters;
-		List<int > zhangjieid = PassLevelBtn.Instance ().Sec_idlist;
+		List<int > zhangjieid = PassLevelBtn.Instance().Sec_idlist;
 		Art.SetActive(false);
-		Debug.Log("Chapternumber = "+Chapternumber);
+		//Debug.Log("Chapternumber = "+Chapternumber);
 		if(zhangjieid != null )
 		{
 			foreach(int id in zhangjieid)
 			{
-				Debug.Log("id = "+id);
+			//	Debug.Log("id = "+id);
 				if(id == Chapternumber)
 				{
 					Art.SetActive(true);
@@ -52,7 +52,7 @@ public class chooseChapterBtn : MonoBehaviour {
 		choosemap.nextMap = Chapternumber;
 		choosemap.UpAndDownbtn = false;
 	    MapData.mapinstance.CurrChapter = Chapternumber;
-	    Debug.Log ("Chapternumber"+Chapternumber);
+	  //  Debug.Log ("Chapternumber"+Chapternumber);
 		MapData.sendmapMessage (Chapternumber);
 		//MapData.mapinstance.deletelvfun();
 	    MapData.mapinstance.IsCloseGuid = false;

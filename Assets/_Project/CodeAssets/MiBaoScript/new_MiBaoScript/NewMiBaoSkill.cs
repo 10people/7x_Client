@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -31,7 +31,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 	public UILabel Be_SKill_Instroduction;//被动效果
 
-	public UILabel Money;
+	//public UILabel Money;
 
 	public SkillInfo m_Skill;
 
@@ -45,7 +45,9 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 	public GameObject SaveBtn;
 
-	public static NewMiBaoSkill Instance ()
+	public GameObject NewAddMiBaoShangZhen;
+
+	public static NewMiBaoSkill Instance()
 	{
 		if (!mMiBaoData)
 		{
@@ -77,6 +79,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 	}
 	public void Init(int SKillType, int ski_id)
 	{
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		SaveId = ski_id;
 		S_Type = SKillType;
 		if (!COmeMiBaoUI)
@@ -114,7 +117,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 				m_Skill_MiBaoInfo = MiBaoInfo;
 				
 				InitData();
-				Debug.Log ("mibao data back !");
+//				Debug.Log ("mibao data back !");
 				return true;
 			}
 			case ProtoIndexes.MIBAO_DEAL_SKILL_RESP://m秘宝技能激活或者进阶返回
@@ -135,12 +138,12 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 				if(mMiBaoDealSkillResp.message == 0)
 				{
 					isMiBaoSkillActive = true;
-					Debug.Log ("激活技能成功");
+//					Debug.Log ("激活技能成功");
 				}
 				else{
-					Debug.Log ("碎片不足");
+//					Debug.Log ("碎片不足");
 				}
-			//	UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillTemp,EffectIdTemplate.GetPathByeffectId(100178));
+			//	UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillTemp,EffectIdTemplate.GetPathByeffectId(100178));
 				return true;
 			}
 
@@ -154,11 +157,11 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 				
 				t_qx.Deserialize(t_stream, Sava_MiBao, Sava_MiBao.GetType());
 				
-				Debug.Log ("Sava_MiBao.success = "+Sava_MiBao.success);
+//				Debug.Log ("Sava_MiBao.success = "+Sava_MiBao.success);
 				if(Sava_MiBao.success == 1)//保存成功
 				{
 					skillZuHeId = Sava_MiBao.zuheSkill;
-					Debug.Log ("Sava_MiBao.type:" + Sava_MiBao.type);
+//					Debug.Log ("Sava_MiBao.type:" + Sava_MiBao.type);
 					yinDaoId = Sava_MiBao.zuheSkill;
 					switch(Sava_MiBao.type)
 					{
@@ -171,23 +174,15 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.PvpSend ):
-					{
-//						GameObject tiaozhanObj = GameObject.Find ("GeneralChallengePage");
-//						Debug.Log ("GeneralChallengePage:" + tiaozhanObj);
-//						if (tiaozhanObj != null)
-//						{
-//							GeneralTiaoZhan tiaozhan = tiaozhanObj.GetComponent<GeneralTiaoZhan> ();
-//							
-//							tiaozhan.RefreshMiBaoSkillInfo (skillZuHeId);
-//							
-//							YinDaoCol ();
-//						}
-						
+					{					
+						GeneralChallengePage.gcPage.RefreshMyMiBaoSkillInfo (skillZuHeId);
+						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
+						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.HY_TreSend ):
 					{
-						HY_UIManager.Instance ().ShowOrClose ();
+						HY_UIManager.Instance().ShowOrClose ();
 						
 						HYRetearceEnemy.Instance().M_Treas_info.zuheId =  skillZuHeId;
 						
@@ -207,9 +202,9 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 //							baizhanMain.DefensiveSetUp ();
 //							baizhanMain.IsOpenOpponent = false;
 //						}
-						PvpPage.pvpPage.pvpResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
-						PvpPage.pvpPage.PvpActiveState (true);
-						PvpPage.pvpPage.DefensiveSetUp ();
+//						PvpPage.pvpPage.pvpResp.pvpInfo.zuheId = Sava_MiBao.zuheSkill;
+//						PvpPage.pvpPage.PvpActiveState (true);
+//						PvpPage.pvpPage.DefensiveSetUp ();
 						
 						break;
 					}
@@ -229,45 +224,72 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 					case (int)(CityGlobalData.MibaoSkillType.YX_JinBi) :
 					{
 						//EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+						foreach(YXItem m_YXItem in XYItemManager.initance().YXItemList)
+						{
+							if(m_YXItem.mYouXiaInfo.id == NewYXUI.Instance().big_id)
+							{
+								m_YXItem.mYouXiaInfo.zuheId = skillZuHeId;
+							}
+						}
 						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
 						NewYXUI.Instance().ShowMiBaoSkillIcon();
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YX_Cailiao) :
 					{
-						//EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+						foreach(YXItem m_YXItem in XYItemManager.initance().YXItemList)
+						{
+							if(m_YXItem.mYouXiaInfo.id == NewYXUI.Instance().big_id)
+							{
+								m_YXItem.mYouXiaInfo.zuheId = skillZuHeId;
+							}
+						}
 						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
 						NewYXUI.Instance().ShowMiBaoSkillIcon();
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YX_Jingpo) :
 					{
-						//EnterYouXiaBattle.GlobleEnterYouXiaBattle.SecondShowOrClose();
+						foreach(YXItem m_YXItem in XYItemManager.initance().YXItemList)
+						{
+							if(m_YXItem.mYouXiaInfo.id == NewYXUI.Instance().big_id)
+							{
+								m_YXItem.mYouXiaInfo.zuheId = skillZuHeId;
+							}
+						}
 						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
 						NewYXUI.Instance().ShowMiBaoSkillIcon();
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YX_WanbiGuizhao):
 					{
+						foreach(YXItem m_YXItem in XYItemManager.initance().YXItemList)
+						{
+							if(m_YXItem.mYouXiaInfo.id == NewYXUI.Instance().big_id)
+							{
+								m_YXItem.mYouXiaInfo.zuheId = skillZuHeId;
+							}
+						}
 						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
 						NewYXUI.Instance().ShowMiBaoSkillIcon();
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.YX_ZongHengLiuHe):
 					{
+						foreach(YXItem m_YXItem in XYItemManager.initance().YXItemList)
+						{
+							if(m_YXItem.mYouXiaInfo.id == NewYXUI.Instance().big_id)
+							{
+								m_YXItem.mYouXiaInfo.zuheId = skillZuHeId;
+							}
+						}
 						NewYXUI.Instance().m_You_XiaInfo.zuheId = skillZuHeId;
 						NewYXUI.Instance().ShowMiBaoSkillIcon();
 						break;
 					}
 					case (int)(CityGlobalData.MibaoSkillType.LueDuo_GongJi):
 					{
-						GameObject tiaozhanObj = GameObject.Find ("GeneralChallengePage");
-						
-						if (tiaozhanObj != null)
-						{
-							GeneralTiaoZhan tiaozhan = tiaozhanObj.GetComponent<GeneralTiaoZhan> ();
-							tiaozhan.RefreshMiBaoSkillInfo (skillZuHeId);
-						}
+						GeneralChallengePage.gcPage.RefreshMyMiBaoSkillInfo (skillZuHeId);
 						
 						break;
 					}
@@ -285,37 +307,49 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			
 		}else
 		{
-			Debug.Log ("p_message == null");
+//			Debug.Log ("p_message == null");
 		}
 		
 		return false;
 	}
 	public void InitData()
 	{
-		Money.text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString();
+		//Money.text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString();
 
 		if(m_Skill_MiBaoInfo.skillList != null)
 		{
-			Debug.Log ("111SaveId = "+SaveId);
+//			Debug.Log ("111SaveId = "+SaveId);
 
 			if(SaveId > 0)
 			{
-				Debug.Log ("1aaaaaa ");
+//				Debug.Log ("1aaaaaa ");
 				ShowBeChoosed_MiBao(SaveId,true);
+				if(!COmeMiBaoUI)
+				{
+					NewAddMiBaoShangZhen.SetActive(true);
+					NewAddMiBaoShangZhen.transform.localPosition = m_Skill_Gbj [SaveId-1].transform.localPosition;
+				}
 			}
 			else
-			{   if(m_Skill_MiBaoInfo.skillList.Count < 7)
+			{   
+				if(!COmeMiBaoUI)
 				{
-					ShowBeChoosed_MiBao( m_Skill_Gbj[m_Skill_MiBaoInfo.skillList.Count].GetComponent<miBaoskilltemp>().SKill_id,false);
+					NewAddMiBaoShangZhen.SetActive(true);
+					NewAddMiBaoShangZhen.transform.localPosition = m_Skill_Gbj [0].transform.localPosition;
+					ShowBeChoosed_MiBao( m_Skill_Gbj[0].GetComponent<miBaoskilltemp>().SKill_id,true);
 				}
 				else
 				{
-					ShowBeChoosed_MiBao( m_Skill_Gbj[m_Skill_MiBaoInfo.skillList.Count-1].GetComponent<miBaoskilltemp>().SKill_id,true);
+					if(m_Skill_MiBaoInfo.skillList.Count < 7)
+					{
+						ShowBeChoosed_MiBao( m_Skill_Gbj[m_Skill_MiBaoInfo.skillList.Count].GetComponent<miBaoskilltemp>().SKill_id,false);
+					}
+					else
+					{
+						ShowBeChoosed_MiBao( m_Skill_Gbj[m_Skill_MiBaoInfo.skillList.Count-1].GetComponent<miBaoskilltemp>().SKill_id,true);
+					}
 				}
-				Debug.Log ("bbbbbbbbbb ");
-				Debug.Log("activeZuheId = "+m_Skill_MiBaoInfo.skillList[m_Skill_MiBaoInfo.skillList.Count -1].activeZuheId);
 			}
-
 			for(int i = 0; i < m_Skill_Gbj.Length; i ++)
 			{
 				miBaoskilltemp m_miBaoskilltemp = m_Skill_Gbj[i].GetComponent<miBaoskilltemp>();
@@ -332,7 +366,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 						if(isMiBaoSkillActive)
 						{
-							UI3DEffectTool.Instance ().ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,m_Skill_Gbj[i],EffectIdTemplate.GetPathByeffectId(100166));
+							UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,m_Skill_Gbj[i],EffectIdTemplate.GetPathByeffectId(100166));
 						}
 					}
 				}
@@ -341,14 +375,14 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		}
 		else
 		{
-			Debug.Log ("cccccccccc ");
+//			Debug.Log ("cccccccccc ");
 			ShowBeChoosed_MiBao(1,false);
 		}
 	
 	}
 
 	public int SaveId;
-
+	public int NewSaveId;
 	public int S_Type;
 
 	public bool IsActived = false;
@@ -357,7 +391,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 	int NeedAcmibaonuber = 0;
 	public void ShowBeChoosed_MiBao(int  m_Skllinfo_id,bool Isactive)
 	{
-		Debug.Log ("m_Skllinfo_id = "+m_Skllinfo_id);
+//		Debug.Log ("m_Skllinfo_id = "+m_Skllinfo_id);
 		NeedAcmibaonuber = 0;
 		Acmibaonuber = 0;
 		foreach(MibaoInfo minfo in m_Skill_MiBaoInfo.miBaoList)
@@ -368,7 +402,10 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			}
 		}
 		SaveId = m_Skllinfo_id;
-
+		if(Isactive)
+		{
+			NewSaveId = m_Skllinfo_id;
+		}
 		IsActived = Isactive;
 		for (int i = 0; i < m_Skill_Gbj.Length; i ++)
 		{
@@ -379,6 +416,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 				m_miBaoskilltemp.beChoosed = true;
 
 				m_miBaoskilltemp.Be_CHoosed();
+
 			}
 		}
 		MiBaoSkillLvTempLate m_MiBaoSkillTemp = MiBaoSkillLvTempLate.GetMiBaoSkillLvTemplateByIdAndLevel (m_Skllinfo_id,1);
@@ -386,10 +424,16 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoSkillTemp.nameId);
 		
 		SKillName.text = mName;
-		
-		DescIdTemplate mDesc1 = DescIdTemplate.getDescIdTemplateByNameId(m_MiBaoSkillTemp.skillDesc);
-		DescIdTemplate mDesc2 = DescIdTemplate.getDescIdTemplateByNameId(mMiBaoSkillTemp.skillDesc);
-		DescIdTemplate mDesc3 = DescIdTemplate.getDescIdTemplateByNameId(m_MiBaoSkillTemp.skill2Desc);
+		if(Isactive&&!COmeMiBaoUI)
+		{
+			string MiBaoSkillName = mName;
+			string MiBaoNameShangZhen = " 已上阵！";
+			string data = MyColorData.getColorString(5, MiBaoSkillName)+MiBaoNameShangZhen;
+			ClientMain.m_UITextManager.createText( data);
+		}
+		DescIdTemplate mDesc1 = DescIdTemplate.getDescIdTemplateByNameId(m_MiBaoSkillTemp.ZhuDongskillDesc);
+		DescIdTemplate mDesc2 = DescIdTemplate.getDescIdTemplateByNameId(m_MiBaoSkillTemp.Desc);
+		DescIdTemplate mDesc3 = DescIdTemplate.getDescIdTemplateByNameId(m_MiBaoSkillTemp.BeDongskillDesc);
 		Skill_Icon.spriteName = mMiBaoSkillTemp.icon;
 		
 		SKill_Instroduction.text = mDesc1.description;
@@ -411,14 +455,14 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		else
 		{
 			Instroduction.gameObject.SetActive(true);
-			if (!COmeMiBaoUI)
-			{
-				SaveBtn.SetActive(true);
-			}
-			else
-			{
-				SaveBtn.SetActive(false);
-			}
+//			if (!COmeMiBaoUI)
+//			{
+//				//SaveBtn.SetActive(true);
+//			}
+//			else
+//			{
+//				SaveBtn.SetActive(false);
+//			}
 			int level = 0;
 			for(int j = 0; j < m_Skill_MiBaoInfo.skillList.Count; j ++)
 			{
@@ -433,156 +477,43 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			DisActiveMiBaoUISkill.SetActive(false);
 		}
 	}
-	public void ActiveSkillBtn()
+
+	public void SendSaveMiBaoMasege( )//保存秘宝技能
 	{
-		if(Acmibaonuber >= NeedAcmibaonuber)
-		{
-			bool iscanactive = false;
+		Debug.Log ("NewSaveId = "+NewSaveId);
+		if (NewSaveId <= 0) {
+			Destroy (this.gameObject);
 
-			Debug.Log("SaveId = "+SaveId);
-
-			int x_n = SaveId;
-
-			if(x_n < 2)
-			{
-				x_n = 2;
-			}
-
-			miBaoskilltemp m_miBaoskilltemp = m_Skill_Gbj [x_n-2].GetComponent<miBaoskilltemp> ();
-			if(m_Skill_MiBaoInfo.skillList != null)
-			{
-				for(int j = 0; j < m_Skill_MiBaoInfo.skillList.Count; j ++)
-				{
-					if(m_Skill_MiBaoInfo.skillList[j].activeZuheId == m_miBaoskilltemp.SKill_id)
-					{
-						iscanactive = true;
-						break;
-					}
-				}
-			}else
-			{
-				if(SaveId == 1)
-				{
-					iscanactive = true;
-				}else
-				{
-					iscanactive = false;
-				}
-			}
-
-			if(!iscanactive)
-			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),DontActive);
-				return;
-			}
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),MiBaoUpStarLoadBack);
-		}
-		else
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),OpenLockLoadBack);
-		}
-	}
-
-	void MiBaoUpStarLoadBack(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = "";
-		string str = "";
-
-		titleStr = "激活";
-		str ="\r\n"+"确定激活此技能吗？";
-
-		string confirm = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		string cancel = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
-		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,cancel,confirm,SendStarUpInfo);
-			
-	}
-	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		string str1 = "";
-
-		str1 = "\r\n"+"秘宝不足，无法激活！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-	
-		
-		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
-		
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str1), null,null,confirmStr,null,null,null,null
-		             );
-	}
-	void DontActive(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		string str1 = "";
-		
-		str1 = "\r\n"+"先激活前面的秘技！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-		
-		
-		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
-		
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str1), null,null,confirmStr,null,null,null,null
-		             );
-	}
-	void SendStarUpInfo(int i)
-	{
-		if( i == 2)
-		{
-			MiBaoDealSkillReq mMiBaoDealSkillReq = new MiBaoDealSkillReq ();
+		} else {
+			MibaoSelect Mibaoid = new MibaoSelect ();
 			
 			MemoryStream miBaoStream = new MemoryStream ();
 			
 			QiXiongSerializer MiBaoSer = new QiXiongSerializer ();
-
-			//Debug.Log("SaveId222 = "+SaveId);
-
-			mMiBaoDealSkillReq.zuheId = SaveId;
-			Debug.Log("SaveId222 = "+mMiBaoDealSkillReq.zuheId);
-			MiBaoSer.Serialize (miBaoStream,mMiBaoDealSkillReq);
-			byte[] t_protof;
-			t_protof = miBaoStream.ToArray();
 			
-			SocketTool.Instance ().SendSocketMessage (ProtoIndexes.MIBAO_DEAL_SKILL_REQ,ref t_protof);
+			Mibaoid.type = S_Type;
+			
+			Mibaoid.zuheSkill = NewSaveId;
+			
+			MiBaoSer.Serialize (miBaoStream, Mibaoid);
+			byte[] t_protof;
+			t_protof = miBaoStream.ToArray ();
+			
+			SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_MIBAO_SELECT, ref t_protof);
 		}
+
 	}
 
-	public void SendSaveMiBaoMasege( )//保存秘宝技能
-	{
-		MibaoSelect Mibaoid = new MibaoSelect ();
-		
-		MemoryStream miBaoStream = new MemoryStream ();
-		
-		QiXiongSerializer MiBaoSer = new QiXiongSerializer ();
-		
-		Mibaoid.type = S_Type;
-		
-		Mibaoid.zuheSkill = SaveId;
-		
-		MiBaoSer.Serialize (miBaoStream, Mibaoid);
-		byte[] t_protof;
-		t_protof = miBaoStream.ToArray ();
-		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_MIBAO_SELECT, ref t_protof);
-		
-		//CityGlobalData.m_MiBaoSkillId = SaveId;
-	}
-
-	public void Buy_Money()
-	{
-		JunZhuData.Instance().BuyTiliAndTongBi(false,true,false);
-	}
 	public void CloseBtn()
 	{
-		MainCityUI.TryRemoveFromObjectList(this.gameObject);
-		Destroy (this.gameObject);
+		if (COmeMiBaoUI) {
+
+			Destroy (this.gameObject);
+		} else {
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,4);
+			MainCityUI.TryRemoveFromObjectList(this.gameObject);
+			SendSaveMiBaoMasege ();
+		}
 	}
 }

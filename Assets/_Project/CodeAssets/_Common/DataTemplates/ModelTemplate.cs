@@ -26,6 +26,8 @@ public class ModelTemplate : XmlLoadManager
 
 	public float height;
 
+	public int icon;
+
 
 	public static List<ModelTemplate> m_templates = new List<ModelTemplate>();
 
@@ -110,6 +112,9 @@ public class ModelTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.height = float.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.icon = int.Parse(t_reader.Value);
 			}
 			
 			//			t_template.Log();

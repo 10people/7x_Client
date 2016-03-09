@@ -134,15 +134,15 @@ public class AllianceFightMainPage : MonoBehaviour
                     {
                         if (tempResp.isCanFight)
                         {
-                            Debug.Log("m_allianceId:" + m_allianceId);
-                            Debug.Log("tempResp.matchInfos.Count:" + tempResp.matchInfos.Count);
+//                            Debug.Log("m_allianceId:" + m_allianceId);
+//                            Debug.Log("tempResp.matchInfos.Count:" + tempResp.matchInfos.Count);
                             for (int i = 0; i < tempResp.matchInfos.Count; i++)
                             {
                                 List<int> lmIdList = new List<int>();
                                 lmIdList.Add(tempResp.matchInfos[i].lm1Id);
                                 lmIdList.Add(tempResp.matchInfos[i].lm2Id);
-                                Debug.Log("lmIdList[0]:" + lmIdList[0]);
-                                Debug.Log("lmIdList[1]:" + lmIdList[1]);
+//                                Debug.Log("lmIdList[0]:" + lmIdList[0]);
+//                                Debug.Log("lmIdList[1]:" + lmIdList[1]);
                                 if (lmIdList.Contains(m_allianceId))
                                 {
                                     if (lmIdList.Contains(-1))
@@ -153,7 +153,7 @@ public class AllianceFightMainPage : MonoBehaviour
                                     {
                                         gameStatusLabel.text = "";
                                         enterFightBtn.SetActive(true);
-                                        Debug.Log("dsaf");
+//                                        Debug.Log("dsaf");
                                     }
                                     break;
                                 }
@@ -186,10 +186,10 @@ public class AllianceFightMainPage : MonoBehaviour
     //创建fightItem
     private void CreateFightItemList(List<FightMatchInfo> tempFightList)
     {
-        Debug.Log("tempFightList.Count:" + tempFightList.Count);
+//        Debug.Log("tempFightList.Count:" + tempFightList.Count);
         if (tempFightList.Count > fightItemList.Count)
         {
-            Debug.Log(">");
+//            Debug.Log(">");
             int count = tempFightList.Count - fightItemList.Count;
             for (int i = 0; i < count; i++)
             {
@@ -205,7 +205,7 @@ public class AllianceFightMainPage : MonoBehaviour
         }
         else if (tempFightList.Count < fightItemList.Count)
         {
-            Debug.Log("<");
+//            Debug.Log("<");
             int count = fightItemList.Count - tempFightList.Count;
             for (int i = 0; i < count; i++)
             {
@@ -284,7 +284,7 @@ public class AllianceFightMainPage : MonoBehaviour
         {
             applyTimeLabel.text = MyColorData.getColorString(5, "报名截止");
         }
-        Debug.Log("leftTime:" + leftTime);
+//        Debug.Log("leftTime:" + leftTime);
         //距离报名截止时间还有*天**小时**分**秒
         string hourStr = "";
         string minuteStr = "";

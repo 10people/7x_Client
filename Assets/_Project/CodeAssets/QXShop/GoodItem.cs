@@ -25,7 +25,11 @@ public class GoodItem : MonoBehaviour {
 	private GameObject iconSamplePrefab;
 
 	public GameObject saleOutObj;
+	public GameObject soldOutSprite;
+	public UILabel vipLabel;
 	public EventHandler goodHandler;
+
+	private int jieSuoVip;
 
 	/// <summary>
 	/// Gets the dui huan info.
@@ -42,6 +46,8 @@ public class GoodItem : MonoBehaviour {
 		desLabel.text = "";
 		moneyIcon.transform.parent.gameObject.SetActive (true);
 
+		jieSuoVip = 0;
+
 		switch (tempType)
 		{
 		case ShopData.ShopType.ORDINARY:
@@ -55,6 +61,8 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.moneyType = (QXComData.MoneyType)Enum.ToObject (typeof (QXComData.MoneyType),template.needType);
 			goodInfo.countBuyTime = tempInfo.remainCount;
 
+			jieSuoVip = template.VIP;
+
 			break;
 		}
 		case ShopData.ShopType.MYSTRERT:
@@ -66,6 +74,8 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.itemNum = template.itemNum;
 			goodInfo.needMoney = template.needNum;
 			goodInfo.moneyType = (QXComData.MoneyType)Enum.ToObject (typeof (QXComData.MoneyType),template.needType);
+
+			jieSuoVip = template.VIP;
 
 			break;
 		}
@@ -131,7 +141,11 @@ public class GoodItem : MonoBehaviour {
 
 		moneyIcon = QXComData.MoneySprite (goodInfo.moneyType,moneyIcon);
 		moneyLabel.text = goodInfo.needMoney.ToString ();
-		saleOutObj.SetActive (tempInfo.isChange ? false : true);
+		saleOutObj.SetActive ((!tempInfo.isChange || JunZhuData.Instance().m_junzhuInfo.vipLv < jieSuoVip) ? true : false);
+
+		soldOutSprite.SetActive (tempInfo.isChange ? false : true);
+		vipLabel.gameObject.SetActive (JunZhuData.Instance().m_junzhuInfo.vipLv < jieSuoVip ? true : false);
+		vipLabel.text = MyColorData.getColorString (1,JunZhuData.Instance().m_junzhuInfo.vipLv < jieSuoVip ? "V" + jieSuoVip + "解锁" : "");
 
 		if (iconSamplePrefab == null)
 		{
@@ -143,8 +157,8 @@ public class GoodItem : MonoBehaviour {
 			InItIconSamplePrefab ();
 		}
 
-		goodHandler.m_handler -= ClickItem;
-		goodHandler.m_handler += ClickItem;
+		goodHandler.m_click_handler -= ClickItem;
+		goodHandler.m_click_handler += ClickItem;
 	}
 
 	void LoadIconSamplePrefab (ref WWW p_www, string p_path, UnityEngine.Object p_object)
@@ -162,12 +176,12 @@ public class GoodItem : MonoBehaviour {
 		//0普通道具;3当铺材料;5秘宝碎片;6进阶材料;7基础宝石;8高级宝石;9强化材料
 		IconSampleManager iconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
 
-		iconSample.SetIconByID (goodInfo.itemId);
+		iconSample.SetIconByID (goodInfo.itemId,"x" + goodInfo.itemNum,1);
 
 		string mdesc = DescIdTemplate.GetDescriptionById(goodInfo.itemId);
 		
-		iconSample.SetIconBasicDelegate (true,true,ClickItem);
-		iconSample.SetIconPopText(goodInfo.itemId, goodInfo.itemName, mdesc, 1);
+		iconSample.SetIconBasicDelegate (false,true,ClickItem);
+//		iconSample.SetIconPopText(goodInfo.itemId, goodInfo.itemName, mdesc, 1);
 //		iconSamplePrefab.transform.localScale = Vector3.one * 0.9f;
 
 		//if shopType == GongXian : SetBgColor to grey
@@ -180,7 +194,7 @@ public class GoodItem : MonoBehaviour {
 	
 	void ClickItem (GameObject obj)
 	{
-		if (duiHuanInfo.isChange)
+		if (duiHuanInfo.isChange && JunZhuData.Instance().m_junzhuInfo.vipLv >= jieSuoVip)
 		{
 			if (shopType == ShopData.ShopType.GONGXIAN)
 			{

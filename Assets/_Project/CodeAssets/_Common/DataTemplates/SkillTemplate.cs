@@ -44,6 +44,8 @@ public class SkillTemplate : XmlLoadManager
 	/// 3002#2.0#2.0#ff0000#0.74#0.0#10.0
 	public string Fx3D;
 
+	public int immediately;
+
 	public static List<SkillTemplate> templates= new List<SkillTemplate>();
 
 
@@ -130,6 +132,8 @@ public class SkillTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.Fx3D = t_reader.Value;
+
+				t_template.immediately = XmlLoadManager.ReadNextInt(t_reader);
 			}
 			
 			//			t_template.Log();

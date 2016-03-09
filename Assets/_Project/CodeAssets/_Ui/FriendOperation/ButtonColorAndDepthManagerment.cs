@@ -4,8 +4,8 @@ using System.Collections;
 public class ButtonColorAndDepthManagerment : MonoBehaviour {
 
     public GameObject m_BackObj;
-    public int m_DepthUp = 0;
-    public int m_DepthLow = 0;
+    //public int m_DepthUp = 0;
+    //public int m_DepthLow = 0;
     void Start ()
     {
 	
@@ -20,13 +20,13 @@ public class ButtonColorAndDepthManagerment : MonoBehaviour {
         }
         if (colliderEnable)
         {
-            m_BackObj.GetComponent<UISprite>().depth = m_DepthUp;
+         //   m_BackObj.GetComponent<UISprite>().depth = m_DepthUp;
             m_BackObj.GetComponent<TweenColor>().from = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
             m_BackObj.GetComponent<TweenColor>().to = new Color(1.0f, 1.0f, 1.0f);
         }
         else
         {
-            m_BackObj.GetComponent<UISprite>().depth = m_DepthLow;
+          //  m_BackObj.GetComponent<UISprite>().depth = m_DepthLow;
             m_BackObj.GetComponent<TweenColor>().from = new Color(1.0f, 1.0f, 1.0f);
             m_BackObj.GetComponent<TweenColor>().to = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
         }

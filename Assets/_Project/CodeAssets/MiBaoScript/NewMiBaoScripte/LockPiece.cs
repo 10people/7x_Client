@@ -119,7 +119,7 @@ public class LockPiece : MonoBehaviour ,SocketProcessor{
 				return;
 				
 			}
-			Debug.Log("int.Parse(s[i]) = "+int.Parse(s[i]));
+//			Debug.Log("int.Parse(s[i]) = "+int.Parse(s[i]));
 
 			LegendPveTemplate mLg_PveTempTemplate = LegendPveTemplate.GetlegendPveTemplate_By_id(int.Parse(s[i]));
 

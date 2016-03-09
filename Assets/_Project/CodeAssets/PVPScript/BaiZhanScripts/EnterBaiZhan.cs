@@ -13,7 +13,7 @@ public class EnterBaiZhan : MonoBehaviour {
 			}
 		}
 		else{
-			Debug.Log("AllianceData.Instance.Ex_Union"+AllianceData.Instance.IsAllianceNotExist);
+//			Debug.Log("AllianceData.Instance.Ex_Union"+AllianceData.Instance.IsAllianceNotExist);
             //if(AllianceData.Instance.Ex_Union == 1)
             //{
             //    Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.ALLIANCE_NOT_HAVE_ROOT ),

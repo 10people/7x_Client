@@ -12,7 +12,7 @@ public class AllianceApplicationData : MonoBehaviour,SocketProcessor {
 
 	private static AllianceApplicationData applicateData;
 
-	public static AllianceApplicationData Instance ()
+	public static AllianceApplicationData Instance()
 	{
 		if (!applicateData)
 		{
@@ -85,7 +85,7 @@ public class AllianceApplicationData : MonoBehaviour,SocketProcessor {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof,"30124");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof,"30124");
 		Debug.Log ("ApplicateReq" + ProtoIndexes.LOOK_APPLICANTS);
 	}
 

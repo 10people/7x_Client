@@ -77,6 +77,11 @@ public class GeneralSpecialReward : MonoBehaviour {
 			
 //			QXComData.InstanceEffect (QXComData.EffectPos.TOP,miBaoObj,100148);
 			QXComData.InstanceEffect (QXComData.EffectPos.MID,miBaoObj,100157);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,3);
+			if (!QXComData.CheckYinDaoOpenState (100160))
+			{
+				UIYindao.m_UIYindao.setCloseUIEff ();
+			}
 
 			break;
 		case QXComData.XmlType.EQUIP:
@@ -89,9 +94,11 @@ public class GeneralSpecialReward : MonoBehaviour {
 			break;
 		}
 
-		rewardHandler.m_handler += RewardHandlerClickBack;
+		rewardHandler.m_click_handler += RewardHandlerClickBack;
 
 		StartCoroutine ("ShowDesLabel1");
+
+//		Debug.Log ("QXComData.CheckYinDaoOpenState (100160)1:" + QXComData.CheckYinDaoOpenState (100160));
 	}
 
 	void RewardHandlerClickBack (GameObject obj)
@@ -100,12 +107,18 @@ public class GeneralSpecialReward : MonoBehaviour {
 		{
 		case QXComData.XmlType.MIBAO:
 
-			UI3DEffectTool.Instance ().ClearUIFx (miBaoObj);
+			UI3DEffectTool.ClearUIFx (miBaoObj);
+
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,4);
+			if (!QXComData.CheckYinDaoOpenState (100160))
+			{
+				UIYindao.m_UIYindao.setOpenUIEff ();
+			}
 
 			break;
 		case QXComData.XmlType.EQUIP:
 
-			UI3DEffectTool.Instance ().ClearUIFx (equipObj);
+			UI3DEffectTool.ClearUIFx (equipObj);
 
 			break;
 		default:
@@ -117,9 +130,11 @@ public class GeneralSpecialReward : MonoBehaviour {
 			rewardData.miBaoClick ();
 		}
 
-		GeneralRewardManager.Instance ().SpecialReward_Index ++;
-		GeneralRewardManager.Instance ().CheckSpecialReward ();
-		GeneralRewardManager.Instance ().RefreshSpecialItemList (this.gameObject);
+//		Debug.Log ("QXComData.CheckYinDaoOpenState (100160)2:" + QXComData.CheckYinDaoOpenState (100160));
+
+		GeneralRewardManager.Instance().SpecialReward_Index ++;
+		GeneralRewardManager.Instance().CheckSpecialReward ();
+		GeneralRewardManager.Instance().RefreshSpecialItemList (this.gameObject);
 	}
 
 	IEnumerator ShowDesLabel1 ()

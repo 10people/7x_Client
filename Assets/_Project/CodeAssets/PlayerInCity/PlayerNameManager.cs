@@ -148,19 +148,10 @@ public class PlayerNameManager : MonoBehaviour
                 if (vip.IndexOf(':') > -1)
                 {
                     string[] vp = vip.Split(':');
-                    string name = m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.text;
-                    if (int.Parse(vp[1]) > 0)
-                    {
-                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Left;
-                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(289, 0,0);
-                    }
-                    else
-                    {
-                       m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Center;
-                       m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = Vector3.zero;
-                    }
+                    string name = m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_NameSend;
                     if (!string.IsNullOrEmpty(vp[1]) && int.Parse(vp[1]) > 0)
                     {
+                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(name) - 1) * 17, -11, 0);
                         m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteVip.gameObject.SetActive(true);
                         m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteVip.spriteName = "vip" + vp[1].ToString();
                     }
@@ -219,32 +210,6 @@ public class PlayerNameManager : MonoBehaviour
         tempPlayerName.transform.localScale = Vector3.one;
         PlayerNameInCity tempName = tempPlayerName.GetComponent<PlayerNameInCity>();
         tempPlayerName.GetComponent<PlayerNameInCity>().m_ObjController.transform.localScale = new Vector3(scale, scale, 1.0f);
-        //tempName.m_playerName.transform.localScale = new Vector3(0.36f, 0.36f, 1);
-        //tempName.m_playerName.transform.localPosition = new Vector3(9.32f, -24f, 1);
-
-        //tempName.m_SpriteChengHao.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-        //tempName.m_SpriteChengHao.transform.localPosition = new Vector3(0, 7.87f, 0);
-
-
-        //tempName.m_LabAllianceName.transform.localPosition = new Vector3(0, -45.2f, 0);
-        //tempName.m_LabAllianceName.transform.localScale = new Vector3(0.3f, 0.3f, 1);
-
-        //tempName.m_SpriteVip.transform.localPosition = new Vector3(-33.1f, -24, 0);
-        //tempName.m_SpriteVip.transform.localScale = new Vector3(0.45f, 0.42f, 1);
-
-        //tempPlayerName.GetComponent<PlayerNameInCity>().m_playerName.transform.localEulerAngles = Vector3.zero;
-        //tempPlayerName.GetComponent<PlayerNameInCity>().m_playerVip.transform.localEulerAngles = Vector3.zero;
-        //tempPlayerName.GetComponent<PlayerNameInCity>().m_LabAllianceName.transform.localEulerAngles = Vector3.zero;
-        //if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
-        //{
-        //   tempName.m_playerName.alignment = NGUIText.Alignment.Left;
-        // tempName.m_playerName.transform.localPosition = new Vector3(90, -22f, 0);
-        //}
-        //else
-        //{
-        //    tempName.m_playerName.alignment = NGUIText.Alignment.Center;
-        //    tempName.m_playerName.transform.localPosition = new Vector3(0, -22f, 0);
-        //}
 
         if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
         {
@@ -262,38 +227,19 @@ public class PlayerNameManager : MonoBehaviour
  
     public static void UpdateSelfName()
     {
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0 && AllianceData.Instance.g_UnionInfo != null)
+     
+        if (!AllianceData.Instance.IsAllianceNotExist && AllianceData.Instance.g_UnionInfo != null)
         {
             m_ObjSelfName.GetComponent<PlayerNameInCity>().Init(JunZhuData.Instance().m_junzhuInfo.name
             , AllianceData.Instance.g_UnionInfo.name, JunZhuData.m_iChenghaoID.ToString()
             , JunZhuData.Instance().m_junzhuInfo.vipLv.ToString(), AllianceData.Instance.g_UnionInfo.identity);
-            if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
-            {
-                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Left;
-                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(289.0f, 0, 0);
-            }
-            else
-            {
-                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Center;
-                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = Vector3.zero;
-            }
+            
         }
         else
         {
             m_ObjSelfName.GetComponent<PlayerNameInCity>().Init(JunZhuData.Instance().m_junzhuInfo.name
                , ""
                , JunZhuData.m_iChenghaoID.ToString(), JunZhuData.Instance().m_junzhuInfo.vipLv.ToString(), 0);
-
-            if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
-            {
-                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Left;
-                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = new Vector3(289, 0, 0);
-            }
-            else
-            {
-                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.alignment = NGUIText.Alignment.Center;
-                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_playerName.transform.localPosition = Vector3.zero;
-            }
         }
     }
 }

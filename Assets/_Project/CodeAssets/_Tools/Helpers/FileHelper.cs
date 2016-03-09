@@ -112,6 +112,10 @@ public class FileHelper {
 		}
 	}
 
+	public static bool FileExist( string p_file_path ){
+		return File.Exists( p_file_path );
+	}
+
 	#endregion
 
 
@@ -138,11 +142,15 @@ public class FileHelper {
 		try{
 			System.IO.FileStream t_stream = new System.IO.FileStream( p_full_path,
 		                                                         System.IO.FileMode.Open );
+			
+			string t_content = ReadString( t_stream );
 
-			return ReadString( t_stream );
+			t_stream.Close();
+
+			return t_content;
 		}
 		catch( Exception e ){
-			Debug.Log( "File not exist: " + e );
+//			Debug.Log( "File not exist: " + e );
 
 			return "";
 		}
@@ -173,7 +181,11 @@ public class FileHelper {
 		
 		p_stream.Write(t_bytes, 0, t_bytes.Length);
 	}
-	
+
+	public static void WriteFile( string p_path, string p_text ){
+		OutputFile( p_path, p_text );
+	}
+
 	/// Params:
 	/// p_path: Application.dataPath + "/Resources/_Data/Config/Test/action.txt"
 	public static void OutputFile( string p_path, string p_text ){
@@ -230,6 +242,12 @@ public class FileHelper {
 
 		
 	#region File Log
+
+	public static void RegisterLog(){
+		Application.logMessageReceived -= FileHelper.LogFile;
+		
+		Application.logMessageReceived += FileHelper.LogFile;
+	}
 	
 	private const string LOG_FILE_NAME = "Log";
 	

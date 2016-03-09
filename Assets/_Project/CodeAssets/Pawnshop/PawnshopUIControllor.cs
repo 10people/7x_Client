@@ -95,9 +95,9 @@ public class PawnshopUIControllor : MonoBehaviour, SocketProcessor
 
 		lastTime = 0;
 
-		coin = JunZhuData.Instance ().m_junzhuInfo.jinBi;
+		coin = JunZhuData.Instance().m_junzhuInfo.jinBi;
 
-		RMB = JunZhuData.Instance ().m_junzhuInfo.yuanBao;
+		RMB = JunZhuData.Instance().m_junzhuInfo.yuanBao;
 
 		DKP = AllianceData.Instance.g_UnionInfo == null ? 0 :
 			AllianceData.Instance.g_UnionInfo.contribution;
@@ -108,7 +108,7 @@ public class PawnshopUIControllor : MonoBehaviour, SocketProcessor
 
 		labelDKP.text = DKP + "";
 
-        m_EventTouch.m_handler += TopUp;
+        m_EventTouch.m_click_handler += TopUp;
 
 		first = true;
 
@@ -351,16 +351,16 @@ public class PawnshopUIControllor : MonoBehaviour, SocketProcessor
 
 	void FixedUpdate()
 	{
-		if(coin != JunZhuData.Instance ().m_junzhuInfo.jinBi)
+		if(coin != JunZhuData.Instance().m_junzhuInfo.jinBi)
 		{
-			coin = JunZhuData.Instance ().m_junzhuInfo.jinBi;
+			coin = JunZhuData.Instance().m_junzhuInfo.jinBi;
 
 			labelCoin.text = coin + "";
 		}
 
-		if(RMB != JunZhuData.Instance ().m_junzhuInfo.yuanBao)
+		if(RMB != JunZhuData.Instance().m_junzhuInfo.yuanBao)
 		{
-			RMB = JunZhuData.Instance ().m_junzhuInfo.yuanBao;
+			RMB = JunZhuData.Instance().m_junzhuInfo.yuanBao;
 
 			labelRMB.text = RMB + "";
 		}

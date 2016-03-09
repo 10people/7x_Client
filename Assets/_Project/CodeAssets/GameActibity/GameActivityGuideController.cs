@@ -14,7 +14,7 @@ public class GameActivityGuideController : MonoBehaviour
 
 	void Update()
 	{
-//		if(FreshGuide.Instance ().IsActive ((FreshGuide.GuideState)6))
+//		if(FreshGuide.Instance().IsActive ((FreshGuide.GuideState)6))
 //		{
 //			this.gameObject.SetActive(true);
 //	

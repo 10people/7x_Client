@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -16,6 +18,8 @@ public class BagData : MonoBehaviour, SocketProcessor
     public static BagData m_BatData;
 
     public List<BagItem> m_bagItemList = new List<BagItem>();
+
+    public List<int> m_HighlightItemList = new List<int>();
 
     public Dictionary<int, BagItem> m_playerEquipDic = new Dictionary<int, BagItem>();
 
@@ -71,12 +75,13 @@ public class BagData : MonoBehaviour, SocketProcessor
     {
         SocketTool.UnRegisterMessageProcessor(this);
 
-		m_BatData = null;
+        m_BatData = null;
     }
 
     public static void RefreshData()
     {
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BagInfo);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_HighLight_item_ids);
     }
 
     public bool OnProcessSocketMessage(QXBuffer p_message)
@@ -87,8 +92,6 @@ public class BagData : MonoBehaviour, SocketProcessor
             {
                 case ProtoIndexes.S_BagInfo:
                     {
-//                        Debug.Log("更新背包信息");
-
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
                         QiXiongSerializer t_qx = new QiXiongSerializer();
@@ -121,8 +124,19 @@ public class BagData : MonoBehaviour, SocketProcessor
                         // Removed By YuGu, red alert auto updated by PushHelper.
                         //Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
                         //MainCityUI.SetRedAlert(12, AllIntensify() || PushAndNotificationHelper.IsShowRedSpotNotification(1210));
+                        return true;
                     }
-                    return true;
+                case ProtoIndexes.S_GET_HighLight_item_ids:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                        ErrorMessage tempErrorMsg = new ErrorMessage();
+                        t_qx.Deserialize(t_stream, tempErrorMsg, tempErrorMsg.GetType());
+
+                        m_HighlightItemList = tempErrorMsg.errorDesc.Split(new[] {"#"}, StringSplitOptions.RemoveEmptyEntries).Select(item => int.Parse(item)).ToList();
+
+                        return true;
+                    }
                 default: return false;
             }
         }
@@ -192,7 +206,7 @@ public class BagData : MonoBehaviour, SocketProcessor
     /// </summary>
     void SetPlayerEquipData()
     {
-//        Debug.Log("刷新玩家装备信息");
+        //        Debug.Log("刷新玩家装备信息");
 
         if (m_playerEquipDic != null)
         {
@@ -207,28 +221,28 @@ public class BagData : MonoBehaviour, SocketProcessor
                     m_playerEquipDic.Add(i, m_bagItemList[i]);
                     //Debug.Log("装备在背包中数据：" + m_bagItemList[i].qiangHuaLv + " " + m_bagItemList[i].gongJi + " " + m_bagItemList[i].fangYu + " " + m_bagItemList[i].shengMing + " " +m_bagItemList[i].tongShuai + " " + m_bagItemList[i].wuYi + " " + m_bagItemList[i].mouLi);
                 }
-              
+
             }
 
             WetherHaveEquipsLowPinZhi();
             CityGlobalData.m_JunZhuTouJinJieTag = true;
         }
 
-		MainCityUI.SetRedAlert(500005, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace());
-		MainCityUI.SetRedAlert(1211, BagData.AllUpgrade());
+        MainCityUI.SetRedAlert(500005, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace());
+        MainCityUI.SetRedAlert(1211, BagData.AllUpgrade());
 
 
-//        if (!Global.m_isTianfuUpCan && !Global.m_isNewChenghao && !Global.m_isFuWen)
-//        {
-////            Debug.Log("BagData.AllUpgrade()BagData.AllUpgrade() ::" + BagData.AllUpgrade());
-//
-//            MainCityUI.SetRedAlert(200, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace() || BagData.AllUpgrade());
-//        }
-              //Set junzhu data after setting equipment info.
-//		Debug.Log ("BagData");
+        //        if (!Global.m_isTianfuUpCan && !Global.m_isNewChenghao && !Global.m_isFuWen)
+        //        {
+        ////            Debug.Log("BagData.AllUpgrade()BagData.AllUpgrade() ::" + BagData.AllUpgrade());
+        //
+        //            MainCityUI.SetRedAlert(200, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace() || BagData.AllUpgrade());
+        //        }
+        //Set junzhu data after setting equipment info.
+        //		Debug.Log ("BagData");
 
-		// Added 14436 By LiangXiao, update JunZhuInfo after equipped equip changes.
-		// Removed by YuGu, 2015.9.21, server will push JunZhuInfo in that case.
+        // Added 14436 By LiangXiao, update JunZhuInfo after equipped equip changes.
+        // Removed by YuGu, 2015.9.21, server will push JunZhuInfo in that case.
         //JunZhuData.RequestJunZhuInfo();
     }
 
@@ -254,20 +268,24 @@ public class BagData : MonoBehaviour, SocketProcessor
                     {
                         m_playerCaiLiaoDic[tempBagItem.dbId].Add(tempBagItem);
                     }
-					if (tempBagItem.itemType >= 101 && tempBagItem.itemType <= 103)
-					{
-						MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(tempBagItem.itemId, tempBagItem.cnt);
-					}
+                    if (tempBagItem.itemType >= 101 && tempBagItem.itemType <= 103)
+                    {
+						if( MainCityUI.m_MainCityUI != null ){
+							if( MainCityUI.m_MainCityUI.m_MainCityUIRB != null ){
+								MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(tempBagItem.itemId, tempBagItem.cnt);		
+							}
+						}
+                    }
                 }
             }
 
-//			Debug.Log("AllIntensifyAllIntensifyAllIntensifyAllIntensify ::" + AllIntensify());
+            //			Debug.Log("AllIntensifyAllIntensifyAllIntensifyAllIntensify ::" + AllIntensify());
 
-            MainCityUI.SetRedAlert(12, AllIntensify() || PushAndNotificationHelper.IsShowRedSpotNotification(1210));
-            
-			MainCityUI.SetRedAlert(500005, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace());
-            
-			MainCityUI.SetRedAlert(1211, BagData.AllUpgrade());
+            MainCityUI.SetRedAlert(1212, AllIntensify() || PushAndNotificationHelper.IsShowRedSpotNotification(1210));
+
+            MainCityUI.SetRedAlert(500005, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace());
+
+            MainCityUI.SetRedAlert(1211, BagData.AllUpgrade());
         }
 
     }
@@ -289,11 +307,11 @@ public class BagData : MonoBehaviour, SocketProcessor
             }
         }
 
-//        Debug.Log("卡箱数量：" + m_cardBagCount);
+        //        Debug.Log("卡箱数量：" + m_cardBagCount);
     }
 
-   
-   
+
+
 
     public BagItem GetBagEquip_With_InstId(long p_inst_id)
     {
@@ -335,7 +353,7 @@ public class BagData : MonoBehaviour, SocketProcessor
         int tempBuwei = 0;
         foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
         {
-        
+
             switch (item.Value.buWei)
             {
                 case 1: tempBuwei = 3; break;//重武器
@@ -352,14 +370,30 @@ public class BagData : MonoBehaviour, SocketProcessor
 
             if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei) && item.Value.pinZhi > EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].pinZhi)
             {
-                MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
+                if (MainCityUI.m_MainCityUI == null)
+                {
+                    Debug.Log("MainCity Not Exist, Should Process Data Here.");
+                }
+                else
+                {
+                    MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
+                }
             }
-            else if(!EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei))
+            else if (!EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei))
             {
-                MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
+                if (MainCityUI.m_MainCityUI == null)
+                {
+					#if UNITY_EDITOR
+                    Debug.Log("MainCity Not Exist, Should Process Data Here.");
+					#endif
+                }
+                else
+                {
+                    MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
+                }
             }
         }
- 
+
     }
 
 
@@ -496,7 +530,7 @@ public class BagData : MonoBehaviour, SocketProcessor
         }
         return sum;
     }
-    
+
     public int GetCountItemShiYongId(int id)
     {
         int sum = 0;
@@ -511,7 +545,7 @@ public class BagData : MonoBehaviour, SocketProcessor
     }
 
 
-    
+
     #endregion
 
     public static bool AllUpgrade()

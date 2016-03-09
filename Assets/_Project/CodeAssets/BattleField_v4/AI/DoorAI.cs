@@ -46,6 +46,8 @@ public class DoorAI : MonoBehaviour
 
 		m_box_collider = GetComponent<BoxCollider>();
 
+		gameObject.AddComponent<SoundPlayEff> ();
+
 		OpenDoor ();
 
 //		ObjectHelper.AddObjectTrace( mAnim );

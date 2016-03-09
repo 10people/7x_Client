@@ -38,6 +38,8 @@ public class FuWenMainPage : MonoBehaviour {
 
 	public GameObject anchorTopRight;
 
+	private bool isOpenFuWen = false;
+
 	void Awake ()
 	{
 		fuWenMainPage = this;
@@ -62,10 +64,14 @@ public class FuWenMainPage : MonoBehaviour {
 
 		fuWenResp = tempResp;
 
-		if (zhanLiLabel.text == "")
+		if (!isOpenFuWen)
 		{
 			zhanLi = tempResp.zhanli;
 			zhanLiLabel.text = tempResp.zhanli.ToString ();
+
+			pageType = ShowPageType.PAGE_XIANGQIAN;
+
+			isOpenFuWen = true;
 		}
 		else
 		{
@@ -74,14 +80,16 @@ public class FuWenMainPage : MonoBehaviour {
 
 		FuWenListSort (tempResp);
 
-		Debug.Log ("QXComData.CheckYinDaoOpenState (100470):" + QXComData.CheckYinDaoOpenState (100470));
+//		Debug.Log ("QXComData.CheckYinDaoOpenState (100470):" + QXComData.CheckYinDaoOpenState (100470));
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100470,3);
 
-		btnsHandlerList[0].m_handler += XiangQianBtn;//镶嵌按钮
-		btnsHandlerList[1].m_handler += HeChengBtn;//合成按钮
+		btnsHandlerList [0].m_click_handler -= XiangQianBtn;
+		btnsHandlerList [0].m_click_handler += XiangQianBtn;//镶嵌按钮
+		btnsHandlerList [1].m_click_handler -= HeChengBtn;
+		btnsHandlerList [1].m_click_handler += HeChengBtn;//合成按钮
 	}
 
-	#region
+	#region Rank FuShi
 	/// <summary>
 	/// 筛选未锁定的符石，对符石进行排序
 	/// </summary>
@@ -166,53 +174,48 @@ public class FuWenMainPage : MonoBehaviour {
 			}
 		}
 
+		SwitchFuWenPage ();
+	}
+	#endregion
+
+	void SwitchFuWenPage ()
+	{
+		xiangQianPage.SetActive (pageType == ShowPageType.PAGE_XIANGQIAN ? true : false);
+		heChengPage.SetActive (pageType == ShowPageType.PAGE_HECHENG ? true : false);
+
+		btnsHandlerList [0].GetComponent<UISprite> ().color = pageType == ShowPageType.PAGE_XIANGQIAN ? Color.white : Color.gray;
+		btnsHandlerList [1].GetComponent<UISprite> ().color = pageType == ShowPageType.PAGE_HECHENG ? Color.white : Color.gray;
+
 		switch (pageType)
 		{
 		case ShowPageType.PAGE_XIANGQIAN:
-			XiangQianBtn (gameObject);
-			break;
 
+			InItXiangQianPage (fuWenResp);
+
+			break;
+			
 		case ShowPageType.PAGE_HECHENG:
-			HeChengBtn (gameObject);
+
+			InItHeChengPage (bagFuWenList);
+
 			break;
 		default:
 			break;
 		}
-
-		InItXiangQianPage (fuWenResp);
-		InItHeChengPage (bagFuWenList);
 	}
-	#endregion
 
-	#region
+	#region XiangQian
 	/// <summary>
 	/// 镶嵌页
 	/// </summary>
 	public UIScrollView pageSc;
-	public UIScrollBar pageSb;
-	public GameObject fuWenPageGrid;
-	public GameObject fuWenPageItemObj;//符文页item
-	private List<GameObject> fuWenPageItemList = new List<GameObject> ();
+	public List<FuWenPageItem> fuWenPageList = new List<FuWenPageItem> ();
 	public List<UILabel> attributeLabels = new List<UILabel> ();//属性labels
 	private JunzhuAttr totleAttributes;//总属性值
 	private JunzhuAttr bonuses;//属性加成值
-
-//	private int openLanWeiCount = 0;//开启的栏位个数
-//	public int GetOpenLanWeiCount
-//	{
-//		get{return openLanWeiCount;}
-//	}
+	
 	private int nextOpenLevel;//下几个栏位开启等级
-	public int NextOpenLevel {set{nextOpenLevel = value;} get{return nextOpenLevel;}}
-
-	private int curXiangQianId;//点击当前栏位上镶嵌的符石id
-	public int CurXiangQianId
-	{
-		set{curXiangQianId = value;}
-		get{return curXiangQianId;}
-	}
-
-	private float pageSbValue;
+	public int NextOpenLevel  {set{nextOpenLevel = value;} get{return nextOpenLevel;} }
 
 	//初始化镶嵌页
 	void InItXiangQianPage (QueryFuwenResp tempResp)
@@ -238,26 +241,19 @@ public class FuWenMainPage : MonoBehaviour {
 			}
 		}
 
-		attributeLabels [0].text = MyColorData.getColorString (3,totleAttributes.gongji.ToString () + "[00ff00](" + bonuses.gongji.ToString () + ")[-]");//攻击
-		attributeLabels [1].text = MyColorData.getColorString (3,totleAttributes.fangyu.ToString () + "[00ff00](" + bonuses.fangyu.ToString () + ")[-]");//防御
-		attributeLabels [2].text = MyColorData.getColorString (3,totleAttributes.shengming.ToString () + "[00ff00](" + bonuses.shengming.ToString () + ")[-]");//生命
-		attributeLabels [3].text = MyColorData.getColorString (6,totleAttributes.wqSH.ToString () + "[00ff00](" + bonuses.wqSH.ToString () + ")[-]");//武器伤害加深
-		attributeLabels [4].text = MyColorData.getColorString (6,totleAttributes.wqBJ.ToString () + "[00ff00](" + bonuses.wqBJ.ToString () + ")[-]");//武器暴击加深
-		attributeLabels [5].text = MyColorData.getColorString (7,totleAttributes.jnSH.ToString () + "[00ff00](" + bonuses.jnSH.ToString () + ")[-]");//技能伤害加深
-		attributeLabels [6].text = MyColorData.getColorString (7,totleAttributes.jnBJ.ToString () + "[00ff00](" + bonuses.jnBJ.ToString () + ")[-]");//技能暴击加深
-		attributeLabels [7].text = MyColorData.getColorString (6,totleAttributes.wqJM.ToString () + "[00ff00](" + bonuses.wqJM.ToString () + ")[-]");//武器伤害抵抗
-		attributeLabels [8].text = MyColorData.getColorString (6,totleAttributes.wqRX.ToString () + "[00ff00](" + bonuses.wqRX.ToString () + ")[-]");//武器暴击抵抗
-		attributeLabels [9].text = MyColorData.getColorString (7,totleAttributes.jnJM.ToString () + "[00ff00](" + bonuses.jnJM.ToString () + ")[-]");//技能伤害抵抗
-		attributeLabels [10].text = MyColorData.getColorString (7,totleAttributes.jnRX.ToString () + "[00ff00](" + bonuses.jnRX.ToString () + ")[-]");//技能暴击抵抗
-	
-//		openLanWeiCount = 0;//开启的栏位个数
-//		for (int i = 0;i < tempResp.lanwei.Count;i ++)
-//		{
-//			if (tempResp.lanwei[i].itemId != -1)
-//			{
-//				openLanWeiCount ++;
-//			}
-//		}
+		string colorCode = FuWenData.Instance.colorCode;
+
+		attributeLabels [0].text = MyColorData.getColorString (3,totleAttributes.gongji.ToString () + colorCode + "(" + bonuses.gongji.ToString () + ")[-]");//攻击
+		attributeLabels [1].text = MyColorData.getColorString (3,totleAttributes.fangyu.ToString () + colorCode + "(" + bonuses.fangyu.ToString () + ")[-]");//防御
+		attributeLabels [2].text = MyColorData.getColorString (3,totleAttributes.shengming.ToString () + colorCode + "(" + bonuses.shengming.ToString () + ")[-]");//生命
+		attributeLabels [3].text = MyColorData.getColorString (6,totleAttributes.wqSH.ToString () + colorCode + "(" + bonuses.wqSH.ToString () + ")[-]");//武器伤害加深
+		attributeLabels [4].text = MyColorData.getColorString (6,totleAttributes.wqBJ.ToString () + colorCode + "(" + bonuses.wqBJ.ToString () + ")[-]");//武器暴击加深
+		attributeLabels [5].text = MyColorData.getColorString (7,totleAttributes.jnSH.ToString () + colorCode + "(" + bonuses.jnSH.ToString () + ")[-]");//技能伤害加深
+		attributeLabels [6].text = MyColorData.getColorString (7,totleAttributes.jnBJ.ToString () + colorCode + "(" + bonuses.jnBJ.ToString () + ")[-]");//技能暴击加深
+		attributeLabels [7].text = MyColorData.getColorString (6,totleAttributes.wqJM.ToString () + colorCode + "(" + bonuses.wqJM.ToString () + ")[-]");//武器伤害抵抗
+		attributeLabels [8].text = MyColorData.getColorString (6,totleAttributes.wqRX.ToString () + colorCode + "(" + bonuses.wqRX.ToString () + ")[-]");//武器暴击抵抗
+		attributeLabels [9].text = MyColorData.getColorString (7,totleAttributes.jnJM.ToString () + colorCode + "(" + bonuses.jnJM.ToString () + ")[-]");//技能伤害抵抗
+		attributeLabels [10].text = MyColorData.getColorString (7,totleAttributes.jnRX.ToString () + colorCode + "(" + bonuses.jnRX.ToString () + ")[-]");//技能暴击抵抗
 
 		//对符文栏位进行开启顺序排序
 		List<int> openLevelList = new List<int> ();
@@ -302,42 +298,21 @@ public class FuWenMainPage : MonoBehaviour {
 				NextOpenLevel = NextOpenLevel < wOpenLevelList[i] ? NextOpenLevel : wOpenLevelList[i];
 			}
 		}
-		Debug.Log ("NextOpenLevel：" + NextOpenLevel);
+//		Debug.Log ("NextOpenLevel：" + NextOpenLevel);
 
-		int fuWenPageNum = tempResp.lanwei.Count % 11 > 0? (tempResp.lanwei.Count / 11) + 1 : tempResp.lanwei.Count / 11;
-		Debug.Log ("符文页：" + fuWenPageNum);
-
-		if (fuWenPageItemList.Count == 0)
+		for (int i = 0;i < fuWenPageList.Count;i ++)
 		{
-			for (int i = 0;i < fuWenPageNum;i ++)
-			{
-				GameObject fuWenPageItem = (GameObject)Instantiate (fuWenPageItemObj);
-				
-				fuWenPageItem.SetActive (true);
-				fuWenPageItem.transform.parent = fuWenPageGrid.transform;
-				fuWenPageItem.transform.localPosition = new Vector3(0,-445 * i,0);
-				fuWenPageItem.transform.localScale = Vector3.one;
-				
-				fuWenPageItemList.Add (fuWenPageItem);
-
-				pageSc.UpdateScrollbars (true);
-			}
-		}
-
-		for (int i = 0;i < fuWenPageNum;i ++)
-		{
-			FuWenPageItem fuWenPage = fuWenPageItemList[i].GetComponent<FuWenPageItem> ();
-			fuWenPage.InItFuWenPageInfo (i + 1,tempResp.lanwei);
+			fuWenPageList[i].InItFuWenPageInfo (i + 1,tempResp.lanwei);
 		}
 		pageSc.enabled = QXComData.CheckYinDaoOpenState (100470) ? false : true;
-		btnsHandlerList [2].m_handler -= FuShiMixBtn;
-		btnsHandlerList [2].m_handler += FuShiMixBtn;//普通合成
-		btnsHandlerList [3].m_handler -= FuShiYiJianMixBtn;
-		btnsHandlerList [3].m_handler += FuShiYiJianMixBtn;//一键合成
+		btnsHandlerList [2].m_click_handler -= FuShiMixBtn;
+		btnsHandlerList [2].m_click_handler += FuShiMixBtn;//普通合成
+		btnsHandlerList [3].m_click_handler -= FuShiYiJianMixBtn;
+		btnsHandlerList [3].m_click_handler += FuShiYiJianMixBtn;//一键合成
 	}
 	#endregion
 
-	#region
+	#region HeCheng
 	/// <summary>
 	/// 合成页
 	/// </summary>
@@ -351,13 +326,7 @@ public class FuWenMainPage : MonoBehaviour {
 	public UILabel desLabel;
 	
 	private int curHeChengItemId;//当前合成孔上的符石itemid
-	public int CurHeChengItemId
-	{
-		set{curHeChengItemId = value;}
-		get{return curHeChengItemId;}
-	}
-
-	private float bagSbValue;
+	public int CurHeChengItemId { set{curHeChengItemId = value;} get{return curHeChengItemId;} }
 
 	//初始化合成页
 	void InItHeChengPage (List<Fuwen> tempList)
@@ -366,44 +335,27 @@ public class FuWenMainPage : MonoBehaviour {
 	
 		isBtnClick = false;
 
-		desLabel.text = tempList.Count > 0 ? "" : "背包空空的什么也没有";
-//		foreach (GameObject obj in fuWenBagItemList)
-//		{
-//			Destroy (obj);
-//		}
-//		fuWenBagItemList.Clear ();
+		fuWenBagItemList = QXComData.CreateGameObjectList (fuWenBagItemObj,tempList.Count,fuWenBagItemList);
 
-		int bagItemCount = tempList.Count - fuWenBagItemList.Count;
-		if (bagItemCount > 0)
-		{
-			for (int i = 0;i < bagItemCount;i ++)
-			{
-				GameObject fuWenBagItem = (GameObject)Instantiate (fuWenBagItemObj);
-				
-				fuWenBagItem.SetActive (true);
-				fuWenBagItem.transform.parent = fuWenBagGrid.transform;
-				fuWenBagItem.transform.localPosition = new Vector3(0,-100 * (fuWenBagItemList.Count + i),0);
-				fuWenBagItem.transform.localScale = Vector3.one;
-				
-				fuWenBagItemList.Add (fuWenBagItem);
-			}
-		}
-		else if (bagItemCount < 0)
-		{
-			for (int i = 0;i < Mathf.Abs (bagItemCount);i ++)
-			{
-				Destroy (fuWenBagItemList[fuWenBagItemList.Count - 1]);
-				fuWenBagItemList.RemoveAt (fuWenBagItemList.Count - 1);
-			}
-		}
-		bagSc.UpdateScrollbars (true);
+		desLabel.text = fuWenBagItemList.Count > 0 ? "" : "背包空空的什么也没有";
+
 		for (int i = 0;i < tempList.Count;i ++)
 		{
+			fuWenBagItemList[i].transform.localPosition = new Vector3(0,-100 * i,0);
+			bagSc.UpdateScrollbars (true);
+
 			FuWenBagItem fuWenBag = fuWenBagItemList[i].GetComponent<FuWenBagItem> ();
 			fuWenBag.GetFuWenInfo (tempList[i]);
 		}
 
-		bagSc.enabled = tempList.Count < 4 ? false : true;
+		if (tempList.Count <= 4)
+		{
+			bagSb.value = 0;
+			bagSc.ResetPosition ();
+		}
+
+		bagSc.enabled = tempList.Count <= 4 ? false : true;
+		bagSb.gameObject.SetActive (tempList.Count <= 4 ? false : true);
 	}
 
 	//显示合成按钮状态
@@ -462,7 +414,7 @@ public class FuWenMainPage : MonoBehaviour {
 				break;
 			case FuWenMixBtn.FxType.CLEAR:
 				fuWenMixBtn.ClearFx ();
-				UI3DEffectTool.Instance ().ClearUIFx (heFuWenSprite.gameObject);
+				UI3DEffectTool.ClearUIFx (heFuWenSprite.gameObject);
 				break;
 			default:
 				break;
@@ -472,7 +424,7 @@ public class FuWenMainPage : MonoBehaviour {
 	
 	#endregion
 
-	#region
+	#region FuShiSelect
 	/// <summary>
 	/// 打开符石选择窗口 
 	/// </summary>
@@ -484,6 +436,8 @@ public class FuWenMainPage : MonoBehaviour {
 		OTHER,
 	}
 	private FuWenSelect.SelectType selectType = FuWenSelect.SelectType.XIANGQIAN;
+	private List<int> exceptList = new List<int>();
+
 	//// <summary>
 	/// 选择符石窗口
 	/// </summary>
@@ -491,63 +445,182 @@ public class FuWenMainPage : MonoBehaviour {
 	/// <param name="lanWeiId">符石栏位id</param>
 	/// <param name="tempFuShiType">符石属性（主属性，高级属性）</param>
 	/// <param name="tempExceptList">已镶嵌的符石属性list</param>
-	public void SelectFuWen (FuWenSelect.SelectType tempType,int lanWeiId,FuShiType tempFuShiType,List<int> tempExceptList)
+	public void SelectFuWen (FuWenSelect.SelectType tempType,FuwenLanwei tempLanWei,FuShiType tempFuShiType,List<int> tempExceptList)
 	{
 //		Debug.Log ("TempType:" + tempType);
 		selectType = tempType;
-//		GameObject fuWenWindow = (GameObject)Instantiate (s_FuWenWindow);
-//		fuWenWindow.SetActive (true);
-//		fuWenWindow.transform.parent = s_FuWenWindow.transform.parent;
-//		fuWenWindow.transform.localPosition = Vector3.zero;
-//		fuWenWindow.transform.localScale = Vector3.one;
-//		Debug.Log ("tempExceptList:" + tempExceptList);
+
 		s_FuWenWindow.SetActive (true);
-		FuWenSelect fuWenSelect = s_FuWenWindow.GetComponent<FuWenSelect> ();
+
 		switch (tempType)
 		{
 		case FuWenSelect.SelectType.XIANGQIAN:
 		{
+			exceptList.Clear ();;
+			foreach (int i in tempExceptList)
+			{
+				exceptList.Add (i);
+//				Debug.Log ("exceptList[i]:" + i);
+			}
+
 			if (tempFuShiType == FuShiType.MAIN_FUSHI)
 			{
-				//去掉已镶嵌的主属性符石
+				//筛选当前颜色符石
+				int curMaxLevel = tempLanWei.itemId > 0 ? FuWenTemplate.GetFuWenTemplateByFuWenId (tempLanWei.itemId).fuwenLevel : -1;//当前符石等级
+				int curInlayColor = FuWenOpenTemplate.GetFuWenOpenTemplateByLanWeiId (tempLanWei.lanweiId).inlayColor;//当前符石镶嵌颜色
+//				Debug.Log ("curMaxLevel:" + curMaxLevel + "||curInlayColor:" + curInlayColor);
+				Fuwen curFuWen = new Fuwen();
+//				Debug.Log ("curFuWen.itemId:" + curFuWen.itemId);
 				List<Fuwen> selectList = new List<Fuwen>();
 				for (int i = 0;i < mainFuWenList.Count;i ++)
 				{
 					FuWenTemplate fuwenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (mainFuWenList[i].itemId);
-					if (!tempExceptList.Contains (fuwenTemp.shuxing))
+//					Debug.Log ("fuwenTemp.inlayColor:" + fuwenTemp.inlayColor);
+					if (fuwenTemp.inlayColor == curInlayColor)
 					{
-//						Debug.Log ("m_Contain:" + fuwenTemp.shuxing);
-						selectList.Add (mainFuWenList[i]);
+						if (fuwenTemp.fuwenLevel > curMaxLevel)
+						{
+							curMaxLevel = fuwenTemp.fuwenLevel;
+							curFuWen = mainFuWenList[i];
+						}
+						else
+						{
+							if (mainFuWenList[i].itemId == tempLanWei.itemId)
+							{
+								selectList.Add (mainFuWenList[i]);
+							}
+						}
 					}
 				}
 
-				fuWenSelect.GetSelectFuWenInfo (tempType,selectList);
+				if (curFuWen.itemId != 0)
+				{
+					selectList.Add (curFuWen);
+				}
+
+				if (tempLanWei.itemId > 0)
+				{
+					bool isContain = false;
+					foreach (Fuwen fuWen in selectList)
+					{
+						if (fuWen.itemId == tempLanWei.itemId)
+						{
+							//							fuWen.cnt += 1;
+							isContain = true;
+							break;
+						}
+						else
+						{
+							isContain = false;
+						}
+					}
+					if (!isContain)
+					{
+						Fuwen fuWen = new Fuwen();
+						fuWen.itemId = tempLanWei.itemId;
+						fuWen.cnt = 0;
+						fuWen.isLock = 2;
+						selectList.Add (fuWen);
+					}
+				}
+
+				FuWenSelect.fuWenSelect.GetSelectFuWenInfo (tempType,selectList,tempLanWei);
 			}
 			else if (tempFuShiType == FuShiType.GAOJI_FUSHI)
 			{
-				//去掉已镶嵌的高级属性符石
+				//刷选当前颜色符石
+				int curMaxLevel = tempLanWei.itemId > 0 ? FuWenTemplate.GetFuWenTemplateByFuWenId (tempLanWei.itemId).fuwenLevel : -1;
+				int curInlayColor = FuWenOpenTemplate.GetFuWenOpenTemplateByLanWeiId (tempLanWei.lanweiId).inlayColor;
+				int curShuXing = tempLanWei.itemId > 0 ? FuWenTemplate.GetFuWenTemplateByFuWenId (tempLanWei.itemId).shuxing : -1;
+
+				Fuwen curFuWen = new Fuwen();
+
 				List<Fuwen> selectList = new List<Fuwen>();
 				for (int i = 0;i < gaoJiFuWenList.Count;i ++)
 				{
 					FuWenTemplate fuwenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (gaoJiFuWenList[i].itemId);
-					if (!tempExceptList.Contains (fuwenTemp.shuxing))
+
+					if (fuwenTemp.inlayColor == curInlayColor)
 					{
-						selectList.Add (gaoJiFuWenList[i]);
+						if (fuwenTemp.shuxing == curShuXing)
+						{
+							if (fuwenTemp.fuwenLevel > curMaxLevel)
+							{
+								curMaxLevel = fuwenTemp.fuwenLevel;
+								curFuWen = gaoJiFuWenList[i];
+							}
+							else
+							{
+								if (gaoJiFuWenList[i].itemId == tempLanWei.itemId)
+								{
+									selectList.Add (gaoJiFuWenList[i]);
+								}
+							}
+						}
+						else
+						{
+							if (!exceptList.Contains (fuwenTemp.shuxing))
+							{
+								exceptList.Add (fuwenTemp.shuxing);
+								selectList.Add (gaoJiFuWenList[i]);
+							}
+							else
+							{
+								for (int j = 0;j < selectList.Count;j ++)
+								{
+									if (fuwenTemp.fuwenLevel > FuWenTemplate.GetFuWenTemplateByFuWenId (selectList[j].itemId).fuwenLevel)
+									{
+										selectList[j] = gaoJiFuWenList[i];
+									}
+								}
+							}
+						}
 					}
 				}
 
-				fuWenSelect.GetSelectFuWenInfo (tempType,selectList);
+				if (tempLanWei.itemId > 0)
+				{
+					if (curMaxLevel > FuWenTemplate.GetFuWenTemplateByFuWenId (tempLanWei.itemId).fuwenLevel)
+					{
+						selectList.Add (curFuWen);
+					}
+
+					bool isContain = false;
+					foreach (Fuwen fuWen in selectList)
+					{
+						if (fuWen.itemId == tempLanWei.itemId)
+						{
+//							fuWen.cnt += 1;
+							isContain = true;
+							break;
+						}
+						else
+						{
+							isContain = false;
+						}
+					}
+					if (!isContain)
+					{
+						Fuwen fuWen = new Fuwen();
+						fuWen.itemId = tempLanWei.itemId;
+						fuWen.cnt = 0;
+						fuWen.isLock = 2;
+						selectList.Add (fuWen);
+					}
+				}
+
+				FuWenSelect.fuWenSelect.GetSelectFuWenInfo (tempType,selectList,tempLanWei);
 			}
-			fuWenSelect.RefreshSelectFuShiItem (curXiangQianId);
-			fuWenSelect.GetXiangQianLanWeiId = lanWeiId;
 			
 			break;
 		}
 		case FuWenSelect.SelectType.HECHENG:
 		{
-			fuWenSelect.GetSelectFuWenInfo (tempType,mixFuWenList);
-			fuWenSelect.RefreshSelectFuShiItem (curHeChengItemId);
-			
+			foreach (Fuwen fuwen in mixFuWenList)
+			{
+				Debug.Log ("fuwen:" + fuwen.itemId);
+			}
+			FuWenSelect.fuWenSelect.GetSelectFuWenInfo (tempType,mixFuWenList,tempLanWei);
 			break;
 		}
 		default:
@@ -556,7 +629,7 @@ public class FuWenMainPage : MonoBehaviour {
 	}
 	#endregion
 
-	#region
+	#region FuShiOperate
 	/// <summary>
 	/// 符石操作页
 	/// </summary>
@@ -564,13 +637,9 @@ public class FuWenMainPage : MonoBehaviour {
 	private FuShiOperate.OperateType operateType = FuShiOperate.OperateType.XIANGQIAN;//符石操作类型
 	public void OperateFuWen (FuShiOperate.OperateType tempType,int tempItemId,int tempLanWeiId)
 	{
-		Debug.Log ("TempType:" + tempType);
+//		Debug.Log ("TempType:" + tempType);
 		operateType = tempType;
-//		GameObject operateWindow = (GameObject)Instantiate (o_FuWenWindow);
-//		operateWindow.SetActive (true);
-//		operateWindow.transform.parent = s_FuWenWindow.transform.parent;
-//		operateWindow.transform.localPosition = Vector3.zero;
-//		operateWindow.transform.localScale = Vector3.one;
+
 		o_FuWenWindow.SetActive (true);
 		FuShiOperate fuShiOperate = o_FuWenWindow.GetComponent<FuShiOperate> ();
 		fuShiOperate.GetOperateInfo (tempType,tempItemId,tempLanWeiId);
@@ -601,41 +670,29 @@ public class FuWenMainPage : MonoBehaviour {
 	}
 
 	//镶嵌页按钮
-	public void XiangQianBtn (GameObject obj)
+	void XiangQianBtn (GameObject obj)
 	{
 		if (!isBtnClick)
 		{
 			isBtnClick = true;
 
-			btnsHandlerList [0].GetComponent<UISprite> ().color = Color.white;
-			btnsHandlerList [1].GetComponent<UISprite> ().color = Color.gray;
-			xiangQianPage.SetActive (true);
-			heChengPage.SetActive (false);
-			
 			pageType = ShowPageType.PAGE_XIANGQIAN;
 
-			bagSbValue = bagSb.value;
-			pageSb.value = pageSbValue;
+			SwitchFuWenPage ();
 		}
 
 		isBtnClick = false;
 	}
 	//合成页按钮
-	public void HeChengBtn (GameObject obj)
+	void HeChengBtn (GameObject obj)
 	{
 		if (!isBtnClick)
 		{
 			isBtnClick = true;
 
-			btnsHandlerList [0].GetComponent<UISprite> ().color = Color.gray;
-			btnsHandlerList [1].GetComponent<UISprite> ().color = Color.white;
-			xiangQianPage.SetActive (false);
-			heChengPage.SetActive (true);
-
 			pageType = ShowPageType.PAGE_HECHENG;
 
-			pageSbValue = pageSb.value;
-			bagSb.value = bagSbValue;
+			SwitchFuWenPage ();
 		}
 
 		isBtnClick = false;
@@ -786,7 +843,7 @@ public class FuWenMainPage : MonoBehaviour {
 			effectId = 100163;
 		}
 		
-		UI3DEffectTool.Instance ().ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,heFuWenSprite.gameObject,EffectIdTemplate.GetPathByeffectId(effectId));
+		UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,heFuWenSprite.gameObject,EffectIdTemplate.GetPathByeffectId(effectId));
 		StartCoroutine (WaitForClick (1));
 	}
 
@@ -847,6 +904,7 @@ public class FuWenMainPage : MonoBehaviour {
 
 	void OnCloseWindow ()
 	{
+		isOpenFuWen = false;
 		Global.m_isOpenFuWen = false;
 		gameObject.SetActive (false);
 //		Destroy(gameObject);

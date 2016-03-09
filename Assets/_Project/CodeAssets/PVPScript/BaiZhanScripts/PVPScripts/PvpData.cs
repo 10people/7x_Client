@@ -10,17 +10,20 @@ using ProtoBuf.Meta;
 
 public class PvpData : Singleton<PvpData>,SocketProcessor {
 
-	private bool isOpenPvpByBtn = false;
-	public bool IsOpenPvpByBtn
-	{
-		set{isOpenPvpByBtn = value;}
-		get{return isOpenPvpByBtn;}
-	}
+	private bool isPvpPageOpen = false;//是否打开首页
+	public bool IsPvpPageOpen {set{isPvpPageOpen = value;} get{return isPvpPageOpen;}}
+
 	private string textStr = "";
 
 	void Awake () 
 	{
 		SocketTool.RegisterMessageProcessor (this);
+	}
+
+	//打开百战
+	public void OpenPvp ()
+	{
+		PvpDataReq ();
 	}
 
 	#region PVP_DataReq
@@ -85,7 +88,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			}
 			enemyId = PvpOpponentInfo.junZhuId;
 			enemyRank = PvpOpponentInfo.rank;
-			myRank = PvpPage.pvpPage.pvpResp.pvpInfo.rank;
+			myRank = BaiZhanPage.baiZhanPage.baiZhanResp.pvpInfo.rank;
 
 			break;
 		}
@@ -112,7 +115,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 
 		QXComData.SendQxProtoMessage (stateReq,ProtoIndexes.PLAYER_STATE_REQ,ProtoIndexes.PLAYER_STATE_RESP.ToString ());
 
-		//		Debug.Log ("PlayerStateCheck:" + ProtoIndexes.PLAYER_STATE_REQ);
+//		Debug.Log ("PlayerStateCheck:" + ProtoIndexes.PLAYER_STATE_REQ);
 	}
 	#endregion
 
@@ -122,7 +125,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 	/// Challenges the req.
 	/// </summary>
 	/// <param name="tempId">Temp identifier.</param>
-	public void ChallengeReq (long tempId)
+	void ChallengeReq (long tempId)
 	{
 		ChallengeReq challengeReq = new ChallengeReq ();
 		challengeReq.oppoJunZhuId = tempId;
@@ -140,17 +143,18 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		PVP_REFRESH_PLARER = 3,
 		PVP_REFRESH_MY_RANK = 4,
 		PVP_REFRESH_OPPO_RANK = 5,
+		PVP_GET_RANK_REWARD = 6,
+		PVP_GET_DAY_REWARD = 7,
 	}
 	private PVP_CONFIRM_TYPE pvpConfirmType = PVP_CONFIRM_TYPE.PVP_BUY_CISHU;
 
 	private ConfirmExecuteResp confirmResp;//百战操作返回
 
 	private int canGetWeiWang;//当前可领取的威望
-	public int CanGetWeiWang
-	{
-		set{canGetWeiWang = value;}
-		get{return canGetWeiWang;}
-	}
+	public int CanGetWeiWang { set{canGetWeiWang = value;} get{return canGetWeiWang;} }
+
+	private List<RewardData> rewardDataList;//每日排名结算奖励
+	public List<RewardData> RewardDataList { set{rewardDataList = value;} get{return rewardDataList;} }
 
 	/// <summary>
 	/// Confirms the req.
@@ -205,21 +209,20 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 					
 					pvpInfoResp = pvpInfo;
 
-					Global.m_isOpenBaiZhan = true;
+//					Debug.Log ("pvpInfo.nextTimeTo21:" + pvpInfo.nextTimeTo21);
+//					Debug.Log ("pvpInfo.baizhanXMLId:" + pvpInfo.pvpInfo.baizhanXMLId);
+//					Debug.Log ("pvpInfo.rankAward:" + pvpInfo.rankAward);
 
-					if (IsOpenPvpByBtn)
+					if (pvpObj == null)
 					{
-						if (pvpObj == null)
-						{
-							Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.PVP_PAGE ),
-							                        PvpLoadCallback );
-						}
-						else
-						{
-							pvpObj.SetActive (true);
-
-							InItPvpPage ();
-						}
+						Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.PVP_PAGE ),
+						                        PvpLoadCallback );
+					}
+					else
+					{
+						pvpObj.SetActive (true);
+						
+						InItPvpPage ();
 					}
 				}
 				
@@ -248,41 +251,34 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 							switch (confirm.buyCiShuInfo.success)
 							{
 							case 0://元宝不足
-								textStr = "\n\n元宝不足,是否跳转到充值？";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.cancelStr, QXComData.confirmStr, 
-								                 PvpPage.pvpPage.TurnToVipPage);
+								textStr = "元宝不足,是否前往充值？";
+								QXComData.CreateBox (1,textStr,false,BaiZhanPage.baiZhanPage.TurnToVipPage);
 								break;
 							case 1://购买成功
-								Debug.Log ("剩余次数：" + confirm.buyCiShuInfo.leftTimes);
-								Debug.Log ("总次数：" + confirm.buyCiShuInfo.totalTimes);
+//								Debug.Log ("剩余次数：" + confirm.buyCiShuInfo.leftTimes);
+//								Debug.Log ("总次数：" + confirm.buyCiShuInfo.totalTimes);
+								BaiZhanPage.baiZhanPage.OpenSkillEffect (2);
 								PvpDataReq ();
-								textStr = "\n\n恭喜购买挑战次数成功！";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.confirmStr, null, 
-								                 PvpPage.pvpPage.OpenSkillEffect);
+//								textStr = "\n\n恭喜购买挑战次数成功！";
+//								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
+//								                 QXComData.confirmStr, null, 
+//								                 BaiZhanPage.baiZhanPage.OpenSkillEffect);
 								break;
 							case 2://数据错误
-								textStr = "\n\n购买失败，请重新购买！";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.confirmStr, null, 
-								                 PvpPage.pvpPage.OpenSkillEffect);
+								textStr = "购买失败，请重新购买！";
+								QXComData.CreateBox (1,textStr,true,BaiZhanPage.baiZhanPage.OpenSkillEffect);
 								break;
 							case 3://今日购买次数用尽
-								int vipLevel = JunZhuData.Instance ().m_junzhuInfo.vipLv;
-								if (vipLevel < 10)
+								int vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv;
+								if (vipLevel < QXComData.maxVipLevel)
 								{
-									textStr = "\n今日购买次数已用尽，充值到vip" + (vipLevel + 1) + "级可购买更多挑战次数\n\n是否跳转到充值？";
-									Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-									                 QXComData.cancelStr, QXComData.confirmStr, 
-									                 PvpPage.pvpPage.TurnToVipPage);
+									textStr = "今日购买次数已用完，V特权等级提升到" + (vipLevel + 1) + "级即可购买更多挑战次数。\n\n是否前往充值？";
+									QXComData.CreateBox (1,textStr,false,BaiZhanPage.baiZhanPage.TurnToVipPage);
 								}
 								else
 								{
-									textStr = "\n今日购买次数已用尽...";
-									Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-									                 QXComData.confirmStr, null, 
-									                 PvpPage.pvpPage.OpenSkillEffect);
+									textStr = "今日购买次数已用完...";
+									QXComData.CreateBox (1,textStr,true,BaiZhanPage.baiZhanPage.OpenSkillEffect);
 								}
 
 								break;
@@ -300,36 +296,26 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 							switch (confirm.cleanCDInfo.success)
 							{
 							case 0://元宝不足
-								textStr = "\n\n元宝不足,是否跳转到充值？";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.cancelStr, QXComData.confirmStr, 
-								                 PvpPage.pvpPage.TurnToVipPage);
+								textStr = "元宝不足,是否前往充值？";
+								QXComData.CreateBox (1,textStr,false,BaiZhanPage.baiZhanPage.TurnToVipPage);
 								break;
 							case 1:
 								//LanguageTemplate.GetText (LanguageTemplate.Text.BAIZHAN_DISCD_TITLE);
 								//LanguageTemplate.GetText (LanguageTemplate.Text.BAIZHAN_DISCD_SUCCESS);
-								textStr = "\n\n清除冷却成功！";
-								PvpPage.pvpPage.pvpResp.cdYuanBao = confirm.cleanCDInfo.nextCDYB;
-								PvpPage.pvpPage.pvpResp.pvpInfo.time = 0;
-								PvpPage.pvpPage.CdTime = 0;
-								StopCoroutine ("PvpCd");
-								PvpPage.pvpPage.ChallangeRules ();
-								
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.confirmStr, null, 
-								                 PvpPage.pvpPage.OpenSkillEffect);
+								textStr = "清除冷却成功！";
+
+								BaiZhanPage.baiZhanPage.baiZhanResp.cdYuanBao = confirm.cleanCDInfo.nextCDYB;
+								BaiZhanPage.baiZhanPage.baiZhanResp.pvpInfo.time = 0;
+								BaiZhanPage.baiZhanPage.InItChallenge ();
+//								QXComData.CreateBox (1,textStr,true,BaiZhanPage.baiZhanPage.OpenSkillEffect);
 								break;
 							case 2:
-								textStr = "\n\n清除冷却失败，请重新尝试！";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.confirmStr, null, 
-								                 PvpPage.pvpPage.OpenSkillEffect);
+								textStr = "清除冷却失败，请重新尝试！";
+								QXComData.CreateBox (1,textStr,true,BaiZhanPage.baiZhanPage.OpenSkillEffect);
 								break;
 							case 3:
-								textStr = "\n达到vip" + PvpPage.pvpPage.pvpResp.canCleanCDvipLev + "级可清楚冷却\n\n是否跳转到充值？";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.cancelStr, QXComData.confirmStr, 
-								                 PvpPage.pvpPage.TurnToVipPage);
+								textStr = "V特权等级不足，V特权等级提升到" + BaiZhanPage.baiZhanPage.baiZhanResp.canCleanCDvipLev + "级即可重置挑战冷却时间。\n\n是否前往充值？ ";
+								QXComData.CreateBox (1,textStr,false,BaiZhanPage.baiZhanPage.TurnToVipPage);
 								break;
 							default:
 								break;
@@ -344,9 +330,14 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 						{
 //							Debug.Log ("领取成功");
 
-							PvpPage.pvpPage.pvpResp.canGetweiWang = 0;
-							PvpPage.pvpPage.pvpResp.hasWeiWang += CanGetWeiWang;
-							PvpPage.pvpPage.InItMyRank ();
+//							PvpPage.pvpPage.pvpResp.canGetweiWang = 0;
+//							PvpPage.pvpPage.pvpResp.hasWeiWang += CanGetWeiWang;
+//							PvpPage.pvpPage.InItMyRank ();
+
+							BaiZhanPage.baiZhanPage.baiZhanResp.canGetweiWang = 0;
+							BaiZhanPage.baiZhanPage.baiZhanResp.hasWeiWang += CanGetWeiWang;
+							BaiZhanPage.baiZhanPage.InItMyRank ();
+
 							//关闭按钮特效
 							if (QXComData.CheckYinDaoOpenState (100210))
 							{
@@ -354,16 +345,15 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 							}
 
 							RewardData data = new RewardData (900011,CanGetWeiWang);
-							GeneralRewardManager.Instance ().CreateReward (data);
+							GeneralRewardManager.Instance().CreateReward (data);
 						}
 						else
 						{
 //							Debug.Log ("领取失败");
 
-							textStr = "\n\n您已领取过该奖励！";
-							Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-							                 QXComData.confirmStr, null, 
-							                 PvpPage.pvpPage.OpenSkillEffect);//刷新百战奖励领取
+							textStr = "您已领取过该奖励！";
+							QXComData.CreateBox (1,textStr,true,BaiZhanPage.baiZhanPage.OpenSkillEffect);
+							//刷新百战奖励领取
 						}
 
 						break;
@@ -378,16 +368,17 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 								{
 									confirm.refreshMyInfo.oppoList = new List<OpponentInfo>();
 								}
-								PvpPage.pvpPage.pvpResp.pvpInfo.rank = confirm.refreshMyInfo.junZhuRank;
-								PvpPage.pvpPage.pvpResp.oppoList = confirm.refreshMyInfo.oppoList;
-								PvpPage.pvpPage.InItMyRank ();
-								PvpPage.pvpPage.OpponentsInfo ();
+
+								BaiZhanPage.baiZhanPage.baiZhanResp.pvpInfo.rank = confirm.refreshMyInfo.junZhuRank;
+								BaiZhanPage.baiZhanPage.baiZhanResp.oppoList = confirm.refreshMyInfo.oppoList;
+								BaiZhanPage.baiZhanPage.InItMyRank ();
+								BaiZhanPage.baiZhanPage.InItOpponent ();
 							}
 						}
 						else
 						{
 							//关闭挑战阵容页面，刷新百战信息
-
+							ReOpenPvp ();
 						}
 
 						break;
@@ -403,14 +394,14 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 									confirm.refreshOtherInfo.oppoList = new List<OpponentInfo>();
 								}
 
-								PvpPage.pvpPage.pvpResp.oppoList = confirm.refreshOtherInfo.oppoList;
-								PvpPage.pvpPage.OpponentsInfo ();
+								BaiZhanPage.baiZhanPage.baiZhanResp.oppoList = confirm.refreshOtherInfo.oppoList;
+								BaiZhanPage.baiZhanPage.InItOpponent ();
 							}
 						}
 						else
 						{
 							//关闭挑战阵容页面，刷新百战信息
-
+							ReOpenPvp ();
 						}
 
 						break;
@@ -419,15 +410,57 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 					{
 						if (confirm.payChangeInfo.success == 1)
 						{
-							PvpPage.pvpPage.pvpResp.huanYiPiYB = confirm.payChangeInfo.nextHuanYiPiYB;
-							PvpPage.pvpPage.pvpResp.oppoList = confirm.payChangeInfo.oppoList;
-							PvpPage.pvpPage.OpponentsInfo ();
-							textStr = "\n\n更换挑战对手成功!";
-							Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-							                 QXComData.confirmStr, null, 
-							                 PvpPage.pvpPage.OpenSkillEffect);
+							BaiZhanPage.baiZhanPage.baiZhanResp.huanYiPiYB = confirm.payChangeInfo.nextHuanYiPiYB;
+							BaiZhanPage.baiZhanPage.baiZhanResp.oppoList = confirm.payChangeInfo.oppoList;
+							BaiZhanPage.baiZhanPage.InItMyRank ();
+							BaiZhanPage.baiZhanPage.InItOpponent ();
+
+							BaiZhanPage.baiZhanPage.OpenSkillEffect (2);
+
+//							textStr = "\n\n更换挑战对手成功!";
+//							Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
+//							                 QXComData.confirmStr, null, 
+//							                 BaiZhanPage.baiZhanPage.OpenSkillEffect);
 						}
 
+						break;
+					}
+					case PVP_CONFIRM_TYPE.PVP_GET_RANK_REWARD:
+					{
+						switch (confirm.getAwardInfo.success)
+						{
+						case 0://失败
+							break;
+						case 1://成功
+
+							BaiZhanPage.baiZhanPage.baiZhanResp.rankAward = 0;
+							BaiZhanPage.baiZhanPage.InItMyRank ();
+
+							BaiZhanPage.baiZhanPage.OpenHighRankRewardWindow (rewardDataList);
+
+							break;
+						default:
+							break;
+						}
+						break;
+					}
+					case PVP_CONFIRM_TYPE.PVP_GET_DAY_REWARD:
+					{
+						switch (confirm.getAwardInfo.success)
+						{
+						case 0://失败
+							break;
+						case 1://成功
+							
+							BaiZhanPage.baiZhanPage.baiZhanResp.nextTimeTo21 = -1;
+							BaiZhanPage.baiZhanPage.InItMyRank ();
+
+							GeneralRewardManager.Instance().CreateReward (rewardDataList);
+
+							break;
+						default:
+							break;
+						}
 						break;
 					}
 					}
@@ -437,7 +470,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			}
 			case ProtoIndexes.ZhanDou_Notes_Resq://百战战斗记录返回
 			{
-				Debug.Log ("PvpRecordResp:" + ProtoIndexes.ZhanDou_Notes_Resq);
+//				Debug.Log ("PvpRecordResp:" + ProtoIndexes.ZhanDou_Notes_Resq);
 				
 				ZhandouRecordResp pvpRecord = new ZhandouRecordResp ();
 				pvpRecord = QXComData.ReceiveQxProtoMessage (p_message,pvpRecord) as ZhandouRecordResp;
@@ -448,7 +481,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 					{
 						pvpRecord.info = new List<ZhandouItem>();
 					}
-					PvpPage.pvpPage.LoadPvpRecordPrefab (pvpRecord);
+					BaiZhanPage.baiZhanPage.LoadPvpRecordPrefab (pvpRecord);
 				}
 
 				return true;
@@ -497,49 +530,43 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 						{
 							//挑战机会用完
 							//可否购买挑战机会check************
-							if (PvpPage.pvpPage.pvpResp.leftCanBuyCount == 0)
+							if (BaiZhanPage.baiZhanPage.baiZhanResp.leftCanBuyCount == 0)
 							{
-								if (JunZhuData.Instance ().m_junzhuInfo.vipLv < 10)
+								if (JunZhuData.Instance().m_junzhuInfo.vipLv < 10)
 								{
-									textStr = "\n今日挑战机会已用完,充值到vip" + (JunZhuData.Instance ().m_junzhuInfo.vipLv + 1) + "级可购买更多挑战次数\n\n是否跳转到充值？";
-									Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-									                 QXComData.cancelStr, QXComData.confirmStr, 
-									                 PvpPage.pvpPage.TurnToVipPage);
+									string textDes1 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_7);
+									string textDes2 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_8).Replace ('*',char.Parse ((JunZhuData.Instance().m_junzhuInfo.vipLv + 1).ToString ()));
+									string textDes3 = LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
+//									textStr = "今日挑战次数已用完，V特权等级提升到" + (JunZhuData.Instance().m_junzhuInfo.vipLv + 1) + "级即可购买更多挑战次数。\n\n是否前往充值？";
+									textStr = textDes1 + "\n" + textDes2 + "\n" + textDes3;
+									QXComData.CreateBox (1,textStr,true,null);
 								}
 								else
 								{
-									textStr = "\n\n今日挑战机会已用完...";
-									Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-									                 QXComData.confirmStr, null, 
-									                 PvpPage.pvpPage.OpenSkillEffect);
+									textStr = "今日挑战次数已用完...";
+									QXComData.CreateBox (1,textStr,true,BaiZhanPage.baiZhanPage.OpenSkillEffect);
 								}
 							}
 							else
 							{
-								textStr = "\n今日挑战机会已用完\n\n是否使用" + PvpPage.pvpPage.pvpResp.buyNeedYB + "元宝购买" + PvpPage.pvpPage.pvpResp.buyNumber + "次挑战次数？\n\n今日还可购买" + PvpPage.pvpPage.pvpResp.leftCanBuyCount + "回";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.cancelStr, QXComData.confirmStr, 
-								                 PvpPage.pvpPage.BuyTimes);
+								textStr = "今日挑战次数已用完\n\n是否使用" + BaiZhanPage.baiZhanPage.baiZhanResp.buyNeedYB + "元宝购买" + BaiZhanPage.baiZhanPage.baiZhanResp.buyNumber + "次挑战次数？\n\n今日还可购买" + BaiZhanPage.baiZhanPage.baiZhanResp.leftCanBuyCount + "回";
+								QXComData.CreateBox (1,textStr,false,BaiZhanPage.baiZhanPage.BuyTimes);
 							}
 						}
 						else if (stateRes.type == 5)
 						{
 							//冷却cd
 							//LanguageTemplate.GetText (LanguageTemplate.Text.BAIZHAN_TIAOZHAN_DISCD);
-							int cleanCdVipLevel = PvpPage.pvpPage.pvpResp.canCleanCDvipLev;
-							if (JunZhuData.Instance ().m_junzhuInfo.vipLv < cleanCdVipLevel)
+							int cleanCdVipLevel = BaiZhanPage.baiZhanPage.baiZhanResp.canCleanCDvipLev;
+							if (JunZhuData.Instance().m_junzhuInfo.vipLv < cleanCdVipLevel)
 							{
-								textStr = "\n挑战冷却中,达到vip" + cleanCdVipLevel + "级可清除冷却\n\n是否跳转到充值？";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.cancelStr, QXComData.confirmStr, 
-								                 PvpPage.pvpPage.TurnToVipPage);
+								textStr = "V特权等级不足，V特权等级提升到" + cleanCdVipLevel + "级即可重置挑战冷却时间。\n\n是否前往充值？ ";
+								QXComData.CreateBox (1,textStr,false,BaiZhanPage.baiZhanPage.TurnToVipPage);
 							}
 							else
 							{
-								textStr = "\n\n挑战冷却中,是否使用" + PvpPage.pvpPage.pvpResp.cdYuanBao + "元宝清除挑战冷却？";
-								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-								                 QXComData.cancelStr, QXComData.confirmStr, 
-								                 PvpPage.pvpPage.ClearCd);
+								textStr = "挑战冷却中,是否使用" + BaiZhanPage.baiZhanPage.baiZhanResp.cdYuanBao + "元宝清除挑战冷却？";
+								QXComData.CreateBox (1,textStr,false,BaiZhanPage.baiZhanPage.ClearCd);
 							}
 						}
 						else
@@ -549,27 +576,25 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 							case 2://玩家正在被挑战
 								//LanguageTemplate.GetText (LanguageTemplate.Text.BAIZHAN_BGING_CHALLENGED);
 								//LanguageTemplate.GetText (LanguageTemplate.Text.BAIZHAN_WAIT_TRY);
-								textStr = "\n\n这位玩家正在被挑战\n\n请稍后再做尝试...";
+								textStr = "这位玩家正在被挑战\n\n请稍后再做尝试...";
 								break;
 							case 3://君主等级不足
-								textStr = "\n\n君主等级不足，无法挑战...";
+								textStr = "君主等级不足，无法挑战...";
 								break;
 							case 6://数据出错
-								textStr = "\n\n挑战失败，请稍后再做尝试...";
+								textStr = "挑战失败，请稍后再做尝试...";
 								break;
 							case 7://对手名次发生变化
-								textStr = "\n\n对手名次发生变化，请重新选择挑战对手！";
+								textStr = "对手名次发生变化，请重新选择挑战对手！";
 								break;
 							case 8://自己的名次已发生变化
-								textStr = "\n\n您的名次已发生变化！";
+								textStr = "您的名次已发生变化！";
 								break;
 							default:
 								break;
 							}
-							
-							Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
-							                 QXComData.confirmStr, null, 
-							                 PlayerStateCheckCallBack);
+
+							QXComData.CreateBox (1,textStr,true,PlayerStateCheckCallBack);
 						}
 					}
 				}
@@ -589,16 +614,11 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 
 					PvpChallengeResp = challenge;
 
-					Global.m_isOpenBaiZhan = true;
+					GeneralControl.Instance.OpenPvpChallengePage (PvpChallengeResp);
 
-					if (pvpObj != null)
+					if (IsPvpPageOpen)
 					{
-						PvpPage.pvpPage.CancelBtn ();
-					}
-
-					if (IsOpenPvpByBtn)
-					{
-						GeneralControl.Instance.OpenPvpChallengePage (PvpChallengeResp);
+						BaiZhanPage.baiZhanPage.DisActiveObj ();
 					}
 				}
 				
@@ -629,7 +649,8 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			CityGlobalData.m_isRightGuide = true;
 		}
 
-		PvpPage.pvpPage.InItPvpPage (pvpInfoResp);
+//		PvpPage.pvpPage.InItPvpPage (pvpInfoResp);
+		BaiZhanPage.baiZhanPage.InItBaiZhanPage (pvpInfoResp);
 	}
 
 	//挑战验证失败回调
@@ -637,8 +658,9 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 	{
 		if (playerState == PlayerState.STATE_PVP_MAIN_PAGE)
 		{
-			PvpPage.pvpPage.OpenSkillEffect (2);
+			BaiZhanPage.baiZhanPage.OpenSkillEffect (2);
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,2);
 			switch (PlayerStateCheckFaillType)
 			{
 			case 2:
@@ -648,7 +670,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 			case 3:
 				//关闭百战
 				UIYindao.m_UIYindao.CloseUI ();
-				PvpPage.pvpPage.CancelBtn ();
+				BaiZhanPage.baiZhanPage.CancelBtn ();
 				break;
 			case 6:
 				ConfirmReq (PVP_CONFIRM_TYPE.PVP_REFRESH_OPPO_RANK);//刷新对手名次
@@ -666,25 +688,21 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		else
 		{
 			//关闭挑战阵容页面，刷新百战首页
-//			GeneralTiaoZhan tiaoZhan = challengeObj.GetComponent<GeneralTiaoZhan> ();
-//			tiaoZhan.PvpReset = true;
-//			tiaoZhan.DestroyRoot ();
-			GeneralChallengePage.gcPage.PvpReset = true;
-			GeneralChallengePage.gcPage.DisActiveObj ();
+			ReOpenPvp ();
 		}
+	}
+	void ReOpenPvp ()
+	{
+		GeneralChallengePage.gcPage.PvpReset = true;
+		GeneralChallengePage.gcPage.DisActiveObj ();
+
+		OpenPvp ();
 	}
 	#endregion
 
-	//打开百战
-	public void OpenPvp ()
-	{
-		IsOpenPvpByBtn = true;
-		PvpDataReq ();
-	}
-
-	void OnDestroy (){	
+	void OnDestroy ()
+	{	
 		SocketTool.UnRegisterMessageProcessor (this);
-
 		base.OnDestroy();
 	}
 }

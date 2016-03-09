@@ -610,24 +610,31 @@ public class UICamera : MonoBehaviour
 					for (int b = 0; b < hits.Length; ++b)
 					{
 						GameObject go = hits[b].collider.gameObject;
-						UIWidget w = go.GetComponent<UIWidget>();
 
-						if (w != null)
-						{
-							if (!w.isVisible) continue;
-							if (w.hitCheck != null && !w.hitCheck(hits[b].point)) continue;
+						UIWidget w = ComponentHelper.GetActiveWidget( go );
+
+						if (w != null){
+							if ( !w.isVisible ) {
+								continue;
+							}
+
+							if ( w.hitCheck != null && !w.hitCheck( hits[b].point ) ) {
+								continue;
+							}
 						}
-						else
-						{
+						else{
 							UIRect rect = NGUITools.FindInParents<UIRect>(go);
-							if (rect != null && rect.finalAlpha < 0.001f) continue;
+
+							if (rect != null && rect.finalAlpha < 0.001f){
+								continue;
+							}
 						}
 
-						mHit.depth = NGUITools.CalculateRaycastDepth(go);
+						mHit.depth = NGUITools.CalculateRaycastDepth( go );
 
-						if (mHit.depth != int.MaxValue)
-						{
+						if (mHit.depth != int.MaxValue){
 							mHit.hit = hits[b];
+
 							mHits.Add(mHit);
 						}
 					}
@@ -644,6 +651,7 @@ public class UICamera : MonoBehaviour
 						{
 							hit = mHits[b].hit;
 							hoveredObject = hit.collider.gameObject;
+
 							mHits.Clear();
 							return true;
 						}
@@ -653,12 +661,17 @@ public class UICamera : MonoBehaviour
 				else if (hits.Length == 1)
 				{
 					Collider c = hits[0].collider;
+				
 					UIWidget w = c.GetComponent<UIWidget>();
 
-					if (w != null)
-					{
-						if (!w.isVisible) continue;
-						if (w.hitCheck != null && !w.hitCheck(hits[0].point)) continue;
+					if ( w != null ){
+						if ( !w.isVisible ) {
+							continue;
+						}
+
+						if ( w.hitCheck != null && !w.hitCheck( hits[0].point ) ) {
+							continue;
+						}
 					}
 					else
 					{
@@ -851,7 +864,9 @@ public class UICamera : MonoBehaviour
 	/// Remove a touch event from the list.
 	/// </summary>
 
-	public static void RemoveTouch (int id) { mTouches.Remove(id); }
+	public static void RemoveTouch (int id) {
+		mTouches.Remove(id); 
+	}
 
 	/// <summary>
 	/// Add this camera to the list.

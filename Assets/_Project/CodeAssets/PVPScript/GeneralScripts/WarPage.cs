@@ -74,35 +74,48 @@ public class WarPage : MonoBehaviour {
 
 		foreach (EventHandler handler in closeHandlerList)
 		{
-			handler.m_handler -= WarCloseHandlerClickBack;
-			handler.m_handler += WarCloseHandlerClickBack;
+			handler.m_click_handler -= WarCloseHandlerClickBack;
+			handler.m_click_handler += WarCloseHandlerClickBack;
+		}
+	}
+
+	public void CheckRedPoint ()
+	{
+		for (int i = 0;i < warList.Count;i ++)
+		{
+			WarItem war = warList[i].GetComponent<WarItem> ();
+			war.CheckRedPoint ();
+		}
+	}
+
+	/// <summary>
+	/// Sets the plunder times.
+	/// </summary>
+	/// <param name="countNum">Count number.</param>
+	/// <param name="totleNum">Totle number.</param>
+	public void SetPlunderTimes (int countNum,int totleNum)
+	{
+		for (int i = 0;i < mainSimpleResp.info.Count;i ++)
+		{
+			if (mainSimpleResp.info[i].functionId == 211)
+			{
+				mainSimpleResp.info[i].num1 = countNum;
+				mainSimpleResp.info[i].num2 = totleNum;
+				
+//				Debug.Log ("refresh:" + mainSimpleResp.info[i].num1 + "||" + mainSimpleResp.info[i].num2);
+			}
+		}
+
+		for (int i = 0;i < warList.Count;i ++)
+		{
+			WarItem war = warList[i].GetComponent<WarItem> ();
+			war.InItWarItem (mainSimpleResp.info[i]);
 		}
 	}
 
 	public void WarCloseHandlerClickBack (GameObject obj)
 	{
-		CheckRedPoint ();
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
-	}
-
-	/// <summary>
-	/// Shows the war red.
-	/// </summary>
-	public void CheckRedPoint ()
-	{
-		foreach (GameObject obj in warList)
-		{
-			WarItem war = obj.GetComponent<WarItem> ();
-			if (war.GetShowRed)
-			{
-				PushAndNotificationHelper.SetRedSpotNotification (220,true);//or 313
-				break;
-			}
-			else
-			{
-				PushAndNotificationHelper.SetRedSpotNotification (220,false);
-			}
-		}
 	}
 }

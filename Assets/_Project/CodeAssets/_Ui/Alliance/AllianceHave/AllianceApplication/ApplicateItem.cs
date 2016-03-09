@@ -46,9 +46,9 @@ public class ApplicateItem : MonoBehaviour {
 		Debug.Log ("就不给你看");
 
 		Vector3 localPos = new Vector3 (40f,-60f,0);
-		AllianceApplicationData.Instance ().Select (this.gameObject,localPos);
+		AllianceApplicationData.Instance().Select (this.gameObject,localPos);
 
-		AllianceApplicationData.Instance ().MakeZheZhao (true);
+		AllianceApplicationData.Instance().MakeZheZhao (true);
 		
 		GameObject infoWin = (GameObject)Instantiate (infoWindowObj);
 		

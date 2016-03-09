@@ -118,6 +118,10 @@ public class TipItemControllor : MonoBehaviour
 		{
 			showNormalNum = !refreshProgress_JinJieCaiLiao();
 		}
+		else if(template.itemType == 211)
+		{
+			showNormalNum = false;
+		}
 		
 		if(showNormalNum == true)
 		{
@@ -234,6 +238,10 @@ public class TipItemControllor : MonoBehaviour
 		{
 			num = AllianceData.Instance.g_UnionInfo == null ? 0 :
 				AllianceData.Instance.g_UnionInfo.contribution;
+		}
+		else if(template.id == 900026)//荒野币
+		{
+			num = AllianceData.Instance.Hy_Bi;
 		}
 
 		//0普通道具;2装备;3玉玦;4秘宝；5秘宝碎片；6进阶材料；7基础属性符文；8高级属性符文；9强化材料
@@ -408,7 +416,7 @@ public class TipItemControllor : MonoBehaviour
 
 	private int GetHorseAwardNum (int horseType)
 	{
-		JunzhuShengjiTemplate junZhuUpLevelTemp = JunzhuShengjiTemplate.GetJunZhuShengJi (JunZhuData.Instance ().m_junzhuInfo.level);
+		JunzhuShengjiTemplate junZhuUpLevelTemp = JunzhuShengjiTemplate.GetJunZhuShengJi (JunZhuData.Instance().m_junzhuInfo.level);
 
 		int xiShu = junZhuUpLevelTemp.xishu;
 		

@@ -147,6 +147,11 @@ public class CanshuTemplate : XmlLoadManager
 	public static string NUQI_SHENGMING_REDUCE = "NUQI_SHENGMING_REDUCE";
 	public static string NUQI_MAX = "NUQI_MAX";
 	public static string NUQI_MAX_0 = "NUQI_MAX_0";
+	public static string QIEWUQI_CD_X = "QIEWUQI_CD_X";
+	public static string QIEWUQI_CD_Y = "QIEWUQI_CD_Y";
+	public static string BROADCAST_PRICE = "BROADCAST_PRICE";
+	public static string WORLDCHAT_PRICE = "WORLDCHAT_PRICE";
+	public static string QIEWUQI_AI_PANDINGJULI = "QIEWUQI_AI_PANDINGJULI";
 
 
     /// <summary>

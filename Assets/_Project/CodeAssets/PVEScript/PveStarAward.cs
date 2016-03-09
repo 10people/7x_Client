@@ -8,190 +8,204 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class PveStarAward : MonoBehaviour, SocketProcessor {
-
-	[HideInInspector] public Level M_Level;
-
+public class PveStarAward : MonoBehaviour {
+	
 	[HideInInspector] public List<PveStarItem> PveStarItemList = new List<PveStarItem> ();
 
-	public GameObject StaItemp;
-
-	private float Dis = 140;
-
-	public GameObject Success_obj;
-	 
-	public int  Opentype; // 1 在地图打开 2在UI打开
+	private float Dis = 100;
 
 	public GameObject UIgrid;
 
-	public UIPanel mPanle;
+	[HideInInspector]
+	public Level mLevel;
+
+	[HideInInspector]
+	public GameObject IconSamplePrefab;
+
 	void Start () {
 	
 	}
 
 	void Update () {
 	
+
+	}
+	public void Init()
+	{
+		if (IconSamplePrefab == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleCallBack);
+		}
+		else
+		{
+			WWW temp = null;
+			OnIconSampleCallBack(ref temp, null, IconSamplePrefab);
+		}
 		if(UIYindao.m_UIYindao.m_isOpenYindao)
 		{
 			UIYindao.m_UIYindao.CloseUI();
 		}
 	}
-
-	void Awake()
-	{ 
-		SocketTool.RegisterMessageProcessor(this);
-	}
-	void OnDestroy()
+	private void OnIconSampleCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
-		SocketTool.UnRegisterMessageProcessor(this);
-	}
-
-	public void Init()
-	{
+		foreach(PveStarItem mPveStarItem in PveStarItemList)
+		{
+			Destroy(mPveStarItem.gameObject);
+		}
 		PveStarItemList.Clear ();
-
-		for(int i = 0 ; i < M_Level.starInfo.Count; i ++)
+		if (IconSamplePrefab == null)
 		{
-			GameObject mStar = Instantiate( StaItemp )as GameObject;
-
-			mStar.SetActive(true);
-
-			mStar.transform.parent = StaItemp.transform.parent;
-
-			mStar.transform.localScale = Vector3.one;
-
-			mStar.transform.localPosition = new Vector3(0,180-Dis*i,0);
-
-			PveStarItem mPveStarItem = mStar.GetComponent<PveStarItem>();
-
-			mPveStarItem.mStarInfo = M_Level.starInfo[i];
-
-			mPveStarItem.m_Level = M_Level;
-
-			mPveStarItem.Init();
-
-			PveStarItemList.Add(mPveStarItem);
+			IconSamplePrefab = p_object as GameObject;
 		}
-		mFixUniform mmFixUniform = UIgrid.GetComponent<mFixUniform>();
-
-		mmFixUniform.offset = new Vector3(0,-30,0);
-
-		if(M_Level.starInfo.Count > 4){
-
-			mmFixUniform.enabled = false;
-		}
-		UIScrollView mscollview  = mPanle.GetComponent<UIScrollView>();
-		mscollview.ResetPosition ();
-	}
-	public   bool OnProcessSocketMessage(QXBuffer p_message){
-		
-		if (p_message != null)
+		if(CityGlobalData.PT_Or_CQ)
 		{
-			switch (p_message.m_protocol_index)
+			for(int i = 0 ; i < mLevel.starInfo.Count; i ++)
 			{
-			case ProtoIndexes.PVE_STAR_REWARD_GET_RET: 
-			{
-				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer t_qx = new QiXiongSerializer();
-			
-				PveStarGetSuccess tempInfo = new PveStarGetSuccess();
-				
-				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-
-				if (tempInfo != null)
+				if(mLevel.starInfo[i].finished && !mLevel.starInfo[i].getRewardState)
 				{
-					foreach(PveStarItem m_item in PveStarItemList )
-					{
-						if(m_item.Star_Id == tempInfo.s_starNum)
-						{
-							m_item.mStarInfo.getRewardState = true;
-							
-							m_item.Init();
-
-							RewardData data = new RewardData ( m_item.Award_id, m_item.Awardsnum); 
-
-							GeneralRewardManager.Instance ().CreateReward (data); 
-
-							break;
-						}
-					}
-					foreach(Pve_Level_Info m_Lv in MapData.mapinstance.Pve_Level_InfoList )
-					{
-						if(m_Lv.litter_Lv.guanQiaId == tempInfo.guanQiaId)
-						{
-							for(int j = 0 ; j < m_Lv.litter_Lv.starInfo.Count; j++)
-							{
-								if(m_Lv.litter_Lv.starInfo[j].starId == tempInfo.s_starNum)
-								{
-									m_Lv.litter_Lv.starInfo[j].getRewardState = true;
-									
-									m_Lv.ShowBox();
-									
-									break;
-								}
-							}
-							break;
-						}
-					}
-
-					if (tempInfo.s_result)
-					{
-						
-//						GameObject Success = Instantiate( Success_obj )as GameObject;
-//						
-//						Success.SetActive(true);
-//						
-//						Success.transform.parent = Success_obj.transform.parent;
-//						
-//						Success.transform.localScale = Vector3.one;
-//						
-//						Success.transform.localPosition = Vector3.zero;
-
-					}
+					GameObject iconSampleObject = Instantiate( IconSamplePrefab )as GameObject;
 					
-					else
-					{
-						Debug.Log ("已领取过星级奖励");
-						
-						Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-						                        GetXingJiRewardLoadBack );
-					}
+					iconSampleObject.SetActive(true);
+					
+					iconSampleObject.transform.parent = UIgrid.transform;
+					
+					var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+					
+					var iconSpriteName = "";
+					string[] Awardlist = PveStarTemplate.GetAwardInfo (mLevel.starInfo[i].starId);
+					
+					PveStarTemplate mPveStarTemplate = PveStarTemplate.getPveStarTemplateByStarId (mLevel.starInfo[i].starId);
+					
+					CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(int.Parse(Awardlist[1]));
+					
+					iconSpriteName = mItemTemp.icon.ToString();
+					
+					iconSampleManager.SetIconType(IconSampleManager.IconType.item);
+					
+					NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mItemTemp.nameId);
+					
+					string mdesc = DescIdTemplate.GetDescriptionById(int.Parse(Awardlist[1]));
+					
+					var popTitle = mNameIdTemplate.Name;
+					
+					var popDesc = mdesc;
+					
+					iconSampleManager.SetIconByID(mItemTemp.id, Awardlist[2], 3);
+					iconSampleManager.SetIconPopText(int.Parse(Awardlist[1]), popTitle, popDesc, 1);
+					iconSampleObject.transform.localScale = new Vector3(0.5f,0.5f,1);
 				}
-				return true;
-			}
-			default: return false;
+				
 			}
 		}
-		
-		return false;
-	}
-	UIBox ui_box;
-	void GetXingJiRewardLoadBack ( ref WWW p_www, string p_path, Object p_object )
-	{
-		if(ui_box == null)
-		{
-		    ui_box = (Instantiate( p_object ) as GameObject).GetComponent<UIBox> ();
-			
-			string titleStr = "提示";
-			
-			string str = "\n\n您已领取过该星级奖励！";
-			
-			string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-			ui_box.setBox(titleStr, MyColorData.getColorString (1,str), null, 
-			              null,confirmStr,null,null);
+		else{
+			for(int i = 0 ; i < mLevel.cqStarInfo.Count; i ++)
+			{
+				if(mLevel.cqStarInfo[i].finished && !mLevel.cqStarInfo[i].getRewardState)
+				{
+					GameObject iconSampleObject = Instantiate( IconSamplePrefab )as GameObject;
+					
+					iconSampleObject.SetActive(true);
+					
+					iconSampleObject.transform.parent = UIgrid.transform;
+					
+					var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+					
+					var iconSpriteName = "";
+					string[] Awardlist = PveStarTemplate.GetAwardInfo (mLevel.cqStarInfo[i].starId);
+					
+					PveStarTemplate mPveStarTemplate = PveStarTemplate.getPveStarTemplateByStarId (mLevel.cqStarInfo[i].starId);
+					
+					CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(int.Parse(Awardlist[1]));
+					
+					iconSpriteName = mItemTemp.icon.ToString();
+					
+					iconSampleManager.SetIconType(IconSampleManager.IconType.item);
+					
+					NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mItemTemp.nameId);
+					
+					string mdesc = DescIdTemplate.GetDescriptionById(int.Parse(Awardlist[1]));
+					
+					var popTitle = mNameIdTemplate.Name;
+					
+					var popDesc = mdesc;
+					
+					iconSampleManager.SetIconByID(mItemTemp.id, Awardlist[2], 3);
+					iconSampleManager.SetIconPopText(int.Parse(Awardlist[1]), popTitle, popDesc, 1);
+					iconSampleObject.transform.localScale = new Vector3(0.5f,0.5f,1);
+				}
+				
+			}
 		}
-	}
 
+		UIgrid.GetComponent<UIGrid> ().repositionNow = true;
+	}
+	public void SendLingQu()
+	{
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+		}
+		if(CityGlobalData.PT_Or_CQ)
+		{
+			for (int i = 0; i < mLevel.starInfo.Count; i ++) {
+				if(mLevel.starInfo[i].finished && !mLevel.starInfo[i].getRewardState)
+				{
+					MemoryStream t_tream = new MemoryStream();
+					
+					QiXiongSerializer t_qx = new QiXiongSerializer();
+					
+					GetPveStarAward award = new GetPveStarAward();
+					
+					award.s_starNum = mLevel.starInfo[i].starId;
+					
+					award.guanQiaId = mLevel.guanQiaId;
+
+					award.isChuanQi = false;
+
+					t_qx.Serialize(t_tream, award);
+					
+					byte[] t_protof;
+					
+					t_protof = t_tream.ToArray();
+					
+					SocketTool.Instance().SendSocketMessage(ProtoIndexes.PVE_STAR_REWARD_GET, ref t_protof);
+				}
+			}
+		}
+		else{
+			for (int i = 0; i < mLevel.cqStarInfo.Count; i ++) {
+
+				if(mLevel.cqStarInfo[i].finished && !mLevel.cqStarInfo[i].getRewardState)
+				{
+					MemoryStream t_tream = new MemoryStream();
+					
+					QiXiongSerializer t_qx = new QiXiongSerializer();
+					
+					GetPveStarAward award = new GetPveStarAward();
+					
+					award.s_starNum = mLevel.cqStarInfo[i].starId;
+					
+					award.guanQiaId = mLevel.guanQiaId;
+
+					award.isChuanQi = true;
+
+					t_qx.Serialize(t_tream, award);
+					
+					byte[] t_protof;
+					
+					t_protof = t_tream.ToArray();
+					
+					SocketTool.Instance().SendSocketMessage(ProtoIndexes.PVE_STAR_REWARD_GET, ref t_protof);
+				}
+			}
+		}
+
+	
+		Destroy (this.gameObject);
+	}
 	public void CloseUI()
 	{
-		if(Opentype == 1)
-		{
-			MapData.mapinstance.OpenEffect ();
-			PassLevelBtn.Instance ().OPenEffect ();
-			MapData.mapinstance.ShowPVEGuid ();
-		}
-
+		NewPVEUIManager.Instance().ShowPVEGuid ();
 		Destroy (this.gameObject);
 	}
 }

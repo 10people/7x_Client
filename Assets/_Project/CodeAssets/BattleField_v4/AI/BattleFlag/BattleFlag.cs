@@ -373,18 +373,18 @@ public class BattleFlag : MonoBehaviour
 		
 		GuideTemplate template = GuideTemplate.getTemplateByLevelAndEvent (level, guideId);
 		
-		bool flag = BattleControlor.Instance ().havePlayedGuide (template);
+		bool flag = BattleControlor.Instance().havePlayedGuide (template);
 		
 		if (flag == true) return;
 		
-		BattleUIControlor.Instance ().showDaramControllor (level, template.id);
+		BattleUIControlor.Instance().showDaramControllor (level, template.id);
 	}
 
 	private void OnTriggerHintLabel()
 	{
 		if(CityGlobalData.m_levelType != qxmobile.protobuf.LevelType.LEVEL_TALE)
 		{
-			SceneGuideManager.Instance ().ShowSceneGuide (hintLabelId);
+			SceneGuideManager.Instance().ShowSceneGuide (hintLabelId);
 		}
 	}
 

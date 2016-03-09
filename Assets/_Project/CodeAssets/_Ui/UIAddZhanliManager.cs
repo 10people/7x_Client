@@ -37,7 +37,7 @@ public class UIAddZhanliManager
 		}
 		m_UIAddZhanliData = GameObject.Instantiate(m_ObjText).GetComponent<UIAddZhanliData>();
 		m_UIAddZhanliData.m_UILabel.text = "战力提升：" + m_iCurNum;
-		UI3DEffectTool.Instance().ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_UIAddZhanliData.m_Eff, EffectTemplate.getEffectTemplateByEffectId( 100179 ).path);
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_UIAddZhanliData.m_Eff, EffectTemplate.getEffectTemplateByEffectId( 100179 ).path);
 
 	}
 	

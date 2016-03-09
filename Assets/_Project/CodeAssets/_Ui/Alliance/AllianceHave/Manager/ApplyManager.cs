@@ -30,11 +30,6 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 	public GameObject ReCruitBtn;
 	public List<AppMember> m_AppMemberList = new List<AppMember>();
 
-	public UILabel mTiLi;
-	
-	public UILabel mTongBi;
-	
-	public UILabel mYuanBao;
 
 	void Awake()
 	{ 
@@ -54,11 +49,11 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 
 	void Update () {
 	
-//		mTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tili.ToString();
+//		mTiLi.text = JunZhuData.Instance().m_junzhuInfo.tili.ToString();
 //		
-//		mTongBi.text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString();
+//		mTongBi.text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString();
 //		
-//		mYuanBao.text = JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString();
+//		mYuanBao.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
 	}
 
 	public void Init()
@@ -94,9 +89,9 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 		OpenRecruit.transform.localPosition = Vector3.zero;
 		ReCruit mReCruit = OpenRecruit.GetComponent<ReCruit>();
 		//mReCruit.Z_UnionInfo = m_tempInfo;
-
-		mReCruit.ChangeNum ();
 		mReCruit.initLevel ();
+		mReCruit.ChangeNum ();
+
 		mReCruit.init ();
 	}
 
@@ -115,8 +110,8 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof,"30124");
-		Debug.Log ("ApplicateReq" + ProtoIndexes.LOOK_APPLICANTS);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof,"30124");
+		//Debug.Log ("ApplicateReq" + ProtoIndexes.LOOK_APPLICANTS);
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)
@@ -127,7 +122,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			{
 			case ProtoIndexes.LOOK_APPLICANTS_RESP://查看申请入盟成员请求返回
 			{
-				Debug.Log ("ApplicateResp" + ProtoIndexes.LOOK_APPLICANTS_RESP);
+			//	Debug.Log ("ApplicateResp" + ProtoIndexes.LOOK_APPLICANTS_RESP);
 				MemoryStream application_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				
 				QiXiongSerializer application_qx = new QiXiongSerializer();
@@ -138,7 +133,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 				
 				if (applicateResp != null)
 				{
-					Debug.Log ("申请者信息：" + applicateResp.applicanInfo);
+				//	Debug.Log ("申请者信息：" + applicateResp.applicanInfo);
 
 					if (applicateResp.applicanInfo != null)
 					{
@@ -156,7 +151,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			}
 			case ProtoIndexes.REFUSE_APPLY_RESP://拒绝入盟申请请求返回
 			{
-				Debug.Log ("拒绝返回：" + ProtoIndexes.REFUSE_APPLY_RESP);
+			//	Debug.Log ("拒绝返回：" + ProtoIndexes.REFUSE_APPLY_RESP);
 				MemoryStream refuse_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				
 				QiXiongSerializer refuse_qx = new QiXiongSerializer();
@@ -183,15 +178,18 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 					if(AppleNumber <= 0)
 					{
 						CityGlobalData.AllianceApplyNotice = 0;
+						int Junjue = 410000; 
+						PushAndNotificationHelper.SetRedSpotNotification(Junjue,false);
+
 					}
 				}
-				
+				NewAlliancemanager.Instance().Refreshtification ();
 				return true;
 			}
 				
 			case ProtoIndexes.AGREE_APPLY_RESP://同意入盟申请请求返回
 			{
-				Debug.Log ("同意返回：" + ProtoIndexes.AGREE_APPLY_RESP);
+				//Debug.Log ("同意返回：" + ProtoIndexes.AGREE_APPLY_RESP);
 				MemoryStream agree_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				
 				QiXiongSerializer agree_qx = new QiXiongSerializer();
@@ -224,7 +222,10 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 				if(AppleNumber <= 0)
 				{
 					CityGlobalData.AllianceApplyNotice = 0;
+					int Junjue = 410000; 
+					PushAndNotificationHelper.SetRedSpotNotification(Junjue,false);
 				}
+				NewAlliancemanager.Instance().Refreshtification ();
 				return true;
 			}
 
@@ -264,7 +265,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			
 		case 0:
 			
-			Debug.Log ("Refuse Success!");
+		//	Debug.Log ("Refuse Success!");
 			
 			str2 = "\r\n"+"\r\n"+"您已拒绝" + backName + "的入盟申请";
 			
@@ -272,7 +273,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			
 		case 1:
 			
-			Debug.Log ("Refuse Fail!");
+		//	Debug.Log ("Refuse Fail!");
 			
 			//str1 = "拒绝失败";
 			str2 = "\r\n"+"拒绝失败"+"\r\n"+"\r\n"+"您没有对该申请的拒绝权限";
@@ -293,7 +294,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 		int resultType = agreeApplyResp.result;
 		if (resultType == 0)
 		{
-			Debug.Log ("Agree Success!");
+			//Debug.Log ("Agree Success!");
 			
 			str2 =  "\r\n"+"\r\n"+ "您已同意" + backName + "的入盟申请";
 			
@@ -309,18 +310,18 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			
 			if (resultType == 1)
 			{
-				Debug.Log ("没有权限");
+			//	Debug.Log ("没有权限");
 				str2 = "\r\n"+"同意入盟申请失败！"+"\r\n"+"\r\n"+ "您没有对该申请的同意权限";
 			}
 			
 			else if (resultType == 2)
 			{
-				Debug.Log ("联盟人数已满");
+			//	Debug.Log ("联盟人数已满");
 				str2 = "\r\n"+"同意入盟申请失败！"+"\r\n"+"\r\n"+"联盟人数已满！";
 			}
 			else if (resultType == 3)
 			{
-				Debug.Log ("取消申请或加入其他联盟");
+				//Debug.Log ("取消申请或加入其他联盟");
 				
 				//str1 = "同意入盟申请失败";
 				
@@ -384,6 +385,6 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 	}
 	public void Close()
 	{
-		NewAlliancemanager.Instance ().BackToThis (this.gameObject);
+		NewAlliancemanager.Instance().BackToThis (this.gameObject);
 	}
 }

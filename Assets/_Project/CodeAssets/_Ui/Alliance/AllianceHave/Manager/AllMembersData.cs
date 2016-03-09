@@ -55,7 +55,7 @@ public class AllMembersData : MonoBehaviour,SocketProcessor {
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.LOOK_MEMBERS,ref t_protof,"30116");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_MEMBERS,ref t_protof,"30116");
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)
@@ -76,7 +76,7 @@ public class AllMembersData : MonoBehaviour,SocketProcessor {
 				
 				if (membersResp != null)
 				{	
-					Debug.Log ("联盟成员信息返回");
+					//Debug.Log ("联盟成员信息返回");
 					m_membersInfo = membersResp;
 					
 					ElectionAndVote elect_vote = electAndVoteTips.GetComponent<ElectionAndVote> ();

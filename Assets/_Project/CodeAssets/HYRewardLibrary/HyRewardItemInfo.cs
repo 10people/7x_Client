@@ -80,11 +80,11 @@ public class HyRewardItemInfo : MonoBehaviour {
 		{
 			foreach (ApplyerInfo tempPlayer in tempInfo.applyerInfo)
 			{
-				Debug.Log ("id：" + tempPlayer.junzhuId + "/" + JunZhuData.Instance ().m_junzhuInfo.id);
+				Debug.Log ("id：" + tempPlayer.junzhuId + "/" + JunZhuData.Instance().m_junzhuInfo.id);
 				junZhuIdList.Add (tempPlayer.junzhuId);
 			}
 			
-			if (junZhuIdList.Contains (JunZhuData.Instance ().m_junzhuInfo.id))
+			if (junZhuIdList.Contains (JunZhuData.Instance().m_junzhuInfo.id))
 			{
 				selectBoxObj.SetActive (true);
 			}

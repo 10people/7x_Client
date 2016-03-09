@@ -30,7 +30,7 @@ public class DroppenAI : MonoBehaviour
 
 		GameObject effectTemple;
 
-		BattleEffectControllor.Instance ().GetEffectDict ().TryGetValue(
+		BattleEffectControllor.Instance().GetEffectDict ().TryGetValue(
 			EffectIdTemplate.getEffectTemplateByEffectId(200001).path, 
 			out effectTemple);
 
@@ -49,7 +49,7 @@ public class DroppenAI : MonoBehaviour
 		
 		float dropHeight = -1f;
 
-		BattleEffectControllor.Instance ().PlayEffect (200000, startPos, (targetPos - startPos).normalized, dropTime + 1f);
+		BattleEffectControllor.Instance().PlayEffect (200000, startPos, (targetPos - startPos).normalized, dropTime + 1f);
 		
 		iTween.ValueTo (gameObject, iTween.Hash(
 			"from", 0,
@@ -109,6 +109,10 @@ public class DroppenAI : MonoBehaviour
 
 	}
 
+	private string m_fx_path = "";
+
+	private GameObject m_fx_gb = null;
+
 	public void OnActionFinish()
 	{
 //		SoundPlayEff sound = gameObject.AddComponent<SoundPlayEff> ();
@@ -119,14 +123,20 @@ public class DroppenAI : MonoBehaviour
 
 		body.SetActive (false);
 
-		BattleEffectControllor.Instance ().PlayEffect (200001, gameObject, 999);
+		int eff_id = 200001;
+
+		EffectIdTemplate et = EffectTemplate.getEffectTemplateByEffectId ( eff_id );
+
+		m_fx_path = et.path;
+
+		m_fx_gb = BattleEffectControllor.Instance().PlayEffect ( eff_id, gameObject, 999 );
 	}
 
 	public void Update ()
 	{
 		if (flying == false) return;
 
-		Vector3 targetP = BattleControlor.Instance ().getKing ().transform.position + new Vector3(0, 1.5f, 0);
+		Vector3 targetP = BattleControlor.Instance().getKing ().transform.position + new Vector3(0, 1.5f, 0);
 
 		if(Vector3.Distance(transform.position, targetP) < .5f)
 		{
@@ -138,7 +148,7 @@ public class DroppenAI : MonoBehaviour
 
 			body.SetActive(false);
 
-			BloodLabelControllor.Instance().showDroppenAwardEx(BattleControlor.Instance ().getKing (), item);
+			BloodLabelControllor.Instance().showDroppenAwardEx(BattleControlor.Instance().getKing (), item);
 
 			StartCoroutine(des());
 		}
@@ -165,7 +175,13 @@ public class DroppenAI : MonoBehaviour
 
 		yield return new WaitForSeconds(.5f);
 
-		DestroyObject (gameObject);
+		DestroyDropAI();
+
 	}
 
+	void DestroyDropAI(){
+		FxHelper.FreeFxGameObject( m_fx_path, m_fx_gb );
+
+		DestroyObject( gameObject );
+	}
 }

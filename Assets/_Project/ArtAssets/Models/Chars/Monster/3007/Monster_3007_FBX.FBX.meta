@@ -289,7 +289,7 @@ ModelImporter:
         messageOptions: 0
       - time: .283071727
         functionName: PlaySound
-        data: 3308
+        data: 43000|43002
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -427,7 +427,7 @@ ModelImporter:
         messageOptions: 0
       - time: .283071727
         functionName: PlaySound
-        data: 3308
+        data: 43000|43002
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -556,23 +556,23 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .00275561796
+      - time: .0119299311
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 90
         messageOptions: 0
-      - time: .968000233
-        functionName: attackedActionEnd
-        data: 
+      - time: .0278549064
+        functionName: PlaySound
+        data: 43005|43010|43012
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .00597954355
-        functionName: PlaySound
-        data: 4000|4001|4002|0|0
+      - time: .968000233
+        functionName: attackedActionEnd
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -694,16 +694,16 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .779999614
-        functionName: checkDieInKnockdown
-        data: 
+      - time: .0126663791
+        functionName: PlaySound
+        data: 43005|43010|43012
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .599822342
-        functionName: PlaySound
-        data: 3000|3001|3002
+      - time: .779999614
+        functionName: checkDieInKnockdown
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -942,9 +942,9 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .00317460322
+      - time: .0123489155
         functionName: PlaySound
-        data: 4003|4004|4005|0|0|0|0
+        data: 43020|43021
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -952,13 +952,6 @@ ModelImporter:
       - time: .544303656
         functionName: dieActionDone
         data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .650177836
-        functionName: PlaySound
-        data: 3000|3001|3002
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -1593,6 +1586,13 @@ ModelImporter:
       - time: .0379745737
         functionName: playPre
         data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .395542949
+        functionName: PlaySound
+        data: 43000|43002
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

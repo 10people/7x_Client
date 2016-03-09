@@ -53,6 +53,8 @@ public class ZhuXianTemp : XmlLoadManager
 
 	public string m_sSprite;
 
+    public string doneTitle;
+
     public List<int> m_listYindaoShuju = new List<int>();
 
     public static List<int> taskShowIdList = new List<int>();
@@ -165,7 +167,9 @@ public class ZhuXianTemp : XmlLoadManager
 				t_reader.MoveToNextAttribute();
 				t_template.m_sSprite = t_reader.Value;
 
-
+                t_reader.MoveToNextAttribute();
+                t_template.doneTitle = t_reader.Value;
+                
                 //			Debug.Log(_template.yindaoId);
 
                 string[] temp = t_template.yindaoId.Split(';');
@@ -262,7 +266,7 @@ public class ZhuXianTemp : XmlLoadManager
 
     public static string GeTaskTitleByIndexid(int tempId)
     {
-        Debug.Log("tempIdtempIdtempId  ::::::" + tempId);
+//        Debug.Log("tempIdtempIdtempId  ::::::" + tempId);
         foreach (ZhuXianTemp template in tempTasks)
         {
             if (template.orderidx == tempId)

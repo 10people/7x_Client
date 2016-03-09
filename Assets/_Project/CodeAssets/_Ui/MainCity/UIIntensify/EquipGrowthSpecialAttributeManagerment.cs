@@ -11,8 +11,8 @@ public class EquipGrowthSpecialAttributeManagerment : MonoBehaviour
     private int _addCount = 0;
     void Start ()
     {
-	
-	}
+   
+    }
     public void ShowInfo(EquipSuoData.WashInfo attribute, bool isadd, bool isnew)
     {
         m_labName.text = MyColorData.getColorString(ColorID(attribute._type), NameIdTemplate.GetName_By_NameId(attribute._nameid));

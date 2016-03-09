@@ -84,6 +84,10 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 	public UILabel winDescNum;
 
+	public UISprite unlockSprite;
+
+	public UILabel unlockLabel;
+
 
 	[HideInInspector] public int winLevel;
 
@@ -162,9 +166,9 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 	public void OnResultHelp()
 	{
-		if (JunZhuData.Instance ().m_junzhuInfo.lianMengId > 0)//有联盟
+		if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)//有联盟
 		{
-			BattleUIControlor.Instance ().sendHelp ();
+			BattleUIControlor.Instance().sendHelp ();
 		}
 		else//无联盟
 		{
@@ -362,10 +366,10 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 	IEnumerator resultActionGeneral(BattleControlor.BattleResult result, float battleTime)
 	{
+		float timer = 0;
+
 		Vector3 targetFlagPos = spriteFlag.transform.localPosition;
 		
-		Vector3 targetFlagScale = new Vector3 (1, 1, 1);
-
 		spriteFlag.transform.localPosition = Vector3.zero;
 
 		if(result == BattleControlor.BattleResult.RESULT_LOSE)
@@ -383,25 +387,32 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 		if(result == BattleControlor.BattleResult.RESULT_WIN)
 		{
-			UI3DEffectTool.Instance().ShowTopLayerEffect( 
+			UI3DEffectTool.ShowTopLayerEffect( 
                  UI3DEffectTool.UIType.FunctionUI_1, 
                  spriteFlag.gameObject, 
                  EffectIdTemplate.GetPathByeffectId(100102) );
 			
-			UI3DEffectTool.Instance().ShowTopLayerEffect( 
+			UI3DEffectTool.ShowTopLayerEffect( 
 	             UI3DEffectTool.UIType.FunctionUI_1, 
 	             spriteFlag.gameObject, 
 	             EffectIdTemplate.GetPathByeffectId(100105) );
 		}
 		else
 		{
-			UI3DEffectTool.Instance().ShowMidLayerEffect( 
+			UI3DEffectTool.ShowMidLayerEffect( 
 	             UI3DEffectTool.UIType.FunctionUI_1, 
 	             spriteFlag.gameObject, 
 	             EffectIdTemplate.GetPathByeffectId(100104) );
 		}
 
-		yield return new WaitForSeconds (actionTime * 7);
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+
+			if(timer > actionTime * 7) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
 		
 		iTween.MoveTo(spriteFlag.gameObject, iTween.Hash(
 			"name", "spriteFlag",
@@ -411,11 +422,18 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 			"easeType", iTween.EaseType.linear
 			));
 
-		yield return new WaitForSeconds (actionTime);
-		
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
+
 		if(result == BattleControlor.BattleResult.RESULT_WIN)
 		{
-			UI3DEffectTool.Instance().ShowMidLayerEffect( 
+			UI3DEffectTool.ShowMidLayerEffect( 
                  UI3DEffectTool.UIType.FunctionUI_1, 
                  spriteFlag.gameObject, 
                  EffectIdTemplate.GetPathByeffectId(100100) );
@@ -423,11 +441,25 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		
 		layerTime.SetActive (battleTime > 1);
 
-		yield return new WaitForSeconds (actionTime);
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
 
 		layerGeneral.gameObject.SetActive (true);
 
-		yield return new WaitForSeconds (actionTime);
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
 		
 		layer_3.SetActive (true);
 		
@@ -467,12 +499,14 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 	IEnumerator resultAction()
 	{
+		float timer = 0;
+
 		Vector3 targetFlagPos = spriteFlag.transform.localPosition;
 
 		Vector3 targetFlagScale = new Vector3 (1, 1, 1);
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan 
-		   && CityGlobalData.m_levelType == LevelType.LEVEL_ELITE)
+		   && CityGlobalData.m_levelType != LevelType.LEVEL_NORMAL)
 		{
 			targetFlagPos += new Vector3(0, 207.6f - targetFlagPos.y, 0);
 
@@ -514,29 +548,43 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 		if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN)
 		{
-			UI3DEffectTool.Instance().ShowTopLayerEffect( 
+			UI3DEffectTool.ShowTopLayerEffect( 
 	             UI3DEffectTool.UIType.FunctionUI_1, 
 	             spriteFlag.gameObject, 
 			     EffectIdTemplate.GetPathByeffectId(100102) );
 
-			UI3DEffectTool.Instance().ShowTopLayerEffect( 
+			UI3DEffectTool.ShowTopLayerEffect( 
 	             UI3DEffectTool.UIType.FunctionUI_1, 
 	             spriteFlag.gameObject, 
 			     EffectIdTemplate.GetPathByeffectId(100105) );
 		}
 		else
 		{
-			UI3DEffectTool.Instance().ShowMidLayerEffect( 
+			UI3DEffectTool.ShowMidLayerEffect( 
 	             UI3DEffectTool.UIType.FunctionUI_1, 
 	             spriteFlag.gameObject, 
 	             EffectIdTemplate.GetPathByeffectId(100104) );
 		}
 
-		yield return new WaitForSeconds (actionTime * 7);
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime * 7) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
 
 		TweenAlpha.Begin (spriteFlag.gameObject, actionTime, 0);
 
-		yield return new WaitForSeconds (actionTime);
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
 
 		iTween.MoveTo(spriteFlag.gameObject, iTween.Hash(
 			"name", "spriteFlag",
@@ -547,38 +595,45 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 			));
 
 		iTween.ScaleTo(spriteFlag.gameObject, iTween.Hash(
-			"name", "spriteFlag",
+			"name", "spriteFlagScale",
 			"scale", targetFlagScale,
-			"time", .05f,
+			"time", 0,
 			"easeType", iTween.EaseType.linear
 			));
 
-		yield return new WaitForSeconds (.1f);
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime / 3) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
 
 		TweenAlpha.Begin (spriteFlag.gameObject, actionTime, 1);
 
-		yield return new WaitForSeconds (actionTime);
-
-		iTween.ScaleTo(spriteFlag.gameObject, iTween.Hash(
-			"name", "spriteFlag",
-			"scale", targetFlagScale,
-			"time", 0f,
-			"easeType", iTween.EaseType.linear
-			));
+//		for(timer = 0;;)
+//		{
+//			timer += Time.deltaTime;
+//			
+//			if(timer > actionTime) break;
+//
+//			yield return new WaitForEndOfFrame ();
+//		}
 
 		if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN)
 		{
-			UI3DEffectTool.Instance().ShowMidLayerEffect( 
-	             UI3DEffectTool.UIType.FunctionUI_1, 
-	             spriteFlag.gameObject, 
-	             EffectIdTemplate.GetPathByeffectId(100100) );
+			UI3DEffectTool.ShowMidLayerEffect( 
+			                                             UI3DEffectTool.UIType.FunctionUI_1, 
+			                                             spriteFlag.gameObject, 
+			                                             EffectIdTemplate.GetPathByeffectId(100100) );
 		}
 
 		layerTime.SetActive (BattleControlor.Instance().battleTime > 1);
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)
 		{
-			if(CityGlobalData.m_levelType == LevelType.LEVEL_ELITE)//精英
+			if(CityGlobalData.m_levelType == LevelType.LEVEL_ELITE || CityGlobalData.m_levelType == LevelType.LEVEL_TALE)//精英
 			{
 				for(int i = 0; i < stars.Count; i++)
 				{
@@ -590,7 +645,14 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 				for(int i = 0; i < stars.Count; i++)
 				{
-					yield return new WaitForSeconds(.3f);
+					for(timer = 0;;)
+					{
+						timer += Time.deltaTime;
+						
+						if(timer > actionTime) break;
+
+						yield return new WaitForEndOfFrame ();
+					}
 
 					BattleResultStar star = stars[i];
 
@@ -599,7 +661,14 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 				star_win.refreshData_2(winLevel == 3 && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN, null);
 
-				yield return new WaitForSeconds(.3f);
+				for(timer = 0;;)
+				{
+					timer += Time.deltaTime;
+					
+					if(timer > actionTime) break;
+
+					yield return new WaitForEndOfFrame ();
+				}
 
 				star_win.onShow_2();
 			}
@@ -623,7 +692,26 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 			winDescNum.gameObject.SetActive(false);
 		}
 
-		yield return new WaitForSeconds (actionTime);
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
+
+		if(iCoin > 0)
+		{
+			SoundPlayEff speff = gameObject.GetComponent<SoundPlayEff>();
+
+			if(speff == null)
+			{
+				speff = gameObject.AddComponent<SoundPlayEff>();
+			}
+
+			speff.PlaySound("210959");
+		}
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao
@@ -634,23 +722,30 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 			labelCoin.text = "0";
 			
 			labelExp.text = "0";
-			
+
 			for (float i = 0; i <= 1; i += .04f)
 			{
-				yield return new WaitForSeconds(actionTime / 6);
+				for(timer = 0;;)
+				{
+					timer += Time.deltaTime;
+					
+					if(timer > actionTime / 3) break;
+
+					yield return new WaitForEndOfFrame ();
+				}
 				
 				int coin = (int)(iCoin * i);
 				
 				int exp = (int)(iExp * i);
 				
-				labelCoin.text = coin + "";
+				labelCoin.text = "+" + coin;
 				
-				labelExp.text = exp + "";
+				labelExp.text = "+" + exp;
 			}
 			
-			labelCoin.text = iCoin + "";
+			labelCoin.text = "+" + iCoin;
 			
-			labelExp.text = iExp + "";
+			labelExp.text = "+" + iExp;
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
@@ -660,14 +755,21 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 			for (float i = 0; i <= 1; i += .04f)
 			{
-				yield return new WaitForSeconds(actionTime / 6);
+				for(timer = 0;;)
+				{
+					timer += Time.deltaTime;
+					
+					if(timer > actionTime / 3) break;
+
+					yield return new WaitForEndOfFrame ();
+				}
 				
 				int coin = (int)(iCoin * i);
 				
-				labelDKP.text = coin + "";
+				labelDKP.text = "+" + coin;
 			}
 
-			labelDKP.text = iCoin + "";
+			labelDKP.text = "+" + iCoin;
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan)
 		{
@@ -691,7 +793,14 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 			}
 		}
 
-		yield return new WaitForSeconds (actionTime);
+		for(timer = 0;;)
+		{
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime) break;
+
+			yield return new WaitForEndOfFrame ();
+		}
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao
@@ -726,11 +835,13 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 			//layerHuangye_2_lose.gameObject.SetActive(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_LOSE);
 		}
 
-		yield return new WaitForSeconds (actionTime);
-
-		if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN && CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 1 && CityGlobalData.m_tempLevel == 1)
+		for(timer = 0;;)
 		{
-			UIYindao.m_UIYindao.setOpenYindao(20108);
+			timer += Time.deltaTime;
+			
+			if(timer > actionTime) break;
+
+			yield return new WaitForEndOfFrame ();
 		}
 
 		if(lmAwards.Count != 0)
@@ -746,17 +857,12 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 	public void closeHint()
 	{
 		layer_3.SetActive (true);
-		
+
+		unlockSprite.transform.parent.gameObject.SetActive(false);
+
 		if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_LOSE)
 		{
-			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 1 && CityGlobalData.m_tempLevel == 1)
-			{
-				
-			}
-			else
-			{
-				btnStronger.SetActive(true);
-			}
+			btnStronger.SetActive(true);
 
 			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo)
 			{
@@ -765,7 +871,29 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 				btnHelp.gameObject.SetActive(true);
 			}
 		}
-		
+		else
+		{
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_levelType != LevelType.LEVEL_TALE)
+			{
+				PveTempTemplate pve = PveTempTemplate.GetPVETemplate(CityGlobalData.m_tempSection, CityGlobalData.m_tempLevel);
+
+				if(pve.enddingRemind != null && pve.enddingRemind.IndexOf("|") != -1)
+				{
+					unlockSprite.transform.parent.gameObject.SetActive(true);
+
+					string[] strs = pve.enddingRemind.Split('|');
+
+					string spriteName = strs[0];
+
+					string text = strs[1];
+
+					unlockSprite.spriteName = spriteName;
+
+					unlockLabel.text = text;
+				}
+			}
+		}
+
 		showActionDone();
 	}
 
@@ -786,14 +914,23 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
     public int getStarCount()
     {
-        float blood = 0;
+//        float blood = 0;
+//
+//        foreach (BaseAI node in BattleControlor.Instance().selfNodes)
+//        {
+//			blood += node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp );
+//        }
+//
+//        float rate = blood / BattleControlor.Instance().totalBloodSelf;
 
-        foreach (BaseAI node in BattleControlor.Instance().selfNodes)
-        {
-			blood += node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp );
-        }
+		BaseAI king = BattleControlor.Instance().getKing ();
 
-        float rate = blood / BattleControlor.Instance().totalBloodSelf;
+		if (king == null || king.isAlive == false && king.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) < 0)
+		{
+			return 1;
+		}
+
+		float rate = king.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) / king.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMaxReal);
 
         if (rate > .6f) return 3;
 
@@ -947,7 +1084,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 				{
 					tipsInShow.Add(gc);
 
-					UI3DEffectTool.Instance().ShowMidLayerOverLayNGUI(
+					UI3DEffectTool.ShowMidLayerOverLayNGUI(
 						UI3DEffectTool.UIType.FunctionUI_1, 
 						spriteFlag.gameObject, gc);
 				}

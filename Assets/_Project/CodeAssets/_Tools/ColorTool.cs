@@ -27,10 +27,16 @@ public class ColorTool : MonoBehaviour {
     //255 255 255
     public const string Color_White_ffffff = "[ffffff]";
 
-	#region Mono
+    //203 2 232
+    public const string Color_Purple_cb02d8 = "[cb02d8]";
 
-	// Use this for initialization
-	void Start () {
+    //255 127 0
+    public const string Color_Orange_ff7f00 = "[FF7F00]";
+
+    #region Mono
+
+    // Use this for initialization
+    void Start () {
 	
 	}
 	

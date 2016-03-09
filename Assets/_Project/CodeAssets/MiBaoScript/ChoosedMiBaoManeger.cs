@@ -43,12 +43,12 @@ public class ChoosedMiBaoManeger : MonoBehaviour
     }
     void Start()
     {
-        //	Junzu_Data = (JunZhuInfoRet)JunZhuData.Instance ().m_junzhuInfo.Public_MemberwiseClone();
+        //	Junzu_Data = (JunZhuInfoRet)JunZhuData.Instance().m_junzhuInfo.Public_MemberwiseClone();
         //		MiBaochoose.Clear ();
         //		position1 = new Vector3(-150,0,0);
         //		position2 = new Vector3(0,0,0);
         //		position3 = new Vector3(150,0,0);
-        //		//ZhanLi = JunZhuData.Instance ().m_junzhuInfo.zhanLi;
+        //		//ZhanLi = JunZhuData.Instance().m_junzhuInfo.zhanLi;
         //		poses.Clear ();
         //		poses.Add (position1);
         //		poses.Add (position2);
@@ -204,7 +204,7 @@ public class ChoosedMiBaoManeger : MonoBehaviour
 
     public void InstanceMiBao(Vector3 getposition, bool isSave)
     {
-        //Junzu_Data = (JunZhuInfoRet)JunZhuData.Instance ().m_junzhuInfo.Public_MemberwiseClone();
+        //Junzu_Data = (JunZhuInfoRet)JunZhuData.Instance().m_junzhuInfo.Public_MemberwiseClone();
 
 //		Debug.Log ("开始初始化秘宝了");
 

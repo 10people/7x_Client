@@ -39,7 +39,7 @@ public class GeneralRules : MonoBehaviour {
 		onRulesBtnClick = tempClick;
 		foreach (EventHandler handler in closeHandlerList)
 		{
-			handler.m_handler += CloseHandlerClickBack;
+			handler.m_click_handler += CloseHandlerClickBack;
 		}
 	}
 

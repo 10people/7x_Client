@@ -11,6 +11,8 @@ public class DramaActorPlayEffect : DramaActor
 
 	public float playTime;
 
+	public float moveTime;
+
 	public bool follow;
 
 	public Vector3 targetLocalPosition;
@@ -26,7 +28,7 @@ public class DramaActorPlayEffect : DramaActor
 //		Global.ResourcesDotLoad( EffectTemplate.getEffectTemplateByEffectId ( effectid ).path, 
 //		                        LoadCallback );
 
-		//if (BattleEffectControllor.Instance () == null)
+		//if (BattleEffectControllor.Instance() == null)
 		{
 			LoadEffectDebug();
 
@@ -35,7 +37,7 @@ public class DramaActorPlayEffect : DramaActor
 
 //		if(follow == true)
 //		{
-//			BattleEffectControllor.Instance ().PlayEffect (
+//			BattleEffectControllor.Instance().PlayEffect (
 //				effectid,
 //				gameObject,
 //				playTime);
@@ -81,7 +83,9 @@ public class DramaActorPlayEffect : DramaActor
 			return;
 		}
 		
-		GameObject effectObject = (GameObject)Instantiate(temple);
+//		GameObject effectObject = (GameObject)Instantiate(temple);
+
+		GameObject effectObject = FxHelper.ObtainFreeFxGameObject( et.path, temple );
 		
 		effectObject.SetActive(true);
 		
@@ -95,19 +99,21 @@ public class DramaActorPlayEffect : DramaActor
 		}
 		
 		effectObject.transform.localScale = temple.transform.localScale;
-		
-		BattleEffect effect = (BattleEffect)effectObject.AddComponent<BattleEffect>();
-		
+
+		BattleEffect effect = (BattleEffect)ComponentHelper.AddIfNotExist( effectObject, typeof(BattleEffect) );
+
 		effect.refreshDate(null, follow ? gameObject : null, playTime, position, foward, 0);
 
-		effect.offset = position;
+		if(follow == true) effect.offset = position;
 
 		effect.realTime = Time.realtimeSinceStartup;
-		
+
+		effect.updateOn ();
+
 		if(et.sound.Equals("-1") == false)
 		{
-			SoundPlayEff spe = effectObject.AddComponent<SoundPlayEff>();
-			
+			SoundPlayEff spe = (SoundPlayEff)ComponentHelper.AddIfNotExist( effectObject, typeof(SoundPlayEff) );
+
 			spe.PlaySound(et.sound);
 		}
 
@@ -115,10 +121,12 @@ public class DramaActorPlayEffect : DramaActor
 
 		if(length > .1f)
 		{
+			effect.updateOff();
+
 			iTween.MoveTo(effectObject, iTween.Hash(
 				"name", "Effect",
 				"position", targetLocalPosition,
-				"time", playTime,
+				"time", moveTime,
 				"easeType", iTween.EaseType.linear,
 				"islocal", true
 				));

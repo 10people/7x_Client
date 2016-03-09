@@ -331,6 +331,11 @@ public class SmallHouseSelfOperation : MonoBehaviour, SocketListener
 
         //disable red alert.
         ReceiveBTNRedAlert.SetActive(false);
+
+        int XiaoWuid = 600800;
+        PushAndNotificationHelper.SetRedSpotNotification(XiaoWuid, false);
+        NewAlliancemanager.Instance().Refreshtification();
+
         PushAndNotificationHelper.SetRedSpotNotification(500040, false);
     }
 

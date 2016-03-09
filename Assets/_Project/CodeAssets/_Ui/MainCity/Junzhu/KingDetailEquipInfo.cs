@@ -17,12 +17,12 @@ public class KingDetailEquipInfo : MonoBehaviour
 
     void Awake()
     {
-        m_IconList.ForEach(item => item.GetComponent<EventHandler>().m_handler += ShowEquipOfBody);
+        m_IconList.ForEach(item => item.GetComponent<EventHandler>().m_click_handler += ShowEquipOfBody);
     }
 
     void OnDestroy()
     {
-        m_IconList.ForEach(item=>item.GetComponent<EventHandler>().m_handler -= ShowEquipOfBody);
+        m_IconList.ForEach(item => item.GetComponent<EventHandler>().m_click_handler -= ShowEquipOfBody);
     }
 
     void Start()
@@ -75,11 +75,30 @@ public class KingDetailEquipInfo : MonoBehaviour
 
                 m_IconList[i].GetComponent<UISprite>().enabled = true;
                 m_IconList[i].spriteName = ZhuangBei.getZhuangBeiById(m_BagItemDic[i].itemId).icon;
-                m_QualityList[i].GetComponent<UISprite>().spriteName =
-                    QualityIconSelected.SelectQuality(
-                        ZhuangBei.GetColorByEquipID(
-                            int.Parse(ZhuangBei.getZhuangBeiById(m_BagItemDic[i].itemId).icon)));
-                m_QualityList[i].gameObject.SetActive(true);
+
+                var color = CommonItemTemplate.getCommonItemTemplateById(m_BagItemDic[i].itemId).color - 1;
+                var sprite = m_QualityList[i].GetComponent<UISprite>();
+                if (color > 0)
+                {
+                    sprite.spriteName = IconSampleManager.QualityPrefix + color;
+                    if (IconSampleManager.FreeQualityFrameSpriteName.Contains(color))
+                    {
+                        sprite.SetDimensions(IconSampleManager.FreeQualityFrameLength, IconSampleManager.FreeQualityFrameLength);
+                    }
+                    else if (IconSampleManager.FrameQualityFrameSpriteName.Contains(color))
+                    {
+                        sprite.SetDimensions(IconSampleManager.FrameQualityFrameLength, IconSampleManager.FrameQualityFrameLength);
+                    }
+                    else if (IconSampleManager.MibaoPieceQualityFrameSpriteName.Contains(color))
+                    {
+                        sprite.SetDimensions(IconSampleManager.MibaoPieceQualityFrameLength, IconSampleManager.MibaoPieceQualityFrameLength);
+                    }
+                    sprite.gameObject.SetActive(true);
+                }
+                else
+                {
+                    sprite.gameObject.SetActive(false);
+                }
             }
             else
             {

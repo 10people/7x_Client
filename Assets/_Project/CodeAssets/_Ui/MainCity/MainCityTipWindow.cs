@@ -50,6 +50,9 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 
 	public List<GameObject> m_CloseObj = new List<GameObject>();
 
+	public GameObject m_MonetParentObj;
+	public GameObject m_objTitle;
+
 	void Awake()
 	{
 		SocketTool.RegisterSocketListener(this);
@@ -62,6 +65,8 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 
     void Start()
     {
+		MainCityUI.setGlobalTitle(m_objTitle, "提升实力", 0, 0);
+		MainCityUI.setGlobalBelongings(m_MonetParentObj, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
 		for(int i = 0; i < m_openFunctionID.Length; i ++)
 		{
 			if(m_openFunctionID[i] != -1 && !FunctionOpenTemp.IsHaveID(m_openFunctionID[i]))
@@ -332,7 +337,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 		}
 		else if(ui.name.IndexOf("tili") != -1)
 		{
-			JunZhuData.Instance ().BuyTiliAndTongBi (true,false,false);
+			JunZhuData.Instance().BuyTiliAndTongBi (true,false,false);
 		}
 		else if(ui.name.IndexOf("Page") != -1)
 		{

@@ -12,16 +12,17 @@ public class FuWenBagItem : MonoBehaviour {
 
 	private Fuwen fuWenInfo;
 
+	public UISprite itemBg;
 	public UILabel nameLabel;
 	public UILabel numLabel;
 	public UILabel desLabel;
 	public UILabel shuXingLabel;
 
-	public UISprite lockIcon;
-
 	private int iconId;
 	private int pinZhiId;
 	private string nameStr;
+
+	private bool isCanMix = false;
 
 	private GameObject iconSamplePrefab;
 
@@ -29,17 +30,19 @@ public class FuWenBagItem : MonoBehaviour {
 	{
 		fuWenInfo = tempInfo;
 //		Debug.Log ("tempInfo:" + tempInfo);
-//		Debug.Log ("isLock:" + tempInfo.isLock);
-		lockIcon.gameObject.SetActive (tempInfo.isLock == 1 ? true : false);
+
+		isCanMix = tempInfo.cnt >= 4 ? true : false;
+
+//		itemBg.color = tempInfo.cnt >= 4 ? Color.white : new Color (0.7f,0.7f,0.7f,1);
 
 		FuWenTemplate fuWenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (tempInfo.itemId);
 
 		nameStr = NameIdTemplate.GetName_By_NameId (fuWenTemp.name);
-		nameLabel.text = nameStr;
-		desLabel.text = NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName);
+		nameLabel.text = MyColorData.getColorString (3,nameStr);
+		desLabel.text = FuWenData.Instance.colorCode + NameIdTemplate.GetName_By_NameId (fuWenTemp.shuXingName) + "[-]";
 
-		numLabel.text = "x" + tempInfo.cnt;
-		shuXingLabel.text = "+" + fuWenTemp.shuxingValue;
+		numLabel.text = MyColorData.getColorString (3,"x" + tempInfo.cnt);
+		shuXingLabel.text = FuWenData.Instance.colorCode + "+" + fuWenTemp.shuxingValue + "[-]";
 
 		iconId = fuWenTemp.icon;
 		pinZhiId = CommonItemTemplate.getCommonItemTemplateById (tempInfo.itemId).color - 1;
@@ -75,15 +78,30 @@ public class FuWenBagItem : MonoBehaviour {
 		fuShiIconSample.SetIconBasic(5,iconId.ToString (),"","pinzhi" + pinZhiId);
 		fuShiIconSample.SetIconPopText(fuWenInfo.itemId, nameStr, mdesc, 1);
 		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
+
+		UIWidget[] sprites = this.GetComponentsInChildren<UIWidget> ();
+		foreach (UIWidget sp in sprites)
+		{
+			sp.color = isCanMix ? Color.white : new Color (0.6f,0.6f,0.6f,1);
+		}
 	}
 
 	void OnClick ()
 	{
-		if (!FuWenMainPage.fuWenMainPage.IsBtnClick)
+		if (isCanMix)
 		{
-			FuWenMainPage.fuWenMainPage.IsBtnClick = true;
-			FuWenMainPage.fuWenMainPage.FxController (FuWenMixBtn.FxType.CLEAR);
-			FuWenMainPage.fuWenMainPage.OperateFuWen (FuShiOperate.OperateType.HECHENG,fuWenInfo.itemId,0);
+			if (!FuWenMainPage.fuWenMainPage.IsBtnClick)
+			{
+				FuWenMainPage.fuWenMainPage.IsBtnClick = true;
+				
+				FuWenMainPage.fuWenMainPage.CurHeChengItemId = fuWenInfo.itemId;
+				FuWenMainPage.fuWenMainPage.ShowMixBtns ();
+				FuWenMainPage.fuWenMainPage.FxController (FuWenMixBtn.FxType.OPEN);
+				FuWenMainPage.fuWenMainPage.EffectPanel (true);
+
+//				FuWenMainPage.fuWenMainPage.FxController (FuWenMixBtn.FxType.CLEAR);
+//				FuWenMainPage.fuWenMainPage.OperateFuWen (FuShiOperate.OperateType.HECHENG,fuWenInfo.itemId,0);
+			}
 		}
 	}
 }

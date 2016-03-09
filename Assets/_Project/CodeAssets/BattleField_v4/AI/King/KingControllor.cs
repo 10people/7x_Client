@@ -94,7 +94,7 @@ public class KingControllor : HeroAI
 
 	void Awake()
 	{
-		m_play_attack_effect = new DevelopUtility.PlayAttackEffectReturn();
+		m_play_attack_effect = new DevelopAnimationCallback.PlayAttackEffectReturn();
 	}
 
 	public override void Start()
@@ -137,7 +137,7 @@ public class KingControllor : HeroAI
 
 		//initWeaponData ();
 
-		autoWeaponCD = 0;
+		autoWeaponCD = 9999;
 
 		skillCD = 0;
 
@@ -205,6 +205,11 @@ public class KingControllor : HeroAI
 			playUnlockEffList.Add(weaponDateRanged.skillFirstActive[i] + 6);
 		}
 
+		if(playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.jishe) == true)
+		{
+			BattleControlor.Instance(). playUnLockEffWeaponRange();
+		}
+
 		gameCamera = (KingCamera) Camera.main.GetComponent(typeof(KingCamera));
 
 		gameCamera.init ();
@@ -251,11 +256,11 @@ public class KingControllor : HeroAI
 		{
 			GuideTemplate template = GuideTemplate.getTemplateByLevelAndType (level, 7, weaponId);
 			
-			bool flag = BattleControlor.Instance ().havePlayedGuide (template);
+			bool flag = BattleControlor.Instance().havePlayedGuide (template);
 			
 			if (flag == false) 
 			{
-				BattleUIControlor.Instance ().showDaramControllor (level, template.dungeonId);
+				BattleUIControlor.Instance().showDaramControllor (level, template.dungeonId);
 			}
 		}
 
@@ -299,6 +304,11 @@ public class KingControllor : HeroAI
 		}
 		
 		updataAttackRange();
+
+		if(BattleControlor.Instance().completed == true && stance == Stance.STANCE_SELF)
+		{
+			BattleUIControlor.Instance().centerLabelControllor.changeWeapon (weaponType);
+		}
 	}
 	
 	public void initWeaponData()
@@ -456,10 +466,6 @@ public class KingControllor : HeroAI
 				nodeData.SetAttribute( buff.buffType, t_att + buff.getBuffValue() );
 			}
 		}
-
-		autoWeaponCD = 0;
-
-		if(BattleControlor.Instance().completed == true && stance == Stance.STANCE_SELF) BattleUIControlor.Instance ().centerLabelControllor.changeWeapon (weaponType);
 	}
 
 	string playingAnimationName = "";
@@ -516,7 +522,7 @@ public class KingControllor : HeroAI
 
 			updateEnemysList();
 
-			updataAttackRange();
+			if(actionId != 150) updataAttackRange();
 
 			updateRevise();
 		}
@@ -549,16 +555,18 @@ public class KingControllor : HeroAI
 		attack();
 	}
 
-	public void setAutoWeapon()
+	public void setAutoWeapon(bool autoWeapon)
 	{
-		autoWeaponCD = 4f;
+		if(autoWeapon == true) autoWeaponCD = (float)CanshuTemplate.GetValueByKey(CanshuTemplate.QIEWUQI_CD_X);
+
+		else autoWeaponCD = (float)CanshuTemplate.GetValueByKey(CanshuTemplate.QIEWUQI_CD_Y);
 	}
 
 	public void updateWeapon()
 	{
-		autoWeaponCD += Time.deltaTime;
+		autoWeaponCD -= Time.deltaTime;
 
-		if (autoWeaponCD < 2.0f) return;
+		if (autoWeaponCD > 0) return;
 
 		string isplaying = IsPlaying ();
 
@@ -566,7 +574,7 @@ public class KingControllor : HeroAI
 
 		if (isPlayingSkill () == true) return;
 
-		autoWeaponCD = 0;
+		autoWeaponCD = (float)CanshuTemplate.GetValueByKey(CanshuTemplate.QIEWUQI_CD_X);
 
 //		if(nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp ) < nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hpMax ) * .3f)
 //		{
@@ -579,7 +587,7 @@ public class KingControllor : HeroAI
 
 		int count_2 = 0;
 
-		List<BaseAI> nodeList = stance == Stance.STANCE_SELF ? BattleControlor.Instance ().enemyNodes : BattleControlor.Instance ().selfNodes;
+		List<BaseAI> nodeList = stance == Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
 		
 		foreach(BaseAI node in nodeList)
 		{
@@ -589,47 +597,47 @@ public class KingControllor : HeroAI
 			
 			float length = Vector3.Distance(node.transform.position, transform.position);
 			
-			if(length < 13)
+			if(length < CanshuTemplate.GetValueByKey(CanshuTemplate.QIEWUQI_AI_PANDINGJULI))
 			{
 				count_1 ++;
 			}
 
-			if(length < 13)
+			if(length < CanshuTemplate.GetValueByKey(CanshuTemplate.QIEWUQI_AI_PANDINGJULI))
 			{
 				count_2 ++;
 			}
 		}
 
-		bool rangeSkillAble = false;
+		bool rangeSkillAble = true;
 
-		if(stance == Stance.STANCE_SELF)
-		{
-			WeaponSkillOpenTemplate template = WeaponSkillOpenTemplate.getWeaponSkillTemplate (maxLevel);
-
-			if (template.b_skill_ranged_2 == false) 
-			{
-				rangeSkillAble = false;
-			}
-			else
-			{
-				rangeSkillAble = BattleUIControlor.Instance().cooldownRangeSkill_1.spriteCD.gameObject.activeSelf == false
-					|| BattleUIControlor.Instance().cooldownRangeSkill_2.spriteCD.gameObject.activeSelf == false;
-			}
-		}
-		else
-		{
-			WeaponSkillOpenTemplate template = WeaponSkillOpenTemplate.getWeaponSkillTemplate (maxLevel);
-
-			if (template.b_skill_ranged_2 == false) 
-			{
-				rangeSkillAble = false;
-			}
-			else
-			{
-				rangeSkillAble = BattleUIControlor.Instance().cooldownRangeSkill_1_enemy.spriteCD.gameObject.activeSelf == false
-					|| BattleUIControlor.Instance().cooldownRangeSkill_2_enemy.spriteCD.gameObject.activeSelf == false;
-			}
-		}
+//		if(stance == Stance.STANCE_SELF)
+//		{
+//			WeaponSkillOpenTemplate template = WeaponSkillOpenTemplate.getWeaponSkillTemplate (maxLevel);
+//
+//			if (template.b_skill_ranged_2 == false) 
+//			{
+//				rangeSkillAble = false;
+//			}
+//			else
+//			{
+//				rangeSkillAble = BattleUIControlor.Instance().cooldownRangeSkill_1.spriteCD.gameObject.activeSelf == false
+//					|| BattleUIControlor.Instance().cooldownRangeSkill_2.spriteCD.gameObject.activeSelf == false;
+//			}
+//		}
+//		else
+//		{
+//			WeaponSkillOpenTemplate template = WeaponSkillOpenTemplate.getWeaponSkillTemplate (maxLevel);
+//
+//			if (template.b_skill_ranged_2 == false) 
+//			{
+//				rangeSkillAble = false;
+//			}
+//			else
+//			{
+//				rangeSkillAble = BattleUIControlor.Instance().cooldownRangeSkill_1_enemy.spriteCD.gameObject.activeSelf == false
+//					|| BattleUIControlor.Instance().cooldownRangeSkill_2_enemy.spriteCD.gameObject.activeSelf == false;
+//			}
+//		}
 
 		if(count_2 == 0 && rangeSkillAble)
 		{
@@ -676,7 +684,7 @@ public class KingControllor : HeroAI
 
 		if (skillCD < 1.5f) return;
 
-		List<BaseAI> nodes = stance == Stance.STANCE_SELF ? BattleControlor.Instance ().enemyNodes : BattleControlor.Instance ().selfNodes;
+		List<BaseAI> nodes = stance == Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
 		
 		int count = 0;
 		
@@ -711,7 +719,7 @@ public class KingControllor : HeroAI
 		else
 		{
 			flag = BattleUIControlor.Instance().useMiBaoSkill_Enemy(this);
-			
+
 			if(flag == true) skillCD = 1;
 		}
 
@@ -728,7 +736,7 @@ public class KingControllor : HeroAI
 			else
 			{
 				flag = BattleUIControlor.Instance().useDaoSkill_2_Enemy(this);
-				
+
 				if(flag == true) skillCD = 1;
 			}
 
@@ -811,7 +819,7 @@ public class KingControllor : HeroAI
 
 	protected override void runaway(float time)
 	{
-		List<BaseAI> list = stance == Stance.STANCE_SELF ? BattleControlor.Instance ().selfNodes : BattleControlor.Instance ().enemyNodes;
+		List<BaseAI> list = stance == Stance.STANCE_SELF ? BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes;
 
 		if (list.Count < 2) return;
 
@@ -874,9 +882,9 @@ public class KingControllor : HeroAI
 
 	public void move(Vector3 offset)
 	{
-		if (Vector3.Distance(offset, Vector3.zero) > .2f) DramaControllor.Instance ().closeYindao (1);
+		if (Vector3.Distance(offset, Vector3.zero) > .2f) DramaControllor.Instance().closeYindao (1);
 
-		if (BattleControlor.Instance ().autoFight == true && BattleUIControlor.Instance().pressedJoystick == false) return;
+		if (BattleControlor.Instance().autoFight == true && BattleUIControlor.Instance().pressedJoystick == false) return;
 
 		if(!isAlive || mAnim == null) 
 		{
@@ -994,7 +1002,7 @@ public class KingControllor : HeroAI
 
 		BaseAI tempNodeDead = null;
 
-		List<BaseAI> list = stance == Stance.STANCE_SELF ? BattleControlor.Instance ().enemyNodes : BattleControlor.Instance ().selfNodes;
+		List<BaseAI> list = stance == Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
 
 		foreach(BaseAI t_node in list)
 		{
@@ -1032,7 +1040,7 @@ public class KingControllor : HeroAI
 			transform.forward = tempNode.transform.position - transform.position;
 		}
 
-		if(signShadow != null)
+		if(signShadow != null && signShadow.enabled == true && signShadow.gameObject.activeSelf == true)
 		{
 			signShadow.LateUpdate();
 		}
@@ -1111,7 +1119,7 @@ public class KingControllor : HeroAI
 
 		if (playing.IndexOf(getAnimationName( AniType.ANI_BATCDown)) != -1) return;
 
-		if (BattleControlor.Instance ().achivement != null) BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+		if (BattleControlor.Instance().achivement != null) BattleControlor.Instance().achivement.ReplaceWap ((int)weaponType);
 
 		//BattleReplayorWrite.Instance().addReplayKingAttack(nodeId, weaponFoward);
 
@@ -1220,7 +1228,7 @@ public class KingControllor : HeroAI
 
 			else if(weaponType == WeaponType.W_Heavy) id = CityGlobalData.skillLevelId.zhongji;
 
-			else if(weaponType == WeaponType.W_Heavy) id = CityGlobalData.skillLevelId.jishe;
+			else if(weaponType == WeaponType.W_Ranged) id = CityGlobalData.skillLevelId.jishe;
 
 			SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (id, this);
 			
@@ -1367,54 +1375,56 @@ public class KingControllor : HeroAI
 
 			Buff.createBuff(defenderNode, AIdata.AttributeType.ATTRTYPE_Ice, 10, 1f);
 
-			BattleEffectControllor.Instance ().PlayEffect (50000, defenderNode.gameObject);
+			BattleEffectControllor.Instance().PlayEffect (50000, defenderNode.gameObject);
 
-			BattleEffectControllor.Instance ().PlayEffect (303, defenderNode.gameObject);
+			BattleEffectControllor.Instance().PlayEffect (303, defenderNode.gameObject);
 		}
 	}
 
-	public bool attackBaseAI(BaseAI node, float hpValue, bool cri)
+	public bool attackBaseAI(BaseAI node, float hpValue, bool cri, BattleControlor.NuqiAddType nuqiType)
 	{
-		if(node.body != null) {
+		if(node.body != null) 
+		{
 			EffectTool.Instance.SetHittedEffect (node.body);
 		}
-		else {
+		else 
+		{
 			EffectTool.Instance.SetHittedEffect (node.gameObject); 
 		}
 
-		if(actionId == 200 || actionId == 201 || actionId == 202 || actionId == 203)//重武器普攻
+		if(nuqiType == BattleControlor.NuqiAddType.HEAVY_BASE)//重武器普攻
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_HEAVY));
 		}
-		else if(actionId == 250)//重武器技能1-八荒烈日
+		else if(nuqiType == BattleControlor.NuqiAddType.HEAVY_SKILL_1)//重武器技能1-八荒烈日
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_HEAVY_SKILL1));
 		}
-		else if(actionId == 252)//重武器技能2-乾坤斗转
+		else if(nuqiType == BattleControlor.NuqiAddType.HEAVY_SKILL_2)//重武器技能2-乾坤斗转
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_HEAVY_SKILL2));
 		}
-		else if(actionId == 101 || actionId == 103 || actionId == 105 || actionId == 106)//轻武器普攻
+		else if(nuqiType == BattleControlor.NuqiAddType.LIGHT_BASE)//轻武器普攻
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT));
 		}
-		else if(actionId >= 140 && actionId <= 151)//轻武器技能1-绝影星光斩
+		else if(nuqiType == BattleControlor.NuqiAddType.LIGHT_SKILL_1)//轻武器技能1-绝影星光斩
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT_SKILL1));
 		}
-		else if(actionId ==160)//轻武器技能2-血迹烙印
+		else if(nuqiType == BattleControlor.NuqiAddType.LIGHT_SKILL_2)//轻武器技能2-血迹烙印
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT_SKILL2));
 		}
-		else if(actionId == 262 || actionId == 263)//弓武器普攻
+		else if(nuqiType == BattleControlor.NuqiAddType.RANGE_BASE)//弓武器普攻
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE));
 		}
-		else if(actionId == 260)//弓武器节能1-追星箭
+		else if(nuqiType == BattleControlor.NuqiAddType.RANGE_SKILL_1)//弓武器节能1-追星箭
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE_SKILL1));
 		}
-		else if(actionId == 261)//弓武器技能2-寒冰箭
+		else if(nuqiType == BattleControlor.NuqiAddType.RANGE_SKILL_2)//弓武器技能2-寒冰箭
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE_SKILL2));
 		}
@@ -1431,8 +1441,6 @@ public class KingControllor : HeroAI
 //		{
 //			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE));
 //		}
-
-
 
 		bool f = false;
 
@@ -1557,7 +1565,19 @@ public class KingControllor : HeroAI
 
 		bool have = KingCrashTemplate.haveKingCrashById(actionId);
 
-		if(have == true)
+		bool orderLvFlag = true;
+
+		if(nuqiType == BattleControlor.NuqiAddType.HEAVY_BASE || nuqiType == BattleControlor.NuqiAddType.LIGHT_BASE)
+		{
+			bool haveOrder = ControlOrderLvTemplate.haveBeatDownTemplateById (11);
+
+			if(haveOrder)
+			{
+				orderLvFlag = ControlOrderLvTemplate.getCantrolableById (11, AIdata.AttributeType.ATTRTYPE_ReductionBTACDown, this);
+			}
+		}
+
+		if(have == true && orderLvFlag == true)
 		{
 			KingCrashTemplate template = KingCrashTemplate.getKingCrashById(actionId);
 			
@@ -1575,15 +1595,15 @@ public class KingControllor : HeroAI
 		}
 
 		{
-			GameObject t_gb = BattleEffectControllor.Instance ().PlayEffect (1010, node.transform.position + new Vector3(0, 1.2f, 0), node.transform.forward);
+			GameObject t_gb = BattleEffectControllor.Instance().PlayEffect (1010, node.transform.position + new Vector3(0, 1.2f, 0), node.transform.forward);
 
 			if( !QualityTool.GetBool( QualityTool.CONST_CHARACTER_HITTED_FX ) ){
 				ComponentHelper.DisableAllVisibleObject( t_gb );
 			}
 		}
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.AttackNum ((int)hpValue);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.AttackNum ((int)hpValue);
 
 		return f;
 	}
@@ -1617,7 +1637,7 @@ public class KingControllor : HeroAI
 
 	public void attackDone(int actionId)
 	{
-		//if (BattleControlor.Instance ().inDrama == true) return;
+		//if (BattleControlor.Instance().inDrama == true) return;
 
 		mAnim.speed = 1f;
 
@@ -1691,96 +1711,96 @@ public class KingControllor : HeroAI
 		return base.isPlayingSwing();
 	}
 
-	private static DevelopUtility.PlayAttackEffectReturn m_play_attack_effect = null;
+	private static DevelopAnimationCallback.PlayAttackEffectReturn m_play_attack_effect = null;
 
-	public static DevelopUtility.PlayAttackEffectReturn GetPlayAttackEffectParams( int attackId )
+	public static DevelopAnimationCallback.PlayAttackEffectReturn GetPlayAttackEffectParams( int attackId )
 	{
-		if(m_play_attack_effect == null) m_play_attack_effect = new DevelopUtility.PlayAttackEffectReturn();
+		if(m_play_attack_effect == null) m_play_attack_effect = new DevelopAnimationCallback.PlayAttackEffectReturn();
 
 		m_play_attack_effect.m_will_play_effect = false;
 
 		if( attackId == 100 )
 		{
 			m_play_attack_effect.Set( 25, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 101)
 		{
 			m_play_attack_effect.Set( 26, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 102)
 		{
 			m_play_attack_effect.Set( 27, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 103)
 		{
 			m_play_attack_effect.Set( 28, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 104)
 		{
 			m_play_attack_effect.Set( 28, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 105)
 		{
 			m_play_attack_effect.Set( 28, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 106)
 		{
 			m_play_attack_effect.Set( 31, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 107)
 		{
 			m_play_attack_effect.Set( 33,
-			                         DevelopUtility.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
 		}
 		else if(attackId == 108)
 		{
 			m_play_attack_effect.Set( 26,
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 115)
 		{
 			m_play_attack_effect.Set( 34, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 116)
 		{
 			m_play_attack_effect.Set( 35,
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 120)
 		{
 			m_play_attack_effect.Set( 37,
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 121)
 		{
 			m_play_attack_effect.Set( 38, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 122)
 		{
 			m_play_attack_effect.Set( 39, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		///////////////
 		/// 
@@ -1791,8 +1811,8 @@ public class KingControllor : HeroAI
 			//BattleEffectControllor.Instance().PlayEffect((BattleEffectControllor.EffectType)252, transform.position + transform.forward, transform.forward);
 			
 			m_play_attack_effect.Set( 42, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRNASFORM_POSITION_PLUS_TRANSFORM_FORWARD,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRNASFORM_POSITION_PLUS_TRANSFORM_FORWARD,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 141)
 		{
@@ -1801,8 +1821,8 @@ public class KingControllor : HeroAI
 			//Vector3 tempR = new Vector3(0, 0, 0);
 			
 			m_play_attack_effect.Set( 253, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRNASFORM_POSITION_PLUS_TRANSFORM_FORWARD,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.CUSTOM,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRNASFORM_POSITION_PLUS_TRANSFORM_FORWARD,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.CUSTOM,
 			                         tempR );
 		}
 		else if(attackId == 200)
@@ -1810,84 +1830,84 @@ public class KingControllor : HeroAI
 			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateById(200012);
 			
 			m_play_attack_effect.Set( 150, 
-			                         DevelopUtility.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT,
 			                         skillTemplate.value1 );
 		}
 		else if(attackId == 201)
 		{
 			m_play_attack_effect.Set( 152,
-			                         DevelopUtility.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
 		}
 		else if(attackId == 202)
 		{
 			m_play_attack_effect.Set( 63, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 203)//穿云箭
 		{
 			m_play_attack_effect.Set( 302, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 204)//冰箭
 		{
 			m_play_attack_effect.Set( 44, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 205)//冲锋落地
 		{
 			m_play_attack_effect.Set( 151, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 300)
 		{
 			m_play_attack_effect.Set( 100, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 301)
 		{
 			m_play_attack_effect.Set( 101, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 302)
 		{
 			m_play_attack_effect.Set( 102, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 303)
 		{
 			m_play_attack_effect.Set( 103, 
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD );
 		}
 		else if(attackId == 304)//弓箭普通攻击-集气特效
 		{
 			m_play_attack_effect.Set( 300,
-			                         DevelopUtility.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
 		}
 		else if(attackId == 305)//弓箭普通攻击-集气特效
 		{
 			m_play_attack_effect.Set( 299,
-			                         DevelopUtility.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
 		}
 		else if(attackId == 500)
 		{
 			m_play_attack_effect.Set( 50071,
-			                         DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
-			                         DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD);
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD);
 		
 			BattleControlor.Instance().getKing().gameCamera.Shake(KingCamera.ShakeType.Vertical);
 		}
 		else if(attackId == 600156)
 		{
 			m_play_attack_effect.Set( 600156,
-			                         DevelopUtility.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT);
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT);
 		}
 
 		return m_play_attack_effect;
@@ -1895,7 +1915,7 @@ public class KingControllor : HeroAI
 
 	protected override void playAttackEffect(int attackId)
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		m_play_attack_effect =  GetPlayAttackEffectParams( attackId );
 
@@ -1903,15 +1923,15 @@ public class KingControllor : HeroAI
 			GameObject t_gb = null;
 
 			switch( m_play_attack_effect.m_gb_type ){
-			case DevelopUtility.PlayAttackEffectReturn.GameObjectType.NONE:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.NONE:
 				t_gb = null;
 				break;
 
-			case DevelopUtility.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT:
 				t_gb = gameObject;
 				break;
 
-			case DevelopUtility.PlayAttackEffectReturn.GameObjectType.WEAPON_RANGE_TRANSFORM_PARENT_GAMEOBJECT:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.WEAPON_RANGE_TRANSFORM_PARENT_GAMEOBJECT:
 				t_gb = m_weapon_Ranged.transform.parent.gameObject;
 				break;
 			}
@@ -1919,15 +1939,15 @@ public class KingControllor : HeroAI
 			Vector3 t_position = Vector3.zero;;
 
 			switch( m_play_attack_effect.m_position_type ){
-			case DevelopUtility.PlayAttackEffectReturn.PositionType.ZERO:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.ZERO:
 				t_position = Vector3.zero;
 				break;
 
-			case DevelopUtility.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION:
 				t_position = transform.position;
 				break;
 
-			case DevelopUtility.PlayAttackEffectReturn.PositionType.TRNASFORM_POSITION_PLUS_TRANSFORM_FORWARD:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRNASFORM_POSITION_PLUS_TRANSFORM_FORWARD:
 				t_position = transform.position + transform.forward;
 				break;
 			}
@@ -1935,22 +1955,22 @@ public class KingControllor : HeroAI
 			Vector3 t_forward = Vector3.zero;
 
 			switch( m_play_attack_effect.m_forward_type ){
-			case DevelopUtility.PlayAttackEffectReturn.ForwardType.ZERO:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.ZERO:
 				t_forward = Vector3.zero;
 				break;
 
-			case DevelopUtility.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD:
 				t_forward = transform.forward;
 				break;
 
-			case DevelopUtility.PlayAttackEffectReturn.ForwardType.CUSTOM:
+			case DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.CUSTOM:
 				t_forward = m_play_attack_effect.m_custom_forward;
 				break;
 			}
 
 			// debug use
 			if( Console_SetBattleFieldFx.IsEnableAttackFx() ){
-				BattleEffectControllor.Instance ().PlayEffect(
+				BattleEffectControllor.Instance().PlayEffect(
 					m_play_attack_effect.m_effect_id, 
 					t_gb, 
 					m_play_attack_effect.m_time,
@@ -2055,15 +2075,15 @@ public class KingControllor : HeroAI
 //		{
 //			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateById(200012);
 //			
-//			BattleEffectControllor.Instance ().PlayEffect ((BattleEffectControllor.EffectType)150, gameObject, skillTemplate.value1);
+//			BattleEffectControllor.Instance().PlayEffect ((BattleEffectControllor.EffectType)150, gameObject, skillTemplate.value1);
 //		}
 //		else if(attackId == 201)
 //		{
-//			BattleEffectControllor.Instance ().PlayEffect ((BattleEffectControllor.EffectType)152, gameObject);			
+//			BattleEffectControllor.Instance().PlayEffect ((BattleEffectControllor.EffectType)152, gameObject);			
 //		}
 //		else if(attackId == 202)
 //		{
-//			BattleEffectControllor.Instance ().PlayEffect (BattleEffectControllor.EffectType.EFFECT_KING_JI_SHE, transform.position, transform.forward);			
+//			BattleEffectControllor.Instance().PlayEffect (BattleEffectControllor.EffectType.EFFECT_KING_JI_SHE, transform.position, transform.forward);			
 //		}
 //		else if(attackId == 203)//穿云箭
 //		{
@@ -2075,7 +2095,7 @@ public class KingControllor : HeroAI
 //		}
 //		else if(attackId == 205)//冲锋落地
 //		{
-//			BattleEffectControllor.Instance ().PlayEffect ((BattleEffectControllor.EffectType)151, transform.position, transform.forward);
+//			BattleEffectControllor.Instance().PlayEffect ((BattleEffectControllor.EffectType)151, transform.position, transform.forward);
 //		}
 //		else if(attackId == 300)
 //		{
@@ -2116,7 +2136,12 @@ public class KingControllor : HeroAI
 
 			foreach(BaseAI node in nodeList)
 			{
-				if(node == null || node.isAlive == false || node.gameObject.activeSelf == false) continue;
+				if(node == null 
+				   || node.isAlive == false 
+				   || node.gameObject.activeSelf == false 
+				   || node.nodeData.nodeType == NodeType.GOD 
+				   || node.nodeData.nodeType == NodeType.NPC) 
+					continue;
 
 				float _length = Vector3.Distance(transform.position, node.transform.position);
 
@@ -2157,7 +2182,7 @@ public class KingControllor : HeroAI
 
 				FloatBoolParam fbp = BattleControlor.Instance().getAttackValueSkill(this, focusNode, skillTemplate.value4, 0, false);
 
-				attackHp(focusNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK);
+				attackHp(focusNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.LIGHT_SKILL_2);
 
 				BattleEffectControllor.Instance().PlayEffect(104, focusNode.gameObject);
 
@@ -2284,11 +2309,11 @@ public class KingControllor : HeroAI
 
 		mAnim.SetTrigger ("skill_1");
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.UseSkill (200011, nodeId);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.UseSkill (200011, nodeId);
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.ReplaceWap ((int)weaponType);
 
 		checkSkillDrama (200011);
 
@@ -2305,8 +2330,8 @@ public class KingControllor : HeroAI
 	{
 //		mAnim.SetTrigger ("skill_2");
 //
-//		if (BattleControlor.Instance ().achivement != null)
-//			BattleControlor.Instance ().achivement.UseSkill (200012, nodeId);
+//		if (BattleControlor.Instance().achivement != null)
+//			BattleControlor.Instance().achivement.UseSkill (200012, nodeId);
 
 		swingEnd ();
 
@@ -2332,8 +2357,8 @@ public class KingControllor : HeroAI
 
 		kingSkillHeavy_2.m_isDeadOverSkill = 0;
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.ReplaceWap ((int)weaponType);
 
 		if(kingSkillHeavy_2.m_isUseThisSkill == true)
 		{
@@ -2353,11 +2378,11 @@ public class KingControllor : HeroAI
 
 		mAnim.SetTrigger ("skill_1");
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.UseSkill (200021, nodeId);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.UseSkill (200021, nodeId);
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.ReplaceWap ((int)weaponType);
 
 		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.jueyingxingguangzhan, this);
 
@@ -2372,15 +2397,15 @@ public class KingControllor : HeroAI
 	{
 		swingEnd ();
 
-		//comboable = false;
+		comboable = false;
 
 		mAnim.SetTrigger ("skill_2");
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.UseSkill (200022, nodeId);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.UseSkill (200022, nodeId);
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.ReplaceWap ((int)weaponType);
 
 		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.xuejilaoyin, this);
 
@@ -2397,11 +2422,11 @@ public class KingControllor : HeroAI
 
 		mAnim.SetTrigger ("skill_1");
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.UseSkill (200031, nodeId);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.UseSkill (200031, nodeId);
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.ReplaceWap ((int)weaponType);
 
 		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.zhuixingjian, this);
 
@@ -2422,11 +2447,11 @@ public class KingControllor : HeroAI
 
 		mAnim.SetTrigger ("skill_2");
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.UseSkill (200032, nodeId);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.UseSkill (200032, nodeId);
 
-		if (BattleControlor.Instance ().achivement != null)
-			BattleControlor.Instance ().achivement.ReplaceWap ((int)weaponType);
+		if (BattleControlor.Instance().achivement != null)
+			BattleControlor.Instance().achivement.ReplaceWap ((int)weaponType);
 
 		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.hanbingjian, this);
 
@@ -2454,7 +2479,7 @@ public class KingControllor : HeroAI
 
 		float nuqi = nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
 
-		if(nodeId == 1) BattleUIControlor.Instance ().spriteBarMibao.fillAmount = nuqi / nuqiMax;
+		if(nodeId == 1) BattleUIControlor.Instance().spriteBarMibao.fillAmount = nuqi / nuqiMax;
 		
 		float unityMax = nuqiMax / 3;
 		
@@ -2490,9 +2515,9 @@ public class KingControllor : HeroAI
 			BubblePopControllor.Instance().triggerFuncSkill(nodeId, skillMibao.template.id);
 
 			StrEffectItem.OpenEffect(gameObject, SkillTemplate.getSkillTemplateById(skillMibao.template.id).Fx3D, modelId);
-		}
 
-		if(stance == Stance.STANCE_SELF) BattleUIControlor.Instance ().centerLabelControllor.useSkill (skillMibao.template.name);
+			if(stance == Stance.STANCE_SELF) BattleMibaoSkillEffControllor.showSkillEff(int.Parse(skillMibao.template.name));
+		}
 	}
 
 	public void refreshCDTime(int id)
@@ -2535,16 +2560,20 @@ public class KingControllor : HeroAI
 		}
 		else if(id == 100)//秘宝技能
 		{
-			float nuqiMax = (float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_MAX);
+			actionId = 0;
 
-			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
-			{
-				nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
-			}
+//			float nuqiMax = (float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_MAX);
+//
+//			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
+//			{
+//				nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
+//			}
+//
+//			addNuqi(-nuqiMax);
 
-			addNuqi(-nuqiMax);
+			clearNuQi();
 
-			UI3DEffectTool.Instance().ClearUIFx(BattleUIControlor.Instance().btnMibaoSkill);
+			UI3DEffectTool.ClearUIFx(BattleUIControlor.Instance().btnMibaoSkill);
 
 			if(stance == Stance.STANCE_SELF) BattleUIControlor.Instance().cooldownMibaoSkill.refreshCDTime ();
 			
@@ -2656,7 +2685,7 @@ public class KingControllor : HeroAI
 
 	public override void setWeaponTriggerTrue(int _aid)
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		int hand = _aid / 1000;
 		
@@ -2677,6 +2706,8 @@ public class KingControllor : HeroAI
 			weaponBox_3.gameObject.SetActive(true);
 
 			weaponBox_3.setTriggerableSkill(true, skillTemplate.value1, 0);
+
+			BattleEffectControllor.Instance().PlayEffect(600216, gameObject);
 		}
 		else if(_aid == 3260)//乾坤斗转
 		{
@@ -2726,7 +2757,9 @@ public class KingControllor : HeroAI
 
 	public override void setWeaponTriggerFalse(int hand)
 	{
-		if (BattleControlor.Instance ().inDrama == true) return;
+//		TimeHelper.SignetTime();
+
+		if (BattleControlor.Instance().inDrama == true) return;
 
 		if (actionId >= 140 && actionId <= 151) return;//无敌斩
 
@@ -2793,6 +2826,8 @@ public class KingControllor : HeroAI
 			
 			weaponBox_4.gameObject.SetActive(false);
 		}
+
+//		TimeHelper.LogDeltaTimeSinceSignet( "setWeaponTriggerFalse" );
 	}
 
 	public void Shake(KingCamera.ShakeType shakeType)

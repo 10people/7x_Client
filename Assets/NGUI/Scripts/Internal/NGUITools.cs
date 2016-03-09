@@ -4,6 +4,9 @@
 //----------------------------------------------
 
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -389,7 +392,7 @@ public static class NGUITools
 			t.localPosition = Vector3.zero;
 			t.localRotation = Quaternion.identity;
 			t.localScale = Vector3.one;
-			go.layer = parent.layer;
+			GameObjectHelper.SetGameObjectLayer( go, parent.layer );
 		}
 		return go;
 	}
@@ -413,7 +416,7 @@ public static class NGUITools
 			t.localPosition = Vector3.zero;
 			t.localRotation = Quaternion.identity;
 			t.localScale = Vector3.one;
-			go.layer = parent.layer;
+			GameObjectHelper.SetGameObjectLayer( go, parent.layer );
 		}
 		return go;
 	}
@@ -424,8 +427,19 @@ public static class NGUITools
 
 	public static int CalculateRaycastDepth (GameObject go)
 	{
-		UIWidget w = go.GetComponent<UIWidget>();
-		if (w != null) return w.raycastDepth;
+		UIWidget[] w = go.GetComponents<UIWidget>();
+
+		if( w!= null && w.Length > 0 ){
+			int t_max = w[ 0 ].raycastDepth;
+
+			for( int i = 1; i < w.Length; i++ ){
+				if( w[ i ].raycastDepth > t_max ){
+					t_max = w[ i ].raycastDepth;
+				}
+			}	
+
+			return t_max;
+		}
 
 		UIWidget[] widgets = go.GetComponentsInChildren<UIWidget>();
 		if (widgets.Length == 0) return 0;
@@ -648,7 +662,7 @@ public static class NGUITools
 			// Automatically find the layers if none were specified
 			if (layer == -1) layer = LayerMask.NameToLayer("UI");
 			if (layer == -1) layer = LayerMask.NameToLayer("2D UI");
-			go.layer = layer;
+			GameObjectHelper.SetGameObjectLayer( go, layer );
 
 			if (advanced3D)
 			{
@@ -740,7 +754,14 @@ public static class NGUITools
 				trans.parent = panel.transform;
 				trans.localScale = Vector3.one;
 				trans.localPosition = Vector3.zero;
-				SetChildLayer(panel.cachedTransform, panel.cachedGameObject.layer);
+//				Debug.Log( Time.frameCount + " Create and SetPanelLayer: " + GameObjectHelper.GetGameObjectHierarchy( trans.gameObject ) );
+//				#if UNITY_EDITOR
+//				EditorApplication.isPaused = true;
+//				#endif
+
+//				SetChildLayer(panel.cachedTransform, panel.cachedGameObject.layer);
+
+//				SetChildLayer( trans.transform, panel.cachedGameObject.layer);
 			}
 		}
 		return panel;
@@ -755,7 +776,8 @@ public static class NGUITools
 		for (int i = 0; i < t.childCount; ++i)
 		{
 			Transform child = t.GetChild(i);
-			child.gameObject.layer = layer;
+			GameObjectHelper.SetGameObjectLayer( child.gameObject, layer );
+
 			SetChildLayer(child, layer);
 		}
 	}
@@ -795,7 +817,8 @@ public static class NGUITools
 		widget.width = 100;
 		widget.height = 100;
 		widget.depth = depth;
-		widget.gameObject.layer = go.layer;
+		GameObjectHelper.SetGameObjectLayer( widget.gameObject, go.layer );
+
 		return widget;
 	}
 
@@ -1129,7 +1152,7 @@ public static class NGUITools
 
 	public static void SetLayer (GameObject go, int layer)
 	{
-		go.layer = layer;
+		GameObjectHelper.SetGameObjectLayer( go, layer );
 
 		Transform t = go.transform;
 		

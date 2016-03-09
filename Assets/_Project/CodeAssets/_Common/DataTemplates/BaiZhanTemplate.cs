@@ -28,6 +28,8 @@ public class BaiZhanTemplate : XmlLoadManager
 
 	public string dayAward;
 
+	public int produceSpeed;
+
 	public static List<BaiZhanTemplate> templates = new List<BaiZhanTemplate>();
 
 
@@ -84,7 +86,6 @@ public class BaiZhanTemplate : XmlLoadManager
 				t_reader.MoveToNextAttribute();
 				t_template.maxRank = int.Parse( t_reader.Value );
 
-
 				t_reader.MoveToNextAttribute();
 				t_template.jibie = int.Parse( t_reader.Value );
 				
@@ -94,7 +95,8 @@ public class BaiZhanTemplate : XmlLoadManager
 				t_reader.MoveToNextAttribute();
 				t_template.dayAward = t_reader.Value;
 				
-
+				t_reader.MoveToNextAttribute();
+				t_template.produceSpeed = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();
@@ -118,5 +120,4 @@ public class BaiZhanTemplate : XmlLoadManager
 		
 		return null;
 	}
-
 }

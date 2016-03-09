@@ -9,9 +9,7 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
 {
-    public UILabel m_LabTopTitle;
-    public UILabel m_LabTopMidTitle;
-    public UILabel m_LabTopBottomTitle;
+    public UISprite m_SpriteLQ;
     public UILabel m_LabMiddleTitle;
     public UILabel m_LabBottomTitle;
     public UILabel m_LabBottomCount;
@@ -96,6 +94,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
                         _TimeCount = ReponseInfo.remainTime;
                         TidyData(ReponseInfo);
                         m_HiddenObject.SetActive(true);
+                        UI2DTool.Instance.AddTopUI(GameObjectHelper.GetRootGameObject(gameObject));
                         return true;
                     }
                     break;
@@ -177,6 +176,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
         else
         {
             m_BottomLabParent.gameObject.SetActive(false);
+            SparkleEffectItem.OpenSparkle(m_SpriteLQ.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
             m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
         }
     }
@@ -187,12 +187,14 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
         if (info.state == 10) //奖励状态10：未领取 20：已领取 30：超时不能领取 40:不可领取
         {
            m_BottomLabParent.gameObject.SetActive(false);
-           m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
+            SparkleEffectItem.OpenSparkle(m_SpriteLQ.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
+            m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
         }
         else if (info.state == 40)
         {
             m_BottomLabParent.gameObject.SetActive(true);
-            m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+           SparkleEffectItem.CloseSparkle(m_SpriteLQ.gameObject);
+           m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
           //  _TimeCount = info.shengTime;
             m_LabBottomCount.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(_TimeCount));
             _isTimeDown = true;

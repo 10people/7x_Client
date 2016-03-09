@@ -21,7 +21,7 @@ public class BossSkillLengJian : HeroSkill
 	{
 		tempNode = null;
 		
-		List<BaseAI> nodes = node.stance == BaseAI.Stance.STANCE_SELF ? BattleControlor.Instance ().enemyNodes : BattleControlor.Instance ().selfNodes;
+		List<BaseAI> nodes = node.stance == BaseAI.Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
 
 		foreach(BaseAI n in nodes)
 		{

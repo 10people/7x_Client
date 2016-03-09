@@ -40,7 +40,7 @@ public class GuideTemplate : XmlLoadManager
 
 	public int pause;
 
-	public int delTarget;
+	public List<int> delTarget;
 
 	public List<int> flagId;
 	
@@ -136,7 +136,17 @@ public class GuideTemplate : XmlLoadManager
 				t_template.pause = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.delTarget = int.Parse( t_reader.Value );
+				t_template.delTarget = new List<int>();
+				string delTargetStr = t_reader.Value;
+				string[] delTargets = delTargetStr.Split(',');
+				foreach(string delTarget in delTargets)
+				{
+					int del = int.Parse(delTarget);
+					
+					if(del == 0) continue;
+					
+					t_template.delTarget.Add(del);
+				}	
 
 				t_reader.MoveToNextAttribute();
 				t_template.flagId = new List<int>();

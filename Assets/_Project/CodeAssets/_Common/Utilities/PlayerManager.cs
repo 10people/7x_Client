@@ -7,6 +7,7 @@ using qxmobile.protobuf;
 public class PlayerManager : MonoBehaviour
 {
     public List<GameObject> PlayerPrefabList = new List<GameObject>();
+    public GameObject PlayerParentObject;
     public GameObject CarriagePrefab;
     public float BasicYPosition;
 
@@ -33,6 +34,8 @@ public class PlayerManager : MonoBehaviour
 
             temp.GetComponent<CharacterController>().enabled = false;
             temp.GetComponent<NavMeshAgent>().enabled = false;
+
+            TransformHelper.ActiveWithStandardize(Carriage.RootManager.Instance.PlayerParentObject.transform, temp.transform);
 
             temp.transform.localPosition = l_position;
             temp.transform.name = "CreatedOtherPlayer_" + l_uID;

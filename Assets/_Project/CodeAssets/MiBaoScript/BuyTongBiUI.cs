@@ -27,7 +27,7 @@ public class BuyTongBiUI : MonoBehaviour {
 	}
 	public void  Init()
 	{
-		Debug.Log ("M_BuyTongBiInfo.baoji = "+M_BuyTongBiInfo.baoji);
+		//Debug.Log ("M_BuyTongBiInfo.baoji = "+M_BuyTongBiInfo.baoji);
 		if(M_BuyTongBiInfo.baoji >= 2)
 		{
 			BaojiRoot.SetActive(true);

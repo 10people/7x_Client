@@ -1,4 +1,4 @@
-﻿#define DEBUG_BUNDLE
+﻿//#define DEBUG_BUNDLE
 
 #define SHOW_SERVER_SELECTOR
 
@@ -90,7 +90,7 @@ public class PrepareBundleHelper {
 				ComponentHelper.AddIfNotExist( t_gb, typeof(ThirdPlatform) );
 			}
 
-			GameObjectHelper.RegisterGlobalComponents();
+			ComponentHelper.RegisterGlobalComponents();
 		}
 
 //		#if DEBUG_BUNDLE
@@ -113,7 +113,9 @@ public class PrepareBundleHelper {
 		{
 			FileHelper.DeleteLogFile();
 			
-			Application.logMessageReceived += FileHelper.LogFile;
+			FileHelper.RegisterLog();
+
+//			DebugHelper.RegisterLog();
 		}
 		
 		// report when game launched
@@ -585,6 +587,14 @@ public class PrepareBundleHelper {
 	
 	
 	public const string BUTTON_TXT_OK								= "确定";
-	
+
+
+
+	public const string LOGIN_FAIL_TITLE							= "登陆失败";
+
+	public const string LOGIN_FAIL_CONTENT_LOGIN_FAIL				= "登录失败.";
+
+	public const string LOGIN_FAIL_CONTENT_OTHER_FAIL				= "其他失败.";
+
 	#endregion
 }

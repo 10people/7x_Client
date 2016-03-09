@@ -186,7 +186,7 @@ public class MyResourse : MonoBehaviour {
 //
 //	void ShowMibaoSkill()
 //	{
-//		my_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+//		my_MiBaoInfo = MiBaoGlobleData.Instance().G_MiBaoInfo;
 //
 //		int Pinzhi = 0;
 //

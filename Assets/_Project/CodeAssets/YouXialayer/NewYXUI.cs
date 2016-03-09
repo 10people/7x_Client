@@ -7,12 +7,12 @@ using System.Text;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class NewYXUI : MonoBehaviour,SocketProcessor {
+public class NewYXUI : MYNGUIPanel,SocketProcessor {
 	public static NewYXUI mNewYXUI;
 	public int l_id;
 	
 	public int big_id;
-	public static NewYXUI Instance ()
+	public static NewYXUI Instance()
 	{
 		if (!mNewYXUI)
 		{
@@ -21,12 +21,6 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 		
 		return mNewYXUI;
 	}
-	
-	public UILabel mTiLi;
-	
-	public UILabel mTongBi;
-	
-	public UILabel mYuanBao;
 
 	public YouXiaGuanQiaInfoResp m_YouXiaGuanQiaInfoResp;
 
@@ -85,10 +79,35 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 
 	public GameObject ChengJiRoot;
 	//public GameObject SaodangAndEnterBattleBtn;
+	public MiBaoSkillTips mMiBaoSkillTips;
+	public NGUILongPress EnergyDetailLongPress1;
+
+	public GameObject CDTime;
+
+	public SparkleEffectItem mSparkleEffectItem;
+
+	public GameObject OnStrongBtn;
 
 	void Awake()
 	{
+		EnergyDetailLongPress1.LongTriggerType = NGUILongPress.TriggerType.Press;
+		EnergyDetailLongPress1.NormalPressTriggerWhenLongPress = false;
+		EnergyDetailLongPress1.OnLongPressFinish = OnCloseDetail;
+		EnergyDetailLongPress1.OnLongPress = OnEnergyDetailClick1;
 		SocketTool.RegisterMessageProcessor(this);
+	}
+	private void OnCloseDetail(GameObject go)
+	{
+		ShowTip.close();
+	}
+	public void OnEnergyDetailClick1(GameObject go)//显示体力恢复提示
+	{
+		int mibaoid = m_You_XiaInfo.zuheId;
+		if(mibaoid<=0)
+		{
+			return;
+		}
+		ShowTip.showTip (mibaoid);
 	}
 	void OnDestroy()
 	{
@@ -109,11 +128,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 
 	void Update () {
 
-		mTiLi.text = JunZhuData.Instance ().m_junzhuInfo.tili.ToString();
-		
-		mTongBi.text = JunZhuData.Instance ().m_junzhuInfo.jinBi.ToString();
-		
-		mYuanBao.text = JunZhuData.Instance ().m_junzhuInfo.yuanBao.ToString();
+
 	}
 	YouXiaTimesInfoResp M_tempInfo;
 	public   bool OnProcessSocketMessage(QXBuffer p_message){
@@ -156,7 +171,6 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 				
 				m_YouXiaGuanQiaInfoResp = tempInfo;
 
-				Debug.Log("扫荡接收完毕。。。。");
 				showChengJi(tempInfo);
 				return true;
 			}
@@ -174,8 +188,8 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 				M_tempInfo = tempInfo;
 				
 				BuyTimesInfoBack(tempInfo);
-				
-				Debug.Log("购买游侠信息次数返回");
+				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YOUXIA_INFO_REQ);
+				//Debug.Log("购买游侠信息次数返回");
 				
 				return true;
 			}
@@ -190,7 +204,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 				
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 				
-				Debug.Log("确认购买游侠信息返回");
+			//	Debug.Log("确认购买游侠信息返回");
 				
 				if(tempInfo.result == 0)
 				{
@@ -223,6 +237,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 				mXY.Init();
 			}
 		}	
+		InitUIData ();
 	}
 	private void BuyTimesInfoBack(YouXiaTimesInfoResp m_tempInfo)
 	{
@@ -239,7 +254,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 	{
 		string str1 =  LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str2 = "\r\n"+"您是否要用"+M_tempInfo.cost.ToString()+"元宝"+"\r\n"+"\r\n"+"购买"+M_tempInfo.getTimes.ToString()+"次？";
+		string str2 = "\r\n"+"您是否要用"+M_tempInfo.cost.ToString()+"元宝"+"\r\n"+"\r\n"+"购买"+M_tempInfo.getTimes.ToString()+"次挑战？";
 		
 		string strbtn1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
 		
@@ -283,17 +298,27 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 	}
 	void HaveNoTimesReMainBack(ref WWW p_www, string p_path, Object p_object)
 	{
+	//	Debug.Log ("无购买次数");
 		string title = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str2 = "\r\n"+"今日购买次数已经用完了"+"\r\n"+"提升Vip等级可以增加购买次数";//LanguageTemplate.GetText(LanguageTemplate.Text.FINGHT_CONDITON);
+		int vip = 3;
+		if (vip <= JunZhuData.Instance().m_junzhuInfo.vipLv) {
+			
+			vip = 7;
+		} 
+		string str2 = "V特权等级不足，V特权等级提升到"+(vip).ToString()+"级即可购买挑战次数。参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
+		//string str2 = "\r\n"+"今日购买次数已经用完了"+"\r\n"+"提升Vip等级可以增加购买次数";//LanguageTemplate.GetText(LanguageTemplate.Text.FINGHT_CONDITON);
 		
 		//string strbtn1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
 		
 		string strbtn2 = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-		
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		uibox.setBox(title,str2, null, null, strbtn2,  null, null, null, null);
+		GameObject m = GameObject.Find ("1YouXiaBuyTime");
+		if(m == null)
+		{
+			UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+			uibox.gameObject.name = "1YouXiaBuyTime";
+			uibox.setBox(title,str2, null, null, strbtn2,  null, null, null, null);
+		}
 	}
 	public void SaodangBtn()  // w未定协议7 23
 	{
@@ -302,8 +327,17 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 			ClientMain.m_UITextManager.createText( data);
 			return;
 		}
-		if(m_You_XiaInfo.remainTimes == 1)
+		int num = 0;
+		foreach(YXItem m_YXItem in XYItemManager.initance().YXItemList)
 		{
+			if(m_YXItem.mYouXiaInfo.remainColdTime <= 0 && m_YXItem.mYouXiaInfo.remainTimes >= 0)
+			{
+				num += 1;
+			}
+		}
+		if(num < 2)
+		{
+		//	Debug.Log("关闭游侠红点");
 			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
 		}
 		YouXiaSaoDangReq saodanginfo = new YouXiaSaoDangReq ();
@@ -324,13 +358,13 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 		
 		t_protof = saodangstream.ToArray();
 		
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_YOUXIA_SAO_DANG_REQ,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_YOUXIA_SAO_DANG_REQ,ref t_protof);
 		
 	}
 	void InitUIData()
 	{
 		Sendmessege ();
-
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		YouxiaPveTemplate myouxia = YouxiaPveTemplate.getYouXiaPveTemplateById (l_id);
 		
 		string difficult = NameIdTemplate.GetName_By_NameId (myouxia.smaName);
@@ -355,17 +389,50 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 
 		for(int i = 0; i < s.Length; i++)
 		{
-			Debug.Log("s[i] = "+s[i]);
+		//	Debug.Log("s[i] = "+s[i]);
 		}
-
-		for(int i = 0; i < Conditions.Length; i++)
+		if (s.Length <= 1) {
+			for (int i = 0; i < Conditions.Length; i++) {
+				Conditions [i].text = "";
+			}
+			Conditions [1].text = s [0];
+		}
+		else
 		{
-			Conditions[i].text = s[i];
+			for(int i = 0; i < Conditions.Length; i++)
+			{
+				Conditions[i].text = s[i];
+			}
 		}
 
-		My_ZHanli.text = JunZhuData.Instance ().m_junzhuInfo.zhanLi.ToString ();
+		if(JunZhuData.Instance().m_junzhuInfo.zhanLi < mYouxiaPveTemplate.recZhanli )
+		{
+			OnStrongBtn.SetActive(true);
+			My_ZHanli.text = MyColorData.getColorString(5, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
+		}
+		else
+		{
+			OnStrongBtn.SetActive(false);
+			My_ZHanli.text = MyColorData.getColorString(4, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
+		}
+		string TuiJiAnMiBAo = mYouxiaPveTemplate.recMibaoSkill;
+		string []m_str = TuiJiAnMiBAo.Split(',');
+		for (int i = 0; i < m_str.Length; i++)
+		{
+			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
+			mobg.SetActive(true);
+			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
+			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (m_str.Length - 1) * 35, 0, 0);
+			mobg.transform.localScale = Vector3.one;
+			if(m_str[i] != ""&&m_str[i] != null)
+			{
+				mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(m_str[i]);
+				mobg.GetComponent<MiBaoSkillTips>().mibao_name = m_str[i];
+			}
 
-		TuiJianMiBaoIcon.spriteName = mYouxiaPveTemplate.recMibaoSkill.ToString ();
+			mobg.GetComponent<MiBaoSkillTips>().Init();
+		}
+		//TuiJianMiBaoIcon.spriteName = mYouxiaPveTemplate.recMibaoSkill;
 
 		int AllTimes = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (big_id).maxTimes;
 
@@ -373,7 +440,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 
 		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
 		{
-			Debug.Log("进入试练二阶界面333");
+			//Debug.Log("进入试练二阶界面333");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
 			//mScorview.enabled = false;
@@ -385,12 +452,20 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 	{
 		if(m_You_XiaInfo.zuheId < 1)
 		{
+			if(!MiBaoGlobleData.Instance().GetMiBaoskillOpen())
+			{
+				mSparkleEffectItem.enabled = false ;
+			}
+			else
+			{
+				mSparkleEffectItem.enabled = true ;
+			}
 			MiBaoIcon.spriteName = "";
 		}
 		else
 		{
 			MiBaoSkillTemp mMiBAo = MiBaoSkillTemp.getMiBaoSkillTempBy_id(m_You_XiaInfo.zuheId);
-			
+			mSparkleEffectItem.enabled = false ;
 			MiBaoIcon.spriteName = mMiBAo.icon.ToString();
 		}
 	}
@@ -411,7 +486,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 		byte[] t_protof;
 		
 		t_protof = YouXiaGuanQiaInfoReqtream.ToArray();
-		SocketTool.Instance ().SendSocketMessage (ProtoIndexes.C_YOUXIA_GUANQIA_REQ,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_YOUXIA_GUANQIA_REQ,ref t_protof);
 	}
 	public GameObject obj_SaodangBtn;
 	
@@ -433,17 +508,57 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 		if(mtempInfo.saoDang && m_You_XiaInfo.remainTimes > 0)
 		{
 			obj_SaodangBtn.SetActive(true);
+			CDTime.SetActive(false);
 		}
 		else
 		{
 			obj_SaodangBtn.SetActive(false);
-			
+			CDTime.SetActive(true);
 		}
+//		Debug.Log ("saoDang = "+mtempInfo.saoDang);
+//		Debug.Log ("remainTimes = "+m_You_XiaInfo.remainTimes);
+//		Debug.Log ("time = "+mtempInfo.time);
 		if(mtempInfo.time > 0)
 		{
 			obj_EnterBattleBtn.SetActive(false);
+			StopCoroutine("StartCountTime");
+			StartCoroutine("StartCountTime");
+		}
+		else
+		{
+			obj_EnterBattleBtn.SetActive(true);
+			obj_SaodangBtn.SetActive(true);
+			CDTime.SetActive(false);
 		}
 		
+	}
+	IEnumerator StartCountTime()
+	{
+		int T = m_YouXiaGuanQiaInfoResp.time;
+		while(T > 0)
+		{
+			T -= 1;
+			
+			int M = (int)(T/60);
+			
+			int S = (int)(T % 60);
+			string m_s = "";
+			if(S < 10)
+			{
+				m_s = "0"+S.ToString();
+			}
+			else
+			{
+				m_s = S.ToString();
+			}
+
+			yield return new WaitForSeconds(1f);
+		}
+		//this.gameObject.GetComponent<BoxCollider>().enabled = true;
+		
+		obj_EnterBattleBtn.SetActive(true);
+		obj_SaodangBtn.SetActive(true);
+		CDTime.SetActive(false);
 	}
 	void getSaoDangData(PveSaoDangRet mtempInfo)
 	{
@@ -476,11 +591,21 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),NoTimes);
 			return;
 		}
-		Debug.Log ("big_id = "+big_id +"l_id%10 = " +l_id%10);
-		if(m_You_XiaInfo.remainTimes == 1)
+		//Debug.Log ("big_id = "+big_id +"l_id%10 = " +l_id%10);
+		int num = 0;
+		foreach(YXItem m_YXItem in XYItemManager.initance().YXItemList)
 		{
+			if(m_YXItem.mYouXiaInfo.remainColdTime <= 0 && m_YXItem.mYouXiaInfo.remainTimes >= 0)
+			{
+				num += 1;
+			}
+		}
+		if(num < 2)
+		{
+			//Debug.Log("关闭游侠红点");
 			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
 		}
+
 		EnterBattleField.EnterBattleYouXia (big_id, l_id%10);
 	}
 	void NoTimes(ref WWW p_www,string p_path, Object p_object)
@@ -493,7 +618,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 		string confirm = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 
 		titleStr = "次数不足";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
+	//	Debug.Log ("次数不足");
 		str ="\r\n"+"今日挑战次数已用完，是否购买挑战次数？";
 		
 		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,cancel,confirm,BuyTimes);
@@ -544,421 +669,135 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 		mChoose_MiBao.transform.localScale = Vector3.one;
 		
 		NewMiBaoSkill mNewMiBaoSkill = mChoose_MiBao.GetComponent<NewMiBaoSkill>();
-		mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.YX_JinBi),m_You_XiaInfo.zuheId );
+		switch(big_id)
+		{
+		case 1:
+			mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.YX_JinBi),m_You_XiaInfo.zuheId );
+			break;
+		case 2:
+			mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.YX_Cailiao),m_You_XiaInfo.zuheId );
+			break;
+		case 3:
+			mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.YX_Jingpo),m_You_XiaInfo.zuheId );
+			break;
+		case 4:
+			mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.YX_WanbiGuizhao),m_You_XiaInfo.zuheId );
+			break;
+		case 5:
+			mNewMiBaoSkill.Init ( (int)(CityGlobalData.MibaoSkillType.YX_ZongHengLiuHe),m_You_XiaInfo.zuheId );
+			break;
+		default:
+			break;
+		}
+
 		MainCityUI.TryAddToObjectList(mChoose_MiBao);
 		
 	}
-
+	List<YouXiaNpcTemplate> mYouXiaNpcTemplateList = new List<YouXiaNpcTemplate>();
 	private void CreateEnemy()
 	{
-		foreach(GameObject con in mHerosIcon)
-		{
-			Destroy(con);	
-		}
-		mHerosIcon.Clear ();
-		
-		soldires.Clear();
-		heros.Clear();
-		Bosses.Clear();
-		Zhi_Ye.Clear();
+		mYouXiaNpcTemplateList.Clear ();
 		
 		EnemyNumBers = 4;
 		
 		YouxiaPveTemplate mYouxiaPveTemplate = YouxiaPveTemplate.getYouXiaPveTemplateById (l_id);
 		
-		List<YouXiaNpcTemplate> mYouXiaNpcTemplateList = YouXiaNpcTemplate.GetYouXiaNpcTemplates_By_npcid(mYouxiaPveTemplate.npcId);
-		
-		Debug.Log ("l_id = " +l_id);
-		
-		NpcId = mYouxiaPveTemplate.npcId;
-		
-		Debug.Log ("mYouxiaPveTemplate.npcId = " +mYouxiaPveTemplate.npcId);
-		
-		Debug.Log ("mYouXiaNpcTemplateList.conut = " +mYouXiaNpcTemplateList.Count);
-		
-		foreach(YouXiaNpcTemplate mYouXiaNpcTemplate in mYouXiaNpcTemplateList)
+		mYouXiaNpcTemplateList = YouXiaNpcTemplate.GetYouXiaNpcTemplates_By_npcid(mYouxiaPveTemplate.npcId);
+
+		for (int i = 0; i < mYouXiaNpcTemplateList.Count-1; i ++)
 		{
-			int icn = int.Parse(mYouXiaNpcTemplate.icon);
-			
-			if(mYouXiaNpcTemplate.type == 4&& !Bosses.Contains(mYouXiaNpcTemplate.EnemyId) && icn != 0) // boss
+			for(int j = i+1; j < mYouXiaNpcTemplateList.Count; )
 			{
-				Bosses.Add(mYouXiaNpcTemplate.id);
-			}
-			
-			if(mYouXiaNpcTemplate.type == 3&& !heros.Contains(mYouXiaNpcTemplate.id)&& icn != 0) // hero
-			{
-				
-				heros.Add(mYouXiaNpcTemplate.id);
-				
-			}
-			
-			if(mYouXiaNpcTemplate.type == 2&& !soldires.Contains(mYouXiaNpcTemplate.id)&& icn != 0) // Solider
-			{
-				
-				soldires.Add(mYouXiaNpcTemplate.id);
-				
-			}
-		}
-		
-		for (int i = 0; i < soldires.Count-1; i ++)
-		{
-			
-			YouXiaNpcTemplate m_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (soldires [i],NpcId);
-			
-			for(int j = i+1; j < soldires.Count; )
-			{
-				YouXiaNpcTemplate j_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (soldires [j],NpcId);
-				
-				if(m_YouXiaNpcTemplate.profession == j_YouXiaNpcTemplate.profession)
+				if(mYouXiaNpcTemplateList[i].modelId == mYouXiaNpcTemplateList[j].modelId)
 				{
-					soldires.RemoveAt(j);
+					
+					mYouXiaNpcTemplateList.RemoveAt(j);
 				}
 				else{
 					j ++;
 				}
 			}
-			
 		}
-		
-		for (int i = 0; i < heros.Count-1; i ++)
+		for (int i = 0; i < mYouXiaNpcTemplateList.Count-1; i ++)
 		{
-			//Debug.Log("heros[i] = "+heros[i]);
-			YouXiaNpcTemplate m_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (heros [i],NpcId);
-			
-			for(int j = i+1; j < heros.Count; )
+			for(int j = i+1 ; j < mYouXiaNpcTemplateList.Count; j++)
 			{
-				YouXiaNpcTemplate j_YouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id (heros [j],NpcId);
-				
-				if(m_YouXiaNpcTemplate.profession == j_YouXiaNpcTemplate.profession)
+				if(mYouXiaNpcTemplateList[i].type < mYouXiaNpcTemplateList[j].type)
 				{
-					heros.RemoveAt(j);
-				}
-				else{
-					j ++;
+					YouXiaNpcTemplate mLegendNpc = mYouXiaNpcTemplateList[i];
+					mYouXiaNpcTemplateList[i] = mYouXiaNpcTemplateList[j];
+					mYouXiaNpcTemplateList[j] = mLegendNpc ;
 				}
 			}
-			
 		}
-		
 		getEnemyData();
 	}
 	
 	void getEnemyData()
 	{
-		//List<string> EyName = new List<string>(GetPveTempID.NewEnemy.Keys);
-		
-		int bossnum = Bosses.Count;
-		int heronum = heros.Count;
-		int solder = soldires.Count;
-		
-		Debug.Log ("boss个数：" + bossnum);
-		Debug.Log ("hero个数：" + heronum);
-		Debug.Log ("soldier个数：" + solder);
-		
-		if (bossnum > 0)//BOSS个数不为0
-		{
-			if (bossnum < EnemyNumBers)//boss不大于大于6个
-			{
-				if (heronum > 0)//w武将个数大于0
-				{
-					if (heronum + bossnum < EnemyNumBers)//w武将和bpss的总个数小于6
-					{
-						if (solder > 0)
-						{
-							if (heronum + bossnum + solder > EnemyNumBers)
-							{
-								createBoss(bossnum);
-								createHeros(heronum);
-								createSoliders(EnemyNumBers - (bossnum + heronum));
-							}
-							else
-							{
-								createBoss(bossnum);
-								createHeros(heronum);
-								createSoliders(solder);
-							}
-						}
-						else
-						{
-							createBoss(bossnum);
-							createHeros(heronum);
-						}
-					}
-					else
-					{//boss和武将的和大于6了 只创建6个
-						createBoss(bossnum);
-						createHeros(EnemyNumBers - bossnum);
-					}
-				}
-				else
-				{
-					//ww武将为0
-					if (solder > 0)
-					{
-						if (solder + bossnum > EnemyNumBers)
-						{
-							createBoss(bossnum);
-							createSoliders(EnemyNumBers - bossnum);
-						}
-						else
-						{
-							createBoss(bossnum);
-							createSoliders(solder);
-						}
-					}
-					else
-					{
-						createBoss(bossnum);
-					}
-				}
-			}
-			else
-			{
-				//boss的个数大于6
-				createBoss(EnemyNumBers);
-			}
-		}
-		else
-		{
-			//假如boss的个数为0000000000
-			if (heronum > 0)//w武将个数大于0
-			{
-				if (heronum < EnemyNumBers)//w武将和bpss的总个数小于6
-				{
-					if (solder > 0)
-					{
-						if (heronum + solder <= EnemyNumBers)
-						{
-							createHeros(heronum);
-							createSoliders(solder);
-						}
-						else
-						{
-							createHeros(heronum);
-							createSoliders(EnemyNumBers - heronum);
-						}
-					}
-					else
-					{
-						createHeros(heronum);
-					}
-				}
-				else
-				{
-					createHeros(EnemyNumBers);
-				}
-			}
-			else
-			{
-				if (solder > EnemyNumBers)
-				{
-					createSoliders(EnemyNumBers);
-				}
-				else
-				{
-					createSoliders(solder);
-				}
-			}
-		}
-		//this.gameObject.GetComponent<UIGrid>().repositionNow = true;
-	}
-	
-	private void OnCreateBossCallBack(ref WWW p_www, string p_path, Object p_object)
-	{
 		if (IconSamplePrefab == null)
 		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-		
-		for (int n = 0; n < createBossPara; n++)
-		{
-			
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			
-			mHerosIcon.Add(iconSampleObject);
-			
-			iconSampleObject.SetActive (true);
-			
-			iconSampleObject.transform.parent = EnemyRoot;
-			
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
-			}
-			
-			//EnemyNameid = LegendNpcTemplate.GetEnemyNameId_By_EnemyId(Bosses[n]);
-			
-			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(Bosses[n],NpcId);
-			
-			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
-			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
-			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
-			
-			string leftTopSpriteName = null;
-			var rightButtomSpriteName = "boss";
-			
-			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-			iconSampleManager.SetIconBasic(3, mYouXiaNpcTemplate.icon.ToString());
-			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
-		}
-	}
-	
-	private int createBossPara;
-	
-	private int allenemy
-	{
-		get { return Bosses.Count + heros.Count + soldires.Count; }
-	}
-	
-	void createBoss(int i)
-	{
-		createBossPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateBossCallBack);
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateCQ_Enemys);
 		}
 		else
 		{
 			WWW temp = null;
-			OnCreateBossCallBack(ref temp, null, IconSamplePrefab);
+			OnCreateCQ_Enemys(ref temp, null, IconSamplePrefab);
 		}
 	}
-	
-	private void OnCreateHeroCallBack(ref WWW p_www, string p_path, Object p_object)
+	private void OnCreateCQ_Enemys(ref WWW p_www, string p_path, Object p_object)
 	{
 		if (IconSamplePrefab == null)
 		{
 			IconSamplePrefab = p_object as GameObject;
 		}
-		
-		for (int n = 0; n < createHeroPara; n++)
+		int count = mYouXiaNpcTemplateList.Count;
+		if(count > 4)
+		{
+			count = 4;
+		}
+		for (int n = 0; n < count; n++)
 		{
 			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			mHerosIcon.Add(iconSampleObject);
+			
 			iconSampleObject.SetActive (true);
-			iconSampleObject.transform.parent = EnemyRoot;
+			iconSampleObject.transform.parent = EnemyRoot.transform;
+			
+			int allenemy = mYouXiaNpcTemplateList.Count;
+			if(allenemy > 4)
+			{
+				allenemy = 4;
+			}
+			
+			iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
 			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - Bosses.Count - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - Bosses.Count - n) * distance - countDistance, -20, 0);
-			}
-			
-			Debug.Log("eros[n] = " +heros[n]);
-			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(heros[n],NpcId);
-			
-			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
-			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
-			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
+			YouXiaNpcTemplate m_LegendNpcTemplate= YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(mYouXiaNpcTemplateList[n].id);
 			
 			string leftTopSpriteName = null;
 			var rightButtomSpriteName = "";
-			Debug.Log("mYouXiaNpcTemplate.icon.ToString() = " +mYouXiaNpcTemplate.icon.ToString());
+			if(m_LegendNpcTemplate.type == 4)
+			{
+				rightButtomSpriteName = "boss";
+			}
+			if(m_LegendNpcTemplate.type == 5)
+			{
+				rightButtomSpriteName = "JunZhu";
+			}
+			
+			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(m_LegendNpcTemplate.Name);
+			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + m_LegendNpcTemplate.level.ToString();
+			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(m_LegendNpcTemplate.desc).description;
+			
+			
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-			iconSampleManager.SetIconBasic(3, mYouXiaNpcTemplate.icon.ToString());
+			iconSampleManager.SetIconBasic(3, m_LegendNpcTemplate.icon.ToString());
 			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
 			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
 		}
 	}
-	
-	private int createHeroPara;
-	
-	void createHeros(int i)
-	{
-		createHeroPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateHeroCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnCreateHeroCallBack(ref temp, null, IconSamplePrefab);
-		}
-	}
-	
-	private void OnCreateSoldierCallBack(ref WWW p_www, string p_path, Object p_object)
-	{
-		if (IconSamplePrefab == null)
-		{
-			IconSamplePrefab = p_object as GameObject;
-		}
-		
-		for (int n = 0; n < createSoldierPara; n++)
-		{
-			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-			
-			mHerosIcon.Add(iconSampleObject);
-			
-			iconSampleObject.SetActive (true);
-			
-			iconSampleObject.transform.parent = EnemyRoot;
-			
-			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-			
-			if (allenemy >= EnemyNumBers)
-			{
-				iconSampleObject.transform.localPosition = new Vector3((EnemyNumBers - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, -20, 0);
-			}
-			else
-			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - (Bosses.Count + heros.Count)
-				                                                        - n) * distance - countDistance, -20, 0);
-			}
-			iconSampleObject.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
-			
-			int EnemyNameid = 0;
-			
-			YouXiaNpcTemplate mYouXiaNpcTemplate = YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(soldires[n],NpcId);
-			
-			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(mYouXiaNpcTemplate.Name);
-			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + mYouXiaNpcTemplate.level.ToString();
-			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mYouXiaNpcTemplate.desc).description;
-			
-			string leftTopSpriteName = null;
-			var rightButtomSpriteName = "";
-			
-			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
-			iconSampleManager.SetIconBasic(3, mYouXiaNpcTemplate.icon.ToString());
-			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
-		}
-	}
-	
-	private int createSoldierPara;
-	
-	void createSoliders(int i)
-	{
-		createSoldierPara = i;
-		
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnCreateSoldierCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnCreateSoldierCallBack(ref temp, null, IconSamplePrefab);
-		}
-	}
-	
+
 	private int numPara;
 	private List<int> itemsPara;
 	
@@ -1018,7 +857,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 	{
 		int pos = 0;
 		
-		Debug.Log("numPara = " +numPara);
+		//Debug.Log("numPara = " +numPara);
 		
 		for (int n = 0; n < numPara; n++)
 		{
@@ -1048,7 +887,7 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 					NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mAwardTemp[i].itemId);
 					string mdesc = DescIdTemplate.GetDescriptionById(mAwardTemp[i].itemId);
 					iconSampleManager.SetIconByID(mAwardTemp[i].itemId, "", 3);
-					iconSampleManager.SetIconPopText(mAwardTemp[0].itemId, mNameIdTemplate.Name, mdesc, 1);
+					iconSampleManager.SetIconPopText(mAwardTemp[i].itemId, mNameIdTemplate.Name, mdesc, 1);
 					iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
 				}
 			}
@@ -1074,9 +913,61 @@ public class NewYXUI : MonoBehaviour,SocketProcessor {
 		EquipSuoData.TopUpLayerTip();
 		//		QXTanBaoData.Instance().CheckFreeTanBao();
 	}
+	public void OnStronger()
+	{
+		MainCityUILT.ShowMainTipWindow();
+	
+	}
 	public void Close()
 	{
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Destroy (this.gameObject);
 	}
+	#region fulfil my ngui panel
+	
+	/// <summary>
+	/// my click in my ngui panel
+	/// </summary>
+	/// <param name="ui"></param>
+	public override void MYClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOver(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+		
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+		
+	}
+	
+	#endregion
 }

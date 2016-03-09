@@ -20,6 +20,8 @@ public class Joystick : MYNGUIPanel
 	public UISprite m_spriteBG;
 	public UISprite m_spriteButton;
     public bool m_isLockBack;
+	private bool m_isMove;
+	private Vector3 m_Vector3MousePos;
     void Awake()
     {
 
@@ -61,6 +63,16 @@ public class Joystick : MYNGUIPanel
                 m_joystickTransform.localPosition = m_joystickTransform.localPosition.normalized * MaxToggleDistance;
             }
             m_uiOffset = new Vector3(m_joystickTransform.localPosition.x, 0, m_joystickTransform.localPosition.y);
+			if(Mathf.Abs(m_joystickTransform.localPosition.x) >= 10 || Mathf.Abs(m_joystickTransform.localPosition.y) >= 10)
+			{
+				m_spriteBG.color = new Color(1f, 1f, 1f, 1f);
+				m_spriteButton.color = new Color(1f, 1f, 1f, 1f);
+				m_isMove = true;
+			}
+			else
+			{
+				m_uiOffset = Vector3.zero;
+			}
         }
     }
 
@@ -92,6 +104,12 @@ public class Joystick : MYNGUIPanel
     {
         if (isPress)
         {
+			m_isMove = false;
+			if (Input.GetMouseButton(0))
+			{
+				m_Vector3MousePos = Input.mousePosition;
+			}
+
             CityGlobalData.m_joystickControl = true;
 
             m_MouseOrTouch = UICamera.GetTouch(UICamera.currentTouchID);
@@ -103,8 +121,6 @@ public class Joystick : MYNGUIPanel
                     m_joystickBackGround.localPosition.x < 76 ? 76 : m_joystickBackGround.localPosition.x,
                     m_joystickBackGround.localPosition.y < 76 ? 76 : m_joystickBackGround.localPosition.y,
                     0);
-				m_spriteBG.color = new Color(1f, 1f, 1f, 1f);
-				m_spriteButton.color = new Color(1f, 1f, 1f, 1f);
             }
         }
         else
@@ -117,6 +133,67 @@ public class Joystick : MYNGUIPanel
             m_uiOffset = Vector3.zero;
 			m_spriteBG.color = new Color(1f, 1f, 1f, 0.3f);
 			m_spriteButton.color = new Color(1f, 1f, 1f, 0.3f);
+			if(!m_isMove)
+			{
+				if (MainCityUI.IsWindowsExist() || UIYindao.m_UIYindao.m_isOpenYindao)
+				{
+					return;
+				}
+				
+				Vector3 tempMousePosition = Input.mousePosition;
+
+//				Ray m_ray = NpcManager.m_NpcManager.m_nguiCamera.ScreenPointToRay(tempMousePosition);// 从屏幕发射线
+//				RaycastHit nguiHit;
+				
+//				if (Physics.Raycast(m_ray, out nguiHit)) return;//碰到主界面UI按钮
+				
+				Ray m_ray = Camera.main.ScreenPointToRay(tempMousePosition);
+				
+				RaycastHit hit;
+				int t_index = LayerMask.NameToLayer("CityRoles");
+
+				if (Physics.Raycast(m_ray, out hit, 1000.0f, 1 << t_index))
+				{
+					if (hit.collider.transform.name.IndexOf("PlayerObject") > -1)
+					{
+                        EquipSuoData.CreateChaKan(hit.collider.transform.name, tempMousePosition);
+						return;
+					}
+				}
+				int  t_index2 = LayerMask.NameToLayer("Default");
+				
+				int  depth2 = 1 << t_index2;
+				
+				if (Physics.Raycast(m_ray,out hit, 10000.0f, depth2)) //碰到3d世界中的npc
+				{
+					NpcCityTemplate m_currentNpcTemplate = null;
+					if (hit.collider.transform.name == "NpcInCity")
+					{
+						PlayerModelController.m_playerModelController.m_agent.enabled = true;
+						m_currentNpcTemplate = hit.collider.transform.GetComponent<NpcObjectItem>().m_template;
+						
+						PlayerModelController.m_playerModelController.m_iMoveToNpcID = m_currentNpcTemplate.m_npcId;
+						if (Vector3.Distance(hit.collider.transform.position, PlayerModelController.m_playerModelController.m_ObjHero.transform.position) > 2)
+						{
+							PlayerModelController.m_playerModelController.SelfNavigation(hit.collider.gameObject.transform.position);
+						}
+						else
+						{
+							//  Debug.Log("m_currentNpcTemplate.m_npcId m_currentNpcTemplate.m_npcId  ::" + m_currentNpcTemplate.m_npcId);
+							if (m_currentNpcTemplate.m_npcId == 801)
+							{
+								NewEmailData.Instance().OpenEmail(0);
+							}
+							else
+							{
+								PlayerModelController.m_playerModelController.TidyNpcInfo();
+							}
+						}
+						
+					}
+				}
+			}
+			m_isMove = false;
         }
     }
 

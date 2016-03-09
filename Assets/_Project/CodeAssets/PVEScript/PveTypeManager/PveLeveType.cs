@@ -46,7 +46,7 @@ public class PveLeveType : MonoBehaviour {
 	public void InItCheckPoint ()
 	{
 
-		if(!MiBaoGlobleData.Instance ().GetEnterChangeMiBaoSkill_Oder ())
+		if(!MiBaoGlobleData.Instance().GetEnterChangeMiBaoSkill_Oder ())
 		{
 			ChangeMiBaobtn.SetActive(false);
 		}else
@@ -130,38 +130,38 @@ public class PveLeveType : MonoBehaviour {
 	/// 领取星级奖励
 	public void popLv_Star_UI()
 	{
-		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.PVE_GRADE_REWARD),LoadResourceCallback2);
-
-		PveLevelUImaneger.mPveLevelUImaneger.CloseEffect ();
-		PveLevelUImaneger.mPveLevelUImaneger.ColsePVEGuid ();
+//		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.PVE_GRADE_REWARD),LoadResourceCallback2);
+//
+//		PveLevelUImaneger.mPveLevelUImaneger.CloseEffect ();
+//		PveLevelUImaneger.mPveLevelUImaneger.ColsePVEGuid ();
 	}
 
 	public void LoadResourceCallback2(ref WWW p_www,string p_path, Object p_object)
 	{
-		PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
-
-		GameObject tempOjbect = Instantiate(p_object)as GameObject;
-		
-		tempOjbect.transform.parent = GameObject.Find ("Mapss").transform;
-		
-		tempOjbect.transform.localScale = Vector3.one;
-		
-		tempOjbect.transform.localPosition = Vector3.zero;
-		
-		PveStarAward mPveStarAward = tempOjbect.GetComponent<PveStarAward>();
-		
-		mPveStarAward.M_Level = levelInfo;
-
-		mPveStarAward.Opentype = 2;
-
-		mPveStarAward.Init ();
+//		PveLevelUImaneger.mPveLevelUImaneger.SHow_OrClose ();
+//
+//		GameObject tempOjbect = Instantiate(p_object)as GameObject;
+//		
+//		tempOjbect.transform.parent = GameObject.Find ("Mapss").transform;
+//		
+//		tempOjbect.transform.localScale = Vector3.one;
+//		
+//		tempOjbect.transform.localPosition = Vector3.zero;
+//		
+//		PveStarAward mPveStarAward = tempOjbect.GetComponent<PveStarAward>();
+//		
+//		mPveStarAward.M_Level = levelInfo;
+//
+//		mPveStarAward.Opentype = 2;
+//
+//		mPveStarAward.Init ();
 
 	}
 
 	//攻打按钮
 	public void ComfireTest_btn()
 	{
-		UI3DEffectTool.Instance ().ClearUIFx (ChangeMiBaobtn);
+		UI3DEffectTool.ClearUIFx (ChangeMiBaobtn);
 		IsTest = true;
 		char[] aprcation = {','};
 		//Debug.Log ("text =  "+testLable.text);
@@ -308,7 +308,7 @@ public class PveLeveType : MonoBehaviour {
 		MiBaoShangZhen selectMibao = mibaoSelectObj.GetComponent<MiBaoShangZhen>();
 		
 		//selectMibao.m_MiBaoInfo = miBaoResp;
-		selectMibao.GJunzu_Data = (JunZhuInfoRet)JunZhuData.Instance ().m_junzhuInfo.Public_MemberwiseClone();
+		selectMibao.GJunzu_Data = (JunZhuInfoRet)JunZhuData.Instance().m_junzhuInfo.Public_MemberwiseClone();
 
 		selectMibao.InitData ();
 	}

@@ -53,15 +53,7 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
         ExitScene temp = new ExitScene { uid = 0 };
         SocketHelper.SendQXMessage(temp, ProtoIndexes.EXIT_FIGHT_SCENE);
 
-        //GoToReturn.
-        //if (AllianceData.Instance.IsAllianceNotExist)
-        //{
         SceneManager.EnterMainCity();
-        //}
-        //else
-        //{
-        //   // SceneManager.EnterAllianceCity();
-        //}
     }
 
     #endregion
@@ -83,13 +75,9 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     public void ExitCarriage()
     {
-        //if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
-        //{
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.EXIT_CARRIAGE_SCENE);
+
         SceneManager.EnterMainCity();
-        //}
-        //else
-        //{
-        //    SceneManager.EnterAllianceCity();
     }
 
     public DelegateUtil.VoidDelegate m_DelegateAfterCarriage;

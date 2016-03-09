@@ -18,7 +18,7 @@ function Update () {
 		if(SpawnEnd){
 			var obj = GameObject.Instantiate(SpawnEnd,this.transform.position,this.transform.rotation);
 		}
-		GameObject.Destroy(this.gameObject);
+		//GameObject.Destroy(this.gameObject);
 	}
 	if(this.gameObject.GetComponent.<Light>()){
 		this.GetComponent.<Light>().intensity += LightIntensityMult * Time.deltaTime;

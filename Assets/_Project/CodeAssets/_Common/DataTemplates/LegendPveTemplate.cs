@@ -80,7 +80,21 @@ public class LegendPveTemplate : XmlLoadManager {
 
 	public int configId;
 
-	public int TeammateID;
+	public int TeammateID;//wanfaType="百战" recZhanli="18100" recMibaoSkill="250104" />
+
+	public string wanfaType;
+
+	public int recZhanli;
+
+	public string recMibaoSkill;
+
+	public string OPenSkillLabel;
+	
+	public int bossIcon; //0 为没有bossicon  1 wei you boss
+	
+	public string bubble; // 气泡
+	
+	public int BigIcon; // 1wei bigicon
 
 	public static List<LegendPveTemplate> templates = new List<LegendPveTemplate>();
 	
@@ -219,6 +233,27 @@ public class LegendPveTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.TeammateID = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.wanfaType =  t_reader.Value;
+
+				t_reader.MoveToNextAttribute();
+				t_template.recZhanli = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.recMibaoSkill = t_reader.Value;
+
+				t_reader.MoveToNextAttribute();
+				t_template.OPenSkillLabel =  t_reader.Value ;
+				
+				t_reader.MoveToNextAttribute();
+				t_template.bossIcon = int.Parse( t_reader.Value );
+				
+				t_reader.MoveToNextAttribute();
+				t_template.bubble =  t_reader.Value ;
+				
+				t_reader.MoveToNextAttribute();
+				t_template.BigIcon = int.Parse( t_reader.Value );
 
 			}
 			

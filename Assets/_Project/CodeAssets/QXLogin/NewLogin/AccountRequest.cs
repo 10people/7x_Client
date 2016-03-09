@@ -12,31 +12,38 @@ public class AccountRequest : MonoBehaviour {
 	private JSONNode dengLuNode;
 
 	public UIInput userName;//用户名
-
 	public UIInput password;//密码输入
 
-	public GameObject loginObj;
+	public GameObject loginObj1;
+	public GameObject loginObj2;
 	public GameObject lastLoginObj;
 
-	public GameObject tipWindow;
-
-	private string msg;
+	private string textStr;
 
 	public UIToggle toggleBtn;
 
 	private bool isRemember;
 
+	private readonly Dictionary<int,string> ServeStateDic = new Dictionary<int, string>()
+	{
+		{1,"[00ff00]新区[-]"},
+		{2,"[00ff00]流畅[-]"},
+		{3,"[dc0600]爆满[-]"},
+		{4,"[dc0600]维护[-]"}
+	};
+
+	public GameObject zhezhaoObj;
+
+	public List<EventHandler> loginHandlerList = new List<EventHandler> ();
+
 	/// <summary>
 	/// 公告
 	/// </summary>
-	
 	public GameObject noticeObj;
 
 	public GameObject selectUrlObj;
 
 	public GameObject inputObj;
-	
-	public EventHandler zheZhaoHandler;
 	
 	private float time = 0.4f;
 
@@ -47,10 +54,6 @@ public class AccountRequest : MonoBehaviour {
 
 	void Start () 
 	{
-		userName.GetComponent<EventHandler> ().m_handler += TransUp;
-		password.GetComponent<EventHandler> ().m_handler += TransUp;
-		zheZhaoHandler.m_handler += ZheZhaoHandlerCallBack;
-
 		#if DEBUG_REQUEST
 		Debug.Log( Time.realtimeSinceStartup + " AccountRequest.Start()" );
 		#endif
@@ -96,6 +99,61 @@ public class AccountRequest : MonoBehaviour {
 		}
 
 		selectUrlObj.SetActive ( PrepareBundleHelper.ShowServerSelector ());
+
+		foreach (EventHandler handler in loginHandlerList)
+		{
+			handler.m_click_handler -= LoginHandlerClickBack;
+			handler.m_click_handler += LoginHandlerClickBack;
+		}
+	}
+
+	void LoginHandlerClickBack (GameObject obj)
+	{
+		switch (obj.name)
+		{
+		case "RegisterButton":
+
+			LoginRequestSend ();
+
+			break;
+		case "LoginButton":
+
+			DengLuRequestSend ();
+
+			break;
+		case "ZheZhao":
+
+			TransDown ();
+
+			break;
+		case "NameInput":
+
+			TransUp ();
+
+			break;
+		case "PasswordInput":
+
+			TransUp ();
+
+			break;
+		case "Toggle":
+
+			ToggleValueChange ();
+
+			break;
+		case "QQ":
+
+			QQBtn ();
+
+			break;
+		case "WeiXin":
+
+			WeiXinBtn ();
+
+			break;
+		default:
+			break;
+		}
 	}
 
 	void OnDestroy(){
@@ -110,7 +168,7 @@ public class AccountRequest : MonoBehaviour {
 		Debug.Log ( Time.realtimeSinceStartup + "NoticeDataRequest()" );
 		#endif
 
-		HttpRequest.Instance ().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.NOTICE_URL,
+		HttpRequest.Instance().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.NOTICE_URL,
 		                                  null, 
 		                                  NoticeSuccess,
 		                                  NoticeFail,
@@ -128,7 +186,7 @@ public class AccountRequest : MonoBehaviour {
 		notice.SetActive (true);
 		notice.name = "Notice";
 
-		notice.transform.transform.parent = loginObj.transform.parent;
+		notice.transform.transform.parent = loginObj2.transform.parent;
 		notice.transform.localPosition = Vector3.zero;
 		notice.transform.localScale = Vector3.one;
 
@@ -138,25 +196,52 @@ public class AccountRequest : MonoBehaviour {
 	
 	void NoticeFail (string tempResponse) 
 	{
-		Debug.Log( Time.realtimeSinceStartup + "AccountRequest.NoticeFail: " + tempResponse );
+//		Debug.Log( " AccountRequest.NoticeFail: " + tempResponse );
 
         CreateReConnectWindow();
-
-
 	}
 
 	#region Register
 
 	/// <summary>
+	/// QQs the button.
+	/// </summary>
+	void QQBtn ()
+	{
+		if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+			Debug.Log( "MyApp flow, Now Start QQ Login." );
+			
+			ThirdPlatform.ShowQQLogin();
+			
+			return;
+		}
+	}
+
+	/// <summary>
+	/// Weis the xin button.
+	/// </summary>
+	void WeiXinBtn ()
+	{
+		if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+			Debug.Log( "MyApp flow, Now Start WeiXin Login." );
+			
+			ThirdPlatform.ShowWXLogin();
+			
+			return;
+		}
+	}
+
+	/// <summary>
 	/// 注册账号
 	/// </summary>
-	public void LoginRequestSend ()
+	void LoginRequestSend ()
 	{
+		QQBtn ();
+
 		if (SysparaTemplate.CompareSyeParaWord (userName.value) || SysparaTemplate.CompareSyeParaWord (password.value))
 		{
-			msg = "有奇怪的文字混进来了\n再仔细推敲一下吧...";
-
-			ShowFailTipWindow (msg);
+			textStr = "有奇怪的文字混进来了\n再仔细推敲一下吧...";
+			QXComData.CreateBox (1,textStr,true,null);
 		}
 
 		else
@@ -164,9 +249,8 @@ public class AccountRequest : MonoBehaviour {
 			if (string.IsNullOrEmpty (userName.value) || string.IsNullOrEmpty (password.value) ||
 			    userName.value == "请输入账号名" || password.value == "请输入密码")
 			{
-				msg = "账号或密码不能为空！";
-
-				ShowFailTipWindow (msg);
+				textStr = "账号或密码不能为空！";
+				QXComData.CreateBox (1,textStr,true,null);
 			}
 			
 			else
@@ -185,7 +269,7 @@ public class AccountRequest : MonoBehaviour {
 //				DebugRequestParams( tempUrl );
 				#endif
 				
-				HttpRequest.Instance ().Connect ( CityGlobalData.RigisterURL, 
+				HttpRequest.Instance().Connect ( CityGlobalData.RigisterURL, 
 				                                 tempUrl, 
 				                                 LoginRequestSuccess, 
 				                                 LoginRequestFail );
@@ -219,52 +303,32 @@ public class AccountRequest : MonoBehaviour {
 		
 		JSONNode zhuCeNode = JSON.Parse (tempResponse);
 
-		msg = zhuCeNode ["msg"].Value;
-
-		ShowFailTipWindow (msg);
-
-//		switch (zhuCeNode ["code"].AsInt)
-//		{
-//		case 0:
-//
-////			Debug.Log ("注册失败，该用户名已被注册！");
-//
-//			ShowFailTipWindow (2);
-//
-//			break;
-//
-//		case 1:
-//
-////			Debug.Log ("注册成功，请登录游戏！");
-//
-//			ShowFailTipWindow (4);
-//
-//			break;
-//		}
+		textStr = zhuCeNode ["msg"].Value;
+		QXComData.CreateBox (1,textStr,true,null);
 	}
 	
 	void LoginRequestFail (string tempResponse) 
 	{
 		Debug.LogError( "LoginRequestFail: " + tempResponse );
-		ShowFailTipWindow (tempResponse + "\n请选择其他服务器！");
+		textStr = "请选择其他服务器！";
+		QXComData.CreateBox (1,textStr,true,null);
 	}
 
 	#endregion
-
-
 
 	#region Login
 
 	/// <summary>
 	/// 登陆
 	/// </summary>
-	public void DengLuRequestSend () 
+	void DengLuRequestSend () 
 	{
+		WeiXinBtn ();
+
 		if (SysparaTemplate.CompareSyeParaWord (userName.value) || SysparaTemplate.CompareSyeParaWord (password.value))
 		{
-			msg = "有奇怪的文字混进来了\n再仔细推敲一下吧...";
-
-			ShowFailTipWindow (msg);
+			textStr = "有奇怪的文字混进来了\n\n再仔细推敲一下吧...";
+			QXComData.CreateBox (1,textStr,true,null);
 		}
 
 		else
@@ -272,9 +336,8 @@ public class AccountRequest : MonoBehaviour {
 			if (string.IsNullOrEmpty (userName.value) || string.IsNullOrEmpty (password.value) ||
 			    userName.value == "请输入账号名" || password.value == "请输入密码")
 			{
-				msg = "账号或密码不能为空！";
-
-				ShowFailTipWindow (msg);
+				textStr = "账号或密码不能为空！";
+				QXComData.CreateBox (1,textStr,true,null);
 			}
 			
 			else
@@ -298,7 +361,7 @@ public class AccountRequest : MonoBehaviour {
 					OperationSupport.AppendHttpParamUUID( tempUrl );
 				}
 				
-				HttpRequest.Instance ().Connect ( CityGlobalData.LoginURL,
+				HttpRequest.Instance().Connect ( CityGlobalData.LoginURL,
 				                                 tempUrl,
 				                                 DengLuRequestSuccess, 
 				                                 DengLuRequestFail );
@@ -339,26 +402,28 @@ public class AccountRequest : MonoBehaviour {
 
 		int code = dengLuNode ["code"].AsInt; //登陆是否成功 code
 
-		msg = dengLuNode ["msg"].Value; //反馈信息
+		textStr = dengLuNode ["msg"].Value; //反馈信息
 		
 		//登陆判定
-		if( code == 0 )
+		switch (code)
 		{
-//			Debug.Log( "Login.Response.Code: " + code + " : " + msg );
+		case 0:
+			Debug.Log( "AccountRequest Normal Fail." );
 
-			ShowFailTipWindow (msg);
-		}
-
-		else if (code == 1)
-		{	
-//			Debug.Log ("登陆成功！");
-
-			loginObj.SetActive (false);
+			QXComData.CreateBox (1,textStr,true,null);
+			break;
+		case 1:
+			loginObj1.SetActive (false);
+			loginObj2.SetActive (false);
 			lastLoginObj.SetActive (true);
-
+			
 			LastLogin last = lastLoginObj.GetComponent<LastLogin> ();
 			last.loginNode = dengLuNode;
 			last.CreateLastLogin ();
+			break;
+		default:
+			Debug.Log( "AccountRequest Other Fail." );
+			break;
 		}
 	}
 	
@@ -366,7 +431,8 @@ public class AccountRequest : MonoBehaviour {
 	{
 		// TODO, PopOut Window
 		Debug.LogError ( "DengLuRequestFail: " + tempResponse );
-		ShowFailTipWindow ("\n\n请选择其他服务器！");
+		textStr = "请选择其他服务器！";
+		QXComData.CreateBox (1,textStr,true,null);
 	}
 
 	#endregion
@@ -377,7 +443,7 @@ public class AccountRequest : MonoBehaviour {
 
 	private void DebugRequestParams( Dictionary<string, string> p_dict ){
 		foreach( KeyValuePair<string, string> p_kv in p_dict ){
-			Debug.Log( p_kv.Key + ": " + p_kv.Value );
+//			Debug.Log( p_kv.Key + ": " + p_kv.Value );
 		}
 	}
 
@@ -386,7 +452,7 @@ public class AccountRequest : MonoBehaviour {
 		Debug.Log ( "AddClientInfo: " + Time.realtimeSinceStartup );
 		#endif
 
-		p_dict.Add( "ClientVersion", VersionTool_4.GetSmallVersion() );
+		p_dict.Add( "ClientVersion", VersionTool.GetClientVersionString() );
 
 		p_dict.Add( "SystemSoftware", SystemInfo.operatingSystem );
 
@@ -432,87 +498,49 @@ public class AccountRequest : MonoBehaviour {
 	//显示区状态
 	public void ShowServeState (UILabel tempStrLabel,int state)
 	{
-		switch (state)
-		{
-		case 1:
-			
-			tempStrLabel.text = "[00ff00]新区[-]";
-			
-			break;
-			
-		case 2:
-			
-			tempStrLabel.text = "[00ff00]流畅[-]";
-			
-			break;
-			
-		case 3:
-			
-			tempStrLabel.text = "[dc0600]爆满[-]";
-			
-			break;
-			
-		case 4:
-			
-			tempStrLabel.text = "[dc0600]维护[-]";
-			
-			break;
-
-		default:break;
-		}
+		tempStrLabel.text = ServeStateDic[state];
 	}
 
 	//上次登陆按钮状态
-	public void ShowLastLoginBtn (GameObject btnObj,UILabel btn1Label,UILabel btn2Label)
+	public void ShowLastLoginBtn (UISprite btnSprite,UILabel btnLabel)
 	{
 		int isNewPlayer = dengLuNode ["isLogined"].AsInt;//新老用户 1.登陆过 2.未登陆过
+
 		switch (isNewPlayer)
 		{
 		case 1:
 
-			btnObj.SetActive (true);
+			btnSprite.color = Color.white;
+			btnLabel.color = Color.white;
 			
 			JSONNode lastLogin = dengLuNode ["lastLogin"];
 
-			btn1Label.text = "上次登录" + lastLogin ["id"].AsInt + "区";
+			btnLabel.text = "上次登录" + lastLogin ["id"].AsInt + "区";
 
 			break;
 
 		case 2:
 
-			btnObj.SetActive (false);
+			btnSprite.color = Color.black;
+			btnLabel.color = Color.black;
 
-			btn2Label.text = "上次登录" + " " + "区";
+			btnLabel.text = "上次登录" + " " + "区";
 
 			break;
 		}
 	}
 
-	public void ShowFailTipWindow (string msg)
-	{
-		GameObject tipWin = (GameObject)Instantiate (tipWindow);
-
-		tipWin.SetActive (true);
-		tipWin.transform.parent = this.transform;
-		tipWin.transform.localPosition = Vector3.zero;
-		tipWin.transform.localScale = Vector3.one;
-
-		LoginTipWindow loginTipWin = tipWin.GetComponent<LoginTipWindow> ();
-		loginTipWin.ScaleAnim ();
-		loginTipWin.ShowTip (msg);
-	}
-
-	public void ToggleValueChange ()
+	void ToggleValueChange ()
 	{
 		if (isRemember)
 		{
 			isRemember = false;
-			Debug.Log ("close");
+//			Debug.Log ("close");
 		}
 		else
 		{
 			isRemember = true;
-			Debug.Log ("open");
+//			Debug.Log ("open");
 		}
 	}
 
@@ -564,10 +592,10 @@ public class AccountRequest : MonoBehaviour {
 	}
 
 	//输入框上移
-	void TransUp (GameObject tempObj)
+	void TransUp ()
 	{
-		zheZhaoHandler.gameObject.SetActive (true);
-		zheZhaoHandler.GetComponent<UISprite> ().alpha = 0.1f;
+		zhezhaoObj.SetActive (true);
+		zhezhaoObj.GetComponent<UISprite> ().alpha = 0.1f;
 
 		Hashtable up = new Hashtable ();
 		
@@ -586,9 +614,9 @@ public class AccountRequest : MonoBehaviour {
 	}
 	
 	//输入框下移
-	public void TransDown ()
+	void TransDown ()
 	{
-		zheZhaoHandler.gameObject.SetActive (false);
+		zhezhaoObj.SetActive (false);
 
 		TextLimit ();
 
@@ -600,11 +628,6 @@ public class AccountRequest : MonoBehaviour {
 		down.Add ("islocal",true);
 		
 		iTween.MoveTo (inputObj,down);
-	}
-
-	void ZheZhaoHandlerCallBack (GameObject tempObj)
-	{
-		TransDown ();
 	}
 
 	#region Utilities

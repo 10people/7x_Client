@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<FuwenOpen id="1" level="1" lanweiID="1101" lanweiType="11" positionX="-57.9" positionY="133.7" positionZ="0" />
-<FuwenOpen id="2" level="10" lanweiID="1102" lanweiType="11" positionX="-137.7" positionY="63.5" positionZ="0" />
-<FuwenOpen id="3" level="10" lanweiID="1103" lanweiType="11" positionX="-137.6" positionY="-55" positionZ="0" />
-<FuwenOpen id="4" level="10" lanweiID="1104" lanweiType="11" positionX="-58" positionY="-135" positionZ="0" />
-<FuwenOpen id="5" level="15" lanweiID="1201" lanweiType="1" positionX="1.6" positionY="69" positionZ="0" />
-<FuwenOpen id="6" level="15" lanweiID="1202" lanweiType="1" positionX="-58.9" positionY="-40" positionZ="0" />
-<FuwenOpen id="7" level="15" lanweiID="1203" lanweiType="1" positionX="61" positionY="-39.6" positionZ="0" />
-<FuwenOpen id="8" level="20" lanweiID="1105" lanweiType="11" positionX="57.5" positionY="-135" positionZ="0" />
-<FuwenOpen id="9" level="20" lanweiID="1106" lanweiType="11" positionX="137" positionY="-55" positionZ="0" />
-<FuwenOpen id="10" level="20" lanweiID="1107" lanweiType="11" positionX="137" positionY="63" positionZ="0" />
-<FuwenOpen id="11" level="20" lanweiID="1108" lanweiType="11" positionX="57.8" positionY="133" positionZ="0" />
-<FuwenOpen id="12" level="30" lanweiID="2101" lanweiType="12" positionX="-57.9" positionY="133.7" positionZ="0" />
-<FuwenOpen id="13" level="30" lanweiID="2102" lanweiType="12" positionX="-137.7" positionY="63.5" positionZ="0" />
-<FuwenOpen id="14" level="30" lanweiID="2103" lanweiType="12" positionX="-137.6" positionY="-55" positionZ="0" />
-<FuwenOpen id="15" level="30" lanweiID="2104" lanweiType="12" positionX="-58" positionY="-135" positionZ="0" />
-<FuwenOpen id="16" level="35" lanweiID="2201" lanweiType="2" positionX="1.6" positionY="69" positionZ="0" />
-<FuwenOpen id="17" level="35" lanweiID="2202" lanweiType="2" positionX="-58.9" positionY="-40" positionZ="0" />
-<FuwenOpen id="18" level="35" lanweiID="2203" lanweiType="2" positionX="61" positionY="-39.6" positionZ="0" />
-<FuwenOpen id="19" level="40" lanweiID="2105" lanweiType="12" positionX="57.5" positionY="-135" positionZ="0" />
-<FuwenOpen id="20" level="40" lanweiID="2106" lanweiType="12" positionX="137" positionY="-55" positionZ="0" />
-<FuwenOpen id="21" level="40" lanweiID="2107" lanweiType="12" positionX="137" positionY="63" positionZ="0" />
-<FuwenOpen id="22" level="40" lanweiID="2108" lanweiType="12" positionX="57.8" positionY="133" positionZ="0" />
-<FuwenOpen id="23" level="45" lanweiID="3101" lanweiType="13" positionX="-57.9" positionY="133.7" positionZ="0" />
-<FuwenOpen id="24" level="45" lanweiID="3102" lanweiType="13" positionX="-137.7" positionY="63.5" positionZ="0" />
-<FuwenOpen id="25" level="45" lanweiID="3103" lanweiType="13" positionX="-137.6" positionY="-55" positionZ="0" />
-<FuwenOpen id="26" level="45" lanweiID="3104" lanweiType="13" positionX="-58" positionY="-135" positionZ="0" />
-<FuwenOpen id="27" level="50" lanweiID="3201" lanweiType="3" positionX="1.6" positionY="69" positionZ="0" />
-<FuwenOpen id="28" level="50" lanweiID="3202" lanweiType="3" positionX="-58.9" positionY="-40" positionZ="0" />
-<FuwenOpen id="29" level="50" lanweiID="3203" lanweiType="3" positionX="61" positionY="-39.6" positionZ="0" />
-<FuwenOpen id="30" level="60" lanweiID="3105" lanweiType="13" positionX="57.5" positionY="-135" positionZ="0" />
-<FuwenOpen id="31" level="60" lanweiID="3106" lanweiType="13" positionX="137" positionY="-55" positionZ="0" />
-<FuwenOpen id="32" level="60" lanweiID="3107" lanweiType="13" positionX="137" positionY="63" positionZ="0" />
-<FuwenOpen id="33" level="60" lanweiID="3108" lanweiType="13" positionX="57.8" positionY="133" positionZ="0" />
+<FuwenOpen id="1" level="1" lanweiID="1101" lanweiType="11" positionX="-57.9" positionY="133.7" positionZ="0" inlayColor="4" />
+<FuwenOpen id="2" level="10" lanweiID="1102" lanweiType="11" positionX="-137.7" positionY="63.5" positionZ="0" inlayColor="4" />
+<FuwenOpen id="3" level="10" lanweiID="1103" lanweiType="11" positionX="-137.6" positionY="-55" positionZ="0" inlayColor="4" />
+<FuwenOpen id="4" level="10" lanweiID="1104" lanweiType="11" positionX="-58" positionY="-135" positionZ="0" inlayColor="4" />
+<FuwenOpen id="5" level="15" lanweiID="1201" lanweiType="1" positionX="1.6" positionY="69" positionZ="0" inlayColor="1" />
+<FuwenOpen id="6" level="15" lanweiID="1202" lanweiType="1" positionX="-58.9" positionY="-40" positionZ="0" inlayColor="2" />
+<FuwenOpen id="7" level="15" lanweiID="1203" lanweiType="1" positionX="61" positionY="-39.6" positionZ="0" inlayColor="3" />
+<FuwenOpen id="8" level="20" lanweiID="1105" lanweiType="11" positionX="57.5" positionY="-135" positionZ="0" inlayColor="5" />
+<FuwenOpen id="9" level="20" lanweiID="1106" lanweiType="11" positionX="137" positionY="-55" positionZ="0" inlayColor="5" />
+<FuwenOpen id="10" level="20" lanweiID="1107" lanweiType="11" positionX="137" positionY="63" positionZ="0" inlayColor="5" />
+<FuwenOpen id="11" level="20" lanweiID="1108" lanweiType="11" positionX="57.8" positionY="133" positionZ="0" inlayColor="5" />
+<FuwenOpen id="12" level="30" lanweiID="2101" lanweiType="12" positionX="-57.9" positionY="133.7" positionZ="0" inlayColor="4" />
+<FuwenOpen id="13" level="30" lanweiID="2102" lanweiType="12" positionX="-137.7" positionY="63.5" positionZ="0" inlayColor="4" />
+<FuwenOpen id="14" level="30" lanweiID="2103" lanweiType="12" positionX="-137.6" positionY="-55" positionZ="0" inlayColor="4" />
+<FuwenOpen id="15" level="30" lanweiID="2104" lanweiType="12" positionX="-58" positionY="-135" positionZ="0" inlayColor="4" />
+<FuwenOpen id="16" level="35" lanweiID="2201" lanweiType="2" positionX="1.6" positionY="69" positionZ="0" inlayColor="1" />
+<FuwenOpen id="17" level="35" lanweiID="2202" lanweiType="2" positionX="-58.9" positionY="-40" positionZ="0" inlayColor="2" />
+<FuwenOpen id="18" level="35" lanweiID="2203" lanweiType="2" positionX="61" positionY="-39.6" positionZ="0" inlayColor="3" />
+<FuwenOpen id="19" level="40" lanweiID="2105" lanweiType="12" positionX="57.5" positionY="-135" positionZ="0" inlayColor="5" />
+<FuwenOpen id="20" level="40" lanweiID="2106" lanweiType="12" positionX="137" positionY="-55" positionZ="0" inlayColor="5" />
+<FuwenOpen id="21" level="40" lanweiID="2107" lanweiType="12" positionX="137" positionY="63" positionZ="0" inlayColor="5" />
+<FuwenOpen id="22" level="40" lanweiID="2108" lanweiType="12" positionX="57.8" positionY="133" positionZ="0" inlayColor="5" />
+<FuwenOpen id="23" level="45" lanweiID="3101" lanweiType="13" positionX="-57.9" positionY="133.7" positionZ="0" inlayColor="4" />
+<FuwenOpen id="24" level="45" lanweiID="3102" lanweiType="13" positionX="-137.7" positionY="63.5" positionZ="0" inlayColor="4" />
+<FuwenOpen id="25" level="45" lanweiID="3103" lanweiType="13" positionX="-137.6" positionY="-55" positionZ="0" inlayColor="4" />
+<FuwenOpen id="26" level="45" lanweiID="3104" lanweiType="13" positionX="-58" positionY="-135" positionZ="0" inlayColor="4" />
+<FuwenOpen id="27" level="50" lanweiID="3201" lanweiType="3" positionX="1.6" positionY="69" positionZ="0" inlayColor="1" />
+<FuwenOpen id="28" level="50" lanweiID="3202" lanweiType="3" positionX="-58.9" positionY="-40" positionZ="0" inlayColor="2" />
+<FuwenOpen id="29" level="50" lanweiID="3203" lanweiType="3" positionX="61" positionY="-39.6" positionZ="0" inlayColor="3" />
+<FuwenOpen id="30" level="60" lanweiID="3105" lanweiType="13" positionX="57.5" positionY="-135" positionZ="0" inlayColor="5" />
+<FuwenOpen id="31" level="60" lanweiID="3106" lanweiType="13" positionX="137" positionY="-55" positionZ="0" inlayColor="5" />
+<FuwenOpen id="32" level="60" lanweiID="3107" lanweiType="13" positionX="137" positionY="63" positionZ="0" inlayColor="5" />
+<FuwenOpen id="33" level="60" lanweiID="3108" lanweiType="13" positionX="57.8" positionY="133" positionZ="0" inlayColor="5" />
 </dataset>
