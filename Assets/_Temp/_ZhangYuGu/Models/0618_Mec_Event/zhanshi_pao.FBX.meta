@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 6a45e3df95185df4998b2e9c946fac70
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: ________________
     100002: Bip01
@@ -40,6 +40,7 @@ ModelImporter:
     100068: Bone13(mirrored)
     100070: //RootNode
     100072: zhujue_haojie_nan
+    100074: "\u624B\u673A\u4E03\u96C4_\u5200"
     400000: ________________
     400002: Bip01
     400004: Bip01 Head
@@ -77,10 +78,14 @@ ModelImporter:
     400068: Bone13(mirrored)
     400070: //RootNode
     400072: zhujue_haojie_nan
+    400074: "\u624B\u673A\u4E03\u96C4_\u5200"
     2300000: ________________
+    2300002: "\u624B\u673A\u4E03\u96C4_\u5200"
     3300000: ________________
+    3300002: "\u624B\u673A\u4E03\u96C4_\u5200"
     4300000: zhujue_haojie_nan
     4300002: ________________
+    4300004: "\u624B\u673A\u4E03\u96C4_\u5200"
     7400000: run
     7400002: Run_Event_0
     7400004: Run_Event_1
@@ -95,11 +100,17 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleRotations: 1
     optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations:
@@ -113,6 +124,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
@@ -126,70 +138,70 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .0149625903
+      - time: 0.01496259
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: .144638404
+      - time: 0.1446384
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 2
         messageOptions: 0
-      - time: .291770577
+      - time: 0.29177058
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 3
         messageOptions: 0
-      - time: .413965076
+      - time: 0.41396508
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 4
         messageOptions: 0
-      - time: .426433921
+      - time: 0.42643392
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 5
         messageOptions: 0
-      - time: .438902736
+      - time: 0.43890274
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 6
         messageOptions: 0
-      - time: .895261824
+      - time: 0.8952618
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 7
         messageOptions: 0
-      - time: .910224438
+      - time: 0.91022444
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 8
         messageOptions: 0
-      - time: .922693253
+      - time: 0.92269325
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 9
         messageOptions: 0
-      - time: .930174589
+      - time: 0.9301746
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -279,6 +291,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: Run_Event_0
       takeName: Take 001
@@ -289,6 +302,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -302,63 +316,63 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .0769230798
+      - time: 0.07692308
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: .100334451
+      - time: 0.10033445
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 2
         messageOptions: 0
-      - time: .123745821
+      - time: 0.12374582
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 3
         messageOptions: 0
-      - time: .384615391
+      - time: 0.3846154
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 4
         messageOptions: 0
-      - time: .404682279
+      - time: 0.40468228
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 5
         messageOptions: 0
-      - time: .424749166
+      - time: 0.42474917
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 6
         messageOptions: 0
-      - time: .682274222
+      - time: 0.6822742
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 7
         messageOptions: 0
-      - time: .698996663
+      - time: 0.69899666
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 8
         messageOptions: 0
-      - time: .722408056
+      - time: 0.72240806
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -455,6 +469,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: Run_Event_1
       takeName: Take 001
@@ -465,6 +480,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -478,35 +494,35 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .0497076027
+      - time: 0.049707603
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 11
         messageOptions: 0
-      - time: .27192983
+      - time: 0.27192983
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 12
         messageOptions: 0
-      - time: .435672522
+      - time: 0.43567252
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 13
         messageOptions: 0
-      - time: .593567252
+      - time: 0.59356725
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 14
         messageOptions: 0
-      - time: .725146174
+      - time: 0.7251462
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -596,6 +612,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: Run_Event_2
       takeName: Take 001
@@ -606,6 +623,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -619,28 +637,28 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .225146204
+      - time: 0.2251462
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 21
         messageOptions: 0
-      - time: .239766076
+      - time: 0.23976608
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 22
         messageOptions: 0
-      - time: .251461983
+      - time: 0.25146198
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 23
         messageOptions: 0
-      - time: .269005835
+      - time: 0.26900584
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -730,6 +748,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: Run_Event_3
       takeName: Take 001
@@ -740,6 +759,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -753,70 +773,70 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .172514617
+      - time: 0.17251462
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 31
         messageOptions: 0
-      - time: .198830411
+      - time: 0.19883041
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 32
         messageOptions: 0
-      - time: .213450298
+      - time: 0.2134503
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 33
         messageOptions: 0
-      - time: .225146204
+      - time: 0.2251462
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 34
         messageOptions: 0
-      - time: .274853796
+      - time: 0.2748538
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 35
         messageOptions: 0
-      - time: .295321643
+      - time: 0.29532164
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 36
         messageOptions: 0
-      - time: .491228074
+      - time: 0.49122807
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 37
         messageOptions: 0
-      - time: .502923965
+      - time: 0.50292397
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 39
         messageOptions: 0
-      - time: .517543852
+      - time: 0.51754385
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 39
         messageOptions: 0
-      - time: .535087705
+      - time: 0.5350877
         functionName: AnimEventCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -906,6 +926,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -917,30 +938,35 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

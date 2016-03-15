@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: feb63d773af5f374897fb5191123b7e6
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
     100002: Bip01
@@ -56,6 +56,7 @@ ModelImporter:
     100100: Bone19
     100102: Circle01
     100104: kf_jm________________
+    100106: "kf_jm_\u5973\u6D77\u76D7\u8EAB\u4F53"
     400000: //RootNode
     400002: Bip01
     400004: Bip01 Head
@@ -109,11 +110,14 @@ ModelImporter:
     400100: Bone19
     400102: Circle01
     400104: kf_jm________________
+    400106: "kf_jm_\u5973\u6D77\u76D7\u8EAB\u4F53"
     4300000: kf_jm________________
+    4300002: "kf_jm_\u5973\u6D77\u76D7\u8EAB\u4F53"
     7400000: Take 001
     9500000: //RootNode
     11100000: //RootNode
     13700000: kf_jm________________
+    13700002: "kf_jm_\u5973\u6D77\u76D7\u8EAB\u4F53"
   materials:
     importMaterials: 1
     materialName: 0
@@ -121,11 +125,17 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleRotations: 1
     optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations:
@@ -139,6 +149,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -287,6 +298,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -298,30 +310,35 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 1
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

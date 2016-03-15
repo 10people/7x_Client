@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 6a062b68d93f66d40ac54a583ea77be0
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
     100002: ________________
@@ -40,6 +40,7 @@ ModelImporter:
     100068: Bone13
     100070: Bone13(mirrored)
     100072: zhujue_haojie_nan
+    100074: "\u624B\u673A\u4E03\u96C4_\u5200"
     400000: //RootNode
     400002: ________________
     400004: Bip01
@@ -77,10 +78,14 @@ ModelImporter:
     400068: Bone13
     400070: Bone13(mirrored)
     400072: zhujue_haojie_nan
+    400074: "\u624B\u673A\u4E03\u96C4_\u5200"
     2300000: ________________
+    2300002: "\u624B\u673A\u4E03\u96C4_\u5200"
     3300000: ________________
+    3300002: "\u624B\u673A\u4E03\u96C4_\u5200"
     4300000: zhujue_haojie_nan
     4300002: ________________
+    4300004: "\u624B\u673A\u4E03\u96C4_\u5200"
     7400000: attack_1
     7400002: attack_0
     7400004: attack_2
@@ -95,11 +100,17 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleRotations: 1
     optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 3
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations:
@@ -113,6 +124,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -126,35 +138,35 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .210691825
+      - time: 0.21069182
         functionName: ActionShake
         data: attack_0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .210691825
+      - time: 0.21069182
         functionName: ActionMovement
         data: attack_0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .498300195
+      - time: 0.4983002
         functionName: Attack_Open_Cal
         data: attack_0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .698369563
+      - time: 0.69836956
         functionName: Attack_Close_Cal
         data: attack_0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0294117648
+      - time: 0.029411765
         functionName: ActionRotation
         data: attack_0
         objectReferenceParameter: {instanceID: 0}
@@ -244,6 +256,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: attack_1
       takeName: Take 001
@@ -254,6 +267,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -274,21 +288,21 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0274408069
+      - time: 0.027440807
         functionName: ActionMovement
         data: attack_1
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .527696729
+      - time: 0.5276967
         functionName: Attack_Open_Cal
         data: attack_1
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .737609208
+      - time: 0.7376092
         functionName: Attack_Close_Cal
         data: attack_1
         objectReferenceParameter: {instanceID: 0}
@@ -378,6 +392,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: attack_2
       takeName: Take 001
@@ -388,6 +403,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -408,21 +424,21 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0170454551
+      - time: 0.017045455
         functionName: ActionMovement
         data: attack_2
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .250728846
+      - time: 0.25072885
         functionName: Attack_Open_Cal
         data: attack_2
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .419825077
+      - time: 0.41982508
         functionName: Attack_Close_Cal
         data: attack_2
         objectReferenceParameter: {instanceID: 0}
@@ -512,6 +528,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: Take 001
       takeName: Take 001
@@ -522,6 +539,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -618,6 +636,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -629,30 +648,35 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
