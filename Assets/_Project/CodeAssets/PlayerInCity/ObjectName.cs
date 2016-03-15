@@ -9,9 +9,11 @@ public class ObjectName : MonoBehaviour {
     public UISprite m_SpriteChengHao;
     public UILabel m_playerVip;
     public UISprite m_SpriteVip;
+    public UISprite m_SpriteZH;
     [HideInInspector]
     public string m_NameSend = "";
     protected Transform m_transform;
+    public bool m_isShowChengHao = false;
 	
 	void Start()
 	{
@@ -32,11 +34,13 @@ public class ObjectName : MonoBehaviour {
 
         if (!string.IsNullOrEmpty(tempChengHao) && !tempChengHao.Equals("-1"))
         {
+            m_isShowChengHao = true;
             m_SpriteChengHao.gameObject.SetActive(true);
             m_SpriteChengHao.spriteName = tempChengHao;
         }
         else
         {
+            m_isShowChengHao = false;
           m_SpriteChengHao.gameObject.SetActive(false);
         }
 
@@ -53,7 +57,7 @@ public class ObjectName : MonoBehaviour {
             //}
             if (int.Parse(vip_level) > 0)
             {
-                m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(tempPlayerName) - 1) * 17, -11, 0);
+                m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(tempPlayerName) - 1) * 20, -11, 0);
                 m_SpriteVip.gameObject.SetActive(true);
                 m_SpriteVip.spriteName = "vip" + vip_level;
                 m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
@@ -69,10 +73,29 @@ public class ObjectName : MonoBehaviour {
            // m_playerName.alignment = NGUIText.Alignment.Automatic; 
             m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
         }
+       
         ShowOrHide(true);
 	}
 
-
+    public void UpdateZH(string info)
+    {
+        if (m_isShowChengHao)
+        {
+            m_SpriteZH.transform.localPosition = new Vector3(0, 157, 0);
+        }
+        else
+        {
+            m_SpriteZH.transform.localPosition = new Vector3(0, 63, 0);
+        }
+        string[] zH = info.ToString().Split('|');
+        m_SpriteZH.gameObject.SetActive(true);
+        StartCoroutine(Wiat(float.Parse(zH[1]) / 1000));
+    }
+    IEnumerator Wiat(float time)
+    {
+        yield return new WaitForSeconds(time);
+        m_SpriteZH.gameObject.SetActive(false);
+    }
 	public void ShowOrHide(bool tempState) //显示或隐藏玩家名字
 	{
 		m_playerName.gameObject.SetActive(tempState);

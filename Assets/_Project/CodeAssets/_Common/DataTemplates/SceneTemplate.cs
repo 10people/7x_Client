@@ -21,6 +21,7 @@ public class SceneTemplate : XmlLoadManager
 		ALLIANCE_CITY_YE_WAN = 8,
 		CARRIAGE = 9,
 		ALLIANCE_BATTLE = 10,
+		TREASURE_CITY = 11,
 		BATTLE_FIELD_1 = 100,
 		BATTLE_FIELD_2 = 101,
 		BATTLE_FIELD_3 = 201,

@@ -50,6 +50,11 @@ public class BattleCheckResult
 
 		if(result == BattleControlor.BattleResult.RESULT_LOSE)
 		{
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan && CityGlobalData.battleTemplateId == -1)//玩家第一次进入百战必胜
+			{
+				return BattleControlor.BattleResult.RESULT_WIN;
+			}
+
 			return BattleControlor.BattleResult.RESULT_LOSE;
 		}
 

@@ -542,6 +542,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 				
 				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_YINDAO ),
 				                        YinDaoLoadCallback );
+				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.SHOUJI ),
+				                        YinDaoLoadCallback );
 			}
 			
 			// async load after announcement
@@ -975,6 +977,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 		{
 			ChuShiNuQiTemplate.LoadTemplates(TemplateLoadedCallback);
 			LMBubbleTemplate.LoadTemplates(TemplateLoadedCallback);
+			LegendPveZuoBiaoTemplate.LoadTemplates(TemplateLoadedCallback);
 		}
 		m_is_templates_loaded = true;
 	}

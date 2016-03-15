@@ -19,10 +19,6 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	private Vector3 tempPos;
 
-	private GameObject copyObject;
-
-	private Animator copyAnim;
-
 	private string colorName = "Main Color";
 
 	private Vector3 curNodePosition;
@@ -47,19 +43,19 @@ public class KingSkillWuDiZhan : MonoBehaviour
 	{
 		king = gameObject.GetComponent<KingControllor> ();
 		
-		if(copyObject == null) copyObject = Instantiate (gameObject);
+		if(king.copyObject == null) king.copyObject = Instantiate (gameObject);
 
-		copyObject.name = "WuDiZhanCopy";
+		king.copyObject.name = "WuDiZhanCopy";
 
-		copyObject.SetActive (false);
+		king.copyObject.SetActive (false);
 
-		copyObject.transform.parent = transform.parent;
+		king.copyObject.transform.parent = transform.parent;
 
-		copyObject.transform.localScale = transform.localScale;
+		king.copyObject.transform.localScale = transform.localScale;
 
-		copyObject.transform.position = new Vector3(0, -1000, 0);
+		king.copyObject.transform.position = new Vector3(0, -1000, 0);
 
-		KingControllor copyKing = copyObject.GetComponent<KingControllor> ();
+		KingControllor copyKing = king.copyObject.GetComponent<KingControllor> ();
 
 		DestroyObject (copyKing.m_weapon_Heavy);
 
@@ -67,19 +63,21 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		Destroy (copyKing);
 
-		Destroy (copyObject.GetComponent<KingSkillWuDiZhan>());
+		Destroy (king.copyObject.GetComponent<KingSkillWuDiZhan>());
 
-		Destroy (copyObject.GetComponent<KingSkillXuanFengZhan>());
+		Destroy (king.copyObject.GetComponent<KingSkillXuanFengZhan>());
 
-		Destroy (copyObject.GetComponent<CharacterController>());
+		Destroy (king.copyObject.GetComponent<CharacterController>());
 
-		Destroy (copyObject.GetComponent<NavMeshAgent>());
+		Destroy (king.copyObject.GetComponent<NavMeshAgent>());
 
-		Destroy (copyObject.GetComponent<SphereCollider>());
+		Destroy (king.copyObject.GetComponent<SphereCollider>());
 
-		copyObject.AddComponent<DramaStorySimulation>();
+		Destroy (king.copyObject.GetComponent<SoundPlayEff>());
 
-		foreach(HeroSkill skill in copyObject.GetComponents<HeroSkill>())
+		king.copyObject.AddComponent<DramaStorySimulation_2>();
+
+		foreach(HeroSkill skill in king.copyObject.GetComponents<HeroSkill>())
 		{
 			Destroy(skill);
 		}
@@ -93,24 +91,26 @@ public class KingSkillWuDiZhan : MonoBehaviour
 	void OnDestroy()
 	{
 		curNode = null;
-		
-		king = null;
 
-		copyObject = null;
+		if (king == null) return;
 
-		if( copyAnim != null )
+		king.copyObject = null;
+
+		if( king.copyAnim != null )
 		{
-			copyAnim.runtimeAnimatorController = null;
+			king.copyAnim.runtimeAnimatorController = null;
 		}
 
-		copyAnim = null;
+		king.copyAnim = null;
+
+		king = null;
 	}
 
 	void loadControllorCallback(ref WWW p_www, string p_path, Object p_object)
 	{
-		copyAnim = copyObject.GetComponent<Animator>();
+		king.copyAnim = king.copyObject.GetComponent<Animator>();
 
-		copyAnim.runtimeAnimatorController = (RuntimeAnimatorController)p_object;
+		king.copyAnim.runtimeAnimatorController = (RuntimeAnimatorController)p_object;
 	}
 
 	private void initSkill_1()
@@ -174,19 +174,19 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		
 		if(curNode != null && king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.targetChang (curNode.gameObject);
 
-		copyObject.SetActive (true);
+		king.copyObject.SetActive (true);
 
-		copyObject.transform.position = curNodePosition;
+		king.copyObject.transform.position = curNodePosition;
 
-		if(curNode != null) copyObject.transform.forward = curNode.transform.position - copyObject.transform.position;
+		if(curNode != null) king.copyObject.transform.forward = curNode.transform.position - king.copyObject.transform.position;
 
-		else copyObject.transform.forward = king.transform.forward;
+		else king.copyObject.transform.forward = king.transform.forward;
 
 		curNavSpeed = king.getNavMeshSpeedReal ();
 
 		king.setNavMeshSpeedReal (1000);
 
-		king.setNavMeshDestinationReal (copyObject.transform.position);
+		king.setNavMeshDestinationReal (king.copyObject.transform.position);
 	}
 
 	public void chooseTarget_skill_1()
@@ -207,13 +207,13 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		float length = 5.5f;
 
-		copyObject.SetActive (true);
+		king.copyObject.SetActive (true);
 
-		copyObject.transform.position = (curNode != null ? curNode.transform.position : curNodePosition) + (offsetPos [curCount % offsetPos.Length].normalized * length);
+		king.copyObject.transform.position = (curNode != null ? curNode.transform.position : curNodePosition) + (offsetPos [curCount % offsetPos.Length].normalized * length);
 
-		copyObject.transform.forward = (curNode != null ? curNode.transform.position : curNodePosition) - copyObject.transform.position;
+		king.copyObject.transform.forward = (curNode != null ? curNode.transform.position : curNodePosition) - king.copyObject.transform.position;
 
-		copyAnim.Play ("JYXGZ_" + ((curCount % 4) + 1));
+		king.copyAnim.Play ("JYXGZ_" + ((curCount % 4) + 1));
 
 		iTween.ValueTo (gameObject, iTween.Hash(
 			"from", 0f,
@@ -223,13 +223,13 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			"easetype", iTween.EaseType.easeInExpo
 			));
 
-		iTween.MoveTo (copyObject, iTween.Hash(
-			"position", copyObject.transform.position + copyObject.transform.forward * (length - 1),
+		iTween.MoveTo (king.copyObject, iTween.Hash(
+			"position", king.copyObject.transform.position + king.copyObject.transform.forward * (length - 1),
 			"time", 0.18f,
 			"easetype", iTween.EaseType.easeInOutQuart
 			));
 
-		BattleEffectControllor.Instance().PlayEffect (600211, copyObject.transform.position, copyObject.transform.forward);
+		BattleEffectControllor.Instance().PlayEffect (600211, king.copyObject.transform.position, king.copyObject.transform.forward);
 
 		curCount ++;
 
@@ -250,7 +250,7 @@ public class KingSkillWuDiZhan : MonoBehaviour
 //			if(curNode != null) curNodePosition = curNode.transform.position;
 //		}
 		
-		copyAnim.Play ("XJLY_" + index);
+		king.copyAnim.Play ("XJLY_" + index);
 
 //		iTween.ValueTo (gameObject, iTween.Hash(
 //			"from", 0f,
@@ -268,11 +268,11 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		if(index == 0)
 		{
-			BattleEffectControllor.Instance().PlayEffect (600227, copyObject.transform.position, copyObject.transform.forward);
+			BattleEffectControllor.Instance().PlayEffect (600227, king.copyObject.transform.position, king.copyObject.transform.forward);
 		}
 		else if(index  == 1)
 		{
-			BattleEffectControllor.Instance().PlayEffect (600228, copyObject.transform.position, copyObject.transform.forward);
+			BattleEffectControllor.Instance().PlayEffect (600228, king.copyObject.transform.position, king.copyObject.transform.forward);
 		}
 	}
 
@@ -424,8 +424,16 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			
 			king.attackHp(wudizhan.curNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.LIGHT_SKILL_1);
 			
-			if(index == 1) BattleEffectControllor.Instance().PlayEffect (600229, wudizhan.curNode.transform.position, copyObject.transform.forward);
+			if(index == 1)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600229, wudizhan.curNode.transform.position, king.copyObject.transform.forward);
 			
+				if(skillTemplate.value4 != 0)
+				{
+					Buff.createBuff(wudizhan.curNode, AIdata.AttributeType.ATTRTYPE_skillReduction_Light, skillTemplate.value4, skillTemplate.value5);
+				}
+			}
+
 			if(king.stance == BaseAI.Stance.STANCE_SELF) king.Shake(KingCamera.ShakeType.Cri);
 		}
 	}
@@ -440,9 +448,9 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		if(king.shadowObject_2 != null) king.shadowObject_2.SetActive (true);
 
-		copyObject.SetActive (false);
+		king.copyObject.SetActive (false);
 		
-		copyObject.transform.position = new Vector3(0, -1000, 0);
+		king.copyObject.transform.position = new Vector3(0, -1000, 0);
 
 		if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.targetChang (king.gameObject);
 
@@ -465,17 +473,17 @@ public class KingSkillWuDiZhan : MonoBehaviour
 	{
 		king.setNavMeshStop ();
 
-		king.transform.forward = copyObject.transform.forward;
+		king.transform.forward = king.copyObject.transform.forward;
 
 		if(king.signShadow != null) king.signShadow.gameObject.SetActive (true);
 
 		if(king.shadowObject_2 != null) king.shadowObject_2.SetActive (true);
 
-		BattleEffectControllor.Instance().PlayEffect (600230, copyObject.transform.position, copyObject.transform.forward);
+		BattleEffectControllor.Instance().PlayEffect (600230, king.copyObject.transform.position, king.copyObject.transform.forward);
 
-		copyObject.SetActive (false);
+		king.copyObject.SetActive (false);
 		
-		copyObject.transform.position = new Vector3(0, -1000, 0);
+		king.copyObject.transform.position = new Vector3(0, -1000, 0);
 		
 		if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.targetChang (king.gameObject);
 
@@ -539,7 +547,7 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	void setAlphaCopy(float alpha)
 	{
-		Renderer[] rds = copyObject.GetComponentsInChildren<Renderer>();
+		Renderer[] rds = king.copyObject.GetComponentsInChildren<Renderer>();
 		
 		foreach (Renderer r in rds)
 		{
@@ -551,6 +559,51 @@ public class KingSkillWuDiZhan : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	public void cut()
+	{
+		//StartCoroutine (cutAction());
+
+		king.setNavMeshStop ();
+		
+		king.transform.forward = king.copyObject.transform.forward;
+		
+		if(king.signShadow != null) king.signShadow.gameObject.SetActive (true);
+		
+		if(king.shadowObject_2 != null) king.shadowObject_2.SetActive (true);
+		
+		king.copyObject.SetActive (false);
+		
+		king.copyObject.transform.position = new Vector3(0, -1000, 0);
+		
+		if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.targetChang (king.gameObject);
+		
+		iTween.ValueTo (gameObject, iTween.Hash(
+			"from", 0f,
+			"to", 1f,
+			"time", .2f,
+			"onupdate", "setAlphaSelf"
+			));
+		
+		king.setNavMeshSpeedReal (curNavSpeed);
+	}
+
+	IEnumerator cutAction()
+	{
+		yield return new WaitForSeconds (.1f);
+
+		gameObject.SetActive (true);
+		
+		king.copyObject.SetActive (false);
+
+		if(king.signShadow != null) king.signShadow.gameObject.SetActive (true);
+		
+		if(king.shadowObject_2 != null) king.shadowObject_2.SetActive (true);
+
+		king.copyObject.transform.position = new Vector3(0, -1000, 0);
+
+		if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.targetChang (king.gameObject);
 	}
 
 }

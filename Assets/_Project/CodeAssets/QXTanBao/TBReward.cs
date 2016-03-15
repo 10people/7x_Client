@@ -231,6 +231,8 @@ public class TBReward : MonoBehaviour {
 
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,4);
 
+		UIShouji.m_isPlayShouji = true;
+
 		BlockController (false);
 	}
 

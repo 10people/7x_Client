@@ -201,6 +201,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 			{
 			case ProtoIndexes.S_REQ_MAIL_LIST://邮件返回
 			{
+				Debug.Log ("ReadEmailBack:" + ProtoIndexes.S_REQ_MAIL_LIST);
 				EmailListResponse emailDataRes = new EmailListResponse ();
 				emailDataRes = QXComData.ReceiveQxProtoMessage (p_message,emailDataRes) as EmailListResponse;
 				
@@ -210,6 +211,9 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 					{
 						emailDataRes.emailList = new List<EmailInfo>();
 					}
+
+					privateList.Clear ();
+					systemList.Clear ();
 
 					foreach (EmailInfo email in emailDataRes.emailList)
 					{	

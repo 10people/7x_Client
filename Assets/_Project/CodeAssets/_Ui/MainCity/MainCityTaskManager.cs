@@ -23,6 +23,8 @@ public class MainCityTaskManager : MonoBehaviour
 	public GameObject m_objRefreshEff;
 	public GameObject m_objAnimationEnd;
 	public GameObject m_objAlret;
+	public GameObject m_objUpEff;
+	public GameObject m_objDownEff;
 	private int m_iRefreshNum = 0;
 	private int m_iShowID = -1;
 	private int m_iState;
@@ -40,7 +42,11 @@ public class MainCityTaskManager : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-
+		if(m_iThisPanelState == 0)
+		{
+			UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, m_objUpEff, EffectTemplate.getEffectTemplateByEffectId( 620212 ).path);
+			UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, m_objDownEff, EffectTemplate.getEffectTemplateByEffectId( 620213 ).path);
+		}
 	}
 
 	// Update is called once per frame

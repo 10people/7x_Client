@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LockControllor : MonoBehaviour 
 {
@@ -29,25 +30,17 @@ public class LockControllor : MonoBehaviour
 
 	public GameObject lockWeaponRange;
 
-	public GameObject lockHeavySkill_1;
-
-	public GameObject lockHeavySkill_2;
-
-	public GameObject lockLightSkill_1;
-
-	public GameObject lockLightSkill_2;
-	
-	public GameObject lockRangeSkill_1;
-	
-	public GameObject lockRangeSkill_2;
-
 	public GameObject lockMiBaoSkill;
-
-	public GameObject lockDodge;
 
 	public GameObject lockAutoFight;
 
 	public GameObject lockPause;
+
+	public RuntimeAnimatorController unlockAnimation;
+
+	public List<Vector3> iconPositions = new List<Vector3> ();
+
+	public GameObject colliderObject;
 
 
 	private BattleUIControlor controllor;
@@ -112,37 +105,37 @@ public class LockControllor : MonoBehaviour
 		}
 		else if(lockType == LOCK_TYPE.HeavySkill_1)
 		{
-			refreshLock(lockHeavySkill_1, controllor.m_gc_skill_1[0], targetActive);
+			refreshLock(null, controllor.m_gc_skill_1[0], targetActive, CityGlobalData.skillLevelId.bahuanglieri, KingControllor.WeaponType.W_Heavy);
 
 			bw.spriteHeavySkill_1.setSkillLock(targetActive);
 		}
 		else if(lockType == LOCK_TYPE.HeavySkill_2)
 		{
-			refreshLock(lockHeavySkill_2, controllor.m_gc_skill_2[0], targetActive);
+			refreshLock(null, controllor.m_gc_skill_2[0], targetActive, CityGlobalData.skillLevelId.qiankundouzhuan, KingControllor.WeaponType.W_Heavy);
 
 			bw.spriteHeavySkill_2.setSkillLock(targetActive);
 		}
 		else if(lockType == LOCK_TYPE.LightSkill_1)
 		{
-			refreshLock(lockLightSkill_1, controllor.m_gc_skill_1[2], targetActive);
+			refreshLock(null, controllor.m_gc_skill_1[2], targetActive, CityGlobalData.skillLevelId.jueyingxingguangzhan, KingControllor.WeaponType.W_Light);
 
 			bw.spriteLightSkill_1.setSkillLock(targetActive);
 		}
 		else if(lockType == LOCK_TYPE.LightSkill_2)
 		{
-			refreshLock(lockLightSkill_2, controllor.m_gc_skill_2[2], targetActive);
+			refreshLock(null, controllor.m_gc_skill_2[2], targetActive, CityGlobalData.skillLevelId.xuejilaoyin, KingControllor.WeaponType.W_Light);
 
 			bw.spriteLightSkill_2.setSkillLock(targetActive);
 		}
 		else if(lockType == LOCK_TYPE.RangeSkill_1)
 		{
-			refreshLock(lockRangeSkill_1, controllor.m_gc_skill_1[1], targetActive);
+			refreshLock(null, controllor.m_gc_skill_1[1], targetActive, CityGlobalData.skillLevelId.zhuixingjian, KingControllor.WeaponType.W_Ranged);
 
 			bw.spriteRangeSkill_1.setSkillLock(targetActive);
 		}
 		else if(lockType == LOCK_TYPE.RangeSkill_2)
 		{
-			refreshLock(lockRangeSkill_2, controllor.m_gc_skill_2[1], targetActive);
+			refreshLock(null, controllor.m_gc_skill_2[1], targetActive, CityGlobalData.skillLevelId.hanbingjian, KingControllor.WeaponType.W_Ranged);
 
 			bw.spriteRangeSkill_2.setSkillLock(targetActive);
 		}
@@ -152,22 +145,7 @@ public class LockControllor : MonoBehaviour
 
 			if(targetActive == true && BattleControlor.Instance().getKing() != null)
 			{
-				float nuqi = BattleControlor.Instance().getKing().nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_NUQI);
-
-				float nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX);
-
-				if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1)
-				{
-					nuqiMax = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.NUQI_MAX_0);
-				}
-
-				if(nuqi == nuqiMax)
-				{
-					UI3DEffectTool.ShowTopLayerEffect(
-						UI3DEffectTool.UIType.FunctionUI_1, 
-						BattleUIControlor.Instance().btnMibaoSkill,
-						EffectIdTemplate.GetPathByeffectId(100189) );
-				}
+				BattleControlor.Instance().getKing().addNuqi(0);
 			}
 
 			if(targetActive == false)
@@ -180,7 +158,7 @@ public class LockControllor : MonoBehaviour
 		}
 		else if(lockType == LOCK_TYPE.Dodge)
 		{
-			refreshLock(lockDodge, controllor.m_gc_dodge, targetActive);
+			refreshLock(null, controllor.m_gc_dodge, targetActive, CityGlobalData.skillLevelId.fangun, BattleControlor.Instance().getKing().weaponType);
 		}
 		else if(lockType == LOCK_TYPE.AutoFight)
 		{
@@ -192,24 +170,141 @@ public class LockControllor : MonoBehaviour
 		}
 	}
 
-	private void refreshLock(GameObject gc_lock, GameObject icon, bool targetActive)
+	private void refreshLock(GameObject gc_lock, GameObject icon, bool targetActive, CityGlobalData.skillLevelId skillLevelId = CityGlobalData.skillLevelId.zhongji, KingControllor.WeaponType weaponType = KingControllor.WeaponType.W_Heavy)
 	{
-		gc_lock.SetActive (targetActive == false && icon.activeSelf == true);
-
-		UISprite[] sprites = icon.GetComponentsInChildren<UISprite>();
-
-		float rgb = targetActive == false ? 0f : 1f;
-
-		foreach(UISprite sprite in sprites)
+		if(gc_lock != null)
 		{
-			if(sprite.gameObject.name.Equals("SpriteWEAPON")) continue;
+			UISprite lockSprite = gc_lock.GetComponent<UISprite>();
 
-			if(sprite.gameObject.name.Contains("Skill_1")) continue;
+			lockSprite.alpha = ((targetActive == false && icon.activeSelf == true) ? 1f : .1f);
 
-			if(sprite.gameObject.name.Contains("Skill_2")) continue;
+			iTween.ValueTo(gameObject, iTween.Hash(
+				"from", 0f,
+				"to", 1f,
+				"time", 2f,
+				"onupdate", "unlockUpdate",
+				"oncomplete", "unlockComplete",
+				"oncompleteparams", gc_lock
+				));
 
-			sprite.color = new Color(rgb, rgb, rgb, sprite.color.a);
+//			gc_lock.SetActive (targetActive == false && icon.activeSelf == true);
+
+			UISprite[] sprites = icon.GetComponentsInChildren<UISprite>();
+
+			float rgb = targetActive == false ? 0f : 1f;
+
+			foreach(UISprite sprite in sprites)
+			{
+				if(sprite.gameObject.name.Equals("SpriteWEAPON")) continue;
+
+				if(sprite.gameObject.name.Contains("Skill_1")) continue;
+
+				if(sprite.gameObject.name.Contains("Skill_2")) continue;
+
+				sprite.color = new Color(rgb, rgb, rgb, sprite.color.a);
+			}
 		}
+		else if(targetActive == false)
+		{
+			if(BattleControlor.Instance().getKing().weaponType == weaponType)
+			{
+				icon.SetActive(targetActive);
+			}
+		}
+		else
+		{
+			bool showEffectFlag = false;
+
+			if(BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)skillLevelId) == true)
+			{
+				showEffectFlag = true;
+			}
+			else
+			{
+
+			}
+
+			if(showEffectFlag == true && BattleControlor.Instance().getKing().weaponType == weaponType)
+			{
+				BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)skillLevelId);
+				
+				Vector3 tempPosition = iconPositions[(int)skillLevelId];
+
+				if(skillLevelId == CityGlobalData.skillLevelId.fangun)
+				{
+					icon.transform.localPosition = -BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
+				}
+				else
+				{
+					icon.transform.localPosition = -BattleUIControlor.Instance().anchorBottomRight.transform.localPosition - icon.transform.parent.localPosition;
+				}
+
+				icon.SetActive(true);
+
+				GameObject sprite = icon.GetComponentInChildren<UISprite>().gameObject;
+
+				UI3DEffectTool.ShowTopLayerEffect( UI3DEffectTool.UIType.MainUI_0, icon, EffectIdTemplate.getEffectTemplateByEffectId(100009).path);
+
+				Animator anim = sprite.GetComponent<Animator>();
+
+				if(anim == null) anim = sprite.AddComponent<Animator>();
+
+				anim.runtimeAnimatorController = unlockAnimation;
+
+				colliderObject.SetActive(true);
+
+				iTween.MoveTo(icon, iTween.Hash(
+					"name", "unlockMove_" + icon.name,
+					"delay", 1.5f,
+					"position", tempPosition,
+					"time", .8f,
+					"islocal", true,
+					"onstarttarget", gameObject,
+					"onstart","startMove",
+					"onstartparams", icon,
+					"oncompletetarget", gameObject,
+					"oncomplete", "unlockEffDone",
+					"oncompleteparams", sprite
+					));
+			}
+		}
+	}
+
+	private void unlockUpdate(float t)
+	{
+	
+	}
+
+	private void unlockComplete(GameObject lockObject)
+	{
+		UISprite sprite = lockObject.GetComponent<UISprite>();
+
+		lockObject.SetActive (sprite.alpha > .5f);
+	}
+
+	private void startMove(GameObject icon)
+	{
+		//UI3DEffectTool.ShowTopLayerEffect( UI3DEffectTool.UIType.MainUI_0, icon, EffectIdTemplate.getEffectTemplateByEffectId(620223).path);
+	}
+
+	private void unlockEffDone(GameObject icon)
+	{
+		//UI3DEffectTool.ClearUIFx (icon);
+
+		colliderObject.SetActive(false);
+
+		UI3DEffectTool.ShowTopLayerEffect( UI3DEffectTool.UIType.MainUI_0, icon, EffectIdTemplate.getEffectTemplateByEffectId(620222).path);
+
+		StartCoroutine (unlockEffOver(icon));
+	}
+
+	IEnumerator unlockEffOver(GameObject icon)
+	{
+		yield return new WaitForSeconds (1.2f);
+
+		UI3DEffectTool.ClearUIFx (icon);
+
+		Destroy (icon.GetComponent<Animator> ());
 	}
 
 	public void lightOff(GameObject lockObject, bool forced)

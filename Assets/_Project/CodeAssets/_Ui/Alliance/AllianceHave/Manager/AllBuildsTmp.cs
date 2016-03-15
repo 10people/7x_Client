@@ -282,7 +282,7 @@ public class AllBuildsTmp : MonoBehaviour {
 			break;
 		case 7:
 			AllianceLevel = NewAlliancemanager.Instance().m_allianceHaveRes.level;
-			Debug.Log("AllianceLevel = "+AllianceLevel);
+//			Debug.Log("AllianceLevel = "+AllianceLevel);
 
 			if(AllianceLevel < 2)
 			{

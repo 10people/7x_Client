@@ -1,4 +1,8 @@
-﻿#define DEVELOPMENT_SHADOW_TYPE
+﻿//#define DEBUG_QUALITY
+
+
+
+#define DEVELOPMENT_SHADOW_TYPE
 
 
 
@@ -11,6 +15,9 @@
 
 
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System.Collections;
 
 public class Quality_Shadow {
@@ -200,11 +207,21 @@ public class Quality_Shadow {
 		#if DEBUG_QUALITY
 		Debug.Log( "ConfigLights( " + p_active_light + " )" );
 		#endif
-		
+
+		#if UNITY_EDITOR
+		EditorApplication.isPaused = true;
+		#endif
+
 		Object[] t_objs = GameObject.FindObjectsOfType( typeof(Light) );
-		
-		//		Debug.Log( "Active Light's GameObject Count: " + t_objs.Length );
-		
+
+		#if DEBUG_QUALITY
+		Debug.Log( "Active Light's GameObject Count: " + t_objs.Length );
+		#endif
+
+		#if UNITY_EDITOR
+		EditorApplication.isPaused = true;
+		#endif
+
 		for( int i = 0; i < t_objs.Length; i++ ){
 			Light t_light = (Light)t_objs[ i ];
 			

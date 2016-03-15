@@ -19,6 +19,8 @@ public class BattleResultPvpWin : MonoBehaviour
 
 	public UILabel labelWeiWang;
 
+	public UILabel labelRMB;
+
 
 	public void refreshData(BaiZhanResultResp _resp)
 	{
@@ -52,6 +54,8 @@ public class BattleResultPvpWin : MonoBehaviour
 //		labelRes.text = "" + _resp.lostJianShe;
 
 //		labelWeiWang.text = "" + _resp.reciveWeiWang;
+
+		labelRMB.text = "" + _resp.yuanbao;
 	}
 
 }

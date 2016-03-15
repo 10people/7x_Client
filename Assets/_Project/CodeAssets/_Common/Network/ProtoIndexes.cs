@@ -63,7 +63,7 @@ public class ProtoIndexes
     public const short ROLE_NAME_RESPONSE = 23108;
 
     public const int Enter_Scene = 22000;               //玩家发起进去主城
-    public const int Enter_Scene_Confirm = 22001;       //确认进入主城
+    public const int Enter_Scene_Confirm = 22001;       //确认进入主城 / 服务器确认可以进入当前请求的目标场景
     public const int Sprite_Move = 22002;               //玩家移动
     public const int ExitScene = 22003;                 //玩家退出主城
     public const short Enter_HouseScene = 22004;        //玩家进入房屋
@@ -74,6 +74,11 @@ public class ProtoIndexes
     public const short EXIT_CARRIAGE_SCENE = 22010;        
     public const short ENTER_CARRIAGE_SCENE = 22009;      
 
+	public const short Enter_TBBXScene = 22011;//进入探宝宝箱场景
+	public const short Exit_TBBXScene = 22012;//退出探宝宝箱场景
+	public const short C_GET_BAO_XIANG = 4113;//开启宝箱
+
+	public const short OPEN_ShiLian_FuBen = 4101;//十连开启通知
 
     public const short S_HEAD_STRING = 22101;//更新称号ok
 
@@ -99,11 +104,15 @@ public class ProtoIndexes
 	
 	public const short S_LMKJ_UP = 27504;
 	//升级结果，消息体用ErrorMessage，errorCode值为0表示成功，其他表示失败
-	
-	//
+
+
+	public const short C_LMKEJI_JIHUO  = 27515;//请求激活联盟科技
+	public const short S_LMKEJI_JIHUO  = 27516;//请求激活联盟科技返回
+
+
+	//获取联盟科技信息，消息体是JianZhuList，按照配置表，每个type发一个等级
 	public const short C_LMKJ_INFO = 27507;
 	public const short S_LMKJ_INFO = 27508;
-	//获取联盟科技信息，消息体是JianZhuList，按照配置表，每个type发一个等级
 
 	public const short C_LM_CHOU_JIANG_1 = 27510;// 宗庙抽奖一次
 	public const short C_LM_CHOU_JIANG_N = 27511;//宗庙连续抽奖
@@ -473,6 +482,8 @@ public class ProtoIndexes
 	public const int LVE_BATTLE_END_RESP = 26071;
 
 	public const int C_YUAN_HU_END_REQ = 26077;
+
+	public const int S_YUAN_HU_END_RESP = 26080;
 
     /* --------------- 战斗proto< 23000-26003 > --------------- */
     /* ---------------------------------------------------------- */
@@ -1428,4 +1439,31 @@ public class ProtoIndexes
 	public const short S_FULIINFO_RESP = 4021;//请求福利信息返回
 	public const short C_FULIINFOAWARD_REQ = 4030;//请求福利奖励
 	public const short S_FULIINFOAWARD_RESP = 4031;//请求福利奖励返回
+	public const short C_HONGBAONFO_REQ = 4032;//请求红包福利信息
+	public const short S_HONGBAONFO_RESP = 4033;//请求红包福利信息返回
+
+    public const short C_GREET_REQ = 5000;//向某人打招呼请求
+    public const short S_GREET_RESP = 5011;//向某人打招呼返回
+
+    public const short C_ALLIANCE_INVITE = 30177;//邀请某人加入联盟请求
+    public const short S_ALLIANCE_INVITE = 30178;//邀请某人加入联盟请求返回
+
+    //联盟邀请列表查看 
+    public const short C_ALLIANCE_INVITE_LIST = 30179;
+
+     // 邀请的联盟列表		
+    public const short S_ALLIANCE_INVITE_LIST = 30180;
+
+    // 拒绝联盟邀请		
+    public const short C_ALLIANCE_INVITE_REFUSE = 30181;
+
+    // 拒绝联盟邀请返回	
+    public const short S_ALLIANCE_INVITE_REFUSE = 30182;
+    // 同意联盟邀请，
+    public const short C_ALLIANCE_INVITE_AGREE = 30183;
+    // 拒绝联盟邀请， 
+    public const short S_ALLIANCE_INVITE_AGREE = 30184;
+    // 通知里的同意联盟邀请返回， 
+    public const short S_ALLIANCE_INVITE_RESP = 30185;
+
 }

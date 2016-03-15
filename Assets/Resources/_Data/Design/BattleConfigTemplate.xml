@@ -5,7 +5,7 @@
 <BattleConfigTemplate configId="3" autoFight="1" soundID="0" preDesc="520003" />
 <BattleConfigTemplate configId="4" autoFight="1" soundID="0" preDesc="520004" />
 <BattleConfigTemplate configId="600" autoFight="0" soundID="100201" preDesc="520600" />
-<BattleConfigTemplate configId="900" autoFight="0" soundID="100101" preDesc="520900" />
+<BattleConfigTemplate configId="900" autoFight="1" soundID="100101" preDesc="520900" />
 <BattleConfigTemplate configId="100001" autoFight="1" soundID="100101" preDesc="530001" />
 <BattleConfigTemplate configId="100101" autoFight="1" soundID="100100" preDesc="530101" />
 <BattleConfigTemplate configId="100102" autoFight="1" soundID="100103" preDesc="530102" />
@@ -15,7 +15,7 @@
 <BattleConfigTemplate configId="100106" autoFight="1" soundID="100100" preDesc="530106" />
 <BattleConfigTemplate configId="100107" autoFight="1" soundID="100200" preDesc="530107" />
 <BattleConfigTemplate configId="100201" autoFight="1" soundID="10000" preDesc="530201" />
-<BattleConfigTemplate configId="100202" autoFight="0" soundID="100101" preDesc="530202" />
+<BattleConfigTemplate configId="100202" autoFight="1" soundID="100101" preDesc="530202" />
 <BattleConfigTemplate configId="100203" autoFight="1" soundID="100200" preDesc="530203" />
 <BattleConfigTemplate configId="100204" autoFight="1" soundID="100102" preDesc="530204" />
 <BattleConfigTemplate configId="100205" autoFight="1" soundID="10000" preDesc="530205" />

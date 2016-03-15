@@ -34,6 +34,10 @@ public class PveStarAwardpanel : MonoBehaviour  ,SocketProcessor {
 
 	void Update () {
 	
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+		}
 	}
 	public void Init()
 	{

@@ -1643,4 +1643,23 @@ public class UIPanel : UIRect
 		}
 	}
 #endif
+
+
+
+	#region Utilities
+
+	// true if panel's dc's verts is full
+	public bool IsFull(){
+		for (int i = 0; i < drawCalls.size; ++i){
+			UIDrawCall dc = drawCalls.buffer[i];
+		
+			if( dc.ReachVertTopLimit() ){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	#endregion
 }

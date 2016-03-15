@@ -9,10 +9,12 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
 {
+    public static JunZHuEquipOfBody m_EquipOfBody;
     public List<JunZhuEquipInfoManagerment> m_listEquipEleInfo;
     public GameObject m_MoveObj;
+    public GameObject m_ObjMainBack;
     public UISprite m_ForSprite;
-
+    private float _SaveValue = -1.0f;
     public struct SelfEquipInfo
     {
         public string _icon;
@@ -63,12 +65,12 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
     public List<GameObject> listMovObj;
     void Awake()
     {
-
         SocketTool.RegisterMessageProcessor(this);
     }
 
     void Start()
     {
+        m_EquipOfBody = this;
         Vector3[] vvv = { new Vector3(-47, 183, 0),new Vector3(- 47,93, 0),new Vector3(- 47,0, 0)
                 ,new Vector3( - 47,- 96, 0),new Vector3(52,- 185, 0),new Vector3(220,-185, 0)
                 ,new Vector3(310 - 93, 0),new Vector3(380,0, 0),new Vector3(415,90,0) };
@@ -90,6 +92,8 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
     }
 
     int indeValue = 1;
+
+
     public void RequestJiHuo(int index)
     {
         MemoryStream t_tream = new MemoryStream();
@@ -111,26 +115,32 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.activate_tao_zhuang_req, ref t_protof);
     }
     TaoZhuangResp _TaoZhuang_Temp;
+
+    void ShowActivaty()
+    {
+        _TaoZhuang_Temp = EquipsOfBody.Instance().m_Activatetemp;
+        ShowTaoZhang(EquipsOfBody.Instance().m_Activatetemp);
+    }
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
         if (p_message != null)
         {
             switch (p_message.m_protocol_index)
             {
-                case ProtoIndexes.tao_zhuang_Resp:
-                    {
-                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                //case ProtoIndexes.tao_zhuang_Resp:
+                //    {
+                //        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
-                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                //        QiXiongSerializer t_qx = new QiXiongSerializer();
 
-                        TaoZhuangResp temp = new TaoZhuangResp();
+                //        TaoZhuangResp temp = new TaoZhuangResp();
 
-                        t_qx.Deserialize(t_stream, temp, temp.GetType());
+                //        t_qx.Deserialize(t_stream, temp, temp.GetType());
 
-                        _TaoZhuang_Temp = temp;
-                        ShowTaoZhang(temp);
-                        return true;
-                    }
+                //        _TaoZhuang_Temp = temp;
+                //        ShowTaoZhang(temp);
+                //        return true;
+                //    }
                 case ProtoIndexes.activate_tao_zhuang_resp:
                     {
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -148,8 +158,9 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                             Global.m_isZhanli = true;
                             // EffectShowOne();
                             ShowTaoZhang(_TaoZhuang_Temp);
+                            RequestTaoZhang();
                         }
-                      //  MoveOnNow();
+                        //  MoveOnNow();
                         return true;
                     }
                 default: return false;
@@ -205,7 +216,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
     }
     void OnDisable()
     {
-        UI3DEffectTool.ClearUIFx(m_ForSprite.gameObject);
+        UI3DEffectTool.ClearUIFx(m_ObjMainBack);
         UI3DEffectTool.ClearUIFx(m_MoveObj);
         ClearAdvanceEffect();
     }
@@ -220,22 +231,23 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
             {
                 if (EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).condition) < TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).neededNum && TaoZhuangTemplate.templates[0].type == 1)
                 {
-
                     m_LabelTarget.text = MyColorData.getColorString(GetColorNeed(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).condition),
                                          LanguageTemplate.GetText(LanguageTemplate.Text.TARGET_SIGNAL)
                                         + NameIdTemplate.GetName_By_NameId(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).targetShow));
                     m_SpriteTargetPinZhi.spriteName = QualityIconSelected.SelectQuality(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).condition);
-                    UI3DEffectTool.ClearUIFx(m_ForSprite.gameObject);
+                    UI3DEffectTool.ClearUIFx(m_ObjMainBack);
                     UI3DEffectTool.ClearUIFx(m_MoveObj);
                     UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_MoveObj, EffectIdTemplate.GetPathByeffectId(620217), null);
                     m_MoveObj.SetActive(true);
                     m_ProgressPurple.value = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).condition) 
                                           /float.Parse(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).neededNum.ToString());
+                    _SaveValue = m_ProgressPurple.value;
                     float fff = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).condition)
                                           / float.Parse(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).neededNum.ToString());
                     m_MoveObj.transform.localPosition = new Vector3(204 + GetLengthMove(fff), 209, 0);
                     m_LabelPurple.text = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).condition).ToString() + " / " +  TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).neededNum.ToString();
-                    m_ObjChaKan.SetActive(true);
+
+					m_ObjChaKan.SetActive(true);
                     m_JiHuoEvent.gameObject.SetActive(false);
                     break;
                 }
@@ -246,9 +258,10 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                                           + NameIdTemplate.GetName_By_NameId(TaoZhuangTemplate.templates[i].targetShow));
                     m_SpriteTargetPinZhi.spriteName = QualityIconSelected.SelectQuality(TaoZhuangTemplate.templates[i].condition);
                     m_ProgressPurple.value = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.templates[i].condition) / float.Parse(TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).neededNum.ToString());
-                    //UI3DEffectTool.ClearUIFx(m_MoveObj);
+                    _SaveValue = m_ProgressPurple.value;
+                    UI3DEffectTool.ClearUIFx(m_MoveObj);
                     m_MoveObj.SetActive(false);
-                   // UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ForSprite.gameObject, EffectIdTemplate.GetPathByeffectId(620217), null);
+                    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjMainBack, EffectIdTemplate.GetPathByeffectId(620220), null);
                     UI3DEffectTool.ClearUIFx(m_MoveObj);
                     m_LabelPurple.text = TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).neededNum.ToString() + " / " + TaoZhuangTemplate.GetNextTaoZhuangById(temp.maxActiZhuang).neededNum.ToString();
                     m_ObjChaKan.SetActive(false);
@@ -263,9 +276,9 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                     m_LabelTarget.text = MyColorData.getColorString(GetColorNeed(TaoZhuangTemplate.templates[i].condition), LanguageTemplate.GetText(LanguageTemplate.Text.TARGET_SIGNAL_BEST));
                     m_SpriteTargetPinZhi.spriteName = QualityIconSelected.SelectQuality(TaoZhuangTemplate.templates[i].condition);
                     m_ProgressPurple.value = 1.0f;
-               
+                    _SaveValue = m_ProgressPurple.value;
                     m_MoveObj.SetActive(false);
-                    // UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ForSprite, EffectIdTemplate.GetPathByeffectId(620215), null);
+                    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjMainBack, EffectIdTemplate.GetPathByeffectId(620220), null);
                     m_LabelPurple.text = "";
                     m_ObjChaKan.SetActive(true);
                     m_JiHuoEvent.gameObject.SetActive(false);
@@ -339,6 +352,12 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
 
                 EquipDataTidy();
             }
+        }
+
+        if (EquipsOfBody.Instance().m_ActivateLoad)
+        {
+            EquipsOfBody.Instance().m_ActivateLoad = false;
+            ShowActivaty();
         }
     }
     void EquipDataTidy()
@@ -513,6 +532,16 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 
         }
+        if (FunctionWindowsCreateManagerment.m_BuWeiNum != -1)
+        {
+            if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(FunctionWindowsCreateManagerment.m_BuWeiNum))
+            {
+                m_zhuanbeiInfo.GetEquipInfo(EquipsOfBody.Instance().m_equipsOfBodyDic[FunctionWindowsCreateManagerment.m_BuWeiNum].itemId, FunctionWindowsCreateManagerment.m_BuWeiNum);
+                m_zhuanbeiInfo.gameObject.SetActive(true);
+                m_BottomButton.gameObject.SetActive(false);
+            }
+            FunctionWindowsCreateManagerment.m_BuWeiNum = -1;
+        }
     }
     private List<int> _list_Num = new List<int>();
 
@@ -570,13 +599,13 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
             tempTaskData.m_iCurIndex = 4;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
         }
-        else if (FreshGuide.Instance().IsActive(100270) && TaskData.Instance.m_iCurMissionIndex == 100270 && TaskData.Instance.m_TaskInfoDic[100270].progress >= 0)
-        {
-            TaskData.Instance.m_iCurMissionIndex = 100270;
-            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 3;
-            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        }
+        //else if (FreshGuide.Instance().IsActive(100270) && TaskData.Instance.m_iCurMissionIndex == 100270 && TaskData.Instance.m_TaskInfoDic[100270].progress >= 0)
+        //{
+        //    TaskData.Instance.m_iCurMissionIndex = 100270;
+        //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+        //    tempTaskData.m_iCurIndex = 3;
+        //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+        //}
         //else if (FreshGuide.Instance().IsActive(100090) && TaskData.Instance.m_iCurMissionIndex == 100090 && TaskData.Instance.m_TaskInfoDic[100090].progress >= 0)
         //{
         //    TaskData.Instance.m_iCurMissionIndex = 100090;
@@ -584,17 +613,17 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         //    tempTaskData.m_iCurIndex = 2;
         //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
         //}
-        else if (FreshGuide.Instance().IsActive(100115) && TaskData.Instance.m_iCurMissionIndex == 100115 && TaskData.Instance.m_TaskInfoDic[100115].progress >= 0)
-        {
-            TaskData.Instance.m_iCurMissionIndex = 100115;
-            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        }
-        else if (FreshGuide.Instance().IsActive(100150) && TaskData.Instance.m_iCurMissionIndex == 100150 && TaskData.Instance.m_TaskInfoDic[100150].progress >= 0)
-        {
-            TaskData.Instance.m_iCurMissionIndex = 100150;
-            UIYindao.m_UIYindao.CloseUI();
-        }
+        //else if (FreshGuide.Instance().IsActive(100115) && TaskData.Instance.m_iCurMissionIndex == 100115 && TaskData.Instance.m_TaskInfoDic[100115].progress >= 0)
+        //{
+        //    TaskData.Instance.m_iCurMissionIndex = 100115;
+        //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+        //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+        //}
+        //else if (FreshGuide.Instance().IsActive(100150) && TaskData.Instance.m_iCurMissionIndex == 100150 && TaskData.Instance.m_TaskInfoDic[100150].progress >= 0)
+        //{
+        //    TaskData.Instance.m_iCurMissionIndex = 100150;
+        //    UIYindao.m_UIYindao.CloseUI();
+        //}
         else if (FreshGuide.Instance().IsActive(100405) && TaskData.Instance.m_iCurMissionIndex == 100405 && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
         {
             TaskData.Instance.m_iCurMissionIndex = 100405;
@@ -773,6 +802,15 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         {
             EquipDataTidy();
         }
+
+        if (_SaveValue >= 0 && _SaveValue < 1.0f)
+        {
+            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_MoveObj, EffectIdTemplate.GetPathByeffectId(620217), null);
+        }
+        else
+        {
+            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjMainBack, EffectIdTemplate.GetPathByeffectId(620220), null);
+        }
     }
 
     void ShowEquipInfo()
@@ -882,6 +920,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
     }
     void OnDestroy()
     {
+        m_EquipOfBody = null;
         SocketTool.UnRegisterMessageProcessor(this);
     }
 

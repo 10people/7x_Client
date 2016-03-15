@@ -32,7 +32,7 @@ public class UIBackgroundEffect : MonoBehaviour {
 
 	void Awake(){
 		#if DEBUG_UI_BG_EF
-		Debug.Log( "UIBackgroundEffect.Awake()" );
+		Debug.Log( "UIBackgroundEffect.Awake( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " )" );
 		#endif
 
 		InitEffect();
@@ -124,7 +124,7 @@ public class UIBackgroundEffect : MonoBehaviour {
 
 	private void InitEffect(){
 		#if DEBUG_UI_BG_EF
-		Debug.Log( "UIBackgroundEffect.InitEffect()" );
+		Debug.Log( "UIBackgroundEffect.InitEffect( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " )" );
 		#endif
 
 		m_shader = Shader.Find( "Custom/Effects/UIBackground" );
@@ -141,13 +141,17 @@ public class UIBackgroundEffect : MonoBehaviour {
 			}
 		}
 		else{
-			#if DEBUG_UI_BG_EF
-			Debug.Log( "UIBackgroundEffect.( new mat )" );
-			#endif
+//			#if DEBUG_UI_BG_EF
+//			Debug.Log( "UIBackgroundEffect.( new mat )" );
+//			#endif
 
 			m_mat = new Material( m_shader );
 
 			m_is_supported = true;
+		}
+
+		{
+			InitCamParam();
 		}
 
 //		ComponentHelper.HideComponent( this );
@@ -167,11 +171,15 @@ public class UIBackgroundEffect : MonoBehaviour {
 
 	private CameraClearFlags m_cam_flag;
 
-	private void InitCam(){
+	private Camera InitCamParam(){
 		Camera t_cam = GetComponent<Camera>();
 
 		if( t_cam == null ){
-			return;
+			#if DEBUG_UI_BG_EF
+			Debug.Log( "UIBackground.InitCam( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " ) Error, No Cam Found." );
+			#endif
+
+			return null;
 		}
 
 		#if DEBUG_UI_BG_EF
@@ -182,9 +190,21 @@ public class UIBackgroundEffect : MonoBehaviour {
 			m_cam_flag = t_cam.clearFlags;
 
 			m_cam_mask = t_cam.cullingMask;
+
+			#if DEBUG_UI_BG_EF
+			Debug.Log( "Store Cam.Flag: " + m_cam_flag );
+
+			Debug.Log( "Store Cam.Mask: " + m_cam_mask );
+			#endif
 		}
 
-		{
+		return t_cam;
+	}
+
+	private void InitCam(){
+		Camera t_cam = InitCamParam();
+
+		if( t_cam != null ){
 			t_cam.clearFlags = CameraClearFlags.Depth;
 
 			t_cam.cullingMask = 0;
@@ -195,13 +215,27 @@ public class UIBackgroundEffect : MonoBehaviour {
 		Camera t_cam = GetComponent<Camera>();
 
 		if( t_cam == null ){
+			#if DEBUG_UI_BG_EF
+			Debug.Log( "UIBackground.RevertCam( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " ) Error, No Cam Found." );
+			#endif
+
 			return;
 		}
+
+		#if DEBUG_UI_BG_EF
+		Debug.Log( "UIBackground.RevertCam( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " )" );
+		#endif
 
 		{
 			t_cam.clearFlags = m_cam_flag;
 
 			t_cam.cullingMask = m_cam_mask;
+
+			#if DEBUG_UI_BG_EF
+			Debug.Log( "Restore Cam.Flag: " + m_cam_flag );
+
+			Debug.Log( "Restore Cam.Mask: " + m_cam_mask );
+			#endif
 		}
 	}
 
@@ -225,6 +259,10 @@ public class UIBackgroundEffect : MonoBehaviour {
 
 			return null;
 		}
+
+		#if DEBUG_UI_BG_EF
+		Debug.Log( "SetUIBackgroundEffect( " + p_open + " - " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) + " )" );
+		#endif
 
 		if( p_open ){
 			UIBackgroundEffect t_effect = (UIBackgroundEffect)ComponentHelper.AddIfNotExist( p_gb, typeof(UIBackgroundEffect) );

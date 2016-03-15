@@ -179,10 +179,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 	public void initHYTreasureBattleUI()
 	{
 		//BooldNumb.text = mHuangYeTreasure.jindu+"%";
-		if(M_Treas_info.thisBoCi != null && M_Treas_info.allBoCi != null)
-		{
-			Boci.text = "当前波次("+M_Treas_info.thisBoCi.ToString()+"/"+M_Treas_info.allBoCi.ToString()+")";
-		}
+
 		//Boci.text = "当前波次("+M_Treas_info.thisBoCi.ToString()+"/"+M_Treas_info.allBoCi.ToString()+")";
 
 		HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
@@ -621,6 +618,11 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		M_Treas_info = Treas_info;
 
 		m_Time = Treas_info.remainTime ;
+
+		if(M_Treas_info.thisBoCi != null && M_Treas_info.allBoCi != null)
+		{
+			Boci.text = "当前波次("+M_Treas_info.thisBoCi.ToString()+"/"+M_Treas_info.allBoCi.ToString()+")";
+		}
 		if (!m_isEnterBattle) {
 			initEnemy( );
 			

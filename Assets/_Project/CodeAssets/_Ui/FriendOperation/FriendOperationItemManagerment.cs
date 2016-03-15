@@ -91,11 +91,11 @@ public class FriendOperationItemManagerment : MonoBehaviour
         m_listSprite[0].spriteName = "PlayerIcon" + info.iconId.ToString();
         if (info.level > 0)
         {
-            m_listLabel[3].text = "VIP" + info.vipLv.ToString();
+            m_listLabel[3].text = "V" + info.vipLv.ToString();
         }
         else
         {
-            m_listLabel[3].text = "VIP0";
+            m_listLabel[3].text = "V0";
         }
 
         m_listLabel[2].text = info.zhanLi.ToString();

@@ -24,6 +24,8 @@ public class LockPiece : MonoBehaviour ,SocketProcessor{
 
 	public GameObject ChildparentGB;
 
+	[HideInInspector]public string UINAme;
+
 	void Awake()
 	{
 		SocketTool.RegisterMessageProcessor(this);
@@ -46,8 +48,15 @@ public class LockPiece : MonoBehaviour ,SocketProcessor{
 		MiBaoXmlTemp mMiBao = MiBaoXmlTemp.getMiBaoXmlTempById (my_Diaoluomibao.miBaoId);
 
 		string  mName = NameIdTemplate.GetName_By_NameId (mMiBao.nameId);
+		if(UINAme != "")
+		{
+			MiBaoName.text = UINAme;
+		}
+		else
+		{
+			MiBaoName.text = mName;
+		}
 
-		MiBaoName.text = mName;
 
 		MiBaoScrollView.IsOPenPath = true;
 

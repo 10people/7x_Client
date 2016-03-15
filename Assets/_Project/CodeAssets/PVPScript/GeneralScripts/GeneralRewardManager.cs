@@ -253,7 +253,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 		if (rewardItemList.Count == 0 && specialItemList.Count == 0)
 		{
 			//			Debug.Log ("ClientMain.closePopUp();");
-
+			MainCityUI.TryRemoveFromObjectList (gameObject);
 			ClientMain.closePopUp();
 		}
 	}
@@ -286,7 +286,8 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	/// </summary>
 	void ShowRewardPanel ()
 	{
-		UI2DTool.Instance.AddTopUI( gameObject );
+		MainCityUI.TryAddToObjectList (gameObject);
+//		UI2DTool.Instance.AddTopUI( gameObject );
 //		CityGlobalData.m_isRightGuide = true;
 	}
 

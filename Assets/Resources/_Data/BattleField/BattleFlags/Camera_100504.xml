@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<BattleCameraFlag flagId="1" radius="109.2" x="223.6" y="-12.08752" z="-121.1" px="8.666542" py="13.41346" pz="-10.61965" rx="42.58755" ry="320.7826" rz="3.478902E-06" ex="42.58755" ey="219.2174" ez="18.61766" ew="0.8145878" killMin="0" killMax="1000" />
+<BattleCameraFlag flagId="1" radius="109.2" x="223.6" y="-12.08752" z="-121.1" px="6.925608" py="10.88261" pz="-8.48638" rx="42.58756" ry="320.7826" rz="1.159634E-06" ex="42.58755" ey="219.2174" ez="14.87776" ew="0.8145878" killMin="0" killMax="1000" />
 </dataset>

@@ -115,7 +115,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
         m_ListGameObject = new List<GameObject>();
 
         CreateIcon(bagItem);
-        Debug.Log(bagItem.itemType);
+//        Debug.Log(bagItem.itemType);
         if (useAllItemID.Contains(bagItem.itemType))
         {
             m_UseButton.gameObject.SetActive(true);

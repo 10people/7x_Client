@@ -255,10 +255,11 @@ public class EquipSuoData:MonoBehaviour
         string concelStr = LanguageTemplate.GetText(12);
         _strContent1 = content1;
         _strContent2 = content2;
+    
         if (_CallBack != null)
         {
             _BoxObj = Global.CreateBox(
-                 title,
+                 _strTitle,
                  MyColorData.getColorString(1, _strContent1),
                  MyColorData.getColorString(1, _strContent2),
                  null,
@@ -278,7 +279,7 @@ public class EquipSuoData:MonoBehaviour
             if (type == 0)
             {
                 _BoxObj = Global.CreateBox(
-                   title,
+                   _strTitle,
                    MyColorData.getColorString(1, _strContent1),
                    MyColorData.getColorString(1, _strContent2),
                     null,
@@ -351,6 +352,7 @@ public class EquipSuoData:MonoBehaviour
             OtherPlayerInfoManagerment.m_OtherInfo.m_NowPos = Camera.main.WorldToScreenPoint(vec_pos); 
             OtherPlayerInfoManagerment.m_OtherInfo.gameObject.SetActive(true);
         }
+   
     }
 
     private static void UIBoxLoadCallback_ChaKan(ref WWW p_www, string p_path, Object p_object)

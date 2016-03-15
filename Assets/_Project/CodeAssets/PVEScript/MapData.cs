@@ -68,7 +68,7 @@ public class MapData : MonoBehaviour, SocketProcessor {
 	void Start ()
 	{
 		StartCoroutine (Changestatebtn());
-		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5 ,null ,null);
 	}
 
 	void OnDestroy(){
@@ -88,28 +88,12 @@ public class MapData : MonoBehaviour, SocketProcessor {
 
     void Update()
 	{
-//		if(UIs.Count > 0)
-//		{
-//			if(UIYindao.m_UIYindao.m_isOpenYindao)
-//			{
-//				UIYindao.m_UIYindao.CloseUI();
-//			}
-//		}
-		if(ShowYinDao)
+//		Debug.Log ("a = "+CityGlobalData.PveLevel_UI_is_OPen);
+		if(ShowYinDao && !CityGlobalData.PveLevel_UI_is_OPen)
 		{
 			CityGlobalData.m_isRightGuide = false;
 			ShowPVEGuid();
 		}
-//		if(CityGlobalData.PveLevel_UI_is_OPen)
-//		{
-//			if(ShowYinDaoBackToCity)
-//			{
-//				if(UIYindao.m_UIYindao.m_isOpenYindao)
-//				{
-//					UIYindao.m_UIYindao.CloseUI();
-//				}
-//			}
-//		}
 	}
 	[HideInInspector]public int ShowEffectLevelid;
 
@@ -265,17 +249,19 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			return;
 		}
 
+		if (FreshGuide.Instance().IsActive (100145) && TaskData.Instance.m_TaskInfoDic [100145].progress >= 0) {
+			Debug.Log("领完奖励回程");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100145];
+			
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			ShowYinDao = false;
+			return;
+		}
 		ClosewPVEGuid ();
 	}
 	public void BackToCity()
 	{
-//		Debug.Log("回程");
-		if (FreshGuide.Instance().IsActive (100145) && TaskData.Instance.m_TaskInfoDic [100145].progress >= 0) {
 
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100145];
-
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-		}
 	}
 	public void ShowPve_PT_GuidSection2() // 第二章节引导
 	{
@@ -285,6 +271,14 @@ public class MapData : MonoBehaviour, SocketProcessor {
 //			Debug.Log("指向宝箱");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100140];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+			ShowYinDao = false;
+			return;
+		}
+		if (FreshGuide.Instance().IsActive (100145) && TaskData.Instance.m_TaskInfoDic [100145].progress >= 0) {
+			Debug.Log("领完奖励回程");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100145];
+			
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
 			ShowYinDao = false;
 			return;
 		}
@@ -356,23 +350,7 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			ShowYinDao = false;
 			return;
 		}
-		if(FreshGuide.Instance().IsActive(100405)&& TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
-		{
-			//			Debug.Log("在第二张中完成2-7返回主城");(新增)
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100405];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-			ShowYinDao = false;
-			return;
-		}
-		if(FreshGuide.Instance().IsActive(100405)&& TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
-		{
-			//	Debug.Log("回程了去扫荡)
-			ShowYinDao = false;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100405];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-			
-			return;
-		}
+	
 		ClosewPVEGuid ();
 	}
 	public void GuidTO_CQ() // 引导第一次攻打传奇关卡
@@ -396,7 +374,11 @@ public class MapData : MonoBehaviour, SocketProcessor {
 	{
 		//return;
 		ShowYinDaoBackToCity = false;
-		//Debug.Log ("myMapinfo.s_section = "+myMapinfo.s_section);
+	//	Debug.Log ("myMapinfo.s_section = "+myMapinfo.s_section);
+		if(EnterGuoGuanmap.Instance().ShouldOpen_id > 1)
+		{
+			return;
+		}
 		switch(myMapinfo.s_section)
 		{
 		case 1:
@@ -409,6 +391,14 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			break;
 		}
 		GuidTO_CQ();
+		if(FreshGuide.Instance().IsActive(100405)&& TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
+		{
+			//			Debug.Log("返回城中扫荡");(新增)
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100405];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			ShowYinDao = false;
+			return;
+		}
 	}
 	public bool IsChoosedMiBao;
 	public void  startsendinfo(int Currchapter)
@@ -443,7 +433,6 @@ public class MapData : MonoBehaviour, SocketProcessor {
 //						UIYindao.m_UIYindao.CloseUI();
 //					}
 				    ShowYinDao = true;
-
 
 				    CityGlobalData.m_temp_CQ_Section = tempInfo.maxCqPassId;
 

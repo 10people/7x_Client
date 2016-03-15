@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LianMengShuYuan id="102001" shuYuanLevel="1" alliance_lv_needed="1" shuYuan_lvUp_value="250" keJilLevelMax="1" />
-<LianMengShuYuan id="102002" shuYuanLevel="2" alliance_lv_needed="2" shuYuan_lvUp_value="700" keJilLevelMax="2" />
-<LianMengShuYuan id="102003" shuYuanLevel="3" alliance_lv_needed="3" shuYuan_lvUp_value="1400" keJilLevelMax="3" />
-<LianMengShuYuan id="102004" shuYuanLevel="4" alliance_lv_needed="4" shuYuan_lvUp_value="2100" keJilLevelMax="4" />
-<LianMengShuYuan id="102005" shuYuanLevel="5" alliance_lv_needed="5" shuYuan_lvUp_value="4000" keJilLevelMax="5" />
-<LianMengShuYuan id="102006" shuYuanLevel="6" alliance_lv_needed="6" shuYuan_lvUp_value="9000" keJilLevelMax="6" />
-<LianMengShuYuan id="102007" shuYuanLevel="7" alliance_lv_needed="7" shuYuan_lvUp_value="17500" keJilLevelMax="7" />
-<LianMengShuYuan id="102008" shuYuanLevel="8" alliance_lv_needed="8" shuYuan_lvUp_value="28000" keJilLevelMax="8" />
-<LianMengShuYuan id="102009" shuYuanLevel="9" alliance_lv_needed="9" shuYuan_lvUp_value="42000" keJilLevelMax="9" />
-<LianMengShuYuan id="102010" shuYuanLevel="10" alliance_lv_needed="10" shuYuan_lvUp_value="42000" keJilLevelMax="10" />
+<LianMengShuYuan id="102001" shuYuanLevel="1" alliance_lv_needed="1" shuYuan_lvUp_value="900" keJilLevelMax="1" />
+<LianMengShuYuan id="102002" shuYuanLevel="2" alliance_lv_needed="2" shuYuan_lvUp_value="2400" keJilLevelMax="2" />
+<LianMengShuYuan id="102003" shuYuanLevel="3" alliance_lv_needed="3" shuYuan_lvUp_value="6000" keJilLevelMax="3" />
+<LianMengShuYuan id="102004" shuYuanLevel="4" alliance_lv_needed="4" shuYuan_lvUp_value="10800" keJilLevelMax="4" />
+<LianMengShuYuan id="102005" shuYuanLevel="5" alliance_lv_needed="5" shuYuan_lvUp_value="25300" keJilLevelMax="5" />
+<LianMengShuYuan id="102006" shuYuanLevel="6" alliance_lv_needed="6" shuYuan_lvUp_value="60200" keJilLevelMax="6" />
+<LianMengShuYuan id="102007" shuYuanLevel="7" alliance_lv_needed="7" shuYuan_lvUp_value="135300" keJilLevelMax="7" />
+<LianMengShuYuan id="102008" shuYuanLevel="8" alliance_lv_needed="8" shuYuan_lvUp_value="240600" keJilLevelMax="8" />
+<LianMengShuYuan id="102009" shuYuanLevel="9" alliance_lv_needed="9" shuYuan_lvUp_value="397000" keJilLevelMax="9" />
+<LianMengShuYuan id="102010" shuYuanLevel="10" alliance_lv_needed="10" shuYuan_lvUp_value="0" keJilLevelMax="10" />
 </dataset>

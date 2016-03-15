@@ -19,7 +19,15 @@ public class ChapterUImaneger : MonoBehaviour {
 	Vector3 scale1;
 	Vector3 scale2;
 	float time = 0.5f;
-
+	public static ChapterUImaneger mChapterUImaneger;
+	public static ChapterUImaneger Instance()
+	{
+		if (!mChapterUImaneger)
+		{
+			mChapterUImaneger = (ChapterUImaneger)GameObject.FindObjectOfType (typeof(ChapterUImaneger));
+		}
+		return mChapterUImaneger;
+	}
 
 
 

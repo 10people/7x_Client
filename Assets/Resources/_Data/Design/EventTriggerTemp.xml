@@ -85,4 +85,7 @@
 <EventTriggerTemp ID="1100001" type="10" EventID="17" DescId="1100001" DicType="0" />
 <EventTriggerTemp ID="1110001" type="11" EventID="18" DescId="1110001" DicType="0" />
 <EventTriggerTemp ID="1120001" type="12" EventID="19" DescId="1120001" DicType="0" />
+<EventTriggerTemp ID="1130001" type="13" EventID="20" DescId="1130001" DicType="0" />
+<EventTriggerTemp ID="1140001" type="14" EventID="32" DescId="1140001" DicType="0" />
+
 </dataset>

@@ -122,6 +122,16 @@ public class UtilityTool : Singleton<UtilityTool>{
         }
     }
 
+	void OnLevelWasLoaded(int level) {
+//		Debug.Log( "OnLevelWasLoaded( " + level + " )" );
+
+//		Debug.Log( "Application.Info( " + Application.loadedLevel + ", " + Application.loadedLevelName + " )" );
+
+//		{
+//			LoadingHelper.ConfigBloomAndLight();
+//		}
+	}
+
     void OnDestroy(){
 		base.OnDestroy();
 	}

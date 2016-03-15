@@ -134,6 +134,9 @@ public class KingDetailInfo : MonoBehaviour
     void Start()
     {
         m_ScaleEffectController.OpenCompleteDelegate = EndDelegate;
+
+        //Close guide.
+        CityGlobalData.m_isRightGuide = true;
     }
 
     void OnCloseWindow()

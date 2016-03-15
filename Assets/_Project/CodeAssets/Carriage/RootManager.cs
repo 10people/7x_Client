@@ -76,7 +76,7 @@ namespace Carriage
 
             m_SelfPlayerController = tempObject.GetComponent<CarriagePlayerController>() ?? tempObject.AddComponent<CarriagePlayerController>();
             m_SelfPlayerCultureController = tempObject.GetComponent<CarriagePlayerCultureController>();
-            m_CarriageMain.AddGizmos(PlayerSceneSyncManager.Instance.m_MyselfUid, 0);
+            m_CarriageMain.m_MapController.AddGizmos(PlayerSceneSyncManager.Instance.m_MyselfUid, 0, m_SelfPlayerController.transform.localPosition, m_SelfPlayerController.transform.localEulerAngles.y);
 
             //Set CarriagePlayerController.
             m_SelfPlayerController.IsRotateCamera = false;
@@ -89,8 +89,8 @@ namespace Carriage
             m_SelfPlayerController.m_Joystick = m_CarriageMain.m_Joystick;
             m_SelfPlayerController.TrackCamera = TrackCamera;
 
-            m_SelfPlayerController.m_StartNavDelegate += m_CarriageMain.ShowNavAnimation;
-            m_SelfPlayerController.m_EndNavDelegate += m_CarriageMain.StopNavAnimation;
+            m_SelfPlayerController.m_StartNavDelegate += m_CarriageMain.ShowNavigationAnim;
+            m_SelfPlayerController.m_EndNavDelegate += m_CarriageMain.StopNavigationAnim;
 
             //Set CarriagePlayerCultureController.
             m_SelfPlayerCultureController.TrackCamera = TrackCamera;
@@ -195,6 +195,9 @@ namespace Carriage
         {
             if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
             {
+                //banner click anyway.
+                m_CarriageMain.m_BannerEffectController.OnAlertEffectClick();
+
                 //carriage click trigger.
                 var trackCameraRay = TrackCamera.ScreenPointToRay(Input.mousePosition);
                 var trackCameraHits = Physics.RaycastAll(trackCameraRay, Mathf.Infinity);
@@ -202,15 +205,15 @@ namespace Carriage
                 var nguiCameraRayList = NGUICameraList.Select(item => item.ScreenPointToRay(Input.mousePosition)).ToList();
                 var nguiCameraHits = nguiCameraRayList.Select(item => Physics.RaycastAll(item, Mathf.Infinity).ToList()).Aggregate((i, j) => i.Concat(j).ToList());
 
-                RaycastHit shieldHit = nguiCameraHits.Where(item => (item.transform.gameObject.layer == LayerMask.NameToLayer("NGUI")) || (item.transform.tag == "CarriageItemShield")).FirstOrDefault();
-                RaycastHit tempHit = trackCameraHits.Where(item => item.transform.tag == "CarriageItemTrigger").FirstOrDefault();
-                if (shieldHit.transform != null)
+                RaycastHit shieldHit = nguiCameraHits.Where(item => (item.collider.transform.gameObject.layer == LayerMask.NameToLayer("NGUI")) || (item.collider.transform.tag == "CarriageItemShield")).FirstOrDefault();
+                RaycastHit tempHit = trackCameraHits.Where(item => item.collider.transform.tag == "CarriageItemTrigger").FirstOrDefault();
+                if (shieldHit.collider != null && shieldHit.collider.transform != null)
                 {
                     return;
                 }
-                if (tempHit.transform != null)
+                if (tempHit.collider != null && tempHit.collider.transform != null)
                 {
-                    tempHit.transform.gameObject.SendMessage("OnCarriageItemClick");
+                    tempHit.collider.transform.gameObject.SendMessage("OnCarriageItemClick");
                 }
             }
         }
@@ -249,10 +252,6 @@ namespace Carriage
 
         void Awake()
         {
-            YunBiaoSafeTemplate.LoadTemplates();
-            YunBiaoTemplate.LoadTemplates();
-            RobCartXishuTemplate.LoadTemplates();
-
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YUNBIAO_MAIN_PAGE),
                         BiaoJuLoadCallBack);
 

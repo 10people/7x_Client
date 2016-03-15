@@ -92,7 +92,6 @@ public class PvpOpponentInfo : MonoBehaviour {
 			handler.m_click_handler += BtnHandlerCallBack;
 		}
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,3);
 	}
 
 	void BtnHandlerCallBack (GameObject obj)
@@ -111,7 +110,6 @@ public class PvpOpponentInfo : MonoBehaviour {
 		case "DisBtn":
 
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,2);
 			
 			DisActiveWindow ();
 
@@ -128,7 +126,6 @@ public class PvpOpponentInfo : MonoBehaviour {
 		case "Zhezhao":
 
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,2);
 			
 			DisActiveWindow ();
 

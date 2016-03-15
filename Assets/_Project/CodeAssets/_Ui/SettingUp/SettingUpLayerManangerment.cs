@@ -60,7 +60,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
  
 	void Start ()
     {
-        m_LabRenameSignal.text = LanguageTemplate.GetText(20006) + MyColorData.getColorString(5, "100") + "元宝";
+        m_LabRenameSignal.text = LanguageTemplate.GetText(1604) + MyColorData.getColorString(5, "100") + "元宝";
         MainCityUI.setGlobalTitle(m_ObjTopLeft, LanguageTemplate.GetText(1528), 0, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
       //  m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);

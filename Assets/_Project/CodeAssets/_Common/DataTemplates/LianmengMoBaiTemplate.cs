@@ -18,7 +18,9 @@ public class LianmengMoBaiTemplate : XmlLoadManager
     public int gongxian;
     public int buffNum;
     public string awardShow;
-	public static List<LianmengMoBaiTemplate> templates = new List<LianmengMoBaiTemplate>();
+    public int jianshe;
+    public int tuTenglvNeeded;
+    public static List<LianmengMoBaiTemplate> templates = new List<LianmengMoBaiTemplate>();
 
 
     public static void LoadTemplates( EventDelegate.Callback p_callback = null )
@@ -83,7 +85,13 @@ public class LianmengMoBaiTemplate : XmlLoadManager
 
                 t_reader.MoveToNextAttribute();
                 t_template.awardShow = t_reader.Value;
-                
+
+                t_reader.MoveToNextAttribute();
+                t_template.jianshe = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.tuTenglvNeeded = int.Parse(t_reader.Value);
+
             }
 			
 			//			t_template.Log();

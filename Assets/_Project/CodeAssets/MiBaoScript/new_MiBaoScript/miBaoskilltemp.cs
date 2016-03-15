@@ -58,19 +58,33 @@ public class miBaoskilltemp : MonoBehaviour {
 	}
 	public void ShowDeilInfo()
 	{
-		if(NewMiBaoSkill.Instance().SaveId == SKill_id)
-		{
-			return;
-		}
-		NewMiBaoSkill.Instance().ShowBeChoosed_MiBao (SKill_id,IsActive);
 		if(NewMiBaoSkill.Instance().COmeMiBaoUI)
 		{
-			return;
+			if(NewMiBaoSkill.Instance().SaveId == SKill_id)
+			{
+				return;
+			}
+			NewMiBaoSkill.Instance().ShowBeChoosed_MiBao (SKill_id,IsActive);
 		}
-		if(IsActive)
+		else
 		{
-			NewAddMiBaoShangZhen.SetActive(true);
-			NewAddMiBaoShangZhen.transform.localPosition = this.gameObject.transform.localPosition;
+			if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
+			{
+				//	Debug.Log("切换秘技)Z
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
+			}
+			if(NewMiBaoSkill.Instance().SaveId == SKill_id)
+			{
+				return;
+			}
+			NewMiBaoSkill.Instance().ShowBeChoosed_MiBao (SKill_id,IsActive);
+			if(IsActive)
+			{
+				NewAddMiBaoShangZhen.SetActive(true);
+				NewAddMiBaoShangZhen.transform.localPosition = this.gameObject.transform.localPosition;
+			}
 		}
+
 	}
 }

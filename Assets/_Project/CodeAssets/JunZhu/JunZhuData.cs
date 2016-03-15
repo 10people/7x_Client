@@ -220,6 +220,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 							}
 							Global.m_iPZhanli = m_junzhuInfo.zhanLi;
 						}
+                        PlayerNameManager.UpdateSelfName();
                         return true;
                     }
                 case ProtoIndexes.S_ADD_TILI_INTERVAL:
@@ -455,8 +456,17 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 		{
 			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_TIMES_REQ,(ProtoIndexes.S_BUY_TIMES_INFO).ToString());
 		}
-		CityGlobalData.m_isRightGuide = true;
+		if (UIYindao.m_UIYindao.m_isOpenYindao) {
+
+			yindaoid = UIYindao.m_UIYindao.m_iCurId;
+		} 
+		else 
+		{
+			yindaoid = 0;
+		}
+
     }
+	int yindaoid = 0 ;
     void InitBuyUI()
     {
 //		Debug.Log ("IsBuyTongBi = "+IsBuyTongBi);
@@ -499,14 +509,15 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 		{
 			//UI_IsOpen = false;
 		}
+		CityGlobalData.m_isRightGuide = true;
     }
 
    public  void LoadBuyTongBiNoTimesBack(ref WWW p_www, string p_path, Object p_object)
     {
 		string str3 = "";
         string title = "";
-//		Debug.Log ("IsBuyTongBi = "+IsBuyTongBi);
-//		Debug.Log ("IsBuyTiLi = "+IsBuyTiLi);
+		Debug.Log ("IsBuyTongBi = "+IsBuyTongBi);
+		Debug.Log ("IsBuyTiLi = "+IsBuyTiLi);
         if (IsBuyTongBi)
         {
             IsBuyTongBi = false;
@@ -530,7 +541,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
         UIBox uibox = m_Box.GetComponent<UIBox>();
 
-		uibox.setBox(title, null, str3, null, strbtn, null, ChangeState, null, null);
+		uibox.setBox(title, null, str3, null, strbtn, null, ChangeState, null, null,null,false,false);
     }
 
 
@@ -561,6 +572,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     {
 		GameObject tempObj = GameObject.Instantiate(p_object) as GameObject;
 		UIBuyMoneyPanel tempPanel = tempObj.GetComponent<UIBuyMoneyPanel>();
+		tempPanel.YIndao_id = yindaoid;
 		tempPanel.setData(m_BuyTongBiData);
 		MainCityUI.TryAddToObjectList(tempObj);
 	}
@@ -580,7 +592,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
         UIBox uibox = m_Box.GetComponent<UIBox>();
 
-        uibox.setBox(str1, null, str2, null, strbtn, null, null, null, null);
+        uibox.setBox(str1, null, str2, null, strbtn, null, null, null, null,null,false,false);
     }
     public void LoadBack_2(ref WWW p_www, string p_path, Object p_object)
     {
@@ -597,13 +609,13 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
         UIBox uibox = m_Box.GetComponent<UIBox>();
 
-        uibox.setBox(titleStr, null, str2, null, CancleBtn, strbtn, LackYBLoadBack, null, null, null);
+        uibox.setBox(titleStr, null, str2, null, CancleBtn, strbtn, LackYBLoadBack, null, null, null,false,false);
     }
     int MaxVIPLevel = 10;
 
 	public void LoadBack_3(ref WWW p_www, string p_path, Object p_object)
     {
-//		Debug.Log ("Buywhta");
+		Debug.Log ("Buywhta");
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
 
         string str22 = LanguageTemplate.GetText(LanguageTemplate.Text.YOU_XIA_14);
@@ -621,7 +633,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
         UIBox uibox = m_Box.GetComponent<UIBox>();
 
-        uibox.setBox(str1, null, str3, null, strbtn, null, null, null, null);
+        uibox.setBox(str1, null, str3, null, strbtn, null, null, null, null,null,false,false);
     }
 
     void GetTiLi() //获得体力

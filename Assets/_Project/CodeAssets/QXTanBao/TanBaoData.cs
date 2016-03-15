@@ -141,6 +141,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 
 	public void TanBaoRespCallBack (int i)
 	{
+		UIShouji.m_isPlayShouji = true;
 		TBReward.tbReward.BlockController (false);
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,4);
 	}

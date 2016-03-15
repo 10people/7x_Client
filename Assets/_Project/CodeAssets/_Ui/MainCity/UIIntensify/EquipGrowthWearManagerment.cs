@@ -199,13 +199,13 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     {
    
       FunctionWindowsCreateManagerment.SetSelectEquipInfo(_Index_Type_Save, index);
-        if (FreshGuide.Instance().IsActive(100160) && TaskData.Instance.m_TaskInfoDic[100160].progress >= 0)
-        {
-            TaskData.Instance.m_iCurMissionIndex = 100160;
-            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 2;
-            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        }
+        //if (FreshGuide.Instance().IsActive(100160) && TaskData.Instance.m_TaskInfoDic[100160].progress >= 0)
+        //{
+        //    TaskData.Instance.m_iCurMissionIndex = 100160;
+        //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+        //    tempTaskData.m_iCurIndex = 2;
+        //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+        //}
         if (_Index_Save != index)
         {
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(false);

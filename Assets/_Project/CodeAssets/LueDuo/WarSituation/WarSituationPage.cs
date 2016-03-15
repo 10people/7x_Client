@@ -63,6 +63,8 @@ public class WarSituationPage : MonoBehaviour {
 
 		situationList = QXComData.CreateGameObjectList (situationObj,tempResp.infos.Count,situationList);
 
+		PushAndNotificationHelper.SetRedSpotNotification (tempType == WarSituationData.SituationType.PLUNDER ? 410012 : 410015,situationList.Count > 0 ? true : false);
+
 		for (int i = 0;i < situationList.Count;i ++)
 		{
 			situationList[i].transform.localPosition = new Vector3(0,-130 * i,0);
@@ -76,7 +78,7 @@ public class WarSituationPage : MonoBehaviour {
 		situationSb.gameObject.SetActive (situationList.Count > 3 ? true : false);
 
 		desLabel.text = situationList.Count > 0 ? "" : MyColorData.getColorString (1,"军情记录为空");
-		leftLabel.text = tempType == WarSituationData.SituationType.YUNBIAO ? "盟友运镖成功后联盟可获得建设值" : "驱逐可获得贡献度奖励\n驱逐成功联盟可获得建设值";
+		leftLabel.text = MyColorData.getColorString (5,tempType == WarSituationData.SituationType.YUNBIAO ? "盟友运镖成功后联盟可获得建设值" : "驱逐可获得贡献度奖励\n驱逐成功联盟可获得建设值");
 
 		switch (tempType)
 		{
@@ -84,16 +86,21 @@ public class WarSituationPage : MonoBehaviour {
 
 			if (situationResp.todayRemainHelp > 0)
 			{
-				if (situationCd == 0)
+				if (situationResp.cd > 0)
 				{
 					situationCd = situationResp.cd;
 					StartCoroutine ("PlunderSituationCd");
+				}
+				else
+				{
+					StopCoroutine ("PlunderSituationCd");
+					rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp);
 				}
 			}
 			else
 			{
 				StopCoroutine ("PlunderSituationCd");
-				rightLabel.text = "[ffffff]今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp + "[-]";
+				rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp);
 			}
 
 			break;
@@ -227,6 +234,11 @@ public class WarSituationPage : MonoBehaviour {
 
 	public void CloseSituationPage ()
 	{
+		if (MainCityUI.m_MainCityUI != null)
+		{
+			MainCityUI.m_MainCityUI.setInit ();
+		}
+
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
 	}

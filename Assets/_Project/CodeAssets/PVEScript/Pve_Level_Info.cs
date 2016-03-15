@@ -69,6 +69,10 @@ public class Pve_Level_Info : MonoBehaviour {
 	public UISprite mBossIcon;
 	public UISprite mBossIconbg;
 	public UISprite mBossIconbg1;
+
+	public GameObject mBossNameobg;
+	public UILabel BossName;
+	public GameObject Leve_Name;
 	public enum m_Level_Type 
 	{ 
 		Putong = 0, 
@@ -169,6 +173,8 @@ public class Pve_Level_Info : MonoBehaviour {
 		// 0 普通  1 精英  2  传奇
 		if(levelState == (int)m_Level_Type.Putong)
 		{
+			Leve_Name.transform.localPosition = mBossNameobg.transform.localPosition;
+			mBossNameobg.SetActive(false);
 			JY_CQ_Level.SetActive(false);
 
 			PT_Level.SetActive(true);
@@ -288,15 +294,26 @@ public class Pve_Level_Info : MonoBehaviour {
 	
 		if(levelState == (int)m_Level_Type.JingYing)
 		{
+			mBossNameobg.SetActive(true);
 			PveTempTemplate mPveTemp = PveTempTemplate.GetPveTemplate_By_id (litter_Lv.guanQiaId);
 		
 			List<NpcTemplate> mNpcTemplate = new List<NpcTemplate>();
 			mNpcTemplate = NpcTemplate.GetNpcTemplates_By_npcid(mPveTemp.npcId);
 			foreach(NpcTemplate mNpc in mNpcTemplate)
 			{
-				if(mNpc.type == 4)
+				if(mNpc.type == 4||mNpc.type == 5)
 				{
 					mBossIcon.spriteName = mNpc.icon.ToString();
+					if(NameIdTemplate.GetName_By_NameId(mNpc.EnemyName) != "" )
+					{
+						BossName.text = NameIdTemplate.GetName_By_NameId(mNpc.EnemyName);
+					}
+					else
+					{
+						Leve_Name.transform.localPosition = mBossNameobg.transform.localPosition;
+						mBossNameobg.SetActive(false);
+					}
+
 					break;
 				}
 			}
@@ -399,6 +416,7 @@ public class Pve_Level_Info : MonoBehaviour {
 		}
 		if(levelState == (int)m_Level_Type.ChuanQi)
 		{
+			mBossNameobg.SetActive(true);
 			PT_Level.SetActive(false);
 			
 			JY_CQ_Level.SetActive(true);
@@ -427,9 +445,18 @@ public class Pve_Level_Info : MonoBehaviour {
 			}
 			foreach(LegendNpcTemplate mNpc in mLegendNpcTemplateList)
 			{
-				if(mNpc.type == 4)
+				if(mNpc.type == 4||mNpc.type == 5)
 				{
 					mBossIcon.spriteName = mNpc.icon.ToString();
+					if(NameIdTemplate.GetName_By_NameId(mNpc.EnemyName) != "" )
+					{
+						BossName.text = NameIdTemplate.GetName_By_NameId(mNpc.EnemyName);
+					}
+					else
+					{
+						Leve_Name.transform.localPosition = mBossNameobg.transform.localPosition;
+						mBossNameobg.SetActive(false);
+					}
 					break;
 				}
 			}
@@ -563,18 +590,18 @@ public class Pve_Level_Info : MonoBehaviour {
 		ShowLevel ();
 
 		DrawLine ();
-
-		if(litter_Lv.guanQiaId == EnterGuoGuanmap.Instance().ShouldOpen_id)
-		{   
-			EnterGuoGuanmap.Instance().ShouldOpen_id = 1;
-
-			Startsendmasg = true;
-			if(UIYindao.m_UIYindao.m_isOpenYindao)
-			{
-				UIYindao.m_UIYindao.CloseUI();
-			}
-			POPLevelInfo();
-		}
+//
+//		if(litter_Lv.guanQiaId == EnterGuoGuanmap.Instance().ShouldOpen_id)
+//		{   
+//			EnterGuoGuanmap.Instance().ShouldOpen_id = 1;
+//
+//			Startsendmasg = true;
+//			if(UIYindao.m_UIYindao.m_isOpenYindao)
+//			{
+//				UIYindao.m_UIYindao.CloseUI();
+//			}
+//			POPLevelInfo();
+//		}
 	}
 	public UISprite Boxsprite;
 	public void ShowBox(bool jingyin)

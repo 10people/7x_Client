@@ -19,7 +19,27 @@ public class _Debug : MonoBehaviour {
 
 	public _Empty empty_target = null;
 
+	public Texture2D m_tex;
+
+	public Texture2D m_self_copy_tex;
+
 	#region Mono
+
+	private void SetUITexture( Texture2D p_tex ){
+		UITexture t_tex = GetComponent<UITexture>();
+
+		if( t_tex == null ){
+			return;
+		}
+
+		if( p_tex == null ){
+			return;
+		}
+
+		{
+			t_tex.mainTexture = p_tex;
+		}
+	}
 
 	void Awake(){
 //		{
@@ -66,6 +86,72 @@ public class _Debug : MonoBehaviour {
 //		Debug.Log ( "_Debug.Start()" );
 
 //		NavTest();
+
+//		iTween.ValueTo(gameObject, iTween.Hash(
+//			"from", 0.0f,
+//			"to", 5.0f,
+//			"delay", 0,
+//			"time", 5.0f,
+//			"easetype", iTween.EaseType.linear,
+//			"onupdate", "onFloat1stUpdate",
+//			"oncomplete", "onFloat1stComplete"
+//		));
+//
+//		iTween.ValueTo(gameObject, iTween.Hash(
+//			"from", 0.0f,
+//			"to", 5.0f,
+//			"delay", 0,
+//			"time", 5.0f,
+//			"easetype", iTween.EaseType.linear,
+//			"onupdate", "onFloat2ndUpdate",
+//			"oncomplete", "onFloat2ndComplete"
+//		));
+
+//		Time.timeScale = 0;
+
+		Debug.Log( TimeHelper.GetFrameAndTime() + " iTween.Set." );
+
+		iTween t_itween = iTween.ValueTo(gameObject, iTween.Hash(
+			"from", 0.0f,
+			"to", 5.0f,
+			"delay", 3.0f,
+			"ignoretimescale", true,
+			"time", 3.0f,
+			"easetype", iTween.EaseType.linear,
+			"onstart", "onFloatRealTimeStart",
+			"onupdate", "onFloatRealTimeUpdate",
+			"oncomplete", "onFloatRealTimeComplete"
+		));
+
+		t_itween.SetDebug( true );
+	}
+
+	public void onFloatRealTimeStart(){
+		Debug.Log( TimeHelper.GetFrameAndTime() + " onFloatRealTimeStart()" );
+	}
+
+	public void onFloatRealTimeUpdate( float p_float ){
+		Debug.Log( TimeHelper.GetFrameAndTime() + " onFloatRealTimeUpdate( " + p_float + " ) " );
+	}
+
+	public void onFloatRealTimeComplete(){
+		Debug.Log( TimeHelper.GetFrameAndTime() + " onFloatRealTimeComplete() " );
+	}
+
+	public void onFloat1stUpdate( float p_float ){
+		Debug.Log( "onFloat1stUpdate( " + p_float + " ) " + TimeHelper.GetFrameAndTime() );
+	}
+
+	public void onFloat1stComplete(){
+		Debug.Log( "onFloat1stComplete() " + TimeHelper.GetFrameAndTime() );
+	}
+
+	public void onFloat2ndUpdate( float p_float ){
+		Debug.Log( "onFloat2ndUpdate( " + p_float + " ) " + TimeHelper.GetFrameAndTime() );
+	}
+
+	public void onFloat2ndComplete(){
+		Debug.Log( "onFloat2ndComplete() " + TimeHelper.GetFrameAndTime() );
 	}
 
 	public bool m_log_button_status = false;
@@ -82,9 +168,31 @@ public class _Debug : MonoBehaviour {
 	public Vector3 m_delta_move = new Vector3( 0.001f, 0, 0 );
 
 	void Update () {
-		{
-			Debug.Log( "Server Time: " + TimeHelper.GetCurServerDateTimeString() + "   IsFirstDay: " + LoadingTemplate.IsFirstDay() );
-		}
+//		if( m_tex != null ){
+//			Debug.Log( "Update UITexture: " + m_tex );
+//
+//			SetUITexture( m_tex );
+//
+//			m_tex = null;
+//		}
+//
+//		if( m_self_copy_tex != null ){
+//			Debug.Log( "Update Self Copy UITexture: " + m_tex );
+//
+//			Texture2D t_tex = null;
+//
+//			{
+//				
+//			}
+//
+//			SetUITexture( m_self_copy_tex );
+//
+//			m_self_copy_tex = null;
+//		}
+
+//		{
+//			Debug.Log( "Server Time: " + TimeHelper.GetCurServerDateTimeString() + "   IsFirstDay: " + LoadingTemplate.IsFirstDay() );
+//		}
 
 //		{
 //			CharacterController t_control = GetComponent<CharacterController>();

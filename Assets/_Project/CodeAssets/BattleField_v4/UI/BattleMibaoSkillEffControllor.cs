@@ -12,13 +12,17 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 	public UISprite spriteLabel_2;
 
+	public GameObject colliderObject;
+
 
 	private int skillNameId;
 
-	private BattleMibaoEffTemplate template;
-
 
 	private static BattleMibaoSkillEffControllor _instance;
+
+	private static float label1StartTime = .2f;
+
+	private static float label2StartTime = .8f;
 
 	private static float label1ActionTime = .15f;
 
@@ -26,11 +30,15 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 	private static float hideActionTime = .5f;
 
+	private static float endTime = 1.5f;
+
 	private static iTween.EaseType labelEase = iTween.EaseType.easeOutElastic;
 
 	private static Vector3 labelStartScale = new Vector3(5f, 5f, 1f);
 
 	private static Vector3 labelEndScale = new Vector3 (1f, 1f, 1f);
+
+	private float tempTimeScale = 1;
 
 
 	public static BattleMibaoSkillEffControllor Instance() { return _instance; }
@@ -50,14 +58,22 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 	private void _showSkillEff(int _skillNameId)
 	{
+		tempTimeScale = Time.timeScale;
+
 		hide ();
+
+		UIBackgroundEffect t_ef = EffectTool.SetUIBackgroundEffect( Camera.main.gameObject, true );
+
+		BattleUIControlor.Instance ().layerFight.SetActive (false);
+
+		Time.timeScale = 0;
 
 		gameObject.SetActive (true);
 
+		colliderObject.SetActive (true);
+
 		skillNameId = _skillNameId;
 		
-		template = BattleMibaoEffTemplate.getMibaoEffectTemplateByNameId (skillNameId);
-
 		foreach(UISprite sprite in spriteframes)
 		{
 			sprite.spriteName = skillNameId + "_frame";
@@ -69,18 +85,18 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 		
 		spriteLabel_2.spriteName = skillNameId + "_2";
 
-		StartCoroutine (_showSkillEffFrameAction());
+		_showSkillEffFrameAction();
 
-		StartCoroutine (_showSkillEffBackAction());
+		_showSkillEffBackAction();
 
-		StartCoroutine (_showSkillEffLabel1Action());
+		_showSkillEffLabel1Action();
 
-		StartCoroutine (_showSkillEffLabel2Action());
+		_showSkillEffLabel2Action();
 
-		StartCoroutine (_endAction());
+		_endAction();
 	}
 
-	private IEnumerator _showSkillEffFrameAction()
+	private void _showSkillEffFrameAction()
 	{
 		foreach(UISprite sprite in spriteframes)
 		{
@@ -89,89 +105,140 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 			sprite.alpha = 0;
 		}
 
-		yield return new WaitForSeconds (template.frameStartTime);
-
 		foreach(UISprite sprite in spriteframes)
 		{
-			TweenAlpha.Begin(sprite.gameObject, template.frameActionTime, 1f);
+			iTween.ValueTo(sprite.gameObject, iTween.Hash(
+				"from", 0,
+				"to", 1,
+				"time", hideActionTime,
+				"ignoretimescale", true,
+				"onupdate", "iSetAlpha"
+				));
 		}
 	}
 
-	private IEnumerator _showSkillEffBackAction()
+	private void _showSkillEffBackAction()
 	{
 		spriteBack.gameObject.SetActive (true);
 
 		spriteBack.alpha = 0;
 
-		yield return new WaitForSeconds (template.backStartTime);
-
-		TweenAlpha.Begin(spriteBack.gameObject, template.backActionTime, 1f);
+		iTween.ValueTo(spriteBack.gameObject, iTween.Hash(
+			"from", 0,
+			"to", 1,
+			"time", hideActionTime,
+			"ignoretimescale", true,
+			"onupdate", "iSetAlpha"
+			));
 	}
 
-	private IEnumerator _showSkillEffLabel1Action()
+	private void _showSkillEffLabel1Action()
 	{
 		spriteLabel_1.transform.localScale = labelStartScale;
 
 		spriteLabel_1.alpha = 1f;
 
-		yield return new WaitForSeconds (template.label1StartTime);
-
-		spriteLabel_1.gameObject.SetActive (true);
-
-		iTween.ScaleTo (spriteLabel_1.gameObject, iTween.Hash(
-			"scale", labelEndScale,
+		iTween.ValueTo(gameObject, iTween.Hash(
+			"delay", label1StartTime,
+			"from", labelStartScale.x,
+			"to", labelEndScale.x,
 			"time", label1ActionTime,
-			"easetype", labelEase
+			"easetype", labelEase,
+			"ignoretimescale", true,
+			"onupdate", "_showSkillEffLabel1Update",
+			"onstart", "_showSkillEffLabel1Start"
 			));
 	}
 
-	private IEnumerator _showSkillEffLabel2Action()
+	private void _showSkillEffLabel1Start()
+	{
+		spriteLabel_1.gameObject.SetActive (true);
+	}
+
+	private void _showSkillEffLabel1Update(float _scale)
+	{
+		spriteLabel_1.transform.localScale = new Vector3(_scale, _scale, 1f);
+	}
+
+	private void _showSkillEffLabel2Action()
 	{
 		spriteLabel_2.transform.localScale = labelStartScale;
 
 		spriteLabel_2.alpha = 1f;
 
-		yield return new WaitForSeconds (template.label2StartTime);
-		
-		spriteLabel_2.gameObject.SetActive (true);
-		
-		iTween.ScaleTo (spriteLabel_2.gameObject, iTween.Hash(
-			"scale", labelEndScale,
+		iTween.ValueTo(gameObject, iTween.Hash(
+			"delay", label2StartTime,
+			"from", labelStartScale.x,
+			"to", labelEndScale.x,
 			"time", label2ActionTime,
-			"easetype", labelEase
+			"easetype", labelEase,
+			"ignoretimescale", true,
+			"onupdate", "_showSkillEffLabel2Update",
+			"onstart", "_showSkillEffLabel2Start"
 			));
 	}
 
-	private IEnumerator _shkeAction()
+	private void _showSkillEffLabel2Start()
 	{
-		yield return new WaitForSeconds (template.shakeTime);
-
-		BattleControlor.Instance().getKing ().gameCamera.Shake (KingCamera.ShakeType.Cri);
+		spriteLabel_2.gameObject.SetActive (true);
 	}
 
-	private IEnumerator _endAction()
+	private void _showSkillEffLabel2Update(float _scale)
 	{
-		yield return new WaitForSeconds (template.endTime);
+		spriteLabel_2.transform.localScale = new Vector3(_scale, _scale, 1f);
+	}
 
+	private void _endAction()
+	{
 		foreach(UISprite sprite in spriteframes)
 		{
-			TweenAlpha.Begin(sprite.gameObject, hideActionTime, 0f);
+			iTween.ValueTo(sprite.gameObject, iTween.Hash(
+				"delay", endTime,
+				"from", 1,
+				"to", 0,
+				"time", hideActionTime,
+				"ignoretimescale", true,
+				"onupdate", "iSetAlpha"
+				));
 		}
 
-		TweenAlpha.Begin(spriteBack.gameObject, hideActionTime, 0f);
+		iTween.ValueTo(spriteBack.gameObject, iTween.Hash(
+			"delay", endTime,
+			"from", 1,
+			"to", 0,
+			"time", hideActionTime,
+			"ignoretimescale", true,
+			"onupdate", "iSetAlpha"
+			));
 
-		TweenAlpha.Begin(spriteLabel_1.gameObject, hideActionTime, 0f);
+		iTween.ValueTo(spriteLabel_1.gameObject, iTween.Hash(
+			"delay", endTime - label1StartTime,
+			"from", 1,
+			"to", 0,
+			"time", hideActionTime,
+			"ignoretimescale", true,
+			"onupdate", "iSetAlpha"
+			));
 
-		TweenAlpha.Begin(spriteLabel_2.gameObject, hideActionTime, 0f);
-
-		yield return new WaitForSeconds (hideActionTime);
-
-		hide ();
+		iTween.ValueTo(spriteLabel_2.gameObject, iTween.Hash(
+			"delay", endTime - label2StartTime,
+			"from", 1,
+			"to", 0,
+			"time", hideActionTime,
+			"ignoretimescale", true,
+			"onupdate", "iSetAlpha",
+			"oncomplete", "hide",
+			"oncompletetarget", gameObject
+			));
 	}
 
 	private void hide()
 	{
 		skillNameId = 0;
+
+		UIBackgroundEffect t_ef = EffectTool.SetUIBackgroundEffect( Camera.main.gameObject, false );
+
+		BattleUIControlor.Instance ().layerFight.SetActive (true);
 
 		foreach(UISprite sprite in spriteframes)
 		{
@@ -185,6 +252,10 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 		spriteLabel_2.gameObject.SetActive (false);
 
 		gameObject.SetActive (false);
+
+		colliderObject.SetActive (false);
+
+		Time.timeScale = tempTimeScale;
 	}
 
 }

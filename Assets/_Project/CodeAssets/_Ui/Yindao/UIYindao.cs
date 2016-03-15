@@ -17,6 +17,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 	public UISprite m_UISpriteRight;
 
 	public UISprite m_UISpriteButton;
+	public bool m_isQiangzhi;
 	// Use this for initialization
 	private iTween[] m_iTween;
 	private bool m_isMoveOne = true;
@@ -110,7 +111,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		}
 		m_iCurId = id;
 
-//		Debug.Log(m_iCurId);
+	//	Debug.Log(m_iCurId);
 
 		if(id == 0)
 		{
@@ -224,6 +225,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
             m_iIsColl = yindaoElenemt.m_Click.isColl;
 			if(yindaoElenemt.m_Click.isColl == 0)
 			{
+				m_isQiangzhi = true;
 				m_UISpriteCenter.gameObject.SetActive(true);
 				m_UISpriteTop.gameObject.SetActive(true);
 				m_UISpriteBom.gameObject.SetActive(true);
@@ -232,6 +234,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 			}
 			else
 			{
+				m_isQiangzhi = false;
 				m_UISpriteCenter.gameObject.SetActive(false);
 				m_UISpriteTop.gameObject.SetActive(false);
 				m_UISpriteBom.gameObject.SetActive(false);
@@ -456,7 +459,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 
 	public void CloseUI()
 	{
-//    	Debug.Log("CloseYinDao");
+  // 	Debug.Log("CloseYinDao");
 		if(!Global.m_isOpenJiaoxue)
 		{
 			return;

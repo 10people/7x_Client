@@ -10,7 +10,7 @@ public class AnnounceTemplate : XmlLoadManager
 
 	public int type;
 
-	public int condition;
+	public string condition;
 
 	public string announcement;
 
@@ -58,7 +58,7 @@ public class AnnounceTemplate : XmlLoadManager
 				t_template.type = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.condition = int.Parse( t_reader.Value );
+				t_template.condition = t_reader.Value;
 				
 				t_reader.MoveToNextAttribute();
 				t_template.announcement = t_reader.Value;
@@ -90,7 +90,7 @@ public class AnnounceTemplate : XmlLoadManager
 	{
 		foreach(AnnounceTemplate template in templates)
 		{
-			if(template.type == type && template.condition == condition)
+			if(template.type == type && int.Parse (template.condition) == condition)
 			{
 				return true;
 			}

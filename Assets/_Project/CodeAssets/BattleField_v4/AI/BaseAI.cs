@@ -188,6 +188,8 @@ public class BaseAI : MonoBehaviour
 
 	protected bool inHover;
 
+	protected bool inStrongMove;
+
 
 	private AnimationState aniWalk;
 
@@ -238,6 +240,7 @@ public class BaseAI : MonoBehaviour
 	private bool inPath;
 
 	private Vector3 pathPos;
+
 
 	#if UNITY_EDITOR && REMOVE_MIBAO_CD
 	private static bool m_log_tips = true;
@@ -341,6 +344,8 @@ public class BaseAI : MonoBehaviour
 		curCrashData = null;
 
 		inHover = false;
+
+		inStrongMove = false;
 
 		inPath = false;
 
@@ -1040,6 +1045,11 @@ public class BaseAI : MonoBehaviour
 			return;
 		}
 
+		if(isIdle)
+		{
+			return;
+		}
+
 		if(m_sPlaySkillAnimation != "")
 		{
 			if(m_sPlaySkillAnimation == IsPlaying())
@@ -1110,7 +1120,7 @@ public class BaseAI : MonoBehaviour
 
 	public virtual void BaseUpdate ()
 	{
-		if(!isAlive || !aiable) return;
+		if (!isAlive || !aiable) return;
 
 		if (nodeData.nodeType == NodeType.NPC) return;
 
@@ -1763,7 +1773,7 @@ public class BaseAI : MonoBehaviour
 
 		if (IsPlaying (getAnimationName(AniType.ANI_BATCUp)) == true) return false;
 
-		mAnim.SetTrigger(getAnimationName(AniType.ANI_Attack_0));
+		mAnim.SetTrigger(getAnimationName(AniType.ANI_Attack_0 + (int)((Random.value * 100) % ModelTemplate.getModelTemplateByModelId(modelId).attackCount)));
 
 		transform.forward = defender.transform.position - transform.position;
 
@@ -1895,11 +1905,9 @@ public class BaseAI : MonoBehaviour
 		character.Move(step);
 	}
 
-	public void moveAction(Vector3 targetPosition, iTween.EaseType easeType, float time, bool colliderEnable = true)
+	public void moveAction(Vector3 targetPosition, iTween.EaseType easeType, float time, int colliderLevel = 0)
 	{
-//		return;
-
-		if(colliderEnable == true)
+		if(colliderLevel == 0)
 		{
 			tempMovePostion = Vector3.zero;
 
@@ -1937,30 +1945,33 @@ public class BaseAI : MonoBehaviour
 		
 		chongfengControllor.transform.position = transform.position;
 
-		foreach(BaseAI a in BattleControlor.Instance().enemyNodes)
+		//if(colliderLevel == 2)
 		{
-			a.setNavMeshRadiusTemp(0);
+			foreach(BaseAI a in BattleControlor.Instance().enemyNodes)
+			{
+				a.setNavMeshRadiusTemp(0);
 
-			a.character.radius = 0;
+				a.character.radius = 0;
 
-			if(a.nodeId == nodeId) continue;
+				if(a.nodeId == nodeId) continue;
 
-			a.transform.position += new Vector3(0, 5000, 0);
+				a.transform.position += new Vector3(0, 5000, 0);
 
-			//a.character.enabled = false;
-		}
+				//a.character.enabled = false;
+			}
 
-		foreach(BaseAI a in BattleControlor.Instance().selfNodes)
-		{
-			a.setNavMeshRadiusTemp(0);
+			foreach(BaseAI a in BattleControlor.Instance().selfNodes)
+			{
+				a.setNavMeshRadiusTemp(0);
 
-			a.character.radius = 0;
+				a.character.radius = 0;
 
-			if(a.nodeId == nodeId) continue;
+				if(a.nodeId == nodeId) continue;
 
-			a.transform.position += new Vector3(0, 5000, 0);
+				a.transform.position += new Vector3(0, 5000, 0);
 
-			//a.character.enabled = false;
+				//a.character.enabled = false;
+			}
 		}
 
 		float length = Vector3.Distance (targetPosition, transform.position);
@@ -1971,44 +1982,61 @@ public class BaseAI : MonoBehaviour
 
 		chongfengControllor.Move (chongfengControllor.transform.forward * length);
 
-		foreach(BaseAI a in BattleControlor.Instance().enemyNodes)
+		//if(colliderLevel == 2)
 		{
-			a.setNavMeshRadiusTemp(a.radius);
+			foreach(BaseAI a in BattleControlor.Instance().enemyNodes)
+			{
+				a.setNavMeshRadiusTemp(a.radius);
+				
+				a.character.radius = a.radius;
+	
+				if(a.nodeId == nodeId) continue;
+	
+				a.transform.position += new Vector3(0, -5000, 0);
+	
+				//a.character.enabled = true;
+			}
 			
-			a.character.radius = a.radius;
-
-			if(a.nodeId == nodeId) continue;
-
-			a.transform.position += new Vector3(0, -5000, 0);
-
-			//a.character.enabled = true;
+			foreach(BaseAI a in BattleControlor.Instance().selfNodes)
+			{
+				a.setNavMeshRadiusTemp(a.radius);
+				
+				a.character.radius = a.radius;
+	
+				if(a.nodeId == nodeId) continue;
+	
+				a.transform.position += new Vector3(0, -5000, 0);
+	
+				//a.character.enabled = true;
+			}
 		}
-		
-		foreach(BaseAI a in BattleControlor.Instance().selfNodes)
+
+		if(colliderLevel == 1)
 		{
-			a.setNavMeshRadiusTemp(a.radius);
-			
-			a.character.radius = a.radius;
-
-			if(a.nodeId == nodeId) continue;
-
-			a.transform.position += new Vector3(0, -5000, 0);
-
-			//a.character.enabled = true;
+			iTween.ValueTo(gameObject, iTween.Hash(
+				"from", transform.position,
+				"to", chongfengControllor.transform.position,
+				"time", time,
+				"easeType", easeType,
+				"onupdate", "PositonTweenWithoutCharactor",
+				"oncomplete", "PositonTweenWithoutCharactorComplete"
+				));
 		}
+		else
+		{
+			StrongMove();
+		}
+	}
 
-		iTween.ValueTo(gameObject, iTween.Hash(
-			"from", transform.position,
-			"to", chongfengControllor.transform.position,
-			"time", time,
-			"easeType", easeType,
-			"onupdate", "PositonTweenWithoutCharactor",
-			"oncomplete", "PositonTweenWithoutCharactorComplete"
-			));
+	protected virtual void StrongMove()
+	{
+	
 	}
 
 	protected void PositonTweenWithoutCharactor(Vector3 p_offset)
 	{
+		if (inStrongMove) return;
+
 		transform.position = p_offset;
 	}
 
@@ -2401,20 +2429,37 @@ public class BaseAI : MonoBehaviour
 			if(count == 0)
 			{
 				BattleUIControlor.Instance().labelBarMibao.text = "";
+
+				setHeartOn(false);
 			}
 			else if(count == 1)
 			{
 				BattleUIControlor.Instance().labelBarMibao.text = "x1";
+
+				if(BattleUIControlor.Instance().b_skill_miBao == true)
+				{
+					setHeartOn(true);
+				}
 			}
 			else if(count == 2)
 			{
 				BattleUIControlor.Instance().labelBarMibao.text = "x2";
+
+				if(BattleUIControlor.Instance().b_skill_miBao == true)
+				{
+					setHeartOn(true);
+				}
 			}
 			else if(count == 3)
 			{
 				BattleUIControlor.Instance().labelBarMibao.text = "MAX";
 
-				if(tempNuqi > 0 && BattleUIControlor.Instance().b_skill_miBao == true)
+				if(BattleUIControlor.Instance().b_skill_miBao == true)
+				{
+					setHeartOn(true);
+				}
+
+				if((tempNuqi > 0 || addNuqi == 0) && BattleUIControlor.Instance().b_skill_miBao == true)
 				{
 					UI3DEffectTool.ShowTopLayerEffect(
 	                    UI3DEffectTool.UIType.FunctionUI_1, 
@@ -2423,6 +2468,15 @@ public class BaseAI : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	public void setHeartOn(bool on)
+	{
+		BattleUIControlor.Instance().btnMibaoSkillIconAnim.enabled = on;
+		
+		BattleUIControlor.Instance().btnMibaoSkillIconAnim_1.gameObject.SetActive(on);
+		
+		BattleUIControlor.Instance().btnMibaoSkillIconAnim_2.gameObject.SetActive(on);
 	}
 
 	protected void clearNuQi()
@@ -2687,7 +2741,14 @@ public class BaseAI : MonoBehaviour
 		if (able == false) return false;
 
 		mAnim.SetTrigger(getAnimationName(AniType.ANI_BATCDown));
-		
+
+		if(nodeData.nodeType == NodeType.PLAYER)
+		{
+			KingSkillWuDiZhan wudizhan = gameObject.GetComponent<KingSkillWuDiZhan>();
+
+			wudizhan.cut();
+		}
+
 		setNavMeshStop();
 
 		targetNode = null;

@@ -1316,19 +1316,19 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .438196689
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 203
+        messageOptions: 0
       - time: .546003878
         functionName: createArrow
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 260
-        messageOptions: 0
-      - time: .546170115
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 204
         messageOptions: 0
       - time: .551876128
         functionName: PlaySound

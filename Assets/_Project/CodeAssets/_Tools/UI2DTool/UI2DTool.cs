@@ -126,13 +126,18 @@ public class UI2DTool : Singleton<UI2DTool>{
 		return t_gb;
 	}
 
+	private bool m_hide_origin_top_ui = false;
 
 	/// Desc:
 	/// Manual add the Toppest UI, and hide MainCityUI.
 	/// 
+	/// Params:
+	/// 1.p_gb, the UI's root gameObject which is tried to be added here;
+	/// 2.p_hide_origin_top_ui, control whether or not hide the origin UI(except 0 UI);
+	/// 
 	/// Notice:
 	/// 1.p_gb MUST be Function's UI.
-	public void AddTopUI( GameObject p_gb ){
+	public void AddTopUI( GameObject p_gb, bool p_hide_origin_top_ui = true ){
 		if( p_gb == null ){
 			Debug.LogError( "Error, p_gb is null." );
 
@@ -170,12 +175,18 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 		// hide origin top
 		#if ENABLE_OPTIMIZE
-		if( GetTopUI() != null ){
-			if( GetTopUI().GetRootGameObject() != null ){
-				GetTopUI().SetActive( false );
-			}
-		}
+		HideOriginTopUI();
 		#endif
+
+		{
+			m_hide_origin_top_ui = p_hide_origin_top_ui;
+
+			if( p_hide_origin_top_ui ){
+				if( m_2d_manager_list.Count > 1 ){
+					HideOriginTopUI();
+				}
+			}	
+		}
 
 		{
 			AddToTop( t_manager );
@@ -371,7 +382,7 @@ public class UI2DTool : Singleton<UI2DTool>{
 		#endif
 
 		#if DEBUG_UI_2D_TOOL
-		Debug.Log( "UpdateUIBackground() : " + m_2d_manager_list.Count );
+		Debug.Log( "UpdateUIBackground( Count: " + m_2d_manager_list.Count + " )" );
 		#endif
 
 		#if ENABLE_OPTIMIZE 
@@ -480,6 +491,13 @@ public class UI2DTool : Singleton<UI2DTool>{
 		}
 	}
 
+	private void HideOriginTopUI(){
+		if( GetTopUI() != null ){
+			if( GetTopUI().GetRootGameObject() != null ){
+				GetTopUI().SetActive( false );
+			}
+		}
+	}
 
 	public int GetUICount(){
 		return m_2d_manager_list.Count;

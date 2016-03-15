@@ -13,7 +13,7 @@ public class LianmengFengshanTemplate : XmlLoadManager
     public string desc3;
     public int huoyuedu;
     public string award;
-
+    public int tuTenglvNeeded;
 
     public static List<LianmengFengshanTemplate> templates = new List<LianmengFengshanTemplate>();
 
@@ -71,11 +71,15 @@ public class LianmengFengshanTemplate : XmlLoadManager
 
                 t_reader.MoveToNextAttribute();
                 t_template.desc3 = t_reader.Value;
+
                 t_reader.MoveToNextAttribute();
                 t_template.huoyuedu = int.Parse(t_reader.Value);
+
                 t_reader.MoveToNextAttribute();
                 t_template.award = t_reader.Value;
+
                 t_reader.MoveToNextAttribute();
+                t_template.tuTenglvNeeded = int.Parse(t_reader.Value);
 
             }
 

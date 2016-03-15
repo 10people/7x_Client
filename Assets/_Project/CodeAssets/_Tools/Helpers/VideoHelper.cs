@@ -156,6 +156,20 @@ public class VideoHelper : MonoBehaviour {
 	}
 
 	public IEnumerator PlayVideo(){
+		if( ConfigTool.GetBool( ConfigTool.CONST_INVESTIGATION_USE ) ){
+			#if DEBUG_VIDEO
+			Debug.Log( "Skip Video." );
+			#endif
+
+			VideoPlayedDone();
+
+			yield break;
+		}
+
+		#if DEBUG_VIDEO
+		Debug.Log( "Prepare To Play Video." );
+		#endif
+
 		#if PC_VIDEO && UNITY_EDITOR
 		{
 			string t_win_path = "Assets/ResourcesCache/" + m_video_path;

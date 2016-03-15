@@ -26,6 +26,29 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
     private List<Vector3> _listPos = new List<Vector3>();
     private bool _isMovingOn = false;
     private bool _isMovingComntinue = false;
+
+    float _timeInterval = 0;
+    private bool _isRun = false;
+    private bool _PlaySet = false;
+    private bool _isTimeGo = false;
+    private float _time_StayAnimator = 0.0f;
+    private bool _playerRandomAnimator = false;
+    private enum AnimationType
+    {
+        INIDLE,
+        RELAX_1,
+        RELAX_2
+    }
+    private AnimationType _PlayerTyoe = new AnimationType();
+    private AnimationType _PlayerTyoeMiddle = new AnimationType();
+    private int _time_limit = 0;
+    private enum MoveType
+    {
+        NONE,
+        MOVE_TYPE_RUN,
+        MOVE_TYPE_IDLE
+    }
+    MoveType m_MoveType = new MoveType();
     void Awake()
     {
         m_animation = this.GetComponent<Animator>();
@@ -37,59 +60,89 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
 
     void Start()
     {
+        _time_limit = Random.Range(5, 15);
+        m_MoveType = MoveType.NONE;
+        _PlayerTyoe = AnimationType.INIDLE;
         m_character = transform.GetComponent<CharacterController>();
-      //  m_character.enabled = false;
+        //  m_character.enabled = false;
         //m_Agent.enabled = false;
     }
 
-
     public void PlayerRun(Vector3 targetPosition)
     {
-        //_isRun = false;
-        //if (_listPos.Count == 0)
-        //{
-        //    Debug.Log("_listPos.Count_listPos.Count_listPos.Count ::" + _listPos.Count);
-        //    _listPos.Add(targetPosition);
-        //    MovingOn(targetPosition);
-        //}
-        //else
-        //{
-        //    Debug.Log("_listPos.Count_listPos.Count_listPos.Count ::" + _listPos.Count);
-        //    _listPos.Add(targetPosition);
-        //}
         _isRun = true;
         MovingOn(targetPosition);
     }
-     float _timeInterval = 0;
-     private bool _isRun = false;
     void Update()
     {
-    
-      //  if (_listPos.Count > 0)
-        {
-            //  Debug.Log(" m_Agent.remainingDistance m_Agent.remainingDistance m_Agent.remainingDistance ::" + m_Agent.remainingDistance);
-            if (_isRun)
-            {
 
-                if (m_Agent != null)
+        if (m_Agent != null )
+        {
+            if (Mathf.Abs(m_Agent.remainingDistance) < 0.01f)
+            {
+                PlayerStop();
+            }
+        }
+        if (_playerRandomAnimator && !_isTimeGo)
+        {
+            _time_StayAnimator += Time.deltaTime;
+            if (_time_StayAnimator >= _time_limit)
+            {
+                _time_limit = Random.RandomRange(5, 15);
+                _isTimeGo = true;
+                switch (_PlayerTyoe)
                 {
-                    if (Mathf.Abs(m_Agent.remainingDistance) < 0.01f)
-                    {
-                        _isRun = false;
-                        PlayerStop();
-                    }
+                    case AnimationType.INIDLE:
+                        {
+                            _PlayerTyoeMiddle = _PlayerTyoe;
+                            AnimationPlay(2);
+                            _PlayerTyoe = AnimationType.RELAX_1;
+                        }
+                        break;
+                    case AnimationType.RELAX_2:
+                        {
+                            _PlayerTyoeMiddle = _PlayerTyoe;
+                            AnimationPlay(3);
+                            _PlayerTyoe = AnimationType.RELAX_1;
+                        }
+
+                        break;
+
                 }
-                else
-                {
-                    _isRun = false;
-                }
+
+                _time_StayAnimator = 0;
+            }
+        }
+        else if (_time_StayAnimator > 0)
+        {
+            _time_StayAnimator = 0;
+
+        }
+
+
+        if ((IsPlayComplete("inRelax_1") || IsPlayComplete("inRelax_2")) && _PlayerTyoe == AnimationType.RELAX_1)
+        {
+            _isTimeGo = false;
+            m_MoveType = MoveType.MOVE_TYPE_IDLE;
+            PlayerStop();
+            if (_PlayerTyoeMiddle == AnimationType.INIDLE)
+            {
+                _PlayerTyoe = AnimationType.RELAX_2;
+            }
+            else
+            {
+                _PlayerTyoe = AnimationType.INIDLE;
             }
         }
     }
 
     void MovingOn(Vector3 targetPosition)
     {
-        m_animation.SetBool("inRun", true);
+        if (_playerRandomAnimator)
+        {
+            _playerRandomAnimator = false;
+            AnimationPlay(1);
+        }
         m_Agent.speed = PlayerModelController.m_playerModelController.m_speed;
 
         m_Agent.Resume();
@@ -103,16 +156,77 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
 
     public void PlayerStop()
     {
-        _isRun = false;
         m_Agent.Stop();
-        
-        if (m_animation != null)
+        if (m_MoveType == MoveType.NONE)
         {
-            m_animation.SetBool("inRun", false); 
+            _playerRandomAnimator = true;
+        }
+ 
+        if (m_MoveType == MoveType.MOVE_TYPE_IDLE)
+        {
+            m_MoveType = MoveType.MOVE_TYPE_RUN;
+            AnimationPlay(0);
+            _playerRandomAnimator = true;
         }
     }
 
+    public void AnimationPlay(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                {
+                    _playerRandomAnimator = true;
+                    m_animation.SetTrigger("iniDle");
+                }
+                break;
+            case 1:
+                {
+                    _isTimeGo = false;
+                    _playerRandomAnimator = false;
+                    _PlayerTyoe = AnimationType.INIDLE;
+                    m_MoveType = MoveType.MOVE_TYPE_IDLE;
+                    m_animation.SetTrigger("inRun");
+                }
+                break;
+            case 2:
+                {
+                    m_animation.SetTrigger("inRelax_1");
+                }
+                break;
+            case 3:
+                {
+                    m_animation.SetTrigger("inRelax_2");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    public bool IsPlayComplete(string _name)
+    {
+        if (m_animation == null) return false;
 
+        AnimatorClipInfo[] t_states = m_animation.GetCurrentAnimatorClipInfo(0);
+        AnimatorStateInfo info = m_animation.GetCurrentAnimatorStateInfo(0);
+        float playing = Mathf.Clamp01(info.normalizedTime);
+
+        for (int i = 0; i < t_states.Length; /*i++*/ )
+        {
+            AnimatorClipInfo t_item = t_states[i];
+
+            if (t_item.clip.name.Equals(_name) && playing >= 1.0f)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return false;
+    }
 
     public void DestoryObject()
     {

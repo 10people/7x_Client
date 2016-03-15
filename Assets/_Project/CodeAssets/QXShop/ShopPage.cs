@@ -68,6 +68,9 @@ public class ShopPage : MonoBehaviour {
 	public GameObject moneyInfoObj;
 	public UISprite moneyIcon;
 	public UILabel moneyLabel;
+
+	public GameObject refreshBtn;
+	public GameObject refreshLabelObj;
 	
 	private List<EventHandler> shopBtnList = new List<EventHandler>();
 	public GameObject shopBtnObj;
@@ -86,6 +89,9 @@ public class ShopPage : MonoBehaviour {
 	private int column;//列数
 	private float size = 660;
 	private float itemDis = 165;
+
+	private bool buyFinished = false;
+	public bool BuyFinished { set{buyFinished = value;} get{return buyFinished;} }
 
 	/// <summary>
 	/// Ins it shop page.
@@ -154,7 +160,11 @@ public class ShopPage : MonoBehaviour {
 			moneyIcon = QXComData.MoneySprite (ShopData.Instance.MoneyType (tempType),moneyIcon);
 			moneyLabel.text = tempShopRes.money.ToString ();
 		}
-		
+
+		bool isAllianceType = tempType == ShopData.ShopType.GONGXIAN || tempType == ShopData.ShopType.GONGXUN || tempType == ShopData.ShopType.HUANGYE ? true : false;
+		refreshBtn.SetActive (!isAllianceType);
+		refreshLabelObj.transform.localPosition = new Vector3 (isAllianceType ? 335 : 150,185,0);
+
 		ShopBtnState (tempType);
 
 		foreach (EventHandler handler in otherBtnList)
@@ -165,7 +175,11 @@ public class ShopPage : MonoBehaviour {
 
 		CreateGoodList ();
 
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 1);
+//		Debug.Log ("QXComData.CheckYinDaoOpenState (400040):" + QXComData.CheckYinDaoOpenState (400040));
+		if (!BuyFinished)
+		{
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 1);
+		}
 	}
 	
 	/// <summary>
@@ -636,6 +650,10 @@ public class ShopPage : MonoBehaviour {
 		goodSbValue = 0;
 		ShopData.Instance.IsOpenFirstTime = true;
 		Global.m_isOpenShop = false;
+		if(GameObject.Find("New_My_Union(Clone)"))
+		{
+			NewAlliancemanager.Instance ().ShowAllianceGuid ();
+		}
 		MainCityUI.TryRemoveFromObjectList (gameObject);
 		gameObject.SetActive (false);
 	}

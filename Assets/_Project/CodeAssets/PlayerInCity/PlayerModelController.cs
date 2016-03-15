@@ -55,6 +55,10 @@ public class PlayerModelController : MonoBehaviour
     public NavMeshAgent m_agent;
 
     private float m_timeInterval = 0.0f;
+    private float _time_StayAnimator = 0.0f;
+    private bool _playerRandomAnimator = false;
+
+    private int _RandomNum = 0;
 
     public int m_iMoveToNpcID = -1;
 
@@ -63,18 +67,22 @@ public class PlayerModelController : MonoBehaviour
     private int BigHouseId = 0;
 
     private Vector3 vec_TargetPos = new Vector3();
-
+    private enum MoveType
+    {
+     NONE,
+     MOVE_TYPE_RUN,
+     MOVE_TYPE_IDLE
+    }
+    MoveType m_MoveType = new MoveType();
     void Awake()
     {
         m_playerModelController = this;
-
-        //  CreatePlayerModel();
-        //		Debug.Log ("PlayerModelCol");
-        //        JunZhuData.RequestJunZhuInfo();
     }
 
     void Start()
     {
+        m_MoveType = MoveType.NONE;
+        _PlayerTyoe = AnimationType.INIDLE;
         StartCoroutine(ManualStart());
     }
 
@@ -223,6 +231,7 @@ public class PlayerModelController : MonoBehaviour
 
         SendPlayerData();
     }
+
 
     public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
@@ -440,8 +449,9 @@ public class PlayerModelController : MonoBehaviour
 
         yield return new WaitForSeconds(0.01f);
         inTurning = false;
-        m_animator.SetBool("inRun", true);
-
+     
+       // m_animator.SetTrigger("inRun");
+       AnimationPlay(1);
         m_agent.speed = m_speed;
 
         m_agent.Resume();
@@ -475,7 +485,7 @@ public class PlayerModelController : MonoBehaviour
 
         _isArrived = false;
         //stay character, disable right buttom btns.
-        m_animator.SetBool("inRun", false);
+      //  m_animator.SetTrigger("iniDle");
         //  m_animator.Play("zhuchengdile");
         //        if (isMoving)
         //        {
@@ -488,6 +498,9 @@ public class PlayerModelController : MonoBehaviour
 
         m_agent.Stop();
         m_isNavMesh = false;
+        //m_animator.SetBool("idle", true);
+        //_playerRandomAnimator = true;
+     
         //Tenement Nav Break
         //if (CityGlobalData.m_isAllianceTenentsScene)
         //{
@@ -520,6 +533,7 @@ public class PlayerModelController : MonoBehaviour
         if (!CityGlobalData.m_selfNavigation) return;
     
         CityGlobalData.m_selfNavigation = false;
+        
         m_agent.Stop();
         m_isNavMesh = false;
         m_character.enabled = true;
@@ -531,10 +545,21 @@ public class PlayerModelController : MonoBehaviour
         {
             m_showLayer = null;
         }
+      
     }
     private bool _IsSetPos = false;
     private bool _isArrived = false;
     public bool m_isSendPos = true;
+    private bool _PlaySet = false;
+    private bool _isTimeGo = false;
+    private enum AnimationType
+    {
+        INIDLE,
+        RELAX_1,
+        RELAX_2
+    }
+    private AnimationType _PlayerTyoe = new AnimationType();
+    private AnimationType _PlayerTyoeMiddle = new AnimationType();
     void Update()
     {
         if (m_ObjHero == null || m_joystick == null)
@@ -542,13 +567,65 @@ public class PlayerModelController : MonoBehaviour
             return;
         }
 
+        if (_playerRandomAnimator && !_isTimeGo)
+        {
+            _time_StayAnimator += Time.deltaTime;
+            if (_time_StayAnimator >= 5.0f )
+            {
+                _isTimeGo = true;
+                switch (_PlayerTyoe)
+                {
+                    case AnimationType.INIDLE:
+                        {
+                            _PlayerTyoeMiddle = _PlayerTyoe;
+                            AnimationPlay(2);
+                            _PlayerTyoe = AnimationType.RELAX_1;
+                        }
+                        break;
+                    case AnimationType.RELAX_2:
+                        {
+                            _PlayerTyoeMiddle = _PlayerTyoe;
+                            AnimationPlay(3);
+                            _PlayerTyoe = AnimationType.RELAX_1;
+                        }
+                     
+                        break;
+
+                }
+               
+                _time_StayAnimator = 0;
+            }
+        }
+        else if(_time_StayAnimator > 0)
+        {
+            _time_StayAnimator = 0;
+           
+        }
+ 
+        if ((IsPlayComplete("inRelax_1") || IsPlayComplete("inRelax_2")) && _PlayerTyoe == AnimationType.RELAX_1)
+        {
+            _isTimeGo = false;
+            m_MoveType = MoveType.MOVE_TYPE_IDLE;
+
+            if (_PlayerTyoeMiddle == AnimationType.INIDLE)
+            {
+                _PlayerTyoe = AnimationType.RELAX_2;
+            }
+            else
+            {
+                _PlayerTyoe = AnimationType.INIDLE;
+            }
+        }
+
+
         //update audio listener positon
         if (m_ObjHero != null)
         {
             ClientMain.m_ClientMainObj.transform.position = new Vector3(m_ObjHero.transform.position.x, m_ObjHero.transform.position.y, m_ObjHero.transform.position.z - 1);
         }
         m_timeInterval += Time.deltaTime;
-
+    
+        
         //0.24秒刷新一次玩家位置  提交数据        
         if (m_timeInterval >= 0.05f && m_ObjHero != null && m_isSendPos)
         {
@@ -589,9 +666,15 @@ public class PlayerModelController : MonoBehaviour
         //character control horizontal
         if (m_moveDir != Vector3.zero)
         {
+     
             MoveTurnToDestination(m_moveDir);
             // m_transform.forward = m_moveDir;
-            m_animator.SetBool("inRun", true);
+ 
+            if (_playerRandomAnimator)
+            {
+               AnimationPlay(1);
+            }
+
             if (CityGlobalData.m_selfNavigation)
             {
                 Global.m_sPanelWantRun = "";
@@ -611,9 +694,18 @@ public class PlayerModelController : MonoBehaviour
         }
         else
         {
-            //stop character, enable right buttom btns.
-            m_animator.SetBool("inRun", false);
-
+            if (m_MoveType == MoveType.NONE)
+            {
+                _playerRandomAnimator = true;
+            }
+ 
+           if (m_MoveType == MoveType.MOVE_TYPE_IDLE)
+            {
+                m_MoveType = MoveType.MOVE_TYPE_RUN;
+                AnimationPlay(0);
+                _playerRandomAnimator = true;
+            }
+            //  m_animator.SetBool("inRun", false);
             if (isMoving)
             {
                 isMoving = false;
@@ -635,6 +727,7 @@ public class PlayerModelController : MonoBehaviour
             PlayerPrefs.SetString("IsCurrentJunZhuPos", value);
         }
     }
+ 
     public void EmailLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject tempObject = Instantiate(p_object) as GameObject;
@@ -873,6 +966,8 @@ public class PlayerModelController : MonoBehaviour
         NewEmailData.Instance().LoadEmailPrefab();
 
 		QXChatData.Instance.LoadChatPrefab ();
+
+		TreasureCityData.Instance ();
     }
 
 
@@ -934,4 +1029,69 @@ public class PlayerModelController : MonoBehaviour
 		MainCityUI.TryAddToObjectList(tempObject);
 		UIYindao.m_UIYindao.CloseUI();
 	}
+
+    public void AnimationPlay(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                {
+                    _playerRandomAnimator = true;
+                    m_animator.SetTrigger("iniDle");
+                }
+            break;
+            case 1:
+                {
+                    _isTimeGo = false;
+                    _playerRandomAnimator = false;
+                    _PlayerTyoe = AnimationType.INIDLE;
+                    m_MoveType = MoveType.MOVE_TYPE_IDLE;
+                    m_animator.SetTrigger("inRun"); 
+                }
+                break;
+            case 2:
+                {
+                    m_animator.SetTrigger("inRelax_1");
+                }
+                break;
+            case 3:
+                {
+                    m_animator.SetTrigger("inRelax_2");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public bool IsPlayComplete(string _name)
+    {
+        if (m_animator == null) return false;
+
+        AnimatorClipInfo[] t_states = m_animator.GetCurrentAnimatorClipInfo(0);
+        AnimatorStateInfo info = m_animator.GetCurrentAnimatorStateInfo(0);
+         float playing = Mathf.Clamp01(info.normalizedTime);
+
+        for (int i = 0; i < t_states.Length; /*i++*/ )
+        {
+            AnimatorClipInfo t_item = t_states[i];
+
+            if (t_item.clip.name.Equals(_name) && playing >= 1.0f)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    bool isAnimatorPlaying()
+    {
+        float playing = Mathf.Clamp01(m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        return playing < 1 ?false :true;
+    }
 }

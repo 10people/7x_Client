@@ -1331,15 +1331,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	#endregion
 
-	private static void CloseYinDao ()
-	{
-		GameObject uibox = GameObject.Find ("Box(Clone)");
-		if (uibox)
-		{
-			Destroy (uibox);
-		}
-		UIYindao.m_UIYindao.CloseUI ();
-	}
+
 
 	#region Sending Data Tips & Wait
 
@@ -1619,6 +1611,14 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 
 	#region Utilities
+
+	public static Queue<QXBuffer> GetReceivedMessages(){
+		return m_received_messages;
+	}
+
+	public static Queue<QXBuffer> GetSendingMessages(){
+		return m_sending_messages;	
+	}
 
 	public static void LogSocketProcessor(){
 		Debug.Log( "Socket.Processor.Count: " + m_socket_processors.Count );

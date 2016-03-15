@@ -291,6 +291,9 @@ public class UIBagLeft : MonoBehaviour, SocketListener
 
     void OnEnable()
     {
+        //Close guide.
+        CityGlobalData.m_isRightGuide = true;
+
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_HighLight_item_ids);
 
         if (!isInited)

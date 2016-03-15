@@ -101,7 +101,7 @@ namespace Carriage
                 RootManager.Instance.m_SelfPlayerController.StartNavigation(RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic[m_StoredCarriageInfo.UID].transform.position);
 
                 m_TotalCarriageListController.OnCloseWindowClick();
-                RootManager.Instance.m_CarriageMain.OnCloseBigMap();
+                RootManager.Instance.m_CarriageMain.m_MapController.OnCloseBigMap();
             }
         }
 

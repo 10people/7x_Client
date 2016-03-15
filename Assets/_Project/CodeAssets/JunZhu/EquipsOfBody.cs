@@ -28,6 +28,9 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
     public bool m_Advance = false;
     public EquipJinJieResp m_EquipUpgradeInfo = new EquipJinJieResp();
     public int m_EquipAddId = 0;
+    public TaoZhuangResp m_Activatetemp;
+
+    public bool m_ActivateLoad = true;
     public static EquipsOfBody Instance()
     {
         if (m_equipsOfBody == null)
@@ -57,6 +60,7 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
     void OnEnable()
     {
         RequestEquipInfo();
+        RequestTaoZhang();
     }
 
     /// Obtain JunZhu Data
@@ -95,6 +99,7 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
                 case ProtoIndexes.S_EquipInfo:
                     {
                         ProcessEquipInfo(p_message);
+				setTaozhuang();
                     } return true;
 
                 case ProtoIndexes.S_EQUIP_JINJIE:
@@ -135,6 +140,23 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
                         }
                         FunctionWindowsCreateManagerment.m_IsEquipAdvance = true;
                     } return true;
+                case ProtoIndexes.tao_zhuang_Resp:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+
+                        TaoZhuangResp temp = new TaoZhuangResp();
+
+                        t_qx.Deserialize(t_stream, temp, temp.GetType());
+                        m_Activatetemp = temp;
+                        if (JunZHuEquipOfBody.m_EquipOfBody != null)
+                        {
+                            m_ActivateLoad = true;
+                        }
+						setTaozhuang();
+                        return true;
+                    }
                 default: return false;
             }
         }
@@ -160,7 +182,10 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
 
         RefreshEquipsDic(tempInfo);
     }
-
+    public void RequestTaoZhang()
+    {
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.tao_zhuang_Req);
+    }
     #endregion
 
     public void EquipAdvace(long equipID)
@@ -524,4 +549,53 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
         return false;
     }
     #endregion
+
+    void Search(int id)
+    {
+        foreach (KeyValuePair<int, BagItem> item in m_equipsOfBodyDic)
+        {
+            for (int i = 0; i < ZhuangBei.templates.Count; i++)
+            {
+                if (ZhuangBei.templates[i].id == item.Value.itemId)
+                {
+                    foreach (KeyValuePair<long, List<BagItem>> item2 in BagData.Instance().m_playerCaiLiaoDic)
+                    {
+                        for (int j = 0; j < item2.Value.Count; j++)
+                        {
+                            if (item2.Value[j].itemId == int.Parse(ZhuangBei.templates[i].jinjieItem))
+                            {
+                                //  item2.Value[j].cnt > int.Parse(ZhuangBei.templates[i].jinjieNum);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    void searchhh(int quality)
+    {
+        foreach (BagItem t_item in m_equipsOfBodyDic.Values)
+        {
+            if (t_item.pinZhi >= quality)
+            {
+                 
+            }
+        }
+    }
+	public int m_iCurNum = -1;
+	public int m_iMaxNum;
+	public void setTaozhuang()
+	{
+		if(m_Activatetemp == null)
+		{
+			return;
+		}
+		if(m_iCurNum != -1 && m_iCurNum < EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition))
+		{
+			m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
+			MainCityUI.addShouji(m_Activatetemp.maxActiZhuang, 1, m_iCurNum, TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).neededNum, "套装收集");
+		}
+		m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
+	}
 }

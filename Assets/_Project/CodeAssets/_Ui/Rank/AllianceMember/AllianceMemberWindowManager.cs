@@ -1,4 +1,4 @@
-﻿#define DEBUG_ALLIANCE_MEMBER
+﻿//#define DEBUG_ALLIANCE_MEMBER
 
 using UnityEngine;
 using System.Collections;

@@ -6,4 +6,6 @@
 <DangpuCommon id="1203" itemType="0" itemId="921002" itemNum="10" type="1" needNum="100" site="4" flag="1" max="10" VIP="0" />
 <DangpuCommon id="1003" itemType="0" itemId="910001" itemNum="1" type="1" needNum="200" site="5" flag="1" max="10" VIP="0" />
 <DangpuCommon id="1004" itemType="0" itemId="955021" itemNum="1" type="1" needNum="60" site="6" flag="1" max="10" VIP="0" />
+<DangpuCommon id="1301" itemType="0" itemId="900018" itemNum="500" type="1" needNum="50" site="7" flag="1" max="10" VIP="0" />
+<DangpuCommon id="1302" itemType="0" itemId="900019" itemNum="500" type="1" needNum="50" site="8" flag="1" max="10" VIP="0" />
 </dataset>

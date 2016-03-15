@@ -6,6 +6,8 @@ namespace Carriage
 {
     public class CarriageNPCController : MonoBehaviour
     {
+        public GameObject m_ShadowObject;
+
         public void OnCarriageItemClick()
         {
             if (!RootManager.Instance.m_CarriageMain.isCanStartCarriage)
@@ -22,6 +24,11 @@ namespace Carriage
                 RootManager.Instance.m_SelfPlayerController.m_CompleteNavDelegate = RootManager.Instance.m_CarriageMain.DoStartCarriage;
                 RootManager.Instance.m_SelfPlayerController.StartNavigation(transform.position);
             }
+        }
+
+        void Awake()
+        {
+            m_ShadowObject.SetActive(Quality_Shadow.BattleField_ShowSimpleShadow());
         }
     }
 }

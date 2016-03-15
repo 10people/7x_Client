@@ -30,6 +30,8 @@ ModelImporter:
     100044: Bone21
     100046: Object001
     100048: //RootNode
+    100050: Bone12
+    100052: S7_jiemian_laoying001
     400000: Bone01
     400002: Bone02
     400004: Bone03
@@ -55,7 +57,10 @@ ModelImporter:
     400044: Bone21
     400046: Object001
     400048: //RootNode
+    400050: Bone12
+    400052: S7_jiemian_laoying001
     4300000: Object001
+    4300002: S7_jiemian_laoying001
     7400000: Take 001
     7400002: Stand0
     7400004: qifei
@@ -63,6 +68,7 @@ ModelImporter:
     7400008: xiuxian
     9500000: //RootNode
     13700000: Object001
+    13700002: S7_jiemian_laoying001
   materials:
     importMaterials: 1
     materialName: 0
@@ -93,7 +99,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -315,7 +321,7 @@ ModelImporter:
       name: xiuxian
       takeName: Take 001
       firstFrame: 123
-      lastFrame: 233
+      lastFrame: 230
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

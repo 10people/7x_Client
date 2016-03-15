@@ -304,7 +304,8 @@ public class FuWenMainPage : MonoBehaviour {
 		{
 			fuWenPageList[i].InItFuWenPageInfo (i + 1,tempResp.lanwei);
 		}
-		pageSc.enabled = QXComData.CheckYinDaoOpenState (100470) ? false : true;
+		Debug.Log ("QXComData.CheckYinDaoOpenState (100470):" + QXComData.CheckYinDaoOpenState (100470));
+		pageSc.enabled = !QXComData.CheckYinDaoOpenState (100470);
 		btnsHandlerList [2].m_click_handler -= FuShiMixBtn;
 		btnsHandlerList [2].m_click_handler += FuShiMixBtn;//普通合成
 		btnsHandlerList [3].m_click_handler -= FuShiYiJianMixBtn;

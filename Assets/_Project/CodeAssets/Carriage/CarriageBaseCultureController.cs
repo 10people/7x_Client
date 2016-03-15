@@ -10,9 +10,10 @@ namespace Carriage
     public class CarriageBaseCultureController : MonoBehaviour
     {
         public CarriagePlayerController m_CarriagePlayerController;
-        public PlayerController m_PlayerController;
+        public OtherPlayerController m_OtherPlayerController;
 
         public Animator m_Animator;
+        public GameObject m_ShadowObject;
 
         public void OnSkillFinish()
         {
@@ -63,9 +64,9 @@ namespace Carriage
                 m_CarriagePlayerController.ActiveMove();
             }
 
-            if (m_PlayerController != null)
+            if (m_OtherPlayerController != null)
             {
-                m_PlayerController.ActiveMove();
+                m_OtherPlayerController.ActiveMove();
             }
         }
 
@@ -76,10 +77,10 @@ namespace Carriage
             if (!isGetController)
             {
                 m_CarriagePlayerController = GetComponent<CarriagePlayerController>();
-                m_PlayerController = GetComponent<PlayerController>();
+                m_OtherPlayerController = GetComponent<OtherPlayerController>();
             }
 
-            if (m_CarriagePlayerController != null || m_PlayerController != null)
+            if (m_CarriagePlayerController != null || m_OtherPlayerController != null)
             {
                 isGetController = true;
             }
@@ -167,7 +168,7 @@ namespace Carriage
         {
             TryGetController();
 
-            if (m_PlayerController != null)
+            if (m_OtherPlayerController != null)
             {
                 RootManager.Instance.m_CarriageMain.ActiveTarget(UID);
             }
@@ -299,9 +300,9 @@ namespace Carriage
                     m_CarriagePlayerController.ActiveMove();
                 }
 
-                if (m_PlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_Animator)))
+                if (m_OtherPlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_Animator)))
                 {
-                    m_PlayerController.ActiveMove();
+                    m_OtherPlayerController.ActiveMove();
                 }
 
                 checkTime = Time.realtimeSinceStartup;
@@ -318,6 +319,8 @@ namespace Carriage
         void Awake()
         {
             m_Animator = GetComponent<Animator>();
+
+            m_ShadowObject.SetActive(Quality_Shadow.BattleField_ShowSimpleShadow());
         }
     }
 }

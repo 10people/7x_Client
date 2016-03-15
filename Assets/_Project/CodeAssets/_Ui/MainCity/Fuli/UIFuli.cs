@@ -14,6 +14,18 @@ public class UIFuli : MYNGUIPanel , SocketListener
 	public FuliPageData m_FuliPageData;
 	public List<FuliPageData> m_listFuliPageData = new List<FuliPageData>();
 	private FuLiHuoDongResp m_FuLiHuoDongResp;
+
+	public GameObject m_objFuli;
+	public GameObject m_objHongbao;
+
+	public UILabel m_Num;
+	public UILabel m_Lianxu;
+	public UILabel m_Time;
+	public UILabel m_Des;
+
+	public UISprite m_LingquButton;
+	public BoxCollider m_Box;
+//	public delegate 
 	// Use this for initialization
 	void Awake()
 	{
@@ -63,6 +75,7 @@ public class UIFuli : MYNGUIPanel , SocketListener
 					m_listFuliPageData[i].gameObject.name = "Item" + i;
 					b_X += 230;
 					m_listFuliPageData[i].m_listObjRed.SetActive(tempInfo.xianshi[i].isCanGet);
+					MainCityUI.SetRedAlert(tempInfo.xianshi[i].typeId, tempInfo.xianshi[i].isCanGet);
 					m_listFuliPageData[i].m_SpriteBG.spriteName = "fuliImage" + tempInfo.xianshi[i].typeId;
 					m_listFuliPageData[i].m_labelFunctionName.text = "[b]" + FunctionOpenTemp.GetTemplateById(tempInfo.xianshi[i].typeId).Des + "[-]";
 					if(tempInfo.xianshi[i].isCanGet)
@@ -97,6 +110,14 @@ public class UIFuli : MYNGUIPanel , SocketListener
 					}
 					m_listFuliPageData[i].gameObject.SetActive(true);
 				}
+
+				if(m_objHongbao.activeSelf)
+				{
+					m_objFuli.SetActive(true);
+					m_objHongbao.SetActive(false);
+					m_Box.enabled = false;
+					Global.ScendNull(ProtoIndexes.C_FULIINFO_REQ);
+				}
 				break;
 			}
 			case ProtoIndexes.S_FULIINFOAWARD_RESP:
@@ -114,12 +135,27 @@ public class UIFuli : MYNGUIPanel , SocketListener
 					dataList = new RewardData(int.Parse(Global.NextCutting(ref tempData, ":")), int.Parse(Global.NextCutting(ref tempData, ":")));
 					GeneralRewardManager.Instance().CreateReward (dataList);
 				}
-
 //				for (int m = 0;m < tempEmail.goodsList.Count;m ++)
 //				{
 //					RewardData data = new RewardData(tempEmail.goodsList[m].id,tempEmail.goodsList[m].count);
 //					dataList.Add (data);
 //				}
+				break;
+			}
+			case ProtoIndexes.S_HONGBAONFO_RESP:
+			{
+				m_objFuli.SetActive(false);
+				m_objHongbao.SetActive(true);
+				m_LingquButton.color = Color.black;
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				HongBaoResp tempInfo = new HongBaoResp();
+				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+				m_Lianxu.text = tempInfo.day.ToString();
+				m_Num.text = "x" + tempInfo.yuanbao.ToString();
+				m_Des.text = tempInfo.awardTime;
+				TimeLabelHelper.Instance.setTimeLabel(m_Time, "", tempInfo.remainTime, End, "后可拆");
 				break;
 			}
 			default: return false;
@@ -132,6 +168,13 @@ public class UIFuli : MYNGUIPanel , SocketListener
 		
 		return false;
 	}
+
+	public void End()
+	{
+		Debug.Log("========1");
+		m_LingquButton.color = Color.white;
+		m_Box.enabled = true;
+	}
 	
 	// Update is called once per frame
 	void Update () 
@@ -140,22 +183,33 @@ public class UIFuli : MYNGUIPanel , SocketListener
 
 	public override void MYClick(GameObject ui)
 	{
-		if(ui.name.IndexOf("Close") != -1)
+		if(ui.name.IndexOf("HongbaoClose") != -1)
+		{
+			m_objFuli.SetActive(true);
+			m_objHongbao.SetActive(false);
+			m_Box.enabled = false;
+			Global.ScendNull(ProtoIndexes.C_FULIINFO_REQ);
+		}
+		else if(ui.name.IndexOf("LingquButton") != -1)
+		{
+			Global.ScendID(ProtoIndexes.C_FULIINFOAWARD_REQ, 1390);
+		}
+		else if(ui.name.IndexOf("Close") != -1)
 		{
 			GameObject.Destroy(gameObject);
 			MainCityUI.TryRemoveFromObjectList(gameObject);
 		}
-		else if(ui.name.IndexOf("Item0") != -1)
+		else if(ui.name.IndexOf("Item") != -1)
 		{
-			Global.ScendID(ProtoIndexes.C_FULIINFOAWARD_REQ, m_FuLiHuoDongResp.xianshi[0].typeId);
-		}
-		else if(ui.name.IndexOf("Item1") != -1)
-		{
-			Global.ScendID(ProtoIndexes.C_FULIINFOAWARD_REQ, m_FuLiHuoDongResp.xianshi[1].typeId);
-		}
-		else if(ui.name.IndexOf("Item2") != -1)
-		{
-			Global.ScendID(ProtoIndexes.C_FULIINFOAWARD_REQ, m_FuLiHuoDongResp.xianshi[2].typeId);
+			int index = int.Parse(ui.name.Substring(4, 1));
+			if(m_FuLiHuoDongResp.xianshi[index].typeId == 1390)
+			{
+				Global.ScendNull(ProtoIndexes.C_HONGBAONFO_REQ);
+			}
+			else
+			{
+				Global.ScendID(ProtoIndexes.C_FULIINFOAWARD_REQ, m_FuLiHuoDongResp.xianshi[index].typeId);
+			}
 		}
 	}
 	
@@ -169,10 +223,12 @@ public class UIFuli : MYNGUIPanel , SocketListener
 	
 	public override void MYPress(bool isPress, GameObject ui)
 	{
+
 	}
 	
 	public override void MYelease(GameObject ui)
 	{
+
 	}
 	
 	public override void MYondrag(Vector2 delta)

@@ -16,8 +16,11 @@ public class CityGlobalData  {
 		xuejilaoyin,
 		jishe,
 		zhuixingjian,
-		hanbingjian
+		hanbingjian,
+		fangun
 	}
+
+	public static bool IsFistGetMiBaoData = true;//判断是否是第一次获取秘宝数据
 
 	public static bool autoFightDebug = false;//自动不停的战斗的测试
 

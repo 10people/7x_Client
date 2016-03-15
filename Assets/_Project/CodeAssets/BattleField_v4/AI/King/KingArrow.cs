@@ -87,7 +87,6 @@ public class KingArrow : MonoBehaviour {
 
 		bulletObject.SetActive(true);
 
-
 		BattleEffectControllor.Instance().PlayEffect (effectId, bulletObject);
 
 		KingArrow arrow = (KingArrow)bulletObject.AddComponent<KingArrow>();

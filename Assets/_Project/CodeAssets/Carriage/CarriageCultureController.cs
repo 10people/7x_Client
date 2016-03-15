@@ -62,8 +62,11 @@ namespace Carriage
             LevelLabel.text = Level.ToString();
             MoneyLabel.text = "+" + CarriageValueCalctor.GetRealValueOfCarriage(Money, Level, BattleValue, HorseLevel, IsChouRen);
 
-            //Play walking particle.
-            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(600216 + HorseLevel), gameObject, null);
+            //Play walking particle only when horse level major to 1.
+            if (HorseLevel > 1)
+            {
+                FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(600216 + HorseLevel), gameObject, null);
+            }
         }
     }
 }

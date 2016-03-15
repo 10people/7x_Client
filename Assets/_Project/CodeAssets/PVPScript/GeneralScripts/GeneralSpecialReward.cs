@@ -19,12 +19,29 @@ public class GeneralSpecialReward : MonoBehaviour {
 	public GameObject starObj;
 	private int effectId;
 
+	public GameObject leftObj;
+	public UILabel miBaoCount;
+	public UILabel unLockNeedNum;
+	public UISprite skillIcon;
+	public UILabel skillName;
+	public UILabel skillDes;
+
+	public GameObject rightObj;
+	public UILabel shuxing_attack;
+	public UILabel shuxing_deffense;
+	public UILabel shuxing_hp;
+	public UILabel star_attack;
+	public UILabel star_deffense;
+	public UILabel star_hp;
+
+	public GetMiBaoInfo getMiBaoInfo;
+
 	//装备信息
 	public UILabel cardLabel;
 
 	public UILabel desLabel;
 	private float time = 1f;
-	private string desStr = "点击任意位置继续";
+	private string desStr = "点击屏幕继续";
 
 	public EventHandler rewardHandler;
 
@@ -74,7 +91,8 @@ public class GeneralSpecialReward : MonoBehaviour {
 		switch (xmlType)
 		{
 		case QXComData.XmlType.MIBAO:
-			
+
+			MiBaoCardDes ();
 //			QXComData.InstanceEffect (QXComData.EffectPos.TOP,miBaoObj,100148);
 			QXComData.InstanceEffect (QXComData.EffectPos.MID,miBaoObj,100157);
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,3);
@@ -135,6 +153,103 @@ public class GeneralSpecialReward : MonoBehaviour {
 		GeneralRewardManager.Instance().SpecialReward_Index ++;
 		GeneralRewardManager.Instance().CheckSpecialReward ();
 		GeneralRewardManager.Instance().RefreshSpecialItemList (this.gameObject);
+	}
+
+	void MiBaoCardDes ()
+	{
+		leftObj.SetActive (true);
+		rightObj.SetActive (true);
+
+		var miBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		int miBaoNum = 0;
+		for (int i = 0;i < miBaoInfo.miBaoList.Count;i ++)
+		{
+			if (miBaoInfo.miBaoList[i].level > 0)
+			{
+				miBaoNum ++;
+			}
+		}
+
+		miBaoCount.text = "当前秘宝个数：" + MyColorData.getColorString (5, miBaoNum.ToString ()) + "个";
+
+		int nextNeedNum = 0;//解锁下个技能还需秘宝个数
+		int getSkillId = 0;
+
+		string unLockDesStr = "";//解锁需秘宝数
+
+		if (miBaoInfo.skillList == null || miBaoInfo.skillList.Count == 0)
+		{
+			getSkillId = 1;
+		}
+		else
+		{
+			if (miBaoInfo.skillList.Count >= 7)
+			{
+				getSkillId = 7;
+			}
+			else
+			{
+				getSkillId = miBaoInfo.skillList.Count + 1;
+			}
+		}
+//		Debug.Log ("getSkillId:" + getSkillId);
+		MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id (getSkillId);
+		skillIcon.spriteName = mMiBaoskill.icon;
+
+		skillName.text = NameIdTemplate.GetName_By_NameId (mMiBaoskill.nameId);
+
+		string desStr = "";
+		string[] desLen = DescIdTemplate.getDescIdTemplateByNameId (mMiBaoskill.briefDesc).description.Split ('#');
+		for (int i = 0;i < desLen.Length;i ++)
+		{
+			desStr += (i < desLen.Length - 1 ? desLen[i] + "\n" : desLen[i]);
+		}
+
+		skillDes.text = desStr;
+
+//		Debug.Log ("miBaoNum:" + miBaoNum);
+//		Debug.Log ("mMiBaoskill.needNum:" + mMiBaoskill.needNum);
+
+		if (getSkillId < 7)
+		{
+			if (miBaoNum >= mMiBaoskill.needNum)
+			{
+				unLockDesStr = "当前秘宝技能可解锁";
+			}
+			else
+			{
+				nextNeedNum = mMiBaoskill.needNum - miBaoNum;
+				unLockDesStr = "再收集" + MyColorData.getColorString (5,nextNeedNum.ToString ()) + "个秘宝，可解锁";
+			}
+		}
+		else
+		{
+			unLockDesStr = "秘宝技能已全部解锁";
+		}
+
+		unLockNeedNum.text = unLockDesStr;
+
+		MiBaoXmlTemp miBaoTemp = MiBaoXmlTemp.getMiBaoXmlTempById (rewardData.itemId);
+		shuxing_attack.text = "攻击：" + miBaoTemp.gongji.ToString ();
+		shuxing_deffense.text = "防御：" + miBaoTemp.fangyu.ToString ();
+		shuxing_hp.text = "生命：" + miBaoTemp.shengming.ToString ();
+
+		star_attack.text = "攻击：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,100,5,1);
+		star_deffense.text = "防御：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,100,5,2);
+		star_hp.text = "生命：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,100,5,3);
+
+		DesObjMove (leftObj,true);
+		DesObjMove (rightObj,false);
+	}
+
+	void DesObjMove (GameObject obj,bool left)
+	{
+		Hashtable move = new Hashtable ();
+		move.Add ("position",new Vector3(left ? -325 : 325,0,0));
+		move.Add ("time",0.5f);
+		move.Add ("easetype",iTween.EaseType.easeOutQuart);
+		move.Add ("islocal",true);
+		iTween.MoveTo (obj,move);
 	}
 
 	IEnumerator ShowDesLabel1 ()
@@ -204,7 +319,7 @@ public class GeneralSpecialReward : MonoBehaviour {
 			star.transform.localScale = Vector3.one;
 		}
 		
-		miBaoName.text = NameIdTemplate.GetName_By_NameId (nameId);
+		miBaoName.text = "[b]" + NameIdTemplate.GetName_By_NameId (nameId) + "[-]";
 		
 		miBaoObj.SetActive (true);
 		ScaleEffect (miBaoObj,0.3f);

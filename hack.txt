@@ -1,0 +1,18 @@
+不弹出君主升级
+JunZhuLevelUpManagerment.cs 
+ShowInfo at end :SelefDestroy (m_HiddenObj);//tigo
+
+主线任务自动领奖
+TaskSignalInfoShow.cs 
+ChargeData at 'else' end:  TaskData.Instance.GetQuestAward(m_TaskId);//tigo
+
+新功能开启后自动点击以跳过动画
+MainCityAddFunction.cs
+Update  add switch case:
+case AddFunctionSatatae.Click://tigo
+			MYClick(m_objThis);
+			break;
+
+禁止自动弹出七日奖励
+MainCityUI 搜 Res2DTemplate.Res.ONLINE_REWARD_DAY，
+在case 2 的地方，注释掉该行。

@@ -8,7 +8,7 @@
 <EffectTemplate  effectId="42" path="_3D/Fx/Prefabs/BattleEffect/huahen" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="44" path="_3D/Fx/Prefabs/BattleEffect/hanbingjian" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="48" path="_3D/Fx/FxTemporary/FT_MagicEffects_volume01/king_skill_shi_xue" sound="-1" position="0" ratio="0" />
-<EffectTemplate  effectId="50" path="_3D/Fx/Prefabs/BattleEffect/ArrowTemplate" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="50" path="_3D/Fx/Prefabs/BattleEffect/pugonggongjian" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="51" path="_3D/Models/BattleField/Char_Shadow" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="52" path="_3D/Models/BattleField/ShadowTemple" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="53" path="_Uis/BattleField/LabelTemple_base" sound="-1" position="0" ratio="0" />
@@ -289,7 +289,7 @@
 <EffectTemplate  effectId="600177" path="_3D/Fx/Prefabs/BattleEffect/shangyang_fazhang_effect" sound="-1" position="1.2" ratio="1.2" />
 <EffectTemplate  effectId="600178" path="_3D/Fx/Prefabs/BattleEffect/mibaojineng" sound="420170" position="0" ratio="0" />
 <EffectTemplate  effectId="600179" path="_3D/Fx/Prefabs/BattleEffect/mibaojinnengchixu" sound="-1" position="0" ratio="0" />
-<EffectTemplate  effectId="600180" path="_3D/Fx/Prefabs/BattleEffect/mibaojinnengdaji" sound="-1" position="2" ratio="2" />
+<EffectTemplate  effectId="600180" path="_3D/Fx/Prefabs/BattleEffect/mibaojinnengdaji" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="600181" path="_3D/Fx/Prefabs/BattleEffect/Boss_tianji_sanlianzhan" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="600182" path="_3D/Fx/Prefabs/BattleEffect/duwuzhadan" sound="33801" position="0" ratio="0" />
 <EffectTemplate  effectId="600183" path="_3D/Fx/Prefabs/BattleEffect/duwuzhadanfeixing" sound="33802" position="0" ratio="0" />
@@ -345,6 +345,18 @@
 <EffectTemplate  effectId="600233" path="_3D/Fx/Prefabs/BattleEffect/4003_gongji" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="600234" path="_3D/Fx/Prefabs/BattleEffect/4004_attack_01" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="600235" path="_3D/Fx/Prefabs/BattleEffect/4004_attack_02" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600236" path="_3D/Fx/Prefabs/BattleEffect/4001_skill_01_mingzhong" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600237" path="_3D/Fx/Prefabs/BattleEffect/4001_skill_01_shifa" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600238" path="_3D/Fx/Prefabs/BattleEffect/4001attack_01" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600239" path="_3D/Fx/Prefabs/BattleEffect/4020_attack_mingzhong" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600240" path="_3D/Fx/Prefabs/BattleEffect/4020_wuqiguang" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600241" path="_3D/Fx/Prefabs/BattleEffect/bibaozhandou" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600242" path="_3D/Fx/Prefabs/BattleEffect/qishihuangpugong" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600243" path="_3D/Fx/Prefabs/BattleEffect/qinshihuangpugong2" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600244" path="_3D/Fx/Prefabs/BattleEffect/qinshihuangpugong3" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600245" path="_3D/Fx/Prefabs/BattleEffect/biaoshi" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600246" path="_3D/Fx/Prefabs/BattleEffect/baoxiang" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="600247" path="_3D/Fx/Prefabs/BattleEffect/yuanbaofei" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620211" path="_3D/Fx/Prefabs/UiEffect/dangriqiandao" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620212" path="_3D/Fx/Prefabs/UiEffect/liuguangtexiao_1 1" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620213" path="_3D/Fx/Prefabs/UiEffect/liuguangtexiao_2 1" sound="-1" position="0" ratio="0" />
@@ -353,6 +365,11 @@
 <EffectTemplate  effectId="620216" path="_3D/Fx/Prefabs/UiEffect/jinbifeijiemian" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620217" path="_3D/Fx/Prefabs/UiEffect/denglu_dutiao" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620218" path="_3D/Fx/Prefabs/UiEffect/zidong_zhandou" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620219" path="_3D/Fx/Prefabs/UiEffect/zhanchangmibao" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620220" path="_3D/Fx/Prefabs/UiEffect/taozhuangdianji" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620221" path="_3D/Fx/Prefabs/UiEffect/zhishishouzhi" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620222" path="_3D/Fx/Prefabs/UiEffect/jinengxiaza" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620223" path="_3D/Fx/Prefabs/UiEffect/jinengpiaofu" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="700000" path="Video/x7.mp4" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="700001" path="Video/x7_1.mp4" sound="-1" position="0" ratio="0" />
 </dataset>

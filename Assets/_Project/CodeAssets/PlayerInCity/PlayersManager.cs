@@ -11,6 +11,7 @@ using ProtoBuf.Meta;
 public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城中的玩家管理类
 
     public static Dictionary<int, ErrorMessage> m_playrHeadInfo = new Dictionary<int, ErrorMessage>();  //主城玩家集合
+    public static int m_Self_UID = 0;
     void Awake(){
 
 	}
@@ -32,7 +33,7 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
         {
             if (tempPlayer != null)
             {
-                PlayerNameManager.UpdatePlayerNamePosition(tempPlayer.GetComponent<PlayerInCity>());
+				PlayerNameManager.UpdatePlayerNamePosition(tempPlayer.GetComponent<PlayerInCity>().m_playerID,tempPlayer);
             }
         }
     }
@@ -68,17 +69,19 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
                     }
                     return true;
 
-                //case ProtoIndexes.Enter_Scene_Confirm: //我自己进入主城
-                //{
-                //    MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position );
+                case ProtoIndexes.Enter_Scene_Confirm: //我自己进入主城
+                {
+                     MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position );
 
-                //    EnterSceneConfirm tempConfirm = new EnterSceneConfirm();
+                    EnterSceneConfirm tempConfirm = new EnterSceneConfirm();
 
-                //    QiXiongSerializer t_qx = new QiXiongSerializer();
+                    QiXiongSerializer t_qx = new QiXiongSerializer();
 
-                //    t_qx.Deserialize(t_stream,tempConfirm,tempConfirm.GetType());
-
-                //}return true;
+                    t_qx.Deserialize(t_stream,tempConfirm,tempConfirm.GetType());
+                    m_Self_UID = tempConfirm.uid;
+//                    Debug.Log("m_Self_UIDm_Self_UIDm_Self_UIDm_Self_UID :: + " + m_Self_UID);
+                }
+                    return true;
 
                 case ProtoIndexes.Sprite_Move: //玩家移动
                     {

@@ -31,7 +31,7 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 	public int m_iAnimationNum = 0;
 	public int m_iAnimationState = 0;
 	public bool m_isAnimation = false;
-
+	public int YIndao_id = 0;
 	// Use this for initialization
 	void Start () 
 	{
@@ -41,6 +41,7 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 	// Update is called once per frame
 	void Update () 
 	{
+
 		if(m_isAnimation)
 		{
 			float tempScale = 0;
@@ -183,6 +184,13 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 	{
 		if(ui.name.IndexOf("Close") != -1)
 		{
+			Debug.Log("YIndao_id = "+YIndao_id);
+//			MainCityUI.OpenGui();
+			if(YIndao_id != 0)
+			{
+				UIYindao.m_UIYindao.setOpenYindao(YIndao_id);
+				YIndao_id = 0;
+			}
 			GameObject.Destroy(gameObject);
 			MainCityUI.TryRemoveFromObjectList(gameObject);
 			JunZhuData.Instance().UI_IsOpen = false;

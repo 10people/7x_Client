@@ -220,7 +220,7 @@ public class choosemap : MonoBehaviour {
 
 		for(int n = 0; n<MapData.mapinstance.CQLv.Count; n++)
 		{
-			Vector2 ZuoBiao1 = PVEZuoBiaoTemplate.GetCoordinate(MapData.mapinstance.myMapinfo.s_section,MapData.mapinstance.CQLv[n].guanQiaId);
+			Vector2 ZuoBiao1 = LegendPveZuoBiaoTemplate.GetCoordinate(MapData.mapinstance.myMapinfo.s_section,MapData.mapinstance.CQLv[n].guanQiaId);
 
 			GameObject LVL = Instantiate(Lev)as GameObject;
 
@@ -242,7 +242,7 @@ public class choosemap : MonoBehaviour {
 					
 			if (n < MapData.mapinstance.CQLv.Count-1)
 			{
-				Vector2 ZuoBiao2 = PVEZuoBiaoTemplate.GetCoordinate(MapData.mapinstance.myMapinfo.s_section,MapData.mapinstance.CQLv[n+1].guanQiaId);
+				Vector2 ZuoBiao2 = LegendPveZuoBiaoTemplate.GetCoordinate(MapData.mapinstance.myMapinfo.s_section,MapData.mapinstance.CQLv[n+1].guanQiaId);
 
 				LvChild.Zuob1 =ZuoBiao1;
 
@@ -256,6 +256,7 @@ public class choosemap : MonoBehaviour {
 		}
 		Global.m_isOpenPVP = false;
 		MapData.mapinstance.nowCurrChapter = MapData.mapinstance.CurrChapter;
+		POpPveUI_By_KuanJie ();
 	}
 	void CreateLvs(GameObject UIroot)//创建普通关卡的小关卡
 	{
@@ -308,6 +309,24 @@ public class choosemap : MonoBehaviour {
 		}
 		Global.m_isOpenPVP = false;
 		MapData.mapinstance.nowCurrChapter = MapData.mapinstance.CurrChapter;
+		POpPveUI_By_KuanJie ();
 	}
-
+	void POpPveUI_By_KuanJie()
+	{
+		foreach(Pve_Level_Info mLev in MapData.mapinstance.Pve_Level_InfoList)
+		{
+			if(mLev.litter_Lv.guanQiaId == EnterGuoGuanmap.Instance().ShouldOpen_id)
+			{   
+				EnterGuoGuanmap.Instance().ShouldOpen_id = 1;
+				
+				mLev.Startsendmasg = true;
+				//Debug.Log("UIYindao.m_UIYindao.m_isOpenYindao = "+UIYindao.m_UIYindao.m_isOpenYindao);
+				if(UIYindao.m_UIYindao.m_isOpenYindao)
+				{
+					UIYindao.m_UIYindao.CloseUI();
+				}
+				mLev.POPLevelInfo();
+			}
+		}
+	}
 }

@@ -69,7 +69,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                             case 101:
                             case 102:
                                 {
-                                    m_RootManager.m_CarriageMain.TPToPosition(new Vector2(msg.posX, msg.posZ));
+                                    m_RootManager.m_CarriageMain.TpToPosition(new Vector2(msg.posX, msg.posZ));
 
                                     break;
                                 }
@@ -78,7 +78,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                             case 105:
                                 {
                                     ClientMain.m_UITextManager.createText("成功加入协助");
-                                    m_RootManager.m_CarriageMain.TPToPosition(new Vector2(msg.posX, msg.posZ));
+                                    m_RootManager.m_CarriageMain.TpToPosition(new Vector2(msg.posX, msg.posZ));
                                     break;
                                 }
                             default:

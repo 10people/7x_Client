@@ -12,6 +12,8 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 
 	public static EnterGame enterGame;
 
+	private LoginRet loginResp;
+
     public static HighestUI s_HighestUI;
 
 	private int state;
@@ -125,138 +127,137 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
         {
             switch (p_message.m_protocol_index)
             {
-                case ProtoIndexes.LOGIN_ACCOUNT_RET:
-                    {
-                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+            case ProtoIndexes.LOGIN_ACCOUNT_RET:
+            {
+                MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
-                        LoginRet loginRet = new LoginRet();
+                LoginRet loginRet = new LoginRet();
 
-                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                QiXiongSerializer t_qx = new QiXiongSerializer();
 
-                        t_qx.Deserialize(t_stream, loginRet, loginRet.GetType());
+                t_qx.Deserialize(t_stream, loginRet, loginRet.GetType());
 
-                        if (loginRet != null)
-                        {
-                            CityGlobalData.m_SeverTime = loginRet.serTime;
-                            CityGlobalData.m_king_model_Id = loginRet.roleId;
+                if (loginRet != null)
+                {
+					loginResp = loginRet;
 
-							{
-								// 2008-05-01 21:34:42
+                    CityGlobalData.m_SeverTime = loginRet.serTime;
+                    CityGlobalData.m_king_model_Id = loginRet.roleId;
+
+					{
+						// 2008-05-01 21:34:42
 //								Debug.Log( "ServerTime: " + loginRet.serverTime );
 
-								TimeHelper.SetServerDateTime( loginRet.serverTime );
+						TimeHelper.SetServerDateTime( loginRet.serverTime );
 
 //								Debug.Log( "RegisterTime: " + loginRet.accountRegisterTime );
 
-								PlayerInfoCache.SetRegisterTime( loginRet.accountRegisterTime );
-							}
+						PlayerInfoCache.SetRegisterTime( loginRet.accountRegisterTime );
+					}
 
-                            //CityGlobalData.m_EnterCityPosition = new Vector3(loginRet.x,
-                            //                                                   loginRet.y,
-                            //                                                   loginRet.z);
-                  
-                            string value = loginRet.x.ToString() + ":" + loginRet.y.ToString() + ":" + loginRet.z.ToString();
-                            PlayerPrefs.SetString("IsCurrentJunZhuPos", value);
-                            if (!ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION))
-                            {
-								FunctionOpenTemp.AssignFunctionIds( loginRet.openFunctionID );
+                    //CityGlobalData.m_EnterCityPosition = new Vector3(loginRet.x,
+                    //                                                   loginRet.y,
+                    //                                                   loginRet.z);
+          
+                    string value = loginRet.x.ToString() + ":" + loginRet.y.ToString() + ":" + loginRet.z.ToString();
+                    PlayerPrefs.SetString("IsCurrentJunZhuPos", value);
+                    if (!ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION))
+                    {
+						FunctionOpenTemp.AssignFunctionIds( loginRet.openFunctionID );
 
-                                //		                for (int i = 0; i < FunctionOpenTemp.m_EnableFuncIDList.Count; i++)
-                                //		                {
-                                //		                    Debug.Log(" FunctionOpenTemp.m_EnableFuncIDList[i] :" + FunctionOpenTemp.m_EnableFuncIDList[i]);
-                                //		                }
-                                //						Debug.Log( "Login response:\ncode: " + loginRet.code + "\nmessage:" + loginRet.msg );
-                            }
-
-
-                            switch (loginRet.code)
-                            {
-                                case 1:
-
-                                    //Debug.Log ("登陆成功，已有角色！");
-
-                                    CityGlobalData.countryId = loginRet.guoJiaId;
-                                    SceneManager.EnterMainCity();
-
-                                    NGUIDebug.ClearLogs();
-
-                                    break;
-
-                                case 2:
-
-                                    //						Debug.Log ("登陆成功，未创建角色！");
-                                    //					CityGlobalData.m_nextSceneName = ConstInGame.CONST_SCENE_NAME_CREATE_ROLE;
-
-                                    CityGlobalData.countryId = loginRet.guoJiaId;
-
-                                    //						Debug.LogError( "Never Use This." );
-                                    //
-                                    //						Application.LoadLevel ( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
-
-                                    //SceneManager.EnterCreateRole();
-
-                                    					EnterBattleField.EnterBattlePve( 0, 1, LevelType.LEVEL_NORMAL );
-                                    //	
-                                    //					NGUIDebug.ClearLogs ();
-
-                                    break;
-
-                                case 3:
-
-//                                    Debug.Log("登录失败");
-//
-                                    Debug.Log("失败原因：" + loginRet.msg);
-
-									Global.CreateBox( "登录失败",
-						                 "失败原因：" + loginRet.msg,
-						                 null,
-						                 null, 
-						                 "确定", 
-						                 null,
-						                 AccPwdErrorClickCallback,
-						                 null,
-						                 null,
-						                 null,
-						                 false,
-						                 false,
-						                 true );
-                                    break;
-
-                                case 100:
-
-                                    //						Debug.Log ("登陆成功，有联盟！");
-
-                                    CityGlobalData.countryId = loginRet.guoJiaId;
-
-                                    //						EquipsOfBody.Instance();
-                                    //if (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene() == 2)
-                                    //{
-                                        CityGlobalData.m_isAllianceTenentsScene = true;
-                                        CityGlobalData.m_iAllianceTenentsSceneNum = FunctionWindowsCreateManagerment.IsFenChengNum();
-                                    //SceneManager.EnterAllianceCityTenentsCityOne();
-                                    SceneManager.EnterMainCity();
-                                    //}
-                                    //else
-                                    //{
-                                    //    SceneManager.EnterAllianceCity();
-                                    //}
-
-
-                                    break;
-
-                                default: break;
-                            }
-                        }
-
-                        return true;
+                        //		                for (int i = 0; i < FunctionOpenTemp.m_EnableFuncIDList.Count; i++)
+                        //		                {
+                        //		                    Debug.Log(" FunctionOpenTemp.m_EnableFuncIDList[i] :" + FunctionOpenTemp.m_EnableFuncIDList[i]);
+                        //		                }
+                        //						Debug.Log( "Login response:\ncode: " + loginRet.code + "\nmessage:" + loginRet.msg );
                     }
+					Debug.Log ("loginRet.code:" + loginRet.code);
+	                switch (loginRet.code)
+	                {
+	                case 1:
 
-                default: return false;
+	                    //Debug.Log ("登陆成功，已有角色！");
+	                    CityGlobalData.countryId = loginRet.guoJiaId;
+//	                    SceneManager.EnterMainCity();
+						AccountRequest.account.DisActiveLoginObj ();
+
+	                    break;
+	                case 2:
+
+	                    //Debug.Log ("登陆成功，未创建角色！");
+	                    CityGlobalData.countryId = loginRet.guoJiaId;
+
+	                    //SceneManager.EnterCreateRole();
+
+//	                    EnterBattleField.EnterBattlePve( 0, 1, LevelType.LEVEL_NORMAL );
+						AccountRequest.account.DisActiveLoginObj ();
+
+	                    break;
+	                case 3:
+
+						//Debug.Log("登录失败");
+	                    Debug.Log("失败原因：" + loginRet.msg);
+						Global.CreateBox( "登录失败",
+			                 "失败原因：" + loginRet.msg,
+			                 null,
+			                 null, 
+			                 "确定", 
+			                 null,
+			                 AccPwdErrorClickCallback,
+			                 null,
+			                 null,
+			                 null,
+			                 false,
+			                 false,
+			                 true );
+	                    break;
+	                case 100:
+	                    //Debug.Log ("登陆成功，有联盟！");
+
+	                    CityGlobalData.countryId = loginRet.guoJiaId;
+
+	                    //EquipsOfBody.Instance();
+	                    CityGlobalData.m_isAllianceTenentsScene = true;
+	                    CityGlobalData.m_iAllianceTenentsSceneNum = FunctionWindowsCreateManagerment.IsFenChengNum();
+	                    
+//						SceneManager.EnterMainCity();
+						AccountRequest.account.DisActiveLoginObj ();
+
+	                    break;
+					 default: 
+						 break;
+	                 }
+                }
+
+                return true;
+            }
             }
         }
 
         return false;
     }
+
+	/// <summary>
+	/// Enters the game wait for animation end.
+	/// </summary>
+	public void EnterGameWaitForAnimationEnd ()
+	{
+//		Debug.Log ("loginResp.code:" + loginResp.code);
+		switch (loginResp.code)
+		{
+		case 1:
+			SceneManager.EnterMainCity();
+			break;
+		case 2:
+			EnterBattleField.EnterBattlePve( 0, 1, LevelType.LEVEL_NORMAL );
+			break;
+		case 100:
+			SceneManager.EnterMainCity();
+			break;
+		default:
+			break;
+		}
+	}
 
 	public static void AccPwdErrorClickCallback( int p_i ){
 //		Debug.Log("ReLoginClickCallback( " + p_i + " )");
@@ -296,6 +297,7 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 
 	void OnDestroy ()
 	{
+		enterGame = null;
 		SocketTool.UnRegisterMessageProcessor (this);
 	}
 }

@@ -65,7 +65,7 @@ public class EnterBattleField : ScriptableObject
 		}
 	}
 
-	public static void EnterBattlePvp(long enemyId)
+	public static void EnterBattlePvp(long enemyId, bool first)
 	{
 		// notice loading
 		{
@@ -84,7 +84,7 @@ public class EnterBattleField : ScriptableObject
 		
 		int chapterId = 900;
 
-		CityGlobalData.battleTemplateId = 0;
+		CityGlobalData.battleTemplateId = first ? -1 : 0;
 
 //		CityGlobalData.m_nextSceneName = "BattleField_V4_" + chapterId;
 

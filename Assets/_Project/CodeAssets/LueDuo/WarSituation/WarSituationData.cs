@@ -58,9 +58,41 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 	{
 		situationType = tempType;
 
+		if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+		{
+			//无联盟
+			ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"您还没有加入一个联盟！"));
+			return;
+		}
+
+		switch (situationType)
+		{
+		case SituationType.PLUNDER:
+
+			if (JunZhuData.Instance().m_junzhuInfo.level < FunctionOpenTemp.GetTemplateById (211).Level)
+			{
+				//未到掠夺开启等级
+				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"[dc0600]" + FunctionOpenTemp.GetTemplateById (211).Level + "[-]级开启掠夺！"));
+				return;
+			}
+			break;
+		case SituationType.YUNBIAO:
+			
+			if (!FunctionOpenTemp.IsHaveID(310))
+			{
+				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,FunctionOpenTemp.GetTemplateById (310).m_sNotOpenTips));
+				return;
+			}
+			
+			break;
+		default:
+			break;
+		}
+
 		JunQingReq junQingReq = new JunQingReq();
 		junQingReq.type = (int)tempType;
 		QXComData.SendQxProtoMessage (junQingReq,ProtoIndexes.alliance_junQing_req);
+		Debug.Log ("联盟军情请求：" + ProtoIndexes.alliance_junQing_req);
 	}
 
 	/// <summary>
@@ -126,6 +158,7 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 					{
 						//可以驱逐
 						EnterBattleField.EnterBattleYuanZhu (itemId);
+						PushAndNotificationHelper.SetRedSpotNotification (410012,false);
 					}
 					else
 					{
@@ -178,6 +211,7 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 	{
 		IsSituationPageOpen = true;
 		MainCityUI.TryAddToObjectList (situationObj);
+		UIYindao.m_UIYindao.CloseUI ();
 		WarSituationPage.situationPage.InItWarSituationPage (situationType,situationResp);
 	}
 

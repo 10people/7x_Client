@@ -74,13 +74,11 @@ public class BaiZhanPage : MonoBehaviour {
 		else
 		{
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,2);
 
 			Yd_GetReward = false;
 			Yd_Store = false;
+			Global.m_isOpenBaiZhan = false;
 		}
-
-		Global.m_isOpenBaiZhan = false;
 	}
 
 	#region MyRankInfo
@@ -133,6 +131,10 @@ public class BaiZhanPage : MonoBehaviour {
 		rankLabel.text = "排名：" + baiZhanResp.pvpInfo.rank.ToString ();
 		rankDesLabel.transform.localPosition = maxLevel ? new Vector3(-250,-20) : new Vector3 (-290,-70,0);
 		rankDesLabel.text = MyColorData.getColorString (3,(maxLevel ? "[d80202]已达到最高军衔[-]" : "排名达到[d80202]" + BaiZhanTemplate.getBaiZhanTemplateById (baiZhanResp.pvpInfo.baizhanXMLId + 1).minRank + "[-]进阶") + "\n军衔越高，威望产出越多");
+
+		Debug.Log ("baiZhanResp.pvpInfo.rank:" + baiZhanResp.pvpInfo.rank);
+
+		Debug.Log ("baiZhanResp.canGetweiWang:" + baiZhanResp.canGetweiWang);
 
 		weiWangLabel.text = baiZhanResp.hasWeiWang.ToString ();
 		getWeiWangLabel.text = MyColorData.getColorString (3,"可领：[016bc5]"+ baiZhanResp.canGetweiWang + "/" + (baiZhanResp.pvpInfo.rank > 5000 ? BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (5001).weiwangLimit : BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (baiZhanResp.pvpInfo.rank).weiwangLimit) + "[-]" + "威望");
@@ -252,16 +254,9 @@ public class BaiZhanPage : MonoBehaviour {
 	public void InItChallenge ()
 	{
 		StopCoroutine ("ChallangeCd");
-		StartCoroutine ("ChallangeCd");
 		label2.transform.localPosition = new Vector3 (155,0,0);
-		if (baiZhanResp.pvpInfo.time > 0)
-		{
-			label1.color = Color.red;
-			label2.text = "今日剩余次数：" + baiZhanResp.pvpInfo.leftTimes + "/" + baiZhanResp.pvpInfo.totalTimes;
-			resetBtn.SetActive (true);
-			buyTimeBtn.SetActive (false);
-		}
-		else
+
+		if (baiZhanResp.pvpInfo.time <= 0 || QXComData.CheckYinDaoOpenState (100255))
 		{
 			label1.color = Color.white;
 			if (baiZhanResp.pvpInfo.leftTimes > 0)
@@ -300,6 +295,14 @@ public class BaiZhanPage : MonoBehaviour {
 					}
 				}
 			}
+		}
+		else
+		{
+			StartCoroutine ("ChallangeCd");
+			label1.color = Color.red;
+			label2.text = "今日剩余次数：" + baiZhanResp.pvpInfo.leftTimes + "/" + baiZhanResp.pvpInfo.totalTimes;
+			resetBtn.SetActive (true);
+			buyTimeBtn.SetActive (false);
 		}
 	}
 
@@ -655,7 +658,9 @@ public class BaiZhanPage : MonoBehaviour {
 	public void OpenHighRankRewardWindow (List<RewardData> tempRewardList)
 	{
 		highRankRewardObj.SetActive (true);
-		PvpHighRankReward.highReward.InItHighRankReward (tempRewardList);
+//		PvpHighRankReward.highReward.InItHighRankReward (tempRewardList);
+		Debug.Log ("baiZhanResp:" + baiZhanResp.pvpInfo.rank + "||" + baiZhanResp.pvpInfo.historyHighRank);
+		PvpHighRank.highRank.InItHighRankPage (baiZhanResp,tempRewardList);
 	}
 
 	#endregion

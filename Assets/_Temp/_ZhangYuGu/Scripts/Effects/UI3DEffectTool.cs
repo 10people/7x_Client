@@ -1397,7 +1397,8 @@ public class UI3DEffectTool : MonoBehaviour {
 			m_load_state = LoadState.Done;
 
 			if( m_ngui_gb == null ){
-				Debug.LogWarning( "FxToLoad.EffectLoadCallback()" );
+				Debug.LogWarning( "FxToLoad.EffectLoadCallback(), m_ngui_gb is null." );
+
 				return;
 			}
 

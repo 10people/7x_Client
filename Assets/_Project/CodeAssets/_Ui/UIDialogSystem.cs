@@ -82,6 +82,10 @@ public class UIDialogSystem : MonoBehaviour, IUIRootAutoActivator
 						break;
 					}
 				}
+				if(m_sCutDialogData.ToCharArray()[i_Num -1] == '\\')
+				{
+					i_Num += 2;
+				}
 				label.text = m_sCutDialogData.Substring(0, i_Num);
 			}
 		}

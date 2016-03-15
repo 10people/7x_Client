@@ -10,6 +10,10 @@ using ProtoBuf.Meta;
 
 public class MBTemp : MonoBehaviour {
 
+	public GameObject Newobg;
+
+	public bool IsNew = false;
+
 	public GameObject MiBaoActive;
 
 	public GameObject MiBaoDisActive;
@@ -40,6 +44,9 @@ public class MBTemp : MonoBehaviour {
 	public GameObject Proess;
 	public GameObject ActiveProess;
 	public int SuipianNum;
+
+	public UILabel MiBaoPath;
+
 	void Start () {
 	
 	}
@@ -64,27 +71,46 @@ public class MBTemp : MonoBehaviour {
 			if(mMiBaoinfo.suiPianNum <= 0)
 			{
 				Tips.gameObject.SetActive(false);
+				MiBaoSuipianIcon.gameObject.GetComponent<Animator>().enabled = false;
 				HechengNum.text = MyColorData.getColorString(5, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoSuipianXMltemp.hechengNum.ToString();
 			}
 			else if(mMiBaoinfo.suiPianNum >= mMiBaoSuipianXMltemp.hechengNum)
 			{
 				Tips.gameObject.SetActive(true);
+				MiBaoSuipianIcon.gameObject.GetComponent<Animator>().enabled = true;
 				HechengNum.text = MyColorData.getColorString(6, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoSuipianXMltemp.hechengNum.ToString();
 			}
 			else
 			{
 				Tips.gameObject.SetActive(false);
 				HechengNum.text = mMiBaoinfo.suiPianNum.ToString()+"/"+mMiBaoSuipianXMltemp.hechengNum.ToString();
+				MiBaoSuipianIcon.gameObject.GetComponent<Animator>().enabled = false;
 			}
 			MiBaoSuipianIcon.spriteName = mMiBaoSuipianXMltemp.icon.ToString();
 
 			UISlider mSlider = Proess.GetComponent<UISlider>();
 			
 			mSlider.value = (float)(mMiBaoinfo.suiPianNum)/(float)(mMiBaoSuipianXMltemp.hechengNum);
-	
+			//Debug.Log("mMiBaoSuipianXMltemp.mibaoPath = "+mMiBaoSuipianXMltemp.mibaoPath);
+			if(mMiBaoSuipianXMltemp.mibaoPath == "" ||mMiBaoSuipianXMltemp.mibaoPath == null)
+			{
+				MiBaoPath.text = "";
+			}
+			else{
+				MiBaoPath.text = mMiBaoSuipianXMltemp.mibaoPath;
+			}
+
 		}
 		else
 		{
+			if(IsNew)
+			{
+				Newobg.SetActive(true);
+			}
+			else
+			{
+				Newobg.SetActive(false);
+			}
 			MiBaoXmlTemp mmibao = MiBaoXmlTemp.getMiBaoXmlTempById(mMiBaoinfo.miBaoId);
 
 			Lv.text = "Lv."+mMiBaoinfo.level.ToString();
@@ -177,6 +203,15 @@ public class MBTemp : MonoBehaviour {
 	}
 	void CreateStar(UISprite star)
 	{
+		if(mMiBaoinfo.needSuipianNum <= mMiBaoinfo.suiPianNum&&mMiBaoinfo.star < 5)
+		{
+			MiBaoIcon.gameObject.GetComponent<Animator>().enabled = true;
+		}
+		else
+		{
+			MiBaoIcon.gameObject.GetComponent<Animator>().enabled = false;
+		}
+
 		foreach(UISprite s in Stars)
 		{
 			Destroy(s.gameObject);
@@ -199,7 +234,14 @@ public class MBTemp : MonoBehaviour {
 		for(int i = 0 ; i < stars; i ++)
 		{
 			GameObject StarTemp = Instantiate(star.gameObject) as GameObject;
-
+			if(mMiBaoinfo.needSuipianNum <= mMiBaoinfo.suiPianNum&&mMiBaoinfo.star < 5)
+			{
+				StarTemp.gameObject.GetComponent<Animator>().enabled = true;
+			}
+			else
+			{
+				StarTemp.gameObject.GetComponent<Animator>().enabled = false;
+			}
 			StarTemp.SetActive(true);
 
 			StarTemp.transform.parent = star.gameObject.transform.parent;
@@ -216,6 +258,12 @@ public class MBTemp : MonoBehaviour {
 
 	public void ShowActiveInfo()
 	{
+		if(IsNew &&! MiBaoGlobleData.Instance().OldMiBaolist.Contains(mMiBaoinfo))
+		{
+			MiBaoGlobleData.Instance().OldMiBaolist.Add(mMiBaoinfo);
+			IsNew = false;
+			Newobg.SetActive(false);
+		}
 		NewMiBaoManager.Instance().ShowMiBaoDeilInf (mMiBaoinfo);
 	}
 

@@ -48,78 +48,20 @@ namespace Carriage
 
         #region Map Controller
 
-        public SmallMapController m_SmallMapController;
-        public List<GameObject> m_ItemGizmosPrefabList = new List<GameObject>();
-        public Dictionary<int, Transform> m_ItemGizmosDic = new Dictionary<int, Transform>();
+        public MapController m_MapController;
 
-        private const float m_MapTransDuration = 0.5f;
-        public float m_MapTransTime;
-        public Transform m_MapSmallModeTransform;
-        private float m_MapSmallModeA = 1.0f;
-        public Transform m_MapBigModeTransform;
-        private float m_MapBigModeA = 1.0f;
-
-        public GameObject m_BigMapDeco;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="p_uID"></param>
-        /// <param name="p_type">from 0 - 5</param>
-        /// <returns></returns>
-        public bool AddGizmos(int p_uID, int p_type)
+        public void ExecuteAfterOpenMap()
         {
-            if (m_ItemGizmosDic.ContainsKey(p_uID))
-            {
-                Debug.LogWarning("Cannot add duplicated gizmos to small map, id:" + p_uID);
-                return false;
-            }
-
-            var gizmos = Instantiate(m_ItemGizmosPrefabList[p_type]);
-            gizmos.name += "_" + p_uID;
-            TransformHelper.ActiveWithStandardize(m_SmallMapController.transform, gizmos.transform);
-            m_ItemGizmosDic.Add(p_uID, gizmos.transform);
-
-            return true;
+            //open vague
+            m_MainUIVagueEffect.enabled = true;
+            m_Joystick.m_Box.enabled = false;
         }
 
-        public bool RemoveGizmos(int p_uID)
+        public void ExecuteAfterCloseMap()
         {
-            if (!m_ItemGizmosDic.ContainsKey(p_uID))
-            {
-                Debug.LogWarning("Cannot remove non-existed gizmos from small map, id:" + p_uID);
-                return false;
-            }
-
-            Destroy(m_ItemGizmosDic[p_uID].gameObject);
-            m_ItemGizmosDic.Remove(p_uID);
-
-            return true;
-        }
-
-        public void UpdateGizmosPosition(int p_uID, Vector3 p_position, float p_rotation)
-        {
-            if (!m_ItemGizmosDic.ContainsKey(p_uID))
-            {
-                Debug.LogWarning("Cannot update non-existed gizmos in small map, id:" + p_uID);
-                return;
-            }
-
-            m_SmallMapController.SetPositionInSmallMap(m_ItemGizmosDic[p_uID], p_position, p_rotation);
-        }
-
-        #endregion
-
-        #region Map Effect Controller
-
-        public MapEffectController m_MapEffectController;
-
-        public void ShowMapEffect(int p_uid)
-        {
-            if (m_ItemGizmosDic.ContainsKey(p_uid))
-            {
-                m_MapEffectController.BlinkEffect(p_uid, m_ItemGizmosDic[p_uid].localPosition);
-            }
+            //close vague
+            m_MainUIVagueEffect.enabled = false;
+            m_Joystick.m_Box.enabled = true;
         }
 
         #endregion
@@ -282,78 +224,6 @@ namespace Carriage
             }
         }
 
-        public void OnOpenBigMap()
-        {
-            if (!m_SmallMapController.m_IsMapInSmallMode) return;
-
-            m_MapTransTime = Time.realtimeSinceStartup;
-            m_SmallMapController.m_IsMapInSmallMode = false;
-
-            m_SmallMapController.MapBG.mainTexture = m_SmallMapController.BigMapTexture;
-            //m_SmallMapController.MapBG.width = m_SmallMapController.MapBG.height = 200;
-
-            var color = m_SmallMapController.GetComponent<UITexture>().color;
-            m_SmallMapController.GetComponent<UITexture>().color = new Color(color.r, color.g, color.b, m_MapBigModeA);
-            m_BigMapDeco.SetActive(true);
-
-            //vague
-            m_MainUIVagueEffect.enabled = true;
-            m_Joystick.m_Box.enabled = false;
-        }
-
-        public void OnCloseBigMap()
-        {
-            if (m_SmallMapController.m_IsMapInSmallMode) return;
-
-            m_MapTransTime = Time.realtimeSinceStartup;
-            m_SmallMapController.m_IsMapInSmallMode = true;
-
-            m_SmallMapController.MapBG.mainTexture = m_SmallMapController.SmallMapTexture;
-            //m_SmallMapController.MapBG.width = m_SmallMapController.MapBG.height = 200;
-
-            var color = m_SmallMapController.GetComponent<UITexture>().color;
-            m_SmallMapController.GetComponent<UITexture>().color = new Color(color.r, color.g, color.b, m_MapSmallModeA);
-            m_BigMapDeco.SetActive(false);
-
-            //vague
-            m_MainUIVagueEffect.enabled = false;
-            m_Joystick.m_Box.enabled = true;
-        }
-
-        public void OnAlertEffectClick()
-        {
-            DenableAlertEffectClick();
-
-            HideAlertEffect();
-
-            //Show awards.
-            if (m_RewardIDs != null && m_RewardIDs.Any() && m_RewardNums != null && m_RewardNums.Any() && m_RewardIDs.Count == m_RewardNums.Count)
-            {
-                GeneralRewardManager.Instance().CreateReward(m_RewardIDs.Select((t, i) => new RewardData(t, m_RewardNums[i])).ToList());
-            }
-
-            if (m_CurrenTongzhiData != null)
-            {
-                Global.m_listAllTheData.Remove(m_CurrenTongzhiData);
-                Global.upDataTongzhiData(null);
-
-                if (m_CurrenTongzhiData.m_ButtonIndexList != null && m_CurrenTongzhiData.m_ButtonIndexList.Any())
-                {
-                    PromptActionReq req = new PromptActionReq();
-                    req.reqType = m_CurrenTongzhiData.m_ButtonIndexList.First();
-                    req.suBaoId = m_CurrenTongzhiData.m_SuBaoMSG.subaoId;
-                    MemoryStream tempStream = new MemoryStream();
-                    QiXiongSerializer t_qx = new QiXiongSerializer();
-                    t_qx.Serialize(tempStream, req);
-                    byte[] t_protof;
-                    t_protof = tempStream.ToArray();
-                    SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_Prompt_Action_Req, ref t_protof);
-                }
-            }
-
-            m_MainCityUiTongzhi.upDataShow();
-        }
-
         public void OnReportClick()
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TONGZHI), DoOpenReportWindow);
@@ -404,11 +274,11 @@ namespace Carriage
             {
                 if (value && !isChaseAttack)
                 {
-                    ShowChaseToAttackAnimation();
+                    AnimationController.ShowAnimation(Res2DTemplate.GetResPath(Res2DTemplate.Res.CHASE_ATTACK_NAV));
                 }
                 else if (!value && isChaseAttack)
                 {
-                    StopChaseToAttackAnimation();
+                    AnimationController.StopAnimation();
                 }
 
                 isChaseAttack = value;
@@ -569,7 +439,7 @@ namespace Carriage
 
         private float selectDistance;
 
-        private List<KeyValuePair<int, PlayerController>> GetAllItemsWithinDistance()
+        private List<KeyValuePair<int, OtherPlayerController>> GetAllItemsWithinDistance()
         {
             if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic == null || m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Count == 0)
             {
@@ -722,6 +592,13 @@ namespace Carriage
                             //mine skill
                             if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.attackUid, RTSkillTemplate.GetTemplateByID(tempInfo.skillId).CsOnShot))
                             {
+                                //turn rotation
+                                if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(tempInfo.targetUid))
+                                {
+                                    m_RootManager.m_SelfPlayerController.transform.forward = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.targetUid].transform.position - m_RootManager.m_SelfPlayerController.transform.position;
+                                    m_RootManager.m_SelfPlayerController.transform.localEulerAngles = new Vector3(0, m_RootManager.m_SelfPlayerController.transform.localEulerAngles.y, 0);
+                                }
+
                                 m_RootManager.m_SelfPlayerController.DeactiveMove();
 
                                 FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), m_RootManager.m_SelfPlayerController.gameObject, null, Vector3.zero, m_RootManager.m_SelfPlayerController.transform.forward);
@@ -730,13 +607,25 @@ namespace Carriage
                         else
                         {
                             var temp = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
-                            if (temp != null && temp.Count() > 0)
+                            if (temp != null && temp.Any())
                             {
                                 if (!temp.First().Value.IsCarriage)
                                 {
                                     //other player skill, carriage not included.
                                     if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.attackUid, RTSkillTemplate.GetTemplateByID(tempInfo.skillId).CsOnShot))
                                     {
+                                        //turn rotation.
+                                        if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(tempInfo.targetUid))
+                                        {
+                                            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.forward = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.targetUid].transform.position - m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.position;
+                                            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles = new Vector3(0, m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles.y, 0);
+                                        }
+                                        else if (tempInfo.targetUid == PlayerSceneSyncManager.Instance.m_MyselfUid && m_RootManager.m_SelfPlayerController != null)
+                                        {
+                                            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.forward = m_RootManager.m_SelfPlayerController.transform.position - m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.position;
+                                            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles = new Vector3(0, m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles.y, 0);
+                                        }
+
                                         temp.First().Value.DeactiveMove();
 
                                         FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
@@ -800,7 +689,7 @@ namespace Carriage
                                     {
                                         if ((!string.IsNullOrEmpty(temp2.AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (temp2.AllianceName == AllianceData.Instance.g_UnionInfo.name)) || (temp2.KingName == JunZhuData.Instance().m_junzhuInfo.name))
                                         {
-                                            ShowMapEffect(tempInfo.targetUid);
+                                            m_MapController.ShowBeenAttackEffect(tempInfo.targetUid);
                                         }
                                     }
                                 }
@@ -1184,7 +1073,7 @@ namespace Carriage
                 child.parent = null;
             }
 
-            if (!AllianceData.Instance.IsAllianceNotExist && m_SafeAresRecoveringLevel >= 0)
+            if (!AllianceData.Instance.IsAllianceNotExist && m_SafeAresRecoveringLevel > 0)
             {
                 var temp = Instantiate(p_object) as GameObject;
                 var manager = temp.GetComponent<IconSampleManager>();
@@ -1225,7 +1114,7 @@ namespace Carriage
                 child.parent = null;
             }
 
-            if (!AllianceData.Instance.IsAllianceNotExist && m_CarriageBuffLevel >= 0)
+            if (!AllianceData.Instance.IsAllianceNotExist && m_CarriageBuffLevel > 0)
             {
                 var temp = Instantiate(p_object) as GameObject;
                 var manager = temp.GetComponent<IconSampleManager>();
@@ -1408,176 +1297,45 @@ namespace Carriage
 
         #region Alert Info Effect
 
-        private bool isAlertInfoEffectShowing;
+        public BannerEffectController m_BannerEffectController;
 
-        public GameObject AlertEffectMainObject;
-        public GameObject AlertEffectBGObject;
-        public GameObject AlertEffectInfoObject;
-        public UILabel AlertEffectLabel;
-        public UILabel AlertEffectSubLabel;
-        public UILabel AlertEffectButtomInfoLabel;
-        public UILabel AlertEffectRightInfoLabel;
-        public UIGrid AlertEffectRewardGrid;
-
-        public BoxCollider AlertEffectCollider;
-
-        public List<int> m_RewardIDs = new List<int>();
-        public List<int> m_RewardNums = new List<int>();
-
-        private const float BGTurnDuration = 0.3f;
-        private const float LabelMoveDuration = 0.4f;
-
-        public void ShowAlertInfo(string p_mainStr, string p_subStr = "", List<int> p_rewardIDs = null, List<int> p_rewardNums = null, bool isShowRemainingRobTimes = false)
+        public void ExecuteAfterEffectClick()
         {
-            isAlertInfoEffectShowing = true;
-
-            AlertEffectLabel.text = p_mainStr;
-            AlertEffectSubLabel.text = p_subStr;
-            if (isShowRemainingRobTimes)
+            if (m_CurrenTongzhiData != null)
             {
-                AlertEffectRightInfoLabel.text = "今日还剩" + ColorTool.Color_Red_c40000 + RemainingRobCarriageTimes + "[-]" + "次可获劫镖收益";
-                AlertEffectRightInfoLabel.gameObject.SetActive(true);
-            }
-            else
-            {
-                AlertEffectRightInfoLabel.gameObject.SetActive(false);
-            }
+                Global.m_listAllTheData.Remove(m_CurrenTongzhiData);
+                Global.upDataTongzhiData(null);
 
-            if (p_rewardIDs != null && p_rewardIDs.Any() && p_rewardNums != null && p_rewardNums.Any() && p_rewardIDs.Count == p_rewardNums.Count)
-            {
-                m_RewardIDs = p_rewardIDs;
-                m_RewardNums = p_rewardNums;
-
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
-            }
-            else
-            {
-                //Clear all awards.
-
-                m_RewardIDs.Clear();
-                m_RewardNums.Clear();
-
-                while (AlertEffectRewardGrid.transform.childCount > 0)
+                if (m_CurrenTongzhiData.m_ButtonIndexList != null && m_CurrenTongzhiData.m_ButtonIndexList.Any())
                 {
-                    var child = AlertEffectRewardGrid.transform.GetChild(0);
-                    child.parent = null;
-                    Destroy(child.gameObject);
+                    PromptActionReq req = new PromptActionReq();
+                    req.reqType = m_CurrenTongzhiData.m_ButtonIndexList.First();
+                    req.suBaoId = m_CurrenTongzhiData.m_SuBaoMSG.subaoId;
+                    MemoryStream tempStream = new MemoryStream();
+                    QiXiongSerializer t_qx = new QiXiongSerializer();
+                    t_qx.Serialize(tempStream, req);
+                    byte[] t_protof;
+                    t_protof = tempStream.ToArray();
+                    SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_Prompt_Action_Req, ref t_protof);
                 }
-
-                ShowAlertEffect();
-            }
-        }
-
-        private void OnIconSampleLoadCallBack(ref WWW www, string path, UnityEngine.Object p_object)
-        {
-            while (AlertEffectRewardGrid.transform.childCount > 0)
-            {
-                var child = AlertEffectRewardGrid.transform.GetChild(0);
-                child.parent = null;
-                Destroy(child.gameObject);
             }
 
-            for (int i = 0; i < m_RewardIDs.Count; i++)
-            {
-                var temp = (Instantiate(p_object) as GameObject).GetComponent<IconSampleManager>();
-                TransformHelper.ActiveWithStandardize(AlertEffectRewardGrid.transform, temp.transform);
-
-                temp.SetIconByID(m_RewardIDs[i], "x" + m_RewardNums[i], 10);
-            }
-
-            float deflection = AlertEffectRewardGrid.transform.localScale.x * AlertEffectRewardGrid.cellWidth * (m_RewardIDs.Count - 1) / 2f;
-            AlertEffectRewardGrid.transform.localPosition = new Vector3(-deflection, AlertEffectRewardGrid.transform.localPosition.y, 0);
-            AlertEffectRewardGrid.Reposition();
-
-            ShowAlertEffect();
+            m_MainCityUiTongzhi.upDataShow();
         }
 
-        public void ShowAlertEffect()
+        public void ExecuteAfterEffectEnd()
         {
-            AlertEffectMainObject.SetActive(true);
-
-            ShowAlertEffectBG();
-        }
-
-        private void ShowAlertEffectBG()
-        {
-            AlertEffectBGObject.transform.localScale = new Vector3(1, 0, 1);
-            AlertEffectBGObject.SetActive(true);
-            iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", 1, "time", BGTurnDuration, "easetype", "easeOutBack", "onupdate", "SetAlertEffectBGScale", "oncomplete", "ShowAlertEffectInfo"));
-        }
-
-        private void ShowAlertEffectInfo()
-        {
-            AlertEffectInfoObject.transform.localPosition = new Vector3(-ClientMain.m_TotalWidthInCoordinate, AlertEffectInfoObject.transform.localPosition.y, 0);
-            AlertEffectInfoObject.SetActive(true);
-            iTween.ValueTo(gameObject, iTween.Hash("from", -ClientMain.m_TotalWidthInCoordinate, "to", 0, "time", LabelMoveDuration, "easetype", "easeOutBack", "onupdate", "SetAlertEffectInfoPos", "oncomplete", "EnableAlertEffectClick"));
-        }
-
-        public void HideAlertEffect()
-        {
-            HideAlertEffectInfo();
-        }
-
-        private void HideAlertEffectInfo()
-        {
-            AlertEffectInfoObject.transform.localPosition = new Vector3(0, AlertEffectInfoObject.transform.localPosition.y, 0);
-            AlertEffectInfoObject.SetActive(true);
-            iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", ClientMain.m_TotalWidthInCoordinate, "time", LabelMoveDuration, "easetype", "easeInBack", "onupdate", "SetAlertEffectInfoPos", "oncomplete", "HideAlertEffectBG"));
-        }
-
-        private void HideAlertEffectBG()
-        {
-            AlertEffectInfoObject.SetActive(false);
-
-            AlertEffectBGObject.transform.localScale = new Vector3(1, 1, 1);
-            AlertEffectBGObject.SetActive(true);
-            iTween.ValueTo(gameObject, iTween.Hash("from", 1, "to", 0, "time", BGTurnDuration, "easetype", "easeInBack", "onupdate", "SetAlertEffectBGScale", "oncomplete", "EndAlertEffect"));
-        }
-
-        public void EndAlertEffect()
-        {
-            AlertEffectBGObject.SetActive(false);
-            AlertEffectMainObject.SetActive(false);
-
-            isAlertInfoEffectShowing = false;
-
             if (m_CurrenTongzhiData != null)
             {
                 ExecuteReportData();
             }
         }
 
-        public void SetAlertEffectBGScale(float value)
-        {
-            AlertEffectBGObject.transform.localScale = new Vector3(1, value, 1);
-        }
-
-        public void SetAlertEffectInfoPos(float value)
-        {
-            AlertEffectInfoObject.transform.localPosition = new Vector3(value, AlertEffectInfoObject.transform.localPosition.y, 0);
-        }
-
-        public void EnableAlertEffectClick()
-        {
-            AlertEffectCollider.enabled = true;
-
-            CycleTween.StartCycleTween(AlertEffectButtomInfoLabel.gameObject, 1, 0, 1.0f, OnUpdateAlertInfoLabelA);
-        }
-
-        public void DenableAlertEffectClick()
-        {
-            AlertEffectCollider.enabled = false;
-        }
-
-        private void OnUpdateAlertInfoLabelA(float value)
-        {
-            AlertEffectButtomInfoLabel.color = new Color(AlertEffectButtomInfoLabel.color.r, AlertEffectButtomInfoLabel.color.g, AlertEffectButtomInfoLabel.color.b, value);
-        }
-
         #endregion
 
         #region Report Info
 
+        public GameObject m_ReportObject;
         public MainCityUITongzhi m_MainCityUiTongzhi;
 
         public TongzhiData m_CurrenTongzhiData;
@@ -1593,7 +1351,17 @@ namespace Carriage
         /// <returns>is executed</returns>
         public bool ExecuteReportData()
         {
-            if (isAlertInfoEffectShowing)
+            //Update report icon.
+            if (Global.m_listJiebiaoData != null && Global.m_listJiebiaoData.Any())
+            {
+                m_ReportObject.SetActive(true);
+            }
+            else
+            {
+                m_ReportObject.SetActive(false);
+            }
+
+            if (m_BannerEffectController.isAlertInfoEffectShowing)
             {
                 Debug.LogWarning("Cancel execute report data cause alert effect showing");
                 return false;
@@ -1621,7 +1389,7 @@ namespace Carriage
                         });
                     }
 
-                    ShowAlertInfo(labelText, subLabelText, awardIdList, awardNumList, data.m_ReportTemplate.m_iEvent == 114 || data.m_ReportTemplate.m_iEvent == 115);
+                    m_BannerEffectController.ShowAlertInfo(labelText, subLabelText, data.m_ReportTemplate.m_iEvent == 114 || data.m_ReportTemplate.m_iEvent == 115 ? ("今日还剩" + ColorTool.Color_Red_c40000 + RemainingRobCarriageTimes + "[-]" + "次可获劫镖收益") : "", awardIdList, awardNumList);
                     return true;
                 }
             }
@@ -1633,61 +1401,22 @@ namespace Carriage
 
         #region TP
 
-        public GameObject m_TpObject;
-        public UIProgressBar m_TpBar;
-        public UILabel m_TpTimeLabel;
+        public TPController m_TpController;
 
-        public float m_TPDuration
-        {
-            get
-            {
-                if (m_tpDuration <= 0)
-                {
-                    string l_value = YunBiaoTemplate.GetValueByKey("TP_duration");
-                    return m_tpDuration = !string.IsNullOrEmpty(l_value) ? float.Parse(l_value) : 3;
-                }
-                else
-                {
-                    return m_tpDuration;
-                }
-            }
-        }
+        private float m_tpDuration;
 
-        private float m_tpDuration = -1;
-
-        private Vector2 m_TpToPos;
-
-        public void TPToPosition(Vector2 targetPos)
+        public void TpToPosition(Vector2 p_position)
         {
             if (m_RootManager.m_SelfPlayerController != null && m_RootManager.m_SelfPlayerCultureController != null)
             {
-                m_TpToPos = targetPos;
-
-                m_TpObject.SetActive(true);
-                StartSetTpBar();
+                m_TpController.m_ExecuteAfterTP = ExecuteAfterTp;
+                m_TpController.TPToPosition(p_position, m_tpDuration);
             }
         }
 
-        private void StartSetTpBar()
+        private void ExecuteAfterTp(Vector2 p_position)
         {
-            m_TpBar.value = 0;
-            m_TpTimeLabel.text = "传送中" + 0.0 + "秒";
-            //m_TpTimeLabel.text = ColorTool.Color_White_ffffff + "传送中[-]" + ColorTool.Color_Red_c40000 + 0.0 + "[-]" + ColorTool.Color_White_ffffff + "秒[-]";
-            iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", 1, "time", m_TPDuration, "easetype", "linear", "onupdate", "UpdateTpInfo", "oncomplete", "DoTpToPos"));
-        }
-
-        private void UpdateTpInfo(float value)
-        {
-            m_TpBar.value = value;
-            m_TpTimeLabel.text = "传送中" + float.Parse((m_TPDuration * value).ToString("0.0")) + "秒";
-            //m_TpTimeLabel.text = ColorTool.Color_White_ffffff + "传送中[-]" + ColorTool.Color_Red_c40000 + float.Parse((m_TPDuration * value).ToString("0.0")) + "[-]" + ColorTool.Color_White_ffffff + "秒[-]";
-        }
-
-        private void DoTpToPos()
-        {
-            m_TpObject.SetActive(false);
-
-            m_RootManager.m_SelfPlayerController.transform.localPosition = new Vector3(m_TpToPos.x, RootManager.BasicYPosition, m_TpToPos.y);
+            m_RootManager.m_SelfPlayerController.transform.localPosition = new Vector3(p_position.x, RootManager.BasicYPosition, p_position.y);
         }
 
         #endregion
@@ -1796,52 +1525,23 @@ namespace Carriage
 
         #region ChaseToAttack/Navigation Animation
 
-        private GameObject NavAnimObject;
-        private GameObject ChaseToAttackAnimObject;
-        public GameObject AnimParent;
-
-        public void ShowChaseToAttackAnimation()
+        public void ShowNavigationAnim()
         {
-            if (ChaseToAttackAnimObject == null)
+            if (!IsChaseAttack)
             {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.CHASE_ATTACK_NAV), ChaseToAttackAnimLoadCallback);
+                AnimationController.ShowAnimation(Res2DTemplate.GetResPath(Res2DTemplate.Res.AUTO_NAV));
             }
         }
 
-        public void ShowNavAnimation()
+        public void StopNavigationAnim()
         {
-            if (IsChaseAttack)
+            if (!IsChaseAttack)
             {
-                return;
-            }
-
-            if (NavAnimObject == null)
-            {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.AUTO_NAV), NavAnimLoadCallback);
+                AnimationController.StopAnimation();
             }
         }
 
-        private void ChaseToAttackAnimLoadCallback(ref WWW p_www, string p_path, Object p_object)
-        {
-            ChaseToAttackAnimObject = (GameObject)Instantiate(p_object);
-            TransformHelper.ActiveWithStandardize(AnimParent.transform, ChaseToAttackAnimObject.transform);
-        }
-
-        private void NavAnimLoadCallback(ref WWW p_www, string p_path, Object p_object)
-        {
-            NavAnimObject = (GameObject)Instantiate(p_object);
-            TransformHelper.ActiveWithStandardize(AnimParent.transform, NavAnimObject.transform);
-        }
-
-        public void StopChaseToAttackAnimation()
-        {
-            Destroy(ChaseToAttackAnimObject);
-        }
-
-        public void StopNavAnimation()
-        {
-            Destroy(NavAnimObject);
-        }
+        public CharacterAnimationController AnimationController;
 
         #endregion
 
@@ -1881,33 +1581,7 @@ namespace Carriage
 
         #region Bubble Controller
 
-        public UILabel BubbleLabel;
-
-        private float bubbleGapTime;
-        private float bubbleExistTime;
-        private float bubbleDistance;
-
-        private List<string> bubbleStrList = new List<string>();
-
-        public void ShowBubble()
-        {
-            Random temp = new Random();
-            BubbleLabel.text = bubbleStrList[temp.Next(0, bubbleStrList.Count - 1)];
-            BubbleLabel.gameObject.SetActive(true);
-
-            if (TimeHelper.Instance.IsTimeCalcKeyExist("CarriageBubble"))
-            {
-                TimeHelper.Instance.RemoveFromTimeCalc("CarriageBubble");
-            }
-            TimeHelper.Instance.AddOneDelegateToTimeCalc("CarriageBubble", bubbleExistTime, HideBubble);
-        }
-
-        public void HideBubble()
-        {
-            BubbleLabel.gameObject.SetActive(false);
-
-            TimeHelper.Instance.RemoveFromTimeCalc("CarriageBubble");
-        }
+        public BubbleController m_BubbleController;
 
         #endregion
 
@@ -1942,27 +1616,9 @@ namespace Carriage
         {
             if (m_RootManager.m_SelfPlayerController == null || m_RootManager.m_SelfPlayerCultureController == null) return;
 
-            #region Map trans animation
-
-            if (Time.realtimeSinceStartup - m_MapTransTime <= m_MapTransDuration)
-            {
-                if (!m_SmallMapController.m_IsMapInSmallMode)
-                {
-                    m_SmallMapController.transform.position = Vector3.Lerp(m_MapSmallModeTransform.position, m_MapBigModeTransform.position, (Time.realtimeSinceStartup - m_MapTransTime) / m_MapTransDuration);
-                    m_SmallMapController.transform.localScale = Vector3.Lerp(m_MapSmallModeTransform.localScale, m_MapBigModeTransform.localScale, (Time.realtimeSinceStartup - m_MapTransTime) / m_MapTransDuration);
-                }
-                else
-                {
-                    m_SmallMapController.transform.position = Vector3.Lerp(m_MapBigModeTransform.position, m_MapSmallModeTransform.position, (Time.realtimeSinceStartup - m_MapTransTime) / m_MapTransDuration);
-                    m_SmallMapController.transform.localScale = Vector3.Lerp(m_MapBigModeTransform.localScale, m_MapSmallModeTransform.localScale, (Time.realtimeSinceStartup - m_MapTransTime) / m_MapTransDuration);
-                }
-            }
-
-            #endregion
-
             #region Update small map
 
-            UpdateGizmosPosition(PlayerSceneSyncManager.Instance.m_MyselfUid, m_RootManager.m_SelfPlayerController.transform.localPosition, m_RootManager.m_SelfPlayerController.transform.localEulerAngles.y);
+            m_MapController.UpdateGizmosPosition(PlayerSceneSyncManager.Instance.m_MyselfUid, m_RootManager.m_SelfPlayerController.transform.localPosition, m_RootManager.m_SelfPlayerController.transform.localEulerAngles.y);
 
             #endregion
 
@@ -2041,15 +1697,15 @@ namespace Carriage
                 checkTime1 = Time.realtimeSinceStartup;
             }
 
-            if (Time.realtimeSinceStartup - checkTime2 > bubbleGapTime)
+            if (Time.realtimeSinceStartup - checkTime2 > m_BubbleController.bubbleGapTime)
             {
                 if (m_TotalCarriageListController.m_StoredCarriageControllerList.Any(item => item.KingName == JunZhuData.Instance().m_junzhuInfo.name) && m_RootManager.m_SelfPlayerController != null)
                 {
                     var myCarriage = m_TotalCarriageListController.m_StoredCarriageControllerList.Where(item => item.KingName == JunZhuData.Instance().m_junzhuInfo.name).First();
 
-                    if (Vector3.Distance(myCarriage.transform.position, m_RootManager.m_SelfPlayerController.transform.position) > bubbleDistance)
+                    if (Vector3.Distance(myCarriage.transform.position, m_RootManager.m_SelfPlayerController.transform.position) > m_BubbleController.bubbleDistance)
                     {
-                        ShowBubble();
+                        m_BubbleController.ShowBubble();
                     }
                 }
 
@@ -2115,12 +1771,8 @@ namespace Carriage
 
         void Start()
         {
-            AlertEffectBGObject.GetComponent<UISprite>().width = (int)(ClientMain.m_TotalWidthInCoordinate);
-
             //Execute remaining data.
             ExecuteReportData();
-
-            WhipSkillController.BaseSkillClickDelegate = OnWhipClick;
 
             //Init whip/aid button color.
             isCanAid = true;
@@ -2133,14 +1785,25 @@ namespace Carriage
         void Awake()
         {
             //Load configs.
-            bubbleGapTime = float.Parse(YunBiaoTemplate.GetValueByKey("bubble_interval"));
-            bubbleExistTime = float.Parse(YunBiaoTemplate.GetValueByKey("bubble_duration"));
-            bubbleDistance = float.Parse(YunBiaoTemplate.GetValueByKey("bubble_distance"));
+            m_BubbleController.bubbleGapTime = float.Parse(YunBiaoTemplate.GetValueByKey("bubble_interval"));
+            m_BubbleController.bubbleExistTime = float.Parse(YunBiaoTemplate.GetValueByKey("bubble_duration"));
+            m_BubbleController.bubbleDistance = float.Parse(YunBiaoTemplate.GetValueByKey("bubble_distance"));
 
-            bubbleStrList = new List<string>() { LanguageTemplate.GetText(1532), LanguageTemplate.GetText(1533), LanguageTemplate.GetText(1534) };
+            m_BubbleController.bubbleStrList = new List<string>() { LanguageTemplate.GetText(1532), LanguageTemplate.GetText(1533), LanguageTemplate.GetText(1534) };
 
             RecommandedScale = int.Parse(YunBiaoTemplate.GetValueByKey("rec_zhanli_scale"));
             RecommandedNum = int.Parse(YunBiaoTemplate.GetValueByKey("rec_cartNum"));
+
+            m_tpDuration = float.Parse(YunBiaoTemplate.GetValueByKey("TP_duration"));
+
+            //Bind delegate.
+            m_BannerEffectController.m_ExecuteAfterClick = ExecuteAfterEffectClick;
+            m_BannerEffectController.m_ExecuteAfterEnd = ExecuteAfterEffectEnd;
+
+            WhipSkillController.BaseSkillClickDelegate = OnWhipClick;
+
+            m_MapController.m_ExecuteAfterOpenMap = ExecuteAfterOpenMap;
+            m_MapController.m_ExecuteAfterCloseMap = ExecuteAfterCloseMap;
         }
 
 #if DEBUG_CARRIAGE
@@ -2149,7 +1812,7 @@ namespace Carriage
         {
             if (GUILayout.Button("Test TP"))
             {
-                TPToPosition(new Vector2(202, 30));
+                TpToPosition(new Vector2(202, 30));
             }
             if (GUILayout.Button("Test buy"))
             {
@@ -2161,13 +1824,13 @@ namespace Carriage
             }
             if (GUILayout.Button("Test effect"))
             {
-                ShowAlertInfo("testing", "testing2", new List<int>() { 900010, 900011 }, new List<int>() { 1, 2 });
+                m_BannerEffectController.ShowAlertInfo("testing", "testing2", "", new List<int>() { 900010, 900011 }, new List<int>() { 1, 2 });
             }
         }
 
         void doBuy()
         {
-            ShowAlertInfo("testing", "testing2", new List<int>() { 900010, 900011 }, new List<int>() { 1, 2 });
+            m_BannerEffectController.ShowAlertInfo("testing", "testing2", "", new List<int>() { 900010, 900011 }, new List<int>() { 1, 2 });
         }
 #endif
 

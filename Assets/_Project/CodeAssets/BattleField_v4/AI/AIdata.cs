@@ -153,6 +153,7 @@ public class AIdata
 		AddAttribute (nodeData.attackSpeed);//AttrubuteType.ATTRTYPE_attackSpeed
 		AddAttribute (nodeData.attackRange);//AttrubuteType.ATTRTYPE_attackRange
 		AddAttribute ((CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan 
+		               || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YuanZhu 
 		               || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao 
 		               || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pvp
 		               || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo) ? 1000 : nodeData.eyeRange);//AttrubuteType.ATTRTYPE_eyeRange

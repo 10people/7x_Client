@@ -10,22 +10,22 @@ using ProtoBuf.Meta;
 
 public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 
-	
-	public GameObject m_Technology1;
-	
-	public GameObject m_Technology2;
-	
-	public GameObject m_Technology3;
-
 	public UILabel Builds;
-	public JianZhuList m_JianZhuList;
+
+	public KeJiList m_mKeJiList;
+
 	public static TechnologyManager m_TechnologyManager;
 	public int CurKejiType;
 
 	public List<Technologytemp> mTechnologytempList = new List<Technologytemp>();
 
-	public GameObject StudyVctry;
+	public UISprite StudyVctry;
 	public int JianZhu_InDex;
+
+	public List<GameObject> BtnList = new List<GameObject>();
+
+	public List<GameObject> m_TechnologyList = new List<GameObject>();
+
  	public static TechnologyManager Instance()
 	{
 		if (!m_TechnologyManager)
@@ -76,20 +76,21 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				
 				QiXiongSerializer t_qx = new QiXiongSerializer();
 
-				JianZhuList mJianZhuList = new JianZhuList(); // 科技等级  按顺序发送
+				KeJiList mKeJiList = new KeJiList(); // 科技等级  按顺序发送
 				
-				t_qx.Deserialize(application_stream, mJianZhuList, mJianZhuList.GetType());
+				t_qx.Deserialize(application_stream, mKeJiList, mKeJiList.GetType());
 				
-				m_JianZhuList = mJianZhuList;
+				m_mKeJiList = mKeJiList;
 
 				//Debug.Log("请求科技返回");
-
-				m_Technology1.SetActive(true);
-				Technology1 mTechnology1 = m_Technology1.GetComponent<Technology1>();
-				mTechnology1.m_JianZhuKeji = m_JianZhuList;
-				mTechnology1.Card = 1;
-				mTechnology1.Init ();
-
+//
+//				m_Technology1.SetActive(true);
+//				Technology1 mTechnology1 = m_Technology1.GetComponent<Technology1>();
+//				mTechnology1.m_JianZhuKeji = m_mKeJiList;
+//				mTechnology1.Card = 1;
+//				mTechnology1.Init ();
+				mCurCard = 0;
+				m_TechnologyBtn1();
 				InitData();
 
 				return true;
@@ -115,14 +116,84 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 						temp.Init();
 					}
 				}
-				m_JianZhuList.list[JianZhu_InDex].lv += 1;
-				StudyVctry.SetActive(true);
+		
+				m_mKeJiList.list[JianZhu_InDex].lv += 1;
+				StudyVctry.gameObject.SetActive(true);
+				StudyVctry.spriteName = "StudyV";
 				int effectid = 100180;
-				UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,StudyVctry,EffectIdTemplate.GetPathByeffectId(effectid));
+				UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,StudyVctry.gameObject,EffectIdTemplate.GetPathByeffectId(effectid));
 				StopCoroutine("closeEffect");
 				StartCoroutine( "closeEffect");
+
+				bool showAerlt = false; // 是否显示红点
+				foreach(KeJiInfo temp in m_mKeJiList.list)
+				{
+					LianMengKeJiTemplate mLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (CurKejiType,temp.lv);
+					int ShuYuanLve = NewAlliancemanager.Instance().KejiLev;
+					if(ShuYuanLve > temp.lv && mLianMengKeJiTemplate.lvUpValue  <= NewAlliancemanager.Instance().m_allianceHaveRes.build)
+					{
+						showAerlt = true;
+						break;
+					}
+				}
+				if(!showAerlt)
+				{
+					int ActiveAerlt = 600600;
+					PushAndNotificationHelper.SetRedSpotNotification(ActiveAerlt,false);
+					NewAlliancemanager.Instance().Refreshtification ();
+				}
+
 				return true;
-			}	
+			}
+			case ProtoIndexes.S_LMKEJI_JIHUO://lianmeng keji back Active
+			{
+				Debug.Log ("S_LMKEJI_JIHUO" + ProtoIndexes.S_LMKEJI_JIHUO);
+				MemoryStream application_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				JiHuoLMKJResp mErrorMessage = new JiHuoLMKJResp(); // 科技等级  按顺序发送
+				
+				t_qx.Deserialize(application_stream, mErrorMessage, mErrorMessage.GetType());
+				
+				//Debug.Log("科技升级");
+				
+				foreach(Technologytemp temp in mTechnologytempList)
+				{
+					if(temp.Keji_type == CurKejiType)
+					{
+						temp.JiHuoLv +=1;
+						temp.Init();
+					}
+				}
+				m_mKeJiList.list[JianZhu_InDex].jiHuoLv += 1;
+				StudyVctry.gameObject.SetActive(true);
+				// 激活特效需要更改
+				StudyVctry.spriteName = "Active";
+				int effectid = 100180;
+				UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,StudyVctry.gameObject,EffectIdTemplate.GetPathByeffectId(effectid));
+				StopCoroutine("closeEffect");
+				StartCoroutine( "closeEffect");
+				
+				bool showAerlt = false; // 是否显示红点
+				foreach(KeJiInfo temp in m_mKeJiList.list)
+				{
+
+					if(temp.jiHuoLv < temp.lv)
+					{
+						showAerlt = true;
+						break;
+					}
+				}
+				if(!showAerlt)
+				{
+					int ActiveAerlt = 600600;
+					PushAndNotificationHelper.SetRedSpotNotification(ActiveAerlt,false);
+					NewAlliancemanager.Instance().Refreshtification ();
+				}
+
+				return true;
+			}
 			default:return false;
 			}
 		}
@@ -132,8 +203,8 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 
 	IEnumerator closeEffect()
 	{
-		yield return new WaitForSeconds (1f);
-		StudyVctry.SetActive(false);
+		yield return new WaitForSeconds (1.3f);
+		StudyVctry.gameObject.SetActive(false);
 	}
 
 	bool isfirst = false;
@@ -145,83 +216,70 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 		//StartCoroutine (getvalue());
 		//m_TechnologyBtn1 ();
 	}
-	IEnumerator getvalue()
-	{
-		yield return new WaitForSeconds (0.01f);
-		
-		mUItoggle.value = !mUItoggle.value;
-		
-	}
+//	IEnumerator getvalue()
+//	{
+//		yield return new WaitForSeconds (0.01f);
+//		
+//		mUItoggle.value = !mUItoggle.value;
+//		
+//	}
+	private int mCurCard;
 	public void m_TechnologyBtn1()
 	{
-		//Debug.Log ("isfirst = "+isfirst);
-
-		if(!isfirst||m_Technology2.activeInHierarchy)
-		{
-			return;
-		}
-		HidAllGameobj ();
-		m_Technology1.SetActive(true);
-		Technology1 mTechnology1 = m_Technology1.GetComponent<Technology1>();
-		mTechnology1.m_JianZhuKeji = m_JianZhuList;
-		mTechnology1.Card = 1;
-		mTechnology1.Init ();
-		//Debug.Log ("this................111");
-
+		InitItems (1);
+		SetBtnState (0);
 	}
 	public void m_TechnologyBtn2()
 	{
-		//Debug.Log ("isfirst2 = "+isfirst);
-		if(!isfirst||m_Technology2.activeInHierarchy)
-		{
-			return;
-		}
-		HidAllGameobj ();
-		m_Technology2.SetActive(true);
-		Technology1 mTechnology1 = m_Technology2.GetComponent<Technology1>();
-		mTechnology1.m_JianZhuKeji = m_JianZhuList;
-		mTechnology1.Card = 2;
-		mTechnology1.Init ();
+		InitItems (2);
+		SetBtnState (1);
 	}
 	public void m_TechnologyBtn3()
 	{
-		//Debug.Log ("isfirst33 = "+isfirst);
-		if(!isfirst||m_Technology3.activeInHierarchy)
+		InitItems (3);
+		SetBtnState (2);
+	}
+
+	void HidAllGameobj(int Index)
+	{
+		m_TechnologyList.ForEach (item => Setactive (item, false));
+		m_TechnologyList [Index].SetActive (true);
+
+	}
+    public void InitItems(int mCard)
+	{
+		if(mCard == mCurCard)
 		{
 			return;
+		} 
+		mCurCard = mCard;
+		foreach(Technologytemp mTe in mTechnologytempList)
+		{
+			Destroy(mTe.gameObject);
 		}
-		HidAllGameobj ();
-		m_Technology3.SetActive(true);
-		Technology1 mTechnology1 = m_Technology3.GetComponent<Technology1>();
-		mTechnology1.m_JianZhuKeji = m_JianZhuList;
-		mTechnology1.Card = 3;
+		mTechnologytempList.Clear ();
+
+		Debug.Log ("mCard =" +mCard);
+		HidAllGameobj (mCard-1);
+		Technology1 mTechnology1 = m_TechnologyList[mCard-1].GetComponent<Technology1>();
+		mTechnology1.m_JianZhuKeji = m_mKeJiList;
+		mTechnology1.Card = mCard;
 		mTechnology1.Init ();
 	}
 
-	void HidAllGameobj()
+	void SetBtnState(int Index)
 	{
-		m_Technology1.SetActive(false);
-		
-		m_Technology3.SetActive(false);
-		
-		m_Technology2.SetActive(false);
-
+		BtnList.ForEach (item => Setactive (item, false));
+		BtnList [Index].SetActive (true);
 	}
-	public void BuyTiLi()
+	private void Setactive(GameObject go, bool a)
 	{
-		
-	}
-	public void BuyTongBi()
-	{
-		
-	}
-	public void BuyYuanBao()
-	{
-		
+		go.SetActive (a);
 	}
 	public void Close()
 	{
-		HidAllGameobj ();
+		StudyVctry.gameObject.SetActive(false);
+
 		foreach(Technologytemp mTe in mTechnologytempList)
 		{
 			Destroy(mTe.gameObject);

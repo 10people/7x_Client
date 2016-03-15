@@ -31,7 +31,8 @@ public class MiBaoSuipianXMltemp : XmlLoadManager {
 	public int tempId;
 	
 	public int recyclePrice;
-	
+
+	public string mibaoPath;
 	public static List<MiBaoSuipianXMltemp> templates = new List<MiBaoSuipianXMltemp>();
 	
 	
@@ -105,6 +106,9 @@ public class MiBaoSuipianXMltemp : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.recyclePrice = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.mibaoPath =  t_reader.Value;
 			}
 			
 			//			t_template.Log();

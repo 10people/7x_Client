@@ -721,6 +721,7 @@ public class TaskLayerManager : MonoBehaviour
     void overMission(int id)
     {
         TaskSignalInfoShow.m_TaskId = id;
+        if(TaskSignalInfoShow.m_TaskSignal == null)
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), RewardCallback);
     }
 

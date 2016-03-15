@@ -9,6 +9,8 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
+	public List<XiaoWuInrerface> mQiPaolist = new List<XiaoWuInrerface> ();
+
 	public UIButton mButton;
 
 	public UILabel allianceExp;// 联盟经验进度
@@ -67,7 +69,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
 	public int Maxhufunum;
 
-	//public GameObject noticeBtn;//公告编辑按钮
+	public GameObject AllianceMUBIao;//公告编辑按钮
 
 	UpdateNoticeResp m_noticeResp ;
 
@@ -95,7 +97,55 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	{
 		InitUI ();
 	}
+	private void CloseEffect()
+	{
+		UI3DEffectTool.ClearUIFx (AllianceMUBIao);
+	}
+	private void OPenEffect()
+	{
+		Debug.Log ("OPenEEfect");
+		int Effectid = 620220;
+		UI3DEffectTool.ShowBottomLayerEffect (UI3DEffectTool.UIType.PopUI_2,AllianceMUBIao,EffectIdTemplate.GetPathByeffectId(Effectid));
+	}
 
+	void OnEnable()
+	{
+		isopen = true;
+		StopTime ();
+	}
+
+	void  StopTime()
+	{
+	    int STarTime = Random.Range (10,25);
+
+		Invoke ("PoP_QiPao",STarTime);
+	}
+	private bool isopen;
+	private void PoP_QiPao()
+	{
+		int Index = Random.Range (0,7);
+
+		for(int i = 0; i < mQiPaolist.Count; i++)
+		{
+			if(i == Index)
+			{
+				mQiPaolist[i].Init();
+				break;
+			}
+		}
+		if(isopen)
+		{
+			StopTime ();
+		}
+		else
+		{
+			mQiPaolist[Index].StopAnimation();
+		}
+	}
+	void OnDisable()
+	{
+		isopen = false;
+	}
 	public bool OnProcessSocketMessage(QXBuffer p_message){
 		
 		if (p_message != null)
@@ -262,16 +312,19 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 			if(m_Alliance.level >= LmMuBiaoLevel)
 			{
 				alliance_Lv.text = "联盟等级到达Lv "+(m_Alliance.lmTargetLevel).ToString()+"(已完成)";
+				CloseEffect();
+				OPenEffect ();
 			}
 			else
 			{
+				CloseEffect();
 				alliance_Lv.text = "联盟等级到达Lv "+(m_Alliance.lmTargetLevel).ToString()+"(未完成)";;
 			}
 		}
 		else
 		{
 			alliance_Lv.text = "联盟等级已满";
-
+			CloseEffect();
 			//mButton.enabled = false;
 		}
 		mSlider.value = (float)FontmLMExp / (float)mLMExp;

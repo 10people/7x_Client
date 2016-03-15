@@ -27,6 +27,8 @@ public class BubblePopTemplate : XmlLoadManager
 
 	public int soundID;
 
+	public float cdTime;
+
 	public int triggerCurNum;
 
 
@@ -100,6 +102,9 @@ public class BubblePopTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.soundID = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.cdTime = float.Parse( t_reader.Value );
 			}
 			
 			templates.Add( t_template );
@@ -143,7 +148,18 @@ public class BubblePopTemplate : XmlLoadManager
 			{
 				if(dict == null) dict = new Dictionary<int, BubblePopTemplate>();
 
-				if(dict.ContainsKey(template.triggerFunc) == false) 
+				if(template.triggerFunc == 1)//技能触发将技能id作为key
+				{
+					if(dict.ContainsKey((int)template.tp1) == false) 
+					{
+						dict.Add((int)template.tp1, template);
+					}
+					else
+					{
+						Debug.LogError("XML ERROR: BubblePopTemplate have to much element with levelId " + levelId + " and nodeId " + nodeId + " and skillId " + template.tp1);
+					}
+				}
+				else if(dict.ContainsKey(template.triggerFunc) == false) 
 				{
 					dict.Add(template.triggerFunc, template);
 				}

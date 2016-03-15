@@ -163,8 +163,10 @@ public class NoticeManager : MonoBehaviour {
 //		Debug.Log( Time.realtimeSinceStartup +  "NoticeManager.CloseBtn()" );
 //		Debug.Log ("ThirdPlatform.IsMyAppAndroidPlatform():" + ThirdPlatform.IsMyAppAndroidPlatform());
 
-		loginObj1.SetActive (ThirdPlatform.IsMyAppAndroidPlatform());
-		loginObj2.SetActive (!ThirdPlatform.IsMyAppAndroidPlatform());
+//		loginObj1.SetActive (ThirdPlatform.IsMyAppAndroidPlatform());
+//		loginObj2.SetActive (!ThirdPlatform.IsMyAppAndroidPlatform());
+
+		AccountRequest.account.SetActiveLoginObj (ThirdPlatform.IsMyAppAndroidPlatform());
 
 		Destroy (this.gameObject);
 

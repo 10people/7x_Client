@@ -47,6 +47,12 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public UISprite btnMibaoSkillIcon;
 
+	public Animator btnMibaoSkillIconAnim;
+
+	public UISprite btnMibaoSkillIconAnim_1;
+
+	public UISprite btnMibaoSkillIconAnim_2;
+
 	public UILabel labelTime;
 
 	public UILabel labelLeave;
@@ -462,6 +468,10 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 				//int mibaoIconId = (mibaoSkill.template.id / 1000) * 1000 + 100 + (mibaoSkill.template.id % 100);//250204 - 250104
 
 				btnMibaoSkillIcon.spriteName = mibaoSkill.template.name;
+
+				btnMibaoSkillIconAnim_1.spriteName = mibaoSkill.template.name;
+
+				btnMibaoSkillIconAnim_2.spriteName = mibaoSkill.template.name;
 			}
 		}
 	}
@@ -559,7 +569,9 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	private void keyboardListen()
 	{
 		//if(dramaControllor.gameObject.activeSelf == true) return;
-		
+
+		if (BattleControlor.Instance ().completed == false) return;
+
 		if(Input.GetKey(KeyCode.Space))
 		{
 			keyDownW = false;
@@ -621,6 +633,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public void changeAutoFight()
 	{
+		DramaControllor.Instance().closeYindao (9);
+
 		foreach(GameObject gc in layerAutoFight)
 		{
 			gc.transform.localPosition = BattleControlor.Instance().autoFight ? new Vector3 (0, -10000, 0) : Vector3.zero;
@@ -811,6 +825,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	public void kingDodge()
 	{
 		//if (BattleControlor.Instance().getKing ().isPlayingAttack () == true) return;
+
+		if (BattleControlor.Instance ().completed == false) return;
 
 		DramaControllor.Instance().closeYindao (10);
 
@@ -1688,6 +1704,10 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		{
 			sendResultLueDuo(result);
 		}
+		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YuanZhu)
+		{
+			sendResultYuanZhu(result);
+		}
 	}
 
 	public void LoadResultRes()
@@ -1823,7 +1843,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		
 		t_protof = tempStream.ToArray();
 		
-		int waitIndex = ProtoIndexes.BAIZHAN_RESULT_RESP;
+		int waitIndex = ProtoIndexes.S_YUAN_HU_END_RESP;
 
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YUAN_HU_END_REQ, ref t_protof, p_receiving_wait_proto_index:waitIndex);
 	}
@@ -2243,7 +2263,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			
 			QiXiongSerializer t_qx = new QiXiongSerializer();
 			
-			LveBattleResult res = new LveBattleResult();
+			LveBattleEndResp res = new LveBattleEndResp();
 			
 			t_qx.Deserialize(t_stream, res, res.GetType());
 			
@@ -2259,6 +2279,38 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		{
 			resultControllor.OnResultHelpCallback();
 
+			return true;
+		}
+		case ProtoIndexes.S_YUAN_HU_END_RESP:
+		{
+			MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+			
+			QiXiongSerializer t_qx = new QiXiongSerializer();
+			
+			QuZhuBattleEndResp res = new QuZhuBattleEndResp();
+			
+			t_qx.Deserialize(t_stream, res, res.GetType());
+
+			//resultControllor.setPVPData(res);
+
+			List<Enums.Currency> currencies = new List<Enums.Currency>();
+
+			currencies.Add(Enums.Currency.GongXian);
+
+			List<int> cus = new List<int>();
+
+			cus.Add(res.build);
+
+			resultControllor.gameObject.SetActive(true);
+			
+			resultControllor.showResultGeneral(BattleControlor.Instance().result, 
+			                                   currencies, 
+			                                   cus, 
+			                                   (int)BattleControlor.Instance().battleTime, 
+			                                   BattleControlor.Instance().timeLast + (int)BattleControlor.Instance().battleTime,
+			                                   null
+			                                   );
+			
 			return true;
 		}
 		}

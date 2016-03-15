@@ -37,7 +37,7 @@ namespace Carriage
         /// </summary>
         public Dictionary<long, DeadInfoCollector> m_DeadPlayerDic = new Dictionary<long, DeadInfoCollector>();
 
-        public override void AddTrackCamera(PlayerController temp)
+        public override void AddTrackCamera(OtherPlayerController temp)
         {
             temp.TrackCamera = m_RootManager.TrackCamera;
         }
@@ -96,13 +96,6 @@ namespace Carriage
                                 //Update self head icon info.
                                 m_RootManager.m_CarriageMain.SelfIconSetter.SetPlayer(tempMsg.roleId, true, tempMsg.level, tempMsg.senderName, tempMsg.allianceName, tempMsg.totalLife, tempMsg.currentLife, tempMsg.guojia, tempMsg.vipLevel, tempMsg.zhanli);
 
-                                //DoDelegate After Init Position.
-                                if (PlayerSceneSyncManager.Instance.m_DelegateAfterCarriage != null)
-                                {
-                                    PlayerSceneSyncManager.Instance.m_DelegateAfterCarriage();
-                                    PlayerSceneSyncManager.Instance.m_DelegateAfterCarriage = null;
-                                }
-
                                 //Set blood num.
                                 m_RootManager.m_CarriageMain.SetRemainingBloodNum(tempMsg.xuePingRemain);
                             }
@@ -135,7 +128,7 @@ namespace Carriage
                                 {
                                     typeID = tempMsg.roleId >= 50000 ? 5 : 4;
                                 }
-                                m_RootManager.m_CarriageMain.AddGizmos(tempMsg.uid, typeID);
+                                m_RootManager.m_CarriageMain.m_MapController.AddGizmos(tempMsg.uid, typeID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), 0);
                             }
 
                             tempBaseCultureController.TrackCamera = m_RootManager.TrackCamera;
@@ -179,7 +172,7 @@ namespace Carriage
                             }
 
                             //Update gizmos.
-                            m_RootManager.m_CarriageMain.UpdateGizmosPosition(tempMsg.uid, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), 0);
+                            m_RootManager.m_CarriageMain.m_MapController.UpdateGizmosPosition(tempMsg.uid, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), 0);
 
                             return true;
                         }
@@ -202,7 +195,7 @@ namespace Carriage
                             }
 
                             //Remove gizmos.
-                            m_RootManager.m_CarriageMain.RemoveGizmos(tempMsg.uid);
+                            m_RootManager.m_CarriageMain.m_MapController.RemoveGizmos(tempMsg.uid);
 
                             return true;
                         }
@@ -279,7 +272,7 @@ namespace Carriage
                             }
 
                             //Remove gizmos.
-                            m_RootManager.m_CarriageMain.RemoveGizmos(tempMsg.uid);
+                            m_RootManager.m_CarriageMain.m_MapController.RemoveGizmos(tempMsg.uid);
 
                             //Show popup text for dead.
                             string l_killerName = "";
@@ -427,7 +420,7 @@ namespace Carriage
                                             {
                                                 typeID = m_DeadPlayerDic[tempMsg.uid].m_RoleID >= 50000 ? 5 : 4;
                                             }
-                                            m_RootManager.m_CarriageMain.AddGizmos(tempMsg.uid, typeID);
+                                            m_RootManager.m_CarriageMain.m_MapController.AddGizmos(tempMsg.uid, typeID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), 0);
 
                                             RemoveFromDeadDic(tempMsg.uid);
                                         }

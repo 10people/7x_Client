@@ -359,16 +359,16 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
             {
                 _listSignalInItem[i].m_NowSignalIn = false;
                 _listSignalInItem[i].m_listGameobject[0].gameObject.SetActive(false);
-                _listSignalInItem[i].m_listGameobject[2].gameObject.SetActive(false);
-                //_listSignalInItem[i].m_GouAnimation.Play();
+                _listSignalInItem[i].m_listGameobject[2].gameObject.SetActive(true);
+               // _listSignalInItem[i].m_GouAnimator.gameObject.SetActive(true);
+             //   _listSignalInItem[i].m_GouAnimator.enabled = true;
             }
         }
-        SingnalUpdate();
     }
-
+    
     void SingnalUpdate()
     {
-        RequestSignalInInfo();
+     RequestSignalInInfo();
     }
     bool WetherSignalIn(GetQiandaoResp info)
     {
@@ -468,14 +468,14 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                 tempObj.GetComponent<ActivitySignalInItemManagerment>().ShowInfo(listSignalInInfo[index_SignalInNum],
                                                                          listSignalInInfo[index_SignalInNum].state == 0,
                                                                          index_SignalInNum < CurrentSignalInDays ? true : false,
-                                                                         SignalIn, SingnalUpdate);
+                                                                         SignalIn);
             }
             else
             {
                 tempObj.GetComponent<ActivitySignalInItemManagerment>().ShowInfo(listSignalInInfo[index_SignalInNum],
                                                                                    listSignalInInfo[index_SignalInNum].state == 0,
                                                                                    index_SignalInNum < CurrentSignalInDays ? true : false,
-                                                                                   SignalIn);
+                                                                                   SignalIn, SingnalUpdate);
             }
          
           

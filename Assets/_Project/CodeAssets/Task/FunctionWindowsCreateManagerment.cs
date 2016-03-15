@@ -8,6 +8,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
     private static int BigHouseId = 0;
     private static int SmallHouseId = 0;
     public static int m_AllianceID = -1;
+    public static int m_BuWeiNum = -1;
     private readonly static List<int> FrameQuality = new List<int>() { 2, 4, 5, 7, 8, 10 };
     public enum SettingType
     {
@@ -105,54 +106,44 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
 
     private static void DoGoHome()
     {
-        //  Debug.Log("7777777777777777777777777777777777777");
         foreach (KeyValuePair<int, HouseSimpleInfo> item in TenementData.Instance.m_AllianceCityTenementDic)
         {
             if (item.Value.jzId == JunZhuData.Instance().m_junzhuInfo.id && item.Value.locationId > 50)
             {
-                //   Debug.Log("7777777777777777777777777777777777777");
                 BigHouseId = item.Value.locationId;
                 break;
             }
         }
         if (BigHouseId > 0)
         {
-            //  Debug.Log("7777777777777777777777777777777777777");
             CityGlobalData.m_isNavToHouse = true;
             NpcManager.m_NpcManager.setGoToNpc(BigHouseId + 1000);
         }
         else
         {
-            // Debug.Log("7777777777777777777777777777777777777");
             CityGlobalData.m_isNavToHome = true;
             foreach (KeyValuePair<int, HouseSimpleInfo> item in TenementData.Instance.m_AllianceCityTenementDic)
             {
-                //    Debug.Log("7777777777777777777777777777777777777");
                 if (item.Value.jzId == JunZhuData.Instance().m_junzhuInfo.id && item.Value.locationId <= 50)
                 {
-                    //     Debug.Log("7777777777777777777777777777777777777");
                     SmallHouseId = item.Value.locationId;
                     break;
                 }
             }
             if (CityGlobalData.m_isAllianceTenentsScene)
             {
-                //  Debug.Log("7777777777777777777777777777777777777");
                 if (!NpcManager.m_NpcManager.m_npcObjectItemDic.ContainsKey(SmallHouseId + 1000))
                 {
-                    //        Debug.Log("7777777777777777777777777777777777777");
                     NpcManager.m_NpcManager.setGoToNpc(SmallHouseId + 1000);
                     CityGlobalData.m_isNavToAllianCityToTenement = true;
                 }
                 else
                 {
-                    //   Debug.Log("7777777777777777777777777777777777777");
                     NpcManager.m_NpcManager.setGoToSelfTenement(SmallHouseId + 1000);
                 }
             }
             else
             {
-                //   Debug.Log("7777777777777777777777777777777777777");
                 NpcManager.m_NpcManager.setGoToTenementNpc(SmallHouseId + 1000);
             }
         }
@@ -511,7 +502,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         {
             if (ss.IndexOf(dd[i]) > -1)
             {
-                distance += 0.5f;
+                distance += 0.7f;
             }
             else
             {
@@ -519,5 +510,10 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
             }
         }
         return distance;
+    }
+
+    public static int RangNum(int min, int max)
+    {
+        return Random.Range(min, max);
     }
 }

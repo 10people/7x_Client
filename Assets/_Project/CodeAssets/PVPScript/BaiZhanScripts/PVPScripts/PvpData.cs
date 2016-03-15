@@ -173,7 +173,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		confirmReq.type = (int)tempType;
 
 		QXComData.SendQxProtoMessage (confirmReq,ProtoIndexes.CONFIRM_EXECUTE_REQ,ProtoIndexes.CONFIRM_EXECUTE_RESP.ToString ());
-//		Debug.Log ("ConfirmReq:" + ProtoIndexes.CONFIRM_EXECUTE_REQ);
+		Debug.Log ("ConfirmReq:" + ProtoIndexes.CONFIRM_EXECUTE_REQ);
 	}
 	
 	#endregion
@@ -514,7 +514,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 							Global.m_isOpenBaiZhan = true;
 
 							UIYindao.m_UIYindao.CloseUI ();
-							EnterBattleField.EnterBattlePvp (enemyId);
+							EnterBattleField.EnterBattlePvp (enemyId, QXComData.CheckYinDaoOpenState (100200));
 
 							break;
 						default:
@@ -660,7 +660,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		{
 			BaiZhanPage.baiZhanPage.OpenSkillEffect (2);
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,2);
+
 			switch (PlayerStateCheckFaillType)
 			{
 			case 2:

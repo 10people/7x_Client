@@ -421,13 +421,13 @@ public class iTween : MonoBehaviour{
 	/// <param name="oncompleteparams">
 	/// A <see cref="System.Object"/> for arguments to be sent to the "oncomplete" method.
 	/// </param>
-	public static void ValueTo(GameObject target, Hashtable args){
+	public static iTween ValueTo(GameObject target, Hashtable args){
 		//clean args:
 		args = iTween.CleanArgs(args);
 		
 		if (!args.Contains("onupdate") || !args.Contains("from") || !args.Contains("to")) {
 			Debug.LogError("iTween Error: ValueTo() requires an 'onupdate' callback function and a 'from' and 'to' property.  The supplied 'onupdate' callback must accept a single argument that is the same type as the supplied 'from' and 'to' properties!");
-			return;
+			return null;
 		}else{
 			//establish iTween:
 			args["type"]="value";
@@ -444,7 +444,7 @@ public class iTween : MonoBehaviour{
 				args["method"]="color";
 			}else{
 				Debug.LogError("iTween Error: ValueTo() only works with interpolating Vector3s, Vector2s, floats, ints, Rects and Colors!");
-				return;	
+				return null;	
 			}
 			
 			//set a default easeType of linear if none is supplied since eased color interpolation is nearly unrecognizable:
@@ -452,7 +452,7 @@ public class iTween : MonoBehaviour{
 				args.Add("easetype",EaseType.linear);
 			}
 			
-			Launch(target,args);
+			return Launch(target,args);
 		}
 	}
 	
@@ -6575,6 +6575,11 @@ public class iTween : MonoBehaviour{
 		if(delay > 0){
 			yield return StartCoroutine("TweenDelay");
 		}
+
+		if( useRealTime ){
+			lastRealTime = Time.realtimeSinceStartup;
+		}
+
 		TweenStart();
 	}	
 	
@@ -6594,6 +6599,10 @@ public class iTween : MonoBehaviour{
 					TweenComplete();	
 				}
 			}
+		}
+
+		if( Time.timeScale == 0 ){
+			FixedUpdate();
 		}
 	}
 	
@@ -6642,6 +6651,10 @@ public class iTween : MonoBehaviour{
 
 	void OnDisable(){
 		DisableKinematic();
+	}
+
+	void OnDestroy(){
+	
 	}
 	
 	#endregion
@@ -6752,7 +6765,7 @@ public class iTween : MonoBehaviour{
 	}	
 	
 	//catalog new tween and add component phase of iTween:
-	static void Launch(GameObject target, Hashtable args){
+	static iTween Launch(GameObject target, Hashtable args){
 		if(!args.Contains("id")){
 			args["id"] = GenerateID();
 		}
@@ -6762,7 +6775,7 @@ public class iTween : MonoBehaviour{
 		}		
 
 		tweens.Insert (0, args);
-		target.AddComponent<iTween>();
+		return target.AddComponent<iTween>();
 	}		
 	
 	//cast any accidentally supplied doubles and ints as floats as iTween only uses floats internally and unify parameter case:
@@ -7516,5 +7529,21 @@ public class iTween : MonoBehaviour{
 	public static void stopType(GameObject target, Hashtable args){Debug.LogError("iTween Error: stopType() has been deprecated. Please investigate Stop().");}
 	public static void tweenCount(GameObject target, Hashtable args){Debug.LogError("iTween Error: tweenCount() has been deprecated. Please investigate Count().");}
 	*/
+	#endregion
+
+
+
+	#region Utilities
+
+	private bool m_open_debug = true;
+
+	private bool IsDebugOpen(){
+		return m_open_debug;
+	}
+
+	public void SetDebug( bool p_open_debug ){
+		m_open_debug = p_open_debug;
+	}
+
 	#endregion
 } 

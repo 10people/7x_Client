@@ -7,7 +7,7 @@ namespace AllianceBattle
     public class ABPlayerCultureController : MonoBehaviour
     {
         public ABPlayerController m_ABPlayerController;
-        public PlayerController m_PlayerController;
+        public OtherPlayerController m_OtherPlayerController;
 
         public void OnAttackFinish()
         {
@@ -21,10 +21,10 @@ namespace AllianceBattle
 
         private void EnableMove()
         {
-            if (m_ABPlayerController == null && m_PlayerController == null)
+            if (m_ABPlayerController == null && m_OtherPlayerController == null)
             {
                 m_ABPlayerController = GetComponent<ABPlayerController>();
-                m_PlayerController = GetComponent<PlayerController>();
+                m_OtherPlayerController = GetComponent<OtherPlayerController>();
             }
 
             if (m_ABPlayerController != null)
@@ -32,9 +32,9 @@ namespace AllianceBattle
                 m_ABPlayerController.ActiveMove();
             }
 
-            if (m_PlayerController != null)
+            if (m_OtherPlayerController != null)
             {
-                m_PlayerController.ActiveMove();
+                m_OtherPlayerController.ActiveMove();
             }
         }
 

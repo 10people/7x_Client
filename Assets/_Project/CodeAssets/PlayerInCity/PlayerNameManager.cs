@@ -14,7 +14,7 @@ public class PlayerNameManager : MonoBehaviour
 
     public Camera m_mainCamera;
 
-    public static float m_NameHeightOffset =3.82f;
+    public static float m_NameHeightOffset = 4.1f;
     [HideInInspector]
     public static GameObject m_PlayerNamesParent;
     [HideInInspector]
@@ -119,16 +119,19 @@ public class PlayerNameManager : MonoBehaviour
                     string ccc = cc[1].ToString();
                     if (!string.IsNullOrEmpty(ccc) && !ccc.Equals("-1"))
                     {
+                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_isShowChengHao = true;
                         m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteChengHao.gameObject.SetActive(true);
                         m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteChengHao.spriteName = ccc;
                     }
                     else
                     {
+                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_isShowChengHao = false;
                         m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteChengHao.gameObject.SetActive(false);
                     }
                 }
                 else
                 {
+                    m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_isShowChengHao = false;
                     m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteChengHao.gameObject.SetActive(false);
                 }
                 string ll = info[2].ToString();
@@ -137,7 +140,7 @@ public class PlayerNameManager : MonoBehaviour
                 {
                     string[] lm = ll.Split(':');
                     string[] zhiw = zw.Split(':');
-                    m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_LabAllianceName.text = MyColorData.getColorString(12,"<" +lm[1].ToString()+ ">" + FunctionWindowsCreateManagerment.GetIdentityById(int.Parse(zhiw[1])));
+                    m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_LabAllianceName.text = MyColorData.getColorString(12, "<" + lm[1].ToString() + ">" + FunctionWindowsCreateManagerment.GetIdentityById(int.Parse(zhiw[1])));
                 }
                 else
                 {
@@ -159,14 +162,45 @@ public class PlayerNameManager : MonoBehaviour
                     {
                         m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteVip.gameObject.SetActive(false);
                     }
-                    
+
+                }
+
+                if (u_info.errorDesc.IndexOf("Face") > -1)
+                {
+                    string zhaohu = info[8].ToString();
+
+                    if (zhaohu.IndexOf("|") > -1)
+                    {
+                        m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().UpdateZH(zhaohu);
+                    }
                 }
             }
             else
             {
-              
+
                 m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_SpriteChengHao.gameObject.SetActive(false);
                 m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_LabAllianceName.text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT);
+            }
+        }
+        else if (u_info.errorCode == PlayersManager.m_Self_UID)
+        {
+            if (!string.IsNullOrEmpty(JunZhuData.m_iChenghaoID.ToString()) && !JunZhuData.m_iChenghaoID.ToString().Equals("-1"))
+            {
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_isShowChengHao = true;
+            }
+            else
+            {
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().m_isShowChengHao = false;
+            }
+
+            if (u_info.errorDesc.IndexOf("Face") > -1)
+            {
+                string[] info = u_info.errorDesc.Split('#');
+                string zhaohu = info[8].ToString();
+                if (zhaohu.IndexOf("|") > -1)
+                {
+                    m_ObjSelfName.GetComponent<PlayerNameInCity>().UpdateZH(zhaohu);
+                }
             }
         }
     }
@@ -186,20 +220,20 @@ public class PlayerNameManager : MonoBehaviour
     }
 
     //更新玩家名字位置
-    public static void UpdatePlayerNamePosition(PlayerInCity tempPlayer)
+    public static void UpdatePlayerNamePosition(int tempUID,GameObject tempTarget)
     {
 
-        if (!m_playrNameDic.ContainsKey(tempPlayer.m_playerID))
+		if (!m_playrNameDic.ContainsKey(tempUID))
         {
             return;
         }
-        PlayerNameInCity tempPlayerName = m_playrNameDic[tempPlayer.m_playerID].GetComponent<PlayerNameInCity>();
-        Vector3 v = tempPlayer.transform.position;
+		PlayerNameInCity tempPlayerName = m_playrNameDic[tempUID].GetComponent<PlayerNameInCity>();
+		Vector3 v = tempTarget.transform.position;
         v.y += m_NameHeightOffset;
         tempPlayerName.transform.position = v;
     }
  
-    public static void CreateSelfeName(Object p_object,float pos_Y = 107.0f,float scale = 0.6f)
+    public static void CreateSelfeName(Object p_object,float pos_Y = 137.0f,float scale = 0.6f)
     {
         //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_PLAYER_NAME),
         //                       LoadSelfCallback);

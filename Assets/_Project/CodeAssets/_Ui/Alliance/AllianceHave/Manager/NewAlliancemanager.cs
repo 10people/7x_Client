@@ -69,7 +69,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	public GameObject Apply;
 	public GameObject XiaoWu;
 	public GameObject HyQs;
-
+	public GameObject ReadRoom;
 	public GameObject BuildUpVecotry;
 	public static NewAlliancemanager Instance()
 	{
@@ -109,7 +109,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	/// <summary>
 	/// Shows the alliance GUID.联盟引导
 	/// </summary>
-	void ShowAllianceGuid()
+	public void ShowAllianceGuid()
 	{
 		UIYindao.m_UIYindao.CloseUI();
 		//Debug.Log("联盟引导");
@@ -264,12 +264,21 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 			}
 			case ProtoIndexes.ALLIANCE_FIRE_NOTIFY://被联盟开除通知
 			{
+				if(UIYindao.m_UIYindao.m_isOpenYindao)
+				{
+					UIYindao.m_UIYindao.CloseUI();
+				}
+
 				MainCityUI.TryRemoveFromObjectList(this.gameObject);
 				Destroy(this.gameObject);
 				return true;
 			}
 			case ProtoIndexes.ALLIANCE_DISMISS_NOTIFY://联盟被解散成功
 			{
+				if(UIYindao.m_UIYindao.m_isOpenYindao)
+				{
+					UIYindao.m_UIYindao.CloseUI();
+				}
 				MainCityUI.TryRemoveFromObjectList(this.gameObject);
 				Destroy(this.gameObject);
 				return true;
@@ -377,6 +386,8 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		mHYInterface6.Init ();
 		HYInterface mHYInterface7 = HyQs.GetComponent<HYInterface>();
 		mHYInterface7.Init ();
+		HYInterface mHYInterface8 = ReadRoom.GetComponent<HYInterface>();
+		mHYInterface8.Init ();
 	}
 	public void ExitAllianceLoadCallback( ref WWW p_www, string p_path,  Object p_object )
 	{
@@ -721,6 +732,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
     public void BackToThis(GameObject m_game)
 	{
 		//Buttons.transform.localPosition = new Vector3(0,298,0);
+		ShowAllianceGuid ();
 	    m_game.SetActive (false);
 		All_FirstUI.SetActive (true);
 

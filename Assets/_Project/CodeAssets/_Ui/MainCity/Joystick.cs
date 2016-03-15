@@ -29,8 +29,10 @@ public class Joystick : MYNGUIPanel
 
     void Start()
     {
-		m_Box.center = new Vector3((480 + ClientMain.m_iMoveX) / 2 - 76, (320 + ClientMain.m_iMoveY) / 2 - 76, 0);
-		m_Box.size = new Vector3(480 + ClientMain.m_iMoveX, 320 + ClientMain.m_iMoveY, 0);
+		float tempW = (960 + ClientMain.m_iMoveX * 2) / 100 * 30;
+		float tempH = (640 + ClientMain.m_iMoveY * 2) / 100 * 35;
+		m_Box.center = new Vector3(tempW / 2 - 76, tempH / 2 - 76, 0);
+		m_Box.size = new Vector3(tempW, tempH, 0);
     }
 
     public void setPos(int x, int y)
@@ -135,7 +137,7 @@ public class Joystick : MYNGUIPanel
 			m_spriteButton.color = new Color(1f, 1f, 1f, 0.3f);
 			if(!m_isMove)
 			{
-				if (MainCityUI.IsWindowsExist() || UIYindao.m_UIYindao.m_isOpenYindao)
+				if (MainCityUI.IsWindowsExist() || UIYindao.m_UIYindao.m_isQiangzhi)
 				{
 					return;
 				}

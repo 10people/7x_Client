@@ -120,4 +120,16 @@ public class BaiZhanTemplate : XmlLoadManager
 		
 		return null;
 	}
+
+	public static int getBaiZhanJiBieByRank (int rank)
+	{
+		foreach (BaiZhanTemplate template in templates)
+		{
+			if (rank <= template.maxRank && rank >= template.minRank)
+			{
+				return template.jibie;
+			}
+		}
+		return 0;
+	}
 }

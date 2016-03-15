@@ -9,6 +9,8 @@ public class DramaStoryBoard : MonoBehaviour
 {
 	public int storyBoardId;
 
+	public float totalTime;
+
 
 	[HideInInspector] public JSONNode m_json;
 
@@ -412,21 +414,32 @@ public class DramaStoryBoard : MonoBehaviour
 
 	IEnumerator callback()
 	{
-		bool flag = false;
-
-		for(;flag == false && target != null;)
+		if(totalTime > 0)
 		{
-			yield return new WaitForEndOfFrame();//WaitForSeconds(.5f);
+			yield return new WaitForSeconds(totalTime);
 
-			flag = getCurActionDone ();
+			if(target != null) target.SendMessage("storyBoardDone");
 
-			if (flag == true)
-			{
-				target.SendMessage("storyBoardDone");
-			}
+			actionDone ();
 		}
+		else
+		{
+			bool flag = false;
 
-		actionDone ();
+			for(;flag == false && target != null;)
+			{
+				yield return new WaitForEndOfFrame();//WaitForSeconds(.5f);
+
+				flag = getCurActionDone ();
+
+				if (flag == true)
+				{
+					target.SendMessage("storyBoardDone");
+				}
+			}
+
+			actionDone ();
+		}
 	}
 
 	public void actionDone()

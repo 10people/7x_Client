@@ -862,6 +862,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .455809176
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 203
+        messageOptions: 0
       - time: .556043565
         functionName: createArrow
         data: 
@@ -875,13 +882,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .563782632
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 204
         messageOptions: 0
       - time: .778947592
         functionName: swingStart

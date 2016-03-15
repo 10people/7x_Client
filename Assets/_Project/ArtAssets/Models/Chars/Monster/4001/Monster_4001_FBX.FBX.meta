@@ -1446,6 +1446,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .487577885
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600238
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -1582,19 +1589,26 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .515505016
+      - time: .508485198
         functionName: PlaySound
         data: 3302
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .53237623
+      - time: .531032145
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
+        messageOptions: 0
+      - time: .487577885
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600238
         messageOptions: 0
       transformMask:
       - path: 

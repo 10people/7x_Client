@@ -50,6 +50,8 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     public List<GameObject> m_listMoBaiPiao;
     public List<GameObject> m_listFengShanPiao;
 
+    public List<UILabel> m_listLabObjMoBai;
+    public List<UILabel> m_listLabObjFengShan;
     public GameObject m_ObjTopLeft;
     public UILabel m_LabDingLiSignal;
     private int yuanBaoCost = 0;
@@ -137,6 +139,54 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
     }
     void ShowInfo()
     {
+        int size_0 = m_listLabObjMoBai.Count;
+        for (int i = 0; i < size_0; i++)
+        {
+            if (i == 0 && m_bulidingLevel >= LianmengMoBaiTemplate.GetShowInfoByType(i + 1).tuTenglvNeeded && FunctionOpenTemp.GetWhetherContainID(400010))
+            {
+                m_ListEvent[i].gameObject.SetActive(true);
+                m_listLabObjMoBai[i].text = "";
+            }
+            else if (i == 1 && m_bulidingLevel >= LianmengMoBaiTemplate.GetShowInfoByType(i + 1).tuTenglvNeeded && FunctionOpenTemp.GetWhetherContainID(400012))
+            {
+                m_ListEvent[i].gameObject.SetActive(true);
+                m_listLabObjMoBai[i].text = "";
+            }
+            else if (i == 2 && m_bulidingLevel >= LianmengMoBaiTemplate.GetShowInfoByType(i + 1).tuTenglvNeeded && FunctionOpenTemp.GetWhetherContainID(400015))
+            {
+                m_ListEvent[i].gameObject.SetActive(true);
+                m_listLabObjMoBai[i].text = "";
+            }
+            else
+            {
+                m_ListEvent[i].gameObject.SetActive(false);
+                m_listLabObjMoBai[i].text = LanguageTemplate.GetText(20011) 
+                    + LianmengMoBaiTemplate.GetShowInfoByType(i + 1).tuTenglvNeeded .ToString()
+                    + LanguageTemplate.GetText(20012);
+            }
+        }
+
+        int size_1 = m_listLabObjFengShan.Count;
+        //for (int i = 0; i < size_1; i++)
+        //{
+        //    if (i == 0 && m_bulidingLevel >= LianmengFengshanTemplate.GetFengshanById(i + 1).tuTenglvNeeded && FunctionOpenTemp.GetWhetherContainID(400100))
+        //    {
+        //        m_listFengShanInfo[i].m_Event.gameObject.SetActive(true);
+        //        m_listLabObjFengShan[i].text = "";
+        //    }
+        //    else if (i == 0 && m_bulidingLevel >= LianmengFengshanTemplate.GetFengshanById(i + 1).tuTenglvNeeded && FunctionOpenTemp.GetWhetherContainID(400110))
+        //    {
+        //        m_listFengShanInfo[i].m_Event.gameObject.SetActive(true);
+        //        m_listLabObjFengShan[i].text = "";
+        //    }
+        //    else
+        //    {
+        //        m_listFengShanInfo[i].m_Event.gameObject.SetActive(false);
+        //        m_listLabObjFengShan[i].text = LanguageTemplate.GetText(20011)
+        //            + LianmengFengshanTemplate.GetFengshanById(i + 1).tuTenglvNeeded.ToString()
+        //            + LanguageTemplate.GetText(20012);
+        //    }
+        //}
         Vector3[] effect = { new Vector3(-265, -120, 0), new Vector3(28, -120, 0), new Vector3(350, -120, 0) };
         listEffectPos.AddRange(effect);
 
@@ -483,15 +533,17 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
 
                         t_qx.Deserialize(t_tream, worship, worship.GetType());
 
-                        m_TanHaoMoBai.SetActive(worship.tongBiOpen || worship.yuanBaoOpen || (worship.yuOpen && YuJueIsEnough()));
+                        m_TanHaoMoBai.SetActive((worship.tongBiOpen && FunctionOpenTemp.GetWhetherContainID(400010))
+                                || (worship.yuanBaoOpen && FunctionOpenTemp.GetWhetherContainID(400012)) 
+                                || (worship.yuOpen && YuJueIsEnough() && FunctionOpenTemp.GetWhetherContainID(400015)));
 
-                        MainCityUI.SetRedAlert(400010, worship.tongBiOpen);
-                        MainCityUI.SetRedAlert(400012, worship.yuanBaoOpen);
-                        MainCityUI.SetRedAlert(400015, worship.yuOpen && YuJueIsEnough());
+                        MainCityUI.SetRedAlert(400010, worship.tongBiOpen && FunctionOpenTemp.GetWhetherContainID(400010));
+                        MainCityUI.SetRedAlert(400012, worship.yuanBaoOpen && FunctionOpenTemp.GetWhetherContainID(400012));
+                        MainCityUI.SetRedAlert(400015, worship.yuOpen && YuJueIsEnough() && FunctionOpenTemp.GetWhetherContainID(400015));
  
-                        m_YuanBaoTanHao.SetActive(worship.yuanBaoOpen);
-                        m_YuJueTanHao.SetActive(worship.yuOpen && YuJueIsEnough());
-                        m_TanHao.SetActive(worship.tongBiOpen);
+                        m_YuanBaoTanHao.SetActive(worship.yuanBaoOpen && FunctionOpenTemp.GetWhetherContainID(400010));
+                        m_YuJueTanHao.SetActive(worship.yuOpen && YuJueIsEnough() && FunctionOpenTemp.GetWhetherContainID(400015));
+                        m_TanHao.SetActive(worship.tongBiOpen && FunctionOpenTemp.GetWhetherContainID(400010));
                             worshipShow = worship;
                         m_listRewardEvent[0].GetComponent<ButtonColorManagerment>().ShakeEffectShow(worship.bigStep0 == 1 ? true : false);
                         if (worship.bigStep0 != 2)
@@ -623,7 +675,12 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor
                                 m_listFengShanInfo[i].m_TopTitle.text = LianmengFengshanTemplate.GetFengshanById(FengShan.fsInfo[i].confId).desc1;
                                 m_listFengShanInfo[i].m_MidTitle.text = LianmengFengshanTemplate.GetFengshanById(FengShan.fsInfo[i].confId).desc2;
 
-                                if (FengShan.fsInfo[i].state == 2)
+                                if (FengShan.fsInfo[i].state == 2 && i == 0 && FunctionOpenTemp.GetWhetherContainID(400100))
+                                {
+                                    m_listFengShanInfo[i].m_TanHao.SetActive(true);
+                                    m_listFengShanInfo[i].m_Event.transform.GetComponent<ButtonColorManagerment>().ButtonsControl(true);
+                                }
+                                else if (FengShan.fsInfo[i].state == 2 && i == 1 && FunctionOpenTemp.GetWhetherContainID(400110))
                                 {
                                     m_listFengShanInfo[i].m_TanHao.SetActive(true);
                                     m_listFengShanInfo[i].m_Event.transform.GetComponent<ButtonColorManagerment>().ButtonsControl(true);

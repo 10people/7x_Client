@@ -133,6 +133,8 @@ public class DramaControllor : MonoBehaviour
 
 		tempAutoFight = BattleControlor.Instance().autoFight || tempAutoFight;
 
+//		Debug.Log ("00000000000000000000   " + tempAutoFight);
+
 		bg.SetActive (true);
 
 		if (storyControllor == null)
@@ -150,7 +152,8 @@ public class DramaControllor : MonoBehaviour
 
 	public void showEvent(int level, int eventId, Callback _callBack)
 	{
-		if (inDrama == true) {
+		if (inDrama == true) 
+		{
 			//nextPlayList.Add(eventId);
 
 			//nextCallbackList.Add(_callBack);
@@ -528,9 +531,9 @@ public class DramaControllor : MonoBehaviour
 	{
 		EffectIdTemplate template = EffectIdTemplate.getEffectTemplateByEffectId (videoId);
 
-		VideoHelper.PlayDramaVideo (template.path, onPressInDrama);
-
 		spriteVedioBG.SetActive (true);
+
+		VideoHelper.PlayDramaVideo (template.path, onPressInDrama);
 	}
 
 	private void nodeDie(int nodeId)
@@ -824,6 +827,8 @@ public class DramaControllor : MonoBehaviour
 				lockType = LockControllor.LOCK_TYPE.HeavySkill_1;
 
 				BattleUIControlor.Instance().b_skill_heavy_1 = true;
+
+				BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.bahuanglieri);
 			}
 			else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Light)
 			{
@@ -832,6 +837,8 @@ public class DramaControllor : MonoBehaviour
 				lockType = LockControllor.LOCK_TYPE.LightSkill_1;
 
 				BattleUIControlor.Instance().b_skill_light_1 = true;
+
+				BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.jueyingxingguangzhan);
 			}
 			else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Ranged)
 			{
@@ -840,6 +847,8 @@ public class DramaControllor : MonoBehaviour
 				lockType = LockControllor.LOCK_TYPE.RangeSkill_1;
 
 				BattleUIControlor.Instance().b_skill_ranged_1 = true;
+
+				BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.zhuixingjian);
 			}
 
 			offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
@@ -853,6 +862,8 @@ public class DramaControllor : MonoBehaviour
 				lockType = LockControllor.LOCK_TYPE.HeavySkill_2;
 
 				BattleUIControlor.Instance().b_skill_heavy_2 = true;
+
+				BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.qiankundouzhuan);
 			}
 			else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Light)
 			{
@@ -861,6 +872,8 @@ public class DramaControllor : MonoBehaviour
 				lockType = LockControllor.LOCK_TYPE.LightSkill_2;
 
 				BattleUIControlor.Instance().b_skill_light_2 = true;
+
+				BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.xuejilaoyin);
 			}
 			else if(BattleControlor.Instance().getKing().weaponType == KingControllor.WeaponType.W_Ranged)
 			{
@@ -869,6 +882,8 @@ public class DramaControllor : MonoBehaviour
 				lockType = LockControllor.LOCK_TYPE.RangeSkill_2;
 
 				BattleUIControlor.Instance().b_skill_ranged_2 = true;
+
+				BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.hanbingjian);
 			}
 
 			offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
@@ -930,6 +945,8 @@ public class DramaControllor : MonoBehaviour
 			lockType = LockControllor.LOCK_TYPE.Dodge;
 
 			BattleUIControlor.Instance().b_dodge = true;
+
+			BattleControlor.Instance().getKing().playUnlockEffList.Add((int)CityGlobalData.skillLevelId.fangun);
 
 			//offset = BattleUIControlor.Instance().anchorBottomRight.transform.localPosition;
 		}
@@ -1087,14 +1104,14 @@ public class DramaControllor : MonoBehaviour
 			}
 		}
 
-		yield return new WaitForSeconds (1f);
+		yield return new WaitForSeconds (2f);
 
 		dramaOver (false);
 	}
 
 	public void setAnchorLeftOffsetX(float x)
 	{
-		BattleUIControlor.Instance ().m_changeWeapon.transform.localPosition += new Vector3 (-BattleUIControlor.Instance ().m_changeWeapon.transform.localPosition.x, 0, 0);
+		BattleUIControlor.Instance ().m_changeWeapon.transform.localPosition += new Vector3 (-BattleUIControlor.Instance ().m_changeWeapon.transform.localPosition.x + x, 0, 0);
 	}
 
 	public void DialogCallback()
@@ -1127,7 +1144,7 @@ public class DramaControllor : MonoBehaviour
 
 	private void clearDelTarget()
 	{
-		if (m_templateCallback.delTarget.Count == 0) return;
+		if (m_templateCallback == null || m_templateCallback.delTarget.Count == 0) return;
 
 		foreach(int delTarget in m_templateCallback.delTarget)
 		{
@@ -1243,7 +1260,7 @@ public class DramaControllor : MonoBehaviour
 
 		if(mCallback != null) mCallback();
 
-		if(tempAutoFight == true && _stopAction == true)
+		if(tempAutoFight == true && BattleControlor.Instance().autoFight == false)//&& _stopAction == true)
 		{
 			BattleUIControlor.Instance().changeAutoFight();
 

@@ -311,6 +311,11 @@ public class PushAndNotificationHelper : MonoBehaviour, SocketProcessor{
 
 			// all new red spot are under MainCityUIRB
 			MainCityUI.SetRedAlert( t_target.m_iID, t_target.m_show_red_alert, false );
+
+			if (QXChatUIBox.chatUIBox != null)
+			{
+				QXChatUIBox.chatUIBox.SetSituationState ();
+			}
 		}
 	}
 

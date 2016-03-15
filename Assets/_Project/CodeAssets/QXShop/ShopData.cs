@@ -462,11 +462,12 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 								shopDic[shopType].money = shopBuyRes.remianMoney;
 								RefreshMoney (shopType,shopBuyRes.remianMoney);
 							}
+//							Debug.Log ("shopBuyRes.isChange:" + shopBuyRes.isChange);
 							foreach (DuiHuanInfo duiHuan in shopDic[shopType].goodsInfos)
 							{
 								if (goodInfo.xmlId == duiHuan.id && goodInfo.site == duiHuan.site)
 								{
-									duiHuan.isChange = false;
+									duiHuan.isChange = shopBuyRes.isChange;
 									break;
 								}
 							}
@@ -485,7 +486,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 							{
 //								Debug.Log ("goodInfo.xmlId:" + goodInfo.xmlId + "||goodInfo.site:" + goodInfo.site);
 //								Debug.Log ("duiHuan.id:" + duiHuan.id + "||duiHuan.site:" + duiHuan.site);
-								duiHuan.isChange = false;
+								duiHuan.isChange = shopBuyRes.isChange;
 								break;
 							}
 						}

@@ -1,3 +1,7 @@
+//#define OPEN_DEBUG_UTILITIES
+
+
+
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
@@ -13,6 +17,8 @@ using Mono.Data.Sqlite;
 using System.Linq;  
 using System.Text;  
 //using System.Threading.Tasks;  
+
+
 
 [InitializeOnLoad]
 public class EditorUtilities : MonoBehaviour
@@ -35,6 +41,7 @@ public class EditorUtilities : MonoBehaviour
 		OPEN_FX_CACHE,
 		OPEN_SPOT_VIEW,
 		OPEN_FX_VIEW,
+		OPEN_PROTO,
 		OPEN_OTHER,
 
 		UPGRADE___NAV_UPGRADE = 200,
@@ -54,15 +61,16 @@ public class EditorUtilities : MonoBehaviour
 
     #region Open Menu
 
-	[MenuItem("Utility/Open/Drama Director", false, (int)MenuItemPriority.OPEN_DRAMA_DIRECTOR)]
-	static void OpenDramaDirector(){
-		EditorWindow.GetWindow<DramaDirectorWindow>( false, "Drama Director", true );	
-	}
-
-
 	[MenuItem("Utility/Open/Json Viewer", false, (int)MenuItemPriority.OPEN_JSON)]
 	static void OpenJson(){
 		EditorWindow.GetWindow<JsonViewer>( false, "View Json", true );
+	}
+
+	#if OPEN_DEBUG_UTILITIES && UNITY_ANDROID
+
+	[MenuItem("Utility/Open/Drama Director", false, (int)MenuItemPriority.OPEN_DRAMA_DIRECTOR)]
+	static void OpenDramaDirector(){
+		EditorWindow.GetWindow<DramaDirectorWindow>( false, "Drama Director", true );	
 	}
 
 	[MenuItem("Utility/Open/2D UI", false, (int)MenuItemPriority.OPEN_UI_2D)]
@@ -85,6 +93,11 @@ public class EditorUtilities : MonoBehaviour
 		EditorWindow.GetWindow<FxViewWindow>( false, "Fx View", true );
 	}
 
+	[MenuItem("Utility/Open/Proto View", false, (int)MenuItemPriority.OPEN_PROTO)]
+	static void OpenViewProtoWindowTool(){
+		EditorWindow.GetWindow<ViewProtoWindow>( false, "Proto View", true );
+	}
+
 	[MenuItem("Utility/Open/View Spot", false, (int)MenuItemPriority.OPEN_SPOT_VIEW)]
 	static void OpenViewSpotWindowTool(){
 		EditorWindow.GetWindow<ViewSpotWindow>( false, "View Spot", true );
@@ -99,6 +112,7 @@ public class EditorUtilities : MonoBehaviour
 	static void OpenBreaker(){
 
 	}
+	#endif
 
 	#endregion
 

@@ -468,10 +468,6 @@ public class EnterNextScene : MonoBehaviour{
 		Debug.Log( "PrepareWhenSceneLoaded.Before.Light()" );
 		#endif
 
-		{
-			LoadingHelper.ConfigBloomAndLight();
-		}
-
 		#if DEBUG_SHOW_LOADING_INFO
 		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.PrepareWhenSceneLoaded.After.Check()" );
 		#endif

@@ -9,6 +9,8 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
+	public mFixUniform mmFixUniform;
+
 	public GameObject First_MiBao_UI; //秘宝UI
 	
 	public GameObject MiBao_TempInfo; //秘宝信息
@@ -269,7 +271,6 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		if(m_MiBaoInfo.skillList == null|| m_MiBaoInfo.skillList.Count == 0 )
 		{
 			MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(1);
-
 			string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoskill.nameId);
 
 			SkillName.text = mName;
@@ -440,10 +441,12 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	/// IShow yindao
 	/// </summary>
 	/// 
+	bool yindaois_open = false;
 	void ShowMiBaoYInDao()
 	{
 //		Debug.Log (FreshGuide.Instance().IsActive(100330));
 //		Debug.Log (TaskData.Instance.m_TaskInfoDic[100330].progress);
+		yindaois_open = false;
 		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress >= 0)
 		{
 //			Debug.Log("choose one mibao ");
@@ -469,11 +472,12 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100330];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
 			mUIscrolview.enabled = false;
+			yindaois_open = true;
 			return;
 		}
 		if(FreshGuide.Instance().IsActive(100360)&& TaskData.Instance.m_TaskInfoDic[100360].progress >= 0)
 		{
-			//Debug.Log("进度条满了110081 ");
+			//Debug.Log("秘宝升星 ");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100360];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			//mUIscrolview.enabled = false;
@@ -663,6 +667,23 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 			mMBTemp.mMiBaoinfo = ActiveMiBaoList[i];
 			mMBTempList.Add(mMBTemp);
+			if(MiBaoGlobleData.Instance().OldMiBaolist.Count == 0)
+			{
+				mMBTemp.IsNew = true;
+			}
+			else
+			{
+				foreach(MibaoInfo mmibaoodl in MiBaoGlobleData.Instance().OldMiBaolist)
+				{
+					if(ActiveMiBaoList[i].miBaoId == mmibaoodl.miBaoId)
+					{
+						mMBTemp.IsNew = false;
+						break;
+					}
+					mMBTemp.IsNew = true;
+				}
+			}
+
 			mMBTemp.Init();
 		}
 		if(ActiveMiBaoList.Count >= 21)
@@ -699,8 +720,14 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		}
 
 		float Sprite_y = 0;
+		bool HaveCouldMake = false;
 		for(int i = 0 ; i < DisActiveMiBaoList.Count; i++)
 		{
+			MiBaoSuipianXMltemp mMiBaoSuipianXMltemp = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid (DisActiveMiBaoList[i].tempId);
+			if(DisActiveMiBaoList[i].suiPianNum >= mMiBaoSuipianXMltemp.hechengNum)
+			{
+				HaveCouldMake = true;
+			}
 			GameObject mMiBaotep = Instantiate(new_MiBaoTemp) as GameObject;
 			
 			mMiBaotep.SetActive(true);
@@ -741,6 +768,23 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			DisactiveLabel.gameObject.SetActive(false);
 			DisActiveMibaoBackGroud.gameObject.SetActive(false);
 		}
+		//Debug.Log ("HaveCouldMake = "+HaveCouldMake);
+		if(HaveCouldMake && !yindaois_open)
+		{
+			int S_y = 130+(ActiveMiBaoList.Count/4)*120;
+			//Debug.Log ("S_y = "+S_y);
+			mmFixUniform.offset = new Vector3(-9.2f,S_y,0);
+			mmFixUniform.enabled = true;
+			Invoke("ClosemmFixUniform",1f);
+		}
+		else
+		{
+			mmFixUniform.enabled = false;
+		}
+	}
+	void ClosemmFixUniform()
+	{
+		mmFixUniform.enabled = false;
 	}
 	public void Buy_Money()
 	{

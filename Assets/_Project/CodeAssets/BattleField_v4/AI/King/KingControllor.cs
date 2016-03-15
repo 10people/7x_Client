@@ -64,6 +64,10 @@ public class KingControllor : HeroAI
 
 	[HideInInspector] public List<int> playUnlockEffList = new List<int> ();
 
+	[HideInInspector] public GameObject copyObject;
+	
+	[HideInInspector] public Animator copyAnim;
+
 
 	private bool moving;
 	
@@ -203,6 +207,11 @@ public class KingControllor : HeroAI
 		for(int i = 0; weaponDateRanged != null && weaponDateRanged.skillFirstActive != null && i < weaponDateRanged.skillFirstActive.Count; i++)
 		{
 			playUnlockEffList.Add(weaponDateRanged.skillFirstActive[i] + 6);
+		}
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_configId == 100101)
+		{
+			playUnlockEffList.Add((int)CityGlobalData.skillLevelId.jueyingxingguangzhan);
 		}
 
 		if(playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.jishe) == true)
@@ -1241,19 +1250,23 @@ public class KingControllor : HeroAI
 	private void attackMove(int actionId)
 	{
 		KingMovementTemplate template = KingMovementTemplate.getKingMovementById (actionId);
-
+		
 		float length = template.length;
 
 		iTween.EaseType easeType = iTween.EaseType.linear;
+
+		int colliderLevel = 1;
 
 		if(actionId == 401)
 		{
 			easeType = iTween.EaseType.easeOutSine;
 
 			length = nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_moveSpeed);
+
+			colliderLevel = 2;
 		}
 
-		moveAction (transform.forward * length + transform.position, easeType, template.time, false);
+		moveAction (transform.forward * length + transform.position, easeType, template.time, colliderLevel);
 
 //		iTween.ValueTo(gameObject, iTween.Hash(
 //			"name", "action_" + actionId,
@@ -1268,6 +1281,60 @@ public class KingControllor : HeroAI
 		if( AttackMoveWillPlayEffect( actionId ) ){
 			BattleEffectControllor.Instance().PlayEffect( GetAttackMoveEffectId(), gameObject );
 		}
+	}
+
+	protected override void StrongMove()
+	{
+		StartCoroutine (StrongMoveAction());
+	}
+
+	private IEnumerator StrongMoveAction()
+	{
+		//copyAnim.avatar = mAnim.avatar;
+
+		inStrongMove = true;
+
+		copyAnim.transform.position = transform.position;
+
+		copyAnim.transform.forward = transform.forward;
+
+		body.SetActive (false);
+		
+		transform.position = chongfengControllor.transform.position;
+		
+		PositonTweenWithoutCharactorComplete ();
+		
+		copyAnim.gameObject.SetActive (true);
+		
+		copyAnim.Play ("DODGE");
+
+		gameCamera.targetChang (copyAnim.gameObject);
+
+		if(signShadow != null) signShadow.gameObject.SetActive (false);
+
+		if(shadowObject_2 != null) shadowObject_2.SetActive (false);
+
+		KingMovementTemplate template = KingMovementTemplate.getKingMovementById (401);
+
+		iTween.MoveTo(copyAnim.gameObject, iTween.Hash(
+			"position", transform.position,
+			"time", template.time,
+			"easeType", iTween.EaseType.easeOutSine
+			));
+		
+		yield return new WaitForSeconds (template.time);
+
+		gameCamera.targetChang (gameObject);
+
+		body.SetActive (true);
+		
+		copyAnim.gameObject.SetActive (false);
+
+		if(signShadow != null) signShadow.gameObject.SetActive (true);
+
+		if(shadowObject_2 != null) shadowObject_2.SetActive (true);
+
+		inStrongMove = false;
 	}
 
 	public static int GetAttackMoveEffectId(){
@@ -1290,7 +1357,7 @@ public class KingControllor : HeroAI
 		{
 			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.zhuixingjian, this);
 			
-			KingArrow arrow = KingArrow.createArrow(this, BattleControlor.AttackType.SKILL_ATTACK, 68);
+			KingArrow arrow = KingArrow.createArrow(this, BattleControlor.AttackType.SKILL_ATTACK, 75);
 
 			arrow.continueArrow = true;
 			
@@ -1573,7 +1640,7 @@ public class KingControllor : HeroAI
 
 			if(haveOrder)
 			{
-				orderLvFlag = ControlOrderLvTemplate.getCantrolableById (11, AIdata.AttributeType.ATTRTYPE_ReductionBTACDown, this);
+				orderLvFlag = ControlOrderLvTemplate.getCantrolableById (11, AIdata.AttributeType.ATTRTYPE_ReductionBTACDown, node);
 			}
 		}
 
@@ -1587,7 +1654,9 @@ public class KingControllor : HeroAI
 			
 			float d = nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp ) > 0 ? template.delay : 0f;
 			
-			Vector3 e = node.transform.position + transform.forward * v;
+//			Vector3 e = node.transform.position + transform.forward * v;
+
+			Vector3 e = node.transform.position + (node.transform.position - transform.position).normalized * v;
 			
 			node.curCrashData = template;
 			
@@ -1888,13 +1957,13 @@ public class KingControllor : HeroAI
 		}
 		else if(attackId == 304)//弓箭普通攻击-集气特效
 		{
-			m_play_attack_effect.Set( 300,
-			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
+//			m_play_attack_effect.Set( 300,
+//			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
 		}
 		else if(attackId == 305)//弓箭普通攻击-集气特效
 		{
-			m_play_attack_effect.Set( 299,
-			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
+//			m_play_attack_effect.Set( 299,
+//			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT );
 		}
 		else if(attackId == 500)
 		{
@@ -2492,16 +2561,14 @@ public class KingControllor : HeroAI
 		skillMibao.template.zhudong = false;
 
 		kingSkillHeavy_2.m_isDeadOverSkill = 1;
-
 		skillMibao.upData ();
-
 		skillMibao.template.zhudong = true;
 
 		kingSkillHeavy_2.template.zhudong = true;
 		
 		kingSkillHeavy_2.m_isDeadOverSkill = 0;
 
-		if (skillMibao.m_isUseThisSkill) 
+		if (skillMibao.m_isUseCurSkill) 
 		{
 			comboable = false;
 

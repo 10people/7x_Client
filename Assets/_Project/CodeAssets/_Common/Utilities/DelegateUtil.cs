@@ -10,4 +10,6 @@ public class DelegateUtil
     public delegate void FloatDelegate(float p_float);
 
     public delegate void StringDelegate(string p_str);
+
+    public delegate void Vector2Delegate(Vector2 p_str);
 }

@@ -31,11 +31,13 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     public EventIndexHandle m_MaskTouch;
     XiLianRes EquipWashInfo = new XiLianRes();
     public EventPressIndexHandle m_EventPress;
+    public EventPressIndexHandle m_EventPress_JinJie;
     public GameObject m_ObjNewAttribute;
     public UILabel m_labNewAttSignal;
     private int _WashType = 0;
     private long dbIdSave;
     public int buttonNum = 0;
+    public int m_Sendbuwei = 0;
     private int savedId;
     private int _StoneWashTImes = 0;
     private bool _isFull = false;
@@ -45,6 +47,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     private int pinzhiSaved = 0;
     private int YBXiLianLimited = 0;
     private int _yuanbaoConSume = 0;
+    private int _BuWeiSave = 0;
     public int m_EquipType = 0;
     public UIGrid m_GridAdd;
     public struct RangeInfo
@@ -67,6 +70,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         m_MaskTouch.m_Handle += TouchEvent;
         listEvent.ForEach(p => p.m_Handle += TouchEvent);
         m_EventPress.m_Handle += PressEvent;
+        m_EventPress_JinJie.m_Handle += PressEvent_JinJie;
         if (FreshGuide.Instance().IsActive(100330) && TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
         {
             TaskData.Instance.m_iCurMissionIndex = 100330;
@@ -80,6 +84,17 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
     {
         _WadhStoneCount = BagData.Instance().GetCountByItemId(910002);
         SocketTool.RegisterMessageProcessor(this);
+    }
+
+    void PressEvent_JinJie(int index)
+    {
+        MainCityUI.TryRemoveFromObjectList(m_MainParent);
+        FunctionWindowsCreateManagerment.m_BuWeiNum = m_Sendbuwei;
+        GameObject tempObj = new GameObject();
+        tempObj.name = "MainCityUIButton_200";
+        MainCityUI.m_MainCityUI.MYClick(tempObj);
+        Destroy(tempObj);
+        m_MainParent.SetActive(false);
     }
     void PressEvent(int index)
     {
@@ -225,6 +240,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         pinzhiSaved = pinzhi;
         dbIdSave = dbid;
         savedId = equipid;
+       // EquipsOfBody.Instance().m_equipsOfBodyDic
         MemoryStream t_tream = new MemoryStream();
         QiXiongSerializer t_qx = new QiXiongSerializer();
         XiLianReq equip = new XiLianReq();
@@ -367,7 +383,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         float[] allNow = { float.Parse(xlres.wqSH.ToString()), float.Parse(xlres.wqJM.ToString()), float.Parse(xlres.wqBJ.ToString())
                 , float.Parse(xlres.wqRX.ToString()), float.Parse(xlres.jnSH.ToString()), float.Parse(xlres.jnJM.ToString())
                 , float.Parse(xlres.jnBJ.ToString()), float.Parse(xlres.jnRX.ToString())
-                ,xlres.wqBJL, xlres.jnBJL, xlres.wqMBL, xlres.jnMBL, xlres.jnMBL };
+                ,xlres.wqBJL, xlres.jnBJL, xlres.wqMBL, xlres.jnMBL };
 
         int[] allMax = { xlres.wqSHMax, xlres.wqJMMax, xlres.wqBJMax, xlres.wqRXMax, xlres.jnSHMax, xlres.jnJMMax, xlres.jnBJMax, xlres.jnRXMax };
 
@@ -484,7 +500,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         float[] allNow = { float.Parse(xlres.wqSH.ToString()), float.Parse(xlres.wqJM.ToString()), float.Parse(xlres.wqBJ.ToString())
                 , float.Parse(xlres.wqRX.ToString()), float.Parse(xlres.jnSH.ToString()), float.Parse(xlres.jnJM.ToString())
                 , float.Parse(xlres.jnBJ.ToString()), float.Parse(xlres.jnRX.ToString())
-                ,xlres.wqBJL, xlres.jnBJL, xlres.wqMBL, xlres.jnMBL, xlres.jnMBL };
+                ,xlres.wqBJL, xlres.jnBJL, xlres.wqMBL, xlres.jnMBL};
 
         int[] allMax = { xlres.wqSHMax, xlres.wqJMMax, xlres.wqBJMax, xlres.wqRXMax, xlres.jnSHMax, xlres.jnJMMax, xlres.jnBJMax, xlres.jnRXMax };
 
@@ -509,7 +525,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
             m_XLYuanBao.SetActive(false);
             m_XLStone.SetActive(true);
      
-            m_WashConsume.text = _WadhStoneCount.ToString();
+            m_WashConsume.text ="1/" +_WadhStoneCount.ToString();
             m_WashConsumeSignal.text = MyColorData.getColorString(10, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_1));
         }
         else
@@ -645,7 +661,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         float[] allNow = { float.Parse(EquipWashInfo.wqSH.ToString()), float.Parse(EquipWashInfo.wqJM.ToString()), float.Parse(EquipWashInfo.wqBJ.ToString())
                 , float.Parse(EquipWashInfo.wqRX.ToString()), float.Parse(EquipWashInfo.jnSH.ToString()), float.Parse(EquipWashInfo.jnJM.ToString())
                 , float.Parse(EquipWashInfo.jnBJ.ToString()), float.Parse(EquipWashInfo.jnRX.ToString())
-                ,EquipWashInfo.wqBJL, EquipWashInfo.jnBJL, EquipWashInfo.wqMBL, EquipWashInfo.jnMBL, EquipWashInfo.jnMBL };
+                ,EquipWashInfo.wqBJL, EquipWashInfo.jnBJL, EquipWashInfo.wqMBL, EquipWashInfo.jnMBL};
         int[] attribute = { EquipWashInfo.wqSHAdd, EquipWashInfo.wqJMAdd, EquipWashInfo.wqBJAdd, EquipWashInfo.wqRXAdd, EquipWashInfo.jnSHAdd, EquipWashInfo.jnJMAdd, EquipWashInfo.jnBJAdd, EquipWashInfo.jnRXAdd };
 
         int[] allMax = { EquipWashInfo.wqSHMax, EquipWashInfo.wqJMMax, EquipWashInfo.wqBJMax, EquipWashInfo.wqRXMax, EquipWashInfo.jnSHMax, EquipWashInfo.jnJMMax, EquipWashInfo.jnBJMax, EquipWashInfo.jnRXMax };
@@ -946,6 +962,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
 
         if (pinzhiSaved > 1 && !_isFull)
         {
+            m_EventPress.gameObject.SetActive(true);
             m_SuoTagSignal.SetActive(false);
             if (YBXiLianLimited == 0 && (_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0))
             {
@@ -960,7 +977,10 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor
         else
         {
             m_labNewAttSignal.gameObject.SetActive(false);
-            m_EventPress.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+            //m_EventPress.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+            m_EventPress.gameObject.SetActive(false);
+            m_EventPress_JinJie.gameObject.SetActive(true);
+           
             m_EventPress.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
         }
     }

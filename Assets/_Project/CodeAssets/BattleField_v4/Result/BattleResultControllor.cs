@@ -68,7 +68,11 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 	//public UILabel labelSoldierLevel;
 
-	public UILabel labelGongJIn;
+	public UILabel labelJifen;
+
+	public UILabel labelBuild;
+
+	public UILabel labelShengWang;
 
 	public UILabel labelTime;
 
@@ -367,6 +371,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 	IEnumerator resultActionGeneral(BattleControlor.BattleResult result, float battleTime)
 	{
 		float timer = 0;
+
+		unlockSprite.transform.parent.gameObject.SetActive(false);
 
 		Vector3 targetFlagPos = spriteFlag.transform.localPosition;
 		
@@ -783,14 +789,12 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		{
 			btnHelp.gameObject.SetActive(false);
 			
-			if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN)
-			{
-				layerLueduo_win.SetActive(true);
-			}
-			else
-			{
-				layerLueduo_lose.SetActive(true);			
-			}
+			layerLueduo_win.SetActive(true);
+
+//			if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_LOSE)
+//			{
+//				layerLueduo_lose.SetActive(true);
+//			}
 		}
 
 		for(timer = 0;;)
@@ -1067,9 +1071,13 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		//layerHuangye_2_win_2.gameObject.SetActive (_resp.isLevelup != 1);
 	}
 
-	public void setLueDuoData(LveBattleResult _resp)
+	public void setLueDuoData(LveBattleEndResp _resp)
 	{
-		labelGongJIn.text = _resp.lostGongJin + "";
+		labelJifen.text = _resp.jifen + "";
+
+		labelBuild.text = _resp.build + "";
+
+		labelShengWang.text = _resp.shengwang + "";
 	}
 
 	void FixedUpdate ()

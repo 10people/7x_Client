@@ -206,7 +206,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	void SendChatMessage (ChatMessage tempChatMsg)
 	{
 		string sendStr = tempChatMsg.chatPct.content.Replace ("\n", "");
-		
+		sendStr = tempChatMsg.chatPct.content.Replace (" ", "");
 		// notice console tool what were typed
 		{
 			if (ConsoleTool.Instance().OnChatContent (sendStr)) {
@@ -214,7 +214,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 				return;
 			}
 		}
-		
+//		Debug.Log ("tempChatMsg.chatPct.type:" + tempChatMsg.chatPct.type);
 		if (sendStr.Length > CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_MAX_WORDS)) 
 		{
 			sendStr = sendStr.Substring (0, (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_MAX_WORDS));
@@ -261,7 +261,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 
 				if (chatData != null)
 				{
-//					Debug.Log ("chatData.channel:" + chatData.channel);
+//					Debug.Log ("chatData.type:" + chatData.type);
 //					Debug.Log ("chatData.senderId:" + chatData.senderId);
 //					Debug.Log ("chatData.senderName:" + chatData.senderName);
 //					Debug.Log ("chatData.guoJia:" + chatData.guoJia);

@@ -45,6 +45,7 @@ ModelImporter:
     100074: Bone18
     100076: //RootNode
     100078: qixiongwushuang_xiaoqi
+    100080: S7_npc_xiaoqi_001
     400000: Bip01
     400002: Bip01 Head
     400004: Bip01 L Calf
@@ -85,7 +86,9 @@ ModelImporter:
     400074: Bone18
     400076: //RootNode
     400078: qixiongwushuang_xiaoqi
+    400080: S7_npc_xiaoqi_001
     4300000: qixiongwushuang_xiaoqi
+    4300002: S7_npc_xiaoqi_001
     7400000: Attack_0
     7400002: Attack_1
     7400004: Attack_2
@@ -111,6 +114,7 @@ ModelImporter:
     7400044: Walk
     9500000: //RootNode
     13700000: qixiongwushuang_xiaoqi
+    13700002: S7_npc_xiaoqi_001
   materials:
     importMaterials: 1
     materialName: 0
@@ -153,7 +157,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .214082226
         functionName: setWeaponTriggerTrue
         data: 
@@ -294,7 +298,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .214082226
         functionName: setWeaponTriggerTrue
         data: 
@@ -435,7 +439,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .214082226
         functionName: setWeaponTriggerTrue
         data: 
@@ -717,7 +721,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .779999614
         functionName: checkDieInKnockdown
         data: 
@@ -971,7 +975,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00317460322
         functionName: PlaySound
         data: 4003|4004|4005|0|0|0|0
@@ -1472,7 +1476,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00769078359
         functionName: PlaySound
         data: 3022|3023|3024|3025|3026|3027|3028|3029
@@ -1606,7 +1610,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: checkSkillDrama
         data: 
@@ -1761,7 +1765,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: checkSkillDrama
         data: 
@@ -2071,7 +2075,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: checkSkillDrama
         data: 
@@ -2226,7 +2230,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: checkSkillDrama
         data: 
@@ -2381,7 +2385,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: checkSkillDrama
         data: 
@@ -2691,7 +2695,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: checkSkillDrama
         data: 
@@ -2846,7 +2850,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0126580643
         functionName: checkSkillDrama
         data: 
@@ -3001,7 +3005,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0168776382
         functionName: setStand
         data: 
@@ -3128,7 +3132,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .0168776382
         functionName: setStand
         data: 
@@ -3255,7 +3259,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00738916267
         functionName: PlaySound
         data: 3022|3023|3024|3025|3026|3027|3028|3029

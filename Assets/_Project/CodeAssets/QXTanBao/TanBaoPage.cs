@@ -260,12 +260,14 @@ public class TanBaoPage : MonoBehaviour {
 		{
 		case "KDSingleBtn":
 
+			UIShouji.m_isPlayShouji = false;
 			TBReward.tbReward.BlockController (true,0.1f);
 			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.TONGBI_SINGLE);
 
 			break;
 		case "KDSpendBtn":
 
+			UIShouji.m_isPlayShouji = false;
 			TBReward.tbReward.BlockController (true,0.1f);
 			if (isTenTimesOpen)
 			{
@@ -279,12 +281,14 @@ public class TanBaoPage : MonoBehaviour {
 			break;
 		case "KJSingleBtn":
 
+			UIShouji.m_isPlayShouji = false;
 			TBReward.tbReward.BlockController (true,0.1f);
 			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.YUANBAO_SINGLE);
 
 			break;
 		case "KJSpendBtn":
 
+			UIShouji.m_isPlayShouji = false;
 			TBReward.tbReward.BlockController (true,0.1f);
 			if (isTenTimesOpen)
 			{

@@ -21,6 +21,8 @@ public class QXChatUIBox : MonoBehaviour {
 
 	public EventHandler chatUIBoxHandler;
 
+	public EventHandler situationHandler;
+
 	void Awake ()
 	{
 		chatUIBox = this;
@@ -35,6 +37,7 @@ public class QXChatUIBox : MonoBehaviour {
 	{
 		SetRedAlert (false);
 		chatUIBoxHandler.m_click_handler += ChatUIBoxClickBack;
+		situationHandler.m_click_handler += SituationHandlerClickBack;
 	}
 
 	/// <summary>
@@ -52,16 +55,19 @@ public class QXChatUIBox : MonoBehaviour {
 
 		UILabel mChatLabel = chatLabelItem.GetComponent<UILabel> ();
 		string chatText = "";
+		Debug.Log ("tempChatMsg.chatPct.content:" + tempChatMsg.chatPct.content);
 		if (tempChatMsg.chatPct.guoJia <= 0)
 		{
-			chatText = (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "[00e1c4][广播][-]  " : MyColorData.getColorString (5,"[系统]  ")) + tempChatMsg.chatPct.content;
+			chatText = (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "[00e1c4][广播][-]" : MyColorData.getColorString (5,"[系统]")) + tempChatMsg.chatPct.content;
 		}
 		else
 		{
 			string channelStr = "[00e1c4][" + QXChatData.Instance.GetChannelTitleStr (tempChatMsg.chatPct.channel) + "][-]";
 			string nationStr = "[e5e205][" + QXComData.GetNationName (tempChatMsg.chatPct.guoJia) + "][-]";
 			string nameStr = "[f5aa29]" + tempChatMsg.chatPct.senderName + "[-]";
-			chatText = channelStr + nationStr + nameStr + "  " + tempChatMsg.chatPct.content;
+			chatText = channelStr + nationStr + nameStr + "" + tempChatMsg.chatPct.content;
+			chatText = chatText.Replace (" ","");
+			chatText = chatText.Replace ("\n","");
 		}
 		mChatLabel.text = chatText;
 
@@ -120,5 +126,30 @@ public class QXChatUIBox : MonoBehaviour {
 	public void SetRedAlert (bool isActive)
 	{
 		redObj.SetActive (isActive);
+	}
+	
+	/// <summary>
+	/// Sets the state of the situation.
+	/// </summary>
+	/// <param name="active">If set to <c>true</c> active.</param>
+	public void SetSituationState ()
+	{
+		if (MainCityUI.m_MainCityUI != null)
+		{
+			situationHandler.gameObject.SetActive (FunctionOpenTemp.IsShowRedSpotNotification (410012) || FunctionOpenTemp.IsShowRedSpotNotification (410015));
+		}
+	}
+
+	void SituationHandlerClickBack (GameObject obj)
+	{
+		if (FunctionOpenTemp.IsShowRedSpotNotification (410012))
+		{
+			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER);
+			return;
+		}
+		else if (FunctionOpenTemp.IsShowRedSpotNotification (410015))
+		{
+			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.YUNBIAO);
+		}
 	}
 }

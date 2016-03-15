@@ -244,4 +244,9 @@
 <Res2DTemplate UIID="242" path="_UIs/LueDuo/WarSituation" />
 <Res2DTemplate UIID="243" path="_UIs/_Ref/Equip_Atlas_Ref" />
 <Res2DTemplate UIID="244" path="_UIs/_Ref/Activity_Atlas_Ref" />
+<Res2DTemplate UIID="245" path="_UIs/_Anim/QiandaoGou Animation" />
+<Res2DTemplate UIID="246" path="_UIs/Alliance/Prefabs/AlianceYQingItem" />
+<Res2DTemplate UIID="247" path="_UIs/TreasureCity/Prefabs/TreasureCityUI" />
+<Res2DTemplate UIID="248" path="_UIs/Alliance/Prefabs/AllianceSwichCountryLayer" />
+<Res2DTemplate UIID="250" path="Global/UI_Shouji" />
 </dataset>

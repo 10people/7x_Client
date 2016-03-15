@@ -9,19 +9,120 @@ ModelImporter:
     100002: s7_new_3d_chengchi_cb002
     100004: s7_new_3d_chengchi_cb003
     100006: //RootNode
+    100008: Object01csdf01
+    100010: Object01dfdf
+    100012: Object01zxcxc
+    100014: Object036
+    100016: Object039
+    100018: Object040
+    100020: Object043
+    100022: Object047
+    100024: Object048
+    100026: Object049
+    100028: Object051
+    100030: s7_new_3d_chengchi_dangpu001
+    100032: s7_new_3d_chengchi_langan001
+    100034: s7_new_3d_chengchi_langang002
+    100036: s7_new_3d_chengchi_pingtai004
+    100038: s7_new_3d_chengchi_taijie001
+    100040: s7_new_3d_chengchi_taijie002
+    100042: s7_new_3d_chengchi_yuantai01
+    100044: s7_qianchongta_neibu_jianzhu023333
+    100046: work0111111
     400000: s7_new_3d_chengchi_cb001
     400002: s7_new_3d_chengchi_cb002
     400004: s7_new_3d_chengchi_cb003
     400006: //RootNode
+    400008: Object01csdf01
+    400010: Object01dfdf
+    400012: Object01zxcxc
+    400014: Object036
+    400016: Object039
+    400018: Object040
+    400020: Object043
+    400022: Object047
+    400024: Object048
+    400026: Object049
+    400028: Object051
+    400030: s7_new_3d_chengchi_dangpu001
+    400032: s7_new_3d_chengchi_langan001
+    400034: s7_new_3d_chengchi_langang002
+    400036: s7_new_3d_chengchi_pingtai004
+    400038: s7_new_3d_chengchi_taijie001
+    400040: s7_new_3d_chengchi_taijie002
+    400042: s7_new_3d_chengchi_yuantai01
+    400044: s7_qianchongta_neibu_jianzhu023333
+    400046: work0111111
     2300000: s7_new_3d_chengchi_cb001
     2300002: s7_new_3d_chengchi_cb002
     2300004: s7_new_3d_chengchi_cb003
+    2300006: Object01csdf01
+    2300008: Object01dfdf
+    2300010: Object01zxcxc
+    2300012: Object036
+    2300014: Object039
+    2300016: Object040
+    2300018: Object043
+    2300020: Object047
+    2300022: Object048
+    2300024: Object049
+    2300026: Object051
+    2300028: s7_new_3d_chengchi_dangpu001
+    2300030: s7_new_3d_chengchi_langan001
+    2300032: s7_new_3d_chengchi_langang002
+    2300034: s7_new_3d_chengchi_pingtai004
+    2300036: s7_new_3d_chengchi_taijie001
+    2300038: s7_new_3d_chengchi_taijie002
+    2300040: s7_new_3d_chengchi_yuantai01
+    2300042: s7_qianchongta_neibu_jianzhu023333
+    2300044: work0111111
     3300000: s7_new_3d_chengchi_cb001
     3300002: s7_new_3d_chengchi_cb002
     3300004: s7_new_3d_chengchi_cb003
+    3300006: Object01csdf01
+    3300008: Object01dfdf
+    3300010: Object01zxcxc
+    3300012: Object036
+    3300014: Object039
+    3300016: Object040
+    3300018: Object043
+    3300020: Object047
+    3300022: Object048
+    3300024: Object049
+    3300026: Object051
+    3300028: s7_new_3d_chengchi_dangpu001
+    3300030: s7_new_3d_chengchi_langan001
+    3300032: s7_new_3d_chengchi_langang002
+    3300034: s7_new_3d_chengchi_pingtai004
+    3300036: s7_new_3d_chengchi_taijie001
+    3300038: s7_new_3d_chengchi_taijie002
+    3300040: s7_new_3d_chengchi_yuantai01
+    3300042: s7_qianchongta_neibu_jianzhu023333
+    3300044: work0111111
     4300000: s7_new_3d_chengchi_cb001
     4300002: s7_new_3d_chengchi_cb002
     4300004: s7_new_3d_chengchi_cb003
+    4300006: s7_new_3d_chengchi_langang002
+    4300008: s7_new_3d_chengchi_taijie001
+    4300010: s7_new_3d_chengchi_yuantai01
+    4300012: s7_new_3d_chengchi_pingtai004
+    4300014: s7_new_3d_chengchi_taijie002
+    4300016: s7_new_3d_chengchi_langan001
+    4300018: s7_new_3d_chengchi_dangpu001
+    4300020: s7_qianchongta_neibu_jianzhu023333
+    4300022: Object01csdf01
+    4300024: Object01dfdf
+    4300026: Object047
+    4300028: work0111111
+    4300030: Object051
+    4300032: Object01zxcxc
+    4300034: Object039
+    4300036: Object048
+    4300038: Object036
+    4300040: Object040
+    4300042: Object043
+    4300044: Object049
+    7400000: Take 001
     9500000: //RootNode
   materials:
     importMaterials: 1

@@ -11,13 +11,11 @@ public class XiaoWuInrerface : MonoBehaviour {
 	public UILabel mLanguageLabel;
 	void  StopTime()
 	{
-		STarTime = Random.Range (10,40);
 		mLanguage.transform.localScale = Vector3.zero;
-		Invoke ("PoP_QiPao",STarTime);
 	}
 	void  ChangeTimeTolanguage()
 	{
-		Invoke ("StopTime",3f);
+		Invoke ("StopTime",4f);
 	}
 	private void PoP_QiPao()
 	{
@@ -25,9 +23,17 @@ public class XiaoWuInrerface : MonoBehaviour {
 	}
 	void Start () {
 	
-		Init ();
-	}
 
+	}
+	void OnEnable()
+	{
+
+	}
+	void OnDisable()
+	{
+		PlayLanguage = false;
+		mLanguage.transform.localScale = Vector3.zero;
+	}
 	void Update () {
 	
 		if(PlayLanguage)
@@ -51,11 +57,17 @@ public class XiaoWuInrerface : MonoBehaviour {
 			mLanguage.transform.localScale = tempScale;
 		}
 	}
+	public void StopAnimation()
+	{
+		PlayLanguage = false;
+		mLanguage.transform.localScale = Vector3.zero;
+	}
 	public void Init()
 	{
+//		Debug.Log ("start1 - - ");
 		LMBubbleTemplate mLMb = LMBubbleTemplate.getLMBubbleTemplateBy_id (QIPao_id);
 		mLanguageLabel.text = mLMb.triggerFunc;
-		StopTime ();
-		PlayLanguage = false;
+		mLanguage.transform.localScale = Vector3.zero;
+		PlayLanguage = true;
 	}
 }

@@ -1203,6 +1203,30 @@ public class ComponentHelper{
 
 
 
+	#region Log
+
+	public static void LogGameObjectComponents( GameObject p_gb ){
+		if( p_gb == null ){
+			Debug.Log( "GameObject is null." );
+
+			return;
+		}
+
+		MonoBehaviour[] t_monos = p_gb.GetComponents<MonoBehaviour>();
+
+		for( int i = 0; i < t_monos.Length; i++ ){
+			if( t_monos[ i ] == null ){
+				continue;
+			}
+
+			Debug.Log( i + ": " + t_monos[ i ] + " - " + t_monos[ i ].GetType() );
+		}
+	}
+
+	#endregion
+
+
+
 	#region Utilities
 
 	public static void HideComponent( Component p_com ){

@@ -28,6 +28,8 @@ public class ModelTemplate : XmlLoadManager
 
 	public int icon;
 
+	public int attackCount;
+
 
 	public static List<ModelTemplate> m_templates = new List<ModelTemplate>();
 
@@ -115,6 +117,9 @@ public class ModelTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.icon = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.attackCount = int.Parse(t_reader.Value);
 			}
 			
 			//			t_template.Log();

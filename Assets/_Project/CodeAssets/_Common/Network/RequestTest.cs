@@ -15,7 +15,7 @@ public class RequestTest : MonoBehaviour {
 
     void RequestSuccess(string tempResponse)
     {
-//        Debug.Log("数据返回：" + tempResponse);
+//        Debug.Log("数据返回：" + tempResponse);//
 
         JSONNode tempNode = JSON.Parse(tempResponse);
 

@@ -5,7 +5,7 @@ public class HYInterface : MonoBehaviour {
 
 	public GameObject Arelt;
 	/// <summary>
-	/// The type.1 小屋 2 图腾 3 宗庙 4 荒野 5 客栈
+	/// The type.1 小屋 2 图腾 3 宗庙 4 荒野 5 客栈 6 书院 科技
 	/// </summary>
 	public int Type;
 	void Start () {
@@ -70,6 +70,18 @@ public class HYInterface : MonoBehaviour {
 			int Evet = 600500;
 			//Debug.Log("PushAndNotificationHelper.IsShowRedSpotNotification(Evet) = "+PushAndNotificationHelper.IsShowRedSpotNotification(Evet));
 			if(PushAndNotificationHelper.IsShowRedSpotNotification(Evet))
+			{
+				Arelt.SetActive(true);
+			}
+			else
+			{
+				Arelt.SetActive(false);
+			}
+			break;
+		case 6:
+			int Readroom = 600600;
+			Debug.Log("PushAndNotificationHelper.IsShowRedSpotNotification(600600) = "+PushAndNotificationHelper.IsShowRedSpotNotification(Readroom));
+			if(PushAndNotificationHelper.IsShowRedSpotNotification(Readroom))
 			{
 				Arelt.SetActive(true);
 			}

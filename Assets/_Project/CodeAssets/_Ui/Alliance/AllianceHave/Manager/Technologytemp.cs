@@ -9,6 +9,10 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class Technologytemp : MonoBehaviour {
 
+	public GameObject mAlert;
+
+	public UILabel REmind;
+
 	public UISprite Icon;
 
 	public UILabel CurrInstrudction;
@@ -24,6 +28,10 @@ public class Technologytemp : MonoBehaviour {
 	public GameObject ResearchBtn;
 
 	public GameObject Green_ResearchBtn;
+
+	public UILabel Green_ResearchBtnLabel;
+
+	public GameObject mActiveBtn;
 
 	public int Keji_id;
 
@@ -42,6 +50,12 @@ public class Technologytemp : MonoBehaviour {
 	LianMengKeJiTemplate mLianMengKeJiTemplate;
 
 	public int Keji_Index;
+
+	public int JiHuoLv;
+
+	public GameObject BtnList;
+
+	public UILabel NoOpen;
 	void Start () {
 	
 	}
@@ -52,50 +66,120 @@ public class Technologytemp : MonoBehaviour {
 	}
 	public void Init()
 	{
+		Alliance_Builds = NewAlliancemanager.Instance().m_allianceHaveRes.build;
 		Identity = NewAlliancemanager.Instance().m_allianceHaveRes.identity;
 		ShuYuanLevel = NewAlliancemanager.Instance().KejiLev;
-//		Debug.Log ("Identity = "+Identity);
-		//Debug.Log ("ShuYuanLevel = "+ShuYuanLevel);
-
-		level.text = "Lv " + Keji_level.ToString ();
-//		Debug.Log ("Keji_type = "+Keji_type);
-//		Debug.Log ("Keji_level = "+Keji_level);
-	
-		 mLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,Keji_level);
-		//Debug.Log ("mLianMengKeJiTemplate.desc = "+mLianMengKeJiTemplate.desc);
-		KeJiName.text = mLianMengKeJiTemplate.name;
-
-		CurrInstrudction.text = mLianMengKeJiTemplate.desc;
-		Icon.spriteName = mLianMengKeJiTemplate.Icon.ToString ();
-		if(Keji_level < MaxKeji_level)
+		LianMengKeJiTemplate m_LianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,0);
+		int OPenLv = m_LianMengKeJiTemplate.shuYuanlvNeeded;
+		if(ShuYuanLevel < OPenLv)
 		{
-			LianMengKeJiTemplate NextLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,Keji_level+1);
-			NextInstrudction.text = NextLianMengKeJiTemplate.desc;
+			BtnList.SetActive(false);
+			NoOpen.text = "书院"+OPenLv.ToString()+"级开放";
 		}
 		else
 		{
-			NextInstrudction.gameObject.SetActive(false);
+			BtnList.SetActive(true);
+			NoOpen.text = "";
 		}
-		CostBuilds.text = "消耗建设值："+mLianMengKeJiTemplate.lvUpValue.ToString ();
-		if(Identity == 0)
+//		Debug.Log("Identity = "+Identity);
+		if(Identity == 0) // 盟员 版
 		{
-			Green_ResearchBtn.SetActive(false);
+
+//
+//			Debug.Log("Keji_type = "+Keji_type);
+//			Debug.Log("JiHuoLv = "+JiHuoLv);
+//			Debug.Log("Keji_level = "+Keji_level);
+			if(JiHuoLv > MaxKeji_level)
+			{
+				JiHuoLv = MaxKeji_level;
+			}
+			if(Keji_level > MaxKeji_level)
+			{
+				Keji_level = MaxKeji_level;
+			}
+			level.text = "Lv " + JiHuoLv.ToString ();
+			mLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,JiHuoLv);
+			if(JiHuoLv < MaxKeji_level)
+			{
+				LianMengKeJiTemplate NextLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,JiHuoLv+1);
+				NextInstrudction.text = NextLianMengKeJiTemplate.desc;
+			}
+			else
+			{
+				NextInstrudction.gameObject.SetActive(false);
+			}
+			CostBuilds.gameObject.SetActive(false);
 			ResearchBtn.SetActive(false);
+			if(JiHuoLv < Keji_level)
+			{
+				Green_ResearchBtn.SetActive(false);
+				REmind.gameObject.SetActive(false);
+				mActiveBtn.SetActive(true);
+				mAlert.SetActive(true);
+			}
+			else
+			{
+				Green_ResearchBtn.SetActive(true);
+				Green_ResearchBtnLabel.text = "激 活";
+				mActiveBtn.SetActive(false);
+				REmind.gameObject.SetActive(true);
+				if(JiHuoLv >= MaxKeji_level )
+				{
+					REmind.gameObject.SetActive(false);
+					Green_ResearchBtnLabel.text = "已到最高";
+				}
+				mAlert.SetActive(false);
+			}
+		
+
 		}
-		else
+		else // 盟主或者副盟主版
 		{
+			REmind.gameObject.SetActive(false);
+			level.text = "Lv " + Keji_level.ToString ();
+
+			mLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,Keji_level);
+			if(Keji_level < MaxKeji_level)
+			{
+				LianMengKeJiTemplate NextLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (Keji_type,Keji_level+1);
+				NextInstrudction.text = NextLianMengKeJiTemplate.desc;
+			}
+			else
+			{
+				NextInstrudction.gameObject.SetActive(false);
+			}
+			CostBuilds.gameObject.SetActive(true);
+//			CostBuilds.text = "消耗建设值："+mLianMengKeJiTemplate.lvUpValue.ToString ();
+			mActiveBtn.SetActive(false);
 			if(Keji_level >= MaxKeji_level)
 			{
 				Green_ResearchBtn.SetActive(true);
+				Green_ResearchBtnLabel.text = "研 究";
 				ResearchBtn.SetActive(false);
+				mAlert.SetActive(false);
 			}
 			else
 			{
 				Green_ResearchBtn.SetActive(false);
 				ResearchBtn.SetActive(true);
-			}
-			
+//				Debug.Log("mLianMengKeJiTemplate.lvUpValue = "+mLianMengKeJiTemplate.lvUpValue);
+//				Debug.Log("Alliance_Buildse = "+Alliance_Builds);
+				if (mLianMengKeJiTemplate.lvUpValue <= Alliance_Builds &&Keji_level < ShuYuanLevel) 
+				{
+					mAlert.SetActive(true);
+				}
+				else
+				{
+					mAlert.SetActive(false);
+				}
+
+			}	
 		}
+
+		KeJiName.text = mLianMengKeJiTemplate.name;
+		
+		CurrInstrudction.text = mLianMengKeJiTemplate.desc;
+		Icon.spriteName = mLianMengKeJiTemplate.Icon.ToString ();
 	}
 	public void Research()
 	{
@@ -108,13 +192,32 @@ public class Technologytemp : MonoBehaviour {
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),UpComform);
 		}
 	}
+	public void ActiveNow()
+	{
+		JiHuoLMKJReq KeJiUp = new JiHuoLMKJReq ();
+		
+		MemoryStream MiBaoStream = new MemoryStream ();
+		
+		QiXiongSerializer MiBaoer = new QiXiongSerializer ();
+	
+		KeJiUp.keJiType = Keji_type;
+		TechnologyManager.Instance().CurKejiType = Keji_type;
+		//NewAlliancemanager.Instance().Up_id = id;
+		TechnologyManager.Instance().JianZhu_InDex = Keji_Index;
+		MiBaoer.Serialize (MiBaoStream,KeJiUp);
+		
+		byte[] t_protof;
+		t_protof = MiBaoStream.ToArray();
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LMKEJI_JIHUO,ref t_protof);
+
+	}
 	void DOnt_UpComform(ref WWW p_www,string p_path, Object p_object)
 	{
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"建筑等级不可超过书院等级,请先升级书院";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "\r\n"+"科技等级不可超过书院等级,请先升级书院";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		

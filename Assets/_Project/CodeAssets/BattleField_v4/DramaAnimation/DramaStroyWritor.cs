@@ -52,9 +52,12 @@ public class DramaStroyWritor : MonoBehaviour
 		FileInfo t = new FileInfo( t_file_path );
 
 		sw = t.CreateText();
+
 		JSONClass json = new JSONClass ();
 
 		json ["storyboardId"].AsInt = dsb.storyBoardId;
+
+		json ["totalTime"].AsFloat = dsb.totalTime;
 
 		foreach(DramaActorControllor actorControllor in dsb.getDramaActorControllors())
 		{

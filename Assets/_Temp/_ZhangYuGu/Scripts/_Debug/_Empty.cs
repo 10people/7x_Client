@@ -50,7 +50,7 @@ public class _Empty : MonoBehaviour {
 	void Start () {
 //		Debug.Log( Time.realtimeSinceStartup + " _Empty.Start() " + gameObject.name );
 
-		EffectTool.OpenUIEffect_ById( gameObject, m_ui_source_effect_id, m_ui_mirror_effect_id, m_ui_fx_id );
+		EffectTool.OpenMultiUIEffect_ById( gameObject, m_ui_source_effect_id, m_ui_mirror_effect_id, m_ui_fx_id );
 
 //		UISprite t_sprite = GetComponent<UISprite>();
 //
@@ -75,7 +75,7 @@ public class _Empty : MonoBehaviour {
 
 //		m_empty_script = null;
 
-		EffectTool.CloseUIEffect_ById( gameObject, m_ui_source_effect_id, m_ui_mirror_effect_id, m_ui_fx_id );
+		EffectTool.CloseMultiUIEffect_ById( gameObject, m_ui_source_effect_id, m_ui_mirror_effect_id, m_ui_fx_id );
 	}
 
 	// Update is called once per frame

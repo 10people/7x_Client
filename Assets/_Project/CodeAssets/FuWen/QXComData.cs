@@ -307,7 +307,7 @@ public class QXComData {
 		}
 		return false;
 	}
-	
+
 	#endregion
 
 	#region TimeStyle 00:00:00

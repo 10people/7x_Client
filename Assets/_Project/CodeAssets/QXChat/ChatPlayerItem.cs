@@ -71,7 +71,7 @@ public class ChatPlayerItem : MonoBehaviour {
 
 		if (isPlayer)
 		{
-			headIcon.spriteName = "PlayerIcon" + 1;
+			headIcon.spriteName = "PlayerIcon" + tempChatMsg.chatPct.roleId;
 			string channelStr = "[00e1c4][" + QXChatData.Instance.GetChannelTitleStr (tempChatMsg.chatPct.channel) + "][-]";
 			string nationStr = "[e5e205][" + QXComData.GetNationName (tempChatMsg.chatPct.guoJia) + "][-]";
 			nameLabel.text = channelStr + nationStr + "[f5aa29]" + tempChatMsg.chatPct.senderName + "[-]";
@@ -79,7 +79,7 @@ public class ChatPlayerItem : MonoBehaviour {
 		}
 
 		int row = textLabel.height / 19;
-
+//		Debug.Log ("tempChatMsg.chatPct.type:" + tempChatMsg.chatPct.type);
 		allianceInfoHandler.gameObject.SetActive (tempChatMsg.chatPct.type == 2 ? true : false);
 		int num = System.Text.Encoding.Default.GetBytes (tempChatMsg.chatPct.content).Length;
 //		Debug.Log ("numnum:" + num);
@@ -102,8 +102,6 @@ public class ChatPlayerItem : MonoBehaviour {
 
 		playerHandler.m_click_handler -= PlayerHandlerClickBack;
 		playerHandler.m_click_handler += PlayerHandlerClickBack;
-
-		allianceInfoHandler.gameObject.SetActive (chatMsg.chatPct.lianmengId > 0 ? true : false);
 
 		allianceInfoHandler.m_click_handler -= AllianceInfoHandlerClickBack;
 		allianceInfoHandler.m_click_handler += AllianceInfoHandlerClickBack;

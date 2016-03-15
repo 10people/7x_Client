@@ -2,6 +2,8 @@
 
 //#define DEBUG_SCENE_STATE
 
+
+
 using UnityEngine;
 using System.Collections;
 using System;
@@ -195,6 +197,20 @@ public class SceneManager{
 		EnterLoading();
     }
 
+	/// <summary>
+	/// Enters the treasure city.
+	/// </summary>
+	public static void EnterTreasureCity ()
+	{
+		#if DEBUG_LOADING_SCENE
+		Debug.Log("EnterTreasureCity()" );
+		#endif
+		
+		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.TREASURE_CITY ) );
+		
+		EnterLoading();
+	}
+
     /// Request to Load Main City Scene.
     public static void EnterMainCity(){
 #if DEBUG_LOADING_SCENE
@@ -346,6 +362,10 @@ public class SceneManager{
 			Global.m_isOpenFuWen = false;
 			Global.m_isOpenShop = false;
 			Global.m_isOpenPlunder = false;
+
+			Global.m_listAllTheData = new List<TongzhiData>();
+			Global.m_listMainCityData = new List<TongzhiData>();
+			Global.m_listJiebiaoData = new List<TongzhiData>();
 
             //Clear highest ui and chat objects.
 			if( ClientMain.Instance() != null ){

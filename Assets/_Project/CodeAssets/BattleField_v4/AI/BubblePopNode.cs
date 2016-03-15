@@ -15,11 +15,17 @@ public class BubblePopNode : MonoBehaviour
 
 	private UILabel label;
 
+	private UISprite spriteJian;
+
 	private float tempTime;
 
 	private BubblePopTemplate distanceOutTemplate;
 
 	private BubblePopTemplate distanceInTemplate;
+
+	private float cdTime;
+
+	private Vector3 offset;
 
 
 	public void init()
@@ -29,6 +35,10 @@ public class BubblePopNode : MonoBehaviour
 		distanceOutTemplate = null;
 
 		distanceInTemplate = null;
+
+		cdTime = 0;
+
+		offset = Vector3.zero;
 
 		dict.TryGetValue (3, out distanceOutTemplate);
 
@@ -42,6 +52,8 @@ public class BubblePopNode : MonoBehaviour
 
 	public void triggerFunc(BubblePopTemplate template)
 	{
+		if(cdTime < template.cdTime) return;
+
 		if(gc == null)
 		{
 			gc = Instantiate(gcTemple);
@@ -50,9 +62,21 @@ public class BubblePopNode : MonoBehaviour
 
 			gc.transform.localScale = new Vector3(1 / node.transform.localScale.x, 1 / node.transform.localScale.y, 1 / node.transform.localScale.z );
 
-			gc.transform.localPosition = new Vector3(0, node.appearanceTemplate.height * 2 + .2f, 0);
+			gc.transform.localPosition = new Vector3(0, node.getHeight() + .2f, 0);
 
 			label = gc.GetComponentInChildren<UILabel>();
+
+			UISprite[] sprites = gc.GetComponentsInChildren<UISprite>();
+
+			foreach(UISprite sprite in sprites)
+			{
+				if(sprite.spriteName.IndexOf("Jian") != -1)
+				{
+					spriteJian = sprite;
+
+					break;
+				}
+			}
 
 			gc.SetActive(false);
 		}
@@ -67,16 +91,105 @@ public class BubblePopNode : MonoBehaviour
 
 		template.triggerCurNum ++;
 
+		cdTime = 0;
+
 		if(BattleUIControlor.Instance().barAPC.gameObject.activeSelf == true
 		   && BattleUIControlor.Instance().barAPC.getFocusNode().nodeId == node.nodeId)
 		{
 			Vector3 position2D = Camera.main.WorldToViewportPoint(node.transform.position);
+
+			spriteJian.transform.localPosition = new Vector3(0, 0.1f, 0);
+			
+			spriteJian.transform.localEulerAngles = new Vector3(0, 0, 0);
+			
+			spriteJian.transform.localScale = new Vector3(.02f, .02f, .02f);
+
+			offset = new Vector3(0, node.getHeight() + .2f, 0);
 
 			if(position2D.x < 0 || position2D.x > 1 || position2D.y < 0 || position2D.y > 1)
 			{
 				BattleUIControlor.Instance().barAPC.setBubbleText(BubbleTextTemplate.getBubbleTextById (textId));
 
 				return;
+			}
+		}
+		else
+		{
+			offset = new Vector3(0, node.getHeight() + .2f, 0);
+
+			spriteJian.transform.localPosition = new Vector3(0, 0.1f, 0);
+			
+			spriteJian.transform.localEulerAngles = new Vector3(0, 0, 0);
+			
+			spriteJian.transform.localScale = new Vector3(.02f, .02f, .02f);
+
+			Vector3 position2D = Camera.main.WorldToViewportPoint(node.transform.position + offset + new Vector3(0, .8f, 0));//加上锚点偏移
+			
+			bool inScreen = !(position2D.x < 0 || position2D.x > 1 || position2D.y < 0 || position2D.y > 1);
+
+			if(!inScreen)
+			{
+				UIAnchor.Side leftOrRight = UIAnchor.Side.Left;
+
+				offset = new Vector3(2.8f, node.getHeight() / 2, 0);
+
+//				spriteJian.transform.localPosition = new Vector3(-2.27f, 0.5f, 0);
+//
+//				spriteJian.transform.localEulerAngles = new Vector3(0, 0, 270f);
+//				
+//				spriteJian.transform.localScale = new Vector3(.02f, .02f, .02f);
+
+				float angle = Vector3.Angle(node.transform.forward + new Vector3(0, -node.transform.forward.y, 0), Camera.main.transform.forward + new Vector3(0, -Camera.main.transform.forward.y, 0));
+
+				if(Mathf.Abs(angle) > 90)//怪与镜头反方向
+				{
+					leftOrRight = UIAnchor.Side.Right;
+				}
+				else
+				{
+					leftOrRight = UIAnchor.Side.Left;
+				}
+
+				position2D = Camera.main.WorldToViewportPoint(node.transform.position + offset + new Vector3(0, .8f, 0));//加上锚点偏移
+
+				inScreen = !(position2D.x < 0 || position2D.x > 1 || position2D.y < 0 || position2D.y > 1);
+
+				if(!inScreen)
+				{
+					offset = new Vector3(-2.8f, node.getHeight() / 2, 0);
+
+//					spriteJian.transform.localPosition = new Vector3(2.24f, 0.5f, 0);
+//					
+//					spriteJian.transform.localEulerAngles = new Vector3(0, 0, 270f);
+//
+//					spriteJian.transform.localScale = new Vector3(.02f, -.02f, .02f);
+
+					if(Mathf.Abs(angle) > 90)//怪与镜头反方向
+					{
+						leftOrRight = UIAnchor.Side.Left;
+					}
+					else
+					{
+						leftOrRight = UIAnchor.Side.Right;
+					}
+				}
+
+				if(leftOrRight == UIAnchor.Side.Left)
+				{
+					spriteJian.transform.localPosition = new Vector3(-2.27f, 0.5f, 0);
+	
+					spriteJian.transform.localEulerAngles = new Vector3(0, 0, 270f);
+					
+					spriteJian.transform.localScale = new Vector3(.02f, .02f, .02f);
+				}
+				else
+				{
+					spriteJian.transform.localPosition = new Vector3(2.24f, 0.5f, 0);
+
+					spriteJian.transform.localEulerAngles = new Vector3(0, 0, 270f);
+
+					spriteJian.transform.localScale = new Vector3(.02f, -.02f, .02f);
+				}
 			}
 		}
 
@@ -94,6 +207,8 @@ public class BubblePopNode : MonoBehaviour
 
 	void Update ()
 	{
+		updateCDTime ();
+
 		updateOutDistance ();
 		
 		updateInDistance ();
@@ -108,7 +223,17 @@ public class BubblePopNode : MonoBehaviour
 		if (Camera.main == null) return;
 		
 		if (gc == null) return;
-		
+
+		Vector3 tempNodeForward = node.transform.forward;
+
+		gc.transform.localPosition = Vector3.zero;
+
+		node.transform.forward = (Camera.main.transform.position - node.transform.position);
+
+		gc.transform.localPosition += offset;
+
+		node.transform.forward = tempNodeForward;
+
 		gc.transform.forward = Camera.main.transform.forward;
 	}
 
@@ -148,6 +273,11 @@ public class BubblePopNode : MonoBehaviour
 		{
 			triggerFunc(distanceInTemplate);
 		}
+	}
+
+	private void updateCDTime()
+	{
+		cdTime += Time.deltaTime;
 	}
 
 	private void updateTime()

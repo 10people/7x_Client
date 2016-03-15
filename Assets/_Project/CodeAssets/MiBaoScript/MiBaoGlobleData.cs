@@ -10,6 +10,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 {
 	private static MiBaoGlobleData m_instance;
 	public MibaoInfoResp G_MiBaoInfo;//返回秘宝信息
+	public MibaoInfoResp G_MiBaoInfoCopy;
 	public bool MiBaoISNull = true;//判断秘宝是否为空
 
 	public bool MiBaoUp = false;//判断秘宝是否已经升级
@@ -23,6 +24,10 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 	private int JunZhuJinBi;
 
 	private int Point;
+
+	public List<MibaoInfo> OldMiBaolist = new List<MibaoInfo>();//久的秘宝
+
+	private int m_iMibaoNum;
 
 	public static MiBaoGlobleData Instance()
 	{
@@ -81,12 +86,12 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 //			TimeHelper.SignetTime();
 //		}
 
-		if(CityGlobalData.PveLevel_UI_is_OPen &&changeState)
-		{
-			changeState = false;
-			StopCoroutine("ChangePveOpenDate");
-			StartCoroutine("ChangePveOpenDate");
-		}
+//		if(CityGlobalData.PveLevel_UI_is_OPen &&changeState)
+//		{
+//			changeState = false;
+//			StopCoroutine("ChangePveOpenDate");
+//			StartCoroutine("ChangePveOpenDate");
+//		}
 		if(CityGlobalData.MibaoSatrUpCallback &&changeState)
 		{
 			changeState = false;
@@ -156,85 +161,35 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 				MiBaoDataBack = true;
 				int index = functionTemp.m_iID;
 				int ActiveMiBaonum = 0;
-//				for(int i = 0 ; i < MiBaoInfo.mibaoGroup.Count; i ++)
-//				{
-//					ActiveMiBaonum = 0;
-//					for(int j = 0 ; j < MiBaoInfo.mibaoGroup[i].mibaoInfo.Count; j ++)
-//					{
-//						if(MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level > 0&&!MiBaoInfo.mibaoGroup[i].mibaoInfo[j].isLock)
-//						{
-//							if(MiBaoInfo.mibaoGroup[i].mibaoInfo[j].suiPianNum >= MiBaoInfo.mibaoGroup[i].mibaoInfo[j].needSuipianNum && MiBaoInfo.mibaoGroup[i].mibaoInfo[j].star < 5)
-//							{
-//								// Removed By YuGu, red alert auto updated by PushHelper.
-////								MainCityUIRB.SetRedAlert(index,true);
-//
-////								Debug.Log("Up  star");
-//
-//								PushAndNotificationHelper.SetRedSpotNotification (602, true);
-//								return true;
-//								//break;
-//							}
-//							ActiveMiBaonum += 1;
-//
-//						}
-//						else 
-//						{
-//							MiBaoSuipianXMltemp mMiBaosuipian = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid(MiBaoInfo.mibaoGroup[i].mibaoInfo[j].tempId);
-//
-//							if(MiBaoInfo.mibaoGroup[i].mibaoInfo[j].suiPianNum >= mMiBaosuipian.hechengNum&&!MiBaoInfo.mibaoGroup[i].mibaoInfo[j].isLock )
-//							{
-//								Debug.Log("Hecheng");
-//								PushAndNotificationHelper.SetRedSpotNotification (605, true);
-//
-//								// Removed By YuGu, red alert auto updated by PushHelper.
-////								MainCityUIRB.SetRedAlert(index,true);
-//
-//								return true;
-//								//break;
-//							}
-//			
-//						}
-//
-////						if(ActiveMiBaonum >= 2&&MiBaoInfo.mibaoGroup[i].hasActive ==0)
-////						{
-////							Debug.Log("Up  star2");
-////							PushAndNotificationHelper.SetRedSpotNotification (610, true);
-////						}
-////						if(ActiveMiBaonum > 2&&MiBaoInfo.mibaoGroup[i].hasActive ==1)
-////						{
-////
-////							if(MiBaoInfo.mibaoGroup[i].hasJinjie == 0)
-////							{
-////								Debug.Log("Up  star3");
-////								PushAndNotificationHelper.SetRedSpotNotification (610, true);
-////							}
-////
-////						}
-////
-////						int lv = MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level;
-////						if(lv == 0)
-////						{
-////							lv = 1;
-////						}
-////						MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(MiBaoInfo.mibaoGroup[i].mibaoInfo[j].miBaoId);
-////						
-////						ExpXxmlTemp mExpXxmlTemp = ExpXxmlTemp.getExpXxmlTemp_By_expId (mMiBaoXmlTemp.expId, lv);
-////						
-////						if(G_MiBaoInfo.levelPoint > 0 && JunZhuData.Instance().m_junzhuInfo.jinBi >= mExpXxmlTemp.needExp &&
-////						   lv < JunZhuData.Instance().m_junzhuInfo.level&&lv < 100&&MiBaoInfo.mibaoGroup[i].mibaoInfo[j].level >=1 &&!MiBaoInfo.mibaoGroup[i].mibaoInfo[j].isLock)
-////						{
-////
-////							CanLevelUp = true;// 有升级点数可以升级秘宝
-////						}
-//
-//					}
-//
-//				}
-
-			//	CantUpMiBao();
-				// Removed By YuGu, red alert auto updated by PushHelper.
-//				MainCityUIRB.SetRedAlert(index,false);
-
+				//Debug.Log(" if(CityGlobalData.IsFistGetMiBaoData) = "+ CityGlobalData.IsFistGetMiBaoData);
+                if(CityGlobalData.IsFistGetMiBaoData)
+				{
+					OldMiBaolist.Clear();
+					foreach(MibaoInfo mibaoif in G_MiBaoInfo.miBaoList)
+					{
+						if(mibaoif.level > 0 )
+						{
+							OldMiBaolist.Add(mibaoif);
+						}
+					}
+	
+					CityGlobalData.IsFistGetMiBaoData = false;
+				}
+				if(G_MiBaoInfoCopy == null)
+				{
+					G_MiBaoInfoCopy = MiBaoInfo;
+					for(int i = 0; i < G_MiBaoInfoCopy.miBaoList.Count; i ++)
+					{
+						if(G_MiBaoInfoCopy.miBaoList[i].level > 0)
+						{
+							m_iMibaoNum ++;
+						}
+					}
+				}
+				else
+				{
+					upMibaoShouji();
+				}
 				return true;
 			}
 			case ProtoIndexes.S_MIBAO_SELECT_RESP: //      密保保存返回
@@ -462,6 +417,51 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		MainCityUI.TryAddToObjectList(tempObject);
 		HY_UIManager mWildnessManager = tempObject.GetComponent<HY_UIManager>();
 		mWildnessManager.init();
-		
+	}
+
+	public void upMibaoShouji()
+	{
+		for(int i = 0; i < G_MiBaoInfoCopy.miBaoList.Count; i ++)
+		{
+			if(G_MiBaoInfoCopy.miBaoList[i].suiPianNum < G_MiBaoInfo.miBaoList[i].suiPianNum)
+			{
+				if(G_MiBaoInfoCopy.miBaoList[i].level > 0)
+				{
+					if(G_MiBaoInfoCopy.miBaoList[i].star < 5)
+					{
+						MainCityUI.addShouji(G_MiBaoInfoCopy.miBaoList[i].miBaoId, 2, G_MiBaoInfo.miBaoList[i].suiPianNum, G_MiBaoInfo.miBaoList[i].needSuipianNum, "秘宝升星");
+					}
+				}
+				else
+				{
+					MiBaoSuipianXMltemp mmibaosuip = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid(G_MiBaoInfo.miBaoList[i].tempId);
+					MainCityUI.addShouji(mmibaosuip.icon, 3, G_MiBaoInfo.miBaoList[i].suiPianNum, mmibaosuip.hechengNum, "秘宝合成");
+				}
+			}
+		}
+		G_MiBaoInfoCopy = G_MiBaoInfo;
+		int tempNum = 0;
+		for(int i = 0; i < G_MiBaoInfoCopy.miBaoList.Count; i ++)
+		{
+			if(G_MiBaoInfoCopy.miBaoList[i].level > 0)
+			{
+				tempNum ++;
+			}
+		}
+		if(tempNum > m_iMibaoNum)
+		{
+			MiBaoSkillTemp mMiBaoskill;
+			if(G_MiBaoInfo.skillList == null|| G_MiBaoInfo.skillList.Count == 0 )
+			{
+				mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(1);
+			}
+			else
+			{
+				mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(G_MiBaoInfo.skillList.Count + 1);
+			}
+
+			m_iMibaoNum = tempNum;
+			MainCityUI.addShouji(mMiBaoskill.skill2, 4, m_iMibaoNum, mMiBaoskill.needNum, "秘宝技能");
+		}
 	}
 }

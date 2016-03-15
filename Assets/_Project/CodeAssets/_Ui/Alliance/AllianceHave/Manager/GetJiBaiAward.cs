@@ -93,11 +93,16 @@ public class GetJiBaiAward : MonoBehaviour {
 		}
 		if(m_OneKeyAward.Count == 3)
 		{
-			AwardUitroot.GetComponent<UIGrid> ().m_x_offset = -75;
+			AwardUitroot.GetComponent<UIGrid> ().m_x_offset = -80;
 		}
-		if(m_OneKeyAward.Count > 4)
+		if(m_OneKeyAward.Count == 4)
+		{
+			AwardUitroot.GetComponent<UIGrid> ().m_x_offset = -120;
+		}
+		if(m_OneKeyAward.Count >= 5)
 		{
 			AwardUitroot.GetComponent<UIGrid> ().m_y_offset = 74;
+			AwardUitroot.GetComponent<UIGrid> ().m_x_offset = -160;
 		}
 		AwardUitroot.GetComponent<UIGrid> ().repositionNow = true;
 	}

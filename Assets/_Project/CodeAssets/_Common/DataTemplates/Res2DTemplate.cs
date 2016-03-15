@@ -253,7 +253,10 @@ public class Res2DTemplate : XmlLoadManager
 		WARSITUATION = 242,
 		PRE_LOAD_EQUIP_ATLAS = 243,
 		PRE_LOAD_ACTIVITY_ATLAS = 244,
-
+        ALLIANCE_YAOQING_ITEM = 246,
+        TREASURE_CITY_UI = 247,
+        ALLIANCE_SWITCH_COUNTRY = 248,
+		SHOUJI = 250,
     }
 
 

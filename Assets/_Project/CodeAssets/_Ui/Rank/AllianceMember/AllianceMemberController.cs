@@ -145,6 +145,12 @@ namespace Rank
 
         public GameObject TopLeftAnchor;
 
+        void Start()
+        {
+            //Close guide.
+            CityGlobalData.m_isRightGuide = true;
+        }
+
         void Awake()
         {
             DragAreaHandler.onPress += OnDragAreaPress;

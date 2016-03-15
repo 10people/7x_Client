@@ -1232,7 +1232,7 @@ public class BattleControlor : MonoBehaviour
 		}
 		else
 		{
-			bool fd = CityGlobalData.getDramable () && CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan;
+			bool fd = /*CityGlobalData.getDramable () && */ CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan;
 
 			if(fd == true)
 			{
@@ -1414,49 +1414,49 @@ public class BattleControlor : MonoBehaviour
 		if(BattleUIControlor.Instance().m_gc_skill_1[2].gameObject.activeSelf == true
 		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.jueyingxingguangzhan) == true)
 		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.jueyingxingguangzhan);
+//			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.jueyingxingguangzhan);
 			
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_1, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
+			StartCoroutine(playUnlockEff(null, BattleUIControlor.Instance().m_gc_skill_1[2].gameObject));
 		}
 
 		if(BattleUIControlor.Instance().m_gc_skill_2[2].gameObject.activeSelf == true
 		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.xuejilaoyin) == true)
 		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.xuejilaoyin);
+//			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.xuejilaoyin);
 			
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockLightSkill_2, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
+			StartCoroutine(playUnlockEff(null, BattleUIControlor.Instance().m_gc_skill_2[2].gameObject));
 		}
 
 		if(BattleUIControlor.Instance().m_gc_skill_1[0].gameObject.activeSelf == true
 		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.bahuanglieri) == true)
 		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.bahuanglieri);
+//			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.bahuanglieri);
 			
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_1, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
+			StartCoroutine(playUnlockEff(null, BattleUIControlor.Instance().m_gc_skill_1[0].gameObject));
 		}
 
 		if(BattleUIControlor.Instance().m_gc_skill_2[0].gameObject.activeSelf == true
 		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.qiankundouzhuan) == true)
 		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.qiankundouzhuan);
+//			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.qiankundouzhuan);
 			
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockHeavySkill_2, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
+			StartCoroutine(playUnlockEff(null, BattleUIControlor.Instance().m_gc_skill_2[0].gameObject));
 		}
 
 		if(BattleUIControlor.Instance().m_gc_skill_1[1].gameObject.activeSelf == true
 		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.zhuixingjian) == true)
 		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.zhuixingjian);
+//			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.zhuixingjian);
 			
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_1, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
+			StartCoroutine(playUnlockEff(null, BattleUIControlor.Instance().m_gc_skill_1[1].gameObject));
 		}
 
 		if(BattleUIControlor.Instance().m_gc_skill_2[1].gameObject.activeSelf == true
 		   && BattleControlor.Instance().getKing().playUnlockEffList.Contains((int)CityGlobalData.skillLevelId.hanbingjian) == true)
 		{
-			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.hanbingjian);
+//			BattleControlor.Instance().getKing().playUnlockEffList.Remove((int)CityGlobalData.skillLevelId.hanbingjian);
 			
-			StartCoroutine(playUnlockEff(LockControllor.Instance().lockRangeSkill_2, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
+			StartCoroutine(playUnlockEff(null, BattleUIControlor.Instance().m_gc_skill_2[1].gameObject));
 		}
 
 		if(BattleUIControlor.Instance().m_gc_skill_2[1].gameObject.activeSelf == true
@@ -1482,19 +1482,26 @@ public class BattleControlor : MonoBehaviour
 
 	private IEnumerator playUnlockEff(GameObject lockObject, GameObject effectRoot)
 	{
-		yield return new WaitForSeconds (.2f);
+		if(lockObject != null)
+		{
+			yield return new WaitForSeconds (.2f);
 
-		LockControllor.Instance().lightOn (lockObject, true);
+			LockControllor.Instance().lightOn (lockObject, true);
 
-		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100169));
+			UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100169));
 
-		yield return new WaitForSeconds (.8f);
+			yield return new WaitForSeconds (.8f);
 
-		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100009));
+			UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, effectRoot, EffectIdTemplate.GetPathByeffectId(100009));
 
-		yield return new WaitForSeconds (.3f);
+			yield return new WaitForSeconds (.3f);
 
-		LockControllor.Instance().lightOff (lockObject, true);
+			LockControllor.Instance().lightOff (lockObject, true);
+		}
+		else
+		{
+			//effectRoot.SetActive(true);
+		}
 	}
 
 	public void playUnLockEffWeaponRange()
@@ -1586,11 +1593,11 @@ public class BattleControlor : MonoBehaviour
 	{
 		float time = 0;
 
-		if(false)
+		if(CityGlobalData.t_resp.selfTroop.nodes[0].mibaoCount > 0)
 		{
 			BattleUIControlor.Instance ().mibaoShowControllor.gameObject.SetActive (true);
 
-			time = 3f;
+			time = 5f;
 		}
 
 		yield return new WaitForSeconds (time);
@@ -1641,18 +1648,7 @@ public class BattleControlor : MonoBehaviour
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
 		{
-			if(CityGlobalData.m_tempSection == 1)
-			{
-				SceneGuideManager.Instance().ShowSceneGuide (1100001);
-			}
-			else if(CityGlobalData.m_tempSection == 2)
-			{
-				SceneGuideManager.Instance().ShowSceneGuide (1110001);
-			}
-			else
-			{
-				SceneGuideManager.Instance().ShowSceneGuide (1120001);
-			}
+			SceneGuideManager.Instance().ShowSceneGuide (1100001 + ((CityGlobalData.m_tempSection - 1) * 10000));
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo)
 		{
@@ -2092,6 +2088,11 @@ public class BattleControlor : MonoBehaviour
 //		Debug.Log ("showResultAction showResultAction");
 
 //		UtilityTool.UnloadUnusedAssets ();
+
+		if(autoFight == true)
+		{
+			BattleUIControlor.Instance().changeAutoFight();
+		}
 
 		BattleUIControlor.Instance().LoadResultRes ();
 

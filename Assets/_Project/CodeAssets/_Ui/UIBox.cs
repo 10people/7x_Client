@@ -269,7 +269,7 @@ public class UIBox : MYNGUIPanel
     {
 		if( gameObject.activeSelf ){
 			gameObject.SetActive( false );
-			if(GameObject.Find("Map(Clone)"))
+			if(GameObject.Find("Map(Clone)")&& MainCityUI.m_MainCityUI.m_WindowObjectList.Count <= 1)
 			{
 				MapData.mapinstance.ShowPVEGuid ();
 			}

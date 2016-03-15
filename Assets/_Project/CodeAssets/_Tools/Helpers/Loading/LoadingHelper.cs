@@ -363,6 +363,11 @@ public class LoadingHelper {
 		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE );
 	}
 
+	public static bool IsLoadingTreasureCity ()
+	{
+		return EnterNextScene.GetSceneToLoad() == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.TREASURE_CITY );
+	}
+
 	#endregion
 
 
@@ -390,7 +395,7 @@ public class LoadingHelper {
 				
 				t_active_bloom = QualityTool.GetBool( QualityTool.CONST_BLOOM );
 			}
-			else if (IsLoadingMainCity() || IsLoadingMainCityYeWan() || IsLoadingAllianceCity() || IsLoadingAllianceTenentsCity() || IsLoadingHouse() || IsLoadingAllianceCityYeWan() || IsInAllianceTenentsCityYeWanScene() || IsLoadingCarriage()||IsLoadingAllianceBattle())
+			else if (IsLoadingMainCity() || IsLoadingMainCityYeWan() || IsLoadingAllianceCity() || IsLoadingAllianceTenentsCity() || IsLoadingHouse() || IsLoadingAllianceCityYeWan() || IsInAllianceTenentsCityYeWanScene() || IsLoadingCarriage()||IsLoadingAllianceBattle()||IsLoadingTreasureCity())
 			{
 				t_active_light = Quality_Shadow.InCity_RealShadow();
 				

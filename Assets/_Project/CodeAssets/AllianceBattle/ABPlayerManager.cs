@@ -26,7 +26,7 @@ namespace AllianceBattle
         /// </summary>
         public Dictionary<long, IDCollector> m_DeadPlayerDic = new Dictionary<long, IDCollector>();
 
-        public override void AddTrackCamera(PlayerController temp)
+        public override void AddTrackCamera(OtherPlayerController temp)
         {
             temp.TrackCamera = m_RootManager.TrackCamera;
         }

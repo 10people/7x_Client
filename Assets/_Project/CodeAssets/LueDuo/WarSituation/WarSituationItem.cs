@@ -55,27 +55,39 @@ public class WarSituationItem : MonoBehaviour {
 		enemyHead.spriteName = QXComData.PlayerIcon (situationInfo.enemyRoleId);
 		enemylevel.text = situationInfo.enemyLevel.ToString ();
 		enemyNation.spriteName = QXComData.Nation (situationInfo.enemyCountryId);
-		enemyName.text = MyColorData.getColorString (1,situationInfo.enemyName);
+		enemyName.text = MyColorData.getColorString (3,situationInfo.enemyName);
 		enemyAlliance.text = MyColorData.getColorString (6,situationInfo.enemyAllianceName.Equals ("***") ? "无联盟" : "<" + situationInfo.enemyAllianceName + ">");
 		enemyZhanLi.text = "战力" + situationInfo.enemyZhanLi;
+
 		Debug.Log ("situationInfo.enemyRemainHP:" + situationInfo.enemyRemainHP);
 		Debug.Log ("situationInfo.enemyAllHP:" + situationInfo.enemyAllHP);
+
 		int hp = (int)((situationInfo.enemyRemainHP / (float)situationInfo.enemyAllHP) * 100);
+		hp = hp < 1 ? 1 : hp;
+		Debug.Log ("hp:" + hp);
+
 		enemyProcess.text = hp + "%";
 		QXComData.InItScrollBarValue (enemyHpBar,hp);
 
-		stateLabel.text = tempType == WarSituationData.SituationType.PLUNDER ? "掠夺了" : "正在攻击";
+		stateLabel.text = MyColorData.getColorString (5,tempType == WarSituationData.SituationType.PLUNDER ? "掠夺了" : "正在攻击...");
+
+		string date = QXComData.UTCToTimeString (situationInfo.happendTime,"yyyy-MM-dd");
+		string time = QXComData.UTCToTimeString (situationInfo.happendTime,"HH:mm:ss");
+
+		fightTimeLabel.text = MyColorData.getColorString (3,date + " " + time);
 
 		plunderObj.SetActive (tempType == WarSituationData.SituationType.PLUNDER ? true : false);
 		yunBiaoObj.SetActive (tempType == WarSituationData.SituationType.YUNBIAO ? true : false);
 
 		yNameLabel.text = situationInfo.friendName;
 
+		StopCoroutine ("LostCd");
+
 		switch (tempType)
 		{
 		case WarSituationData.SituationType.PLUNDER:
 
-			pNameLabel.text = "";
+			pNameLabel.text = MyColorData.getColorString (3,situationInfo.friendName);
 
 			situationHandler.gameObject.SetActive (situationInfo.state == 1 ? false : true);
 
@@ -86,10 +98,10 @@ public class WarSituationItem : MonoBehaviour {
 			}
 			else
 			{
-				quZhuLabel.text = MyColorData.getColorString (5,"正在被驱逐");
+				quZhuLabel.text = MyColorData.getColorString (5,"正在驱逐...");
 			}
 
-			if (lostCdTime == 0)
+			if (situationInfo.remainTime > 0)
 			{
 				lostCdTime = situationInfo.remainTime;
 				StartCoroutine ("LostCd");
@@ -98,13 +110,15 @@ public class WarSituationItem : MonoBehaviour {
 			break;
 		case WarSituationData.SituationType.YUNBIAO:
 
+			Debug.Log ("situationInfo.friendHorseRoleId:" + situationInfo.friendHorseRoleId);
 			situationHandler.gameObject.SetActive (true);
 			situationHandler.GetComponentInChildren <UILabel> ().text = "前往";
 			quZhuLabel.text = "";
 
-			StopCoroutine ("LostCd");
+			yNameLabel.text = MyColorData.getColorString (3,situationInfo.friendName);
 
 			int yhp = (int)((situationInfo.friendRemainHP / (float)situationInfo.friendAllHP) * 100);
+			yhp = yhp < 1 ? 1 : yhp;
 			yHpLabel.text = yhp + "%";
 			QXComData.InItScrollBarValue (yHpBar,yhp);
 
@@ -145,7 +159,8 @@ public class WarSituationItem : MonoBehaviour {
 			//跳转到运镖场景
 			if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(310))
 			{
-				PlayerSceneSyncManager.Instance.EnterCarriage();
+				PlayerSceneSyncManager.Instance.EnterCarriage(situationInfo.posX,situationInfo.posZ);
+				PushAndNotificationHelper.SetRedSpotNotification (410015,false);
 			}
 			else
 			{
@@ -164,10 +179,10 @@ public class WarSituationItem : MonoBehaviour {
 		{
 			situationInfo.remainTime --;
 
-			string timeStr = MyColorData.getColorString (5,TimeHelper.GetUniformedTimeString (situationInfo.remainTime));
-			string lostBuildStr = MyColorData.getColorString (5,situationInfo.willLostBuild.ToString ());
+			string timeStr = TimeHelper.GetUniformedTimeString (situationInfo.remainTime);
+			string lostBuildStr = situationInfo.willLostBuild.ToString ();
 
-			lostCdLabel.text = timeStr + "后联盟将损失" + lostBuildStr + "建设值";
+			lostCdLabel.text = MyColorData.getColorString (3, timeStr + "后联盟将损失" + lostBuildStr + "建设值");
 
 			yield return new WaitForSeconds (1);
 
@@ -186,20 +201,20 @@ public class WarSituationItem : MonoBehaviour {
 		
 		iconSamplePrefab.SetActive(true);
 		iconSamplePrefab.transform.parent = yunBiaoObj.transform;
-		iconSamplePrefab.transform.localPosition = new Vector3(-40,5,0);
+		iconSamplePrefab.transform.localPosition = new Vector3(-40,9,0);
 		
 		InItIconSample ();
 	}
 	
 	void InItIconSample ()
 	{
-		CommonItemTemplate commonTemp = CommonItemTemplate.getCommonItemTemplateById (situationInfo.friendHorseRoleId);
+		CommonItemTemplate commonTemp = CommonItemTemplate.getCommonItemTemplateById (902000 + situationInfo.friendHorseRoleId);
 		string nameStr = NameIdTemplate.GetName_By_NameId (commonTemp.nameId);
-		string mdesc = DescIdTemplate.GetDescriptionById (situationInfo.friendHorseRoleId);
+		string mdesc = DescIdTemplate.GetDescriptionById (902000 + situationInfo.friendHorseRoleId);
 		
 		IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
-		fuShiIconSample.SetIconByID (situationInfo.friendHorseRoleId,"",1);
+		fuShiIconSample.SetIconByID (902000 + situationInfo.friendHorseRoleId,"",1);
 		fuShiIconSample.SetIconPopText(situationInfo.friendHorseRoleId, nameStr, mdesc, 1);
-		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
+//		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
 	}
 }

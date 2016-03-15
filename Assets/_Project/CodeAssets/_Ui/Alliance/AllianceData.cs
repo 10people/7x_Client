@@ -20,10 +20,14 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
 	public bool IsAllianceUP = false;
 
+    public bool m_InviteGetData = false ;
+
+    public bool m_Invite_List_Load = false;
+    public InviteList m_InviteInfo;
     private bool _isNoAllianceKey = false;
  
     private int index_RemNum = 0;
-
+    private immediatelyJoinResp _AllianceQuickApply = null;
     /// <summary>
     /// 判断是否存在联盟
     /// </summary>
@@ -53,7 +57,9 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
     void Start()
     {
         isNewLeader = true;
-//        RequestData();
+        RequestAllianceData();
+       RequestYaoQing();
+        //        RequestData();
     }
 
     //void Update()
@@ -65,11 +71,11 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
     //        {
     //            Destroy(GameObject.Find("My_Union(Clone)"));
     //        }
-           
+
     //    }
     //}
 
-//    private static readonly List<int> AllianceAddFuncBtn = new List<int>() { 2000, 2001, 2002 };
+    //    private static readonly List<int> AllianceAddFuncBtn = new List<int>() { 2000, 2001, 2002 };
 
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
@@ -120,6 +126,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         {
                             PlayerNameManager.UpdateSelfName();
                         }
+                        MainCityUI.SetSuperRed(104, true);
                         return true;
                     }
 
@@ -153,15 +160,15 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
                             CityGlobalData.m_AllianceIsHave = true;
 
-//                            foreach (var item in AllianceAddFuncBtn)
-//                            {
-//                                if (!FunctionOpenTemp.m_EnableFuncIDList.Contains(item))
-//                                {
-//									Debug.Log("=============1");
-//									Debug.Log(item);
-//                                    FunctionOpenTemp.m_EnableFuncIDList.Add(item);
-//                                }
-//                            }
+                            //                            foreach (var item in AllianceAddFuncBtn)
+                            //                            {
+                            //                                if (!FunctionOpenTemp.m_EnableFuncIDList.Contains(item))
+                            //                                {
+                            //									Debug.Log("=============1");
+                            //									Debug.Log(item);
+                            //                                    FunctionOpenTemp.m_EnableFuncIDList.Add(item);
+                            //                                }
+                            //                            }
                             ApplicateAllianceReq(g_UnionInfo);
                             //					GameObject allianceObj = GameObject.Find("My_Union(Clone)");
                             //					if (allianceObj != null)
@@ -200,6 +207,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         {
                             PlayerNameManager.UpdateSelfName();
                         }
+                        MainCityUI.SetSuperRed(104, false);
                         return true;
                     }
 
@@ -228,8 +236,8 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
                 case ProtoIndexes.ALLIANCE_HAVE_NEW_APPLYER://主界面联盟按钮提示
                     {
-//                        Debug.Log("联盟动态：" + ProtoIndexes.ALLIANCE_HAVE_NEW_APPLYER);
-//                        Debug.Log("联盟index：" + 104);
+                        //                        Debug.Log("联盟动态：" + ProtoIndexes.ALLIANCE_HAVE_NEW_APPLYER);
+                        //                        Debug.Log("联盟index：" + 104);
                         MainCityUI.SetRedAlert(104, true);
                         return true;
                     }
@@ -249,7 +257,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                     }
                 case ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY://主界面联盟按钮提示
                     {
-//                        Debug.Log("联盟升级：" + ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY);
+                        //                        Debug.Log("联盟升级：" + ProtoIndexes.ALLIANCE_LEVEL_UP_NOTIFY);
 
                         IsAllianceUP = true;
 
@@ -259,7 +267,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                 case ProtoIndexes.ALLIANCE_DISMISS_NOTIFY://联盟被解散成功
                     {
                         JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
-               
+
                         if (!CityGlobalData.m_isJieBiaoScene && BattleControlor.Instance() == null)
                         {
                             for (int i = 0; i < g_UnionInfo.memberInfo.Count; i++)
@@ -277,44 +285,219 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         return true;
                         break;
                     }
-			case ProtoIndexes.S_JIAN_ZHU_INFO:
-			{
-				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer t_qx = new QiXiongSerializer();
-				
-				JianZhuList mJianZhuList = new JianZhuList();
-				
-				t_qx.Deserialize(t_stream, mJianZhuList, mJianZhuList.GetType());
+                case ProtoIndexes.S_JIAN_ZHU_INFO:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
-//				Debug.Log("请求建筑返回11");
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
 
-				return true;
-			}
-			case ProtoIndexes.S_JIAN_ZHU_UP :
-			{
-				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer t_qx = new QiXiongSerializer();
-				
-				ErrorMessage BuildUpback = new ErrorMessage();
-				
-				t_qx.Deserialize(t_stream, BuildUpback, BuildUpback.GetType());
-				
-//				Debug.Log("BuildUpback main - -   ");
-				
-				return true;
-			}
+                        JianZhuList mJianZhuList = new JianZhuList();
+
+                        t_qx.Deserialize(t_stream, mJianZhuList, mJianZhuList.GetType());
+
+                        //				Debug.Log("请求建筑返回11");
+
+                        return true;
+                    }
+                case ProtoIndexes.S_JIAN_ZHU_UP:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+
+                        ErrorMessage BuildUpback = new ErrorMessage();
+
+                        t_qx.Deserialize(t_stream, BuildUpback, BuildUpback.GetType());
+
+                        //				Debug.Log("BuildUpback main - -   ");
+
+                        return true;
+                    }
+                case ProtoIndexes.S_ALLIANCE_INVITE_RESP: /** 同意联盟邀请 **/
+                    {
+                        MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+
+                        immediatelyJoinResp AllianceQuickApply = new immediatelyJoinResp();
+                        t_qx.Deserialize(t_tream, AllianceQuickApply, AllianceQuickApply.GetType());
+                        _AllianceQuickApply = AllianceQuickApply;
+               
+                        switch ((AllianceConnectRespEnum)AllianceQuickApply.code)
+                        {
+                            case AllianceConnectRespEnum.E_ALLIANCE_ZERO:
+                                {
+                                    if (Application.loadedLevelName.Equals(ConstInGame.CONST_SCENE_NAME_MAINCITY))
+                                    {
+                                        JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
+                                        GameObject obj = new GameObject();
+                                        obj.name = "MainCityUIButton_104";
+                                        MainCityUI.m_MainCityUI.MYClick(obj);
+                                    }
+                                    else
+                                    {
+                                        ClientMain.m_UITextManager.createText("联盟加入成功！");
+                                    }
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_ONE:
+                                {
+                                    ClientMain.m_UITextManager.createText("失败：联盟需要审批！");
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_TWO:
+                                {
+
+                                    ClientMain.m_UITextManager.createText("很遗憾，找不到这个联盟！");
+
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_THREE:
+                                {
+                                    ClientMain.m_UITextManager.createText("玩家申请的联盟数量已经满了！");
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_FOUR:
+                                {
+                                    ClientMain.m_UITextManager.createText("失败，联盟未开启招募！");
+
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_FIVE:
+                                {
+                                    ClientMain.m_UITextManager.createText("失败，该联盟人数已经满员！");
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_SIX:
+                                {
+                                    ClientMain.m_UITextManager.createText("失败君主等级不满足！");
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_SEVEN:
+                                {
+                                    ClientMain.m_UITextManager.createText("失败，军衔等级不满足！");
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_EIGHT:
+                                {
+                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_SWITCH_COUNTRY),
+                                            ResLoaded);
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_NINE:
+                                {
+                                    ClientMain.m_UITextManager.createText("间隔时间不到！");
+                                }
+                                break;
+
+
+                            default:
+                                break;
+                        }
+
+                        return true;
+                    }
+                case ProtoIndexes.S_ALLIANCE_INVITE_LIST: /** 邀请的联盟列表 **/
+                    {
+                        MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+
+                        InviteList invitetem = new InviteList();
+                   
+                        t_qx.Deserialize(t_tream, invitetem, invitetem.GetType());
+                        m_InviteInfo = invitetem;
+                        if (AllianceLayerManagerment.m_No_AllianceLayer != null)
+                        {
+                            m_Invite_List_Load = true;
+                        }
+                        else
+                        {
+                            if (IsAllianceNotExist)
+                            {
+                                //if (invitetem.inviteInfo != null)
+                                //{
+                                //    PushAndNotificationHelper.IsShowRedSpotNotification(104);
+                                //}
+                                //else
+                                //{
+                                //    PushAndNotificationHelper.SetRedSpotNotification(104, false);
+                                //}
+                            }
+                            
+                        }
+
+                        if (invitetem.inviteInfo != null && IsAllianceNotExist)
+                        {
+                            MainCityUI.SetButtonNum(104, invitetem.inviteInfo.Count);
+                        }
+                       
+
+                        return true;
+                    }
+                //case ProtoIndexes.S_ALLIANCE_INVITE_REFUSE: /** 拒绝联盟邀请返回 **/
+                //    {
+                //        MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+
+                //        QiXiongSerializer t_qx = new QiXiongSerializer();
+
+                //        RefuseInvite invitetem = new RefuseInvite();
+                //        t_qx.Deserialize(t_tream, invitetem, invitetem.GetType());
+
+                //        return true;
+                //    }
+                case ProtoIndexes.S_ALLIANCE_INVITE:// 邀请某人加入联盟请求返回
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+
+                        AllianceInviteResp inviteResp = new AllianceInviteResp();
+
+                        t_qx.Deserialize(t_stream, inviteResp, inviteResp.GetType());
+                        m_InviteGetData = true;
+                        switch (inviteResp.result)
+                        {
+                            case 0:
+                                {
+                                    ClientMain.m_UITextManager.createText("邀请成功！");
+                                }
+                                break;
+                            case 1:
+                                {
+                                    ClientMain.m_UITextManager.createText("君主不存在！");
+                                }
+                                break;
+                            case 4:
+                                {
+                                    ClientMain.m_UITextManager.createText("对方已加入别的联盟！");
+                                }
+                                break;
+                            case 5:
+                                {
+                                    ClientMain.m_UITextManager.createText("你没有权限邀请别人加入联盟！");
+                                }
+                                break;
+                        }
+                        return true;
+                    }
                 default: return false;
             }
-		
+
         }
         return false;
     }
-	public void DisAllianceLoadCallback ( ref WWW p_www, string p_path,  Object p_object )
+    void ResLoaded(ref WWW p_www, string p_path, UnityEngine.Object p_object)
+    {
+      GameObject tempObject = (GameObject)Instantiate(p_object);
+      tempObject.GetComponent<AllianceSwitchCountryManagerment>().ShowInfo(_AllianceQuickApply.guojiaId, _AllianceQuickApply.lmId);
+      MainCityUI.TryAddToObjectList(tempObject);
+      UIYindao.m_UIYindao.CloseUI();
+    }
+
+    public void DisAllianceLoadCallback ( ref WWW p_www, string p_path,  Object p_object )
 	{
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);
-		
 		GameObject boxObj = Instantiate( p_object ) as GameObject;
 		UIBox uibox = boxObj.GetComponent<UIBox> ();
 		//PlayerModelController.m_playerModelController.m_isCanUpdatePosition = false;
@@ -396,4 +579,61 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
 		base.OnDestroy();
 	}
+
+    public void RequestAppliactionAlliance(int id)//申请加入联盟
+    {
+        MemoryStream t_tream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        ApplyAlliance allianceApplication = new ApplyAlliance();
+        allianceApplication.id = id;
+        t_qx.Serialize(t_tream, allianceApplication);
+        byte[] t_protof;
+        t_protof = t_tream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.APPLY_ALLIANCE, ref t_protof);
+    }
+
+    public void RequestJoinAlliance(int id)//立即加入联盟
+    {
+        MemoryStream t_tream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        CancelJoinAlliance allianceApplyCancel = new CancelJoinAlliance();
+        allianceApplyCancel.id = id;
+
+        t_qx.Serialize(t_tream, allianceApplyCancel);
+        byte[] t_protof;
+        t_protof = t_tream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.IMMEDIATELY_JOIN, ref t_protof);
+    }
+
+    public void RequestYaoQing()//联盟邀请列表
+    {
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_INVITE_LIST);
+    }
+    public void RequestRefuseInvite(int id)//拒绝联盟邀请
+    {
+        MemoryStream t_tream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        RefuseInvite refuse = new RefuseInvite();
+        refuse.id = id;
+        t_qx.Serialize(t_tream, refuse);
+        byte[] t_protof;
+        t_protof = t_tream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_INVITE_REFUSE, ref t_protof);
+    }
+    public void RequestAgreeInvite(int id)//同意联盟邀请
+    {
+        MemoryStream t_tream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        AgreeInvite agree = new AgreeInvite();
+        agree.id = id;
+        t_qx.Serialize(t_tream, agree);
+        byte[] t_protof;
+        t_protof = t_tream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_INVITE_AGREE, ref t_protof);
+    }
+
+    public void RequestAllianceData()
+    {
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);
+    }
 }

@@ -16,6 +16,8 @@ public class HeroSkill : MonoBehaviour
 
 	public bool m_isUseThisSkill = false;
 
+	public bool m_isUseCurSkill = false;
+
 	public NodeSkill template;
 	
 	public BaseAI node;
@@ -1220,7 +1222,7 @@ public class HeroSkill : MonoBehaviour
 			{
 
 				bool flag = false;
-				if(castSkill())
+				if(m_isUseCurSkill = castSkill())
 				{
 					if(m_isSeal)
 					{
@@ -1294,7 +1296,10 @@ public class HeroSkill : MonoBehaviour
 					cooldown = tempTime;
 				}
 			}
-			
+			else
+			{
+				m_isUseCurSkill = false;
+			}
 			for(int i = 0; i < m_listFirstAI.Count; i ++)//判定每个技能特效里 元素组的第几个攻击时间
 			{
 				if(m_listFirstAI[i] == null || m_listFirstAI[i].gameObject == null || !m_listFirstAI[i].gameObject.activeSelf)
@@ -1408,7 +1413,7 @@ public class HeroSkill : MonoBehaviour
 							{
 								m_vectorMove = true;
 								m_VectorPos = node.gameObject.transform.position;
-								node.moveAction(node.gameObject.transform.position + (m_VForWard * (m_iCollValue0 * template.endtime)), iTween.EaseType.linear, template.endtime, (m_iCollValue4 == 1));
+								node.moveAction(node.gameObject.transform.position + (m_VForWard * (m_iCollValue0 * template.endtime)), iTween.EaseType.linear, template.endtime, (m_iCollValue4 == 1) ? 0 : 1);
 							}
 							else
 							{
@@ -1645,7 +1650,7 @@ public class HeroSkill : MonoBehaviour
 			}
 
 			//是否是死的角色
-			if( listBaseAI[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0 ){
+			if( listBaseAI[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) <= 0 ){
 				int indexResurrection = -1;
 
 				for(int l = 0; l < m_look.Count; l ++)//遍历技能元素组是否有复活

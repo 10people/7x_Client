@@ -52,6 +52,8 @@ public class LastLogin : MonoBehaviour {
 		{
 			selectServe1.SetActive (true);
 
+			AccountRequest.account.enterType = AccountRequest.EnterType.SELECT_ONE;
+
 			SelectServeOne serveOne = selectServe1.GetComponent<SelectServeOne> ();
 			serveOne.CreateServeItems ();
 		}
@@ -59,8 +61,17 @@ public class LastLogin : MonoBehaviour {
 		else 
 		{
 			selectServe2.SetActive (true);
+
+			AccountRequest.account.enterType = AccountRequest.EnterType.SELECT_TWO;
+
 			SelectServeTwo serveTwo = selectServe2.GetComponent<SelectServeTwo> ();
 			serveTwo.CreateServeItems ();
 		}
+	}
+
+	public void LastLoginEnterGame ()
+	{
+		AccountRequest.account.enterType = AccountRequest.EnterType.LAST_LOGIN;
+		EnterGame.enterGame.EnterGameReq ();
 	}
 }

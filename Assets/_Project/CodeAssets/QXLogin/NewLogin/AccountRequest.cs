@@ -18,6 +18,16 @@ public class AccountRequest : MonoBehaviour {
 	public GameObject loginObj2;
 	public GameObject lastLoginObj;
 
+	public GameObject selectObj1;
+	public GameObject selectObj2;
+	public enum EnterType
+	{
+		LAST_LOGIN,
+		SELECT_ONE,
+		SELECT_TWO,
+	}
+	public EnterType enterType;
+
 	private string textStr;
 
 	public UIToggle toggleBtn;
@@ -200,6 +210,81 @@ public class AccountRequest : MonoBehaviour {
 
         CreateReConnectWindow();
 	}
+
+	#region Active LoginObj
+	private UIWidget loginWidget;
+	public void SetActiveLoginObj (bool selectPlatform)
+	{
+		loginObj1.SetActive (selectPlatform);
+		loginObj2.SetActive (!selectPlatform);
+
+		FlyBirdController.birdController.SetBirdState (FlyBirdController.BirdState.LAND);
+
+		loginWidget = (selectPlatform ? loginObj1 : loginObj2).GetComponent<UIWidget> ();
+		loginWidget.alpha = 0;
+		StartCoroutine ("ShowLoginWindow");
+	}
+
+	IEnumerator ShowLoginWindow ()
+	{
+		while (loginWidget.alpha <= 1)
+		{
+			loginWidget.alpha += 0.05f;
+			yield return new WaitForSeconds (0.02f);
+
+			if (loginWidget.alpha >= 1)
+			{
+				loginWidget.alpha = 1;
+				StopCoroutine ("ShowLoginWindow");
+			}
+		}
+	}
+
+	private UIWidget selectObjWidget;
+	/// <summary>
+	/// Dises the active login object.
+	/// </summary>
+	public void DisActiveLoginObj ()
+	{
+		switch (enterType)
+		{
+		case EnterType.LAST_LOGIN:
+			selectObjWidget = lastLoginObj.GetComponent<UIWidget> ();
+			break;
+		case EnterType.SELECT_ONE:
+			selectObjWidget = selectObj1.GetComponent<UIWidget> ();
+			break;
+		case EnterType.SELECT_TWO:
+			selectObjWidget = selectObj2.GetComponent<UIWidget> ();
+			break;
+		default:
+			break;
+		}
+
+		selectObjWidget.alpha = 1;
+
+		FlyBirdController.birdController.SetBirdState (FlyBirdController.BirdState.FLY);
+
+		StartCoroutine ("DisLoginWindow");
+	}
+
+	IEnumerator DisLoginWindow ()
+	{
+		while (selectObjWidget.alpha > 0)
+		{
+			selectObjWidget.alpha -= 0.05f;
+			yield return new WaitForSeconds (0.02f);
+			
+			if (selectObjWidget.alpha <= 0)
+			{
+				selectObjWidget.alpha = 0;
+
+				StopCoroutine ("DisLoginWindow");
+			}
+		}
+	}
+
+	#endregion
 
 	#region Register
 
@@ -408,7 +493,7 @@ public class AccountRequest : MonoBehaviour {
 		switch (code)
 		{
 		case 0:
-			Debug.Log( "AccountRequest Normal Fail." );
+//			Debug.Log( "AccountRequest Normal Fail." );
 
 			QXComData.CreateBox (1,textStr,true,null);
 			break;

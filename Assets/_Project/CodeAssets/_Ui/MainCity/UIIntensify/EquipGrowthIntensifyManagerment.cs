@@ -264,6 +264,7 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour, UI2DEventListener
     }
     public void OnUI2DShow()
     {
+        listM.Clear();
         CaiLiaoStrenth.Clear();
         CaiLiaoAdvance.Clear();
         CaiLiaoEquips.Clear();

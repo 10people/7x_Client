@@ -12,7 +12,7 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
     public UILabel m_LabLevel;
     public string m_OtherPlayerId;
     public Vector3  m_NowPos;
-    public EventIndexHandle m_ChaKan;
+    public List<EventIndexHandle> m_listEvent;
     public ScaleEffectController m_SEC;
     public GameObject m_ObjChaKan;
     public GameObject m_MainParent;
@@ -25,16 +25,27 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
 	void Start ()
     {
         m_ObjChaKan.transform.position = m_currentCamera.ScreenToWorldPoint(m_NowPos);
-        m_ChaKan.m_Handle += ChaKan;
+        m_listEvent.ForEach(p=>p.m_Handle += ChaKan);
         m_SEC.OpenCompleteDelegate += ShowInfo;
     }
     void OnEnable()
     {
         SocketTool.RegisterMessageProcessor(this);
     }
-    void ShowInfo()
-    {
 
+    void Update()
+    {
+        if (FriendOperationData.Instance.m_GreetSucess || AllianceData.Instance. m_InviteGetData)
+        {
+            FriendOperationData.Instance.m_GreetSucess = false;
+            AllianceData.Instance.m_InviteGetData = false;
+            MainCityUI.TryRemoveFromObjectList(m_MainParent);
+            Destroy(m_MainParent);
+        }
+
+    }
+        void ShowInfo()
+    {
         Request();
     }
 
@@ -57,9 +68,65 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
     }
     void ChaKan (int index)
     {
-        MainCityUI.TryRemoveFromObjectList(m_MainParent);
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
-        Destroy(m_MainParent);
+        switch (index)
+        {
+            case 0:
+                {
+                    MainCityUI.TryRemoveFromObjectList(m_MainParent);
+                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
+                    Destroy(m_MainParent);
+                }
+                break;
+            case 1:
+                {
+                    string[] ss = m_OtherPlayerId.Split(':');
+                    GreetReq green = new GreetReq();
+
+                    green.jzId = long.Parse(ss[1]);
+
+                    MemoryStream t_stream = new MemoryStream();
+
+                    QiXiongSerializer q_serializer = new QiXiongSerializer();
+
+                    q_serializer.Serialize(t_stream, green);
+
+                    byte[] t_protof = t_stream.ToArray();
+
+                    SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GREET_REQ, ref t_protof);
+                }
+                break;
+            case 2:
+                {
+                    if (AllianceData.Instance.g_UnionInfo == null || AllianceData.Instance.g_UnionInfo.identity == 0)
+                    {
+                        MainCityUI.TryRemoveFromObjectList(m_MainParent);
+                        Destroy(m_MainParent);
+                        ClientMain.m_UITextManager.createText("只有盟主/副盟主可以邀请玩家加入联盟！");
+                      
+                    }
+                    else if (AllianceData.Instance.g_UnionInfo.identity > 0)
+                    {
+
+
+                        string[] ss = m_OtherPlayerId.Split(':');
+                        AllianceInvite green = new AllianceInvite();
+
+                        green.junzhuId = long.Parse(ss[1]);
+
+                        MemoryStream t_stream = new MemoryStream();
+
+                        QiXiongSerializer q_serializer = new QiXiongSerializer();
+
+                        q_serializer.Serialize(t_stream, green);
+
+                        byte[] t_protof = t_stream.ToArray();
+
+                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_INVITE, ref t_protof);
+                    }
+                }
+                break;
+        }
+       
     }
 
     public bool OnProcessSocketMessage(QXBuffer p_message)
@@ -78,6 +145,12 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
                             m_LabName.text = m_JunzhuPlayerResp.name;
                             m_LabLevel.text = "LV." + m_JunzhuPlayerResp.level.ToString();
                             m_ObjChaKan.SetActive(true);
+                       
+                            for (int i = 0; i < m_listEvent.Count; i++)
+                            {
+                                m_listEvent[i].GetComponent<Collider>().enabled = true;
+                            }
+                    
                             //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
                         }
                       //  

@@ -14,6 +14,8 @@ public class MainCityUIRT : MYNGUIPanel
 	public UILabel m_yuanbaoNuM;
 	public UILabel m_energyNuM;
 
+	public GameObject m_TiliMaxTishi;
+	public float m_Time;
     /// <summary>
     /// Task pop up label info
     /// </summary>
@@ -22,6 +24,28 @@ public class MainCityUIRT : MYNGUIPanel
 	void Start()
 	{
 //		MainCityUI.m_MainCityUI.setGlobalBelongings(gameObject, 0, 0);
+	}
+
+	void Update()
+	{
+		if(JunZhuData.Instance().m_junzhuInfo.tili >= JunZhuData.Instance().m_junzhuInfo.tiLiMax)
+		{
+			float tempTime = Time.time - m_Time;
+			if(m_TiliMaxTishi.activeSelf)
+			{
+				if(tempTime > 10)
+				{
+					m_TiliMaxTishi.SetActive(false);
+				}
+			}
+			else
+			{
+				if(tempTime > 120)
+				{
+					m_TiliMaxTishi.SetActive(false);
+				}
+			}
+		}
 	}
 
 	public void RefreshJunZhuInfo()
@@ -46,10 +70,14 @@ public class MainCityUIRT : MYNGUIPanel
 		if(int.Parse(energyText) >= int.Parse(energyMaxText) && JunZhuData.Instance().m_junzhuInfo.level > Global.TILILVMAX)
 		{
 			m_energyNuM.text = MyColorData.getColorString(18, energyText + "/" + energyMaxText);
+			m_TiliMaxTishi.SetActive(true);
+			m_Time = Time.time;
 		}
 		else
 		{
 			m_energyNuM.text = energyText + "/" + energyMaxText;
+			m_TiliMaxTishi.SetActive(false);
+			m_Time = Time.time;
 		}
 	}
 

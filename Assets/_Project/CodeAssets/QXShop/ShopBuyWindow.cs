@@ -46,7 +46,7 @@ public class ShopBuyWindow : MonoBehaviour {
 	public void GetBuyGoodInfo (ShopGoodInfo tempInfo,ShopData.ShopType tempType)
 	{
 		sEffectController.OnOpenWindowClick ();
-
+//		Debug.Log ("ShopBuyId:" + tempInfo.itemId);
 		goodInfo = tempInfo;
 		shopType = tempType;
 
@@ -80,7 +80,11 @@ public class ShopBuyWindow : MonoBehaviour {
 
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100220, 3);
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100460, 3);
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 2);
+
+		if (!ShopPage.shopPage.BuyFinished)
+		{
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 2);
+		}
 	}
 
 	void LoadIconSamplePrefab (ref WWW p_www, string p_path, UnityEngine.Object p_object)
@@ -116,6 +120,10 @@ public class ShopBuyWindow : MonoBehaviour {
 		
 			if (QXComData.CheckYinDaoOpenState (100220) || QXComData.CheckYinDaoOpenState (100460) || QXComData.CheckYinDaoOpenState (400040))
 			{
+				if (FreshGuide.Instance ().IsActive (400040))
+				{
+					ShopPage.shopPage.BuyFinished = true;
+				}
 				UIYindao.m_UIYindao.CloseUI ();
 			}
 

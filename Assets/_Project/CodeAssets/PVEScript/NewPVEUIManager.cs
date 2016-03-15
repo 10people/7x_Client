@@ -175,7 +175,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			TestBtn.SetActive(false);
 		}
 //		Debug.Log ("FunctionOpenTemp.GetWhetherContainID(3000010) = "+FunctionOpenTemp.GetWhetherContainID(3000010));
-		if(!FunctionOpenTemp.GetWhetherContainID(3000010))
+		if(!FunctionOpenTemp.GetWhetherContainID(3000010)|| mLevel.type == 0)
 		{
 			SaodangBtns.SetActive(false);
 		}
@@ -1705,6 +1705,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		}
 		MapData.mapinstance.ShowPVEGuid();
 		CityGlobalData.PveLevel_UI_is_OPen = false;
+		PassLevelBtn.Instance().OPenEffect ();
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		if(EnterGuoGuanmap.Instance().ShouldOpen_id == 1)
 		{

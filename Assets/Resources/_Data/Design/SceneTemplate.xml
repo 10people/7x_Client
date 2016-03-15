@@ -11,6 +11,7 @@
 <SceneTemplate sceneId="8" sceneName="Game_Scene_AllianceCity_YeWan" isCheck="1" />
 <SceneTemplate sceneId="9" sceneName="Game_Scene_Carriage" isCheck="1" />
 <SceneTemplate sceneId="10" sceneName="Game_Scene_AllianceBattle" isCheck="0" />
+<SceneTemplate sceneId="11" sceneName="Game_Scene_TreasureCity" isCheck="1" />
 <SceneTemplate sceneId="100" sceneName="BattleField_V4_100" isCheck="1" />
 <SceneTemplate sceneId="101" sceneName="BattleField_V4_101" isCheck="1" />
 <SceneTemplate sceneId="201" sceneName="BattleField_V4_201" isCheck="1" />

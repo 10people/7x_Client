@@ -93,8 +93,26 @@ public class UIPanelTongzhi : MYNGUIPanel
                     case 6:
                         tempShowText = "知道了";
                         break;
-                }
-                temp.m_listButtonBG[q].gameObject.name = "TongzhiButton_" + i + "_" + q;
+					case 8:
+						tempShowText = "恭 贺";
+						break;
+					case 9:
+						tempShowText = "接 受";
+						break;
+					case 10:
+						tempShowText = "拒 绝";
+						break;
+					case 11:
+						tempShowText = "你 好";
+						break;
+					case 12:
+						tempShowText = "走 开";
+						break;
+					case 13:
+						tempShowText = "招 募";
+						break;
+				}
+				temp.m_listButtonBG[q].gameObject.name = "TongzhiButton_" + i + "_" + q;
                 temp.m_listButtonBG[q].gameObject.SetActive(true);
                 temp.m_listButtonLabel[q].text = tempShowText;
             }

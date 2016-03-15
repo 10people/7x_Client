@@ -1,6 +1,7 @@
 //#define DEBUG_EFFECT
 
 
+
 using System;
 using UnityEngine;
 using System.IO;
@@ -8,7 +9,13 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
 public class SparkleEffectItem : MonoBehaviour {
+
+	#if DEBUG_EFFECT
+	public Vector4 m_vec4 = Vector4.zero;
+	#endif
 
 	/** Desc:
 	 * 	Common_Icon		---> common icon
@@ -52,7 +59,61 @@ public class SparkleEffectItem : MonoBehaviour {
 		{
 			UpdateSparkleParam();
 		}
+	}
 
+	void OnEnable(){
+		InitSparkle();
+	}
+
+	void Update(){
+		if( string.Compare( m_sprite_name, m_sprite.spriteName ) != 0 ||
+			m_tex != m_sprite.mainTexture ){
+			#if DEBUG_EFFECT
+			Debug.Log( "Sprite Change, Reset." );
+			#endif
+
+			InitSparkle();
+		}
+
+		if (m_ui_tex != null) {
+			if (m_ui_tex.material != null) {
+				UpdateSparkle ();
+			}
+		}
+
+		if( m_ui_tex != null ){
+			if( m_ui_tex.material != null ){
+				m_ui_tex.material.SetColor( "_TintColor", m_color );
+
+				m_ui_tex.material.SetFloat( "_Coef", m_coef );
+
+				m_ui_tex.material.SetFloat( "_T", m_t );
+
+				if( m_sparkle_type == SparkleType.Sprite ){
+					m_ui_tex.CustomReset();	
+				}
+				else if( m_sparkle_type == SparkleType.Texture ){
+					m_ui_tex.CustomReset();	
+				}
+			}
+		}
+	}
+
+	void OnDisable(){
+		Clean();
+	}
+
+	void OnDestroy(){
+		Clean();
+	}
+
+	#endregion
+
+
+
+	#region Use
+
+	private void InitSparkle(){
 		{
 			m_sprite = GetComponent<UISprite>();
 
@@ -78,11 +139,19 @@ public class SparkleEffectItem : MonoBehaviour {
 
 					m_sprite_data = m_sprite.atlas.GetSprite( m_sprite.spriteName );
 
+					m_sprite_name = m_sprite.spriteName;
+
 					if( m_sprite_data == null ){
+						#if UNITY_EDITOR
 						Debug.Log( "No Sprite data setted." );
+						#endif
 
 						return;
 					}
+
+					#if DEBUG_EFFECT
+					LogInfo();
+					#endif
 				}
 			}
 		}
@@ -115,6 +184,10 @@ public class SparkleEffectItem : MonoBehaviour {
 
 				Vector4 t_vec_4 = GetVec4();
 
+				#if DEBUG_EFFECT
+				m_vec4 = t_vec_4;
+				#endif
+
 				m_ui_tex.material.SetVector( "_Tex_ST", t_vec_4 );
 			}
 		}
@@ -129,37 +202,6 @@ public class SparkleEffectItem : MonoBehaviour {
 		}
 	}
 
-	void Update(){
-		if( m_ui_tex != null ){
-			if( m_ui_tex.material != null ){
-				UpdateSparkle();
-
-				m_ui_tex.material.SetColor( "_TintColor", m_color );
-
-				m_ui_tex.material.SetFloat( "_Coef", m_coef );
-
-				m_ui_tex.material.SetFloat( "_T", m_t );
-
-				if( m_sparkle_type == SparkleType.Sprite ){
-					m_ui_tex.CustomReset();	
-				}
-				else if( m_sparkle_type == SparkleType.Texture ){
-					m_ui_tex.CustomReset();	
-				}
-			}
-		}
-	}
-
-	void OnDestroy(){
-		Clean();
-	}
-
-	#endregion
-
-
-
-	#region Use
-
 	public void Clean(){
 //		Debug.Log( "Sparkle.Clean()" );
 
@@ -173,7 +215,7 @@ public class SparkleEffectItem : MonoBehaviour {
 			if( m_ui_tex != null ){
 				m_ui_tex.enabled = false;
 
-				//			DestroyImmediate( m_ui_tex );
+//				DestroyImmediate( m_ui_tex );
 
 				Destroy( m_ui_tex );
 
@@ -391,6 +433,7 @@ public class SparkleEffectItem : MonoBehaviour {
 	
 	private UISpriteData m_sprite_data 	= null;
 
+	private string m_sprite_name = "";
 
 	private Shader m_origin_sh	= null;
 

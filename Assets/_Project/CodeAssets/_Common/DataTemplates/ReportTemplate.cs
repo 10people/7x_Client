@@ -16,7 +16,7 @@ public class ReportTemplate : XmlLoadManager
 	public int m_iID;
 	public int m_iEvent;
 	public int m_iSendCondition;
-	public int m_iReceiveObject;
+	public string m_iReceiveObject;
 	public string m_sRecveiveScence;
 	public string m_sPopupable;
 	public int m_iLanguageID;
@@ -72,7 +72,7 @@ public class ReportTemplate : XmlLoadManager
 				t_template.m_iID = ReadNextInt(t_reader);
 				t_template.m_iEvent = ReadNextInt(t_reader);
 				t_template.m_iSendCondition = ReadNextInt(t_reader);
-				t_template.m_iReceiveObject = ReadNextInt(t_reader);
+				t_template.m_iReceiveObject = ReadNextString(t_reader);
 				t_template.m_sRecveiveScence = ReadNextString(t_reader);
 				t_template.m_sPopupable = ReadNextString(t_reader);
 				t_template.m_iLanguageID = ReadNextInt(t_reader);

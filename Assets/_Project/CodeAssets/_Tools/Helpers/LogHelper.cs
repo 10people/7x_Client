@@ -152,7 +152,7 @@ public class LogHelper : MonoBehaviour {
 		if( type != null ){
 			MethodInfo displayName = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
 			if ( displayName != null ){
-				Debug.Log(displayName.Invoke(null, null));
+				Debug.Log( displayName.Invoke( null, null ) );
 			}
 			else{
 				Debug.LogError( "Error in Get RunTime." );

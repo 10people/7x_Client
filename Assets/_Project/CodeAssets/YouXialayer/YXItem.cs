@@ -162,7 +162,9 @@ public class YXItem : MonoBehaviour  {
 		mYxChooseDefcult.BigId = mYouXiaInfo.id;
 		
 		mYxChooseDefcult.mYouXia_Info = mYouXiaInfo;
-		
+
+		mYxChooseDefcult.m_Times = Re_AllTimes.text;
+
 		mYxChooseDefcult.Init ();
 		MainCityUI.TryAddToObjectList(tempOjbect);
 	}

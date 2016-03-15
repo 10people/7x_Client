@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define DEBUG_SCENE_SYNC
+
+using UnityEngine;
 using System.Collections;
 using System.IO;
 using qxmobile.protobuf;
@@ -12,16 +14,16 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     private VoidDelegate m_enterSceneDelegate;
 
-    private byte[] GetEnterSceneStructure(float initYPosition)
+    private byte[] GetEnterSceneStructure(Vector3 initPosition)
     {
         //Send character sync message to server.
         EnterScene tempEnterScene = new EnterScene
         {
             senderName = SystemInfo.deviceName,
             uid = 0,
-            posX = 0,
-            posY = initYPosition,
-            posZ = 0
+            posX = initPosition.x,
+            posY = initPosition.y,
+            posZ = initPosition.z
         };
 
         MemoryStream tempStream = new MemoryStream();
@@ -37,7 +39,11 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     public void EnterAB()
     {
-        byte[] t_protof = GetEnterSceneStructure(0.5f);
+#if DEBUG_SCENE_SYNC
+		Debug.Log( "EnterAB()" );
+#endif
+
+        byte[] t_protof = GetEnterSceneStructure(new Vector3(0, 0.5f, 0));
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.ENTER_FIGHT_SCENE, ref t_protof);
 
         m_enterSceneDelegate = DoEnterAB;
@@ -50,6 +56,10 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     public void ExitAB()
     {
+#if DEBUG_SCENE_SYNC
+		Debug.Log( "ExitAB()" );
+#endif
+
         ExitScene temp = new ExitScene { uid = 0 };
         SocketHelper.SendQXMessage(temp, ProtoIndexes.EXIT_FIGHT_SCENE);
 
@@ -60,9 +70,13 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     #region Carriage
 
-    public void EnterCarriage()
+    public void EnterCarriage(float initXPos = 0, float initZPos = 0)
     {
-        byte[] t_protof = GetEnterSceneStructure(-2.5f);
+#if DEBUG_SCENE_SYNC
+		Debug.Log( "EnterCarriage()" );
+#endif
+
+        byte[] t_protof = GetEnterSceneStructure(new Vector3(initXPos, -2.5f, initZPos));
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.ENTER_CARRIAGE_SCENE, ref t_protof);
 
         m_enterSceneDelegate = DoEnterCarriage;
@@ -75,21 +89,51 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     public void ExitCarriage()
     {
+#if DEBUG_SCENE_SYNC
+		Debug.Log( "EnterCarriage()" );
+#endif
+
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.EXIT_CARRIAGE_SCENE);
 
         SceneManager.EnterMainCity();
     }
 
-    public DelegateUtil.VoidDelegate m_DelegateAfterCarriage;
-
-    public Vector2 m_MovePosAfterCarriage;
-
-    public void m_MoveToPosAfterCarriageInit()
-    {
-        Carriage.RootManager.Instance.m_CarriageMain.TPToPosition(m_MovePosAfterCarriage);
-    }
-
     #endregion
+
+	#region Treasure City
+
+	public void EnterTreasureCity (float initXPos = 0, float initZPos = 0)
+	{
+		#if DEBUG_SCENE_SYNC
+		Debug.Log( "EnterTreasureCity()" );
+		#endif
+
+		byte[] t_protof = GetEnterSceneStructure(new Vector3(initXPos, -2.5f, initZPos));
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.Enter_TBBXScene, ref t_protof);
+
+//		Debug.Log ("ProtoIndexes.Enter_TBBXScene:" + ProtoIndexes.Enter_TBBXScene);
+
+		m_enterSceneDelegate = DoEnterTreasureCity;
+	}
+
+	void DoEnterTreasureCity ()
+	{
+		SceneManager.EnterTreasureCity ();
+	}
+
+	public void ExitTreasureCity ()
+	{
+		#if DEBUG_SCENE_SYNC
+		Debug.Log( "ExitTreasureCity()" );
+		#endif
+
+		ExitScene temp = new ExitScene { uid = 0 };
+		SocketHelper.SendQXMessage(temp, ProtoIndexes.Exit_TBBXScene);
+		
+		SceneManager.EnterMainCity();
+	}
+
+	#endregion
 
     public bool OnSocketEvent(QXBuffer p_message)
     {
@@ -99,6 +143,10 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
             {
                 case ProtoIndexes.Enter_Scene_Confirm:
                     {
+#if DEBUG_SCENE_SYNC
+						Debug.Log( "Enter_Scene_Confirm()" );
+#endif
+
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
                         QiXiongSerializer t_qx = new QiXiongSerializer();
                         EnterSceneConfirm tempScene = new EnterSceneConfirm();

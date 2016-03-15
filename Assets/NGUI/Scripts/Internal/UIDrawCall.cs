@@ -278,10 +278,18 @@ public class UIDrawCall : MonoBehaviour
 		if (mClipping == Clipping.SoftClip)
 		{
 			shader = Shader.Find(shaderName + soft);
+
+			if( shader == null ){
+				shader = Shader.Find(shaderName + alpha);
+			}
 		}
 		else if (mClipping == Clipping.AlphaClip)
 		{
 			shader = Shader.Find(shaderName + alpha);
+
+			if( shader == null ){
+				shader = Shader.Find(shaderName + soft);
+			}
 		}
 		else // No clipping
 		{
@@ -376,7 +384,7 @@ public class UIDrawCall : MonoBehaviour
 			if (mFilter == null) mFilter = gameObject.GetComponent<MeshFilter>();
 			if (mFilter == null) mFilter = gameObject.AddComponent<MeshFilter>();
 
-			if (verts.size < 65000)
+			if (verts.size < MaxVertCount() )
 			{
 				// Populate the index buffer
 				int indexCount = (count >> 1) * 3;
@@ -409,7 +417,7 @@ public class UIDrawCall : MonoBehaviour
 
 				mTriangles = (verts.size >> 1);
 
-				if (trim || verts.buffer.Length > 65000)
+				if (trim || verts.buffer.Length > MaxVertCount() )
 				{
 					if (trim || mMesh.vertexCount != verts.size)
 					{
@@ -418,6 +426,7 @@ public class UIDrawCall : MonoBehaviour
 					}
 
 					mMesh.vertices = verts.ToArray();
+					m_vert_count = verts.size;
 					mMesh.uv = uvs.ToArray();
 					mMesh.colors32 = cols.ToArray();
 
@@ -433,6 +442,7 @@ public class UIDrawCall : MonoBehaviour
 					}
 
 					mMesh.vertices = verts.buffer;
+					m_vert_count = verts.size;
 					mMesh.uv = uvs.buffer;
 					mMesh.colors32 = cols.buffer;
 
@@ -738,4 +748,24 @@ public class UIDrawCall : MonoBehaviour
 			}
 		}
 	}
+
+	private const int MAX_VERT_COUNT	= 65000;
+
+	protected static int MaxVertCount(){
+		return MAX_VERT_COUNT;
+	}
+
+	private const int CUMSTOM_VERT_TOPLIMIT	= 64000;
+
+	private int m_vert_count = 0;
+
+	public bool ReachVertTopLimit(){
+		if( m_vert_count >= CUMSTOM_VERT_TOPLIMIT ){
+			return true;
+		}
+
+		return false;
+	}
+
+
 }

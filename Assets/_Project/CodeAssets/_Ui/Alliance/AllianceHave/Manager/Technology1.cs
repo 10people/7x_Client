@@ -12,7 +12,7 @@ public class Technology1 : MonoBehaviour {
 
 	public GameObject KeJiTemp;
 
-	public JianZhuList m_JianZhuKeji;
+	public KeJiList m_JianZhuKeji;
 
 	float Dis = 142;
 
@@ -82,6 +82,7 @@ public class Technology1 : MonoBehaviour {
 			}
 			mTechnologytemp.Keji_Index = kejiNumber;
 			mTechnologytemp.Keji_level = m_JianZhuKeji.list[kejiNumber].lv;
+			mTechnologytemp.JiHuoLv = m_JianZhuKeji.list[kejiNumber].jiHuoLv;
 			mTechnologytemp.Init();
 			TechnologyManager.Instance().mTechnologytempList.Add(mTechnologytemp);
 		}

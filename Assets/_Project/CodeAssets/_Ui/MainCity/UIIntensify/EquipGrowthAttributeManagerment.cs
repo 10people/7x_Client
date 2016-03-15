@@ -73,12 +73,15 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                         m_ProgressRed.gameObject.SetActive(false);
                         m_ProgressGreen.gameObject.SetActive(true);
                         m_ProgressGreen.value = float.Parse(_ShuXingInfo._Count2.ToString()) / _ShuXingInfo._Max2;
+                        m_ProgressGreen.ForceUpdate();
                     }
                     else
                     {
                         m_ProgressGreen.gameObject.SetActive(false);
                         m_ProgressRed.gameObject.SetActive(true);
+                    
                         m_ProgressRed.value = float.Parse(_ShuXingInfo._Count2.ToString()) / _ShuXingInfo._Max2;
+                        m_ProgressRed.ForceUpdate();
                     }
                 }
                 else
@@ -92,7 +95,9 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                 m_ProgressPuple.gameObject.SetActive(false);
                 m_ProgressBlue.gameObject.SetActive(true);
                 m_ProgressBlue.value = 0;
+                m_ProgressBlue.ForceUpdate();
                 m_labProgressBlue.text = "0/0";
+
                 m_ProgressRed.gameObject.SetActive(false);
                 m_ProgressGreen.gameObject.SetActive(false);
             }
@@ -152,12 +157,14 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                         m_ProgressRed.gameObject.SetActive(false);
                         m_ProgressGreen.gameObject.SetActive(true);
                         m_ProgressGreen.value = float.Parse(_ShuXingInfo._Count2.ToString()) / _ShuXingInfo._Max2;
+                        m_ProgressGreen.ForceUpdate();
                     }
                     else
                     {
                         m_ProgressGreen.gameObject.SetActive(false);
                         m_ProgressRed.gameObject.SetActive(true);
                         m_ProgressRed.value = float.Parse(_ShuXingInfo._Count2.ToString()) / _ShuXingInfo._Max2;
+                        m_ProgressRed.ForceUpdate();
                     }
                 }
                 else
@@ -171,6 +178,7 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                 m_ProgressBlue.gameObject.SetActive(false);
                 m_ProgressPuple.gameObject.SetActive(true);
                 m_ProgressPuple.value = 0;
+                m_ProgressPuple.ForceUpdate();
                 m_labProgressPuple.text = "0/0";
                 m_ProgressRed.gameObject.SetActive(false);
                 m_ProgressGreen.gameObject.SetActive(false);

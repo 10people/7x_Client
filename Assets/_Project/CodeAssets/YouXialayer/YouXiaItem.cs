@@ -54,6 +54,7 @@ public class YouXiaItem : MonoBehaviour {
 
 	public GameObject Win;
 
+	public bool ISOpenlock = true;
 	void Start () {
 	
 	}
@@ -89,13 +90,13 @@ public class YouXiaItem : MonoBehaviour {
 
 		YouxiaPveTemplate mYouxia = YouxiaPveTemplate.getYouXiaPveTemplateById (L_id);
 
-		if(mYouxia.monarchLevel > JunZhuData.Instance().m_junzhuInfo.level)
+		if(!ISOpenlock)
 		{
 			ColiderBox.SetActive(true);
 
 			//YouXiaLimit.SetActive(true);
 
-			YouXia_Limit.text = "等级达到"+mYouxia.monarchLevel.ToString()+"可解锁";
+			YouXia_Limit.text = "通关上一难度可解锁";
 		}
 		else
 		{

@@ -21,6 +21,7 @@ public class GoodItem : MonoBehaviour {
 	public UILabel desLabel;
 
 	private bool isAllianceCanBuy;
+	private bool isSparkEffect;
 
 	private GameObject iconSamplePrefab;
 
@@ -143,7 +144,11 @@ public class GoodItem : MonoBehaviour {
 		moneyLabel.text = goodInfo.needMoney.ToString ();
 		saleOutObj.SetActive ((!tempInfo.isChange || JunZhuData.Instance().m_junzhuInfo.vipLv < jieSuoVip) ? true : false);
 
-		soldOutSprite.SetActive (tempInfo.isChange ? false : true);
+		soldOutSprite.SetActive (!tempInfo.isChange);
+
+		isSparkEffect = (!tempInfo.isChange || JunZhuData.Instance ().m_junzhuInfo.vipLv < jieSuoVip) ? 
+			false : (shopType == ShopData.ShopType.GONGXIAN ? isAllianceCanBuy : true);
+
 		vipLabel.gameObject.SetActive (JunZhuData.Instance().m_junzhuInfo.vipLv < jieSuoVip ? true : false);
 		vipLabel.text = MyColorData.getColorString (1,JunZhuData.Instance().m_junzhuInfo.vipLv < jieSuoVip ? "V" + jieSuoVip + "解锁" : "");
 
@@ -176,7 +181,7 @@ public class GoodItem : MonoBehaviour {
 		//0普通道具;3当铺材料;5秘宝碎片;6进阶材料;7基础宝石;8高级宝石;9强化材料
 		IconSampleManager iconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
 
-		iconSample.SetIconByID (goodInfo.itemId,"x" + goodInfo.itemNum,1);
+		iconSample.SetIconByID (goodInfo.itemId,"x" + goodInfo.itemNum,1,false,isSparkEffect);
 
 		string mdesc = DescIdTemplate.GetDescriptionById(goodInfo.itemId);
 		

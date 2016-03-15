@@ -31,6 +31,7 @@ public class FunctionOpenTemp : XmlLoadManager
     public int rank;
 	public int m_iImageW;
 	public int m_iImageH;
+	public int m_iNum;
 	public string m_sNotOpenTips;
 	public List<int> m_listNextID = new List<int>();
 

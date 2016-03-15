@@ -1,7 +1,10 @@
 
 -------------------------------------------------------------------- <Version Config>
 // show version code and lag
-ShowVersion:		true
+ShowVersion:			true
+
+// Investigate use or not, if true then skip all Movies
+InVestigateVersion:		false
 ------------------------------------------------------------------- </Version Config>
 
 

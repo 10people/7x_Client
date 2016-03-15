@@ -186,7 +186,6 @@ public class GeneralChallengePage : MonoBehaviour {
 		if (mSkillId > 0)
 		{
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
 			UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
 			sprite.color = Color.white;
 			label.color = Color.white;
@@ -202,21 +201,18 @@ public class GeneralChallengePage : MonoBehaviour {
 					if (mSkillId <= 0)
 					{
 						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
-						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,4);
+
 						UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,challengehandlerList[0].gameObject,
 						                                   EffectIdTemplate.GetPathByeffectId(600151));
 					}
 					else
 					{
-						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
 						UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
 					}
 				}
 				else
 				{
 					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
 					sprite.color = Color.black;
 					sprite.color = Color.black;
 					UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
@@ -416,7 +412,6 @@ public class GeneralChallengePage : MonoBehaviour {
 	public void RefreshMyMiBaoSkillInfo (int tempSkillId)
 	{
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100255,5);
 		mSkillId = tempSkillId;
 		InItMiBaoInfo ();
 	}

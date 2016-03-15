@@ -54,11 +54,6 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     public UIGrid m_Grid;
     public UISlider mSlider;
 
-    public UILabel MaxExp;
-
-    public UILabel CurExp;
-
-    public GameObject LingQuBtn;
     private GameObject OldBookSelfPrefab;
     private GameObject ExchangeOtherPrefab;
 
@@ -221,7 +216,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     /// </summary>
     private void RefreshExchangeBoxOther()
     {
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LM_HOUSE_INFO);
+        //SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LM_HOUSE_INFO);
         if (ExchangeOtherPrefab != null)
         {
             WWW temp = null;
@@ -521,6 +516,12 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     private float totalValueBar2;
     private float currentValueBar2;
 
+    #region House Exp
+
+    public UILabel MaxExp;
+    public UILabel CurExp;
+    public GameObject LingQuBtn;
+
     void SetHouseExp(HouseExpInfo mmHouseExpInfo)
     {
         totalValueBar2 = mmHouseExpInfo.max;
@@ -548,4 +549,6 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         PushAndNotificationHelper.SetRedSpotNotification(600800, false);
         NewAlliancemanager.Instance().Refreshtification();
     }
+
+    #endregion
 }

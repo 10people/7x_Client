@@ -818,6 +818,10 @@ public class TimeHelper : Singleton<TimeHelper>
 		Debug.Log( p_prefix + " : " + Time.realtimeSinceStartup );
 	}
 
+	public static string GetFrameAndTime(){
+		return Time.frameCount + " - " + Time.renderedFrameCount + " - " + Time.realtimeSinceStartup;
+	}
+
 	#endregion
 
 

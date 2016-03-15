@@ -968,14 +968,14 @@ public class NpcManager : MonoBehaviour {
  
     void LateUpdate()
 	{
-		if(UIYindao.m_UIYindao != null)
-		{
-            if (UIYindao.m_UIYindao.m_isOpenYindao && UIYindao.m_UIYindao.m_iIsColl == 0)
-			{
-				return;
-			}
-		}
-		if(m_talkingTransformDic.Count > 0) //
+        //if(UIYindao.m_UIYindao != null)
+        //{
+        if (UIYindao.m_UIYindao.m_isQiangzhi)
+        {
+            return;
+        }
+        //}
+        if (m_talkingTransformDic.Count > 0) //
 		{
 			foreach(int tempKey in m_currentNpcTransformDic.Keys)
 			{
@@ -990,21 +990,21 @@ public class NpcManager : MonoBehaviour {
 				m_talkingTransformDic[tempKey].transform.localPosition = new Vector3(tempPosition1.x * m_scale,tempPosition1.y * m_scale,tempPosition1.z);
 			}
 		}
-
-		if( MainCityUI.m_MainCityUI == null )
+ 
+        if ( MainCityUI.m_MainCityUI == null )
         {
 			return;
 		}
-
+ 
         if (QXChatData.Instance.SetOpenChat || CityGlobalData.m_joystickControl || MainCityUI.IsWindowsExist() || JunZhuLevelUpManagerment.m_JunZhuLevelUp != null  || TaskSignalInfoShow.m_TaskSignal != null) return; //现在在操纵摇杆 or 有ui界面弹出  npc不响应点击事件
 		{
             if (Input.GetMouseButton(0))
 			{
-                if (MainCityUI.IsWindowsExist() || UIYindao.m_UIYindao.m_isOpenYindao)
+                //if (MainCityUI.IsWindowsExist() || UIYindao.m_UIYindao.m_isOpenYindao
+                if (MainCityUI.IsWindowsExist())
                 {
                     return;
                 }
-               
                 Vector3 tempMousePosition = Input.mousePosition;
                 m_ray = m_nguiCamera.ScreenPointToRay(tempMousePosition);// 从屏幕发射线
 				RaycastHit nguiHit;

@@ -25,6 +25,8 @@ public class BagData : MonoBehaviour, SocketProcessor
 
     public Dictionary<long, List<BagItem>> m_playerCaiLiaoDic = new Dictionary<long, List<BagItem>>();
 
+	public Dictionary<int, int> m_ZhuangbeiJinjie;
+
     public int[] m_arrIYUNum = new int[5];
 
     [HideInInspector]
@@ -119,6 +121,8 @@ public class BagData : MonoBehaviour, SocketProcessor
                             RefreshPlayerCaiLiaoData();
 
                             GetCardBagCount();
+
+							RefreshJinJieCaiLiaoData();
                         }
 
                         // Removed By YuGu, red alert auto updated by PushHelper.
@@ -705,4 +709,82 @@ public class BagData : MonoBehaviour, SocketProcessor
         }
         return 99;
     }
+
+	void RefreshJinJieCaiLiaoData() //刷新进阶材料
+	{
+		if(m_ZhuangbeiJinjie == null)
+		{
+			m_ZhuangbeiJinjie = new Dictionary<int, int>();
+			for(int i = 0; i < m_bagItemList.Count; i ++)
+			{
+				if(m_bagItemList[i].itemType == 6)
+				{
+					m_ZhuangbeiJinjie.Add(m_bagItemList[i].itemId, m_bagItemList[i].cnt);
+				}
+			}
+		}
+		else
+		{
+			for(int i = 0; i < m_bagItemList.Count; i ++)
+			{
+				if(m_bagItemList[i].itemType == 6)
+				{
+					if(!m_ZhuangbeiJinjie.ContainsKey(m_bagItemList[i].itemId))
+					{
+						foreach (KeyValuePair<int, BagItem> item in EquipsOfBody.Instance().m_equipsOfBodyDic)
+						{
+							ZhuangBei tempZhuangbei = ZhuangBei.getZhuangBeiById(item.Value.itemId);
+							if(int.Parse(tempZhuangbei.jinjieItem) == m_bagItemList[i].itemId)
+							{
+								MainCityUI.addShouji(m_bagItemList[i].itemId, 0, m_bagItemList[i].cnt, int.Parse(tempZhuangbei.jinjieNum), "装备进阶");
+								Debug.Log("装备进度1");
+								Debug.Log(m_bagItemList[i].itemId);
+								Debug.Log(m_bagItemList[i].cnt);
+								break;
+							}
+						}
+						m_ZhuangbeiJinjie.Add(m_bagItemList[i].itemId, m_bagItemList[i].cnt);
+					}
+					else
+					{
+						if(m_ZhuangbeiJinjie[m_bagItemList[i].itemId] < m_bagItemList[i].cnt)
+						{
+							foreach (KeyValuePair<int, BagItem> item in EquipsOfBody.Instance().m_equipsOfBodyDic)
+							{
+								ZhuangBei tempZhuangbei = ZhuangBei.getZhuangBeiById(item.Value.itemId);
+								if(int.Parse(tempZhuangbei.jinjieItem) == m_bagItemList[i].itemId)
+								{
+									MainCityUI.addShouji(m_bagItemList[i].itemId, 0, m_bagItemList[i].cnt, int.Parse(tempZhuangbei.jinjieNum), "装备进阶");
+									Debug.Log("装备进度2");
+									Debug.Log(m_bagItemList[i].itemId);
+									Debug.Log(m_bagItemList[i].cnt);
+									break;
+								}
+							}
+						}
+						m_ZhuangbeiJinjie[m_bagItemList[i].itemId] = m_bagItemList[i].cnt;
+					}
+				}
+			}
+			foreach (KeyValuePair<int, int> kvp in m_ZhuangbeiJinjie)
+			{
+				if(getBagItem(kvp.Value) != null)
+				{
+					m_ZhuangbeiJinjie.Remove(kvp.Key);
+				}
+			}
+		}
+	}
+
+	BagItem getBagItem(int itmeID)
+	{
+		for(int i = 0; i < m_bagItemList.Count; i ++)
+		{
+			if(itmeID == m_bagItemList[i].itemId)
+			{
+				return m_bagItemList[i];
+			}
+		}
+		return null;
+	}
 }

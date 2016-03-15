@@ -84,11 +84,11 @@ public class BubblePopControllor : MonoBehaviour
 		
 		BubblePopTemplate temp = null;
 		
-		bpn.dict.TryGetValue (1, out temp);
+		bpn.dict.TryGetValue (skillId, out temp);
 		
 		if (temp == null) return;
 
-		if (temp.tp1 != skillId) return;
+		if (temp.triggerFunc != 1) return;
 
 		bpn.triggerFunc (temp);
 	}

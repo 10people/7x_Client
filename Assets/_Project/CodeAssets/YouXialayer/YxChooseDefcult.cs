@@ -22,6 +22,8 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	public UIScrollView mScorview;
 	public List<int > PassedId = new List<int>();
 
+	public UILabel mTimes;
+	public string m_Times;
 	public static YxChooseDefcult Instance()
 	{
 		if (!mmmYxChooseDefcult)
@@ -105,6 +107,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	}
 	void InitData()
 	{
+		mTimes.text = m_Times;
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
 		{
@@ -144,8 +147,26 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 			//mYouXiaItem.CountTime = HavatTimes;
 			mYXItem.mYou_XiaInfo = mYouXia_Info;
 			mYXItem.bigid = mYouxiaPveTemplateList[i].bigId;
-			mYXItem.Init();
+			if(i > 0)
+			{
+				int curid = mYouxiaPveTemplateList[i-1].id;
+				foreach(int id in YxChooseDefcult.Instance().PassedId)
+				{
+					if(curid == id) 
+					{
+						mYXItem.ISOpenlock = true;
+						break;
+					}
+					mYXItem.ISOpenlock = false;
+				}
+
+			}
+			else
+			{
+				mYXItem.ISOpenlock = true;
+			}
 			YouXiaItemmList.Add(mYXItem);
+			mYXItem.Init();
 		}
 		mGid.repositionNow = true;
 	}

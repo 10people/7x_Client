@@ -103,8 +103,11 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 		m_SpriteExp.SetDimensions(Global.getBili(122, (float)JunZhuData.Instance().m_junzhuInfo.exp, (float)JunZhuData.Instance().m_junzhuInfo.expMax), 8);
 		//m_SpriteExp
 		m_ZhanLiLabel.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
-		
-		MainCityUI.m_MainCityUI.m_MainCityUIRT.RefreshJunZhuInfo();
+
+		if (MainCityUI.m_MainCityUI != null)
+		{
+			MainCityUI.m_MainCityUI.m_MainCityUIRT.RefreshJunZhuInfo();
+		}
     }
 
     public void RefreshBattleValue()

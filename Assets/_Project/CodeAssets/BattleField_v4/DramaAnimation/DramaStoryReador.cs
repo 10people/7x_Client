@@ -295,6 +295,8 @@ public class DramaStoryReador : MonoBehaviour
 
 		storyBoard.storyBoardId = storyboardId;
 
+		storyBoard.totalTime = json ["totalTime"].AsFloat;
+
 		storyBoard.m_json = json;
 
 		storyBoard.m_ArrayJson = json ["jsonActor"].AsArray;

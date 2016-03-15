@@ -51,7 +51,7 @@
 <CanShu key="YUEKA_YUANBAO" value="120" desc="月卡每日返回元宝数" />
 <CanShu key="CHAT_INTERVAL_TIME" value="10" desc="聊天最短间隔时间（秒）" />
 <CanShu key="CHAT_MAX_WORDS" value="150" desc="聊天输入最大字数（个）" />
-<CanShu key="HUANGYEPVE_AWARD_X" value="0.1" desc="荒野宝藏点奖励系数X" />
+<CanShu key="HUANGYEPVE_AWARD_X" value="0.002" desc="荒野宝藏点奖励系数X" />
 <CanShu key="HUANGYEPVP_PRODUCE_P" value="0" desc="荒野资源点生产奖励系数P" />
 <CanShu key="HUANGYEPVP_KILL_K" value="0" desc="荒野资源点击杀奖励系数K" />
 <CanShu key="HUANGYEPVP_AWARDTIME" value="21:00" desc="荒野资源点发生产奖励时间" />
@@ -189,4 +189,9 @@
 <CanShu key="EXPEL_CD" value="60" desc="每次驱逐CD（S）" />
 <CanShu key="FANGWU_INITIAL_EXP" value="50" desc="房屋初始经验" />
 <CanShu key="JION_ALLIANCE_LV_MINI" value="13" desc="加入联盟最低等级限制" />
+<CanShu key="CONGRATULATE_AWARD_K" value="-5" desc="恭贺奖励系数K" />
+<CanShu key="CONGRATULATE_AWARD_B" value="55" desc="恭贺奖励系数B" />
+<CanShu key="BIAOQING_INTERVAL" value="3" desc="表情持续时间（秒）" />
+<CanShu key="GREETED_CD" value="60" desc="被打招呼的CD（秒）" />
+<CanShu key="BOX_SEARCH_RANGE" value="3" desc="试炼副本宝箱寻找半径（米）" />
 </dataset>

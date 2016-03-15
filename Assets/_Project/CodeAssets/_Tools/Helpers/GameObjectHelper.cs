@@ -202,6 +202,10 @@ public class GameObjectHelper {
 
 	#region Logs
 
+	public static void LogGameObjectComponents( GameObject p_gb ){
+		ComponentHelper.LogGameObjectComponents( p_gb );
+	}
+
 	public static void LogGameObjectInfo( GameObject p_gb ){
 		Debug.Log( "-------- LogGameObjectInfo: " + p_gb + "------------" );
 

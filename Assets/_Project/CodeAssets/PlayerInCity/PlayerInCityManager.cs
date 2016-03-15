@@ -80,7 +80,8 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
 
             //GameObject t_gb = Instantiate(player_object) as GameObject;
             t_gb.name = "PlayerObject:" + p_enter_scene.jzId;
-           //t_gb.GetComponent<CharacterController>().enabled = false;
+            t_gb.transform.Rotate(0, _PlayerRotation, 0) ;//; = new Quaternion(0, _PlayerRotation, 0, 0);
+            //t_gb.GetComponent<CharacterController>().enabled = false;
             t_gb.transform.parent = this.transform;
           //  Debug.Log(t_gb.transform.localPosition);
             
@@ -92,7 +93,8 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
             //Debug.Log("t_post_post_post_post_post_post_post_post_post_post_post_post_post_post_post_pos" + t_pos);
           //  Debug.Log(" t_gb.transform t_gb.transform t_gb.transform X ::" + t_gb.transform.localPosition.x + "YYYYYY ::" + t_gb.transform.localPosition.y + "ZZZZZZZZZZZZZZZZZ ::" + t_gb.transform.localPosition.z);
             t_gb.transform.localScale = Vector3.one*1.5f;
-
+        
+        
             PlayerInCity tempItem = t_gb.AddComponent<PlayerInCity>();
 
             tempItem.m_playerID = p_enter_scene.uid;
@@ -110,8 +112,8 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
       
 	}
 
-	//private Object m_player_object = null;
-
+    //private Object m_player_object = null;
+    float _PlayerRotation = 0;
 	public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object ){
         //m_player_object = p_object;
        // Debug.Log("p_pathp_pathp_pathp_pathp_pathp_pathp_path :::" + p_path);
@@ -119,9 +121,10 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
         for( int i = _PlayerInfo.Count - 1; i >= 0; i--) {
             EnterScene t_info = _PlayerInfo[i];
 
-            if ( GetModelResPathByRoleId(t_info.roleId ) == p_path ){
+            if ( GetModelResPathByRoleId(t_info.roleId ) == p_path )
+            {
+                _PlayerRotation = Random.Range(0.0f, 180.0f);
                 LoadingPlayer( t_info, p_object );
-
                 _PlayerInfo.Remove(t_info);
             }
         }

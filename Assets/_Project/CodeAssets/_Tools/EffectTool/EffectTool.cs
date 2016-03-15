@@ -537,12 +537,20 @@ public class EffectTool : Singleton<EffectTool> {
 	 * p_mirror_effect_id: param 1 from ZhongZhenWei
 	 * p_fx_id: param 1 from ZhongZhenWei
 	 */
-	public static void OpenUIEffect_ById( GameObject p_gb, int p_source_effect_id, int p_mirror_effect_id, int p_fx_id ){
-		UIAniEffectItem.OpenUIEffect( p_gb, p_source_effect_id, p_mirror_effect_id, p_fx_id );	
+	public static void OpenMultiUIEffect_ById( GameObject p_gb, int p_source_effect_id, int p_mirror_effect_id, int p_fx_id ){
+		UIMultiAnimEffect.OpenUIEffect( p_gb, p_source_effect_id, p_mirror_effect_id, p_fx_id );	
 	}
 
-	public static void CloseUIEffect_ById( GameObject p_gb, int p_source_effect_id, int p_mirror_effect_id, int p_fx_id  ){
-		UIAniEffectItem.CloseUIEffect( p_gb, p_source_effect_id, p_mirror_effect_id, p_fx_id );
+	public static void CloseMultiUIEffect_ById( GameObject p_gb, int p_source_effect_id, int p_mirror_effect_id, int p_fx_id  ){
+		UIMultiAnimEffect.CloseUIEffect( p_gb, p_source_effect_id, p_mirror_effect_id, p_fx_id );
+	}
+
+	public static void OpenUIEffect_ById( GameObject p_gb, int p_source_effect_id ){
+		UIAnimEffect.OpenUIEffect( p_gb, p_source_effect_id );	
+	}
+
+	public static void CloseUIEffect_ById( GameObject p_gb, int p_source_effect_id  ){
+		UIAnimEffect.CloseUIEffect( p_gb, p_source_effect_id );
 	}
 
 	#endregion
@@ -553,6 +561,9 @@ public class EffectTool : Singleton<EffectTool> {
 
 	/// Desc:
 	/// Open or Close Camera's effect.
+	/// 
+	/// Param:
+	/// p_gb: give camera gb here.
 	public static UIBackgroundEffect SetUIBackgroundEffect( GameObject p_gb, bool p_enable ){
 		return UIBackgroundEffect.SetUIBackgroundEffect( p_gb, p_enable );
 	}

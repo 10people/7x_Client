@@ -184,6 +184,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                         }
                         else
                         {
+                            MainCityUI.TryRemoveFromObjectList(m_MainParent);
                             Destroy(m_MainParent);
 							ClientMain.closePopUp();
                         }
@@ -215,6 +216,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
             }
             else
             {
+                MainCityUI.TryRemoveFromObjectList(m_MainParent);
                 Destroy(m_MainParent);
 				ClientMain.closePopUp();
             }

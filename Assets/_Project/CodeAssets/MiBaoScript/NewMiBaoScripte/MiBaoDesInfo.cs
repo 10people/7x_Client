@@ -796,7 +796,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 					Init();
 
 				}
-
+				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 				if(UIYindao.m_UIYindao.m_isOpenYindao)
 				{
 					UIYindao.m_UIYindao.CloseUI();
@@ -831,19 +831,25 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	void LoadBck_2(ref WWW p_www,string p_path, Object p_object) // 合成秘宝时候弹出的框 大秘宝
 	{
-		GameObject cardtemp = Instantiate(p_object) as GameObject;
-		
-		cardtemp.transform.parent = this.transform.parent;
-		
-		cardtemp.transform.localPosition = new Vector3(0,0,0);
-		
-		cardtemp.transform.localScale = new Vector3(0.9f,0.9f,0.9f);
 
-		mbCardTemp mmbCardTemp = cardtemp.GetComponent<mbCardTemp>();
-		
-		mmbCardTemp.mibaoTemp =  ShowmMiBaoinfo;
-		
-		mmbCardTemp.init();	
+		List<RewardData> data = new List<RewardData> ();
+
+		RewardData data1 = new RewardData (ShowmMiBaoinfo.miBaoId,1,ShowmMiBaoinfo.star);
+		data.Add (data1);
+		GeneralRewardManager.Instance().CreateSpecialReward (data);
+//		GameObject cardtemp = Instantiate(p_object) as GameObject;
+//		
+//		cardtemp.transform.parent = this.transform.parent;
+//		
+//		cardtemp.transform.localPosition = new Vector3(0,0,0);
+//		
+//		cardtemp.transform.localScale = new Vector3(0.9f,0.9f,0.9f);
+//
+//		mbCardTemp mmbCardTemp = cardtemp.GetComponent<mbCardTemp>();
+//		
+//		mmbCardTemp.mibaoTemp =  ShowmMiBaoinfo;
+//		
+//		mmbCardTemp.init();	
 	}
 
 	void LockTongBiLoadBack(ref WWW p_www,string p_path, Object p_object)
@@ -918,15 +924,16 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	void MiBaoUpStarLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
 		CloseEffect ();
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = "";
-		string str = "";
-		string confirm = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		string cancel = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 
 		if (ShowmMiBaoinfo.star >= 5)
 		{
+			UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+			
+			string titleStr = "";
+			string str = "";
+			string confirm = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+			string cancel = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
+
 			titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.HUANGYE_19);
 			
 			str = "\r\n"+"星级已满, 不能在进行升星了！";
@@ -937,14 +944,23 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		{
 			if (ShowmMiBaoinfo.suiPianNum < ShowmMiBaoinfo.needSuipianNum)
 			{
-				titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.MIBAO_ENHANCE_3);
-				
-				str = LanguageTemplate.GetText (LanguageTemplate.Text.MIBAO_ENHANCE_4);
-				
-				uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,confirm,null,null);
+//				titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.MIBAO_ENHANCE_3);
+//				
+//				str = LanguageTemplate.GetText (LanguageTemplate.Text.MIBAO_ENHANCE_4);
+//				
+//				uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,confirm,null,null);
+				uiname = "碎片不足";
+				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_NOT_ENOUGH_PIECE ),ShowPicecPath);
 			}
 			else 
 			{
+				UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+				
+				string titleStr = "";
+				string str = "";
+				string confirm = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+				string cancel = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
+
 				MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (ShowmMiBaoinfo.star);
 				
 				StarNeedMoney = mMiBaoStarTemp.needMoney;
@@ -986,10 +1002,12 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		}
 
 	}
-
+	string uiname;
 	public void ConllectMiBao()
 	{
+		uiname = "";
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_NOT_ENOUGH_PIECE ),ShowPicecPath);
+
 	}
 
 	void ShowPicecPath(ref WWW p_www,string p_path, Object p_object)
@@ -1007,7 +1025,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		LockPiece mLockPiece = mNoPiece.GetComponent<LockPiece>();
 		
 		mLockPiece.my_Diaoluomibao = ShowmMiBaoinfo; 
-		
+		mLockPiece.UINAme = uiname;
 		mLockPiece.Init ();
 		CloseEffect ();
 		//MiBaoScrollView.FirstOPenPath = false;
@@ -1019,9 +1037,9 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		
 		Mony = mMiBaoSuipianXMltemp.money;
 
-		Debug.Log ("howmMiBaoinfo.suiPianNum = "+ShowmMiBaoinfo.suiPianNum);
+		//Debug.Log ("howmMiBaoinfo.suiPianNum = "+ShowmMiBaoinfo.suiPianNum);
 
-		Debug.Log ("mMiBaoSuipianXMltemp.hechengNum = "+mMiBaoSuipianXMltemp.hechengNum);
+		//Debug.Log ("mMiBaoSuipianXMltemp.hechengNum = "+mMiBaoSuipianXMltemp.hechengNum);
 
 		if (ShowmMiBaoinfo.suiPianNum >= mMiBaoSuipianXMltemp.hechengNum) {
 			CloseYInDao();
@@ -1029,7 +1047,9 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		} 
 		else 
 		{
-			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LockOFPices);
+			//Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LockOFPices);
+			uiname = "碎片不足";
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_NOT_ENOUGH_PIECE ),ShowPicecPath);
 		}
 	}
 

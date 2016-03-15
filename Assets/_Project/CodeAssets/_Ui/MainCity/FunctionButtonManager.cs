@@ -12,16 +12,19 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 	[HideInInspector]public float m_iWantMoveY;
 	[HideInInspector]public int m_iMoveIndex = 0;
 	[HideInInspector]public int m_iMoveNum = 10;
+	public bool m_isSuperAlert = false;
 	public UISprite m_ButtonSprite;
 	public GameObject m_RedAlertObject;
 	public UILabel m_LabelButtonName;
 	public UILabel m_LabelTime;
+	public UILabel m_LabelNum;
 	public int m_index;
 	public MYNGUIButtonMessage m_MYNGUIButtonMessage;
 	public BoxCollider m_Coll;
 	private FunctionOpenTemp m_FuncTemplate;
 	private int m_RankIndex;//排序
 	private int m_Type;
+	private bool m_isTeshu = false;
 
     public void SetData(FunctionOpenTemp template)
     {
@@ -39,6 +42,11 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
         m_RankIndex = template.rank;
         m_Type = template.type;
 		m_LabelButtonName.text = template.Des;
+		if(template.m_iNum > 0)
+		{
+			m_LabelNum.text = template.m_iNum.ToString();
+			m_LabelNum.gameObject.SetActive(true);
+		}
 		m_ButtonSprite.SetDimensions(template.m_iImageW, template.m_iImageH);
 		m_Coll.size = new Vector3(template.m_iImageW, template.m_iImageH, 0);
 		if(template.m_iShowDesc == 1)
@@ -57,6 +65,7 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 
 	public void Teshu()
 	{
+		m_isTeshu = true;
 		if(m_FuncTemplate.m_iID == 17)
 		{
 			var temp = FunctionUnlock.templates.Where(item => !FunctionOpenTemp.m_EnableFuncIDList.Contains(item.id));
@@ -77,27 +86,18 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 		}
 		else if(m_FuncTemplate.m_iID == 139)
 		{
-//			if(!m_LabelTime.gameObject.activeSelf)
-//			{
-//				if()
-//				int time = 100000;
-//				for(int i = 0; i < MainCityUI.m_MainCityUI.m_FuLiHuoDongResp.xianshi.Count; i ++)
-//				{
-//					if(MainCityUI.m_MainCityUI.m_FuLiHuoDongResp.xianshi[i].isCanGet)
-//					{
-//						TimeLabelHelper.Instance.setTimeLabel(m_LabelTime, "领取", -1);
-//						return;
-//					}
-//					else
-//					{
-//						if(MainCityUI.m_MainCityUI.m_FuLiHuoDongResp.xianshi[i].remainTime < time)
-//						{
-//							time = MainCityUI.m_MainCityUI.m_FuLiHuoDongResp.xianshi[i].remainTime;
-//						}
-//					}
-//				}
-//				TimeLabelHelper.Instance.setTimeLabel(m_LabelTime, "领取", time);
-//			}
+			Global.ScendNull(ProtoIndexes.C_FULIINFO_REQ);
+		}
+		else if(m_FuncTemplate.m_iID == 141)
+		{
+			setSuperAlert(true);
+		}
+		else if(m_FuncTemplate.m_iID == 104)
+		{
+			if(JunZhuData.Instance().m_junzhuInfo.lianMengId == 0)
+			{
+				setSuperAlert(true);
+			}
 		}
 	}
 
@@ -117,6 +117,10 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
     /// </summary>
     public void ShowRedAlert()
     {
+		if(m_isSuperAlert)
+		{
+			return;
+		}
         //Cancel show sprite when null button.
         if (m_index < 0) return;
 
@@ -129,7 +133,7 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 			UI3DEffectTool.ClearUIFx(m_RedAlertObject);
 			m_RedAlertObject.transform.localPosition = Vector3.zero;
 			if( !UI3DEffectTool.HaveAnyFx( m_RedAlertObject ) ){
-				UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_RedAlertObject, EffectTemplate.getEffectTemplateByEffectId(100185).path);
+				UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, m_RedAlertObject, EffectTemplate.getEffectTemplateByEffectId(100185).path);
 			}
 		}
 		else
@@ -159,6 +163,7 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 		{
 			MainCityUI.SetRedAlert(m_index, m_FuncTemplate.m_show_red_alert);
 		}
+
 	}
 
 	public bool Move()
@@ -172,6 +177,11 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 		else
 		{
 			GoToPos();
+			if(!m_isTeshu)
+			{
+				Teshu();
+				m_isTeshu = true;
+			}
 			return true;
 		}
 	}
@@ -211,6 +221,36 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 		else
 		{
 			HideRedAlert();
+		}
+	}
+
+	public void setNum(int num)
+	{
+		if(num > 0)
+		{
+			m_LabelNum.text = num.ToString();
+			m_LabelNum.gameObject.SetActive(true);
+		}
+		else
+		{
+			m_LabelNum.gameObject.SetActive(false);
+		}
+	}
+
+	public void setSuperAlert(bool isShow)
+	{
+		if(isShow)
+		{
+			EffectTool.OpenMultiUIEffect_ById(m_ButtonSprite.gameObject, 223, 224, 225);
+			HideRedAlert();
+			m_isSuperAlert = true;
+		}
+		else
+		{
+			EffectTool.CloseMultiUIEffect_ById(m_ButtonSprite.gameObject, 223, 224, 225);
+			setRed(m_FuncTemplate.m_show_red_alert);
+			setNum(m_FuncTemplate.m_iNum);
+			m_isSuperAlert = false;
 		}
 	}
 }

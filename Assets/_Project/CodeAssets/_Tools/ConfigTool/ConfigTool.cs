@@ -276,6 +276,10 @@ public class ConfigTool : Singleton<ConfigTool>{
 			LoadValues( m_config_value_dict, CONST_SHOW_VERSION, LoadBoolValue( m_config_xml_dict, CONST_SHOW_VERSION ) );
 		}
 
+		{
+			LoadValues( m_config_value_dict, CONST_INVESTIGATION_USE, LoadBoolValue( m_config_xml_dict, CONST_INVESTIGATION_USE ) );
+		}
+
 		// debug
 		{
 			LoadValues( m_config_value_dict, CONST_SHOW_SCREEN_LOG, LoadBoolValue( m_config_xml_dict, CONST_SHOW_SCREEN_LOG ) );
@@ -716,6 +720,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 	#region Version Keys
 
 	public const string CONST_SHOW_VERSION			= "ShowVersion";
+
+	public const string CONST_INVESTIGATION_USE		= "InVestigateVersion";
 
 	#endregion
 
