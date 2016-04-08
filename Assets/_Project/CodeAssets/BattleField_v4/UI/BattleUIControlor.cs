@@ -159,6 +159,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public BattleMibaoShowControllor mibaoShowControllor;
 
+	public Camera uiCamera;
+
 
 	[HideInInspector] public bool b_joystick;
 	
@@ -224,7 +226,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	
 	private void Awake() { _instance = this; }
 	
-	void OnDestroy(){
+	void OnDestroy()
+	{
 		SocketTool.UnRegisterMessageProcessor( this );
 
 		_instance = null;
@@ -618,6 +621,19 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 			moveKing(offset.normalized);
 		}
+
+		if(Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			m_changeWeapon.changeWeaponToHeavy();
+		}
+		else if(Input.GetKeyDown(KeyCode.Alpha2))
+		{
+			m_changeWeapon.changeWeaponToLight();
+		}
+		else if(Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			m_changeWeapon.changeWeaponToRange();
+		}
 	}
 
 	public void resetKeyBoard()
@@ -633,6 +649,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public void changeAutoFight()
 	{
+//		Debug.Log ("changeAutoFight  ");
+
 		DramaControllor.Instance().closeYindao (9);
 
 		foreach(GameObject gc in layerAutoFight)
@@ -845,6 +863,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		if (BattleControlor.Instance().getKing ().nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) < 0) return;
 
 		BattleControlor.Instance().getKing ().dodge (lastOffset);
+
+		BattleControlor.Instance().getKing ().setAutoWeapon (false);
 	}
 
 	public void kingChangeWeapon()
@@ -1149,6 +1169,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if (cooldownHeavySkill_1.spriteCD.gameObject.activeSelf == true) return false;
 
+		if (BattleControlor.Instance ().getKing ().isIdle) return false; 
+
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
 			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
@@ -1182,6 +1204,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		if (b_skill_heavy_2 == false) return false;
 
 		if (cooldownHeavySkill_2.spriteCD.gameObject.activeSelf == true) return false;
+
+		if (BattleControlor.Instance ().getKing ().isIdle) return false; 
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
@@ -1219,6 +1243,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if (cooldownLightSkill_1.spriteCD.gameObject.activeSelf == true) return false;
 
+		if (BattleControlor.Instance ().getKing ().isIdle) return false; 
+
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
 			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
@@ -1252,6 +1278,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		if (b_skill_light_2 == false) return false;
 
 		if (cooldownLightSkill_2.spriteCD.gameObject.activeSelf == true) return false;
+
+		if (BattleControlor.Instance ().getKing ().isIdle) return false; 
 
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
@@ -1287,6 +1315,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if (cooldownRangeSkill_1.spriteCD.gameObject.activeSelf == true) return false;
 
+		if (BattleControlor.Instance ().getKing ().isIdle) return false; 
+
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
 			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
@@ -1321,6 +1351,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if (cooldownRangeSkill_2.spriteCD.gameObject.activeSelf == true) return false;
 
+		if (BattleControlor.Instance ().getKing ().isIdle) return false; 
+
 		if(BattleControlor.Instance().getKing().isPlayingSwing() == false)
 		{
 			//if (BattleControlor.Instance().getKing().isPlayingAttack() == true) return false;
@@ -1351,6 +1383,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		if (cooldownHeavySkill_1_enemy.spriteCD.gameObject.activeSelf == true) return false;
 
+		if (node.isIdle) return false; 
+
 		//if (node.isPlayingAttack() == true) return false;
 		
 		if (node.isPlayingSkill() == true) return false;
@@ -1375,6 +1409,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		if (template.b_skill_heavy_2 == false) return false;
 		
 		if (cooldownHeavySkill_2_enemy.spriteCD.gameObject.activeSelf == true) return false;
+
+		if (node.isIdle) return false; 
 
 		//if (node.isPlayingAttack() == true) return false;
 		
@@ -1401,6 +1437,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		
 		if (cooldownLightSkill_1_enemy.spriteCD.gameObject.activeSelf == true) return false;
 
+		if (node.isIdle) return false; 
+
 		//if (node.isPlayingAttack () == true) return false;
 		
 		if (node.isPlayingSkill () == true) return false;
@@ -1425,6 +1463,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		if (template.b_skill_light_2 == false) return false;
 		
 		if (cooldownLightSkill_2_enemy.spriteCD.gameObject.activeSelf == true) return false;
+
+		if (node.isIdle) return false; 
 
 		//if (node.isPlayingAttack () == true) return false;
 		
@@ -1451,6 +1491,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		
 		if (cooldownRangeSkill_1_enemy.spriteCD.gameObject.activeSelf == true) return false;
 
+		if (node.isIdle) return false; 
+
 		//if (node.isPlayingAttack () == true) return false;
 		
 		if (node.isPlayingSkill () == true) return false;
@@ -1476,6 +1518,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		
 		if (cooldownRangeSkill_2_enemy.spriteCD.gameObject.activeSelf == true) return false;
 
+		if (node.isIdle) return false; 
+
 		//if (node.isPlayingAttack () == true) return false;
 
 		if (node.isPlayingSkill () == true) return false;
@@ -1497,11 +1541,15 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	{
 		DramaControllor.Instance().closeYindao (17);
 
+		if (BattleControlor.Instance ().result != BattleControlor.BattleResult.RESULT_BATTLING) return false;
+
 		if (btnMibaoSkill.activeSelf == false) return false;
 		
 		if (b_skill_miBao == false) return false;
-		
+
 		if (cooldownMibaoSkill.spriteCD.gameObject.activeSelf == true) return false;
+
+		if (BattleControlor.Instance ().getKing ().isIdle) return false;
 
 		if (BattleControlor.Instance().getKing().kingSkillMibao == null || BattleControlor.Instance().getKing().kingSkillMibao.Count == 0) return false;
 
@@ -1528,6 +1576,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	public bool useMiBaoSkill_Enemy(KingControllor node)
 	{
 		if (cooldownMibaoSkill_enemy.spriteCD.gameObject.activeSelf == true) return false;
+
+		if (node.isIdle) return false;
 
 		if (node.kingSkillMibao == null || node.kingSkillMibao.Count == 0) return false;
 
@@ -1565,6 +1615,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	public void enterPause()
 	{
 		if (BattleControlor.Instance().result != BattleControlor.BattleResult.RESULT_BATTLING) return;
+
+		if (Time.timeScale != 1) return;
 
 		pauseControllor.refreshData ();
 
@@ -1628,17 +1680,25 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public void devolopmentEasy()
 	{
-//		BattleControlor.Instance().getKing ().addHp (BattleControlor.Instance().getKing ().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ));
-//
+		BattleControlor.Instance().getKing ().addHp (BattleControlor.Instance().getKing ().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ));
+
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			if(node.gameObject.activeSelf == true)
+			{
+				node.addHp(node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) * .05f - node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ));
+			}
+		}
+
+		BattleControlor.Instance().getKing ().addNuqi (5000);
+
 //		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
 //		{
 //			if(node.gameObject.activeSelf == true)
 //			{
-//				node.addHp(node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) * .05f - node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ));
+//				node.addNuqi(5000);
 //			}
 //		}
-
-		BattleControlor.Instance().getKing ().addNuqi (5000);
 	}
 
 	public void devolopmentLose()
@@ -1672,6 +1732,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public void showResult(BattleControlor.BattleResult result)
 	{
+		Time.timeScale = 1f;
+
 		short requestId = 0;
 
 		sendEndSecret ();
@@ -1836,7 +1898,22 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		
 		req.winId = result == BattleControlor.BattleResult.RESULT_LOSE ? 
 			CityGlobalData.m_tempEnemy : JunZhuData.Instance().m_junzhuInfo.id;
-		
+
+		req.remainHp = 0;
+
+		if(result == BattleControlor.BattleResult.RESULT_LOSE)
+		{
+			foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+			{
+				if(node.nodeData.nodeType == NodeType.PLAYER)
+				{
+					req.remainHp = (int)node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp);
+
+					break;
+				}
+			}
+		}
+
 		t_qx.Serialize(tempStream, req);
 		
 		byte[] t_protof;
@@ -1994,6 +2071,11 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		req.id = 300000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
 		
 		req.result = result == BattleControlor.BattleResult.RESULT_LOSE ? 0 : 1;
+
+		if(CityGlobalData.m_tempSection == 1)
+		{
+			req.result = 1;
+		}
 
 //		req.dropeenItems = new List<DroppenItemResult> ();
 //
@@ -2334,7 +2416,14 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			resultControllor.addAward(award, i, res.awardItems.Count);
 		}
 
-		resultControllor.SetExpMoney(res.exp, res.money);
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
+		{
+			resultControllor.SetExpMoney(res.tongbi, res.money);
+		}
+		else
+		{
+			resultControllor.SetExpMoney(res.exp, res.money);
+		}
 
 		if(res.lmAwardItems != null) resultControllor.lmAwards = res.lmAwardItems;
 
@@ -2367,31 +2456,59 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		{
 			descLanguageId = 1082;
 
+			BattleConfigTemplate configTemplate = BattleConfigTemplate.getBattleConfigTemplateByConfigId (CityGlobalData.m_configId);
+			
+			DescIdTemplate.GetDescriptionById (configTemplate.preDesc);
+
 			winDescNum.text = "";
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Boss)
 		{
 			descLanguageId = 1083;
 
-			winDescNum.text = BattleControlor.Instance().battleCheck.bossKilled + "/" + winDescTemplate.killNum;
+			int num = BattleControlor.Instance().battleCheck.bossKilled;
+
+			int numMax = winDescTemplate.killNum;
+
+			num = num > numMax ? numMax : num;
+
+			winDescNum.text = num + "/" + numMax;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Hero)
 		{
 			descLanguageId = 1092;
 
-			winDescNum.text = BattleControlor.Instance().battleCheck.heroKilled + "/" + winDescTemplate.killNum;
+			int num = BattleControlor.Instance().battleCheck.heroKilled;
+			
+			int numMax = winDescTemplate.killNum;
+			
+			num = num > numMax ? numMax : num;
+			
+			winDescNum.text = num + "/" + numMax;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Soldier)
 		{
 			descLanguageId = 1090;
 
-			winDescNum.text = BattleControlor.Instance().battleCheck.soldierKilled + "/" + winDescTemplate.killNum;
+			int num = BattleControlor.Instance().battleCheck.soldierKilled;
+			
+			int numMax = winDescTemplate.killNum;
+			
+			num = num > numMax ? numMax : num;
+			
+			winDescNum.text = num + "/" + numMax;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Gear)
 		{
 			descLanguageId = 1088;
 
-			winDescNum.text = BattleControlor.Instance().battleCheck.gearKilled + "/" + winDescTemplate.killNum;
+			int num = BattleControlor.Instance().battleCheck.gearKilled;
+			
+			int numMax = winDescTemplate.killNum;
+			
+			num = num > numMax ? numMax : num;
+			
+			winDescNum.text = num + "/" + numMax;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Destination)
 		{

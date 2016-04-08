@@ -13,6 +13,13 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
+/** Desc:
+ * Video wil only be played in UnitEditor, iOS, Android.
+ * PC will not be supported, because it will take space in iOS or Android.
+ * 
+ */
 public class VideoHelper : MonoBehaviour {
 
 	public enum VideoControlMode{
@@ -228,9 +235,11 @@ public class VideoHelper : MonoBehaviour {
 		}
 		#elif UNITY_IOS || UNITY_ANDROID
 		{
+			#if DEBUG_VIDEO
 			Debug.Log( "Play Handheld: " + m_video_path );
 
 			Debug.Log( "Mode: " + GetPlayMode() );
+			#endif
 
 			Handheld.PlayFullScreenMovie( m_video_path, Color.black, GetPlayMode() );
 

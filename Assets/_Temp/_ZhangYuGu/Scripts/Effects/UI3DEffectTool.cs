@@ -840,7 +840,9 @@ public class UI3DEffectTool : MonoBehaviour {
 		#endif
 
 		if( !HaveInstance() ){
+			#if DEBUG_UI_EFFECT
 			Debug.Log( "UI3DEffectTool.Not.Exist." );
+			#endif
 
 			return;
 		}

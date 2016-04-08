@@ -12,6 +12,25 @@ public class TipUIControllor : MonoBehaviour
 
 	public TipEnemyControllor enemyContorllor;
 
+	// fix bug in some device
+	public UIEventListener m_close_listener = null;
+
+
+	void Awake(){
+		m_close_listener.onPress = OnNGUIPressed;
+	}
+
+	public void OnNGUIPressed( GameObject go, bool state ){
+		Debug.Log( "TipUI.SpriteBg.OnNGUIPressed( " + go + ", " + state + " )" );
+
+		if( !state ){
+//			ShowTip.close();	
+
+			gameObject.SetActive( false );
+
+			Destroy( gameObject );
+		}
+	}
 
 	public void refreshDataItem(int commonItemId)
 	{

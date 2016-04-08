@@ -56,8 +56,7 @@ public class AllBuildsTmp : MonoBehaviour {
 	}
 	public void Init()
 	{
-		Build = NewAlliancemanager.Instance().m_allianceHaveRes.build;
-
+		Debug.Log ("NewAlliancemanager.Instance().m_allianceHaveRes.build:" + NewAlliancemanager.Instance().m_allianceHaveRes.build);
 		AllianceLevel = NewAlliancemanager.Instance().m_allianceHaveRes.level;
 
 		Identity = NewAlliancemanager.Instance().m_allianceHaveRes.identity;
@@ -89,7 +88,7 @@ public class AllBuildsTmp : MonoBehaviour {
 				{
 					UpBtn.SetActive(true);
 					GreenUpBtn.SetActive(false);
-					LianMengKeZhanTemplate m_LianMengKeZhanTemplate = LianMengKeZhanTemplate.GetLianMengKeZhanTemplate_by_lev(lv+1);
+					LianMengKeZhanTemplate m_LianMengKeZhanTemplate = LianMengKeZhanTemplate.GetLianMengKeZhanTemplate_by_lev(lv);
 					
 					costbuild = m_LianMengKeZhanTemplate.keZhan_lvUp_value;
 				}
@@ -128,7 +127,7 @@ public class AllBuildsTmp : MonoBehaviour {
 				{
 					UpBtn.SetActive(true);
 					GreenUpBtn.SetActive(false);
-					LianMengShuYuanTemplate m_LianMengShuYuanTemplate = LianMengShuYuanTemplate.GetLianMengShuYuanTemplate_by_shuYuanLevel(lv+1);
+					LianMengShuYuanTemplate m_LianMengShuYuanTemplate = LianMengShuYuanTemplate.GetLianMengShuYuanTemplate_by_shuYuanLevel(lv);
 					costbuild = m_LianMengShuYuanTemplate.shuYuan_lvUp_value;
 				}
 				else
@@ -166,7 +165,7 @@ public class AllBuildsTmp : MonoBehaviour {
 				{
 					UpBtn.SetActive(true);
 					GreenUpBtn.SetActive(false);
-					LianMengTuTengTemplate m_LianMengTuTengTemplate = LianMengTuTengTemplate.getTuTengAwardByLevel(lv+1);
+					LianMengTuTengTemplate m_LianMengTuTengTemplate = LianMengTuTengTemplate.getTuTengAwardByLevel(lv);
 					costbuild = m_LianMengTuTengTemplate.tuTeng_lvUp_value;
 				}
 				else
@@ -202,8 +201,9 @@ public class AllBuildsTmp : MonoBehaviour {
 				{
 					UpBtn.SetActive(true);
 					GreenUpBtn.SetActive(false);
-					LianMengShangPuTemplate m_LLianMengShangPuTemplate = LianMengShangPuTemplate.GetLianMengShangPuTemplate_by_lv(lv+1);
+					LianMengShangPuTemplate m_LLianMengShangPuTemplate = LianMengShangPuTemplate.GetLianMengShangPuTemplate_by_lv(lv);
 					costbuild = m_LLianMengShangPuTemplate.shangPu_lvUp_value;
+					Debug.Log ("costbuild000:" + costbuild);
 				}
 				else
 				{
@@ -237,7 +237,7 @@ public class AllBuildsTmp : MonoBehaviour {
 				{
 					UpBtn.SetActive(true);
 					GreenUpBtn.SetActive(false);
-					LianMengZongMiaoTemplate m_LianMengZongMiaoTemplate = LianMengZongMiaoTemplate.GetLianMengZongMiaoTemplate_by_lev(lv+1);
+					LianMengZongMiaoTemplate m_LianMengZongMiaoTemplate = LianMengZongMiaoTemplate.GetLianMengZongMiaoTemplate_by_lev(lv);
 					costbuild = m_LianMengZongMiaoTemplate.zongMiao_lvUp_value;
 				}
 				else
@@ -307,10 +307,22 @@ public class AllBuildsTmp : MonoBehaviour {
 	}
 	public void Enter()
 	{
+//		if(Input.touchCount > 1)
+//		{
+//			return;
+//		}
 		NewAlliancemanager.Instance().ENterOtherUI (id);
 	}
 	public void UpGreed()
 	{
+//		if(Input.touchCount > 1)
+//		{
+//			return;
+//		}
+		if(GameObject.Find("Box(Clone)"))
+		{
+			return;
+		}
 		if( AllianceLevel <= lv)
 		{
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),DOnt_UpComform);
@@ -327,7 +339,7 @@ public class AllBuildsTmp : MonoBehaviour {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"建筑等级不可超过联盟等级";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "\r\n"+"建筑等级不可超过联盟等级。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
@@ -351,7 +363,11 @@ public class AllBuildsTmp : MonoBehaviour {
 	}
 	void UpCom(int i)
 	{
-		if (i == 2) {
+		if (i == 2)
+		{
+//			Debug.Log ("costbuild:" + costbuild);
+//			Debug.Log ("NewAlliancemanager.Instance().m_allianceHaveRes.build:" + NewAlliancemanager.Instance().m_allianceHaveRes.build);
+			Build = NewAlliancemanager.Instance().m_allianceHaveRes.build;
 			if (Build < costbuild) 
 			{
 				Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LackOfBuildLoadBack);
@@ -375,6 +391,7 @@ public class AllBuildsTmp : MonoBehaviour {
 				byte[] t_protof;
 				t_protof = MiBaoStream.ToArray();
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_UP,ref t_protof);
+				Debug.Log ("ProtoIndexes.C_JIAN_ZHU_UP:" + ProtoIndexes.C_JIAN_ZHU_UP);
 			}
 		}
 	}
@@ -384,7 +401,7 @@ public class AllBuildsTmp : MonoBehaviour {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"建设值不足，无法升级该建筑" ;//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "\r\n"+"建设值不足，无法升级该建筑。" ;//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		

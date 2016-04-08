@@ -56,7 +56,12 @@ public class BattleDramaFlag : MonoBehaviour
 
 		if (node == null) return;
 
-		bool f = IsColliderWith (node);
+		bool f = IsColliderWith (node.gameObject);
+
+		if(f == false && nodeId == 1 && BattleControlor.Instance().getKing().copyObject.activeSelf == true)
+		{
+			f = IsColliderWith (BattleControlor.Instance().getKing().copyObject);
+		}
 
 		if(f == true)
 		{
@@ -64,7 +69,7 @@ public class BattleDramaFlag : MonoBehaviour
 		}
 	}
 
-	private bool IsColliderWith(BaseAI t_node)
+	private bool IsColliderWith(GameObject t_node)
 	{
 		Vector3 pos2 = t_node.transform.position;
 		

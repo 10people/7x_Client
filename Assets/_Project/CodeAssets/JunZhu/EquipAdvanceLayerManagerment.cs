@@ -62,7 +62,7 @@ public class EquipAdvanceLayerManagerment : MonoBehaviour {
         {
             m_LabParent1.SetActive(false);
             m_LabParent2.SetActive(true);
-            m_LabFang.text = MyColorData.getColorString(9, info._fang.ToString() + " → " + (info._gong + info._fanggadd).ToString() + " (") + MyColorData.getColorString(4, info._fanggadd+ "↑") + MyColorData.getColorString(9, ")");
+            m_LabFang.text = MyColorData.getColorString(9, info._fang.ToString() + " → " + (info._fang + info._fanggadd).ToString() + " (") + MyColorData.getColorString(4, info._fanggadd+ "↑") + MyColorData.getColorString(9, ")");
             m_LabMing.text = MyColorData.getColorString(9, info._ming.ToString() + " → " + (info._ming + info._minggadd).ToString() + " (") + MyColorData.getColorString(4, info._minggadd + "↑") + MyColorData.getColorString(9, ")");
         }
         for (int i = 0; i < _listReward.Count; i++)
@@ -115,6 +115,7 @@ public class EquipAdvanceLayerManagerment : MonoBehaviour {
     }
     void OnDestroy()
     {
+        JunZhuZhuangBeiInfo.m_isJinJie = false;
         m_EquipAdvance = null;
         if (m_Camera != null)
             EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);

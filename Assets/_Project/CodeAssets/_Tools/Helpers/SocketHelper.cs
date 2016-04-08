@@ -1,4 +1,8 @@
-﻿//#define DEBUG_SOCKET_HELPER
+﻿//#define DEBUG_SOCKET_WINDOW
+
+//#define DEBUG_SOCKET_HELPER
+
+
 
 using System;
 using UnityEngine;
@@ -8,6 +12,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 using qxmobile.protobuf;
+
+
 
 public class SocketHelper {
 
@@ -96,7 +102,7 @@ public class SocketHelper {
 	public static void ClearNetWorkCheckQueue(){
 		m_socket_check_send_queue.Clear();
 
-		m_last_socket_check_time = Time.realtimeSinceStartup;
+		m_last_socket_check_time = 0.0f;
 	}
 	
 	public static void UpdateNetworkStatusCheck(){
@@ -156,7 +162,7 @@ public class SocketHelper {
 			return;
 		}
 		
-		if ( TimeHelper.GetCurrentTime_Second() - GetDataReceived_Sec () < ConfigTool.GetFloat ( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT ) ) {
+		if ( TimeHelper.GetCurrentTime_Second() - GetDataReceived_Sec () < ConfigTool.GetFloat ( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT, 10.0f ) ) {
 			ClearNetWorkCheckQueue();
 			
 			return;
@@ -164,7 +170,7 @@ public class SocketHelper {
 		
 		float t_sent_time = m_socket_check_send_queue.Peek();
 		
-		if( Time.realtimeSinceStartup - t_sent_time > ConfigTool.GetFloat( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT ) ){
+		if( Time.realtimeSinceStartup - t_sent_time > ConfigTool.GetFloat( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT, 10.0f ) ){
 			Debug.Log( "Socket Status Check Fail: " + ( Time.realtimeSinceStartup - t_sent_time ) );
 			
 			ClearNetWorkCheckQueue();
@@ -224,27 +230,72 @@ public class SocketHelper {
 
 	#region Boxes
 
+	private static void ResetErrorBoxFlag(){
+		#if DEBUG_SOCKET_WINDOW
+		Debug.Log( "ResetErrorBoxFlag()" );
+		#endif
+
+		m_to_create_lost_or_fail_window = false;
+
+		m_to_create_time_out_window = false;
+	}
+
 	public static void UpdateErrorBoxes(){
+		if( !m_to_create_lost_or_fail_window && !m_to_create_time_out_window ){
+			return;
+		}
+
+		if( LanguageTemplate.HaveData() ){
+			if( UIBox.BoxExistWithTime( LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_1 ) ) ||
+				UIBox.BoxExistWithTime( LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_3 ) ) ||
+				UIBox.BoxExistWithTime( LanguageTemplate.GetText( LanguageTemplate.Text.DISTANCE_LOGIN_1 ) ) ){
+				#if DEBUG_SOCKET_WINDOW
+				Debug.Log( "Box Already Exist, skip." );
+				#endif
+
+				{
+					ResetErrorBoxFlag();
+				}
+
+				return;
+			}
+		}
+
 		if( m_to_create_lost_or_fail_window ){
-			m_to_create_lost_or_fail_window = false;
+			#if DEBUG_SOCKET_WINDOW
+			Debug.Log( "Show Create Lost or Fail Window()" );
+			#endif
+
+			{
+				ResetErrorBoxFlag();
+			}
 
 			UtilityTool.StartCorutineBox( LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_1 ),
 				LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_2 ),
 				"",
 				null,
 				LanguageTemplate.GetText( LanguageTemplate.Text.LOST_CONNECTION_3 ),
+
 				null,
 				ReLoginClickCallback,
 				null,
 				null,
 				null,
+
 				false,
 				false,
+				true,
 				true );
 		}
 
 		if( m_to_create_time_out_window ){
-			m_to_create_time_out_window = false;
+			#if DEBUG_SOCKET_WINDOW
+			Debug.Log( "Show Create Time Out Window()" );
+			#endif
+
+			{
+				ResetErrorBoxFlag();
+			}
 
 			UtilityTool.StartCorutineBox( LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_3 ),
 				LanguageTemplate.GetText( LanguageTemplate.Text.TIME_OUT_1 ),
@@ -260,7 +311,8 @@ public class SocketHelper {
 
 				false,
 				false,
-				true);
+				true, 
+				true );
 		}
 	}
 
@@ -271,7 +323,9 @@ public class SocketHelper {
 	private static UIBox.OnBoxCreated m_time_out_create = null;
 
 	public static void CreateTimeOutReConnectWindow( UIBox.onclick p_on_click, UIBox.OnBoxCreated p_on_create = null ){
-		//		Debug.Log ( "CreateTimeOutReConnectWindow()" );
+		#if DEBUG_SOCKET_WINDOW
+		Debug.Log ( "CreateTimeOutReConnectWindow()" );
+		#endif
 
 		m_to_create_time_out_window = true;
 
@@ -283,18 +337,22 @@ public class SocketHelper {
 	private static bool m_to_create_lost_or_fail_window = false;
 
 	public static void CreateConnectionLostOrFailWindow(){
-	//		Debug.Log ( "CreateConnectionLostOrFailWindow()" );
+		#if DEBUG_SOCKET_WINDOW
+		Debug.Log ( "CreateConnectionLostOrFailWindow()" );
+		#endif
 
 		m_to_create_lost_or_fail_window = true;
 	}
 
 	public static void ReLoginClickCallback( int p_i ){
-		//		Debug.Log("ReLoginClickCallback( " + p_i + " )");
+		#if DEBUG_SOCKET_HELPER
+		Debug.Log("ReLoginClickCallback( " + p_i + " )");
+		#endif
 
 		{
-			//			if( SocketTool.WillReconnect() )
+//			if( SocketTool.WillReconnect() )
 			{
-				//				SceneManager.CleanGuideAndDialog();
+//				SceneManager.CleanGuideAndDialog();
 
 				SceneManager.RequestEnterLogin();
 			}
@@ -303,18 +361,28 @@ public class SocketHelper {
 
 	/// called only in OnProcessProto
 	public static void CreateGeneralErrorWindow( int p_error_code, string p_error_desc, int p_client_cmd ){
+		#if DEBUG_SOCKET_WINDOW
+		Debug.Log ( "CreateGeneralErrorWindow()" );
+		#endif
+
 		Global.CreateBox("System Error",
 			"code: " + p_error_code + "\n" +
 			"desc: " + p_error_desc + "\n" +
 			"client cmd: " + p_client_cmd,
-			null, null, 
+			null,
+			null, 
 			"OK",
-			null, null, null,
+
+			null,
+			null, 
 			null,
 			null,
+			null,
+
 			false,
 			false,
-			true);
+			true,
+			true );
 	}
 
 	#endregion

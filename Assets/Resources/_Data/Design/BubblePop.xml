@@ -18,6 +18,7 @@
 <BubblePop levelId="100203" nodeId="2" triggerFunc="3" tp1="1" tp2="12" tp3="0" textList="15|16" triggerNum="3" soundID="0" cdTime="1.5" />
 <BubblePop levelId="100203" nodeId="110" triggerFunc="4" tp1="1" tp2="6" tp3="0" textList="17|18" triggerNum="3" soundID="0" cdTime="1.5" />
 <BubblePop levelId="100203" nodeId="110" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="19" triggerNum="3" soundID="0" cdTime="1.5" />
+<BubblePop levelId="100203" nodeId="2" triggerFunc="4" tp1="210" tp2="7" tp3="0" textList="2060" triggerNum="200000" soundID="0" cdTime="4" />
 <BubblePop levelId="100205" nodeId="2" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="13|14" triggerNum="200000" soundID="0" cdTime="4" />
 <BubblePop levelId="100207" nodeId="310" triggerFunc="1" tp1="240211" tp2="0" tp3="0" textList="40" triggerNum="2" soundID="0" cdTime="1.5" />
 <BubblePop levelId="100306" nodeId="2" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="1010" triggerNum="200000" soundID="0" cdTime="4" />

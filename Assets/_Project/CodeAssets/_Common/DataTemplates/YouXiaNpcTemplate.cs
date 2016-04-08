@@ -45,7 +45,8 @@ public class YouXiaNpcTemplate : XmlLoadManager {
 	public int lifebarNum;
 
 	public int modelApID;
-	public static List<YouXiaNpcTemplate> templates = new List<YouXiaNpcTemplate>();
+
+	private static List<YouXiaNpcTemplate> templates = new List<YouXiaNpcTemplate>();
 	
 	public void Log(){
 
@@ -55,27 +56,34 @@ public class YouXiaNpcTemplate : XmlLoadManager {
 		UnLoadManager.DownLoad( 
 		                       PathManager.GetUrl( XmlLoadManager.m_LoadPath + "YouxiaNpcTemp.xml" ), CurLoad, UtilityTool.GetEventDelegateList( p_callback ), false );
 	}
-	
+
+	private static TextAsset m_templates_text = null;
+
 	public static void CurLoad( ref WWW www, string path, Object obj ){
-		{
-			templates.Clear();
+		if ( obj == null ) {
+			Debug.LogError ("Asset Not Exist: " + path);
+
+			return;
 		}
-		
-		XmlReader t_reader = null;
-		
-		if( obj != null ){
-			TextAsset t_text_asset = obj as TextAsset;
-			
-			t_reader = XmlReader.Create( new StringReader( t_text_asset.text ) );
-			
-			//			Debug.Log( "Text: " + t_text_asset.text );
+
+		m_templates_text = obj as TextAsset;
+	}
+
+	private static void ProcessAsset(){
+		if( templates.Count > 0 ) {
+			return;
 		}
-		else{
-			t_reader = XmlReader.Create( new StringReader( www.text ) );
+
+		if( m_templates_text == null ) {
+			Debug.LogError( "Error, Asset Not Exist." );
+
+			return;
 		}
-		
+
+		XmlReader t_reader = XmlReader.Create( new StringReader( m_templates_text.text ) );
+
 		bool t_has_items = true;
-		
+
 		do{
 			t_has_items = t_reader.ReadToFollowing( "YouxiaNpcTemp" );
 			
@@ -146,10 +154,17 @@ public class YouXiaNpcTemplate : XmlLoadManager {
 			templates.Add( t_template );
 		}
 		while( t_has_items );
+
+		{
+			m_templates_text = null;
+		}
 	}
 
-	public static List<int> GetEnemyId_By_npcid(int npc_id)
-	{
+	public static List<int> GetEnemyId_By_npcid(int npc_id){
+		{
+			ProcessAsset();
+		}
+
 		List <int> Enemy_IdList = new List<int> ();
 
 		Enemy_IdList.Clear ();
@@ -168,8 +183,12 @@ public class YouXiaNpcTemplate : XmlLoadManager {
 		}
 		return Enemy_IdList;
 	}
-	public static List<YouXiaNpcTemplate> GetYouXiaNpcTemplates_By_npcid(int npc_id)
-	{
+
+	public static List<YouXiaNpcTemplate> GetYouXiaNpcTemplates_By_npcid(int npc_id){
+		{
+			ProcessAsset();
+		}
+
 		List<YouXiaNpcTemplate> temps = new List<YouXiaNpcTemplate> ();
 		
 		for( int i = 0; i < templates.Count; i++ )
@@ -184,8 +203,12 @@ public class YouXiaNpcTemplate : XmlLoadManager {
 		
 		return temps;
 	}
-	public static YouXiaNpcTemplate GetYouXiaNpcTemplate_By_id(int id )
-	{
+
+	public static YouXiaNpcTemplate GetYouXiaNpcTemplate_By_id(int id ){
+		{
+			ProcessAsset();
+		}
+
 		for( int i = 0; i < templates.Count; i++ ){
 			
 			YouXiaNpcTemplate t_item = templates[ i ];

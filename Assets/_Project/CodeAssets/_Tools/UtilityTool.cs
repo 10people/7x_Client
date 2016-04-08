@@ -1,3 +1,5 @@
+//#define DEBUG_GC
+
 //#define DEBUG_BOX
 
 
@@ -174,7 +176,15 @@ public class UtilityTool : Singleton<UtilityTool>{
         m_cached_box_obj = p_object;
     }
 
-	public GameObject CreateBox( string p_title, string p_des_1, string p_des_2, List<BagItem> p_bag_item, string p_btn_name_1, string p_btn_name_2, UIBox.onclick p_click_delegate, UIBox.OnBoxCreated p_on_create = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false ){
+	public GameObject CreateBox( 
+			string p_title, 
+			string p_des_1, string p_des_2,
+			List<BagItem> p_bag_item, 
+			string p_btn_name_1, string p_btn_name_2, 
+			UIBox.onclick p_click_delegate, UIBox.OnBoxCreated p_on_create = null,
+			UIFont uifontButton1 = null, UIFont uifontButton2 = null, 
+			bool isShowBagItemNumBelow = false, 
+			bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false ){
 		bool t_debug_box = false;
 
 		if ( ConfigTool.GetBool (ConfigTool.CONST_LOG_DIALOG_BOX) ) {
@@ -331,9 +341,10 @@ public class UtilityTool : Singleton<UtilityTool>{
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>
-    public static int GetBytesNumOfString(string str){
+    [Obsolete("Finally, i abandon this cause getting real width in chinese/ english mixed string in uilabel is really complex, donot use this any more.")]
+    public static float GetBytesNumOfString(string str){
         byte[] bytes = System.Text.Encoding.Unicode.GetBytes(str);
-        int n = 0;
+        float n = 0;
         for (int i = 0; i < bytes.GetLength(0); i++)
         {
             if (i % 2 == 0)
@@ -409,9 +420,40 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     #region GC
 
+	private static float m_last_gc_time = 0.0f;
+
+	public static void CheckGCTimer(){
+//		#if DEBUG_GC
+//		Debug.Log( "CheckGCTimer( " + Time.realtimeSinceStartup + " - " + m_last_gc_time + " )" );
+//		#endif
+
+		float t_duration = ConfigTool.GetFloat( ConfigTool.CONST_MAINCITY_UI_GC, 180.0f );
+
+		if( Time.realtimeSinceStartup - m_last_gc_time > t_duration ){
+			#if DEBUG_GC
+			Debug.Log( "GC Time Up: " + Time.realtimeSinceStartup + " - " + m_last_gc_time );
+			#endif
+
+			UnloadUnusedAssets();
+		}
+//		else{
+//			#if DEBUG_GC
+//			Debug.Log( "Waiting For GC Count Down: " +
+//				( Time.realtimeSinceStartup - m_last_gc_time ) + " / " + t_duration + "   " + 
+//				Time.realtimeSinceStartup + " - " + m_last_gc_time );
+//			#endif
+//		}
+	}
+
 	public static void UnloadUnusedAssets( bool p_clean_anim = false ){
-//		Debug.Log( "UtilityTool.UnloadUnusedAssets()" );
-		
+		#if DEBUG_GC
+		Debug.Log( "UtilityTool.UnloadUnusedAssets()" );
+		#endif
+
+		{
+			m_last_gc_time = Time.realtimeSinceStartup;
+		}
+
 		Resources.UnloadUnusedAssets();
 
 		ComponentHelper.UnloadUseless( p_clean_anim );
@@ -420,7 +462,9 @@ public class UtilityTool : Singleton<UtilityTool>{
 	}
 
     public void DelayedUnloadUnusedAssets(){
-//		Debug.Log( "UtilityTool.DelayedUnloadUnusedAssets()" );
+		#if DEBUG_GC
+		Debug.Log( "UtilityTool.DelayedUnloadUnusedAssets()" );
+		#endif
 
         StartCoroutine( Exec_DelayedUnloadUnusedAssets( 0.5f ) );
     }
@@ -586,6 +630,10 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 	#region Coroutine Box
 
+	/** Desc:
+	 * Coroutine box will not be destroyed when loading.
+	 * 
+	 */
 	public static void StartCorutineBox(
 					string tile, 
 					string dis1, 
@@ -601,7 +649,8 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 					bool isShowBagItemNumBelow = false, 
 					bool isSetDepth = true, 
-					bool isBagItemTop = true ){
+					bool isBagItemTop = true,
+					bool isFunction = false ){
 		UtilityTool.Instance.StartCoroutine(
 			UtilityTool.Instance.CoroutineBox( tile,
 				dis1,
@@ -617,7 +666,8 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 				isShowBagItemNumBelow, 
 				isSetDepth, 
-				isBagItemTop ) );
+				isBagItemTop,
+				isFunction ) );
 	}
 
 	private IEnumerator CoroutineBox(
@@ -635,10 +685,11 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 					bool isShowBagItemNumBelow = false, 
 					bool isSetDepth = true, 
-					bool isBagItemTop = true ){
+					bool isBagItemTop = true,
+					bool isFunction = false ){
 		yield return new WaitForEndOfFrame();
 
-		Global.CreateBox( 
+		GameObject t_gb = Global.CreateBox( 
 			tile,
 			dis1,
 			dis2,
@@ -653,7 +704,10 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 			isShowBagItemNumBelow, 
 			isSetDepth, 
-			isBagItemTop );
+			isBagItemTop,
+			isFunction );
+		
+		GameObjectHelper.DontDestroyGameObject( t_gb );
 	}
 
 	#endregion
@@ -709,6 +763,25 @@ public class UtilityTool : Singleton<UtilityTool>{
         returnStr += ori;
 
         return returnStr;
+    }
+
+    private const float SCREEN_OFFSET = 0.2f;
+
+    public static bool IsInScreen(Vector3 p_pos,Camera p_camera)
+    {
+        Vector3 t_vec = p_camera.WorldToViewportPoint(p_pos);
+
+        if (t_vec.x < -SCREEN_OFFSET || t_vec.x > 1 + SCREEN_OFFSET)
+        {
+            return false;
+        }
+
+        if (t_vec.y < -SCREEN_OFFSET || t_vec.y > 1 + SCREEN_OFFSET)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     #endregion

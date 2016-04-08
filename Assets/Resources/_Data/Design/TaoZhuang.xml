@@ -3,7 +3,7 @@
 <TaoZhuang id="1" type="1" condition="2" shuxing1="1" num1="30" shuxing2="2" num2="30" shuxing3="3" num3="600" targetShow="2201" conditionMax="9" neededNum="5" color="4" />
 <TaoZhuang id="2" type="1" condition="2" shuxing1="1" num1="40" shuxing2="2" num2="40" shuxing3="3" num3="800" targetShow="2202" conditionMax="9" neededNum="7" color="4" />
 <TaoZhuang id="3" type="1" condition="3" shuxing1="1" num1="50" shuxing2="2" num2="50" shuxing3="3" num3="1000" targetShow="2203" conditionMax="9" neededNum="8" color="5" />
-<TaoZhuang id="4" type="1" condition="2" shuxing1="1" num1="60" shuxing2="2" num2="60" shuxing3="3" num3="1200" targetShow="2204" conditionMax="9" neededNum="9" color="5" />
+<TaoZhuang id="4" type="1" condition="3" shuxing1="1" num1="60" shuxing2="2" num2="60" shuxing3="3" num3="1200" targetShow="2204" conditionMax="9" neededNum="9" color="5" />
 <TaoZhuang id="5" type="1" condition="4" shuxing1="1" num1="70" shuxing2="2" num2="70" shuxing3="3" num3="1400" targetShow="2205" conditionMax="9" neededNum="9" color="7" />
 <TaoZhuang id="6" type="1" condition="5" shuxing1="1" num1="80" shuxing2="2" num2="80" shuxing3="3" num3="1600" targetShow="2206" conditionMax="9" neededNum="9" color="8" />
 <TaoZhuang id="7" type="1" condition="6" shuxing1="1" num1="90" shuxing2="2" num2="90" shuxing3="3" num3="1800" targetShow="2207" conditionMax="9" neededNum="9" color="9" />

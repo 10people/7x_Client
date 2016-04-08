@@ -150,7 +150,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                             }
                         }
 
- 
+//				Debug.Log ("_listOnlineInfo.Count:" + _listOnlineInfo.Count);
                         if (_listOnlineInfo.Count > 0)
                         {
                             int size = m_CenterParent.transform.childCount;
@@ -184,6 +184,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                         }
                         else
                         {
+//					Debug.Log ("TryRemoveFromObjectList:");
                             MainCityUI.TryRemoveFromObjectList(m_MainParent);
                             Destroy(m_MainParent);
 							ClientMain.closePopUp();
@@ -243,6 +244,11 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
         if (_listOnlineInfo.Count > 0)
         {
             ShowData(_listOnlineInfo[0]);
+			m_HiddenObject.SetActive(true);
+			
+			{
+				UI2DTool.Instance.AddTopUI( GameObjectHelper.GetRootGameObject( gameObject  ) );
+			}
         }
     }
 
@@ -315,11 +321,6 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                 break;
             }
         }
-        m_HiddenObject.SetActive(true);
-
-		{
-			UI2DTool.Instance.AddTopUI( GameObjectHelper.GetRootGameObject( gameObject  ) );
-		}
 
         RewardData();
 

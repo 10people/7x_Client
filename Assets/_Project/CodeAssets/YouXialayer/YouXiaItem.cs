@@ -118,18 +118,18 @@ public class YouXiaItem : MonoBehaviour {
 	private void OnIconSampleCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
 		List<int> t_items = new List<int>();
-
+		List<string> t_Numbers = new List<string>();
 		t_items.Clear ();
-
+		t_Numbers.Clear ();
 		YouxiaPveTemplate myouxia = YouxiaPveTemplate.getYouXiaPveTemplateById (L_id);
 
-		string Award = myouxia.awardId;
+		string Award = myouxia.awardShow;
 
 	//	Debug.Log ("myouxia.awardId = "+myouxia.awardId);
 
-		char[] t_items_delimiter = { ',' };
+		char[] t_items_delimiter = { '#' };
 		
-		char[] t_item_id_delimiter = { '=' };
+		char[] t_item_id_delimiter = { ':' };
 		
 		string[] t_item_strings = Award.Split(t_items_delimiter);
 		
@@ -139,9 +139,10 @@ public class YouXiaItem : MonoBehaviour {
 			
 			string[] t_finals = t_item.Split(t_item_id_delimiter);
 			
-			if(t_finals[0] != "" && !t_items.Contains(int.Parse(t_finals[0])))
+			if(t_finals[1] != "" && !t_items.Contains(int.Parse(t_finals[1])))
 			{
-				t_items.Add(int.Parse(t_finals[0]));
+				t_items.Add(int.Parse(t_finals[1]));
+				t_Numbers.Add(t_finals[2]);
 			}
 			
 		}
@@ -149,51 +150,51 @@ public class YouXiaItem : MonoBehaviour {
 		int count = 0;
 		for(int i = 0; i < t_items.Count ; i ++)
 		{
-			List<AwardTemp> mAwardTemp = AwardTemp.getAwardTempList_By_AwardId(t_items[i]);
-
-			//Debug.Log ("mAwardTemp.Count = "+mAwardTemp.Count);
-			for(int j = 0; j < mAwardTemp.Count ; j ++)
+//			List<AwardTemp> mAwardTemp = AwardTemp.getAwardTempList_By_AwardId(t_items[i]);
+//
+//			//Debug.Log ("mAwardTemp.Count = "+mAwardTemp.Count);
+//			for(int j = 0; j < mAwardTemp.Count ; j ++)
+//			{
+			count += 1;
+			if(count > 3)
 			{
-				count += 1;
-				if(count > 3)
-				{
-					break;
-				}
-				if (IconSamplePrefab == null)
-				{
-					IconSamplePrefab = p_object as GameObject;
-				}
-				//Debug.Log("mAwardTemp[j] = "+mAwardTemp[j]);
-				GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
-				
-				iconSampleObject.SetActive(true);
-				
-				iconSampleObject.transform.parent = AwardROot.transform;
-				
-				//iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
-				
-				var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-				
-				var iconSpriteName = "";
-				
-				CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(mAwardTemp[j].itemId);
-				
-				iconSpriteName = mItemTemp.icon.ToString();
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.item);
-				
-				NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mItemTemp.nameId);
-				
-				string mdesc = DescIdTemplate.GetDescriptionById(mItemTemp.descId);
-				
-				var popTitle = mNameIdTemplate.Name;
-				
-				var popDesc = mdesc;
-				
-				iconSampleManager.SetIconByID(mItemTemp.id, "", 7);
-				iconSampleManager.SetIconPopText(mItemTemp.id, popTitle, popDesc, 1);
-				iconSampleObject.transform.localScale = Vector3.one * 0.4f;
+				break;
 			}
+			if (IconSamplePrefab == null)
+			{
+				IconSamplePrefab = p_object as GameObject;
+			}
+			//Debug.Log("mAwardTemp[j] = "+mAwardTemp[j]);
+			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
+			
+			iconSampleObject.SetActive(true);
+			
+			iconSampleObject.transform.parent = AwardROot.transform;
+			
+			//iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
+			
+			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+			
+			var iconSpriteName = "";
+			
+			CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(t_items[i]);
+			
+			iconSpriteName = mItemTemp.icon.ToString();
+			
+			iconSampleManager.SetIconType(IconSampleManager.IconType.item);
+			
+			NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mItemTemp.nameId);
+			
+			string mdesc = DescIdTemplate.GetDescriptionById(mItemTemp.descId);
+			
+			var popTitle = mNameIdTemplate.Name;
+			
+			var popDesc = mdesc;
+			
+			iconSampleManager.SetIconByID(mItemTemp.id, t_Numbers[i], 7);
+			iconSampleManager.SetIconPopText(mItemTemp.id, popTitle, popDesc, 1);
+			iconSampleObject.transform.localScale = Vector3.one * 0.4f;
+//			}
 
 			//iconSampleManager.SetAwardNumber(m_OneKeyAward[i].pieceNumber);
 

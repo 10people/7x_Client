@@ -439,6 +439,35 @@ public class DeviceHelper {
 
 
 
+	#region Touch
+
+	public static Vector2 GetFirstTouchPosition(){
+		if( Input.touchCount > 0 ){
+			return Input.GetTouch( 0 ).position;	
+		}
+		else{
+			return Vector2.zero;
+		}
+	}
+
+	#endregion
+
+
+
+	#region Clip board
+
+	public static void SetClipBoard( string p_clip_board_string ){
+		UniPasteBoard.SetClipBoardString( p_clip_board_string );
+	}
+
+	public static string GetClipBoard(){
+		return UniPasteBoard.GetClipBoardString();
+	}
+
+	#endregion
+
+
+
 	#region Utilities
 
 	/// For LeiQing Use

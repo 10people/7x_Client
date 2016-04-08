@@ -1,3 +1,5 @@
+//#define DEBUG_CAMERA_TOUCH
+
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
 // Copyright 漏 2011-2014 Tasharen Entertainment
@@ -931,6 +933,10 @@ public class UICamera : MonoBehaviour
 
 	void OnDisable () { list.Remove(this); }
 
+	public static void ReSortUICamera(){
+		list.Sort(CompareFunc);
+	}
+
 #if !UNITY_3_5 && !UNITY_4_0
 	/// <summary>
 	/// We don't want the camera to send out any kind of mouse events.
@@ -1160,6 +1166,10 @@ public class UICamera : MonoBehaviour
 			currentTouchID = allowMultiTouch ? touch.fingerId : 1;
 			currentTouch = GetTouch(currentTouchID);
 
+//			#if DEBUG_CAMERA_TOUCH
+//			Debug.Log( "----------- Set Current Touch To: " + currentTouchID + " - " + currentTouch.current );
+//			#endif
+
 			bool pressed = (touch.phase == TouchPhase.Began) || currentTouch.touchBegan;
 			bool unpressed = (touch.phase == TouchPhase.Canceled) || (touch.phase == TouchPhase.Ended);
 			currentTouch.touchBegan = false;
@@ -1190,6 +1200,10 @@ public class UICamera : MonoBehaviour
 			currentTouch.last = null;
 			currentTouch = null;
 
+//			#if DEBUG_CAMERA_TOUCH
+//			Debug.Log( "----------- Set Current Touch To Null." );
+//			#endif
+
 			// Don't consider other touches
 			if (!allowMultiTouch) break;
 		}
@@ -1218,6 +1232,11 @@ public class UICamera : MonoBehaviour
 		{
 			currentTouchID = 1;
 			currentTouch = mMouse[0];
+
+			#if DEBUG_CAMERA_TOUCH
+			Debug.Log( "----------- Set Current Touch To Mouse 0." );
+			#endif
+
 			currentTouch.touchBegan = pressed;
 
 			Vector2 pos = Input.mousePosition;
@@ -1242,6 +1261,10 @@ public class UICamera : MonoBehaviour
 			if (unpressed) RemoveTouch(currentTouchID);
 			currentTouch.last = null;
 			currentTouch = null;
+
+			#if DEBUG_CAMERA_TOUCH
+			Debug.Log( "----------- Set Current Touch To Null." );
+			#endif
 		}
 	}
 
@@ -1253,6 +1276,10 @@ public class UICamera : MonoBehaviour
 	{
 		currentTouchID = -100;
 		currentTouch = controller;
+
+//		#if DEBUG_CAMERA_TOUCH
+//		Debug.Log( "----------- Set Current Touch To Controller." );
+//		#endif
 
 		// If this is an input field, ignore WASD and Space key presses
 		inputHasFocus = (mCurrentSelection != null && mCurrentSelection.GetComponent<UIInput>() != null);
@@ -1352,6 +1379,11 @@ public class UICamera : MonoBehaviour
 		}
 
 		currentTouch = null;
+
+//		#if DEBUG_CAMERA_TOUCH
+//		Debug.Log( "----------- Set Current Touch To Null." );
+//		#endif
+
 		currentKey = KeyCode.None;
 	}
 
@@ -1361,6 +1393,12 @@ public class UICamera : MonoBehaviour
 
 	public void ProcessTouch (bool pressed, bool unpressed)
 	{
+		#if DEBUG_CAMERA_TOUCH
+		if( pressed || unpressed ){
+			Debug.Log( "-------------------------------UICamera.ProcessTouch( " + currentTouchID + " - " + pressed + ", " + unpressed + " )" );
+		}
+		#endif
+
 		// Whether we're using the mouse
 		bool isMouse = (currentScheme == ControlScheme.Mouse);
 		float drag   = isMouse ? mouseDragThreshold : touchDragThreshold;
@@ -1372,13 +1410,31 @@ public class UICamera : MonoBehaviour
 			if (mTooltip != null) ShowTooltip(false);
 
 			currentTouch.pressStarted = true;
+
+			#if DEBUG_CAMERA_TOUCH
+			Debug.Log( "UICamera.ProcessTouch.Pressed" );
+
+			Debug.Log( "UICamera.TryNotify Pre Gb for UnPress: " + GameObjectHelper.GetGameObjectHierarchy( currentTouch.pressed ) );
+			#endif
+
 			Notify(currentTouch.pressed, "OnPress", false);
+
 			currentTouch.pressed = currentTouch.current;
+
+			#if DEBUG_CAMERA_TOUCH
+			Debug.Log( "Set CurrentTouch.Pressed: " + GameObjectHelper.GetGameObjectHierarchy( currentTouch.current ) );
+			#endif
+
 			currentTouch.dragged = currentTouch.current;
+
 			currentTouch.clickNotification = ClickNotification.BasedOnDelta;
 			currentTouch.totalDelta = Vector2.zero;
 			currentTouch.dragStarted = false;
 			Notify(currentTouch.pressed, "OnPress", true);
+
+			#if DEBUG_CAMERA_TOUCH
+			Debug.Log( "UICamera.TryNotify Cur Gb for Press: " + GameObjectHelper.GetGameObjectHierarchy( currentTouch.pressed ) );
+			#endif
 
 			// Clear the selection
 			if (currentTouch.pressed != mCurrentSelection)
@@ -1467,6 +1523,10 @@ public class UICamera : MonoBehaviour
 					Notify(currentTouch.dragged, "OnDragEnd", null);
 				}
 
+				#if DEBUG_CAMERA_TOUCH
+				Debug.Log( "UICamera.ProcessTouch.Unpressed: " + currentTouch.pressed );
+				#endif
+
 				// Send the notification of a touch ending
 				Notify(currentTouch.pressed, "OnPress", false);
 
@@ -1515,6 +1575,10 @@ public class UICamera : MonoBehaviour
 			currentTouch.dragStarted = false;
 			currentTouch.pressed = null;
 			currentTouch.dragged = null;
+
+			#if DEBUG_CAMERA_TOUCH
+			Debug.Log( "Set CurrentTouch.Pressed to Null." );
+			#endif
 		}
 	}
 

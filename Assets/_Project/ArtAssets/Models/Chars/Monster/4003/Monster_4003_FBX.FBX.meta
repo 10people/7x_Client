@@ -1027,7 +1027,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .544303656
+      - time: .244868621
         functionName: dieActionDone
         data: 
         objectReferenceParameter: {instanceID: 0}

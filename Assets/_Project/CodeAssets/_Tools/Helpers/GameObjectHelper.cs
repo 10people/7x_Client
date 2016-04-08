@@ -57,7 +57,7 @@ public class GameObjectHelper {
 			
 			m_dont_destroy_on_load_gb.name = CONST_DONT_DESTROY_ON_LOAD_GAME_OBJECT_NAME;
 
-			GameObject.DontDestroyOnLoad( m_dont_destroy_on_load_gb );
+			DontDestroyGameObject( m_dont_destroy_on_load_gb );
 		}
 		
 		return m_dont_destroy_on_load_gb;
@@ -346,6 +346,22 @@ public class GameObjectHelper {
 				Debug.Log( i + " : " + t_monos[ i ] + " is null." );
 			}
 		}
+	}
+
+	#endregion
+
+
+
+	#region DontDestroy
+
+	public static void DontDestroyGameObject( GameObject p_gb ){
+		if( p_gb == null ){
+			Debug.Log( "GameObject is null." );
+
+			return;
+		}
+
+		GameObject.DontDestroyOnLoad( p_gb );
 	}
 
 	#endregion

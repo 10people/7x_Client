@@ -10,6 +10,7 @@ using ProtoBuf.Meta;
 
 public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 {
+    public static SettingUpLayerManangerment m_SettingUp;
     public ScaleEffectController m_ScaleEffectController;
     public GameObject m_Durable_UI; 
     public GameObject m_DestroyTarget;
@@ -18,6 +19,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     public UISprite m_SpriteIcon;
     public UISprite m_SpriteCountry;
     public UISprite m_JunXian;
+    public UIGrid m_GrideCDReward;
+    public GameObject m_ObjReward;
 
     public List<SettingUpButtonController> listSettingButton;
 
@@ -45,13 +48,16 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     public UILabel m_LabelTopUp;
 
     public UILabel m_LabRenameSignal;
+    public UIInput m_CDKeyInput;
+
     private string RenameInfo = "";
     private string CDkeyInfo = "";
 
     private string NameSave = "";
- 
 
+    private string _award = "";
     private Dictionary<long, GameObject> BloakedEleDic = new Dictionary<long, GameObject>();
+    private List<FunctionWindowsCreateManagerment.RewardInfo> _listReward = new List<FunctionWindowsCreateManagerment.RewardInfo>();
     void Awake()
     {
         SocketTool.RegisterMessageProcessor(this);
@@ -60,7 +66,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
  
 	void Start ()
     {
-        m_LabRenameSignal.text = LanguageTemplate.GetText(1604) + MyColorData.getColorString(5, "100") + "元宝";
+        m_SettingUp = this;
+        m_LabRenameSignal.text = LanguageTemplate.GetText(1604) + MyColorData.getColorString(5, "100") + "元宝。";
         MainCityUI.setGlobalTitle(m_ObjTopLeft, LanguageTemplate.GetText(1528), 0, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
       //  m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
@@ -76,7 +83,9 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 	}
     public void OnInput()
     {
-        UIInput input = listRenameObject[1].GetComponent<UILabel>().parent.GetComponent<UIInput>();
+      
+           UIInput input = listRenameObject[1].GetComponent<UILabel>().parent.GetComponent<UIInput>();
+      
         RenameInfo = FunctionWindowsCreateManagerment.GetNeedString(input.value);
 
         listRenameObject[1].SetActive(true);
@@ -91,16 +100,31 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
             listRenameObject[2].SetActive(false);
         }
     }
+
+    public void OnSetInfo()
+    {
+        m_CDKeyInput.value = UIInput.current.value;
+        CDkeyInfo = m_CDKeyInput.value;
+        listCDKeyObject[3].GetComponent<UILabel>().text = m_CDKeyInput.value;
+        listCDKeyObject[4].SetActive(false);
+    }
     void Update()
     {
         UIInput input = listRenameObject[1].GetComponent<UILabel>().parent.GetComponent<UIInput>();
+ 
         if (!string.IsNullOrEmpty(input.value))
         {
             OnInput();
         }
-        CDkeyInfo = listCDKeyObject[3].GetComponent<UILabel>().text;
+      CDkeyInfo = m_CDKeyInput.value;
       CreateNameControl();
       CDKeyInfoControl();
+
+        if (FunctionWindowsCreateManagerment.m_isSwitchCountry)
+        {
+            FunctionWindowsCreateManagerment.m_isSwitchCountry = false;
+            RefreshCountryInfo();
+        }
     }
     bool createNameIsOn = false;
     bool createNameIsOff = false;
@@ -170,11 +194,16 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 
         if (!string.IsNullOrEmpty(CDkeyInfo))
         {
+            listCDKeyObject[4].SetActive(false);
+        }
+
+        if (!string.IsNullOrEmpty(CDkeyInfo) && CDkeyInfo.Length >= 8)
+        {
             if (CDKeyIsOn)
             {
                 CDKeyIsOn = false;
-                listCDKeyObject[4].SetActive(false);
                 listCDKeyEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
+            
                // ButtonsControl(listCDKeyEvent[0].gameObject, true);
             }
         }
@@ -185,6 +214,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 CDKeyIsOn = true;
                 listCDKeyEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
                 //ButtonsControl(listCDKeyEvent[0].gameObject, false);
+               
             }
         }
     }
@@ -384,7 +414,6 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         NameSave = tempInfo.name;
                      
                         listRenameEvent[1].GetComponent<Collider>().enabled = true;
-                        
                         if (tempInfo.code == 0)
                         {
                          //   listRenameObject[1].SetActive(false);
@@ -404,6 +433,15 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                             ClientMain.m_UITextManager.createText(  "改名成功！");
 
                         }
+                        else if (tempInfo.code == -100)
+                        {
+                            //_content1 = LanguageTemplate.GetText(1507);
+                            //_content2 = "";
+                            //_SignalType = 2;
+                            //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+                            //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            ClientMain.m_UITextManager.createText("输入的名称过长！");
+                        }
                         else if (tempInfo.code == -200)
                         {
                             //_content1 = LanguageTemplate.GetText(1507);
@@ -411,7 +449,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                             //_SignalType = 2;
                             //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
                             //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
-                            ClientMain.m_UITextManager.createText( LanguageTemplate.GetText(1507));
+                            ClientMain.m_UITextManager.createText("仅限使用中/英文以及数字！");
                         }
                         else if (tempInfo.code == -300)
                         {
@@ -421,7 +459,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                             //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
                             //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
 
-                            ClientMain.m_UITextManager.createText(LanguageTemplate.GetText(1508));
+                            ClientMain.m_UITextManager.createText("该名称已被其他玩家使用！");
                         }
                         else if (tempInfo.code == -400)
                         {
@@ -431,6 +469,16 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                             //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
                             //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
                             ClientMain.m_UITextManager.createText(  LanguageTemplate.GetText(1509));
+                        }
+                        else if (tempInfo.code == -500)
+                        {
+                            //_content1 = LanguageTemplate.GetText(1509);
+                            //_content2 = "";
+                            //_SignalType = 2;
+                            //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+                            //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                  
+                              ClientMain.m_UITextManager.createText("输入的名称包含敏感词！");
                         }
                         else if (tempInfo.code > 0)
                         {
@@ -455,7 +503,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         if (tempResponse.result == 0)
                         {
                             listCDKeyObject[0].SetActive(false);
-                            string _award = "";
+                            _award = "";
                           for (int i = 0; i < tempResponse.awards.Count;i++)
                           {
                                 if (i < tempResponse.awards.Count - 1)
@@ -468,13 +516,17 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                                 }
 
                           }
-                          FunctionWindowsCreateManagerment.ShowRAwardInfo(_award);
+                             _listReward = FunctionWindowsCreateManagerment.GetRewardInfo(_award);
+                            m_ObjReward.SetActive(true);
+                            Create();
+                         
                         }
                         else
                         {
-                            EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
-                                                         , tempResponse.errorMsg
-                                                         , "");
+                            ClientMain.m_UITextManager.createText(tempResponse.errorMsg);
+                            //EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
+                            //                             , tempResponse.errorMsg
+                            //                             , "");
                         }
                         
                         return true;
@@ -520,19 +572,19 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         {
             case 0:
                 {
-                    if (SysparaTemplate.CompareSyeParaWord(RenameInfo))
-                    {
-                        listRenameObject[0].SetActive(false);
-                        listRenameObject[8].SetActive(true);
-                        _content1 = LanguageTemplate.GetText(1503);
-                        _content2 = "";
-                        _SignalType = 2;
-                        EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+                    //if (SysparaTemplate.CompareSyeParaWord(RenameInfo))
+                    //{
+                    //    listRenameObject[0].SetActive(false);
+                    //    listRenameObject[8].SetActive(true);
+                    //    _content1 = LanguageTemplate.GetText(1503);
+                    //    _content2 = "";
+                    //    _SignalType = 2;
+                    //    EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
 
-                      //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                    //  //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
 
-                    }
-                    else
+                    //}
+                    //else
                     {
                         //   //listRenameObject[0].SetActive(false);
                         //  // listRenameObject[1].SetActive(true);
@@ -589,8 +641,15 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 break;
             case 1:
                 {
-                    listCDKeyObject[0].SetActive(true);
-                    listCDKeyObject[1].SetActive(false);
+                    int size = m_GrideCDReward.transform.childCount;
+                    for (int i = 0; i < size; i++)
+                    {
+                        Destroy(m_GrideCDReward.transform.GetChild(i).gameObject);
+                    }
+                    m_ObjReward.SetActive(false);
+                    FunctionWindowsCreateManagerment.ShowRAwardInfo(_award);
+                    //listCDKeyObject[0].SetActive(true);
+                    //listCDKeyObject[1].SetActive(false);
                 }
                 break;
             case 2:
@@ -758,9 +817,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
             }
             else
             {
-               // listRenameObject[1].SetActive(false);
-               // listRenameObject[5].SetActive(true);
-                EquipSuoData.TopUpLayerTip(m_MainParent);
+                EquipSuoData.ShowSignal(null, "您的元宝不足！");
+                //EquipSuoData.TopUpLayerTip(m_MainParent);
             }
         }
 
@@ -821,15 +879,60 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         }
 
     }
-    void RefreshCountryInfo(int index)
+    void RefreshCountryInfo()
     {
-        ChangeCountryInfo(index);
-        m_listChangeCountryEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
-        m_SpriteCountryCurrent.spriteName = "nation_" + index;
-        m_SpriteCountry.spriteName = "nation_" + index;
+        m_SpriteCountry.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
     }
     void OnDestroy()
     {
+        m_SettingUp = null;
         SocketTool.UnRegisterMessageProcessor(this);
     }
+
+    int index_Reward = 0;
+
+
+    void Create()
+    {
+        index_Reward = 0;
+        int size = _listReward.Count;
+        m_GrideCDReward.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size - 1, 108), 0, 0);
+        for (int i = 0; i < size; i++)
+        {
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+        }
+ 
+    }
+    private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
+    {
+        if (m_GrideCDReward != null)
+        {
+            GameObject iconSampleObject = Instantiate(p_object) as GameObject;
+            iconSampleObject.SetActive(true);
+            iconSampleObject.transform.parent = m_GrideCDReward.transform;
+            iconSampleObject.transform.localPosition = Vector3.zero;
+            IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+
+            iconSampleManager.SetIconByID( _listReward[index_Reward].icon,_listReward[index_Reward].count.ToString(), 4);
+            iconSampleManager.SetIconPopText(_listReward[index_Reward].icon,
+                NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(_listReward[index_Reward].icon).nameId),
+                DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(_listReward[index_Reward].icon).descId));
+
+          
+                iconSampleObject.transform.localScale = Vector3.one;
+           
+
+            if (index_Reward < _listReward.Count - 1)
+            {
+                index_Reward++;
+            }
+
+            m_GrideCDReward.repositionNow = true;
+        }
+        else
+        {
+            p_object = null;
+        }
+    }
+
 }

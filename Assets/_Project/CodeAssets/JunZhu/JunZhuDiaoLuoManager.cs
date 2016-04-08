@@ -111,13 +111,13 @@ public class JunZhuDiaoLuoManager : MonoBehaviour ,SocketProcessor
       int size = listDiaoLuoId.Count;
       for (int i = 0; i < size; i++)
       {
-          for (int j = 0; j < PveTempTemplate.templates.Count; j++)
+		for (int j = 0; j < PveTempTemplate.GetTemplatesCount(); j++)
           {
 
-              if (listDiaoLuoId[i] == PveTempTemplate.templates[j].id)
+			if (listDiaoLuoId[i] == PveTempTemplate.GetPveTemplate_By_index( j ).id)
               {
                   LevelInFo Info = new LevelInFo();
-                  if (PveTempTemplate.templates[j].id <= _MaxLevelId)
+					if (PveTempTemplate.GetPveTemplate_By_index( j ).id <= _MaxLevelId)
                   {
                       Info.isShow = true;
                   }
@@ -125,9 +125,9 @@ public class JunZhuDiaoLuoManager : MonoBehaviour ,SocketProcessor
                   {
                       Info.isShow = false;
                   }
-                  Info.bigId = PveTempTemplate.templates[j].bigId.ToString();
-                  Info.smaName = PveTempTemplate.templates[j].smaName.ToString();
-                  Info.id = PveTempTemplate.templates[j].id;
+					Info.bigId = PveTempTemplate.GetPveTemplate_By_index( j ).bigId.ToString();
+					Info.smaName = PveTempTemplate.GetPveTemplate_By_index( j ).smaName.ToString();
+					Info.id = PveTempTemplate.GetPveTemplate_By_index( j ).id;
                   //   Info.stars = MapCurrentInfo.s_allLevel[k].s_starNum;
                   listLevelInfo.Add(Info);
               }

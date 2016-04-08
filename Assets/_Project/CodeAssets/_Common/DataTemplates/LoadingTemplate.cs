@@ -130,7 +130,8 @@ public class LoadingTemplate : XmlLoadManager
 
 	// TODO
 	public static string GetResPath(){
-		if( m_templates == null ){
+		if( m_templates == null ||
+			m_templates.Count == 0 ){
 			return "";
 		}
 

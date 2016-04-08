@@ -5,6 +5,7 @@ using qxmobile.protobuf;
 public class FunctionWindowsCreateManagerment : MonoBehaviour
 {
     public static bool m_isJieBiao = false;
+    public static bool m_isSwitchCountry = false;
     private static int BigHouseId = 0;
     private static int SmallHouseId = 0;
     public static int m_AllianceID = -1;
@@ -97,7 +98,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
 
             if (tempBuwei == buwei && item.Value.pinZhi > EquipsOfBody.Instance().m_equipsOfBodyDic[buwei].pinZhi)
             {
-                MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
+				MainCityUIRB.setSavePropUse(item.Value.itemId, 1);
                 return true;
             }
         }
@@ -139,12 +140,12 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
                 }
                 else
                 {
-                    NpcManager.m_NpcManager.setGoToSelfTenement(SmallHouseId + 1000);
+                    //NpcManager.m_NpcManager.setGoToSelfTenement(SmallHouseId + 1000);
                 }
             }
             else
             {
-                NpcManager.m_NpcManager.setGoToTenementNpc(SmallHouseId + 1000);
+                //NpcManager.m_NpcManager.setGoToTenementNpc(SmallHouseId + 1000);
             }
         }
     }
@@ -351,7 +352,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         }
     }
 
-    public static string GetNeedString(string content)
+    public static string GetNeedString(string content,int length = 7)
     {
         if (!string.IsNullOrEmpty(content))
         {
@@ -360,7 +361,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
             string resuilt = "";
             for (int i = 0; i < size; i++)
             {
-                if (i < 7)
+                if (i < length)
                 {
                     resuilt += input[i];
                 }
@@ -387,12 +388,12 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
                 break;
             case 1:
                 {
-                    return "(" + LanguageTemplate.GetText(LanguageTemplate.Text.IDENTITY_1) + ")";
+                    return  LanguageTemplate.GetText(LanguageTemplate.Text.IDENTITY_1)  ;
                 }
                 break;
             case 2:
                 {
-                    return "(" + LanguageTemplate.GetText(LanguageTemplate.Text.IDENTITY_2) + ")";
+                    return  LanguageTemplate.GetText(LanguageTemplate.Text.IDENTITY_2);
                 }
                 break;
             default:

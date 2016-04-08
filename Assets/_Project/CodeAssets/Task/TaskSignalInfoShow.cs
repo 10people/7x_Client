@@ -82,6 +82,10 @@ public class TaskSignalInfoShow : MonoBehaviour
             {
                 index_Num++;
             }
+            else
+            {
+                m_ListEvent[0].GetComponent<Collider>().enabled = true;
+            }
             m_grid.GetComponent<UIGrid>().repositionNow = true;
         }
         else
@@ -116,7 +120,6 @@ public class TaskSignalInfoShow : MonoBehaviour
         m_ObjFinish.SetActive(false);
         m_ObjHidden.SetActive(true);
         UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_labelTitle.gameObject, EffectIdTemplate.GetPathByeffectId(620214), null);
-        m_TaskSignal = this;
         taskId = temp.id;
         _rewardInfo = temp.award;
         m_labelTitle.text = "完成任务：" + temp.doneTitle;
@@ -219,12 +222,12 @@ public class TaskSignalInfoShow : MonoBehaviour
             {
                 TaskData.Instance.GetDailyQuestAward(taskId);
             }
+            UI3DEffectTool.ClearUIFx(m_ObjFinish);
             Destroy(gameObject);
         }
     }
     void OnDisable()
     {
-        m_TaskSignal = null;
         if(m_Camera)
         EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);
         UI3DEffectTool.ClearUIFx(m_labelTitle.gameObject);
@@ -232,6 +235,7 @@ public class TaskSignalInfoShow : MonoBehaviour
 
     void OnDestroy()
     {
+        m_TaskSignal = null;
         if (TaskLayerManager.m_TaskLayerM)
         {
             TaskLayerManager.m_TaskLayerM.m_isDailyVitilityFresh = true;

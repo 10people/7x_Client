@@ -267,6 +267,8 @@ namespace Carriage
 							};
 							SocketHelper.SendQXMessage(temp5, ProtoIndexes.C_YABIAO_MOREINFO_RSQ);
 
+							BiaoJuPage.bjPage.BiaoJuResp.yaBiaoCiShu -= 1;
+
 							BiaoJuPage.bjPage.CloseBiaoJu ();
 
 							break;

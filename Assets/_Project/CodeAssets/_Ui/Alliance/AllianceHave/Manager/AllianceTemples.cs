@@ -49,23 +49,23 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 
 	void Start () {
 	
-	}
-	
-	public void Init()
-	{
 		if(FreshGuide.Instance().IsActive(400020)&& TaskData.Instance.m_TaskInfoDic[400020].progress >= 0)
 		{
 			//			Debug.Log("去寺庙祭拜");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400020];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
 		}
-		DengDaiYaoJiang.SetActive(false);
+	}
+	
+	public void Init()
+	{
 		JiBaoBtn.GetComponent<UIButton>().enabled = true;
 		OneKeyJiBaoBtn.GetComponent<UIButton>().enabled = true;
 		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_LM_CHOU_JIANG_INFO);
 	}
 	void Update () {
 
+		mGongXian.text = NewAlliancemanager.Instance().m_allianceHaveRes.contribution.ToString ();
 	}
 	public bool OnProcessSocketMessage (QXBuffer p_message)
 	{
@@ -75,7 +75,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 			{
 			case ProtoIndexes.S_LM_CHOU_JIANG_INFO://宗庙返回
 			{
-				//Debug.Log("宗庙返回");
+				Debug.Log("宗庙返回");
 				MemoryStream application_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				
 				QiXiongSerializer application_qx = new QiXiongSerializer();
@@ -105,7 +105,8 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 				UIYindao.m_UIYindao.CloseUI();
 				//Debug.Log("aErrorMessage.errorCode = "+aErrorMessage.errorCode);
 				ChouJiangDataBack(aErrorMessage);
-				return true;
+				Init();
+                return true;
 			}
 			default:return false;
 			}
@@ -113,89 +114,145 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		
 		return false;
 	}
+	List<int > Mark = new List<int> ();
 	public void ChouJiangDataBack(ErrorMessage a_ErrorMessage)
 	{
-		List<int > Mark = new List<int> ();
+
 		//Debug.Log("a_ErrorMessage.errorDesc = "+a_ErrorMessage.errorDesc);
 		string []s = a_ErrorMessage.errorDesc.Split('#');
 		Mark.Clear ();
 		OneKeyAward.Clear ();
 		for (int i = 0; i < s.Length; i++)
 		{
-			//Debug.Log("s[i] = "+s[i]);
+//			Debug.Log("s[i] = "+s[i]);
 			Mark.Add(int.Parse(s[i]));
 		}
 
 		if(JiBaoTime) // 祭拜
 		{
-			StartCoroutine(ShowEff(Mark,0));
+			StopCoroutine("ShowEff");
+			StartCoroutine("ShowEff");
 		}else
 		{
-			for (int i = 0; i < mJiBaiList.Count; i++)
+			for (int i = 0; i < Mark.Count; i++)
 			{
-				for (int j = 0; j < Mark.Count; j++)
-				{
-					if(i+1 == Mark[j])
-					{
-						mJiBaiList[i].GetDataByChouJiang();
-						OneKeyAward.Add(mJiBaiList[i].mAwardinfo);
-					}
-				}
+
+				mJiBaiList[Mark[i]].GetDataByChouJiang();
+				OneKeyAward.Add(mJiBaiList[Mark[i]].mAwardinfo);
+
 			}
 			StartCoroutine (OpenAwardUI());
 		}
-		NewAlliancemanager.Instance().Refreshtification ();
+//		NewAlliancemanager.Instance().Refreshtification ();
 	}
-	IEnumerator ShowEff(List<int > mMark,int mTimes )
+	public GameObject mBoxEffect;
+	int MaxNumber = 0;
+	int startcount = 0;
+	IEnumerator ShowEff()
 	{
 		bool IsStop = false;
+		startcount = 0;
+		int index = Random.Range (2,4);
+		MaxNumber = index*10;
+		float WaitingTime = 0.5f;
+		mBoxEffect.SetActive (true);
+		Debug.Log("MaxNumber = "+MaxNumber);
 //		Debug.Log("mMark.count = "+mMark.Count);
-//		Debug.Log("mMark[0] = "+mMark[0]);
-		float WaitingTime = 0.2f;
-		float AddTime = WaitingTime/(float)mTimes;
-		for (int i = 0; i < mJiBaiList.Count; i++)
+		Debug.Log("mMark[0] = "+Mark[0]);
+		int mStarcount = 0;
+		while(startcount <= MaxNumber+Mark[0])
 		{
-			mTimes++;
-
-			//Debug.Log("i = "+i);
-			if(mTimes < 11)
+			if(startcount < 10)
 			{
-
-				yield return new WaitForSeconds (WaitingTime);
-				mJiBaiList[i].CHoseShowAnimation();
+				mJiBaiList[startcount].ChangeBoxPostion(mBoxEffect);
 			}
 			else
 			{
-				//Debug.Log("mTimes = "+mTimes);
-
-				yield return new WaitForSeconds (WaitingTime);
-
-				for (int j = 0; j < mMark.Count; j++)
-				{
-					if(i == mMark[j])
-					{
-						IsStop = true;
-						mJiBaiList[i].GetDataByChouJiang();
-						OneKeyAward.Add(mJiBaiList[i].mAwardinfo);
-						StartCoroutine (OpenAwardUI());
-						break;
-					}
-				}
-				if(IsStop)
-				{break;}
-				mJiBaiList[i].CHoseShowAnimation();
+			    mStarcount = startcount%10;
+				mJiBaiList[mStarcount].ChangeBoxPostion(mBoxEffect);
 			}
 
-		}
-		if(JiBaoTime) // 祭拜
-		{
-			StartCoroutine(ShowEff(mMark,11));
-			JiBaoTime = false;
+			if(startcount < 5)
+			{
+				if(WaitingTime > 0.04f)
+				{
+					WaitingTime -= 0.08f;
+				}
+
+			}
+			else if(startcount >= 5 && startcount < MaxNumber+Mark[0] -5)
+			{
+				WaitingTime = 0.04f;
+			}
+			if(startcount >= MaxNumber+Mark[0] -5)
+			{
+				WaitingTime += 0.08f;
+			}
+			if(startcount == MaxNumber+Mark[0])
+			{
+				mBoxEffect.SetActive (false);
+				DengDaiYaoJiang.SetActive(false);
+				mJiBaiList[mStarcount].GetDataByChouJiang();
+				OneKeyAward.Add(mJiBaiList[Mark[0]].mAwardinfo);
+				StartCoroutine ("OpenAwardUI");
+				//StartCoroutine("ShowAnimation");
+				StopCoroutine("ShowEff");
+			}
+			startcount ++;
+			yield return new WaitForSeconds (WaitingTime);
 		}
 
+//		float AddTime = WaitingTime/(float)mTimes;
+//		for (int i = 0; i < mJiBaiList.Count; i++)
+//		{
+//			mTimes++;
+//
+//			//Debug.Log("i = "+i);
+//			if(mTimes < 11)
+//			{
+//
+//				yield return new WaitForSeconds (WaitingTime);
+//				mJiBaiList[i].CHoseShowAnimation();
+//			}
+//			else
+//			{
+//				//Debug.Log("mTimes = "+mTimes);
+//
+//				yield return new WaitForSeconds (WaitingTime);
+//
+//				for (int j = 0; j < mMark.Count; j++)
+//				{
+//					if(i == mMark[j])
+//					{
+//						IsStop = true;
+//						mJiBaiList[i].GetDataByChouJiang();
+//						OneKeyAward.Add(mJiBaiList[i].mAwardinfo);
+//						StartCoroutine (OpenAwardUI());
+//						break;
+//					}
+//				}
+//				if(IsStop)
+//				{break;}
+//				mJiBaiList[i].CHoseShowAnimation();
+//			}
+//
+//		}
+//		if(JiBaoTime) // 祭拜
+//		{
+//			StartCoroutine(ShowEff(mMark,11));
+//			JiBaoTime = false;
+//		}
+
 	}
+//	IEnumerator ShowAnimation()
+//	{
+//		mBoxEffect.SetActive (true);
+//		yield return new WaitForSeconds(0.4f);
+//		mBoxEffect.SetActive (false);
+//	}
 	IEnumerator OpenAwardUI()
 	{
+		UIYindao.m_UIYindao.CloseUI();
 		float t = 1f;
 		yield return new WaitForSeconds (t);
 		JiBaoBtn.GetComponent<UIButton>().enabled = true;
@@ -204,7 +261,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	}
 	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
-		DengDaiYaoJiang.SetActive(false);
+        DengDaiYaoJiang.SetActive(false);
 		GameObject tempObject = ( GameObject )Instantiate( p_object );
 
 		tempObject.transform.parent = this.transform.parent;
@@ -216,11 +273,13 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		GetJiBaiAward mGetJiBaiAward = tempObject.GetComponent<GetJiBaiAward>();
 
 		mGetJiBaiAward.m_OneKeyAward = OneKeyAward;
-
-		mGetJiBaiAward.Init ();
+       JiBaoBtn.GetComponent<Collider>().enabled = true;
+       OneKeyJiBaoBtn.GetComponent<Collider>().enabled = true;
+       mGetJiBaiAward.Init ();
 	}
 	public void InitData(ExploreResp m_ExploreResp)
 	{
+
 		int addTime = NewAlliancemanager.Instance().ZongmiaoLev;
 
 		if(g_mExploreResp.info == null)
@@ -229,6 +288,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		}
 
 		JiBaiCostPreTime.text = g_mExploreResp.info.money.ToString () + "贡献/次";
+		CostPreTime = g_mExploreResp.info.money;
 		mAddProperty1.text = LanguageTemplate.GetText(LanguageTemplate.Text.RULL2)+addTime.ToString();
 		if(addTime >= 10)
 		{
@@ -258,12 +318,15 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	}
 	public void ShowTime()
 	{
-		//Debug.Log ("g_mExploreResp.info.remainFreeCount = "+g_mExploreResp.info.remainFreeCount);
+		Debug.Log ("g_mExploreResp.info.remainFreeCount = "+g_mExploreResp.info.remainFreeCount);
 		if(g_mExploreResp.info.remainFreeCount <= 0)
 		{
-			int ChouJiangid = 600900;
-			PushAndNotificationHelper.SetRedSpotNotification(ChouJiangid,false);
+			int ChouJiangid1 = 600900;
+			int ChouJiangid2 = 600905;
+			PushAndNotificationHelper.SetRedSpotNotification(ChouJiangid1,false);
+			PushAndNotificationHelper.SetRedSpotNotification(ChouJiangid2,false);
 		}
+		NewAlliancemanager.Instance().Refreshtification ();
 		RemainTimes.text = "剩余次数："+g_mExploreResp.info.remainFreeCount.ToString () + "/" + g_mExploreResp.info.cd.ToString ();
 		AllTime = g_mExploreResp.info.remainFreeCount;
 		mGongXian.text = NewAlliancemanager.Instance().m_allianceHaveRes.contribution.ToString ();
@@ -281,14 +344,19 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	private bool JiBaoTime;
 	public void JIBai()
 	{
-		if(CostPreTime <= NewAlliancemanager.Instance().m_allianceHaveRes.contribution)
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+		}
+		if(CostPreTime <= NewAlliancemanager.Instance().m_allianceHaveRes.contribution && AllTime > 0)
 		{
 			g_mExploreResp.info.remainFreeCount-=1;
 			NewAlliancemanager.Instance().m_allianceHaveRes.contribution -= CostPreTime;
 			JiBaoTime = true;
-
+			UIYindao.m_UIYindao.CloseUI();
 			JiBaoBtn.GetComponent<UIButton>().enabled = false;
-			OneKeyJiBaoBtn.GetComponent<UIButton>().enabled = false;
+            JiBaoBtn.GetComponent<Collider>().enabled = false;
+            OneKeyJiBaoBtn.GetComponent<UIButton>().enabled = false;
 			DengDaiYaoJiang.SetActive(true);
 			SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_LM_CHOU_JIANG_1);
 			ShowTime();
@@ -315,6 +383,9 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	}
 	public void OneKeyJIBai()
 	{
+//		Debug.Log ("CostPreTime*AllTime = "+CostPreTime*AllTime);
+//		Debug.Log ("AllTime = "+AllTime);
+//		Debug.Log ("CostPreTime = "+CostPreTime);
 		if(CostPreTime*AllTime <= NewAlliancemanager.Instance().m_allianceHaveRes.contribution)
 		{
 			JiBaoTime = false;
@@ -322,7 +393,9 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 			g_mExploreResp.info.remainFreeCount-=AllTime;
 			JiBaoBtn.GetComponent<UIButton>().enabled = false;
 			OneKeyJiBaoBtn.GetComponent<UIButton>().enabled = false;
-			DengDaiYaoJiang.SetActive(true);
+            OneKeyJiBaoBtn.GetComponent<Collider>().enabled = false;
+
+            DengDaiYaoJiang.SetActive(true);
 			SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_LM_CHOU_JIANG_N);
 			ShowTime();
 		}

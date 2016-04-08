@@ -2,6 +2,8 @@
 
 //#define DEBUG_SHOW_LOADING_INFO
 
+//#define DEBUG_SHOW_LOADING_TIME
+
 
 
 using UnityEngine;
@@ -82,23 +84,13 @@ public class EnterNextScene : MonoBehaviour{
 		PrepareToLoadScene();
 	}
 
-	/** Notes:
-	 * bug fixed, NEVER destroy here.
-	 * destroy in ManualDestroy.
-	 */
-	void OnDestroy(){
-		#if DEBUG_ENTER_NEXT_SCENE
-		Debug.Log( "EnterNextScene.OnDestroy()" );
-		#endif
-
-		m_background_image = null;
-	}
-
 	void Update(){
 		{
 			float t_percentage = LoadingHelper.GetLoadingPercentage( StaticLoading.m_loading_sections );
 
-//			Debug.Log( "StaticLoading.Percentage: " + t_percentage );
+			#if DEBUG_SHOW_LOADING_INFO
+			Debug.Log( "EnterNextScene.Update.Loading.Bar( " + t_percentage + " )" );
+			#endif
 
 			if( t_percentage < m_preserve_percentage ){
 				t_percentage = m_preserve_percentage;
@@ -109,6 +101,10 @@ public class EnterNextScene : MonoBehaviour{
 			}
 			else{
 				m_slider_progress.value = t_percentage;
+			}
+
+			{
+				UpdateFx();
 			}
 		}
 
@@ -126,7 +122,20 @@ public class EnterNextScene : MonoBehaviour{
 			}
 		}
 	}
-	
+
+	/** Notes:
+	 * bug fixed, NEVER destroy here.
+	 * destroy in ManualDestroy.
+	 */
+	void OnDestroy(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.OnDestroy()" );
+		#endif
+
+		m_background_image = null;
+	}
+
+
 	#endregion
 
 
@@ -159,16 +168,18 @@ public class EnterNextScene : MonoBehaviour{
             // loading MainCity
             //  Prepare_For_MainCity();
      
-            PrepareForCityLoad.Instance.Prepare_For_MainCity();
+			{
+				PrepareForCityLoad t_com = gameObject.AddComponent<PrepareForCityLoad>();
+
+				t_com.Prepare_For_MainCity();
+			}
         }
 		else if ( LoadingHelper.IsLoadingAllianceCity() || LoadingHelper.IsLoadingAllianceCityYeWan()) {
             // Prepare_For_AllianceCity();
-    
-           // PrepareForCityLoad.Instance.Prepare_For_AllianceCity();
         }
 		else if ( LoadingHelper.IsLoadingAllianceCityYeWan() || LoadingHelper.IsLoadingAllianceTenentsCity())
         {
-           // PrepareForCityLoad.Instance.Prepare_For_AllianceCity();
+          	
         }
 		else if ( LoadingHelper.IsLoadingAllianceTenentsCity() ){
           //  Prepare_For_AllianceCity();
@@ -218,7 +229,7 @@ public class EnterNextScene : MonoBehaviour{
 		Debug.Log( "---------------- LoadLevelNow( " + GetSceneToLoad() + " ) ---------------" );
 		#endif
 
-		#if DEBUG_SHOW_LOADING_INFO
+		#if DEBUG_SHOW_LOADING_TIME
 		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.LoadLevelNow()" );
 		#endif
 
@@ -230,9 +241,13 @@ public class EnterNextScene : MonoBehaviour{
 			SceneManager.LoadLevel( t_to_load_scene_name );
 
 			m_load_level_time = Time.realtimeSinceStartup - m_load_level_time;
+
+			{
+				ClearSceneToLoad();
+			}
 		}
 
-		#if DEBUG_SHOW_LOADING_INFO
+		#if DEBUG_SHOW_LOADING_TIME
 		LoadingHelper.LogTimeSinceLoading( "LoadLevel - EnterNextScene.LoadLevelNow.Done()" );
 		#endif
 
@@ -307,17 +322,7 @@ public class EnterNextScene : MonoBehaviour{
 	public void ManualDestroyImmediate(){
 		Debug.Log ( "ManualDestroyImmediate()" );
 
-		{
-			m_preserve_percentage = 0.0f;
-		}
-		
-		{
-			UnRegister();
-		}
-		
-		{
-			DestroyUI();
-		}
+		DestroyUIImmediately();
 	}
 
 	// unregister and destroy UI if needed.
@@ -403,7 +408,9 @@ public class EnterNextScene : MonoBehaviour{
 		}
 
 		{
-			UtilityTool.Instance.DelayedUnloadUnusedAssets();
+//			UtilityTool.Instance.DelayedUnloadUnusedAssets();
+
+			UtilityTool.UnloadUnusedAssets();
 		}
 	}
 
@@ -435,7 +442,7 @@ public class EnterNextScene : MonoBehaviour{
 		Debug.Log( "PrepareWhenSceneLoaded()" );
 		#endif
 
-		#if DEBUG_SHOW_LOADING_INFO
+		#if DEBUG_SHOW_LOADING_TIME
 		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.PrepareWhenSceneLoaded()" );
 		#endif
 
@@ -468,11 +475,11 @@ public class EnterNextScene : MonoBehaviour{
 		Debug.Log( "PrepareWhenSceneLoaded.Before.Light()" );
 		#endif
 
-		#if DEBUG_SHOW_LOADING_INFO
+		#if DEBUG_SHOW_LOADING_TIME
 		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.PrepareWhenSceneLoaded.After.Check()" );
 		#endif
 
-		#if DEBUG_SHOW_LOADING_INFO
+		#if DEBUG_SHOW_LOADING_TIME
 		LoadingHelper.LogTimeSinceLoading( "EnterNextScene.PrepareWhenSceneLoaded.Done()" );
 		#endif
 	}
@@ -676,6 +683,10 @@ public class EnterNextScene : MonoBehaviour{
 
 		m_destroy_ui_when_level_loaded = p_destroy_ui_when_level_loaded;
 	}
+
+	public static void ClearSceneToLoad(){
+		m_to_load_scene_name = "";
+	}
 	
 	public static string GetSceneToLoad(){
 		return m_to_load_scene_name;
@@ -690,6 +701,20 @@ public class EnterNextScene : MonoBehaviour{
 
 
 	#region Utilities
+
+	private void UpdateFx(){
+		UnityEngine.Object[] t_objs = GameObject.FindObjectsOfType(typeof(UILoadingFx));
+
+		for( int i = 0; i < t_objs.Length; i++ ){
+			if( t_objs[ i ] == null ){
+				continue;
+			}
+
+			UILoadingFx t_fx = (UILoadingFx)t_objs[ i ];
+
+			t_fx.UpdatePos();
+		}
+	}
 
 	// get background image for optimize useage.
 	public static UITexture GetBackgroundImage(){

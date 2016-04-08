@@ -66,16 +66,25 @@ public class FuWenMainPage : MonoBehaviour {
 
 		if (!isOpenFuWen)
 		{
-			zhanLi = tempResp.zhanli;
-			zhanLiLabel.text = tempResp.zhanli.ToString ();
+//			zhanLi = tempResp.zhanli;
+//			zhanLiLabel.text = tempResp.zhanli.ToString ();
+
+			zhanLi = JunZhuData.Instance ().m_junzhuInfo.zhanLi;
+			zhanLiLabel.text = zhanLi.ToString ();
 
 			pageType = ShowPageType.PAGE_XIANGQIAN;
 
+			Debug.Log ("refreshZhanLi1:" + refreshZhanLi);
+			refreshZhanLi = false;
 			isOpenFuWen = true;
 		}
 		else
 		{
+			Debug.Log ("refreshZhanLi2:" + refreshZhanLi);
 			AddZhanLi (tempResp.zhanli);
+
+			refreshZhanLi = true;
+			Debug.Log ("tempResp.zhanli:" + tempResp.zhanli);
 		}
 
 		FuWenListSort (tempResp);
@@ -355,8 +364,8 @@ public class FuWenMainPage : MonoBehaviour {
 			bagSc.ResetPosition ();
 		}
 
-		bagSc.enabled = tempList.Count <= 4 ? false : true;
-		bagSb.gameObject.SetActive (tempList.Count <= 4 ? false : true);
+		bagSc.enabled = tempList.Count < 4 ? false : true;
+		bagSb.gameObject.SetActive (tempList.Count < 4 ? false : true);
 	}
 
 	//显示合成按钮状态
@@ -501,12 +510,12 @@ public class FuWenMainPage : MonoBehaviour {
 
 				if (tempLanWei.itemId > 0)
 				{
+					Debug.Log ("go");
 					bool isContain = false;
 					foreach (Fuwen fuWen in selectList)
 					{
 						if (fuWen.itemId == tempLanWei.itemId)
 						{
-							//							fuWen.cnt += 1;
 							isContain = true;
 							break;
 						}
@@ -699,31 +708,40 @@ public class FuWenMainPage : MonoBehaviour {
 		isBtnClick = false;
 	}
 
+	public GameObject tipsObj;
+	public UILabel operateDesLabel;
+	private float showTime = 0;
 	//合成成功提示
 	public void SuccessTips (FuWenData.FuWenOperateType tempType)
 	{
-//		tipsLabel.text = "";
-		string tipStr = "";
 		if (tempType == FuWenData.FuWenOperateType.EQUIP_FUWEN)
 		{
-			tipStr = "符石镶嵌成功！";
+			operateDesLabel.text = "符石镶嵌成功！";
 		}
 		else if (tempType == FuWenData.FuWenOperateType.GENERAL_HECHENG || tempType == FuWenData.FuWenOperateType.YIJIAN_HECHENG)
 		{
-			tipStr = "符石合成成功！";
+			operateDesLabel.text = "符石合成成功！";
 		}
 
-		MainCityUI.m_MainCityUI.m_MainCityUIRB.m_FuncNotOpenInfoLabel.text = tipStr;
-		PopUpLabelTool.Instance().AddPopLabelWatcher(MainCityUI.m_MainCityUI.m_MainCityUIRB.m_FuncNotOpenInfoObject, 
-		                                             new Vector3 (135,220,0), 
-		                                             Vector2.zero, 
-		                                             iTween.EaseType.easeOutBack, 1.0f, iTween.EaseType.linear, 2f);
+		showTime = 3;
+		tipsObj.SetActive (true);
+//		if (MainCityUI.m_MainCityUI != null)
+//		{
+//			MainCityUI.m_MainCityUI.m_MainCityUIRB.m_FuncNotOpenInfoLabel.text = tipStr;
+//			PopUpLabelTool.Instance().AddPopLabelWatcher(MainCityUI.m_MainCityUI.m_MainCityUIRB.m_FuncNotOpenInfoObject, 
+//			                                             new Vector3 (135,220,0), 
+//			                                             Vector2.zero, 
+//			                                             iTween.EaseType.easeOutBack, 1.0f, iTween.EaseType.linear, 2f);
+//		}
 	}
+
+
 
 	public void AddZhanLi (long tempZhanLi)
 	{
 		if (tempZhanLi == zhanLi)
 		{
+			endZhanLi = tempZhanLi;
 			return;
 		}
 
@@ -742,7 +760,6 @@ public class FuWenMainPage : MonoBehaviour {
 		                                             iTween.EaseType.easeOutBack, -1.0f, iTween.EaseType.linear, 1.5f);
 
 		endZhanLi = tempZhanLi;
-		refreshZhanLi = true;
 	}
 
 	void Update ()
@@ -750,6 +767,17 @@ public class FuWenMainPage : MonoBehaviour {
 		if (refreshZhanLi)
 		{
 			NumCount (zhanLiLabel,endZhanLi);
+		}
+
+		if (showTime > 0)
+		{
+			showTime -= Time.deltaTime;
+
+			if (showTime <= 0)
+			{
+				showTime = 0;
+				tipsObj.SetActive (false);
+			}
 		}
 	}
 
@@ -843,7 +871,8 @@ public class FuWenMainPage : MonoBehaviour {
 		{
 			effectId = 100163;
 		}
-		
+
+		UI3DEffectTool.ClearUIFx (heFuWenSprite.gameObject);
 		UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,heFuWenSprite.gameObject,EffectIdTemplate.GetPathByeffectId(effectId));
 		StartCoroutine (WaitForClick (1));
 	}
@@ -900,11 +929,24 @@ public class FuWenMainPage : MonoBehaviour {
 	/// </summary>
 	public void RulesBtn ()
 	{
-		GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.FUSHI_HELP_DESC));
+		if (!IsBtnClick)
+		{
+			IsBtnClick = true;
+			FxController (FuWenMixBtn.FxType.CLEAR);
+			GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.FUSHI_HELP_DESC),SetBtnClick);
+		}
+	}
+
+	void SetBtnClick ()
+	{
+		IsBtnClick = false;
 	}
 
 	void OnCloseWindow ()
 	{
+		showTime = 0;
+		refreshZhanLi = false;
+		tipsObj.SetActive (false);
 		isOpenFuWen = false;
 		Global.m_isOpenFuWen = false;
 		gameObject.SetActive (false);

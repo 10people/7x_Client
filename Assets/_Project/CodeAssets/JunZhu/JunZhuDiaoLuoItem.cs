@@ -8,8 +8,8 @@ public class JunZhuDiaoLuoItem : MonoBehaviour
     public UILabel m_LabelChuanQi;
     public GameObject m_Mask;
  
-      public delegate void OnClick_Touch(int id);
-      OnClick_Touch touch_CallBack;
+    public delegate void OnClick_Touch(int id);
+    OnClick_Touch touch_CallBack;
 	public EventHandler m_TouchEvent;
     private bool _isChuangQi = false;
  
@@ -38,7 +38,7 @@ public class JunZhuDiaoLuoItem : MonoBehaviour
 	GameObject DiaoluoShow;
 	private void SkipScence(GameObject obj)
     {
-		if (DeviceHelper.IsSingleTouching() )
+		 if(Input.touchCount < 2)
         {
             if (_isChuangQi)
             {

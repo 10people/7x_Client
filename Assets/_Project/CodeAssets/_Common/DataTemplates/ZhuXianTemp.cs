@@ -59,7 +59,7 @@ public class ZhuXianTemp : XmlLoadManager
 
     public static List<int> taskShowIdList = new List<int>();
 
-    public static List<ZhuXianTemp> tempTasks = new List<ZhuXianTemp>();
+    private static List<ZhuXianTemp> tempTasks = new List<ZhuXianTemp>();
 
 
 
@@ -68,31 +68,34 @@ public class ZhuXianTemp : XmlLoadManager
         UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "ZhuXian.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
     }
 
-    public static void CurLoad(ref WWW www, string path, Object obj)
-    {
-        {
-            tempTasks.Clear();
-        }
+	private static TextAsset m_templates_text = null;
 
-        XmlReader t_reader = null;
+    public static void CurLoad(ref WWW www, string path, Object obj){
+		if ( obj == null ) {
+			Debug.LogError ("Asset Not Exist: " + path);
 
-        if (obj != null)
-        {
-            TextAsset t_text_asset = obj as TextAsset;
+			return;
+		}
 
-            t_reader = XmlReader.Create(new StringReader(t_text_asset.text));
+		m_templates_text = obj as TextAsset;
+	}
 
-            //			Debug.Log( "Text: " + t_text_asset.text );
-        }
-        else
-        {
-            t_reader = XmlReader.Create(new StringReader(www.text));
-        }
+	private static void ProcessAsset(){
+		if( tempTasks.Count > 0 ) {
+			return;
+		}
 
-        bool t_has_items = true;
+		if( m_templates_text == null ) {
+			Debug.LogError( "Error, Asset Not Exist." );
 
-        do
-        {
+			return;
+		}
+
+		XmlReader t_reader = XmlReader.Create( new StringReader( m_templates_text.text ) );
+
+		bool t_has_items = true;
+
+		do{
             t_has_items = t_reader.ReadToFollowing("ZhuXian");
 
             if (!t_has_items)
@@ -195,10 +198,33 @@ public class ZhuXianTemp : XmlLoadManager
             }
         }
         while (t_has_items);
+
+		{
+			m_templates_text = null;
+		}
     }
 
-    public static ZhuXianTemp getTemplateById(int id)
-    {
+	public static int GetTemplatesCount(){
+		{
+			ProcessAsset();
+		}
+
+		return tempTasks.Count;
+	}
+
+	public static ZhuXianTemp GetTemplateByIndex( int p_index ){
+		{
+			ProcessAsset();
+		}
+
+		return tempTasks[ p_index ];
+	}
+
+    public static ZhuXianTemp getTemplateById(int id){
+		{
+			ProcessAsset();
+		}
+
         foreach (ZhuXianTemp template in tempTasks)
         {
             if (template.id == id)
@@ -212,8 +238,10 @@ public class ZhuXianTemp : XmlLoadManager
         return null;
     }
 
-    public static int GetTypeById(int tempId)
-    {
+    public static int GetTypeById(int tempId){
+		{
+			ProcessAsset();
+		}
 
         foreach (ZhuXianTemp template in tempTasks)
         {
@@ -225,8 +253,10 @@ public class ZhuXianTemp : XmlLoadManager
         return tempId;
     }
 
-    public static string GetTaskIconById(int tempId)
-    {
+    public static string GetTaskIconById(int tempId){
+		{
+			ProcessAsset();
+		}
 
         foreach (ZhuXianTemp template in tempTasks)
         {
@@ -238,8 +268,10 @@ public class ZhuXianTemp : XmlLoadManager
         return "";
     }
 
-    public static int GetNpcIdById(int tempId)
-    {
+    public static int GetNpcIdById(int tempId){
+		{
+			ProcessAsset();
+		}
 
         foreach (ZhuXianTemp template in tempTasks)
         {
@@ -250,8 +282,11 @@ public class ZhuXianTemp : XmlLoadManager
         }
         return tempId;
     }
-    public static string GeTaskTitleById(int tempId)
-    {
+    public static string GeTaskTitleById(int tempId){
+		{
+			ProcessAsset();
+		}
+
         //        Debug.Log("tempIdtempIdtempId  ::::::" + tempId);
 
         foreach (ZhuXianTemp template in tempTasks)
@@ -264,8 +299,11 @@ public class ZhuXianTemp : XmlLoadManager
         return "";
     }
 
-    public static string GeTaskTitleByIndexid(int tempId)
-    {
+    public static string GeTaskTitleByIndexid(int tempId){
+		{
+			ProcessAsset();
+		}
+
 //        Debug.Log("tempIdtempIdtempId  ::::::" + tempId);
         foreach (ZhuXianTemp template in tempTasks)
         {

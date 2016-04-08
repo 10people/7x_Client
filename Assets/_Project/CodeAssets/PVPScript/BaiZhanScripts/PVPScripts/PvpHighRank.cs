@@ -51,10 +51,10 @@ public class PvpHighRank : MonoBehaviour {
 		rank1.text = tempResp.lastHighestRank.ToString ();
 		rank2.text = tempResp.pvpInfo.rank.ToString ();
 
-		Debug.Log ("tempResp.pvpInfo.historyHighRank:" + tempResp.pvpInfo.historyHighRank);
-		Debug.Log ("tempResp.pvpInfo.rank:" + tempResp.pvpInfo.rank);
+//		Debug.Log ("tempResp.pvpInfo.historyHighRank:" + tempResp.pvpInfo.historyHighRank);
+//		Debug.Log ("tempResp.pvpInfo.rank:" + tempResp.pvpInfo.rank);
 
-		junXian1.spriteName = "junxian" + BaiZhanTemplate.getBaiZhanJiBieByRank (tempResp.pvpInfo.historyHighRank);
+		junXian1.spriteName = "junxian" + BaiZhanTemplate.getBaiZhanJiBieByRank (tempResp.lastHighestRank);
 		junXian2.spriteName = "junxian" + baiZhanTemp.jibie;
 
 		if (iconSamplePrefab == null)

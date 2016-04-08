@@ -106,7 +106,7 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 						fuWenData.fuwens = new List<Fuwen>();
 					}
 
-//					Debug.Log ("战力：" + fuWenData.zhanli);
+					Debug.Log ("战力：" + fuWenData.zhanli);
 //					Debug.Log ("符文页：" + fuWenData.lanwei.Count);
 //					Debug.Log ("属性：" + fuWenData.attr.Count);
 //					Debug.Log ("背包符文：" + fuWenData.fuwens.Count);
@@ -120,15 +120,6 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 //					{
 //						Debug.Log ("符文：" + fuWenData.fuwens[i].itemId);
 //					}
-
-					for (int i = 0;i < fuWenData.lanwei.Count;i ++)
-					{
-						if (fuWenData.lanwei[i].itemId > 0)
-						{
-							FuShiRedTips (true);
-							break;
-						}
-					}
 
 					fuWenDataResp = fuWenData;
 
@@ -263,8 +254,7 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 								break;
 							}
 							fuWenMainPage.FxController (FuWenMixBtn.FxType.CLEAR);
-							Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-							                        FailLoadBack);
+							QXComData.CreateBox (1,failMsg,true,FailBack,true);
 							break;
 						}
 					}
@@ -286,15 +276,6 @@ public class FuWenData : Singleton<FuWenData>,SocketProcessor {
 		return false;
 	}
 
-	private void FailLoadBack(ref WWW p_www, string p_path, Object p_object)
-	{
-		UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-
-		string titleStr = "提示";
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-
-		uibox.setBox(titleStr,"\n\n" + MyColorData.getColorString (1,failMsg),null,null,confirmStr,null,FailBack);
-	}
 	void FailBack (int i)
 	{
 //		GameObject fuWenObj = GameObject.Find ("FuWen(Clone)");

@@ -120,10 +120,17 @@ namespace Rank
 
         public override void AddFriend()
         {
-            m_ModuleController.m_RootController.AddFriendName = m_JunZhuInfo.name;
+            if (FriendOperationData.Instance.m_FriendListInfo.friends.Select(item => item.ownerid).Contains(m_JunZhuInfo.junZhuId))
+            {
+                ClientMain.m_UITextManager.createText("该玩家已经是您的好友！");
+            }
+            else
+            {
+                m_ModuleController.m_RootController.AddFriendName = m_JunZhuInfo.name;
 
-            FriendOperationLayerManagerment.AddFriends((int)m_JunZhuInfo.junZhuId);
-            m_ModuleController.ClampScrollView();
+                FriendOperationLayerManagerment.AddFriends((int)m_JunZhuInfo.junZhuId);
+                m_ModuleController.ClampScrollView();
+            }
         }
 
         public override void Shield()

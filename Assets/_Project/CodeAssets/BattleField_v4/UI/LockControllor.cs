@@ -178,13 +178,17 @@ public class LockControllor : MonoBehaviour
 
 			lockSprite.alpha = ((targetActive == false && icon.activeSelf == true) ? 1f : .1f);
 
+			iTween.StopByName("refreshLock" + gc_lock.name);
+
 			iTween.ValueTo(gameObject, iTween.Hash(
+				"name", "refreshLock" + gc_lock.name,
 				"from", 0f,
 				"to", 1f,
 				"time", 2f,
 				"onupdate", "unlockUpdate",
 				"oncomplete", "unlockComplete",
-				"oncompleteparams", gc_lock
+				"oncompleteparams", gc_lock,
+				"ignoretimescale", true
 				));
 
 //			gc_lock.SetActive (targetActive == false && icon.activeSelf == true);
@@ -264,7 +268,8 @@ public class LockControllor : MonoBehaviour
 					"onstartparams", icon,
 					"oncompletetarget", gameObject,
 					"oncomplete", "unlockEffDone",
-					"oncompleteparams", sprite
+					"oncompleteparams", sprite,
+					"ignoretimescale", true
 					));
 			}
 		}
@@ -284,6 +289,8 @@ public class LockControllor : MonoBehaviour
 
 	private void startMove(GameObject icon)
 	{
+		UI3DEffectTool.ClearUIFx (icon);
+
 		//UI3DEffectTool.ShowTopLayerEffect( UI3DEffectTool.UIType.MainUI_0, icon, EffectIdTemplate.getEffectTemplateByEffectId(620223).path);
 	}
 

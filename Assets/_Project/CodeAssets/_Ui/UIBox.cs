@@ -38,6 +38,9 @@ public class UIBox : MYNGUIPanel
 
     public onclick m_onclick;
 
+	public delegate void YindaoControl();
+
+	private YindaoControl mYindaoControl;
     private class SetBoxCallback
     {
         public UIBox m_ui_box;
@@ -121,6 +124,17 @@ public class UIBox : MYNGUIPanel
     //	{
     //		setBox(tile, dis1, dis2, bagItem, buttonname1, buttonname2, onClcik);
     //	}
+	public void YinDaoControl(YindaoControl m_YindaoControl = null)
+	{
+		if(m_YindaoControl != null )
+		{
+			mYindaoControl = m_YindaoControl ;
+		}
+	}
+
+	private static string GetTitleString( string p_title_str ){
+		return "[b]" + p_title_str + "[-]";
+	}
 
     public void setBox(
         string tile, string dis1, string dis2,
@@ -141,10 +155,11 @@ public class UIBox : MYNGUIPanel
         }
 		else
 		{
+			//设置tile文字;
 			m_labelTile.bitmapFont = UI_TitleFont;
 		}
 
-        m_labelTile.text = "[b]" + tile + "[-]";//设置tile文字
+		m_labelTile.text = GetTitleString( tile );
 
         //设置上 介绍文字
         if (string.IsNullOrEmpty(dis1))
@@ -230,6 +245,10 @@ public class UIBox : MYNGUIPanel
 			m_Camera.depth = 100;
 			m_Panel.depth = 1005;
 		}
+
+		{
+			UICamera.ReSortUICamera();
+		}
     }
 
     public void createIcon(BagItem bagItem, int p_pos_x, int p_pos_y)
@@ -252,8 +271,6 @@ public class UIBox : MYNGUIPanel
 
     public void OnClick(GameObject obj)
     {
-//		Debug.Log( "OnClick()" );
-
 		m_button1.GetComponent<BoxCollider> ().enabled = false;
 		m_button2.GetComponent<BoxCollider> ().enabled = false;
 
@@ -261,7 +278,7 @@ public class UIBox : MYNGUIPanel
         {
             m_onclick( int.Parse(obj.name.Substring(6, 1)) );
         }
-
+		mYindaoControl = null;
         DoCloseWindow();
     }
 
@@ -272,6 +289,12 @@ public class UIBox : MYNGUIPanel
 			if(GameObject.Find("Map(Clone)")&& MainCityUI.m_MainCityUI.m_WindowObjectList.Count <= 1)
 			{
 				MapData.mapinstance.ShowPVEGuid ();
+				CityGlobalData.PveLevel_UI_is_OPen = false;
+			}
+			if(mYindaoControl != null)
+			{
+				mYindaoControl();
+				mYindaoControl = null;
 			}
 			Destroy(gameObject);
 		}
@@ -344,4 +367,33 @@ public class UIBox : MYNGUIPanel
 	{
 		
 	}
+
+
+	#region Utilities
+
+	public static bool BoxExistWithTime( string p_title ){
+		UILabel[] t_labels = GameObject.FindObjectsOfType<UILabel>();
+
+		string t_content = GetTitleString( p_title );
+
+		for( int i = 0; i < t_labels.Length; i++ ){
+			UILabel t_label = t_labels[ i ];
+
+			if( t_label == null ){
+				continue;
+			}
+
+			if( !t_label.gameObject.activeInHierarchy ){
+				continue;
+			}
+
+			if( t_label.text == t_content ){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	#endregion
 }

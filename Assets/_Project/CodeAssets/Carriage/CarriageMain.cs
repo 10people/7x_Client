@@ -46,6 +46,74 @@ namespace Carriage
             }
         }
 
+        /// <summary>
+        /// Avoid player share position with npc.
+        /// </summary>
+        public Vector2 LimitPlayerPositionByCarriageNPC(Vector2 originalVec2)
+        {
+            if (m_RootManager.m_CarriageSafeArea.m_SafeAreaList != null && m_RootManager.m_CarriageSafeArea.m_SafeAreaList.Any())
+            {
+                var temp = m_RootManager.m_CarriageSafeArea.m_SafeAreaList.Where(item => Vector2.Distance(item.AreaPos, originalVec2) < 2f).ToList();
+
+                if (temp != null && temp.Any())
+                {
+                    var distance = Vector2.Distance(temp.First().AreaPos, originalVec2);
+
+                    if (distance > 0.01f)
+                    {
+                        return temp.First().AreaPos + new Vector2((originalVec2.x - temp.First().AreaPos.x) / distance * 2, (originalVec2.y - temp.First().AreaPos.y) / distance * 2);
+                    }
+                    else
+                    {
+                        return temp.First().AreaPos + new Vector2(0, -2f);
+                    }
+                }
+            }
+
+            return originalVec2;
+        }
+
+        #region Chouren Manager
+
+        [HideInInspector]
+        public List<YaBiaoEnemy> ChourenList = new List<YaBiaoEnemy>();
+
+        public void RefreshChourenState()
+        {
+            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Values.Select(item => item.GetComponent<CarriageBaseCultureController>()).ToList().ForEach(item => item.IsChouRen = IsChouren(item.JunzhuID));
+        }
+
+        public bool IsChouren(long junzhuID)
+        {
+            return ChourenList != null && ChourenList.Any() && ChourenList.Any(item => item.enemyJzId == junzhuID);
+        }
+
+        #endregion
+
+        #region Navigate with tracking
+
+        [HideInInspector]
+        public Transform m_TargetItemTransform;
+
+        private const float m_TrackingNavigateRange = 1.5f;
+
+        public void NavigateToItem()
+        {
+            if (m_RootManager.m_SelfPlayerController == null || m_TargetItemTransform == null)
+            {
+                return;
+            }
+
+            //Make navigate move.
+            if (Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, m_TargetItemTransform.position) > m_TrackingNavigateRange)
+            {
+                m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = NavigateToItem;
+                m_RootManager.m_SelfPlayerController.StartNavigation(m_TargetItemTransform.position);
+            }
+        }
+
+        #endregion
+
         #region Map Controller
 
         public MapController m_MapController;
@@ -94,10 +162,10 @@ namespace Carriage
             if (m_RootManager.m_SelfPlayerController != null && m_RootManager.m_SelfPlayerCultureController != null)
             {
                 //Cancel chase.
-                RootManager.Instance.m_CarriageMain.TryCancelChaseToAttack();
+                m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
 
                 m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = m_RootManager.m_CarriageMain.DoStartCarriage;
-                m_RootManager.m_SelfPlayerController.StartNavigation(m_RootManager.m_CarriageSafeArea.m_CarriageNPCList.OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.transform.position)).First().transform.position);
+                m_RootManager.m_SelfPlayerController.StartNavigation(m_RootManager.m_CarriageSafeArea.m_CarriageNPCList.OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.transform.position)).First().transform.position, 2);
             }
         }
 
@@ -203,6 +271,14 @@ namespace Carriage
                     }
                 }
 
+                //Special check for attack/ sp attack.
+                if ((template.SkillId == 101 || template.SkillId == 111) && m_RootManager.m_SelfPlayerController != null && m_RootManager.m_SelfPlayerCultureController != null && m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(m_TargetId) && m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetId].IsCarriage && RemainingRobCarriageTimes <= 0)
+                {
+                    ClientMain.m_UITextManager.createText("今日的劫镖次数已用完,可与其他玩家切磋身手");
+                    m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
+                    return;
+                }
+
                 //Special check for blood recover.
                 if (template.SkillId == 121 && m_RootManager.m_SelfPlayerController != null && m_RootManager.m_SelfPlayerCultureController != null && m_RootManager.m_SelfPlayerCultureController.RemainingBlood >= m_RootManager.m_SelfPlayerCultureController.TotalBlood)
                 {
@@ -231,19 +307,21 @@ namespace Carriage
 
         public void OnNavigateToMyCarriageClick()
         {
-            if (RootManager.Instance.m_SelfPlayerController != null && RootManager.Instance.m_SelfPlayerCultureController != null)
+            if (m_RootManager.m_SelfPlayerController != null && m_RootManager.m_SelfPlayerCultureController != null)
             {
                 var temp = m_TotalCarriageListController.m_StoredCarriageControllerList.Where(item => item.KingName == JunZhuData.Instance().m_junzhuInfo.name).ToList();
 
-                if (temp.Any() && RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(temp.First().UID))
+                if (temp.Any() && m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(temp.First().UID))
                 {
                     //Cancel chase.
-                    RootManager.Instance.m_CarriageMain.TryCancelChaseToAttack();
+                    m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
 
-                    RootManager.Instance.m_SelfPlayerController.StartNavigation(RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic[temp.First().UID].transform.position);
+                    m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = null;
+                    m_TargetItemTransform = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[temp.First().UID].transform;
+                    NavigateToItem();
 
                     //m_TotalCarriageListController.OnCloseWindowClick();
-                    //RootManager.Instance.m_CarriageMain.OnCloseBigMap();
+                    //m_RootManager.m_CarriageMain.OnCloseBigMap();
                 }
             }
         }
@@ -392,19 +470,31 @@ namespace Carriage
 
         #region Buy Blood Time
 
+        [HideInInspector]
+        public bool IsCanClickBuyBloodTimes = true;
+
         public void OnBuyBloodTimesClick()
         {
-            BuyXuePingReq temp = new BuyXuePingReq()
+            if (IsCanClickBuyBloodTimes)
             {
-                code = 2
-            };
-            MemoryStream tempStream = new MemoryStream();
-            QiXiongSerializer tempSer = new QiXiongSerializer();
-            tempSer.Serialize(tempStream, temp);
-            byte[] t_protof;
-            t_protof = tempStream.ToArray();
+                IsCanClickBuyBloodTimes = false;
 
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_XUEPING_REQ, ref t_protof);
+                BuyXuePingReq temp = new BuyXuePingReq()
+                {
+                    code = 2
+                };
+                MemoryStream tempStream = new MemoryStream();
+                QiXiongSerializer tempSer = new QiXiongSerializer();
+                tempSer.Serialize(tempStream, temp);
+                byte[] t_protof;
+                t_protof = tempStream.ToArray();
+
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_XUEPING_REQ, ref t_protof);
+            }
+            else
+            {
+                Debug.LogWarning("Cancel click buy blood times.");
+            }
         }
 
         public void DoBuyBloodTimes()
@@ -470,18 +560,7 @@ namespace Carriage
                 return null;
             }
 
-            //Select carriage.
-            var carriageList = allItemList.Where(item => item.Value.IsCarriage).ToList();
-            //Select player.
-            var playerList = allItemList.Where(item => !item.Value.IsCarriage).ToList();
-
-            //Order.
-            carriageList = carriageList.OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.Value.transform.position)).ToList();
-            playerList = playerList.OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.Value.transform.position)).ToList();
-
-            allItemList = carriageList.Concat(playerList).ToList();
-
-            return allItemList.Select(item => item.Key).ToList();
+            return allItemList.OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.Value.transform.position)).ThenBy(item => item.Value.IsCarriage).Select(item => item.Key).ToList();
         }
 
         /// <summary>
@@ -619,16 +698,25 @@ namespace Carriage
                                         {
                                             m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.forward = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.targetUid].transform.position - m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.position;
                                             m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles = new Vector3(0, m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles.y, 0);
+
+                                            if (EffectNumController.Instance.IsCanPlayEffect())
+                                            {
+                                                EffectNumController.Instance.NotifyPlayingEffect();
+
+                                                FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+                                            }
+
                                         }
                                         else if (tempInfo.targetUid == PlayerSceneSyncManager.Instance.m_MyselfUid && m_RootManager.m_SelfPlayerController != null)
                                         {
                                             m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.forward = m_RootManager.m_SelfPlayerController.transform.position - m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.position;
                                             m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles = new Vector3(0, m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles.y, 0);
+
+                                            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+
                                         }
 
                                         temp.First().Value.DeactiveMove();
-
-                                        FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
                                     }
                                 }
                                 else
@@ -661,7 +749,13 @@ namespace Carriage
                                     //other player been attack, carriage not included.
                                     if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.targetUid, RTActionTemplate.GetTemplateByID(tempInfo.skillId).CeOnHit))
                                     {
-                                        FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(tempInfo.skillId).CsOnHit), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+
+                                        if (EffectNumController.Instance.IsCanPlayEffect())
+                                        {
+                                            EffectNumController.Instance.NotifyPlayingEffect();
+
+                                            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(tempInfo.skillId).CsOnHit), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+                                        }
 
                                         EffectTool.Instance.SetHittedEffect(temp.First().Value.gameObject);
                                     }
@@ -726,7 +820,12 @@ namespace Carriage
                                     {
                                         temp.First().Value.DeactiveMove();
 
-                                        FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+                                        if (EffectNumController.Instance.IsCanPlayEffect())
+                                        {
+                                            EffectNumController.Instance.NotifyPlayingEffect();
+
+                                            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+                                        }
                                     }
                                 }
                             }
@@ -1047,7 +1146,7 @@ namespace Carriage
         public GameObject m_SafeAresRecoveringParent;
         public int m_SafeAresRecoveringLevel = -1;
 
-        private void SetRecoveringIcon(bool isShow)
+        public void SetRecoveringIcon(bool isShow)
         {
             if (isShow)
             {
@@ -1088,7 +1187,7 @@ namespace Carriage
         public GameObject CarriageBuffParent;
         public int m_CarriageBuffLevel = -1;
 
-        private void SetCarriageBuffIcon(bool isShow)
+        public void SetCarriageBuffIcon(bool isShow)
         {
             if (isShow)
             {
@@ -1143,22 +1242,13 @@ namespace Carriage
             {
                 if (value != isCanWhipValue)
                 {
-                    if (UI3DEffectTool.HaveAnyFx(WhipObject))
-                    {
-                        UI3DEffectTool.ClearUIFx(WhipObject);
-                    }
-
                     if (value)
                     {
-                        UI3DEffectTool.ShowBottomLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, WhipObject, EffectTemplate.getEffectTemplateByEffectId(100009).path);
-
-                        WhipObject.GetComponent<UISprite>().color = Color.white;
-                        WhipObject.GetComponent<UIButton>().enabled = true;
+                        SparkleEffectItem.OpenSparkle(WhipObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
                     }
                     else
                     {
-                        WhipObject.GetComponent<UIButton>().enabled = false;
-                        WhipObject.GetComponent<UISprite>().color = Color.grey;
+                        SparkleEffectItem.CloseSparkle(WhipObject);
                     }
                 }
 
@@ -1174,22 +1264,13 @@ namespace Carriage
             {
                 if (value != isCanAidValue)
                 {
-                    if (UI3DEffectTool.HaveAnyFx(AidObject))
-                    {
-                        UI3DEffectTool.ClearUIFx(AidObject);
-                    }
-
                     if (value)
                     {
-                        UI3DEffectTool.ShowBottomLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, AidObject, EffectTemplate.getEffectTemplateByEffectId(100009).path);
-
-                        AidObject.GetComponent<UISprite>().color = Color.white;
-                        AidObject.GetComponent<UIButton>().enabled = true;
+                        SparkleEffectItem.OpenSparkle(AidObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
                     }
                     else
                     {
-                        AidObject.GetComponent<UIButton>().enabled = false;
-                        AidObject.GetComponent<UISprite>().color = Color.grey;
+                        SparkleEffectItem.CloseSparkle(AidObject);
                     }
                 }
 
@@ -1399,6 +1480,17 @@ namespace Carriage
 
         #endregion
 
+        #region Record red alert
+
+        public UISprite m_RecordRedAlertObject;
+
+        public void SetRecordRedAlert(bool isActive)
+        {
+            m_RecordRedAlertObject.gameObject.SetActive(isActive);
+        }
+
+        #endregion
+
         #region TP
 
         public TPController m_TpController;
@@ -1410,7 +1502,7 @@ namespace Carriage
             if (m_RootManager.m_SelfPlayerController != null && m_RootManager.m_SelfPlayerCultureController != null)
             {
                 m_TpController.m_ExecuteAfterTP = ExecuteAfterTp;
-                m_TpController.TPToPosition(p_position, m_tpDuration);
+                m_TpController.TPToPosition(LimitPlayerPositionByCarriageNPC(p_position), m_tpDuration);
             }
         }
 
@@ -1438,42 +1530,27 @@ namespace Carriage
         #region Help Window
 
         public GameObject HelpWindowObject;
-        public ScaleEffectController m_ScaleEffectController;
-
-        public UIScrollBar m_HelpWindowScrollBar;
-        public UIScrollView m_HelpWindowScrollView;
-
-        public UILabel HelpInfoLabel;
 
         public void OnOpenHelpWindowClick()
         {
             HelpWindowObject.SetActive(true);
-            m_ScaleEffectController.OpenCompleteDelegate = OnOpenHelpWindowComplete;
-            m_ScaleEffectController.OnOpenWindowClick();
-        }
 
-        private void OnOpenHelpWindowComplete()
-        {
-            SetHelpWindow();
+            //Open guide.
+            if (FreshGuide.Instance().IsActive(100370) && TaskData.Instance.m_TaskInfoDic[100370].progress >= 0)
+            {
+                UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[100370].m_listYindaoShuju[3]);
+            }
         }
 
         public void OnCloseHelpWindowClick()
         {
-            m_ScaleEffectController.CloseCompleteDelegate = OnCloseHelpWindowComplete;
-            m_ScaleEffectController.OnCloseWindowClick();
-        }
-
-        private void OnCloseHelpWindowComplete()
-        {
             HelpWindowObject.SetActive(false);
-        }
 
-        public void SetHelpWindow()
-        {
-            HelpInfoLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.CARRIAGE_HELP_DESC);
-            m_HelpWindowScrollView.UpdateScrollbars(true);
-            m_HelpWindowScrollBar.value = 0f;
-            m_HelpWindowScrollBar.ForceUpdate();
+            //Open guide.
+            if (FreshGuide.Instance().IsActive(100370) && TaskData.Instance.m_TaskInfoDic[100370].progress >= 0)
+            {
+                UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[100370].m_listYindaoShuju[4]);
+            }
         }
 
         #endregion
@@ -1589,14 +1666,16 @@ namespace Carriage
 
         public void NavigateToCarriage(int kingID)
         {
-            var temp = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Select(item => item.Value.GetComponent<CarriageBaseCultureController>()).Where(item => item.JunzhuID == kingID).ToList();
+            var temp = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Select(item => item.Value.GetComponent<CarriageBaseCultureController>()).Where(item => item.JunzhuID == kingID && item.IsCarriage).ToList();
 
             if (temp.Any())
             {
                 //Cancel chase.
-                RootManager.Instance.m_CarriageMain.TryCancelChaseToAttack();
+                m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
 
-                m_RootManager.m_SelfPlayerController.StartNavigation(temp.First().transform.position);
+                m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = null;
+                m_TargetItemTransform = temp.First().transform;
+                NavigateToItem();
             }
         }
 
@@ -1622,6 +1701,69 @@ namespace Carriage
 
             #endregion
 
+            //update total carriage list
+            m_TotalCarriageListController.m_StoredCarriageControllerList = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Where(item => item.Value.IsCarriage).Select(item => item.Value.GetComponent<CarriageCultureController>()).ToList();
+
+            if (m_TotalCarriageListController.m_StoredCarriageControllerList.Any(item => item.KingName == JunZhuData.Instance().m_junzhuInfo.name))
+            {
+                //update 2 lists state
+                m_MyHelperListController.gameObject.SetActive(true);
+                m_TotalCarriageListController.gameObject.SetActive(false);
+
+                //update start carriage btn
+                if (UI3DEffectTool.HaveAnyFx(m_StartCarriageBTN.gameObject))
+                {
+                    UI3DEffectTool.ClearUIFx(m_StartCarriageBTN.gameObject);
+                }
+
+                m_StartCarriageBTN.color = Color.grey;
+                m_StartCarriageBTN.GetComponent<UIButton>().enabled = false;
+                isCanStartCarriage = false;
+
+                //Show my carriage logo.
+                ShowMyCarriageLogo(m_TotalCarriageListController.m_StoredCarriageControllerList.Where(item => item.KingName == JunZhuData.Instance().m_junzhuInfo.name).First());
+            }
+            else
+            {
+                //update 2 lists state
+                m_MyHelperListController.gameObject.SetActive(false);
+                m_TotalCarriageListController.gameObject.SetActive(true);
+
+                //Clear my helper list.
+                if (m_MyHelperListController.m_StoredXieZhuJunZhuResp == null)
+                {
+                    m_MyHelperListController.m_StoredXieZhuJunZhuResp = new XieZhuJunZhuResp();
+                }
+                if (m_MyHelperListController.m_StoredXieZhuJunZhuResp.xiezhuJz == null)
+                {
+                    m_MyHelperListController.m_StoredXieZhuJunZhuResp.xiezhuJz = new List<XieZhuJunZhu>();
+                }
+                m_MyHelperListController.m_StoredXieZhuJunZhuResp.xiezhuJz.Clear();
+
+                //update start carriage btn.
+                if (RemainingStartCarriageTimes > 0)
+                {
+                    if (!UI3DEffectTool.HaveAnyFx(m_StartCarriageBTN.gameObject))
+                    {
+                        UI3DEffectTool.ShowBottomLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, m_StartCarriageBTN.gameObject, EffectTemplate.getEffectTemplateByEffectId(600154).path);
+                    }
+                }
+                else
+                {
+                    if (UI3DEffectTool.HaveAnyFx(m_StartCarriageBTN.gameObject))
+                    {
+                        UI3DEffectTool.ClearUIFx(m_StartCarriageBTN.gameObject);
+                    }
+                }
+
+                m_StartCarriageBTN.color = Color.white;
+                m_StartCarriageBTN.GetComponent<UIButton>().enabled = true;
+                isCanStartCarriage = true;
+
+                //Hide my carriage logo.
+                HideMyCarriageLogo();
+            }
+
             if (Time.realtimeSinceStartup - checkTime1 > 1.0f)
             {
                 //auto active/deactive target.
@@ -1631,68 +1773,18 @@ namespace Carriage
                 //check safe area.
                 SetSafeAreaFlag(new Vector2(m_RootManager.m_SelfPlayerController.transform.localPosition.x, m_RootManager.m_SelfPlayerController.transform.localPosition.z));
 
-                //update total carriage list
-                m_TotalCarriageListController.m_StoredCarriageControllerList = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Where(item => item.Value.IsCarriage).Select(item => item.Value.GetComponent<CarriageCultureController>()).ToList();
-
-                if (m_TotalCarriageListController.m_StoredCarriageControllerList.Any(item => item.KingName == JunZhuData.Instance().m_junzhuInfo.name))
-                {
-                    //update 2 lists state
-                    m_MyHelperListController.gameObject.SetActive(true);
-                    m_TotalCarriageListController.gameObject.SetActive(false);
-
-                    //update start carriage btn
-                    if (UI3DEffectTool.HaveAnyFx(m_StartCarriageBTN.gameObject))
-                    {
-                        UI3DEffectTool.ClearUIFx(m_StartCarriageBTN.gameObject);
-                    }
-
-                    m_StartCarriageBTN.color = Color.grey;
-                    m_StartCarriageBTN.GetComponent<UIButton>().enabled = false;
-                    isCanStartCarriage = false;
-
-                    //Show my carriage logo.
-                    ShowMyCarriageLogo(m_TotalCarriageListController.m_StoredCarriageControllerList.Where(item => item.KingName == JunZhuData.Instance().m_junzhuInfo.name).First());
-                }
-                else
-                {
-                    //update 2 lists state
-                    m_MyHelperListController.gameObject.SetActive(false);
-                    m_TotalCarriageListController.gameObject.SetActive(true);
-
-                    //Clear my helper list.
-                    if (m_MyHelperListController.m_StoredXieZhuJunZhuResp == null)
-                    {
-                        m_MyHelperListController.m_StoredXieZhuJunZhuResp = new XieZhuJunZhuResp();
-                    }
-                    if (m_MyHelperListController.m_StoredXieZhuJunZhuResp.xiezhuJz == null)
-                    {
-                        m_MyHelperListController.m_StoredXieZhuJunZhuResp.xiezhuJz = new List<XieZhuJunZhu>();
-                    }
-                    m_MyHelperListController.m_StoredXieZhuJunZhuResp.xiezhuJz.Clear();
-
-                    //update start carriage btn.
-                    if (RemainingStartCarriageTimes > 0)
-                    {
-                        if (!UI3DEffectTool.HaveAnyFx(m_StartCarriageBTN.gameObject))
-                        {
-                            UI3DEffectTool.ShowBottomLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, m_StartCarriageBTN.gameObject, EffectTemplate.getEffectTemplateByEffectId(600154).path);
-                        }
-                    }
-                    else
-                    {
-                        if (UI3DEffectTool.HaveAnyFx(m_StartCarriageBTN.gameObject))
-                        {
-                            UI3DEffectTool.ClearUIFx(m_StartCarriageBTN.gameObject);
-                        }
-                    }
-
-                    m_StartCarriageBTN.color = Color.white;
-                    m_StartCarriageBTN.GetComponent<UIButton>().enabled = true;
-                    isCanStartCarriage = true;
-
-                    //Hide my carriage logo.
-                    HideMyCarriageLogo();
-                }
+                //Switch NGUI UI state for perfermance.
+                m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Select(item => item.Value.GetComponent<CarriageBaseCultureController>()).ToList().ForEach(item =>
+                  {
+                      if (UtilityTool.IsInScreen(item.m_UIParentObject.transform.position, m_RootManager.TrackCamera) && Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.transform.position) <= SelectDistance * 2)
+                      {
+                          item.SetUIParentObject(true);
+                      }
+                      else
+                      {
+                          item.SetUIParentObject(false);
+                      }
+                  });
 
                 checkTime1 = Time.realtimeSinceStartup;
             }
@@ -1754,7 +1846,9 @@ namespace Carriage
                 {
                     if (Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetId].transform.position) > template.Range_Max)
                     {
-                        m_RootManager.m_SelfPlayerController.StartNavigation(m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetId].transform.position);
+                        m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = null;
+                        m_TargetItemTransform = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetId].transform;
+                        NavigateToItem();
                     }
                 }
             }
@@ -1774,12 +1868,14 @@ namespace Carriage
             //Execute remaining data.
             ExecuteReportData();
 
-            //Init whip/aid button color.
-            isCanAid = true;
-            isCanWhip = true;
-
             //Open spark effect for button.
             SparkleEffectItem.OpenSparkle(OpenTotalCarriageListButton.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
+
+            //Set record red alert.
+            if (FunctionOpenTemp.IsShowRedSpotNotification(313) || FunctionOpenTemp.IsShowRedSpotNotification(315))
+            {
+                SetRecordRedAlert(true);
+            }
         }
 
         void Awake()

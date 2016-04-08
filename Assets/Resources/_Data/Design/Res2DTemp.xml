@@ -248,5 +248,8 @@
 <Res2DTemplate UIID="246" path="_UIs/Alliance/Prefabs/AlianceYQingItem" />
 <Res2DTemplate UIID="247" path="_UIs/TreasureCity/Prefabs/TreasureCityUI" />
 <Res2DTemplate UIID="248" path="_UIs/Alliance/Prefabs/AllianceSwichCountryLayer" />
+<Res2DTemplate UIID="249" path="New/TreasureBox" />
 <Res2DTemplate UIID="250" path="Global/UI_Shouji" />
+<Res2DTemplate UIID="251" path="New/MaxTili" />
+<Res2DTemplate UIID="252" path="_UIs/MainCity/Prefabs/MainCityYunYing" />
 </dataset>

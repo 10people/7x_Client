@@ -11,6 +11,7 @@ public class MainCityAddFunction : MYNGUIPanel
 		Def		= 0,
 		Eff 	= 1,
 		Click	= 2,
+		Delete  = 3,
 	}
 
 	private AddFunctionSatatae m_AddFunctionSatatae = AddFunctionSatatae.Eff;
@@ -86,6 +87,7 @@ public class MainCityAddFunction : MYNGUIPanel
 	{
 		if(m_AddFunctionSatatae == AddFunctionSatatae.Click)
 		{
+			m_AddFunctionSatatae = AddFunctionSatatae.Delete;
 			MainCityUI.TryRemoveFromObjectList(MainCityUI.m_MainCityUI.m_AddFunction);
 			MainCityUI.m_MainCityUI.AddButton(m_FunctionButtonManager, m_FunctionOpenTemp);
 			Destroy(m_objThis);

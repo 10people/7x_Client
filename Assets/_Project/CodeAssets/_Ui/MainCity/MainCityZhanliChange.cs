@@ -23,7 +23,7 @@ public class MainCityZhanliChange : MYNGUIPanel
 	// Use this for initialization
 	void Start () 
 	{
-		m_UILabelHeroZhanli.text = Global.m_iPZhanli.ToString();
+		m_UILabelHeroZhanli.text = Global.m_iPChangeZhanli.ToString();
 		m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
 
 		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_objEff, EffectTemplate.getEffectTemplateByEffectId( 100191 ).path);

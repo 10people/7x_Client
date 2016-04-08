@@ -25,10 +25,9 @@ public class ShopPage : MonoBehaviour {
 	
 	private ShopData.ShopPageType spType = ShopData.ShopPageType.MAIN_PAGE;
 
-	private bool isDuiHuanYinDao = false;
-	private bool isByFuShiYinDao = false;
-
 	public GameObject moneyObj;
+
+//	private bool isCreateEnd = true;//是否创建完全
 
 	void Awake ()
 	{
@@ -93,6 +92,8 @@ public class ShopPage : MonoBehaviour {
 	private bool buyFinished = false;
 	public bool BuyFinished { set{buyFinished = value;} get{return buyFinished;} }
 
+	public float clickTime = 0;
+
 	/// <summary>
 	/// Ins it shop page.
 	/// </summary>
@@ -100,8 +101,10 @@ public class ShopPage : MonoBehaviour {
 	/// <param name="tempShopRes">Temp shop res.</param>
 	public void InItShopPage (ShopData.ShopType tempType,ShopResp tempShopRes)
 	{
+//		isCreateEnd = false;
 		shopResp = tempShopRes;
-		
+		clickTime = 0;
+
 		if (ShopData.Instance.IsOpenFirstTime)
 		{
 			sEffectController.OnOpenWindowClick ();
@@ -144,6 +147,9 @@ public class ShopPage : MonoBehaviour {
 		{
 			ShopData.ShopType sType = (ShopData.ShopType)Enum.ToObject (typeof (ShopData.ShopType),i + 1);
 			shopBtnList[i].gameObject.SetActive (ShopData.Instance.IsShopFunctionOpen (sType));
+//			Debug.Log ("sTypeRed:" + sType + "||" + ShopData.Instance.IsBtnRed (sType));
+
+			shopBtnList[i].transform.FindChild ("Red").gameObject.SetActive (sType == shopType ? false : ShopData.Instance.IsBtnRed (sType));
 
 			shopBtnList[i].transform.localPosition = new Vector3(0,-75 * activeCount,0);
 			activeCount += ShopData.Instance.IsShopFunctionOpen (sType) ? 1 : 0;
@@ -161,7 +167,7 @@ public class ShopPage : MonoBehaviour {
 			moneyLabel.text = tempShopRes.money.ToString ();
 		}
 
-		bool isAllianceType = tempType == ShopData.ShopType.GONGXIAN || tempType == ShopData.ShopType.GONGXUN || tempType == ShopData.ShopType.HUANGYE ? true : false;
+		bool isAllianceType = tempType == ShopData.ShopType.GONGXIAN ? true : false;
 		refreshBtn.SetActive (!isAllianceType);
 		refreshLabelObj.transform.localPosition = new Vector3 (isAllianceType ? 335 : 150,185,0);
 
@@ -175,13 +181,79 @@ public class ShopPage : MonoBehaviour {
 
 		CreateGoodList ();
 
-//		Debug.Log ("QXComData.CheckYinDaoOpenState (400040):" + QXComData.CheckYinDaoOpenState (400040));
-		if (!BuyFinished)
+		//yindao 
+		switch (shopType)
 		{
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 1);
+		case ShopData.ShopType.WEIWANG:
+		{
+			if (QXComData.CheckYinDaoOpenState (100220))
+			{
+				Debug.Log ("WEIWANG");
+				if (!BuyFinished)
+				{
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100220,2);
+				}
+			}
+			break;
 		}
+		case ShopData.ShopType.MYSTRERT:
+		{
+			if (QXComData.CheckYinDaoOpenState (100460))
+			{
+				Debug.Log ("MYSTRERT2");
+				if (!BuyFinished)
+				{
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100460,2);
+				}
+			}
+
+			break;
+		}
+		case ShopData.ShopType.GONGXIAN:
+		{
+			if (QXComData.CheckYinDaoOpenState (400040))
+			{
+				Debug.Log ("GONGXIAN");
+				if (!BuyFinished)
+				{
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 1);
+					goodScrollView.enabled = false;
+				}
+				else
+				{
+					goodScrollView.enabled = true;
+				}
+			}
+			else
+			{
+				goodScrollView.enabled = true;
+			}
+
+			break;
+		}
+		default:
+		{
+			if (QXComData.CheckYinDaoOpenState (100460))
+			{
+				if (!BuyFinished)
+				{
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100460,1);
+				}
+				Debug.Log ("MYSTRERT1");
+			}
+			else
+			{
+				UIYindao.m_UIYindao.CloseUI ();
+			}
+
+			break;
+		}
+		}
+
+		clickTime = 0.5f;
+//		isCreateEnd = true;
 	}
-	
+
 	/// <summary>
 	/// Shops the state of the button.
 	/// </summary>
@@ -207,6 +279,15 @@ public class ShopPage : MonoBehaviour {
 	
 	void ShopBtnClickBack (GameObject obj)
 	{
+		Debug.Log ("IsShowYinDao4");
+//		if (!isCreateEnd)
+//		{
+//			return;
+//		}
+		if (clickTime > 0)
+		{
+			return;
+		}
 //		Debug.Log (obj.name + "||" + ((int)shopType).ToString ());
 		if (((int)shopType).ToString () != obj.name)
 		{
@@ -215,7 +296,11 @@ public class ShopPage : MonoBehaviour {
 			
 //			ShopBtnState (type);
 			ShopData.Instance.OpenShop (type);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100460,2);
+
+			if (ShopData.Instance.ShopBtnRedId (type) != -1)
+			{
+				PushAndNotificationHelper.SetRedSpotNotification (ShopData.Instance.ShopBtnRedId (type),false);
+			}
 		}
 	}
 	
@@ -224,6 +309,39 @@ public class ShopPage : MonoBehaviour {
 	/// </summary>
 	void CreateGoodList ()
 	{
+		if (shopType == ShopData.ShopType.GONGXIAN)
+		{
+			for (int i = 0;i < shopResp.goodsInfos.Count - 1;i ++)
+			{
+//				Debug.Log ("shoptype:" + shopType);
+				for (int j = 0;j < shopResp.goodsInfos.Count - i - 1;j ++)
+				{
+					LMDuiHuanTemplate template1 = LMDuiHuanTemplate.getLMDuiHuanTemplateById (shopResp.goodsInfos[j].id);
+					LMDuiHuanTemplate template2 = LMDuiHuanTemplate.getLMDuiHuanTemplateById (shopResp.goodsInfos[j + 1].id);
+					bool open1 = ShopData.Instance.GetAllianceLevel () >= template1.needLv;
+					bool open2 = ShopData.Instance.GetAllianceLevel () >= template2.needLv;
+					if (open1 != open2)
+					{
+						if (!open1)
+						{
+							DuiHuanInfo tempInfo = shopResp.goodsInfos[j];
+							shopResp.goodsInfos[j] = shopResp.goodsInfos[j + 1];
+							shopResp.goodsInfos[j + 1] = tempInfo;
+						}
+					}
+					else
+					{
+						if (template1.needLv > template2.needLv)
+						{
+							DuiHuanInfo tempInfo = shopResp.goodsInfos[j];
+							shopResp.goodsInfos[j] = shopResp.goodsInfos[j + 1];
+							shopResp.goodsInfos[j + 1] = tempInfo;
+						}
+					}
+				}
+			}
+		}
+
 		goodObjList = QXComData.CreateGameObjectList (goodItemObj,goodGrid.GetComponent<UIGrid> (),shopResp.goodsInfos.Count,goodObjList);
 
 		for (int i = 0;i < shopResp.goodsInfos.Count;i ++)
@@ -255,7 +373,7 @@ public class ShopPage : MonoBehaviour {
 	
 	#region SellPage
 	
-	private List<ShopSellGoodInfo> sellGoodList = new List<ShopSellGoodInfo> ();
+	private Dictionary<long,ShopSellGoodInfo> sellGoodDic = new Dictionary<long, ShopSellGoodInfo> ();
 	private List<GameObject> bagObjList = new List<GameObject> ();
 	
 	public UIScrollView bagSc;
@@ -281,7 +399,7 @@ public class ShopPage : MonoBehaviour {
 
 		if (tempSellState == 0)
 		{
-			sellGoodList.Clear ();
+			sellGoodDic.Clear ();
 			foreach (BagItem b in BagData.Instance().m_bagItemList)
 			{
 				if (b.itemType == 21)//玉玦
@@ -292,7 +410,16 @@ public class ShopPage : MonoBehaviour {
 					sellGood.dbId = b.dbId;
 					sellGood.itemNum = b.cnt;
 					sellGood.sellType = 1;
-					sellGoodList.Add(sellGood);
+					if (!sellGoodDic.ContainsKey (sellGood.dbId))
+					{
+						sellGoodDic.Add (sellGood.dbId,sellGood);
+					}
+					else
+					{
+						sellGoodDic[sellGood.dbId].itemNum += sellGood.itemId;
+					}
+
+					Debug.Log ("b.dbId:" + b.dbId + "||b.itemId" + b.itemId + "||b.cnt" + b.cnt);
 				}
 			}
 			
@@ -307,21 +434,29 @@ public class ShopPage : MonoBehaviour {
 					sellGood.dbId = miBao.dbId;
 					sellGood.itemNum = miBao.suiPianNum;
 					sellGood.sellType = 2;
-					sellGoodList.Add(sellGood);
+					if (!sellGoodDic.ContainsKey (sellGood.dbId))
+					{
+						sellGoodDic.Add (sellGood.dbId,sellGood);
+					}
+					else
+					{
+						sellGoodDic[sellGood.dbId].itemNum += sellGood.itemId;
+					}
+					Debug.Log ("miBao.dbId:" + miBao.dbId + "||miBao.itemId" + sellGood.itemId + "||miBao.cnt" + miBao.suiPianNum);
 				}
 			}
 		}
 		else
 		{
-			for (int i = 0;i < sellGoodList.Count;i ++)
+			foreach (KeyValuePair<long,SellGoodsInfo> pair in sellDic)
 			{
-				if (sellDic.ContainsKey (sellGoodList[i].dbId))
+				Debug.Log ("pair:bagId:" + pair.Value.bagId + "||count:" + pair.Value.count);
+				if (sellGoodDic.ContainsKey (pair.Key))
 				{
-					sellGoodList[i].itemNum -= sellDic[sellGoodList[i].dbId].count;
-
-					if (sellGoodList[i].itemNum <= 0)
+					sellGoodDic[pair.Key].itemNum -= pair.Value.count;
+					if (sellGoodDic[pair.Key].itemNum <= 0)
 					{
-						sellGoodList.Remove (sellGoodList[i]);
+						sellGoodDic.Remove (pair.Key);
 					}
 				}
 			}
@@ -329,9 +464,9 @@ public class ShopPage : MonoBehaviour {
 
 		sellDic.Clear ();
 
-		bagSc.transform.parent.gameObject.SetActive (sellGoodList.Count > 0 ? true : false);
-		
-		int bagItemCount = sellGoodList.Count - bagObjList.Count;
+		bagSc.transform.parent.gameObject.SetActive (sellGoodDic.Count > 0 ? true : false);
+
+		int bagItemCount = sellGoodDic.Count - bagObjList.Count;
 		if (bagItemCount > 0)
 		{
 			for (int i = 0;i < bagItemCount;i ++)
@@ -348,24 +483,30 @@ public class ShopPage : MonoBehaviour {
 				bagObjList.RemoveAt (bagObjList.Count - 1);
 			}
 		}
-		
+
+		List<ShopSellGoodInfo> sellGoodInfoList = new List<ShopSellGoodInfo> ();
+		foreach (ShopSellGoodInfo shopSellGood in sellGoodDic.Values)
+		{
+			sellGoodInfoList.Add (shopSellGood);
+		}
+
 		for (int i = 0;i < bagObjList.Count;i ++)
 		{
 			bagObjList[i].SetActive (true);
 			bagGrid.repositionNow = true;
-			
+			bagSc.UpdateScrollbars (true);
 			ShopBagItem bagItem = bagObjList[i].GetComponent<ShopBagItem>() ?? bagObjList[i].AddComponent<ShopBagItem>();
-			bagItem.GetBagItemInfo (sellGoodList[i]);
+			bagItem.GetBagItemInfo (sellGoodInfoList[i]);
 		}
 		
-		bagSc.enabled = sellGoodList.Count > 10 ? true : false;
-		bagSb.gameObject.SetActive (sellGoodList.Count > 10 ? true : false);
+		bagSc.enabled = sellGoodDic.Count > 10 ? true : false;
+		bagSb.gameObject.SetActive (sellGoodDic.Count > 10 ? true : false);
 		RefreshSellState (bagObjList.Count > 0 ? 1 : 2);
 		
 		switch (tempSellState)
 		{
 		case 0:
-			sellLabel.text = sellGoodList.Count > 0 ? 
+			sellLabel.text = sellGoodDic.Count > 0 ? 
 				LanguageTemplate.GetText ((LanguageTemplate.Text)226) : LanguageTemplate.GetText ((LanguageTemplate.Text)228);
 			break;
 		case 1:
@@ -385,6 +526,7 @@ public class ShopPage : MonoBehaviour {
 		
 		bagIconSample.transform.parent = bagGrid.transform;
 		bagIconSample.transform.localPosition = Vector3.zero;
+		bagIconSample.transform.localScale = Vector3.one;
 		
 		bagObjList.Add (bagIconSample);
 	}
@@ -447,7 +589,11 @@ public class ShopPage : MonoBehaviour {
 		default:
 			break;
 		}
-		
+		Debug.Log ("isContain:" + sellDic.ContainsKey (tempItem.dbId));
+		if (sellDic.ContainsKey (tempItem.dbId))
+		{
+			Debug.Log ("contains:bagId:" + sellDic[tempItem.dbId].bagId + "||count:" + sellDic[tempItem.dbId].count);
+		}
 		if (sellDic.Count <= 0)
 		{
 			RefreshSellState (1);
@@ -503,6 +649,11 @@ public class ShopPage : MonoBehaviour {
 	
 	void OtherHandlerClickBack (GameObject obj)
 	{
+		if(clickTime > 0)
+		{
+			return;
+		}
+
 		switch (obj.name)
 		{
 		case "SellBtn":
@@ -597,17 +748,26 @@ public class ShopPage : MonoBehaviour {
 
 	void Update ()
 	{
-		if (QXComData.CheckYinDaoOpenState (100220) && !isDuiHuanYinDao)
+		if (clickTime > 0)
 		{
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100220,2);
-			isDuiHuanYinDao = true;
+			clickTime -= Time.deltaTime;
+
+			if (clickTime <= 0)
+			{
+				clickTime = 0;
+			}
 		}
-		
-		if (QXComData.CheckYinDaoOpenState (100460) && !isByFuShiYinDao)
-		{
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100460,1);
-			isByFuShiYinDao = true;
-		}
+//		if (QXComData.CheckYinDaoOpenState (100220) && !isDuiHuanYinDao)
+//		{
+//			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100220,2);
+//			isDuiHuanYinDao = true;
+//		}
+
+//		if (QXComData.CheckYinDaoOpenState (100460) && !isByFuShiYinDao && shopType != ShopData.ShopType.MYSTRERT)
+//		{
+//			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100460,1);
+//			isByFuShiYinDao = true;
+//		}
 
 		ScrollViewMove ();
 	}
@@ -647,7 +807,9 @@ public class ShopPage : MonoBehaviour {
 
 	void CloseShop ()
 	{
+		BuyFinished = false;
 		goodSbValue = 0;
+		clickTime = 0;
 		ShopData.Instance.IsOpenFirstTime = true;
 		Global.m_isOpenShop = false;
 		if(GameObject.Find("New_My_Union(Clone)"))

@@ -104,6 +104,8 @@ public class UIDragDropItem : MonoBehaviour
 			UICamera.currentTouch.pressed = clone;
 			UICamera.currentTouch.dragged = clone;
 
+//			Debug.Log( "Set CurrentTouch.Pressed to: " + GameObjectHelper.GetGameObjectHierarchy( clone ) );
+
 			UIDragDropItem item = clone.GetComponent<UIDragDropItem>();
 			item.Start();
 			item.OnDragDropStart();

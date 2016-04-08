@@ -36,6 +36,8 @@ public class DuiHuanTemplete : XmlLoadManager {
 	public int weight;
 
 	public int site;
+
+	public int ifRecomanded;
 	
 	public static List<DuiHuanTemplete> templates = new List<DuiHuanTemplete>();
 	
@@ -93,6 +95,9 @@ public class DuiHuanTemplete : XmlLoadManager {
 				
 				t_reader.MoveToNextAttribute();
 				t_template.site = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ifRecomanded = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

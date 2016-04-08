@@ -23,8 +23,6 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	private Vector3 curNodePosition;
 
-	private float curNavSpeed;
-
 	private int curCount;
 
 	private int countMax;
@@ -37,6 +35,8 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		new Vector3(1.04f, 0f, 0.49f),
 		new Vector3(0f, 0f, -1f),
 	};
+
+	private bool inSkill;
 
 
 	void Start()
@@ -56,6 +56,10 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		king.copyObject.transform.position = new Vector3(0, -1000, 0);
 
 		KingControllor copyKing = king.copyObject.GetComponent<KingControllor> ();
+
+		DestroyObject (copyKing.m_weapon_Light_left);
+
+		DestroyObject (copyKing.m_weapon_Light_right);
 
 		DestroyObject (copyKing.m_weapon_Heavy);
 
@@ -82,10 +86,26 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			Destroy(skill);
 		}
 
-		Global.ResourcesDotLoad("_3D/Models/BattleField/DramaControllor/DramaControllor_" + king.modelId,
-		                        loadControllorCallback );
+		SphereCollider sc = king.copyObject.AddComponent<SphereCollider>();
+
+		sc.radius = 0;
+
+		sc.center = Vector3.zero;
+
+		king.copyAnim = king.copyObject.GetComponent<Animator>();
+
+		Global.ResourcesDotLoad("_3D/Models/BattleField/DramaControllor/DramaControllor_" + (510 + ((king.modelId - 1001) * 10) + 1),
+		                        loadHeavyControllorCallback );
+
+		Global.ResourcesDotLoad("_3D/Models/BattleField/DramaControllor/DramaControllor_" + (510 + ((king.modelId - 1001) * 10) + 2),
+		                        loadLightControllorCallback );
+
+		Global.ResourcesDotLoad("_3D/Models/BattleField/DramaControllor/DramaControllor_" + (510 + ((king.modelId - 1001) * 10) + 3),
+		                        loadRangeControllorCallback );
 
 		curCount = 0;
+
+		inSkill = false;
 	}
 	
 	void OnDestroy()
@@ -106,15 +126,25 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		king = null;
 	}
 
-	void loadControllorCallback(ref WWW p_www, string p_path, Object p_object)
+	void loadHeavyControllorCallback(ref WWW p_www, string p_path, Object p_object)
 	{
-		king.copyAnim = king.copyObject.GetComponent<Animator>();
+		king.copyRuntimeControllorHeavy = (RuntimeAnimatorController)p_object;
+	}
 
-		king.copyAnim.runtimeAnimatorController = (RuntimeAnimatorController)p_object;
+	void loadLightControllorCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		king.copyRuntimeControllorLight = (RuntimeAnimatorController)p_object;
+	}
+
+	void loadRangeControllorCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		king.copyRuntimeControllorRange = (RuntimeAnimatorController)p_object;
 	}
 
 	private void initSkill_1()
 	{
+		inSkill = true;
+
 		king.actionId = 145;
 
 		tempPos = gameObject.transform.position;
@@ -147,6 +177,8 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	private void initSkill_2()
 	{
+		inSkill = true;
+
 		king.actionId = 150;
 		
 		tempPos = gameObject.transform.position;
@@ -182,11 +214,7 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		else king.copyObject.transform.forward = king.transform.forward;
 
-		curNavSpeed = king.getNavMeshSpeedReal ();
-
-		king.setNavMeshSpeedReal (1000);
-
-		king.setNavMeshDestinationReal (king.copyObject.transform.position);
+		king.moveAction (curNodePosition, iTween.EaseType.linear, .1f, 1);
 	}
 
 	public void chooseTarget_skill_1()
@@ -212,6 +240,19 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		king.copyObject.transform.position = (curNode != null ? curNode.transform.position : curNodePosition) + (offsetPos [curCount % offsetPos.Length].normalized * length);
 
 		king.copyObject.transform.forward = (curNode != null ? curNode.transform.position : curNodePosition) - king.copyObject.transform.position;
+
+		if(king.weaponType == KingControllor.WeaponType.W_Heavy)
+		{
+			king.copyAnim.runtimeAnimatorController = king.copyRuntimeControllorHeavy;
+		}
+		else if(king.weaponType == KingControllor.WeaponType.W_Light)
+		{
+			king.copyAnim.runtimeAnimatorController = king.copyRuntimeControllorLight;
+		}
+		else
+		{
+			king.copyAnim.runtimeAnimatorController = king.copyRuntimeControllorRange;
+		}
 
 		king.copyAnim.Play ("JYXGZ_" + ((curCount % 4) + 1));
 
@@ -249,7 +290,20 @@ public class KingSkillWuDiZhan : MonoBehaviour
 //			
 //			if(curNode != null) curNodePosition = curNode.transform.position;
 //		}
-		
+
+		if(king.weaponType == KingControllor.WeaponType.W_Heavy)
+		{
+			king.copyAnim.runtimeAnimatorController = king.copyRuntimeControllorHeavy;
+		}
+		else if(king.weaponType == KingControllor.WeaponType.W_Light)
+		{
+			king.copyAnim.runtimeAnimatorController = king.copyRuntimeControllorLight;
+		}
+		else
+		{
+			king.copyAnim.runtimeAnimatorController = king.copyRuntimeControllorRange;
+		}
+
 		king.copyAnim.Play ("XJLY_" + index);
 
 //		iTween.ValueTo (gameObject, iTween.Hash(
@@ -471,6 +525,8 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	public void skill_2_resetPosition()
 	{
+		inSkill = false;
+
 		king.setNavMeshStop ();
 
 		king.transform.forward = king.copyObject.transform.forward;
@@ -493,12 +549,12 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			"time", .2f,
 			"onupdate", "setAlphaSelf"
 			));
-
-		king.setNavMeshSpeedReal (curNavSpeed);
 	}
 
 	public void WudizhanDone()
 	{
+		inSkill = false;
+
 		List<BaseAI> ns = king.stance == BaseAI.Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
 
 		Vector3 tempFow = transform.forward;
@@ -563,7 +619,16 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	public void cut()
 	{
-		//StartCoroutine (cutAction());
+		if(inSkill) StartCoroutine (cutAction());
+	}
+
+	IEnumerator cutAction()
+	{
+		yield return new WaitForSeconds (.1f);
+
+		setAlphaCopy(1);
+		
+		setAlphaSelf (1);
 
 		king.setNavMeshStop ();
 		
@@ -578,32 +643,7 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		king.copyObject.transform.position = new Vector3(0, -1000, 0);
 		
 		if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.targetChang (king.gameObject);
-		
-		iTween.ValueTo (gameObject, iTween.Hash(
-			"from", 0f,
-			"to", 1f,
-			"time", .2f,
-			"onupdate", "setAlphaSelf"
-			));
-		
-		king.setNavMeshSpeedReal (curNavSpeed);
+
+		inSkill = false;
 	}
-
-	IEnumerator cutAction()
-	{
-		yield return new WaitForSeconds (.1f);
-
-		gameObject.SetActive (true);
-		
-		king.copyObject.SetActive (false);
-
-		if(king.signShadow != null) king.signShadow.gameObject.SetActive (true);
-		
-		if(king.shadowObject_2 != null) king.shadowObject_2.SetActive (true);
-
-		king.copyObject.transform.position = new Vector3(0, -1000, 0);
-
-		if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.targetChang (king.gameObject);
-	}
-
 }

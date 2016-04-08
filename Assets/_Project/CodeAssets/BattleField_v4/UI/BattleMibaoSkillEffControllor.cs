@@ -40,6 +40,8 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 	private float tempTimeScale = 1;
 
+	private static float minAlpha = .1f;
+
 
 	public static BattleMibaoSkillEffControllor Instance() { return _instance; }
 	
@@ -53,11 +55,53 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 	public static void showSkillEff(int _skillNameId)
 	{
-		_instance._showSkillEff (_skillNameId);
+		if(_instance.gameObject.activeSelf == false) _instance._showSkillEff (_skillNameId);
 	}
 
 	private void _showSkillEff(int _skillNameId)
 	{
+		BattleUIControlor.Instance ().attackJoystick.reset ();
+
+		if(_skillNameId == 650001)//羲皇青龙诀 根据模型id播语音
+		{
+			if(BattleControlor.Instance().getKing().modelId == 1002)//豪杰
+			{
+				//811860
+
+				ClientMain.Instance().m_SoundPlayEff.PlaySound("811860");
+			}
+			else if(BattleControlor.Instance().getKing().modelId == 1003)//儒雅
+			{
+				//811880
+
+				ClientMain.Instance().m_SoundPlayEff.PlaySound("811880");
+			}
+			else if(BattleControlor.Instance().getKing().modelId == 1004)//蔷薇
+			{
+				//811870
+
+				ClientMain.Instance().m_SoundPlayEff.PlaySound("811870");
+			}
+			else if(BattleControlor.Instance().getKing().modelId == 1005)//萝莉
+			{
+				//811890
+
+				ClientMain.Instance().m_SoundPlayEff.PlaySound("811890");
+			}
+		}
+		else if(_skillNameId == 650007)//蚩尤地煞诀
+		{
+			if(BattleControlor.Instance().getKing().modelId == 1003 
+			   && CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan
+			   && CityGlobalData.m_tempSection == 0
+			   && CityGlobalData.m_tempLevel == 1)//仅儒雅在第0章第一关播放语音
+			{
+				//811920
+
+				ClientMain.Instance().m_SoundPlayEff.PlaySound("811920");
+			}
+		}
+
 		tempTimeScale = Time.timeScale;
 
 		hide ();
@@ -102,14 +146,14 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 		{
 			sprite.gameObject.SetActive(true);
 
-			sprite.alpha = 0;
+			sprite.alpha = minAlpha;
 		}
 
 		foreach(UISprite sprite in spriteframes)
 		{
 			iTween.ValueTo(sprite.gameObject, iTween.Hash(
-				"from", 0,
-				"to", 1,
+				"from", minAlpha,
+				"to", 1f,
 				"time", hideActionTime,
 				"ignoretimescale", true,
 				"onupdate", "iSetAlpha"
@@ -121,11 +165,11 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 	{
 		spriteBack.gameObject.SetActive (true);
 
-		spriteBack.alpha = 0;
+		spriteBack.alpha = minAlpha;
 
 		iTween.ValueTo(spriteBack.gameObject, iTween.Hash(
-			"from", 0,
-			"to", 1,
+			"from", minAlpha,
+			"to", 1f,
 			"time", hideActionTime,
 			"ignoretimescale", true,
 			"onupdate", "iSetAlpha"
@@ -194,8 +238,8 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 		{
 			iTween.ValueTo(sprite.gameObject, iTween.Hash(
 				"delay", endTime,
-				"from", 1,
-				"to", 0,
+				"from", 1f,
+				"to", minAlpha,
 				"time", hideActionTime,
 				"ignoretimescale", true,
 				"onupdate", "iSetAlpha"
@@ -204,8 +248,8 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 		iTween.ValueTo(spriteBack.gameObject, iTween.Hash(
 			"delay", endTime,
-			"from", 1,
-			"to", 0,
+			"from", 1f,
+			"to", minAlpha,
 			"time", hideActionTime,
 			"ignoretimescale", true,
 			"onupdate", "iSetAlpha"
@@ -213,8 +257,8 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 		iTween.ValueTo(spriteLabel_1.gameObject, iTween.Hash(
 			"delay", endTime - label1StartTime,
-			"from", 1,
-			"to", 0,
+			"from", 1f,
+			"to", minAlpha,
 			"time", hideActionTime,
 			"ignoretimescale", true,
 			"onupdate", "iSetAlpha"
@@ -222,14 +266,26 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 		iTween.ValueTo(spriteLabel_2.gameObject, iTween.Hash(
 			"delay", endTime - label2StartTime,
-			"from", 1,
-			"to", 0,
+			"from", 1f,
+			"to", minAlpha,
 			"time", hideActionTime,
 			"ignoretimescale", true,
 			"onupdate", "iSetAlpha",
-			"oncomplete", "hide",
+			"oncomplete", "startHide",
 			"oncompletetarget", gameObject
 			));
+	}
+
+	private void startHide()
+	{
+		StartCoroutine (startHideAction());
+	}
+
+	private IEnumerator startHideAction()
+	{
+		yield return new WaitForEndOfFrame ();
+
+		hide ();
 	}
 
 	private void hide()
@@ -248,8 +304,12 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 		spriteBack.gameObject.SetActive (false);
 		
 		spriteLabel_1.gameObject.SetActive (false);
-		
+
+		spriteLabel_1.alpha = 1f;
+
 		spriteLabel_2.gameObject.SetActive (false);
+
+		spriteLabel_2.alpha = 1f;
 
 		gameObject.SetActive (false);
 

@@ -22,7 +22,11 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 	public UISprite StudyVctry;
 	public int JianZhu_InDex;
 
+	public bool m_isDrag = false;
+
 	public List<GameObject> BtnList = new List<GameObject>();
+
+	public List<GameObject> AlertList = new List<GameObject>();
 
 	public List<GameObject> m_TechnologyList = new List<GameObject>();
 
@@ -71,7 +75,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 			{
 			case ProtoIndexes.S_LMKJ_INFO://lianmeng keji back
 			{
-				//Debug.Log ("ApplicateResp" + ProtoIndexes.LOOK_APPLICANTS_RESP);
+//				Debug.Log ("ApplicateResp" + ProtoIndexes.LOOK_APPLICANTS_RESP);
 				MemoryStream application_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				
 				QiXiongSerializer t_qx = new QiXiongSerializer();
@@ -81,14 +85,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				t_qx.Deserialize(application_stream, mKeJiList, mKeJiList.GetType());
 				
 				m_mKeJiList = mKeJiList;
-
-				//Debug.Log("请求科技返回");
-//
-//				m_Technology1.SetActive(true);
-//				Technology1 mTechnology1 = m_Technology1.GetComponent<Technology1>();
-//				mTechnology1.m_JianZhuKeji = m_mKeJiList;
-//				mTechnology1.Card = 1;
-//				mTechnology1.Init ();
+				isfirst = true;
 				mCurCard = 0;
 				m_TechnologyBtn1();
 				InitData();
@@ -97,7 +94,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 			}
 			case ProtoIndexes.S_LMKJ_UP://lianmeng keji back
 			{
-				//Debug.Log ("ApplicateResp" + ProtoIndexes.LOOK_APPLICANTS_RESP);
+				Debug.Log ("ApplicateResp" + ProtoIndexes.LOOK_APPLICANTS_RESP);
 				MemoryStream application_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				
 				QiXiongSerializer t_qx = new QiXiongSerializer();
@@ -113,8 +110,8 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 					if(temp.Keji_type == CurKejiType)
 					{
 						temp.Keji_level +=1;
-						temp.Init();
 					}
+					temp.Init();
 				}
 		
 				m_mKeJiList.list[JianZhu_InDex].lv += 1;
@@ -126,11 +123,14 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				StartCoroutine( "closeEffect");
 
 				bool showAerlt = false; // 是否显示红点
-				foreach(KeJiInfo temp in m_mKeJiList.list)
+				for(int i = 0; i < m_mKeJiList.list.Count; i ++)
 				{
-					LianMengKeJiTemplate mLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (CurKejiType,temp.lv);
+					LianMengKeJiTemplate mLianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Zu_And_Level (i,m_mKeJiList.list[i].lv);
 					int ShuYuanLve = NewAlliancemanager.Instance().KejiLev;
-					if(ShuYuanLve > temp.lv && mLianMengKeJiTemplate.lvUpValue  <= NewAlliancemanager.Instance().m_allianceHaveRes.build)
+
+
+
+					if(mLianMengKeJiTemplate.shuYuanlvNeeded <= ShuYuanLve && ShuYuanLve > m_mKeJiList.list[i].lv && mLianMengKeJiTemplate.lvUpValue  <= NewAlliancemanager.Instance().m_allianceHaveRes.build)
 					{
 						showAerlt = true;
 						break;
@@ -142,7 +142,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 					PushAndNotificationHelper.SetRedSpotNotification(ActiveAerlt,false);
 					NewAlliancemanager.Instance().Refreshtification ();
 				}
-
+				ReFreshData();
 				return true;
 			}
 			case ProtoIndexes.S_LMKEJI_JIHUO://lianmeng keji back Active
@@ -178,7 +178,8 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				bool showAerlt = false; // 是否显示红点
 				foreach(KeJiInfo temp in m_mKeJiList.list)
 				{
-
+					Debug.Log(temp.jiHuoLv);
+					Debug.Log(temp.lv);
 					if(temp.jiHuoLv < temp.lv)
 					{
 						showAerlt = true;
@@ -187,11 +188,12 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				}
 				if(!showAerlt)
 				{
+					Debug.Log("======================123");
 					int ActiveAerlt = 600600;
 					PushAndNotificationHelper.SetRedSpotNotification(ActiveAerlt,false);
 					NewAlliancemanager.Instance().Refreshtification ();
 				}
-
+				ReFreshData();
 				return true;
 			}
 			default:return false;
@@ -209,20 +211,97 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 
 	bool isfirst = false;
 	public UIToggle mUItoggle;
+
+	void ReFreshData()
+	{
+		AlertList.ForEach (item => Setactive (item, false));
+		int Identy = NewAlliancemanager.Instance().m_allianceHaveRes.identity;
+		int ShuYuanLevel = NewAlliancemanager.Instance().KejiLev;
+		bool Btn1Alert = false;
+		bool Btn2Alert = false;
+		bool Btn3Alert = false;
+		int Alliance_Builds = NewAlliancemanager.Instance().m_allianceHaveRes.build;
+		List<LianMengKeJiTemplate> LianMengKeJiTemplateList = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_type ( );
+		for(int i = 0; i< m_mKeJiList.list.Count ; i ++)
+		{
+			if(Identy == 0)
+			{
+				LianMengKeJiTemplate m_LianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (LianMengKeJiTemplateList[i].type,0);
+				int OPenLv = m_LianMengKeJiTemplate.shuYuanlvNeeded;
+				if(m_mKeJiList.list[i].jiHuoLv < m_mKeJiList.list[i].lv && OPenLv <= ShuYuanLevel)
+				{
+					if(i < 11)
+					{
+						Btn1Alert = true;
+					}
+					if(i >= 11 && i < 13)
+					{
+						Btn2Alert = true;
+					}
+					if(i >= 13)
+					{
+						Btn3Alert = true;
+					}
+				}
+			}
+			else
+			{
+				LianMengKeJiTemplate m_LianMengKeJiTemplat = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (LianMengKeJiTemplateList[i].type,0);
+				int OPenLv = m_LianMengKeJiTemplat.shuYuanlvNeeded;
+				LianMengKeJiTemplate m_LianMengKeJiTemplate = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level (LianMengKeJiTemplateList[i].type,m_mKeJiList.list[i].lv);
+				if(m_mKeJiList.list[i].lv < ShuYuanLevel && m_LianMengKeJiTemplate.lvUpValue <= Alliance_Builds && OPenLv <= ShuYuanLevel)
+				{
+					if(i < 11)
+					{
+						Btn1Alert = true;
+					}
+					if(i >= 11 && i < 13)
+					{
+						Btn2Alert = true;
+					}
+					if(i >= 13)
+					{
+//						Debug.Log("m_LianMengKeJiTemplate.lvUpValue = "+m_LianMengKeJiTemplate.lvUpValue);
+//						Debug.Log("mAlliance_Builds = "+Alliance_Builds);
+//						Debug.Log("m_mKeJiList.list[i].lv = "+m_mKeJiList.list[i].lv);
+						Btn3Alert = true;
+					}
+				}
+			}
+		}
+		BoolShowAlert (Btn1Alert,Btn2Alert,Btn3Alert);
+	}
+	
 	public void InitData()
 	{
-		isfirst = true;
 
-		//StartCoroutine (getvalue());
-		//m_TechnologyBtn1 ();
+		ReFreshData ();
 	}
-//	IEnumerator getvalue()
-//	{
-//		yield return new WaitForSeconds (0.01f);
-//		
-//		mUItoggle.value = !mUItoggle.value;
-//		
-//	}
+	void BoolShowAlert(bool a,bool b ,bool c)
+	{
+
+		if(a)
+		{
+			ShowAlert(0);
+		}
+		if(b)
+		{
+			ShowAlert(1);
+		}
+		if(c)
+		{
+			ShowAlert(2);
+		}
+
+	}
+	public void CloseAlert(int  Index)
+	{
+		AlertList [Index].SetActive (false);
+	}
+	void ShowAlert(int  Index)
+	{
+		AlertList [Index].SetActive (true);
+	}
 	private int mCurCard;
 	public void m_TechnologyBtn1()
 	{
@@ -246,6 +325,11 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 		m_TechnologyList [Index].SetActive (true);
 
 	}
+	void OnDrag(Vector2 delta)
+	{
+		Debug.Log ("m_isDrag = "+m_isDrag);
+		m_isDrag = true;
+	}
     public void InitItems(int mCard)
 	{
 		if(mCard == mCurCard)
@@ -259,7 +343,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 		}
 		mTechnologytempList.Clear ();
 
-		Debug.Log ("mCard =" +mCard);
+//		Debug.Log ("mCard =" +mCard);
 		HidAllGameobj (mCard-1);
 		Technology1 mTechnology1 = m_TechnologyList[mCard-1].GetComponent<Technology1>();
 		mTechnology1.m_JianZhuKeji = m_mKeJiList;

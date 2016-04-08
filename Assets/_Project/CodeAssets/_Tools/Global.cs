@@ -50,6 +50,7 @@ public class Global
 	public static List<TongzhiData> m_listAllTheData = new List<TongzhiData>();
 	public static List<TongzhiData> m_listMainCityData = new List<TongzhiData>();
 	public static List<TongzhiData> m_listJiebiaoData = new List<TongzhiData>();
+	public static List<TongzhiData> m_listShiLianData = new List<TongzhiData> ();
 
 	public const int TILILVMAX = 14;
 
@@ -307,7 +308,14 @@ public class Global
 	 * isSetDepth: true ---> Cam.Depth = 45
 	 * isSetDepth: false ---> Cam.Depth = 100
 	 */
-	public static GameObject CreateBox(string tile, string dis1, string dis2, List<BagItem> bagItem, string buttonname1, string buttonname2, UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true){
+	public static GameObject CreateBox( string tile, 
+		string dis1, string dis2, 
+		List<BagItem> bagItem, string buttonname1, string buttonname2,
+		UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create = null, 
+		UIFont uifontButton1 = null, UIFont uifontButton2 = null, 
+		bool isShowBagItemNumBelow = false, 
+		bool isSetDepth = true, bool isBagItemTop = true,
+		bool isFunction = false ){
 		return UtilityTool.Instance.CreateBox(
 			tile,
 			dis1,
@@ -321,7 +329,8 @@ public class Global
 			uifontButton2,
 			isShowBagItemNumBelow,
 			isSetDepth,
-			isBagItemTop);
+			isBagItemTop, 
+			isFunction );
 	}
 
 	public static GameObject GetObj(ref GameObject obj, string name)
@@ -783,6 +792,7 @@ public class Global
 		}
 		m_listJiebiaoData = new List<TongzhiData>();
 		m_listMainCityData = new List<TongzhiData>();
+		m_listShiLianData = new List<TongzhiData> ();
 		for(int i = 0; i < m_listAllTheData.Count; i ++)
 		{
 //			int tempState = m_listAllTheData[i].m_iSceneType;
@@ -793,6 +803,10 @@ public class Global
 			if((m_listAllTheData[i].m_ReceiveSceneType & 2) != 0)
 			{
 				m_listMainCityData.Add(m_listAllTheData[i]);
+			}
+			if((m_listAllTheData[i].m_ReceiveSceneType & 4) != 0)
+			{
+				m_listShiLianData.Add(m_listAllTheData[i]);
 			}
 		}
 //		Debug.Log("m_listMainCityData.cout="+m_listMainCityData.Count);

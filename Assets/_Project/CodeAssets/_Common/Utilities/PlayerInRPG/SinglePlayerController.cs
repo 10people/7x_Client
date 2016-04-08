@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define DEBUG_MODE
+
+using System;
 using UnityEngine;
 using System.Collections;
 using System.IO;
@@ -20,7 +22,7 @@ public class SinglePlayerController : MonoBehaviour
 
     public float BaseGroundPosY;
 
-    public static float m_CharacterSyncDuration = 0.1f;
+    public static float m_CharacterSyncDuration = 0.2f;
     public static float m_CharacterMoveDistance = 0.1f;
 
     #endregion
@@ -143,13 +145,17 @@ public class SinglePlayerController : MonoBehaviour
     {
         if (!is_CanMove)
         {
+#if DEBUG_MODE
             Debug.LogWarning("Cancel navigate cause controller set.");
+#endif
             return;
         }
 
         if (m_RealJoystickOffset != Vector3.zero)
         {
+#if DEBUG_MODE
             Debug.LogWarning("Cancel navigation cause in character control");
+#endif
             return;
         }
 
@@ -341,7 +347,7 @@ public class SinglePlayerController : MonoBehaviour
             m_sameTransformTimes = 0;
         }
 
-        if (m_sameTransformTimes > 10)
+        if (m_sameTransformTimes >= 1)
         {
             return;
         }
@@ -403,7 +409,9 @@ public class SinglePlayerController : MonoBehaviour
 
         if (!is_CanMove)
         {
+#if DEBUG_MODE
             Debug.Log("Cancel move cause controller set.");
+#endif
         }
         else
         {

@@ -68,7 +68,7 @@ public class EventManager : MonoBehaviour  ,SocketProcessor {
 		
 		return false;
 	}
-	private float Dis = 80;
+	private float Dis = 67;
 	void SortEvents()
 	{
 		//Debug.Log ("m_EventListResp.msg.Count = " +m_EventListResp.msg.Count);
@@ -90,7 +90,7 @@ public class EventManager : MonoBehaviour  ,SocketProcessor {
 			
 			m_Eventitem.transform.parent = Eventitem.transform.parent;
 			
-			m_Eventitem.transform.localPosition = new Vector3(0,120-i*Dis,0);
+			m_Eventitem.transform.localPosition = new Vector3(0,133-i*Dis,0);
 			
 			m_Eventitem.transform.localScale = Vector3.one;
 			

@@ -81,6 +81,16 @@ public class TimeLabelHelper : Singleton<TimeLabelHelper>
 				tempTimeLabelData1.m_fBTime = Time.realtimeSinceStartup;
 				tempTimeLabelData1.m_iSecondTime = second;
 				TimeLabelList[i] = tempTimeLabelData1;
+
+				if(second <= 0)
+				{
+					if(tempTimeLabelData1.m_FunctionEndTime != null)
+					{
+						tempTimeLabelData1.m_FunctionEndTime();
+						tempTimeLabelData1.m_isFunction = true;
+						//				TimeLabelList[i].m_isFunction = true;
+					}
+				}
 				return;
 			}
 		}

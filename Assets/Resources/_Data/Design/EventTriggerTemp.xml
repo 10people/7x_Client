@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 <EventTriggerTemp ID="1010001" type="1" EventID="1" DescId="1010001" DicType="0" />
-<EventTriggerTemp ID="1020001" type="2" EventID="2" DescId="1020001" DicType="0" />
+<EventTriggerTemp ID="1020001" type="2" EventID="2" DescId="1010001" DicType="0" />
 <EventTriggerTemp ID="1030001" type="3" EventID="3" DescId="0" DicType="0" />
 <EventTriggerTemp ID="1040001" type="4" EventID="4" DescId="0" DicType="0" />
 <EventTriggerTemp ID="1050001" type="5" EventID="5" DescId="1050001" DicType="0" />

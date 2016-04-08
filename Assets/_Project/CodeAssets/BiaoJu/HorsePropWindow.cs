@@ -65,17 +65,17 @@ namespace Carriage
 
 			if (BiaoJuPage.bjPage.CheckGaoJiMaBian ())
 			{
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,9);
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,11);
 			}
 			else
 			{
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,8);
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,10);
 			}
 		}
 
 		public void CloseBtnHandlerClickBack (GameObject obj)
 		{
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,10);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,12);
 			isOpenFirst = true;
 			gameObject.SetActive (false);
 		}

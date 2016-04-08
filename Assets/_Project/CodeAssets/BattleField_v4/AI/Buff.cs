@@ -30,7 +30,7 @@ public class Buff : MonoBehaviour
 
 	public static Buff createBuff(BaseAI _ai, AIdata.AttributeType _buffType, float _buffValue, float _time, SkillBuff _supplement = null )
 	{
-		//Debug.Log ("CCCCCCCCCCCCCC   " + _buffType + ", " + _buffValue + ", " + _time);
+//		Debug.Log ("CCCCCCCCCCCCCC   " + _buffType + ", " + _buffValue + ", " + _time);
 
 		List<Buff> m_typeListBuff = _ai.getBuffs();//鑾峰彇AI鐨凚UFFS
 
@@ -78,12 +78,24 @@ public class Buff : MonoBehaviour
 				buff.m_ObjEff = BattleEffectControllor.Instance().getEffect(buff.supplement.m_iEffID);
 
 				buff.m_ObjEff = GameObject.Instantiate(buff.m_ObjEff) as GameObject;
+
 				buff.m_ObjEff.SetActive(true);
+
 				Vector3 tempPos = _ai.gameObject.transform.position;
+
 				tempPos.y += (_ai.getHeight() * EffectIdTemplate.GetHeight(buff.supplement.m_iEffID));
+
 				buff.m_ObjEff.transform.position = tempPos;
+
 				buff.m_ObjEff.transform.rotation = _ai.gameObject.transform.rotation;
+
 				buff.m_ObjEff.transform.parent = _ai.gameObject.transform;
+
+				BattleEffect be = buff.m_ObjEff.GetComponent<BattleEffect>();
+
+				if(be == null) be = buff.m_ObjEff.AddComponent<BattleEffect>();
+
+				be.updataDodgeOn();
 
 				EffectIdTemplate et = EffectTemplate.getEffectTemplateByEffectId (buff.supplement.m_iEffID);
 

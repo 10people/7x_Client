@@ -27,6 +27,8 @@ public class BattleEffect : MonoBehaviour
 
 	private bool selfUpdateTime = false;
 
+	private bool selfUpdataDodge = false;
+
 	private FxCacheItem m_fx_cache = null;
 
 
@@ -54,6 +56,8 @@ public class BattleEffect : MonoBehaviour
 		selfUpdatePosition = false;
 
 		selfUpdateTime = false;
+
+		selfUpdataDodge = false;
 	}
 
 	public void refreshDate(EffectIdGroup _group, GameObject _host, float _time, Vector3 _position, Vector3 _forward, float _ratio)
@@ -61,6 +65,8 @@ public class BattleEffect : MonoBehaviour
 		selfUpdatePosition = false;
 
 		selfUpdateTime = false;
+
+		selfUpdataDodge = false;
 
 		group = _group;
 
@@ -95,13 +101,23 @@ public class BattleEffect : MonoBehaviour
 		//selfUpdateTime = false;
 	}
 
+	public void updataDodgeOn()
+	{
+		selfUpdataDodge = true;
+	}
+
 	void Update ()
 	{
 		//if (selfUpdate == false) return;
 
-		if(selfUpdatePosition) updataPosition ();
-		
+		if (selfUpdatePosition) updataPosition ();
+
 		if(selfUpdateTime) updataTime ();
+	}
+
+	void LateUpdate()
+	{
+		updataPositionDodge ();
 	}
 
 	public void effectUpdate ()
@@ -109,6 +125,11 @@ public class BattleEffect : MonoBehaviour
 		updataPosition ();
 
 		updataTime ();
+	}
+
+	public void effectLateUpdate ()
+	{
+		//updataPositionDodge ();
 	}
 
 	private void updataPosition()
@@ -137,6 +158,21 @@ public class BattleEffect : MonoBehaviour
 		}
 	}
 
+	public void updataPositionDodge()
+	{
+		if (transform.parent == null) return;
+
+		KingControllor kc = transform.parent.gameObject.GetComponent<KingControllor>();
+
+		if(kc != null)
+		{
+			if(kc.copyObject.activeSelf == true)
+			{
+				transform.position = kc.copyObject.transform.position;
+			}
+		}
+	}
+
 	private void updataTime()
 	{
 		time -= Time.deltaTime;
@@ -151,6 +187,12 @@ public class BattleEffect : MonoBehaviour
 
 	public void destoryEffect()
 	{
+		selfUpdataDodge = false;
+
+		selfUpdatePosition = false;
+
+		selfUpdateTime = false;
+
 		if( m_fx_cache != null ){
 			m_fx_cache.FreeFx();
 		}

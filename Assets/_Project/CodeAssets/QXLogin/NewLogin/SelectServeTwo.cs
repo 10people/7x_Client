@@ -123,6 +123,11 @@ public class SelectServeTwo : MonoBehaviour {
 	//上次登陆按钮
 	public void LastLoginBtn ()
 	{
+		if (AccountRequest.account.isNewPlayer == 2)
+		{
+			return;
+		}
+
 		this.gameObject.SetActive (false);
 		
 		lastLoginObj.SetActive (true);

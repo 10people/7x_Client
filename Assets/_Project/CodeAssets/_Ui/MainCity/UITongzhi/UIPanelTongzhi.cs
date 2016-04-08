@@ -27,6 +27,10 @@ public class UIPanelTongzhi : MYNGUIPanel
             {
                 return Global.m_listJiebiaoData;
             }
+			else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_TREASURECITY)
+			{
+				return Global.m_listShiLianData;
+			}
             else
             {
                 return new List<TongzhiData>();
@@ -46,6 +50,10 @@ public class UIPanelTongzhi : MYNGUIPanel
             {
                 return Carriage.RootManager.Instance.m_CarriageMain.m_MainCityUiTongzhi;
             }
+			else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_TREASURECITY)
+			{
+				return TreasureCityUITR.tCityUITR.TongZhi;
+			}
             else
             {
                 return null;
@@ -67,6 +75,7 @@ public class UIPanelTongzhi : MYNGUIPanel
             temp.m_labelDes.text = m_CurrentTongzhiDataList[i].m_SuBaoMSG.subao;
 			temp.m_listButtonBG[0].gameObject.SetActive(false);
 			temp.m_listButtonBG[1].gameObject.SetActive(false);
+			int by = 30 - ((2 - m_CurrentTongzhiDataList[i].m_ButtonIndexList.Count) * 20);
             for (int q = 0; q < m_CurrentTongzhiDataList[i].m_ButtonIndexList.Count; q++)
             {
                 string tempShowText = "";
@@ -114,7 +123,9 @@ public class UIPanelTongzhi : MYNGUIPanel
 				}
 				temp.m_listButtonBG[q].gameObject.name = "TongzhiButton_" + i + "_" + q;
                 temp.m_listButtonBG[q].gameObject.SetActive(true);
+				temp.m_listButtonBG[q].gameObject.transform.localPosition = new Vector3(temp.m_listButtonBG[q].gameObject.transform.localPosition.x, by - q * 40,temp.m_listButtonBG[q].gameObject.transform.localPosition.z);
                 temp.m_listButtonLabel[q].text = tempShowText;
+
             }
 
             temp.transform.localScale = Vector3.one;
@@ -135,6 +146,10 @@ public class UIPanelTongzhi : MYNGUIPanel
         {
             Carriage.RootManager.Instance.m_CarriageMain.m_MainCityUiTongzhi.upDataShow();
         }
+		else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_TREASURECITY)
+		{
+			TreasureCityUITR.tCityUITR.TongZhi.upDataShow ();
+		}
     }
 
     public void scaleOver()

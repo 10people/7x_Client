@@ -20,6 +20,11 @@ public class KingSkillXuanFengZhan : MonoBehaviour
 		
 		SkillTemplate skill = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.bahuanglieri, king);
 
+		if( skill == null ){
+			Debug.LogError( "Error, skill is null." );
+
+		}
+
 		count = (int)skill.value2;
 
 		curCount = 0;

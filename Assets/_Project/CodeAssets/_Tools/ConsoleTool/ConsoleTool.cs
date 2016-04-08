@@ -258,6 +258,16 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 				RegisterCommand( CONST_LOG_SCREEN, Console_SetSystem.LogScreen );
 
 				RegisterCommand( CONST_VIBRATE, Console_SetSystem.Vibrate );
+
+				RegisterCommand( CONST_DEBUG_CAMERA, Console_SetCam.DebugCamera );
+
+				RegisterCommand( CREATE_RES, Console_SetSystem.CreateRes );
+
+				RegisterCommand( LOAD_RES, Console_SetSystem.LoadRes );
+
+				RegisterCommand( UNLOAD_RES, Console_SetSystem.UnloadRes );
+
+				RegisterCommand( LOG_MODEL_AUTO, ModelAutoActivator.LogModelAuto );
 			}
 
 			{
@@ -531,6 +541,14 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public const string GC								= "/GC";
 
+	public const string CREATE_RES						= "/CreateRes";
+
+	public const string LOAD_RES						= "/LoadRes";
+
+	public const string UNLOAD_RES						= "/UnloadRes";
+
+	public const string LOG_MODEL_AUTO					= "/LogModelAuto";
+
 
 
 	public const string SET_CAM_TOUR					= "/SetCamTour";
@@ -540,6 +558,8 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public const string CONST_LOG_SCREEN				= "/LogScreen";
 
 	public const string CONST_VIBRATE					= "/Vibrate";
+
+	public const string CONST_DEBUG_CAMERA				= "/DebugCamera";
 
 
 

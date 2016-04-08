@@ -22,6 +22,7 @@ public class SpecialPurposeCloseLayer : MonoBehaviour
         else
         {
             MainCityUI.TryRemoveFromObjectList(m_TargetDestroy);
+			TreasureCityUI.TryRemoveFromObjectList(m_TargetDestroy);
             Destroy(m_TargetDestroy);
            
         }

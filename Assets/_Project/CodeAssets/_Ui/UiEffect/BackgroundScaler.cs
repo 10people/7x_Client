@@ -41,6 +41,16 @@ public class BackgroundScaler : MonoBehaviour {
 
 	#region Utilities
 
+	public bool IsFullScreenUI(){
+		UITexture t_tex = GetComponent<UITexture>();
+
+		if( t_tex != null ){
+			return true;
+		}
+
+		return false;
+	}
+
 	private void ScaleBg(){
 		float t_s = ScreenHelper.GetBGScale( m_designed_w, m_designed_h );
 
@@ -48,9 +58,9 @@ public class BackgroundScaler : MonoBehaviour {
 			UITexture t_tex = GetComponent<UITexture>();
 			
 			if( t_tex != null ){
-				t_tex.width = (int)( m_designed_w * t_s );
+				t_tex.width = (int)( m_designed_w * t_s ) + 6;
 				
-				t_tex.height = (int)( m_designed_h * t_s );
+				t_tex.height = (int)( m_designed_h * t_s ) + 4;
 
 				return;
 			}
@@ -61,9 +71,9 @@ public class BackgroundScaler : MonoBehaviour {
 			UISprite t_sprite = GetComponent<UISprite>();
 
 			if( t_sprite != null ){
-				t_sprite.width = (int)( m_designed_w * t_s );
+				t_sprite.width = (int)( m_designed_w * t_s ) + 6;
 				
-				t_sprite.height = (int)( m_designed_h * t_s );
+				t_sprite.height = (int)( m_designed_h * t_s ) + 4;
 				
 				return;
 			}

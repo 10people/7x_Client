@@ -76,6 +76,7 @@ public class PveStarItem : MonoBehaviour {
 				UiSpriteBg.gameObject.SetActive(false);
 
 				Item_Icon.spriteName = "tint_back";
+				mBtn.enabled = true;
 			}
 			else
 			{
@@ -126,6 +127,22 @@ public class PveStarItem : MonoBehaviour {
 	}
 	public void SendLingQu()
 	{
+//		UIButton mBtn = GetComponent<UIButton>();
+//		
+//		mBtn.enabled = false;
+//		Debug.Log ("mStarInfo.finished:" + mStarInfo.finished);
+//		Debug.Log ("mStarInfo.getRewardState:" + mStarInfo.getRewardState);
+		if (!mStarInfo.finished)
+		{
+			return;
+		}
+		if (mStarInfo.getRewardState)
+		{
+			return;
+		}
+
+		UIButton mBtn = GetComponent<UIButton>();
+		mBtn.enabled = false;
 
 		MemoryStream t_tream = new MemoryStream();
 

@@ -64,6 +64,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 	public UILabel labelDKP;
 
+	public UILabel labelHuangyeCoin;
+
 	//public UILabel labelHeroLevel;
 
 	//public UILabel labelSoldierLevel;
@@ -257,7 +259,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		}
 		else
         {
-            SceneManager.EnterMainCity();
+			SceneManager.EnterMainCity();
         }
 
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("JunZhu")))
@@ -500,6 +502,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 		{
 			UI2DTool.OnBattleV4ResultShow();
+
+			EffectTool.SetUIBackgroundEffect(BattleUIControlor.Instance().uiCamera.gameObject, true);
 		}
     }
 
@@ -525,9 +529,17 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 		if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_LOSE)
 		{
-			spriteFlag.spriteName = "result_lose";
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia
+			   && CityGlobalData.m_tempSection == 1)
+			{
+				spriteWinLevel.spriteName = "result_over";
+			}
+			else
+			{
+				spriteFlag.spriteName = "result_lose";
 
-			spriteWinLevel.spriteName = "result_lose_0";
+				spriteWinLevel.spriteName = "result_lose_0";
+			}
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)
 		{
@@ -540,10 +552,13 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 				spriteWinLevel.spriteName = "result_win_" + (winLevel - 1);
 			}
 		}
-		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve
-		        || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
+		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
 			spriteWinLevel.spriteName = "result_over";
+		}
+		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
+		{
+			spriteWinLevel.spriteName = "result_win_3";
 		}
 		else
 		{
@@ -566,10 +581,10 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		}
 		else
 		{
-			UI3DEffectTool.ShowMidLayerEffect( 
-	             UI3DEffectTool.UIType.FunctionUI_1, 
-	             spriteFlag.gameObject, 
-	             EffectIdTemplate.GetPathByeffectId(100104) );
+//			UI3DEffectTool.ShowMidLayerEffect( 
+//	             UI3DEffectTool.UIType.FunctionUI_1, 
+//	             spriteFlag.gameObject, 
+//	             EffectIdTemplate.GetPathByeffectId(100104) );
 		}
 
 		for(timer = 0;;)
@@ -744,20 +759,22 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 				
 				int exp = (int)(iExp * i);
 				
-				labelCoin.text = "+" + coin;
+				labelCoin.text = "" + coin;
 				
-				labelExp.text = "+" + exp;
+				labelExp.text = "" + exp;
 			}
 			
-			labelCoin.text = "+" + iCoin;
+			labelCoin.text = "" + iCoin;
 			
-			labelExp.text = "+" + iExp;
+			labelExp.text = "" + iExp;
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
 			layerHuangYe_1.SetActive(true);
 
 			labelDKP.text = "0";
+
+			labelHuangyeCoin.text = "0";
 
 			for (float i = 0; i <= 1; i += .04f)
 			{
@@ -771,11 +788,17 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 				}
 				
 				int coin = (int)(iCoin * i);
-				
-				labelDKP.text = "+" + coin;
+
+				int exp = (int)(iExp * i);
+
+				labelDKP.text = "" + coin;
+
+				labelHuangyeCoin.text = "" + exp;
 			}
 
-			labelDKP.text = "+" + iCoin;
+			labelDKP.text = "" + iCoin;
+
+			labelHuangyeCoin.text = "" + iExp;
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan)
 		{

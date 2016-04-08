@@ -28,6 +28,10 @@ public class TongzhiData
         {
             return true;
         }
+		else if ((Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_TREASURECITY) && ((m_PopupableType & 4) != 0))
+		{
+			return true;
+		}
         else
         {
             return false;

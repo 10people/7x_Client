@@ -39,34 +39,39 @@ public class PlotChatTemplate : XmlLoadManager
 	
 	public float cameraRy;
 
+	private static List<PlotChatTemplate> templates = new List<PlotChatTemplate>();
 
-	public static List<PlotChatTemplate> templates = new List<PlotChatTemplate>();
-	
-	
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
 		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "PlotChat.xml"), CurLoad, UtilityTool.GetEventDelegateList( p_callback ), false );
 	}
-	
+
+	private static TextAsset m_templates_text = null;
+
 	public static void CurLoad(ref WWW www, string path, Object obj){
-		{
-			templates.Clear();
+		if ( obj == null ) {
+			Debug.LogError ("Asset Not Exist: " + path);
+
+			return;
 		}
+
+		m_templates_text = obj as TextAsset;
+	}
 		
-		XmlReader t_reader = null;
-		
-		if( obj != null ){
-			TextAsset t_text_asset = obj as TextAsset;
-			
-			t_reader = XmlReader.Create( new StringReader( t_text_asset.text ) );
-			
-			//			Debug.Log( "Text: " + t_text_asset.text );
+	private static void ProcessAsset(){
+		if( templates.Count > 0 ) {
+			return;
 		}
-		else{
-			t_reader = XmlReader.Create( new StringReader( www.text ) );
+
+		if( m_templates_text == null ) {
+			Debug.LogError( "Error, Asset Not Exist." );
+
+			return;
 		}
-		
+
+		XmlReader t_reader = XmlReader.Create( new StringReader( m_templates_text.text ) );
+
 		bool t_has_items = true;
-		
+
 		do{
 			t_has_items = t_reader.ReadToFollowing( "PlotChat" );
 			
@@ -128,10 +133,25 @@ public class PlotChatTemplate : XmlLoadManager
 			templates.Add( t_template );
 		}
 		while( t_has_items );
+
+		{
+			m_templates_text = null;
+		}
+	}
+
+	public static List<PlotChatTemplate> GetTemplates(){
+		{
+			ProcessAsset();	
+		}
+
+		return templates;
 	}
 	
-	public static PlotChatTemplate getPlotChatTemplateById(int plotChatId)
-	{
+	public static PlotChatTemplate getPlotChatTemplateById(int plotChatId){
+		{
+			ProcessAsset();	
+		}
+
 		foreach(PlotChatTemplate template in templates)
 		{
 			if(template.plotChatId == plotChatId)

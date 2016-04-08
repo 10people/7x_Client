@@ -84,8 +84,11 @@ public class GetAllianceData : MonoBehaviour , SocketListener{
 						}
 					}
 				}
-			
-				MainCityUI.SetRedAlert(index,false);
+				if( !CityGlobalData.m_AllianceIsHave)
+				{
+					MainCityUI.SetRedAlert(index,false);
+				}
+
 				return true;
 			}
 			default: return false;

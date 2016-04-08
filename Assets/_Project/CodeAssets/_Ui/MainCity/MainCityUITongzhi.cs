@@ -20,6 +20,7 @@ public class MainCityUITongzhi : MYNGUIPanel
     public List<UILabel> m_listButtonDes = new List<UILabel>();
     public TongzhiData m_TongzhiData;
 	public bool m_isOpen = false;
+	private bool m_isMove = false;
 
     public List<TongzhiData> m_CurrentTongzhiDataList
     {
@@ -33,6 +34,10 @@ public class MainCityUITongzhi : MYNGUIPanel
             {
                 return Global.m_listJiebiaoData;
             }
+			else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_TREASURECITY)
+			{
+				return Global.m_listShiLianData;
+			}
             else
             {
                 return new List<TongzhiData>();
@@ -136,7 +141,7 @@ public class MainCityUITongzhi : MYNGUIPanel
                 break;
             }
         }
-		if(isHave != m_isOpen)
+		if(isHave != m_isOpen && !m_isMove)
 		{
 			m_isOpen = isHave;
 			if(m_isOpen)
@@ -148,6 +153,7 @@ public class MainCityUITongzhi : MYNGUIPanel
 					"easeType", iTween.EaseType.easeOutElastic,
 					"islocal",true
 					));
+				m_isMove = true;
 			}
 			else
 			{
@@ -158,6 +164,7 @@ public class MainCityUITongzhi : MYNGUIPanel
 					"easeType", iTween.EaseType.easeOutElastic,
 					"islocal",true
 					));
+				m_isMove = true;
 			}
 		}
         m_objAlert.SetActive(false);
@@ -216,13 +223,13 @@ public class MainCityUITongzhi : MYNGUIPanel
 				"oncomplete", "moveOver",
 				"oncompletetarget", gameObject
 				));
+			m_isMove = true;
 			m_isOpen = false;
 
 			if(m_TongzhiData.m_ButtonIndexShowDesList[tempIndex] != -1)
 			{
 				ClientMain.m_UITextManager.createText(DescIdTemplate.GetDescriptionById(m_TongzhiData.m_ButtonIndexShowDesList[tempIndex]));
 			}
-//			;
         }
     }
 
@@ -257,6 +264,15 @@ public class MainCityUITongzhi : MYNGUIPanel
 
 	public void moveOver()
 	{
+		m_isMove = false;
 		upDataShow();
+//		if(m_isOpen)
+//		{
+//			m_objBGShow.transform.localPosition = new Vector3(-340f, m_objBGShow.transform.localPosition.y, m_objBGShow.transform.localPosition.z);
+//		}
+//		else
+//		{
+//			m_objBGShow.transform.localPosition = new Vector3(-25f, m_objBGShow.transform.localPosition.y, m_objBGShow.transform.localPosition.z);
+//		}
 	}
 }

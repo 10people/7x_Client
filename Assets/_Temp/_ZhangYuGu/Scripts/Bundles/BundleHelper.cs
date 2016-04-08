@@ -4,6 +4,8 @@
 
 //#define DEBUG_BUNDLE_HELPER
 
+//#define DEBUG_BUNDLE_HELPER_DETAIL
+
 
 
 //#define DEBUG_DELAY_LOAD
@@ -190,7 +192,7 @@ public class BundleHelper : MonoBehaviour{
 
 		string t_bundle_key = ManifestHelper.GetBundleKey( p_resource_path );
 
-		#if DEBUG_BUNDLE_HELPER
+		#if DEBUG_BUNDLE_HELPER_DETAIL
 		Debug.Log( "t_bundle_key( " + t_bundle_key + " )" );
 		#endif
 
@@ -280,11 +282,11 @@ public class BundleHelper : MonoBehaviour{
 
 	private static void DownloadTheToLoad(){
 		#if DEBUG_BUNDLE_HELPER
-		Debug.Log( "DownloadAndCache()" );
+		Debug.Log( "DownloadTheToLoad()" );
 		#endif
 
 		if( IsDownloading() ){
-			#if DEBUG_BUNDLE_HELPER
+			#if DEBUG_BUNDLE_HELPER_DETAIL
 			Debug.Log( "IsDownloading." );
 			#endif
 
@@ -340,7 +342,7 @@ public class BundleHelper : MonoBehaviour{
 			
 			bool t_contains = m_bundle_dict.ContainsKey( p_url );
 			
-			#if DEBUG_BUNDLE_HELPER
+			#if DEBUG_BUNDLE_HELPER_DETAIL
 			Debug.Log( "t_is_local_res: " + t_is_local_res );
 			
 			Debug.Log( "t_contains: " + t_contains );

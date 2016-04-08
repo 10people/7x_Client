@@ -76,7 +76,7 @@ public class ChapterUImaneger : MonoBehaviour {
 
 		mmFixUniform.offset = new Vector3(-4,10,0);
 
-		if(AllChapers > 8){
+		if(AllChapers > 6){
 
 			mmFixUniform.enabled = false;
 		}

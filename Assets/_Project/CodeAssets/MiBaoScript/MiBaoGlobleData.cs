@@ -461,7 +461,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 			}
 
 			m_iMibaoNum = tempNum;
-			MainCityUI.addShouji(mMiBaoskill.skill2, 4, m_iMibaoNum, mMiBaoskill.needNum, "秘宝技能");
+			MainCityUI.addShouji(int.Parse(mMiBaoskill.icon), 4, m_iMibaoNum, mMiBaoskill.needNum, "秘宝技能");
 		}
 	}
 }

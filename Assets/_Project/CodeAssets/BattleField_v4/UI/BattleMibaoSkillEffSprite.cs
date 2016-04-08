@@ -3,9 +3,6 @@ using System.Collections;
 
 public class BattleMibaoSkillEffSprite : MonoBehaviour 
 {
-	public bool logFlag = false;
-
-
 	private UISprite sprite;
 
 
@@ -17,11 +14,6 @@ public class BattleMibaoSkillEffSprite : MonoBehaviour
 	private void iSetAlpha(float _alpha)
 	{
 		sprite.alpha = _alpha;
-
-		if(logFlag)
-		{
-			//Debug.Log(TimeHelper.GetFrameAndTime() + "  SSSSSSSSSSSSSSSSSSSSSSSS    " + _alpha);
-		}
 	}
 
 	private void uSetAlpha(float _alpha)

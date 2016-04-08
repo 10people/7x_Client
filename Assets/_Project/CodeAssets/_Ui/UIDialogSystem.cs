@@ -190,7 +190,7 @@ public class UIDialogSystem : MonoBehaviour, IUIRootAutoActivator
 		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.YINDAO_DRAMA_AVATAR_PREFIX ) + tempHeadID,
 		                        ResourceLoadCallback );
 		avatar.gameObject.SetActive(true);
-		sprite.width = 960 + (ClientMain.m_iMoveX * 2);
+		sprite.width = 960 + (ClientMain.m_iMoveX * 2) + 10;
 
 		m_FTimeNew = System.DateTime.Now;
 		if(m_dialogData[m_iCurentDialogIndex].sDialogSoundID != "" && m_dialogData[m_iCurentDialogIndex].sDialogSoundID != null)
@@ -237,7 +237,7 @@ public class UIDialogSystem : MonoBehaviour, IUIRootAutoActivator
 		sprite.gameObject.transform.localPosition = new Vector3(0, 0, 0);
 		//Debug.Log(ClientMain.m_iMoveY * 2);
 		spriteUp.gameObject.transform.localPosition = new Vector3(0, 640 + (ClientMain.m_iMoveY * 2) + 5, 0);
-		spriteUp.width = (960 + (ClientMain.m_iMoveX * 2));
+		spriteUp.width = (960 + (ClientMain.m_iMoveX * 2) + 10);
 		m_labelAG.transform.localPosition = new Vector3(960 + (ClientMain.m_iMoveX * 2) - 210, 25, m_labelAG.transform.localPosition.z);
 		if(isLeft)
 		{

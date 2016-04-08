@@ -446,7 +446,9 @@ public class MyAllianceMain : MonoBehaviour, SocketProcessor
 
 	public void DeletUI_i(int i)//Quite。
 	{
-	    m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindowWithEnterMainCity;
+        AllianceData.Instance.IsAllianceNotExist = true;
+        QXChatUIBox.chatUIBox.SetSituationState();
+        m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindowWithEnterMainCity;
         m_ScaleEffectController.OnCloseWindowClick();
 	}
 

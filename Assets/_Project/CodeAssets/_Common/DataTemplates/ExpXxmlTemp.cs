@@ -31,7 +31,7 @@ public class ExpXxmlTemp : XmlLoadManager {
     public static List<NeedInfo> m_listNeedInfo = new List<NeedInfo>();
     public static List<NeedInfo> m_listReduceInfo = new List<NeedInfo>();
 	
-	public static List<ExpXxmlTemp> templates = new List<ExpXxmlTemp>();
+	private static List<ExpXxmlTemp> templates = new List<ExpXxmlTemp>();
 	
 	
 	public void Log(){

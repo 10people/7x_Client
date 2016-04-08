@@ -24,7 +24,7 @@ public class EquipTaoZhuangLayerManagerment : MonoBehaviour {
                     EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, true);
             }
         }
-        ShowInfo(FunctionWindowsCreateManagerment.m_JiHuoInfo);
+    //  ShowInfo(FunctionWindowsCreateManagerment.m_JiHuoInfo);
     }
 
     void SelefDestroy(GameObject obj)
@@ -32,7 +32,7 @@ public class EquipTaoZhuangLayerManagerment : MonoBehaviour {
         Destroy(this.gameObject);
     }
 
-    void ShowInfo(FunctionWindowsCreateManagerment.EquipTaoJiHuo info)
+    public void ShowInfo(FunctionWindowsCreateManagerment.EquipTaoJiHuo info)
     {
         if (FunctionWindowsCreateManagerment.SpecialSizeFit(info._quality))
         {
@@ -49,12 +49,13 @@ public class EquipTaoZhuangLayerManagerment : MonoBehaviour {
         UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_LabTitle.gameObject, EffectIdTemplate.GetPathByeffectId(620214), null);
      
         m_LabGong.text = MyColorData.getColorString(9, (info._gong + info._gongadd).ToString() + " (") + MyColorData.getColorString(4,  info._gongadd.ToString() + "↑") + MyColorData.getColorString(9, ")");
-        m_LabFang.text = MyColorData.getColorString(9, (info._fang + info._fanggadd).ToString() + " (") + MyColorData.getColorString(4, (JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level).fangAdd) + "↑") + MyColorData.getColorString(9, ")");
-        m_LabMing.text = MyColorData.getColorString(9, (info._ming + info._minggadd).ToString() + " (") + MyColorData.getColorString(4, (JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level).xueAdd) + "↑") + MyColorData.getColorString(9, ")");
+        m_LabFang.text = MyColorData.getColorString(9, (info._fang + info._fanggadd).ToString() + " (") + MyColorData.getColorString(4, info._fanggadd + "↑") + MyColorData.getColorString(9, ")");
+        m_LabMing.text = MyColorData.getColorString(9, (info._ming + info._minggadd).ToString() + " (") + MyColorData.getColorString(4, info._minggadd + "↑") + MyColorData.getColorString(9, ")");
     }
 
     void OnDestroy()
     {
+        JunZHuEquipOfBody.m_IsJiHuo = false;
         if (m_Camera != null)
             EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);
 

@@ -241,7 +241,7 @@ public class GuideTemplate : XmlLoadManager
 
 		int levelType = CityGlobalData.m_levelType == qxmobile.protobuf.LevelType.LEVEL_TALE ? 1 : 0;
 
-		if (levelType == 1) return null;
+		//if (levelType == 1) return null;
 
 		foreach(GuideTemplate template in templates)
 		{
@@ -251,7 +251,7 @@ public class GuideTemplate : XmlLoadManager
 			}
 		}
 		
-		Debug.LogError("XML ERROR: Can't get GuideTemplate with level " + levelId + ", and eventId " + eventId);
+		if(levelType == 0) Debug.LogError("XML ERROR: Can't get GuideTemplate with level " + levelId + ", and eventId " + eventId);
 
 		return null;
 	}

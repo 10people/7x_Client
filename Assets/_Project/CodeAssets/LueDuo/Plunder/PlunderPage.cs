@@ -94,7 +94,7 @@ public class PlunderPage : MonoBehaviour {
 	public UIScrollBar allianceSb;
 	private List<GameObject> allianceItemList = new List<GameObject> ();
 	public GameObject allianceItemObj;
-	public UIGrid allianceGrid;
+	public GameObject allianceGrid;
 	public UILabel allianceDesLabel;
 	
 	//对手
@@ -102,8 +102,12 @@ public class PlunderPage : MonoBehaviour {
 	public UIScrollBar opponentSb;
 	private List<GameObject> opponentItemList = new List<GameObject> ();
 	public GameObject opponentItemObj;
-	public UIGrid opponentGrid;
+	public GameObject opponentGrid;
 	public UILabel opponentDesLabel;
+
+	private bool canTap = false;
+	
+	private bool isRefreshToTop = true;
 
 	public GameObject btnsObj;
 	public GameObject labelsObj;
@@ -185,6 +189,7 @@ public class PlunderPage : MonoBehaviour {
 		SetPlunderState ();
 		SetGetRewardState ();
 		SetRedPoint (tempRes.hasRecord);
+		SetSituationRedPoint (FunctionOpenTemp.IsShowRedSpotNotification (410012));
 
 		if (isFirstOpen)
 		{
@@ -226,15 +231,18 @@ public class PlunderPage : MonoBehaviour {
 	/// </summary>
 	void InItPlunderAlliance ()
 	{
-		allianceItemList = QXComData.CreateGameObjectList (allianceItemObj,
-		                                                   allianceGrid,
-		                                                   plunderResp.mengInfos.Count,
-		                                                   allianceItemList);
+		allianceItemList = QXComData.CreateGameObjectList (allianceItemObj, plunderResp.mengInfos.Count,allianceItemList);
 
-		allianceDesLabel.text = allianceItemList.Count > 0 ? "" : "这个国家暂时还没有联盟！";
+		if (allianceItemList.Count <= 5)
+		{
+			allianceSc.ResetPosition ();
+		}
+
+		allianceGrid.GetComponent<ItemTopCol> ().enabled = allianceItemList.Count < 5 ? true : false;
 
 		for (int i = 0;i < allianceItemList.Count;i ++)
 		{
+			allianceItemList[i].transform.localPosition = new Vector3(0,-70 * i,0);
 			allianceSc.UpdateScrollbars (true);
 			allianceSb.value = isRefreshToTop ? 0.0f : 1.0f;
 			allianceItemList[i].name = i.ToString ();
@@ -246,9 +254,11 @@ public class PlunderPage : MonoBehaviour {
 			handler.m_click_handler += AllianceItemClickBack;
 		}
 
+		allianceDesLabel.text = allianceItemList.Count > 0 ? "" : "这个国家暂时还没有联盟！";
+
 		startAllianceIndex = 0;
 
-		SetCanTap (true);
+		canTap = true;
 
 		if (allianceItemList.Count > 0)
 		{
@@ -285,10 +295,11 @@ public class PlunderPage : MonoBehaviour {
 	/// </summary>
 	void InItPlunderOpponent ()
 	{
-		opponentItemList = QXComData.CreateGameObjectList (opponentItemObj,
-		                                                   opponentGrid,
-		                                                   plunderResp.junInfos.Count,
-		                                                   opponentItemList);
+		opponentItemList = QXComData.CreateGameObjectList (opponentItemObj,plunderResp.junInfos.Count, opponentItemList);
+
+		opponentSc.ResetPosition ();
+
+		opponentGrid.GetComponent<ItemTopCol> ().enabled = opponentItemList.Count < 4 ? true : false;
 
 		opponentDesLabel.text = opponentItemList.Count > 0 ? "" : "暂时还没有可掠夺的对手！";
 
@@ -297,19 +308,52 @@ public class PlunderPage : MonoBehaviour {
 		{
 			for (int j = 0;j < plunderResp.junInfos.Count - i - 1;j ++)
 			{
-				if (plunderResp.junInfos[j].leftProtectTime > plunderResp.junInfos[j + 1].leftProtectTime)
+				if (plunderResp.junInfos[j].leftProtectTime == 0)
 				{
-					JunZhuInfo tempInfo = plunderResp.junInfos[j];
-					plunderResp.junInfos[j] = plunderResp.junInfos[j + 1];
-					plunderResp.junInfos[j + 1] = tempInfo;
+					if (plunderResp.junInfos[j + 1].leftProtectTime == 0)
+					{
+						if (plunderResp.junInfos[j].gongjin < plunderResp.junInfos[j + 1].gongjin)
+						{
+							JunZhuInfo tempInfo = plunderResp.junInfos[j];
+							plunderResp.junInfos[j] = plunderResp.junInfos[j + 1];
+							plunderResp.junInfos[j + 1] = tempInfo;
+						}
+						else if (plunderResp.junInfos[j].gongjin == plunderResp.junInfos[j + 1].gongjin)
+						{
+							if (plunderResp.junInfos[j].zhanli < plunderResp.junInfos[j + 1].zhanli)
+							{
+								JunZhuInfo tempInfo = plunderResp.junInfos[j];
+								plunderResp.junInfos[j] = plunderResp.junInfos[j + 1];
+								plunderResp.junInfos[j + 1] = tempInfo;
+							}
+							else if (plunderResp.junInfos[j].zhanli == plunderResp.junInfos[j + 1].zhanli)
+							{
+								if (plunderResp.junInfos[j].remainHp < plunderResp.junInfos[j + 1].remainHp)
+								{
+									JunZhuInfo tempInfo = plunderResp.junInfos[j];
+									plunderResp.junInfos[j] = plunderResp.junInfos[j + 1];
+									plunderResp.junInfos[j + 1] = tempInfo;
+								}
+							}
+						}
+					}
 				}
-				else if (plunderResp.junInfos[j].leftProtectTime == plunderResp.junInfos[j + 1].leftProtectTime && plunderResp.junInfos[j].leftProtectTime <= 0)
+				else
 				{
-					if (plunderResp.junInfos[j].gongji < plunderResp.junInfos[j + 1].gongji)
+					if (plunderResp.junInfos[j + 1].leftProtectTime == 0)
 					{
 						JunZhuInfo tempInfo = plunderResp.junInfos[j];
 						plunderResp.junInfos[j] = plunderResp.junInfos[j + 1];
 						plunderResp.junInfos[j + 1] = tempInfo;
+					}
+					else
+					{
+						if (plunderResp.junInfos[j].leftProtectTime > plunderResp.junInfos[j + 1].leftProtectTime)
+						{
+							JunZhuInfo tempInfo = plunderResp.junInfos[j];
+							plunderResp.junInfos[j] = plunderResp.junInfos[j + 1];
+							plunderResp.junInfos[j + 1] = tempInfo;
+						}
 					}
 				}
 			}
@@ -317,6 +361,7 @@ public class PlunderPage : MonoBehaviour {
 
 		for (int i = 0;i < opponentItemList.Count;i ++)
 		{
+			opponentItemList[i].transform.localPosition = new Vector3(0,-100 * i,0);
 			opponentSc.UpdateScrollbars (true);
 			opponentSb.value = IsOpponentToTop ? 0.0f : opponentSb.value;
 			PdOpponentItem pdOpponent = opponentItemList[i].GetComponent<PdOpponentItem> ();
@@ -355,7 +400,7 @@ public class PlunderPage : MonoBehaviour {
 			{
 				textStr = "是否使用" + plunderResp.clearCdYB + "元宝清除冷却时间？";
 				
-				QXComData.CreateBox (1,textStr,false,ClearCdReqBack);
+				QXComData.CreateBox (1,textStr,false,PlunderData.Instance.ClearCdReqBack);
 			}
 
 			break;
@@ -366,7 +411,7 @@ public class PlunderPage : MonoBehaviour {
 					+ MyColorData.getColorString (1,"次掠夺机会？\n\n今日还可购买") + MyColorData.getColorString (5,plunderResp.remainBuyHuiShi.ToString ())
 					+ MyColorData.getColorString (1,"次");
 			
-			QXComData.CreateBoxDiy (textStr,false,BuyPlunderNumReqBack);
+			QXComData.CreateBoxDiy (textStr,false,PlunderData.Instance.BuyPlunderNumReqBack);
 
 			break;
 		case "RulesBtn":
@@ -388,6 +433,10 @@ public class PlunderPage : MonoBehaviour {
 
 				aRankSb.value = 0;
 				pRankSb.value = 0;
+				isArankToTop = true;
+				isPRankToTop = true;
+				aRankSc.ResetPosition ();
+				pRankSc.ResetPosition ();
 				SwitchPlunderPage (SwitchPageType.MAIN_PAGE);
 
 				break;
@@ -441,46 +490,11 @@ public class PlunderPage : MonoBehaviour {
 			break;
 		case "SituationBtn":
 
-			SetSituationRedPoint (false);
-			WarSituationData.Instance.OpenWarSituation ();
+			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER,true);
 
 			break;
 		default:
 			break;
-		}
-	}
-
-	//清除冷却
-	public void ClearCdReqBack (int i)
-	{
-		if (i == 2)
-		{
-			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < plunderResp.clearCdYB)
-			{
-				textStr = "元宝不足！\n\n是否跳转到充值？";
-				QXComData.CreateBox (1,textStr,false,TurnToVip);
-			}
-			else
-			{
-				PlunderData.Instance.PlunderOperate (PlunderData.OperateType.CLEAR_CD);
-			}
-		}
-	}
-
-	//购买次数
-	public void BuyPlunderNumReqBack (int i)
-	{
-		if (i == 2)
-		{
-			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < plunderResp.buyNextBattleYB)
-			{
-				textStr = "元宝不足！\n\n是否跳转到充值？";
-				QXComData.CreateBox (1,textStr,false,TurnToVip);
-			}
-			else
-			{
-				PlunderData.Instance.PlunderOperate (PlunderData.OperateType.ADD_NUM);
-			}
 		}
 	}
 
@@ -520,32 +534,31 @@ public class PlunderPage : MonoBehaviour {
 	void SetPlunderState ()
 	{
 		StopCoroutine ("PlunderCdTime");
+
+		gongJinLabel.text = MyColorData.getColorString (1,QXComData.MoneyName (QXComData.MoneyType.JIFEN) + "：") + MyColorData.getColorString (4,plunderResp.gongJin);
+		 
 		if (plunderResp.all >= plunderResp.nowMaxBattleCount)
 		{
 			plunderBtnDic["AddNumBtn"].gameObject.SetActive (false);
 			
 			if (plunderResp.used >= plunderResp.all)
 			{
-				btnsObj.transform.localPosition = new Vector3(10,-270,0);
-				labelsObj.transform.localPosition = new Vector3(345,0,0);
-				
-				numsLabel.text = "今日掠夺次数已用尽";
+				timeLabel.text = MyColorData.getColorString (1,"今日掠夺次数已用尽");
 				plunderBtnDic["ResetBtn"].gameObject.SetActive (false);
-				
-				gongJinLabel.text = "贡金：" + plunderResp.gongJin;
-				timeLabel.text = "";
+			
+				numsLabel.text = "";
 			}
 			else
 			{
-				numsLabel.text = "今日剩余次数：" + (plunderResp.all - plunderResp.used) + "/" + plunderResp.all;
-				
 				if (plunderResp.CdTime > 0)//掠夺冷却期
 				{
 					btnsObj.transform.localPosition = new Vector3(0,-270,0);
 					labelsObj.transform.localPosition = new Vector3(345,0,0);
-					gongJinLabel.text = "";
+
 					plunderBtnDic["ResetBtn"].gameObject.SetActive (true);
-					
+
+					numsLabel.text = MyColorData.getColorString (1,"今日剩余次数：") + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+
 					cdTime = plunderResp.CdTime;
 					StartCoroutine ("PlunderCdTime");
 				}
@@ -554,16 +567,14 @@ public class PlunderPage : MonoBehaviour {
 					btnsObj.transform.localPosition = new Vector3(10,-270,0);
 					labelsObj.transform.localPosition = new Vector3(345,0,0);
 					plunderBtnDic["ResetBtn"].gameObject.SetActive (false);
-					
-					gongJinLabel.text = "贡金：" + plunderResp.gongJin;
-					timeLabel.text = "";
+
+					numsLabel.text = "";
+					timeLabel.text = MyColorData.getColorString (1,"今日剩余次数：") + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
 				}
 			}
 		}
 		else
 		{
-			numsLabel.text = "今日剩余次数：" + (plunderResp.all - plunderResp.used) + "/" + plunderResp.all;
-			
 			if (plunderResp.used >= plunderResp.all)
 			{
 				btnsObj.transform.localPosition = new Vector3(0,-270,0);
@@ -571,9 +582,9 @@ public class PlunderPage : MonoBehaviour {
 				
 				plunderBtnDic["ResetBtn"].gameObject.SetActive (false);
 				plunderBtnDic["AddNumBtn"].gameObject.SetActive (true);
-				
-				gongJinLabel.text = "贡金：" + plunderResp.gongJin;
-				timeLabel.text = "";
+
+				timeLabel.text = MyColorData.getColorString (1,"今日剩余次数：") + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+				numsLabel.text = "";
 			}
 			else
 			{
@@ -583,9 +594,11 @@ public class PlunderPage : MonoBehaviour {
 				{
 					btnsObj.transform.localPosition = new Vector3(0,-270,0);
 					labelsObj.transform.localPosition = new Vector3(335,0,0);
-					gongJinLabel.text = "";
+
 					plunderBtnDic["ResetBtn"].gameObject.SetActive (true);
-					
+
+					numsLabel.text = MyColorData.getColorString (1,"今日剩余次数：") + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+
 					cdTime = plunderResp.CdTime;
 					StartCoroutine ("PlunderCdTime");
 				}
@@ -594,9 +607,10 @@ public class PlunderPage : MonoBehaviour {
 					btnsObj.transform.localPosition = new Vector3(10,-270,0);
 					labelsObj.transform.localPosition = new Vector3(345,0,0);
 					plunderBtnDic["ResetBtn"].gameObject.SetActive (false);
-					
-					gongJinLabel.text = "贡金：" + plunderResp.gongJin;
-					timeLabel.text = "";
+
+					timeLabel.text = MyColorData.getColorString (1,"今日剩余次数：") + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+
+					numsLabel.text = "";
 				}
 			}
 		}
@@ -611,7 +625,7 @@ public class PlunderPage : MonoBehaviour {
 		{
 			cdTime --;
 			
-			timeLabel.text = "掠夺冷却：" + TimeHelper.GetUniformedTimeString (cdTime);
+			timeLabel.text = MyColorData.getColorString (1,"掠夺冷却：") + MyColorData.getColorString (5,TimeHelper.GetUniformedTimeString (cdTime));
 			
 			if (cdTime == 0) 
 			{
@@ -701,18 +715,6 @@ public class PlunderPage : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Turns to vip.
-	/// </summary>
-	/// <param name="i">The index.</param>
-	public void TurnToVip (int i)
-	{
-		if (i == 2)
-		{
-			//跳转到充值
-		}
-	}
-
-	/// <summary>
 	/// Sets the red point.
 	/// </summary>
 	/// <param name="isRed">If set to <c>true</c> is red.</param>
@@ -721,17 +723,20 @@ public class PlunderPage : MonoBehaviour {
 		plunderResp.hasRecord = isRed;
 		recordRedObj.SetActive (isRed);
 		PushAndNotificationHelper.SetRedSpotNotification (220, plunderResp.hasRecord);
-		WarPage.warPage.CheckRedPoint ();
+		if (WarPage.warPage != null)
+		{
+			WarPage.warPage.CheckRedPoint ();
+		}
 	}
 
 	/// <summary>
 	/// Sets the situation red point.
 	/// </summary>
 	/// <param name="isRed">If set to <c>true</c> is red.</param>
-	void SetSituationRedPoint (bool isRed)
+	public void SetSituationRedPoint (bool isRed)
 	{
 		situationRedObj.SetActive (isRed);
-		PushAndNotificationHelper.SetRedSpotNotification (220, plunderResp.hasRecord);
+		PushAndNotificationHelper.SetRedSpotNotification (410012, isRed);
 //		WarPage.warPage.CheckRedPoint ();
 	}
 
@@ -743,173 +748,158 @@ public class PlunderPage : MonoBehaviour {
 		allianceSb.value = 0;
 		opponentSb.value = 0;
 		isOpenFirst = true;
+		PlunderData.Instance.isOpenLueDuo = false;
 		gameObject.SetActive (false);
 	}
 
-	/// <summary>
-	/// Checks the plunder times.
-	/// </summary>
-	public void CheckPlunderTimes ()
-	{
-//		Debug.Log ("plunderResp.all - plunderResp.used:" + (plunderResp.all - plunderResp.used));
-		if (plunderResp.all - plunderResp.used == 1)
-		{
-			PushAndNotificationHelper.SetRedSpotNotification (215, false);
-			WarPage.warPage.CheckRedPoint ();
-		}
-	}
-
 	#endregion
-
-	private bool canTap = false;
-	public void SetCanTap (bool isTap)
-	{
-		canTap = isTap;
-	}
-
-	private bool isRefreshToTop = true;
+	
 	void Update ()
 	{
 		//掠夺联盟
 		float temp = allianceSc.GetSingleScrollViewValue();
-		if (temp == -100) return;
-		
-		if (PlunderData.Instance.PdAlliancePage == 1)
+		if (temp != -100) 
 		{
-			if (allianceItemList.Count >= 20)
+			if (PlunderData.Instance.PdAlliancePage == 1)
 			{
-				if (temp > 1.25f && canTap)
+				if (allianceItemList.Count >= 20)
 				{
-					isRefreshToTop = true;
-					canTap = false;
-					PlunderData.Instance.PdAlliancePage += 1;//向上滑
-					PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.ALLIANCE,GetCurNationId ());
+					if (temp > 1.25f && canTap)
+					{
+						isRefreshToTop = true;
+						canTap = false;
+						PlunderData.Instance.PdAlliancePage += 1;//向上滑
+						PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.ALLIANCE,GetCurNationId ());
+					}
 				}
 			}
-		}
-		else if (PlunderData.Instance.PdAlliancePage > 1)
-		{
-			if (allianceItemList.Count >= 20)
+			else if (PlunderData.Instance.PdAlliancePage > 1)
 			{
-				if (temp > 1.25f && canTap)
+				if (allianceItemList.Count >= 20)
 				{
-					isRefreshToTop = true;
-					canTap = false;
-					PlunderData.Instance.PdAlliancePage += 1;//向上滑
-					PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.ALLIANCE,GetCurNationId ());
+					if (temp > 1.25f && canTap)
+					{
+						isRefreshToTop = true;
+						canTap = false;
+						PlunderData.Instance.PdAlliancePage += 1;//向上滑
+						PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.ALLIANCE,GetCurNationId ());
+					}
+					else if (temp < -0.25f && canTap)
+					{
+						isRefreshToTop = false;
+						canTap = false;
+						PlunderData.Instance.PdAlliancePage -= 1;//向下滑
+						PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.ALLIANCE,GetCurNationId ());
+					}
 				}
-				else if (temp < -0.25f && canTap)
+				else
 				{
-					isRefreshToTop = false;
-					canTap = false;
-					PlunderData.Instance.PdAlliancePage -= 1;//向下滑
-					PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.ALLIANCE,GetCurNationId ());
-				}
-			}
-			else
-			{
-				if (temp < -0.25f && canTap)
-				{
-					isRefreshToTop = false;
-					canTap = false;
-					PlunderData.Instance.PdAlliancePage -= 1;//向下滑
-					PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.ALLIANCE,GetCurNationId ());
+					if ((allianceItemList.Count < 5 ? temp > 1.0f : temp < -0.25f) && canTap)
+					{
+						isRefreshToTop = false;
+						canTap = false;
+						PlunderData.Instance.PdAlliancePage -= 1;//向下滑
+						PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.ALLIANCE,GetCurNationId ());
+					}
 				}
 			}
 		}
 
 		//掠夺个人排行
 		float pScValue = pRankSc.GetSingleScrollViewValue();
-		if (pScValue == -100) return;
-		
-		if (PlunderData.Instance.PRankPage == 1)
+		if (pScValue != -100) 
 		{
-			if (pRankItemList.Count >= 20)
+			if (PlunderData.Instance.PRankPage == 1)
 			{
-				if (pScValue > 1.25f && isPCanTap)
+				if (pRankItemList.Count >= 20)
 				{
-					isPRankToTop = true;
-					isPCanTap = false;
-					PlunderData.Instance.PRankPage += 1;//向上滑
-					PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
+					if (pScValue > 1.25f && isPCanTap)
+					{
+						isPRankToTop = true;
+						isPCanTap = false;
+						PlunderData.Instance.PRankPage += 1;//向上滑
+						PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
+					}
 				}
 			}
-		}
-		else if (PlunderData.Instance.PRankPage > 1)
-		{
-			if (pRankItemList.Count >= 20)
+			else if (PlunderData.Instance.PRankPage > 1)
 			{
-				if (pScValue > 1.25f && isPCanTap)
+				if (pRankItemList.Count >= 20)
 				{
-					isPRankToTop = true;
-					isPCanTap = false;
-					PlunderData.Instance.PRankPage += 1;//向上滑
-					PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
+					if (pScValue > 1.25f && isPCanTap)
+					{
+						isPRankToTop = true;
+						isPCanTap = false;
+						PlunderData.Instance.PRankPage += 1;//向上滑
+						PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
+					}
+					else if (pScValue < -0.25f && isPCanTap)
+					{
+						isPRankToTop = false;
+						isPCanTap = false;
+						PlunderData.Instance.PRankPage -= 1;//向下滑
+						PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
+					}
 				}
-				else if (pScValue < -0.25f && isPCanTap)
+				else
 				{
-					isPRankToTop = false;
-					isPCanTap = false;
-					PlunderData.Instance.PRankPage -= 1;//向下滑
-					PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
-				}
-			}
-			else
-			{
-				if (pScValue < -0.25f && isPCanTap)
-				{
-					isPRankToTop = false;
-					isPCanTap = false;
-					PlunderData.Instance.PRankPage -= 1;//向下滑
-					PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
+					if ((pRankItemList.Count <= 6 ? pScValue > 1.0f : pScValue < -0.25f) && isPCanTap)
+					{
+						isPRankToTop = false;
+						isPCanTap = false;
+						PlunderData.Instance.PRankPage -= 1;//向下滑
+						PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
+					}
 				}
 			}
 		}
 
 		//掠夺联盟排行
 		float aScValue = aRankSc.GetSingleScrollViewValue();
-		if (aScValue == -100) return;
-		
-		if (PlunderData.Instance.ARankPage == 1)
-		{
-			if (aRankItemList.Count >= 20)
+//		Debug.Log ("aRankSc.ResetPosition ():" + aRankSc.GetSingleScrollViewValue ());
+		if (aScValue != -100)
+		{	
+			if (PlunderData.Instance.ARankPage == 1)
 			{
-				if (aScValue > 1.25f && isACanTap)
+				if (aRankItemList.Count >= 20)
 				{
-					isPRankToTop = true;
-					isACanTap = false;
-					PlunderData.Instance.ARankPage += 1;//向上滑
-					PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
+					if (aScValue > 1.25f && isACanTap)
+					{
+						isArankToTop = true;
+						isACanTap = false;
+						PlunderData.Instance.ARankPage += 1;//向上滑
+						PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
+					}
 				}
 			}
-		}
-		else if (PlunderData.Instance.ARankPage > 1)
-		{
-			if (aRankItemList.Count >= 20)
+			else if (PlunderData.Instance.ARankPage > 1)
 			{
-				if (aScValue > 1.25f && isACanTap)
+				if (aRankItemList.Count >= 20)
 				{
-					isPRankToTop = true;
-					isACanTap = false;
-					PlunderData.Instance.ARankPage += 1;//向上滑
-					PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
+					if (aScValue > 1.25f && isACanTap)
+					{
+						isArankToTop = true;
+						isACanTap = false;
+						PlunderData.Instance.ARankPage += 1;//向上滑
+						PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
+					}
+					else if (aScValue < -0.25f && isACanTap)
+					{
+						isArankToTop = false;
+						isACanTap = false;
+						PlunderData.Instance.ARankPage -= 1;//向下滑
+						PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
+					}
 				}
-				else if (aScValue < -0.25f && isACanTap)
+				else
 				{
-					isPRankToTop = false;
-					isACanTap = false;
-					PlunderData.Instance.ARankPage -= 1;//向下滑
-					PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
-				}
-			}
-			else
-			{
-				if (aScValue < -0.25f && isACanTap)
-				{
-					isPRankToTop = false;
-					isACanTap = false;
-					PlunderData.Instance.ARankPage -= 1;//向下滑
-					PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
+					if ((aRankItemList.Count <= 6 ? aScValue > 1.0f : aScValue < -0.25f) && isACanTap)
+					{
+						isArankToTop = false;
+						isACanTap = false;
+						PlunderData.Instance.ARankPage -= 1;//向下滑
+						PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
+					}
 				}
 			}
 		}
@@ -917,35 +907,45 @@ public class PlunderPage : MonoBehaviour {
 
 	#region RankPage
 
-	public GameObject rankItemObj;
-
 	//个人排行
+	public GameObject pRankItemObj;
 	public UIScrollView pRankSc;
 	public UIScrollBar pRankSb;
-	public UIGrid pRankGrid;
+	public GameObject pRankGrid;
 	private List<GameObject> pRankItemList = new List<GameObject> ();
 	public UILabel pRankLabel;
 	public UILabel pRankDesLabel;
 
 	private bool isPRankToTop = true;
+	public bool IsPRankToTop { set{isPRankToTop = value;} get{return isPRankToTop;} }
+
 	private bool isPCanTap = false;
 
 	private int personalPage;
+	public UILabel personalBtnLabel;
+	private PlunderData.RankSerchType pSerchType;
 
 	//联盟排行
+	public RankingResp allianceResp;
+	public GameObject rankItemObj;
 	public UIScrollView aRankSc;
 	public UIScrollBar aRankSb;
-	public UIGrid aRankGrid;
+	public GameObject aRankGrid;
 	private List<GameObject> aRankItemList = new List<GameObject> ();
 	public UILabel aRankLabel;
 	public UILabel aRankDesLabel;
 
 	private bool isArankToTop = true;
+	public bool IsARankToTop { set{isArankToTop = value;} get{return isArankToTop;} }
 	private bool isACanTap = false;
 
 	private int alliancePage;
 
+	public UILabel allianceBtnLabel;
+	private PlunderData.RankSerchType aSerchType;
+
 	public List<EventHandler> rankHandlerList = new List<EventHandler> ();
+
 
 	/// <summary>
 	/// Ins it rank page.
@@ -963,6 +963,8 @@ public class PlunderPage : MonoBehaviour {
 		{
 		case PlunderData.PlunderRankType.PERSONAL_RANK:
 
+			pSerchType = tempSerchType;
+
 			int personalRank = 0;
 			int pRankCount = 0;
 
@@ -974,25 +976,37 @@ public class PlunderPage : MonoBehaviour {
 					break;
 				}
 			}
-
-			personalPage = personalRank % 20 > 0 ? personalRank / 20 + 1 : personalRank / 20;
-
-			if (tempResp.gongInfoList.Count > 20)
+//			Debug.Log ("personalRank:" + personalRank);
+			personalPage = personalRank >= 20 ? (personalRank % 20 > 0 ? personalRank / 20 + 1 : personalRank / 20) : 1;
+//			Debug.Log ("personalPage:" + personalPage);
+			if (personalPage == CurPage (tempResp.gongInfoList[0].rank))
 			{
-				pRankCount = tempResp.gongInfoList.Count - 1;
+				pRankCount = tempResp.gongInfoList.Count;
 			}
 			else
 			{
-				pRankCount = tempResp.gongInfoList.Count; 
+				pRankCount = tempResp.gongInfoList.Count - 1; 
+			}
+
+			//reset panel
+			if (pRankCount <= 6)
+			{
+				//				aRankSc.restrictWithinPanel = true;
+				aRankSc.ResetPosition ();
 			}
 
 			pRankLabel.text = personalRank.ToString ();
 
 			pRankDesLabel.text = pRankCount > 0 ? "" : "暂时没有掠夺个人排行！";
-			pRankItemList = QXComData.CreateGameObjectList (rankItemObj,pRankGrid,pRankCount,pRankItemList);
+//			pRankItemList = QXComData.CreateGameObjectList (rankItemObj,pRankGrid,pRankCount,pRankItemList);
+			pRankItemList = QXComData.CreateGameObjectList (pRankItemObj,pRankCount,pRankItemList);
+			pRankGrid.GetComponent<ItemTopCol> ().enabled = pRankItemList.Count < 5 ? true : false;
 
 			for (int i = 0;i < pRankCount;i ++)
 			{
+				pRankItemList[i].transform.localPosition = new Vector3(0,-70 * i,0);
+				pRankSc.UpdateScrollbars (true);
+				pRankSb.value = isPRankToTop ? 0.0f : 1.0f;
 				UISprite widget = pRankItemList[i].GetComponent<UISprite>();
 				widget.color = Color.white;
 				PlunderRankItem plunderRank = pRankItemList[i].GetComponent<PlunderRankItem> ();
@@ -1001,8 +1015,8 @@ public class PlunderPage : MonoBehaviour {
 
 			if (tempSerchType == PlunderData.RankSerchType.SELF_POS)
 			{
-				int index = (personalRank - 1) % 20;
-				UISprite widget = pRankItemList[0].GetComponent<UISprite>();
+				int index = personalRank > 20 ? (personalRank - 1) % 20 : personalRank - 1;
+				UISprite widget = pRankItemList[index].GetComponent<UISprite>();
 				widget.color = new Color(1,0.75f,0.35f);
 				
 				float widgetValue = pRankSc.GetWidgetValueRelativeToScrollView(widget).y;
@@ -1019,41 +1033,59 @@ public class PlunderPage : MonoBehaviour {
 				}
 			}
 
+			personalBtnLabel.text = tempSerchType == PlunderData.RankSerchType.DEFAULT ? "我的名次" : "全部名次";
+
+			isPCanTap = true;
+
 			break;
 		case PlunderData.PlunderRankType.ALLIANCE_RANK:
 
+			allianceResp = tempResp;
+			aSerchType = tempSerchType;
 			int allianceRank = 0;
 			int aRankCount = 0;
-
+//			Debug.Log ("lianMengId:" + JunZhuData.Instance().m_junzhuInfo.lianMengId);
 			for (int i = 0;i < tempResp.gongInfoList.Count;i ++)
 			{
-				if ((long)JunZhuData.Instance().m_junzhuInfo.lianMengId == tempResp.gongInfoList[i].id)
+				if ((long)AllianceData.Instance.g_UnionInfo.id == tempResp.gongInfoList[i].id)
 				{
 					allianceRank = tempResp.gongInfoList[i].rank;
-					aRankCount = tempResp.gongInfoList.Count;
 					
 					break;
 				}
 			}
+//			Debug.Log ("allianceRank:" + allianceRank);
+			alliancePage = allianceRank >= 20 ? (allianceRank % 20 > 0 ? allianceRank / 20 + 1 : allianceRank / 20) : 1;
 
-			alliancePage = allianceRank % 20 > 0 ? allianceRank / 20 + 1 : allianceRank / 20;
-
-			if (tempResp.gongInfoList.Count > 20)
+			if (alliancePage == CurPage (tempResp.gongInfoList[0].rank))
 			{
-				aRankCount = tempResp.gongInfoList.Count - 1;
+				aRankCount = tempResp.gongInfoList.Count;
 			}
 			else
 			{
-				aRankCount = tempResp.gongInfoList.Count; 
+				aRankCount = tempResp.gongInfoList.Count - 1; 
+			}
+
+			//reset panel
+			if (aRankCount <= 6)
+			{
+//				aRankSc.restrictWithinPanel = true;
+				aRankSc.ResetPosition ();
 			}
 
 			aRankLabel.text = allianceRank.ToString ();
 
 			aRankDesLabel.text = aRankCount > 0 ? "" : "暂时没有掠夺联盟排行！";
-			aRankItemList = QXComData.CreateGameObjectList (rankItemObj,aRankGrid,aRankCount,aRankItemList);
+//			aRankItemList = QXComData.CreateGameObjectList (rankItemObj,aRankGrid,aRankCount,aRankItemList);
+			aRankItemList = QXComData.CreateGameObjectList (rankItemObj,aRankCount,aRankItemList);
+
+			aRankGrid.GetComponent<ItemTopCol> ().enabled = aRankItemList.Count < 5 ? true : false;
 
 			for (int i = 0;i < aRankCount;i ++)
 			{
+				aRankItemList[i].transform.localPosition = new Vector3(0,-70 * i,0);
+				aRankSc.UpdateScrollbars (true);
+				aRankSb.value = isArankToTop ? 0.0f : 1.0f;
 				UISprite widget = aRankItemList[i].GetComponent<UISprite>();
 				widget.color = Color.white;
 				PlunderRankItem plunderRank = aRankItemList[i].GetComponent<PlunderRankItem> ();
@@ -1062,7 +1094,7 @@ public class PlunderPage : MonoBehaviour {
 
 			if (tempSerchType == PlunderData.RankSerchType.SELF_POS)
 			{
-				int index = (allianceRank - 1) % 20;
+				int index = allianceRank > 20 ? (allianceRank - 1) % 20 : allianceRank - 1;
 				UISprite widget = aRankItemList[index].GetComponent<UISprite>();
 //				widget.color = new Color(244, 154, 0);
 				widget.color = new Color(1,0.75f,0.35f);
@@ -1081,6 +1113,10 @@ public class PlunderPage : MonoBehaviour {
 				}
 			}
 
+			allianceBtnLabel.text = tempSerchType == PlunderData.RankSerchType.DEFAULT ? "联盟名次" : "全部名次";
+
+			isACanTap = true;
+
 			break;
 		default:
 			break;
@@ -1090,6 +1126,19 @@ public class PlunderPage : MonoBehaviour {
 		{
 			handler.m_click_handler -= RankHandlerClickBack;
 			handler.m_click_handler += RankHandlerClickBack;
+		}
+	}
+
+	//当前页
+	private int CurPage (int minRank)
+	{
+		if (minRank > 20)
+		{
+			return minRank % 20 > 0 ? minRank / 20 + 1 : minRank / 20;
+		}
+		else
+		{
+			return 1;
 		}
 	}
 
@@ -1103,8 +1152,19 @@ public class PlunderPage : MonoBehaviour {
 			{
 				break;
 			}
-			PlunderData.Instance.PRankPage = personalPage;
-			PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.SELF_POS);
+			switch (pSerchType)
+			{
+			case PlunderData.RankSerchType.DEFAULT:
+				PlunderData.Instance.PRankPage = personalPage;
+				PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.SELF_POS);
+				break;
+			case PlunderData.RankSerchType.SELF_POS:
+				PlunderData.Instance.PRankPage = 1;
+				PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.PERSONAL_RANK,PlunderData.RankSerchType.DEFAULT);
+				break;
+			default:
+				break;
+			}
 			
 			break;
 		case "AllianceBtn":
@@ -1113,8 +1173,19 @@ public class PlunderPage : MonoBehaviour {
 			{
 				break;
 			}
-			PlunderData.Instance.ARankPage = alliancePage;
-			PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.SELF_POS);
+			switch (aSerchType)
+			{
+			case PlunderData.RankSerchType.DEFAULT:
+				PlunderData.Instance.ARankPage = alliancePage;
+				PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.SELF_POS);
+				break;
+			case PlunderData.RankSerchType.SELF_POS:
+				PlunderData.Instance.ARankPage = 1;
+				PlunderData.Instance.PlunderRankListReq (PlunderData.PlunderRankType.ALLIANCE_RANK,PlunderData.RankSerchType.DEFAULT);
+				break;
+			default:
+				break;
+			}
 
 			break;
 		default:

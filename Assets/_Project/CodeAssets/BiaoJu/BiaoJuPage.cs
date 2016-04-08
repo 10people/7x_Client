@@ -51,6 +51,8 @@ namespace Carriage
 
 		public GameObject anchorTopRight;
 
+		private string fuLiDesStr = "括号内为福利次数，优先消耗";
+
 		void Awake ()
 		{
 			bjPage = this;
@@ -159,15 +161,25 @@ namespace Carriage
 		#region BiaoJuMainPage
 
 		private YabiaoMainInfoResp biaoJuResp;
+		public YabiaoMainInfoResp BiaoJuResp
+		{
+			get{return biaoJuResp;}
+			set{biaoJuResp = value;}
+		}
 
 		public List<EventHandler> mainPageBtnList = new List<EventHandler> ();
 
 		public UILabel rulesLabel;
 		public UILabel numLabel;
 
+		public UILabel fuLiDesLabel;
+		public UILabel fuLiDesLabel2;
+
 		private int needYb;//购买运镖次数需要的元宝
 
 		public GameObject yunBiaoBtnObj;
+
+		private bool isStartYinDao = false;//是否已经引导中
 
 		/// <summary>
 		/// Gets the biao ju resp.
@@ -186,13 +198,18 @@ namespace Carriage
 			string countTimeStr = LanguageTemplate.GetText (LanguageTemplate.Text.YUN_BIAO_42);
 			string[] countTimeStrLength = countTimeStr.Split ('*');
 
-			numLabel.text = countTimeStrLength[0] + "[dc0600]" + (tempResp.yaBiaoCiShu - RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes) + "[-]" 
-							+ (RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? MyColorData.getColorString (4,"(" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes + ")") : "") + countTimeStrLength[1];
+			numLabel.text = countTimeStrLength[0] + MyColorData.getColorString (4,(tempResp.yaBiaoCiShu - RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes).ToString ()) 
+							+ (RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? MyColorData.getColorString (5,"(" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes + ")") : "") + countTimeStrLength[1];
 
+			fuLiDesLabel.text = RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? MyColorData.getColorString (5,fuLiDesStr) : "";
+//			Debug.Log ("biaoJuResp.yaBiaoCiShu:" + biaoJuResp.yaBiaoCiShu);
+//			Debug.Log ("RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes:" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes);
 			countDownTimeLabel.text = MyColorData.getColorString (10,"今日剩余") 
-							+ MyColorData.getColorString (5,(biaoJuResp.yaBiaoCiShu - RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes).ToString ()) 
-							+ MyColorData.getColorString (4,RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? "(" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes + ")" : "")	
+							+ MyColorData.getColorString (4,(biaoJuResp.yaBiaoCiShu - RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes).ToString ()) 
+							+ MyColorData.getColorString (5,RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? "(" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes + ")" : "")	
 							+ MyColorData.getColorString (10,"次");
+
+			fuLiDesLabel2.text = RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? MyColorData.getColorString (5,fuLiDesStr) : "";
 
 			SparkleEffectItem se = yunBiaoBtnObj.GetComponent<SparkleEffectItem> ();
 			if (biaoJuResp.yaBiaoCiShu > 0 && biaoJuResp.isOpen)
@@ -220,11 +237,25 @@ namespace Carriage
 				handler.m_click_handler += BiaoJuBtnHandlerClickBack;
 			}
 
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,3);
+			if (QXComData.CheckYinDaoOpenState (100370))
+			{
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,5);
+
+			}
+			else
+			{
+				UIYindao.m_UIYindao.CloseUI ();
+			}
+
+			isStartYinDao = true;
 		}
 
 		void BiaoJuBtnHandlerClickBack (GameObject obj)
 		{
+			if (!isStartYinDao)
+			{
+				return;
+			}
 			switch (obj.name)
 			{
 			case "YunBiaoBtn":
@@ -288,7 +319,7 @@ namespace Carriage
 		public void LackYuanbao ()
 		{
 			textStr = "元宝不足，是否跳转到充值？";
-			QXComData.CreateBox (1,textStr,false,TurnToVip);
+			QXComData.CreateBoxDiy (textStr,false,TurnToVip);
 		}
 
 		/// <summary>
@@ -354,6 +385,8 @@ namespace Carriage
 		private int curHorseLevel;
 		public int CurHorseLevel {set{curHorseLevel = value;} get{return curHorseLevel;}}//当前马等级
 
+		private bool isHorseYinDao = false;
+
 		public void GetHorseResp (YabiaoMenuResp tempResp)
 		{
 			//reset info
@@ -368,12 +401,13 @@ namespace Carriage
 
 				buyCount = 0;
 				PropReward = 0;
+				isHorseYinDao = false;
 			}
 
 			SwitchPage (BiaoJuPageType.HORSE_PAGE);
 		
 			horsePageInfo = tempResp;
-
+//			Debug.Log ("tempResp.horse:" + tempResp.horse);
 			CurHorseLevel = tempResp.horse;
 
 			if (horseList.Count <= 0)
@@ -447,17 +481,17 @@ namespace Carriage
 			{
 				if (horsePageInfo.horse < 5)
 				{
-					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,4);
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,6);
 				}
 				else
 				{
 					if (CheckGaoJiMaBian ())
 					{
-						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,10);
+						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,12);
 					}
 					else
 					{
-						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,7);
+						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,9);
 					}
 				}
 			}
@@ -547,7 +581,11 @@ namespace Carriage
 
 		void HorsePageBtnHandlerClickBack (GameObject obj)
 		{
-			Debug.Log ("bbbbb");
+			if (!isHorseYinDao)
+			{
+				return;
+			}
+//			Debug.Log ("bbbbb");
 			switch (obj.name)
 			{
 			case "AddLevelBtn":
@@ -652,6 +690,7 @@ namespace Carriage
 			}
 			else
 			{
+				isHorseYinDao = true;
 				MoveToTargetPos (horseType - 1);
 			}
 		}
@@ -775,7 +814,7 @@ namespace Carriage
 			switch (i)
 			{
 			case 1:
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,10);
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,12);
 				break;
 			case 2:
 				BiaoJuData.Instance.BeginYunBiaoReq ();
@@ -808,35 +847,40 @@ namespace Carriage
 				else
 				{
 					StopCoroutine ("Shining");
-					ZheZhaoControl (false);
 
 					//check yindao state
 					{
 						if (horsePageInfo.horse < 5)
 						{
-							QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,4);
+							QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,6);
 						}
 						else
 						{
 							if (CheckGaoJiMaBian ())
 							{
-								QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,10);
+								QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,12);
 							}
 							else
 							{
-								QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,7);
+								QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,9);
 							}
 						}
 					}
 
+					ZheZhaoControl (false);
+
 					shining = false;
 				}
+
+				isHorseYinDao = true;
 			}
 		}
 
 		public void CloseBiaoJu ()
 		{
 			PushAndNotificationHelper.SetRedSpotNotification (312, biaoJuResp.yaBiaoCiShu > 0 ? true : false);
+
+			isStartYinDao = false;
 
 			isFirstOpen = true;
 			gameObject.SetActive (false);

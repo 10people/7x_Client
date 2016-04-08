@@ -108,7 +108,19 @@ public class WarItem : MonoBehaviour {
 
 	public void CheckRedPoint ()
 	{
-		redObj.SetActive (FunctionOpenTemp.IsShowRedSpotNotification (simpleInfo.functionId));
+		if (simpleInfo.functionId == 310)
+		{
+//			Debug.Log ("FunctionOpenTemp.IsRedSpotDataOpen (313):" + FunctionOpenTemp.IsShowRedSpotNotification (313));
+//			Debug.Log ("FunctionOpenTemp.IsRedSpotDataOpen (315):" + FunctionOpenTemp.IsShowRedSpotNotification (315));
+			redObj.SetActive (isOpen && (FunctionOpenTemp.IsShowRedSpotNotification (312) || FunctionOpenTemp.IsShowRedSpotNotification (313) || FunctionOpenTemp.IsShowRedSpotNotification (315)) ? true : false);
+//			PushAndNotificationHelper.SetRedSpotNotification (312,isOpen && simpleInfo.num1 > 0 ? true : false);
+		}
+		else
+		{
+			redObj.SetActive (isOpen && (FunctionOpenTemp.IsShowRedSpotNotification (215) || FunctionOpenTemp.IsShowRedSpotNotification (220)) ? true : false);
+//			PushAndNotificationHelper.SetRedSpotNotification (215,isOpen && simpleInfo.num1 > 0 ? true : false);
+		}
+
 //		Debug.Log ("functionId:" + simpleInfo.functionId + "||" + FunctionOpenTemp.IsShowRedSpotNotification (simpleInfo.functionId));
 	}
 }

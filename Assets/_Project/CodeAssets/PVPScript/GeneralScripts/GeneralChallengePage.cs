@@ -20,6 +20,7 @@ public class GeneralChallengePage : MonoBehaviour {
 	public UILabel mZhanLiLabel;
 	public UISprite mSkillIcon;
 	public GameObject mLockObj;
+	public GameObject addObj;
 	private int mSkillId;
 	#endregion
 	
@@ -120,6 +121,12 @@ public class GeneralChallengePage : MonoBehaviour {
 			handler.m_click_handler += ChallengeHandlerClickBack;
 		}
 
+//		Debug.Log ("QXComData.CheckYinDaoOpenState (100255):" + QXComData.CheckYinDaoOpenState (100255));
+		if (!QXComData.CheckYinDaoOpenState (100200))
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
+
 		Global.m_isOpenBaiZhan = false;
 	}
 
@@ -169,7 +176,7 @@ public class GeneralChallengePage : MonoBehaviour {
 	void InItMiBaoInfo ()
 	{
 //		Debug.Log ("mSkillId:" + mSkillId + "||eSkillId:" + eSkillId);
-		mLockObj.SetActive (mSkillId > 0 ? false : true);
+//		mLockObj.SetActive (mSkillId > 0 ? false : true);
 		mSkillIcon.spriteName = mSkillId > 0 ? MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (mSkillId).icon.ToString () : "";
 
 		eLockObj.SetActive (eSkillId > 0 ? false : true);
@@ -185,8 +192,10 @@ public class GeneralChallengePage : MonoBehaviour {
 
 		if (mSkillId > 0)
 		{
+			addObj.SetActive (false);
+			mLockObj.SetActive (false);
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-			UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
+//			UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
 			sprite.color = Color.white;
 			label.color = Color.white;
 		}
@@ -198,24 +207,18 @@ public class GeneralChallengePage : MonoBehaviour {
 				{
 					sprite.color = Color.white;
 					sprite.color = Color.white;
-					if (mSkillId <= 0)
-					{
-						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
-
-						UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,challengehandlerList[0].gameObject,
-						                                   EffectIdTemplate.GetPathByeffectId(600151));
-					}
-					else
-					{
-						UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
-					}
+					addObj.SetActive (true);
+					mLockObj.SetActive (false);
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
 				}
 				else
 				{
+					mLockObj.SetActive (true);
+					addObj.SetActive (false);
 					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
 					sprite.color = Color.black;
 					sprite.color = Color.black;
-					UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
+//					UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
 				}
 			}
 		}
@@ -411,6 +414,10 @@ public class GeneralChallengePage : MonoBehaviour {
 	/// <param name="tempId">Temp identifier.</param>
 	public void RefreshMyMiBaoSkillInfo (int tempSkillId)
 	{
+		if (!QXComData.CheckYinDaoOpenState (100200))
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
 		mSkillId = tempSkillId;
 		InItMiBaoInfo ();
@@ -465,7 +472,7 @@ public class GeneralChallengePage : MonoBehaviour {
 			case GeneralControl.ChallengeType.PLUNDER:
 				
 				EnterBattleField.EnterBattleLueDuo (plunderResp.oppoId);
-				PlunderPage.plunderPage.CheckPlunderTimes ();
+				PlunderData.Instance.CheckPlunderTimes ();
 
 				break;
 			default:

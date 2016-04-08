@@ -72,10 +72,9 @@ public class FuWenBagItem : MonoBehaviour {
 	void InItIconSample ()
 	{
 		string mdesc = DescIdTemplate.GetDescriptionById (fuWenInfo.itemId);
-		
+
 		IconSampleManager fuShiIconSample = iconSamplePrefab.GetComponent<IconSampleManager>();
-		fuShiIconSample.SetIconType(IconSampleManager.IconType.FuWen);
-		fuShiIconSample.SetIconBasic(5,iconId.ToString (),"","pinzhi" + pinZhiId);
+		fuShiIconSample.SetIconByID (fuWenInfo.itemId,"",3,false,isCanMix);
 		fuShiIconSample.SetIconPopText(fuWenInfo.itemId, nameStr, mdesc, 1);
 		iconSamplePrefab.transform.localScale = Vector3.one * 0.8f;
 

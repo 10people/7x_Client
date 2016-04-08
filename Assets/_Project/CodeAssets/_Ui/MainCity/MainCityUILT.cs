@@ -278,7 +278,7 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 			}
 			if(TaskData.Instance.m_TaskInfoDic[id].progress < 0)
 			{
-				overMission(id);
+//				overMission(id);
 			}
 			else
 			{
@@ -444,6 +444,9 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
                     return true;
                 }
+			case ProtoIndexes.ALLIANCE_HAVE_RESP:
+				RefreshAllianceInfo();
+				return true;
             default:
                 return false;
         }

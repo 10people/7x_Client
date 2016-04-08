@@ -87,44 +87,6 @@ public class Editor_FindMissingMono : MonoBehaviour {
 		}
 	}
 
-	[MenuItem("Utility/Utilities/Find Tex In Res", false, (int)EditorUtilities.MenuItemPriority.UTILITIES___FIND_TEX_IN_RES)]
-	static void FindTexInRes(){
-//		Debug.Log( "FindLargetTex()" );
-		
-		string[] t_search_foloders = { 
-			"Assets/Resources",
-		};
-		
-		string[] t_assets = AssetDatabase.FindAssets( "t:Texture2D", t_search_foloders );
-		
-		int t_index = 0;
-		
-		for( int i = 0; i < t_assets.Length; i++ ){
-			string t_path = AssetDatabase.GUIDToAssetPath( t_assets[ i ] );
-			
-			Texture2D t_tex = (Texture2D)AssetDatabase.LoadAssetAtPath( t_path, typeof(Texture2D) );
-			
-			if( t_tex == null ){
-				Debug.Log( "tex is null, " + t_path );
-				
-				continue;
-			}
-			
-			if( StringHelper.IsContain( t_path, ".exr" ) ){
-				continue;
-			}
-				
-			Debug.Log( t_index++ + ": " + t_path );
-				
-			if( t_tex.format == TextureFormat.DXT1 ||
-				t_tex.format == TextureFormat.DXT1Crunched ||
-				t_tex.format == TextureFormat.DXT5 ||
-				t_tex.format == TextureFormat.DXT5Crunched ){
-				ComponentHelper.LogTexture2D( t_tex );
-			}
-		}
-	}
-
 	#endregion
 
 

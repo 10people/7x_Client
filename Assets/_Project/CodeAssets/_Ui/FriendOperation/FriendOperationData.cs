@@ -132,8 +132,8 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
                         if (tempResponse.result == 0)
                         {
                             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallbackAddFriendSuccess);
-							
-							switch (addType)
+                            RequestData();
+                            switch (addType)
 							{
 							case AddFriendType.LiaoTian:
 							{
@@ -177,18 +177,19 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
                         {
                             case 1:
                                 {
-                        
-                                   // ClientMain.m_UITextManager.createText("打招呼成功！");
+
+                                    // ClientMain.m_UITextManager.createText("打招呼成功！");
+                                    RequestData();
                                 }
                                 break;
                             case 2:
                                 {
-                                    ClientMain.m_UITextManager.createText("目标忙待会再打招呼！");
+                                    ClientMain.m_UITextManager.createText("该玩家现在忙，1分钟内无法打招呼！");
                                 }
                                 break;
                             case 10:
                                 {
-                                    ClientMain.m_UITextManager.createText("对方在自己黑名单！");
+                                    ClientMain.m_UITextManager.createText("该玩家此前已级被你屏蔽，请解除屏蔽再来加好友吧！");
                                 }
                                 break;
                             case 20:
@@ -230,7 +231,7 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
         string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_2);
+        string str = "您的好友名单已满";//LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_2)
         string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_3);
 
         uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), MyColorData.getColorString(1, str2), null, confirmStr, null, null);

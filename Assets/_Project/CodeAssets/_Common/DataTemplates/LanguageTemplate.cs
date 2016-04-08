@@ -940,8 +940,20 @@ public class LanguageTemplate : XmlLoadManager
 
 		SET_1 = 1600,
 
+		TIP_HECHENG = 1701,
+		TIP_SHENGXING = 1702,
+		TIP_JINJIE = 1703,
+
 		TAN_BAO_TIPS_1 = 2100,
 		TAN_BAO_TIPS_2 = 2101,
+
+		SHOP_MONEY_LOW_TIPS_1 = 30001,
+		SHOP_MONEY_LOW_TIPS_2 = 30002,
+		SHOP_MONEY_LOW_TIPS_3 = 30003,
+		SHOP_MONEY_LOW_TIPS_4 = 30004,
+		SHOP_MONEY_LOW_TIPS_5 = 30005,
+		SHOP_MONEY_LOW_TIPS_6 = 30006,
+
 
 		LOADING_TIPS_1 = 80001,
 		LOADING_TIPS_2 = 80002,
@@ -1073,25 +1085,69 @@ public class LanguageTemplate : XmlLoadManager
         return GetText(t_id);
     }
 
-    public static string GetText(int p_text_id)
-    {
+	public static int GetIdByText( Text p_text ){
+		return (int)p_text;
+	}
+
+    public static string GetText( int p_text_id ){
 		if (m_templates == null) {
 			return null;
 		}
 
         int t_id = p_text_id;
 
-        foreach (LanguageTemplate t_template in m_templates)
-        {
-            if (t_template.lanId == t_id)
-            {
+        foreach( LanguageTemplate t_template in m_templates ){
+            if( t_template.lanId == t_id ){
                 return t_template.m_text;
             }
         }
+
+		if( p_text_id == GetIdByText( Text.TIME_OUT_1 ) ){
+			return "对不起。服务器请求超时，请检查您的网络环境是否正常，然后重新登录。";
+		}
+		else if( p_text_id == GetIdByText( Text.TIME_OUT_3 ) ){
+			return "连接超时";
+		}
+		else if( p_text_id == GetIdByText( Text.TIME_OUT_4 ) ){
+			return "重新连接";
+		}
+		else if( p_text_id == GetIdByText( Text.DISTANCE_LOGIN_1 ) ){
+			return "异地登录";
+		}
+		else if( p_text_id == GetIdByText( Text.LOST_CONNECTION_1 ) ){
+			return "网络异常";
+		}
+		else if( p_text_id == GetIdByText( Text.LOST_CONNECTION_2 ) ){
+			return "对不起，您的网络异常，游戏连接中断。";
+		}
+		else if( p_text_id == GetIdByText( Text.LOST_CONNECTION_3 ) ){
+			return "重新连接";
+		}
+		else if( p_text_id == GetIdByText( Text.EXIT_GAME_TIPS_TITLE ) ){
+			return "退出游戏";
+		}
+		else if( p_text_id == GetIdByText( Text.EXIT_GAME_TIPS ) ){
+			return "点击“[FF0000]确定[-]”即可退出游戏。\\n每天登录游戏皆可领取当日[FF0000]签到奖励[-]。前七日登录游戏还有丰厚的[FF0000]活动礼包[-]可以领取！";
+		}
+		else if( p_text_id == GetIdByText( Text.CONFIRM ) ){
+			return "确定";
+		}
+		else if( p_text_id == GetIdByText( Text.CANCEL ) ){
+			return "取消";
+		}
 
         Debug.LogError("XML ERROR: Can't get LanguageTemplate with Id: " + t_id);
 
         return "";
     }
+
+	public static bool HaveData(){
+		if( m_templates == null ||
+			m_templates.Count == 0 ){
+			return false;
+		}
+
+		return true;
+	}
 
 }

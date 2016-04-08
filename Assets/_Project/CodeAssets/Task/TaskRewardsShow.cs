@@ -24,11 +24,11 @@ public class TaskRewardsShow : MonoBehaviour
     }
     void Update()
     {
-        if (TaskData.Instance.m_TaskGetAwardComplete)
-        {
-            TaskData.Instance.m_TaskGetAwardComplete = false;
-            gameObject.SetActive(false);
-        }
+        //if (TaskData.Instance.m_TaskGetAwardComplete)
+        //{
+        //    TaskData.Instance.m_TaskGetAwardComplete = false;
+        //    gameObject.SetActive(false);
+        //}
     }
 	void OnEnable()
 	{

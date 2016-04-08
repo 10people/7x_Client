@@ -96,14 +96,16 @@ public class DramaControllor : MonoBehaviour
 
 	void Awake()
 	{
-//		Debug.Log( "DramaControllor.Awake()" );
-
 		_instance = this;
 	}
 
-	public static DramaControllor Instance() { return _instance; }
+	public static DramaControllor Instance() 
+	{
+		return _instance; 
+	}
 
-	void OnDestroy(){
+	void OnDestroy()
+	{
 		_instance = null;
 	}
 
@@ -132,8 +134,6 @@ public class DramaControllor : MonoBehaviour
 		enemyRoot = GameObject.Find ("Enemy");
 
 		tempAutoFight = BattleControlor.Instance().autoFight || tempAutoFight;
-
-//		Debug.Log ("00000000000000000000   " + tempAutoFight);
 
 		bg.SetActive (true);
 
@@ -487,6 +487,16 @@ public class DramaControllor : MonoBehaviour
 
 		UI3DEffectTool.ClearUIFx(BattleUIControlor.Instance().autoFight_1);
 
+		foreach(BaseAI node in BattleControlor.Instance().selfNodes)
+		{
+			node.setNavMeshStop();
+		}
+		
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			node.setNavMeshStop();
+		}
+
 		inGuide = true;
 
 		bg.SetActive (false);
@@ -496,7 +506,6 @@ public class DramaControllor : MonoBehaviour
 		BattleUIControlor.Instance().layerFight.SetActive (false);
 
 		storyControllor.init ();
-
 
 		storyControllor.recreateModel (index);
 
@@ -594,6 +603,16 @@ public class DramaControllor : MonoBehaviour
 		UIYindao.m_UIYindao.CloseUI ();
 
 		UI3DEffectTool.ClearUIFx(BattleUIControlor.Instance().autoFight_1);
+
+		foreach(BaseAI node in BattleControlor.Instance().selfNodes)
+		{
+			node.setNavMeshStop();
+		}
+
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			node.setNavMeshStop();
+		}
 
 		List<DialogData.dialogData> dialoglistdata = new List<DialogData.dialogData>();
 
@@ -1121,6 +1140,13 @@ public class DramaControllor : MonoBehaviour
 
 	public void OnPress(bool pressed)
 	{
+		if(m_templateCallback.actionType == 1 && m_templateCallback.ap1 == 10000)
+		{
+			storyControllor.forcedEnd();
+
+			return;
+		}
+
 		if (pressed == false) return;
 
 		if (inGuide == true) return;

@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿//#define DEBUG_LONG_PRESS
+
+
+
+using UnityEngine;
+
+
 
 /// <summary>
 /// Long press control for NGUI, OnLongPressFinish only for press type.
@@ -49,27 +55,75 @@ public class NGUILongPress : MonoBehaviour
 
     #endregion
 
+
+
+	#region Mono
+
+	void Awake(){
+		#if DEBUG_LONG_PRESS
+		GameObjectHelper.LogGameObjectHierarchy( gameObject, "NGUILongPress.Awake()" );
+		#endif
+	}
+
+	void OnDestroy(){
+		#if DEBUG_LONG_PRESS
+		GameObjectHelper.LogGameObjectHierarchy( gameObject, "NGUILongPress.OnDestroy()" );
+		#endif
+	}
+
+	#endregion
+
+
     #region Private Methods
 
     private void OnPress(bool pressed)
     {
+		#if DEBUG_LONG_PRESS
+		GameObjectHelper.LogGameObjectHierarchy( gameObject, "NGUILongPress.OnPress( " + pressed + " )" );
+		#endif
+
         if (pressed)
         {
             dragged = false;
             lastPress = Time.realtimeSinceStartup;
             isInPress = true;
+
+			#if DEBUG_LONG_PRESS
+			Debug.Log( "Refresh: " + lastPress );
+			#endif
+
             cachedClickPos = Input.mousePosition;
-            if (LongTriggerType == TriggerType.Press)
-            {
-                Invoke("CheckPressTypeLongPress", LongClickDuration);
-            }
+
+//			#if UNITY_EDITOR
+//			#elif UNITY_ANDROID || UNITY_IPHONE
+//			cachedClickPos = DeviceHelper.GetFirstTouchPosition();
+//			#endif
+
+            cachedClickPos = Input.mousePosition;
+            Invoke("CheckPressTypeLongPress", LongClickDuration);
+
         }
         else
         {
             isInPress = false;
+
+			#if DEBUG_LONG_PRESS
+			Debug.Log( "Cur Time Offset: " + ( Time.realtimeSinceStartup - lastPress ) );
+
+			Debug.Log( "Duration: " + LongClickDuration );
+
+			Debug.Log( "Cur.Time: " + Time.realtimeSinceStartup );
+
+			Debug.Log( "Last Press: " + lastPress );
+			#endif
+
             //If the press time is over long click duration and the object is not be dragged, trigger long press.
             if (Time.realtimeSinceStartup - lastPress > LongClickDuration)
             {
+				#if DEBUG_LONG_PRESS
+				Debug.Log( "Long Press Found." );
+				#endif
+
                 CheckReleaseTypeLongPress();
                 CheckPressTypeLongPressFinish();
             }
@@ -103,11 +157,23 @@ public class NGUILongPress : MonoBehaviour
     private void OnDragStart()
     {
         dragged = true;
-        if (Vector3.Distance(cachedClickPos, Input.mousePosition) > MinDeviation
-            && Time.realtimeSinceStartup - lastPress > LongClickDuration)
-        {
-            CheckPressTypeLongPressFinish();
-        }
+
+		Vector3 t_compare_pos = Input.mousePosition;
+
+		float t_dis = Vector3.Distance(cachedClickPos, Input.mousePosition);
+
+//		#if UNITY_EDITOR
+//		#elif UNITY_ANDROID || UNITY_IPHONE
+//		t_dis = Vector2.Distance( DeviceHelper.GetFirstTouchPosition(), new Vector2( cachedClickPos.x, cachedClickPos.y ) );
+//		#endif
+
+		if( NGUIHelper.HaveUIScrollViewInParent( gameObject ) ){
+			if ( t_dis > MinDeviation
+				&& Time.realtimeSinceStartup - lastPress > LongClickDuration)
+			{
+				CheckPressTypeLongPressFinish();
+			}
+		}
     }
 
     private void CheckReleaseTypeLongPress()
@@ -128,7 +194,7 @@ public class NGUILongPress : MonoBehaviour
 
     private void CheckPressTypeLongPress()
     {
-        if (!dragged && isInPress && OnLongPress != null)
+        if (LongTriggerType == TriggerType.Press && !dragged && isInPress && OnLongPress != null)
         {
             OnLongPress(gameObject);
         }

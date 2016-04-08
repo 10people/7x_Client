@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_BUNDLE
 
-#define SHOW_SERVER_SELECTOR
+//#define SHOW_SERVER_SELECTOR
 
 
 
@@ -10,6 +10,8 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
+
+
 
 public class PrepareBundleHelper {
 
@@ -41,14 +43,14 @@ public class PrepareBundleHelper {
 		
 		// set default http server prefix
 		if( ShowServerSelector() ){
-			PrepareBundleHelper.SetCeshiServer();
-			
-			//			PrepareBundleHelper.SetDefaultServer();
+			PrepareBundleHelper.SetDefaultServer();
+
+//			PrepareBundleHelper.SetTiYanServer();
 		}
 		else{
-			//			PrepareBundleHelper.SetTiYanServer();
+			PrepareBundleHelper.SetTiYanServer();
 			
-			PrepareBundleHelper.SetCeshiServer();
+//			PrepareBundleHelper.SetCeshiServer();
 		}
 
 //		#if DEBUG_BUNDLE
@@ -62,6 +64,8 @@ public class PrepareBundleHelper {
 //			#if DEBUG_BUNDLE
 //			Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.After.VersionTool()" );
 //			#endif
+
+			NetworkWaiting.LoadResourcesUI();
 			
 			UtilityTool.LoadBox();
 
@@ -100,10 +104,12 @@ public class PrepareBundleHelper {
 		{
 			PathHelper.LogPath();
 		}
-		
+
+		#if !UNITY_EDITOR
 		{
 			DeviceHelper.LogDeviceInfo( null );
 		}
+		#endif
 
 //		#if DEBUG_BUNDLE
 //		Debug.Log( "PrepareBundleHelper.PrepareBundles_Init_In_Awake.5()" );
@@ -166,12 +172,14 @@ public class PrepareBundleHelper {
 	public static void UpdateLocalBundleInfo(){
 		if( IsBundleNotExist() || IsToUpdateBundle() ){
 			Debug.Log( "Save Version: " + PrepareBundleHelper.GetServerSmallVersion() );
-			
+
 			PlayerPrefs.SetString( ConstInGame.CONST_PLAYER_PREFS_KEY_CACHED_BUNDLE_SMALL_VERSION, 
 			                      PrepareBundleHelper.GetServerSmallVersion() );
 			
 			PlayerPrefs.SetInt( ConstInGame.CONST_PLAYER_PREFS_KEY_CACHED_ROOT_BUNDLE_VERSION, 
 			                      PrepareBundleHelper.GetNewRootBundleVersion() );
+
+			SetLocalSmallVersion( PrepareBundleHelper.GetServerSmallVersion() );
 			
 			PlayerPrefs.Save();
 		}
@@ -465,6 +473,8 @@ public class PrepareBundleHelper {
 	#region Configs
 	
 	private static void SetDefaultServer(){
+		Debug.Log( "PrepareBundleHelper.SetDefaultServer()" );
+
 		NetworkHelper.ServerType t_server_type = SelectUrl.GetServerType();
 		
 		switch( t_server_type ){
@@ -487,6 +497,8 @@ public class PrepareBundleHelper {
 	}
 	
 	public static void SetTiYanServer(){
+		Debug.Log( "PrepareBundleHelper.SetTiYanServer()" );
+
 		NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_TIYAN );
 
 		NetworkHelper.SetServerType( NetworkHelper.ServerType.TiYan );
@@ -495,25 +507,33 @@ public class PrepareBundleHelper {
 	}
 	
 	public static void SetCeshiServer(){
+		Debug.Log( "PrepareBundleHelper.SetCeshiServer()" );
+
 		NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_CESHI );
 
 		NetworkHelper.SetServerType( NetworkHelper.ServerType.CeShi );
 		
 		SelectUrl.SetUrlServeType( NetworkHelper.ServerType.CeShi );
 	}
+
+	public static void SetNeiWangServer(){
+		Debug.Log( "PrepareBundleHelper.SetNeiWangServer()" );
+
+		NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_NEIWANG );
+
+		NetworkHelper.SetServerType( NetworkHelper.ServerType.NeiWang );
+
+		SelectUrl.SetUrlServeType( NetworkHelper.ServerType.NeiWang );
+	}
 	
 	public static void OnPopupListChange(){
-		#if DEBUG_BUNDLE
+//		#if DEBUG_BUNDLE
 		Debug.Log( "UpdateServerSelected( " + PrepareBundles.Instance().m_pop_update_server.value + " )" );
-		#endif
+//		#endif
 		
 		switch( PrepareBundles.Instance().m_pop_update_server.value ){
 		case "测试服":
-			NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_CESHI );
-			
-			NetworkHelper.SetServerType( NetworkHelper.ServerType.CeShi );
-			
-			SelectUrl.SetUrlServeType( NetworkHelper.ServerType.CeShi );
+			SetCeshiServer();
 			break;
 			
 		case "体验服":
@@ -522,11 +542,7 @@ public class PrepareBundleHelper {
 			
 		case "内网服":
 			// default
-			NetworkHelper.SetUpdateUrl( NetworkHelper.UPDATE_URL_NEIWANG );
-			
-			NetworkHelper.SetServerType( NetworkHelper.ServerType.NeiWang );
-			
-			SelectUrl.SetUrlServeType( NetworkHelper.ServerType.NeiWang );
+			SetNeiWangServer();
 			break;
 		}
 	}
@@ -573,6 +589,8 @@ public class PrepareBundleHelper {
 	public const string LOADING_TIPS_CONNECTING_TO_UPDATE_SERVER	= "连接更新服务器中，请稍后......";
 	
 	public const string LOADING_TIPS_EXTRACTING_ASSETS				= "提取系统资源中，请稍后......";
+
+	public const string LOADING_TIPS_CHECKING_ASSESTS				= "资源检查中，请稍后......";
 	
 	public const string LOADING_TIPS_UPDAING_ASSESTS				= "更新资源中，请稍后......";
 	

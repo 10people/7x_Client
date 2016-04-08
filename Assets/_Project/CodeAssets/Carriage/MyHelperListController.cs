@@ -23,6 +23,7 @@ namespace Carriage
         public XieZhuJunZhuResp m_StoredXieZhuJunZhuResp;
 
         public UISprite m_ArrowSprite;
+        public UILabel m_MoreLabel;
         private bool IsListOpen = true;
 
         public void OnOpenCloseListClick()
@@ -138,6 +139,7 @@ namespace Carriage
         {
             if (gameObject.activeInHierarchy)
             {
+                m_MoreLabel.gameObject.SetActive(m_StoredXieZhuJunZhuResp != null && m_StoredXieZhuJunZhuResp.xiezhuJz != null && m_StoredXieZhuJunZhuResp.xiezhuJz.Count >= 3);
                 UpdateGrid(m_LeftGrid, LeftItemPrefab, m_MyHelperLeftItemControllerList);
 
                 if (MyHelperListWindow.activeInHierarchy)

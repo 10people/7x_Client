@@ -15,7 +15,7 @@ public class Technology1 : MonoBehaviour {
 	public KeJiList m_JianZhuKeji;
 
 	float Dis = 142;
-
+	public UIScrollView mUIScrollView;
 	int kejiNumber; 
 	List<LianMengKeJiTemplate> m_LianMengKeJiTemplate = new List<LianMengKeJiTemplate>();
 	void Start () {
@@ -86,5 +86,6 @@ public class Technology1 : MonoBehaviour {
 			mTechnologytemp.Init();
 			TechnologyManager.Instance().mTechnologytempList.Add(mTechnologytemp);
 		}
+		mUIScrollView.ResetPosition ();
 	}
 }

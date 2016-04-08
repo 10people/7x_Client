@@ -24,6 +24,7 @@ public class miBaoskilltemp : MonoBehaviour {
 
 	public bool beChoosed;
 	public GameObject NewAddMiBaoShangZhen;
+
 	void Start () {
 
 		IsActive = false;
@@ -46,16 +47,16 @@ public class miBaoskilltemp : MonoBehaviour {
 	}
 	public void Be_CHoosed()
 	{
-		StartCoroutine (Changestatebtn());
+		//StartCoroutine (Changestatebtn());
 	}
-	IEnumerator Changestatebtn()
-	{
-		yield return new WaitForSeconds (0.5f);
-		
-		this.gameObject.GetComponent<UIToggle>().value = !this.gameObject.GetComponent<UIToggle>().value;
-		
-
-	}
+//	IEnumerator Changestatebtn()
+//	{
+//		yield return new WaitForSeconds (0.5f);
+//		
+//		this.gameObject.GetComponent<UIToggle>().value = !this.gameObject.GetComponent<UIToggle>().value;
+//		
+//
+//	}
 	public void ShowDeilInfo()
 	{
 		if(NewMiBaoSkill.Instance().COmeMiBaoUI)

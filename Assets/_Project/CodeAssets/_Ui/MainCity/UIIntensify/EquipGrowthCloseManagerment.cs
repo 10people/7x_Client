@@ -30,7 +30,7 @@ public class EquipGrowthCloseManagerment : MonoBehaviour
         }
 
         MainCityUI.TryRemoveFromObjectList(m_gameObject);
-        //Destroy(m_gameObject);
+         // Destroy(m_gameObject);
         m_gameObject.SetActive(false);
     }
 

@@ -49,6 +49,12 @@ namespace Carriage
 
                 KingNameLabel.color = Color.black;
             }
+            else if (!AllianceData.Instance.IsAllianceNotExist && AllianceData.Instance.g_UnionInfo.name == m_StoredCarriageInfo.AllianceName)
+            {
+                HeadDecoSprite.gameObject.SetActive(false);
+
+                KingNameLabel.color = Color.blue;
+            }
             else
             {
                 HeadDecoSprite.gameObject.SetActive(false);
@@ -77,7 +83,7 @@ namespace Carriage
             Bar.value = m_StoredCarriageInfo.RemainingBlood / m_StoredCarriageInfo.TotalBlood;
             BarNumLabel.text = m_StoredCarriageInfo.RemainingBlood + "/" + m_StoredCarriageInfo.TotalBlood;
             ProgressLabel.text = "进度" + m_StoredCarriageInfo.ProgressPercent + "%";
-            MoneyLabel.text = CarriageValueCalctor.GetRealValueOfCarriage(m_StoredCarriageInfo.Money, m_StoredCarriageInfo.Level, m_StoredCarriageInfo.BattleValue, m_StoredCarriageInfo.HorseLevel, m_StoredCarriageInfo.IsChouRen).ToString();
+            MoneyLabel.text = m_StoredCarriageInfo.IsSelf ? m_StoredCarriageInfo.Money.ToString() : CarriageValueCalctor.GetRealValueOfCarriage(m_StoredCarriageInfo.Money, m_StoredCarriageInfo.Level, m_StoredCarriageInfo.BattleValue, m_StoredCarriageInfo.HorseLevel, m_StoredCarriageInfo.IsChouRen).ToString();
 
             //Set recommanded.
             if (m_StoredCarriageInfo.IsRecommandedOne)
@@ -98,7 +104,9 @@ namespace Carriage
                 //Cancel chase.
                 RootManager.Instance.m_CarriageMain.TryCancelChaseToAttack();
 
-                RootManager.Instance.m_SelfPlayerController.StartNavigation(RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic[m_StoredCarriageInfo.UID].transform.position);
+                RootManager.Instance.m_SelfPlayerController.m_CompleteNavDelegate = null;
+                RootManager.Instance.m_CarriageMain.m_TargetItemTransform = RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic[m_StoredCarriageInfo.UID].transform;
+                RootManager.Instance.m_CarriageMain.NavigateToItem();
 
                 m_TotalCarriageListController.OnCloseWindowClick();
                 RootManager.Instance.m_CarriageMain.m_MapController.OnCloseBigMap();

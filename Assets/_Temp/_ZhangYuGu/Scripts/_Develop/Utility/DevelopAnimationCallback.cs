@@ -21,6 +21,8 @@ public class DevelopAnimationCallback : MonoBehaviour{
 
 	public VoidDelegateInt OnPlayAtttackEffect;
 
+	public VoidDelegateInt OnPlayFx;
+
 	public VoidDelegateVoid OnResetXuanFengCount;
 
 	public VoidDelegateVoid OnAddXuanFengCount;
@@ -64,6 +66,12 @@ public class DevelopAnimationCallback : MonoBehaviour{
 
 		if( OnPlayAtttackEffect != null ){
 			OnPlayAtttackEffect( p_attack_id );
+		}
+	}
+
+	public void PlayFx( int p_fx_id ){
+		if( OnPlayFx != null ){
+			OnPlayFx( p_fx_id );
 		}
 	}
 

@@ -98,20 +98,20 @@ public class GeneralReward : MonoBehaviour {
 
 		//if mibao or blue equip
 
-		QXComData.XmlType xmlType = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (rewardData.itemId));
-
-		if (xmlType == QXComData.XmlType.MIBAO)
-		{
-			GeneralRewardManager.Instance().CreateSpecialReward (rewardData);
-		}
-		else if (xmlType == QXComData.XmlType.EQUIP)
-		{
-			CommonItemTemplate comTemp = CommonItemTemplate.getCommonItemTemplateById (rewardData.itemId);
-			if (QXComData.GetEffectColorByXmlColorId (comTemp.color) >= 2)
-			{
-				GeneralRewardManager.Instance().CreateSpecialReward (rewardData);
-			}
-		}
+//		QXComData.XmlType xmlType = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (rewardData.itemId));
+//
+//		if (xmlType == QXComData.XmlType.MIBAO)
+//		{
+//			GeneralRewardManager.Instance().CreateSpecialReward (rewardData);
+//		}
+//		else if (xmlType == QXComData.XmlType.EQUIP)
+//		{
+//			CommonItemTemplate comTemp = CommonItemTemplate.getCommonItemTemplateById (rewardData.itemId);
+//			if (QXComData.GetEffectColorByXmlColorId (comTemp.color) >= 2)
+//			{
+//				GeneralRewardManager.Instance().CreateSpecialReward (rewardData);
+//			}
+//		}
 	}
 	
 	IEnumerator MoveSecond ()

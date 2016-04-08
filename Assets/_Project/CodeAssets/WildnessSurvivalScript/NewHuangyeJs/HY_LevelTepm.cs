@@ -175,7 +175,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
 		int OpenHuafei = mhuangye.openCost; // read Table
 
-		string str = "是否需要花费"+OpenHuafei.ToString()+"联盟建设值来重置该宝藏点？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "是否需要花费"+OpenHuafei.ToString()+"联盟建设值来重置该关卡？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,ComfirmRestingIdentity,null,null);
 	}
@@ -186,7 +186,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		string titleStr = "提示";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = "必须完成之前的宝藏点才能激活该宝藏点！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "必须完成之前的关卡才能激活该关卡！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
@@ -200,7 +200,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
 		int OpenHuafei = mhuangye.openCost; // read Table
 		
-		string str = "激活该宝藏点需要花费"+OpenHuafei.ToString()+"联盟建设值，是否需要激活？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "激活该关卡需要花费"+OpenHuafei.ToString()+"联盟建设值，是否需要激活？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 	
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,SureIdentity,null,null);
 	}
@@ -254,7 +254,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		string titleStr = "重置失败";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = "只有盟主才能重置该宝藏点！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "只有盟主才能重置该关卡！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
@@ -265,7 +265,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		string titleStr = "激活失败";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = "只有盟主或者副盟主才能激活该宝藏点！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "只有盟主或者副盟主才能激活该关卡点！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
@@ -335,22 +335,3 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

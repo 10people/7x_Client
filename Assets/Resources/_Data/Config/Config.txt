@@ -1,7 +1,7 @@
 
 -------------------------------------------------------------------- <Version Config>
 // show version code and lag
-ShowVersion:			true
+ShowVersion:			false
 
 // Investigate use or not, if true then skip all Movies
 InVestigateVersion:		false
@@ -53,13 +53,34 @@ QuickFx:					false
 
 
 
+----------------------------------------------------------------------- <Performance Config>
+//Char performance, Maximum char count in scene
+MaxCarriageChar:			20
+
+MaxCharInTanBao:			30
+
+// char update interval
+CharUpdateInterval:	1.0
+
+//Maximum effect count in scene
+MaxEffect:					3
+
+// effect update interval
+EffectUpdateInterval:	2.0
+---------------------------------------------------------------------- </Performance Config>
+
+
+
 ------------------------------------------------------------------------ <FPS Config>
 // must be 30 or 60
 TargetFPS:			30
 
-ShowFPS:			true
+ShowFPS:			false
 
 LoadingInterval:	0.8
+
+// how long gc will run after gc runned
+MainCityUIGC:		180
 ----------------------------------------------------------------------- </FPS Config>
 
 
@@ -79,10 +100,10 @@ OpenAllTheFunction:			false
 
 ---------------------------------------------------------------- <BattleField Config>
 // quick choose level
-QuickChooseLevel:			true
+QuickChooseLevel:			false
 
 // quick finish game
-QuickFight:					true
+QuickFight:					false
 
 // operate battle's camera
 ShowBattleCameraOps:		false

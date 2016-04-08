@@ -64,6 +64,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
     public UIGrid m_ObjGrid2;
     public List<GameObject> m_listSignal;
     private float _ValueSave = 0;
+    public static bool m_isJinJie = false;
     public struct DiaoLuoGuanQia
     {
         public string GuanQiaName;
@@ -135,7 +136,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
             m_ButtonClose.SetActive(false);
         }
 
-            UI3DEffectTool.ClearUIFx(m_SpritePinZhi.gameObject);
+        UI3DEffectTool.ClearUIFx(m_SpritePinZhi.gameObject);
 
         SocketTool.UnRegisterMessageProcessor(this);
     }
@@ -172,7 +173,6 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
             EquipSaveId = EquipsOfBody.Instance().m_equipsOfBodyDic[BuWeiSave].itemId;
             //  EquipsInfoTidy(EquipsOfBody.Instance().m_equipsOfBodyDic[BuWeiSave]);
             GetEquipInfo(EquipSaveId, BuWeiSave);
-            Global.m_isZhanli = true;
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_ADVANCE),
                             ResLoadedSimple);
         }
@@ -315,6 +315,14 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
             exInfo._isWuQi = false;
         }
 
+        if (m_ObjGrid2.transform.childCount > 0)
+        {
+            int size_c = m_ObjGrid2.transform.childCount;
+            for (int i = 0; i < size_c; i++)
+            {
+                Destroy(m_ObjGrid2.transform.GetChild(i).gameObject);
+            }
+        }
         if (exInfo._JinjieId != 0)
         {
             exInfo._isDiaoLuo = true;
@@ -326,6 +334,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
             {
                 QuerySection();
             }
+            EquipsInfoTidy(EquipsOfBody.Instance().m_equipsOfBodyDic[BuWeiSave]);
         }
         else
         {
@@ -430,7 +439,19 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                 }
             }
         }
-        EquipsInfoTidy(EquipsOfBody.Instance().m_equipsOfBodyDic[BuWeiSave]);
+
+        m_HuoDeText.text = exInfo._DiaoLuoSigNal;
+        if (exInfo._JinjieId != 0 && exInfo._listGuanQia.Count > 0)// pinzhi yihou haihuitiao xuyao guding dubiao
+        {
+            int size_a = exInfo._listGuanQia.Count;
+            index_DiaoLuoNum = 0;
+            for (int i = 0; i < size_a; i++)
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.JUN_ZHU_DROP_ITEM),
+                                            ResourcesLoadCallBack);
+            }
+        }
+         
     }
     private List<EquipSuoData.WashInfo> _listAttribute;
     private void EquipsInfoTidy(BagItem esr)//分离数据并赋值
@@ -510,26 +531,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
             }
         }
-
-
-        //;
-        //exInfo.EquipUpgradeIcon = ZhuangBei.templates[i].jinjieIcon;
-
-        
-        //exInfo.des = ZhuangBei.templates[i].funDesc;
         exInfo.level = esr.qiangHuaLv.ToString();
-        //exInfo.Condition = ZhuangBei.templates[i].jinjieLv.ToString();
-        //levelNeed = ZhuangBei.templates[i].jinjieLv;
-
-        //exInfo.EquipMaterialCount = ZhuangBei.templates[i].jinjieNum;
-        //exInfo.Gong = esr.gongJi.ToString();
-        //exInfo.Fang = esr.fangYu.ToString();
-        //exInfo.Ming = esr.shengMing.ToString();
-        //exInfo.PinZhi = esr.pinZhi;
-
-        //        break;
-        //    }
-        //}
         int size_s = m_listSignal.Count;
         for (int i = 0; i < size_s; i++)
         {
@@ -617,7 +619,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
         m_NextGong.text = MyColorData.getColorString(5, exInfo.NextGong);
         m_NextFang.text = MyColorData.getColorString(5, exInfo.NextFang);
         m_NextXue.text = MyColorData.getColorString(5, exInfo.NextMing);
-        m_HuoDeText.text = exInfo._DiaoLuoSigNal;
+
         m_MaxPinZhi.SetActive(ZhuangBei.getZhuangBeiById(EquipSaveId).jiejieId == 0 ? true : false);
         m_ObjIcon.SetActive(true);
         m_Progress.gameObject.SetActive(exInfo._isProgress);
@@ -625,15 +627,8 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
         m_Progress.ForceUpdate();
         m_labProgress.text= exInfo.EquipMaterialCount;
  
-        if (exInfo.PinZhi > 8 || exInfo._Value < 1 || JunZhuData.Instance().m_junzhuInfo.level < int.Parse(exInfo.Condition))
+        if (exInfo._JinjieId == 0 || exInfo._Value < 1 || JunZhuData.Instance().m_junzhuInfo.level < int.Parse(exInfo.Condition))
         {
-            //			Debug.Log( "exInfo.PinZhi: " + exInfo.PinZhi );
-            //
-            //			Debug.Log( "exInfo._Value: " + exInfo._Value );
-            //
-            //			Debug.Log( "JunZhuData.Instance().m_junzhuInfo.level: " + JunZhuData.Instance().m_junzhuInfo.level );
-            //
-            //			Debug.Log( "int.Parse(exInfo.Condition): " + int.Parse(exInfo.Condition) );
             SparkleEffectItem.CloseSparkle(m_SpriteJinJie.gameObject);
  
             ListEventHandler[1].transform.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
@@ -663,27 +658,6 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
                               ResLoadedMiddleLeft);
         }
-
-        if (m_ObjGrid2.transform.childCount > 0)
-        {
-            int size_c = m_ObjGrid2.transform.childCount;
-            for (int i = 0; i < size_c; i++)
-            {
-                Destroy(m_ObjGrid2.transform.GetChild(i).gameObject);
-            }
-        }
-        if (exInfo._JinjieId != 0 && exInfo._listGuanQia.Count > 0)// pinzhi yihou haihuitiao xuyao guding dubiao
-        {
-            int size_a = exInfo._listGuanQia.Count;
-
-           
-            index_DiaoLuoNum = 0;
-            for (int i = 0; i < size_a; i++)
-            {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.JUN_ZHU_DROP_ITEM),
-                                            ResourcesLoadCallBack);
-            }
-        }
         m_Hidden.SetActive(true);
     }
 
@@ -706,6 +680,11 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                 }
                 else
                 {
+                    if (m_isJinJie)
+                    {
+                        return;
+                    }
+                    m_isJinJie = true;
                     EquipsOfBody.Instance().EquipAdvace(EquipsOfBody.Instance().m_equipsOfBodyDic[BuWeiSave].dbId);
                 }
             }
@@ -773,9 +752,6 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                         UIYindao.m_UIYindao.CloseUI();
                     }
                 }
-
-
-
                 EquipAddReq tempAddReq = new EquipAddReq(); //装备在背包中下标
                 Dictionary<int, BagItem> tempBagEquipDic = BagData.Instance().m_playerEquipDic;
                 foreach (KeyValuePair<int, BagItem> item in tempBagEquipDic)
@@ -1027,7 +1003,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
         }
         else
         {
-
+            p_object = null;
         }
         //  DiaoluoShow.transform.GetComponent<JunZhuDiaoLuoItem>().ShowInfo(diaoluoInfo.isShow, diaoluoInfo.bigId.ToString(), diaoluoInfo.smaName.ToString(), diaoluoInfo.icon.ToString(), diaoluoInfo.stars);
     }

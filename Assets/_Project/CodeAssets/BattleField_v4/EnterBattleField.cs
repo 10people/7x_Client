@@ -308,8 +308,7 @@ public class EnterBattleField : ScriptableObject
 
 		nextTemplate = null;
 
-		foreach(PveTempTemplate template in PveTempTemplate.templates)
-		{
+		foreach(PveTempTemplate template in PveTempTemplate.GetTemplates()){
 			if(next == true)
 			{
 				nextTemplate = template;

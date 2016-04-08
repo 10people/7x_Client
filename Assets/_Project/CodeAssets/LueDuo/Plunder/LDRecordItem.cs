@@ -76,14 +76,14 @@ public class LDRecordItem : MonoBehaviour {
 
 				attackLabel.text = "成功掠夺";
 				getAwardLabel.text = "[dc0600]掠夺了[-]";
-				gongJin.text = tempInfo.lostXiaYi.ToString ();
+				gongJin.text = QXComData.MoneyName (QXComData.MoneyType.JIFEN) + ":" + tempInfo.lostXiaYi.ToString ();
 				btnLabel.text = "复仇";
 				
 				break;
 				
 			case 2:
 				
-				gongJin.parent.gameObject.SetActive (false);
+				gongJin.gameObject.SetActive (false);
 				getAwardLabel.transform.localPosition = new Vector3(180,0,0);
 
 				attackLabel.text = "掠夺";
@@ -111,14 +111,14 @@ public class LDRecordItem : MonoBehaviour {
 
 				attackLabel.text = "成功掠夺";
 				getAwardLabel.text = "[dc0600]掠夺了[-]";
-				gongJin.text = tempInfo.lostXiaYi.ToString ();
+				gongJin.text = QXComData.MoneyName (QXComData.MoneyType.JIFEN) + ":" + tempInfo.lostXiaYi.ToString ();
 				btnLabel.text = "再战一局";
 				
 				break;
 				
 			case 2://失败
 				
-				gongJin.parent.gameObject.SetActive (false);
+				gongJin.gameObject.SetActive (false);
 				getAwardLabel.transform.localPosition = new Vector3(180,0,0);
 
 				attackLabel.text = "掠夺";

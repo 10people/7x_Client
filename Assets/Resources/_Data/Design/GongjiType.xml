@@ -85,6 +85,7 @@
 <GongjiType typeId="1544" moveSpeed="10.5" attackSpeed="90000" attackRange="2" shiyeRange="1000" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="2011" moveSpeed="7" attackSpeed="0" attackRange="0" shiyeRange="0" baojiX="0" baojiY="0" jnbaojiX="0" jnbaojiY="0" />
 <GongjiType typeId="3000" moveSpeed="0" attackSpeed="0" attackRange="0" shiyeRange="1000" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
+<GongjiType typeId="3001" moveSpeed="8" attackSpeed="1" attackRange="4" shiyeRange="1000" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="4000" moveSpeed="0" attackSpeed="0" attackRange="0" shiyeRange="1000" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="4001" moveSpeed="2" attackSpeed="0" attackRange="0" shiyeRange="-10" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="4002" moveSpeed="2" attackSpeed="0" attackRange="0" shiyeRange="-10" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
@@ -107,6 +108,7 @@
 <GongjiType typeId="6003" moveSpeed="2" attackSpeed="1" attackRange="4" shiyeRange="1000" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="6004" moveSpeed="3" attackSpeed="1" attackRange="4" shiyeRange="1000" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="6005" moveSpeed="2" attackSpeed="1" attackRange="4" shiyeRange="1000" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
+<GongjiType typeId="6006" moveSpeed="2" attackSpeed="1" attackRange="4" shiyeRange="1000" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="7001" moveSpeed="7" attackSpeed="1" attackRange="4" shiyeRange="12" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="7002" moveSpeed="7" attackSpeed="2" attackRange="4" shiyeRange="12" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="7003" moveSpeed="7" attackSpeed="1" attackRange="4" shiyeRange="12" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />

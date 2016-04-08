@@ -28,8 +28,10 @@ public class EditorUtilities : MonoBehaviour
     {
         BUILD_DEBUG = 1,
 
-		UTILITIES___FIND_LARGE_TEX = 10,
+		UTILITIES_DEBUG = 10,
+		UTILITIES___FIND_LARGE_TEX,
 		UTILITIES___FIND_TEX_IN_RES,
+		UTILITIES___FIND_WARNNING_TEX_FORMAT,
 		UTILITIES___ASSETS_FILTER,
 		UTILITIES___COMBINE_MESH,
 		UTILITIES___FIND_MISSING_MONO,
@@ -42,6 +44,7 @@ public class EditorUtilities : MonoBehaviour
 		OPEN_SPOT_VIEW,
 		OPEN_FX_VIEW,
 		OPEN_PROTO,
+		OPEN_MODEL_ACTIVATOR,
 		OPEN_OTHER,
 
 		UPGRADE___NAV_UPGRADE = 200,
@@ -58,6 +61,18 @@ public class EditorUtilities : MonoBehaviour
 
         AssetDatabase.Refresh();
     }
+
+
+	#region Debug
+
+	[MenuItem("Utility/Utilities/Debug", false, (int)EditorUtilities.MenuItemPriority.UTILITIES_DEBUG)]
+	static void FindTexInRes(){
+		
+	}
+
+	#endregion
+
+
 
     #region Open Menu
 
@@ -101,6 +116,12 @@ public class EditorUtilities : MonoBehaviour
 	[MenuItem("Utility/Open/View Spot", false, (int)MenuItemPriority.OPEN_SPOT_VIEW)]
 	static void OpenViewSpotWindowTool(){
 		EditorWindow.GetWindow<ViewSpotWindow>( false, "View Spot", true );
+	}
+
+
+	[MenuItem("Utility/Open/Model Activator", false, (int)MenuItemPriority.OPEN_MODEL_ACTIVATOR)]
+	static void OpenModelActivatorWindowTool(){
+		EditorWindow.GetWindow<ModelActivatorWindow>( false, "Model Activator", true );
 	}
 
 	[MenuItem("Utility/Open/Open Other", false, (int)MenuItemPriority.OPEN_OTHER)]

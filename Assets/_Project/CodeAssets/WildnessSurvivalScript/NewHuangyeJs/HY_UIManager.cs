@@ -104,7 +104,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 			
 			return;
 		}
-		canOpenShop = true; 
+//		canOpenShop = true; 
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_OPEN_HUANGYE);
 		
 	}
@@ -535,13 +535,23 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	public void RightMoveMap()
 	{
 	
+		if((CurMap)*Levelsnum == m_OpenHuangYeResp.treasure.Count )
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTongBiLoadBack);
+			return;
+		}
 		for(int i = (CurMap -1)*Levelsnum; i < (CurMap)*Levelsnum; i++)
 		{
-			if(m_OpenHuangYeResp.treasure[i].isActive == 0||m_OpenHuangYeResp.treasure[i].isActive ==1)
+			int MaxNuber = m_OpenHuangYeResp.treasure.Count;
+			if(i < m_OpenHuangYeResp.treasure.Count -1)
 			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTongBiLoadBack);
-				return;
+				if(m_OpenHuangYeResp.treasure[i+1].isActive == 0)
+				{
+					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTongBiLoadBack);
+					return;
+				}
 			}
+
 		}
 		if((CurMap+1) <= MaxMap)
 		{
@@ -577,7 +587,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = "需要用关所有关卡才能进入下一张荒野地图！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "需要通关所有关卡才能进入下一张荒野地图！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
@@ -608,20 +618,18 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	/// <summary>
 	/// 商店是否可开启
 	/// </summary>
-	private bool canOpenShop = true; 
-	public bool CanOpenShop
-	{
-		set{canOpenShop = value;}
-	}
+//	private bool canOpenShop = true; 
+//	public bool CanOpenShop
+//	{
+//		set{canOpenShop = value;}
+//	}
 
 	public void EnterHY_Shop()
 	{
-		if (canOpenShop)
-		{
-			canOpenShop = false;
+	
 //			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.HUANGYE,GeneralControl.StoreReqType.FREE);
-			ShopData.Instance.OpenShop (ShopData.ShopType.HUANGYE);
-		}
+	   ShopData.Instance.OpenShop (ShopData.ShopType.HUANGYE);
+
 	}
 
 	public void AddTimes()
@@ -679,7 +687,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		string str = "V特权等级不足，V特权等级提升到"+(vip).ToString()+"级即可购买挑战次数。参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		if (7 <= JunZhuData.Instance().m_junzhuInfo.vipLv) {
 			
-			str = "今日的购买次数已经用完了，请明日再来吧";
+			str = "今日的购买次数已经用完了，请明日再来吧。";
 		} 
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
@@ -690,7 +698,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		
 		string titleStr = "购买次数";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = "您是否要花费"+m_OpenHuangYeResp.buyNextMoney.ToString()+"元宝购买"+m_OpenHuangYeResp.buyNextCiShu.ToString()+"次挑战次数？\r\n 今日还可购买"+m_OpenHuangYeResp.leftBuyCiShu.ToString()+"次";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "您是否要花费"+m_OpenHuangYeResp.buyNextMoney.ToString()+"元宝购买"+m_OpenHuangYeResp.buyNextCiShu.ToString()+"次挑战次数？\r\n 今日还可购买"+m_OpenHuangYeResp.leftBuyCiShu.ToString()+"次。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,SureBuy,null,null);
 	}

@@ -46,7 +46,7 @@ public class SkillTemplate : XmlLoadManager
 
 	public int immediately;
 
-	public static List<SkillTemplate> templates= new List<SkillTemplate>();
+	private static List<SkillTemplate> templates= new List<SkillTemplate>();
 
 
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
@@ -54,26 +54,33 @@ public class SkillTemplate : XmlLoadManager
 
 	}
 
+	private static TextAsset m_templates_text = null;
+
 	public static void CurLoad( ref WWW www, string path, Object obj ){
-		{
-			templates.Clear();
+		if ( obj == null ) {
+			Debug.LogError ("Asset Not Exist: " + path);
+
+			return;
 		}
 
-		XmlReader t_reader = null;
+		m_templates_text = obj as TextAsset;
+	}
 		
-		if( obj != null ){
-			TextAsset t_text_asset = obj as TextAsset;
-			
-			t_reader = XmlReader.Create( new StringReader( t_text_asset.text ) );
-			
-			//			Debug.Log( "Text: " + t_text_asset.text );
+	private static void ProcessAsset(){
+		if( templates.Count > 0 ) {
+			return;
 		}
-		else{
-			t_reader = XmlReader.Create( new StringReader( www.text ) );
+
+		if( m_templates_text == null ) {
+			Debug.LogError( "Error, Asset Not Exist." );
+
+			return;
 		}
-		
+
+		XmlReader t_reader = XmlReader.Create( new StringReader( m_templates_text.text ) );
+
 		bool t_has_items = true;
-		
+
 		do{
 			t_has_items = t_reader.ReadToFollowing( "SkillTemplate" );
 			
@@ -141,6 +148,7 @@ public class SkillTemplate : XmlLoadManager
 			templates.Add( t_template );
 		}
 		while( t_has_items );
+
 		for(int i = 0; i < templates.Count; i ++)
 		{
 			try
@@ -150,18 +158,23 @@ public class SkillTemplate : XmlLoadManager
 					setFirstLoadEffID(templates[i].value7);
 				}
 			}
-			catch (System.Exception e)
-			{
+			catch (System.Exception e){
 				//Debug.LogError(templates[i].value7);
 				//Debug.Log(e.Message);
 				//Debug.Log(e);
 			}
+		}
 
+		{
+			m_templates_text = null;
 		}
 	}
 
-	public static SkillTemplate getSkillTemplateById(int id)
-	{
+	public static SkillTemplate getSkillTemplateById(int id){
+		{
+			ProcessAsset();
+		}
+
 		foreach(SkillTemplate template in templates)
 		{
 			if(template.id == id)
@@ -175,8 +188,11 @@ public class SkillTemplate : XmlLoadManager
 		return null;
 	}
 
-    public static List<SkillTemplate> GetSkillOfJunZhu(int skillType)
-    {
+    public static List<SkillTemplate> GetSkillOfJunZhu(int skillType){
+		{
+			ProcessAsset();
+		}
+
         List<SkillTemplate> templateList = new List<SkillTemplate>();
 
         foreach (SkillTemplate template in templates)
@@ -189,8 +205,11 @@ public class SkillTemplate : XmlLoadManager
         return templateList;
     }
 
-	public static List<int> setFirstLoadEffID(string tempString)
-	{
+	public static List<int> setFirstLoadEffID(string tempString){
+		{
+			ProcessAsset();
+		}
+
 //		Debug.Log (tempString);
 		List<int> tempLoadEffID = new List<int>();
 		Global.NextCutting(ref tempString);
@@ -396,27 +415,43 @@ public class SkillTemplate : XmlLoadManager
 		return tempLoadEffID;
 	}
 
-	public static SkillTemplate getSkillTemplateByJiNengPeiYangId(int jiNengPeiYangId)
-	{
+	public static SkillTemplate getSkillTemplateByJiNengPeiYangId(int jiNengPeiYangId){
+		{
+			ProcessAsset();
+		}
+
 		HeroSkillUpTemplate jinengpeiyangTemplate = HeroSkillUpTemplate.GetHeroSkillUpByID (jiNengPeiYangId);
+
+		if( jinengpeiyangTemplate == null ){
+			return null;
+		}
 
 		return getSkillTemplateById (jinengpeiyangTemplate.m_iSkillID);
 	}
 
-	public static SkillTemplate getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId skillLevelIndex, KingControllor kingNode)
-	{
+	public static SkillTemplate getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId skillLevelIndex, KingControllor kingNode){
+		{
+			ProcessAsset();
+		}
+
 		return getSkillTemplateByJiNengPeiYangId(kingNode.skillLevel [(int)skillLevelIndex]);
 	}
 
-	public static int getSkillLevelByJiNengPeiYangId(int jiNengPeiYangId)
-	{
+	public static int getSkillLevelByJiNengPeiYangId(int jiNengPeiYangId){
+		{
+			ProcessAsset();
+		}
+
 		HeroSkillUpTemplate jinengpeiyangTemplate = HeroSkillUpTemplate.GetHeroSkillUpByID (jiNengPeiYangId);
 
 		return jinengpeiyangTemplate.m_iQuality;
 	}
 
-	public static int getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId skillLevelIndex, KingControllor kingNode)
-	{
+	public static int getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId skillLevelIndex, KingControllor kingNode){
+		{
+			ProcessAsset();
+		}
+
 		return getSkillLevelByJiNengPeiYangId (kingNode.skillLevel [(int)skillLevelIndex]);
 	}
 

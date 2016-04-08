@@ -125,11 +125,13 @@ public class DramaStoryReador : MonoBehaviour
 
 		bool flag = false;
 
+		int levelType = CityGlobalData.m_levelType == qxmobile.protobuf.LevelType.LEVEL_TALE ? 1 : 0;
+
 		if(GuideTemplate.GetTemplates() != null)
 		{
 			foreach( GuideTemplate gt in GuideTemplate.GetTemplates() )
 			{
-				if(gt.dungeonId == levelId)
+				if(gt.dungeonId == levelId && gt.levelType == levelType)
 				{
 					flag = true;
 

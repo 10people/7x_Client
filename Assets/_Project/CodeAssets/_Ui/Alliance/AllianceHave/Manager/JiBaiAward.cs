@@ -92,6 +92,10 @@ public class JiBaiAward : MYNGUIPanel {
 		IsChoosed.gameObject.SetActive (false);
 		Box.SetActive (true);
 	}
+	public void  ChangeBoxPostion(GameObject m_obg)
+	{
+		m_obg.transform.localPosition = this.transform.localPosition;
+	}
 	public void CHoseShowAnimation()
 	{
 		StartCoroutine (ShowAnimation());
@@ -99,7 +103,7 @@ public class JiBaiAward : MYNGUIPanel {
 	IEnumerator ShowAnimation()
 	{
 		IsChoosed.gameObject.SetActive (true);
-		yield return new WaitForSeconds(0.1f);
+		yield return new WaitForSeconds(0.01f);
 		IsChoosed.gameObject.SetActive (false);
 	}
 	#region fulfil my ngui panel

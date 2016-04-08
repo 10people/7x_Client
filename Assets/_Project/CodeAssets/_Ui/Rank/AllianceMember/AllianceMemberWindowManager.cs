@@ -1,4 +1,4 @@
-﻿//#define DEBUG_ALLIANCE_MEMBER
+﻿//#define UNIT_TEST
 
 using UnityEngine;
 using System.Collections;
@@ -79,7 +79,11 @@ public class AllianceMemberWindowManager : Singleton<AllianceMemberWindowManager
         controller.isOutterCall = isOutterCall;
         controller.m_AllianceName = SelectedAllianceName;
         controller.m_AlliancePlayerResp = m_AlliancePlayerResp;
-        if (!isOutterCall)
+        if (isOutterCall)
+        {
+            MainCityUI.TryAddToObjectList(tempObject);
+        }
+        else
         {
             controller.m_RootController = m_RootController;
         }
@@ -110,7 +114,7 @@ public class AllianceMemberWindowManager : Singleton<AllianceMemberWindowManager
         base.OnDestroy();
     }
 
-#if DEBUG_ALLIANCE_MEMBER
+#if UNIT_TEST
 
     private int allianceid;
 

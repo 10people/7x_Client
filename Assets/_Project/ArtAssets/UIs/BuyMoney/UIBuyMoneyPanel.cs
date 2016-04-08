@@ -182,17 +182,20 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 
 	public override void MYClick(GameObject ui)
 	{
+		Debug.Log(ui.name);
 		if(ui.name.IndexOf("Close") != -1)
 		{
 			Debug.Log("YIndao_id = "+YIndao_id);
 //			MainCityUI.OpenGui();
 			if(YIndao_id != 0)
 			{
+				CityGlobalData.m_isRightGuide = false;
 				UIYindao.m_UIYindao.setOpenYindao(YIndao_id);
 				YIndao_id = 0;
 			}
 			GameObject.Destroy(gameObject);
 			MainCityUI.TryRemoveFromObjectList(gameObject);
+			TreasureCityUI.TryRemoveFromObjectList(gameObject);
 			JunZhuData.Instance().UI_IsOpen = false;
 		}
 		else if(ui.name.IndexOf("ButtonLianxu1") != -1)
@@ -209,10 +212,17 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 		}
 		else if(ui.name.IndexOf("Button2") != -1)
 		{
-			m_objShowGetLianxuMoney.SetActive(true);
-			m_labelLianxuDes.text = "连续换取" + m_BuyTongbiData.lixuCount + "次铜币";
-			m_labelLianxuUseYuanbao.text = (m_BuyTongbiData.cost * m_BuyTongbiData.lixuCount).ToString();
-			m_labelLianxuGetMoney.text = (m_BuyTongbiData.getTonbi * m_BuyTongbiData.lixuCount).ToString();
+			if(m_BuyTongbiData.nowCount >= m_BuyTongbiData.maxCount)
+			{
+				Global.ScendNull(ProtoIndexes.C_BUY_TongBi);
+			}
+			else
+			{
+				m_objShowGetLianxuMoney.SetActive(true);
+				m_labelLianxuDes.text = "连续换取" + m_BuyTongbiData.lixuCount + "次铜币";
+				m_labelLianxuUseYuanbao.text = (m_BuyTongbiData.cost * m_BuyTongbiData.lixuCount).ToString();
+				m_labelLianxuGetMoney.text = (m_BuyTongbiData.getTonbi * m_BuyTongbiData.lixuCount).ToString();
+			}
 //			m_BuyTongbiData.
 //			public UILabel m_labelLianxuDes;
 //			public UILabel m_labelLianxuUseYuanbao;

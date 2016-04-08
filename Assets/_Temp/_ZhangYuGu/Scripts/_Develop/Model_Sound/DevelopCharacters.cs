@@ -103,6 +103,8 @@ public class DevelopCharacters : MonoBehaviour {
 		t_callback.OnResetXuanFengCount = OnResetXuanFengCount;
 		
 		t_callback.OnAddXuanFengCount = OnAddXuanFengCount;
+
+		t_callback.OnPlayFx = PlayFx;
 	}
 
 	public void OnResetHitCount(){

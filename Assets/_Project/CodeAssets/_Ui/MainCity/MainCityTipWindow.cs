@@ -65,7 +65,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 
     void Start()
     {
-		MainCityUI.setGlobalTitle(m_objTitle, "提升实力", 0, 0);
+		MainCityUI.setGlobalTitle(m_objTitle, "我要变强", 0, 0);
 		MainCityUI.setGlobalBelongings(m_MonetParentObj, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
 		for(int i = 0; i < m_openFunctionID.Length; i ++)
 		{
@@ -211,19 +211,27 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 			if(data0.tianfuId == null || data0.tianfuId.Count == 0)
 			{
 				m_ListDis[m_iPageIndex][0].gameObject.SetActive(false);
-			}
-			for(int i = 0; i < 3; i ++)
-			{
-				if(i < data0.tianfuId.Count)
-				{
-					m_ListIcon[m_iPageIndex][i].gameObject.SetActive(true);
-					m_ListIcon[m_iPageIndex][i].spriteName = data0.tianfuId[i]+"";
-				}
-				else
+				for(int i = 0; i < 3; i ++)
 				{
 					m_ListIcon[m_iPageIndex][i].gameObject.SetActive(false);
 				}
 			}
+			if(data0.tianfuId != null)
+			{
+				for(int i = 0; i < 3; i ++)
+				{
+					if(i < data0.tianfuId.Count)
+					{
+						m_ListIcon[m_iPageIndex][i].gameObject.SetActive(true);
+						m_ListIcon[m_iPageIndex][i].spriteName = data0.tianfuId[i]+"";
+					}
+					else
+					{
+						m_ListIcon[m_iPageIndex][i].gameObject.SetActive(false);
+					}
+				}
+			}
+
 			m_ListLabel[m_iPageIndex][0].text = data0.curHeroLevel + "级/" + data0.maxHeroLevel + "级";
 			m_ListLabel[m_iPageIndex][1].text = data0.curTanfuLevel + "/" + data0.maxTanfuLevel;
 			if(!FunctionOpenTemp.IsHaveID(500000))
@@ -252,7 +260,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 					if(data1.pageData[i].zhuangbeiData != null && q < data1.pageData[i].zhuangbeiData.Count)
 					{
 						m_ListIcon[m_iPageIndex][i*3+q].gameObject.SetActive(true);
-						m_ListIcon[m_iPageIndex][i*3+q].spriteName = data1.pageData[i].zhuangbeiData[q].id + "";
+						m_ListIcon[m_iPageIndex][i*3+q].spriteName = CommonItemTemplate.getCommonItemTemplateById(data1.pageData[i].zhuangbeiData[q].id).icon + "";
 					}
 					else
 					{
@@ -285,7 +293,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 				{
 					if(data2.pageData[i].mibaoDataId != null && q < data2.pageData[i].mibaoDataId.Count)
 					{
-						m_ListRect[i*3+q].spriteName = MiBaoGlobleData.Instance().getStart(data2.pageData[i].mibaoDataId[q]);
+						m_ListRect[i*3+q].spriteName = "pinzhi6";
 						m_ListIcon[m_iPageIndex][i*3+q].gameObject.SetActive(true);
 						m_ListIcon[m_iPageIndex][i*3+q].spriteName = data2.pageData[i].mibaoDataId[q] + "";
 					}
@@ -314,7 +322,8 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 					if(data3.pageData[i].fuwenDataId != null && q < data3.pageData[i].fuwenDataId.Count)
 					{
 						m_ListIcon[m_iPageIndex][i*3+q].gameObject.SetActive(true);
-						m_ListIcon[m_iPageIndex][i*3+q].spriteName = data3.pageData[i].fuwenDataId[q] + "";
+
+						m_ListIcon[m_iPageIndex][i*3+q].spriteName = FuWenTemplate.GetFuWenTemplateByFuWenId (data3.pageData[i].fuwenDataId[q]).icon + "";
 					}
 					else
 					{
@@ -435,6 +444,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 
 					Global.m_isShowBianqiang = true;
 					Global.m_sBianqiangClick = "Page" + m_iPageIndex;
+					Debug.Log("Global.m_sPanelWantRun="+Global.m_sPanelWantRun);
 				}
 				else
 				{

@@ -328,5 +328,20 @@ public class choosemap : MonoBehaviour {
 				mLev.POPLevelInfo();
 			}
 		}
+		IdStartUpdate = true;
+	}
+	bool IdStartUpdate ;
+	void Update()
+	{
+		if(CityGlobalData.PveLevel_UI_is_OPen&&IdStartUpdate)
+		{
+			IdStartUpdate = false;
+			StartCoroutine("ChangeUiState");
+		}
+	}
+	IEnumerator ChangeUiState()
+	{
+		yield return new WaitForSeconds (2f);
+		CityGlobalData.PveLevel_UI_is_OPen = false;
 	}
 }

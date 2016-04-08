@@ -87,11 +87,14 @@ namespace Carriage
 
                             CarriageBaseCultureController tempBaseCultureController;
 
+                            //Only limit player pos, change to all if carriage move type changed.
+                            Vector2 limitedPosition = tempMsg.uid == PlayerSceneSyncManager.Instance.m_MyselfUid || tempMsg.roleId < 50000 ? m_RootManager.m_CarriageMain.LimitPlayerPositionByCarriageNPC(new Vector2(tempMsg.posX, tempMsg.posZ)) : new Vector2(tempMsg.posX, tempMsg.posZ);
+
                             //Self
                             if (tempMsg.uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
                             {
                                 tempBaseCultureController = m_RootManager.m_SelfPlayerCultureController;
-                                tempBaseCultureController.transform.localPosition = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
+                                tempBaseCultureController.transform.localPosition = new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y);
 
                                 //Update self head icon info.
                                 m_RootManager.m_CarriageMain.SelfIconSetter.SetPlayer(tempMsg.roleId, true, tempMsg.level, tempMsg.senderName, tempMsg.allianceName, tempMsg.totalLife, tempMsg.currentLife, tempMsg.guojia, tempMsg.vipLevel, tempMsg.zhanli);
@@ -102,10 +105,16 @@ namespace Carriage
                             //Other
                             else
                             {
-                                if (!CreatePlayer(tempMsg.roleId, tempMsg.uid, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ)))
+                                if (!CreatePlayer(tempMsg.roleId, tempMsg.uid, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y)))
                                 {
                                     Debug.LogError("Cannot create duplicated player.");
                                     return true;
+                                }
+
+                                //Add to mesh controller.
+                                if (m_PlayerDic.ContainsKey(tempMsg.uid) && !m_PlayerDic[tempMsg.uid].IsCarriage)
+                                {
+                                    ModelAutoActivator.RegisterAutoActivator(m_PlayerDic[tempMsg.uid].gameObject);
                                 }
 
                                 tempBaseCultureController = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>();
@@ -128,7 +137,7 @@ namespace Carriage
                                 {
                                     typeID = tempMsg.roleId >= 50000 ? 5 : 4;
                                 }
-                                m_RootManager.m_CarriageMain.m_MapController.AddGizmos(tempMsg.uid, typeID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), 0);
+                                m_RootManager.m_CarriageMain.m_MapController.AddGizmos(tempMsg.uid, typeID, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y), 0);
                             }
 
                             tempBaseCultureController.TrackCamera = m_RootManager.TrackCamera;
@@ -147,7 +156,7 @@ namespace Carriage
                             tempBaseCultureController.RoleID = tempMsg.roleId;
                             tempBaseCultureController.UID = tempMsg.uid;
                             tempBaseCultureController.JunzhuID = tempMsg.jzId;
-                            tempBaseCultureController.IsChouRen = tempMsg.isEnemy;
+                            tempBaseCultureController.IsChouRen = m_RootManager.m_CarriageMain.IsChouren(tempMsg.jzId);
                             tempBaseCultureController.SetThis();
 
                             return true;
@@ -186,6 +195,12 @@ namespace Carriage
 
                             if (m_PlayerDic.ContainsKey(tempMsg.uid))
                             {
+                                //Remove from mesh controller.
+                                if (m_PlayerDic.ContainsKey(tempMsg.uid) && !m_PlayerDic[tempMsg.uid].IsCarriage)
+                                {
+                                    ModelAutoActivator.UnregisterAutoActivator(m_PlayerDic[tempMsg.uid].gameObject);
+                                }
+
                                 DestroyPlayer(tempMsg.uid);
                             }
 
@@ -371,16 +386,24 @@ namespace Carriage
                                         //Dead dic contains all data.
                                         if (m_DeadPlayerDic.ContainsKey(tempMsg.uid))
                                         {
+                                            Vector2 limitedPosition = m_RootManager.m_CarriageMain.LimitPlayerPositionByCarriageNPC(new Vector2(tempMsg.posX, tempMsg.posZ));
+
                                             if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.uid)
                                             {
-                                                m_RootManager.CreateSelfPlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_JunzhuID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), m_DeadPlayerDic[tempMsg.uid].m_KingName, m_DeadPlayerDic[tempMsg.uid].m_AllianceName, m_DeadPlayerDic[tempMsg.uid].m_VipLevel, m_DeadPlayerDic[tempMsg.uid].m_Title, m_DeadPlayerDic[tempMsg.uid].m_AlliancePost, m_DeadPlayerDic[tempMsg.uid].m_Nation, m_DeadPlayerDic[tempMsg.uid].m_Level, m_DeadPlayerDic[tempMsg.uid].m_BattleValue, tempMsg.life, m_DeadPlayerDic[tempMsg.uid].m_TotalBlood);
+                                                m_RootManager.CreateSelfPlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_JunzhuID, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y), m_DeadPlayerDic[tempMsg.uid].m_KingName, m_DeadPlayerDic[tempMsg.uid].m_AllianceName, m_DeadPlayerDic[tempMsg.uid].m_VipLevel, m_DeadPlayerDic[tempMsg.uid].m_Title, m_DeadPlayerDic[tempMsg.uid].m_AlliancePost, m_DeadPlayerDic[tempMsg.uid].m_Nation, m_DeadPlayerDic[tempMsg.uid].m_Level, m_DeadPlayerDic[tempMsg.uid].m_BattleValue, tempMsg.life, m_DeadPlayerDic[tempMsg.uid].m_TotalBlood);
 
                                                 //Show dead dimmer.
                                                 m_RootManager.m_CarriageMain.HideDeadWindows();
                                             }
                                             else
                                             {
-                                                CreatePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_UID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ));
+                                                CreatePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_UID, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y));
+
+                                                //Add to mesh controller.
+                                                if (m_PlayerDic.ContainsKey(tempMsg.uid) && !m_PlayerDic[tempMsg.uid].IsCarriage)
+                                                {
+                                                    ModelAutoActivator.RegisterAutoActivator(m_PlayerDic[tempMsg.uid].gameObject);
+                                                }
 
                                                 var tempPlayerCultureController = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>();
 
@@ -462,4 +485,3 @@ namespace Carriage
         }
     }
 }
-

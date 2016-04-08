@@ -17,7 +17,7 @@ public class CameraTemplateC : MonoBehaviour
 	
 	private void TemplateLoadedCallback()
 	{
-		foreach(PlotChatTemplate template in PlotChatTemplate.templates)
+		foreach(PlotChatTemplate template in PlotChatTemplate.GetTemplates() )
 		{
 			Vector3 t_po = new Vector3(template.cameraPx, template.cameraPy, template.cameraPz);
 
@@ -35,14 +35,14 @@ public class CameraTemplateC : MonoBehaviour
 			}
 		}
 
-		Debug.Log ("PlotChatTemplate Length: " + PlotChatTemplate.templates.Count);
+//		Debug.Log ("PlotChatTemplate Length: " + PlotChatTemplate.templates.Count);
 
-		Debug.Log ("tempList Length: " + tempList.Count);
+//		Debug.Log ("tempList Length: " + tempList.Count);
 	}
 
 	private bool checkList(Vector3 po, Vector3 ro)
 	{
-		Debug.Log ("=======================================");
+//		Debug.Log ("=======================================");
 
 		foreach(cameraValue ca in tempList)
 		{

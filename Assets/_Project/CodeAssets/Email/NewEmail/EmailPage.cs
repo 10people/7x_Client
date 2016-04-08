@@ -35,7 +35,10 @@ public class EmailPage : MonoBehaviour {
 	private List<EmailInfo> systemList = new List<EmailInfo> ();//系统邮件列表
 	private List<EmailInfo> privateList = new List<EmailInfo> ();//私信列表
 
-	public GameObject emailItemParent;
+	public UIScrollView emailSc;
+	public UIScrollBar emailSb;
+	private float emailSbValue;
+
 	public GameObject emailItemObj;
 	private List<GameObject> emailItemList = new List<GameObject> ();
 	private List<EventHandler> emailItemHandlerList = new List<EventHandler> ();
@@ -71,6 +74,8 @@ public class EmailPage : MonoBehaviour {
 		privateList = tempPrivateList;
 
 		emailOpenType = tempOpenType;
+
+		emailSbValue = 0;
 
 		if (pageDic.Count == 0)
 		{
@@ -128,7 +133,7 @@ public class EmailPage : MonoBehaviour {
 		switch (tempType)
 		{
 		case EmailShowType.SYSTEM:
-			
+
 			desLabel.text = systemList.Count == 0 ? "您的邮箱暂时没有系统邮件！" : "";
 			InItEmailList (systemList);
 			BtnAnimation (btnObjDic["SystemBtn"],true);
@@ -154,30 +159,7 @@ public class EmailPage : MonoBehaviour {
 	/// <param name="tempList">Temp list.</param>
 	void InItEmailList (List<EmailInfo> tempList)
 	{
-		int emailCount = tempList.Count - emailItemList.Count;
-		int exitCount = emailItemList.Count;
-
-		if (emailCount > 0)
-		{
-			for (int i = 0;i < emailCount;i ++)
-			{
-				GameObject emailItem = (GameObject)Instantiate (emailItemObj);
-
-				emailItem.SetActive (true);
-				emailItem.transform.parent = emailItemParent.transform;
-				emailItem.transform.localPosition = new Vector3(0,-130 * (i + exitCount));
-				emailItem.transform.localScale = Vector3.one;
-				emailItemList.Add (emailItem);
-			}
-		}
-		else
-		{
-			for (int i = 0;i < Mathf.Abs (emailCount);i ++)
-			{
-				Destroy (emailItemList[emailItemList.Count - 1]);
-				emailItemList.RemoveAt (emailItemList.Count - 1);
-			}
-		}
+		emailItemList = QXComData.CreateGameObjectList (emailItemObj,tempList.Count,emailItemList);
 
 		for (int i = 0;i < tempList.Count - 1;i ++)
 		{
@@ -210,8 +192,13 @@ public class EmailPage : MonoBehaviour {
 		}
 		emailItemHandlerList.Clear ();
 
+		emailSb.value = tempList.Count > 4 ? emailSbValue : 0;
+
 		for (int i = 0;i < tempList.Count;i ++)
 		{
+			emailItemList[i].transform.localPosition = new Vector3(0,-130 * i,0);
+			emailSc.UpdateScrollbars (true);
+//			emailSc.UpdatePosition ();
 			EmailItem email = emailItemList[i].GetComponent<EmailItem> ();
 			email.GetEmailItemInfo (tempList[i]);
 
@@ -220,7 +207,10 @@ public class EmailPage : MonoBehaviour {
 			emailItemHandlerList.Add (emailHandler);
 		}
 
-		emailItemParent.GetComponentInParent <UIScrollView> ().enabled = tempList.Count > 4 ? true : false;
+		emailSc.enabled = tempList.Count > 4 ? true : false;
+		emailSb.gameObject.SetActive (tempList.Count > 4 ? true : false);
+
+//		UIYindao.m_UIYindao.CloseUI ();
 	}
 
 	void EmailItemHandlerCallBack (GameObject obj)
@@ -272,6 +262,7 @@ public class EmailPage : MonoBehaviour {
 			break;
 		case "WriteBtn":
 
+//			emailSbValue = emailSb.value;
 			NewEmailData.Instance().SendEmailType = NewEmailData.SendType.DEFAULT;
 			ShowEmailPage (EmailShowPage.EMAIL_SEND);
 	
@@ -301,11 +292,8 @@ public class EmailPage : MonoBehaviour {
 					{
 						GetSendEmailInfo ();
 						ShowEmailPage (EmailShowPage.EMAIL_MAINPGE);
-						if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
-						{
-							SwitchEmailType (ShowType);
-							CheckUnSendEmail ();
-						}
+						SwitchEmailType (ShowType);
+						CheckUnSendEmail ();
 					}
 					else
 					{
@@ -382,6 +370,7 @@ public class EmailPage : MonoBehaviour {
 	/// <param name="tempInfo">Temp info.</param>
 	public void OpenCheckEmail (EmailInfo tempInfo)
 	{
+//		emailSbValue = emailSb.value;
 		//打开查看邮件
 		ShowEmailPage (EmailShowPage.EMAIL_CHECK);
 
@@ -413,8 +402,15 @@ public class EmailPage : MonoBehaviour {
 			break;
 		}
 		CheckUnSendEmail ();
+//		Debug.Log ("showPage:" + showPage);
 		if (showPage == EmailShowPage.EMAIL_MAINPGE)
 		{
+			int emailCount = ShowType == EmailShowType.PRIVATE ? privateList.Count : systemList.Count;
+
+//			Debug.Log ("emailSbValue:" + emailSbValue);
+//			Debug.Log ("emailSb.value:" + emailSb.value);
+//			emailSbValue = emailCount > 4 ? emailSb.value : 0;
+
 			InItEmailList (ShowType == EmailShowType.SYSTEM ? systemList : privateList);
 		}
 	}
@@ -459,6 +455,8 @@ public class EmailPage : MonoBehaviour {
 
 	public void CloseEmail ()
 	{
+		emailSbValue = 0;
+		emailSb.value = emailSbValue;
 		ShowType = EmailShowType.SYSTEM;
 		GetSendEmailInfo ();
 //		NewEmailData.Instance().ExistNewEmail ();
@@ -516,7 +514,9 @@ public class EmailPage : MonoBehaviour {
 				}
 			}
 		}
-		redObjList[2].SetActive (string.IsNullOrEmpty (NewEmailData.Instance().SendName) && string.IsNullOrEmpty (NewEmailData.Instance().SendContent) ?
-		                         false : true);
+
+		bool isUnSend = string.IsNullOrEmpty (NewEmailData.Instance ().SendName) && string.IsNullOrEmpty (NewEmailData.Instance ().SendContent) ? false : true;
+		redObjList[2].SetActive (isUnSend);
+		PushAndNotificationHelper.SetRedSpotNotification (20,isUnSend);
 	}
 }

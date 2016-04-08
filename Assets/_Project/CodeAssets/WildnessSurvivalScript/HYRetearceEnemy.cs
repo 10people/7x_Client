@@ -379,6 +379,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 			OnCreatePuTong_Enemys(ref temp, null, IconSamplePrefab);
 		}
 	}
+	private List<GameObject> iconSampleObjectList = new List<GameObject> (); 
 	private void OnCreatePuTong_Enemys(ref WWW p_www, string p_path, Object p_object)
 	{
 		if (IconSamplePrefab == null)
@@ -390,6 +391,11 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		{
 			count =  10;
 		}
+		foreach(GameObject mobg in iconSampleObjectList)
+		{
+			Destroy(mobg);
+		}
+		iconSampleObjectList.Clear ();
 		for (int n = 0; n < count; n++)
 		{
 			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
@@ -450,6 +456,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 			iconSampleManager.SetIconPopText(0,popTextTitle, popTextDesc,0);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
 			iconSampleObject.transform.localScale = new Vector3(0.6f,0.6f,1);
+			iconSampleObjectList.Add(iconSampleObject);
 		}
 		EnemyRoot.GetComponent<UIGrid>().repositionNow = true;
 	}
@@ -657,6 +664,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 				if(Treas_info.conditionIsOk)
 				{
 				    Global.m_isOpenHuangYe = true;
+					CityGlobalData.IsOPenHyLeveUI = false;
 					HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
 					EnterBattleField.EnterBattleHYPve (mHuangYeTreasure.id, mHuangYePveTemplate);
 				}
@@ -866,7 +874,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
 		if (JunZhuData.Instance().m_junzhuInfo.vipLv >= 7) {
 
-			str  = "今日的购买次数已经用完了，请明日再来吧";
+			str  = "今日的购买次数已经用完了，请明日再来吧。";
 		}
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
@@ -877,7 +885,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		
 		string titleStr = "购买次数";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = "您是否要花费"+M_Treas_info.buyNextMoney.ToString()+"元宝购买"+M_Treas_info.buyNextCiShu.ToString()+"次挑战次数？\r\n 今日还可购买"+M_Treas_info.leftBuyCiShu.ToString()+"次";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "您是否要花费"+M_Treas_info.buyNextMoney.ToString()+"元宝购买"+M_Treas_info.buyNextCiShu.ToString()+"次挑战次数？\r\n 今日还可购买"+M_Treas_info.leftBuyCiShu.ToString()+"次。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,SureBuy,null,null);
 	}

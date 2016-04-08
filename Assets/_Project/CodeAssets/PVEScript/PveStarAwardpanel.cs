@@ -14,7 +14,7 @@ public class PveStarAwardpanel : MonoBehaviour  ,SocketProcessor {
 
 	public GameObject StaItemp;
 
-	private float Dis = 140;
+	private float Dis = 82;
 
 	public GameObject UIgrid;
 
@@ -48,8 +48,8 @@ public class PveStarAwardpanel : MonoBehaviour  ,SocketProcessor {
 			GameObject mStar = Instantiate( StaItemp )as GameObject;
 			mStar.SetActive(true);
 			mStar.transform.parent = StaItemp.transform.parent;
-			mStar.transform.localScale = Vector3.one;
-			mStar.transform.localPosition = new Vector3(0,173-Dis*i,0);
+			mStar.transform.localScale = new Vector3 (0.6f,0.6f,1);
+			mStar.transform.localPosition = new Vector3(0,70-Dis*i,0);
 			PveStarItem mPveStarItem = mStar.GetComponent<PveStarItem>();
 			if(CityGlobalData.PT_Or_CQ)
 			{
@@ -89,6 +89,10 @@ public class PveStarAwardpanel : MonoBehaviour  ,SocketProcessor {
 					{
 						foreach(PveStarItem m_item in PveStarItemList )
 						{
+//							UIButton mBtn = m_item.gameObject.GetComponent<UIButton>();
+//							
+//							mBtn.enabled = true;
+
 							if(m_item.Star_Id == tempInfo.s_starNum)
 							{
 								m_item.mStarInfo.getRewardState = true;
@@ -99,7 +103,6 @@ public class PveStarAwardpanel : MonoBehaviour  ,SocketProcessor {
 								
 								GeneralRewardManager.Instance().CreateReward (data); 
 								
-								break;
 							}
 						}
 					   

@@ -18,16 +18,46 @@ public class HttpRequest : MonoBehaviour{
 
     public delegate void HttpCallBack(string tempString);
 
-    public static HttpRequest Instance(){
+	private static List<WWW> m_current_www_list = new List<WWW>();
+
+	public static HttpRequest Instance(){
 		if( m_request == null ){
 			GameObject t_gameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
 
 			m_request = t_gameObject.AddComponent<HttpRequest>();
-        }
+		}
 
-        return m_request;
-    }
+		return m_request;
+	}
 
+	#endregion
+
+	#region Mono
+
+	void Awake(){
+		Clear();
+	}
+
+	void OnDestroy(){
+		Clear();
+	}
+
+	#endregion
+
+
+
+	#region Clear
+
+	void Clear(){
+		m_current_www_list.Clear();
+	}
+
+	#endregion
+
+
+
+	#region Use
+  
 	public void Connect( string p_url, Dictionary<string, string> p_params, HttpCallBack success_callback, HttpCallBack error_callback = null, List<EventDelegate> p_callback_list = null ){
 		{
 			bool p_log = false;
@@ -64,13 +94,21 @@ public class HttpRequest : MonoBehaviour{
     }
 
 	private IEnumerator Get( string p_url, HttpCallBack success_callback, HttpCallBack error_callback = null, List<EventDelegate> p_callback_list = null ){
+		WWW t_www = new WWW( p_url );
+
+		{
+			AddWWW( t_www );
+		}
+
+        yield return t_www;
+
+		{
+			RemoveWWW( t_www );
+		}
+
 		if( ConfigTool.IsEmulatingNetworkLatency() ){
 			yield return new WaitForSeconds( ConfigTool.GetEmulatingNetworkLatency() );
 		}
-
-        WWW t_www = new WWW( p_url );
-
-        yield return t_www;
 
 		{
 			bool p_log = false;
@@ -94,10 +132,15 @@ public class HttpRequest : MonoBehaviour{
 		}
 
 		// hide sending
-		{
+		if( !HaveActiveWWW() ){
 			if( NetworkWaiting.m_instance_exist ){
 				NetworkWaiting.Instance().HideNeworkWaiting();
 			}
+		}
+		else{
+			#if DEBUG_HTTP
+			Debug.Log( "Stil Have Active WWW: " + m_current_www_list.Count );
+			#endif
 		}
 
         if( !string.IsNullOrEmpty( t_www.error ) ){
@@ -123,10 +166,7 @@ public class HttpRequest : MonoBehaviour{
     }
 
 	private IEnumerator POST(string p_url, Dictionary<string, string> p_dic, HttpCallBack success_callback, HttpCallBack error_callback = null, List<EventDelegate> p_callback_list = null ){
-		if( ConfigTool.IsEmulatingNetworkLatency() ){
-			yield return new WaitForSeconds( ConfigTool.GetEmulatingNetworkLatency() );
-		}
-
+		
         WWWForm t_form = new WWWForm();
 
         if( p_dic != null ){
@@ -138,9 +178,22 @@ public class HttpRequest : MonoBehaviour{
                 t_form.AddField(p_pair.Key, p_pair.Value);
             }
         }
+
         WWW t_www = new WWW(p_url,t_form);
 
+		{
+			AddWWW( t_www );
+		}
+
         yield return t_www;
+
+		{
+			RemoveWWW( t_www );
+		}
+
+		if( ConfigTool.IsEmulatingNetworkLatency() ){
+			yield return new WaitForSeconds( ConfigTool.GetEmulatingNetworkLatency() );
+		}
 
 		{
 			bool p_log = false;
@@ -163,10 +216,15 @@ public class HttpRequest : MonoBehaviour{
 		}
 
 		// hide sending
-		{
+		if( !HaveActiveWWW() ){
 			if( NetworkWaiting.m_instance_exist ){
 				NetworkWaiting.Instance().HideNeworkWaiting();
 			}
+		}
+		else{
+			#if DEBUG_HTTP
+			Debug.Log( "Stil Have Active WWW: " + m_current_www_list.Count );
+			#endif
 		}
 
         if( !string.IsNullOrEmpty( t_www.error ) ){
@@ -190,6 +248,40 @@ public class HttpRequest : MonoBehaviour{
 			EventDelegate.Execute( p_callback_list );
 		}
     }
+
+	#endregion
+
+
+
+	#region WWW
+
+	public static string GetFirstWWWUrl(){
+		if( m_current_www_list.Count > 0 ){
+			WWW t_www = m_current_www_list[ 0 ];
+
+			if( t_www != null ){
+				return t_www.url;
+			}
+			else{
+				return "";
+			}
+		}
+		else{
+			return "";
+		}
+	}
+
+	private static void AddWWW( WWW p_www ){
+		m_current_www_list.Add( p_www );
+	}
+
+	private static void RemoveWWW( WWW p_www ){
+		m_current_www_list.Remove( p_www );
+	}
+
+	public static bool HaveActiveWWW(){
+		return m_current_www_list.Count > 0;
+	}
 
 	#endregion
 

@@ -87,7 +87,11 @@ public class ConstInGame : MonoBehaviour {
 
 	#endregion
 
+	#region TreasureCity
 
+	public const string CONST_SCENE_NAME_TREASURECITY = "Game_Scene_TreasureCity";
+
+	#endregion
 
 	#region Debug
 	

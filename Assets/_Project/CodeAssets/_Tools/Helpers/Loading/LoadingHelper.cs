@@ -469,7 +469,8 @@ public class LoadingHelper {
 	
 	public static void ItemLoaded( List<LoadingSection> p_list, string p_section_name, string p_item_name = "" ){
 		#if LOG_LOADING
-		Debug.Log( "ItemLoaded( " + p_section_name + ": " + p_item_name + " )" );
+		Debug.Log( "ItemLoaded( " + LoadingHelper.GetLoadingPercentage( p_list ) +
+			" - " + p_section_name + ": " + p_item_name + " )" );
 		#endif
 		
 		LoadingSection t_section = LoadingHelper.GetSection( p_list, p_section_name );

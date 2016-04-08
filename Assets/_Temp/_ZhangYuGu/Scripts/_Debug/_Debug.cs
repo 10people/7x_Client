@@ -41,7 +41,37 @@ public class _Debug : MonoBehaviour {
 		}
 	}
 
+	_Debug(){
+//		Debug.Log ( "_Debug()" );
+	}
+
+	~_Debug(){
+//		Debug.Log ( "~_Debug()" );
+	}
+
+	void FindAllUISprite(){
+		UnityEngine.Object[] t_objects = Resources.FindObjectsOfTypeAll( typeof(UISprite) );
+
+		int t_count = 0;
+
+		for( int i = t_objects.Length - 1; i >= 0; i-- ){
+			UISprite t_sprite = (UISprite)t_objects[ i ];
+
+			if( t_sprite == null ){
+				continue;
+			}
+
+			if( !t_sprite.gameObject.activeInHierarchy ){
+				ComponentHelper.LogUISprite( t_sprite );
+			}
+		}
+	}
+
 	void Awake(){
+		Debug.Log ( "_Debug.Awake()" );
+
+//		FindAllUISprite();
+
 //		{
 //			DateTime t_time = DateTime.Parse( "2008-05-01 21:34:42" );
 //
@@ -53,8 +83,6 @@ public class _Debug : MonoBehaviour {
 //
 //			PlayerInfoCache.SetRegisterTime( "2016-02-27 21:16:21" );
 //		}
-
-//		Debug.Log ( "_Debug.Awake()" );
 
 //		m_instance = this;
 
@@ -81,8 +109,28 @@ public class _Debug : MonoBehaviour {
 //		GameObjectHelper.LogComponents( gameObject );
 	}
 
+	public GameObject m_gb_destroy;
+
+	public GameObject m_gb_destroy_object;
+
 	// Use this for initialization
 	void Start () {
+
+//		Debug.Log( "------ Destroy Info ------" );
+//
+//		if( m_gb_destroy != null ){
+//			Destroy( m_gb_destroy );	
+//		}
+//
+//		Debug.Log( "Gb after destroy: " + m_gb_destroy );
+//
+//		if( m_gb_destroy_object != null ){
+//			DestroyObject( m_gb_destroy_object );	
+//		}
+//
+//		Debug.Log( "Gb after destroy object: " + m_gb_destroy_object );
+
+
 //		Debug.Log ( "_Debug.Start()" );
 
 //		NavTest();
@@ -109,21 +157,21 @@ public class _Debug : MonoBehaviour {
 
 //		Time.timeScale = 0;
 
-		Debug.Log( TimeHelper.GetFrameAndTime() + " iTween.Set." );
-
-		iTween t_itween = iTween.ValueTo(gameObject, iTween.Hash(
-			"from", 0.0f,
-			"to", 5.0f,
-			"delay", 3.0f,
-			"ignoretimescale", true,
-			"time", 3.0f,
-			"easetype", iTween.EaseType.linear,
-			"onstart", "onFloatRealTimeStart",
-			"onupdate", "onFloatRealTimeUpdate",
-			"oncomplete", "onFloatRealTimeComplete"
-		));
-
-		t_itween.SetDebug( true );
+//		Debug.Log( TimeHelper.GetFrameAndTime() + " iTween.Set." );
+//
+//		iTween t_itween = iTween.ValueTo(gameObject, iTween.Hash(
+//			"from", 0.0f,
+//			"to", 5.0f,
+//			"delay", 3.0f,
+//			"ignoretimescale", true,
+//			"time", 3.0f,
+//			"easetype", iTween.EaseType.linear,
+//			"onstart", "onFloatRealTimeStart",
+//			"onupdate", "onFloatRealTimeUpdate",
+//			"oncomplete", "onFloatRealTimeComplete"
+//		));
+//
+//		t_itween.SetDebug( true );
 	}
 
 	public void onFloatRealTimeStart(){
@@ -168,6 +216,16 @@ public class _Debug : MonoBehaviour {
 	public Vector3 m_delta_move = new Vector3( 0.001f, 0, 0 );
 
 	void Update () {
+		ModelAutoActivator.Instance().ManualUpdate();
+
+//		UILabel t_label = GetComponent<UILabel>();
+//
+//		if( t_label == null ){
+//			return;
+//		}
+//
+//		NGUIHelper.GetTextWidth( t_label, t_label.text );
+
 //		if( m_tex != null ){
 //			Debug.Log( "Update UITexture: " + m_tex );
 //

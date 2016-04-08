@@ -25,7 +25,14 @@ public class DramaActor : MonoBehaviour
 
 	[HideInInspector] public bool actionDone;
 
-	protected virtual void OnDestroy(){
+
+	private bool end;
+
+	private float curTime;
+
+
+	protected virtual void OnDestroy()
+	{
 
 	}
 
@@ -38,6 +45,8 @@ public class DramaActor : MonoBehaviour
 	{
 		actionDone = false;
 
+		end = false;
+
 		funcStart ();
 
 		DramaActorControllor controllor = gameObject.GetComponent<DramaActorControllor>();
@@ -49,8 +58,22 @@ public class DramaActor : MonoBehaviour
 		float t = func ();
 		
 		t = t < .02f ? .02f : t;
-		
-		yield return new WaitForSeconds(t);
+
+		curTime = Time.realtimeSinceStartup;
+
+		for(int i = 0; i < 1;)
+		{
+			float now = Time.realtimeSinceStartup;
+
+			if(now - curTime < t && end == false)
+			{
+				yield return new WaitForEndOfFrame();
+			}
+			else
+			{
+				i++;
+			}
+		}
 
 		bool done = false;
 
@@ -82,6 +105,16 @@ public class DramaActor : MonoBehaviour
 	protected virtual bool funcDone ()
 	{
 		return true;
+	}
+
+	protected virtual void funcForcedEnd ()
+	{
+
+	}
+
+	public void _forcedEnd()
+	{
+		end = true;
 	}
 
 	public virtual void log()

@@ -170,7 +170,15 @@ public class QXJoystick : MonoBehaviour //主城摇杆
 
                     m_u3dOffset = new Vector3(m_uiOffset.x, 0, m_uiOffset.y);
 					Debug.Log("===================3");
-					PlayerModelController.m_playerModelController.StopPlayerNavigation();
+					if (PlayerModelController.m_playerModelController != null)
+					{
+						PlayerModelController.m_playerModelController.StopPlayerNavigation();
+					}
+
+					if (TreasureCityPlayer.m_instance != null)
+					{
+						TreasureCityPlayer.m_instance.StopPlayerNavigation();
+					}
                 }
             }
             else

@@ -14,7 +14,10 @@ public class ObjectName : MonoBehaviour {
     public string m_NameSend = "";
     protected Transform m_transform;
     public bool m_isShowChengHao = false;
-	
+
+	private bool isPlayer = true;
+	public bool IsPlayer { set{isPlayer = value;} get{return isPlayer;} }
+
 	void Start()
 	{
 		m_transform = this.GetComponent<Transform>();
@@ -22,58 +25,69 @@ public class ObjectName : MonoBehaviour {
 	
 	public void Init(string tempPlayerName,string tempAllianceName,string tempChengHao,string vip_level,int zhiwei)//初始化玩家名字
 	{
-        m_NameSend = tempPlayerName;
-        if (!string.IsNullOrEmpty(tempAllianceName))
-        {
-            m_LabAllianceName.text = MyColorData.getColorString(12, "<" + tempAllianceName + ">") + FunctionWindowsCreateManagerment.GetIdentityById(zhiwei);
-        }
-        else
-        {
-            m_LabAllianceName.text = MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
-        }
+		m_NameSend = tempPlayerName;
+		if (IsPlayer)
+		{
+			if (!string.IsNullOrEmpty(tempAllianceName))
+			{
+				m_LabAllianceName.text = MyColorData.getColorString(12, "<" + tempAllianceName + ">  " + FunctionWindowsCreateManagerment.GetIdentityById(zhiwei)) ;
+			}
+			else
+			{
+				m_LabAllianceName.text = MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
+			}
 
-        if (!string.IsNullOrEmpty(tempChengHao) && !tempChengHao.Equals("-1"))
-        {
-            m_isShowChengHao = true;
-            m_SpriteChengHao.gameObject.SetActive(true);
-            m_SpriteChengHao.spriteName = tempChengHao;
-        }
-        else
-        {
-            m_isShowChengHao = false;
-          m_SpriteChengHao.gameObject.SetActive(false);
-        }
+			if (!string.IsNullOrEmpty(tempChengHao) && !tempChengHao.Equals("-1"))
+			{
+				m_isShowChengHao = true;
+				m_SpriteChengHao.gameObject.SetActive(true);
+				m_SpriteChengHao.spriteName = tempChengHao;
+			}
+			else
+			{
+				m_isShowChengHao = false;
+				m_SpriteChengHao.gameObject.SetActive(false);
+			}
 
-   
-        if (!string.IsNullOrEmpty(vip_level))
-        {
-            //if (int.Parse(vip_level) > 0)
-            //{
-            //    m_playerName.text = MyColorData.getColorString(1,"V" + vip_level.ToString()) +" "+ MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-            //}
-            //else
-            //{
-            //    m_playerName.text =  MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-            //}
-            if (int.Parse(vip_level) > 0)
-            {
-                m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(tempPlayerName) - 1) * 20, -11, 0);
-                m_SpriteVip.gameObject.SetActive(true);
-                m_SpriteVip.spriteName = "vip" + vip_level;
-                m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-            }
-            else
-            {
-                m_SpriteVip.gameObject.SetActive(false);
-                m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-            }
-        }
+			if (!string.IsNullOrEmpty(vip_level))
+			{
+				//if (int.Parse(vip_level) > 0)
+				//{
+				//    m_playerName.text = MyColorData.getColorString(1,"V" + vip_level.ToString()) +" "+ MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
+				//}
+				//else
+				//{
+				//    m_playerName.text =  MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
+				//}
+				if (int.Parse(vip_level) > 0)
+				{
+					m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(tempPlayerName) - 1) * 20, -11, 0);
+					m_SpriteVip.gameObject.SetActive(true);
+					m_SpriteVip.spriteName = "vip" + vip_level;
+					m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
+				}
+				else
+				{
+					m_SpriteVip.gameObject.SetActive(false);
+					m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
+				}
+			}
+			else
+			{
+				// m_playerName.alignment = NGUIText.Alignment.Automatic; 
+				m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
+			}
+		}
         else
-        {
-           // m_playerName.alignment = NGUIText.Alignment.Automatic; 
-            m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-        }
-       
+		{
+			m_LabAllianceName.text = "";
+			m_isShowChengHao = false;
+			m_SpriteChengHao.gameObject.SetActive(false);
+			m_SpriteVip.gameObject.SetActive(false);
+
+			m_playerName.text = IsPlayer ? tempPlayerName : MyColorData.getColorString (12,tempPlayerName) + "的宝箱";
+		}
+
         ShowOrHide(true);
 	}
 
@@ -81,11 +95,11 @@ public class ObjectName : MonoBehaviour {
     {
         if (m_isShowChengHao)
         {
-            m_SpriteZH.transform.localPosition = new Vector3(0, 157, 0);
+            m_SpriteZH.transform.localPosition = new Vector3(0, 110, 0);
         }
         else
         {
-            m_SpriteZH.transform.localPosition = new Vector3(0, 63, 0);
+            m_SpriteZH.transform.localPosition = new Vector3(0, 50, 0);
         }
         string[] zH = info.ToString().Split('|');
         m_SpriteZH.gameObject.SetActive(true);

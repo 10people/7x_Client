@@ -77,8 +77,16 @@ public class HuangyePvpNpcTemplate : XmlLoadManager  {
 
 	
 	private static List<HuangyePvpNpcTemplate> templates = new List<HuangyePvpNpcTemplate>();
-	
+
+	private static void WarnningShouldNeverUse(){
+		Debug.LogError( "Error, Template will never be use from 2016.3.24." );
+	}
+
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
+		{
+			WarnningShouldNeverUse();
+		}
+
 		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "HuangyePvpNpc.xml"), CurLoad, UtilityTool.GetEventDelegateList( p_callback ), false );
 	}
 
@@ -95,6 +103,10 @@ public class HuangyePvpNpcTemplate : XmlLoadManager  {
 	}
 
 	private static void ProcessAsset(){
+		{
+			WarnningShouldNeverUse();
+		}
+
 		if( templates.Count > 0 ) {
 			return;
 		}

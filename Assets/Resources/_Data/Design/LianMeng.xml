@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LianMeng id="1001" lv="1" exp="5000" renshuMax="50" fumeng="5" statueType="0" mobaiAward="100" buffNum="15" jiansheMax="55000" targetAward="0:900001:10000" />
-<LianMeng id="1002" lv="2" exp="20000" renshuMax="60" fumeng="5" statueType="0" mobaiAward="100" buffNum="20" jiansheMax="70000" targetAward="0:900001:20000" />
-<LianMeng id="1003" lv="3" exp="60000" renshuMax="70" fumeng="5" statueType="0" mobaiAward="100" buffNum="25" jiansheMax="85000" targetAward="0:900001:30000" />
-<LianMeng id="1004" lv="4" exp="108000" renshuMax="80" fumeng="5" statueType="0" mobaiAward="100" buffNum="30" jiansheMax="100000" targetAward="0:900001:40000" />
-<LianMeng id="1005" lv="5" exp="250000" renshuMax="90" fumeng="5" statueType="0" mobaiAward="100" buffNum="35" jiansheMax="115000" targetAward="0:900001:50000" />
-<LianMeng id="1006" lv="6" exp="600000" renshuMax="100" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" jiansheMax="130000" targetAward="0:900001:60000" />
-<LianMeng id="1007" lv="7" exp="1350000" renshuMax="110" fumeng="5" statueType="0" mobaiAward="100" buffNum="45" jiansheMax="145000" targetAward="0:900001:70000" />
-<LianMeng id="1008" lv="8" exp="2400000" renshuMax="120" fumeng="5" statueType="0" mobaiAward="100" buffNum="50" jiansheMax="160000" targetAward="0:900001:80000" />
-<LianMeng id="1009" lv="9" exp="3960000" renshuMax="130" fumeng="5" statueType="0" mobaiAward="100" buffNum="55" jiansheMax="175000" targetAward="0:900001:90000" />
-<LianMeng id="1010" lv="10" exp="3960000" renshuMax="140" fumeng="5" statueType="0" mobaiAward="100" buffNum="60" jiansheMax="190000" targetAward="0:900001:100000" />
+<LianMeng id="1001" lv="1" exp="5000" renshuMax="50" fumeng="5" statueType="0" mobaiAward="100" buffNum="15" jiansheMax="100225" targetAward="0:900001:10000" />
+<LianMeng id="1002" lv="2" exp="20000" renshuMax="60" fumeng="5" statueType="0" mobaiAward="100" buffNum="20" jiansheMax="130300" targetAward="0:900001:20000" />
+<LianMeng id="1003" lv="3" exp="60000" renshuMax="70" fumeng="5" statueType="0" mobaiAward="100" buffNum="25" jiansheMax="160375" targetAward="0:900001:30000" />
+<LianMeng id="1004" lv="4" exp="108000" renshuMax="80" fumeng="5" statueType="0" mobaiAward="100" buffNum="30" jiansheMax="190450" targetAward="0:900001:40000" />
+<LianMeng id="1005" lv="5" exp="250000" renshuMax="90" fumeng="5" statueType="0" mobaiAward="100" buffNum="35" jiansheMax="220525" targetAward="0:900001:50000" />
+<LianMeng id="1006" lv="6" exp="600000" renshuMax="100" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" jiansheMax="250600" targetAward="0:900001:60000" />
+<LianMeng id="1007" lv="7" exp="1350000" renshuMax="110" fumeng="5" statueType="0" mobaiAward="100" buffNum="45" jiansheMax="280675" targetAward="0:900001:70000" />
+<LianMeng id="1008" lv="8" exp="2400000" renshuMax="120" fumeng="5" statueType="0" mobaiAward="100" buffNum="50" jiansheMax="310750" targetAward="0:900001:80000" />
+<LianMeng id="1009" lv="9" exp="3960000" renshuMax="130" fumeng="5" statueType="0" mobaiAward="100" buffNum="55" jiansheMax="340825" targetAward="0:900001:90000" />
+<LianMeng id="1010" lv="10" exp="3960000" renshuMax="140" fumeng="5" statueType="0" mobaiAward="100" buffNum="60" jiansheMax="370900" targetAward="0:900001:100000" />
 </dataset>

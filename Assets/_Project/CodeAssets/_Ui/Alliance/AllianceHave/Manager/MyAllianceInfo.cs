@@ -111,18 +111,23 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	void OnEnable()
 	{
 		isopen = true;
-		StopTime ();
-	}
+		if(STarTime == 0)
+		{
+			StopTime ();
+		}
 
+	}
+	int STarTime;
 	void  StopTime()
 	{
-	    int STarTime = Random.Range (10,25);
+	     STarTime = Random.Range (10,25);
 
 		Invoke ("PoP_QiPao",STarTime);
 	}
 	private bool isopen;
 	private void PoP_QiPao()
 	{
+		STarTime = 0;
 		int Index = Random.Range (0,7);
 
 		for(int i = 0; i < mQiPaolist.Count; i++)
@@ -281,12 +286,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		}
 		int mLMExp = 0;
 		int FontmLMExp = 0;
+		int AllExp1 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level-1);
 		if(m_Alliance.level > 1)
 		{
-			int AllExp1 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level-1);
-
-			//Debug.Log("AllExp1 = "+AllExp1);
-			//Debug.Log("m_Alliance.level = "+m_Alliance.level);
 			int AllExp3 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (LmMuBiaoLevel-1);
 			mLMExp = AllExp3;
 			allianceExp.text = "联盟经验: " + (AllExp1+m_Alliance.exp).ToString()+ "/" + (AllExp3).ToString ();
@@ -305,26 +307,25 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		int curexp = LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level - 1) + m_Alliance.exp;
 		int needexp = LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level);
 		Exp.text = curexp.ToString () + "/" + needexp.ToString ();
-
-		//Debug.Log ("m_Alliance.lmTargetLevel = "+m_Alliance.lmTargetLevel);
 		if(m_Alliance.lmTargetLevel != -1)
 		{
 			if(m_Alliance.level >= LmMuBiaoLevel)
 			{
-				alliance_Lv.text = "联盟等级到达Lv "+(m_Alliance.lmTargetLevel).ToString()+"(已完成)";
+				alliance_Lv.text = "联盟到达Lv"+(m_Alliance.lmTargetLevel).ToString()+"(已完成)";
 				CloseEffect();
 				OPenEffect ();
 			}
 			else
 			{
 				CloseEffect();
-				alliance_Lv.text = "联盟等级到达Lv "+(m_Alliance.lmTargetLevel).ToString()+"(未完成)";;
+				alliance_Lv.text = "联盟到达Lv "+(m_Alliance.lmTargetLevel).ToString()+"(未完成)";;
 			}
 		}
 		else
 		{
 			alliance_Lv.text = "联盟等级已满";
 			CloseEffect();
+			allianceExp.text = "联盟经验: " + (AllExp1+m_Alliance.exp).ToString()+ "/" + needexp.ToString ();
 			//mButton.enabled = false;
 		}
 		mSlider.value = (float)FontmLMExp / (float)mLMExp;
@@ -537,8 +538,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	public void  OpenEditnoticeUI()
 	{
 		EditUI.SetActive (true);
-	
+
 		ShoweditInfo.text = m_Alliance.notice ;
+
 		UIInput mUIInput = ShoweditInfo.gameObject.GetComponent<UIInput>();
 		mUIInput.value = m_Alliance.notice;
 	}
@@ -557,6 +559,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		noticeReq.notice = ShoweditInfo.text;
 		
 		noticeInfo = ShoweditInfo.text;
+		ShoweditInfo.text = "";
 		//Debug.Log ("noticeInfo ="+noticeInfo);
 		MemoryStream noticeStream = new MemoryStream ();
 		
@@ -585,9 +588,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 			//弹出修改成功的UI提示， 并更新UIlable的显示内容
 			Debug.Log("修改成功");
 			
-			ShoweditInfo.text = noticeInfo;
-			editInfo.text = noticeInfo;
-			m_Alliance.notice = noticeInfo;
+			ShoweditInfo.text = m_noticeResp.notice;
+			editInfo.text = m_noticeResp.notice;
+			m_Alliance.notice = m_noticeResp.notice;
 
 			string changeSuccessStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_GONGGAO_CHANGE_SUCCESS);
 			
@@ -599,9 +602,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		{
 			Debug.Log("修改失败，，，，，，，，，，");
 			
-			string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_GONGGAO_STR_TOOMUCH);
-			string str2 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_GONGGAO_CHANGE_FAIL);
-			uibox.setBox(changeTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),
+			string str1 = "\n"+LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_GONGGAO_STR_TOOMUCH);
+
+			uibox.setBox(changeTitleStr, MyColorData.getColorString (1,str1), null,
 			             null,confirmStr,null,null);
 		}
 	}

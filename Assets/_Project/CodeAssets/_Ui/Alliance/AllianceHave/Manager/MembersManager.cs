@@ -30,7 +30,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 
 	//public UILabel Label_FuLeadrBtn;
 
-	private float Dis = 72;
+	private float Dis = 67;
 
 	public long myId;//我的君主id
 
@@ -104,13 +104,101 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		{
 			for(int j = i+1; j < m_allianceHaveRes.memberInfo.Count; j++)
 			{
-				if(m_allianceHaveRes.memberInfo[i].identity < m_allianceHaveRes.memberInfo[j].identity)
+				if(m_allianceHaveRes.memberInfo[i].offlineTime > 0 && m_allianceHaveRes.memberInfo[j].offlineTime <= 0)
 				{
 					var memberinfo = m_allianceHaveRes.memberInfo[i];
 					
 					m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
 					
 					m_allianceHaveRes.memberInfo[j] = memberinfo;
+				}
+				else if(m_allianceHaveRes.memberInfo[i].offlineTime <= 0 && m_allianceHaveRes.memberInfo[j].offlineTime <= 0)
+				{
+					if(m_allianceHaveRes.memberInfo[i].identity < m_allianceHaveRes.memberInfo[j].identity)
+					{
+						var memberinfo = m_allianceHaveRes.memberInfo[i];
+						
+						m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+						
+						m_allianceHaveRes.memberInfo[j] = memberinfo;
+					}
+					else if(m_allianceHaveRes.memberInfo[i].identity == m_allianceHaveRes.memberInfo[j].identity)
+					{
+						if(m_allianceHaveRes.memberInfo[i].zhanLi < m_allianceHaveRes.memberInfo[j].zhanLi)
+						{
+							var memberinfo = m_allianceHaveRes.memberInfo[i];
+							
+							m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+							
+							m_allianceHaveRes.memberInfo[j] = memberinfo;
+						}
+						else if(m_allianceHaveRes.memberInfo[i].zhanLi == m_allianceHaveRes.memberInfo[j].zhanLi)
+						{
+							if(m_allianceHaveRes.memberInfo[i].curMonthGongXian < m_allianceHaveRes.memberInfo[j].curMonthGongXian)
+							{
+								var memberinfo = m_allianceHaveRes.memberInfo[i];
+								
+								m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+								
+								m_allianceHaveRes.memberInfo[j] = memberinfo;
+							}
+							else if(m_allianceHaveRes.memberInfo[i].curMonthGongXian == m_allianceHaveRes.memberInfo[j].curMonthGongXian)
+							{
+								if(m_allianceHaveRes.memberInfo[i].contribution < m_allianceHaveRes.memberInfo[j].contribution)
+								{
+									var memberinfo = m_allianceHaveRes.memberInfo[i];
+									
+									m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+									
+									m_allianceHaveRes.memberInfo[j] = memberinfo;
+								}
+							}
+						}
+					}
+				}
+				else if(m_allianceHaveRes.memberInfo[i].offlineTime > 0 && m_allianceHaveRes.memberInfo[j].offlineTime > 0)
+				{
+					if(m_allianceHaveRes.memberInfo[i].identity < m_allianceHaveRes.memberInfo[j].identity)
+					{
+						var memberinfo = m_allianceHaveRes.memberInfo[i];
+						
+						m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+						
+						m_allianceHaveRes.memberInfo[j] = memberinfo;
+					}
+					else if(m_allianceHaveRes.memberInfo[i].identity == m_allianceHaveRes.memberInfo[j].identity)
+					{
+						if(m_allianceHaveRes.memberInfo[i].zhanLi < m_allianceHaveRes.memberInfo[j].zhanLi)
+						{
+							var memberinfo = m_allianceHaveRes.memberInfo[i];
+							
+							m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+							
+							m_allianceHaveRes.memberInfo[j] = memberinfo;
+						}
+						else if(m_allianceHaveRes.memberInfo[i].zhanLi == m_allianceHaveRes.memberInfo[j].zhanLi)
+						{
+							if(m_allianceHaveRes.memberInfo[i].curMonthGongXian < m_allianceHaveRes.memberInfo[j].curMonthGongXian)
+							{
+								var memberinfo = m_allianceHaveRes.memberInfo[i];
+								
+								m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+								
+								m_allianceHaveRes.memberInfo[j] = memberinfo;
+							}
+							else if(m_allianceHaveRes.memberInfo[i].curMonthGongXian == m_allianceHaveRes.memberInfo[j].curMonthGongXian)
+							{
+								if(m_allianceHaveRes.memberInfo[i].contribution < m_allianceHaveRes.memberInfo[j].contribution)
+								{
+									var memberinfo = m_allianceHaveRes.memberInfo[i];
+									
+									m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+									
+									m_allianceHaveRes.memberInfo[j] = memberinfo;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -122,7 +210,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			
 			m_Member.transform.parent = MemberTemp.transform.parent;
 			
-			m_Member.transform.localPosition = new Vector3(0,105-i*Dis,0);
+			m_Member.transform.localPosition = new Vector3(0,120-i*Dis,0);
 			
 			m_Member.transform.localScale = Vector3.one;
 			
@@ -259,32 +347,32 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 //				return true;
 //				break;
 //			}
-
-			case ProtoIndexes.EXIT_ALLIANCE_RESP://退出联盟返回
-			{
-				MemoryStream exit_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer exit_qx = new QiXiongSerializer();
-				
-				ExitAllianceResp exitResp = new ExitAllianceResp();
-				
-				exit_qx.Deserialize(exit_stream, exitResp, exitResp.GetType());
-				
-				if(exitResp != null)
-				{
-					m_exitResp = exitResp;
-					
-					if (exitResp.code == 0)
-					{
-						CityGlobalData.m_isMainScene = true;
-					}
-					
-					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-					                        ExitAllianceLoadCallback );
-
-				}
-				return true;
-			}
+//
+//			case ProtoIndexes.EXIT_ALLIANCE_RESP://退出联盟返回
+//			{
+//				MemoryStream exit_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+//				
+//				QiXiongSerializer exit_qx = new QiXiongSerializer();
+//				
+//				ExitAllianceResp exitResp = new ExitAllianceResp();
+//				
+//				exit_qx.Deserialize(exit_stream, exitResp, exitResp.GetType());
+//				
+//				if(exitResp != null)
+//				{
+//					m_exitResp = exitResp;
+//					
+//					if (exitResp.code == 0)
+//					{
+//						CityGlobalData.m_isMainScene = true;
+//					}
+//					
+//					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+//					                        ExitAllianceLoadCallback );
+//
+//				}
+//				return true;
+//			}
 
 			case ProtoIndexes.FIRE_MEMBER_RESP://开除返回
 			{
@@ -541,7 +629,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		{
 			titleStr = "升职成功";
 			
-			str2 = "您已将" + backName + "升职为副盟主";
+			str2 = "您已将" + backName + "升职为副盟主!";
 		}
 		
 		else if (upTitleResp.code == 1)

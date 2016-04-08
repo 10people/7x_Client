@@ -76,25 +76,25 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 	
 	#if MYAPP_ANDROID_PLATFORM
-	private PlatformType m_platform_type = PlatformType.MyApp_Android_Platform;
+	private static PlatformType m_platform_type = PlatformType.MyApp_Android_Platform;
 	#elif PP_PLATFORM
-	private PlatformType m_platform_type = PlatformType.PP_Platform;
+	private static PlatformType m_platform_type = PlatformType.PP_Platform;
 	#elif XY_PLATFORM
-	private PlatformType m_platform_type = PlatformType.XY_Platform;
+	private static PlatformType m_platform_type = PlatformType.XY_Platform;
 	#elif TONGBU_PLATFORM
-	private PlatformType m_platform_type = PlatformType.TongBu_Platform;
+	private static PlatformType m_platform_type = PlatformType.TongBu_Platform;
 	#elif I4_PLATFORM
-	private PlatformType m_platform_type = PlatformType.I4_Platform;
+	private static PlatformType m_platform_type = PlatformType.I4_Platform;
 	#elif KUAIYONG_PLATFORM
-	private PlatformType m_platform_type = PlatformType.KuaiYong_Platform;
+	private static PlatformType m_platform_type = PlatformType.KuaiYong_Platform;
 	#elif HAIMA_PLATFORM
-	private PlatformType m_platform_type = PlatformType.HaiMa_Platform;
+	private static PlatformType m_platform_type = PlatformType.HaiMa_Platform;
 	#elif I_APPLE_PLATFORM
-	private PlatformType m_platform_type = PlatformType.I_Apple_Platform;
+	private static PlatformType m_platform_type = PlatformType.I_Apple_Platform;
 	#elif ITOOLS_PLATFORM
-	private PlatformType m_platform_type = PlatformType.ITools_Platform;
+	private static PlatformType m_platform_type = PlatformType.ITools_Platform;
 	#else
-	private PlatformType m_platform_type = PlatformType.None;
+	private static PlatformType m_platform_type = PlatformType.None;
 	#endif
 
 
@@ -153,6 +153,18 @@ public class ThirdPlatform : MonoBehaviour {
 
 	void Update(){
 		ProcessToken ();
+	}
+
+	void OnApplicationPause( bool p_pause ){
+		#if MYAPP_ANDROID_PLATFORM
+		if( !p_pause ){
+			if( GetPlatformStatus() == PlatformStatus.Verifying ){
+				UpdateLoginRequestTime();
+
+				StartCoroutine( CheckIfVerifyingTimeOut() );
+			}
+		}
+		#endif
 	}
 
 	private float[] m_btn_rect_params = new float[ 6 ];
@@ -226,7 +238,7 @@ public class ThirdPlatform : MonoBehaviour {
 		else {
 			Debug.LogError( "ThirdPlatformLoginSuccess in wrong state: " + PrepareBundles.GetBundleUpdateState () );
 
-			ThirdPlatform.Instance().SetPlatformStatus( PlatformStatus.LogOut );
+			ThirdPlatform.SetPlatformStatus( PlatformStatus.LogOut );
 		}
 		
 		#if TONGBU_PLATFORM
@@ -528,6 +540,10 @@ public class ThirdPlatform : MonoBehaviour {
 		else{
 			ShowErrorBox( p_response, TokenLoadFailRepeatUpload );
 		}
+
+		{
+			SetPlatformStatus( PlatformStatus.LogOut );
+		}
 	}
 
 	public void TokenLoadFailCallback( int p_int ){
@@ -556,18 +572,19 @@ public class ThirdPlatform : MonoBehaviour {
 		LogOut,
 
 		// only HaiMa use this, start from sdk show to game server verify done.
+		// MyApp Use This Now
 		Verifying,	
 
 		LogIn,
 	}
 
-	private PlatformStatus m_platform_status = PlatformStatus.LogOut;
+	private static PlatformStatus m_platform_status = PlatformStatus.LogOut;
 
-	public PlatformStatus GetPlatformStatus(){
+	public static PlatformStatus GetPlatformStatus(){
 		return m_platform_status;
 	}
 
-	public void SetPlatformStatus( PlatformStatus p_status ){
+	public static void SetPlatformStatus( PlatformStatus p_status ){
 		#if DEBUG_THIRD_PLATFORM
 		Debug.Log( "SetPlatformStatus( " + p_status + " )" );
 		#endif
@@ -590,13 +607,13 @@ public class ThirdPlatform : MonoBehaviour {
 			return;
 		}
 
-		if( Instance().GetPlatformStatus() == PlatformStatus.LogOut ) {
-			Debug.Log( "Ready for next login turn( " + Instance().GetPlatformStatus() + " )" );
+		if( GetPlatformStatus() == PlatformStatus.LogOut ) {
+			Debug.Log( "Ready for next login turn( " + GetPlatformStatus() + " )" );
 
 			ShowSDKCenter();
 		}
 		else{
-			Debug.Log( "Previous Login turn not done: " + Instance().GetPlatformStatus() );
+			Debug.Log( "Previous Login turn not done: " + GetPlatformStatus() );
 		}
 	}
 	
@@ -614,7 +631,7 @@ public class ThirdPlatform : MonoBehaviour {
 		Debug.Log( Time.realtimeSinceStartup + " ThirdPlatform.LogOut()" );
 
 		if ( m_instance != null ){
-			Instance().SetPlatformStatus( PlatformStatus.LogOut );
+			SetPlatformStatus( PlatformStatus.LogOut );
 		}
 		else{
 			Debug.LogError( "Error, instance = null." );
@@ -637,6 +654,33 @@ public class ThirdPlatform : MonoBehaviour {
 	
 	private Msdk.LoginRet m_my_app_login_ret	= null;
 
+	private Msdk.PersonInfo m_my_persion_info = null;
+
+	// fix bug for WX back not callback when logout in wx( request login )
+	private float m_request_login_time = 0.0f;
+
+	private void UpdateLoginRequestTime(){
+		Debug.Log( "UpdateLoginRequestTime()" );
+
+		m_request_login_time = Time.realtimeSinceStartup;	
+	}
+
+	IEnumerator CheckIfVerifyingTimeOut(){
+		Debug.Log( "CheckIfVerifyingTimeOut()" );
+
+		yield return new WaitForSeconds( 3.0f );
+
+		if( GetPlatformStatus() == PlatformStatus.Verifying ){
+			Debug.Log( "Fix Verifying Status Bug, Force LogOut." );
+
+			SetPlatformStatus(PlatformStatus.LogOut );
+		}
+
+		Debug.Log( "CheckIfVerifyingTimeOut.Done: " + GetPlatformStatus() );
+
+		yield break;
+	}
+
 	public static string GetMyAppToken(){
 		#if MYAPP_ANDROID_PLATFORM
 		return Instance().m_my_app_login_ret.GetAccessToken();
@@ -648,9 +692,19 @@ public class ThirdPlatform : MonoBehaviour {
 	public static void ShowQQLogin(){
 		Debug.Log ( "ShowQQLogin()" );
 
+		if( GetPlatformStatus() != PlatformStatus.LogOut ){
+			Debug.Log( "Not In LogOut State, Return." );
+
+			return;
+		}
+
 		#if MYAPP_ANDROID_PLATFORM
 		if( Application.platform == RuntimePlatform.Android ){
 			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_QQ );
+		}
+
+		{
+			SetPlatformStatus( PlatformStatus.Verifying );
 		}
 		#endif
 	}
@@ -658,9 +712,19 @@ public class ThirdPlatform : MonoBehaviour {
 	public static void ShowWXLogin(){
 		Debug.Log ( "ShowWXLogin()" );
 
+		if( GetPlatformStatus() != PlatformStatus.LogOut ){
+			Debug.Log( "Not In LogOut State, Return." );
+
+			return;
+		}
+
 		#if MYAPP_ANDROID_PLATFORM
 		if( Application.platform == RuntimePlatform.Android ){
 			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_Weixin );
+		}
+
+		{
+			SetPlatformStatus( PlatformStatus.Verifying );
 		}
 		#endif
 	}
@@ -672,6 +736,72 @@ public class ThirdPlatform : MonoBehaviour {
 		if( Application.platform == RuntimePlatform.Android ){
 			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_Guest );
 		}
+		#endif
+	}
+
+	public bool HavePersonInfo(){
+		if( m_my_persion_info == null ){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+	public string GetNickName(){
+		if( m_my_persion_info == null ){
+			Debug.Log( "My Person Info Ss Null." );
+
+			return "";
+		}
+		else{
+			return m_my_persion_info.nickName;
+		}
+	}
+
+	void OnRelationNotify( string jsonRet ) {
+		Debug.Log( "OnRelationNotify( " + jsonRet + " )" );
+
+		#if MYAPP_ANDROID_PLATFORM
+
+		RelationRet ret = RelationRet.ParseJson( jsonRet );
+
+		if( ret == null ) {
+			m_myapp_login_message = "解析json失败，具体请看log日志";
+
+			m_my_persion_info = null;
+
+			return;
+		}
+
+		m_myapp_login_message = ret.ToString();
+
+		m_my_persion_info = ret.persons[ 0 ];
+
+		#if DEBUG_THIRD_PLATFORM
+		Debug.Log( "ret: " + m_myapp_login_message );
+
+		Debug.Log( "flag: " + ret.flag );
+
+		Debug.Log( "MyPersonInfo: " + m_my_persion_info );
+
+		Debug.Log( "NickName: " + GetNickName() );
+		#endif
+
+//		switch( ret.flag ) {
+//		case Msdk.eFlag.eFlag_Succ:
+//			// relationRet.persons.at(0) 中保存的即是个人信息
+//			
+//			Debug.Log( "My Person Info: " + m_my_persion_info.ToString() );
+//
+//			m_my_persion_info = ret.persons[ 0 ];
+//
+//			break;
+//
+//		default:
+//			break;
+//		}
+
 		#endif
 	}
 
@@ -697,6 +827,10 @@ public class ThirdPlatform : MonoBehaviour {
 			m_myapp_login_state = "登陆失败";
 			
 			m_myapp_login_message = " ";
+
+			{
+				SetPlatformStatus( PlatformStatus.LogOut );
+			}
 			
 			return;
 		}
@@ -724,9 +858,13 @@ public class ThirdPlatform : MonoBehaviour {
 			
 			if(ePlatform.ePlatform_Weixin == platform){
 				m_myapp_login_state = "微信登陆成功";
+				
+				WGPlatform.Instance.WGQueryMyWXInfo();
 			}
 			else if(ePlatform.ePlatform_QQ == platform){
 				m_myapp_login_state = "QQ登陆成功";
+
+				WGPlatform.Instance.WGQueryMyQQInfo();
 			}
 			else if(ePlatform.ePlatform_QQHall == platform){
 				m_myapp_login_state = "大厅登陆成功";
@@ -750,14 +888,37 @@ public class ThirdPlatform : MonoBehaviour {
 			Debug.Log( "微信票据过期，重刷新token." );
 			
 			WGPlatform.Instance.WGRefreshWXToken();
-			break;
 			
+			break;
 			
 			// 游戏逻辑，对登陆失败情况分别进行处理
 		case eFlag.eFlag_Local_Invalid:
 			// 自动登录失败, 需要重新授权, 包含本地票据过期, 刷新失败登所有错误
 			m_myapp_login_state = "自动登陆失败";
+
 			m_myapp_login_message = ret.desc;
+
+			{
+				SetPlatformStatus( PlatformStatus.LogOut );
+
+//				Global.CreateBox( m_myapp_login_state,
+//					"自动登录失败，" + m_myapp_login_message,
+//					null,
+//					null, 
+//					"确认",
+//
+//					null,
+//					null, // SocketHelper.ReLoginClickCallback, 
+//					null,
+//					null,
+//					null,
+//
+//					false,
+//					false,
+//					true,
+//					true );
+			}
+
 			break;
 			
 		case eFlag.eFlag_WX_UserCancel:
@@ -783,8 +944,55 @@ public class ThirdPlatform : MonoBehaviour {
 		Debug.Log( "MyApp.Login.State: " + m_myapp_login_state );
 		
 		Debug.Log( "MyApp.Login.Message: " + m_myapp_login_message );
-		
+
+		if( ret.flag == eFlag.eFlag_WX_NotInstall ){
+			// Please Install WX, or Use Other Login Type.
+
+			Debug.Log( "Show Please Install WX Window." );
+	
+			Global.CreateBox( "登陆失败",
+				"您尚未安装微信，请下载并安装微信后尝试登陆。",
+				null,
+				null, 
+				"确认",
+
+				null,
+				null, 
+				null,
+				null,
+				null,
+
+				false,
+				false,
+				true,
+				true );
+		}
+		else if( ret.flag == eFlag.eFlag_QQ_UserCancel ){
+			Debug.Log( "Show QQ User Cancel Tip Window." );
+
+			Global.CreateBox( "取消登录",
+				"您已取消了QQ授权。",
+				null,
+				null, 
+				"确认",
+
+				null,
+				ConfirmCancelQQ, 
+				null,
+				null,
+				null,
+
+				false,
+				false,
+				true,
+				true );
+		}
+
 		#endif
+	}
+
+	public void ConfirmCancelQQ(int i ){
+		
 	}
 
 	public void AndroidCallString( string p_param ){
@@ -1351,7 +1559,7 @@ public class ThirdPlatform : MonoBehaviour {
 		{
 			ErrorMessage t_error_message = new ErrorMessage();
 			
-			t_error_message.errorDesc = m_xg_token;
+			t_error_message.errorDesc = GetXGToken();
 			
 			t_error_message.cmd = 0;
 			
@@ -1370,7 +1578,7 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 	
 	public static bool IsXGTokeGetted(){
-		if (string.IsNullOrEmpty (m_xg_token)) {
+		if (string.IsNullOrEmpty( GetXGToken() ) ) {
 			return false;
 		}
 		
@@ -1380,7 +1588,7 @@ public class ThirdPlatform : MonoBehaviour {
 	public static string GetXGToken(){
 		return m_xg_token;
 	}
-	
+
 	public void XGSetToken( string p_token ){
 		Debug.Log ( "ThirdPlatform.XGSetToken( " + p_token + " )" );
 		
@@ -1517,11 +1725,7 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 	
 	public static PlatformType GetPlarformType(){
-		if( m_instance == null ){
-			return PlatformType.None;
-		}
-		
-		return Instance().m_platform_type;
+		return m_platform_type;
 	}
 	
 	#endregion

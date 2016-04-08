@@ -2,9 +2,9 @@
 <dataset>
 <LoadingTemplate function="1" param="1-1" resid="220" />
 <LoadingTemplate function="1" param="1-2" resid="240" />
-<LoadingTemplate function="1" param="1-3" resid="220" />
+<LoadingTemplate function="1" param="1-3" resid="240" />
 <LoadingTemplate function="1" param="1-4" resid="236" />
-<LoadingTemplate function="1" param="1-5" resid="220" />
+<LoadingTemplate function="1" param="1-5" resid="236" />
 <LoadingTemplate function="1" param="1-6" resid="222" />
 <LoadingTemplate function="1" param="1-7" resid="237" />
 <LoadingTemplate function="1" param="2-1" resid="234" />

@@ -149,12 +149,12 @@ public class Technologytemp : MonoBehaviour {
 				NextInstrudction.gameObject.SetActive(false);
 			}
 			CostBuilds.gameObject.SetActive(true);
-//			CostBuilds.text = "消耗建设值："+mLianMengKeJiTemplate.lvUpValue.ToString ();
+    		CostBuilds.text = "消耗建设值："+mLianMengKeJiTemplate.lvUpValue.ToString ();
 			mActiveBtn.SetActive(false);
 			if(Keji_level >= MaxKeji_level)
 			{
 				Green_ResearchBtn.SetActive(true);
-				Green_ResearchBtnLabel.text = "研 究";
+				Green_ResearchBtnLabel.text = "已到最高";
 				ResearchBtn.SetActive(false);
 				mAlert.SetActive(false);
 			}
@@ -217,7 +217,7 @@ public class Technologytemp : MonoBehaviour {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"科技等级不可超过书院等级,请先升级书院";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "\r\n"+"科技等级不可超过书院等级,请先升级书院。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
@@ -274,7 +274,7 @@ public class Technologytemp : MonoBehaviour {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"建设值不足，无法研究该科技" ;//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "\r\n"+"建设值不足，无法研究该科技。" ;//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		

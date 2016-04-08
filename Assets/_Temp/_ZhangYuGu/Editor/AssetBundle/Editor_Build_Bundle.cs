@@ -110,7 +110,7 @@ public class Editor_Build_Bundle{
 		{
 			Debug.Log( "Origin Item Count: " + t_count );
 
-//			Debug.Log( "Origin Item: " + m_all_bundle_json.ToString( "" ) );
+			Debug.Log( "Origin Item: " + m_all_bundle_json.ToString( "" ) );
 		}
 
 		{

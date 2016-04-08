@@ -222,7 +222,7 @@ public class BloodLabelControllor : MonoBehaviour
 
 		CommonItemTemplate commonItemTemplate = CommonItemTemplate.getCommonItemTemplateById(_item.commonItemId);
 
-		string text = NameIdTemplate.GetName_By_NameId (commonItemTemplate.nameId) + "x" + _item.num;
+		string text = NameIdTemplate.GetName_By_NameId (commonItemTemplate.nameId) + "+" + _item.num;
 
 		BloodLabel label = createBloodLabel (defender, text, false, BattleControlor.AttackType.DEFAULT, list);
 		

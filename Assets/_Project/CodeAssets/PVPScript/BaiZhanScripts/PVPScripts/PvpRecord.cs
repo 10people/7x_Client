@@ -33,6 +33,19 @@ public class PvpRecord : MonoBehaviour {
 	{
 		recordItemList = QXComData.CreateGameObjectList (recordItemObj,tempRecordResp.info.Count,recordItemList);
 
+		for (int i = 0;i < tempRecordResp.info.Count;i ++)
+		{
+			for (int j = 0;j < tempRecordResp.info.Count - i - 1;j ++)
+			{
+				if (tempRecordResp.info[j].time > tempRecordResp.info[j + 1].time)
+				{
+					ZhandouItem tempItem = tempRecordResp.info[j];
+					tempRecordResp.info[j] = tempRecordResp.info[j + 1];
+					tempRecordResp.info[j + 1] = tempItem;
+				}
+			}
+		}
+
 		for (int i = 0;i < recordItemList.Count;i ++)
 		{
 			recordItemList[i].transform.localPosition = new Vector3(0,-113 * i,0);

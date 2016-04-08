@@ -12,4 +12,5 @@
 <CameraTemplate id="10" cameraPx="0.91" cameraPy="1.64" cameraPz="2.2" cameraRx="9.46" cameraRy="-514.4" />
 <CameraTemplate id="11" cameraPx="-0.26" cameraPy="4.65" cameraPz="4.45" cameraRx="7.93" cameraRy="-188.28" />
 <CameraTemplate id="12" cameraPx="-0.12" cameraPy="2.59" cameraPz="2.66" cameraRx="7.93" cameraRy="-188.28" />
+<CameraTemplate id="13" cameraPx="-2.38" cameraPy="3.01" cameraPz="2.97" cameraRx="14.95716" cameraRy="132.6632" />
 </dataset>

@@ -10,23 +10,25 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class ChatPlayerItem : MonoBehaviour {
+public class ChatPlayerItem : MonoBehaviour,SocketListener {
 
 	private ChatMessage chatMsg;
 
 	public UISprite headIcon;
 	public UISprite vipIcon;
+	public UISprite channelIcon;
+	public UISprite nationIcon;
 	public UILabel nameLabel;
-	public UISprite textBg;//-60,15,0  -60,5,0
+	public UISprite textBg;
 	public UILabel textLabel;
 
-	public UILabel titleLabel;
+	public UISprite channelTitle;
 
-	private const int minTextBgHeigh = 34;
-	private const int dis = 20;
+	private const int minTextBgHeigh = 43;
+	private const int dis = 24;
 
 //	private const int bgDis = -37;
-	private const int textLabelMixWidth = 144;
+	private const int textLabelMixWidth = 295;
 
 	private const int colorCharNum = 33;//发送的内容包含的颜色代码字符长度
 
@@ -36,17 +38,40 @@ public class ChatPlayerItem : MonoBehaviour {
 
 	private bool isPlayer;
 
-	private int itemHeigh;
+	private float itemHeigh;
 
 	private string textStr;
+
+	void Awake ()
+	{
+		SocketTool.RegisterSocketListener (this);
+	}
 
 	void Start ()
 	{
 		#if StartTest
-		textLabel.text = "花费的烦得很地花费的烦得很地花费的烦得很地花费的烦得很地花费的烦得很地花费的烦得很地花费的烦得很地花费的烦得很地";
-		
-		int row = textLabel.height / 19;
-		textBg.height = minTextBgHeigh + (row - 1) * dis;
+
+		string s1 = "测，.1!！q#*[";
+		string s = "测试啊啊啊啊啊啊啊a啊啊啊啊啊";
+		Debug.Log ("s:" + s);
+	
+//		for (int i = 0;i < s.Length - 1;i ++)
+//		{
+//			Debug.Log ("str:" + s[i] + "|||||IsMatch汉字:" + Regex.IsMatch(s[i].ToString (), @"[\u4e00-\u9fbb]"));
+//			Debug.Log ("str:" + s[i] + "|||||IsMatch数字:" + Regex.IsMatch(s[i].ToString (), @"[0-9]"));
+//			Debug.Log ("str:" + s[i] + "|||||IsMatch标点符号:" + Regex.IsMatch(s[i].ToString (), @"[\,\.\?\!]"));
+//		}
+
+		BetterList<Vector3> mTempVerts = new BetterList<Vector3> ();
+		BetterList<int> mTempIndices = new BetterList<int> ();
+		string mProcessedText = "";
+		bool fits = NGUIText.WrapText(s, out mProcessedText, false);
+		NGUIText.PrintCharacterPositions (s, mTempVerts, mTempIndices);
+		Vector3[] list = mTempVerts.ToArray();
+		int[] indexs = mTempIndices.ToArray();
+
+		Debug.Log ("list[list.Length - 1]:" + list[list.Length - 1]);
+
 		#endif
 	}
 
@@ -60,45 +85,73 @@ public class ChatPlayerItem : MonoBehaviour {
 
 		isPlayer = (tempChatMsg.chatPct.guoJia > 0 && tempChatMsg.chatPct.guoJia < 8) ? true : false;
 
-		headIcon.transform.parent.gameObject.SetActive (isPlayer ? true : false);
-		titleLabel.text = isPlayer ? "" : (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "[00e1c4]【广播】[-]" : MyColorData.getColorString (5,"【系统】"));
-		textBg.transform.localPosition = new Vector3 (-60,isPlayer ? 6 : 15,0);
+		headIcon.gameObject.SetActive (isPlayer ? true : false);
+		channelTitle.spriteName = isPlayer ? "" : (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "broadCast" : "system");
+		textBg.transform.localPosition = new Vector3 (-105,isPlayer ? 1 : 20,0);
 
-		textBg.color = isPlayer ? (tempChatMsg.chatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id ? new Color (0.7f,1,0.6f) : Color.white) : Color.white;
-
-		textLabel.text = "[dbba8f]" + tempChatMsg.chatPct.content + "[-]";
+		textBg.spriteName = isPlayer ? (tempChatMsg.chatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id ? "DialogSelf" : "DialogOther") : "DialogOther";
+		textBg.color = isPlayer ? Color.white : new Color (0.02f, 0.02f, 0.02f);
 //		Debug.Log ("nationId:" + tempChatMsg.chatPct.guoJia);
 
 		if (isPlayer)
 		{
-			headIcon.spriteName = "PlayerIcon" + tempChatMsg.chatPct.roleId;
-			string channelStr = "[00e1c4][" + QXChatData.Instance.GetChannelTitleStr (tempChatMsg.chatPct.channel) + "][-]";
-			string nationStr = "[e5e205][" + QXComData.GetNationName (tempChatMsg.chatPct.guoJia) + "][-]";
-			nameLabel.text = channelStr + nationStr + "[f5aa29]" + tempChatMsg.chatPct.senderName + "[-]";
+			headIcon.spriteName = "Player_" + tempChatMsg.chatPct.roleId;
 			vipIcon.spriteName = tempChatMsg.chatPct.vipLevel > 0 ? "vip" + tempChatMsg.chatPct.vipLevel : "";
+			channelIcon.spriteName = QXChatData.Instance.GetChannelTitleStr (tempChatMsg.chatPct.channel);
+			nationIcon.spriteName = QXComData.GetNationSpriteName (tempChatMsg.chatPct.guoJia);
+			nameLabel.text = MyColorData.getColorString (1,tempChatMsg.chatPct.senderName);
 		}
 
-		int row = textLabel.height / 19;
+//		byte[] bytes = System.Text.Encoding.Default.GetBytes (tempChatMsg.chatPct.content);
+
+		textLabel.text = isPlayer ? "[000000]" + tempChatMsg.chatPct.content + "[-]" : tempChatMsg.chatPct.content;
+
+		int row = textLabel.height / dis;
+
+		if (NGUIHelper.GetTextWidth (textLabel,textLabel.text).x <= 232)
+		{
+			textBg.width = (int)(NGUIHelper.GetTextWidth (textLabel,textLabel.text).x + 28);
+		}
+		else
+		{
+			textBg.width = 260;
+		}
+
+//		BetterList<Vector3> mTempVerts = new BetterList<Vector3> ();
+//		BetterList<int> mTempIndices = new BetterList<int> ();
+//		NGUIText.PrintCharacterPositions (textLabel.text, mTempVerts, mTempIndices);
+//		Vector3[] list = mTempVerts.ToArray();
+//		int[] indexs = mTempIndices.ToArray();
+//		
+//		Debug.Log ("list:" + list[list.Length - 1]);
+//		Debug.Log ("list.len:" + list.Length);
+//		Debug.Log ("indexs:" + indexs.Length);
+//		textBg.width = row > 1 ? 325 : (int)(list [list.Length - 1].x + 34);
+
 //		Debug.Log ("tempChatMsg.chatPct.type:" + tempChatMsg.chatPct.type);
+		#region AllianceInfo Btn
 		allianceInfoHandler.gameObject.SetActive (tempChatMsg.chatPct.type == 2 ? true : false);
-		int num = System.Text.Encoding.Default.GetBytes (tempChatMsg.chatPct.content).Length;
+
 //		Debug.Log ("numnum:" + num);
 		bool add = false;
 		if (tempChatMsg.chatPct.type == 2)
 		{
-			if (num - colorCharNum <= 29)
-			{
-				allianceInfoHandler.transform.localPosition = new Vector3(60 + (num - colorCharNum - 19) * 8,-39,0);
-			}
-			else
-			{
-				allianceInfoHandler.transform.localPosition = new Vector3(60 + ((num - colorCharNum - 38) > 0 ? (num - colorCharNum - 38) * 8 : 0),-59,0);
-				add = true;
-			}
+			add = true;
+//			if (num - colorCharNum <= 29)
+//			{
+//				allianceInfoHandler.transform.localPosition = new Vector3(60 + (num - colorCharNum - 19) * 8,-39,0);
+//			}
+//			else
+//			{
+//				allianceInfoHandler.transform.localPosition = new Vector3(60 + ((num - colorCharNum - 38) > 0 ? (num - colorCharNum - 38) * 8 : 0),-59,0);
+//				add = true;
+//			}
 		}
+		#endregion
 
-		textBg.height = minTextBgHeigh + (row - 1 + (add ? 1 : 0)) * dis;
-		itemHeigh = textBg.height;
+		textBg.height = minTextBgHeigh + (row - 1) * dis + (add ? 15 : 0);
+
+		itemHeigh = isPlayer ? textBg.height + 14.5f : textBg.height;//*************消息的间隔
 
 		playerHandler.m_click_handler -= PlayerHandlerClickBack;
 		playerHandler.m_click_handler += PlayerHandlerClickBack;
@@ -134,6 +187,11 @@ public class ChatPlayerItem : MonoBehaviour {
 				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "屏蔽",chatBtnDelegate = Shield});
 			}
 
+			if (chatMsg.chatPct.lianmengId <= 0)
+			{
+				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "邀请入盟",chatBtnDelegate = InvitedIntoAlliance});
+			}
+
 			break;
 		case ChatMessage.SendState.SEND_FAIL:
 
@@ -163,6 +221,7 @@ public class ChatPlayerItem : MonoBehaviour {
 			QXComData.CreateBox (1,textStr,true,null);
 			return;
 		}
+
 		int m_allianceId = JunZhuData.Instance().m_junzhuInfo.lianMengId;
 //		Debug.Log ("m_allianceId:" + m_allianceId);
 
@@ -194,7 +253,7 @@ public class ChatPlayerItem : MonoBehaviour {
 	/// Gets the item heigh.
 	/// </summary>
 	/// <returns>The item heigh.</returns>
-	public int GetItemHeigh ()
+	public float GetItemHeigh ()
 	{
 		return itemHeigh;
 	}
@@ -223,7 +282,7 @@ public class ChatPlayerItem : MonoBehaviour {
 
 	private void Shield ()
 	{
-		string textStr = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO) + "\n\n" + LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_IS_SHIELD).Replace("***", chatMsg.chatPct.senderName);
+		string textStr = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_IS_SHIELD).Replace("***", chatMsg.chatPct.senderName);
 		QXComData.CreateBox (1,textStr,false,ShieldCallBack);
 	}
 
@@ -245,6 +304,11 @@ public class ChatPlayerItem : MonoBehaviour {
 		}
 	}
 
+	public void InvitedIntoAlliance ()
+	{
+		AllianceData.Instance.RequestAllianceInvite (chatMsg.chatPct.senderId);
+	}
+
 	private void SendAgain ()
 	{
 		QXChatData.Instance.SendChatData (chatMsg);
@@ -253,5 +317,52 @@ public class ChatPlayerItem : MonoBehaviour {
 	private void Delate ()
 	{
 		QXChatData.Instance.DelateChatMsg (chatMsg);
+	}
+
+	public bool OnSocketEvent (QXBuffer p_message)
+	{
+		if (p_message != null)
+		{
+			switch (p_message.m_protocol_index)
+			{
+			case ProtoIndexes.S_Join_BlackList_Resp://返回加入黑名单信息 
+			{	
+				BlacklistResp joinResp = new BlacklistResp();
+				joinResp = QXComData.ReceiveQxProtoMessage (p_message,joinResp) as BlacklistResp;
+
+				if (joinResp != null)
+				{
+					if (joinResp.junzhuId != chatMsg.chatPct.senderId)
+					{
+						Debug.Log("joinResp.junzhuId:" + joinResp.junzhuId);
+						return false;
+					}
+					switch (joinResp.result)
+					{
+					case 0:
+
+						BlockedData.Instance().m_BlockedInfoDic.Add (joinResp.junzhuId, joinResp.junzhuInfo);
+
+						break;
+					case 103:
+
+						string textStr = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_2) + "\n" + LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_3);
+						QXComData.CreateBox (1,textStr,true,null);
+
+						break;
+					default:
+						break;
+					}
+				}
+				return true;
+			}
+			}
+		}
+		return false;
+	}
+
+	void OnDestroy ()
+	{
+		SocketTool.UnRegisterSocketListener (this);
 	}
 }

@@ -332,6 +332,14 @@ public class ConfigTool : Singleton<ConfigTool>{
 			}
 
 			LoadValues( m_config_value_dict, CONST_LOADING_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_LOADING_INTERVAL ) );
+
+			LoadValues( m_config_value_dict, CONST_MAINCITY_UI_GC, LoadFloatValue( m_config_xml_dict, CONST_MAINCITY_UI_GC ) );
+
+			LoadValues( m_config_value_dict, CONST_MAX_CHAR_COUNT, LoadIntValue( m_config_xml_dict, CONST_MAX_CHAR_COUNT ) );
+
+			LoadValues( m_config_value_dict, CONST_MAX_CHAR_IN_TAN_BAO_COUNT, LoadIntValue( m_config_xml_dict, CONST_MAX_CHAR_IN_TAN_BAO_COUNT ) );
+
+			LoadValues( m_config_value_dict, CONST_CHAR_UPDATE_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_CHAR_UPDATE_INTERVAL ) );
 		}
 
 		// guide
@@ -768,6 +776,18 @@ public class ConfigTool : Singleton<ConfigTool>{
 	public const string CONST_SHOW_FPS				= "ShowFPS";
 
 	public const string CONST_LOADING_INTERVAL		= "LoadingInterval";
+
+	public const string CONST_MAINCITY_UI_GC		= "MainCityUIGC";
+
+	public const string CONST_MAX_CHAR_COUNT		= "MaxCarriageChar";
+
+	public const string CONST_MAX_CHAR_IN_TAN_BAO_COUNT		= "MaxCharInTanBao";
+
+	public const string CONST_CHAR_UPDATE_INTERVAL	= "CharUpdateInterval";
+
+	public const string CONST_MAX_EFFECT_COUNT = "MaxEffect";
+
+	public const string CONST_EFFECT_UPDATE_INTERVAL = "EffectUpdateInterval";
 
 	#endregion
 

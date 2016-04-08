@@ -10,8 +10,9 @@ public class AnnounceItemManagerment : MonoBehaviour
     public UISprite m_SpriteGuang;
     public EventHandler m_TouchEvent;
     public UISprite m_SpriteBack;
-
-	void Start () 
+    public GameObject m_ObjNew;
+    public UILabel m_labNew;
+    void Start () 
     {
         m_TouchEvent.m_click_handler += ShowEvent;
 	}
@@ -26,12 +27,12 @@ public class AnnounceItemManagerment : MonoBehaviour
         }
     
     }
-    public void ContentShow(string title,_delegateTouch callback)
+    public void ContentShow(NoticeManager.AnnounceInfo announce_info, _delegateTouch callback)
     {
         TouchCallBack = callback;
 
-        m_UIlabelTitle.text = title;
- 
+        m_UIlabelTitle.text = announce_info.title;
+        m_ObjNew.SetActive(announce_info._New == 1);
     }
 	
 	 

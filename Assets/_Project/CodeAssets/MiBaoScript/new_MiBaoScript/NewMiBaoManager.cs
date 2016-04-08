@@ -9,6 +9,8 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
+	public UILabel JunZhuZhanLi;
+
 	public mFixUniform mmFixUniform;
 
 	public GameObject First_MiBao_UI; //秘宝UI
@@ -107,20 +109,21 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	void Start () {
 	
 		TaskData.Instance.m_DestroyMiBao = true;
-
+		Init ();
+		ShowMiBaoYInDao ();
 	}
 
 	void OnEnable()
 	{
-		Init ();
+
 	}
 
 	void Update () {
 	
+		JunZhuZhanLi.text = JunZhuData.Instance ().m_junzhuInfo.zhanLi.ToString ();
 	}
 	public void Init()
 	{
-		
 		if(Global.m_sPanelWantRun != null && Global.m_sPanelWantRun != "")
 		{
 			if(Global.m_sPanelWantRun == "Mibaoskill")
@@ -151,7 +154,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				t_qx.Deserialize(t_stream, MiBaoInfo, MiBaoInfo.GetType());
 
 				m_MiBaoInfo = MiBaoInfo;
-
+				Debug.Log("========1");
 				mtime = m_MiBaoInfo.remainTime;
 
 //				Debug.Log("秘宝信息返回！");
@@ -173,7 +176,12 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				t_qx.Deserialize(t_stream, mBuyMibaoPointResp, mBuyMibaoPointResp.GetType());
 				if (mBuyMibaoPointResp.result == 0)
 				{
-					m_MiBaoInfo.levelPoint = 10;
+					int viplv = JunZhuData.Instance().m_junzhuInfo.vipLv;
+					VipTemplate mVip = VipTemplate.GetVipInfoByLevel (viplv);
+					
+					int MaxPoint = mVip.MiBaoLimit;
+
+					m_MiBaoInfo.levelPoint = MaxPoint;
 					MiBao_TempInfo.GetComponent<MiBaoDesInfo>().Init();
 				}
 				return true;
@@ -249,6 +257,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		if(MaxPoint <= m_MiBaoInfo.levelPoint)
 		{
 			StopCoroutine("showTime");
+			MiBao_TempInfo.GetComponent<MiBaoDesInfo>().PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
 		}
 		else
 		{
@@ -261,6 +270,8 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			StopCoroutine("showTime");
 			
 			StartCoroutine("showTime");
+
+			MiBao_TempInfo.GetComponent<MiBaoDesInfo>().PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
 		}
 	}
 	int MaxId;
@@ -293,6 +304,8 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
 				OpenLockBtn.SetActive(true);
 				NuqiObg.SetActive(false);
+				Closeffect();
+				OPeneffect();
 			}
 			else
 			{
@@ -305,12 +318,17 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 				NuqiZhi.text = mNiqi.nuqiRatioc.ToString();
 				string mstr1 = (mMiBaoskill.needNum -ActiveMiBaoList.Count).ToString();
+				Closeffect();
 				string mstr2 = "再激活 ";
 				string mstr3 = " 个秘宝可解锁该技能";
 				PushAndNotificationHelper.SetRedSpotNotification (610, false);
 				LockofMiBaonum.text = MyColorData.getColorString(10,mstr2)+MyColorData.getColorString(5,mstr1)+MyColorData.getColorString(10,mstr3);
 			}
-			mSlider.value = (float)(ActiveMiBaoList.Count) / (float)(mMiBaoskill.needNum);
+		
+			if(!MiBao_TempInfo.activeInHierarchy)
+			{
+				mSlider.value = (float)(ActiveMiBaoList.Count) / (float)(mMiBaoskill.needNum);
+			}
 
 			SkillIcon.spriteName = mMiBaoskill.icon;
 
@@ -363,7 +381,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				{
 					mRul += s[i]+"\r\n";	
 				}
-				
+				Closeffect();
 				SkillInstruction.text = mRul;;
 			}
 			else
@@ -406,6 +424,8 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 					OpenLockBtn.SetActive(true);
 					NuqiObg.SetActive(false);
 					string mstr = "当前秘宝技能可解锁";
+					Closeffect();
+					OPeneffect();
 					LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
 				}
 				else
@@ -420,10 +440,15 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 					PushAndNotificationHelper.SetRedSpotNotification (610, false);
 					string mstr2 = "再激活 ";
 					string mstr3 = " 个秘宝可解锁该技能";
+					Closeffect();
 					string mstr1 = (mMiBaoskill.needNum -ActiveMiBaoList.Count).ToString();
 					LockofMiBaonum.text = MyColorData.getColorString(10,mstr2)+MyColorData.getColorString(5,mstr1)+MyColorData.getColorString(10,mstr3);
 				}
-				mSlider.value = (float)(ActiveMiBaoList.Count) / (float)(mMiBaoskill.needNum);
+				if(!MiBao_TempInfo.activeInHierarchy)
+				{
+					mSlider.value = (float)(ActiveMiBaoList.Count) / (float)(mMiBaoskill.needNum);
+				}
+
 				if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
 				{
 					Art.SetActive(true);
@@ -435,7 +460,19 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			}
 
 		}
-		ShowMiBaoYInDao ();
+
+	}
+
+	public void OPeneffect()
+	{
+		int effectid = 620224;
+		UI3DEffectTool.ShowBottomLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillIcon.gameObject,EffectIdTemplate.GetPathByeffectId(620224));
+	}
+
+	
+	public void Closeffect()
+	{
+		UI3DEffectTool.ClearUIFx (SkillIcon.gameObject);
 	}
 	/// <summary>
 	/// IShow yindao
@@ -446,29 +483,24 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	{
 //		Debug.Log (FreshGuide.Instance().IsActive(100330));
 //		Debug.Log (TaskData.Instance.m_TaskInfoDic[100330].progress);
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			CityGlobalData.m_isRightGuide = false;
+			UIYindao.m_UIYindao.CloseUI();
+			//Debug.Log ("UIYindao.m_UIYindao.CloseUI();");
+		}
 		yindaois_open = false;
 		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress >= 0)
 		{
-//			Debug.Log("choose one mibao ");
+			//Debug.Log("choose one mibao ");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100170];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			mUIscrolview.enabled = false;
-			if(ActiveMiBaoList.Count > 1)
-			{
-				if(ActiveMiBaoList[0].miBaoId != 301011)
-				{
-					MibaoInfo mMiBaoIf = ActiveMiBaoList[0];
-
-					ActiveMiBaoList[0] = ActiveMiBaoList[1];
-
-					ActiveMiBaoList[1] = mMiBaoIf;
-				}
-			}
 			return;
 		}
 		if(FreshGuide.Instance().IsActive(100330)&& TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
 		{
-//			Debug.Log("Make one mibao ");
+			//Debug.Log("Make one mibao ");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100330];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
 			mUIscrolview.enabled = false;
@@ -487,14 +519,23 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		{
 			//Debug.Log("秘宝技能激活");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100259];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+
+			//Debug.Log ("tempTaskData.m_listYindaoShuju[2] = "+tempTaskData.m_listYindaoShuju[2]);
+
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			//mUIscrolview.enabled = false;
 			return;
 		}
+	
 		mUIscrolview.enabled = true;
+
 	}
 	public void InitData()
 	{
+		if(m_MiBaoInfo == null)
+		{
+			m_MiBaoInfo = MiBaoGlobleData.Instance().G_MiBaoInfo;
+		}
 		ActiveMiBaoList.Clear ();
 		DisActiveMiBaoList.Clear ();
 		bool isHeCheng = false;
@@ -591,17 +632,20 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				}
 			}
 		}
+	
 		for(int i = 0 ; i < DisActiveMiBaoList.Count; i++)
 		{
 			MiBaoSuipianXMltemp mMiBaosuipian1 = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid(DisActiveMiBaoList[i].tempId);
 
+			float a = (float)DisActiveMiBaoList[i].suiPianNum/(float)mMiBaosuipian1.hechengNum;
+
 			for(int j = i+1 ; j < DisActiveMiBaoList.Count; j++)
 			{
 				MiBaoSuipianXMltemp mMiBaosuipian2 = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid(DisActiveMiBaoList[j].tempId);
-
-				float a = (float)DisActiveMiBaoList[i].suiPianNum/(float)mMiBaosuipian1.hechengNum;
+		
 				float b = (float)DisActiveMiBaoList[j].suiPianNum/(float)mMiBaosuipian2.hechengNum;
-				if(a < b)
+		
+				if(a < b && a < 1.0f)
 				{
 					MibaoInfo mbTemp = DisActiveMiBaoList[i];
 					
@@ -612,6 +656,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	
 			}
 		}
+
 		InitUI ();
 
 		InistanceMiBaoItem ();
@@ -641,12 +686,14 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		//Debug.Log ("ActiveMiBaoList.Count = "+ActiveMiBaoList.Count);
 
 		//Debug.Log ("ActiveMiBaoList.Count = "+DisActiveMiBaoList.Count);
+		ActiveMibaoBackGroud.gameObject.SetActive (true);
 
 		foreach(MBTemp m in mMBTempList)
 		{
 			Destroy(m.gameObject);
 		}
 		mMBTempList.Clear ();
+//		Debug.Log("MiBaoGlobleData.Instance().OldMiBaolist.Count = "+MiBaoGlobleData.Instance().OldMiBaolist.Count);
 		for(int i = 0 ; i < ActiveMiBaoList.Count; i++)
 		{
 			GameObject mMiBaotep = Instantiate(new_MiBaoTemp) as GameObject;
@@ -667,6 +714,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 			mMBTemp.mMiBaoinfo = ActiveMiBaoList[i];
 			mMBTempList.Add(mMBTemp);
+
 			if(MiBaoGlobleData.Instance().OldMiBaolist.Count == 0)
 			{
 				mMBTemp.IsNew = true;
@@ -686,6 +734,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 			mMBTemp.Init();
 		}
+
 		if(ActiveMiBaoList.Count >= 21)
 		{
 			ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,130-(6-1)*70,0);
@@ -721,6 +770,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 		float Sprite_y = 0;
 		bool HaveCouldMake = false;
+	
 		for(int i = 0 ; i < DisActiveMiBaoList.Count; i++)
 		{
 			MiBaoSuipianXMltemp mMiBaoSuipianXMltemp = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid (DisActiveMiBaoList[i].tempId);
@@ -768,6 +818,24 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			DisactiveLabel.gameObject.SetActive(false);
 			DisActiveMibaoBackGroud.gameObject.SetActive(false);
 		}
+		if(FreshGuide.Instance().IsActive(100170)&& TaskData.Instance.m_TaskInfoDic[100170].progress >= 0)
+		{
+			if(UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				if(ActiveMiBaoList.Count > 1)
+				{
+					if(ActiveMiBaoList[0].miBaoId != 301011)
+					{
+						MibaoInfo mMiBaoIf = ActiveMiBaoList[0];
+						
+						ActiveMiBaoList[0] = ActiveMiBaoList[1];
+						
+						ActiveMiBaoList[1] = mMiBaoIf;
+					}
+				}
+			}
+
+		}
 		//Debug.Log ("HaveCouldMake = "+HaveCouldMake);
 		if(HaveCouldMake && !yindaois_open)
 		{
@@ -804,7 +872,10 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	public void BackToFirstPage(GameObject Nextgme) // 返回首页
 	{
 		First_MiBao_UI.SetActive (true);
+
 		Nextgme.SetActive (false);
+
+		InitUI ();
 	}
 	public void ShowAllSkillS_Btn()
 	{

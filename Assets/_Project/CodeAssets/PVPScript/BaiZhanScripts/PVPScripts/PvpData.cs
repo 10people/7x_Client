@@ -173,7 +173,7 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 		confirmReq.type = (int)tempType;
 
 		QXComData.SendQxProtoMessage (confirmReq,ProtoIndexes.CONFIRM_EXECUTE_REQ,ProtoIndexes.CONFIRM_EXECUTE_RESP.ToString ());
-		Debug.Log ("ConfirmReq:" + ProtoIndexes.CONFIRM_EXECUTE_REQ);
+//		Debug.Log ("ConfirmReq:" + ProtoIndexes.CONFIRM_EXECUTE_REQ);
 	}
 	
 	#endregion
@@ -259,6 +259,19 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 //								Debug.Log ("总次数：" + confirm.buyCiShuInfo.totalTimes);
 								BaiZhanPage.baiZhanPage.OpenSkillEffect (2);
 								PvpDataReq ();
+								//turn to challengepage
+//								{
+//									//									Debug.Log ("PvpOpponentInfo:" + PvpOpponentInfo);
+//									if (PvpOpponentInfo != null)
+//									{
+//										ChallengeReq (PvpOpponentInfo.junZhuId);
+//									}
+//									else
+//									{
+//										PvpDataReq ();
+//									}
+//								}
+
 //								textStr = "\n\n恭喜购买挑战次数成功！";
 //								Global.CreateBox(QXComData.titleStr,MyColorData.getColorString (1,textStr), null, null, 
 //								                 QXComData.confirmStr, null, 
@@ -307,6 +320,15 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 								BaiZhanPage.baiZhanPage.baiZhanResp.cdYuanBao = confirm.cleanCDInfo.nextCDYB;
 								BaiZhanPage.baiZhanPage.baiZhanResp.pvpInfo.time = 0;
 								BaiZhanPage.baiZhanPage.InItChallenge ();
+
+								//turn to challengepage
+								{
+//									Debug.Log ("PvpOpponentInfo:" + PvpOpponentInfo);
+									if (PvpOpponentInfo != null)
+									{
+										ChallengeReq (PvpOpponentInfo.junZhuId);
+									}
+								}
 //								QXComData.CreateBox (1,textStr,true,BaiZhanPage.baiZhanPage.OpenSkillEffect);
 								break;
 							case 2:
@@ -334,8 +356,8 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 //							PvpPage.pvpPage.pvpResp.hasWeiWang += CanGetWeiWang;
 //							PvpPage.pvpPage.InItMyRank ();
 
-							BaiZhanPage.baiZhanPage.baiZhanResp.canGetweiWang = 0;
 							BaiZhanPage.baiZhanPage.baiZhanResp.hasWeiWang += CanGetWeiWang;
+							BaiZhanPage.baiZhanPage.baiZhanResp.canGetweiWang = 0;
 							BaiZhanPage.baiZhanPage.InItMyRank ();
 
 							//关闭按钮特效
@@ -513,7 +535,6 @@ public class PvpData : Singleton<PvpData>,SocketProcessor {
 
 							Global.m_isOpenBaiZhan = true;
 
-							UIYindao.m_UIYindao.CloseUI ();
 							EnterBattleField.EnterBattlePvp (enemyId, QXComData.CheckYinDaoOpenState (100200));
 
 							break;

@@ -28,9 +28,10 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
 		m_instance = null;
 
 		m_playrDic.Clear();
-	}
+        PlayerNameManager.DicClear();
+    }
 
-	// create player
+    // create player
     public void CreatePlayer( EnterScene p_enter_scene_player ) {
       //  Debug.Log("PlayerInCityManager.CreatePlayer: " + p_enter_scene_player.uid + " " + p_enter_scene_player.roleId + " " + p_enter_scene_player.senderName );
 
@@ -83,15 +84,6 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
             t_gb.transform.Rotate(0, _PlayerRotation, 0) ;//; = new Quaternion(0, _PlayerRotation, 0, 0);
             //t_gb.GetComponent<CharacterController>().enabled = false;
             t_gb.transform.parent = this.transform;
-          //  Debug.Log(t_gb.transform.localPosition);
-            
-
-            //t_gb.transform.position = t_pos;
-            //Debug.Log(t_gb.transform.localPosition);
-            //Debug.Log(" t_gb.transform.namet_gb.transform.namet_gb.transform.namet_gb.transform.namet_gb.transform.namet_gb.transform.name " + t_gb.transform.name);
-
-            //Debug.Log("t_post_post_post_post_post_post_post_post_post_post_post_post_post_post_post_pos" + t_pos);
-          //  Debug.Log(" t_gb.transform t_gb.transform t_gb.transform X ::" + t_gb.transform.localPosition.x + "YYYYYY ::" + t_gb.transform.localPosition.y + "ZZZZZZZZZZZZZZZZZ ::" + t_gb.transform.localPosition.z);
             t_gb.transform.localScale = Vector3.one*1.5f;
         
         
@@ -99,11 +91,10 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
 
             tempItem.m_playerID = p_enter_scene.uid;
             m_playrDic.Add(p_enter_scene.uid, t_gb);
+            Fresh();
             PlayerNameManager.m_PlayerNamesParent = m_NameParent;
             PlayerNameManager.CreatePlayerName(p_enter_scene);
             EffectTool.DisableCityOcclusion(t_gb);
-
-
         }
         else
         {
@@ -111,14 +102,24 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
         }
       
 	}
-
+    static void Fresh()
+    {
+        foreach (KeyValuePair<int, GameObject> item in m_playrDic)
+        {
+            if (PlayersManager.m_playrHeadInfo.ContainsKey(item.Key))
+            {
+                PlayerNameManager.UpdateAllLabel(PlayersManager.m_playrHeadInfo[item.Key]);
+            }
+        }
+    }
     //private Object m_player_object = null;
     float _PlayerRotation = 0;
 	public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object ){
         //m_player_object = p_object;
        // Debug.Log("p_pathp_pathp_pathp_pathp_pathp_pathp_path :::" + p_path);
 
-        for( int i = _PlayerInfo.Count - 1; i >= 0; i--) {
+        for( int i = _PlayerInfo.Count - 1; i >= 0; i--)
+        {
             EnterScene t_info = _PlayerInfo[i];
 
             if ( GetModelResPathByRoleId(t_info.roleId ) == p_path )

@@ -36,6 +36,12 @@ public class ConfigHelper{
 			return;
 		}
 
+		if( p_object == null ){
+			Debug.Log( "Res not exist: " + p_path );
+
+			return;
+		}
+
 		{
 			TextAsset t_text = ( TextAsset )p_object;
 

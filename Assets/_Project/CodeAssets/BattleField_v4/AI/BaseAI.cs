@@ -423,7 +423,7 @@ public class BaseAI : MonoBehaviour
 
 		float bloodRate = 1f;
 
-		float bloodY = appearanceTemplate.height * 2 + .2f;
+		float bloodY = getHeight() + .2f;
 
 		if(nodeData.nodeType == NodeType.SOLDIER)
 		{
@@ -1057,7 +1057,6 @@ public class BaseAI : MonoBehaviour
 //				Debug.Log("清空技能播放名称=" + m_sPlaySkillAnimation);
 
 				m_sPlaySkillAnimation = "";
-
 			}
 		}
 
@@ -1134,7 +1133,7 @@ public class BaseAI : MonoBehaviour
 		{
 			int frameCount = Time.frameCount % 5;
 
-			int idIndex = nodeId % 5;
+			int idIndex = Mathf.Abs(nodeId % 5);
 
 			if(frameCount == idIndex)
 			{
@@ -1157,7 +1156,7 @@ public class BaseAI : MonoBehaviour
 				uptateTarget();
 				
 				updateEnemysList();
-				
+
 				moveOrAttack();
 			}
 		}
@@ -1514,7 +1513,7 @@ public class BaseAI : MonoBehaviour
 
 			inRun = false;
 		}
-		else if(tempL > nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_attackRange ))
+		else if(tempL > range)
 		{
 			runOrAttack = 0;
 
@@ -1837,7 +1836,7 @@ public class BaseAI : MonoBehaviour
 					return;
 				}
 
-				bloodbar.setValue(rate);
+				if(nodeData.nodeType != NodeType.GOD && nodeData.nodeType != NodeType.NPC) bloodbar.setValue(rate);
 			}
 		}
 
@@ -1907,20 +1906,20 @@ public class BaseAI : MonoBehaviour
 
 	public void moveAction(Vector3 targetPosition, iTween.EaseType easeType, float time, int colliderLevel = 0)
 	{
-		if(colliderLevel == 0)
-		{
-			tempMovePostion = Vector3.zero;
-
-			iTween.ValueTo(gameObject, iTween.Hash(
-				"from", Vector3.zero,
-				"to", targetPosition - transform.position,
-				"time", time,
-				"easeType", easeType,
-				"onupdate", "MovePositonTween"
-				));
-
-			return;
-		}
+//		if(colliderLevel == 0)
+//		{
+//			tempMovePostion = Vector3.zero;
+//
+//			iTween.ValueTo(gameObject, iTween.Hash(
+//				"from", Vector3.zero,
+//				"to", targetPosition - transform.position,
+//				"time", time,
+//				"easeType", easeType,
+//				"onupdate", "MovePositonTween"
+//				));
+//
+//			return;
+//		}
 
 		if(chongfengControllor == null)
 		{
@@ -1945,7 +1944,7 @@ public class BaseAI : MonoBehaviour
 		
 		chongfengControllor.transform.position = transform.position;
 
-		//if(colliderLevel == 2)
+		if(colliderLevel > 0)
 		{
 			foreach(BaseAI a in BattleControlor.Instance().enemyNodes)
 			{
@@ -1982,7 +1981,7 @@ public class BaseAI : MonoBehaviour
 
 		chongfengControllor.Move (chongfengControllor.transform.forward * length);
 
-		//if(colliderLevel == 2)
+		if(colliderLevel > 0)
 		{
 			foreach(BaseAI a in BattleControlor.Instance().enemyNodes)
 			{
@@ -2011,7 +2010,7 @@ public class BaseAI : MonoBehaviour
 			}
 		}
 
-		if(colliderLevel == 1)
+		if(colliderLevel < 2)
 		{
 			iTween.ValueTo(gameObject, iTween.Hash(
 				"from", transform.position,
@@ -2037,7 +2036,7 @@ public class BaseAI : MonoBehaviour
 	{
 		if (inStrongMove) return;
 
-		transform.position = p_offset;
+		setTransformPosition (p_offset);
 	}
 
 	protected void PositonTweenWithoutCharactorComplete()
@@ -2277,7 +2276,7 @@ public class BaseAI : MonoBehaviour
 					{
 						gameObject.SetActive(false);
 
-						transform.position = temppos;
+						setTransformPosition(temppos);
 					}
 				}
 			}
@@ -2425,12 +2424,14 @@ public class BaseAI : MonoBehaviour
 			int count = (int)(nuqi / unityMax);
 
 			BattleUIControlor.Instance().spriteMibaoFrame.SetActive(count == 0);
-			
+
+			bool have = UI3DEffectTool.HaveAnyFx(BattleUIControlor.Instance().btnMibaoSkill);
+
 			if(count == 0)
 			{
 				BattleUIControlor.Instance().labelBarMibao.text = "";
 
-				setHeartOn(false);
+//				setHeartOn(false);
 			}
 			else if(count == 1)
 			{
@@ -2438,7 +2439,12 @@ public class BaseAI : MonoBehaviour
 
 				if(BattleUIControlor.Instance().b_skill_miBao == true)
 				{
-					setHeartOn(true);
+					if(have == false) UI3DEffectTool.ShowTopLayerEffect(
+						UI3DEffectTool.UIType.FunctionUI_1, 
+						BattleUIControlor.Instance().btnMibaoSkill,
+						EffectIdTemplate.GetPathByeffectId(100189) );
+
+//					setHeartOn(true);
 				}
 			}
 			else if(count == 2)
@@ -2447,7 +2453,12 @@ public class BaseAI : MonoBehaviour
 
 				if(BattleUIControlor.Instance().b_skill_miBao == true)
 				{
-					setHeartOn(true);
+					if(have == false) UI3DEffectTool.ShowTopLayerEffect(
+						UI3DEffectTool.UIType.FunctionUI_1, 
+						BattleUIControlor.Instance().btnMibaoSkill,
+						EffectIdTemplate.GetPathByeffectId(100189) );
+
+//					setHeartOn(true);
 				}
 			}
 			else if(count == 3)
@@ -2456,17 +2467,20 @@ public class BaseAI : MonoBehaviour
 
 				if(BattleUIControlor.Instance().b_skill_miBao == true)
 				{
-					setHeartOn(true);
-				}
-
-				if((tempNuqi > 0 || addNuqi == 0) && BattleUIControlor.Instance().b_skill_miBao == true)
-				{
-					UI3DEffectTool.ShowTopLayerEffect(
-	                    UI3DEffectTool.UIType.FunctionUI_1, 
-	                    BattleUIControlor.Instance().btnMibaoSkill,
+					if(have == false) UI3DEffectTool.ShowTopLayerEffect(
+						UI3DEffectTool.UIType.FunctionUI_1, 
+						BattleUIControlor.Instance().btnMibaoSkill,
 						EffectIdTemplate.GetPathByeffectId(100189) );
+
+//					setHeartOn(true);
 				}
 			}
+
+			if(count > 0 
+			   && have == false 
+			   && CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan 
+			   && CityGlobalData.m_configId == 100204
+			   ) ClientMain.Instance().m_SoundPlayEff.PlaySound("811800");
 		}
 	}
 
@@ -3033,11 +3047,7 @@ public class BaseAI : MonoBehaviour
 
 		for(; nav.enabled == true;)
 		{
-			//nav.Resume();
-
-			setNavDestination(targetPosition);
-
-			//nav.Stop();
+//			setNavDestination(targetPosition);
 
 			if(tempPath != null && tempPath.Equals(nav.path) == false)
 			{
@@ -3050,7 +3060,9 @@ public class BaseAI : MonoBehaviour
 				break;
 			}
 
-			tempPath = nav.path;
+			if( nav != null ){
+				tempPath = nav.path;
+			}
 
 			yield return new WaitForEndOfFrame();
 		}
@@ -3081,8 +3093,6 @@ public class BaseAI : MonoBehaviour
 
 		if(isAlive == true && nav.enabled == true && gameObject.activeSelf == true && inTurning == true) 
 		{
-			nav.Resume();
-
 			setNavDestination(targetPosition);
 		}
 
@@ -3093,9 +3103,11 @@ public class BaseAI : MonoBehaviour
 
 	private void setNavDestination(Vector3 destination)
 	{
+		nav.Resume ();
+
 		if(Vector3.Distance(destination, nav.destination) < 1f)
 		{
-			return;
+//			return;
 		}
 
 		nav.SetDestination(destination);
@@ -3113,11 +3125,6 @@ public class BaseAI : MonoBehaviour
 	public void setNavMeshSpeed(float _speed)
 	{
 		nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_moveSpeed, _speed );
-	}
-
-	public void setNavMeshSpeedReal(float _speed)
-	{
-		nav.speed = _speed;
 	}
 
 	public void setNavMeshPriority(int priority)
@@ -3154,8 +3161,10 @@ public class BaseAI : MonoBehaviour
 
 		inTurning = false;
 
-		if( mAnim.isActiveAndEnabled ){
-			if( AnimatorHelper.HaveParameter( mAnim, "move_speed" ) ){
+		if( mAnim.isActiveAndEnabled )
+		{
+			if( AnimatorHelper.HaveParameter( mAnim, "move_speed" ) )
+			{
 				mAnim.SetFloat("move_speed", 0);	
 			}
 		}
@@ -3166,11 +3175,6 @@ public class BaseAI : MonoBehaviour
 	public float getNavMeshSpeed()
 	{
 		return nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_moveSpeed );
-	}
-
-	public float getNavMeshSpeedReal()
-	{
-		return nav.speed;
 	}
 
 	public void setNavMeshRadius(float _radius)
@@ -3207,6 +3211,11 @@ public class BaseAI : MonoBehaviour
 	public void setTargetPosition(Vector3 _targetPosition)
 	{
 		tarPosition = _targetPosition;
+	}
+
+	public void setTransformPosition(Vector3 _position)
+	{
+		transform.position = _position;
 	}
 
 	public virtual void setWeaponTriggerTrue(int _aid)
@@ -3577,7 +3586,7 @@ public class BaseAI : MonoBehaviour
 
 	public float getHeight()
 	{
-		return appearanceTemplate.height * 2;
+		return appearanceTemplate.height * ModelTemplate.getModelTemplateByModelId(modelId).height;
 	}
 
 }

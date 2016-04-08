@@ -7,12 +7,15 @@
 //#define LOCAL_BUNDLE_UPDATE
 
 
+
 using UnityEngine;
 using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
+
+
 
 /** 
  * @author:		Zhang YuGu
@@ -22,10 +25,25 @@ using SimpleJSON;
  * 
  * Notes:
  * 1.In Development, update -> login scene -> login -> server select;
+ * 
  * 2.In Third Platform(except MSDK), 3rd login -> update -> upload token -> login scene -> server select;
- * 3.In MSDK,
- * update -> login scene -> 3rd login -> upload token -> server select;
- * or update & 3rd login -> login scene -> upload token -> server select;
+ * 
+ * 3.In MSDK:
+ * 		1.update -> login scene -> 3rd login -> upload token -> server select;
+ * 		2.or update & 3rd login -> login scene -> upload token -> server select;
+ * 
+ * 4.Build:
+ * 		1.Update Version.txt;
+ * 		2.Run Build -> Bundles -> Build All;
+ * 		3.Run Build -> Bundles -> Build Manifest;
+ * 
+ * 5.3rd Update:
+ * 		1.ThirdPlatform;
+ * 		2.Bonjour;
+ * 		3.PrepareBundles;
+ * 		4.PrepareBundleHelper;
+ * 		5.NetworkHelper;
+ * 
  */ 
 public class PrepareBundles : MonoBehaviour {
 
@@ -67,7 +85,11 @@ public class PrepareBundles : MonoBehaviour {
 	void Awake(){
 //		Debug.Log( "PrepareBundles.Awake()" );
 		
-		m_instance = this;
+		{
+			m_instance = this;
+
+			SetUpdateState( UpdateState.SELECT_UPDATE_SERVER );
+		}
 		
 		PrepareBundleHelper.PrepareBundles_Init_In_Awake();
 
@@ -325,50 +347,53 @@ public class PrepareBundles : MonoBehaviour {
 	}
 	
 	private void SmallUpdateCheck(){
+		#if DEBUG_BUNDLE
+		Debug.Log( "SmallUpdateCheck()" );
+		#endif
+
 		{
 			PrepareBundleHelper.InitLoadingSections();
 
 			SetUpdateState( UpdateState.UPDATEING_BUNDLES );
 		}
 
-		{
+		int t_root_version = PrepareBundleHelper.GetCachedRootBundleVersion();
+
+		if( PrepareBundleHelper.IsToUpdateBundle() ){
+			#if DEBUG_BUNDLE
+			Debug.Log( "SmallUpdate." );
+			#endif
+
+			t_root_version = PrepareBundleHelper.GetNewRootBundleVersion();
+
 			PrepareBundleHelper.SetLoadingTitle( PrepareBundleHelper.LOADING_TIPS_UPDAING_ASSESTS );
 		}
-		
+		else{
+			PrepareBundleHelper.SetLoadingTitle( PrepareBundleHelper.LOADING_TIPS_CHECKING_ASSESTS );
+		}
+
+		// update bundles
 		{
-			int t_root_version = PrepareBundleHelper.GetCachedRootBundleVersion();
+			string t_root_bundle_url = BundleHelper.GetRootBundleUrl();
 
-			if( PrepareBundleHelper.IsToUpdateBundle() ){
-				#if DEBUG_BUNDLE
-				Debug.Log( "SmallUpdate." );
-				#endif
+			string t_file_url = BundleHelper.GetFileUrl();
 
-				t_root_version = PrepareBundleHelper.GetNewRootBundleVersion();
-			}
+			#if LOCAL_BUNDLE_UPDATE
+			t_root_bundle_url = PathHelper.GetLocalFileWWWPath_U5_Test_Use( PlatformHelper.GetPlatformTag() );
 
-			// update bundles
+			t_file_url = PathHelper.GetLocalFileWWWPath_U5_Test_Use( ManifestHelper.CONST_MANIFEST_FOLDER_NAME + "/" + ManifestHelper.CONST_FILE_NAME );
+			#endif
+
 			{
-				string t_root_bundle_url = BundleHelper.GetRootBundleUrl();
-
-				string t_file_url = BundleHelper.GetFileUrl();
-
-				#if LOCAL_BUNDLE_UPDATE
-				t_root_bundle_url = PathHelper.GetLocalFileWWWPath_U5_Test_Use( PlatformHelper.GetPlatformTag() );
-
-				t_file_url = PathHelper.GetLocalFileWWWPath_U5_Test_Use( ManifestHelper.CONST_MANIFEST_FOLDER_NAME + "/" + ManifestHelper.CONST_FILE_NAME );
-				#endif
-
-				{
-					if( !PrepareBundleHelper.IsBigVersionUpdated() ){
-						BundleHelper.LoadAsset( t_root_bundle_url, t_root_version,
-						                       "", ManifestHelper.CONST_ROOT_BUNDLE_ASSET_NAME,
-						                       RootBundleCallback );
-					}
-					
-					BundleHelper.LoadAsset( t_file_url, t_root_version,
-					                       "", ManifestHelper.CONST_FILE_NAME,
-					                       FileBundleCallback );
+				if( !PrepareBundleHelper.IsBigVersionUpdated() ){
+					BundleHelper.LoadAsset( t_root_bundle_url, t_root_version,
+						"", ManifestHelper.CONST_ROOT_BUNDLE_ASSET_NAME,
+						RootBundleCallback );
 				}
+
+				BundleHelper.LoadAsset( t_file_url, t_root_version,
+					"", ManifestHelper.CONST_FILE_NAME,
+					FileBundleCallback );
 			}
 		}
 	}
@@ -486,6 +511,16 @@ public class PrepareBundles : MonoBehaviour {
 	public static void StartGame(){
 		Debug.Log( "PrepareBundleConfig.StartGame()" );
 
+
+		#if DEBUG_BUNDLE
+		Debug.Log( "LocalSmallVersion: " + PrepareBundleHelper.GetLocalSmallVersion() );
+
+		Debug.Log( "LocalBigVersion: " + VersionTool.GetPackageBigVersion() );
+
+		Debug.Log( "ServerBigVersion: " + PrepareBundleHelper.GetServerBigVersion() );
+		#endif
+
+
 		SceneManager.EnterLogin();
 	}
 
@@ -504,7 +539,7 @@ public class PrepareBundles : MonoBehaviour {
 		PRELOAD_RESOURCES,
 		PREPARE_START_GAME,
 	}
-	
+
 	private static UpdateState m_bundle_update_state = UpdateState.SELECT_UPDATE_SERVER;
 
 	public static void SetUpdateState( UpdateState p_state ){

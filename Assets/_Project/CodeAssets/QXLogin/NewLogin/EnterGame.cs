@@ -171,7 +171,7 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
                         //		                }
                         //						Debug.Log( "Login response:\ncode: " + loginRet.code + "\nmessage:" + loginRet.msg );
                     }
-					Debug.Log ("loginRet.code:" + loginRet.code);
+//					Debug.Log ("loginRet.code:" + loginRet.code);
 	                switch (loginRet.code)
 	                {
 	                case 1:
@@ -224,6 +224,13 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 						AccountRequest.account.DisActiveLoginObj ();
 
 	                    break;
+
+					case 2016:
+
+						CityGlobalData.countryId = loginRet.guoJiaId;
+						AccountRequest.account.DisActiveLoginObj ();
+
+						break;
 					 default: 
 						 break;
 	                 }
@@ -253,6 +260,9 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 			break;
 		case 100:
 			SceneManager.EnterMainCity();
+			break;
+		case 2016:
+			SceneManager.EnterCreateRole ();
 			break;
 		default:
 			break;

@@ -28,16 +28,26 @@ public class SceneManager{
 
 	#region Clean In Loading
 
-	/// Enter Loading Scene, clean everything here
-	private static void EnterLoading(){
+	/// Desc:
+	/// Enter Loading Scene, clean everything here.
+	/// 
+	/// Return:
+	/// true, if success.
+	/// false, if fail.
+	private static bool EnterLoading( string p_scene_to_load, bool p_destroy_ui_when_level_loaded = true ){
 		#if DEBUG_LOADING_SCENE
 		Debug.Log( "SceneManager.EnterLoading()" );
 		#endif
 		
 		if ( EnterNextScene.Instance() != null ) {
-			Debug.Log( "Loading loading." );
-			
+			Debug.Log( "Loading loading, destroy first load, may cause load interrupt." );
+
 			EnterNextScene.Instance().ManualDestroyImmediate();
+		}
+
+		// success, then continue.
+		{
+			EnterNextScene.SetSceneToLoad( p_scene_to_load, p_destroy_ui_when_level_loaded );
 		}
 		
 		// clear all fx
@@ -59,10 +69,17 @@ public class SceneManager{
 		{
 			UI2DTool.ClearAll();
 		}
+
+		//
+		{
+			ModelAutoActivator.Clear();
+		}
 		
 		string t_loading_level_name = ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE;
 		
 		Global.LoadLevel( t_loading_level_name, LoadLoadinglDone );
+
+		return true;
 	}
 
 	#endregion
@@ -77,9 +94,7 @@ public class SceneManager{
         // Keep This Error, and Please RT YuGu.
         Debug.LogError("Error, Never Use This.");
 
-        EnterNextScene.SetSceneToLoad( p_scene_name );
-
-        EnterLoading();
+        EnterLoading( p_scene_name );
     }
 
 	/// request enter login.
@@ -89,6 +104,8 @@ public class SceneManager{
 	/// 2.in 3rd package, login will be invoke by 3rd callback.
 
 	public static void RequestEnterLogin(){
+		Debug.Log( "RequestEnterLogin()" );
+
 		if ( ThirdPlatform.IsThirdPlatform () ){
 			ThirdPlatform.LogOut();
 		}
@@ -123,12 +140,12 @@ public class SceneManager{
 
 		// notice loading
 		{
-			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.ENTER_LOGIN );
+//			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.ENTER_LOGIN );
+
+			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.ENTER_MAIN_CITY );
 		}
 
-        EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_LOGIN );
-
-        EnterLoading();
+      	EnterLoading( ConstInGame.CONST_SCENE_NAME_LOGIN );
 
 		if( ThirdPlatform.IsThirdPlatform() ){
 			ThirdPlatform.CheckLoginToShowSDK();
@@ -146,9 +163,7 @@ public class SceneManager{
 			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.ENTER_CREATE_ROLE );
 		}
 
-		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CREATE_ROLE ) );
-
-        EnterLoading();
+		EnterLoading( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CREATE_ROLE ) );
     }
 
     /// Load House Scene.
@@ -162,9 +177,7 @@ public class SceneManager{
         //Object.DontDestroyOnLoad( mainCityUI.gameObject );
         CityGlobalData.m_isAllianceTenentsScene = false;
 
-		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) );
-		
-		EnterLoading();
+		EnterLoading( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.HOUSE ) );
     }
 
     /// Load Carriage Scene.
@@ -179,9 +192,7 @@ public class SceneManager{
 			LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVP_YUN_BIAO );
 		}
 
-		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) );
-		
-		EnterLoading();
+		EnterLoading( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE ) );
     }
 
     /// <summary>
@@ -192,9 +203,7 @@ public class SceneManager{
 		Debug.Log("EnterAllianceBattle()" );
         #endif
 
-		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE ) );
-		
-		EnterLoading();
+		EnterLoading( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE ) );
     }
 
 	/// <summary>
@@ -206,9 +215,7 @@ public class SceneManager{
 		Debug.Log("EnterTreasureCity()" );
 		#endif
 		
-		EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.TREASURE_CITY ) );
-		
-		EnterLoading();
+		EnterLoading( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.TREASURE_CITY ) );
 	}
 
     /// Request to Load Main City Scene.
@@ -249,11 +256,11 @@ public class SceneManager{
         //}
         //else
         {
-			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.MAIN_CITY), false );
+			
            // EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_MAIN_CITY_YEWAN);
         }
 
-        EnterLoading();
+		EnterLoading( SceneTemplate.GetScenePath(SceneTemplate.SceneEnum.MAIN_CITY), false );
     }
 
     /// Request to Load Battle Field "p_battle_field_scene_name".
@@ -262,9 +269,11 @@ public class SceneManager{
 		Debug.Log("EnterBattleField( " + p_battle_field_scene_name + " )" );
 		#endif
 
-        EnterNextScene.SetSceneToLoad( p_battle_field_scene_name );
+		{
+			UtilityTool.UnloadUnusedAssets();
+		}
 
-        EnterLoading();
+       	EnterLoading( p_battle_field_scene_name );
     }
 
 
@@ -295,11 +304,11 @@ public class SceneManager{
    //     }
    //     else
         {
-			EnterNextScene.SetSceneToLoad( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY ), false );
+			EnterLoading( SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_CITY ), false );
           //  EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY );
         }
   
-        EnterLoading();
+
     }
 
    
@@ -313,16 +322,12 @@ public class SceneManager{
         CityGlobalData.m_isAllianceTenentsScene = true;
 
         //Debug.Log("CityGlobalData.m_SeverTimeCityGlobalData.m_SeverTime :: " + CityGlobalData.m_SeverTime);
-        if (CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20)
-        {
-            EnterNextScene.SetSceneToLoad(ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN);
+        if ( CityGlobalData.m_SeverTime < 5 || CityGlobalData.m_SeverTime > 20 ){
+           	EnterLoading( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_YEWAN );
         }
-        else
-        {
-            EnterNextScene.SetSceneToLoad( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE );
+        else{
+            EnterLoading( ConstInGame.CONST_SCENE_NAME_ALLIANCE_CITY_TENENTS_CITY_ONE );
         }
-
-        EnterLoading();
     }
     #endregion
 
@@ -338,7 +343,7 @@ public class SceneManager{
 		// clear
 		{
 			Global.m_isOpenPVP = false;
-
+			CityGlobalData.IsFistGetMiBaoData = true;
 			ClientMain.m_listPopUpData = new List<ClientMain.PopUpData>();
 			ClientMain.m_isNewOpenFunction = false;
 
@@ -352,12 +357,14 @@ public class SceneManager{
 //		Debug.Log("===========1");
 			Global.m_isOpenJiaoxue = true;
 			Global.m_isZhanli = false;
+			Global.m_iPChangeZhanli = 0;
+			Global.m_iPZhanli = 0;
 			Global.m_iAddZhanli = 0;
-			
+			Global.m_iCenterZhanli = 0;
+
 			Global.m_sMainCityWantOpenPanel = -1;
 			Global.m_sPanelWantRun = "";
 			Global.m_NewChenghao = new List<int>();
-			Global.m_iAddZhanli = 0;
 
 			Global.m_isOpenFuWen = false;
 			Global.m_isOpenShop = false;
@@ -367,6 +374,15 @@ public class SceneManager{
 			Global.m_listMainCityData = new List<TongzhiData>();
 			Global.m_listJiebiaoData = new List<TongzhiData>();
 
+			ClientMain.m_isOpenQIRI = false;
+			
+			ClientMain.m_isOpenQianDao = false;
+			CityGlobalData.PT_Or_CQ = true;
+			CityGlobalData.m_temp_CQ_Section = 0;
+			LimitActivityData.Instance.IsOpenQiriActivity = true;
+			LimitActivityData.Instance.IsOpenZaixianActivity = true;
+			EnterBattleFieldNet.sending = true;
+			MainCityUI.m_listShoujiData = new List<ShoujiData>();
             //Clear highest ui and chat objects.
 			if( ClientMain.Instance() != null ){
 				ClientMain.Instance().ClearObjectsWhenReconnect();
@@ -392,7 +408,7 @@ public class SceneManager{
 			{
 				GeneralRewardManager.Instance().ClearRewardData ();
 			}
-			
+
 			SocketTool.CloseSocket();
 		}
 
@@ -472,6 +488,10 @@ public class SceneManager{
 	
 	public static bool IsInCarriageScene(){
 		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE );
+	}
+
+	public static bool IsInTreasureCityScene(){
+		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.TREASURE_CITY );
 	}
 	
 	

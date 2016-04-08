@@ -22,7 +22,7 @@ public class My_DamageRank : MonoBehaviour {
 
 	mFixUniform mmFixUniform;
 
-	float MRankPosition;
+	public float MRankPosition;
 
 	float Relative_MRankPosition_Y;
 
@@ -55,7 +55,7 @@ public class My_DamageRank : MonoBehaviour {
 			
 			m_mRanktemp.transform.parent = mRanktemp.transform.parent;
 			
-			m_mRanktemp.transform.localPosition = new Vector3(0,120-i*Dis,0);
+			m_mRanktemp.transform.localPosition = new Vector3(0,-i*Dis,0);
 			
 			m_mRanktemp.transform.localScale = Vector3.one;
 			
@@ -79,15 +79,19 @@ public class My_DamageRank : MonoBehaviour {
 
 	public void Showmyrank()
 	{
+//		if(mRankList.damageInfo.Count <= 5)
+//		{
+//			return;
+//		}
 		mmFixUniform = UIgrid.GetComponent<mFixUniform>();
 
-		if(m_Scollview.transform.localPosition.y - MRankPosition + 112 > 0 )
+		if(m_Scollview.transform.localPosition.y + MRankPosition  > 5 )
 		{
 
-			//Debug.Log("11");
-			float S_y = m_Scollview.transform.localPosition.y-(m_Scollview.transform.localPosition.y -MRankPosition + 112);
-
-			mmFixUniform.offset = new Vector3(0,S_y,0);
+			Debug.Log("11");
+			float S_y = m_Scollview.transform.localPosition.y +MRankPosition;
+			Debug.Log("S_y = "+S_y);
+			mmFixUniform.offset = new Vector3(0,-S_y+70,0);
 
 			mmFixUniform.enabled = true;
 
@@ -95,12 +99,12 @@ public class My_DamageRank : MonoBehaviour {
 
 			StartCoroutine("Closescripte");
 		}
-		else if(m_Scollview.transform.localPosition.y + MRankPosition < -172)
+		else if(m_Scollview.transform.localPosition.y + MRankPosition  < -365)
 		{
-			//Debug.Log("22");
-			float X_y = m_Scollview.transform.localPosition.y -(m_Scollview.transform.localPosition.y +MRankPosition+ 172);
 
-			mmFixUniform.offset = new Vector3(0,X_y,0);
+			float X_y = m_Scollview.transform.localPosition.y + MRankPosition;
+
+			mmFixUniform.offset = new Vector3(0,-X_y-360,0);
 
 			mmFixUniform.enabled = true;
 
@@ -116,7 +120,7 @@ public class My_DamageRank : MonoBehaviour {
 	}
 	IEnumerator Closescripte()
 	{
-		yield return new WaitForSeconds (1.00f);
+		yield return new WaitForSeconds (0.50f);
 
 		 mmFixUniform.enabled = false;
 	}

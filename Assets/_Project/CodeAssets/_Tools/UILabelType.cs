@@ -126,7 +126,7 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.gradientBottom = new Color(253/255f, 220/255f, 201/255f);
 			m_UILabel.effectStyle = UILabel.Effect.Outline;
 			m_UILabel.effectColor = new Color(45/255f, 21/255f, 4/255f);
-			m_UILabel.effectDistance = new Vector2(2, 2);
+			m_UILabel.effectDistance = new Vector2(1, 1);
 			break;
 		case 100:
 			m_UILabel.fontSize = 25;

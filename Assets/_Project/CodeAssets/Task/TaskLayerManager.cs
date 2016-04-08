@@ -20,6 +20,8 @@ public class TaskLayerManager : MonoBehaviour
     private Dictionary<int, GameObject> _QuestButtonDic = new Dictionary<int, GameObject>();
     public UIGrid m_RewardParent;
     public UIGrid m_ItemParent;
+ 
+    public UIScrollView m_ScrollView;
     public UIGrid m_ButtonParent;
     public GameObject m_Durable_UI;
     //public List<GameObject> m_listTanHao;
@@ -46,6 +48,8 @@ public class TaskLayerManager : MonoBehaviour
     public UIGrid m_VitalityRewardGetParent;
     public UIGrid m_VitalityRewardShowParent;
     public UITexture m_TextureIcon;
+
+    public EventIndexHandle m_EventHide;
     private GameObject TouchedAhead;
     private int _index_OtherNum = 0;
     public GameObject m_DailyQuestObj;
@@ -88,13 +92,31 @@ public class TaskLayerManager : MonoBehaviour
         MainCityUI.setGlobalTitle(m_ObjTopLeft, "任务", 0, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         m_listMainTaskEvent.ForEach(p => p.m_Handle += MainTaskTouch);
+        m_EventHide.m_Handle += Hide;
         m_listEvent.ForEach(p => p.m_Handle += TouchInfo);
         m_SEC.OpenCompleteDelegate += ShowInfo;
         m_listEventVitality.ForEach(p => p.m_Handle += VitalityGet);
         // m_listVitalityInfo.ForEach(p => p.OnNormalPress += NormalTouch);
          m_listVitalityInfo.ForEach(p => p.m_TouchLQEvent.m_Handle += NormalTouch);
-        m_listVitalityInfo.ForEach(p => p.OnLongPress += LongTouch);
-        m_listVitalityInfo.ForEach(p => p.OnLongPressFinish += LongTouchFinish);
+        m_listVitalityInfo.ForEach(p => p.m_PressLong += LongTouch);
+        m_listVitalityInfo.ForEach(p => p.m_PressUp += LongTouchFinish);
+    }
+    void Hide(int index)
+    {
+        _LoneTouchOn = false;
+        _Name = "";
+        FreshVitality();
+        int count2 = m_VitalityRewardShowParent.transform.childCount;
+
+        if (count2 > 0)
+        {
+            for (int i = 0; i < count2; i++)
+            {
+                Destroy(m_VitalityRewardShowParent.transform.GetChild(i).gameObject);
+            }
+        }
+ 
+        m_VitalityRewardShow.SetActive(false);
     }
     void VitalityGet(int index)
     {
@@ -136,28 +158,13 @@ public class TaskLayerManager : MonoBehaviour
             ShowLeftButton();
         }
 
-        //if (_touchIndex == 0)
-        //{
-        //    TaskData.Instance.m_SideReload = false;
-        //    TaskData.Instance.m_DailyQuestIsRefresh = false;
-        //}
-        //else if (_touchIndex == 1)
-        //{
-        //    TaskData.Instance.m_MainReload = false;
-        //    TaskData.Instance.m_DailyQuestIsRefresh = false;
-        //}
-        //else if (_touchIndex == 2)
-        //{
-        //    TaskData.Instance.m_MainReload = false;
-        //    TaskData.Instance.m_SideReload = false;
-        //}
         if (TaskData.Instance.m_MainReload && _touchIndex == 0)
         {
             TaskData.Instance.m_MainReload = false;
             TidyMainTaskInfo();
         }
 
-
+       
         if (TaskData.Instance.m_SideReload && _touchIndex == 1)
         {
             TaskData.Instance.m_SideReload = false;
@@ -193,7 +200,6 @@ public class TaskLayerManager : MonoBehaviour
     {
         if (_touchIndex != index)
         {
-           
             _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(true);
             _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_Guang.SetActive(true);
             _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(false);
@@ -500,7 +506,7 @@ public class TaskLayerManager : MonoBehaviour
         if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue > 0 && TaskData.Instance.m_VitalityShowInfo._todaylHuoYue <= 100)
         {
             m_MoveSprite.gameObject.SetActive(true);
-            m_MoveSprite.transform.localPosition = new Vector3(-390 + GetLengthMove(float.Parse(TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString()) / HuoYueTempTemplate.GetHuoYueTempById(5).needNum), 164, 0);
+            m_MoveSprite.transform.localPosition = new Vector3(-390 + GetLengthMove(float.Parse(TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString()) / HuoYueTempTemplate.GetHuoYueTempById(5).needNum), 175, 0);
         }
         else
         {
@@ -579,7 +585,7 @@ public class TaskLayerManager : MonoBehaviour
         }
 
         int size_a = _listTaskInfo.Count;
-
+        Debug.Log("size_asize_asize_asize_asize_a ::" + size_a);
         for (int i = 0; i < size_a; i++)
         {
             CreateScrollViewItem();
@@ -620,21 +626,11 @@ public class TaskLayerManager : MonoBehaviour
             iconSampleObject.transform.parent = m_RewardParent.transform;
             iconSampleObject.transform.localPosition = Vector3.zero;
             IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-
             iconSampleManager.SetIconByID(_listTaskInfo[0]._listReward[index_Reward].icon, _listTaskInfo[0]._listReward[index_Reward].count.ToString(),4);
             iconSampleManager.SetIconPopText(_listTaskInfo[0]._listReward[index_Reward].icon,
                 NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(_listTaskInfo[0]._listReward[index_Reward].icon).nameId),
                 DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(_listTaskInfo[0]._listReward[index_Reward].icon).descId));
-           
-            if (_listTaskInfo[0]._listReward[index_Reward].type == 0)
-            {
-                iconSampleObject.transform.localScale = Vector3.one * 0.8f;
-            }
-            else
-            {
-                iconSampleObject.transform.localScale = Vector3.one;
-            }
-
+            iconSampleObject.transform.localScale = Vector3.one * 0.8f;
             if (index_Reward < _listTaskInfo[0]._listReward.Count - 1)
             {
                 index_Reward++;
@@ -642,6 +638,7 @@ public class TaskLayerManager : MonoBehaviour
             else
             {
                 m_MainQuestObj.SetActive(true);
+                m_RewardParent.repositionNow = true;
             }
 
             m_RewardParent.repositionNow = true;
@@ -675,9 +672,7 @@ public class TaskLayerManager : MonoBehaviour
             else
             {
                 m_OtherQuestObj.SetActive(true);
-                m_ItemParent.transform.parent.GetComponent<UIScrollView>().verticalScrollBar.value = 0;
                 m_ItemParent.transform.parent.GetComponent<UIScrollView>().UpdatePosition();
-                m_ItemParent.transform.parent.GetComponent<UIScrollView>().UpdateScrollbars(true);
             }
             m_ItemParent.repositionNow = true;
         }
@@ -686,6 +681,7 @@ public class TaskLayerManager : MonoBehaviour
             p_object = null;
         }
     }
+    bool _Istouch = false;
     void ShowReward(TaskLayerManager.TaskNeedInfo taskInfo, GameObject obj)
     {
         if (taskInfo._Progress < 0)
@@ -698,8 +694,9 @@ public class TaskLayerManager : MonoBehaviour
             //m_ObjFinish.SetActive(true);
             //StartCoroutine(WaitSecond(taskInfo, obj));
         }
-        else
+        else if(!_Istouch)
         {
+            _Istouch = true;
             if (RenWuTemplate.GetWetherContainId(taskInfo._TaskId) && !FunctionOpenTemp.GetWhetherContainID(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID) && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != -1 && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900002 && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900001)
             {
                 ClientMain.m_UITextManager.createText(MyColorData.getColorString(1, FunctionOpenTemp.GetTemplateById(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID).m_sNotOpenTips));
@@ -721,14 +718,21 @@ public class TaskLayerManager : MonoBehaviour
     void overMission(int id)
     {
         TaskSignalInfoShow.m_TaskId = id;
-        if(TaskSignalInfoShow.m_TaskSignal == null)
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), RewardCallback);
     }
 
     public void RewardCallback(ref WWW p_www, string p_path, Object p_object)
     {
-        GameObject tempObject = (GameObject)Instantiate(p_object);
-        UIYindao.m_UIYindao.CloseUI();
+        if (TaskSignalInfoShow.m_TaskSignal == null)
+        {
+            GameObject tempObject = (GameObject)Instantiate(p_object);
+            TaskSignalInfoShow.m_TaskSignal = tempObject.GetComponent<TaskSignalInfoShow>();
+            UIYindao.m_UIYindao.CloseUI();
+        }
+        else
+        {
+            p_object = null;
+        }
     }
     IEnumerator WaitSecond(TaskLayerManager.TaskNeedInfo taskInfo, GameObject obj)
     {
@@ -784,6 +788,7 @@ public class TaskLayerManager : MonoBehaviour
     }
     void OnDisable()
     {
+        _Istouch = false;
         TaskData.Instance.m_ShowType = 0;
     }
 
@@ -824,7 +829,7 @@ public class TaskLayerManager : MonoBehaviour
             p_object = null;
         }
     }
-
+    private bool _CreatedReward = false;
     void Vitality_RewardGet()
     {
         index_Vitality_Reward = 0;
@@ -883,8 +888,9 @@ public class TaskLayerManager : MonoBehaviour
     }
     private void OnIconSampleLoadReward_ShowCallBack(ref WWW p_www, string p_path, Object p_object)
     {
-        if (m_VitalityRewardShowParent != null)
+        if (m_VitalityRewardShowParent != null && !_LoneTouchOn)
         {
+            _LoneTouchOn = true;
             GameObject iconSampleObject = Instantiate(p_object) as GameObject;
             iconSampleObject.SetActive(true);
             iconSampleObject.transform.parent = m_VitalityRewardShowParent.transform;
@@ -905,6 +911,7 @@ public class TaskLayerManager : MonoBehaviour
             }
             else
             {
+                _CreatedReward = true;
                 m_VitalityRewardShow.SetActive(true);
             }
 
@@ -925,47 +932,88 @@ public class TaskLayerManager : MonoBehaviour
         for (int i = 0; i < 7; i++)
         {
             m_listVitalityInfo[i].m_LabTitle.text = HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum.ToString();
-            if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
+            if (i < 5)
             {
-                m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(true);
-                m_listVitalityInfo[i].m_FirstObj.SetActive(true);
-                m_listVitalityInfo[i].m_SecondObj.SetActive(false);
-                UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listVitalityInfo[i].gameObject, EffectIdTemplate.GetPathByeffectId(600154), null);
-            }
-            else if (TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
-            {
-                m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(false);
-                m_listVitalityInfo[i].m_FirstObj.SetActive(true);
-                m_listVitalityInfo[i].m_SecondObj.SetActive(false);
+                if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
+                {
+                    m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(true);
+                    m_listVitalityInfo[i].m_FirstObj.SetActive(true);
+                    m_listVitalityInfo[i].m_SecondObj.SetActive(false);
+                    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listVitalityInfo[i].gameObject, EffectIdTemplate.GetPathByeffectId(600154), null);
+                }
+                else if (TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
+                {
+                    m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(false);
+                    m_listVitalityInfo[i].m_FirstObj.SetActive(true);
+                    m_listVitalityInfo[i].m_SecondObj.SetActive(false);
+                }
+                else
+                {
+                    m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(false);
+                    m_listVitalityInfo[i].m_FirstObj.SetActive(false);
+                    m_listVitalityInfo[i].m_SecondObj.SetActive(true);
+                    UI3DEffectTool.ClearUIFx(m_listVitalityInfo[i].gameObject);
+                }
             }
             else
             {
-                m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(false);
-                m_listVitalityInfo[i].m_FirstObj.SetActive(false);
-                m_listVitalityInfo[i].m_SecondObj.SetActive(true);
-                UI3DEffectTool.ClearUIFx(m_listVitalityInfo[i].gameObject);
+                if (TaskData.Instance.m_VitalityShowInfo._weekHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
+                {
+                    m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(true);
+                    m_listVitalityInfo[i].m_FirstObj.SetActive(true);
+                    m_listVitalityInfo[i].m_SecondObj.SetActive(false);
+                    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listVitalityInfo[i].gameObject, EffectIdTemplate.GetPathByeffectId(600154), null);
+                }
+                else if (TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
+                {
+                    m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(false);
+                    m_listVitalityInfo[i].m_FirstObj.SetActive(true);
+                    m_listVitalityInfo[i].m_SecondObj.SetActive(false);
+                }
+                else
+                {
+                    m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(false);
+                    m_listVitalityInfo[i].m_FirstObj.SetActive(false);
+                    m_listVitalityInfo[i].m_SecondObj.SetActive(true);
+                    UI3DEffectTool.ClearUIFx(m_listVitalityInfo[i].gameObject);
+                }
             }
         }
     }
+    private int _indexSave = -1;
     void NormalTouch(int index)
     {
-        _Vitality_index = index;
-        int count0 = m_VitalityRewardGetParent.transform.childCount;
-        if (count0 > 0)
+        if (_indexSave != index)
         {
-            for (int i = 0; i < count0; i++)
+            _indexSave = index;
+            m_listVitalityInfo[index].m_TouchLQEvent.GetComponent<Collider>().enabled = false;
+            _Vitality_index = index;
+            int count0 = m_VitalityRewardGetParent.transform.childCount;
+            if (count0 > 0)
             {
-                Destroy(m_VitalityRewardGetParent.transform.GetChild(i).gameObject);
+                for (int i = 0; i < count0; i++)
+                {
+                    Destroy(m_VitalityRewardGetParent.transform.GetChild(i).gameObject);
+                }
             }
-        }
-        CleartVitalityEffect();
+            CleartVitalityEffect();
 
-        if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(index + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[index] != 1)
-        {
-            m_labVitalityRewardGet.text = "[今日]活跃度达到" + HuoYueTempTemplate.GetHuoYueTempById(index + 1).needNum.ToString();
-            _listVitalityReward.Clear();
-            _listVitalityReward = FunctionWindowsCreateManagerment.GetRewardInfo(HuoYueTempTemplate.GetHuoYueTempById(index + 1).award);
-            Vitality_RewardGet();
+            if (index > 4
+                && TaskData.Instance.m_VitalityShowInfo._weekHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(index + 1).needNum
+                    && TaskData.Instance.m_VitalityShowInfo._listawardStatus[index] != 1)
+            {
+                m_labVitalityRewardGet.text = "[本周]活跃度达到" + HuoYueTempTemplate.GetHuoYueTempById(index + 1).needNum.ToString();
+                _listVitalityReward.Clear();
+                _listVitalityReward = FunctionWindowsCreateManagerment.GetRewardInfo(HuoYueTempTemplate.GetHuoYueTempById(index + 1).award);
+                Vitality_RewardGet();
+            }
+            else if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(index + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[index] != 1)
+            {
+                m_labVitalityRewardGet.text = "[今日]活跃度达到" + HuoYueTempTemplate.GetHuoYueTempById(index + 1).needNum.ToString();
+                _listVitalityReward.Clear();
+                _listVitalityReward = FunctionWindowsCreateManagerment.GetRewardInfo(HuoYueTempTemplate.GetHuoYueTempById(index + 1).award);
+                Vitality_RewardGet();
+            }
         }
     }
 
@@ -977,7 +1025,34 @@ public class TaskLayerManager : MonoBehaviour
         }
     }
     private int index_Touch_Save = 0;
+    private string _Name = "";
+    private bool _LoneTouchOn = false;
+
     void LongTouch(GameObject obj)
+    {
+        if (UICamera.selectedObject != null && !string.IsNullOrEmpty(_Name))
+        {
+            if (!UICamera.selectedObject.name.Equals(_Name))
+            {
+                LongTouchFinish(obj);
+            }
+        }
+
+        if (Input.touchCount > 1)
+        {
+            return;
+        }
+        if (string.IsNullOrEmpty(_Name))
+        {
+            _Name = obj.name;
+        }
+    
+        if(_Name == obj.name)
+        {
+            TouchOn(obj);
+        }
+    }
+    void TouchOn(GameObject obj)
     {
         for (int i = 0; i < 7; i++)
         {
@@ -996,12 +1071,18 @@ public class TaskLayerManager : MonoBehaviour
             _listVitalityReward.Clear();
             _listVitalityReward = FunctionWindowsCreateManagerment.GetRewardInfo(HuoYueTempTemplate.GetHuoYueTempById(int.Parse(obj.name) + 1).award);
 
-            Vitality_RewardShow();
+            {
+
+                Vitality_RewardShow();
+            }
         }
+
     }
 
     void LongTouchFinish(GameObject obj)
     {
+        _LoneTouchOn = false;
+        _Name = "";
         FreshVitality();
         int count2 = m_VitalityRewardShowParent.transform.childCount;
  

@@ -58,24 +58,29 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
     {
         isNewLeader = true;
         RequestAllianceData();
-       RequestYaoQing();
+
         //        RequestData();
     }
 
-    //void Update()
-    //{
-    //    if (Isdismissed)
-    //    {
-    //        Isdismissed = false;
-    //        if (GameObject.Find("My_Union(Clone)") != null)
-    //        {
-    //            Destroy(GameObject.Find("My_Union(Clone)"));
-    //        }
+    void Update()
+    {
+		if(Hy_Bi !=JunZhuData.Instance ().Hy_Bi)
+		{
+			Hy_Bi = JunZhuData.Instance ().Hy_Bi;
+		}
 
-    //    }
-    //}
+//        if (Isdismissed)
+//        {
+//            Isdismissed = false;
+//            if (GameObject.Find("My_Union(Clone)") != null)
+//            {
+//                Destroy(GameObject.Find("My_Union(Clone)"));
+//            }
+//
+//        }
+    }
 
-    //    private static readonly List<int> AllianceAddFuncBtn = new List<int>() { 2000, 2001, 2002 };
+        private static readonly List<int> AllianceAddFuncBtn = new List<int>() { 2000, 2001, 2002 };
 
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
@@ -110,7 +115,10 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                                 RefreshAllianceInfo(allianceNoRes);
                             }
                             _isNoAllianceKey = true;
-                            m_InstantiateNoAlliance = true;
+                            if (AllianceLayerManagerment.m_No_AllianceLayer)
+                            {
+                                m_InstantiateNoAlliance = true;
+                            }
 
                             //Clear tenement data.
                             TenementData.Instance.m_AllianceCityTenementDic.Clear();
@@ -127,6 +135,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             PlayerNameManager.UpdateSelfName();
                         }
                         MainCityUI.SetSuperRed(104, true);
+                        RequestYaoQing();
                         return true;
                     }
 
@@ -208,6 +217,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             PlayerNameManager.UpdateSelfName();
                         }
                         MainCityUI.SetSuperRed(104, false);
+                        MainCityUI.SetButtonNum(104, 0);
                         return true;
                     }
 
@@ -223,6 +233,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             g_UnionInfo = null;
                             Isdismissed = true;
                             JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;//new add
+                            IsAllianceNotExist = true;
                             //if (!CityGlobalData.m_isJieBiaoScene && BattleControlor.Instance() == null)
                             //{
                             //    CityGlobalData.m_isAllianceScene = false;
@@ -250,7 +261,17 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             CityGlobalData.m_isMainScene = false;
                             // CityGlobalData.m_isAllianceScene = true;
                             // SceneManager.EnterAllianceCity();
-
+                            if (Application.loadedLevelName.Equals(ConstInGame.CONST_SCENE_NAME_MAINCITY))
+                            {
+                                JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
+                                GameObject obj = new GameObject();
+                                obj.name = "MainCityUIButton_104";
+                                MainCityUI.m_MainCityUI.MYClick(obj);
+                            }
+                            else
+                            {
+                                ClientMain.m_UITextManager.createText("加入联盟成功！现在您可以协助盟友运镖了！！");
+                            }
                             JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;//new add
                         }
                         return true;
@@ -267,7 +288,16 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                 case ProtoIndexes.ALLIANCE_DISMISS_NOTIFY://联盟被解散成功
                     {
                         JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
-
+						{
+							//去掉商铺联盟相关红点
+							PushAndNotificationHelper.SetRedSpotNotification (600700,false);//贡献商铺
+							PushAndNotificationHelper.SetRedSpotNotification (903,false);//荒野商店
+						}
+						
+						if(MainCityUI.m_MainCityUI.m_WindowObjectList.Count>=1)
+						{
+							DisAllianceSuccessBack(0);
+						}
                         if (!CityGlobalData.m_isJieBiaoScene && BattleControlor.Instance() == null)
                         {
                             for (int i = 0; i < g_UnionInfo.memberInfo.Count; i++)
@@ -431,8 +461,11 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         {
                             MainCityUI.SetButtonNum(104, invitetem.inviteInfo.Count);
                         }
+                        else
+                        {
+                            MainCityUI.SetButtonNum(104, 0);
+                        }
                        
-
                         return true;
                     }
                 //case ProtoIndexes.S_ALLIANCE_INVITE_REFUSE: /** 拒绝联盟邀请返回 **/
@@ -481,6 +514,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         }
                         return true;
                     }
+			
                 default: return false;
             }
 
@@ -512,8 +546,10 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 		
 	}
 	void DisAllianceSuccessBack (int i)
-	{
-        GameObject uirot = GameObject.Find("_My_Union(Clone)");
+    {
+        AllianceData.Instance.IsAllianceNotExist = true;
+        QXChatUIBox.chatUIBox.SetSituationState();
+        GameObject uirot = GameObject.Find("New_My_Union(Clone)");
 		
 		if(uirot)
 		{
@@ -634,6 +670,18 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
     public void RequestAllianceData()
     {
+
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);
     }
+    public void RequestAllianceInvite(long _junzhuid)////联盟邀请
+    {
+        AllianceInvite green = new AllianceInvite();
+        green.junzhuId = _junzhuid;
+        MemoryStream t_stream = new MemoryStream();
+        QiXiongSerializer q_serializer = new QiXiongSerializer();
+        q_serializer.Serialize(t_stream, green);
+        byte[] t_protof = t_stream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_INVITE, ref t_protof);
+    }
+
 }

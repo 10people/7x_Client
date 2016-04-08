@@ -28,7 +28,7 @@ public class MainCityWantOpenManager : MYNGUIPanel
 		{
 			if(!FunctionOpenTemp.IsHaveID(FunctionUnlock.templates[i].id))
 			{
-				Debug.Log(FunctionUnlock.templates[i].id);
+//				Debug.Log(FunctionUnlock.templates[i].id);
 				m_spriteIcon.spriteName = "Function_" + FunctionUnlock.templates[i].id;
 				m_labelDes.text = FunctionUnlock.templates[i].des1;
 				m_labelUnLock.text = "解锁条件:" + FunctionUnlock.templates[i].des2;

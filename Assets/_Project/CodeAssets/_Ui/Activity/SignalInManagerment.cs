@@ -56,14 +56,21 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     public Animator m_Anim_2;
 
     private List<ActivitySignalInItemManagerment> _listSignalInItem = new List<ActivitySignalInItemManagerment>();
+    private bool _isGeneralRules = false;
     void Awake()
     {
         m_SignalIn = this;
        // SocketTool.RegisterMessageProcessor(this);
     }
-
+    public enum TouchType
+    {
+        BUTTON_NONE,
+        BUTTON_UP
+    }
+    public TouchType m_ButtonTouch;
     void Start()
     {
+        m_ButtonTouch = TouchType.BUTTON_UP;
         m_EventEffect.m_Handle += EffectHidden;
         if (FreshGuide.Instance().IsActive(100175) && TaskData.Instance.m_TaskInfoDic[100175].progress >= 0)
         {
@@ -97,6 +104,15 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         SocketTool.RegisterMessageProcessor(this);
     }
 
+
+    void Update()
+    {
+        if (GameObject.Find("GeneralRules(Clone)") == null && _isGeneralRules)
+        {
+            _isGeneralRules = false;
+            FreshBagsState();
+        }
+    }
     void EffectHidden(int index)
     {
         m_ObjBack.GetComponent<FadeInOrOutManagerment>().FadeEffect(FadeInFinish);
@@ -105,7 +121,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
 
     void RequestSignalInInfo()
     {
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_SIGNALINLIST_REQ);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_SIGNALINLIST_REQ,true);
     }
 
     void SignalIn()
@@ -115,6 +131,19 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
 
     void BagTouch(int index)
     {
+        if (FreshGuide.Instance().IsActive(100175) || (FreshGuide.Instance().IsActive(100177) &&! (index + 1 <= _VipDate && !_listBagsState[index])))
+        {
+            return;
+        }
+        else if (m_ButtonTouch == TouchType.BUTTON_NONE )
+        {
+            return;
+        }
+        else
+        {
+            m_ButtonTouch = TouchType.BUTTON_NONE;
+        }
+ 
         UIYindao.m_UIYindao.CloseUI();
         
         //else
@@ -158,6 +187,8 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                 break;
             case 1:
                 {
+                    ClearBags();
+                    _isGeneralRules = true;
                   // m_ObjDesInfo.SetActive(true);
                     GeneralControl.Instance.LoadRulesPrefab(DescIdTemplate.GetDescriptionById(QianDaoMonthTemplate.getDescIdTemplateByMonth(currentMonth)));
                     //m_ObjSignal.SetActive(false);
@@ -222,9 +253,10 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                                 SparkleEffectItem.CloseSparkle(m_SpriteQianDao.gameObject);
                                 m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
                                 m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
-                                m_LabSignalInButtonRight.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_3)
-                                    + MyColorData.getColorString(5, 4)
-                                    + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_4);
+                                //m_LabSignalInButtonRight.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_3)
+                                //    + MyColorData.getColorString(5, 4)
+                                //    + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_4);
+                                m_LabSignalInButtonRight.text = "每日[ff0000]4[-]点可领新的签到奖励!";
                             }
                             else
                             {
@@ -317,6 +349,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
 
                         if (ReponseInfo.success == 0)
                         {
+                            UIYindao.m_UIYindao.CloseUI();
                             RequestSignalInInfo();
                             //if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
                             //{
@@ -431,6 +464,15 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                 }
             }
             m_listBagsInfo[i].m_SecondObj.SetActive(_listBagsState[i]);
+        }
+    }
+
+    void ClearBags()
+    {
+        int size = m_listBagsInfo.Count;
+        for (int i = 0; i < size; i++)
+        {
+            UI3DEffectTool.ClearUIFx(m_listBagsInfo[i].gameObject);
         }
     }
     void ShowSignalIn()
@@ -602,6 +644,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
             UI3DEffectTool.ClearUIFx(m_EventEffect.gameObject);
            _isEnanble = true;
             m_ObjGetV.SetActive(false);
+            m_ButtonTouch = SignalInManagerment.TouchType.BUTTON_UP;
             m_ObjAllSignal.SetActive(true);
             ClientMain.closePopUp();
         }

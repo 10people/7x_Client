@@ -143,7 +143,16 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
             _playerRandomAnimator = false;
             AnimationPlay(1);
         }
-        m_Agent.speed = PlayerModelController.m_playerModelController.m_speed;
+//        m_Agent.speed = PlayerModelController.m_playerModelController.m_speed;
+
+		if (PlayerModelController.m_playerModelController != null)
+		{
+			m_Agent.speed = PlayerModelController.m_playerModelController.m_speed;
+		}
+		else if (TreasureCityPlayer.m_instance != null)
+		{
+			m_Agent.speed = TreasureCityPlayer.m_instance.m_speed;
+		}
 
         m_Agent.Resume();
         m_Agent.SetDestination(targetPosition);
@@ -177,7 +186,8 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
             case 0:
                 {
                     _playerRandomAnimator = true;
-                    m_animation.SetTrigger("iniDle");
+                    //m_animation.SetTrigger("iniDle");
+                    m_animation.Play("zhuchengidle");
                 }
                 break;
             case 1:
@@ -186,17 +196,20 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
                     _playerRandomAnimator = false;
                     _PlayerTyoe = AnimationType.INIDLE;
                     m_MoveType = MoveType.MOVE_TYPE_IDLE;
-                    m_animation.SetTrigger("inRun");
+                    //m_animation.SetTrigger("inRun");
+                    m_animation.Play("zhuchengrun");
                 }
                 break;
             case 2:
                 {
-                    m_animation.SetTrigger("inRelax_1");
+                    //m_animation.SetTrigger("inRelax_1");
+                    m_animation.Play("zhuchengrelax_1");
                 }
                 break;
             case 3:
                 {
-                    m_animation.SetTrigger("inRelax_2");
+                    //m_animation.SetTrigger("inRelax_2");
+                    m_animation.Play("zhuchengrelax_2");
                 }
                 break;
             default:

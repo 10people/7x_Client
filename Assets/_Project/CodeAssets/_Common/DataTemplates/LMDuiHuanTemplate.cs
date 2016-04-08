@@ -38,6 +38,10 @@ public class LMDuiHuanTemplate : XmlLoadManager {
 	public int site;
 
 	public int needLv;
+
+	public int max;
+
+	public int ifRecomanded;
 	
 	public static List<LMDuiHuanTemplate> templates = new List<LMDuiHuanTemplate>();
 	
@@ -98,6 +102,12 @@ public class LMDuiHuanTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.needLv = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.max = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ifRecomanded = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

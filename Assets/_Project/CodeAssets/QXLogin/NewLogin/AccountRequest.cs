@@ -44,6 +44,8 @@ public class AccountRequest : MonoBehaviour {
 
 	public GameObject zhezhaoObj;
 
+	public GameObject backBtnObj;
+
 	public List<EventHandler> loginHandlerList = new List<EventHandler> ();
 
 	/// <summary>
@@ -161,6 +163,39 @@ public class AccountRequest : MonoBehaviour {
 			WeiXinBtn ();
 
 			break;
+		case "BackBtn":
+
+			{
+				ThirdPlatform.LogOut();
+			}
+
+			backBtnObj.SetActive (false);
+
+			switch (enterType)
+			{
+			case EnterType.LAST_LOGIN:
+
+				lastLoginObj.SetActive (false);
+
+				break;
+			case EnterType.SELECT_ONE:
+
+				selectObj1.SetActive (false);
+
+				break;
+			case EnterType.SELECT_TWO:
+
+				selectObj2.SetActive (false);
+
+				break;
+			default:
+				break;
+			}
+
+			loginObj1.SetActive (m_selectPlatform);
+			loginObj2.SetActive (!m_selectPlatform);
+
+			break;
 		default:
 			break;
 		}
@@ -201,10 +236,10 @@ public class AccountRequest : MonoBehaviour {
 		notice.transform.localScale = Vector3.one;
 
 		NoticeManager noticeMan = notice.GetComponent<NoticeManager> ();
-		noticeMan.GetNoticeStr (tempResponse);
+		//noticeMan.GetNoticeStr (tempResponse);
 	}
 	
-	void NoticeFail (string tempResponse) 
+	public static void NoticeFail (string tempResponse) 
 	{
 //		Debug.Log( " AccountRequest.NoticeFail: " + tempResponse );
 
@@ -212,9 +247,11 @@ public class AccountRequest : MonoBehaviour {
 	}
 
 	#region Active LoginObj
+	private bool m_selectPlatform;
 	private UIWidget loginWidget;
 	public void SetActiveLoginObj (bool selectPlatform)
 	{
+		m_selectPlatform = selectPlatform;
 		loginObj1.SetActive (selectPlatform);
 		loginObj2.SetActive (!selectPlatform);
 
@@ -262,6 +299,7 @@ public class AccountRequest : MonoBehaviour {
 		}
 
 		selectObjWidget.alpha = 1;
+		backBtnObj.GetComponent<UIWidget> ().alpha = 1;
 
 		FlyBirdController.birdController.SetBirdState (FlyBirdController.BirdState.FLY);
 
@@ -273,6 +311,7 @@ public class AccountRequest : MonoBehaviour {
 		while (selectObjWidget.alpha > 0)
 		{
 			selectObjWidget.alpha -= 0.05f;
+			backBtnObj.GetComponent<UIWidget> ().alpha -= 0.05f;
 			yield return new WaitForSeconds (0.02f);
 			
 			if (selectObjWidget.alpha <= 0)
@@ -323,42 +362,43 @@ public class AccountRequest : MonoBehaviour {
 	{
 		QQBtn ();
 
-		if (SysparaTemplate.CompareSyeParaWord (userName.value) || SysparaTemplate.CompareSyeParaWord (password.value))
+//		if (SysparaTemplate.CompareSyeParaWord (userName.value) || SysparaTemplate.CompareSyeParaWord (password.value))
+//		{
+//			textStr = "有奇怪的文字混进来了\n再仔细推敲一下吧...";
+//			QXComData.CreateBox (1,textStr,true,null);
+//		}
+//		else
+//		{
+//
+//		}
+
+		if (string.IsNullOrEmpty (userName.value) || string.IsNullOrEmpty (password.value) ||
+		    userName.value == "请输入账号名" || password.value == "请输入密码")
 		{
-			textStr = "有奇怪的文字混进来了\n再仔细推敲一下吧...";
+			textStr = "账号或密码不能为空！";
 			QXComData.CreateBox (1,textStr,true,null);
 		}
-
+		
 		else
 		{
-			if (string.IsNullOrEmpty (userName.value) || string.IsNullOrEmpty (password.value) ||
-			    userName.value == "请输入账号名" || password.value == "请输入密码")
-			{
-				textStr = "账号或密码不能为空！";
-				QXComData.CreateBox (1,textStr,true,null);
-			}
+			Dictionary<string,string> tempUrl = new Dictionary<string,string>();
 			
-			else
-			{
-				Dictionary<string,string> tempUrl = new Dictionary<string,string>();
-				
-				tempUrl.Add ( "name", userName.value );
-				
-				tempUrl.Add ( "pwd",password.value );
-
-				tempUrl.Add ( "CustomDeviceId", DeviceHelper.GetDeviceInfo() );
-
-				AddClientInfo( tempUrl );
-
-				#if DEBUG_REQUEST
-//				DebugRequestParams( tempUrl );
-				#endif
-				
-				HttpRequest.Instance().Connect ( CityGlobalData.RigisterURL, 
-				                                 tempUrl, 
-				                                 LoginRequestSuccess, 
-				                                 LoginRequestFail );
-			}
+			tempUrl.Add ( "name", userName.value );
+			
+			tempUrl.Add ( "pwd",password.value );
+			
+			tempUrl.Add ( "CustomDeviceId", DeviceHelper.GetDeviceInfo() );
+			
+			AddClientInfo( tempUrl );
+			
+			#if DEBUG_REQUEST
+			//				DebugRequestParams( tempUrl );
+			#endif
+			
+			HttpRequest.Instance().Connect ( CityGlobalData.RigisterURL, 
+			                                tempUrl, 
+			                                LoginRequestSuccess, 
+			                                LoginRequestFail );
 		}
 	}
 	
@@ -410,47 +450,48 @@ public class AccountRequest : MonoBehaviour {
 	{
 		WeiXinBtn ();
 
-		if (SysparaTemplate.CompareSyeParaWord (userName.value) || SysparaTemplate.CompareSyeParaWord (password.value))
+//		if (SysparaTemplate.CompareSyeParaWord (userName.value) || SysparaTemplate.CompareSyeParaWord (password.value))
+//		{
+//			textStr = "有奇怪的文字混进来了\n\n再仔细推敲一下吧...";
+//			QXComData.CreateBox (1,textStr,true,null);
+//		}
+//		else
+//		{
+//
+//		}
+
+		if (string.IsNullOrEmpty (userName.value) || string.IsNullOrEmpty (password.value) ||
+		    userName.value == "请输入账号名" || password.value == "请输入密码")
 		{
-			textStr = "有奇怪的文字混进来了\n\n再仔细推敲一下吧...";
+			textStr = "账号或密码不能为空！";
 			QXComData.CreateBox (1,textStr,true,null);
 		}
-
+		
 		else
 		{
-			if (string.IsNullOrEmpty (userName.value) || string.IsNullOrEmpty (password.value) ||
-			    userName.value == "请输入账号名" || password.value == "请输入密码")
+			Dictionary<string,string> tempUrl = new Dictionary<string,string>();
+			
+			tempUrl.Add("name",userName.value);
+			
+			tempUrl.Add("pwd", password.value);
+			
+			tempUrl.Add ( "CustomDeviceId", DeviceHelper.GetDeviceInfo() );
+			
+			AddClientInfo( tempUrl );
+			
+			#if DEBUG_REQUEST
+			//				DebugRequestParams( tempUrl );
+			#endif
+			
+			// add uuid
 			{
-				textStr = "账号或密码不能为空！";
-				QXComData.CreateBox (1,textStr,true,null);
+				OperationSupport.AppendHttpParamUUID( tempUrl );
 			}
 			
-			else
-			{
-				Dictionary<string,string> tempUrl = new Dictionary<string,string>();
-				
-				tempUrl.Add("name",userName.value);
-				
-				tempUrl.Add("pwd", password.value);
-
-				tempUrl.Add ( "CustomDeviceId", DeviceHelper.GetDeviceInfo() );
-
-				AddClientInfo( tempUrl );
-
-				#if DEBUG_REQUEST
-//				DebugRequestParams( tempUrl );
-				#endif
-
-				// add uuid
-				{
-					OperationSupport.AppendHttpParamUUID( tempUrl );
-				}
-				
-				HttpRequest.Instance().Connect ( CityGlobalData.LoginURL,
-				                                 tempUrl,
-				                                 DengLuRequestSuccess, 
-				                                 DengLuRequestFail );
-			}
+			HttpRequest.Instance().Connect ( CityGlobalData.LoginURL,
+			                                tempUrl,
+			                                DengLuRequestSuccess, 
+			                                DengLuRequestFail );
 		}
 	}
 
@@ -498,6 +539,8 @@ public class AccountRequest : MonoBehaviour {
 			QXComData.CreateBox (1,textStr,true,null);
 			break;
 		case 1:
+
+			backBtnObj.SetActive (true);
 			loginObj1.SetActive (false);
 			loginObj2.SetActive (false);
 			lastLoginObj.SetActive (true);
@@ -586,10 +629,15 @@ public class AccountRequest : MonoBehaviour {
 		tempStrLabel.text = ServeStateDic[state];
 	}
 
+	public int isNewPlayer;
+
 	//上次登陆按钮状态
 	public void ShowLastLoginBtn (UISprite btnSprite,UILabel btnLabel)
 	{
-		int isNewPlayer = dengLuNode ["isLogined"].AsInt;//新老用户 1.登陆过 2.未登陆过
+		isNewPlayer = dengLuNode ["isLogined"].AsInt;//新老用户 1.登陆过 2.未登陆过
+		Debug.Log ("isNewPlayer:" + isNewPlayer);
+		btnSprite.color = Color.white;
+		btnLabel.color = Color.white;
 
 		switch (isNewPlayer)
 		{
@@ -606,10 +654,10 @@ public class AccountRequest : MonoBehaviour {
 
 		case 2:
 
-			btnSprite.color = Color.black;
-			btnLabel.color = Color.black;
+//			btnSprite.color = Color.black;
+//			btnLabel.color = Color.black;
 
-			btnLabel.text = "上次登录" + " " + "区";
+			btnLabel.text = "选择分区";
 
 			break;
 		}
@@ -629,7 +677,7 @@ public class AccountRequest : MonoBehaviour {
 		}
 	}
 
-     void CreateReConnectWindow()
+	public static void CreateReConnectWindow()
     {
 //		Debug.Log( "AccountRequest.CreateReConnectWindow()" );
 
@@ -645,10 +693,11 @@ public class AccountRequest : MonoBehaviour {
 		                 null,
 		                 false,
 		                 false,
-		                 false );
+		                 false,
+						true );
     }
 
-     void ReLoginClickCallback(int p_i)
+     public static void ReLoginClickCallback(int p_i)
     {
 //        Debug.Log("ReLoginClickCallback( " + p_i + " )");
 

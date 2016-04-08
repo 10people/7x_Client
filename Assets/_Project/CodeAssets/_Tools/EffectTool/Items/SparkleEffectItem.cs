@@ -54,6 +54,10 @@ public class SparkleEffectItem : MonoBehaviour {
 	#region Mono
 
 	void Start(){
+		#if DEBUG_EFFECT
+		Debug.Log( "SparkleEffectItem.Start( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " )" );
+		#endif
+
 		m_start_time = Time.realtimeSinceStartup;
 
 		{
@@ -62,6 +66,10 @@ public class SparkleEffectItem : MonoBehaviour {
 	}
 
 	void OnEnable(){
+		#if DEBUG_EFFECT
+		Debug.Log( "SparkleEffectItem.OnEnable( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " )" );
+		#endif
+
 		InitSparkle();
 	}
 
@@ -71,6 +79,8 @@ public class SparkleEffectItem : MonoBehaviour {
 			#if DEBUG_EFFECT
 			Debug.Log( "Sprite Change, Reset." );
 			#endif
+
+			Clean();
 
 			InitSparkle();
 		}
@@ -100,10 +110,18 @@ public class SparkleEffectItem : MonoBehaviour {
 	}
 
 	void OnDisable(){
+		#if DEBUG_EFFECT
+		Debug.Log( "SparkleEffectItem.OnDisable( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " )" );
+		#endif
+
 		Clean();
 	}
 
 	void OnDestroy(){
+		#if DEBUG_EFFECT
+		Debug.Log( "SparkleEffectItem.OnDestroy( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " )" );
+		#endif
+
 		Clean();
 	}
 
@@ -251,6 +269,8 @@ public class SparkleEffectItem : MonoBehaviour {
 			
 			return;
 		}
+
+		t_sparkle.Clean();
 
 		Destroy( t_sparkle );
 	}

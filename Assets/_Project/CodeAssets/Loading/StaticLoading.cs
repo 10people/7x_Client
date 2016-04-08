@@ -170,7 +170,13 @@ public class StaticLoading : MonoBehaviour {
 	}
 
 	private static void InitLoadingFx(){
-		string t_path = EffectIdTemplate.GetPathByeffectId( 620217 );
+		EffectIdTemplate t_template = EffectIdTemplate.getEffectTemplateByEffectId( 620217, false );
+
+		if( t_template == null ){
+			return;
+		}
+
+		string t_path = t_template.path;
 
 		Global.ResourcesDotLoad( t_path, LoadingFxLoadCallback );
 	}
@@ -214,6 +220,10 @@ public class StaticLoading : MonoBehaviour {
 		}
 		#endif
 
+		#if LOG_LOADING
+		Debug.Log( "Res Path: " + t_ui_path );
+		#endif
+
 		if( string.IsNullOrEmpty( t_ui_path ) ){
 			Debug.Log( "Loading Res not configged." );
 
@@ -231,6 +241,10 @@ public class StaticLoading : MonoBehaviour {
 			
 			return;
 		}
+
+		#if LOG_LOADING
+		Debug.Log( "Set Texture: " + t_tex );
+		#endif
 
 		Instance().m_loading_bg.mainTexture = t_tex;
 	}

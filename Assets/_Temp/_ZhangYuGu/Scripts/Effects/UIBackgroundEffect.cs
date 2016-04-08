@@ -1,5 +1,7 @@
 ﻿//#define DEBUG_UI_BG_EF
 
+//#define DEBUG_OPEN_CLOSE
+
 
 
 using UnityEngine;
@@ -10,6 +12,8 @@ using System.Collections;
 public class UIBackgroundEffect : MonoBehaviour {
 
 	#region Mono
+
+	private Camera m_self_cam;
 
 	private Shader m_shader = null;
 
@@ -41,6 +45,8 @@ public class UIBackgroundEffect : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		m_start_time = Time.time;
+
+		m_self_cam = GetComponent<Camera>();
 	}
 
 	void OnEnable(){
@@ -48,13 +54,7 @@ public class UIBackgroundEffect : MonoBehaviour {
 	}
 
 	void OnDisable(){
-		RevertCam();
-
-		if( m_cached_rt != null ){
-			RenderTexture.ReleaseTemporary( m_cached_rt );
-
-			m_cached_rt = null;
-		}
+		ManualCloseEffect();
 	}
 	
 	// Update is called once per frame
@@ -209,6 +209,10 @@ public class UIBackgroundEffect : MonoBehaviour {
 
 			t_cam.cullingMask = 0;
 		}
+
+		if( !CameraHelper.IsMainCamera( m_self_cam ) ){
+			CameraHelper.SetMainCamera( false );
+		}
 	}
 
 	private void RevertCam(){
@@ -237,6 +241,10 @@ public class UIBackgroundEffect : MonoBehaviour {
 			Debug.Log( "Restore Cam.Mask: " + m_cam_mask );
 			#endif
 		}
+
+		if( !CameraHelper.IsMainCamera( m_self_cam ) ){
+			CameraHelper.SetMainCamera( true );
+		}
 	}
 
 	#endregion
@@ -260,19 +268,49 @@ public class UIBackgroundEffect : MonoBehaviour {
 			return null;
 		}
 
-		#if DEBUG_UI_BG_EF
+		#if DEBUG_OPEN_CLOSE || DEBUG_UI_BG_EF
 		Debug.Log( "SetUIBackgroundEffect( " + p_open + " - " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) + " )" );
 		#endif
 
 		if( p_open ){
 			UIBackgroundEffect t_effect = (UIBackgroundEffect)ComponentHelper.AddIfNotExist( p_gb, typeof(UIBackgroundEffect) );
 
+			if( t_effect != null ){
+				if( t_effect.IsGoingToBeDestroyed() ){
+					#if DEBUG_OPEN_CLOSE || DEBUG_UI_BG_EF
+					Debug.Log( "Origin Background Effect is going to be destroyed, add new one." );
+					#endif
+
+					t_effect = (UIBackgroundEffect)ComponentHelper.AddComponet( p_gb, typeof(UIBackgroundEffect) );
+				}
+			}
+
 			return t_effect;
 		}
 		else{
-			ComponentHelper.RemoveIfExist( p_gb, typeof(UIBackgroundEffect) );
+			Component t_com = ComponentHelper.RemoveIfExist( p_gb, typeof(UIBackgroundEffect) );
+
+			if( t_com != null ){
+				UIBackgroundEffect t_effect = (UIBackgroundEffect)t_com;
+
+				{
+					t_effect.ManualCloseEffect();
+
+					t_effect.SetIsGoingToBeDestroyed();
+				}
+			}
 
 			return null;
+		}
+	}
+
+	protected void ManualCloseEffect(){
+		if( m_cached_rt != null ){
+			RevertCam();
+
+			RenderTexture.ReleaseTemporary( m_cached_rt );
+
+			m_cached_rt = null;
 		}
 	}
 
@@ -281,6 +319,16 @@ public class UIBackgroundEffect : MonoBehaviour {
 
 
 	#region Utilities
+
+	private bool m_is_going_to_be_destroyed = false;
+
+	protected bool IsGoingToBeDestroyed(){
+		return m_is_going_to_be_destroyed;
+	}
+
+	protected void SetIsGoingToBeDestroyed(){
+		m_is_going_to_be_destroyed = true;
+	}
 
 	private float GetCoef(){
 		if( m_default_delay <= 0 ){

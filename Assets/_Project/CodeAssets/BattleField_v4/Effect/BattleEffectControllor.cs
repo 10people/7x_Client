@@ -398,6 +398,14 @@ public class BattleEffectControllor : MonoBehaviour
 		}
 	}
 
+	void LateUpdate()
+	{
+		foreach(BattleEffect effect in effects)
+		{
+			effect.effectLateUpdate();
+		}
+	}
+
 	public GameObject getEffect(int id, bool sound = true)
 	{
 		EffectIdTemplate et = EffectTemplate.getEffectTemplateByEffectId (id);
@@ -452,7 +460,15 @@ public class BattleEffectControllor : MonoBehaviour
 
 			spe.PlaySound(et.sound);
 		}
-		
+
+		BattleEffect be = tempObj.GetComponent<BattleEffect>();
+
+		if (be == null) be = tempObj.AddComponent<BattleEffect>();
+
+		be.updateOff ();
+
+		be.updataDodgeOn ();
+
 		return tempObj;
 	}
 

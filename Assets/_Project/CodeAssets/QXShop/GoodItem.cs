@@ -32,6 +32,8 @@ public class GoodItem : MonoBehaviour {
 
 	private int jieSuoVip;
 
+	public GameObject tuiJianObj;
+
 	/// <summary>
 	/// Gets the dui huan info.
 	/// </summary>
@@ -49,6 +51,8 @@ public class GoodItem : MonoBehaviour {
 
 		jieSuoVip = 0;
 
+		bool tuiJian = false;
+
 		switch (tempType)
 		{
 		case ShopData.ShopType.ORDINARY:
@@ -63,6 +67,7 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.countBuyTime = tempInfo.remainCount;
 
 			jieSuoVip = template.VIP;
+			tuiJian = template.ifRecomanded == 0 ? false : true;
 
 			break;
 		}
@@ -77,6 +82,7 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.moneyType = (QXComData.MoneyType)Enum.ToObject (typeof (QXComData.MoneyType),template.needType);
 
 			jieSuoVip = template.VIP;
+			tuiJian = template.ifRecomanded == 0 ? false : true;
 
 			break;
 		}
@@ -90,6 +96,8 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.needMoney = template.needNum;
 			goodInfo.moneyType = ShopData.Instance.MoneyType (tempType);
 
+			tuiJian = template.ifRecomanded == 0 ? false : true;
+
 			break;
 		}
 		case ShopData.ShopType.GONGXIAN:
@@ -102,11 +110,14 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.needMoney = template.needNum;
 			goodInfo.moneyType = ShopData.Instance.MoneyType (tempType);
 			goodInfo.site = template.site;
+			goodInfo.countBuyTime = tempInfo.remainCount;
 
 			isAllianceCanBuy = ShopData.Instance.GetAllianceLevel () >= template.needLv ? true : false;
-//			Debug.Log ("isAllianceCanBuy:" + isAllianceCanBuy);
+//			Debug.Log ("goodInfo.itemId:" + goodInfo.itemId);
 			desLabel.text = isAllianceCanBuy ? "" : MyColorData.getColorString (5,"商铺升至" + template.needLv + "级可购买");
 			moneyIcon.transform.parent.gameObject.SetActive (isAllianceCanBuy);
+
+			tuiJian = template.ifRecomanded == 0 ? false : true;
 
 			break;
 		}
@@ -132,11 +143,15 @@ public class GoodItem : MonoBehaviour {
 			goodInfo.needMoney = template.needNum;
 			goodInfo.moneyType = ShopData.Instance.MoneyType (tempType);
 
+			tuiJian = template.ifRecomanded == 0 ? false : true;
+
 			break;
 		}
 		default:
 			break;
 		}
+
+		tuiJianObj.SetActive (shopType == ShopData.ShopType.GONGXIAN ? (isAllianceCanBuy ? tuiJian : false) : tuiJian);
 
 		goodInfo.site = tempInfo.site;
 
@@ -199,6 +214,10 @@ public class GoodItem : MonoBehaviour {
 	
 	void ClickItem (GameObject obj)
 	{
+		if (ShopPage.shopPage.clickTime > 0)
+		{
+			return;
+		}
 		if (duiHuanInfo.isChange && JunZhuData.Instance().m_junzhuInfo.vipLv >= jieSuoVip)
 		{
 			if (shopType == ShopData.ShopType.GONGXIAN)

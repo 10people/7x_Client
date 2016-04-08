@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define DEBUG_TOUCH
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,6 +106,10 @@ public class Joystick : MYNGUIPanel
 
     public override void MYPress(bool isPress, GameObject ui)
     {
+		#if DEBUG_TOUCH
+		Debug.Log( "MYPress( " + isPress + " )" );
+		#endif
+
         if (isPress)
         {
 			m_isMove = false;

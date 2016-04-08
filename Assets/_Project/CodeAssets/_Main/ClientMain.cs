@@ -511,16 +511,16 @@ public class ClientMain : MonoBehaviour , SocketListener
 		
 		if( m_basic_assets_loaded_count == CONST_BASIC_ASSET_TO_LOAD_COUNT ){
 			//			Debug.Log( "ClientMain.Continue Loading -> Login, Network, DialogSystem, YinDao." );
-			
+
+			// load network
+			{
+				NetworkWaiting.Instance( true );
+			}
+
 			{
 				// load login
 				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.LOGIN ),
 				                        LoginLoadCallback );
-			}
-			
-			// load network
-			{
-				NetworkWaiting.Instance( true );
 			}
 			
 			{
@@ -542,8 +542,11 @@ public class ClientMain : MonoBehaviour , SocketListener
 				
 				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_YINDAO ),
 				                        YinDaoLoadCallback );
-				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.SHOUJI ),
-				                        YinDaoLoadCallback );
+				if(UIShouji.m_UIShouji == null)
+				{
+					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.SHOUJI ),
+					                        YinDaoLoadCallback );
+				}
 			}
 			
 			// async load after announcement
@@ -587,7 +590,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 	
 	private static int m_templates_loaded 		= 0;
 	
-	private const int CONST_TEMPLATES_COUNT		= 104;
+	private const int CONST_TEMPLATES_COUNT		= 144;
 	
 	public static bool m_is_templates_loaded 	= false;
 	
@@ -629,9 +632,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 			RenWuTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			CreateRoleTemplate.LoadTemplates( TemplateLoadedCallback );
-			
-			ChengJiuTemplate.LoadTemplates( TemplateLoadedCallback );
-			
+
 			
 			
 			BattleMibaoEffTemplate.LoadTemplates( TemplateLoadedCallback );
@@ -641,9 +642,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 			DangpuItemCommonTemplate.LoadTemplates( TemplateLoadedCallback );
 			
 			SkillTemplate.LoadTemplates( TemplateLoadedCallback );
-			
-			ExpXxmlTemp.LoadTemplates( TemplateLoadedCallback );
-			
+
 			BattleConfigTemplate.LoadTemplates( TemplateLoadedCallback );
 		}
 		
@@ -734,11 +733,9 @@ public class ClientMain : MonoBehaviour , SocketListener
 			
 			GongJiTypeTemplate.LoadTemplates ( TemplateLoadedCallback );
 			
-			BattleAppearanceTemplate.LoadTemplates( TemplateLoadedCallback );
+
 			
-			
-			
-			SysparaTemplate.LoadTemplates( TemplateLoadedCallback );
+			ExpXxmlTemp.LoadTemplates( TemplateLoadedCallback );
 			
 			VipTemplate.LoadTemplates( TemplateLoadedCallback );
 			
@@ -748,9 +745,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 			
 			DiaoLuoTemplate.LoadTemplates( TemplateLoadedCallback );
 		}
-		
-		//			UnLoadManager.startLoad( TemplateLoadedCallback );
-		
+
 		// 51 - 60
 		{
 			MiBaoXmlTemp.LoadTemplates ( TemplateLoadedCallback );
@@ -807,13 +802,13 @@ public class ClientMain : MonoBehaviour , SocketListener
 			
 			PveStarTemplate.LoadTemplates(TemplateLoadedCallback);
 			
-			HuangyePvpNpcTemplate.LoadTemplates(TemplateLoadedCallback);
-			
 			VipFuncOpenTemplate.LoadTemplates(TemplateLoadedCallback);
 			
 			HuoDongTemplate.LoadTemplates(TemplateLoadedCallback);
 			
-			
+			LMBubbleTemplate.LoadTemplates(TemplateLoadedCallback);
+
+
 			
 			QianDaoMonthTemplate.LoadTemplates(TemplateLoadedCallback);
 			
@@ -838,9 +833,9 @@ public class ClientMain : MonoBehaviour , SocketListener
 			
 			YouXiaNpcTemplate.LoadTemplates(TemplateLoadedCallback);
 			
-			
-			
-			HY_GuYongBingTempTemplate.LoadTemplates ( TemplateLoadedCallback );
+
+
+			LegendPveZuoBiaoTemplate.LoadTemplates(TemplateLoadedCallback);
 			
 			XianshiControlTemp.LoadTemplates(TemplateLoadedCallback);
 			
@@ -862,7 +857,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 			LianmengzhanTemplate.LoadTemplates(TemplateLoadedCallback);
 			
 			ChenghaoTemplate.LoadTemplates(TemplateLoadedCallback);
-			
+
+
 			
 			LMDuiHuanTemplate.LoadTemplates(TemplateLoadedCallback);
 			
@@ -898,10 +894,10 @@ public class ClientMain : MonoBehaviour , SocketListener
 			QiriQiandaoTemplate.LoadTemplates(TemplateLoadedCallback);
 			
 			MiBaoExtrattributeTemplate.LoadTemplates(TemplateLoadedCallback);
-			{
+		}
 				
-				//111-120
-			}
+		//111-120
+		{
 			LianMengTuTengTemplate.LoadTemplates(TemplateLoadedCallback);
 			
 			HeroSkillUpTemplate.LoadTemplates(TemplateLoadedCallback);
@@ -962,7 +958,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 			
 			LueDuoPersonRankTemplate.LoadTemplates(TemplateLoadedCallback);
 			
-			
+
+
 			LueDuoUnionRankTemplate.LoadTemplates(TemplateLoadedCallback);
 			
 			LueDuoLianmengRankTemplate.LoadTemplates(TemplateLoadedCallback);
@@ -973,12 +970,18 @@ public class ClientMain : MonoBehaviour , SocketListener
 			
 			LMTargetTemplate.LoadTemplates(TemplateLoadedCallback);
 		}
+
 		//141-150
 		{
 			ChuShiNuQiTemplate.LoadTemplates(TemplateLoadedCallback);
-			LMBubbleTemplate.LoadTemplates(TemplateLoadedCallback);
-			LegendPveZuoBiaoTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			BattleAppearanceTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			ChengJiuTemplate.LoadTemplates( TemplateLoadedCallback );
+			
+            FangWuTemplate.LoadTemplates(TemplateLoadedCallback);
 		}
+
 		m_is_templates_loaded = true;
 	}
 	

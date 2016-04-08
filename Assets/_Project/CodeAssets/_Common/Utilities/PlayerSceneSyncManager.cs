@@ -75,6 +75,14 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 #if DEBUG_SCENE_SYNC
 		Debug.Log( "EnterCarriage()" );
 #endif
+		if(!UIShouji.m_isPlayShouji)
+		{
+			if(UIShouji.m_UIShouji.m_isPlay)
+			{
+				UIShouji.m_UIShouji.close();
+				UIShouji.m_UIShouji.gameObject.SetActive(false);
+			}
+		}
 
         byte[] t_protof = GetEnterSceneStructure(new Vector3(initXPos, -2.5f, initZPos));
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.ENTER_CARRIAGE_SCENE, ref t_protof);
@@ -102,13 +110,32 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
 	#region Treasure City
 
-	public void EnterTreasureCity (float initXPos = 0, float initZPos = 0)
+	public void EnterTreasureCity (float initXPos = -15, float initZPos = -30)
 	{
+		if (TreasureCityData.Instance ().CanGetBoxCount () <= 0)
+		{
+			ClientMain.m_UITextManager.createText (MyColorData.getColorString (4,"今日您可抢的宝箱数已为[d80202]0[-]，明天再来吧。"));
+			return;
+		}
+
+		if (TreasureCityData.Instance ().openState == 100)
+		{
+			ClientMain.m_UITextManager.createText (MyColorData.getColorString (4,"宝箱副本里的人数已满，请稍后再试。"));
+			return;
+		}
+
+		if(!UIShouji.m_isPlayShouji)
+		{
+			if(UIShouji.m_UIShouji.m_isPlay)
+			{
+				UIShouji.m_UIShouji.close();
+				UIShouji.m_UIShouji.gameObject.SetActive(false);
+			}
+		}
 		#if DEBUG_SCENE_SYNC
 		Debug.Log( "EnterTreasureCity()" );
 		#endif
-
-		byte[] t_protof = GetEnterSceneStructure(new Vector3(initXPos, -2.5f, initZPos));
+		byte[] t_protof = GetEnterSceneStructure(new Vector3(initXPos, 85, initZPos));
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.Enter_TBBXScene, ref t_protof);
 
 //		Debug.Log ("ProtoIndexes.Enter_TBBXScene:" + ProtoIndexes.Enter_TBBXScene);
@@ -154,7 +181,7 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
                         m_MyselfUid = tempScene.uid;
                         m_MyselfPosition = new Vector3(tempScene.posX, tempScene.posY, tempScene.posZ);
-
+//						Debug.Log ("EndPos:" + m_MyselfPosition);
                         if (m_enterSceneDelegate != null)
                         {
                             m_enterSceneDelegate();

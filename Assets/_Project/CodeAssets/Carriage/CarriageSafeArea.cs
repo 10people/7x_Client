@@ -21,7 +21,6 @@ namespace Carriage
         {
             m_CarriageNPCPrefab = Resources.Load<GameObject>("_3D/Models/Carriage/CarriageNPC");
 
-            YunBiaoSafeTemplate.Templates.ForEach(item => m_SafeAreaList.Add(item.m_SafeArea));
             m_SafeAreaList.ForEach(item =>
             {
                 //Create safe area effect.
@@ -42,6 +41,11 @@ namespace Carriage
                 //Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(NpcCityTemplate.GetNpcItemById(301).m_npcShowId),
                 //                        LoadModelCallback);
             });
+        }
+
+        void Awake()
+        {
+            YunBiaoSafeTemplate.Templates.ForEach(item => m_SafeAreaList.Add(item.m_SafeArea));
         }
 
         private void LoadModelCallback(ref WWW p_www, string p_path, Object p_object)

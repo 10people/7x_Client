@@ -30,7 +30,11 @@ public class LianMengKeJiTemplate : XmlLoadManager {
 
 	public int  Icon;
 
+	public static int m_iAddType = -1;
+
 	public static List<LianMengKeJiTemplate> templates = new List<LianMengKeJiTemplate>();
+
+	public static List<List<LianMengKeJiTemplate>> templateszu = new List<List<LianMengKeJiTemplate>>();
 	
 	
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null )
@@ -57,7 +61,7 @@ public class LianMengKeJiTemplate : XmlLoadManager {
 		}
 		
 		bool t_has_items = true;
-		
+		List<LianMengKeJiTemplate> tempAddLate = new List<LianMengKeJiTemplate>();
 		do{
 			t_has_items = t_reader.ReadToFollowing( "LianMengKeJi" );
 			
@@ -66,7 +70,8 @@ public class LianMengKeJiTemplate : XmlLoadManager {
 			}
 			
 			LianMengKeJiTemplate t_template = new LianMengKeJiTemplate();
-			
+
+
 			{
 
 				t_reader.MoveToNextAttribute();
@@ -92,7 +97,8 @@ public class LianMengKeJiTemplate : XmlLoadManager {
 				
 				t_reader.MoveToNextAttribute();
 				t_template.type = int.Parse( t_reader.Value );
-				
+
+
 				t_reader.MoveToNextAttribute();
 				t_template.value1 = int.Parse( t_reader.Value );
 
@@ -101,16 +107,32 @@ public class LianMengKeJiTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.Icon = int.Parse( t_reader.Value );
-				
+
+
+//				public static List<LianMengKeJiTemplate> templates = new List<LianMengKeJiTemplate>();
+//				
+//				public static List<List<LianMengKeJiTemplate>> templateszu = new List<List<LianMengKeJiTemplate>>();
 			}
 			
 			//			t_template.Log();
 			
 			templates.Add( t_template );
+
+			if(m_iAddType != t_template.type)
+			{
+				if(m_iAddType != -1)
+				{
+					templateszu.Add(tempAddLate);
+					tempAddLate = new List<LianMengKeJiTemplate>();
+				}
+				m_iAddType = t_template.type;
+			}
+			tempAddLate.Add(t_template);
 		}
 		while( t_has_items );
+		templateszu.Add(tempAddLate);
 	}
-	
+
 	public static LianMengKeJiTemplate GetLianMengKeJiTemplate_by_Type_And_Level(int type, int mLevel)
 	{
 		for (int i = 0; i < templates.Count; i++)
@@ -122,6 +144,11 @@ public class LianMengKeJiTemplate : XmlLoadManager {
 		}
 		return null;
 		
+	}
+
+	public static LianMengKeJiTemplate GetLianMengKeJiTemplate_by_Zu_And_Level(int type, int mLevel)
+	{
+		return templateszu[type][mLevel];
 	}
 	public static List<LianMengKeJiTemplate> mLianMengKeJiTemplateList = new List<LianMengKeJiTemplate> ();
 	public static List<LianMengKeJiTemplate> GetLianMengKeJiTemplate_by_type()

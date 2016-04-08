@@ -165,8 +165,12 @@ public class BattleControlor : MonoBehaviour
 		king = null;
 
 		_instance = null;
-	}
 
+		if(ClientMain.m_ClientMainObj != null && ClientMain.m_ClientMainObj.GetComponent<AudioListener>() == null)
+		{
+			ClientMain.m_ClientMainObj.AddComponent<AudioListener> ();
+		}
+	}
 
 	#region Prepare Battle Field
 
@@ -252,7 +256,7 @@ public class BattleControlor : MonoBehaviour
 
 	public bool havePlayedGuide(GuideTemplate template)
 	{
-		if (template == null || template.levelType == 1 || CityGlobalData.m_debugPve == true || CityGlobalData.autoFightDebug == true) return true;
+		if (template == null || CityGlobalData.m_debugPve == true || CityGlobalData.autoFightDebug == true) return true;
 
 		foreach(GuideTemplate t in guidePlayed)
 		{
@@ -277,6 +281,12 @@ public class BattleControlor : MonoBehaviour
 			{
 				return true;
 			}
+		}
+
+		//胜利之后，可以出现胜利引导和后续引导
+		if(result != BattleResult.RESULT_BATTLING && template.triggerType != 2 && template.triggerType != 4)
+		{
+			return true;
 		}
 
 		return false;
@@ -1087,6 +1097,33 @@ public class BattleControlor : MonoBehaviour
 
 		UIYindao.m_UIYindao.CloseUI ();
 
+		{
+			bool droppenCoin = false;
+		
+			bool droppenBox = false;
+		
+			foreach (Node n in CityGlobalData.t_resp.enemyTroop.nodes) 
+			{
+				for (int i = 0; n.droppenItems != null && n.droppenItems.Count > 0 && i < n.droppenItems.Count; i++) 
+				{
+					DroppenItem di = n.droppenItems [i];
+				
+					if (di.commonItemId == 900001) droppenCoin = true;
+
+					else droppenBox = true;
+				}
+			}
+		
+			BattleUIControlor.Instance().droppenLayerBox.gameObject.SetActive (droppenBox);
+		
+			if (droppenCoin == false) 
+			{
+				BattleUIControlor.Instance().droppenLayerBox.transform.localPosition = BattleUIControlor.Instance().droppenLayerCoin.transform.localPosition;
+			}
+		
+			BattleUIControlor.Instance().droppenLayerCoin.gameObject.SetActive (droppenCoin);
+		}
+
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)
 		{
 			int chapterId = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
@@ -1506,6 +1543,8 @@ public class BattleControlor : MonoBehaviour
 
 	public void playUnLockEffWeaponRange()
 	{
+		ClientMain.Instance ().m_SoundPlayEff.PlaySound ("811790");
+
 		StartCoroutine(playUnLockEffWeaponRange(LockControllor.Instance().lockWeaponRange, BattleUIControlor.Instance().m_changeWeapon.btnRange));
 	}
 
@@ -1593,7 +1632,7 @@ public class BattleControlor : MonoBehaviour
 	{
 		float time = 0;
 
-		if(CityGlobalData.t_resp.selfTroop.nodes[0].mibaoCount > 0)
+		if(CityGlobalData.t_resp.selfTroop.nodes[0].mibaoCount > 0 && false)
 		{
 			BattleUIControlor.Instance ().mibaoShowControllor.gameObject.SetActive (true);
 
@@ -2045,6 +2084,8 @@ public class BattleControlor : MonoBehaviour
 	{
 		if (CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0 && CityGlobalData.m_tempLevel == 1) 
 		{
+			UIYindao.m_UIYindao.CloseUI ();
+
 			BattleUIControlor.Instance().ExecQuit ();
 
 			return;
@@ -2052,9 +2093,25 @@ public class BattleControlor : MonoBehaviour
 
 //		Debug.Log ("showResult showResult");
 
-		BattleUIControlor.Instance().addDebugText ("showResult()");
+		{
+			DramaStoryControllor storyControllor = DramaStoryReador.Instance ().GetComponentInChildren <DramaStoryControllor>();
+		
+			if(storyControllor != null && storyControllor.storyBoardList != null)
+			{
+				foreach(DramaStoryBoard dsb in storyControllor.storyBoardList.Values)
+				{
+					dsb.clear();
+				}
 
-//		UtilityTool.Instance.DelayedUnloadUnusedAssets();
+				storyControllor.storyBoardList.Clear();
+			}
+
+			FxHelper.CleanCachedFx ();
+
+			UtilityTool.UnloadUnusedAssets ();
+		}
+
+		BattleUIControlor.Instance().addDebugText ("showResult()");
 
 		ClientMain.m_sound_manager.RemoveAllSound();
 

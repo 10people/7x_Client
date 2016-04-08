@@ -237,7 +237,21 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 			{
 			case ProtoIndexes.DISMISS_ALLIANCE_OK://无法判断是否解散成功
 			{
-				//Debug.Log ("jiesan:" + ProtoIndexes.DISMISS_ALLIANCE_OK);
+				Debug.Log ("jiesan:" + ProtoIndexes.DISMISS_ALLIANCE_OK);
+				//去掉商铺联盟相关红点
+				PushAndNotificationHelper.SetRedSpotNotification (600700,false);//贡献商铺
+				PushAndNotificationHelper.SetRedSpotNotification (903,false);//荒野商店
+
+				PushAndNotificationHelper.SetRedSpotNotification (410000,false);//荒野商店
+				PushAndNotificationHelper.SetRedSpotNotification (410010,false);//荒野商店
+				PushAndNotificationHelper.SetRedSpotNotification (600500,false);//荒野商店
+				PushAndNotificationHelper.SetRedSpotNotification (600600,false);//荒野商店
+				PushAndNotificationHelper.SetRedSpotNotification (600750,false);//荒野商店
+				PushAndNotificationHelper.SetRedSpotNotification (600850,false);//荒野商店
+				PushAndNotificationHelper.SetRedSpotNotification (300200,false);//荒野商店
+				PushAndNotificationHelper.SetRedSpotNotification (300300,false);//荒野商店
+				PushAndNotificationHelper.SetRedSpotNotification (400018,false);//荒野商店
+
 				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
 				                        DisAllianceLoadCallback );
 		 		return true;
@@ -303,6 +317,8 @@ public class LeaderSetting : MonoBehaviour, SocketProcessor {
 
 	void DisAllianceSuccessBack (int i)
 	{
+        AllianceData.Instance.IsAllianceNotExist = true;
+        QXChatUIBox.chatUIBox.SetSituationState();
         //JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
         //CityGlobalData.m_isAllianceScene = false;
         //CityGlobalData.m_isMainScene = true;

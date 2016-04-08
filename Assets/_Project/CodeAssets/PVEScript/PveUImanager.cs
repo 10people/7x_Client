@@ -11,6 +11,8 @@ public class PveUImanager :MYNGUIPanel
 {
     public ScaleEffectController m_ScaleEffectController;
 
+	int maxChanpter = 13;
+
     public static int buyTimes;
     public GameObject desdroymap;
     public static PveUImanager instances;
@@ -55,6 +57,7 @@ public class PveUImanager :MYNGUIPanel
       //  RecoverToliCips.transform.localScale = new Vector3(0, 0, 0);
         LeftBtn.SetActive(false);
         RightBtn.SetActive(true);
+
 //		UIRoot root = GameObject.FindObjectOfType<UIRoot>();
 //		if (root != null) {
 //			float s = (float)root.activeHeight / Screen.height;
@@ -68,7 +71,12 @@ public class PveUImanager :MYNGUIPanel
 //			//Debug.Log ("root == null");
 //		}
     }
-
+	public void OPenEffect(GameObject Btn)
+	{
+		int id = 620225;
+		UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,Btn,
+		                                   EffectIdTemplate.GetPathByeffectId(id));
+	}
 	void OnDestroy(){
 		instances = null;
 	}
@@ -80,15 +88,15 @@ public class PveUImanager :MYNGUIPanel
 			UIToggle mUItoggle = PT_btn.GetComponent<UIToggle>();
 			//mUItoggle.startsActive = true;
 			mUItoggle.value = !mUItoggle.value;
-
-//			Debug.Log("pongtong");
+			OPenEffect (PT_btn);
+		
 		}else
 		{
+			OPenEffect (CQ_btn);
 			UIToggle mUItoggle = CQ_btn.GetComponent<UIToggle>();
 			//mUItoggle.startsActive = true;
 			mUItoggle.value = !mUItoggle.value;
 
-//			Debug.Log("Chuanqi Ka");
 		}
 	}
 
@@ -186,10 +194,15 @@ public class PveUImanager :MYNGUIPanel
 //		Debug.Log("CityGlobalData.m_LastSection = "+CityGlobalData.m_LastSection);
 //		Debug.Log("FunctionOpenTemp.GetWhetherContainID( 109))= "+FunctionOpenTemp.GetWhetherContainID( 109));
 //		Debug.Log("CityGlobalData.m_temp_CQ_Section = "+CityGlobalData.m_temp_CQ_Section);
-		if((CityGlobalData.m_temp_CQ_Section  > 1 ||(CityGlobalData.m_LastSection > 1&& FunctionOpenTemp.GetWhetherContainID( 109))&&CityGlobalData.m_temp_CQ_Section  > 0))
+		if(!CQ_btn.activeInHierarchy)
 		{
 			//Debug.Log("CityGlobalData.m_LastSection = "+CityGlobalData.m_LastSection);
-			CQ_btn.SetActive(true);
+			if((CityGlobalData.m_temp_CQ_Section  > 1 ||(CityGlobalData.m_LastSection > 1&& FunctionOpenTemp.GetWhetherContainID( 109))&&CityGlobalData.m_temp_CQ_Section  > 0))
+			{
+				CQ_btn.SetActive(true);
+
+			}
+
 		}
 
       //  buyTimes = JunZhuData.Instance().m_junzhuInfo.tiLipurchaseTime;
@@ -238,7 +251,17 @@ public class PveUImanager :MYNGUIPanel
             return;
         }
 		CityGlobalData.PT_Or_CQ = true;
+		UI3DEffectTool.ClearUIFx (CQ_btn);
+		OPenEffect(PT_btn);
       //  MapData.mapinstance.Is_Com_Lv = true;
+		if(FreshGuide.Instance().IsActive(100320)&& TaskData.Instance.m_TaskInfoDic[100320].progress >= 0)
+		{
+			//			Debug.Log("攻打传奇关卡");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100320];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+
+			return;
+		}
         MapData.sendmapMessage(-1);
     }
 
@@ -250,6 +273,7 @@ public class PveUImanager :MYNGUIPanel
 
 		choosemap.UpAndDownbtn = true;
 
+
 	    CloseArt();
 		if (!CityGlobalData.PT_Or_CQ )
         {
@@ -258,9 +282,9 @@ public class PveUImanager :MYNGUIPanel
 		CityGlobalData.PT_Or_CQ = false;
        // MapData.mapinstance.Is_Com_Lv = false;
 		MapData.mapinstance.GuidLevel = 0;
-
+		UI3DEffectTool.ClearUIFx (PT_btn);
 		//Debug.Log ("CityGlobalData.m_temp_CQ_Section =  "+CityGlobalData.m_temp_CQ_Section);
-
+		OPenEffect(CQ_btn);
 		MapData.sendmapMessage(CityGlobalData.m_temp_CQ_Section);
 	}
 	
@@ -378,7 +402,7 @@ public class PveUImanager :MYNGUIPanel
 					return;
 				}
 			}
-			if (MapData.mapinstance.CurrChapter  > 15)
+			if (MapData.mapinstance.CurrChapter  > maxChanpter)
 			{
 				// Debug.Log("显示未开启提示");
 				DontOpenLvTips.SetActive(true);
@@ -389,7 +413,7 @@ public class PveUImanager :MYNGUIPanel
 
 				return;
 			}
-            if (MapData.mapinstance.nowCurrChapter < 15)
+			if (MapData.mapinstance.nowCurrChapter < maxChanpter)
             {
                 choosemap.UpAndDownbtn = true;
                 MapData.mapinstance.JYLvs = 0;
@@ -434,7 +458,7 @@ public class PveUImanager :MYNGUIPanel
 					return;
 				}
 			}
-			if (MapData.mapinstance.CurrChapter  > 15)
+			if (MapData.mapinstance.CurrChapter  > maxChanpter)
 			{
 				// Debug.Log("显示未开启提示");
 				DontOpenLvTips.SetActive(true);
@@ -582,10 +606,11 @@ public class PveUImanager :MYNGUIPanel
 	{
 		GeneralControl.Instance.LoadRulesPrefab (LanguageTemplate.GetText (LanguageTemplate.Text.PVE_HELP_DESC),ActiveGuide);
 		UIYindao .m_UIYindao.CloseUI ();
+		MapData.mapinstance.CloseEffect ();
 	}
 	void ActiveGuide ()
 	{
-
+		MapData.mapinstance.OpenEffect ();
 		MapData.mapinstance.ShowPVEGuid();
 
 	}
@@ -605,7 +630,7 @@ public class PveUImanager :MYNGUIPanel
         {
             UIYindao.m_UIYindao.CloseUI();
         }
-        MapData.mapinstance.IsCloseGuid = true;
+        //MapData.mapinstance.IsCloseGuid = true;
 //		WindowBackShowController.CreateSaveWindow("Secret(Clone)");
 //		WindowBackShowController.CreateSaveWindow("JUN_ZHU_LAYER_AMEND");
         Destroy(desdroymap);

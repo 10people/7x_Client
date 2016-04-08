@@ -27,7 +27,9 @@ public class TipItemControllor : MonoBehaviour
 	public UILabel labelNumBar;
 	
 	public UISprite spriteTab;
-	
+
+	public UILabel labelTab;
+
 	public UILabel labelDesc;
 	
 	public UILabel labelFrom;
@@ -45,7 +47,7 @@ public class TipItemControllor : MonoBehaviour
 	
 	private CommonItemTemplate template;
 	
-	private int num;
+	private long num;
 	
 	private BagItem bagItem;
 
@@ -109,7 +111,7 @@ public class TipItemControllor : MonoBehaviour
 
 		bool showNormalNum = true;
 		
-		//0普通道具;2装备;3玉玦;4秘宝；5秘宝碎片；6进阶材料；7基础属性符文；8高级属性符文；9强化材料
+		//0普通道具;2装备;3玉玦;4秘宝；5秘宝碎片；6进阶材料；7基础属性符文；8高级属性符文；9强化材料;201联盟科技;202联盟科技;203联盟科技
 		if(template.itemType == 5)
 		{
 			showNormalNum = !refreshProgress_MibaoSuiPian();
@@ -118,7 +120,11 @@ public class TipItemControllor : MonoBehaviour
 		{
 			showNormalNum = !refreshProgress_JinJieCaiLiao();
 		}
-		else if(template.itemType == 211)
+		else if(commonItemId == 900006)//exp
+		{
+			showNormalNum = true;
+		}
+		else if(template.itemType == 211 || template.itemType == 201 || template.itemType == 202 || template.itemType == 203)
 		{
 			showNormalNum = false;
 		}
@@ -140,6 +146,10 @@ public class TipItemControllor : MonoBehaviour
 				textNum = num + "/" + JunZhuData.Instance().m_junzhuInfo.tiLiMax;
 
 				text_2 = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_3);
+			}
+			else if(commonItemId == 900006)//exp
+			{
+				textNum = num + "/" + JunZhuData.Instance().m_junzhuInfo.expMax;
 			}
 
 			string text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_1) 
@@ -234,14 +244,39 @@ public class TipItemControllor : MonoBehaviour
 		{
 			num = JunZhuData.Instance().m_junzhuInfo.tili;
 		}
+		else if(template.id == 900006)//exp
+		{
+		    num = JunZhuData.Instance().m_junzhuInfo.exp;
+		}
 		else if(template.id == 900015)//联盟贡献
 		{
 			num = AllianceData.Instance.g_UnionInfo == null ? 0 :
 				AllianceData.Instance.g_UnionInfo.contribution;
 		}
-		else if(template.id == 900026)//荒野币
+		else if(template.id == 900017)//联盟建设
+		{
+			num = AllianceData.Instance.g_UnionInfo == null ? 0 :
+				AllianceData.Instance.g_UnionInfo.build;
+		}
+        else if (template.id == 900018)//武艺精气
+        {
+            num = JunZhuData.Instance().m_junzhuInfo.wuYiJingQi;
+        }
+        else if (template.id == 900019)//体魄精气
+        {
+            num = JunZhuData.Instance().m_junzhuInfo.tiPoJingQi;
+        }
+        else if(template.id == 900026)//荒野币
 		{
 			num = AllianceData.Instance.Hy_Bi;
+		}
+        else if(template.id == 900030)//活跃度
+		{
+			num = TaskData.Instance.m_VitalityShowInfo._todaylHuoYue;
+		}
+		else if(template.id == 900011)//威望
+		{
+			num = JunZhuData.Instance().errorResp.errorCode;//这里没有写错！就是errorCode
 		}
 
 		//0普通道具;2装备;3玉玦;4秘宝；5秘宝碎片；6进阶材料；7基础属性符文；8高级属性符文；9强化材料
@@ -356,18 +391,33 @@ public class TipItemControllor : MonoBehaviour
 			spriteTab.gameObject.SetActive(true);
 			
 			spriteTab.spriteName = "tips_4";
-			
+
+			labelTab.gameObject.SetActive(false);
+
 			return true;
 		}
 		
 		if(num < numMax)
 		{
 			spriteTab.gameObject.SetActive(false);
+
+			labelTab.gameObject.SetActive(true);
+
+			if(isHave == false)//没有秘宝，显示"待合成"
+			{
+				labelTab.text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_HECHENG);
+			}
+			else
+			{
+				labelTab.text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_SHENGXING);
+			}
 		}
 		else
 		{
 			spriteTab.gameObject.SetActive(true);
-			
+
+			labelTab.gameObject.SetActive(false);
+
 			if(isHave == false)//没有秘宝，显示"可合成"
 			{
 				spriteTab.spriteName = "tips_1";
@@ -403,6 +453,11 @@ public class TipItemControllor : MonoBehaviour
 		if(num < numMax)
 		{
 			spriteTab.gameObject.SetActive(false);
+
+			labelTab.gameObject.SetActive(true);
+
+			labelTab.text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_JINJIE);
+			
 		}
 		else 
 		{

@@ -267,6 +267,14 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 
 			CityGlobalData.m_isBattleField_V4_2D = true;
 
+			if(!UIShouji.m_isPlayShouji)
+			{
+				if(UIShouji.m_UIShouji.m_isPlay)
+				{
+					UIShouji.m_UIShouji.close();
+					UIShouji.m_UIShouji.gameObject.SetActive(false);
+				}
+			}
 			SceneManager.EnterBattleField( CityGlobalData.t_next_battle_field_scene );
 
 			StartCoroutine(des ());

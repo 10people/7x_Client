@@ -158,9 +158,10 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		mPveStarAward.mLevel = mLevel;
 		mPveStarAward.Init ();
 	}
-
+	private int mTouchCount = 0;
 	public void Init()
 	{
+		mTouchCount = 0;
 		InitStarUI ();
 		sendLevelDrop ();
 		InItEnemyList ();
@@ -238,7 +239,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				
 				saodinfo = tempInfo;
 				
-			//	Debug.Log("请求扫荡是数据返回了。。。");
+			    Debug.Log("请求扫荡是数据返回了。。。");
 		
 				if(UIYindao.m_UIYindao.m_isOpenYindao)
 				{
@@ -247,6 +248,8 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				sendLevelDrop();
 				
 				popRewardUI();
+
+				m_isShaodang = false;
 				
 				return true;
 			}
@@ -331,21 +334,43 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 					{
 						if(m_Lv.litter_Lv.guanQiaId == tempInfo.guanQiaId)
 						{
-							for(int j = 0 ; j < m_Lv.litter_Lv.starInfo.Count; j++)
+							if(!CityGlobalData.PT_Or_CQ)
 							{
-								if(m_Lv.litter_Lv.starInfo[j].starId == tempInfo.s_starNum)
+								for(int j = 0 ; j < m_Lv.litter_Lv.cqStarInfo.Count; j++)
 								{
-									m_Lv.litter_Lv.starInfo[j].getRewardState = true;
-									bool jingying = false ;
-									if(CityGlobalData.PT_Or_CQ)
+									if(m_Lv.litter_Lv.cqStarInfo[j].starId == tempInfo.s_starNum)
 									{
-										jingying = true;
+										m_Lv.litter_Lv.cqStarInfo[j].getRewardState = true;
+										bool jingying = false ;
+										if(CityGlobalData.PT_Or_CQ)
+										{
+											jingying = true;
+										}
+										m_Lv.ShowBox(jingying);
+										
+										break;
 									}
-									m_Lv.ShowBox(jingying);
-									
-									break;
 								}
 							}
+							else
+							{
+								for(int j = 0 ; j < m_Lv.litter_Lv.starInfo.Count; j++)
+								{
+									if(m_Lv.litter_Lv.starInfo[j].starId == tempInfo.s_starNum)
+									{
+										m_Lv.litter_Lv.starInfo[j].getRewardState = true;
+										bool jingying = false ;
+										if(CityGlobalData.PT_Or_CQ)
+										{
+											jingying = true;
+										}
+										m_Lv.ShowBox(jingying);
+										
+										break;
+									}
+								}
+							}
+
 							break;
 						}
 					}
@@ -910,7 +935,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		if(IsTest)
 		{
 			CityGlobalData.m_tempSection = Test_Section;
-			
+			CityGlobalData.PveLevel_UI_is_OPen = false;
 			CityGlobalData.m_tempLevel = Test_Level;
 			Global.m_isOpenPVP = true;
 			EnterBattleField.EnterBattlePve(Test_Section, Test_Level, LevelType.LEVEL_NORMAL);
@@ -952,6 +977,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
 		if(CityGlobalData.PT_Or_CQ )
 		{
+//			Debug.Log(mLevel.type);
 			if(mLevel.type == 1)
 			{
 				EnterBattleField.EnterBattlePve(my_tempSection, my_tempLevel, LevelType.LEVEL_ELITE);
@@ -1073,10 +1099,33 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
+
 		string str = LanguageTemplate.GetText (LanguageTemplate.Text.RESETTING_FINSHED);
+		string str3 = "";
+		if(JunZhuData.Instance().m_junzhuInfo.vipLv < 7)
+		{
+			int junzhuvip = JunZhuData.Instance().m_junzhuInfo.vipLv;
+			VipTemplate mvip = VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv);
+			int RessteingTimes = mvip.legendPveRefresh;
+			for(int viplevel = JunZhuData.Instance().m_junzhuInfo.vipLv+1; viplevel < 8; viplevel++)
+			{
+				VipTemplate mvip1 = VipTemplate.GetVipInfoByLevel(viplevel);
+				if(RessteingTimes < mvip1.legendPveRefresh)
+				{
+					junzhuvip = viplevel;
+					break;
+				}
+			}
+			str3 = "V特权等级不足，V特权等级提升到" + junzhuvip.ToString()+"级即可购买更多重置次数。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
+		}
+		else
+		{
+			str3 = "今日重置次数已经用完了。";
+		}
+		//string str = LanguageTemplate.GetText (LanguageTemplate.Text.RESETTING_FINSHED);
 		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,btnStr,null,null,null,null);
+		uibox.setBox(titleStr,str3,null,null,btnStr,null,null,null,null);
 	}
 	void LockTiLiLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -1197,7 +1246,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			//	Debug.Log("扫荡引导)
 			YinDaoOpen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100405];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[5]);
 			
 			return;
 		}
@@ -1535,20 +1584,30 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		iconSampleManager.FirstWinSpr.gameObject.SetActive(true);
 		iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
 	}
+	public bool m_isShaodang;
 	/// <summary>
 	/// Saos the dang1 button.
 	/// </summary>
-	public void SaoDangBtn(int Times)
+	public bool SaoDangBtn(int Times)
 	{
-
 		if(mLevel.type == 1)
 		{
-			if(!mLevel.s_pass||mLevel.win_Level !=3)
+			int starnum = 0;//litter_Lv.starNum;
+			
+			//Debug.Log ("starnum"+starnum);
+			for(int j = 0 ; j < mLevel.starInfo.Count; j++)
+			{
+				if(mLevel.starInfo[j].finished)
+				{
+					starnum += 1;
+				}
+			}
+			if(!mLevel.s_pass||starnum < 3)
 			{
 				//血量剩余≥60%可完胜
-				string data = "完胜[c40000](血量剩余≥60%可完胜)[-]通关后，才能扫荡！";
+				string data = "[c40000]3星[-]通关后，才能扫荡！";
 				ClientMain.m_UITextManager.createText( data);
-				return;
+				return false;
 			}
 			else
 			{
@@ -1556,7 +1615,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				{
 					string data = "扫荡次数不足！";
 					ClientMain.m_UITextManager.createText( data);
-					return;
+					return false;
 				}
 			}
 		}else
@@ -1565,16 +1624,31 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			{
 				ReSettingLv();
 				
-				return;
+				return false;
 			}
-			if(!mLevel.chuanQiPass||mLevel.pingJia !=3)
+			int starnum = 0;//litter_Lv.starNum;
+			
+			//Debug.Log ("starnum"+starnum);
+			for(int j = 0 ; j < mLevel.cqStarInfo.Count; j++)
 			{
-				string data = "完胜[c40000](血量剩余≥60%可完胜)[-]通关后，才能扫荡！";
+				if(mLevel.cqStarInfo[j].finished)
+				{
+					starnum += 1;
+				}
+			}
+			if(!mLevel.chuanQiPass||starnum < 3)
+			{
+				string data = "[c40000]3星[-]通关后，才能扫荡！";
 				ClientMain.m_UITextManager.createText( data);
-				return;
+				return false;
+			}
+			if(Times > sdCountTime)
+			{
+				string data = "扫荡次数不足！";
+				ClientMain.m_UITextManager.createText( data);
+				return false;
 			}
 		}
-
 		Vipgrade = JunZhuData.Instance().m_junzhuInfo.vipLv;
 		junZhuLevel = JunZhuData.Instance().m_junzhuInfo.level;
 		ExistingPower = JunZhuData.Instance().m_junzhuInfo.tili;
@@ -1584,7 +1658,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			string Contain2 = Contain1+ZhuXianTemp.GeTaskTitleById (FunctionOpenTemp.GetTemplateById(3000010).m_iDoneMissionID)+"后开启该功能";
 			//string data = "完胜通关后，才能扫荡！";
 			ClientMain.m_UITextManager.createText( Contain2);
-			return;
+			return false;
 		}
 		if (junZhuLevel >= FunctionOpenTemp.GetTemplateById(3000010).Level)
 		{
@@ -1593,8 +1667,10 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			//Debug.Log ("needpower" +needpower);
 			if(needpower > ExistingPower)//体力不够
 			{
-				string data = "体力不足！";
-				ClientMain.m_UITextManager.createText( data);
+//				string data = "体力不足！";
+//				ClientMain.m_UITextManager.createText( data);
+				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
+				return false;
 			}
 			else
 			{
@@ -1605,6 +1681,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 					//ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(500000).m_sNotOpenTips);
 					string data = LanguageTemplate.GetText(LanguageTemplate.Text.VIPDesc3);
 					ClientMain.m_UITextManager.createText( data);
+					return false;
 				}else{
 					//Debug.Log ("发送扫荡请求。。。");
 					
@@ -1612,6 +1689,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				}
 			}
 		}
+		return true;
 	}
 	void SendSaoDangInfo(int id,int howTimes)
 	{
@@ -1632,7 +1710,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 		saodanginfo.times = howTimes;
 		
-		//Debug.Log ("saodanginfo.times = " +saodanginfo.times);
+		Debug.Log ("saodanginfo.times = " +saodanginfo.times);
 		
 		saodangSer.Serialize (saodangstream, saodanginfo);
 		
@@ -1652,11 +1730,18 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	[HideInInspector]public int Vipgrade = 0;
 	public void SaoDangBtn1()
 	{
-		SaoDangBtn (1);
+		if(!m_isShaodang)
+		{
+			m_isShaodang = SaoDangBtn (1);
+		}
 	}
 	public void SaoDangBtn10()
 	{
-		SaoDangBtn (10);
+		if(!m_isShaodang)
+		{
+			m_isShaodang = true;
+			m_isShaodang = SaoDangBtn (10);
+		}
 	}
 	/// <summary>
 	/// Buies the ti li.
@@ -1699,25 +1784,28 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	}
 	public void CloseUI()
 	{
-		if(UIYindao.m_UIYindao.m_isOpenYindao)
-		{
-			UIYindao.m_UIYindao.CloseUI();
-		}
-		MapData.mapinstance.ShowPVEGuid();
-		CityGlobalData.PveLevel_UI_is_OPen = false;
-		PassLevelBtn.Instance().OPenEffect ();
-		MainCityUI.TryRemoveFromObjectList (this.gameObject);
-		if(EnterGuoGuanmap.Instance().ShouldOpen_id == 1)
-		{
-			EnterGuoGuanmap.Instance().ShouldOpen_id = 0;
-
-			GameObject map = GameObject.Find("Map(Clone)");
-			if(map)
-			{
-				MainCityUI.TryRemoveFromObjectList (map);
-				Destroy(map);
+		if (mTouchCount <= 3) {
+			if (UIYindao.m_UIYindao.m_isOpenYindao) {
+				UIYindao.m_UIYindao.CloseUI ();
 			}
-		}
+			MapData.mapinstance.ShowPVEGuid ();
+		
+			if (CityGlobalData.PT_Or_CQ) {
+				PassLevelBtn.Instance ().OPenEffect ();
+			}
+			MainCityUI.TryRemoveFromObjectList (this.gameObject);
+			if (EnterGuoGuanmap.Instance ().ShouldOpen_id == 1) {
+				EnterGuoGuanmap.Instance ().ShouldOpen_id = 0;
+				
+				GameObject map = GameObject.Find ("Map(Clone)");
+				if (map) {
+					MainCityUI.TryRemoveFromObjectList (map);
+					Destroy (map);
+				}
+			}
+			mTouchCount ++;
+		} 
+		CityGlobalData.PveLevel_UI_is_OPen = false;
 		Destroy (this.gameObject);
 	}
 	/// <summary>
@@ -1732,7 +1820,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	//攻打按钮
 	public void ComfireTest_btn()
 	{
-
+		Debug.Log("=============2");
 		IsTest = true;
 		char[] aprcation = {','};
 		//Debug.Log ("text =  "+testLable.text);

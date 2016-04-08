@@ -94,6 +94,10 @@ public class SelectServeOne : MonoBehaviour {
 	/// </summary>
 	public void LastLoginBtn ()
 	{
+		if (AccountRequest.account.isNewPlayer == 2)
+		{
+			return;
+		}
 		lastLoginObj.SetActive (true);
 		LastLogin lastLogin = lastLoginObj.GetComponent<LastLogin> ();
 		lastLogin.CreateLastLogin ();

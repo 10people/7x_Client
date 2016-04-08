@@ -35,13 +35,23 @@ public class MuBiaoItem : MonoBehaviour {
 
 			if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 2)
 			{
-				GoButn.SetActive(true);
+				int MAx = NewAlliancemanager.Instance().m_allianceHaveRes.memberMax;
+				int Nuber = NewAlliancemanager.Instance().m_allianceHaveRes.memberInfo.Count;
+				if(MAx == Nuber)
+				{
+					GoButn.SetActive(false);
+				}
+				else
+				{
+					GoButn.SetActive(true);
+				}
+
 			}
 			else
 			{
 				GoButn.SetActive(false);
 			}
-			Menbers.text = NewAlliancemanager.Instance().m_allianceHaveRes.members.ToString()+"/"+NewAlliancemanager.Instance().m_allianceHaveRes.memberMax.ToString();
+			Menbers.text = NewAlliancemanager.Instance().m_allianceHaveRes.memberInfo.Count.ToString()+"/"+NewAlliancemanager.Instance().m_allianceHaveRes.memberMax.ToString();
 		}
 		else
 		{
@@ -71,6 +81,11 @@ public class MuBiaoItem : MonoBehaviour {
 		   
 			break;
 		case 2 :
+			if(!FunctionOpenTemp.GetWhetherContainID(106))
+			{
+				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"每日任务未开启！"));
+				return;
+			}
 
 			TaskData.Instance.m_ShowType = 2;
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TASK),
@@ -86,6 +101,21 @@ public class MuBiaoItem : MonoBehaviour {
 			break;
 		}
 	}
+
+	void OPenUIFailed(ref WWW p_www,string p_path, Object p_object)
+	{
+
+		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+		
+		string titleStr = "提示";
+		
+		string str1 = "每日任务未开启";
+		
+		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+		
+		uibox.setBox(titleStr,null,str1,null,confirmStr,null,null,null,null);
+	}
+
 	public void EnterYABiao()
 	{
 		if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(310))
@@ -112,9 +142,15 @@ public class MuBiaoItem : MonoBehaviour {
 	}
 	public void TaskLoadCallback(ref WWW p_www, string p_path, Object p_object)
 	{
+		GameObject AlianceRoot = GameObject.Find ("New_My_Union(Clone)");
+		GameObject AlianceMuBiaoRoot = GameObject.Find ("Leader_Setting(Clone)");
+		MainCityUI.TryRemoveFromObjectList (AlianceRoot);
+		MainCityUI.TryRemoveFromObjectList (AlianceMuBiaoRoot);
 		GameObject tempObject = (GameObject)Instantiate(p_object);
 		MainCityUI.TryAddToObjectList(tempObject);
 		UIYindao.m_UIYindao.CloseUI();
+		Destroy (AlianceRoot);
+		Destroy (AlianceMuBiaoRoot);
 	}
 
 	GameObject OpenRecruit;

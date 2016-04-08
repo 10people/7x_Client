@@ -41,7 +41,7 @@ public class PlayerManager : MonoBehaviour
             temp.transform.name = "CreatedOtherPlayer_" + l_uID;
 
             OtherPlayerController tempItem = temp.AddComponent<OtherPlayerController>();
-            tempItem.m_CharacterLerpDuration = l_roleID >= 50000 ? 0.5f : 0.2f;
+            tempItem.m_CharacterLerpDuration = l_roleID >= 50000 ? 1.0f : 0.4f;
             AddTrackCamera(tempItem);
 
             tempItem.m_RoleID = l_roleID;
@@ -62,7 +62,7 @@ public class PlayerManager : MonoBehaviour
 
         OtherPlayerController tempPlayer = m_PlayerDic[l_uID];
 
-        tempPlayer.StartPlayerTransformTurn(l_position, new Vector3(0, l_y_Rotation, 0));
+        tempPlayer.StartPlayerTransformTurn(l_position, new Vector3(0, l_y_Rotation, 0), true);
     }
 
     public void DestroyPlayer(int l_uID)

@@ -1,8 +1,13 @@
 //#define DEBUG_WAITING
 
+//#define DEBUG_WAITING_INFO
+
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
 
 
 public class NetworkWaiting : MonoBehaviour {
@@ -37,7 +42,7 @@ public class NetworkWaiting : MonoBehaviour {
 
 	private string m_default_title = "";
 
-	private float m_show_time	= 0;
+	private float m_show_time	= -10.0f;
 
 	public static NetworkWaiting Instance( bool p_create_if_null = false ){
 		if( !m_instance_exist && p_create_if_null ){
@@ -46,6 +51,10 @@ public class NetworkWaiting : MonoBehaviour {
 		}
 
 		return m_instance;
+	}
+
+	public static void LoadResourcesUI(){
+		Global.ResourcesDotLoad( "_UIs/_CommonAtlas/Network/UI_NetworkWaiting", ResourceLoadCallback );
 	}
 
 	public static void ResourceLoadCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
@@ -75,6 +84,10 @@ public class NetworkWaiting : MonoBehaviour {
 				Debug.Log( "Set NetworkWaiting GameObject inactive." );
 				#endif
 			}
+
+			if( HttpRequest.HaveActiveWWW() ){
+				Instance().ShowNetworkSending( HttpRequest.GetFirstWWWUrl() );
+			}
 		}
 	}
 
@@ -85,7 +98,7 @@ public class NetworkWaiting : MonoBehaviour {
 		{
 			bool t_enable_detail = ConfigTool.GetBool( ConfigTool.CONST_NETWORK_SHOW_STATUS );
 
-			#if DEBUG_WAITING
+			#if DEBUG_WAITING_INFO
 			t_enable_detail = true;
 			#endif
 
@@ -143,6 +156,9 @@ public class NetworkWaiting : MonoBehaviour {
 	#region Time Update
 
 	private void ResetShowTime(){
+		#if DEBUG_WAITING
+		Debug.Log( "ResetShowTime: " + Time.realtimeSinceStartup );
+		#endif
 		m_show_time = Time.realtimeSinceStartup;
 	}
 
@@ -151,8 +167,10 @@ public class NetworkWaiting : MonoBehaviour {
 	}
 
 	private void CheckTimeOut(){
-		if( GetWaitTime() > ConfigTool.GetFloat( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT ) ){
+		if( GetWaitTime() > ConfigTool.GetFloat( ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT, 10.0f ) ){
+			#if DEBUG_WAITING
 //			Debug.Log( "Message Time Out: " + Time.realtimeSinceStartup  + " / " + m_show_time + " - " + m_waiting_state );
+			#endif
 
 			{
 				HideNeworkWaiting();
@@ -160,9 +178,11 @@ public class NetworkWaiting : MonoBehaviour {
 				SocketTool.Instance().ClearSendAdnReceiveMessages();
 
 				if( m_reconnect_gb == null ){
-//					Debug.Log( "Create Reconnect Box." );
+					#if DEBUG_WAITING
+					Debug.Log( "Create Reconnect Box." );
 
-//					Debug.Log( "Show ReconnectUI, proto waiting: " + GetWaitingProtoDesc() );
+					Debug.Log( "Show ReconnectUI, proto waiting: " + GetWaitingProtoDesc() );
+					#endif
 
 					SocketHelper.CreateTimeOutReConnectWindow( ReConnectCallback, OnReconnectBoxCreated );
 				}
@@ -236,6 +256,8 @@ public class NetworkWaiting : MonoBehaviour {
 
 	public bool IsHiding(){
 		if( !m_instance_exist ){
+			Debug.LogError( "Error, HideNeworkTips.NetworkSending not found." );
+
 			return true;
 		}
 
@@ -248,6 +270,8 @@ public class NetworkWaiting : MonoBehaviour {
 		
 	public bool IsShowingSending(){
 		if( !m_instance_exist ){
+			Debug.LogError( "Error, HideNeworkTips.NetworkSending not found." );
+
 			return false;
 		}
 		
@@ -261,6 +285,8 @@ public class NetworkWaiting : MonoBehaviour {
 
 	public bool IsShowingReceiving(){
 		if( !m_instance_exist ){
+			Debug.LogError( "Error, HideNeworkTips.NetworkSending not found." );
+
 			return false;
 		}
 		
@@ -308,7 +334,7 @@ public class NetworkWaiting : MonoBehaviour {
 
 	public void ShowNetworkSending( string p_sending ){
 		#if DEBUG_WAITING
-		Debug.Log( "ShowNetworkSending( " + p_sending + " )" + Time.frameCount );
+		Debug.Log( "ShowNetworkSending( " + p_sending + " ) " + Time.frameCount );
 		#endif
 
 		{
@@ -324,7 +350,7 @@ public class NetworkWaiting : MonoBehaviour {
 
 	public void ShowNetworkSending( int p_proto_index ){
 		#if DEBUG_WAITING
-		Debug.Log( "ShowNetworkSending( " + p_proto_index + " )" + Time.frameCount );
+		Debug.Log( "ShowNetworkSending( " + p_proto_index + " ) " + Time.frameCount );
 		#endif
 
 		{
@@ -348,7 +374,7 @@ public class NetworkWaiting : MonoBehaviour {
 
 	public void ShowNetworkReceiving( string p_proto_waiting ){
 		#if DEBUG_WAITING
-		Debug.Log( "ShowNetworkReceiving( " + p_proto_waiting + " )" + Time.frameCount );
+		Debug.Log( "ShowNetworkReceiving( " + p_proto_waiting + " ) " + Time.frameCount );
 		#endif
 
 		{
@@ -365,7 +391,7 @@ public class NetworkWaiting : MonoBehaviour {
 
 	public void HideNeworkWaiting(){
 		#if DEBUG_WAITING
-		Debug.Log( "HideNeworkWaiting()" + Time.frameCount );
+		Debug.Log( "HideNeworkWaiting() " + Time.frameCount );
 		#endif
 
 		if( !m_instance_exist ){

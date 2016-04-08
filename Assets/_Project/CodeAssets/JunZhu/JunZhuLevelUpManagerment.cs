@@ -18,6 +18,12 @@ public class JunZhuLevelUpManagerment : MonoBehaviour
     private UICamera m_Camera = null;
     void Awake()
     {
+        if (UIYindao.m_UIYindao.m_isOpenYindao)
+        {
+            yinid = UIYindao.m_UIYindao.m_iCurId;
+		
+            UIYindao.m_UIYindao.CloseUI();
+        }
         if (MainCityUI.m_MainCityUI)
         {
             int size = MainCityUI.m_MainCityUI.m_WindowObjectList.Count;
@@ -64,10 +70,19 @@ public class JunZhuLevelUpManagerment : MonoBehaviour
   
         m_LabTiLi.text = MyColorData.getColorString(9, JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level -1).tiliCao.ToString() + "(")+ MyColorData.getColorString(4,  (JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level).tiliCao - JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level - 1).tiliCao).ToString() + "↑") + MyColorData.getColorString(9, ")");
         m_LabHuoDeTiLi.text = MyColorData.getColorString(1, LanguageTemplate.GetText(LanguageTemplate.Text.LEVEL_UP_SIGNAL)) + MyColorData.getColorString(4, JunzhuShengjiTemplate.GetAddTili(JunZhuData.Instance().m_junzhuInfo.level)) + MyColorData.getColorString(1, LanguageTemplate.GetText(LanguageTemplate.Text.LEVEL_UP_SIGNAL_1));
+        m_HandCancelEffect.GetComponent<Collider>().enabled = true;
     }
-
+    int yinid = -1;
     void OnDestroy()
     {
+        m_JunZhuLevelUp = null;
+       
+        if (yinid > 0)
+        { 
+            UIYindao.m_UIYindao.setOpenYindao(yinid);
+			yinid = -1;
+        }
+
         if (m_Camera != null)
             EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);
 

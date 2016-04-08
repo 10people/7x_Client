@@ -5,6 +5,6 @@
 <LMBubblePop buildId="3" name="联盟商铺" triggerFunc="[2b180a]在这里可以消耗贡献度[-][c40000]购买[-][2b180a]各种道具喔[-]" />
 <LMBubblePop buildId="4" name="联盟宗庙" triggerFunc="[2b180a]在这里可以消耗贡献度进行[-][c40000]抽奖[-][2b180a]，有大量[-][c40000]元宝[-][2b180a]等你来抽喔[-]" />
 <LMBubblePop buildId="5" name="联盟书院" triggerFunc="[2b180a]在这里可以给你提供各种[-][c40000]角色属性值[-][2b180a]和[-][c40000]特殊技能[-][2b180a]喔[-]" />
-<LMBubblePop buildId="6" name="联盟客栈" triggerFunc="[2b180a]在这里可以查看[-][c40000]联盟成员[-][2b180a]和[-][c40000]联盟事件[-][2b180a]喔[-]" />
+<LMBubblePop buildId="6" name="联盟客栈" triggerFunc="[2b180a]在这里可以查看[-][c40000]联盟成员[-][2b180a]和[-][c40000]联盟动态[-][2b180a]喔[-]" />
 <LMBubblePop buildId="7" name="荒野求生" triggerFunc="[2b180a]在这里需要联盟成员共同[-][c40000]挑战关卡[-][2b180a]获得奖励喔[-]" />
 </dataset>

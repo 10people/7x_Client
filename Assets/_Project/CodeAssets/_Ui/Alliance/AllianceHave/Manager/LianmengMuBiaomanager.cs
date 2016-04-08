@@ -25,7 +25,11 @@ public class LianmengMuBiaomanager : MYNGUIPanel,SocketProcessor {
 
 	public GameObject LingQuAlert;
 
+	public GameObject LingQuBoxbtn;
 	public UISprite LingQuBox;
+
+	public GameObject CanNotLingQuBoxbtn;//不能领取按钮
+	//public UISprite CanNotLingQuBox; 
 
 	public NGUILongPress EnergyDetailLongPress1;
 
@@ -159,9 +163,10 @@ public class LianmengMuBiaomanager : MYNGUIPanel,SocketProcessor {
 		}
 		int mLMExp = 0;
 		int FontmLMExp = 0;
+		int AllExp1 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (Lianmeng_Alliance.level-1);
+		int needexp = LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (Lianmeng_Alliance.level);
 		if(Lianmeng_Alliance.level > 1)
 		{
-			int AllExp1 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (Lianmeng_Alliance.level-1);
 			int AllExp3 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (LmMuBiaoLevel-1);
 			mLMExp = AllExp3;
 			allianceExp.text = "联盟经验: " + (AllExp1+Lianmeng_Alliance.exp).ToString()+ "/" + (AllExp3).ToString ();
@@ -175,6 +180,10 @@ public class LianmengMuBiaomanager : MYNGUIPanel,SocketProcessor {
 			FontmLMExp = Lianmeng_Alliance.exp;
 		}
 
+		if(Lianmeng_Alliance.lmTargetLevel == -1)
+		{
+			allianceExp.text = "联盟经验: " + (AllExp1+Lianmeng_Alliance.exp).ToString()+ "/" + needexp.ToString ();
+		}
 
 		float mvalue = (float)FontmLMExp/ (float)mLMExp;
 		if(mvalue < 0.01f)
@@ -187,6 +196,8 @@ public class LianmengMuBiaomanager : MYNGUIPanel,SocketProcessor {
 			LingQuBox.spriteName = "xiangzi";
 			if(Lianmeng_Alliance.level >= LmMuBiaoLevel )
 			{
+				CanNotLingQuBoxbtn.SetActive(false);
+				LingQuBoxbtn.SetActive(true);
 				ISLingQU = true;
 				LingQuLabel.text = "可领取";
 				LingQuAlert.SetActive(true);
@@ -195,6 +206,8 @@ public class LianmengMuBiaomanager : MYNGUIPanel,SocketProcessor {
 			}
 			else
 			{
+				CanNotLingQuBoxbtn.SetActive(true);
+				LingQuBoxbtn.SetActive(false);
 				EnergyDetailLongPress1.enabled = false;
 				ISLingQU = false;
 				LingQuAlert.SetActive(false);
@@ -202,6 +215,8 @@ public class LianmengMuBiaomanager : MYNGUIPanel,SocketProcessor {
 				LingQuLabel.text = "目标达成后领取";
 			}
 		} else {
+			CanNotLingQuBoxbtn.SetActive(false);
+			LingQuBoxbtn.SetActive(true);
 			EnergyDetailLongPress1.enabled = false;
 			mLingQuBtn.enabled = false;
 			LingQuBox.spriteName = "zz";

@@ -2768,6 +2768,20 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .0046374076
+        functionName: PlaySound
+        data: 330010
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0374636985
+        functionName: refreshCDTime
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 22
+        messageOptions: 0
       - time: .223057687
         functionName: chooseTarget_skill_2
         data: 
@@ -2810,12 +2824,12 @@ ModelImporter:
         floatParameter: 0
         intParameter: 11
         messageOptions: 0
-      - time: .0374636985
-        functionName: refreshCDTime
-        data: 
+      - time: .017028138
+        functionName: PlaySound
+        data: 520201|520202|0|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 22
+        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 
@@ -4439,9 +4453,9 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .20034945
+      - time: .126410052
         functionName: PlaySound
-        data: 500201|500202
+        data: 520201|520202
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -4459,6 +4473,13 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 10
+        messageOptions: 0
+      - time: .0116682164
+        functionName: PlaySound
+        data: 330000
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 
@@ -4601,13 +4622,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1
-        messageOptions: 0
-      - time: .817609608
-        functionName: PlaySound
-        data: 3319
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 

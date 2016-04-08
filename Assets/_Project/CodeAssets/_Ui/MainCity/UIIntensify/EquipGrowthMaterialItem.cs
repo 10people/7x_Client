@@ -62,7 +62,7 @@ public class EquipGrowthMaterialItem : MonoBehaviour
         //Set iconSample.
         if (!string.IsNullOrEmpty(count))
         {
-            IconSampleManager.SetIconByID(int.Parse(icon), count);
+            IconSampleManager.SetIconByID(id, count);
         }
         else 
         {
@@ -82,7 +82,7 @@ public class EquipGrowthMaterialItem : MonoBehaviour
         else
         {
 
-            IconSampleManager.SetIconBasicDelegate(true, true, OnMaterialClick,OnMaterialClickPress, OnMaterialClickFinish);
+            IconSampleManager.SetIconBasicDelegate(false, true, OnMaterialClick,null, null);
             IconSampleManager.SetIconButtonDelegate(null, null, OnSubButtonClick);
 
           // IconSampleManager.SetIconBasicDelegate(false, true, OnMaterialClick);
@@ -132,11 +132,9 @@ public class EquipGrowthMaterialItem : MonoBehaviour
                 }
             }
 
-
             if (TouchController && pinzhiSave != 200)
             {
                 EquipGrowthMaterialUseManagerment.m_MaterialId = m_Itemid;
-
                 if (EquipGrowthMaterialUseManagerment.touchIsEnable)
                 {
 

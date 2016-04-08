@@ -32,7 +32,7 @@ public class ComponentHelper{
 
 		{
 			FileHelper.RegisterLog();
-
+			JunZhuData.Instance ();
 //			DebugHelper.RegisterLog();
 		}
 	}
@@ -46,6 +46,8 @@ public class ComponentHelper{
 	/// Non-Mono class update could be here, invoked in UtilityTool.
 	public static void GlobalClassUpdate(){
 		UIRootAutoActivator.Instance().ManualUpdate();
+
+		ModelAutoActivator.Instance().ManualUpdate();
 	}
 
 	#endregion
@@ -136,6 +138,18 @@ public class ComponentHelper{
 		GameObject.DestroyImmediate (p_target);
 	}
 
+	public static Component AddComponet( GameObject p_gb, System.Type p_type ){
+		if( p_gb == null ){
+			Debug.LogError( "Error, gb is null: " + p_gb );
+
+			return null;
+		}
+
+		Component t_com = p_gb.AddComponent( p_type );
+
+		return t_com;
+	}
+
 	/// Add type to a gameobject, if not exist on it.
 	public static Component AddIfNotExist( GameObject p_gb, System.Type p_type ){
 		if( p_gb == null ){
@@ -154,13 +168,19 @@ public class ComponentHelper{
 	}
 
 	public static Component RemoveIfExist( GameObject p_gb, System.Type p_type ){
-		Component t_com = p_gb.GetComponent( p_type );
+		Component[] t_coms = p_gb.GetComponents( p_type );
 
-		if( t_com != null ){
-			Destroy( t_com );
+		for( int i = 0; i < t_coms.Length; i++ ){
+			if( t_coms[ i ] != null ){
+				Destroy( t_coms[ i ] );
+			}
 		}
-
-		return t_com;
+		if( t_coms.Length > 0 ){
+			return t_coms[ 0 ];	
+		}
+		else{
+			return null;
+		}
 	}
 
 	#endregion
@@ -176,7 +196,9 @@ public class ComponentHelper{
 			return;
 		}
 
-		Debug.Log( p_prefix + " " + p_sprite.spriteName + " : " + p_sprite.type );
+		Debug.Log( p_prefix + " " + p_sprite.spriteName + " : " + p_sprite.type + " - " + p_sprite.gameObject.activeInHierarchy );
+
+		Debug.Log( "Hierarchy: " + GameObjectHelper.GetGameObjectHierarchy( p_sprite.gameObject ) );
 
 		Debug.Log( "w.h: " + p_sprite.width + ", " + p_sprite.height + " - " + 
 			p_sprite.atlas.name + " - " + 
@@ -251,6 +273,10 @@ public class ComponentHelper{
 		}
 
 		Debug.Log( "------ " + p_prefix + " ------" );
+
+		#if UNITY_EDITOR
+		Debug.Log( "Path: " + AssetDatabase.GetAssetPath( p_tex ) );
+		#endif
 
 		Debug.Log( "w,h: " + p_tex.name + " : " + p_tex.width + ", " + p_tex.height );
 
@@ -525,7 +551,9 @@ public class ComponentHelper{
 	#region Clean
 
 	public static void UnloadUseless( bool p_clean_anim = false ){
-		CleanAtlas();
+//		#if UNITY_EDITOR || UNITY_STANDALONE
+//		CleanAtlas();
+//		#endif
 
 //		#if UNITY_ANDROID
 //		if( p_clean_clip ){
@@ -745,7 +773,7 @@ public class ComponentHelper{
 		List<UIAtlas> t_atlases = new List<UIAtlas>();
 		
 		{
-			UnityEngine.Object[] t_objects = GameObject.FindObjectsOfType( typeof(UISprite) );
+			UnityEngine.Object[] t_objects = Resources.FindObjectsOfTypeAll( typeof(UISprite) );
 			
 			int t_count = 0;
 			

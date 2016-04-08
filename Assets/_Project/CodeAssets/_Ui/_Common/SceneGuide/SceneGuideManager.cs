@@ -100,6 +100,10 @@ public class SceneGuideManager : MonoBehaviour, IUIRootAutoActivator
 			m_lb_title.text = desc;
 		}
 
+		iTween.StopByName ("FadeInTips");
+
+		iTween.StopByName ("FadeOutTips");
+
 		EnableSceneTips( true );
 	}
 
@@ -112,6 +116,7 @@ public class SceneGuideManager : MonoBehaviour, IUIRootAutoActivator
 
 	private void FadeSceneTips(){
 		iTween.ValueTo( gameObject, iTween.Hash( 
+		   "name", "FadeInTips",
 		   "from", 0f,
 		   "to", 1f,
 		   "delay", 0,
@@ -119,7 +124,8 @@ public class SceneGuideManager : MonoBehaviour, IUIRootAutoActivator
 		   "easetype", iTween.EaseType.linear,
 		   "onupdate", "OnSceneTipsFade" ) );
 		
-		iTween.ValueTo( gameObject, iTween.Hash( 
+		iTween.ValueTo( gameObject, iTween.Hash(
+			"name", "FadeOutTips",
 			"from", 1f,
 			"to", 0f,
 			"delay", m_fade_time + m_show_time,

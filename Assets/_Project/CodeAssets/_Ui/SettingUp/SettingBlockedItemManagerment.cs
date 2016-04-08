@@ -47,11 +47,11 @@ public class SettingBlockedItemManagerment : MonoBehaviour
         m_LabName.text = "Lv" + info.level + "    " + info.name;
         if (info.vipLv > 0)
         {
-            m_LabVip.text = "VIP" + info.vipLv.ToString();
+            m_LabVip.text = "V" + info.vipLv.ToString();
         }
         else
         {
-            m_LabVip.text = "VIP0";
+            m_LabVip.text = "V0";
         }
        // m_HeadIcon.spriteName = "PlayerIcon" + info.iconId; //info.iconId;
         m_PowerCount.text = info.zhanLi.ToString();

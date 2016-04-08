@@ -117,6 +117,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 						switch (tbGetRewardRes.success)
 						{
 						case 1:
+//							textStr = "对不起，您的铜币不足！\n通过以下方式可以获取更多的铜币：\n元宝购买、【行镖】玩法、【试练-洗劫权贵】。";
 							textStr = LanguageTemplate.GetText (LanguageTemplate.Text.TAN_BAO_TIPS_2);//铜币不足
 							break;
 						case 2:
@@ -171,6 +172,9 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 		{
 			MainCityUI.TryAddToObjectList(tbObj);
 		}
+
+		//十连副本场景
+		TreasureCityUI.TryAddToObjectList (tbObj);
 
 		TanBaoPage.tbPage.GetTBInfoResp (tbInfoResp);
 	}

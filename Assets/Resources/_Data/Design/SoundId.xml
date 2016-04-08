@@ -153,6 +153,9 @@
 <SoundList id="3317" name="Skill_BigSword_Crash" path="Sounds/Sfx/Skill_BigSword_Crash" loops="0" type="mp3" stereo="1" />
 <SoundList id="3318" name="Skill_BigSword_Roll" path="Sounds/Sfx/Skill_BigSword_Roll" loops="0" type="mp3" stereo="1" />
 <SoundList id="3319" name="Skill_Sword_Buff" path="Sounds/Sfx/Skill_Sword_Buff" loops="0" type="mp3" stereo="1" />
+<SoundList id="330000" name="Skill_Sword1" path="Sounds/Sfx/Skill_Sword1" loops="0" type="mp3" stereo="1" />
+<SoundList id="330010" name="Skill_Sword2" path="Sounds/Sfx/Skill_Sword2" loops="0" type="mp3" stereo="1" />
+<SoundList id="330020" name="Skill_BigSword1" path="Sounds/Sfx/Skill_BigSword1" loops="0" type="mp3" stereo="1" />
 <SoundList id="400000" name="Skill_Thunder" path="Sounds/Sfx/Skill_Thunder" loops="0" type="mp3" stereo="1" />
 <SoundList id="400099" name="Skill_Fire_Qianyao" path="Sounds/Sfx/Skill_Fire_Qianyao" loops="0" type="mp3" stereo="1" />
 <SoundList id="400100" name="Skill_Fire_Shot" path="Sounds/Sfx/Skill_Fire_Shot" loops="0" type="mp3" stereo="1" />
@@ -402,6 +405,7 @@
 <SoundList id="810590" name="VO_NPC_Guide56" path="Sounds/Voice/VO_NPC_Guide56" loops="0" type="mp3" stereo="0" />
 <SoundList id="810600" name="VO_NPC_Guide57" path="Sounds/Voice/VO_NPC_Guide57" loops="0" type="mp3" stereo="0" />
 <SoundList id="810610" name="VO_NPC_Guide58" path="Sounds/Voice/VO_NPC_Guide58" loops="0" type="mp3" stereo="0" />
+<SoundList id="810615" name="VO_NPC_Guide580" path="Sounds/Voice/VO_NPC_Guide580" loops="0" type="mp3" stereo="0" />
 <SoundList id="810620" name="VO_NPC_Guide59" path="Sounds/Voice/VO_NPC_Guide59" loops="0" type="mp3" stereo="0" />
 <SoundList id="810630" name="VO_NPC_Guide60" path="Sounds/Voice/VO_NPC_Guide60" loops="0" type="mp3" stereo="0" />
 <SoundList id="810640" name="VO_NPC_Guide61" path="Sounds/Voice/VO_NPC_Guide61" loops="0" type="mp3" stereo="0" />
@@ -472,6 +476,7 @@
 <SoundList id="811710" name="VO_NPC_Guide402" path="Sounds/Voice/VO_NPC_Guide402" loops="0" type="mp3" stereo="0" />
 <SoundList id="811720" name="VO_NPC_Guide403" path="Sounds/Voice/VO_NPC_Guide403" loops="0" type="mp3" stereo="0" />
 <SoundList id="811730" name="VO_NPC_Guide404" path="Sounds/Voice/VO_NPC_Guide404" loops="0" type="mp3" stereo="0" />
+<SoundList id="811735" name="VO_NPC_Guide4040" path="Sounds/Voice/VO_NPC_Guide4040" loops="0" type="mp3" stereo="0" />
 <SoundList id="811740" name="VO_NPC_Guide405" path="Sounds/Voice/VO_NPC_Guide405" loops="0" type="mp3" stereo="0" />
 <SoundList id="811750" name="VO_NPC_Guide406" path="Sounds/Voice/VO_NPC_Guide406" loops="0" type="mp3" stereo="0" />
 <SoundList id="811760" name="VO_NPC_Guide407" path="Sounds/Voice/VO_NPC_Guide407" loops="0" type="mp3" stereo="0" />

@@ -107,15 +107,8 @@ public class BiaoJuRecordItem : MonoBehaviour {
 
 		nameLabel.text = tempRecordInfo.enemyName;
 
-		string allianceName = "";
-		if (tempRecordInfo.enemylianMengName.Equals (""))
-		{
-			allianceName = "无联盟";
-		}
-		else
-		{
-			allianceName = "<" + tempRecordInfo.enemylianMengName + ">";
-		}
+		string allianceName = QXComData.AllianceName (tempRecordInfo.enemylianMengName);
+
 		allianceNameLabel.text = MyColorData.getColorString (6,allianceName);
 
 		zhanLiLabel.text = "战力" + tempRecordInfo.enemyzhanLi.ToString ();

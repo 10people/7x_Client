@@ -44,8 +44,10 @@ public class TaskCloseLayer : MonoBehaviour
 			if(GameObject.Find("New_My_Union(Clone)"))
 			{
 				NewAlliancemanager.Instance ().ShowAllianceGuid ();
+				NewAlliancemanager.Instance ().SomeUIis_OPen = false;
 			}
                 MainCityUI.TryRemoveFromObjectList(m_gameObject);
+				TreasureCityUI.TryRemoveFromObjectList (m_gameObject);
                 Destroy(m_gameObject);
 
                 if (CityGlobalData.TaskUpdata)

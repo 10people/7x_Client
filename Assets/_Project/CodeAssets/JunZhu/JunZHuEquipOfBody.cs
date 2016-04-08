@@ -15,10 +15,12 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
     public GameObject m_ObjMainBack;
     public UISprite m_ForSprite;
     private float _SaveValue = -1.0f;
+    public static bool m_IsJiHuo = false;
     public struct SelfEquipInfo
     {
         public string _icon;
         public int _PinZhi;
+        public int _quality;
         public string _Name;
         public bool _TanHao;
         public bool _isAdd;
@@ -63,6 +65,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
     private Vector3 vec_target = new Vector3(280, 180, 0);
     private List<Vector3> list_pos = new List<Vector3>();
     public List<GameObject> listMovObj;
+    private FunctionWindowsCreateManagerment.EquipTaoJiHuo m_JiHuoTaozhuangInfo;
     void Awake()
     {
         SocketTool.RegisterMessageProcessor(this);
@@ -70,6 +73,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
 
     void Start()
     {
+        m_JiHuoTaozhuangInfo = new FunctionWindowsCreateManagerment.EquipTaoJiHuo();
         m_EquipOfBody = this;
         Vector3[] vvv = { new Vector3(-47, 183, 0),new Vector3(- 47,93, 0),new Vector3(- 47,0, 0)
                 ,new Vector3( - 47,- 96, 0),new Vector3(52,- 185, 0),new Vector3(220,-185, 0)
@@ -96,6 +100,14 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
 
     public void RequestJiHuo(int index)
     {
+        Debug.Log("m_IsJiHuom_IsJiHuom_IsJiHuom_IsJiHuo :::" + m_IsJiHuo);
+        if (m_IsJiHuo)
+        {
+            Debug.Log("m_IsJiHuom_IsJiHuom_IsJiHuom_IsJiHuo :::" + m_IsJiHuo);
+            return;
+        }
+        m_IsJiHuo = true;
+        m_JiHuoTaozhuangInfo = FunctionWindowsCreateManagerment.m_JiHuoInfo;
         MemoryStream t_tream = new MemoryStream();
         QiXiongSerializer t_qx = new QiXiongSerializer();
         ActivateTaoZhReq tempRequest = new ActivateTaoZhReq();
@@ -155,7 +167,6 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                             _TaoZhuang_Temp.maxActiZhuang = temp.activatedId;
                             FunctionWindowsCreateManagerment.m_IsEquipJihuoShow = true;
                             MoveOnNow();
-                            Global.m_isZhanli = true;
                             // EffectShowOne();
                             ShowTaoZhang(_TaoZhuang_Temp);
                             RequestTaoZhang();
@@ -213,6 +224,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
     void ResLoaded_JiHuo(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
         GameObject tempObject = (GameObject)Instantiate(p_object);
+        tempObject.GetComponent<EquipTaoZhuangLayerManagerment>().ShowInfo(m_JiHuoTaozhuangInfo);
     }
     void OnDisable()
     {
@@ -276,9 +288,13 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                     m_LabelTarget.text = MyColorData.getColorString(GetColorNeed(TaoZhuangTemplate.templates[i].condition), LanguageTemplate.GetText(LanguageTemplate.Text.TARGET_SIGNAL_BEST));
                     m_SpriteTargetPinZhi.spriteName = QualityIconSelected.SelectQuality(TaoZhuangTemplate.templates[i].condition);
                     m_ProgressPurple.value = 1.0f;
-                    _SaveValue = m_ProgressPurple.value;
+                    _SaveValue = -1;
+           
+                    UI3DEffectTool.ClearUIFx(m_ObjMainBack);
+                    UI3DEffectTool.ClearUIFx(m_MoveObj);
+                
                     m_MoveObj.SetActive(false);
-                    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjMainBack, EffectIdTemplate.GetPathByeffectId(620220), null);
+               //     UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjMainBack, EffectIdTemplate.GetPathByeffectId(620220), null);
                     m_LabelPurple.text = "";
                     m_ObjChaKan.SetActive(true);
                     m_JiHuoEvent.gameObject.SetActive(false);
@@ -358,6 +374,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         {
             EquipsOfBody.Instance().m_ActivateLoad = false;
             ShowActivaty();
+            EquipDataTidy();
         }
     }
     void EquipDataTidy()
@@ -378,6 +395,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                         SelfEquipInfo equip = new SelfEquipInfo();
                         equip._icon = ZhuangBei.getZhuangBeiById(tempEquipsOfBodyDic[j].itemId).icon;
                         equip._JinJieId = ZhuangBei.getZhuangBeiById(tempEquipsOfBodyDic[j].itemId).jiejieId;
+                        equip._quality = ZhuangBei.getZhuangBeiById(tempEquipsOfBodyDic[j].itemId).pinZhi;
                         if (tempEquipsOfBodyDic[j].qiangHuaLv > 0)
                         {
                             equip._Name = MyColorData.getColorString(10, NameIdTemplate.GetName_By_NameId(int.Parse(ZhuangBei.templates[i].m_name)) + "+" + tempEquipsOfBodyDic[j].qiangHuaLv.ToString());
@@ -415,6 +433,17 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                                 equip._Signal1 = "";
                                 equip._Pregress = MaterialCount + "/" + ZhuangBei.templates[i].jinjieNum;
                                 equip._Value = 1.0f;
+                                equip._NextItemIcon = ZhuangBei.templates[i].jiejieId;
+                            }
+                            else if (TaoZhuangTemplate.GetNextTaoZhuangById(EquipsOfBody.Instance().m_Activatetemp.maxActiZhuang) != null
+                                && TaoZhuangTemplate.GetNextTaoZhuangById(EquipsOfBody.Instance().m_Activatetemp.maxActiZhuang).condition > equip._quality
+                                && EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(EquipsOfBody.Instance().m_Activatetemp.maxActiZhuang).condition) >= (TaoZhuangTemplate.GetNextTaoZhuangById(EquipsOfBody.Instance().m_Activatetemp.maxActiZhuang).neededNum/2.0f))
+                            {
+                                equip._isProgress = true;
+                                equip._Signal0 = MyColorData.getColorString(5, "急需进阶");
+                                equip._Signal1 = "";
+                                equip._Pregress = MaterialCount + "/" + ZhuangBei.templates[i].jinjieNum;
+                                equip._Value = MaterialCount / float.Parse(ZhuangBei.templates[i].jinjieNum);
                                 equip._NextItemIcon = ZhuangBei.templates[i].jiejieId;
                             }
                             else
@@ -514,7 +543,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         {
             TaskData.Instance.m_iCurMissionIndex = 100060;
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 2;
+            tempTaskData.m_iCurIndex = 3;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
         }
         else if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_iCurMissionIndex == 100100 && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
@@ -528,7 +557,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         {
             TaskData.Instance.m_iCurMissionIndex = 100405;
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 2;
+            tempTaskData.m_iCurIndex = 3;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 
         }
@@ -542,6 +571,8 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
             }
             FunctionWindowsCreateManagerment.m_BuWeiNum = -1;
         }
+
+        WatitShow();
     }
     private List<int> _list_Num = new List<int>();
 
@@ -552,9 +583,9 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
             CreateItem();
         }
      }
-    IEnumerator WatitShow()
+    void WatitShow()
     {
-        yield return new WaitForSeconds(0.3f);
+       // yield return new WaitForSeconds(0.3f);
         if (!string.IsNullOrEmpty(Global.m_sPanelWantRun) || WindowBackShowController.m_SaveEquipBuWei != 0)
         {
             if (!string.IsNullOrEmpty(Global.m_sPanelWantRun))
@@ -562,6 +593,21 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                 int type = int.Parse(Global.NextCutting(ref Global.m_sPanelWantRun));
 
                 int buwei = EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(int.Parse(Global.NextCutting(ref Global.m_sPanelWantRun))).buWei);
+
+                if (FreshGuide.Instance().IsActive(100405)
+                    && TaskData.Instance.m_iCurMissionIndex == 100405 
+                    && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0 
+                    && buwei == 4)
+                {
+                    TaskData.Instance.m_iCurMissionIndex = 100405;
+                    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+                    tempTaskData.m_iCurIndex = 4;
+                    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+                }
+                else
+                {
+                    UIYindao.m_UIYindao.CloseUI();
+                }
                 Global.m_sPanelWantRun = null;
                 if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(buwei))
                 {
@@ -599,36 +645,11 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
             tempTaskData.m_iCurIndex = 4;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
         }
-        //else if (FreshGuide.Instance().IsActive(100270) && TaskData.Instance.m_iCurMissionIndex == 100270 && TaskData.Instance.m_TaskInfoDic[100270].progress >= 0)
-        //{
-        //    TaskData.Instance.m_iCurMissionIndex = 100270;
-        //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-        //    tempTaskData.m_iCurIndex = 3;
-        //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        //}
-        //else if (FreshGuide.Instance().IsActive(100090) && TaskData.Instance.m_iCurMissionIndex == 100090 && TaskData.Instance.m_TaskInfoDic[100090].progress >= 0)
-        //{
-        //    TaskData.Instance.m_iCurMissionIndex = 100090;
-        //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-        //    tempTaskData.m_iCurIndex = 2;
-        //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
-        //}
-        //else if (FreshGuide.Instance().IsActive(100115) && TaskData.Instance.m_iCurMissionIndex == 100115 && TaskData.Instance.m_TaskInfoDic[100115].progress >= 0)
-        //{
-        //    TaskData.Instance.m_iCurMissionIndex = 100115;
-        //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-        //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        //}
-        //else if (FreshGuide.Instance().IsActive(100150) && TaskData.Instance.m_iCurMissionIndex == 100150 && TaskData.Instance.m_TaskInfoDic[100150].progress >= 0)
-        //{
-        //    TaskData.Instance.m_iCurMissionIndex = 100150;
-        //    UIYindao.m_UIYindao.CloseUI();
-        //}
         else if (FreshGuide.Instance().IsActive(100405) && TaskData.Instance.m_iCurMissionIndex == 100405 && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
         {
             TaskData.Instance.m_iCurMissionIndex = 100405;
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 3;
+            tempTaskData.m_iCurIndex = 4;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
         }
         else
@@ -690,7 +711,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                     if (item.Value.buWei == tempBuwei)
                     {
                         tempAddReq.gridIndex = item.Value.bagIndex;
-                        MainCityUI.m_MainCityUI.m_MainCityUIRB.deleteProp(item.Value.itemId);
+                       	MainCityUIRB.setDeletePropUse(item.Value.itemId);
                         // EquipsOfBody.Instance().m_EquipAddId = item.Value.itemId;
                         EquipsOfBody.Instance().m_EquipBuWeiWearing = item.Value.buWei;
                         break;
@@ -738,12 +759,12 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
 
                         }
                     }
-                    MainCityUI.m_MainCityUI.m_MainCityUIRB.deleteProp(_listEquip[0].itemId);
+					MainCityUIRB.setDeletePropUse(_listEquip[0].itemId);
                     tempAddReq.gridIndex = _listEquip[0].bagIndex;
                 }
                 else
                 {
-                    MainCityUI.m_MainCityUI.m_MainCityUIRB.deleteProp(_listEquip[0].itemId);
+					MainCityUIRB.setDeletePropUse(_listEquip[0].itemId);
                     tempAddReq.gridIndex = _listEquip[0].bagIndex;
                 }
                 MemoryStream tempStream = new MemoryStream();
@@ -807,7 +828,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         {
             UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_MoveObj, EffectIdTemplate.GetPathByeffectId(620217), null);
         }
-        else
+        else if(_SaveValue != -1)
         {
             UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_ObjMainBack, EffectIdTemplate.GetPathByeffectId(620220), null);
         }
@@ -909,6 +930,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         //                }
         //            }
         //        }
+        Debug.Log("buweibuweibuweibuweibuwei ：：：" + buwei);
         m_zhuanbeiInfo.GetEquipInfo(id, buwei);
         m_zhuanbeiInfo.gameObject.SetActive(true);
         m_BottomButton.gameObject.SetActive(false);
@@ -1128,6 +1150,16 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         if (index_Move == listMovObj.Count)
         {
             StartCoroutine(WaitForOne());
+        }
+        else if(index_Move > listMovObj.Count)
+        {
+            for (int i = 0; i < listMovObj.Count; i++)
+            {
+                UI3DEffectTool.ClearUIFx(listMovObj[i]);
+                listMovObj[i].transform.localPosition = list_pos[i];
+            }
+            index_Move = 1;
+           // Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_TAO), ResLoaded_JiHuo);
         }
     }
 

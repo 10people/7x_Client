@@ -19,6 +19,7 @@ public class PvpOpponentInfo : MonoBehaviour {
 	public UILabel allianceLabel;
 	public UILabel zhanLiLabel;
 	public UISprite country;
+	public UILabel zhanLiBiJiao;
 	
 	/// <summary>
 	/// 秘宝技能相关
@@ -55,13 +56,30 @@ public class PvpOpponentInfo : MonoBehaviour {
 		junXianIcon.spriteName = "junxian" + junXianId;
 		junXianName.spriteName = "JunXian_" + junXianId;
 		
-		rankLabel.text = tempInfo.rank.ToString ();
+		rankLabel.text = MyColorData.getColorString (3,tempInfo.rank.ToString ());
 
-		nameLabel.text = tempInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse (tempInfo.junZhuName)) : tempInfo.junZhuName;
-		allianceLabel.text = tempInfo.lianMengName.Equals ("") ? "无联盟" : "<" + tempInfo.lianMengName + ">";
+		nameLabel.text = MyColorData.getColorString (3,tempInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse (tempInfo.junZhuName)) : tempInfo.junZhuName);
+		allianceLabel.text = MyColorData.getColorString (3, QXComData.AllianceName (tempInfo.lianMengName));
 		
-		zhanLiLabel.text = "战力" + tempInfo.zhanLi.ToString ();
-		
+		zhanLiLabel.text = MyColorData.getColorString (3,"战力：") + MyColorData.getColorString (BaiZhanPage.baiZhanPage.baiZhanResp.pvpInfo.zhanLi >= tempInfo.zhanLi ? 4 : 5,tempInfo.zhanLi.ToString ());
+
+		string biJiaoStr = "";
+		int zhanLi = BaiZhanPage.baiZhanPage.baiZhanResp.pvpInfo.zhanLi - tempInfo.zhanLi;
+
+		if (zhanLi < 0)
+		{
+			biJiaoStr = MyColorData.getColorString (5,"比我高 " + Mathf.Abs(zhanLi));
+		}
+		else if (zhanLi == 0)
+		{
+			biJiaoStr = MyColorData.getColorString (4,"与我战力相同");
+		}
+		else
+		{
+			biJiaoStr = MyColorData.getColorString (4,"比我低 " + zhanLi);
+		}
+		zhanLiBiJiao.text = biJiaoStr;
+
 		country.spriteName = "nation_" + tempInfo.guojia;
 
 		lockObj.SetActive (tempInfo.zuheId > 0 ? false : true);
@@ -85,6 +103,8 @@ public class PvpOpponentInfo : MonoBehaviour {
 		}
 		
 //		PvpPage.pvpPage.MibaoSkillBgColor (miBaoSkillTemp == null ? 0 : tempInfo.zuheId);
+//		Debug.Log ("tempInfo.zuheId:" + tempInfo.zuheId);
+		miBaoSkillBg.spriteName = tempInfo.zuheId > 0 ? tempInfo.zuheId.ToString () : "SkillBg0";
 
 		foreach (EventHandler handler in btnHandlerList)
 		{

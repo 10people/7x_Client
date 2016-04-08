@@ -9,6 +9,10 @@ public class BattleResultPvpWin : MonoBehaviour
 
 	public UISprite spriteNew;
 
+	public UISprite spriteLabelOld;
+
+	public UISprite spriteLabelNew;
+
 	public GameObject newRecord;
 
 	public UILabel labelOld;
@@ -41,11 +45,17 @@ public class BattleResultPvpWin : MonoBehaviour
 //		Debug.Log ("老军衔：" + _resp.oldJunXianLevel);
 //		Debug.Log ("新军衔：" + _resp.newJunXianLevel);
 
-		newRecord.SetActive (_resp.oldRank > _resp.newRank);
+		Debug.Log ("PVP Result   " + _resp.oldRank + ", " + _resp.newRank + ", " + _resp.highest + ", " + _resp.yuanbao);
+
+		newRecord.SetActive (_resp.newRank < _resp.highest);
 
 		spriteOld.spriteName = "junxian" + _resp.oldJunXianLevel;
 
 		spriteNew.spriteName = "junxian" + _resp.newJunXianLevel;
+
+		spriteLabelOld.spriteName = "JunXian_" + _resp.oldJunXianLevel;
+
+		spriteLabelNew.spriteName = "JunXian_" + _resp.newJunXianLevel;
 
 		labelOld.text = "" + _resp.oldRank;
 

@@ -28,6 +28,8 @@ public class DangPuTemplate : XmlLoadManager
 	public int flag;
 
 	public int VIP;
+
+	public int ifRecomanded;
 	
 	public static List<DangPuTemplate> templates = new List<DangPuTemplate>();
 
@@ -95,6 +97,9 @@ public class DangPuTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.VIP = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ifRecomanded = int.Parse( t_reader.Value );
 			}
 			
 			templates.Add( t_template );

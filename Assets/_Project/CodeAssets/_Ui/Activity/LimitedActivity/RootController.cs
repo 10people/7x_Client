@@ -43,12 +43,6 @@ namespace LimitActivity
             {
                 LoadFromCache();
             }
-
-            //Add guide here.
-            if (FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
-            {
-                UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[100173].m_listYindaoShuju[1]);
-            }
         }
 
         public void Close()

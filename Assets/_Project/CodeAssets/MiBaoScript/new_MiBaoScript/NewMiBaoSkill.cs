@@ -9,11 +9,13 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
+	public UILabel Remaind;
+
 	public MibaoInfoResp m_Skill_MiBaoInfo;
 
 	public UISprite Skill_Icon;
 
-	public UILabel SKillName;
+	public UISprite SKillName;
 
 	public UILabel NeedMiBaonum;
 
@@ -47,6 +49,8 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 	public GameObject NewAddMiBaoShangZhen;
 
+	public List<GameObject> EffectList = new List<GameObject>();
+
 	public static NewMiBaoSkill Instance()
 	{
 		if (!mMiBaoData)
@@ -77,8 +81,21 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 	void Update () {
 	
 	}
+
+	void HidAllGameobj(int Index)
+	{
+		EffectList.ForEach (item => Setactive (item, false));
+		EffectList [Index].SetActive (true);
+
+	}
+	private void Setactive(GameObject go, bool a)
+	{
+		go.SetActive (a);
+	}
+
 	public void Init(int SKillType, int ski_id)
 	{
+		EffectList.ForEach (item=>Setactive(item,false));
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		SaveId = ski_id;
 		S_Type = SKillType;
@@ -88,14 +105,20 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
 			{
 				//	Debug.Log("切换秘技)
-				
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			
+				if(CityGlobalData.PveLevel_UI_is_OPen)
+				{
+					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
+					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+				}
+
 			}
 		}
 		else
 		{
+			if(UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				UIYindao.m_UIYindao.CloseUI();
+			}
 			SaveBtn.SetActive(false);
 			CHoseRemaind.gameObject.SetActive (false);
 		}
@@ -399,8 +422,10 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 	public void ShowBeChoosed_MiBao(int  m_Skllinfo_id,bool Isactive)
 	{
 //		Debug.Log ("m_Skllinfo_id = "+m_Skllinfo_id);
+		HidAllGameobj (m_Skllinfo_id -1);
 		NeedAcmibaonuber = 0;
 		Acmibaonuber = 0;
+		int SKillLv = 1;
 		foreach(MibaoInfo minfo in m_Skill_MiBaoInfo.miBaoList)
 		{
 			if(minfo.level > 0 )
@@ -411,8 +436,14 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		SaveId = m_Skllinfo_id;
 		if(Isactive)
 		{
+			foreach(SkillInfo mSkill in m_Skill_MiBaoInfo.skillList)
+			{
+				SKillLv = mSkill.level;
+			}
 			NewSaveId = m_Skllinfo_id;
 		}
+//		Debug.Log ("SKillLv= "+SKillLv);
+//		Debug.Log ("ll_MiBaoInfo.skillList。count = "+m_Skill_MiBaoInfo.skillList.Count);
 		IsActived = Isactive;
 		for (int i = 0; i < m_Skill_Gbj.Length; i ++)
 		{
@@ -420,17 +451,15 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 			if(m_miBaoskilltemp.SKill_id == m_Skllinfo_id  )
 			{
-				m_miBaoskilltemp.beChoosed = true;
-
-				m_miBaoskilltemp.Be_CHoosed();
+				HidAllGameobj(m_Skllinfo_id -1);
 
 			}
 		}
-		MiBaoSkillLvTempLate m_MiBaoSkillTemp = MiBaoSkillLvTempLate.GetMiBaoSkillLvTemplateByIdAndLevel (m_Skllinfo_id,1);
+		MiBaoSkillLvTempLate m_MiBaoSkillTemp = MiBaoSkillLvTempLate.GetMiBaoSkillLvTemplateByIdAndLevel (m_Skllinfo_id,SKillLv);
 		MiBaoSkillTemp mMiBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id (m_Skllinfo_id);
 		string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoSkillTemp.nameId);
 		
-		SKillName.text = mName;
+		SKillName.spriteName = m_MiBaoSkillTemp.id.ToString();
 		if(Isactive&&!COmeMiBaoUI)
 		{
 			string MiBaoSkillName = mName;
@@ -458,6 +487,14 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			mSilder.value = (float)(Acmibaonuber) / (float)(mMiBaoSkillTemp.needNum);
 			NeedMiBaonum.text = Acmibaonuber.ToString()+"/"+mMiBaoSkillTemp.needNum.ToString();
 			SaveBtn.SetActive(false);
+			if(Acmibaonuber >=  mMiBaoSkillTemp.needNum)
+			{
+				Remaind.text = "[2b180a]该技能可以激活[-]";
+			}
+			else{
+				int mibaonuber = mMiBaoSkillTemp.needNum - Acmibaonuber;
+				Remaind.text = "[2b180a]再激活[-]"+MyColorData.getColorString(5,mibaonuber.ToString()) +"[2b180a]个秘宝可以解锁该技能[-]";
+			}
 		}
 		else
 		{

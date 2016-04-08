@@ -28,6 +28,7 @@ public class TopUpLoadManagerment : MonoBehaviour
     {
         GameObject tempObject = (GameObject)Instantiate(p_object);
         MainCityUI.TryAddToObjectList(tempObject);
+		TreasureCityUI.TryAddToObjectList(tempObject);
 
         if (isSpecial)
         {

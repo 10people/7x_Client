@@ -12,14 +12,19 @@ using ProtoBuf.Meta;
 
 public class TreasureCityUI : TreasureCitySingleton<TreasureCityUI> {
 
-	public TreasureCityUIBR tCityUIBR;
-	public TreasureCityUITop tCityTop;
-	public TreasureCityUITL tCityUITL;
-	public TreasureCityUITR tCityTR;
+	public TreasureCityUIBR tCityUIBR;//右下
+	public TreasureCityUITop tCityUITop;//正上
+	public TreasureCityUITL tCityUITL;//左上
+	public TreasureCityUITR tCityUITR;//右上
 
 	void Awake ()
 	{
 		base.Awake ();
+	}
+
+	void Start ()
+	{
+		TopLeftUI ();
 	}
 
 	void OnDestroy ()
@@ -41,7 +46,22 @@ public class TreasureCityUI : TreasureCitySingleton<TreasureCityUI> {
 
 	public void TopUI (ErrorMessage tempMsg)
 	{
-		tCityTop.InItTopUI (tempMsg);
+		tCityUITop.InItTopUI (tempMsg);
+	}
+
+	public void TopYBUI (ErrorMessage tempMsg)
+	{
+		tCityUITop.InItTopUIYB (tempMsg);
+	}
+
+	public void TopUIMsg (string msg)
+	{
+		tCityUITop.GetChatMsg (msg);
+	}
+
+	public void TopLeftUI ()
+	{
+		tCityUITL.RefreshJunZhuInfo ();
 	}
 
 	#endregion
@@ -78,7 +98,7 @@ public class TreasureCityUI : TreasureCitySingleton<TreasureCityUI> {
 		}
 		else
 		{
-			Debug.LogWarning("Warning, MainCityUI not exist.");
+			Debug.LogWarning("Warning, TreasureCityUI not exist.");
 		}
 	}
 	

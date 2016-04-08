@@ -20,23 +20,52 @@ namespace Rank
 
         public void Refresh(List<LianMengInfo> list)
         {
-            //Find nothing in one mode.
-            if ((list == null || list.Count == 0) && IsOneMode)
+            if (list == null || list.Count == 0)
             {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.FindNoAllianceCallBack);
-                return;
+                //Find nothing in one mode.
+                if (IsOneMode)
+                {
+                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.FindNoAllianceCallBack);
+                }
+                else if (CurrentPageIndex == 1)
+                {
+                    //Set no data info.
+                    if (CurrentNationIndex == 0)
+                    {
+                        NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_02);
+                        NoDataLabel.gameObject.SetActive(true);
+                    }
+                    else if (CurrentNationIndex > 0)
+                    {
+                        if (JunZhuData.Instance().m_junzhuInfo.guoJiaId == CurrentNationIndex)
+                        {
+                            NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_03);
+                        }
+                        else
+                        {
+                            NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_04).Replace("%d", m_RootController.NaionStringList[CurrentNationIndex]);
+                        }
+                        NoDataLabel.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        Debug.LogError("Goto refresh all mode when nation id not setted.");
+                        NoDataLabel.gameObject.SetActive(false);
+                        return;
+                    }
+                }
             }
-
-            while (m_Grid.transform.childCount != 0)
+            else
             {
-                var child = m_Grid.transform.GetChild(0);
-                child.parent = null;
-                Destroy(child.gameObject);
-            }
-            m_DetailControllerList.Clear();
+                //Clear all
+                while (m_Grid.transform.childCount != 0)
+                {
+                    var child = m_Grid.transform.GetChild(0);
+                    child.parent = null;
+                    Destroy(child.gameObject);
+                }
+                m_DetailControllerList.Clear();
 
-            if (list != null && list.Count != 0)
-            {
                 for (int i = 0; i < list.Count; i++)
                 {
                     var temp = Instantiate(m_Prefab) as GameObject;
@@ -59,33 +88,6 @@ namespace Rank
                 }
 
                 NoDataLabel.gameObject.SetActive(false);
-            }
-            else
-            {
-                //Set no data info.
-                if (CurrentNationIndex == 0)
-                {
-                    NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_02);
-                    NoDataLabel.gameObject.SetActive(true);
-                }
-                else if (CurrentNationIndex > 0)
-                {
-                    if (JunZhuData.Instance().m_junzhuInfo.guoJiaId == CurrentNationIndex)
-                    {
-                        NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_03);
-                    }
-                    else
-                    {
-                        NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_04).Replace("%d", m_RootController.NaionStringList[CurrentNationIndex]);
-                    }
-                    NoDataLabel.gameObject.SetActive(true);
-                }
-                else
-                {
-                    Debug.LogError("Goto refresh all mode when nation id not setted.");
-                    NoDataLabel.gameObject.SetActive(false);
-                    return;
-                }
             }
 
             //High light item.

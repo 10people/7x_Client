@@ -1,4 +1,10 @@
-﻿//#define CLOSE_CE_SHI_SERVER
+﻿#define DEFAULT_TIYAN
+
+//#define DEFAULT_CESHI
+
+//#define DEFAULT_NEIWANG
+
+
 
 //#define DEBUG_HUGE_UPDATE_SERVER
 
@@ -9,6 +15,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+
 
 public class NetworkHelper {
 
@@ -134,16 +142,28 @@ public class NetworkHelper {
 		CeShi,
 	}
 
-	#if CLOSE_CE_SHI_SERVER
+	#if DEFAULT_NEIWANG
 	// Now is the same as NeiWang
 	private static ServerType m_server_type_enum 	= ServerType.NeiWang;
 	
 	private const string DEFAULT_SERVER_NAME 		= "内网服";
 
 	private const SelectUrl.UrlSeclect m_default_select_url	= SelectUrl.UrlSeclect.NeiWang;
-	#else
+	#elif DEFAULT_TIYAN
+	private static ServerType m_server_type_enum 	= ServerType.TiYan;
+
+	private const string DEFAULT_SERVER_NAME 		= "体验服";
+
+	private const SelectUrl.UrlSeclect m_default_select_url	= SelectUrl.UrlSeclect.TiYan;
+	#elif DEFAULT_CESHI
 	private static ServerType m_server_type_enum 	= ServerType.CeShi;
 	
+	private const string DEFAULT_SERVER_NAME 		= "测试服";
+
+	private const SelectUrl.UrlSeclect m_default_select_url	= SelectUrl.UrlSeclect.CeShi;
+	#else
+	private static ServerType m_server_type_enum 	= ServerType.CeShi;
+
 	private const string DEFAULT_SERVER_NAME 		= "测试服";
 
 	private const SelectUrl.UrlSeclect m_default_select_url	= SelectUrl.UrlSeclect.CeShi;
@@ -185,18 +205,13 @@ public class NetworkHelper {
 	// NeiWang Develop server
 	private const string SERVER_NEIWANG_PREFIX		= "http://192.168.3.80:8090/";
 	
-	// TiYan Public server
+	// TiYan, 1.1 Official Server
 	private const string SERVER_TIYAN_PREFIX		= "http://203.195.230.100:9090/";
-	
-	
-	#if CLOSE_CE_SHI_SERVER
-	// Now is the same as NeiWang
-	private const string SERVER_CESHI_PREFIX		= "http://192.168.3.80:8090/";
-	#else
+
 	// Ceshi develop test server
 	private const string SERVER_CESHI_PREFIX		= "http://203.195.230.100:9091/";
-	#endif
-	
+
+	// JianHu Server
 	public const string SERVER_HUGE_PREFIX			= "http://192.168.0.176:8080/";
 
 	#endregion
@@ -207,8 +222,9 @@ public class NetworkHelper {
 
 	/// Update Server
 	public const string UPDATE_URL_NEIWANG			= "http://192.168.3.80:8070/wsRes/compare1.1.jsp";
-	
-	public const string UPDATE_URL_TIYAN			= "http://203.195.230.100:9090/wsRes/compare1.1.jsp";
+
+	// TiYan, 1.1 Official Server
+	public const string UPDATE_URL_TIYAN			= "http://203.195.230.100:8010/wsRes/compare1.1.jsp";
 	
 	public const string UPDATE_URL_CESHI			= "http://203.195.230.100:8010/wsRes/compare1.1.jsp";
 

@@ -63,12 +63,12 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
             {
               
                 _ValueCount = 0.2f + (m_listEffect[m_listEffect.Count - 1] - 1) * 0.05f;
-                _PerTimeAddExp = _MaxExp / (1 / _ValueCount);
+                _PerTimeAddExp = (_MaxExp * m_listEffect.Count) / (1 / _ValueCount);
             }
             else
             {
                 _ValueCount = 0.44f;
-                _PerTimeAddExp = _MaxExp / (1 / _ValueCount);
+                _PerTimeAddExp = (_MaxExp * m_listEffect.Count) / (1 / _ValueCount);
             }
  
             _SaveNum = m_listEffect[m_listEffect.Count - 1];

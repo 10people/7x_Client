@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define CloneBox
+#define ShowChatMsgInOneLabel
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +24,17 @@ public class QXChatUIBox : MonoBehaviour {
 	public EventHandler chatUIBoxHandler;
 
 	public EventHandler situationHandler;
+	public UISprite lightBox;
+
+	private bool isShow = false;
+	public enum ShowState
+	{
+		COUNT,
+		ADD,
+	}
+	private ShowState showState = ShowState.COUNT;
+
+	private List<string> chatMsgList = new List<string>();
 
 	void Awake ()
 	{
@@ -38,6 +51,8 @@ public class QXChatUIBox : MonoBehaviour {
 		SetRedAlert (false);
 		chatUIBoxHandler.m_click_handler += ChatUIBoxClickBack;
 		situationHandler.m_click_handler += SituationHandlerClickBack;
+
+//		PushAndNotificationHelper.SetRedSpotNotification (410012,true);
 	}
 
 	/// <summary>
@@ -47,6 +62,50 @@ public class QXChatUIBox : MonoBehaviour {
 	public void InItChatUIBox (ChatMessage tempChatMsg)
 	{
 		SetRedAlert (!QXChatData.Instance.SetOpenChat);
+
+		#if ShowChatMsgInOneLabel
+		string chatText = "";
+		if (tempChatMsg.chatPct.guoJia <= 0)
+		{
+			chatText = (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "[00e1c4][广播][-]" : MyColorData.getColorString (5,"[系统]")) + tempChatMsg.chatPct.content;
+		}
+		else
+		{
+			string channelStr = "[00e1c4][" + QXChatData.Instance.GetChannelNameStr (tempChatMsg.chatPct.channel) + "][-]";
+			string nationStr = "[e5e205][" + QXComData.GetNationName (tempChatMsg.chatPct.guoJia) + "][-]";
+			string nameStr = "[f5aa29]" + tempChatMsg.chatPct.senderName + "[-]";
+			chatText = channelStr + nationStr + nameStr + tempChatMsg.chatPct.content;
+//			chatText = chatText.Replace (" ","");
+			chatText = chatText.Replace ("\n","");
+		}
+
+		chatText = tempChatMsg.chatPct.type == 2 ? chatText + "[u][e15a00]快来看看吧[-][/u]" + "！" : chatText;
+
+		chatMsgList.Add (chatText);
+
+		for (int i = 0;i < chatMsgList.Count;i ++)
+		{
+			if (chatMsgList.Count > 3)
+			{
+				chatMsgList.RemoveAt (0);
+			}
+		}
+		for (int i = 0;i < chatMsgList.Count;i ++)
+		{
+//			Debug.Log ("chatMsgList:" + chatMsgList[i]);
+			if (chatMsgList.Count == 1)
+			{
+				chatLabel.text = chatMsgList[chatMsgList.Count - 1];
+			}
+			else if (chatMsgList.Count > 1)
+			{
+				chatLabel.text = chatMsgList[chatMsgList.Count - 1] + "\n" + chatMsgList[chatMsgList.Count - 2];
+			}
+		}
+
+		#endif
+
+		#if CloneBox
 		GameObject chatLabelItem = (GameObject)Instantiate (chatLabel.gameObject);
 		chatLabelItem.SetActive (true);
 		chatLabelItem.transform.parent = chatLabel.transform.parent;
@@ -55,14 +114,14 @@ public class QXChatUIBox : MonoBehaviour {
 
 		UILabel mChatLabel = chatLabelItem.GetComponent<UILabel> ();
 		string chatText = "";
-		Debug.Log ("tempChatMsg.chatPct.content:" + tempChatMsg.chatPct.content);
+//		Debug.Log ("tempChatMsg.chatPct.content:" + tempChatMsg.chatPct.content);
 		if (tempChatMsg.chatPct.guoJia <= 0)
 		{
 			chatText = (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "[00e1c4][广播][-]" : MyColorData.getColorString (5,"[系统]")) + tempChatMsg.chatPct.content;
 		}
 		else
 		{
-			string channelStr = "[00e1c4][" + QXChatData.Instance.GetChannelTitleStr (tempChatMsg.chatPct.channel) + "][-]";
+			string channelStr = "[00e1c4][" + QXChatData.Instance.GetChannelNameStr (tempChatMsg.chatPct.channel) + "][-]";
 			string nationStr = "[e5e205][" + QXComData.GetNationName (tempChatMsg.chatPct.guoJia) + "][-]";
 			string nameStr = "[f5aa29]" + tempChatMsg.chatPct.senderName + "[-]";
 			chatText = channelStr + nationStr + nameStr + "" + tempChatMsg.chatPct.content;
@@ -75,12 +134,13 @@ public class QXChatUIBox : MonoBehaviour {
 
 		foreach (GameObject obj in chatLabelList)
 		{
-			Hashtable move = new Hashtable();
-			move.Add ("time",0.1f);
-			move.Add ("position",obj.transform.localPosition - new Vector3(0,chatLabelHeigh,0));
-			move.Add ("islocal",true);
-			move.Add ("easetype",iTween.EaseType.easeOutQuad);
-			iTween.MoveTo (obj,move);
+			obj.transform.localPosition -= new Vector3(0,chatLabelHeigh,0);
+//			Hashtable move = new Hashtable();
+//			move.Add ("time",0.1f);
+//			move.Add ("position",obj.transform.localPosition - new Vector3(0,chatLabelHeigh,0));
+//			move.Add ("islocal",true);
+//			move.Add ("easetype",iTween.EaseType.easeOutQuad);
+//			iTween.MoveTo (obj,move);
 		}
 
 		chatLabelList.Add (chatLabelItem);
@@ -90,12 +150,25 @@ public class QXChatUIBox : MonoBehaviour {
 			Destroy (chatLabelList[0]);
 			chatLabelList.RemoveAt (0);
 		}
+		#endif
 	}
 
 	public void ChatUIBoxClickBack (GameObject obj)
 	{
-		QXChatData.Instance.OpenChatPage ();
-		SetRedAlert (false);
+		if (!MainCityUI.IsWindowsExist ())
+		{
+			ChatPct.Channel tempChannel = ChatPct.Channel.SHIJIE;
+			foreach (KeyValuePair<ChatPct.Channel,string[]> pair in QXChatData.Instance.GetChatInfoDic ())
+			{
+				if (pair.Value[2] == "0")
+				{
+					tempChannel = pair.Key;
+					break;
+				}
+			}
+			QXChatData.Instance.OpenChatPage (tempChannel);
+			SetRedAlert (false);
+		}
 	}
 
 	/// <summary>
@@ -136,7 +209,12 @@ public class QXChatUIBox : MonoBehaviour {
 	{
 		if (MainCityUI.m_MainCityUI != null)
 		{
-			situationHandler.gameObject.SetActive (FunctionOpenTemp.IsShowRedSpotNotification (410012) || FunctionOpenTemp.IsShowRedSpotNotification (410015));
+			isShow = (FunctionOpenTemp.IsShowRedSpotNotification (410012) || FunctionOpenTemp.IsShowRedSpotNotification (410015)) && !AllianceData.Instance.IsAllianceNotExist;
+			situationHandler.gameObject.SetActive (isShow);
+		}
+		else
+		{
+			isShow = false;
 		}
 	}
 
@@ -150,6 +228,35 @@ public class QXChatUIBox : MonoBehaviour {
 		else if (FunctionOpenTemp.IsShowRedSpotNotification (410015))
 		{
 			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.YUNBIAO);
+		}
+	}
+
+	void Update ()
+	{
+		if (isShow)
+		{
+			if (showState == ShowState.ADD)
+			{
+				if (lightBox.alpha < 1)
+				{
+					lightBox.alpha += 0.08f;
+				}
+				else if (lightBox.alpha >= 1)
+				{
+					showState = ShowState.COUNT;
+				}
+			}
+			else if (showState == ShowState.COUNT)
+			{
+				if (lightBox.alpha > 0)
+				{
+					lightBox.alpha -= 0.08f;
+				}
+				else if (lightBox.alpha <= 0)
+				{
+					showState = ShowState.ADD;
+				}
+			}
 		}
 	}
 }

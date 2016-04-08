@@ -147,9 +147,16 @@ public class DramaStoryControllor : MonoBehaviour
 		}
 	}
 
+	public void forcedEnd()
+	{
+		curStroyBoard.forcedEnd ();
+	}
+
 	public void storyBoardDone()
 	{
-		GameObject.Find("UISpirteAlphaBG").GetComponent<UISprite>().alpha = 0;
+		GameObject gc = GameObject.Find ("UISpirteAlphaBG");
+
+		if(gc != null) gc.GetComponent<UISprite>().alpha = 0;
 
 		if (target != null) target.SendMessage ("dramaStoryDone");
 	}

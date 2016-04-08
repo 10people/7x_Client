@@ -27,12 +27,24 @@ public class DramaStoryBoard : MonoBehaviour
 
 	private GameObject target;
 
-	void OnDestroy(){
+
+	void OnDestroy()
+	{
 		m_actorGc.Clear();
 
 		controllors.Clear();
+
+		m_actorGc.Clear ();
 	}
 
+	public void clear()
+	{
+		m_actorGc.Clear();
+		
+		controllors.Clear();
+		
+		m_actorGc.Clear ();
+	}
 
 	public void init(GameObject _target)
 	{
@@ -412,15 +424,23 @@ public class DramaStoryBoard : MonoBehaviour
 		return true;
 	}
 
+	public void forcedEnd()
+	{
+		foreach(GameObject gc in m_actorGc)
+		{
+			gc.SendMessage("forcedEnd");
+		}
+	}
+
 	IEnumerator callback()
 	{
 		if(totalTime > 0)
 		{
 			yield return new WaitForSeconds(totalTime);
 
-			if(target != null) target.SendMessage("storyBoardDone");
-
 			actionDone ();
+
+			if(target != null) target.SendMessage("storyBoardDone");
 		}
 		else
 		{
@@ -434,11 +454,11 @@ public class DramaStoryBoard : MonoBehaviour
 
 				if (flag == true)
 				{
+					actionDone ();
+
 					target.SendMessage("storyBoardDone");
 				}
 			}
-
-			actionDone ();
 		}
 	}
 
@@ -447,7 +467,7 @@ public class DramaStoryBoard : MonoBehaviour
 		foreach(DramaActorControllor dac in controllors)
 		{
 			dac.actionDone();
-		
+
 			Destroy(dac);
 		}
 

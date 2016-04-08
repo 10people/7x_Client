@@ -142,7 +142,10 @@ public class TaskScrollViewItemAmend : MonoBehaviour
    
     void OnClick()
     {
-       CallBackTouch(_SavetaskInfo, gameObject);
+        if (CallBackTouch != null && Input.touchCount < 2)
+        {
+            CallBackTouch(_SavetaskInfo, gameObject);
+        }
     }
 
     int index_Num2 = 0;

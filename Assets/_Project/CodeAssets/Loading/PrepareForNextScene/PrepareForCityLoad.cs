@@ -13,7 +13,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
+public class PrepareForCityLoad : MonoBehaviour, SocketListener
 {
     private List<NpcCityTemplate> listNpcTempInfo = new List<NpcCityTemplate>();
     
@@ -54,7 +54,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     }
  
     void OnDestroy(){
-        base.OnDestroy();
+		SocketTool.UnRegisterSocketListener(this);
     }
 
     private void InitCityLoading()
@@ -71,7 +71,7 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
         //}
         //else
         {
-            LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 15, 13);
+            LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_NPC, 15, 11);
         }
 
         LoadingHelper.InitSectionInfo(StaticLoading.m_loading_sections, CONST_CITY_LOADING_3D_JUNZHU_MODEL, 2, 1);
@@ -316,6 +316,10 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
     /// Prepare Data For Main City.
     public void Prepare_For_MainCity()
     {
+		#if DEBUG_PREPARE_FOR_CITY_LOAD
+		Debug.Log( "Prepare_For_MainCity()" );
+		#endif
+
         InitCityLoading();
 
         // reset info
@@ -391,14 +395,18 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
   //      }
  
         if (m_received_data_for_main_city >= REQUEST_DATA_COUNT_FOR_MAINCITY ){
-            UnRegister();
-
-            Load_2D_UI();
+			
         }
 		else{
 			#if DEBUG_PREPARE_FOR_CITY_LOAD
 			Debug.Log( "not entering main city." );
 			#endif
+		}
+
+		{
+			UnRegister();
+
+			Load_2D_UI();
 		}
     }
     private static float m_preserve_percentage = 0.0f;
@@ -544,13 +552,16 @@ public class PrepareForCityLoad : Singleton<PrepareForCityLoad>, SocketListener
             }
         }
     }
-    void UnRegister()
-    {
+
+    void UnRegister(){
         SocketTool.UnRegisterSocketListener(this);
     }
 
-    public void Prepare_For_AllianceCity11()
-    {
+    public void Prepare_For_AllianceCity11(){
+		#if DEBUG_PREPARE_FOR_CITY_LOAD
+		Debug.Log( "Prepare_For_AllianceCity11()" );
+		#endif
+
         InitCityLoading();
 
         // reset info

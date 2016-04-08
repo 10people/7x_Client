@@ -754,14 +754,14 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .401572466
+      - time: .345690101
         functionName: PlaySound
         data: 3000|3001|3002
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .544303656
+      - time: .353127182
         functionName: dieActionDone
         data: 
         objectReferenceParameter: {instanceID: 0}

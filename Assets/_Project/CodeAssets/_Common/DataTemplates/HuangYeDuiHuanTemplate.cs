@@ -36,7 +36,9 @@ public class HuangYeDuiHuanTemplate : XmlLoadManager {
 	public int weight;
 	
 	public int site;
-	
+
+	public int ifRecomanded;
+
 	public static List<HuangYeDuiHuanTemplate> templates = new List<HuangYeDuiHuanTemplate>();
 	
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
@@ -93,6 +95,9 @@ public class HuangYeDuiHuanTemplate : XmlLoadManager {
 				
 				t_reader.MoveToNextAttribute();
 				t_template.site = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ifRecomanded = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

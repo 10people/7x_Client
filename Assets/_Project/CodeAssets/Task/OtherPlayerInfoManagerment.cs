@@ -106,22 +106,9 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
                     }
                     else if (AllianceData.Instance.g_UnionInfo.identity > 0)
                     {
-
-
                         string[] ss = m_OtherPlayerId.Split(':');
-                        AllianceInvite green = new AllianceInvite();
-
-                        green.junzhuId = long.Parse(ss[1]);
-
-                        MemoryStream t_stream = new MemoryStream();
-
-                        QiXiongSerializer q_serializer = new QiXiongSerializer();
-
-                        q_serializer.Serialize(t_stream, green);
-
-                        byte[] t_protof = t_stream.ToArray();
-
-                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_INVITE, ref t_protof);
+             
+                        AllianceData.Instance.RequestAllianceInvite(long.Parse(ss[1]));
                     }
                 }
                 break;
@@ -191,10 +178,17 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
             }
             tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "邮件", m_ButtonClick = OnMailClick });
 
-            if (BlockedData.Instance().m_BlockedInfoDic == null || BlockedData.Instance().m_BlockedInfoDic.Count == 0 || !BlockedData.Instance().m_BlockedInfoDic.Select(item => item.Value.junzhuId).Contains(m_JunzhuPlayerResp.junZhuId))
+            //if (BlockedData.Instance().m_BlockedInfoDic == null || BlockedData.Instance().m_BlockedInfoDic.Count == 0 || !BlockedData.Instance().m_BlockedInfoDic.Select(item => item.Value.junzhuId).Contains(m_JunzhuPlayerResp.junZhuId))
+            //{
+            //    tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "屏蔽", m_ButtonClick = OnShieldClick });
+            //}
+
+        
+            //if (AllianceData.Instance.g_UnionInfo == null || AllianceData.Instance.g_UnionInfo.identity == 0)
             {
-                tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "屏蔽", m_ButtonClick = OnShieldClick });
+                tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "邀请入盟", m_ButtonClick = OnYaoQingClick });
             }
+
         }
         info.SetThis(tempKingInfo, tempConfigList);
         info.m_KingDetailEquipInfo.m_BagItemDic = m_JunzhuPlayerResp.equip.items.Where(item => item.buWei > 0).ToDictionary(item => KingDetailInfo.TransferBuwei(item.buWei));
@@ -203,7 +197,14 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
     }
     private void OnAddFriendClick()
     {
-        FriendOperationLayerManagerment.AddFriends((int)m_JunzhuPlayerResp.junZhuId);
+        if (FriendOperationData.Instance.m_FriendListInfo.friends.Select(item => item.ownerid).Contains(m_JunzhuPlayerResp.junZhuId))
+        {
+            ClientMain.m_UITextManager.createText("该玩家已经是您的好友！");
+        }
+        else
+        {
+            FriendOperationLayerManagerment.AddFriends((int)m_JunzhuPlayerResp.junZhuId);
+        }
     }
 
     private void OnMailClick()
@@ -223,6 +224,23 @@ public class OtherPlayerInfoManagerment : MonoBehaviour, SocketProcessor
         byte[] t_protof;
         t_protof = t_tream.ToArray();
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_Join_BlackList, ref t_protof);
+    }
+
+    private void OnYaoQingClick()
+    {
+        if (AllianceData.Instance.g_UnionInfo == null || AllianceData.Instance.g_UnionInfo.identity == 0)
+        {
+            MainCityUI.TryRemoveFromObjectList(m_MainParent);
+            Destroy(m_MainParent);
+            ClientMain.m_UITextManager.createText("只有盟主/副盟主可以邀请玩家加入联盟！");
+
+        }
+        else
+        {
+            string[] ss = m_OtherPlayerId.Split(':');
+
+            AllianceData.Instance.RequestAllianceInvite(long.Parse(ss[1]));
+        }
     }
 
 

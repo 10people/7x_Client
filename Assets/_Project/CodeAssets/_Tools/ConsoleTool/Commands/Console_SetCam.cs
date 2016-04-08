@@ -175,6 +175,26 @@ public class Console_SetCam {
 
 
 
+	#region Debug Camera
+
+	public static void DebugCamera( string[] p_params ){
+		if( UICamera.eventHandler == null ){
+			Debug.Log( "UICamera.eventHandler is null." );
+
+			return;
+		}
+
+		UICamera.eventHandler.debug = !UICamera.eventHandler.debug;
+
+		NGUIDebug.debugRaycast = UICamera.eventHandler.debug;
+
+		Debug.Log( "Set UICamera.Debug: " + UICamera.eventHandler.debug );
+	}
+
+	#endregion
+
+
+
 	#region Cam Tour Body
 
 	private static Vector3 m_local_pos		= Vector3.zero;

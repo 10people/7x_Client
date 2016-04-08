@@ -103,12 +103,26 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 			}
 		}
 	
+		bool isContainsSpecial = false;
 		foreach (KeyValuePair<int,RewardData> pair in rewardDic)
 		{
+			QXComData.XmlType xmlType = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (pair.Value.itemId));
+			if (xmlType == QXComData.XmlType.MIBAO || xmlType == QXComData.XmlType.EQUIP)
+			{
+				isContainsSpecial = true;
+				specialRewardList.Add (pair.Value);
+			}
 			rewardDataList.Add (pair.Value);
 		}
 
-		CheckReward ();
+		if (!isContainsSpecial && specialItemList.Count == 0)
+		{
+			CheckReward ();
+		}
+		else
+		{
+			CheckSpecialReward ();
+		}
 	}
 
 	void RankRewardDataList (List<RewardData> tempDataList)
@@ -119,7 +133,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 			{
 				QXComData.XmlType xmlType1 = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (tempDataList[j].itemId));
 				QXComData.XmlType xmlType2 = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (tempDataList[j + 1].itemId));
-				if (xmlType1 != xmlType2 && (xmlType1 == QXComData.XmlType.EQUIP || xmlType1 == QXComData.XmlType.MIBAO))
+				if (xmlType1 != xmlType2 && (xmlType2 == QXComData.XmlType.MIBAO || xmlType2 == QXComData.XmlType.EQUIP))
 				{
 					RewardData tempData = tempDataList[j];
 					tempDataList[j] = tempDataList[j + 1];
@@ -250,11 +264,26 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 				specialItemList.RemoveAt (i);
 			}
 		}
-		if (rewardItemList.Count == 0 && specialItemList.Count == 0)
+//		Debug.Log ("specialItemList.count:" + specialItemList.Count);
+		if (specialItemList.Count == 0)
 		{
-			//			Debug.Log ("ClientMain.closePopUp();");
+//			Debug.Log ("ClientMain.closePopUp();");
 			MainCityUI.TryRemoveFromObjectList (gameObject);
-			ClientMain.closePopUp();
+			TreasureCityUI.TryRemoveFromObjectList (gameObject);
+
+			if (MainCityUI.m_MainCityUI != null)
+			{
+				UIYindao.m_UIYindao.NeedOPenYInDao ();
+			}
+//			foreach (GameObject gameObj in MainCityUI.m_MainCityUI. m_WindowObjectList)
+//			{
+//				Debug.Log ("gameObj.name33333:" + gameObj.name);
+//			}
+			CheckReward ();
+			if (rewardItemList.Count == 0)
+			{
+				ClientMain.closePopUp();
+			}
 		}
 	}
 	#endregion
@@ -286,7 +315,22 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	/// </summary>
 	void ShowRewardPanel ()
 	{
+//		Debug.Log ("Add");
+//		foreach (GameObject gameObj in MainCityUI.m_MainCityUI. m_WindowObjectList)
+//		{
+//			Debug.Log ("gameObj.name11111:" + gameObj.name);
+//		}
+		if (MainCityUI.m_MainCityUI != null)
+		{
+			UIYindao.m_UIYindao.IsOPenYInDao ();
+		}
+
 		MainCityUI.TryAddToObjectList (gameObject);
+		TreasureCityUI.TryAddToObjectList (gameObject);
+//		foreach (GameObject gameObj in MainCityUI.m_MainCityUI. m_WindowObjectList)
+//		{
+//			Debug.Log ("gameObj.name22222:" + gameObj.name);
+//		}
 //		UI2DTool.Instance.AddTopUI( gameObject );
 //		CityGlobalData.m_isRightGuide = true;
 	}
@@ -305,7 +349,12 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	}
 
 	#region IUIRootAutoActivator
-	
+
+	public bool IsExitSpecialReward ()
+	{
+		return specialItemList.Count > 0 ? true : false;
+	}
+
 	public bool IsNGUIVisible()
 	{
 		return IsExitReward();

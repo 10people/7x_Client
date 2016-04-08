@@ -14,6 +14,8 @@ public class YXItem : MonoBehaviour  {
 
 	public UILabel Re_AllTimes;
 
+	public string m_Time;
+
 	public UISprite Box;
 
 	public UILabel OpenLevel;
@@ -44,7 +46,7 @@ public class YXItem : MonoBehaviour  {
 		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (m_bigid);
 
 		Itname.text = NameIdTemplate.GetName_By_NameId (myouxia.bigName);
-
+		m_Time = "剩余次数 "+mYouXiaInfo.remainTimes.ToString () + "/" + mYouxiaoOPen.maxTimes.ToString ();
 		if(mYouxiaoOPen.openLevel > JunZhuData.Instance().m_junzhuInfo.level)
 		{
 			Re_AllTimes.gameObject.SetActive(false);
@@ -133,6 +135,7 @@ public class YXItem : MonoBehaviour  {
 			this.gameObject.GetComponent<UIButton>().enabled = true;
 			Re_AllTimes.text = MyColorData.getColorString(1, str) +MyColorData.getColorString(5, mYouXiaInfo.remainTimes.ToString()+"/"+mYouxiaoOPen.maxTimes.ToString());
 		}
+//		Debug.Log ("Re_AllTimes.text = "+Re_AllTimes.text);
 	}
 	public void Enter()
 	{
@@ -163,7 +166,7 @@ public class YXItem : MonoBehaviour  {
 		
 		mYxChooseDefcult.mYouXia_Info = mYouXiaInfo;
 
-		mYxChooseDefcult.m_Times = Re_AllTimes.text;
+		mYxChooseDefcult.m_Times = m_Time;
 
 		mYxChooseDefcult.Init ();
 		MainCityUI.TryAddToObjectList(tempOjbect);

@@ -145,12 +145,6 @@ namespace Rank
 
         public GameObject TopLeftAnchor;
 
-        void Start()
-        {
-            //Close guide.
-            CityGlobalData.m_isRightGuide = true;
-        }
-
         void Awake()
         {
             DragAreaHandler.onPress += OnDragAreaPress;
@@ -161,6 +155,8 @@ namespace Rank
             //Load float button prefab if outter call.
             if (isOutterCall)
             {
+                CityGlobalData.m_isRightGuide = true;
+
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FLOAT_BUTTON), FloatButtonLoadCallBack);
             }
         }
@@ -173,6 +169,11 @@ namespace Rank
         void OnDestroy()
         {
             DragAreaHandler.onPress -= OnDragAreaPress;
+
+            if (isOutterCall)
+            {
+                MainCityUI.TryRemoveFromObjectList(gameObject);
+            }
         }
     }
 }

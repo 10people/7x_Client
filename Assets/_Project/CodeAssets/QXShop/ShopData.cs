@@ -1,5 +1,4 @@
-﻿//#define TestGeneralReward
-
+﻿//#define SHOP_INFO_REQ
 using UnityEngine;
 using System;
 using System.Collections;
@@ -48,13 +47,13 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		//string[3]:币种(QXCombData.cs:MoneyType)
 		//string[4]:功能名称
 		//string[5]:功能开启id(FunctionOpen.xml)
-		//string[6]:商铺位置排序
-		{ShopType.HUANGYE,new string[]{"10,11","荒野币","1","4","联盟","104"}},//"荒野求生","300200"
-		{ShopType.GONGXIAN,new string[]{"20,21","贡献","2","2","联盟","104"}},
-		{ShopType.GONGXUN,new string[]{"30,31","功勋","3","5","联盟战","104"}},
-		{ShopType.WEIWANG,new string[]{"40,41","威望","4","3","百战千军","300100"}},
-		{ShopType.ORDINARY,new string[]{"50,51","普通","5","1","商铺","9"}},
-		{ShopType.MYSTRERT,new string[]{"60,61","神秘","6","1","商铺","9"}},
+		//string[6]:商铺红点id
+		{ShopType.HUANGYE,new string[]{"10,11","荒野币","1","4","联盟","104","903"}},//"荒野求生","300200"
+		{ShopType.GONGXIAN,new string[]{"20,21","贡献","2","2","联盟","104","600700"}},
+		{ShopType.GONGXUN,new string[]{"30,31","功勋","3","5","联盟战","104","902"}},
+		{ShopType.WEIWANG,new string[]{"40,41","威望","4","3","百战千军","300100","300107"}},
+		{ShopType.ORDINARY,new string[]{"50,51","普通","5","1","商铺","9","-1"}},
+		{ShopType.MYSTRERT,new string[]{"60,61","神秘","6","1","商铺","9","901"}},
 	};
 
 	private Dictionary<ShopType,ShopResp> shopDic = new Dictionary<ShopType, ShopResp>();
@@ -111,7 +110,36 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	/// <param name="tempType">Temp type.</param>
 	public bool IsShopFunctionOpen (ShopType tempType)
 	{
-		return FunctionOpenTemp.IsHaveID(int.Parse (shopReqDic[tempType][5]));
+		if (tempType == ShopType.HUANGYE || tempType == ShopType.GONGXIAN || tempType == ShopType.GONGXUN)
+		{
+			return (FunctionOpenTemp.IsHaveID(int.Parse (shopReqDic[tempType][5])) && JunZhuData.Instance ().m_junzhuInfo.lianMengId > 0);
+		}
+		else
+		{
+			return FunctionOpenTemp.IsHaveID(int.Parse (shopReqDic[tempType][5]));
+		}
+	}
+
+	/// <summary>
+	/// Determines whether this instance is button red the specified sType.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is button red the specified sType; otherwise, <c>false</c>.</returns>
+	/// <param name="sType">S type.</param>
+	public bool IsBtnRed (ShopType sType)
+	{
+		int redId = ShopBtnRedId (sType);
+
+		return redId == -1 ? false : (shopReqDic[sType][5] == "104" ? (JunZhuData.Instance ().m_junzhuInfo.lianMengId > 0 ? FunctionOpenTemp.IsShowRedSpotNotification (redId) : false) : FunctionOpenTemp.IsShowRedSpotNotification (redId));
+	}
+
+	/// <summary>
+	/// Shops the button red identifier.
+	/// </summary>
+	/// <returns>The button red identifier.</returns>
+	/// <param name="sType">S type.</param>
+	public int ShopBtnRedId (ShopType sType)
+	{
+		return int.Parse (shopReqDic[sType][6]);
 	}
 
 	/// <summary>
@@ -120,20 +148,6 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	/// <param name="tempType">Temp type.</param>
 	public void OpenShop (ShopType tempType)
 	{
-		#if TestGeneralReward
-		List<RewardData> rewardDataList = new List<RewardData> ();
-		for (int i = 0;i < 3;i ++)
-		{
-			RewardData data = new RewardData (301013,1);//108105,920001,301013
-			rewardDataList.Add (data);
-		}
-		
-		//		GeneralRewardManager.Instance().CreateReward (rewardDataList);
-		GeneralRewardManager.Instance().CreateSpecialReward (rewardDataList);
-
-		return;
-		#endif
-
 //		if (!FunctionOpenTemp.IsHaveID (9))
 //		{
 //			Debug.Log ("商铺未开启");
@@ -156,6 +170,9 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 //		Debug.Log ("shopDic.Count:" + shopDic.Count);
 		shopType = tempType;
 
+		ShopInfoReq (tempType,ShopReqType.FREE);
+
+		#if SHOP_INFO_REQ
 		if (tempType == ShopType.ORDINARY)
 		{
 			if (!shopDic.ContainsKey (tempType))
@@ -202,6 +219,9 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 				}
 			}
 		}
+		#endif
+
+
 	}
 
 	/// <summary>
@@ -210,6 +230,10 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	/// <param name="tempType">Temp type.</param>
 	public void RefreshShopReq (ShopType tempType)
 	{
+		int m_vipLevel = JunZhuData.Instance ().m_junzhuInfo.vipLv;
+		int refreshLimit = VipTemplate.GetVipInfoByLevel (m_vipLevel).dangpuRefreshLimit;
+		Debug.Log ("dangpuRefreshLimit:" + refreshLimit);
+
 		shopType = tempType;
 		textStr = "立刻刷新货物需要花费" + shopDic[shopType].nextRefreshNeedMoney + QXComData.MoneyName (MoneyType (shopType)) + "\n\n确定刷新货物吗？";
 		QXComData.CreateBox (1,textStr,false,RefreshShopAskBack);
@@ -257,7 +281,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		shopReq.type = tempReqType == ShopReqType.FREE ? int.Parse (reqType[0]) : int.Parse (reqType[1]);
 		
 		QXComData.SendQxProtoMessage (shopReq,ProtoIndexes.HY_SHOP_REQ,ProtoIndexes.HY_SHOP_RESP.ToString ());
-//		Debug.Log ("商铺信息请求:" + ProtoIndexes.HY_SHOP_REQ);
+		Debug.Log ("商铺信息请求:" + ProtoIndexes.HY_SHOP_REQ);
 	}
 
 	/// <summary>
@@ -284,22 +308,30 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 		{
 			moneyNum = shopDic[shopType].money;
 		}
+
+		BuyGoodReq storeBuyReq = new BuyGoodReq();
+		
+		storeBuyReq.type = int.Parse (shopReqDic[shopType][2]);
+		storeBuyReq.goodId = tempInfo.xmlId;
+		
+		QXComData.SendQxProtoMessage (storeBuyReq,ProtoIndexes.HY_BUY_GOOD_REQ,ProtoIndexes.HY_BUY_GOOD_RESP.ToString ());
+
 //		Debug.Log ("moneyNum:" + moneyNum);
-		if (goodInfo.needMoney > moneyNum)
-		{
-			//缺钱
-			BuyGoodLackMoney ();
-		}
-		else
-		{
-			BuyGoodReq storeBuyReq = new BuyGoodReq();
-			
-			storeBuyReq.type = int.Parse (shopReqDic[shopType][2]);
-			storeBuyReq.goodId = tempInfo.xmlId;
-			
-			QXComData.SendQxProtoMessage (storeBuyReq,ProtoIndexes.HY_BUY_GOOD_REQ,ProtoIndexes.HY_BUY_GOOD_RESP.ToString ());
-//			Debug.Log ("购买物品：" + ProtoIndexes.HY_BUY_GOOD_REQ);
-		}
+//		if (goodInfo.needMoney > moneyNum)
+//		{
+//			//缺钱
+//			BuyGoodLackMoney ();
+//		}
+//		else
+//		{
+//			BuyGoodReq storeBuyReq = new BuyGoodReq();
+//			
+//			storeBuyReq.type = int.Parse (shopReqDic[shopType][2]);
+//			storeBuyReq.goodId = tempInfo.xmlId;
+//			
+//			QXComData.SendQxProtoMessage (storeBuyReq,ProtoIndexes.HY_BUY_GOOD_REQ,ProtoIndexes.HY_BUY_GOOD_RESP.ToString ());
+////			Debug.Log ("购买物品：" + ProtoIndexes.HY_BUY_GOOD_REQ);
+//		}
 	}
 
 	/// <summary>
@@ -347,6 +379,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 					if (shopType == ShopType.GONGXIAN)
 					{
 						allianceLevel = shopRes.lmshopLv;
+//						Debug.Log ("shopRes.lmshopLv:" + shopRes.lmshopLv);
 					}
 
 					switch (shopReqType)
@@ -381,7 +414,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 						{
 							RefreshLackMoney ();
 						}
-						else
+						else if (shopRes.msg == 12)
 						{
 							shopRefreshTime = shopRes.remianTime;
 							StopCoroutine ("ShopRefresh");
@@ -395,6 +428,11 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 							RefreshMoney (shopType,shopRes.money);
 
 							LoadShopPrefab ();
+						}
+						else
+						{
+							textStr = "今日刷新次数已用完\n提升V特权等级可增加商铺刷新次数！";
+							QXComData.CreateBox (1,textStr,true,null);
 						}
 
 						break;
@@ -431,6 +469,7 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 								if (goodInfo.xmlId == duiHuan.id && goodInfo.site == duiHuan.site)
 								{
 									duiHuan.remainCount -= 1;
+									duiHuan.isChange = shopBuyRes.isChange;
 									break;
 								}
 							}
@@ -632,21 +671,15 @@ public class ShopData : Singleton<ShopData>,SocketProcessor {
 	/// </summary>
 	void BuyGoodLackMoney ()
 	{
-		string desStr = "购买失败，";
+		LanguageTemplate.Text languageTempText = (LanguageTemplate.Text)Enum.ToObject (typeof(LanguageTemplate.Text),int.Parse (QXComData.MoneyDicStr (goodInfo.moneyType,3)));
+		textStr = LanguageTemplate.GetText (languageTempText);
 		if (goodInfo.moneyType == QXComData.MoneyType.YUANBAO)
 		{
-			textStr = QXComData.MoneyName (goodInfo.moneyType) + "不足\n\n是否跳转到充值？";
-			QXComData.CreateBox (1,desStr + textStr,false,TurnToVip);
-		}
-		else if (goodInfo.moneyType == QXComData.MoneyType.TONGBI)
-		{
-			textStr = QXComData.MoneyName (goodInfo.moneyType) + "不足\n\n是否使用" + "xxx元宝兑换 xxx铜币？";
-			QXComData.CreateBox (1,desStr + textStr,false,null);
+			QXComData.CreateBox (1,textStr,true,TurnToVip);
 		}
 		else
 		{
-			textStr = QXComData.MoneyName (goodInfo.moneyType) + "不足";
-			QXComData.CreateBox (1,desStr + textStr,true,null);
+			QXComData.CreateBox (1,textStr,true,null);
 		}
 	}
 	/// <summary>

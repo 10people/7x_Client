@@ -75,6 +75,10 @@ public class SwitchCountryManagerment : MonoBehaviour, SocketProcessor
 
                         if (tempResponse.result == 0)
                         {
+                            if (SettingUpLayerManangerment.m_SettingUp)
+                            {
+                                FunctionWindowsCreateManagerment.m_isSwitchCountry = true;
+                            }
                             _isSaveKey = false;
                             RefreshCountryInfo(SaveNum);
                             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadZhuangGuoSuccess);
@@ -130,7 +134,7 @@ public class SwitchCountryManagerment : MonoBehaviour, SocketProcessor
         string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_ALLIANCE_1) + AllianceData.Instance.g_UnionInfo.name + LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_ALLIANCE_2);
+        string str = LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_ALLIANCE_1) +"<"+ AllianceData.Instance.g_UnionInfo.name+ ">" + LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_ALLIANCE_2);
         string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.SETTINGUP_CHANGE_COUNTRY_ALLIANCE_3);
         // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
         uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), MyColorData.getColorString(1, str2), null, confirmStr, null, null);

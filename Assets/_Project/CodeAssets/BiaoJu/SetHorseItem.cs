@@ -43,8 +43,10 @@ namespace Carriage
 			costLabel.gameObject.SetActive (tempInfo.horseId > curId ? true : false);
 
 			shouYiLabel.text = tempInfo.shouYi.ToString ();
-
+//			Debug.Log ("BiaoJuPage.bjPage.CurHorseLevel:" + BiaoJuPage.bjPage.CurHorseLevel);
 			CartTemplate cartTemp = CartTemplate.GetCartTemplateByType (BiaoJuPage.bjPage.CurHorseLevel);
+//			Debug.Log ("tempInfo.upNeedMoney:" + tempInfo.upNeedMoney);
+//			Debug.Log ("cartTemp.ShengjiCost:" + cartTemp.ShengjiCost);
 			costYuanBao = tempInfo.upNeedMoney - cartTemp.ShengjiCost;
 			costLabel.text = costYuanBao.ToString ();
 
@@ -59,26 +61,28 @@ namespace Carriage
 
 		void BuyBtnHandlerClickBack (GameObject obj)
 		{
-			if (horseInfo.needVipLevel <= JunZhuData.Instance().m_junzhuInfo.vipLv)
-			{
-				if (costYuanBao > JunZhuData.Instance().m_junzhuInfo.yuanBao)
-				{
-					SetHorseWindow.setHorse.CloseSetHorseWindow (gameObject);
-					textStr = "元宝不足！是否前往充值？";
-					QXComData.CreateBox (1,textStr,false,BiaoJuPage.bjPage.TurnToVip);
-				}
-				else
-				{
-					BiaoJuData.Instance.UpHorseReq (horseInfo.horseId);
-				}
-			}
-			else
-			{
-	            EquipSuoData.TopUpLayerTip(null, false, 0, "VIP等级不足！是否跳转到充值？");
-				//textStr = "VIP等级不足！是否跳转到充值？";
-				//QXComData.CreateBox (1,textStr,false,LackVipLevel);
-				//SetHorseWindow.setHorse.CloseSetHorseWindow (gameObject);
-			}
+			BiaoJuData.Instance.UpHorseReq (horseInfo.horseId);
+//			if (horseInfo.needVipLevel <= JunZhuData.Instance().m_junzhuInfo.vipLv)
+//			{
+//				if (costYuanBao > JunZhuData.Instance().m_junzhuInfo.yuanBao)
+//				{
+//					SetHorseWindow.setHorse.CloseSetHorseWindow (gameObject);
+////					textStr = "元宝不足！是否前往充值？";
+////					QXComData.CreateBox (1,textStr,false,BiaoJuPage.bjPage.TurnToVip);
+//					BiaoJuPage.bjPage.LackYuanbao ();
+//				}
+//				else
+//				{
+//
+//				}
+//			}
+//			else
+//			{
+//	            EquipSuoData.TopUpLayerTip(null, false, 0, "VIP等级不足！是否跳转到充值？");
+//				//textStr = "VIP等级不足！是否跳转到充值？";
+//				//QXComData.CreateBox (1,textStr,false,LackVipLevel);
+//				//SetHorseWindow.setHorse.CloseSetHorseWindow (gameObject);
+//			}
 		}
 
 		void LackVipLevel (int i)

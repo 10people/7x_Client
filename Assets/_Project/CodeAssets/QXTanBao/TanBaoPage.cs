@@ -91,13 +91,20 @@ public class TanBaoPage : MonoBehaviour {
 		labelDic ["Kd_Spend"].text = TanBaoCost (costDic ["KdSpend"]).ToString ();
 		labelDic ["Kj_Spend"].text = TanBaoCost (costDic ["KjSpend"]).ToString ();
 
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100160,2);
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100257,1);
+		if (QXComData.CheckYinDaoOpenState (100160) || QXComData.CheckYinDaoOpenState (100257))
+		{
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100160,2);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100257,1);
+		}
+		else
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
 
 		InItKuangDong ();
 		InItKuangJing ();
 
-		tenFunctionDes = FunctionOpenTemp.GetTemplateById (1103).m_sNotOpenTips;
+		tenFunctionDes = FunctionOpenTemp.GetTemplateById (1103).m_sNotOpenTips + "。";
 
 		TenTimesBtn (kdTenBtnObj);
 		TenTimesBtn (kjTenBtnObj);
@@ -108,6 +115,15 @@ public class TanBaoPage : MonoBehaviour {
 		{
 			handler.m_click_handler -= TBBtnHandlerCallBack;
 			handler.m_click_handler += TBBtnHandlerCallBack;
+		}
+
+		//Set TreasureBoxUIBtn's Effect DisActive
+		{
+			if (TreasureCityUIBR.m_instance != null)
+			{
+				TreasureCityUIBR.m_instance.OpenWindow = true;
+				TreasureCityUIBR.m_instance.ClearBtnEffect ();
+			}
 		}
 	}
 
@@ -260,14 +276,14 @@ public class TanBaoPage : MonoBehaviour {
 		{
 		case "KDSingleBtn":
 
-			UIShouji.m_isPlayShouji = false;
+			SetJinDuFalse ();
 			TBReward.tbReward.BlockController (true,0.1f);
 			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.TONGBI_SINGLE);
 
 			break;
 		case "KDSpendBtn":
 
-			UIShouji.m_isPlayShouji = false;
+			SetJinDuFalse ();
 			TBReward.tbReward.BlockController (true,0.1f);
 			if (isTenTimesOpen)
 			{
@@ -281,14 +297,14 @@ public class TanBaoPage : MonoBehaviour {
 			break;
 		case "KJSingleBtn":
 
-			UIShouji.m_isPlayShouji = false;
+			SetJinDuFalse ();
 			TBReward.tbReward.BlockController (true,0.1f);
 			TanBaoData.Instance.TBGetRewardReq (TanBaoData.TanBaoType.YUANBAO_SINGLE);
 
 			break;
 		case "KJSpendBtn":
 
-			UIShouji.m_isPlayShouji = false;
+			SetJinDuFalse ();
 			TBReward.tbReward.BlockController (true,0.1f);
 			if (isTenTimesOpen)
 			{
@@ -314,6 +330,16 @@ public class TanBaoPage : MonoBehaviour {
 			break;
 		default:
 			break;
+		}
+	}
+
+	void SetJinDuFalse ()
+	{
+		UIShouji.m_isPlayShouji = false;
+		if(UIShouji.m_UIShouji.m_isPlay)
+		{
+			UIShouji.m_UIShouji.close();
+			UIShouji.m_UIShouji.gameObject.SetActive(false);
 		}
 	}
 
@@ -414,7 +440,17 @@ public class TanBaoPage : MonoBehaviour {
 		isOpenFirst = true;
 		CheckTBRed ();
 		MainCityUI.TryRemoveFromObjectList (gameObject);
+		TreasureCityUI.TryRemoveFromObjectList (gameObject);
 //		gameObject.SetActive (false);
+
+		//Set TreasureBoxUIBtn's Effect DisActive
+		{
+			if (TreasureCityUIBR.m_instance != null)
+			{
+				TreasureCityUIBR.m_instance.OpenWindow = false;
+			}
+		}
+
 		Destroy (gameObject);
 	}
 }

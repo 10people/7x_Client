@@ -47,17 +47,27 @@ public class MBTemp : MonoBehaviour {
 
 	public UILabel MiBaoPath;
 
+	private int CurMoney = 0;
+
 	void Start () {
 	
 	}
 	
 
 	void Update () {
-	
+		if(CurMoney < JunZhuData.Instance ().m_junzhuInfo.jinBi)
+		{
+			Init();
+			CurMoney = JunZhuData.Instance ().m_junzhuInfo.jinBi;
+		}
 	}
+	private void CheckShowAlert()
+	{
 
+	}
 	public void Init()
 	{
+		CurMoney = JunZhuData.Instance ().m_junzhuInfo.jinBi;
 		if(mMiBaoinfo.level <= 0)
 		{
 			MiBaoActive.SetActive(false);
@@ -147,7 +157,10 @@ public class MBTemp : MonoBehaviour {
 				Tips.gameObject.SetActive(true);
 			}
 			else{
-				if(mMiBaoinfo.needSuipianNum <= mMiBaoinfo.suiPianNum&&mMiBaoinfo.star < 5)
+				MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (mMiBaoinfo.star);
+				
+				int StarNeedMoney = mMiBaoStarTemp.needMoney;
+				if(mMiBaoinfo.needSuipianNum <= mMiBaoinfo.suiPianNum&&mMiBaoinfo.star < 5&&JunZhuData.Instance().m_junzhuInfo.jinBi >= StarNeedMoney)
 				{
 					Tips.gameObject.SetActive(true);
 				}
@@ -155,7 +168,6 @@ public class MBTemp : MonoBehaviour {
 				{
 					Tips.gameObject.SetActive(false);
 				}
-
 			}
 
 			switch(mMiBaoinfo.star)
@@ -192,14 +204,14 @@ public class MBTemp : MonoBehaviour {
 			CreateStar (Star);
 		}
 	
-		if(Global.m_sPanelWantRun != null&&Global.m_sPanelWantRun != "")
-		{
-			if(int.Parse(Global.m_sPanelWantRun)  == mMiBaoinfo.miBaoId)
-			{
-				//ShowActiveInfo();
-				Global.m_sPanelWantRun = "";
-			}
-		}
+//		if(Global.m_sPanelWantRun != null&&Global.m_sPanelWantRun != "")
+//		{
+//			if(int.Parse(Global.m_sPanelWantRun)  == mMiBaoinfo.miBaoId)
+//			{
+//				//ShowActiveInfo();
+//				Global.m_sPanelWantRun = "";
+//			}
+//		}
 	}
 	void CreateStar(UISprite star)
 	{

@@ -67,6 +67,8 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 
 	private string textStr;
 
+	public bool isOpenLueDuo = false;
+
 	void Awake ()
 	{
 		SocketTool.RegisterMessageProcessor (this);
@@ -95,8 +97,20 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 			return;
 		}
 
-		QXComData.SendQxProtoMessage (ProtoIndexes.LVE_DUO_INFO_REQ,ProtoIndexes.LVE_DUO_INFO_RESP.ToString ());
-//		Debug.Log ("掠夺信息请求:" + ProtoIndexes.LVE_DUO_INFO_REQ);
+		isOpenLueDuo = true;
+		PlunderDataReq ();
+	}
+
+	/// <summary>
+	/// Plunders the data req.
+	/// </summary>
+	public void PlunderDataReq ()
+	{
+		if (JunZhuData.Instance ().m_junzhuInfo.lianMengId > 0 && JunZhuData.Instance().m_junzhuInfo.level >= FunctionOpenTemp.GetTemplateById (211).Level) 
+		{
+			QXComData.SendQxProtoMessage (ProtoIndexes.LVE_DUO_INFO_REQ,ProtoIndexes.LVE_DUO_INFO_RESP.ToString ());
+			//		Debug.Log ("掠夺信息请求:" + ProtoIndexes.LVE_DUO_INFO_REQ);
+		}
 	}
 
 	/// <summary>
@@ -191,12 +205,12 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 	{
 		rankType = tempType;
 		serchType = tempSerchType;
-//		Debug.Log (PRankPage + ":" + ARankPage);
+		Debug.Log (PRankPage + ":" + ARankPage);
 		RankingReq rank = new RankingReq ();
 		rank.rankType = (int)tempType;
 		rank.pageNo = tempType == PlunderRankType.PERSONAL_RANK ? PRankPage : ARankPage;
 		QXComData.SendQxProtoMessage (rank,ProtoIndexes.RANKING_REQ,ProtoIndexes.RANKING_RESP.ToString ());
-//		Debug.Log ("掠夺排行请求：" + ProtoIndexes.RANKING_REQ);
+		Debug.Log ("掠夺排行请求：" + ProtoIndexes.RANKING_REQ);
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)
@@ -239,7 +253,10 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 					}
 
 					plunderResp = plunderDataRes;
-					LoadPlunderObj ();
+					if (isOpenLueDuo)
+					{
+						LoadPlunderObj ();
+					}
 				}
 				
 				return true;
@@ -309,12 +326,15 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 					case 0:
 
 						textStr = "元宝不足！\n\n是否跳转到充值？";
-						QXComData.CreateBox (1,textStr,false,PlunderPage.plunderPage.TurnToVip);
+						QXComData.CreateBox (1,textStr,false,TurnToVip);
 
 						break;
 					case 1:
 
-						PlunderPage.plunderPage.RefreshPlunderState (confirmRes);
+						if (isOpenLueDuo)
+						{
+							PlunderPage.plunderPage.RefreshPlunderState (confirmRes);
+						}
 
 						break;
 					case 2:
@@ -346,7 +366,10 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 
 //						Debug.Log ("领奖成功！");
 						GeneralRewardManager.Instance().CreateReward (RewardDataList);
-						PlunderPage.plunderPage.RefreshPlunderState (confirmRes);
+						if (isOpenLueDuo)
+						{
+							PlunderPage.plunderPage.RefreshPlunderState (confirmRes);
+						}
 
 						break;
 					default:
@@ -401,7 +424,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 							else
 							{
 								textStr = "掠夺冷却中！\n\n是否使用" + plunderResp.clearCdYB + "元宝清除冷却时间？";
-								QXComData.CreateBox (1,textStr,false,PlunderPage.plunderPage.ClearCdReqBack);
+								QXComData.CreateBox (1,textStr,false,ClearCdReqBack);
 							}
 							break;
 						case 3:
@@ -410,7 +433,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 								textStr = "掠夺次数用尽！\n\n是否使用" + plunderResp.buyNextBattleYB + "元宝购买" 
 										+ plunderResp.buyNextBattleCount + "次掠夺机会？\n\n今日还可购买" 
 										+ plunderResp.remainBuyHuiShi + "次";
-								QXComData.CreateBox (1,textStr,false,PlunderPage.plunderPage.BuyPlunderNumReqBack);
+								QXComData.CreateBox (1,textStr,false,BuyPlunderNumReqBack);
 							}
 							else
 							{
@@ -440,6 +463,14 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 							break;
 						case 8:
 							textStr = "对手还没有开启掠夺！";
+							QXComData.CreateBox (1,textStr,true,null);
+							break;
+						case 9:
+							textStr = "您已不在联盟中，不能掠夺！";
+							QXComData.CreateBox (1,textStr,true,null);
+							break;
+						case 10:
+							textStr = "对手已不在联盟中，不能掠夺！";
 							QXComData.CreateBox (1,textStr,true,null);
 							break;
 						default:
@@ -487,9 +518,13 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 					{
 						rankResp.gongInfoList = new List<GongJinInfo>();
 					}
-//					Debug.Log (rankResp.gongInfoList.Count);
+					Debug.Log (rankResp.gongInfoList.Count);
 					PlunderRankType tempType = (PlunderRankType)Enum.ToObject (typeof (PlunderRankType),rankResp.rankType);
-
+//					Debug.Log ("rankResp.gongInfoList.Count:" + rankResp.gongInfoList.Count);
+//					for (int i = 0;i < rankResp.gongInfoList.Count;i ++)
+//					{
+//						Debug.Log (rankResp.gongInfoList[i].rank);
+//					}
 					switch (tempType)
 					{
 					case PlunderRankType.PERSONAL_RANK:
@@ -570,6 +605,69 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 			MainCityUI.TryAddToObjectList (plunderObj);
 		}
 		PlunderPage.plunderPage.InItPlunderPage (plunderResp);
+	}
+
+	//购买次数
+	public void BuyPlunderNumReqBack (int i)
+	{
+		if (i == 2)
+		{
+			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < plunderResp.buyNextBattleYB)
+			{
+				textStr = "元宝不足！\n\n是否跳转到充值？";
+				QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+			}
+			else
+			{
+				PlunderOperate (PlunderData.OperateType.ADD_NUM);
+			}
+		}
+	}
+
+	//清除冷却
+	public void ClearCdReqBack (int i)
+	{
+		if (i == 2)
+		{
+			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < plunderResp.clearCdYB)
+			{
+				textStr = "元宝不足！\n\n是否跳转到充值？";
+				QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+			}
+			else
+			{
+				PlunderOperate (PlunderData.OperateType.CLEAR_CD);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Turns to vip.
+	/// </summary>
+	/// <param name="i">The index.</param>
+	public void TurnToVip (int i)
+	{
+		if (i == 2)
+		{
+			//跳转到充值
+			EquipSuoData.TopUpLayerTip ();
+		}
+	}
+
+	/// <summary>
+	/// Checks the plunder times.
+	/// </summary>
+	public void CheckPlunderTimes ()
+	{
+		//		Debug.Log ("plunderResp.all - plunderResp.used:" + (plunderResp.all - plunderResp.used));
+		if (plunderResp.all - plunderResp.used == 1)
+		{
+			PushAndNotificationHelper.SetRedSpotNotification (215, false);
+			if (WarPage.warPage != null)
+			{
+				WarPage.warPage.CheckRedPoint ();
+			}
+		}
 	}
 
 	void OnDestroy (){

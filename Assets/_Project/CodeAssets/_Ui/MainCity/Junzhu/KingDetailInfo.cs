@@ -98,7 +98,7 @@ public class KingDetailInfo : MonoBehaviour
 
         m_KingNameLabel.text = m_KingInfo.KingName;
 
-        m_AllianceNameLabel.text = (m_KingInfo.AllianceName == "无") ? "无联盟" : ("<" + m_KingInfo.AllianceName + ">");
+        m_AllianceNameLabel.text = (string.IsNullOrEmpty(m_KingInfo.AllianceName) || m_KingInfo.AllianceName == "无") ? "无联盟" : ("<" + m_KingInfo.AllianceName + ">");
 
         //Set right part buttons.
         while (m_Grid.transform.childCount != 0)

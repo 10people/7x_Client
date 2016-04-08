@@ -146,13 +146,22 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 				PveSaoDangRet tempInfo = new PveSaoDangRet();
 				
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-				
+
 				saodinfo = tempInfo;
-				
-				getSaoDangData(tempInfo);
-				
+				Debug.Log("扫荡游侠saodinfo.result = "+saodinfo.result);
+				switch(saodinfo.result)
+				{
+				case 0:
+					getSaoDangData(tempInfo);
+					break;
+				case 1:
+					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+					                        ExitLoadCallback );
+					break;
+				default:
+					break;
+				}
 				InitUIData();
-				
 				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YOUXIA_INFO_REQ);
 				
 				//	ChooseYouXiaUIManager.mChooseYouXiaUIManager.mYouXia_Info.remainTimes -= 1;
@@ -170,7 +179,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 				
 				m_YouXiaGuanQiaInfoResp = tempInfo;
-
+				Debug.Log ("tempInfo:" + tempInfo.saoDang);
 				showChengJi(tempInfo);
 				return true;
 			}
@@ -212,7 +221,10 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 				}
 				else
 				{
-					Debug.LogError("购买失败了");
+
+					Debug.LogError("购买失败了"+tempInfo.result);
+					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+					                        ExitLoadCallback1 );
 				}
 				
 				return true;
@@ -222,6 +234,40 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 		}
 		
 		return false;
+	}
+	//购买失败提示框异步加载回调
+	public void ExitLoadCallback1( ref WWW p_www, string p_path,  Object p_object )
+	{
+		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+		
+		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
+		
+		string str2 = "";
+		
+		string str1 = "\r\n"+"购买失败！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		
+		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
+		
+		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+		
+		uibox.setBox(titleStr, MyColorData.getColorString (1,str1+str2), null,null,confirmStr,null,null,null,null);
+	}
+	//扫荡次数用完了提示框异步加载回调
+	public void ExitLoadCallback( ref WWW p_www, string p_path,  Object p_object )
+	{
+		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+		
+		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
+		
+		string str2 = "";
+		
+		string str1 = "\r\n"+"扫荡次数已经用完了！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		
+		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
+		
+		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+		
+		uibox.setBox(titleStr, MyColorData.getColorString (1,str1+str2), null,null,confirmStr,null,null,null,null);
 	}
 	private void ComfireBuyTimesInfoBack(YouXiaTimesBuyResp m_tempInfo)
 	{
@@ -241,6 +287,8 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 	}
 	private void BuyTimesInfoBack(YouXiaTimesInfoResp m_tempInfo)
 	{
+		Debug.Log ("m_tempInfo.remainBuyTimes = "+m_tempInfo.remainBuyTimes);
+		Debug.Log ("m_tempInfo.type = "+m_tempInfo.type);
 		if(m_tempInfo.remainBuyTimes > 0)
 		{
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LoadBuyTimesInfoBack);
@@ -254,15 +302,15 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 	{
 		string str1 =  LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str2 = "\r\n"+"您是否要用"+M_tempInfo.cost.ToString()+"元宝"+"\r\n"+"\r\n"+"购买"+M_tempInfo.getTimes.ToString()+"次挑战？";
-		
+		string str2 = "\n"+"您是否要用"+M_tempInfo.cost.ToString()+"元宝购买"+M_tempInfo.getTimes.ToString()+"次挑战？";
+		string str3 = "您还可以购买"+M_tempInfo.remainBuyTimes.ToString()+"次。";
 		string strbtn1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
 		
 		string strbtn2 = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 		
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
-		uibox.setBox(str1, str2 , null, null, strbtn1, strbtn2, BuYComfire, null, null, null);
+		uibox.setBox(str1,MyColorData.getColorString (1,str2 + "\n" + str3) , null, null, strbtn1, strbtn2, BuYComfire, null, null, null);
 	}
 	void BuYComfire(int i)
 	{
@@ -306,8 +354,16 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 			
 			vip = 7;
 		} 
-		string str2 = "V特权等级不足，V特权等级提升到"+(vip).ToString()+"级即可购买挑战次数。参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
-		//string str2 = "\r\n"+"今日购买次数已经用完了"+"\r\n"+"提升Vip等级可以增加购买次数";//LanguageTemplate.GetText(LanguageTemplate.Text.FINGHT_CONDITON);
+		string str2 = "";
+		if(JunZhuData.Instance().m_junzhuInfo.vipLv >= 7)
+		{
+			 str2 = "\r\n" + "今日购买次数已经用完了。";
+		}
+		else
+		{
+		     str2 = "V特权等级不足，V特权等级提升到"+(vip).ToString()+"级即可购买挑战次数。参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
+		}
+
 		
 		//string strbtn1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
 		
@@ -322,6 +378,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 	}
 	public void SaodangBtn()  // w未定协议7 23
 	{
+		Debug.Log ("m_YouXiaGuanQiaInfoResp.saoDang:" + m_YouXiaGuanQiaInfoResp.saoDang);
 		if (!m_YouXiaGuanQiaInfoResp.saoDang) {
 			string data = "通关一次才能扫荡！";
 			ClientMain.m_UITextManager.createText( data);
@@ -340,6 +397,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 		//	Debug.Log("关闭游侠红点");
 			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
 		}
+		Debug.Log("K开始扫荡！");
 		YouXiaSaoDangReq saodanginfo = new YouXiaSaoDangReq ();
 		
 		MemoryStream saodangstream = new MemoryStream ();
@@ -438,13 +496,13 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 
 		SaoDangTimes.text = m_You_XiaInfo.remainTimes.ToString ()+"/"+AllTimes.ToString();
 
-		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
-		{
-			//Debug.Log("进入试练二阶界面333");
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			//mScorview.enabled = false;
-		}
+//		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
+//		{
+//			//Debug.Log("进入试练二阶界面333");
+//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
+//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+//			//mScorview.enabled = false;
+//		}
 		
 		ShowMiBaoSkillIcon ();
 	}
@@ -605,8 +663,8 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 			//Debug.Log("关闭游侠红点");
 			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
 		}
-
-		EnterBattleField.EnterBattleYouXia (big_id, l_id%10);
+		YouxiaPveTemplate template = YouxiaPveTemplate.getYouXiaPveTemplateById (l_id);
+		EnterBattleField.EnterBattleYouXia (big_id, template.smaId);
 	}
 	void NoTimes(ref WWW p_www,string p_path, Object p_object)
 	{

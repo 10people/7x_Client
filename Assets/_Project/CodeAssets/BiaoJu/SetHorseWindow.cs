@@ -76,11 +76,11 @@ namespace Carriage
 
 			if (tempType == 5)
 			{
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,6);
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,8);
 			}
 			else
 			{
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,5);
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,7);
 			}
 		}
 
@@ -89,11 +89,11 @@ namespace Carriage
 			//判断是否有高级马鞭
 			if (BiaoJuPage.bjPage.CheckGaoJiMaBian ())
 			{
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,10);
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,12);
 			}
 			else
 			{
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,7);
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,9);
 			}
 			isOpenFirst = true;
 			gameObject.SetActive (false);

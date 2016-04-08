@@ -56,6 +56,8 @@ public class ProtoIndexes
     /// 登陆账号返回
     public const int LOGIN_ACCOUNT_RET = 23104;
 
+	public const short C_OPEN_CREATE_ROLE = 888;//进入选人界面发送
+
     /// 账号协议
     public const short CREATE_ROLE_REQUEST = 23105;
     public const short CREATE_ROLE_RESPONSE1 = 23106;
@@ -79,6 +81,8 @@ public class ProtoIndexes
 	public const short C_GET_BAO_XIANG = 4113;//开启宝箱
 
 	public const short OPEN_ShiLian_FuBen = 4101;//十连开启通知
+
+	public const short BAO_XIANG_PICKED_INFO = 4055;//十连得宝箱数
 
     public const short S_HEAD_STRING = 22101;//更新称号ok
 
@@ -312,6 +316,7 @@ public class ProtoIndexes
 	public const short C_BUY_MiBaoPoint = 28327;			//购买铜币
 	public const short S_BUY_MiBaoPoint = 28328;			//购买铜币fanhui
 
+	public const short weiWang = 5020;//威望
 
     //**********百战协议号*********
     public const short BAIZHAN_INFO_REQ = 27001;/**请求百战**/
@@ -655,6 +660,8 @@ public class ProtoIndexes
 
     /** 返回联盟信息， 给有联盟的玩家返回此条信息 **/
     public const short ALLIANCE_HAVE_RESP = 30102;
+
+	public const  short huangyeBi = 5021; // 新增荒野币协议
 
     /** 验证联盟名字 **/
     public const short CHECK_ALLIANCE_NAME = 30103;
@@ -1224,6 +1231,7 @@ public class ProtoIndexes
 	public const short C_CHECK_YABIAOHELP_RSQ = 3449;
 	public const short S_CHECK_YABIAOHELP_RESP = 3450;
 
+    public const short S_YABIAO_ENEMY_4_SIGN_RESP = 3453;//请求仇人信息返回（给客户端进行仇人标记用）
 
     //通知
     public const short C_MengYouKuaiBao_Req = 4240;//请求盟友快报
@@ -1466,4 +1474,9 @@ public class ProtoIndexes
     // 通知里的同意联盟邀请返回， 
     public const short S_ALLIANCE_INVITE_RESP = 30185;
 
+	//*********************************开服活动*********************
+	public const short GET_QQ_INFO = 900;
+	public const short GET_LV_INFO = 910;
+	public const short GET_REQ_INFO = 920;
+	public const short GET_LV_REWARD = 930;
 }

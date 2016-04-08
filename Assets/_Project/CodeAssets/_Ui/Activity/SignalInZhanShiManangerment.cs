@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class SignalInZhanShiManangerment : MonoBehaviour {
-
     public GameObject m_ObjAllSignal;
     public EventIndexHandle m_Event;
     void Start()
@@ -15,6 +14,7 @@ public class SignalInZhanShiManangerment : MonoBehaviour {
 
     void Show(int index)
     {
+        SignalInManagerment.m_SignalIn.m_ButtonTouch = SignalInManagerment.TouchType.BUTTON_UP;
         m_ObjAllSignal.SetActive(true);
         gameObject.SetActive(false);
     }

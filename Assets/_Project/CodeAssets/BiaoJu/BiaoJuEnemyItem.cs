@@ -66,7 +66,8 @@ namespace Carriage
 				int jinDu = (int)((tempInfo.usedTime / (float)tempInfo.totalTime) * 100);
 				jinDuLabel.text = "进度" + jinDu.ToString () + "%";
 				QXComData.InItScrollBarValue (jinDuBar,jinDu);
-
+				Debug.Log ("tempInfo.hp:" + tempInfo.hp);
+				Debug.Log ("tempInfo.maxHp:" + tempInfo.maxHp);
 				int hpNum = (int)((tempInfo.hp / (float)tempInfo.maxHp) * 100);
 				hpLabel.text = tempInfo.hp.ToString () + "/" + tempInfo.maxHp.ToString ();
 				QXComData.InItScrollBarValue (hpBar,hpNum);
@@ -83,8 +84,26 @@ namespace Carriage
 			//关闭记录弹窗，自动寻路
 			if (enemyInfo.state == 10)
 			{
-				RootManager.Instance.m_CarriageMain.NavigateToCarriage ((int)enemyInfo.junZhuId);
-				BiaoJuRecordPage.bjRecordPage.CloseRecord ();
+				bool isComAlliance = false;
+				if (JunZhuData.Instance ().m_junzhuInfo.lianMengId > 0)
+				{
+					var allianceInfo = AllianceData.Instance.g_UnionInfo;
+					isComAlliance = allianceInfo.name.Equals(enemyInfo.lianMengName);
+				}
+
+				if (isComAlliance)
+				{
+					ClientMain.m_UITextManager.createText(MyColorData.getColorString (5,"不能打劫盟友！"));
+				}
+				else
+				{
+					RootManager.Instance.m_CarriageMain.NavigateToCarriage ((int)enemyInfo.junZhuId);
+					BiaoJuRecordPage.bjRecordPage.CloseRecord ();
+				}
+			}
+			else
+			{
+				ClientMain.m_UITextManager.createText(MyColorData.getColorString (5,"请选择一个正在运镖的玩家！"));
 			}
 		}
 	}

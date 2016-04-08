@@ -119,15 +119,15 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 			YXItemList.Add(mYXItem);
 		}
 		mGid.repositionNow = true;
-		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
-		{
-		//	Debug.Log("进入试练二阶界面1");
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
-			mScorview.enabled = false;
-			return;
-
-		}
+//		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
+//		{
+//		//	Debug.Log("进入试练二阶界面1");
+//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
+//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+//			mScorview.enabled = false;
+//			return;
+//
+//		}
 		bool idshow_alert = false;
 		foreach(YXItem mXY in YXItemList)
 		{

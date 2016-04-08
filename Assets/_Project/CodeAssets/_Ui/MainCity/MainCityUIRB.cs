@@ -16,8 +16,6 @@ public class MainCityUIRB : MYNGUIPanel
     public GameObject m_FuncNotOpenInfoObject;
 	public static bool isOpen = true;
 	public UISprite m_SpriteOpen;
-	public MainCityListButtonManager m_MainCityListButtonManager_RB;
-	public MainCityListButtonManager m_MainCityListButtonManager_R;
 	public GameObject m_ObjPropUse;
 	public IconSampleManager m_IconSampleManager;
 	public UILabel m_UILabelPropName;
@@ -45,79 +43,20 @@ public class MainCityUIRB : MYNGUIPanel
 		}
 	}
 
-    /// <summary>
-    /// Initialize main city uirb.
-    /// </summary>
-	public void Initialize(MainCityListButtonManager rb, MainCityListButtonManager r)
-    {
-		m_MainCityListButtonManager_RB = rb;
-		m_MainCityListButtonManager_R = r;
-        //Add buttons.
-//        foreach (var template in FunctionOpenTemp.templates)
-//        {
-//            if (template.type <= 0)
-//            {
-//                //Debug.LogWarning("Skip initialize button:" + template.m_iID);
-//                continue;
-//            }
-//
-//
-//            //Set Zaixian, Qiri acitivity specifically.
-//            if (template.m_iID == 15 || template.m_iID == 16)
-//            {
-//                continue;
-//            }
-//
-//            //Set comming soon specifically.
-//            if (template.m_iID == 17)
-//            {
-//                continue;
-//            }
-//
-//            //Skip mail, task guide and chat btns.
-//            if (template.type == 6 || template.type == 7) continue;
-//
-//            //Skip obsolete btns.
-//            if (template.m_iID == 2002)
-//            {
-//                continue;
-//            }
-//
-//            AddButton(template.m_iID);
-//        }
-//
-//        Set Zaixian, Qiri acitivity specifically.
-//        if (!LimitActivityData.Instance.IsDataReceived)
-//        {
-//            Debug.LogWarning("Cannot init Zaixian, Qiri acitivty when data not received");
-//        }
-//        else
-//        {
-//            if (LimitActivityData.Instance.IsOpenZaixianActivity)
-//            {
-//                AddButton(15);
-//            }
-//
-//            if (LimitActivityData.Instance.IsOpenQiriActivity)
-//            {
-//                AddButton(16);
-//            }
-//        }
-//
-//        //Refresh comming soon button.
-//        RefreshCommingSoonButton();
-//
-//        //Init red alert.
-//        PushAndNotificationHelper.UpdateMainMenusNewRedSpot();
-//
-//        //execute after init.
-//        if (m_MainCityUIRBDelegate != null)
-//        {
-//            m_MainCityUIRBDelegate();
-//        }
-//
-//        IsInitialized = true;
-    }
+	void Update()
+	{
+		while(m_listStaticPropUseID.Count > 0)
+		{
+			setPropUse(m_listStaticPropUseID[0], m_listStaticPropUseNum[0]);
+			m_listStaticPropUseID.RemoveAt(0);
+			m_listStaticPropUseNum.RemoveAt(0);
+		}
+		while(m_listStaticPropDeleteID.Count > 0)
+		{
+			deleteProp(m_listStaticPropDeleteID[0]);
+			m_listStaticPropDeleteID.RemoveAt(0);
+		}
+	}
 
     /// <summary>
     /// Add/Remove a button to/from button list.
@@ -363,7 +302,18 @@ public class MainCityUIRB : MYNGUIPanel
 
     private int PlayAddButtonID;
     private GameObject PlayAddButtonObject;
-
+	public static List<int> m_listStaticPropUseID = new List<int>();
+	public static List<int> m_listStaticPropUseNum = new List<int>();
+	public static List<int> m_listStaticPropDeleteID = new List<int>();
+	public static void setSavePropUse(int id, int num = 0)
+	{
+		m_listStaticPropUseID.Add(id);
+		m_listStaticPropUseNum.Add(num);
+	}
+	public static void setDeletePropUse(int id)
+	{
+		m_listStaticPropDeleteID.Add(id);
+	}
 	public void setPropUse(int id, int num = 0)
 	{
 //		Debug.Log("setPropUse id=" + id);

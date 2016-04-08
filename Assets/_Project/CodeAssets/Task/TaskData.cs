@@ -18,7 +18,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
     public bool m_SideReload = false;
     public bool m_DailyQuestIsRefresh = false;
     public bool m_VitaRefresh = false;
-    public bool m_TaskGetAwardComplete = false;
+  //  public bool m_TaskGetAwardComplete = false;
     public bool m_DestroyMiBao = false;
     public bool isRefrsh = false;
     public ZhuXianTemp m_MainComplete;
@@ -67,12 +67,16 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
 
     void Update()
     {
+        if (CityGlobalData.m_isBattleField_V4_2D && Application.loadedLevelName.Equals(ConstInGame.CONST_SCENE_NAME_MAINCITY))
+        {
+            CityGlobalData.m_isBattleField_V4_2D = false;
+        }
         //if (m_RemainTime > 0 && !_isNeedWait)
         //{
         //    _isNeedWait = true;
         //    StartCoroutine(WaitTimeDown());
         //}
-        if (WindowBackShowController.m_isContainKey)
+            if (WindowBackShowController.m_isContainKey)
         {
             if (ClientMain.m_listPopUpData.Count == 0)
             {
@@ -277,13 +281,16 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
 
                            
                             m_TaskInfoDic[TaskSyncReponse.task.id].progress = TaskSyncReponse.task.progress;
-                            if (ZhuXianTemp.getTemplateById(TaskSyncReponse.task.id).type == 0)
+                            if (TaskLayerManager.m_TaskLayerM)
                             {
-                                m_MainReload = true;
-                            }
-                            else
-                            {
-                                m_SideReload = true;
+                                if (ZhuXianTemp.getTemplateById(TaskSyncReponse.task.id).type == 0)
+                                {
+                                    m_MainReload = true;
+                                }
+                                else
+                                {
+                                    m_SideReload = true;
+                                }
                             }
                           
                         }
@@ -293,13 +300,16 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                             list.Add(TaskSyncReponse.task);
                             RefreshTaskInfo(list);
 
-                            if (ZhuXianTemp.getTemplateById(TaskSyncReponse.task.id).type == 0)
+                            if (TaskLayerManager.m_TaskLayerM)
                             {
-                                m_MainReload = true;
-                            }
-                            else
-                            {
-                                m_SideReload = true;
+                                if (ZhuXianTemp.getTemplateById(TaskSyncReponse.task.id).type == 0)
+                                {
+                                    m_MainReload = true;
+                                }
+                                else
+                                {
+                                    m_SideReload = true;
+                                }
                             }
                         }
 
@@ -333,7 +343,11 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                 listUnComplete.Clear();
                                 RefreshDailyTaskInfo(dailyTaskList);
                                 m_TagIsShow = true;
-                                m_DailyQuestIsRefresh = true;
+                                if (TaskLayerManager.m_TaskLayerM)
+                                {
+                                    m_DailyQuestIsRefresh = true;
+                                }
+                             
                             }
                         }
                         return true;
@@ -407,15 +421,18 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                     }
 
                                     award = ZhuXianTemp.getTemplateById(TaskSyncReponse.taskId).award;
-                                    if (ZhuXianTemp.getTemplateById(TaskSyncReponse.taskId).type == 0)
+                                    if (TaskLayerManager.m_TaskLayerM)
                                     {
-                                        m_MainReload = true;
+                                        if (ZhuXianTemp.getTemplateById(TaskSyncReponse.taskId).type == 0)
+                                        {
+                                            m_MainReload = true;
+                                        }
+                                        else
+                                        {
+                                            m_SideReload = true;
+                                        }
                                     }
-                                    else
-                                    {
-                                        m_SideReload = true;
-                                    }
-                                    m_TaskGetAwardComplete = true;
+                                   // m_TaskGetAwardComplete = true;
                                     if (!string.IsNullOrEmpty(award))
                                     {
                                         FunctionWindowsCreateManagerment.ShowRAwardInfo(award);
@@ -457,8 +474,11 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                             {
                                 award = m_TaskDailyDic[dailyTask.taskId].jiangli;
                                 m_TaskDailyDic.Remove(dailyTask.taskId);
-                                m_TaskGetAwardComplete = true;
-                                m_DailyQuestIsRefresh = true;
+                                //  m_TaskGetAwardComplete = true;
+                                if (TaskLayerManager.m_TaskLayerM)
+                                {
+                                    m_DailyQuestIsRefresh = true;
+                                }
                                 if (!string.IsNullOrEmpty(award))
                                 {
                                     FunctionWindowsCreateManagerment.ShowRAwardInfo(award);
@@ -501,10 +521,13 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
 
                         ErrorMessage vitality = new ErrorMessage();
                         t_qx.Deserialize(t_tream, vitality, vitality.GetType());
-                        if (vitality.errorCode == 0)
+                        if (TaskLayerManager.m_TaskLayerM)
                         {
-                            FunctionWindowsCreateManagerment.ShowRAwardInfo(HuoYueTempTemplate.GetHuoYueTempById(int.Parse(vitality.errorDesc) + 1).award);
-                            m_VitaRefresh = true;
+                            if (vitality.errorCode == 0)
+                            {
+                                FunctionWindowsCreateManagerment.ShowRAwardInfo(HuoYueTempTemplate.GetHuoYueTempById(int.Parse(vitality.errorDesc)).award);
+                                m_VitaRefresh = true;
+                            }
                         }
                         return true;
                     }
@@ -555,7 +578,10 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
         {
             m_TaskDailyDic.Add(listDailyAll[i].id, listDailyAll[i]);
         }
-        m_DailyQuestIsRefresh = true;
+        if (TaskLayerManager.m_TaskLayerM)
+        {
+            m_DailyQuestIsRefresh = true;
+        }
         MainCityUI.SetRedAlert(106, DailyWetherContainComplete(m_TaskDailyDic));
     }
 
@@ -574,31 +600,31 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
         int size_tem = templist.Count;
         for (int j = 0; j < size_tem; j++)
         {
-            for (int i = 0; i < ZhuXianTemp.tempTasks.Count; i++)
+			for (int i = 0; i < ZhuXianTemp.GetTemplatesCount(); i++)
             {
-                if (ZhuXianTemp.tempTasks[i].id == templist[j].id)
+				if (ZhuXianTemp.GetTemplateByIndex( i ).id == templist[j].id)
                 {
-                    if (ZhuXianTemp.tempTasks[i].progress != templist[j].progress && ZhuXianTemp.tempTasks[i].type == 0)
+					if (ZhuXianTemp.GetTemplateByIndex( i ).progress != templist[j].progress && ZhuXianTemp.GetTemplateByIndex( i ).type == 0)
                     {
                         if (templist[j].progress < 0)
                         {
-                            FunctionOpenTemp.GetMissionAddOpenFunction(ZhuXianTemp.tempTasks[i].id);
+							FunctionOpenTemp.GetMissionAddOpenFunction(ZhuXianTemp.GetTemplateByIndex( i ).id);
                         }
                     }
-                    ZhuXianTemp.tempTasks[i].progress = templist[j].progress;
-                    if (ZhuXianTemp.tempTasks[i].type == 0)
+					ZhuXianTemp.GetTemplateByIndex( i ).progress = templist[j].progress;
+					if (ZhuXianTemp.GetTemplateByIndex( i ).type == 0)
                     {
-                        listMain.Add(ZhuXianTemp.tempTasks[i]);
+						listMain.Add(ZhuXianTemp.GetTemplateByIndex( i ) );
                     }
                     else
                     {
                         if (templist[j].progress < 0)
                         {
-                            listBranchComplete.Add(ZhuXianTemp.tempTasks[i]);
+							listBranchComplete.Add(ZhuXianTemp.GetTemplateByIndex( i ) );
                         }
                         else
                         {
-                            listBranchUnComplete.Add(ZhuXianTemp.tempTasks[i]);
+							listBranchUnComplete.Add(ZhuXianTemp.GetTemplateByIndex( i ) );
                         }
                     }
                     //  m_TaskInfoDic.Add(tempTaskInfo.id, ZhuXianTemp.tempTasks[i]);

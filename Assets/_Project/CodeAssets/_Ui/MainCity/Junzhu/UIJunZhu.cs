@@ -122,7 +122,21 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		MainCityUI.setGlobalTitle(m_objTitle, "角色", 0, 0);
 		MainCityUI.setGlobalBelongings(m_MonetParentObj, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
 		m_ScaleEffectController.OpenCompleteDelegate = EndDelegate;
-		if (FreshGuide.Instance().IsActive(100280) && TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
+        if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_iCurMissionIndex == 100100 && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
+        {
+            TaskData.Instance.m_iCurMissionIndex = 100100;
+            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+            tempTaskData.m_iCurIndex = 4;
+            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+        }
+        else if (FreshGuide.Instance().IsActive(100405) && TaskData.Instance.m_iCurMissionIndex == 100405 && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
+        {
+            TaskData.Instance.m_iCurMissionIndex = 100405;
+            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+            tempTaskData.m_iCurIndex = 4;
+            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+        }
+       else if (FreshGuide.Instance().IsActive(100280) && TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
 		{
 			{
 				TaskData.Instance.m_iCurMissionIndex = 100280;
@@ -473,6 +487,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
     void OnCloseWindow()
     {
         MainCityUI.TryRemoveFromObjectList(gameObject);
+		TreasureCityUI.TryRemoveFromObjectList(gameObject);
 
         if (UIYindao.m_UIYindao.m_isOpenYindao)
         {
@@ -593,9 +608,6 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				{
 					UIYindao.m_UIYindao.CloseUI();
 				}
-				GameObject tempgameobj = new GameObject();
-				tempgameobj.name = "Skill1";
-				MYClick(tempgameobj);
 				break;
 			case 3:
 				if(m_isLock)

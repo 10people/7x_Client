@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 using System.IO;
 
 using ProtoBuf;
@@ -9,64 +13,105 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
 public class TreasureBox : MonoBehaviour {
-
+	
 	public EnterScene enterScene; 
+
+	private TreasureOpenBox tOpenBox;
+
 	private GameObject lightEffect;
 
-	public void InItTreasureBox (EnterScene tempEnterScene)
+	private Animator animation;
+
+	/// <summary>
+	/// Ins it effect.
+	/// </summary>
+	public void InItEffect ()
 	{
-		enterScene = tempEnterScene;
+		Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(3000), InstanceEffect);
 	}
 
-	public void DestroyBox ()
+	void InstanceEffect (ref WWW p_www, string p_path, UnityEngine.Object p_object)
 	{
+		GameObject instanceEffect = Instantiate(p_object) as GameObject;
+		instanceEffect.transform.parent = this.transform;
+		instanceEffect.transform.localPosition = Vector3.zero;
+		instanceEffect.transform.localScale = Vector3.one;
+	}
+
+	/// <summary>
+	/// Destroies the box.
+	/// </summary>
+	public void DestroyBox (TreasureOpenBox tempOpenBox)
+	{
+		tOpenBox = tempOpenBox;
+
+		animation = this.GetComponent<Animator> ();
+
 		//产生爆开特效
-		this.GetComponent<BoxCollider> ().enabled = false;
-
-		TreasureCityPlayer.m_instance.TargetBoxUID = -1;//更新player范围的宝箱
-
-		if (TCityPlayerManager.m_instance.IsOpenBox)
+//		GetComponent<BoxCollider> ().enabled = false;
+//		TCityPlayerManager.m_instance.TargetBoxUID = -1;//更新player范围的宝箱
+		
+		if (tempOpenBox.isOpen && tempOpenBox.num > 0)
 		{
 			Debug.Log ("Destroy2");
-			TCityPlayerManager.m_instance.IsOpenBox = false;
-			Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(600246), TenementNPCBigHouse);
+
+			Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(600246), LightEffectLoadBack);
 		}
 		else
 		{
-			TreasureCityUI.m_instance.BottomUI (false);
-			Destroy (gameObject);
+			DestroyGameObj ();
 		}
 	}
 
-	void TenementNPCBigHouse(ref WWW p_www, string p_path, UnityEngine.Object p_object)
+	void LightEffectLoadBack (ref WWW p_www, string p_path, UnityEngine.Object p_object)
 	{
 		lightEffect = Instantiate(p_object) as GameObject;
 		lightEffect.transform.parent = this.transform.parent;
-		lightEffect.transform.localPosition = Vector3.zero;
+		lightEffect.transform.localPosition = this.transform.localPosition + new Vector3(0,0.5f,0);
 		lightEffect.transform.localScale = Vector3.one;
-
+		
 		StartCoroutine ("BoxAnimate");
 	}
-
+	
 	IEnumerator BoxAnimate ()
 	{
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (1f);
 
+		animation.enabled = true;
+	}
+
+	public void JinBiFeiChu ()
+	{
 		Global.ResourcesDotLoad ( PlayerInCityManager.GetModelResPathByRoleId (6903), ResourceLoadCallback );
+	}
 
-//		RewardData data = new RewardData ();
-//		GeneralRewardManager.Instance ().CreateReward ();
-		TreasureCityUI.m_instance.BottomUI (false);
+	public void AnimationFinished ()
+	{
 		Destroy (lightEffect);
-		Destroy (gameObject);
+		DestroyGameObj ();
 	}
 
 	private void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object )
 	{
-		GameObject obj = Instantiate (p_object) as GameObject;
+//		Debug.Log ("LigntEffect");
+		GameObject droppenObject = Instantiate (p_object) as GameObject;
+		
+		droppenObject.transform.parent = this.transform.parent;
+		droppenObject.transform.localPosition = this.transform.localPosition + new Vector3(0,0.5f,0);
+		droppenObject.transform.localScale = Vector3.one;
 
-		obj.transform.parent = this.transform.parent;
-		obj.transform.localPosition = this.transform.localPosition;
-		obj.transform.localScale = Vector3.one;
+//		Vector3 foward = new Vector3(Random.value, 0, Random.value).normalized;
+		Vector3 targetPos = transform.position;
+
+		TreasureYuanBao treasureYb = droppenObject.GetComponent<TreasureYuanBao> ();
+		treasureYb.refreshdata (targetPos,tOpenBox.num);
+	}
+
+	void DestroyGameObj ()
+	{
+		TCityPlayerManager.m_instance.DestroyBoxName (tOpenBox.exitScene);
+
+		TreasureCityUI.m_instance.BottomUI (false);
+		Destroy (gameObject);
 	}
 }

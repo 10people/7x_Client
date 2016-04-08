@@ -161,7 +161,7 @@ public class MainCityTaskManager : MonoBehaviour
 
 	public void setData(int taskID)
 	{
-		m_objAlret.SetActive(false);
+		EffectTool.CloseMultiUIEffect_ById(m_objAlret, 223, 224, 225);
 		m_iShowID = taskID;
 		if(m_iShowID == -1)
 		{
@@ -183,7 +183,8 @@ public class MainCityTaskManager : MonoBehaviour
 			m_UILabelClick.text = "点击领奖";
 			if(m_iThisPanelState != 0)
 			{
-				m_objAlret.SetActive(true);
+				EffectTool.OpenMultiUIEffect_ById(m_objAlret, 223, 224, 225);
+//				m_objAlret.SetActive(true);
 			}
 		}
 		else

@@ -11,9 +11,10 @@ public class EquipGrowthEquipItemManagerMent : MonoBehaviour
     public EventIndexHandle m_Event;
     public GameObject m_ObjEffect;
     private int _addCount = 0;
-
-    public void MoveLabel(int _add)
+    private int _FontSize = 0;
+    public void MoveLabel(int _add,int size = 0)
     {
+        _FontSize = size;
         _addCount = _add;
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_MOVE_ITEM), ResourcesLoadAddCallBack);
     }
@@ -23,7 +24,12 @@ public class EquipGrowthEquipItemManagerMent : MonoBehaviour
         rewardShow.transform.parent = m_Level.transform;
         rewardShow.transform.localScale = Vector3.one;
         rewardShow.transform.localPosition = Vector3.zero;
-    
+
+        if (_FontSize > 0)
+        {
+            rewardShow.GetComponent<UILabel>().fontSize = _FontSize;
+        }
+        
         {
             rewardShow.GetComponent<UILabel>().text = MyColorData.getColorString(4, "+" + _addCount.ToString());
         }
@@ -43,6 +49,6 @@ public class EquipGrowthEquipItemManagerMent : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
         Destroy(obj);
        // m_ObjEffect.SetActive(false);
-        EquipGrowthEquipInfoManagerment.m_isEffect = true;
+     //   EquipGrowthEquipInfoManagerment.m_isEffect = true;
     }
 }

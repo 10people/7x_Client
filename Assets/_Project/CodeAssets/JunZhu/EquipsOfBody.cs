@@ -587,7 +587,7 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
 	public int m_iMaxNum;
 	public void setTaozhuang()
 	{
-		if(m_Activatetemp == null)
+		if(m_Activatetemp == null || TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang) == null)
 		{
 			return;
 		}
@@ -596,6 +596,7 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
 			m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
 			MainCityUI.addShouji(m_Activatetemp.maxActiZhuang, 1, m_iCurNum, TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).neededNum, "套装收集");
 		}
+        
 		m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
 	}
 }

@@ -36,4 +36,5 @@
 <SceneTemplate sceneId="1503" sceneName="BattleField_V4_1503" isCheck="1" />
 <SceneTemplate sceneId="2008" sceneName="BattleField_V4_2008" isCheck="1" />
 <SceneTemplate sceneId="900" sceneName="BattleField_V4_900" isCheck="1" />
+<SceneTemplate sceneId="666" sceneName="BattleField_V4_666" isCheck="1" />
 </dataset>

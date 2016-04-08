@@ -33,12 +33,12 @@ public class BaiZhanOpponent : MonoBehaviour {
 		nation.spriteName = "nation_" + opponentInfo.guojia;
 		nameLabel.text = MyColorData.getColorString (1,opponentInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse(opponentInfo.junZhuName)) : opponentInfo.junZhuName);
 		
-		zhanLiLabel.text = "战力" + opponentInfo.zhanLi.ToString ();
+		zhanLiLabel.text = "战力：" + MyColorData.getColorString (opponentInfo.zhanLi > BaiZhanPage.baiZhanPage.baiZhanResp.pvpInfo.zhanLi ? 5 : 4,opponentInfo.zhanLi.ToString ());
 		
 		levelLabel.text = opponentInfo.level.ToString ();
 
 		rankLabel.text = "排行：" + opponentInfo.rank.ToString ();
 
-		newRecordSprite.gameObject.SetActive (tempInfo.rank < BaiZhanPage.baiZhanPage.MyRank ? true : false);
+		newRecordSprite.gameObject.SetActive (tempInfo.rank < BaiZhanPage.baiZhanPage.baiZhanResp.pvpInfo.historyHighRank ? true : false);
 	}
 }

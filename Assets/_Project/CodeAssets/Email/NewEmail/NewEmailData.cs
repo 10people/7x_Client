@@ -57,7 +57,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 
 	private string[] sendFailLength = new string[]{"失败，玩家名空！","失败，内容为空！",
 												   "失败，找不到玩家！","失败，有非法字符！","你被对方屏蔽！",
-												   "不能给自己发邮件！","间隔时间不到1分钟！","收件人在黑名单中！",
+												   "不能给自己发邮件！","间隔时间不到1分钟！","已在屏蔽名单中！",
 												   "邮件内容字数超出限制！"};
 
 	private string textStr;
@@ -274,6 +274,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 				if (newEmailResp != null)
 				{
 					MainCityUIL.ShowEmailDetail(true,LanguageTemplate.GetText (LanguageTemplate.Text.NEW_EMAIL));
+					PushAndNotificationHelper.SetRedSpotNotification (newEmailResp.email.type == 80000 ? 10 : 41,true);
 
 					if (newEmailResp.email.type == 80000)
 					{

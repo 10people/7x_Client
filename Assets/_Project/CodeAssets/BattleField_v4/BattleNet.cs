@@ -894,6 +894,8 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 
 	public void sendEndSecret()
 	{
+		if (curSecretResp == null) return;
+
 		sendingSecret = false;
 		
 		InProgress req = new InProgress ();
@@ -1399,17 +1401,23 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 		}
 
 		public void Exec(BattleNet net){
-//			bool t_bool = (m_node_data == null);
-//
-//			Debug.Log( "BattleNet.Exec m_node_data: " + ( t_bool ? "m_node_data=null" : "m_node_data!=null" ) );
-//
-//			Debug.Log( "BattleNet.Exec m_node_temple: " + m_node_temple );
+			bool t_bool = (m_node_data == null);
+
+			#if DEBUG_BATTLE_LOADING
+			Debug.Log( "BattleNet.Exec m_node_data: " + ( t_bool ? "m_node_data=null" : "m_node_data!=null" ) );
+
+			Debug.Log( "BattleNet.Exec m_node_temple: " + m_node_temple );
+			#endif
 
 			BaseAI node = BattleControlor.Instance().CreateNode(
 				m_node_data, 
 				m_stance, 
 				m_flag, 
 				m_node_temple);
+
+			#if DEBUG_BATTLE_LOADING
+			Debug.Log( "Node Created." );
+			#endif
 
 			if (m_stance == BaseAI.Stance.STANCE_SELF && m_node_data.nodeType == NodeType.PLAYER)
 			{
@@ -1428,6 +1436,10 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 			}
 
 			NodeLoaded ();
+
+			#if DEBUG_BATTLE_LOADING
+			Debug.Log( "Node Exec Done." );
+			#endif
 		}
 
 		public void NodeLoaded()

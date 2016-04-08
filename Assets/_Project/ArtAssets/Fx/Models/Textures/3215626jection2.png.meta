@@ -44,7 +44,11 @@ TextureImporter:
   spritePixelsToUnits: 100
   alphaIsTransparency: 0
   textureType: 5
-  buildTargetSettings: []
+  buildTargetSettings:
+  - buildTarget: Android
+    maxTextureSize: 128
+    textureFormat: 47
+    compressionQuality: 50
   spriteSheet:
     sprites: []
   spritePackingTag: 

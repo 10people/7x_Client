@@ -53,7 +53,7 @@ public class EmailSelectFriend : MonoBehaviour {
 		friendSc.enabled = friendList.Count > 4 ? true : false;
 		friendSb.gameObject.SetActive (friendList.Count > 4 ? true : false);
 
-		desLabel.text = friendList.Count > 0 ? "" : "还没有好友";
+		desLabel.text = friendList.Count > 0 ? "" : "还没有好友。";
 
 		closeHandler.m_click_handler -= CloseHandlerClickBack;
 		closeHandler.m_click_handler += CloseHandlerClickBack;

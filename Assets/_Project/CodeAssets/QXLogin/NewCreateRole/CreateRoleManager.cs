@@ -35,6 +35,8 @@ public class CreateRoleManager : MonoBehaviour {
 	{
 		ClientMain.m_sound_manager.chagneBGSound (1000);
 
+		QXComData.SendQxProtoMessage (ProtoIndexes.C_OPEN_CREATE_ROLE);
+
 		loadSize = Vector3.one;
 		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.SELECT_ROLE ),
 		                        SelectRoleUILoadBack );

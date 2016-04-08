@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define DEBUG_SHOW_TIP
+
+using UnityEngine;
 using System.Collections;
 
 public class ShowTip : ScriptableObject
@@ -16,8 +18,11 @@ public class ShowTip : ScriptableObject
 	private static GameObject tipObject;
 
 
-	public static void showTipEnemy(string iconName, string enemyName, string enemyDesc)
-	{
+	public static void showTipEnemy(string iconName, string enemyName, string enemyDesc){
+		#if DEBUG_SHOW_TIP
+		Debug.Log( "showTipEnemy( " + iconName + ", " + enemyName + ", " + enemyDesc + " )" );
+		#endif
+
 		m_iconName = iconName;
 
 		m_enemyName = enemyName;
@@ -27,9 +32,20 @@ public class ShowTip : ScriptableObject
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TIP), LoadResultResCallbackEnemy);
 	}
 
-	private static void LoadResultResCallbackEnemy(ref WWW p_www, string p_path, Object p_object)
-	{
-		if (tipObject != null) return;
+	private static void LoadResultResCallbackEnemy(ref WWW p_www, string p_path, Object p_object){
+		#if DEBUG_SHOW_TIP
+		Debug.Log( "LoadResultResCallbackEnemy( " + p_www + ", " + p_path + ", " + p_object + " )" );
+		#endif
+
+		if (tipObject != null) {
+			#if DEBUG_SHOW_TIP
+			LogInfo( "tipObject != null, return." );
+			#endif
+
+			CameraHelper.ShowCameraInfo( tipObject );
+
+			return;
+		}
 
 		tipObject = (GameObject)Instantiate(p_object);
 		
@@ -46,24 +62,46 @@ public class ShowTip : ScriptableObject
 		tipControllor.refreshDataEnemy (m_iconName, m_enemyName, m_enemyDesc);
 	}
 
-	public static void showTip(int commonItemId)
-	{
+	public static void showTip(int commonItemId){
+		#if DEBUG_SHOW_TIP
+		Debug.Log( "showTip( " + commonItemId + " )" );
+		#endif
+
         //Debug.Log("=========Show Tips With Id: " + commonItemId);
 
         bool flag = CommonItemTemplate.haveCommonItemTemplateById (commonItemId);
 
-		if (flag == false) return;
+		if (flag == false){
+			#if DEBUG_SHOW_TIP
+			LogInfo( "flag == false, return." );
+			#endif
+
+			CameraHelper.ShowCameraInfo( tipObject );
+
+			return;
+		}
 
 		m_commonItemId = commonItemId;
 
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TIP), LoadResultResCallbackItem);
 	}
 
-	private static void LoadResultResCallbackItem(ref WWW p_www, string p_path, Object p_object)
-	{
+	private static void LoadResultResCallbackItem(ref WWW p_www, string p_path, Object p_object){
+		#if DEBUG_SHOW_TIP
+		Debug.Log( "LoadResultResCallbackItem( " + p_www + ", " + p_path + ", " + p_object + " )" );
+		#endif
+
         //Debug.Log("=========== load tip prefab.");
 
-		if (tipObject != null) return;
+		if (tipObject != null){
+			#if DEBUG_SHOW_TIP
+			LogInfo( "tipObject != null, return." );
+			#endif
+
+			CameraHelper.ShowCameraInfo( tipObject );
+
+			return;
+		}
 		
 		tipObject = (GameObject)Instantiate(p_object);
 		
@@ -80,13 +118,38 @@ public class ShowTip : ScriptableObject
 		tipControllor.refreshDataItem (m_commonItemId);
 	}
 
-	public static void close()
-	{
-		if (tipObject == null) return;
+	public static void close(){
+		#if DEBUG_SHOW_TIP
+		Debug.Log( "close()" );
+		#endif
+
+		if (tipObject == null){
+			#if DEBUG_SHOW_TIP
+			LogInfo( "tipObject == null, return." );
+			#endif
+
+			return;
+		}
 
 		DestroyObject (tipObject);
 
 		tipObject = null;
+
+		#if DEBUG_SHOW_TIP
+		LogInfo( "close()" );
+		#endif
 	}
 
+	private static void LogInfo( string p_prefix ){
+		if( !string.IsNullOrEmpty( p_prefix ) ){
+			Debug.Log( "----------------------------- Log: " + p_prefix + " --------------------------" );
+		}
+
+		if( tipObject == null ){
+			Debug.Log( "tipObject is null: " + tipObject );	
+		}
+		else{
+			GameObjectHelper.LogGameObjectHierarchy( tipObject );
+		}
+	}
 }

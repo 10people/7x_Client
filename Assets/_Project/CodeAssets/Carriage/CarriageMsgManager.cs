@@ -87,6 +87,26 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                                 }
                         }
 
+                        if (msg.fujian == null || msg.fujian == "")
+                        {
+                            break;
+                        }
+                        string tempFujian = msg.fujian;
+                        List<string> funjianlist = new List<string>();
+                        while (tempFujian.IndexOf("#") != -1)
+                        {
+                            funjianlist.Add(Global.NextCutting(ref tempFujian, "#"));
+                        }
+                        funjianlist.Add(Global.NextCutting(ref tempFujian, "#"));
+                        List<RewardData> RewardDataList = new List<RewardData>();
+                        for (int i = 0; i < funjianlist.Count; i++)
+                        {
+                            tempFujian = funjianlist[i];
+                            Global.NextCutting(ref tempFujian, ":");
+                            RewardData Rewarddata = new RewardData(int.Parse(Global.NextCutting(ref tempFujian, ":")), int.Parse(Global.NextCutting(ref tempFujian, ":")));
+                            RewardDataList.Add(Rewarddata);
+                        }
+                        GeneralRewardManager.Instance().CreateReward(RewardDataList);
                         break;
                     }
                 case ProtoIndexes.S_YABIAO_BUY_RESP:
@@ -367,12 +387,14 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                         BuyXuePingResp tempInfo = new BuyXuePingResp();
                         t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
+                        m_RootManager.m_CarriageMain.IsCanClickBuyBloodTimes = true;
+
                         switch (tempInfo.resCode)
                         {
                             case 40:
                                 if (tempInfo.remainTimes > 0)
                                 {
-                                    CommonBuy.Instance.ShowBuy(tempInfo.nextCost, tempInfo.nextGet, "血瓶", m_RootManager.m_CarriageMain.DoBuyBloodTimes);
+                                    CommonBuy.Instance.ShowBuy(tempInfo.nextCost, tempInfo.nextGet, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_RootManager.m_CarriageMain.DoBuyBloodTimes);
                                 }
                                 else
                                 {
@@ -399,7 +421,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                         switch (tempInfo.result)
                         {
                             case 0:
-                                CommonBuy.Instance.ShowBuy(tempInfo.cost, tempInfo.getTimes, "次数", m_RootManager.m_CarriageMain.DoBuyRebirthFullTime);
+                                CommonBuy.Instance.ShowBuy(tempInfo.cost, tempInfo.getTimes, "次数", "", m_RootManager.m_CarriageMain.DoBuyRebirthFullTime);
                                 break;
                             case 2:
                                 ClientMain.m_UITextManager.createText("元宝不足");
@@ -464,6 +486,18 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
 
                         return true;
                     }
+                case ProtoIndexes.S_YABIAO_ENEMY_4_SIGN_RESP:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                        YaBiaoEnemyResp tempInfo = new YaBiaoEnemyResp();
+                        t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+                        m_RootManager.m_CarriageMain.ChourenList = tempInfo.enemy;
+                        m_RootManager.m_CarriageMain.RefreshChourenState();
+
+                        break;
+                    }
                 //Update I help other list.
                 case ProtoIndexes.S_CHECK_YABIAOHELP_RESP:
                     {
@@ -522,8 +556,10 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                         {
                             //204, recovering
                             m_RootManager.m_CarriageMain.m_SafeAresRecoveringLevel = tempInfo.list[12 - 1].lv;
+                            m_RootManager.m_CarriageMain.SetRecoveringIcon(m_RootManager.m_CarriageMain.m_IsInSafeArea);
                             //205, carriage buff.
                             m_RootManager.m_CarriageMain.m_CarriageBuffLevel = tempInfo.list[13 - 1].lv;
+                            m_RootManager.m_CarriageMain.SetCarriageBuffIcon(m_RootManager.m_CarriageMain.MyCarriageGameObject.activeInHierarchy);
                         }
                         catch (Exception e)
                         {

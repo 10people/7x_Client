@@ -47,6 +47,8 @@ public class UIBagLeft : MonoBehaviour, SocketListener
     /// </summary>
     public UIGrid m_UiGrid;
 
+    public UIScrollView m_ScrollView;
+
     #endregion
 
     #region Private Fields
@@ -211,7 +213,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
                 tempManager.SetIconByID(m_ListBag[i].itemId, m_ListBag[i].cnt.ToString(), 0, false, false);
                 tempManager.SetIconBasicDelegate(false, true, CheckInfo);
                 tempManager.RightButtomCornorLabel.effectStyle = UILabel.Effect.Outline;
-                tempManager.RightButtomCornorLabel.effectColor = new Color(1, 0, 0, 1);
+                tempManager.RightButtomCornorLabel.effectColor = new Color(0, 0, 0, 1);
 
                 m_IconSampleManagers.Add(tempManager);
             }
@@ -220,7 +222,8 @@ public class UIBagLeft : MonoBehaviour, SocketListener
                 tempManager.SetIconType(IconSampleManager.IconType.null_type);
                 tempManager.SetIconBasic(0, "", "", "");
                 tempManager.RightButtomCornorLabel.effectStyle = UILabel.Effect.Outline;
-                tempManager.RightButtomCornorLabel.effectColor = new Color(1, 0, 0, 1);
+                tempManager.RightButtomCornorLabel.effectColor = new Color(0, 0, 0, 1);
+
             }
 
             //Set gameobject name and transform info.
@@ -250,6 +253,8 @@ public class UIBagLeft : MonoBehaviour, SocketListener
     {
         yield return null;
         m_UiGrid.Reposition();
+
+        m_ScrollView.UpdatePosition();
     }
 
     private void CheckInfo(GameObject tempObject)

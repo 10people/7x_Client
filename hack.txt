@@ -16,3 +16,14 @@ case AddFunctionSatatae.Click://tigo
 禁止自动弹出七日奖励
 MainCityUI 搜 Res2DTemplate.Res.ONLINE_REWARD_DAY，
 在case 2 的地方，注释掉该行。
+
+自动领取星级奖励
+PveStarItem.cs  在 Item_Icon.spriteName = "tint_back"; 这句后面加
+				SendLingQu();
+
+不显示进度提示框
+MainCityUI.cs update 里 UIShouji.m_isPlayShouji = false;
+
+跳过电影
+EnterGame。cs  loginRet.code
+if(loginRet.code==2)loginRet.code=2016;//跳过电影

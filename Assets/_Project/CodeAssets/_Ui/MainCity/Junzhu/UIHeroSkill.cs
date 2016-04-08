@@ -67,6 +67,17 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 				m_Num = 0;
 			}
 		}
+		if(m_labelNeedMoney.gameObject.activeSelf)
+		{
+			if(JunZhuData.Instance().m_junzhuInfo.jinBi >= m_listCurPageHeroSkillUpTemplate[m_iSelectIndex].m_iNeedMoney)
+			{
+				m_labelNeedMoney.color = Color.black;
+			}
+			else
+			{
+				m_labelNeedMoney.color = Color.red;
+			}
+		}
 	}
 
 	public void setData(GetJiNengPeiYangQuality data)
@@ -104,7 +115,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 		for(int i = 0; i < m_heroSkillData.listHeroData.Count; i ++)
 		{
 			HeroSkillUpTemplate temp = HeroSkillUpTemplate.GetHeroSkillUpByID(m_heroSkillData.listHeroData[i].skillId);
-			if(getIsTupo(temp) == 2)
+			if(getIsTupo(temp) == 2 && JunZhuData.Instance().m_junzhuInfo.jinBi >= temp.m_iNeedMoney && EquipsOfBody.Instance().m_weapon[temp.m_iWuqiType])
 			{
 				m_listButtonAlert[temp.m_iWuqiType].gameObject.SetActive(true);
 				tempReturn = true;
@@ -174,6 +185,21 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 				}
 				break;
 			}
+			case ProtoIndexes.JunZhuInfoRet:
+				setHeroSkillUp(HeroSkillUpTemplate.GetHeroSkillUpByID(m_iSelectId).m_iNeedParID);
+				setEffUPTupo();
+				for(int i = 0; i < m_heroSkillData.listHeroData.Count; i ++)
+				{
+					if(m_heroSkillData.listHeroData[i].skillId == m_iSelectId)
+					{
+						m_heroSkillData.listHeroData[i].isUp = true;
+					}
+				}
+				upDateIcon();
+				setDes(m_iSelectIndex);
+				clear();
+				MainCityUI.SetRedAlert(500007, setAlert());
+				break;
 			default: return false;
 			}
 			
@@ -228,8 +254,14 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 					m_listSkillUpNeedLv[i].text = "Lv." + m_listCurPageHeroSkillUpTemplate[i].m_iNeedLV + "解锁";
 					break;
 				case 2:
-					m_listSkillTupo[i].SetActive(true);
-					m_listSkillAlert[i].SetActive(true);
+					if(EquipsOfBody.Instance().m_weapon[m_IndexType])
+					{
+						m_listSkillTupo[i].SetActive(true);
+						if(JunZhuData.Instance().m_junzhuInfo.jinBi >= m_listCurPageHeroSkillUpTemplate[i].m_iNeedMoney)
+						{
+							m_listSkillAlert[i].SetActive(true);
+						}
+					}
 					break;
 				}
 			}
@@ -288,21 +320,29 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 		m_iSelectIndex = selectIndex;
 		m_labelSkillName.text = m_listCurPageHeroSkillUpTemplate[m_iSelectIndex].m_sName;
 		m_labelDes.text = m_listCurPageHeroSkillUpTemplate[m_iSelectIndex].m_sDesc;
-		if(getIsTupo(m_listCurPageHeroSkillUpTemplate[m_iSelectIndex]) == 2)
-		{
-			m_objUp.SetActive(true);
-		}
-		else
-		{
-			m_objUp.SetActive(false);
-		}
 		if(getIsTupo(m_listCurPageHeroSkillUpTemplate[m_iSelectIndex]) == 1)
 		{
 			m_objUpHui.SetActive(true);
 		}
-		else
+		else if(EquipsOfBody.Instance().m_weapon[m_IndexType])
 		{
 			m_objUpHui.SetActive(false);
+		}
+		if(getIsTupo(m_listCurPageHeroSkillUpTemplate[m_iSelectIndex]) == 2)
+		{
+			if(EquipsOfBody.Instance().m_weapon[m_IndexType])
+			{
+				m_objUp.SetActive(true);
+			}
+			else
+			{
+				m_objUp.SetActive(false);
+				m_objUpHui.SetActive(true);
+			}
+		}
+		else
+		{
+			m_objUp.SetActive(false);
 		}
 		if(m_listCurPageHeroData[m_iSelectIndex].isUp)
 		{

@@ -68,6 +68,12 @@ public class KingControllor : HeroAI
 	
 	[HideInInspector] public Animator copyAnim;
 
+	[HideInInspector] public RuntimeAnimatorController copyRuntimeControllorHeavy;
+
+	[HideInInspector] public RuntimeAnimatorController copyRuntimeControllorLight;
+
+	[HideInInspector] public RuntimeAnimatorController copyRuntimeControllorRange;
+
 
 	private bool moving;
 	
@@ -197,16 +203,22 @@ public class KingControllor : HeroAI
 		for(int i = 0; weaponDateHeavy != null && weaponDateHeavy.skillFirstActive != null && i < weaponDateHeavy.skillFirstActive.Count; i++)
 		{
 			playUnlockEffList.Add(weaponDateHeavy.skillFirstActive[i]);
+
+//			Debug.Log("add playUnlockEffList Heavy " + (weaponDateHeavy.skillFirstActive[i]));
 		}
 
 		for(int i = 0; weaponDateLight != null && weaponDateLight.skillFirstActive != null && i < weaponDateLight.skillFirstActive.Count; i++)
 		{
 			playUnlockEffList.Add(weaponDateLight.skillFirstActive[i] + 3);
+
+//			Debug.Log("add playUnlockEffList Light " + (weaponDateLight.skillFirstActive[i] + 3));
 		}
 
 		for(int i = 0; weaponDateRanged != null && weaponDateRanged.skillFirstActive != null && i < weaponDateRanged.skillFirstActive.Count; i++)
 		{
 			playUnlockEffList.Add(weaponDateRanged.skillFirstActive[i] + 6);
+
+//			Debug.Log("add playUnlockEffList Range " + (weaponDateRanged.skillFirstActive[i] + 6));
 		}
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_configId == 100101)
@@ -218,6 +230,8 @@ public class KingControllor : HeroAI
 		{
 			BattleControlor.Instance(). playUnLockEffWeaponRange();
 		}
+
+//		Debug.Log("playUnlockEffList Count " + playUnlockEffList.Count);
 
 		gameCamera = (KingCamera) Camera.main.GetComponent(typeof(KingCamera));
 
@@ -1255,7 +1269,7 @@ public class KingControllor : HeroAI
 
 		iTween.EaseType easeType = iTween.EaseType.linear;
 
-		int colliderLevel = 1;
+		int colliderLevel = 0;
 
 		if(actionId == 401)
 		{
@@ -1301,11 +1315,37 @@ public class KingControllor : HeroAI
 		body.SetActive (false);
 		
 		transform.position = chongfengControllor.transform.position;
-		
+
 		PositonTweenWithoutCharactorComplete ();
 		
 		copyAnim.gameObject.SetActive (true);
+
+		Renderer[] rds = copyObject.GetComponentsInChildren<Renderer>();
 		
+		foreach (Renderer r in rds)
+		{
+			foreach (Material m in r.materials)
+			{
+				if(m.shader.name.Equals("Custom/Characters/Main Texture High Light"))
+				{
+					m.color = new Color( 0.537f, 0.537f, 0.537f, 1);
+				}
+			}
+		}
+
+		if(weaponType == WeaponType.W_Heavy)
+		{
+			copyAnim.runtimeAnimatorController = copyRuntimeControllorHeavy;
+		}
+		else if(weaponType == WeaponType.W_Light)
+		{
+			copyAnim.runtimeAnimatorController = copyRuntimeControllorLight;
+		}
+		else
+		{
+			copyAnim.runtimeAnimatorController = copyRuntimeControllorRange;
+		}
+
 		copyAnim.Play ("DODGE");
 
 		gameCamera.targetChang (copyAnim.gameObject);
@@ -1313,6 +1353,16 @@ public class KingControllor : HeroAI
 		if(signShadow != null) signShadow.gameObject.SetActive (false);
 
 		if(shadowObject_2 != null) shadowObject_2.SetActive (false);
+		
+		if(copyObject.activeSelf == true)
+		{
+			BattleEffect[] bfs = gameObject.GetComponentsInChildren<BattleEffect>();
+			
+			foreach(BattleEffect bf in bfs)
+			{
+				bf.updataPositionDodge();
+			}
+		}
 
 		KingMovementTemplate template = KingMovementTemplate.getKingMovementById (401);
 
@@ -1445,6 +1495,11 @@ public class KingControllor : HeroAI
 			BattleEffectControllor.Instance().PlayEffect (50000, defenderNode.gameObject);
 
 			BattleEffectControllor.Instance().PlayEffect (303, defenderNode.gameObject);
+
+			if(skillTemplate.value4 != 0)
+			{
+				Buff.createBuff(defenderNode, AIdata.AttributeType.ATTRTYPE_skillReduction_Light, skillTemplate.value4, skillTemplate.value5);
+			}
 		}
 	}
 
@@ -2187,97 +2242,95 @@ public class KingControllor : HeroAI
 //			BattleEffectControllor.Instance().PlayEffect((BattleEffectControllor.EffectType)300, gameObject);
 //		}
 
-
-
-		if(attackId == 150)//血迹烙印
-		{
-			actionId = 160;
-
-			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this);
-
-			float length = skillTemplate.value1;
-
-			float time = skillTemplate.value2;
-
-			List<BaseAI> nodeList = stance == Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
-
-			BaseAI focusNode = null;
-
-			foreach(BaseAI node in nodeList)
-			{
-				if(node == null 
-				   || node.isAlive == false 
-				   || node.gameObject.activeSelf == false 
-				   || node.nodeData.nodeType == NodeType.GOD 
-				   || node.nodeData.nodeType == NodeType.NPC) 
-					continue;
-
-				float _length = Vector3.Distance(transform.position, node.transform.position);
-
-				if(_length > length) continue;
-
-				if(focusNode == null)
-				{
-					focusNode = node;
-				
-					continue;
-				}
-
-				if((int)node.nodeData.nodeType > (int)focusNode.nodeData.nodeType)
-				{
-					focusNode = node;
-					
-					continue;
-				}
-				else if((int)node.nodeData.nodeType == (int)focusNode.nodeData.nodeType)
-				{
-					if(node.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp) > focusNode.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp))
-					{
-						focusNode = node;
-						
-						continue;
-					}
-				}
-			}
-
-			if(focusNode != null)
-			{
-				for(int i = 0; i < skillTemplate.value5; i++)
-				{
-					Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_Focus, 5, time);
-				}
-			
-				//Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_weaponReduction_Light, skillTemplate.value3, time);
-
-				FloatBoolParam fbp = BattleControlor.Instance().getAttackValueSkill(this, focusNode, skillTemplate.value4, 0, false);
-
-				attackHp(focusNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.LIGHT_SKILL_2);
-
-				BattleEffectControllor.Instance().PlayEffect(104, focusNode.gameObject);
-
-				BattleEffectControllor.Instance().PlayEffect(600162, focusNode.gameObject);
-
-				if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this) > 0)//流血效果
-				{
-					fbp = BattleControlor.Instance().getAttackValueSkill(this, focusNode, skillTemplate.value3, 0, false);
-
-					Buff buff = Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_hpDelay, fbp.Float, time);
-
-					buff.setEffect(BattleEffectControllor.Instance().PlayEffect(104, focusNode.gameObject, time));
-
-					BattleEffectControllor.Instance().PlayEffect(600163, focusNode.gameObject);
-				}
-
-				if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this) > 1)//抗性下降效果
-				{
-					Buff buff = Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_skillReduction_Light, -skillTemplate.value6, time);
-
-					GameObject gc = BattleEffectControllor.Instance().PlayEffect(600165, focusNode.gameObject);
-
-					buff.setEffect(gc);
-				}
-			}
-		}
+//		if(attackId == 150)//血迹烙印
+//		{
+//			actionId = 160;
+//
+//			SkillTemplate skillTemplate = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this);
+//
+//			float length = skillTemplate.value1;
+//
+//			float time = skillTemplate.value2;
+//
+//			List<BaseAI> nodeList = stance == Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
+//
+//			BaseAI focusNode = null;
+//
+//			foreach(BaseAI node in nodeList)
+//			{
+//				if(node == null 
+//				   || node.isAlive == false 
+//				   || node.gameObject.activeSelf == false 
+//				   || node.nodeData.nodeType == NodeType.GOD 
+//				   || node.nodeData.nodeType == NodeType.NPC) 
+//					continue;
+//
+//				float _length = Vector3.Distance(transform.position, node.transform.position);
+//
+//				if(_length > length) continue;
+//
+//				if(focusNode == null)
+//				{
+//					focusNode = node;
+//				
+//					continue;
+//				}
+//
+//				if((int)node.nodeData.nodeType > (int)focusNode.nodeData.nodeType)
+//				{
+//					focusNode = node;
+//					
+//					continue;
+//				}
+//				else if((int)node.nodeData.nodeType == (int)focusNode.nodeData.nodeType)
+//				{
+//					if(node.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp) > focusNode.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp))
+//					{
+//						focusNode = node;
+//						
+//						continue;
+//					}
+//				}
+//			}
+//
+//			if(focusNode != null)
+//			{
+//				for(int i = 0; i < skillTemplate.value5; i++)
+//				{
+//					Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_Focus, 5, time);
+//				}
+//			
+//				//Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_weaponReduction_Light, skillTemplate.value3, time);
+//
+//				FloatBoolParam fbp = BattleControlor.Instance().getAttackValueSkill(this, focusNode, skillTemplate.value4, 0, false);
+//
+//				attackHp(focusNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.LIGHT_SKILL_2);
+//
+//				BattleEffectControllor.Instance().PlayEffect(104, focusNode.gameObject);
+//
+//				BattleEffectControllor.Instance().PlayEffect(600162, focusNode.gameObject);
+//
+//				if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this) > 0)//流血效果
+//				{
+//					fbp = BattleControlor.Instance().getAttackValueSkill(this, focusNode, skillTemplate.value3, 0, false);
+//
+//					Buff buff = Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_hpDelay, fbp.Float, time);
+//
+//					buff.setEffect(BattleEffectControllor.Instance().PlayEffect(104, focusNode.gameObject, time));
+//
+//					BattleEffectControllor.Instance().PlayEffect(600163, focusNode.gameObject);
+//				}
+//
+//				if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.xuejilaoyin, this) > 1)//抗性下降效果
+//				{
+//					Buff buff = Buff.createBuff(focusNode, AIdata.AttributeType.ATTRTYPE_skillReduction_Light, -skillTemplate.value6, time);
+//
+//					GameObject gc = BattleEffectControllor.Instance().PlayEffect(600165, focusNode.gameObject);
+//
+//					buff.setEffect(gc);
+//				}
+//			}
+//		}
 
 	}
 
@@ -2584,6 +2637,8 @@ public class KingControllor : HeroAI
 			StrEffectItem.OpenEffect(gameObject, SkillTemplate.getSkillTemplateById(skillMibao.template.id).Fx3D, modelId);
 
 			if(stance == Stance.STANCE_SELF) BattleMibaoSkillEffControllor.showSkillEff(int.Parse(skillMibao.template.name));
+
+			else BattleEnmeyMibaoShowContollor.show(int.Parse(skillMibao.template.name));
 		}
 	}
 

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+
 public class NoticeManager : MonoBehaviour {
 
 	public UILabel m_labelContent;
@@ -15,99 +17,115 @@ public class NoticeManager : MonoBehaviour {
     public UIScrollView m_ScrollViewDes;
     public GameObject m_ObjectContent;
     private List<GameObject> listItem = new List<GameObject>();
-    struct AnnounceInfo
+    public struct AnnounceInfo
     {
         public string title;
         public string content;
         public int aligment;
+        public int _New;
     };
 
     private List<AnnounceInfo> listInfo = new List<AnnounceInfo>();
     public void GetNoticeStr(string tempStr)
     {
-        listInfo.Clear();
+       ////Debug.Log("tempStrtempStrtempStrtempStr ::" + tempStr);
+        //        #$$*$$#|*1*封测公告#1#[272727]
+        //◇ 欢迎来到《[FF0000]
+        //    七雄无双[-]》游戏世界！
 
-        string[] ss = tempStr.Split('|');
-        int size = ss.Length;
-        for (int i = 0; i < size; i++)
+
+        if (!string.IsNullOrEmpty(tempStr) && tempStr.IndexOf('|') > -1)
         {
-            if (!string.IsNullOrEmpty(ss[i]))
+            listInfo.Clear();
+
+            try
             {
-                if (ss[i].IndexOf('#') > -1)
+                string[] ss = tempStr.Split('|');
+                if (ss[0].Equals("#$$*$$#"))
                 {
-                    string[] tempInfo = ss[i].Split('#');
-                    AnnounceInfo info = new AnnounceInfo();
-                    info.aligment = int.Parse(tempInfo[1]);
-                    info.title = tempInfo[0];
-                    info.content = tempInfo[2];
-                    listInfo.Add(info);
-                }
-                else
-                {
-                    AnnounceInfo info = new AnnounceInfo();
-                    info.aligment = 0;
-                    info.title = "";
-                    info.content = tempStr;
-                    listInfo.Add(info);
+
+                    int size = ss.Length;
+                    for (int i = 1; i < size; i++)
+                    {
+                        if (!string.IsNullOrEmpty(ss[i]))
+                        {
+                            if (ss[i].IndexOf('*') > -1)
+                            {
+                                string[] tempInfo = ss[i].Split('*');
+                                if (tempInfo[2].IndexOf('#') > -1)
+                                {
+                                    int tt = 0;
+                                    string[] tempInfo2 = tempInfo[2].Split('#');
+                                    AnnounceInfo info = new AnnounceInfo();
+                                    if (int.TryParse(tempInfo[1], out tt))
+                                    {
+                                        info.aligment = int.Parse(tempInfo2[1]);
+                                    }
+                                    info.title = tempInfo2[0];
+                                    info.content = tempInfo2[2];
+                                    if (int.TryParse(tempInfo[1], out tt))
+                                    {
+                                        info._New = int.Parse(tempInfo[1]);
+                                    }
+                                    listInfo.Add(info);
+                                }
+                            }
+                        }
+
+                    }
+                    WWW p_www = null;
+                    //}
+                    int sizeAll = listInfo.Count;
+                    if (sizeAll <= 4)
+                    {
+
+                        m_ScrollView.enabled = false;
+                    }
+                    else
+                    {
+                        m_ScrollView.enabled = true; ;
+                    }
+
+                    for (int i = 0; i < sizeAll; i++)
+                    {
+                        ResourcesLoadCallBack(ref p_www, i.ToString(), m_AnnounceItem);
+                    }
+
                 }
             }
-
-        }
-        //noticeLabel.text = tempStr;
-
-        //if (noticeLabel.height <= 300)
-        //{
-        //    noticeLabel.gameObject.GetComponent<BoxCollider> ().enabled = false;
-        //}
-
-        //else
-        //{
-        //    noticeLabel.overflowMethod = UILabel.Overflow.ResizeHeight;
-        //    noticeLabel.gameObject.GetComponent<BoxCollider> ().enabled = true;
-        WWW p_www = null;
-        //}
-        int sizeAll = listInfo.Count;
-        if (sizeAll <= 4)
-        {
-
-            m_ScrollView.enabled = false;
-        }
-        else
-        {
-            m_ScrollView.enabled = true; ;
-        }
-
-        for (int i = 0; i < sizeAll; i++)
-        {
-            ResourcesLoadCallBack(ref p_www, i.ToString(), m_AnnounceItem);
+            catch (Exception e)
+            {
+				Debug.LogError( "Notice Exception: " + e );
+            }
         }
     }
 
-    void ResourcesLoadCallBack(ref WWW p_www, string p_path, Object p_object)
+    int indexNum = 0;
+    void ResourcesLoadCallBack(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
         GameObject tempObject = Instantiate(p_object) as GameObject;
         tempObject.name = p_path;
         listItem.Add(tempObject);
-        if (int.Parse(p_path) == 0)
+        if (indexNum == 0)
         {
             tempObject.GetComponent<AnnounceItemManagerment>().m_SpriteGuang.gameObject.SetActive(true);
             tempObject.GetComponent<AnnounceItemManagerment>().m_SpriteBack.transform.localScale = new Vector3(1.05f, 1.05f, 1);
            // m_labelContent.text = listInfo[int.Parse(p_path)].content;
             WWW _www = null;
-            ResourcesLoadCallBackContent(ref _www, listInfo[int.Parse(p_path)].content, m_ObjectContent);
+            ResourcesLoadCallBackContent(ref _www,  "0" , m_ObjectContent);
         }
         tempObject.transform.parent = m_Parent.transform;
         tempObject.transform.localPosition = Vector3.zero;
         tempObject.transform.localScale = Vector3.one;
-        tempObject.transform.GetComponent<AnnounceItemManagerment>().ContentShow(listInfo[int.Parse(p_path)].title, ShowInfo);
+        tempObject.transform.GetComponent<AnnounceItemManagerment>().ContentShow(listInfo[indexNum], ShowInfo);
         m_Parent.GetComponent<UIGrid>().repositionNow = true;
+        indexNum++;
     }
 
     private int _TouchNumSave = 0;
-    void ShowInfo(int index)
-    {
-        if (_TouchNumSave != index)
-        {
+
+    void ShowInfo(int index){
+        if (_TouchNumSave != index){
             m_ScrollViewDes.transform.localPosition = new Vector3(107, 380, 0);
             m_ScrollViewDes.GetComponent<UIPanel>().clipOffset = new Vector2(0, -379);
             m_ScrollViewDes.UpdatePosition();
@@ -117,21 +135,23 @@ public class NoticeManager : MonoBehaviour {
             listItem[_TouchNumSave].GetComponent<AnnounceItemManagerment>().m_SpriteGuang.gameObject.SetActive(false);
             listItem[_TouchNumSave].GetComponent<AnnounceItemManagerment>().m_SpriteBack.transform.localScale = Vector3.one;
             _TouchNumSave = index;
-            if (_ContentTemp != null)
-            {
+
+            if (_ContentTemp != null){
+				
                 Destroy(_ContentTemp);
+
                 WWW _www = null;
-                ResourcesLoadCallBackContent(ref _www, listInfo[index].content, m_ObjectContent);
+
+                ResourcesLoadCallBackContent(ref _www, index.ToString(), m_ObjectContent);
             }
         }
-
     }
 	
 	public void CloseBtn (){
 		if ( ThirdPlatform.IsThirdPlatform () ) {
 			if( ThirdPlatform.Instance() != null ){
 				if( !ThirdPlatform.IsMyAppAndroidPlatform() ){
-					if( ThirdPlatform.Instance().GetPlatformStatus() != ThirdPlatform.PlatformStatus.LogIn ){
+					if( ThirdPlatform.GetPlatformStatus() != ThirdPlatform.PlatformStatus.LogIn ){
 						ThirdPlatform.CheckLoginToShowSDK();
 
 						Debug.Log( "Not In Login Status, CheckSDK and return" );
@@ -172,17 +192,26 @@ public class NoticeManager : MonoBehaviour {
 
 		if( ThirdPlatform.IsThirdPlatform() ){
 			if( ThirdPlatform.IsMyAppAndroidPlatform() ){
-				// temporary use the same code
-				// MyApp have two entrance, 1st is here, 2nd is after 1st time login success
-				if( string.IsNullOrEmpty( ThirdPlatform.Instance().GetLoginInfo() ) ){
-
-					Debug.Log( "1st time enter game, show login type UI." );
+				if( ThirdPlatform.GetPlatformStatus() != ThirdPlatform.PlatformStatus.LogIn ){
+					Debug.Log( "1st Time Enter Game, Show Login Type UI." );
 				}
 				else{
-					Debug.Log( "enter game when already logged in, direct goto server select." );
+					Debug.Log( "Enter Game when already logged in, Direct Goto Server Select." );
 
 					AccountRequest.account.DengLuRequestSuccess( ThirdPlatform.Instance().GetLoginInfo() );		
 				}
+
+				// temporary use the same code
+				// MyApp have two entrance, 1st is here, 2nd is after 1st time login success
+//				if( string.IsNullOrEmpty( ThirdPlatform.Instance().GetLoginInfo() ) ){
+//
+//					Debug.Log( "1st time enter game, show login type UI." );
+//				}
+//				else{
+//					Debug.Log( "enter game when already logged in, direct goto server select." );
+//
+//					AccountRequest.account.DengLuRequestSuccess( ThirdPlatform.Instance().GetLoginInfo() );		
+//				}
 			}
 			else{
 				AccountRequest.account.DengLuRequestSuccess( ThirdPlatform.Instance().GetLoginInfo() );	
@@ -191,11 +220,11 @@ public class NoticeManager : MonoBehaviour {
 	}
 
     private GameObject _ContentTemp = null;
-    void ResourcesLoadCallBackContent(ref WWW p_www, string p_path, Object p_object)
+    void ResourcesLoadCallBackContent(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
         _ContentTemp = Instantiate(p_object) as GameObject;
         _ContentTemp.transform.parent = m_TableObject.transform;
-        _ContentTemp.GetComponent<NoticeContentInfo>().ShowContent(p_path);
+        _ContentTemp.GetComponent<NoticeContentInfo>().ShowContent(listInfo[int.Parse(p_path)]);
         _ContentTemp.transform.localPosition = Vector3.zero;
         _ContentTemp.transform.localScale = Vector3.one;
 

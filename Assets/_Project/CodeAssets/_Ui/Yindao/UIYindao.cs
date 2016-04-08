@@ -32,6 +32,9 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 	private bool m_isAddSound = false;
 
 	private int m_iNum = 0;
+
+	public int m_iCurdialogId = -1;
+	public int m_iPardialogId = -1;
 	
 	private struct moveData
 	{
@@ -96,7 +99,32 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 	}
 
 	private string m_sPos = "c";
+	private int cur_YinDaoid = 0;
+	/// <summary>
+	/// 判断引导是否开启  如果开启就关闭并获得关闭前的引导id
+	/// </summary>
+	/// <returns><c>true</c> if this instance is O pen Y in DAO; otherwise, <c>false</c>.</returns>
+	public void  IsOPenYInDao()
+	{
+	   if(m_UIYindao.m_isOpenYindao)
+		{
+			cur_YinDaoid = m_iCurId;
+			m_UIYindao.CloseUI();
 
+		}
+	}
+	/// <summary>
+	/// 如果之前引导是打开的 就打开之前的引导
+	/// </summary>
+	/// <returns><c>true</c> if this instance is O pen Y in DAO; otherwise, <c>false</c>.</returns>
+	public void  NeedOPenYInDao( )
+	{
+		if(cur_YinDaoid > 0)
+		{
+			setOpenYindao(cur_YinDaoid);
+			cur_YinDaoid = -1;
+		}
+	}
 	public void setOpenYindao(int id)
     {
 		m_iNum = 0;
@@ -111,7 +139,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		}
 		m_iCurId = id;
 
-	//	Debug.Log(m_iCurId);
+//		Debug.Log(m_iCurId);
 
 		if(id == 0)
 		{
@@ -220,6 +248,28 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		m_YindaoElenemt = yindaoElenemt;
 
 		m_isOpenYindao = true;
+
+		int x = 0;
+		int y = 0;
+		int w = 0;
+
+		if(yindaoElenemt.m_Label != null)
+		{
+			m_sPos = yindaoElenemt.m_Label.pos;
+			m_iCurdialogId = yindaoElenemt.m_Label.dialogid;
+			x = yindaoElenemt.m_Label.x;
+			y = yindaoElenemt.m_Label.y;
+			w = yindaoElenemt.m_Label.w;
+			//			string str = yindaoElenemt.m_Label.str;
+			if(m_iPardialogId != m_iCurdialogId)
+			{
+				ClientMain.m_ClientMain.m_UIDialogSystem.setOpenDialogID(m_iCurdialogId, x, y , w, 99999, ClickDialogOver);
+			}
+		}
+		else
+		{
+			m_iPardialogId = -1;
+		}
 		if(yindaoElenemt.m_Click != null)
 		{
             m_iIsColl = yindaoElenemt.m_Click.isColl;
@@ -259,14 +309,14 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 				m_UISpriteTop.gameObject.GetComponent<UISprite>().spriteName = "editrect";
 				m_UISpriteBom.gameObject.GetComponent<UISprite>().spriteName = "editrect";
 			}
-			int x = yindaoElenemt.m_Click.x;
-			int y = yindaoElenemt.m_Click.y;
+			x = yindaoElenemt.m_Click.x;
+			y = yindaoElenemt.m_Click.y;
 //			m_sX = x +"";
 //			m_sY = y +"";
 			x -= 480;
 			y = 320 - y;
 			getPos(ref x, ref y, m_sPos);
-			int w = yindaoElenemt.m_Click.w;
+			w = yindaoElenemt.m_Click.w;
 			int h = yindaoElenemt.m_Click.h;
 //			m_sW = w +"";
 //			m_sH = h +"";
@@ -313,8 +363,8 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 			m_sPos = yindaoElenemt.m_ImageMove.pos;
 			int angle = yindaoElenemt.m_ImageMove.Angle;
 			int desID = yindaoElenemt.m_ImageMove.desID;
-			int x = yindaoElenemt.m_ImageMove.x;
-			int y = yindaoElenemt.m_ImageMove.y;
+			x = yindaoElenemt.m_ImageMove.x;
+			y = yindaoElenemt.m_ImageMove.y;
 			x -= 480;
 			y = 320 - y;
 			getPos(ref x, ref y, m_sPos);
@@ -354,7 +404,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 			m_iImageIndex++;
 			m_listMoveData.Add(tempMove);
 
-			if(yindaoElenemt.m_Label == null)
+			if(yindaoElenemt.m_Label == null || m_iPardialogId == m_iCurdialogId)
 			{
 				tempObj.SetActive(true);
 			}
@@ -369,22 +419,10 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		}
 		if(yindaoElenemt.m_Eff != null)
 		{
-			if(yindaoElenemt.m_Label == null)
+			if(yindaoElenemt.m_Label == null || m_iPardialogId == m_iCurdialogId)
 			{
 				createEff();
 			}
-		}
-
-		if(yindaoElenemt.m_Label != null)
-		{
-//			string str = yindaoElenemt.m_Label.str;
-			m_sPos = yindaoElenemt.m_Label.pos;
-			int dialogId = yindaoElenemt.m_Label.dialogid;
-			int x = yindaoElenemt.m_Label.x;
-			int y = yindaoElenemt.m_Label.y;
-			int w = yindaoElenemt.m_Label.w;
-
-			ClientMain.m_ClientMain.m_UIDialogSystem.setOpenDialogID(dialogId, x, y , w, 99999, ClickDialogOver);
 		}
 	}
 
@@ -455,11 +493,12 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		{
 			createEff();
 		}
+		m_iPardialogId = m_iCurdialogId;
 	}
 
 	public void CloseUI()
 	{
-  // 	Debug.Log("CloseYinDao");
+   		//Debug.Log("CloseYinDao");
 		if(!Global.m_isOpenJiaoxue)
 		{
 			return;

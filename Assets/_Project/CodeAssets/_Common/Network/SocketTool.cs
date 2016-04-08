@@ -12,6 +12,8 @@
 
 //#define DEBUG_PROCESSOR_COST
 
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +27,8 @@ using System.IO;
 
 using qxmobile;
 using qxmobile.protobuf;
+
+
 
 /** 
  * @author:		Zhang YuGu
@@ -81,11 +85,11 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	#region Socket Key Data
 
 	public enum SocketState{
-		DisConnected,
-		Connecting,
-		Connected,
-		ConnectedFailed,
-		ConnectiontLost
+		DisConnected,		// off line status
+		Connecting,			// try connecting
+		Connected,			// connected
+		ConnectedFailed,	// fail
+		ConnectiontLost		// lost
 	}
 
 	public static SocketState m_state = SocketState.DisConnected;
@@ -277,7 +281,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			NetworkWaiting.Instance().ShowNetworkSending( "Connecting to server" );
 		}
 
-		m_state = SocketState.Connecting;
+		SetSocketState( SocketState.Connecting );
 
 		m_socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
 		
@@ -341,7 +345,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			return;
 		}
 
-		m_state = SocketState.Connected;
+		SetSocketState( SocketState.Connected );
 
 		{
 			lock( m_sending_messages ){
@@ -418,14 +422,16 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 	
 	public static void CloseSocket(){
-//		Debug.Log( "SocketTool.CloseSocket()" );
+		Debug.Log( "SocketTool.CloseSocket()" );
+
+		{
+			SetStateDisConnect();
+		}
 
 		try{
 			if( m_instance != null ){
 				m_instance.ShutDown();
 			}
-
-			m_state = SocketState.DisConnected;
 		}
 		catch( Exception e ){
 			/* possibly throw an exception here, but never mind.
@@ -438,7 +444,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 	
 	private void ShutDown(){
-//		Debug.Log( "ShutDown()" );
+		Debug.Log( "SocketTool.ShutDown()" );
 
 		try{
 	//		if( m_socket != null && m_socket.Connected ){
@@ -446,15 +452,19 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 				m_socket.Shutdown( SocketShutdown.Both );
 				
 				m_socket.Close();
-
-				m_socket = null;
 			}	
 		}
 		catch( Exception e ){
 			Debug.Log( "Socket.ShutDown.Exception: " + e );
 		}
+
+		{
+			m_socket = null;
+		}
 		
-		Clear();
+		{
+			Clear();
+		}
 	}
 
 	public void SetSocketLost(){
@@ -469,7 +479,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public static void ConnectionTimeOut(){
 		SocketHelper.CreateTimeOutReConnectWindow( SocketHelper.ReLoginClickCallback );
 		
-		m_state = SocketState.DisConnected;
+		SetStateDisConnect();
 	}
 
 	/// <summary>
@@ -478,7 +488,17 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	private void ConnectionLostOrFail(){
 		SocketHelper.CreateConnectionLostOrFailWindow();
 		
-		m_state = SocketState.DisConnected;
+		SetStateDisConnect();
+	}
+
+	private static void SetSocketState( SocketState p_state ){
+		m_state = p_state;
+	}
+
+	private static void SetStateDisConnect(){
+		Debug.Log( "SetStateDisConnect()" );
+
+		SetSocketState( SocketState.DisConnected );
 	}
 
 	public static void LogSocketToolInfo(){
@@ -546,24 +566,27 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 
 			SocketTool.CloseSocket();
-			
-			m_multi_login_gb = Global.CreateBox( LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_1),
-			                                    LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TRANS_97),
-			                                    "",
-			                                    null,
-			                                    LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_2),
 
-			                                    null,
-			                                    MultiLoginCallback,
-			                                    null,
-			                                    null,
-			                                    null,
+			if( m_multi_login_gb == null ){
+				m_multi_login_gb = Global.CreateBox( LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_1),
+					LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TRANS_97),
+					"",
+					null,
+					LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_2),
 
-			                                    false,
-			                                    false,
-			                                    true );
-			
-			DontDestroyOnLoad( m_multi_login_gb );
+					null,
+					MultiLoginCallback,
+					null,
+					null,
+					null,
+
+					false,
+					false,
+					true, 
+					true );
+
+				DontDestroyOnLoad( m_multi_login_gb );
+			}
 			
 			return true;
 		}
@@ -575,14 +598,15 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		return false;
 	}
 
-	public void MultiLoginCallback(int p_i )
-	{
+	public void MultiLoginCallback(int p_i ){
 		Debug.Log("MultiLoginCallback( " + p_i + " )");
 		
-		if( m_multi_login_gb.activeSelf ){
+		if( m_multi_login_gb != null ){
 			m_multi_login_gb.SetActive( false );
 			
 			Destroy( m_multi_login_gb );
+
+			m_multi_login_gb = null;
 		}
 
 		{
@@ -635,13 +659,17 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	private void Clear(){
-//		#if DEBUG_CLEAR
+		#if DEBUG_CLEAR
 //		Debug.Log( "SocketTool.Clear()" );
-//		#endif
+		#endif
 
-		m_received_messages.Clear();
-		
-		m_sending_messages.Clear();
+		{
+			ClearSendAdnReceiveMessages();
+		}
+
+		{
+			m_received_messages.Clear();
+		}
 
 		{
 			m_socket_processors.Clear();
@@ -650,8 +678,6 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		{
 			m_socket_listeners.Clear();
 		}
-
-		m_receiving_waiting_list.Clear();
 		
 		
 		m_socket = null;
@@ -728,7 +754,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			}
 		}
 		catch( System.Exception e ){
-			Debug.Log( "ReceiveCallback.Exception: " + e );
+			Debug.Log( "ReceiveCallback.Exception 1: " + e );
 
 			//Close();
 
@@ -737,11 +763,19 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 //			return;
 		}
 
+		if( IsDisConnected() ){
+//			#if DEBUG_SOCKET_CONNECT
+			Debug.Log( "DisConnected, return." );
+//			#endif
+
+			return;
+		}
+
 		// close if receive 0 length data.
 		if ( t_recieved_bytes == 0 ){
-			#if DEBUG_SOCKET_CONNECT
+//			#if DEBUG_SOCKET_CONNECT
             Debug.Log( "t_receive_bytes == 0, close Socket." );
-			#endif
+//			#endif
 
 			CloseSocket();
 
@@ -774,13 +808,21 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		catch( System.Exception e ){
 			//Close();
 
-			ManualLostConnection();
+			Debug.Log( "ReceiveCallback.Exception 2: " + e );
 
-			Debug.Log( "ReceiveCallback.Exception: " + e );
+			ManualLostConnection();
 		}
 	}
 
 	void ProcessMultiMessage(){
+		if( m_receive_buffer == null ){
+			Debug.LogError( "Error, Buffer Is Null." );
+
+			ResetRead();
+
+			return;
+		}
+
 		byte[] t_bytes = m_receive_buffer.buffer;
 		
 		while( m_read_index + 4 < m_receive_buffer.position ){
@@ -874,15 +916,21 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		if ( m_read_index == m_receive_buffer.position ) {
 //			Debug.Log( "Recycle." );
 
-			m_receive_buffer.Recycle ();
-
-			m_receive_buffer = null;
-		
-			m_read_index = 0;
+			ResetRead();
 		}
 		else {
 //			Debug.LogError( "Error, Data Split." );
 		}
+	}
+
+	private void ResetRead(){
+		if( m_receive_buffer != null ){
+			m_receive_buffer.Recycle ();
+
+			m_receive_buffer = null;
+		}
+
+		m_read_index = 0;
 	}
 
 	#endregion
@@ -1358,9 +1406,17 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 				
 				return;	
 			}
-			
+
+			if( IsDisConnected() ){
+				Debug.Log( "DisConnected, skip sending." );
+
+				return;
+			}
+
 //			if( !m_socket.Connected ){
 			if( !IsCSSocketConnected() ){
+				Debug.Log( "Not Connected." );
+
 				LogServerSet();
 				
 				//m_socket.Close();
@@ -1682,6 +1738,10 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		return m_state == SocketState.Connected;
 	}
 
+	public static bool IsDisConnected(){
+		return m_state == SocketState.DisConnected;
+	}
+
 	public static SocketState GetSocketState(){
 		return m_state;
 	}
@@ -1712,14 +1772,14 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		Debug.Log( "ConnectFailed()" );
 
 		// process all received messages.
-		{
-			Process_Received_Messages();
-		}
+//		{
+//			Process_Received_Messages();
+//		}
 
 		if( m_state == SocketState.Connecting || 
 		   m_state == SocketState.Connected || 
 		   m_state == SocketState.ConnectiontLost ){
-			m_state = SocketState.ConnectedFailed;
+			SetSocketState( SocketState.ConnectedFailed );
 		}
 		
 		ShutDown();
@@ -1730,17 +1790,17 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 	
 	private void ManualLostConnection(){
-		Debug.Log( "ManualLostConnection()" );
+		Debug.Log( "SocketTool.ManualLostConnection()" );
 
 		// process all received messages.
-		{
-			Process_Received_Messages();
-		}
+//		{
+//			Process_Received_Messages();
+//		}
 
 		if( m_state == SocketState.Connecting || 
 		   m_state == SocketState.Connected || 
 		   m_state == SocketState.ConnectedFailed ){
-			m_state = SocketTool.SocketState.ConnectiontLost;
+			SetSocketState( SocketTool.SocketState.ConnectiontLost );
 		}
 		
 		ShutDown();

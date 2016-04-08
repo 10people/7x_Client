@@ -8,7 +8,7 @@ namespace Carriage
     {
         public GameObject m_ShadowObject;
 
-        public void OnCarriageItemClick()
+        public void OnClick()
         {
             if (!RootManager.Instance.m_CarriageMain.isCanStartCarriage)
             {
@@ -22,7 +22,7 @@ namespace Carriage
                 RootManager.Instance.m_CarriageMain.TryCancelChaseToAttack();
 
                 RootManager.Instance.m_SelfPlayerController.m_CompleteNavDelegate = RootManager.Instance.m_CarriageMain.DoStartCarriage;
-                RootManager.Instance.m_SelfPlayerController.StartNavigation(transform.position);
+                RootManager.Instance.m_SelfPlayerController.StartNavigation(transform.position, 2);
             }
         }
 

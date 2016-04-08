@@ -69,6 +69,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     public UIGrid m_GridParent;
     public GameObject m_ObjSig;
     public UILabel m_LabObjSig;
+    public UIInput m_InputName;
     private int IconSave = 0;
     private int removeIndex = 0;
     private bool isUnInput = false;
@@ -77,6 +78,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     private string CreateNameSave = "";
  
     public GameObject m_MainLayer;
+ 
     private bool isShowOn = false;
     private int _AllianceCountry = 0;
     private int _AppliedCount = 0;
@@ -133,24 +135,32 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         AllianceData.Instance.RequestData();
         AllianceData.Instance.RequestYaoQing();
     }
+ 
     public void OnSelect()
     {
-        UIInput Input = m_LabInputName.transform.parent.GetComponent<UIInput>();
-        if (!string.IsNullOrEmpty(FunctionWindowsCreateManagerment.GetNeedString(m_LabInputName.text)))
+        
+        if (!string.IsNullOrEmpty(FunctionWindowsCreateManagerment.GetNeedString(m_InputName.value)))
         {
-            InputName = FunctionWindowsCreateManagerment.GetNeedString(Input.value);
+            InputName = FunctionWindowsCreateManagerment.GetNeedString(m_InputName.value);
+        
             m_LabInputName.text = InputName;
-            Input.value = InputName;
+            m_InputName.value = InputName;
+            m_LabInputSignal.gameObject.SetActive(false);
         }
     }
     void Update()
     {
+        InputName = FunctionWindowsCreateManagerment.GetNeedString(m_InputName.value);
+        if (!string.IsNullOrEmpty(InputName))
+        {
+            OnSelect();
+        }
         if (AllianceData.Instance.m_InstantiateNoAlliance)
         {
             m_HidenObject.SetActive(true);
             isShowOn = true;
         }
-        
+        InputName = m_InputName.value;
         if (isShowOn)
         {
             if (AllianceData.Instance.m_InstantiateNoAlliance)
@@ -158,13 +168,22 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                 isShowOn = false;
                 AllianceData.Instance.m_InstantiateNoAlliance = false;
                 AllianceInfoShow();
+                if (FunctionWindowsCreateManagerment.m_AllianceID > 0)
+                {
+                    ShowAllianceApplicationInfo(FunctionWindowsCreateManagerment.m_AllianceID);
+                    FunctionWindowsCreateManagerment.m_AllianceID = -1;
+                }
             }
         }
-       
+
 
         if (!string.IsNullOrEmpty(InputName))
         {
-			CreateNameSave = InputName;
+            CreateNameSave = InputName;
+        }
+        else
+        {
+          ///  m_LabInputSignal.gameObject.SetActive(true);
         }
 
         if (AllianceData.Instance.m_Invite_List_Load)
@@ -229,18 +248,34 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         }
 
     }
+    private bool _CDKeyIsOff = false;
     void CreateNameButtonControl()
     {
-        //  !InputName.Equals(LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL)) &&
-        // && (InputName.Equals(LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL))
+        if (_CDKeyIsOff && !string.IsNullOrEmpty(InputName))
+        {
+            _CDKeyIsOff = false;
+            m_LabInputSignal.gameObject.SetActive(false);
+        }
+        else if (!_CDKeyIsOff && string.IsNullOrEmpty(InputName))
+        {
+            _CDKeyIsOff = true;
+            m_LabInputSignal.gameObject.SetActive(true);
+        }
+        //     if (!string.IsNullOrEmpty(InputName))ui
+        //{
+        //    m_LabInputSignal.gameObject.SetActive(false);
+        //}
+ 
         if ( !string.IsNullOrEmpty(InputName) && isUnInput && IconSave != 0) 
         {
             isUnInput = false;
             ButtonsControl(6, true);
+            m_LabInputSignal.gameObject.SetActive(false);
         }
         else if (!isUnInput && (string.IsNullOrEmpty(InputName) || IconSave == 0))
         {
             isUnInput = true;
+          //  m_LabInputSignal.gameObject.SetActive(true);
             ButtonsControl(6, false);
         }
     }
@@ -294,13 +329,13 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     }
     void Touch(int index)
     {
-        Debug.Log("indexindexindexindexindexindexindexindexindexindexindex");
         switch (index)
         {
             case 0:
                 {
-                    m_LabInputSignal.gameObject.SetActive(true);
-                    // m_LabInputName.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL);
+                    //m_LabInputSignal.gameObject.SetActive(true);
+                  
+                    //   m_LabInputName.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_INPUT_SIGNAL);
                     IconSave = 0;
                     isUnInput = false;
                     isUnSlelectIcon = false;
@@ -355,14 +390,14 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             case 6:
                 {
                     m_LabInputName.text = "";
-                    if (SysparaTemplate.CompareSyeParaWord(CreateNameSave))
-                    {
-                        _content1 = "有奇怪的文字混进来了...\n再推敲一下吧！"; ;
-                        _content2 = "";
-                        _SignalIndex = 2;
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
-                    }
-                    else
+                    //if (SysparaTemplate.CompareSyeParaWord(CreateNameSave))
+                    //{
+                    //    _content1 = "有奇怪的文字混进来了...\n再推敲一下吧！"; ;
+                    //    _content2 = "";
+                    //    _SignalIndex = 2;
+                    //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                    //}
+                    //else
                     {
                         ConnectServer(index);
                     }
@@ -421,10 +456,19 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                 {
                     MainCityUI.TryRemoveFromObjectList(m_MainObj);
                     JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
-                    GameObject obj = new GameObject();
-                    obj.name = "MainCityUIButton_104";
-                    MainCityUI.m_MainCityUI.MYClick(obj);
-                    Destroy(obj);
+                    AllianceData.Instance.IsAllianceNotExist = false;
+                    if (Application.loadedLevelName.Equals(ConstInGame.CONST_SCENE_NAME_MAINCITY))
+                    {
+                        AllianceData.Instance.IsAllianceNotExist = false;
+                        JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
+                        GameObject obj = new GameObject();
+                        obj.name = "MainCityUIButton_104";
+                        MainCityUI.m_MainCityUI.MYClick(obj);
+                    }
+                    else
+                    {
+                        ClientMain.m_UITextManager.createText("联盟加入成功！");
+                    }
                     Destroy(m_MainObj);
                 }
                 break;
@@ -452,12 +496,14 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                 break;
             case 21:
                 {
+                    m_ObjButtonParent.SetActive(false);
                     index_YQRequest = 1;
                     AllianceData.Instance.RequestYaoQing();
                 }
                 break;
             case 22:
                 {
+                    m_ObjButtonParent.SetActive(true);
                     m_MainCancel.SetActive(true);
                     m_YaoQingObj.SetActive(false);
                     m_YaoQingObjCancel.SetActive(false);
@@ -602,47 +648,32 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_ONE:
                                 {
-                                    _content1 = " 您起的名字已被占用... \n\n 换个更好的吧！"; ;
-                                    _content2 = "";
-                                    _SignalIndex = 2;
-                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                                    ClientMain.m_UITextManager.createText("该名称已被其他联盟使用！");
                                 }
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_TWO:
                                 {
-                                    _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TSG_TITLE);
-                                    _strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TSG_0);
-                                    _strContent2 = "";
-                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                  UIBoxLoadCallbackOnea);
+                                    ClientMain.m_UITextManager.createText("失败，元宝不足！");
                                 }
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_THREE:
                                 {
-                                    _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TSG_TITLE);
-                                    _strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TSG_1);
-
-                                    _strContent2 = "";
-                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                 UIBoxLoadCallbackOnea);
+                                    ClientMain.m_UITextManager.createText("仅限使用中/英文以及数字！");
                                 }
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_FOUR:
                                 {
-                                    _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TSG_TITLE);
-                                    _strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TSG_2);
-                                    _strContent2 = "";
-                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                  UIBoxLoadCallbackOnea);
+                                    ClientMain.m_UITextManager.createText("输入的名称过长！");
                                 }
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_FIVE:
                                 {
-                                    _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TSG_TITLE);
-                                    _strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TSG_3);
-                                    _strContent2 = "";
-                                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                  UIBoxLoadCallbackOnea);
+                                    ClientMain.m_UITextManager.createText("失败找不到所选的Icon！");
+                                }
+                                break;
+                            case AllianceConnectRespEnum.E_ALLIANCE_SIX:
+                                {
+                                    ClientMain.m_UITextManager.createText("输入的名称包含敏感词！");
                                 }
                                 break;
 
@@ -891,14 +922,19 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                 {
                                     MainCityUI.TryRemoveFromObjectList(m_MainObj);
                                     JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
-                                    // _strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.HUANGYE_19);
-                                    // _strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TAG_ADD_5);
-                                    //_strContent2 = "";
-                                    //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                    //UIBoxLoadCallbackJoined);
-                                    GameObject obj = new GameObject();
-                                    obj.name = "MainCityUIButton_104";
-                                    MainCityUI.m_MainCityUI.MYClick(obj);
+                                    AllianceData.Instance.IsAllianceNotExist = false;
+                                    if (Application.loadedLevelName.Equals(ConstInGame.CONST_SCENE_NAME_MAINCITY))
+                                    {
+                                        JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
+                                        GameObject obj = new GameObject();
+                                        obj.name = "MainCityUIButton_104";
+                                        MainCityUI.m_MainCityUI.MYClick(obj);
+                                    }
+                                    else
+                                    {
+                                        ClientMain.m_UITextManager.createText("联盟加入成功！");
+                                    }
+
                                     Destroy(m_MainObj);
 
                                 }
@@ -1333,27 +1369,35 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         {
             for (int j = 0; j < listAllianceInfo.Count - 1 - i; j++)
             {
-                if (listAllianceInfo[j].exp < listAllianceInfo[j + 1].exp)
+                if (listAllianceInfo[j].level < listAllianceInfo[j + 1].level)
                 {
                     NonAllianceInfo aliance = new NonAllianceInfo();
                     aliance = listAllianceInfo[j];
                     listAllianceInfo[j] = listAllianceInfo[j + 1];
                     listAllianceInfo[j + 1] = aliance;
                 }
-                else if (listAllianceInfo[j].exp == listAllianceInfo[j + 1].exp)
+                else if (listAllianceInfo[j].exp  == listAllianceInfo[j + 1].exp)
                 {
-                    if (listAllianceInfo[j].reputation < listAllianceInfo[j + 1].reputation)
+                    if (listAllianceInfo[j].exp < listAllianceInfo[j + 1].exp)
                     {
                         NonAllianceInfo aliance = new NonAllianceInfo();
                         aliance = listAllianceInfo[j];
                         listAllianceInfo[j] = listAllianceInfo[j + 1];
                         listAllianceInfo[j + 1] = aliance;
                     }
+                    else if (listAllianceInfo[j].exp == listAllianceInfo[j + 1].exp)
+                    {
+                        if (listAllianceInfo[j].members < listAllianceInfo[j + 1].members)
+                        {
+                            NonAllianceInfo aliance = new NonAllianceInfo();
+                            aliance = listAllianceInfo[j];
+                            listAllianceInfo[j] = listAllianceInfo[j + 1];
+                            listAllianceInfo[j + 1] = aliance;
+                        }
+                    }
                 }
             }
         }
-
-    
         NeedInfTidy();
     }
 
@@ -1425,11 +1469,6 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             if (index_Nu < listItemNeedInfo.Count - 1)
             {
                 index_Nu++;
-            }
-            else if(FunctionWindowsCreateManagerment.m_AllianceID > 0)
-            {
-                ShowAllianceApplicationInfo(FunctionWindowsCreateManagerment.m_AllianceID);
-                FunctionWindowsCreateManagerment.m_AllianceID = -1;
             }
         }
         else
@@ -1885,7 +1924,6 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             tempObject.transform.localScale = Vector3.one;
             tempObject.transform.GetComponent<AllianceYQItemManagerment>().ShowInfo(_listYaoQingInfo[index_YaoQing], YaoQingChuLi);
             m_GrideAllianceList.repositionNow = true;
-            Debug.Log("ididididididididididididididid ::: " + _listYaoQingInfo[index_YaoQing].id);
             _YaoQingDict.Add(_listYaoQingInfo[index_YaoQing].id, tempObject);
             if (index_YaoQing < _listYaoQingInfo.Count - 1)
             {

@@ -36,7 +36,7 @@ public class RankItem : MonoBehaviour {
 		mDamage.text = mDamageInfo.damage.ToString();
 		if(iSMyself)
 		{
-			myself.spriteName = "bg2";
+			myself.spriteName = "Cmplete";
 		}
 	}
 }

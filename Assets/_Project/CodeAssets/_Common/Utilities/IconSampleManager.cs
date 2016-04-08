@@ -1,4 +1,6 @@
-﻿//debug duplicate set, may find possible error.
+﻿//#define DEBUG_ICON
+
+//debug duplicate set, may find possible error.
 //#define DEBUG_DUPLICATE
 
 using System;
@@ -356,7 +358,7 @@ public class IconSampleManager : MonoBehaviour
             case IconType.item:
                 {
                     //Set atlas.
-                    FgSprite.atlas = EquipAtlas;
+                    SetForegroundAtlas(EquipAtlas);
 
                     //Set fgSprite and quality frame.
                     var itemTemp = ItemTemp.getItemTempById(id);
@@ -390,7 +392,7 @@ public class IconSampleManager : MonoBehaviour
                     var tempList = LianMengKeJiTemplate.templates.Where(item => item.id == id).ToList();
                     if (tempList.Any())
                     {
-                        FgSprite.atlas = AllianceAtlas;
+                        SetForegroundAtlas(AllianceAtlas);
 
                         fgSpriteName = tempList.First().Icon.ToString();
 
@@ -419,7 +421,7 @@ public class IconSampleManager : MonoBehaviour
                 }
             case IconType.exchangeBox:
                 {
-                    FgSprite.atlas = EquipAtlas;
+                    SetForegroundAtlas(EquipAtlas);
 
                     //Set select frame.
                     SelectFrameSprite.spriteName = YellowSelectedSpriteName;
@@ -455,7 +457,7 @@ public class IconSampleManager : MonoBehaviour
             case IconType.equipment:
                 {
                     //Set atlas.
-                    FgSprite.atlas = EquipAtlas;
+                    SetForegroundAtlas(EquipAtlas);
 
                     //Set fgSprite and quality frame.
                     var equipmentTemp = ZhuangBei.getZhuangBeiById(id);
@@ -486,7 +488,7 @@ public class IconSampleManager : MonoBehaviour
                 }
             case IconType.MiBao:
                 {
-                    FgSprite.atlas = MibaoLitterAtlas;
+                    SetForegroundAtlas(MibaoLitterAtlas);
 
                     fgSpriteName = MiBaoXmlTemp.getMiBaoXmlTempById(id).icon.ToString();
                     FgSprite.width = FgSprite.height = MibaoForeLength;
@@ -512,7 +514,7 @@ public class IconSampleManager : MonoBehaviour
                 }
             case IconType.MiBaoSuiPian:
                 {
-                    FgSprite.atlas = MibaoSuiPianAtlas;
+                    SetForegroundAtlas(MibaoSuiPianAtlas);
 
                     fgSpriteName = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById(id).icon.ToString();
                     FgSprite.width = FgSprite.height = MibaoPieceForeLength;
@@ -539,7 +541,7 @@ public class IconSampleManager : MonoBehaviour
             case IconType.MiBaoSkill:
                 {
                     //Set atlas.
-                    FgSprite.atlas = MibaoLitterAtlas;
+                    SetForegroundAtlas(MibaoLitterAtlas);
 
                     //Set fgSprite and quality frame.
                     var skillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id(id);
@@ -570,7 +572,7 @@ public class IconSampleManager : MonoBehaviour
                 }
             case IconType.FuWen:
                 {
-                    FgSprite.atlas = FuWenAtlas;
+                    SetForegroundAtlas(EquipAtlas);
 
                     //Set fgSprite and quality frame.
                     var temp = CommonItemTemplate.getCommonItemTemplateById(id);
@@ -620,7 +622,7 @@ public class IconSampleManager : MonoBehaviour
         if (!string.IsNullOrEmpty(fgSpriteName))
         {
             FgSprite.gameObject.SetActive(true);
-            FgSprite.spriteName = fgSpriteName;
+            SetForegroundSpriteName(fgSpriteName);
         }
         else
         {
@@ -653,6 +655,14 @@ public class IconSampleManager : MonoBehaviour
             {
                 SparkleEffectItem.OpenSparkle(FgSprite.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
             }
+            else
+            {
+                SparkleEffectItem.CloseSparkle(FgSprite.gameObject);
+            }
+        }
+        else
+        {
+            SparkleEffectItem.CloseSparkle(FgSprite.gameObject);
         }
     }
 
@@ -683,11 +693,11 @@ public class IconSampleManager : MonoBehaviour
             case IconType.item:
             case IconType.equipment:
                 //Set atlas.
-                FgSprite.atlas = EquipAtlas;
+                SetForegroundAtlas(EquipAtlas);
                 break;
 
             case IconType.exchangeBox:
-                FgSprite.atlas = EquipAtlas;
+                SetForegroundAtlas(EquipAtlas);
                 //Set select frame.
                 SelectFrameSprite.spriteName = YellowSelectedSpriteName;
                 SelectFrameSprite.width = SelectFrameSprite.height = 128;
@@ -695,7 +705,7 @@ public class IconSampleManager : MonoBehaviour
 
             case IconType.pveHeroAtlas:
                 //Set atlas.
-                FgSprite.atlas = EnemyIcon;
+                SetForegroundAtlas(EnemyIcon);
                 RightButtomCornorSprite.atlas = IconDecoAtlas;
                 LeftTopCornorSprite.atlas = IconDecoAtlas;
                 break;
@@ -703,7 +713,7 @@ public class IconSampleManager : MonoBehaviour
             //TODO: numbers may not be right.
             case IconType.oldMiBao:
                 //Set atlas.
-                FgSprite.atlas = MibaoLitterAtlas;
+                SetForegroundAtlas(MibaoLitterAtlas);
 
                 ButtomSprite.atlas = IconDecoAtlas;
                 ButtomSprite.width = ButtomSprite.height = 20;
@@ -715,22 +725,22 @@ public class IconSampleManager : MonoBehaviour
                 break;
 
             case IconType.mainCityAtlas:
-                FgSprite.atlas = IconDecoAtlas;
+                SetForegroundAtlas(IconDecoAtlas);
                 break;
 
             case IconType.MiBao:
-                FgSprite.atlas = MibaoLitterAtlas;
+                SetForegroundAtlas(MibaoLitterAtlas);
                 break;
 
             case IconType.MiBaoSuiPian:
-                FgSprite.atlas = MibaoSuiPianAtlas;
+                SetForegroundAtlas(MibaoSuiPianAtlas);
                 break;
 
             case IconType.HuangyeMonster:
                 MiddleSprite.atlas = ComAtlas_0;
                 break;
             case IconType.FuWen:
-                FgSprite.atlas = FuWenAtlas;
+                SetForegroundAtlas(FuWenAtlas);
                 break;
 
             default:
@@ -781,7 +791,7 @@ public class IconSampleManager : MonoBehaviour
         if (!string.IsNullOrEmpty(fgSpriteName))
         {
             FgSprite.gameObject.SetActive(true);
-            FgSprite.spriteName = fgSpriteName;
+            SetForegroundSpriteName(fgSpriteName);
 
             if (m_type == IconType.MiBao)
             {
@@ -1011,7 +1021,14 @@ public class IconSampleManager : MonoBehaviour
     {
         //Debug.Log("============Set icon pop text: " + popTextTitle + "in: " + gameObject.name);
 
-        m_commonId = commonId;//@author LiuChang
+        if (commonId > 0)
+        {
+            m_commonId = commonId;//@author LiuChang
+        }
+        else if (iconID > 0)
+        {
+            m_commonId = iconID;
+        }
 
         m_enemyName = popTextTitle;//@author LiuChang
 
@@ -1290,4 +1307,30 @@ public class IconSampleManager : MonoBehaviour
             Destroy(PopFrameSprite.gameObject);
         }
     }
+
+    #region Utilities
+
+    private void SetForegroundAtlas(UIAtlas p_atlas)
+    {
+#if DEBUG_ICON
+		Debug.Log( "SetForegroundAtlas( " + p_atlas + " )" );
+
+		ComponentHelper.LogUIAtlas( p_atlas );
+#endif
+
+        FgSprite.atlas = p_atlas;
+    }
+
+    public void SetForegroundSpriteName(string p_name)
+    {
+#if DEBUG_ICON
+		Debug.Log( "SetForegroundSpriteName( " + p_name + " )" );
+
+		ComponentHelper.LogUIAtlas( FgSprite.atlas );
+#endif
+
+        FgSprite.spriteName = p_name;
+    }
+
+    #endregion
 }

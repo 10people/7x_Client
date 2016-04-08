@@ -21,6 +21,10 @@ public class UIShouji : MonoBehaviour
 	public GameObject m_MibaoSkill;
 	public UISprite m_SpriteMibaoSkill;
 	public float playTime;
+
+	private int m_iFirstManzuID = -1;
+	private int m_iAnimState = -1;
+	private int m_iNum = 0;
 	// Use this for initialization
 	void Awake ()
 	{
@@ -37,16 +41,43 @@ public class UIShouji : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		switch(m_iAnimState)
+		{
+		case 0:
+			m_spriteManzu.gameObject.transform.localScale = new Vector3(3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f);
+			m_spriteManzu.gameObject.transform.localPosition = new Vector3(38f, -137 - m_iNum, 0);
+			if(m_iNum == 10)
+			{
+				m_iAnimState = 1;
+				m_iNum = 0;
+			}
+			m_iNum ++;
+			break;
+		case 1:
+
+			break;
+		case 2:
+			break;
+		}
 	}
 
 	public void setData(int id, int type, int cur, int max, string des)
 	{
 		gameObject.SetActive(true);
+		m_iNum = 0;
+		m_iAnimState = -1;
 		if(cur >= max)
 		{
 			m_spriteManzu.gameObject.SetActive(true);
 			m_spriteManzu.spriteName = "Type" + type;
+			if(m_iFirstManzuID == -1 || m_iFirstManzuID != id)
+			{
+				m_iFirstManzuID = id;
+				m_spriteManzu.depth = 50;
+				m_spriteManzu.gameObject.transform.localScale = new Vector3(3f, 3f, 3f);
+				m_spriteManzu.gameObject.transform.localPosition = new Vector3(38f, -137, 0);
+				m_iAnimState = 0;
+			}
 		}
 		else
 		{
@@ -105,6 +136,9 @@ public class UIShouji : MonoBehaviour
 	public void close()
 	{
 		m_isPlay = false;
-		m_icon.SetActive(false);
+		if(m_icon != null)
+		{
+			m_icon.SetActive(false);
+		}
 	}
 }

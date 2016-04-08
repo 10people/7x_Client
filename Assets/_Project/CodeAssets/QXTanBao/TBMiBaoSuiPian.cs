@@ -23,6 +23,8 @@ public class TBMiBaoSuiPian : MonoBehaviour {
 
 	public List<EventHandler> closeHandlerList = new List<EventHandler>();
 
+	private bool isScaleEnd = false;
+
 	void Awake ()
 	{
 		tbSuiPian = this;
@@ -74,8 +76,16 @@ public class TBMiBaoSuiPian : MonoBehaviour {
 		scale.Add ("time",0.2f);
 		scale.Add ("easetype",iTween.EaseType.easeInOutQuart);
 		scale.Add ("islocal",true);
+		scale.Add ("oncomplete","ScaleEnd");
+		scale.Add ("oncompletetarget",gameObject);
 		iTween.ScaleTo (pieceObj,scale);
 	}
+
+	void ScaleEnd ()
+	{
+		isScaleEnd = true;
+	}
+
 	private void IconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
 		iconSamplePrefab = (GameObject)Instantiate (p_object);
@@ -103,6 +113,11 @@ public class TBMiBaoSuiPian : MonoBehaviour {
 	
 	void CloseHandlerClickBack (GameObject obj)
 	{
+		if (!isScaleEnd)
+		{
+			return;
+		}
+		isScaleEnd = false;
 		pieceWindowObj.SetActive (false);
 
 		TBReward.tbReward.CloseShowMiBao ();

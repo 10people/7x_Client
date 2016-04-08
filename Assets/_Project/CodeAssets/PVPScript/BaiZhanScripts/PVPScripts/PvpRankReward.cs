@@ -26,7 +26,7 @@ public class PvpRankReward : MonoBehaviour {
 	{
 		sEffectController.OnOpenWindowClick ();
 
-		yuanBaoLabel.text = (BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (1).yuanbao  - (rank > BaiZhanRankTemplate.templates.Count ? 0 : BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (rank).yuanbao)).ToString ();
+		yuanBaoLabel.text = (BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (1).yuanbao  - (rank > BaiZhanRankTemplate.GetTemplatesCount() ? 0 : BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (rank).yuanbao)).ToString ();
 
 		foreach (EventHandler handler in closeHandlerList)
 		{

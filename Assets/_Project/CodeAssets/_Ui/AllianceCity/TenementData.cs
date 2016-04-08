@@ -144,7 +144,7 @@ public class TenementData : Singleton<TenementData>, SocketProcessor
 
 #endif
 //                        Debug.Log("ChangePortColorChangePortColorChangePortColorChangePortColorChangePortColor");
-                        NpcManager.m_NpcManager.ChangePortColor();
+                        //NpcManager.m_NpcManager.ChangePortColor();
                         return true;
                     }
             }

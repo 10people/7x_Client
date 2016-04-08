@@ -39,6 +39,10 @@ public class ShopBuyWindow : MonoBehaviour {
 		shopBuyWindow = this;
 	}
 
+	void OnDestroy(){
+		shopBuyWindow = null;
+	}
+
 	/// <summary>
 	/// Gets the buy good info.
 	/// </summary>
@@ -50,7 +54,26 @@ public class ShopBuyWindow : MonoBehaviour {
 		goodInfo = tempInfo;
 		shopType = tempType;
 
-		buyTimeLabel.text = shopType == ShopData.ShopType.ORDINARY ? MyColorData.getColorString (1,"剩余" + (tempInfo.countBuyTime <= 0 ? "[dc0600]" : "[00ff00]") + tempInfo.countBuyTime + "[-]次") : "";
+		if (shopType == ShopData.ShopType.ORDINARY)
+		{
+			buyTimeLabel.text = MyColorData.getColorString (1,"剩余" + (tempInfo.countBuyTime <= 0 ? "[dc0600]" : "[00ff00]") + tempInfo.countBuyTime + "[-]次");
+			moneyIcon.transform.localPosition = new Vector3 (-90,0,0);
+		}
+		else
+		{
+			if (shopType == ShopData.ShopType.GONGXIAN)
+			{
+//				Debug.Log ("tempInfo.countBuyTime:" + tempInfo.countBuyTime);
+				LMDuiHuanTemplate lmDuiHuan = LMDuiHuanTemplate.getLMDuiHuanTemplateById (tempInfo.xmlId);
+				buyTimeLabel.text = lmDuiHuan.max != 999 ? MyColorData.getColorString (1,"剩余" + (tempInfo.countBuyTime <= 0 ? "[dc0600]" : "[00ff00]") + tempInfo.countBuyTime + "[-]次") : "";
+				moneyIcon.transform.localPosition = new Vector3 (lmDuiHuan.max != 999 ? -90 : 10,0,0);
+			}
+			else
+			{
+				buyTimeLabel.text = "";
+				moneyIcon.transform.localPosition = new Vector3 (10,0,0);
+			}
+		}
 
 		moneyIcon.transform.localPosition = new Vector3 (shopType == ShopData.ShopType.ORDINARY ? -90 : 10,0,0);
 
@@ -78,12 +101,46 @@ public class ShopBuyWindow : MonoBehaviour {
 			handler.m_click_handler += BuyHandlerClickBack;
 		}
 
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100220, 3);
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100460, 3);
-
-		if (!ShopPage.shopPage.BuyFinished)
+		//yindao 
+		switch (shopType)
 		{
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 2);
+		case ShopData.ShopType.WEIWANG:
+		{
+			if (QXComData.CheckYinDaoOpenState (100220))
+			{
+				if (!ShopPage.shopPage.BuyFinished)
+				{
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100220, 3);
+				}
+			}
+			break;
+		}
+		case ShopData.ShopType.MYSTRERT:
+		{
+			if (QXComData.CheckYinDaoOpenState (100460))
+			{
+				if (!ShopPage.shopPage.BuyFinished)
+				{
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100460, 3);
+				}
+			}
+			
+			break;
+		}
+		case ShopData.ShopType.GONGXIAN:
+		{
+			if (QXComData.CheckYinDaoOpenState (400040))
+			{
+				if (!ShopPage.shopPage.BuyFinished)
+				{
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 2);
+				}
+			}
+			
+			break;
+		}
+		default:
+			break;
 		}
 	}
 
@@ -118,15 +175,41 @@ public class ShopBuyWindow : MonoBehaviour {
 			break;
 		case "SureBtn":
 		
-			if (QXComData.CheckYinDaoOpenState (100220) || QXComData.CheckYinDaoOpenState (100460) || QXComData.CheckYinDaoOpenState (400040))
+			//yindao 
+			switch (shopType)
 			{
-				if (FreshGuide.Instance ().IsActive (400040))
+			case ShopData.ShopType.WEIWANG:
+			{
+				if (QXComData.CheckYinDaoOpenState (100220))
 				{
 					ShopPage.shopPage.BuyFinished = true;
 				}
-				UIYindao.m_UIYindao.CloseUI ();
+				break;
+			}
+			case ShopData.ShopType.MYSTRERT:
+			{
+				if (QXComData.CheckYinDaoOpenState (100460))
+				{
+					ShopPage.shopPage.BuyFinished = true;
+				}
+				
+				break;
+			}
+			case ShopData.ShopType.GONGXIAN:
+			{
+				if (QXComData.CheckYinDaoOpenState (400040))
+				{
+					ShopPage.shopPage.BuyFinished = true;
+				}
+				
+				break;
+			}
+			default:
+				break;
 			}
 
+			UIYindao.m_UIYindao.CloseUI ();
+		
 			if (shopType == ShopData.ShopType.ORDINARY)
 			{
 				if (goodInfo.countBuyTime > 0)

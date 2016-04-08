@@ -69,4 +69,46 @@ public class NGUIHelper {
 	}
 	
 	#endregion
+
+
+
+	#region Label
+
+	public static Vector2 GetTextWidth( UILabel p_label, string p_text ){
+		if( p_label == null ){
+			Debug.Log( "UILabel is null." );
+
+			return Vector2.zero;
+		}
+
+		p_label.UpdateNGUIText( 0, 1000000, 1000000 );
+
+		Vector2 t_size = NGUIText.CalculatePrintedSize( p_text );
+
+		return t_size;
+	}
+
+	#endregion
+
+
+
+	#region UIScroll View
+
+	public static bool HaveUIScrollViewInParent( GameObject p_gb ){
+		if( p_gb == null ){
+			Debug.Log( "GameObject is null." );
+
+			return false;
+		}
+
+		UIScrollView t_scroll = p_gb.GetComponentInParent<UIScrollView>();
+
+		if( t_scroll != null ){
+			return true;
+		}
+
+		return false;
+	}
+
+	#endregion
 }

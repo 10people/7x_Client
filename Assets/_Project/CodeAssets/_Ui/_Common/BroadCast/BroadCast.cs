@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define UNIT_TEST
+
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,38 +59,20 @@ public class BroadCast : MonoBehaviour, SocketListener
 
     private void SetInfo(string info)
     {
-        List<char> countStr = info.ToArray().ToList();
+        //string countStr = info;
 
-        for (int i = 0; i < countStr.Count; i++)
-        {
-            while (countStr[i] == '[')
-            {
-                while (countStr[i] != ']')
-                {
-                    countStr.Remove(countStr[i]);
+        //int firstIndex = countStr.IndexOf("[");
+        //int secondIndex = countStr.IndexOf("]");
 
-                    if (i >= countStr.Count)
-                    {
-                        break;
-                    }
-                }
+        //while (firstIndex != -1 && secondIndex != -1 && secondIndex > firstIndex)
+        //{
+        //    countStr = countStr.Remove(firstIndex, secondIndex - firstIndex + 1);
 
-                if (i >= countStr.Count)
-                {
-                    break;
-                }
+        //    firstIndex = countStr.IndexOf("[");
+        //    secondIndex = countStr.IndexOf("]");
+        //}
 
-                countStr.Remove(countStr[i]);
-
-                if (i >= countStr.Count)
-                {
-                    break;
-                }
-            }
-        }
-
-        //Cannot use ToString().
-        m_InfoLabel.width = (int)Math.Ceiling(m_InfoLabel.fontSize * UtilityTool.GetBytesNumOfString(new String(countStr.ToArray())) / 2.0f);
+        //m_InfoLabel.width = (int)Math.Ceiling(m_InfoLabel.fontSize * UtilityTool.GetBytesNumOfString(countStr) / 2.0f);
         m_InfoLabel.text = info;
         m_InfoLabel.gameObject.SetActive(true);
         m_BgSprite.gameObject.SetActive(true);
@@ -155,9 +139,18 @@ public class BroadCast : MonoBehaviour, SocketListener
         }
     }
 
-    public void ShowBroadCast(string info)
+    public void ShowBroadCast(string info, bool isFirst = false)
     {
-        m_storedDataList.Add(info);
+        if (isFirst)
+        {
+            Stop();
+
+            m_storedDataList.Insert(0, info);
+        }
+        else
+        {
+            m_storedDataList.Add(info);
+        }
         StartBroadCast();
     }
 
@@ -183,18 +176,18 @@ public class BroadCast : MonoBehaviour, SocketListener
                         ShowBroadCast(tempResp.errorDesc);
 
                         //Add to chat broadcast channel.
-//                        if (ChatWindow.s_ChatWindow != null)
-//                        {
-//                            ChatWindow.s_ChatWindow.GetChannelFrame(ChatPct.Channel.Broadcast).m_ChatBaseDataHandler.OnChatMessageReceived(new ChatPct()
-//                            {
-//                                channel = ChatPct.Channel.Broadcast,
-//                                content = tempResp.errorDesc,
-//                                senderName = "系统"
-//                            }, true);
-//                        }
+                        //                        if (ChatWindow.s_ChatWindow != null)
+                        //                        {
+                        //                            ChatWindow.s_ChatWindow.GetChannelFrame(ChatPct.Channel.Broadcast).m_ChatBaseDataHandler.OnChatMessageReceived(new ChatPct()
+                        //                            {
+                        //                                channel = ChatPct.Channel.Broadcast,
+                        //                                content = tempResp.errorDesc,
+                        //                                senderName = "系统"
+                        //                            }, true);
+                        //                        }
 
-						//add chatmsg to broadcastlist
-						QXChatData.Instance.AddBroadcastMsgInToChatList (tempResp);
+                        //add chatmsg to broadcastlist
+                        QXChatData.Instance.AddBroadcastMsgInToChatList(tempResp);
 
                         return true;
                     }
@@ -210,9 +203,19 @@ public class BroadCast : MonoBehaviour, SocketListener
 
     public void Clear()
     {
-        //Clear and stop.
-        StopCoroutine("DoScrollInfo");
+        Stop();
         m_storedDataList.Clear();
+    }
+
+    public void Stop()
+    {
+        StopCoroutine("DoScrollInfo");
+        if (TimeHelper.Instance.IsTimeCalcKeyExist("BroadCastClear"))
+        {
+            TimeHelper.Instance.RemoveFromTimeCalc("BroadCastClear");
+        }
+        iTween.Stop(gameObject);
+
         m_InfoLabel.gameObject.SetActive(false);
         m_BgSprite.gameObject.SetActive(false);
         IsInBroadCast = false;
@@ -238,4 +241,14 @@ public class BroadCast : MonoBehaviour, SocketListener
     {
         SocketTool.UnRegisterSocketListener(this);
     }
+
+#if UNIT_TEST
+    void OnGUI()
+    {
+        if (GUILayout.Button("Run insert broadcast"))
+        {
+            ShowBroadCast("insertinsertinsertinsertinsertinsertinsert", true);
+        }
+    }
+#endif
 }

@@ -45,12 +45,13 @@ public class chooseChapterBtn : MonoBehaviour {
 
 	void OnClick()
 	{
+		CityGlobalData.PveLevel_UI_is_OPen = false;
 		if(MapData.mapinstance.CurrChapter == Chapternumber)
 		{
 			ChapterUImaneger.Instance().DeletFun();
 			return;
 		}
-		CityGlobalData.PveLevel_UI_is_OPen = false;
+
 		MapData.mapinstance.Lv.Clear();
 		MapData.mapinstance.JYLvs = 0;
 		MapData.mapinstance.Starnums = 0;

@@ -92,7 +92,7 @@
 <CanShu key="OPENTIME_YUNBIAO" value="8:00" desc="运镖开启时间" />
 <CanShu key="CLOSETIME_YUNBIAO" value="23:00" desc="运镖关闭时间" />
 <CanShu key="OPENTIME_LUEDUO" value="8:00" desc="掠夺开启时间" />
-<CanShu key="CLOSETIME_LUEDUO" value="24:00" desc="掠夺关闭时间" />
+<CanShu key="CLOSETIME_LUEDUO" value="21:55" desc="掠夺关闭时间" />
 <CanShu key="LUEDUO_MAXNUM" value="5" desc="每日掠夺次数" />
 <CanShu key="LUEDUO_CD" value="600" desc="掠夺冷却时间（秒）" />
 <CanShu key="TIANFULV_DIANSHUADD1" value="10" desc="增加点数所需天赋等级1" />
@@ -133,7 +133,7 @@
 <CanShu key="LUEDUO_CANSHU_A" value="10" desc="掠夺参数A" />
 <CanShu key="LUEDUO_CANSHU_B" value="20" desc="掠夺参数B" />
 <CanShu key="LUEDUO_CANSHU_C" value="5" desc="掠夺参数C" />
-<CanShu key="REFRESHTIME" value="0" desc="次数重置时间" />
+<CanShu key="REFRESHTIME" value="4" desc="次数重置时间" />
 <CanShu key="LUEDUO_COMFORTED_AWARD_K" value="0.01" desc="掠夺被安慰奖励系数k" />
 <CanShu key="LUEDUO_COMFORTED_AWARD_B" value="0" desc="掠夺被安慰奖励参数b" />
 <CanShu key="LUEDUO_AWARDEDCOMFORT_MAXTIMES" value="5" desc="安慰被掠夺盟友有奖励的次数" />
@@ -193,5 +193,6 @@
 <CanShu key="CONGRATULATE_AWARD_B" value="55" desc="恭贺奖励系数B" />
 <CanShu key="BIAOQING_INTERVAL" value="3" desc="表情持续时间（秒）" />
 <CanShu key="GREETED_CD" value="60" desc="被打招呼的CD（秒）" />
-<CanShu key="BOX_SEARCH_RANGE" value="3" desc="试炼副本宝箱寻找半径（米）" />
+<CanShu key="BOX_SEARCH_RANGE" value="3" desc="十连副本宝箱寻找半径（米）" />
+<CanShu key="BOX_GET_MAX" value="10" desc="十连副本宝箱拾取上限" />
 </dataset>

@@ -95,11 +95,8 @@ public class PveTempTemplate : XmlLoadManager {
 
 	public string enddingRemind;
 
+	private static List<PveTempTemplate> templates = new List<PveTempTemplate>();
 
-	public static List<PveTempTemplate> templates = new List<PveTempTemplate>();
-	
-	
-	
 	public void Log(){
 		Debug.Log( "PveTempTemplate-  id: " + id +
 		          " bigName: " + bigName + 
@@ -111,26 +108,33 @@ public class PveTempTemplate : XmlLoadManager {
 		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "PveTemp.xml"), CurLoad, UtilityTool.GetEventDelegateList( p_callback ), false );
 	}
 
+	private static TextAsset m_templates_text = null;
+
 	public static void CurLoad( ref WWW www, string path, Object obj ){
-		{
-			templates.Clear();
+		if ( obj == null ) {
+			Debug.LogError ("Asset Not Exist: " + path);
+
+			return;
 		}
 
-		XmlReader t_reader = null;
-		
-		if( obj != null ){
-			TextAsset t_text_asset = obj as TextAsset;
-			
-			t_reader = XmlReader.Create( new StringReader( t_text_asset.text ) );
-			
-			//			Debug.Log( "Text: " + t_text_asset.text );
+		m_templates_text = obj as TextAsset;
+	}
+
+	private static void ProcessAsset(){
+		if( templates.Count > 0 ) {
+			return;
 		}
-		else{
-			t_reader = XmlReader.Create( new StringReader( www.text ) );
+
+		if( m_templates_text == null ) {
+			Debug.LogError( "Error, Asset Not Exist." );
+
+			return;
 		}
-		
+
+		XmlReader t_reader = XmlReader.Create( new StringReader( m_templates_text.text ) );
+
 		bool t_has_items = true;
-		
+
 		do{
 			t_has_items = t_reader.ReadToFollowing( "PveTemp" );
 			
@@ -267,9 +271,17 @@ public class PveTempTemplate : XmlLoadManager {
 			templates.Add( t_template );
 		}
 		while( t_has_items );
+
+		{
+			m_templates_text = null;
+		}
 	}
 
 	public static PveTempTemplate GetPVETemplate( int p_section, int p_level ){
+		{
+			ProcessAsset();	
+		}
+
 		for( int i = 0; i < templates.Count; i++ ){
 			PveTempTemplate t_item = templates[ i ];
 
@@ -284,6 +296,10 @@ public class PveTempTemplate : XmlLoadManager {
 	}
 
 	public static List<int> GetAutoAwardItemIds( string p_award_id ){
+		{
+			ProcessAsset();	
+		}
+
 		List<int> t_items = new List<int>();
 
 		char[] t_items_delimiter = { ',' };
@@ -304,6 +320,10 @@ public class PveTempTemplate : XmlLoadManager {
 	}
 
 	public static bool IsEssenceLevel( int p_section_num, int p_level_num ){
+		{
+			ProcessAsset();	
+		}
+
 		for( int i = 0; i < templates.Count; i++ ){
 			PveTempTemplate t_item = templates[ i ];
 
@@ -318,6 +338,10 @@ public class PveTempTemplate : XmlLoadManager {
 	}
 
 	public static int GetRequiredLevel( int p_section_num, int p_level_num ){
+		{
+			ProcessAsset();	
+		}
+
 		for( int i = 0; i < templates.Count; i++ ){
 			PveTempTemplate t_item = templates[ i ];
 			
@@ -331,7 +355,35 @@ public class PveTempTemplate : XmlLoadManager {
 		return -1;
 	}
 
+	public static List<PveTempTemplate> GetTemplates(){
+		{
+			ProcessAsset();	
+		}
+
+		return templates;
+	}
+
+	public static int GetTemplatesCount(){
+		{
+			ProcessAsset();	
+		}
+
+		return templates.Count;
+	}
+
+	public static PveTempTemplate GetPveTemplate_By_index( int p_index ){
+		{
+			ProcessAsset();	
+		}
+
+		return templates[ p_index ];
+	}
+
 	public static PveTempTemplate GetPveTemplate_By_id( int p_level_id ){
+		{
+			ProcessAsset();	
+		}
+
 		for( int i = 0; i < templates.Count; i++ ){
 			PveTempTemplate t_item = templates[ i ];
 			
@@ -347,6 +399,9 @@ public class PveTempTemplate : XmlLoadManager {
 
 	
 	public static string LevelName_By_id( int p_level_id ){
+		{
+			ProcessAsset();	
+		}
 
 		for( int i = 0; i < templates.Count; i++ ){
 
@@ -366,6 +421,10 @@ public class PveTempTemplate : XmlLoadManager {
 	}
 
 	public static PveTempTemplate GetPveTemplate_By_Chapter_Id( int Chapter_Id ){
+		{
+			ProcessAsset();	
+		}
+
 		for( int i = 0; i < templates.Count; i++ ){
 			PveTempTemplate t_item = templates[ i ];
 			
@@ -378,8 +437,11 @@ public class PveTempTemplate : XmlLoadManager {
 		
 		return null;
 	}
-    public static List<int> GetPveStarsIdByLevelId(int level_id)
-    {
+    public static List<int> GetPveStarsIdByLevelId(int level_id){
+		{
+			ProcessAsset();	
+		}
+
         List<int> listId = new List<int>();
         for (int i = 0; i < templates.Count; i++)
         {
@@ -398,8 +460,11 @@ public class PveTempTemplate : XmlLoadManager {
         return null;
     }
 
-    public static PveTempTemplate GetPveTemplateGuanQiaId(int _Id)
-    {
+    public static PveTempTemplate GetPveTemplateGuanQiaId(int _Id){
+		{
+			ProcessAsset();	
+		}
+
         for (int i = 0; i < templates.Count; i++)
         {
             PveTempTemplate t_item = templates[i];

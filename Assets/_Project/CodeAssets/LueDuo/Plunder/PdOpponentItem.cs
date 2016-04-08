@@ -45,7 +45,7 @@ public class PdOpponentItem : MonoBehaviour {
 		nameLabel.text = tempInfo.name;
 		
 		zhanLiLabel.text = MyColorData.getColorString (3,"战力：" + tempInfo.zhanli);
-		victory.text = MyColorData.getColorString (4,"可掠夺：贡金+" + tempInfo.gongjin);
+		victory.text = MyColorData.getColorString (4,"可掠夺：" + QXComData.MoneyName (QXComData.MoneyType.JIFEN)+ "+" + tempInfo.gongjin);
 
 		//Debug.Log ("HP:" + tempInfo.remainHp + "||" + tempInfo.shengMingMax);
 		int jinDu = (int)((tempInfo.remainHp / (float)tempInfo.shengMingMax) * 100);

@@ -172,6 +172,13 @@ public class DramaActorSprite : DramaActor
 		}
 	}
 
+	protected override void funcForcedEnd ()
+	{
+//		UISprite sprite = spriteGc.GetComponent<UISprite>();
+//
+//		sprite.alpha = 0;
+	}
+
 	protected override bool funcDone ()
 	{
 		Destroy (spriteGc);

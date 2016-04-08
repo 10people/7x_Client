@@ -56,7 +56,7 @@ namespace Carriage
 				handler.m_click_handler += CloseRewardTips;
 			}
 
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,11);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,13);
 		}
 
 		void CloseRewardTips (GameObject obj)

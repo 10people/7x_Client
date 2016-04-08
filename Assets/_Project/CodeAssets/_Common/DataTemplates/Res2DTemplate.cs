@@ -257,6 +257,8 @@ public class Res2DTemplate : XmlLoadManager
         TREASURE_CITY_UI = 247,
         ALLIANCE_SWITCH_COUNTRY = 248,
 		SHOUJI = 250,
+		MAXTILI = 251,
+		MAIN_CITY_YUNYING = 252,
     }
 
 

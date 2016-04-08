@@ -58,14 +58,14 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 
 	public void Init()
 	{
-		if(m_tempInfo.identity == 2)
-		{
-			ReCruitBtn.SetActive(true);
-		}
-		else
-		{
-			ReCruitBtn.SetActive(false);
-		}
+//		if(m_tempInfo.identity == 2)
+//		{
+//			ReCruitBtn.SetActive(true);
+//		}
+//		else
+//		{
+//			ReCruitBtn.SetActive(false);
+//		}
 		ApplicateAllianceReq (m_tempInfo);
 
 	}
@@ -354,7 +354,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			
 			m_Member.transform.parent = AppMemberItem.transform.parent;
 			
-			m_Member.transform.localPosition = new Vector3(0,110-i*Dis,0);
+			m_Member.transform.localPosition = new Vector3(0,154-i*Dis,0);
 			
 			m_Member.transform.localScale = Vector3.one;
 

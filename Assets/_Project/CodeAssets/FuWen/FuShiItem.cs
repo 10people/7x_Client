@@ -45,7 +45,7 @@ public class FuShiItem : MonoBehaviour {
 		//有符文为itemId，没有为0，未解锁为-1
 		fuShiIcon.spriteName = tempLanWei.itemId > 0 ? tempLanWei.itemId.ToString () : "";
 		lockIcon.gameObject.SetActive (tempLanWei.itemId == -1 ? true : false);
-		colorIcon.spriteName = tempLanWei.itemId == 0 ? "inlayColor" + fuWenOpenTemp.inlayColor : "";
+		colorIcon.spriteName = tempLanWei.itemId >= 0 ? "inlayColor" + fuWenOpenTemp.inlayColor : "";
 		openLevel.text = tempLanWei.itemId == -1 ? (fuWenOpenTemp.level == FuWenMainPage.fuWenMainPage.NextOpenLevel ? fuWenOpenTemp.level + "级解锁" : "") : "";
 
 		this.GetComponent<EventHandler> ().m_click_handler -= FuShiHandlerClickBack;

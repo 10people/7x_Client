@@ -748,11 +748,19 @@ public class Pve_Level_Info : MonoBehaviour {
 		int starnum = 0;//litter_Lv.starNum;
 
 		//Debug.Log ("starnum"+starnum);
-		for(int j = 0 ; j < litter_Lv.starInfo.Count; j++)
+		if (CityGlobalData.PT_Or_CQ) {
+			for (int j = 0; j < litter_Lv.starInfo.Count; j++) {
+				if (litter_Lv.starInfo [j].finished) {
+					starnum += 1;
+				}
+			}
+		} 
+		else 
 		{
-			if(litter_Lv.starInfo[j].finished)
-			{
-				starnum += 1;
+			for (int j = 0; j < litter_Lv.cqStarInfo.Count; j++) {
+				if (litter_Lv.cqStarInfo [j].finished) {
+					starnum += 1;
+				}
 			}
 		}
 		for(int i = 0; i < starnum; i++)
@@ -1084,12 +1092,20 @@ public class Pve_Level_Info : MonoBehaviour {
 
 	void createpveui(bool issended)
 	{
-//		Debug.Log("Startsendmasg = " +Startsendmasg);
-
+//		Debug.Log("CityGlobalData.PveLevel_UI_is_OPen) = " +CityGlobalData.PveLevel_UI_is_OPen);
+//		if(Input.touchCount > 1)
+//		{
+//			return;
+//		}
 		if (issended)
 		{
 			UIYindao.m_UIYindao.CloseUI ();
 			Startsendmasg = false;
+			if(CityGlobalData.PveLevel_UI_is_OPen)
+			{
+				return;
+			}
+
 			if(CityGlobalData.PT_Or_CQ)
 			{
 				if(MapData.mapinstance.Lv.ContainsKey(litter_Lv.guanQiaId))
@@ -1163,6 +1179,7 @@ public class Pve_Level_Info : MonoBehaviour {
 	}
 	void ShowUIbaseBackData()
 	{
+		MapData.mapinstance.ShowYinDao = false;
 		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.PVE_UI),loadback);
 		
 	}
@@ -1236,8 +1253,8 @@ public class Pve_Level_Info : MonoBehaviour {
 		{
 			return;
 		}
-		tempOjbect_PVEUI = Instantiate (p_object)as GameObject;
 		CityGlobalData.PveLevel_UI_is_OPen = true;
+		tempOjbect_PVEUI = Instantiate (p_object)as GameObject;
 		MainCityUI.TryAddToObjectList (tempOjbect_PVEUI);
 		MapData.mapinstance.CloseEffect();
 		if(CityGlobalData.PT_Or_CQ)

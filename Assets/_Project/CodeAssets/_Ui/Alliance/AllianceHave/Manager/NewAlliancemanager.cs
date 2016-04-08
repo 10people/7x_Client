@@ -9,9 +9,9 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
 public class NewAlliancemanager : MonoBehaviour , SocketListener{
-
-	//public GameObject Buttons;
-
+	public bool mYinDaoisOpen = false;
+	public GameObject RecruteBtn;
+	private bool HaveappyMembers;
 	private string titleStr;
 	private string str2;
 	private string jieSanTitleStr;
@@ -87,6 +87,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	void Start()
 	{
 		AllianceData.Instance.RequestData ();
+
 		jieSanTitleStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIACNE_JIESAN_TITLE);
 		closeTitleStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_CLOSE_RECRUIT_TITLE);
 		confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
@@ -95,7 +96,24 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		GetAllianceBuildsMessege ();
 		//Init ();
 	}
-
+	//查看入盟申请成员请求
+	void ApplicateAllianceReq (AllianceHaveResp tempInfo)
+	{
+		LookApplicants applicateReq = new LookApplicants ();
+		
+		applicateReq.id = tempInfo.id;
+		
+		MemoryStream t_stream = new MemoryStream ();
+		
+		QiXiongSerializer t_serializer = new QiXiongSerializer ();
+		
+		t_serializer.Serialize (t_stream,applicateReq);
+		
+		byte[] t_protof = t_stream.ToArray ();
+		
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof,"30124");
+		Debug.Log ("ApplicateReq" + ProtoIndexes.LOOK_APPLICANTS);
+	}
 	void OnDestroy(){
 		SocketTool.UnRegisterSocketListener(this);
 
@@ -106,50 +124,66 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	{
 		//Shownotice ();
 	}
+
+    public List<Collider> mainColliders = new List<Collider>(); 
+
 	/// <summary>
 	/// Shows the alliance GUID.联盟引导
 	/// </summary>
 	public void ShowAllianceGuid()
 	{
+		SomeUIis_OPen = false; 
 		UIYindao.m_UIYindao.CloseUI();
 		//Debug.Log("联盟引导");
 		if(FreshGuide.Instance().IsActive(400010)&& TaskData.Instance.m_TaskInfoDic[400010].progress >= 0)
 		{
 			//			Debug.Log("去小屋领经验");
+			mYinDaoisOpen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400010];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-
-			return;
+			StartCoroutine("SetmButtonEnabel");
 		}
-		if(FreshGuide.Instance().IsActive(400020)&& TaskData.Instance.m_TaskInfoDic[400020].progress >= 0)
+		else if(FreshGuide.Instance().IsActive(400020)&& TaskData.Instance.m_TaskInfoDic[400020].progress >= 0)
 		{
 			//			Debug.Log("去寺庙祭拜");
+			mYinDaoisOpen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400020];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-			
-			return;
+			StartCoroutine("SetmButtonEnabel");
 		}
-		if(FreshGuide.Instance().IsActive(400030)&& TaskData.Instance.m_TaskInfoDic[400030].progress >= 0)
+		else if(FreshGuide.Instance().IsActive(400030)&& TaskData.Instance.m_TaskInfoDic[400030].progress >= 0)
 		{
 			//			Debug.Log("去图腾祭拜");
+			mYinDaoisOpen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400030];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-			
-			return;
+			StartCoroutine("SetmButtonEnabel");
 		}
-		if(FreshGuide.Instance().IsActive(400040)&& TaskData.Instance.m_TaskInfoDic[400040].progress >= 0)
+		else if(FreshGuide.Instance().IsActive(400040)&& TaskData.Instance.m_TaskInfoDic[400040].progress >= 0)
 		{
 			//			Debug.Log("去商店购买东西");
+			mYinDaoisOpen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400040];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
-			
-			return;
+			StartCoroutine("SetmButtonEnabel");
 		}
+
+        //Open all colliders.
+	    mainColliders.ForEach(item => item.enabled = true);
 	}
+	IEnumerator SetmButtonEnabel()
+	{
+		yield return  new WaitForSeconds (1f);
+		mYinDaoisOpen = false;
+	}
+	public bool SomeUIis_OPen = false;
 	public void GetAllianceBuildsMessege()
 	{
 		//CityGlobalData.m_isRightGuide = true;
-		ShowAllianceGuid ();
+		if(!SomeUIis_OPen)
+		{
+			ShowAllianceGuid ();
+		}
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO);
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 		// Ui等比放缩
@@ -187,7 +221,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
     			//Debug.Log ("监听到联盟信息返回了");
 				
 				m_allianceHaveRes = allianceHaveRes;
-
+		
 				InitAlliance();
 		
 				return true;
@@ -235,7 +269,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 				
 				t_qx.Deserialize(t_stream, BuildUpback, BuildUpback.GetType());
 
-				//Debug.Log("BuildUpback   ");
+				Debug.Log("BuildUpback   ");
 
 				if(BuildUpback.errorCode == 0)
 				{
@@ -243,8 +277,8 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 					{
 						if(Up_id == AllBuildsTmp_List[i].id){
 
+//							Debug.Log ("Up_id：" + Up_id);
 							AllBuildsTmp_List[i].lv += 1;
-							
 							AllBuildsTmp_List[i].Init();
 
 							int effectid = 100180;
@@ -252,6 +286,12 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 							BuildUpVecotry.transform.localPosition = AllBuildsTmp_List[i].gameObject.transform.localPosition;
 							UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,BuildUpVecotry,EffectIdTemplate.GetPathByeffectId(effectid));
 							StartCoroutine( closeEffect());
+
+							HYInterface hyInterface = AllBuildsTmp_List[i].GetComponent<HYInterface> ();
+							if (hyInterface != null)
+							{
+								hyInterface.Init ();
+							}
 						}
 					}
 
@@ -273,17 +313,18 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 				Destroy(this.gameObject);
 				return true;
 			}
-			case ProtoIndexes.ALLIANCE_DISMISS_NOTIFY://联盟被解散成功
-			{
-				if(UIYindao.m_UIYindao.m_isOpenYindao)
-				{
-					UIYindao.m_UIYindao.CloseUI();
-				}
-				MainCityUI.TryRemoveFromObjectList(this.gameObject);
-				Destroy(this.gameObject);
-				return true;
-			
-			}
+//			case ProtoIndexes.ALLIANCE_DISMISS_NOTIFY://联盟被解散成功
+//			{
+//				if(UIYindao.m_UIYindao.m_isOpenYindao)
+//				{
+//					UIYindao.m_UIYindao.CloseUI();
+//				}
+//				Debug.Log("联盟被解散成功");
+//				MainCityUI.TryRemoveFromObjectList(this.gameObject);
+//				Destroy(this.gameObject);
+//				return true;
+//			
+//			}
 			case ProtoIndexes.EXIT_ALLIANCE_RESP://退出联盟返回
 			{
 				MemoryStream exit_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -293,7 +334,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 				ExitAllianceResp exitResp = new ExitAllianceResp();
 				
 				exit_qx.Deserialize(exit_stream, exitResp, exitResp.GetType());
-				
+				Debug.Log("退出联盟2");
 				if(exitResp != null)
 				{
 					mexitResp = exitResp;
@@ -301,11 +342,62 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 					if (exitResp.code == 0)
 					{
 						CityGlobalData.m_isMainScene = true;
+
+						//去掉商铺联盟相关红点
+						PushAndNotificationHelper.SetRedSpotNotification (600700,false);//贡献商铺
+						PushAndNotificationHelper.SetRedSpotNotification (903,false);//荒野商店
 					}
 					
 					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
 					                        ExitAllianceLoadCallback );
 					
+				}
+				return true;
+			}
+			case ProtoIndexes.LOOK_APPLICANTS_RESP://查看申请入盟成员请求返回
+			{
+				//	Debug.Log ("ApplicateResp" + ProtoIndexes.LOOK_APPLICANTS_RESP);
+				MemoryStream application_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer application_qx = new QiXiongSerializer();
+				
+				LookApplicantsResp applicateResp = new LookApplicantsResp();
+				
+				application_qx.Deserialize(application_stream, applicateResp, applicateResp.GetType());
+				Debug.Log("==============3");
+				if (applicateResp != null)
+				{
+					Debug.Log("==============2");
+					if (applicateResp.applicanInfo == null || applicateResp.applicanInfo.Count == 0)
+					{
+						HaveappyMembers = false;
+					}
+					else
+					{
+						HaveappyMembers = true;
+					}
+					AppbtnAlert.SetActive(HaveappyMembers);
+					MainCityUI.SetRedAlert(410000, HaveappyMembers);
+				}
+				else
+				{
+					Debug.Log("==============1");
+				}
+				return true;
+			}
+			case ProtoIndexes.RED_NOTICE_INFO://监听红点事件
+			{
+				ErrorMessage t_error_body = new ErrorMessage();
+
+				ProtoHelper.DeserializeProto( t_error_body, p_message );
+
+				for(int i = 0; i < AllBuildsTmp_List.Count; i++)
+				{
+					HYInterface hyInterface = AllBuildsTmp_List[i].GetComponent<HYInterface> ();
+					if (hyInterface != null)
+					{
+						hyInterface.Init ();
+					}
 				}
 				return true;
 			}
@@ -352,7 +444,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 
 		for(int i = 0; i < mJianZhu.list.Count; i++)
 		{
-//			Debug.Log("mJianZhu.list.lv = "+mJianZhu.list[i].lv);
+			Debug.Log("mJianZhu.list.lv = "+mJianZhu.list[i].lv);
 
 			AllBuildsTmp mAllBuildsTmp = mBUILDS[i].GetComponent<AllBuildsTmp>();
 
@@ -401,8 +493,9 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		{
 			string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_DES1);
 			string str2 = m_allianceHaveRes.name + LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_DES2);
-			
-			uibox.setBox(exitTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,confirmStr,null,DeletUI_i);
+			uibox.YinDaoControl(Del);
+			uibox.setBox(exitTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,confirmStr,null,null);
+			Del();
 		}
 		else
 		{
@@ -413,13 +506,49 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 			uibox.setBox(exitTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,confirmStr,null,null);
 		}
 	}
+	void Del()
+	{
+		DeletUI_i (1);
+	}
 	public void DeletUI_i(int i)//Quite。
 	{
-		JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
+        AllianceData.Instance.IsAllianceNotExist = true;
+        QXChatUIBox.chatUIBox.SetSituationState();
+        JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
 		AllianceData.Instance.RequestData();
 		//SceneManager.EnterMainCity();
 		MainCityUI.TryRemoveFromObjectList(this.gameObject);
 		Destroy(this.gameObject);
+	}
+	GameObject OpenRecruit;
+	public void ReCruitSetting()
+	{
+		if(OpenRecruit)
+		{
+			return;
+		}
+		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.ALLIANCE_RECRUIT ),
+		                        RecruitLoadCallback );
+	}
+
+	//联盟招募异步加载回调
+	public void RecruitLoadCallback ( ref WWW p_www, string p_path,  Object p_object )
+	{	
+		OpenRecruit = Instantiate( p_object ) as GameObject;
+		OpenRecruit.transform.parent = this.transform;;
+		OpenRecruit.transform.localScale = Vector3.one;
+		OpenRecruit.transform.localPosition = Vector3.zero;
+		ReCruit mReCruit = OpenRecruit.GetComponent<ReCruit>();
+		//mReCruit.Z_UnionInfo = m_tempInfo;
+		mReCruit.initLevel ();
+		mReCruit.ChangeNum ();
+	
+		mReCruit.init (HSowMapAndBuilds);
+		All_FirstUI.SetActive (false);
+	}
+	void HSowMapAndBuilds()
+	{
+		All_FirstUI.SetActive (true);
 	}
 	void ShowBtn()
 	{
@@ -428,12 +557,12 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		if(m_allianceHaveRes.identity == 2)
 		{
 			Label_LeaderBtn.text = "解散联盟";
-
+			RecruteBtn.SetActive(true);
 //			JuanXianUI.SetActive(true);
 
 			Appbtn.SetActive(true);
 			int mEvent_id = 410000; // 联盟申请
-			if(PushAndNotificationHelper.IsShowRedSpotNotification(mEvent_id))
+			if(PushAndNotificationHelper.IsShowRedSpotNotification(mEvent_id)&& HaveappyMembers)
 			{
 				AppbtnAlert.SetActive(true);
 			}
@@ -445,6 +574,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		}
 		else if(m_allianceHaveRes.identity == 1)
 		{
+			RecruteBtn.SetActive(false);
 			Label_LeaderBtn.text = "退出联盟";
 			//JuanXianUI.SetActive(false);
 			Appbtn.SetActive(true);
@@ -465,7 +595,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 //			JuanXianUI.SetActive(false);
 //
 //			JuanXianUI.transform.localPosition = new Vector3(0,-290,0);
-
+			RecruteBtn.SetActive(false);
 			Appbtn.SetActive(false);
 			Label_LeaderBtn.text = "退出联盟";
 			NoticeBox.GetComponent<BoxCollider>().enabled = false;
@@ -519,6 +649,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 
 	public void QuitAlliance()
 	{
+
 		if(m_allianceHaveRes.identity == 2) // 盟主
 		{
 			Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
@@ -625,8 +756,18 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	}
 	public void ENterOtherUI(int m_id)
 	{
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
 		//Debug.Log ("m_id = " +m_id );
 		//Buttons.transform.localPosition = new Vector3(50,298,0);
+		if(SomeUIis_OPen){return;}
+		SomeUIis_OPen = true;
+		if(mYinDaoisOpen)
+		{
+			return;
+		}
 		switch(m_id)
 		{
 		case 1:
@@ -658,6 +799,10 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	}
 	public void ENterHY()
 	{
+		if(mYinDaoisOpen)
+		{
+			return;
+		}
 		if(m_allianceHaveRes.level >= 2)
 		{
 			MiBaoGlobleData.Instance().OpenHYMap_UI ();
@@ -670,6 +815,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 
 	void CantEnterOpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
+		SomeUIis_OPen = true;
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
@@ -679,15 +825,26 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		string str1 = "\r\n"+"联盟等级到达2级才能进入荒野求生！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
-		
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
+		uibox.YinDaoControl (ShowAllianceGuid);
 		uibox.setBox(titleStr, MyColorData.getColorString (1,str1+str2), null,null,confirmStr,null,null,null,null);
 	}
 	[HideInInspector]
 	public OldBookWindow m_OldBookWindow;
 	public void ENterAllianceHorse()
 	{
+		if(mYinDaoisOpen)
+		{
+			return;
+		}
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
 		//Buttons.transform.localPosition = new Vector3(50,298,0);
 		All_FirstUI.SetActive (false);
 		if (m_OldBookWindow != null)
@@ -700,6 +857,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 		{
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.OLD_BOOK_WINDOW), OnBookLoadCallBack);
 		}
+		SomeUIis_OPen = true;
 	}
 	void OnBookLoadCallBack(ref WWW www, string path, object loadedObject)
 	{
@@ -714,15 +872,31 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
 	}
 	public void EnterShop()
 	{
+		if(mYinDaoisOpen)
+		{
+			return;
+		}
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
 		ShopData.Instance.OpenShop (ShopData.ShopType.GONGXIAN);
 	}
 
 	public void Enter_MoBai() // 进入膜拜界面  直接复制TutengLev膜拜等级
 	{
+		if(mYinDaoisOpen)
+		{
+			return;
+		}
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
         WorshipLayerManagerment.m_bulidingLevel = TutengLev;
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.WORSHIP_MAIN_LAYER),
                                      WorshipLayerLoadCallback);
-    
+		SomeUIis_OPen = true;
     }
     private static void WorshipLayerLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
@@ -732,6 +906,7 @@ public class NewAlliancemanager : MonoBehaviour , SocketListener{
     public void BackToThis(GameObject m_game)
 	{
 		//Buttons.transform.localPosition = new Vector3(0,298,0);
+		SomeUIis_OPen = false;
 		ShowAllianceGuid ();
 	    m_game.SetActive (false);
 		All_FirstUI.SetActive (true);

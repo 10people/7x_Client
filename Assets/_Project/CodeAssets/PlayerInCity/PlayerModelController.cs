@@ -121,7 +121,7 @@ public class PlayerModelController : MonoBehaviour
         {
             case 0:
                 {
-
+                    m_ObjHero.transform.localRotation = Quaternion.Euler(Vector3.zero);
                     if (CityGlobalData.m_CreateRoleCurrent)
                     {
                         CityGlobalData.m_CreateRoleCurrent = false;
@@ -137,11 +137,13 @@ public class PlayerModelController : MonoBehaviour
                             if (FunctionWindowsCreateManagerment.m_isJieBiao)
                             {
                                 FunctionWindowsCreateManagerment.m_isJieBiao = false;
-                                m_ObjHero.transform.position = new Vector3(30.3f, 2.39f, -18.9f);
+                                m_ObjHero.transform.position = new Vector3(14.99f, 9.36f, 24.0f);
+                                m_ObjHero.transform.Rotate(0, 95.5f, 0);
                             }
                             else
                             {
                                 m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
+                            
                                 if (m_ObjHero.transform.position.y > 10)
                                 {
                                     m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
@@ -189,7 +191,7 @@ public class PlayerModelController : MonoBehaviour
                 break;
         }
         m_isSetPos = true;
-        m_ObjHero.transform.localRotation = Quaternion.Euler(Vector3.zero);
+      
 
         m_ObjHero.transform.localScale = Vector3.one*1.5f;
 
@@ -247,7 +249,6 @@ public class PlayerModelController : MonoBehaviour
         {
             case 0:
                 {
-
                     if (CityGlobalData.m_CreateRoleCurrent)
                     {
                         CityGlobalData.m_CreateRoleCurrent = false;
@@ -262,7 +263,8 @@ public class PlayerModelController : MonoBehaviour
                             if (FunctionWindowsCreateManagerment.m_isJieBiao)
                             {
                                 FunctionWindowsCreateManagerment.m_isJieBiao = false;
-                                m_ObjHero.transform.position = new Vector3(26.610f, 2.39f, -10.0f);
+                                m_ObjHero.transform.position = new Vector3(14.99f, 9.36f,24.0f);
+                                Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
                             }   
                             else if (m_ObjHero.transform.position.y < 150 || m_ObjHero.transform.position.y > 177)
                             {
@@ -271,6 +273,7 @@ public class PlayerModelController : MonoBehaviour
                         }
                         else
                         {
+                            Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
                             m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
                         }
                     }
@@ -838,11 +841,11 @@ public class PlayerModelController : MonoBehaviour
                 NpcManager.m_NpcManager.m_npcObjectItemDic[m_iMoveToNpcID].GetComponent<NpcAnimationManagerment>().setDialogAnimation();
             }
         }
-        for (int i = 0; i < ZhuXianTemp.tempTasks.Count; i++)
+		for (int i = 0; i < ZhuXianTemp.GetTemplatesCount(); i++)
         {
-            if (FreshGuide.Instance().IsActive(ZhuXianTemp.tempTasks[i].id) && ZhuXianTemp.tempTasks[i].doneType == 4)
+			if (FreshGuide.Instance().IsActive(ZhuXianTemp.GetTemplateByIndex( i ).id) && ZhuXianTemp.GetTemplateByIndex( i ).doneType == 4)
             {
-                if (PlayerModelController.m_playerModelController.m_iMoveToNpcID == ZhuXianTemp.tempTasks[i].NpcId)
+				if (PlayerModelController.m_playerModelController.m_iMoveToNpcID == ZhuXianTemp.GetTemplateByIndex( i ).NpcId)
                 {
                     ClientMain.m_ClientMain.m_UIDialogSystem.setOpenDialog(m_iMoveToNpcID);
                     return;
@@ -968,6 +971,8 @@ public class PlayerModelController : MonoBehaviour
 		QXChatData.Instance.LoadChatPrefab ();
 
 		TreasureCityData.Instance ();
+
+		PlunderData.Instance.PlunderDataReq ();
     }
 
 
@@ -1037,7 +1042,8 @@ public class PlayerModelController : MonoBehaviour
             case 0:
                 {
                     _playerRandomAnimator = true;
-                    m_animator.SetTrigger("iniDle");
+                    //  m_animator.SetTrigger("iniDle");
+                    m_animator.Play("zhuchengidle");
                 }
             break;
             case 1:
@@ -1046,17 +1052,20 @@ public class PlayerModelController : MonoBehaviour
                     _playerRandomAnimator = false;
                     _PlayerTyoe = AnimationType.INIDLE;
                     m_MoveType = MoveType.MOVE_TYPE_IDLE;
-                    m_animator.SetTrigger("inRun"); 
+                    // m_animator.SetTrigger("inRun"); 
+                    m_animator.Play("zhuchengrun");
                 }
                 break;
             case 2:
                 {
-                    m_animator.SetTrigger("inRelax_1");
+                    //  m_animator.SetTrigger("inRelax_1");
+                    m_animator.Play("zhuchengrelax_1");
                 }
                 break;
             case 3:
                 {
-                    m_animator.SetTrigger("inRelax_2");
+                    //   m_animator.SetTrigger("inRelax_2");
+                    m_animator.Play("zhuchengrelax_2");
                 }
                 break;
             default:

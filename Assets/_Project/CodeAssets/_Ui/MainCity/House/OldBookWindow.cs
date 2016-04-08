@@ -57,8 +57,6 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     private GameObject OldBookSelfPrefab;
     private GameObject ExchangeOtherPrefab;
 
-    public UILabel HouseTechAdditionLabel;
-
     public GameObject TopLeftManualAnchor;
     public GameObject TopRightManualAnchor;
 
@@ -357,6 +355,10 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         {
             UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[400010].m_listYindaoShuju[1]);
         }
+        else
+        {
+            UIYindao.m_UIYindao.CloseUI();
+        }
     }
 
     void OnDisable()
@@ -521,6 +523,10 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     public UILabel MaxExp;
     public UILabel CurExp;
     public GameObject LingQuBtn;
+    public UISprite m_ReceiveRedAlert;
+
+    public UILabel HouseTechAdditionLabel;
+    public UILabel HouseTechAddition2Label;
 
     void SetHouseExp(HouseExpInfo mmHouseExpInfo)
     {
@@ -529,16 +535,13 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         mSlider.value = currentValueBar2 / totalValueBar2;
         MaxExp.text = mmHouseExpInfo.max.ToString();
         CurExp.text = mmHouseExpInfo.cur.ToString();
-        if (currentValueBar2 == 0)
-        {
-            LingQuBtn.SetActive(false);
-        }
-        else
-        {
-            LingQuBtn.SetActive(true);
-        }
+
+        LingQuBtn.SetActive(currentValueBar2 > 0);
+        m_ReceiveRedAlert.gameObject.SetActive(currentValueBar2 >= totalValueBar2);
 
         HouseTechAdditionLabel.text = "受联盟科技影响\n" + LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel).desc;
+        HouseTechAddition2Label.text = "每小时产出" + (LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel).value2 / 100f + 1) * FangWuTemplate.GetFangWuTemplateByLevel(1).produceSpeed +
+        "点角色经验";
     }
 
     public void LingQu()

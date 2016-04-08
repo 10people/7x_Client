@@ -51,6 +51,7 @@ namespace Carriage
 	
 		public UILabel enemyRules;
 		private float cdTime = 10;
+		public GameObject redPoint;
 		#endregion
 
 		void Awake ()
@@ -129,6 +130,8 @@ namespace Carriage
 			noRecordLabel.text = historyItemList.Count > 0 ? "" : "劫镖记录为空";
 			recordDesLabel.text = "超出条目部分会自动移除";
 			recordNumLabel.text = "条数" + tempResp.historyList.Count + "/50";
+
+			redPoint.SetActive (FunctionOpenTemp.IsShowRedSpotNotification (315));
 		}
 
 		/// <summary>
@@ -139,18 +142,25 @@ namespace Carriage
 		public void InItEnemyPage (EnemiesResp tempResp)
 		{
 			enemyResp = tempResp;
-		
-			PushAndNotificationHelper.SetRedSpotNotification (315,false);
 
 			enemyItemList = QXComData.CreateGameObjectList (enemyItemObj,tempResp.enemyList.Count,enemyItemList);
 
+			bool isYunBiao = false;
 			for (int i = 0;i < enemyItemList.Count;i ++)
 			{
 				enemyItemList[i].transform.localPosition = new Vector3(0,-i * itemDis,0);
 				enemySc.UpdateScrollbars (true);
 				BiaoJuEnemyItem enemy = enemyItemList[i].GetComponent<BiaoJuEnemyItem> ();
 				enemy.InItEnemyItem (tempResp.enemyList[i]);
+				if (tempResp.enemyList[i].state == 10)
+				{
+					isYunBiao = true;
+				}
 			}
+
+			RootManager.Instance.m_CarriageMain.SetRecordRedAlert (false);
+			redPoint.SetActive (false);
+			PushAndNotificationHelper.SetRedSpotNotification (315,false);
 
 			enemySc.enabled = tempResp.enemyList.Count > 3 ? true : false;
 			enemySb.gameObject.SetActive (tempResp.enemyList.Count > 3 ? true : false);

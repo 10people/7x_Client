@@ -60,7 +60,9 @@ public class YouxiaPveTemplate : XmlLoadManager
 	public string recMibaoSkill;
 
 	public int vicConDescID;
-	
+
+	public string awardShow;
+
 	public static List<YouxiaPveTemplate> templates = new List<YouxiaPveTemplate>();
 
 
@@ -180,7 +182,10 @@ public class YouxiaPveTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.vicConDescID = int.Parse(t_reader.Value);
-				
+
+				t_reader.MoveToNextAttribute();
+				t_template.awardShow = t_reader.Value;
+
 				templates.Add(t_template);
 			}
 		}

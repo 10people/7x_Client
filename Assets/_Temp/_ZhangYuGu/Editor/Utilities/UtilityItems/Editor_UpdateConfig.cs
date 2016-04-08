@@ -35,8 +35,24 @@ public class Editor_UpdateConfig : AssetPostprocessor {
 
 		string t_db_path = t_project_root + "/.svn/wc.db";
 
-		if( !File.Exists( t_db_path ) ){
-			t_db_path = PathHelper.GetParentPath( t_project_root ) + "/.svn/wc.db";
+		{
+			if( !File.Exists( t_db_path ) ){
+				t_db_path = PathHelper.GetParentPath( t_project_root ) + "/.svn/wc.db";
+			}
+
+			if( !File.Exists( t_db_path ) ){
+				t_db_path = PathHelper.GetParentPath( t_project_root ) + "/.svn/wc.db";
+			}
+
+			if( !File.Exists( t_db_path ) ){
+				t_db_path = PathHelper.GetParentPath( t_project_root ) + "/.svn/wc.db";
+			}
+
+			if( !File.Exists( t_db_path ) ){
+				Debug.Log( "File Not Exist: " + t_db_path );
+
+				return;
+			}
 		}
 
 		string ConnectionString = "Data Source=" + 

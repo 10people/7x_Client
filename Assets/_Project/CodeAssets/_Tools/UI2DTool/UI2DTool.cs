@@ -46,13 +46,29 @@ public class UI2DTool : Singleton<UI2DTool>{
 	
 	// Update is called once per frame
 	void Update () {
-		Update2DUI();
+		UpdateAll();
+	}
+
+	void LateUpdate(){
+		UpdateAll();
 	}
 
 	void OnDestroy(){
 		ClearAll();
 
 		base.OnDestroy();
+	}
+
+	#endregion
+
+
+
+	#region All
+
+	private void UpdateAll(){
+		Update2DUI();
+
+		UpdateBackgroundScaler();
 	}
 
 	#endregion
@@ -71,6 +87,19 @@ public class UI2DTool : Singleton<UI2DTool>{
 	}
 
 	private void AddToTop( UI2DToolItem p_manager ){
+		// remove if exist
+		{
+			#if DEBUG_UI_2D_TOOL
+			Debug.Log( "Remove pre Added." );
+			#endif
+
+			UI2DToolItem t_ui = GetUI( p_manager.GetRootGameObject() );
+
+			if( t_ui != null ){
+				m_2d_manager_list.Remove( t_ui );
+			}
+		}
+
 		// add new top
 		{
 			m_2d_manager_list.Add( p_manager );
@@ -169,8 +198,8 @@ public class UI2DTool : Singleton<UI2DTool>{
 		}
 
 		#if DEBUG_UI_2D_TOOL
-		Debug.Log( "Add Top Function UI " + m_2d_manager_list.Count + ": " + 
-		          GameObjectHelper.GetGameObjectHierarchy( p_gb ) );
+		Debug.Log( " ------------------------- Add Top Function UI " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) + " - " + p_hide_origin_top_ui +
+			"   Cur.Total: " + m_2d_manager_list.Count );
 		#endif
 
 		// hide origin top
@@ -217,6 +246,18 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 	public static GameObject GetCachedGameObject(){
 		return m_cached_gb;
+	}
+
+	private void UpdateBackgroundScaler(){
+		if( m_active_background_scaler != null ){
+			if( !m_active_background_scaler.gameObject.activeInHierarchy ){
+				#if DEBUG_UI_2D_TOOL
+				Debug.Log( "Top Scaler Changed." );
+				#endif
+
+				ForceUpdateTopUI();
+			}
+		}
 	}
 
 	private void Update2DUI(){
@@ -283,6 +324,10 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 		if( Quality_MemLevel.IsMemLevelLow() ){
 			UtilityTool.UnloadUnusedAssets();
+		}
+
+		if( m_2d_manager_list.Count == 1 ){
+			UtilityTool.CheckGCTimer();
 		}
 	}
 
@@ -376,6 +421,16 @@ public class UI2DTool : Singleton<UI2DTool>{
 		m_2d_manager_list[ 0 ].SetActive( !( m_2d_manager_list.Count > 1 ) );
 	}
 
+	private static BackgroundScaler m_active_background_scaler = null;
+
+	public static GameObject GetActiveBackgroundScalerGameObject(){
+		if( m_active_background_scaler == null ){
+			return null;
+		}
+
+		return m_active_background_scaler.gameObject;
+	}
+
 	private static void UpdateUIBackground(){
 		#if UNITY_IOS
 		return;
@@ -393,31 +448,60 @@ public class UI2DTool : Singleton<UI2DTool>{
 			Console_Effect.SetUIBackground( false );
 		}
 		#else
-		if( m_2d_manager_list.Count > 1 ){
-			Console_Effect.SetUIBackground( true );
-		}
-		else{
-			Console_Effect.SetUIBackground( false );
-		}
+//		if( m_2d_manager_list.Count > 1 ){
+//			Console_Effect.SetUIBackground( true );
+//		}
+//		else{
+//			Console_Effect.SetUIBackground( false );
+//		}
 
-		for( int i = 0; i < m_2d_manager_list.Count; i++ ){
+		bool t_root_bg_scaled = false;
+
+		m_active_background_scaler = null;
+
+		for( int i = m_2d_manager_list.Count - 1; i >= 0; i-- ){
 			GameObject t_gb = m_2d_manager_list[ i ].GetRootGameObject();
 
-            if (t_gb == null) {
+            if( t_gb == null ) {
                 continue;
             }
 
-			Camera[] t_cams = t_gb.GetComponentsInChildren<Camera>();
+			if( i == m_2d_manager_list.Count - 1 ){
+				m_2d_manager_list[i].SetCameraEffect( false );
 
-			for( int j = 0; j < t_cams.Length; j++ ){
-				if( i == m_2d_manager_list.Count - 1 ){
-					EffectTool.SetUIBackgroundEffect( t_cams[ j ].gameObject, false );
+				m_active_background_scaler = m_2d_manager_list[ i ].GetActiveBackgroundScaler();
+
+				if( m_active_background_scaler != null ){
+					#if DEBUG_UI_2D_TOOL
+					Debug.Log( "Scaler Found: " + GameObjectHelper.GetGameObjectHierarchy( m_active_background_scaler.gameObject ) );
+					#endif
+
+					t_root_bg_scaled = true;
 				}
-				else{
-					EffectTool.SetUIBackgroundEffect( t_cams[ j ].gameObject, true );
+			}
+			else{
+//					if( !t_root_bg_scaled ){
+				m_2d_manager_list[i].SetCameraEffect( true );
+//					}
+			}
+		}
+
+		if( m_2d_manager_list.Count > 1 && t_root_bg_scaled ){
+			m_2d_manager_list[ 0 ].SetActive( false );
+
+			CameraHelper.SetMainCamera( false );
+		}
+		else{
+//			if( m_2d_manager_list.Count == 1 )
+			{
+				if( m_2d_manager_list[ 0 ] != null ){
+					m_2d_manager_list[ 0 ].SetActive( true );
+
+					CameraHelper.SetMainCamera( true );
 				}
 			}
 		}
+
 		#endif
 	}
 
@@ -511,6 +595,16 @@ public class UI2DTool : Singleton<UI2DTool>{
 		}
 
 		return m_2d_manager_list[ p_index ];
+	}
+
+	public UI2DToolItem GetUI( GameObject p_gb ){
+		for( int i = 0; i < m_2d_manager_list.Count; i++ ){
+			if( m_2d_manager_list[ i ].GetRootGameObject() == p_gb ){
+				return m_2d_manager_list[ i ];
+			}
+		}
+			
+		return null;
 	}
 
 	private static Vector3 GetUIRootPos( int p_count ){
@@ -675,6 +769,51 @@ public class UI2DTool : Singleton<UI2DTool>{
 				for( int i = 0; i < t_listeners.Length; i++ ){
 					t_listeners[ i ].OnUI2DShow();
 				}
+			}
+		}
+
+		public BackgroundScaler GetActiveBackgroundScaler(){
+			GameObject t_gb = GetRootGameObject();
+
+			if( t_gb == null ){
+				return null;
+			}
+
+			BackgroundScaler[] t_scalers = t_gb.GetComponentsInChildren<BackgroundScaler>();
+
+			for( int k = 0; k < t_scalers.Length; k++ ){
+				if( t_scalers[ k ] != null ){
+					if( t_scalers[ k ].gameObject.activeInHierarchy ){
+						if( t_scalers[ k ].IsFullScreenUI() ){
+							return t_scalers[ k ];	
+						}
+					}
+				}
+			}
+			return null;
+		}
+
+		public bool HaveActiveBackgroundScaler(){
+			BackgroundScaler t_scaler = GetActiveBackgroundScaler();
+
+			if( t_scaler != null ){
+				return true;
+			}
+
+			return false;
+		}
+
+		public void SetCameraEffect( bool p_enable_effect ){
+			GameObject t_gb = GetRootGameObject();
+
+			if( t_gb == null ) {
+				return;
+			}
+
+			Camera[] t_cams = t_gb.GetComponentsInChildren<Camera>();
+
+			for( int j = 0; j < t_cams.Length; j++ ){
+				EffectTool.SetUIBackgroundEffect( t_cams[ j ].gameObject, p_enable_effect );
 			}
 		}
 	}

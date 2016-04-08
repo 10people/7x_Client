@@ -37,7 +37,7 @@ public class FuWenSelectItem : MonoBehaviour {
 		lanWeiInfo = tempLanWeiInfo;
 		selectType = tempType;
 
-		fuWenCnt = tempInfo.cnt + 1;
+		fuWenCnt = tempInfo.cnt + (tempLanWeiInfo.itemId == tempInfo.itemId ? 1 : 0);
 
 		FuWenTemplate fuWenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (tempInfo.itemId);
 
@@ -66,9 +66,9 @@ public class FuWenSelectItem : MonoBehaviour {
 		operateHandlerList [0].gameObject.SetActive (tempType == FuWenSelect.SelectType.HECHENG ? true : false);
 		selectBtnLabel.text = tempType == FuWenSelect.SelectType.HECHENG ? (isCurFuWen ? "当前选择" : "选择") : "";
 		//卸下按钮
-		operateHandlerList [2].gameObject.SetActive (tempType == FuWenSelect.SelectType.XIANGQIAN ? (isCurFuWen ? (isCanMix ? false : true) : false) : false);
+		operateHandlerList [2].gameObject.SetActive (tempType == FuWenSelect.SelectType.XIANGQIAN ? (isCurFuWen ? (fuWenTemp.fuwenLevel < 11 ? (isCanMix ? false : true) : true) : false) : false);
 		//合成按钮
-		operateHandlerList [1].gameObject.SetActive (tempType == FuWenSelect.SelectType.XIANGQIAN ? ((isCanMix && isCurFuWen) ? true : false) : false);
+		operateHandlerList [1].gameObject.SetActive (tempType == FuWenSelect.SelectType.XIANGQIAN ? (isCurFuWen ? (fuWenTemp.fuwenLevel < 11 ? (isCanMix ? true : false) : false) : false) : false);
 		//镶嵌按钮
 		operateHandlerList [3].gameObject.SetActive (tempType == FuWenSelect.SelectType.XIANGQIAN ? (isCurFuWen ? false : true) : false);
 

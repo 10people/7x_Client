@@ -118,8 +118,8 @@ namespace Carriage
 
             //Set recommanded one.
             m_StoredCarriageControllerList.ForEach(item => item.IsRecommandedOne = false);
-            m_StoredCarriageControllerList.Where(item => item.KingName != JunZhuData.Instance().m_junzhuInfo.name && item.BattleValue < RootManager.Instance.m_CarriageMain.RecommandedScale * JunZhuData.Instance().m_junzhuInfo.zhanLi).OrderByDescending(item => item.Money).Take(RootManager.Instance.m_CarriageMain.RecommandedNum).ToList().ForEach(item => item.IsRecommandedOne = true);
-            m_StoredCarriageControllerList = m_StoredCarriageControllerList.OrderByDescending(item => item.HorseLevel).ThenByDescending(item => CarriageValueCalctor.GetRealValueOfCarriage(item.Money, item.Level, item.BattleValue, item.HorseLevel, item.IsChouRen)).ToList();
+            m_StoredCarriageControllerList.Where(item => item.KingName != JunZhuData.Instance().m_junzhuInfo.name && (AllianceData.Instance.IsAllianceNotExist || AllianceData.Instance.g_UnionInfo.name != item.AllianceName) && item.BattleValue < RootManager.Instance.m_CarriageMain.RecommandedScale * JunZhuData.Instance().m_junzhuInfo.zhanLi).OrderByDescending(item => item.Money).Take(RootManager.Instance.m_CarriageMain.RecommandedNum).ToList().ForEach(item => item.IsRecommandedOne = true);
+            m_StoredCarriageControllerList = m_StoredCarriageControllerList.OrderByDescending(item => item.IsRecommandedOne).ThenByDescending(item => item.HorseLevel).ThenByDescending(item => CarriageValueCalctor.GetRealValueOfCarriage(item.Money, item.Level, item.BattleValue, item.HorseLevel, item.IsChouRen)).ToList();
 
             foreach (var item in m_StoredCarriageControllerList)
             {

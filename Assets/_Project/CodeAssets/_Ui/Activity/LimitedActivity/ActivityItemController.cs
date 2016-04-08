@@ -52,6 +52,12 @@ namespace LimitActivity
 
         public void OnClick()
         {
+            //Add guide here.
+            if (m_OpenXianShi != null && m_OpenXianShi.typeId == 1574000 && FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
+            {
+                UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[100173].m_listYindaoShuju[1]);
+            }
+
             SetSelected();
             RequestData();
 

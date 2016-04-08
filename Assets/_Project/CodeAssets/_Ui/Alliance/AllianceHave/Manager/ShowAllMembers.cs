@@ -27,6 +27,10 @@ public class ShowAllMembers : MonoBehaviour {
 	public UILabel GongJin;
 
 	GetDragData mGetDragData;
+
+	public UIAtlas m_Atlas1;
+	public UIAtlas m_Atlas2;
+	public UISprite mBg;
 	void Start () {
 	
 		mGetDragData = GetComponent<GetDragData>();
@@ -78,7 +82,8 @@ public class ShowAllMembers : MonoBehaviour {
 		if(mMemberInfo.offlineTime <= 0)
 		{
 			DownTime.text = "在线";
-
+			mBg.atlas = m_Atlas1;
+			mBg.spriteName = "tint_back";
 			return;
 		}
 		if(mMemberInfo.offlineTime > (60*60*24))
@@ -102,7 +107,8 @@ public class ShowAllMembers : MonoBehaviour {
 		{
 			DownTime.text = "离线1分钟";
 		}
-
+		mBg.atlas = m_Atlas2;
+		mBg.spriteName = "di_shen";
 	}
 	GameObject m_tempObject;
 	void OnClick()
@@ -185,15 +191,29 @@ public class ShowAllMembers : MonoBehaviour {
 		float m_y = 0;
 
 		m_y = this.transform.localPosition.y + this.transform.parent.parent.localPosition.y;
-		//Debug.Log ("m_y = "+m_y);
-		if(tempList.Count > 3)
+		Debug.Log ("m_y = "+m_y);
+		Debug.Log ("this.transform.localPosition.y = "+this.transform.localPosition.y);
+		Debug.Log ("this.transform.parent.parent.localPosition.y = "+this.transform.parent.parent.localPosition.y);
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity  == 0)
 		{
-			if(m_y < -80)
+			if(m_y < -160)
 			{
-				m_y += (tempList.Count-3)*20;
+				m_y = -160;
+			}
+		}else
+		{
+			if(m_y < -130)
+			{
+				m_y = -130;
+			}
+			if(tempList.Count > 3)
+			{
+				{
+					m_y += (tempList.Count-3)*30;
+				}
 			}
 		}
-
+	
 		Vector3 m_V = new Vector3 (m_x,m_y,0);
 
 		m_tempObject.transform.parent = FloatButtonsRoot.transform;

@@ -544,7 +544,7 @@ public class EquipGrowthUpgradeManagerment : MonoBehaviour
 
             m_EquipSprite.spriteName = exInfo.EquipIcon;
 
-            DicSpriteInfo[0].GetComponent<IconSampleManager>().FgSprite.spriteName = exInfo.EquipIcon;
+			DicSpriteInfo[0].GetComponent<IconSampleManager>().SetForegroundSpriteName( exInfo.EquipIcon );
             DicSpriteInfo[0].GetComponent<IconSampleManager>().QualityFrameSprite.spriteName = QualityIconSelected.SelectQuality(CommonItemTemplate.getCommonItemTemplateById(int.Parse(exInfo.EquipIcon)).color);
 
             DicSpriteInfo[1].SetActive(false);

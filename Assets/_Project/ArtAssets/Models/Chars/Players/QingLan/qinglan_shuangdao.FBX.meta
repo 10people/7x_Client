@@ -839,6 +839,27 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .0035005461
+        functionName: PlaySound
+        data: 330010
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .010320548
+        functionName: PlaySound
+        data: 4222|4223|0|0|0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0374636985
+        functionName: refreshCDTime
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 22
+        messageOptions: 0
       - time: .223057687
         functionName: chooseTarget_skill_2
         data: 
@@ -880,13 +901,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 11
-        messageOptions: 0
-      - time: .0374636985
-        functionName: refreshCDTime
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 22
         messageOptions: 0
       transformMask:
       - path: 
@@ -4004,14 +4018,21 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .20034945
+      - time: .00488599343
+        functionName: PlaySound
+        data: 330000
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0136827826
         functionName: PlaySound
         data: 4022|4023
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .204687312
+      - time: .201050952
         functionName: refreshCDTime
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -4151,13 +4172,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1
-        messageOptions: 0
-      - time: .817609608
-        functionName: PlaySound
-        data: 3319
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 

@@ -2,6 +2,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+using ProtoBuf;
+using qxmobile.protobuf;
 
 public class GeneralSpecialReward : MonoBehaviour {
 
@@ -36,6 +41,8 @@ public class GeneralSpecialReward : MonoBehaviour {
 
 	public GetMiBaoInfo getMiBaoInfo;
 
+	private int defaultStar;
+
 	//装备信息
 	public UILabel cardLabel;
 
@@ -44,6 +51,8 @@ public class GeneralSpecialReward : MonoBehaviour {
 	private string desStr = "点击屏幕继续";
 
 	public EventHandler rewardHandler;
+
+	private bool isScaleEnd = false;
 
 	public void InItSpecialReward (RewardData tempData)
 	{
@@ -106,6 +115,7 @@ public class GeneralSpecialReward : MonoBehaviour {
 
 			QXComData.InstanceEffect (QXComData.EffectPos.TOP,equipObj,100142 + effectId);
 			QXComData.InstanceEffect (QXComData.EffectPos.MID,equipObj,100150 + effectId);
+			isScaleEnd = true;
 
 			break;
 		default:
@@ -115,12 +125,17 @@ public class GeneralSpecialReward : MonoBehaviour {
 		rewardHandler.m_click_handler += RewardHandlerClickBack;
 
 		StartCoroutine ("ShowDesLabel1");
-
 //		Debug.Log ("QXComData.CheckYinDaoOpenState (100160)1:" + QXComData.CheckYinDaoOpenState (100160));
 	}
 
 	void RewardHandlerClickBack (GameObject obj)
 	{
+		if (!isScaleEnd)
+		{
+			return;
+		}
+		isScaleEnd = false;
+
 		switch (xmlType)
 		{
 		case QXComData.XmlType.MIBAO:
@@ -162,12 +177,18 @@ public class GeneralSpecialReward : MonoBehaviour {
 
 		var miBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
 		int miBaoNum = 0;
+//		int mibaoLevel = 1;
+
 		for (int i = 0;i < miBaoInfo.miBaoList.Count;i ++)
 		{
 			if (miBaoInfo.miBaoList[i].level > 0)
 			{
 				miBaoNum ++;
 			}
+//			if (miBaoInfo.miBaoList[i].miBaoId == rewardData.itemId)
+//			{
+//				mibaoLevel = miBaoInfo.miBaoList[i].level;
+//			}
 		}
 
 		miBaoCount.text = "当前秘宝个数：" + MyColorData.getColorString (5, miBaoNum.ToString ()) + "个";
@@ -228,11 +249,12 @@ public class GeneralSpecialReward : MonoBehaviour {
 		}
 
 		unLockNeedNum.text = unLockDesStr;
+		Debug.Log ("defaultStar:" + defaultStar);
+		rewardData.miBaoStar = rewardData.miBaoStar == 0 ? 1 : rewardData.miBaoStar;
 
-		MiBaoXmlTemp miBaoTemp = MiBaoXmlTemp.getMiBaoXmlTempById (rewardData.itemId);
-		shuxing_attack.text = "攻击：" + miBaoTemp.gongji.ToString ();
-		shuxing_deffense.text = "防御：" + miBaoTemp.fangyu.ToString ();
-		shuxing_hp.text = "生命：" + miBaoTemp.shengming.ToString ();
+		shuxing_attack.text = "基础攻击：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,1,defaultStar,1);
+		shuxing_deffense.text = "基础防御：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,1,defaultStar,2);
+		shuxing_hp.text = "基础生命：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,1,defaultStar,3);
 
 		star_attack.text = "攻击：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,100,5,1);
 		star_deffense.text = "防御：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,100,5,2);
@@ -249,7 +271,14 @@ public class GeneralSpecialReward : MonoBehaviour {
 		move.Add ("time",0.5f);
 		move.Add ("easetype",iTween.EaseType.easeOutQuart);
 		move.Add ("islocal",true);
+		move.Add ("oncomplete","MoveEnd");
+		move.Add ("oncompletetarget",gameObject);
 		iTween.MoveTo (obj,move);
+	}
+
+	void MoveEnd ()
+	{
+		isScaleEnd = true;
 	}
 
 	IEnumerator ShowDesLabel1 ()
@@ -294,7 +323,7 @@ public class GeneralSpecialReward : MonoBehaviour {
 		int iconId = miBaoTemp.icon;
 		int nameId = miBaoTemp.nameId;
 
-		int defaultStar = rewardData.miBaoStar > 0 ? rewardData.miBaoStar : miBaoTemp.initialStar;
+		defaultStar = rewardData.miBaoStar > 0 ? rewardData.miBaoStar : miBaoTemp.initialStar;
 
 		mbTexTure.mainTexture = (Texture)Resources.Load (Res2DTemplate.GetResPath (Res2DTemplate.Res.MIBAO_BIGICON)
 		        

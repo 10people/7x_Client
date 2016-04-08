@@ -274,11 +274,7 @@ public class BagData : MonoBehaviour, SocketProcessor
                     }
                     if (tempBagItem.itemType >= 101 && tempBagItem.itemType <= 103)
                     {
-						if( MainCityUI.m_MainCityUI != null ){
-							if( MainCityUI.m_MainCityUI.m_MainCityUIRB != null ){
-								MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(tempBagItem.itemId, tempBagItem.cnt);		
-							}
-						}
+						MainCityUIRB.setSavePropUse(tempBagItem.itemId, tempBagItem.cnt);
                     }
                 }
             }
@@ -374,27 +370,11 @@ public class BagData : MonoBehaviour, SocketProcessor
 
             if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei) && item.Value.pinZhi > EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].pinZhi)
             {
-                if (MainCityUI.m_MainCityUI == null)
-                {
-                    Debug.Log("MainCity Not Exist, Should Process Data Here.");
-                }
-                else
-                {
-                    MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
-                }
+				MainCityUIRB.setSavePropUse(item.Value.itemId, 1);
             }
             else if (!EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei))
             {
-                if (MainCityUI.m_MainCityUI == null)
-                {
-					#if UNITY_EDITOR
-                    Debug.Log("MainCity Not Exist, Should Process Data Here.");
-					#endif
-                }
-                else
-                {
-                    MainCityUI.m_MainCityUI.m_MainCityUIRB.setPropUse(item.Value.itemId, 1);
-                }
+				MainCityUIRB.setSavePropUse(item.Value.itemId, 1);
             }
         }
 
@@ -737,9 +717,9 @@ public class BagData : MonoBehaviour, SocketProcessor
 							if(int.Parse(tempZhuangbei.jinjieItem) == m_bagItemList[i].itemId)
 							{
 								MainCityUI.addShouji(m_bagItemList[i].itemId, 0, m_bagItemList[i].cnt, int.Parse(tempZhuangbei.jinjieNum), "装备进阶");
-								Debug.Log("装备进度1");
-								Debug.Log(m_bagItemList[i].itemId);
-								Debug.Log(m_bagItemList[i].cnt);
+//								Debug.Log("装备进度1");
+//								Debug.Log(m_bagItemList[i].itemId);
+//								Debug.Log(m_bagItemList[i].cnt);
 								break;
 							}
 						}
@@ -755,9 +735,9 @@ public class BagData : MonoBehaviour, SocketProcessor
 								if(int.Parse(tempZhuangbei.jinjieItem) == m_bagItemList[i].itemId)
 								{
 									MainCityUI.addShouji(m_bagItemList[i].itemId, 0, m_bagItemList[i].cnt, int.Parse(tempZhuangbei.jinjieNum), "装备进阶");
-									Debug.Log("装备进度2");
-									Debug.Log(m_bagItemList[i].itemId);
-									Debug.Log(m_bagItemList[i].cnt);
+//									Debug.Log("装备进度2");
+//									Debug.Log(m_bagItemList[i].itemId);
+//									Debug.Log(m_bagItemList[i].cnt);
 									break;
 								}
 							}

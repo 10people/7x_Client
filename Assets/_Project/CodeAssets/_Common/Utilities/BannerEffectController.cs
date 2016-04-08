@@ -34,11 +34,12 @@ public class BannerEffectController : MonoBehaviour
 
             HideAlertEffect();
 
-            //Show awards.
-            if (m_rewardIDs != null && m_rewardIDs.Any() && m_rewardNums != null && m_rewardNums.Any() && m_rewardIDs.Count == m_rewardNums.Count)
-            {
-                GeneralRewardManager.Instance().CreateReward(m_rewardIDs.Select((t, i) => new RewardData(t, m_rewardNums[i])).ToList());
-            }
+            //Cancel cause send prompt action message.
+            ////Show awards.
+            //if (m_rewardIDs != null && m_rewardIDs.Any() && m_rewardNums != null && m_rewardNums.Any() && m_rewardIDs.Count == m_rewardNums.Count)
+            //{
+            //    GeneralRewardManager.Instance().CreateReward(m_rewardIDs.Select((t, i) => new RewardData(t, m_rewardNums[i])).ToList());
+            //}
 
             if (m_ExecuteAfterClick != null)
             {

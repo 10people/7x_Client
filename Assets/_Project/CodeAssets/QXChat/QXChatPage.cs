@@ -15,7 +15,7 @@ public class QXChatPage : MonoBehaviour {
 
 	private ChatPct.Channel chatChannel;
 
-	private bool isDragChatPage = false;
+	private bool openFirstChannel = true;//是否第一次打开聊天
 
 	void Awake ()
 	{
@@ -32,7 +32,7 @@ public class QXChatPage : MonoBehaviour {
 	public UIScrollBar chatSb;
 	private float chatSbValue = 1;
 	public UIDragScrollView dragArea;
-	private int lastScHeigh;
+	private float lastScHeigh;
 	
 	private List<GameObject> chatItemList = new List<GameObject> ();
 	public GameObject chatItemObj;
@@ -49,10 +49,7 @@ public class QXChatPage : MonoBehaviour {
 
 		if (tempChatList.Count > 50)
 		{
-			for (int i = 0;i < tempChatList.Count - 50;i ++)
-			{
-				tempChatList.RemoveAt (0);
-			}
+			tempChatList.RemoveAt (0);
 		}
 
 		CreateChatList (tempChatList);
@@ -128,10 +125,10 @@ public class QXChatPage : MonoBehaviour {
 			}
 		}
 
-		int firstHeigh = 0;
-		int lastHeigh = 0;
-		int totleHeigh = 0;
-		//s:s :h + 11  p:p : h + 38  p:s : h + 21 s:p : h + 26
+		float firstHeigh = 0;
+		float lastHeigh = 0;
+		float totleHeigh = 0;
+		//s:s :h2 + 11  p:p : h1 + 52.5  p:s : h1 + 36.5 s:p : h2 + 42
 		for (int i = 0;i < tempChatList.Count;i ++)
 		{
 			ChatPlayerItem chatPlayer = chatItemList[i].GetComponent<ChatPlayerItem> ();
@@ -141,23 +138,23 @@ public class QXChatPage : MonoBehaviour {
 			{
 				firstHeigh = chatPlayer.GetItemHeigh ();
 				bool isPlayer = (tempChatList[i].chatPct.guoJia > 0 && tempChatList[i].chatPct.guoJia < 8) ? true : false;
-				totleHeigh += (isPlayer ? 32 : 15 ) + firstHeigh;
+				totleHeigh += (isPlayer ? 46.5f : 22.5f ) + firstHeigh;
 			}
 			else
 			{
-				int heigh = chatItemList[i - 1].GetComponent<ChatPlayerItem> ().GetItemHeigh ();
+				float heigh = chatItemList[i - 1].GetComponent<ChatPlayerItem> ().GetItemHeigh ();
 				bool isPlayer1 = (tempChatList[i - 1].chatPct.guoJia > 0 && tempChatList[i - 1].chatPct.guoJia < 8) ? true : false;
 				bool isPlayer2 = (tempChatList[i].chatPct.guoJia > 0 && tempChatList[i].chatPct.guoJia < 8) ? true : false;
 
 				if (!isPlayer1)
 				{
-					chatItemList[i].transform.localPosition = chatItemList[i - 1].transform.localPosition + new Vector3(0,-(heigh + (!isPlayer2 ? 11 : 26)),0);//ss:sp
-					totleHeigh += (heigh + (!isPlayer2 ? 11 : 26));
+					chatItemList[i].transform.localPosition = chatItemList[i - 1].transform.localPosition + new Vector3(0,-(heigh + (!isPlayer2 ? 11 : 42)),0);//ss:sp
+					totleHeigh += (heigh + (!isPlayer2 ? 11 : 42));
 				}
 				else
 				{
-					chatItemList[i].transform.localPosition = chatItemList[i - 1].transform.localPosition + new Vector3(0,-(heigh + (!isPlayer2 ? 21 : 38)),0);//ps:pp
-					totleHeigh += (heigh + (!isPlayer2 ? 21 : 38));
+					chatItemList[i].transform.localPosition = chatItemList[i - 1].transform.localPosition + new Vector3(0,-(heigh + (!isPlayer2 ? 36.5f : 52.5f)),0);//ps:pp
+					totleHeigh += (heigh + (!isPlayer2 ? 36.5f : 52.5f));
 				}
 
 				if (i == tempChatList.Count - 1)
@@ -175,10 +172,17 @@ public class QXChatPage : MonoBehaviour {
 //		Debug.Log ("chatSc.GetComponent<UIPanel> ().GetViewSize ().y:" + chatSc.GetComponent<UIPanel> ().GetViewSize ().y);
 
 		bool canDrag = totleHeigh > chatSc.GetComponent<UIPanel> ().GetViewSize ().y ? true : false;
+		bool isDragChatPage = false;
 
 		if (!canDrag)
 		{
 			chatSc.ResetPosition ();
+			isDragChatPage = false;
+		}
+		else
+		{
+			bool isMySelf = tempChatList [tempChatList.Count - 1].chatPct.senderId == JunZhuData.Instance ().m_junzhuInfo.id ? true : false;
+			isDragChatPage = openFirstChannel ? false : (isMySelf ? false : (chatSb.value < 0.9f ? true : false));
 		}
 
 		foreach (GameObject obj in chatItemList)
@@ -195,7 +199,7 @@ public class QXChatPage : MonoBehaviour {
 		{
 			if (lastScHeigh > totleHeigh)
 			{
-				int countHeigh = lastScHeigh - totleHeigh - 10;
+				float countHeigh = lastScHeigh - totleHeigh - 10;
 				chatSc.GetComponent<UIPanel> ().clipOffset += new Vector2 (0,countHeigh);
 				chatSc.gameObject.transform.localPosition -= new Vector3(0,countHeigh,0);
 			}
@@ -211,6 +215,8 @@ public class QXChatPage : MonoBehaviour {
 		lastScHeigh = totleHeigh;
 
 		#endregion
+
+		openFirstChannel = false;
 	}
 
 	void ChatBtnHandlerClickBack (GameObject obj)
@@ -221,10 +227,8 @@ public class QXChatPage : MonoBehaviour {
 		case "WorldBtn":
 			if (chatChannel != ChatPct.Channel.SHIJIE)
 			{
-				if (!isDragChatPage)
-				{
-					chatSbValue = 1;
-				}
+				chatSbValue = 1;
+				openFirstChannel = true;
 
 				QXChatData.Instance.SetChatChannel (ChatPct.Channel.SHIJIE);
 			}
@@ -237,10 +241,8 @@ public class QXChatPage : MonoBehaviour {
 			}
 			if (chatChannel != ChatPct.Channel.LIANMENG)
 			{
-				if (!isDragChatPage)
-				{
-					chatSbValue = 1;
-				}
+				chatSbValue = 1;
+				openFirstChannel = true;
 
 				QXChatData.Instance.SetChatChannel (ChatPct.Channel.LIANMENG);
 			}
@@ -248,10 +250,8 @@ public class QXChatPage : MonoBehaviour {
 		case "BroadCastBtn":
 			if (chatChannel != ChatPct.Channel.Broadcast)
 			{
-				if (!isDragChatPage)
-				{
-					chatSbValue = 1;
-				}
+				chatSbValue = 1;
+				openFirstChannel = true;
 
 				QXChatData.Instance.SetChatChannel (ChatPct.Channel.Broadcast);
 			}
@@ -307,7 +307,7 @@ public class QXChatPage : MonoBehaviour {
 		}
 		
 		chatInputIndex = tempIndex;
-
+		OnChatSubmit ();
 		switch (tempIndex)
 		{
 		case 0:
@@ -326,6 +326,28 @@ public class QXChatPage : MonoBehaviour {
 			break;
 		default:
 			break;
+		}
+	}
+
+	public void OnChatSubmit ()
+	{
+		UIInput input = inputList[chatInputIndex].GetComponent<UIInput> ();
+		if (input.value == "" || QXChatData.Instance.SendWaitTime > 0)
+		{
+			SendBtnActiveState (false);
+		}
+		else
+		{
+			SendBtnActiveState (true);
+		}
+	}
+
+	void SendBtnActiveState (bool active)
+	{
+		UIWidget[] widgets = sendBtnHandlerList[2].GetComponentsInChildren<UIWidget> ();
+		foreach (UIWidget widget in widgets)
+		{
+			widget.color = active ? Color.white : Color.grey;
 		}
 	}
 
@@ -358,6 +380,7 @@ public class QXChatPage : MonoBehaviour {
 					sendState = ChatMessage.SendState.SENDING,
 					chatPct = new ChatPct()
 					{
+						roleId = CityGlobalData.m_king_model_Id,
 						senderName = JunZhuData.Instance().m_junzhuInfo.name,
 						senderId = JunZhuData.Instance().m_junzhuInfo.id,
 						channel = chatChannel,
@@ -437,9 +460,12 @@ public class QXChatPage : MonoBehaviour {
 	}
 
 	#endregion
+	
+	private bool isCdEnd = false;
 
 	void Update ()
 	{
+		UIYindao.m_UIYindao.CloseUI ();
 		if (QXChatData.Instance.SendWaitTime > 0)
 		{
 			sendCdLabel.text = "冷却" + MyColorData.getColorString (5,QXChatData.Instance.SendWaitTime + "s");
@@ -460,7 +486,7 @@ public class QXChatPage : MonoBehaviour {
 
 		Hashtable move = new Hashtable ();
 		move.Add ("time",0.4f);
-		move.Add ("position",new Vector3 (isOpen ? -120 : -450,0,0));
+		move.Add ("position",new Vector3 (isOpen ? 0 : -455,0,0));
 		move.Add ("islocal",true);
 		move.Add ("oncomplete","ChatPageAnimationEnd");
 		move.Add ("oncompletetarget",gameObject);
@@ -479,7 +505,7 @@ public class QXChatPage : MonoBehaviour {
 					MainCityUI.m_MainCityUI.setInit ();
 				}
 			}
-
+			openFirstChannel = true;
 			chatSbValue = 1;
 			chatSb.value = 0;
 //			MainCityUI.TryRemoveFromObjectList (gameObject);

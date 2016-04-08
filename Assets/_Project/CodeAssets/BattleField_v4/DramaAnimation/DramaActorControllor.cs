@@ -21,13 +21,17 @@ public class DramaActorControllor : MonoBehaviour
 
 	private RuntimeAnimatorController tempControllor;
 
+	private string tempAnim;
+
 	private List<DramaActor> actors = new List<DramaActor>();
 
 	private DramaStoryBoard storyBoard;
 
 	private Vector3 tempScale;
 
-	void OnDestroy(){
+
+	void OnDestroy()
+	{
 		tempControllor = null;
 
 		storyBoard = null;
@@ -104,7 +108,15 @@ public class DramaActorControllor : MonoBehaviour
 	{
 		Animator anim = GetComponent<Animator>();
 		
-		if(anim != null) anim.runtimeAnimatorController = tempControllor;
+		if(anim != null)
+		{
+			anim.runtimeAnimatorController = tempControllor;
+		
+			if(tempAnim != null && tempAnim.Length > 0 && !tempAnim.Equals("Stand1"))
+			{
+				anim.Play(tempAnim);
+			}
+		}
 
 		transform.localScale = tempScale;
 
@@ -137,6 +149,10 @@ public class DramaActorControllor : MonoBehaviour
 		if (anim == null || modleId <= 0) return;
 
 		tempControllor = anim.runtimeAnimatorController;
+	
+		tempAnim = "";
+
+		if(anim.GetCurrentAnimatorClipInfo(0).Length > 0) tempAnim = anim.GetCurrentAnimatorClipInfo (0) [0].clip.name;
 
 		anim.runtimeAnimatorController = null;
 
@@ -158,6 +174,14 @@ public class DramaActorControllor : MonoBehaviour
 		RuntimeAnimatorController con = (RuntimeAnimatorController)p_object;
 
 		anim.runtimeAnimatorController = con;
+	}
+
+	public void forcedEnd()
+	{
+		foreach(DramaActor actor in actors)
+		{
+			actor._forcedEnd();
+		}
 	}
 
 }

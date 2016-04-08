@@ -45,6 +45,11 @@ public class QXComData {
 		MainCityUI.setGlobalBelongings (obj, -30, 0);
 	}
 
+	public static string AllianceName (string tempName)
+	{
+		return tempName.Equals ("***") || tempName.Equals ("") ? "无联盟" : "<" + tempName + ">";
+	}
+
 	#endregion
 
 	#region EffectColor
@@ -292,6 +297,7 @@ public class QXComData {
 			CityGlobalData.m_isRightGuide = true;
 			break;
 		}
+//		Debug.Log ("yindoaend");
 	}
 
 	/// <summary>
@@ -302,6 +308,20 @@ public class QXComData {
 	public static bool CheckYinDaoOpenState (int tempTaskId)
 	{
 		if(FreshGuide.Instance().IsActive(tempTaskId) && TaskData.Instance.m_TaskInfoDic[tempTaskId].progress >= 0)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/// <summary>
+	/// Checks the open task.
+	/// </summary>
+	/// <returns><c>true</c>, if open task was checked, <c>false</c> otherwise.</returns>
+	/// <param name="tempTaskId">Temp task identifier.</param>
+	public static bool CheckOpenTask (int tempTaskId)
+	{
+		if (FreshGuide.Instance ().IsActive (tempTaskId))
 		{
 			return true;
 		}
@@ -397,13 +417,27 @@ public class QXComData {
 	public static GameObject CreateBoxDiy (string tempText,bool isOneBtn,UIBox.onclick onClick,bool isFunction = false)
 	{
 		return isOneBtn ? UtilityTool.Instance.CreateBox (titleStr,
-                                               "\n\n" + tempText,null,null,
-                                               confirmStr,null,
-                                               onClick) 
+                                               			  "\n" + tempText,null,null,
+                                               			  confirmStr,null,
+		                                                  onClick,
+		                                                  null,
+		                                                  null,
+		                                                  null,
+		                                                  false,
+		                                                  true,
+		                                                  true,
+		                                                  isFunction) 
 						: UtilityTool.Instance.CreateBox (titleStr,
-			                                   "\n\n" + tempText,null,null,
-			                                   cancelStr,confirmStr,
-                                  			   onClick);
+			                                   			  "\n" + tempText,null,null,
+			                                   			  cancelStr,confirmStr,
+                                  			  		      onClick,
+						                                  null,
+						                                  null,
+						                                  null,
+						                                  false,
+						                                  true,
+						                                  true,
+						                                  isFunction);
 	}
 
 	#endregion
@@ -460,15 +494,20 @@ public class QXComData {
 		GONGXIAN = 2,//贡献
 		YUANBAO = 1,//元宝
 		TONGBI = 0,//铜币
+		JIFEN = 6,//积分
 	}
+	/// <summary>
+	/// 0-spriteName 1-name 2-size 3-LanguageTempId
+	/// </summary>
 	private static readonly Dictionary<MoneyType,string[]> moneyDic = new Dictionary<MoneyType, string[]>()
 	{
-		{MoneyType.WEIWANG,new string[]{"weiwangIcon","威望","60,60"}},
-		{MoneyType.GONGXUN,new string[]{"GongXun","功勋","60,63"}},
-		{MoneyType.HUANGYE,new string[]{"HuangYe","荒野币","70,70"}},
-		{MoneyType.GONGXIAN,new string[]{"GongXian","贡献","60,60"}},
-		{MoneyType.YUANBAO,new string[]{"YB_big","元宝","55,40"}},
-		{MoneyType.TONGBI,new string[]{"coinicon","铜币","50,50"}}
+		{MoneyType.WEIWANG,new string[]{"weiwangIcon","威望","60,60","30003"}},
+		{MoneyType.GONGXUN,new string[]{"GongXun","功勋","60,63","30005"}},
+		{MoneyType.HUANGYE,new string[]{"HuangYe","荒野币","70,70","30006"}},
+		{MoneyType.GONGXIAN,new string[]{"GongXian","贡献","60,60","30004"}},
+		{MoneyType.YUANBAO,new string[]{"YB_big","元宝","55,40","30001"}},
+		{MoneyType.TONGBI,new string[]{"coinicon","铜币","50,50","30002"}},
+		{MoneyType.JIFEN,new string[]{"gongjin","积分","50,50","30007"}}
 	};
 
 	/// <summary>
@@ -493,6 +532,22 @@ public class QXComData {
 	{
 		return moneyDic [tempType] [1];
 	}
+
+	/// <summary>
+	/// Moneies the dic string.
+	/// </summary>
+	/// <returns>The dic string.</returns>
+	/// <param name="tempType">Temp type.</param>
+	/// <param name="tempIndex">Temp index.</param>
+	public static string MoneyDicStr (MoneyType tempType,int tempIndex)
+	{
+		if (tempIndex > moneyDic[tempType].Length - 1)
+		{
+			Debug.LogError ("Money Str return null!");
+		}
+		return tempIndex > moneyDic[tempType].Length - 1 ? null : moneyDic[tempType][tempIndex];
+	}
+
 	#endregion
 
 	#region CreateScrollView GameObjectList

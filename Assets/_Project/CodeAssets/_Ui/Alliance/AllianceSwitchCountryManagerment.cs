@@ -72,9 +72,20 @@ public class AllianceSwitchCountryManagerment : MonoBehaviour, SocketProcessor
                                 {
                                     MainCityUI.TryRemoveFromObjectList(m_MainObj);
                                     JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
-                                    GameObject obj = new GameObject();
-                                    obj.name = "MainCityUIButton_104";
-                              
+                                    if (Application.loadedLevelName.Equals(ConstInGame.CONST_SCENE_NAME_MAINCITY))
+                                    {
+                                        JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;
+                                        GameObject obj = new GameObject();
+                                        obj.name = "MainCityUIButton_104";
+                                        MainCityUI.m_MainCityUI.MYClick(obj);
+                                        Destroy(obj);
+                                    }
+                                    else
+                                    {
+                                        ClientMain.m_UITextManager.createText("联盟加入成功！");
+                                    }
+
+
                                     Destroy(m_MainObj);
                                     return true;
                                 }

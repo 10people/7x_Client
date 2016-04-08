@@ -16,24 +16,30 @@ namespace Rank
 
         public void Refresh(List<JunZhuInfo> list)
         {
-            //Find nothing in one mode.
-            if ((list == null || list.Count == 0) && IsOneMode)
+            if (list == null || list.Count == 0)
             {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.FindNoKingCallBack);
-                return;
+                //Find nothing in one mode.
+                if (IsOneMode)
+                {
+                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.FindNoKingCallBack);
+                }
+                else if (CurrentPageIndex == 1)
+                {
+                    NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_01);
+                    NoDataLabel.gameObject.SetActive(true);
+                }
             }
-
-            //Clear all
-            while (m_Grid.transform.childCount != 0)
+            else
             {
-                var child = m_Grid.transform.GetChild(0);
-                child.parent = null;
-                Destroy(child.gameObject);
-            }
-            m_DetailControllerList.Clear();
+                //Clear all
+                while (m_Grid.transform.childCount != 0)
+                {
+                    var child = m_Grid.transform.GetChild(0);
+                    child.parent = null;
+                    Destroy(child.gameObject);
+                }
+                m_DetailControllerList.Clear();
 
-            if (list != null && list.Count != 0)
-            {
                 for (int i = 0; i < list.Count; i++)
                 {
                     var temp = Instantiate(m_Prefab) as GameObject;
@@ -55,11 +61,6 @@ namespace Rank
                     m_ScrollBar.value = IsRefreshToTop ? 0.0f : 1.0f;
                 }
                 NoDataLabel.gameObject.SetActive(false);
-            }
-            else
-            {
-                NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_01);
-                NoDataLabel.gameObject.SetActive(true);
             }
 
             //High light item.

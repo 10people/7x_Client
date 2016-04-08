@@ -15,6 +15,7 @@ public class LastLogin : MonoBehaviour {
 
 	public void CreateLastLogin ()
 	{
+		AccountRequest.account.enterType = AccountRequest.EnterType.LAST_LOGIN;
 		JSONNode lastLogin = loginNode["lastLogin"];
 
 //		Debug.Log ("lastLogin:" + lastLogin);
@@ -71,7 +72,6 @@ public class LastLogin : MonoBehaviour {
 
 	public void LastLoginEnterGame ()
 	{
-		AccountRequest.account.enterType = AccountRequest.EnterType.LAST_LOGIN;
 		EnterGame.enterGame.EnterGameReq ();
 	}
 }

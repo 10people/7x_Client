@@ -29,6 +29,8 @@ public class DangpuItemCommonTemplate : XmlLoadManager
 
 	public int VIP;
 
+	public int ifRecomanded;
+
 	public static List<DangpuItemCommonTemplate> templates;
 
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
@@ -97,6 +99,9 @@ public class DangpuItemCommonTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.VIP = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ifRecomanded = int.Parse( t_reader.Value );
 			}
 			
 			templates.Add( t_template );

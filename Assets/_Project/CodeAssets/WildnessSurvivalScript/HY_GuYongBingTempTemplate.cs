@@ -83,8 +83,16 @@ public class HY_GuYongBingTempTemplate : XmlLoadManager {
 
 	private static List<HY_GuYongBingTempTemplate> templates = new List<HY_GuYongBingTempTemplate>();
 
+	private static void WarnningShouldNeverUse(){
+		Debug.LogError( "Error, Template will never be use from 2016.3.24." );
+	}
+
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null )
 	{
+		{
+			WarnningShouldNeverUse();
+		}
+
 		UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "HuangYeGuYongBing.xml"), CurLoad, UtilityTool.GetEventDelegateList( p_callback ), false );
 	}
 
@@ -101,6 +109,10 @@ public class HY_GuYongBingTempTemplate : XmlLoadManager {
 	}
 
 	private static void ProcessAsset(){
+		{
+			WarnningShouldNeverUse();
+		}
+
 		if( templates.Count > 0 ) {
 			return;
 		}

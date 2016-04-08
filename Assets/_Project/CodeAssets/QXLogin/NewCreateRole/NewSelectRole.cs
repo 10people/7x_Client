@@ -171,30 +171,54 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 	}
 
 	//初始男女名字各随一个
-	public void NameInIt ()
-	{	
+	public void NameInIt (){
 		int randomXin = 0;
+
 		int randomNan = 0;
+
 		int randomNv = 0;
 
-		for (int i = 0;i < nameInputList.Count;i ++)
-		{
-			string xin = "";
-			if (i < 2)
-			{
-				randomXin = Random.Range (0,NameKuTemplate.nameList1.Count - 1);
-				randomNan = Random.Range (0,NameKuTemplate.nameList2.Count - 1);
-				xin = NameKuTemplate.nameList1[randomXin];
-				string nan = NameKuTemplate.nameList2[randomNan];
-				nameInputList[i].value = xin + nan;
+		for( int i = 0;i < nameInputList.Count;i ++ ){
+			if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+				if( ThirdPlatform.Instance() != null ){
+					if( ThirdPlatform.Instance().HavePersonInfo() ){
+						Debug.Log( "Init With Platform NickName: " + ThirdPlatform.Instance().GetNickName() );
+
+						string t_nick_name = ThirdPlatform.Instance().GetNickName();
+
+						string t_final_nick_name = TextLengthLimit( StrLimitType.CREATE_ROLE_NAME, t_nick_name );
+
+						if( GetAvailableTextLength( StrLimitType.CREATE_ROLE_NAME, t_nick_name ) > GetCreateRoleNameLimit() ){
+							t_final_nick_name = t_final_nick_name.Substring( 0, GetCreateRoleNameLimit() - 2 );
+
+							t_final_nick_name = t_final_nick_name + "..";
+						}
+
+						nameInputList[i].value = t_final_nick_name;
+
+						continue;
+					}
+				}
 			}
-			else 
+
 			{
-				randomXin = Random.Range (0,NameKuTemplate.nameList1.Count - 1);
-				randomNv = Random.Range (0,NameKuTemplate.nameList3.Count - 1);
-				xin = NameKuTemplate.nameList1[randomXin];
-				string nv = NameKuTemplate.nameList3[randomNv];
-				nameInputList[i].value = xin + nv;
+				// custom ramdom
+				string xin = "";
+
+				if( i < 2 ){
+					randomXin = Random.Range (0,NameKuTemplate.nameList1.Count - 1);
+					randomNan = Random.Range (0,NameKuTemplate.nameList2.Count - 1);
+					xin = NameKuTemplate.nameList1[randomXin];
+					string nan = NameKuTemplate.nameList2[randomNan];
+					nameInputList[i].value = xin + nan;
+				}
+				else{
+					randomXin = Random.Range (0,NameKuTemplate.nameList1.Count - 1);
+					randomNv = Random.Range (0,NameKuTemplate.nameList3.Count - 1);
+					xin = NameKuTemplate.nameList1[randomXin];
+					string nv = NameKuTemplate.nameList3[randomNv];
+					nameInputList[i].value = xin + nv;
+				}
 			}
 		}
 	}
@@ -202,6 +226,8 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 	//随机姓名
 	public void RandomNameBtn ()
 	{
+		Debug.Log( "RandomNameBtn()" );
+
 		int randomXin = Random.Range (0,NameKuTemplate.nameList1.Count);
 		
 		int randomNan = Random.Range (0,NameKuTemplate.nameList2.Count);
@@ -269,31 +295,33 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 	/// </summary>
 	public void CreatRole () 
 	{	
-		if (SysparaTemplate.CompareSyeParaWord (nameInputList[roleId].text))
-		{
-			string des = LanguageTemplate.GetText (LanguageTemplate.Text.Name_2);
-			QXComData.CreateBox (1,des,true,RandomAgain);
-		}
-		else
-		{
-			CreateRoleRequest creatReq = new CreateRoleRequest();
-			
-			creatReq.roleName = nameInputList[roleId].text; //角色名字
-			
-			creatReq.roleId = roleId + 1;  //角色id
-			
-			creatReq.guoJiaId = currentNationId; //国家id
-			
-			MemoryStream tempStream = new MemoryStream();
-			
-			QiXiongSerializer tempSer = new QiXiongSerializer();
-			
-			tempSer.Serialize(tempStream, creatReq);
-			
-			byte[] t_protof = tempStream.ToArray();
-			
-			SocketTool.Instance().SendSocketMessage(ProtoIndexes.CREATE_ROLE_REQUEST , ref t_protof,"23106");
-		}
+//		if (SysparaTemplate.CompareSyeParaWord (nameInputList[roleId].text))
+//		{
+//			string des = LanguageTemplate.GetText (LanguageTemplate.Text.Name_2);
+//			QXComData.CreateBox (1,des,true,RandomAgain);
+//		}
+//		else
+//		{
+//
+//		}
+
+		CreateRoleRequest creatReq = new CreateRoleRequest();
+		
+		creatReq.roleName = nameInputList[roleId].text; //角色名字
+		
+		creatReq.roleId = roleId + 1;  //角色id
+		
+		creatReq.guoJiaId = currentNationId; //国家id
+		
+		MemoryStream tempStream = new MemoryStream();
+		
+		QiXiongSerializer tempSer = new QiXiongSerializer();
+		
+		tempSer.Serialize(tempStream, creatReq);
+		
+		byte[] t_protof = tempStream.ToArray();
+		
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.CREATE_ROLE_REQUEST , ref t_protof,"23106");
 	}
 	
 	public bool OnProcessSocketMessage( QXBuffer p_message )
@@ -322,7 +350,7 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 						//Application.LoadLevel( ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE );
 						
 						CityGlobalData.m_CreateRoleCurrent = true;
-						
+
 						//EnterBattleField.EnterBattlePve( 1, 1, LevelType.LEVEL_NORMAL );
                         if (TimeHelper.Instance.IsTimeCalcKeyExist("RoleAnimate"))
 						{
@@ -336,10 +364,15 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 						break;
 						
 					case false:
-						
-						//创建失败
-						QXComData.CreateBox (1,creatRes.msg,true,RandomAgain);
 //						Debug.Log("creatRes.msg:" + creatRes.msg);
+
+						//创建失败
+						if( ThirdPlatform.IsMyAppAndroidPlatform() ){
+							QXComData.CreateBox( 1, creatRes.msg, true, null );
+						}
+						else{
+							QXComData.CreateBox (1,creatRes.msg,true,RandomAgain);
+						}
 						
 						break;
 					}
@@ -369,7 +402,11 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 		CREATE_ROLE_NAME,
 	}
 	private StrLimitType limitType;
-	
+
+	private static int GetCreateRoleNameLimit(){
+		return 7;
+	}
+
 	/// <summary>
 	/// 字符串长度限制
 	/// </summary>
@@ -390,7 +427,7 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 			{
 			case StrLimitType.CREATE_ROLE_NAME:
 				
-				limitCount = 7;
+				limitCount = GetCreateRoleNameLimit();
 				
 				if ((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= '0' && str[i] <= '9') ||
 				    (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 0x4e00 && str[i] <= 0x9fa5))
@@ -427,6 +464,47 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 		
 		return lastStr;
 	}
+
+	public static int GetAvailableTextLength( StrLimitType limitType,string str ){
+		int limitCount = 0;
+
+		string lastStr = "";
+
+		List<char> textStrList = new List<char> ();
+
+		for (int i = 0;i < str.Length;i ++)
+		{
+			switch (limitType)
+			{
+			case StrLimitType.CREATE_ROLE_NAME:
+
+				limitCount = 7;
+
+				if ((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= '0' && str[i] <= '9') ||
+					(str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 0x4e00 && str[i] <= 0x9fa5))
+				{
+					textStrList.Add (str[i]);
+				}
+				break;
+
+			case StrLimitType.USER_NAME:
+
+				limitCount = 8;
+
+				if ((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= '0' && str[i] <= '9') ||
+					(str[i] >= 'a' && str[i] <= 'z'))
+				{
+					textStrList.Add (str[i]);
+				}
+				break;
+			default:
+				break;
+			}
+
+		}
+
+		return textStrList.Count;
+	}
 	
 	void InputHandlerCallBack (GameObject obj)
 	{
@@ -447,6 +525,7 @@ public class NewSelectRole : MonoBehaviour,SocketProcessor {
 	void OnDestroy () 
 	{	
 		SocketTool.UnRegisterMessageProcessor (this);
-		selectRole = this;
+
+		selectRole = null;
 	}
 }

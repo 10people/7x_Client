@@ -42,6 +42,10 @@ public class LockPiece : MonoBehaviour ,SocketProcessor{
 
 	void Update () {
 	
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.IsOPenYInDao();
+		}
 	}
     public void Init()
 	{
@@ -169,6 +173,7 @@ public class LockPiece : MonoBehaviour ,SocketProcessor{
 
 	public void Close()
 	{
+		UIYindao.m_UIYindao.NeedOPenYInDao ();
 		MiBaoScrollView.OpenMiBaoId = 0;
 		MiBaoScrollView.IsOPenPath = false;
 		Destroy (this.gameObject);

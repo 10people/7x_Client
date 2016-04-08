@@ -9,6 +9,7 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NationManagerment : MonoBehaviour, SocketProcessor
 {
+    public static NationManagerment m_Nation;
     public GameObject m_Main;
     public GameObject m_Durable_UI;
     public List<UILabel> m_ListInfo;
@@ -23,7 +24,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     public UIGrid m_ObjectRewardParent;
     public GameObject m_HiddenObj;
     public ScaleEffectController m_SEC;
-
+    public GameObject m_ObjRedPot;
 
     public GameObject m_ObjTopLeft;
     private List<GameObject> _listitem = new List<GameObject>();
@@ -44,6 +45,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     }
     void Start()
     {
+        m_Nation = this;
         MainCityUI.setGlobalTitle(m_ObjTopLeft, "国家", 0, 0);
         NationData.Instance.m_DataGetComplete = false;
         m_SEC.OpenCompleteDelegate += RequestData;
@@ -296,7 +298,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
         m_ListInfo[8].text = _strNotice;
       //   Debug.Log("isCanGiveisCanGiveisCanGiveisCanGiveisCanGiveisCanGiveisCanGiveisCanGiveisCanGive ::" + temp.isCanGive);
         _isLocked = temp.isCanGive;
- 
+
         //if (PushAndNotificationHelper.IsShowRedSpotNotification(500020) && _isLocked)
         //{
         //    PushAndNotificationHelper.SetRedSpotNotification(500020, true);
@@ -305,7 +307,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
         //{
         //    PushAndNotificationHelper.SetRedSpotNotification(500020, false);
         //}
-      //  m_Tanhao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(500020) && _isLocked);
+        m_ObjRedPot.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(500022) && _isLocked);
         //_lastRank = temp.lastGuoRank;
         if (temp.guojiaAward.Equals("0"))
         {
@@ -480,15 +482,17 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
 
                         if (ReponseInfo.result == 10)
                         {
+                            PushAndNotificationHelper.SetRedSpotNotification(500022, false);
+                            m_ObjRedPot.SetActive(false);
                             m_ListInfo[10].text = LanguageTemplate.GetText(LanguageTemplate.Text.NATION_REWARD) + ReponseInfo.guojiRank.ToString()
                                    + LanguageTemplate.GetText(LanguageTemplate.Text.NATION_REWARD_1) + ReponseInfo.lianMengRank.ToString()
                                    + LanguageTemplate.GetText(LanguageTemplate.Text.NATION_REWARD_2);
                        //     MainCityUIRB.SetRedAlert(212, false);
                             m_ListEvent[1].GetComponent<Collider>().enabled = false;
                             m_ListEvent[1].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
-                            m_ObjectReward.SetActive(true);
-                            ShowReward(ReponseInfo.award);
-
+                            //m_ObjectReward.SetActive(true);
+                            //ShowReward(ReponseInfo.award);
+                           FunctionWindowsCreateManagerment.ShowRAwardInfo(ReponseInfo.award);
                             //_strTitle = LanguageTemplate.GetText(LanguageTemplate.Text.NATION_LINGQUJIANGLI_TITLE);
                             //_strContent1 = LanguageTemplate.GetText(LanguageTemplate.Text.NATION_LINGQUJIANGLI_CONTENT1) + _lastRank.ToString()
                             //    + LanguageTemplate.GetText(LanguageTemplate.Text.NATION_LINGQUJIANGLI_CONTENT2) +"\n" + ShowRewardInfo(ReponseInfo.award);
@@ -704,6 +708,7 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
 
     void OnDestroy()
     {
+        m_Nation = null;
        SocketTool.UnRegisterMessageProcessor(this);
     }
 

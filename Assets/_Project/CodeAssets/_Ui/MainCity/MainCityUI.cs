@@ -55,7 +55,8 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     public GameObject equipObject;
     public int a = 0;
-
+	public static bool m_isAdd = false;
+	private bool m_isQiangzhiClick = false;
     /// <summary>
     /// 1.auto cleared when accessed;
     /// 2.After negotiation, all objects contained here are only Functions' Main UI, not sub UI popped.
@@ -122,8 +123,8 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                 PvpData.Instance.OpenPvp();
             }
 
-            if (Global.m_isOpenHuangYe)
-            {
+			if (Global.m_isOpenHuangYe && JunZhuData.Instance().m_junzhuInfo.lianMengId != 0)
+			{
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.HY_MAP),
                                         LoadHY_Map);
             }
@@ -132,7 +133,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         m_isInited = true;
 
 		Global.m_isZhanli = false;
-		Global.m_iAddZhanli = 0;
+//		Global.m_iAddZhanli = 0;
 		Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 
         setInit();
@@ -150,8 +151,12 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_Titile ), OnLoadCallBackTitle);
 		}
         //		Global.m_isZhanli = true;
-//		ClientMain.addPopUP(40, 2, "500010", null);
-        //		ClientMain.addPopUP(40, 2, "12", null);
+		if(!m_isAdd)
+		{
+			m_isAdd = true;
+//			ClientMain.addPopUP(40, 2, "9", null);
+		}
+//        		ClientMain.addPopUP(40, 2, "12", null);
 //		FunctionOpenTemp.m_EnableFuncIDList.Add(140);
 //        		ClientMain.addPopUP(40, 2, "139", null);
         //		m_MainCityUIRB.setPropUse(103103,30);
@@ -166,10 +171,18 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         return MainCityUI.m_MainCityUI.m_WindowObjectList.Count > 0;
     }
 
-    public static void TryAddToObjectList(GameObject go, bool p_add_to_2d_tool = true)
+    public static bool TryAddToObjectList(GameObject go, bool p_add_to_2d_tool = true)
     {
+
         if (m_MainCityUI != null)
         {
+			for(int i = 0; i < m_MainCityUI.m_WindowObjectList.Count; i ++)
+			{
+				if(m_MainCityUI.m_WindowObjectList[i].name == go.name)
+				{
+					return false;
+				}
+			}
             m_MainCityUI.m_WindowObjectList.Add(go);
 
             // assume all param:go is functionUI's main page, if not will cause an error
@@ -182,6 +195,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         {
             Debug.LogWarning("Warning, MainCityUI not exist.");
         }
+		return true;
     }
 
     public static void TryRemoveFromObjectList(GameObject go)
@@ -314,6 +328,12 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         m_MainCityUI = null;
 
         SocketTool.UnRegisterSocketListener(this);
+
+		if(UIShouji.m_UIShouji != null)
+		{
+			UIShouji.m_UIShouji.close();
+			UIShouji.m_UIShouji.gameObject.SetActive(false);
+		}
     }
 
 
@@ -435,7 +455,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             {
                 return;
             }
-
             //Cancel fresh guide if not in main city.
             if (MainCityUI.m_PlayerPlace != PlayerPlace.MainCity)
             {
@@ -456,16 +475,23 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                     }
                 }
             }
-        }
-
-        if (m_MainCityUiDelegate != null)
-        {
-            m_MainCityUiDelegate();
-            m_MainCityUiDelegate = null;
-        }
-    }
-
-    public void setInitButtons()
+			else
+			{
+//				for (int i = 0; i < m_MainCityUI.m_WindowObjectList.Count; i ++)
+//				{
+//					Debug.Log(m_MainCityUI.m_WindowObjectList[i].gameObject.name);
+//				}
+			}
+		}
+		
+		if (m_MainCityUiDelegate != null)
+		{
+			m_MainCityUiDelegate();
+			m_MainCityUiDelegate = null;
+		}
+	}
+	
+	public void setInitButtons()
     {
         m_MainCityListButton_L = new MainCityListButtonManager(m_ObjMainCityButtonS, "ButtonS_L", 0);
         m_MainCityListButton_RT = new MainCityListButtonManager(m_ObjMainCityButtonS, "ButtonS_RT", 1);
@@ -554,6 +580,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     public void AddButton(FunctionButtonManager functionButtonManager, FunctionOpenTemp functionOpenTemp)
     {
+		if(getButton(functionButtonManager.m_index) != null)
+		{
+			return;
+		}
         int tempID = FunctionOpenTemp.GetParent(functionOpenTemp);
         int tempType = 0;
         if (tempID == -1)
@@ -765,6 +795,15 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 	private int m_iCur = 0;
 	void Update()
 	{
+//		Debug.Log(Global.m_sMainCityWantOpenPanel);
+		if (Global.m_sMainCityWantOpenPanel != -1)
+		{
+			GameObject tempObj = new GameObject();
+			tempObj.name = "MainCityUIButton_" + Global.m_sMainCityWantOpenPanel;
+			m_isQiangzhiClick = true;
+			MYClick(tempObj);
+			Global.m_sMainCityWantOpenPanel = -1;
+		}
 		//		m_iCur ++;
 		//		if(m_iCur == 200)
 		//		{
@@ -822,8 +861,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                 {
                     GameObject tempObj = new GameObject();
                     tempObj.name = "MainCityUIButton_" + Global.m_sMainCityWantOpenPanel;
+					m_isQiangzhiClick = true;
                     MYClick(tempObj);
                     Global.m_sMainCityWantOpenPanel = -1;
+					m_isQiangzhiClick = true;
                 }
                 else if (Global.m_isShowBianqiang)
                 {
@@ -876,6 +917,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     {
         if (!m_isClick)
         {
+			Debug.Log("=================2");
             return;
         }
         //		LimitActivityData.Instance.RequestData();
@@ -897,13 +939,22 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 					{
 						TaskData.Instance.SendData(FunctionOpenTemp.GetTemplateById(id).m_iMissionOpenID, 1);
 					}
+					if(tempFunction.type < 4 && getButton(id) == null)
+					{
+						return;
+					}
 				}
 
 				//return if window opened.
-                if (MainCityUI.IsWindowsExist())
+				if (MainCityUI.IsWindowsExist() && !m_isQiangzhiClick)
                 {
+					for(int i = 0; i < MainCityUI.m_MainCityUI.m_WindowObjectList.Count; i ++)
+					{
+						Debug.Log(MainCityUI.m_MainCityUI.m_WindowObjectList[i].gameObject.name);
+					}
                     return;
                 }
+				m_isQiangzhiClick = false;
 //				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_FULI),
 //				                        AddUIPanel);
 //				return;
@@ -1023,13 +1074,14 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                     //Recharge
                     //Equip
                     case 12:
-						Debug.Log(UIShouji.m_UIShouji);
-						Debug.Log(UIShouji.m_isPlayShouji);
-						Debug.Log(m_listShoujiData.Count);
-						Debug.Log(UIShouji.m_UIShouji.m_isPlay);
-						Debug.Log(Time.realtimeSinceStartup - UIShouji.m_UIShouji.playTime);
-						Debug.Log(UIShouji.m_UIShouji.playTime);
-						Debug.Log(Time.realtimeSinceStartup);
+//						Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MAIN_CITY_YUNYING ), AddUIPanel);
+//						Debug.Log(UIShouji.m_UIShouji);
+//						Debug.Log(UIShouji.m_isPlayShouji);
+//						Debug.Log(m_listShoujiData.Count);
+//						Debug.Log(UIShouji.m_UIShouji.m_isPlay);
+//						Debug.Log(Time.realtimeSinceStartup - UIShouji.m_UIShouji.playTime);
+//						Debug.Log(UIShouji.m_UIShouji.playTime);
+//						Debug.Log(Time.realtimeSinceStartup);
 
                         if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(12))
                         {
@@ -1118,6 +1170,9 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 						break;
 					case 141:
 						PlayerSceneSyncManager.Instance.EnterTreasureCity ();
+						break;
+					case 143:
+						Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MAIN_CITY_YUNYING ), AddUIPanel);
 						break;
 					case 144:
 						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ACTIVITY_LAYER),
@@ -1473,9 +1528,14 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             PromptActionResp msg = new PromptActionResp();
             xiongSerializer.Deserialize(stream, msg, msg.GetType());
 
-            if (msg.result != 10) return true;
+                    if (msg.result != 10)
+                    {
+                        ClientMain.m_UITextManager.createText("通知已过时");
 
-            switch (msg.subaoType)
+                        return true;
+                    }
+
+                    switch (msg.subaoType)
             {
                 //transport to position.
                 case 101:
@@ -1522,12 +1582,15 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             tbGetRewardRes = QXComData.ReceiveQxProtoMessage(p_message, tbGetRewardRes) as ExploreResp;
 
             List<RewardData> dataList = new List<RewardData>();
-            for (int m = 0; m < tbGetRewardRes.awardsList.Count; m++)
-            {
-                RewardData data = new RewardData(tbGetRewardRes.awardsList[m].itemId, tbGetRewardRes.awardsList[m].itemNumber);
-                dataList.Add(data);
-            }
-            GeneralRewardManager.Instance().CreateReward(dataList);
+			if(tbGetRewardRes.awardsList != null)
+			{
+				for (int m = 0; m < tbGetRewardRes.awardsList.Count; m++)
+				{
+					RewardData data = new RewardData(tbGetRewardRes.awardsList[m].itemId, tbGetRewardRes.awardsList[m].itemNumber);
+					dataList.Add(data);
+				}
+				GeneralRewardManager.Instance().CreateReward(dataList);
+			}
             break;
         }
 		case ProtoIndexes.S_FULIINFO_RESP:
@@ -1569,6 +1632,30 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 //
 //			}
 			break;
+		}
+		case ProtoIndexes.LOOK_APPLICANTS_RESP://查看申请入盟成员请求返回
+		{
+			//	Debug.Log ("ApplicateResp" + ProtoIndexes.LOOK_APPLICANTS_RESP);
+			MemoryStream application_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+			
+			QiXiongSerializer application_qx = new QiXiongSerializer();
+			
+			LookApplicantsResp applicateResp = new LookApplicantsResp();
+			
+			application_qx.Deserialize(application_stream, applicateResp, applicateResp.GetType());
+			
+			if (applicateResp != null)
+			{
+				if (applicateResp.applicanInfo == null || applicateResp.applicanInfo.Count == 0)
+				{
+					MainCityUI.SetRedAlert(410000, false);
+				}
+				else
+				{
+					MainCityUI.SetRedAlert(410000, true);
+				}
+			}
+			return true;
 		}
         }
         return false;
@@ -1659,6 +1746,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                         {
                             ClientMain.m_isNewOpenFunction = true;
                             ClientMain.m_listPopUpData.RemoveAt(i);
+							if(UIYindao.m_UIYindao.m_isOpenYindao)
+							{
+								UIYindao.m_UIYindao.CloseUI();
+							}
                             return true;
                         }
                         break;
@@ -1791,7 +1882,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     public void JunzhuLayerLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject tempObject = Instantiate(p_object) as GameObject;
-        MainCityUI.TryAddToObjectList(tempObject);
+		if(!MainCityUI.TryAddToObjectList(tempObject))
+		{
+			Destroy(tempObject);
+		}
     }
 
     public void AddUIPanel(ref WWW p_www, string p_path, Object p_object)
@@ -1863,13 +1957,13 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                 else
                 {
                     //   Debug.Log("7777777777777777777777777777777777777");
-                    NpcManager.m_NpcManager.setGoToSelfTenement(SmallHouseId + 1000);
+                    //NpcManager.m_NpcManager.setGoToSelfTenement(SmallHouseId + 1000);
                 }
             }
             else
             {
                 //   Debug.Log("7777777777777777777777777777777777777");
-                NpcManager.m_NpcManager.setGoToTenementNpc(SmallHouseId + 1000);
+                //NpcManager.m_NpcManager.setGoToTenementNpc(SmallHouseId + 1000);
             }
         }
     }

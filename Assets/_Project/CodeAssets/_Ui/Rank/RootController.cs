@@ -11,8 +11,11 @@ namespace Rank
     {
         #region Call Interface
 
-        public static void CreateRankWindow()
+        public static int m_StoredStartModuleIndex;
+
+        public static void CreateRankWindow(int startModuleIndex = 0)
         {
+            m_StoredStartModuleIndex = startModuleIndex;
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.RANK_WINDOW),
                         RankWindowLoadBack);
         }
@@ -20,6 +23,9 @@ namespace Rank
         private static void RankWindowLoadBack(ref WWW p_www, string p_path, Object p_object)
         {
             GameObject temp = (GameObject)Instantiate(p_object) as GameObject;
+            RootController tempController = temp.GetComponent<RootController>();
+            tempController.m_StartModuleIndex = m_StoredStartModuleIndex;
+
             MainCityUI.TryAddToObjectList(temp);
         }
 
@@ -103,7 +109,7 @@ namespace Rank
 
         private int currentModule;
 
-        private void OnModulesClick(int index)
+        public void OnModulesClick(int index)
         {
             m_ModuleTogglesControl.OnToggleClick(index);
             m_ModuleControllerList.ForEach(item => item.gameObject.SetActive(false));
@@ -119,15 +125,15 @@ namespace Rank
 
         public GameObject TopLeftAnchor;
 
+        [HideInInspector]
+        public int m_StartModuleIndex = 0;
+
         private void Start()
         {
             //Initialize
             CurrentNation = 0;
             CurrentModule = 0;
-            OnModulesClick(0);
-
-            //Reset nation toggle.
-            m_NationTogglesControl.OnToggleClick(0);
+            OnModulesClick(m_StartModuleIndex);
         }
 
         private void Awake()
@@ -258,14 +264,12 @@ namespace Rank
                 {
                     tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "加为好友", m_ButtonClick = AddFriend });
                 }
-                if (BlockedData.Instance().m_BlockedInfoDic == null || BlockedData.Instance().m_BlockedInfoDic.Count == 0 || !BlockedData.Instance().m_BlockedInfoDic.Select(item => item.Value.junzhuId).Contains(m_JunzhuPlayerResp.junZhuId))
-                {
-                    tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "加入屏蔽", m_ButtonClick = Shield });
-                }
+                tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "邮件", m_ButtonClick = Mail });
                 if (m_JunzhuPlayerResp.lianMeng != "无")
                 {
                     tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "掠夺", m_ButtonClick = Rob });
                 }
+                tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "邀请入盟", m_ButtonClick = InviteToAlliance });
             }
             info.SetThis(tempKingInfo, tempConfigList);
 
@@ -279,23 +283,21 @@ namespace Rank
         /// </summary>
         private void AddFriend()
         {
-            AddFriendName = m_JunzhuPlayerResp.name;
+            if (FriendOperationData.Instance.m_FriendListInfo.friends.Select(item => item.ownerid).Contains(m_JunzhuPlayerResp.junZhuId))
+            {
+                ClientMain.m_UITextManager.createText("该玩家已经是您的好友！");
+            }
+            else
+            {
+                AddFriendName = m_JunzhuPlayerResp.name;
 
-            FriendOperationLayerManagerment.AddFriends((int)m_JunzhuPlayerResp.junZhuId);
+                FriendOperationData.Instance.AddFriends((FriendOperationData.AddFriendType)(-1), m_JunzhuPlayerResp.junZhuId, m_JunzhuPlayerResp.name);
+            }
         }
 
-        /// <summary>
-        /// king detail info window button call back.
-        /// </summary>
-        private void Shield()
+        private void Mail()
         {
-            ShieldName = m_JunzhuPlayerResp.name;
-
-            JoinToBlacklist tempMsg = new JoinToBlacklist
-            {
-                junzhuId = m_JunzhuPlayerResp.junZhuId
-            };
-            SocketHelper.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
+            NewEmailData.Instance().OpenEmail(NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE, m_JunzhuPlayerResp.name);
         }
 
         /// <summary>
@@ -304,6 +306,22 @@ namespace Rank
         private void Rob()
         {
             PlunderData.Instance.PlunderOpponent(PlunderData.Entrance.RANKLIST, m_JunzhuPlayerResp.junZhuId);
+        }
+
+        /// <summary>
+        /// king detail info window button call back.
+        /// </summary>
+        private void InviteToAlliance()
+        {
+            AllianceInvite green = new AllianceInvite();
+            green.junzhuId = m_JunzhuPlayerResp.junZhuId;
+
+            MemoryStream t_stream = new MemoryStream();
+            QiXiongSerializer q_serializer = new QiXiongSerializer();
+            q_serializer.Serialize(t_stream, green);
+            byte[] t_protof = t_stream.ToArray();
+
+            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_INVITE, ref t_protof);
         }
 
         public string AddFriendName = "";

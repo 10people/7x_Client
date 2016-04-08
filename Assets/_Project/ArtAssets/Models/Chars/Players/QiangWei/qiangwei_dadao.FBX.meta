@@ -2545,26 +2545,26 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .048389677
-        functionName: refreshCDTime
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 11
-        messageOptions: 0
-      - time: .0590718538
-        functionName: resetXuanFengCount
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: .0843881443
         functionName: firstAtt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
+        messageOptions: 0
+      - time: .0844955817
+        functionName: resetXuanFengCount
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0851128399
+        functionName: refreshCDTime
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 11
         messageOptions: 0
       - time: .957982838
         functionName: PlaySound
@@ -2722,13 +2722,6 @@ ModelImporter:
         floatParameter: 0
         intParameter: 3250
         messageOptions: 0
-      - time: .0628782883
-        functionName: PlaySound
-        data: 520201|520202|0|0
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: .0677783266
         functionName: PlaySound
         data: 3300
@@ -2885,6 +2878,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .00264014956
+        functionName: PlaySound
+        data: 330020
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .0126580643
         functionName: checkSkillDrama
         data: 
@@ -2951,6 +2951,13 @@ ModelImporter:
       - time: .957188725
         functionName: swingEnd
         data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0325078256
+        functionName: PlaySound
+        data: 520202|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

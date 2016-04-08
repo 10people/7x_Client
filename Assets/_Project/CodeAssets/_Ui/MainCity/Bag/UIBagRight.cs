@@ -162,7 +162,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
 
         tempManager.SetIconByID(m_BagItem.itemId, "x" + m_BagItem.cnt);
         tempManager.RightButtomCornorLabel.effectStyle = UILabel.Effect.Outline;
-        tempManager.RightButtomCornorLabel.effectColor = new Color(1, 0, 0, 1);
+        tempManager.RightButtomCornorLabel.effectColor = new Color(0, 0, 0, 1);
 
         //Set gameobject name and transform info.
         tempObject.name = "icon";

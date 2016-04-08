@@ -1,4 +1,7 @@
-﻿using System;
+﻿//#define UNIT_TEST
+//#define DEBUG_MODE
+
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +33,7 @@ namespace Carriage
         [HideInInspector]
         public Vector3 TrackCameraRotation;
 
-        public Transform originalPosition;
+        public Transform m_CarriagePlayerTransform;
 
         public GameObject PlayerParentObject
         {
@@ -144,7 +147,9 @@ namespace Carriage
             {
                 if (m_SelfPlayerController == null && m_SelfPlayerCultureController == null)
                 {
+#if DEBUG_MODE
                     Debug.LogWarning("Cancel play animation: " + animationName + " in self cause self player not exist");
+#endif
                     return false;
                 }
                 l_animator = m_SelfPlayerController.GetComponent<Animator>();
@@ -153,7 +158,9 @@ namespace Carriage
             {
                 if (!m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(p_uid))
                 {
+#if DEBUG_MODE
                     Debug.LogWarning("Cancel play animation: " + animationName + " in other cause other player not exist");
+#endif
                     return false;
                 }
                 l_animator = m_CarriageItemSyncManager.m_PlayerDic[p_uid].GetComponent<Animator>();
@@ -161,20 +168,27 @@ namespace Carriage
 
             if (m_animationHashListInPiority.IndexOf(Animator.StringToHash(animationName)) < 0 || m_animationHashListInPiority.IndexOf(AnimationHelper.GetAnimatorPlayingHash(l_animator)) < 0)
             {
+#if DEBUG_MODE
                 Debug.LogWarning("Cancel play animation: " + animationName + " in: " + p_uid + " cause animation/ current playing animation not exist in hierarchy.");
+#endif
                 return false;
             }
 
             if (m_animationHashListInPiority.IndexOf(Animator.StringToHash(animationName)) > m_animationHashListInPiority.IndexOf(AnimationHelper.GetAnimatorPlayingHash(l_animator)))
             {
+#if DEBUG_MODE
                 Debug.LogWarning("Cancel play animation: " + animationName + " in: " + p_uid + " cause animation hierarchy block, " + m_animationHashListInPiority.IndexOf(Animator.StringToHash(animationName)) + ">" + m_animationHashListInPiority.IndexOf(AnimationHelper.GetAnimatorPlayingHash(l_animator)));
+#endif
                 return false;
             }
 
+#if DEBUG_MODE
             if (p_uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
             {
                 Debug.LogWarning("Play animation: " + animationName + " in self.");
             }
+#endif
+
             l_animator.Play(animationName);
 
             return true;
@@ -193,37 +207,76 @@ namespace Carriage
 
         void Update()
         {
-            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
-            {
-                //banner click anyway.
-                m_CarriageMain.m_BannerEffectController.OnAlertEffectClick();
+            //Abandon this cause using ngui camera would be nicer.
 
-                //carriage click trigger.
-                var trackCameraRay = TrackCamera.ScreenPointToRay(Input.mousePosition);
-                var trackCameraHits = Physics.RaycastAll(trackCameraRay, Mathf.Infinity);
+            //#if UNITY_EDITOR||UNITY_STANDALONE
+            //            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+            //            {
+            //                //banner click anyway expect help window opened.
+            //                if (!m_CarriageMain.HelpWindowObject.activeInHierarchy)
+            //                {
+            //                    m_CarriageMain.m_BannerEffectController.OnAlertEffectClick();
+            //                }
 
-                var nguiCameraRayList = NGUICameraList.Select(item => item.ScreenPointToRay(Input.mousePosition)).ToList();
-                var nguiCameraHits = nguiCameraRayList.Select(item => Physics.RaycastAll(item, Mathf.Infinity).ToList()).Aggregate((i, j) => i.Concat(j).ToList());
+            //                //carriage click trigger.
+            //                var trackCameraRay = TrackCamera.ScreenPointToRay(Input.mousePosition);
+            //                var trackCameraHits = Physics.RaycastAll(trackCameraRay, Mathf.Infinity);
 
-                RaycastHit shieldHit = nguiCameraHits.Where(item => (item.collider.transform.gameObject.layer == LayerMask.NameToLayer("NGUI")) || (item.collider.transform.tag == "CarriageItemShield")).FirstOrDefault();
-                RaycastHit tempHit = trackCameraHits.Where(item => item.collider.transform.tag == "CarriageItemTrigger").FirstOrDefault();
-                if (shieldHit.collider != null && shieldHit.collider.transform != null)
-                {
-                    return;
-                }
-                if (tempHit.collider != null && tempHit.collider.transform != null)
-                {
-                    tempHit.collider.transform.gameObject.SendMessage("OnCarriageItemClick");
-                }
-            }
+            //                var nguiCameraRayList = NGUICameraList.Select(item => item.ScreenPointToRay(Input.mousePosition)).ToList();
+            //                var nguiCameraHits = nguiCameraRayList.Select(item => Physics.RaycastAll(item, Mathf.Infinity).ToList()).Aggregate((i, j) => i.Concat(j).ToList());
+
+            //                RaycastHit shieldHit = nguiCameraHits.Where(item => (item.collider.transform.gameObject.layer == LayerMask.NameToLayer("NGUI")) || (item.collider.transform.tag == "CarriageItemShield")).FirstOrDefault();
+            //                RaycastHit tempHit = trackCameraHits.Where(item => item.collider.transform.tag == "CarriageItemTrigger").FirstOrDefault();
+            //                if (shieldHit.collider != null && shieldHit.collider.transform != null)
+            //                {
+            //                    return;
+            //                }
+            //                if (tempHit.collider != null && tempHit.collider.transform != null)
+            //                {
+            //                    tempHit.collider.transform.gameObject.SendMessage("OnCarriageItemClick");
+            //                }
+            //            }
+            //#else
+            //            if (Input.touchCount > 0)
+            //            {
+            //                //banner click anyway expect help window opened.
+            //                if (!m_CarriageMain.HelpWindowObject.activeInHierarchy)
+            //                {
+            //                    m_CarriageMain.m_BannerEffectController.OnAlertEffectClick();
+            //                }
+
+            //                foreach (var touch in Input.touches)
+            //                {
+            //                    //carriage click trigger.
+            //                    var trackCameraRay = TrackCamera.ScreenPointToRay(touch.position);
+            //                    var trackCameraHits = Physics.RaycastAll(trackCameraRay, Mathf.Infinity);
+
+            //                    var nguiCameraRayList = NGUICameraList.Select(item => item.ScreenPointToRay(Input.mousePosition)).ToList();
+            //                    var nguiCameraHits = nguiCameraRayList.Select(item => Physics.RaycastAll(item, Mathf.Infinity).ToList()).Aggregate((i, j) => i.Concat(j).ToList());
+
+            //                    RaycastHit shieldHit = nguiCameraHits.Where(item => (item.collider.transform.gameObject.layer == LayerMask.NameToLayer("NGUI")) || (item.collider.transform.tag == "CarriageItemShield")).FirstOrDefault();
+            //                    RaycastHit tempHit = trackCameraHits.Where(item => item.collider.transform.tag == "CarriageItemTrigger").FirstOrDefault();
+            //                    if (shieldHit.collider != null && shieldHit.collider.transform != null)
+            //                    {
+            //                        return;
+            //                    }
+            //                    if (tempHit.collider != null && tempHit.collider.transform != null)
+            //                    {
+            //                        tempHit.collider.transform.gameObject.SendMessage("OnCarriageItemClick");
+            //                    }
+            //                }
+            //            }
+            //#endif
         }
 
         void Start()
         {
-            TrackCameraPosition = TrackCamera.transform.localPosition;
-            TrackCameraRotation = TrackCamera.transform.localEulerAngles;
+            var offsetPosition = TrackCamera.transform.localPosition - m_CarriagePlayerTransform.transform.localPosition;
+            TrackCameraPosition = new Vector3(offsetPosition.x, TrackCamera.transform.localPosition.y, offsetPosition.z);
+            TrackCameraRotation = TrackCamera.transform.localEulerAngles - m_CarriagePlayerTransform.transform.localEulerAngles;
 
-            CreateSelfPlayer(CityGlobalData.m_king_model_Id, JunZhuData.Instance().m_junzhuInfo.id, new Vector3(PlayerSceneSyncManager.Instance.m_MyselfPosition.z, BasicYPosition, PlayerSceneSyncManager.Instance.m_MyselfPosition.z), JunZhuData.Instance().m_junzhuInfo.name, AllianceData.Instance.IsAllianceNotExist ? "" : AllianceData.Instance.g_UnionInfo.name, JunZhuData.Instance().m_junzhuInfo.vipLv, JunZhuData.m_iChenghaoID, AllianceData.Instance.IsAllianceNotExist ? -1 : AllianceData.Instance.g_UnionInfo.identity, JunZhuData.Instance().m_junzhuInfo.guoJiaId, JunZhuData.Instance().m_junzhuInfo.level, JunZhuData.Instance().m_junzhuInfo.zhanLi);
+            Vector2 limitedPosition = m_CarriageMain.LimitPlayerPositionByCarriageNPC(new Vector2(PlayerSceneSyncManager.Instance.m_MyselfPosition.x, PlayerSceneSyncManager.Instance.m_MyselfPosition.z));
+            CreateSelfPlayer(CityGlobalData.m_king_model_Id, JunZhuData.Instance().m_junzhuInfo.id, new Vector3(limitedPosition.x, BasicYPosition, limitedPosition.y), JunZhuData.Instance().m_junzhuInfo.name, AllianceData.Instance.IsAllianceNotExist ? "" : AllianceData.Instance.g_UnionInfo.name, JunZhuData.Instance().m_junzhuInfo.vipLv, JunZhuData.m_iChenghaoID, AllianceData.Instance.IsAllianceNotExist ? -1 : AllianceData.Instance.g_UnionInfo.identity, JunZhuData.Instance().m_junzhuInfo.guoJiaId, JunZhuData.Instance().m_junzhuInfo.level, JunZhuData.Instance().m_junzhuInfo.zhanLi);
 
             //Create line point.
             CartRouteTemplate.Templates.ForEach(item =>
@@ -297,6 +350,13 @@ namespace Carriage
             };
             SocketHelper.SendQXMessage(temp5, ProtoIndexes.C_YABIAO_MOREINFO_RSQ);
 
+            //Request chou ren list.
+            YaBiaoMoreInfoReq temp6 = new YaBiaoMoreInfoReq
+            {
+                type = 4
+            };
+            SocketHelper.SendQXMessage(temp6, ProtoIndexes.C_YABIAO_MOREINFO_RSQ);
+
             //Request alliance tech info.
             SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LMKJ_INFO);
         }
@@ -305,5 +365,24 @@ namespace Carriage
         {
             base.OnDestroy();
         }
+
+#if UNIT_TEST
+        void OnGUI()
+        {
+            if (GUILayout.Button("Test buy blood times"))
+            {
+                CommonBuy.Instance.ShowBuy(123, 456, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_CarriageMain.DoBuyBloodTimes);
+            }
+            if (GUILayout.Button("Test vip"))
+            {
+                CommonBuy.Instance.ShowVIP(JunZhuData.Instance().m_junzhuInfo.vipLv + 1);
+            }
+            if (GUILayout.Button("Test long damage num"))
+            {
+                m_SelfPlayerCultureController.OnDamage(-647658086, 1, true);
+            }
+        }
+#endif
+
     }
 }

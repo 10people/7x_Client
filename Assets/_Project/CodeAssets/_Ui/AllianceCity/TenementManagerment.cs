@@ -41,7 +41,7 @@ public class TenementManagerment : Singleton<TenementManagerment>
 
     void TenementLocalPosition(int index)
     {
-        NpcManager.m_NpcManager.setGoToTenementNpc(index + 1000);
+        //NpcManager.m_NpcManager.setGoToTenementNpc(index + 1000);
     }
 
     public void NavgationToTenement(int index)

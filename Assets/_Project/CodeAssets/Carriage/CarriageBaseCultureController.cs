@@ -13,6 +13,7 @@ namespace Carriage
         public OtherPlayerController m_OtherPlayerController;
 
         public Animator m_Animator;
+        public Renderer m_MainRenderer;
         public GameObject m_ShadowObject;
 
         public void OnSkillFinish()
@@ -51,6 +52,12 @@ namespace Carriage
             }
             else
             {
+                //Remove from mesh controller.
+                if (RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(l_uId) && !RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic[l_uId].IsCarriage)
+                {
+                    ModelAutoActivator.UnregisterAutoActivator(RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic[l_uId].gameObject);
+                }
+
                 RootManager.Instance.m_CarriageItemSyncManager.DestroyPlayer(l_uId);
             }
         }
@@ -89,6 +96,16 @@ namespace Carriage
         public Camera TrackCamera;
 
         public GameObject m_UIParentObject;
+
+        public void SetUIParentObject(bool isActive)
+        {
+            if (isActive && !m_UIParentObject.activeInHierarchy)
+            {
+                ProgressBar.ForceUpdate();
+            }
+
+            m_UIParentObject.SetActive(isActive);
+        }
 
         public UIProgressBar ProgressBar;
         public UISprite ProgressBarForeSprite;
@@ -150,6 +167,11 @@ namespace Carriage
         public int RoleID;
         public long JunzhuID;
 
+        public bool IsCarriage
+        {
+            get { return RoleID >= 50000; }
+        }
+
         public GameObject PlayerSelectedSign;
 
         public virtual void SetThis()
@@ -164,7 +186,7 @@ namespace Carriage
             }
         }
 
-        public void OnCarriageItemClick()
+        public void OnClick()
         {
             TryGetController();
 
@@ -190,7 +212,7 @@ namespace Carriage
         /// <param name="damage">damage</param>
         /// <param name="remaining"></param>
         /// <param name="isSPDamage"></param>
-        public void OnDamage(float damage, float remaining, bool isSPDamage = false)
+        public void OnDamage(long damage, float remaining, bool isSPDamage = false)
         {
             StopAllCoroutines();
             DeactivePopupLabel();
@@ -210,7 +232,7 @@ namespace Carriage
             StopAllCoroutines();
             DeactivePopupLabel();
             //StartCoroutine(ShowBloodChange(recover, false));
-            ShowBloodChange(recover, false, false);
+            ShowBloodChange((long)recover, false, false);
 
             UpdateBloodBar(remaining);
         }
@@ -227,7 +249,7 @@ namespace Carriage
         private const float moveDuration = 0.5f;
         private const float stayDuration = 0.25f;
 
-        private void ShowBloodChange(float change, bool isSub, bool isSPDamage)
+        private void ShowBloodChange(long change, bool isSub, bool isSPDamage)
         {
             string labelText = (isSub ? "-" : "+") + change;
 

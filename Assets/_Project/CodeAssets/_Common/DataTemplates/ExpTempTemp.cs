@@ -9,41 +9,43 @@ public class ExpTempTemp : XmlLoadManager
     public int expId;
     public int level;
     public int needExp;
-    public static List<ExpTempTemp> templates = new List<ExpTempTemp>();
- 
- 
 
+    private static List<ExpTempTemp> templates = new List<ExpTempTemp>();
+ 
     public static void LoadTemplates(EventDelegate.Callback p_callback = null)
     {
         UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "ExpTemp.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
 
     }
 
-    public static void CurLoad(ref WWW www, string path, Object obj)
-    {
-        {
-            templates.Clear();
-        }
+	private static TextAsset m_templates_text = null;
 
-        XmlReader t_reader = null;
+    public static void CurLoad(ref WWW www, string path, Object obj){
+		if ( obj == null) {
+			Debug.LogError ("Asset Not Exist: " + path );
 
-        if (obj != null)
-        {
-            TextAsset t_text_asset = obj as TextAsset;
+			return;
+		}
 
-            t_reader = XmlReader.Create(new StringReader(t_text_asset.text));
+		m_templates_text = obj as TextAsset;
+	}
 
-            //			Debug.Log( "Text: " + t_text_asset.text );
-        }
-        else
-        {
-            t_reader = XmlReader.Create(new StringReader(www.text));
-        }
+	private static void ProcessAsset(){
+		if( templates.Count > 0 ) {
+			return;
+		}
 
-        bool t_has_items = true;
+		if( m_templates_text == null ) {
+			Debug.LogError( "Error, Asset Not Exist." );
 
-        do
-        {
+			return;
+		}
+
+		XmlReader t_reader = XmlReader.Create( new StringReader( m_templates_text.text ) );
+
+		bool t_has_items = true;
+
+		do{
             t_has_items = t_reader.ReadToFollowing("ExpTemp");
 
             if (!t_has_items)
@@ -73,10 +75,17 @@ public class ExpTempTemp : XmlLoadManager
             templates.Add(t_template);
         }
         while (t_has_items);
+
+		{
+			m_templates_text = null;
+		}
     }
 
-    public static List<ExpTempTemp> GetEquipUpgradeInfo(int expId)
-    {
+    public static List<ExpTempTemp> GetEquipUpgradeInfo(int expId){
+		{
+			ProcessAsset();
+		}
+
         List<ExpTempTemp> list = new List<ExpTempTemp>();
         for (int i = 0; i < templates.Count; i++)
         {
@@ -93,8 +102,11 @@ public class ExpTempTemp : XmlLoadManager
         return list;
     }
 
-    public static int GetEquipUpgradeInfo(int expId,int leve)
-    {
+    public static int GetEquipUpgradeInfo(int expId,int leve){
+		{
+			ProcessAsset();
+		}
+
         List<ExpTempTemp> list = new List<ExpTempTemp>();
         for (int i = 0; i < templates.Count; i++)
         {
@@ -105,8 +117,6 @@ public class ExpTempTemp : XmlLoadManager
                 list.Add(t_item);
             }
         }
-
-
 
         return 0;
     }

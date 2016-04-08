@@ -48,7 +48,7 @@
 <Mail type="30014" icon="30014" title="盟主禅让通知" taitou="主人：" content="启禀主人，您已经成功的将盟主的宝座禅让给***，联盟必将在***的领导下继往开来，发扬光大！" sender="小七" award="0" remainTime="30" mailType="1" mailfenlei="3" />
 <Mail type="30015" icon="30015" title="盟主禅让通知" taitou="主人：" content="启禀主人，您此前的杰出贡献终于获取盟主***的认可，盟主已经将盟主之位禅让给您。希望主人能够带领联盟披荆斩棘，登上王者之巅！" sender="小七" award="0" remainTime="30" mailType="1" mailfenlei="3" />
 <Mail type="30016" icon="30016" title="盟主禅让通知" taitou="主人：" content="启禀主人，联盟盟主之位发生变更！前任盟主***因种种原因，已将盟主之位禅让给新任盟主XXX，请主人快去拜访新任盟主吧！" sender="小七" award="0" remainTime="30" mailType="1" mailfenlei="3" />
-<Mail type="30017" icon="30017" title="入盟成功" taitou="主人：" content="您加入【***】联盟的申请已经被批准通过。快进入联盟，参加联盟活动吧！有丰厚的奖励等着您呦~" sender="小七" award="0" remainTime="30" mailType="4" mailfenlei="3" />
+<Mail type="30017" icon="30017" title="入盟成功" taitou="主人：" content="您加入【***】联盟的申请已经被批准通过。快进入联盟，参加联盟活动吧！有丰厚的奖励等着您呦~" sender="小七" award="0" remainTime="30" mailType="1" mailfenlei="3" />
 <Mail type="30018" icon="30018" title="入盟失败" taitou="主人：" content="很遗憾，您向【***】联盟提出的入盟申请遭到回绝。莫愁前路无知己，不如我们再去寻找其他联盟试试看！或者创建一个自己的联盟也是不错的选择哦~" sender="小七" award="0" remainTime="30" mailType="1" mailfenlei="3" />
 <Mail type="30019" icon="30019" title="联盟解散" taitou="主人：" content="主人，虽然不知您出于何种原因解散了联盟，但想必您有自己的考虑。如今天下纷争，战火四起，加入一个联盟才是明智之举。愿您早日再找到属于自己的组织！" sender="小七" award="0" remainTime="30" mailType="1" mailfenlei="3" />
 <Mail type="30020" icon="30020" title="退出联盟" taitou="主人：" content="启禀主人，您已成功退出了联盟。但是如今天下纷争，找到一个属于自己的组织，与自己的同伴一起征战天下才是明智之举。还请主人早日重新找到属于自己的联盟。" sender="小七" award="0" remainTime="30" mailType="1" mailfenlei="3" />
@@ -63,7 +63,7 @@
 <Mail type="60002" icon="60002" title="" taitou="" content="" sender="小七" award="0" remainTime="30" mailType="2" mailfenlei="8" />
 <Mail type="80000" icon="80000" title="" taitou="" content="" sender="" award="0" remainTime="30" mailType="0" mailfenlei="1" />
 <Mail type="90000" icon="90000" title="国战通知" taitou="亲爱的xxxxx：" content="国战将于今晚八点半准时开始，请各路英豪准时参加，保家卫国，征战天下。" sender="掌军司马" award="0" remainTime="0" mailType="0" mailfenlei="6" />
-<Mail type="100001" icon="100001" title="掠夺排行奖励" taitou="英雄：" content="本周掠夺玩法的排名已经确定，您的国家在全服排名中位列第***名，您的联盟在国家排名中位列第###名，特赠予您一批奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="0" mailType="2" mailfenlei="9" />
-<Mail type="100002" icon="100002" title="个人贡金排行奖励" taitou="英雄：" content="恭喜您在昨日的掠夺玩法中表现优异！您的当日排行为第***名。特赠送您丰厚的奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="1" mailType="2" mailfenlei="9" />
-<Mail type="100003" icon="100003" title="联盟贡金排行奖励通知" taitou="英雄：" content="恭喜您的联盟在昨日的掠夺玩法中表现优异！您的联盟在当日的排行为第***名。特赠予您丰厚的奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="1" mailType="1" mailfenlei="9" />
+<Mail type="100001" icon="100001" title="掠夺排行奖励" taitou="英雄：" content="上周掠夺玩法的排名已经确定，您的国家在全服排名中位列第***名，您的联盟在国家排名中位列第###名，特赠予您一批奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="0" mailType="2" mailfenlei="9" />
+<Mail type="100002" icon="100002" title="个人积分排行奖励" taitou="英雄：" content="恭喜您在昨日的掠夺玩法中表现优异！您的当日排行为第***名。特赠送您丰厚的奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="1" mailType="2" mailfenlei="9" />
+<Mail type="100003" icon="100003" title="联盟积分排行奖励通知" taitou="英雄：" content="恭喜您的联盟在昨日的掠夺玩法中表现优异！您的联盟在当日的排行为第***名。奖励已发放至您的联盟，敬请笑纳！" sender="军情密探" award="0" remainTime="1" mailType="1" mailfenlei="9" />
 </dataset>

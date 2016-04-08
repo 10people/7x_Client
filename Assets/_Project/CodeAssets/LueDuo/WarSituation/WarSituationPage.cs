@@ -33,8 +33,9 @@ public class WarSituationPage : MonoBehaviour {
 
 	public GameObject anchorTopRight;
 
-	private int situationCd;
 	private string textStr;
+
+	private bool isEnterByPlunder = false;
 
 	void Awake ()
 	{
@@ -56,14 +57,39 @@ public class WarSituationPage : MonoBehaviour {
 	/// </summary>
 	/// <param name="tempType">Temp type.</param>
 	/// <param name="tempResp">Temp resp.</param>
-	public void InItWarSituationPage (WarSituationData.SituationType tempType,JunQingResp tempResp)
+	public void InItWarSituationPage (WarSituationData.SituationType tempType,JunQingResp tempResp,bool enterByPlunder)
 	{
 		situationType = tempType;
 		situationResp = tempResp;
 
+		isEnterByPlunder = enterByPlunder;
+
+		yunBiaoBtnObj.SetActive (!enterByPlunder);
+		plunderBtnObj.transform.localPosition = new Vector3 (enterByPlunder ? -360 : -175,230,0);
+
 		situationList = QXComData.CreateGameObjectList (situationObj,tempResp.infos.Count,situationList);
 
 		PushAndNotificationHelper.SetRedSpotNotification (tempType == WarSituationData.SituationType.PLUNDER ? 410012 : 410015,situationList.Count > 0 ? true : false);
+		if (enterByPlunder)
+		{
+			PlunderPage.plunderPage.SetSituationRedPoint (situationList.Count > 0 ? true : false);
+		}
+
+		if (tempType == WarSituationData.SituationType.YUNBIAO)
+		{
+			for (int i = 0;i < tempResp.infos.Count - 1;i ++)
+			{
+				for (int j = 0;j < tempResp.infos.Count - i -1;j ++)
+				{
+					if (tempResp.infos[j].friendRemainHP > tempResp.infos[j + 1].friendRemainHP)
+					{
+						HistoryBattleInfo tempInfo = tempResp.infos[j];
+						tempResp.infos[j] = tempResp.infos[j + 1];
+						tempResp.infos[j + 1] = tempInfo;
+					}
+				}
+			}
+		}
 
 		for (int i = 0;i < situationList.Count;i ++)
 		{
@@ -78,7 +104,9 @@ public class WarSituationPage : MonoBehaviour {
 		situationSb.gameObject.SetActive (situationList.Count > 3 ? true : false);
 
 		desLabel.text = situationList.Count > 0 ? "" : MyColorData.getColorString (1,"军情记录为空");
-		leftLabel.text = MyColorData.getColorString (5,tempType == WarSituationData.SituationType.YUNBIAO ? "盟友运镖成功后联盟可获得建设值" : "驱逐可获得贡献度奖励\n驱逐成功联盟可获得建设值");
+		leftLabel.text = MyColorData.getColorString (5,tempType == WarSituationData.SituationType.YUNBIAO ? "盟友运镖成功后联盟可获得建设值" : "驱逐可获得贡献度奖励\n驱逐成功联盟将不会损失建设值");
+
+		StopCoroutine ("PlunderSituationCd");
 
 		switch (tempType)
 		{
@@ -88,25 +116,21 @@ public class WarSituationPage : MonoBehaviour {
 			{
 				if (situationResp.cd > 0)
 				{
-					situationCd = situationResp.cd;
 					StartCoroutine ("PlunderSituationCd");
 				}
 				else
 				{
-					StopCoroutine ("PlunderSituationCd");
 					rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp);
 				}
 			}
 			else
 			{
-				StopCoroutine ("PlunderSituationCd");
 				rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp);
 			}
 
 			break;
 		case WarSituationData.SituationType.YUNBIAO:
 
-			StopCoroutine ("PlunderSituationCd");
 			rightLabel.text = "";
 
 			break;
@@ -150,18 +174,18 @@ public class WarSituationPage : MonoBehaviour {
 
 	IEnumerator PlunderSituationCd ()
 	{
-		while (situationCd > 0)
+		while (situationResp.cd > 0)
 		{
-			situationCd --;
+			situationResp.cd --;
+
+			rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp +
+			                                              "\n驱逐冷却时间：" + TimeHelper.GetUniformedTimeString (situationResp.cd));
 
 			yield return new WaitForSeconds (1);
 
-			rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp +
-			                                              "驱逐冷却时间：" + TimeHelper.GetUniformedTimeString (situationCd));
-
-			if (situationCd == 0)
+			if (situationResp.cd == 0)
 			{
-				WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER);
+				WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER,isEnterByPlunder);
 			}
 		}
 	}
@@ -206,7 +230,7 @@ public class WarSituationPage : MonoBehaviour {
 			}
 		}
 
-		InItWarSituationPage (situationType,situationResp);
+		InItWarSituationPage (situationType,situationResp,isEnterByPlunder);
 	}
 
 	/// <summary>
@@ -215,21 +239,22 @@ public class WarSituationPage : MonoBehaviour {
 	/// <param name="tempInfo">Temp info.</param>
 	public void FightJudgment (HistoryBattleInfo tempInfo)
 	{
-		if (situationResp.todayRemainHelp <= 0)
-		{
-			textStr = "今日已无剩余驱逐次数！";
-			QXComData.CreateBox (1,textStr,true,null);
-		}
-		else if (situationCd > 0)
-		{
-			textStr = "处于驱逐冷却期！";
-			QXComData.CreateBox (1,textStr,true,null);
-		}
-		else
-		{
-			//请求驱逐
-			WarSituationData.Instance.Expel (tempInfo.itemId);
-		}
+		WarSituationData.Instance.Expel (tempInfo.itemId);
+//		if (situationResp.todayRemainHelp <= 0)
+//		{
+//			textStr = "今日已无剩余驱逐次数！";
+//			QXComData.CreateBox (1,textStr,true,null);
+//		}
+//		else if (situationResp.cd > 0)
+//		{
+//			textStr = "处于驱逐冷却期！";
+//			QXComData.CreateBox (1,textStr,true,null);
+//		}
+//		else
+//		{
+//			//请求驱逐
+//			WarSituationData.Instance.Expel (tempInfo.itemId);
+//		}
 	}
 
 	public void CloseSituationPage ()

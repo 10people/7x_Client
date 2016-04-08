@@ -9,6 +9,8 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class MapData : MonoBehaviour, SocketProcessor {
 
+	public UISprite MapBianKuang;
+
 	[HideInInspector]public bool UI_exsit = false;
 	public int GuoGuanNunbers;
     public  Section myMapinfo; 
@@ -69,6 +71,7 @@ public class MapData : MonoBehaviour, SocketProcessor {
 	{
 		StartCoroutine (Changestatebtn());
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5 ,null ,null);
+
 	}
 
 	void OnDestroy(){
@@ -275,7 +278,7 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			return;
 		}
 		if (FreshGuide.Instance().IsActive (100145) && TaskData.Instance.m_TaskInfoDic [100145].progress >= 0) {
-			Debug.Log("领完奖励回程");
+//			Debug.Log("领完奖励回程");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100145];
 			
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
@@ -424,11 +427,30 @@ public class MapData : MonoBehaviour, SocketProcessor {
 				  
 					t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-			     	myMapinfo = tempInfo;
-
-				    CurrChapter = myMapinfo.s_section;
+				// 临时添加判断条件  只能到13章节
+			
 				   
-//					if(UIYindao.m_UIYindao.m_isOpenYindao)
+					if(tempInfo.s_section > 13)
+					{
+						tempInfo.s_section =13;
+					}
+					if(tempInfo.sectionMax > 13)
+					{
+						tempInfo.sectionMax = 13;
+					}
+					if(tempInfo.maxCqPassId > 13)
+					{
+						tempInfo.maxCqPassId = 13;
+					}
+
+			     	myMapinfo = tempInfo;
+				    MapType ();
+			       CurrChapter = myMapinfo.s_section;
+//				foreach(Level tempLevel in myMapinfo.s_allLevel)
+//				{
+//					Debug.Log("tempLevel = "+tempLevel.s_pass);
+//				}
+					//					if(UIYindao.m_UIYindao.m_isOpenYindao)
 //					{
 //						UIYindao.m_UIYindao.CloseUI();
 //					}
@@ -436,10 +458,16 @@ public class MapData : MonoBehaviour, SocketProcessor {
 
 				    CityGlobalData.m_temp_CQ_Section = tempInfo.maxCqPassId;
 
-					if(tempInfo.s_section > CityGlobalData.m_LastSection)
+//				Debug.Log("tempInfo.sectionMax = "+tempInfo.sectionMax);
+					if(tempInfo.sectionMax < 0)
 					{
-						CityGlobalData.m_LastSection = tempInfo.s_section;
+						tempInfo.sectionMax = 1;
 					}
+				    CityGlobalData.m_LastSection = tempInfo.sectionMax;
+//					if(tempInfo.s_section > CityGlobalData.m_LastSection)
+//					{
+//						CityGlobalData.m_LastSection = tempInfo.s_section;
+//					}
 					AllChapteres = CityGlobalData.m_LastSection;
 					//第一次进入pve场景时候获得当前的章节数
 					if(IsFirstIn)
@@ -453,7 +481,6 @@ public class MapData : MonoBehaviour, SocketProcessor {
 
 					}
 				   if(CityGlobalData.PT_Or_CQ){
-
 						Initmapinfo();  
 					    PassLevelBtn.Instance().InitData(CurrChapter);
 					}
@@ -573,9 +600,22 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			}
 		}
 	}
-
+    public  void MapType()
+	{
+	    if(CityGlobalData.PT_Or_CQ)
+		{
+			MapBianKuang.spriteName = "MapDikuang";
+		}
+		else
+		{
+			MapBianKuang.spriteName = "ChuanQiDiKuang";
+		}
+	}
 	public static void sendmapMessage(int a)
 	{
+		CityGlobalData.PveLevel_UI_is_OPen = false;
+
+		//Debug.Log ("CityGlobalData.PT_Or_CQ = "+CityGlobalData.PT_Or_CQ);
 		PvePageReq mapinfo = new PvePageReq ();
 
 		MemoryStream mapStream = new MemoryStream ();

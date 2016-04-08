@@ -194,7 +194,7 @@ public class EquipSuoData:MonoBehaviour
             str1 = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SS);
         }
       
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), "", null, cancelStr,confirmStr, OnComfirm, null, null);
+        uibox.setBox(upLevelTitleStr,  str1, "", null, cancelStr,confirmStr, OnComfirm, null, null);
     }
 
     private static void OnComfirm(int index)
@@ -260,8 +260,8 @@ public class EquipSuoData:MonoBehaviour
         {
             _BoxObj = Global.CreateBox(
                  _strTitle,
-                 MyColorData.getColorString(1, _strContent1),
-                 MyColorData.getColorString(1, _strContent2),
+                _strContent1,
+                _strContent2,
                  null,
                   concelStr,
                   confirmStr,
@@ -280,8 +280,8 @@ public class EquipSuoData:MonoBehaviour
             {
                 _BoxObj = Global.CreateBox(
                    _strTitle,
-                   MyColorData.getColorString(1, _strContent1),
-                   MyColorData.getColorString(1, _strContent2),
+                    _strContent1,
+                   _strContent2,
                     null,
                     confirmStr,
                     null,
@@ -298,8 +298,8 @@ public class EquipSuoData:MonoBehaviour
             {
                 _BoxObj = Global.CreateBox(
                      title,
-                     MyColorData.getColorString(1, _strContent1),
-                     MyColorData.getColorString(1, _strContent2),
+                    _strContent1,
+                    _strContent2,
                      null,
                       concelStr,
                       confirmStr,
@@ -330,7 +330,7 @@ public class EquipSuoData:MonoBehaviour
         _BoxObj = boxObj;
         UIBox uibox = boxObj.GetComponent<UIBox>();
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-        uibox.setBox(_strTitle, MyColorData.getColorString(1, _strContent1), MyColorData.getColorString(1, _strContent2), null, confirmStr, null, null);
+        uibox.setBox(_strTitle, _strContent1, _strContent2, null, confirmStr, null, null);
     }
 
     private static string _OtherPlayerInfo = "";

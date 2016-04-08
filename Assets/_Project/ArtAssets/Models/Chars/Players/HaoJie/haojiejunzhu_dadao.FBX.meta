@@ -604,6 +604,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .00325732888
+        functionName: PlaySound
+        data: 330020
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -670,6 +677,13 @@ ModelImporter:
       - time: .953854322
         functionName: swingEnd
         data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .00816822145
+        functionName: PlaySound
+        data: 4022|4023|0|0|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -776,12 +790,26 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .992841184
-        functionName: playAttackEffect
+      - time: .0831008777
+        functionName: refreshCDTime
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 201
+        intParameter: 11
+        messageOptions: 0
+      - time: .0843881443
+        functionName: firstAtt
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0844955817
+        functionName: resetXuanFengCount
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       - time: .957982838
         functionName: PlaySound
@@ -797,26 +825,12 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0590718538
-        functionName: resetXuanFengCount
+      - time: .992841184
+        functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .0843881443
-        functionName: firstAtt
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .0548522919
-        functionName: refreshCDTime
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 11
+        intParameter: 201
         messageOptions: 0
       transformMask:
       - path: 

@@ -2,6 +2,8 @@
 
 //#define SKIP_TEX_OPTIMIZE_ANDROID
 
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +13,8 @@ using System.Text;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
+
+
 
 public class PrepareForBattleField : MonoBehaviour {
 

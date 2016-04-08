@@ -251,6 +251,7 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 			setRed(m_FuncTemplate.m_show_red_alert);
 			setNum(m_FuncTemplate.m_iNum);
 			m_isSuperAlert = false;
+			m_ButtonSprite.depth = 2;
 		}
 	}
 }

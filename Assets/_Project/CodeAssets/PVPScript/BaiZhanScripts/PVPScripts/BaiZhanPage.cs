@@ -18,11 +18,17 @@ public class BaiZhanPage : MonoBehaviour {
 
 	public ScaleEffectController sEffectController;
 
+	private bool yd_FirstFight = true;
+	public bool Yd_FirstFight { set{yd_FirstFight = value;} get{return yd_FirstFight;} }
+
 	private bool yd_GetReward = true;
 	public bool Yd_GetReward { set{yd_GetReward = value;} get{return yd_GetReward;}}
 
 	private bool yd_Store = true;
 	public bool Yd_Store { set{yd_Store = value;} get{return yd_Store;}}
+
+	private bool afterYinDao = false;
+	public bool AfterYinDao { set{afterYinDao = value;} get{return afterYinDao;} }
 
 	private bool isOpenFirst = false;
 
@@ -55,15 +61,21 @@ public class BaiZhanPage : MonoBehaviour {
 			sEffectController.OnOpenWindowClick ();
 		}
 
-		InItMyRank ();
-		InItOpponent ();
-		InItChallenge ();
-
-		foreach (EventHandler handler in pvpHandlerList)
+//		Debug.Log ("100200:" + QXComData.CheckYinDaoOpenState (100200));
+//		Debug.Log ("100210:" + QXComData.CheckYinDaoOpenState (100210));
+//		Debug.Log ("100220:" + QXComData.CheckYinDaoOpenState (100220));
+		if (!QXComData.CheckOpenTask (100200) && !QXComData.CheckOpenTask (100210) && !QXComData.CheckOpenTask (100220))
 		{
-			handler.m_click_handler -= BaiZhanHandlerListClickBack;
-			handler.m_click_handler += BaiZhanHandlerListClickBack;
+//			Debug.Log ("CloseYinDao");
+			AfterYinDao = true;
+			UIYindao.m_UIYindao.CloseUI ();
 		}
+		else
+		{
+			AfterYinDao = false;
+		}
+		
+		//		Debug.Log ("baiZhanResp.lastHighestRank:" + baiZhanResp.lastHighestRank);
 		if (baiZhanResp.rankAward > 0)
 		{
 			List<RewardData> tempList = new List<RewardData>();
@@ -73,11 +85,22 @@ public class BaiZhanPage : MonoBehaviour {
 		}
 		else
 		{
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
-
+			Yd_FirstFight = false;
 			Yd_GetReward = false;
 			Yd_Store = false;
+			
 			Global.m_isOpenBaiZhan = false;
+		}
+//		Debug.Log ("AfterYinDao:" + AfterYinDao);
+
+		InItMyRank ();
+		InItOpponent ();
+		InItChallenge ();
+
+		foreach (EventHandler handler in pvpHandlerList)
+		{
+			handler.m_click_handler -= BaiZhanHandlerListClickBack;
+			handler.m_click_handler += BaiZhanHandlerListClickBack;
 		}
 	}
 
@@ -91,9 +114,6 @@ public class BaiZhanPage : MonoBehaviour {
 
 	public UILabel rankLabel;
 	public UILabel rankDesLabel;
-
-	private int myRank;
-	public int MyRank { set{myRank = value;} get{return myRank;}}
 
 	public UILabel weiWangLabel;
 	public UILabel getWeiWangLabel;
@@ -127,14 +147,13 @@ public class BaiZhanPage : MonoBehaviour {
 		nextJunXianIcon.spriteName = maxLevel ? "" : "junxian" + BaiZhanTemplate.getBaiZhanTemplateById (baiZhanResp.pvpInfo.baizhanXMLId + 1).jibie;
 		nextJunXian.spriteName = maxLevel ? "" : "JunXian_" + BaiZhanTemplate.getBaiZhanTemplateById (baiZhanResp.pvpInfo.baizhanXMLId + 1).jibie;
 
-		MyRank = baiZhanResp.pvpInfo.historyHighRank;
 		rankLabel.text = "排名：" + baiZhanResp.pvpInfo.rank.ToString ();
 		rankDesLabel.transform.localPosition = maxLevel ? new Vector3(-250,-20) : new Vector3 (-290,-70,0);
-		rankDesLabel.text = MyColorData.getColorString (3,(maxLevel ? "[d80202]已达到最高军衔[-]" : "排名达到[d80202]" + BaiZhanTemplate.getBaiZhanTemplateById (baiZhanResp.pvpInfo.baizhanXMLId + 1).minRank + "[-]进阶") + "\n军衔越高，威望产出越多");
+		rankDesLabel.text = MyColorData.getColorString (3,(maxLevel ? "[d80202]已达到最高军衔[-]" : "排名达到[d80202]" + BaiZhanTemplate.getBaiZhanTemplateById (baiZhanResp.pvpInfo.baizhanXMLId + 1).maxRank + "[-]进阶") + "\n军衔越高，威望产出越多");
 
-		Debug.Log ("baiZhanResp.pvpInfo.rank:" + baiZhanResp.pvpInfo.rank);
-
-		Debug.Log ("baiZhanResp.canGetweiWang:" + baiZhanResp.canGetweiWang);
+//		Debug.Log ("baiZhanResp.pvpInfo.rank:" + baiZhanResp.pvpInfo.rank);
+//
+//		Debug.Log ("baiZhanResp.canGetweiWang:" + baiZhanResp.canGetweiWang);
 
 		weiWangLabel.text = baiZhanResp.hasWeiWang.ToString ();
 		getWeiWangLabel.text = MyColorData.getColorString (3,"可领：[016bc5]"+ baiZhanResp.canGetweiWang + "/" + (baiZhanResp.pvpInfo.rank > 5000 ? BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (5001).weiwangLimit : BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (baiZhanResp.pvpInfo.rank).weiwangLimit) + "[-]" + "威望");
@@ -229,6 +248,11 @@ public class BaiZhanPage : MonoBehaviour {
 
 	void OpponentHandlerClickBack (GameObject obj)
 	{
+//		Debug.Log ("AfterYinDao:" + AfterYinDao);
+		if (!AfterYinDao) 
+		{
+			return;
+		}
 		//打开对手详情窗口
 		opponentWindow.SetActive (true);
 		PvpOpponentInfo opponentWin = opponentWindow.GetComponent<PvpOpponentInfo> ();
@@ -256,7 +280,7 @@ public class BaiZhanPage : MonoBehaviour {
 		StopCoroutine ("ChallangeCd");
 		label2.transform.localPosition = new Vector3 (155,0,0);
 
-		if (baiZhanResp.pvpInfo.time <= 0 || QXComData.CheckYinDaoOpenState (100255))
+		if (baiZhanResp.pvpInfo.time <= 0)
 		{
 			label1.color = Color.white;
 			if (baiZhanResp.pvpInfo.leftTimes > 0)
@@ -331,6 +355,10 @@ public class BaiZhanPage : MonoBehaviour {
 
 	void BaiZhanHandlerListClickBack (GameObject obj)
 	{
+		if (!AfterYinDao) 
+		{
+			return;
+		}
 		switch (obj.name)
 		{
 		case "ShopBtn":
@@ -348,12 +376,12 @@ public class BaiZhanPage : MonoBehaviour {
 //			tempList.Add (new RewardData(900002,1000));
 //			OpenHighRankRewardWindow (tempList);
 			OpenRankRewardWindow ();
-			PvpRankReward.rankReward.InItRankReward (baiZhanResp.pvpInfo.rank);
+			PvpRankReward.rankReward.InItRankReward (baiZhanResp.pvpInfo.historyHighRank);
 
 			break;
 		case "RankBtn":
 
-			Rank.RootController.CreateRankWindow ();
+			Rank.RootController.CreateRankWindow (2);
 
 			break;
 		case "RulesBtn":
@@ -408,6 +436,7 @@ public class BaiZhanPage : MonoBehaviour {
 			break;
 		case "ResetBtn":
 
+			PvpData.Instance.PvpOpponentInfo = null;
 			int cleanCdVipLevel = baiZhanResp.canCleanCDvipLev;
 			if (JunZhuData.Instance().m_junzhuInfo.vipLv < cleanCdVipLevel)
 			{
@@ -423,6 +452,7 @@ public class BaiZhanPage : MonoBehaviour {
 			break;
 		case "BuyTimesBtn":
 
+//			PvpData.Instance.PvpOpponentInfo = null;
 			if (baiZhanResp.leftCanBuyCount == 0)
 			{
 				if (JunZhuData.Instance().m_junzhuInfo.vipLv < QXComData.maxVipLevel)
@@ -493,7 +523,7 @@ public class BaiZhanPage : MonoBehaviour {
 		}
 		else
 		{
-			
+
 		}
 	}
 	
@@ -568,20 +598,41 @@ public class BaiZhanPage : MonoBehaviour {
 			getTipObj.SetActive (false);
 			getTipObj.transform.localScale = Vector3.zero;
 		}
-		
+
+		if (QXComData.CheckYinDaoOpenState (100200) && !Yd_FirstFight)
+		{
+//			Debug.Log ("100200");
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,2);
+
+			StartCoroutine ("WaitForClick");
+			Yd_FirstFight = true;
+		}
+
 		if (QXComData.CheckYinDaoOpenState (100210) && !Yd_GetReward)
 		{
+//			Debug.Log ("100210");
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100210,1);
-			
+
+			StartCoroutine ("WaitForClick");
 			Yd_GetReward = true;
 		}
 		
 		if (QXComData.CheckYinDaoOpenState (100220) && !Yd_Store)
 		{
+//			Debug.Log ("100220");
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100220,1);
-			
+
+			StartCoroutine ("WaitForClick");
 			Yd_Store = true;
+//			Debug.Log ("Yd_Store:" + Yd_Store);
+//			Debug.Log ("AfterYinDao:" + AfterYinDao);
 		}
+	}
+
+	IEnumerator WaitForClick ()
+	{
+		yield return new WaitForSeconds (0.5f);
+		AfterYinDao = true;
 	}
 
 	//是否有新的对战记录

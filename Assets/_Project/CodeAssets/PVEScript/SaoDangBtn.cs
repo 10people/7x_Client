@@ -33,7 +33,7 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 
 	void OnDestroy()
 	{
-
+		saodanginfo = null;
 	}
 
 	void Start () 

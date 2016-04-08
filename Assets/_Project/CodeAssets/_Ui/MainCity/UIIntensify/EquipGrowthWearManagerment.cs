@@ -23,7 +23,7 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     public UILabel m_LabContent;
     public ScaleEffectController m_SEC;
     public GameObject m_ObjTopLeft;
-    private bool _IsNotNull;
+    private bool _IsNotNull = true;
 
     void Awake()
     {
@@ -70,30 +70,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
         {
             switch (index)
             {
-                case 0:
-                    {
-                        //if (!FunctionOpenTemp.GetWhetherContainID(1211))
-                        //{
-                        //    EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
-                        //      , LanguageTemplate.GetText(LanguageTemplate.Text.EQUIP_UPGRADE)
-                        //      , "");
-                        //    return;
-                        //}
-
-                    }
-                    break;
-                case 1:
-                    {
-                        //if (!FunctionOpenTemp.GetWhetherContainID(1212))
-                        //{
-                        //    EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
-                        //      , LanguageTemplate.GetText(LanguageTemplate.Text.EQUIP_STRENGTH)
-                        //      , "");
-                        //    return;
-                        //}
-
-                    }
-                    break;
                 case 2:
                     {
 
@@ -112,11 +88,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
 
             FunctionWindowsCreateManagerment.SetSelectEquipInfo(index, _Index_Save);
             CityGlobalData.m_ShowSelectType = 0;
-            //if (index == 0)
-            //{
-            //    Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-            //    ShowEquipTanHao();
-            //}
 
             if (index == 2)
             {
@@ -130,15 +101,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                 _Index_Type_Save = index;
                 switch (index)
                 {
-                    //case 0:
-                    //    {
-                    //        showAniMation();
-                    //        m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
-                    //        m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                    //        m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                    //    }
-
-                    //    break;
                     case 1:
                         {
                             m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
@@ -166,46 +128,22 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                         break;
                 }
                 Dictionary<int, BagItem> tempEquipsOfBodyDic = EquipsOfBody.Instance().m_equipsOfBodyDic;
-
-                if (index > 0)
+                if (tempEquipsOfBodyDic.ContainsKey(_Index_Save))
                 {
-                    if (tempEquipsOfBodyDic.ContainsKey(_Index_Save))
-                    {
-                        m_IntensifyOrWash.GetComponent<EquipGrowthEquipInfoManagerment>().
-                            GetEquipInfo(tempEquipsOfBodyDic[_Index_Save].itemId,
-                            tempEquipsOfBodyDic[_Index_Save].dbId,
-                            index - 1,
-                            _Index_Save);
-                    }
-                }
-                else
-                {
-                    if (tempEquipsOfBodyDic.ContainsKey(_Index_Save))
-                    {
-                        m_IntensifyOrWash.GetComponent<EquipGrowthEquipInfoManagerment>().
-                            GetEquipInfo(tempEquipsOfBodyDic[_Index_Save].itemId,
-                            tempEquipsOfBodyDic[_Index_Save].dbId,
-                            2,
-                            _Index_Save);
-                    }
+                    m_IntensifyOrWash.GetComponent<EquipGrowthEquipInfoManagerment>().
+                        GetEquipInfo(tempEquipsOfBodyDic[_Index_Save].itemId,
+                        tempEquipsOfBodyDic[_Index_Save].dbId,
+                        index - 1,
+                        _Index_Save);
                 }
             }
         }
-      
     }
   
 
     void ShowEquips(int index)
     {
-   
-      FunctionWindowsCreateManagerment.SetSelectEquipInfo(_Index_Type_Save, index);
-        //if (FreshGuide.Instance().IsActive(100160) && TaskData.Instance.m_TaskInfoDic[100160].progress >= 0)
-        //{
-        //    TaskData.Instance.m_iCurMissionIndex = 100160;
-        //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-        //    tempTaskData.m_iCurIndex = 2;
-        //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        //}
+       FunctionWindowsCreateManagerment.SetSelectEquipInfo(_Index_Type_Save, index);
         if (_Index_Save != index)
         {
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(false);
@@ -228,83 +166,40 @@ public class EquipGrowthWearManagerment : MonoBehaviour
 
      public void ShowDefault()
     {
-        //   if (UIYindao.m_UIYindao.m_isOpenYindao)
-        //{
-        //    CityGlobalData.m_isRightGuide = false;
-        //    //if (FreshGuide.Instance().IsActive(100080) && TaskData.Instance.m_TaskInfoDic[100080].progress >= 0)
-        //    //{
-        //    //    m_IntensifyOrWash.GetComponent<EquipGrowthEquipInfoManagerment>().m_ScrollView.enabled = false;
-        //    //    FunctionWindowsCreateManagerment.SetSelectEquipInfo(1, 3);
-        //    //    TaskData.Instance.m_iCurMissionIndex = 100080;
-
-        //    //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-        //    //    tempTaskData.m_iCurIndex = 2;
-        //    //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        //    //}
-
-        //    //else if (FreshGuide.Instance().IsActive(100160) && TaskData.Instance.m_TaskInfoDic[100160].progress >= 0)
-        //    //{
-        //    //    m_IntensifyOrWash.GetComponent<EquipGrowthEquipInfoManagerment>().m_ScrollView.enabled = false;
-        //    //    ////FunctionWindowsCreateManagerment.SetSelectEquipInfo(1,0);
-        //    //    TaskData.Instance.m_iCurMissionIndex = 100160;
-        //    //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-        //    //    tempTaskData.m_iCurIndex = 1;
-        //    //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        //    //}
-
-        //    //else if (FreshGuide.Instance().IsActive(100330) && TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
-        //    //{
-        //    //    FunctionWindowsCreateManagerment.SetSelectEquipInfo(2, 3);
-        //    //    TaskData.Instance.m_iCurMissionIndex = 100330;
-
-        //    //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-        //    //    tempTaskData.m_iCurIndex = 2;
-        //    //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-        //    //}
-        //    //else
-
-        //    {
-        //        UIYindao.m_UIYindao.CloseUI();
-        //    }
-        //}
         if (!string.IsNullOrEmpty(Global.m_sPanelWantRun))
         {
             int type = int.Parse(Global.NextCutting( ref Global.m_sPanelWantRun));
             int buwei = 0;
-            if (!string.IsNullOrEmpty(Global.NextCutting(ref Global.m_sPanelWantRun)))
+   
+            string equip_id = Global.NextCutting(ref Global.m_sPanelWantRun) ;
+            if (!string.IsNullOrEmpty(equip_id))
             {
-                buwei = EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(int.Parse(Global.NextCutting(ref Global.m_sPanelWantRun))).buWei);
+                int tt = 0;
+                if (int.TryParse(equip_id, out tt))
+                {
+                    buwei = EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(int.Parse(equip_id)).buWei);
+                }
+                else
+                {
+                    string[] _info = FunctionWindowsCreateManagerment.m_EquipSaveInfo.Split(':');
+                    buwei = int.Parse(_info[1]);
+                }
             }
             else
             {
                 string[] _info = FunctionWindowsCreateManagerment.m_EquipSaveInfo.Split(':');
                 buwei = int.Parse(_info[1]);
             }
-            _Index_Save = buwei;
-
+           
+            Global.m_sPanelWantRun = null;
             if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(buwei))
             {
                 m_listItemEvent[buwei].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
-                m_listItemEvent[buwei].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
-                Global.m_sPanelWantRun = null;
+                m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(false);
+                _Index_Save = buwei;
                 _IsNotNull = false;
                 switch (type)
                 {
-                    //case 0:
-                    //    {
-                    //        if (!FunctionOpenTemp.GetWhetherContainID(1211))
-                    //        {
-                    //            ShowTypes(1);
-                    //            EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
-                    //              , LanguageTemplate.GetText(LanguageTemplate.Text.EQUIP_UPGRADE)
-                    //              , "");
-                    //        }
-                    //        else
-                    //        {
-                    //            ShowTypes(type);
-                    //        }
-                    //    }
-                    //    break;
                     case 1:
                         {
                             ShowTypes(type);
@@ -316,7 +211,7 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                             {
                                 ShowTypes(1);
                                 EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
-                                 , LanguageTemplate.GetText(LanguageTemplate.Text.EQUIP_WASH)
+                                 , FunctionOpenTemp.GetTemplateById(1210).m_sNotOpenTips
                                  , "");
                             }
                             else
@@ -337,26 +232,12 @@ public class EquipGrowthWearManagerment : MonoBehaviour
         else
         {
             string[] _info = FunctionWindowsCreateManagerment.m_EquipSaveInfo.Split(':');
+         
+            m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(false);
             _Index_Save = int.Parse(_info[1]);
-            m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
             switch (int.Parse(_info[0]))
             {
-                //case 0:
-                //    {
-                //        if (!FunctionOpenTemp.GetWhetherContainID(1211))
-                //        {
-                //            ShowTypes(1);
-                //            EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
-                //              ,LanguageTemplate.GetText(LanguageTemplate.Text.EQUIP_UPGRADE)
-                //              ,"");
-                //        }
-                //        else
-                //        {
-                //            ShowTypes(int.Parse(_info[0]));
-                //        }
-                //    }
-                //    break;
                 case 1:
                     {
                         ShowTypes(int.Parse(_info[0]));
@@ -402,10 +283,10 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             }
         }
 
-        if (!_IsNotNull && !string.IsNullOrEmpty(Global.m_sPanelWantRun))
+         if (!_IsNotNull && !string.IsNullOrEmpty(Global.m_sPanelWantRun))
         {
             _IsNotNull = true;
-            ShowDefault();
+           ShowDefault();
         }
     }
 
@@ -515,6 +396,7 @@ public class EquipGrowthWearManagerment : MonoBehaviour
 
     void OnDisable()
     {
+        _IsNotNull = false;
         m_EquipGrowth = null;
     }
     void OnDestroy()

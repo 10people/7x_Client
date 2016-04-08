@@ -138,7 +138,7 @@ public class DroppenAI : MonoBehaviour
 
 		Vector3 targetP = BattleControlor.Instance().getKing ().transform.position + new Vector3(0, 1.5f, 0);
 
-		if(Vector3.Distance(transform.position, targetP) < .5f)
+		if(Vector3.Distance(transform.position, targetP) < 1f)
 		{
 			flying = false;
 

@@ -31,6 +31,11 @@ ModelImporter:
     100046: Bone11(mirrored)(mirrored) 1
     100048: //RootNode
     100050: S7_qizi_001
+    100052: Bone10(mirrored)(mirrored)1
+    100054: Bone10(mirrored)1
+    100056: Bone11(mirrored)(mirrored)1
+    100058: Bone11(mirrored)1
+    100060: Bone16
     400000: Bone01
     400002: Bone03
     400004: Bone05
@@ -57,6 +62,11 @@ ModelImporter:
     400046: Bone11(mirrored)(mirrored) 1
     400048: //RootNode
     400050: S7_qizi_001
+    400052: Bone10(mirrored)(mirrored)1
+    400054: Bone10(mirrored)1
+    400056: Bone11(mirrored)(mirrored)1
+    400058: Bone11(mirrored)1
+    400060: Bone16
     4300000: S7_qizi_001
     7400000: Take 001
     9500000: //RootNode

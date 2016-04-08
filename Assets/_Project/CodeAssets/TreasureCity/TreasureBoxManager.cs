@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TreasureBoxManager : TreasureCitySingleton<TreasureBoxManager> {
 
@@ -28,7 +29,7 @@ public class TreasureBoxManager : TreasureCitySingleton<TreasureBoxManager> {
 			return;
 		}
 		
-		if (QXChatData.Instance.SetOpenChat || CityGlobalData.m_joystickControl || TreasureCityUI.IsWindowsExist() || JunZhuLevelUpManagerment.m_JunZhuLevelUp != null) return; //现在在操纵摇杆 or 有ui界面弹出  npc不响应点击事件
+		if (QXChatData.Instance.SetOpenChat || CityGlobalData.m_joystickControl || TreasureCityUI.IsWindowsExist() || Global.m_isOpenFuWen || JunZhuLevelUpManagerment.m_JunZhuLevelUp != null) return; //现在在操纵摇杆 or 有ui界面弹出  npc不响应点击事件
 		{
 			if (Input.GetMouseButton(0))
 			{
@@ -72,7 +73,7 @@ public class TreasureBoxManager : TreasureCitySingleton<TreasureBoxManager> {
 						TreasureCityPlayer.m_instance.m_agent.enabled = true;
 
 						TreasureBox box = hit.collider.transform.GetComponent<TreasureBox> ();
-						TreasureCityPlayer.m_instance.TargetBoxUID = box.enterScene.uid;
+//						TCityPlayerManager.m_instance.TargetBoxUID = box.enterScene.uid;
 
 //						PlayerModelController.m_playerModelController.m_iMoveToNpcID = m_currentNpcTemplate.m_npcId;
 

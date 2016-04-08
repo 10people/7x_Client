@@ -42,29 +42,7 @@ public class UIMultiAnimEffect : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		if( m_mirror_gb != null ){
-			m_mirror_gb.SetActive( false );
-
-			Destroy( m_mirror_gb );
-		}
-
-		if( m_source_anim != null ){
-			#if DEBUG_EFFECT
-			Debug.Log( "source try rewind." );
-			#endif
-
-			AnimatorHelper.RewindToEnd( m_source_anim );
-
-			m_source_anim.enabled = false;
-
-			Destroy( m_source_anim );
-		}
-
-		if( m_fx_gb != null ){
-			m_fx_gb.SetActive( false );
-
-			Destroy( m_fx_gb );
-		}
+		Clean();
 	}
 
 	#endregion
@@ -75,7 +53,7 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 	public static void CloseUIEffect( GameObject p_gb, int p_source_effect_id, int p_mirror_effect_id, int p_fx_id ){
 		#if DEBUG_EFFECT
-		Debug.Log( "CloseUIEffect( " + p_gb + " )" );
+		Debug.Log( "CloseUIEffect( " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) + " )" );
 		#endif
 
 		if( p_gb == null ){
@@ -94,13 +72,17 @@ public class UIMultiAnimEffect : MonoBehaviour {
 			return;
 		}
 
-		Destroy( t_effect );
+		{
+			t_effect.Clean();
+
+			Destroy( t_effect );
+		}
 	}
 
 	/// Pass gameobject with target UISprite here
 	public static void OpenUIEffect( GameObject p_gb, int p_source_effect_id, int p_mirror_effect_id, int p_fx_id ){
 		#if DEBUG_EFFECT
-		Debug.Log( "OpenUIEffect( " + p_gb + " - " + p_source_effect_id + " )" );
+		Debug.Log( Time.frameCount + " OpenUIEffect( " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) + " - " + p_source_effect_id + " )" );
 		#endif
 
 		if( p_gb == null ){
@@ -111,16 +93,20 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 		UIMultiAnimEffect t_effect = p_gb.GetComponent<UIMultiAnimEffect>();
 
-		if( t_effect != null ){
+		if( t_effect != null && t_effect.enabled ){
+			#if DEBUG_EFFECT
 			Debug.Log( "UI Effect already exist, return now.");
+			#endif
 
 			return;
 		}
 
 		Animator t_anim = p_gb.GetComponent<Animator>();
 
-		if( t_anim != null ){
+		if( t_anim != null && t_anim.enabled ){
+			#if DEBUG_EFFECT
 			Debug.Log( "Animator already exist, return now." );
+			#endif
 
 			return;
 		}
@@ -130,11 +116,11 @@ public class UIMultiAnimEffect : MonoBehaviour {
 		t_effect = p_gb.AddComponent<UIMultiAnimEffect>();
 
 		{
-			#if DEBUG_EFFECT
-			Debug.Log( "p_source_effect_id = " +p_source_effect_id);
-			Debug.Log( "m_mirror_effect_id = " +p_mirror_effect_id);
-			Debug.Log( "m_fx_effect_id = " +p_fx_id);
-			#endif
+//			#if DEBUG_EFFECT
+//			Debug.Log( "p_source_effect_id = " +p_source_effect_id);
+//			Debug.Log( "m_mirror_effect_id = " +p_mirror_effect_id);
+//			Debug.Log( "m_fx_effect_id = " +p_fx_id);
+//			#endif
 
 			t_effect.m_mirror_gb = t_gb;
 
@@ -153,6 +139,40 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 	
 	#region Clean
+
+	public void Clean(){
+		if( m_mirror_gb != null ){
+			m_mirror_gb.SetActive( false );
+
+			Destroy( m_mirror_gb );
+
+			m_mirror_gb = null;
+		}
+
+		if( m_source_anim != null ){
+//			#if DEBUG_EFFECT
+//			Debug.Log( "source try rewind." );
+//			#endif
+
+			AnimatorHelper.RewindToEnd( m_source_anim );
+
+			m_source_anim.enabled = false;
+
+//			Destroy( m_source_anim );
+
+			m_source_anim = null;
+		}
+
+		if( m_fx_gb != null ){
+			m_fx_gb.SetActive( false );
+
+			Destroy( m_fx_gb );
+
+			m_fx_gb = null;
+		}
+
+		enabled = false;
+	}
 
 	private void LogInfo(){
 		Debug.Log( "LogInfo()" );
@@ -190,7 +210,7 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 	private void Init(){
 		#if DEBUG_EFFECT
-		Debug.Log( "AniEffect.Init()" );
+		Debug.Log( Time.frameCount + " AniEffect.Init()" );
 		#endif
 
 		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( m_source_effect_id ), LoadSourceEffectCallback );
@@ -201,9 +221,9 @@ public class UIMultiAnimEffect : MonoBehaviour {
 	}
 
 	public void LoadSourceEffectCallback( ref WWW p_www,string p_path, UnityEngine.Object p_object ){
-		#if DEBUG_EFFECT
-		Debug.Log( "AniEffect.LoadSourceEffectCallback()" );
-		#endif
+//		#if DEBUG_EFFECT
+//		Debug.Log( "AniEffect.LoadSourceEffectCallback()" );
+//		#endif
 
 		if( p_object == null ){
 			Debug.LogError ( "Effect Object is null: " + m_source_effect_id );
@@ -211,15 +231,17 @@ public class UIMultiAnimEffect : MonoBehaviour {
 			return;
 		}
 
-		m_source_anim = gameObject.AddComponent<Animator>();
+		m_source_anim = (Animator)ComponentHelper.AddIfNotExist( gameObject, typeof(Animator) );
+
+		m_source_anim.enabled = true;
 
 		m_source_anim.runtimeAnimatorController = (RuntimeAnimatorController)p_object;
 	}
 
 	public void LoadMirrorEffectCallback( ref WWW p_www,string p_path, UnityEngine.Object p_object ){
-		#if DEBUG_EFFECT
-		Debug.Log( "AniEffect.LoadMirrorEffectCallback()" );
-		#endif
+//		#if DEBUG_EFFECT
+//		Debug.Log( "AniEffect.LoadMirrorEffectCallback()" );
+//		#endif
 
 		if( p_object == null ){
 			Debug.LogError ( "Effect Object is null: " + m_source_effect_id );
@@ -228,7 +250,9 @@ public class UIMultiAnimEffect : MonoBehaviour {
 		}
 
 		{
-			Animator t_anim = m_mirror_gb.AddComponent<Animator>();
+			Animator t_anim = (Animator)ComponentHelper.AddIfNotExist( m_mirror_gb, typeof(Animator) );
+
+			t_anim.enabled = true;
 
 			t_anim.runtimeAnimatorController = (RuntimeAnimatorController)p_object;
 		}
@@ -238,20 +262,20 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 			int t_min = ComponentHelper.GetNGUIMinDepth( m_mirror_gb );
 
-			#if DEBUG_EFFECT
-			Debug.Log( "self.max: " + t_max );
-
-			Debug.Log( "mirror.min: " + t_min );
-			#endif
+//			#if DEBUG_EFFECT
+//			Debug.Log( "self.max: " + t_max );
+//
+//			Debug.Log( "mirror.min: " + t_min );
+//			#endif
 
 			ComponentHelper.ShiftWidgetDepth( m_mirror_gb, - t_min + t_max + 1 );
 		}
 	}
 
 	public void LoadFxCallback( ref WWW p_www,string p_path, UnityEngine.Object p_object ){
-		#if DEBUG_EFFECT
-		Debug.Log( "AniEffect.LoadFxCallback()" );
-		#endif
+//		#if DEBUG_EFFECT
+//		Debug.Log( "AniEffect.LoadFxCallback()" );
+//		#endif
 
 		if( p_object == null ){
 			Debug.LogError ( "Effect Object is null: " + m_source_effect_id );
@@ -276,11 +300,11 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 			int t_min = ComponentHelper.GetNGUIMinDepth( m_fx_gb );
 
-			#if DEBUG_EFFECT
-			Debug.Log( "mirror.max: " + t_max );
-
-			Debug.Log( "fx.min: " + t_min );
-			#endif
+//			#if DEBUG_EFFECT
+//			Debug.Log( "mirror.max: " + t_max );
+//
+//			Debug.Log( "fx.min: " + t_min );
+//			#endif
 
 			ComponentHelper.ShiftWidgetDepth( m_fx_gb, - t_min + t_max + 1 );
 		}

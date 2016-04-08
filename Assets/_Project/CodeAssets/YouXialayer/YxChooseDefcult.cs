@@ -24,6 +24,8 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 
 	public UILabel mTimes;
 	public string m_Times;
+	public mFixUniform mCHangeItemsPostion; //改变坐标 当前打到的关卡
+
 	public static YxChooseDefcult Instance()
 	{
 		if (!mmmYxChooseDefcult)
@@ -109,13 +111,13 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	{
 		mTimes.text = m_Times;
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
-		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
-		{
-			//Debug.Log("进入试练二阶界面222");
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-			mScorview.enabled = false;
-		}
+//		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
+//		{
+//			//Debug.Log("进入试练二阶界面222");
+//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
+//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+//			mScorview.enabled = false;
+//		}
 		//Debug.Log ("BigId.Count = "+BigId);
 		List<YouxiaPveTemplate> mYouxiaPveTemplateList = YouxiaPveTemplate.getYouXiaPveTemplateListBy_BigId (BigId);
 		YouxiaPveTemplate myouxia = YouxiaPveTemplate.getYouXiaPveTemplateBy_BigId (BigId);
@@ -126,6 +128,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 		}
 		YouXiaItemmList.Clear ();
 		//Debug.Log ("mYouxiaPveTemplateList.Count = "+mYouxiaPveTemplateList.Count);
+		int CurrLevelid = 0;
 		for(int i = 0 ; i < mYouxiaPveTemplateList.Count; i++)
 		{
 			GameObject m_UI = Instantiate(Item) as GameObject;
@@ -155,6 +158,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 					if(curid == id) 
 					{
 						mYXItem.ISOpenlock = true;
+						CurrLevelid +=1;
 						break;
 					}
 					mYXItem.ISOpenlock = false;
@@ -165,10 +169,30 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 			{
 				mYXItem.ISOpenlock = true;
 			}
+		
 			YouXiaItemmList.Add(mYXItem);
 			mYXItem.Init();
 		}
 		mGid.repositionNow = true;
+		Debug.Log ("CurrLevelid ="+CurrLevelid);
+		if(CurrLevelid >= 3 && CurrLevelid < 8)
+		{
+			mCHangeItemsPostion.offset = new Vector3(0-270*(CurrLevelid-1) ,-11,3.7f);
+			mCHangeItemsPostion.enabled = true;
+			StartCoroutine("SetmFixUniformFalse");
+		}
+		if( CurrLevelid >= 8)
+		{
+			mCHangeItemsPostion.offset = new Vector3(-1791 ,-11,3.7f);
+			mCHangeItemsPostion.enabled = true;
+			StartCoroutine("SetmFixUniformFalse");
+		}
+	}
+	IEnumerator SetmFixUniformFalse()
+	{
+		Debug.Log ("CurrLevelid = aaa");
+		yield return new WaitForSeconds (0.5f);
+		mCHangeItemsPostion.enabled = false;
 	}
 	public void BuyTiLi()
 	{

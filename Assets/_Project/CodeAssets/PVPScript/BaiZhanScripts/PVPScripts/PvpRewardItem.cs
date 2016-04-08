@@ -29,7 +29,7 @@ public class PvpRewardItem : MonoBehaviour {
 		int minRank = template.minRank;
 
 		rankSprite.spriteName = maxRank == minRank ? "rank" + maxRank : "";
-		rankLabel.text = maxRank == minRank ? "" : MyColorData.getColorString (3,"第" + minRank + "名-第" + maxRank + "名");
+		rankLabel.text = maxRank == minRank ? "" : MyColorData.getColorString (3,minRank < 2001 ? "第" + minRank + "名-第" + maxRank + "名" : "2000名之后");
 
 		rankDesLabel.text = (tempXmlId + 1) == template.id ? MyColorData.getColorString (5,"排名提升，可获得更多奖励") : "";
 		bgSprite.color = (tempXmlId + 1) == template.id ? new Color(1,0.75f,0.35f) : Color.white;

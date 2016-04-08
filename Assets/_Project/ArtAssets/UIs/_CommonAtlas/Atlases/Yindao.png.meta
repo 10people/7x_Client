@@ -30,10 +30,10 @@ TextureImporter:
   maxTextureSize: 4096
   textureSettings:
     filterMode: 0
-    aniso: 4
+    aniso: 1
     mipBias: -1
     wrapMode: 1
-  nPOTScale: 1
+  nPOTScale: 0
   lightmap: 0
   rGBM: 0
   compressionQuality: 50
@@ -45,15 +45,19 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
-  textureType: 2
+  textureType: 5
   buildTargetSettings:
   - buildTarget: Standalone
     maxTextureSize: 256
-    textureFormat: -3
+    textureFormat: 5
     compressionQuality: 50
   - buildTarget: Windows Store Apps
     maxTextureSize: 256
-    textureFormat: -3
+    textureFormat: 5
+    compressionQuality: 50
+  - buildTarget: Android
+    maxTextureSize: 4096
+    textureFormat: 47
     compressionQuality: 50
   spriteSheet:
     sprites: []
