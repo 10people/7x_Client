@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 85c0979b00abb4946a8a3029fe0fd58a
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: ________________03
     100002: ________________04
@@ -35,6 +35,8 @@ ModelImporter:
     100058: Bone13(mirrored)
     100060: //RootNode
     100062: zhujue_haojie_nan
+    100064: "\u624B\u673A\u4E03\u96C4_\u520003"
+    100066: "\u624B\u673A\u4E03\u96C4_\u520004"
     400000: ________________03
     400002: ________________04
     400004: Bip01
@@ -67,13 +69,21 @@ ModelImporter:
     400058: Bone13(mirrored)
     400060: //RootNode
     400062: zhujue_haojie_nan
+    400064: "\u624B\u673A\u4E03\u96C4_\u520003"
+    400066: "\u624B\u673A\u4E03\u96C4_\u520004"
     2300000: ________________03
     2300002: ________________04
+    2300004: "\u624B\u673A\u4E03\u96C4_\u520003"
+    2300006: "\u624B\u673A\u4E03\u96C4_\u520004"
     3300000: ________________03
     3300002: ________________04
+    3300004: "\u624B\u673A\u4E03\u96C4_\u520003"
+    3300006: "\u624B\u673A\u4E03\u96C4_\u520004"
     4300000: zhujue_haojie_nan
     4300002: ________________03
     4300004: ________________04
+    4300006: "\u624B\u673A\u4E03\u96C4_\u520003"
+    4300008: "\u624B\u673A\u4E03\u96C4_\u520004"
     7400000: Take 001
     9500000: //RootNode
     13700000: zhujue_haojie_nan
@@ -84,11 +94,17 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleRotations: 1
     optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations: []
@@ -103,30 +119,35 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 64cd2d7a7a9d0b54ea6c3f8b6e97770b
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: ________________
     100002: Bip01
@@ -34,6 +34,7 @@ ModelImporter:
     100056: Bone13(mirrored)
     100058: //RootNode
     100060: zhujue_haojie_nan
+    100062: "\u624B\u673A\u4E03\u96C4_\u5200"
     400000: ________________
     400002: Bip01
     400004: Bip01 Head
@@ -65,10 +66,14 @@ ModelImporter:
     400056: Bone13(mirrored)
     400058: //RootNode
     400060: zhujue_haojie_nan
+    400062: "\u624B\u673A\u4E03\u96C4_\u5200"
     2300000: ________________
+    2300002: "\u624B\u673A\u4E03\u96C4_\u5200"
     3300000: ________________
+    3300002: "\u624B\u673A\u4E03\u96C4_\u5200"
     4300000: zhujue_haojie_nan
     4300002: ________________
+    4300004: "\u624B\u673A\u4E03\u96C4_\u5200"
     7400000: attack_1_dao_dun
     7400002: attack_0_dao_dun
     7400004: attack_2_dao_dun
@@ -86,11 +91,17 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleRotations: 1
     optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 3
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations:
@@ -104,6 +115,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -188,6 +200,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: attack_1_dao_dun
       takeName: Take 001
@@ -198,6 +211,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -211,7 +225,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .594936728
+      - time: 0.5949367
         functionName: attackDone
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -289,6 +303,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: attack_2_dao_dun
       takeName: Take 001
@@ -299,6 +314,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -312,28 +328,28 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .00975609757
+      - time: 0.009756098
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 2
         messageOptions: 0
-      - time: .0168776531
+      - time: 0.016877653
         functionName: attackMovementDao
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 2
         messageOptions: 0
-      - time: .151898876
+      - time: 0.15189888
         functionName: attackActionDao
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 2
         messageOptions: 0
-      - time: .383966297
+      - time: 0.3839663
         functionName: attackDone
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -411,6 +427,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: attack_3_dao_dun
       takeName: Take 001
@@ -421,6 +438,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -434,42 +452,42 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .00975609757
+      - time: 0.009756098
         functionName: attackMovementDao
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 3
         messageOptions: 0
-      - time: .00975609757
+      - time: 0.009756098
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 3
         messageOptions: 0
-      - time: .0337552279
+      - time: 0.033755228
         functionName: attackActionDao
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 3
         messageOptions: 0
-      - time: .413502127
+      - time: 0.41350213
         functionName: attackActionDao
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 4
         messageOptions: 0
-      - time: .742616117
+      - time: 0.7426161
         functionName: attackMovementDao
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 5
         messageOptions: 0
-      - time: .303797483
+      - time: 0.30379748
         functionName: attackMovementDao
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -547,6 +565,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: attack_0_dao_dun_done
       takeName: Take 001
@@ -557,6 +576,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -641,6 +661,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: attack_1_dao_dun_done
       takeName: Take 001
@@ -651,6 +672,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -735,6 +757,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: attack_2_dao_dun_done
       takeName: Take 001
@@ -745,6 +768,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -829,6 +853,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -840,30 +865,35 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
