@@ -20,10 +20,8 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
     public UIGrid m_GemsNeedGrid;
     public UIGrid m_GemsNeedlist;
     public UILabel m_LabNoMaterial;
-    public UILabel m_LabTitle;
     public EquipGrowthEquipInfoManagerment m_EquipGrowthEquipInfoManagerment;
     List<EquipGrowthMaterialUseManagerment.MaterialInfo> CaiLiaoStrenth = new List<EquipGrowthMaterialUseManagerment.MaterialInfo>();
-    List<EquipGrowthMaterialUseManagerment.MaterialInfo> CaiLiaoSwitch = new List<EquipGrowthMaterialUseManagerment.MaterialInfo>();
     List<EquipGrowthMaterialUseManagerment.MaterialInfo> CaiLiaoInfo = new List<EquipGrowthMaterialUseManagerment.MaterialInfo>();
     private Dictionary<long, GameObject> _DicMaterial = new Dictionary<long, GameObject>();
     private int index_Num = 0;
@@ -117,7 +115,6 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
         public string _Count;
         public string _Attribute;
         public int _Exp;
-        public bool _isSwitch;
     }
 
   
@@ -125,7 +122,6 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
     {
         m_listGemItem.ForEach(p => p.m_Add.m_Handle += TouchAdd);
         m_listGemItem.ForEach(p => p.m_GemInfo.m_Handle += TouchInfo);
-        m_listGemItem.ForEach(p => p.m_Switch.m_Handle += switchTouch);
         m_listEvent.ForEach(p => p.m_Handle += TouchEvent);
     }
     void OnEnable()
@@ -182,49 +178,6 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
         m_ObjGemInfo.SetActive(true);
     }
 
-
-    void switchTouch(int index)
-    {
-        Debug.Log("SSSSSSSSSSSSSSSSSSSSSS");
-        m_LabTitle.text = "替换";
-       
-        m_ObjGemlist.SetActive(true);
-        _posNum = index;
-        index_list = 0;
-        int inlayerid = 1;
-        CaiLiaoSwitch.Clear();
-        for (int i = 0; i < CaiLiaoSwitch.Count; i++)
-        {
-            if (ZhuangBei.getZhuangBeiById(_equipIdSave).inlayColor == CaiLiaoSwitch[i].attribute)
-            {
-                CaiLiaoSwitch.Add(CaiLiaoStrenth[i]);
-            }
-        }
-
-        if (CaiLiaoInfo.Count == 0)
-        {
-            m_LabNoMaterial.gameObject.SetActive(true);
-        }
-        else
-        {
-            m_LabNoMaterial.gameObject.SetActive(false);
-        }
-        int size = CaiLiaoSwitch.Count;
-        int child_size = m_GemsNeedlist.transform.childCount;
-
-        if (child_size > 0)
-        {
-            for (int i = 0; i < child_size; i++)
-            {
-                Destroy(m_GemsNeedlist.transform.GetChild(i).gameObject);
-            }
-        }
-        for (int i = 0; i < size; i++)
-        {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_GROWTH_GEM_ITEM), Switch_item_LoadCallBack);
-        }
-    }
-
     void FreshMaterials(int gem_type)
     {
         CaiLiaoInfo.Clear();
@@ -243,7 +196,6 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
     private int _posNum = 0;
     void TouchAdd(int index)
     {
-        m_LabTitle.text = "镶嵌";
         if (FreshGuide.Instance().IsActive(200030) && TaskData.Instance.m_TaskInfoDic[200030].progress >= 0)
         {
             TaskData.Instance.m_iCurMissionIndex = 200030;
@@ -685,11 +637,9 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
                         {
  
                             List<int> list = new List<int>();
-                            Debug.Log("Equip.RedPoint.Count ::" + Equip.RedPoint.Count);
                             for (int i = 0; i < Equip.RedPoint.Count; i++)
                             {
-                                Debug.Log("Equip.RedPoint.Count ::" + Equip.RedPoint[i]);
-                                foreach (KeyValuePair<int, BagItem> item in EquipsOfBody.Instance().m_equipsOfBodyDic)
+                                foreach(KeyValuePair<int, BagItem> item in EquipsOfBody.Instance().m_equipsOfBodyDic)
                                 {
                                     if (item.Value.dbId == Equip.RedPoint[i])
                                     {
@@ -736,23 +686,17 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
         {
             if (geninfo._ListGems[i]._id > 0)
             {
-                m_listGemItem[i].m_Switch.gameObject.SetActive(SwitchTag(geninfo._ListGems[i]._id));
-                m_listGemItem[i].m_Advance.gameObject.SetActive(CanAdvance(geninfo._ListGems[i]._id, geninfo._ListGems[i]._exp));
                 m_listGemItem[i].m_Add.GetComponent<Collider>().enabled = false;
                 m_listGemItem[i].m_GemSprite.gameObject.SetActive(true);
                 m_listGemItem[i].m_GemSprite.spriteName = CommonItemTemplate.getCommonItemTemplateById(geninfo._ListGems[i]._id).icon.ToString();
             }
             else if (geninfo._ListGems[i]._isopen)
             {
-                m_listGemItem[i].m_Switch.gameObject.SetActive(false);
-                m_listGemItem[i].m_Advance.gameObject.SetActive(false);
                 m_listGemItem[i].m_Add.GetComponent<Collider>().enabled = true;
                 m_listGemItem[i].m_GemSprite.gameObject.SetActive(false);
             }
             else
             {
-                m_listGemItem[i].m_Switch.gameObject.SetActive(false);
-                m_listGemItem[i].m_Advance.gameObject.SetActive(false);
                 m_listGemItem[i].m_Add.GetComponent<Collider>().enabled = false;
                 m_listGemItem[i].m_GemSprite.gameObject.SetActive(false);
             }
@@ -779,7 +723,6 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
             }
             m_listGemItem[i].m_GemDi.spriteName = geninfo._ListGems[i]._Di;
             m_listGemItem[i].m_GemDiKuang.spriteName = geninfo._ListGems[i]._kuang;
-       
         }
     }
 
@@ -868,7 +811,7 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
                 }
                 else if (list[j].inlayColor == list[j + 1].inlayColor)
                 {
-                    if (list[j].expCurr < list[j + 1].expCurr)
+                    if (list[j].expCurr > list[j + 1].expCurr)
                     {
                         mInfo = list[j];
                         list[j] = list[j + 1];
@@ -1582,37 +1525,6 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
             p_object = null;
         }
     }
-    public void Switch_item_LoadCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        if (m_GemsNeedlist != null)
-        {
-            GameObject iconSampleObject = Instantiate(p_object) as GameObject;
-            iconSampleObject.SetActive(true);
-            iconSampleObject.transform.parent = m_GemsNeedlist.transform;
-            iconSampleObject.transform.localPosition = Vector3.zero;
-            EquipGrowthInlayLayerManagerment.GemSelectInfo gemInfo = new EquipGrowthInlayLayerManagerment.GemSelectInfo();
-            gemInfo._Gemid = CaiLiaoSwitch[index_list].materialId;
-            gemInfo._dbid = CaiLiaoSwitch[index_list].dbid;
-            gemInfo._Count = CaiLiaoSwitch[index_list].count;
-            gemInfo._Exp = CaiLiaoSwitch[index_list].expCurr;
-            gemInfo._isSwitch = true;
-           iconSampleObject.GetComponent<EquipGrowthGemSelectItemManagerment>().ShowInfo(gemInfo, Inlay);
-            iconSampleObject.transform.localScale = Vector3.one;
-            if (index_list < CaiLiaoSwitch.Count - 1)
-            {
-                index_list++;
-            }
-            else
-            {
-                m_GemsNeedlist.repositionNow = true;
-
-            }
-        }
-        else
-        {
-            p_object = null;
-        }
-    }
 
     int index_list = 0;
     public void Select_item_LoadCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -1645,6 +1557,22 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
             p_object = null;
         }
     }
+    /*
+
+       message EquipOperationReq{
+   //	type = 1：请求装备上的宝石信息
+   //	type = 2：请求一键镶嵌
+   //	type = 3：请求一键拆解 
+   //	type = 4：请求镶嵌一颗宝石
+   //	type = 5：请求拆解一颗宝石
+   //	type = 6：请求宝石合成
+   required int32 type = 1 ;		//请求类型
+   required int64 equlpId = 2 ;	//所请求的装备dbid
+   optional int64 jewelId = 3 ;	//所请求的宝石dbid，请求镶嵌时需要发送
+   optional int32 possionId = 4 ;	//所请求的宝石孔的id，请求镶嵌、拆下、合成时需要发送
+   repeated int64 cailiaoList = 5;	//所请求的材料列表，宝石合成的时候发送
+}
+   */
     void Inlay(long inlay_id)
     {
         if (FreshGuide.Instance().IsActive(200030) && TaskData.Instance.m_TaskInfoDic[200030].progress >= 0)
@@ -1707,7 +1635,7 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
                                 CreateCurrent(GemExp - GemExpAdd);
                                 ShowAddNum();
                             }
-                            //ClientMain.m_UITextManager.createText("所需经验已满");
+                            ClientMain.m_UITextManager.createText("所需经验已满");
                             return;
                         }
                     }
@@ -1722,21 +1650,21 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
                     CreateCurrent(GemExp - GemExpAdd);
                     ShowAddNum();
                 }
-                //ClientMain.m_UITextManager.createText("已添加所有宝石");
+                ClientMain.m_UITextManager.createText("已添加所有宝石");
                 return;
                 
             }
         }
         else
         {
-            //if (GetAllMaterialAddCount() == EquipGrowthMaterialUseManagerment.listTouchedId.Count)
-            //{
-            //    ClientMain.m_UITextManager.createText("已添加所有宝石");
-            //}
-            //else
-            //{
-            //    ClientMain.m_UITextManager.createText("所需经验已满");
-            //}
+            if (GetAllMaterialAddCount() == EquipGrowthMaterialUseManagerment.listTouchedId.Count)
+            {
+                ClientMain.m_UITextManager.createText("已添加所有宝石");
+            }
+            else
+            {
+                ClientMain.m_UITextManager.createText("所需经验已满");
+            }
 
 
         }
@@ -1861,14 +1789,18 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
  
         for (int i = 0; i < _size; i++)
         {
-            m_EquipGrowthEquipInfoManagerment.m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[i].m_ObjTanHao.SetActive(false);
             for (int j = 0; j < list_index.Count; j++)
             {
                 if (list_index[j] == i)
                 {
                     m_EquipGrowthEquipInfoManagerment.m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[i].m_ObjTanHao.SetActive(true);
                 }
+                else
+                {
+                    m_EquipGrowthEquipInfoManagerment.m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[i].m_ObjTanHao.SetActive(false);
+                } 
             }
+            
         }
     }
     public void ShowEquipTanHaoFalse( )
@@ -1880,50 +1812,33 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
         }
     }
 
-    void SwitchGem(int id)
+    void SwitchGem()
     {
-        CaiLiaoSwitch.Clear();
-        for (int i = 0; i < CaiLiaoStrenth.Count; i++)
+        foreach (KeyValuePair<long, List<BagItem>> item in BagCaiLiao)
         {
-            if (CaiLiaoStrenth[i].attribute == FuWenTemplate.GetFuWenTemplateByFuWenId(id).shuxing)
+            for (int i = 0; i < ItemTemp.templates.Count; i++)
             {
-                if (CaiLiaoStrenth[i].expNeed > FuWenTemplate.GetFuWenTemplateByFuWenId(id).lvlupExp)
+                if (item.Value[0].itemId == ItemTemp.templates[i].id/* && ItemTemp.templates[i].quality != 0 */)
                 {
-                    CaiLiaoStrenth.Add(CaiLiaoStrenth[i]);
+                    if (item.Value[0].itemType == 7)
+                    {
+                        EquipGrowthMaterialUseManagerment.MaterialInfo material = new EquipGrowthMaterialUseManagerment.MaterialInfo();
+                        material.dbid = item.Value[0].dbId;
+                        material.materialId = item.Value[0].itemId;
+                        material.icon = ItemTemp.templates[i].icon;
+                        material.count = item.Value[0].cnt.ToString();
+                        material.isSelected = false;
+                        material.quality = FuWenTemplate.GetFuWenTemplateByFuWenId(item.Value[0].itemId).color;
+                        material.isTouchControl = isMaxSave;
+                        material.inlayColor = FuWenTemplate.GetFuWenTemplateByFuWenId(item.Value[0].itemId).inlayColor;
+                        material.expCurr = FuWenTemplate.GetFuWenTemplateByFuWenId(item.Value[0].itemId).exp;
+                        material.expNeed = FuWenTemplate.GetFuWenTemplateByFuWenId(item.Value[0].itemId).lvlupExp;
+                        material.attribute = FuWenTemplate.GetFuWenTemplateByFuWenId(item.Value[0].itemId).shuxing;
+                        material.materialEXP = item.Value[0].qiangHuaExp;
+                        CaiLiaoStrenth.Add(material);
+                    }
                 }
             }
         }
-    }
-
-    private bool SwitchTag(int id)
-    {
-        for (int i = 0; i < CaiLiaoStrenth.Count; i++)
-        {
-            if (CaiLiaoStrenth[i].attribute == FuWenTemplate.GetFuWenTemplateByFuWenId(id).shuxing)
-            {
-                if (CaiLiaoStrenth[i].expNeed > FuWenTemplate.GetFuWenTemplateByFuWenId(id).lvlupExp)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    private bool CanAdvance(int id, int expCurr)// 合成升一级ID统计
-    {
-        int GemExp = expCurr;
-        int size = CaiLiaoStrenth.Count;
-        for (int i = 0; i < size; i++)
-        {
-            if (CaiLiaoStrenth[i].attribute == FuWenTemplate.GetFuWenTemplateByFuWenId(id).shuxing)
-            {
-                GemExp += CaiLiaoStrenth[i].materialEXP;
-                if (NeedIsEnought(GemExp, id))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
