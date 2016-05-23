@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<ShiLianFuBen ID="1" yuanbaoNum="14" zuobiaoX="-14.5" zuobiaoY="-5" />
+<ShiLianFuBen ID="2" yuanbaoNum="17" zuobiaoX="-32.1" zuobiaoY="-7.9" />
+<ShiLianFuBen ID="3" yuanbaoNum="19" zuobiaoX="-40.4" zuobiaoY="-22" />
+<ShiLianFuBen ID="4" yuanbaoNum="22" zuobiaoX="-2.5" zuobiaoY="-14.2" />
+<ShiLianFuBen ID="5" yuanbaoNum="25" zuobiaoX="-21.4" zuobiaoY="-20.8" />
+<ShiLianFuBen ID="6" yuanbaoNum="27" zuobiaoX="-27.7" zuobiaoY="-37.1" />
+<ShiLianFuBen ID="7" yuanbaoNum="30" zuobiaoX="-26.2" zuobiaoY="-55.8" />
+<ShiLianFuBen ID="8" yuanbaoNum="32" zuobiaoX="-11.8" zuobiaoY="-47.5" />
+<ShiLianFuBen ID="9" yuanbaoNum="35" zuobiaoX="-5.5" zuobiaoY="-32.4" />
+<ShiLianFuBen ID="10" yuanbaoNum="38" zuobiaoX="6.9" zuobiaoY="-24.4" />
+</dataset>

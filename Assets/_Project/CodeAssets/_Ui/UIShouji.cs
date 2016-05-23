@@ -4,8 +4,6 @@ using System.Collections;
 public class UIShouji : MonoBehaviour 
 {
 	public static UIShouji m_UIShouji;
-	public static bool m_isPlayShouji = true;
-	public bool m_isPlay = false;
 	public UISprite m_spriteJindu;
 	public UILabel m_labelJindu;
 	public UISprite m_spriteManzu;
@@ -25,17 +23,17 @@ public class UIShouji : MonoBehaviour
 	private int m_iFirstManzuID = -1;
 	private int m_iAnimState = -1;
 	private int m_iNum = 0;
+	private ShoujiData m_ShoujiData;
 	// Use this for initialization
 	void Awake ()
 	{
 		m_UIShouji = this;
-		DontDestroyOnLoad(gameObject);
-		gameObject.SetActive(false);
+//		gameObject.SetActive(false);
 	}
 
 	void Start () 
 	{
-
+		gameObject.transform.localPosition = new Vector3(-620 - ClientMain.m_iMoveX, 418 + ClientMain.m_iMoveY, 0);
 	}
 	
 	// Update is called once per frame
@@ -44,28 +42,63 @@ public class UIShouji : MonoBehaviour
 		switch(m_iAnimState)
 		{
 		case 0:
-			m_spriteManzu.gameObject.transform.localScale = new Vector3(3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f);
-			m_spriteManzu.gameObject.transform.localPosition = new Vector3(38f, -137 - m_iNum, 0);
-			if(m_iNum == 10)
+			gameObject.transform.localPosition += new Vector3(20, 0, 0);
+//			m_spriteManzu.gameObject.transform.localScale = new Vector3(3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f);
+//			m_spriteManzu.gameObject.transform.localPosition = new Vector3(38f, -137 - m_iNum, 0);
+			m_iNum ++;
+			if(m_iNum == 14)
 			{
 				m_iAnimState = 1;
 				m_iNum = 0;
 			}
-			m_iNum ++;
 			break;
 		case 1:
-
+			m_iNum ++;
+			if(m_iNum == 50)
+			{
+				m_iAnimState = 2;
+				m_iNum = 0;
+				gameObject.GetComponent<UIPanel>().depth = 100;
+			}
 			break;
 		case 2:
+			gameObject.transform.localPosition += new Vector3(-20, 0, 0);
+			m_iNum ++;
+			if(m_iNum == 4)
+			{
+				m_iAnimState = 3;
+				m_iNum = 0;
+				UIShoujiManager.m_UIShoujiManager.m_isPlay = true;
+			}
+			break;
+		case 3:
+			gameObject.transform.localPosition += new Vector3(-20, 0, 0);
+			m_iNum ++;
+			if(m_iNum == 10)
+			{
+				m_iAnimState = -1;
+				m_iNum = 0;
+				m_icon.SetActive(false);
+			}
 			break;
 		}
 	}
 
-	public void setData(int id, int type, int cur, int max, string des)
+	public void setData(ShoujiData data)
 	{
+//		int id, int type, int cur, int max, string des
+		int id = data.m_iID;
+		int type = data.m_iType;
+		int cur = data.m_iCurNum;
+		int max = data.m_iMaxNum;
+		string des = data.m_sDrawString;
+		m_ShoujiData = data;
+//		, m_listShoujiData[0].m_iType, m_listShoujiData[0].m_iCurNum, m_listShoujiData[0].m_iMaxNum, m_listShoujiData[0].m_sDrawString;
+
 		gameObject.SetActive(true);
+		gameObject.GetComponent<UIPanel>().depth = 101;
 		m_iNum = 0;
-		m_iAnimState = -1;
+		m_iAnimState = 0;
 		if(cur >= max)
 		{
 			m_spriteManzu.gameObject.SetActive(true);
@@ -84,7 +117,6 @@ public class UIShouji : MonoBehaviour
 			m_spriteManzu.gameObject.SetActive(false);
 		}
 		m_labelDes.text = des;
-		m_isPlay = true;
 		m_labelJindu.text = "[ff0000]" + cur + "[-] / " + max;
 		int w = Global.getBili(142, cur, max);
 		if(w > 142)
@@ -130,15 +162,6 @@ public class UIShouji : MonoBehaviour
 			m_MibaoSkill.SetActive(true);
 			m_SpriteMibaoSkill.spriteName = id.ToString();
 			break;
-		}
-	}
-
-	public void close()
-	{
-		m_isPlay = false;
-		if(m_icon != null)
-		{
-			m_icon.SetActive(false);
 		}
 	}
 }

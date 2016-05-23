@@ -115,6 +115,7 @@
 <GongjiType typeId="7004" moveSpeed="6" attackSpeed="1" attackRange="4" shiyeRange="12" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="7005" moveSpeed="8" attackSpeed="1" attackRange="4" shiyeRange="12" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="7006" moveSpeed="7" attackSpeed="1" attackRange="12" shiyeRange="12" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
+<GongjiType typeId="7007" moveSpeed="7" attackSpeed="1" attackRange="4" shiyeRange="12" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="9001" moveSpeed="4" attackSpeed="0" attackRange="0" shiyeRange="-10" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="9051" moveSpeed="4" attackSpeed="1" attackRange="4" shiyeRange="3" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />
 <GongjiType typeId="9052" moveSpeed="6" attackSpeed="1" attackRange="4" shiyeRange="3" baojiX="10" baojiY="2" jnbaojiX="10" jnbaojiY="2" />

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<ControlOrderLv id="100" player="0" boss="0" hero="0" soldier="1" playerSkill="0" playerAttack="0" bossSkill="0" bossAttack="0" heroSkill="0" heroAttack="0" soldierSkill="1" soldierAttack="1" />
+<ControlOrderLv id="101" player="0" boss="0" hero="0" soldier="1" playerSkill="0" playerAttack="0" bossSkill="0" bossAttack="0" heroSkill="0" heroAttack="0" soldierSkill="1" soldierAttack="1" />
+<ControlOrderLv id="102" player="0" boss="0" hero="0" soldier="1" playerSkill="0" playerAttack="0" bossSkill="0" bossAttack="0" heroSkill="0" heroAttack="0" soldierSkill="1" soldierAttack="1" />
+<ControlOrderLv id="103" player="0" boss="0" hero="0" soldier="1" playerSkill="0" playerAttack="0" bossSkill="0" bossAttack="0" heroSkill="0" heroAttack="0" soldierSkill="1" soldierAttack="1" />
+<ControlOrderLv id="200" player="1" boss="1" hero="1" soldier="1" playerSkill="1" playerAttack="1" bossSkill="1" bossAttack="1" heroSkill="1" heroAttack="1" soldierSkill="1" soldierAttack="1" />
+<ControlOrderLv id="1" player="1" boss="0" hero="0" soldier="0" playerSkill="0" playerAttack="1" bossSkill="0" bossAttack="0" heroSkill="0" heroAttack="0" soldierSkill="0" soldierAttack="0" />
+<ControlOrderLv id="11" player="0" boss="0" hero="1" soldier="1" playerSkill="0" playerAttack="0" bossSkill="0" bossAttack="0" heroSkill="1" heroAttack="1" soldierSkill="1" soldierAttack="1" />
+</dataset>

@@ -6,6 +6,8 @@ public class EnterFuWen : MonoBehaviour {
 
 	void OnClick ()
 	{
+		RechargeData.Instance.RechargeDataReq ();
+		return;
 		Carriage.BiaoJuRecordData.Instance.BiaoJuRecordReq (Carriage.BiaoJuRecordData.RecordType.HISTORY);
 		return;
 

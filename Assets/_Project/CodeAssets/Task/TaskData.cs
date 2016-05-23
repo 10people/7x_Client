@@ -163,7 +163,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                 && TanBaoPage.tbPage == null
                 && !m_DestroyMiBao
                 && SignalEffectManagerment.m_SignalEffect == null
-                && !Global.m_isOpenBaiZhan
+                && Global.m_isSportDataInItEnd
                 )
         {
             if (PlayerModelController.m_playerModelController != null)
@@ -213,32 +213,20 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                         {
 											UIYindao.m_UIYindao.CloseUI();
                                         }
+										if (TaskListReponse.list[i].id == 100173)
+										{
+											UIYindao.m_UIYindao.CloseUI();
+										}
 
                                         //[WARNING]Added by liangxiao.
                                         if (TaskListReponse.list[i].id == 400000)
                                         {
                                             MainCityUI.IsShowFunctionOpenEffectInAllianceCity = true;
                                         }
-                                        else if (TaskListReponse.list[i].id == 100060)
+                                        else if (new List<int>() {100060, 100315, 100370, 100173, 400010, 200040, 100220}.Contains(TaskListReponse.list[i].id))
                                         {
-											UIYindao.m_UIYindao.CloseUI();
+                                            UIYindao.m_UIYindao.CloseUI();
                                         }
-										else if (TaskListReponse.list[i].id == 100315)
-										{
-											UIYindao.m_UIYindao.CloseUI();
-										}
-										else if (TaskListReponse.list[i].id == 100370)
-										{
-											UIYindao.m_UIYindao.CloseUI();
-										}
-										else if (TaskListReponse.list[i].id == 100173)
-										{
-											UIYindao.m_UIYindao.CloseUI();
-										}
-										else if (TaskListReponse.list[i].id == 400010)
-										{
-											UIYindao.m_UIYindao.CloseUI();
-										}
                                     }
                                 }
 
@@ -343,7 +331,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                 listUnComplete.Clear();
                                 RefreshDailyTaskInfo(dailyTaskList);
                                 m_TagIsShow = true;
-                                if (TaskLayerManager.m_TaskLayerM)
+								if (TaskLayerEveryDayManager.m_TaskLayerM)
                                 {
                                     m_DailyQuestIsRefresh = true;
                                 }
@@ -403,13 +391,6 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                     FunctionOpenTemp.GetMissionDoneOpenFunction(TaskSyncReponse.taskId);
                                   
                                     string award = "";
-  
-//                                    foreach (KeyValuePair<int, ZhuXianTemp> item in m_TaskInfoDic)
-//                                    {
-//                                        Debug.Log(item.Value.id);
-//
-//                                    }
-                                    
                                     m_TaskInfoDic.Remove(TaskSyncReponse.taskId);
                                     foreach (KeyValuePair<int, ZhuXianTemp> item in m_TaskInfoDic)
                                     {
@@ -432,7 +413,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                             m_SideReload = true;
                                         }
                                     }
-                                   // m_TaskGetAwardComplete = true;
+
                                     if (!string.IsNullOrEmpty(award))
                                     {
                                         FunctionWindowsCreateManagerment.ShowRAwardInfo(award);
@@ -475,7 +456,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                 award = m_TaskDailyDic[dailyTask.taskId].jiangli;
                                 m_TaskDailyDic.Remove(dailyTask.taskId);
                                 //  m_TaskGetAwardComplete = true;
-                                if (TaskLayerManager.m_TaskLayerM)
+								if (TaskLayerEveryDayManager.m_TaskLayerM)
                                 {
                                     m_DailyQuestIsRefresh = true;
                                 }
@@ -578,7 +559,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
         {
             m_TaskDailyDic.Add(listDailyAll[i].id, listDailyAll[i]);
         }
-        if (TaskLayerManager.m_TaskLayerM)
+		if (TaskLayerEveryDayManager.m_TaskLayerM)
         {
             m_DailyQuestIsRefresh = true;
         }
@@ -650,11 +631,21 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                 showTitleOn = true;
                 ShowId = listMain[i].id;
             }
-            if (listMain[0].progress < 0)
+            if (listMain[0].progress < 0 )
             {
-                _isMainComplete = true;
+                if (!string.IsNullOrEmpty(listMain[0].award))
+                {
+                    _isMainComplete = true;
+                  
+                }
+                else
+                {
+                    GetQuestAward(listMain[0].id);
+                }
                 m_MainComplete = listMain[0];
             }
+             
+     
             ShowId = listMain[0].id;
             // Debug.Log("listMain[i].idlistMain[i].idlistMain[i].id ::" + listMain[i].id);
             m_TaskInfoDic.Add(listMain[i].id, listMain[i]);

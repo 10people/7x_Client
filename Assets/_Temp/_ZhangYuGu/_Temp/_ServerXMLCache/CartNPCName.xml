@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<CartNPCName id="1" name="天子" />
+<CartNPCName id="2" name="天子" />
+<CartNPCName id="3" name="天子" />
+<CartNPCName id="4" name="天子" />
+<CartNPCName id="5" name="诸侯" />
+<CartNPCName id="6" name="诸侯" />
+<CartNPCName id="7" name="诸侯" />
+<CartNPCName id="8" name="诸侯" />
+<CartNPCName id="9" name="大夫" />
+<CartNPCName id="10" name="大夫" />
+<CartNPCName id="11" name="大夫" />
+<CartNPCName id="12" name="大夫" />
+<CartNPCName id="13" name="官吏" />
+<CartNPCName id="14" name="官吏" />
+<CartNPCName id="15" name="官吏" />
+<CartNPCName id="16" name="官吏" />
+<CartNPCName id="17" name="商贾" />
+<CartNPCName id="18" name="商贾" />
+<CartNPCName id="19" name="商贾" />
+<CartNPCName id="20" name="商贾" />
+<CartNPCName id="21" name="平民" />
+<CartNPCName id="22" name="平民" />
+<CartNPCName id="23" name="平民" />
+<CartNPCName id="24" name="平民" />
+</dataset>

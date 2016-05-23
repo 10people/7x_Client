@@ -66,7 +66,10 @@ public class CanshuTemplate : XmlLoadManager
 	public static string BAIZHAN_WEIWANG_ADDLIMIT = "BAIZHAN_WEIWANG_ADDLIMIT";
 	public static string YUEKA_TIME = "YUEKA_TIME";
 	public static string YUEKA_YUANBAO = "YUEKA_YUANBAO";
-	public static string CHAT_INTERVAL_TIME = "CHAT_INTERVAL_TIME";
+	public static string CHAT_WORLD_INTERVAL_TIME = "CHAT_WORLD_INTERVAL_TIME";
+	public static string CHAT_ALLIANCE_INTERVAL_TIME = "CHAT_ALLIANCE_INTERVAL_TIME";
+	public static string CHAT_BROADCAST_INTERVAL_TIME = "CHAT_BROADCAST_INTERVAL_TIME";
+	public static string CHAT_SECRET_INTERVAL_TIME = "CHAT_SECRET_INTERVAL_TIME";
 	public static string CHAT_MAX_WORDS = "CHAT_MAX_WORDS"; 
     public static string HUANGYEPVE_AWARD_X = "HUANGYEPVE_AWARD_X";
 	public static string HUANGYEPVP_PRODUCE_P = "HUANGYEPVP_PRODUCE_P";
@@ -152,7 +155,11 @@ public class CanshuTemplate : XmlLoadManager
 	public static string BROADCAST_PRICE = "BROADCAST_PRICE";
 	public static string WORLDCHAT_PRICE = "WORLDCHAT_PRICE";
 	public static string QIEWUQI_AI_PANDINGJULI = "QIEWUQI_AI_PANDINGJULI";
-
+	public static string ARMOR_B = "ARMOR_B";
+	public static string ARMOR_RECOVERYTIME1 = "ARMOR_RECOVERYTIME1";
+	public static string ARMOR_RECOVERYTIME2 = "ARMOR_RECOVERYTIME2";
+	public static string ARMOR_RECOVERYRATE = "ARMOR_RECOVERYRATE";
+	public static string UNLOCK_ROLE_PIRCE = "UNLOCK_ROLE_PIRCE";
 
     /// <summary>
     /// 以下参数表里未找到
@@ -219,13 +226,14 @@ public class CanshuTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 string t_value = t_reader.Value;
 
-                t_reader.MoveToNextAttribute();
+              
                 // desc
 
-                if (t_value.IndexOf(",") == -1 && t_value.IndexOf(":") == -1)
+                if (t_value.IndexOf(",") == -1 && t_value.IndexOf(":") == -1 &&  t_value.IndexOf("=") == -1)
                 {
                     try
                     {
+
                         double t_double_value = double.Parse(t_value);
                         m_TaskInfoDic.Add(t_key, t_double_value);
                     }
@@ -253,6 +261,7 @@ public class CanshuTemplate : XmlLoadManager
 
     public static double GetValueByKey (string key)
     {
+//		Debug.Log("key="+key);
         if (m_TaskInfoDic.ContainsKey(key))
         {
             return m_TaskInfoDic[key];

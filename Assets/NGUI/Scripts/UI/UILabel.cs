@@ -11,6 +11,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using Alignment = NGUIText.Alignment;
+using Direction = NGUIText.Direction;
 
 [ExecuteInEditMode]
 [AddComponentMenu("NGUI/UI/NGUI Label")]
@@ -54,6 +55,7 @@ public class UILabel : UIWidget
 	[HideInInspector][SerializeField] int mFontSize = 16;
 	[HideInInspector][SerializeField] FontStyle mFontStyle = FontStyle.Normal;
 	[HideInInspector][SerializeField] Alignment mAlignment = Alignment.Automatic;
+	[HideInInspector][SerializeField] Direction mDirection = Direction.Horizontal;
 	[HideInInspector][SerializeField] bool mEncoding = true;
 	[HideInInspector][SerializeField] int mMaxLineCount = 0; // 0 denotes unlimited
 	[HideInInspector][SerializeField] Effect mEffectStyle = Effect.None;
@@ -330,6 +332,26 @@ public class UILabel : UIWidget
 			if (mAlignment != value)
 			{
 				mAlignment = value;
+				shouldBeProcessed = true;
+				ProcessAndRequest();
+			}
+		}
+	}
+
+	public Direction direction
+	{
+		get
+		{
+			return mDirection;
+		}
+		set
+		{
+			if (mDirection != value)
+			{
+				mDirection = value;
+
+//				mAlignment = Alignment.Right;
+
 				shouldBeProcessed = true;
 				ProcessAndRequest();
 			}
@@ -1632,6 +1654,7 @@ public class UILabel : UIWidget
 		NGUIText.spacingX = mSpacingX;
 		NGUIText.spacingY = mSpacingY;
 		NGUIText.fontScale = isDynamic ? mScale : ((float)mFontSize / mFont.defaultSize) * mScale * bitmapFont.pixelSize;
+		NGUIText.direction = mDirection;
 
 		if (mFont != null)
 		{

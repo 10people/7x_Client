@@ -84,6 +84,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		closeTitleStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_CLOSE_RECRUIT_TITLE);
 		confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
+		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 	}
 	
 	public UILabel mLabel_Font;
@@ -161,8 +162,9 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 			ShenPi_LeftBtn.SetActive(false);
 		}
 		m_Lv.text = mlv.ToString ();
-		BaiZhanTemplate mBaiZhanTemplate = BaiZhanTemplate.getBaiZhanTemplateById (mjunxian);
-		string mJX = NameIdTemplate.GetName_By_NameId (mBaiZhanTemplate.funDesc);
+		//BaiZhanTemplate mBaiZhanTemplate = BaiZhanTemplate.getBaiZhanTemplateById (mjunxian);
+
+		string mJX = QXComData.GetJunXianName (mjunxian);
 		m_Junxian.text = mJX;
 		if(needSp == 0)
 		{
@@ -213,8 +215,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		{
 			EditBtn.SetActive(false);
 		}
-		BaiZhanTemplate mBaiZhanTemplate = BaiZhanTemplate.getBaiZhanTemplateById (mjunxian);
-		string mJX = NameIdTemplate.GetName_By_NameId (mBaiZhanTemplate.funDesc);
+		string mJX = QXComData.GetJunXianName (mjunxian);
 		m_Junxian.text = mJX;
 		str_m_Lv = mlv.ToString ();
 		str_m_Junxian = mJX;
@@ -223,6 +224,12 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	}
 	public void ShenPiLeftBtn()//审批的控制左边按钮
 	{
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 0)
+		{
+			string mst = "只有盟主或副盟主才能进行编辑操作!";
+			ClientMain.m_UITextManager.createText(mst);
+			return;
+		}
 		if(needSp != 1)
 		{
 			needSp = 1;
@@ -232,6 +239,12 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	}
 	public void ShenPiRightBtn()//审批的控制右边按钮
 	{
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 0)
+		{
+			string mst = "只有盟主或副盟主才能进行编辑操作!";
+			ClientMain.m_UITextManager.createText(mst);
+			return;
+		}
 		if(needSp != 0)
 		{
 			needSp = 0;
@@ -241,6 +254,12 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	}
 	public void WriteingNotice()//编写公告
 	{
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 0)
+		{
+			string mst = "只有盟主或副盟主才能进行编辑操作!";
+			ClientMain.m_UITextManager.createText(mst);
+			return;
+		}
 		input_Notice.SetActive (true);
 		inputInfo.text = Show_Notice.text;
 		UIInput mUIInput = inputInfo.gameObject.GetComponent<UIInput>();
@@ -295,6 +314,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	public bool IsSava = true;
 	public void All_ComfrimBtm()//保存招募广告信息
 	{
+	
 //		Debug.Log ("m_Lv.text = "+m_Lv.text);
 //		Debug.Log ("m_Junxian.text = "+m_Junxian.text);
 //		Debug.Log ("str_needShenpi = "+str_needShenpi);
@@ -343,6 +363,12 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	}
 	public void SavaComf()//发布广告
 	{
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.memberMax == NewAlliancemanager.Instance().m_allianceHaveRes.members)
+		{
+			string mst = "联盟成员已满，无法发布招募公告。";
+			ClientMain.m_UITextManager.createText(mst);
+			return;
+		}
 		OpenApply mOpenApply = new OpenApply ();
 		MemoryStream mOpenApplyStream = new MemoryStream ();
 		
@@ -362,16 +388,18 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		SocketTool.Instance().SendSocketMessage(
 			ProtoIndexes.OPEN_APPLY,ref t_protof,"30134");
 		QXChatData.Instance.SendAllianceInfo ();
-
+		isSave = false;
 		GameObject m_root2 = GameObject.Find ("Leader_Setting(Clone)");
 		MainCityUI.TryRemoveFromObjectList (m_root2);
 
 		Destroy(m_root2);
 	}
+	private bool isSave = false;
 	public void ComfrimBtm(int i)//确定发布按钮
 	{
 		if(i == 2)
 		{
+			isSave = true;
 			OpenApply mOpenApply = new OpenApply ();
 			MemoryStream mOpenApplyStream = new MemoryStream ();
 			
@@ -461,11 +489,18 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 					}
 //					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
 //					                        ResourceLoadCallback );
+					if(mOnRecuitBtnClick != null )
+					{
+						mOnRecuitBtnClick();
+						mOnRecuitBtnClick = null;
+					}
 
+					if(!isSave)
+					{	GameObject m_root = GameObject.Find ("New_My_Union(Clone)");
+						MainCityUI.TryRemoveFromObjectList (m_root);
+						Destroy (m_root);
+					}
 					Destroy(this.gameObject);
-					GameObject m_root = GameObject.Find ("New_My_Union(Clone)");
-					MainCityUI.TryRemoveFromObjectList (m_root);
-					Destroy (m_root);
 				}
 				return true;
 			}

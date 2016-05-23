@@ -4,6 +4,7 @@
 //----------------------------------------------
 
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Sends a message to the remote object when something happens.
@@ -13,6 +14,7 @@ public class MYNGUIButtonMessage : MonoBehaviour
 	public MYNGUIPanel panel;
 	bool mStarted = false;
 	bool mHighlighted = false;
+
 	
 	void Start () 
 	{
@@ -49,8 +51,10 @@ public class MYNGUIButtonMessage : MonoBehaviour
 	
 	void OnClick ()
 	{
-		if (enabled)
+		float tempTime = Time.time;
+		if(tempTime - panel.m_TimeP > 0.2f)
 		{
+			panel.m_TimeP = tempTime;
 			panel.MYClick(gameObject);
 		}
 	}

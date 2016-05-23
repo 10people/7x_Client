@@ -11,11 +11,11 @@
 <NpcChat  id="200830" seriestId="1" ChatName="xxxxx" pText="似乎感受到一股力量在身体里涌动！我们走吧，去试一试武器[0dbce8]强化[-]后的效果！" Icon="0" SoundId="-1" position="1" />
 <NpcChat  id="200600" seriestId="1" ChatName="小七" pText="恭喜您[FF8000]战力提升啦[-]~快去战场上试试身手吧！" Icon="200" SoundId="810070" position="0" />
 <NpcChat  id="100010" seriestId="1" ChatName="小七" pText="恭喜您获得了一顶头盔！快去试试看！" Icon="200" SoundId="811270" position="0" />
-<NpcChat  id="201300" seriestId="1" ChatName="小七" pText="您刚刚获得的那件[e15a00]头盔[-]可是一件宝贝呦！[06de34]穿戴装备[-]，可以提升您的防御力！还不试试看？" Icon="200" SoundId="810170" position="0" />
+<NpcChat  id="201300" seriestId="1" ChatName="小七" pText="您刚刚获得的那件[e15a00]青铜战甲[-]可是一件宝贝呦！[06de34]穿戴装备[-]，可以提升您的防御力！还不试试看？" Icon="200" SoundId="810170" position="0" />
 <NpcChat  id="100020" seriestId="1" ChatName="小七" pText="进阶材料足够了呢！快去[06de34]进阶长柄武器[-]吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="110060" seriestId="1" ChatName="小七" pText="工欲善其事，必先利其器！您有装备[06de34]可以进阶了[-]！" Icon="200" SoundId="811300" position="0" />
 <NpcChat  id="201000" seriestId="1" ChatName="小七" pText="点击进入，将[e15a00]长柄武器[-]进阶到[0dbce8]蓝色品质[-]！" Icon="200" SoundId="810140" position="0" />
-<NpcChat  id="100030" seriestId="1" ChatName="小七" pText="恭喜您掌握了【装备进阶】的操作方法！\n请继续搜集材料[0dbce8]强化[-]任意装备到[10ff2b]5级[-]吧！" Icon="200" SoundId="811530" position="0" />
+<NpcChat  id="100030" seriestId="1" ChatName="小七" pText="恭喜您掌握了【装备进阶】的操作方法！\n请继续搜集材料[0dbce8]强化[-]任意装备到[10ff2b]5级[-]吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="100036" seriestId="1" ChatName="小七" pText="连续[0dbce8]强化任意装备到5级[-]吧！" Icon="200" SoundId="811530" position="0" />
 <NpcChat  id="201200" seriestId="1" ChatName="小七" pText="恭喜您成功通关！请再接再厉，\n一举[0dbce8]击败商鞅[-]吧！" Icon="200" SoundId="810150" position="0" />
 <NpcChat  id="100040" seriestId="1" ChatName="小七" pText="恭喜您成功击败商鞅，\n快去[06de34]领取通章奖励[-]吧！" Icon="200" SoundId="-1" position="0" />
@@ -25,12 +25,12 @@
 <NpcChat  id="100050" seriestId="1" ChatName="铁匠" pText="小英雄请留步！昨日老夫夜观天象，紫微暗淡，霸星横空。料想将有不世出之枭雄横扫天下，一统九州。老夫观你器宇不凡，乃是万中无一的英雄。" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="100050" seriestId="2" ChatName="铁匠" pText="然而英雄怎能无利器在手？不如将你身上的兵刃交给老夫进阶一下如何？你身上带的进阶材料老夫已经看到了，快拿出来给老夫瞧瞧？" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="100050" seriestId="3" ChatName="xxxxx" pText="真是巧了！在下身上带的材料刚好进阶！老师傅快帮忙进阶兵器吧！" Icon="0" SoundId="-1" position="1" />
-<NpcChat  id="200400" seriestId="1" ChatName="小七" pText="[FF8000]【探宝】[-]功能开启了！通过探宝可以获得[cb02d8]秘宝[-]呦~快去试试手气吧！" Icon="200" SoundId="810050" position="0" />
+<NpcChat  id="200400" seriestId="1" ChatName="小七" pText="[FF8000]【探宝】[-]功能开启了！通过探宝可以获得[cb02d8]将魂[-]呦~快去试试手气吧！" Icon="200" SoundId="810050" position="0" />
 <NpcChat  id="200410" seriestId="1" ChatName="小七" pText="每隔一段时间都可[FF8000]免费探宝[-]！[06de34] 快快点击[-]【探宝1次】试试看！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="200490" seriestId="1" ChatName="小七" pText="[cb02d8]【秘宝】[-]功能开启了~" Icon="200" SoundId="810060" position="0" />
-<NpcChat  id="200500" seriestId="1" ChatName="小七" pText="恭喜您获得第一件[e15a00]秘宝[-]！拥有的[e15a00]秘宝[-]越多您的战斗力就越强。快去[0dbce8]给秘宝升级[-]吧！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="200510" seriestId="1" ChatName="小七" pText="您拥有的[0dbce8]秘宝等级[-]越高，战力就越强。但是[e15a00]秘宝[-]的等级不能超过[0dbce8]角色等级[-]。所以请记得尽可能将[0dbce8]秘宝等级[-]提升到最高上限呦~" Icon="200" SoundId="811550" position="0" />
-<NpcChat  id="200511" seriestId="1" ChatName="小七" pText="点击[ff8000]升级秘宝[-]，可以[06de34] 连续点击[-]快速升级哦！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="200490" seriestId="1" ChatName="小七" pText="[cb02d8]【将魂】[-]功能开启了~" Icon="200" SoundId="810060" position="0" />
+<NpcChat  id="200500" seriestId="1" ChatName="小七" pText="恭喜您获得第一个[e15a00]将魂[-]！拥有的[e15a00]将魂[-]越多您的战斗力就越强。快去[0dbce8]给将魂升级[-]吧！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="200510" seriestId="1" ChatName="小七" pText="您拥有的[0dbce8]将魂等级[-]越高，战力就越强。但是[e15a00]将魂[-]的等级不能超过[0dbce8]角色等级[-]。所以请记得尽可能将[0dbce8]将魂等级[-]提升到最高上限呦~" Icon="200" SoundId="811550" position="0" />
+<NpcChat  id="200511" seriestId="1" ChatName="小七" pText="点击[ff8000]升级将魂[-]，可以[06de34] 连续点击[-]快速升级哦！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="200512" seriestId="1" ChatName="小七" pText="可以[06de34]再点一次[-]哦！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="200513" seriestId="1" ChatName="小七" pText="主人今天好棒！三连击了呢！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="110021" seriestId="1" ChatName="小七" pText="可以攻打[06de34]新的章节[-]啦！" Icon="200" SoundId="811120" position="0" />
@@ -43,8 +43,8 @@
 <NpcChat  id="201415" seriestId="1" ChatName="小七" pText="听说城中[FF8000]竞技场[-]有人在挑衅您！\n回去收拾他吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="201417" seriestId="1" ChatName="小七" pText="进去看看是谁这么嚣张！\n名次竟然排在主人前面！" Icon="200" SoundId="811410" position="0" />
 <NpcChat  id="201433" seriestId="1" ChatName="小七" pText="号外号外！[FF8000]封测大福利[-]！\n [10ff2b]首次元宝十连探宝免费[-]耶！" Icon="200" SoundId="811400" position="0" />
-<NpcChat  id="201435" seriestId="1" ChatName="小七" pText="矿井十连探宝[cb02d8]必得秘宝[-]！" Icon="200" SoundId="811570" position="0" />
-<NpcChat  id="201437" seriestId="1" ChatName="小七" pText="快去试试[cb02d8]秘技的威力[-]吧！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="201435" seriestId="1" ChatName="小七" pText="【购买中级武器强化石】中【购买十次】[cb02d8]必得将魂[-]！" Icon="200" SoundId="811570" position="0" />
+<NpcChat  id="201437" seriestId="1" ChatName="小七" pText="快去试试[cb02d8]无双技的威力[-]吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="100060" seriestId="1" ChatName="鬼谷子" pText="啧啧啧，徒儿，我看你经过一番磨练之后，武器技艺隐隐有突破的迹象了。" Icon="404" SoundId="-1" position="0" />
 <NpcChat  id="100060" seriestId="2" ChatName="小七" pText="呀！现在我们可以[06de34]突破技能[-]了！" Icon="200" SoundId="811650" position="0" />
 <NpcChat  id="100065" seriestId="1" ChatName="小七" pText="当您的等级满足条件时，即可通过[06de34]突破[-]来提升武器伤害和技能伤害了呦！" Icon="200" SoundId="-1" position="0" />
@@ -58,11 +58,11 @@
 <NpcChat  id="110015" seriestId="1" ChatName="小七" pText="[10ff2b]点击前往[-]即可自动寻路......" Icon="200" SoundId="811260" position="0" />
 <NpcChat  id="202900" seriestId="1" ChatName="小七" pText="[FF8000]【试练】[-]玩法开启了！挑战试练关卡可以获得[0dbce8] 强化材料、铜币和精气值[-]呦~" Icon="200" SoundId="810410" position="0" />
 <NpcChat  id="202300" seriestId="1" ChatName="小七" pText="[FF8000]【传奇关卡】[-]开启了！“传奇”是难度更高的关卡，准备好挑战自己了吗？" Icon="200" SoundId="811640" position="0" />
-<NpcChat  id="202400" seriestId="1" ChatName="小七" pText="恭喜您获得[e15a00]秘宝碎片[-]！快去[0dbce8]激活第二个秘宝[-]吧！" Icon="200" SoundId="810380" position="0" />
-<NpcChat  id="110085" seriestId="1" ChatName="小七" pText="有新的[cb02d8]秘宝可以合成[-]了！" Icon="200" SoundId="811630" position="0" />
-<NpcChat  id="110030" seriestId="1" ChatName="小七" pText="挑战传奇关卡成功即可[cb02d8]获得秘宝碎片[-]！点击快速前往。" Icon="200" SoundId="811130" position="0" />
-<NpcChat  id="110080" seriestId="1" ChatName="小七" pText="[FF8000]传奇关卡[-]胜利通关！集齐升星所需的[e15a00]秘宝碎片[-]了！快[06de34]去秘宝升星[-]吧！" Icon="200" SoundId="811340" position="0" />
-<NpcChat  id="110081" seriestId="1" ChatName="小七" pText="[06de34]碎片进度条[-]满了就可以对这个秘宝进行[cb02d8]升星[-]啦！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="202400" seriestId="1" ChatName="小七" pText="恭喜您获得[e15a00]将魂碎片[-]！快去[0dbce8]激活新的将魂[-]吧！" Icon="200" SoundId="810380" position="0" />
+<NpcChat  id="110085" seriestId="1" ChatName="小七" pText="有新的[cb02d8]将魂可以激活[-]了！" Icon="200" SoundId="811630" position="0" />
+<NpcChat  id="110030" seriestId="1" ChatName="小七" pText="挑战传奇关卡成功即可[cb02d8]获得将魂碎片[-]！点击快速前往。" Icon="200" SoundId="811130" position="0" />
+<NpcChat  id="110080" seriestId="1" ChatName="小七" pText="[FF8000]传奇关卡[-]胜利通关！集齐升星所需的[e15a00]将魂碎片[-]了！快[06de34]去将魂升星[-]吧！" Icon="200" SoundId="811340" position="0" />
+<NpcChat  id="110081" seriestId="1" ChatName="小七" pText="[06de34]碎片进度条[-]满了就可以对这个将魂进行[cb02d8]升星[-]啦！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="110100" seriestId="1" ChatName="小七" pText="装备都进阶到蓝色，就可在【角色】右上角[0dbce8]【激活】套装[-]属性啦！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="202500" seriestId="1" ChatName="小七" pText="[FF8000]【行镖】[-]玩法开启了！运镖和]劫镖均可获取大量[FF8000]铜币[-]呢！\n行镖玩法是[FF8000]实时多人对战[-]，建议[06de34] 连接wifi保持网络通畅[-]。" Icon="200" SoundId="810390" position="0" />
 <NpcChat  id="202500" seriestId="1" ChatName="小七" pText="[06de34] 镖师姐姐[-]可是个大美女呦~准备好了就快去和她聊聊吧！" Icon="200" SoundId="-1" position="0" />
@@ -77,7 +77,7 @@
 <NpcChat  id="202545" seriestId="1" ChatName="女镖师" pText="[FF8000]马和马具的收益可叠加[-]，别忘了哟！" Icon="701" SoundId="-1" position="0" />
 <NpcChat  id="202547" seriestId="1" ChatName="女镖师" pText="出发吧！" Icon="701" SoundId="-1" position="0" />
 <NpcChat  id="200115" seriestId="1" ChatName="小七" pText="咦？是什么在闪闪发光呢？\n赶快打开[FF8000]【成就】[-]看看吧！" Icon="200" SoundId="811580" position="0" />
-<NpcChat  id="200117" seriestId="1" ChatName="小七" pText="探宝不但能得[cb02d8]绝世秘宝[-]，\n[FF8000]首次十连探宝[-]更可获得成就大奖哦！\n主人不要忘记哟！" Icon="200" SoundId="811400" position="0" />
+<NpcChat  id="200117" seriestId="1" ChatName="小七" pText="探宝不但能得[cb02d8]绝世将魂[-]，\n[FF8000]首次十连探宝[-]更可获得成就大奖哦！\n主人不要忘记哟！" Icon="200" SoundId="811400" position="0" />
 <NpcChat  id="110065" seriestId="1" ChatName="小七" pText="[06de34]集齐装备残图[-]就可以[0dbce8] 进阶装备[-]了，别忘了多多收集装备残图和领取通章奖励哟！" Icon="200" SoundId="811290" position="0" />
 <NpcChat  id="110039" seriestId="1" ChatName="小七" pText="主人！您只差一个装备残图就可以进阶双刀啦！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="110040" seriestId="1" ChatName="小七" pText="您获得了[06de34]新的装备[-]！快去穿上吧！" Icon="200" SoundId="-1" position="0" />
@@ -88,20 +88,20 @@
 <NpcChat  id="202010" seriestId="3" ChatName="小七" pText="装备[e15a00]宝石[-]和[e15a00]符文[-]可以极大增强战力呦~" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="202200" seriestId="1" ChatName="小七" pText="主人，如今兵荒马乱，城外并不太平！不如先找[4169E1]铁匠师傅[-][0dbce8]把兵器洗练一下[-]再出发吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="202210" seriestId="1" ChatName="小七" pText="通过[0dbce8]洗练[-]武器装备，可以去除武器装备中的杂质，从而提升武器装备的属性呦！" Icon="200" SoundId="810360" position="0" />
-<NpcChat  id="202220" seriestId="1" ChatName="小七" pText="每天[FF8000]【签到】[-]很快就可以获得[cb02d8]秘宝[-]了，主人要每天来看小七哦！" Icon="200" SoundId="811380" position="0" />
+<NpcChat  id="202220" seriestId="1" ChatName="小七" pText="每天[FF8000]【签到】[-]很快就可以获得[cb02d8]将魂[-]了，主人要每天来看小七哦！" Icon="200" SoundId="811380" position="0" />
 <NpcChat  id="202225" seriestId="1" ChatName="小七" pText="本次封测为您准备了[ffb12a]V特权宝箱[-]，\n每天都可以[ffb12a]提升V特权等级[-]哦！" Icon="200" SoundId="811390" position="0" />
 <NpcChat  id="100002" seriestId="1" ChatName="小七" pText="新关卡开启了呦！" Icon="200" SoundId="811140" position="0" />
 <NpcChat  id="100003" seriestId="1" ChatName="小七" pText="快继续战斗吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="100004" seriestId="1" ChatName="小七" pText="快继续推进吧！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="201500" seriestId="1" ChatName="小七" pText="您刚刚用[e15a00]威望[-]兑换的[e15a00]秘宝碎片[-]已经足够[cb02d8]激活秘宝[-]了呦！快去[0dbce8]激活秘宝[-]吧！" Icon="200" SoundId="810250" position="0" />
-<NpcChat  id="201510" seriestId="1" ChatName="小七" pText="恭喜您获得了新的[cb02d8]秘宝[-]！" Icon="200" SoundId="811560" position="0" />
+<NpcChat  id="201500" seriestId="1" ChatName="小七" pText="您刚刚用[e15a00]威望[-]兑换的[e15a00]将魂碎片[-]已经足够[cb02d8]激活将魂[-]了呦！快去[0dbce8]激活将魂[-]吧！" Icon="200" SoundId="810250" position="0" />
+<NpcChat  id="201510" seriestId="1" ChatName="小七" pText="恭喜您获得了新的[cb02d8]将魂[-]！" Icon="200" SoundId="811560" position="0" />
 <NpcChat  id="100006" seriestId="1" ChatName="小七" pText="[06de34]点此关闭界面[-]" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="100007" seriestId="1" ChatName="小七" pText="[06de34]点击此处[-]继续" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="100008" seriestId="1" ChatName="小七" pText="点击即可自动寻路了呦~" Icon="200" SoundId="811110" position="0" />
-<NpcChat  id="100009" seriestId="1" ChatName="小七" pText="点击即可快捷跳转到装备残图所在关卡。" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="100009" seriestId="1" ChatName="小七" pText="点击即可快捷跳转到秘宝碎片所在关卡。" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="100035" seriestId="1" ChatName="小七" pText="现有的强化材料充足，快去[10ff2b]强化装备[-]吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="110010" seriestId="1" ChatName="小七" pText="[06de34]新功能开启了[-]！快去看看吧！" Icon="200" SoundId="811100" position="0" />
-<NpcChat  id="110090" seriestId="1" ChatName="小七" pText="收集到的[cb02d8]秘宝[-]已经足够激活[cb02d8]秘宝技能[-]了！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="110090" seriestId="1" ChatName="小七" pText="收集到的[cb02d8]将魂[-]已经足够激活[cb02d8]无双技[-]了！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="200000" seriestId="1" ChatName="(引导)临时工" pText="这里该发展剧情了，求明曦" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="200005" seriestId="1" ChatName="(引导)临时工" pText="大师！您解锁了【闪避】！可以使用这个新的技能躲避敌人的强力攻击了，赶紧去第三章试试吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="200001" seriestId="1" ChatName="小七" pText="任务完成咯！快去[0dbce8]领取任务奖励[-]吧！" Icon="200" SoundId="810000" position="0" />
@@ -119,10 +119,10 @@
 <NpcChat  id="201210" seriestId="1" ChatName="小七" pText="恭喜主人成功剿灭了[4169E1]智伯瑶[-]乱党！快去将这个消息[0dbce8]告知陛下[-]吧！他老人家一定很高兴！" Icon="200" SoundId="810160" position="0" />
 <NpcChat  id="201310" seriestId="1" ChatName="小七" pText="呀，主人戴上[e15a00]头盔[-]真好看！快去[0dbce8]找铁匠师傅强化[-]一下吧！强化后的头盔防御力更强呦！" Icon="200" SoundId="810180" position="0" />
 <NpcChat  id="201350" seriestId="1" ChatName="小七" pText="恭喜主人的战力更上一层楼！不如我们出城去找几个毛贼试试新装备的效果吧！" Icon="200" SoundId="810190" position="0" />
-<NpcChat  id="201511" seriestId="2" ChatName="小七" pText="[cb02d8]秘宝技能[-]解锁了！收集更多[cb02d8]秘宝[-]，可以解锁更多的[cb02d8]秘宝技能[-]呦！" Icon="200" SoundId="810260" position="0" />
-<NpcChat  id="201520" seriestId="1" ChatName="小七" pText="主人已经激活了一个[cb02d8]秘宝技能[-]快去试试看吧！" Icon="200" SoundId="810270" position="0" />
-<NpcChat  id="201530" seriestId="1" ChatName="小七" pText="进入战斗前，在这里切换[cb02d8]秘技[-]后，就进入战斗吧！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="201540" seriestId="1" ChatName="小七" pText="主人，记得升级[cb02d8]秘宝[-]哦。" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="201511" seriestId="2" ChatName="小七" pText="[cb02d8]无双技[-]解锁了！收集更多[cb02d8]将魂[-]，可以解锁更多的[cb02d8]无双技[-]呦！" Icon="200" SoundId="810260" position="0" />
+<NpcChat  id="201520" seriestId="1" ChatName="小七" pText="主人已经激活了一个[cb02d8]无双技[-]快去试试看吧！" Icon="200" SoundId="810270" position="0" />
+<NpcChat  id="201530" seriestId="1" ChatName="小七" pText="进入战斗前，在这里切换[cb02d8]无双技[-]后，就进入战斗吧！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="201540" seriestId="1" ChatName="小七" pText="主人，记得升级[cb02d8]将魂[-]哦。" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="201600" seriestId="1" ChatName="小七" pText="[4169E1]荀翰丞[-]将军正在[D2691E]演武场[-]中等您。" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="201700" seriestId="1" ChatName="铁匠" pText="把要进阶的[e15a00]武器装备[-]和[e15a00]进阶材料[-]都交给老夫吧！" Icon="300" SoundId="810300" position="0" />
 <NpcChat  id="201800" seriestId="1" ChatName="小七" pText="现在主人一定很熟悉游戏的内容了！接下来如果主人不知道新的任务目标，可以到[0dbce8]每日任务[-]中查看呦~" Icon="200" SoundId="810310" position="0" />
@@ -149,31 +149,33 @@
 <NpcChat  id="400000" seriestId="1" ChatName="小七" pText="前方就是魏国境内了呦！\n快前进吧！" Icon="200" SoundId="811350" position="0" />
 <NpcChat  id="400001" seriestId="1" ChatName="小七" pText="新关卡开启了！\n本关将解锁新的武器呦！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400010" seriestId="1" ChatName="小七" pText="师兄想必出事了！\n快去找寻师兄的下落！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="400011" seriestId="1" ChatName="小七" pText="新关卡开启了！\n快去试试逆鳞战盔的威力吧！" Icon="200" SoundId="811220" position="0" />
+<NpcChat  id="400011" seriestId="1" ChatName="小七" pText="新关卡开启了！\n快去试试青铜战甲的威力吧！" Icon="200" SoundId="811220" position="0" />
 <NpcChat  id="400020" seriestId="1" ChatName="小七" pText="师兄至今杳无音讯，\n快去找寻线索吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400021" seriestId="1" ChatName="小七" pText="新关卡开启了！\n精英关卡有意外惊喜呦~" Icon="200" SoundId="811220" position="0" />
 <NpcChat  id="400030" seriestId="1" ChatName="小七" pText="总算知晓师兄的下落了！\n快去救出师兄吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400031" seriestId="1" ChatName="小七" pText="新关卡开启了！\n快去试试武器强化的效果吧！" Icon="200" SoundId="811220" position="0" />
 <NpcChat  id="400040" seriestId="1" ChatName="小七" pText="继续战斗吧！\n孙膑师兄正在前方等着我们！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400041" seriestId="1" ChatName="小七" pText="新关卡开启了！\n你准备好了吗？" Icon="200" SoundId="811220" position="0" />
-<NpcChat  id="400050" seriestId="1" ChatName="小七" pText="快去试试武器进阶后的效果吧！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400050" seriestId="1" ChatName="小七" pText="继续战斗吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400051" seriestId="1" ChatName="小七" pText="快！不要被女密探逃走了！" Icon="200" SoundId="811360" position="0" />
 <NpcChat  id="400060" seriestId="1" ChatName="小七" pText="新关卡开启了！\n师兄的仇人商鞅就在前方！" Icon="200" SoundId="811220" position="0" />
 <NpcChat  id="400061" seriestId="1" ChatName="小七" pText="击败商鞅！为师兄复仇！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="400070" seriestId="1" ChatName="小七" pText="升级了[cb02d8]秘宝[-]，战力又有所提升了！快去挑战新章节吧！" Icon="200" SoundId="811230" position="0" />
+<NpcChat  id="400070" seriestId="1" ChatName="小七" pText="升级了[cb02d8]将魂[-]，战力又有所提升了！快去挑战新章节吧！" Icon="200" SoundId="811230" position="0" />
 <NpcChat  id="400080" seriestId="1" ChatName="小七" pText="新关卡开启了！\n齐王的猎场就在前方！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400090" seriestId="1" ChatName="小七" pText="新关卡开启了！\n护送师兄摆脱田忌的追捕！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="400095" seriestId="1" ChatName="小七" pText="恭喜主人获得了第一件秘宝！" Icon="200" SoundId="811540" position="0" />
-<NpcChat  id="400100" seriestId="1" ChatName="小七" pText="新关卡开启了！\n快去试试[cb02d8]秘技[-]的威力吧！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="400101" seriestId="1" ChatName="小七" pText="点击相应[cb02d8]秘技[-]即可上阵使用！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="400102" seriestId="1" ChatName="小七" pText="现在去试试[cb02d8]秘技[-]吧！" Icon="200" SoundId="811420" position="0" />
+<NpcChat  id="400095" seriestId="1" ChatName="小七" pText="恭喜主人获得了第一个将魂！" Icon="200" SoundId="811540" position="0" />
+<NpcChat  id="400100" seriestId="1" ChatName="小七" pText="新关卡开启了！\n快去试试[cb02d8]无双技[-]的威力吧！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400101" seriestId="1" ChatName="小七" pText="点击相应[cb02d8]无双技[-]即可上阵使用！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400102" seriestId="1" ChatName="小七" pText="现在去试试[cb02d8]无双技[-]吧！" Icon="200" SoundId="811420" position="0" />
 <NpcChat  id="400103" seriestId="1" ChatName="小七" pText="开始战斗！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400110" seriestId="1" ChatName="小七" pText="新关卡开启了！\n向齐王的营帐进军！" Icon="200" SoundId="811220" position="0" />
 <NpcChat  id="400120" seriestId="1" ChatName="小七" pText="新关卡开启了！\n去感受下天赋升级的效果吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400130" seriestId="1" ChatName="小七" pText="击败田忌！\n向下一关冲锋吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400140" seriestId="1" ChatName="小七" pText="传奇关卡开启了！\n去镌写属于自己的传奇吧！" Icon="200" SoundId="811640" position="0" />
-<NpcChat  id="400150" seriestId="1" ChatName="小七" pText="传奇关卡开启了！\n去感受[cb02d8]秘宝升星[-]的效果吧！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400150" seriestId="1" ChatName="小七" pText="传奇关卡开启了！\n去感受[cb02d8]将魂升星[-]的效果吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400160" seriestId="1" ChatName="小七" pText="传奇关卡开启了！\n再战商鞅，扬我鬼谷威名！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400170" seriestId="1" ChatName="小七" pText="恭喜主人！为您猎符的NPC品质提升了！猎符过程中有一定几率提升NPC的品质呦！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400175" seriestId="1" ChatName="小七" pText="为您猎符的NPC品质代表着这个NPC的能力！品质越高的NPC为您猎符获得的符文品质就越高呦！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="500100" seriestId="1" ChatName="xxxxx" pText="小七，我们该出发了！" Icon="0" SoundId="-1" position="1" />
 <NpcChat  id="500200" seriestId="1" ChatName="小七" pText="恭喜主人通过[ffb12a]精英关卡[-]！达成关卡条件即可领取相应[ffb12a]星级奖励[-]！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="500300" seriestId="1" ChatName="小七" pText="先去[0dbce8]领取任务奖励[-]吧。" Icon="200" SoundId="-1" position="0" />
@@ -280,10 +282,10 @@
 <NpcChat  id="733020" seriestId="1" ChatName="小七" pText="[06de34]点此按钮[-]，释放[FF8000]血祭烙印[-]技能。" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="733021" seriestId="1" ChatName="小七" pText="[06de34]点此按钮[-]，释放[06de34] 追星箭[-]技能。" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="733022" seriestId="1" ChatName="小七" pText="[06de34]点此按钮[-]，释放[FF8000]寒冰箭[-]技能。" Icon="300" SoundId="-1" position="0" />
-<NpcChat  id="733023" seriestId="1" ChatName="小七" pText="[06de34]点此按钮[-]，释放[cb02d8]秘技[-]。" Icon="300" SoundId="-1" position="0" />
+<NpcChat  id="733023" seriestId="1" ChatName="小七" pText="[06de34]点此按钮[-]，释放[cb02d8]无双技[-]。" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="733024" seriestId="1" ChatName="小七" pText="释放[FF8000]乾坤斗转[-]后释放[FF8000]八荒裂日[-]！" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="733025" seriestId="1" ChatName="小七" pText="释放[FF8000]血祭烙印[-]后释放[FF8000]绝影星光斩[-]！" Icon="300" SoundId="-1" position="0" />
-<NpcChat  id="733026" seriestId="1" ChatName="小七" pText="[06de34] 点此按钮[-]，释放[cb02d8]秘技[-]。" Icon="300" SoundId="-1" position="0" />
+<NpcChat  id="733026" seriestId="1" ChatName="小七" pText="[06de34] 点此按钮[-]，释放[cb02d8]无双技[-]。" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="733027" seriestId="1" ChatName="小七" pText="拖动[06de34] 摇杆按钮[-]，控制角色移动。" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="733028" seriestId="1" ChatName="小七" pText="[06de34]点此按钮[-]，可以切换到[FF8000]自动战斗[-]。" Icon="300" SoundId="-1" position="0" />
 <NpcChat  id="733029" seriestId="1" ChatName="小七" pText="[FF8000]自动战斗[-]过程中，可以[06de34]点此技能按钮[-]释放技能。" Icon="300" SoundId="-1" position="0" />

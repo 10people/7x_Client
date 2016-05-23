@@ -34,7 +34,7 @@ public class Huangyetearce : MonoBehaviour {
 //		Debug.Log ("初始化藏宝点。。。。。。。。");
 		int stas = m_HuangYeTreasure.isOpen; // 判断宝藏是否开启 0为未开启 1 为开启
 
-		HuangyeTemplate mHY = HuangyeTemplate.getHuangyeTemplate_byid (m_HuangYeTreasure.fileId);
+		HuangyeTemplate mHY = HuangyeTemplate.getHuangyeTemplate_byid (m_HuangYeTreasure.guanQiaId);
 		
 		string mName = NameIdTemplate.GetName_By_NameId (mHY.nameId);
 
@@ -142,7 +142,7 @@ public class Huangyetearce : MonoBehaviour {
 	void loodBoxBack(ref WWW p_www,string p_path, Object p_object)
 	{
 	//	Debug.Log("盟主22222        ");
-		HuangYePveTemplate mhuangyeTemp = HuangYePveTemplate.getHuangYePveTemplatee_byid( m_HuangYeTreasure.fileId);
+		HuangYePveTemplate mhuangyeTemp = HuangYePveTemplate.getHuangYePveTemplatee_byid( m_HuangYeTreasure.guanQiaId);
 		string str1 = "是否要花费"+mhuangyeTemp.openCost.ToString()+"建设值开启宝藏?";
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 
@@ -158,7 +158,7 @@ public class Huangyetearce : MonoBehaviour {
 		if(i == 2)
 		{
 			int builddata  = AllianceData.Instance.g_UnionInfo.build;
-			HuangYePveTemplate mhuangyeTemp = HuangYePveTemplate.getHuangYePveTemplatee_byid( m_HuangYeTreasure.fileId);
+			HuangYePveTemplate mhuangyeTemp = HuangYePveTemplate.getHuangYePveTemplatee_byid( m_HuangYeTreasure.guanQiaId);
 //			Debug.Log("mHuangYeTreasure.fileIdt"+m_HuangYeTreasure.fileId);
 //			Debug.Log("AllianceData.Instance.g_UnionInfo.build"+AllianceData.Instance.g_UnionInfo.build);
 //			Debug.Log("mhuangyeTemp.openCost"+mhuangyeTemp.openCost);

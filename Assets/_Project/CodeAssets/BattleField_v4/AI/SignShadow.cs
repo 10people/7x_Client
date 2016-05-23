@@ -192,7 +192,7 @@ public class SignShadow : MonoBehaviour
 
 		targetPo = UpdateArrow_Node (0);
 
-		if(Vector3.Distance(targetPo, Vector3.zero) < .2f)
+		if(Vector3.SqrMagnitude(targetPo - Vector3.zero) < 0.04f)
 		{
 			BattleWinTemplate winTemplate = BattleWinTemplate.getWinTemplateContainsType(BattleWinFlag.EndType.PROTECT, true);
 

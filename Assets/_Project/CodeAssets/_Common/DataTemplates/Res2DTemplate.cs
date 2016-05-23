@@ -259,6 +259,25 @@ public class Res2DTemplate : XmlLoadManager
 		SHOUJI = 250,
 		MAXTILI = 251,
 		MAIN_CITY_YUNYING = 252,
+		QIANCHONGLOU = 253,
+		QCLLAYERINFO = 254,
+		QCLLAYERSAODANG = 255,
+		QCLPREVIEW = 256,
+		TASK_LAYER_AMEND_EBERYDAY = 257,
+        EQUIP_GROWTH_GEM_ITEM = 258,
+		FUNCTION_JUMP = 259,
+		LIEFU = 260,
+		GETFUWEN = 261,
+		FUWENPAGE = 262,	
+		FUWENCHANGE = 263,	
+		FUWENCHUANDAI = 264,	
+		JIAPIANCASH = 265,	
+		JIAPIANCHSHTIPS = 266,	
+		CITY_WAR_ROOT = 267,
+		COUNTRYUI = 268,
+        MODEL_PARENT = 269,
+		RECHARGE_ROOT = 270,
+		ALLIANCE_BATTLE_SCENE = 271,
     }
 
 
@@ -339,6 +358,7 @@ public class Res2DTemplate : XmlLoadManager
 
         {
             UtilityTool.LoadBox();
+			UtilityTool.LoadFunctionJump();
         }
     }
 

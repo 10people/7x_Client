@@ -94,7 +94,7 @@ public class SendMail : MonoBehaviour {
 	public void NameSubmit ()
 	{
 		btnDic["Block"].gameObject.SetActive (false);
-		nameLabel.value = NewSelectRole.TextLengthLimit (NewSelectRole.StrLimitType.CREATE_ROLE_NAME,nameLabel.value);
+		nameLabel.value = QXComData.TextLengthLimit (QXComData.StrLimitType.CREATE_ROLE_NAME,nameLabel.value);
 	}
 
 	/// <summary>

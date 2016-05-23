@@ -1027,7 +1027,7 @@ public class HeroSkill : MonoBehaviour
 				{
 					tempAngle = m_ListAngleEffMove[0];
 				}
-				m_listMyEffElement[i].transform.localEulerAngles = new Vector3(0, tempAngle, 0);
+				m_listMyEffElement[i].transform.localEulerAngles += new Vector3(0, tempAngle, 0);
 			}
 
 
@@ -1385,7 +1385,14 @@ public class HeroSkill : MonoBehaviour
 					if(m_iEffMoveIndex < m_ListAngleEffMove.Count)
 					{
 						m_fEffMovePassageTime = tempTime;
-						m_listMyEffElement[i].transform.position += m_listMyEffElement[i].transform.forward.normalized * (((tempTime - m_fEffMovePassageTime) / m_ListEffMoveTime[m_iEffMoveIndex]) * m_ListEffMoveDistance[m_iEffMoveIndex]);
+						if(m_isEffLock && m_isEffPlaySelf)
+						{
+							node.transform.position += m_listMyEffElement[i].transform.forward.normalized * (((tempTime - m_fEffMovePassageTime) / m_ListEffMoveTime[m_iEffMoveIndex]) * m_ListEffMoveDistance[m_iEffMoveIndex]);
+						}
+						else
+						{
+							m_listMyEffElement[i].transform.position += m_listMyEffElement[i].transform.forward.normalized * (((tempTime - m_fEffMovePassageTime) / m_ListEffMoveTime[m_iEffMoveIndex]) * m_ListEffMoveDistance[m_iEffMoveIndex]);
+						}
 //						m_fEffMovePassageTime
 						if(tempTime - m_fEffMoveIndexBTime >= m_ListEffMoveTime[m_iEffMoveIndex])
 						{
@@ -1401,7 +1408,7 @@ public class HeroSkill : MonoBehaviour
 							{
 								tempAngle = m_ListAngleEffMove[m_iEffMoveIndex];
 							}
-							m_listMyEffElement[i].transform.localEulerAngles = new Vector3(0, tempAngle, 0);
+							m_listMyEffElement[i].transform.localEulerAngles += new Vector3(0, tempAngle, 0);
 						}
 					}
 

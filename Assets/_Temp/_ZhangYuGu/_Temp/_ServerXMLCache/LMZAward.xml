@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LMZAward game="1" winAward="0:900027:100" loseAward="0:900027:60" />
+<LMZAward game="2" winAward="0:900027:100" loseAward="0:900027:60" />
+<LMZAward game="3" winAward="0:900027:100" loseAward="0:900027:60" />
+<LMZAward game="4" winAward="0:900027:100" loseAward="0:900027:60" />
+<LMZAward game="5" winAward="0:900027:100" loseAward="0:900027:60" />
+<LMZAward game="6" winAward="0:900027:100" loseAward="0:900027:60" />
+<LMZAward game="7" winAward="0:900027:100" loseAward="0:900027:60" />
+</dataset>

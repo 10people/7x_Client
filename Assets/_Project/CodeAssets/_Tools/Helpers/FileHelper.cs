@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using System.Security.Cryptography;
 
 using qxmobile.protobuf;
 
@@ -28,7 +29,7 @@ public class FileHelper {
 		}
 	}
 
-	public static void DirectoryDelete( string p_full_path, bool p_recursive ){
+	public static void DirectoryDelete( string p_full_path, bool p_recursive = true ){
 		DirectoryInfo t_dir = new DirectoryInfo( p_full_path );
 
 		if ( !t_dir.Exists ) {
@@ -273,5 +274,54 @@ public class FileHelper {
 		t_stream.Close();
 	}
 	
+	#endregion
+
+
+
+	#region MD5
+
+	private static MD5 m_md5 = null;
+
+	private static MD5 GetMd5(){
+		if( m_md5 == null ){
+			m_md5 = MD5.Create();
+		}
+
+		return m_md5;
+	}
+
+	/** Desc:
+	 * Return MD5 about the bundle.
+	 * 
+	 * Params:
+	 * 1.p_full_path:			"E:/WorkSpace_External/DynastyMobile_2014/Assets/StreamingAssets/Android/Resources/_UIs/_CommonAtlas/Common";
+	 */
+	public static string GetMd5Hash( string p_full_path ){
+		FileInfo t_file_info = new FileInfo( p_full_path );
+
+		return GetMd5Hash( t_file_info );
+	}
+
+	public static string GetMd5Hash( FileInfo p_file_info ){
+		FileStream t_f_s = p_file_info.Open( FileMode.Open );
+
+		t_f_s.Position = 0;
+
+		byte[] t_data = GetMd5().ComputeHash( t_f_s );
+
+		StringBuilder t_builder = new StringBuilder();
+
+		// Loop through each byte of the hashed data  
+		// and format each one as a hexadecimal string. 
+		for (int i = 0; i < t_data.Length; i++)
+		{
+			t_builder.Append( t_data[i].ToString( "x2" ) );
+		}
+
+		t_f_s.Close();
+
+		return t_builder.ToString();
+	}
+
 	#endregion
 }

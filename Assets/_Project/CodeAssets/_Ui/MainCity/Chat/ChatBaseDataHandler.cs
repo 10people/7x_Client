@@ -345,7 +345,7 @@ public class ChatBaseDataHandler : MonoBehaviour, SocketListener
                 tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "屏蔽", m_ButtonClick = OnShieldClick });
             }
         }
-        info.SetThis(tempKingInfo, tempConfigList);
+        //info.SetThis(tempKingInfo, tempConfigList);
 
         info.m_KingDetailEquipInfo.m_BagItemDic = m_JunzhuPlayerResp.equip.items.Where(item => item.buWei > 0).ToDictionary(item => KingDetailInfo.TransferBuwei(item.buWei));
 

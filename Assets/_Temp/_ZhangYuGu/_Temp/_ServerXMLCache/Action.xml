@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Action Id="101" TypeKey="1" Param1="1000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="67" Prob="1000" />
+<Action Id="111" TypeKey="1" Param1="5000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="1010" Prob="1000" />
+<Action Id="121" TypeKey="4" Param1="121" Param2="10000" Param3="0" Param4="0" Param5="0" TSR="1" TTR="0" CeOnHit="0" CsOnHit="0" Prob="1000" />
+<Action Id="131" TypeKey="3" Param1="25" Param2="0" Param3="0" Param4="0" Param5="0" TSR="1" TTR="0" CeOnHit="0" CsOnHit="0" Prob="1000" />
+</dataset>

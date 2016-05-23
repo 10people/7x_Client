@@ -17,9 +17,11 @@ namespace Rank
 
         public UILabel LevelLabel;
 
-        public UILabel ShenwangLabel;
+        public UILabel CityLabel;
 
         public UILabel NumberLabel;
+
+        public UISprite MyAllianceLogoSprite;
 
         public void SetThis()
         {
@@ -27,7 +29,7 @@ namespace Rank
 
             LevelLabel.text = "Lv" + m_AllianceInfo.level;
 
-            ShenwangLabel.text = m_AllianceInfo.shengWang.ToString();
+            CityLabel.text = m_AllianceInfo.shengWang.ToString();
 
             NationSprite.spriteName = "nation_" + m_AllianceInfo.guoJiaId;
             if (m_AllianceInfo.rank <= 3)

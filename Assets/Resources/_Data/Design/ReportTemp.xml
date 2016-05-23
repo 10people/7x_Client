@@ -42,4 +42,6 @@
 <ReportTemp ID="43" event="402" sendCondition="-1" receiveObject="2,3" recveiveScence="2,4" popupable="2,4" DescID="3040201" button="8,1" clickAward="0:900001:100" showType="1" reportTitle="" buttonfeedback="-1,-1" specialFunc="-1" interval="1" />
 <ReportTemp ID="44" event="403" sendCondition="-1" receiveObject="1" recveiveScence="2,4" popupable="2,4" DescID="3040301" button="5" clickAward="0:900002:50" showType="1" reportTitle="" buttonfeedback="-1" specialFunc="-1" interval="0" />
 <ReportTemp ID="45" event="404" sendCondition="-1" receiveObject="1" recveiveScence="2,4" popupable="2,4" DescID="3040401" button="5" clickAward="" showType="1" reportTitle="" buttonfeedback="-1" specialFunc="-1" interval="0" />
+<ReportTemp ID="46" event="405" sendCondition="-1" receiveObject="11" recveiveScence="2,4" popupable="2,4" DescID="3040501" button="14,1" clickAward="" showType="1" reportTitle="" buttonfeedback="-1,-1" specialFunc="-1" interval="0" />
+<ReportTemp ID="47" event="406" sendCondition="-1" receiveObject="8" recveiveScence="2,4" popupable="2,4" DescID="3040601" button="14,1" clickAward="" showType="1" reportTitle="" buttonfeedback="-1,-1" specialFunc="-1" interval="0" />
 </dataset>

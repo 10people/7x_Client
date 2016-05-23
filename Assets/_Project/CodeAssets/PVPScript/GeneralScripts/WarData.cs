@@ -41,7 +41,7 @@ public class WarData : Singleton<WarData>,SocketProcessor {
 			{
 			case ProtoIndexes.S_MAIN_SIMPLE_INFO_RESP:
 			{
-//				Debug.Log ("Fight窗口信息返回" + ProtoIndexes.S_MAIN_SIMPLE_INFO_RESP);
+				Debug.Log ("Fight窗口信息返回" + ProtoIndexes.S_MAIN_SIMPLE_INFO_RESP);
 
 				MainSimpleInfoResp mainSimpleRes = new MainSimpleInfoResp();
 				mainSimpleRes = QXComData.ReceiveQxProtoMessage (p_message,mainSimpleRes) as MainSimpleInfoResp;
@@ -54,7 +54,7 @@ public class WarData : Singleton<WarData>,SocketProcessor {
 					}
 					mainSimpleResp = mainSimpleRes;
 
-					LoadWarPageObj ();
+					WarPage.warPage.InItWarPage (mainSimpleResp);
 				}
 				return true;
 			}

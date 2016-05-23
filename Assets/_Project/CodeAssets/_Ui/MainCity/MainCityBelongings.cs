@@ -76,7 +76,7 @@ public class MainCityBelongings : MYNGUIPanel , SocketListener
 		}
 		else if(ui.name.IndexOf("RT_BuyRecharge") != -1)
 		{
-            EquipSuoData.TopUpLayerTip();
+			Global.CreateFunctionIcon(101);
         }
 		else if(ui.name.IndexOf("RT_BuyEnergy") != -1)
 		{
@@ -95,6 +95,10 @@ public class MainCityBelongings : MYNGUIPanel , SocketListener
 	
 	public override void MYPress(bool isPress, GameObject ui)
 	{
+		if(ui.name.IndexOf("Icon900003") != -1 && isPress)
+		{
+			ShowTip.showTip(900003);
+		}
 	}
 	
 	public override void MYelease(GameObject ui)

@@ -14,6 +14,7 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 	[HideInInspector]public int m_iMoveNum = 10;
 	public bool m_isSuperAlert = false;
 	public UISprite m_ButtonSprite;
+	public BoxChangeScale m_BoxChangeScale;
 	public GameObject m_RedAlertObject;
 	public UILabel m_LabelButtonName;
 	public UILabel m_LabelTime;
@@ -127,18 +128,35 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
         //cancel show locked button
         if (s_LockedList.Contains(m_index)) return;
 
-		m_RedAlertObject.SetActive(true);
-		if(m_FuncTemplate.m_iRedType != 0)
+		switch(m_FuncTemplate.m_iRedType)
 		{
+		case 0:
+			m_RedAlertObject.SetActive(true);
+			m_RedAlertObject.transform.localPosition = new Vector3(-22, 30, 0);
+			break;
+		case 1:
+			m_RedAlertObject.SetActive(true);
 			UI3DEffectTool.ClearUIFx(m_RedAlertObject);
 			m_RedAlertObject.transform.localPosition = Vector3.zero;
 			if( !UI3DEffectTool.HaveAnyFx( m_RedAlertObject ) ){
 				UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.MainUI_0, m_RedAlertObject, EffectTemplate.getEffectTemplateByEffectId(100185).path);
 			}
-		}
-		else
-		{
-			m_RedAlertObject.transform.localPosition = new Vector3(-22, 30, 0);
+			break;
+		case 2:
+			m_BoxChangeScale.enabled = true;
+			break;
+		case 3:
+			EffectTool.OpenMultiUIEffect_ById(m_ButtonSprite.gameObject, 223, 224, 225);
+			break;
+		case 4:
+			m_RedAlertObject.SetActive(true);
+			m_RedAlertObject.transform.localPosition = new Vector3(-15, 15, 0);
+			break;
+		case 5:
+			m_RedAlertObject.SetActive(true);
+			UISprite sprite = m_RedAlertObject.GetComponent<UISprite>();
+			sprite.spriteName = "RedTanhao";
+			break;
 		}
 
         IsAlertShowed = true;
@@ -149,9 +167,31 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
     {
         IsAlertShowed = false;
 		m_RedAlertObject.SetActive(false);
+		switch(m_FuncTemplate.m_iRedType)
+		{
+		case 0:
+			m_RedAlertObject.SetActive(false);
+			break;
+		case 1:
+			m_RedAlertObject.SetActive(false);
+			UI3DEffectTool.ClearUIFx(m_RedAlertObject);
+			break;
+		case 2:
+			m_BoxChangeScale.enabled = false;
+			break;
+		case 3:
+			EffectTool.OpenMultiUIEffect_ById(m_ButtonSprite.gameObject, 223, 224, 225);
+			break;
+		case 4:
+			m_RedAlertObject.SetActive(false);
+			break;
+		case 5:
+			m_RedAlertObject.SetActive(false);
+			break;
+		}
 		if(m_FuncTemplate.m_iRedType != 0)
 		{
-			UI3DEffectTool.ClearUIFx(m_RedAlertObject);
+
 //			m_RedAlertObject
 		}
     }

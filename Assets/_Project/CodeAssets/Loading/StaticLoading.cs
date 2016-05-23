@@ -1,4 +1,6 @@
-﻿//#define LOG_LOADING
+﻿//#define DEBUG_BG_RES
+
+//#define DEBUG_LOADING
 
 
 
@@ -36,7 +38,7 @@ public class StaticLoading : MonoBehaviour {
 
 	public static StaticLoading Instance(){
 		if( m_instance == null ){
-			Debug.LogError( "Error, StaticLoadingBg = null." );
+			Debug.LogError( "Error, StaticLoading = null." );
 		}
 
 		return m_instance;
@@ -50,7 +52,9 @@ public class StaticLoading : MonoBehaviour {
 	#region Mono
 
 	void Awake(){
-//		Debug.Log( "StaticLoadingBg.Awake()" );
+		#if DEBUG_LOADING
+		Debug.Log( "StaticLoading.Awake()" );
+		#endif
 
 		SceneManager.SetSceneState( SceneManager.SceneState.Loading );
 
@@ -67,6 +71,16 @@ public class StaticLoading : MonoBehaviour {
 
 			InitLoadingFx();
 		}
+
+		#if DEBUG_LOADING
+		Debug.Log( "StaticLoading.Awake.Done()" );
+		#endif
+	}
+
+	void Start(){
+		#if DEBUG_LOADING
+		Debug.Log( "StaticLoading.Start()" );
+		#endif
 	}
 
 	void OnGUI(){
@@ -78,11 +92,25 @@ public class StaticLoading : MonoBehaviour {
 	 * destroy in ManualDestroy.
 	 */
 	void OnDestroy(){
-//		Debug.Log( "StaticLoadingBg.OnDestroy()" );
+		#if DEBUG_LOADING
+		Debug.Log( "StaticLoading.OnDestroy()" );
+		#endif
+
+		Clear();
+	}
+
+	void Clear(){
+		#if DEBUG_BG_RES
+		Debug.Log( "StaticLoading.Clear()" );
+		#endif
+
+		m_instance = null;
 
 		m_loading_bg = null;
 
 		m_loading_bg_root = null;
+
+		m_preloaded_texture = null;
 	}
 
 	#endregion
@@ -92,8 +120,12 @@ public class StaticLoading : MonoBehaviour {
 	#region Destroy
 
 	public void ManualDestroy(){
+		#if DEBUG_LOADING
+		Debug.Log( "StaticLoading.ManualDestroy()" );
+		#endif
+
 		if ( m_loading_bg_root != null ) {
-			m_loading_bg_root.SetActive (false);
+			m_loading_bg_root.SetActive( false );
 		}
 		else {
 			Debug.Log( "Should not be here." );
@@ -102,7 +134,7 @@ public class StaticLoading : MonoBehaviour {
 
 		Destroy( m_loading_bg_root );
 
-		m_instance = null;
+		Clear();
 
 		{
 			// restore default loading for next loading
@@ -203,7 +235,19 @@ public class StaticLoading : MonoBehaviour {
 		TransformHelper.ResetLocalPosAndLocalRotAndLocalScale( t_gb );
 	}
 
-	private static void InitBackgroundTexture(){
+	public static void InitBackgroundTexture(){
+		#if DEBUG_BG_RES
+		Debug.Log( "InitBackgroundTexture()" );
+		#endif
+
+		if( m_preloaded_texture != null ){
+			#if DEBUG_BG_RES
+			Debug.Log( "Already loaded." );
+			#endif
+
+			return;
+		}
+
 		string t_ui_path = "";
 
 		#if USE_LOADING_RES_CONFIG
@@ -220,7 +264,7 @@ public class StaticLoading : MonoBehaviour {
 		}
 		#endif
 
-		#if LOG_LOADING
+		#if DEBUG_LOADING || DEBUG_BG_RES
 		Debug.Log( "Res Path: " + t_ui_path );
 		#endif
 
@@ -233,6 +277,8 @@ public class StaticLoading : MonoBehaviour {
 		Global.ResourcesDotLoad( t_ui_path, BackgroundLoadCallback );
 	}
 
+	private static Texture m_preloaded_texture = null;
+
 	public static void BackgroundLoadCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
 		Texture t_tex = (Texture)( p_object );
 		
@@ -242,11 +288,36 @@ public class StaticLoading : MonoBehaviour {
 			return;
 		}
 
-		#if LOG_LOADING
+		#if DEBUG_BG_RES
+		Debug.Log( "BackgroundLoadCallback()" );
+
+		Debug.Log( "p_path: " + p_path );
+
+		Debug.Log( "t_tex: " + t_tex );
+		#endif
+
+		#if DEBUG_LOADING
 		Debug.Log( "Set Texture: " + t_tex );
 		#endif
 
-		Instance().m_loading_bg.mainTexture = t_tex;
+		m_preloaded_texture = t_tex;
+
+		UsePreloadedTexture();
+	}
+
+	private static void UsePreloadedTexture(){
+		if( HaveInstance() ){
+			#if DEBUG_BG_RES
+			Debug.Log( "UsePreloadedTexture()" );
+			#endif
+
+			Instance().m_loading_bg.mainTexture = m_preloaded_texture;
+		}
+		else{
+			#if DEBUG_BG_RES
+			Debug.Log( "StaticLoading.No.Instance()" );
+			#endif
+		}
 	}
 
 	#endregion
@@ -256,8 +327,8 @@ public class StaticLoading : MonoBehaviour {
 	#region Update Loading
 
 	public static void SetCurLoading( string p_cur_loading_name ){
-		#if LOG_LOADING
-		//Debug.Log( "SetCurLoading( " + p_cur_loading_name + " )" );
+		#if DEBUG_LOADING
+		Debug.Log( "SetCurLoading( " + p_cur_loading_name + " )" );
 		#endif
 
 		m_cur_loading_asset = p_cur_loading_name;

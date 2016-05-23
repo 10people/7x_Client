@@ -1279,6 +1279,13 @@ public class UIInput : MonoBehaviour
 			if (ch == '，' ) return ch;
 			if (ch == '；' ) return ch;
 			if (ch == '。' ) return ch;
+
+			if (ch == ',' ) return ch;
+			if (ch == '.' ) return ch;
+			if (ch == ';' ) return ch;
+			if (ch == '"' ) return ch;
+			if (ch == '|' ) return ch;
+			if (ch == '/' ) return ch;
 			if (ch>=0x4e00 && ch<=0x9fa5) return ch;
 		}
 

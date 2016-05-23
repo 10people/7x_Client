@@ -181,6 +181,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 		
 		{
 			m_sound_manager = new SoundManager( m_sound1, m_sound2 );
+
+		    s_MSCPlayer = MSCPlayer.Instance;
 		}
 		
 		if(m_UITextManager == null)
@@ -488,6 +490,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 			MyColorData.LoadTemplates( BasicAssetsLoadCallback );
 			
 			ConfigTool.Instance.LoadConfigs( BasicAssetsLoadCallback );
+
+			PropertyTool.Instance.LoadConfigs( BasicAssetsLoadCallback );
 			
 			Res2DTemplate.LoadTemplates( BasicAssetsLoadCallback );
 			
@@ -980,8 +984,52 @@ public class ClientMain : MonoBehaviour , SocketListener
 			ChengJiuTemplate.LoadTemplates( TemplateLoadedCallback );
 			
             FangWuTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			FuWenDuiHuanTemplate.LoadTemplates( TemplateLoadedCallback );
+
+
+
+			MibaoNewTemplate.LoadTemplates(TemplateLoadedCallback);
+
+			JCZCityTemplate.LoadTemplates (TemplateLoadedCallback);
+
+			JCZTemplate.LoadTemplates (TemplateLoadedCallback);
+
+			HYRankAwardTemplate.LoadTemplates (TemplateLoadedCallback);
+
+			MibaoNewSuipianTemplate.LoadTemplates(TemplateLoadedCallback);
 		}
 
+		//151 -160
+		{
+			ChonglouPveTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			ChongLouNpcTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			FunctionLinkTemplate.LoadTemplates( TemplateLoadedCallback );
+
+            BaoShiOpenTemplate.LoadTemplates(TemplateLoadedCallback);
+       
+			LieFuTemplate.LoadTemplates( TemplateLoadedCallback );
+
+
+
+			MishuTemplate.LoadTemplates(TemplateLoadedCallback);		
+
+			CountryZuoBiaoTemplate.LoadTemplates(TemplateLoadedCallback);	
+
+			FuWenTabTemplate.LoadTemplates(TemplateLoadedCallback);	
+
+			VipGiftTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			LianmengJuanxianTemplate.LoadTemplates(TemplateLoadedCallback);
+		}
+
+		// 161-170
+		{
+			GuideInfoTemplate.LoadTemplates( TemplateLoadedCallback );
+		}
+		  
 		m_is_templates_loaded = true;
 	}
 	
@@ -1203,5 +1251,6 @@ public class ClientMain : MonoBehaviour , SocketListener
 	public static bool M_BRESLOAD = true;
 	
 	public static SoundManager m_sound_manager;
-	
+
+	public static MSCPlayer s_MSCPlayer;
 }

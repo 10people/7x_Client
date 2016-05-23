@@ -7,8 +7,14 @@ public class QianDaoMonthTemplate : XmlLoadManager
 {
     public int month;
 
-    public int desc;
+    public string desc;
 
+    public string name;
+
+    public int icon;
+
+
+ 
 
     public static List<QianDaoMonthTemplate> templates = new List<QianDaoMonthTemplate>();
 
@@ -57,7 +63,15 @@ public class QianDaoMonthTemplate : XmlLoadManager
                 t_template.month = int.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
-                t_template.desc = int.Parse(t_reader.Value);
+                t_template.desc = t_reader.Value;
+
+
+                t_reader.MoveToNextAttribute();
+                t_template.name = t_reader.Value;
+
+                t_reader.MoveToNextAttribute();
+                t_template.icon = int.Parse(t_reader.Value);
+
             }
 
             //			t_template.Log();
@@ -67,19 +81,18 @@ public class QianDaoMonthTemplate : XmlLoadManager
         while (t_has_items);
     }
 
-    public static int getDescIdTemplateByMonth(int month)
+    public static QianDaoMonthTemplate getQianDaoMonthTemplateByMonth(int month)
     {
-//        Debug.Log("templates.CountQianDaoMonthQianDaoMonth ::" + templates.Count);
         foreach (QianDaoMonthTemplate template in templates)
         {
             if (template.month == month)
             {
-                return template.desc;
+                return template;
             }
         }
 
         Debug.LogError("XML ERROR: Can't get DescIdTemplate with descId " + month);
 
-        return 0;
+        return null;
     }
 }

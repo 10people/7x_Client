@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LMZSJAward minRank="1" maxRank="1" award="0:900027:200" />
+<LMZSJAward minRank="2" maxRank="2" award="0:900027:180" />
+<LMZSJAward minRank="3" maxRank="3" award="0:900027:160" />
+<LMZSJAward minRank="4" maxRank="4" award="0:900027:140" />
+<LMZSJAward minRank="5" maxRank="8" award="0:900027:130" />
+<LMZSJAward minRank="9" maxRank="16" award="0:900027:120" />
+<LMZSJAward minRank="17" maxRank="32" award="0:900027:110" />
+<LMZSJAward minRank="33" maxRank="64" award="0:900027:100" />
+</dataset>

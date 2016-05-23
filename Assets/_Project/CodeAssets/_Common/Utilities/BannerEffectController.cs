@@ -5,8 +5,8 @@ using System.Linq;
 
 public class BannerEffectController : MonoBehaviour
 {
-    public DelegateUtil.VoidDelegate m_ExecuteAfterClick;
-    public DelegateUtil.VoidDelegate m_ExecuteAfterEnd;
+    public DelegateHelper.VoidDelegate m_ExecuteAfterClick;
+    public DelegateHelper.VoidDelegate m_ExecuteAfterEnd;
 
     public bool isAlertInfoEffectShowing = false;
     private bool m_isCanClickEffect = false;

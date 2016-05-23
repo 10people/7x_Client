@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LMTarget id="1" title="联盟膜拜" desc="进行联盟膜拜，增加联盟建设值和联盟经验" />
+<LMTarget id="2" title="每日任务" desc="达成联盟封禅所需活跃度，封禅增加联盟建设值和联盟经验" />
+<LMTarget id="3" title="掠夺" desc="成功掠夺敌对国玩家，增加联盟建设值和联盟经验" />
+<LMTarget id="4" title="招募" desc="尽快提升联盟人数，为联盟招募伙伴" />
+</dataset>

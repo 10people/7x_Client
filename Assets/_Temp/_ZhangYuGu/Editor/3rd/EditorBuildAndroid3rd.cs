@@ -1,5 +1,7 @@
 //#define DEBUG_THIRD_PLATFORM
 
+
+
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -9,6 +11,18 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2016.1.x
+ * @since:		Unity 5.1.3
+ * Function:	1.1 Build for MyApp's Android test.
+ * 
+ * Notes:
+ * 1.Only used in 1.1, not used since 1.2.
+ * 2.Versions since Payment built-in use EditorBuildAndroid.
+ */
 public class EditorBuildAndroid3rd {
 
 	#region Common
@@ -62,7 +76,9 @@ public class EditorBuildAndroid3rd {
 	
 	#region Build 3rd
 
-	[PostProcessBuild(1000)]
+	/** Path: E:/WorkSpace_Eclipse/qixiong
+	 */
+//	[PostProcessBuild(1000)]
 	public static void OnThirdPlatformPostBuild( BuildTarget p_target, string p_path_to_built_project ){
 //		if ( true ) {
 //			Debug.Log( "3rd platform not working." );

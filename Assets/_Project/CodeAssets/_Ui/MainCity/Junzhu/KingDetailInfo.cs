@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using ProtoBuf;
 using qxmobile.protobuf;
@@ -27,21 +28,25 @@ public class KingDetailInfo : MonoBehaviour
         }
     }
 
+    public static Dictionary<int, string> TransferNation = new Dictionary<int, string>()
+    {
+        {1, "齐"}, {2, "楚"}, {3, "燕"}, {4, "韩"}, {5, "赵"}, {6, "魏"}, {7, "秦"},
+    };
+
     /// <summary>
     /// Do not set this if not in rank sys.
     /// </summary>
     public KingDetailEquipInfo m_KingDetailEquipInfo;
+    public KingDetailMibaoInfo m_KingDetailMibaoInfo;
     public ScaleEffectController m_ScaleEffectController;
 
     public UILabel m_LevelLabel;
     public UILabel m_JunxianLabel;
-    public UILabel m_MoneyLabel;
+    public UILabel m_ScoreLabel;
     public UILabel m_BattleValue;
-    public UILabel m_AttackLabel;
-    public UILabel m_ProtectLabel;
-    public UILabel m_LifeLabel;
     public UILabel m_KingNameLabel;
     public UILabel m_AllianceNameLabel;
+    public UILabel m_NationLabel;
     public GameObject m_PlayerParent;
     public GameObject m_PlayerModel;
     public GameObject m_PlayerLeft;
@@ -54,7 +59,7 @@ public class KingDetailInfo : MonoBehaviour
     public UIGrid m_Grid;
     public GameObject m_ButtonPrefab;
 
-    public KingDetailData m_KingInfo;
+    public JunZhuInfo m_KingInfo;
 
     public struct KingDetailData
     {
@@ -70,16 +75,17 @@ public class KingDetailInfo : MonoBehaviour
         public string KingName;
         public string AllianceName;
         public int Title;
+        public int Nation;
     }
 
-    public void SetThis(KingDetailData data, List<KingDetailButtonController.KingDetailButtonConfig> configList)
+    public void SetThis(JunZhuInfo data, List<KingDetailButtonController.KingDetailButtonConfig> configList)
     {
         m_KingInfo = data;
 
-        if (m_KingInfo.Title > 0)
+        if (m_KingInfo.chenghao > 0)
         {
             m_TitleSprite.gameObject.SetActive(true);
-            m_TitleSprite.spriteName = m_KingInfo.Title.ToString();
+            m_TitleSprite.spriteName = m_KingInfo.chenghao.ToString();
         }
         else
         {
@@ -87,18 +93,20 @@ public class KingDetailInfo : MonoBehaviour
         }
 
         //Set right part data.
-        m_AttackLabel.text = m_KingInfo.Attack.ToString();
-        m_ProtectLabel.text = m_KingInfo.Protect.ToString();
-        m_LifeLabel.text = m_KingInfo.Life.ToString();
-        m_LevelLabel.text = m_KingInfo.Level.ToString();
-        m_BattleValue.text = m_KingInfo.BattleValue.ToString();
-        m_MoneyLabel.text = m_KingInfo.Money.ToString();
+        m_LevelLabel.text = "Lv " + m_KingInfo.level;
+        m_BattleValue.text = m_KingInfo.zhanli.ToString();
+        m_ScoreLabel.text = m_KingInfo.gongjin.ToString();
 
-        m_JunxianLabel.text = m_KingInfo.JunxianRank < 0 ? "无军衔" : m_KingInfo.Junxian;
+        m_JunxianLabel.text = m_KingInfo.junxianRank < 0 ? "无军衔" : m_KingInfo.junxian;
 
-        m_KingNameLabel.text = m_KingInfo.KingName;
+        m_KingNameLabel.text = m_KingInfo.name;
 
-        m_AllianceNameLabel.text = (string.IsNullOrEmpty(m_KingInfo.AllianceName) || m_KingInfo.AllianceName == "无") ? "无联盟" : ("<" + m_KingInfo.AllianceName + ">");
+        m_AllianceNameLabel.text = (string.IsNullOrEmpty(m_KingInfo.lianMeng) || m_KingInfo.lianMeng == "无") ? "无联盟" : ("<" + m_KingInfo.lianMeng + ">");
+
+        if (TransferNation.ContainsKey(m_KingInfo.guojiaId))
+        {
+            m_NationLabel.text = TransferNation[m_KingInfo.guojiaId] + "国";
+        }
 
         //Set right part buttons.
         while (m_Grid.transform.childCount != 0)
@@ -121,6 +129,12 @@ public class KingDetailInfo : MonoBehaviour
 
             m_Grid.Reposition();
         }
+
+        m_KingDetailEquipInfo.m_BagItemDic = m_KingInfo.equip.items.Where(item => item.buWei > 0).ToDictionary(item => TransferBuwei(item.buWei));
+        m_KingDetailEquipInfo.m_BagItemDic = m_KingInfo.equip.items.Where(item => item.buWei > 0).ToDictionary(item => TransferBuwei(item.buWei));
+        m_KingDetailMibaoInfo.m_MibaoInfoResp = m_KingInfo.mibaoInfoResp;
+
+        m_KingDetailMibaoInfo.setDataMiBao();
     }
 
     public GameObject TopLeftAnchor;
@@ -158,7 +172,11 @@ public class KingDetailInfo : MonoBehaviour
 
         m_PlayerModel.name = p_object.name;
 
-        m_PlayerModel.GetComponent<NavMeshAgent>().enabled = false;
+        var nav = m_PlayerModel.GetComponent<NavMeshAgent>();
+        if (nav != null)
+        {
+            nav.enabled = false;
+        }
 
         m_PlayerModel.GetComponent<Animator>().Play("zhuchengidle");
 
@@ -167,9 +185,7 @@ public class KingDetailInfo : MonoBehaviour
 
     public void EndDelegate()
     {
-        //        Debug.Log("===1");
-
-        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + m_KingInfo.RoleID),
+        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + m_KingInfo.roleId),
                                 PlayerLoadCallBack);
     }
 }

@@ -178,18 +178,30 @@ public class LockControllor : MonoBehaviour
 
 			lockSprite.alpha = ((targetActive == false && icon.activeSelf == true) ? 1f : .1f);
 
-			iTween.StopByName("refreshLock" + gc_lock.name);
+//			{
+//				iTween.StopByName("refreshLock" + gc_lock.name);
+//
+//				iTween.ValueTo(gameObject, iTween.Hash(
+//					"name", "refreshLock" + gc_lock.name,
+//					"from", 0f,
+//					"to", 1f,
+//					"time", 2f,
+//					"onupdate", "unlockUpdate",
+//					"oncomplete", "unlockComplete",
+//					"oncompleteparams", gc_lock,
+//					"ignoretimescale", true
+//				));
+//			}
 
-			iTween.ValueTo(gameObject, iTween.Hash(
-				"name", "refreshLock" + gc_lock.name,
-				"from", 0f,
-				"to", 1f,
-				"time", 2f,
-				"onupdate", "unlockUpdate",
-				"oncomplete", "unlockComplete",
-				"oncompleteparams", gc_lock,
-				"ignoretimescale", true
-				));
+			{
+				LeanTween.cancel( gc_lock );
+
+				LeanTween.value( gameObject, 0, 1.0f, 2.0f )
+					.setOnUpdate( unlockUpdate )
+					.setOnComplete( unlockComplete )
+					.setOnCompleteParam( gc_lock )
+					.setIgnoreTimeScale( true );
+			}
 
 //			gc_lock.SetActive (targetActive == false && icon.activeSelf == true);
 
@@ -257,20 +269,30 @@ public class LockControllor : MonoBehaviour
 
 				colliderObject.SetActive(true);
 
-				iTween.MoveTo(icon, iTween.Hash(
-					"name", "unlockMove_" + icon.name,
-					"delay", 1.5f,
-					"position", tempPosition,
-					"time", .8f,
-					"islocal", true,
-					"onstarttarget", gameObject,
-					"onstart","startMove",
-					"onstartparams", icon,
-					"oncompletetarget", gameObject,
-					"oncomplete", "unlockEffDone",
-					"oncompleteparams", sprite,
-					"ignoretimescale", true
-					));
+//				iTween.MoveTo(icon, iTween.Hash(
+//					"name", "unlockMove_" + icon.name,
+//					"delay", 1.5f,
+//					"position", tempPosition,
+//					"time", .8f,
+//					"islocal", true,
+//					"onstarttarget", gameObject,
+//					"onstart","startMove",
+//					"onstartparams", icon,
+//					"oncompletetarget", gameObject,
+//					"oncomplete", "unlockEffDone",
+//					"oncompleteparams", sprite,
+//					"ignoretimescale", true
+//					));
+
+				LeanTween.moveLocal( icon, tempPosition, 0.8f )
+					.setDelay( 1.5f )
+					.setOnStart( () => {
+						UI3DEffectTool.ClearUIFx (icon);
+					} )
+					.setOnComplete( unlockEffDone )
+					.setOnCompleteParam( sprite )
+					.setIgnoreTimeScale( true );
+
 			}
 		}
 	}
@@ -280,11 +302,21 @@ public class LockControllor : MonoBehaviour
 	
 	}
 
-	private void unlockComplete(GameObject lockObject)
+	private void unlockComplete( System.Object lockObject)
 	{
-		UISprite sprite = lockObject.GetComponent<UISprite>();
+		GameObject t_gb = ((GameObject)lockObject);
 
-		lockObject.SetActive (sprite.alpha > .5f);
+		if( t_gb == null ){
+			return;
+		}
+
+		UISprite sprite = t_gb.GetComponent<UISprite>();
+
+		if( sprite == null ){
+			return;
+		}
+
+		t_gb.SetActive (sprite.alpha > .5f);
 	}
 
 	private void startMove(GameObject icon)
@@ -294,15 +326,16 @@ public class LockControllor : MonoBehaviour
 		//UI3DEffectTool.ShowTopLayerEffect( UI3DEffectTool.UIType.MainUI_0, icon, EffectIdTemplate.getEffectTemplateByEffectId(620223).path);
 	}
 
-	private void unlockEffDone(GameObject icon)
+	private void unlockEffDone(System.Object icon)
 	{
+		GameObject t_gb = (GameObject)icon;
 		//UI3DEffectTool.ClearUIFx (icon);
 
 		colliderObject.SetActive(false);
 
-		UI3DEffectTool.ShowTopLayerEffect( UI3DEffectTool.UIType.MainUI_0, icon, EffectIdTemplate.getEffectTemplateByEffectId(620222).path);
+		UI3DEffectTool.ShowTopLayerEffect( UI3DEffectTool.UIType.MainUI_0, t_gb, EffectIdTemplate.getEffectTemplateByEffectId(620222).path);
 
-		StartCoroutine (unlockEffOver(icon));
+		StartCoroutine (unlockEffOver(t_gb));
 	}
 
 	IEnumerator unlockEffOver(GameObject icon)

@@ -8,166 +8,167 @@ using ProtoBuf.Meta;
 
 public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
 
-    private static PlayerInCityManager m_instance;
-    private List<EnterScene> _PlayerInfo = new List<EnterScene>();
+    public static PlayerInCityManager m_PlayerInCity;
+    private List<PlayersManager.OtherPlayerInfo> _PlayerInfo = new List<PlayersManager.OtherPlayerInfo>();
     public static Dictionary<int, GameObject> m_playrDic = new Dictionary<int, GameObject>();  //主城玩家集合
     public GameObject m_NameParent;
-	public static PlayerInCityManager Instance(){
-		if( m_instance == null ){
-			Debug.LogError( "PlayerInCityManager.instance == null." );
-		}
-
-		return m_instance;
-	}
-
+    struct ModelInfo
+    {
+        public int _UID;
+        public int _RoleId;
+        public string _Path;
+    };
+    List<ModelInfo> _listMainInf = new List<ModelInfo>();
+    List<ModelInfo> _listSkeletonInf = new List<ModelInfo>();
     void Start(){
-        m_instance = this;
+        m_PlayerInCity = this;
     }
 
 	void OnDestroy(){
-		m_instance = null;
+        m_PlayerInCity = null;
 
 		m_playrDic.Clear();
         PlayerNameManager.DicClear();
     }
 
     // create player
-    public void CreatePlayer( EnterScene p_enter_scene_player ) {
-      //  Debug.Log("PlayerInCityManager.CreatePlayer: " + p_enter_scene_player.uid + " " + p_enter_scene_player.roleId + " " + p_enter_scene_player.senderName );
-
+    public void CreatePlayer(PlayersManager.OtherPlayerInfo u_info)
+    {
         int size = _PlayerInfo.Count;
         for (int i = 0; i < size; i++)
         {
-            if (_PlayerInfo[i].uid == p_enter_scene_player.uid)
+            if (_PlayerInfo[i]._UID == u_info._UID)
             {
                 return;
             }
         }
-        _PlayerInfo.Add(p_enter_scene_player);
-        // TODO: replace with new res.
-        //		Global.ResourcesDotLoad( ModelTemplate.GetResPathByModelId( -1 ),
-        //	                        ResourceLoadCallback );
-        //		Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
-        //                               LoadCallback);
-        //		Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
-        //                               ResourceLoadCallback);
+        _PlayerInfo.Add(u_info);
+        ModelInfo info = new ModelInfo();
+        info._UID = u_info._UID;
+        info._RoleId = u_info._RoleId;
+        info._Path = ModelTemplate.GetResPathByModelId(100 + u_info._RoleId);
+        _listMainInf.Add(info);
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MODEL_PARENT),
+                       ResourceLoad_Main_Callback);
+      
+    }
+    Dictionary<int, GameObject> _MainParentDic = new Dictionary<int, GameObject>();
+    public void ResourceLoad_Main_Callback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject t_gb = Instantiate(p_object) as GameObject;
+        t_gb.transform.localScale = Vector3.one * 1.5f;
+        t_gb.transform.Rotate(0, _PlayerRotation, 0);
+        PlayerInCity tempItem = t_gb.AddComponent<PlayerInCity>();
+        t_gb.AddComponent<ModelTouchShowOrMoveManagerment>();
+   
+        EffectTool.DisableCityOcclusion(t_gb);
+        for (int i = _PlayerInfo.Count - 1; i >= 0; i--)
+        {
+            if (GetModelResPathByRoleId(_PlayerInfo[i]._RoleId) == _listMainInf[i]._Path && _listMainInf[i]._UID == _PlayerInfo[i]._UID)
+            {
+                t_gb.transform.localPosition = _PlayerInfo[i]._SeverPos;
+                _PlayerRotation = Random.Range(0.0f, 180.0f);
+                t_gb.name = "PlayerObject:" + _PlayerInfo[i]._MonarchId;
+                tempItem.m_playerID = _PlayerInfo[i]._UID;
+                m_playrDic.Add(_PlayerInfo[i]._UID, t_gb);
+                PlayerNameManager.m_PlayerNamesParent = m_NameParent;
+                Create_Name(_PlayerInfo[i]);
+                _MainParentDic.Add(_PlayerInfo[i]._UID, t_gb);
 
-        //	Debug.Log("p_enter_scene_player.roleId +1)p_enter_scene_player.roleId +1)p_enter_scene_player.roleId +1)" + p_enter_scene_player.roleId);
-
-        //if (p_enter_scene_player.roleId == 0)
-        //{
-        //    p_enter_scene_player.roleId = 1;
-        //}
-        //else if (p_enter_scene_player.roleId > 4)
-        //{
-        //    p_enter_scene_player.roleId = 4;
-        //}
-       // Debug.Log("NAMeNAMeNAMeNAMe ::" + p_enter_scene_player.senderName + "IDIDIDIDIDIDIDIDIDIDIDIDIDIDIDID ::" + p_enter_scene_player.roleId);
-        Global.ResourcesDotLoad( GetModelResPathByRoleId(p_enter_scene_player.roleId ), ResourceLoadCallback );
+                Global.ResourcesDotLoad(GetModelResPathByRoleId(_PlayerInfo[i]._RoleId), ResourceLoadCallback);
+                _listMainInf.Remove(_listMainInf[i]);
+            }
+        }
+    }
+        float _PlayerRotation = 0;
+    public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        for (int i = _PlayerInfo.Count - 1; i >= 0; i--)
+        {
+            if (GetModelResPathByRoleId(_PlayerInfo[i]._RoleId) == p_path)
+            {
+                LoadingPlayer(_PlayerInfo[i], p_object, _MainParentDic[_PlayerInfo[i]._UID]);
+                _MainParentDic.Remove(_PlayerInfo[i]._UID);
+                _PlayerInfo.Remove(_PlayerInfo[i]);
+            }
+        }
     }
 
-    public static string GetModelResPathByRoleId( int p_role_id ) {
+
+ 
+    public static string GetModelResPathByRoleId( int p_role_id )
+    {
         return ModelTemplate.GetResPathByModelId(100 + p_role_id );
     }
-    
-    void LoadingPlayer(EnterScene p_enter_scene,Object player_object)
-    {
-        if (!m_playrDic.ContainsKey(p_enter_scene.uid))
-        {
-            Vector3 t_pos = new Vector3(p_enter_scene.posX,
-                                        p_enter_scene.posY,
-                                        p_enter_scene.posZ);
-           GameObject t_gb = Instantiate(player_object, t_pos, Quaternion.Euler(Vector3.zero)) as GameObject;
 
-            //GameObject t_gb = Instantiate(player_object) as GameObject;
-            t_gb.name = "PlayerObject:" + p_enter_scene.jzId;
-            t_gb.transform.Rotate(0, _PlayerRotation, 0) ;//; = new Quaternion(0, _PlayerRotation, 0, 0);
-            //t_gb.GetComponent<CharacterController>().enabled = false;
-            t_gb.transform.parent = this.transform;
-            t_gb.transform.localScale = Vector3.one*1.5f;
-        
-        
-            PlayerInCity tempItem = t_gb.AddComponent<PlayerInCity>();
-
-            tempItem.m_playerID = p_enter_scene.uid;
-            m_playrDic.Add(p_enter_scene.uid, t_gb);
-            Fresh();
-            PlayerNameManager.m_PlayerNamesParent = m_NameParent;
-            PlayerNameManager.CreatePlayerName(p_enter_scene);
-            EffectTool.DisableCityOcclusion(t_gb);
-        }
-        else
-        {
-            player_object = null;
-        }
-      
-	}
-    static void Fresh()
+    void LoadingPlayer(PlayersManager.OtherPlayerInfo u_info, Object player_object, GameObject parent)
     {
-        foreach (KeyValuePair<int, GameObject> item in m_playrDic)
+        GameObject t_gb = Instantiate(player_object) as GameObject;
+   
+        // GameObject t_gb = Instantiate(player_object, , Quaternion.Euler(Vector3.zero)) as GameObject;
+        parent.GetComponent<PlayerShadowManagerment>().m_Skeleton = t_gb;
+        parent.GetComponent<PlayerInCity>().m_animation = t_gb.GetComponent<Animator>();
+        parent.GetComponent<PlayerShadowManagerment>().m_RoleID = u_info._RoleId;
+        t_gb.transform.parent = parent.transform;
+        t_gb.transform.localScale = Vector3.one;
+        t_gb.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        t_gb.transform.localPosition = Vector3.zero;
+    }
+    public void Reload_Skeleton(int uid,int roleid)
+    {
+        foreach (KeyValuePair<int,GameObject> item in m_playrDic)
         {
-            if (PlayersManager.m_playrHeadInfo.ContainsKey(item.Key))
+            if (item.Key == uid && item.Value.GetComponent<PlayerShadowManagerment>().m_RoleID != roleid)
             {
-                PlayerNameManager.UpdateAllLabel(PlayersManager.m_playrHeadInfo[item.Key]);
+                ModelInfo info = new ModelInfo();
+                info._UID = uid;
+                info._RoleId = roleid;
+                info._Path = ModelTemplate.GetResPathByModelId(100 + roleid);
+                _listSkeletonInf.Add(info);
+                Global.ResourcesDotLoad(GetModelResPathByRoleId(roleid), Reload_ResourceLoadCallback);
             }
         }
     }
-    //private Object m_player_object = null;
-    float _PlayerRotation = 0;
-	public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object ){
-        //m_player_object = p_object;
-       // Debug.Log("p_pathp_pathp_pathp_pathp_pathp_pathp_path :::" + p_path);
 
-        for( int i = _PlayerInfo.Count - 1; i >= 0; i--)
+    public void Reload_ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject t_gb = Instantiate(p_object) as GameObject;
+   
+        for (int i = _listSkeletonInf.Count - 1; i >= 0; i--)
         {
-            EnterScene t_info = _PlayerInfo[i];
-
-            if ( GetModelResPathByRoleId(t_info.roleId ) == p_path )
+            if (GetModelResPathByRoleId(_listSkeletonInf[i]._RoleId) == p_path)
             {
-                _PlayerRotation = Random.Range(0.0f, 180.0f);
-                LoadingPlayer( t_info, p_object );
-                _PlayerInfo.Remove(t_info);
+                t_gb.transform.parent = m_playrDic[_listSkeletonInf[i]._UID].transform;
+                Destroy(m_playrDic[_listSkeletonInf[i]._UID].GetComponent<PlayerShadowManagerment>().m_Skeleton);
+                m_playrDic[_listSkeletonInf[i]._UID].GetComponent<PlayerShadowManagerment>().m_Skeleton = t_gb;
+                t_gb.transform.localScale = Vector3.one;
+                t_gb.transform.localPosition = Vector3.zero;
+                _listSkeletonInf.Remove(_listSkeletonInf[i]);
             }
         }
-	}
+    }
+    void Create_Name(PlayersManager.OtherPlayerInfo u_info)
+    {
+       PlayerNameManager.Create_MainCity_PlayerName(u_info);
+    }
+    //private Object m_player_object = null;
+
 
 	//更新玩家位置
-    public static void UpdatePlayerPosition(SpriteMove tempMove) 
+    public  void UpdatePlayerPosition(SpriteMove tempMove) 
     {
-        if ( !m_playrDic.ContainsKey( tempMove.uid ) ){
+        if ( !m_playrDic.ContainsKey( tempMove.uid ) )
+        {
 			return;
 		}
 
         PlayerInCity tempPlayer = m_playrDic[tempMove.uid].GetComponent<PlayerInCity>();
-        //if (CityGlobalData.m_isAllianceTenentsScene)
-        //{
-        //    tempMove.posY = 2.4f;
-        //}
-        //else
-        //{
-        //    tempMove.posY = 0.4f;
-        //}
-
         Vector3 targetPosition = new Vector3( tempMove.posX,tempMove.posY,tempMove.posZ );
 
         tempPlayer.PlayerRun( targetPosition );
 
      }
-
-    public void UpdatePlayerPosition()
-    {
-        //foreach (GameObject tempPlayer in m_playrDic.Values)
-        //{
-        //    if (tempPlayer != null && tempPlayer.GetComponent<NavMeshAgent>().enabled)
-        //    {
-        //        if (tempPlayer.GetComponent<PlayerInCity>().m_Agent.remainingDistance == 0)
-        //        {
-        //            tempPlayer.GetComponent<PlayerInCity>().PlayerStop();
-        //        }
-        //    }
-        //}
-    }
-
+ 
 	//删除玩家
     public static void DestroyPlayer(ExitScene tempPlayer) 
     {

@@ -58,12 +58,6 @@ public class UtilityTool : Singleton<UtilityTool>{
     void Update(){
 		{
 			ComponentHelper.GlobalClassUpdate();
-
-			ObjectHelper.OnUpdate();
-
-			SocketHelper.UpdateErrorBoxes();
-
-//			SoundHelper.OnUpdate();
 		}
 
 		#if UNITY_ANDROID
@@ -160,6 +154,7 @@ public class UtilityTool : Singleton<UtilityTool>{
 	
 
     private static Object m_cached_box_obj;
+	public static Object m_cached_functionJump_obj;
 
     public static void LoadBox(){
         //		Global.ResourcesDotLoad( Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), CachedBoxCallback );
@@ -167,14 +162,21 @@ public class UtilityTool : Singleton<UtilityTool>{
 //		Debug.Log( "UtilityTool.LoadBox()" );
 
         // Updated 2015.7.4, Bundle Load Use.
-        Global.ResourcesDotLoad( "New/Box", CachedBoxCallback );
+		Global.ResourcesDotLoad("New/Box", CachedBoxCallback );
     }
 
     private static void CachedBoxCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
 //		Debug.Log( "UtilityTool.CachedBoxCallback( " + p_path + " - " + p_object + " )" );
-
         m_cached_box_obj = p_object;
     }
+
+	public static void LoadFunctionJump(){
+		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.FUNCTION_JUMP ), CachedFunctionJumpCallback );
+	}
+	
+	private static void CachedFunctionJumpCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
+		m_cached_functionJump_obj = p_object;
+	}
 
 	public GameObject CreateBox( 
 			string p_title, 
@@ -184,7 +186,8 @@ public class UtilityTool : Singleton<UtilityTool>{
 			UIBox.onclick p_click_delegate, UIBox.OnBoxCreated p_on_create = null,
 			UIFont uifontButton1 = null, UIFont uifontButton2 = null, 
 			bool isShowBagItemNumBelow = false, 
-			bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false ){
+			bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false,
+			int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ){
 		bool t_debug_box = false;
 
 		if ( ConfigTool.GetBool (ConfigTool.CONST_LOG_DIALOG_BOX) ) {
@@ -240,10 +243,28 @@ public class UtilityTool : Singleton<UtilityTool>{
 	                   isShowBagItemNumBelow,
 	                   isSetDepth,
 	                   isBagItemTop,
-		               isFunction);
+		               isFunction,
+						p_window_id );
     }
 
-	GameObject ExecLoadBox(string tile, string dis1, string dis2, List<BagItem> bagItem, string buttonname1, string buttonname2, UIBox.onclick onClcik, UIBox.OnBoxCreated p_on_create, UIFont uifontButton1 = null, UIFont uifontButton2 = null, bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false ){
+	GameObject ExecLoadBox(
+		string tile, 
+		string dis1, 
+		string dis2, 
+		List<BagItem> bagItem, 
+		string buttonname1, 
+
+		string buttonname2, 
+		UIBox.onclick onClcik, 
+		UIBox.OnBoxCreated p_on_create, 
+		UIFont uifontButton1 = null, 
+		UIFont uifontButton2 = null, 
+
+		bool isShowBagItemNumBelow = false, 
+		bool isSetDepth = true, 
+		bool isBagItemTop = true, 
+		bool isFunction = false,
+		int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ){
         if ( m_cached_box_obj == null ){
             Debug.LogError("Error, No Cached box.");
 
@@ -266,7 +287,8 @@ public class UtilityTool : Singleton<UtilityTool>{
 		             isShowBagItemNumBelow,
 		             isSetDepth,
 		             isBagItemTop,
-		             isFunction);
+		             isFunction,
+						p_window_id );
 
 		return t_gb;
     }

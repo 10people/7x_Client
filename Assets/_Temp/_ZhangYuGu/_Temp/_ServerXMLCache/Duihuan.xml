@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Duihuan id="1001" itemType="5" itemId="311002" itemNum="3" needNum="900" weight="10000" site="1" ifRecomanded="0" />
+<Duihuan id="1002" itemType="5" itemId="313002" itemNum="3" needNum="500" weight="10000" site="2" ifRecomanded="1" />
+<Duihuan id="1003" itemType="8" itemId="901088" itemNum="1" needNum="100" weight="3334" site="3" ifRecomanded="0" />
+<Duihuan id="1004" itemType="8" itemId="902088" itemNum="1" needNum="400" weight="3333" site="3" ifRecomanded="0" />
+<Duihuan id="1005" itemType="8" itemId="903088" itemNum="1" needNum="1600" weight="3333" site="3" ifRecomanded="0" />
+<Duihuan id="1006" itemType="8" itemId="901098" itemNum="1" needNum="100" weight="3334" site="4" ifRecomanded="0" />
+<Duihuan id="1007" itemType="8" itemId="902098" itemNum="1" needNum="400" weight="3333" site="4" ifRecomanded="0" />
+<Duihuan id="1008" itemType="8" itemId="903098" itemNum="1" needNum="1600" weight="3333" site="4" ifRecomanded="0" />
+<Duihuan id="1009" itemType="0" itemId="910002" itemNum="3" needNum="600" weight="10000" site="5" ifRecomanded="0" />
+<Duihuan id="1010" itemType="0" itemId="951001" itemNum="5" needNum="250" weight="3334" site="6" ifRecomanded="0" />
+<Duihuan id="1011" itemType="0" itemId="951002" itemNum="2" needNum="400" weight="3333" site="6" ifRecomanded="0" />
+<Duihuan id="1012" itemType="0" itemId="951003" itemNum="1" needNum="1000" weight="3333" site="6" ifRecomanded="0" />
+<Duihuan id="1013" itemType="9" itemId="920002" itemNum="5" needNum="130" weight="5000" site="7" ifRecomanded="0" />
+<Duihuan id="1014" itemType="9" itemId="920003" itemNum="5" needNum="500" weight="5000" site="7" ifRecomanded="0" />
+<Duihuan id="1015" itemType="9" itemId="921002" itemNum="5" needNum="130" weight="5000" site="8" ifRecomanded="0" />
+<Duihuan id="1016" itemType="9" itemId="921003" itemNum="5" needNum="500" weight="5000" site="8" ifRecomanded="0" />
+</dataset>

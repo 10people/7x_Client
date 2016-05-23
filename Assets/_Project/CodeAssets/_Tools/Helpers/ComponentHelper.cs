@@ -30,6 +30,8 @@ public class ComponentHelper{
 
 		ComponentHelper.AddIfNotExist(t_dont_destroy, typeof(InGameLog));
 
+		ComponentHelper.AddIfNotExist(t_dont_destroy, typeof(UIWindowTool));
+
 		{
 			FileHelper.RegisterLog();
 			JunZhuData.Instance ();
@@ -45,9 +47,19 @@ public class ComponentHelper{
 
 	/// Non-Mono class update could be here, invoked in UtilityTool.
 	public static void GlobalClassUpdate(){
+		TimeHelper.UpdateLastRealtimeSinceStartup();
+
 		UIRootAutoActivator.Instance().ManualUpdate();
 
 		ModelAutoActivator.Instance().ManualUpdate();
+
+		ObjectHelper.OnUpdate();
+
+		SocketHelper.UpdateErrorBoxes();
+
+		ScheduleHelper.OnUpdate();
+
+		//			SoundHelper.OnUpdate();
 	}
 
 	#endregion
@@ -151,6 +163,29 @@ public class ComponentHelper{
 	}
 
 	/// Add type to a gameobject, if not exist on it.
+	public static Component AddIfNotExist( Component p_com, System.Type p_type ){
+		if( p_com == null ){
+			Debug.LogError( "Error, component is null: " + p_com );
+
+			return null;
+		}
+
+		if( p_com.gameObject == null ){
+			Debug.LogError( "Error, gb is null: " + p_com );
+
+			return null;
+		}
+
+		Component t_com = p_com.gameObject.GetComponent( p_type );
+
+		if( t_com == null ) {
+			t_com = p_com.gameObject.AddComponent( p_type );
+		}
+
+		return t_com;
+	}
+
+	/// Add type to a gameobject, if not exist on it.
 	public static Component AddIfNotExist( GameObject p_gb, System.Type p_type ){
 		if( p_gb == null ){
 			Debug.LogError( "Error, gb is null: " + p_gb );
@@ -231,8 +266,26 @@ public class ComponentHelper{
 		Debug.Log( p_label.width + ", " + p_label.height + ": " + p_label.text );
 	}
 
-	public static void LogCamera( Camera p_cam ){
-		Debug.Log( p_cam.depth + ", " + p_cam.cullingMask );
+	public static void LogCamera( Camera p_cam, string p_prefix = "" ){
+		Debug.Log( "------ " + p_prefix + " ------" );
+
+		if( p_cam == null ){
+			return;
+		}
+
+		Debug.Log( "clearFlags: " + p_cam.clearFlags );
+
+		Debug.Log( "cullingMask: " + p_cam.cullingMask );
+
+		Debug.Log( "projectionMatrix: " + p_cam.projectionMatrix );
+
+		Debug.Log( "fieldOfView: " + p_cam.fieldOfView );
+
+		Debug.Log( "nearClipPlane: " + p_cam.nearClipPlane );
+
+		Debug.Log( "farClipPlane: " + p_cam.farClipPlane );
+
+		Debug.Log( "depth: " + p_cam.depth );
 	}
 
 	public static void LogParticleSystem( ParticleSystem p_ps, string p_prefix = "" ){
@@ -881,7 +934,7 @@ public class ComponentHelper{
 	#region Monos
 
 	/// Clear All Monos under p_gb and its' children.
-	public static void ClearMonos( GameObject p_gb ){
+	public static void ClearMonos( GameObject p_gb, bool p_clear_children = true ){
 		if ( p_gb == null ){
 			Debug.LogWarning("Error in ClearMonos, p_gb = null.");
 			
@@ -891,10 +944,12 @@ public class ComponentHelper{
 		int t_child_count = p_gb.transform.childCount;
 		
 		{
-			for ( int i = 0; i < t_child_count; i++ ){
-				Transform t_child = p_gb.transform.GetChild( i );
-				
-				ClearMonos( t_child.gameObject );
+			if( p_clear_children ){
+				for ( int i = 0; i < t_child_count; i++ ){
+					Transform t_child = p_gb.transform.GetChild( i );
+
+					ClearMonos( t_child.gameObject, p_clear_children );
+				}
 			}
 			
 			{
@@ -904,6 +959,37 @@ public class ComponentHelper{
 					MonoBehaviour t_mono = t_monos[ i ];
 					
 					Destroy( t_mono );
+				}
+			}
+		}
+	}
+
+	/// Clear All Monos under p_gb and its' children.
+	public static void ClearComponents( GameObject p_gb, bool p_clear_children = true ){
+		if ( p_gb == null ){
+			Debug.LogWarning("Error in ClearMonos, p_gb = null.");
+
+			return;
+		}
+
+		int t_child_count = p_gb.transform.childCount;
+
+		{
+			if( p_clear_children ){
+				for ( int i = 0; i < t_child_count; i++ ){
+					Transform t_child = p_gb.transform.GetChild( i );
+
+					ClearMonos( t_child.gameObject, p_clear_children );
+				}
+			}
+
+			{
+				Component[] t_coms = p_gb.GetComponents<Component>();
+
+				for( int i = t_coms.Length - 1; i >= 0; i-- ){
+					Component t_com = t_coms[ i ];
+
+					Destroy( t_com );
 				}
 			}
 		}
@@ -976,6 +1062,20 @@ public class ComponentHelper{
 
 
 	#region Materials
+
+	public static Material NewMaterial( string p_shader_name ){
+		Shader t_shader = Shader.Find( p_shader_name );
+
+		if( t_shader == null ){
+			Debug.LogError( "Shader is null: " + p_shader_name );
+
+			return null;
+		}
+
+		Material t_mat = new Material( t_shader );
+
+		return t_mat;
+	}
 	
 	public static void LogMaterial( Material p_mat, string p_prefix = "" ){
 		if( p_mat == null ){
@@ -1013,6 +1113,34 @@ public class ComponentHelper{
 				Debug.Log( p_prefix + " " + i + ": " + t_mat + " - " + t_mat.shader.name );
 			}
 		}
+	}
+
+	public static Material GetMaterialWithShader<T>( GameObject p_gb ) where T : Renderer{
+		if( p_gb == null ){
+//			Debug.Log( "p_object is null." );
+
+			return null;
+		}
+
+		T[] t_renderers = p_gb.GetComponentsInChildren<T>();
+
+		for( int i = 0; i < t_renderers.Length; i++ ){
+			T t_renderer = t_renderers[i];
+
+			Material[] t_mats = t_renderer.materials;
+
+			for ( int j = 0; j < t_renderer.materials.Length; j++ ){
+				Material t_mat = t_renderer.materials[ j ];
+
+				if ( t_mat == null ){
+					continue;
+				}
+
+				return t_mat;
+			}
+		}
+
+		return null;
 	}
 
 	public static Material GetMaterialWithShader<T>( GameObject p_gb, Shader p_shader ) where T : Renderer{
@@ -1087,6 +1215,16 @@ public class ComponentHelper{
 		}
 		
 		return m_list.ToArray();
+	}
+
+	public static Material GetFirstMaterial( GameObject p_gb ){
+		Material t_mat = ComponentHelper.GetMaterialWithShader<MeshRenderer>( p_gb );
+
+		if( t_mat == null ){
+			t_mat = ComponentHelper.GetMaterialWithShader<SkinnedMeshRenderer>( p_gb );
+		}
+
+		return t_mat;
 	}
 
 	#endregion

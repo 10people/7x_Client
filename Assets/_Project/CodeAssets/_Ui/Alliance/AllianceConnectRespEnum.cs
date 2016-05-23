@@ -11,7 +11,7 @@ public enum AllianceConnectRespEnum
  E_ALLIANCE_FIVE,    //5
  E_ALLIANCE_SIX,   //6
  E_ALLIANCE_SEVEN,  //7
-     E_ALLIANCE_EIGHT,   //8
-     E_ALLIANCE_NINE,   //9
+ E_ALLIANCE_EIGHT,   //8
+ E_ALLIANCE_NINE,   //9
 
 }

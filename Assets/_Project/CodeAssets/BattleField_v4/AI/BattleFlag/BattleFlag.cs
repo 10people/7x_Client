@@ -13,15 +13,15 @@ public class BattleFlag : MonoBehaviour
 
 	public enum TriggerFunc
 	{
-		Null,              //无操作
-		Crash,             //死亡
-		FadeIn,            //出现
-		Hurtable,          //取消无敌状态
-		EyeToEye,          //视野共享
-		Guide,             //guide表
-		HintLabel,         //触发提示文字
-		NodeSkillOn,       //触发后开启技能
-		NodeSkillOff,      //触发后关闭技能
+		Null,				//无操作
+		Crash,				//死亡
+		FadeIn,				//出现
+		Hurtable,			//取消无敌状态
+		EyeToEye,			//视野共享
+		Guide,				//guide表
+		HintLabel,			//触发提示文字
+		NodeSkillOn,		//触发后开启技能
+		NodeSkillOff,		//触发后关闭技能
 	}
 
 	public int flagId;
@@ -55,6 +55,10 @@ public class BattleFlag : MonoBehaviour
 	public GameObject alarmGc;
 
 	public TriggerFunc triggerFunc;
+
+	public int triggerFuncEffect;
+
+	public float triggerDelay;
 
 	public GameObject triggerFlagEye2eyeRoot;
 
@@ -97,7 +101,19 @@ public class BattleFlag : MonoBehaviour
 
 	[HideInInspector] public List<BattleDoorFlag> doorFlags = new List<BattleDoorFlag>();
 
-	void OnDestroy(){
+	[HideInInspector] public GameObject wallObject;
+
+
+	private bool triggerSuc;
+
+
+	void Start()
+	{
+		triggerSuc = false;
+	}
+
+	void OnDestroy()
+	{
 		triggerFlagEye2eye.Clear();
 		
 		triggerFlagEnter.Clear();
@@ -253,47 +269,71 @@ public class BattleFlag : MonoBehaviour
 
 	public void trigger(BaseAI t_node = null)
 	{
+		if(!triggerSuc) StartCoroutine (_trigger(t_node));
+	}
+
+	IEnumerator _trigger(BaseAI t_node)
+	{
+		if(triggerDelay > 0)
+		{
+			yield return new WaitForSeconds(triggerDelay);
+		}
+
+		bool suc = false;
+
 		if(triggerFunc == BattleFlag.TriggerFunc.Crash)
 		{
-			OnTriggerCrash();
+			suc = OnTriggerCrash();
 		}
 		else if(triggerFunc == BattleFlag.TriggerFunc.FadeIn)
 		{
-			OnTriggerFadeIn();
+			suc = OnTriggerFadeIn();
 		}
 		else if(triggerFunc == BattleFlag.TriggerFunc.Hurtable)
 		{
-			OnTriggerHurtable();
+			suc = OnTriggerHurtable();
 		}
 		else if(triggerFunc == BattleFlag.TriggerFunc.EyeToEye)
 		{
-			OnTriggerEyeToEye(t_node);
+			suc = OnTriggerEyeToEye(t_node);
 		}
 		else if(triggerFunc == BattleFlag.TriggerFunc.Guide)
 		{
-			OnTriggerGuide();
+			suc = OnTriggerGuide();
 		}
 		else if(triggerFunc == TriggerFunc.HintLabel)
 		{
-			OnTriggerHintLabel();
+			suc = OnTriggerHintLabel();
 		}
 		else if(triggerFunc == TriggerFunc.NodeSkillOn)
 		{
-			OnTriggerSkillOn();
+			suc = OnTriggerSkillOn();
 		}
 		else if(triggerFunc == TriggerFunc.NodeSkillOff)
 		{
-			OnTriggerSkillOff();
+			suc = OnTriggerSkillOff();
+		}
+
+		if(suc)
+		{
+			if(!triggerSuc && triggerFuncEffect != 0)
+			{
+				if(node != null) BattleEffectControllor.Instance ().PlayEffect (triggerFuncEffect, node.transform.position, node.transform.forward);
+				
+				else BattleEffectControllor.Instance ().PlayEffect (triggerFuncEffect, transform.position, transform.forward);
+			}
+
+			triggerSuc = true;
 		}
 	}
 
-	private void OnTriggerCrash()
+	private bool OnTriggerCrash()
 	{
 		if(triggerCount > 0)
 		{
 			triggerCount --;
 
-			if(triggerCount > 0) return;
+			if(triggerCount > 0) return false;
 		}
 
 		if(flagId >= 1000 && flagId < 2000) 
@@ -312,31 +352,39 @@ public class BattleFlag : MonoBehaviour
 		}
 		else
 		{
-			node.die(false);
+			if(node != null) node.die(false);
 		}
+
+		return true;
 	}
 
-	public void OnTriggerEyeToEye(BaseAI nodeEnter)
+	public bool OnTriggerEyeToEye(BaseAI nodeEnter)
 	{
-		if(node == null) return;
+		if(node == null) return false;
 
-		if (nodeEnter == null) return;
+		if (nodeEnter == null) return false;
 
 		SphereCollider collider = (SphereCollider)nodeEnter.GetComponent("SphereCollider");
 
-		node.OnTriggerEnterNode(collider);
+		node.OnTriggerEnterNode(nodeEnter);
+
+		return true;
 	}
 
-	private void OnTriggerFadeIn()
+	private bool OnTriggerFadeIn()
 	{
 		if(triggerCount > 0)
 		{
 			triggerCount --;
 
-			if(triggerCount > 0) return;
+			if(triggerCount > 0) return false;
 		}
 
-		if(flagGroup != null)
+		if(flagId >= 1000 && flagId < 2000) 
+		{
+			wallObject.SetActive(true);
+		}
+		else if(flagGroup != null)
 		{
 			flagGroup.FadeIn(this);
 		}
@@ -344,29 +392,33 @@ public class BattleFlag : MonoBehaviour
 		{
 			if(node != null) node.fadeIn();
 		}
+
+		return true;
 	}
 
-	private void OnTriggerHurtable()
+	private bool OnTriggerHurtable()
 	{
-		if(node == null) return;
+		if(node == null) return false;
 
 		if(triggerCount > 0)
 		{
 			triggerCount --;
 			
-			if(triggerCount > 0) return;
+			if(triggerCount > 0) return false;
 		}
 
 		node.hurtable = true;
+
+		return true;
 	}
 
-	private void OnTriggerGuide()
+	private bool OnTriggerGuide()
 	{
 		if(triggerCount > 0)
 		{
 			triggerCount --;
 			
-			if(triggerCount > 0) return;
+			if(triggerCount > 0) return false;
 		}
 		
 		int level = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
@@ -375,22 +427,26 @@ public class BattleFlag : MonoBehaviour
 		
 		bool flag = BattleControlor.Instance().havePlayedGuide (template);
 		
-		if (flag == true) return;
+		if (flag == true) return false;
 		
 		BattleUIControlor.Instance().showDaramControllor (level, template.id);
+
+		return true;
 	}
 
-	private void OnTriggerHintLabel()
+	private bool OnTriggerHintLabel()
 	{
 		if(CityGlobalData.m_levelType != qxmobile.protobuf.LevelType.LEVEL_TALE)
 		{
 			SceneGuideManager.Instance().ShowSceneGuide (hintLabelId);
 		}
+
+		return true;
 	}
 
-	private void OnTriggerSkillOn()
+	private bool OnTriggerSkillOn()
 	{
-		if (node == null) return;
+		if (node == null) return false;
 
 		foreach(int skillId in nodeSkillAble)
 		{
@@ -398,11 +454,13 @@ public class BattleFlag : MonoBehaviour
 			
 			if(skill != null) skill.template.zhudong = false;
 		}
+
+		return true;
 	}
 
-	private void OnTriggerSkillOff()
+	private bool OnTriggerSkillOff()
 	{
-		if (node == null) return;
+		if (node == null) return false;
 
 		foreach(int skillId in nodeSkillAble)
 		{
@@ -410,6 +468,8 @@ public class BattleFlag : MonoBehaviour
 			
 			if(skill != null) skill.template.zhudong = true;
 		}
+
+		return true;
 	}
 
 }

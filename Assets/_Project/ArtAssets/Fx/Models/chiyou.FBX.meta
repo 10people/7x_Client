@@ -1,0 +1,155 @@
+fileFormatVersion: 2
+guid: 0e5d70a69641e4544b9c9d7fd5a749ac
+timeCreated: 1459403572
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Bip01
+    100002: Bip01 Head
+    100004: Bip01 L Calf
+    100006: Bip01 L Clavicle
+    100008: Bip01 L Finger0
+    100010: Bip01 L Foot
+    100012: Bip01 L Forearm
+    100014: Bip01 L Hand
+    100016: Bip01 L Thigh
+    100018: Bip01 L Toe0
+    100020: Bip01 L UpperArm
+    100022: Bip01 Neck
+    100024: Bip01 Pelvis
+    100026: Bip01 Prop1
+    100028: Bip01 R Calf
+    100030: Bip01 R Clavicle
+    100032: Bip01 R Finger0
+    100034: Bip01 R Foot
+    100036: Bip01 R Forearm
+    100038: Bip01 R Hand
+    100040: Bip01 R Thigh
+    100042: Bip01 R Toe0
+    100044: Bip01 R UpperArm
+    100046: Bip01 Spine
+    100048: Bip01 Spine1
+    100050: Bone01
+    100052: Bone02
+    100054: Bone03
+    100056: Bone09
+    100058: Bone10
+    100060: Bone11
+    100062: Bone12
+    100064: Bone12(mirrored)
+    100066: Bone13
+    100068: Bone13(mirrored)
+    100070: Bone14
+    100072: Bone14(mirrored)
+    100074: //RootNode
+    100076: haojiejunzhu
+    100078: haojiejunzhu_dadao
+    400000: Bip01
+    400002: Bip01 Head
+    400004: Bip01 L Calf
+    400006: Bip01 L Clavicle
+    400008: Bip01 L Finger0
+    400010: Bip01 L Foot
+    400012: Bip01 L Forearm
+    400014: Bip01 L Hand
+    400016: Bip01 L Thigh
+    400018: Bip01 L Toe0
+    400020: Bip01 L UpperArm
+    400022: Bip01 Neck
+    400024: Bip01 Pelvis
+    400026: Bip01 Prop1
+    400028: Bip01 R Calf
+    400030: Bip01 R Clavicle
+    400032: Bip01 R Finger0
+    400034: Bip01 R Foot
+    400036: Bip01 R Forearm
+    400038: Bip01 R Hand
+    400040: Bip01 R Thigh
+    400042: Bip01 R Toe0
+    400044: Bip01 R UpperArm
+    400046: Bip01 Spine
+    400048: Bip01 Spine1
+    400050: Bone01
+    400052: Bone02
+    400054: Bone03
+    400056: Bone09
+    400058: Bone10
+    400060: Bone11
+    400062: Bone12
+    400064: Bone12(mirrored)
+    400066: Bone13
+    400068: Bone13(mirrored)
+    400070: Bone14
+    400072: Bone14(mirrored)
+    400074: //RootNode
+    400076: haojiejunzhu
+    400078: haojiejunzhu_dadao
+    4300000: haojiejunzhu
+    4300002: haojiejunzhu_dadao
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: haojiejunzhu
+    13700002: haojiejunzhu_dadao
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

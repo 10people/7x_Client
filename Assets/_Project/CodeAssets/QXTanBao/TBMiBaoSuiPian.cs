@@ -59,7 +59,7 @@ public class TBMiBaoSuiPian : MonoBehaviour {
 		//此秘宝将转化为<秘宝名五字>碎片
 		//碎片可用于提升秘宝星级
 		string miBaoName = NameIdTemplate.GetName_By_NameId (mibaoTemp.nameId);
-		pieceDesLabel.text = "您已拥有<" + miBaoName + ">" + "\n此秘宝将转化为<" + miBaoName + ">碎片\n碎片可用于提升秘宝星级";
+		pieceDesLabel.text = "您已拥有<[cb02d8]" + miBaoName + "[-]>的将魂" + "\n此将魂将转化为<[cb02d8]" + miBaoName + "[-]>的将魂碎片\n碎片可用于提升将魂星级";
 		
 		if (iconSamplePrefab == null)
 		{
@@ -73,8 +73,8 @@ public class TBMiBaoSuiPian : MonoBehaviour {
 
 		Hashtable scale = new Hashtable ();
 		scale.Add ("scale",Vector3.one);
-		scale.Add ("time",0.2f);
-		scale.Add ("easetype",iTween.EaseType.easeInOutQuart);
+		scale.Add ("time",0.3f);
+		scale.Add ("easetype",iTween.EaseType.easeOutBack);
 		scale.Add ("islocal",true);
 		scale.Add ("oncomplete","ScaleEnd");
 		scale.Add ("oncompletetarget",gameObject);

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 <Guide id="1" levelType="0" dungeonId="100001" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="10" ap1="700000" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="2" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1011" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="2" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="11" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="3" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1000101" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="4" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1000102" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="5" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1000103" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
@@ -13,7 +13,7 @@
 <Guide id="23" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="3" ap1="20123" ap2="0" ap3="3" pause="0" delTarget="0" flagId="0" />
 <Guide id="31" levelType="0" dungeonId="100001" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="2" ap1="100203" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="32" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="10000" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="33" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1012" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="33" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="12" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="34" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1000111" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="35" levelType="0" dungeonId="100001" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1000112" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 
@@ -37,20 +37,21 @@
 <Guide id="21" levelType="0" dungeonId="100101" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="2" ap1="100203" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="22" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="10000" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="23" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="4009" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="31" levelType="0" dungeonId="100101" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1021" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="32" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1022" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="33" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1023" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="34" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1024" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="35" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811700" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="36" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1025" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="37" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="4" ap1="6" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="38" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811820" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="39" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="3" ap1="20124" ap2="0" ap3="6" pause="0" delTarget="0" flagId="0" />
+<Guide id="31" levelType="0" dungeonId="100101" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811700" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
+<Guide id="32" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1016" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="33" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1011" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="34" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1012" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="35" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1013" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="36" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1014" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="37" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1015" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="38" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="4" ap1="6" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
+<Guide id="39" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811820" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
+<Guide id="40" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="3" ap1="20124" ap2="0" ap3="6" pause="0" delTarget="0" flagId="0" />
 <Guide id="41" levelType="0" dungeonId="100101" triggerType="2" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010131" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="42" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010132" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="43" levelType="0" dungeonId="100101" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010133" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 
-<Guide id="1" levelType="0" dungeonId="100102" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010201" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="1" levelType="0" dungeonId="100102" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1021" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="11" levelType="0" dungeonId="100102" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="2" ap1="100203" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="12" levelType="0" dungeonId="100102" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="10000" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="13" levelType="0" dungeonId="100102" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="4010" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
@@ -65,7 +66,7 @@
 
 
 
-<Guide id="1" levelType="0" dungeonId="100103" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010301" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="1" levelType="0" dungeonId="100103" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1031" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="2" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010302" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="3" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010303" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="4" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010304" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
@@ -77,10 +78,9 @@
 <Guide id="14" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010311" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="15" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010312" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="21" levelType="0" dungeonId="100103" triggerType="2" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010321" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="22" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811180" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="23" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010322" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
+<Guide id="22" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1032" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
+<Guide id="23" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811180" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="24" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010323" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="25" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010324" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="31" levelType="0" dungeonId="100103" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="3" ap1="20133" ap2="0" ap3="6" pause="0" delTarget="0" flagId="0" />
 <Guide id="32" levelType="0" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="810470" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="36" levelType="0" dungeonId="100103" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="3" ap1="20134" ap2="0" ap3="5" pause="0" delTarget="0" flagId="0" />
@@ -93,11 +93,8 @@
 <Guide id="12" levelType="1" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="10000" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="13" levelType="1" dungeonId="100103" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="4003" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 
-<Guide id="1" levelType="0" dungeonId="100104" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010401" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="2" levelType="0" dungeonId="100104" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010402" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="3" levelType="0" dungeonId="100104" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010403" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="4" levelType="0" dungeonId="100104" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="800080" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="5" levelType="0" dungeonId="100104" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010404" ap2="0" ap3="0" pause="1" delTarget="2001,2002" flagId="0" />
+<Guide id="1" levelType="0" dungeonId="100104" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1041" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="2" levelType="0" dungeonId="100104" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="800080" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="11" levelType="0" dungeonId="100104" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811730" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="12" levelType="0" dungeonId="100104" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="4" ap1="9" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="13" levelType="0" dungeonId="100104" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="3" ap1="20131" ap2="0" ap3="9" pause="1" delTarget="0" flagId="0" />
@@ -140,9 +137,8 @@
 <Guide id="12" levelType="1" dungeonId="100105" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="10000" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="13" levelType="1" dungeonId="100105" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="4020" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 
-<Guide id="1" levelType="0" dungeonId="100106" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010601" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="2" levelType="0" dungeonId="100106" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1010602" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="3" levelType="0" dungeonId="100106" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811850" ap2="0" ap3="0" pause="0" delTarget="2001" flagId="0" />
+<Guide id="1" levelType="0" dungeonId="100106" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="1" ap1="1061" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="2" levelType="0" dungeonId="100106" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="8" ap1="811850" ap2="0" ap3="0" pause="0" delTarget="2001" flagId="0" />
 <Guide id="11" levelType="0" dungeonId="100106" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="2" ap1="100203" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 
 
@@ -537,8 +533,8 @@
 <Guide id="2" levelType="0" dungeonId="100606" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1060602" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="11" levelType="0" dungeonId="100606" triggerType="2" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1060611" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="12" levelType="0" dungeonId="100606" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1060612" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="21" levelType="0" dungeonId="100606" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1060613" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
-<Guide id="22" levelType="0" dungeonId="100606" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1060614" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
+<Guide id="13" levelType="0" dungeonId="100606" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1060613" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
+<Guide id="14" levelType="0" dungeonId="100606" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1060614" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="41" levelType="0" dungeonId="100606" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="2" ap1="100203" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="42" levelType="0" dungeonId="100606" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="10000" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="43" levelType="0" dungeonId="100606" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="4007" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
@@ -661,7 +657,7 @@
 
 <Guide id="1" levelType="0" dungeonId="100802" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080201" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="2" levelType="0" dungeonId="100802" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080202" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="11" levelType="0" dungeonId="100802" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080211" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="3" levelType="0" dungeonId="100802" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080203" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="21" levelType="0" dungeonId="100802" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080221" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="31" levelType="0" dungeonId="100802" triggerType="2" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080231" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="32" levelType="0" dungeonId="100802" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080232" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
@@ -685,7 +681,7 @@
 
 <Guide id="1" levelType="0" dungeonId="100804" triggerType="1" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080401" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="2" levelType="0" dungeonId="100804" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080402" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
-<Guide id="11" levelType="0" dungeonId="100804" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080403" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
+<Guide id="3" levelType="0" dungeonId="100804" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,0" delay="0" actionType="0" ap1="1080403" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="41" levelType="0" dungeonId="100804" triggerType="0" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="2" ap1="100203" ap2="0" ap3="0" pause="0" delTarget="0" flagId="0" />
 <Guide id="42" levelType="0" dungeonId="100804" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="10000" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />
 <Guide id="43" levelType="0" dungeonId="100804" triggerType="4" tp1="0" tp2="0" tp3="0" reTriggerAble="0,1" delay="0" actionType="1" ap1="4019" ap2="0" ap3="0" pause="1" delTarget="0" flagId="0" />

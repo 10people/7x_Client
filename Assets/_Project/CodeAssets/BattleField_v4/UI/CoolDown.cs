@@ -5,6 +5,8 @@ public class CoolDown : MonoBehaviour
 {
 	public UISprite spriteCD;
 
+	public UILabel labelCDTime;
+
 	public BattleWeaponSkillDolt spriteWeaponDolt;
 
 
@@ -70,6 +72,8 @@ public class CoolDown : MonoBehaviour
 			spriteCD.gameObject.SetActive (true);
 
 			timeLst = curTimeTotal;
+
+			if(labelCDTime != null) labelCDTime.text = "" + (int)timeLst;
 		}
 	}
 
@@ -113,6 +117,8 @@ public class CoolDown : MonoBehaviour
 		else
 		{
 			spriteCD.fillAmount = timeLst / curTimeTotal;
+
+			if(labelCDTime != null) labelCDTime.text = "" + (int)timeLst;
 		}
 	}
 
@@ -156,6 +162,8 @@ public class CoolDown : MonoBehaviour
 		else
 		{
 			spriteCD.fillAmount = timeLst / curTimeTotal;
+
+			if(labelCDTime != null) labelCDTime.text = "" + (int)timeLst;
 		}
 	}
 

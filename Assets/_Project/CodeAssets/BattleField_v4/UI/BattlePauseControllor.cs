@@ -12,66 +12,76 @@ public class BattlePauseControllor : MonoBehaviour
 	{
 		label.text = LanguageTemplate.GetText ((LanguageTemplate.Text)543);
 
-		int descLanguageId = 0;
+//		int descLanguageId = 0;
+//
+//		string strNum = "";
+//
+//		BattleWinTemplate winDescTemplate = BattleUIControlor.Instance().winDescTemplate;
+//
+//		if(winDescTemplate == null)
+//		{
+//			winDescTemplate = BattleWinTemplate.templates[0];
+//		}
+//
+//		if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_All)
+//		{
+//			descLanguageId = 1082;
+//			
+//			strNum = "";
+//		}
+//		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Boss)
+//		{
+//			descLanguageId = 1083;
+//			
+//			strNum = BattleControlor.Instance().battleCheck.bossKilled + "/" + winDescTemplate.killNum;
+//		}
+//		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Hero)
+//		{
+//			descLanguageId = 1092;
+//			
+//			strNum = BattleControlor.Instance().battleCheck.heroKilled + "/" + winDescTemplate.killNum;
+//		}
+//		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Soldier)
+//		{
+//			descLanguageId = 1090;
+//			
+//			strNum = BattleControlor.Instance().battleCheck.soldierKilled + "/" + winDescTemplate.killNum;
+//		}
+//		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Gear)
+//		{
+//			descLanguageId = 1088;
+//			
+//			strNum = BattleControlor.Instance().battleCheck.gearKilled + "/" + winDescTemplate.killNum;
+//		}
+//		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Destination)
+//		{
+//			descLanguageId = 1085;
+//			
+//			strNum = ((int)Vector3.Distance(BattleControlor.Instance().getKing().transform.position, winDescTemplate.destination) - winDescTemplate.destinationRadius) + "m";
+//		}
+//		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Time)
+//		{
+//			descLanguageId = 1086;
+//			
+//			strNum = BattleControlor.Instance().timeLast + "s";
+//		}
+//		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Wave)
+//		{
+//			descLanguageId = 1088;
+//			
+//			strNum = BattleControlor.Instance().battleCheck.waveKilled + "/" + winDescTemplate.killNum;
+//		}
+//		
+//		labelDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + strNum;
 
-		string strNum = "";
+		BattleConfigTemplate configTemplate = BattleConfigTemplate.getBattleConfigTemplateByConfigId (CityGlobalData.m_configId);
 
-		BattleWinTemplate winDescTemplate = BattleUIControlor.Instance().winDescTemplate;
-
-		if(winDescTemplate == null)
-		{
-			winDescTemplate = BattleWinTemplate.templates[0];
-		}
-
-		if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_All)
-		{
-			descLanguageId = 1082;
-			
-			strNum = "";
-		}
-		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Boss)
-		{
-			descLanguageId = 1083;
-			
-			strNum = BattleControlor.Instance().battleCheck.bossKilled + "/" + winDescTemplate.killNum;
-		}
-		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Hero)
-		{
-			descLanguageId = 1092;
-			
-			strNum = BattleControlor.Instance().battleCheck.heroKilled + "/" + winDescTemplate.killNum;
-		}
-		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Soldier)
-		{
-			descLanguageId = 1090;
-			
-			strNum = BattleControlor.Instance().battleCheck.soldierKilled + "/" + winDescTemplate.killNum;
-		}
-		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Gear)
-		{
-			descLanguageId = 1088;
-			
-			strNum = BattleControlor.Instance().battleCheck.gearKilled + "/" + winDescTemplate.killNum;
-		}
-		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Destination)
-		{
-			descLanguageId = 1085;
-			
-			strNum = ((int)Vector3.Distance(BattleControlor.Instance().getKing().transform.position, winDescTemplate.destination) - winDescTemplate.destinationRadius) + "m";
-		}
-		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Time)
-		{
-			descLanguageId = 1086;
-			
-			strNum = BattleControlor.Instance().timeLast + "s";
-		}
-		
-		labelDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + strNum;
+		labelDesc.text = DescIdTemplate.GetDescriptionById (configTemplate.preDesc);
 	}
 
 	public void close()
 	{
-		Time.timeScale = 1.0f;
+		TimeHelper.SetTimeScale(1f);
 
 		gameObject.SetActive(false);
 	}
@@ -85,7 +95,7 @@ public class BattlePauseControllor : MonoBehaviour
 
 	public void runaway()
 	{
-		Time.timeScale = 1.0f;
+		TimeHelper.SetTimeScale(1f);
 
 		GameObject root3d = GameObject.Find ("BattleField_V4_3D");
 		

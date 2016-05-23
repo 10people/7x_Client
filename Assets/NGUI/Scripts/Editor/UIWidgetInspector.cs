@@ -1114,49 +1114,49 @@ public class UIWidgetInspector : UIRectEditor
 			SetPivot(pivot, isHorizontal);
 	}
 
-	static bool IsLeft (UIWidget.Pivot pivot)
+	public static bool IsLeft (UIWidget.Pivot pivot)
 	{
 		return pivot == UIWidget.Pivot.Left ||
 			pivot == UIWidget.Pivot.TopLeft ||
 			pivot == UIWidget.Pivot.BottomLeft;
 	}
 
-	static bool IsRight (UIWidget.Pivot pivot)
+	public static bool IsRight (UIWidget.Pivot pivot)
 	{
 		return pivot == UIWidget.Pivot.Right ||
 			pivot == UIWidget.Pivot.TopRight ||
 			pivot == UIWidget.Pivot.BottomRight;
 	}
 
-	static bool IsTop (UIWidget.Pivot pivot)
+	public static bool IsTop (UIWidget.Pivot pivot)
 	{
 		return pivot == UIWidget.Pivot.Top ||
 			pivot == UIWidget.Pivot.TopLeft ||
 			pivot == UIWidget.Pivot.TopRight;
 	}
 
-	static bool IsBottom (UIWidget.Pivot pivot)
+	public static bool IsBottom (UIWidget.Pivot pivot)
 	{
 		return pivot == UIWidget.Pivot.Bottom ||
 			pivot == UIWidget.Pivot.BottomLeft ||
 			pivot == UIWidget.Pivot.BottomRight;
 	}
 
-	static UIWidget.Pivot GetHorizontal (UIWidget.Pivot pivot)
+	public static UIWidget.Pivot GetHorizontal (UIWidget.Pivot pivot)
 	{
 		if (IsLeft(pivot)) return UIWidget.Pivot.Left;
 		if (IsRight(pivot)) return UIWidget.Pivot.Right;
 		return UIWidget.Pivot.Center;
 	}
 
-	static UIWidget.Pivot GetVertical (UIWidget.Pivot pivot)
+	public static UIWidget.Pivot GetVertical (UIWidget.Pivot pivot)
 	{
 		if (IsTop(pivot)) return UIWidget.Pivot.Top;
 		if (IsBottom(pivot)) return UIWidget.Pivot.Bottom;
 		return UIWidget.Pivot.Center;
 	}
 
-	static UIWidget.Pivot Combine (UIWidget.Pivot horizontal, UIWidget.Pivot vertical)
+	public static UIWidget.Pivot Combine (UIWidget.Pivot horizontal, UIWidget.Pivot vertical)
 	{
 		if (horizontal == UIWidget.Pivot.Left)
 		{

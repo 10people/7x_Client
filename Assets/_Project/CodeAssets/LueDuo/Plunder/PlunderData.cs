@@ -392,7 +392,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 					if (plunderOpRes.isCanLveDuo == 7)
 					{
 						//跳转到对战阵容页面
-						GeneralControl.Instance.OpenPlunderChallengePage (plunderOpRes);
+						GeneralControl.Instance.OpenChallengePage (GeneralChallengePage.ChallengeType.PLUNDER,plunderOpRes);
 					}
 					else
 					{
@@ -508,6 +508,10 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 			}
 			case ProtoIndexes.RANKING_RESP:
 			{
+				if (!isOpenLueDuo)
+				{
+					return false;
+				}
 //				Debug.Log ("请求掠夺排行返回:" + ProtoIndexes.RANKING_RESP);
 				RankingResp rankResp = new RankingResp();
 				rankResp = QXComData.ReceiveQxProtoMessage (p_message,rankResp) as RankingResp;

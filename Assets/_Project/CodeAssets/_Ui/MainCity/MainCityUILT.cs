@@ -24,7 +24,8 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
     public UILabel m_playerName;
     public UILabel m_playrLevel;
-    public UILabel m_playrVipLevel;
+    public UISprite m_playrVipLevel;
+	public GameObject m_playerVipObj;
 
     public UILabel m_leagueName;
 	
@@ -35,12 +36,8 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
     public UILabel m_ZhanLiLabel;
 
-    public GameObject m_objLianmeng;
     public GameObject m_objLabelHero;
     //public GameObject m_objMoney;
-    public GameObject m_objLianmengbg;
-	public GameObject m_objRedEmali;
-	public BoxChangeScale m_BoxChangeScale;
     //public GameObject m_objWulianmengbg;
 
 
@@ -97,10 +94,19 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
         //player info
         m_UISpriteHeroIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id;
         m_playerName.text = JunZhuData.Instance().m_junzhuInfo.name;
-        m_playrLevel.text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString();
-        m_playrVipLevel.text = "V" + JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
+        m_playrLevel.text = JunZhuData.Instance().m_junzhuInfo.level.ToString();
+		if(JunZhuData.Instance().m_junzhuInfo.vipLv <= 0)
+		{
+			m_playerVipObj.SetActive(false);
+		}
+		else
+		{
+			m_playerVipObj.SetActive(true);
+			m_playrVipLevel.spriteName = "v" + JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
+		}
         NationSprite.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
-		m_SpriteExp.SetDimensions(Global.getBili(122, (float)JunZhuData.Instance().m_junzhuInfo.exp, (float)JunZhuData.Instance().m_junzhuInfo.expMax), 8);
+		m_SpriteExp.fillAmount = (float)JunZhuData.Instance().m_junzhuInfo.exp / (float)JunZhuData.Instance().m_junzhuInfo.expMax;
+//		m_SpriteExp.SetDimensions(, 8);
 		//m_SpriteExp
 		m_ZhanLiLabel.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
 
@@ -122,7 +128,6 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
         if (!AllianceData.Instance.IsAllianceNotExist)
         {
             m_isLianmeng = true;
-            m_objLianmeng.SetActive(true);
 
             //try set alliance name
             if (AllianceData.Instance.g_UnionInfo != null && AllianceData.Instance.g_UnionInfo.name != null)
@@ -133,9 +138,8 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
         else
         {
             m_isLianmeng = false;
-            m_objLianmeng.SetActive(true);
 
-            m_leagueName.text = "无联盟";
+            m_leagueName.text = "<无联盟>";
         }
     }
 
@@ -276,9 +280,9 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 			{
 				Global.m_sPanelWantRun = TaskData.Instance.m_TaskInfoDic[id].m_sSprite;
 			}
-			if(TaskData.Instance.m_TaskInfoDic[id].progress < 0)
+			if(TaskData.Instance.m_TaskInfoDic[id].progress < 0 && TaskData.Instance.m_TaskInfoDic[id].type != 0)
 			{
-//				overMission(id);
+     			overMission(id);
 			}
 			else
 			{

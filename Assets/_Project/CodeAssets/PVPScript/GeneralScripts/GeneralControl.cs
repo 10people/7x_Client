@@ -10,23 +10,33 @@ using ProtoBuf.Meta;
 
 public class GeneralControl : Singleton<GeneralControl>
 {
-	#region GeneralRule
+	#region GeneralRules
+
+	private GameObject m_rulesObj;
 
 	private string ruleText;
-	private GeneralRules.OnRulesBtnClick rulesClick;
+
+	private GeneralRules.RulesDelegate m_rulesDelegate;
 
 	/// <summary>
 	/// Loads the rules prefab.
 	/// </summary>
 	/// <param name="tempText">Temp text.</param>
 	/// <param name="tempClick">Temp click.</param>
-	public void LoadRulesPrefab (string tempText,GeneralRules.OnRulesBtnClick tempClick = null)
+	public void LoadRulesPrefab (string tempText,GeneralRules.RulesDelegate tempClick = null)
 	{
 		ruleText = tempText;
-		rulesClick = tempClick;
+		m_rulesDelegate = tempClick;
 
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_RULES ),
-		                        RulesLoadBack );
+		if (m_rulesObj == null)
+		{
+			Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_RULES ),
+			                        RulesLoadBack );
+		}
+		else
+		{
+			m_rulesObj.SetActive (true);
+		}
 	}
 
 	/// <summary>
@@ -34,7 +44,7 @@ public class GeneralControl : Singleton<GeneralControl>
 	/// </summary>
 	/// <param name="textList">Text list.</param>
 	/// <param name="tempClick">Temp click.</param>
-	public void LoadRulesPrefab (List<string> textList,GeneralRules.OnRulesBtnClick tempClick = null)
+	public void LoadRulesPrefab (List<string> textList,GeneralRules.RulesDelegate tempClick = null)
 	{
 		string text = "";
 		foreach (string s in textList)
@@ -42,61 +52,62 @@ public class GeneralControl : Singleton<GeneralControl>
 			text += (s + "\n");
 		}
 		ruleText = text;
-		rulesClick = tempClick;
+		m_rulesDelegate = tempClick;
 
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_RULES ),
-		                        RulesLoadBack );
+		if (m_rulesObj == null)
+		{
+			Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_RULES ),
+			                        RulesLoadBack );
+		}
+		else
+		{
+			m_rulesObj.SetActive (true);
+			InItRulesPage ();
+		}
 	}
+
 	void RulesLoadBack ( ref WWW p_www, string p_path, Object p_object )
 	{
-		GameObject rulesObj = GameObject.Instantiate( p_object ) as GameObject;
-		
-		GeneralRules rules = rulesObj.GetComponent<GeneralRules> ();
-		rules.ShowRules (ruleText,rulesClick);
+		m_rulesObj = GameObject.Instantiate( p_object ) as GameObject;
+
+		InItRulesPage ();
+	}
+
+	void InItRulesPage ()
+	{
+//		MainCityUI.TryAddToObjectList (m_rulesObj);
+		GeneralRules.m_instance.M_RulesDelegate = RulesDelegateCallBack;
+		GeneralRules.m_instance.ShowRules (ruleText);
+	}
+
+	void RulesDelegateCallBack ()
+	{
+		if (m_rulesDelegate != null)
+		{
+			m_rulesDelegate ();
+		}
+//		MainCityUI.TryRemoveFromObjectList (m_rulesObj);
+		m_rulesObj.SetActive (false);
 	}
 
 	#endregion
 
 	#region GeneralTiaoZhan
 
-	public enum ChallengeType
-	{
-		PVP,//百战
-		PLUNDER,//掠夺
-	}
-	private ChallengeType challengeType;
+	private GeneralChallengePage.ChallengeType m_challengeType;
 
-	//百战
-	private ChallengeResp pvpResp;
-
-	//掠夺
-	private LveGoLveDuoResp plunderResp;
+	private object m_GeneralResp;
 
 	private GameObject tiaoZhanObj;
 
 	/// <summary>
 	/// Opens the pvp challenge page.
 	/// </summary>
-	public void OpenPvpChallengePage (ChallengeResp tempResp)
+	public void OpenChallengePage (GeneralChallengePage.ChallengeType tempType,object tempResp)
 	{
-		challengeType = ChallengeType.PVP;
-		pvpResp = tempResp;
-		LoadChallengePage ();
-	}
+		m_challengeType = tempType;
+		m_GeneralResp = tempResp;
 
-	/// <summary>
-	/// Opens the plunder challenge page.
-	/// </summary>
-	/// <param name="tempResp">Temp resp.</param>
-	public void OpenPlunderChallengePage (LveGoLveDuoResp tempResp)
-	{
-		challengeType = ChallengeType.PLUNDER;
-		plunderResp = tempResp;
-		LoadChallengePage ();
-	}
-
-	void LoadChallengePage ()
-	{
 		if (tiaoZhanObj == null)
 		{
 			Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GENERAL_CHALLENGE_PAGE ),
@@ -108,6 +119,7 @@ public class GeneralControl : Singleton<GeneralControl>
 			InItChallengePage ();
 		}
 	}
+
 	void ChallengeLoadCallback( ref WWW p_www, string p_path,  Object p_object )
 	{
 		tiaoZhanObj = Instantiate (p_object) as GameObject;
@@ -116,18 +128,67 @@ public class GeneralControl : Singleton<GeneralControl>
 	void InItChallengePage ()
 	{
 		MainCityUI.TryAddToObjectList (tiaoZhanObj);
-		switch (challengeType)
+		GeneralChallengePage.m_instance.InItChallengePage (m_challengeType,m_GeneralResp);
+		GeneralChallengePage.m_instance.M_ChallengeDelegate = ChallengeDelegateCallBack;
+	}
+	void ChallengeDelegateCallBack ()
+	{
+		tiaoZhanObj.SetActive (false);
+		MainCityUI.TryRemoveFromObjectList (tiaoZhanObj);
+	}
+	#endregion
+
+	#region GeneralRecord
+
+	private GameObject m_recordObj;
+
+	private GeneralRecord.RecordType m_recordType;
+
+	private object m_objectResp;
+
+	private GeneralRecord.RecordDelegate m_recordDelegate;
+
+	public void LoadRecordPage (GeneralRecord.RecordType tempType,object tempResp,GeneralRecord.RecordDelegate tempDelegate = null)
+	{
+		m_recordType = tempType;
+		m_objectResp = tempResp;
+		m_recordDelegate = tempDelegate;
+
+		if (m_recordObj == null)
 		{
-		case ChallengeType.PVP:
-			GeneralChallengePage.gcPage.InItPvpChallengePage (challengeType,pvpResp);
-			break;
-		case ChallengeType.PLUNDER:
-			GeneralChallengePage.gcPage.InItPlunderChallengePage (challengeType,plunderResp);
-			break;
-		default:
-			break;
+			Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.TIAOZHAN_RECORD ),
+			                        RecordLoadCallback );
+		}
+		else
+		{
+			m_recordObj.SetActive (true);
+			InItRecordPage ();
 		}
 	}
+
+	void RecordLoadCallback( ref WWW p_www, string p_path, Object p_object )
+	{
+		m_recordObj = Instantiate (p_object) as GameObject;
+		InItRecordPage ();
+	}
+
+	void InItRecordPage ()
+	{
+//		MainCityUI.TryAddToObjectList (m_recordObj);
+		GeneralRecord.m_instance.M_RecordDelegate = RecordDelegateCallBack;
+		GeneralRecord.m_instance.InItRecordPage (m_recordType,m_objectResp);
+	}
+
+	void RecordDelegateCallBack ()
+	{
+		if (m_recordDelegate != null)
+		{
+			m_recordDelegate ();
+		}
+//		MainCityUI.TryRemoveFromObjectList (m_recordObj);
+		m_recordObj.SetActive (false);
+	}
+
 	#endregion
 
 	void OnDestroy(){

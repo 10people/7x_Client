@@ -145,7 +145,7 @@ public class TreasureCityUITR : MYNGUIPanel,SocketProcessor {
 				
 				if (msg.result != 10)
 				{
-					ClientMain.m_UITextManager.createText("通知已过时");
+//					ClientMain.m_UITextManager.createText("通知已过时");
 					
 					return true;
 				}

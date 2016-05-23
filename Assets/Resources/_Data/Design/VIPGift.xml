@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<VIPGift vip="1" award="0:900001:10000" />
+<VIPGift vip="2" award="0:900001:10001" />
+<VIPGift vip="3" award="0:900001:10002" />
+<VIPGift vip="4" award="0:900001:10003" />
+<VIPGift vip="5" award="0:900001:10004" />
+<VIPGift vip="6" award="0:900001:10005" />
+<VIPGift vip="7" award="0:900001:10006" />
+</dataset>

@@ -24,6 +24,10 @@ public class UIEventTrigger : MonoBehaviour
 	public List<EventDelegate> onClick = new List<EventDelegate>();
 	public List<EventDelegate> onDoubleClick = new List<EventDelegate>();
 
+    public bool IsMultiClickCheck = true;
+    public float MultiClickDuration = 0.2f;
+    private float lastClickTime;
+
 	void OnHover (bool isOver)
 	{
 		current = this;
@@ -50,6 +54,16 @@ public class UIEventTrigger : MonoBehaviour
 
 	void OnClick ()
 	{
+	    if (IsMultiClickCheck)
+	    {
+	        if (Time.realtimeSinceStartup - lastClickTime < MultiClickDuration)
+	        {
+	            return;
+	        }
+
+	        lastClickTime = Time.realtimeSinceStartup;
+	    }
+
 		current = this;
 		EventDelegate.Execute(onClick);
 		current = null;

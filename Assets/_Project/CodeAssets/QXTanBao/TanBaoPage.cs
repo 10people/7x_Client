@@ -38,6 +38,10 @@ public class TanBaoPage : MonoBehaviour {
 	public GameObject kdTenBtnObj;
 	public GameObject kjTenBtnObj;
 
+	private GameObject m_iconSample;
+	private GameObject m_kdIconSample;
+	private GameObject m_kjIconSample;
+
 	private int kdCdTime;
 	private int kjCdTime;
 
@@ -101,6 +105,16 @@ public class TanBaoPage : MonoBehaviour {
 			UIYindao.m_UIYindao.CloseUI ();
 		}
 
+		if (m_iconSample == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),IconSampleLoadCallBack);
+		}
+		else
+		{
+			CreateIconSample (m_kdIconSample,kdTenBtnObj.transform.parent.gameObject,920001);
+			CreateIconSample (m_kjIconSample,kjTenBtnObj.transform.parent.gameObject,920002);
+		}
+
 		InItKuangDong ();
 		InItKuangJing ();
 
@@ -162,8 +176,6 @@ public class TanBaoPage : MonoBehaviour {
 			labelDic["Kd_Des"].text = "本日免费次数已用完";
 			labelDic["Kd_Single"].text = TanBaoCost (costDic["KdSingle"]);
 		}
-
-
 	}
 
 	IEnumerator KuangDongCd ()
@@ -172,7 +184,7 @@ public class TanBaoPage : MonoBehaviour {
 		{
 			kdCdTime --;
 
-			labelDic["Kd_Des"].text = TimeHelper.GetUniformedTimeString (kdCdTime) + "后免费";
+			labelDic["Kd_Des"].text = MyColorData.getColorString (5,TimeHelper.GetUniformedTimeString (kdCdTime)) + "后免费";
 
 			yield return new WaitForSeconds (1);
 
@@ -208,7 +220,7 @@ public class TanBaoPage : MonoBehaviour {
 		{
 			kjCdTime --;
 
-			labelDic["Kj_Des"].text = TimeHelper.GetUniformedTimeString (kjCdTime) + "后免费";
+			labelDic["Kj_Des"].text = MyColorData.getColorString (5,TimeHelper.GetUniformedTimeString (kjCdTime)) + "后免费";
 
 			yield return new WaitForSeconds (1);
 
@@ -217,6 +229,34 @@ public class TanBaoPage : MonoBehaviour {
 				TanBaoData.Instance.TanBaoInfoReq ();
 			}
 		}
+	}
+
+	void IconSampleLoadCallBack (ref WWW p_www, string p_path, Object p_object)
+	{
+		m_iconSample = p_object as GameObject;
+
+		CreateIconSample (m_kdIconSample,kdTenBtnObj.transform.parent.gameObject,920001);
+		CreateIconSample (m_kjIconSample,kjTenBtnObj.transform.parent.gameObject,920002);
+	}
+
+	void CreateIconSample (GameObject tempObj,GameObject parentObj,int tempId)
+	{
+		if (tempObj == null)
+		{
+			tempObj = Instantiate(m_iconSample) as GameObject;
+		}
+
+		tempObj.transform.parent = parentObj.transform;
+		tempObj.transform.localPosition = new Vector3 (0,110,0);
+		tempObj.transform.localScale = Vector3.one;
+		
+		CommonItemTemplate commonTemp = CommonItemTemplate.getCommonItemTemplateById (tempId);
+		string mdesc = DescIdTemplate.GetDescriptionById (commonTemp.descId);
+		string nameStr = NameIdTemplate.GetName_By_NameId (commonTemp.nameId);
+		
+		IconSampleManager iconSample = tempObj.GetComponent<IconSampleManager> ();
+		iconSample.SetIconByID (tempId,"",3);
+		iconSample.SetIconPopText(tempId, nameStr, mdesc, 1);
 	}
 
 	/// <summary>
@@ -266,7 +306,7 @@ public class TanBaoPage : MonoBehaviour {
 	private string TanBaoCost (int tempCostId)
 	{
 		PurchaseTemplate purchase = PurchaseTemplate.GetPurchaseTempById (tempCostId);
-		return MyColorData.getColorString (1,purchase.price.ToString ());
+		return purchase.price.ToString ();
 	}
 
 	void TBBtnHandlerCallBack (GameObject obj)
@@ -335,12 +375,7 @@ public class TanBaoPage : MonoBehaviour {
 
 	void SetJinDuFalse ()
 	{
-		UIShouji.m_isPlayShouji = false;
-		if(UIShouji.m_UIShouji.m_isPlay)
-		{
-			UIShouji.m_UIShouji.close();
-			UIShouji.m_UIShouji.gameObject.SetActive(false);
-		}
+		UIShoujiManager.m_UIShoujiManager.m_isPlayShouji = false;
 	}
 
 	void ActiveGuide ()

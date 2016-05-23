@@ -161,7 +161,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 				MiBaoDataBack = true;
 				int index = functionTemp.m_iID;
 				int ActiveMiBaonum = 0;
-				//Debug.Log(" if(CityGlobalData.IsFistGetMiBaoData) = "+ CityGlobalData.IsFistGetMiBaoData);
+			
                 if(CityGlobalData.IsFistGetMiBaoData)
 				{
 					OldMiBaolist.Clear();
@@ -190,6 +190,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 				{
 					upMibaoShouji();
 				}
+				BoolSuperRedPoint();
 				return true;
 			}
 			case ProtoIndexes.S_MIBAO_SELECT_RESP: //      密保保存返回
@@ -220,6 +221,72 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		}
 		
 		return false;
+	}
+	public void BoolSuperRedPoint()
+	{
+		int activemibaonuber = 0; 
+		if(G_MiBaoInfo.skillList == null|| G_MiBaoInfo.skillList.Count == 0 )
+		{
+			MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(1);
+			string mName  = NameIdTemplate.GetName_By_NameId(mMiBaoskill.nameId);
+			for(int i = 0 ; i < G_MiBaoInfo.miBaoList.Count; i++)
+			{
+				if(G_MiBaoInfo.miBaoList[i].level > 0)
+				{
+					activemibaonuber ++;
+				}
+			}
+
+			if(activemibaonuber >= mMiBaoskill.needNum)
+			{
+				MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(true);
+			}
+			else
+			{
+				MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(false);
+			}
+
+		}
+		else
+		{
+			int Maxid = 0;
+			if(G_MiBaoInfo.skillList.Count >= 7)
+			{
+				MainCityUI.m_MainCityUI.getButton(610).setSuperAlert(false);
+			}
+			else
+			{
+				for(int i = 0; i < G_MiBaoInfo.skillList.Count; i++)
+				{
+					//Debug.Log ("m_MiBaoInfo.skillList[i].activeZuheId = "+m_MiBaoInfo.skillList[i].activeZuheId);
+					if(G_MiBaoInfo.skillList[i].activeZuheId > Maxid)
+					{
+						Maxid = G_MiBaoInfo.skillList[i].activeZuheId;//找到最大值
+					}
+				}
+				Maxid  += 1  ;
+				MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(Maxid);
+				
+				for(int i = 0 ; i < G_MiBaoInfo.miBaoList.Count; i++)
+				{
+					if(G_MiBaoInfo.miBaoList[i].level > 0)
+					{
+						activemibaonuber ++;
+					}
+				}
+
+				if(activemibaonuber >= mMiBaoskill.needNum)
+				{
+					MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(true);
+				}
+				else
+				{
+					MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(false);
+				}
+			}
+			
+		}
+		
 	}
 
 	public void ShowMiBaoCanLevelUp()
@@ -429,13 +496,13 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 				{
 					if(G_MiBaoInfoCopy.miBaoList[i].star < 5)
 					{
-						MainCityUI.addShouji(G_MiBaoInfoCopy.miBaoList[i].miBaoId, 2, G_MiBaoInfo.miBaoList[i].suiPianNum, G_MiBaoInfo.miBaoList[i].needSuipianNum, "秘宝升星");
+						MainCityUI.addShouji(G_MiBaoInfoCopy.miBaoList[i].miBaoId, 2, G_MiBaoInfo.miBaoList[i].suiPianNum, G_MiBaoInfo.miBaoList[i].needSuipianNum, "将魂升星");
 					}
 				}
 				else
 				{
 					MiBaoSuipianXMltemp mmibaosuip = MiBaoSuipianXMltemp.getMiBaoSuipianXMltempBytempid(G_MiBaoInfo.miBaoList[i].tempId);
-					MainCityUI.addShouji(mmibaosuip.icon, 3, G_MiBaoInfo.miBaoList[i].suiPianNum, mmibaosuip.hechengNum, "秘宝合成");
+					MainCityUI.addShouji(mmibaosuip.icon, 3, G_MiBaoInfo.miBaoList[i].suiPianNum, mmibaosuip.hechengNum, "将魂合成");
 				}
 			}
 		}
@@ -461,7 +528,69 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 			}
 
 			m_iMibaoNum = tempNum;
-			MainCityUI.addShouji(int.Parse(mMiBaoskill.icon), 4, m_iMibaoNum, mMiBaoskill.needNum, "秘宝技能");
+			MainCityUI.addShouji(int.Parse(mMiBaoskill.icon), 4, m_iMibaoNum, mMiBaoskill.needNum, "无双技");
 		}
 	}
+	/// <summary>
+	/// Tm_Type 1 c创建国家 2 为联盟转国
+	/// </summary>
+	int m_Type;
+
+	public void LoadCountryUI(int mtype = 2)
+	{
+		Debug.Log ("mtype = "+mtype);
+		m_Type = mtype;
+		AllianceChangeCountry ();
+	}
+	void AllianceChangeCountry()
+	{
+		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.COUNTRYUI ),
+		                        LoadCountry );
+	}
+	GameObject mCountry;
+	public void LoadCountry( ref WWW p_www, string p_path,  Object p_object )
+	{
+		
+		if(mCountry == null)
+		{
+			mCountry = Instantiate( p_object ) as GameObject;
+			
+			mCountry.transform.localScale = Vector3.one;
+			mCountry.transform.localPosition = new Vector3 (500,200,0);
+			ChooseCountry mChooseCountry = mCountry.GetComponent<ChooseCountry>();
+			//mLianmengMuBiaomanager.Lianmeng_Alliance = m_Alliance;
+			//int x = (int)(mChooseCountry.ChooseType.Choose);
+			mChooseCountry.Init(m_Type);
+			
+		}
+	}
+	 List<int >mdi = new List<int> ();
+	List<int >mnumbers = new List<int> ();
+	/// <summary>
+	/// AwardID 物品Id m_numbers物品id对应的物品数量
+	/// </summary>
+	/// <param name="AwardID">Award I.</param>
+	/// <param name="m_numbers">M_numbers.</param>
+	private FuWenShow.CallBack m_rulesDelegate;
+	public  void GetCommAwards(List<int > AwardID,List<int > m_numbers,FuWenShow.CallBack mm_CallBack = null)
+	{
+		m_rulesDelegate = mm_CallBack;
+		mdi = AwardID;
+		mnumbers = m_numbers;
+		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GETFUWEN),LoadShowFuwenCallback);
+	}
+	void LoadShowFuwenCallback(ref WWW p_www,string p_path, Object p_object)
+	{
+		
+		GameObject ShowFuwen = Instantiate(p_object )as GameObject;
+		
+		ShowFuwen.transform.localScale = Vector3.one;
+		
+		ShowFuwen.transform.localPosition = new Vector3 (-100,-100,0);
+		
+		FuWenShow mFuWenShow = ShowFuwen.GetComponent<FuWenShow>();
+	
+		mFuWenShow.Init (mdi,mnumbers,m_rulesDelegate);
+	}
+
 }

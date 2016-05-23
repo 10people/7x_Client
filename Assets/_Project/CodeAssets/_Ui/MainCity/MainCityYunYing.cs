@@ -152,7 +152,6 @@ public class MainCityYunYing : MYNGUIPanel , SocketListener
 		switch(m_iPageIndex)
 		{
 		case 0:
-			Debug.Log(data0.errorDesc);
 			string[] tempData = data0.errorDesc.Split(new string[]{"#=#=#"}, System.StringSplitOptions.None);
 			m_page0Dis0.text = tempData[0];
 			m_page0Dis1.text = "官方QQ群：[ff0000]" + tempData[1] + "[-]";

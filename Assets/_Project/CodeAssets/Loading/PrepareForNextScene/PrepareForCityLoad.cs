@@ -265,10 +265,13 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
     {
       yield return new WaitForEndOfFrame();
     }
-        void LoadJunZhuModel()
+     void LoadJunZhuModel()
     {
-        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
-                                ResourceLoadModelCallback);
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MODEL_PARENT),
+                        ResourceLoadModelCallback);
+
+        //Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
+        //                        ResourceLoadModelCallback);
 
     }
     private void ResourceLoadModelCallback(ref WWW p_www, string p_path, Object p_object)

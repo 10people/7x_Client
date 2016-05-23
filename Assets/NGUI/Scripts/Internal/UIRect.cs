@@ -523,6 +523,8 @@ public abstract class UIRect : MonoBehaviour
 		rightAnchor.rect	= (rightAnchor.target)	? rightAnchor.target.GetComponent<UIRect>()	 : null;
 		topAnchor.rect		= (topAnchor.target)	? topAnchor.target.GetComponent<UIRect>()	 : null;
 
+//		Debug.Log( LayerMask.LayerToName( cachedGameObject.layer ) + " NGUITools.FindCameraForLayer: " + GameObjectHelper.GetGameObjectHierarchy( cachedGameObject ) );
+
 		mMyCam = NGUITools.FindCameraForLayer(cachedGameObject.layer);
 
 		FindCameraFor(leftAnchor);

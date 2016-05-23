@@ -185,6 +185,8 @@ public class DramaStroyWritor : MonoBehaviour
 
 					node["follow"].AsBool = dape.follow;
 
+					node["offset"].AsBool = dape.offset;
+
 					node["px"].AsFloat = dape.position.x;
 
 					node["py"].AsFloat = dape.position.y;

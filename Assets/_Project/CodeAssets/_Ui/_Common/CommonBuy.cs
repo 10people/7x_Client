@@ -10,7 +10,7 @@ public class CommonBuy : Singleton<CommonBuy>
     /// <param name="times">购买个数/次数</param>
     /// <param name="p_buyItemStr">购买物品名字</param>
     /// <param name="doBuyDelegate">购买操作回调</param>
-    public void ShowBuy(int ingot, int times, string p_buyItemStr, string p_buyItemDesc, DelegateUtil.VoidDelegate doBuyDelegate)
+    public void ShowBuy(int ingot, int times, string p_buyItemStr, string p_buyItemDesc, DelegateHelper.VoidDelegate doBuyDelegate)
     {
         m_times = times;
         m_ingot = ingot;
@@ -24,7 +24,7 @@ public class CommonBuy : Singleton<CommonBuy>
     private int m_ingot;
     private int m_times;
     private string m_buyItemDesc;
-    private DelegateUtil.VoidDelegate m_doBuyDelegate;
+    private DelegateHelper.VoidDelegate m_doBuyDelegate;
 
     private void ConfirmBuy(ref WWW p_www, string p_path, Object p_object)
     {
@@ -58,13 +58,10 @@ public class CommonBuy : Singleton<CommonBuy>
         }
     }
 
-    private void ShowRecharge()
+    public void ShowRecharge()
     {
         EquipSuoData.TopUpLayerTip();
-
     }
-
-
 
     /// <summary>
     /// VIP限制

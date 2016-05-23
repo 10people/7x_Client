@@ -33,13 +33,14 @@ public class CreateRoleManager : MonoBehaviour {
 
 	void Start ()
 	{
-		ClientMain.m_sound_manager.chagneBGSound (1000);
-
-		QXComData.SendQxProtoMessage (ProtoIndexes.C_OPEN_CREATE_ROLE);
-
-		loadSize = Vector3.one;
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.SELECT_ROLE ),
-		                        SelectRoleUILoadBack );
+		QXSelectRole.Instance.SelectRolePage (QXSelectRolePage.SelectType.CREATE_ROLE);
+//		ClientMain.m_sound_manager.chagneBGSound (1000);
+//
+//		QXComData.SendQxProtoMessage (ProtoIndexes.C_OPEN_CREATE_ROLE);
+//
+//		loadSize = Vector3.one;
+//		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.SELECT_ROLE ),
+//		                        SelectRoleUILoadBack );
 	}
 
 	void SelectRoleUILoadBack ( ref WWW p_www, string p_path, Object p_object )

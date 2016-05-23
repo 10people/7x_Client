@@ -94,13 +94,13 @@ public class TipItemControllor : MonoBehaviour
 		{
 			layerDesc_2.SetActive (true);
 
-			spriteFrame.SetDimensions(450, 512);
+			spriteFrame.SetDimensions(306, 462);
 		}
 		else
 		{
 			layerDesc_2.SetActive (false);
 
-			spriteFrame.SetDimensions(450, 405);
+			spriteFrame.SetDimensions(306, 354);
 		}
 
 		layerNum.SetActive (false);
@@ -135,7 +135,7 @@ public class TipItemControllor : MonoBehaviour
 			
 			layerProgress.SetActive (false);
 			
-			string color = num == 0 ? "[FF0000]" : "[029528]";
+//			string color = num == 0 ? "[FF0000]" : "[029528]";
 
 			string textNum = num + "";
 
@@ -152,8 +152,7 @@ public class TipItemControllor : MonoBehaviour
 				textNum = num + "/" + JunZhuData.Instance().m_junzhuInfo.expMax;
 			}
 
-			string text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_1) 
-				+ color + textNum + "[-]";
+			string text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_1) + textNum;
 
 			labelNumNormal.text = text;
 		}
@@ -217,11 +216,11 @@ public class TipItemControllor : MonoBehaviour
 		
 		gc.transform.eulerAngles = itemTemple.transform.eulerAngles;
 		
-		gc.transform.localScale = itemTemple.transform.localScale;
-		
 		IconSampleManager ism = gc.GetComponent<IconSampleManager>();
 
 		ism.SetIconByID(commonItemId, "", 500);
+
+		gc.transform.localScale = new Vector3(.75f, .75f, 1);
 	}
 
 	private void refreshNum()
@@ -500,6 +499,5 @@ public class TipItemControllor : MonoBehaviour
 			}
 		}
 	}
-
-
+	
 }

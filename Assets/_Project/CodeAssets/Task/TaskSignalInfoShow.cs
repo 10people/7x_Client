@@ -44,12 +44,12 @@ public class TaskSignalInfoShow : MonoBehaviour
                 UI2DTool.Instance.AddTopUI(gameObject);
             }
         }
-      
+
         //   UI2DTool.Instance.AddTopUI(gameObject);
     }
     void Start()
     {
-       // UIYindao.m_UIYindao.CloseUI();
+        // UIYindao.m_UIYindao.CloseUI();
         _listObj.Clear();
         m_TaskSignal = this;
         m_ListEvent.ForEach(item => item.m_click_handler += GetAwards);
@@ -67,10 +67,10 @@ public class TaskSignalInfoShow : MonoBehaviour
             iconSampleObject.SetActive(true);
             iconSampleObject.transform.parent = m_grid.transform;
             iconSampleObject.transform.localPosition = Vector3.zero;
-            iconSampleObject.transform.localScale = Vector3.one*0.8f;
+            iconSampleObject.transform.localScale = Vector3.one * 0.8f;
             IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
             iconSampleManager.SetIconByID(int.Parse(listRewardInfo[index_Num].icon), listRewardInfo[index_Num].count);
-			iconSampleManager.SetIconPopText(int.Parse(listRewardInfo[index_Num].icon), NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(int.Parse(listRewardInfo[index_Num].icon)).nameId)
+            iconSampleManager.SetIconPopText(int.Parse(listRewardInfo[index_Num].icon), NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(int.Parse(listRewardInfo[index_Num].icon)).nameId)
                 , DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(int.Parse(listRewardInfo[index_Num].icon)).descId));
             if (int.Parse(listRewardInfo[index_Num].icon) == 900006)
             {
@@ -101,7 +101,7 @@ public class TaskSignalInfoShow : MonoBehaviour
             m_SpriteIcon.spriteName = "side";
             ShowAwardInfo(TaskData.Instance.m_TaskInfoDic[m_TaskId]);
         }
-        else if(TaskData.Instance.m_TaskDailyDic.ContainsKey(m_TaskId))
+        else if (TaskData.Instance.m_TaskDailyDic.ContainsKey(m_TaskId))
         {
             m_SpriteIcon.spriteName = "meiri";
             ShowDailyAwardInfo(TaskData.Instance.m_TaskDailyDic[m_TaskId]);
@@ -167,7 +167,7 @@ public class TaskSignalInfoShow : MonoBehaviour
         m_TaskSignal = this;
         taskId = temp.id;
         _rewardInfo = temp.jiangli;
-        m_labelTitle.text = "完成任务：" +  temp.doneTitle;
+        m_labelTitle.text = "完成任务：" + temp.doneTitle;
         listRewardInfo.Clear();
         if (!string.IsNullOrEmpty(_rewardInfo) && _rewardInfo != "0")
         {
@@ -218,7 +218,7 @@ public class TaskSignalInfoShow : MonoBehaviour
             {
                 TaskData.Instance.GetQuestAward(taskId);
             }
-            else
+            else if (TaskData.Instance.m_TaskDailyDic.ContainsKey(m_TaskId))
             {
                 TaskData.Instance.GetDailyQuestAward(taskId);
             }
@@ -228,17 +228,18 @@ public class TaskSignalInfoShow : MonoBehaviour
     }
     void OnDisable()
     {
-        if(m_Camera)
-        EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);
+        if (m_Camera)
+            EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);
         UI3DEffectTool.ClearUIFx(m_labelTitle.gameObject);
     }
 
     void OnDestroy()
     {
+       
         m_TaskSignal = null;
         if (TaskLayerManager.m_TaskLayerM)
-        {
-            TaskLayerManager.m_TaskLayerM.m_isDailyVitilityFresh = true;
-        }
+            TaskLayerManager.m_TaskLayerM.m_isFinishCurrent = false;
+		if (TaskLayerEveryDayManager.m_TaskLayerM)
+			TaskLayerEveryDayManager.m_TaskLayerM.m_isFinishCurrent = false;
     }
 }

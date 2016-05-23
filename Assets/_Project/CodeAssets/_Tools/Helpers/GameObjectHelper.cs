@@ -157,9 +157,48 @@ public class GameObjectHelper {
 
 	#region GameObject Helper
 
+	public static GameObject GetChild( GameObject p_gb, string p_child_name ){
+//	public static GameObject GetChild( GameObject p_gb, string p_child_name, int p_level = 0 ){
+		if( p_gb == null ){
+			Debug.LogError( "Error, GameObject is null." );
+
+			return null;
+		}
+
+		int t_count = p_gb.transform.childCount;
+
+		for( int i = 0; i < t_count; i++ ){
+			Transform t_tran = p_gb.transform.GetChild( i );
+
+			if( t_tran == null ){
+				continue;
+			}
+
+			if( t_tran.name == p_child_name ){
+				return t_tran.gameObject;
+			}
+			else{
+				GameObject t_gb = GetChild( t_tran.gameObject, p_child_name );
+//				GameObject t_gb = GetChild( t_tran.gameObject, p_child_name, p_level + 1 );
+
+				if( t_gb != null ){
+//					if( p_level == 0 ){
+//						LogGameObjectHierarchy( t_gb, "Child Found." );
+//					}
+
+					return t_gb;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	/// Get 1st ancestor
 	public static GameObject GetRootGameObject( GameObject p_gb ){
 		if( p_gb == null ){
+			Debug.LogError( "Error, Root GameObject is null." );
+
 			return null;
 		}
 
@@ -280,6 +319,7 @@ public class GameObjectHelper {
 
 	
 	#region Layer
+
 	public static void SetGameObjectLayer( GameObject p_target_gb, int p_layer ){
 		if( p_target_gb == null ){
 			Debug.LogError( "p_target_gb = null." );

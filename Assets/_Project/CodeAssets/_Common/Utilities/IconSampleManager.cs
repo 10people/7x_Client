@@ -139,14 +139,25 @@ public class IconSampleManager : MonoBehaviour
     public UIAtlas ComAtlas_0;
 
     /// <summary>
-    /// MiBao atlas
+    /// Old MiBao atlas
     /// </summary>
     public UIAtlas MibaoLitterAtlas;
 
     /// <summary>
-    /// MiBao fragment atlas
+    /// Old MiBao fragment atlas
     /// </summary>
     public UIAtlas MibaoSuiPianAtlas;
+
+    /// <summary>
+    /// New MiBao atlas
+    /// </summary>
+    public UIAtlas NewMiBaoAtlas;
+
+    /// <summary>
+    /// New MiBao fragment atlas
+    /// </summary>
+    public UIAtlas NewMiBaoSuiPianAtlas;
+
     public UIAtlas EnemyIcon;
     public UIAtlas CarriageAtlas;
 
@@ -160,7 +171,11 @@ public class IconSampleManager : MonoBehaviour
     /// </summary>
     public UIAtlas FuWenAtlas;
 
+    public UIAtlas BaoshiAtlas;
+
     public UIAtlas AllianceAtlas;
+
+    public UIAtlas TuluBuffAtlas;
 
     #endregion
 
@@ -219,16 +234,20 @@ public class IconSampleManager : MonoBehaviour
         livingWild,
         pveHeroAtlas,
         pveItemAtlas,
-        oldMiBao,
+        OldOldMiBao,
         exchangeBox,
         mainCityAtlas,
-        MiBao,
+        OldMiBao,
+        NewMiBao,
         MiBaoSkill,
-        MiBaoSuiPian,
+        OldMiBaoSuiPian,
+        NewMiBaoSuiPian,
         Carriage,
         HuangyeMonster,
         FuWen,
-        AllianceTech
+        AllianceTech,
+        TuluBuff,
+        Baoshi
     }
     private IconType m_type;
 
@@ -285,15 +304,23 @@ public class IconSampleManager : MonoBehaviour
                     type = IconType.item;
                     break;
                 case 4:
-                    type = IconType.MiBao;
+                    type = IconType.OldMiBao;
+                    break;
+                case 22:
+                    type = IconType.NewMiBao;
                     break;
                 case 5:
-                    type = IconType.MiBaoSuiPian;
+                    type = IconType.OldMiBaoSuiPian;
+                    break;
+                case 23:
+                    type = IconType.NewMiBaoSuiPian;
                     break;
                 case 211:
                     type = IconType.MiBaoSkill;
                     break;
                 case 7:
+                    type = IconType.Baoshi;
+                    break;
                 case 8:
                     type = IconType.FuWen;
                     break;
@@ -304,6 +331,9 @@ public class IconSampleManager : MonoBehaviour
                 case 202:
                 case 203:
                     type = IconType.AllianceTech;
+                    break;
+                case 221:
+                    type = IconType.TuluBuff;
                     break;
                 default:
                     Debug.LogError("Not defined icon type: " + typeID + ", id: " + id + ", check or use SetIconType instead.");
@@ -419,6 +449,38 @@ public class IconSampleManager : MonoBehaviour
 
                     break;
                 }
+            case IconType.TuluBuff:
+                {
+                    //Set atlas.
+                    SetForegroundAtlas(TuluBuffAtlas);
+
+                    //Set fgSprite and quality frame.
+                    //var itemTemp = ItemTemp.getItemTempById(id);
+                    var commonItemTemp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    //if (itemTemp == null || commonItemTemp == null)
+                    //{
+                    //    Debug.LogError("Can't set icon sample cause item:" + id + " not found");
+                    //    return;
+                    //}
+
+                    fgSpriteName = commonItemTemp.icon.ToString();
+                    FgSprite.width = FgSprite.height = NormalForeLength;
+
+                    BgSprite.spriteName = NormalBgSpriteName;
+
+                    qualityFrameSpriteName = commonItemTemp.color != 0
+                       ? QualityPrefix + (commonItemTemp.color - 1)
+                       : "";
+                    if (FreeQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                    }
+                    else if (FrameQualityFrameSpriteName.Contains(commonItemTemp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                    }
+                    break;
+                }
             case IconType.exchangeBox:
                 {
                     SetForegroundAtlas(EquipAtlas);
@@ -486,7 +548,7 @@ public class IconSampleManager : MonoBehaviour
                     }
                     break;
                 }
-            case IconType.MiBao:
+            case IconType.OldMiBao:
                 {
                     SetForegroundAtlas(MibaoLitterAtlas);
 
@@ -512,7 +574,7 @@ public class IconSampleManager : MonoBehaviour
                     }
                     break;
                 }
-            case IconType.MiBaoSuiPian:
+            case IconType.OldMiBaoSuiPian:
                 {
                     SetForegroundAtlas(MibaoSuiPianAtlas);
 
@@ -527,6 +589,60 @@ public class IconSampleManager : MonoBehaviour
                     RightTopCornorSprite.gameObject.SetActive(true);
 
                     CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    if (temp != null)
+                    {
+                        qualityFrameSpriteName = temp.color > 0
+                            ? QualityPrefix + (temp.color - 1)
+                            : "";
+
+                        QualityFrameSprite.width = QualityFrameSprite.height = MibaoPieceQualityFrameLength;
+                        QualityFrameSprite.SetDimensions(MibaoPieceQualityFrameLength, MibaoPieceQualityFrameLength);
+                    }
+                    break;
+                }
+            case IconType.NewMiBao:
+                {
+                    SetForegroundAtlas(MibaoLitterAtlas);
+
+                    BgSprite.spriteName = NormalBgSpriteName;
+
+                    CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    fgSpriteName = temp.nameId.ToString();
+
+                    FgSprite.width = FgSprite.height = MibaoForeLength;
+
+                    if (temp != null)
+                    {
+                        qualityFrameSpriteName = temp.color > 0
+                            ? QualityPrefix + (temp.color - 1)
+                            : "";
+                        if (FreeQualityFrameSpriteName.Contains(temp.color - 1))
+                        {
+                            QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                        }
+                        else if (FrameQualityFrameSpriteName.Contains(temp.color - 1))
+                        {
+                            QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                        }
+                    }
+                    break;
+                }
+            case IconType.NewMiBaoSuiPian:
+                {
+			        SetForegroundAtlas(NewMiBaoSuiPianAtlas);
+
+                    BgSprite.spriteName = MibaoPieceBgSpriteName;
+
+                    RightTopCornorSprite.atlas = ComAtlas_0;
+                    RightTopCornorSprite.spriteName = "mibaoPieceLogo";
+                    RightTopCornorSprite.transform.localPosition = new Vector3(26, 26, 0);
+                    RightTopCornorSprite.gameObject.SetActive(true);
+
+                    CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
+
+                    fgSpriteName = temp.nameId.ToString();
+                    FgSprite.width = FgSprite.height = MibaoPieceForeLength;
+
                     if (temp != null)
                     {
                         qualityFrameSpriteName = temp.color > 0
@@ -572,7 +688,35 @@ public class IconSampleManager : MonoBehaviour
                 }
             case IconType.FuWen:
                 {
-                    SetForegroundAtlas(EquipAtlas);
+                    SetForegroundAtlas(FuWenAtlas);
+
+                    //Set fgSprite and quality frame.
+                    var temp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    if (temp == null)
+                    {
+                        Debug.LogError("Can't set icon sample cause fu shi:" + id + " not found");
+                        return;
+                    }
+
+                    fgSpriteName = id.ToString();
+                    FgSprite.width = FgSprite.height = NormalForeLength;
+
+                    BgSprite.spriteName = NormalBgSpriteName;
+
+                    qualityFrameSpriteName = temp.color != 0 ? QualityPrefix + (temp.color - 1) : "";
+                    if (FreeQualityFrameSpriteName.Contains(temp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FreeQualityFrameLength;
+                    }
+                    else if (FrameQualityFrameSpriteName.Contains(temp.color - 1))
+                    {
+                        QualityFrameSprite.width = QualityFrameSprite.height = FrameQualityFrameLength;
+                    }
+                    break;
+                }
+            case IconType.Baoshi:
+                {
+                    SetForegroundAtlas(BaoshiAtlas);
 
                     //Set fgSprite and quality frame.
                     var temp = CommonItemTemplate.getCommonItemTemplateById(id);
@@ -711,7 +855,7 @@ public class IconSampleManager : MonoBehaviour
                 break;
 
             //TODO: numbers may not be right.
-            case IconType.oldMiBao:
+            case IconType.OldOldMiBao:
                 //Set atlas.
                 SetForegroundAtlas(MibaoLitterAtlas);
 
@@ -728,11 +872,11 @@ public class IconSampleManager : MonoBehaviour
                 SetForegroundAtlas(IconDecoAtlas);
                 break;
 
-            case IconType.MiBao:
+            case IconType.OldMiBao:
                 SetForegroundAtlas(MibaoLitterAtlas);
                 break;
 
-            case IconType.MiBaoSuiPian:
+            case IconType.OldMiBaoSuiPian:
                 SetForegroundAtlas(MibaoSuiPianAtlas);
                 break;
 
@@ -793,11 +937,11 @@ public class IconSampleManager : MonoBehaviour
             FgSprite.gameObject.SetActive(true);
             SetForegroundSpriteName(fgSpriteName);
 
-            if (m_type == IconType.MiBao)
+            if (m_type == IconType.OldMiBao)
             {
                 FgSprite.SetDimensions(105, 105);
             }
-            else if (m_type == IconType.MiBaoSuiPian)
+            else if (m_type == IconType.OldMiBaoSuiPian)
             {
                 FgSprite.SetDimensions(83, 83);
             }
@@ -1299,6 +1443,11 @@ public class IconSampleManager : MonoBehaviour
         BossNamebg.gameObject.SetActive(true);
         BossName.text = m_name;
     }
+	public UILabel AwardName;
+	public void ShowAwardName(string m_name)
+	{
+		AwardName.text = m_name;
+	}
     void OnDestroy()
     {
         if (PopFrameSprite.transform.parent != transform)

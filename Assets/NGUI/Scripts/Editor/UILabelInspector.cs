@@ -173,7 +173,28 @@ public class UILabelInspector : UIWidgetInspector
 #endif
 			GUI.skin.textField.wordWrap = ww;
 
-			NGUIEditorTools.DrawPaddedProperty("Alignment", serializedObject, "mAlignment");
+			{
+				SerializedProperty t_new_align_property = NGUIEditorTools.DrawPaddedProperty("Alignment", serializedObject, "mAlignment");
+
+				SerializedProperty t_new_dir_property = NGUIEditorTools.DrawPaddedProperty("Direction", serializedObject, "mDirection");
+
+				NGUIText.Alignment t_pre_align = mLabel.alignment;
+
+				NGUIText.Alignment t_new_align = (NGUIText.Alignment)t_new_align_property.intValue;
+
+				NGUIText.Direction t_pre_dir = mLabel.direction;
+
+				NGUIText.Direction t_new_dir = (NGUIText.Direction)t_new_dir_property.intValue;
+
+				if( t_new_dir == NGUIText.Direction.Vertcial ){
+					if( t_pre_dir != t_new_dir ||
+						t_pre_align != t_new_align ){
+						t_new_align_property.intValue = (int)NGUIText.Alignment.Right;
+
+						mLabel.pivot = UIWidgetInspector.Combine( UIWidgetInspector.GetHorizontal( mLabel.pivot ), UIWidget.Pivot.Top );
+					}	
+				}
+			}
 
 			SerializedProperty ov = NGUIEditorTools.DrawPaddedProperty("Overflow", serializedObject, "mOverflow");
 			NGUISettings.overflowStyle = (UILabel.Overflow)ov.intValue;

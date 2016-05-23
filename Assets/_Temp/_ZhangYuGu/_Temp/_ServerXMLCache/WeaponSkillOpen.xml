@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<WeaponSkillOpen skill_light_1="100101" skill_light_2="100202" skill_heavy_1="100101" skill_heavy_2="100201" skill_ranged_1="100101" skill_ranged_2="100203" dodge="100301" />
+</dataset>

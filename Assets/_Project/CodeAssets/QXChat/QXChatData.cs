@@ -12,7 +12,7 @@ using ProtoBuf.Meta;
 using Object = UnityEngine.Object;
 
 public class QXChatData : Singleton<QXChatData>,SocketProcessor {
-
+	public static bool STARTTIME = false;
 	private ChatPct.Channel chatChannel = ChatPct.Channel.SHIJIE;
 
 	private Dictionary<ChatPct.Channel,List<ChatMessage>> chatDic = new Dictionary<ChatPct.Channel, List<ChatMessage>>()
@@ -20,6 +20,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 		{ChatPct.Channel.SHIJIE,new List<ChatMessage> ()},
 		{ChatPct.Channel.LIANMENG,new List<ChatMessage> ()},
 		{ChatPct.Channel.Broadcast,new List<ChatMessage> ()},
+		{ChatPct.Channel.SILIAO,new List<ChatMessage> ()},
 		//		{ChatPct.Channel.XiaoWu,new List<ChatMessage> ()},
 	};
 
@@ -28,7 +29,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 		{ChatPct.Channel.SHIJIE,new string[]{"shijie","0","-1","世界"}},
 		{ChatPct.Channel.LIANMENG,new string[]{"alliance","1","-1","联盟"}},
 		{ChatPct.Channel.Broadcast,new string[]{"broadCast","2","-1","广播"}},
-		{ChatPct.Channel.XiaoWu,new string[]{"home","3","-1","小屋"}},
+		{ChatPct.Channel.SILIAO,new string[]{"siliao","3","-1","私聊"}},
 	};
 
 	private JunZhuInfo junZhuInfo;
@@ -48,8 +49,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 		get{return isOpenJunZhuInfo;}
 	}
 
-	private int sendWaitTime;
-	public int SendWaitTime {set{sendWaitTime = value;} get{return sendWaitTime;}}
+	public List<int> m_listScendWaitTime = new List<int>();
 
 	private int unReceiveWaitTime;
 
@@ -90,8 +90,8 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	/// </summary>
 	public void ResetChatInfo ()
 	{
-		SendWaitTime = 0;
 		StopCoroutine ("SendWait");
+		QXChatData.STARTTIME = false;
 		foreach (KeyValuePair<ChatPct.Channel,List<ChatMessage>> pair in chatDic)
 		{
 			pair.Value.Clear ();
@@ -146,26 +146,27 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	/// <param name="tempChatMsg">Temp chat message.</param>
 	public void SendChatData (ChatMessage tempChatMsg)
 	{
+		Debug.Log("====================1");
 		int spaceChar = 0;
 		foreach (char s in tempChatMsg.chatPct.content)
 		{
 			spaceChar += s == ' ' ? 1 : 0;
 		}
-		
+		Debug.Log("====================2");
 		if (spaceChar == tempChatMsg.chatPct.content.Length)
 		{
 			ClientMain.m_UITextManager.createText (MyColorData.getColorString (5, "发送内容不能为空！"));
 			setOpen = false;
 			return;
 		}
-
-		if (SendWaitTime > 0) 
+		Debug.Log("====================3");
+		if (m_listScendWaitTime[QXChatPage.chatPage.chatInputIndex] > 0) 
 		{
 			ClientMain.m_UITextManager.createText (MyColorData.getColorString (5, "您发言太快！"));
 			setOpen = false;
 			return;
 		}
-
+		Debug.Log("====================4");
 		willSendChatMsg = tempChatMsg;
 
 		switch (tempChatMsg.chatPct.channel)
@@ -186,9 +187,12 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 			SendChatMessage (tempChatMsg);
 			break;
 		case ChatPct.Channel.Broadcast:
-			QXComData.CreateBox (1,"是否花费" + MyColorData.getColorString (5,CanshuTemplate.GetStrValueByKey (CanshuTemplate.BROADCAST_PRICE)) + "元宝发送本条消息到广播频道？",false,BroadCastSendCallBack);
+			SendChatMessage (tempChatMsg);
 			break;
 		case ChatPct.Channel.XiaoWu:
+			SendChatMessage (tempChatMsg);
+			break;
+		case ChatPct.Channel.SILIAO:
 			SendChatMessage (tempChatMsg);
 			break;
 		default:
@@ -218,6 +222,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 
 	void SendChatMessage (ChatMessage tempChatMsg)
 	{
+		Debug.Log("==========================1");
 		string sendStr = tempChatMsg.chatPct.content.Replace ("\n", "");
 //		sendStr = tempChatMsg.chatPct.content.Replace (" ", "");
 
@@ -246,15 +251,33 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 //		}
 		
 		receiveList.Add (tempChatMsg);
-		
-		SendWaitTime = (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_INTERVAL_TIME);
-//		Debug.Log ("SendWaitTime:" + SendWaitTime);
-		StartCoroutine ("SendWait");
+
+		switch(QXChatPage.chatPage.chatInputIndex)
+		{
+		case 0:
+			m_listScendWaitTime[QXChatPage.chatPage.chatInputIndex] = (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_WORLD_INTERVAL_TIME);
+			break;
+		case 1:
+			m_listScendWaitTime[QXChatPage.chatPage.chatInputIndex] = (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_ALLIANCE_INTERVAL_TIME);
+			break;
+		case 2:
+			m_listScendWaitTime[QXChatPage.chatPage.chatInputIndex] = (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_BROADCAST_INTERVAL_TIME);
+			break;
+		case 3:
+			m_listScendWaitTime[QXChatPage.chatPage.chatInputIndex] = (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHAT_SECRET_INTERVAL_TIME);
+			break;
+		}
+		if(!QXChatData.STARTTIME)
+		{
+			StartCoroutine ("SendWait");
+			QXChatData.STARTTIME = true;
+		}
+
 		if (SetOpenChat)
 		{
 			QXChatPage.chatPage.ClearInputText (int.Parse (chatInfoDic[chatChannel][1]));
 		}
-		
+		Debug.Log("发送发送发送");
 		QXComData.SendQxProtoMessage (tempChatMsg.chatPct,ProtoIndexes.C_Send_Chat);
 //		Debug.Log ("聊天发送：" + ProtoIndexes.C_Send_Chat);
 		
@@ -272,10 +295,9 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 			{
 			case ProtoIndexes.S_Send_Chat:
 			{
-//				Debug.Log ("聊天返回：" + ProtoIndexes.S_Send_Chat);
+				Debug.Log ("聊天返回：" + ProtoIndexes.S_Send_Chat);
 				ChatPct chatData = new ChatPct();
 				chatData = QXComData.ReceiveQxProtoMessage (p_message,chatData) as ChatPct;
-
 				if (chatData != null)
 				{
 //					Debug.Log ("chatData.type:" + chatData.type);
@@ -465,7 +487,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 			sendState = ChatMessage.SendState.SEND_SUCCESS,
 			chatPct = new ChatPct ()
 			{
-				guoJia = 0,
+				guoJia = 100,
 				channel = ChatPct.Channel.Broadcast,
 				content = tempResp.errorDesc
 			}
@@ -528,7 +550,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 				tempConfigList.Add(new KingDetailButtonController.KingDetailButtonConfig() { m_ButtonStr = "屏蔽", m_ButtonClick = OnShieldClick });
 			}
 		}
-		info.SetThis(tempKingInfo, tempConfigList);
+		//info.SetThis(tempKingInfo, tempConfigList);
 		
 		info.m_KingDetailEquipInfo.m_BagItemDic = junZhuInfo.equip.items.Where(item => item.buWei > 0).ToDictionary(item => KingDetailInfo.TransferBuwei(item.buWei));
 		
@@ -593,21 +615,16 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	/// <returns>The wait.</returns>
 	IEnumerator SendWait ()
 	{
-		while (SendWaitTime > 0)
+		while (true)
 		{
 			yield return new WaitForSeconds (1);
-			SendWaitTime --;
-
-			if (SendWaitTime <= 0)
+			for(int i = 0; i < m_listScendWaitTime.Count; i ++)
 			{
-				SendWaitTime = 0;
-
-				if (SetOpenChat)
+				m_listScendWaitTime[i] --;
+				if (m_listScendWaitTime[i] == 0 && SetOpenChat && QXChatPage.chatPage.chatInputIndex == i)
 				{
 					QXChatPage.chatPage.OnChatSubmit ();
 				}
-
-				StopCoroutine ("SendWait");
 			}
 		}
 	}

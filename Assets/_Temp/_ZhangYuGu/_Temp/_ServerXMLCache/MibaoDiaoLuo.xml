@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<MibaoDiaoLuo suipianId="311001" legendPveId="100103,100203,100303,101303" />
+<MibaoDiaoLuo suipianId="311002" legendPveId="100105,100205,100305,101306" />
+<MibaoDiaoLuo suipianId="311003" legendPveId="100107,100207,100307,101309" />
+<MibaoDiaoLuo suipianId="312001" legendPveId="100403,100503,100603,101403" />
+<MibaoDiaoLuo suipianId="312002" legendPveId="100406,100506,100606,101406" />
+<MibaoDiaoLuo suipianId="312003" legendPveId="100409,100509,100609,101409" />
+<MibaoDiaoLuo suipianId="313001" legendPveId="可在【荒野商店】兑换" />
+<MibaoDiaoLuo suipianId="313002" legendPveId="可在百战【威望商店】兑换" />
+<MibaoDiaoLuo suipianId="313003" legendPveId="可在【神秘商铺】兑换" />
+<MibaoDiaoLuo suipianId="314001" legendPveId="100703,100803,100903" />
+<MibaoDiaoLuo suipianId="314002" legendPveId="100706,100806,100906" />
+<MibaoDiaoLuo suipianId="314003" legendPveId="100709,100809,100909" />
+<MibaoDiaoLuo suipianId="315001" legendPveId="101003,101103,101203" />
+<MibaoDiaoLuo suipianId="315002" legendPveId="101006,101106,101206" />
+<MibaoDiaoLuo suipianId="315003" legendPveId="101009,101109,101209" />
+<MibaoDiaoLuo suipianId="316001" legendPveId="可在【1级联盟商店】兑换" />
+<MibaoDiaoLuo suipianId="316002" legendPveId="可在【2级联盟商店】兑换" />
+<MibaoDiaoLuo suipianId="316003" legendPveId="可在【3级联盟商店】兑换" />
+<MibaoDiaoLuo suipianId="317001" legendPveId="可通过【矿洞探宝】获得" />
+<MibaoDiaoLuo suipianId="317002" legendPveId="可通过【矿洞探宝】获得" />
+<MibaoDiaoLuo suipianId="317003" legendPveId="可通过【矿洞探宝】获得" />
+</dataset>

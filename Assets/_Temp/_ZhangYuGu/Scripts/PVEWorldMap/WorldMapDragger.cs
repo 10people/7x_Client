@@ -45,8 +45,6 @@ public class WorldMapDragger : MonoBehaviour {
 	}
 
 	void OnDrag( Vector2 p_delta ){
-		NGUIDebug.ClearLogs();
-
 		if( UICamera.touchCount == 2 ){
 			ProcessScale();
 		}

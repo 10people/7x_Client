@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<YouxiaOpenTime id="1" OpenDay="1,2,3,4,5,6,7" OpenTime="4:00" maxTimes="3" CD="600" NameId="300100" openLevel="26" />
+<YouxiaOpenTime id="2" OpenDay="1,2,3,4,5,6,7" OpenTime="4:00" maxTimes="3" CD="600" NameId="300200" openLevel="28" />
+<YouxiaOpenTime id="3" OpenDay="1,2,3,4,5,6,7" OpenTime="4:00" maxTimes="3" CD="600" NameId="300300" openLevel="12" />
+<YouxiaOpenTime id="4" OpenDay="1,2,3,4,5,6,7" OpenTime="4:00" maxTimes="3" CD="600" NameId="300400" openLevel="16" />
+<YouxiaOpenTime id="5" OpenDay="1,2,3,4,5,6,7" OpenTime="4:00" maxTimes="3" CD="600" NameId="300500" openLevel="32" />
+</dataset>

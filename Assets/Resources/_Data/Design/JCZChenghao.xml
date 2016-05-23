@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<JCZChenghao ID="4301" nameID="4301" descID="4301" condition="10" killedAward="20" />
+<JCZChenghao ID="4302" nameID="4302" descID="4302" condition="20" killedAward="40" />
+<JCZChenghao ID="4303" nameID="4303" descID="4303" condition="30" killedAward="60" />
+<JCZChenghao ID="4304" nameID="4304" descID="4304" condition="40" killedAward="80" />
+<JCZChenghao ID="4305" nameID="4305" descID="4305" condition="50" killedAward="100" />
+</dataset>

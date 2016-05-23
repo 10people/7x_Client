@@ -1,6 +1,11 @@
-﻿using UnityEngine;
+﻿//#define USE_ITWEEN
+
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+
 
 using qxmobile.protobuf;
 
@@ -50,7 +55,8 @@ public class DroppenAI : MonoBehaviour
 		float dropHeight = -1f;
 
 		BattleEffectControllor.Instance().PlayEffect (200000, startPos, (targetPos - startPos).normalized, dropTime + 1f);
-		
+
+		#if USE_ITWEEN
 		iTween.ValueTo (gameObject, iTween.Hash(
 			"from", 0,
 			"to", 1,
@@ -84,6 +90,26 @@ public class DroppenAI : MonoBehaviour
 			"onupdate", "OnActionUpdate",
 			"oncomplete", "OnActionFinish"
 			));
+		#else
+		LeanTween.value( gameObject, 0, 1.0f, dropTime )
+			.setEase( LeanTweenType.linear )
+			.setOnUpdate( updateX );
+
+		LeanTween.value( gameObject, 0, dropHeight, dropTime / 2 )
+			.setEase( LeanTweenType.easeOutCirc )
+			.setOnUpdate( updateY );
+
+		LeanTween.value( gameObject, dropHeight, 0, dropTime / 2 )
+			.setDelay( dropTime / 2 )
+			.setEase( LeanTweenType.easeInCirc )
+			.setOnUpdate( updateY );
+
+		LeanTween.value( gameObject, 0, 1.0f, dropTime + 1f )
+			.setDelay( dropTime / 2 )
+			.setEase( LeanTweenType.linear )
+			.setOnUpdate( OnActionUpdate )
+			.setOnComplete( OnActionFinish );
+		#endif
 	}
 
 	public void updateX(float x)
@@ -104,7 +130,7 @@ public class DroppenAI : MonoBehaviour
 		transform.position = new Vector3 (transform.position.x, targetY, transform.position.z);
 	}
 
-	public void OnActionUpdate()
+	public void OnActionUpdate( float p_float )
 	{
 
 	}

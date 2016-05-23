@@ -174,7 +174,7 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 		m_BuyTongbiData = tongbiData;
 		m_labelUseYuanbao.text = tongbiData.cost.ToString();
 		m_labelGetMoney.text = tongbiData.getTonbi.ToString();
-		string tempString = MyColorData.getColorString(1, "用少量元宝换取大量铜币\r\n(今日可用");
+		string tempString = MyColorData.getColorString(1, "用少量元宝购买大量铜币\r\n(今日可用");
 		tempString += MyColorData.getColorString(2, m_BuyTongbiData.nowCount + "/" + m_BuyTongbiData.maxCount);
 		tempString += MyColorData.getColorString(1, ")");
 		m_labelDes.text = tempString;
@@ -219,7 +219,7 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 			else
 			{
 				m_objShowGetLianxuMoney.SetActive(true);
-				m_labelLianxuDes.text = "连续换取" + m_BuyTongbiData.lixuCount + "次铜币";
+				m_labelLianxuDes.text = "连续购买" + m_BuyTongbiData.lixuCount + "次铜币";
 				m_labelLianxuUseYuanbao.text = (m_BuyTongbiData.cost * m_BuyTongbiData.lixuCount).ToString();
 				m_labelLianxuGetMoney.text = (m_BuyTongbiData.getTonbi * m_BuyTongbiData.lixuCount).ToString();
 			}

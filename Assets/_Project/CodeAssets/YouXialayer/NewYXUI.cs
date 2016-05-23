@@ -8,6 +8,9 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NewYXUI : MYNGUIPanel,SocketProcessor {
+
+	public GameObject NoMiBaoSkillMind;
+
 	public static NewYXUI mNewYXUI;
 	public int l_id;
 	
@@ -519,9 +522,13 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 				mSparkleEffectItem.enabled = true ;
 			}
 			MiBaoIcon.spriteName = "";
+			MiBaoIcon.gameObject.SetActive(false);
+			NoMiBaoSkillMind.SetActive(MiBaoGlobleData.Instance().GetMiBaoskillOpen());
 		}
 		else
 		{
+			NoMiBaoSkillMind.SetActive(false);
+			MiBaoIcon.gameObject.SetActive(true);
 			MiBaoSkillTemp mMiBAo = MiBaoSkillTemp.getMiBaoSkillTempBy_id(m_You_XiaInfo.zuheId);
 			mSparkleEffectItem.enabled = false ;
 			MiBaoIcon.spriteName = mMiBAo.icon.ToString();

@@ -21,7 +21,7 @@ public class BackbtntoInfo : MonoBehaviour {
 	public void DestroyPveUI ()
 	{
 		MapData.mapinstance.GuidLevel = 0;
-		MapData.mapinstance.ShowPVEGuid ();
+		MapData.mapinstance.ShowYinDao = true;
 		Destroy (pveUIObj);
 	}
 }

@@ -108,11 +108,8 @@ namespace Rank
 
         public override void GetInfo()
         {
-            JunZhuInfoSpecifyReq temp = new JunZhuInfoSpecifyReq()
-            {
-                junzhuId = m_BaizhanInfo.junZhuId
-            };
-            SocketHelper.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
+            KingDetailInfoController.Instance.ShowKingDetailWindow(m_BaizhanInfo.junZhuId);
+
             m_ModuleController.ClampScrollView();
         }
 
@@ -124,8 +121,6 @@ namespace Rank
             }
             else
             {
-                m_ModuleController.m_RootController.AddFriendName = m_BaizhanInfo.name;
-
                 FriendOperationLayerManagerment.AddFriends((int)m_BaizhanInfo.junZhuId);
                 m_ModuleController.ClampScrollView();
             }

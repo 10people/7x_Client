@@ -26,7 +26,7 @@ public class Editor_Build_Bundle_5 {
 	
 	#if DEBUG_BUNDLE
 	/// 1st.
-	[MenuItem("Build/Bundles/Build All", false, (int)Editor_Build_Bundle_Menu.MenuItemPriority.BUILD_DEBUG - 2 ) ]
+	[MenuItem("Build/Bundles/1.Build All", false, (int)Editor_Build_Bundle_Menu.MenuItemPriority.BUILD_ALL ) ]
 	public static void Debug_Editor_Build_All() {
 		{
 			EditorBundleHelper.CleanCachedBundles();
@@ -65,7 +65,7 @@ public class Editor_Build_Bundle_5 {
 	}
 
 	/// 2nd.
-	[MenuItem("Build/Bundles/Build Manifest", false, (int)Editor_Build_Bundle_Menu.MenuItemPriority.BUILD_DEBUG ) ]
+	[MenuItem("Build/Bundles/2.Build Manifest", false, (int)Editor_Build_Bundle_Menu.MenuItemPriority.BUILD_MANIFEST ) ]
 	public static void Debug_Editor_Debug_Bundle_2nd() {
 		{
 			EditorBuildManifest.BuildManifest( GetBuildTargetPath() );

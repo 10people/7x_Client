@@ -331,9 +331,9 @@ public class ThirdPlatform : MonoBehaviour {
 		string t_url = NetworkHelper.GetPrefix() + NetworkHelper.THIRD_PLATFORM_LOGIN_URL;
 		#endif
 
-		#if DEBUG_THIRD_PLATFORM
+//		#if DEBUG_THIRD_PLATFORM
 		Debug.Log( "UploadToken( " + t_url + "   " + m_platform_type + " )" );
-		#endif
+//		#endif
 
 		{
 			Dictionary< string,string > t_request_params = new Dictionary<string,string>();
@@ -341,10 +341,9 @@ public class ThirdPlatform : MonoBehaviour {
 			{
 				// add 3rd platform info
 				if( IsMyAppAndroidPlatform() ){
-					if( m_my_app_login_ret == null ){
-					Debug.Log( "MyApp's ret is null, Start Game, and login there." );
-
-//						CheckLoginToShowSDK();
+//					if( m_my_app_login_ret == null ){
+					if( !m_login_notified ){
+						Debug.Log( "MyApp's ret is null, Start Game, and login there." );
 
 						StartGame();
 
@@ -354,26 +353,28 @@ public class ThirdPlatform : MonoBehaviour {
 					t_request_params.Add( "channel", GetPlatformTag() );
 
 					// use msdk.open_id to check it if right
-					t_request_params.Add( "openid", m_my_app_login_ret.open_id );
+					t_request_params.Add( "openid", ThirdPlatform.GetOpenId() );
 
 					// use token to check it if right
-					t_request_params.Add( "openkey", m_my_app_login_ret.GetAccessToken() );
+					t_request_params.Add( "openkey", ThirdPlatform.GetMyAppAccessToken() );
 
-//					Debug.Log( "UploadToken.openkey: " + m_my_app_login_ret.GetAccessToken() );
-//
-//					Debug.Log( "Prelog.AccessToken: " + ThirdPlatform.GetMyAppToken() );
+					t_request_params.Add( "paytoken", ThirdPlatform.GetPayToken() );
+
+					t_request_params.Add( "pf", ThirdPlatform.GetPf() );
+
+					t_request_params.Add( "pfkey", ThirdPlatform.GetPfKey() );
 					
 					{
-						if( m_my_app_login_ret.platform == Msdk.ePlatform.ePlatform_Weixin ){
+						if( m_e_platform == ePlatform.ePlatform_Weixin ){
 							// wx
 							t_request_params.Add( "type", "1" );
 						}
-						else if( m_my_app_login_ret.platform == Msdk.ePlatform.ePlatform_QQ ){
+						else if( m_e_platform == ePlatform.ePlatform_QQ ){
 							// qq
 							t_request_params.Add( "type", "2" );
 						}
 						else{
-							Debug.Log( "Platform not processed." );
+							Debug.LogError( "Platform not processed." );
 
 							t_request_params.Add( "type", "Not Defined" );
 						}
@@ -387,7 +388,7 @@ public class ThirdPlatform : MonoBehaviour {
 				else if( IsMyAppAndroidPlatform() ){
 					t_request_params.Add( "channel", GetPlatformTag() );
 					
-					t_request_params.Add( "sid", GetMyAppToken() );
+					t_request_params.Add( "sid", GetMyAppAccessToken() );
 				}
 				else if( IsXYPlatform() ){
 					t_request_params.Add( "channel", GetPlatformTag() );
@@ -645,16 +646,33 @@ public class ThirdPlatform : MonoBehaviour {
 
 
 	#region MyApp Platform
-	private string m_myapp_login_state;
+
+	private static string m_open_id = "";
+
+	private static string m_access_token = "";
+
+	private static string m_pay_token = "";
+
+	private static string m_pf = "";
+
+	private static string m_pf_key = "";
+
+	private static string m_pay_result_code = "";
 	
-	private string m_myapp_login_message;
+	private enum ePlatform{
+		ePlatform_None 		= 0,
+		ePlatform_QQ 		= 1,
+		ePlatform_Weixin 	= 2,
+	};
+
+	private static ePlatform m_e_platform = ePlatform.ePlatform_None;
+
+	private string m_myapp_login_state;
 
 	// Confirmed by KangJiangHu, if ios will be published, ios will use TXIOS
 	public const string PLATFORM_MY_APP_ANDROID_TAG 		= "TX";
-	
-	private Msdk.LoginRet m_my_app_login_ret	= null;
 
-	private Msdk.PersonInfo m_my_persion_info = null;
+	private static string m_nick_name = "";
 
 	// fix bug for WX back not callback when logout in wx( request login )
 	private float m_request_login_time = 0.0f;
@@ -681,12 +699,114 @@ public class ThirdPlatform : MonoBehaviour {
 		yield break;
 	}
 
-	public static string GetMyAppToken(){
-		#if MYAPP_ANDROID_PLATFORM
-		return Instance().m_my_app_login_ret.GetAccessToken();
-		#else
-		return "";
-		#endif
+	public void SetPayResultCode( string p_result_code ){
+		Debug.Log( "SetPayResultCode( " + p_result_code + " )" );
+
+		m_pay_result_code = p_result_code;
+
+		int t_result = int.Parse( p_result_code );
+
+		switch( t_result ){
+		case -2:
+			//（此时需要在回调中重新绑定，否则有可能无法拉起支付页面）
+			//PAYRESULT_SERVICE_BIND_FAIL   = -2;
+			Debug.LogError( "Error, PayResult Service Bind Fail" );
+			break;
+
+		case -1:
+			//支付流程失败
+			//PAYRESULT_ERROR        = -1;
+			Debug.LogError( "Error, PayResult Error." );
+			break;
+
+		case 0:
+			//支付流程成功
+			//PAYRESULT_SUCC         = 0;
+			Debug.LogError( "Error, PayResult Success." );
+			break;
+
+		case 2:
+			//用户取消
+			//PAYRESULT_CANCEL       = 2;
+			Debug.LogError( "Error, PayResult Cancel." );
+			break;
+
+		case 3:
+			//参数错误
+			//PAYRESULT_PARAMERROR   = 3;
+			Debug.LogError( "Error, PayResult Param Error." );
+			break;
+
+		default:
+			Debug.LogError( "Error, PayResult Not defined ." );
+			break;
+		}
+	}
+
+	public static string GetPayToken(){
+		return m_pay_token;
+	}
+
+	public void SetPayToken( string p_pay_token ){
+		Debug.Log( "SetPayToken: " + p_pay_token );
+
+		m_pay_token = p_pay_token;
+	}
+
+	public static string GetPf(){
+		return m_pf;
+	}
+
+	public void SetPf( string p_pf ){
+		Debug.Log( "SetPf: " + p_pf );
+
+		m_pf = p_pf;
+	}
+
+	public static string GetPfKey(){
+		return m_pf_key;
+	}
+
+	public void SetPfKey( string p_pf_key ){
+		Debug.Log( "SetPfKey: " + p_pf_key );
+
+		m_pf_key = p_pf_key;
+	}
+
+	public static string GetMyAppAccessToken(){
+		return m_access_token;
+	}
+
+	public void SetAccessToken( string p_access_token ){
+		Debug.Log( "SetAccessToken( " + p_access_token + " )" );
+	
+		m_access_token = p_access_token;
+	}
+
+	public static string GetOpenId(){
+		return m_open_id;
+	}
+
+	public void SetOpenId( string p_open_id ){
+		Debug.Log( "SetOpenId( " + p_open_id + " )" );
+
+		m_open_id = p_open_id;
+	}
+
+	public void SetPlatform( string p_platform ){
+		Debug.Log( "SetPlatform( " + p_platform + " )" );
+
+		int t_platform = int.Parse( p_platform );
+
+		if( t_platform == 1 ){
+			m_e_platform = ePlatform.ePlatform_QQ;
+		}
+		else if( t_platform == 2 ){
+			m_e_platform = ePlatform.ePlatform_Weixin;
+		}
+		else{
+			Debug.LogError( "Error, in Platform" );
+		}
 	}
 
 	public static void ShowQQLogin(){
@@ -700,11 +820,15 @@ public class ThirdPlatform : MonoBehaviour {
 
 		#if MYAPP_ANDROID_PLATFORM
 		if( Application.platform == RuntimePlatform.Android ){
-			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_QQ );
+			Bonjour.OnQQLogin();
+
+			//WGPlatform.Instance.WGLogin( ePlatform.ePlatform_QQ );
 		}
 
 		{
 			SetPlatformStatus( PlatformStatus.Verifying );
+
+			m_e_platform = ePlatform.ePlatform_QQ;
 		}
 		#endif
 	}
@@ -720,11 +844,15 @@ public class ThirdPlatform : MonoBehaviour {
 
 		#if MYAPP_ANDROID_PLATFORM
 		if( Application.platform == RuntimePlatform.Android ){
-			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_Weixin );
+			Bonjour.OnWXLogin();
+
+			//WGPlatform.Instance.WGLogin( ePlatform.ePlatform_Weixin );
 		}
 
 		{
 			SetPlatformStatus( PlatformStatus.Verifying );
+
+			m_e_platform = ePlatform.ePlatform_Weixin;
 		}
 		#endif
 	}
@@ -734,13 +862,13 @@ public class ThirdPlatform : MonoBehaviour {
 
 		#if MYAPP_ANDROID_PLATFORM
 		if( Application.platform == RuntimePlatform.Android ){
-			WGPlatform.Instance.WGLogin( ePlatform.ePlatform_Guest );
+			//WGPlatform.Instance.WGLogin( ePlatform.ePlatform_Guest );
 		}
 		#endif
 	}
 
 	public bool HavePersonInfo(){
-		if( m_my_persion_info == null ){
+	if( string.IsNullOrEmpty( m_nick_name ) ){
 			return false;
 		}
 		else{
@@ -749,128 +877,70 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 
 	public string GetNickName(){
-		if( m_my_persion_info == null ){
+		if( string.IsNullOrEmpty( m_nick_name ) ){
 			Debug.Log( "My Person Info Ss Null." );
 
 			return "";
 		}
 		else{
-			return m_my_persion_info.nickName;
+			return m_nick_name;
 		}
 	}
 
-	void OnRelationNotify( string jsonRet ) {
-		Debug.Log( "OnRelationNotify( " + jsonRet + " )" );
+	public void SetNickName( string p_nick_name ) {
+		Debug.Log( "SetNickName( " + p_nick_name + " )" );
 
-		#if MYAPP_ANDROID_PLATFORM
-
-		RelationRet ret = RelationRet.ParseJson( jsonRet );
-
-		if( ret == null ) {
-			m_myapp_login_message = "解析json失败，具体请看log日志";
-
-			m_my_persion_info = null;
-
-			return;
-		}
-
-		m_myapp_login_message = ret.ToString();
-
-		m_my_persion_info = ret.persons[ 0 ];
-
-		#if DEBUG_THIRD_PLATFORM
-		Debug.Log( "ret: " + m_myapp_login_message );
-
-		Debug.Log( "flag: " + ret.flag );
-
-		Debug.Log( "MyPersonInfo: " + m_my_persion_info );
-
-		Debug.Log( "NickName: " + GetNickName() );
-		#endif
-
-//		switch( ret.flag ) {
-//		case Msdk.eFlag.eFlag_Succ:
-//			// relationRet.persons.at(0) 中保存的即是个人信息
-//			
-//			Debug.Log( "My Person Info: " + m_my_persion_info.ToString() );
-//
-//			m_my_persion_info = ret.persons[ 0 ];
-//
-//			break;
-//
-//		default:
-//			break;
-//		}
-
-		#endif
+		m_nick_name = p_nick_name;
 	}
 
-	//TODO GAME 回调实现，游戏可以参考下面代码
+	private bool m_login_notified = false;
 	
 	/// <summary>
 	///  登陆回调
 	/// </summary>
 	/// <param name="jsonRet">Json ret.</param>
-	void OnLoginNotify( string jsonRet ){
-		Debug.Log( "OnLoginNotify=" + jsonRet );
+	void OnLoginNotify( string p_ret_flag ){
+		Debug.Log( "OnLoginNotify( " + p_ret_flag + " )" );
 		
+		m_login_notified = true;
+
 		#if MYAPP_ANDROID_PLATFORM
 		
-		Msdk.LoginRet ret = Msdk.LoginRet.ParseJson( jsonRet );
-		
-		{
-			m_my_app_login_ret = ret;
-		}
-		
-		if ( ret == null ) {
-			
-			m_myapp_login_state = "登陆失败";
-			
-			m_myapp_login_message = " ";
+		int t_ret_flag = int.Parse( p_ret_flag );
 
-			{
-				SetPlatformStatus( PlatformStatus.LogOut );
-			}
+//		int t_e_platform = int.Parse( p_e_platform );
+
+		switch ( t_ret_flag ){
+		case 0:				
+			// 0 success
+			// 登陆成功, 可以读取各种票据
 			
-			return;
-		}
-		
-		Debug.Log ( "MyApp.OnLoginNotify( " + ret + " )" );
-		
-		/*
-		 *  loginRet.platform表示当前的授权平台, 值类型为ePlatform, 可能值为ePlatform_QQ, ePlatform_Weixin
-	 	 *     loginRet.flag值表示返回状态, 可能值(eFlag枚举)如下：
-		 *       eFlag_Succ: 返回成功, 游戏接收到此flag以后直接读取LoginRet结构体中的票据进行游戏授权流程.
-		 *       eFlag_QQ_NoAcessToken: 手Q授权失败, 游戏接收到此flag以后引导用户去重新授权(重试)即可.
-		 *       eFlag_QQ_UserCancel: 用户在授权过程中
-		 *       eFlag_QQ_LoginFail: 手Q授权失败, 游戏接收到此flag以后引导用户去重新授权(重试)即可.
-		 *       eFlag_QQ_NetworkErr: 手Q授权过程中出现网络错误, 游戏接收到此flag以后引导用户去重新授权(重试)即可.
-		 *     loginRet.token是一个List<TokenRet>, 其中存放的TokenRet有type和value, 通过遍历Vector判断type来读取需要的票据. type(TokenType)类型定义如下:
-		 *       eToken_QQ_Access,
-		 *       eToken_QQ_Pay,
-		 *       eToken_WX_Access,
-		 *       eToken_WX_Refresh
-		 */
-		switch ( ret.flag ){
-		case eFlag.eFlag_Succ:				
-			// 登陆成功, 可以读取各种票据				
-			int platform= ret.platform;
-			
-			if(ePlatform.ePlatform_Weixin == platform){
+			if( m_e_platform == ePlatform.ePlatform_Weixin ){
 				m_myapp_login_state = "微信登陆成功";
 				
-				WGPlatform.Instance.WGQueryMyWXInfo();
+				//WGPlatform.Instance.WGQueryMyWXInfo();
+
+				//Bonjour.SetOpenIdAndOpenKey( m_my_app_login_ret.open_id, m_my_app_login_ret.GetTokenByType( eTokenType.eToken_WX_Access  ) );
+
+				//Bonjour.SetSessionInfo( "hy_gameid", "wc_actoken" );
 			}
-			else if(ePlatform.ePlatform_QQ == platform){
+			else if( m_e_platform == ePlatform.ePlatform_QQ ){
 				m_myapp_login_state = "QQ登陆成功";
 
-				WGPlatform.Instance.WGQueryMyQQInfo();
+				//WGPlatform.Instance.WGQueryMyQQInfo();
+
+				//Bonjour.SetOpenIdAndOpenKey( m_my_app_login_ret.open_id, m_my_app_login_ret.GetTokenByType( eTokenType.eToken_QQ_Pay  ) );
+
+				//Bonjour.SetSessionInfo( "openid", "kp_actoken" );
 			}
-			else if(ePlatform.ePlatform_QQHall == platform){
-				m_myapp_login_state = "大厅登陆成功";
+
+//			{
+//				Bonjour.SetPfAndPfKey( WGPlatform.Instance.WGGetPf( "" ), WGPlatform.Instance.WGGetPfKey() );
+//			}
+
+			{
+				Bonjour.InitPayment();
 			}
-			
-			m_myapp_login_message = ret.ToString();
 			
 			{
 //				ThirdPlatformLoginSuccess();
@@ -887,7 +957,7 @@ public class ThirdPlatform : MonoBehaviour {
 		case eFlag.eFlag_WX_AccessTokenExpired:
 			Debug.Log( "微信票据过期，重刷新token." );
 			
-			WGPlatform.Instance.WGRefreshWXToken();
+//			WGPlatform.Instance.WGRefreshWXToken();
 			
 			break;
 			
@@ -895,8 +965,6 @@ public class ThirdPlatform : MonoBehaviour {
 		case eFlag.eFlag_Local_Invalid:
 			// 自动登录失败, 需要重新授权, 包含本地票据过期, 刷新失败登所有错误
 			m_myapp_login_state = "自动登陆失败";
-
-			m_myapp_login_message = ret.desc;
 
 			{
 				SetPlatformStatus( PlatformStatus.LogOut );
@@ -928,10 +996,9 @@ public class ThirdPlatform : MonoBehaviour {
 			
 		default:
 			m_myapp_login_state = "登陆失败";
-			m_myapp_login_message = ret.desc;
 			
 			{
-				Debug.Log( "LoginFail.flag: " + ret.flag );
+				Debug.Log( "LoginFail.flag: " + t_ret_flag );
 				
 				LogOutCallback ( true );
 				
@@ -943,9 +1010,8 @@ public class ThirdPlatform : MonoBehaviour {
 		
 		Debug.Log( "MyApp.Login.State: " + m_myapp_login_state );
 		
-		Debug.Log( "MyApp.Login.Message: " + m_myapp_login_message );
-
-		if( ret.flag == eFlag.eFlag_WX_NotInstall ){
+		if( t_ret_flag == 2000 ){
+			//2000 	User_WX_NotInstall
 			// Please Install WX, or Use Other Login Type.
 
 			Debug.Log( "Show Please Install WX Window." );
@@ -967,7 +1033,8 @@ public class ThirdPlatform : MonoBehaviour {
 				true,
 				true );
 		}
-		else if( ret.flag == eFlag.eFlag_QQ_UserCancel ){
+		else if( t_ret_flag == 1001 ){
+			// 1001		User_QQ_UserCancel
 			Debug.Log( "Show QQ User Cancel Tip Window." );
 
 			Global.CreateBox( "取消登录",
@@ -1656,7 +1723,7 @@ public class ThirdPlatform : MonoBehaviour {
 			return GetPPToken();
 		} 
 		else if( IsMyAppAndroidPlatform() ){
-			return GetMyAppToken();
+			return GetMyAppAccessToken();
 		}
 		else if ( IsXYPlatform() ) {
 			return GetXYToken();
@@ -1731,6 +1798,95 @@ public class ThirdPlatform : MonoBehaviour {
 	#endregion
 	
 	
-	
 
+	#region WavToMp3
+
+	/** Params:
+	 * p_des: /sdcard/ylzs.mp3
+	 */
+	private void ConvertFinish( string p_des ){
+		Debug.Log( "------ ConvertFinish ------: " + p_des );
+	}
+
+	#endregion
+
+
+
+	#region Payment
+
+	/** Param define:
+	*  
+	* Result Code:
+	* //说明游戏初始化绑定service不成功
+	* PAYRESULT_SERVICE_BIND_FAIL   = -2;
+	* （此时需要在回调中重新绑定，否则有可能无法拉起支付页面）
+	*
+	* //支付流程失败
+	* PAYRESULT_ERROR        = -1;
+	*
+	* //支付流程成功
+	* PAYRESULT_SUCC         = 0;
+	*
+	* //用户取消
+	* PAYRESULT_CANCEL       = 2;
+	*
+	* //参数错误
+	* PAYRESULT_PARAMERROR   = 3;
+	*/
+	public void SetPayResult( int p_result_code, string p_result_message ){
+		Debug.Log( "SetPayResult()" );
+
+		Debug.Log( "Result Code: " + p_result_code );
+
+		Debug.Log( "Result Message: " + p_result_message );
+
+		switch( p_result_code ){
+		case -2:
+			Debug.LogError( "Bind Service Fail." );
+			break;
+
+		case -1:
+			Debug.LogError( "Payment Fail." );
+			RechargeData.Instance.RechargeReport (RechargeData.ReportState.FAIL,
+			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
+			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
+			QXComData.CreateBoxDiy ("充值失败！",true,null);
+			break;
+
+		case 0:
+			Debug.Log( "Pay Success." );
+			RechargeData.Instance.RechargeReport (RechargeData.ReportState.AFTER_SUCCESS,
+			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
+			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
+			QXComData.CreateBoxDiy ("充值成功！",true,null);
+			break;
+
+		case 2:
+			Debug.Log( "Pay Cancel." );
+			RechargeData.Instance.RechargeReport (RechargeData.ReportState.CANCEL,
+			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
+			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
+			QXComData.CreateBoxDiy ("取消充值！",true,null);
+			break;
+
+		case 3:
+			Debug.Log( "Param Error." );
+			break;
+
+		default:
+			Debug.Log( "Not defined Result Code: " + p_result_code );
+			break;
+		}
+	}
+	//	*
+	//	*	支付状态
+	//	*	PAYSTATE_PAYUNKOWN     = -1;
+	//	*	//支付成功
+	//	*	PAYSTATE_PAYSUCC       = 0;
+	//	*	//用户取消
+	//	*	PAYSTATE_PAYCANCEL     = 1;
+	//	*	//支付出错
+	//	*	PAYSTATE_PAYERROR      = 2;
+
+	#endregion
 }

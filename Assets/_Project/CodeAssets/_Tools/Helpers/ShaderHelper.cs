@@ -94,6 +94,8 @@ public class ShaderHelper {
 		}
 
 		T[] t_renderers = p_object.GetComponentsInChildren<T>();
+
+		Material t_1st_found_mat = null;
 		
 		for( int i = 0; i < t_renderers.Length; i++ ){
 			T t_renderer = t_renderers[i];
@@ -118,12 +120,12 @@ public class ShaderHelper {
 
 					t_mat.shader = p_new_shader;
 						
-					return t_mat;
+					t_1st_found_mat = t_mat;
 				}
 			}
 		}
 
-		return null;
+		return t_1st_found_mat;
 	}
 
 	#endregion

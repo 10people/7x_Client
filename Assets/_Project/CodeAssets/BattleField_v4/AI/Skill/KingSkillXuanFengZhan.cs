@@ -20,9 +20,9 @@ public class KingSkillXuanFengZhan : MonoBehaviour
 		
 		SkillTemplate skill = SkillTemplate.getSkillTemplateBySkillLevelIndex (CityGlobalData.skillLevelId.bahuanglieri, king);
 
-		if( skill == null ){
+		if( skill == null )
+		{
 			Debug.LogError( "Error, skill is null." );
-
 		}
 
 		count = (int)skill.value2;
@@ -30,7 +30,8 @@ public class KingSkillXuanFengZhan : MonoBehaviour
 		curCount = 0;
 	}
 
-	void OnDestroy(){
+	void OnDestroy()
+	{
 		king = null;
 	}
 
@@ -41,7 +42,8 @@ public class KingSkillXuanFengZhan : MonoBehaviour
 		ResetXuanFengCountCallback( king.mAnim );
 	}
 
-	public static void ResetXuanFengCountCallback( Animator p_animator ){
+	public static void ResetXuanFengCountCallback( Animator p_animator )
+	{
 		p_animator.SetBool("XuanFengOver", false);
 	}
 
@@ -55,7 +57,8 @@ public class KingSkillXuanFengZhan : MonoBehaviour
 		}
 	}
 
-	public static void AddXuanFengCountCallback( Animator p_animator ){
+	public static void AddXuanFengCountCallback( Animator p_animator )
+	{
 		p_animator.SetBool("XuanFengOver", true);
 	}
 

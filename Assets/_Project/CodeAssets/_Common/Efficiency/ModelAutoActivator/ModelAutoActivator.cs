@@ -1,6 +1,10 @@
 ﻿//#define DEBUG_MODEL
 
-//#define TEMP_CLOSE_FOR_LOCK
+//#define DEBUG_NUM
+
+//#define TEMP_CLOSE_FOR_SVN_LOCK
+
+
 
 using UnityEngine;
 using System.Collections;
@@ -12,6 +16,8 @@ using System;
 using System.Threading;
 using System.Text;
 using System.IO;
+
+
 
 public class ModelAutoActivator : MonoBehaviour{
 
@@ -74,7 +80,7 @@ public class ModelAutoActivator : MonoBehaviour{
 			return;
 		}
 
-		#if TEMP_CLOSE_FOR_LOCK
+		#if TEMP_CLOSE_FOR_SVN_LOCK
 		if( Time.realtimeSinceStartup - m_last_update_time < 1.0f ){
 		#else
 		if( Time.realtimeSinceStartup - m_last_update_time < ConfigTool.GetFloat( ConfigTool.CONST_CHAR_UPDATE_INTERVAL, 1.0f ) ){
@@ -165,25 +171,50 @@ public class ModelAutoActivator : MonoBehaviour{
 	}
 
 	private static bool IsReachLimitation(){
-		#if TEMP_CLOSE_FOR_LOCK
+		#if TEMP_CLOSE_FOR_SVN_LOCK
 		if( m_active_activator_list.Count >= 30 ){
 			return true;
 		}
 		#else
 		if (SceneManager.IsInCarriageScene ()) {
-			if( m_active_activator_list.Count >= ConfigTool.GetInt( ConfigTool.CONST_MAX_CHAR_COUNT, 30 ) ){
+#if DEBUG_NUM
+            if( m_active_activator_list.Count >= limitNum)
+            {
 				return true;
 			}
+#else
+            if( m_active_activator_list.Count >= ConfigTool.GetInt( ConfigTool.CONST_MAX_CHAR_COUNT, 30 ) ){
+				return true;
+			}
+#endif
+		} else if (SceneManager.IsInAllianceBattleScene()) {
+#if DEBUG_NUM
+            if (m_active_activator_list.Count >= limitNum)
+            {
+                return true;
+            }
+#else
+			if( m_active_activator_list.Count >= ConfigTool.GetInt( ConfigTool.CONST_MAX_CHAR_IN_AB_COUNT, 30 ) ){
+				return true;
+			}
+#endif
 		} else if (SceneManager.IsInTreasureCityScene ()) {
+#if DEBUG_NUM
+            if (m_active_activator_list.Count >= limitNum)
+            {
+                return true;
+            }
+#else
 			if( m_active_activator_list.Count >= ConfigTool.GetInt( ConfigTool.CONST_MAX_CHAR_IN_TAN_BAO_COUNT, 30 ) ){
 				return true;
 			}
+#endif
 		} else {
 			Debug.Log( "Error, not in right scene." );
 		}
-		#endif
+#endif
 
-		return false;
+            return false;
 	}
 
 	private static bool IsActive( ActivatorContainer p_container ){
@@ -283,6 +314,10 @@ public class ModelAutoActivator : MonoBehaviour{
 			#if DEBUG_MODEL
 			Debug.Log( "RegisterAutoActivator( " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) + " )" );
 			#endif
+
+			if( m_main_cam == null ){
+				return;
+			}
 
 			{
 				t_activator.Update();
@@ -528,4 +563,14 @@ public class ModelAutoActivator : MonoBehaviour{
 
 		void SetModelActive( bool p_active );
 	}
+
+#if DEBUG_NUM
+
+    private static int limitNum;
+
+    void OnGUI()
+    {
+        limitNum = int.Parse(GUILayout.TextArea(limitNum.ToString()));
+    }
+#endif
 }

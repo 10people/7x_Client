@@ -22,10 +22,55 @@ public class ObjectName : MonoBehaviour {
 	{
 		m_transform = this.GetComponent<Transform>();
 	}
-	
-	public void Init(string tempPlayerName,string tempAllianceName,string tempChengHao,string vip_level,int zhiwei)//初始化玩家名字
+    public void Init_Maincity_PlayerHeadInfo(PlayersManager.OtherPlayerInfo u_info)//初始化玩家名字
+    {
+        m_NameSend = u_info._Name;
+        if (!string.IsNullOrEmpty(u_info._AllianceName)  && !u_info._AllianceName.Equals("***"))
+        {
+            m_LabAllianceName.text = MyColorData.getColorString(12, "<" + u_info._AllianceName + ">  " + FunctionWindowsCreateManagerment.GetIdentityById(u_info._Duty));
+        }
+        else
+        {
+            m_LabAllianceName.text = MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
+        }
+
+        if (!string.IsNullOrEmpty(u_info._Designation) && !u_info._Designation.Equals("-1"))
+        {
+            m_SpriteChengHao.gameObject.SetActive(true);
+            m_SpriteChengHao.spriteName = u_info._Designation;
+        }
+        else
+        {
+            m_SpriteChengHao.gameObject.SetActive(false);
+        }
+
+        if (!string.IsNullOrEmpty(u_info._VInfo))
+        {
+            if (int.Parse(u_info._VInfo) > 0)
+            {
+                m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(u_info._Name) - 1) * 18, -11, 0);
+                m_SpriteVip.gameObject.SetActive(true);
+                m_SpriteVip.spriteName = "vip" + u_info._VInfo;
+                m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
+            }
+            else
+            {
+                m_SpriteVip.gameObject.SetActive(false);
+                m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
+            }
+        }
+        else
+        {
+            m_SpriteVip.gameObject.SetActive(false);
+            m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
+        }
+
+        ShowOrHide(true);
+    }
+
+
+    public void Init(string tempPlayerName,string tempAllianceName,string tempChengHao,string vip_level,int zhiwei)//初始化玩家名字
 	{
-		m_NameSend = tempPlayerName;
 		if (IsPlayer)
 		{
 			if (!string.IsNullOrEmpty(tempAllianceName))

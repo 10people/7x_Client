@@ -102,9 +102,10 @@ public class KingControllor : HeroAI
 	private bool b_resetHit;
 
 
-	void Awake()
-	{
+	public override void Awake(){
 		m_play_attack_effect = new DevelopAnimationCallback.PlayAttackEffectReturn();
+
+		base.Awake();
 	}
 
 	public override void Start()
@@ -1002,7 +1003,13 @@ public class KingControllor : HeroAI
 		
 		if(character.enabled == true)
 		{
-			character.Move(offset * getNavMeshSpeed() * Time.deltaTime);
+//			AttackThenDisableNav();
+
+			Vector3 moveOff = offset * getNavMeshSpeed() * Time.deltaTime;
+
+//			moveOff.y = -1f;
+
+			character.Move(moveOff);
 		}
 
 		if (offset != Vector3.zero)
@@ -1069,8 +1076,29 @@ public class KingControllor : HeroAI
 		}
 	}
 
+	private void AttackThenDisableNav()
+	{
+		if (!BattleControlor.Instance ().completed) return;
+
+		if( nav.enabled )
+		{
+			nav.Stop();
+
+			nav.enabled = false;
+		}
+	}
+
+	private void StandThenEnableNav()
+	{
+		if (!BattleControlor.Instance ().completed) return;
+
+		nav.enabled = true;
+	}
+
 	public void ResetHitCount()
 	{
+		StandThenEnableNav();
+
 		comboable = true;
 
 		b_resetHit = false;
@@ -1156,6 +1184,8 @@ public class KingControllor : HeroAI
 			//comboable = false;
 
 			attackTempTime = System.DateTime.Now;
+
+			AttackThenDisableNav();
 
 			mAnim.SetBool(getAnimationName(AniType.ANI_Attack_0), true);
 
@@ -1279,6 +1309,8 @@ public class KingControllor : HeroAI
 
 			colliderLevel = 2;
 		}
+
+		AttackThenDisableNav();
 
 		moveAction (transform.forward * length + transform.position, easeType, template.time, colliderLevel);
 
@@ -1503,8 +1535,10 @@ public class KingControllor : HeroAI
 		}
 	}
 
-	public bool attackBaseAI(BaseAI node, float hpValue, bool cri, BattleControlor.NuqiAddType nuqiType)
+	public bool attackBaseAI(BaseAI node, float hpValue, bool cri, BattleControlor.NuqiAddType nuqiType, bool forcedArmor)
 	{
+		bool f = false;
+		
 		if(node.body != null) 
 		{
 			EffectTool.Instance.SetHittedEffect (node.body);
@@ -1521,6 +1555,8 @@ public class KingControllor : HeroAI
 		else if(nuqiType == BattleControlor.NuqiAddType.HEAVY_SKILL_1)//重武器技能1-八荒烈日
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_HEAVY_SKILL1));
+
+			f = true;
 		}
 		else if(nuqiType == BattleControlor.NuqiAddType.HEAVY_SKILL_2)//重武器技能2-乾坤斗转
 		{
@@ -1533,10 +1569,14 @@ public class KingControllor : HeroAI
 		else if(nuqiType == BattleControlor.NuqiAddType.LIGHT_SKILL_1)//轻武器技能1-绝影星光斩
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT_SKILL1));
+			
+			f = true;
 		}
 		else if(nuqiType == BattleControlor.NuqiAddType.LIGHT_SKILL_2)//轻武器技能2-血迹烙印
 		{
 			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_LIGHT_SKILL2));
+			
+			f = true;
 		}
 		else if(nuqiType == BattleControlor.NuqiAddType.RANGE_BASE)//弓武器普攻
 		{
@@ -1563,8 +1603,6 @@ public class KingControllor : HeroAI
 //		{
 //			addNuqi((float)CanshuTemplate.GetValueByKey(CanshuTemplate.NUQI_RANGE));
 //		}
-
-		bool f = false;
 
 		if(actionId == 101)//双刀第一击
 		{
@@ -1594,6 +1632,8 @@ public class KingControllor : HeroAI
 		if(actionId == 250)//旋风斩
 		{
 			Shake(KingCamera.ShakeType.Cri);
+
+			f = node.beatDown(100, this); 
 		}
 
 		if(cri == true)
@@ -1642,7 +1682,7 @@ public class KingControllor : HeroAI
 
 				transform.forward = tempForward;
 
-				f = node.beatDown(102);
+				f = node.beatDown(102, this);
 			}
 		}
 		else if(actionId == 261)//寒冰箭
@@ -1668,7 +1708,7 @@ public class KingControllor : HeroAI
 			{
 				Debug.LogError("AAAAAAAAAAAAAAAA  " + actionId);
 
-				node.beatDown(100);
+				node.beatDown(100, this);
 
 				f = true;
 			}
@@ -1676,11 +1716,9 @@ public class KingControllor : HeroAI
 			{
 				if(SkillTemplate.getSkillLevelBySkillLevelIndex(CityGlobalData.skillLevelId.zhongji, this) > 0)
 				{
-					node.beatDown(100);
+					f = node.beatDown(100, this);
 
 					Shake(KingCamera.ShakeType.Vertical);
-
-					f = true;
 				}
 			}
 		}
@@ -1704,7 +1742,13 @@ public class KingControllor : HeroAI
 			KingCrashTemplate template = KingCrashTemplate.getKingCrashById(actionId);
 			
 			float v = nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp ) > 0 ? template.length : 4f;
-			
+
+			float angle = Vector3.Angle(transform.forward, node.transform.position - transform.position);
+
+			v = v * Mathf.Cos(Mathf.Deg2Rad * angle / 2);
+
+			if(forcedArmor) v += 1.5f;
+
 			float t = nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp ) > 0 ? template.time : 1f;
 			
 			float d = nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hp ) > 0 ? template.delay : 0f;
@@ -2032,6 +2076,12 @@ public class KingControllor : HeroAI
 		{
 			m_play_attack_effect.Set( 600156,
 			                         DevelopAnimationCallback.PlayAttackEffectReturn.GameObjectType.GAMEOBJECT);
+		}
+		else
+		{
+			m_play_attack_effect.Set( attackId,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.PositionType.TRANSFORM_POSITION,
+			                         DevelopAnimationCallback.PlayAttackEffectReturn.ForwardType.TRANSFORM_FORWARD);
 		}
 
 		return m_play_attack_effect;
@@ -2829,7 +2879,18 @@ public class KingControllor : HeroAI
 
 			weaponBox_3.setTriggerableSkill(true, skillTemplate.value1, 0);
 
-			BattleEffectControllor.Instance().PlayEffect(600216, gameObject);
+			if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 4)
+			{
+				BattleEffectControllor.Instance().PlayEffect(600269, gameObject);
+			}
+			else if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 3)
+			{
+				BattleEffectControllor.Instance().PlayEffect(600259, gameObject);
+			}
+			else
+			{
+				BattleEffectControllor.Instance().PlayEffect(600216, gameObject);
+			}
 		}
 		else if(_aid == 3260)//乾坤斗转
 		{
@@ -2923,7 +2984,7 @@ public class KingControllor : HeroAI
 
 				if(Console_SetBattleFieldFx.IsEnableAttackFx())
 				{
-					BattleEffectControllor.Instance().PlayEffect(efid, transform.position, transform.forward);
+					//BattleEffectControllor.Instance().PlayEffect(efid, transform.position, transform.forward);
 				}
 //				else{
 //					EffectIdTemplate t_et = EffectTemplate.getEffectTemplateByEffectId ( efid );

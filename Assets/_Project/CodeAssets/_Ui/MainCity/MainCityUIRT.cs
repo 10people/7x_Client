@@ -104,18 +104,13 @@ public class MainCityUIRT : MYNGUIPanel
 
 	public override void MYClick(GameObject ui)
 	{
-		if(ui.name.IndexOf("RT_Setting") != -1)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_LAYER),
-			                        SettingUpLoadCallback);
-		}
-		else if(ui.name.IndexOf("RT_BuyMoney") != -1)
+		if(ui.name.IndexOf("RT_BuyMoney") != -1)
 		{
 			JunZhuData.Instance().BuyTiliAndTongBi(false, true, false);
 		}
 		else if(ui.name.IndexOf("RT_BuyRecharge") != -1)
 		{
-            EquipSuoData.TopUpLayerTip();
+			Global.CreateFunctionIcon(101);
 		}
 		else if(ui.name.IndexOf("RT_BuyEnergy") != -1)
 		{
@@ -150,15 +145,5 @@ public class MainCityUIRT : MYNGUIPanel
 	
 	public override void MYonInput(GameObject ui, string c)
 	{
-	}
-
-	public void SettingUpLoadCallback(ref WWW p_www, string p_path, Object p_object)
-	{
-		GameObject tempObject = (GameObject)Instantiate(p_object);
-		MainCityUI.TryAddToObjectList(tempObject);
-		tempObject.transform.position = new Vector3(0, 500, 0);
-		
-		
-		UIYindao.m_UIYindao.CloseUI();
 	}
 }

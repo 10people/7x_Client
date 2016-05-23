@@ -112,9 +112,26 @@ public class BattleDramaFlag : MonoBehaviour
 		{
 			if(_flagId == 0) continue;
 
-			BattleFlag flag = BattleControlor.Instance().flags[_flagId];
+			bool have = BattleControlor.Instance().flags.ContainsKey(_flagId);
 
-			flag.trigger();
+			if(have)
+			{
+				BattleFlag flag = BattleControlor.Instance().flags[_flagId];
+
+				flag.trigger();
+			}
+			else
+			{
+				BattleDoorFlag[] doors = BattleControlor.Instance().GetComponentsInChildren<BattleDoorFlag>();
+				
+				foreach(BattleDoorFlag doorFlag in doors)
+				{
+					if(doorFlag.flagId == _flagId)
+					{
+						doorFlag.trigger();
+					}
+				}
+			}
 		}
 
 		Destroy (gameObject);

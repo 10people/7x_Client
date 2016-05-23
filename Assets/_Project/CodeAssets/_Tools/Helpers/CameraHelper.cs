@@ -66,6 +66,32 @@ public class CameraHelper {
 
 
 
+	#region Utilities
+
+	public static void CopyCameraComponentParam( Camera p_source, Camera p_destination ){
+		TransformHelper.CopyTransform( p_source.gameObject, p_destination.gameObject );
+
+//		ComponentHelper.LogCamera( p_source, "Origin Camera Param" );
+
+		p_destination.clearFlags = p_source.clearFlags;
+
+		p_destination.cullingMask = p_source.cullingMask;
+
+		p_destination.projectionMatrix = p_source.projectionMatrix;
+
+		p_destination.fieldOfView = p_source.fieldOfView;
+
+		p_destination.nearClipPlane = p_source.nearClipPlane;
+
+		p_destination.farClipPlane = p_source.farClipPlane;
+
+		p_destination.depth = p_source.depth;
+	}
+
+	#endregion
+
+
+
 	#region Log
 
 	public static void ShowCameraInfo( GameObject p_gb ){

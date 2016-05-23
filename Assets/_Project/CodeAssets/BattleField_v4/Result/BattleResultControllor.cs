@@ -259,6 +259,10 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		}
 		else
         {
+			if (CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan)
+			{
+				Global.m_isOpenBaiZhan = true;
+			}
 			SceneManager.EnterMainCity();
         }
 
@@ -736,7 +740,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao
-		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
+		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia
+		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_ChongLou)
 		{
 			layerGuoguan_1.SetActive (true);
 
@@ -832,7 +837,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia
-		   )
+		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_ChongLou)
 		{
 			layerGuoguan_2.SetActive (true);
 		}

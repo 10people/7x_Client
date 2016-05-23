@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Skill SkillId="101" SkillTarget="1" EffectTarget="0" ST_TypeRejectU="0" CRRejectU="2" Range_Min="0" Range_Max="300" BaseCD="1000" IsInGCD="1" Action1="101" CsOnShoot="attack_1" EsOnShoot="25" TowardType="0" />
+<Skill SkillId="111" SkillTarget="1" EffectTarget="0" ST_TypeRejectU="0" CRRejectU="2" Range_Min="0" Range_Max="600" BaseCD="10000" IsInGCD="1" Action1="111" CsOnShoot="attack_4" EsOnShoot="28" TowardType="0" />
+<Skill SkillId="121" SkillTarget="0" EffectTarget="0" ST_TypeRejectU="0" CRRejectU="1" Range_Min="0" Range_Max="800" BaseCD="10000" IsInGCD="1" Action1="121" CsOnShoot="skill_mibao" EsOnShoot="50111" TowardType="0" />
+<Skill SkillId="131" SkillTarget="2" EffectTarget="0" ST_TypeRejectU="0" CRRejectU="1" Range_Min="0" Range_Max="0" BaseCD="0" IsInGCD="0" Action1="131" CsOnShoot="" EsOnShoot="0" TowardType="0" />
+</dataset>

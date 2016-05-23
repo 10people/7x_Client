@@ -15,8 +15,13 @@ namespace Rank
         public UILabel KingLabel;
         public UILabel JobLabel;
         public UILabel LevelLabel;
-        public UILabel GongxianLabel;
-        public UILabel BattlevalueLabel;
+
+        public UISprite JunxianSprite;
+        public UILabel JunxianLabel;
+        public UISprite JunxianLabelSprite;
+        public UILabel NoJunxianLabel;
+
+        public UILabel ChongLouLevelLabel;
         public UILabel GongjinLabel;
 
         public void SetThis()
@@ -40,9 +45,27 @@ namespace Rank
             }
 
             LevelLabel.text = "Lv" + m_JunZhuInfo.level;
-            GongxianLabel.text = m_JunZhuInfo.gongxian.ToString();
-            BattlevalueLabel.text = m_JunZhuInfo.zhanli.ToString();
+            ChongLouLevelLabel.text = m_JunZhuInfo.chongLouLayer + "层";
             GongjinLabel.text = m_JunZhuInfo.gongjin.ToString();
+
+            //Check junxian empty
+            if (m_JunZhuInfo.junxianRank <= 0)
+            {
+                JunxianSprite.gameObject.SetActive(false);
+                JunxianLabelSprite.gameObject.SetActive(false);
+                NoJunxianLabel.gameObject.SetActive(true);
+
+                NoJunxianLabel.text = "无军衔";
+            }
+            else
+            {
+                JunxianSprite.gameObject.SetActive(true);
+                JunxianLabelSprite.gameObject.SetActive(true);
+                NoJunxianLabel.gameObject.SetActive(false);
+
+                JunxianLabel.text = m_JunZhuInfo.junxian + " " + m_JunZhuInfo.junxianRank;
+                JunxianSprite.spriteName = "junxian" + m_JunZhuInfo.junxianLevel;
+            }
         }
 
         new void OnClick()
@@ -102,11 +125,8 @@ namespace Rank
 
         public override void GetInfo()
         {
-            JunZhuInfoSpecifyReq temp = new JunZhuInfoSpecifyReq()
-            {
-                junzhuId = m_JunZhuInfo.junZhuId
-            };
-            SocketHelper.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
+            KingDetailInfoController.Instance.ShowKingDetailWindow(m_JunZhuInfo.junZhuId);
+
             m_AllianceMemberController.ClampScrollView();
         }
 
@@ -118,11 +138,6 @@ namespace Rank
             }
             else
             {
-                if (!m_AllianceMemberController.isOutterCall)
-                {
-                    m_AllianceMemberController.m_RootController.AddFriendName = m_JunZhuInfo.name;
-                }
-
                 FriendOperationLayerManagerment.AddFriends((int)m_JunZhuInfo.junZhuId);
                 m_AllianceMemberController.ClampScrollView();
             }

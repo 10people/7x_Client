@@ -34,6 +34,7 @@ public class PlunderPage : MonoBehaviour {
 	private string textStr;
 
 	public GameObject anchorTopRight;
+	public GameObject m_anchorTL;
 
 	void Awake ()
 	{
@@ -48,6 +49,7 @@ public class PlunderPage : MonoBehaviour {
 	void Start ()
 	{
 		QXComData.LoadYuanBaoInfo (anchorTopRight);
+		QXComData.LoadTitleObj (m_anchorTL,"掠夺");
 	}
 
 	/// <summary>

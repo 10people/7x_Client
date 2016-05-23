@@ -1,2 +1,2 @@
 @echo off
-unity -batchmode -quit -executeMethod EditorBuildPackage.Build
+unity -batchmode -quit -executeMethod EditorBuildAndroid.BuildApkForRelease

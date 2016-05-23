@@ -401,7 +401,7 @@ public class DramaControllor : MonoBehaviour
 			{
 				SceneGuideManager.Instance().OnSceneTipsHide();
 
-				Time.timeScale = 0;
+				TimeHelper.SetTimeScale(0);
 			}
 		}
 		else if(template.actionType == 4)//解锁界面功能
@@ -763,7 +763,7 @@ public class DramaControllor : MonoBehaviour
 		{
 			SceneGuideManager.Instance().OnSceneTipsHide();
 
-			Time.timeScale = 0;
+			TimeHelper.SetTimeScale(0);
 		}
 
 		BattleControlor.Instance().inDrama = true;
@@ -1208,8 +1208,8 @@ public class DramaControllor : MonoBehaviour
 		int e = tempEventId + 1;
 
 		bool guideFlag = GuideTemplate.HaveId (tempLevel, e);
-		
-		Time.timeScale = 1;
+
+		TimeHelper.SetTimeScale(1f);
 
 		spriteVedioBG.SetActive (false);
 
@@ -1322,7 +1322,7 @@ public class DramaControllor : MonoBehaviour
 
 			gc_moving = null;
 
-			Time.timeScale = 1;
+			TimeHelper.SetTimeScale(1f);
 
 			return;
 		}

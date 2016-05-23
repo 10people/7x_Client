@@ -1,5 +1,7 @@
 ﻿//#define DEBUG_BATTLE_LOADING
 
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +10,8 @@ using System.IO;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
+
+
 
 public class BattleNet : MonoBehaviour, SocketProcessor{
 	public DramaStoryReador storyReador;
@@ -454,6 +458,10 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 			bf.triggerCount = template.triggerCount;
 
 			bf.triggerFunc = (BattleFlag.TriggerFunc)template.triggerFunc;
+
+			bf.triggerFuncEffect = template.triggerFuncEffect;
+
+			bf.triggerDelay = template.triggerDelay;
 
 			bf.willRelive = (template.willRelive != 0);
 
@@ -1037,6 +1045,18 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 
 			wantAddSoundID(BattleEffectControllor.Instance().getSoundIdByModelId(model));
 		}
+
+		List<int> triggerFuncEffects = new List<int> ();
+
+		foreach(BattleFlagTemplate bfTemp in BattleFlagTemplate.templates)
+		{
+			if(bfTemp.triggerFuncEffect != 0)
+			{
+				triggerFuncEffects.Add(bfTemp.triggerFuncEffect);
+			}
+		}
+
+		wantAddEffID (triggerFuncEffects);
 
 		effCount = 0;
 

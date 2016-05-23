@@ -65,7 +65,7 @@ public class PlayerModelController : MonoBehaviour
     private float m_fPDistance = 0f;
     static Vector3 m_PlayerPostion = new Vector3(0, 0.4f, 0);
     private int BigHouseId = 0;
-
+    private GameObject _ObjSkeleton = null;
     private Vector3 vec_TargetPos = new Vector3();
     private enum MoveType
     {
@@ -107,17 +107,31 @@ public class PlayerModelController : MonoBehaviour
 
     public void CreatePlayerModel(Object p_object)
     {
-        //Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
-        //                        ResourceLoadCallback);
         m_ObjHero = Instantiate(p_object) as GameObject;
-
         m_ObjHero.SetActive(true);
+        m_ObjHero.AddComponent<TenementPortal>();
+        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
+                                ResourceLoad_Skeleton_Callback);
+    }
 
-        //if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
+    public void SwitchModel()
+    {
+        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
+                               ResourceLoad_Skeleton_Callback);
+    }
+    public void ResourceLoad_Skeleton_Callback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject obj = Instantiate(p_object) as GameObject;
+        obj.transform.parent = m_ObjHero.transform;
+        obj.transform.localScale = Vector3.one;
+        obj.transform.localPosition = Vector3.zero;
+        if (_ObjSkeleton)
         {
-            m_ObjHero.AddComponent<TenementPortal>();
+            Destroy(_ObjSkeleton);
         }
-        switch (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene())
+        _ObjSkeleton = obj;
+
+            switch (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene())
         {
             case 0:
                 {
@@ -125,14 +139,11 @@ public class PlayerModelController : MonoBehaviour
                     if (CityGlobalData.m_CreateRoleCurrent)
                     {
                         CityGlobalData.m_CreateRoleCurrent = false;
-                        //Vector2  vec_random = Random.insideUnitCircle * 10;
-
-                        //m_ObjHero.transform.position = new Vector3(0.0f + vec_random.x, 4.62f,-9.8f + vec_random.y);
                         m_ObjHero.transform.position = new Vector3(0.38f, 2.1f, -29.5f);
                     }
                     else
                     {
-                       if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
+                        if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
                         {
                             if (FunctionWindowsCreateManagerment.m_isJieBiao)
                             {
@@ -143,57 +154,44 @@ public class PlayerModelController : MonoBehaviour
                             else
                             {
                                 m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                            
+
                                 if (m_ObjHero.transform.position.y > 10)
                                 {
                                     m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
                                 }
                             }
-                            
                         }
                         else
                         {
                             m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
-                            ///   m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
                         }
                     }
                 }
                 break;
             case 1:
-                {//FunctionWindowsCreateManagerment.IsCurrentJunZhuID(JunZhuData.Instance().m_junzhuInfo.id) && */
+                {
                     if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
                     {
                         m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                        //if (m_ObjHero.transform.position.y > 177.0f || m_ObjHero.transform.position.y < 150.0f)
-                        //{
+                    }
+                    else
+                    {
                         //    m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
-                        //}
-                    }
-                    else
-                    {
-                    //    m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
                     }
                 }
                 break;
             case 2:
                 {
-                    //if (FunctionWindowsCreateManagerment.IsCurrentJunZhuID(JunZhuData.Instance().m_junzhuInfo.id) && !FunctionWindowsCreateManagerment.IsChangeScene())
-                    //{
-                    //    m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                    //}
-                    //else
-                    //{
-                    //    m_ObjHero.transform.position = new Vector3(6.0f, 2.40f, -30.0f);
-                    //}
+   
                 }
                 break;
             default:
                 break;
         }
         m_isSetPos = true;
-      
 
-        m_ObjHero.transform.localScale = Vector3.one*1.5f;
+
+        m_ObjHero.transform.localScale = Vector3.one * 1.5f;
 
         m_character = m_ObjHero.GetComponent<CharacterController>();
 
@@ -202,25 +200,10 @@ public class PlayerModelController : MonoBehaviour
         m_agent.enabled = false;
 
         m_transform = m_ObjHero.transform;
-
-        // Debug.Log("m_transform.position.ym_transform.position.y" + m_transform.position.y);
-
-        m_animator = m_ObjHero.GetComponent<Animator>();
-
-
-
+        m_animator = obj.GetComponent<Animator>();
         m_currenPosition = m_transform.position;
-
         m_mainCamera.GetComponent<CameraRun>().target = m_ObjHero.transform;
-
         m_mainCamera.GetComponent<CameraRun>().setCameraPos();
-
-        ////Execute void delegate.
-        //if (m_VoidDelegate != null)
-        //{
-        //    m_VoidDelegate();
-        //    m_VoidDelegate = null;
-        //}
         if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
         {
             SceneGuideManager.Instance().ShowSceneGuide(1010001);
@@ -229,127 +212,6 @@ public class PlayerModelController : MonoBehaviour
         {
             SceneGuideManager.Instance().ShowSceneGuide(1020001);
         }
-
-
-        SendPlayerData();
-    }
-
-
-    public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        m_ObjHero = Instantiate(p_object) as GameObject;
-
-        m_ObjHero.SetActive(true);
-
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
-        {
-            m_ObjHero.AddComponent<TenementPortal>();
-        }
-        switch (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene())
-        {
-            case 0:
-                {
-                    if (CityGlobalData.m_CreateRoleCurrent)
-                    {
-                        CityGlobalData.m_CreateRoleCurrent = false;
-                        m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
-                    }
-                    else
-                    {
-                        if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
-                        {
-                            m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-
-                            if (FunctionWindowsCreateManagerment.m_isJieBiao)
-                            {
-                                FunctionWindowsCreateManagerment.m_isJieBiao = false;
-                                m_ObjHero.transform.position = new Vector3(14.99f, 9.36f,24.0f);
-                                Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                            }   
-                            else if (m_ObjHero.transform.position.y < 150 || m_ObjHero.transform.position.y > 177)
-                            {
-                                m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
-                            }
-                        }
-                        else
-                        {
-                            Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                            m_ObjHero.transform.position = new Vector3(-26.0f, 169.4f, -177.0f);
-                        }
-                    }
-                }
-                break;
-            case 1:
-                {//FunctionWindowsCreateManagerment.IsCurrentJunZhuID(JunZhuData.Instance().m_junzhuInfo.id) && */
-                    if (!FunctionWindowsCreateManagerment.IsChangeScene() && FunctionWindowsCreateManagerment.GetCurrentPosition() != Vector3.zero)
-                    {
-                        m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                        if (m_ObjHero.transform.position.y > 177.0f || m_ObjHero.transform.position.y < 150.0f)
-                        {
-                            m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
-                        }
-                    }
-                    else
-                    {
-                        m_ObjHero.transform.position = new Vector3(-23.0f, 169.4f, -105.0f);
-                    }
-                }
-                break;
-            case 2:
-                {
-                    //if (FunctionWindowsCreateManagerment.IsCurrentJunZhuID(JunZhuData.Instance().m_junzhuInfo.id) && !FunctionWindowsCreateManagerment.IsChangeScene())
-                    //{
-                    //    m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-                    //}
-                    //else
-                    //{
-                    //    m_ObjHero.transform.position = new Vector3(6.0f, 2.40f, -30.0f);
-                    //}
-                }
-                break;
-            default:
-                break;
-        }
-        m_isSetPos = true;
-        m_ObjHero.transform.localRotation = Quaternion.Euler(Vector3.zero);
-
-        m_ObjHero.transform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
-
-        m_character = m_ObjHero.GetComponent<CharacterController>();
-
-        m_agent = m_ObjHero.GetComponent<NavMeshAgent>();
-
-        m_agent.enabled = false;
-
-        m_transform = m_ObjHero.transform;
-
-        // Debug.Log("m_transform.position.ym_transform.position.y" + m_transform.position.y);
-
-        m_animator = m_ObjHero.GetComponent<Animator>();
-
-
-
-        m_currenPosition = m_transform.position;
-
-        m_mainCamera.GetComponent<CameraRun>().target = m_ObjHero.transform;
-
-        m_mainCamera.GetComponent<CameraRun>().setCameraPos();
-
-        ////Execute void delegate.
-        //if (m_VoidDelegate != null)
-        //{
-        //    m_VoidDelegate();
-        //    m_VoidDelegate = null;
-        //}
-        if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
-        {
-            SceneGuideManager.Instance().ShowSceneGuide(1010001);
-        }
-        else
-        {
-            SceneGuideManager.Instance().ShowSceneGuide(1020001);
-        }
-
 
         SendPlayerData();
     }
@@ -487,35 +349,8 @@ public class PlayerModelController : MonoBehaviour
         CityGlobalData.m_selfNavigation = false;
 
         _isArrived = false;
-        //stay character, disable right buttom btns.
-      //  m_animator.SetTrigger("iniDle");
-        //  m_animator.Play("zhuchengdile");
-        //        if (isMoving)
-        //        {
-        //            isMoving = false;
-        //
-        //            MainCityUIRB.IsCanClickButtons = true;
-        //            MainCityUI.m_MainCityUI.m_MainCityUIRB.SetPanel(true);
-        //            UIYindao.m_UIYindao.setOpenUIEff();
-        //        }
-
         m_agent.Stop();
         m_isNavMesh = false;
-        //m_animator.SetBool("idle", true);
-        //_playerRandomAnimator = true;
-     
-        //Tenement Nav Break
-        //if (CityGlobalData.m_isAllianceTenentsScene)
-        //{
-        //    CityGlobalData.m_isNavToHome = false;
-        //    CityGlobalData.m_isNavToAllianCity = false;
-        //}
-        //if (!CityGlobalData.m_isAllianceTenentsScene)
-        //{
-        //    CityGlobalData.m_isNavToAllianCityToTenement = false;
-        //}
-
-
         m_character.enabled = true;
 
         m_agent.enabled = false;
@@ -947,8 +782,6 @@ public class PlayerModelController : MonoBehaviour
     void InitWithGlobalData()
     {
         //		Debug.Log ("PlayerModelCol");
-        NGUIDebug.ClearLogs();
-
         LimitActivityData.Instance.RequestData();//request limit activity info.
 
         MiBaoGlobleData.Instance();

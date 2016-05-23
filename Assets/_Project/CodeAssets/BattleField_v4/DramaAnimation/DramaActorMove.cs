@@ -17,7 +17,7 @@ public class DramaActorMove : DramaActor
 	{
 		base.func ();
 
-		transform.forward = targetPosition - transform.position;
+		//transform.forward = targetPosition - transform.position;
 
 		iTween.MoveTo (gameObject, iTween.Hash(
 			"name", "func",

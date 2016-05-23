@@ -74,6 +74,12 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 			
 			OnSendEnterBattle();
 		}
+		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_ChongLou)
+		{
+			OnSendChongLou();
+
+			OnSendEnterBattle();
+		}
 	}
 
 	private void OnSendPvp()
@@ -232,6 +238,25 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.ZHANDOU_INIT_YUAN_ZHU_REQ, ref t_protof, ProtoIndexes.ZhanDou_Init_Resp + "|" + ProtoIndexes.S_ZHANDOU_INIT_ERROR);
 	}
 
+	private void OnSendChongLou()
+	{
+		ChongLouBattleInit req = new ChongLouBattleInit ();
+
+		req.layer = CityGlobalData.m_tempLevel;
+
+		MemoryStream tempStream = new MemoryStream();
+		
+		QiXiongSerializer t_qx = new QiXiongSerializer();
+		
+		t_qx.Serialize(tempStream, req);
+		
+		byte[] t_protof;
+		
+		t_protof = tempStream.ToArray();
+
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.CHONG_LOU_BATTLE_INIT, ref t_protof, ProtoIndexes.ZhanDou_Init_Resp + "|" + ProtoIndexes.S_ZHANDOU_INIT_ERROR);
+	}
+
 	private void OnSendEnterBattle()
 	{
 		LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
@@ -263,18 +288,20 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 
 			t_qx.Deserialize(t_stream, resp, resp.GetType());
 
+//			resp.selfTroop.nodes[0].modleId = 4;
+
 			CityGlobalData.t_resp = resp;
 
 			CityGlobalData.m_isBattleField_V4_2D = true;
 
-			if(!UIShouji.m_isPlayShouji)
-			{
-				if(UIShouji.m_UIShouji.m_isPlay)
-				{
-					UIShouji.m_UIShouji.close();
-					UIShouji.m_UIShouji.gameObject.SetActive(false);
-				}
-			}
+//			if(!UIShouji.m_isPlayShouji)
+//			{
+//				if(UIShouji.m_UIShouji.m_isPlay)
+//				{
+//					UIShouji.m_UIShouji.close();
+//					UIShouji.m_UIShouji.gameObject.SetActive(false);
+//				}
+//			}
 			SceneManager.EnterBattleField( CityGlobalData.t_next_battle_field_scene );
 
 			StartCoroutine(des ());

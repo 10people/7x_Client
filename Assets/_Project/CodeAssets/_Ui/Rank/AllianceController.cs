@@ -29,6 +29,15 @@ namespace Rank
                 }
                 else if (CurrentPageIndex == 1)
                 {
+                    //Clear all
+                    while (m_Grid.transform.childCount != 0)
+                    {
+                        var child = m_Grid.transform.GetChild(0);
+                        child.parent = null;
+                        Destroy(child.gameObject);
+                    }
+                    m_DetailControllerList.Clear();
+
                     //Set no data info.
                     if (CurrentNationIndex == 0)
                     {
@@ -96,13 +105,14 @@ namespace Rank
                 var detailControllerList = m_DetailControllerList.Select(item => item as AllianceDetailController).Where(item => item.m_AllianceInfo.mengName == m_OneModeNameStr).ToList();
                 if (detailControllerList.Count == 1)
                 {
-                    UISprite widget = detailControllerList[0].GetComponent<UISprite>();
-                    widget.color = new Color(244, 154, 0);
+                    UISprite sprite = detailControllerList[0].GetComponent<UISprite>();
+                    sprite.spriteName = "jianbianbgliang";
+                    detailControllerList.First().MyAllianceLogoSprite.gameObject.SetActive(true);
 
-                    float widgetValue = m_ScrollView.GetWidgetValueRelativeToScrollView(widget).y;
+                    float widgetValue = m_ScrollView.GetWidgetValueRelativeToScrollView(sprite).y;
                     if (widgetValue < 0 || widgetValue > 1)
                     {
-                        m_ScrollView.SetWidgetValueRelativeToScrollView(widget, 0);
+                        m_ScrollView.SetWidgetValueRelativeToScrollView(sprite, 0);
 
                         //clamp scroll bar value.
                         //donot update scroll bar cause SetWidgetValueRelativeToScrollView has updated.

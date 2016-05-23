@@ -264,7 +264,14 @@ public class MapData : MonoBehaviour, SocketProcessor {
 	}
 	public void BackToCity()
 	{
-
+		if (FreshGuide.Instance().IsActive (100145) && TaskData.Instance.m_TaskInfoDic [100145].progress >= 0) {
+			Debug.Log("领完奖励回程");
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100145];
+			
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			ShowYinDao = false;
+			return;
+		}
 	}
 	public void ShowPve_PT_GuidSection2() // 第二章节引导
 	{
@@ -317,15 +324,15 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			ShowYinDao = false;
 			return;
 		}
-
-		if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
-		{
-			//			Debug.Log("切换秘技)
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
-			ShowYinDao = false;
-			return;
-		}
+//
+//		if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
+//		{
+//			//			Debug.Log("切换秘技)
+//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
+//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+//			ShowYinDao = false;
+//			return;
+//		}
 
 		if(FreshGuide.Instance().IsActive(100280)&& TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
 		{
@@ -401,6 +408,65 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
 			ShowYinDao = false;
 			return;
+		}
+		if(!UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			if(FreshGuide.Instance().IsActive(200005)&& TaskData.Instance.m_TaskInfoDic[200005].progress >= 0)
+			{
+                Debug.Log("返回城中激活新秘宝");
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200005];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+				ShowYinDao = false;
+				return;
+			}
+			if(FreshGuide.Instance().IsActive(200010)&& TaskData.Instance.m_TaskInfoDic[200010].progress >= 0)
+			{
+				Debug.Log("返回城中激活绿色秘术");
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200010];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+				ShowYinDao = false;
+				return;
+			}
+			if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
+			{
+				Debug.Log("返回城中去试练");
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+				ShowYinDao = false;
+				return;
+			}
+			if(FreshGuide.Instance().IsActive(100280)&& TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
+			{
+				Debug.Log("返回城中有新功能开启");
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100280];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+				ShowYinDao = false;
+				return;
+			}
+			if(FreshGuide.Instance().IsActive(100405)&& TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
+			{
+				Debug.Log("返回城中激活蓝色秘宝");
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200030];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+				ShowYinDao = false;
+				return;
+			}
+			if(FreshGuide.Instance().IsActive(200030)&& TaskData.Instance.m_TaskInfoDic[200030].progress >= 0)
+			{
+				Debug.Log("返回城中有宝石镶嵌");
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200030];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+				ShowYinDao = false;
+				return;
+			}
+			if(FreshGuide.Instance().IsActive(200040)&& TaskData.Instance.m_TaskInfoDic[200040].progress >= 0)
+			{
+				Debug.Log("返回城中有装备坊抽奖");
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200040];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+				ShowYinDao = false;
+				return;
+			}
 		}
 	}
 	public bool IsChoosedMiBao;

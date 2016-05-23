@@ -81,7 +81,7 @@ public class RTActionTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.CeOnHit = t_reader.Value == "0" ? "" : t_reader.Value;
                 t_reader.MoveToNextAttribute();
-                t_template.CsOnHit = int.Parse(t_reader.Value);
+                t_template.CsOnHit = t_reader.Value == "" ? 0 : int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
                 t_template.Prob = int.Parse(t_reader.Value);
             }

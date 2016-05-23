@@ -41,14 +41,14 @@ public class EquipAdvanceLayerManagerment : MonoBehaviour {
       //  UIYindao.m_UIYindao.CloseUI();
         m_Handler.m_click_handler += DestroyInfo;
         _listReward.Clear();
-        ShowInfo(FunctionWindowsCreateManagerment.m_AdvanceInfo);
+        //ShowInfo(FunctionWindowsCreateManagerment.m_AdvanceInfo);
     }
 
     void DestroyInfo(GameObject obj)
     {
         Destroy(gameObject);
     }
-    void ShowInfo(FunctionWindowsCreateManagerment.EquipAdvanceInfo info)
+    public void ShowInfo(FunctionWindowsCreateManagerment.EquipAdvanceInfo info)
     {
         _listReward.Add(info._equipid);
         _listReward.Add(info._nextid);
@@ -56,14 +56,14 @@ public class EquipAdvanceLayerManagerment : MonoBehaviour {
         {
             m_LabParent1.SetActive(true);
             m_LabParent2.SetActive(false);
-            m_LabGong.text = MyColorData.getColorString(9,info._gong.ToString() + " → " + (info._gong + info._gongadd).ToString() +" (" ) + MyColorData.getColorString(4,info._gongadd.ToString() + "↑") + MyColorData.getColorString(9, ")");
+            m_LabGong.text = MyColorData.getColorString(9,info._gong.ToString() + " → " + (info._gong + info._gongadd).ToString() +" (" ) + MyColorData.getColorString(4,"+" + info._gongadd.ToString()) + MyColorData.getColorString(9, "↑)");
         }
-        else
+        else//↑
         {
             m_LabParent1.SetActive(false);
             m_LabParent2.SetActive(true);
-            m_LabFang.text = MyColorData.getColorString(9, info._fang.ToString() + " → " + (info._fang + info._fanggadd).ToString() + " (") + MyColorData.getColorString(4, info._fanggadd+ "↑") + MyColorData.getColorString(9, ")");
-            m_LabMing.text = MyColorData.getColorString(9, info._ming.ToString() + " → " + (info._ming + info._minggadd).ToString() + " (") + MyColorData.getColorString(4, info._minggadd + "↑") + MyColorData.getColorString(9, ")");
+            m_LabFang.text = MyColorData.getColorString(9, info._fang.ToString() + " → " + (info._fang + info._fanggadd).ToString() + " (") + MyColorData.getColorString(4, "+" + info._fanggadd) + MyColorData.getColorString(9, "↑)");
+            m_LabMing.text = MyColorData.getColorString(9, info._ming.ToString() + " → " + (info._ming + info._minggadd).ToString() + " (") + MyColorData.getColorString(4, "+" + info._minggadd ) + MyColorData.getColorString(9, "↑)");
         }
         for (int i = 0; i < _listReward.Count; i++)
         {

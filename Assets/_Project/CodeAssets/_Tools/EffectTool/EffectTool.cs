@@ -50,11 +50,11 @@ public class EffectTool : Singleton<EffectTool> {
 		GameObjectHelper.LogGameObjectInfo( p_object );
 		#endif
 
-		{
-			FindCharHL();
-
-			FindCharOC();
-		}
+//		{
+//			FindCharHL();
+//
+//			FindCharOC();
+//		}
 
 		{
 			ShaderHelper.Replace<SkinnedMeshRenderer>( p_object, m_sl_char_oc, m_sl_char_hl );
@@ -68,12 +68,20 @@ public class EffectTool : Singleton<EffectTool> {
 	private static Shader m_sl_char_hl			= null;
 
 	private static void FindCharOC(){
+		if( true ){
+			return;
+		}
+
 		if( m_sl_char_oc == null ){
 			m_sl_char_oc = Shader.Find( "Custom/Characters/Occlusion Colored" );
 		}
 	}
 
 	private static void FindCharHL(){
+		if( true ){
+			return;
+		}
+
 		if( m_sl_char_hl == null ){
 			m_sl_char_hl = Shader.Find( "Custom/Characters/Main Texture High Light" );
 		}
@@ -86,6 +94,10 @@ public class EffectTool : Singleton<EffectTool> {
 	#region Occlusion BattleField
 
 	public static void DisableBattleOcclusion( GameObject p_object ){
+		if( true ){
+			return;
+		}
+
 		#if DEBUG_OCCLUSION
 		Debug.Log( "DisableOcclusion( " + p_object + " )" );
 		#endif
@@ -111,6 +123,10 @@ public class EffectTool : Singleton<EffectTool> {
 
 	/// Only Should be used in BattleField Occlusion.
 	private static void DisableBattleOcclusionRenderers<T>( GameObject p_object, Shader p_shader ) where T : Renderer{
+		if( true ){
+			return;
+		}
+
 		T[] t_renderers = p_object.GetComponentsInChildren<T>();
 		
 		for ( int i = 0; i < t_renderers.Length; i++ ){
@@ -152,6 +168,10 @@ public class EffectTool : Singleton<EffectTool> {
 
 	/// Only Should be used in BattleField Occlusion.
 	private static void StoreMaterialInfo( GameObject p_object, Material p_mat ){
+		if( true ){
+			return;
+		}
+
 		StoreGameObjectData t_data = p_object.GetComponent<StoreGameObjectData>();
 		
 		if ( t_data == null ){
@@ -162,6 +182,10 @@ public class EffectTool : Singleton<EffectTool> {
 	}
 	
 	public static void RestoreBattleOcclusion( GameObject p_object ){
+		if( true ){
+			return;
+		}
+
 		#if DEBUG_OCCLUSION
 		Debug.Log( "RestoreOcclusion( " + p_object + " )" );
 		#endif
@@ -187,6 +211,10 @@ public class EffectTool : Singleton<EffectTool> {
 
 	/// Only Should be used in BattleField Occlusion.
 	private static void RestoreBattleOcclusionRenderer<T>( GameObject p_object, StoreGameObjectData p_data ) where T : Renderer{
+		if( true ){
+			return;
+		}
+
 		T[] t_renderers = p_object.GetComponentsInChildren<T>();
 		
 		for (int i = 0; i < t_renderers.Length; i++)
@@ -224,6 +252,10 @@ public class EffectTool : Singleton<EffectTool> {
 	private static Shader m_sl_effect_oc 		= null;
 	
 	private static void FindFxOC(){
+		if( true ){
+			return;
+		}
+
 		if( m_sl_effect_oc == null ){
 			m_sl_effect_oc = Shader.Find( "Custom/Effects/Occlusion Colored" );
 		}
@@ -348,10 +380,60 @@ public class EffectTool : Singleton<EffectTool> {
 		m_boss_mat = null;
 	}
 
+	public static void ClearBossEffect( GameObject p_gb ){
+		if ( p_gb == null ){
+			Debug.Log("Error, p_gb = null.");
+
+			return;
+		}
+
+		{
+			Shader t_origin = Shader.Find( "Custom/Characters/Main Texture Hight Light Rim" );
+
+			Shader t_new = Shader.Find( "Custom/Characters/Main Texture High Light" );
+
+			{
+				Material[] t_mats = ComponentHelper.GetMaterialsWithShader<SkinnedMeshRenderer>( p_gb, t_origin );
+
+				for( int i = 0; i < t_mats.Length; i++ ){
+					Material t_mat = t_mats[ i ];
+
+					if( t_mat != null ){
+						t_mat.SetFloat( "_RimWidth", 8.0f );
+					}
+				}
+			}
+
+			{
+				Material[] t_mats = ComponentHelper.GetMaterialsWithShader<MeshRenderer>( p_gb, t_origin );
+
+				for( int i = 0; i < t_mats.Length; i++ ){
+					Material t_mat = t_mats[ i ];
+
+					if( t_mat != null ){
+						t_mat.SetFloat( "_RimWidth", 8.0f );
+					}
+				}
+			}
+
+//			{
+//				Material t_mat = ShaderHelper.Replace<SkinnedMeshRenderer>( p_gb, t_origin, t_new );
+//			}
+//
+//			{
+//				Material t_mat = ShaderHelper.Replace<MeshRenderer>( p_gb, t_origin, t_new );
+//			}
+		}
+	}
+
 	public static void SetBossEffect( GameObject p_gb, string p_color_str = "", float p_coef = 1.39f ){
 		if ( p_gb == null ){
 			Debug.Log("Error, p_gb = null.");
 			
+			return;
+		}
+
+		if (true) {
 			return;
 		}
 		
@@ -378,7 +460,7 @@ public class EffectTool : Singleton<EffectTool> {
 		{
 			Shader t_origin = Shader.Find( "Custom/Characters/Main Texture High Light" );
 
-			Shader t_new = Shader.Find( "Custom/Characters/Stroke High Light" );
+			Shader t_new = Shader.Find( "Custom/Characters/Main Texture Hight Light Rim" );
 
 			{
 				Material t_mat = ShaderHelper.Replace<SkinnedMeshRenderer>( p_gb, t_origin, t_new );
@@ -394,22 +476,38 @@ public class EffectTool : Singleton<EffectTool> {
 				MathHelper.ParseHexString( p_color_str, out p_color, Color.red );
 
 				{
-					Material t_mat = ComponentHelper.GetMaterialWithShader<SkinnedMeshRenderer>( p_gb, t_new );
-					
-					if( t_mat != null ){
-						t_mat.SetFloat( "_Coef", 1.39f );
-					
-						t_mat.SetColor( "_SKColor", p_color );
+					Material[] t_mats = ComponentHelper.GetMaterialsWithShader<SkinnedMeshRenderer>( p_gb, t_new );
+
+					for( int i = 0; i < t_mats.Length; i++ ){
+						Material t_mat = t_mats[ i ];
+
+						if( t_mat != null ){
+//						{
+//							t_mat.SetFloat( "_Coef", p_coef );
+//
+//							t_mat.SetColor( "_SKColor", p_color );
+//						}
+
+							SetBossMatParam( t_mat, p_color, p_coef );
+						}
 					}
 				}
 
 				{
-					Material t_mat = ComponentHelper.GetMaterialWithShader<MeshRenderer>( p_gb, t_new );
-					
-					if( t_mat != null ){
-						t_mat.SetFloat( "_Coef", 1.39f );
+					Material[] t_mats = ComponentHelper.GetMaterialsWithShader<MeshRenderer>( p_gb, t_new );
 
-						t_mat.SetColor( "_SKColor", p_color );
+					for( int i = 0; i < t_mats.Length; i++ ){
+						Material t_mat = t_mats[ i ];
+
+						if( t_mat != null ){
+//						{
+//							t_mat.SetFloat( "_Coef", p_coef );
+//
+//							t_mat.SetColor( "_SKColor", p_color );
+//						}
+
+							SetBossMatParam( t_mat, p_color, p_coef );
+						}
 					}
 				}
 			}
@@ -418,6 +516,19 @@ public class EffectTool : Singleton<EffectTool> {
 		#if DEBUG_BOSS
 		Debug.Log( "SetBossEffect.Done." );
 		#endif
+	}
+
+	private static void SetBossMatParam( Material p_mat, Color p_color, float p_coef ){
+		if( p_mat == null ){
+			return;
+		}
+
+		p_mat.SetColor( "_RimColor", p_color );
+
+		p_mat.SetFloat( "_RimWidth", 2.0f );
+
+		p_mat.SetFloat( "_RimWeight", 1.0f );
+//		p_mat.SetColor( "_RimWeight", p_color );
 	}
 	
 	private static void BossMatLoadCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object ){
@@ -437,7 +548,7 @@ public class EffectTool : Singleton<EffectTool> {
 			}
 		}
 		
-		m_boss_target_list.Clear ();
+		m_boss_target_list.Clear();
 	}
 	
 	private static void SetDetailBossEffect<T>( GameObject p_gb ) where T : Renderer{
@@ -505,17 +616,38 @@ public class EffectTool : Singleton<EffectTool> {
 	#region Hitted
 	
 	public void SetHittedEffect( GameObject p_gb ){
+		if( true ){
+			return;
+		}
+
 		#if DEBUG_HITTED
 		Debug.Log( "SetHittedEffect( " + p_gb + " )" );
 		#endif
 
 		HittedEffect t_hitted = p_gb.GetComponent<HittedEffect>();
-		
+
+		Shader t_origin = Shader.Find( "Custom/Characters/Main Texture High Light" );
+
+		Shader t_new = Shader.Find( "Custom/Characters/Main Texture Hight Light Rim" );
+
 		if ( t_hitted == null ){
 			t_hitted = p_gb.AddComponent<HittedEffect>();
+
+			// enemies but boss
+			{
+				Material t_mat_skin = ShaderHelper.Replace<SkinnedMeshRenderer>( p_gb, t_origin, t_new );
+
+				Material t_mat = ShaderHelper.Replace<MeshRenderer>( p_gb, t_origin, t_new );
+
+//				if( t_mat_skin == null && t_mat == null ){
+//					t_hitted.SaveBossEffect( t_new );
+//				}
+			}
 		}
-		
-		t_hitted.Init();
+		else{
+			t_hitted.InitAnim();
+		}
+
 
 		#if DEBUG_HITTED
 		Debug.Log( "SetHittedEffect.Done." );

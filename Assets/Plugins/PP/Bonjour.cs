@@ -75,6 +75,136 @@ public class Bonjour{
 
 
 
+	#region Init Payment
+	
+	#if MYAPP_ANDROID_PLATFORM
+
+	public static void InitPayment(){
+		Debug.Log( "InitPayment()" );
+
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "InitPayment" );
+		} 
+	}
+
+	public static void SetOpenIdAndOpenKey( string p_open_id, string p_open_key ){
+		Debug.Log( "SetOpenIdAndOpenKey()" );
+
+		Debug.Log( "p_open_id: " + p_open_id );
+
+		Debug.Log( "p_open_key: " + p_open_key );
+
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "SetOpenIdAndOpenKey", p_open_id, p_open_key );
+		} 
+	}
+
+	public static void SetSessionInfo( string p_session_id, string p_session_type ){
+		Debug.Log( "SetSessionInfo()" );
+
+		Debug.Log( "p_session_id: " + p_session_id );
+
+		Debug.Log( "p_session_type: " + p_session_type );
+
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "SetSessionIdAndType", p_session_id, p_session_type );
+		} 
+	}
+
+	public static void SetPfAndPfKey( string p_pf, string p_pf_key ){
+		Debug.Log( "SetPfAndPfKey()" );
+
+		Debug.Log( "pf: " + p_pf );
+
+		Debug.Log( "pfKey: " + p_pf_key );
+
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "SetPfAndPfKey", p_pf, p_pf_key );
+		} 
+	}
+	
+	#endif
+
+	#endregion
+
+
+
+	#region Payment
+
+
+
+//	public static void BuyMonthCard(){
+//		Debug.Log( "BuyMonthCard()" );
+//
+//		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+//			if( t_cls == null ){
+//				Debug.LogError( "Error, AndroidJavaClass is null." );
+//
+//				return;
+//			}
+//
+//			t_cls.CallStatic( "BuyMonthCard" );
+//		} 
+//	}
+//
+//	public static void BuyEverCard(){
+//		Debug.Log( "BuyEverCard()" );
+//
+//		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+//			if( t_cls == null ){
+//				Debug.LogError( "Error, AndroidJavaClass is null." );
+//
+//				return;
+//			}
+//
+//			t_cls.CallStatic( "BuyEverCard" );
+//		} 
+//	}
+
+	public static void BuyYuanBao( int p_count ){
+		Debug.Log( "BuyYuanBao( " + p_count + " )" );
+
+		#if UNITY_ANDROID
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "BuyYuanBao", p_count );
+		} 
+		#endif
+	}
+
+	#endregion
+
+
+
 	#region XG
 
 	#if UNITY_IOS && XG_PUSH
@@ -160,6 +290,39 @@ public class Bonjour{
 			}
 		}
 		return returnDic;
+	}
+
+	#endregion
+
+
+
+	#region Audio
+
+	/** Params:
+	 *  1.p_src: "/sdcard/ylzs.wav"
+	 *  2.p_des: "/sdcard/ylzs.mp3"
+	 *  3.p_rate: "8000"
+	 */
+	public static void ConvertWavToMp3( string p_src, string p_des, string p_rate = "8000" ){
+		#if UNITY_ANDROID
+		Debug.Log( "------ ConvertWavToMp3 ------ " );
+
+		Debug.Log( "src: " + p_src );
+
+		Debug.Log( "dst: " + p_des );
+
+		Debug.Log( "rate: " + p_rate );
+
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "ConvertWavToMp3", p_src, p_des, p_rate );
+		} 
+		#endif
 	}
 
 	#endregion
@@ -891,9 +1054,11 @@ public class Bonjour{
 
 
 
-	#if MYAPP_ANDROID_PLATFORM
+
 	
 	#region My App
+
+	#if MYAPP_ANDROID_PLATFORM
 
 	public static void showSDKCenter(){
 		Debug.Log ( "MyApp.ShowSDKCenter(), do Nothing." );
@@ -903,16 +1068,51 @@ public class Bonjour{
 //		}
 	}
 
+	public static void OnQQLogin(){
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "OnQQLogin" );
+		} 
+	}
+
+	public static void OnWXLogin(){
+		using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+			if( t_cls == null ){
+				Debug.LogError( "Error, AndroidJavaClass is null." );
+
+				return;
+			}
+
+			t_cls.CallStatic( "OnWXLogin" );
+		} 
+	}
+
 	public static void logout(){
 		Debug.Log ( "logout()" );
 		
 		if ( Application.platform == RuntimePlatform.Android ){
-			WGPlatform.Instance.WGLogout();
+			using ( AndroidJavaClass t_cls = new AndroidJavaClass( "com.tencent.tmgp.qixiongwushuang.UnityPlayerActivity" ) ) { 
+				if( t_cls == null ){
+					Debug.LogError( "Error, AndroidJavaClass is null." );
+
+					return;
+				}
+
+				t_cls.CallStatic( "OnLogOut" );
+			} 
+
+			//WGPlatform.Instance.WGLogout();
+
 		}
 	}
+
+	#endif
 	
 	#endregion
-	
-	#endif
 
 }

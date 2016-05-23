@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<BubbleText id="1" text="我" />
+<BubbleText id="2" text="住" />
+<BubbleText id="3" text="隔" />
+<BubbleText id="4" text="壁" />
+<BubbleText id="5" text="我" />
+<BubbleText id="6" text="姓" />
+<BubbleText id="7" text="王" />
+</dataset>

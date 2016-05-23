@@ -4,7 +4,10 @@ using System.Collections;
 public class PlayerShadowManagerment : MonoBehaviour
 {
     public GameObject m_Shadow;
-	void Start () 
+    public GameObject m_Skeleton = null;
+    public int m_RoleID;
+    public Animator m_Animator;
+    void Start () 
     {
 		m_Shadow.SetActive( Quality_Shadow.InCity_ShowSimpleShadow() );
 	}

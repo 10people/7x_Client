@@ -1,4 +1,4 @@
-﻿//#define DEBUG_CARRIAGE
+﻿//#define UNIT_TEST
 
 using System;
 using UnityEngine;
@@ -614,14 +614,8 @@ namespace Carriage
                 temp.OnSelected();
 
                 //set target ui info.
-                if (temp.RoleID >= 50000)
-                {
-                    TargetIconSetter.SetHorse(temp.HorseLevel, true, temp.Level, temp.KingName, temp.AllianceName, temp.TotalBlood, temp.RemainingBlood, temp.NationID, temp.Vip);
-                }
-                else
-                {
-                    TargetIconSetter.SetPlayer(temp.RoleID, true, temp.Level, temp.KingName, temp.AllianceName, temp.TotalBlood, temp.RemainingBlood, temp.NationID, temp.Vip, temp.BattleValue);
-                }
+                TargetIconSetter.SetPlayer(temp.RoleID, true, temp.Level, temp.KingName, temp.AllianceName, temp.TotalBlood, temp.RemainingBlood, temp.NationID, temp.Vip, temp.BattleValue, temp.HorseLevel);
+
                 TargetIconSetter.gameObject.SetActive(true);
 
                 //Try show clamped buttons.
@@ -657,6 +651,8 @@ namespace Carriage
 
         #region Skill/Buff Executer
 
+        public RTSkillExecuter m_RTSkillExecuter = new RTSkillExecuter();
+
         public void ExecuteSkill(FightAttackResp tempInfo)
         {
             switch (tempInfo.skillId)
@@ -666,170 +662,15 @@ namespace Carriage
                 //sp attack
                 case 111:
                     {
-                        if (tempInfo.attackUid == PlayerSceneSyncManager.Instance.m_MyselfUid)
-                        {
-                            //mine skill
-                            if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.attackUid, RTSkillTemplate.GetTemplateByID(tempInfo.skillId).CsOnShot))
-                            {
-                                //turn rotation
-                                if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(tempInfo.targetUid))
-                                {
-                                    m_RootManager.m_SelfPlayerController.transform.forward = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.targetUid].transform.position - m_RootManager.m_SelfPlayerController.transform.position;
-                                    m_RootManager.m_SelfPlayerController.transform.localEulerAngles = new Vector3(0, m_RootManager.m_SelfPlayerController.transform.localEulerAngles.y, 0);
-                                }
-
-                                m_RootManager.m_SelfPlayerController.DeactiveMove();
-
-                                FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), m_RootManager.m_SelfPlayerController.gameObject, null, Vector3.zero, m_RootManager.m_SelfPlayerController.transform.forward);
-                            }
-                        }
-                        else
-                        {
-                            var temp = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
-                            if (temp != null && temp.Any())
-                            {
-                                if (!temp.First().Value.IsCarriage)
-                                {
-                                    //other player skill, carriage not included.
-                                    if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.attackUid, RTSkillTemplate.GetTemplateByID(tempInfo.skillId).CsOnShot))
-                                    {
-                                        //turn rotation.
-                                        if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(tempInfo.targetUid))
-                                        {
-                                            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.forward = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.targetUid].transform.position - m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.position;
-                                            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles = new Vector3(0, m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles.y, 0);
-
-                                            if (EffectNumController.Instance.IsCanPlayEffect())
-                                            {
-                                                EffectNumController.Instance.NotifyPlayingEffect();
-
-                                                FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
-                                            }
-
-                                        }
-                                        else if (tempInfo.targetUid == PlayerSceneSyncManager.Instance.m_MyselfUid && m_RootManager.m_SelfPlayerController != null)
-                                        {
-                                            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.forward = m_RootManager.m_SelfPlayerController.transform.position - m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.position;
-                                            m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles = new Vector3(0, m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[tempInfo.attackUid].transform.localEulerAngles.y, 0);
-
-                                            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
-
-                                        }
-
-                                        temp.First().Value.DeactiveMove();
-                                    }
-                                }
-                                else
-                                {
-                                    //carriage skill.
-                                }
-                            }
-                        }
-
-                        if (tempInfo.targetUid == PlayerSceneSyncManager.Instance.m_MyselfUid)
-                        {
-                            //mine been attack
-                            if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.targetUid, RTActionTemplate.GetTemplateByID(tempInfo.skillId).CeOnHit))
-                            {
-                                FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(tempInfo.skillId).CsOnHit), m_RootManager.m_SelfPlayerController.gameObject, null, Vector3.zero, m_RootManager.m_SelfPlayerController.transform.forward);
-
-                                EffectTool.Instance.SetHittedEffect(m_RootManager.m_SelfPlayerController.gameObject);
-                            }
-
-                            m_RootManager.m_SelfPlayerCultureController.OnDamage(tempInfo.damage, tempInfo.remainLife, tempInfo.skillId == 111);
-                            SelfIconSetter.UpdateBar(tempInfo.remainLife);
-                        }
-                        else
-                        {
-                            var temp = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetUid).ToList();
-                            if (temp.Any())
-                            {
-                                if (!temp.First().Value.IsCarriage)
-                                {
-                                    //other player been attack, carriage not included.
-                                    if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.targetUid, RTActionTemplate.GetTemplateByID(tempInfo.skillId).CeOnHit))
-                                    {
-
-                                        if (EffectNumController.Instance.IsCanPlayEffect())
-                                        {
-                                            EffectNumController.Instance.NotifyPlayingEffect();
-
-                                            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(tempInfo.skillId).CsOnHit), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
-                                        }
-
-                                        EffectTool.Instance.SetHittedEffect(temp.First().Value.gameObject);
-                                    }
-                                }
-                                else
-                                {
-                                    //carriage been attack, use this to play sound.
-                                    FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(67), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
-
-                                    //carriage been attack effect.
-                                    EffectTool.Instance.SetHittedEffect(temp.First().Value.gameObject);
-                                }
-
-                                var temp2 = temp.First().Value.GetComponent<CarriageBaseCultureController>();
-                                if (temp2 != null)
-                                {
-                                    temp2.OnDamage(tempInfo.damage, tempInfo.remainLife, tempInfo.skillId == 111);
-                                    if (m_TargetId == tempInfo.targetUid)
-                                    {
-                                        TargetIconSetter.UpdateBar(tempInfo.remainLife);
-                                    }
-
-                                    //Play map effect.
-                                    if (temp.First().Value.IsCarriage)
-                                    {
-                                        if ((!string.IsNullOrEmpty(temp2.AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (temp2.AllianceName == AllianceData.Instance.g_UnionInfo.name)) || (temp2.KingName == JunZhuData.Instance().m_junzhuInfo.name))
-                                        {
-                                            m_MapController.ShowBeenAttackEffect(tempInfo.targetUid);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        m_RTSkillExecuter.ExecuteAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.skillId);
+                        m_RTSkillExecuter.ExecuteBeenAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.damage, tempInfo.remainLife, m_TargetId, tempInfo.skillId);
 
                         break;
                     }
                 //Recover skill
                 case 121:
                     {
-                        if (tempInfo.attackUid == PlayerSceneSyncManager.Instance.m_MyselfUid)
-                        {
-                            //mine skill
-                            if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.attackUid, RTSkillTemplate.GetTemplateByID(tempInfo.skillId).CsOnShot))
-                            {
-                                m_RootManager.m_SelfPlayerController.DeactiveMove();
-
-                                FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), m_RootManager.m_SelfPlayerController.gameObject, null, Vector3.zero, m_RootManager.m_SelfPlayerController.transform.forward);
-                            }
-
-                            //Update blood num.
-                            SetRemainingBloodNum(m_RemainBloodNum - 1);
-                        }
-                        else
-                        {
-                            var temp = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
-                            if (temp != null && temp.Count() > 0)
-                            {
-                                if (!temp.First().Value.IsCarriage)
-                                {
-                                    //other player skill, carriage not included.
-                                    if (m_RootManager.TryPlayAnimationInAnimator(tempInfo.attackUid, RTSkillTemplate.GetTemplateByID(tempInfo.skillId).CsOnShot))
-                                    {
-                                        temp.First().Value.DeactiveMove();
-
-                                        if (EffectNumController.Instance.IsCanPlayEffect())
-                                        {
-                                            EffectNumController.Instance.NotifyPlayingEffect();
-
-                                            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(tempInfo.skillId).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        m_RTSkillExecuter.ExecuteRecover(tempInfo.attackUid, tempInfo.skillId);
 
                         break;
                     }
@@ -891,7 +732,7 @@ namespace Carriage
             }
         }
 
-        public void ExecuteRecover(SafeAreaBloodReturn tempInfo)
+        public void ExecuteSafeAreaRecover(SafeAreaBloodReturn tempInfo)
         {
             //mine
             if (tempInfo.uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
@@ -929,6 +770,31 @@ namespace Carriage
         #endregion
 
         #region Dead and Rebrith
+
+        public void ExecuteDead(int p_uID)
+        {
+            if (p_uID == PlayerSceneSyncManager.Instance.m_MyselfUid)
+            {
+                Destroy(m_RootManager.m_SelfPlayerController.gameObject);
+
+                m_RootManager.m_SelfPlayerCultureController = null;
+                m_RootManager.m_SelfPlayerController = null;
+                DeactiveTarget();
+
+                //Show dead dimmer.
+                ShowDeadWindow(m_RootManager.m_CarriageItemSyncManager.m_StoredPlayerDeadNotify.killerUid, m_RootManager.m_CarriageItemSyncManager.m_StoredPlayerDeadNotify.remainAllLifeTimes, m_RootManager.m_CarriageItemSyncManager.m_StoredPlayerDeadNotify.autoReviveRemainTime, m_RootManager.m_CarriageItemSyncManager.m_StoredPlayerDeadNotify.onSiteReviveCost);
+            }
+            else
+            {
+                //Remove from mesh controller.
+                if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(p_uID))
+                {
+                    ModelAutoActivator.UnregisterAutoActivator(m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[p_uID].gameObject);
+                }
+
+                m_RootManager.m_CarriageItemSyncManager.DestroyPlayer(p_uID);
+            }
+        }
 
         public GameObject DeadWindow;
         public UILabel FailInfoLabel;
@@ -1054,6 +920,11 @@ namespace Carriage
 
         public GameObject m_AddBloodTimesBTN;
         public GameObject m_RecoverBTN;
+
+        public void UpdateWithUse1BloodNum()
+        {
+            SetRemainingBloodNum(m_RemainBloodNum - 1);
+        }
 
         public void SetRemainingBloodNum(int remainingNum)
         {
@@ -1892,6 +1763,15 @@ namespace Carriage
 
             m_tpDuration = float.Parse(YunBiaoTemplate.GetValueByKey("TP_duration"));
 
+            //Set variables.
+            m_RTSkillExecuter.m_AnimationHierarchyPlayer = m_RootManager.m_AnimationHierarchyPlayer;
+            m_RTSkillExecuter.m_PlayerManager = m_RootManager.m_CarriageItemSyncManager;
+            m_RTSkillExecuter.m_LogicMain = m_RootManager.m_CarriageMain.gameObject;
+            m_RTSkillExecuter.m_SelfIconSetter = SelfIconSetter;
+            m_RTSkillExecuter.m_TargetIconSetter = TargetIconSetter;
+            m_RTSkillExecuter.m_SelfPlayerController = m_RootManager.m_SelfPlayerController;
+            m_RTSkillExecuter.m_SelfPlayerCultureController = m_RootManager.m_SelfPlayerCultureController;
+
             //Bind delegate.
             m_BannerEffectController.m_ExecuteAfterClick = ExecuteAfterEffectClick;
             m_BannerEffectController.m_ExecuteAfterEnd = ExecuteAfterEffectEnd;
@@ -1902,7 +1782,7 @@ namespace Carriage
             m_MapController.m_ExecuteAfterCloseMap = ExecuteAfterCloseMap;
         }
 
-#if DEBUG_CARRIAGE
+#if UNIT_TEST
 
         void OnGUI()
         {

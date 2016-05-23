@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<VipFuncOpen key="1" desc="元宝洗练功能" needlv="0" />
+<VipFuncOpen key="2" desc="刷新当铺功能" needlv="1" />
+<VipFuncOpen key="3" desc="世界聊天" needlv="0" />
+<VipFuncOpen key="4" desc="更换名字" needlv="1" />
+<VipFuncOpen key="5" desc="锁定洗练属性" needlv="2" />
+<VipFuncOpen key="6" desc="一键强化" needlv="2" />
+<VipFuncOpen key="7" desc="虔诚膜拜" needlv="3" />
+<VipFuncOpen key="8" desc="进阶装备免费无损" needlv="0" />
+<VipFuncOpen key="9" desc="元宝消除百战等待时间" needlv="1" />
+<VipFuncOpen key="10" desc="传奇关卡挑战次数重置" needlv="1" />
+<VipFuncOpen key="11" desc="顶礼膜拜" needlv="4" />
+<VipFuncOpen key="12" desc="购买虎符" needlv="2" />
+<VipFuncOpen key="13" desc="连续扫荡" needlv="3" />
+<VipFuncOpen key="14" desc="小屋内装备秘宝展示" needlv="6" />
+<VipFuncOpen key="15" desc="百战威望产出增加" needlv="9" />
+<VipFuncOpen key="16" desc="房屋经验产出增加" needlv="8" />
+<VipFuncOpen key="17" desc="购买秘宝升级点数" needlv="1" />
+<VipFuncOpen key="18" desc="购买试炼次数" needlv="0" />
+<VipFuncOpen key="19" desc="购买运镖次数" needlv="2" />
+<VipFuncOpen key="20" desc="购买劫镖次数" needlv="3" />
+<VipFuncOpen key="21" desc="元宝消除掠夺等待时间" needlv="4" />
+<VipFuncOpen key="22" desc="购买荒野次数" needlv="3" />
+<VipFuncOpen key="23" desc="购买满血复活所需VIP等级" needlv="0" />
+<VipFuncOpen key="24" desc="购买原地复活所需VIP等级" needlv="2" />
+</dataset>

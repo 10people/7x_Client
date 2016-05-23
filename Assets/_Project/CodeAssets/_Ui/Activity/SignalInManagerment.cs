@@ -18,7 +18,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     public UILabel m_LabName;
     public UILabel m_LabTitle;
     public UILabel m_LabSignalTop;
-    public UILabel m_LabSignalBottom;
+ 
     public UILabel m_LabDes;
     //public UISprite m_SpriteMiBao;
     public UITexture m_TextureIcon;
@@ -33,14 +33,12 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_Durable_UI;
     public GameObject m_ObjHidden;
     public GameObject m_ObjDesInfo;
-
-    public List<SignalBagManagerment> m_listBagsInfo;
+ 
     public UISprite m_SpriteShowV;
     public UILabel m_LabShowVDes;
     public UILabel m_LabShowVBottomDes;
 
-    public UIProgressBar m_ProgressBar;
-
+ 
     public UISprite m_SpriteGetV;
 
     public GameObject m_ObjAllSignal;
@@ -60,7 +58,6 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     void Awake()
     {
         m_SignalIn = this;
-       // SocketTool.RegisterMessageProcessor(this);
     }
     public enum TouchType
     {
@@ -94,7 +91,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(227), ResourceLoadCallback_1);
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(228), ResourceLoadCallback_2);
         MainCityUI.setGlobalTitle(m_ObjTopLeft, "签到",0,0);
-        m_listBagsInfo.ForEach(p => p.m_Event.m_Handle += BagTouch);
+       
         m_SEC.OpenCompleteDelegate += RequestSignalInInfo;
         m_listEvent.ForEach(p => p.m_Handle += Touch);
     }
@@ -104,15 +101,6 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         SocketTool.RegisterMessageProcessor(this);
     }
 
-
-    void Update()
-    {
-        if (GameObject.Find("GeneralRules(Clone)") == null && _isGeneralRules)
-        {
-            _isGeneralRules = false;
-            FreshBagsState();
-        }
-    }
     void EffectHidden(int index)
     {
         m_ObjBack.GetComponent<FadeInOrOutManagerment>().FadeEffect(FadeInFinish);
@@ -129,52 +117,6 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_SIGNALIN_REQ);
     }
 
-    void BagTouch(int index)
-    {
-        if (FreshGuide.Instance().IsActive(100175) || (FreshGuide.Instance().IsActive(100177) &&! (index + 1 <= _VipDate && !_listBagsState[index])))
-        {
-            return;
-        }
-        else if (m_ButtonTouch == TouchType.BUTTON_NONE )
-        {
-            return;
-        }
-        else
-        {
-            m_ButtonTouch = TouchType.BUTTON_NONE;
-        }
- 
-        UIYindao.m_UIYindao.CloseUI();
-        
-        //else
-        //{
-        //    UIYindao.m_UIYindao.CloseUI();
-        //}
-        if (index + 1 <= _VipDate && !_listBagsState[index])
-        {
-            MemoryStream t_tream = new MemoryStream();
-            QiXiongSerializer t_qx = new QiXiongSerializer();
-            GetVipPresentReq tempRequest = new GetVipPresentReq();
-            tempRequest.vip = VIPQianDaoTemp.GetVipByVipLevel(index + 1).VIP;
- 
-            t_qx.Serialize(t_tream, tempRequest);
-
-            byte[] t_protof;
-            t_protof = t_tream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.qianDao_get_vip_present_req, ref t_protof);
-        }
-        else
-        {
-            m_ObjAllSignal.SetActive(false);
-            m_LabShowVDes.text = VIPQianDaoTemp.GetVipByVipLevel(index + 1).desc;
-            m_LabShowVBottomDes.text = MyColorData.getColorString(1, LanguageTemplate.GetText(1601) + VIPQianDaoTemp.GetVipByVipLevel(index + 1).day.ToString() + LanguageTemplate.GetText(1602));
-            m_ObjShowV.SetActive(true);
-    
-    m_SpriteShowV.spriteName = "0_" + (index + 1).ToString();
-        }
-    
-       // m_SpriteGetV.spriteName = "0_" + (index + 1).ToString();
-    }
     void Touch(int index)
     {
         UIYindao.m_UIYindao.CloseUI();
@@ -187,10 +129,9 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                 break;
             case 1:
                 {
-                    ClearBags();
                     _isGeneralRules = true;
                   // m_ObjDesInfo.SetActive(true);
-                    GeneralControl.Instance.LoadRulesPrefab(DescIdTemplate.GetDescriptionById(QianDaoMonthTemplate.getDescIdTemplateByMonth(currentMonth)));
+                    GeneralControl.Instance.LoadRulesPrefab(QianDaoMonthTemplate.getQianDaoMonthTemplateByMonth(currentMonth).icon.ToString());
                     //m_ObjSignal.SetActive(false);
                     //ShowQianDaoDes();
                 }
@@ -208,7 +149,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     private List<bool> _listBagsState = new List<bool>();
     void ShowQianDaoDes()
     {
-        m_LabDes.text = DescIdTemplate.GetDescriptionById(QianDaoMonthTemplate.getDescIdTemplateByMonth(currentMonth));
+        m_LabDes.text = QianDaoMonthTemplate.getQianDaoMonthTemplateByMonth(currentMonth).desc;
     }
 
     private List<QiandaoAward> listSignalInInfo = new List<QiandaoAward>();
@@ -218,7 +159,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     private int CurrentState = 0;
     private int currentMonth = 0;
     private int currentDate = 0;
-    private int _VipDate = 0;
+    
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
         if (p_message != null)
@@ -245,7 +186,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
 
                         if (ReponseInfo.award != null)
                         {
-                            m_LabSignalBottom.text = "";
+                        
                             m_LabTitle.text = ReponseInfo.desc;
                             Show(ReponseInfo.icon.ToString());
                             if (WetherSignalIn(ReponseInfo))
@@ -256,34 +197,27 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                                 //m_LabSignalInButtonRight.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_3)
                                 //    + MyColorData.getColorString(5, 4)
                                 //    + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_4);
-                                m_LabSignalInButtonRight.text = "每日[ff0000]4[-]点可领新的签到奖励!";
+                          //      m_LabSignalInButtonRight.text = "每日[ff0000]4[-]点可领新的签到奖励!";
                             }
                             else
                             {
                                 m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
                                 SparkleEffectItem.OpenSparkle(m_SpriteQianDao.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
-                                m_LabSignalInButtonRight.text = "";
-                                m_LabSignalBottom.text = "";
+                               // m_LabSignalInButtonRight.text = "";
+
                             }
 
                             for (int i = 0; i < ReponseInfo.award.Count; i++)
                             {
-                                if (CurrentSignalInDays < ReponseInfo.award[i].day && ReponseInfo.award[i].awardId == ReponseInfo.icon && WetherSignalIn(ReponseInfo))
-                                {
-                                    m_LabSignalBottom.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_5) 
-                                        + MyColorData.getColorString(5, (ReponseInfo.award[i].day - CurrentSignalInDays).ToString())
-                                        + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_6);
-                                }
+                                //if (CurrentSignalInDays < ReponseInfo.award[i].day && ReponseInfo.award[i].awardId == ReponseInfo.icon && WetherSignalIn(ReponseInfo))
+                                //{
+                                //    m_LabSignalBottom.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_5) 
+                                //        + MyColorData.getColorString(5, (ReponseInfo.award[i].day - CurrentSignalInDays).ToString())
+                                //        + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_6);
+                                //}
                                 listSignalInInfo.Add(ReponseInfo.award[i]);
                             }
-                            if (ReponseInfo.isGetvipPresent != null)
-                            {
-                                _listBagsState = ReponseInfo.isGetvipPresent;
-                                _VipDate = ReponseInfo.allQianNum;
-                             
-                                m_ProgressBar.value = ReponseInfo.allQianNum / 7.0f;
-                                FreshBagsState();
-                            }
+                         
                           
                             //   required int32 allQianNum = 7; // 历史总共签到次数)
 
@@ -309,9 +243,9 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                             m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
                             m_ObjHidden.SetActive(true);
                             m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
-                            m_LabSignalInButtonRight.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_3)
-                                + MyColorData.getColorString(5, 4)
-                                + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_4);
+                            //m_LabSignalInButtonRight.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_3)
+                            //    + MyColorData.getColorString(5, 4)
+                            //    + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_4);
                             listSignalReward.Clear();
                     
                             string award = "";
@@ -327,6 +261,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                                     award += ReponseInfo.award[i].awardType + ":" + ReponseInfo.award[i].awardId + ":" + ReponseInfo.award[i].awardNum;
                                 }
                             }
+                         
                             FunctionWindowsCreateManagerment.ShowRAwardInfo(award);
                             PushAndNotificationHelper.SetRedSpotNotification(140, false);
                           //  SignalRewardInfo();
@@ -337,40 +272,36 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                         }
                         return true;
                     }
-
-                case ProtoIndexes.qianDao_get_vip_present_resp://
+                case ProtoIndexes.S_RETROACTIVE_RESP://补签信息
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
                         QiXiongSerializer t_qx = new QiXiongSerializer();
 
-                        GetVipPresentResp ReponseInfo = new GetVipPresentResp();
+                        QiandaoResp ReponseInfo = new QiandaoResp();
                         t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
-
-                        if (ReponseInfo.success == 0)
+                        _listSignalInItem[_TouchNum].m_SignalInState = 2;
+                        _listSignalInItem[_TouchNum].m_Event.gameObject.SetActive(false);
+                        string award = "";
+                        for (int i = 0; i < ReponseInfo.award.Count; i++)
                         {
-                            UIYindao.m_UIYindao.CloseUI();
-                            RequestSignalInInfo();
-                            //if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
-                            //{
-                            //    TaskData.Instance.m_iCurMissionIndex = 100100;
-                            //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-                            //    tempTaskData.m_iCurIndex = 3;
-                            //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-                            //}
-                            _listBagsState[ReponseInfo.vip - 1] = true;
-                            UI3DEffectTool.ClearUIFx(m_listBagsInfo[ReponseInfo.vip - 1].gameObject);
-                            FreshBagsState();
-                            m_SpriteGetV.spriteName = "0_" + ReponseInfo.vip.ToString();
-                            ClientMain.addPopUP(1,0,"", null);
-
-
+                            if (i > 0)
+                            {
+                                award += "#" + ReponseInfo.award[i].awardType + ":" + ReponseInfo.award[i].awardId + ":" + ReponseInfo.award[i].awardNum;
+                            }
+                            else
+                            {
+                                award += ReponseInfo.award[i].awardType + ":" + ReponseInfo.award[i].awardId + ":" + ReponseInfo.award[i].awardNum;
+                            }
                         }
+
+                        FunctionWindowsCreateManagerment.ShowRAwardInfo(award);
                         return true;
                     }
 
+
+                    }
             }
-        }
         return false;
     }
 
@@ -424,57 +355,14 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
 
 
 
-        m_TextureIcon.mainTexture = (Texture)Resources.Load(Res2DTemplate.GetResPath(Res2DTemplate.Res.MIBAO_BIGICON) + mmibaoxml.icon.ToString());
-        //if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 5)
-        //{
-        //    m_SpriteMiBao.atlas = m_Atlas_Pieces;
-        //    m_SpriteMiBao.spriteName = iconName;
-        //}
-        //else if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 4)
-        //{
-        //    m_SpriteMiBao.atlas = m_Atlas_MiBao;
-        //    m_SpriteMiBao.spriteName = iconName;
-        //}
-        //else if (CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 7 || CommonItemTemplate.getCommonItemTemplateById(int.Parse(iconName)).itemType == 8)
-        //{
-        //    m_SpriteMiBao.atlas = m_Atlas_FuShi;
-        //    m_SpriteMiBao.type = UISprite.Type.Simple;
-        //    m_SpriteMiBao.spriteName = iconName;
-        //}
-        //else
-        //{
-        //    m_SpriteMiBao.atlas = m_Atlas_Commom;
-        //    m_SpriteMiBao.spriteName = iconName;
-        //}
+      //  m_TextureIcon.mainTexture = (Texture)Resources.Load(Res2DTemplate.GetResPath(Res2DTemplate.Res.MIBAO_BIGICON) + mmibaoxml.icon.ToString());
+  
     }
     Vector3 pos_start = Vector3.zero;
 
-    void FreshBagsState()
-    {
-        int size = _listBagsState.Count;
-        for (int i = 0; i < size; i++)
-        {
-            m_listBagsInfo[i].m_FirstObj.SetActive(!_listBagsState[i]);
-            if (_VipDate <= m_listBagsInfo.Count && i < _VipDate && !_listBagsState[i])
-            {
-                m_listBagsInfo[i].GetComponent<ButtonColorManagerment>().ShakeEffectShow(true);
-                if (i > 0)
-                {
-                    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listBagsInfo[i].gameObject, EffectIdTemplate.GetPathByeffectId(600154), null);
-                }
-            }
-            m_listBagsInfo[i].m_SecondObj.SetActive(_listBagsState[i]);
-        }
-    }
+ 
 
-    void ClearBags()
-    {
-        int size = m_listBagsInfo.Count;
-        for (int i = 0; i < size; i++)
-        {
-            UI3DEffectTool.ClearUIFx(m_listBagsInfo[i].gameObject);
-        }
-    }
+ 
     void ShowSignalIn()
     {
         _listSignalInItem.Clear();
@@ -501,6 +389,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         {
             GameObject tempObj = Instantiate(p_object) as GameObject;
             tempObj.transform.parent = m_Grid.transform;
+            tempObj.name = index_SignalInNum.ToString();
             tempObj.transform.localPosition = Vector3.zero;
             tempObj.transform.localScale = Vector3.one;
             ActivitySignalInItemManagerment tem = tempObj.GetComponent<ActivitySignalInItemManagerment>();
@@ -510,14 +399,14 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                 tempObj.GetComponent<ActivitySignalInItemManagerment>().ShowInfo(listSignalInInfo[index_SignalInNum],
                                                                          listSignalInInfo[index_SignalInNum].state == 0,
                                                                          index_SignalInNum < CurrentSignalInDays ? true : false,
-                                                                         SignalIn);
+                                                                         SignalIn, Retroactive);
             }
             else
             {
                 tempObj.GetComponent<ActivitySignalInItemManagerment>().ShowInfo(listSignalInInfo[index_SignalInNum],
                                                                                    listSignalInInfo[index_SignalInNum].state == 0,
                                                                                    index_SignalInNum < CurrentSignalInDays ? true : false,
-                                                                                   SignalIn, SingnalUpdate);
+                                                                                   SignalIn, Retroactive,SingnalUpdate);
             }
          
           
@@ -532,7 +421,21 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
             p_object = null;
         }
     }
+    int _TouchNum = 0;
+    void Retroactive(int index)
+    {
+        _TouchNum = index;
+        MemoryStream tempStream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        GetVipDoubleReq tempAdvanceReq = new GetVipDoubleReq();
+        tempAdvanceReq.id = index;
+        t_qx.Serialize(tempStream, tempAdvanceReq);
 
+        byte[] t_protof;
+        t_protof = tempStream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_RETROACTIVE_REQ, ref t_protof);
+
+    }
     //public void LoadDesItemCallback(ref WWW p_www, string p_path, Object p_object)
     //{
     //    if (m_GridDes != null)
@@ -552,7 +455,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     //    }
 
     //}
- 
+
     private List<QiandaoAward> listSignalReward = new List<QiandaoAward>();
     float pos_x = 0;
     int index_SignalReward = 0;

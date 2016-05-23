@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HuangyeFogArray ArrayId="0" fogID1="0" fogID2="0" fogID3="0" fogID4="0" openCost="0" needLv="1" positionX="0" positionY="0" />
+<HuangyeFogArray ArrayId="1" fogID1="48" fogID2="49" fogID3="59" fogID4="0" openCost="2000" needLv="1" positionX="-100" positionY="150" />
+<HuangyeFogArray ArrayId="2" fogID1="50" fogID2="60" fogID3="68" fogID4="0" openCost="2000" needLv="1" positionX="250" positionY="100" />
+<HuangyeFogArray ArrayId="3" fogID1="77" fogID2="86" fogID3="94" fogID4="0" openCost="2000" needLv="1" positionX="350" positionY="-200" />
+<HuangyeFogArray ArrayId="4" fogID1="76" fogID2="85" fogID3="92" fogID4="101" openCost="2000" needLv="1" positionX="-250" positionY="-250" />
+<HuangyeFogArray ArrayId="5" fogID1="67" fogID2="75" fogID3="84" fogID4="0" openCost="5000" needLv="2" positionX="-450" positionY="-100" />
+<HuangyeFogArray ArrayId="6" fogID1="38" fogID2="47" fogID3="58" fogID4="0" openCost="5000" needLv="2" positionX="-350" positionY="200" />
+<HuangyeFogArray ArrayId="7" fogID1="30" fogID2="39" fogID3="40" fogID4="0" openCost="5000" needLv="2" positionX="0" positionY="350" />
+<HuangyeFogArray ArrayId="8" fogID1="41" fogID2="51" fogID3="61" fogID4="69" openCost="5000" needLv="2" positionX="400" positionY="150" />
+<HuangyeFogArray ArrayId="9" fogID1="78" fogID2="87" fogID3="95" fogID4="0" openCost="14000" needLv="3" positionX="550" positionY="-200" />
+<HuangyeFogArray ArrayId="10" fogID1="93" fogID2="102" fogID3="103" fogID4="0" openCost="14000" needLv="3" positionX="100" positionY="-350" />
+<HuangyeFogArray ArrayId="11" fogID1="46" fogID2="57" fogID3="66" fogID4="0" openCost="14000" needLv="3" positionX="-550" positionY="100" />
+<HuangyeFogArray ArrayId="12" fogID1="18" fogID2="28" fogID3="29" fogID4="37" openCost="14000" needLv="3" positionX="-350" positionY="400" />
+<HuangyeFogArray ArrayId="13" fogID1="21" fogID2="31" fogID3="32" fogID4="0" openCost="23000" needLv="4" positionX="300" positionY="450" />
+<HuangyeFogArray ArrayId="14" fogID1="42" fogID2="43" fogID3="52" fogID4="0" openCost="23000" needLv="4" positionX="600" positionY="250" />
+<HuangyeFogArray ArrayId="15" fogID1="62" fogID2="70" fogID3="79" fogID4="0" openCost="23000" needLv="4" positionX="650" positionY="0" />
+<HuangyeFogArray ArrayId="16" fogID1="113" fogID2="122" fogID3="123" fogID4="129" openCost="23000" needLv="4" positionX="100" positionY="-550" />
+<HuangyeFogArray ArrayId="17" fogID1="112" fogID2="121" fogID3="128" fogID4="0" openCost="50000" needLv="5" positionX="-150" positionY="-600" />
+<HuangyeFogArray ArrayId="18" fogID1="111" fogID2="120" fogID3="127" fogID4="0" openCost="50000" needLv="5" positionX="-350" positionY="-600" />
+<HuangyeFogArray ArrayId="19" fogID1="91" fogID2="100" fogID3="110" fogID4="0" openCost="50000" needLv="5" positionX="-450" positionY="-400" />
+<HuangyeFogArray ArrayId="20" fogID1="83" fogID2="90" fogID3="99" fogID4="109" openCost="50000" needLv="5" positionX="-650" positionY="-350" />
+<HuangyeFogArray ArrayId="21" fogID1="56" fogID2="65" fogID3="74" fogID4="0" openCost="110000" needLv="6" positionX="-750" positionY="0" />
+<HuangyeFogArray ArrayId="22" fogID1="3" fogID2="11" fogID3="20" fogID4="0" openCost="110000" needLv="6" positionX="150" positionY="600" />
+<HuangyeFogArray ArrayId="23" fogID1="4" fogID2="12" fogID3="13" fogID4="22" openCost="110000" needLv="6" positionX="450" positionY="600" />
+<HuangyeFogArray ArrayId="24" fogID1="23" fogID2="33" fogID3="34" fogID4="0" openCost="110000" needLv="6" positionX="700" positionY="450" />
+<HuangyeFogArray ArrayId="25" fogID1="5" fogID2="14" fogID3="24" fogID4="0" openCost="230000" needLv="7" positionX="800" positionY="600" />
+<HuangyeFogArray ArrayId="26" fogID1="44" fogID2="53" fogID3="54" fogID4="0" openCost="230000" needLv="7" positionX="900" positionY="250" />
+<HuangyeFogArray ArrayId="27" fogID1="63" fogID2="71" fogID3="72" fogID4="0" openCost="230000" needLv="7" positionX="900" positionY="50" />
+<HuangyeFogArray ArrayId="28" fogID1="80" fogID2="88" fogID3="97" fogID4="107" openCost="230000" needLv="7" positionX="850" positionY="-200" />
+<HuangyeFogArray ArrayId="29" fogID1="106" fogID2="117" fogID3="0" fogID4="0" openCost="370000" needLv="8" positionX="850" positionY="-450" />
+<HuangyeFogArray ArrayId="30" fogID1="96" fogID2="105" fogID3="116" fogID4="0" openCost="370000" needLv="8" positionX="650" positionY="-400" />
+<HuangyeFogArray ArrayId="31" fogID1="104" fogID2="114" fogID3="113" fogID4="0" openCost="370000" needLv="8" positionX="400" positionY="-450" />
+<HuangyeFogArray ArrayId="32" fogID1="124" fogID2="125" fogID3="130" fogID4="0" openCost="370000" needLv="8" positionX="500" positionY="-650" />
+<HuangyeFogArray ArrayId="33" fogID1="118" fogID2="119" fogID3="126" fogID4="0" openCost="650000" needLv="9" positionX="-700" positionY="-650" />
+<HuangyeFogArray ArrayId="34" fogID1="89" fogID2="98" fogID3="108" fogID4="0" openCost="650000" needLv="9" positionX="-850" positionY="-400" />
+<HuangyeFogArray ArrayId="35" fogID1="64" fogID2="73" fogID3="81" fogID4="82" openCost="650000" needLv="9" positionX="-925" positionY="-125" />
+<HuangyeFogArray ArrayId="36" fogID1="25" fogID2="35" fogID3="45" fogID4="55" openCost="650000" needLv="9" positionX="-900" positionY="250" />
+<HuangyeFogArray ArrayId="37" fogID1="15" fogID2="26" fogID3="27" fogID4="36" openCost="830000" needLv="10" positionX="-750" positionY="400" />
+<HuangyeFogArray ArrayId="38" fogID1="6" fogID2="7" fogID3="16" fogID4="0" openCost="830000" needLv="10" positionX="-700" positionY="550" />
+<HuangyeFogArray ArrayId="39" fogID1="1" fogID2="8" fogID3="17" fogID4="0" openCost="830000" needLv="10" positionX="-450" positionY="600" />
+<HuangyeFogArray ArrayId="40" fogID1="2" fogID2="9" fogID3="10" fogID4="19" openCost="830000" needLv="10" positionX="-100" positionY="600" />
+</dataset>

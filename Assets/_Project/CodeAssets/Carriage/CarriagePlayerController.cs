@@ -11,13 +11,6 @@ namespace Carriage
     {
         public RootManager m_RootManager;
 
-        public float LatestServerSyncTime;
-
-        public void UpdateServerSyncState()
-        {
-            LatestServerSyncTime = Time.realtimeSinceStartup;
-        }
-
         public override void OnPlayerRun()
         {
             m_Animator.SetBool("Move", true);
@@ -28,15 +21,15 @@ namespace Carriage
             m_Animator.SetBool("Move", false);
         }
 
-        public Vector3 RestrictPosition = Vector3.zero;
+        //public Vector3 RestrictPosition = Vector3.zero;
         public bool IsSetToRestrictPosition = false;
 
         new void Update()
         {
             base.Update();
 
-			if (Time.realtimeSinceStartup - CarriageItemSyncManager.m_LatestServerSyncTime > 
-			    NetworkHelper.GetPingSecWithMin( Console_SetNetwork.GetMinPingForPreRun() ) * NetworkHelper.GetValidRunC() )
+            if (Time.realtimeSinceStartup - PlayerManager.m_LatestServerSyncTime >
+                NetworkHelper.GetPingSecWithMin(Console_SetNetwork.GetMinPingForPreRun()) * NetworkHelper.GetValidRunC())
             {
 #if DEBUG_MOVE
                 Debug.LogWarning("+++++++++++++Limit self msg.");
@@ -46,7 +39,7 @@ namespace Carriage
                 {
                     IsUploadPlayerPosition = false;
 
-                    RestrictPosition = transform.localPosition;
+                    //RestrictPosition = transform.localPosition;
                     IsSetToRestrictPosition = true;
                 }
             }
@@ -58,7 +51,7 @@ namespace Carriage
                     Debug.LogWarning("+++++++++++Set restrict position from " + transform.localPosition + " to " + RestrictPosition);
 #endif
 
-                    transform.localPosition = RestrictPosition;
+                    //transform.localPosition = RestrictPosition;
 
                     IsSetToRestrictPosition = false;
                 }
@@ -77,10 +70,11 @@ namespace Carriage
             TrackCameraOffsetUpDownRotation = 26.4f;
         }
 
-		void OnDestroy(){
-			base.OnDestroy();
+        void OnDestroy()
+        {
+            base.OnDestroy();
 
-			m_RootManager = null;
-		}
+            m_RootManager = null;
+        }
     }
 }

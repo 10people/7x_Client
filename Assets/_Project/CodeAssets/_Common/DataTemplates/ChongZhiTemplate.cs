@@ -6,11 +6,9 @@ using System.IO;
 
 public class ChongZhiTemplate : XmlLoadManager
 {
-
     public int id;
 
     public string name;
-
 
     public string desc;
     public int needNum;
@@ -96,5 +94,16 @@ public class ChongZhiTemplate : XmlLoadManager
         while (t_has_items);
     }
 
-
+	public static ChongZhiTemplate GetChongZhiTempById (int id)
+	{
+		foreach (ChongZhiTemplate template in templates)
+		{
+			if (template.id == id)
+			{
+				return template;
+			}
+		}
+		Debug.LogError ("Can not getChongZhiTemplate by id:" + id);
+		return null;
+	}
 }

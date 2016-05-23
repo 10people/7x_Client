@@ -1,10 +1,18 @@
 //#define REMOVE_MIBAO_CD
 
+#define CUSTOM_TRIGGER
+
+//#define DEBUG_CUSTOM_TRIGGER
+
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 using qxmobile.protobuf;
+
+
 
 public class BaseAI : MonoBehaviour
 {
@@ -41,6 +49,8 @@ public class BaseAI : MonoBehaviour
 		ANI_Skill_8 = 21,
 		ANI_BATCUp = 22,
 		ANI_DODGE = 23,
+		ANI_BATC_LEFT = 24,
+		ANI_BATC_RIGHT = 25,
 	}
 
     private string[] m_strAnimationName = new string[]{
@@ -68,6 +78,8 @@ public class BaseAI : MonoBehaviour
 		"Skill_8",        //21
 		"BATCUp",         //22
 		"DODGE",          //23
+		"BATCLeft",       //24
+		"BATCRight",      //24
 	};
 
 	public GameObject body;
@@ -102,6 +114,8 @@ public class BaseAI : MonoBehaviour
 	[HideInInspector] public GameObject bloodTemple;
 
 	[HideInInspector] public BloodBar bloodbar;
+
+	[HideInInspector] public BloodBar armorbar;
 
 	[HideInInspector] public int nodeId;
 
@@ -176,10 +190,12 @@ public class BaseAI : MonoBehaviour
 	[HideInInspector] public BattleAppearanceTemplate appearanceTemplate;
 
 	[HideInInspector] public string m_sPlaySkillAnimation = "";
-	
+
+	[HideInInspector] public UIAnchor.Side attackDir;//攻击动作的方向，left:从左向右
+
 
 	protected CharacterController chongfengControllor;
-	
+
 	protected System.DateTime attackTempTime;
 
 	protected bool inTurning;
@@ -195,7 +211,7 @@ public class BaseAI : MonoBehaviour
 
 	private AnimationState aniRun;
 
-	private NavMeshAgent nav;
+	protected NavMeshAgent nav;
 
 	private Vector3 tempPos;
 
@@ -241,10 +257,20 @@ public class BaseAI : MonoBehaviour
 
 	private Vector3 pathPos;
 
+	private float armorCD;
+
+	private float disarmorCD;
+
 
 	#if UNITY_EDITOR && REMOVE_MIBAO_CD
 	private static bool m_log_tips = true;
 	#endif
+
+	public virtual void Awake(){
+		{
+			RegisterTrigger( this );
+		}
+	}
 
 	public virtual void Start()
 	{
@@ -278,6 +304,10 @@ public class BaseAI : MonoBehaviour
 		}
 
 		mAnim = null;
+
+		{
+			UnRegisterTrigger( this );
+		}
 	}
 
 	public virtual void initStart()
@@ -327,6 +357,10 @@ public class BaseAI : MonoBehaviour
 
 		setNavMeshPriority (appearanceTemplate.navPriority);
 
+		setNavEnabled (false);
+
+		character.enabled = false;
+
 		ObjectHelper.AddObjectTrace( mAnim.runtimeAnimatorController );
 
 		trails.Clear();
@@ -372,6 +406,14 @@ public class BaseAI : MonoBehaviour
 		criSkillNumCount = 0;
 
 		hoverIndex = -1;
+
+		armorCD = 0;
+
+		disarmorCD = 0;
+
+		inFlyAction = false;
+
+		attackDir = UIAnchor.Side.Center;
 
 		avoidancePriority = nav.avoidancePriority;
 
@@ -452,15 +494,60 @@ public class BaseAI : MonoBehaviour
 
 		bloodObject.SetActive (false);
 
+		if(nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0)
+		{
+			GameObject armorObject = (GameObject)Instantiate (bloodTemple);
+		
+			armorObject.transform.parent = gameObject.transform;
+		
+			armorObject.transform.localPosition = new Vector3 (0, bloodY - .1f, 0);
+		
+			armorObject.transform.localScale = new Vector3 (bloodTemple.transform.localScale.x * bloodRate, bloodTemple.transform.localScale.y, bloodTemple.transform.localScale.z);
+		
+			UISprite[] armorSprites = armorObject.GetComponentsInChildren<UISprite>();
+
+			foreach(UISprite sprite in armorSprites)
+			{
+				if(sprite.gameObject.name.Equals("ForntSprite"))
+				{
+					sprite.spriteName = "battle_armor_bar_yellow";
+				}
+
+				if(sprite.gameObject.name.Equals("Sprite"))
+				{
+					sprite.spriteName = "battle_armor_bar_board";
+				}
+			}
+
+			armorbar = armorObject.GetComponent<BloodBar> ();
+		
+			armorbar.setValue (1);
+		
+			armorObject.SetActive (false);
+		}
+
 		updataBloodBar();
 
 		if(nodeData.nodeType == NodeType.BOSS)
 		{
-			if(body != null) {
+			if(body != null) 
+			{
 				EffectTool.SetBossEffect( body, appearanceTemplate.bossFxColor, appearanceTemplate.bossFxWidth );
 			}
-			else {
+			else 
+			{
 				EffectTool.SetBossEffect( gameObject, appearanceTemplate.bossFxColor, appearanceTemplate.bossFxWidth );
+			}
+		}
+		else
+		{
+			if(body != null) 
+			{
+				EffectTool.ClearBossEffect( body );
+			}
+			else
+			{
+				EffectTool.ClearBossEffect( gameObject );
 			}
 		}
 
@@ -768,8 +855,26 @@ public class BaseAI : MonoBehaviour
 		}
 	}
 
+	public void setAttackDir(int dir)
+	{
+		if(dir == 1)
+		{
+			attackDir = UIAnchor.Side.Left;
+		}
+		else if(dir == 2)
+		{
+			attackDir = UIAnchor.Side.Right;
+		}
+		else 
+		{
+			attackDir = UIAnchor.Side.Center;
+		}
+	}
+
 	public void setStand()
 	{
+		attackDir = UIAnchor.Side.Center;
+
 		if (BattleControlor.Instance().inDrama == true) return;
 
 		if(gameObject.activeSelf == true && nav != null && nav.enabled == true)
@@ -1025,6 +1130,10 @@ public class BaseAI : MonoBehaviour
 //	void FixedUpdate ()
 	void Update()
 	{
+		#if CUSTOM_TRIGGER
+		UpdateCustomTrigger();
+		#endif
+
 		updateThreats ();
 
 		if(BattleUIControlor.Instance().resultControllor != null && BattleUIControlor.Instance().resultControllor.gameObject.activeSelf == true)
@@ -1050,6 +1159,8 @@ public class BaseAI : MonoBehaviour
 			return;
 		}
 
+		updataArmor ();
+		
 		if(m_sPlaySkillAnimation != "")
 		{
 			if(m_sPlaySkillAnimation == IsPlaying())
@@ -1114,6 +1225,42 @@ public class BaseAI : MonoBehaviour
 			float lengthThreat = 1000 - Vector3.Distance(node.transform.position, transform.position) * 10;
 			
 			threat.lengthThreat = lengthThreat;
+		}
+	}
+
+	public void updataArmor()
+	{
+		if (nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_ArmorMax) <= 0) return;
+
+		float curArmor = nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Armor);
+
+		if(curArmor == 0)//破防状态
+		{
+			disarmorCD += Time.deltaTime;
+
+			if(disarmorCD > CanshuTemplate.GetValueByKey(CanshuTemplate.ARMOR_RECOVERYTIME2))
+			{
+				disarmorCD = 0;
+
+				nodeData.SetAttribute(AIdata.AttributeType.ATTRTYPE_Armor, nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_ArmorMax));
+
+				armorbar.gameObject.SetActive(true);
+
+				updataBloodBar();
+			}
+		}
+		else //霸体状态
+		{
+			armorCD += Time.deltaTime;
+
+			if(armorCD > CanshuTemplate.GetValueByKey(CanshuTemplate.ARMOR_RECOVERYTIME1))
+			{
+				curArmor += (float)CanshuTemplate.GetValueByKey(CanshuTemplate.ARMOR_RECOVERYRATE) * Time.deltaTime;
+
+				nodeData.SetAttribute(AIdata.AttributeType.ATTRTYPE_Armor, curArmor);
+
+				updataBloodBar();
+			}
 		}
 	}
 
@@ -1275,11 +1422,15 @@ public class BaseAI : MonoBehaviour
 
 		//List<BaseAI> tempList = stance == Stance.STANCE_ENEMY ? BattleControlor.Instance().selfNodes : BattleControlor.Instance().enemyNodes;
 
-		foreach(BaseAI node in enemysInRange)
+		for( int i = 0; i < enemysInRange.Count; i++ )
 		{
+			BaseAI node = enemysInRange[ i ];
+
+			NodeType t_node_type = node.nodeData.nodeType;
+
 			if(node == null || !node.isAlive || node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0) continue;
 
-			if(node.nodeData.nodeType == NodeType.GOD || node.nodeData.nodeType == NodeType.NPC) continue;
+			if( t_node_type == NodeType.GOD || t_node_type == NodeType.NPC) continue;
 
 			if(node.gameObject.activeSelf == false) continue;
 
@@ -1321,6 +1472,23 @@ public class BaseAI : MonoBehaviour
 		{
 			if(stance == Stance.STANCE_SELF)
 			{
+				foreach(BaseAI tn in BattleControlor.Instance().selfNodes)
+				{
+					if(tn.flag.hoverPath.Count > 0)
+					{
+						if(Vector3.Distance(transform.position, tn.transform.position) < 3)
+						{
+							setNavMeshStop();
+						}
+						else
+						{
+							setNavMeshDestination(tn.transform.position);
+						}
+						
+						return;
+					}
+				}
+
 				foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
 				{
 					if(node == null || node.isAlive == false || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
@@ -1337,6 +1505,23 @@ public class BaseAI : MonoBehaviour
 			}
 			else if(stance == Stance.STANCE_ENEMY)
 			{
+				foreach(BaseAI tn in BattleControlor.Instance().enemyNodes)
+				{
+					if(tn.flag.hoverPath.Count > 0)
+					{
+						if(Vector3.Distance(transform.position, tn.transform.position) < 7)
+						{
+							setNavMeshStop();
+						}
+						else
+						{
+							setNavMeshDestination(tn.transform.position);
+						}
+						
+						return;
+					}
+				}
+
 				foreach(BaseAI node in BattleControlor.Instance().selfNodes)
 				{
 					if(node == null || node.isAlive == false || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
@@ -1425,6 +1610,8 @@ public class BaseAI : MonoBehaviour
 			    || isPlaying.Equals(getAnimationName(AniType.ANI_BATCDown)) == true
 			    || isPlaying.Equals(getAnimationName(AniType.ANI_BATCUp)) == true
 			    || isPlaying.Equals(getAnimationName(AniType.ANI_BATC)) == true
+			    || isPlaying.Equals(getAnimationName(AniType.ANI_BATC_LEFT)) == true
+			    || isPlaying.Equals(getAnimationName(AniType.ANI_BATC_RIGHT)) == true
 			    || isPlaying.Equals(getAnimationName(AniType.ANI_BATCFly)) == true
 			    )
 			{
@@ -1447,6 +1634,49 @@ public class BaseAI : MonoBehaviour
 			else
 			{
 				setNavMeshDestination(po);
+			}
+
+			return;
+		}
+		else if(targetNode == null &&  nodeData.nodeType == NodeType.PLAYER && flag.hoverPath.Count == 0)
+		{
+			if(stance == Stance.STANCE_SELF)
+			{
+				foreach(BaseAI tn in BattleControlor.Instance().selfNodes)
+				{
+					if(tn.flag.hoverPath.Count > 0)
+					{
+						if(Vector3.Distance(transform.position, tn.transform.position) < 3)
+						{
+							setNavMeshStop();
+						}
+						else
+						{
+							setNavMeshDestination(tn.transform.position);
+						}
+
+						return;
+					}
+				}
+			}
+			else if(stance == Stance.STANCE_ENEMY)
+			{
+				foreach(BaseAI tn in BattleControlor.Instance().enemyNodes)
+				{
+					if(tn.flag.hoverPath.Count > 0)
+					{
+						if(Vector3.Distance(transform.position, tn.transform.position) < 3)
+						{
+							setNavMeshStop();
+						}
+						else
+						{
+							setNavMeshDestination(tn.transform.position);
+						}
+						
+						return;
+					}
+				}
 			}
 
 			return;
@@ -1738,6 +1968,10 @@ public class BaseAI : MonoBehaviour
 			if (isPlayingAttack () == true) return false;
 			
 			if (IsPlaying (getAnimationName (AniType.ANI_BATC)) == true) return false;
+
+			if (IsPlaying (getAnimationName (AniType.ANI_BATC_LEFT)) == true) return false;
+
+			if (IsPlaying (getAnimationName (AniType.ANI_BATC_RIGHT)) == true) return false;
 			
 			if (IsPlaying (getAnimationName(AniType.ANI_BATCDown)) == true) return false;
 
@@ -1755,7 +1989,7 @@ public class BaseAI : MonoBehaviour
 			return false;
 		}
 
-		bool inAttacked = IsPlaying (getAnimationName(AniType.ANI_BATC));
+		bool inAttacked = IsPlaying (getAnimationName(AniType.ANI_BATC)) || IsPlaying (getAnimationName(AniType.ANI_BATC_LEFT)) || IsPlaying (getAnimationName(AniType.ANI_BATC_RIGHT));
 
 		if(nodeData.nodeType == NodeType.SOLDIER)
 		{
@@ -1823,10 +2057,10 @@ public class BaseAI : MonoBehaviour
 
 		float rate = nodeData.GetAttribute ((int)AIdata.AttributeType.ATTRTYPE_hp) / nodeData.GetAttribute ((int)AIdata.AttributeType.ATTRTYPE_hpMaxReal);
 
+		ModelTemplate mt = ModelTemplate.getModelTemplateByModelId(modelId);
+
 		if (bloodbar != null)
 		{
-			ModelTemplate mt = ModelTemplate.getModelTemplateByModelId(modelId);
-
 			if(mt.height != 0)
 			{
 				if(stance == Stance.STANCE_SELF && nodeData.nodeType == NodeType.PLAYER) 
@@ -1837,6 +2071,23 @@ public class BaseAI : MonoBehaviour
 				}
 
 				if(nodeData.nodeType != NodeType.GOD && nodeData.nodeType != NodeType.NPC) bloodbar.setValue(rate);
+			}
+		}
+
+		if(nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0 && armorbar != null)
+		{
+			if(mt.height != 0)
+			{
+				if(stance == Stance.STANCE_SELF && nodeData.nodeType == NodeType.PLAYER) 
+				{
+					armorbar.gameObject.SetActive(false);
+					
+					return;
+				}
+
+				float armorRate = nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Armor) / nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_ArmorMax);
+
+				if(nodeData.nodeType != NodeType.GOD && nodeData.nodeType != NodeType.NPC) armorbar.setValue(armorRate);
 			}
 		}
 
@@ -1904,6 +2155,11 @@ public class BaseAI : MonoBehaviour
 		character.Move(step);
 	}
 
+//	public void moveAction(Vector3 targetPosition, iTween.EaseType easeType, float time, int colliderLevel = 0)
+//	{
+//		StartCoroutine (_moveAction(targetPosition, easeType, time, colliderLevel));
+//	}
+
 	public void moveAction(Vector3 targetPosition, iTween.EaseType easeType, float time, int colliderLevel = 0)
 	{
 //		if(colliderLevel == 0)
@@ -1941,7 +2197,7 @@ public class BaseAI : MonoBehaviour
 
 			chongfengControllor.height = 3f;
 		}
-		
+
 		chongfengControllor.transform.position = transform.position;
 
 		if(colliderLevel > 0)
@@ -1981,6 +2237,15 @@ public class BaseAI : MonoBehaviour
 
 		chongfengControllor.Move (chongfengControllor.transform.forward * length);
 
+		chongfengControllor.Move (new Vector3(0, -2f, 0));
+
+		if(colliderLevel >= 2)
+		{
+//			yield return new WaitForEndOfFrame ();
+//
+//			yield return new WaitForEndOfFrame ();
+		}
+
 		if(colliderLevel > 0)
 		{
 			foreach(BaseAI a in BattleControlor.Instance().enemyNodes)
@@ -2012,14 +2277,19 @@ public class BaseAI : MonoBehaviour
 
 		if(colliderLevel < 2)
 		{
-			iTween.ValueTo(gameObject, iTween.Hash(
-				"from", transform.position,
-				"to", chongfengControllor.transform.position,
-				"time", time,
-				"easeType", easeType,
-				"onupdate", "PositonTweenWithoutCharactor",
-				"oncomplete", "PositonTweenWithoutCharactorComplete"
-				));
+//			iTween.ValueTo(gameObject, iTween.Hash(
+//				"from", transform.position,
+//				"to", chongfengControllor.transform.position,
+//				"time", time,
+//				"easeType", easeType,
+//				"onupdate", "PositonTweenWithoutCharactor",
+//				"oncomplete", "PositonTweenWithoutCharactorComplete"
+//				));
+
+			LeanTween.value( gameObject, transform.position, chongfengControllor.transform.position, time)
+				.setEase( LeanTweenType.linear )
+				.setOnUpdate( PositonTweenWithoutCharactor )
+				.setOnComplete( PositonTweenWithoutCharactorComplete );
 		}
 		else
 		{
@@ -2041,7 +2311,7 @@ public class BaseAI : MonoBehaviour
 
 	protected void PositonTweenWithoutCharactorComplete()
 	{
-		chongfengControllor.transform.position = new Vector3 (0, -500, 0);
+		chongfengControllor.transform.position += new Vector3 (0, -500, 0);
 
 //		foreach(BaseAI a in BattleControlor.Instance().enemyNodes)
 //		{
@@ -2194,6 +2464,8 @@ public class BaseAI : MonoBehaviour
 
 		dropItem ();
 
+		if(armorbar != null) armorbar.gameObject.SetActive (false);
+
 		if(nodeId > 0)
 		{
 			if (BattleControlor.Instance().achivement != null && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().achivement.KillMonster (nodeId);
@@ -2205,6 +2477,29 @@ public class BaseAI : MonoBehaviour
 			if (nodeData.nodeType == NodeType.HERO && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().battleCheck.heroKilled ++;
 
 			if (nodeData.nodeType == NodeType.SOLDIER && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().battleCheck.soldierKilled ++;
+		
+			if (flag.flagGroup != null && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING)
+			{
+				bool lastOne = true;
+
+				foreach(BattleFlag bf in flag.flagGroup.listFlags)
+				{
+					if(bf.node != null)
+					{
+						if(bf.node.isAlive || bf.node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) > 0)
+						{
+							lastOne = false;
+
+							break;
+						}
+					}
+				}
+
+				if(lastOne == true)
+				{
+					BattleControlor.Instance().battleCheck.waveKilled ++;
+				}
+			}
 		}
 
 		if(stance == Stance.STANCE_SELF)
@@ -2373,7 +2668,7 @@ public class BaseAI : MonoBehaviour
 
 	public void checkDieInKnockdown()
 	{
-		if (nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) > 0) return;
+		if (nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) >= 0) return;
 
 		mAnim.speed = 0;
 
@@ -2580,6 +2875,10 @@ public class BaseAI : MonoBehaviour
 
 		if (actionName.IndexOf (getAnimationName(AniType.ANI_BATC)) != -1) return true;
 
+		if (actionName.IndexOf (getAnimationName(AniType.ANI_BATC_LEFT)) != -1) return true;
+
+		if (actionName.IndexOf (getAnimationName(AniType.ANI_BATC_RIGHT)) != -1) return true;
+
 		if (actionName.IndexOf (getAnimationName(AniType.ANI_BATCDown)) != -1) return true;
 
 		if (actionName.IndexOf (getAnimationName(AniType.ANI_Dead)) != -1) return true;
@@ -2607,7 +2906,7 @@ public class BaseAI : MonoBehaviour
 		return false;
 	}
 
-	public void attacked(BaseAI attacker, float hpValue, bool cri, BattleControlor.AttackType attackedType, BattleControlor.NuqiAddType nuqiType)
+	public void attacked(BaseAI attacker, float hpValue, bool cri, BattleControlor.AttackType attackedType, BattleControlor.NuqiAddType nuqiType, bool forcedArmor)
 	{
 		//BattleReplayorWrite.Instance().addReplayNodeAttacked(nodeId, hpValue);
 
@@ -2631,7 +2930,7 @@ public class BaseAI : MonoBehaviour
 
 		if(attacker.nodeData.nodeType != NodeType.GEAR && nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_eyeRange) > .1f) 
 		{
-			OnTriggerEnterNode ((Collider)attacker.GetComponent(typeof(Collider)));
+			OnTriggerEnterNode(attacker);
 		}
 
 		bool flag = nodeData.nodeType == NodeType.PLAYER;
@@ -2660,7 +2959,7 @@ public class BaseAI : MonoBehaviour
 			{
 				KingControllor king = (KingControllor)attacker;
 
-				f = king.attackBaseAI(this, hpValue, cri, nuqiType);
+				f = king.attackBaseAI(this, hpValue, cri, nuqiType, forcedArmor);
 			}
 
 			if(f == false && nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) > 0)
@@ -2669,18 +2968,45 @@ public class BaseAI : MonoBehaviour
 
 				string nextP = nextPlaying();
 
-				if(nodeData.nodeType == NodeType.PLAYER || isPlayingAttack() || isPlayingSkill() || m_iUseSkillIndex != -1 || nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_eyeRange) < 0)
+				if(nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0 && nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_Armor) <= 0)
 				{
+//					mAnim.SetTrigger(getAnimationName(AniType.ANI_BATC));
+//					
+//					setNavMeshStop();
 
+					playBATC(attacker);
+
+					for(int i = 0; i < skills.Count; i ++)
+					{
+						if(skills[i].m_isUseThisSkill)
+						{
+							skills[i].ForcedTermination();
+						}
+					}
+				}
+				else if(nodeData.nodeType == NodeType.PLAYER || isPlayingAttack() || isPlayingSkill() || m_iUseSkillIndex != -1 || nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_eyeRange) < 0)
+				{
+					//debug   浮空
+
+					//beatDown(100, attacker);
+
+					if(nodeData.nodeType == NodeType.SOLDIER)
+					{
+						playBATC(attacker);
+					}
 				}
 				else if(playing.Equals(getAnimationName( AniType.ANI_Stand0))
 				   || playing.Equals(getAnimationName( AniType.ANI_Stand1))
 				   || playing.Equals(getAnimationName( AniType.ANI_BATC))
+                   || playing.Equals(getAnimationName( AniType.ANI_BATC_LEFT))
+                   || playing.Equals(getAnimationName( AniType.ANI_BATC_RIGHT))
 				   )
 				{
-					mAnim.SetTrigger(getAnimationName(AniType.ANI_BATC));
+					playBATC(attacker);
 
-					setNavMeshStop();
+					//mAnim.SetTrigger(getAnimationName(AniType.ANI_BATC));
+
+					//setNavMeshStop();
 				}
 			}
 
@@ -2691,6 +3017,29 @@ public class BaseAI : MonoBehaviour
 //				    -nodeData.GetAttribute( (int)AIdata.AttrubuteType.ATTRTYPE_moveSpeed ),
 //				    .5f);
 //			}
+		}
+
+		if(forcedArmor)
+		{
+			beatDown(100, attacker);
+
+			TimeHelper.SetTimeScale(.5f);
+
+			iTween.ValueTo(gameObject, iTween.Hash(
+				"from", 0f,
+				"to", 1f,
+				"time", 1f,
+				"onupdate", "forcedArmorTimeUpdata",
+				"oncomplete", "forcedArmorTimeComplete",
+				"ignoretimescale", true
+				));
+
+			BattleEffectControllor.Instance().PlayEffect(601254, gameObject);
+
+			if(nodeId == BattleUIControlor.Instance().barEnemy.getFocusNodeId() && nodeData.nodeType == NodeType.BOSS)
+			{
+				BattleUIControlor.Instance().barEnemy.startFlashArmorFrame((float)CanshuTemplate.GetValueByKey(CanshuTemplate.ARMOR_RECOVERYTIME2));
+			}
 		}
 
 		if(attacker.stance == Stance.STANCE_SELF)
@@ -2722,6 +3071,155 @@ public class BaseAI : MonoBehaviour
 		updataBloodBar();
 	}
 
+	private void forcedArmorTimeUpdata()
+	{
+
+	}
+
+	private void forcedArmorTimeComplete()
+	{
+		TimeHelper.SetTimeScale(1f);
+	}
+
+	private void playBATC(BaseAI attacker)
+	{
+		string playing = IsPlaying ();
+
+		string nextPlay = nextPlaying ();
+
+		if(playing.Equals(getAnimationName(AniType.ANI_BATCDown)) || playing.Equals(getAnimationName(AniType.ANI_BATCFly))
+		   || nextPlay.Equals(getAnimationName(AniType.ANI_BATCDown)) || nextPlay.Equals(getAnimationName(AniType.ANI_BATCFly))
+		   )
+		{
+//			playBATCFly();
+//
+//			mAnim.SetTrigger(getAnimationName(AniType.ANI_BATCFly));
+//
+//			setNavMeshStop();
+
+			return;
+		}
+
+		AniType at = AniType.ANI_BATC;
+
+		float angle = Mathf.Abs(Vector3.Angle (transform.forward, attacker.transform.position - transform.position));
+
+		if(angle < 60)//defender面对attacker
+		{
+			if(attacker.attackDir == UIAnchor.Side.Left)
+			{
+				at = AniType.ANI_BATC_LEFT;
+			}
+			else if(attacker.attackDir == UIAnchor.Side.Right)
+			{
+				at = AniType.ANI_BATC_RIGHT;
+			}
+		}
+		else if(angle > 120)//defender背对attacker
+		{
+			if(attacker.attackDir == UIAnchor.Side.Left)
+			{
+				at = AniType.ANI_BATC_RIGHT;
+			}
+			else if(attacker.attackDir == UIAnchor.Side.Right)
+			{
+				at = AniType.ANI_BATC_LEFT;
+			}
+		}
+		else //defender侧对attacker
+		{
+			at = AniType.ANI_BATC;
+		}
+
+		if(attacker.nodeData.nodeType == NodeType.PLAYER)
+		{
+			KingControllor kc = (KingControllor)attacker;
+
+			if(kc.actionId == 145)//绝影星光斩
+			{
+				float angleJ = Vector3.Angle (transform.forward, kc.copyObject.transform.position - transform.position);
+
+				if(angleJ > 60 && angleJ < 120)
+				{
+					at = AniType.ANI_BATC_LEFT;
+				}
+				else if(angleJ > 240 && angleJ < 300)
+				{
+					at = AniType.ANI_BATC_RIGHT;
+				}
+			}
+		}
+
+		mAnim.SetTrigger(getAnimationName(at));
+		
+		setNavMeshStop();
+	}
+
+	private void playBATCFly()
+	{
+		mAnim.SetTrigger(getAnimationName(AniType.ANI_BATCFly));
+
+		setNavMeshStop();
+
+//		mAnim.speed = 0;
+
+		StartCoroutine (BATCFlyAction());
+	}
+
+	private bool inFlyAction;
+
+	private float flyActionTime;//浮空在空中定住的时间  计时器
+
+	private float flyActionY;
+
+	private bool up;
+
+	IEnumerator BATCFlyAction()
+	{
+		flyActionTime = .6f;
+
+		flyActionY = body.transform.localPosition.y + 1f;
+
+		flyActionY = flyActionY > 2 ? 2 : flyActionY;
+
+		up = true;
+		
+		if( !inFlyAction )
+		{
+			inFlyAction = true;
+
+			for(;flyActionTime > 0 && body.transform.localPosition.y <= 0;)
+			{
+				yield return new WaitForEndOfFrame();
+
+				flyActionTime -= Time.deltaTime;
+
+				if(up)//上升
+				{
+					body.transform.localPosition += new Vector3(0, 8f * Time.deltaTime, 0);
+
+					if(body.transform.localPosition.y > flyActionY)
+					{
+						up = false;
+					}
+				}
+				else
+				{
+					body.transform.localPosition -= new Vector3(0, 3f * Time.deltaTime, 0);
+
+					if(body.transform.localPosition.y < 0)
+					{
+						body.transform.localPosition -= new Vector3(0, body.transform.localPosition.y, 0);
+					}
+				}
+			}
+
+			inFlyAction = false;
+
+			body.transform.localPosition -= new Vector3(0, body.transform.localPosition.y, 0);
+		}
+	}
+
 	public void showText(string text, int skillId)
 	{
 		if (skillId == tempSkillId) return;
@@ -2736,15 +3234,23 @@ public class BaseAI : MonoBehaviour
 		tempSkillId = 0;
 	}
 
-	public bool beatDown(int beatdownTemplateId)
+	public bool beatDown(int beatdownTemplateId, BaseAI attacker)
 	{
 		string playing = IsPlaying ();
 
 		if (playing.IndexOf (getAnimationName (BaseAI.AniType.ANI_DODGE)) != -1) return false;
 
-		if (playing.IndexOf (getAnimationName (BaseAI.AniType.ANI_BATCDown)) != -1) return false;
+		if (playing.IndexOf (getAnimationName (BaseAI.AniType.ANI_BATCDown)) != -1 
+		    || playing.IndexOf (getAnimationName (BaseAI.AniType.ANI_BATCFly)) != -1)
+		{
+			playBATCFly();
 
-		if (playing.IndexOf (getAnimationName (BaseAI.AniType.ANI_BATCUp)) != -1) return false;
+			//playBATC(attacker);
+
+			return false;
+		}
+
+		//if (playing.IndexOf (getAnimationName (BaseAI.AniType.ANI_BATCUp)) != -1) return false;
 
 		bool f = ControlOrderLvTemplate.haveBeatDownTemplateById (beatdownTemplateId);
 
@@ -2916,23 +3422,37 @@ public class BaseAI : MonoBehaviour
 
 			if (isAlive == true)
 			{
-				iTween.ValueTo(gameObject, iTween.Hash(
-					"name", "action_" + nodeId,
-					"from", transform.position,
-					"to", targetPosition,
-					"time", time,
-					"easeType", easeType,//iTween.EaseType.easeOutExpo,
-					"onupdate", "PositonTween"
-					));
+//				iTween.ValueTo(gameObject, iTween.Hash(
+//					"name", "action_" + nodeId,
+//					"from", transform.position,
+//					"to", targetPosition,
+//					"time", time,
+//					"easeType", easeType,//iTween.EaseType.easeOutExpo,
+//					"onupdate", "PositonTween"
+//					));
+
+				LeanTween.value( gameObject, Vector3.zero, targetPosition - transform.position, time )
+					.setEase( LeanTweenType.easeOutExpo )
+					.setOnStart(PositionTweenStart)
+					.setOnUpdate( PositonTween );
 			}
 		}
+	}
+
+	Vector3 tempTweenPo;
+
+	public void PositionTweenStart()
+	{
+		tempTweenPo = Vector3.zero;
 	}
 
 	public void PositonTween( Vector3 p_offset )
 	{
 		if (isAlive == false) return;
 
-		character.Move(p_offset - transform.position);
+		character.Move(p_offset - tempTweenPo);
+
+		tempTweenPo = p_offset;
 	}
 
 	public void clearTrails()
@@ -2961,6 +3481,8 @@ public class BaseAI : MonoBehaviour
 
 	public void setNavMeshDestination(Vector3 targetPosition)
 	{
+//		Debug.Log( Time.frameCount + " - " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " - " + targetPosition );
+
 		if (isPlayingAttack () == true) 
 		{
 			setNavMeshStop();
@@ -2989,6 +3511,20 @@ public class BaseAI : MonoBehaviour
 			return;
 		}
 
+		if (playing.Equals (getAnimationName (AniType.ANI_BATC_LEFT)) == true)
+		{
+			setNavMeshStop();
+			
+			return;
+		}
+
+		if (playing.Equals (getAnimationName (AniType.ANI_BATC_RIGHT)) == true)
+		{
+			setNavMeshStop();
+			
+			return;
+		}
+
 		if (playing.Equals (getAnimationName(AniType.ANI_BATCDown)) == true)
 		{
 			setNavMeshStop();
@@ -3011,7 +3547,21 @@ public class BaseAI : MonoBehaviour
 			
 			return;
 		}
-		
+
+		if (nextPlay.Equals (getAnimationName (AniType.ANI_BATC_LEFT)) == true)
+		{
+			setNavMeshStop();
+			
+			return;
+		}
+
+		if (nextPlay.Equals (getAnimationName (AniType.ANI_BATC_RIGHT)) == true)
+		{
+			setNavMeshStop();
+			
+			return;
+		}
+
 		if (nextPlay.Equals (getAnimationName(AniType.ANI_BATCDown)) == true)
 		{
 			setNavMeshStop();
@@ -3155,7 +3705,7 @@ public class BaseAI : MonoBehaviour
 		if(gameObject.activeSelf == true && nav != null && nav.enabled == true)
 		{
 			nav.destination = transform.position;
-			
+
 			nav.Stop();
 		}
 
@@ -3250,18 +3800,33 @@ public class BaseAI : MonoBehaviour
 
 	}
 
+	#if !CUSTOM_TRIGGER
 	private void OnTriggerEnter(Collider other)
 	{
+		#if DEBUG_CUSTOM_TRIGGER
+		Debug.Log( "OnTriggerEnter( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " - " + other.gameObject + " )" );
+		#endif
+
 		OnTriggerEnterNode (other);
 	}
 
+	public void OnTriggerExit(Collider other)
+	{
+		OnCustomTriggerExit( other );	
+	}
+	#endif
+
 	private bool triggerable = true;
 
-	public void OnTriggerEnterNode(Collider other)
+	public void OnTriggerEnterNode(BaseAI p_other)
 	{
+		#if DEBUG_CUSTOM_TRIGGER
+		Debug.Log( Time.frameCount + " - " + Time.realtimeSinceStartup + " OnTriggerEnterNode( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " - " + other.gameObject + " )" );
+		#endif
+
 		if (triggerable == false) return;
 
-		BaseAI node = (BaseAI)other.gameObject.GetComponent("BaseAI");
+		BaseAI node = p_other;
 
 		if(node == null || !node.isAlive) return;
 
@@ -3358,16 +3923,19 @@ public class BaseAI : MonoBehaviour
 
 		BubblePopControllor.Instance().triggerFuncOpenEye (nodeId);
 
-		triggerable = false;
+		if(stance == Stance.STANCE_ENEMY) triggerable = false;
 	}
 
-	public void OnTriggerExit(Collider other)
-	{
+	public void OnCustomTriggerExit( BaseAI p_other ){
+		#if DEBUG_CUSTOM_TRIGGER
+		Debug.Log( "OnCustomTriggerExit( " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " - " + other.gameObject + " )" );
+		#endif
+
 		if (nodeData == null) return;
 
 		if (nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_eyeRange ) == 0) return;
 
-		BaseAI node = (BaseAI)other.gameObject.GetComponent("BaseAI");
+		BaseAI node = p_other;
 
 		enemysInRange.Remove(node);
 	}
@@ -3415,7 +3983,25 @@ public class BaseAI : MonoBehaviour
 
 		float t_attr = defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp );
 
+//		if(defender.nodeId != 101)
 		defender.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp, t_attr - hpValue );
+
+		float curArmor = defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Armor);
+
+		if(defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0)//armor
+		{
+			defender.armorCD = 0;
+
+			float armorMinus = BattleControlor.Instance().getArmorValue(defender, hpValue);
+
+			float tempArmor = curArmor - armorMinus;
+			
+			tempArmor = tempArmor < 0 ? 0 : tempArmor;
+
+			tempArmor = tempArmor > defender.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) ? defender.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) : tempArmor;
+
+			defender.nodeData.SetAttribute( AIdata.AttributeType.ATTRTYPE_Armor, tempArmor);
+		}
 
 		Buff.createBuffThreat (defender, (float)CanshuTemplate.m_TaskInfoDic[CanshuTemplate.GONGJICHOUHEN_ADD], (float)CanshuTemplate.m_TaskInfoDic[CanshuTemplate.GONGJICHOUHEN_TIME], nodeId, 0);
 
@@ -3423,7 +4009,14 @@ public class BaseAI : MonoBehaviour
 
 		else m_listSkill.Add (defender);
 
-		defender.attacked(this, hpValue, cri, attackedType, nuqiType);
+		bool forcedArmor = false;
+
+		if(defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Armor) == 0 && curArmor > 0)
+		{
+			forcedArmor = true;
+		}
+
+		defender.attacked(this, hpValue, cri, attackedType, nuqiType, forcedArmor);
 
 		if( defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0 )
 		{
@@ -3468,7 +4061,7 @@ public class BaseAI : MonoBehaviour
 
 	IEnumerator lastCameraEffect(BaseAI attacker, BaseAI defender)
 	{
-		Time.timeScale = 0.2f;
+		TimeHelper.SetTimeScale(.2f);
 
 //		if(defender.nodeId == BattleControlor.Instance().getKing().nodeId && false)
 //		{
@@ -3516,8 +4109,8 @@ public class BaseAI : MonoBehaviour
 		BattleControlor.Instance().lastCameraEffect = true;
 		
 		yield return new WaitForSeconds(2.0f);
-		
-		Time.timeScale = 1f;
+
+		TimeHelper.SetTimeScale(1f);
 		
 		//yield return new WaitForSeconds(0.2f);
 		
@@ -3589,4 +4182,386 @@ public class BaseAI : MonoBehaviour
 		return appearanceTemplate.height * ModelTemplate.getModelTemplateByModelId(modelId).height;
 	}
 
+
+
+	#region Custom Trigger
+
+	private static List<CustomTrigger> m_custom_trigger_list = new List<CustomTrigger>();
+
+	#if DEBUG_CUSTOM_TRIGGER
+	public bool m_log_all_custom_triggers = false;
+
+	public bool m_log_cur_trigger = false;
+	#endif
+
+	private static float m_custom_trigger_update_time = 0;
+
+	private static int m_custom_trigger_update_frame = 0;
+
+	private void UpdateTriggersLog(){
+		#if DEBUG_CUSTOM_TRIGGER
+		for( int i = m_custom_trigger_list.Count - 1; i >= 0; i-- ){
+			CustomTrigger t_trigger = m_custom_trigger_list[ i ];
+
+			// log
+			{
+				if( t_trigger.m_base_ai.m_log_all_custom_triggers ){
+					t_trigger.m_base_ai.m_log_all_custom_triggers = false;
+
+					Debug.Log( "------ Custom All Triggers ------" );
+
+					for( int j = m_custom_trigger_list.Count - 1; j >= 0; j-- ){
+						CustomTrigger t_cur_trigger = m_custom_trigger_list[ j ];
+
+						if( t_cur_trigger.m_base_ai == this ){
+							t_cur_trigger.Log();
+						}
+					}
+				}
+
+				if( t_trigger.m_base_ai.m_log_cur_trigger ){
+					t_trigger.m_base_ai.m_log_cur_trigger = false;
+
+					Debug.Log( "--- Log Current Trigger: " + GameObjectHelper.GetGameObjectHierarchy( gameObject ) + " ---"  );
+
+					CustomTrigger t_cur_trigger = GetCustomTrigger( this );
+
+					t_cur_trigger.Log();
+				}
+			}
+		}
+		#endif
+	}
+	
+	// entrance
+	private void UpdateCustomTrigger(){
+		if( Time.frameCount == m_custom_trigger_update_frame ){
+			return;
+		}
+
+		if( Time.realtimeSinceStartup - m_custom_trigger_update_time <
+			ConfigTool.GetFloat( ConfigTool.CONST_BATTLE_CUSTOM_TRIGGER_UPDATE_INVERVAL ) ){
+			return;
+		}
+
+		{
+			#if DEBUG_CUSTOM_TRIGGER
+			Debug.Log( Time.frameCount + " Update Custom Trigger." );
+
+//			Debug.Log( "Delta.Time: " + ( Time.frameCount == m_custom_trigger_update_frame ) );
+//
+//			Debug.Log( "Interval: " + ConfigTool.GetFloat( ConfigTool.CONST_BATTLE_CUSTOM_TRIGGER_UPDATE_INVERVAL ) );
+//
+//			Debug.Log( "TriggerUpdateTime: " + m_custom_trigger_update_time );
+			#endif
+
+			m_custom_trigger_update_frame = Time.frameCount;
+
+			m_custom_trigger_update_time = Time.realtimeSinceStartup;
+		}
+
+		#if DEBUG_CUSTOM_TRIGGER
+		{
+			UpdateTriggersLog();
+		}
+		#endif
+	
+		// clean
+		{
+			for( int i = m_custom_trigger_list.Count - 1; i >= 0; i-- ){
+				CustomTrigger t_trigger = m_custom_trigger_list[ i ];
+
+				if( !t_trigger.IsExist() ){
+					m_custom_trigger_list.Remove( t_trigger );
+					
+					t_trigger.Clear();
+				}
+			}
+		}
+
+		// update
+		{
+			for( int i = m_custom_trigger_list.Count - 1; i >= 0; i-- ){
+				CustomTrigger t_trigger = m_custom_trigger_list[ i ];
+
+				t_trigger.UpdateTriggerExit();
+
+				t_trigger.UpdateTrigger();
+			}
+
+			for( int i = m_custom_trigger_list.Count - 1; i >= 0; i-- ){
+				CustomTrigger t_trigger_i = m_custom_trigger_list[ i ];
+
+				if( !t_trigger_i.IsActive() ){
+					continue;
+				}
+
+				for( int j = i - 1; j >= 0; j-- ){
+					CustomTrigger t_trigger_j = m_custom_trigger_list[ j ];
+
+					if( !t_trigger_j.IsActive() ){
+						continue;
+					}
+
+					if( !t_trigger_i.IsMoving() && !t_trigger_j.IsMoving() ){
+						continue;
+					}
+
+					t_trigger_i.UpdateTriggerEnter( t_trigger_j );
+				}
+			}
+		}
+	}
+
+	private void RegisterTrigger( BaseAI p_base_ai ){
+		#if CUSTOM_TRIGGER
+		if( ContainedTrigger( p_base_ai ) ){
+			#if DEBUG_CUSTOM_TRIGGER
+			Debug.Log( "Trigger contained: " + p_base_ai );
+			#endif
+
+			return;
+		}
+
+		#if DEBUG_CUSTOM_TRIGGER
+		Debug.Log( "RegisterTrigger: " + p_base_ai );
+		#endif
+
+		CustomTrigger t_trigger = new CustomTrigger( p_base_ai );
+
+		m_custom_trigger_list.Add( t_trigger );
+		#endif
+	}
+
+	private void UnRegisterTrigger( BaseAI p_base_ai ){
+		#if CUSTOM_TRIGGER
+		CustomTrigger t_trigger = GetCustomTrigger( p_base_ai );
+
+		if( t_trigger != null ){
+			#if DEBUG_CUSTOM_TRIGGER
+			Debug.Log( "UnRegisterTrigger: " + p_base_ai );
+			#endif
+			
+			m_custom_trigger_list.Remove( t_trigger );
+		}
+		#endif
+	}
+
+	private CustomTrigger GetCustomTrigger( BaseAI p_base_ai ){
+		for( int i = m_custom_trigger_list.Count - 1; i >= 0; i-- ){
+			CustomTrigger t_trigger = m_custom_trigger_list[ i ];
+
+			if( t_trigger.m_base_ai == p_base_ai ){
+				return t_trigger;
+			}
+		}
+
+		return null;
+	}
+
+	private bool ContainedTrigger( BaseAI p_base_ai ){
+		for( int i = m_custom_trigger_list.Count - 1; i >= 0; i-- ){
+			CustomTrigger t_trigger = m_custom_trigger_list[ i ];
+
+			if( t_trigger.m_base_ai == p_base_ai ){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private class CustomTrigger{
+		public BaseAI m_base_ai;
+
+		public GameObject m_base_ai_gb;
+
+		private Collider m_collider;
+
+		private SphereCollider m_cast_sphere_collider;
+
+		private float m_cast_sphere_collider_r = 0.0f;
+
+		private Transform m_transform;
+
+		private Vector3 m_transform_position = Vector3.zero;
+
+		private bool m_is_moving = true;
+
+		private Dictionary<CustomTrigger, bool> m_triggers_in_range = new Dictionary<CustomTrigger, bool>();
+
+		public void Clear(){
+			m_triggers_in_range.Clear();
+
+			m_base_ai = null;
+		}
+
+		public CustomTrigger( BaseAI p_base_ai ){
+			m_base_ai = p_base_ai;
+
+			m_base_ai_gb = p_base_ai.gameObject;
+
+			m_collider = p_base_ai.GetComponent<SphereCollider>();
+
+			m_collider.enabled = false;
+
+			if( m_collider != null ){
+				m_cast_sphere_collider = (SphereCollider)m_collider;
+			}
+			else{
+				Debug.LogError( "Sphere Collider Not Exist: " + p_base_ai );
+
+				Collider[] t_colliders = p_base_ai.GetComponents<Collider>();
+
+				for( int i = 0; i < t_colliders.Length; i++ ){
+					Collider t_collider = t_colliders[i ];
+
+					Debug.Log( i + " : " + t_collider );
+				}
+			}
+
+			m_transform = p_base_ai.gameObject.transform;
+		}
+
+		public void Log(){
+			Debug.Log( IsActive() + " --- Custom Trigger: " + GameObjectHelper.GetGameObjectHierarchy( m_base_ai.gameObject ) + " ---" );
+
+			Debug.Log( "IsActive: " + IsActive() );
+
+			foreach( KeyValuePair<CustomTrigger, bool> t_kv in m_triggers_in_range ){
+				Debug.Log( "Trigger In Range : " + GameObjectHelper.GetGameObjectHierarchy( t_kv.Key.m_base_ai ) );
+			}
+		}
+
+		public void UpdateTrigger(){
+			m_cast_sphere_collider_r = m_cast_sphere_collider.radius;
+
+			if( Vector3.SqrMagnitude( m_transform.position - m_transform_position ) < Vector3.kEpsilon ){
+				m_is_moving = false;
+			}
+			else{
+				m_is_moving = true;
+			}
+
+			m_transform_position = m_transform.position;
+		}
+
+		private List<CustomTrigger> m_temp_list = new List<CustomTrigger>();
+
+		public void UpdateTriggerExit(){
+			m_temp_list.Clear();
+
+			foreach( KeyValuePair<CustomTrigger, bool> t_kv in m_triggers_in_range ){
+				CustomTrigger t_trigger = t_kv.Key;
+
+				if( !IsTriggerStillInRange( t_trigger ) ){
+					m_temp_list.Add( t_trigger );
+				}
+			}
+
+			for( int i = 0; i < m_temp_list.Count; i++ ){
+				CustomTrigger t_trigger = m_temp_list[ i ];	
+
+				{
+					m_triggers_in_range.Remove( t_trigger );
+
+					m_base_ai.OnCustomTriggerExit( t_trigger.m_base_ai );
+				}
+
+				{
+					t_trigger.m_triggers_in_range.Remove( this );
+
+					t_trigger.m_base_ai.OnCustomTriggerExit( m_base_ai );
+				}
+			}
+		}
+
+		public void UpdateTriggerEnter( CustomTrigger p_trigger ){
+			if( this.m_base_ai == p_trigger.m_base_ai ){
+				return;
+			}
+
+			if( m_triggers_in_range.ContainsKey( p_trigger ) ){
+				return;
+			}
+
+			if( IsCollidingWith( p_trigger ) ){
+				{
+					m_triggers_in_range.Add( p_trigger, true );
+
+					m_base_ai.OnTriggerEnterNode( p_trigger.m_base_ai );
+				}
+
+				{
+					p_trigger.m_triggers_in_range.Add( this, true );
+
+					p_trigger.m_base_ai.OnTriggerEnterNode( m_base_ai );
+				}
+			}
+		}
+
+		public bool IsExist(){
+			if( m_base_ai == null ){
+				return false;
+			}
+
+			if( m_base_ai_gb == null ){
+				return false;
+			}
+
+			return true;
+		}
+
+		public bool IsMoving(){
+			return m_is_moving;
+		}
+		
+		public bool IsActive(){
+			if( m_base_ai_gb == null ){
+				return false;
+			}
+
+			if( !m_base_ai_gb.activeInHierarchy ){
+				return false;
+			}
+
+			return true;
+		}
+
+		public bool IsCollidingWith( CustomTrigger p_trigger ){
+			float t_r = ( m_cast_sphere_collider_r + p_trigger.m_cast_sphere_collider_r );
+
+			if( Vector3.SqrMagnitude( m_transform_position - p_trigger.m_transform_position ) <= t_r * t_r ){
+				return true;
+			}
+
+			return false;
+		}
+
+		public bool IsTriggerStillInRange( CustomTrigger p_trigger ){
+			if( !IsActive() ){
+				return false;
+			}
+
+			if( p_trigger == null ){
+				return false;
+			}
+
+			if( !p_trigger.IsActive() ){
+				return false;
+			}
+
+			if( !IsMoving() && !p_trigger.IsMoving() ){
+				return true;
+			}
+
+			if( IsCollidingWith( p_trigger ) ){
+				return true;
+			}
+
+			return false;
+		}
+	}
+
+	#endregion
 }

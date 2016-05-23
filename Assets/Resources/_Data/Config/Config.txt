@@ -1,7 +1,7 @@
 
 -------------------------------------------------------------------- <Version Config>
 // show version code and lag
-ShowVersion:			false
+ShowVersion:			true
 
 // Investigate use or not, if true then skip all Movies
 InVestigateVersion:		false
@@ -57,16 +57,21 @@ QuickFx:					false
 //Char performance, Maximum char count in scene
 MaxCarriageChar:			20
 
+MaxAllianceBattleChar:		20
+
 MaxCharInTanBao:			30
 
-// char update interval
-CharUpdateInterval:	1.0
+// char performance update interval
+CharUpdateInterval:			1.0
 
-//Maximum effect count in scene
+//Maximum effect count in carriage scene
 MaxEffect:					3
 
-// effect update interval
-EffectUpdateInterval:	2.0
+// carriage scene effect update interval
+EffectUpdateInterval:		2.0
+
+// In-Screen offset
+CarriageInfoSendingDis:		5.0
 ---------------------------------------------------------------------- </Performance Config>
 
 
@@ -75,7 +80,7 @@ EffectUpdateInterval:	2.0
 // must be 30 or 60
 TargetFPS:			30
 
-ShowFPS:			false
+ShowFPS:			true
 
 LoadingInterval:	0.8
 
@@ -100,13 +105,16 @@ OpenAllTheFunction:			false
 
 ---------------------------------------------------------------- <BattleField Config>
 // quick choose level
-QuickChooseLevel:			false
+QuickChooseLevel:			true
 
 // quick finish game
-QuickFight:					false
+QuickFight:					true
 
 // operate battle's camera
-ShowBattleCameraOps:		false
+ShowBattleCameraOps:		true
+
+// Cumstom Trigger Update Interval
+BattleFieldCustomTriggerInterval:	0.2
 --------------------------------------------------------------- </BattleField Config>
 
 
@@ -127,6 +135,9 @@ NetworkLatency:				0.0
 
 // show network detail status
 ShowNetworkStatus:			false
+
+// Socket Update Interval
+SocketUpdateInterval:		0.1
 ------------------------------------------------------------------- </Network Config>
 
 

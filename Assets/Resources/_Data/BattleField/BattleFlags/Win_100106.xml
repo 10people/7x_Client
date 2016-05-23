@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 <BattleWin id="1" isWin="1" endType="1" killNum="1" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="0" protectList="0" />
-<BattleWin id="2" isWin="0" endType="2" killNum="0" destinationx="-1.728592" destinationy="-6.041164" destinationz="35.90219" destinationRadius="2.5" activeNum="1" activeList="110" showOnUI="0" protectNum="0" protectList="0" />
+<BattleWin id="2" isWin="0" endType="2" killNum="0" destinationx="-34.3587" destinationy="3.119999" destinationz="-60.17844" destinationRadius="2.5" activeNum="1" activeList="110" showOnUI="0" protectNum="0" protectList="0" />
 <BattleWin id="2" isWin="0" endType="3" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="0" protectList="0" />
 <BattleWin id="2" isWin="0" endType="7" killNum="0" destinationx="0" destinationy="0" destinationz="0" destinationRadius="0" activeNum="0" activeList="0" showOnUI="0" protectNum="1" protectList="1" />
 </dataset>

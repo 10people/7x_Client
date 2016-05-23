@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<XilianQujian typeID="1001" min="-200" max="100" type="1" />
+<XilianQujian typeID="1002" min="100" max="200" type="1" />
+<XilianQujian typeID="1003" min="200" max="300" type="1" />
+<XilianQujian typeID="1004" min="300" max="400" type="1" />
+<XilianQujian typeID="1005" min="400" max="500" type="1" />
+<XilianQujian typeID="1006" min="500" max="600" type="1" />
+<XilianQujian typeID="1007" min="600" max="700" type="1" />
+<XilianQujian typeID="1008" min="700" max="800" type="1" />
+<XilianQujian typeID="1009" min="800" max="900" type="1" />
+<XilianQujian typeID="1010" min="900" max="1000" type="1" />
+<XilianQujian typeID="2001" min="-200" max="100" type="2" />
+<XilianQujian typeID="2002" min="100" max="200" type="2" />
+<XilianQujian typeID="2003" min="200" max="300" type="2" />
+<XilianQujian typeID="2004" min="300" max="400" type="2" />
+<XilianQujian typeID="2005" min="400" max="500" type="2" />
+<XilianQujian typeID="2006" min="500" max="600" type="2" />
+<XilianQujian typeID="2007" min="600" max="700" type="2" />
+<XilianQujian typeID="2008" min="700" max="800" type="2" />
+<XilianQujian typeID="2009" min="800" max="900" type="2" />
+<XilianQujian typeID="2010" min="900" max="1000" type="2" />
+</dataset>

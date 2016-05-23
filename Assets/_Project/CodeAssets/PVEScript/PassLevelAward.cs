@@ -156,10 +156,6 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 				UIYindao.m_UIYindao.CloseUI();
 				InitGetAwardData(mErrorMessage);
 
-				if(MapData.mapinstance.myMapinfo.s_section == 1) //第一章节领奖引导
-				{
-					MapData.mapinstance.BackToCity();
-				}
 				SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_NOT_GET_AWART_ZHANGJIE_REQ);
 				PassLevelBtn.Instance().IsOPenEffect = false;
 				PassLevelBtn.Instance().CloseEffect ();
@@ -240,7 +236,11 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 		FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
 		MapData.mapinstance.ShowYinDao = false;
 		PassLevelBtn.Instance().OPenEffect ();
-		//MapData.mapinstance.OpenEffect();
+		if(MapData.mapinstance.myMapinfo.s_section == 1) //第一章节领奖引导
+		{
+//			MapData.mapinstance.BackToCity();
+			MapData.mapinstance.ShowYinDao = true;
+		}
 		Destroy (this.gameObject);
 	}
 }

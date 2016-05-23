@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HuangYeDuihuan id="1001" itemType="5" itemId="313001" itemNum="4" needNum="240" weight="10000" site="1" ifRecomanded="1" />
+<HuangYeDuihuan id="1002" itemType="0" itemId="910002" itemNum="3" needNum="240" weight="10000" site="2" ifRecomanded="0" />
+<HuangYeDuihuan id="1003" itemType="8" itemId="901048" itemNum="1" needNum="40" weight="3334" site="3" ifRecomanded="0" />
+<HuangYeDuihuan id="1004" itemType="8" itemId="902048" itemNum="1" needNum="160" weight="3333" site="3" ifRecomanded="0" />
+<HuangYeDuihuan id="1005" itemType="8" itemId="903048" itemNum="1" needNum="640" weight="3333" site="3" ifRecomanded="0" />
+<HuangYeDuihuan id="1006" itemType="8" itemId="901058" itemNum="1" needNum="40" weight="3334" site="4" ifRecomanded="0" />
+<HuangYeDuihuan id="1007" itemType="8" itemId="902058" itemNum="1" needNum="160" weight="3333" site="4" ifRecomanded="0" />
+<HuangYeDuihuan id="1008" itemType="8" itemId="903058" itemNum="1" needNum="640" weight="3333" site="4" ifRecomanded="0" />
+<HuangYeDuihuan id="1009" itemType="8" itemId="901068" itemNum="1" needNum="40" weight="3334" site="5" ifRecomanded="0" />
+<HuangYeDuihuan id="1010" itemType="8" itemId="902068" itemNum="1" needNum="160" weight="3333" site="5" ifRecomanded="0" />
+<HuangYeDuihuan id="1011" itemType="8" itemId="903068" itemNum="1" needNum="640" weight="3333" site="5" ifRecomanded="0" />
+<HuangYeDuihuan id="1012" itemType="8" itemId="901078" itemNum="1" needNum="40" weight="3334" site="6" ifRecomanded="0" />
+<HuangYeDuihuan id="1013" itemType="8" itemId="902078" itemNum="1" needNum="160" weight="3333" site="6" ifRecomanded="0" />
+<HuangYeDuihuan id="1014" itemType="8" itemId="903078" itemNum="1" needNum="640" weight="3333" site="6" ifRecomanded="0" />
+<HuangYeDuihuan id="1015" itemType="0" itemId="951001" itemNum="5" needNum="100" weight="3334" site="7" ifRecomanded="0" />
+<HuangYeDuihuan id="1016" itemType="0" itemId="951002" itemNum="3" needNum="240" weight="3333" site="7" ifRecomanded="0" />
+<HuangYeDuihuan id="1017" itemType="0" itemId="951003" itemNum="1" needNum="400" weight="3333" site="7" ifRecomanded="0" />
+<HuangYeDuihuan id="1018" itemType="9" itemId="920002" itemNum="5" needNum="50" weight="2500" site="8" ifRecomanded="0" />
+<HuangYeDuihuan id="1019" itemType="9" itemId="921002" itemNum="5" needNum="50" weight="2500" site="8" ifRecomanded="0" />
+<HuangYeDuihuan id="1020" itemType="9" itemId="920003" itemNum="5" needNum="200" weight="2500" site="8" ifRecomanded="0" />
+<HuangYeDuihuan id="1021" itemType="9" itemId="921003" itemNum="5" needNum="200" weight="2500" site="8" ifRecomanded="0" />
+</dataset>

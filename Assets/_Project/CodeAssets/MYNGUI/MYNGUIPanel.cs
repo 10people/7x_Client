@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public abstract class MYNGUIPanel : MonoBehaviour
@@ -6,6 +7,7 @@ public abstract class MYNGUIPanel : MonoBehaviour
 //	public int iUiIndexPanel = -1;
 //	public bool m_isUp = false;
 //	public bool m_isOpen = false;
+	public float m_TimeP = 0;
 	public abstract void MYClick(GameObject ui);
 	public abstract void MYMouseOver(GameObject ui);
 	public abstract void MYMouseOut(GameObject ui);

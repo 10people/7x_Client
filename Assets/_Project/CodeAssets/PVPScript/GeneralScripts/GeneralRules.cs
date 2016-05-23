@@ -2,54 +2,55 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GeneralRules : MonoBehaviour {
+public class GeneralRules : GeneralInstance<GeneralRules> {
 
-	public delegate void OnRulesBtnClick ();
+	public delegate void RulesDelegate ();
 
-	private OnRulesBtnClick onRulesBtnClick;
+	public RulesDelegate M_RulesDelegate;
 
-	public UILabel rulesLabel;
+	public UILabel m_rules;
 
-	public UIDragScrollView dragArea;
+	public UIDragScrollView m_dragArea;
 
-	public UIScrollView ruleSc;
-	public UIScrollBar ruleSb;
+	public UIScrollView m_ruleSc;
+	public UIScrollBar m_ruleSb;
 
-	public List<EventHandler> closeHandlerList = new List<EventHandler>();
-
-	public ScaleEffectController m_ScaleEffectController;
+	new void Awake ()
+	{
+		base.Awake ();
+	}
 
 	/// <summary>
 	/// Shows the rules.
 	/// </summary>
 	/// <param name="textList">Text list.</param>
 	/// <param name="tempClick">Temp click.</param>
-	public void ShowRules (string ruleText,OnRulesBtnClick tempClick)
+	public void ShowRules (string ruleText)
 	{
-		m_ScaleEffectController.OnOpenWindowClick ();
+		m_rules.text = ruleText;
+		m_ruleSc.UpdateScrollbars (true);
 
-//		rulesLabel.text = "[ffffff]" + ruleText + "[-]";
-		rulesLabel.text = ruleText;
-		ruleSc.UpdateScrollbars (true);
+		m_dragArea.enabled = m_rules.height > 180 ? true : false;
 
-		dragArea.enabled = rulesLabel.height > 326 ? true : false;
+		m_ruleSb.gameObject.SetActive (m_rules.height > 180 ? true : false);
+	}
 
-		ruleSb.gameObject.SetActive (rulesLabel.height > 326 ? true : false);
-
-		onRulesBtnClick = tempClick;
-		foreach (EventHandler handler in closeHandlerList)
+	public override void MYClick (GameObject ui)
+	{
+		switch (ui.name)
 		{
-			handler.m_click_handler += CloseHandlerClickBack;
+		case "ZheZhao":
+
+			M_RulesDelegate ();
+
+			break;
+		default:
+			break;
 		}
 	}
 
-	void CloseHandlerClickBack (GameObject obj)
+	new void OnDestroy ()
 	{
-		if (onRulesBtnClick != null)
-		{
-			onRulesBtnClick ();
-		}
-
-		Destroy (gameObject);
+		base.OnDestroy ();
 	}
 }

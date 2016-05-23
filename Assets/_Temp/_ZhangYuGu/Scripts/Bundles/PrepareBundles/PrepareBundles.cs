@@ -1,4 +1,4 @@
-﻿//#define SKIP_BUNDLE_UPDATE
+﻿#define SKIP_BUNDLE_UPDATE
 
 //#define DEBUG_BUNDLE
 
@@ -34,15 +34,15 @@ using SimpleJSON;
  * 
  * 4.Build:
  * 		1.Update Version.txt;
- * 		2.Run Build -> Bundles -> Build All;
- * 		3.Run Build -> Bundles -> Build Manifest;
+ * 		2.Run Build -> Bundles -> 1.Build All;
+ * 		3.Run Build -> Bundles -> 2.Build Manifest;
  * 
  * 5.3rd Update:
  * 		1.ThirdPlatform;
  * 		2.Bonjour;
  * 		3.PrepareBundles;
- * 		4.PrepareBundleHelper;
- * 		5.NetworkHelper;
+ * 		4.PrepareBundleHelper;			--- Optional: Set Server Selector
+ * 		5.NetworkHelper;				--- Optional: Set Default Server
  * 
  */ 
 public class PrepareBundles : MonoBehaviour {
@@ -189,6 +189,12 @@ public class PrepareBundles : MonoBehaviour {
 	}
 
 	private void StartUpdate(){
+		#if DEBUG_BUNDLE
+		Debug.Log( "StartUpdate()" );
+		#endif
+
+		Debug.Log( "Debug.IsDebugBuild: " + Debug.isDebugBuild );
+
 		{
 			#if SKIP_BUNDLE_UPDATE
 			if( ThirdPlatform.IsThirdPlatform() && !Debug.isDebugBuild ){
@@ -198,7 +204,13 @@ public class PrepareBundles : MonoBehaviour {
 					Debug.LogError( "Skipping Update Now, Please Confirm." );
 				}
 
-				Application.Quit();
+//				{
+//					Debug.LogError( "We Are Forcing Quit Now." );
+//
+//					Debug.LogError( "Stopping Normal Update, Becasue of ThirdPlatform and Debug.IsDebugBuild: " + Debug.isDebugBuild );
+//
+//					UtilityTool.QuitGame();
+//				}
 			}
 
 			BundleHelper.Instance().PreLoadResources();
@@ -252,6 +264,10 @@ public class PrepareBundles : MonoBehaviour {
 	#region HTTP
 
 	private void GetServerInfo(){
+		#if DEBUG_BUNDLE
+		Debug.Log( "GetServerInfo()" );
+		#endif
+
 		Dictionary< string,string > t_request_params = new Dictionary<string,string>();
 		
 		{

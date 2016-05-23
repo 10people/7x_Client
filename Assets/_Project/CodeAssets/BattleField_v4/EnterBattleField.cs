@@ -14,6 +14,7 @@ public class EnterBattleField : ScriptableObject
 		Type_YouXia,
 		Type_LueDuo,
 		Type_YuanZhu,
+		Type_ChongLou,
 	}
 
 	public static void EnterBattlePve( int section, int level, LevelType levelType )
@@ -276,6 +277,29 @@ public class EnterBattleField : ScriptableObject
 		
 		//SceneManager.EnterBattleField( CityGlobalData.t_next_battle_field_scene );
 
+		sendData ();
+	}
+
+	public static void EnterBattleChongLou( int level )
+	{
+		LoadingTemplate.SetCurFunction( LoadingTemplate.LoadingFunctions.PVE_CHONG_LOU);
+		
+		CityGlobalData.m_battleType = BattleType.Type_ChongLou;
+		
+		CityGlobalData.m_tempSection = 0;
+		
+		CityGlobalData.m_tempLevel = level;
+		
+		CityGlobalData.m_save = 0;
+		
+		ChonglouPveTemplate template = ChonglouPveTemplate.Get_QCL_PVETemplate_By_Layer (level);
+		
+		CityGlobalData.battleTemplateId = template.id;
+		
+		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( template.sceneId );
+		
+		CityGlobalData.m_configId = template.configId;
+		
 		sendData ();
 	}
 

@@ -1,6 +1,12 @@
-﻿using UnityEngine;
+﻿//#define USE_ITWEEN
+
+
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+
 
 public class BloodLabel : UILabel
 {
@@ -79,12 +85,18 @@ public class BloodLabel : UILabel
 
 		randomVector3.y = _ty;
 
-		iTween.MoveTo (gameObject, iTween.Hash(
-			"name", "Blood",
-			"position", transform.position + randomVector3,
-			"time", time,
-			"easeType", iTween.EaseType.easeOutQuint
+		{
+			#if USE_ITWEEN
+			iTween.MoveTo (gameObject, iTween.Hash(
+				"name", "Blood",
+				"position", transform.position + randomVector3,
+				"time", time,
+				"easeType", iTween.EaseType.easeOutQuint
 			));
+			#else
+			LeanTween.move( gameObject, transform.position + randomVector3, time ).setEase( LeanTweenType.easeOutQuint );
+			#endif
+		}
 
 		for(;state == 0;)
 		{
@@ -93,12 +105,18 @@ public class BloodLabel : UILabel
 
 		randomVector3.y = _ty + .5f;
 
-		iTween.MoveTo (gameObject, iTween.Hash(
-			"name", "Blood",
-			"position", transform.position + randomVector3,
-			"time", time / 2,
-			"easeType", iTween.EaseType.linear
+		{
+			#if USE_ITWEEN
+			iTween.MoveTo (gameObject, iTween.Hash(
+				"name", "Blood",
+				"position", transform.position + randomVector3,
+				"time", time / 2,
+				"easeType", iTween.EaseType.linear
 			));
+			#else
+			LeanTween.move( gameObject, transform.position + randomVector3, time / 2 ).setEase( LeanTweenType.linear );
+			#endif
+		}
 
 		TweenAlpha.Begin (gameObject, time / 2, 0);
 

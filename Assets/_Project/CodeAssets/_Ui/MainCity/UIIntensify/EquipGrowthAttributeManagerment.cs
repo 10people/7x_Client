@@ -12,7 +12,8 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
     public UIProgressBar m_ProgressRed;
     public UILabel m_labProgressBlue;
     public UILabel m_labProgressPuple;
- 
+    public UILabel m_labProgressAdd;
+    public UISprite m_SpritArrow;
     void Start()
     {
 
@@ -20,6 +21,8 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
     public void ShowInfo(EquipSuoData.ShuXingInfo _ShuXingInfo)
     {
         m_labName.text = MyColorData.getColorString(ColorID(_ShuXingInfo._type), NameIdTemplate.GetName_By_NameId(_ShuXingInfo._nameid));
+        m_labProgressAdd.text = "";
+        m_SpritArrow.gameObject.SetActive(false);
         if (_ShuXingInfo._type == 0)
         {
             if (_ShuXingInfo._Max != 0)
@@ -28,16 +31,18 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                 m_ProgressBlue.gameObject.SetActive(true);
                 m_ProgressBlue.value = float.Parse(_ShuXingInfo._Count.ToString()) / _ShuXingInfo._Max;
                 m_ProgressBlue.ForceUpdate();
-            //    m_ProgressBlue.alpha = float.Parse(_ShuXingInfo._Count.ToString()) / _ShuXingInfo._Max;
+          
                 if (Mathf.Abs(_ShuXingInfo._CountAdd) == 0)
                 {
                     if (_ShuXingInfo._Count >= _ShuXingInfo._Max && _ShuXingInfo._IsAllMax)
                     {
                         m_labProgressBlue.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_10);
+                        m_labProgressAdd.text = "";
                     }
                     else if (_ShuXingInfo._Count >= _ShuXingInfo._Max)
                     {
                         m_labProgressBlue.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_9);
+                        m_labProgressAdd.text = "";
                     }
                     else
                     {
@@ -48,21 +53,31 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                 {
                     if (_ShuXingInfo._CountAdd < 0)
                     {
-                        m_labProgressBlue.text = MyColorData.getColorString(5, _ShuXingInfo._CountAdd.ToString());
+                        // m_labProgressBlue.text = MyColorData.getColorString(5, _ShuXingInfo._CountAdd.ToString());
+                        m_labProgressAdd.text = MyColorData.getColorString(5, _ShuXingInfo._CountAdd.ToString());
+                        m_SpritArrow.spriteName = "arrow_down";
+                        m_SpritArrow.gameObject.SetActive(true);
+                        m_labProgressBlue.text = _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString();
                     }
                     else
                     {
                         if (_ShuXingInfo._Count >= _ShuXingInfo._Max && _ShuXingInfo._IsAllMax)
                         {
                             m_labProgressBlue.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_10);
+                            m_labProgressAdd.text = "";
                         }
                         else if (_ShuXingInfo._Count >= _ShuXingInfo._Max)
                         {
                             m_labProgressBlue.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_9);
+                            m_labProgressAdd.text = "";
                         }
                         else
                         {
-                            m_labProgressBlue.text = MyColorData.getColorString(4, "+" + _ShuXingInfo._CountAdd.ToString());
+                            m_labProgressBlue.text = _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString();
+                            m_labProgressAdd.text = MyColorData.getColorString(4, _ShuXingInfo._CountAdd.ToString());
+                            m_SpritArrow.spriteName = "arrow_up";
+                            m_SpritArrow.gameObject.SetActive(true);
+                            // m_labProgressBlue.text = MyColorData.getColorString(4, "+" + _ShuXingInfo._CountAdd.ToString());
                         }
                     }
                 }
@@ -118,10 +133,12 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                     if (_ShuXingInfo._Count >= _ShuXingInfo._Max && _ShuXingInfo._IsAllMax)
                     {
                         m_labProgressPuple.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_10);
+                        m_labProgressAdd.text = "";
                     }
                     else if (_ShuXingInfo._Count >= _ShuXingInfo._Max)
                     {
                         m_labProgressPuple.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_9);
+                        m_labProgressAdd.text = "";
                     }
                     else
                     {
@@ -132,21 +149,31 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
                 {
                     if (_ShuXingInfo._CountAdd < 0)
                     {
-                        m_labProgressPuple.text = MyColorData.getColorString(5, _ShuXingInfo._CountAdd.ToString());
+                        m_labProgressAdd.text = MyColorData.getColorString(5, _ShuXingInfo._CountAdd.ToString());
+                        m_SpritArrow.spriteName = "arrow_down";
+                        m_SpritArrow.gameObject.SetActive(true);
+                        // m_labProgressPuple.text = MyColorData.getColorString(5, _ShuXingInfo._CountAdd.ToString());
+                        m_labProgressPuple.text = _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString();
                     }
                     else
                     {
                         if (_ShuXingInfo._Count >= _ShuXingInfo._Max && _ShuXingInfo._IsAllMax)
                         {
                             m_labProgressPuple.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_10);
+                            m_labProgressAdd.text = "";
                         }
                         else if (_ShuXingInfo._Count >= _ShuXingInfo._Max)
                         {
                             m_labProgressPuple.text = LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_9);
+                            m_labProgressAdd.text = "";
                         }
                         else
                         {
-                            m_labProgressPuple.text = MyColorData.getColorString(4, "+" + _ShuXingInfo._CountAdd.ToString());
+                            m_labProgressAdd.text = MyColorData.getColorString(4, _ShuXingInfo._CountAdd.ToString());
+                            m_SpritArrow.spriteName = "arrow_up";
+                            m_SpritArrow.gameObject.SetActive(true);
+                            m_labProgressPuple.text = _ShuXingInfo._Count.ToString() + "/" + _ShuXingInfo._Max.ToString();
+                            //m_labProgressPuple.text = MyColorData.getColorString(4, "+" + _ShuXingInfo._CountAdd.ToString());
                         }
                     }
                 }
@@ -200,11 +227,11 @@ public class EquipGrowthAttributeManagerment : MonoBehaviour
     {
         if (type == 0)
         {
-            return 6;
+            return 54;
         }
         else
         {
-            return 7;
+            return 55;
         }
     }
 

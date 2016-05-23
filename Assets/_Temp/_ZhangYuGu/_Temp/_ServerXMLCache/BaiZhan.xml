@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<BaiZhan id="1" name="70001" funDesc="70001" icon="1" minRank="2001" maxRank="9999999" jibie="1" xishu="0" dayAward="0:951021:10#0:900002:20#0:955041:1" produceSpeed="1" />
+<BaiZhan id="2" name="70002" funDesc="70002" icon="2" minRank="1001" maxRank="2000" jibie="2" xishu="0" dayAward="0:951021:11#0:900002:40#0:955041:1" produceSpeed="2" />
+<BaiZhan id="3" name="70003" funDesc="70003" icon="3" minRank="501" maxRank="1000" jibie="3" xishu="0" dayAward="0:951021:12#0:900002:60#0:955041:1" produceSpeed="3" />
+<BaiZhan id="4" name="70004" funDesc="70004" icon="4" minRank="201" maxRank="500" jibie="4" xishu="0" dayAward="0:951021:13#0:900002:80#0:955041:1" produceSpeed="4" />
+<BaiZhan id="5" name="70005" funDesc="70005" icon="5" minRank="101" maxRank="200" jibie="5" xishu="0" dayAward="0:951021:14#0:900002:100#0:955041:2" produceSpeed="5" />
+<BaiZhan id="6" name="70006" funDesc="70006" icon="6" minRank="31" maxRank="100" jibie="6" xishu="0" dayAward="0:951021:15#0:900002:120#0:955041:2" produceSpeed="6" />
+<BaiZhan id="7" name="70007" funDesc="70007" icon="7" minRank="11" maxRank="30" jibie="7" xishu="0" dayAward="0:951021:16#0:900002:140#0:955041:2" produceSpeed="7" />
+<BaiZhan id="8" name="70008" funDesc="70008" icon="8" minRank="6" maxRank="10" jibie="8" xishu="0" dayAward="0:951021:17#0:900002:160#0:955041:2" produceSpeed="8" />
+<BaiZhan id="9" name="70009" funDesc="70008" icon="8" minRank="4" maxRank="5" jibie="8" xishu="0" dayAward="0:951021:18#0:900002:200#0:955041:2" produceSpeed="8" />
+<BaiZhan id="10" name="70010" funDesc="70008" icon="8" minRank="2" maxRank="3" jibie="8" xishu="0" dayAward="0:951021:19#0:900002:250#0:955041:3" produceSpeed="8" />
+<BaiZhan id="11" name="70011" funDesc="70008" icon="8" minRank="1" maxRank="1" jibie="8" xishu="0" dayAward="0:951021:20#0:900002:300#0:955041:3" produceSpeed="8" />
+</dataset>

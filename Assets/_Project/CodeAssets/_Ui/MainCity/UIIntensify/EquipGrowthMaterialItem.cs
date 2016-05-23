@@ -15,6 +15,7 @@ public class EquipGrowthMaterialItem : MonoBehaviour
     Over_JunZhu_Level Over_Step;
     [HideInInspector]
     public int m_Itemid = 0;
+    public long m_ItemDB = 0;
     private int pinzhiSave = 0;
     [HideInInspector]
     public bool m_IntenseShow = false;
@@ -47,33 +48,39 @@ public class EquipGrowthMaterialItem : MonoBehaviour
             }
         }
     }
-    public void ShowMaterialInfo(int id, string icon, string count, bool isMaxExp, int pinzhi,Over_JunZhu_Level callback)
+
+    public struct MaterialNeed
     {
+        public int _itemid;
+        public long _dbid;
+        public string _icon;
+        public string _count;
+        public int _pinzhi;
+    };
+  //  public void ShowMaterialInfo(int id, string icon, string count, bool isMaxExp, Over_JunZhu_Level callback)
+    public void ShowMaterialInfo(MaterialNeed material, bool isMaxExp ,Over_JunZhu_Level callback)
+    {
+        IconSampleManager.transform.localScale = Vector3.one * 0.5f;
         Over_Step = callback;
-        pinzhiSave = pinzhi;
+        pinzhiSave = material._pinzhi;
         MaterialUsingCount = 0;
         EquipGrowthMaterialUseManagerment.listTouchedId.Clear();
-        m_Itemid = id;
-        MaterialAllCount = count;
+        m_Itemid = material._itemid;
+        m_ItemDB = material._dbid;
+        MaterialAllCount = material._count;
         TouchController = isMaxExp;
-
-        bool isNoMaterial = (string.IsNullOrEmpty(icon) || string.IsNullOrEmpty(count));
+        bool isNoMaterial = (string.IsNullOrEmpty(material._icon) || string.IsNullOrEmpty(material._count));
 
         //Set iconSample.
-        if (!string.IsNullOrEmpty(count))
+        if (!string.IsNullOrEmpty(material._count))
         {
-            IconSampleManager.SetIconByID(id, count);
+            IconSampleManager.SetIconByID(material._itemid, material._count);
         }
         else 
         {
             IconSampleManager.SetIconByID(-1);
         }
-
-    //IconSampleManager.SetIconType(IconSampleManager.IconType.equipment);
-    //    IconSampleManager.SetIconBasic(0,
-    //        icon, !string.IsNullOrEmpty(icon) ? count : "",
-    //        pinzhi == 200 ? "" : IconSampleManager.QualityPrefix + QualityIconSelected.SelectQualityNum(pinzhi));
-
+        IconSampleManager.transform.localScale = Vector3.one * 0.85f;
         if (isNoMaterial)
         {
             IconSampleManager.SetIconBasicDelegate(false, true, null);
@@ -81,12 +88,8 @@ public class EquipGrowthMaterialItem : MonoBehaviour
         }
         else
         {
-
             IconSampleManager.SetIconBasicDelegate(false, true, OnMaterialClick,null, null);
             IconSampleManager.SetIconButtonDelegate(null, null, OnSubButtonClick);
-
-          // IconSampleManager.SetIconBasicDelegate(false, true, OnMaterialClick);
-         //   IconSampleManager.SetIconButtonDelegate(null, null, OnSubButtonClick);
         }
 
         IconSampleManager.RightButtomCornorLabel.gameObject.SetActive(true);
@@ -105,36 +108,48 @@ public class EquipGrowthMaterialItem : MonoBehaviour
     {
         if (m_IntenseShow)
         {
-            
-           // if (UIYindao.m_UIYindao.m_isOpenYindao)
+
+            if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress >= 0)
+            {
+                TaskData.Instance.m_iCurMissionIndex = 100040;
+                ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+                tempTaskData.m_iCurIndex = 4;
+                UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
+            }
+            // if (UIYindao.m_UIYindao.m_isOpenYindao)
             {
                 //    CityGlobalData.m_isRightGuide = false;
-                if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress >= 0)
-                {
+                //if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress >= 0)
+                //{
                  
-                    //TaskData.Instance.m_iCurMissionIndex = 100040;
+                //    //TaskData.Instance.m_iCurMissionIndex = 100040;
 
-                    //ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-                    //tempTaskData.m_iCurIndex = 4;
-                    //UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-                }
-                else if (FreshGuide.Instance().IsActive(100080) && TaskData.Instance.m_TaskInfoDic[100080].progress >= 0)
-                {
-                    TaskData.Instance.m_iCurMissionIndex = 100080;
+                //    //ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+                //    //tempTaskData.m_iCurIndex = 4;
+                //    //UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+                //}
+                //else if (FreshGuide.Instance().IsActive(100080) && TaskData.Instance.m_TaskInfoDic[100080].progress >= 0)
+                //{
+                //    TaskData.Instance.m_iCurMissionIndex = 100080;
 
-                    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-                    tempTaskData.m_iCurIndex = 3;
-                    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-                }
-                else
-                {
-                    UIYindao.m_UIYindao.CloseUI();
-                }
+                //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+                //    tempTaskData.m_iCurIndex = 3;
+                //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+                //}
+                //else
+                //{
+                //    UIYindao.m_UIYindao.CloseUI();
+                //}
             }
 
+            //Debug.Log("TouchControllerTouchController :L::" + TouchController);
             if (TouchController && pinzhiSave != 200)
             {
-                EquipGrowthMaterialUseManagerment.m_MaterialId = m_Itemid;
+                EquipGrowthMaterialUseManagerment.TopuchInfo tinfo = new EquipGrowthMaterialUseManagerment.TopuchInfo();
+                tinfo._itemid = m_Itemid;
+                tinfo._dbid = m_ItemDB;
+                EquipGrowthMaterialUseManagerment.m_MaterialId = tinfo;
+                //Debug.Log("touchIsEnabletouchIsEnabletouchIsEnable :L::" + EquipGrowthMaterialUseManagerment.touchIsEnable);
                 if (EquipGrowthMaterialUseManagerment.touchIsEnable)
                 {
 
@@ -143,16 +158,14 @@ public class EquipGrowthMaterialItem : MonoBehaviour
                         EquipGrowthMaterialUseManagerment.materialItemTouched = true;
                         MaterialUsingCount++;
                         IconSampleManager.RightButtomCornorLabel.text = MaterialUsingCount.ToString() + "/" + MaterialAllCount;
-                        EquipGrowthMaterialUseManagerment.AddUseMaterials(m_Itemid);
+                        EquipGrowthMaterialUseManagerment.AddUseMaterials(EquipGrowthMaterialUseManagerment.m_MaterialId);
                     }
                     IconSampleManager.SubButton.SetActive(true);
                 }
                 else
                 {
-
                     if (MaterialUsingCount < int.Parse(MaterialAllCount))
                     {
-            
                         if (Over_Step != null)
                         {
                             Over_Step(1);
@@ -162,7 +175,6 @@ public class EquipGrowthMaterialItem : MonoBehaviour
             }
             else if (!TouchController && pinzhiSave != 200)
             {
- 
                 Over_Step(-1);
             }
         }
@@ -189,20 +201,18 @@ public class EquipGrowthMaterialItem : MonoBehaviour
     {
         if (m_IntenseShow)
         {
-           // if (UIYindao.m_UIYindao.m_isOpenYindao)
-            //{
-            //    ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            //    UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-            //}
             if (TouchController && pinzhiSave != 200)
             {
-                EquipGrowthMaterialUseManagerment.m_MaterialId = m_Itemid;
+                EquipGrowthMaterialUseManagerment.m_MaterialId._itemid = m_Itemid;
 
                 if (MaterialUsingCount > 0)
                 {
                     EquipGrowthMaterialUseManagerment.materialItemTouched = true;
                     EquipGrowthMaterialUseManagerment.materialItemReduce = true;
                     MaterialUsingCount--;
+                    EquipGrowthMaterialUseManagerment.m_MaterialId._itemid = m_Itemid;
+                    EquipGrowthMaterialUseManagerment.m_MaterialId._dbid = m_ItemDB;
+                    //EquipGrowthMaterialUseManagerment.ReduceUseMaterials(EquipGrowthMaterialUseManagerment.m_MaterialId);
                     if (MaterialUsingCount == 0)
                     {
                         IconSampleManager.SubButton.SetActive(false);
@@ -216,7 +226,11 @@ public class EquipGrowthMaterialItem : MonoBehaviour
             }
         }
     }
-
-
+    public void showLabInfo(int count_use)
+    {
+        MaterialUsingCount = count_use;
+        IconSampleManager.SubButton.SetActive(true);
+        IconSampleManager.RightButtomCornorLabel.text = MaterialUsingCount + "/" + MaterialAllCount;
+    }
 
 }

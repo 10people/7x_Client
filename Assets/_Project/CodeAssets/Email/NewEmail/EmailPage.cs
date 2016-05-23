@@ -52,6 +52,7 @@ public class EmailPage : MonoBehaviour {
 	public ScaleEffectController m_ScaleEffectController;
 
 	public GameObject anchorTopRight;
+	public GameObject m_anchorTL;
 
 	void Awake ()
 	{
@@ -60,7 +61,8 @@ public class EmailPage : MonoBehaviour {
 
 	void Start ()
 	{
-		QXComData.LoadYuanBaoInfo (anchorTopRight.gameObject);
+		QXComData.LoadTitleObj (m_anchorTL,"邮箱");
+		QXComData.LoadYuanBaoInfo (anchorTopRight);
 	}
 
 	/// <summary>

@@ -91,6 +91,10 @@ public class SparkleEffectItem : MonoBehaviour {
 			}
 		}
 
+		if( !IsActive() ){
+			return;
+		}
+		
 		if( m_ui_tex != null ){
 			if( m_ui_tex.material != null ){
 				m_ui_tex.material.SetColor( "_TintColor", m_color );
@@ -160,7 +164,7 @@ public class SparkleEffectItem : MonoBehaviour {
 					m_sprite_name = m_sprite.spriteName;
 
 					if( m_sprite_data == null ){
-						#if UNITY_EDITOR
+						#if UNITY_EDITOR && DEBUG_EFFECT
 						Debug.Log( "No Sprite data setted." );
 						#endif
 
@@ -196,7 +200,7 @@ public class SparkleEffectItem : MonoBehaviour {
 
 				m_ui_tex.gameObject.transform.localPosition = t_vec3;
 
-				m_ui_tex.material = new Material( Shader.Find( "Custom/Effects/Sparkle Effect" ) );
+				m_ui_tex.material = ComponentHelper.NewMaterial( "Custom/Effects/Sparkle Effect" );
 
 				m_ui_tex.material.mainTexture = m_tex;
 
@@ -214,7 +218,7 @@ public class SparkleEffectItem : MonoBehaviour {
 
 			m_tex = m_ui_tex.mainTexture;
 
-			m_ui_tex.material = new Material( Shader.Find( "Custom/Effects/Sparkle Effect" ) );
+			m_ui_tex.material = ComponentHelper.NewMaterial( "Custom/Effects/Sparkle Effect" );
 
 			m_ui_tex.material.mainTexture = m_tex;
 		}

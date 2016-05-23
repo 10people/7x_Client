@@ -69,12 +69,12 @@ public class miBaoskilltemp : MonoBehaviour {
 		}
 		else
 		{
-			if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
-			{
-				//	Debug.Log("切换秘技)Z
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
-			}
+//			if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
+//			{
+//				//	Debug.Log("切换秘技)Z
+//				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
+//				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
+//			}
 			if(NewMiBaoSkill.Instance().SaveId == SKill_id)
 			{
 				return;

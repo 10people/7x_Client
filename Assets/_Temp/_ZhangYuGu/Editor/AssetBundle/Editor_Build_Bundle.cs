@@ -226,8 +226,8 @@ public class Editor_Build_Bundle{
 						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_KEY_TAG ] = t_key;
 						
 						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_SIZE_TAG ] = FileHelper.GetFileSize( t_file_info ).ToString();
-						
-						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_MD5_TAG ] = GetMd5Hash( t_file_info );
+
+						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_MD5_TAG ] = FileHelper.GetMd5Hash( t_file_info );
 						
 						m_all_bundle_json[ CONFIG_BUNDLE_LIST_ITEMS_TAG ][ t_index ][ CONFIG_BUNDLE_LIST_ITEM_VERSION_TAG ] = 0 + "";
 					}
@@ -1251,7 +1251,7 @@ public class Editor_Build_Bundle{
 
 				// md5
 				{
-					string t_hash = GetMd5Hash( t_full_path );
+					string t_hash = FileHelper.GetMd5Hash( t_full_path );
 					
 					m_cur_bundle_json[ t_key ][ CONFIG_MD5_TAG ] = t_hash;
 				}
@@ -2474,49 +2474,6 @@ public class Editor_Build_Bundle{
 		}
 
 		return false;
-	}
-
-	private static MD5 m_md5 = null;
-
-	private static MD5 GetMd5(){
-		if( m_md5 == null ){
-			m_md5 = MD5.Create();
-		}
-
-		return m_md5;
-	}
-
-	/** Desc:
-	 * Return MD5 about the bundle.
-	 * 
-	 * Params:
-	 * 1.p_full_path:			"E:/WorkSpace_External/DynastyMobile_2014/Assets/StreamingAssets/Android/Resources/_UIs/_CommonAtlas/Common";
-	 */
-	private static string GetMd5Hash( string p_full_path ){
-		FileInfo t_file_info = new FileInfo( p_full_path );
-		
-		return GetMd5Hash( t_file_info );
-	}
-
-	private static string GetMd5Hash( FileInfo p_file_info ){
-		FileStream t_f_s = p_file_info.Open( FileMode.Open );
-		
-		t_f_s.Position = 0;
-		
-		byte[] t_data = GetMd5().ComputeHash( t_f_s );
-		
-		StringBuilder t_builder = new StringBuilder();
-		
-		// Loop through each byte of the hashed data  
-		// and format each one as a hexadecimal string. 
-		for (int i = 0; i < t_data.Length; i++)
-		{
-			t_builder.Append( t_data[i].ToString( "x2" ) );
-		}
-		
-		t_f_s.Close();
-		
-		return t_builder.ToString();
 	}
 
 	#endregion

@@ -29,6 +29,8 @@ public class PushAndNotificationHelper : MonoBehaviour, SocketProcessor{
 
 	#region Mono
 
+	public bool m_log_status_now = false;
+
 	void Awake(){
 		{
 			SocketTool.RegisterMessageProcessor( this );
@@ -43,6 +45,12 @@ public class PushAndNotificationHelper : MonoBehaviour, SocketProcessor{
 	}
 
 	void Update(){
+		if( m_log_status_now ){
+			m_log_status_now = false;
+
+			LogRedSpotNotification ();
+		}
+
 		if ( !SocketTool.IsConnected() ) {
 			return;
 		}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<ChongZhi id="0" name="月卡" desc="连续30天每天可领120元宝" needNum="25" addNum="300" extraYuanbao="0" type="0" extraFirst="0" addVipExp="0" />
+<ChongZhi id="1" name="60元宝" desc="另赠60元宝（限购1次）" needNum="6" addNum="60" extraYuanbao="0" type="1" extraFirst="60" addVipExp="60" />
+<ChongZhi id="2" name="280元宝" desc="另赠300元宝（限购1次）" needNum="30" addNum="300" extraYuanbao="20" type="1" extraFirst="300" addVipExp="300" />
+<ChongZhi id="3" name="680元宝" desc="另赠700元宝（限购1次）" needNum="68" addNum="680" extraYuanbao="60" type="1" extraFirst="700" addVipExp="680" />
+<ChongZhi id="4" name="980元宝" desc="另赠1050元宝（限购1次）" needNum="98" addNum="980" extraYuanbao="100" type="1" extraFirst="1050" addVipExp="980" />
+<ChongZhi id="5" name="1980元宝" desc="另赠2200元宝（限购1次）" needNum="198" addNum="1980" extraYuanbao="250" type="1" extraFirst="2200" addVipExp="1980" />
+<ChongZhi id="6" name="3280元宝" desc="另赠3750元宝（限购1次）" needNum="328" addNum="3280" extraYuanbao="600" type="1" extraFirst="3750" addVipExp="3280" />
+<ChongZhi id="7" name="6480元宝" desc="另赠7500元宝（限购1次）" needNum="648" addNum="6480" extraYuanbao="1500" type="1" extraFirst="7500" addVipExp="6480" />
+</dataset>

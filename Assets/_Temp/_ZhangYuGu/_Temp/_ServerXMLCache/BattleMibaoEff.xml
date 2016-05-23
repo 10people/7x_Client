@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<BattleMibaoEff id="650001" frameStartTime="0" frameActionTime="0.3" backStartTime="1" backActionTime="0.3" label1StartTime="1.5" label2StartTime="2.2" shakeTime="2.35" endTime="4" />
+<BattleMibaoEff id="650002" frameStartTime="0" frameActionTime="0.3" backStartTime="1" backActionTime="0.3" label1StartTime="1.5" label2StartTime="2.2" shakeTime="2.35" endTime="4" />
+<BattleMibaoEff id="650003" frameStartTime="0" frameActionTime="0.3" backStartTime="1" backActionTime="0.3" label1StartTime="1.5" label2StartTime="2.2" shakeTime="2.35" endTime="4" />
+<BattleMibaoEff id="650004" frameStartTime="0" frameActionTime="0.3" backStartTime="1" backActionTime="0.3" label1StartTime="1.5" label2StartTime="2.2" shakeTime="2.35" endTime="4" />
+<BattleMibaoEff id="650005" frameStartTime="0" frameActionTime="0.3" backStartTime="1" backActionTime="0.3" label1StartTime="1.5" label2StartTime="2.2" shakeTime="2.35" endTime="4" />
+<BattleMibaoEff id="650006" frameStartTime="0" frameActionTime="0.3" backStartTime="1" backActionTime="0.3" label1StartTime="1.5" label2StartTime="2.2" shakeTime="2.35" endTime="4" />
+<BattleMibaoEff id="650007" frameStartTime="0" frameActionTime="0.3" backStartTime="1" backActionTime="0.3" label1StartTime="1.5" label2StartTime="2.2" shakeTime="2.35" endTime="4" />
+</dataset>

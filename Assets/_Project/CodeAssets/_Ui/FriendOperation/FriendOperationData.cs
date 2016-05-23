@@ -141,7 +141,7 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
 							}
 							case AddFriendType.BaiZhan:
 							{
-								BaiZhanPage.baiZhanPage.RefreshOpponentFriendState ();
+//								BaiZhanPage.baiZhanPage.RefreshOpponentFriendState ();
 								break;
 							}
 							case AddFriendType.Email:
@@ -231,8 +231,8 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
         string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
-        string str = "您的好友名单已满";//LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_2)
-        string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_3);
+        string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_0);
+        string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_1);
 
         uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), MyColorData.getColorString(1, str2), null, confirmStr, null, null);
     }

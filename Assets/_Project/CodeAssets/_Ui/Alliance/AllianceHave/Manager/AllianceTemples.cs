@@ -202,54 +202,8 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 			yield return new WaitForSeconds (WaitingTime);
 		}
 
-//		float AddTime = WaitingTime/(float)mTimes;
-//		for (int i = 0; i < mJiBaiList.Count; i++)
-//		{
-//			mTimes++;
-//
-//			//Debug.Log("i = "+i);
-//			if(mTimes < 11)
-//			{
-//
-//				yield return new WaitForSeconds (WaitingTime);
-//				mJiBaiList[i].CHoseShowAnimation();
-//			}
-//			else
-//			{
-//				//Debug.Log("mTimes = "+mTimes);
-//
-//				yield return new WaitForSeconds (WaitingTime);
-//
-//				for (int j = 0; j < mMark.Count; j++)
-//				{
-//					if(i == mMark[j])
-//					{
-//						IsStop = true;
-//						mJiBaiList[i].GetDataByChouJiang();
-//						OneKeyAward.Add(mJiBaiList[i].mAwardinfo);
-//						StartCoroutine (OpenAwardUI());
-//						break;
-//					}
-//				}
-//				if(IsStop)
-//				{break;}
-//				mJiBaiList[i].CHoseShowAnimation();
-//			}
-//
-//		}
-//		if(JiBaoTime) // 祭拜
-//		{
-//			StartCoroutine(ShowEff(mMark,11));
-//			JiBaoTime = false;
-//		}
 
 	}
-//	IEnumerator ShowAnimation()
-//	{
-//		mBoxEffect.SetActive (true);
-//		yield return new WaitForSeconds(0.4f);
-//		mBoxEffect.SetActive (false);
-//	}
 	IEnumerator OpenAwardUI()
 	{
 		UIYindao.m_UIYindao.CloseUI();
@@ -363,7 +317,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		}
 		else
 		{
-			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LackOfBuildLoadBack);
+			Global.CreateFunctionIcon(701);
 		}
 
 	}
@@ -401,7 +355,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		}
 		else
 		{
-			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LackOfBuildLoadBack);
+			Global.CreateFunctionIcon(701);
 		}
 	}
 	public void BuyTiLi()

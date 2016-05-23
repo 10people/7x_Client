@@ -38,6 +38,8 @@ public class DuiHuanTemplete : XmlLoadManager {
 	public int site;
 
 	public int ifRecomanded;
+
+	public int max;
 	
 	public static List<DuiHuanTemplete> templates = new List<DuiHuanTemplete>();
 	
@@ -98,6 +100,9 @@ public class DuiHuanTemplete : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.ifRecomanded = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.max = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

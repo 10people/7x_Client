@@ -25,6 +25,15 @@ namespace Rank
                 }
                 else if (CurrentPageIndex == 1)
                 {
+                    //Clear all
+                    while (m_Grid.transform.childCount != 0)
+                    {
+                        var child = m_Grid.transform.GetChild(0);
+                        child.parent = null;
+                        Destroy(child.gameObject);
+                    }
+                    m_DetailControllerList.Clear();
+
                     NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_01);
                     NoDataLabel.gameObject.SetActive(true);
                 }
@@ -69,13 +78,13 @@ namespace Rank
                 var detailControllerList = m_DetailControllerList.Select(item => item as BaizhanDetailController).Where(item => item.m_BaizhanInfo.name == m_OneModeNameStr).ToList();
                 if (detailControllerList.Count == 1)
                 {
-                    UISprite widget = detailControllerList[0].GetComponent<UISprite>();
-                    widget.color = new Color(244, 154, 0);
+                    UISprite sprite = detailControllerList[0].GetComponent<UISprite>();
+                    sprite.spriteName = "jianbianbgliang";
 
-                    float widgetValue = m_ScrollView.GetWidgetValueRelativeToScrollView(widget).y;
+                    float widgetValue = m_ScrollView.GetWidgetValueRelativeToScrollView(sprite).y;
                     if (widgetValue < 0 || widgetValue > 1)
                     {
-                        m_ScrollView.SetWidgetValueRelativeToScrollView(widget, 0);
+                        m_ScrollView.SetWidgetValueRelativeToScrollView(sprite, 0);
 
                         //clamp scroll bar value.
                         //donot update scroll bar cause SetWidgetValueRelativeToScrollView has updated.

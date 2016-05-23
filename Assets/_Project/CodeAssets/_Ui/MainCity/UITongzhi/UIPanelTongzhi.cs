@@ -64,7 +64,7 @@ public class UIPanelTongzhi : MYNGUIPanel
     // Use this for initialization
     void Start()
     {
-        int y = 193;
+        int y = 173;
         for (int i = 0; i < m_CurrentTongzhiDataList.Count; i++)
         {
             m_CurrentTongzhiDataList[i].m_isLooked = true;

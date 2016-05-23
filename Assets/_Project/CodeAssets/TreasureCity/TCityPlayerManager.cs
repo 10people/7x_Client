@@ -232,7 +232,7 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 //			PlayerInCity tempItem = tCityObj.AddComponent<PlayerInCity>();
 //			tempItem.m_playerID = tempEnterScene.uid;
 //			Debug.Log ("NameParentIndex(playerDic.Count):" + NameParentIndex(playerDic.Count));
-//			PlayerNameManager.m_PlayerNamesParent = namePanelList[NameParentIndex()].gameObject;
+			PlayerNameManager.m_PlayerNamesParent = namePanelList[NameParentIndex()].gameObject;
 		}
 		else
 		{

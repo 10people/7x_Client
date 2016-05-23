@@ -20,9 +20,13 @@ using System.Security.Cryptography;
 public class Editor_Build_Bundle_Menu : MonoBehaviour {
 
 	public enum MenuItemPriority{
+		BUILD_APK = 0,
+		BUILD_APK_SEPERATOR,
+		BUILD_ALL,
+		BUILD_MANIFEST,
+
 		BUILD_DEBUG = 100,
 
-		BUILD_ALL,
 		BUILD_SUB_UI_ATLAS_PREFABS,
 		BUILD_SUB_UI_IMAGES,
 		BUILD_SUB_DATA,

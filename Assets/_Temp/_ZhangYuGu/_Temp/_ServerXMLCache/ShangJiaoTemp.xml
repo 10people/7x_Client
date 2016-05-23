@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<ShangJiaoTemp times="1" needNum="1000" personAward="100" unionAward="100" countryAward="10" />
+<ShangJiaoTemp times="2" needNum="2000" personAward="200" unionAward="200" countryAward="20" />
+<ShangJiaoTemp times="3" needNum="3000" personAward="300" unionAward="300" countryAward="30" />
+<ShangJiaoTemp times="4" needNum="4000" personAward="400" unionAward="400" countryAward="40" />
+<ShangJiaoTemp times="5" needNum="6000" personAward="600" unionAward="600" countryAward="60" />
+<ShangJiaoTemp times="6" needNum="8000" personAward="800" unionAward="800" countryAward="80" />
+<ShangJiaoTemp times="7" needNum="10000" personAward="1000" unionAward="1000" countryAward="100" />
+<ShangJiaoTemp times="8" needNum="15000" personAward="1500" unionAward="1500" countryAward="150" />
+</dataset>

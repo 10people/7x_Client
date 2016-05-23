@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LueduoPersonRank min="1" max="1" award="0:955021:20#0:900015:3000" updateNum="1000" />
+<LueduoPersonRank min="2" max="2" award="0:955021:18#0:900015:2500" updateNum="1000" />
+<LueduoPersonRank min="3" max="3" award="0:955021:16#0:900015:2000" updateNum="1000" />
+<LueduoPersonRank min="4" max="5" award="0:955021:14#0:900015:1800" updateNum="1000" />
+<LueduoPersonRank min="6" max="10" award="0:955021:12#0:900015:1600" updateNum="1000" />
+<LueduoPersonRank min="11" max="20" award="0:955021:10#0:900015:1500" updateNum="1000" />
+<LueduoPersonRank min="21" max="30" award="0:955021:9#0:900015:1400" updateNum="950" />
+<LueduoPersonRank min="31" max="50" award="0:955021:8#0:900015:1300" updateNum="900" />
+<LueduoPersonRank min="51" max="100" award="0:955021:7#0:900015:1200" updateNum="850" />
+<LueduoPersonRank min="101" max="200" award="0:955021:6#0:900015:1100" updateNum="800" />
+<LueduoPersonRank min="201" max="300" award="0:955021:6#0:900015:1000" updateNum="760" />
+<LueduoPersonRank min="301" max="500" award="0:955021:5#0:900015:950" updateNum="740" />
+<LueduoPersonRank min="501" max="1000" award="0:955021:5#0:900015:900" updateNum="720" />
+<LueduoPersonRank min="1001" max="2000" award="0:955021:4#0:900015:850" updateNum="700" />
+<LueduoPersonRank min="2001" max="3000" award="0:955021:4#0:900015:800" updateNum="680" />
+<LueduoPersonRank min="3001" max="5000" award="0:955021:3#0:900015:750" updateNum="660" />
+<LueduoPersonRank min="5001" max="10000" award="0:955021:3#0:900015:700" updateNum="640" />
+</dataset>

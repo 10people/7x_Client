@@ -24,49 +24,16 @@ public class MuBiaoItem : MonoBehaviour {
 	public void Init()
 	{
 		LMTargetTemplate mLMTargetTemplate = LMTargetTemplate.getLMTargetTemplate_by_Id (Id);
-		if (mLMTargetTemplate.Name == "招募") {
-			IsReCret = true;
-		} else {
-			IsReCret = false;
-		}
-		if(IsReCret)
-		{
-			mMenbers.SetActive(true);
 
-			if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 2)
-			{
-				int MAx = NewAlliancemanager.Instance().m_allianceHaveRes.memberMax;
-				int Nuber = NewAlliancemanager.Instance().m_allianceHaveRes.memberInfo.Count;
-				if(MAx == Nuber)
-				{
-					GoButn.SetActive(false);
-				}
-				else
-				{
-					GoButn.SetActive(true);
-				}
-
-			}
-			else
-			{
-				GoButn.SetActive(false);
-			}
-			Menbers.text = NewAlliancemanager.Instance().m_allianceHaveRes.memberInfo.Count.ToString()+"/"+NewAlliancemanager.Instance().m_allianceHaveRes.memberMax.ToString();
-		}
-		else
-		{
-			GoButn.SetActive(true);
-			mMenbers.SetActive(false);
-		}
 		mDesc.text = mLMTargetTemplate.condition;
 		mName.text = mLMTargetTemplate.Name;
 	}
 	public void GoToNewUI()
 	{
-//		<LMTarget id="1" title="联盟膜拜" desc="进行联盟膜拜，增加联盟建设值和联盟经验" />
-//			<LMTarget id="2" title="每日任务" desc="达成联盟封禅所需活跃度，封禅增加联盟建设值和联盟经验" />
-//				<LMTarget id="3" title="掠夺" desc="成功掠夺敌对国玩家，增加联盟建设值和联盟经验" />
-//				<LMTarget id="4" title="招募" desc="尽快提升联盟人数，为联盟招募伙伴" />
+//		<LMTarget id="1" title="联盟图腾" desc="进行联盟膜拜，或者基础捐献" />
+//			<LMTarget id="2" title="荒野求生" desc="联盟成员一起努力攻克荒野关卡" />
+//				<LMTarget id="3" title="掠夺" desc="成功掠夺其他联盟玩家，并提高联盟积分排行名次" />
+//				<LMTarget id="4" title="运镖" desc="每次成功运镖可以增加联盟建设值" />
 
 		switch(Id)
 		{
@@ -81,18 +48,24 @@ public class MuBiaoItem : MonoBehaviour {
 		   
 			break;
 		case 2 :
-			if(!FunctionOpenTemp.GetWhetherContainID(106))
-			{
-				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"每日任务未开启！"));
-				return;
-			}
 
-			TaskData.Instance.m_ShowType = 2;
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TASK),
-			                        TaskLoadCallback);
-			break;
-		case 5 :
-			ReCruitSetting();
+			if (AllianceData.Instance.g_UnionInfo.level >= 2)
+			{
+				MiBaoGlobleData.Instance().OpenHYMap_UI();
+			}
+			else
+			{
+				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), CantEnterOpenLockLoadBack);
+			}
+//			if(!FunctionOpenTemp.GetWhetherContainID(106))
+//			{
+//				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"每日任务未开启！"));
+//				return;
+//			}
+//
+//			TaskData.Instance.m_ShowType = 2;
+//			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TASK),
+//			                        TaskLoadCallback);
 			break;
 		case 4 :
 			EnterYABiao();
@@ -101,7 +74,23 @@ public class MuBiaoItem : MonoBehaviour {
 			break;
 		}
 	}
+	void CantEnterOpenLockLoadBack(ref WWW p_www, string p_path, Object p_object)
+	{
 
+		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+		
+		string titleStr = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO);
+		
+		string str2 = "";
+		
+		string str1 = "\r\n" + "联盟等级到达2级才能进入荒野求生！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		
+		string CancleBtn = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+
+		string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
+
+		uibox.setBox(titleStr, MyColorData.getColorString(1, str1 + str2), null, null, confirmStr, null, null, null, null);
+	}
 	void OPenUIFailed(ref WWW p_www,string p_path, Object p_object)
 	{
 
@@ -153,28 +142,4 @@ public class MuBiaoItem : MonoBehaviour {
 		Destroy (AlianceMuBiaoRoot);
 	}
 
-	GameObject OpenRecruit;
-	public void ReCruitSetting()
-	{
-		if(OpenRecruit)
-		{
-			return;
-		}
-		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.ALLIANCE_RECRUIT ),
-		                        RecruitLoadCallback );
-	}
-	
-	//联盟招募异步加载回调
-	public void RecruitLoadCallback ( ref WWW p_www, string p_path,  Object p_object )
-	{	
-		OpenRecruit = Instantiate( p_object ) as GameObject;
-		OpenRecruit.transform.parent = GameObject.Find("Leader_Setting(Clone)").transform;
-		OpenRecruit.transform.localScale = Vector3.one;
-		OpenRecruit.transform.localPosition = Vector3.zero;
-		ReCruit mReCruit = OpenRecruit.GetComponent<ReCruit>();
-		//mReCruit.Z_UnionInfo = m_tempInfo;
-		mReCruit.initLevel ();
-		mReCruit.ChangeNum ();
-		mReCruit.init ();
-	}
 }

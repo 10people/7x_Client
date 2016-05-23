@@ -325,7 +325,8 @@ public class FightTypeSelectManagerment : MonoBehaviour
 //        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_BAI_ZHAN),
 //                                BaiZhanLoadCallback);
 
-		PvpData.Instance.OpenPvp ();
+//		PvpData.Instance.OpenPvp ();
+		SportData.Instance.OpenSport ();
     }
 
 //    public void BaiZhanLoadCallback(ref WWW p_www, string p_path, Object p_object)

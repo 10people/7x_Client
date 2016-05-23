@@ -365,7 +365,7 @@ public class Prepare_Bundle_Config_4 : MonoBehaviour {
 					Debug.LogError( "Skipping Update Now, Please Confirm." );
 				}
 
-				Application.Quit();
+				UtilityTool.QuitGame();
 			}
 			
 			PreLoadBaseBundlesDone();

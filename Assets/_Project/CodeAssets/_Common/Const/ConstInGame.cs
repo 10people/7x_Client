@@ -80,6 +80,12 @@ public class ConstInGame : MonoBehaviour {
 
     #endregion
 
+    #region Alliance Battle
+
+    public const string CONST_SCENE_NAME_ALLIANCE_BATTLE = "Game_Scene_AllianceBattle";
+
+    #endregion
+
     #region Battle Field
 
     /// Every Battle Scene MUST Start With "BattleField_V4_".

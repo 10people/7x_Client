@@ -172,8 +172,9 @@ ModelImporter:
     7400040: Skill_8
     7400042: BATCUp
     7400044: Null
-    7400046: Take 001
+    7400046: BATCLeft
     7400048: Take 0010
+    7400050: BATCRight
     9500000: //RootNode
     13700000: _________-_________BOSS_____________________-______(1)
     13700002: Object10
@@ -3844,6 +3845,324 @@ ModelImporter:
       - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bone07
         weight: 1
       - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bone07/Bone08
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Prop1
+        weight: 1
+      - path: Bip03/Bone21
+        weight: 1
+      - path: Bip03/Bone21/Bone22
+        weight: 1
+      - path: S7_boss_qibingnushe_er
+        weight: 1
+      - path: S7_boss_qibingnushe_ma
+        weight: 1
+      - path: S7_boss_qibingnushe_wq
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: BATCLeft
+      takeName: Take 001
+      firstFrame: 700
+      lastFrame: 720
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: 
+      - time: .00275561796
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 90
+        messageOptions: 0
+      - time: .968000233
+        functionName: attackedActionEnd
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0100479079
+        functionName: PlaySound
+        data: 4009|4010|4011|0|0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bip01 L Toe01
+        weight: 1
+      - path: Bip01 Neck01
+        weight: 1
+      - path: Bip01 Neck01/Bip01 L Clavicle01
+        weight: 1
+      - path: Bip01 Neck01/Bip01 R Clavicle01
+        weight: 1
+      - path: Bip01 Pelvis
+        weight: 1
+      - path: Bip01 R Toe01
+        weight: 1
+      - path: Bip03
+        weight: 1
+      - path: Bip03/Bip02 Spine02
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 L Thigh01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 L Thigh01/Bip02 L Calf01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 L Thigh01/Bip02 L Calf01/Bip02 L Foot01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 R Thigh01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 R Thigh01/Bip02 R Calf01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 R Thigh01/Bip02 R Calf01/Bip02 R Foot01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 Head01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 L UpperArm01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 L UpperArm01/Bip02 L Forearm01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 L UpperArm01/Bip02 L Forearm01/Bip02
+          L Hand01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 R UpperArm01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 R UpperArm01/Bip02 R Forearm01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 R UpperArm01/Bip02 R Forearm01/Bip02
+          R Hand01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 L
+          Thigh
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 L
+          Thigh/Bip01 L Calf
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 R
+          Thigh
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 R
+          Thigh/Bip01 R Calf
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 Head
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 L Clavicle
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 L Clavicle/Bip01 L UpperArm
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 R Clavicle
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 R Clavicle/Bip01 R UpperArm
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Prop1
+        weight: 1
+      - path: Bip03/Bone21
+        weight: 1
+      - path: Bip03/Bone21/Bone22
+        weight: 1
+      - path: S7_boss_qibingnushe_er
+        weight: 1
+      - path: S7_boss_qibingnushe_ma
+        weight: 1
+      - path: S7_boss_qibingnushe_wq
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: BATCRight
+      takeName: Take 001
+      firstFrame: 723
+      lastFrame: 743
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: 
+      - time: .00275561796
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 90
+        messageOptions: 0
+      - time: .968000233
+        functionName: attackedActionEnd
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0100479079
+        functionName: PlaySound
+        data: 4009|4010|4011|0|0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bip01 L Toe01
+        weight: 1
+      - path: Bip01 Neck01
+        weight: 1
+      - path: Bip01 Neck01/Bip01 L Clavicle01
+        weight: 1
+      - path: Bip01 Neck01/Bip01 R Clavicle01
+        weight: 1
+      - path: Bip01 Pelvis
+        weight: 1
+      - path: Bip01 R Toe01
+        weight: 1
+      - path: Bip03
+        weight: 1
+      - path: Bip03/Bip02 Spine02
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 L Thigh01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 L Thigh01/Bip02 L Calf01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 L Thigh01/Bip02 L Calf01/Bip02 L Foot01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 R Thigh01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 R Thigh01/Bip02 R Calf01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 R Thigh01/Bip02 R Calf01/Bip02 R Foot01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 Head01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 L UpperArm01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 L UpperArm01/Bip02 L Forearm01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 L UpperArm01/Bip02 L Forearm01/Bip02
+          L Hand01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 R UpperArm01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 R UpperArm01/Bip02 R Forearm01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bip02 Spine03/Bip02 R UpperArm01/Bip02 R Forearm01/Bip02
+          R Hand01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 L
+          Thigh
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 L
+          Thigh/Bip01 L Calf
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 R
+          Thigh
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 R
+          Thigh/Bip01 R Calf
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 Head
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 L Clavicle
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 L Clavicle/Bip01 L UpperArm
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 R Clavicle
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 R Clavicle/Bip01 R UpperArm
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm
+        weight: 1
+      - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Pelvis 1/Bip01 Spine/Bip01 Spine1/Bip01
+          Neck/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand
         weight: 1
       - path: Bip03/Bip02 Spine02/Bone17/Bip01/Bip01 Prop1
         weight: 1

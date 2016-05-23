@@ -9,6 +9,8 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
+	public GameObject NoMiBaoSkillMind;
+
 	public SparkleEffectItem mSparkleEffectItem;
 	public UILabel Boci;
 	public HuangYeTreasure mHuangYeTreasure;
@@ -58,6 +60,8 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 	public MiBaoSkillTips mMiBaoSkillTips;
 
 	public GameObject KuaiSuAwardRoot;
+
+	public int mGuanqia_id;
 
 	public static HYRetearceEnemy Instance()
 	{
@@ -113,7 +117,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 	List <string > awardNumlist = new List<string> ();
 	private void ShowFastAward()
 	{
-		HuangYePveTemplate mHYtemp = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+		HuangYePveTemplate mHYtemp = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.guanQiaId);
 		awardidlist.Clear ();
 		awardNumlist.Clear ();
 
@@ -182,7 +186,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
 		//Boci.text = "当前波次("+M_Treas_info.thisBoCi.ToString()+"/"+M_Treas_info.allBoCi.ToString()+")";
 
-		HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+		HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.guanQiaId);
 
 		string mHuangYeDesc = DescIdTemplate.GetDescriptionById (mHuangYePveTemplate.descId);
 
@@ -218,7 +222,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		Lv_Instruction.text = desText;
 		Res_Name.text = mName;
 		//m_UISlider.value = (float)( mHuangYeTreasure.jindu )/ (float)(100);
-		int id = mHuangYeTreasure.fileId;
+		int id = mHuangYeTreasure.guanQiaId;
 
 		InitDropthings(id);
 
@@ -542,20 +546,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
 				return true;
 			}
-			case ProtoIndexes.MAX_DAMAGE_RANK_RESP :
-			{
-				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer t_qx = new QiXiongSerializer();
-				
-				MaxDamageRankResp mMaxDamageRankResp = new MaxDamageRankResp();
-				
-				t_qx.Deserialize(t_stream, mMaxDamageRankResp, mMaxDamageRankResp.GetType());
-
-				//Debug.Log("_____排行榜");
-				InitRankUI(mMaxDamageRankResp);
-				return true;
-			}	
+		
 			default: return false;
 			}
 			
@@ -665,7 +656,9 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 				{
 				    Global.m_isOpenHuangYe = true;
 					CityGlobalData.IsOPenHyLeveUI = false;
-					HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+					HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.guanQiaId);
+					Debug.Log("mHuangYeTreasure.guanQiaId = "+mHuangYeTreasure.guanQiaId);
+					Debug.Log("mHuangYeTreasure.id = "+mHuangYeTreasure.id);
 					EnterBattleField.EnterBattleHYPve (mHuangYeTreasure.id, mHuangYePveTemplate);
 				}
 				else
@@ -692,10 +685,14 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 				mSparkleEffectItem.enabled = true ;
 			}
 			MiBaoicon.spriteName = "";
+			MiBaoicon.gameObject.SetActive(false);
+			NoMiBaoSkillMind.SetActive(MiBaoGlobleData.Instance().GetMiBaoskillOpen());
 			return;
 		}
+		NoMiBaoSkillMind.SetActive(false);
 		MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(M_Treas_info.zuheId);
 		mSparkleEffectItem.enabled = false ;
+		MiBaoicon.gameObject.SetActive(true);
 		MiBaoicon.spriteName = mMiBaoskill.icon.ToString ();
 		//TimeAndAllTimes.text = M_Treas_info.timesOfDay.ToString () + "/" + M_Treas_info.totalTimes.ToString ();
 	}
@@ -729,9 +726,9 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		
 		string titleStr = "提示";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = "您今日的挑战次数已经用完，是否购买挑战次数？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str = "您今日的挑战次数已经用完!";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,AddTimes,null,null);
+		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
 	}
 	public void HY_EnterBattle() //  进入战斗接口
 	{
@@ -849,7 +846,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		
 		string titleStr = "提示";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 
-		HuangYePveTemplate mHuangyePve = HuangYePveTemplate.getHuangYePveTemplatee_byid(mHuangYeTreasure.fileId);
+		HuangYePveTemplate mHuangyePve = HuangYePveTemplate.getHuangYePveTemplatee_byid(mHuangYeTreasure.guanQiaId);
 
 		string str = "只有先通关过关斩将第"+mHuangyePve.condition.ToString()+"章才能挑战该宝藏点！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		

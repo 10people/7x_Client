@@ -11,13 +11,13 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
 	public List<XiaoWuInrerface> mQiPaolist = new List<XiaoWuInrerface> ();
 
-	public UIButton mButton;
-
-	public UILabel allianceExp;// 联盟经验进度
-
-	public UILabel alliance_Lv ;// 联盟等级到达
-
-	public UISlider mSlider;
+//	public UIButton mButton;
+//
+//	public UILabel allianceExp;// 联盟经验进度
+//
+//	public UILabel alliance_Lv ;// 联盟等级到达
+//
+//	public UISlider mSlider;
 
 	public GameObject BianjiGonggangTishi;
 
@@ -33,9 +33,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	
 	public UILabel leader;
 	
-	public UILabel Exp;
+	//public UILabel Exp;
 	
-	public UILabel Shengwang;
+	public UILabel Hufu;
 	
 	public UILabel Menbers;
 	
@@ -44,7 +44,8 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	public UILabel MyGongxianzhi;
 	
 	public UILabel MyGongJin;
-	
+
+	public UILabel MyGongXun;
 	//public UILabel My_notice;//编辑的公告内容
 	
 	//public GameObject MenberItem;
@@ -169,9 +170,15 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 				if (noticeResp != null)
 				{
 					m_noticeResp = noticeResp;
-					
-					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-					                        NoticeLoadCallback );
+					if (m_noticeResp.code == 0)
+					{
+						ClientMain.m_UITextManager.createText("公告修改成功！");
+					}
+					else{
+						ClientMain.m_UITextManager.createText("公告修改失败！");
+					}
+//					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+//					                        NoticeLoadCallback );
 				}
 				EditUI.SetActive (false);
 				return true;
@@ -270,70 +277,18 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 			LederSet.transform.localScale = Vector3.one;
 			LederSet.transform.localPosition = new Vector3 (500,200,0);
 			LianmengMuBiaomanager mLianmengMuBiaomanager = LederSet.GetComponent<LianmengMuBiaomanager>();
-			mLianmengMuBiaomanager.Lianmeng_Alliance = m_Alliance;
-			mLianmengMuBiaomanager.Init();
+			//mLianmengMuBiaomanager.Lianmeng_Alliance = m_Alliance;
+			mLianmengMuBiaomanager.Init("建设值不足");
 			MainCityUI.TryAddToObjectList(LederSet,false);
 		}
 
 	}
 	public void InitUI()
 	{
-		int LmMuBiaoLevel = m_Alliance.lmTargetLevel;
-
-		if(LmMuBiaoLevel == -1)
-		{
-			LmMuBiaoLevel = m_Alliance.level;
-		}
-		int mLMExp = 0;
-		int FontmLMExp = 0;
-		int AllExp1 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level-1);
-		if(m_Alliance.level > 1)
-		{
-			int AllExp3 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (LmMuBiaoLevel-1);
-			mLMExp = AllExp3;
-			allianceExp.text = "联盟经验: " + (AllExp1+m_Alliance.exp).ToString()+ "/" + (AllExp3).ToString ();
-			FontmLMExp = AllExp1+m_Alliance.exp;
-		}
-		else
-		{
-			int AllExp3 =  LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (LmMuBiaoLevel-1);
-			allianceExp.text = "联盟经验: " + (m_Alliance.exp).ToString()+ "/" + (AllExp3).ToString ();
-			mLMExp = AllExp3; 
-			FontmLMExp = m_Alliance.exp;
-		}
-
-		int MaxLv = 10; //临时用的变量 等策划确定
-
-		int curexp = LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level - 1) + m_Alliance.exp;
-		int needexp = LianMengTemplate.GetLianMengTemplate_AllExp_by_lv (m_Alliance.level);
-		Exp.text = curexp.ToString () + "/" + needexp.ToString ();
-		if(m_Alliance.lmTargetLevel != -1)
-		{
-			if(m_Alliance.level >= LmMuBiaoLevel)
-			{
-				alliance_Lv.text = "联盟到达Lv"+(m_Alliance.lmTargetLevel).ToString()+"(已完成)";
-				CloseEffect();
-				OPenEffect ();
-			}
-			else
-			{
-				CloseEffect();
-				alliance_Lv.text = "联盟到达Lv "+(m_Alliance.lmTargetLevel).ToString()+"(未完成)";;
-			}
-		}
-		else
-		{
-			alliance_Lv.text = "联盟等级已满";
-			CloseEffect();
-			allianceExp.text = "联盟经验: " + (AllExp1+m_Alliance.exp).ToString()+ "/" + needexp.ToString ();
-			//mButton.enabled = false;
-		}
-		mSlider.value = (float)FontmLMExp / (float)mLMExp;
-
-		Alliance_Name.text = m_Alliance.name+"("+m_Alliance.id.ToString()+")";
+		Alliance_Name.text = m_Alliance.name;
 		
 		Level.text = m_Alliance.level.ToString();
-
+		Debug.Log ("m_Alliance.country = "+m_Alliance.country);
 		switch(m_Alliance.country)
 		{
 		case 1:
@@ -368,9 +323,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		
 
 		
-		Shengwang.text = m_Alliance.shengWang.ToString();
+		Hufu.text = m_Alliance.hufuNum.ToString();
 		
-		Menbers.text = m_Alliance.memberInfo.Count.ToString () + "/" + m_Alliance.memberMax.ToString ();
+		Menbers.text = m_Alliance.memberInfo.Count.ToString () + "/"+m_Alliance.memberMax.ToString () ;
 		
 		if(m_Alliance.identity == 0)
 		{
@@ -387,7 +342,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		
 		all_Icon.spriteName = m_Alliance.icon.ToString ();
 	
-		MyGongJin.text = m_Alliance.gongJin.ToString();
+		MyGongJin.text = m_Alliance.jiFen.ToString();
+
+		MyGongXun.text = m_Alliance.gongXun.ToString ();
 
 		ShowMyGongXianZhi (m_Alliance.contribution);
 
@@ -610,7 +567,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	}
 	public void AllanceBattle()
 	{
-		AllianceFightData.Instance.OpenAllianceFightMainPage ();
+		//联盟战入口
 	}
 
 	private bool canOpenShop = true;

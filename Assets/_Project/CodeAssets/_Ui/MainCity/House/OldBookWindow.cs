@@ -184,7 +184,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
             m_OldBookSelfControllerList[i].BagItemIdList.Clear();
             m_OldBookSelfControllerList[i].NumList.Clear();
             m_OldBookSelfControllerList[i].OldBookInfoLabel.text = OldBookSelfLogoList[i];
-            m_OldBookSelfControllerList[i].OldBookLogoSprite.spriteName = (OldBookSelfStartId - 1 + 1000 * i).ToString();
+            //m_OldBookSelfControllerList[i].OldBookLogoSprite.spriteName = (OldBookSelfStartId - 1 + 1000 * i).ToString();
 
             for (int j = 0; j < 5; j++)
             {
@@ -528,6 +528,9 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     public UILabel HouseTechAdditionLabel;
     public UILabel HouseTechAddition2Label;
 
+    public UILabel HouseTechNameLabel;
+    public UILabel HouseTechLvlLabel;
+
     void SetHouseExp(HouseExpInfo mmHouseExpInfo)
     {
         totalValueBar2 = mmHouseExpInfo.max;
@@ -539,9 +542,21 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         LingQuBtn.SetActive(currentValueBar2 > 0);
         m_ReceiveRedAlert.gameObject.SetActive(currentValueBar2 >= totalValueBar2);
 
-        HouseTechAdditionLabel.text = "受联盟科技影响\n" + LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel).desc;
-        HouseTechAddition2Label.text = "每小时产出" + (LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel).value2 / 100f + 1) * FangWuTemplate.GetFangWuTemplateByLevel(1).produceSpeed +
-        "点角色经验";
+        var temp = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel);
+        HouseTechNameLabel.text = temp.name;
+        HouseTechLvlLabel.text = "Lv " + temp.level;
+
+        if (mmHouseExpInfo.kejiLevel > 0)
+        {
+            HouseTechAdditionLabel.text = "增加小屋" + temp.value1 + "%经验获取速度\n增加" + temp.value2 + "点经验存储上限";
+        }
+        else
+        {
+            HouseTechAdditionLabel.text = "目前未受到科技加成";
+        }
+
+        HouseTechAddition2Label.text = "每小时产出" + (temp.value2 / 100f + 1) * FangWuTemplate.GetFangWuTemplateByLevel(1).produceSpeed +
+"点角色经验";
     }
 
     public void LingQu()
@@ -551,6 +566,12 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         //Remove red alert.
         PushAndNotificationHelper.SetRedSpotNotification(600800, false);
         NewAlliancemanager.Instance().Refreshtification();
+
+        var temp = new RewardData(900006, (int)currentValueBar2);
+        GeneralRewardManager.Instance().CreateReward(temp);
+
+        //Close guide.
+        UIYindao.m_UIYindao.CloseUI();
     }
 
     #endregion

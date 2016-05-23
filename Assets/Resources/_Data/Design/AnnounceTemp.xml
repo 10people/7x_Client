@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<AnnounceTemp id="1" type="1" condition="3" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]探宝[-][ffffff]获得[-][0dbce8]3星[-][ffffff]秘宝[-][d503ee]#秘宝名字#[-][ffffff]！[-]" announceObject="1,2" />
-<AnnounceTemp id="2" type="2" condition="3" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]升星[-][ffffff]获得[-][0dbce8]3星[-][ffffff]秘宝[-][d503ee]#秘宝名字#[-][ffffff]！[-]" announceObject="1,2" />
-<AnnounceTemp id="3" type="2" condition="4" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]升星[-][ffffff]获得[-][cb02d8]4星[-][ffffff]秘宝[-][d503ee]#秘宝名字#[-][ffffff]！[-]" announceObject="1,2" />
-<AnnounceTemp id="4" type="2" condition="5" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]升星[-][ffffff]获得[-][e15a00]5星[-][ffffff]秘宝[-][d503ee]#秘宝名字#[-][ffffff]！[-]" announceObject="1,2" />
-<AnnounceTemp id="5" type="3" condition="9" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]9[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="6" type="3" condition="10" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]10[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="7" type="3" condition="11" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]11[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="8" type="3" condition="12" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]12[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="9" type="3" condition="13" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]13[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="10" type="3" condition="14" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]14[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="11" type="3" condition="15" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]15[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="12" type="3" condition="16" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]16[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="13" type="3" condition="17" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]17[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="14" type="3" condition="18" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]18[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="15" type="3" condition="19" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]19[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="16" type="3" condition="20" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]20[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
-<AnnounceTemp id="17" type="3" condition="21" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]21[-][ffffff]个[-][d503ee]秘宝[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="1" type="1" condition="3" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]探宝[-][ffffff]获得[-][0dbce8]3星[-][ffffff]将魂[-][d503ee]#将魂名字#[-][ffffff]！[-]" announceObject="1,2" />
+<AnnounceTemp id="2" type="2" condition="3" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]升星[-][ffffff]获得[-][0dbce8]3星[-][ffffff]将魂[-][d503ee]#将魂名字#[-][ffffff]！[-]" announceObject="1,2" />
+<AnnounceTemp id="3" type="2" condition="4" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]升星[-][ffffff]获得[-][cb02d8]4星[-][ffffff]将魂[-][d503ee]#将魂名字#[-][ffffff]！[-]" announceObject="1,2" />
+<AnnounceTemp id="4" type="2" condition="5" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]升星[-][ffffff]获得[-][e15a00]5星[-][ffffff]将魂[-][d503ee]#将魂名字#[-][ffffff]！[-]" announceObject="1,2" />
+<AnnounceTemp id="5" type="3" condition="9" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]9[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="6" type="3" condition="10" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]10[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="7" type="3" condition="11" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]11[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="8" type="3" condition="12" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]12[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="9" type="3" condition="13" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]13[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="10" type="3" condition="14" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]14[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="11" type="3" condition="15" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]15[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="12" type="3" condition="16" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]16[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="13" type="3" condition="17" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]17[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="14" type="3" condition="18" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]18[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="15" type="3" condition="19" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]19[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="16" type="3" condition="20" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]20[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
+<AnnounceTemp id="17" type="3" condition="21" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]收集到[-][d80202]21[-][ffffff]个[-][d503ee]将魂[-][ffffff]！战力更上一层楼！[-]" announceObject="1,2" />
 <AnnounceTemp id="18" type="4" condition="102002" announcement="[dbba8f]*玩家名字七个字*[-][e5e205]进阶[-][ffffff]获得[-][00cbf0]逆鳞双剑[-][ffffff]！完成装备进阶任务可获得大量[-][00e1c4]元宝[-][ffffff]！[-]" announceObject="1,2" />
 <AnnounceTemp id="19" type="4" condition="102102" announcement="[dbba8f]*玩家名字七个字*[-][e5e205]进阶[-][ffffff]获得[-][00cbf0]逆鳞护肩[-][ffffff]！完成装备进阶任务可获得大量[-][00e1c4]元宝[-][ffffff]！[-]" announceObject="1,2" />
 <AnnounceTemp id="20" type="4" condition="102104" announcement="[dbba8f]*玩家名字七个字*[-][e5e205]进阶[-][ffffff]获得[-][00cbf0]逆鳞臂甲[-][ffffff]！完成装备进阶任务可获得大量[-][00e1c4]元宝[-][ffffff]！[-]" announceObject="1,2" />
@@ -196,7 +196,7 @@
 <AnnounceTemp id="217" type="10" condition="300410" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]通关了[-][-][ffffff]难度十的[-][0dbce8]【完璧归赵】[-][ffffff]！[-]" announceObject="1,2" />
 <AnnounceTemp id="218" type="10" condition="300510" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]通关了[-][-][ffffff]难度十的[-][0dbce8]【横扫六合】[-][ffffff]！[-]" announceObject="1,2" />
 <AnnounceTemp id="219" type="11" condition="-1" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]于[-][0dbce8]竞技[-][ffffff]中击败了[-][dbba8f]#玩家名字七个字#[-][ffffff]，排名上升为第[-][d80202]$N$[-][ffffff]名！[-]" announceObject="1,2" />
-<AnnounceTemp id="220" type="13" condition="3" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]合成[-][0dbce8]3星[-][ffffff]秘宝[-][d503ee]#秘宝名字#[-][ffffff]！[-]" announceObject="1,2" />
+<AnnounceTemp id="220" type="13" condition="3" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][e5e205]合成[-][0dbce8]3星[-][ffffff]将魂[-][d503ee]#将魂名字#[-][ffffff]！[-]" announceObject="1,2" />
 <AnnounceTemp id="221" type="14" condition="10" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]购买[-][f5aa29]铜币[-][ffffff]时获得[-][d80202]10倍[-][ffffff]暴击！[-]" announceObject="1,2" />
 <AnnounceTemp id="222" type="15" condition="316001" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟商店[-][ffffff]兑换获得[-][d503ee]女娲补天石的碎片[-][ffffff]！[-]" announceObject="2" />
 <AnnounceTemp id="223" type="15" condition="316002" announcement="[ffffff]恭喜[-][dbba8f]*玩家名字七个字*[-][ffffff]在[-][06de34]联盟商店[-][ffffff]兑换获得[-][d503ee]女娲鹿鸣笙的碎片[-][ffffff]！[-]" announceObject="2" />
@@ -241,19 +241,6 @@
 <AnnounceTemp id="262" type="29" condition="20:01" announcement="[ffffff]加入群[-] [00e1c4]467690600[-][ffffff]，参与群活动即可获得[-][cb02d8]V特权礼包码[-][ffffff]哟![-]" announceObject="1,2" />
 <AnnounceTemp id="263" type="30" condition="4" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]成功洗劫了[-][dbba8f]*玩家名字七个字*[-][ffffff]的[-][cb02d8]紫色[-][ffffff]镖马！[-]" announceObject="1,2" />
 <AnnounceTemp id="264" type="30" condition="5" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]成功洗劫了[-][dbba8f]*玩家名字七个字*[-][ffffff]的[-][e15a00]橙色[-][ffffff]镖马！[-]" announceObject="1,2" />
-<AnnounceTemp id="240" type="28" condition="-1" announcement="您的盟友[dbba8f]XXX[-]遭到[d80202]*玩家名字七个字*[-]的掠夺！联盟将在[f5aa29]00:00[-]后损失M建设值！请速去驱逐敌人！" announceObject="5" />
-<AnnounceTemp id="241" type="29" condition="20:30" announcement="[ffffff]竞技排名将于[-][d80202]21:00[-][ffffff]结算！请抓紧[-][d80202]冲击排名[-][ffffff]，赢取丰厚[-][d80202]奖励[-][ffffff]呦！[-]" announceObject="1,2" />
-<AnnounceTemp id="242" type="29" condition="20:45" announcement="[ffffff]竞技排名将于[-][d80202]21:00[-][ffffff]结算！请抓紧[-][d80202]冲击排名[-][ffffff]，赢取丰厚[-][d80202]奖励[-][ffffff]呦！[-]" announceObject="1,2" />
-<AnnounceTemp id="243" type="29" condition="20:55" announcement="[ffffff]竞技排名将于[-][d80202]21:00[-][ffffff]结算！请抓紧[-][d80202]冲击排名[-][ffffff]，赢取丰厚[-][d80202]奖励[-][ffffff]呦！[-]" announceObject="1,2" />
-<AnnounceTemp id="244" type="29" condition="21:30" announcement="[ffffff]掠夺排名将于[-][d80202]22:00[-][ffffff]结算！请抓紧[-][d80202]冲击排名[-][ffffff]，赢取丰厚[-][d80202]奖励[-][ffffff]呦！[-]" announceObject="1,2" />
-<AnnounceTemp id="245" type="29" condition="21:45" announcement="[ffffff]掠夺排名将于[-][d80202]22:00[-][ffffff]结算！请抓紧[-][d80202]冲击排名[-][ffffff]，赢取丰厚[-][d80202]奖励[-][ffffff]呦！[-]" announceObject="1,2" />
-<AnnounceTemp id="246" type="29" condition="21:55" announcement="[ffffff]掠夺排名将于[-][d80202]22:00[-][ffffff]结算！请抓紧[-][d80202]冲击排名[-][ffffff]，赢取丰厚[-][d80202]奖励[-][ffffff]呦！[-]" announceObject="1,2" />
-<AnnounceTemp id="247" type="29" condition="9:00" announcement="[d80202]商铺刷新[-][ffffff]啦！一大批新货已上架！快去看看吧！[-]" announceObject="1,2" />
-<AnnounceTemp id="248" type="29" condition="21:00" announcement="[d80202]商铺刷新[-][ffffff]啦！一大批新货已上架！快去看看吧！[-]" announceObject="1,2" />
-<AnnounceTemp id="249" type="29" condition="11:50" announcement="[ffffff]加入群[-] [00e1c4]467690600[-][ffffff]，参与群活动即可获得[-][cb02d8]VIP礼包码[-][ffffff]哟![-]" announceObject="1,2" />
-<AnnounceTemp id="250" type="29" condition="12:00" announcement="[ffffff]加入群[-] [00e1c4]467690600[-][ffffff]，参与群活动即可获得[-][cb02d8]VIP礼包码[-][ffffff]哟![-]" announceObject="1,2" />
-<AnnounceTemp id="251" type="29" condition="12:10" announcement="[ffffff]加入群[-] [00e1c4]467690600[-][ffffff]，参与群活动即可获得[-][cb02d8]VIP礼包码[-][ffffff]哟![-]" announceObject="1,2" />
-<AnnounceTemp id="252" type="29" condition="19:50" announcement="[ffffff]加入群[-] [00e1c4]467690600[-][ffffff]，参与群活动即可获得[-][cb02d8]VIP礼包码[-][ffffff]哟![-]" announceObject="1,2" />
-<AnnounceTemp id="253" type="29" condition="20:00" announcement="[ffffff]加入群[-] [00e1c4]467690600[-][ffffff]，参与群活动即可获得[-][cb02d8]VIP礼包码[-][ffffff]哟![-]" announceObject="1,2" />
-<AnnounceTemp id="254" type="29" condition="20:10" announcement="[ffffff]加入群[-] [00e1c4]467690600[-][ffffff]，参与群活动即可获得[-][cb02d8]VIP礼包码[-][ffffff]哟![-]" announceObject="1,2" />
+<AnnounceTemp id="265" type="31" condition="10" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]获得了[-][e15a00]橙色[-][ffffff]符文[-][e15a00]*符文名字*[-][ffffff]，运气超群！[-]" announceObject="1,2" />
+<AnnounceTemp id="266" type="32" condition="10" announcement="[dbba8f]*玩家名字七个字*[-][ffffff]通过甲片兑换获得了[-][e15a00]橙色[-][ffffff]符文[-][e15a00]*符文名字*[-][ffffff]！[-]" announceObject="1,2" />
 </dataset>

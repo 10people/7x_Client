@@ -123,7 +123,7 @@ public class EquipMaterialInfoManagerment : MonoBehaviour {
 
             if (TouchController && pinzhiSave != 200)
             {
-                EquipGrowthMaterialUseManagerment.m_MaterialId = m_Itemid;
+                EquipGrowthMaterialUseManagerment.m_MaterialId._itemid = m_Itemid;
 
                 if (EquipGrowthMaterialUseManagerment.touchIsEnable)
                 {
@@ -133,7 +133,7 @@ public class EquipMaterialInfoManagerment : MonoBehaviour {
                         EquipGrowthMaterialUseManagerment.materialItemTouched = true;
                         MaterialUsingCount++;
                         m_LabCount.text = MaterialUsingCount.ToString() + "/" + MaterialAllCount;
-                        EquipGrowthMaterialUseManagerment.AddUseMaterials(m_Itemid);
+                      //  EquipGrowthMaterialUseManagerment.AddUseMaterials(m_Itemid);
                     }
                     SubButton.SetActive(true);
                     SubButton.transform.GetComponent<Collider>().enabled = true;
@@ -172,7 +172,7 @@ public class EquipMaterialInfoManagerment : MonoBehaviour {
    
             if (TouchController && pinzhiSave != 200)
             {
-                EquipGrowthMaterialUseManagerment.m_MaterialId = m_Itemid;
+                //EquipGrowthMaterialUseManagerment.m_MaterialId = m_Itemid;
 
                 if (MaterialUsingCount > 0)
                 {
@@ -193,4 +193,5 @@ public class EquipMaterialInfoManagerment : MonoBehaviour {
             }
         }
     }
+ 
 }

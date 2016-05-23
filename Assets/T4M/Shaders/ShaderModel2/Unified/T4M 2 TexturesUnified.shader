@@ -14,12 +14,16 @@ SubShader {
 CGPROGRAM
 #pragma surface surf T4M exclude_path:prepass noforwardadd
 #pragma exclude_renderers xbox360 ps3
+
+sampler2D _Control;
+sampler2D _Splat0,_Splat1;
+
 inline fixed4 LightingT4M (SurfaceOutput s, fixed3 lightDir, fixed atten)
 {
 	fixed diff = dot (s.Normal, lightDir);
 	fixed4 c;
 	c.rgb = s.Albedo * _LightColor0.rgb * (diff * atten * 2);
-	c.a = 0.0;
+	c.a = 0;
 	return c;
 }
 struct Input {
@@ -28,15 +32,11 @@ struct Input {
 	float2 uv_Splat1 : TEXCOORD2;
 };
  
-sampler2D _Control;
-sampler2D _Splat0,_Splat1;
- 
 void surf (Input IN, inout SurfaceOutput o) {
 	fixed2 splat_control = tex2D (_Control, IN.uv_Control).rgba;
 		
 	fixed3 lay1 = tex2D (_Splat0, IN.uv_Splat0);
 	fixed3 lay2 = tex2D (_Splat1, IN.uv_Splat1);
-	o.Alpha = 0.0;
 	o.Albedo.rgb = (lay1 * splat_control.r + lay2 * splat_control.g);
 }
 ENDCG 

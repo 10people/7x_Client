@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<QianDaoDesc month="1" desc="1月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="2" desc="2月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="3" desc="3月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="4" desc="4月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="5" desc="5月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="6" desc="6月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="7" desc="7月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="8" desc="8月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="9" desc="9月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="10" desc="10月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="11" desc="11月签到送" awardDesc="极品秘宝" />
+<QianDaoDesc month="12" desc="12月签到送" awardDesc="极品秘宝" />
+</dataset>

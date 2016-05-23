@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<JCZCommand ID="101" desc="进攻敌方上路营地！" annotation="攻方可见，上路最外面营地显示标记（标记仅攻方可见）" />
+<JCZCommand ID="102" desc="进攻敌方中路营地！" annotation="攻方可见，中路最外面营地显示标记（标记仅攻方可见）" />
+<JCZCommand ID="103" desc="进攻敌方下路营地！" annotation="攻方可见，下路最外面营地显示标记（标记仅攻方可见）" />
+<JCZCommand ID="104" desc="进攻敌方基地！" annotation="攻方可见，守方基地显示标记（标记仅攻方可见）" />
+<JCZCommand ID="105" desc="防守我方基地！" annotation="攻方可见，攻方基地显示标记（标记仅攻方可见）" />
+<JCZCommand ID="201" desc="防守我方上路营地！" annotation="守方可见，上路最外面营地显示标记（标记仅守方可见）" />
+<JCZCommand ID="202" desc="防守我方中路营地！" annotation="守方可见，中路最外面营地显示标记（标记仅守方可见）" />
+<JCZCommand ID="203" desc="防守我方下路营地！" annotation="守方可见，下路最外面营地显示标记（标记仅守方可见）" />
+<JCZCommand ID="204" desc="防守我方基地！" annotation="守方可见，守方基地显示标记（标记仅守方可见）" />
+<JCZCommand ID="205" desc="进攻敌方基地！" annotation="守方可见，攻方基地显示标记（标记仅守方可见）" />
+</dataset>

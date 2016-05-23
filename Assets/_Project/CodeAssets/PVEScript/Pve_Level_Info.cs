@@ -1132,13 +1132,23 @@ public class Pve_Level_Info : MonoBehaviour {
 							}
 						}
 						else{
-							Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-							                        LoadResourceCallback );
+
+							string Contain1 = LanguageTemplate.GetText(LanguageTemplate.Text.LEVEL_LIMIT)+litter_Lv.s_level.ToString ()+LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_UP_LEVEL)+LanguageTemplate.GetText(LanguageTemplate.Text.GET_EXP);
+							
+							ClientMain.m_UITextManager.createText(Contain1);
+							//Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+//							                        LoadResourceCallback );
 						}
 						
 					}
 					else{
-						Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadRenWuBack);
+
+						string Contain2 = ZhuXianTemp.GeTaskTitleById (RenWuId);
+						
+						string Contain1 = LanguageTemplate.GetText(LanguageTemplate.Text.RENWU_LIMIT)+Contain2;
+						
+						ClientMain.m_UITextManager.createText(Contain1);
+						//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadRenWuBack);
 					}
 				}
 			}
@@ -1164,13 +1174,23 @@ public class Pve_Level_Info : MonoBehaviour {
 							}
 						}
 						else{
-							Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-							                        LoadResourceCallback );
+
+							string Contain1 = LanguageTemplate.GetText(LanguageTemplate.Text.LEVEL_LIMIT)+litter_Lv.s_level.ToString ()+LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_UP_LEVEL)+LanguageTemplate.GetText(LanguageTemplate.Text.GET_EXP);
+
+							ClientMain.m_UITextManager.createText(Contain1);
+							//Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+//							                        LoadResourceCallback );
 						}
 						
 					}
 					else{
-						Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadRenWuBack);
+				
+						string Contain2 = ZhuXianTemp.GeTaskTitleById (RenWuId);
+						
+						string Contain1 = LanguageTemplate.GetText(LanguageTemplate.Text.RENWU_LIMIT)+Contain2;
+
+						ClientMain.m_UITextManager.createText(Contain1);
+					//	Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadRenWuBack);
 					}
 				}
 			}
@@ -1188,22 +1208,6 @@ public class Pve_Level_Info : MonoBehaviour {
 		yield return new WaitForSeconds (1.0f);
 		
 		Startsendmasg = true;
-	}
-	void LoadRenWuBack(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string title = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-
-		string Contain2 = ZhuXianTemp.GeTaskTitleById (RenWuId);
-
-		string Contain1 = "\r\n"+LanguageTemplate.GetText(LanguageTemplate.Text.RENWU_LIMIT)+"\r\n"+"\r\n"+Contain2;
-
-		string Contain3 = LanguageTemplate.GetText(LanguageTemplate.Text.FINGHT_CONDITON);
-
-		string Comfirm = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
-		uibox.setBox(title,Contain1, null,null,Comfirm,null,null,null,null);
 	}
 	void LoadPowerUpBack(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -1228,21 +1232,6 @@ public class Pve_Level_Info : MonoBehaviour {
 		string Comfirm = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
 		uibox.setBox(title,Contain1, Contain2,null,Comfirm,null,null,null,null);
-	}
-	public void LoadResourceCallback(ref WWW p_www,string p_path, Object p_object)
-	{
-		
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string title = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-
-		string Contain1 = "\n\r"+LanguageTemplate.GetText(LanguageTemplate.Text.LEVEL_LIMIT)+litter_Lv.s_level.ToString ()+LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_UP_LEVEL)+"\n\r"+"\n\r"+LanguageTemplate.GetText(LanguageTemplate.Text.GET_EXP);
-
-		//string Contain2 = litter_Lv.s_level.ToString ();
-
-		string Comfirm = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
-		uibox.setBox(title,Contain1, null,null,Comfirm,null,null,null,null);
 	}
 
 	GameObject tempOjbect_PVEUI;//掉落显示页面

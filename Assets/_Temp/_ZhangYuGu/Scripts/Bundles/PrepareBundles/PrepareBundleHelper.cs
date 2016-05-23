@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_BUNDLE
 
-//#define SHOW_SERVER_SELECTOR
+#define SHOW_SERVER_SELECTOR
 
 
 

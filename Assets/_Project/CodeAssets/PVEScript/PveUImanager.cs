@@ -393,21 +393,25 @@ public class PveUImanager :MYNGUIPanel
 			{
 				if(!mLevel.litter_Lv.s_pass)
 				{
-					DontOpenLvTips.SetActive(true);
-
-					m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_94);
-
-					StartCoroutine(discovertips());
-
+//					DontOpenLvTips.SetActive(true);
+//
+//					m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_94);
+//
+//					StartCoroutine(discovertips());
+					string mstr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_94);
+					ClientMain.m_UITextManager.createText(mstr);
 					return;
 				}
 			}
 			if (MapData.mapinstance.CurrChapter  > maxChanpter)
 			{
 				// Debug.Log("显示未开启提示");
-				DontOpenLvTips.SetActive(true);
+//				DontOpenLvTips.SetActive(true);
+//
+//				m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
 
-				m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
+				string mstr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
+				ClientMain.m_UITextManager.createText(mstr);
 
 				StartCoroutine(discovertips());
 
@@ -430,43 +434,43 @@ public class PveUImanager :MYNGUIPanel
 			else
 			{
 				// Debug.Log("显示未开启提示");
-				DontOpenLvTips.SetActive(true);
-				
-				m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
-				
-				StartCoroutine(discovertips());
-				
+//				DontOpenLvTips.SetActive(true);
+//				
+//				m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
+//				
+//				StartCoroutine(discovertips());
+				string mstr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
+				ClientMain.m_UITextManager.createText(mstr);
 				return;
 			}
         }
         else
         {
-			//Debug.Log(" you yidong111112qqqqq = " +MapData.mapinstance.CurrChapter);
-			//.Log(" you yidong111wwww = " +CityGlobalData.m_temp_CQ_Section );
-			//.Log(" you yidong111eeeeeee = " +MapData.mapinstance.AllCQ_Lv_Passed);
-			
+		
 			foreach(Level mLevel in MapData.mapinstance.CQLv )
 			{
 				if(!mLevel.chuanQiPass)
 				{
-					DontOpenLvTips.SetActive(true);
-					
-					m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_94);
-					
-					StartCoroutine(discovertips());
-					
+//					DontOpenLvTips.SetActive(true);
+//					
+//					m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_94);
+//					
+//					StartCoroutine(discovertips());
+					string mstr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_94);
+					ClientMain.m_UITextManager.createText(mstr);
 					return;
 				}
 			}
 			if (MapData.mapinstance.CurrChapter  > maxChanpter)
 			{
 				// Debug.Log("显示未开启提示");
-				DontOpenLvTips.SetActive(true);
-				
-				m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
-				
-				StartCoroutine(discovertips());
-				
+//				DontOpenLvTips.SetActive(true);
+//				
+//				m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
+//				
+//				StartCoroutine(discovertips());
+				string mstr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_96);
+				ClientMain.m_UITextManager.createText(mstr);
 				return;
 			}
             if (MapData.mapinstance.CurrChapter < CityGlobalData.m_temp_CQ_Section)
@@ -484,11 +488,14 @@ public class PveUImanager :MYNGUIPanel
             }
 			else
 			{
-				DontOpenLvTips.SetActive(true);
-				
-				m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_95);
-				
-				StartCoroutine(discovertips());
+//				DontOpenLvTips.SetActive(true);
+//				
+//				m_DontOpenLvTips.text = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_95);
+//				
+//				StartCoroutine(discovertips());
+
+				string mstr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_95);
+				ClientMain.m_UITextManager.createText(mstr);
 
 			}
         }

@@ -29,7 +29,11 @@ public class ParticleAutoRelease : MonoBehaviour {
 	}
 
 	void Start(){
-		this.enabled = IsAutoReleaseEnabled();
+		{
+			this.enabled = IsAutoReleaseEnabled( gameObject );
+
+			m_pss = gameObject.GetComponentsInChildren<ParticleSystem>();
+		}
 
 		#if DEBUG_AUTO_RELEASE
 		GameObjectHelper.LogGameObjectHierarchy( gameObject, "ParticleAutoRelease.Start() " + this.enabled );
@@ -59,12 +63,18 @@ public class ParticleAutoRelease : MonoBehaviour {
 	#region Utilities
 
 	// is fx should be auto released?
-	bool IsAutoReleaseEnabled(){
+	public static bool IsAutoReleaseEnabled( GameObject p_gb ){
+		if( p_gb == null ){
+			Debug.LogError( "GameObject is null." );
+
+			return true;
+		}
+
 		// ps
 		{
 			// self
 			{
-				ParticleSystem t_ps = gameObject.GetComponent<ParticleSystem>();
+				ParticleSystem t_ps = p_gb.GetComponent<ParticleSystem>();
 
 				if( t_ps != null ){
 					if( t_ps.loop ){
@@ -75,23 +85,23 @@ public class ParticleAutoRelease : MonoBehaviour {
 
 			// child
 			{
-				m_pss = gameObject.GetComponentsInChildren<ParticleSystem>();
+				ParticleSystem[] t_pss = p_gb.GetComponentsInChildren<ParticleSystem>();
 				
 				#if DEBUG_AUTO_RELEASE
-				Debug.Log( "IsAutoReleaseEnabled.PS.Count: " + m_pss.Length );
+				Debug.Log( "IsAutoReleaseEnabled.PS.Count: " + t_pss.Length );
 				#endif
 				
-				if( m_pss.Length == 0 ){
+				if( t_pss.Length == 0 ){
 					#if DEBUG_AUTO_RELEASE
-					GameObjectHelper.LogGameObjectHierarchy( gameObject, "Fx not made of Particle: " );
+					GameObjectHelper.LogGameObjectHierarchy( p_gb, "Fx not made of Particle: " );
 					#endif
 					
 					return false;
 				}
 				
-				for( int i = 0; i < m_pss.Length; i++ ){
-					if( m_pss[ i ].loop ){
-						ParticleSystemRenderer t_ps_renderer = m_pss[ i ].gameObject.GetComponent<ParticleSystemRenderer>();
+				for( int i = 0; i < t_pss.Length; i++ ){
+					if( t_pss[ i ].loop ){
+						ParticleSystemRenderer t_ps_renderer = t_pss[ i ].gameObject.GetComponent<ParticleSystemRenderer>();
 						
 						if( t_ps_renderer.enabled ){
 							return false;
@@ -103,7 +113,7 @@ public class ParticleAutoRelease : MonoBehaviour {
 
 //		// mesh
 //		{
-//			MeshRenderer t_mesh = gameObject.GetComponentInChildren<MeshRenderer>();
+//			MeshRenderer t_mesh = p_gb.GetComponentInChildren<MeshRenderer>();
 //
 //			if( t_mesh != null ){
 //				return false;

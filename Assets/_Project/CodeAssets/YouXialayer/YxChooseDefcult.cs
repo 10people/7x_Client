@@ -58,7 +58,10 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	}
 	private void SetMessegae()
 	{
-
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+		}
 		YouXiaTypeInfoReq saodanginfo = new YouXiaTypeInfoReq ();
 		
 		MemoryStream saodangstream = new MemoryStream ();

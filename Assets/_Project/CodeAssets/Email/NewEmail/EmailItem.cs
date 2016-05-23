@@ -53,7 +53,7 @@ public class EmailItem : MonoBehaviour {
 		
 		else
 		{
-			titleLabel.text = emailInfo.title;
+			titleLabel.text = "[000000]" + emailInfo.title + "[-]";
 			//			Debug.Log ("emailInfo.type" + emailInfo.type);
 			EmailTemp emailTemp = EmailTemp.getEmailTempByType (emailInfo.type);
 			int whichType = emailTemp.whichType;
@@ -70,9 +70,9 @@ public class EmailItem : MonoBehaviour {
 			}
 		}
 		
-		senderLabel.text = "发件人:" + emailInfo.senderName;
+		senderLabel.text = "[000000]发件人:" + emailInfo.senderName + "[-]";
 		
-		timeLabel.text = QXComData.UTCToTimeString (emailInfo.time,"yyyy-MM-dd");
+		timeLabel.text = MyColorData.getColorString (5,QXComData.UTCToTimeString (emailInfo.time,"yyyy-MM-dd hh:ss"));
 
 		bgSprite.color = emailInfo.isRead == 0 ? QXComData.lightColor : Color.white;
 	}

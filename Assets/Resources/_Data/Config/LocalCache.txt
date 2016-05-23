@@ -1,2 +1,2 @@
-Version : 0408-1755
-VersionCode : 45834
+Version : 0523-1726
+VersionCode : 50275

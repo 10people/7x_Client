@@ -13,11 +13,11 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 	public mFixUniform mmFixUniform;
 
-	public GameObject First_MiBao_UI; //秘宝UI
+	public GameObject First_MiBao_UI; //将魂UI
 	
-	public GameObject MiBao_TempInfo; //秘宝信息
+	public GameObject MiBao_TempInfo; //将魂信息
 	
-	//public GameObject MiBao_ZhanLiInfo; //秘宝战力信息界面
+	//public GameObject MiBao_ZhanLiInfo; //将魂战力信息界面
 
 	public MibaoInfoResp m_MiBaoInfo;
 
@@ -41,11 +41,11 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 	//public GameObject AllMiBaoActive;
 
-	public List<MibaoInfo> ActiveMiBaoList = new List<MibaoInfo> (); //已经激活秘宝
+	public List<MibaoInfo> ActiveMiBaoList = new List<MibaoInfo> (); //已经激活将魂
 
-	public List<MibaoInfo> DisActiveMiBaoList = new List<MibaoInfo> ();//尚未激活秘宝
+	public List<MibaoInfo> DisActiveMiBaoList = new List<MibaoInfo> ();//尚未激活将魂
 
-	public GameObject new_MiBaoTemp; //秘宝战力信息界面
+	public GameObject new_MiBaoTemp; //将魂战力信息界面
 
 	public GameObject Art; //可以合成技能的红点
 
@@ -157,7 +157,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				Debug.Log("========1");
 				mtime = m_MiBaoInfo.remainTime;
 
-//				Debug.Log("秘宝信息返回！");
+//				Debug.Log("将魂信息返回！");
 
 				InitData();
 				StopCoroutine("showTime");
@@ -186,7 +186,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				}
 				return true;
 			}
-			case ProtoIndexes.MIBAO_DEAL_SKILL_RESP://m秘宝技能激活或者进阶返回
+			case ProtoIndexes.MIBAO_DEAL_SKILL_RESP://m将魂技能激活或者进阶返回
 			{
 				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				
@@ -300,7 +300,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			Num_of_ActiveMiBao.text = ActiveMiBaoList.Count.ToString()+"/"+ mMiBaoskill.needNum.ToString();
 			if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
 			{
-				string mstr = "当前秘宝技能可解锁";
+				string mstr = "当前无双技可解锁";
 				LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
 				OpenLockBtn.SetActive(true);
 				NuqiObg.SetActive(false);
@@ -320,7 +320,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				string mstr1 = (mMiBaoskill.needNum -ActiveMiBaoList.Count).ToString();
 				Closeffect();
 				string mstr2 = "再激活 ";
-				string mstr3 = " 个秘宝可解锁该技能";
+				string mstr3 = " 个将魂可解锁该技能";
 				PushAndNotificationHelper.SetRedSpotNotification (610, false);
 				LockofMiBaonum.text = MyColorData.getColorString(10,mstr2)+MyColorData.getColorString(5,mstr1)+MyColorData.getColorString(10,mstr3);
 			}
@@ -362,7 +362,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				UIsilder.SetActive(false);
 				MaxId = 7;
 				//AllMiBaoActive.SetActive(true);
-				string mstr ="秘宝技能已全部解锁";
+				string mstr ="无双技已全部解锁";
 				LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
 				mLock.SetActive(false);
 
@@ -423,7 +423,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				{
 					OpenLockBtn.SetActive(true);
 					NuqiObg.SetActive(false);
-					string mstr = "当前秘宝技能可解锁";
+					string mstr = "当前无双技可解锁";
 					Closeffect();
 					OPeneffect();
 					LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
@@ -439,7 +439,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 					NuqiZhi.text = mNiqi.nuqiRatioc.ToString();
 					PushAndNotificationHelper.SetRedSpotNotification (610, false);
 					string mstr2 = "再激活 ";
-					string mstr3 = " 个秘宝可解锁该技能";
+					string mstr3 = " 个将魂可解锁该技能";
 					Closeffect();
 					string mstr1 = (mMiBaoskill.needNum -ActiveMiBaoList.Count).ToString();
 					LockofMiBaonum.text = MyColorData.getColorString(10,mstr2)+MyColorData.getColorString(5,mstr1)+MyColorData.getColorString(10,mstr3);
@@ -509,7 +509,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		}
 		if(FreshGuide.Instance().IsActive(100360)&& TaskData.Instance.m_TaskInfoDic[100360].progress >= 0)
 		{
-			//Debug.Log("秘宝升星 ");
+			//Debug.Log("将魂升星 ");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100360];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			//mUIscrolview.enabled = false;
@@ -517,7 +517,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		}
 		if(FreshGuide.Instance().IsActive(100259)&& TaskData.Instance.m_TaskInfoDic[100259].progress >= 0)
 		{
-			//Debug.Log("秘宝技能激活");
+			//Debug.Log("将魂技能激活");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100259];
 
 			//Debug.Log ("tempTaskData.m_listYindaoShuju[2] = "+tempTaskData.m_listYindaoShuju[2]);
@@ -706,7 +706,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 			int m_y = (int)(i/4);
 
-			mMiBaotep.transform.localPosition = new Vector3(-180+m_x*dis_x,-m_y*(dis_y+10)+130,0);
+			mMiBaotep.transform.localPosition = new Vector3(-180+m_x*dis_x,-m_y*(dis_y+10)+130+50,0);
 
 			mMiBaotep.transform.localScale = Vector3.one;
 
@@ -737,7 +737,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 		if(ActiveMiBaoList.Count >= 21)
 		{
-			ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,130-(6-1)*70,0);
+			ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,130-(6-1)*70+50,0);
 			
 			ActiveMibaoBackGroud.SetDimensions(486,140*6);
 
@@ -754,15 +754,15 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			if(ActiveMiBaoList.Count == 0)
 			{
 				ActiveMibaoBackGroud.gameObject.SetActive(false);
-				DisactiveLabel.gameObject.transform.localPosition = new Vector3(-150,-50,0);
+				DisactiveLabel.gameObject.transform.localPosition = new Vector3(-150,-50+50,0);
 			}
 			else
 			{
 				int n = (int)((ActiveMiBaoList.Count-1)/4)+1;
 
-				DisactiveLabel.gameObject.transform.localPosition = new Vector3(-150,-60 -(dis_y+20)*n,0);
+				DisactiveLabel.gameObject.transform.localPosition = new Vector3(-150,-60 -(dis_y+20)*n+50,0);
 
-				ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,130-(n-1)*70,0);
+				ActiveMibaoBackGroud.transform.localPosition = new Vector3(0,130-(n-1)*70+50,0);
 
 				ActiveMibaoBackGroud.SetDimensions(486,140*n);
 			}
@@ -792,10 +792,10 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			{
 				n = (int)((ActiveMiBaoList.Count-1)/4)+1;
 			}
-			mMiBaotep.transform.localPosition = new Vector3(-180+m_x*dis_x,-m_y*(dis_y+10)+130 -(n*140+60),0);
+			mMiBaotep.transform.localPosition = new Vector3(-180+m_x*dis_x,-m_y*(dis_y+10)+130+50 -(n*140+60),0);
 			if( i == 0)
 			{
-				Sprite_y = -m_y*dis_y+130 -n*140+60;
+				Sprite_y = -m_y*dis_y+130+50 -n*140+60;
 			}
 			mMiBaotep.transform.localScale = Vector3.one;
 			

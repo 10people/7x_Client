@@ -2,12 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 public class RTBuffTemplate : XmlLoadManager
 {
     public int BuffId;
     public bool IsDebuff;
+    public int SkillId;
+    public int EffectTime;
+    public int EffectCycle;
+    public int Caster;
+    public int SkillTarget;
     public int Attr_1;
     public int Attr_1_P1;
     public int Attr_1_P2;
@@ -65,6 +71,16 @@ public class RTBuffTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.IsDebuff = (int.Parse(t_reader.Value) == 1);
                 t_reader.MoveToNextAttribute();
+                t_template.SkillId = int.Parse(t_reader.Value);
+                t_reader.MoveToNextAttribute();
+                t_template.EffectTime = int.Parse(t_reader.Value);
+                t_reader.MoveToNextAttribute();
+                t_template.EffectCycle = int.Parse(t_reader.Value);
+                t_reader.MoveToNextAttribute();
+                t_template.Caster = int.Parse(t_reader.Value);
+                t_reader.MoveToNextAttribute();
+                t_template.SkillTarget = int.Parse(t_reader.Value);
+                t_reader.MoveToNextAttribute();
                 t_template.Attr_1 = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
                 t_template.Attr_1_P1 = int.Parse(t_reader.Value);
@@ -83,7 +99,7 @@ public class RTBuffTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.Attr_3_P2 = int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
-                t_template.BuffDisplay = int.Parse(t_reader.Value);
+                t_template.BuffDisplay = t_reader.Value == "" ? 0 : int.Parse(t_reader.Value);
                 t_reader.MoveToNextAttribute();
                 t_template.BuffDuration = int.Parse(t_reader.Value);
             }
@@ -91,5 +107,19 @@ public class RTBuffTemplate : XmlLoadManager
             templates.Add(t_template);
         }
         while (t_has_items);
+    }
+
+    public static RTBuffTemplate GetTemplateByID(int id)
+    {
+        var temp = templates.Where(item => item.BuffId == id).ToList();
+
+        if (temp.Any())
+        {
+            return temp.First();
+        }
+        else
+        {
+            return null;
+        }
     }
 }

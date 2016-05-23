@@ -19,6 +19,7 @@ public class CityGlobalData  {
 		hanbingjian,
 		fangun
 	}
+	public static bool QCLISOPen = false;//判断千重楼是UI是否打开
 
 	public static bool IsFistGetMiBaoData = true;//判断是否是第一次获取秘宝数据
 
@@ -206,6 +207,8 @@ public class CityGlobalData  {
 		YX_ZongHengLiuHe = 14,
 
 		LueDuo_GongJi = 12,
+
+		QianChongLiu = 15,
 	}
 
 	/// <summary>

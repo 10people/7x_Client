@@ -204,7 +204,21 @@ public static class NGUITools
 		cam = Camera.main;
 		if (cam != null && (cam.cullingMask & layerMask) != 0) return cam;
 
+		if( cam != null ){
+			Camera[] t_cams = cam.GetComponentsInChildren<Camera>();
+
+			for( int i = 0; i < t_cams.Length; i++ ){
+				Camera t_cam = t_cams[ i ];
+
+				if ( t_cam != null && (t_cam.cullingMask & layerMask) != 0){
+					return t_cam;
+				}
+			}
+		}
+
 		Camera[] cameras = NGUITools.FindActive<Camera>();
+
+//		Debug.Log( " ------ NGUITools.FindActive: " + cameras.Length );
 
 		for (int i = 0, imax = cameras.Length; i < imax; ++i)
 		{

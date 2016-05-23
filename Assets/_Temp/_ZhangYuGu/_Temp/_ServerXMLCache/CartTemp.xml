@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<CartTemp quality="1" name="骡马" cartSpeed="0.9" profitPara="11.9" failProfit="0.7" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="0" CartProbability="40000" vipMin="0" success_Jianshe="40" fail_Jianshe="20" rob_Jianshe="20" />
+<CartTemp quality="2" name="驮马" cartSpeed="0.9" profitPara="15.4" failProfit="0.7" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="5" CartProbability="28000" vipMin="0" success_Jianshe="50" fail_Jianshe="25" rob_Jianshe="25" />
+<CartTemp quality="3" name="膘马" cartSpeed="0.9" profitPara="20.2" failProfit="0.7" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="15" CartProbability="18000" vipMin="0" success_Jianshe="60" fail_Jianshe="30" rob_Jianshe="30" />
+<CartTemp quality="4" name="骏马" cartSpeed="0.9" profitPara="24.9" failProfit="0.7" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="40" CartProbability="10000" vipMin="0" success_Jianshe="70" fail_Jianshe="35" rob_Jianshe="35" />
+<CartTemp quality="5" name="神驹" cartSpeed="0.9" profitPara="29.6" failProfit="0.7" robProfit="0.5" protectTime="60" recoveryRate="0" cartTime="600" ShengjiCost="70" CartProbability="4000" vipMin="0" success_Jianshe="80" fail_Jianshe="40" rob_Jianshe="40" />
+</dataset>

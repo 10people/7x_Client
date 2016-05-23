@@ -21,8 +21,10 @@ public class HouseSecretCardShower : MonoBehaviour
         SetStar(tempInfo.star);
         var tempXmlTemp = MiBaoXmlTemp.templates.FirstOrDefault(TreasureItem => TreasureItem.id == tempInfo.miBaoId);
 
-		Name.text = NameIdTemplate.GetTemplates().FirstOrDefault(NameIDItem => NameIDItem.nameId == tempXmlTemp.nameId).Name;
+//		Name.text = NameIdTemplate.GetTemplates().FirstOrDefault(NameIDItem => NameIDItem.nameId == tempXmlTemp.nameId).Name;
         
+		Name.text = NameIdTemplate.getNameIdTemplateByNameId( tempXmlTemp.nameId ).Name;
+
 		{
 			Desc.text =
 				DescIdTemplate.GetTemplates().FirstOrDefault(DescIDItem => DescIDItem.descId == tempXmlTemp.descId).description;

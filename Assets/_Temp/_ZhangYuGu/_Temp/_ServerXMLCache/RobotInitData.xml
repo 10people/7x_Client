@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<RobotInitData name="Robot" posX="59" posY="0.3372" posZ="28.6" max="59" min="-66.72" direction="0" />
+<RobotInitData name="Robot01" posX="0" posY="0.3372" posZ="28.6" max="59" min="-66.72" direction="0" />
+<RobotInitData name="Robot1" posX="34" posY="8.15" posZ="67.4" max="34.6" min="-34.8" direction="0" />
+<RobotInitData name="Robot11" posX="0" posY="8.15" posZ="67.4" max="34.6" min="-34.8" direction="0" />
+<RobotInitData name="Robot2" posX="-66.23" posY="0.3372" posZ="28.6" max="132.05" min="28.6" direction="2" />
+<RobotInitData name="Robot21" posX="-66.23" posY="0.3372" posZ="80" max="132.05" min="28.6" direction="2" />
+<RobotInitData name="Robot3" posX="63.11" posY="0.3372" posZ="29.55" max="124.48" min="29.55" direction="2" />
+<RobotInitData name="Robot31" posX="63.11" posY="0.3372" posZ="75" max="124.48" min="29.55" direction="2" />
+<RobotInitData name="Robot4" posX="59.98" posY="0.3372" posZ="-12.073" max="59.98" min="-63.6" direction="0" />
+<RobotInitData name="Robot41" posX="0" posY="0.3372" posZ="-12.073" max="59.98" min="-63.6" direction="0" />
+<RobotInitData name="Robot5" posX="45.213" posY="0.3372" posZ="-12.073" max="31.7" min="-12" direction="2" />
+<RobotInitData name="Robot51" posX="45.213" posY="0.3372" posZ="9" max="31.7" min="-12" direction="2" />
+<RobotInitData name="Robot6" posX="-0.22" posY="0.3372" posZ="40.3" max="40.295" min="-31.185" direction="2" />
+<RobotInitData name="Robot61" posX="-0.22" posY="0.3372" posZ="0" max="40.295" min="-31.165" direction="2" />
+<RobotInitData name="Robot7" posX="-31.36" posY="0.3372" posZ="31.72" max="31.72" min="-12.78" direction="2" />
+<RobotInitData name="Robot71" posX="-31.36" posY="0.3372" posZ="9.5" max="31.72" min="-12.78" direction="2" />
+<RobotInitData name="Robot8" posX="60.5" posY="0.3372" posZ="-12.073" max="60.5" min="-54.82" direction="0" />
+<RobotInitData name="Robot81" posX="0" posY="0.3372" posZ="-12.073" max="60.5" min="-54.82" direction="0" />
+</dataset>

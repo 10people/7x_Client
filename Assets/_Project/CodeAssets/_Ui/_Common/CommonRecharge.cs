@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CommonRecharge : Singleton<CommonRecharge>
 {
-    public void ShowBuy(int ingot, int times, DelegateUtil.VoidDelegate doBuyDelegate)
+    public void ShowBuy(int ingot, int times, DelegateHelper.VoidDelegate doBuyDelegate)
     {
         m_times = times;
         m_ingot = ingot;
@@ -13,7 +13,7 @@ public class CommonRecharge : Singleton<CommonRecharge>
 
     private int m_ingot;
     private int m_times;
-    private DelegateUtil.VoidDelegate m_doBuyDelegate;
+    private DelegateHelper.VoidDelegate m_doBuyDelegate;
 
     private void ConfirmBuy(ref WWW p_www, string p_path, Object p_object)
     {

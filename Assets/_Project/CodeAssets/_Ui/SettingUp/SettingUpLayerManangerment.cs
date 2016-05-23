@@ -67,13 +67,14 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 	void Start ()
     {
         m_SettingUp = this;
+		_title = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         m_LabRenameSignal.text = LanguageTemplate.GetText(1604) + MyColorData.getColorString(5, "100") + "元宝。";
         MainCityUI.setGlobalTitle(m_ObjTopLeft, LanguageTemplate.GetText(1528), 0, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
       //  m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
         listEventMainLayer.ForEach(p => p.m_Handle += EventReception);
         listRenameEvent.ForEach(p => p.m_Handle += RenameReception);
-        m_listSwitchAccountEvent.m_Handle += SwitchAccountController;
+        m_listSwitchAccountEvent.m_Handle += SwitchAccoutTag;
         listCDKeyEvent.ForEach(p => p.m_Handle += CDKeyReception);
         m_listChangeCountryEvent.ForEach(p => p.m_Handle += ChangeCountryReception);
         //listEventMainLayer[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
@@ -224,7 +225,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     {
         
         {
-              m_JunXian.gameObject.SetActive(true);
+           //   m_JunXian.gameObject.SetActive(true);
               m_JunXian.spriteName = "junxian" + JunZhuData.Instance().m_junzhuInfo.junXian;
         }
      
@@ -236,15 +237,20 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         }
         else
         {
-            listMainLab[0].text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT);
+            listMainLab[0].text = "<无联盟>";
             m_AllianceHave.SetActive(false);
         }
-        listMainLab[1].text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString() + "   " + JunZhuData.Instance().m_junzhuInfo.name;
-        listMainLab[2].text = "";
+        listMainLab[1].text =JunZhuData.Instance().m_junzhuInfo.level.ToString();
+        listMainLab[2].text = JunZhuData.Instance().m_junzhuInfo.name;
         m_SpriteIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id; ;
         SettingButtonControl();
     }
 
+    
+    public void ShowIcon()
+    {
+        m_SpriteIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id; 
+    }
     void SettingButtonControl()
     {
 
@@ -345,7 +351,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 break;
             case 2:
                 {
-                    m_SwitchAccountObject.SetActive(true);
+                    SwitchAccoutTag();
                 }
                 break;
             case 3:
@@ -359,7 +365,10 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 m_ScaleEffectController.OnCloseWindowClick();
             }
                 break;
-         
+			case 5:
+				//切换形象
+				QXSelectRole.Instance.SelectRolePage (QXSelectRolePage.SelectType.UNLOCK_ROLE);
+				break;
             default:
                 break;
         }
@@ -420,9 +429,11 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                            // RenameInfo = "";
                           //  listRenameEvent[2].GetComponent<UIInput>().value = "";
                            // listRenameObject[2].SetActive(true);
-                            listMainLab[1].text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString() + "   " + tempInfo.name;
+                            listMainLab[1].text = JunZhuData.Instance().m_junzhuInfo.level.ToString();
+                        
                             JunZhuData.Instance().m_junzhuInfo.name = NameSave;
-                            listRenameObject[0].SetActive(false);
+                            listMainLab[1].text = JunZhuData.Instance().m_junzhuInfo.name;
+                        listRenameObject[0].SetActive(false);
                             //_content1 = LanguageTemplate.GetText(1506);
                             //_content2 = "\n" + NameSave;
                             //_SignalType = 2;
@@ -694,6 +705,37 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
 		}
     }
 
+    void SwitchAccoutTag(int index = 0)
+    {
+        string cancelStr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+        Global.CreateBox(LanguageTemplate.GetText(2000), "是否退出本账号并回到登录界面？", "", null, cancelStr, "确定", SwitchAccount);
+       
+    }
+  
+    public static void SwitchAccount(int index)
+    {
+        if (index == 2)
+        {
+            WindowBackShowController.m_SaveEquipBuWei = 0;
+            PlayerPrefs.DeleteKey("UserNameAndPassWord");
+            FunctionWindowsCreateManagerment.SetSelectEquipDefault();
+            SceneManager.m_isSequencer = false;
+            if (UIYindao.m_UIYindao != null && UIYindao.m_UIYindao.m_isOpenYindao)
+            {
+                UIYindao.m_UIYindao.CloseUI();
+            }
+            EquipSuoData.Instance().m_listNoShow.Clear();
+            CityGlobalData.m_isAllianceTenentsScene = false;
+            CityGlobalData.m_isWashMaxSignal = false;
+            SceneManager.m_isSequencer = false;
+            CityGlobalData.m_isAllianceTenentsScene = false;
+
+            {
+                SceneManager.RequestEnterLogin();
+            }
+        }
+    }
+
     private int SaveNum = 0;
     private int _index_Touch_num = 0;
     void ChangeCountryReception(int index)
@@ -773,7 +815,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, cancelStr, confirmStr, ZhuanGuo);
 
     }
-    private string _title = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
+    private string _title = "";
+
     private string _content1 = "";
     private string _content2 = "";
     private int _SignalType = 0;

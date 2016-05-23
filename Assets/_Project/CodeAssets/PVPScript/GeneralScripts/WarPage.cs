@@ -9,7 +9,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class WarPage : MonoBehaviour {
+public class WarPage : MonoBehaviour, SocketProcessor {
 
 	public static WarPage warPage;
 
@@ -17,19 +17,19 @@ public class WarPage : MonoBehaviour {
 
 	public GameObject warItemObj;
 	private List<GameObject> warList = new List<GameObject> ();
-	
-	public List<EventHandler> closeHandlerList = new List<EventHandler>();
 
 	public ScaleEffectController sEffectController;
 
 	void Awake ()
 	{
 		warPage = this;
+		SocketTool.RegisterMessageProcessor (this);
 	}
 
 	void OnDestroy ()
 	{
 		warPage = null;
+		SocketTool.UnRegisterMessageProcessor (this);
 	}
 
 	/// <summary>
@@ -40,6 +40,8 @@ public class WarPage : MonoBehaviour {
 	{
 		mainSimpleResp = tempResp;
 		sEffectController.OnOpenWindowClick ();
+
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,1);
 
 		int warCount = mainSimpleResp.info.Count - warList.Count;
 		if (warCount > 0)
@@ -66,16 +68,24 @@ public class WarPage : MonoBehaviour {
 
 		for (int i = 0;i < mainSimpleResp.info.Count;i ++)
 		{
-			warList[i].transform.localPosition = new Vector3(i * 180 - (mainSimpleResp.info.Count - 1) * 90,0,0);
+			switch (mainSimpleResp.info[i].functionId)
+			{
+			case 310:
+				warList[i].transform.localPosition = new Vector3(100,0,0);
+				break;
+			case 211:
+				warList[i].transform.localPosition = new Vector3(200,0,0);
+				break;
+			case 300100:
+				warList[i].transform.localPosition = new Vector3(0,0,0);
+				break;
+			default:
+				break;
+			}
+
 			warList[i].transform.localScale = Vector3.one;
 			WarItem war = warList[i].GetComponent<WarItem> ();
 			war.InItWarItem (mainSimpleResp.info[i]);
-		}
-
-		foreach (EventHandler handler in closeHandlerList)
-		{
-			handler.m_click_handler -= WarCloseHandlerClickBack;
-			handler.m_click_handler += WarCloseHandlerClickBack;
 		}
 	}
 
@@ -113,9 +123,34 @@ public class WarPage : MonoBehaviour {
 		}
 	}
 
-	public void WarCloseHandlerClickBack (GameObject obj)
+	public bool OnProcessSocketMessage (QXBuffer p_message)
 	{
-		MainCityUI.TryRemoveFromObjectList (gameObject);
-		gameObject.SetActive (false);
+		if (p_message != null)
+		{
+			switch (p_message.m_protocol_index)
+			{
+			case ProtoIndexes.S_MAIN_SIMPLE_INFO_RESP:
+			{
+				Debug.Log ("Fight窗口信息返回" + ProtoIndexes.S_MAIN_SIMPLE_INFO_RESP);
+				
+				MainSimpleInfoResp mainSimpleRes = new MainSimpleInfoResp();
+				mainSimpleRes = QXComData.ReceiveQxProtoMessage (p_message,mainSimpleRes) as MainSimpleInfoResp;
+				
+				if (mainSimpleRes != null)
+				{
+					if (mainSimpleRes.info == null)
+					{
+						mainSimpleRes.info = new List<SimpleInfo>();
+					}
+					mainSimpleResp = mainSimpleRes;
+					
+					InItWarPage (mainSimpleResp);
+				}
+				return true;
+			}
+			}
+		}
+		
+		return false;
 	}
 }

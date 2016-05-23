@@ -56,7 +56,7 @@ public class ChatBaseSendController : MonoBehaviour
         TimeCalc.Instance.StopAllCoroutines();
 
         TimeCalc.Instance.StartCheckMsgSucceedCoroutine(ConfigTool.GetFloat(ConfigTool.CONST_NETOWRK_SOCKET_TIME_OUT) + checkMsgSecurityTimePlus, m_ChatBaseWindow, m_ChatBaseWindow.GetChannelFrame(m_ChatBaseWindow.CurrentChannel).m_ChatBaseDataHandler);
-        TimeCalc.Instance.StartOpenSendMessageCD((float)CanshuTemplate.GetValueByKey(CanshuTemplate.CHAT_INTERVAL_TIME), m_ChatBaseWindow);
+        TimeCalc.Instance.StartOpenSendMessageCD((float)CanshuTemplate.GetValueByKey(CanshuTemplate.CHAT_WORLD_INTERVAL_TIME), m_ChatBaseWindow);
 
         //Clean field after send chat message.
         m_ChatBaseWindow.GetChannelFrame(m_ChatBaseWindow.CurrentChannel).EditInput.value = null;

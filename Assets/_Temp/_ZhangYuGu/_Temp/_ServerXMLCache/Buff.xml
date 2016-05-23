@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Buff BuffId="101" IsDebuff="1" SkillId="0" EffectTime="0" EffectCycle="0" Caster="0" SkillTarget="0" Attr_1="0" Attr_1_P1="0" Attr_1_P2="0" Attr_2="0" Attr_2_P1="0" Attr_2_P2="0" Attr_3="0" Attr_3_P1="0" Attr_3_P2="0" BuffDisplay="0" BuffDuration="0" />
+<Buff BuffId="121" IsDebuff="1" SkillId="131" EffectTime="50" EffectCycle="500" Caster="0" SkillTarget="1" Attr_1="0" Attr_1_P1="0" Attr_1_P2="0" Attr_2="0" Attr_2_P1="0" Attr_2_P2="0" Attr_3="0" Attr_3_P1="0" Attr_3_P2="0" BuffDisplay="0" BuffDuration="0" />
+</dataset>

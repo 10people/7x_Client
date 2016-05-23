@@ -26,13 +26,20 @@ public class TransformHelper : MonoBehaviour {
 		p_gb.transform.localRotation = Quaternion.Euler( p_local_rot );
 	}
 
-	#endregion
+    public static Vector3 GetTrackRotation(Vector3 sourcePos, Vector3 targetPos)
+    {
+        double angleTemp = Math.Atan2(targetPos.x - sourcePos.x, targetPos.z - sourcePos.z)/Math.PI*180;
+
+        return new Vector3(0, (float) angleTemp, 0);
+    }
+
+    #endregion
 
 
 
-	#region Save&Load
+    #region Save&Load
 
-	private static Quaternion m_quaternion;
+    private static Quaternion m_quaternion;
 	
 	private static Vector3 m_position;
 	
@@ -150,15 +157,15 @@ public class TransformHelper : MonoBehaviour {
 	/// <summary>
 	/// Set default transform and active.
 	/// </summary>
-	/// <param name="parent">parent transform</param>
-	/// <param name="targetChild">transform standardized</param>
-	public static void ActiveWithStandardize(Transform parent, Transform targetChild)
+	/// <param name="p_parent">parent transform</param>
+	/// <param name="p_targetChild">transform standardized</param>
+	public static void ActiveWithStandardize(Transform p_parent, Transform p_targetChild,float p_localScale=1f)
 	{
-		targetChild.transform.parent = parent;
-		targetChild.transform.localPosition = Vector3.zero;
-		targetChild.transform.localEulerAngles = Vector3.zero;
-		targetChild.transform.localScale = Vector3.one;
-		targetChild.gameObject.SetActive(true);
+		p_targetChild.transform.parent = p_parent;
+		p_targetChild.transform.localPosition = Vector3.zero;
+		p_targetChild.transform.localEulerAngles = Vector3.zero;
+	    p_targetChild.transform.localScale = Vector3.one*p_localScale;
+		p_targetChild.gameObject.SetActive(true);
 	}
 	
 	#endregion
@@ -323,17 +330,14 @@ public class TransformHelper : MonoBehaviour {
 		return t_local_scale;
 	}
 	
-	public static void CopyTransform(GameObject p_source, GameObject p_destination)
-	{
-		if (p_source == null)
-		{
+	public static void CopyTransform( GameObject p_source, GameObject p_destination ){
+		if( p_source == null ){
 			Debug.LogError("CopyTransform.Source = null");
 			
 			return;
 		}
 		
-		if (p_destination == null)
-		{
+		if( p_destination == null ){
 			Debug.LogError("CopyTransform.Des = null");
 			
 			return;

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<JCZTemp key="declaration_startTime" desc="宣战起始时间" value="8:00" />
+<JCZTemp key="declaration_endTime" desc="宣战结束时间" value="18:00" />
+<JCZTemp key="preparation_startTime" desc="备战起始时间" value="18:00" />
+<JCZTemp key="preparation_endTime" desc="备战结束时间" value="20:00" />
+<JCZTemp key="fighting_startTime" desc="战斗起始时间" value="20:00" />
+<JCZTemp key="fighting_endTime" desc="战斗结束时间" value="23:00" />
+<JCZTemp key="add_level1" desc="加价第一档" value="1" />
+<JCZTemp key="add_level2" desc="加价第一档" value="10" />
+<JCZTemp key="add_level3" desc="加价第一档" value="100" />
+<JCZTemp key="resurgence_countDown" desc="复活倒计时（秒）" value="60" />
+<JCZTemp key="resurgence_hp" desc="复活后血量（百分比）" value="100" />
+<JCZTemp key="resurgence_freeTimes" desc="免费复活次数" value="5" />
+<JCZTemp key="prepare_duration" desc="战斗前准备时长（秒）" value="120" />
+<JCZTemp key="fighting_duration" desc="战斗时长（秒）" value="900" />
+<JCZTemp key="ending_duration" desc="结束时长（秒）" value="30" />
+<JCZTemp key="campSeized_area_radius" desc="营地占领范围" value="10" />
+<JCZTemp key="campSeized_initial_value" desc="营地占领初始值" value="0" />
+<JCZTemp key="campSeized_critical_value" desc="营地占领临界值" value="500" />
+<JCZTemp key="Seized_value_addSpeed" desc="营地占领速度" value="2" />
+<JCZTemp key="report_CD" desc="战报冷却时间（秒）" value="10" />
+<JCZTemp key="patrol_radius" desc="巡视范围半径" value="12" />
+<JCZTemp key="offline_preserve_time" desc="掉线保留时间（秒）" value="120" />
+<JCZTemp key="redElixir_freeNum" desc="免费药水数量" value="2" />
+<JCZTemp key="basic_integral" desc="杀人基础积分" value="10" />
+</dataset>

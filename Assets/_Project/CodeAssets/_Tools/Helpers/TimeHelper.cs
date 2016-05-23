@@ -75,6 +75,16 @@ public class TimeHelper : Singleton<TimeHelper>
 
     #region Current Time
 
+	private static float m_last_realtime_since_startup = 0.0f;
+
+	public static float GetLastRealtimeSinceStartup(){
+		return m_last_realtime_since_startup;
+	}
+
+	public static void UpdateLastRealtimeSinceStartup(){
+		m_last_realtime_since_startup = Time.realtimeSinceStartup;
+	}
+
     /// "yyyy-MM-dd-HHmmss"
 	public static string GetCurrentTime_String( string p_format = "yyyy-MM-dd-HHmmss" ){
 		return DateTime.Now.ToLocalTime().ToString( p_format );
@@ -268,10 +278,10 @@ public class TimeHelper : Singleton<TimeHelper>
         /// 1: one deleagte, 2:per/s delegate, 3:per/frame delegate
         /// </summary>
         public int DelegateMode;
-        public DelegateUtil.VoidDelegate m_TimeCalcVoidDelegate;
-        public DelegateUtil.StringDelegate m_TimeCalcStringDelegate;
-        public DelegateUtil.IntDelegate m_TimeCalcIntDelegate;
-        public DelegateUtil.FloatDelegate m_TimeCalcFloatDelegate;
+        public DelegateHelper.VoidDelegate m_TimeCalcVoidDelegate;
+        public DelegateHelper.StringDelegate m_TimeCalcStringDelegate;
+        public DelegateHelper.IntDelegate m_TimeCalcIntDelegate;
+        public DelegateHelper.FloatDelegate m_TimeCalcFloatDelegate;
 
         public static bool ContainsKey(string key)
         {
@@ -299,7 +309,7 @@ public class TimeHelper : Singleton<TimeHelper>
     /// <param name="duration">time over duration</param>
     /// <param name="l_voidDelegate">delegate</param>
     /// <returns>is add succeed</returns>
-    public bool AddOneDelegateToTimeCalc(string key, float duration, DelegateUtil.VoidDelegate l_voidDelegate = null)
+    public bool AddOneDelegateToTimeCalc(string key, float duration, DelegateHelper.VoidDelegate l_voidDelegate = null)
     {
         if (TimeCalc.ContainsKey(key))
         {
@@ -320,7 +330,7 @@ public class TimeHelper : Singleton<TimeHelper>
     /// <param name="duration">time over duration</param>
     /// <param name="l_timeCalcVoidDelegate">delegate</param>
     /// <returns>is add succeed</returns>
-    public bool AddOneDelegateToTimeCalc(string key, float duration, DelegateUtil.StringDelegate l_stringDelegate = null)
+    public bool AddOneDelegateToTimeCalc(string key, float duration, DelegateHelper.StringDelegate l_stringDelegate = null)
     {
         if (TimeCalc.ContainsKey(key))
         {
@@ -341,7 +351,7 @@ public class TimeHelper : Singleton<TimeHelper>
     /// <param name="duration">time over duration</param>
     /// <param name="l_intDelegate">delegate</param>
     /// <returns>is add succeed</returns>
-    public bool AddEveryDelegateToTimeCalc(string key, float duration, DelegateUtil.IntDelegate l_intDelegate = null)
+    public bool AddEveryDelegateToTimeCalc(string key, float duration, DelegateHelper.IntDelegate l_intDelegate = null)
     {
         if (TimeCalc.ContainsKey(key))
         {
@@ -362,7 +372,7 @@ public class TimeHelper : Singleton<TimeHelper>
     /// <param name="duration">time over duration</param>
     /// <param name="l_timeCalcIntDelegate">delegate</param>
     /// <returns>is add succeed</returns>
-    public bool AddFrameDelegateToTimeCalc(string key, float duration, DelegateUtil.FloatDelegate l_floatDelegate = null)
+    public bool AddFrameDelegateToTimeCalc(string key, float duration, DelegateHelper.FloatDelegate l_floatDelegate = null)
     {
         if (TimeCalc.ContainsKey(key))
         {
@@ -827,6 +837,12 @@ public class TimeHelper : Singleton<TimeHelper>
 
 
     #region Utilities
+	
+	public static void SetTimeScale( float p_time_scale ){
+//		Debug.Log( "SetTimeScale( " + p_time_scale + " )" );
+		
+		Time.timeScale = p_time_scale;
+	}
 
     public static void ResetTimeScale()
     {

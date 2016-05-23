@@ -30,7 +30,7 @@ public class Console_SetNetwork {
 	
 	public static void OnPingManual( string[] p_params, bool p_log_ping ){
 		#if DEBUG_CONSOLE
-		Debug.Log( "OnPing() " + Time.realtimeSinceStartup );
+//		Debug.Log( "OnPing() " + Time.realtimeSinceStartup );
 		#endif
 		
 		ErrorMessage t_msg = new ErrorMessage ();

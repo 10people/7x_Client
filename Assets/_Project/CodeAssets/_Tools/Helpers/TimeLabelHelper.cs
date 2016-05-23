@@ -58,7 +58,14 @@ public class TimeLabelHelper : Singleton<TimeLabelHelper>
 				}
 				else
 				{
-					TimeLabelList[i].m_LabelTime.text = ColorTool.Color_Green_00ff00 + TimeHelper.SecondToClockTime(tempCountdown) + "[-]" + TimeLabelList[i].m_sAddString;
+					if(TimeLabelList[i].m_LabelTime.color == Color.white)
+					{
+						TimeLabelList[i].m_LabelTime.text = ColorTool.Color_Green_00ff00 + TimeHelper.SecondToClockTime(tempCountdown) + TimeLabelList[i].m_sAddString  + "[-]";
+					}
+					else
+					{
+						TimeLabelList[i].m_LabelTime.text = TimeHelper.SecondToClockTime(tempCountdown) + TimeLabelList[i].m_sAddString;
+					}
 				}
 			}
 		}

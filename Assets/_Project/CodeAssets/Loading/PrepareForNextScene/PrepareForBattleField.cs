@@ -142,6 +142,11 @@ public class PrepareForBattleField : MonoBehaviour {
 		Debug.Log( "Prepare_For_BattleFieldCallback()" );
 		#endif
 
+		// preload templates
+		{
+			NameIdTemplate.ProcessAsset();
+		}
+
 		// origin coroutine
 		{
 			GameObject gc2d = (GameObject)Instantiate( temple2D );

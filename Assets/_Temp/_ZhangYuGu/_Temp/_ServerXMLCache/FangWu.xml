@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<FangWu id="10001" type="101" lv="1" exp="400" lianmengLv="1" produceSpeed="50" produceLimit="2400" waiguanId="1" buildNum="3" needNum="100" addNum="100" coolTime="1800" value="0" dec_playerExp_add="100" />
+<FangWu id="10002" type="101" lv="2" exp="1100" lianmengLv="2" produceSpeed="65" produceLimit="3120" waiguanId="1" buildNum="3" needNum="120" addNum="120" coolTime="1800" value="0" dec_playerExp_add="120" />
+<FangWu id="10003" type="101" lv="3" exp="2100" lianmengLv="3" produceSpeed="80" produceLimit="3840" waiguanId="2" buildNum="3" needNum="140" addNum="140" coolTime="1800" value="0" dec_playerExp_add="140" />
+<FangWu id="10004" type="101" lv="4" exp="3800" lianmengLv="4" produceSpeed="95" produceLimit="4560" waiguanId="2" buildNum="3" needNum="160" addNum="160" coolTime="1800" value="0" dec_playerExp_add="160" />
+<FangWu id="10005" type="101" lv="5" exp="5400" lianmengLv="5" produceSpeed="110" produceLimit="5280" waiguanId="3" buildNum="3" needNum="180" addNum="180" coolTime="1800" value="0" dec_playerExp_add="180" />
+<FangWu id="10006" type="101" lv="6" exp="9000" lianmengLv="6" produceSpeed="125" produceLimit="6000" waiguanId="3" buildNum="3" needNum="200" addNum="200" coolTime="1800" value="0" dec_playerExp_add="200" />
+<FangWu id="10007" type="101" lv="7" exp="13200" lianmengLv="7" produceSpeed="140" produceLimit="6720" waiguanId="4" buildNum="3" needNum="220" addNum="220" coolTime="1800" value="0" dec_playerExp_add="220" />
+<FangWu id="10008" type="101" lv="8" exp="28800" lianmengLv="8" produceSpeed="155" produceLimit="7440" waiguanId="4" buildNum="3" needNum="240" addNum="240" coolTime="1800" value="0" dec_playerExp_add="240" />
+<FangWu id="10009" type="101" lv="9" exp="46800" lianmengLv="9" produceSpeed="170" produceLimit="8160" waiguanId="5" buildNum="3" needNum="260" addNum="260" coolTime="1800" value="0" dec_playerExp_add="260" />
+<FangWu id="10010" type="101" lv="10" exp="84000" lianmengLv="10" produceSpeed="185" produceLimit="8880" waiguanId="5" buildNum="3" needNum="280" addNum="280" coolTime="1800" value="0" dec_playerExp_add="280" />
+</dataset>

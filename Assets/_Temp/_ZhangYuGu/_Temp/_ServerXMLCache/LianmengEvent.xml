@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LianmengEvent ID="1" str="%d创建了联盟！" />
+<LianmengEvent ID="2" str="%d加入了联盟！" />
+<LianmengEvent ID="3" str="%d被盟主%d开除出联盟！" />
+<LianmengEvent ID="4" str="%d退出了联盟！" />
+<LianmengEvent ID="5" str="盟主%d将联盟转让给%d！" />
+<LianmengEvent ID="6" str="盟主将%d从%d升职到%d！" />
+<LianmengEvent ID="7" str="盟主将%d从%d降职到%d！" />
+<LianmengEvent ID="8" str="盟主%d发布了新的联盟公告！" />
+<LianmengEvent ID="9" str="%d捐献了%d个虎符，联盟获得%d建设值和%d经验值" />
+<LianmengEvent ID="10" str="经过各位成员努力，联盟等级提升到%d级！" />
+<LianmengEvent ID="11" str="%d%d开启了荒野求生的%d，快去参加！" />
+<LianmengEvent ID="12" str="经过各位成员努力，%d已被攻破！" />
+<LianmengEvent ID="13" str="联盟资源点%d被%d联盟占领！" />
+<LianmengEvent ID="14" str="%d掠夺%d成功，联盟获得%d建设值" />
+<LianmengEvent ID="15" str="%d上缴了%d点贡金，联盟获得%d声望值！" />
+<LianmengEvent ID="16" str="副盟主%d发布了新的联盟公告！" />
+<LianmengEvent ID="17" str="%d掠夺%d成功，联盟获得%d建设值。" />
+<LianmengEvent ID="18" str="%d进行了%d膜拜，联盟获得了%d建设值和%d经验值。" />
+<LianmengEvent ID="19" str="%d进行了封禅%d，联盟获得了%d建设值和%d经验值。" />
+<LianmengEvent ID="20" str="盟主%d升级了%d，快去看看吧！" />
+<LianmengEvent ID="21" str="副盟主%d升级了%d，快去看看吧！" />
+<LianmengEvent ID="22" str="盟主%d升级了%d科技，快去看看吧！" />
+<LianmengEvent ID="23" str="副盟主%d升级了%d科技，快去看看吧！" />
+<LianmengEvent ID="24" str="%d被驱逐失败，联盟损失%d建设值。" />
+<LianmengEvent ID="25" str="%d驱逐%d成功，避免了联盟建设值的损失。" />
+<LianmengEvent ID="26" str="联盟积分排行%d，获得%d建设值和%d经验值。" />
+<LianmengEvent ID="27" str="a运镖成功，联盟获得b建设值。" />
+<LianmengEvent ID="28" str="a劫镖成功，联盟获得b建设值。" />
+<LianmengEvent ID="29" str="a运镖失败，联盟获得b建设值。" />
+
+</dataset>

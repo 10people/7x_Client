@@ -136,7 +136,7 @@ public class Joystick : MYNGUIPanel
             CityGlobalData.m_joystickControl = false;
 
             m_MouseOrTouch = null;
-            m_joystickBackGround.localPosition = new Vector3(76, 76, 0);
+            m_joystickBackGround.localPosition = new Vector3(76, 136, 0);
             m_joystickTransform.localPosition = Vector3.zero;
             m_uiOffset = Vector3.zero;
 			m_spriteBG.color = new Color(1f, 1f, 1f, 0.3f);

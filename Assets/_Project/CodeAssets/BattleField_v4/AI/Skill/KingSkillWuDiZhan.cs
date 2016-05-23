@@ -270,7 +270,18 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			"easetype", iTween.EaseType.easeInOutQuart
 			));
 
-		BattleEffectControllor.Instance().PlayEffect (600211, king.copyObject.transform.position, king.copyObject.transform.forward);
+		if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 4)
+		{
+			BattleEffectControllor.Instance().PlayEffect (600267, king.copyObject.transform.position, king.copyObject.transform.forward);
+		}
+		else if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 1)
+		{
+			BattleEffectControllor.Instance().PlayEffect (600281, king.copyObject.transform.position, king.copyObject.transform.forward);
+		}
+		else
+		{
+			BattleEffectControllor.Instance().PlayEffect (600211, king.copyObject.transform.position, king.copyObject.transform.forward);
+		}
 
 		curCount ++;
 
@@ -322,11 +333,29 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		if(index == 0)
 		{
-			BattleEffectControllor.Instance().PlayEffect (600227, king.copyObject.transform.position, king.copyObject.transform.forward);
+			if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 4)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600265, king.copyObject.transform.position, king.copyObject.transform.forward);
+			}
+			else if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 1)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600278, king.copyObject.transform.position, king.copyObject.transform.forward);
+			}
+			else
+			{
+				BattleEffectControllor.Instance().PlayEffect (600227, king.copyObject.transform.position, king.copyObject.transform.forward);
+			}
 		}
 		else if(index  == 1)
 		{
-			BattleEffectControllor.Instance().PlayEffect (600228, king.copyObject.transform.position, king.copyObject.transform.forward);
+			if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 1)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600279, king.copyObject.transform.position, king.copyObject.transform.forward);
+			}
+			else
+			{
+				BattleEffectControllor.Instance().PlayEffect (600228, king.copyObject.transform.position, king.copyObject.transform.forward);
+			}
 		}
 	}
 
@@ -376,7 +405,18 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		if(curNode != null)
 		{
-			BattleEffectControllor.Instance().PlayEffect (600210, curNode.gameObject);
+			if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 4)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600266, curNode.gameObject);
+			}
+			else if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 1)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600280, curNode.gameObject);
+			}
+			else
+			{
+				BattleEffectControllor.Instance().PlayEffect (600210, curNode.gameObject);
+			}
 		}
 		
 		KingSkillWuDiZhan wudizhan = (KingSkillWuDiZhan)gameObject.GetComponent("KingSkillWuDiZhan");
@@ -417,7 +457,9 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			}
 			
 			king.attackHp(wudizhan.curNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.LIGHT_SKILL_1);
-			
+
+			curNode.beatDown(100, king);
+
 			Buff.createBuff(wudizhan.curNode, AIdata.AttributeType.ATTRTYPE_Focus, 0, 5f);
 			
 			if(king.stance == BaseAI.Stance.STANCE_SELF) king.Shake(KingCamera.ShakeType.Cri);
@@ -436,7 +478,14 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		
 		if(curNode != null)
 		{
-			BattleEffectControllor.Instance().PlayEffect (600210, curNode.gameObject);
+			if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 4)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600264, curNode.gameObject);
+			}
+			else
+			{
+				BattleEffectControllor.Instance().PlayEffect (600210, curNode.gameObject);
+			}
 		}
 		
 		KingSkillWuDiZhan wudizhan = (KingSkillWuDiZhan)gameObject.GetComponent("KingSkillWuDiZhan");
@@ -477,7 +526,9 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			}
 			
 			king.attackHp(wudizhan.curNode, fbp.Float, fbp.Bool, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.LIGHT_SKILL_1);
-			
+
+			curNode.beatDown(100, king);
+
 			if(index == 1)
 			{
 				BattleEffectControllor.Instance().PlayEffect (600229, wudizhan.curNode.transform.position, king.copyObject.transform.forward);
@@ -555,34 +606,34 @@ public class KingSkillWuDiZhan : MonoBehaviour
 	{
 		inSkill = false;
 
-		List<BaseAI> ns = king.stance == BaseAI.Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
-
-		Vector3 tempFow = transform.forward;
-
-		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.jueyingxingguangzhan, king);
-
-		foreach(BaseAI n in ns)
-		{
-			float l = Vector3.Distance(transform.position, n.transform.position);
-			
-			if(l < template.value6 && n.isAlive)
-			{
-				transform.forward = n.transform.position - transform.position;
-
-				Vector3 targetP = transform.position + transform.forward * (l + 2f);
-
-				StartCoroutine(n.attackedMovement(0.05f, targetP, iTween.EaseType.easeOutExpo, 0.2f));
-			
-				if(n.nodeData.nodeType != qxmobile.protobuf.NodeType.BOSS)
-				{
-					//n.mAnim.SetTrigger(n.getAnimationName(BaseAI.AniType.ANI_BATCDown));
-
-					n.beatDown(101);
-				}
-			}
-		}
-
-		transform.forward = tempFow;
+//		List<BaseAI> ns = king.stance == BaseAI.Stance.STANCE_SELF ? BattleControlor.Instance().enemyNodes : BattleControlor.Instance().selfNodes;
+//
+//		Vector3 tempFow = transform.forward;
+//
+//		SkillTemplate template = SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.jueyingxingguangzhan, king);
+//
+//		foreach(BaseAI n in ns)
+//		{
+//			float l = Vector3.Distance(transform.position, n.transform.position);
+//			
+//			if(l < template.value6 && n.isAlive)
+//			{
+//				transform.forward = n.transform.position - transform.position;
+//
+//				Vector3 targetP = transform.position + transform.forward * (l + 2f);
+//
+//				StartCoroutine(n.attackedMovement(0.05f, targetP, iTween.EaseType.easeOutExpo, 0.2f));
+//			
+//				if(n.nodeData.nodeType != qxmobile.protobuf.NodeType.BOSS)
+//				{
+//					//n.mAnim.SetTrigger(n.getAnimationName(BaseAI.AniType.ANI_BATCDown));
+//
+//					n.beatDown(101, king);
+//				}
+//			}
+//		}
+//
+//		transform.forward = tempFow;
 	}
 
 	void setAlphaSelf(float alpha)

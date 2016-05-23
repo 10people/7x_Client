@@ -19,10 +19,12 @@ public class Global
 	public static bool m_isOpenPVP = false;//pve
 
     public static bool m_isOpenBaiZhan = false;//pvp
+	public static bool m_isSportDataInItEnd = true;//pvpdata init end
 
 	public static bool m_isOpenHuangYe = false;//huangye
 
 	public static int m_iOpenFunctionIndex = -1;
+	public static bool m_isAddZhanli = true;
 	public static bool m_isZhanli = false;
 
 	public static int m_iScreenID = 0;
@@ -56,7 +58,12 @@ public class Global
 
 	public static int getBili(int w, float curNum, float maxNum)
 	{
-		return (int)((curNum / maxNum) * w);
+		int W = (int)((curNum / maxNum) * w);
+		if(W > w)
+		{
+			W = w;
+		}
+		return W;
 	}
 
 	public static int[] getNum(int num){
@@ -315,7 +322,8 @@ public class Global
 		UIFont uifontButton1 = null, UIFont uifontButton2 = null, 
 		bool isShowBagItemNumBelow = false, 
 		bool isSetDepth = true, bool isBagItemTop = true,
-		bool isFunction = false ){
+		bool isFunction = false,
+		int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ){
 		return UtilityTool.Instance.CreateBox(
 			tile,
 			dis1,
@@ -330,7 +338,21 @@ public class Global
 			isShowBagItemNumBelow,
 			isSetDepth,
 			isBagItemTop, 
-			isFunction );
+			isFunction,
+			p_window_id );
+	}
+
+	public static GameObject CreateFunctionIcon(int id)
+	{
+		GameObject temp = GameObject.Instantiate(UtilityTool.m_cached_functionJump_obj) as GameObject;
+
+		UIFunctionJump functionJump = (temp).GetComponent<UIFunctionJump>();
+
+		functionJump.setDate(id);
+
+		MainCityUI.TryAddToObjectList(temp);
+
+		return temp;
 	}
 
 	public static GameObject GetObj(ref GameObject obj, string name)

@@ -102,4 +102,19 @@ public class MiBaoSkillLvTempLate : XmlLoadManager {
 
 		return null;
 	}
+
+	public static int GetMiBaoSkillComDesIdByZuHeId (int skillId)
+	{
+		foreach (MiBaoSkillLvTempLate template in templates)
+		{
+			if (template.id == skillId)
+			{
+				return template.Desc;
+			}
+		}
+		
+		Debug.LogError ("Can not Get MiBaoSkillComDesIdByZuHeId by skillId:" + skillId);
+		
+		return -1;
+	}
 }

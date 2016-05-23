@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--type说明：1活动奖励2百战每日奖励3百战赛季奖励4房屋交易5玩家赠送6系统公告-->
+<dataset>
+<YoujianTemp id="1001" type="1" icon="yj1" yinchuo="yc1" fujian="1" />
+<YoujianTemp id="2001" type="2" icon="yj2" yinchuo="yc2" fujian="1" />
+<YoujianTemp id="3001" type="3" icon="yj3" yinchuo="yc3" fujian="1" />
+<YoujianTemp id="4001" type="4" icon="yj4" yinchuo="yc4" fujian="1" />
+<YoujianTemp id="5001" type="5" icon="yj5" yinchuo="yc5" fujian="1" />
+<YoujianTemp id="6001" type="6" icon="yj6" yinchuo="yc6" fujian="0" />
+</dataset>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<SceneTemplate sceneId="0" sceneName="Game_Scene_Bundle_Loader" isCheck="1" />
+<SceneTemplate sceneId="1" sceneName="Game_Scene_Login" isCheck="1" />
+<SceneTemplate sceneId="2" sceneName="Game_Scene_Loading" isCheck="1" />
+<SceneTemplate sceneId="3" sceneName="Game_Scene_Create_Role" isCheck="1" />
+<SceneTemplate sceneId="4" sceneName="Game_Scene_MainCity" isCheck="1" />
+<SceneTemplate sceneId="5" sceneName="Game_Scene_MainCity_YeWan" isCheck="1" />
+<SceneTemplate sceneId="6" sceneName="Game_Scene_House" isCheck="0" />
+<SceneTemplate sceneId="7" sceneName="Game_Scene_AllianceCity" isCheck="1" />
+<SceneTemplate sceneId="8" sceneName="Game_Scene_AllianceCity_YeWan" isCheck="1" />
+<SceneTemplate sceneId="9" sceneName="Game_Scene_Carriage" isCheck="1" />
+<SceneTemplate sceneId="10" sceneName="Game_Scene_AllianceBattle" isCheck="0" />
+<SceneTemplate sceneId="100" sceneName="BattleField_V4_100" isCheck="1" />
+<SceneTemplate sceneId="101" sceneName="BattleField_V4_101" isCheck="1" />
+<SceneTemplate sceneId="201" sceneName="BattleField_V4_201" isCheck="1" />
+<SceneTemplate sceneId="202" sceneName="BattleField_V4_202" isCheck="1" />
+<SceneTemplate sceneId="203" sceneName="BattleField_V4_203" isCheck="1" />
+<SceneTemplate sceneId="204" sceneName="BattleField_V4_204" isCheck="1" />
+<SceneTemplate sceneId="205" sceneName="BattleField_V4_205" isCheck="1" />
+<SceneTemplate sceneId="207" sceneName="BattleField_V4_207" isCheck="1" />
+<SceneTemplate sceneId="301" sceneName="BattleField_V4_301" isCheck="1" />
+<SceneTemplate sceneId="302" sceneName="BattleField_V4_302" isCheck="1" />
+<SceneTemplate sceneId="303" sceneName="BattleField_V4_303" isCheck="1" />
+<SceneTemplate sceneId="304" sceneName="BattleField_V4_304" isCheck="1" />
+<SceneTemplate sceneId="401" sceneName="BattleField_V4_401" isCheck="1" />
+<SceneTemplate sceneId="406" sceneName="BattleField_V4_406" isCheck="1" />
+<SceneTemplate sceneId="407" sceneName="BattleField_V4_407" isCheck="1" />
+<SceneTemplate sceneId="503" sceneName="BattleField_V4_503" isCheck="1" />
+<SceneTemplate sceneId="504" sceneName="BattleField_V4_504" isCheck="1" />
+<SceneTemplate sceneId="506" sceneName="BattleField_V4_506" isCheck="1" />
+<SceneTemplate sceneId="704" sceneName="BattleField_V4_704" isCheck="1" />
+<SceneTemplate sceneId="1503" sceneName="BattleField_V4_1503" isCheck="1" />
+<SceneTemplate sceneId="2008" sceneName="BattleField_V4_2008" isCheck="1" />
+<SceneTemplate sceneId="900" sceneName="BattleField_V4_900" isCheck="1" />
+<SceneTemplate sceneId="33" sceneName="Game_Scene_AllianceBattle" isCheck="0" />
+</dataset>

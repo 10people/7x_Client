@@ -27,31 +27,67 @@ public class EquipGrowthWearManagerment : MonoBehaviour
 
     void Awake()
     {
-        UIYindao.m_UIYindao.CloseUI();
+       UIYindao.m_UIYindao.CloseUI();
     }
     void Start () 
     {
-       
+        for (int i = 0; i < m_listTypeEvent.Count; i++)
+        {
+          m_listTypeEvent[i].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+        }
         m_LabToSignal.text = MyColorData.getColorString(2, LanguageTemplate.GetText(1513));
         m_LabContent.text = LanguageTemplate.GetText(1355);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
-        MainCityUI.setGlobalTitle(m_ObjTopLeft, "装备打造", 0, 0);
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "装备", 0, 0);
+      //  MainCityUI.setGlobalTitle(m_ObjTopLeft, "装备打造", 0, 0);
         m_EquipGrowth = this;
         m_listTypeEvent.ForEach(p => p.m_Handle += ShowTypes);
         m_SEC.OpenCompleteDelegate += ShowDefault;
-        // m_UpgradeTanHao.SetActive(EquipSuoData.AllUpgrade());
         m_EventIllustrate.m_Handle += Showillusrate;
         m_listItemEvent.ForEach(p => p.m_Event.m_Handle += ShowEquips);
     }
 
     void Showillusrate(int index)
     {
-        //m_illustrateObj.SetActive(true);
         GeneralControl.Instance.LoadRulesPrefab(LanguageTemplate.GetText(1355));
-        //m_LabContent.text = ;
     }
     void OnEnable()
     {
+        if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
+        {
+            TaskData.Instance.m_iCurMissionIndex = 100100;
+            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+
+            if (_Index_Type_Save != 3 && _Index_Save != 4)
+            {
+                tempTaskData.m_iCurIndex = 3;
+            }
+            else if (_Index_Type_Save == 3 && _Index_Save == 4)
+            {
+                tempTaskData.m_iCurIndex = 5;
+            }
+            else
+            {
+                tempTaskData.m_iCurIndex = 4;
+            }
+            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
+        }
+        else if (FreshGuide.Instance().IsActive(200030) && TaskData.Instance.m_TaskInfoDic[200030].progress >= 0)
+        {
+            TaskData.Instance.m_iCurMissionIndex = 200030;
+            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+       
+            if (_Index_Type_Save != -1)
+             {
+                tempTaskData.m_iCurIndex = 3;
+             }
+           else
+            {
+                tempTaskData.m_iCurIndex = 2;
+            }
+     
+            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
+        }
         m_EquipGrowth = this;
         m_SEC.transform.localScale = Vector3.one;
         if (EquipsOfBody.Instance().m_equipsOfBodyDic != null)
@@ -61,21 +97,20 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     }
  
     private int materialSendId = 0;
-    private int _Index_Type_Save = 0;//type
-    private int _Index_Save = 3;//equip
+    [HideInInspector]
+    public int _Index_Type_Save = -1;//type
+    [HideInInspector]
+    public int _Index_Save = 3;//equip
     void ShowTypes(int index)
     {
-
         if (_Index_Type_Save != index)
         {
             switch (index)
             {
                 case 2:
                     {
-
                         if (!FunctionOpenTemp.GetWhetherContainID(1210))
                         {
-                            ShowTypes(1);
                             EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
                              , FunctionOpenTemp.GetTemplateById(1210).m_sNotOpenTips
                              , "");
@@ -83,8 +118,36 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                         }
                     }
                     break;
+                case 0:
+                    {
+
+                        if (!FunctionOpenTemp.GetWhetherContainID(1213))
+                        {
+                            EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
+                          , FunctionOpenTemp.GetTemplateById(1213).m_sNotOpenTips
+                          , "");
+                            return;
+                        }
+                    }
+                    break;
+                case 3:
+                    {
+                        if (!FunctionOpenTemp.GetWhetherContainID(1211))
+                        {
+                            EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
+                          , FunctionOpenTemp.GetTemplateById(1211).m_sNotOpenTips
+                          , "");
+                            return;
+                        }
+                    }
+                    break;
                 default: break;
             }
+            if (_Index_Type_Save != -1)
+            {
+                m_listTypeEvent[_Index_Type_Save].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+            }
+            m_listTypeEvent[index].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
 
             FunctionWindowsCreateManagerment.SetSelectEquipInfo(index, _Index_Save);
             CityGlobalData.m_ShowSelectType = 0;
@@ -93,57 +156,73 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             {
                 StrengthTanHao();
             }
-            
-
-            //  if (_Index_Type_Save != index)
+            _Index_Type_Save = index;
+          
+            switch (index)
             {
+                case 0:
+                    {
+                        //m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                        //m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[3].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                    }
 
-                _Index_Type_Save = index;
-                switch (index)
-                {
-                    case 1:
+                    break;
+                case 1:
+                    {
+                        //m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                        //m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[3].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                    }
+                    break;
+                case 2:
+                    {
+                        if (FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress >= 0)
                         {
-                            m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
-                            m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                            m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                            FunctionWindowsCreateManagerment.SetSelectEquipInfo(1, 3);
+                            TaskData.Instance.m_iCurMissionIndex = 100705;
+                            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+                            tempTaskData.m_iCurIndex = 3;
+                            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
                         }
-                        break;
-                    case 2:
-                        {
-                            if (FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress >= 0)
-                            {
-                                FunctionWindowsCreateManagerment.SetSelectEquipInfo(1, 3);
-                                TaskData.Instance.m_iCurMissionIndex = 100705;
-                                ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-                                tempTaskData.m_iCurIndex = 3;
-                                UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-                            }
-                            showAniMation();
-                            m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
-                            m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                            m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                Dictionary<int, BagItem> tempEquipsOfBodyDic = EquipsOfBody.Instance().m_equipsOfBodyDic;
-                if (tempEquipsOfBodyDic.ContainsKey(_Index_Save))
-                {
-                    m_IntensifyOrWash.GetComponent<EquipGrowthEquipInfoManagerment>().
-                        GetEquipInfo(tempEquipsOfBodyDic[_Index_Save].itemId,
-                        tempEquipsOfBodyDic[_Index_Save].dbId,
-                        index - 1,
-                        _Index_Save);
-                }
+                        showAniMation();
+                        //m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                        //m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[3].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                    }
+                    break;
+                case 3:
+                    {
+
+                        //m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                        //m_listTypeEvent[3].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                    }
+                    break;
+                default:
+                    break;
             }
+            Dictionary<int, BagItem> tempEquipsOfBodyDic = EquipsOfBody.Instance().m_equipsOfBodyDic;
+            if (tempEquipsOfBodyDic.ContainsKey(_Index_Save))
+            {
+                m_IntensifyOrWash.GetComponent<EquipGrowthEquipInfoManagerment>().
+                    GetEquipInfo(tempEquipsOfBodyDic[_Index_Save].itemId,
+                    tempEquipsOfBodyDic[_Index_Save].dbId,
+                    index - 1,
+                    _Index_Save);
+            }
+
         }
     }
   
 
     void ShowEquips(int index)
     {
-       FunctionWindowsCreateManagerment.SetSelectEquipInfo(_Index_Type_Save, index);
+        FunctionWindowsCreateManagerment.SetSelectEquipInfo(_Index_Type_Save, index);
         if (_Index_Save != index)
         {
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(false);
@@ -168,8 +247,9 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(Global.m_sPanelWantRun))
         {
+         
             int type = int.Parse(Global.NextCutting( ref Global.m_sPanelWantRun));
-            int buwei = 0;
+            int buwei = -1;
    
             string equip_id = Global.NextCutting(ref Global.m_sPanelWantRun) ;
             if (!string.IsNullOrEmpty(equip_id))
@@ -190,8 +270,14 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                 string[] _info = FunctionWindowsCreateManagerment.m_EquipSaveInfo.Split(':');
                 buwei = int.Parse(_info[1]);
             }
-           
+
+            if (buwei < 0)
+            {
+                buwei = _Index_Save;
+            }
+
             Global.m_sPanelWantRun = null;
+     
             if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(buwei))
             {
                 m_listItemEvent[buwei].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
@@ -200,6 +286,13 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                 _IsNotNull = false;
                 switch (type)
                 {
+                    case 0:
+                        {
+                          
+                                ShowTypes(type);
+                 
+                        }
+                        break;
                     case 1:
                         {
                             ShowTypes(type);
@@ -207,14 +300,15 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                         break;
                     case 2:
                         {
-                            if (!FunctionOpenTemp.GetWhetherContainID(1210))
+                           
                             {
-                                ShowTypes(1);
-                                EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
-                                 , FunctionOpenTemp.GetTemplateById(1210).m_sNotOpenTips
-                                 , "");
+                                ShowTypes(type);
                             }
-                            else
+                        }
+                        break;
+                    case 3:
+                        {
+                            
                             {
                                 ShowTypes(type);
                             }
@@ -238,6 +332,11 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
             switch (int.Parse(_info[0]))
             {
+                case 0:
+                    {
+                        ShowTypes(int.Parse(_info[0]));
+                    }
+                    break;
                 case 1:
                     {
                         ShowTypes(int.Parse(_info[0]));
@@ -261,8 +360,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                 default:break;
             }
         }
-
-       // ShowEquips(_Index_Save);
   }
     void showAniMation()
     {
@@ -334,27 +431,27 @@ public class EquipGrowthWearManagerment : MonoBehaviour
         {
             if (tempEquipsOfBodyDic.ContainsKey(i))
             {
-                if (tempEquipsOfBodyDic[i].qiangHuaLv > 0)
+                ////if (tempEquipsOfBodyDic[i].qiangHuaLv > 0)
                 {
-                    m_listItemEvent[i].m_Level.text = MyColorData.getColorString(4, "+" + tempEquipsOfBodyDic[i].qiangHuaLv.ToString());
+                    m_listItemEvent[i].m_Level.text = "Lv." + tempEquipsOfBodyDic[i].qiangHuaLv.ToString();
                 }
-                else
-                {
-                    m_listItemEvent[i].m_Level.text = "";
-                }
+                //else
+                //{
+                //    m_listItemEvent[i].m_Level.text = "";
+                //}
                 m_listItemEvent[i].m_Event.GetComponent<Collider>().enabled = true;
                 m_listItemEvent[i].m_SpriteIcon.enabled = true;
                 m_listItemEvent[i].m_SpriteIcon.spriteName = ZhuangBei.getZhuangBeiById(tempEquipsOfBodyDic[i].itemId).icon;
                 m_listItemEvent[i].m_Suo.gameObject.SetActive(false);
                 if (FunctionWindowsCreateManagerment.SpecialSizeFit(CommonItemTemplate.getCommonItemTemplateById(tempEquipsOfBodyDic[i].itemId).color))
                 {
-                    m_listItemEvent[i].m_SpritePinZhi.transform.localPosition = new Vector3(0, 3, 0);
+                    m_listItemEvent[i].m_SpritePinZhi.transform.localPosition = new Vector3(0, 4, 0);
                     m_listItemEvent[i].m_SpritePinZhi.width = m_listItemEvent[i].m_SpritePinZhi.height = 84;
                 }
                 else
                 {
-                    m_listItemEvent[i].m_SpritePinZhi.transform.localPosition = new Vector3(0, -4, 0);
-                    m_listItemEvent[i].m_SpritePinZhi.width = m_listItemEvent[i].m_SpritePinZhi.height = 70;
+                    m_listItemEvent[i].m_SpritePinZhi.transform.localPosition = new Vector3(0, -1, 0);
+                    m_listItemEvent[i].m_SpritePinZhi.width = m_listItemEvent[i].m_SpritePinZhi.height = 74;
                 }
                     m_listItemEvent[i].m_SpritePinZhi.spriteName =  QualityIconSelected.SelectQuality(CommonItemTemplate.getCommonItemTemplateById(tempEquipsOfBodyDic[i].itemId).color);
                 m_listItemEvent[i].m_SpritePinZhi.gameObject.SetActive(true);
@@ -440,48 +537,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
         return false;
     }
 
-    private int EachUpgrade(int index)
-    {
-         if(EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(index))
-        {
-            foreach (KeyValuePair<long, List<BagItem>> item in BagData.Instance().m_playerCaiLiaoDic)
-            {
-                if (int.Parse(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).jinjieItem) == item.Value[0].itemId)
-                {
-                    if (item.Value[0].cnt >= int.Parse(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).jinjieNum))
-                    {
-                        return EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei;
-                    }
-                }
-            }
-        }
-        return 99;
-    }
-
-    public void ShowEquipTanHao()
-    {
-        int _size = m_listItemEvent.Count;
-        for (int i = 0; i < _size; i++)
-        {
-            if (i == EachUpgrade(i))
-            {
-                if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(i))
-                {
-                    m_listItemEvent[i].m_ObjTanHao.SetActive(true);
-                }
-                else
-                {
-                    m_listItemEvent[i].m_ObjTanHao.SetActive(false);
-                }
-            }
-            else
-            {
-                m_listItemEvent[i].m_ObjTanHao.SetActive(false);
-            }
-        }
-    }
-
-
     public void StrengthTanHao()
     {
         int _size = m_listItemEvent.Count;
@@ -489,5 +544,44 @@ public class EquipGrowthWearManagerment : MonoBehaviour
         {
           m_listItemEvent[i].m_ObjTanHao.SetActive(false);
         }
+    }
+
+    private bool CompoundContainEnable()
+    {
+        int EquipExp = 0;
+        foreach (KeyValuePair<int, BagItem> equip in EquipsOfBody.Instance().m_equipsOfBodyDic)
+        {
+            EquipExp = equip.Value.jinJieExp;
+            if (ZhuangBei.getZhuangBeiById(equip.Value.itemId).jiejieId > 0)
+            {
+                foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
+                {
+                    int tempBuwei = 0;
+                    switch (item.Value.buWei)
+                    {
+                        case 1: tempBuwei = 3; break;//重武器
+                        case 2: tempBuwei = 4; break;//轻武器
+                        case 3: tempBuwei = 5; break;//弓
+                        case 11: tempBuwei = 0; break;//头盔
+                        case 12: tempBuwei = 8; break;//肩膀
+                        case 13: tempBuwei = 1; break;//铠甲
+                        case 14: tempBuwei = 7; break;//手套
+                        case 15: tempBuwei = 2; break;//裤子
+                        case 16: tempBuwei = 6; break;//鞋子
+                        default: break;
+                    }
+                    if (tempBuwei == equip.Value.buWei
+                        && item.Value.pinZhi <= equip.Value.pinZhi)
+                    {
+                        EquipExp += ZhuangBei.GetItemByID(item.Value.itemId).exp;
+                        if (EquipExp >= ZhuangBei.getZhuangBeiById(equip.Value.itemId).lvlupExp)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

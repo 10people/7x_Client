@@ -405,6 +405,7 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
     }
     public static void ShowRAwardInfo(string _award)
     {
+//        Debug.Log("_award_award_award ：：" + _award);
         List<RewardData> tempDataList = new List<RewardData>();
         if (_award.IndexOf('#') > -1)
         {
@@ -516,5 +517,117 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
     public static int RangNum(int min, int max)
     {
         return Random.Range(min, max);
+    }
+
+
+    public static int GetNeedLocation(int _location)
+    {
+        int tempBuwei = 0;
+        switch (_location)
+        {
+            case 1: tempBuwei = 3; break;//刀
+            case 2: tempBuwei = 4; break;//枪
+            case 3: tempBuwei = 5; break;//弓
+            case 11: tempBuwei = 0; break;//头盔
+            case 12: tempBuwei = 8; break;//肩膀
+            case 13: tempBuwei = 1; break;//铠甲
+            case 14: tempBuwei = 7; break;//手套
+            case 15: tempBuwei = 2; break;//裤子
+            case 16: tempBuwei = 6; break;//鞋子
+            default: break;
+        }
+        return tempBuwei;
+    }
+    public static void FreshEquipInfo(EquipStrengthResp Equip)
+    {
+        int tempBuwei = 0;
+        switch (ZhuangBei.getZhuangBeiById(Equip.zhuangbeiID).buWei)
+        {
+            case 1: tempBuwei = 3; break;//刀
+            case 2: tempBuwei = 4; break;//枪
+            case 3: tempBuwei = 5; break;//弓
+            case 11: tempBuwei = 0; break;//头盔
+            case 12: tempBuwei = 8; break;//肩膀
+            case 13: tempBuwei = 1; break;//铠甲
+            case 14: tempBuwei = 7; break;//手套
+            case 15: tempBuwei = 2; break;//裤子
+            case 16: tempBuwei = 6; break;//鞋子
+            default: break;
+        }
+        if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei))
+        {
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].fangYu = Equip.fangYu;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].gongJi = Equip.gongJi;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].qiangHuaExp = Equip.exp;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].qiangHuaLv = Equip.level;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].shengMing = Equip.shengMing; 
+        }
+    }
+    public static void FreshWashEquipInfo(XiLianRes Equip)
+    {
+        int tempBuwei = 0;
+        switch (ZhuangBei.getZhuangBeiById(Equip.zhuangbeiID).buWei)
+        {
+            case 1: tempBuwei = 3; break;//刀
+            case 2: tempBuwei = 4; break;//枪
+            case 3: tempBuwei = 5; break;//弓
+            case 11: tempBuwei = 0; break;//头盔
+            case 12: tempBuwei = 8; break;//肩膀
+            case 13: tempBuwei = 1; break;//铠甲
+            case 14: tempBuwei = 7; break;//手套
+            case 15: tempBuwei = 2; break;//裤子
+            case 16: tempBuwei = 6; break;//鞋子
+            default: break;
+        }
+        if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei))
+        {
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].jnBJ = Equip.jnBJ;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].jnJM = Equip.jnJM;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].jnMBL = Equip.jnMBL;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].jnRX = Equip.jnRX;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].jnSH = Equip.jnSH;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].wqBJ = Equip.wqBJ;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].wqJM = Equip.wqJM;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].wqMBL = Equip.wqMBL;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].wqRX = Equip.wqRX;
+
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].wqSH = Equip.wqSH;
+        }
+    }
+
+    public static void FreshAdvanceEquipInfo(EquipJinJieResp Equip)
+    {
+        int tempBuwei = 0;
+        switch (ZhuangBei.getZhuangBeiById(Equip.zbItemId).buWei)
+        {
+            case 1: tempBuwei = 3; break;//刀
+            case 2: tempBuwei = 4; break;//枪
+            case 3: tempBuwei = 5; break;//弓
+            case 11: tempBuwei = 0; break;//头盔
+            case 12: tempBuwei = 8; break;//肩膀
+            case 13: tempBuwei = 1; break;//铠甲
+            case 14: tempBuwei = 7; break;//手套
+            case 15: tempBuwei = 2; break;//裤子
+            case 16: tempBuwei = 6; break;//鞋子
+            default: break;
+        }
+        if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(tempBuwei))
+        {
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].dbId = Equip.equipId;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].fangYu = Equip.fangYu;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].gongJi = Equip.gongJi;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].jinJieExp = Equip.exp;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].shengMing = Equip.shengMing;
+            EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].itemId = Equip.zbItemId;
+            
+        }
     }
 }

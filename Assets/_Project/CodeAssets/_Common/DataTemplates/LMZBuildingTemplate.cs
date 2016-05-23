@@ -14,13 +14,13 @@ public class LMZBuildingTemplate : XmlLoadManager
     public int Side;
 
     public Vector2 Position = new Vector2();
+    public float Rotation;
 
     public int ZhanlingzhiMax;
-    public int CriticalValue;
     public int ZhanlingzhiAdd;
     public int ScoreAdd;
-
     public int Radius;
+    public float Scale;
 
     public static List<LMZBuildingTemplate> Templates = new List<LMZBuildingTemplate>();
 
@@ -78,10 +78,10 @@ public class LMZBuildingTemplate : XmlLoadManager
                 t_template.Position = new Vector2(x, int.Parse(t_reader.Value));
 
                 t_reader.MoveToNextAttribute();
-                t_template.ZhanlingzhiMax = int.Parse(t_reader.Value);
+                t_template.Rotation = float.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
-                t_template.CriticalValue = int.Parse(t_reader.Value);
+                t_template.ZhanlingzhiMax = int.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
                 t_template.ZhanlingzhiAdd = int.Parse(t_reader.Value);
@@ -91,11 +91,24 @@ public class LMZBuildingTemplate : XmlLoadManager
 
                 t_reader.MoveToNextAttribute();
                 t_template.Radius = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.Scale = float.Parse(t_reader.Value);
             }
 
             Templates.Add(t_template);
         }
         while (t_has_items);
+    }
+
+    public static List<LMZBuildingTemplate> GetTemplates(int type, int side)
+    {
+        return Templates.Where(item => item.Type == type && item.Side == side).ToList();
+    }
+
+    public static List<LMZBuildingTemplate> GetTemplatesByType(int type)
+    {
+        return Templates.Where(item => item.Type == type).ToList();
     }
 
     public static List<LMZBuildingTemplate> GetTemplatesBySide(int side)

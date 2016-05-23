@@ -10,8 +10,6 @@ using ProtoBuf.Meta;
 
 public class YXItem : MonoBehaviour  {
 
-	public UILabel Itname;
-
 	public UILabel Re_AllTimes;
 
 	public string m_Time;
@@ -25,9 +23,8 @@ public class YXItem : MonoBehaviour  {
 	public UISprite Art;
 
 	public UISprite Icon;
-	public GameObject CDBox;
 	private int LimitLevel ;
-
+	public bool isQianchonglou = false;
 	void Start () {
 	
 	}
@@ -36,7 +33,51 @@ public class YXItem : MonoBehaviour  {
 	void Update () {
 	
 	}
+	public void InitQianChongLouBtn()
+	{
+		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (101);
+		Re_AllTimes.gameObject.SetActive(false);
+		Icon.spriteName = "Function_"+mYouxiaoOPen.functionID.ToString();
+//		if()
+//		{
+//			Art.gameObject.SetActive(true);
+//		}
+//		else
+//		{
+		Art.gameObject.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(mYouxiaoOPen.functionID));
+//		}300
+//		int qianchonglouFunctionID = 300;
+		if(!FunctionOpenTemp.IsHaveID(mYouxiaoOPen.functionID))
+		{
 
+			OpenLevel.gameObject.SetActive(true);
+			
+			mTips = FunctionOpenTemp.GetTemplateById(mYouxiaoOPen.functionID).m_sNotOpenTips;
+
+			if(FunctionOpenTemp.GetTemplateById(mYouxiaoOPen.functionID).Level < 0)
+			{
+				OpenLevel.text = "即将开放";
+				
+			}
+			else
+			{
+				OpenLevel.text = FunctionOpenTemp.GetTemplateById(mYouxiaoOPen.functionID).m_sNotOpenTips;
+			}
+			Box.gameObject.SetActive(true);
+			Icon.color = new Color(0,0,0,255);
+			Art.gameObject.SetActive(false);
+		}
+		else
+		{
+			mTips = "";
+			Icon.color = new Color(255,255,255,255);
+			Box.gameObject.SetActive(false);
+			OpenLevel.gameObject.SetActive(false);
+		}
+	
+		isQianchonglou = true;
+	}
+	private string mTips;
 	public void Init()
 	{
 		int m_bigid = mYouXiaInfo.id;
@@ -45,20 +86,32 @@ public class YXItem : MonoBehaviour  {
 
 		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (m_bigid);
 
-		Itname.text = NameIdTemplate.GetName_By_NameId (myouxia.bigName);
-		m_Time = "剩余次数 "+mYouXiaInfo.remainTimes.ToString () + "/" + mYouxiaoOPen.maxTimes.ToString ();
-		if(mYouxiaoOPen.openLevel > JunZhuData.Instance().m_junzhuInfo.level)
+		m_Time = "剩余 "+mYouXiaInfo.remainTimes.ToString () + "/" + mYouxiaoOPen.maxTimes.ToString ();
+		mTips = "";
+		if(!FunctionOpenTemp.IsHaveID(mYouxiaoOPen.functionID))
 		{
 			Re_AllTimes.gameObject.SetActive(false);
 			OpenLevel.gameObject.SetActive(true);
-			OpenLevel.text = mYouxiaoOPen.openLevel.ToString()+"级开放";
-			this.gameObject.GetComponent<UIButton>().enabled = false;
+
+			mTips = FunctionOpenTemp.GetTemplateById(mYouxiaoOPen.functionID).m_sNotOpenTips;
+
+			if(FunctionOpenTemp.GetTemplateById(mYouxiaoOPen.functionID).Level < 0)
+			{
+				OpenLevel.text = "即将开放";
+
+			}
+			else
+			{
+				OpenLevel.text = FunctionOpenTemp.GetTemplateById(mYouxiaoOPen.functionID).m_sNotOpenTips;
+			}
+
 			Box.gameObject.SetActive(true);
-			CDBox.gameObject.SetActive(true);
+			Icon.color = new Color(0,0,0,255);
 			Art.gameObject.SetActive(false);
 		}
 		else{
 			Box.gameObject.SetActive(false);
+			Icon.color = new Color(255,255,255,255);
 			if(mYouXiaInfo.remainColdTime > 0)
 			{
 				CountTime.gameObject.SetActive(true);
@@ -79,7 +132,8 @@ public class YXItem : MonoBehaviour  {
 		}
 
 		//Debug.Log ("m_bigid.m_bigid = "+m_bigid);
-		Icon.spriteName = m_bigid.ToString ();
+		Icon.spriteName = "Function_" + mYouxiaoOPen.functionID; // 有图标了就换
+//		Icon.spriteName = "Function_250";
 	}
 
 	private int T;
@@ -88,7 +142,6 @@ public class YXItem : MonoBehaviour  {
 	{
 		Re_AllTimes.gameObject.SetActive(false);
 		T = mYouXiaInfo.remainColdTime;
-		CDBox.SetActive(false);
 
 		while(T > 0)
 		{
@@ -120,29 +173,52 @@ public class YXItem : MonoBehaviour  {
 	{
 		Re_AllTimes.gameObject.SetActive(true);
 		OpenLevel.gameObject.SetActive(false);
-		string str = "剩余次数 ";
-		CDBox.SetActive(false);
+		string str = "剩余 ";
 
 		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (mYouXiaInfo.id);
 		if(mYouXiaInfo.remainTimes >0 )
 		{
 			this.gameObject.GetComponent<UIButton>().enabled = true;
-			Re_AllTimes.text = MyColorData.getColorString(1, str) +MyColorData.getColorString(4, mYouXiaInfo.remainTimes.ToString()+"/"+mYouxiaoOPen.maxTimes.ToString());
+			Re_AllTimes.text = str +MyColorData.getColorString(4, mYouXiaInfo.remainTimes.ToString()+"/"+mYouxiaoOPen.maxTimes.ToString());
 		}
 		else
 		{
 			Art.gameObject.SetActive(false);
 			this.gameObject.GetComponent<UIButton>().enabled = true;
-			Re_AllTimes.text = MyColorData.getColorString(1, str) +MyColorData.getColorString(5, mYouXiaInfo.remainTimes.ToString()+"/"+mYouxiaoOPen.maxTimes.ToString());
+			Re_AllTimes.text = str +MyColorData.getColorString(5, mYouXiaInfo.remainTimes.ToString()+"/"+mYouxiaoOPen.maxTimes.ToString());
 		}
 //		Debug.Log ("Re_AllTimes.text = "+Re_AllTimes.text);
 	}
 	public void Enter()
 	{
-       Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.CHOOSEYOUXIA),LoadResourceCallback);
+		if(mTips != "")
+		{
+			ClientMain.m_UITextManager.createText(mTips);
+			return;
+		}
+		if (!isQianchonglou)
+		{
+			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.CHOOSEYOUXIA), LoadResourceCallback);
+
+		} else
+		{
+			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.QIANCHONGLOU), Load_QCL_ResourceCallback);
+		}
 	}
+	private GameObject QCL_tempOjbect;
+	void Load_QCL_ResourceCallback(ref WWW p_www,string p_path, Object p_object)
+	{
+		if(QCL_tempOjbect == null)
+		{
+			QCL_tempOjbect = Instantiate(p_object )as GameObject;
+			
+			QCL_tempOjbect.transform.localScale = Vector3.one;
+			
+			QCL_tempOjbect.transform.localPosition = new Vector3 (100,100,0);
 
-
+			MainCityUI.TryAddToObjectList(QCL_tempOjbect);
+		}		
+	}
 	private GameObject tempOjbect;
 	void LoadResourceCallback(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -165,7 +241,7 @@ public class YXItem : MonoBehaviour  {
 		mYxChooseDefcult.BigId = mYouXiaInfo.id;
 		
 		mYxChooseDefcult.mYouXia_Info = mYouXiaInfo;
-
+		Debug.Log(m_Time);
 		mYxChooseDefcult.m_Times = m_Time;
 
 		mYxChooseDefcult.Init ();

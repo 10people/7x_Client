@@ -121,7 +121,7 @@ public class DramaActorLabel : DramaActor
 
 		label.effectDistance = effectDistance;
 
-		label.color = effectColor;
+		label.color = labelColor;
 
 		float time = 0;
 		

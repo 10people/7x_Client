@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<CameraTemplate id="1" cameraPx="0.28" cameraPy="1.6" cameraPz="2.57" cameraRx="9.7" cameraRy="-179.32" />
+<CameraTemplate id="1" cameraPx="0" cameraPy="1.82" cameraPz="5.28" cameraRx="9.9" cameraRy="170.9" />
 <CameraTemplate id="2" cameraPx="-0.68" cameraPy="1.64" cameraPz="2.3" cameraRx="9.7" cameraRy="-204.8" />
 <CameraTemplate id="3" cameraPx="-2.04" cameraPy="1.62" cameraPz="1.14" cameraRx="9.46" cameraRy="-252.6" />
 <CameraTemplate id="4" cameraPx="-1.72" cameraPy="1.68" cameraPz="-1.32" cameraRx="9.46" cameraRy="-315.1" />
@@ -8,9 +8,9 @@
 <CameraTemplate id="6" cameraPx="1.41" cameraPy="1.69" cameraPz="-1.82" cameraRx="9.46" cameraRy="-382.6" />
 <CameraTemplate id="7" cameraPx="2.39" cameraPy="1.72" cameraPz="-0.25" cameraRx="9.46" cameraRy="-436.5" />
 <CameraTemplate id="8" cameraPx="2.43" cameraPy="1.67" cameraPz="1.04" cameraRx="9.46" cameraRy="-474.7" />
-<CameraTemplate id="9" cameraPx="1.41" cameraPy="1.67" cameraPz="1.96" cameraRx="9.46" cameraRy="-497.9" />
+<CameraTemplate id="9" cameraPx="4.32" cameraPy="1.64" cameraPz="4.25" cameraRx="8.5" cameraRy="234" />
 <CameraTemplate id="10" cameraPx="0.91" cameraPy="1.64" cameraPz="2.2" cameraRx="9.46" cameraRy="-514.4" />
-<CameraTemplate id="11" cameraPx="-0.26" cameraPy="4.65" cameraPz="4.45" cameraRx="7.93" cameraRy="-188.28" />
-<CameraTemplate id="12" cameraPx="-0.12" cameraPy="2.59" cameraPz="2.66" cameraRx="7.93" cameraRy="-188.28" />
+<CameraTemplate id="11" cameraPx="-2.26" cameraPy="4.28" cameraPz="8.99" cameraRx="9.65" cameraRy="159" />
+<CameraTemplate id="12" cameraPx="-0.67" cameraPy="2.14" cameraPz="7.14" cameraRx="6.179607" cameraRy="164.7734" />
 <CameraTemplate id="13" cameraPx="-2.38" cameraPy="3.01" cameraPz="2.97" cameraRx="14.95716" cameraRy="132.6632" />
 </dataset>

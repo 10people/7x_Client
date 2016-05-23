@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LianMengShangPu id="104001" shangPuLevel="1" alliance_lv_needed="1" shangPu_lvUp_value="900" item_quantity_max="2" />
+<LianMengShangPu id="104002" shangPuLevel="2" alliance_lv_needed="2" shangPu_lvUp_value="2400" item_quantity_max="4" />
+<LianMengShangPu id="104003" shangPuLevel="3" alliance_lv_needed="3" shangPu_lvUp_value="6000" item_quantity_max="6" />
+<LianMengShangPu id="104004" shangPuLevel="4" alliance_lv_needed="4" shangPu_lvUp_value="10800" item_quantity_max="7" />
+<LianMengShangPu id="104005" shangPuLevel="5" alliance_lv_needed="5" shangPu_lvUp_value="25300" item_quantity_max="8" />
+<LianMengShangPu id="104006" shangPuLevel="6" alliance_lv_needed="6" shangPu_lvUp_value="60200" item_quantity_max="9" />
+<LianMengShangPu id="104007" shangPuLevel="7" alliance_lv_needed="7" shangPu_lvUp_value="135300" item_quantity_max="10" />
+<LianMengShangPu id="104008" shangPuLevel="8" alliance_lv_needed="8" shangPu_lvUp_value="240600" item_quantity_max="11" />
+<LianMengShangPu id="104009" shangPuLevel="9" alliance_lv_needed="9" shangPu_lvUp_value="397000" item_quantity_max="11" />
+<LianMengShangPu id="104010" shangPuLevel="10" alliance_lv_needed="10" shangPu_lvUp_value="541400" item_quantity_max="11" />
+</dataset>

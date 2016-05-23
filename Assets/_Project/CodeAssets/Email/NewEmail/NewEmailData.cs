@@ -273,7 +273,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 				
 				if (newEmailResp != null)
 				{
-					MainCityUIL.ShowEmailDetail(true,LanguageTemplate.GetText (LanguageTemplate.Text.NEW_EMAIL));
+//					MainCityUIL.ShowEmailDetail(true,LanguageTemplate.GetText (LanguageTemplate.Text.NEW_EMAIL));
 					PushAndNotificationHelper.SetRedSpotNotification (newEmailResp.email.type == 80000 ? 10 : 41,true);
 
 					if (newEmailResp.email.type == 80000)

@@ -118,18 +118,22 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 						{
 						case 1:
 //							textStr = "对不起，您的铜币不足！\n通过以下方式可以获取更多的铜币：\n元宝购买、【行镖】玩法、【试练-洗劫权贵】。";
-							textStr = LanguageTemplate.GetText (LanguageTemplate.Text.TAN_BAO_TIPS_2);//铜币不足
+//							textStr = LanguageTemplate.GetText (LanguageTemplate.Text.TAN_BAO_TIPS_2);//铜币不足
+							Global.CreateFunctionIcon (501);
+							TBReward.tbReward.BlockController (false);
 							break;
 						case 2:
-							textStr = LanguageTemplate.GetText (LanguageTemplate.Text.TAN_BAO_TIPS_1);//元宝不足
+//							textStr = LanguageTemplate.GetText (LanguageTemplate.Text.TAN_BAO_TIPS_1);//元宝不足
+							Global.CreateFunctionIcon (101);
+							TBReward.tbReward.BlockController (false);
 							break;
 						case 3:
 							textStr = "数据错误...";
+							QXComData.CreateBox (1,textStr,true,TanBaoRespCallBack,true);
 							break;
 						default:
 							break;
 						}
-						QXComData.CreateBox (1,textStr,true,TanBaoRespCallBack,true);
 					}
 				}
 
@@ -142,7 +146,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 
 	public void TanBaoRespCallBack (int i)
 	{
-		UIShouji.m_isPlayShouji = true;
+		UIShoujiManager.m_UIShoujiManager.m_isPlayShouji = true;
 		TBReward.tbReward.BlockController (false);
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,4);
 	}

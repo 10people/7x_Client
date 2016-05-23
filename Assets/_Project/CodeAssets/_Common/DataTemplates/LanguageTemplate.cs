@@ -8,8 +8,7 @@ public class LanguageTemplate : XmlLoadManager
 {
     // <LanTemp LID="1" str="测试文本" />
 
-    public enum Text
-    {
+    public enum Text{
         LAN_SAMPLE_STRING = 1,
         TANBAO_PIECEWINDOW_DES1 = 2,
         TANBAO_PIECEWINDOW_DES2 = 3,
@@ -947,6 +946,13 @@ public class LanguageTemplate : XmlLoadManager
 		TAN_BAO_TIPS_1 = 2100,
 		TAN_BAO_TIPS_2 = 2101,
 
+		QIANCHONGLOURoles = 2310,
+
+		LIEFUDESC = 2301,
+
+		ZHUANGUOCOST = 2601,
+		ZHUANCOMFORIE =  2602,
+
 		SHOP_MONEY_LOW_TIPS_1 = 30001,
 		SHOP_MONEY_LOW_TIPS_2 = 30002,
 		SHOP_MONEY_LOW_TIPS_3 = 30003,
@@ -1011,7 +1017,7 @@ public class LanguageTemplate : XmlLoadManager
 
     public string m_text;
 
-	private static List<LanguageTemplate> m_templates = new List<LanguageTemplate>();
+	private static Dictionary<int, LanguageTemplate> m_templates = new Dictionary<int, LanguageTemplate>();
 
 
     private static LanguageTemplate m_instance = null;
@@ -1073,7 +1079,7 @@ public class LanguageTemplate : XmlLoadManager
                 t_template.m_text = t_reader.Value;
             }
 
-            m_templates.Add(t_template);
+			m_templates.Add( t_template.lanId, t_template );
         }
         while (t_has_items);
     }
@@ -1090,17 +1096,11 @@ public class LanguageTemplate : XmlLoadManager
 	}
 
     public static string GetText( int p_text_id ){
-		if (m_templates == null) {
-			return null;
+		int t_id = p_text_id;
+
+		if( m_templates.ContainsKey( p_text_id ) ){
+			return m_templates[ p_text_id ].m_text;
 		}
-
-        int t_id = p_text_id;
-
-        foreach( LanguageTemplate t_template in m_templates ){
-            if( t_template.lanId == t_id ){
-                return t_template.m_text;
-            }
-        }
 
 		if( p_text_id == GetIdByText( Text.TIME_OUT_1 ) ){
 			return "对不起。服务器请求超时，请检查您的网络环境是否正常，然后重新登录。";
@@ -1136,7 +1136,9 @@ public class LanguageTemplate : XmlLoadManager
 			return "取消";
 		}
 
+		#if UNITY_EDITOR
         Debug.LogError("XML ERROR: Can't get LanguageTemplate with Id: " + t_id);
+		#endif
 
         return "";
     }

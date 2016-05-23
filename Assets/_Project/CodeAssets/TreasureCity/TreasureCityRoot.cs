@@ -33,20 +33,18 @@ public class TreasureCityRoot : TreasureCitySingleton<TreasureCityRoot> {
 		{
 			UI2DTool.Instance.AddTopUI( treasureCityUI );
 		}
-
-		LoadJunZhuModel ();
+		LoadModelParent ();
 	}
 
-	void LoadJunZhuModel()
+	void LoadModelParent ()
 	{
-		Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MODEL_PARENT),
 		                        ResourceLoadModelCallback);
 		
 	}
 	private void ResourceLoadModelCallback(ref WWW p_www, string p_path, Object p_object)
 	{
 		TreasureCityPlayer.m_instance.CreatePlayerModel (p_object);
-
 		LoadSelfName();
 	}
 

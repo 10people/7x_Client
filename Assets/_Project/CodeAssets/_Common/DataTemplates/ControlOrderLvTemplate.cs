@@ -189,7 +189,14 @@ public class ControlOrderLvTemplate : XmlLoadManager
 			else contrlLv = template.soldier;
 		}
 
-		if (contrlLv - node.nodeData.GetAttribute (controlType) > 0) return true;
+		float defenderControl = node.nodeData.GetAttribute (controlType);
+
+		if(node.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0 && node.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_Armor) <= 0)
+		{
+			defenderControl -= 1;
+		}
+
+		if (contrlLv - defenderControl > 0) return true;
 
 		return false;
 	}

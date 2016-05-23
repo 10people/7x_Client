@@ -742,4 +742,16 @@ public class FunctionOpenTemp : XmlLoadManager
 	}
 
 	#endregion
+
+	public int GetParent_menu_id()
+	{
+		if(m_parent_menu_id != -1)
+		{
+			return FunctionOpenTemp.GetTemplateById(m_parent_menu_id).GetParent_menu_id();
+		}
+		else
+		{
+			return m_iID;
+		}
+	}
 }

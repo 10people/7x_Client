@@ -11,13 +11,26 @@ public class UIBox : MYNGUIPanel
     public ScaleEffectController m_ScaleEffectController;
 
     public UILabel m_labelTile;
+	public UILabel m_labelTile_2;
     public UILabel m_labelDis1;
+	public UILabel m_labelDis1_2;
     public UILabel m_labelDis2;
     public UIButton m_button1;
     public UIButton m_button2;
+	public UIButton m_button1_2;
+	public UIButton m_button2_2;
+	public UISprite m_buttonSprite1;
+	public UISprite m_buttonSprite2;
     public UILabel m_labelButton1;
     public UILabel m_labelButton2;
+
+	public UISprite m_buttonSprite1_2;
+	public UISprite m_buttonSprite2_2;
+	public UILabel m_labelButton1_2;
+	public UILabel m_labelButton2_2;
+
     public UIPanel m_Panel;
+	public UIPanel m_Panel2;
     public int m_ButtonX = 0;
 	public Camera m_Camera;
     private int m_ButtonYDown = -192;
@@ -109,6 +122,8 @@ public class UIBox : MYNGUIPanel
                 {
                     m_button1.GetComponent<EventHandler>().m_click_handler += OnClick;
                     m_button2.GetComponent<EventHandler>().m_click_handler += OnClick;
+					m_button1_2.GetComponent<EventHandler>().m_click_handler += OnClick;
+					m_button2_2.GetComponent<EventHandler>().m_click_handler += OnClick;
                     m_fScale = 1;
                 }
                 else
@@ -116,6 +131,7 @@ public class UIBox : MYNGUIPanel
                     m_fScale += ((1 - m_fScale) / 2);
                 }
                 m_Panel.transform.localScale = new Vector3(m_fScale, m_fScale, m_fScale);
+				m_Panel2.transform.localScale = new Vector3(m_fScale, m_fScale, m_fScale);
             }
         }
     }
@@ -137,30 +153,49 @@ public class UIBox : MYNGUIPanel
 	}
 
     public void setBox(
-        string tile, string dis1, string dis2,
-        List<BagItem> bagItem,
-        string buttonname1, string buttonname2,
-        UIBox.onclick onClick,
-        UIFont uifontTile = null, UIFont uifontButton1 = null, UIFont uifontButton2 = null,
-        bool isShowBagItemNumBelow = false, bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false)
-    {
+	        string tile, 
+			string dis1, 
+			string dis2,
+	        List<BagItem> bagItem,
+	        string buttonname1, 
+
+			string buttonname2,
+	        UIBox.onclick onClick,
+	        UIFont uifontTile = null, 
+			UIFont uifontButton1 = null,
+			UIFont uifontButton2 = null,
+
+			bool isShowBagItemNumBelow = false, 
+			bool isSetDepth = true,
+			bool isBagItemTop = true,
+			bool isFunction = false, 
+			int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ){
+		if(buttonname1 != null && buttonname1.Length == 2)
+		{
+			buttonname1 = buttonname1.Substring(0,1) + " " + buttonname1.Substring(1,1);
+		}
+		if(buttonname2 != null && buttonname2.Length == 2)
+		{
+			buttonname2 = buttonname2.Substring(0,1) + " " + buttonname2.Substring(1,1);
+		}
 		m_isFunction = isFunction;
         m_onclick = onClick;
         m_ButtonX = 0;
-
         if (uifontTile != null)
         {
             //			m_labelTile.font = uifontTile;
             m_labelTile.bitmapFont = uifontTile;
+			m_labelTile_2.bitmapFont = uifontTile;
         }
 		else
 		{
 			//设置tile文字;
 			m_labelTile.bitmapFont = UI_TitleFont;
+			m_labelTile_2.bitmapFont = UI_TitleFont;
 		}
 
 		m_labelTile.text = GetTitleString( tile );
-
+		m_labelTile_2.text = GetTitleString( tile );
         //设置上 介绍文字
         if (string.IsNullOrEmpty(dis1))
         {
@@ -170,6 +205,7 @@ public class UIBox : MYNGUIPanel
         else
         {
             m_labelDis1.text = dis1;
+			m_labelDis1_2.text = dis1;
         }
 
         //设置物品
@@ -200,38 +236,56 @@ public class UIBox : MYNGUIPanel
         }
 
         m_labelDis2.transform.localPosition = new Vector3(0, m_LabelY, 0);
-        if (uifontButton1 != null)
-        {
-            //			m_labelButton1.font = uifontButton1;
-			m_labelButton1.bitmapFont  = UI_btnFont;
-        }
-		else
-		{
-			m_labelButton1.bitmapFont  = UI_btnFont;
-		}
-        if (uifontButton2 != null)
-        {
-           
-			m_labelButton2.bitmapFont  = UI_btnFont;
-        }
-		else
-		{
-			m_labelButton2.bitmapFont  = UI_btnFont;
-		}
+  //      if (uifontButton1 != null)
+  //      {
+  //          //			m_labelButton1.font = uifontButton1;
+		//	m_labelButton1.bitmapFont  = UI_btnFont;
+		//	m_labelButton1_2.bitmapFont  = UI_btnFont;
+  //      }
+		//else
+		//{
+		//	m_labelButton1.bitmapFont  = UI_btnFont;
+		//	m_labelButton1_2.bitmapFont  = UI_btnFont;
+		//}
+  //      if (uifontButton2 != null)
+  //      {
+		//	m_labelButton2.bitmapFont  = UI_btnFont;
+		//	m_labelButton2_2.bitmapFont  = UI_btnFont;
+  //      }
+		//else
+		//{
+		//	m_labelButton2.bitmapFont  = UI_btnFont;
+		//	m_labelButton2_2.bitmapFont  = UI_btnFont;
+		//}
         if (string.IsNullOrEmpty(buttonname2))
         {
             m_labelButton1.text = buttonname1;
+			m_labelButton1_2.text = buttonname1;
 
             m_button1.transform.localPosition = new Vector3(0, m_button1.transform.localPosition.y, m_button1.transform.localPosition.z);
+			m_button1_2.transform.localPosition = new Vector3(0, m_button1_2.transform.localPosition.y, m_button1_2.transform.localPosition.z);
 
             m_button2.gameObject.SetActive(false);
+			m_button2_2.gameObject.SetActive(false);
         }
         else
         {
             m_labelButton1.text = buttonname1;
+			m_labelButton1_2.text = buttonname1;
 
             m_labelButton2.text = buttonname2;
+			m_labelButton2_2.text = buttonname2;
         }
+		if(buttonname1.IndexOf("取") != -1 && buttonname1.IndexOf("消") != -1)
+		{
+			m_buttonSprite1.spriteName = "btn_yellow_219x74";
+			m_buttonSprite1_2.spriteName = "btn_yellow_219x74";
+		}
+		if(!string.IsNullOrEmpty(buttonname2) && buttonname2.IndexOf("取") != -1 && buttonname2.IndexOf("消") != -1)
+		{
+			m_buttonSprite2.spriteName = "btn_yellow_219x74";
+			m_buttonSprite2_2.spriteName = "btn_yellow_219x74";
+		}
 
 //		Debug.Log(isSetDepth);
 
@@ -239,15 +293,33 @@ public class UIBox : MYNGUIPanel
 		{
 			m_Camera.depth = 45;
 			m_Panel.depth = 1000;
+			m_Panel2.depth = 1000;
 		}
 		else
 		{
 			m_Camera.depth = 100;
 			m_Panel.depth = 1005;
+			m_Panel2.depth = 1005;
 		}
 
 		{
 			UICamera.ReSortUICamera();
+		}
+		if(bagItem == null && (string.IsNullOrEmpty(dis2)))
+		{
+			m_Panel2.gameObject.SetActive(true);
+			m_Panel.gameObject.SetActive(false);
+		}
+		else
+		{
+			m_Panel2.gameObject.SetActive(false);
+			m_Panel.gameObject.SetActive(true);
+		}
+
+		{
+			UIWindowEventTrigger t_trigger = (UIWindowEventTrigger)ComponentHelper.AddIfNotExist( gameObject, typeof(UIWindowEventTrigger) );
+
+			t_trigger.m_ui_id = p_window_id;
 		}
     }
 
@@ -288,7 +360,7 @@ public class UIBox : MYNGUIPanel
 			gameObject.SetActive( false );
 			if(GameObject.Find("Map(Clone)")&& MainCityUI.m_MainCityUI.m_WindowObjectList.Count <= 1)
 			{
-				MapData.mapinstance.ShowPVEGuid ();
+				MapData.mapinstance.ShowYinDao = true;
 				CityGlobalData.PveLevel_UI_is_OPen = false;
 			}
 			if(mYindaoControl != null)

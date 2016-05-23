@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HuoYueTemp id="1" type="0" needNum="20" award="0:920002:5" JianShe="0" />
+<HuoYueTemp id="2" type="0" needNum="40" award="0:921002:10" JianShe="0" />
+<HuoYueTemp id="3" type="0" needNum="60" award="0:900002:50" JianShe="0" />
+<HuoYueTemp id="4" type="0" needNum="80" award="0:955011:1" JianShe="0" />
+<HuoYueTemp id="5" type="0" needNum="100" award="0:900002:100" JianShe="0" />
+<HuoYueTemp id="6" type="1" needNum="500" award="0:955021:3" JianShe="0" />
+<HuoYueTemp id="7" type="1" needNum="700" award="0:900002:200" JianShe="0" />
+</dataset>

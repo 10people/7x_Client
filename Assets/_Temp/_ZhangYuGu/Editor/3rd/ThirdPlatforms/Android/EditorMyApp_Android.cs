@@ -1,5 +1,7 @@
 //#define DEBUG_PLATFORM
 
+
+
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -11,6 +13,18 @@ using System.Collections.Generic;
 
 using SimpleJSON;
 
+
+
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2016.1.x
+ * @since:		Unity 5.1.3
+ * Function:	1.1 Build for MyApp's Android test.
+ * 
+ * Notes:
+ * 1.Only used in 1.1, not used since 1.2.
+ * 2.Versions since Payment built-in use EditorBuildAndroid.
+ */
 public class EditorMyApp_Android : MonoBehaviour {
 
 	#region Config

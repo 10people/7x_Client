@@ -1,138 +1,66 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using AllianceBattle;
 
 namespace AllianceBattle
 {
-    public class ABPlayerCultureController : MonoBehaviour
+    public class ABPlayerCultureController : RPGBaseCultureController
     {
-        public ABPlayerController m_ABPlayerController;
-        public OtherPlayerController m_OtherPlayerController;
-
-        public void OnAttackFinish()
-        {
-            EnableMove();
-        }
-
-        public void OnBeenAttackFinish()
-        {
-            EnableMove();
-        }
-
-        private void EnableMove()
-        {
-            if (m_ABPlayerController == null && m_OtherPlayerController == null)
-            {
-                m_ABPlayerController = GetComponent<ABPlayerController>();
-                m_OtherPlayerController = GetComponent<OtherPlayerController>();
-            }
-
-            if (m_ABPlayerController != null)
-            {
-                m_ABPlayerController.ActiveMove();
-            }
-
-            if (m_OtherPlayerController != null)
-            {
-                m_OtherPlayerController.ActiveMove();
-            }
-        }
-
-        public Camera TrackCamera;
-
-        public UIPanel NguiPanel;
-
-        public UIProgressBar ProgressBar;
-        public UISprite ProgressBarForeSprite;
-        private const string redBarName = "progressred";
-        private const string greenBarName = "progressford";
-
         public UILabel NameLabel;
         public UILabel AllianceLabel;
+        public UISprite VIPSprite;
+        public UILabel LevelLabel;
 
-        public UILabel PopupLabel;
+        private const string redBarName = "BloodRed";
+        private const string greenBarName = "BloodGreen";
+        private const string blueBarName = "BloodBlue";
 
-        public string KingName;
-        public string AllianceName;
-        public float TotalBlood;
-        public float RemainingBlood;
-        public bool IsRed;
-
-        public GameObject PlayerSelectedSign;
-
-        public void SetThis()
+        public void OnStartDadaoSkillFinish()
         {
-            NameLabel.text = string.IsNullOrEmpty(KingName) ? "" : KingName;
-            AllianceLabel.text = string.IsNullOrEmpty(AllianceName) ? "无联盟" : AllianceName;
-            NameLabel.color = AllianceLabel.color = IsRed ? Color.red : Color.green;
-            ProgressBarForeSprite.spriteName = IsRed ? redBarName : greenBarName;
-            if (TotalBlood > 0 || RemainingBlood <= TotalBlood)
+            EnableMove();
+        }
+
+        public void OnDadaoSkillStart()
+        {
+            if (RTBuffTemplate.GetTemplateByID(151).BuffDisplay > 0)
             {
-                UpdateBloodBar(RemainingBlood);
+                if (UID == PlayerSceneSyncManager.Instance.m_MyselfUid)
+                {
+                    FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTBuffTemplate.GetTemplateByID(151).BuffDisplay), gameObject, null, Vector3.zero, transform.forward);
+                }
+                else
+                {
+                    if (EffectNumController.Instance.IsCanPlayEffect())
+                    {
+                        EffectNumController.Instance.NotifyPlayingEffect();
+
+                        FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTBuffTemplate.GetTemplateByID(151).BuffDisplay), gameObject, null, Vector3.zero, transform.forward);
+                    }
+                }
             }
         }
 
-        public void OnSelected()
+        public override void SetThis()
         {
-            PlayerSelectedSign.SetActive(true);
-        }
+            ProgressBarForeSprite.spriteName = IsEnemy ? redBarName : (IsSelf ? greenBarName : blueBarName);
 
-        public void OnDeSelected()
-        {
-            PlayerSelectedSign.SetActive(false);
-        }
+            base.SetThis();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="damage">damage</param>
-        public void OnDamage(float damage, float remaining)
-        {
-            StopAllCoroutines();
-            DeactivePopupLabel();
-            StartCoroutine(ShowBloodChange(damage, true));
+            if (string.IsNullOrEmpty(KingName))
+            {
+                Debug.LogError("King name null");
+            }
+            else
+            {
+                NameLabel.text = ("[b]" + (IsSelf ? ColorTool.Color_Green_00ff00 : (IsEnemy ? ColorTool.Color_Red_c40000 : ColorTool.Color_Blue_016bc5)) + KingName + "[-][/b]");
+            }
 
-            UpdateBloodBar(remaining);
-        }
+            LevelLabel.text = Level.ToString();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="recover">recover</param>
-        public void OnRecover(float recover, float remaining)
-        {
-            StopAllCoroutines();
-            DeactivePopupLabel();
-            StartCoroutine(ShowBloodChange(recover, false));
-
-            UpdateBloodBar(remaining);
-        }
-
-        private void UpdateBloodBar(float remaining)
-        {
-            RemainingBlood = remaining;
-            ProgressBar.value = RemainingBlood / TotalBlood;
-        }
-
-        private IEnumerator ShowBloodChange(float change, bool isSub)
-        {
-            PopupLabel.text = (isSub ? (ColorTool.Color_Red_c40000 + "-") : (ColorTool.Color_Green_00ff00 + "+")) + change + "[-]";
-            PopupLabel.gameObject.SetActive(true);
-
-            yield return new WaitForSeconds(1.0f);
-            DeactivePopupLabel();
-        }
-
-        private void DeactivePopupLabel()
-        {
-            PopupLabel.gameObject.SetActive(false);
-        }
-
-        void LateUpdate()
-        {
-            if (TrackCamera == null) return;
-
-            NguiPanel.transform.eulerAngles = new Vector3(TrackCamera.transform.eulerAngles.x, TrackCamera.transform.eulerAngles.y, NguiPanel.transform.eulerAngles.z);
+            AllianceLabel.text = (string.IsNullOrEmpty(AllianceName) || AllianceName == "***") ? MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT)) : (MyColorData.getColorString(12, "<" + AllianceName + ">") + FunctionWindowsCreateManagerment.GetIdentityById(AlliancePost));
+            VIPSprite.spriteName = "vip" + Vip;
         }
     }
 }

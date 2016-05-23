@@ -36,6 +36,10 @@ public class LMFightDuiHuanTemplate : XmlLoadManager {
 	public int weight;
 	
 	public int site;
+
+	public int max;
+
+	public bool isRecommand;
 	
 	public static List<LMFightDuiHuanTemplate> templates = new List<LMFightDuiHuanTemplate>();
 	
@@ -93,6 +97,12 @@ public class LMFightDuiHuanTemplate : XmlLoadManager {
 				
 				t_reader.MoveToNextAttribute();
 				t_template.site = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.max = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+			    t_template.isRecommand = t_reader.Value == "1";
 			}
 			
 			//			t_template.Log();

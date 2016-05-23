@@ -8,6 +8,8 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
+	public GameObject NoMiBaoSkillMind;
+
 	public GameObject NoMiBaoSkill;
 
 	public GameObject mChangemibaobtn;
@@ -49,6 +51,11 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		EnergyDetailLongPress1.OnLongPressFinish = OnCloseDetail;
 		EnergyDetailLongPress1.OnLongPress = OnEnergyDetailClick1;
 		SocketTool.RegisterMessageProcessor(this);
+
+		// reigster trigger delegate
+		{
+			UIWindowEventTrigger.SetOnTopAgainDelegate( gameObject, ShowPVEGuid );
+		}
 	}
 	void OnDestroy()
 	{
@@ -452,19 +459,22 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			{
 				mSparkleEffectItem.enabled = false ;
 				NoMiBaoSkill.SetActive(true);
-				mChangemibaobtn.SetActive(false);
+//				mChangemibaobtn.SetActive(false);
 			}
 			else
 			{
 				NoMiBaoSkill.SetActive(false);
 				mSparkleEffectItem.enabled = true ;
-				mChangemibaobtn.SetActive(true);
+//				mChangemibaobtn.SetActive(true);
 			}
 			MiBaoIcon.gameObject.SetActive(false);
 			MiBaoIcon.spriteName = "";
+
+			NoMiBaoSkillMind.SetActive(MiBaoGlobleData.Instance().GetMiBaoskillOpen());
 		}
 		else
 		{
+			NoMiBaoSkillMind.SetActive(false);
 			MiBaoIcon.gameObject.SetActive(true);
 			MiBaoSkillTemp mMiBaoSkill  = MiBaoSkillTemp.getMiBaoSkillTempBy_id(GuanqiaReq.zuheId);
 			mSparkleEffectItem.enabled = false ;
@@ -907,7 +917,8 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	/// </summary>
 	public void ChangeMiBaoBtn() 
 	{
-	    ColsePVEGuid ();
+		// 2016.5.20 add bug to test
+	   // ColsePVEGuid ();
 		
 		Global.ResourcesDotLoad (Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeMiBaoSkillLoadBack);
 	}
@@ -945,8 +956,8 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
 		if(JunZhuData.Instance().m_junzhuInfo.tili < GuanqiaReq.tili)
 		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
-			
+			//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
+			Global.CreateFunctionIcon (401);
 			return ;
 		}
 		if(mLevel.type == 2)
@@ -1133,13 +1144,13 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = LanguageTemplate.GetText (LanguageTemplate.Text.TITITLE);
+		string str = "\n"+LanguageTemplate.GetText (LanguageTemplate.Text.TITITLE);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,getTili);
+		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,CancleBtn,confirmStr,getTili);
 	}
 	void getTili(int i)
 	{
@@ -1232,15 +1243,17 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 			return;
 		}
-		if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
-		{
-			//	Debug.Log("切换秘技)
-			YinDaoOpen = true;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+		//去掉切换秘技了
 
-			return;
-		}
+//		if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
+//		{
+//			//	Debug.Log("切换秘技)
+//			YinDaoOpen = true;
+//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
+//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+//
+//			return;
+//		}
 		if(FreshGuide.Instance().IsActive(100405)&& TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
 		{
 			//	Debug.Log("扫荡引导)
@@ -1669,7 +1682,8 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			{
 //				string data = "体力不足！";
 //				ClientMain.m_UITextManager.createText( data);
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
+				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
+				Global.CreateFunctionIcon (401);
 				return false;
 			}
 			else
@@ -1788,8 +1802,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			if (UIYindao.m_UIYindao.m_isOpenYindao) {
 				UIYindao.m_UIYindao.CloseUI ();
 			}
-			MapData.mapinstance.ShowPVEGuid ();
-		
+
 			if (CityGlobalData.PT_Or_CQ) {
 				PassLevelBtn.Instance ().OPenEffect ();
 			}
@@ -1806,6 +1819,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			mTouchCount ++;
 		} 
 		CityGlobalData.PveLevel_UI_is_OPen = false;
+		MapData.mapinstance.ShowYinDao = true;
 		Destroy (this.gameObject);
 	}
 	/// <summary>
@@ -1820,7 +1834,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	//攻打按钮
 	public void ComfireTest_btn()
 	{
-		Debug.Log("=============2");
+//		Debug.Log("=============2");
 		IsTest = true;
 		char[] aprcation = {','};
 		//Debug.Log ("text =  "+testLable.text);

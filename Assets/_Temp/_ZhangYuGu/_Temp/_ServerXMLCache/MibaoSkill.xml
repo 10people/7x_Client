@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<MibaoSkill id="1" needNum="3" lv="1" skill="250101" skillDesc="394101" skill2="251301" skill2Desc="395001" nameId="651001" briefDesc="392001" detailDesc="394001" icon="250101" />
+<MibaoSkill id="2" needNum="5" lv="2" skill="250203" skillDesc="394203" skill2="251303" skill2Desc="395003" nameId="651003" briefDesc="392003" detailDesc="394003" icon="250103" />
+<MibaoSkill id="3" needNum="7" lv="3" skill="250302" skillDesc="394302" skill2="251302" skill2Desc="395002" nameId="651002" briefDesc="392002" detailDesc="394002" icon="250102" />
+<MibaoSkill id="4" needNum="9" lv="4" skill="250404" skillDesc="394404" skill2="251304" skill2Desc="395004" nameId="651004" briefDesc="392004" detailDesc="394004" icon="250104" />
+<MibaoSkill id="5" needNum="11" lv="5" skill="250505" skillDesc="394505" skill2="251305" skill2Desc="395005" nameId="651005" briefDesc="392005" detailDesc="394005" icon="250105" />
+<MibaoSkill id="6" needNum="13" lv="6" skill="250606" skillDesc="394606" skill2="251306" skill2Desc="395006" nameId="651006" briefDesc="392006" detailDesc="394006" icon="250106" />
+<MibaoSkill id="7" needNum="15" lv="7" skill="250707" skillDesc="394707" skill2="251307" skill2Desc="395007" nameId="651007" briefDesc="392007" detailDesc="394007" icon="250107" />
+</dataset>

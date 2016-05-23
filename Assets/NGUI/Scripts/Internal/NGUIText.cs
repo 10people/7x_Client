@@ -25,6 +25,12 @@ public static class NGUIText
 		Justified,
 	}
 
+	public enum Direction
+	{
+		Horizontal,
+		Vertcial,
+	}
+
 	public enum SymbolStyle
 	{
 		None,
@@ -41,6 +47,18 @@ public static class NGUIText
 		public float advance = 0f;
 		public int channel = 0;
 		public bool rotatedUVs = false;
+
+		public void LogVert(){
+			Debug.Log( "v0: " + v0 + "   " + "v1: " + v1 );
+		}
+
+		public void Log(){
+			LogVert();
+
+			Debug.Log( "u0: " + u0 + "   " + "u1: " + u1 );
+
+			Debug.Log( "advance: " + advance );
+		}
 	}
 
 	/// <summary>
@@ -59,6 +77,7 @@ public static class NGUIText
 	public static float pixelDensity = 1f;
 	public static FontStyle fontStyle = FontStyle.Normal;
 	public static Alignment alignment = Alignment.Left;
+	public static Direction direction = Direction.Horizontal;
 	public static Color tint = Color.white;
 
 	public static int rectWidth = 1000000;
@@ -95,6 +114,7 @@ public static class NGUIText
 	{
 		finalSize = Mathf.RoundToInt(fontSize / pixelDensity);
 		finalSpacingX = spacingX * fontScale;
+
 		finalLineHeight = (fontSize + spacingY) * fontScale;
 		useSymbols = (bitmapFont != null && bitmapFont.hasSymbols) && encoding && symbolStyle != SymbolStyle.None;
 
@@ -211,11 +231,19 @@ public static class NGUIText
 		{
 			if (dynamicFont.GetCharacterInfo((char)ch, out mTempChar, finalSize, fontStyle))
 			{
+//				LogHelper.LogCharacterInfo( mTempChar );
+
 				glyph.v0.x = mTempChar.vert.xMin;
 				glyph.v1.x = glyph.v0.x + mTempChar.vert.width;
 
 				glyph.v0.y = mTempChar.vert.yMax - baseline;
 				glyph.v1.y = glyph.v0.y - mTempChar.vert.height;
+
+//				Debug.Log( "baseline: " + baseline );
+//
+//				glyph.LogVert();
+//
+//				glyph.Log();
 
 				glyph.u0.x = mTempChar.uv.xMin;
 				glyph.u0.y = mTempChar.uv.yMin;
@@ -986,16 +1014,29 @@ public static class NGUIText
 			{
 				if (x > maxX) maxX = x;
 
-				if (alignment != Alignment.Left)
-				{
-					Align(verts, indexOffset, x - finalSpacingX);
+				if (alignment != Alignment.Left){
+					if( direction == Direction.Horizontal ){
+						Align(verts, indexOffset, x - finalSpacingX);
+					}
+					else{
+						Align(verts, indexOffset, glyph.advance );
+					}
+
 					indexOffset = verts.size;
 				}
 
-				x = 0;
-				y += finalLineHeight;
-				prev = 0;
-				continue;
+				if( direction == Direction.Horizontal ){
+					x = 0;
+					y += finalLineHeight;
+					prev = 0;
+					continue;
+				}
+				else{
+					x -= ( finalSpacingX + glyph.advance );
+					y = 0;
+					prevX = 0;
+					continue;
+				}
 			}
 
 			// Invalid character -- skip it
@@ -1125,25 +1166,50 @@ public static class NGUIText
 				float w = glyph.advance;
 				if (finalSpacingX < 0f) w += finalSpacingX;
 
-				// Doesn't fit? Move down to the next line
-				if (Mathf.RoundToInt(x + w) > rectWidth)
-				{
-					if (x == 0f) return;
-
-					if (alignment != Alignment.Left && indexOffset < verts.size)
+				if( direction == Direction.Horizontal ){
+					// Doesn't fit? Move down to the next line
+					if (Mathf.RoundToInt(x + w) > rectWidth)
 					{
-						Align(verts, indexOffset, x - finalSpacingX);
-						indexOffset = verts.size;
+						if (x == 0f) return;
+
+						if (alignment != Alignment.Left && indexOffset < verts.size)
+						{
+							Align(verts, indexOffset, x - finalSpacingX);
+							indexOffset = verts.size;
+						}
+
+						v0x -= x;
+						v1x -= x;
+						v0y -= finalLineHeight;
+						v1y -= finalLineHeight;
+
+						x = 0;
+						y += finalLineHeight;
+						prevX = 0;
 					}
+				}
+				else{
+					// Doesn't fit? Move down to the next line
+					if (Mathf.RoundToInt(y + finalLineHeight) > rectHeight){
+						if (y == 0f) return;
 
-					v0x -= x;
-					v1x -= x;
-					v0y -= finalLineHeight;
-					v1y -= finalLineHeight;
+						if (alignment != Alignment.Left && indexOffset < verts.size)
+						{
+							Align(verts, indexOffset, glyph.advance );
+							indexOffset = verts.size;
+						}
 
-					x = 0;
-					y += finalLineHeight;
-					prevX = 0;
+						// TODO
+						v0x -= ( finalSpacingX + glyph.advance );
+						v1x -= ( finalSpacingX + glyph.advance );
+						v0y += y;
+						v1y += y;
+
+						x -= ( finalSpacingX + glyph.advance );
+						y = 0;
+						// TODO
+						prevX = 0;
+					}
 				}
 
 				if (ch == ' ')
@@ -1158,9 +1224,14 @@ public static class NGUIText
 					}
 				}
 
-				// Advance the position
-				x += (subscriptMode == 0) ? finalSpacingX + glyph.advance :
-					(finalSpacingX + glyph.advance) * sizeShrinkage;
+				if( direction == Direction.Horizontal ){
+					// Advance the position
+					x += (subscriptMode == 0) ? finalSpacingX + glyph.advance :
+						(finalSpacingX + glyph.advance) * sizeShrinkage;
+				}
+				else{
+					y += finalLineHeight;
+				}
 
 				// No need to continue if this is a space character
 				if (ch == ' ') continue;
@@ -1347,11 +1418,17 @@ public static class NGUIText
 			}
 		}
 
-		if (alignment != Alignment.Left && indexOffset < verts.size)
-		{
-			Align(verts, indexOffset, x - finalSpacingX);
+		if (alignment != Alignment.Left && indexOffset < verts.size){
+			if( direction == Direction.Horizontal ){
+				Align(verts, indexOffset, x - finalSpacingX);
+			}
+			else{
+				Align(verts, indexOffset, glyph.advance );
+			}
+
 			indexOffset = verts.size;
 		}
+
 		mColors.Clear();
 	}
 

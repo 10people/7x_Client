@@ -14,7 +14,6 @@ public class WarItem : MonoBehaviour {
 	private SimpleInfo simpleInfo;
 
 	public UISprite icon;
-	public UILabel nameLabel;
 	public UILabel numLabel;
 
 	public GameObject lockObj;
@@ -41,23 +40,26 @@ public class WarItem : MonoBehaviour {
 
 		lockObj.SetActive (!isOpen);
 
-		icon.spriteName = tempInfo.functionId == 310 ? "yunbiao" : "lueduo";
+		icon.spriteName = "Function_" + tempInfo.functionId;
 	
 //		Debug.Log( "InitWarItem: " + simpleInfo.functionId + " - " + isOpen + " - " + icon.spriteName );
 
 		icon.color = isOpen ? Color.white : Color.black;
 
-		nameLabel.text = FunctionOpenTemp.GetTemplateById (tempInfo.functionId).Des.Split ('-')[1];
+		string name = FunctionOpenTemp.GetTemplateById (tempInfo.functionId).Des.Split ('-')[1];
 
 		if (isOpen)
 		{
 			switch (tempInfo.functionId)
 			{
 			case 310:
-				numLabel.text = tempInfo.num1 > 0 ? MyColorData.getColorString (1,nameLabel.text + "次数  ") + MyColorData.getColorString (4,tempInfo.num1 + "/" + tempInfo.num2) : MyColorData.getColorString (4,"进入多人战场");
+				numLabel.text = tempInfo.num1 > 0 ? "剩余 " + MyColorData.getColorString (4,tempInfo.num1 + "/" + tempInfo.num2) : MyColorData.getColorString (4,"进入多人战场");
 				break;
 			case 211:
-				numLabel.text = MyColorData.getColorString (1,nameLabel.text + "次数  ") + MyColorData.getColorString (tempInfo.num1 > 0 ? 4 : 5,tempInfo.num1 + "/" + tempInfo.num2);
+				numLabel.text = "剩余 "  + MyColorData.getColorString (tempInfo.num1 > 0 ? 4 : 5,tempInfo.num1 + "/" + tempInfo.num2);
+				break;
+			case 300100:
+				numLabel.text = "剩余 " + MyColorData.getColorString (tempInfo.num1 > 0 ? 4 : 5,tempInfo.num1 + "/" + tempInfo.num2);
 				break;
 			default:
 				break;
@@ -65,7 +67,7 @@ public class WarItem : MonoBehaviour {
 		}
 		else
 		{
-			numLabel.text = FunctionOpenTemp.GetTemplateById (tempInfo.functionId).m_sNotOpenTips;
+			numLabel.text = FunctionOpenTemp.GetTemplateById (tempInfo.functionId).Level > 0 ? FunctionOpenTemp.GetTemplateById (tempInfo.functionId).Level + "级开放" : "即将开放";//FunctionOpenTemp.GetTemplateById (tempInfo.functionId).m_sNotOpenTips;
 		}
 
 		CheckRedPoint ();
@@ -77,6 +79,7 @@ public class WarItem : MonoBehaviour {
 	{
 		if (!isOpen)
 		{
+			ClientMain.m_UITextManager.createText (FunctionOpenTemp.GetTemplateById (simpleInfo.functionId).m_sNotOpenTips);
 			return;
 		}
 
@@ -99,6 +102,11 @@ public class WarItem : MonoBehaviour {
 			PlunderData.Instance.OpenPlunder ();
 
 			break;
+		case 300100:
+
+			SportData.Instance.OpenSport ();
+
+			break;
 		default:
 			break;
 		}
@@ -108,19 +116,19 @@ public class WarItem : MonoBehaviour {
 
 	public void CheckRedPoint ()
 	{
-		if (simpleInfo.functionId == 310)
+		switch (simpleInfo.functionId)
 		{
-//			Debug.Log ("FunctionOpenTemp.IsRedSpotDataOpen (313):" + FunctionOpenTemp.IsShowRedSpotNotification (313));
-//			Debug.Log ("FunctionOpenTemp.IsRedSpotDataOpen (315):" + FunctionOpenTemp.IsShowRedSpotNotification (315));
+		case 310:
 			redObj.SetActive (isOpen && (FunctionOpenTemp.IsShowRedSpotNotification (312) || FunctionOpenTemp.IsShowRedSpotNotification (313) || FunctionOpenTemp.IsShowRedSpotNotification (315)) ? true : false);
-//			PushAndNotificationHelper.SetRedSpotNotification (312,isOpen && simpleInfo.num1 > 0 ? true : false);
-		}
-		else
-		{
+			break;
+		case 211:
 			redObj.SetActive (isOpen && (FunctionOpenTemp.IsShowRedSpotNotification (215) || FunctionOpenTemp.IsShowRedSpotNotification (220)) ? true : false);
-//			PushAndNotificationHelper.SetRedSpotNotification (215,isOpen && simpleInfo.num1 > 0 ? true : false);
+			break;
+		case 300100:
+			redObj.SetActive (isOpen && (FunctionOpenTemp.IsShowRedSpotNotification (300103) || FunctionOpenTemp.IsShowRedSpotNotification (300100)) ? true : false);
+			break;
+		default:
+			break;
 		}
-
-//		Debug.Log ("functionId:" + simpleInfo.functionId + "||" + FunctionOpenTemp.IsShowRedSpotNotification (simpleInfo.functionId));
 	}
 }

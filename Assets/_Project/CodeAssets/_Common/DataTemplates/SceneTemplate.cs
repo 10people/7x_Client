@@ -108,6 +108,7 @@ public class SceneTemplate : XmlLoadManager
 
 		{
 			UtilityTool.LoadBox();
+			UtilityTool.LoadFunctionJump();
 		}
 	}
 

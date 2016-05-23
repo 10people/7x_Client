@@ -87,7 +87,7 @@ public class SaoDangAwardTemp : MonoBehaviour {
 		}
 		else{
 			int Max = m_tempInfo.awardItems.Count;
-			if(Max > 7)Max =7;
+			if(Max > 4)Max =4;
 			for (int n = 0; n < Max; n++)
 			{
 				yield return new WaitForSeconds(0.1f);
@@ -97,7 +97,7 @@ public class SaoDangAwardTemp : MonoBehaviour {
 				iconSampleObject.transform.parent = RewardRoot.transform;
 
 				iconSampleObject.transform.localScale= Vector3.one;
-				iconSampleObject.transform.localPosition = new Vector3(-340+n*100, -20, 0);
+				iconSampleObject.transform.localPosition = new Vector3(n * 70 - (Max - 1) * 35, 0, 0);
 				var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 				
 				NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(m_tempInfo.awardItems[n].itemId);
@@ -106,7 +106,7 @@ public class SaoDangAwardTemp : MonoBehaviour {
 				iconSampleManager.SetIconByID(m_tempInfo.awardItems[n].itemId, m_tempInfo.awardItems[n].itemNum.ToString(), 10);
 				//iconSampleManager.SetAwardNumber(m_tempInfo.awardItems[n].itemNum);
 				iconSampleManager.SetIconPopText(m_tempInfo.awardItems[n].itemId, mNameIdTemplate.Name, mdesc, 1);
-				iconSampleManager.transform.localScale = new Vector3(0.8f,0.8f,1);
+				iconSampleManager.transform.localScale = new Vector3(0.6f,0.6f,1);
 			}
 
 		}

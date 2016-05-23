@@ -49,6 +49,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 	public List<GameObject> m_PageObj = new List<GameObject>();
 
 	public List<GameObject> m_CloseObj = new List<GameObject>();
+	public List<UILabel> m_CloseLabel = new List<UILabel>();
 
 	public GameObject m_MonetParentObj;
 	public GameObject m_objTitle;
@@ -234,14 +235,34 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 
 			m_ListLabel[m_iPageIndex][0].text = data0.curHeroLevel + "级/" + data0.maxHeroLevel + "级";
 			m_ListLabel[m_iPageIndex][1].text = data0.curTanfuLevel + "/" + data0.maxTanfuLevel;
+			m_ListLabel[m_iPageIndex][2].text = data0.mibaoNew.curLevel + "/" + data0.mibaoNew.maxLevel;
 			if(!FunctionOpenTemp.IsHaveID(500000))
 			{
 				m_ListPagesObj[m_iPageIndex][1].gameObject.SetActive(false);
 				m_CloseObj[0].SetActive(true);
+				m_CloseLabel[0].text = FunctionOpenTemp.GetTemplateById(500000).m_sNotOpenTips;
 			}
+
+			if(data0.mibaoNew.mibaoDataId != null)
+			{
+				for(int i = 0; i < 3; i ++)
+				{
+					if(i < data0.mibaoNew.mibaoDataId.Count)
+					{
+						m_ListIcon[m_iPageIndex][i + 3].gameObject.SetActive(true);
+						m_ListIcon[m_iPageIndex][i + 3].spriteName = data0.mibaoNew.mibaoDataId[i]+"";
+					}
+					else
+					{
+						m_ListIcon[m_iPageIndex][i + 3].gameObject.SetActive(false);
+					}
+				}
+			}
+
+
 			break;
 		case 1:
-			for(int i = 0; i < 3; i ++)
+			for(int i = 0; i < 4; i ++)
 			{
 				if(i == 1)
 				{
@@ -272,11 +293,19 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 			{
 				m_ListPagesObj[m_iPageIndex][1].gameObject.SetActive(false);
 				m_CloseObj[1].SetActive(true);
+				m_CloseLabel[1].text = FunctionOpenTemp.GetTemplateById(1211).m_sNotOpenTips;
 			}
 			if(!FunctionOpenTemp.IsHaveID(1210))
 			{
 				m_ListPagesObj[m_iPageIndex][2].gameObject.SetActive(false);
 				m_CloseObj[2].SetActive(true);
+				m_CloseLabel[2].text = FunctionOpenTemp.GetTemplateById(1210).m_sNotOpenTips;
+			}
+			if(!FunctionOpenTemp.IsHaveID(1213))
+			{
+				m_ListPagesObj[m_iPageIndex][3].gameObject.SetActive(false);
+				m_CloseObj[3].SetActive(true);
+				m_CloseLabel[3].text = FunctionOpenTemp.GetTemplateById(1213).m_sNotOpenTips;
 			}
 			break;
 		case 2:
@@ -306,11 +335,11 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 			break;
 		case 3:
 			m_ListLabel[m_iPageIndex][0].text = ((int)((float)((float)data3.pageData[0].curLevel / (float)data3.pageData[0].maxLevel) * 100)) + "%";
-			m_ListLabel[m_iPageIndex][1].text = ((int)((float)((float)data3.pageData[1].curLevel / (float)data3.pageData[1].maxLevel) * 100)) + "%";
+//			m_ListLabel[m_iPageIndex][1].text = ((int)((float)((float)data3.pageData[1].curLevel / (float)data3.pageData[1].maxLevel) * 100)) + "%";
 //			m_ListLabel[m_iPageIndex][0].text = data3.pageData[0].curLevel + "/" + data3.pageData[0].maxLevel;
 //			m_ListLabel[m_iPageIndex][1].text = data3.pageData[1].curLevel + "/" + data3.pageData[1].maxLevel;
 			//				
-			for(int i = 0; i < 2; i ++)
+			for(int i = 0; i < 1; i ++)
 			{
 				if(data3.pageData[i].fuwenDataId == null || data3.pageData[i].fuwenDataId.Count == 0)
 				{
@@ -319,16 +348,16 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 				for(int q = 0; q < 3; q ++)
 				{
 
-					if(data3.pageData[i].fuwenDataId != null && q < data3.pageData[i].fuwenDataId.Count)
-					{
-						m_ListIcon[m_iPageIndex][i*3+q].gameObject.SetActive(true);
-
-						m_ListIcon[m_iPageIndex][i*3+q].spriteName = FuWenTemplate.GetFuWenTemplateByFuWenId (data3.pageData[i].fuwenDataId[q]).icon + "";
-					}
-					else
-					{
+//					if(data3.pageData[i].fuwenDataId != null && q < data3.pageData[i].fuwenDataId.Count)
+//					{
+//						m_ListIcon[m_iPageIndex][i*3+q].gameObject.SetActive(true);
+//
+//						m_ListIcon[m_iPageIndex][i*3+q].spriteName = FuWenTemplate.GetFuWenTemplateByFuWenId (data3.pageData[i].fuwenDataId[q]).icon + "";
+//					}
+//					else
+//					{
 						m_ListIcon[m_iPageIndex][i*3+q].gameObject.SetActive(false);
-					}
+//					}
 				}
 			}
 			break;
@@ -403,6 +432,16 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 				m_iWantPageIndex = m_iPageIndex;
 			}
 		}
+		else if(ui.name.IndexOf("Button") != -1)
+		{
+			Global.m_sMainCityWantOpenPanel = 500010;
+			Global.m_sPanelWantRun = "LieFu";
+			MainCityUI.TryRemoveFromObjectList(gameObject);
+			m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
+			m_ScaleEffectController.OnCloseWindowClick();
+			Global.m_isShowBianqiang = true;
+			Global.m_sBianqiangClick = "Page" + m_iPageIndex;
+		}
 		else if(ui.name.IndexOf("icon") != -1)
 		{
 			int tempIndex = int.Parse(ui.name.Substring(4,1));
@@ -410,13 +449,25 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 			{
 			case 0:
 //				if(data0.tianfuId[tempIndex])
-				Global.m_sMainCityWantOpenPanel = 200;
-				Global.m_sPanelWantRun = "Skill2," + data0.tianfuId[tempIndex];
-				MainCityUI.TryRemoveFromObjectList(gameObject);
-				m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
-				m_ScaleEffectController.OnCloseWindowClick();
-				Global.m_isShowBianqiang = true;
-				Global.m_sBianqiangClick = "Page" + m_iPageIndex;
+				if(tempIndex / 3 == 0)
+				{
+					Global.m_sMainCityWantOpenPanel = 200;
+					Global.m_sPanelWantRun = "Skill2," + data0.tianfuId[tempIndex];
+					MainCityUI.TryRemoveFromObjectList(gameObject);
+					m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
+					m_ScaleEffectController.OnCloseWindowClick();
+					Global.m_isShowBianqiang = true;
+					Global.m_sBianqiangClick = "Page" + m_iPageIndex;
+				}
+				else
+				{
+					Global.m_sMainCityWantOpenPanel = 200;
+					MainCityUI.TryRemoveFromObjectList(gameObject);
+					m_ScaleEffectController.CloseCompleteDelegate = DoCloseWindow;
+					m_ScaleEffectController.OnCloseWindowClick();
+					Global.m_isShowBianqiang = true;
+					Global.m_sBianqiangClick = "Page" + m_iPageIndex;
+				}
 				break;
 			case 1:
 				if(data1.pageData[tempIndex / 3].zhuangbeiData[tempIndex % 3].type == 0)
@@ -429,12 +480,17 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 					}
 					else if(tempIndex / 3 == 1)
 					{
-						Global.m_sPanelWantRun = "jinjie,0,";
-						Global.m_sMainCityWantOpenPanel = 200;
+						Global.m_sPanelWantRun = "3,";
+						Global.m_sMainCityWantOpenPanel = 12;
 					}
-					else 
+					else if(tempIndex / 3 == 2)
 					{
 						Global.m_sPanelWantRun = "2,";
+						Global.m_sMainCityWantOpenPanel = 12;
+					}
+					else if(tempIndex / 3 == 3)
+					{
+						Global.m_sPanelWantRun = "0,";
 						Global.m_sMainCityWantOpenPanel = 12;
 					}
 					Global.m_sPanelWantRun += data1.pageData[tempIndex / 3].zhuangbeiData[tempIndex % 3].id;

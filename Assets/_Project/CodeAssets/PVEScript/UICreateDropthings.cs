@@ -255,7 +255,7 @@ public class UICreateDropthings : MonoBehaviour
 
 					iconSpriteName = mItemTemp.icon.ToString();
 
-					iconSampleManager.SetIconType(IconSampleManager.IconType.item);
+					//iconSampleManager.SetIconType(IconSampleManager.IconType.item);
 
 					NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mAwardTemp[i].itemId);
 
@@ -266,7 +266,7 @@ public class UICreateDropthings : MonoBehaviour
 					var popDesc = mdesc;
 
                     iconSampleManager.SetIconByID(mItemTemp.id, "", 10);
-                    iconSampleManager.SetIconPopText(mAwardTemp[i].itemId, popTitle, popDesc, 1);
+                    iconSampleManager.SetIconPopText();
 				}
             }
         }

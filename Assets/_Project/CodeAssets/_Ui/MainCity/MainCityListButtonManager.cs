@@ -51,6 +51,16 @@ public class MainCityListButtonManager
 			m_iTX = 0;
 			m_iTY = 75;
 			break;
+		case 4:
+			m_iBX = 50;
+			m_iBY = -138;
+			m_iTX = 50;
+			m_iTY = 0;
+			break;
+		case 5:
+			m_iBX = 960 + ClientMain.m_iMoveX * 2 - 25;
+			m_iBY = -25;
+			break;
 		}
 //		if(state == 2)
 //		{

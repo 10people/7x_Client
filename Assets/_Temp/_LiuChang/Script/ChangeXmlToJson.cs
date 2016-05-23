@@ -27,58 +27,23 @@ public class ChangeXmlToJson : MonoBehaviour
 	
 	private const int BATTLE_DATA_TO_LOAD_COUNT	= 6;
 
-	
+
+
 	void Start()
+	{
+		BattleConfigTemplate.LoadTemplates (_Start);
+	}
+
+	void _Start()
 	{
 		index = 0;
 
-		for(int i = 0; i < 4; i++) levels.Add (1 + i);
-		
-		levels.Add (900);
+		levels.Clear ();
 
-
-		for(int i = 0; i < 1; i++) levels.Add (100001 + i);
-
-		for(int i = 0; i < 7; i++) levels.Add (100101 + i);
-
-		for(int i = 0; i < 7; i++) levels.Add (100201 + i);
-
-		for(int i = 0; i < 7; i++) levels.Add (100301 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (100401 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (100501 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (100601 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (100701 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (100801 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (100901 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (101001 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (101101 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (101201 + i);
-
-		for(int i = 0; i < 9; i++) levels.Add (101301 + i);
-
-
-		for(int i = 0; i < 14; i++) levels.Add (200001 + i);
-
-
-		for(int i = 0; i < 10; i++) levels.Add (300101 + i);
-
-		for(int i = 0; i < 10; i++) levels.Add (300201 + i);
-
-		for(int i = 0; i < 10; i++) levels.Add (300301 + i);
-
-		for(int i = 0; i < 5; i++) levels.Add (300401 + i);
-
-		for(int i = 0; i < 5; i++) levels.Add (300501 + i);
-
+		foreach(BattleConfigTemplate configTemp in BattleConfigTemplate.templates)
+		{
+			levels.Add(configTemp.configId);
+		}
 
 		writeNext ();
 	}
@@ -245,7 +210,11 @@ public class ChangeXmlToJson : MonoBehaviour
 			bf.triggerCount = template.triggerCount;
 			
 			bf.triggerFunc = (BattleFlag.TriggerFunc)template.triggerFunc;
-			
+
+			bf.triggerFuncEffect = template.triggerFuncEffect;
+
+			bf.triggerDelay = template.triggerDelay;
+
 			bf.willRelive = (template.willRelive != 0);
 			
 			bf.dieable = (template.dieable != 0);

@@ -24,13 +24,19 @@ public class EmailCheck : MonoBehaviour {
 
 	private EmailOperateType operateType = EmailOperateType.NO_ACTION;
 
-	private string[][] btnTextLength = new string[][]{new string[]{"确定"},new string[]{"屏蔽","加好友","回复"},new string[]{"拒绝","同意"},
-													new string[]{"领取"},new string[]{"跳转"}};
+	private string[][] btnTextLength = new string[][]{new string[]{"确  定"},new string[]{"屏  蔽","加好友","回  复"},new string[]{"拒  绝","同  意"},
+													new string[]{"领  取"},new string[]{"跳  转"}};
 
 	public List<EventHandler> btnList = new List<EventHandler> ();
 
 	public GameObject systemObj;
 	public GameObject privateObj;
+
+	public UIScrollView m_sysSc;
+	public UIScrollView m_priSc;
+
+	public UIScrollBar m_sysSb;
+	public UIScrollBar m_priSb;
 
 	public UILabel privateLabel;
 	public UILabel privateSenderLabel;
@@ -43,9 +49,6 @@ public class EmailCheck : MonoBehaviour {
 	private List<NGUILongPress> longPressList = new List<NGUILongPress> ();
 	public UILabel desLabel;
 
-	public UIAtlas equipAtlas;
-	public UIAtlas fuWenAtlas;
-
 	public void GetEmailInfo (EmailInfo tempInfo)
 	{
 		emailInfo = tempInfo;
@@ -57,9 +60,13 @@ public class EmailCheck : MonoBehaviour {
 			systemObj.SetActive (false);
 			privateObj.SetActive (true);
 
-			privateLabel.text = "       " + MyColorData.getColorString (3,emailInfo.content);
-			privateSenderLabel.text = MyColorData.getColorString (3,emailInfo.senderName);
+			privateLabel.text = "       " + emailInfo.content;
+			privateSenderLabel.text = emailInfo.senderName;
 			privateSenderLabel.transform.localPosition = new Vector3(795,privateLabel.height >= 370 ? (-360 - (privateLabel.height - 370)) : -320, 0);
+
+			m_priSc.UpdateScrollbars (true);
+			m_priSc.enabled = privateLabel.maxLineCount > 12 ? true : false;
+			m_priSb.gameObject.SetActive (privateLabel.maxLineCount > 12 ? true : false);
 
 			for (int i = 0;i < btnList.Count;i ++)
 			{
@@ -79,11 +86,15 @@ public class EmailCheck : MonoBehaviour {
 			systemObj.SetActive (true);
 			privateObj.SetActive (false);
 
-			string taiTouStr = MyColorData.getColorString (3,emailInfo.taiTou);
-			string contextStr = "\n     " + MyColorData.getColorString (3,emailInfo.content);
+			string taiTouStr = emailInfo.taiTou;
+			string contextStr = "\n     " + emailInfo.content;
 			systemLabel.text = taiTouStr + contextStr;
-			systemSenderLabel.text = MyColorData.getColorString (3,emailInfo.senderName);
+			systemSenderLabel.text = emailInfo.senderName;
 			systemSenderLabel.transform.localPosition = new Vector3(795, systemLabel.height >= 270 ? (-42 - systemLabel.height) : -238, 0);
+
+			m_sysSc.UpdateScrollbars (true);
+			m_sysSc.enabled = privateLabel.maxLineCount > 9 ? true : false;
+			m_sysSb.gameObject.SetActive (privateLabel.maxLineCount > 9 ? true : false);
 
 			bool isShow = operateType == EmailOperateType.DELATE_AFTER_OPERATE ? true : false;
 

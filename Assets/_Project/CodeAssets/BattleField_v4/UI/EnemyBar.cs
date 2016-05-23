@@ -26,12 +26,22 @@ public class EnemyBar : MonoBehaviour
 
 	public UISprite barNuqi;
 
+	public GameObject layerBossArmor;
+
+	public UIProgressBar barBossArmor;
+
+	public UIProgressBar barBossArmor_white;
+
+	public UISprite spriteArmorFrame;
+
 
 	private BaseAI focusNode = null;
 
 	private KingControllor focusKing = null;
 
 	private float targetValue;
+
+	private float targetValueArmor;
 
 	private float curValue;
 
@@ -52,6 +62,8 @@ public class EnemyBar : MonoBehaviour
 	{
 		targetValue = 1;
 
+		targetValueArmor = 1;
+
 		tempTargetValue = 1;
 
 		focusNode = null;
@@ -63,6 +75,13 @@ public class EnemyBar : MonoBehaviour
 		gc_barBoss.SetActive (false);
 
 		gc_barPlayer.SetActive (false);
+	}
+
+	public int getFocusNodeId()
+	{
+		if (focusNode != null) return focusNode.nodeId;
+
+		return 0;
 	}
 
 	public void setFocusNode(BaseAI _node)
@@ -88,6 +107,8 @@ public class EnemyBar : MonoBehaviour
 		labelBossName.text = _node.nodeData.nodeName;
 
 		labelPlayerName.text = _node.nodeData.nodeName;
+
+		layerBossArmor.SetActive (false);
 
 		if(nodeType == NodeType.BOSS || nodeType == NodeType.PLAYER)
 		{
@@ -122,6 +143,8 @@ public class EnemyBar : MonoBehaviour
 					bosBarList.Add(bar);
 				}
 
+				layerBossArmor.SetActive(focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0);
+
 				//barBoss_2.gameObject.SetActive(focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpNum) > 1);
 			}
 		}
@@ -142,6 +165,11 @@ public class EnemyBar : MonoBehaviour
 
 		targetValue = focusNode.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) / focusNode.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMaxReal );
 
+		if(focusNode.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0)
+		{
+			targetValueArmor = focusNode.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_Armor) / focusNode.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax);
+		}
+
 		if(focusNode.isAlive == false || focusNode.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0)
 		{
 			Start();
@@ -151,6 +179,8 @@ public class EnemyBar : MonoBehaviour
 			UpdateBarPlayer ();
 			
 			UpdateBarBoss ();
+
+			updataBarBossArmor();
 		}
 
 		tempTargetValue = targetValue;
@@ -306,5 +336,114 @@ public class EnemyBar : MonoBehaviour
 		}
 
 	}
-	
+
+	private void updataBarBossArmor()
+	{
+		if (layerBossArmor.gameObject.activeSelf == false) return;
+		
+		float step = .05f;
+		
+		float value = barBossArmor.value;
+		
+		if(Mathf.Abs(value - targetValueArmor) < step * 1.5f)
+		{
+			value = targetValueArmor;
+		}
+		else if(value > targetValueArmor)
+		{
+			value -= step;
+		}
+		else if(value < targetValueArmor)
+		{
+			value += step;
+		}
+		
+		barBossArmor.value = value;
+
+		updataBarWhitBossArmor (step);
+	}
+
+	private void updataBarWhitBossArmor(float step)
+	{
+		if(tempTargetValue != targetValue)
+		{
+			whiteRefreshTime = Time.realtimeSinceStartup;
+
+			barBossArmor_white.value = barBossArmor.value;
+		}
+		
+		if(Time.realtimeSinceStartup - whiteRefreshTime < preTime * whiteRate)
+		{
+			return;
+		}
+		
+		if(barBoss_white.value > barBossArmor.value )
+		{
+			barBossArmor_white.value -= step;
+		}
+		else
+		{
+			barBossArmor_white.value = barBossArmor.value;
+		}
+	}
+
+	public void startFlashArmorFrame(float _time)
+	{
+		StartCoroutine (armorFrameFlash(_time));
+	}
+
+	IEnumerator armorFrameFlash(float flashTIme)
+	{
+		flashTIme += 1f;
+
+		spriteArmorFrame.gameObject.SetActive (true);
+
+		spriteArmorFrame.alpha = .15f;
+
+		float timeCount = 0;
+
+		float deltaTime = 0;
+
+		for(;focusNode != null && focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Armor) <= 0;)
+		{
+			deltaTime = flashTIme / (4 * 3);
+
+//			if(deltaTime < .2f) deltaTime = .2f;
+
+			timeCount = 0;
+
+			for(;spriteArmorFrame.alpha < 1;)//透明度增加阶段
+			{
+				timeCount += Time.deltaTime;
+
+				spriteArmorFrame.alpha = timeCount / deltaTime;
+
+				spriteArmorFrame.alpha = spriteArmorFrame.alpha > 1 ? 1 : spriteArmorFrame.alpha;
+
+				if(focusNode != null) yield return new WaitForEndOfFrame();
+			}
+
+			if(focusNode != null) yield return new WaitForSeconds(deltaTime / 2);
+
+			timeCount = 0;
+
+			for(;spriteArmorFrame.alpha > .15f;)//透明度降低阶段
+			{
+				timeCount += Time.deltaTime;
+				
+				spriteArmorFrame.alpha = 1 - (timeCount / deltaTime);
+				
+				spriteArmorFrame.alpha = spriteArmorFrame.alpha < .1f ? .1f : spriteArmorFrame.alpha;
+				
+				if(focusNode != null) yield return new WaitForEndOfFrame();
+			}
+
+			flashTIme -= deltaTime * 3;
+
+			if(focusNode != null) yield return new WaitForSeconds(deltaTime / 2);
+		}
+
+		spriteArmorFrame.gameObject.SetActive (false);
+	}
+
 }

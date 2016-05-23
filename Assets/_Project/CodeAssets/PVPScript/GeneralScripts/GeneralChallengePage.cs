@@ -7,55 +7,69 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class GeneralChallengePage : MonoBehaviour {
+public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 
-	public static GeneralChallengePage gcPage;
+	public enum ChallengeType
+	{
+		SPORT,
+		PLUNDER,
+	}
+
+	private ChallengeType m_challengeType;
+
+	public delegate void ChallengeDelegate ();
+	public ChallengeDelegate M_ChallengeDelegate;
+
+	public ScaleEffectController sEffectController;
+	public GameObject m_topRightObj;
+
+	private GameObject iconSamplePrefab;
 
 	#region ProtoMessage
-	private ChallengeResp pvpResp;//百战
-	private LveGoLveDuoResp plunderResp;//掠夺
+	private ChallengeResp m_sportResp;//竞技
+	private LveGoLveDuoResp m_plunderResp;//掠夺
 	#endregion
 
-	#region MyInfo
-	public UILabel mZhanLiLabel;
-	public UISprite mSkillIcon;
-	public GameObject mLockObj;
-	public GameObject addObj;
-	private int mSkillId;
-	#endregion
-	
-	#region EnemyInfo
-	public UILabel eZhanLiLabel;
-	public UISprite eSkillIcon;
-	public GameObject eLockObj;
-	private int eSkillId;
+	#region Player
+	public UILabel m_zhanLiLabel;
+	public UISprite m_skill;
+	public GameObject m_lock;
+	public GameObject m_add;
+	public GameObject m_parent;
+	private GameObject m_heroObj;
+	private List<GameObject> m_bingItemList = new List<GameObject> ();
 
-	private int eRoleId;
-	private int eLevel;
-	#endregion
+	public UILabel m_getJiFen;
+	public UILabel m_jiFen;
+	public UILabel m_plunderCount;
 
-	#region PlunderInfo
-	public GameObject plunderInfoObj;
-	public UILabel getGongJinNum;
-	public UILabel mGongJinNum;
-	public UILabel lueDuoTime;
+	private int m_zhanLiNum;
+	private int m_skillId;
+	private List<YongBingInfo> m_yongBingList = new List<YongBingInfo> ();
+
 	#endregion
 
-	public GameObject mParent;
-	public GameObject eParent;
+	#region Enemy
+	public UILabel e_zhanLiLabel;
+	public UISprite e_skill;
+	public GameObject e_lock;
+	public GameObject e_parent;
+	private GameObject e_heroObj;
+	private List<GameObject> e_bingItemList = new List<GameObject> ();
 
-	private GameObject mHeroObj;
-	private GameObject eHeroObj;
+	private int e_zhanLiNum;
+	private int e_skillId;
 
-	private List<GameObject> mItemList = new List<GameObject> ();
-	private List<GameObject> eItemList = new List<GameObject> ();
+	private int e_roleId;
+	private int e_level;
 
-	private List<YongBingInfo> mYongBingList = new List<YongBingInfo> ();
-	private List<YongBingInfo> eYongBingList = new List<YongBingInfo> ();
-	
-	private GameObject iconSamplePrefab;
-	
-	private readonly Dictionary<int,string> armsDic = new Dictionary<int, string>()
+	private List<YongBingInfo> e_yongBingList = new List<YongBingInfo> ();
+	#endregion
+
+	public GameObject m_changeSkillBtn;
+
+	public GameObject m_plunderInfoObj;
+	private readonly Dictionary<int,string> bingDic = new Dictionary<int, string>()
 	{
 		{1,"dun"},//盾兵
 		{2,"gang"},//枪兵
@@ -63,139 +77,150 @@ public class GeneralChallengePage : MonoBehaviour {
 		{4,"piccar"},//车兵
 		{5,"hours"},//骑兵
 	};
-	private const int iconBasicDepth = 15;
-	private const int maxCount = 4;//佣兵最大个数
+	private const int m_iconBasicDepth = 15;
+	private const int m_maxCount = 4;//佣兵最大个数
 
-	public List<EventHandler> challengehandlerList = new List<EventHandler> ();
-
-	private GeneralControl.ChallengeType challengeType;
-
-	public ScaleEffectController sEffectController;
-
-	public GameObject topRightObj;
-
-	void Awake ()
+	new void Awake ()
 	{
-		gcPage = this;
+		base.Awake ();
 	}
 
 	void Start ()
 	{
-		QXComData.LoadYuanBaoInfo (topRightObj);
+		QXComData.LoadYuanBaoInfo (m_topRightObj);
 	}
 
-	/// <summary>
-	/// PVP
-	/// </summary>
-	/// <param name="tempType">Temp type.</param>
-	/// <param name="tempResp">Temp resp.</param>
-	public void InItPvpChallengePage (GeneralControl.ChallengeType tempType,ChallengeResp tempResp)
+	public void InItChallengePage (ChallengeType tempType,object tempObjectResp)
 	{
-		sEffectController.OnOpenWindowClick ();
+		m_plunderInfoObj.SetActive (tempType == ChallengeType.PLUNDER ? true : false);
 
-		challengeType = tempType;
-		pvpResp = tempResp;
+		switch (tempType)
+		{
+		case ChallengeType.SPORT:
+			m_sportResp = tempObjectResp as ChallengeResp;
 
-		PvpReset = false;
+			m_zhanLiNum = m_sportResp.myZhanli;
+			e_zhanLiNum = m_sportResp.oppoZhanli;
 
-		plunderInfoObj.SetActive (false);
+			m_skillId = m_sportResp.myZuheId;
+			e_skillId = m_sportResp.oppZuheId;
 
-		mZhanLiLabel.text = "我方战力：" + tempResp.myZhanli.ToString ();
-		eZhanLiLabel.text = "对手战力：" + tempResp.oppoZhanli.ToString ();
+			e_roleId = m_sportResp.oppoRoleId;
+			e_level = m_sportResp.oppoLevel;
 
-		mSkillId = tempResp.myZuheId;
-		eSkillId = tempResp.oppZuheId;
-		InItMiBaoInfo ();
+			m_yongBingList = CreateYongBingList (tempType,m_sportResp.mySoldiers);
+			e_yongBingList = CreateYongBingList (tempType,m_sportResp.oppoSoldiers);
 
-		eRoleId = pvpResp.oppoRoleId;
-		eLevel = pvpResp.oppoLevel;
+			break;
+		case ChallengeType.PLUNDER:
+			m_plunderResp = tempObjectResp as LveGoLveDuoResp;
 
-		mYongBingList = CreatePvpYongBingList (tempResp.mySoldiers);
-		eYongBingList = CreatePvpYongBingList (tempResp.oppoSoldiers);
+			m_zhanLiNum = m_plunderResp.myZhanli;
+			e_zhanLiNum = m_plunderResp.oppoZhanli;
+			
+
+			m_getJiFen.text = m_plunderResp.lostGongJin.ToString ();
+			m_jiFen.text = m_plunderResp.gongJin.ToString ();
+		
+			m_plunderCount.text = "剩余掠夺次数：" + (m_plunderResp.all - m_plunderResp.used) + "/" + m_plunderResp.all;
+			
+			m_skillId = m_plunderResp.myGongjiZuheId;
+			e_skillId = m_plunderResp.oppFangShouZuheId;
+			
+			e_roleId = m_plunderResp.oppoRoleId;
+			e_level = m_plunderResp.oppoLevel;
+			
+			m_yongBingList = CreateYongBingList (tempType,m_plunderResp.mySoldiers);
+			e_yongBingList = CreateYongBingList (tempType,m_plunderResp.oppoSoldiers);
+
+			break;
+		default:
+			break;
+		}
+
+		m_zhanLiLabel.text = "我方战力：" + m_zhanLiNum.ToString ();
+		e_zhanLiLabel.text = "对手战力：" + e_zhanLiNum.ToString ();
 
 		CreateBattleLineUp ();
-
-		foreach (EventHandler handler in challengehandlerList)
-		{
-			handler.m_click_handler -= ChallengeHandlerClickBack;
-			handler.m_click_handler += ChallengeHandlerClickBack;
-		}
-
-//		Debug.Log ("QXComData.CheckYinDaoOpenState (100255):" + QXComData.CheckYinDaoOpenState (100255));
-		if (!QXComData.CheckYinDaoOpenState (100200))
-		{
-			UIYindao.m_UIYindao.CloseUI ();
-		}
-
-		Global.m_isOpenBaiZhan = false;
+		ShowSkill ();
 	}
 
 	/// <summary>
-	/// 掠夺
+	/// Creates the yong bing list.
 	/// </summary>
+	/// <returns>The yong bing list.</returns>
 	/// <param name="tempType">Temp type.</param>
-	/// <param name="tempResp">Temp resp.</param>
-	public void InItPlunderChallengePage (GeneralControl.ChallengeType tempType,LveGoLveDuoResp tempResp)
+	/// <param name="tempList">Temp list.</param>
+	private List<YongBingInfo> CreateYongBingList (ChallengeType tempType,object tempList)
 	{
-		sEffectController.transform.localScale = Vector3.one;
-
-		challengeType = tempType;
-		plunderResp = tempResp;
-
-		mZhanLiLabel.text = "我方战力：" + tempResp.myZhanli.ToString ();
-		eZhanLiLabel.text = "对手战力：" + tempResp.oppoZhanli.ToString ();
-
-		plunderInfoObj.SetActive (true);
-		getGongJinNum.text = tempResp.lostGongJin.ToString ();
-		mGongJinNum.text = tempResp.gongJin.ToString ();
-//		Debug.Log ("tempResp.all:" + tempResp.all + "|||||tempResp.all:" + tempResp.used);
-		lueDuoTime.text = "剩余掠夺次数：" + (tempResp.all - tempResp.used) + "/" + tempResp.all;
-
-		mSkillId = tempResp.myGongjiZuheId;
-		eSkillId = tempResp.oppFangShouZuheId;
-		InItMiBaoInfo ();
-
-		eRoleId = plunderResp.oppoRoleId;
-		eLevel = plunderResp.oppoLevel;
-
-		mYongBingList = CreatePlunderYongBingList (tempResp.mySoldiers);
-		eYongBingList = CreatePlunderYongBingList (tempResp.oppoSoldiers);
-
-		CreateBattleLineUp ();
-
-		foreach (EventHandler handler in challengehandlerList)
+		List<List<int>> yongBingIdList = new List<List<int>> ();
+		switch (tempType)
 		{
-			handler.m_click_handler -= ChallengeHandlerClickBack;
-			handler.m_click_handler += ChallengeHandlerClickBack;
+		case ChallengeType.SPORT:
+			List<GuYongBing> sportSoldierList = tempList as List<GuYongBing>;
+			for (int i = 0;i < sportSoldierList.Count;i ++)
+			{
+				List<int> idList = new List<int>();
+				idList.Add (sportSoldierList[i].id);
+				idList.Add (0);
+				yongBingIdList.Add (idList);
+			}
+			break;
+		case ChallengeType.PLUNDER:
+			List<Bing> plunderSoldierList = tempList as List<Bing>;
+			for (int i = 0;i < plunderSoldierList.Count;i ++)
+			{
+				List<int> idList = new List<int>();
+				idList.Add (plunderSoldierList[i].id);
+				idList.Add (plunderSoldierList[i].hp);
+				yongBingIdList.Add (idList);
+			}
+			break;
+		default:
+			break;
 		}
+
+		List<YongBingInfo> bingInfoList = new List<YongBingInfo> ();
+		for (int i = 0;i < yongBingIdList.Count;i ++)
+		{
+			if (i < m_maxCount)
+			{
+				GuYongBingTempTemplate yongBingTemp = GuYongBingTempTemplate.GetGuYongBingTempTemplate_By_id(yongBingIdList[i][0]);
+				YongBingInfo bingInfo = new YongBingInfo();
+				bingInfo.yongBingId = yongBingIdList[i][0];
+				bingInfo.yongBingHp = yongBingIdList[i][1];
+				bingInfo.profession = yongBingTemp.profession;
+				bingInfo.iconId = yongBingTemp.icon;
+				bingInfo.level = yongBingTemp.needLv;
+				bingInfo.nameId = yongBingTemp.m_name;
+				bingInfo.desId = yongBingTemp.description;
+				bingInfoList.Add (bingInfo);
+			}
+		}
+		
+		return bingInfoList;
 	}
 
-	/// <summary>
-	/// Ins it mi bao info.
-	/// </summary>
-	void InItMiBaoInfo ()
+	void ShowSkill ()
 	{
-//		Debug.Log ("mSkillId:" + mSkillId + "||eSkillId:" + eSkillId);
-//		mLockObj.SetActive (mSkillId > 0 ? false : true);
-		mSkillIcon.spriteName = mSkillId > 0 ? MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (mSkillId).icon.ToString () : "";
-
-		eLockObj.SetActive (eSkillId > 0 ? false : true);
-		eSkillIcon.spriteName = eSkillId > 0 ? MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (eSkillId).icon.ToString () : "";
-
+		m_skill.spriteName = m_skillId > 0 ? MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (m_skillId).icon.ToString () : "";
+		
+		e_lock.SetActive (e_skillId > 0 ? false : true);
+		e_skill.spriteName = e_skillId > 0 ? MiBaoSkillTemp.getMiBaoSkillTempByZuHeId (e_skillId).icon.ToString () : "";
+		
 		ShowMiBaoSkillBtnEffect (true);
 	}
 
 	void ShowMiBaoSkillBtnEffect (bool isActive)
 	{
-		UISprite sprite = challengehandlerList [0].GetComponent<UISprite> ();
-		UILabel label = challengehandlerList [0].GetComponentInChildren<UILabel> ();
+		UISprite sprite = m_changeSkillBtn.GetComponent<UISprite> ();
+		UILabel label = m_changeSkillBtn.GetComponentInChildren<UILabel> ();
 
-		if (mSkillId > 0)
+		if (m_skillId > 0)
 		{
-			addObj.SetActive (false);
-			mLockObj.SetActive (false);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-//			UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
+			m_add.SetActive (false);
+			m_lock.SetActive (false);
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,7);
 			sprite.color = Color.white;
 			label.color = Color.white;
 		}
@@ -207,80 +232,22 @@ public class GeneralChallengePage : MonoBehaviour {
 				{
 					sprite.color = Color.white;
 					sprite.color = Color.white;
-					addObj.SetActive (true);
-					mLockObj.SetActive (false);
-					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
+					m_add.SetActive (true);
+					m_lock.SetActive (false);
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,6);
 				}
 				else
 				{
-					mLockObj.SetActive (true);
-					addObj.SetActive (false);
-					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
+					m_lock.SetActive (true);
+					m_add.SetActive (false);
+					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,7);
 					sprite.color = Color.black;
 					sprite.color = Color.black;
-//					UI3DEffectTool.ClearUIFx (challengehandlerList[0].gameObject);
 				}
 			}
 		}
 	}
-
-	/// <summary>
-	/// Creates the yong bing list.
-	/// </summary>
-	/// <returns>The yong bing list.</returns>
-	/// <param name="tempList">Temp list.</param>
-	private List<YongBingInfo> CreatePvpYongBingList (List<GuYongBing> tempList)
-	{
-		List<YongBingInfo> bingInfoList = new List<YongBingInfo> ();
-		
-		for (int i = 0;i < tempList.Count;i ++)
-		{
-			if (i < maxCount)
-			{
-				GuYongBingTempTemplate yongBingTemp = GuYongBingTempTemplate.GetGuYongBingTempTemplate_By_id(tempList[i].id);
-				YongBingInfo bingInfo = new YongBingInfo();
-				bingInfo.yongBingId = tempList[i].id;
-				bingInfo.profession = yongBingTemp.profession;
-				bingInfo.iconId = yongBingTemp.icon;
-				bingInfo.level = yongBingTemp.needLv;
-				bingInfo.nameId = yongBingTemp.m_name;
-				bingInfo.desId = yongBingTemp.description;
-				bingInfoList.Add (bingInfo);
-			}
-		}
-		
-		return bingInfoList;
-	}
-
-	/// <summary>
-	/// Creates the yong bing list.
-	/// </summary>
-	/// <returns>The yong bing list.</returns>
-	/// <param name="tempList">Temp list.</param>
-	private List<YongBingInfo> CreatePlunderYongBingList (List<Bing> tempList)
-	{
-		List<YongBingInfo> bingInfoList = new List<YongBingInfo> ();
-		
-		for (int i = 0;i < tempList.Count;i ++)
-		{
-			if (i < maxCount)
-			{
-				GuYongBingTempTemplate yongBingTemp = GuYongBingTempTemplate.GetGuYongBingTempTemplate_By_id(tempList[i].id);
-				YongBingInfo bingInfo = new YongBingInfo();
-				bingInfo.yongBingId = tempList[i].id;
-				bingInfo.yongBingHp = tempList[i].hp;
-				bingInfo.profession = yongBingTemp.profession;
-				bingInfo.iconId = yongBingTemp.icon;
-				bingInfo.level = yongBingTemp.needLv;
-				bingInfo.nameId = yongBingTemp.m_name;
-				bingInfo.desId = yongBingTemp.description;
-				bingInfoList.Add (bingInfo);
-			}
-		}
-		
-		return bingInfoList;
-	}
-
+	
 	/// <summary>
 	/// Creates the battle line up.
 	/// </summary>
@@ -306,8 +273,8 @@ public class GeneralChallengePage : MonoBehaviour {
 			iconSamplePrefab = p_object as GameObject;
 		}
 
-		mItemList = InItItemList (1,mHeroObj,mParent,mYongBingList,mItemList);
-		eItemList = InItItemList (2,eHeroObj,eParent,eYongBingList,eItemList);
+		m_bingItemList = InItItemList (1,m_heroObj,m_parent,m_yongBingList,m_bingItemList);
+		e_bingItemList = InItItemList (2,e_heroObj,e_parent,e_yongBingList,e_bingItemList);
 	}
 
 	/// <summary>
@@ -336,12 +303,12 @@ public class GeneralChallengePage : MonoBehaviour {
 		{
 		case 1:
 
-			heroIconSample.SetIconBasic(iconBasicDepth,"PlayerIcon" + CityGlobalData.m_king_model_Id,JunZhuData.Instance().m_junzhuInfo.level.ToString());
+			heroIconSample.SetIconBasic(m_iconBasicDepth,"PlayerIcon" + CityGlobalData.m_king_model_Id,QXComData.JunZhuInfo ().level.ToString());
 
 			break;
 		case 2:
 
-			heroIconSample.SetIconBasic (iconBasicDepth,"PlayerIcon" + eRoleId,eLevel.ToString());
+			heroIconSample.SetIconBasic (m_iconBasicDepth,"PlayerIcon" + e_roleId,e_level.ToString());
 
 			break;
 		default:
@@ -398,9 +365,9 @@ public class GeneralChallengePage : MonoBehaviour {
 			var popDesc = DescIdTemplate.getDescIdTemplateByNameId (tempYongBingList[i].desId).description;
 			
 			string rBottomSpriteName = "";
-			soldierIconSample.SetIconBasic (iconBasicDepth,tempYongBingList[i].iconId.ToString (),tempYongBingList[i].level.ToString());
+			soldierIconSample.SetIconBasic (m_iconBasicDepth,tempYongBingList[i].iconId.ToString (),tempYongBingList[i].level.ToString());
 			soldierIconSample.SetIconPopText (0,popName,popDesc,1);
-			soldierIconSample.SetIconDecoSprite (armsDic[tempYongBingList[i].profession],rBottomSpriteName);
+			soldierIconSample.SetIconDecoSprite (bingDic[tempYongBingList[i].profession],rBottomSpriteName);
 			
 			tempItemList[i].transform.localScale = Vector3.one * 0.9f;
 		}
@@ -414,66 +381,55 @@ public class GeneralChallengePage : MonoBehaviour {
 	/// <param name="tempId">Temp identifier.</param>
 	public void RefreshMyMiBaoSkillInfo (int tempSkillId)
 	{
-		if (!QXComData.CheckYinDaoOpenState (100200))
-		{
-			UIYindao.m_UIYindao.CloseUI ();
-		}
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
-		mSkillId = tempSkillId;
-		InItMiBaoInfo ();
+		m_skillId = tempSkillId;
+		ShowSkill ();
 	}
 
-	void ChallengeHandlerClickBack (GameObject obj)
+	public override void MYClick (GameObject ui)
 	{
-		switch (obj.name)
+		switch (ui.name)
 		{
 		case "ChangeSkillBtn":
-
 			if(!MiBaoGlobleData.Instance().GetEnterChangeMiBaoSkill_Oder ())
 			{
-//				Debug.Log ("return");
 				return;
 			}
-//			Debug.Log ("mSkillId:" + mSkillId);
 
 			int openId = -1;
-
-			switch (challengeType)
+			switch (m_challengeType)
 			{
-			case GeneralControl.ChallengeType.PVP:
-
+			case ChallengeType.SPORT:
+				
 				openId = (int)CityGlobalData.MibaoSkillType.PvpSend;
 				UIYindao.m_UIYindao.CloseUI ();
-
+				
 				break;
-			case GeneralControl.ChallengeType.PLUNDER:
-
+			case ChallengeType.PLUNDER:
+				
 				openId = (int)CityGlobalData.MibaoSkillType.LueDuo_GongJi;
-
+				
 				break;
 			default:
 				break;
 			}
-
-			MiBaoGlobleData.Instance().OpenMiBaoSkillUI (openId,mSkillId);
-
+			
+			MiBaoGlobleData.Instance().OpenMiBaoSkillUI (openId,m_skillId);
 			break;
 		case "EnterFight":
 
-			switch (challengeType)
+			switch (m_challengeType)
 			{	
-			case GeneralControl.ChallengeType.PVP:
+			case ChallengeType.SPORT:
 
-				PvpData.Instance.PvpChallengeResp = pvpResp;
-				PvpData.Instance.PlayerStateCheck (PvpData.PlayerState.STATE_GENERAL_TIAOZHAN_PAGE);
+				SportData.Instance.SportChallenge (m_sportResp.oppoId,m_sportResp.oppoRank,SportData.EnterPlace.ENTER_BTN);
 				
 				break;
 				
-			case GeneralControl.ChallengeType.PLUNDER:
+			case ChallengeType.PLUNDER:
 				
-				EnterBattleField.EnterBattleLueDuo (plunderResp.oppoId);
+				EnterBattleField.EnterBattleLueDuo (m_plunderResp.oppoId);
 				PlunderData.Instance.CheckPlunderTimes ();
-
+				
 				break;
 			default:
 				break;
@@ -482,22 +438,9 @@ public class GeneralChallengePage : MonoBehaviour {
 			break;
 		case "CloseBtn":
 
-			switch (challengeType)
-			{	
-			case GeneralControl.ChallengeType.PVP:
-
-				sEffectController.OnCloseWindowClick ();
-				sEffectController.CloseCompleteDelegate += DisActiveObj;
-				
-				break;
-				
-			case GeneralControl.ChallengeType.PLUNDER:
-				
-				gameObject.SetActive (false);
-				
-				break;
-			default:
-				break;
+			if (M_ChallengeDelegate != null)
+			{
+				M_ChallengeDelegate ();
 			}
 
 			break;
@@ -506,20 +449,8 @@ public class GeneralChallengePage : MonoBehaviour {
 		}
 	}
 
-	private bool pvpReset = false;//是否重置百战
-	public bool PvpReset
+	new void OnDestroy ()
 	{
-		set{pvpReset = value;}
-		get{return pvpReset;}
-	}
-	public void DisActiveObj ()
-	{
-		MainCityUI.TryRemoveFromObjectList (gameObject);
-		gameObject.SetActive (false);
-	
-		if (PvpReset)
-		{
-			PvpData.Instance.PvpDataReq ();
-		}
+		base.OnDestroy ();
 	}
 }

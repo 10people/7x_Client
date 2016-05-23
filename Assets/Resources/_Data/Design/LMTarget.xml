@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LMTarget id="1" title="联盟膜拜" desc="进行联盟膜拜，增加联盟建设值和联盟经验" />
-<LMTarget id="2" title="每日任务" desc="达成联盟封禅所需活跃度，封禅增加联盟建设值和联盟经验" />
-<LMTarget id="3" title="掠夺" desc="通过掠夺获取积分，让联盟积分更高获取联盟建设和联盟经验" />
-<LMTarget id="4" title="运镖&amp;劫镖" desc="每次成功运镖&amp;劫镖，可以增加联盟建设值" />
-<LMTarget id="5" title="招募" desc="尽快提升联盟人数，为联盟招募伙伴" />
+<LMTarget id="1" title="联盟图腾" desc="进行联盟膜拜，或者基础捐献" />
+<LMTarget id="2" title="荒野求生" desc="联盟成员一起努力攻克荒野关卡" />
+<LMTarget id="3" title="掠夺" desc="成功掠夺其他联盟玩家，并提高联盟积分排行名次" />
+<LMTarget id="4" title="运镖" desc="每次成功运镖可以增加联盟建设值" />
 </dataset>

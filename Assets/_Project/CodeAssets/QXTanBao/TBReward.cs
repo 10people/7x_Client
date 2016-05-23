@@ -27,9 +27,11 @@ public class TBReward : MonoBehaviour {
 
 	private List<Vector3> cardPosList = new List<Vector3> ();
 
+	public UILabel m_rewardDes;
+
 	public EventHandler blockHandler;
 	public UILabel desLabel;
-	private string desStr = "点击任意位置继续";
+	private string desStr = "[dbba8f]点击任意位置继续[-]";
 	private float time = 1;
 
 	private bool isShowMiBao;
@@ -57,11 +59,11 @@ public class TBReward : MonoBehaviour {
 			
 			cardItemList.Add (card);
 		}
-		
+	
 		for (int i = 0;i < 10;i ++)
 		{
-			cardPosList.Add (new Vector3(-340f + 170f * (i < 5 ? i : i - 5),
-			                             i < 5 ? 120f : -120f,
+			cardPosList.Add (new Vector3(-300f + 150f * (i < 5 ? i : i - 5),
+			                             i < 5 ? 140f : -120f,
 			                             0f));
 		}
 	}
@@ -88,6 +90,7 @@ public class TBReward : MonoBehaviour {
 			totleTurnList.Clear ();
 			blockHandler.m_click_handler -= BlockHandlerClickBack;
 			desLabel.text = "";
+			m_rewardDes.text = "";
 			time = 1;
 			StopCoroutine ("ShowDesLabel1");
 			StopCoroutine ("ShowDesLabel2");
@@ -102,9 +105,41 @@ public class TBReward : MonoBehaviour {
 		{
 			blockHandler.GetComponent<UISprite> ().alpha += 0.05f;
 			yield return new WaitForSeconds (0.01f);
-			
+
+			bool higher = false;
+			int num = 0;
+			float posY = 0;
 			if (blockHandler.GetComponent<UISprite> ().alpha >= 1)
 			{
+				switch (tbType)
+				{
+				case TanBaoData.TanBaoType.TONGBI_SINGLE:
+					higher = false;
+					num = 1;
+					posY = 150;
+					break;
+				case TanBaoData.TanBaoType.TONGBI_SPEND:
+					higher = false;
+					num = 10;
+					posY = 265;
+					break;
+				case TanBaoData.TanBaoType.YUANBAO_SINGLE:
+					higher = true;
+					num = 1;
+					posY = 150;
+					break;
+				case TanBaoData.TanBaoType.YUANBAO_SPEND:
+					higher = true;
+					num = 10;
+					posY = 265;
+					break;
+				default:
+					break;
+				}
+				m_rewardDes.transform.localPosition = new Vector3(0,posY,0);
+				m_rewardDes.text = "获得[cd02d8]" + (higher ? "高级" : "初级") + "武器强化石[-]"
+					+ QXComData.yellow + "x" + num + "[-]，并赠送";
+
 				CreateTBReward ();
 			}
 		}
@@ -114,7 +149,7 @@ public class TBReward : MonoBehaviour {
 	{
 		if (tbType == TanBaoData.TanBaoType.TONGBI_SINGLE || tbType == TanBaoData.TanBaoType.YUANBAO_SINGLE) 
 		{
-			InstanceCardObj (0,Vector3.zero);
+			InstanceCardObj (0,new Vector3(0,30,0));
 		} 
 		else
 		{
@@ -188,7 +223,7 @@ public class TBReward : MonoBehaviour {
 
 	IEnumerator ShowDesLabel1 ()
 	{
-		desLabel.text = MyColorData.getColorString (4,desStr);
+		desLabel.text = desStr;
 		UIWidget widget = desLabel.GetComponent<UIWidget> ();
 		while (widget.alpha > 0.2f)
 		{
@@ -204,7 +239,7 @@ public class TBReward : MonoBehaviour {
 	
 	IEnumerator ShowDesLabel2 ()
 	{
-		desLabel.text = MyColorData.getColorString (4,desStr);
+		desLabel.text = desStr;
 		UIWidget widget = desLabel.GetComponent<UIWidget> ();
 		while (widget.alpha < 1)
 		{
@@ -231,7 +266,7 @@ public class TBReward : MonoBehaviour {
 
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,4);
 
-		UIShouji.m_isPlayShouji = true;
+		UIShoujiManager.m_UIShoujiManager.m_isPlayShouji = true;
 
 		BlockController (false);
 	}
@@ -240,6 +275,7 @@ public class TBReward : MonoBehaviour {
 	{
 		blockHandler.gameObject.SetActive (isActive);
 		blockHandler.GetComponent<UISprite> ().alpha = alpha;
+		m_rewardDes.text = "";
 	}
 
 	public void TurnListEffectControl (bool isClear)

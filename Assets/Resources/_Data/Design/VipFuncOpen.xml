@@ -24,4 +24,7 @@
 <VipFuncOpen key="22" desc="购买荒野次数" needlv="3" />
 <VipFuncOpen key="23" desc="购买满血复活所需VIP等级" needlv="0" />
 <VipFuncOpen key="24" desc="购买原地复活所需VIP等级" needlv="2" />
+<VipFuncOpen key="25" desc="购买角色所需VIP等级" needlv="3" />
+<VipFuncOpen key="26" desc="购买虎符所需VIP等级" needlv="2" />
+<VipFuncOpen key="27" desc="购买建设值所需VIP等级" needlv="1" />
 </dataset>

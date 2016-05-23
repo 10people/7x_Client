@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LianmengMobai type="1" name="50001" desc="铜币膜拜" needNum="5000" award="0:900032:50" tili="15" gongxian="50" buffNum="1" awardShow="0:900003:15#0:900015:50#0:900017:50#0:900032:50" jianshe="50" tuTenglvNeeded="1" />
+<LianmengMobai type="2" name="50002" desc="元宝膜拜" needNum="50" award="0:900032:100" tili="30" gongxian="100" buffNum="1" awardShow="0:900003:30#0:900015:100#0:900017:100#0:900032:100" jianshe="100" tuTenglvNeeded="1" />
+<LianmengMobai type="3" name="50003" desc="玉珏膜拜" needNum="250" award="0:900006:3000#0:900032:150" tili="50" gongxian="150" buffNum="1" awardShow="0:900006:3000#0:900003:50#0:900015:150#0:900017:150#0:900032:150" jianshe="150" tuTenglvNeeded="2" />
+</dataset>

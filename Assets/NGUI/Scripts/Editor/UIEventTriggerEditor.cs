@@ -37,9 +37,16 @@ public class UIEventTriggerEditor : Editor
 		DrawEvents("ET5", "On Deselect", mTrigger.onDeselect);
 		DrawEvents("ET6", "On Click/Tap", mTrigger.onClick);
 		DrawEvents("ET7", "On Double-Click/Tap", mTrigger.onDoubleClick);
-	}
 
-	void DrawEvents (string key, string text, List<EventDelegate> list)
+        GUILayout.BeginHorizontal();
+        NGUIEditorTools.DrawProperty("Check Click", serializedObject, "IsMultiClickCheck", GUILayout.Width(130f));
+        GUILayout.Label("Check error multi click");
+        GUILayout.EndHorizontal();
+
+        NGUIEditorTools.DrawProperty("Duration", serializedObject, "MultiClickDuration", GUILayout.Width(300f));
+    }
+
+    void DrawEvents (string key, string text, List<EventDelegate> list)
 	{
 		if (!NGUIEditorTools.DrawHeader(text, key, false)) return;
 		NGUIEditorTools.BeginContents();

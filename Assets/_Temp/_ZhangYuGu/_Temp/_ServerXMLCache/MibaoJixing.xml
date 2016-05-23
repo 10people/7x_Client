@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<MibaoJixing sum="5" award="0:900002:100" />
+<MibaoJixing sum="10" award="0:900002:150" />
+<MibaoJixing sum="15" award="0:900002:200" />
+<MibaoJixing sum="20" award="0:900002:250" />
+<MibaoJixing sum="25" award="0:900002:300" />
+<MibaoJixing sum="30" award="0:900002:350" />
+<MibaoJixing sum="35" award="0:900002:400" />
+<MibaoJixing sum="40" award="0:900002:450" />
+<MibaoJixing sum="45" award="0:900002:500" />
+<MibaoJixing sum="50" award="0:900002:550" />
+<MibaoJixing sum="55" award="0:900002:600" />
+<MibaoJixing sum="60" award="0:900002:650" />
+<MibaoJixing sum="65" award="0:900002:700" />
+<MibaoJixing sum="70" award="0:900002:750" />
+<MibaoJixing sum="75" award="0:900002:800" />
+<MibaoJixing sum="80" award="0:900002:850" />
+<MibaoJixing sum="85" award="0:900002:900" />
+<MibaoJixing sum="90" award="0:900002:950" />
+</dataset>

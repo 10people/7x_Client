@@ -9,12 +9,12 @@ public class CycleTween : MonoBehaviour
         public float m_StartValue;
         public float m_EndValue;
         public float m_Duration;
-        public DelegateUtil.FloatDelegate m_FloatDelegate;
+        public DelegateHelper.FloatDelegate m_FloatDelegate;
     }
 
     private CycleTweenConfig m_cycleTweenConfig;
 
-    public static void StartCycleTween(GameObject targetGameObject, float startValue, float endValue, float duration, DelegateUtil.FloatDelegate floatDelegate)
+    public static void StartCycleTween(GameObject targetGameObject, float startValue, float endValue, float duration, DelegateHelper.FloatDelegate floatDelegate)
     {
         var cycleTween = targetGameObject.GetComponent<CycleTween>() ?? targetGameObject.AddComponent<CycleTween>();
 

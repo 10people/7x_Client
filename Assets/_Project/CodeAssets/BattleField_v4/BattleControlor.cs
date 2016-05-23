@@ -1,4 +1,6 @@
-#define DEBUG_BATTLE_LOADING
+//#define DEBUG_BATTLE_LOADING
+
+
 
 using UnityEngine;
 using System.Collections;
@@ -7,6 +9,8 @@ using System.Collections.Generic;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
+
+
 
 public class BattleControlor : MonoBehaviour
 {
@@ -147,6 +151,8 @@ public class BattleControlor : MonoBehaviour
 	void Awake()
 	{
 		_instance = this; 
+
+		Quality_SceneCameraFx.InitSceneCameraAndCameraFx();
 	}
 
 	public static BattleControlor Instance() 
@@ -502,12 +508,14 @@ public class BattleControlor : MonoBehaviour
 	{
 		Component[] t_battle_flags = flagRoot.GetComponentsInChildren( typeof( BattleFlag ) );
 
-		foreach( Component fl in t_battle_flags ){
+		foreach( Component fl in t_battle_flags )
+		{
 			BattleFlag bf = (BattleFlag) fl;
 
 			bool f = flags.ContainsKey(bf.flagId);
 
-			if(f == false){
+			if(f == false)
+			{
 				flags.Add( bf.flagId, bf );
 			}
 			else
@@ -543,6 +551,7 @@ public class BattleControlor : MonoBehaviour
 //		           + ", criSkillX: " + nodeData.criSkillX + ", criSkillY: " + nodeData.criSkillY
 //  		           + ", droppenItem: " + (nodeData.droppenItems == null ? 0 : nodeData.droppenItems.Count)
 //		           + ", appearance: " + nodeData.appearanceId
+//		           + ", armor: " + nodeData.armor + ", armorMax: " + nodeData.armorMax + ", armorRatio: " + nodeData.armorRatio
 //		          );
 
 		float t_cur_time = Time.realtimeSinceStartup;
@@ -853,6 +862,8 @@ public class BattleControlor : MonoBehaviour
 			BattleUIControlor.Instance().labelName.text = t_ai.nodeData.nodeName;
 
 			BattleUIControlor.Instance().spriteAvatar.spriteName = "PlayerIcon" + nodeData.modleId;
+
+			if(nodeData.modleId == 5) BattleUIControlor.Instance().spriteAvatar.spriteName = "PlayerIcon4";
 		}
 		
 		{
@@ -898,6 +909,17 @@ public class BattleControlor : MonoBehaviour
 
 	public void createWall(BattleFlag bf)
 	{
+		Transform wallTransform = null;
+
+		if(bf.triggerCount < 0)
+		{
+			wallTransform = createWallForever(bf);
+		}
+		else 
+		{
+			wallTransform = createWallNormal(bf);
+		}
+
 		int navCount = (int)(bf.transform.localScale.x / 1f);
 
 		for(int i = 0; i < navCount; i++)
@@ -906,7 +928,7 @@ public class BattleControlor : MonoBehaviour
 
 			gc.name = "NavObs";
 
-			gc.transform.parent = bf.transform;
+			gc.transform.parent = wallTransform;
 
 			gc.transform.localScale = new Vector3(1, 1, 1);
 
@@ -931,24 +953,31 @@ public class BattleControlor : MonoBehaviour
 			capCol.center = new Vector3(0, 2, 0);
 		}
 
-		if(bf.triggerCount < 0)
-		{
-			createWallForever(bf);
-		}
-		else 
-		{
-			createWallNormal(bf);
-		}
+		bf.transform.localScale = new Vector3 (1, 1, 1);
 	}
 
-	private void createWallForever(BattleFlag bf)
+	private Transform createWallForever(BattleFlag bf)
 	{
 		float width = 4f;
 		
 		int count = (int)(bf.transform.localScale.x / width);
 		
 		count = count < 1 ? 1 : count;
+
+		GameObject wallObject = new GameObject ();
+
+		wallObject.name = "wallObject";
+
+		wallObject.transform.parent = bf.transform;
 		
+		wallObject.transform.localPosition = Vector3.zero;
+		
+		wallObject.transform.localScale = new Vector3 (1, 1, 1);
+		
+		wallObject.transform.localEulerAngles = Vector3.zero;
+
+		bf.wallObject = wallObject;
+
 		GameObject GQTemple = GuangQiang_Forever;
 		
 		float ii = bf.triggerCount < 0 ? 2f : 4f;
@@ -961,7 +990,7 @@ public class BattleControlor : MonoBehaviour
 			
 			guangObject.SetActive (true);
 			
-			guangObject.transform.parent = bf.transform;
+			guangObject.transform.parent = wallObject.transform;
 			
 			guangObject.transform.localScale = new Vector3(1, 1, 1);
 			
@@ -972,14 +1001,21 @@ public class BattleControlor : MonoBehaviour
 			guangObject.transform.rotation = bf.transform.rotation;
 		}
 		
-		BoxCollider box = bf.gameObject.AddComponent<BoxCollider>();
+		BoxCollider box = wallObject.AddComponent<BoxCollider>();
 		
 		box.size = new Vector3 (bf.transform.localScale.x, bf.transform.localScale.y, bf.transform.localScale.z);
 		
 		bf.transform.localScale = new Vector3 (1, 1, 1);
+
+		if(bf.triggerFunc == BattleFlag.TriggerFunc.FadeIn)
+		{
+			wallObject.gameObject.SetActive(false);
+		}
+
+		return wallObject.transform;
 	}
 
-	private void createWallNormal(BattleFlag bf)
+	private Transform createWallNormal(BattleFlag bf)
 	{
 		float totalWidth = bf.transform.localScale.x;
 
@@ -1024,6 +1060,20 @@ public class BattleControlor : MonoBehaviour
 			}
 		}
 
+		GameObject wallObject = new GameObject ();
+
+		wallObject.name = "wallObject";
+
+		wallObject.transform.parent = bf.transform;
+
+		wallObject.transform.localPosition = Vector3.zero;
+
+		wallObject.transform.localScale = new Vector3 (1, 1, 1);
+
+		wallObject.transform.localEulerAngles = Vector3.zero;
+
+		bf.wallObject = wallObject;
+
 		float startX = - bf.transform.localScale.x / 2;
 
 		for(int i = 0; i < countList.Count; i++)
@@ -1054,7 +1104,7 @@ public class BattleControlor : MonoBehaviour
 				
 				guangObject.SetActive (true);
 				
-				guangObject.transform.parent = bf.transform;
+				guangObject.transform.parent = wallObject.transform;
 				
 				guangObject.transform.localScale = new Vector3(1, 1, 1);
 				
@@ -1068,16 +1118,16 @@ public class BattleControlor : MonoBehaviour
 			startX += width * count;
 		}
 
-		BoxCollider box = bf.gameObject.AddComponent<BoxCollider>();
+		BoxCollider box = wallObject.AddComponent<BoxCollider>();
 		
 		box.size = new Vector3 (bf.transform.localScale.x, bf.transform.localScale.y, bf.transform.localScale.z);
-		
-		bf.transform.localScale = new Vector3 (1, 1, 1);
 
 		if(bf.triggerFunc == BattleFlag.TriggerFunc.FadeIn)
 		{
-			bf.gameObject.SetActive(false);
+			wallObject.gameObject.SetActive(false);
 		}
+
+		return wallObject.transform;
 	}
 
 	public void nodeCreateComplete()
@@ -1154,6 +1204,10 @@ public class BattleControlor : MonoBehaviour
 			}
 
 			BubblePopControllor.Instance().createBubblePopNode(node);
+
+			node.character.enabled = true;
+
+			node.setNavEnabled(true);
 		}
 
 		foreach(BaseAI node in enemyNodes)
@@ -1179,6 +1233,10 @@ public class BattleControlor : MonoBehaviour
 			}
 
 			BubblePopControllor.Instance().createBubblePopNode(node);
+
+			node.character.enabled = true;
+
+			node.setNavEnabled(true);
 		}
 
 		foreach(BattleFlag flag in flags.Values)
@@ -2296,7 +2354,7 @@ public class BattleControlor : MonoBehaviour
 
 		float startTime = Time.realtimeSinceStartup;
 
-		Time.timeScale = scale;
+		TimeHelper.SetTimeScale(scale);
 
 		for(;;)
 		{
@@ -2310,7 +2368,7 @@ public class BattleControlor : MonoBehaviour
 			}
 		}
 
-		Time.timeScale = 1f;
+		TimeHelper.SetTimeScale(1f);
 
 		lastCameraEffect = false;
 	}
@@ -2345,6 +2403,8 @@ public class BattleControlor : MonoBehaviour
 	{
 		FloatBoolParam fbp = _getAttackValue (attacker, defender, weaponRatio);
 
+//		fbp.Float = 1;
+
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
 			if(fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
@@ -2363,7 +2423,9 @@ public class BattleControlor : MonoBehaviour
 	public FloatBoolParam getAttackValueSkill(BaseAI attacker, BaseAI defender, float shanghaixishu, float gudingshanghai, bool criable = true)
 	{
 		FloatBoolParam fbp = _getAttackValueSkill (attacker, defender, shanghaixishu, gudingshanghai, criable);
-		
+
+//		fbp.Float = 1;
+
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
 			if(fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
@@ -2656,6 +2718,21 @@ public class BattleControlor : MonoBehaviour
 		}
 
 		return fbp;
+	}
+
+	public float getArmorValue(BaseAI defender, float tempHp)
+	{
+		float M = defender.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_ArmorRatio);
+
+		float N = defender.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_ArmorMax);
+
+		float B = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.ARMOR_B);
+
+		float armor = (tempHp * N * M) / (defender.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hpMaxReal));
+
+		armor += B;
+
+		return armor;
 	}
 
 	public KingControllor getKing()

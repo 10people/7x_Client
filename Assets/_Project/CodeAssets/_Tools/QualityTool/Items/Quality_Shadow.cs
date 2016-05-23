@@ -208,6 +208,11 @@ public class Quality_Shadow {
 		Debug.Log( "ConfigLights( " + p_active_light + " )" );
 		#endif
 
+		// always use real time in scene since 2016.4.14
+		if( true ){
+			return;
+		}
+
 		#if UNITY_EDITOR
 		EditorApplication.isPaused = true;
 		#endif

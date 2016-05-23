@@ -62,6 +62,11 @@ public class HuangYePveTemplate : XmlLoadManager {
 
 	public string recMibaoSkill;
 
+	public float huangYeBi_scale;
+
+	public int frontGuanqiaID;
+
+	public int nextGuanqiaID;
 	public static List<HuangYePveTemplate> templates = new List<HuangYePveTemplate>();
 
 
@@ -174,6 +179,15 @@ public class HuangYePveTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.recMibaoSkill =  t_reader.Value ;
+
+				t_reader.MoveToNextAttribute();
+				t_template.huangYeBi_scale = float.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.frontGuanqiaID = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.nextGuanqiaID = int.Parse( t_reader.Value );
 				#if DEBUG_TEMPLATE
 				Log( t_template );
 				#endif
@@ -202,5 +216,18 @@ public class HuangYePveTemplate : XmlLoadManager {
 		Debug.LogError("XML ERROR: Can't get HuangYePveTemplate with id " + id);
 		
 		return null;
+	}
+	public static List<int > getHuangYePveTemplateList()
+	{
+		List<int > mList = new List<int> ();
+
+		foreach(HuangYePveTemplate template in templates)
+		{
+			mList.Add(template.id);
+		}
+		
+		//Debug.LogError("XML ERROR: Can't get HuangYePveTemplate with id " + id);
+		
+		return mList;
 	}
 }

@@ -20,6 +20,8 @@ public class YouXiaOpenTimeTemplate :  XmlLoadManager  {
 	public int NameId;
 
 	public int openLevel;
+
+	public int functionID;
 	public static List<YouXiaOpenTimeTemplate> templates = new List<YouXiaOpenTimeTemplate>();
 	
 	
@@ -82,8 +84,10 @@ public class YouXiaOpenTimeTemplate :  XmlLoadManager  {
 				t_reader.MoveToNextAttribute();
 				t_template.openLevel = int.Parse(t_reader.Value);
 	
+				t_reader.MoveToNextAttribute();
+				t_template.functionID = int.Parse(t_reader.Value);
+
 				templates.Add(t_template);
-				
 			}
 		}
 		while (t_has_items);

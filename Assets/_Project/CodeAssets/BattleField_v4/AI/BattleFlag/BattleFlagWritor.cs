@@ -41,7 +41,7 @@ public class BattleFlagWritor : MonoBehaviour
 
 	void Start()
 	{
-		//checkout ();
+		checkout ();
 	}
 
 	public void checkout()
@@ -225,6 +225,10 @@ public class BattleFlagWritor : MonoBehaviour
 			str += " triggerCount=\"" + bf.triggerCount + "\"";
 
 			str += " triggerFunc=\"" + (int)bf.triggerFunc + "\"";
+
+			str += " triggerFuncEffect=\"" + bf.triggerFuncEffect + "\"";
+
+			str += " triggerDelay=\"" + bf.triggerDelay + "\"";
 
 			str += " willRelive=\"" + (bf.willRelive ? 1 : 0) + "\"";
 

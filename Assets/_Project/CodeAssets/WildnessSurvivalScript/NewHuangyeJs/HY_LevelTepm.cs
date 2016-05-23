@@ -27,11 +27,16 @@ public class HY_LevelTepm : MonoBehaviour {
 
 	string confirmStr;
 
-	public GameObject CanActive;
-	public GameObject Resttingbg;
-	public GameObject DisActive;
+	//public GameObject CanActive;
+	//public GameObject Resttingbg;
+	public UISprite DisActive;
 	public AllianceHaveResp m_Allance;
 
+	public int  mState;
+
+	public int  m_GuanQiaID;
+
+	public UISprite PassedSprite;
 	void Start () {
 	
 		 CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
@@ -46,50 +51,53 @@ public class HY_LevelTepm : MonoBehaviour {
 	public void Init()
 	{
 		m_Allance = AllianceData.Instance.g_UnionInfo;//获取联盟的信息
-
-		if(mHuangYeTreasure.isActive == 1)
-		{
-			//可以被激活
-			//Lv_icon.spriteName = "L_Com";
-			DisActive.SetActive(false);
-			Blood.SetActive(false);
-
-			CanActive.SetActive(true);
-			Resttingbg.SetActive(false);
-		}
-		if(mHuangYeTreasure.isActive == 0)
-		{
-			// 不可以被激活
-
-			Blood.SetActive(false);
-			DisActive.SetActive(true);
-			CanActive.SetActive(false);	
-			Resttingbg.SetActive(false);
-		}
-		if(mHuangYeTreasure.isActive == 2)
-		{
+//
+//		if(mHuangYeTreasure.isActive == 1)
+//		{
+//			//可以被激活
+//			//Lv_icon.spriteName = "L_Com";
+//			DisActive.SetActive(false);
+//			Blood.SetActive(false);
+//
+//			//CanActive.SetActive(true);
+//			Resttingbg.SetActive(false);
+//		}
+//		if(mHuangYeTreasure.isActive == 0)
+//		{
+//			// 不可以被激活
+//
+//			Blood.SetActive(false);
+//			DisActive.SetActive(true);
+//			//CanActive.SetActive(false);	
+//			Resttingbg.SetActive(false);
+//		}
+//		if(mHuangYeTreasure.isActive == 2)
+//		{
 			//已经激活过了
 			Lv_icon.color =new Color(255,255,255,255);
-			DisActive.SetActive(false);
-			if(mHuangYeTreasure.isOpen == 0)
-			{
-				Blood.SetActive(false);
-				CanActive.SetActive(false);
-				Resttingbg.SetActive(true);
-			}
-			if(mHuangYeTreasure.isOpen == 1)
-			{
-				Blood.SetActive(true);
+		switch(mState)
+		{
+		case 0: //已经通关
+			NoOPen(0);
+			PassedSprite.gameObject.SetActive(true);
+			break;
+		case 1: //正在攻打
+			Blood.SetActive(true);
+			PassedSprite.gameObject.SetActive(false);
+			DisActive.gameObject.SetActive(false);
+			mUISlider.value = (float)( mHuangYeTreasure.jindu )/ (float)(100);
+			
+			BloodNum.text = mHuangYeTreasure.jindu.ToString()+"%";
+			break;
+		case 2://还未开启
+			PassedSprite.gameObject.SetActive(false);
+			NoOPen(2);
+			break;
+		default:
+			break;
 
-				CanActive.SetActive(false);	
-				Resttingbg.SetActive(false);
-
-				mUISlider.value = (float)( mHuangYeTreasure.jindu )/ (float)(100);
-
-				BloodNum.text = mHuangYeTreasure.jindu.ToString()+"%";
-			}
 		}
-		HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+		HuangYePveTemplate mHuangYePveTemplate = HuangYePveTemplate.getHuangYePveTemplatee_byid (m_GuanQiaID);
 		
 		//string mHuangYeDesc = DescIdTemplate.GetDescriptionById (mHuangYePveTemplate.descId);
 		
@@ -97,44 +105,29 @@ public class HY_LevelTepm : MonoBehaviour {
 
 		Lv_Name.text = mName;
 	}
+	void NoOPen(int state)
+	{
+		if(state == 0)
+		{
+			Blood.SetActive(false);
+			
+			DisActive.gameObject.SetActive(true);
+		}
+		else
+		{
+			Blood.SetActive(false);
+
+			DisActive.gameObject.SetActive(true);
+
+			DisActive.color = new Color(0,0,0,255);
+		}
+	}
 	public void OpenLevelUI() // 开启宝藏点
 	{
-
-		if(mHuangYeTreasure.isActive == 1)
+		if(mState == 1)
 		{
-			if(m_Allance.identity == 0)
-			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),CantOpenLoadBack);
-			}
-			else
-			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),IsOpenLoadBack);
-			}
+			BattleTreasure();
 		}
-		if(mHuangYeTreasure.isActive == 0)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),IsOpenFailLoadBack);
-		}
-		if(mHuangYeTreasure.isActive == 2)
-		{
-			if(mHuangYeTreasure.isOpen == 0)
-			{
-				if(m_Allance.identity == 0|| m_Allance.identity == 1)
-				{
-					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),CantRestingLoadBack);
-				}
-				else
-				{
-					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),ResettingLoadBack);
-				}
-
-			}
-			if(mHuangYeTreasure.isOpen == 1)
-			{
-				BattleTreasure();
-			}
-		}
-
 
 	}
     void BattleTreasure() // 攻击宝藏点
@@ -159,7 +152,9 @@ public class HY_LevelTepm : MonoBehaviour {
 		HYRetearceEnemy m_HuangyeZhengRong = ZhengRongUI.GetComponent<HYRetearceEnemy>();
 		
 		m_HuangyeZhengRong.mHuangYeTreasure = mHuangYeTreasure;
-		
+
+		m_HuangyeZhengRong.mGuanqia_id = m_GuanQiaID;
+
 		m_HuangyeZhengRong.Init();
 		MainCityUI.TryAddToObjectList (ZhengRongUI);
 		//HY_UIManager.Instance().NeedCloseObg = ZhengRongUI;
@@ -172,7 +167,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		string titleStr = "重置关卡";//LanguageTemplate.GetText (LanguageTemplate.Text.RESTTING_CQ_TITLE);
 
-		HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+		HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.guanQiaId);
 		int OpenHuafei = mhuangye.openCost; // read Table
 
 		string str = "是否需要花费"+OpenHuafei.ToString()+"联盟建设值来重置该关卡？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
@@ -197,7 +192,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		string titleStr = "激活";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 
-		HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+		HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.guanQiaId);
 		int OpenHuafei = mhuangye.openCost; // read Table
 		
 		string str = "激活该关卡需要花费"+OpenHuafei.ToString()+"联盟建设值，是否需要激活？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
@@ -209,7 +204,7 @@ public class HY_LevelTepm : MonoBehaviour {
 	{
 		if(i == 2)
 		{
-			HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+			HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.guanQiaId);
 
 			int OpenHuafei = mhuangye.openCost; // read Table
 
@@ -230,7 +225,7 @@ public class HY_LevelTepm : MonoBehaviour {
 
 		if(i == 2)
 		{
-			HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.fileId);
+			HuangYePveTemplate mhuangye = HuangYePveTemplate.getHuangYePveTemplatee_byid (mHuangYeTreasure.guanQiaId);
 			int RestingOpenHuafei = mhuangye.openCost; // read Table
 
 			if(m_Allance.build < RestingOpenHuafei)
@@ -300,9 +295,9 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		QiXiongSerializer Huangye_er = new QiXiongSerializer ();
 		
-		mActiveTreasureReq.idOfFile = mHuangYeTreasure.fileId;
+		mActiveTreasureReq.idOfFile = mHuangYeTreasure.guanQiaId;
 
-		HY_UIManager.Instance().IsactiveID = mHuangYeTreasure.fileId;
+		HY_UIManager.Instance().IsactiveID = mHuangYeTreasure.guanQiaId;
 
 		Huangye_er.Serialize (mOpen_HuangyeStream,mActiveTreasureReq);
 		
@@ -323,7 +318,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		mOpenHuangYeTreasure.id = mHuangYeTreasure.id;
 		
-		HY_UIManager.Instance().IsactiveID = mHuangYeTreasure.fileId;
+		HY_UIManager.Instance().IsactiveID = mHuangYeTreasure.guanQiaId;
 		
 		Huangye_er.Serialize (mOpen_HuangyeStream,mOpenHuangYeTreasure);
 		

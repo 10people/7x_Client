@@ -164,7 +164,7 @@ public class YouXiaItem : MonoBehaviour {
 			{
 				IconSamplePrefab = p_object as GameObject;
 			}
-			//Debug.Log("mAwardTemp[j] = "+mAwardTemp[j]);
+
 			GameObject iconSampleObject = Instantiate(IconSamplePrefab) as GameObject;
 			
 			iconSampleObject.SetActive(true);
@@ -172,11 +172,11 @@ public class YouXiaItem : MonoBehaviour {
 			iconSampleObject.transform.parent = AwardROot.transform;
 			
 			//iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
-			
+
 			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 			
 			var iconSpriteName = "";
-			
+
 			CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(t_items[i]);
 			
 			iconSpriteName = mItemTemp.icon.ToString();
@@ -192,8 +192,9 @@ public class YouXiaItem : MonoBehaviour {
 			var popDesc = mdesc;
 			
 			iconSampleManager.SetIconByID(mItemTemp.id, t_Numbers[i], 7);
+			iconSampleObject.transform.localScale = new Vector3 (0.4f,0.4f,0.4f);
 			iconSampleManager.SetIconPopText(mItemTemp.id, popTitle, popDesc, 1);
-			iconSampleObject.transform.localScale = Vector3.one * 0.4f;
+
 //			}
 
 			//iconSampleManager.SetAwardNumber(m_OneKeyAward[i].pieceNumber);

@@ -1,5 +1,11 @@
-﻿using UnityEngine;
+﻿//#define USE_ITWEEN
+
+
+
+using UnityEngine;
 using System.Collections;
+
+
 
 public class DissolveEffect : MonoBehaviour {
 
@@ -63,6 +69,7 @@ public class DissolveEffect : MonoBehaviour {
 			m_mat.mainTexture = m_origin_tex;
 		}
 
+		#if USE_ITWEEN
 		iTween.ValueTo( gameObject, iTween.Hash( 
 		                                              	"from", 0,
 		                                              	"to", 1f,
@@ -70,6 +77,13 @@ public class DissolveEffect : MonoBehaviour {
 		                                        		"easetype", iTween.EaseType.linear,
 		                                             	"onupdate", "OnUpdate",
 		                                              	"oncomplete", "Done" ) );
+		#else
+		LeanTween.value( gameObject, 0, 1.0f, DISSOLVE_DUR )
+			.setEase( LeanTweenType.linear )
+			.setOnUpdate( OnUpdate )
+			.setOnComplete( Done );
+		
+		#endif
 	}
 
 	private void UpdateMat(){

@@ -52,7 +52,7 @@ public class BloodBar : MonoBehaviour
 			bar.value += step;
 		}
 
-		if (bar.value == 1) gameObject.SetActive (false);
+//		if (bar.value == 1) gameObject.SetActive (false);
 
 		if (bar.value <= 0) gameObject.SetActive (false);
 	}
@@ -61,11 +61,12 @@ public class BloodBar : MonoBehaviour
 	{
 		if(bar == null) bar = GetComponent<UIProgressBar>();
 
-		gameObject.SetActive (true);
+		if(_value < 1) gameObject.SetActive (true);
 
-		if (_value == 1) gameObject.SetActive (false);
-		
-		else if (_value <= 0) _value = 0;
+//		if (_value == 1) gameObject.SetActive (false);
+//		
+//		else
+			if (_value <= 0) _value = 0;
 
 		targetValue = _value;
 

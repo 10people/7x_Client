@@ -144,6 +144,35 @@ public class LogHelper : MonoBehaviour {
 
 
 
+	#region NGUI
+
+	public static void LogCharacterInfo( CharacterInfo p_info ){
+		Debug.Log( "char vert: " + p_info.vert );
+
+		Debug.Log( p_info.minX + ", " + p_info.minY + " - " + p_info.maxX + ", " + p_info.maxY );
+	}
+
+	public static void LogUICorners( Vector3[] p_vec_corner, string p_prefix = "" ){
+		Debug.Log( p_prefix + " : " + p_vec_corner[ 0 ] + ", " + 
+			p_vec_corner[ 1 ] + ", " +
+			p_vec_corner[ 2 ] + ", " +
+			p_vec_corner[ 3 ] );
+	}
+
+	public static void LogUIVert( float v_0_x, float v_0_y, 
+		float v_1_x, float v_1_y, 
+		float v_2_x, float v_2_y, 
+		float v_3_x, float v_3_y, string p_prefix = "" ){
+		Debug.Log( p_prefix + " --- ( " + v_0_x + ", " + v_0_y + " ), " +
+			"( " + v_1_x + ", " + v_1_y + " ), " +
+			"( " + v_2_x + ", " + v_2_y + " ), " +
+			"( " + v_3_x + ", " + v_3_y + " ) " );
+	}
+
+	#endregion
+
+
+
 	#region Utilities
 
 	public static void LogRunTime(){

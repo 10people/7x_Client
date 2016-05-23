@@ -62,4 +62,5 @@
 <YunbiaoTemp key="bubble_distance" desc="播放气泡所需人马距离" value="20" />
 <YunbiaoTemp key="rec_zhanli_scale" desc="推荐攻打战力比" value="2" />
 <YunbiaoTemp key="rec_cartNum" desc="推荐攻打的马车数量" value="5" />
+<YunbiaoTemp key="assistant_application_CD" desc="请求协助消息CD（秒）" value="10" />
 </dataset>

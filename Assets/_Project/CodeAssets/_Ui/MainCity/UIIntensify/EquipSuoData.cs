@@ -166,9 +166,8 @@ public class EquipSuoData:MonoBehaviour
         }
         else
         {
-            ShowSignal("", LanguageTemplate.GetText(1514), "");
-            //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-            //                            UITopUp);
+          //ShowSignal("", LanguageTemplate.GetText(1514), "");
+          Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UITopUp);
         }
     }
     private static GameObject _MainParent;

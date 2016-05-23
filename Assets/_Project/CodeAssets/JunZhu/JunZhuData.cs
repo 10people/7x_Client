@@ -242,7 +242,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 						else if(Global.m_iPZhanli < m_junzhuInfo.zhanLi)
 						{
 							Global.m_iAddZhanli = m_junzhuInfo.zhanLi - Global.m_iPZhanli;
-							if(!Global.m_isZhanli)
+							if(Global.m_isAddZhanli)
 							{
 								Global.m_iPChangeZhanli = Global.m_iPZhanli;
 								ClientMain.addPopUP(70, 1, "", null);
@@ -366,7 +366,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
         string strbtn2 = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
 
-        uibox.setBox(titleStr, null, MyColorData.getColorString(1, Gstr1),
+		uibox.setBox(titleStr, MyColorData.getColorString(1, Gstr1), null,
                      null, strbtn2, null, null, null, null);
 
     }
@@ -411,7 +411,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 		string str3 = Buy_TimespInfo.tiLiHuaFei.ToString();
 		string str4 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_2);
 		string str5 = Buy_TimespInfo.tiLiHuoDe.ToString();
-		string str6 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_6) + "？" + "\r\n" + "\r\n";
+		string str6 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_6) + "？" + "\r\n";
 		string str7 = LanguageTemplate.GetText(LanguageTemplate.Text.BUY_4);
 		string str8 = Buy_TimespInfo.tiLi.ToString();
 		string str9 = LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_ADDNUM_ASKSTR3);
@@ -538,7 +538,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 			IsBuyTiLi = false;
 			if(JunZhuData.Instance().m_junzhuInfo.tili >= JunZhuData.Instance().m_junzhuInfo.tiLiMax && JunZhuData.Instance().m_junzhuInfo.level > Global.TILILVMAX)
 			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MAXTILI), LoadBuyTiLiMaxBack);
+				Global.CreateFunctionIcon(101);
 			}
 			else
 			{
@@ -607,7 +607,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
         UIBox uibox = m_Box.GetComponent<UIBox>();
 
-		uibox.setBox(title, null, str3, null, strbtn, null, ChangeState, null, null,null,false,false);
+		uibox.setBox(title, str3,null , null, strbtn, null, ChangeState, null, null,null,false,false);
     }
 
 
@@ -615,7 +615,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
     {
 //		Debug.Log ("弹出购买点数的UI");
         string str1 = "购买点数";//LanguageTemplate.GetText(LanguageTemplate.Text.BUY_1) + LanguageTemplate.GetText(LanguageTemplate.Text.BUY_5);
-		string str2 = "\r\n" + "你的升级点数不足了" + "\r\n" + "\r\n" + "是否花费" + Buy_TimespInfo.mibaoHuaFei.ToString() + "元宝购买"+Buy_TimespInfo.mibaoHuoDe.ToString()+"点数？";//LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_CONFIRM_DUIHUAN_USE_WEIWANG_ASKSTR1);
+		string str2 = "\r\n" + "你的升级点数不足了" + "\r\n" + "是否花费" + Buy_TimespInfo.mibaoHuaFei.ToString() + "元宝购买"+Buy_TimespInfo.mibaoHuoDe.ToString()+"点数？";//LanguageTemplate.GetText(LanguageTemplate.Text.BAIZHAN_CONFIRM_DUIHUAN_USE_WEIWANG_ASKSTR1);
        
 		//string str3 = ;//Buy_TimespInfo.tongBiHuaFei.ToString();
         //string str4 = ;//LanguageTemplate.GetText(LanguageTemplate.Text.BUY_2);
@@ -659,7 +659,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
         UIBox uibox = m_Box.GetComponent<UIBox>();
 
-        uibox.setBox(str1, null, str2, null, strbtn, null, null, null, null,null,false,false);
+		uibox.setBox(str1, str2, null, null, strbtn, null, null, null, null,null,false,false);
     }
     public void LoadBack_2(ref WWW p_www, string p_path, Object p_object)
     {
@@ -676,7 +676,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
         UIBox uibox = m_Box.GetComponent<UIBox>();
 
-        uibox.setBox(titleStr, null, str2, null, CancleBtn, strbtn, LackYBLoadBack, null, null, null,false,false);
+		uibox.setBox(titleStr, str2, null, null, CancleBtn, strbtn, LackYBLoadBack, null, null, null,false,false);
     }
     int MaxVIPLevel = 10;
 
@@ -706,7 +706,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
         GameObject m_Box = GameObject.Instantiate(p_object) as GameObject;
         UIBox uibox = m_Box.GetComponent<UIBox>();
 
-        uibox.setBox(str1, null, str3, null, strbtn, null, null, null, null,null,false,false);
+		uibox.setBox(str1, str3, null, null, strbtn, null, null, null, null,null,false,false);
     }
 
     void GetTiLi() //获得体力

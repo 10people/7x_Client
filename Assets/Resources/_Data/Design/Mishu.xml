@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Mishu id="210100" pinzhiName="[06de34]绿色一阶秘术[-]" name="[06de34]秘术1[-]" icon="210100" color="3" pinzhi="1" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]绿色一阶秘宝属性加成[-]" />
+<Mishu id="210200" pinzhiName="[00cbf0]蓝色一阶秘术[-]" name="[00cbf0]秘术2[-]" icon="210200" color="4" pinzhi="2" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]蓝色一阶秘宝属性加成[-]" />
+<Mishu id="210300" pinzhiName="[00cbf0]蓝色二阶秘术[-]" name="[00cbf0]秘术3[-]" icon="210300" color="4" pinzhi="3" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]蓝色二阶秘宝属性加成[-]" />
+<Mishu id="210400" pinzhiName="[cb02d8]紫色一阶秘术[-]" name="[cb02d8]秘术4[-]" icon="210400" color="5" pinzhi="4" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]紫色一阶秘宝属性加成[-]" />
+<Mishu id="210500" pinzhiName="[cb02d8]紫色二阶秘术[-]" name="[cb02d8]秘术5[-]" icon="210500" color="5" pinzhi="5" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]紫色二阶秘宝属性加成[-]" />
+<Mishu id="210600" pinzhiName="[cb02d8]紫色三阶秘术[-]" name="[cb02d8]秘术6[-]" icon="210600" color="5" pinzhi="6" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]紫色三阶秘宝属性加成[-]" />
+<Mishu id="210700" pinzhiName="[e83b0d]橙色一阶秘术[-]" name="[e83b0d]秘术7[-]" icon="210700" color="2" pinzhi="7" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]橙色一阶秘宝属性加成[-]" />
+<Mishu id="210800" pinzhiName="[e83b0d]橙色二阶秘术[-]" name="[e83b0d]秘术8[-]" icon="210800" color="2" pinzhi="8" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]橙色二阶秘宝属性加成[-]" />
+<Mishu id="210900" pinzhiName="[e83b0d]橙色三阶秘术[-]" name="[e83b0d]秘术9[-]" icon="210900" color="2" pinzhi="9" gongji="0" fangyu="0" shengming="0" wqSH="10" wqJM="10" wqBJ="0" wqRX="0" jnSH="0" jnJM="0" jnBJ="0" jnRX="0" title="[e5e205]橙色三阶秘宝属性加成[-]" />
+</dataset>

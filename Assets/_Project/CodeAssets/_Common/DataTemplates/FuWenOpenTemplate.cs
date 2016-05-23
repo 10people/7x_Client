@@ -10,19 +10,14 @@ public class FuWenOpenTemplate : XmlLoadManager {
 
 	public int id;
 
+	public int Tab;
+
 	public int level;
-
-	public int lanweiID;
-
-	public int lanweiType;
-
-	public float positionX;
-
-	public float positionY;
-
-	public float positionZ;
-
+	
 	public int inlayColor;
+
+	public string background;
+
 
 	public static List<FuWenOpenTemplate> templates = new List<FuWenOpenTemplate>();
 
@@ -68,25 +63,17 @@ public class FuWenOpenTemplate : XmlLoadManager {
 				t_template.id = int.Parse(t_reader.Value);
 				
 				t_reader.MoveToNextAttribute();
+				t_template.Tab = int.Parse(t_reader.Value);
+				
+				t_reader.MoveToNextAttribute();
 				t_template.level = int.Parse(t_reader.Value);
 				
 				t_reader.MoveToNextAttribute();
-				t_template.lanweiID = int.Parse(t_reader.Value);
-				
-				t_reader.MoveToNextAttribute();
-				t_template.lanweiType = int.Parse(t_reader.Value);
-
-				t_reader.MoveToNextAttribute();
-				t_template.positionX = float.Parse(t_reader.Value);
-
-				t_reader.MoveToNextAttribute();
-				t_template.positionY = float.Parse(t_reader.Value);
-
-				t_reader.MoveToNextAttribute();
-				t_template.positionZ = float.Parse(t_reader.Value);
-
-				t_reader.MoveToNextAttribute();
 				t_template.inlayColor = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.background = t_reader.Value;
+
 			}
 			
 			//			t_template.Log();
@@ -96,18 +83,27 @@ public class FuWenOpenTemplate : XmlLoadManager {
 		while (t_has_items);
 	}
 
-	public static FuWenOpenTemplate GetFuWenOpenTemplateByLanWeiId (int tempLanWeiId)
+	public static List<int > GetFuWenOpenTemplateByLanWeiIdList (int tab)
+	{
+		List<int > Ids = new List<int> ();
+		foreach (FuWenOpenTemplate template in templates)
+		{
+			if (template.Tab == tab)
+			{
+				Ids.Add(template.id);
+			}
+		}
+		return Ids;
+	}
+	public static FuWenOpenTemplate GetFuWenOpenTemplateBy_By_Id (int id)
 	{
 		foreach (FuWenOpenTemplate template in templates)
 		{
-			if (template.lanweiID == tempLanWeiId)
+			if (template.id == id)
 			{
 				return template;
 			}
 		}
-		
-		Debug.LogError("XML ERROR: Can't get FuWenOpenTemplate with lanweiID " + tempLanWeiId);
-		
 		return null;
 	}
 }

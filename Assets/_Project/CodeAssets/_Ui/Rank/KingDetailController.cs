@@ -50,7 +50,7 @@ namespace Rank
             }
 
             //Check junxian empty
-            if (m_JunZhuInfo.junxianRank < 0)
+            if (m_JunZhuInfo.junxianRank <= 0)
             {
                 JunxianSprite.gameObject.SetActive(false);
                 JunxianLabelSprite.gameObject.SetActive(false);
@@ -110,11 +110,8 @@ namespace Rank
 
         public override void GetInfo()
         {
-            JunZhuInfoSpecifyReq temp = new JunZhuInfoSpecifyReq()
-            {
-                junzhuId = m_JunZhuInfo.junZhuId
-            };
-            SocketHelper.SendQXMessage(temp, ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
+            KingDetailInfoController.Instance.ShowKingDetailWindow(m_JunZhuInfo.junZhuId);
+
             m_ModuleController.ClampScrollView();
         }
 
@@ -126,8 +123,6 @@ namespace Rank
             }
             else
             {
-                m_ModuleController.m_RootController.AddFriendName = m_JunZhuInfo.name;
-
                 FriendOperationLayerManagerment.AddFriends((int)m_JunZhuInfo.junZhuId);
                 m_ModuleController.ClampScrollView();
             }

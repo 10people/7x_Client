@@ -102,7 +102,7 @@ public class SocketHelper {
 	public static void ClearNetWorkCheckQueue(){
 		m_socket_check_send_queue.Clear();
 
-		m_last_socket_check_time = 0.0f;
+		m_last_socket_check_time = TimeHelper.GetLastRealtimeSinceStartup();
 	}
 	
 	public static void UpdateNetworkStatusCheck(){
@@ -135,7 +135,7 @@ public class SocketHelper {
 		}
 
 		#if DEBUG_SOCKET_HELPER
-		Debug.Log( "TrySendNetworkCheck()" );
+		Debug.Log( "UpdateNetworkStatusSend()" );
 
 		Debug.Log( "Time.realtimeSinceStartup: " + Time.realtimeSinceStartup );
 
@@ -151,6 +151,10 @@ public class SocketHelper {
 			
 			return;
 		}
+
+		#if DEBUG_SOCKET_HELPER
+		Debug.Log( "Send Network Check." );
+		#endif
 		
 		SocketTool.Instance().SendSocketMessage( ProtoIndexes.NETWORK_CHECK, false );
 		

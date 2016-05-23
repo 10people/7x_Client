@@ -66,6 +66,7 @@ public class MiBaoStarUpUI : MonoBehaviour {
 
 		UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,EffRoot.gameObject,EffectIdTemplate.GetPathByeffectId(620214));
 		ShowStar ();
+		StartCoroutine ("OPenZhanliShow");
 	}
 	void ShowStar()
 	{
@@ -96,9 +97,15 @@ public class MiBaoStarUpUI : MonoBehaviour {
 
 		}
 	}
+	IEnumerator OPenZhanliShow()
+	{
+		yield return new WaitForSeconds (1.5f);
+		Debug.Log ("显示战力提升！");
+		Global.m_isZhanli = false;
+	}
 	public void Close()
 	{
-		Global.m_isZhanli = false;
+
 		EffectTool.SetUIBackgroundEffect (mCamer.gameObject, false);
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Destroy (this.gameObject);

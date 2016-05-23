@@ -53,7 +53,7 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 			LoginReq loginReq = new LoginReq ();
 
 			if( ThirdPlatform.IsMyAppAndroidPlatform() ){
-				loginReq.name = ThirdPlatform.GetMyAppToken();
+				loginReq.name = ThirdPlatform.GetMyAppAccessToken();
 
 //				Debug.Log( "Socket.LoginReq.name: " + loginReq.name );
 			}

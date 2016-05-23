@@ -23,6 +23,8 @@ using System.Text;
 
 using SimpleJSON;
 
+
+
 /** 
  * @author:		Zhang YuGu
  * @Date: 		2015.11.30
@@ -823,6 +825,8 @@ public class BundleHelper : MonoBehaviour{
 		// load data
 		{
 			ConfigTool.Instance.LoadConfigs( LoadingDataDone );
+
+			PropertyTool.Instance.LoadConfigs( LoadingDataDone );
 			
 			Res2DTemplate.LoadTemplates( LoadingDataDone );
 			

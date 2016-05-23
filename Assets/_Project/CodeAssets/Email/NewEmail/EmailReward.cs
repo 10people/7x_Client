@@ -20,7 +20,7 @@ public class EmailReward : MonoBehaviour {
 	{
 		goodInfo = tempInfo;
 
-		numLabel.text = MyColorData.getColorString (1,"x" + tempInfo.count.ToString ());
+		numLabel.text = "x" + tempInfo.count.ToString ();
 
 		if (iconSamplePrefab == null)
 		{

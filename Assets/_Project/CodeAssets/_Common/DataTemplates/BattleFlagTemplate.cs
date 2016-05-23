@@ -41,6 +41,10 @@ public class BattleFlagTemplate : XmlLoadManager
 
 	public int triggerFunc;
 
+	public int triggerFuncEffect;
+
+	public float triggerDelay;
+
 	public int willRelive;
 
 	public int dieable;
@@ -157,6 +161,12 @@ public class BattleFlagTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.triggerFunc = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.triggerFuncEffect = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.triggerDelay = float.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
 				t_template.willRelive = int.Parse( t_reader.Value );

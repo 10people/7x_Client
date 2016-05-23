@@ -18,7 +18,7 @@ public class UILabelType : MonoBehaviour
 	public FontStyle m_iFontStype = FontStyle.Normal;//Font Style
 	UILabel m_UILabel;
 	// Use this for initialization
-	void Start () 
+	void OnEnable () 
 	{
 		init ();
 	}
@@ -128,8 +128,65 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.effectColor = new Color(45/255f, 21/255f, 4/255f);
 			m_UILabel.effectDistance = new Vector2(1, 1);
 			break;
+		case 8:
+			if(m_UILabel.text.Length == 2)
+			{
+				m_UILabel.spacingX = 13;
+				
+				//				m_UILabel.text = "[b]" + m_UILabel.text.Substring(0,1) + " " + m_UILabel.text.Substring(1,1) + "[-]";
+			}
+			else
+			{
+				m_UILabel.spacingX = 2;
+			}
+			m_UILabel.text = "[b]" + m_UILabel.text + "[-]";
+			m_UILabel.fontSize = 32;
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.applyGradient = true;
+			m_UILabel.gradientTop = new Color(248f/255f, 242f/255f, 223f/255f);
+			m_UILabel.gradientBottom = new Color(252f/255f, 225f/255f, 106f/255f);
+			m_UILabel.effectStyle = UILabel.Effect.Outline;
+			m_UILabel.effectColor = Color.black;
+			m_UILabel.effectDistance = new Vector2(2, 2);
+			break;
+		case 9:
+			m_UILabel.fontSize = 22;
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.applyGradient = true;
+			m_UILabel.gradientTop = Global.getStringColor("ffeed1");
+			m_UILabel.gradientBottom = Global.getStringColor("efc67f");
+			m_UILabel.effectStyle = UILabel.Effect.Outline;
+			m_UILabel.effectColor = Global.getStringColor("251102");
+			m_UILabel.effectDistance = new Vector2(1, 1);
+			break;
+		case 10:
+			m_UILabel.fontSize = 22;
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.color = Global.getStringColor("ffeed1");
+			m_UILabel.effectStyle = UILabel.Effect.Outline;
+			m_UILabel.effectColor = Global.getStringColor("251102");
+			m_UILabel.effectDistance = new Vector2(1, 1);
+			break;
+		case 11:
+			m_UILabel.fontSize = 22;
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.color = Global.getStringColor("a69986");
+			m_UILabel.effectStyle = UILabel.Effect.Outline;
+			m_UILabel.effectColor = Global.getStringColor("33120b");
+			m_UILabel.effectDistance = new Vector2(1, 1);
+			break;
+		case 12:
+			m_UILabel.fontSize = 20;
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.applyGradient = true;
+			m_UILabel.gradientTop = Global.getStringColor("fefea1");
+			m_UILabel.gradientBottom = Global.getStringColor("ff984b");
+			m_UILabel.effectStyle = UILabel.Effect.Outline;
+			m_UILabel.effectColor = Global.getStringColor("251102");
+			m_UILabel.effectDistance = new Vector2(1, 1);
+			break;
 		case 100:
-			m_UILabel.fontSize = 25;
+			m_UILabel.fontSize = 22;
 			m_UILabel.fontStyle = FontStyle.Normal;
 			m_UILabel.applyGradient = false;
 			m_UILabel.effectStyle = UILabel.Effect.Outline;

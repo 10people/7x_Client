@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<MibaoSuiPian id="311001" name="311001" funDesc="311001" icon="311001" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="101" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="311002" name="311002" funDesc="311002" icon="311002" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="102" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="311003" name="311003" funDesc="311003" icon="311003" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="103" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="312001" name="312001" funDesc="312001" icon="312001" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="201" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="312002" name="312002" funDesc="312002" icon="312002" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="202" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="312003" name="312003" funDesc="312003" icon="312003" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="203" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="313001" name="313001" funDesc="313001" icon="313001" initialStar="2" hechengNum="30" money="10000" fenjieNum="30" tempId="301" recyclePrice="2000" dropDesc="【荒野商店】\n兑换" />
+<MibaoSuiPian id="313002" name="313002" funDesc="313002" icon="313002" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="302" recyclePrice="2000" dropDesc="【威望商店】\n兑换" />
+<MibaoSuiPian id="313003" name="313003" funDesc="313003" icon="313003" initialStar="3" hechengNum="60" money="30000" fenjieNum="60" tempId="303" recyclePrice="2000" dropDesc="【神秘商铺】\n兑换" />
+<MibaoSuiPian id="314001" name="314001" funDesc="314001" icon="314001" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="401" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="314002" name="314002" funDesc="314002" icon="314002" initialStar="2" hechengNum="30" money="10000" fenjieNum="30" tempId="402" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="314003" name="314003" funDesc="314003" icon="314003" initialStar="3" hechengNum="60" money="30000" fenjieNum="60" tempId="403" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="315001" name="315001" funDesc="315001" icon="315001" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="501" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="315002" name="315002" funDesc="315002" icon="315002" initialStar="2" hechengNum="30" money="10000" fenjieNum="30" tempId="502" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="315003" name="315003" funDesc="315003" icon="315003" initialStar="3" hechengNum="60" money="30000" fenjieNum="60" tempId="503" recyclePrice="2000" dropDesc="传奇关卡\n掉落" />
+<MibaoSuiPian id="316001" name="316001" funDesc="316001" icon="316001" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="601" recyclePrice="2000" dropDesc="【联盟商店】\n兑换" />
+<MibaoSuiPian id="316002" name="316002" funDesc="316002" icon="316002" initialStar="2" hechengNum="30" money="10000" fenjieNum="30" tempId="602" recyclePrice="2000" dropDesc="【联盟商店】\n兑换" />
+<MibaoSuiPian id="316003" name="316003" funDesc="316003" icon="316003" initialStar="3" hechengNum="60" money="30000" fenjieNum="60" tempId="603" recyclePrice="2000" dropDesc="【联盟商店】\n兑换" />
+<MibaoSuiPian id="317001" name="317001" funDesc="317001" icon="317001" initialStar="1" hechengNum="10" money="2000" fenjieNum="10" tempId="701" recyclePrice="2000" dropDesc="【矿洞探宝】\n获得" />
+<MibaoSuiPian id="317002" name="317002" funDesc="317002" icon="317002" initialStar="2" hechengNum="30" money="10000" fenjieNum="30" tempId="702" recyclePrice="2000" dropDesc="【矿洞探宝】\n获得" />
+<MibaoSuiPian id="317003" name="317003" funDesc="317003" icon="317003" initialStar="3" hechengNum="60" money="30000" fenjieNum="60" tempId="703" recyclePrice="2000" dropDesc="【矿洞探宝】\n获得" />
+</dataset>

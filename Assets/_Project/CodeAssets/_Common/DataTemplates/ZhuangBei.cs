@@ -77,8 +77,17 @@ public class ZhuangBei: XmlLoadManager
     public int wqMBL;
     public int jnMBL;
     public int sxJiaCheng;
+    public int holeNum;
+    public int inlayColor;
+    public int lvlupExp;
 	public static List<ZhuangBei> templates = new List<ZhuangBei>();
-
+    public struct NeedInfo
+    {
+        public int id;
+        public int needExp;
+    }
+    public static List<NeedInfo> m_listNeedInfo = new List<NeedInfo>();
+    public static List<NeedInfo> m_listReduceInfo = new List<NeedInfo>();
 
     public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
         UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "ZhuangBei.xml"), CurLoad, UtilityTool.GetEventDelegateList( p_callback ), false );
@@ -243,6 +252,15 @@ public class ZhuangBei: XmlLoadManager
 
                 t_reader.MoveToNextAttribute();
                 t_template.sxJiaCheng = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.holeNum = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.inlayColor = int.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.lvlupExp = int.Parse(t_reader.Value);
 
             }
 
@@ -438,5 +456,128 @@ public class ZhuangBei: XmlLoadManager
             }
         }
         return 0;
+    }
+
+    public static ZhuangBei GetExpById(int equipid)
+    {
+        foreach (ZhuangBei template in templates)
+        {
+            if (template.id == equipid )
+            {
+                return template;
+            }
+        }
+        return null;
+    }
+
+    public static int GetMaxAdvanceIdByAddExp(int equipid,int expTotal, int buwei)
+    {
+        List<ZhuangBei> listNeedInfo = new List<ZhuangBei>();
+        for (int i = 0; i < templates.Count; i++)
+        {
+            if (templates[i].buWei == buwei && templates[i].id >= equipid)
+            {
+                listNeedInfo.Add(templates[i]);
+            }
+        }
+        int sum = 0;
+
+        for (int i = 0; i < listNeedInfo.Count; i++)
+        {
+            sum += listNeedInfo[i].lvlupExp;
+            if (sum > expTotal)
+            {
+                return listNeedInfo[i].id;
+            }
+            else if (sum == expTotal && listNeedInfo[i].lvlupExp > 0)
+            {
+                if (i < listNeedInfo.Count - 1)
+                {
+                    return listNeedInfo[i + 1].id;
+                }
+                else
+                {
+                    return listNeedInfo[i].id;
+                }
+            }
+            if (listNeedInfo[i].lvlupExp == -1)
+            {
+                if (sum < expTotal)
+                {
+                    return listNeedInfo[i].id;
+                }
+            }
+        }
+
+        return listNeedInfo[listNeedInfo.Count - 1].id;
+    }
+
+
+
+
+    public static void GetUpgradeMaxLevel_ById(int id,int buwei, int CurrSumExp)
+    {
+        m_listNeedInfo.Clear();
+        List<ZhuangBei> listNeedInfo = new List<ZhuangBei>();
+        for (int i = 0; i < templates.Count; i++)
+        {
+            if (templates[i].buWei == buwei && templates[i].id >= id)
+            {
+                listNeedInfo.Add(templates[i]);
+            }
+        }
+        int sum = 0;
+
+        int size2 = listNeedInfo.Count;
+        for (int j = 0; j < size2; j++)
+        {
+            NeedInfo ni = new NeedInfo();
+            ni.id = listNeedInfo[j].id;
+            ni.needExp = listNeedInfo[j].lvlupExp;
+            m_listNeedInfo.Add(ni);
+            sum += listNeedInfo[j].lvlupExp;
+            if (sum > CurrSumExp || listNeedInfo[j].lvlupExp < 0)
+            {
+                if (listNeedInfo[j].lvlupExp < 0)
+                {
+                    sum++;
+                }
+                break;
+            }
+        }
+
+        if (sum > 0 && listNeedInfo[size2 - 1].lvlupExp > 0)
+        {
+            EquipGrowthMaterialUseManagerment.CurrentExpIndex++;
+            EquipGrowthMaterialUseManagerment.listCurrentAddExp.Add(EquipGrowthMaterialUseManagerment.CurrentExpIndex
+                , sum - listNeedInfo[size2 - 1].lvlupExp);
+        }
+        
+    }
+
+    public static void GetReduceMaxLevel_Byid(int id, int reduceExp, int buwei)
+    {
+        m_listReduceInfo.Clear();
+        List<ZhuangBei> listNeedInfo = new List<ZhuangBei>();
+        for (int i = 0; i < templates.Count; i++)
+        {
+            if (templates[i].buWei == buwei && templates[i].id < id)
+            {
+                listNeedInfo.Add(templates[i]);
+            }
+        }
+        int sum = 0;
+        for (int j = listNeedInfo.Count - 1; j >= 0; j--)
+        {
+            NeedInfo ni = new NeedInfo();
+            ni.id = listNeedInfo[j].id;
+            ni.needExp = listNeedInfo[j].lvlupExp;
+            m_listReduceInfo.Add(ni);
+            sum += listNeedInfo[j].lvlupExp;
+            if (sum > reduceExp)
+            {
+                break;
+            }
+        }
     }
 }

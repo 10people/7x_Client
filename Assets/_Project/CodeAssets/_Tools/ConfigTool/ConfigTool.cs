@@ -8,10 +8,11 @@ using System.Collections.Generic;
  * @author:		Zhang YuGu
  * @Date: 		2014.11.28
  * @since:		Unity 4.5.3
- * Function:	Manage config files to help develop.
+ * Function:	Manage config files to help develop(Legacy, will be removed).
  * 
  * Notes:
  * 1. All Config Key MUST be listed here.
+ * 2.Legacy, will be removed in future.
  */ 
 public class ConfigTool : Singleton<ConfigTool>{
 	
@@ -337,9 +338,17 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 			LoadValues( m_config_value_dict, CONST_MAX_CHAR_COUNT, LoadIntValue( m_config_xml_dict, CONST_MAX_CHAR_COUNT ) );
 
+			LoadValues( m_config_value_dict, CONST_MAX_CHAR_IN_AB_COUNT, LoadIntValue( m_config_xml_dict, CONST_MAX_CHAR_IN_AB_COUNT) );
+
 			LoadValues( m_config_value_dict, CONST_MAX_CHAR_IN_TAN_BAO_COUNT, LoadIntValue( m_config_xml_dict, CONST_MAX_CHAR_IN_TAN_BAO_COUNT ) );
 
 			LoadValues( m_config_value_dict, CONST_CHAR_UPDATE_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_CHAR_UPDATE_INTERVAL ) );
+
+			LoadValues( m_config_value_dict, CONST_MAX_EFFECT_COUNT, LoadIntValue( m_config_xml_dict, CONST_MAX_EFFECT_COUNT ) );
+
+			LoadValues( m_config_value_dict, CONST_EFFECT_UPDATE_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_EFFECT_UPDATE_INTERVAL ) );
+
+			LoadValues( m_config_value_dict, CONST_CARRIAGE_INFO_SENDING_DIS, LoadFloatValue( m_config_xml_dict, CONST_CARRIAGE_INFO_SENDING_DIS ) );
 		}
 
 		// guide
@@ -358,6 +367,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 			LoadValues( m_config_value_dict, CONST_QUICK_FIGHT, LoadBoolValue( m_config_xml_dict, CONST_QUICK_FIGHT ) );
 
 			LoadValues( m_config_value_dict, CONST_SHOW_BATTLE_CAMERA_OPS, LoadBoolValue( m_config_xml_dict, CONST_SHOW_BATTLE_CAMERA_OPS ) );
+
+			LoadValues( m_config_value_dict, CONST_BATTLE_CUSTOM_TRIGGER_UPDATE_INVERVAL, LoadFloatValue( m_config_xml_dict, CONST_BATTLE_CUSTOM_TRIGGER_UPDATE_INVERVAL ) );
 		}
 		
 		// network emulate
@@ -383,6 +394,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 			#endif
 
 			LoadValues( m_config_value_dict, CONST_NETWORK_SHOW_STATUS, LoadBoolValue( m_config_xml_dict, CONST_NETWORK_SHOW_STATUS ) );
+
+			LoadValues( m_config_value_dict, CONST_NETWORK_SOCKET_UPDATE_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_NETWORK_SOCKET_UPDATE_INTERVAL ) );
 		}
 		
 		// logs
@@ -769,7 +782,7 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 
 
-	#region FPS Keys
+	#region FPS&Performance Keys
 
 	public const string CONST_TARGET_FPS			= "TargetFPS";
 	
@@ -781,13 +794,17 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 	public const string CONST_MAX_CHAR_COUNT		= "MaxCarriageChar";
 
+	public const string CONST_MAX_CHAR_IN_AB_COUNT		= "MaxAllianceBattleChar";
+
 	public const string CONST_MAX_CHAR_IN_TAN_BAO_COUNT		= "MaxCharInTanBao";
 
-	public const string CONST_CHAR_UPDATE_INTERVAL	= "CharUpdateInterval";
+	public const string CONST_CHAR_UPDATE_INTERVAL			= "CharUpdateInterval";
 
-	public const string CONST_MAX_EFFECT_COUNT = "MaxEffect";
+	public const string CONST_MAX_EFFECT_COUNT 				= "MaxEffect";
 
-	public const string CONST_EFFECT_UPDATE_INTERVAL = "EffectUpdateInterval";
+	public const string CONST_EFFECT_UPDATE_INTERVAL 		= "EffectUpdateInterval";
+
+	public const string CONST_CARRIAGE_INFO_SENDING_DIS		= "CarriageInfoSendingDis";
 
 	#endregion
 
@@ -813,6 +830,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 	public const string CONST_SHOW_BATTLE_CAMERA_OPS	= "ShowBattleCameraOps";
 
+	public const string CONST_BATTLE_CUSTOM_TRIGGER_UPDATE_INVERVAL	= "BattleFieldCustomTriggerInterval";
+
 	#endregion
 
 
@@ -828,6 +847,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 	public const string CONST_NETWORK_LATENCY			= "NetworkLatency";
 
 	public const string CONST_NETWORK_SHOW_STATUS		= "ShowNetworkStatus";
+
+	public const string CONST_NETWORK_SOCKET_UPDATE_INTERVAL	= "SocketUpdateInterval";
 
 	#endregion
 

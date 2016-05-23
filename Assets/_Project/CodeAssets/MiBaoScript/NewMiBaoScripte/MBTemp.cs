@@ -324,7 +324,7 @@ public class MBTemp : MonoBehaviour {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"合成此秘宝需要消耗" +Mony.ToString()+"铜币"+"\r\n"+"\r\n"+"是否合成？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "\r\n"+"合成此将魂需要消耗" +Mony.ToString()+"铜币"+"\r\n"+"\r\n"+"是否合成？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 	
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
@@ -353,7 +353,7 @@ public class MBTemp : MonoBehaviour {
 				
 				byte[] t_protof;
 				t_protof = MiBaoinfoStream.ToArray();
-				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_ACTIVATE_REQ,ref t_protof,ProtoIndexes.S_MIBAO_ACTIVATE_RESP.ToString());//秘宝激活
+				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_ACTIVATE_REQ,ref t_protof,ProtoIndexes.S_MIBAO_ACTIVATE_RESP.ToString());//将魂激活
 				PushAndNotificationHelper.SetRedSpotNotification (605, false);
 			}
 			else
@@ -400,7 +400,7 @@ public class MBTemp : MonoBehaviour {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"解锁此秘宝需要达成以下条件：";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "\r\n"+"解锁此将魂需要达成以下条件：";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 
 		string str2 = "";
 

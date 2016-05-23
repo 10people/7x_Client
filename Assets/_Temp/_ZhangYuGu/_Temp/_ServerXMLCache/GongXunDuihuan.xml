@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<GongXunDuihuan id="1001" itemType="7" itemId="901017" itemNum="1" needNum="30" weight="1667" site="1" />
+<GongXunDuihuan id="1002" itemType="7" itemId="901027" itemNum="1" needNum="30" weight="1667" site="1" />
+<GongXunDuihuan id="1003" itemType="7" itemId="901037" itemNum="1" needNum="30" weight="1666" site="1" />
+<GongXunDuihuan id="1004" itemType="7" itemId="902017" itemNum="1" needNum="120" weight="1667" site="1" />
+<GongXunDuihuan id="1005" itemType="7" itemId="902027" itemNum="1" needNum="120" weight="1666" site="1" />
+<GongXunDuihuan id="1006" itemType="7" itemId="902037" itemNum="1" needNum="120" weight="1667" site="1" />
+<GongXunDuihuan id="1007" itemType="7" itemId="901017" itemNum="1" needNum="30" weight="1666" site="2" />
+<GongXunDuihuan id="1008" itemType="7" itemId="901027" itemNum="1" needNum="30" weight="1667" site="2" />
+<GongXunDuihuan id="1009" itemType="7" itemId="901037" itemNum="1" needNum="30" weight="1667" site="2" />
+<GongXunDuihuan id="1010" itemType="7" itemId="902017" itemNum="1" needNum="120" weight="1666" site="2" />
+<GongXunDuihuan id="1011" itemType="7" itemId="902027" itemNum="1" needNum="120" weight="1667" site="2" />
+<GongXunDuihuan id="1012" itemType="7" itemId="902037" itemNum="1" needNum="120" weight="1667" site="2" />
+<GongXunDuihuan id="1013" itemType="7" itemId="901017" itemNum="1" needNum="120" weight="1667" site="3" />
+<GongXunDuihuan id="1014" itemType="7" itemId="901027" itemNum="1" needNum="120" weight="1667" site="3" />
+<GongXunDuihuan id="1015" itemType="7" itemId="901037" itemNum="1" needNum="120" weight="1666" site="3" />
+<GongXunDuihuan id="1016" itemType="7" itemId="903017" itemNum="1" needNum="480" weight="1667" site="3" />
+<GongXunDuihuan id="1017" itemType="7" itemId="903027" itemNum="1" needNum="480" weight="1666" site="3" />
+<GongXunDuihuan id="1018" itemType="7" itemId="903037" itemNum="1" needNum="480" weight="1667" site="3" />
+<GongXunDuihuan id="1019" itemType="7" itemId="901017" itemNum="1" needNum="120" weight="1666" site="4" />
+<GongXunDuihuan id="1020" itemType="7" itemId="901027" itemNum="1" needNum="120" weight="1667" site="4" />
+<GongXunDuihuan id="1021" itemType="7" itemId="901037" itemNum="1" needNum="120" weight="1667" site="4" />
+<GongXunDuihuan id="1022" itemType="7" itemId="903017" itemNum="1" needNum="480" weight="1666" site="4" />
+<GongXunDuihuan id="1023" itemType="7" itemId="903027" itemNum="1" needNum="480" weight="1667" site="4" />
+<GongXunDuihuan id="1024" itemType="7" itemId="903037" itemNum="1" needNum="480" weight="1667" site="4" />
+<GongXunDuihuan id="1025" itemType="5" itemId="314001" itemNum="5" needNum="300" weight="3333" site="5" />
+<GongXunDuihuan id="1026" itemType="5" itemId="314002" itemNum="5" needNum="300" weight="3333" site="5" />
+<GongXunDuihuan id="1027" itemType="5" itemId="314003" itemNum="5" needNum="300" weight="3334" site="5" />
+<GongXunDuihuan id="1028" itemType="0" itemId="910002" itemNum="3" needNum="150" weight="10000" site="6" />
+<GongXunDuihuan id="1029" itemType="9" itemId="920002" itemNum="5" needNum="25" weight="5000" site="7" />
+<GongXunDuihuan id="1030" itemType="9" itemId="920003" itemNum="5" needNum="100" weight="5000" site="7" />
+<GongXunDuihuan id="1031" itemType="9" itemId="921002" itemNum="10" needNum="50" weight="5000" site="8" />
+<GongXunDuihuan id="1032" itemType="9" itemId="921003" itemNum="10" needNum="200" weight="5000" site="8" />
+</dataset>

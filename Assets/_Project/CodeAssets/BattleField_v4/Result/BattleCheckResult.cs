@@ -16,6 +16,8 @@ public class BattleCheckResult
 	
 	[HideInInspector] public int heroKilled;
 
+	[HideInInspector] public int waveKilled;
+
 
 	private int proNum_lose;
 
@@ -31,6 +33,8 @@ public class BattleCheckResult
 		soldierKilled = 0;
 		
 		heroKilled = 0;
+
+		waveKilled = 0;
 
 		proNum_lose = 0;
 
@@ -240,6 +244,24 @@ public class BattleCheckResult
 				fWin = true;
 			}
 
+			if(fWin == true) fWin = BattleWinTemplate.reachTypeWin(winTemplate.winId);
+		}
+
+		winTemplate = BattleWinTemplate.getWinTemplateContainsType (BattleWinFlag.EndType.Kill_Wave, true);
+
+		if(winTemplate != null)
+		{
+			int killNum = winTemplate.killNum;
+			
+			if(waveKilled >= killNum)
+			{
+				fWin = true;
+				
+				waveKilled = winTemplate.killNum;
+				
+				BattleUIControlor.Instance().refreshWinDesc();
+			}
+			
 			if(fWin == true) fWin = BattleWinTemplate.reachTypeWin(winTemplate.winId);
 		}
 

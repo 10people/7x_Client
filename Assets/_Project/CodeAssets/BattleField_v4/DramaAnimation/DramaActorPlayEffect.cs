@@ -15,6 +15,8 @@ public class DramaActorPlayEffect : DramaActor
 
 	public bool follow;
 
+	public bool offset;
+
 	public Vector3 targetLocalPosition;
 
 
@@ -97,14 +99,19 @@ public class DramaActorPlayEffect : DramaActor
 		{
 			effectObject.transform.parent = gameObject.transform.parent;
 		}
-		
+
+		if(offset == true)
+		{
+			position += gameObject.transform.position;
+		}
+
 		effectObject.transform.localScale = temple.transform.localScale;
 
 		BattleEffect effect = (BattleEffect)ComponentHelper.AddIfNotExist( effectObject, typeof(BattleEffect) );
 
 		effect.refreshDate(null, follow ? gameObject : null, playTime, position, foward, 0);
 
-		if(follow == true) effect.offset = position;
+		if (follow == true) effect.offset = position;
 
 		effect.realTime = Time.realtimeSinceStartup;
 

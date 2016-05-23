@@ -305,6 +305,8 @@ public class DramaStoryBoard : MonoBehaviour
 
 					dape.follow = actorJson["follow"].AsBool;
 
+					dape.offset = actorJson["offset"].AsBool;
+
 					dape.position = new Vector3(actorJson["px"].AsFloat, actorJson["py"].AsFloat, actorJson["pz"].AsFloat);
 
 					dape.foward = new Vector3(actorJson["fx"].AsFloat, actorJson["fy"].AsFloat, actorJson["fz"].AsFloat);
@@ -314,6 +316,8 @@ public class DramaStoryBoard : MonoBehaviour
 				else if(actorType == DramaActor.ACTOR_TYPE.SOUND)
 				{
 					DramaActorPlaySound daps = (DramaActorPlaySound)m_actorGc[modelIndex].AddComponent<DramaActorPlaySound>();
+
+					daps.waittingTime = waittingTime;
 
 					daps.soundId = actorJson["soundId"].AsInt;
 				}

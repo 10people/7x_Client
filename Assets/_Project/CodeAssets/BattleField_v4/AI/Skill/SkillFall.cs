@@ -32,7 +32,7 @@ public class SkillFall : SkillDataBead
 		{
 			BaseAI defender = m_HeroSkill.m_listATTTarget[i];
 
-			defender.beatDown(m_lv);
+			defender.beatDown(m_lv, m_HeroSkill.node);
 
 			if(m_HeroSkill.node.nodeData.nodeType == qxmobile.protobuf.NodeType.PLAYER)
 			{

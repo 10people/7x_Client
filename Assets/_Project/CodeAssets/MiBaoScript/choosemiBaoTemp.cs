@@ -36,7 +36,7 @@ public class choosemiBaoTemp : MonoBehaviour
 
         transform.localPosition = pos;
 
-        m_IconSampleManager.SetIconType(IconSampleManager.IconType.oldMiBao);
+        m_IconSampleManager.SetIconType(IconSampleManager.IconType.OldOldMiBao);
         m_IconSampleManager.SetIconBasic(20, fgSpriteName, "", qualityFrameSpriteName);
         m_IconSampleManager.SetIconBasicDelegate(false, true, OnDeleteMibao);
         m_IconSampleManager.SetIconDecoSprite("", rightButtomSpriteName, buttomSpriteName);

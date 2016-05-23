@@ -26,6 +26,11 @@ public class LianMengTemplate : XmlLoadManager {
 	public int jiansheMax;
 
 	public string targetAward;
+
+	public int lvlupTime;
+
+	public int cost;
+
 	public static List<LianMengTemplate> templates = new List<LianMengTemplate>();
 	
 	
@@ -95,7 +100,12 @@ public class LianMengTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.targetAward =  t_reader.Value ;
-				
+
+				t_reader.MoveToNextAttribute();
+				t_template.lvlupTime = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.cost = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<BaoZuanDuihuan id="1001" itemType="5" itemId="311001" itemNum="5" needNum="2000" weight="3333" site="1" />
+<BaoZuanDuihuan id="1002" itemType="5" itemId="311002" itemNum="5" needNum="2000" weight="3333" site="1" />
+<BaoZuanDuihuan id="1003" itemType="5" itemId="311003" itemNum="5" needNum="2000" weight="3334" site="1" />
+<BaoZuanDuihuan id="1004" itemType="5" itemId="312001" itemNum="5" needNum="2000" weight="3333" site="2" />
+<BaoZuanDuihuan id="1005" itemType="5" itemId="312002" itemNum="5" needNum="2000" weight="3333" site="2" />
+<BaoZuanDuihuan id="1006" itemType="5" itemId="312003" itemNum="5" needNum="2000" weight="3334" site="2" />
+<BaoZuanDuihuan id="1007" itemType="5" itemId="313001" itemNum="5" needNum="2000" weight="3333" site="3" />
+<BaoZuanDuihuan id="1008" itemType="5" itemId="313002" itemNum="5" needNum="2000" weight="3333" site="3" />
+<BaoZuanDuihuan id="1009" itemType="5" itemId="313003" itemNum="5" needNum="2000" weight="3334" site="3" />
+<BaoZuanDuihuan id="1010" itemType="5" itemId="314001" itemNum="5" needNum="2000" weight="3333" site="4" />
+<BaoZuanDuihuan id="1011" itemType="5" itemId="314002" itemNum="5" needNum="2000" weight="3333" site="4" />
+<BaoZuanDuihuan id="1012" itemType="5" itemId="314003" itemNum="5" needNum="2000" weight="3334" site="4" />
+<BaoZuanDuihuan id="1013" itemType="5" itemId="315001" itemNum="5" needNum="2000" weight="3333" site="5" />
+<BaoZuanDuihuan id="1014" itemType="5" itemId="315002" itemNum="5" needNum="2000" weight="3333" site="5" />
+<BaoZuanDuihuan id="1015" itemType="5" itemId="315003" itemNum="5" needNum="2000" weight="3334" site="5" />
+<BaoZuanDuihuan id="1016" itemType="5" itemId="316001" itemNum="5" needNum="2000" weight="3333" site="6" />
+<BaoZuanDuihuan id="1017" itemType="5" itemId="316002" itemNum="5" needNum="2000" weight="3333" site="6" />
+<BaoZuanDuihuan id="1018" itemType="5" itemId="316003" itemNum="5" needNum="2000" weight="3334" site="6" />
+<BaoZuanDuihuan id="2001" itemType="9" itemId="920002" itemNum="5" needNum="250" weight="5000" site="7" />
+<BaoZuanDuihuan id="2002" itemType="9" itemId="920003" itemNum="5" needNum="1000" weight="5000" site="7" />
+<BaoZuanDuihuan id="2003" itemType="9" itemId="921002" itemNum="10" needNum="500" weight="5000" site="8" />
+<BaoZuanDuihuan id="2004" itemType="9" itemId="921003" itemNum="10" needNum="2000" weight="5000" site="8" />
+</dataset>

@@ -9,6 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace AllianceBattle
 {
+    [Obsolete]
     public class AllianceBattleUI : MonoBehaviour, SocketListener
     {
         [HideInInspector]
@@ -164,12 +165,12 @@ namespace AllianceBattle
 
         public void SetPlayerPositionInSmallMap()
         {
-            if (m_RootManager.m_AbPlayerController == null || m_RootManager.m_AbPlayerCultureController == null)
+            if (m_RootManager.m_SelfPlayerController == null || m_RootManager.m_SelfPlayerCultureController == null)
             {
                 return;
             }
 
-            PlayerPointsSprite.transform.localPosition = SmallMapPositionTransfer(m_RootManager.m_AbPlayerController.transform.localPosition);
+            PlayerPointsSprite.transform.localPosition = SmallMapPositionTransfer(m_RootManager.m_SelfPlayerController.transform.localPosition);
         }
 
         #endregion
@@ -381,18 +382,18 @@ namespace AllianceBattle
             SetTopUI();
 
             //Set occupy bar.
-            m_BattlefieldInfoResp.campInfos.ForEach(item =>
-            {
-                var tempHoldPoint = AllianceBattleHoldPointManager.HoldPointList.Where(item2 => item2.id == item.id);
-                if (tempHoldPoint != null && tempHoldPoint.Count() == 1)
-                {
-                    //Check red or blue.
-                    tempHoldPoint.First().OccupyValue = item.cursorPos == 1 ? (item.curHoldValue + LimitOccupyBarValue) / (2 * LimitOccupyBarValue) : (LimitOccupyBarValue - item.curHoldValue) / (2 * LimitOccupyBarValue);
-                    tempHoldPoint.First().MovingSpeed = (item.cursorPos == 1 ? 1 : -1) * item.perSecondsHoldValue / (2 * LimitOccupyBarValue);
-                }
-            });
+            //m_BattlefieldInfoResp.campInfos.ForEach(item =>
+            //{
+            //    var tempHoldPoint = ABHoldPointManager.HoldPointList.Where(item2 => item2.id == item.id);
+            //    if (tempHoldPoint != null && tempHoldPoint.Count() == 1)
+            //    {
+            //        //Check red or blue.
+            //        tempHoldPoint.First().OccupyValue = item.cursorPos == 1 ? (item.curHoldValue + LimitOccupyBarValue) / (2 * LimitOccupyBarValue) : (LimitOccupyBarValue - item.curHoldValue) / (2 * LimitOccupyBarValue);
+            //        tempHoldPoint.First().MovingSpeed = (item.cursorPos == 1 ? 1 : -1) * item.perSecondsHoldValue / (2 * LimitOccupyBarValue);
+            //    }
+            //});
 
-            m_RootManager.m_AllianceBattleHoldPointManager.SetConfig();
+            //m_RootManager.m_AbHoldPointManager.SetConfig();
         }
 
         public void OnReturnClick()
@@ -446,7 +447,7 @@ namespace AllianceBattle
 
         void Update()
         {
-            if (m_RootManager.m_AbPlayerManager == null || m_RootManager.m_AbPlayerCultureController == null) return;
+            if (m_RootManager.m_AbPlayerSyncManager == null || m_RootManager.m_SelfPlayerCultureController == null) return;
 
             //Update small map
             {
@@ -455,7 +456,7 @@ namespace AllianceBattle
 
             //Show select effect.
             {
-                if (m_RootManager.m_AbPlayerManager.m_PlayerDic == null || m_RootManager.m_AbPlayerManager.m_PlayerDic.Count == 0)
+                if (m_RootManager.m_AbPlayerSyncManager.m_PlayerDic == null || m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.Count == 0)
                 {
                     //[ALERT]Donot modify rank of call.
                     DeactiveSkills();
@@ -464,7 +465,7 @@ namespace AllianceBattle
                 }
 
                 //In distance
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => Vector3.Distance(m_RootManager.m_AbPlayerController.transform.position, item.Value.transform.position) < AttackDistance);
+                var temp = m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.Where(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.Value.transform.position) < AttackDistance);
                 if (!temp.Any())
                 {
                     DeactiveSkills();
@@ -473,7 +474,7 @@ namespace AllianceBattle
                 }
 
                 //In angle
-                temp = temp.Where(item => Vector3.Angle(m_RootManager.m_AbPlayerController.transform.forward, item.Value.transform.position - m_RootManager.m_AbPlayerController.transform.position) < AttackDegree / 2.0f);
+                temp = temp.Where(item => Vector3.Angle(m_RootManager.m_SelfPlayerController.transform.forward, item.Value.transform.position - m_RootManager.m_SelfPlayerController.transform.position) < AttackDegree / 2.0f);
                 if (!temp.Any())
                 {
                     DeactiveSkills();
@@ -492,7 +493,7 @@ namespace AllianceBattle
 
                 //Get only one target
                 //[ALERT]Donot modify rank of call.
-                var temp2 = temp.ToList().OrderBy(item => Vector3.Distance(m_RootManager.m_AbPlayerController.transform.position, item.Value.transform.position)).First();
+                var temp2 = temp.ToList().OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.Value.transform.position)).First();
                 m_ToAttackId = temp2.Key;
                 ActiveSkills(temp2.Value.GetComponent<ABPlayerCultureController>().KingName);
             }
@@ -506,7 +507,7 @@ namespace AllianceBattle
 
             ToAttackLabel.text = "目标:" + toAttackName;
 
-            m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<ABPlayerCultureController>().OnSelected();
+            m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[m_ToAttackId].GetComponent<ABPlayerCultureController>().OnSelected();
         }
 
         public void DeactiveSkills()
@@ -517,9 +518,9 @@ namespace AllianceBattle
 
             ToAttackLabel.text = "目标:无";
 
-            if (m_ToAttackId > 0 && m_RootManager.m_AbPlayerManager.m_PlayerDic.Keys.Contains(m_ToAttackId))
+            if (m_ToAttackId > 0 && m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.Keys.Contains(m_ToAttackId))
             {
-                m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<ABPlayerCultureController>().OnDeSelected();
+                m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[m_ToAttackId].GetComponent<ABPlayerCultureController>().OnDeSelected();
             }
         }
 
@@ -544,11 +545,11 @@ namespace AllianceBattle
                 SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FIGHT_ATTACK_REQ, ref t_protof);
 
                 //Play animation
-                m_RootManager.m_AbPlayerController.DeactiveMove();
-                m_RootManager.m_AbPlayerController.m_Animator.Play("Attack");
+                m_RootManager.m_SelfPlayerController.DeactiveMove();
+                m_RootManager.m_SelfPlayerController.m_Animator.Play("Attack");
 
-                m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].DeactiveMove();
-                m_RootManager.m_AbPlayerManager.m_PlayerDic[m_ToAttackId].GetComponent<Animator>().Play("BATC");
+                m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[m_ToAttackId].DeactiveMove();
+                m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[m_ToAttackId].GetComponent<Animator>().Play("BATC");
             }
             //skill
             else
@@ -590,7 +591,7 @@ namespace AllianceBattle
             bool isMineAttack = false;
 
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
+                var temp = m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     //other player attack.
@@ -606,7 +607,7 @@ namespace AllianceBattle
             }
 
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetUid).ToList();
+                var temp = m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetUid).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     //other player been attack.
@@ -618,16 +619,16 @@ namespace AllianceBattle
                     }
                     temp.First().Value.GetComponent<ABPlayerCultureController>().OnDamage(tempInfo.damage, tempInfo.remainLife);
                 }
-                else if (m_RootManager.m_AbPlayerCultureController != null && m_RootManager.m_AbPlayerController != null)
+                else if (m_RootManager.m_SelfPlayerCultureController != null && m_RootManager.m_SelfPlayerController != null)
                 {
                     //mine been attack.
                     //Cancel play animation when mine attack.
                     if (!isMineAttack)
                     {
-                        m_RootManager.m_AbPlayerController.DeactiveMove();
-                        m_RootManager.m_AbPlayerController.GetComponent<Animator>().Play("BATC");
+                        m_RootManager.m_SelfPlayerController.DeactiveMove();
+                        m_RootManager.m_SelfPlayerController.GetComponent<Animator>().Play("BATC");
                     }
-                    m_RootManager.m_AbPlayerCultureController.OnDamage(tempInfo.damage, tempInfo.remainLife);
+                    m_RootManager.m_SelfPlayerCultureController.OnDamage(tempInfo.damage, tempInfo.remainLife);
                 }
             }
         }
@@ -639,12 +640,12 @@ namespace AllianceBattle
             if (tempInfo.attackUid == PlayerSceneSyncManager.Instance.m_MyselfUid)
             {
                 //mine skill
-                m_RootManager.m_AbPlayerController.DeactiveMove();
-                m_RootManager.m_AbPlayerController.GetComponent<Animator>().Play("Attack");
+                m_RootManager.m_SelfPlayerController.DeactiveMove();
+                m_RootManager.m_SelfPlayerController.GetComponent<Animator>().Play("Attack");
             }
             else
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
+                var temp = m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.attackUid).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     //other player skill.
@@ -656,13 +657,13 @@ namespace AllianceBattle
             if (tempInfo.targetUid == PlayerSceneSyncManager.Instance.m_MyselfUid)
             {
                 //mine been attack
-                m_RootManager.m_AbPlayerController.DeactiveMove();
-                m_RootManager.m_AbPlayerController.GetComponent<Animator>().Play("BATC");
-                m_RootManager.m_AbPlayerCultureController.OnDamage(tempInfo.damage, tempInfo.remainLife);
+                m_RootManager.m_SelfPlayerController.DeactiveMove();
+                m_RootManager.m_SelfPlayerController.GetComponent<Animator>().Play("BATC");
+                m_RootManager.m_SelfPlayerCultureController.OnDamage(tempInfo.damage, tempInfo.remainLife);
             }
             else
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetUid).ToList();
+                var temp = m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetUid).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     //other player been attack.
@@ -678,12 +679,12 @@ namespace AllianceBattle
             //mine buff
             if (tempInfo.targetId == PlayerSceneSyncManager.Instance.m_MyselfUid)
             {
-                m_RootManager.m_AbPlayerCultureController.OnRecover(tempInfo.value, tempInfo.remainLife);
+                m_RootManager.m_SelfPlayerCultureController.OnRecover(tempInfo.value, tempInfo.remainLife);
             }
             //other player buff
             else
             {
-                var temp = m_RootManager.m_AbPlayerManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
+                var temp = m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.Where(item => item.Key == tempInfo.targetId).ToList();
                 if (temp != null && temp.Count() > 0)
                 {
                     temp.First().Value.GetComponent<ABPlayerCultureController>().OnRecover(tempInfo.value, tempInfo.remainLife);
@@ -759,74 +760,7 @@ namespace AllianceBattle
 
                             return true;
                         }
-                    //Set UI and player info.
-                    case ProtoIndexes.ALLIANCE_BATTLE_FIELD_RESP:
-                        {
-                            MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-                            QiXiongSerializer t_qx = new QiXiongSerializer();
-                            BattlefieldInfoResp tempInfo = new BattlefieldInfoResp();
-                            t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                            m_BattlefieldInfoResp = tempInfo;
-
-                            Refresh();
-
-                            //Set character blood.
-                            if (m_RootManager.m_AbPlayerCultureController != null)
-                            {
-                                m_RootManager.m_AbPlayerCultureController.TotalBlood = m_BattlefieldInfoResp.totalLife;
-                                m_RootManager.m_AbPlayerCultureController.RemainingBlood = m_BattlefieldInfoResp.remainLife;
-                            }
-                            m_RootManager.m_AbPlayerCultureController.SetThis();
-                            //Set character position.
-                            m_RootManager.m_AbPlayerController.transform.localPosition = new Vector3(m_BattlefieldInfoResp.posX, m_RootManager.m_AbPlayerController.transform.localPosition.y, m_BattlefieldInfoResp.posZ);
-
-                            return true;
-                        }
-                    //Refresh info.
-                    case ProtoIndexes.ALLIANCE_BATTLE_FIELD_NOTIFY:
-                        {
-                            MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-                            QiXiongSerializer t_qx = new QiXiongSerializer();
-                            BattlefieldInfoNotify tempInfo = new BattlefieldInfoNotify();
-                            t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-
-                            if (m_BattlefieldInfoResp == null)
-                            {
-                                Debug.LogWarning("Cannot refersh alliance battle field cause data not inited.");
-                                return true;
-                            }
-
-                            m_BattlefieldInfoResp.endRemainTime = tempInfo.endRemainTime;
-                            m_BattlefieldInfoResp.battleDatas = tempInfo.battleDatas;
-                            m_BattlefieldInfoResp.campInfos = tempInfo.campInfos;
-
-                            Refresh();
-
-                            return true;
-                        }
-                    //End battle msg.
-                    case ProtoIndexes.ALLIANCE_BATTLE_RESULT:
-                        {
-                            MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-                            QiXiongSerializer t_qx = new QiXiongSerializer();
-                            BattleResultAllianceFight tempInfo = new BattleResultAllianceFight();
-                            t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-
-                            BattleControlor.BattleResult result = tempInfo.result ? BattleControlor.BattleResult.RESULT_WIN : BattleControlor.BattleResult.RESULT_LOSE;
-                            List<Enums.Currency> currencyList = new List<Enums.Currency>();
-                            List<int> numList = new List<int>();
-                            tempInfo.awardItems.ForEach(item =>
-                            {
-                                currencyList.Add(Enums.Currency.GongXian);
-                                numList.Add(item.awardNum);
-                            });
-                            int second = tempInfo.costTime;
-
-                            EnterBattleResult.showBattleResult(result, currencyList, numList, second, second, OnReturnToMainCity);
-
-                            return true;
-                        }
                 }
             }
 
@@ -859,7 +793,6 @@ namespace AllianceBattle
             //Read skill data.
             m_SkillControllers.ForEach(item =>
             {
-                item.m_AllianceBattleUI = this;
                 if (item.m_Index > 0)
                 {
                     var temp = RTSkillTemplate.templates.Where(item2 => item2.SkillId == item.m_Index);
@@ -880,8 +813,8 @@ namespace AllianceBattle
             AttackDegree = LianmengzhanTemplate.Templates[0].ScreenAngle;
             RebirthDuration = LianmengzhanTemplate.Templates[0].ReviveTime;
             TotalScore = (int)LianmengzhanTemplate.Templates[0].ScoreMax;
-            CriticalOccupyBarValue = LMZBuildingTemplate.GetTemplatesBySide(0).First().CriticalValue;
-            LimitOccupyBarValue = LMZBuildingTemplate.GetTemplatesBySide(0).First().ZhanlingzhiMax;
+            CriticalOccupyBarValue = 100;
+            LimitOccupyBarValue = 400;
             CriticalValueInProgressBar1 = 0.5f - 0.5f / LimitOccupyBarValue * CriticalOccupyBarValue;
             CriticalValueInProgressBar2 = 0.5f + 0.5f / LimitOccupyBarValue * CriticalOccupyBarValue;
         }

@@ -4,7 +4,11 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
+using System;
+using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PathHelper : MonoBehaviour {
 
@@ -172,6 +176,14 @@ public class PathHelper : MonoBehaviour {
 
 
 	#region PC
+
+	public static string GetDeskTopPath(){
+		return Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
+	}
+
+	public static string GetBuiltApkPath(){
+		return Path.Combine( GetDeskTopPath(), TimeHelper.GetCurrentTime_String( "MMdd-HHmm" ) + ".apk" );
+	}
 
 	private const string AndroidProjectFullPath = "E:\\WorkSpace_Eclipse\\qixiong\\七雄无双";
 

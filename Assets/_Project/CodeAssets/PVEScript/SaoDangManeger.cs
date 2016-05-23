@@ -13,7 +13,7 @@ public class SaoDangManeger : MonoBehaviour {
 
 	public GameObject SaoDangTemp;
 
-	private float mDistance = -170;
+	private float mDistance = -148;
 
 	public GameObject mPanle;
 
@@ -69,7 +69,7 @@ public class SaoDangManeger : MonoBehaviour {
 			
 			mSaoDangTemp.transform.localScale = SaoDangTemp.transform.localScale;
 			
-			mSaoDangTemp.transform.localPosition = new Vector3(0 , 55+mDistance*i, 0);
+			mSaoDangTemp.transform.localPosition = new Vector3(0 , 18+mDistance*i, 0);
 
 			SaoDangAwardTemp mSaoDangAwardTemp = mSaoDangTemp.GetComponent<SaoDangAwardTemp>();
 
@@ -128,7 +128,7 @@ public class SaoDangManeger : MonoBehaviour {
 			{
 				Skip.SetActive (false);
 				ConfirmBtn.SetActive (true);
-				ConfirmBtn.transform.localPosition = new Vector3(0,-208,0);
+				ConfirmBtn.transform.localPosition = new Vector3(0,-159,0);
 				SaoDangAgain.SetActive (false);
 				SaoDangfinshed.SetActive(true);
 			}

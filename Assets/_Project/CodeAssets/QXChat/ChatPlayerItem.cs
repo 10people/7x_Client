@@ -10,7 +10,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class ChatPlayerItem : MonoBehaviour,SocketListener {
+public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 
 	private ChatMessage chatMsg;
 
@@ -83,7 +83,7 @@ public class ChatPlayerItem : MonoBehaviour,SocketListener {
 	{
 		chatMsg = tempChatMsg;
 
-		isPlayer = (tempChatMsg.chatPct.guoJia > 0 && tempChatMsg.chatPct.guoJia < 8) ? true : false;
+		isPlayer = (tempChatMsg.chatPct.guoJia >= 0 && tempChatMsg.chatPct.guoJia < 8) ? true : false;
 
 		headIcon.gameObject.SetActive (isPlayer ? true : false);
 		channelTitle.spriteName = isPlayer ? "" : (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "broadCast" : "system");
@@ -91,6 +91,8 @@ public class ChatPlayerItem : MonoBehaviour,SocketListener {
 
 		textBg.spriteName = isPlayer ? (tempChatMsg.chatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id ? "DialogSelf" : "DialogOther") : "DialogOther";
 		textBg.color = isPlayer ? Color.white : new Color (0.02f, 0.02f, 0.02f);
+		textBg.gameObject.name = "dialog" + tempChatMsg.chatPct.seq;
+
 //		Debug.Log ("nationId:" + tempChatMsg.chatPct.guoJia);
 
 		if (isPlayer)
@@ -108,13 +110,13 @@ public class ChatPlayerItem : MonoBehaviour,SocketListener {
 
 		int row = textLabel.height / dis;
 
-		if (NGUIHelper.GetTextWidth (textLabel,textLabel.text).x <= 232)
+		if (NGUIHelper.GetTextWidth (textLabel,textLabel.text).x <= 280)
 		{
 			textBg.width = (int)(NGUIHelper.GetTextWidth (textLabel,textLabel.text).x + 28);
 		}
 		else
 		{
-			textBg.width = 260;
+			textBg.width = 308;
 		}
 
 //		BetterList<Vector3> mTempVerts = new BetterList<Vector3> ();
@@ -158,6 +160,10 @@ public class ChatPlayerItem : MonoBehaviour,SocketListener {
 
 		allianceInfoHandler.m_click_handler -= AllianceInfoHandlerClickBack;
 		allianceInfoHandler.m_click_handler += AllianceInfoHandlerClickBack;
+
+		BoxCollider tempBox = textBg.GetComponent<BoxCollider>();
+		tempBox.center = new Vector3(textBg.width / 2, - textBg.height / 2, 0);
+		tempBox.size = new Vector3(textBg.width, textBg.height, 0);
 	}
 
 	void PlayerHandlerClickBack (GameObject obj)
@@ -192,6 +198,7 @@ public class ChatPlayerItem : MonoBehaviour,SocketListener {
 				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "邀请入盟",chatBtnDelegate = InvitedIntoAlliance});
 			}
 
+			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "私聊",chatBtnDelegate = GotoSiliao});
 			break;
 		case ChatMessage.SendState.SEND_FAIL:
 
@@ -319,6 +326,15 @@ public class ChatPlayerItem : MonoBehaviour,SocketListener {
 		QXChatData.Instance.DelateChatMsg (chatMsg);
 	}
 
+	public void GotoSiliao()
+	{
+		QXChatPage.chatPage.SetSiliaoName(chatMsg.chatPct.senderName);
+		QXChatPage.chatPage.m_iSiliaoID = chatMsg.chatPct.senderId;
+		GameObject tempButton = new GameObject();
+		tempButton.name = "Siliao";
+		QXChatPage.chatPage.ChatBtnHandlerClickBack(tempButton);
+	}
+
 	public bool OnSocketEvent (QXBuffer p_message)
 	{
 		if (p_message != null)
@@ -359,6 +375,50 @@ public class ChatPlayerItem : MonoBehaviour,SocketListener {
 			}
 		}
 		return false;
+	}
+
+	public override void MYClick(GameObject ui)
+	{
+		if(ui.name.IndexOf("dialog") != -1)
+		{
+			Debug.Log(chatMsg.chatPct.soundLen);
+		    MSCPlayer.Instance.PlaySound(chatMsg.chatPct.seq, chatMsg.chatPct.channel);
+		}
+	}
+	
+	public override void MYMouseOver(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+		
 	}
 
 	void OnDestroy ()

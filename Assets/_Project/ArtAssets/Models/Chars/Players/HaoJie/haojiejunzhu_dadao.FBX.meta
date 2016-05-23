@@ -1812,6 +1812,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .397789121
+        functionName: setAttackDir
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 2
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -1983,6 +1990,13 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
+        messageOptions: 0
+      - time: .149173379
+        functionName: setAttackDir
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 1
         messageOptions: 0
       transformMask:
       - path: 
@@ -2169,6 +2183,13 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
+        messageOptions: 0
+      - time: .179557383
+        functionName: setAttackDir
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 2
         messageOptions: 0
       transformMask:
       - path: 

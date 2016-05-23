@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<QiriQiandaoControl id="1542000" Name="在线礼包" Desc="玩家在注册账号后,第一天持续在线，每隔一段时间在线即可领取丰厚奖励。" jinduDesc="在线礼包" Rank="0" status="1" doneType="42" languageId="1510000" StartTime="0" CloseTime="0" DelayTime="0" PicId="42" />
+<QiriQiandaoControl id="1543000" Name="七日签到" Desc="新手玩家在注册账号后的前七日，每天登陆即可领取丰厚奖励。" jinduDesc="七日签到" Rank="0" status="1" doneType="43" languageId="1520000" StartTime="0" CloseTime="0" DelayTime="0" PicId="43" />
+</dataset>

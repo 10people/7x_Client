@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<XilianzhiQujian ID="1" Min="0" Max="5" />
+<XilianzhiQujian ID="2" Min="5" Max="20" />
+<XilianzhiQujian ID="3" Min="20" Max="60" />
+</dataset>

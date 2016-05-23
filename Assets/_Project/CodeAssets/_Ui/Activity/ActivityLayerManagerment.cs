@@ -192,7 +192,7 @@ public class ActivityLayerManagerment : MonoBehaviour, SocketProcessor
 
     void ShowQianDaoDes()
     {
-        m_listLabel[3].text = DescIdTemplate.GetDescriptionById(QianDaoMonthTemplate.getDescIdTemplateByMonth(currentMonth));
+        m_listLabel[3].text =  QianDaoMonthTemplate.getQianDaoMonthTemplateByMonth(currentMonth).desc;
     
     }
     private List<ActivityInfo> listActivitysInfo = new List<ActivityInfo>();
@@ -513,7 +513,8 @@ public class ActivityLayerManagerment : MonoBehaviour, SocketProcessor
         tempObj.transform.localPosition = Vector3.zero;
         tempObj.transform.localScale = Vector3.one;
 
-        tempObj.GetComponent<ActivitySignalInItemManagerment>().ShowInfo(listSignalInInfo[index_SignalInNum], listSignalInInfo[index_SignalInNum].state == 0, index_SignalInNum < CurrentSignalInDays ? true : false, SignalIn);
+        tempObj.GetComponent<ActivitySignalInItemManagerment>().ShowInfo(listSignalInInfo[index_SignalInNum]
+            , listSignalInInfo[index_SignalInNum].state == 0, index_SignalInNum < CurrentSignalInDays ? true : false, SignalIn, Retroactive);
         if (index_SignalInNum < listSignalInInfo.Count - 1)
         {
             index_SignalInNum++;
@@ -605,6 +606,12 @@ public class ActivityLayerManagerment : MonoBehaviour, SocketProcessor
         {
             p_object = null;
         }
+    }
+
+    void Retroactive(int index)
+    {
+
+
     }
 
     void OnDestroy()

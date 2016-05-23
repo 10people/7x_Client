@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<QiriQiandaoTemp id="1510001" BigId="1510000" desc="在线**分钟" doneType="1" doneCondition="300" LimitTime="0" Award="0:900002:20" />
+<QiriQiandaoTemp id="1510002" BigId="1510000" desc="在线**分钟" doneType="1" doneCondition="600" LimitTime="0" Award="0:920001:6" />
+<QiriQiandaoTemp id="1510003" BigId="1510000" desc="在线**分钟" doneType="1" doneCondition="900" LimitTime="0" Award="0:921001:12" />
+<QiriQiandaoTemp id="1510004" BigId="1510000" desc="在线**分钟" doneType="1" doneCondition="1800" LimitTime="0" Award="0:900001:5000" />
+</dataset>

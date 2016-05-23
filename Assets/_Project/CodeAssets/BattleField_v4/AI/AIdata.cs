@@ -93,11 +93,15 @@ public class AIdata
 		
 		ATTRTYPE_Threat = 75,				//增加的仇恨值，用于BUFF计算
 
+		ATTRTYPE_Armor = 76,				//当前霸体值
+		ATTRTYPE_ArmorMax = 77,				//霸体值上限
+		ATTRTYPE_ArmorRatio = 78,			//霸体系数
+
 		//////////////////////////////////
 
-		ATTRTYPE_Ice = 76,              	//冰箭射中后的短暂免疫
-		ATTRTYPE_Focus = 77,				//轻武器技能2的标记
-		ATTRTYPE_NUQI = 78,					//怒气
+		ATTRTYPE_Ice = 79,              	//冰箭射中后的短暂免疫
+		ATTRTYPE_Focus = 80,				//轻武器技能2的标记
+		ATTRTYPE_NUQI = 81,					//怒气
 		ATTRTYPE_isIdle = 100,				//眩晕
 		ATTRTYPE_hpDelay = 101,				//减少生命
 		ATTRTYPE_Blind = 102,				//致盲，恐惧
@@ -265,6 +269,11 @@ public class AIdata
 		AddAttribute (nodeData.hpMax * nodeData.hpNum);//ATTRTYPE_hpMaxReal = 74,总血量上限
 
 		AddAttribute (0);//ATTRTYPE_Ice = 60,
+
+		AddAttribute (nodeData.armor);//ATTRTYPE_Armor = 76
+		AddAttribute (nodeData.armorMax);//ATTRTYPE_ArmorMax = 77
+		AddAttribute (nodeData.armorRatio);//ATTRTYPE_ArmorRatio = 78
+
 		AddAttribute (0);//ATTRTYPE_Focus = 61,
 
 		AddAttribute (0);

@@ -41,6 +41,8 @@ ModelImporter:
     100066: Bone23
     100068: //RootNode
     100070: qixiongwushuang_xinnanzhujue(1)
+    100072: Box001
+    100074: "\u9752\u94DC\u65A9\u9A6C\u5200"
     400000: Bip01
     400002: Bip01 Head
     400004: Bip01 L Calf
@@ -77,7 +79,12 @@ ModelImporter:
     400066: Bone23
     400068: //RootNode
     400070: qixiongwushuang_xinnanzhujue(1)
+    400072: Box001
+    400074: "\u9752\u94DC\u65A9\u9A6C\u5200"
+    2300000: "\u9752\u94DC\u65A9\u9A6C\u5200"
+    3300000: "\u9752\u94DC\u65A9\u9A6C\u5200"
     4300000: qixiongwushuang_xinnanzhujue(1)
+    4300002: "\u9752\u94DC\u65A9\u9A6C\u5200"
     7400000: Stand0
     7400002: BATC
     7400004: Dead
@@ -101,6 +108,7 @@ ModelImporter:
     7400040: fangunqishen
     7400042: BATCDown
     7400044: gongji_4_wan
+    7400046: tiao
     9500000: //RootNode
     13700000: qixiongwushuang_xinnanzhujue(1)
   materials:
@@ -228,9 +236,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -348,9 +360,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -468,9 +484,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -595,9 +615,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -785,9 +809,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -933,9 +961,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -1130,9 +1162,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -1250,9 +1286,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -1370,9 +1410,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -1490,9 +1534,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -1596,9 +1644,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -1758,9 +1810,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -1866,6 +1922,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .176795155
+        functionName: setAttackDir
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 2
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -1941,9 +2004,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -2042,6 +2109,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0635365695
+        functionName: setAttackDir
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -2117,9 +2191,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -2232,6 +2310,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0773486719
+        functionName: setAttackDir
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 2
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -2307,9 +2392,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -2504,9 +2593,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -2659,9 +2752,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -2786,9 +2883,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -2906,9 +3007,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -3026,9 +3131,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -3132,9 +3241,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -3252,9 +3365,13 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1
@@ -3365,9 +3482,123 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Bip01 Neck
+        weight: 1
+      - path: Box001
+        weight: 1
+      - path: qixiongwushuang_xinnanzhujue(1)
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: tiao
+      takeName: Take 001
+      firstFrame: 690
+      lastFrame: 720
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bip01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Head
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Head/Bone03
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Head/Bone03/Bone04
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm/Bip01 L Forearm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm/Bip01 L Forearm/Bip01 L Hand
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm/Bip01 R Forearm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm/Bip01 R Forearm/Bip01 R Hand
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone06
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone06/Bone08
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone22
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone22/Bone23
+        weight: 1
+      - path: Bip01/Bip01 Prop1
+        weight: 1
+      - path: "Bip01/Bip01 Prop1/\u9752\u94DC\u65A9\u9A6C\u5200"
+        weight: 1
+      - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 Neck
+        weight: 1
+      - path: Box001
         weight: 1
       - path: qixiongwushuang_xinnanzhujue(1)
         weight: 1

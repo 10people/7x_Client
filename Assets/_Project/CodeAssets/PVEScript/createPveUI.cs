@@ -32,7 +32,7 @@ public class createPveUI : MonoBehaviour {
 		{
 			UIYindao.m_UIYindao.CloseUI();
 		}
-		MapData.mapinstance.ShowPVEGuid();
+		MapData.mapinstance.ShowYinDao = true;
 
 		iTween.ScaleTo (this.gameObject,iTween.Hash("scale",scale2,"time",time));
 		MapData.mapinstance.UI_exsit = false;

@@ -12,12 +12,12 @@ public class LoadingTween : MonoBehaviour
         public float m_EndValue;
         public float m_GapDuration;
         public float m_WaitDuration;
-        public DelegateUtil.FloatDelegate m_FloatDelegate;
+        public DelegateHelper.FloatDelegate m_FloatDelegate;
     }
 
     private LoadingTweenConfig m_loadingTweenConfig;
 
-    public static void StartLoadingTween(GameObject parentGameObject, List<GameObject> targetGameObjectList, float startValue, float endValue, float gapDuration, float waitDuration, DelegateUtil.FloatDelegate floatDelegate)
+    public static void StartLoadingTween(GameObject parentGameObject, List<GameObject> targetGameObjectList, float startValue, float endValue, float gapDuration, float waitDuration, DelegateHelper.FloatDelegate floatDelegate)
     {
         var loadingTween = parentGameObject.GetComponent<LoadingTween>() ?? parentGameObject.AddComponent<LoadingTween>();
 

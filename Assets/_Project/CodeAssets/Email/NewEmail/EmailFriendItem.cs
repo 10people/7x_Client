@@ -31,7 +31,7 @@ public class EmailFriendItem : MonoBehaviour {
 		headIcon.spriteName = "PlayerIcon" + tempInfo.iconId;
 		nation.spriteName = "nation_" + tempInfo.guojia;
 		vipLabel.text = "V" + tempInfo.vipLv;
-		nameLabel.text = tempInfo.name + (string.IsNullOrEmpty (tempInfo.lianMengName) ? "\n无联盟" : "\n<" + tempInfo.lianMengName + ">");
+		nameLabel.text = tempInfo.name + (string.IsNullOrEmpty (tempInfo.lianMengName) ? "\n无联盟" : "\n[00e1c4]<" + tempInfo.lianMengName + ">[-]");
 
 		EventHandler handler = this.GetComponent<EventHandler> ();
 		handler.m_click_handler -= FriendItemHandlerClickBack;

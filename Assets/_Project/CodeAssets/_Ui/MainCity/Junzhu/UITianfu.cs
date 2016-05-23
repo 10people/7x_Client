@@ -437,8 +437,15 @@ public class UITianfu : MYNGUIPanel
 				}
 			}
 		}
-		
-		m_TianfuName.text = temp.name;
+		if(temp.m_iType == 1)
+		{
+			m_TianfuName.text = "[ec4534]" + temp.name + "[-]";
+		}
+		else
+		{
+			m_TianfuName.text = "[03abea]" + temp.name + "[-]";
+		}
+
 		m_TianfuLV.text = "等级:  " + temp.m_iCurLV + "/" + temp.m_iMaxLV;
 		m_TianfuDis.text = temp.m_sDir;
 		m_TianfuWant.text = "";
@@ -529,12 +536,12 @@ public class UITianfu : MYNGUIPanel
 		if(tempWantLvNum == 0)
 		{
 			m_TianfuWantLv.gameObject.SetActive(false);
-			m_TianfuDis.transform.localPosition = new Vector3(518, 68, 0);
+			m_TianfuDis.transform.localPosition = new Vector3(518, 18, 0);
 		}
 		else
 		{
 			m_TianfuWantLv.gameObject.SetActive(true);
-			m_TianfuDis.transform.localPosition = new Vector3(518, 27, 0);
+			m_TianfuDis.transform.localPosition = new Vector3(518, -9, 0);
 		}
 		
 		if(temp.m_iType == 1)

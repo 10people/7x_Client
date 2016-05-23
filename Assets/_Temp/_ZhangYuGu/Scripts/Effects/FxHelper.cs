@@ -264,6 +264,16 @@ public class FxHelper {
 
 
 
+	#region Utilities
+
+	public static bool IsFxAutoRelease( GameObject p_gb ){
+		return ParticleAutoRelease.IsAutoReleaseEnabled( p_gb );
+	}
+
+	#endregion
+
+
+
 	#region Fx Load List
 	
 	private static List<FxToLoad> m_fx_to_load_list = new List<FxToLoad>();
@@ -276,20 +286,24 @@ public class FxHelper {
 		if( m_fx_to_load_list.Count <= 0 ){
 			return;
 		}
-		
-		FxToLoad t_task = m_fx_to_load_list[ 0 ];
-		
-		if( t_task.IsReadyToLoad() ){
-			t_task.ExeLoad();
-			
-			return;
+
+		int t_count = m_fx_to_load_list.Count;
+
+		for( int i = t_count - 1; i >= 0; i-- ){
+			FxToLoad t_task = m_fx_to_load_list[ i ];
+
+			if( t_task.IsReadyToLoad() ){
+				t_task.ExeLoad();
+
+				return;
+			}
+
+			if( !t_task.IsDone() ){
+				return;
+			}
+
+			m_fx_to_load_list.Remove( t_task );
 		}
-		
-		if( !t_task.IsDone() ){
-			return;
-		}
-		
-		m_fx_to_load_list.Remove( t_task );
 	}
 
 	private class FxToLoad{

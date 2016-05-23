@@ -64,78 +64,54 @@ public class UIChenghao : MYNGUIPanel
 		{
 			if(m_iSelectIndex != -1)
 			{
-				m_UIChenghaoList[m_iSelectIndex].m_SpriteButton.SetActive(false);
 				m_UIChenghaoList[m_iSelectIndex].m_SpriteSelect.gameObject.SetActive(false);
-
 			}
 			m_iSelectIndex = int.Parse(ui.name.Substring(13, ui.name.Length - 13));
-			if(m_chenghaoData.list[m_iSelectIndex].state == 0)
-			{
-				return;
-			}
-			m_UIChenghaoList[m_iSelectIndex].m_SpriteButton.SetActive(true);
 			m_UIChenghaoList[m_iSelectIndex].m_SpriteSelect.gameObject.SetActive(true);
-			if(JunZhuData.m_iChenghaoID == m_chenghaoData.list[m_iSelectIndex].id)
-			{
-				m_UIChenghaoList[m_iSelectIndex].m_LabelButton.text = "卸下";
-			}
-			else
-			{
-				m_UIChenghaoList[m_iSelectIndex].m_LabelButton.text = "装上";
-			}
-
-			for(int i = 0; i < Global.m_NewChenghao.Count; i ++)
-			{
-				if(Global.m_NewChenghao[i] == m_chenghaoData.list[m_iSelectIndex].id)
-				{
-					m_UIChenghaoList[m_iSelectIndex].m_SpriteNewOrIng.gameObject.SetActive(false);
-					Global.m_NewChenghao.RemoveAt(i);
-					string saveString = "";
-					for(int q = 0; q < Global.m_NewChenghao.Count; q ++)
-					{
-						saveString += Global.m_NewChenghao[q] + ",";
-					}
-					PlayerPrefs.SetString( ConstInGame.CONST_NEW_CHENGHAO + JunZhuData.Instance().m_junzhuInfo.id, saveString );
-					PlayerPrefs.Save();
-					if(Global.m_NewChenghao.Count == 0)
-					{
-						MainCityUI.SetRedAlert(500015, false);
-					}
-					break;
-				}
-			}
 		}
 		else if(ui.name.IndexOf("OnChenghao") != -1)
 		{
 //			ErrorMessage
-			if(JunZhuData.m_iChenghaoID == m_chenghaoData.list[m_iSelectIndex].id)
+			int selectIndex = int.Parse(ui.name.Substring(10, ui.name.Length - 10));
+			Debug.Log(selectIndex);
+			if(m_chenghaoData.list[selectIndex].state == 0)
 			{
-				JunZhuData.m_iChenghaoID = -1;
-				m_UIChenghaoList[m_iSelectIndex].m_LabelButton.text = "装上";
-				m_UIChenghaoList[m_iSelectIndex].m_SpriteNewOrIng.gameObject.SetActive(false);
-				m_UISpriteChenghao.gameObject.SetActive(false);
+				if(m_chenghaoData.myPoint >= m_chenghaoData.list[selectIndex].price)
+				{
+					Global.ScendID(ProtoIndexes.C_DuiHuan_CHENGHAO, m_chenghaoData.list[selectIndex].id);
+				}
 			}
 			else
 			{
-				if(JunZhuData.m_iChenghaoID != -1)
+				if(JunZhuData.m_iChenghaoID == m_chenghaoData.list[selectIndex].id)
 				{
-					for(int i = 0; i < m_chenghaoData.list.Count; i ++)
+					JunZhuData.m_iChenghaoID = -1;
+					m_UIChenghaoList[selectIndex].m_LabelButton.text = "装上";
+					m_UIChenghaoList[selectIndex].m_SpriteNewOrIng.gameObject.SetActive(false);
+					m_UISpriteChenghao.gameObject.SetActive(false);
+				}
+				else
+				{
+					if(JunZhuData.m_iChenghaoID != -1)
 					{
-						if(m_chenghaoData.list[i].id == JunZhuData.m_iChenghaoID)
+						for(int i = 0; i < m_chenghaoData.list.Count; i ++)
 						{
-							m_UIChenghaoList[i].m_SpriteNewOrIng.gameObject.SetActive(false);
+							if(m_chenghaoData.list[i].id == JunZhuData.m_iChenghaoID)
+							{
+								m_UIChenghaoList[i].m_SpriteNewOrIng.gameObject.SetActive(false);
+							}
 						}
 					}
+					JunZhuData.m_iChenghaoID = m_chenghaoData.list[selectIndex].id;
+					m_UIChenghaoList[selectIndex].m_LabelButton.text = "卸下";
+					m_UIChenghaoList[selectIndex].m_SpriteNewOrIng.gameObject.SetActive(true);
+					m_UIChenghaoList[selectIndex].m_SpriteNewOrIng.spriteName = "ing";
+					m_UISpriteChenghao.gameObject.SetActive(true);
+					m_UISpriteChenghao.spriteName = JunZhuData.m_iChenghaoID + "";
 				}
-				JunZhuData.m_iChenghaoID = m_chenghaoData.list[m_iSelectIndex].id;
-				m_UIChenghaoList[m_iSelectIndex].m_LabelButton.text = "卸下";
-				m_UIChenghaoList[m_iSelectIndex].m_SpriteNewOrIng.gameObject.SetActive(true);
-				m_UIChenghaoList[m_iSelectIndex].m_SpriteNewOrIng.spriteName = "ing";
-				m_UISpriteChenghao.gameObject.SetActive(true);
-				m_UISpriteChenghao.spriteName = JunZhuData.m_iChenghaoID + "";
+				PlayerNameManager.UpdateSelfName();
+				Global.ScendID(ProtoIndexes.C_USE_CHENG_HAO, JunZhuData.m_iChenghaoID);
 			}
-			PlayerNameManager.UpdateSelfName();
-			Global.ScendID(ProtoIndexes.C_USE_CHENG_HAO, JunZhuData.m_iChenghaoID);
 //			m_iSelectIndex = int.Parse(ui.name.Substring(10, ui.name.Length - 10));
 		}
 		else if(ui.name.IndexOf("chenghaoback") != -1)
@@ -160,7 +136,6 @@ public class UIChenghao : MYNGUIPanel
 			m_UIJunZhu.m_PlayerRight.SetActive(true);
 			m_UIJunZhu.m_UIChenghaoSprite.gameObject.SetActive(false);
 			m_UIJunZhu.m_UILbaelHeroName.gameObject.SetActive(true);
-			m_UIJunZhu.m_PlayerLeft.gameObject.transform.localPosition = new Vector3(-1,0,0);
 			m_UILbaelYulan.gameObject.SetActive(false);
 //			m_UIJunZhu.m_ZhuangBeiIcon.SetActive(true);
 			gameObject.SetActive(false);
@@ -211,45 +186,76 @@ public class UIChenghao : MYNGUIPanel
 	
 	public void setData(ChengHaoList chenghaoData)
 	{
-
 		m_chenghaoData = chenghaoData;
-		if(!gameObject.activeSelf)
+		for(int i = 0; i < m_chenghaoData.list.Count; i ++)
 		{
-			for(int i = 0; i < m_chenghaoData.list.Count; i ++)
+			//				Debug.Log(m_chenghaoData.list[i].id);
+			UIChenghaoList tempChenghaoData;
+			if(m_UIChenghaoList.Count <= i)
 			{
-//				Debug.Log(m_chenghaoData.list[i].id);
-
-				UIChenghaoList tempChenghaoData = GameObject.Instantiate(m_UIChenghaoCopy);
+				tempChenghaoData = GameObject.Instantiate(m_UIChenghaoCopy);
 				tempChenghaoData.gameObject.SetActive(true);
 				tempChenghaoData.transform.parent = m_UIChenghaoCopy.transform.parent;
 				tempChenghaoData.transform.localScale = Vector3.one;
 				tempChenghaoData.transform.localPosition = new Vector3(61f, 41f - (95f * i), 0);
 				tempChenghaoData.gameObject.name = "ChenghaoIndex" + i;
-				tempChenghaoData.m_LabelDis.text = ChenghaoTemplate.GetChenghaoDis(m_chenghaoData.list[i].id);
 				tempChenghaoData.m_LabelName.text = ChenghaoTemplate.GetChenghaoName(m_chenghaoData.list[i].id);
 				tempChenghaoData.m_SpriteButton.name = "OnChenghao" + m_chenghaoData.list[i].id;
-
-				switch(m_chenghaoData.list[i].state)
+				string tempArr = "攻击+" + m_chenghaoData.list[i].gongJi + "\n" + "防御+" + m_chenghaoData.list[i].fangYu + "\n" + "生命+" + m_chenghaoData.list[i].shengMing;
+				tempChenghaoData.m_LabelArr.text = tempArr;
+				tempChenghaoData.m_UIButton.gameObject.name = "OnChenghao" + i;
+			}
+			else
+			{
+				tempChenghaoData = m_UIChenghaoList[i];
+			}
+			switch(m_chenghaoData.list[i].state)
+			{
+			case 0:
+				tempChenghaoData.m_ObjExp.SetActive(true);
+				tempChenghaoData.m_SpriteExp.SetDimensions(Global.getBili(100, m_chenghaoData.myPoint, m_chenghaoData.list[i].price) ,15);
+				tempChenghaoData.m_LabelExp.text = m_chenghaoData.myPoint + "/" + m_chenghaoData.list[i].price;
+				long day = m_chenghaoData.list[i].leftSec / 3600 / 24;
+				tempChenghaoData.m_LabelTime.text = "有效期" + day + "天";
+				tempChenghaoData.m_LabelButton.text = "兑 换";
+				if(m_chenghaoData.myPoint >= m_chenghaoData.list[i].price)
 				{
-				case 0:
-					tempChenghaoData.m_SpriteBG.color = Color.grey;
-					break;
-				case 'U':
-					tempChenghaoData.m_SpriteNewOrIng.spriteName = "ing";
-					tempChenghaoData.m_SpriteNewOrIng.gameObject.SetActive(true);
-					break;
-				case 'G':
-					break;
+					tempChenghaoData.m_SpriteButton.color = Color.white;
+					tempChenghaoData.m_UILabelType.setType(10);
 				}
-				if(isHaveNew(m_chenghaoData.list[i].id))
+				else
 				{
-					tempChenghaoData.m_SpriteNewOrIng.spriteName = "newchenghao";
-					tempChenghaoData.m_SpriteNewOrIng.gameObject.SetActive(true);
+					tempChenghaoData.m_SpriteButton.color = Color.gray;
+					tempChenghaoData.m_UILabelType.setType(101);
+					tempChenghaoData.m_UIButton.enabled = false;
 				}
+				break;
+			case 'U':
+				tempChenghaoData.m_SpriteNewOrIng.spriteName = "ing";
+				tempChenghaoData.m_SpriteNewOrIng.gameObject.SetActive(true);
+				tempChenghaoData.m_ObjExp.SetActive(false);
+				Debug.Log(m_chenghaoData.list[i].leftSec);
+				TimeLabelHelper.Instance.setTimeLabel(tempChenghaoData.m_LabelTime, "00:00", (int)m_chenghaoData.list[i].leftSec, EndTime, "后过期");
+				tempChenghaoData.m_LabelButton.text = "卸下";
+				break;
+			case 'G':
+				Debug.Log(m_chenghaoData.list[i].leftSec);
+				tempChenghaoData.m_ObjExp.SetActive(false);
+				TimeLabelHelper.Instance.setTimeLabel(tempChenghaoData.m_LabelTime, "00:00", (int)m_chenghaoData.list[i].leftSec, EndTime, "后过期");
+				tempChenghaoData.m_LabelButton.text = "装上";
+				break;
+			}
+			if(m_UIChenghaoList.Count <= i)
+			{
 				m_UIChenghaoList.Add(tempChenghaoData);
 			}
-			gameObject.SetActive(true);
 		}
+		gameObject.SetActive(true);
+	}
+
+	public void EndTime()
+	{
+		Global.ScendNull(ProtoIndexes.C_LIST_CHENG_HAO);
 	}
 
 	public bool isHaveNew(int id)

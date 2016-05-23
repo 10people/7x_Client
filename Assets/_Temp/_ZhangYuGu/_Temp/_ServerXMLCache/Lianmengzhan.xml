@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Lianmengzhan startTime="0:00" deadline="21:00" jianshezhi="1000" announceTime="9:00,12:00,18:00,20:00" announcement="距离联盟战报名截止还有X小时，请各位盟主及时在联盟界面报名参赛" memNumMin="5" lianmengLvMin="1" lianmengNumMin="4" lianmengNumMax="64" matchStart="21:00" matchEnd="24:00" publishTime="0:00" preStartTime="0:00" preMatchTipsTime="19:45,19:50,19:55" preMatchTips="距离第X届第X轮比赛开始还有N分钟" warStart="20:00" warStop="20:30" jiesuanTime="30" preCount="2" countDown="15" reviveTime="5" fightingDuration="3" screeningAngle="120" screeningDistance="5" campNum="5" zhanlingzhiMax="400" criticalValue="100" zhanlingzhiAdd="2" scoreAdd1="2" scoreAdd2="5" scoreAdd3="8" scoreAdd4="11" scoreAdd5="15" scoreMax="3000" birthPoint1="5,5" birthPoint2="95,95" camp1="5,65" camp2="65,5" camp3="50,50" camp4="35,95" camp5="95,35" />
+</dataset>

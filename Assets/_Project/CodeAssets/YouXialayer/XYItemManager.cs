@@ -10,11 +10,7 @@ using ProtoBuf.Meta;
 
 public class XYItemManager : MonoBehaviour, SocketProcessor{
 
-	public UIGrid mGid;
-
 	public GameObject Item;
-
-	public UIScrollView mScorview;
 	public List <YXItem> YXItemList = new List<YXItem>();
 
 	public static XYItemManager mXYItemManager;
@@ -31,6 +27,20 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 	void Awake()
 	{
 		SocketTool.RegisterMessageProcessor(this);
+		// reigster trigger delegate
+		{
+			UIWindowEventTrigger.SetOnTopAgainDelegate( gameObject, ShowSL_Yindao );
+		}
+	}
+	public	void ShowSL_Yindao()
+	{
+		if(FreshGuide.Instance().IsActive(200020)&& TaskData.Instance.m_TaskInfoDic[200020].progress >= 0)
+		{
+			Debug.Log("试练界面千重楼首页引导");
+
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200020];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+		}
 	}
 	void OnDestroy()
 	{
@@ -96,7 +106,7 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 			}
 
 		}
-		for(int i = 0 ; i < mYouXiaInfoResp.youXiaInfos.Count; i++)
+		for(int i = 0 ; i < mYouXiaInfoResp.youXiaInfos.Count+1; i++)
 		{
 			GameObject m_UI = Instantiate(Item) as GameObject;
 			
@@ -105,20 +115,24 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 			m_UI.transform.parent = Item.transform.parent;
 			
 			m_UI.transform.localScale = Vector3.one;
-			
-			//m_UI.transform.localPosition = new Vector3(-300+Pos_Dis*i,0,0);
-			
-			YXItem mYXItem = m_UI.GetComponent<YXItem>();
-			
-			mYXItem.mYouXiaInfo = mYouXiaInfoResp.youXiaInfos[i];
 
-//			Debug.Log("mYouXiaInfoResp.youXiaInfos[i].zuheId = "+mYouXiaInfoResp.youXiaInfos[i].zuheId);
-//			Debug.Log("mYouXiaInfoResp.youXiaInfos[i].id = "+mYouXiaInfoResp.youXiaInfos[i].id);
-			mYXItem.Init();
-			
-			YXItemList.Add(mYXItem);
+			YXItem mYXItem = m_UI.GetComponent<YXItem>();
+			if(i < mYouXiaInfoResp.youXiaInfos.Count)
+			{
+				m_UI.transform.localPosition = new Vector3(100 * (i+1),0,0);
+				mYXItem.mYouXiaInfo = mYouXiaInfoResp.youXiaInfos[i];
+
+				mYXItem.Init();
+				
+				YXItemList.Add(mYXItem);
+			}
+			else
+			{				
+				m_UI.transform.localPosition = new Vector3(0,0,0);
+				mYXItem.InitQianChongLouBtn();
+			}
+
 		}
-		mGid.repositionNow = true;
 //		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
 //		{
 //		//	Debug.Log("进入试练二阶界面1");
@@ -128,23 +142,74 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 //			return;
 //
 //		}
+		int index = 0;
+		if(Global.m_sPanelWantRun != null || Global.m_sPanelWantRun != "")
+		{
+			switch(Global.m_sPanelWantRun)
+			{
+			case "SL_JiaoMiePanJun":
+				index = 3;
+				break;
+			case "L_XiJieQuanGui":
+				index = 1;
+				break;
+			case "SL_WanBiGuiZhao":
+				index = 4;
+				break;
+			case "SI_TaoFaShanZei":
+				index = 2;
+				break;
+			case "SI_ZongHengLiuHe":
+				index = 5;
+				break;
+			case "QianChongLou":
+				index = 101;
+				break;
+			default:
+				break;
+			}
+			Global.m_sPanelWantRun = "";
+		}
 		bool idshow_alert = false;
 		foreach(YXItem mXY in YXItemList)
 		{
+			if(mXY.mYouXiaInfo.id == index)
+			{
+				mXY.Enter();
+			}
+			else if(index == 101)
+			{
+				mXY.isQianchonglou = true;
+				mXY.Enter();
+			}
 			if(mXY.Art.gameObject.activeInHierarchy)
 			{
 				idshow_alert = true;
-				break;
 			}
 		}
 		if(!idshow_alert)
 		{
 			PushAndNotificationHelper.SetRedSpotNotification( 305, false );
 		}
+		ShowSL_Yindao ();
 	}
 	public void Close()
 	{
 		MainCityUI.TryRemoveFromObjectList(this.gameObject);
 		Destroy (this.gameObject);
+	}
+	public void EnterQianChongLou()
+	{
+		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.LIEFU),LoadResourceCallback);
+	}
+	void LoadResourceCallback(ref WWW p_www,string p_path, Object p_object)
+	{
+
+		GameObject tempOjbect = Instantiate(p_object )as GameObject;
+
+		tempOjbect.transform.localScale = Vector3.one;
+		
+		tempOjbect.transform.localPosition = new Vector3 (100,100,0);
+
 	}
 }

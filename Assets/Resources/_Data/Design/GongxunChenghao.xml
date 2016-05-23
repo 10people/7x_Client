@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<GongxunChenghao Id="4201" nameID="4201" descID="4201" price="1000" validityPeriod="3" add_injury_scale="10" reduce_injury_scale="10" />
+<GongxunChenghao Id="4202" nameID="4202" descID="4202" price="2000" validityPeriod="3" add_injury_scale="15" reduce_injury_scale="15" />
+<GongxunChenghao Id="4203" nameID="4203" descID="4203" price="3000" validityPeriod="3" add_injury_scale="20" reduce_injury_scale="20" />
+<GongxunChenghao Id="4204" nameID="4204" descID="4204" price="4000" validityPeriod="3" add_injury_scale="25" reduce_injury_scale="25" />
+</dataset>

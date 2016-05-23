@@ -13,10 +13,11 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
     public GameObject m_BackObj;
     public GameObject m_Back_2Obj;
     public List<UILabel> m_listLabel;
-    //  public EventIndexHandle m_Event;
+    public EventPressIndexHandle m_Event;
     public delegate void OnClick_TouchEachDay();
     OnClick_TouchEachDay CallBackSignalIn;
-
+    public delegate void OnClick_TouchRetroactive(int index);
+    OnClick_TouchRetroactive CallBack_Retroactive;
     public delegate void dele_AnimationFinish();
     dele_AnimationFinish CallBackAnimationFinish;
 
@@ -25,7 +26,30 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
     public bool m_NowSignalIn = false;
     void Start()
     {
+        m_Event.m_Handle += Retroactive;
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(245), ResourceLoadCallback_0);
+    }
+
+    void Retroactive(int index)
+    {
+        switch (m_SignalInState)
+        {
+            case 0:
+                {
+                    Global.CreateFunctionIcon(1901);
+                }
+                break;
+            case 1:
+                {
+                    CallBack_Retroactive(int.Parse(transform.name));
+                }
+                break;
+            case 2:
+                {
+                    ClientMain.m_UITextManager.createText("已补签");
+                }
+                break;
+        }
     }
     public void ResourceLoadCallback_0(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
@@ -40,11 +64,15 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         public bool isTouch;
 
     };
+    public int m_SignalInState;
+  
     private ItemInfo rewardInfo = new ItemInfo();
     private int _state = 0;
     private bool _isSpark = false;
-    public void ShowInfo(QiandaoAward reward, bool isGuang, bool isMesh, OnClick_TouchEachDay callback, dele_AnimationFinish callback_finish = null)
+    public void ShowInfo(QiandaoAward reward, bool isGuang, bool isMesh, OnClick_TouchEachDay callback, OnClick_TouchRetroactive callback_TouchRetroactive, dele_AnimationFinish callback_finish = null)
     {
+        m_SignalInState = reward.isDouble;
+        CallBack_Retroactive = callback_TouchRetroactive;
         m_BackObj.SetActive(reward.bottomColor == 0);
         m_Back_2Obj.SetActive(reward.bottomColor == 1);
         if (callback_finish != null)
@@ -63,6 +91,7 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
             m_GouAnimator.enabled = false;
         }
         _state = reward.state;
+        m_Event.gameObject.SetActive(isMesh && reward.state == 0 && reward.vipDouble > 0 && reward.isDouble < 2);
         _isSpark = isMesh && reward.state == 0;
         m_listGameobject[2].gameObject.SetActive(isMesh && reward.state == 0);
         _isTouchEnable = isMesh && reward.state == 0 ? true : false;
@@ -74,6 +103,10 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         {
             m_listLabel[0].text = "[b]V" + reward.vipDouble.ToString() + NameIdTemplate.GetName_By_NameId(990052) + "[/b]";
             m_listGameobject[1].SetActive(true);
+        }
+        else
+        {
+            m_listGameobject[1].SetActive(false);
         }
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
     }
@@ -87,26 +120,10 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         iconSampleObject.transform.localScale = Vector3.one;
         IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
         int color = CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).color;
-        //if (color >= 20)
-        //{
-        //    color -= 20;
-        //}       
-        //iconSampleManager.SetIconByID(rewardInfo.id, rewardInfo.count.ToString(), 0, false,
-        //     _state != 1 && !_isSpark && color >= 7);
-
-        iconSampleManager.SetIconByID(rewardInfo.id, rewardInfo.count.ToString());
-        iconSampleManager.SetIconPopText(rewardInfo.id, NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).nameId), DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).descId));
-        //if (_state == 1)
-        //{
-        //    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2
-        //        , iconSampleObject
-        //        , EffectIdTemplate.GetPathByeffectId(620211)
-        //        , null);
-        //}
-        //else
-        //{
-        //    UI3DEffectTool.ClearUIFx(iconSampleObject);
-        //}
+        iconSampleManager.SetIconByID(rewardInfo.id, rewardInfo.count.ToString(),2);
+        iconSampleManager.SetIconPopText(rewardInfo.id, NameIdTemplate.GetName_By_NameId(
+            CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).nameId),
+            DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).descId));
         if (rewardInfo.isTouch)
         {
             iconSampleManager.NguiLongPress.OnNormalPress = OnTouchEvent;

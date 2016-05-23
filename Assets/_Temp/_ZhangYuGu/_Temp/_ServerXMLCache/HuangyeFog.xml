@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HuangyeFog fogId="0" openCost="0" needLv="1" positionX="0" positionY="0" cangbaoLv="0" />
+<HuangyeFog fogId="1" openCost="2000" needLv="1" positionX="-100" positionY="150" cangbaoLv="0" />
+<HuangyeFog fogId="2" openCost="2000" needLv="1" positionX="250" positionY="100" cangbaoLv="0" />
+<HuangyeFog fogId="3" openCost="2000" needLv="1" positionX="350" positionY="-200" cangbaoLv="0" />
+<HuangyeFog fogId="4" openCost="2000" needLv="1" positionX="-250" positionY="-250" cangbaoLv="0" />
+<HuangyeFog fogId="5" openCost="4000" needLv="1" positionX="-450" positionY="-100" cangbaoLv="10" />
+<HuangyeFog fogId="6" openCost="4000" needLv="1" positionX="-350" positionY="200" cangbaoLv="10" />
+<HuangyeFog fogId="7" openCost="4000" needLv="1" positionX="0" positionY="350" cangbaoLv="10" />
+<HuangyeFog fogId="8" openCost="4000" needLv="1" positionX="400" positionY="150" cangbaoLv="10" />
+<HuangyeFog fogId="9" openCost="6000" needLv="1" positionX="550" positionY="-200" cangbaoLv="20" />
+<HuangyeFog fogId="10" openCost="6000" needLv="1" positionX="100" positionY="-350" cangbaoLv="20" />
+<HuangyeFog fogId="11" openCost="6000" needLv="1" positionX="-550" positionY="100" cangbaoLv="20" />
+<HuangyeFog fogId="12" openCost="6000" needLv="1" positionX="-350" positionY="400" cangbaoLv="20" />
+<HuangyeFog fogId="13" openCost="8000" needLv="1" positionX="300" positionY="450" cangbaoLv="30" />
+<HuangyeFog fogId="14" openCost="8000" needLv="1" positionX="600" positionY="250" cangbaoLv="30" />
+<HuangyeFog fogId="15" openCost="8000" needLv="1" positionX="650" positionY="0" cangbaoLv="30" />
+<HuangyeFog fogId="16" openCost="8000" needLv="1" positionX="100" positionY="-550" cangbaoLv="30" />
+<HuangyeFog fogId="17" openCost="10000" needLv="1" positionX="-150" positionY="-600" cangbaoLv="40" />
+<HuangyeFog fogId="18" openCost="10000" needLv="1" positionX="-350" positionY="-600" cangbaoLv="40" />
+<HuangyeFog fogId="19" openCost="10000" needLv="1" positionX="-450" positionY="-400" cangbaoLv="40" />
+<HuangyeFog fogId="20" openCost="10000" needLv="1" positionX="-650" positionY="-350" cangbaoLv="40" />
+<HuangyeFog fogId="21" openCost="15000" needLv="1" positionX="-750" positionY="0" cangbaoLv="50" />
+<HuangyeFog fogId="22" openCost="15000" needLv="1" positionX="150" positionY="600" cangbaoLv="50" />
+<HuangyeFog fogId="23" openCost="15000" needLv="1" positionX="450" positionY="600" cangbaoLv="50" />
+<HuangyeFog fogId="24" openCost="15000" needLv="1" positionX="700" positionY="450" cangbaoLv="50" />
+<HuangyeFog fogId="25" openCost="20000" needLv="1" positionX="800" positionY="600" cangbaoLv="60" />
+<HuangyeFog fogId="26" openCost="20000" needLv="1" positionX="900" positionY="250" cangbaoLv="60" />
+<HuangyeFog fogId="27" openCost="20000" needLv="1" positionX="900" positionY="50" cangbaoLv="60" />
+<HuangyeFog fogId="28" openCost="20000" needLv="1" positionX="850" positionY="-200" cangbaoLv="60" />
+<HuangyeFog fogId="29" openCost="25000" needLv="1" positionX="850" positionY="-450" cangbaoLv="70" />
+<HuangyeFog fogId="30" openCost="25000" needLv="1" positionX="650" positionY="-400" cangbaoLv="70" />
+<HuangyeFog fogId="31" openCost="25000" needLv="1" positionX="400" positionY="-450" cangbaoLv="70" />
+<HuangyeFog fogId="32" openCost="25000" needLv="1" positionX="500" positionY="-650" cangbaoLv="70" />
+<HuangyeFog fogId="33" openCost="30000" needLv="1" positionX="-700" positionY="-650" cangbaoLv="80" />
+<HuangyeFog fogId="34" openCost="30000" needLv="1" positionX="-850" positionY="-400" cangbaoLv="80" />
+<HuangyeFog fogId="35" openCost="30000" needLv="1" positionX="-925" positionY="-125" cangbaoLv="80" />
+<HuangyeFog fogId="36" openCost="30000" needLv="1" positionX="-900" positionY="250" cangbaoLv="80" />
+<HuangyeFog fogId="37" openCost="40000" needLv="1" positionX="-750" positionY="400" cangbaoLv="90" />
+<HuangyeFog fogId="38" openCost="40000" needLv="1" positionX="-700" positionY="550" cangbaoLv="90" />
+<HuangyeFog fogId="39" openCost="40000" needLv="1" positionX="-450" positionY="600" cangbaoLv="90" />
+<HuangyeFog fogId="40" openCost="40000" needLv="1" positionX="-100" positionY="600" cangbaoLv="90" />
+</dataset>

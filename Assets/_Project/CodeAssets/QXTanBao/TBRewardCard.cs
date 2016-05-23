@@ -25,6 +25,9 @@ public class TBRewardCard : MonoBehaviour {
 	
 	private GameObject iconSamplePrefab;
 
+	public GameObject m_star;
+	private List<GameObject> m_starList = new List<GameObject>();
+
 	private string[] bgSpriteName = new string[]{"CardBg_back","CardBg"};
 
 	private int pinZhiId;
@@ -162,25 +165,27 @@ public class TBRewardCard : MonoBehaviour {
 		if (cardInfo.itemType == 4)
 		{
 			cardLabel.text = NameIdTemplate.GetName_By_NameId (nameId);
+
+			m_starList = QXComData.CreateGameObjectList (m_star,cardInfo.miBaoStar,m_starList);
+			for (int i = 0;i < m_starList.Count;i ++)
+			{
+				m_starList[i].transform.localPosition = new Vector3(18 * i - (m_starList.Count - 1) * 9,-20,0);
+				m_starList[i].transform.localScale = Vector3.one * 0.2f;
+			}
 		}
 		else
 		{
+			foreach (GameObject obj in m_starList)
+			{
+				obj.SetActive (false);
+			}
 			string nameStr = "";
 			if (cardInfo.itemType == 5)
 			{
-				List<char> nameCharList = new List<char>();
-				for (int i = 0;i < NameIdTemplate.GetName_By_NameId (nameId).Length;i ++)
-				{
-					if (i < 5)
-					{
-						nameCharList.Add (NameIdTemplate.GetName_By_NameId (nameId)[i]);
-					}
-				}
-				for (int i = 0;i < nameCharList.Count;i ++)
-				{
-					nameStr += nameCharList[i];
-				}
-				cardLabel.text = nameStr + "\n碎片x" + cardInfo.itemNumber;
+				nameStr = NameIdTemplate.GetName_By_NameId (nameId);
+				nameStr = nameStr.Insert(nameStr.IndexOf ("碎片"),"\n");
+
+				cardLabel.text = nameStr + "x" + cardInfo.itemNumber;
 			}
 			else
 			{

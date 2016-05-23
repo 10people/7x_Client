@@ -1,5 +1,11 @@
-﻿using UnityEngine;
+﻿//#define DEBUG_SYNC
+
+
+
+using UnityEngine;
 using System.Collections;
+
+
 
 [RequireComponent(typeof(CharacterController))]
 public class Develop_SyncCameraPosition : MonoBehaviour {
@@ -56,6 +62,10 @@ public class Develop_SyncCameraPosition : MonoBehaviour {
 
 		if( m_target_camera != null ){
 			m_cam_offset = m_target_camera.transform.position - m_cached_pos;
+
+			#if DEBUG_SYNC
+			Debug.Log( "Origin Cam Offset: " + m_cam_offset );
+			#endif
 		}
 
 		{
@@ -83,7 +93,15 @@ public class Develop_SyncCameraPosition : MonoBehaviour {
 
 			m_controller.Move( t_offset );
 
+			#if DEBUG_SYNC
+			Debug.Log( "Char.Move: " + ( t_offset ) );
+			#endif
+
 			m_target_camera.transform.position = m_target_camera.transform.position + ( transform.position - t_origin );
+
+			#if DEBUG_SYNC
+			Debug.Log( "Cam.Move: " + ( transform.position - t_origin ) );
+			#endif
 		}
 	}
 

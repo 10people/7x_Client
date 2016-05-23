@@ -16,6 +16,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     /// Execute this after init if it is not null
     /// </summary>
     public static MainCityUIDelegate m_MainCityUiDelegate;
+	public static GuanQiaMaxId  MapCurrentInfo = new GuanQiaMaxId();
     public static GameObject m_objBelongings;
 	public static GameObject m_objTitle;
     public enum PlayerPlace
@@ -38,9 +39,11 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     public GameObject m_ObjMainCityButtonS;
 
     public MainCityListButtonManager m_MainCityListButton_L;
+	public MainCityListButtonManager m_MainCityListButton_LT;
     public MainCityListButtonManager m_MainCityListButton_RT;
     public MainCityListButtonManager m_MainCityListButton_RB;
     public MainCityListButtonManager m_MainCityListButton_R;
+	public MainCityListButtonManager m_MainCityListButton_RTRT;
     public MainCityUITongzhi m_MainCityUITongzhi;
     public List<MainCityListButtonManager> m_listMainCityButtons = new List<MainCityListButtonManager>();
     public GameObject ButtonPrefab;
@@ -120,7 +123,8 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
             if (Global.m_isOpenBaiZhan)
             {
-                PvpData.Instance.OpenPvp();
+//                PvpData.Instance.OpenPvp();
+				SportData.Instance.OpenSport ();
             }
 
 			if (Global.m_isOpenHuangYe && JunZhuData.Instance().m_junzhuInfo.lianMengId != 0)
@@ -156,12 +160,22 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 			m_isAdd = true;
 //			ClientMain.addPopUP(40, 2, "9", null);
 		}
-//        		ClientMain.addPopUP(40, 2, "12", null);
+		Global.ScendNull(ProtoIndexes.PVE_MAX_ID_REQ);
+//      ClientMain.addPopUP(40, 2, "140", null);
 //		FunctionOpenTemp.m_EnableFuncIDList.Add(140);
-//        		ClientMain.addPopUP(40, 2, "139", null);
-        //		m_MainCityUIRB.setPropUse(103103,30);
-        //		m_MainCityUIRB.setPropUse(103104,20);
-        //		m_MainCityUIRB.setPropUse(103105,0);
+//      ClientMain.addPopUP(40, 2, "139", null);
+//		m_MainCityUIRB.setPropUse(103103,30);
+//		m_MainCityUIRB.setPropUse(103104,20);
+//		m_MainCityUIRB.setPropUse(103105,0);
+//		MainCityUI.addShouji(100, 0, 1, 5, "装备进阶");
+//		MainCityUI.addShouji(101, 0, 1, 5, "装备进阶");
+//		MainCityUI.addShouji(102, 0, 1, 5, "装备进阶");
+//		MainCityUI.addShouji(103, 0, 1, 5, "装备进阶");
+//		MainCityUI.addShouji(104, 0, 1, 5, "装备进阶");
+//		MainCityUI.addShouji(105, 0, 1, 5, "装备进阶");
+//		MainCityUI.addShouji(106, 0, 1, 5, "装备进阶");
+//		MainCityUI.addShouji(107, 0, 1, 5, "装备进阶");
+//		MainCityUI.addShouji(108, 0, 1, 5, "装备进阶");
     }
 
     public static bool IsWindowsExist()
@@ -329,10 +343,9 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
         SocketTool.UnRegisterSocketListener(this);
 
-		if(UIShouji.m_UIShouji != null)
+		if(UIShoujiManager.m_UIShoujiManager != null)
 		{
-			UIShouji.m_UIShouji.close();
-			UIShouji.m_UIShouji.gameObject.SetActive(false);
+			UIShoujiManager.m_UIShoujiManager.close();
 		}
     }
 
@@ -425,10 +438,11 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 		100090,0,100100,1,100110,0,100120,0,100130,0,100140,0,100145,1,
 		100150,0,100160,1,100170,0,100173,0,100175,1,100177,0,100180,0,
 		100190,0,100200,1,100210,0,100220,0,100230,1,100240,0,100250,1,
-		100255,1,100257,0,100259,0,100260,0,
-		100270,0,100280,1,100285,1,100290,0,100300,0,100305,1,100307,0,100310,0,
-		100315,0,100320,0,100330,1,100340,0,100350,0,100360,0,100370,0,100405,1,100407,0,100409,0,
-		100410,0,100440,0,100460,0,100470,0,100705,0,
+		100255,1,100257,0,100259,0,100260,0,100270,0,100280,1,100285,1,
+		100290,0,100300,0,100305,1,100307,0,100310,0,100315,1,100320,0,
+		100330,1,100340,0,100350,0,100360,0,100370,0,100404,1,100405,1,
+		100407,0,100409,0,100410,0,100440,0,100460,0,100470,1,100705,0,
+		200005,1,200010,1,200040,1,200020,1,200030,1,200060,1
     };
     public void setInit()
     {
@@ -468,6 +482,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                 {
                     if (FreshGuide.Instance().IsActive(m_mission[i]) && TaskData.Instance.m_TaskInfoDic[m_mission[i]].progress >= 0)
                     {
+						Debug.Log(m_mission[i]);
                         TaskData.Instance.m_iCurMissionIndex = m_mission[i];
                         ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
                         tempTaskData.m_iCurIndex = m_mission[i + 1];
@@ -497,10 +512,14 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         m_MainCityListButton_RT = new MainCityListButtonManager(m_ObjMainCityButtonS, "ButtonS_RT", 1);
         m_MainCityListButton_RB = new MainCityListButtonManager(m_ObjMainCityButtonS, "ButtonS_RB", 2);
         m_MainCityListButton_R = new MainCityListButtonManager(m_ObjMainCityButtonS, "ButtonS_R", 3);
+		m_MainCityListButton_LT = new MainCityListButtonManager(m_ObjMainCityButtonS, "ButtonS_LT", 4);
+		m_MainCityListButton_RTRT = new MainCityListButtonManager(m_ObjMainCityButtonS, "ButtonS_RTRT", 5);
         m_listMainCityButtons.Add(m_MainCityListButton_L);
         m_listMainCityButtons.Add(m_MainCityListButton_RT);
         m_listMainCityButtons.Add(m_MainCityListButton_RB);
         m_listMainCityButtons.Add(m_MainCityListButton_R);
+		m_listMainCityButtons.Add(m_MainCityListButton_LT);
+		m_listMainCityButtons.Add(m_MainCityListButton_RTRT);
         for (int i = 0; i < m_listMainCityButtons.Count; i++)
         {
             for (int q = 0; q < FunctionOpenTemp.m_EnableFuncIDList.Count; q++)
@@ -555,7 +574,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             m_listMainCityButtons[i].setEndPos();
         }
 //		Debug.Log("===============1");
-
     }
 
     public void AddButton(int id)
@@ -589,6 +607,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         if (tempID == -1)
         {
             tempType = functionOpenTemp.type;
+			Debug.Log(tempType);
         }
         else
         {
@@ -606,10 +625,19 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 			{
 				m_listMainCityButtons[tempType].m_listFunctionButtonManager[i].setMoveDis();
 			}
-            FunctionButtonManager tempButtonManager = m_listMainCityButtons[tempType].getButtonManagerByID(tempID);
-            functionButtonManager.m_iWantToX = (int)tempButtonManager.gameObject.transform.localPosition.x;
-            functionButtonManager.m_iWantToY = (int)tempButtonManager.gameObject.transform.localPosition.y;
-            functionButtonManager.setMoveDis();
+			if(tempID == 106)
+			{
+				functionButtonManager.m_iWantToX = 960 + ClientMain.m_iMoveX * 2 - 40;
+				functionButtonManager.m_iWantToY = -(640 + ClientMain.m_iMoveY * 2 - 40);
+			}
+			else
+			{
+				FunctionButtonManager tempButtonManager = m_listMainCityButtons[tempType].getButtonManagerByID(tempID);
+				functionButtonManager.m_iWantToX = (int)tempButtonManager.gameObject.transform.localPosition.x;
+				functionButtonManager.m_iWantToY = (int)tempButtonManager.gameObject.transform.localPosition.y;
+			}
+			
+			functionButtonManager.setMoveDis();
         }
         m_listMainCityButtons[tempType].setMove(overAnim);
     }
@@ -643,6 +671,18 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     public static bool SetRedAlert(int id, bool isShow, bool p_manual_set = true)
     {
+//		if(isShow)
+//		{
+//			Debug.Log(id);
+//		}
+//		if(id == 41 && isShow)
+//		{
+//			Debug.Log("=======================1");
+//		}
+//		if(id == 22 && isShow)
+//		{
+//			Debug.Log("=======================2");
+//		}
 		if(id == 140 && isShow)
 		{
 //			Debug.Log(FunctionOpenTemp.IsHaveID(140));
@@ -699,7 +739,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             }
             if (MainCityUI.m_MainCityUI != null)
             {
-                if (temp.type >= 0 && temp.type <= 4 && MainCityUI.m_MainCityUI.m_listMainCityButtons.Count == 4)
+                if (temp.type >= 0 && temp.type <= 6 && MainCityUI.m_MainCityUI.m_listMainCityButtons.Count == 6)
                 {
                     FunctionButtonManager tempButton = MainCityUI.m_MainCityUI.m_listMainCityButtons[temp.type].getButtonManagerByID(id);
                     if (tempButton != null)
@@ -710,13 +750,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                     {
                         return false;
                     }
-                }
-                else if (id == 22)
-                {
-//					Debug.Log("===========isShow="+isShow);
-//					isShow = true;
-                    m_MainCityUI.m_MainCityUILT.m_objRedEmali.SetActive(isShow);
-					m_MainCityUI.m_MainCityUILT.m_BoxChangeScale.enabled = isShow;
                 }
             }
         }
@@ -882,32 +915,15 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 //			ClientMain.m_UITextManager.createText(m_listShoujiData[i].m_sDrawString + m_listShoujiData[i].m_iCurNum + "/" + m_listShoujiData[i].m_iMaxNum);
 //		}
 //		m_listShoujiData = new List<ShoujiData>();
-
-		if(UIShouji.m_UIShouji != null && UIShouji.m_isPlayShouji)
+		if(UIShoujiManager.m_UIShoujiManager != null && UIShoujiManager.m_UIShoujiManager.m_isPlayShouji)
 		{
 			if(m_listShoujiData.Count > 0)
 			{
-				if(!UIShouji.m_UIShouji.m_isPlay)
+				if(UIShoujiManager.m_UIShoujiManager.m_isPlay)
 				{
-					UIShouji.m_UIShouji.setData(m_listShoujiData[0].m_iID, m_listShoujiData[0].m_iType, m_listShoujiData[0].m_iCurNum, m_listShoujiData[0].m_iMaxNum, m_listShoujiData[0].m_sDrawString);
+					UIShoujiManager.m_UIShoujiManager.setData(m_listShoujiData[0]);
 					m_listShoujiData.RemoveAt(0);
-				}
-				else
-				{
-					if(Time.realtimeSinceStartup - UIShouji.m_UIShouji.playTime >= 1)
-					{
-						UIShouji.m_UIShouji.close();
-						UIShouji.m_UIShouji.setData(m_listShoujiData[0].m_iID, m_listShoujiData[0].m_iType, m_listShoujiData[0].m_iCurNum, m_listShoujiData[0].m_iMaxNum, m_listShoujiData[0].m_sDrawString);
-						m_listShoujiData.RemoveAt(0);
-					}
-				}
-			}
-			else
-			{
-				if(UIShouji.m_UIShouji.m_isPlay && Time.realtimeSinceStartup - UIShouji.m_UIShouji.playTime >= 3)
-				{
-					UIShouji.m_UIShouji.close();
-					UIShouji.m_UIShouji.gameObject.SetActive(false);
+					Debug.Log(UIShoujiManager.m_UIShoujiManager.m_isPlay);
 				}
 			}
 		}
@@ -920,6 +936,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 			Debug.Log("=================2");
             return;
         }
+//		Debug.Log(ui.name);
         //		LimitActivityData.Instance.RequestData();
         //		if(1==1)
         //		{
@@ -930,6 +947,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         if (ui.name.IndexOf("MainCityUIButton_") != -1)
         {
             int id = int.Parse(ui.name.Substring(17, ui.name.Length - 17));
+			Debug.Log(id);
             if (Input.touchCount <= 1 && MainCityUIRB.IsCanClickButtons)
             {
 				FunctionOpenTemp tempFunction = FunctionOpenTemp.GetTemplateById(id);
@@ -939,9 +957,12 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 					{
 						TaskData.Instance.SendData(FunctionOpenTemp.GetTemplateById(id).m_iMissionOpenID, 1);
 					}
-					if(tempFunction.type < 4 && getButton(id) == null)
+					if(id != 106)
 					{
-						return;
+//						if(tempFunction.type < 5 && getButton(id) == null)
+//						{
+//							return;
+//						}
 					}
 				}
 
@@ -1042,7 +1063,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                     case 9:
                         if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(9))
                         {
-                            ShopData.Instance.OpenShop(ShopData.ShopType.ORDINARY);
+                            ShopData.Instance.OpenShop(ShopData.ShopType.ROLL);
                         }
                         else
                         {
@@ -1109,11 +1130,13 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                         }
                         break;
                     case 13:
-                        EquipSuoData.TopUpLayerTip();
+					case 1300:
+//						TopUpLoadManagerment.LoadPrefab(false);
+						RechargeData.Instance.RechargeDataReq ();
                         break;
                     //activity sys
                     case 14:
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ACTIVITY_LAYER), OnActivityLoadCallBack);
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ACTIVITY_LAYER) + "1", OnActivityLoadCallBack);
                         break;
                     //新手在线礼包
                     case 15:
@@ -1133,6 +1156,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_JIESUO),
                                                 AddUIPanel);
                         break;
+					//email
+					case 22:
+						NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_MAIN_PAGE);
+						break;
                     //alliance sys
                     case 104:
                         //                        AllianceData.Instance.RequestData();
@@ -1150,7 +1177,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                         break;
                     case 106:
                         TaskData.Instance.m_ShowType = 2;
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TASK),
+						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_LAYER_AMEND_EBERYDAY),
                                                 TaskLoadCallback);
                         break;
                     case 107:
@@ -1165,11 +1192,15 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                                                 AddUIPanel);
                         break;
 					case 140:
+					case 1400:
 						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SIGNAL_LAYER),
 						                        MainCityUI.m_MainCityUI.AddUIPanel);
 						break;
 					case 141:
 						PlayerSceneSyncManager.Instance.EnterTreasureCity ();
+						break;
+					case 142:
+						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ACTIVITY_LAYER) + "1", OnActivityLoadCallBack);
 						break;
 					case 143:
 						Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MAIN_CITY_YUNYING ), AddUIPanel);
@@ -1239,9 +1270,9 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 					//运镖福利按钮
 					case 311:
                         {
-							if(!FunctionOpenTemp.IsHaveID(8))
+							if(!FunctionOpenTemp.IsHaveID(310))
 							{
-								ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(8).m_sNotOpenTips);
+								ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(310).m_sNotOpenTips);
 							}
                             else
 							{
@@ -1275,28 +1306,39 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
                         Debug.LogError("No any house prefab found, exit house fail.");
                         break;
-                    //					Worship
-                    case 400000:
-                        if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(400000))
-                        {
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.WORSHIP_MAIN_LAYER),
-                                                    Worship_LoadCallback);
-                        }
-                        else
-                        {
-                            FunctionWindowsCreateManagerment.ShowUnopen(400000);
-                        }
-                        break;
+					case 1420:
+						Global.CreateFunctionIcon(301);
+						break;
+					case 1421:
+						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_LAYER),
+						                        SettingUpLoadCallback);
+						break;
+	                    //					Worship
+	                    case 400000:
+	                        if (ConfigTool.GetBool(ConfigTool.CONST_OPEN_ALLTHE_FUNCTION) || FunctionOpenTemp.GetWhetherContainID(400000))
+	                        {
+	                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.WORSHIP_MAIN_LAYER),
+	                                                    Worship_LoadCallback);
+	                        }
+	                        else
+	                        {
+	                            FunctionWindowsCreateManagerment.ShowUnopen(400000);
+	                        }
+	                        break;
                     case 300000:
                         if (JunZhuData.Instance().m_junzhuInfo.level >= FunctionOpenTemp.GetTemplateById(300000).Level)
                         {
                             EnterGuoGuanmap.EnterPveUI(-1);
                         }
                         break;
+					case 600100:
+						MainCityUILT.ShowMainTipWindow();
+						break;
                     case 300100:
                         if (JunZhuData.Instance().m_junzhuInfo.level >= FunctionOpenTemp.GetTemplateById(300100).Level)
                         {
-                            PvpData.Instance.OpenPvp();
+//                            PvpData.Instance.OpenPvp();
+							SportData.Instance.OpenSport ();
                         }
                         break;
 			        case 900001: //买铜币 900001
@@ -1315,6 +1357,14 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 			                JunZhuData.Instance().BuyTiliAndTongBi(true, false, false);
 			                break;
 			            }
+						case 500010: //符石
+						{
+							//Add king here.
+							
+							
+					        Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.FUWEN),Load111ResourceCallback);
+							break;
+						}
                     default:
                         //Skip empty button.
                         if (id < 0)
@@ -1330,6 +1380,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_TONGZHI),
                                     AddUIPanel);
         }
+
         else
         {
             if (ui.name.IndexOf("LT_") != -1)
@@ -1351,7 +1402,20 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             m_MYNGUIPanel[tempIndex].MYClick(ui);
         }
     }
-
+	private GameObject mFuShi;
+	void Load111ResourceCallback(ref WWW p_www,string p_path, Object p_object)
+	{
+		if(mFuShi)
+		{
+			return;
+		}
+		mFuShi = Instantiate(p_object )as GameObject;
+		
+		mFuShi.transform.localScale = Vector3.one;
+		
+		mFuShi.transform.localPosition = new Vector3 (100,100,0);
+		MainCityUI.TryAddToObjectList(mFuShi);
+	}
     private GameObject baizhanRoot;
     public void BaiZhanLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
@@ -1381,6 +1445,10 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
     public override void MYPress(bool isPress, GameObject ui)
     {
+		if(ui.name.IndexOf("Icon900003") != -1 && isPress)
+		{
+			ShowTip.showTip(900003);
+		}
     }
 
     public override void MYelease(GameObject ui)
@@ -1530,7 +1598,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
                     if (msg.result != 10)
                     {
-                        ClientMain.m_UITextManager.createText("通知已过时");
+//                        ClientMain.m_UITextManager.createText("通知已过时");
 
                         return true;
                     }
@@ -1657,12 +1725,57 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 			}
 			return true;
 		}
+		case ProtoIndexes.PVE_MAX_ID_RESP:
+		{
+			MemoryStream t_stream = new MemoryStream (p_message.m_protocol_message, 0, p_message.position);
+			
+			QiXiongSerializer t_qx = new QiXiongSerializer ();
+			
+			GuanQiaMaxId tempInfo = new GuanQiaMaxId ();
+			
+			t_qx.Deserialize (t_stream, tempInfo, tempInfo.GetType ());
+			
+			MapCurrentInfo = tempInfo;
+
+//			Debug.Log("================123");
+
+			//				Debug.Log("MapCurrentInfo.chuanQiId  = " +MapCurrentInfo.chuanQiId );
+			return true;
+		}
         }
         return false;
     }
 
+	private GameObject QCL_tempOjbect;
+	void Load_QCL_ResourceCallback(ref WWW p_www,string p_path, Object p_object)
+	{
+		if(QCL_tempOjbect == null)
+		{
+			QCL_tempOjbect = Instantiate(p_object )as GameObject;
+			
+			QCL_tempOjbect.transform.localScale = Vector3.one;
+			
+			QCL_tempOjbect.transform.localPosition = new Vector3 (100,100,0);
+			
+			MainCityUI.TryAddToObjectList(QCL_tempOjbect);
+		}		
+	}
+
     public bool isFirstAnimation()
     {
+
+		if (CityGlobalData.QCLISOPen)
+		{
+		
+			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.QIANCHONGLOU), Load_QCL_ResourceCallback);
+			//			return true;
+		}
+
+		if (Global.m_isOpenBaiZhan)
+		{
+			SportData.Instance.OpenSport ();
+			Global.m_isOpenBaiZhan = false;
+		}
 
         if (Global.m_isOpenPVP)
         {
@@ -1864,11 +1977,15 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         GameObject Secrtgb = (GameObject)Instantiate(p_object);
         MainCityUI.TryAddToObjectList(Secrtgb);
     }
-
+	private GameObject expiectuiltempObject; // 联盟跳转到联盟做个特殊处理 直接删掉原来的UI才重新打开 fix by guronglin
     public void AllianceHaveLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
-        GameObject tempObject = Instantiate(p_object) as GameObject;
-        MainCityUI.TryAddToObjectList(tempObject);
+		if( expiectuiltempObject )
+		{
+			Destroy(expiectuiltempObject);
+		}
+		expiectuiltempObject = Instantiate(p_object) as GameObject;
+		MainCityUI.TryAddToObjectList(expiectuiltempObject);
 
     }
     public void RewardCallback(ref WWW p_www, string p_path, Object p_object)
@@ -2058,6 +2175,16 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 //		}
     }
 
+	public void SettingUpLoadCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject tempObject = (GameObject)Instantiate(p_object);
+		MainCityUI.TryAddToObjectList(tempObject);
+		tempObject.transform.position = new Vector3(0, 500, 0);
+		
+		
+		UIYindao.m_UIYindao.CloseUI();
+	}
+
 	public void addButtonTime(int id, int time)
 	{
 		if(getButton(id) == null)
@@ -2071,14 +2198,14 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 	public static void addShouji(int id, int type, int curNum, int maxNum, string drawString)
 	{
 		ShoujiData tempShoujiData = new ShoujiData(id, type, curNum, maxNum, drawString);
-		for(int i = 0; i < m_listShoujiData.Count; i ++)
-		{
-			if(m_listShoujiData[i].m_iID == id)
-			{
-				m_listShoujiData[i].setCurNum(curNum);
-				return;
-			}
-		}
+//		for(int i = 0; i < m_listShoujiData.Count; i ++)
+//		{
+//			if(m_listShoujiData[i].m_iID == id)
+//			{
+//				m_listShoujiData[i].setCurNum(curNum);
+//				return;
+//			}
+//		}
 		m_listShoujiData.Add(tempShoujiData);
 	}
 }

@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<Message id="100001" title="名字占用" desc="真不巧，这个名字已经被其他人使用啦，换个更好听的吧！" Type="1" />
+<Message id="100002" title="tips：" desc="晚上找铁匠老王会有好事发生" Type="1" />
+</dataset>

@@ -36,7 +36,7 @@ using SimpleJSON;
 public class EditorBuildPackage : MonoBehaviour {
 
 	private enum MenuItemPriority{
-		BUILD_PACKAGE_ANDROID = 1,
+		BUILD_PACKAGE_ANDROID = 100,
 		BUILD_PACKAGE_IOS,
 		BUILD_PROJECT,
 

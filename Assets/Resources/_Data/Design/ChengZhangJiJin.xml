@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<ChengZhangJiJin level="5" award="0:900002:1500" desc="角色等级达到5级" />
+<ChengZhangJiJin level="15" award="0:900002:1500" desc="角色等级达到15级" />
+<ChengZhangJiJin level="25" award="0:900002:1500" desc="角色等级达到25级" />
+<ChengZhangJiJin level="32" award="0:900002:1500" desc="角色等级达到32级" />
+<ChengZhangJiJin level="38" award="0:900002:1500" desc="角色等级达到38级" />
+<ChengZhangJiJin level="42" award="0:900002:1500" desc="角色等级达到42级" />
+<ChengZhangJiJin level="44" award="0:900002:2000" desc="角色等级达到44级" />
+<ChengZhangJiJin level="46" award="0:900002:2000" desc="角色等级达到46级" />
+<ChengZhangJiJin level="48" award="0:900002:2000" desc="角色等级达到48级" />
+</dataset>

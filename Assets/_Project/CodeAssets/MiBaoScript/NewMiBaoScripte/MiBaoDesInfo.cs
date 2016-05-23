@@ -9,6 +9,11 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
 public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
+
+	public List<UIEventListener> mListener = new List<UIEventListener> ();
+
+	public GameObject mMiBaocardtemp;
+
 	private int MaxPoint ; //最大点数 
 
 	public UILabel MiBaoLevel;
@@ -104,10 +109,63 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	void Awake()
 	{
 		SocketTool.RegisterMessageProcessor(this);
+		mListener.ForEach (item => SetBtnMoth(item));
 	}
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
+	}
+
+	void SetBtnMoth(UIEventListener mUIEventListener)
+	{
+		mUIEventListener.onClick = BtnManagerMent;
+	}
+	public void BtnManagerMent(GameObject mbutton)
+	{
+		switch(mbutton.name)
+		{
+		case "Button_0":
+			POpMiBaoCard();
+			break;
+		case "Button_1":
+
+			break;
+		case "Button_2":
+
+			break;
+		case "Button_3":
+
+			break;
+		default:
+			break;
+		}
+	}
+	GameObject mMiBaocard;
+	void POpMiBaoCard()
+	{
+		List<RewardData> tempDataList = new List<RewardData> ();
+
+		int starnunber = ShowmMiBaoinfo.star;
+		if(ShowmMiBaoinfo.level <= 0 )
+		{
+			starnunber = 0;
+		}
+		RewardData data = new RewardData ( ShowmMiBaoinfo.miBaoId,1,starnunber); 
+
+		data.m_isCheckOnly = true;
+
+		tempDataList.Add(data);
+		GeneralRewardManager.Instance().CreateSpecialReward (tempDataList); 
+//		if(mMiBaocard == null )
+//		{
+//			mMiBaocard = Instantiate(mMiBaocardtemp) as GameObject ;
+//			mMiBaocard.transform.parent = mMiBaocardtemp.transform.parent;
+//			mMiBaocard.transform.localPosition = mMiBaocardtemp.transform.localPosition;
+//			mMiBaocard.transform.localScale = new Vector3(0.01f,0.01f,0.01f);
+//			mMiBaocard.SetActive(true);
+//			ShowJuangHunBigPis mShowJuangHunBigPis = mMiBaocard.GetComponent<ShowJuangHunBigPis>();
+//			mShowJuangHunBigPis.Init(ShowmMiBaoinfo.miBaoId);
+//		}
 	}
 	void Start () {
 	
@@ -134,7 +192,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			}
 			else
 			{
-				UP_Money.text = MyColorData.getColorString(3, mExpXxmlTemp.needExp.ToString ());
+				UP_Money.text = mExpXxmlTemp.needExp.ToString (); //MyColorData.getColorString(3, mExpXxmlTemp.needExp.ToString ());
 			}
 			MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(ShowmMiBaoinfo.miBaoId);
 		
@@ -335,11 +393,11 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 		ShowSuipian ();
 
-		GongJi.text = MyColorData.getColorString(10, "+"+m_Gongji.ToString ());
+		GongJi.text = "+"+ m_Gongji.ToString ();//MyColorData.getColorString(10, "+"+m_Gongji.ToString ());
 
-		FangYu.text = MyColorData.getColorString(10, "+"+m_Fangyu.ToString ());
+		FangYu.text ="+"+  m_Fangyu.ToString ();//MyColorData.getColorString(10, "+"+m_Fangyu.ToString ());
 
-		Life.text = MyColorData.getColorString(10, "+"+m_Life.ToString ());
+		Life.text = "+"+  m_Life.ToString ();// MyColorData.getColorString(10, "+"+m_Life.ToString ());
 		//Debug.Log ("m_Point1 = "+m_Point);
 		PointNum.text = m_Point.ToString ();
 
@@ -518,20 +576,26 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	public void ShowGetAward()
 	{
 		int mGrad = 10;
+		Color p_color = Color.red;
 		for(int i = 0 ; i < Proprety.Length ; i++)
 		{
 			string mstr = "等级升到";
 			if((i+1)*10 <= ShowmMiBaoinfo.level)
 			{
 				MiBaoExtrattributeTemplate mMiBaoExt = MiBaoExtrattributeTemplate.GetMiBaoExtrattributeTemplate_By_Id_and_level(ShowmMiBaoinfo.miBaoId,(i+1)*10);
-				AwardforGrad[i].text =MyColorData.getColorString (44,mstr+mGrad.ToString()+"级");
-				Proprety[i].text = MyColorData.getColorString (44,mMiBaoExt.Name +"+"+mMiBaoExt.Num.ToString());
+				AwardforGrad[i].text =MyColorData.getColorString (47,mstr+mGrad.ToString()+"级");
+				Proprety[i].text = MyColorData.getColorString (47,mMiBaoExt.Name +"+"+mMiBaoExt.Num.ToString());
 			}
 			else
 			{
+				MathHelper.ParseHexString( "bebebe", out p_color, Color.red );
+
 				MiBaoExtrattributeTemplate mMiBaoExt = MiBaoExtrattributeTemplate.GetMiBaoExtrattributeTemplate_By_Id_and_level(ShowmMiBaoinfo.miBaoId,(i+1)*10);
-				AwardforGrad[i].text =MyColorData.getColorString (8,mstr+mGrad.ToString()+"级");
-				Proprety[i].text = MyColorData.getColorString (8,mMiBaoExt.Name +"+"+mMiBaoExt.Num.ToString());
+				AwardforGrad[i].text =MyColorData.getColorString (2,mstr+mGrad.ToString()+"级");
+				Proprety[i].text = MyColorData.getColorString (2,mMiBaoExt.Name +"+"+mMiBaoExt.Num.ToString());
+
+				AwardforGrad[i].color = p_color;
+				Proprety[i].color = p_color;
 			}
 			mGrad += 10;
 		}
@@ -613,7 +677,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			
 			StarTemp.transform.parent = Star.gameObject.transform.parent;
 			
-			StarTemp.transform.localPosition = new Vector3(0,-40+25*i,0);
+			StarTemp.transform.localPosition = new Vector3(0,-40+20*i,0);
 			
 			StarTemp.transform.localScale = Star.gameObject.transform.localScale;
 			
@@ -631,7 +695,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	int tems = 3; 
 
-	public void MibaoUp() //秘宝升级
+	public void MibaoUp() //将魂升级
 	{
 	    tems++;
 
@@ -669,7 +733,9 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				CloseEffect ();
 			}
 //			Debug.Log ("mibaolevel >= JunZhuData.Instance().m_junzhuInfo.level ");
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadMiBaolvBack);
+			//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadMiBaolvBack);
+			string mstr = "将魂等级不能大于君主等级！";
+			ClientMain.m_UITextManager.createText(mstr);
 			return;
 		}
 		if(mibaolevel>= 100)
@@ -714,7 +780,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		byte[] t_protof;
 		t_protof = MiBaoStream.ToArray();
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_LEVELUP_REQ,ref t_protof);
-//		Debug.Log ("秘宝升级发送");
+//		Debug.Log ("将魂升级发送");
 	}
     
 	void CloseYInDao()
@@ -727,31 +793,31 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	void  CantUpMiBao()
 	{
 		// TODO
-		// 秘宝升级全部完成后调用
+		// 将魂升级全部完成后调用
 		PushAndNotificationHelper.SetRedSpotNotification ( 600, false );
 
 //
-//		// 秘宝升星激活红点时
+//		// 将魂升星激活红点时
 //		PushAndNotificationHelper.SetRedSpotNotification (602, true);
 //
-//		// 秘宝升星红点取消时
+//		// 将魂升星红点取消时
 //		PushAndNotificationHelper.SetRedSpotNotification (602, false);
 
 
 
 //
-//		// 秘宝合成激活红点时
+//		// 将魂合成激活红点时
 //		PushAndNotificationHelper.SetRedSpotNotification (605, true);
 //		
-//		// 秘宝合成红点取消时
+//		// 将魂合成红点取消时
 //		PushAndNotificationHelper.SetRedSpotNotification (605, false);
 //
 //
 //
-//		// 秘宝技能激活，激活红点时
+//		// 将魂技能激活，激活红点时
 //		PushAndNotificationHelper.SetRedSpotNotification (610, true);
 //		
-//		// 秘宝技能激活，红点取消时
+//		// 将魂技能激活，红点取消时
 //		PushAndNotificationHelper.SetRedSpotNotification (610, false);
 	}
 	
@@ -875,7 +941,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 	public GameObject MiBaoeffect;
 
-	void LoadBck_2(ref WWW p_www,string p_path, Object p_object) // 合成秘宝时候弹出的框 大秘宝
+	void LoadBck_2(ref WWW p_www,string p_path, Object p_object) // 合成将魂时候弹出的框 大将魂
 	{
 
 		List<RewardData> data = new List<RewardData> ();
@@ -905,16 +971,16 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92)+"。";
+		string str = "\n"+LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92)+"。";
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,getTongBi,null,null,null);
+		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,CancleBtn,confirmStr,getTongBi,null,null,null);
 	}
 
-	void LoadMiBaolvBack(ref WWW p_www,string p_path, Object p_object)//秘宝等级不足回调函数
+	void LoadMiBaolvBack(ref WWW p_www,string p_path, Object p_object)//将魂等级不足回调函数
 	{
 		MibaoUpCallback = true;
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
@@ -928,7 +994,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		uibox.setBox(titleStr,str1,null,null,confirmStr,null,null,null,null);
 	}
 
-	void Load_NoLevelUpBack(ref WWW p_www,string p_path, Object p_object)//秘宝等级不足回调函数
+	void Load_NoLevelUpBack(ref WWW p_www,string p_path, Object p_object)//将魂等级不足回调函数
 	{
 		MibaoUpCallback = true;
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
@@ -1019,7 +1085,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 				titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 				
-				str ="\r\n"+"此秘宝升星需要消耗" + StarNeedMoney.ToString() + "铜币"+"\r\n"+"\r\n"+"是否现在升星？";
+				str ="\r\n"+"此将魂升星需要消耗" + StarNeedMoney.ToString() + "铜币"+"\r\n"+"\r\n"+"是否现在升星？";
 
 				uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,cancel,confirm,SendStarUpInfo);
 				needMibao = ShowmMiBaoinfo;
@@ -1111,7 +1177,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"合成此秘宝需要消耗" +Mony.ToString()+"铜币"+"\r\n"+"\r\n"+"是否合成？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "\r\n"+"合成此将魂需要消耗" +Mony.ToString()+"铜币"+"\r\n"+"\r\n"+"是否合成？";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
@@ -1154,7 +1220,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				
 				byte[] t_protof;
 				t_protof = MiBaoinfoStream.ToArray();
-				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_ACTIVATE_REQ,ref t_protof,ProtoIndexes.S_MIBAO_ACTIVATE_RESP.ToString());//秘宝激活
+				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_ACTIVATE_REQ,ref t_protof,ProtoIndexes.S_MIBAO_ACTIVATE_RESP.ToString());//将魂激活
 				PushAndNotificationHelper.SetRedSpotNotification (605, false);
 
 			}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<XianshiControl id="1574000" Name="首次探宝" Desc="完成首次元宝单抽" jinduDesc="元宝单抽有机会获得[FF00FF]绝世秘宝[-]" Rank="1" status="1" doneType="74" languageId="1574000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="1" />
+<XianshiControl id="1575000" Name="元宝十连" Desc="完成首次元宝十连抽，尽快提升竞技排名可获得大量元宝。" jinduDesc="十连抽必得[FF00FF]绝世秘宝[-]" Rank="2" status="1" doneType="75" languageId="1575000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="3" />
+<XianshiControl id="1501000" Name="冲级送礼" Desc="达到指定等级，即可获取丰厚奖励。\n您可以通过参加每日任务、过关斩将、顶礼膜拜等活动获得大量经验，快速升级。" jinduDesc="主人，您当前等级是**级，继续加油哟~" Rank="3" status="1" doneType="1" languageId="1501000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="1" />
+<XianshiControl id="1544000" Name="精英集星" Desc="在过关斩将精英关卡中（传奇关卡不计算在内），获取指定星数即可获取丰厚奖励。\n您在精英关卡中需注意星级评定要求，更高的战力以及细心的操作有助于您达到相应星级。" jinduDesc="主人，您当前过关斩将（精英）获得的总星数为**" Rank="4" status="1" doneType="44" languageId="1544000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="3" />
+<XianshiControl id="1540000" Name="进阶达人" Desc="足够数量的装备达到指定等阶，即可获取丰厚奖励（需领取完上一条奖励才能开启下一条）。\n您可以通过扫荡相应关卡、探宝、以及联盟荒野求生等活动，获得装备碎片用以进阶装备。" jinduDesc="主人，进阶装备会大幅提升战力哟~" Rank="5" status="1" doneType="40" languageId="1540000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="3" />
+<XianshiControl id="1563000" Name="装备强化" Desc="足够数量的装备强化到指定等级，即可获取丰厚奖励（需领取完上一条奖励才能开启下一条）。\n您可以通过扫荡相应关卡、试炼、以及探宝等活动，获得装备强化材料用以强化装备。" jinduDesc="主人，您当前装备最高等级为**级，继续努力哟~" Rank="6" status="1" doneType="63" languageId="1563000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="3" />
+<XianshiControl id="1520000" Name="升级秘宝" Desc="足够数量的秘宝升级到指定等级，即可获取丰厚奖励（需领取完上一条奖励才能开启下一条）。\n您可以通过运镖、试炼、购买铜币等活动，获得大量铜币用以升级秘宝。" jinduDesc="主人，您当前秘宝最高等级为**级，加油哟~" Rank="7" status="1" doneType="20" languageId="1520000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="1" />
+<XianshiControl id="1521000" Name="升星秘宝" Desc="足够数量的秘宝升级到指定星级，即可获取丰厚奖励（需领取完上一条奖励才能开启下一条）。\n您可以通过传奇关卡、商铺兑换、探宝等活动，获得大量秘宝碎片用以升级秘宝。" jinduDesc="主人，传奇关卡可获得秘宝碎片，秘宝升星可大幅提升战力哟~" Rank="8" status="1" doneType="68" languageId="1521000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="3" />
+<XianshiControl id="1519000" Name="收集秘宝" Desc="收集足够数量的秘宝即可获取丰厚奖励。\n您可以通过探宝、传奇关卡、商店兑换等途径获得相应秘宝或秘宝碎片。" jinduDesc="主人，获得新秘宝可大幅提升战力，并可解锁秘宝技能哟~" Rank="9" status="1" doneType="19" languageId="1519000" StartTime="0" CloseTime="1200" DelayTime="48" PicId="1" />
+</dataset>

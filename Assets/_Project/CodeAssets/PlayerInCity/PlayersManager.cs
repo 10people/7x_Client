@@ -9,44 +9,36 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
 public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城中的玩家管理类
+    public static PlayersManager m_PlsyersInfo;
+    public static Dictionary<int, ErrorMessage> m_playrHeadInfo = new Dictionary<int, ErrorMessage>();
 
-    public static Dictionary<int, ErrorMessage> m_playrHeadInfo = new Dictionary<int, ErrorMessage>();  //主城玩家集合
     public static int m_Self_UID = 0;
-    void Awake(){
 
-	}
+    public struct OtherPlayerInfo
+    {
+        public int _UID;
+        public string _Name;
+        public string _AllianceName;
+        public string _Designation;
+        public string _VInfo;
+        public int _Duty;
+        public string _Greet;
+        public Vector3 _SeverPos;
+        public int _RoleId;
+        public long _MonarchId;
+    }
+    //public Dictionary<int, OtherPlayerInfo> m_playerPartInfo = new Dictionary<int, OtherPlayerInfo>();  //主城玩家信息集合
+    //public Dictionary<int, OtherPlayerInfo> m_playerDetailedInfo = new Dictionary<int, OtherPlayerInfo>();  //主城玩家信息集合
+    
+    void Awake(){
+        m_PlsyersInfo = this;
+    }
 
 	void Start(){
 		SocketTool.RegisterMessageProcessor( this );
 	}
 	
-	//创建玩家
-    void CreatePlayer( EnterScene tempEnterPlayer )
-    {
-		PlayerInCityManager.Instance().CreatePlayer( tempEnterPlayer );
-    }
-
-	//更新玩家名字位置
-    public static void UpdatePlayerNamePosition() 
-    {
-		foreach ( GameObject tempPlayer in PlayerInCityManager.m_playrDic.Values )
-        {
-            if (tempPlayer != null)
-            {
-				PlayerNameManager.UpdatePlayerNamePosition(tempPlayer.GetComponent<PlayerInCity>().m_playerID,tempPlayer);
-            }
-        }
-    }
-
-
-    public static void DestoryPlayer(ExitScene tempPlayer) //删除玩家
-    {
-		//删除3d模型
-        PlayerInCityManager.DestroyPlayer(tempPlayer); 
-
-		//及对应的名字
-        PlayerNameManager.DestroyPlayerName(tempPlayer); 
-    }
+	
 
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
@@ -57,15 +49,20 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
                 case ProtoIndexes.Enter_Scene: //有玩家进入主城
                     {
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-
                         QiXiongSerializer t_qx = new QiXiongSerializer();
-
                         EnterScene tempScene = new EnterScene();
-
                         t_qx.Deserialize(t_stream, tempScene, tempScene.GetType());
-
-                        CreatePlayer(tempScene);
-
+                        OtherPlayerInfo part_info = new OtherPlayerInfo();
+                        part_info._Name = tempScene.senderName;
+                        part_info._UID = tempScene.uid;
+                        part_info._RoleId = tempScene.roleId;
+                        part_info._SeverPos = new Vector3(tempScene.posX, tempScene.posY, tempScene.posZ);
+                        part_info._MonarchId = tempScene.jzId;
+                        part_info._Designation = tempScene.chengHao.ToString();
+                        part_info._Duty = tempScene.zhiWu;
+                        part_info._AllianceName = tempScene.allianceName;
+                        part_info._VInfo = tempScene.vipLevel.ToString();
+                        CreatePlayer(part_info);
                     }
                     return true;
 
@@ -79,29 +76,23 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
 
                     t_qx.Deserialize(t_stream,tempConfirm,tempConfirm.GetType());
                     m_Self_UID = tempConfirm.uid;
-//                    Debug.Log("m_Self_UIDm_Self_UIDm_Self_UIDm_Self_UID :: + " + m_Self_UID);
                 }
                     return true;
 
                 case ProtoIndexes.Sprite_Move: //玩家移动
                     {
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-
                         SpriteMove tempMove = new SpriteMove();
-
                         QiXiongSerializer t_qx = new QiXiongSerializer();
-
                         t_qx.Deserialize(t_stream, tempMove, tempMove.GetType());
-
-                        PlayerInCityManager.UpdatePlayerPosition(tempMove);
+                        PlayerInCityManager.m_PlayerInCity.UpdatePlayerPosition(tempMove);
+                        UpdatePlayerNamePosition();
 
                     }
                     return true;
 
                 case ProtoIndexes.ExitScene: //玩家退出主城
                     {
-                        //                Debug.Log("sssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
                         ExitScene tempScene = new ExitScene();
@@ -113,24 +104,106 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
 
                     }
                     return true;
+                case ProtoIndexes.S_HEAD_INFO: //玩家称号、vip更新
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                        EnterScene tempScene = new EnterScene();
+                        t_qx.Deserialize(t_stream, tempScene, tempScene.GetType());
+                        OtherPlayerInfo part_info = new OtherPlayerInfo();
+                        part_info._Name = tempScene.senderName;
+                        part_info._UID = tempScene.uid;
+                        part_info._RoleId = tempScene.roleId;
+                        part_info._SeverPos = new Vector3(tempScene.posX, tempScene.posY, tempScene.posZ);
+                        part_info._MonarchId = tempScene.jzId;
+                        part_info._Designation = tempScene.chengHao.ToString();
+                        part_info._Duty = tempScene.zhiWu;
+                        part_info._AllianceName = tempScene.allianceName;
+                        part_info._VInfo = tempScene.vipLevel.ToString();
+                        Fresh_HeadInfo(part_info);
+                    }
+                    return true;
                 case ProtoIndexes.S_HEAD_STRING: //玩家称号、vip更新
                     {
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-
                         ErrorMessage tempScene = new ErrorMessage();
-
                         QiXiongSerializer t_qx = new QiXiongSerializer();
-
                         t_qx.Deserialize(t_stream, tempScene, tempScene.GetType());
-                        if (!m_playrHeadInfo.ContainsKey(tempScene.errorCode))
+                        if (tempScene != null)
                         {
-                            m_playrHeadInfo.Add(tempScene.errorCode, tempScene);
+                            OtherPlayerInfo part_info = new OtherPlayerInfo();
+                            part_info._UID = tempScene.errorCode;
+                            if (tempScene.errorDesc.IndexOf('#') > -1)
+                            {
+                                string[] info = tempScene.errorDesc.Split('#');
+                                //string chenghao = info[0].ToString();
+                                //if (chenghao.IndexOf(':') > -1)
+                                //{
+                                //    string[] designation_Info = chenghao.Split(':');
+                                //    string designation = designation_Info[1].ToString();
+                                //    if (!string.IsNullOrEmpty(designation) && !designation.Equals("-1"))
+                                //    {
+                                //        part_info._Designation = designation;
+                                //    }
+                                //    else
+                                //    {
+                                //        part_info._Designation = null;
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    part_info._Designation = null;
+                                //}
+
+                                //string alliance_Info = info[2].ToString();
+                                //string duty_detail_Info = info[6].ToString();
+                                //if (alliance_Info.IndexOf(':') > -1 && alliance_Info.IndexOf("***") < 0)
+                                //{
+                                //    string[] alliance_name_Info = alliance_Info.Split(':');
+                                //    string[] duty_info = duty_detail_Info.Split(':');
+                                //    part_info._AllianceName = alliance_name_Info[1];
+                                //    part_info._Duty = int.Parse(duty_info[1]);
+                                //}
+                                //else
+                                //{
+                                //    part_info._AllianceName = "";
+                                //    part_info._Duty = -1;
+                                //}
+
+                                //string vip_deatail_info = info[4].ToString();
+                                //if (vip_deatail_info.IndexOf(':') > -1)
+                                //{
+                                //    string[] vip_Info = vip_deatail_info.Split(':');
+
+                                //    if (!string.IsNullOrEmpty(vip_Info[1]) && int.Parse(vip_Info[1]) > 0)
+                                //    {
+                                //        part_info._VInfo = vip_Info[1].ToString();
+                                //    }
+                                //    else
+                                //    {
+                                //        part_info._VInfo = null;
+                                //    }
+                                //}
+
+                                if (tempScene.errorDesc.IndexOf("Face") > -1)
+                                {
+                                    string greet_Info = info[8].ToString();
+
+                                    part_info._Greet = greet_Info;
+                                    //if (greet_Info.IndexOf("|") > -1)
+                                    //{
+                                    //    string[] greet_detail = greet_Info.Split('|');
+                                    //    part_info._Greet = greet_detail[1];
+                                    //}
+                                }
+                                else
+                                {
+                                    part_info._Greet = null;
+                                }
+                            }
+                           if(part_info._UID == m_Self_UID)
+                            Fresh_HeadInfo(part_info);
                         }
-                        else
-                        {
-                            m_playrHeadInfo[tempScene.errorCode] = tempScene;
-                        }
-                        PlayerNameManager.UpdateAllLabel(tempScene);
                     }
                     return true;
 
@@ -140,15 +213,44 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
         return false;
     }
 
-    void LateUpdate() //更新玩家位置和玩家名字位置
+    //创建玩家
+    void CreatePlayer(OtherPlayerInfo u_info)
     {
-        PlayerInCityManager.Instance().UpdatePlayerPosition();
-
+        PlayerInCityManager.m_PlayerInCity.CreatePlayer(u_info);
+    }
+    void LateUpdate()
+    {
         UpdatePlayerNamePosition();
     }
 
+    //更新玩家名字位置
+    public static void UpdatePlayerNamePosition()
+    {
+        foreach (GameObject tempPlayer in PlayerInCityManager.m_playrDic.Values)
+        {
+            if (tempPlayer != null)
+            {
+                PlayerNameManager.UpdatePlayerNamePosition(tempPlayer.GetComponent<PlayerInCity>().m_playerID, tempPlayer);
+            }
+        }
+    }
+
+    //更新玩家头顶信息
+    void Fresh_HeadInfo(OtherPlayerInfo u_info)
+    {
+        PlayerNameManager.CheckPlayer(u_info);
+    }
+    public static void DestoryPlayer(ExitScene tempPlayer) //删除玩家
+    {
+        //删除3d模型
+        PlayerInCityManager.DestroyPlayer(tempPlayer);
+
+        //及对应的名字
+        PlayerNameManager.DestroyPlayerName(tempPlayer);
+    }
     void OnDestroy()
     {
-		SocketTool.UnRegisterMessageProcessor( this );
+        m_PlsyersInfo = null;
+        SocketTool.UnRegisterMessageProcessor( this );
     }
 }

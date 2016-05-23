@@ -87,7 +87,7 @@ public class SettingUpButtonController : MonoBehaviour
             case ControlTYpe.E_POWER_GET:
                 {
                    // m_tiShiLabel.GetComponent<UILabel>().text = LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_1);
-                    LabelMovePosManagerment.CreateMove(m_tiShiLabel.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_1), 40);
+                   // LabelMovePosManagerment.CreateMove(m_tiShiLabel.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_1), 40);
                     //PopUpLabelTool.Instance().AddPopLabelWatcher(m_tiShiLabel.gameObject, Vector3.zero, Vector2.zero,
                     //                                               iTween.EaseType.easeOutQuart, 0.5f, iTween.EaseType.linear, 1.0f);
                     if (!m_IsTurnOn)
@@ -114,7 +114,7 @@ public class SettingUpButtonController : MonoBehaviour
                     //m_tiShiLabel.GetComponent<UILabel>().text = LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_2);
                     //PopUpLabelTool.Instance().AddPopLabelWatcher(m_tiShiLabel.gameObject, Vector3.zero, Vector2.zero,
                     //                                               iTween.EaseType.easeOutQuart, 0.5f, iTween.EaseType.linear, 1.0f);
-                    LabelMovePosManagerment.CreateMove(m_tiShiLabel.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_2), 40);
+                    //LabelMovePosManagerment.CreateMove(m_tiShiLabel.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_2), 40);
                     if (!m_IsTurnOn)
                     {
                        // PlayerPrefs.SetInt("POWER_FULL", 1);
@@ -139,7 +139,7 @@ public class SettingUpButtonController : MonoBehaviour
                     //m_tiShiLabel.GetComponent<UILabel>().text = LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_4);
                     //PopUpLabelTool.Instance().AddPopLabelWatcher(m_tiShiLabel.gameObject, Vector3.zero, Vector2.zero,
                     //                                               iTween.EaseType.easeOutQuart, 0.5f, iTween.EaseType.linear, 1.0f);
-                    LabelMovePosManagerment.CreateMove(m_tiShiLabel.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_4), 40);
+                   // LabelMovePosManagerment.CreateMove(m_tiShiLabel.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_4), 40);
                     if (!m_IsTurnOn)
                     {
                        // PlayerPrefs.SetInt("PAWNSHOP_FRESH", 1);
@@ -165,7 +165,7 @@ public class SettingUpButtonController : MonoBehaviour
                     //m_tiShiLabel.GetComponent<UILabel>().text = LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_3);
                     //PopUpLabelTool.Instance().AddPopLabelWatcher(m_tiShiLabel.gameObject, Vector3.zero, Vector2.zero,
                     //                                               iTween.EaseType.easeOutQuart, 0.5f, iTween.EaseType.linear, 1.0f);
-                    LabelMovePosManagerment.CreateMove(m_tiShiLabel.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_3), 40);
+                   // LabelMovePosManagerment.CreateMove(m_tiShiLabel.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.SET_UP_3), 40);
                     if (!m_IsTurnOn)
                     {
                         // PlayerPrefs.SetInt("PAWNSHOP_FRESH", 1);

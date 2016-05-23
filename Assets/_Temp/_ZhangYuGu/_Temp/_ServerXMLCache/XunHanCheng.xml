@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<XunHanCheng id="100" icon="100" name="荆轲" desc="0" level="1" gongji="4000" fangyu="4400" shengming="80000" wqSH="20" wqJM="20" wqBJ="20" wqRX="20" jnSH="20" jnJM="20" jnBJ="-90" jnRX="20" mibaoZuhe="7" mibaoZuheLv="4" mibao3="0" power="72232" weapon1="109001" weapon2="109002" weapon3="109003" model="2" pugongHeavy="1102" skill1Heavy="1202" skill2Heavy="1302" pugongLight="2102" skill1Light="2202" skill2Light="2302" pugongRange="3102" skill1Range="3202" skill2Range="3302" />
+</dataset>

@@ -30,6 +30,8 @@ public class BaiZhanTemplate : XmlLoadManager
 
 	public int produceSpeed;
 
+	public string fangWuZuoBiao; 
+
 	public static List<BaiZhanTemplate> templates = new List<BaiZhanTemplate>();
 
 
@@ -97,6 +99,9 @@ public class BaiZhanTemplate : XmlLoadManager
 				
 				t_reader.MoveToNextAttribute();
 				t_template.produceSpeed = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.fangWuZuoBiao = t_reader.Value;
 			}
 			
 			//			t_template.Log();
@@ -131,5 +136,18 @@ public class BaiZhanTemplate : XmlLoadManager
 			}
 		}
 		return 0;
+	}
+
+	public static BaiZhanTemplate GetBaiZhanTempByRank (int rank)
+	{
+		foreach (BaiZhanTemplate template in templates)
+		{
+			if (rank <= template.maxRank && rank >= template.minRank)
+			{
+				return template;
+			}
+		}
+		Debug.LogError("XML ERROR: Can't get BaiZhanTemplate with rank " + rank);
+		return null;
 	}
 }

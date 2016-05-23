@@ -38,6 +38,10 @@ public class SceneManager{
 		#if DEBUG_LOADING_SCENE
 		Debug.Log( "SceneManager.EnterLoading()" );
 		#endif
+
+		{
+			StaticLoading.InitBackgroundTexture();
+		}
 		
 		if ( EnterNextScene.Instance() != null ) {
 			Debug.Log( "Loading loading, destroy first load, may cause load interrupt." );
@@ -347,6 +351,7 @@ public class SceneManager{
 			ClientMain.m_listPopUpData = new List<ClientMain.PopUpData>();
 			ClientMain.m_isNewOpenFunction = false;
 
+			Global.m_isSportDataInItEnd = true;
 			Global.m_isOpenBaiZhan = false;
 			Global.m_isOpenHuangYe = false;
 			Global.m_iOpenFunctionIndex = -1;
@@ -408,7 +413,9 @@ public class SceneManager{
 			{
 				GeneralRewardManager.Instance().ClearRewardData ();
 			}
+		}
 
+		{
 			SocketTool.CloseSocket();
 		}
 
@@ -488,6 +495,10 @@ public class SceneManager{
 	
 	public static bool IsInCarriageScene(){
 		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.CARRIAGE );
+	}
+
+	public static bool IsInAllianceBattleScene(){
+		return Application.loadedLevelName == SceneTemplate.GetScenePath( SceneTemplate.SceneEnum.ALLIANCE_BATTLE );
 	}
 
 	public static bool IsInTreasureCityScene(){

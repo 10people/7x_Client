@@ -13,8 +13,6 @@ namespace Carriage
     {
         public RootManager m_RootManager;
 
-        public static float m_LatestServerSyncTime;
-
         public struct DeadInfoCollector
         {
             public int m_UID;
@@ -82,8 +80,17 @@ namespace Carriage
                         {
                             MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
                             QiXiongSerializer t_qx = new QiXiongSerializer();
+                            EnterSceneCache tempMsg2 = new EnterSceneCache();
+                            t_qx.Deserialize(t_stream, tempMsg2, tempMsg2.GetType());
+
+                            MemoryStream t_stream2 = new MemoryStream(tempMsg2.body, 0, tempMsg2.body.Length);
+                            QiXiongSerializer t_qx2 = new QiXiongSerializer();
                             EnterScene tempMsg = new EnterScene();
-                            t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
+                            t_qx2.Deserialize(t_stream2, tempMsg, tempMsg.GetType());
+
+                            tempMsg.posX = tempMsg2.posX;
+                            tempMsg.posY = tempMsg2.posY;
+                            tempMsg.posZ = tempMsg2.posZ;
 
                             CarriageBaseCultureController tempBaseCultureController;
 
@@ -97,7 +104,7 @@ namespace Carriage
                                 tempBaseCultureController.transform.localPosition = new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y);
 
                                 //Update self head icon info.
-                                m_RootManager.m_CarriageMain.SelfIconSetter.SetPlayer(tempMsg.roleId, true, tempMsg.level, tempMsg.senderName, tempMsg.allianceName, tempMsg.totalLife, tempMsg.currentLife, tempMsg.guojia, tempMsg.vipLevel, tempMsg.zhanli);
+                                m_RootManager.m_CarriageMain.SelfIconSetter.SetPlayer(tempMsg.roleId, true, tempMsg.level, tempMsg.senderName, tempMsg.allianceName, tempMsg.totalLife, tempMsg.currentLife, tempMsg.guojia, tempMsg.vipLevel, tempMsg.zhanli, tempMsg.horseType);
 
                                 //Set blood num.
                                 m_RootManager.m_CarriageMain.SetRemainingBloodNum(tempMsg.xuePingRemain);
@@ -105,7 +112,7 @@ namespace Carriage
                             //Other
                             else
                             {
-                                if (!CreatePlayer(tempMsg.roleId, tempMsg.uid, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y)))
+                                if (!CreatePlayer(tempMsg.roleId, tempMsg.uid, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y), m_RootManager.PlayerParentObject.transform))
                                 {
                                     Debug.LogError("Cannot create duplicated player.");
                                     return true;
@@ -251,10 +258,12 @@ namespace Carriage
                                 }
 
                                 //Play dead animation.
-                                if (m_RootManager.TryPlayAnimationInAnimator(tempMsg.uid, "Dead"))
+                                if (m_RootManager.m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(tempMsg.uid, "Dead"))
                                 {
                                     //Disable move.
                                     m_PlayerDic[tempMsg.uid].DeactiveMove();
+
+                                    m_RootManager.m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(tempMsg.uid, "Dead");
                                 }
                             }
 
@@ -279,10 +288,12 @@ namespace Carriage
                                 m_StoredPlayerDeadNotify = tempMsg;
 
                                 //Play dead animation.
-                                if (m_RootManager.TryPlayAnimationInAnimator(tempMsg.uid, "Dead"))
+                                if (m_RootManager.m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(tempMsg.uid, "Dead"))
                                 {
                                     //Disable move.
                                     m_RootManager.m_SelfPlayerController.DeactiveMove();
+
+                                    m_RootManager.m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(tempMsg.uid, "Dead");
                                 }
                             }
 
@@ -397,7 +408,7 @@ namespace Carriage
                                             }
                                             else
                                             {
-                                                CreatePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_UID, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y));
+                                                CreatePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_UID, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y), m_RootManager.PlayerParentObject.transform);
 
                                                 //Add to mesh controller.
                                                 if (m_PlayerDic.ContainsKey(tempMsg.uid) && !m_PlayerDic[tempMsg.uid].IsCarriage)
@@ -471,7 +482,6 @@ namespace Carriage
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageLuoli"));
             CarriagePrefab = Resources.Load<GameObject>("_3D/Models/Carriage/Carriage");
 
-            BasicYPosition = -3.0f;
             SocketTool.RegisterSocketListener(this);
         }
 

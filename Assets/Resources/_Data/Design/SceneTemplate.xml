@@ -14,6 +14,11 @@
 <SceneTemplate sceneId="11" sceneName="Game_Scene_TreasureCity" isCheck="1" />
 <SceneTemplate sceneId="100" sceneName="BattleField_V4_100" isCheck="1" />
 <SceneTemplate sceneId="101" sceneName="BattleField_V4_101" isCheck="1" />
+<SceneTemplate sceneId="102" sceneName="BattleField_V4_102" isCheck="1" />
+<SceneTemplate sceneId="103" sceneName="BattleField_V4_103" isCheck="1" />
+<SceneTemplate sceneId="104" sceneName="BattleField_V4_104" isCheck="1" />
+<SceneTemplate sceneId="105" sceneName="BattleField_V4_105" isCheck="1" />
+<SceneTemplate sceneId="106" sceneName="BattleField_V4_106" isCheck="1" />
 <SceneTemplate sceneId="201" sceneName="BattleField_V4_201" isCheck="1" />
 <SceneTemplate sceneId="202" sceneName="BattleField_V4_202" isCheck="1" />
 <SceneTemplate sceneId="203" sceneName="BattleField_V4_203" isCheck="1" />

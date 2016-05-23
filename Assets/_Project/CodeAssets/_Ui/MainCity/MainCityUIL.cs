@@ -12,10 +12,8 @@ public class MainCityUIL : MYNGUIPanel
     public GameObject ChatRedAlertObject;
 
     public UISprite TaskFinishSprite;
-    public UILabel EmailDetailLabel;
 
     public GameObject TaskDescObject;
-    public GameObject EmailDescObject;
     public MainCityTaskManager m_MainCityTaskManager;
 
     #region Task Detail/Finished Control
@@ -58,45 +56,14 @@ public class MainCityUIL : MYNGUIPanel
         public string text;
     }
 
-    private static List<StoredEmailDetail> storedEmailDetailList = new List<StoredEmailDetail>();
+//    private static List<StoredEmailDetail> storedEmailDetailList = new List<StoredEmailDetail>();
 
     private static void ExecuteStoredMailDetail()
     {
         m_MainCityUILDelegate -= ExecuteStoredMailDetail;
-        storedEmailDetailList.ForEach(item => ShowEmailDetail(item.IsShow, item.text));
+//        storedEmailDetailList.ForEach(item => ShowEmailDetail(item.IsShow, item.text));
 
-        storedEmailDetailList.Clear();
-    }
-
-    public static void ShowEmailDetail(bool isShow, string text)
-    {
-        if (MainCityUI.m_MainCityUI == null || MainCityUI.m_MainCityUI.m_MainCityUIL == null)
-        {
-            storedEmailDetailList.Add(new StoredEmailDetail
-            {
-                IsShow = isShow,
-                text = text
-            });
-            m_MainCityUILDelegate += ExecuteStoredMailDetail;
-
-            return;
-        }
-
-        MainCityUI.m_MainCityUI.m_MainCityUIL.DoShowEmailDetail(isShow, text);
-    }
-
-    private void DoShowEmailDetail(bool isShow, string text)
-    {
-        if (isShow)
-        {
-            EmailDetailLabel.text = text;
-            EmailDescObject.SetActive(true);
-            m_emailDetailLastShowTime = Time.realtimeSinceStartup;
-        }
-        else
-        {
-            EmailDescObject.SetActive(false);
-        }
+//        storedEmailDetailList.Clear();
     }
 
     private float m_emailDetailLastShowTime;
@@ -106,10 +73,7 @@ public class MainCityUIL : MYNGUIPanel
 
     void Update()
     {
-        if (EmailDescObject.activeInHierarchy && (Time.realtimeSinceStartup - m_emailDetailLastShowTime > m_EmailDetailShowDuration))
-        {
-            ShowEmailDetail(false, "");
-        }
+
     }
 
     public void EmailLoadCallback(ref WWW p_www, string p_path, Object p_object)

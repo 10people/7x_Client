@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<GuideCity id="1" seriestId="1" pText="小雅：主人，刚才任务奖励了装备，让我把它穿上吧！" desc="穿装备引导" />
+<GuideCity id="1" seriestId="2" pText="小雅：接下来请点击【装备】功能按钮" desc="穿装备引导" />
+<GuideCity id="1" seriestId="3" pText="小雅：注意，我们的武器有可以装备的了，请点击”+“号" desc="穿装备引导" />
+<GuideCity id="1" seriestId="4" pText="小雅：点击【装备】按钮就可以穿上这件装备啦！" desc="穿装备引导" />
+<GuideCity id="1" seriestId="5" pText="小雅：第一章剧情已经结束，请主人点击箭头切换到第二章场景。" desc="穿装备引导" />
+<GuideCity id="2" seriestId="1" pText="小雅：请主人点击“再入晋国”继续接下来的任务吧" desc="PVE2-1引导" />
+<GuideCity id="3" seriestId="1" pText="小雅：恭喜主人胜利通关，请主人点击“各个击破1”继续前进。" desc="PVE2-2引导" />
+<GuideCity id="4" seriestId="1" pText="小雅：恭喜主人开启了“商城”功能，从今以后主人就可以在商城中购买所需要的东西了。天子的兵马还在“商城”中等着我们，我们先去商城里看一看吧。" desc="商店引导" />
+<GuideCity id="4" seriestId="2" pText="小雅：在这里有大量的史实名将可以通过抽卡的方式获得，并成为您的左膀右臂。请主人点击“卡箱”。" desc="商店引导" />
+<GuideCity id="4" seriestId="3" pText="小雅：天子的兵马就在这里，请主人选择免费的抽卡选项。" desc="商店引导" />
+<GuideCity id="4" seriestId="4" pText="小雅：请主人从5张卡牌中抽取1张。" desc="商店引导" />
+<GuideCity id="4" seriestId="5" pText="小雅：恭喜主人抽取了第一张武将！请主人点击“确定”。" desc="商店引导" />
+<GuideCity id="5" seriestId="1" pText="小雅：现在主人有了更强力的帮手，就不需要我再陷阵杀敌了。主人先更换上场武将吧！我们需要首先返回“过关斩将”界面。。" desc="过关斩将引导" />
+<GuideCity id="5" seriestId="2" pText="小雅：请主人点进入第二章第三关“各个击破2”。" desc="过关斩将引导" />
+<GuideCity id="5" seriestId="3" pText="小雅：现在请主人将我从您的首发武将阵容中换下吧，请主人点击我的卡牌，随后点击屏幕右侧的“撤换”按钮。" desc="换将引导" />
+<GuideCity id="5" seriestId="4" pText="小雅：现在我已经不在主人的首发武将阵容中了。请主人选择刚刚从商城中抽取的武将，点击屏幕右侧的“上场”键。" desc="换将引导" />
+<GuideCity id="5" seriestId="5" pText="小雅：恭喜主人已经学会了更换上场武将！" desc="换将引导" />
+<GuideCity id="6" seriestId="1" pText="小雅：请主人点击活动功能NPC，即可进入领奖界面。" desc="领奖引导" />
+<GuideCity id="6" seriestId="2" pText="小雅：每天登陆游戏，都可以领取丰厚的奖励呦！" desc="领奖引导" />
+<GuideCity id="7" seriestId="1" pText="小雅：下面请主人点击自己的头像。" desc="科技引导" />
+<GuideCity id="7" seriestId="2" pText="小雅：请主人选择“科技”" desc="科技引导" />
+<GuideCity id="7" seriestId="3" pText="小雅：请主人选择“（科技名）”，即可对这项科技进行升级。" desc="科技引导" />
+<GuideCity id="7" seriestId="4" pText="小雅：恭喜主人学会了升级科技的技巧！在继续出征前，我们先领取一下奖励吧！" desc="科技引导" />
+</dataset>

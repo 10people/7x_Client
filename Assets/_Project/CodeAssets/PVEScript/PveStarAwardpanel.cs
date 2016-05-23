@@ -151,7 +151,7 @@ public class PveStarAwardpanel : MonoBehaviour  ,SocketProcessor {
 	}
 	public void CloseUI()
 	{			
-		MapData.mapinstance.ShowPVEGuid ();
+		MapData.mapinstance.ShowYinDao = true;
 
 		Destroy (this.gameObject);
 	}

@@ -33,6 +33,7 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
     private bool _isTimeGo = false;
     private float _time_StayAnimator = 0.0f;
     private bool _playerRandomAnimator = false;
+    private Vector3 _TargetPos;
     private enum AnimationType
     {
         INIDLE,
@@ -51,8 +52,6 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
     MoveType m_MoveType = new MoveType();
     void Awake()
     {
-        m_animation = this.GetComponent<Animator>();
-
         m_Agent = this.GetComponent<NavMeshAgent>();
 
         m_transform = this.transform;
@@ -60,6 +59,7 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
 
     void Start()
     {
+        _TargetPos = Vector3.zero;
         _time_limit = Random.Range(5, 15);
         m_MoveType = MoveType.NONE;
         _PlayerTyoe = AnimationType.INIDLE;
@@ -67,22 +67,66 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
         //  m_character.enabled = false;
         //m_Agent.enabled = false;
     }
-
+ 
     public void PlayerRun(Vector3 targetPosition)
     {
+      
+        //Debug.Log("DistanceDistanceDistanceDistance ::" + Vector3.Distance(targetPosition, transform.position));
+        if (Vector3.Distance(targetPosition, transform.position) < 0.35f)
+        {
+            return;
+        }
         _isRun = true;
-        MovingOn(targetPosition);
+        _TargetPos = targetPosition;
+        GameObject target = new GameObject();
+        target.transform.position = new Vector3( targetPosition.x, transform.position.y, targetPosition.z);
+//
+        transform.LookAt(target.transform);
+        Destroy(target);
+       // transform.Rotate(0, Vector3.Angle(transform.forward, _TargetPos),0);
+     //   m_Agent.stoppingDistance = m_Agent.remainingDistance;
+       //    MovingOn(targetPosition);
+       
     }
     void Update()
     {
-
-        if (m_Agent != null )
+        if (m_MoveType == MoveType.NONE)
         {
-            if (Mathf.Abs(m_Agent.remainingDistance) < 0.01f)
+            _playerRandomAnimator = true;
+        }
+
+        if (_isRun && Mathf.Abs(Vector3.Distance(_TargetPos,transform.position)) > 0)
+        {
+            if (_TargetPos != transform.position)
             {
+                Move(_TargetPos);
+            }
+            else
+            {
+                _isRun = false;
                 PlayerStop();
             }
         }
+        else if (Mathf.Abs(Vector3.Distance(_TargetPos, transform.position)) <= 0.01f)
+        {
+         
+        }
+        //else if(!_playerRandomAnimator)
+        //{
+        //    StartCoroutine(StoPMove());
+        //}
+
+        //if (m_Agent != null)
+        //{
+        //    if (Mathf.Abs(m_Agent.remainingDistance) < 0.01f)
+        //    {
+        //        PlayerStop();
+        //    }
+        //    else
+        //    {
+        //        Move(_TargetPos);
+        //    }
+        //}
         if (_playerRandomAnimator && !_isTimeGo)
         {
             _time_StayAnimator += Time.deltaTime;
@@ -136,6 +180,19 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
         }
     }
 
+    void Move(Vector3 point)
+    {
+        if (_playerRandomAnimator)
+        {
+            _playerRandomAnimator = false;
+            AnimationPlay(1);
+        }
+        transform.localPosition = Vector3.Lerp(transform.position, point, PlayerModelController.m_playerModelController.m_speed * Time.deltaTime * 0.3f);
+        //CharacterController controller = GetComponent<CharacterController>();
+        //Vector3 v = Vector3.ClampMagnitude(point - transform.position, PlayerModelController.m_playerModelController.m_speed * Time.deltaTime);
+
+        //controller.Move(v);
+    }
     void MovingOn(Vector3 targetPosition)
     {
         if (_playerRandomAnimator)
@@ -143,7 +200,6 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
             _playerRandomAnimator = false;
             AnimationPlay(1);
         }
-//        m_Agent.speed = PlayerModelController.m_playerModelController.m_speed;
 
 		if (PlayerModelController.m_playerModelController != null)
 		{
@@ -153,10 +209,8 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
 		{
 			m_Agent.speed = TreasureCityPlayer.m_instance.m_speed;
 		}
-
         m_Agent.Resume();
         m_Agent.SetDestination(targetPosition);
-
     }
  
     protected bool inTurning;
@@ -166,10 +220,7 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
     public void PlayerStop()
     {
         m_Agent.Stop();
-        if (m_MoveType == MoveType.NONE)
-        {
-            _playerRandomAnimator = true;
-        }
+     
  
         if (m_MoveType == MoveType.MOVE_TYPE_IDLE)
         {
@@ -181,39 +232,42 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
 
     public void AnimationPlay(int index)
     {
-        switch (index)
+        if (m_animation)
         {
-            case 0:
-                {
-                    _playerRandomAnimator = true;
-                    //m_animation.SetTrigger("iniDle");
-                    m_animation.Play("zhuchengidle");
-                }
-                break;
-            case 1:
-                {
-                    _isTimeGo = false;
-                    _playerRandomAnimator = false;
-                    _PlayerTyoe = AnimationType.INIDLE;
-                    m_MoveType = MoveType.MOVE_TYPE_IDLE;
-                    //m_animation.SetTrigger("inRun");
-                    m_animation.Play("zhuchengrun");
-                }
-                break;
-            case 2:
-                {
-                    //m_animation.SetTrigger("inRelax_1");
-                    m_animation.Play("zhuchengrelax_1");
-                }
-                break;
-            case 3:
-                {
-                    //m_animation.SetTrigger("inRelax_2");
-                    m_animation.Play("zhuchengrelax_2");
-                }
-                break;
-            default:
-                break;
+            switch (index)
+            {
+                case 0:
+                    {
+                        _playerRandomAnimator = true;
+                        //m_animation.SetTrigger("iniDle");
+                        m_animation.Play("zhuchengidle");
+                    }
+                    break;
+                case 1:
+                    {
+                        _isTimeGo = false;
+                        _playerRandomAnimator = false;
+                        _PlayerTyoe = AnimationType.INIDLE;
+                        m_MoveType = MoveType.MOVE_TYPE_IDLE;
+                        //m_animation.SetTrigger("inRun");
+                        m_animation.Play("zhuchengrun");
+                    }
+                    break;
+                case 2:
+                    {
+                        //m_animation.SetTrigger("inRelax_1");
+                        m_animation.Play("zhuchengrelax_1");
+                    }
+                    break;
+                case 3:
+                    {
+                        //m_animation.SetTrigger("inRelax_2");
+                        m_animation.Play("zhuchengrelax_2");
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
     public bool IsPlayComplete(string _name)
@@ -240,7 +294,81 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
 
         return false;
     }
+    private GameObject camObject;
+    private GameObject offObject;
+    private GameObject angleObject;
+    void MoveTurnToDestination(Vector3 targetPosition)
+    {
+        if (_playerRandomAnimator)
+        {
+            _playerRandomAnimator = false;
+            AnimationPlay(1);
+        }
+        if (offObject == null)
+        {
+            offObject = new GameObject();
+        }
 
+        offObject.transform.localPosition = targetPosition;
+
+        offObject.transform.localEulerAngles = new Vector3(0, 0, 0);
+
+        offObject.transform.localScale = new Vector3(1, 1, 1);
+
+        if (camObject == null)
+        {
+            camObject = new GameObject();
+        }
+
+        camObject.transform.localPosition = new Vector3(0, 0, 0);
+
+        camObject.transform.localEulerAngles = Vector3.zero;
+
+        camObject.transform.localScale = new Vector3(1, 1, 1);
+
+        offObject.transform.parent = camObject.transform;
+
+        camObject.transform.localEulerAngles = new Vector3(0, Camera.main.transform.localEulerAngles.y, 0);
+
+        targetPosition = offObject.transform.position;
+
+
+
+        if (angleObject == null)
+        {
+            angleObject = new GameObject();
+        }
+
+        angleObject.transform.localScale = new Vector3(1, 1, 1);
+
+        angleObject.transform.localPosition = Vector3.zero;
+
+        angleObject.transform.eulerAngles = m_transform.transform.eulerAngles;
+
+        Vector3 oldangle = angleObject.transform.eulerAngles;
+
+        angleObject.transform.forward = targetPosition;
+
+        float tar = angleObject.transform.eulerAngles.y;
+
+        float sp = 1080 * Time.deltaTime;
+
+        float angle = Mathf.MoveTowardsAngle(oldangle.y, tar, sp);
+
+        angleObject.transform.eulerAngles = new Vector3(0, angle, 0);
+
+
+        {
+
+       
+            Vector3 sp2 = targetPosition * PlayerModelController.m_playerModelController.m_speed * Time.deltaTime;
+
+            m_transform.forward = sp2;
+        
+            m_character.Move(sp2);
+        }
+
+    }
     public void DestoryObject()
     {
         Destroy(this.gameObject);

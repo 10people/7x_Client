@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<FuncLink ID="101" title="元宝不足" desc="充值、提升排名、达成成就均可获取元宝！" funcID="1300,null,300100,War_Sport,144,PageButton144" />
+<FuncLink ID="201" title="消耗体力" desc="扫荡关卡可快速获得秘宝以及将魂碎片。" funcID="300000,null,109,chuanqi" />
+<FuncLink ID="301" title="功 能" desc="" funcID="3,null,4,null,1421,null" />
+<FuncLink ID="401" title="体力不足" desc="购买体力、每日体力赠送、达成成就均可获得体力" funcID="2100,null,1391,PageButton1391,144,PageButton144" />
+<FuncLink ID="501" title="铜币不足" desc="购买铜币、行镖、试炼-洗劫权贵均可获取铜币" funcID="2101,null,310,War_YunBiao,301,SL_XiJieQuanGui" />
+<FuncLink ID="601" title="装备提升" desc="首充、V特权礼包、试炼-横扫六合、商铺" funcID="9,null,305,SI_ZongHengLiuHe" />
+<FuncLink ID="701" title="贡献不足" desc="膜拜、运镖、荒野、掠夺，可获大量贡献！" funcID="104,null,310,War_YunBiao" />
+<FuncLink ID="801" title="威望不足" desc="提升竞技排名可获得更多威望！" funcID="300100,War_Sport" />
+<FuncLink ID="901" title="建设值不足" desc="膜拜、运镖、荒野、掠夺" funcID="104,null,310,War_YunBiao" />
+<FuncLink ID="1001" title="精气值不足" desc="试炼-剿灭叛军" funcID="301,SL_JiaoMiePanJun" />
+<FuncLink ID="1101" title="积分不足" desc="掠夺" funcID="211,War_Plunder" />
+<FuncLink ID="1201" title="洗练石不足" desc="商铺、联盟祭拜、千重楼" funcID="9,null,104,null,300,QianChongLou" />
+<FuncLink ID="1301" title="强化石不足" desc="商铺、试炼讨伐山贼、过关斩将、成就" funcID="9,null, 304,SI_TaoFaShanZei" />
+<FuncLink ID="1401" title="残简不足" desc="过关斩将第N章开始掉落" funcID="300000,null" />
+<FuncLink ID="1501" title="将魂碎片不足" desc="探宝、传奇关卡、商铺" funcID="11,null,109,chuanqi,9,null" />
+<FuncLink ID="1601" title="玉珏" desc="每日任务" funcID="106,null" />
+<FuncLink ID="1701" title="符文" desc="猎符" funcID="500012,null" />
+<FuncLink ID="1801" title="宝石" desc="商铺、试炼-完璧归赵、千重楼" funcID="9,null,303,SL_WanBiGuiZhao,300,QianChongLou" />
+<FuncLink ID="1901" title="V特权不足" desc="充值提升V等级，\n可获更多游戏特权（便捷功能、次数等）" funcID="1300,null" />
+<FuncLink ID="2001" title="装备提升" desc="商铺、试炼-横扫六合" funcID="9,null,305,SI_ZongHengLiuHe" />
+<FuncLink ID="2101" title="秘术提升" desc="过关斩将" funcID="300000,null" />
+<FuncLink ID="2201" title="功勋不足" desc="每日积极参加郡城战可获得海量功勋！" funcID="104,null" />
+</dataset>

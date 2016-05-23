@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<BaizhanPipei id="1" roomNum="101" row="1" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="2" roomNum="201" row="2" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="3" roomNum="202" row="2" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="4" roomNum="203" row="2" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="5" roomNum="204" row="2" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="6" roomNum="301" row="3" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="7" roomNum="302" row="3" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="8" roomNum="303" row="3" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="9" roomNum="304" row="3" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="10" roomNum="401" row="4" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="11" roomNum="402" row="4" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="12" roomNum="403" row="4" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="13" roomNum="404" row="4" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="14" roomNum="501" row="5" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="15" roomNum="502" row="5" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="16" roomNum="503" row="5" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="17" roomNum="504" row="5" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="18" roomNum="601" row="6" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="19" roomNum="602" row="6" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="20" roomNum="603" row="6" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="21" roomNum="604" row="6" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="22" roomNum="701" row="7" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="23" roomNum="702" row="7" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="24" roomNum="703" row="7" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="25" roomNum="801" row="8" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="26" roomNum="802" row="8" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+<BaizhanPipei id="27" roomNum="901" row="9" param1="0" param2="0.25" param3="0.5" param4="0.75" param5="1" />
+</dataset>

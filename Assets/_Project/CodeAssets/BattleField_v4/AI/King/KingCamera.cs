@@ -18,6 +18,11 @@ public class KingCamera : MonoBehaviour
 
 	public RuntimeAnimatorController shakeControllor;
 
+	public GameObject childCamera;
+
+
+	[HideInInspector] public GameObject target;
+
 
 	private List<BattleCameraFlag> flags = new List<BattleCameraFlag>();
 
@@ -28,8 +33,6 @@ public class KingCamera : MonoBehaviour
 	private bool cameraLock;
 
 	private bool m_initialized = false;
-
-	public GameObject target;
 
 	private Vector3 m_cam_position;
 
@@ -78,6 +81,11 @@ public class KingCamera : MonoBehaviour
 		loadFlags ();
 
 		//StartCoroutine (elasticAction());
+	}
+
+	public static GameObject getChildCamera()
+	{
+		return Camera.main.GetComponent<KingCamera>().childCamera;
 	}
 
 	public void loadFlags()

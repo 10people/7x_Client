@@ -251,7 +251,11 @@ public class GuideTemplate : XmlLoadManager
 			}
 		}
 		
-		if(levelType == 0) Debug.LogError("XML ERROR: Can't get GuideTemplate with level " + levelId + ", and eventId " + eventId);
+		if(levelType == 0){
+			#if UNITY_EDITOR
+			Debug.LogError("XML ERROR: Can't get GuideTemplate with level " + levelId + ", and eventId " + eventId);
+			#endif
+		}
 
 		return null;
 	}

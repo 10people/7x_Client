@@ -17,8 +17,8 @@ public class GeneralSpecialReward : MonoBehaviour {
 	public GameObject miBaoObj;
 	public GameObject equipObj;
 
-	//秘宝信息
-	public UITexture mbTexTure;//秘宝图标
+	//将魂信息
+	public UITexture mbTexTure;//将魂图标
 	public UISprite border;
 	public UILabel miBaoName;
 	public GameObject starObj;
@@ -101,10 +101,18 @@ public class GeneralSpecialReward : MonoBehaviour {
 		{
 		case QXComData.XmlType.MIBAO:
 
-			MiBaoCardDes ();
+			if (!rewardData.m_isCheckOnly)
+			{
+				MiBaoCardDes ();
+			}
+			else
+			{
+				isScaleEnd = true;
+			}
 //			QXComData.InstanceEffect (QXComData.EffectPos.TOP,miBaoObj,100148);
 			QXComData.InstanceEffect (QXComData.EffectPos.MID,miBaoObj,100157);
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,3);
+
 			if (!QXComData.CheckYinDaoOpenState (100160))
 			{
 				UIYindao.m_UIYindao.setCloseUIEff ();
@@ -191,12 +199,12 @@ public class GeneralSpecialReward : MonoBehaviour {
 //			}
 		}
 
-		miBaoCount.text = "当前秘宝个数：" + MyColorData.getColorString (5, miBaoNum.ToString ()) + "个";
+		miBaoCount.text = "当前将魂个数：" + MyColorData.getColorString (5, miBaoNum.ToString ()) + "个";
 
-		int nextNeedNum = 0;//解锁下个技能还需秘宝个数
+		int nextNeedNum = 0;//解锁下个技能还需将魂个数
 		int getSkillId = 0;
 
-		string unLockDesStr = "";//解锁需秘宝数
+		string unLockDesStr = "";//解锁需将魂数
 
 		if (miBaoInfo.skillList == null || miBaoInfo.skillList.Count == 0)
 		{
@@ -235,17 +243,17 @@ public class GeneralSpecialReward : MonoBehaviour {
 		{
 			if (miBaoNum >= mMiBaoskill.needNum)
 			{
-				unLockDesStr = "当前秘宝技能可解锁";
+				unLockDesStr = "当前无双技能可解锁";
 			}
 			else
 			{
 				nextNeedNum = mMiBaoskill.needNum - miBaoNum;
-				unLockDesStr = "再收集" + MyColorData.getColorString (5,nextNeedNum.ToString ()) + "个秘宝，可解锁";
+				unLockDesStr = "再收集" + MyColorData.getColorString (5,nextNeedNum.ToString ()) + "个将魂，可解锁";
 			}
 		}
 		else
 		{
-			unLockDesStr = "秘宝技能已全部解锁";
+			unLockDesStr = "无双技能已全部解锁";
 		}
 
 		unLockNeedNum.text = unLockDesStr;

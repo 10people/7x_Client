@@ -38,7 +38,7 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 	private static Vector3 labelEndScale = new Vector3 (1f, 1f, 1f);
 
-	private float tempTimeScale = 1;
+//	private float tempTimeScale = 1;
 
 	private static float minAlpha = .1f;
 
@@ -102,19 +102,19 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 			}
 		}
 
-		tempTimeScale = Time.timeScale;
+//		tempTimeScale = Time.timeScale;
 
 		hide ();
 
-		UIBackgroundEffect t_ef = EffectTool.SetUIBackgroundEffect( Camera.main.gameObject, true );
+//		UIBackgroundEffect t_ef = EffectTool.SetUIBackgroundEffect( Camera.main.gameObject, true );
 
-		BattleUIControlor.Instance ().layerFight.SetActive (false);
+//		BattleUIControlor.Instance ().layerFight.SetActive (false);
 
-		Time.timeScale = 0;
+//		Time.timeScale = 0;
 
 		gameObject.SetActive (true);
 
-		colliderObject.SetActive (true);
+//		colliderObject.SetActive (true);
 
 		skillNameId = _skillNameId;
 		
@@ -155,7 +155,6 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 				"from", minAlpha,
 				"to", 1f,
 				"time", hideActionTime,
-				"ignoretimescale", true,
 				"onupdate", "iSetAlpha"
 				));
 		}
@@ -171,7 +170,6 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 			"from", minAlpha,
 			"to", 1f,
 			"time", hideActionTime,
-			"ignoretimescale", true,
 			"onupdate", "iSetAlpha"
 			));
 	}
@@ -188,7 +186,6 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 			"to", labelEndScale.x,
 			"time", label1ActionTime,
 			"easetype", labelEase,
-			"ignoretimescale", true,
 			"onupdate", "_showSkillEffLabel1Update",
 			"onstart", "_showSkillEffLabel1Start"
 			));
@@ -216,7 +213,6 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 			"to", labelEndScale.x,
 			"time", label2ActionTime,
 			"easetype", labelEase,
-			"ignoretimescale", true,
 			"onupdate", "_showSkillEffLabel2Update",
 			"onstart", "_showSkillEffLabel2Start"
 			));
@@ -241,7 +237,6 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 				"from", 1f,
 				"to", minAlpha,
 				"time", hideActionTime,
-				"ignoretimescale", true,
 				"onupdate", "iSetAlpha"
 				));
 		}
@@ -251,7 +246,6 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 			"from", 1f,
 			"to", minAlpha,
 			"time", hideActionTime,
-			"ignoretimescale", true,
 			"onupdate", "iSetAlpha"
 			));
 
@@ -260,7 +254,6 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 			"from", 1f,
 			"to", minAlpha,
 			"time", hideActionTime,
-			"ignoretimescale", true,
 			"onupdate", "iSetAlpha"
 			));
 
@@ -269,7 +262,6 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 			"from", 1f,
 			"to", minAlpha,
 			"time", hideActionTime,
-			"ignoretimescale", true,
 			"onupdate", "iSetAlpha",
 			"oncomplete", "startHide",
 			"oncompletetarget", gameObject
@@ -292,9 +284,9 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 	{
 		skillNameId = 0;
 
-		UIBackgroundEffect t_ef = EffectTool.SetUIBackgroundEffect( Camera.main.gameObject, false );
+//		UIBackgroundEffect t_ef = EffectTool.SetUIBackgroundEffect( Camera.main.gameObject, false );
 
-		BattleUIControlor.Instance ().layerFight.SetActive (true);
+//		BattleUIControlor.Instance ().layerFight.SetActive (true);
 
 		foreach(UISprite sprite in spriteframes)
 		{
@@ -313,9 +305,9 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 
 		gameObject.SetActive (false);
 
-		colliderObject.SetActive (false);
+//		colliderObject.SetActive (false);
 
-		Time.timeScale = tempTimeScale;
+//		Time.timeScale = tempTimeScale;
 	}
 
 }

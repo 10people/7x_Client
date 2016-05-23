@@ -49,13 +49,21 @@ public class EnterNextScene : MonoBehaviour{
 	#region Mono
 	
 	void Awake(){
-//		Debug.Log( "EnterNextScene.Awake()" );
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Awake()" );
+		#endif
 
 		m_instance = this;
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Awake.Done()" );
+		#endif
 	}
 
 	void Start(){
-//		Debug.Log( "EnterNextScene.Start()" );
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Start()" );
+		#endif
 
 		{
 			if( ConfigTool.GetBool( ConfigTool.CONST_LOG_TOTAL_LOADING_TIME, true ) ){
@@ -82,13 +90,17 @@ public class EnterNextScene : MonoBehaviour{
 		//SocketTool.RegisterSocketListener( this );
 
 		PrepareToLoadScene();
+
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Start.Done()" );
+		#endif
 	}
 
 	void Update(){
 		{
 			float t_percentage = LoadingHelper.GetLoadingPercentage( StaticLoading.m_loading_sections );
 
-			#if DEBUG_SHOW_LOADING_INFO
+			#if DEBUG_ENTER_NEXT_SCENE
 			Debug.Log( "EnterNextScene.Update.Loading.Bar( " + t_percentage + " )" );
 			#endif
 
@@ -121,6 +133,10 @@ public class EnterNextScene : MonoBehaviour{
 				}
 			}
 		}
+
+//		#if DEBUG_SHOW_LOADING_INFO
+//		Debug.Log( "EnterNextScene.Update.Done()" );
+//		#endif
 	}
 
 	/** Notes:
@@ -131,6 +147,16 @@ public class EnterNextScene : MonoBehaviour{
 		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log( "EnterNextScene.OnDestroy()" );
 		#endif
+
+		Clear();
+	}
+
+	void Clear(){
+		#if DEBUG_ENTER_NEXT_SCENE
+		Debug.Log( "EnterNextScene.Clear()" );
+		#endif
+
+		m_instance = null;
 
 		m_background_image = null;
 	}
@@ -188,6 +214,10 @@ public class EnterNextScene : MonoBehaviour{
             // BattleField
 			gameObject.AddComponent<PrepareForBattleField>();
         }
+		else if ( LoadingHelper.IsLoadingAllianceBattle() ) {
+            // PrepareForAllianceBattle
+		    gameObject.AddComponent<PrepareForAllianceBattle>();
+		}
         else {
             // load scenes
             DirectLoadLevel();
@@ -320,7 +350,9 @@ public class EnterNextScene : MonoBehaviour{
 
 	// for double loading use.
 	public void ManualDestroyImmediate(){
+		#if DEBUG_ENTER_NEXT_SCENE
 		Debug.Log ( "ManualDestroyImmediate()" );
+		#endif
 
 		DestroyUIImmediately();
 	}
@@ -387,7 +419,7 @@ public class EnterNextScene : MonoBehaviour{
 		#endif
 
 		{
-			m_instance = null;
+			Clear();
 		}
 
 		if ( StaticLoading.Instance() != null ) {

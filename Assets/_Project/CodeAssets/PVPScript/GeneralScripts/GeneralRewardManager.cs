@@ -372,6 +372,8 @@ public class RewardData {
 
 	public int miBaoStar;//秘宝星级
 
+	public bool m_isCheckOnly = false;//仅仅查看
+
 	public delegate void MiBaoClick ();
 	public MiBaoClick miBaoClick;
 	

@@ -62,10 +62,10 @@ public class QXChatUIBox : MonoBehaviour {
 	public void InItChatUIBox (ChatMessage tempChatMsg)
 	{
 		SetRedAlert (!QXChatData.Instance.SetOpenChat);
-
+		Debug.Log ("chatPct.guoJia:" + tempChatMsg.chatPct.guoJia);
 		#if ShowChatMsgInOneLabel
 		string chatText = "";
-		if (tempChatMsg.chatPct.guoJia <= 0)
+		if (tempChatMsg.chatPct.guoJia == 100)
 		{
 			chatText = (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "[00e1c4][广播][-]" : MyColorData.getColorString (5,"[系统]")) + tempChatMsg.chatPct.content;
 		}

@@ -13,20 +13,17 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private static GameObject IconSamplePrefab;
     public bool m_WetherIsIntensify = false;
     public GameObject m_IntensifyTanHao;
+    public GameObject m_AdvanceTanHao;
     public GameObject m_WashTanHao;
+    public GameObject m_InlayTanHao;
     public UILabel m_labelIntensify;
-    public GameObject m_MainParent;
-
-    public GameObject m_ParentInfo;
- 
     public GameObject m_SharePart;
-
-    public GameObject m_EquipUpgrade;
-
     public GameObject m_EquipIntensify;
     public GameObject m_EquipWash;
     public GameObject m_EquipWashObject;
 
+    public GameObject m_EquipInlayObject;
+    public GameObject m_EquipCompoundObject;
     public GameObject m_MianInfo;
 
     public int m_AttributeCount;
@@ -70,6 +67,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 
     public struct EquipBaseInfo
     {
+        public long _dbid;
         public int _EquipId;
         public string _Name;
         public int _Gong;
@@ -82,12 +80,20 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         public float _PregressValue;
         public int _AttrCount;
         public int _MaxLevel;
+        public int _currEXp;
+        public int _MaxEXp;
+        public int _gemGong;
+        public int _gemFang;
+        public int _gemMing;
+        public int _advanceExp;
     };
     private EquipBaseInfo _EquipBInfo;
     private bool _isUsed = false;
     public EquipGrowthEquipInfoItemManagerment m_EquipItenm = null;
+    private EquipGrowthInlayLayerManagerment.GemsMainInfo _GemiInfo;
     void Start()
     {
+        _GemiInfo = new EquipGrowthInlayLayerManagerment.GemsMainInfo();
         _EquipBInfo = new EquipBaseInfo();
         _listObj.Clear();
         if (JunZhuData.Instance().m_junzhuInfo.yuanBao > 10000)
@@ -98,14 +104,17 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         {
             m_TotalGold.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
         }
-
+        ShowAdvanceTanHao();
      //   m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
     }
 
     public static bool m_isEffect = false;
     private int _CurrenItemNum = 0;
     private float _timeInterval = 0;
-
+    public void ShowAdvanceTanHao()
+    {
+        m_AdvanceTanHao.SetActive(CompoundContainEnable());
+    }
 
     void Update()
     {
@@ -136,6 +145,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                 }
             }
         }
+       
     }
     private bool _IsOn = false;
     void OnEnable()
@@ -148,7 +158,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         {
             if (ShowType == 0)//0强化
             {
-                m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowInfo(EquipSaveId, equipType, _CurrSave, _MaxSave, DBidSave, _LevelSave, BuWeiSave, _PinZhiSave);
+                m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowInfo(EquipInfo);
             }
             else if (ShowType == 1)//1 洗练
             {
@@ -188,104 +198,131 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private int _MaxSave = 0;
     private int _PinZhiSave = 0;
     private int _LevelSave = 0;
-    public void ShowEquipInfo(ZhuangBei equipment, string gong, string fang, string xue, int max, int curr, int pinzhi, int level)
+    public void ShowEquipInfo(EquipStrengthResp esr)
     {
-        _CurrSave = curr;
-        _PinZhiSave = pinzhi;
-        _LevelSave = level;
-        _MaxSave = max;
-        equipmentShowed = equipment;
-        ei.gong = gong;
-        ei.fang = fang;
-        ei.xue = xue;
-        ei.level = level;
-        Equipname = equipment.m_name;
+        _CurrSave = esr.exp;
+        _PinZhiSave = ZhuangBei.getZhuangBeiById(esr.zhuangbeiID).pinZhi;
+        _LevelSave = esr.level;
+        _MaxSave = esr.expMax;
+  
+        ei.gong = esr.gongJi.ToString();
+        ei.fang = esr.fangYu.ToString();
+        ei.xue = esr.shengMing.ToString();
+        ei.level = esr.level;
+        Equipname = ZhuangBei.getZhuangBeiById(esr.zhuangbeiID).m_name;
 
-     
+        if (_isMaxLevel)
         {
-            if (_isMaxLevel)
+            _isMaxLevel = false;
+            if (m_EquipItenm != null)
             {
-                _isMaxLevel = false;
-                if (m_EquipItenm != null)
-                {
-                    CreateMove(m_EquipItenm.m_LabelProgress.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_MAX_LEVEL));
-                }
+                CreateMove(m_EquipItenm.m_LabelProgress.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_MAX_LEVEL));
             }
-          //  m_ProgressBar.value = 1.0f;
-
-           // m_LabPrecess.text = "";
         }
-        if (ShowType == 0)//0强化
+        _EquipBInfo._Name = NameIdTemplate.GetName_By_NameId(int.Parse(ZhuangBei.getZhuangBeiById(esr.zhuangbeiID).m_name));
+        _EquipBInfo._Gong = esr.gongJi;
+        _EquipBInfo._Fang = esr.fangYu;
+        _EquipBInfo._Xue = esr.shengMing;
+        if (esr.expMax != -1)
         {
-            m_labelIntensify.gameObject.SetActive(true);
-            m_labelIntensify.text = MyColorData.getColorString(1, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_8));
-            m_EquipUpgrade.SetActive(false);
-          
-            EquipSuoData.Instance().m_WashIson = false;
-         //   IntensifyEquipInfoShow();
-
-            m_EquipIntensify.SetActive(true);
-            m_EquipWashObject.SetActive(false);
-            m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowInfo(EquipSaveId, equipType, curr, max, DBidSave, level, BuWeiSave, pinzhi);
-        }
-        else if (ShowType == 1)//1 洗练
-        {
-          //  m_labelIntensify.gameObject.SetActive(false);
-
-            int size_shuxing = m_ParentInfo.transform.childCount;
-            m_EquipUpgrade.SetActive(false);
-            EquipSuoData.Instance().m_EquipID = EquipSaveId;
-            m_EquipIntensify.SetActive(false);
-            m_EquipWashObject.SetActive(true);
-            m_EquipWash.SetActive(true);
-            m_EquipWash.GetComponent<EquipGrowthWashManagerment>().m_EquipType = equipType;
-            m_EquipWash.GetComponent<EquipGrowthWashManagerment>().buttonNum = 0;
-            m_EquipWash.GetComponent<EquipGrowthWashManagerment>().m_Sendbuwei = BuWeiSave;
-            m_EquipWash.GetComponent<EquipGrowthWashManagerment>().EquipWash(DBidSave, EquipSaveId, 0, 3, 3, 3, 3, 3, 3, 3, 3, pinzhi);
-        }
-        _EquipBInfo._Name = MyColorData.getColorString(10, NameIdTemplate.GetName_By_NameId(int.Parse(equipment.m_name))); ;
-        _EquipBInfo._Gong = int.Parse(gong);
-        _EquipBInfo._Fang = int.Parse(fang);
-        _EquipBInfo._Xue = int.Parse(xue);
-        if (max != -1)
-        {
-            _EquipBInfo._Progress = curr.ToString() + "/" + max.ToString();
-            _EquipBInfo._PregressValue = curr / float.Parse(max.ToString());
+            _EquipBInfo._Progress = esr.exp.ToString() + "/" + esr.expMax.ToString();
+            _EquipBInfo._PregressValue = esr.exp / float.Parse(esr.expMax.ToString());
         }
         else
         {
             _EquipBInfo._Progress = "";
             _EquipBInfo._PregressValue = 1.0f;
         }
-        _EquipBInfo._Level = level;
-        _EquipBInfo._EquipId = equipment.id;
-        _EquipBInfo._Icon = equipment.icon;
-        _EquipBInfo._MaxLevel = equipment.qianghuaMaxLv;
-        _EquipBInfo._PinZhi = CommonItemTemplate.getCommonItemTemplateById( equipment.id).color;
+        _EquipBInfo._Level = esr.level;
+        _EquipBInfo._EquipId = esr.zhuangbeiID;
+        _EquipBInfo._Icon = ZhuangBei.getZhuangBeiById(esr.zhuangbeiID).icon;
+        _EquipBInfo._MaxLevel = ZhuangBei.getZhuangBeiById(esr.zhuangbeiID).qianghuaMaxLv;
+        _EquipBInfo._PinZhi = CommonItemTemplate.getCommonItemTemplateById(esr.zhuangbeiID).color;
+        _EquipBInfo._currEXp = esr.exp;
+        _EquipBInfo._MaxEXp = esr.expMax;
+        _EquipBInfo._dbid = DBidSave;
+        _EquipBInfo._advanceExp = esr.jinJieExp;
         if (EquipSuoData.m_listEquipWash.ContainsKey(EquipSaveId))
-        _EquipBInfo._AttrCount = EquipSuoData.m_listEquipWash[EquipSaveId].Count;
-        if (m_EquipItenm == null)
+            _EquipBInfo._AttrCount = EquipSuoData.m_listEquipWash[EquipSaveId].Count;
+        if (ShowType == 0)//0强化
         {
-            LoadEquipItem();
+          //  m_labelIntensify.gameObject.SetActive(true);
+          //  m_labelIntensify.text = MyColorData.getColorString(1, LanguageTemplate.GetText(LanguageTemplate.Text.XILIAN_DESC_8));
+
+
+            EquipSuoData.Instance().m_WashIson = false;
+            m_EquipWashObject.SetActive(false);
+            m_EquipInlayObject.SetActive(false);
+            m_EquipCompoundObject.SetActive(false);
+            m_EquipIntensify.SetActive(true);
+
+            m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowInfo(esr);
+        }
+        else if (ShowType == 1)//1 洗练
+        {
+            EquipSuoData.Instance().m_EquipID = EquipSaveId;
+            m_EquipIntensify.SetActive(false);
+            m_EquipWashObject.SetActive(true);
+            m_EquipInlayObject.SetActive(false);
+            m_EquipCompoundObject.SetActive(false);
+            m_EquipWash.SetActive(true);
+            m_EquipWash.GetComponent<EquipGrowthWashManagerment>().m_EquipType = equipType;
+            m_EquipWash.GetComponent<EquipGrowthWashManagerment>().buttonNum = 0;
+            m_EquipWash.GetComponent<EquipGrowthWashManagerment>().m_Sendbuwei = BuWeiSave;
+            m_EquipWash.GetComponent<EquipGrowthWashManagerment>().EquipWash(DBidSave, EquipSaveId, 0, 
+                               3, 3, 3, 3, 3, 3, 3, 3, ZhuangBei.getZhuangBeiById(esr.zhuangbeiID).pinZhi);
+        }
+        else if (ShowType == 2)//进阶
+        {
+            m_EquipIntensify.SetActive(false);
+            m_EquipWashObject.SetActive(false);
+            m_EquipInlayObject.SetActive(false);
+            m_EquipCompoundObject.SetActive(true);
+
+           m_EquipCompoundObject.GetComponent<EquipGrowthEquipAdvanceManagerment>().ShowInfo(_EquipBInfo);
+        }
+        else//镶嵌
+        {
+            m_EquipIntensify.SetActive(false);
+            m_EquipWashObject.SetActive(false);
+            m_EquipInlayObject.SetActive(true);
+            m_EquipCompoundObject.SetActive(false);
+            _GemiInfo.baseInfo = _EquipBInfo;
+            m_EquipInlayObject.GetComponent<EquipGrowthInlayLayerManagerment>().ShowInfo(_GemiInfo);
+        }
+
+        m_EquipItenm.ShowInfo(_EquipBInfo);
+        if (ShowType >= 0 && ShowType < 2)
+        {
+            if (ShowType == 0)//0强化
+            {
+                m_EquipItenm.m_ObjAttributeManagerment.SetActive(true);
+                IntensifyEquipInfoShow();
+            }
+            else if (ShowType == 1)//1 洗练
+            {
+                m_EquipItenm.m_ObjAttributeManagerment.SetActive(false);
+
+                WashEquipInfoShow();
+            }
+            m_EquipItenm.gameObject.SetActive(true);
         }
         else
         {
-            m_EquipItenm.ShowInfo(_EquipBInfo);
-            LoadAttrbuite();
+            m_EquipItenm.gameObject.SetActive(false);
         }
+        //LoadAttrbuite();
+        ShowInfo();
+
     }
 
     void ShowInfo()
     {
-        if (m_EquipItenm)
+        //if (m_EquipItenm)
         {
-            if (EquipInfo.gongJiAdd > 0)
+            if (EquipInfo.gongJiAdd > 0 || EquipInfo.fangYuAdd > 0 || EquipInfo.shengMingAdd > 0)
             {
-                ShowLevel(ei.level, EquipInfo.gongJiAdd, 0, 0);
-            }
-            else if (EquipInfo.fangYuAdd > 0)
-            {
-                ShowLevel(ei.level, 0, EquipInfo.fangYuAdd, EquipInfo.shengMingAdd);
+                ShowLevel(ei.level, EquipInfo.gongJiAdd, EquipInfo.fangYuAdd, EquipInfo.shengMingAdd);
             }
             else
             {
@@ -309,96 +346,6 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 		
 		UI2DTool.Instance.AddTopUI( GameObjectHelper.GetRootGameObject( gameObject ) );
 	}
-
-    void LoadEquipItem()
-    {
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIPINFO_ITEM), ResourcesLoadEquipItemCallBack);
-    }
-
-    public void ResourcesLoadEquipItemCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        if (m_ParentInfo != null)
-        {
-            GameObject rewardShow = Instantiate(p_object) as GameObject;
-            rewardShow.transform.parent = m_ParentInfo.transform;
-            rewardShow.transform.localScale = Vector3.one;
-            rewardShow.transform.localPosition = Vector3.zero;
-            rewardShow.GetComponent<EquipGrowthEquipInfoItemManagerment>().ShowInfo(_EquipBInfo);
-            m_EquipItenm = rewardShow.GetComponent<EquipGrowthEquipInfoItemManagerment>();
-           // m_TableInfo.repositionNow = true;
-
-            if (ShowType == 0)//0强化
-            {
-                IntensifyEquipInfoShow();
-            }
-            else if (ShowType == 1)//1 洗练
-            {
-                WashEquipInfoShow();
-            }
-
-        }
-        else
-        {
-            p_object = null;
-        }
-       LoadAttrbuite();
-        ShowInfo();
-    }
-
-    void LoadAttrbuite()
-    {
-        int size_shuxing = EquipSuoData.m_listEquipWash[EquipSaveId].Count;
-        int size = _listObj.Count;
-        if (size > 0)
-        {
-            if (size_shuxing >= size)
-            {
-                for (int k = 0; k < size_shuxing; k++)
-                {
-                    if (k < size)
-                    {
-                        _listObj[k].GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][k], false, false);
-                    }
-                    else
-                    {
-                        if (k == size)
-                        {
-                            index_ShuXing = k;
-                        }
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
-                    }
-                }
-            }
-            else
-            {
-                for (int k = 0; k < size; k++)
-                {
-                    if (k < size_shuxing)
-                    {
-                        _listObj[k].GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][k], false, false);
-                    }
-                    else
-                    {
-                        Destroy(_listObj[k]);
-                    }
-                }
-
-                for (int k = 0; k < size - size_shuxing; k++)
-                {
-                    _listObj.RemoveAt(_listObj.Count - 1);
-                }
-            }
-        }
-        else
-        {
-            index_ShuXing = 0;
-            for (int k = 0; k < size_shuxing; k++)
-            {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
-            }
-        }
-        ShowInfo();
-    }
     private readonly Vector3 BasicIconPos = new Vector3(-110, 0, 0);
     private const int BasicIconDepth = 10;
     private List<int> _Show_Gong = new List<int>();
@@ -406,276 +353,282 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private List<int> _Show_Fang = new List<int>();
     public void ShowLevel(int index, int gong, int fang, int xue)
     {
-        m_EquipItenm.m_LabelName.text = _EquipBInfo._Name +MyColorData.getColorString(4, " +" + index.ToString());
+        m_EquipItenm.m_LabelName.text = _EquipBInfo._Name;
+
+        if (index < ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaMaxLv)
+        {
+            m_EquipItenm.m_SpriteArrow.gameObject.SetActive(true);
+            m_EquipItenm.m_LabelLevel.text = "LV." + index.ToString()
+                +  MyColorData.getColorString(45, "                     LV." + (index + 1).ToString());
+        }
+        else
+        {
+            m_EquipItenm.m_SpriteArrow.gameObject.SetActive(false);
+            m_EquipItenm.m_LabelLevel.text = "LV." + index.ToString();
+        }
         if (ShowType == 0)
         {
-
-            if (gong > 0)
+            if (Mathf.Abs(gong) > 0)
             {
-                CreateClone(m_EquipItenm.m_LabelGong.gameObject, gong);
- 
+                CreateClone(m_EquipItenm.m_DicInfo[0].gameObject, gong);
                 int gg = int.Parse(ei.gong);
-                //ei.gong = gg.ToString();
-                if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), _EquipBInfo._Level + 1) != null)
+                if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                    , _EquipBInfo._Level + 1) != null)
                 {
                     if (_EquipBInfo._Level < _EquipBInfo._MaxLevel)
                     {
-                        m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, gg.ToString()) +
-                            MyColorData.getColorString(4, "(下一级  "
-                            + (gg + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).gongji - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).gongji).ToString()
-                            + ")");
+                        m_EquipItenm.m_DicInfo[0].text = gg.ToString() +
+                            MyColorData.getColorString(4, " → "
+                            + (gg + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                            , index + 1).gongji - QiangHuaTemplate.GetTemplateByItemId(
+                                int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).gongji).ToString()
+                            );
                     }
                     else
                     {
-                        m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, gg.ToString());
+                        m_EquipItenm.m_DicInfo[0].text = gg.ToString();
                     }
                 }
                 else
                 {
-                    m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, gg.ToString()) ;
-                }
-               
-            }
-            else
-            {
-                if (gong < 0)
-                {
-                    CreateClone(m_EquipItenm.m_LabelGong.gameObject, gong);
-                }
-
-                int gg = int.Parse(ei.gong);
-                //ei.gong = gg.ToString();
-   
-                if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), _EquipBInfo._Level + 1) != null)
-                {
-                    if (_EquipBInfo._Level < _EquipBInfo._MaxLevel)
-                    {
-                        m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, gg.ToString()) +
-                            MyColorData.getColorString(4, "(下一级  "
-                   + (gg + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).gongji - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).gongji).ToString()
-                        + ")");
-                    }
-                    else
-                    {
-                        m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, gg.ToString());
-                    }
-                }
-                else
-                {
-                    m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, gg.ToString());
+                    m_EquipItenm.m_DicInfo[0].text = gg.ToString();
                 }
             }
 
-            if (fang > 0)
+
+            if (Mathf.Abs(fang) > 0)
             {
                 int ff = int.Parse(ei.fang);
-                //ei.fang = ff.ToString();
-                int xx = int.Parse(ei.xue) ;
-        
-                //ei.xue = xx.ToString();
-              
-
-       
-                if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), _EquipBInfo._Level + 1) != null)
+                CreateClone(m_EquipItenm.m_DicInfo[1].gameObject, fang);
+                if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                    , _EquipBInfo._Level + 1) != null)
                 {
                     if (_EquipBInfo._Level < _EquipBInfo._MaxLevel)
                     {
-                        m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ff.ToString()) +
-                         MyColorData.getColorString(4, "(下一级  "
-                   + (ff + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).fangyu - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).fangyu).ToString()
-                        + ")");
-                        m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, xx.ToString()) +
-                             MyColorData.getColorString(4, "(下一级  "
-                       + (xx + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).shengming - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).shengming).ToString()
-                            + ")");
+                        m_EquipItenm.m_DicInfo[1].text = ff.ToString() +
+                         MyColorData.getColorString(4, " → "
+                        + (ff + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                        , index + 1).fangyu - QiangHuaTemplate.GetTemplateByItemId(int.Parse(
+                            ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                        , index).fangyu).ToString()
+                       );
+
                     }
                     else
                     {
-                        m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ff.ToString());
-                        m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, xx.ToString());
+                        m_EquipItenm.m_DicInfo[1].text = ff.ToString();
                     }
                 }
                 else
                 {
-                    m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ff.ToString());
-                    m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, xx.ToString());
+                    m_EquipItenm.m_DicInfo[1].text = ff.ToString();
                 }
             }
-            else
+
+
+            if (Mathf.Abs(xue) > 0)
             {
-                if (xue < 0)
-                {
-                    CreateClone(m_EquipItenm.m_LabelXue.gameObject, xue);
-                    CreateClone(m_EquipItenm.m_LabelFang.gameObject, fang);
-                }
-                int ff = int.Parse(ei.fang);
-                //ei.fang = ff.ToString();
+                CreateClone(m_EquipItenm.m_DicInfo[2].gameObject, xue);
+
                 int xx = int.Parse(ei.xue);
-               // ei.xue = xx.ToString();
-
-                if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), _EquipBInfo._Level + 1) != null)
+                if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                    , _EquipBInfo._Level + 1) != null)
                 {
                     if (_EquipBInfo._Level < _EquipBInfo._MaxLevel)
                     {
-                        m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ff.ToString()) +
-                        MyColorData.getColorString(4, "(下一级  "
-                + (ff + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).fangyu - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).fangyu).ToString()
-                     + ")");
-                        m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, xx.ToString()) +
-                            MyColorData.getColorString(4, "(下一级  "
-                       + (xx + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).shengming - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).shengming).ToString()
-                            + ")");
+                        m_EquipItenm.m_DicInfo[2].text = xx.ToString() +
+                            MyColorData.getColorString(4, " → "
+                        + (xx + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                        , index + 1).shengming - QiangHuaTemplate.GetTemplateByItemId(
+                            int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).shengming).ToString()
+                        );
                     }
                     else
                     {
-                        m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ff.ToString());
-                        m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, xx.ToString());
+                        m_EquipItenm.m_DicInfo[2].text = xx.ToString();
                     }
-                
+
                 }
                 else
                 {
-                    m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ff.ToString());
-                    m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, xx.ToString());
+                    m_EquipItenm.m_DicInfo[2].text = xx.ToString();
                 }
             }
+
         }
     }
 
 
     void ShowFresh(int index)
     {
-        m_EquipItenm.m_LabelName.text = _EquipBInfo._Name + MyColorData.getColorString(4, " +" + index.ToString());
+        m_EquipItenm.m_LabelName.text = _EquipBInfo._Name;
+        if (index < ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaMaxLv)
+        {
+            m_EquipItenm.m_SpriteArrow.gameObject.SetActive(true);
+            m_EquipItenm.m_LabelLevel.text = "LV." + index.ToString() 
+                +  MyColorData.getColorString(45, "                     LV." + (index + 1).ToString());
+        }
+        else
+        {
+            m_EquipItenm.m_SpriteArrow.gameObject.SetActive(false);
+            m_EquipItenm.m_LabelLevel.text = "LV." + index.ToString();
+        }
         if (!string.IsNullOrEmpty(ei.gong) && int.Parse(ei.gong) > 0 )
         {
-            if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), _EquipBInfo._Level + 1) != null)
+            if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                , _EquipBInfo._Level + 1) != null)
             {
                 if (_EquipBInfo._Level < _EquipBInfo._MaxLevel)
                 {
-                    m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong) +
-                    MyColorData.getColorString(4, "(下一级  "
+                    m_EquipItenm.m_DicInfo[0].text = ei.gong +
+                    MyColorData.getColorString(4, " → "
                     + (int.Parse(ei.gong)
-                    + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).gongji - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).gongji).ToString()
-                    + ")");
+                    + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                    , index + 1).gongji - QiangHuaTemplate.GetTemplateByItemId(
+                        int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).gongji).ToString()
+                    );
                 }
                 else
                 {
-                    m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
+                    m_EquipItenm.m_DicInfo[0].text = ei.gong;
                 }
              
             }
             else
             {
-                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
+                m_EquipItenm.m_DicInfo[0].text = ei.gong;
             }
 
         }
 
-        if (!string.IsNullOrEmpty(ei.fang))
+        if (!string.IsNullOrEmpty(ei.fang) && int.Parse(ei.fang) > 0)
         {
-            if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), _EquipBInfo._Level + 1) != null)
-            {
+            if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId),
+                _EquipBInfo._Level + 1) != null)
+            { 
                 if (_EquipBInfo._Level < _EquipBInfo._MaxLevel)
                 {
-                    m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang) +
-                     MyColorData.getColorString(4, "(下一级  "
-               + (int.Parse(ei.fang) + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).fangyu - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).fangyu).ToString()
-                    + ")");
-                    m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue) +
-                         MyColorData.getColorString(4, "(下一级  "
-                   + (int.Parse(ei.xue) + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index + 1).shengming - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).shengming).ToString()
-                        + ")");
+                    m_EquipItenm.m_DicInfo[1].text = ei.fang +
+                     MyColorData.getColorString(4, " → "
+                    + (int.Parse(ei.fang) + QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                    , index + 1).fangyu - QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                    , index).fangyu).ToString()
+                    );
                 }
                 else
                 {
-                    m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
-                    m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
+                    m_EquipItenm.m_DicInfo[1].text = ei.fang;
                 }
             }
             else
             {
-                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
-                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
+                m_EquipItenm.m_DicInfo[1].text = ei.fang;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(ei.xue) && int.Parse(ei.xue) > 0)
+        {
+            if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                , _EquipBInfo._Level + 1) != null)
+            {
+                if (_EquipBInfo._Level < _EquipBInfo._MaxLevel)
+                {
+                    m_EquipItenm.m_DicInfo[2].text = ei.xue +
+                    MyColorData.getColorString(4, " → "
+                    + (int.Parse(ei.xue) + QiangHuaTemplate.GetTemplateByItemId(
+                        int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
+                        , index + 1).shengming - QiangHuaTemplate.GetTemplateByItemId(
+                            int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId), index).shengming).ToString()
+                    );
+                }
+                else
+                {
+                    m_EquipItenm.m_DicInfo[2].text = ei.xue;
+                }
+            }
+            else
+            {
+                m_EquipItenm.m_DicInfo[2].text = ei.xue;
             }
         }
     }
     void IntensifyEquipInfoShow()//强化装备信息显示
     {
-        if (BuWeiSave == (int)EquipPositionEnum.QingWuQi || BuWeiSave == (int)EquipPositionEnum.ZhongWuQi || BuWeiSave == (int)EquipPositionEnum.Gong)
+        if (BuWeiSave == (int)EquipPositionEnum.QingWuQi 
+            || BuWeiSave == (int)EquipPositionEnum.ZhongWuQi
+            || BuWeiSave == (int)EquipPositionEnum.Gong)
         {
             equipType = 1;
-
-            if (EquipInfo.gongJiAdd == 0 || StrengthenIndex == 1)
-            {
-                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
-            }
-            else
-            {
-                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
-                CreateClone(m_EquipItenm.m_LabelGong.gameObject, EquipInfo.gongJiAdd);
-            }
-
             m_EquipIntensify.SetActive(true);
         }
         else
         {
             equipType = 0;
-           
-
-            if (EquipInfo.fangYuAdd == 0 && EquipInfo.shengMingAdd == 0 || StrengthenIndex == 1)
-            {
-                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
-                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
-            }
-            else
-            {
-                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
-                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
-
-                CreateClone(m_EquipItenm.m_LabelFang.gameObject, EquipInfo.fangYuAdd);
-                CreateClone(m_EquipItenm.m_LabelXue.gameObject, EquipInfo.shengMingAdd);
-            }
         }
+
+        //if (Mathf.Abs(EquipInfo.gongJiAdd) > 0)
+        //{
+        //    m_EquipItenm.m_DicInfo[0].text = MyColorData.getColorString(10, ei.gong);
+        //    CreateClone(m_EquipItenm.m_DicInfo[0].gameObject, EquipInfo.gongJiAdd);
+        //}
+      
+        //if (Mathf.Abs(EquipInfo.fangYuAdd) > 0)
+        //{
+        //    m_EquipItenm.m_DicInfo[1].text = MyColorData.getColorString(10, ei.fang);
+
+        //    CreateClone(m_EquipItenm.m_DicInfo[1].gameObject, EquipInfo.fangYuAdd);
+        //}
+
+        //if (Mathf.Abs(EquipInfo.shengMingAdd) > 0)
+        //{
+
+        //    m_EquipItenm.m_DicInfo[2].text = MyColorData.getColorString(10, ei.xue);
+
+        //    CreateClone(m_EquipItenm.m_DicInfo[2].gameObject, EquipInfo.shengMingAdd);
+        //}
     }
 
 
     void WashEquipInfoShow()//洗练装备信息显示
     {
-        if (BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_HEAVY_WEAPONS || BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_LIGHT_WEAPONS || BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_BOW)
+        if (BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_HEAVY_WEAPONS 
+            || BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_LIGHT_WEAPONS 
+            || BuWeiSave == (int)JunzhuEquipPartEnum.E_EQUIP_BOW)
         {
             equipType = 1;
             EquipSuoData.Instance().m_WashIson = true;
-            if (EquipInfo.gongJiAdd == 0 || StrengthenIndex == 1)
-            {
-                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong);
-            }
-            else
-            {
-                CreateClone(m_EquipItenm.m_LabelGong.gameObject, EquipInfo.gongJiAdd);
-            }
+      
         }
         else
         {
             equipType = 0;
-            
             EquipSuoData.Instance().m_WashIson = true;
-
-            if (EquipInfo.fangYuAdd == 0 && EquipInfo.shengMingAdd == 0 || StrengthenIndex == 1)
-            {
-                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
-                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
-            }
-            else
-            {
-                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
-                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
-
-                CreateClone(m_EquipItenm.m_LabelFang.gameObject, EquipInfo.shengMingAdd);
-                CreateClone(m_EquipItenm.m_LabelXue.gameObject, EquipInfo.fangYuAdd);
-            }
-
+ 
             m_EquipWashObject.SetActive(true);
         }
+
+        //if (Mathf.Abs(EquipInfo.gongJiAdd) > 0)
+        //{
+        //    m_EquipItenm.m_DicInfo[0].text = MyColorData.getColorString(10, ei.gong);
+        //    CreateClone(m_EquipItenm.m_DicInfo[0].gameObject, EquipInfo.gongJiAdd);
+        //}
+
+ 
+ 
+        //if (Mathf.Abs(EquipInfo.fangYuAdd) > 0)
+        //{
+        //    m_EquipItenm.m_DicInfo[1].text = MyColorData.getColorString(10, ei.fang);
+
+        //    CreateClone(m_EquipItenm.m_DicInfo[1].gameObject, EquipInfo.fangYuAdd);
+        //}
+
+        //if (Mathf.Abs(EquipInfo.shengMingAdd) > 0)
+        //{
+
+        //    m_EquipItenm.m_DicInfo[2].text = MyColorData.getColorString(10, ei.xue);
+
+        //    CreateClone(m_EquipItenm.m_DicInfo[2].gameObject, EquipInfo.shengMingAdd);
+        //}
     }
  
     int times_index = 0;
@@ -686,7 +639,6 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         {
             switch (p_message.m_protocol_index)
             {
-
                 case ProtoIndexes.S_EQUIP_UPGRADE://返回需要强化的装备装备信息
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -698,44 +650,43 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                         EquipInfo.gongJiAdd = 0;
                         EquipInfo.fangYuAdd = 0;
                         EquipInfo.shengMingAdd = 0;
-                        if (ShowType == 0)
+
+                      
+                        if (m_objSharePart.GetComponent<EquipGrowthWearManagerment>()._Index_Type_Save == 1)
                         {
-                            m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowEquipTanHao();
+                            m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowInfo(EquipInfo);
                             if (!m_WetherIsIntensify)
                             {
                                 EquipInfoSave = Equip;
-                             
                             }
                             else
                             {
+                                FunctionWindowsCreateManagerment.FreshEquipInfo(Equip);
+                                EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
+                                EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
+                                EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
                                 if (Equip.level > _LevelSave)
                                 {
-                                    {
-                                        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_ObjEffectTop, EffectIdTemplate.GetPathByeffectId(620213), null);
-                                        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_ObjEffectBottom, EffectIdTemplate.GetPathByeffectId(620212), null);
-                                    }
                                     m_EquipItenm.m_LevelSave = Equip.level;
                                     m_EquipItenm.m_listEffect.Add(Equip.level - _LevelSave);
-                                   
+
                                 }
-                                UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_SpritePinZhi.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
+                                UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2,
+                                    m_EquipItenm.m_SpritePinZhi.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
                                 m_WetherIsIntensify = false;
 
-                               
+
                                 if (EquipInfo.expMax == -1)
                                 {
                                     _isMaxLevel = true;
                                 }
-                             
-                                    CreateMove(m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
-                                    EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
-                                    EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
-                                    EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
-                               
+
+                                CreateMove(m_EquipItenm.m_LabelSuccess.gameObject,
+                                    LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
                                 EquipInfoSave = Equip;
                             }
                         }
-           
+
                         if (Equip.level < JunZhuData.Instance().m_junzhuInfo.level)
                         {
                             EquipGrowthMaterialUseManagerment.touchIsEnable = true;
@@ -744,9 +695,11 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                         {
                             EquipGrowthMaterialUseManagerment.touchIsEnable = false;
                         }
-                       m_IntensifyTanHao.SetActive(AllIntensify());
-                       m_WashTanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(1210)&& FunctionOpenTemp.GetWhetherContainID(1210));
-                        PushAndNotificationHelper.SetRedSpotNotification(1212, AllIntensify());  
+                        m_IntensifyTanHao.SetActive(AllIntensify());
+                        m_WashTanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(1210) 
+                            && FunctionOpenTemp.GetWhetherContainID(1210));
+                        m_InlayTanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(1213));
+                        PushAndNotificationHelper.SetRedSpotNotification(1212, AllIntensify());
                         EquipsInfoTidy(EquipInfo);
                         StartCoroutine(WaitSecondIntensify());
                         return true;
@@ -761,8 +714,9 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                         intensy.m_YJQHTouch = EquipGrowthIntensifyManagerment.TouchType.BUTTON_UP;
                         if (Equip.allResp != null)
                         {
-                            
-                            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YiJianQHEffectTexture, EffectIdTemplate.GetPathByeffectId(100180), null);
+
+                            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_YiJianQHEffectTexture
+                                , EffectIdTemplate.GetPathByeffectId(100180), null);
                             m_YiJianQHEffect.SetActive(true);
                             StartCoroutine(WaitSecond());
 
@@ -770,13 +724,17 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                             for (int i = 0; i < Equip.allResp.Count; i++)
                             {
 
-                                if (Equip.allResp[i].level > EquipSuoData.m_equipsLevelSave[EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei)])
+                                if (Equip.allResp[i].level 
+                                    > EquipSuoData.m_equipsLevelSave[EquipSuoData.GetEquipInfactUseBuWei(
+                                        ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei)])
                                 {
                                     EquipSuoData.StrengthEffect sf = new EquipSuoData.StrengthEffect();
                                     sf._num = EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei);
                                     sf._isshow = true;
-                                    sf._LevelAdd = Equip.allResp[i].level - EquipSuoData.m_equipsLevelSave[EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei)];
-                                    EquipSuoData.m_listEffectInfo.Add(EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei), sf);
+                                    sf._LevelAdd = Equip.allResp[i].level - EquipSuoData.m_equipsLevelSave[
+                                        EquipSuoData.GetEquipInfactUseBuWei(ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei)];
+                                    EquipSuoData.m_listEffectInfo.Add(EquipSuoData.GetEquipInfactUseBuWei(
+                                        ZhuangBei.getZhuangBeiById(Equip.allResp[i].zhuangbeiID).buWei), sf);
                                 }
 
                                 if (Equip.allResp[i].zhuangbeiID == EquipSaveId)
@@ -796,7 +754,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                             EquipInfoSave = EquipInfo;
 
                             m_IntensifyTanHao.SetActive(AllIntensify());
-                   
+
                             if (EquipInfo.level < JunZhuData.Instance().m_junzhuInfo.level)
                             {
                                 EquipGrowthMaterialUseManagerment.touchIsEnable = true;
@@ -810,13 +768,12 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                             {
                                 m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[iten.Value._num].m_ObjEffect.SetActive(true);
                             }
-                            m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ButtonShow();
+                            //m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ButtonShow();
                             m_isEffect = true;
-                            
+
                         }
                         return true;
                     }
-                    
             }
         }
         return false;
@@ -834,8 +791,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     {
         //   yield return new WaitForSeconds(1.5f);
         yield return new WaitForSeconds(1.0f);
-        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_ObjEffectBottom);
-        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_ObjEffectTop);
+ 
         UI3DEffectTool.ClearUIFx(m_EquipItenm.m_SpritePinZhi.gameObject);
     }
     void OnDisable()
@@ -856,7 +812,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             EquipSuoData.m_listEquipWash.Remove(esr.zhuangbeiID);
         }
         EquipSuoData.Instance().listIndexs.Clear();
-        Dictionary<int, BagItem> EquipsOfBodyDic = EquipsOfBody.Instance().m_equipsOfBodyDic;
+    
 
 
         EquipGrowthMaterialUseManagerment.equipLevel = esr.level;
@@ -894,77 +850,19 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
 
                 EquipSuoData.m_listEquipWash.Add(esr.zhuangbeiID, _listAttribute);
                 // index_ShuXing = 0;
+
+
+
+                ShowEquipInfo(esr);
                
-                foreach (KeyValuePair<int, BagItem> item in EquipsOfBodyDic)
-                {
-                    if (item.Value.itemId == EquipSaveId)
-                    {
-                        ShowEquipInfo(ZhuangBei.templates[i],
-                                      esr.gongJi.ToString(),
-                                      esr.fangYu.ToString(),
-                                      esr.shengMing.ToString(),
-                                      int.Parse(esr.expMax.ToString()),
-                                      esr.exp,
-                                      item.Value.pinZhi, esr.level);
-                        break;
-                    }
-                }
-                break;
             }
         }
     
     }
-    public void AppendAttributeUpdate(int index)//更新属性及加成
-    {
-        if (EquipSuoData.m_listEquipWash.ContainsKey(index))
-        {
-            int size_sx = EquipSuoData.m_listEquipWash[index].Count;
-            int size_obj = _listObj.Count;
-
-            if (size_sx >= size_obj)
-            {
-                for (int k = 0; k < size_sx; k++)
-                {
-                    if (k < size_obj)
-                    {
-                        _listObj[k].GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][k], true, EquipSuoData.GetWetherContainNewAttribute(index));
-                    }
-                    else
-                    {
-                        if (k == size_obj)
-                        {
-                            index_ShuXing = k;
-                        }
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.EQUIP_SPECIAL_ITEM), ResourcesLoadCallBack2);
-                    }
-                }
-            }
-            else
-            {
-                for (int k = 0; k < size_obj; k++)
-                {
-                    if (k < size_sx)
-                    {
-                        _listObj[k].GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][k], true, EquipSuoData.GetWetherContainNewAttribute(index));
-                    }
-                    else
-                    {
-                        Destroy(_listObj[k]);
-                    }
-                }
-
-                for (int k = 0; k < size_obj - size_sx; k++)
-                {
-                    _listObj.RemoveAt(_listObj.Count - 1);
-                }
-            }
-             
-         }
-    }
     void CreateClone(GameObject move, int content)
     {
         GameObject clone = NGUITools.AddChild(move.transform.parent.gameObject, move);
-        clone.transform.localPosition = new Vector3(-220,move.transform.localPosition.y,0);
+        clone.transform.localPosition = new Vector3(-100,move.transform.localPosition.y,0);
         clone.transform.localRotation = move.transform.localRotation;
 
         clone.transform.localScale = move.transform.localScale;
@@ -1017,49 +915,13 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     IEnumerator WatiFor(GameObject obj)
     {
         yield return new WaitForSeconds(0.8f);
-        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelXue.gameObject);
-        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelFang.gameObject);
-        UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelGong.gameObject);
+        //UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelXue.gameObject);
+        //UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelFang.gameObject);
+        //UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelGong.gameObject);
         UI3DEffectTool.ClearUIFx(m_EquipItenm.m_SpritePinZhi.gameObject);
         Destroy(obj);
     }
-
-    void ShowUpgradeInfo()
-    {
-        if (BuWeiSave == (int)EquipPositionEnum.QingWuQi || BuWeiSave == (int)EquipPositionEnum.ZhongWuQi || BuWeiSave == (int)EquipPositionEnum.Gong)
-        {
-            equipType = 1;
-
-            if (EquipInfo.gongJiAdd == 0 || StrengthenIndex == 1)
-            {
-                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong) + "RRR";
-            }
-            else
-            {
-                m_EquipItenm.m_LabelGong.text = MyColorData.getColorString(10, ei.gong) + "RRR";
-                CreateClone(m_EquipItenm.m_LabelGong.gameObject, EquipInfo.gongJiAdd);
-            }
-        }
-        else
-        {
-            equipType = 0;
-            if (EquipInfo.fangYuAdd == 0 && EquipInfo.shengMingAdd == 0 || StrengthenIndex == 1)
-            {
-                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
-                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
-            }
-            else
-            {
-                m_EquipItenm.m_LabelFang.text = MyColorData.getColorString(10, ei.fang);
-                m_EquipItenm.m_LabelXue.text = MyColorData.getColorString(10, ei.xue);
-
-                CreateClone(m_EquipItenm.m_LabelFang.gameObject, EquipInfo.fangYuAdd);
-                CreateClone(m_EquipItenm.m_LabelXue.gameObject, EquipInfo.shengMingAdd);
-            }
-        }
-         m_EquipUpgrade.SetActive(true);
-         m_EquipUpgrade.GetComponent<EquipGrowthUpgradeManagerment>().GetEquipInfo(EquipSaveId, DBidSave, BuWeiSave, true);
-    }
+ 
 
     int EquipType = 0;
 
@@ -1084,7 +946,9 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             equipLevel = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaLv;
             EquipExp = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaExp;
             pinzhi = EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi;
-            if (EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 3 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 4 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 5)
+            if (EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 3 
+                || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 4 
+                || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 5)
             {
                 EquipType = 1;
             }
@@ -1107,75 +971,15 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                         {
                             EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
                         }
-                        else if (item.Value[0].itemType == 6 && pinzhi > item.Value[0].pinZhi)
-                        {
-
-                            int tempBuwei = 0;
-                            switch (ZhuangBei.GetBuWeiByItemId(item.Value[0].itemId))
-                            {
-                                case 1: tempBuwei = 3; break;//重武器
-                                case 2: tempBuwei = 4; break;//轻武器
-                                case 3: tempBuwei = 5; break;//弓
-                                case 11: tempBuwei = 0; break;//头盔
-                                case 12: tempBuwei = 8; break;//肩膀
-                                case 13: tempBuwei = 1; break;//铠甲
-                                case 14: tempBuwei = 7; break;//手套
-                                case 15: tempBuwei = 2; break;//裤子
-                                case 16: tempBuwei = 6; break;//鞋子
-                                default: break;
-                            }
-                            if (EquipType == 1)
-                            {
-                                if (tempBuwei == 3 || tempBuwei == 4 || tempBuwei == 5)
-                                {
-                                    if (tempBuwei == index && EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi > item.Value[0].pinZhi)
-                                    {
-                                        EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (tempBuwei != 3 && tempBuwei != 4 && tempBuwei != 5)
-                                {
-                                    if (tempBuwei == index && EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi > item.Value[0].pinZhi)
-                                    {
-                                        EquipExp += item.Value[0].cnt * ItemTemp.templates[i].effectId;
-                                    }
-                                }
-
-                            }
-
-                        }
                     }
                 }
             }
-
-            foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
+ 
+            if (ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(
+                EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp > 0)
             {
-                int tempBuwei = 0;
-                switch (item.Value.buWei)
-                {
-                    case 1: tempBuwei = 3; break;//重武器
-                    case 2: tempBuwei = 4; break;//轻武器
-                    case 3: tempBuwei = 5; break;//弓
-                    case 11: tempBuwei = 0; break;//头盔
-                    case 12: tempBuwei = 8; break;//肩膀
-                    case 13: tempBuwei = 1; break;//铠甲
-                    case 14: tempBuwei = 7; break;//手套
-                    case 15: tempBuwei = 2; break;//裤子
-                    case 16: tempBuwei = 6; break;//鞋子
-                    default: break;
-                }
-                if (tempBuwei == EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei && item.Value.pinZhi <= EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi)
-                {
-                    EquipExp += ZhuangBei.GetItemByID(item.Value.itemId).exp;
-                }
-            }
-
-            if (ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp > 0)
-            {
-                if (EquipExp >= ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp)
+                if (EquipExp >= ExpXxmlTemp.getExpXxmlTemp_By_expId(ZhuangBei.getZhuangBeiById(
+                    EquipsOfBody.Instance().m_equipsOfBodyDic[index].itemId).expId, equipLevel).needExp)
                 {
                     if (equipLevel < JunZhuData.Instance().m_junzhuInfo.level)
                     {
@@ -1190,72 +994,45 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         }
         return 99;
     }
-
+ 
     int index_ShuXing = 0;
     public List<GameObject> _listObj = new List<GameObject>();
-    public void ResourcesLoadCallBack2(ref WWW p_www, string p_path, Object p_object)
+    private bool CompoundContainEnable()
     {
-        if (m_ParentInfo != null)
+        int EquipExp = 0;
+        foreach (KeyValuePair<int, BagItem> equip in EquipsOfBody.Instance().m_equipsOfBodyDic)
         {
-            GameObject rewardShow = Instantiate(p_object) as GameObject;
-            _listObj.Add(rewardShow);
-            rewardShow.transform.parent = m_ParentInfo.transform;
-            rewardShow.transform.localScale = Vector3.one;
-            rewardShow.transform.localPosition = new Vector3(-237, -20+index_ShuXing * (-28), 0);
-            rewardShow.transform.GetComponent<EquipGrowthSpecialAttributeManagerment>().ShowInfo(EquipSuoData.m_listEquipWash[EquipSaveId][index_ShuXing],false, EquipSuoData.GetWetherContainNewAttribute(EquipSaveId));
-            //m_TableInfo.repositionNow = true;
-            if (index_ShuXing < EquipSuoData.m_listEquipWash[EquipSaveId].Count - 1)
+            EquipExp = equip.Value.jinJieExp;
+            if (ZhuangBei.getZhuangBeiById(equip.Value.itemId).jiejieId > 0)
             {
-                index_ShuXing++;
+                foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
+                {
+                    int tempBuwei = 0;
+                    switch (item.Value.buWei)
+                    {
+                        case 1: tempBuwei = 3; break;//重武器
+                        case 2: tempBuwei = 4; break;//轻武器
+                        case 3: tempBuwei = 5; break;//弓
+                        case 11: tempBuwei = 0; break;//头盔
+                        case 12: tempBuwei = 8; break;//肩膀
+                        case 13: tempBuwei = 1; break;//铠甲
+                        case 14: tempBuwei = 7; break;//手套
+                        case 15: tempBuwei = 2; break;//裤子
+                        case 16: tempBuwei = 6; break;//鞋子
+                        default: break;
+                    }
+                    if (tempBuwei == equip.Value.buWei
+                        && item.Value.pinZhi <= equip.Value.pinZhi)
+                    {
+                        EquipExp += ZhuangBei.GetItemByID(item.Value.itemId).exp;
+                        if (EquipExp >= ZhuangBei.getZhuangBeiById(equip.Value.itemId).lvlupExp)
+                        {
+                            return true;
+                        }
+                    }
+                }
             }
         }
-        else
-        {
-            p_object = null;
-        }
+        return false;
     }
-
-    //public void Intensify(EquipStrengthResp Equip)
-    //{
-    //    EquipInfo = Equip;
-
-    //    EquipGrowthMaterialUseManagerment.listTouchedId.Clear();
-    //    EquipInfo.gongJiAdd = 0;
-    //    EquipInfo.fangYuAdd = 0;
-    //    EquipInfo.shengMingAdd = 0;
-    //    if (ShowType == 0)
-    //    {
-    //        m_EquipIntensify.GetComponent<EquipGrowthIntensifyManagerment>().ShowEquipTanHao();
-    //        if (!m_WetherIsIntensify)
-    //        {
-    //            EquipInfoSave = Equip;
-    //        }
-    //        else
-    //        {
-    //            UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EquipItenm.m_SpritePinZhi.gameObject, EffectIdTemplate.GetPathByeffectId(100182), null);
-    //            CreateMove(m_EquipItenm.m_LabelSuccess.gameObject, LanguageTemplate.GetText(LanguageTemplate.Text.INTENSIFY_SUCCESS));
-    //            if (EquipInfo.expMax == -1)
-    //            {
-    //                _isMaxLevel = true;
-    //            }
-    //            EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
-    //            EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
-    //            EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
-    //            EquipInfoSave = Equip;
-    //        }
-    //    }
-    //    StartCoroutine(WaitSecondIntensify());
-    //    if (Equip.level < JunZhuData.Instance().m_junzhuInfo.level)
-    //    {
-    //        EquipGrowthMaterialUseManagerment.touchIsEnable = true;
-    //    }
-    //    else
-    //    {
-    //        EquipGrowthMaterialUseManagerment.touchIsEnable = false;
-    //    }
-    //    m_IntensifyTanHao.SetActive(AllIntensify());
-    //    m_WashTanHao.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(1210) && FunctionOpenTemp.GetWhetherContainID(1210));
-    //    PushAndNotificationHelper.SetRedSpotNotification(1212, AllIntensify());
-    //    EquipsInfoTidy(EquipInfo);
-    //}
 }

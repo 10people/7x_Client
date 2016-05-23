@@ -23,7 +23,7 @@ public class AddLvLeftBtn : MonoBehaviour {
 			m_iNum ++;
 			if(m_iNum > 10)
 			{
-				StartCoroutine(Re_CHangeStart()); 
+				Re_CHangeStart(); 
 			}
 		}
 
@@ -33,16 +33,21 @@ public class AddLvLeftBtn : MonoBehaviour {
 		ispress = !ispress;
 		if (ispress)
 		{
-			StartCoroutine(Re_CHangeStart()); 
+			Re_CHangeStart(); 
 		}
 		m_iNum = 0;
 	
 	}
 
 	
-	IEnumerator Re_CHangeStart()
+	void  Re_CHangeStart()
 	{
-		yield return new WaitForSeconds (0.0f);
+		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity == 0)
+		{
+			string mst = "只有盟主或副盟主才能进行编辑操作!";
+			ClientMain.m_UITextManager.createText(mst);
+			return;
+		}
 		if(BtnType == 1)
 		{
 			if(mReCruit_root.mlv > mReCruit_root.mlv_min)

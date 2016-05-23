@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HuangyeRank id="1" minRank="1" maxRank="1" />
+<HuangyeRank id="2" minRank="2" maxRank="2" />
+<HuangyeRank id="3" minRank="3" maxRank="5" />
+<HuangyeRank id="4" minRank="6" maxRank="10" />
+<HuangyeRank id="5" minRank="11" maxRank="20" />
+</dataset>

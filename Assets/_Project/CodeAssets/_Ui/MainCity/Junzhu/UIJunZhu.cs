@@ -31,6 +31,8 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	public UILabel m_UILbaelLV;
 	public UILabel m_UILbaelJunxian;
 	public UILabel m_UILbaelZhanli;
+	public UILabel m_UILabelLianmeng;
+	public UILabel m_UILabelGuojia;
 
 	public UILabel m_UILbaelXLV;
 	public UILabel m_UILbaelXJunxian;
@@ -95,6 +97,10 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	public UISprite m_UIChenghaoSprite;
 	public GameObject m_objTitle;
 
+	public GameObject m_objPanelBG;
+
+	private bool m_isRMode = false;
+
 	private bool m_isLock = false;
 	
 	void Awake()
@@ -119,7 +125,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	
 	void Start ()
 	{
-		MainCityUI.setGlobalTitle(m_objTitle, "角色", 0, 0);
+		MainCityUI.setGlobalTitle(m_objTitle, "君主", 0, 0);
 		MainCityUI.setGlobalBelongings(m_MonetParentObj, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
 		m_ScaleEffectController.OpenCompleteDelegate = EndDelegate;
         if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_iCurMissionIndex == 100100 && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
@@ -129,14 +135,34 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
             tempTaskData.m_iCurIndex = 4;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
         }
-        else if (FreshGuide.Instance().IsActive(100405) && TaskData.Instance.m_iCurMissionIndex == 100405 && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
+        else if (FreshGuide.Instance().IsActive(100405) && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
         {
             TaskData.Instance.m_iCurMissionIndex = 100405;
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 4;
+            tempTaskData.m_iCurIndex = 2;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
         }
-       else if (FreshGuide.Instance().IsActive(100280) && TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
+		else if (FreshGuide.Instance().IsActive(200005) && TaskData.Instance.m_TaskInfoDic[200005].progress >= 0)
+		{
+			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				TaskData.Instance.m_iCurMissionIndex = 200005;
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+				tempTaskData.m_iCurIndex = 2;
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+			}
+		}
+		else if (FreshGuide.Instance().IsActive(200010) && TaskData.Instance.m_TaskInfoDic[200010].progress >= 0)
+		{
+			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				TaskData.Instance.m_iCurMissionIndex = 200010;
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+				tempTaskData.m_iCurIndex = 2;
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+			}
+		}
+       	else if (FreshGuide.Instance().IsActive(100280) && TaskData.Instance.m_TaskInfoDic[100280].progress >= 0)
 		{
 			{
 				TaskData.Instance.m_iCurMissionIndex = 100280;
@@ -183,12 +209,12 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 
 		m_UILbaelLV.text = m_JunZhuInfoCopy.level.ToString();
 		m_UILbaelZhanli.text = m_JunZhuInfoCopy.zhanLi.ToString();
-		m_UILbaelJunxian.text =NameIdTemplate.GetName_By_NameId(BaiZhanTemplate.getBaiZhanTemplateById(m_JunZhuInfoCopy.junXian).templateName);
+//		m_UILbaelJunxian.text =NameIdTemplate.GetName_By_NameId(BaiZhanTemplate.getBaiZhanTemplateById(m_JunZhuInfoCopy.junXian).templateName);
 
 
 		m_UILbaelXLV.text = m_JunZhuInfoCopy.level.ToString();
 		m_UILbaelXZhanli.text = m_JunZhuInfoCopy.zhanLi.ToString();
-		m_UILbaelXJunxian.text =NameIdTemplate.GetName_By_NameId(BaiZhanTemplate.getBaiZhanTemplateById(m_JunZhuInfoCopy.junXian).templateName);
+//		m_UILbaelXJunxian.text =NameIdTemplate.GetName_By_NameId(BaiZhanTemplate.getBaiZhanTemplateById(m_JunZhuInfoCopy.junXian).templateName);
 
 		m_UILbaelXATC.text = m_JunZhuInfoCopy.gongJi.ToString();
 		m_UILbaelXDEF.text = m_JunZhuInfoCopy.fangYu.ToString();
@@ -196,17 +222,30 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		m_UILbaelXExp.text = m_JunZhuInfoCopy.exp + "/" + m_JunZhuInfoCopy.expMax;
 		m_UILabelXNUQI.text = m_JunZhuInfoCopy.nuQiValue.ToString();
 
+		m_UILbaelHeroName.text =  m_JunZhuInfoCopy.name;
+
+
 		if(AllianceData.Instance.IsAllianceNotExist)
 		{
-			m_UILbaelHeroName.text =  m_JunZhuInfoCopy.name;
+			m_UILabelLianmeng.text = "<无联盟>";
+			m_UILabelGuojia.text = "周";
 			m_UILabelArrHeroName.text =  m_JunZhuInfoCopy.name;
-
 		}
 		else
 		{
-            m_UILbaelHeroName.text = m_JunZhuInfoCopy.name + "\n<" + AllianceData.Instance.g_UnionInfo.name + ">";
-			m_UILabelArrHeroName.text = m_JunZhuInfoCopy.name + "\n<" + AllianceData.Instance.g_UnionInfo.name + ">";
+			m_UILabelLianmeng.text = "<" + AllianceData.Instance.g_UnionInfo.name + ">";
+			Global.getStringColor("");
 
+			m_UILabelArrHeroName.text =  m_JunZhuInfoCopy.name + "\n[00e1c4]<" + AllianceData.Instance.g_UnionInfo.name + ">[-]";
+			string[] guojiale = new string[]{"1", "齐", "楚", "燕", "韩", "赵", "魏", "秦"};
+			if(JunZhuData.Instance().m_junzhuInfo.guoJiaId <= 0)
+			{
+				m_UILabelGuojia.text = "周";
+			}
+			else
+			{
+				m_UILabelGuojia.text = guojiale[JunZhuData.Instance().m_junzhuInfo.guoJiaId];
+			}
 		}
 		
 		for(int i = 0; i < 3; i ++)
@@ -243,16 +282,6 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 			tempButton = m_SkillIcon[2].gameObject.transform.parent.gameObject.AddComponent<UIButton>();
 			tempButton.tweenTarget = m_SkillIcon[2].gameObject;
 		}
-		if(!FunctionOpenTemp.IsHaveID(500010))
-		{
-			m_SkillLabel[3].GetComponent<UILabelType>().setType(100);
-			m_SkillIcon[3].color = Color.black;
-		}
-		else
-		{
-			tempButton = m_SkillIcon[3].gameObject.transform.parent.gameObject.AddComponent<UIButton>();
-			tempButton.tweenTarget = m_SkillIcon[3].gameObject;
-		}
         ShowPlayer();
 		if(Global.m_sPanelWantRun != null && Global.m_sPanelWantRun != "")
 		{
@@ -274,15 +303,15 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 //		tempObj1.name = "Skill3";
 //		MYClick(tempObj1);
 
-//		if(JunZhuData.m_iChenghaoID != -1)
-//		{
-//			m_UIChenghaoSprite.gameObject.SetActive(true);
-//			m_UIChenghaoSprite.spriteName = "" + JunZhuData.m_iChenghaoID;
-//		}
-//		else
-//		{
-//			m_UIChenghaoSprite.gameObject.SetActive(false);
-//		}
+		if(JunZhuData.m_iChenghaoID != -1)
+		{
+			m_UIChenghaoSprite.gameObject.SetActive(true);
+			m_UIChenghaoSprite.spriteName = "" + JunZhuData.m_iChenghaoID;
+		}
+		else
+		{
+			m_UIChenghaoSprite.gameObject.SetActive(false);
+		}
 	}
 	
 	//    void OnInitIconRectCallBack(ref WWW www, string path, Object loadedObject)
@@ -318,14 +347,6 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		else
 		{
 			m_UIAlert.gameObject.SetActive(false);
-		}
-		if(FunctionOpenTemp.IsHaveID(500010) && FunctionOpenTemp.GetTemplateById(500010).m_show_red_alert)
-		{
-			m_UIFuwenAlert.gameObject.SetActive(true);
-		}
-		else
-		{
-			m_UIFuwenAlert.gameObject.SetActive(false);
 		}
 
 		if(FunctionOpenTemp.IsHaveID(500015) && FunctionOpenTemp.GetTemplateById(500015).m_show_red_alert)
@@ -432,13 +453,11 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				m_PlayerRight.SetActive(false);
 //				m_ZhuangBeiIcon.SetActive(false);
 				m_UIChenghao.setData(tempInfo);
-
 				if(m_XiangxiPanelLeft.gameObject.activeSelf)
 				{
 					m_XiangxiPanelLeft.SetActive(false);
 					m_PlayerLeft.SetActive(true);
 				}
-
 				if(JunZhuData.m_iChenghaoID != -1)
 				{
 					m_UIChenghaoSprite.gameObject.SetActive(true);
@@ -449,7 +468,6 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 					m_UIChenghaoSprite.gameObject.SetActive(false);
 				}
 				m_UILbaelHeroName.gameObject.SetActive(false);
-				m_PlayerLeft.gameObject.transform.localPosition = new Vector3(40,0,0);
 				m_JunzhuState = E_JUNZHUSTATE.E_CHENGHAO;
 				break;
 			}
@@ -463,6 +481,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				m_UIHeroSkill.setData(tempInfo1);
 				m_PlayerLeft.SetActive(false);
 				m_PlayerRight.SetActive(false);
+				m_objPanelBG.SetActive(false);
 				m_JunzhuState = E_JUNZHUSTATE.E_SKILL;
 				break;
 			default: return false;
@@ -535,6 +554,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				MYClick(temoObjClickName);
 				m_JunzhuState = E_JUNZHUSTATE.E_DEF;
 				TaskData.Instance.m_DestroyMiBao = false;
+				m_objPanelBG.SetActive(true);
 				break;
 			case E_JUNZHUSTATE.E_XIANGXI:
 				temoObjClickName.name = "ArrBack";
@@ -573,6 +593,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				m_TierGear.SetActive(true);
 				m_PlayerLeft.SetActive(false);
 				m_PlayerRight.SetActive(false);
+
 				m_isLock = true;
 				break;
 			case 1:
@@ -609,23 +630,6 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 					UIYindao.m_UIYindao.CloseUI();
 				}
 				break;
-			case 3:
-				if(m_isLock)
-				{
-					return;
-				}
-				if(FunctionOpenTemp.IsHaveID(500010))
-				{
-					m_isLock = true;
-					FuWenData.Instance.OpenFuWen();
-					m_PlayerLeft.SetActive(false);
-					m_PlayerRight.SetActive(false);
-				}
-				else
-				{
-					ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(500010).m_sNotOpenTips);
-				}
-				break;
 			}
 		}
 		else if(ui.name.IndexOf("R_Xiangxi") != -1)
@@ -641,16 +645,16 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				tempObj.name = "chenghaoback";
 				m_UIChenghao.MYClick(tempObj);
 			}
-			m_UILbaelXiangxiWQSHJS.text = MyColorData.getColorString(6, m_JunZhuInfoCopy.wqSH);
-			m_UILbaelXiangxiWQBJL.text = MyColorData.getColorString(6, m_JunZhuInfoCopy.wqBJL + "%");
-			m_UILbaelXiangxiWQBJJS.text = MyColorData.getColorString(6, m_JunZhuInfoCopy.wqBJ);
-			m_UILbaelXiangxiJNSHJS.text = MyColorData.getColorString(7, m_JunZhuInfoCopy.jnSH);
-			m_UILbaelXiangxiJNBJL.text = MyColorData.getColorString(7, m_JunZhuInfoCopy.jnBJL + "%");
-			m_UILbaelXiangxiJNBJJS.text = MyColorData.getColorString(7, m_JunZhuInfoCopy.jnBJ);
-			m_UILbaelXiangxiWQSHDK.text = MyColorData.getColorString(6, m_JunZhuInfoCopy.wqJM);
-			m_UILbaelXiangxiWQBJDK.text = MyColorData.getColorString(6, m_JunZhuInfoCopy.wqRX);
-			m_UILbaelXiangxiJNSHDK.text = MyColorData.getColorString(7, m_JunZhuInfoCopy.jnJM);
-			m_UILbaelXiangxiJNBJDK.text = MyColorData.getColorString(7, m_JunZhuInfoCopy.jnRX);
+			m_UILbaelXiangxiWQSHJS.text = m_JunZhuInfoCopy.wqSH + "";
+			m_UILbaelXiangxiWQBJL.text = m_JunZhuInfoCopy.wqBJL + "%";
+			m_UILbaelXiangxiWQBJJS.text = m_JunZhuInfoCopy.wqBJ + "";
+			m_UILbaelXiangxiJNSHJS.text = m_JunZhuInfoCopy.jnSH + "";
+			m_UILbaelXiangxiJNBJL.text = m_JunZhuInfoCopy.jnBJL + "%";
+			m_UILbaelXiangxiJNBJJS.text = m_JunZhuInfoCopy.jnBJ + "";
+			m_UILbaelXiangxiWQSHDK.text = m_JunZhuInfoCopy.wqJM + "";
+			m_UILbaelXiangxiWQBJDK.text = m_JunZhuInfoCopy.wqRX + "";
+			m_UILbaelXiangxiJNSHDK.text = m_JunZhuInfoCopy.jnJM + "";
+			m_UILbaelXiangxiJNBJDK.text = m_JunZhuInfoCopy.jnRX + "";
 			m_XiangxiPanelLeft.SetActive(true);
 			m_PlayerLeft.SetActive(false);
 			m_PlayerRight.SetActive(false);
@@ -770,7 +774,18 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	
 	public override void MYPress(bool isPress, GameObject ui)
 	{
-		
+		if(ui.name.IndexOf("R_mouseBG") != -1)
+		{
+			if(isPress)
+			{
+				m_isRMode = true;
+			}
+			else
+			{
+				m_isRMode = false;
+			}
+		}
+
 	}
 	
 	public override void MYelease(GameObject ui)
@@ -780,7 +795,10 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	
 	public override void MYondrag(Vector2 delta)
 	{
-		
+		if(m_isRMode)
+		{
+			m_PlayerModel.transform.eulerAngles += new Vector3(0, -delta.x * 0.5f, 0);
+		}
 	}
 	
 	public override void MYoubleClick(GameObject ui)
@@ -824,21 +842,28 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 		
 		m_PlayerModel.transform.parent = m_PlayerParent.transform;
 		m_PlayerModel.name = p_object.name;
-
 		GameObjectHelper.SetGameObjectLayerRecursive( m_PlayerModel, m_PlayerModel.transform.parent.gameObject.layer );
-     
-		m_PlayerModel.transform.localPosition = new Vector3(0, -223, -100);
+		m_PlayerModel.transform.localPosition = new Vector3(30, -183, -100);
 		m_PlayerModel.GetComponent<NavMeshAgent>().enabled = false;
-		
-		m_PlayerModel.GetComponent<Animator>().Play("zhuchengidle");
-		
 		m_PlayerModel.transform.localScale = new Vector3(190,190,190);
-		
-		m_PlayerModel.transform.rotation = new Quaternion(0,163,0,0);
 
-//		m_PlayerModel.GetComponent<PlayerWeaponManagerment>().ShowWeapon(3);
-	}
-	public void setOpenWeapon(int index)
+        m_PlayerModel.transform.Rotate(0, 163.0f, 0);
+
+        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
+                                      ResourceLoad_Skeleton_Callback);
+    }
+
+    public void ResourceLoad_Skeleton_Callback(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject obj = Instantiate(p_object) as GameObject;
+        obj.transform.parent = m_PlayerModel.transform;
+        m_PlayerModel.transform.Rotate(0, 163.0f, 0);
+        obj.GetComponent<Animator>().Play("zhuchengidle");
+        obj.transform.localScale = Vector3.one;
+        obj.transform.localPosition = Vector3.zero;
+        m_PlayerModel.transform.Rotate(0, 0, 0);
+    }
+    public void setOpenWeapon(int index)
 	{
 		m_SkillLock[index].gameObject.SetActive(false);
 		m_SkillIcon[index].gameObject.SetActive(true);
@@ -861,7 +886,7 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 	public void EndDelegate()
 	{
         m_Equip.SetActive(true);
-        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MODEL_PARENT),
 		                        LoadCallback );
 	}
 }

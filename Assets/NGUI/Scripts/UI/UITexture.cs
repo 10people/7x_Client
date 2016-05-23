@@ -215,13 +215,17 @@ public class UITexture : UIWidget
 	#region Mono
 
 	public void CustomReset(){
-		enabled = false;
-
-		enabled = true;
-
-//		OnDisable();
-//
-//		OnEnable();
+		if( drawCall != null ){
+			if( drawCall.dynamicMaterial != null ){
+				drawCall.dynamicMaterial.CopyPropertiesFromMaterial( mMat );
+			}	
+//			else{
+//				Debug.Log( "drawCall.baseMaterial = null." );
+//			}
+		}
+//		else{
+//			Debug.Log( "drawCall = null." );
+//		}
 	}
 	
 	protected override void OnDestroy(){

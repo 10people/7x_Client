@@ -12,8 +12,8 @@ public class NameIdTemplate : XmlLoadManager
 
 	public string Name;
 
-
-	private static List<NameIdTemplate> templates = new List<NameIdTemplate>();
+	private static Dictionary<int, NameIdTemplate> m_dict = new Dictionary<int, NameIdTemplate>();
+//	private static List<NameIdTemplate> templates = new List<NameIdTemplate>();
 
 
 	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
@@ -32,8 +32,9 @@ public class NameIdTemplate : XmlLoadManager
 		m_templates_text = obj as TextAsset;
 	}
 
-	private static void ProcessAsset(){
-		if( templates.Count > 0 ) {
+	public static void ProcessAsset(){
+//		if( templates.Count > 0 ) {
+		if( m_dict.Count > 0 ){
 			return;
 		}
 		
@@ -66,7 +67,16 @@ public class NameIdTemplate : XmlLoadManager
 			
 			//			t_template.Log();
 			
-			templates.Add( t_template );
+//			templates.Add( t_template );
+
+			if( !m_dict.ContainsKey( t_template.nameId ) ){
+				m_dict.Add( t_template.nameId, t_template );
+			}
+			else{
+				#if UNITY_EDITOR
+				Debug.LogError( "Error, Duplicate Id In NameId: " + t_template.nameId );
+				#endif
+			}
 		}
 		while( t_has_items );
 
@@ -80,14 +90,18 @@ public class NameIdTemplate : XmlLoadManager
 			ProcessAsset();
 		}
 
-		foreach(NameIdTemplate template in templates)
-		{
-			if(template.nameId == nameId)
-			{
-				return template;
-			}
+		if( m_dict[ nameId ] != null ){
+			return m_dict[ nameId ];
 		}
-		
+
+//		for( int i = 0; i < templates.Count; i++ ){
+//			NameIdTemplate t_template = templates[ i ];
+//
+//			if(t_template.nameId == nameId){
+//				return t_template;
+//			}
+//		}
+//		
 		Debug.LogError("XML ERROR: Can't get NameIdTemplate with nameId " + nameId);
 		
 		return null;
@@ -98,13 +112,17 @@ public class NameIdTemplate : XmlLoadManager
 			ProcessAsset();
 		}
 
-		foreach(NameIdTemplate template in templates)
-		{
-			if(template.nameId == nameId)
-			{
-				return true;
-			}
+		if( m_dict[ nameId ] != null ){
+			return true;
 		}
+
+//		for( int i = 0; i < templates.Count; i++ ){
+//			NameIdTemplate t_template = templates[ i ];
+//
+//			if(t_template.nameId == nameId){
+//				return true;
+//			}
+//		}
 
 		return false;
 	}
@@ -114,24 +132,29 @@ public class NameIdTemplate : XmlLoadManager
 			ProcessAsset();
 		}
 
-		foreach(NameIdTemplate template in templates)
-		{
-			if( template.nameId == p_name_id )
-			{
-				return template.Name;
-			}
+		if(m_dict.ContainsKey(p_name_id) && m_dict[p_name_id] != null)
+        {
+			return m_dict[ p_name_id ].Name;
 		}
+
+//		for( int i = 0; i < templates.Count; i++ ){
+//			NameIdTemplate t_template = templates[ i ];
+//
+//			if( t_template.nameId == p_name_id ){
+//				return t_template.Name;
+//			}
+//		}
 		
 		Debug.LogError("name not found: " + p_name_id );
 		
 		return "null";
 	}
 
-	public static List<NameIdTemplate> GetTemplates(){
-		{
-			ProcessAsset();
-		}
-
-		return templates;
-	} 
+//	public static List<NameIdTemplate> GetTemplates(){
+//		{
+//			ProcessAsset();
+//		}
+//
+//		return templates;
+//	} 
 }

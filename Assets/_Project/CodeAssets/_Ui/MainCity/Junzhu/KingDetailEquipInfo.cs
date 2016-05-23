@@ -33,19 +33,6 @@ public class KingDetailEquipInfo : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        //if (EquipsOfBody.Instance().m_isRefrsehEquips)
-        //{
-        //    EquipsOfBody.Instance().m_isRefrsehEquips = false;
-
-        //    if (m_BagItemDic != null)
-        //    {
-        //        ShowEquipInfo();
-        //    }
-        //}
-    }
-
     void ShowEquipOfBody(GameObject tempObject) //显示玩家身上的装备信息
     {
         if (m_BagItemDic.ContainsKey(int.Parse(tempObject.name)))
@@ -81,18 +68,18 @@ public class KingDetailEquipInfo : MonoBehaviour
                 if (color > 0)
                 {
                     sprite.spriteName = IconSampleManager.QualityPrefix + color;
-                    if (IconSampleManager.FreeQualityFrameSpriteName.Contains(color))
-                    {
-                        sprite.SetDimensions(IconSampleManager.FreeQualityFrameLength, IconSampleManager.FreeQualityFrameLength);
-                    }
-                    else if (IconSampleManager.FrameQualityFrameSpriteName.Contains(color))
-                    {
-                        sprite.SetDimensions(IconSampleManager.FrameQualityFrameLength, IconSampleManager.FrameQualityFrameLength);
-                    }
-                    else if (IconSampleManager.MibaoPieceQualityFrameSpriteName.Contains(color))
-                    {
-                        sprite.SetDimensions(IconSampleManager.MibaoPieceQualityFrameLength, IconSampleManager.MibaoPieceQualityFrameLength);
-                    }
+                    //if (IconSampleManager.FreeQualityFrameSpriteName.Contains(color))
+                    //{
+                    //    sprite.SetDimensions(IconSampleManager.FreeQualityFrameLength, IconSampleManager.FreeQualityFrameLength);
+                    //}
+                    //else if (IconSampleManager.FrameQualityFrameSpriteName.Contains(color))
+                    //{
+                    //    sprite.SetDimensions(IconSampleManager.FrameQualityFrameLength, IconSampleManager.FrameQualityFrameLength);
+                    //}
+                    //else if (IconSampleManager.MibaoPieceQualityFrameSpriteName.Contains(color))
+                    //{
+                    //    sprite.SetDimensions(IconSampleManager.MibaoPieceQualityFrameLength, IconSampleManager.MibaoPieceQualityFrameLength);
+                    //}
                     sprite.gameObject.SetActive(true);
                 }
                 else
@@ -119,13 +106,11 @@ public class KingDetailEquipInfo : MonoBehaviour
                     {
                         if (ItemTemp.templates[j].id == int.Parse(ZhuangBei.templates[i].jinjieItem))
                         {
-                            //                            itemIcon = ItemTemp.templates[j].icon;
-
                             break;
                         }
                     }
 
-                    m_ShowedDetailEquipInfo.GetEquipInfo(id, m_BagItemDic[buwei].dbId, buwei, isWear, 2);
+                    m_ShowedDetailEquipInfo.GetEquipInfo(id, buwei);
                     break;
                 }
             }

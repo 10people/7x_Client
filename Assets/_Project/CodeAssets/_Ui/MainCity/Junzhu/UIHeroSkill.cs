@@ -71,7 +71,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 		{
 			if(JunZhuData.Instance().m_junzhuInfo.jinBi >= m_listCurPageHeroSkillUpTemplate[m_iSelectIndex].m_iNeedMoney)
 			{
-				m_labelNeedMoney.color = Color.black;
+				m_labelNeedMoney.color = Color.white;
 			}
 			else
 			{

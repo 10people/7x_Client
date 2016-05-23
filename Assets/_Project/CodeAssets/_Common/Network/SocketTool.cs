@@ -1,4 +1,8 @@
-﻿//#define PROTO_TOOL
+﻿//#define DEBUG_SOCKET_STATE
+
+//#define DEBUG_SOCKET_CONNECT
+
+//#define PROTO_TOOL
 
 //#define DEBUG_WAITING
 
@@ -7,8 +11,6 @@
 //#define DEBUG_SEND
 
 //#define DEBUG_RECEIVE
-
-//#define DEBUG_SOCKET_CONNECT
 
 //#define DEBUG_PROCESSOR_COST
 
@@ -42,6 +44,8 @@ using qxmobile.protobuf;
 public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	#region Socket Config
+
+	public bool m_log_socket_info	= false;
 
 	/// gbk
 	private const string SOCKET_HEAD_MESSAGE = "tgw_l7_forward\r\nHost:app12345.qzoneapp.com:80\r\n\r\n";
@@ -85,7 +89,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	#region Socket Key Data
 
 	public enum SocketState{
-		DisConnected,		// off line status
+		DisConnected,		// Default, off line status
 		Connecting,			// try connecting
 		Connected,			// connected
 		ConnectedFailed,	// fail
@@ -203,13 +207,27 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	private long m_ms_before_processor	= 0;
 
+	private float m_last_update_time = 0.0f;
+
 	void Update(){
+		if( m_log_socket_info ){
+			m_log_socket_info = false;
+
+			LogSocketToolInfo();
+		}
+
 		if ( m_socket == null ) {
 			return;
 		}
 
-		if( IsConnected() ){
+		if( Time.realtimeSinceStartup - m_last_update_time < ConfigTool.GetFloat( ConfigTool.CONST_NETWORK_SOCKET_UPDATE_INTERVAL ) ){
+			return;
+		}
+		else{
+			m_last_update_time = Time.realtimeSinceStartup;
+		}
 
+		if( IsConnected() ){
 			{
 				Process_Network_Waiting();
 			}
@@ -250,6 +268,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	void OnDestroy(){
+//		Debug.Log( "SocketTool.OnDestroy()" );
+
 		{
 			ShutDown();
 			
@@ -422,7 +442,9 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 	
 	public static void CloseSocket(){
+		#if DEBUG_SOCKET_CONNECT
 		Debug.Log( "SocketTool.CloseSocket()" );
+		#endif
 
 		{
 			SetStateDisConnect();
@@ -444,7 +466,9 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 	
 	private void ShutDown(){
+		#if DEBUG_SOCKET_CONNECT
 		Debug.Log( "SocketTool.ShutDown()" );
+		#endif
 
 		try{
 	//		if( m_socket != null && m_socket.Connected ){
@@ -468,7 +492,9 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	public void SetSocketLost(){
+		#if DEBUG_SOCKET_CONNECT
 		Debug.Log( "SetSocketLost()" );
+		#endif
 
 		ManualLostConnection();
 	}
@@ -492,17 +518,25 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	private static void SetSocketState( SocketState p_state ){
+		#if DEBUG_SOCKET_STATE
+		Debug.Log( "SetSocketState( " + p_state + " )" );
+		#endif
+
 		m_state = p_state;
 	}
 
 	private static void SetStateDisConnect(){
+		#if DEBUG_SOCKET_CONNECT
 		Debug.Log( "SetStateDisConnect()" );
+		#endif
 
 		SetSocketState( SocketState.DisConnected );
 	}
 
 	public static void LogSocketToolInfo(){
 		Debug.Log ( "--- LogSocketToolInfo() ---" );
+
+		Debug.Log( "State: " + GetSocketState() );
 
 		Debug.Log ( "IsConnected(): " + IsConnected() );
 
@@ -517,8 +551,6 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			
 			return;
 		}
-
-		Debug.Log ( "m_state: " + GetSocketState() );
 	}
 
 	#endregion
@@ -678,11 +710,14 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		{
 			m_socket_listeners.Clear();
 		}
-		
-		
+
 		m_socket = null;
 		
-		m_try_send_head_message = true;
+		{
+			m_try_send_head_message = true;
+
+			SetSocketState( SocketState.DisConnected );
+		}
 		
 		if( NetworkWaiting.m_instance_exist ){
 			NetworkWaiting.Instance().HideNeworkWaiting();
@@ -1259,7 +1294,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			m_cur_sending = m_socket.BeginSend( p_buffer.buffer, 
 			                                   0, p_buffer.position, 
 			                                   SocketFlags.None, 
-			                                   new AsyncCallback( SendCallback ),
+											   SendCallback,
 			                                   m_socket );
 			
 //					bool t_success = m_cur_sending.AsyncWaitHandle.WaitOne( 5000, true );
@@ -1598,13 +1633,13 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 				if( !ThirdPlatform.IsThirdPlatform() ){
 					if( !t_message_processed ){
 						if( !t_message_listened ){
-							Debug.LogWarning( "Error, Socket Message neither processed nor listened: " + 
+							Debug.LogWarning( "Warning, Socket Message neither processed nor listened: " + 
 							                 t_buffer.m_protocol_index + 
 							                 ", byte len: " + t_buffer.position +
 							                 ", message queue len:" + t_message_count );
 						}
 //						else{
-//							Debug.LogWarning( "Error, Message Listened, but not processed: " + 
+//							Debug.LogWarning( "Warning, Message Listened, but not processed: " + 
 //							                 t_buffer.m_protocol_index + 
 //							                 ", byte len: " + t_buffer.position +
 //							                 ", message queue len:" + t_message_count );
@@ -1790,7 +1825,7 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 	
 	private void ManualLostConnection(){
-		Debug.Log( "SocketTool.ManualLostConnection()" );
+		Debug.Log( "SocketTool.ManualLostConnection( " + m_state + " )" );
 
 		// process all received messages.
 //		{

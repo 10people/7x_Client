@@ -22,19 +22,19 @@ public class JunZhuDiaoLuoItem : MonoBehaviour
 	   m_TouchEvent.m_click_handler += SkipScence;
 	}
 
-    public void ShowInfo(JunZhuZhuangBeiInfo.DiaoLuoGuanQia diaoluoguanqia, OnClick_Touch callback)
-    {
-        _levelid = diaoluoguanqia._id;
-     //   Debug.Log("sectionsectionsectionsection ::" + section);
-        touch_CallBack = callback;
-        sectionSend = diaoluoguanqia._SetionId;
+    //public void ShowInfo(JunZhuZhuangBeiInfo.DiaoLuoGuanQia diaoluoguanqia, OnClick_Touch callback)
+    //{
+    //    _levelid = diaoluoguanqia._id;
+    // //   Debug.Log("sectionsectionsectionsection ::" + section);
+    //    touch_CallBack = callback;
+    //    sectionSend = diaoluoguanqia._SetionId;
   
-     //   string []  ss = NameIdTemplate.GetName_By_NameId(sectionNameID[int.Parse(section)]).Split(' ');
-        m_LabelName.text = diaoluoguanqia.GuanQiaName;//;ss[0];
-        m_LabelChuanQi.gameObject.SetActive(diaoluoguanqia._isChuanQi);
-        _isChuangQi = diaoluoguanqia._isChuanQi;
-        m_Mask.SetActive(!diaoluoguanqia._isOpen);
-    }
+    // //   string []  ss = NameIdTemplate.GetName_By_NameId(sectionNameID[int.Parse(section)]).Split(' ');
+    //    m_LabelName.text = diaoluoguanqia.GuanQiaName;//;ss[0];
+    //    m_LabelChuanQi.gameObject.SetActive(diaoluoguanqia._isChuanQi);
+    //    _isChuangQi = diaoluoguanqia._isChuanQi;
+    //    m_Mask.SetActive(!diaoluoguanqia._isOpen);
+    //}
 	GameObject DiaoluoShow;
 	private void SkipScence(GameObject obj)
     {

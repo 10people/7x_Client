@@ -30,7 +30,7 @@ public class ShangzhenMiBaoTemp : MonoBehaviour {
         string rightButtomSpriteName = "flag_finish";
         string buttomSpriteName = "xingxing1";
 
-        m_IconSampleManager.SetIconType(IconSampleManager.IconType.oldMiBao);
+        m_IconSampleManager.SetIconType(IconSampleManager.IconType.OldOldMiBao);
         m_IconSampleManager.SetIconBasic(20, fgSpriteName, "", qualityFrameSpriteName,isShowDimmer);
         m_IconSampleManager.SetIconBasicDelegate(false,true,OnChoosed);
         m_IconSampleManager.SetIconDecoSprite("",rightButtomSpriteName, buttomSpriteName);

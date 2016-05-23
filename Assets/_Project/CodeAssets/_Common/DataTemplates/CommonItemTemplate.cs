@@ -113,9 +113,13 @@ public class CommonItemTemplate : XmlLoadManager
 				return template;
 			}
 		}
-        Debug.Log("idididididididididididid ::: " + id);
-        Debug.LogError("XML ERROR: Can't get CommonItemTemplate with id " + id);
-		
+
+		#if UNITY_EDITOR
+        Debug.LogError( "Missing id : " + id );
+
+        Debug.LogError( "XML ERROR: Can't get CommonItemTemplate with id " + id );
+		#endif
+
 		return null;
 	}
 

@@ -97,7 +97,7 @@ public class ChapterUImaneger : MonoBehaviour {
 
 		CityGlobalData.PveLevel_UI_is_OPen = false;
 
-		MapData.mapinstance.ShowPVEGuid();
+		MapData.mapinstance.ShowYinDao = true;
 
 		iTween.MoveTo(childgb, iTween.Hash("position", startpos, "time",time,"islocal",true));
 

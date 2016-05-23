@@ -16,10 +16,13 @@ public class QXComData {
 	public static string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);//确定按钮
 	public static string cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);//取消按钮
 	public static string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);//提示
+	public static string yellow = "[eac102]";
 
 	public static Color lightColor = new Color (1,0.8f,0.54f);
 
 	public static int maxVipLevel = 7;
+
+	public static int SportClearCdVipLevel = VipFuncOpenTemplate.GetNeedLevelByKey (9);//竞技可清除冷却的vip等级
 
 	/// <summary>
 	/// Players the icon.
@@ -31,23 +34,75 @@ public class QXComData {
 		return "PlayerIcon" + roleId;
 	}
 
-	/// <summary>
-	/// Nation the specified nationId.
-	/// </summary>
-	/// <param name="nationId">Nation identifier.</param>
-	public static string Nation (int nationId)
-	{
-		return "nation_" + nationId;
-	}
-
 	public static void LoadYuanBaoInfo (GameObject obj)
 	{
 		MainCityUI.setGlobalBelongings (obj, -30, 0);
 	}
 
+	public static void LoadTitleObj (GameObject obj,string title)
+	{
+		MainCityUI.setGlobalTitle (obj,title,0,0);
+	}
+
 	public static string AllianceName (string tempName)
 	{
 		return tempName.Equals ("***") || tempName.Equals ("") ? "无联盟" : "<" + tempName + ">";
+	}
+
+	#endregion
+
+	#region JunXian
+
+	private static readonly Dictionary<int,string[]> m_junXianDic = new Dictionary<int, string[]> ()
+	{
+		{1,new string[]{"小卒"}},
+		{2,new string[]{"步兵"}},
+		{3,new string[]{"骑士"}},
+		{4,new string[]{"禁卫"}},
+		{5,new string[]{"校尉"}},
+		{6,new string[]{"先锋"}},
+		{7,new string[]{"将军"}},
+		{8,new string[]{"元帅"}},
+		{9,new string[]{"诸侯"}},
+	};
+
+	public static string GetJunXianName (int jiBie)
+	{
+		return m_junXianDic [jiBie] [0];
+	}
+
+	#endregion
+
+	#region JunZhuInfo
+
+	/// <summary>
+	/// Juns the zhu info.
+	/// </summary>
+	/// <returns>The zhu info.</returns>
+	public static JunZhuInfoRet JunZhuInfo ()
+	{
+		var junZhuInfo = JunZhuData.Instance ().m_junzhuInfo;
+
+		if (junZhuInfo != null)
+		{
+			return junZhuInfo;
+		}
+
+		Debug.LogError ("JunZhuInfo is null!");
+		return null;
+	}
+
+	public static AllianceHaveResp AllianceInfo ()
+	{
+		var allianceInfo = AllianceData.Instance.g_UnionInfo;
+
+		if (allianceInfo != null)
+		{
+			return allianceInfo;
+		}
+
+		Debug.LogError ("AllianceInfo is null");
+		return null;
 	}
 
 	#endregion
@@ -104,6 +159,7 @@ public class QXComData {
 
 	private static readonly Dictionary<int,string[]> nationDic = new Dictionary<int, string[]>()
 	{
+		{0,new string[]{"周","nation_0"}},
 		{1,new string[]{"齐","nation_1"}},
 		{2,new string[]{"楚","nation_2"}},
 		{3,new string[]{"燕","nation_3"}},
@@ -130,7 +186,7 @@ public class QXComData {
 	/// <param name="nationId">Nation identifier.</param>
 	public static string GetNationSpriteName (int nationId)
 	{
-		return nationDic [nationId][1];
+		return nationId >= 0 ? nationDic [nationId][1] : "";
 	}
 
 	#endregion
@@ -162,6 +218,27 @@ public class QXComData {
 	{
 		return (XmlType)Enum.ToObject (typeof (XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (itemId));
 	}
+
+	#endregion
+
+	#region LoadFunctionRoot
+
+//	public static GameObject LoadRoot (GameObject rootObj,string path)
+//	{
+//		if (rootObj != null)
+//		{
+//			return rootObj;
+//		}
+//		else
+//		{
+//			return CreatRoot ();
+//		}
+//	}
+//
+//	private static GameObject CreatRoot ( ref WWW p_www, string p_path, UnityEngine.Object p_object )
+//	{
+//		GameObject tempRoot = GameObject.Instantiate (p_object);
+//	}
 
 	#endregion
 
@@ -383,6 +460,12 @@ public class QXComData {
 		
 		// "yyyy-MM-dd HH:mm:ss"
 		return dtResult.ToString(format);
+	}
+
+	public static int ConvertDateTimeInt (System.DateTime time)
+	{
+		System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+		return (int)(time - startTime).TotalSeconds;
 	}
 
 	#endregion
@@ -644,6 +727,145 @@ public class QXComData {
 	}
 
 	#endregion
+
+	#region Vip
+
+	public delegate void VipDelegate (int i);
+
+	private static VipDelegate m_vipDelegate;
+
+	public static void TurnToVip (string tempStr,VipDelegate tempDelegate = null)
+	{
+		m_vipDelegate = tempDelegate;
+		CreateBoxDiy (tempStr,false,VipCallBack);
+	}
+
+	private static void VipCallBack (int i)
+	{
+		if (m_vipDelegate != null)
+		{
+			m_vipDelegate (i);
+		}
+
+		if (i == 2)
+		{
+			EquipSuoData.TopUpLayerTip();
+		}
+	}
+
+	#endregion
+
+	#region TextLimit
+	public enum StrLimitType
+	{
+		USER_NAME,
+		CREATE_ROLE_NAME,
+	}
+	private StrLimitType limitType;
+	/// <summary>
+	/// 字符串长度限制
+	/// </summary>
+	/// <returns>The refresh.</returns>
+	/// <param name="limitType">Limit type.</param>
+	/// <param name="str">String.</param>
+	public static string TextLengthLimit (StrLimitType limitType,string str)
+	{
+		int limitCount = 0;
+		
+		string lastStr = "";
+		
+		List<char> textStrList = new List<char> ();
+		
+		for (int i = 0;i < str.Length;i ++)
+		{
+			switch (limitType)
+			{
+			case StrLimitType.CREATE_ROLE_NAME:
+				
+				limitCount = GetCreateRoleNameLimit();
+				
+				if ((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= '0' && str[i] <= '9') ||
+				    (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 0x4e00 && str[i] <= 0x9fa5))
+				{
+					textStrList.Add (str[i]);
+				}
+				break;
+				
+			case StrLimitType.USER_NAME:
+				
+				limitCount = 8;
+				
+				if ((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= '0' && str[i] <= '9') ||
+				    (str[i] >= 'a' && str[i] <= 'z'))
+				{
+					textStrList.Add (str[i]);
+				}
+				break;
+			default:
+				break;
+			}
+			
+		}
+		
+		//		Debug.Log ("LimitCount:" + limitCount);
+		
+		for (int i = 0;i < textStrList.Count;i ++)
+		{
+			if (i < limitCount)
+			{
+				lastStr += textStrList[i];
+			}
+		}
+		
+		return lastStr;
+	}
+
+	public static int GetCreateRoleNameLimit ()
+	{
+		return 7;
+	}
+	
+	public static int GetAvailableTextLength( StrLimitType limitType,string str ){
+		int limitCount = 0;
+		
+		string lastStr = "";
+		
+		List<char> textStrList = new List<char> ();
+		
+		for (int i = 0;i < str.Length;i ++)
+		{
+			switch (limitType)
+			{
+			case StrLimitType.CREATE_ROLE_NAME:
+				
+				limitCount = GetCreateRoleNameLimit ();
+				
+				if ((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= '0' && str[i] <= '9') ||
+				    (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 0x4e00 && str[i] <= 0x9fa5))
+				{
+					textStrList.Add (str[i]);
+				}
+				break;
+				
+			case StrLimitType.USER_NAME:
+				
+				limitCount = 8;
+				
+				if ((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= '0' && str[i] <= '9') ||
+				    (str[i] >= 'a' && str[i] <= 'z'))
+				{
+					textStrList.Add (str[i]);
+				}
+				break;
+			default:
+				break;
+			}
+			
+		}
+		
+		return textStrList.Count;
+	}
+	#endregion
 }
 
 #region ShopGoodInfo
@@ -660,6 +882,7 @@ public class ShopGoodInfo
 	public int itemNum;//兑换的数量
 	public int needMoney;//需要的钱币数量
 	public int countBuyTime;//剩余购买次数
+    public bool isRestrictBuy;
 	public QXComData.MoneyType moneyType;//币种
 }
 

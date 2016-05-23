@@ -1,9 +1,13 @@
 //#define DEBUG_REQUEST
 
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
+
+
 
 public class AccountRequest : MonoBehaviour {
 
@@ -236,7 +240,7 @@ public class AccountRequest : MonoBehaviour {
 		notice.transform.localScale = Vector3.one;
 
 		NoticeManager noticeMan = notice.GetComponent<NoticeManager> ();
-		//noticeMan.GetNoticeStr (tempResponse);
+		noticeMan.GetNoticeStr (tempResponse);
 	}
 	
 	public static void NoticeFail (string tempResponse) 
@@ -721,8 +725,8 @@ public class AccountRequest : MonoBehaviour {
 	/// </summary>
 	void TextLimit ()
 	{
-		userName.value = NewSelectRole.TextLengthLimit (NewSelectRole.StrLimitType.USER_NAME,userName.value);
-		password.value = NewSelectRole.TextLengthLimit (NewSelectRole.StrLimitType.USER_NAME,password.value);
+		userName.value = QXComData.TextLengthLimit (QXComData.StrLimitType.USER_NAME,userName.value);
+		password.value = QXComData.TextLengthLimit (QXComData.StrLimitType.USER_NAME,password.value);
 	}
 
 	//输入框上移

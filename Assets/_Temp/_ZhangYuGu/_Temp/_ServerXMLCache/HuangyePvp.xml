@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HuangyePvp id="201001" needLv="1" npc="10" refreshCost="5000" produceSpeed="10" killAward="100" match="0" sceneId="900" configId="900" />
+<HuangyePvp id="201002" needLv="1" npc="10" refreshCost="5000" produceSpeed="10" killAward="100" match="0" sceneId="900" configId="900" />
+<HuangyePvp id="201011" needLv="1" npc="10" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="201021" needLv="1" npc="10" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="201031" needLv="1" npc="10" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="201041" needLv="1" npc="10" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="202051" needLv="2" npc="20" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="202061" needLv="2" npc="20" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="202071" needLv="2" npc="20" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="202081" needLv="2" npc="20" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="203091" needLv="3" npc="30" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="203101" needLv="3" npc="30" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="203111" needLv="3" npc="30" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="203121" needLv="3" npc="30" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="204131" needLv="4" npc="40" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="204141" needLv="4" npc="40" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="204151" needLv="4" npc="40" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="204161" needLv="4" npc="40" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="205171" needLv="5" npc="50" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="205181" needLv="5" npc="50" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="205191" needLv="5" npc="50" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="205201" needLv="5" npc="50" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="206211" needLv="6" npc="60" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="206221" needLv="6" npc="60" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="206231" needLv="6" npc="60" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="206241" needLv="6" npc="60" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="207251" needLv="7" npc="70" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="207261" needLv="7" npc="70" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="207271" needLv="7" npc="70" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="207281" needLv="7" npc="70" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="208291" needLv="8" npc="80" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="208301" needLv="8" npc="80" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="208311" needLv="8" npc="80" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="208321" needLv="8" npc="80" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="209331" needLv="9" npc="90" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="209341" needLv="9" npc="90" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="209351" needLv="9" npc="90" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="209361" needLv="9" npc="90" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="210371" needLv="10" npc="100" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="210381" needLv="10" npc="100" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="210391" needLv="10" npc="100" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+<HuangyePvp id="210401" needLv="10" npc="100" refreshCost="5000" produceSpeed="10" killAward="100" match="1" sceneId="900" configId="900" />
+</dataset>

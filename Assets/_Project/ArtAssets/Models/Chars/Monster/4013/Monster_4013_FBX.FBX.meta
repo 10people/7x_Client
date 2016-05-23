@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 5ae129e64809bbe42ac44113dad4471c
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 18
   fileIDToRecycleName:
     100000: Bip01
     100002: Bip01 Head
@@ -109,6 +109,8 @@ ModelImporter:
     7400038: Stand1
     7400040: BATCDown
     7400042: BATCUp
+    7400044: BATCLeft
+    7400046: BATCRight
     9500000: //RootNode
     11100000: //RootNode
     13700000: Object01
@@ -124,6 +126,10 @@ ModelImporter:
     bakeSimulation: 0
     optimizeGameObjects: 0
     motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 3
     animationRotationError: .5
     animationPositionError: .5
@@ -245,9 +251,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bone01/Bone02
         weight: 1
-      - path: Object01
+      - path: qijiang01
         weight: 1
-      - path: qijiang
+      - path: qijiangma01
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -372,9 +378,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bone01/Bone02
         weight: 1
-      - path: Object01
+      - path: qijiang01
         weight: 1
-      - path: qijiang
+      - path: qijiangma01
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -499,9 +505,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bone01/Bone02
         weight: 1
-      - path: Object01
+      - path: qijiang01
         weight: 1
-      - path: qijiang
+      - path: qijiangma01
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -633,9 +639,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bone01/Bone02
         weight: 1
-      - path: Object01
+      - path: qijiang01
         weight: 1
-      - path: qijiang
+      - path: qijiangma01
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -774,9 +780,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bone01/Bone02
         weight: 1
-      - path: Object01
+      - path: qijiang01
         weight: 1
-      - path: qijiang
+      - path: qijiangma01
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -908,9 +914,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bone01/Bone02
         weight: 1
-      - path: Object01
+      - path: qijiang01
         weight: 1
-      - path: qijiang
+      - path: qijiangma01
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1042,9 +1048,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bone01/Bone02
         weight: 1
-      - path: Object01
+      - path: qijiang01
         weight: 1
-      - path: qijiang
+      - path: qijiangma01
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1155,9 +1161,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bone01/Bone02
         weight: 1
-      - path: Object01
+      - path: qijiang01
         weight: 1
-      - path: qijiang
+      - path: qijiangma01
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2798,6 +2804,274 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: BATCLeft
+      takeName: Take 001
+      firstFrame: 352
+      lastFrame: 372
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: .945454597
+        functionName: attackedActionEnd
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0337550715
+        functionName: PlaySound
+        data: 0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0506329462
+        functionName: setStone
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bip02
+        weight: 1
+      - path: Bip02/Bip02 Spine
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 L Thigh
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 L Thigh/Bip02 L Calf
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 L Thigh/Bip02 L Calf/Bip02 L Foot
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 R Thigh
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 R Thigh/Bip02 R Calf
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 R Thigh/Bip02 R Calf/Bip02 R Foot
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 Head
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 L UpperArm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 L UpperArm/Bip02 L Forearm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 L UpperArm/Bip02 L Forearm/Bip02
+          L Hand
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 R UpperArm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 R UpperArm/Bip02 R Forearm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 R UpperArm/Bip02 R Forearm/Bip02
+          R Hand
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01
+          L Calf
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01
+          R Calf
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          Head
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          L UpperArm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          L UpperArm/Bip01 L Forearm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          L UpperArm/Bip01 L Forearm/Bip01 L Hand
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          R UpperArm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          R UpperArm/Bip01 R Forearm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          R UpperArm/Bip01 R Forearm/Bip01 R Hand
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Prop1
+        weight: 1
+      - path: Bip02/Bone01
+        weight: 1
+      - path: Bip02/Bone01/Bone02
+        weight: 1
+      - path: qijiang01
+        weight: 1
+      - path: qijiangma01
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: BATCRight
+      takeName: Take 001
+      firstFrame: 329
+      lastFrame: 349
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: .945454597
+        functionName: attackedActionEnd
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0337550715
+        functionName: PlaySound
+        data: 0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .0506329462
+        functionName: setStone
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bip02
+        weight: 1
+      - path: Bip02/Bip02 Spine
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 L Thigh
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 L Thigh/Bip02 L Calf
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 L Thigh/Bip02 L Calf/Bip02 L Foot
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 R Thigh
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 R Thigh/Bip02 R Calf
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 R Thigh/Bip02 R Calf/Bip02 R Foot
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 Head
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 L UpperArm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 L UpperArm/Bip02 L Forearm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 L UpperArm/Bip02 L Forearm/Bip02
+          L Hand
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 R UpperArm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 R UpperArm/Bip02 R Forearm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bip02 Spine1/Bip02 R UpperArm/Bip02 R Forearm/Bip02
+          R Hand
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01
+          L Calf
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01
+          R Calf
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          Head
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          L UpperArm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          L UpperArm/Bip01 L Forearm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          L UpperArm/Bip01 L Forearm/Bip01 L Hand
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          R UpperArm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          R UpperArm/Bip01 R Forearm
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01
+          R UpperArm/Bip01 R Forearm/Bip01 R Hand
+        weight: 1
+      - path: Bip02/Bip02 Spine/Bone03/Bip01/Bip01 Prop1
+        weight: 1
+      - path: Bip02/Bone01
+        weight: 1
+      - path: Bip02/Bone01/Bone02
+        weight: 1
+      - path: qijiang01
+        weight: 1
+      - path: qijiangma01
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -2809,11 +3083,13 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
@@ -2836,3 +3112,5 @@ ModelImporter:
   animationType: 2
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

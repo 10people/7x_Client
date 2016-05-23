@@ -269,7 +269,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 						//new KingDetailButtonController.KingDetailButtonConfig() {m_ButtonStr = "投TA一票", m_ButtonClick = TouPiao},
 						
 					};
-					info.SetThis(tempKingInfo, tempConfigList);
+					//info.SetThis(tempKingInfo, tempConfigList);
 				}
 				
 				if(menber.mMemberInfo.isVoted == 1)

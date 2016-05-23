@@ -12,18 +12,23 @@ public class TipUIControllor : MonoBehaviour
 
 	public TipEnemyControllor enemyContorllor;
 
+	public TipJewelControllor jewelControllor;
+
 	// fix bug in some device
 	public UIEventListener m_close_listener = null;
 
 
-	void Awake(){
+	void Awake()
+	{
 		m_close_listener.onPress = OnNGUIPressed;
 	}
 
-	public void OnNGUIPressed( GameObject go, bool state ){
+	public void OnNGUIPressed( GameObject go, bool state )
+	{
 		Debug.Log( "TipUI.SpriteBg.OnNGUIPressed( " + go + ", " + state + " )" );
 
-		if( !state ){
+		if( !state )
+		{
 //			ShowTip.close();	
 
 			gameObject.SetActive( false );
@@ -36,9 +41,20 @@ public class TipUIControllor : MonoBehaviour
 	{
 		closeAll ();
 
-		itemControllor.gameObject.SetActive (true);
+		CommonItemTemplate template = CommonItemTemplate.getCommonItemTemplateById (commonItemId);
 
-		itemControllor.refreshData (commonItemId);
+		if(template.itemType == 7 || template.itemType == 8)//宝石
+		{
+			jewelControllor.gameObject.SetActive (true);
+			
+			jewelControllor.refreshData (commonItemId);
+		}
+		else
+		{
+			itemControllor.gameObject.SetActive (true);
+
+			itemControllor.refreshData (commonItemId);
+		}
 	}
 
 	public void refreshDataEnemy(string iconName, string enemyName, string enemyDesc)
@@ -55,6 +71,8 @@ public class TipUIControllor : MonoBehaviour
 		itemControllor.gameObject.SetActive (false);
 
 		enemyContorllor.gameObject.SetActive (false);
+
+		jewelControllor.gameObject.SetActive (false);
 	}
 
 	void Update()

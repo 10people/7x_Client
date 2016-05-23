@@ -8,7 +8,8 @@ public class AllianceSelectIcon : MonoBehaviour
  
     public delegate void OnClick_Touch(GameObject obj ,int id);
     OnClick_Touch CallBackTouch;
-    private int spriteIcon = 0;
+    [HideInInspector]
+    public int spriteIcon = 0;
 	void Start () 
     {
 	

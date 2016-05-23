@@ -1621,8 +1621,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		pauseControllor.refreshData ();
 
 		pauseControllor.gameObject.SetActive(true);
-		
-		Time.timeScale = 0f;
+
+		TimeHelper.SetTimeScale (0.0f);
 	}
 	
 	void LateUpdate()
@@ -1680,15 +1680,15 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public void devolopmentEasy()
 	{
-		BattleControlor.Instance().getKing ().addHp (BattleControlor.Instance().getKing ().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ));
-
-		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
-		{
-			if(node.gameObject.activeSelf == true)
-			{
-				node.addHp(node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) * .05f - node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ));
-			}
-		}
+//		BattleControlor.Instance().getKing ().addHp (BattleControlor.Instance().getKing ().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ));
+//
+//		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+//		{
+//			if(node.gameObject.activeSelf == true)
+//			{
+//				node.addHp(node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) * .05f - node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ));
+//			}
+//		}
 
 		BattleControlor.Instance().getKing ().addNuqi (5000);
 
@@ -1732,7 +1732,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public void showResult(BattleControlor.BattleResult result)
 	{
-		Time.timeScale = 1f;
+		TimeHelper.SetTimeScale (1f);
 
 		short requestId = 0;
 
@@ -1769,6 +1769,10 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YuanZhu)
 		{
 			sendResultYuanZhu(result);
+		}
+		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_ChongLou)
+		{
+			sendResultChongLou(result);
 		}
 	}
 
@@ -1923,6 +1927,29 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		int waitIndex = ProtoIndexes.S_YUAN_HU_END_RESP;
 
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YUAN_HU_END_REQ, ref t_protof, p_receiving_wait_proto_index:waitIndex);
+	}
+
+	private void sendResultChongLou(BattleControlor.BattleResult result)
+	{
+		MemoryStream tempStream = new MemoryStream();
+		
+		QiXiongSerializer t_qx = new QiXiongSerializer();
+
+		ChongLouBattleResult req = new ChongLouBattleResult ();
+
+		req.layer = CityGlobalData.m_tempLevel;
+
+		req.result = result == BattleControlor.BattleResult.RESULT_WIN;
+
+		t_qx.Serialize(tempStream, req);
+		
+		byte[] t_protof;
+		
+		t_protof = tempStream.ToArray();
+		
+		int waitIndex = ProtoIndexes.CHONG_LOU_BATTLE_REPORT_REQP;
+		
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.CHONG_LOU_BATTLE_REPORT, ref t_protof, p_receiving_wait_proto_index:waitIndex);
 	}
 
 	private void sendResultHYPve(BattleControlor.BattleResult result)
@@ -2395,6 +2422,20 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			
 			return true;
 		}
+		case ProtoIndexes.CHONG_LOU_BATTLE_REPORT_REQP:
+		{
+			MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+			
+			QiXiongSerializer t_qx = new QiXiongSerializer();
+
+			BattleResult res = new BattleResult();
+			
+			t_qx.Deserialize(t_stream, res, res.GetType());
+			
+			loadIconSample(res);
+
+			return true;
+		}
 		}
 		
 		return false;
@@ -2461,6 +2502,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			DescIdTemplate.GetDescriptionById (configTemplate.preDesc);
 
 			winDescNum.text = "";
+
+			winDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + winDescNum.text;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Boss)
 		{
@@ -2473,6 +2516,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			num = num > numMax ? numMax : num;
 
 			winDescNum.text = num + "/" + numMax;
+
+			winDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + winDescNum.text;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Hero)
 		{
@@ -2485,6 +2530,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			num = num > numMax ? numMax : num;
 			
 			winDescNum.text = num + "/" + numMax;
+
+			winDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + winDescNum.text;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Soldier)
 		{
@@ -2497,6 +2544,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			num = num > numMax ? numMax : num;
 			
 			winDescNum.text = num + "/" + numMax;
+
+			winDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + winDescNum.text;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Gear)
 		{
@@ -2509,21 +2558,43 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			num = num > numMax ? numMax : num;
 			
 			winDescNum.text = num + "/" + numMax;
+
+			winDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + winDescNum.text;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Destination)
 		{
 			descLanguageId = 1085;
 
 			winDescNum.text = ((int)Vector3.Distance(BattleControlor.Instance().getKing().transform.position, winDescTemplate.destination) - winDescTemplate.destinationRadius) + "m";
+	
+			winDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + winDescNum.text;
 		}
 		else if(winDescTemplate.winType == BattleWinFlag.EndType.Reach_Time)
 		{
 			descLanguageId = 1086;
 
 			winDescNum.text = BattleControlor.Instance().timeLast + "s";
-		}
 
-		winDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + winDescNum.text;
+			winDesc.text = LanguageTemplate.GetText (descLanguageId) + " " + winDescNum.text;
+		}
+		else if(winDescTemplate.winType == BattleWinFlag.EndType.Kill_Wave)
+		{
+			descLanguageId = 2201;
+			
+			int num = BattleControlor.Instance().battleCheck.waveKilled;
+			
+			int numMax = winDescTemplate.killNum;
+			
+			num = num > numMax ? numMax : num;
+			
+			string numStr = num + "/" + numMax;
+
+			string text = LanguageTemplate.GetText (descLanguageId);
+
+			text = text.Replace("*", numStr);
+
+			winDesc.text = text;
+		}
 	}
 
 }

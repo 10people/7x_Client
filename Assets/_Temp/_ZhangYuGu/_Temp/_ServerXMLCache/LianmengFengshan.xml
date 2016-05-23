@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<LianmengFengshan id="1" name="50011" desc1="活跃度20时，可封禅" desc2="获得100点贡献值" desc3="今日已封禅" huoyuedu="20" award="0:900015:100#0:900017:100#0:900032:100" tuTenglvNeeded="1" />
+<LianmengFengshan id="2" name="50012" desc1="活跃度100时，可封禅" desc2="获得200点贡献值" desc3="今日已封禅" huoyuedu="100" award="0:900015:200#0:900017:200#0:900032:200" tuTenglvNeeded="1" />
+</dataset>

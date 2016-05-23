@@ -66,6 +66,16 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 
 		{
 			UIRootAutoActivator.RegisterAutoActivator( this );
+
+			ComponentHelper.AddIfNotExist( m_UISpriteCenter, typeof(FreshGuideMaskEffect) );
+
+			ComponentHelper.AddIfNotExist( m_UISpriteLeft, typeof(FreshGuideMaskEffect) );
+
+			ComponentHelper.AddIfNotExist( m_UISpriteRight, typeof(FreshGuideMaskEffect) );
+
+			ComponentHelper.AddIfNotExist( m_UISpriteBom, typeof(FreshGuideMaskEffect) );
+
+			ComponentHelper.AddIfNotExist( m_UISpriteTop, typeof(FreshGuideMaskEffect) );
 		}
 	}
 
@@ -127,6 +137,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 	}
 	public void setOpenYindao(int id)
     {
+		Debug.Log(id);
 		m_iNum = 0;
 	//cancel yindao if in house.
 //        if(id < 200000)
@@ -320,9 +331,9 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 			int h = yindaoElenemt.m_Click.h;
 //			m_sW = w +"";
 //			m_sH = h +"";
-			
+
 			m_UISpriteCenter.gameObject.transform.localPosition = new Vector3(x, y, 0);
-			m_UISpriteCenter.gameObject.GetComponent<UISprite>().SetDimensions(w,h);
+			m_UISpriteCenter.gameObject.GetComponent<UISprite>().SetDimensions(w + 2, h + 2 );
 			
 			m_UISpriteTop.gameObject.transform.localPosition = new Vector3(x, y + h / 2, 0);
 			m_UISpriteBom.gameObject.transform.localPosition = new Vector3(x, y - h / 2, 0);
@@ -333,8 +344,8 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 			int tempCollH = 4096;
 			m_UISpriteTop.gameObject.GetComponent<UISprite>().SetDimensions(tempCollW,tempCollH);
 			m_UISpriteBom.gameObject.GetComponent<UISprite>().SetDimensions(tempCollW,tempCollH);
-			m_UISpriteLeft.gameObject.GetComponent<UISprite>().SetDimensions(tempCollW,h);
-			m_UISpriteRight.gameObject.GetComponent<UISprite>().SetDimensions(tempCollW,h);
+			m_UISpriteLeft.gameObject.GetComponent<UISprite>().SetDimensions(tempCollW,h+2);
+			m_UISpriteRight.gameObject.GetComponent<UISprite>().SetDimensions(tempCollW,h+2);
 			
 			m_UISpriteTop.gameObject.GetComponent<BoxCollider>().size = new Vector3(tempCollW,tempCollH,1);
 			m_UISpriteTop.gameObject.GetComponent<BoxCollider>().center = new Vector3(0,(tempCollH / 2),0);
@@ -424,6 +435,8 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 				createEff();
 			}
 		}
+
+		Refresh();
 	}
 
 	public void createEff()
@@ -498,7 +511,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 
 	public void CloseUI()
 	{
-   		//Debug.Log("CloseYinDao");
+//   		 Debug.Log("CloseYinDao");
 		if(!Global.m_isOpenJiaoxue)
 		{
 			return;
@@ -590,5 +603,28 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 		return m_isOpenYindao;
 	}
 	
+	#endregion
+
+
+
+	#region Utilities
+
+	private void Refresh(){
+		m_UISpriteCenter.gameObject.SetActive( !m_UISpriteCenter.gameObject.activeSelf );
+		m_UISpriteCenter.gameObject.SetActive( !m_UISpriteCenter.gameObject.activeSelf );
+
+		m_UISpriteLeft.gameObject.SetActive( !m_UISpriteLeft.gameObject.activeSelf );
+		m_UISpriteLeft.gameObject.SetActive( !m_UISpriteLeft.gameObject.activeSelf );
+
+		m_UISpriteRight.gameObject.SetActive( !m_UISpriteRight.gameObject.activeSelf );
+		m_UISpriteRight.gameObject.SetActive( !m_UISpriteRight.gameObject.activeSelf );
+
+		m_UISpriteBom.gameObject.SetActive( !m_UISpriteBom.gameObject.activeSelf );
+		m_UISpriteBom.gameObject.SetActive( !m_UISpriteBom.gameObject.activeSelf );
+
+		m_UISpriteTop.gameObject.SetActive( !m_UISpriteTop.gameObject.activeSelf );
+		m_UISpriteTop.gameObject.SetActive( !m_UISpriteTop.gameObject.activeSelf );
+	}
+
 	#endregion
 }

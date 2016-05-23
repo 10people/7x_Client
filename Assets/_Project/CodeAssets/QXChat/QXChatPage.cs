@@ -9,7 +9,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class QXChatPage : MonoBehaviour {
+public class QXChatPage : MYNGUIPanel , IMSCListener{
 
 	public static QXChatPage chatPage;
 
@@ -20,11 +20,60 @@ public class QXChatPage : MonoBehaviour {
 	void Awake ()
 	{
 		chatPage = this;
+		MSCController.RegisterListener(this);
 	}
 
 	void OnDestroy ()
 	{
 		chatPage = null;
+		MSCController.UnregisterListener(this);
+	}
+
+	public void MSCResult(string key, string data, string fileBytes)
+	{
+		ChatPct chatPct1 = new ChatPct();
+		
+		ChatMessage chatMsg = new ChatMessage()
+		{
+			sendState = ChatMessage.SendState.SENDING,
+			
+			
+			chatPct = new ChatPct()
+			{
+				roleId = CityGlobalData.m_king_model_Id,
+				senderName = JunZhuData.Instance().m_junzhuInfo.name,
+				senderId = JunZhuData.Instance().m_junzhuInfo.id,
+				channel = chatChannel,
+				content = data,
+				guoJia = JunZhuData.Instance().m_junzhuInfo.guoJiaId,
+				vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv,
+				receiverId = m_iSiliaoID,
+				soundData = fileBytes,
+				soundLen = 5,
+			},
+		};
+		
+		QXChatData.Instance.SendChatData (chatMsg);
+	}
+	
+	public void MSCStarted()
+	{
+
+	}
+	
+	public void MSCEnded()
+	{
+
+	}
+	
+	public void MSCError(string error)
+	{
+
+	}
+
+	public void MSCVolume(int vol)
+	{
+
 	}
 
 	#region ShowChatInfo
@@ -36,8 +85,35 @@ public class QXChatPage : MonoBehaviour {
 	
 	private List<GameObject> chatItemList = new List<GameObject> ();
 	public GameObject chatItemObj;
+	public GameObject m_objSiliaoObj;
+	public UILabel m_labelSiLiaoName;
+	public long m_iSiliaoID;
+
+	public QXChatInputEnemt chatInputObj;
+	private List<QXChatInputEnemt> inputList = new List<QXChatInputEnemt> ();
+	
+	public UILabel costLabel;
+	public UILabel freeLabel;
+	
+	public List<EventHandler> sendBtnHandlerList = new List<EventHandler>();
+	
+	public int chatInputIndex;
+	
+	public UILabel sendCdLabel;
 	
 	public List<EventHandler> chatBtnHandlerList = new List<EventHandler> ();
+
+	public UISprite m_spriteYuYinQiehuanButton;
+
+	public UILabelType m_UILabelTypeYuyin;
+
+	public UISprite m_spriteYuyinScendButton;
+
+	private bool m_isYuyin = false;
+
+	private int m_iVoiceIndex = 0;
+
+	public List<int> m_listSoundPlayID = new List<int>();
 
 	/// <summary>
 	/// Ins it chat page.
@@ -58,13 +134,21 @@ public class QXChatPage : MonoBehaviour {
 		{
 			for (int i = 0;i < QXChatData.Instance.GetChannelCount ();i ++)
 			{
-				GameObject chatInput = (GameObject)Instantiate (chatInputObj);
+				QXChatData.Instance.m_listScendWaitTime.Add(0);
+				GameObject chatInput = (GameObject)Instantiate (chatInputObj.gameObject);
 
 				chatInput.transform.parent = chatInputObj.transform.parent;
 				chatInput.transform.localPosition = Vector3.zero;
 				chatInput.transform.localScale = Vector3.one;
 
-				inputList.Add (chatInput);
+				QXChatInputEnemt tempInputEnemt = chatInput.GetComponent<QXChatInputEnemt>();
+				inputList.Add (tempInputEnemt);
+				if(i == 3)
+				{
+					tempInputEnemt.m_spriteBG.SetDimensions(222, 40);
+					tempInputEnemt.m_labelInputLabel.SetDimensions(196, 30);
+					tempInputEnemt.m_labelInputLabel.text = "          点此输入";
+				}
 			}
 		}
 
@@ -78,6 +162,9 @@ public class QXChatPage : MonoBehaviour {
 			break;
 		case ChatPct.Channel.Broadcast:
 			SwitchChannel (2);
+			break;
+		case ChatPct.Channel.SILIAO:
+			SwitchChannel (3);
 			break;
 		default:
 			break;
@@ -137,14 +224,14 @@ public class QXChatPage : MonoBehaviour {
 			if (i == 0)
 			{
 				firstHeigh = chatPlayer.GetItemHeigh ();
-				bool isPlayer = (tempChatList[i].chatPct.guoJia > 0 && tempChatList[i].chatPct.guoJia < 8) ? true : false;
+				bool isPlayer = (tempChatList[i].chatPct.guoJia >= 0 && tempChatList[i].chatPct.guoJia < 8) ? true : false;
 				totleHeigh += (isPlayer ? 46.5f : 22.5f ) + firstHeigh;
 			}
 			else
 			{
 				float heigh = chatItemList[i - 1].GetComponent<ChatPlayerItem> ().GetItemHeigh ();
-				bool isPlayer1 = (tempChatList[i - 1].chatPct.guoJia > 0 && tempChatList[i - 1].chatPct.guoJia < 8) ? true : false;
-				bool isPlayer2 = (tempChatList[i].chatPct.guoJia > 0 && tempChatList[i].chatPct.guoJia < 8) ? true : false;
+				bool isPlayer1 = (tempChatList[i - 1].chatPct.guoJia >= 0 && tempChatList[i - 1].chatPct.guoJia < 8) ? true : false;
+				bool isPlayer2 = (tempChatList[i].chatPct.guoJia >= 0 && tempChatList[i].chatPct.guoJia < 8) ? true : false;
 
 				if (!isPlayer1)
 				{
@@ -219,7 +306,7 @@ public class QXChatPage : MonoBehaviour {
 		openFirstChannel = false;
 	}
 
-	void ChatBtnHandlerClickBack (GameObject obj)
+	public void ChatBtnHandlerClickBack (GameObject obj)
 	{
 		SetChatItemInfoClose (false);
 		switch (obj.name)
@@ -256,6 +343,15 @@ public class QXChatPage : MonoBehaviour {
 				QXChatData.Instance.SetChatChannel (ChatPct.Channel.Broadcast);
 			}
 			break;
+		case "Siliao":
+			if (chatChannel != ChatPct.Channel.SILIAO)
+			{
+				chatSbValue = 1;
+				openFirstChannel = true;
+				
+				QXChatData.Instance.SetChatChannel (ChatPct.Channel.SILIAO);
+			}
+			break;
 		default:
 			break;
 		}
@@ -281,17 +377,7 @@ public class QXChatPage : MonoBehaviour {
 	#endregion
 
 	#region InputChatInfo
-	public GameObject chatInputObj;
-	private List<GameObject> inputList = new List<GameObject> ();
 
-	public UILabel costLabel;
-	public UILabel freeLabel;
-
-	public List<EventHandler> sendBtnHandlerList = new List<EventHandler>();
-
-	private int chatInputIndex;
-
-	public UILabel sendCdLabel;
 
 	/// <summary>
 	/// Switchs the chat input.
@@ -299,30 +385,29 @@ public class QXChatPage : MonoBehaviour {
 	/// <param name="tempIndex">Temp index.</param>
 	void SwitchChatInput (int tempIndex)
 	{
-		freeLabel.transform.parent.gameObject.SetActive (tempIndex == 1 ? false : true);
+		freeLabel.transform.parent.gameObject.SetActive ((tempIndex == 1 ||  tempIndex == 3)? false : true);
 
 		for (int i = 0;i < inputList.Count;i ++)
 		{
-			inputList[i].SetActive (i == tempIndex ? true : false);
+			inputList[i].gameObject.SetActive (i == tempIndex ? true : false);
 		}
-		
+		m_objSiliaoObj.SetActive(false);
 		chatInputIndex = tempIndex;
 		OnChatSubmit ();
 		switch (tempIndex)
 		{
 		case 0:
-
 			freeLabel.text = QXChatData.Instance.FreeTimes > 0 ? "免费\n（" + QXChatData.Instance.FreeTimes + "）" : "";
 			costLabel.gameObject.SetActive (QXChatData.Instance.FreeTimes > 0 ? false : true);
 			costLabel.text = CanshuTemplate.GetStrValueByKey (CanshuTemplate.WORLDCHAT_PRICE);
-
 			break;
 		case 2:
-
 			freeLabel.text = "";
 			costLabel.gameObject.SetActive (true);
 			costLabel.text = CanshuTemplate.GetStrValueByKey (CanshuTemplate.BROADCAST_PRICE);
-
+			break;
+		case 3:
+			m_objSiliaoObj.SetActive(true);
 			break;
 		default:
 			break;
@@ -332,7 +417,7 @@ public class QXChatPage : MonoBehaviour {
 	public void OnChatSubmit ()
 	{
 		UIInput input = inputList[chatInputIndex].GetComponent<UIInput> ();
-		if (input.value == "" || QXChatData.Instance.SendWaitTime > 0)
+		if (input.value == "" || QXChatData.Instance.m_listScendWaitTime[chatInputIndex] > 0)
 		{
 			SendBtnActiveState (false);
 		}
@@ -344,10 +429,18 @@ public class QXChatPage : MonoBehaviour {
 
 	void SendBtnActiveState (bool active)
 	{
-		UIWidget[] widgets = sendBtnHandlerList[2].GetComponentsInChildren<UIWidget> ();
-		foreach (UIWidget widget in widgets)
+		if(m_isYuyin)
 		{
-			widget.color = active ? Color.white : Color.grey;
+			m_spriteYuyinScendButton.color = active ? Color.white : Color.grey;
+			m_UILabelTypeYuyin.setType(active ? 10 : 11);
+		}
+		else
+		{
+			UIWidget[] widgets = sendBtnHandlerList[2].GetComponentsInChildren<UIWidget> ();
+			foreach (UIWidget widget in widgets)
+			{
+				widget.color = active ? Color.white : Color.grey;
+			}
 		}
 	}
 
@@ -387,8 +480,11 @@ public class QXChatPage : MonoBehaviour {
 						content = input.value,
 						guoJia = JunZhuData.Instance().m_junzhuInfo.guoJiaId,
 						vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv,
+						receiverId = m_iSiliaoID,
 					},
 				};
+				Debug.Log(m_iSiliaoID);
+				Debug.Log(chatChannel);
 
 				QXChatData.Instance.SendChatData (chatMsg);
 			}
@@ -466,9 +562,9 @@ public class QXChatPage : MonoBehaviour {
 	void Update ()
 	{
 		UIYindao.m_UIYindao.CloseUI ();
-		if (QXChatData.Instance.SendWaitTime > 0)
+		if (QXChatData.Instance.m_listScendWaitTime[chatInputIndex] > 0)
 		{
-			sendCdLabel.text = "冷却" + MyColorData.getColorString (5,QXChatData.Instance.SendWaitTime + "s");
+			sendCdLabel.text = "冷却" + MyColorData.getColorString (5,QXChatData.Instance.m_listScendWaitTime[chatInputIndex] + "s");
 		}
 		else
 		{
@@ -482,11 +578,12 @@ public class QXChatPage : MonoBehaviour {
 	private bool isOpenChat;
 	public void ChatPageAnimation (bool isOpen)
 	{
+		Debug.Log("=======1");
 		isOpenChat = isOpen;
 
 		Hashtable move = new Hashtable ();
 		move.Add ("time",0.4f);
-		move.Add ("position",new Vector3 (isOpen ? 0 : -455,0,0));
+		move.Add ("position",new Vector3 (isOpen ? 0 : -555,0,0));
 		move.Add ("islocal",true);
 		move.Add ("oncomplete","ChatPageAnimationEnd");
 		move.Add ("oncompletetarget",gameObject);
@@ -513,6 +610,11 @@ public class QXChatPage : MonoBehaviour {
 			gameObject.SetActive (false);
 		}
 	}
+
+	public void SetSiliaoName(string name)
+	{
+		m_labelSiLiaoName.text = "@" + name + ":";
+	}
 	#endregion
 
 	#region ChatPageRedPoint
@@ -532,5 +634,79 @@ public class QXChatPage : MonoBehaviour {
 		}
 	}
 
+	public override void MYClick(GameObject ui)
+	{
+		Debug.Log(ui.name);
+		if(ui.name.IndexOf("YunyinQiehuanBtn") != -1)
+		{
+			m_isYuyin = !m_isYuyin;
+			if(m_isYuyin)
+			{
+				m_spriteYuYinQiehuanButton.spriteName = "jianpan";
+				m_spriteYuyinScendButton.gameObject.SetActive(true);
+				sendBtnHandlerList[2].gameObject.SetActive(false);
+				inputList[chatInputIndex].gameObject.SetActive(false);
+//				m_spriteYuyinScendButton.SetDimensions();
+			}
+			else
+			{
+				m_spriteYuYinQiehuanButton.spriteName = "yuyin";
+				m_spriteYuyinScendButton.gameObject.SetActive(false);
+				sendBtnHandlerList[2].gameObject.SetActive(true);
+				inputList[chatInputIndex].gameObject.SetActive(true);
+			}
+		}
+	}
+	
+	public override void MYMouseOver(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+		if(ui.name.IndexOf("YuyinScendBtn") != -1)
+		{
+			if(isPress)
+			{
+				MSCController.Instance.StartMSC(m_iVoiceIndex + "");
+			}
+			else
+			{
+				m_iVoiceIndex ++;
+				MSCController.Instance.StopMSC();
+			}
+		}
+		else if(ui.name.IndexOf("dialog") != -1)
+		{
+			int index = int.Parse(ui.name.Substring(6, ui.name.Length - 6));
+
+		}
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+		
+	}
 	#endregion
 }

@@ -86,6 +86,7 @@ public class AllBuildsTmp : MonoBehaviour {
 			{
 				if(Max_Lv > lv)
 				{
+				
 					UpBtn.SetActive(true);
 					GreenUpBtn.SetActive(false);
 					LianMengKeZhanTemplate m_LianMengKeZhanTemplate = LianMengKeZhanTemplate.GetLianMengKeZhanTemplate_by_lev(lv);
@@ -96,6 +97,11 @@ public class AllBuildsTmp : MonoBehaviour {
 				{
 					UpBtn.SetActive(false);
 					GreenUpBtn.SetActive(true);
+				}
+				if(lv == AllianceLevel)
+				{
+					UpBtn.SetActive(false);
+					GreenUpBtn.SetActive(false);
 				}
 			}
 			if(!FunctionOpenTemp.GetWhetherContainID(600500))
@@ -135,6 +141,11 @@ public class AllBuildsTmp : MonoBehaviour {
 					UpBtn.SetActive(false);
 					GreenUpBtn.SetActive(true);
 				}
+				if(lv == AllianceLevel)
+				{
+					UpBtn.SetActive(false);
+					GreenUpBtn.SetActive(false);
+				}
 			}
 
 			if(!FunctionOpenTemp.GetWhetherContainID(600600))
@@ -173,6 +184,11 @@ public class AllBuildsTmp : MonoBehaviour {
 					UpBtn.SetActive(false);
 					GreenUpBtn.SetActive(true);
 				}
+				if(lv == AllianceLevel)
+				{
+					UpBtn.SetActive(false);
+					GreenUpBtn.SetActive(false);
+				}
 			}
 			if(!FunctionOpenTemp.GetWhetherContainID(300300))
 			{
@@ -210,6 +226,11 @@ public class AllBuildsTmp : MonoBehaviour {
 					UpBtn.SetActive(false);
 					GreenUpBtn.SetActive(true);
 				}
+				if(lv == AllianceLevel)
+				{
+					UpBtn.SetActive(false);
+					GreenUpBtn.SetActive(false);
+				}
 			}
 			if(!FunctionOpenTemp.GetWhetherContainID(600700))
 			{
@@ -244,6 +265,11 @@ public class AllBuildsTmp : MonoBehaviour {
 				{
 					UpBtn.SetActive(false);
 					GreenUpBtn.SetActive(true);
+				}
+				if(lv == AllianceLevel)
+				{
+					UpBtn.SetActive(false);
+					GreenUpBtn.SetActive(false);
 				}
 			}
 			if(!FunctionOpenTemp.GetWhetherContainID(600850))

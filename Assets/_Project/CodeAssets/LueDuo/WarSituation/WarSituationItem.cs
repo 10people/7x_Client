@@ -54,7 +54,7 @@ public class WarSituationItem : MonoBehaviour {
 
 		enemyHead.spriteName = QXComData.PlayerIcon (situationInfo.enemyRoleId);
 		enemylevel.text = situationInfo.enemyLevel.ToString ();
-		enemyNation.spriteName = QXComData.Nation (situationInfo.enemyCountryId);
+		enemyNation.spriteName = QXComData.GetNationSpriteName (situationInfo.enemyCountryId);
 		enemyName.text = MyColorData.getColorString (3,situationInfo.enemyName);
 		enemyAlliance.text = MyColorData.getColorString (6,situationInfo.enemyAllianceName.Equals ("") ? "无联盟" : "<" + situationInfo.enemyAllianceName + ">");
 		enemyZhanLi.text = "战力" + situationInfo.enemyZhanLi;

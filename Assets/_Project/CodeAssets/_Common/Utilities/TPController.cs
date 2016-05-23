@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TPController : MonoBehaviour
 {
-    public DelegateUtil.Vector2Delegate m_ExecuteAfterTP;
+    public DelegateHelper.Vector2Delegate m_ExecuteAfterTP;
 
     public GameObject m_TpObject;
     public UIProgressBar m_TpBar;

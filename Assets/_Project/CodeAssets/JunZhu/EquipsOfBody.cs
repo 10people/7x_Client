@@ -102,44 +102,44 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
 				setTaozhuang();
                     } return true;
 
-                case ProtoIndexes.S_EQUIP_JINJIE:
-                    {
-                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                //case ProtoIndexes.S_EQUIP_JINJIE:
+                //    {
+                //        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
-                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                //        QiXiongSerializer t_qx = new QiXiongSerializer();
 
-                        EquipJinJieResp tempEquipInfo = new EquipJinJieResp();
+                //        EquipJinJieResp tempEquipInfo = new EquipJinJieResp();
 
-                        t_qx.Deserialize(t_stream, tempEquipInfo, tempEquipInfo.GetType());
+                //        t_qx.Deserialize(t_stream, tempEquipInfo, tempEquipInfo.GetType());
 
-                        m_EquipUpgradeInfo = tempEquipInfo;
-                        foreach (KeyValuePair<int, BagItem> item in m_equipsOfBodyDic)
-                        {
+                //        m_EquipUpgradeInfo = tempEquipInfo;
+                //        foreach (KeyValuePair<int, BagItem> item in m_equipsOfBodyDic)
+                //        {
                             
-                                for (int i = 0; i < ZhuangBei.templates.Count; i++)
-                                {
-                                    if (ZhuangBei.templates[i].id == item.Value.itemId)
-                                    {
-                                    item.Value.itemId = tempEquipInfo.zbItemId;
-                                    item.Value.qiangHuaLv = tempEquipInfo.level;
-                                    item.Value.gongJi = tempEquipInfo.gongJi;
-                                    item.Value.shengMing = tempEquipInfo.shengMing;
-                                    item.Value.fangYu = tempEquipInfo.fangYu;
-                                    item.Value.name = ZhuangBei.templates[i].m_name;
-                                    item.Value.pinZhi = ZhuangBei.templates[i].pinZhi;
-                                        break;
-                                    }
-                                }
+                //                for (int i = 0; i < ZhuangBei.templates.Count; i++)
+                //                {
+                //                    if (ZhuangBei.templates[i].id == item.Value.itemId)
+                //                    {
+                //                    item.Value.itemId = tempEquipInfo.zbItemId;
+                //                    item.Value.qiangHuaLv = tempEquipInfo.level;
+                //                    item.Value.gongJi = tempEquipInfo.gongJi;
+                //                    item.Value.shengMing = tempEquipInfo.shengMing;
+                //                    item.Value.fangYu = tempEquipInfo.fangYu;
+                //                    item.Value.name = ZhuangBei.templates[i].m_name;
+                //                    item.Value.pinZhi = ZhuangBei.templates[i].pinZhi;
+                //                        break;
+                //                    }
+                //                }
                            
-                        }
-                        if (UIJunZhu.m_UIJunzhu != null)
-                        {
-                            m_RefrsehEquipsInfo = true;
+                //        }
+                //        if (UIJunZhu.m_UIJunzhu != null)
+                //        {
+                //            m_RefrsehEquipsInfo = true;
 
-                            m_isRefrsehEquips = true;
-                        }
-                        FunctionWindowsCreateManagerment.m_IsEquipAdvance = true;
-                    } return true;
+                //            m_isRefrsehEquips = true;
+                //        }
+                //        FunctionWindowsCreateManagerment.m_IsEquipAdvance = true;
+                //    } return true;
                 case ProtoIndexes.tao_zhuang_Resp:
                     {
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -587,16 +587,16 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
 	public int m_iMaxNum;
 	public void setTaozhuang()
 	{
-		if(m_Activatetemp == null || TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang) == null)
-		{
-			return;
-		}
-		if(m_iCurNum != -1 && m_iCurNum < EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition))
-		{
-			m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
-			MainCityUI.addShouji(m_Activatetemp.maxActiZhuang, 1, m_iCurNum, TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).neededNum, "套装收集");
-		}
-        
-		m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
+//		if(m_Activatetemp == null || TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang) == null)
+//		{
+//			return;
+//		}
+//		if(m_iCurNum != -1 && m_iCurNum < EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition))
+//		{
+//			m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
+//			MainCityUI.addShouji(m_Activatetemp.maxActiZhuang, 1, m_iCurNum, TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).neededNum, "套装收集");
+//		}
+//        
+//		m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
 	}
 }

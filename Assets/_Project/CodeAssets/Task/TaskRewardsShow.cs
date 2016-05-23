@@ -186,7 +186,6 @@ public class TaskRewardsShow : MonoBehaviour
     void OnDisable()
     {
         _isShowOn = false;
-        m_TaskLA.FreshVitality();
         int size_All = m_grid.transform.childCount;
         for (int i = 0; i < size_All; i++)
         {

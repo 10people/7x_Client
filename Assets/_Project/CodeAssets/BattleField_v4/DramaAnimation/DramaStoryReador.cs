@@ -328,6 +328,21 @@ public class DramaStoryReador : MonoBehaviour
 				}
 				else 
 				{
+					if(actorModelId == 11)//当前君主使用重武器
+					{
+						ja["actorModelId"].AsInt = ((CityGlobalData.t_resp.selfTroop.nodes[0].modleId + 1001) % 10) * 10 + 500 + 1;
+					}
+					else if(actorModelId == 12)//当前君主使用轻武器
+					{
+						ja["actorModelId"].AsInt = ((CityGlobalData.t_resp.selfTroop.nodes[0].modleId + 1001) % 10) * 10 + 500 + 2;
+					}
+					else if(actorModelId == 13)//当前君主使用弓武器
+					{
+						ja["actorModelId"].AsInt = ((CityGlobalData.t_resp.selfTroop.nodes[0].modleId + 1001) % 10) * 10 + 500 + 3;
+					}
+
+					actorModelId = ja["actorModelId"].AsInt;
+
 					storyBoard.m_loadPath.Add(ModelTemplate.GetResPathByModelId(actorModelId));
 				}
 			}

@@ -5,7 +5,9 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using AllianceBattle;
 using qxmobile.protobuf;
 using Object = UnityEngine.Object;
 
@@ -19,7 +21,8 @@ namespace Carriage
         public CarriageSafeArea m_CarriageSafeArea;
         public BiaoJuPage m_BiaoJuPage;
 
-        public CarriageBloodLabelController m_CarriageBloodLabelController;
+        public GlobalBloodLabelController m_GlobalBloodLabelController;
+        public AnimationHierarchyPlayer m_AnimationHierarchyPlayer = new AnimationHierarchyPlayer();
 
         public List<TongzhiData> m_CarriageTongzhiDataList
         {
@@ -66,10 +69,30 @@ namespace Carriage
         public GameObject LinePointParent;
         public GameObject LinePointPrefab;
 
-        public CarriagePlayerController m_SelfPlayerController;
-        public CarriagePlayerCultureController m_SelfPlayerCultureController;
+        public CarriagePlayerController m_SelfPlayerController
+        {
+            get { return m_selfPlayerController; }
+            set
+            {
+                m_selfPlayerController = value;
+                m_AnimationHierarchyPlayer.m_SinglePlayerController = m_SelfPlayerController;
+                m_CarriageMain.m_RTSkillExecuter.m_SelfPlayerController = m_SelfPlayerController;
+            }
+        }
+        private CarriagePlayerController m_selfPlayerController;
 
-        public static float BasicYPosition = -3.24f;
+        public CarriagePlayerCultureController m_SelfPlayerCultureController
+        {
+            get { return m_selfPlayerCultureController; }
+            set
+            {
+                m_selfPlayerCultureController = value;
+                m_CarriageMain.m_RTSkillExecuter.m_SelfPlayerCultureController = m_selfPlayerCultureController;
+            }
+        }
+        private CarriagePlayerCultureController m_selfPlayerCultureController;
+
+        public static float BasicYPosition = 20.5f;
 
         public void CreateSelfPlayer(int p_roleID, long p_junzhuID, Vector3 p_position, string p_kingName, string p_allianceName, int p_vipLevel, int p_TitleIndex, int p_alliancePost, int p_nation, int p_level, int p_battleValue, float p_remainBlood = -1, float p_totalBlood = -1)
         {
@@ -118,7 +141,7 @@ namespace Carriage
             m_SelfPlayerCultureController.SetThis();
 
             //Set HeadIcon.
-            m_CarriageMain.SelfIconSetter.SetPlayer(p_roleID, true, p_level, p_kingName, p_allianceName, p_totalBlood, p_remainBlood, p_nation, p_vipLevel, p_battleValue);
+            m_CarriageMain.SelfIconSetter.SetPlayer(p_roleID, true, p_level, p_kingName, p_allianceName, p_totalBlood, p_remainBlood, p_nation, p_vipLevel, p_battleValue, 0);
             m_CarriageMain.SelfIconSetter.gameObject.SetActive(true);
         }
 
@@ -131,70 +154,6 @@ namespace Carriage
             m_CarriageMain.SelfIconSetter.AllianceLabel.text = (string.IsNullOrEmpty(p_allianceName) || p_allianceName == "***") ? "无联盟" : p_allianceName;
             m_CarriageMain.SelfIconSetter.gameObject.SetActive(true);
         }
-
-        #region Animation Hierarchy
-
-        private readonly List<int> m_animationHashListInPiority = new List<int>()
-        {
-            Animator.StringToHash("Dead"), Animator.StringToHash("attack_4"),Animator.StringToHash("attack_1"),Animator.StringToHash("skill_mibao"), Animator.StringToHash("Run"), Animator.StringToHash("BATC"), Animator.StringToHash("Stand")
-        };
-
-        public bool TryPlayAnimationInAnimator(int p_uid, string animationName)
-        {
-            Animator l_animator;
-
-            if (p_uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
-            {
-                if (m_SelfPlayerController == null && m_SelfPlayerCultureController == null)
-                {
-#if DEBUG_MODE
-                    Debug.LogWarning("Cancel play animation: " + animationName + " in self cause self player not exist");
-#endif
-                    return false;
-                }
-                l_animator = m_SelfPlayerController.GetComponent<Animator>();
-            }
-            else
-            {
-                if (!m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(p_uid))
-                {
-#if DEBUG_MODE
-                    Debug.LogWarning("Cancel play animation: " + animationName + " in other cause other player not exist");
-#endif
-                    return false;
-                }
-                l_animator = m_CarriageItemSyncManager.m_PlayerDic[p_uid].GetComponent<Animator>();
-            }
-
-            if (m_animationHashListInPiority.IndexOf(Animator.StringToHash(animationName)) < 0 || m_animationHashListInPiority.IndexOf(AnimationHelper.GetAnimatorPlayingHash(l_animator)) < 0)
-            {
-#if DEBUG_MODE
-                Debug.LogWarning("Cancel play animation: " + animationName + " in: " + p_uid + " cause animation/ current playing animation not exist in hierarchy.");
-#endif
-                return false;
-            }
-
-            if (m_animationHashListInPiority.IndexOf(Animator.StringToHash(animationName)) > m_animationHashListInPiority.IndexOf(AnimationHelper.GetAnimatorPlayingHash(l_animator)))
-            {
-#if DEBUG_MODE
-                Debug.LogWarning("Cancel play animation: " + animationName + " in: " + p_uid + " cause animation hierarchy block, " + m_animationHashListInPiority.IndexOf(Animator.StringToHash(animationName)) + ">" + m_animationHashListInPiority.IndexOf(AnimationHelper.GetAnimatorPlayingHash(l_animator)));
-#endif
-                return false;
-            }
-
-#if DEBUG_MODE
-            if (p_uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
-            {
-                Debug.LogWarning("Play animation: " + animationName + " in self.");
-            }
-#endif
-
-            l_animator.Play(animationName);
-
-            return true;
-        }
-
-        #endregion
 
         private void BiaoJuLoadCallBack(ref WWW p_www, string p_path, Object p_object)
         {
@@ -287,11 +246,7 @@ namespace Carriage
             });
 
             //Play carriage music.
-            BattleConfigTemplate temp = BattleConfigTemplate.getBattleConfigTemplateByConfigId(600);
-            if (temp != null && temp.soundID != 0)
-            {
-                ClientMain.m_sound_manager.chagneBGSound(temp.soundID);
-            }
+            ClientMain.m_sound_manager.chagneBGSound(100201);
 
             //Close yindao UI.
             UIYindao.m_UIYindao.CloseUI();
@@ -313,6 +268,14 @@ namespace Carriage
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageQiangwei"));
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageLuoli"));
             LinePointPrefab = Resources.Load<GameObject>("_3D/Models/Carriage/CarriageLinePoint");
+
+            //Set variables.
+            m_AnimationHierarchyPlayer.m_PlayerManager = m_CarriageItemSyncManager;
+            m_AnimationHierarchyPlayer.m_SinglePlayerController = m_SelfPlayerController;
+            m_AnimationHierarchyPlayer.m_PiorityDic = new Dictionary<int, int>()
+                {
+                    {Animator.StringToHash("Dead"), 0}, {Animator.StringToHash("attack_4"), 1}, {Animator.StringToHash("attack_1"), 2}, {Animator.StringToHash("skill_mibao"), 3}, {Animator.StringToHash("Run"), 4}, {Animator.StringToHash("BATC"), 5}, {Animator.StringToHash("Stand"), 6}
+                };
 
             PlayerState temp = new PlayerState
             {
@@ -380,6 +343,27 @@ namespace Carriage
             if (GUILayout.Button("Test long damage num"))
             {
                 m_SelfPlayerCultureController.OnDamage(-647658086, 1, true);
+            }
+            if (GUILayout.Button("Test skip skill"))
+            {
+                if (m_CarriageMain.m_TargetId < 0) return;
+
+                var temp = m_CarriageItemSyncManager.m_PlayerDic[m_CarriageMain.m_TargetId].transform;
+
+                SpriteMove tempInfo = new SpriteMove()
+                {
+                    uid = PlayerSceneSyncManager.Instance.m_MyselfUid,
+                    posX = temp.localPosition.x,
+                    posY = temp.localPosition.y,
+                    posZ = temp.localPosition.z,
+                    dir = temp.localEulerAngles.y
+                };
+                MemoryStream tempStream = new MemoryStream();
+                QiXiongSerializer tempSer = new QiXiongSerializer();
+                tempSer.Serialize(tempStream, tempInfo);
+                byte[] t_protof;
+                t_protof = tempStream.ToArray();
+                SocketTool.Instance().SendSocketMessage(ProtoIndexes.POS_JUMP, ref t_protof);
             }
         }
 #endif

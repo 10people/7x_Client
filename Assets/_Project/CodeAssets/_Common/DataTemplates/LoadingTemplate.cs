@@ -23,6 +23,9 @@ public class LoadingTemplate : XmlLoadManager
 		PVP_LUE_DUO = 5,	// ok
 		
 		PVP_HUANG_YE = 6,	// ok
+		PVE_CHONG_LOU = 7,
+
+
 		SPECIAL_FIRST_DAY = 10,	// ok
 		COMMON = 11,		// ok
 

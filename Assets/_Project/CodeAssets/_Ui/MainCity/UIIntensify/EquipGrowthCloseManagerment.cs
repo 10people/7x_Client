@@ -24,7 +24,8 @@ public class EquipGrowthCloseManagerment : MonoBehaviour
     {
         ClientMain.m_isNewOpenFunction = false;
         if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress < 0
-           || FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress < 0)
+           || FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress < 0
+             || FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress < 0)
         {
             UIYindao.m_UIYindao.CloseUI();
         }

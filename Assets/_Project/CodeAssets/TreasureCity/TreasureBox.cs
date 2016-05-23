@@ -82,6 +82,7 @@ public class TreasureBox : MonoBehaviour {
 
 	public void JinBiFeiChu ()
 	{
+		Debug.Log ("JinBiFeiChu");
 		Global.ResourcesDotLoad ( PlayerInCityManager.GetModelResPathByRoleId (6903), ResourceLoadCallback );
 	}
 

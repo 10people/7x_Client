@@ -58,8 +58,6 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 	void InitWithGlobalData()
 	{
 		//		Debug.Log ("PlayerModelCol");
-		NGUIDebug.ClearLogs();
-		
 		LimitActivityData.Instance.RequestData();//request limit activity info.
 		
 		MiBaoGlobleData.Instance();
@@ -91,34 +89,45 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 		m_playerObj = Instantiate(p_object) as GameObject;
 		m_playerObj.SetActive(true);
 
+		Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
+		                        ResourceLoadModelCallback);
+	}
+
+	public void ResourceLoadModelCallback (ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject obj = Instantiate (p_object) as GameObject;
+		obj.transform.parent = m_playerObj.transform;
+		obj.transform.localScale = Vector3.one;
+		obj.transform.localPosition = Vector3.zero;
+
 		Vector3 pos = new Vector3 (TCityPlayerManager.m_instance.gameObject.transform.position.x,
 		                           TCityPlayerManager.m_instance.gameObject.transform.position.y,
 		                           TCityPlayerManager.m_instance.gameObject.transform.position.z);
-
-//		Debug.Log ("pos:" + pos);
+		
+		//		Debug.Log ("pos:" + pos);
 		m_playerObj.transform.position = pos;
 		m_playerObj.transform.localRotation = Quaternion.Euler(Vector3.zero);
 		m_playerObj.transform.localScale = Vector3.one * 1.5f;
-
+		
 		m_character = m_playerObj.GetComponent<CharacterController>();
-		m_animator = m_playerObj.GetComponent<Animator>();
-
+		m_animator = obj.GetComponent<Animator>();
+		
 		m_agent = m_playerObj.GetComponent<NavMeshAgent>();
 		m_agent.enabled = true;
 		
 		m_transform = m_playerObj.transform;
 		m_currenPos = m_transform.position;
-//		Debug.Log ("m_currenPos:" + m_currenPos);
+		//		Debug.Log ("m_currenPos:" + m_currenPos);
 		m_mainCamera.GetComponent<CameraRun>().target = m_playerObj.transform;
 		m_mainCamera.GetComponent<CameraRun>().setCameraPos();
-
-//		m_playerObj.AddComponent<TCityPlayerTrigger> ();
-//		TCityPlayerAuto playerAuto = m_playerObj.AddComponent<TCityPlayerAuto> ();
-//		GameObject autoObj = m_playerObj.GetComponentInChildren<SkinnedMeshRenderer> ().gameObject;
-//		playerAuto.AddAutoObj (autoObj);
-
+		
+		//		m_playerObj.AddComponent<TCityPlayerTrigger> ();
+		//		TCityPlayerAuto playerAuto = m_playerObj.AddComponent<TCityPlayerAuto> ();
+		//		GameObject autoObj = m_playerObj.GetComponentInChildren<SkinnedMeshRenderer> ().gameObject;
+		//		playerAuto.AddAutoObj (autoObj);
+		
 		SendPlayerData();
-
+		
 		StartCoroutine (ManualStart ());
 	}
 

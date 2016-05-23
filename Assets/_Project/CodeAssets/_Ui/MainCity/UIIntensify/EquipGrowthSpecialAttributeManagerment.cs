@@ -44,11 +44,11 @@ public class EquipGrowthSpecialAttributeManagerment : MonoBehaviour
     {
         if (type == 0)
         {
-            return 6;
+            return 54;
         }
         else
         {
-            return 7;
+            return 55;
         }
     }
     public void ShowRangeInfo(EquipGrowthWashManagerment.RangeInfo rangeInfo)

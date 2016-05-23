@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<HuoDong id="1" title="每日签到" desc="签到" awardDesc="极品秘宝" icon="1" type="1" buttonColor="0" buttonTitle="签到" buttonTitleComplete="今日已签到" buttonCompleteTouch="1" HuoDongStatus="1" />
+<HuoDong id="3" title="限时活动" desc="限时活动" awardDesc="限时活动" icon="3" type="1" buttonColor="0" buttonTitle="查看" buttonTitleComplete="查看" buttonCompleteTouch="1" HuoDongStatus="1" />
+<HuoDong id="4" title="敬请期待" desc="敬请期待" awardDesc="0" icon="4" type="0" buttonColor="0" buttonTitle="0" buttonTitleComplete="0" buttonCompleteTouch="0" HuoDongStatus="0" />
+</dataset>

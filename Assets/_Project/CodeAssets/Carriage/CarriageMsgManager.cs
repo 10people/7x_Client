@@ -56,7 +56,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
 
                         if (msg.result != 10)
                         {
-                            ClientMain.m_UITextManager.createText("通知已过时");
+//                            ClientMain.m_UITextManager.createText("通知已过时");
 
                             return true;
                         }
@@ -284,7 +284,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                         SafeAreaBloodReturn tempInfo = new SafeAreaBloodReturn();
                         t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                        m_RootManager.m_CarriageMain.ExecuteRecover(tempInfo);
+                        m_RootManager.m_CarriageMain.ExecuteSafeAreaRecover(tempInfo);
 
                         return true;
                     }
@@ -568,6 +568,39 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
 
                         return true;
                     }
+                //skip skill.
+                case ProtoIndexes.POS_JUMP:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        SpriteMove tempMsg = new SpriteMove();
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                        t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
+
+                        if (tempMsg.uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
+                        {
+                            if (m_RootManager.m_SelfPlayerController != null)
+                            {
+                                m_RootManager.m_SelfPlayerController.transform.localPosition = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
+                                m_RootManager.m_SelfPlayerController.transform.localEulerAngles = new Vector3(0, tempMsg.dir, 0);
+                            }
+                        }
+                        else
+                        {
+                            var temp = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.Where(item => item.Value.m_UID == tempMsg.uid);
+                            if (temp.Any())
+                            {
+                                int uID = temp.First().Key;
+                                m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[uID].transform.localPosition = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
+                                m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[uID].transform.localEulerAngles = new Vector3(0, tempMsg.dir, 0);
+                            }
+                        }
+
+                        //Update gizmos.
+                        m_RootManager.m_CarriageMain.m_MapController.UpdateGizmosPosition(tempMsg.uid, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), 0);
+
+                        return true;
+                    }
+
             }
         }
         return false;
