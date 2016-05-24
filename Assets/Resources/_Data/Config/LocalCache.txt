@@ -1,2 +1,2 @@
-Version : 0523-1742
-VersionCode : 50275
+Version : 0524-0955
+VersionCode : 50345
