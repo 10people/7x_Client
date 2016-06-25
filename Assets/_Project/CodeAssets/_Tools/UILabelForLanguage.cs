@@ -13,9 +13,4 @@ public class UILabelForLanguage : MonoBehaviour
 			tempLabel.text = LanguageTemplate.GetText(m_LanguageId);
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

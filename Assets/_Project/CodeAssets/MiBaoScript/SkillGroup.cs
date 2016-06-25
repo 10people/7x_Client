@@ -59,10 +59,6 @@ public class SkillGroup : MonoBehaviour {
 		iTween.ScaleTo (this.gameObject,iTween.Hash("scale",scale,"time",time));
 	}
 
-	void Update () {
-	
-	}
-
 	public void init()
 	{
 		//dubiao

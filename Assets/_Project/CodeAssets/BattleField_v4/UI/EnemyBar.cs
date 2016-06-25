@@ -143,7 +143,7 @@ public class EnemyBar : MonoBehaviour
 					bosBarList.Add(bar);
 				}
 
-				layerBossArmor.SetActive(focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0);
+				layerBossArmor.SetActive(focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0 && focusNode.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorRatio) > 0);
 
 				//barBoss_2.gameObject.SetActive(focusNode.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpNum) > 1);
 			}

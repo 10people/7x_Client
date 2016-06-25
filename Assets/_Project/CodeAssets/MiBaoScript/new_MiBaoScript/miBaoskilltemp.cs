@@ -35,9 +35,7 @@ public class miBaoskilltemp : MonoBehaviour {
 		Lv.text = "Lv."+mMiBaoSkillTemp.lv.ToString();
 		Icon.spriteName = mMiBaoSkillTemp.icon;
 	}
-	void Update () {
-	
-	}
+
 	public void Init()
 	{
 		Lv.text = "Lv."+mSkillInfo.level.ToString ();

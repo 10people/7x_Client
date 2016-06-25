@@ -6,6 +6,9 @@ using System.Collections;
 public class ShowTip : ScriptableObject
 {
 
+	public static TipItemData tipItemData;
+
+
 	private static int m_commonItemId;
 
 	private static string m_iconName;
@@ -14,14 +17,15 @@ public class ShowTip : ScriptableObject
 
 	private static string m_enemyDesc;
 
-
 	private static GameObject tipObject;
 
 
-	public static void showTipEnemy(string iconName, string enemyName, string enemyDesc){
+	public static void showTipEnemy(string iconName, string enemyName, string enemyDesc, TipItemData _tipItemData = null){
 		#if DEBUG_SHOW_TIP
 		Debug.Log( "showTipEnemy( " + iconName + ", " + enemyName + ", " + enemyDesc + " )" );
 		#endif
+
+		tipItemData = _tipItemData;
 
 		m_iconName = iconName;
 
@@ -58,16 +62,27 @@ public class ShowTip : ScriptableObject
 		tipObject.SetActive (true);
 		
 		TipUIControllor tipControllor = tipObject.GetComponent<TipUIControllor>();
-		
-		tipControllor.refreshDataEnemy (m_iconName, m_enemyName, m_enemyDesc);
+
+		try
+		{
+			tipControllor.refreshDataEnemy (m_iconName, m_enemyName, m_enemyDesc);
+		}
+		catch(System.Exception e)
+		{
+			Debug.LogError(e);
+
+			close();
+		}
 	}
 
-	public static void showTip(int commonItemId){
+	public static void showTip(int commonItemId, TipItemData _tipItemData = null){
 		#if DEBUG_SHOW_TIP
 		Debug.Log( "showTip( " + commonItemId + " )" );
 		#endif
 
         //Debug.Log("=========Show Tips With Id: " + commonItemId);
+
+		tipItemData = _tipItemData;
 
         bool flag = CommonItemTemplate.haveCommonItemTemplateById (commonItemId);
 
@@ -114,8 +129,17 @@ public class ShowTip : ScriptableObject
 		tipObject.SetActive (true);
 		
 		TipUIControllor tipControllor = tipObject.GetComponent<TipUIControllor>();
-		
-		tipControllor.refreshDataItem (m_commonItemId);
+
+		try
+		{
+			tipControllor.refreshDataItem (m_commonItemId);
+		}
+		catch(System.Exception e)
+		{
+			Debug.LogError(e);
+
+			close();
+		}
 	}
 
 	public static void close(){

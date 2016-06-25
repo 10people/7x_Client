@@ -13,11 +13,6 @@ public class DebugDragContainer : MonoBehaviour {
 	void Start () {
 		ResortRoot();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	void OnDrop (GameObject go){
 		Debug.Log( gameObject + ".OnDrop( " + go + " )" );

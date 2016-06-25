@@ -12,6 +12,12 @@ public class RechargeVipItem : MonoBehaviour {
 	public UIScrollBar m_vipSb;
 	public GameObject m_getBtn;
 	public UILabel m_getLabel;
+	private SparkleEffectItem m_sparkEffect;
+
+	public UISprite m_desVip;
+	public UISprite m_rewardVip;
+
+	public UILabel m_totleRecharge;
 
 	public BoxCollider m_labelDragBox;
 
@@ -19,6 +25,8 @@ public class RechargeVipItem : MonoBehaviour {
 	private GameObject m_iconSample;
 	private List<GameObject> m_rewardList = new List<GameObject> ();
 	private List<string> m_rewardStrList = new List<string> ();
+
+	private int m_maxHeigh = 300;
 
 	[HideInInspector]public List<RewardData> M_RewardDataList = new List<RewardData> ();
 
@@ -33,12 +41,16 @@ public class RechargeVipItem : MonoBehaviour {
 			m_vipDesLabel.text += (i < desLen.Length - 1 ? desLen[i] + "\n" : desLen[i]);
 		}
 
-		int desLine = m_vipDesLabel.maxLineCount; //限制11
+		m_desVip.spriteName = "v" + M_VipTemp.lv;
+		m_rewardVip.spriteName = "v" + M_VipTemp.lv;
+		m_totleRecharge.text = M_VipTemp.needNum.ToString ();
+
+		int desLine = m_vipDesLabel.height; //限制330
 
 		m_vipSc.UpdateScrollbars (true);
-		m_vipSc.enabled = desLine > 11 ? true : false;
-		m_vipSb.gameObject.SetActive (desLine > 11 ? true : false);
-		m_labelDragBox.enabled = desLine > 11 ? true : false;
+		m_vipSc.enabled = desLine > m_maxHeigh ? true : false;
+		m_vipSb.gameObject.SetActive (desLine > m_maxHeigh ? true : false);
+		m_labelDragBox.enabled = desLine > m_maxHeigh ? true : false;
 
 		m_rewardStrList.Clear ();
 		M_RewardDataList.Clear ();
@@ -58,21 +70,27 @@ public class RechargeVipItem : MonoBehaviour {
 			CreateRewardList ();
 		}
 
+		m_sparkEffect = m_getBtn.GetComponent<SparkleEffectItem> ();
+
 		if (M_VipTemp.lv <= QXComData.JunZhuInfo ().vipLv)
 		{
-			SetGetBtnState (!RechargePage.m_instance.IsRewardGet (M_VipTemp.lv));
+			m_getBtn.SetActive (true);
+			m_sparkEffect.enabled = !RechargePage.m_instance.IsRewardGet (M_VipTemp.lv);
+			QXComData.SetBtnState (m_getBtn,!RechargePage.m_instance.IsRewardGet (M_VipTemp.lv));
+			m_getLabel.text = RechargePage.m_instance.IsRewardGet (M_VipTemp.lv) ? "已 领" : "领 取";
 		}
 		else
 		{
-			m_getLabel.text = "";
+			m_sparkEffect.enabled = false;
 			m_getBtn.SetActive (false);
 		}
 	}
 
-	public void SetGetBtnState (bool isActive)
+	public void SetBtn ()
 	{
-		m_getLabel.text = isActive ? "" : MyColorData.getColorString (4,"已  领");
-		m_getBtn.SetActive (isActive);
+		m_sparkEffect.enabled = false;
+		QXComData.SetBtnState (m_getBtn,false);
+		m_getLabel.text = "已 领";
 	}
 
 	private void IconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -88,7 +106,7 @@ public class RechargeVipItem : MonoBehaviour {
 		m_rewardList = QXComData.CreateGameObjectList (m_iconSample,m_rewardStrList.Count,m_rewardList);
 		for (int i = 0;i < m_rewardList.Count;i ++)
 		{
-			if (m_rewardStrList.Count > 2)
+			if (m_rewardStrList.Count <= 2)
 			{
 				m_rewardList[i].transform.localPosition = new Vector3(i * 45 - (m_rewardStrList.Count - 1) * 22.5f,10,0);
 			}

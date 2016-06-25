@@ -14,9 +14,11 @@ public class AllianceItemManagerment : MonoBehaviour {
     public UILabel m_LabDemandMilitaryRank;
     public UISprite m_SpriteCountry;
     public List<EventIndexHandle> m_listEvent;
+    public GameObject m_ObjRed;
+    public GameObject m_ObjYellow;
     private int ItemId = 0;
-    public UILabel m_labButtonName;
-    public UILabel m_labButtonName2;
+    public UILabel m_labAlpply;
+    public UILabel m_labButtonContent;
     public delegate void OnClick_Touch(int id);
     OnClick_Touch CallBackTouch;
     public delegate void OnClick_Application(int country_id,int alliance_id);
@@ -41,23 +43,7 @@ public class AllianceItemManagerment : MonoBehaviour {
         {
             if (CallBackAppliacetion != null)
             {
-                //if (_isCanApply)
-                {
-                    //if (_Country != JunZhuData.Instance().m_junzhuInfo.guoJiaId)
-                    {
-                        CallBackAppliacetion(_Country, ItemId);
-                    }
-                    //else
-                    //{
-                    //    CallBackAppliacetion(-1, ItemId);
-                    //}
-                }
-                //else
-                //{
-                //    EquipSuoData.ShowSignal(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO)
-                //                                , LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_APPLY_HOUR)
-                //                                , "");
-                //}
+              CallBackAppliacetion(_Country, ItemId);
             }
         
         }
@@ -73,7 +59,7 @@ public class AllianceItemManagerment : MonoBehaviour {
         _Country = aii.country; 
         _isCanApply = aii.isCanApply;
         m_LabDemandLevel.text = aii.applyLevel.ToString();
-        m_LabDemandMilitaryRank.text = MilitaryRankName(aii.MilitaryRank);
+        m_LabDemandMilitaryRank.text =   MilitaryRankName(aii.MilitaryRank);
         m_SpriteCountry.spriteName = "nation_" + aii.country;
         if (!aii.isApply)
         {
@@ -81,29 +67,32 @@ public class AllianceItemManagerment : MonoBehaviour {
             {
                 if (!aii.isApply && aii.ShenPiId != 0)
                 {
-                    m_labButtonName.gameObject.SetActive(false);
-                    m_labButtonName2.gameObject.SetActive(true);
+                    m_ObjRed.SetActive(true);
+                    m_ObjYellow.SetActive(false);
+                    m_labButtonContent.text = "立即加入";
                 }
                 else
                 {
-                    m_labButtonName.gameObject.SetActive(true);
-                    m_labButtonName2.gameObject.SetActive(false);
+                    m_ObjRed.SetActive(false);
+                    m_ObjYellow.SetActive(true);
+                    m_labButtonContent.text = "申请加入";
                 }
               //      m_labButtonName.text = !aii.isApply && aii.ShenPiId == 0 ? "申请" : "立即加入";
             }
             else
             {
-                m_labButtonName.gameObject.SetActive(false);
-                m_labButtonName2.text = "成员已满";
+                m_ObjYellow.SetActive(true);
+                m_labButtonContent.text = "成员已满";
             }
         }
         else
         {
-            m_labButtonName.text = "已申请";
-            m_labButtonName2.gameObject.SetActive(false);
+            m_ObjRed.SetActive(false);
+            m_ObjYellow.SetActive(true);
+            m_labButtonContent.text = "已申请";
         }
         m_listEvent[1].GetComponent<UIButton>().enabled = aii.isApply && aii.Ren_Now >= aii.Ren_Max ? true : false;
-        m_listEvent[1].GetComponent<ButtonColorManagerment>().ButtonsControl(!aii.isApply && aii.Ren_Now < aii.Ren_Max);
+        m_listEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(!aii.isApply && aii.Ren_Now < aii.Ren_Max,1);
         m_LabName.text = "<" + aii.name + ">";
         m_LabLevel.text = aii.level.ToString();
         m_LabCountry.text = aii.Ren_Now.ToString() + "/" + aii.Ren_Max.ToString();//NameIdTemplate.GetName_By_NameId(aii.country);
@@ -127,12 +116,12 @@ public class AllianceItemManagerment : MonoBehaviour {
                 break;
             case 2:
                 {
-                    return "骑士";
+                    return "步兵";
                 }
                 break;
                       case 3:
                 {
-
+                    return "骑士";
                 }
                 break;
             case 4:

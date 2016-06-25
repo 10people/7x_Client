@@ -55,9 +55,4 @@ public class MessageFieldController : MonoBehaviour
             isInputField = false;
         }
     }
-
-    void Update()
-    {
-
-    }
 }

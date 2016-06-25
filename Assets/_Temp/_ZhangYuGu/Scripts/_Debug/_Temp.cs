@@ -7,18 +7,37 @@ using System.Collections;
 
 
 public class _Temp : MonoBehaviour {
-
+	
 	#region Mono
+
+//	private CharacterController m_controller;
+
+	public GameObject m_gb;
 
 	// Use this for initialization
 	void Start () {
-	
+//		m_controller = (CharacterController)ComponentHelper.AddIfNotExist( gameObject, typeof(CharacterController) );
+		InvokeRepeating( "ShowHitted", 1.0f, 3.0f );
+
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		UpdateGuide();
+
+	private void ShowHitted(){
+//		Debug.Log( "ShowHitted()" );
+
+		EffectTool.Instance.SetHittedEffect( m_gb );
 	}
+
+//	void OnAnimatorMove(){
+//		Animator animator = GetComponent<Animator>();
+//       
+//		if( animator != null ){
+//			Vector3 newPosition = transform.position;
+//
+//			if( animator.deltaPosition.sqrMagnitude != 0 ){
+//				m_controller.Move( animator.deltaPosition );
+//			}
+//        }
+//	}
 
 	#endregion
 
@@ -26,45 +45,11 @@ public class _Temp : MonoBehaviour {
 
 	#region Guide
 
-	public int m_guide_id = 0;
-
-	public bool m_open_guide = false;
-
-	public bool m_close_guide = false;
-
-	public bool m_log_guide = false;
-
-	private void UpdateGuide(){
-		if( m_open_guide ){
-			m_open_guide = false;
-
-			UIYindao.m_UIYindao.setOpenYindao( m_guide_id );
-
-			return;
-		}
-
-		if( m_close_guide ){
-			m_close_guide = false;
-
-			UIYindao.m_UIYindao.CloseUI();
-
-			return;
-		}
-
-		if( m_log_guide ){
-			m_log_guide = false;
-
-			Debug.Log( "Guide.State: " +  UIYindao.m_UIYindao.m_isOpenYindao + " - " + UIYindao.m_UIYindao.m_iCurId );
-		}
-	}
-
 	#endregion
 
 
 
 	#region Utilities
-
-
 
 	#endregion
 

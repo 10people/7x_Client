@@ -37,15 +37,6 @@ public class PveStarItem : MonoBehaviour {
 
 	public GameObject AwardIcon_Bg;
 
-
-	void Start () {
-	
-	}
-
-	void Update () {
-	
-	}
-
 	public void Init()
 	{
 		Star_Id = mStarInfo.starId;
@@ -75,7 +66,7 @@ public class PveStarItem : MonoBehaviour {
 
 				UiSpriteBg.gameObject.SetActive(false);
 
-				Item_Icon.spriteName = "tint_back";
+				Item_Icon.spriteName = "jianbianbgliang";
 				mBtn.enabled = true;
 			}
 			else
@@ -84,9 +75,11 @@ public class PveStarItem : MonoBehaviour {
 				
 				AlreadyGet.gameObject.SetActive(true);
 				
-				UiSpriteBg.gameObject.SetActive(true);
+				UiSpriteBg.gameObject.SetActive(false);
 
-				Item_Icon.spriteName = "Cmplete";
+				this.gameObject.GetComponent<BoxCollider>().enabled = false;
+
+				Item_Icon.spriteName = "thirdBg";
 
 				mBtn.enabled = false;
 			}

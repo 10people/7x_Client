@@ -43,7 +43,7 @@ public class TCityPlayerMove : MonoBehaviour {
 	{
 		enterScene = tempEnterScene;
 		playerAgent = GetComponent<NavMeshAgent> ();
-		pAnimator = GetComponent<Animator> ();
+		pAnimator = GetComponentInChildren<Animator> ();
 		{
 			randomBegin = true;
 			animatorTime = 0;
@@ -70,12 +70,12 @@ public class TCityPlayerMove : MonoBehaviour {
 		
 		playerAgent.Resume();
 		playerAgent.SetDestination (targetPos);
-//		Vector3 curPos = transform.position;
-//		Debug.Log ("curPos:" + curPos);
-//		Debug.Log ("Vector3.Distance (targetPos,curPos):" + Vector3.Distance (targetPos,curPos));
+		Vector3 curPos = transform.position;
+		Debug.Log ("curPos:" + curPos);
+		Debug.Log ("Vector3.Distance (targetPos,curPos):" + Vector3.Distance (targetPos,curPos));
 //		float time = Vector3.Distance (targetPos,curPos) / playerAgent.speed;
 //		Debug.Log ("time:" + time);
-//		transform.position = Vector3.Lerp (curPos,targetPos,time);
+//		transform.position = Vector3.Lerp (curPos,targetPos,Time.deltaTime * 2);
 	}
 
 	void Update()

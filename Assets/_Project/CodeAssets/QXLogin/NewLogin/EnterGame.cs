@@ -286,7 +286,8 @@ public class EnterGame : MonoBehaviour,SocketProcessor {
 		string titleStr = "服务器维护";
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 
-		string textStr = "您所选的服务器正在关闭维护中...\n请稍后再次尝试，或选择其他服务器。";
+//		string textStr = "您所选的服务器正在关闭维护中...\n请稍后再次尝试，或选择其他服务器。";
+		string textStr = LanguageTemplate.GetText (LanguageTemplate.Text.SERVER_TIPS_1);
 
 		uibox.setBox(
 			titleStr,

@@ -18,7 +18,9 @@ public class UILabelType : MonoBehaviour
 	public FontStyle m_iFontStype = FontStyle.Normal;//Font Style
 	UILabel m_UILabel;
 	// Use this for initialization
-	void OnEnable () 
+
+	public bool IsBold;
+	void Awake () 
 	{
 		init ();
 	}
@@ -30,8 +32,11 @@ public class UILabelType : MonoBehaviour
 		if( ClientMain.GetInstance() != null ){
 			m_UILabel.trueTypeFont = ClientMain.GetInstance().m_Font;
 		}
-		else{
+		else if( PrepareBundles.Instance() != null ){
 			m_UILabel.trueTypeFont = PrepareBundles.Instance().m_font;
+		}
+		else{
+			Debug.LogError( "Error, no font found." );
 		}
 
 	    m_UILabel.bitmapFont = null;
@@ -158,6 +163,8 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.effectStyle = UILabel.Effect.Outline;
 			m_UILabel.effectColor = Global.getStringColor("251102");
 			m_UILabel.effectDistance = new Vector2(1, 1);
+//			m_UILabel.spacingX = 3;
+		
 			break;
 		case 10:
 			m_UILabel.fontSize = 22;
@@ -204,6 +211,16 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.effectColor = new Color(13f/255f, 6f/255f, 1f/255f);
 			m_UILabel.effectDistance = new Vector2(1, 1);
 			break;
+		case 102://level text
+			m_UILabel.fontSize = 14;
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.applyGradient = true;
+			m_UILabel.gradientTop = new Color(254f/255f, 254f/255f, 161f/255f);
+			m_UILabel.gradientBottom = new Color(1.0f, 152f/255f, 75f/255f);
+			m_UILabel.effectStyle = UILabel.Effect.None;
+			m_UILabel.effectColor = new Color(255f/255f, 248f/255f, 217f/255f);
+			m_UILabel.effectDistance = new Vector2(1, 1);
+			break;
 		}
 		if(m_iSize != 0)
 		{
@@ -214,16 +231,22 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.fontStyle = m_iFontStype;
 		}
 	}
-
+	void Update()
+	{
+		if(IsBold )
+		{
+			if(m_UILabel.text != "")
+			{
+				m_UILabel.text = "[b]"+m_UILabel.text+"[-]";
+//				Debug.Log(m_UILabel.text);
+				IsBold = false;
+				m_UILabel.spacingX = 3;
+			}
+		}
+	}
 	public void setType(int type)
 	{
 		m_iType = type;
 		init();
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-	
 	}
 }

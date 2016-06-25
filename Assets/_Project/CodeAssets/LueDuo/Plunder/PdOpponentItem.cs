@@ -39,12 +39,23 @@ public class PdOpponentItem : MonoBehaviour {
 		junZhuInfo = tempInfo;
 		
 		headIcon.spriteName = "PlayerIcon" + tempInfo.roleId;
-		nation.spriteName = "nation_" + tempInfo.guojiaId;
-		
+		nation.spriteName = "";
+
+//		if (tempInfo.guojiaId > 0)
+//		{
+//			nation.SetDimensions (31,42);
+//			nation.transform.localScale = Vector3.one;
+//		}
+//		else
+//		{
+//			nation.SetDimensions (100,99);
+//			nation.transform.localScale = Vector3.one * 0.4f;
+//		}
+
 		level.text = tempInfo.level.ToString ();
 		nameLabel.text = tempInfo.name;
 		
-		zhanLiLabel.text = MyColorData.getColorString (3,"战力：" + tempInfo.zhanli);
+		zhanLiLabel.text = "战力：" + tempInfo.zhanli;
 		victory.text = MyColorData.getColorString (4,"可掠夺：" + QXComData.MoneyName (QXComData.MoneyType.JIFEN)+ "+" + tempInfo.gongjin);
 
 		//Debug.Log ("HP:" + tempInfo.remainHp + "||" + tempInfo.shengMingMax);
@@ -59,11 +70,15 @@ public class PdOpponentItem : MonoBehaviour {
 		protectTime = tempInfo.leftProtectTime;
 		StopCoroutine ("ProtectTimeShow");
 		StartCoroutine ("ProtectTimeShow");
-
-		UISprite plunderSprite = plunderHandler.GetComponent<UISprite> ();
-		plunderSprite.color = protectTime <= 0 ? Color.white : Color.gray;
-		UILabel plunderLabel = plunderHandler.GetComponentInChildren<UILabel> ();
-		plunderLabel.color = protectTime <= 0 ? Color.white : Color.gray;
+//		Debug.Log ("lianmeng:" + junZhuInfo.lianMeng + "||" + AllianceData.Instance.g_UnionInfo.name);
+		if (PlunderPage.plunderPage.M_CurAllianceId == AllianceData.Instance.g_UnionInfo.id)
+		{
+			QXComData.SetBtnState (plunderHandler.gameObject,false);
+		}
+		else
+		{
+			QXComData.SetBtnState (plunderHandler.gameObject,protectTime <= 0 ? true : false);
+		}
 
 		plunderHandler.m_click_handler -= PlunderHandlerClickBack;
 		plunderHandler.m_click_handler += PlunderHandlerClickBack;
@@ -112,9 +127,9 @@ public class PdOpponentItem : MonoBehaviour {
 
 	void PlunderHandlerClickBack (GameObject obj)
 	{
-		if (protectTime > 0)
+		if (PlunderPage.plunderPage.M_CurAllianceId == AllianceData.Instance.g_UnionInfo.id)
 		{
-			//冷却cd中
+			ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,junZhuInfo.junZhuId == QXComData.JunZhuInfo ().id ? "无法掠夺自己" : "不能掠夺自己的盟友"));
 		}
 		else
 		{

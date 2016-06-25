@@ -15,7 +15,7 @@ public class TreasureCityUITL : MonoBehaviour ,SocketListener {
 	
 	public UILabel m_playerName;
 	public UILabel m_playrLevel;
-	public UILabel m_playrVipLevel;
+	public UISprite m_playrVip;
 	
 	public UILabel m_leagueName;
 
@@ -23,8 +23,6 @@ public class TreasureCityUITL : MonoBehaviour ,SocketListener {
 	public UISprite m_SpriteExp;
 	
 	public UILabel m_ZhanLiLabel;
-
-	public List<EventHandler> topLeftHandlerList = new List<EventHandler>();
 
 	private bool m_isLianmeng = true;
 
@@ -47,29 +45,23 @@ public class TreasureCityUITL : MonoBehaviour ,SocketListener {
 		//player info
 		m_UISpriteHeroIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id;
 		m_playerName.text = JunZhuData.Instance().m_junzhuInfo.name;
-		m_playrLevel.text = "Lv" + JunZhuData.Instance().m_junzhuInfo.level.ToString();
-		m_playrVipLevel.text = "V" + JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
+		m_playrLevel.text = JunZhuData.Instance().m_junzhuInfo.level.ToString();
+		m_playrVip.spriteName = "v" + JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
 		NationSprite.spriteName = "nation_" + JunZhuData.Instance().m_junzhuInfo.guoJiaId.ToString();
-		m_SpriteExp.SetDimensions(Global.getBili(122, (float)JunZhuData.Instance().m_junzhuInfo.exp, (float)JunZhuData.Instance().m_junzhuInfo.expMax), 8);
+		m_SpriteExp.fillAmount = (float)JunZhuData.Instance().m_junzhuInfo.exp / (float)JunZhuData.Instance().m_junzhuInfo.expMax;
 		//m_SpriteExp
 		m_ZhanLiLabel.text = JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString();
-
-//		foreach (EventHandler handler in topLeftHandlerList)
-//		{
-//			handler.m_click_handler -= TopLeftHandlerClickBack;
-//			handler.m_click_handler += TopLeftHandlerClickBack;
-//		}
 	}
 
 	public void RefreshAllianceInfo()
 	{
-		Debug.Log ("AllianceData.Instance.IsAllianceNotExist:" + AllianceData.Instance.IsAllianceNotExist);
+//		Debug.Log ("AllianceData.Instance.IsAllianceNotExist:" + AllianceData.Instance.IsAllianceNotExist);
 		//alliance exist
 		if (!AllianceData.Instance.IsAllianceNotExist)
 		{
 			m_isLianmeng = true;
 
-			Debug.Log ("AllianceData.Instance.g_UnionInfo.name:" + AllianceData.Instance.g_UnionInfo.name);
+//			Debug.Log ("AllianceData.Instance.g_UnionInfo.name:" + AllianceData.Instance.g_UnionInfo.name);
 
 			//try set alliance name
 			if (AllianceData.Instance.g_UnionInfo != null && AllianceData.Instance.g_UnionInfo.name != null)
@@ -79,6 +71,7 @@ public class TreasureCityUITL : MonoBehaviour ,SocketListener {
 		}
 		else
 		{
+//			Debug.Log ("无联盟");
 			m_isLianmeng = false;
 			
 			m_leagueName.text = "无联盟";
@@ -130,10 +123,10 @@ public class TreasureCityUITL : MonoBehaviour ,SocketListener {
 			JunZhuInfoRet tempInfo = new JunZhuInfoRet();
 			tempInfo = QXComData.ReceiveQxProtoMessage (p_message,tempInfo) as JunZhuInfoRet;
 
-			JunZhuData.Instance().m_junzhuInfo = tempInfo;
-			
-			RefreshJunZhuInfo();
-			RefreshAllianceInfo();
+		//	JunZhuData.Instance().m_junzhuInfo = tempInfo;
+			Debug.Log ("tempInfo:" + tempInfo.lianMengId);
+            JunZhuData.Instance().SetInfo(tempInfo);
+            RefreshJunZhuInfo();
 
 			return true;
 		}

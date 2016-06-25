@@ -60,6 +60,18 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     public GameObject TopLeftManualAnchor;
     public GameObject TopRightManualAnchor;
 
+    public UILabel m_Mind;
+    private string m_mind1;
+    private string m_mind2;
+
+    public static List<int> Itemids = new List<int>();
+
+    [HideInInspector]
+    public int myPosition;
+
+    [HideInInspector]
+    public int TheyPosition;
+
     public class ExchangeInfo
     {
         public int itemId;
@@ -116,14 +128,14 @@ public class OldBookWindow : MonoBehaviour, SocketListener
             case Mode.OldBookSelf:
                 ShowSelfOldBookBTN.gameObject.SetActive(false);
                 ShowFriendsOldBookBTN.gameObject.SetActive(true);
-
-                //init old book fragment list.
+                m_Mind.text = m_mind1;
+                Itemids.Clear();
                 InfoLabel.SetActive(false);
                 InitOldBookSelf();
                 break;
             case Mode.ExchangeBoxOther:
                 ShowSelfOldBookBTN.gameObject.SetActive(true);
-
+                m_Mind.text = m_mind2;
                 ShowFriendsOldBookBTN.gameObject.SetActive(false);
                 //init others' exchange box list.
                 SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_HUAN_WU_LIST);
@@ -197,8 +209,21 @@ public class OldBookWindow : MonoBehaviour, SocketListener
             m_OldBookSelfControllerList[i].Init();
         }
 
+        m_OldBookSelfControllerList = m_OldBookSelfControllerList.OrderBy(item => item.NumList.Count(item2 => item2 == 0)).ToList();
+
+        for (int i = 0; i < 5; i++)
+        {
+            m_OldBookSelfControllerList[i].gameObject.name = ("_" + i);
+        }
+
+        if (m_OldBookSelfControllerList.All(item => item.NumList.Contains(0)))
+        {
+            //Remove red alert
+            PushAndNotificationHelper.SetRedSpotNotification(500050, false);
+            NewAlliancemanager.Instance().Refreshtification();
+        }
         //reposition
-        m_Grid.cellHeight = OldBookSelfPrefab.GetComponent<UISprite>().height;
+        m_Grid.cellHeight = OldBookSelfPrefab.GetComponent<UISprite>().height + 5f;
 
         m_Grid.Reposition();
 
@@ -231,6 +256,11 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         if (ExchangeOtherPrefab == null)
         {
             ExchangeOtherPrefab = loadedObject as GameObject;
+        }
+
+        if (ExchangeOtherInfoList != null)
+        {
+            ExchangeOtherInfoList = ExchangeOtherInfoList.Where(item => (int.Parse(item.slot1) != 0) || (int.Parse(item.slot2) != 0) || (int.Parse(item.slot3) != 0) || (int.Parse(item.slot4) != 0) || (int.Parse(item.slot5) != 0)).ToList();
         }
 
         if (ExchangeOtherInfoList == null || ExchangeOtherInfoList.Count == 0)
@@ -292,8 +322,44 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     /// </summary>
     public void CheckExchange()
     {
+        Itemids.Clear();
         if (MyToExchange != null && OtherToExchange != null)
         {
+            if (OtherToExchange.itemId == MyToExchange.itemId)
+            {
+                //ClientMain.m_UITextManager.createText("您所选的两个物品残简，不能交换！");
+                m_ExchangeSelfController.IconSampleManagerList.ForEach(manager => manager.SelectFrameSprite.gameObject.SetActive(false));
+                ExchangeOtherControllerList.ForEach(
+                    controller =>
+                    controller.IconSampleManagerList.ForEach(
+                    manager => manager.SelectFrameSprite.gameObject.SetActive(false)));
+                MyToExchange = null;
+                OtherToExchange = null;
+                myPosition = 0;
+                TheyPosition = 0;
+                return;
+            }
+
+            ItemTemp mItemtempother = ItemTemp.getItemTempById(OtherToExchange.itemId);
+            ItemTemp mItemtempmyself = ItemTemp.getItemTempById(MyToExchange.itemId);
+            if (mItemtempother.itemType != mItemtempmyself.itemType)
+            {
+                string m_mind3 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCEHOUSE_DESC4);//交换失败
+                ClientMain.m_UITextManager.createText(m_mind3);
+                //				RefreshGrid();
+                //				m_ExchangeSelfController.RefreshExchangeBoxSelf();
+                m_ExchangeSelfController.IconSampleManagerList.ForEach(manager => manager.SelectFrameSprite.gameObject.SetActive(false));
+                ExchangeOtherControllerList.ForEach(
+                    controller =>
+                    controller.IconSampleManagerList.ForEach(
+                    manager => manager.SelectFrameSprite.gameObject.SetActive(false)));
+                MyToExchange = null;
+                OtherToExchange = null;
+                myPosition = 0;
+                TheyPosition = 0;
+                return;
+            }
+
             ExchangeItem temp = new ExchangeItem
             {
                 selfIdx = MyToExchange.boxId,
@@ -303,7 +369,12 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                 selfItemId = MyToExchange.itemId.ToString()
             };
 
-            SocketHelper.SendQXMessage(temp, ProtoIndexes.C_HUAN_WU_EXCHANGE);
+            Itemids.Add(OtherToExchange.itemId);
+            Itemids.Add(MyToExchange.itemId);
+            Itemids.Add(OtherToExchange.boxId);
+            Itemids.Add(MyToExchange.boxId);
+
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.C_HUAN_WU_EXCHANGE, ProtoIndexes.S_HUAN_WU_EXCHANGE);
 
             MyToExchange = null;
             OtherToExchange = null;
@@ -321,6 +392,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         {
             OldBookMode = Mode.OldBookSelf;
             RefreshUI();
+            m_Mind.text = m_mind1;
         }
         else
         {
@@ -340,10 +412,16 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     {
         OldBookMode = Mode.ExchangeBoxOther;
         RefreshUI();
+        m_Mind.text = m_mind2;
     }
 
     void OnEnable()
     {
+        m_mind1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCEHOUSE_DESC2);//"点击古卷图标，可将多余古卷放入换物箱";
+        m_mind2 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCEHOUSE_DESC3);//"选择对方换物箱内的古卷，再点击自己换物箱内的古卷，即可完成交换";
+                                                                                      //		m_mind3 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCEHOUSE_DESC4);//交换失败
+                                                                                      //		ClientMain.m_UITextManager.createText (m_mind3);
+
         ShowSelfOldBookBTN.onClick = OnShowSelfClick;
         CloseBTN.onClick = OnCloseClick;
         ShowFriendsOldBookBTN.onClick = OnShowFriendsClick;
@@ -381,7 +459,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         SocketTool.RegisterSocketListener(this);
 
         MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
-        MainCityUI.setGlobalTitle(TopLeftManualAnchor, "古卷", 0, 0);
+        MainCityUI.setGlobalTitle(TopLeftManualAnchor, "联盟小屋", 0, 0);
     }
 
     void OnDestroy()
@@ -389,12 +467,14 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         SocketTool.UnRegisterSocketListener(this);
     }
 
+    public List<BagItem> m_CombineBagItemList = new List<BagItem>();
+
     private void OnExchangeFailCallBack(ref WWW www, string path, Object loadedObject)
     {
         UIBox uibox = (Instantiate(loadedObject) as GameObject).GetComponent<UIBox>();
         uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
         uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.EXCHANG_FAIL_1),
-            null, LanguageTemplate.GetText(LanguageTemplate.Text.EXCHANG_FAIL_2),
+             LanguageTemplate.GetText(LanguageTemplate.Text.EXCHANG_FAIL_2), null,
             null,
             LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
             null);
@@ -451,12 +531,19 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
                     if (exchangeItemResult.code == 0)
                     {
-                        //                        Debug.Log("Old book fragment exchange succeed.");
+                        //succeed.
+                        ClientMain.m_UITextManager.createText(LanguageTemplate.GetText(7005));
                         RefreshUI();
                     }
                     else if (exchangeItemResult.code == 2)
                     {
                         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnExchangeFailCallBack);
+                    }
+                    else if (exchangeItemResult.code == 3)
+                    {
+                        string m_mind3 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCEHOUSE_DESC4);//交换失败
+                        ClientMain.m_UITextManager.createText(m_mind3);
+                        RefreshUI();
                     }
                     return true;
                 //combine old boook result
@@ -466,7 +553,12 @@ public class OldBookWindow : MonoBehaviour, SocketListener
                     ExCanJuanJiangLi oldBookCombine = new ExCanJuanJiangLi();
                     t_qx4.Deserialize(t_tream4, oldBookCombine, oldBookCombine.GetType());
 
+                    //Show combine succeed effect.
+                    List<RewardData> tempList = m_CombineBagItemList.Select(item => new RewardData(item.itemId, item.cnt)).ToList();
+                    GeneralRewardManager.Instance().CreateReward(tempList);
+
                     RefreshGrid();
+
                     return true;
                 //bag data changed.
                 case ProtoIndexes.S_BagInfo:
@@ -515,8 +607,8 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         }
         return false;
     }
-    private float totalValueBar2;
-    private float currentValueBar2;
+    private float totalValueBar;
+    private float currentValueBar;
 
     #region House Exp
 
@@ -533,14 +625,15 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
     void SetHouseExp(HouseExpInfo mmHouseExpInfo)
     {
-        totalValueBar2 = mmHouseExpInfo.max;
-        currentValueBar2 = mmHouseExpInfo.cur;
-        mSlider.value = currentValueBar2 / totalValueBar2;
+        totalValueBar = mmHouseExpInfo.max;
+        currentValueBar = mmHouseExpInfo.cur;
+        mSlider.value = currentValueBar / totalValueBar;
         MaxExp.text = mmHouseExpInfo.max.ToString();
         CurExp.text = mmHouseExpInfo.cur.ToString();
 
-        LingQuBtn.SetActive(currentValueBar2 > 0);
-        m_ReceiveRedAlert.gameObject.SetActive(currentValueBar2 >= totalValueBar2);
+        LingQuBtn.SetActive(currentValueBar > 0);
+        //m_ReceiveRedAlert.gameObject.SetActive(currentValueBar >= totalValueBar / 2);
+        m_ReceiveRedAlert.gameObject.SetActive(false);
 
         var temp = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_Type_And_Level(301, mmHouseExpInfo.kejiLevel);
         HouseTechNameLabel.text = temp.name;
@@ -548,15 +641,15 @@ public class OldBookWindow : MonoBehaviour, SocketListener
 
         if (mmHouseExpInfo.kejiLevel > 0)
         {
-            HouseTechAdditionLabel.text = "增加小屋" + temp.value1 + "%经验获取速度\n增加" + temp.value2 + "点经验存储上限";
+            HouseTechAdditionLabel.text = "增加" + temp.value1 + "%经验获取速度\n增加" + temp.value2 + "点经验存储上限";
         }
         else
         {
-            HouseTechAdditionLabel.text = "目前未受到科技加成";
+            HouseTechAdditionLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCEHOUSE_DESC1);//"升级联盟科技\n【鲁班工艺】\n经验产生出可获加成";
         }
 
         HouseTechAddition2Label.text = "每小时产出" + (temp.value2 / 100f + 1) * FangWuTemplate.GetFangWuTemplateByLevel(1).produceSpeed +
-"点角色经验";
+"点君主经验";
     }
 
     public void LingQu()
@@ -567,7 +660,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         PushAndNotificationHelper.SetRedSpotNotification(600800, false);
         NewAlliancemanager.Instance().Refreshtification();
 
-        var temp = new RewardData(900006, (int)currentValueBar2);
+        var temp = new RewardData(900006, (int)currentValueBar);
         GeneralRewardManager.Instance().CreateReward(temp);
 
         //Close guide.

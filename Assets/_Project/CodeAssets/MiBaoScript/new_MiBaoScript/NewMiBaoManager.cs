@@ -9,6 +9,11 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
+	public bool isOpenMiBaoTempInfo = false;
+
 	public UILabel JunZhuZhanLi;
 
 	public mFixUniform mmFixUniform;
@@ -72,6 +77,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	public UISprite OPenSkillICon1;
 	public UISprite OPenSkillICon2;
 	public UIScrollView mUIscrolview;
+	
 	public static NewMiBaoManager Instance()
 	{
 		if (!mMiBaoData)
@@ -85,10 +91,15 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	void Awake()
 	{
 		SocketTool.RegisterSocketListener(this);
+		{
+			UIWindowEventTrigger.SetOnTopDelegate( gameObject, ShowMiBaoYInDao );
+		}
 		EnergyDetailLongPress1.LongTriggerType = NGUILongPress.TriggerType.Press;
 		EnergyDetailLongPress1.NormalPressTriggerWhenLongPress = false;
 		EnergyDetailLongPress1.OnLongPressFinish = OnCloseDetail;
 		EnergyDetailLongPress1.OnLongPress = OnEnergyDetailClick1;
+
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "将魂", 0, 0);
 	}
 	private void OnCloseDetail(GameObject go)
 	{
@@ -108,9 +119,10 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 	void Start () {
 	
+		isOpenMiBaoTempInfo = false;
 		TaskData.Instance.m_DestroyMiBao = true;
 		Init ();
-		ShowMiBaoYInDao ();
+		//ShowMiBaoYInDao ();
 	}
 
 	void OnEnable()
@@ -135,7 +147,12 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		}
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 
-		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
+		m_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
+		mtime = m_MiBaoInfo.remainTime;
+		InitData();
+		StopCoroutine("showTime");
+		StartCoroutine("showTime");
+		//SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ,ProtoIndexes.S_MIBAO_INFO_RESP.ToString());
 	}
 	public bool OnSocketEvent(QXBuffer p_message)
 	{
@@ -154,7 +171,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				t_qx.Deserialize(t_stream, MiBaoInfo, MiBaoInfo.GetType());
 
 				m_MiBaoInfo = MiBaoInfo;
-				Debug.Log("========1");
+//				Debug.Log("========1");
 				mtime = m_MiBaoInfo.remainTime;
 
 //				Debug.Log("将魂信息返回！");
@@ -200,19 +217,15 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		
 				if(mMiBaoDealSkillResp.message == 0)
 				{
-//					Debug.Log ("激活技能成功");
-					OPenSkillEffect.SetActive(true);
-					UIYindao.m_UIYindao.CloseUI ();
-					int x   =  MaxId;
-					if(x < 1)
+					Debug.Log ("激活技能成功");
+//					OPenSkillEffect.SetActive(true);
+					if(OPenSkillEffect == null)
 					{
-						x = 1;
+						Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_SECRET ),Load_OPenSkillEffect);
 					}
-					//100108
-					//620215
-					MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(x);
-					OPenSkillICon1.spriteName =mMiBaoskill.icon;
-					OPenSkillICon2.spriteName =mMiBaoskill.icon;
+					UIYindao.m_UIYindao.CloseUI ();
+
+					Closeffect();
 				}
 				else{
 //					Debug.Log ("碎片不足");
@@ -230,11 +243,55 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		
 		return false;
 	}
+	void Load_OPenSkillEffect(ref WWW p_www,string p_path, Object p_object)//将魂等级不足回调函数
+	{
+		OPenSkillEffect = (GameObject)Instantiate(p_object);
+		MainCityUI.TryAddToObjectList(OPenSkillEffect);
+		int x   =  MaxId < 1?1:MaxId ;
+		
+		//100108
+		//620215
+		MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(x);
 
+		OpenMiBaioskillManger mOpenMiBaioskillManger = OPenSkillEffect .GetComponent<OpenMiBaioskillManger>();
+
+		mOpenMiBaioskillManger.m_SkillName.spriteName = mMiBaoskill.id.ToString();
+		switch(x)
+		{
+		case 1:
+			mOpenMiBaioskillManger.mSkillDesc.text = LanguageTemplate.GetText(LanguageTemplate.Text.JINHUNSKILL_DESC1);
+			break;
+		case 2:
+			mOpenMiBaioskillManger.mSkillDesc.text = LanguageTemplate.GetText(LanguageTemplate.Text.JINHUNSKILL_DESC2);
+			break;
+		case 3:
+			mOpenMiBaioskillManger.mSkillDesc.text = LanguageTemplate.GetText(LanguageTemplate.Text.JINHUNSKILL_DESC3);
+			break;
+		case 4:
+			mOpenMiBaioskillManger.mSkillDesc.text = LanguageTemplate.GetText(LanguageTemplate.Text.JINHUNSKILL_DESC4);
+			break;
+		case 5:
+			mOpenMiBaioskillManger.mSkillDesc.text = LanguageTemplate.GetText(LanguageTemplate.Text.JINHUNSKILL_DESC5);
+			break;
+		case 6:
+			mOpenMiBaioskillManger.mSkillDesc.text = LanguageTemplate.GetText(LanguageTemplate.Text.JINHUNSKILL_DESC6);
+			break;
+		case 7:
+			mOpenMiBaioskillManger.mSkillDesc.text = LanguageTemplate.GetText(LanguageTemplate.Text.JINHUNSKILL_DESC7);
+			break;
+		default:
+			break;
+			
+		}
+		// mMiBaoskill.id.ToString();
+		mOpenMiBaioskillManger.m_skillIcon1.spriteName = mMiBaoskill.icon;
+		mOpenMiBaioskillManger.m_skillIcon2.spriteName = mMiBaoskill.icon;
+		mOpenMiBaioskillManger.Init ();
+	}
 	public void CloseOPenEffect()
 	{
 		UI3DEffectTool.ClearUIFx (OPenSkillICon1.gameObject);
-		OPenSkillEffect.SetActive(false);
+//		OPenSkillEffect.SetActive(false);
 	}
 	int mtime;
 	IEnumerator showTime()
@@ -301,7 +358,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 			if(ActiveMiBaoList.Count >= mMiBaoskill.needNum)
 			{
 				string mstr = "当前无双技可解锁";
-				LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
+				LockofMiBaonum.text = mstr;
 				OpenLockBtn.SetActive(true);
 				NuqiObg.SetActive(false);
 				Closeffect();
@@ -322,7 +379,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				string mstr2 = "再激活 ";
 				string mstr3 = " 个将魂可解锁该技能";
 				PushAndNotificationHelper.SetRedSpotNotification (610, false);
-				LockofMiBaonum.text = MyColorData.getColorString(10,mstr2)+MyColorData.getColorString(5,mstr1)+MyColorData.getColorString(10,mstr3);
+				LockofMiBaonum.text = mstr2+MyColorData.getColorString(5,mstr1)+mstr3;
 			}
 		
 			if(!MiBao_TempInfo.activeInHierarchy)
@@ -363,7 +420,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 				MaxId = 7;
 				//AllMiBaoActive.SetActive(true);
 				string mstr ="无双技已全部解锁";
-				LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
+				LockofMiBaonum.text = mstr;
 				mLock.SetActive(false);
 
 				MiBaoSkillTemp mMiBaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(MaxId);
@@ -426,7 +483,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 					string mstr = "当前无双技可解锁";
 					Closeffect();
 					OPeneffect();
-					LockofMiBaonum.text = MyColorData.getColorString(10,mstr);
+					LockofMiBaonum.text = mstr;
 				}
 				else
 				{
@@ -442,7 +499,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 					string mstr3 = " 个将魂可解锁该技能";
 					Closeffect();
 					string mstr1 = (mMiBaoskill.needNum -ActiveMiBaoList.Count).ToString();
-					LockofMiBaonum.text = MyColorData.getColorString(10,mstr2)+MyColorData.getColorString(5,mstr1)+MyColorData.getColorString(10,mstr3);
+					LockofMiBaonum.text = mstr2+MyColorData.getColorString(5,mstr1)+mstr3;
 				}
 				if(!MiBao_TempInfo.activeInHierarchy)
 				{
@@ -465,8 +522,11 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 	public void OPeneffect()
 	{
-		int effectid = 620224;
-		UI3DEffectTool.ShowBottomLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillIcon.gameObject,EffectIdTemplate.GetPathByeffectId(620224));
+//		if(!OPenSkillEffect.activeInHierarchy)
+//		{
+			int effectid = 620224;
+			UI3DEffectTool.ShowBottomLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillIcon.gameObject,EffectIdTemplate.GetPathByeffectId(620224));
+//		}
 	}
 
 	
@@ -481,8 +541,12 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	bool yindaois_open = false;
 	void ShowMiBaoYInDao()
 	{
-//		Debug.Log (FreshGuide.Instance().IsActive(100330));
+		Debug.Log ("ShowMiBaoYInDao First");
 //		Debug.Log (TaskData.Instance.m_TaskInfoDic[100330].progress);
+		if(MiBao_TempInfo.activeInHierarchy)
+		{
+			return;
+		}
 		if(UIYindao.m_UIYindao.m_isOpenYindao)
 		{
 			CityGlobalData.m_isRightGuide = false;
@@ -500,7 +564,7 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		}
 		if(FreshGuide.Instance().IsActive(100330)&& TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
 		{
-			//Debug.Log("Make one mibao ");
+//			Debug.Log("Make one mibao ");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100330];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
 			mUIscrolview.enabled = false;
@@ -900,12 +964,14 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 	public void ShowMiBaoDeilInf( MibaoInfo mMiBaoifon)
 	{
-		First_MiBao_UI.SetActive (false);
+
 		MiBao_TempInfo.SetActive (true);
 		MiBaoDesInfo mMiBaodes = MiBao_TempInfo.GetComponent<MiBaoDesInfo>();
 		mMiBaodes.ShowmMiBaoinfo = mMiBaoifon;
+		First_MiBao_UI.SetActive (false);
 		mMiBaodes.InitLevel ();
 		mMiBaodes.Init();
+
 	}
 
 	public void HelpBtn()

@@ -30,6 +30,8 @@ public class ModelTemplate : XmlLoadManager
 
 	public int attackCount;
 
+	public bool beatdownable;
+
 
 	public static List<ModelTemplate> m_templates = new List<ModelTemplate>();
 
@@ -120,6 +122,9 @@ public class ModelTemplate : XmlLoadManager
 
 				t_reader.MoveToNextAttribute();
 				t_template.attackCount = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.beatdownable = (int.Parse(t_reader.Value) != 0);
 			}
 			
 			//			t_template.Log();

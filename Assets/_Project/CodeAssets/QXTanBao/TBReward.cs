@@ -137,7 +137,7 @@ public class TBReward : MonoBehaviour {
 					break;
 				}
 				m_rewardDes.transform.localPosition = new Vector3(0,posY,0);
-				m_rewardDes.text = "获得[cd02d8]" + (higher ? "高级" : "初级") + "武器强化石[-]"
+				m_rewardDes.text = "获得[cd02d8]" + (higher ? "中级" : "初级") + "武器强化石[-]"
 					+ QXComData.yellow + "x" + num + "[-]，并赠送";
 
 				CreateTBReward ();
@@ -295,29 +295,32 @@ public class TBReward : MonoBehaviour {
 
 	#region ShowMiBaoInfo
 	private Award rewardInfo;
+	public GameObject m_mainCamera;
 	public void ShowMiBaoCard (Award tempInfo)
 	{
 		rewardInfo = tempInfo;
 //		Debug.Log ("tempInfo.itemId:" + tempInfo.itemId);
 //		Debug.Log ("tempInfo.itemNumber:" + tempInfo.itemNumber);
-		RewardData data;
-		if (tempInfo.pieceNumber > 0)
-		{
-			data = new RewardData (tempInfo.itemId,tempInfo.itemNumber,tempInfo.miBaoStar,ShowSuiPianInfo);
-		}
-		else
-		{
-			data = new RewardData (tempInfo.itemId,tempInfo.itemNumber,tempInfo.miBaoStar,CloseShowMiBao);
-		}
+		RewardData data = new RewardData (tempInfo.itemId,tempInfo.itemNumber,tempInfo.miBaoStar,CloseShowMiBao);
+		data.m_isNew = tempInfo.pieceNumber > 0 ? false : true;
+		data.m_cameraObj = m_mainCamera;
+//		if (tempInfo.pieceNumber > 0)
+//		{
+//			data = new RewardData (tempInfo.itemId,tempInfo.itemNumber,tempInfo.miBaoStar,ShowSuiPianInfo);
+//		}
+//		else
+//		{
+//			data = new RewardData (tempInfo.itemId,tempInfo.itemNumber,tempInfo.miBaoStar,CloseShowMiBao);
+//		}
 		GeneralRewardManager.Instance().CreateSpecialReward (data);
 	}
 
 	void ShowSuiPianInfo ()
 	{
-		TBMiBaoSuiPian.tbSuiPian.GetMiBaoSuiPianInfo (rewardInfo);
+//		TBMiBaoSuiPian.m_instance.GetMiBaoSuiPianInfo (rewardInfo);
 	}
 
-	public void CloseShowMiBao ()
+	void CloseShowMiBao ()
 	{
 		IsShowMiBao = false;
 

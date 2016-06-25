@@ -102,7 +102,7 @@ public class PlayerNameManager : MonoBehaviour
 			tempName.m_ObjController.GetComponent<UIWidget>().m_camera_oriented = true;
 			tempName.m_ObjController.transform.localScale = new Vector3(_ScaleSize, _ScaleSize, 1.0f);
 			tempName.IsPlayer = _PlayerNameInfo[0].roleId == 600 ? false : true;
-			//tempName.Init(_PlayerNameInfo[0].senderName, "", "","",0);
+			tempName.Init(_PlayerNameInfo[0].senderName, _PlayerNameInfo[0].allianceName, _PlayerNameInfo[0].chengHao.ToString (),_PlayerNameInfo[0].vipLevel.ToString (),_PlayerNameInfo[0].zhiWu);
             m_playrNameDic.Add(_PlayerNameInfo[0].uid, tempPlayerName);
             _PlayerNameInfo.RemoveAt(0);
        
@@ -154,7 +154,11 @@ public class PlayerNameManager : MonoBehaviour
     {
         if (m_playrNameDic.ContainsKey(u_info._UID))
         {
-            u_info._Name = m_playrNameDic[u_info._UID].GetComponent<PlayerNameInCity>().m_NameSend;
+         //   u_info._Name = m_playrNameDic[u_info._UID].GetComponent<PlayerNameInCity>().m_NameSend;
+            UpdateOtherPlayerInfo(u_info);
+        }
+        else if (u_info._UID == PlayersManager.m_Self_UID)
+        {
             UpdateOtherPlayerInfo(u_info);
         }
     }
@@ -167,7 +171,7 @@ public class PlayerNameManager : MonoBehaviour
         }
         else if (u_info._UID == PlayersManager.m_Self_UID)
         {
-            if (string.IsNullOrEmpty(u_info._Greet))
+            if (!string.IsNullOrEmpty(u_info._Greet))
             {
               m_ObjSelfName.GetComponent<PlayerNameInCity>().UpdateZH(u_info._Greet);
             }
@@ -319,7 +323,7 @@ public class PlayerNameManager : MonoBehaviour
         tempPlayerName.GetComponent<PlayerNameInCity>().m_ObjController.transform.localScale = new Vector3(scale, scale, 1.0f);
         PlayersManager.OtherPlayerInfo head_info = new PlayersManager.OtherPlayerInfo();
         head_info._Name = JunZhuData.Instance().m_junzhuInfo.name;
-        if (AllianceData.Instance.g_UnionInfo != null)
+        if (!AllianceData.Instance.IsAllianceNotExist)
         {
             head_info._AllianceName = AllianceData.Instance.g_UnionInfo.name;
         }
@@ -329,7 +333,7 @@ public class PlayerNameManager : MonoBehaviour
         }
         head_info._Designation = JunZhuData.m_iChenghaoID.ToString();
         head_info._VInfo = JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
-        if (AllianceData.Instance.g_UnionInfo != null)
+        if (!AllianceData.Instance.IsAllianceNotExist)
         {
             head_info._Duty = AllianceData.Instance.g_UnionInfo.identity;
         }
@@ -341,17 +345,19 @@ public class PlayerNameManager : MonoBehaviour
     {
         PlayersManager.OtherPlayerInfo head_info = new PlayersManager.OtherPlayerInfo();
         head_info._Name = JunZhuData.Instance().m_junzhuInfo.name;
-        if (AllianceData.Instance.g_UnionInfo != null)
+    
+        if (!AllianceData.Instance.IsAllianceNotExist)
         {
             head_info._AllianceName = AllianceData.Instance.g_UnionInfo.name;
         }
         else
         {
+  
             head_info._AllianceName = "";
         }
         head_info._Designation = JunZhuData.m_iChenghaoID.ToString();
         head_info._VInfo = JunZhuData.Instance().m_junzhuInfo.vipLv.ToString();
-        if (AllianceData.Instance.g_UnionInfo != null)
+        if (!AllianceData.Instance.IsAllianceNotExist)
         {
             head_info._Duty = AllianceData.Instance.g_UnionInfo.identity;
         }

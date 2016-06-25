@@ -16,8 +16,10 @@ public class EquipAdvanceLayerManagerment : MonoBehaviour {
     public GameObject m_HiddenObj;
     public GameObject m_LabParent1;
     public GameObject m_LabParent2;
+    public UILabel m_labObj;
     private UICamera m_Camera = null;
     private List<int> _listReward = new List<int>();
+   
     void Awake()
     {
         if (MainCityUI.m_MainCityUI)
@@ -35,12 +37,19 @@ public class EquipAdvanceLayerManagerment : MonoBehaviour {
             }
         }
             m_EquipAdvance = this;
+
+    }
+
+    void sdssd(float f)
+    {
+        m_labObj.color = new Color(m_labObj.color.r, m_labObj.color.g, m_labObj.color.b, f);
     }
     void Start ()
     {
       //  UIYindao.m_UIYindao.CloseUI();
         m_Handler.m_click_handler += DestroyInfo;
         _listReward.Clear();
+        CycleTween.StartCycleTween(m_labObj.gameObject, 1, 0.4f, 0.5f, sdssd);
         //ShowInfo(FunctionWindowsCreateManagerment.m_AdvanceInfo);
     }
 

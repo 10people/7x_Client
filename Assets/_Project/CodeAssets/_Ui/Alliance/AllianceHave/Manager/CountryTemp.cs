@@ -15,14 +15,6 @@ public class CountryTemp : MonoBehaviour {
 
 	public UISprite m_CountryIconMyself;
 
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 	public void Init()
 	{
 		m_CountryIcon.spriteName = "nation_"+CountryIcon.ToString();

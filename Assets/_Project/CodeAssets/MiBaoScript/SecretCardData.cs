@@ -30,11 +30,6 @@ public class SecretCardData : MonoBehaviour
 		InitData();
     }
 
-    void Update()
-    {
-
-    }
-
     //初始化秘宝数据
     public void InitData()
     {

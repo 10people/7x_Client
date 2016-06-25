@@ -47,6 +47,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	public bool m_log_socket_info	= false;
 
+	public bool m_log_socket_processor = false;
+
 	/// gbk
 	private const string SOCKET_HEAD_MESSAGE = "tgw_l7_forward\r\nHost:app12345.qzoneapp.com:80\r\n\r\n";
 	private bool m_try_send_head_message = true;
@@ -115,6 +117,9 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 	/// seding queue
 	private static Queue<QXBuffer> m_sending_messages 		= new Queue<QXBuffer>();
+
+	/// Debug Use
+	private static Queue<QXBuffer> m_delayed_received_message 	= new Queue<QXBuffer>();
 
 	/// processor list
 	private static List<SocketProcessor> m_socket_processors 	= new List<SocketProcessor>();
@@ -214,6 +219,12 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			m_log_socket_info = false;
 
 			LogSocketToolInfo();
+		}
+
+		if( m_log_socket_processor ){
+			m_log_socket_processor = false;
+
+			LogSocketProcessor();
 		}
 
 		if ( m_socket == null ) {
@@ -533,12 +544,24 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		SetSocketState( SocketState.DisConnected );
 	}
 
+	public static void LogNetworkWaiting(){
+		Debug.Log( "SocketTool.LogNetworkWaiting()" );
+
+		for( int i = 0; i < m_receiving_waiting_list.Count; i++ ){
+			Debug.Log( i + " Waiting " + m_receiving_waiting_list[ i ].GetReceivingString() );
+		}
+	}
+
 	public static void LogSocketToolInfo(){
 		Debug.Log ( "--- LogSocketToolInfo() ---" );
 
 		Debug.Log( "State: " + GetSocketState() );
 
 		Debug.Log ( "IsConnected(): " + IsConnected() );
+
+		{
+			LogNetworkWaiting();
+		}
 
 		if ( m_instance == null ) {
 			Debug.LogError( "Socket.m_instance = null." );
@@ -600,24 +623,31 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			SocketTool.CloseSocket();
 
 			if( m_multi_login_gb == null ){
-				m_multi_login_gb = Global.CreateBox( LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_1),
-					LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TRANS_97),
-					"",
-					null,
-					LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_2),
+				if( UIBox.BoxExistWithTime( LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_1) ) ){
+					Debug.Log( "Box already exist." );
+				}
+				else{
+					Debug.Log( "Create new multi login box." );
 
-					null,
-					MultiLoginCallback,
-					null,
-					null,
-					null,
+					m_multi_login_gb = Global.CreateBox( LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_1),
+						LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_TRANS_97),
+						"",
+						null,
+						LanguageTemplate.GetText(LanguageTemplate.Text.DISTANCE_LOGIN_2),
 
-					false,
-					false,
-					true, 
-					true );
+						null,
+						MultiLoginCallback,
+						null,
+						null,
+						null,
 
-				DontDestroyOnLoad( m_multi_login_gb );
+						false,
+						false,
+						true, 
+						true );
+
+					DontDestroyOnLoad( m_multi_login_gb );
+				}
 			}
 			
 			return true;
@@ -685,6 +715,14 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public void ClearSendAdnReceiveMessages(){
 		m_sending_messages.Clear();
 
+		m_received_messages.Clear();
+
+		m_delayed_received_message.Clear();
+
+		if( m_receiving_waiting_list.Count > 0 ){
+			LogNetworkWaiting();
+		}
+
 		m_receiving_waiting_list.Clear();
 
 		SocketHelper.ClearNetWorkCheckQueue();
@@ -700,14 +738,27 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		}
 
 		{
-			m_received_messages.Clear();
-		}
+//			for( int i = m_socket_processors.Count - 1; i >= 0; i-- ){
+//				SocketProcessor t_processor = m_socket_processors[ i ];
+//
+//				if( t_processor == null ){
+//					m_socket_processors.RemoveAt( i );
+//				}
+//			}
 
-		{
 			m_socket_processors.Clear();
+
 		}
 
 		{
+//			for( int i = m_socket_listeners.Count - 1; i >= 0; i-- ){
+//				SocketListener t_listener = m_socket_listeners[ i ];
+//
+//				if( t_listener == null ){
+//					m_socket_listeners.RemoveAt( i );
+//				}
+//			}
+
 			m_socket_listeners.Clear();
 		}
 
@@ -940,8 +991,15 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 					SocketHelper.SocketDataReceived();
 				}
 
-				lock( m_received_messages ){
-					m_received_messages.Enqueue( t_buffer );
+				if( !ConfigTool.IsEmulatingNetworkLatency() ){
+					lock( m_received_messages ){
+						m_received_messages.Enqueue( t_buffer );
+					}
+				}
+				else{
+					lock( m_delayed_received_message ){
+						m_delayed_received_message.Enqueue( t_buffer );
+					}
 				}
 			}
 			
@@ -1201,10 +1259,18 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 	}
 
 	private void UpdateSendMessageWaitingFlag( QXBuffer p_buffer, string p_receiving_wait_protos ){
-		p_buffer.SetSendingWait( string.IsNullOrEmpty( p_receiving_wait_protos ) ? false : true );
-		
-		p_buffer.SetReceivingWait( string.IsNullOrEmpty( p_receiving_wait_protos ) ? false : true );
-		
+		if( p_buffer == null ){
+			Debug.LogError( "Error, buffer is null." );
+
+			return;
+		}
+
+		p_buffer.SetAllWaiting( string.IsNullOrEmpty( p_receiving_wait_protos ) ? false : true );
+
+		if( !string.IsNullOrEmpty( p_receiving_wait_protos ) ){
+			p_buffer.SetAllWaiting( ( string.Compare( p_receiving_wait_protos.Trim(), "-1" ) == 0 ) ? false : true );
+		}
+
 		if( p_buffer.IsReceivingWait() ){
 			p_buffer.SetSendingWait( true );
 
@@ -1404,6 +1470,10 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		for( int i = 0; i < m_socket_listeners.Count; i++ ){
 			SocketListener t_listener = m_socket_listeners[ i ];
 
+			if( t_listened == null ){
+				continue;
+			}
+
 			if( t_listener.OnSocketEvent( p_buffer ) ){
 				t_listened = true;
 			}
@@ -1438,6 +1508,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		{
 			if( m_socket == null ){
 				Debug.Log( "m_socket == null, skip sending." );
+
+				SocketHelper.CreateConnectionLostOrFailWindow();
 				
 				return;	
 			}
@@ -1532,6 +1604,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 			return;
 		}
 
+//		Debug.Log( "UpdateProcessorsAndListeners()" );
+
 		for( int i = m_socket_processors.Count - 1; i >= 0; i-- ){
 			SocketProcessor t_processor = m_socket_processors[ i ];
 
@@ -1555,6 +1629,27 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		QXBuffer t_buffer = null;
 
 		lock( m_received_messages ){
+			if( ConfigTool.IsEmulatingNetworkLatency() ){
+				lock( m_delayed_received_message ){
+					if( m_delayed_received_message.Count > 0 ){
+						QXBuffer t_delayed_buffer = m_delayed_received_message.Peek();
+
+						while( t_delayed_buffer != null && t_delayed_buffer.GetSecSinceCreate() > ConfigTool.GetEmulatingNetworkLatency() ){
+							m_received_messages.Enqueue( t_delayed_buffer );
+
+							m_delayed_received_message.Dequeue();
+
+							if( m_delayed_received_message.Count > 0 ){
+								t_delayed_buffer = m_delayed_received_message.Peek();
+							}
+							else{
+								t_delayed_buffer = null;
+							}
+						}
+					}
+				}
+			}
+
 			t_message_count = m_received_messages.Count;
 
 			if( t_message_count > 0 ){
@@ -1589,8 +1684,14 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 				SocketProcessor t_pre_processor	= null;
 
+				int t_pre_processor_index = -1;
+
 				for( int i = 0; i < m_socket_processors.Count; i++ ){
 					SocketProcessor t_processor = m_socket_processors[ i ];
+
+					if( t_processor == null ){
+						continue;
+					}
 
 					try{
 						if( t_processor.OnProcessSocketMessage( t_buffer ) ){
@@ -1598,12 +1699,16 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 								t_message_processed = true;
 
 								t_pre_processor = t_processor;
+
+								t_pre_processor_index = i;
 								
 //							break;
 							}
 							else{
 								Debug.LogError( "Proto Have Multi Processors: " + t_buffer.m_protocol_index + "   - " +
-								               t_processor + "   pre: " + t_pre_processor );
+									t_processor + " - " + 
+									" pre: " + t_pre_processor + " - " +
+									t_pre_processor_index );
 							}
 						}
 					}

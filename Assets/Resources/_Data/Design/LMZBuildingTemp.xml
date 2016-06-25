@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LMZBuildingTemp id="101" type="1" side="1" x="-13" y="82" Py="0" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="0" scale="0" />
-<LMZBuildingTemp id="102" type="1" side="2" x="-89" y="-14" Py="0" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="0" scale="0" />
-<LMZBuildingTemp id="201" type="2" side="1" x="-98" y="49" Py="0" zhanlingzhiMax="2000" zhanlingzhiAdd="2" scoreAdd="2" radius="5" scale="0.05" />
-<LMZBuildingTemp id="202" type="2" side="1" x="-57" y="17" Py="0" zhanlingzhiMax="2000" zhanlingzhiAdd="2" scoreAdd="2" radius="5" scale="0.05" />
-<LMZBuildingTemp id="203" type="2" side="1" x="-24" y="-12" Py="0" zhanlingzhiMax="2000" zhanlingzhiAdd="2" scoreAdd="2" radius="5" scale="0.06" />
-<LMZBuildingTemp id="301" type="3" side="1" x="-63" y="86" Py="0" zhanlingzhiMax="3000" zhanlingzhiAdd="2" scoreAdd="2" radius="5" scale="0.075" />
-<LMZBuildingTemp id="302" type="3" side="1" x="-34" y="60" Py="0" zhanlingzhiMax="3000" zhanlingzhiAdd="2" scoreAdd="2" radius="5" scale="0.075" />
-<LMZBuildingTemp id="303" type="3" side="1" x="7" y="33" Py="0" zhanlingzhiMax="3000" zhanlingzhiAdd="2" scoreAdd="2" radius="5" scale="0.075" />
-<LMZBuildingTemp id="401" type="4" side="1" x="-13" y="82" Py="0" zhanlingzhiMax="4000" zhanlingzhiAdd="2" scoreAdd="2" radius="5" scale="0.125" />
-<LMZBuildingTemp id="402" type="4" side="2" x="-89" y="-14" Py="0" zhanlingzhiMax="6000" zhanlingzhiAdd="2" scoreAdd="2" radius="5" scale="0.125" />
-<LMZBuildingTemp id="501" type="5" side="0" x="-107" y="10" Py="-14" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
-<LMZBuildingTemp id="502" type="5" side="0" x="-74" y="0" Py="39" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
-<LMZBuildingTemp id="503" type="5" side="0" x="-51" y="-28" Py="39" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
-<LMZBuildingTemp id="504" type="5" side="0" x="-59" y="95" Py="45" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
-<LMZBuildingTemp id="505" type="5" side="0" x="-28" y="69" Py="39" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
-<LMZBuildingTemp id="506" type="5" side="0" x="9" y="43" Py="16" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
+<LMZBuildingTemp id="101" name="守方出生点" type="1" side="1" x="-5.62" y="89.39" Py="0" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="0" scale="0" />
+<LMZBuildingTemp id="102" name="攻方出生点" type="1" side="2" x="-95.22" y="-22.83" Py="0" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="0" scale="0" />
+<LMZBuildingTemp id="201" name="上路前哨" type="2" side="1" x="-98" y="49" Py="0" zhanlingzhiMax="300" zhanlingzhiAdd="2" scoreAdd="0" radius="5" scale="0.05" />
+<LMZBuildingTemp id="202" name="中路前哨" type="2" side="1" x="-57" y="17" Py="0" zhanlingzhiMax="300" zhanlingzhiAdd="2" scoreAdd="0" radius="5" scale="0.05" />
+<LMZBuildingTemp id="203" name="下路前哨" type="2" side="1" x="-24" y="-12" Py="0" zhanlingzhiMax="300" zhanlingzhiAdd="2" scoreAdd="0" radius="5" scale="0.05" />
+<LMZBuildingTemp id="301" name="上路行营" type="3" side="1" x="-63" y="86" Py="0" zhanlingzhiMax="500" zhanlingzhiAdd="2" scoreAdd="0" radius="5" scale="0.075" />
+<LMZBuildingTemp id="302" name="中路行营" type="3" side="1" x="-34" y="60" Py="0" zhanlingzhiMax="500" zhanlingzhiAdd="2" scoreAdd="0" radius="5" scale="0.075" />
+<LMZBuildingTemp id="303" name="下路行营" type="3" side="1" x="7" y="33" Py="0" zhanlingzhiMax="500" zhanlingzhiAdd="2" scoreAdd="0" radius="5" scale="0.075" />
+<LMZBuildingTemp id="401" name="守方帅旗" type="4" side="1" x="-13" y="82" Py="0" zhanlingzhiMax="1000" zhanlingzhiAdd="2" scoreAdd="0" radius="5" scale="0.125" />
+<LMZBuildingTemp id="402" name="攻方帅旗" type="4" side="2" x="-89" y="-14" Py="0" zhanlingzhiMax="1500" zhanlingzhiAdd="2" scoreAdd="0" radius="5" scale="0.125" />
+<LMZBuildingTemp id="501" name="光墙" type="5" side="0" x="-107" y="10" Py="-14" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
+<LMZBuildingTemp id="502" name="光墙" type="5" side="0" x="-74" y="0" Py="39" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
+<LMZBuildingTemp id="503" name="光墙" type="5" side="0" x="-51" y="-28" Py="39" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
+<LMZBuildingTemp id="504" name="光墙" type="5" side="0" x="-59" y="95" Py="45" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
+<LMZBuildingTemp id="505" name="光墙" type="5" side="0" x="-28" y="69" Py="39" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
+<LMZBuildingTemp id="506" name="光墙" type="5" side="0" x="9" y="43" Py="16" zhanlingzhiMax="0" zhanlingzhiAdd="0" scoreAdd="0" radius="16" scale="0" />
 </dataset>

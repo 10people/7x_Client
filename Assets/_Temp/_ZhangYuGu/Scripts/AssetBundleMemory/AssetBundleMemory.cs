@@ -7,17 +7,7 @@ public class AssetBundleMemory : MonoBehaviour {
 	public List<AssetBundle> m_bundles = new List<AssetBundle>();
 			
 	#region Mono
-	
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	void OnGUI(){
 		int t_btn_index = 0;
 		

@@ -243,7 +243,7 @@ public class BubblePopNode : MonoBehaviour
 
 		BaseAI t_node = BattleControlor.Instance().getNodebyId ((int)distanceOutTemplate.tp1);
 
-		if (t_node == null || t_node.gameObject.activeSelf == false || t_node.isAlive == false || t_node.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) <= 0) 
+		if (t_node == null || t_node.gameObject.activeSelf == false || t_node.isAlive == false || t_node.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) < 0) 
 		{
 			return;
 		}
@@ -262,7 +262,7 @@ public class BubblePopNode : MonoBehaviour
 		
 		BaseAI t_node = BattleControlor.Instance().getNodebyId ((int)distanceInTemplate.tp1);
 		
-		if (t_node == null || t_node.gameObject.activeSelf == false || t_node.isAlive == false || t_node.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) <= 0) 
+		if (t_node == null || t_node.gameObject.activeSelf == false || t_node.isAlive == false || t_node.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) < 0) 
 		{
 			return;
 		}

@@ -480,6 +480,11 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 					t_root_bg_scaled = true;
 				}
+				else{
+//					Debug.Log( "No Active Background Scaler Found: " + m_2d_manager_list[ i ].GetRootGameObject() );
+//
+//					Debug.Log( "Scaler: " + GameObjectHelper.GetGameObjectHierarchy( m_2d_manager_list[ i ].GetBackgroundScaler() ) );
+				}
 			}
 			else{
 //					if( !t_root_bg_scaled ){
@@ -487,6 +492,10 @@ public class UI2DTool : Singleton<UI2DTool>{
 //					}
 			}
 		}
+
+//		Debug.Log( "m_2d_manager_list.Count: " + m_2d_manager_list.Count );
+//
+//		Debug.Log( "t_root_bg_scaled: " + t_root_bg_scaled );
 
 		if( m_2d_manager_list.Count > 1 && t_root_bg_scaled ){
 			m_2d_manager_list[ 0 ].SetActive( false );
@@ -499,7 +508,9 @@ public class UI2DTool : Singleton<UI2DTool>{
 				if( m_2d_manager_list[ 0 ] != null ){
 					m_2d_manager_list[ 0 ].SetActive( true );
 
-					CameraHelper.SetMainCamera( true );
+					if( !m_2d_manager_list[ 0 ].IsCameraEffectOpen() ){
+						CameraHelper.SetMainCamera( true );
+					}
 				}
 			}
 		}
@@ -820,6 +831,25 @@ public class UI2DTool : Singleton<UI2DTool>{
 					}
 				}
 			}
+
+			return null;
+		}
+
+		public BackgroundScaler GetBackgroundScaler(){
+			GameObject t_gb = GetRootGameObject();
+
+			if( t_gb == null ){
+				return null;
+			}
+
+			BackgroundScaler[] t_scalers = t_gb.GetComponentsInChildren<BackgroundScaler>( true );
+
+			for( int k = 0; k < t_scalers.Length; k++ ){
+				if( t_scalers[ k ] != null ){
+					return t_scalers[ k ];	
+				}
+			}
+
 			return null;
 		}
 
@@ -845,6 +875,24 @@ public class UI2DTool : Singleton<UI2DTool>{
 			for( int j = 0; j < t_cams.Length; j++ ){
 				EffectTool.SetUIBackgroundEffect( t_cams[ j ].gameObject, p_enable_effect );
 			}
+		}
+
+		public bool IsCameraEffectOpen(){
+			GameObject t_gb = GetRootGameObject();
+
+			if( t_gb == null ) {
+				return false;
+			}
+
+			Camera[] t_cams = t_gb.GetComponentsInChildren<Camera>();
+
+			for( int j = 0; j < t_cams.Length; j++ ){
+				if( UIBackgroundEffect.IsUIBackgroundEffectOpen( t_cams[ j ].gameObject ) ){
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

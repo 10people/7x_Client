@@ -70,6 +70,14 @@ namespace AllianceBattle
 
         private void Execute1Attack()
         {
+            if (m_targetObject == null || m_attackObject == null)
+            {
+                Debug.LogWarning("Abort show multi attack cause required object null.");
+                m_remainingSlideTimes = 0;
+                Finish();
+                return;
+            }
+
             m_remainingSlideTimes--;
 
             var degree = m_random.Next(0, 359) * Math.PI / 180;
@@ -86,27 +94,22 @@ namespace AllianceBattle
             if (isAttackSelf)
             {
                 //mine skill
-                if (RootManager.Instance.m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(m_AttackUID, m_animationList[animationIndex]))
+                if (RootManager.Instance.m_AnimationHierarchyPlayer.IsCanPlayAnimation(m_AttackUID, m_animationList[animationIndex]))
                 {
-                    RootManager.Instance.m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(m_AttackUID, m_animationList[animationIndex]);
+                    RootManager.Instance.m_AnimationHierarchyPlayer.TryPlayAnimation(m_AttackUID, m_animationList[animationIndex]);
 
                     if (RTSkillTemplate.GetTemplateByID(181).EsOnShot > 0)
                     {
-                        if (EffectNumController.Instance.IsCanPlayEffect())
-                        {
-                            EffectNumController.Instance.NotifyPlayingEffect();
-
-                            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(181).EsOnShot), m_attackObject, null, Vector3.zero, m_attackObject.transform.forward);
-                        }
+                        FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(181).EsOnShot), m_attackObject, null, Vector3.zero, m_attackObject.transform.forward);
                     }
                 }
             }
             else
             {
                 //other player skill.
-                if (RootManager.Instance.m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(m_AttackUID, m_animationList[animationIndex]))
+                if (RootManager.Instance.m_AnimationHierarchyPlayer.IsCanPlayAnimation(m_AttackUID, m_animationList[animationIndex]))
                 {
-                    RootManager.Instance.m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(m_AttackUID, m_animationList[animationIndex]);
+                    RootManager.Instance.m_AnimationHierarchyPlayer.TryPlayAnimation(m_AttackUID, m_animationList[animationIndex]);
 
                     if (isTargetSelf)
                     {
@@ -167,7 +170,15 @@ namespace AllianceBattle
                 m_attackObject.GetComponent<OtherPlayerController>().ActiveMove();
             }
 
-            RootManager.Instance.m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(m_AttackUID, "Stand", true);
+            var temp = AnimationHelper.GetAnimatorPlayingHash(RootManager.Instance.m_AnimationHierarchyPlayer.TryGetController(m_AttackUID));
+            if (temp != Animator.StringToHash("Dead"))
+            {
+                RootManager.Instance.m_AnimationHierarchyPlayer.TryPlayAnimation(m_AttackUID, "Stand", true);
+            }
+            else
+            {
+                Debug.LogWarning("Cannot stop multi attack skill cause current playing animation is dead.");
+            }
         }
 
         void LateUpdate()

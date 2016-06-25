@@ -20,20 +20,6 @@ public class Debug_BattleField_FPS : MonoBehaviour {
 
 	#region Mono
 
-	void Awake(){
-//		Application.targetFrameRate = 60;
-	}
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	#endregion
 
 

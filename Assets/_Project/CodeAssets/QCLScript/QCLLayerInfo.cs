@@ -8,7 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class QCLLayerInfo : MonoBehaviour {
+public class QCLLayerInfo : MYNGUIPanel {
 
     public List<UIEventListener> BtnList = new List<UIEventListener>(); 
 
@@ -17,6 +17,8 @@ public class QCLLayerInfo : MonoBehaviour {
 	public UISprite CurrSKill;
 
 	public UISprite AddSKill;
+
+	public GameObject LockSprite;
 
 	public UILabel LayerName;
 
@@ -41,6 +43,11 @@ public class QCLLayerInfo : MonoBehaviour {
 	private CheckYindao mCheckYindao;
 
 	List<ChongLouNpcTemplate> mChongLouNpcTemplateList = new List<ChongLouNpcTemplate>();
+
+	public NGUILongPress EnergyDetailLongPress;
+
+	public UISprite GreeyBtn;
+
 	void Awake()
 	{
 		// reigster trigger delegate
@@ -48,8 +55,28 @@ public class QCLLayerInfo : MonoBehaviour {
 			UIWindowEventTrigger.SetOnTopAgainDelegate( gameObject, YinDaoManager );
 		}
 		BtnList.ForEach (item => SetBtnMoth(item));
+
+		EnergyDetailLongPress.LongTriggerType = NGUILongPress.TriggerType.Press;
+		EnergyDetailLongPress.NormalPressTriggerWhenLongPress = false;
+		EnergyDetailLongPress.OnLongPressFinish = OnCloseDetail;
+		EnergyDetailLongPress.OnLongPress = OnEnergyDetailClick1;
 		
 	}
+
+	private void OnCloseDetail(GameObject go)
+	{
+		ShowTip.close();
+	}
+	public void OnEnergyDetailClick1(GameObject go)//显示体力恢复提示
+	{
+		int mibaoid = JuanghunSkillId;
+		if(mibaoid<=0)
+		{
+			return;
+		}
+		ShowTip.showTip (mibaoid);
+	}
+
 	void SetBtnMoth(UIEventListener mUIEventListener)
 	{
 		mUIEventListener.onClick = BtnManagerMent;
@@ -125,14 +152,25 @@ public class QCLLayerInfo : MonoBehaviour {
 		
 		MainCityUI.TryAddToObjectList(mChoose_MiBao);
 	}
+	public UILabel TextCengShu;
 	void EnterBattleBtn()
 	{
+		int x = -1;
+		bool success = int.TryParse(TextCengShu.text,out x);
+		if(x > 0)
+		{
+			m_Layer = x;
+		}
+		Debug.Log ("m_Layer = "+m_Layer);
+		if(m_Layer > 70)
+		{
+			ClientMain.m_UITextManager.createText("此版本只可挑战到70层，敬请期待正式版！");
+			return;
+		}
 		CityGlobalData.QCLISOPen = true;
 		EnterBattleField.EnterBattleChongLou (m_Layer);
 	}
-	void Update () {
-	
-	}
+
 	public void Init(int skill_id ,int layer,CheckYindao m_CheckYindao = null)
 	{
 		if(m_CheckYindao != null)
@@ -146,9 +184,15 @@ public class QCLLayerInfo : MonoBehaviour {
 		initData (m_Skillid);
 		InitEnemys ();
 		InitAwards ();
+
+		GreeyBtn.gameObject.SetActive(m_Layer > 70);
+		
 	}
+	private int JuanghunSkillId;
 	public void initData(int m_mSkillid,bool ISChange = false)
 	{
+		JuanghunSkillId = m_mSkillid;
+
 		if(m_mSkillid > 0)
 		{
 			MiBaoSkillTemp mMiBaoSkill  = MiBaoSkillTemp.getMiBaoSkillTempBy_id(m_mSkillid);
@@ -160,6 +204,7 @@ public class QCLLayerInfo : MonoBehaviour {
 			CurrSKill.spriteName = "";
 	
 			AddSKill.gameObject.SetActive(MiBaoGlobleData.Instance().GetMiBaoskillOpen());
+			LockSprite.SetActive(!MiBaoGlobleData.Instance().GetMiBaoskillOpen());
 		}
 		if(m_Layer < 1)
 		{
@@ -167,7 +212,7 @@ public class QCLLayerInfo : MonoBehaviour {
 		}
 		ChonglouPveTemplate mChonglouPve = ChonglouPveTemplate.Get_QCL_PVETemplate_By_Layer (m_Layer);
 		TuiJianSkill.spriteName = mChonglouPve.recMibaoSkill;
-		
+		TuiJianSkill.gameObject.GetComponent<MiBaoSkillTips> ().Skillid = int.Parse (mChonglouPve.recMibaoSkill);
 		LayerName.text = "第" + m_Layer.ToString () + "层";
 
 		if(ISChange)
@@ -206,7 +251,11 @@ public class QCLLayerInfo : MonoBehaviour {
 			{
 				if(mChongLouNpcTemplateList[i].modelId == mChongLouNpcTemplateList[j].modelId)
 				{
-					
+					if(mChongLouNpcTemplateList[i].type < mChongLouNpcTemplateList[j].type)
+					{
+						mChongLouNpcTemplateList[i] = mChongLouNpcTemplateList[j];
+					}
+				
 					mChongLouNpcTemplateList.RemoveAt(j);
 				}
 				else{
@@ -366,4 +415,50 @@ public class QCLLayerInfo : MonoBehaviour {
 		}
 		Destroy (this.gameObject);
 	}
+	#region fulfil my ngui panel
+	
+	/// <summary>
+	/// my click in my ngui panel
+	/// </summary>
+	/// <param name="ui"></param>
+	public override void MYClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOver(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+		
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+		
+	}
+	#endregion
 }

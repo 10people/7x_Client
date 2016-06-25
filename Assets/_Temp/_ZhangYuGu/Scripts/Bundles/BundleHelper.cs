@@ -6,6 +6,8 @@
 
 //#define DEBUG_BUNDLE_HELPER_DETAIL
 
+//#define DEBUG_RES_LOADING_TIME
+
 
 
 //#define DEBUG_DELAY_LOAD
@@ -454,12 +456,26 @@ public class BundleHelper : MonoBehaviour{
 						#if DEBUG_BUNDLE_HELPER
 						Debug.Log( "Loading: " + p_bundle_to_load.m_res_asset_path + " - " + p_bundle_to_load.m_type );
 						#endif
+
+						#if DEBUG_RES_LOADING_TIME
+						float t_pre_time = Time.realtimeSinceStartup;
+						#endif
 						
 						t_object = Resources.Load( p_bundle_to_load.m_res_asset_path, p_bundle_to_load.m_type );
+
+						#if DEBUG_RES_LOADING_TIME
+						Debug.Log( "Res.Load.Time: " + ( Time.realtimeSinceStartup - t_pre_time ) + " - " + p_bundle_to_load.m_res_asset_path );
+						#endif
 					}
 					else{
 						#if DEBUG_BUNDLE_HELPER
 						Debug.Log( "Loading: " + p_bundle_to_load.m_res_asset_path );
+						#endif
+
+						#if DEBUG_RES_LOADING_TIME
+						float t_pre_time = Time.realtimeSinceStartup;
+
+						Debug.Log( "Before.Resources.Load: " + t_pre_time );
 						#endif
 						
 						t_object = Resources.Load( p_bundle_to_load.m_res_asset_path );
@@ -467,10 +483,35 @@ public class BundleHelper : MonoBehaviour{
 						//					#if DEBUG_BUNDLE_HELPER
 						//					Debug.Log( "Loading Done: " + p_bundle_to_load.m_res_asset_path );
 						//					#endif
+
+						#if DEBUG_RES_LOADING_TIME
+						Debug.Log( "After.Resoures.Load: " + Time.realtimeSinceStartup );
+
+						Debug.Log( "Res.Load.Cost: " + ( Time.realtimeSinceStartup - t_pre_time ) + " - " + p_bundle_to_load.m_res_asset_path );
+						#endif
 					}
 					
-					if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) ){
-						Debug.Log( "Resources.Loaded: " + p_bundle_to_load.m_res_asset_path );
+					{
+						bool t_info = false;
+
+						bool t_error = false;
+
+						if( ConfigTool.GetBool( ConfigTool.CONST_LOG_ASSET_LOADING, false ) ){
+							t_info = true;
+						}
+						else if( ConfigTool.GetBool( ConfigTool.CONST_LOG_RUNTIME_SOUND_LOAD, false ) ){
+							if( p_bundle_to_load.m_res_asset_path.IndexOf( "Sounds" ) >=0 ){
+								t_error = true;
+							}
+						}
+
+						if( t_info ){
+							Debug.Log( "Resources.Loaded: " + p_bundle_to_load.m_res_asset_path );
+						}
+						else if( t_error ){
+							Debug.LogError( "Resources.Loaded: " + p_bundle_to_load.m_res_asset_path );
+						}
+
 					}
 					
 					if( t_object == null ){
@@ -833,7 +874,9 @@ public class BundleHelper : MonoBehaviour{
 			LanguageTemplate.LoadTemplates( LoadingDataDone );
 			
 			MyColorData.LoadTemplates( LoadingDataDone );
-			
+
+
+
 			QualityTool.Instance.LoadQualities( LoadingDataDone );
 
 
@@ -845,7 +888,7 @@ public class BundleHelper : MonoBehaviour{
 
 	private int m_data_for_loading_loaded 				= 0;
 	
-	public const int PREPARE_DATA_COUNT_FOR_LOADING		= 5;
+	public const int PREPARE_DATA_COUNT_FOR_LOADING		= 6;
 
 	public void LoadingDataDone(){
 		{

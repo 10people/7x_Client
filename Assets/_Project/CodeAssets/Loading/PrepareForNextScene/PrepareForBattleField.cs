@@ -40,16 +40,6 @@ public class PrepareForBattleField : MonoBehaviour {
 		Prepare_For_BattleField();
 	}
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	void OnRenderObject(){
 		if( m_battle_res_step == 1 ){
 			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,

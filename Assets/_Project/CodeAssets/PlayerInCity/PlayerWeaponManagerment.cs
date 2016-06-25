@@ -7,14 +7,8 @@ public class PlayerWeaponManagerment : MonoBehaviour
     public GameObject m_HeavyParent;
     public GameObject m_LightParent;
     public GameObject m_BowParent;
-    void Start ()
-    {
-	
-	}
+
     int index_Type = 0;
-	void Update () {
-	
-	}
 
     public void ShowWeapon(int index)
     {

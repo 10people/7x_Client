@@ -49,6 +49,11 @@ QuickPause:					false
 // quick fx
 QuickFx:					false
 
+//Unit test
+UnitTest:					true
+
+//Test mode
+TestMode:					true
 --------------------------------------------------------------------- </Debug Config>
 
 
@@ -57,12 +62,15 @@ QuickFx:					false
 //Char performance, Maximum char count in scene
 MaxCarriageChar:			20
 
-MaxAllianceBattleChar:		20
+MaxAllianceBattleChar:		30
 
 MaxCharInTanBao:			30
 
 // char performance update interval
 CharUpdateInterval:			1.0
+
+// char will be hide if more than this
+HideCharTHCameraOffset:		0.1
 
 //Maximum effect count in carriage scene
 MaxEffect:					3
@@ -111,7 +119,10 @@ QuickChooseLevel:			true
 QuickFight:					true
 
 // operate battle's camera
-ShowBattleCameraOps:		true
+ShowBattleCameraOps:		false
+
+//operate battle's camera divition tool
+ShowCameraDivisionOps:		false
 
 // Cumstom Trigger Update Interval
 BattleFieldCustomTriggerInterval:	0.2
@@ -130,7 +141,6 @@ SocketPingTime:				3.0
 SocketTimeOut:				10.0
 
 // emulate network latency
-// NEVER USE THIS, after lock updated
 NetworkLatency:				0.0
 
 // show network detail status
@@ -138,6 +148,12 @@ ShowNetworkStatus:			false
 
 // Socket Update Interval
 SocketUpdateInterval:		0.1
+
+// Prepare Network Waiting Time
+PrepareNetworkWaitingTime:	0.5
+
+// Force Tips Waiting Time
+ForceNetworkTipsWaitingTime:	0.0
 ------------------------------------------------------------------- </Network Config>
 
 
@@ -168,6 +184,20 @@ LogBundleDownLoading:		false
 LogDialogBox:				false
 
 LogQuality:					false
+
+LogRuntimeSoundLoad:		false
+
+LogRealTimeMove:			false
+
+LogRealTime:				false
+
+LogAllianceBattle:			false
+
+LogCarriage:				false
+
+LogAnimationHierarchy:		false
+
+LogMSC:						false
 ----------------------------------------------------------------------- </Log Config>
 
 

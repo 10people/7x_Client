@@ -18,6 +18,7 @@ namespace Carriage
 		public UILabel costLabel;
 		public EventHandler buyBtn;
 		public UILabel vipLevel;
+		public UISprite m_vipIcon;
 
 		private int costYuanBao;
 
@@ -29,31 +30,35 @@ namespace Carriage
 		{
 			horseInfo = tempInfo;
 
-			horseIcon.spriteName = BiaoJuPage.bjPage.HorseStringInfo (tempInfo.horseId,2);
-			border.spriteName = BiaoJuPage.bjPage.HorseStringInfo (tempInfo.horseId,3);
+			horseIcon.spriteName = BiaoJuPage.m_instance.HorseStringInfo (tempInfo.horseId,2);
+			border.spriteName = BiaoJuPage.m_instance.HorseStringInfo (tempInfo.horseId,3);
 
 			selectBox.SetActive (tempInfo.horseId == curId ? true : false);
 
 			line.SetActive (tempInfo.horseId == 2 ? false : true);
 
 			point.SetActive (tempInfo.horseId <= curId ? true : false);
-			point.transform.localPosition = new Vector3 (float.Parse (BiaoJuPage.bjPage.HorseStringInfo (tempInfo.horseId,4)),0,0);
+			point.transform.localPosition = new Vector3 (float.Parse (BiaoJuPage.m_instance.HorseStringInfo (tempInfo.horseId,4)),0,0);
 
 			desLabel.SetActive (tempInfo.horseId == curId ? true : false);
 			costLabel.gameObject.SetActive (tempInfo.horseId > curId ? true : false);
 
 			shouYiLabel.text = tempInfo.shouYi.ToString ();
-//			Debug.Log ("BiaoJuPage.bjPage.CurHorseLevel:" + BiaoJuPage.bjPage.CurHorseLevel);
-			CartTemplate cartTemp = CartTemplate.GetCartTemplateByType (BiaoJuPage.bjPage.CurHorseLevel);
+//			Debug.Log ("BiaoJuPage.m_instance.CurHorseLevel:" + BiaoJuPage.m_instance.CurHorseLevel);
+			CartTemplate cartTemp = CartTemplate.GetCartTemplateByType (BiaoJuPage.m_instance.CurHorseLevel);
 //			Debug.Log ("tempInfo.upNeedMoney:" + tempInfo.upNeedMoney);
 //			Debug.Log ("cartTemp.ShengjiCost:" + cartTemp.ShengjiCost);
 			costYuanBao = tempInfo.upNeedMoney - cartTemp.ShengjiCost;
 			costLabel.text = costYuanBao.ToString ();
+			Debug.Log ("tempInfo.needVipLevel:" + tempInfo.needVipLevel);
+//			if (tempInfo.horseId > curId)
+//			{
+//	 			vipLevel.text = tempInfo.needVipLevel <= QXComData.JunZhuInfo ().vipLv ? "" : "特权";
+//				m_vipIcon.spriteName = tempInfo.needVipLevel <= QXComData.JunZhuInfo ().vipLv ? "" : "v" + tempInfo.needVipLevel;
+//			}
 
-			if (tempInfo.horseId > curId)
-			{
-	 			vipLevel.text = tempInfo.needVipLevel <= JunZhuData.Instance().m_junzhuInfo.vipLv ? "" : "VIP" + tempInfo.needVipLevel + "可购买";
-			}
+			vipLevel.text = tempInfo.needVipLevel > 0 ? "特权" : "";
+			m_vipIcon.spriteName = tempInfo.needVipLevel > 0 ? "v" + tempInfo.needVipLevel : "";
 
 			buyBtn.m_click_handler -= BuyBtnHandlerClickBack;
 			buyBtn.m_click_handler += BuyBtnHandlerClickBack;
@@ -61,36 +66,23 @@ namespace Carriage
 
 		void BuyBtnHandlerClickBack (GameObject obj)
 		{
-			BiaoJuData.Instance.UpHorseReq (horseInfo.horseId);
-//			if (horseInfo.needVipLevel <= JunZhuData.Instance().m_junzhuInfo.vipLv)
-//			{
-//				if (costYuanBao > JunZhuData.Instance().m_junzhuInfo.yuanBao)
-//				{
-//					SetHorseWindow.setHorse.CloseSetHorseWindow (gameObject);
-////					textStr = "元宝不足！是否前往充值？";
-////					QXComData.CreateBox (1,textStr,false,BiaoJuPage.bjPage.TurnToVip);
-//					BiaoJuPage.bjPage.LackYuanbao ();
-//				}
-//				else
-//				{
-//
-//				}
-//			}
-//			else
-//			{
-//	            EquipSuoData.TopUpLayerTip(null, false, 0, "VIP等级不足！是否跳转到充值？");
-//				//textStr = "VIP等级不足！是否跳转到充值？";
-//				//QXComData.CreateBox (1,textStr,false,LackVipLevel);
-//				//SetHorseWindow.setHorse.CloseSetHorseWindow (gameObject);
-//			}
-		}
-
-		void LackVipLevel (int i)
-		{
-			if (i == 2)
+//			BiaoJuData.Instance.UpHorseReq (horseInfo.horseId);
+			Debug.Log ("horseInfo.needVipLevel:" + horseInfo.needVipLevel);
+			Debug.Log ("QXComData.JunZhuInfo ().vipLv:" + QXComData.JunZhuInfo ().vipLv);
+			if (QXComData.CheckYinDaoOpenState (100370))
 			{
-				BiaoJuPage.bjPage.CloseBiaoJu ();
-				TopUpLoadManagerment.LoadPrefab();
+				BiaoJuData.Instance.UpHorseReq (horseInfo.horseId);
+			}
+			else
+			{
+				if (horseInfo.needVipLevel > QXComData.JunZhuInfo ().vipLv)
+				{
+					Global.CreateFunctionIcon (1901);
+				}
+				else
+				{
+					BiaoJuData.Instance.UpHorseReq (horseInfo.horseId);
+				}
 			}
 		}
 	}

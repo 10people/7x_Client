@@ -16,11 +16,6 @@ public class BattleMibaoSkillEffSprite : MonoBehaviour
 		sprite.alpha = _alpha;
 	}
 
-	private void uSetAlpha(float _alpha)
-	{
-		sprite.alpha = _alpha;
-	}
-
 	private void setScale(float _scale)
 	{
 		sprite.transform.localScale = new Vector3(_scale, _scale, 1f);

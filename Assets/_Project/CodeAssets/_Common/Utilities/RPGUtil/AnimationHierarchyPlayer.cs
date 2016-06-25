@@ -1,6 +1,4 @@
-﻿#define DEBUG_MODE
-
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,29 +11,31 @@ public class AnimationHierarchyPlayer
     public SinglePlayerController m_SinglePlayerController;
     public Dictionary<int, int> m_PiorityDic = new Dictionary<int, int>();
 
-    public Animator TryGetAnimator(int p_uid)
+    public AnimationHierarchyController TryGetController(int p_uid)
     {
         if (p_uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
         {
             if (m_SinglePlayerController == null)
             {
-#if DEBUG_MODE
-                Debug.LogWarning("self player not exist");
-#endif
+                if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ANIMATION_HIERARCHY))
+                {
+                    Debug.LogWarning("self player not exist");
+                }
                 return null;
             }
-            return m_SinglePlayerController.GetComponent<Animator>();
+            return m_SinglePlayerController.GetComponent<AnimationHierarchyController>();
         }
         else
         {
             if (!m_PlayerManager.m_PlayerDic.ContainsKey(p_uid))
             {
-#if DEBUG_MODE
-                Debug.LogWarning("other player not exist");
-#endif
+                if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ANIMATION_HIERARCHY))
+                {
+                    Debug.LogWarning("other player not exist");
+                }
                 return null;
             }
-            return m_PlayerManager.m_PlayerDic[p_uid].GetComponent<Animator>();
+            return m_PlayerManager.m_PlayerDic[p_uid].GetComponent<AnimationHierarchyController>();
         }
     }
 
@@ -45,29 +45,39 @@ public class AnimationHierarchyPlayer
     /// <param name="animationName">play animation using this name</param>
     /// <param name="isStrictlyPlay">donot consider hierarchy if true</param>
     /// <returns></returns>
-    public void TryPlayAnimationInAnimator(int p_uid, string animationName, bool isStrictlyPlay = false)
+    public void TryPlayAnimation(int p_uid, string animationName, bool isStrictlyPlay = false)
     {
-        Animator l_animator = TryGetAnimator(p_uid);
+        AnimationHierarchyController controller = TryGetController(p_uid);
 
-        if (!IsCanPlayAnimationInAnimator(p_uid, animationName, isStrictlyPlay))
+        if (!IsCanPlayAnimation(p_uid, animationName, isStrictlyPlay))
         {
             return;
         }
 
-        if (l_animator == null)
+        if (controller == null)
         {
             Debug.LogWarning("Cannot play animation cause cannot find player, " + p_uid);
             return;
         }
 
-        l_animator.Play(animationName);
+        //if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ANIMATION_HIERARCHY))
+        //{
+        //    Debug.LogWarning("===========Play " + animationName + " in " + p_uid);
+        //}
+
+        controller.Play(animationName);
+
+        if (animationName == "Dead")
+        {
+            controller.IsCloseAnimator = true;
+        }
     }
 
-    public bool IsCanPlayAnimationInAnimator(int p_uid, string animationName, bool isStrictlyPlay = false)
+    public bool IsCanPlayAnimation(int p_uid, string animationName, bool isStrictlyPlay = false)
     {
-        Animator l_animator = TryGetAnimator(p_uid);
+        AnimationHierarchyController controller = TryGetController(p_uid);
 
-        if (l_animator == null)
+        if (controller == null)
         {
             Debug.LogWarning("Cannot play animation cause cannot find player, " + p_uid);
             return false;
@@ -75,26 +85,45 @@ public class AnimationHierarchyPlayer
 
         if (isStrictlyPlay)
         {
-#if DEBUG_MODE
-            Debug.LogWarning("Cancel check hierarchy in strictly playing mode.");
-#endif
+            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ANIMATION_HIERARCHY))
+            {
+                Debug.LogWarning("Cancel check hierarchy in strictly playing mode.");
+            }
         }
         else
         {
-            if (m_PiorityDic[Animator.StringToHash(animationName)] < 0 || m_PiorityDic[AnimationHelper.GetAnimatorPlayingHash(l_animator)] < 0)
+            if (m_PiorityDic[Animator.StringToHash(animationName)] < 0 || m_PiorityDic[AnimationHelper.GetAnimatorPlayingHash(controller)] < 0)
             {
-#if DEBUG_MODE
-                Debug.LogWarning("Cannot play animation cause animation/ current playing animation not exist in hierarchy.");
-                return false;
-#endif
-            }
-            if (m_PiorityDic[Animator.StringToHash(animationName)] > m_PiorityDic[AnimationHelper.GetAnimatorPlayingHash(l_animator)])
-            {
-#if DEBUG_MODE
-                Debug.LogWarning("Cannot play animation: " + animationName + " in: " + p_uid + " cause animation hierarchy block, " + m_PiorityDic[Animator.StringToHash(animationName)] + ">" + m_PiorityDic[AnimationHelper.GetAnimatorPlayingHash(l_animator)]);
-#endif
+                if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ANIMATION_HIERARCHY))
+                {
+                    Debug.LogWarning("Cannot play animation in: " + p_uid + " cause animation/ current playing animation not exist in hierarchy.");
+                }
                 return false;
             }
+            if (m_PiorityDic[Animator.StringToHash(animationName)] > m_PiorityDic[AnimationHelper.GetAnimatorPlayingHash(controller)])
+            {
+                if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ANIMATION_HIERARCHY))
+                {
+                    Debug.LogWarning("Cannot play animation: " + animationName + " in: " + p_uid + " cause animation hierarchy block, " + m_PiorityDic[Animator.StringToHash(animationName)] + ">" + m_PiorityDic[AnimationHelper.GetAnimatorPlayingHash(controller)]);
+                }
+                return false;
+            }
+
+            if (controller.IsCloseAnimator)
+            {
+                if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ANIMATION_HIERARCHY))
+                {
+                    Debug.LogWarning("Cannot play animation in: " + p_uid + "cause close manually.");
+                }
+                return false;
+            }
+            //else
+            //{
+            //    if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ANIMATION_HIERARCHY))
+            //    {
+            //        Debug.LogWarning("Can play animation: " + animationName + " in: " + p_uid + ", " + m_PiorityDic[Animator.StringToHash(animationName)] + "<=" + m_PiorityDic[AnimationHelper.GetAnimatorPlayingHash(controller)]);
+            //    }
+            //}
         }
 
         return true;

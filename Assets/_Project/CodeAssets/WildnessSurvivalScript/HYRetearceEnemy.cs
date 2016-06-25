@@ -108,11 +108,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		
 		confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 	}
-	
 
-	void Update () {
-	
-	}
 	List <int > awardidlist = new List<int> ();
 	List <string > awardNumlist = new List<string> ();
 	private void ShowFastAward()
@@ -125,6 +121,11 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
 		string [] s = m_AwardString.Split ('#');
 
+
+		string m_AwardString_Per = mHYtemp.perFastAward;
+		
+		string [] s1 = m_AwardString_Per.Split ('#');
+
 		for(int i = 0; i < s.Length; i ++)
 		{
 			string [] h = s[i].Split (':');
@@ -132,6 +133,14 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 			awardidlist.Add(mid);
 			awardNumlist.Add(h[2]);
 
+		}
+		for(int i = 0; i < s1.Length; i ++)
+		{
+			string [] h = s1[i].Split (':');
+			int mid = int.Parse(h[1]);
+			awardidlist.Add(mid);
+			awardNumlist.Add(h[2]);
+			
 		}
 		if (IconSamplePrefab == null)
 		{
@@ -224,7 +233,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		//m_UISlider.value = (float)( mHuangYeTreasure.jindu )/ (float)(100);
 		int id = mHuangYeTreasure.guanQiaId;
 
-		InitDropthings(id);
+		//		InitDropthings(id);    bugid 48800 不显示奖励了
 
 		CityGlobalData.IsOPenHyLeveUI = true;
 	}
@@ -236,11 +245,11 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
 		HuangYePveTemplate pvetemp = HuangYePveTemplate.getHuangYePveTemplatee_byid(m_id);
 
-//		Debug.Log ("pvetemp.award = " +pvetemp.award);
+		Debug.Log ("pvetemp.award = " +pvetemp.award);
 
-		char[] t_items_delimiter = { ',' };
+		char[] t_items_delimiter = { '#' };
 		
-		char[] t_item_id_delimiter = { '=' };
+		char[] t_item_id_delimiter = { ':' };
 		
 		string[] t_item_strings = pvetemp.award.Split(t_items_delimiter);
 		
@@ -250,13 +259,13 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 			
 			string[] t_finals = t_item.Split(t_item_id_delimiter);
 
-			if(!t_items.Contains(int.Parse(t_finals[0])))
+			if(!t_items.Contains(int.Parse(t_finals[1])))
 			{
-				t_items.Add(int.Parse(t_finals[0]));
+				t_items.Add(int.Parse(t_finals[1]));
 			}
 
 		}
-		//		Debug.Log ("t_items.count  " +t_items.Count);
+				Debug.Log ("t_items.count  " +t_items.Count);
 		
 		int initNum;
 		if (awardNum >= t_items.Count)
@@ -293,9 +302,9 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
 		for (int n = 0; n < numPara; n++)
 		{
-			//Debug.Log ("itemsPara[n] = " +itemsPara[n]);
+			Debug.Log ("itemsPara[n] = " +itemsPara[n]);
 			List<AwardTemp> mAwardTemp = AwardTemp.getAwardTempList_By_AwardId(itemsPara[n]);
-			//Debug.Log ("mAwardTemp.count = " +mAwardTemp.Count);
+			Debug.Log ("mAwardTemp.count = " +mAwardTemp.Count);
 			for (int i = 0; i < mAwardTemp.Count; i++)
 			{
 				if(mAwardTemp[i].weight != 0)
@@ -584,6 +593,8 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		My_DamageRank mMy_DamageRank = RankUI.GetComponent<My_DamageRank>();
 
 		mMy_DamageRank.mRankList = m_MaxDamageRank;
+
+		mMy_DamageRank.m_levelid = mHuangYeTreasure.guanQiaId;
 
 		mMy_DamageRank.Init ();
 

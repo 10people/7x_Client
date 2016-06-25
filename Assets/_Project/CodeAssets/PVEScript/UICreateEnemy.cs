@@ -27,15 +27,19 @@ public class UICreateEnemy : MonoBehaviour
 			LegendPveTemplate L_pvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(levelID);
 			
 			int npcid = L_pvetemp.npcId;
-		
+
 			mLegendNpcTemplateList = LegendNpcTemplate.GetLegendNpcTemplates_By_npcid(npcid);
+
 			for (int i = 0; i < mLegendNpcTemplateList.Count-1; i ++)
 			{
 				for(int j = i+1; j < mLegendNpcTemplateList.Count; )
 				{
 					if(mLegendNpcTemplateList[i].modelId == mLegendNpcTemplateList[j].modelId)
 					{
-						
+						if(mLegendNpcTemplateList[i].type < mLegendNpcTemplateList[j].type)
+						{
+							mLegendNpcTemplateList[i] = mLegendNpcTemplateList[j];
+						}
 						mLegendNpcTemplateList.RemoveAt(j);
 					}
 					else{
@@ -44,7 +48,6 @@ public class UICreateEnemy : MonoBehaviour
 				}
 				
 			}
-			//Debug.Log("npcid t = " +npcid);
 			for (int i = 0; i < mLegendNpcTemplateList.Count-1; i ++)
 			{
 				for(int j = i+1 ; j < mLegendNpcTemplateList.Count; j++)
@@ -57,7 +60,6 @@ public class UICreateEnemy : MonoBehaviour
 					}
 				}
 			}
-		
 		}
 		else
 		{
@@ -73,7 +75,10 @@ public class UICreateEnemy : MonoBehaviour
 				{
 					if(mNpcTemplate[i].modelId == mNpcTemplate[j].modelId)
 					{
-						
+						if(mNpcTemplate[i].type < mNpcTemplate[j].type)
+						{
+							mNpcTemplate[i] = mNpcTemplate[j];
+						}
 						mNpcTemplate.RemoveAt(j);
 					}
 					else{
@@ -94,7 +99,11 @@ public class UICreateEnemy : MonoBehaviour
 					}
 				}
 			}
-
+//			foreach(NpcTemplate mlengend in mNpcTemplate)
+//			{
+//				Debug.Log("mlengend.modelId = "+mlengend.modelId);
+//				Debug.Log("mlengend.type = "+mlengend.type);
+//			}
 		}
 
         getEnemyData();
@@ -137,6 +146,8 @@ public class UICreateEnemy : MonoBehaviour
         {
             IconSamplePrefab = p_object as GameObject;
         }
+//		Debug.Log("mNpcTemplate.Count = "+mNpcTemplate.Count);
+
 		int count = mNpcTemplate.Count;
 		if(count > 4)
 		{
@@ -165,7 +176,7 @@ public class UICreateEnemy : MonoBehaviour
 			
 			string leftTopSpriteName = null;
 			var rightButtomSpriteName = "";
-
+//			Debug.Log("m_NpcTemplate.type = "+m_NpcTemplate.type);
 			if(m_NpcTemplate.type == 4)
 			{
 //				Debug.Log("boss");
@@ -238,7 +249,9 @@ public class UICreateEnemy : MonoBehaviour
 			NameIdTemplate Enemy_Namestr = NameIdTemplate.getNameIdTemplateByNameId(m_LegendNpcTemplate.EnemyName);
 			var popTextTitle = Enemy_Namestr.Name + " " + "LV" + m_LegendNpcTemplate.level.ToString();
 			var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(m_LegendNpcTemplate.desc).description;
-		
+//		
+//			Debug.Log("mLegendNpcTemplateList[n].id = "+mLegendNpcTemplateList[n].id);
+//			Debug.Log("m_LegendNpcTemplate.icon = "+m_LegendNpcTemplate.icon);
 
 			iconSampleManager.SetIconType(IconSampleManager.IconType.pveHeroAtlas);
 			iconSampleManager.SetIconBasic(3, m_LegendNpcTemplate.icon.ToString());

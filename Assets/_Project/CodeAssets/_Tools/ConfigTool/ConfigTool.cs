@@ -310,6 +310,10 @@ public class ConfigTool : Singleton<ConfigTool>{
 			LoadValues( m_config_value_dict, CONST_QUICK_PAUSE, LoadBoolValue( m_config_xml_dict, CONST_QUICK_PAUSE ) );
 			
 			LoadValues( m_config_value_dict, CONST_QUICK_FX, LoadBoolValue( m_config_xml_dict, CONST_QUICK_FX ) );
+
+			LoadValues( m_config_value_dict, CONST_UNIT_TEST, LoadBoolValue( m_config_xml_dict, CONST_UNIT_TEST) );
+			
+			LoadValues( m_config_value_dict, CONST_TEST_MODE, LoadBoolValue( m_config_xml_dict, CONST_TEST_MODE) );
 		}
 
 		// fps
@@ -344,6 +348,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 			LoadValues( m_config_value_dict, CONST_CHAR_UPDATE_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_CHAR_UPDATE_INTERVAL ) );
 
+			LoadValues( m_config_value_dict, CONST_HIDE_CHAR_TH_CAMERA_OFFSET, LoadFloatValue( m_config_xml_dict, CONST_HIDE_CHAR_TH_CAMERA_OFFSET ) );
+
 			LoadValues( m_config_value_dict, CONST_MAX_EFFECT_COUNT, LoadIntValue( m_config_xml_dict, CONST_MAX_EFFECT_COUNT ) );
 
 			LoadValues( m_config_value_dict, CONST_EFFECT_UPDATE_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_EFFECT_UPDATE_INTERVAL ) );
@@ -368,6 +374,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 			LoadValues( m_config_value_dict, CONST_SHOW_BATTLE_CAMERA_OPS, LoadBoolValue( m_config_xml_dict, CONST_SHOW_BATTLE_CAMERA_OPS ) );
 
+			LoadValues( m_config_value_dict, CONST_SHOW_CAMERA_DIVITION_OPS, LoadBoolValue( m_config_xml_dict, CONST_SHOW_CAMERA_DIVITION_OPS ) );
+
 			LoadValues( m_config_value_dict, CONST_BATTLE_CUSTOM_TRIGGER_UPDATE_INVERVAL, LoadFloatValue( m_config_xml_dict, CONST_BATTLE_CUSTOM_TRIGGER_UPDATE_INVERVAL ) );
 		}
 		
@@ -380,9 +388,15 @@ public class ConfigTool : Singleton<ConfigTool>{
 			LoadValues( m_config_value_dict, CONST_NETOWRK_SOCKET_TIME_OUT, LoadFloatValue( m_config_xml_dict, CONST_NETOWRK_SOCKET_TIME_OUT ) );
 
 			#if UNITY_EDITOR || UNITY_STANDALONE
-			m_is_emulating_latency = IsEmulatingNetworkLatency();
+			m_is_emulating_latency = CalculateIsEmulatingNetworkLatency();
 			
-			m_emulate_network_latency = GetEmulatingNetworkLatency();
+			m_emulate_network_latency = CalculateEmulatingNetworkLatency();
+
+//			if( m_is_emulating_latency ){
+//				Debug.Log( "Emulating: " + m_is_emulating_latency );
+//
+//				Debug.Log( "Emulating Latency: " + m_emulate_network_latency );
+//			}
 			
 			#elif UNITY_IPHONE || UNITY_ANDROID
 			m_is_emulating_latency = false;
@@ -396,6 +410,10 @@ public class ConfigTool : Singleton<ConfigTool>{
 			LoadValues( m_config_value_dict, CONST_NETWORK_SHOW_STATUS, LoadBoolValue( m_config_xml_dict, CONST_NETWORK_SHOW_STATUS ) );
 
 			LoadValues( m_config_value_dict, CONST_NETWORK_SOCKET_UPDATE_INTERVAL, LoadFloatValue( m_config_xml_dict, CONST_NETWORK_SOCKET_UPDATE_INTERVAL ) );
+
+			LoadValues( m_config_value_dict, CONST_PREPARE_NETWORK_WAITING_TIME, LoadFloatValue( m_config_xml_dict, CONST_PREPARE_NETWORK_WAITING_TIME ) );
+
+			LoadValues( m_config_value_dict, CONST_FORCE_NETWORK_TIPS_WAITING_TIME, LoadFloatValue( m_config_xml_dict, CONST_FORCE_NETWORK_TIPS_WAITING_TIME ) );
 		}
 		
 		// logs
@@ -427,8 +445,21 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 			LoadValues( m_config_value_dict, CONST_LOG_DIALOG_BOX, LoadBoolValue( m_config_xml_dict, CONST_LOG_DIALOG_BOX ) );
 
-
 			LoadValues( m_config_value_dict, CONST_LOG_QUALITY_CONFIG, LoadBoolValue( m_config_xml_dict, CONST_LOG_QUALITY_CONFIG ) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_RUNTIME_SOUND_LOAD, LoadBoolValue( m_config_xml_dict, CONST_LOG_RUNTIME_SOUND_LOAD ) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_REALTIME, LoadBoolValue( m_config_xml_dict, CONST_LOG_REALTIME) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_REALTIME_MOVE, LoadBoolValue( m_config_xml_dict, CONST_LOG_REALTIME_MOVE) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_ALLIANCE_BATTLE, LoadBoolValue( m_config_xml_dict, CONST_LOG_ALLIANCE_BATTLE) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_CARRIAGE, LoadBoolValue( m_config_xml_dict, CONST_LOG_CARRIAGE) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_ANIMATION_HIERARCHY, LoadBoolValue( m_config_xml_dict, CONST_LOG_ANIMATION_HIERARCHY) );
+
+			LoadValues( m_config_value_dict, CONST_LOG_MSC, LoadBoolValue( m_config_xml_dict, CONST_LOG_MSC) );
 		}
 		
 		// bundle
@@ -650,7 +681,7 @@ public class ConfigTool : Singleton<ConfigTool>{
 		return p_dict.ContainsKey( p_key );
 	}
 
-	public static bool IsEmulatingNetworkLatency(){
+	private static bool CalculateIsEmulatingNetworkLatency(){
 		bool t_emulating = false;
 
 		if( ContainsKey( m_config_xml_dict, CONST_NETWORK_LATENCY ) ){
@@ -664,12 +695,17 @@ public class ConfigTool : Singleton<ConfigTool>{
 		return t_emulating;
 	}
 
+	public static bool IsEmulatingNetworkLatency(){
+		return m_is_emulating_latency;
+	}
+
 	#endregion
+
 
 
 	#region Get Target Value
 
-	public static float GetEmulatingNetworkLatency(){
+	private static float CalculateEmulatingNetworkLatency(){
 		if( ContainsKey( m_config_xml_dict, CONST_NETWORK_LATENCY ) ){
 			return LoadFloatValue( m_config_xml_dict, CONST_NETWORK_LATENCY );
 		}
@@ -677,6 +713,9 @@ public class ConfigTool : Singleton<ConfigTool>{
 		return 0;
 	}
 
+	public static float GetEmulatingNetworkLatency(){
+		return m_emulate_network_latency;
+	}
 
 	#endregion
 
@@ -778,6 +817,10 @@ public class ConfigTool : Singleton<ConfigTool>{
 	
 	public const string CONST_QUICK_FX					= "QuickFx";
 
+	public const string CONST_UNIT_TEST					= "UnitTest";
+
+	public const string CONST_TEST_MODE                 = "TestMode";
+
 	#endregion
 
 
@@ -799,6 +842,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 	public const string CONST_MAX_CHAR_IN_TAN_BAO_COUNT		= "MaxCharInTanBao";
 
 	public const string CONST_CHAR_UPDATE_INTERVAL			= "CharUpdateInterval";
+
+	public const string CONST_HIDE_CHAR_TH_CAMERA_OFFSET	= "HideCharTHCameraOffset";
 
 	public const string CONST_MAX_EFFECT_COUNT 				= "MaxEffect";
 
@@ -830,6 +875,8 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 	public const string CONST_SHOW_BATTLE_CAMERA_OPS	= "ShowBattleCameraOps";
 
+	public const string CONST_SHOW_CAMERA_DIVITION_OPS 	= "ShowCameraDivisionOps";
+
 	public const string CONST_BATTLE_CUSTOM_TRIGGER_UPDATE_INVERVAL	= "BattleFieldCustomTriggerInterval";
 
 	#endregion
@@ -849,6 +896,10 @@ public class ConfigTool : Singleton<ConfigTool>{
 	public const string CONST_NETWORK_SHOW_STATUS		= "ShowNetworkStatus";
 
 	public const string CONST_NETWORK_SOCKET_UPDATE_INTERVAL	= "SocketUpdateInterval";
+
+	public const string CONST_PREPARE_NETWORK_WAITING_TIME		= "PrepareNetworkWaitingTime";
+
+	public const string CONST_FORCE_NETWORK_TIPS_WAITING_TIME	= "ForceNetworkTipsWaitingTime";
 
 	#endregion
 
@@ -886,7 +937,21 @@ public class ConfigTool : Singleton<ConfigTool>{
 
 
 	public const string CONST_LOG_QUALITY_CONFIG		= "LogQuality";
-			
+
+	public const string CONST_LOG_RUNTIME_SOUND_LOAD	= "LogRuntimeSoundLoad";
+
+	public const string CONST_LOG_REALTIME_MOVE	= "LogRealTimeMove";
+
+	public const string CONST_LOG_REALTIME = "LogRealTime";
+
+	public const string CONST_LOG_ALLIANCE_BATTLE = "LogAllianceBattle";
+
+	public const string CONST_LOG_CARRIAGE = "LogCarriage";
+
+	public const string CONST_LOG_ANIMATION_HIERARCHY = "LogAnimationHierarchy";
+
+	public const string CONST_LOG_MSC = "LogMSC";
+
 	#endregion
 
 

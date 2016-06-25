@@ -796,6 +796,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .253401458
         functionName: PlaySound
         data: 4000|4001|4002|0|0
@@ -2390,8 +2397,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Skill_5
       takeName: Take 001
-      firstFrame: 140
-      lastFrame: 180
+      firstFrame: 183
+      lastFrame: 218
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3149,7 +3156,7 @@ ModelImporter:
       name: BATCLeft
       takeName: Take 001
       firstFrame: 943
-      lastFrame: 967
+      lastFrame: 963
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3280,7 +3287,7 @@ ModelImporter:
       name: BATCRight
       takeName: Take 001
       firstFrame: 972
-      lastFrame: 998
+      lastFrame: 995
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

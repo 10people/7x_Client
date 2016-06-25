@@ -70,6 +70,11 @@ public class SelectUrl : MonoBehaviour {
 			select = NetworkHelper.GetDefaultLoginServerType();
 		}
 
+		if( !PrepareBundleHelper.ShowServerSelector() ){
+			url_select_list.value = NetworkHelper.GetDefaultServerName();
+			select = NetworkHelper.GetDefaultLoginServerType();
+		}
+
 		SetUrl ();
 	}
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LianmengJuanxian id="1" name="50011" type="30" awardShow1="100" awardShow2="10" award="0:900017:100#0:900015:10" tuTenglvNeeded="1" />
-<LianmengJuanxian id="2" name="50012" type="31" awardShow1="10" awardShow2="10" award="0:910000:10#0:900015:10" tuTenglvNeeded="1" />
+<LianmengJuanxian id="1" name="50011" type="30" awardShow1="10" awardShow2="100" award="0:900017:100#0:900015:10" tuTenglvNeeded="1" />
+<LianmengJuanxian id="2" name="50012" type="31" awardShow1="10" awardShow2="1" award="0:910000:1#0:900015:10" tuTenglvNeeded="1" />
 </dataset>

@@ -37,10 +37,6 @@ public class ShowZhanLiInfo : MonoBehaviour {
 		Init ();
 	}
 
-	void Update () {
-	
-	}
-
 	public void Init()
 	{
 		GongJi.text = MyColorData.getColorString (3,JunZhuData.Instance().m_junzhuInfo.gongJi.ToString())+MyColorData.getColorString (6,"("+JunZhuData.Instance().m_junzhuInfo.gongjiMibao.ToString()+")");

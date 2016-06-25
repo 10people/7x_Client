@@ -25,6 +25,7 @@ public class GeneralControl : Singleton<GeneralControl>
 	/// <param name="tempClick">Temp click.</param>
 	public void LoadRulesPrefab (string tempText,GeneralRules.RulesDelegate tempClick = null)
 	{
+		Debug.Log ("tempText:" + tempText);
 		ruleText = tempText;
 		m_rulesDelegate = tempClick;
 
@@ -36,6 +37,7 @@ public class GeneralControl : Singleton<GeneralControl>
 		else
 		{
 			m_rulesObj.SetActive (true);
+			InItRulesPage ();
 		}
 	}
 
@@ -52,6 +54,7 @@ public class GeneralControl : Singleton<GeneralControl>
 			text += (s + "\n");
 		}
 		ruleText = text;
+		Debug.Log ("ruleText:" + ruleText);
 		m_rulesDelegate = tempClick;
 
 		if (m_rulesObj == null)
@@ -115,7 +118,7 @@ public class GeneralControl : Singleton<GeneralControl>
 		}
 		else
 		{
-			tiaoZhanObj.SetActive (true);
+			SetChallengeObjState (true);
 			InItChallengePage ();
 		}
 	}
@@ -133,9 +136,18 @@ public class GeneralControl : Singleton<GeneralControl>
 	}
 	void ChallengeDelegateCallBack ()
 	{
-		tiaoZhanObj.SetActive (false);
+		SetChallengeObjState (false);
 		MainCityUI.TryRemoveFromObjectList (tiaoZhanObj);
 	}
+
+	public void SetChallengeObjState (bool isActive)
+	{
+		if (tiaoZhanObj != null)
+		{
+			tiaoZhanObj.SetActive (isActive);
+		}
+	}
+
 	#endregion
 
 	#region GeneralRecord

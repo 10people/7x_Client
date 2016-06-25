@@ -11,4 +11,5 @@ public class WorshipMoBaiItemManagerment : MonoBehaviour {
     public UILabel m_LabAlliance;
     public UILabel m_LabPrice;
     public UILabel m_LabDes;
+    public GameObject m_ButtonBack;
 }

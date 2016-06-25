@@ -14,6 +14,9 @@ public class SoundIdGroup : XmlLoadManager
 		public List<int> SoundID;
 		public int playNum;
 		public int id;
+		public float pTime;
+		public float nextTime;
+		public float allNumTime;
 	}
 
 	public static List<SoundGroup> m_ListSoundGroup = new List<SoundGroup>();
@@ -68,9 +71,28 @@ public class SoundIdGroup : XmlLoadManager
 				t_reader.MoveToNextAttribute();
 				tempSoundGroup.playNum = int.Parse(t_reader.Value);
 
+				t_reader.MoveToNextAttribute();
+				tempSoundGroup.nextTime = float.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				tempSoundGroup.allNumTime = float.Parse(t_reader.Value);
+
 				m_ListSoundGroup.Add( tempSoundGroup );
 			}
 		}
 		while( t_has_items );
+	}
+
+	public static SoundGroup getSoundGroup(int id)
+	{
+		for(int i = 0; i < m_ListSoundGroup.Count; i ++)
+		{
+			if(m_ListSoundGroup[i].SoundID.Contains(id))
+			{
+				return m_ListSoundGroup[i];
+			}
+		}
+		SoundGroup temp = new SoundGroup();
+		return temp;
 	}
 }

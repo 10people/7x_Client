@@ -2,6 +2,10 @@
 
 
 
+//#define DEBUG_TOP_UI_EFFECT
+
+//#define DEBUG_BOTTOM_UI_EFFECT
+
 //#define DEBUG_UI_EFFECT
 
 //#define FX_ART_USE
@@ -19,7 +23,11 @@ using System.Collections.Generic;
  * 
  * Notes:
  * None.
- */ 
+ */
+//          Top     NGUI    Mid     Buttom
+//Popup     76      75      74      59
+//Function  22      21      20      -1
+//Main      -8      -9      -10     -21
 public class UI3DEffectTool : MonoBehaviour {
 
 	/// Desc:
@@ -323,45 +331,51 @@ public class UI3DEffectTool : MonoBehaviour {
 		}
 	}
 
-	#endregion
+    #endregion
 
 
 
-	#region Top Layer Effect
+    #region Top Layer Effect
 
-	/// Desc:
-	/// Show 3D UI Effect on top of all UIs.
-	/// 
-	/// Params:
-	/// 1.p_ui_type: 
-	///       MainUI for MainCity.UI/BattleField.UI/House.UI;
-	///       FunctionUI for other popout Function.UI;
-	/// 	  PopUI for All Top-Level UIs;
-	/// 
-	/// 2.p_target_ngui_gb: 
-	///       Target NGUI GameObject;
-	/// 
-	/// 3.p_fx_local_pos:
-	///       Local Vector3 Position(Inspector.Transform.Position);
-	/// 
-	/// 4.p_3d_effect_path: 
-	///       "_3D/Fx/_To_Sort/beibao";
-	public static void ShowTopLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null  ){
+    /// <summary>
+    /// Desc:
+    /// Show 3D UI Effect on top of all UIs.
+    /// 
+    /// Params:
+    /// 1.p_ui_type: 
+    ///       MainUI for MainCity.UI/BattleField.UI/House.UI;
+    ///       FunctionUI for other popout Function.UI;
+    /// 	  PopUI for All Top-Level UIs;
+    /// 
+    /// 2.p_target_ngui_gb: 
+    ///       Target NGUI GameObject;
+    /// 
+    /// 3.p_fx_local_pos:
+    ///       Local Vector3 Position(Inspector.Transform.Position);
+    /// 
+    /// 4.p_3d_effect_path: 
+    ///       "_3D/Fx/_To_Sort/beibao";
+    /// </summary>
+    /// <param name="p_ui_type">Camera depth: popop for 76, function for 22, main for -8</param>
+    /// <param name="p_target_ngui_gb"></param>
+    /// <param name="p_3d_effect_path"></param>
+    /// <param name="p_target_ngui_center_gb"></param>
+	public static void ShowTopLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null, bool p_reset_scale_rot = false  ){
 		if( !HaveInstance() ){
 			Debug.LogError( "No UI3DInstance Exist." );
 			
 			return;
 		}
 
-		#if DEBUG_UI_EFFECT
+		#if DEBUG_UI_EFFECT || DEBUG_TOP_UI_EFFECT
 		Debug.Log( "ShowTopLayerEffect: " + p_ui_type + " - " + p_target_ngui_gb );
 
-//		DebugNGUIObject( p_target_ngui_gb );
+		DebugNGUIObject( p_target_ngui_gb );
 //
-//		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
+		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
-		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().TopEffectLoadCallback, p_target_ngui_center_gb );
+		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().TopEffectLoadCallback, p_target_ngui_center_gb, p_reset_scale_rot );
 	}
 
 	public void TopEffectLoadCallback( UIType p_ui_type, GameObject p_ngui_gb, GameObject p_effect_object, GameObject p_target_ngui_center_gb = null  ){
@@ -386,45 +400,53 @@ public class UI3DEffectTool : MonoBehaviour {
 		}
 	}
 
-	#endregion
+    #endregion
 
 
 
-	#region Bottom Layer Effect
+    #region Bottom Layer Effect
 
-	/// Desc:
-	/// Show 3D UI Effect bellow all UIs.
-	/// 
-	/// Params:
-	/// 1.p_ui_type: 
-	///       MainUI for MainCity.UI/BattleField.UI/House.UI;
-	///       FunctionUI for other popout Function.UI;
-	/// 	  PopUI for All Top-Level UIs;
-	/// 
-	/// 2.p_target_ngui_gb: 
-	///       Target NGUI GameObject;
-	/// 
-	/// 3.p_fx_local_pos: 
-	///       Local Vector3 Position(Inspector.Transform.Position);
-	/// 
-	/// 4.p_3d_effect_path: 
-	///       "_3D/Fx/_To_Sort/beibao";
-	public static void ShowBottomLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null ){
+    /// <summary>
+    /// Desc:
+    /// Show 3D UI Effect bellow all UIs.
+    /// 
+    /// Params:
+    /// 1.p_ui_type: 
+    ///       MainUI for MainCity.UI/BattleField.UI/House.UI;
+    ///       FunctionUI for other popout Function.UI;
+    /// 	  PopUI for All Top-Level UIs;
+    /// 
+    /// 2.p_target_ngui_gb: 
+    ///       Target NGUI GameObject;
+    /// 
+    /// 3.p_fx_local_pos: 
+    ///       Local Vector3 Position(Inspector.Transform.Position);
+    /// 
+    /// 4.p_3d_effect_path: 
+    ///       "_3D/Fx/_To_Sort/beibao";
+    /// </summary>
+    /// <param name="p_ui_type">Camera depth: popup for 59, function for -1, main for -21</param>
+    /// <param name="p_target_ngui_gb"></param>
+    /// <param name="p_3d_effect_path"></param>
+    /// <param name="p_target_ngui_center_gb"></param>
+	public static void ShowBottomLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null, bool p_reset_scale_rot = false ){
 		if( !HaveInstance() ){
 			Debug.LogError( "No UI3DInstance Exist." );
 
 			return;
 		}
 
-		#if DEBUG_UI_EFFECT
+		#if DEBUG_UI_EFFECT || DEBUG_BOTTOM_UI_EFFECT
 		Debug.Log( "ShowBottomLayerEffect: " + p_ui_type + " - " + p_target_ngui_gb );
 
-//		DebugNGUIObject( p_target_ngui_gb );
-//
-//		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
+		DebugNGUIObject( p_target_ngui_gb, "Traget.NGUI.GB" );
+
+		DebugNGUIObject( p_target_ngui_center_gb, "Traget.NGUI.Center.GB" );
+
+		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
-		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().BottomEffectLoadCallback, p_target_ngui_center_gb );
+		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().BottomEffectLoadCallback, p_target_ngui_center_gb, p_reset_scale_rot );
 	}
 	
 	public void BottomEffectLoadCallback( UIType p_ui_type, GameObject p_ngui_gb, GameObject p_effect_object, GameObject p_target_ngui_center_gb = null ){
@@ -448,31 +470,37 @@ public class UI3DEffectTool : MonoBehaviour {
 			AddFxWatcher( p_ngui_gb, t_gb, true, p_target_ngui_center_gb );
 		}
 	}
-	
-	#endregion
+
+    #endregion
 
 
 
-	#region Mid Layer Effect
+    #region Mid Layer Effect
 
-	/// Desc:
-	/// Show 3D UI Effect bellow common UIs.
-	/// 
-	/// Params:
-	/// 1.p_ui_type: 
-	///       MainUI for MainCity.UI/BattleField.UI/House.UI;
-	///       FunctionUI for other popout Function.UI;
-	/// 	  PopUI for All Top-Level UIs;
-	/// 
-	/// 2.p_target_ngui_gb: 
-	///       Target NGUI GameObject;
-	/// 
-	/// 3.p_fx_local_pos: 
-	///       Local Vector3 Position(Inspector.Transform.Position);
-	/// 
-	/// 4.p_3d_effect_path: 
-	///       "_3D/Fx/_To_Sort/beibao";
-	public static void ShowMidLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null  ){
+    /// <summary>
+    /// Desc:
+    /// Show 3D UI Effect bellow common UIs.
+    /// 
+    /// Params:
+    /// 1.p_ui_type: 
+    ///       MainUI for MainCity.UI/BattleField.UI/House.UI;
+    ///       FunctionUI for other popout Function.UI;
+    /// 	  PopUI for All Top-Level UIs;
+    /// 
+    /// 2.p_target_ngui_gb: 
+    ///       Target NGUI GameObject;
+    /// 
+    /// 3.p_fx_local_pos: 
+    ///       Local Vector3 Position(Inspector.Transform.Position);
+    /// 
+    /// 4.p_3d_effect_path: 
+    ///       "_3D/Fx/_To_Sort/beibao";
+    /// </summary>
+    /// <param name="p_ui_type">Camera depth: popup for 74, function for 20, main for -10</param>
+    /// <param name="p_target_ngui_gb"></param>
+    /// <param name="p_3d_effect_path"></param>
+    /// <param name="p_target_ngui_center_gb"></param>
+	public static void ShowMidLayerEffect( UIType p_ui_type, GameObject p_target_ngui_gb, string p_3d_effect_path, GameObject p_target_ngui_center_gb = null, bool p_reset_scale_rot = false ){
 		if( !HaveInstance() ){
 			Debug.LogError( "No UI3DInstance Exist." );
 			
@@ -487,27 +515,33 @@ public class UI3DEffectTool : MonoBehaviour {
 //		Debug.Log( "path: " + p_3d_effect_path + " - " + p_target_ngui_center_gb );
 		#endif
 
-		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().MidEffectLoadCallback, p_target_ngui_center_gb );
+		Instance().AddToLoadList( p_ui_type, p_target_ngui_gb, p_3d_effect_path, Instance().MidEffectLoadCallback, p_target_ngui_center_gb, p_reset_scale_rot );
 	}
 
-	/// Desc:
-	/// Show other NGUI overlaying.
-	/// 
-	/// Notes:
-	/// 1.These NGUI compoents must be static which means not moving or scaling.
-	/// 
-	/// Params:
-	/// 1.p_ui_type: 
-	///       MainUI for MainCity.UI/BattleField.UI/House.UI;
-	///       FunctionUI for other popout Function.UI;
-	/// 	  PopUI for All Top-Level UIs;
-	/// 
-	/// 2.p_target_ngui_gb: 
-	///       Target NGUI GameObject, same as ShowMidLayerEffect.
-	/// 
-	/// 3.p_overlay_ngui_gb: 
-	///       Another ngui gb need to be overlaying.
-	public static void ShowMidLayerOverLayNGUI( UIType p_ui_type, GameObject p_target_ngui_gb, GameObject p_overlay_ngui_gb, GameObject p_target_ngui_center_gb = null  ){
+    /// <summary>
+    /// Desc:
+    /// Show other NGUI overlaying.
+    /// 
+    /// Notes:
+    /// 1.These NGUI compoents must be static which means not moving or scaling.
+    /// 
+    /// Params:
+    /// 1.p_ui_type: 
+    ///       MainUI for MainCity.UI/BattleField.UI/House.UI;
+    ///       FunctionUI for other popout Function.UI;
+    /// 	  PopUI for All Top-Level UIs;
+    /// 
+    /// 2.p_target_ngui_gb: 
+    ///       Target NGUI GameObject, same as ShowMidLayerEffect.
+    /// 
+    /// 3.p_overlay_ngui_gb: 
+    ///       Another ngui gb need to be overlaying.
+    /// </summary>
+    /// <param name="p_ui_type">Camera depth: popup for 75, function for 21, main for -9</param>
+    /// <param name="p_target_ngui_gb"></param>
+    /// <param name="p_overlay_ngui_gb"></param>
+    /// <param name="p_target_ngui_center_gb"></param>
+    public static void ShowMidLayerOverLayNGUI( UIType p_ui_type, GameObject p_target_ngui_gb, GameObject p_overlay_ngui_gb, GameObject p_target_ngui_center_gb = null  ){
 		if( !HaveInstance() ){
 			Debug.LogError( "No UI3DInstance Exist." );
 			
@@ -970,6 +1004,8 @@ public class UI3DEffectTool : MonoBehaviour {
 
 		public List<FxWatcherShadow> m_shadow_list = new List<FxWatcherShadow>();
 
+		public UIWindowEventTrigger m_window_trigger = null;
+
 		public FxWatcher( GameObject p_target_ngui_gb ){
 			m_target_ngui_gb = p_target_ngui_gb;
 
@@ -981,6 +1017,10 @@ public class UI3DEffectTool : MonoBehaviour {
 				for( int i = 0; i < t_cams.Length; i++ ){
 					m_target_ngui_ui_root_cams.Add( t_cams[ i ] );
 				}
+			}
+
+			{
+				m_window_trigger = p_target_ngui_gb.GetComponentInParent<UIWindowEventTrigger>();
 			}
 
 			UpdateCachedVisibility();
@@ -1056,11 +1096,13 @@ public class UI3DEffectTool : MonoBehaviour {
 				return;
 			}
 
-			if( m_cached_visibility == GetTargetNGUIVisibility() ){
+			bool t_visibility = GetTargetNGUIVisibility();
+
+			if( m_cached_visibility == t_visibility ){
 				return;
 			}
 			else{
-				m_cached_visibility = GetTargetNGUIVisibility();
+				m_cached_visibility = t_visibility;
 			}
 
 			{
@@ -1081,11 +1123,46 @@ public class UI3DEffectTool : MonoBehaviour {
 			return m_cached_visibility;
 		}
 
+		public bool IsAutoHideUIFx(){
+			if( m_window_trigger == null ){
+				return false;
+			}
+
+			return m_window_trigger.m_fx_auto_hide;
+		}
+
+		public bool IsInTopUIWindow(){
+			int t_top_id = UIWindowTool.GetCurrentTopUIWindowId();
+
+			if( t_top_id == UIWindowEventTrigger.DEFAULT_UI_WINDOW_ID ){
+				return false;
+			}
+
+			if( m_window_trigger == null ){
+				return false;
+			}
+
+			if( m_window_trigger.m_ui_id == t_top_id ){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+
 		public bool GetTargetNGUIVisibility(){
 //			return m_target_ngui_gb.activeInHierarchy;
 
 			if( m_target_ngui_gb == null ){
 				return false;
+			}
+
+			if( IsAutoHideUIFx() ){
+				bool t_is_top = IsInTopUIWindow();
+
+				if( !t_is_top ){
+					return false;
+				}
 			}
 
 			if( m_target_ngui_ui_root_cams.Count > 0 ){
@@ -1251,8 +1328,8 @@ public class UI3DEffectTool : MonoBehaviour {
 
 	private List<FxToLoad> m_fx_to_load_list = new List<FxToLoad>();
 
-	private void AddToLoadList( UIType p_ui_type, GameObject p_ngui_gb, string p_fx_path, UI3DEffectLoadDelegate p_call_back, GameObject p_target_ngui_center_gb = null ){
-		FxToLoad t_task = new FxToLoad( p_ui_type, p_ngui_gb, p_fx_path, p_call_back, p_target_ngui_center_gb );
+	private void AddToLoadList( UIType p_ui_type, GameObject p_ngui_gb, string p_fx_path, UI3DEffectLoadDelegate p_call_back, GameObject p_target_ngui_center_gb = null, bool p_reset_rot_scale = false ){
+		FxToLoad t_task = new FxToLoad( p_ui_type, p_ngui_gb, p_fx_path, p_call_back, p_target_ngui_center_gb, p_reset_rot_scale );
 
 		m_fx_to_load_list.Add( t_task );
 	}
@@ -1334,7 +1411,9 @@ public class UI3DEffectTool : MonoBehaviour {
 
 		private UI3DEffectLoadDelegate m_call_back;
 
-		public FxToLoad( UIType p_ui_type, GameObject p_ngui_gb, string p_fx_path, UI3DEffectLoadDelegate p_call_back, GameObject p_target_ngui_center_gb ){
+		private bool m_reset_scale_rot = false;
+
+		public FxToLoad( UIType p_ui_type, GameObject p_ngui_gb, string p_fx_path, UI3DEffectLoadDelegate p_call_back, GameObject p_target_ngui_center_gb, bool p_reset_scale_rot = false ){
 			if( p_ngui_gb == null ){
 				Debug.LogError( "Error NGUI GameObject = null" );
 			}
@@ -1362,6 +1441,8 @@ public class UI3DEffectTool : MonoBehaviour {
 			m_fx_path = p_fx_path;
 
 			m_call_back = p_call_back;
+
+			m_reset_scale_rot = p_reset_scale_rot;
 		}
 
 		public GameObject GetNGUIGameObject(){
@@ -1429,12 +1510,26 @@ public class UI3DEffectTool : MonoBehaviour {
 
 				if( m_target_ngui_center_gb == null ){
 					t_delta_pos = TransformHelper.GetLocalPositionInUIRoot( m_ngui_gb );
+
+					#if DEBUG_TOP_UI_EFFECT || DEBUG_BOTTOM_UI_EFFECT
+					Debug.Log( "Target center is null: " + m_ngui_gb );
+					#endif
 				}
 				else{
 					t_delta_pos = TransformHelper.GetLocalPositionInUIRoot( m_target_ngui_center_gb );
+
+					#if DEBUG_TOP_UI_EFFECT || DEBUG_BOTTOM_UI_EFFECT
+					Debug.Log( "Target center exist: " + m_target_ngui_center_gb );
+					#endif
 				}
 
-//				Debug.Log( "Init Fx Pos: " + t_delta_pos );
+				#if DEBUG_TOP_UI_EFFECT || DEBUG_BOTTOM_UI_EFFECT
+				Debug.Log( "Init Fx Pos: " + t_delta_pos );
+				#endif
+
+				if( m_reset_scale_rot ){
+					TransformHelper.ResetLocalPosAndLocalRotAndLocalScale( t_gb );
+				}
 
 				t_gb.transform.localPosition = t_delta_pos * UI3DEffectTool.Instance().m_c_factor;
 
@@ -1493,7 +1588,9 @@ public class UI3DEffectTool : MonoBehaviour {
 
 	#region Utilities
 
-	private static void DebugNGUIObject( GameObject p_ngui_gb ){
+	private static void DebugNGUIObject( GameObject p_ngui_gb, string p_prefix = "" ){
+		Debug.Log( "----------- " + p_prefix + "-----------------" );
+
 		GameObjectHelper.LogGameObjectHierarchy( p_ngui_gb );
 
 		TransformHelper.LogPosition( p_ngui_gb, "UI3DEffectTool" );

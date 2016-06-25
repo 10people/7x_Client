@@ -15,9 +15,4 @@ public class DebugMicroPhoneData : MonoBehaviour {
 
 		Debug.Log( "DebugMicroPhoneData.Start() Done." );
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

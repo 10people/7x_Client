@@ -58,7 +58,7 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 		{
 			m_LabelButtonName.gameObject.SetActive(false);
 		}
-		if(m_FuncTemplate.m_iRedType != 0)
+		if(m_FuncTemplate.m_iRedType == 1)
 		{
 			GameObject.Destroy(m_RedAlertObject.GetComponent<UISprite>());
 		}
@@ -77,6 +77,13 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 			MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.SetActive(true);
 			MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.transform.position = m_ButtonSprite.transform.position;
 			MainCityUI.m_MainCityUI.m_MainCityUIRB.TimeCalcRoot.transform.parent = m_ButtonSprite.transform.parent;
+		}
+		else if(m_FuncTemplate.m_iID == 142)
+		{
+			if( !UI3DEffectTool.HaveAnyFx( m_RedAlertObject ) )
+			{
+				MainCityUI.SetRedAlert(142, true);
+			}
 		}
 		else if(m_FuncTemplate.m_iID == 311)
 		{
@@ -279,6 +286,10 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 
 	public void setSuperAlert(bool isShow)
 	{
+		if(m_FuncTemplate.m_iID == 610)
+		{
+			Debug.Log(isShow);
+		}
 		if(isShow)
 		{
 			EffectTool.OpenMultiUIEffect_ById(m_ButtonSprite.gameObject, 223, 224, 225);

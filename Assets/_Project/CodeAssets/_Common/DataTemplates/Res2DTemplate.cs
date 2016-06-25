@@ -278,6 +278,7 @@ public class Res2DTemplate : XmlLoadManager
         MODEL_PARENT = 269,
 		RECHARGE_ROOT = 270,
 		ALLIANCE_BATTLE_SCENE = 271,
+        ALLIANCE_COUNTRYSELECT_ITEM = 276,
     }
 
 

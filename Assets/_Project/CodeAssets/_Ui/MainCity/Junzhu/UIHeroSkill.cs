@@ -469,7 +469,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 		{
 			if(JunZhuData.Instance().m_junzhuInfo.jinBi < m_listCurPageHeroSkillUpTemplate[m_iSelectIndex].m_iNeedMoney)
 			{
-				JunZhuData.Instance().BuyTiliAndTongBi(false, true, false);
+				Global.CreateFunctionIcon(501);
 			}
 			else
 			{

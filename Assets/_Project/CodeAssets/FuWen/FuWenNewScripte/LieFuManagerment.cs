@@ -10,6 +10,7 @@ using ProtoBuf.Meta;
 
 public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 
+	public UICamera mCamera;
 	public List<UIEventListener> BtnList = new List<UIEventListener>(); 
 	
 	public string ButnName;
@@ -28,8 +29,13 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 	
 	private CheckYindao mCheckYindao;
 
+	private bool FirstLieFu = false;
 	void Awake()
 	{
+		// reigster trigger delegate
+		{
+			UIWindowEventTrigger.SetOnTopAgainDelegate( gameObject, YinDaoManager );
+		}
 		SocketTool.RegisterMessageProcessor(this);
 		AddEventListener ();
 		
@@ -48,7 +54,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 	}
 	public void BtnManagerMent(GameObject mbutton)
 	{
-		if(YindaoIsopen)return;
+//		if(YindaoIsopen)return;
 		switch(mbutton.name)
 		{
 		case "Button_1":
@@ -71,11 +77,17 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 		}
 	}
 
-	void Start () {
-		YinDaoManager ();
+	void Start () 
+	{
+		YindaoIsopen = false;
+		FirstLieFu = true;
 	}
-
-	void Update () {
+	void Update()
+	{
+		if(!YindaoIsopen)
+		{
+			YinDaoManager ();
+		}
 
 	}
 	public void Init(CheckYindao m_CheckYindao = null)
@@ -90,25 +102,41 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 	private bool YindaoIsopen;
 	void YinDaoManager()
 	{
-		YindaoIsopen = false;
-		if(FreshGuide.Instance().IsActive(200060)&& TaskData.Instance.m_TaskInfoDic[200060].progress >= 0)
+		if(FirstLieFu)
 		{
-			Debug.Log("引导猎符按钮");
+			if(FreshGuide.Instance().IsActive(200060)&& TaskData.Instance.m_TaskInfoDic[200060].progress >= 0)
+			{
+				Debug.Log("引导猎符按钮");
+
+				YindaoIsopen = true;
+				FirstLieFu = false;
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200060];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+				return;
+				//StartCoroutine("SetBtnEnble");
+			}
+		}
+		if(FreshGuide.Instance().IsActive(200065)&& TaskData.Instance.m_TaskInfoDic[200065].progress >= 0)
+		{
+			Debug.Log("第二次引导猎符按钮");
 			YindaoIsopen = true;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200060];
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200065];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-			StartCoroutine("SetBtnEnble");
+			//StartCoroutine("SetBtnEnble");
 		}
 		else
 		{
-			UIYindao.m_UIYindao.CloseUI();
+			if(UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				UIYindao.m_UIYindao.CloseUI();
+			}
 		}
 	}
-	IEnumerator SetBtnEnble()
-	{
-		yield return new WaitForSeconds (0.5f);
-		YindaoIsopen = false;
-	}
+//	IEnumerator SetBtnEnble()
+//	{
+//		yield return new WaitForSeconds (0.5f);
+//		YindaoIsopen = false;
+//	}
 	public bool OnProcessSocketMessage(QXBuffer p_message)
 	{
 		if (p_message != null)
@@ -160,13 +188,19 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 						}
 					}
 					GetLieFuAward();
-					QXComData.SendQxProtoMessage (ProtoIndexes.C_LOAD_FUWEN_IN_BAG); // 
+
 					Init();
+					if(NewFuWenPage.Instance().RongHeUIisOpen)
+					{
+						FuWenInfoShow.Instance().Init();
+					}
+
 				}
 				else if(mLieFuActionResp.result == 1)
 				{
 					Global.CreateFunctionIcon (501);
 				}
+				YindaoIsopen = false;
 				return true;
 			}
 			default: return false;
@@ -216,6 +250,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 			AddEventListener ();
 			mgrid.repositionNow = true;
 		}
+
 	}
 	GameObject ShowFuwen;
 	void GetLieFuAward()
@@ -239,7 +274,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 
 		mFuWenShow.m_LieFuActionInfo = m_LieFuAction;
 
-		mFuWenShow.Init ();
+		mFuWenShow.Init (null,null,YinDaoManager,mCamera);
 	}
 	public void Close()
 	{
@@ -248,6 +283,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 			mCheckYindao();
 			mCheckYindao = null;
 		}
+		QXComData.SendQxProtoMessage (ProtoIndexes.C_LOAD_FUWEN_IN_BAG); // 
 		MainCityUI.TryRemoveFromObjectList(this.gameObject);
 		Destroy (this.gameObject);
 	}

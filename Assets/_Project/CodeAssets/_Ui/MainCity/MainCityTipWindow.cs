@@ -21,6 +21,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 	public List<UISprite> m_ListIcon2 = new List<UISprite>();
 	public List<UISprite> m_ListIcon3 = new List<UISprite>();
 	public List<UISprite> m_ListRect = new List<UISprite>();
+	public List<UISprite> m_ListZhuangRect = new List<UISprite>();
 
 	public List<List<UILabel>> m_ListLabel = new List<List<UILabel>>();//进度label
 	public List<UILabel> m_ListLabel0 = new List<UILabel>();
@@ -197,12 +198,12 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 				if(i == m_iPageIndex)
 				{
 					m_pageButton[i].color = Color.white;
-					m_pageButtonLabel[i].GetComponent<UILabelType>().setType(2);
+					m_pageButtonLabel[i].GetComponent<UILabelType>().setType(10);
 				}
 				else
 				{
 					m_pageButton[i].color = Color.grey;
-					m_pageButtonLabel[i].GetComponent<UILabelType>().setType(101);
+					m_pageButtonLabel[i].GetComponent<UILabelType>().setType(11);
 				}
 			}
 		}
@@ -258,7 +259,13 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 					}
 				}
 			}
-
+			else
+			{
+				for(int i = 0; i < 3; i ++)
+				{
+					m_ListIcon[m_iPageIndex][i + 3].gameObject.SetActive(false);
+				}
+			}
 
 			break;
 		case 1:
@@ -282,6 +289,18 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 					{
 						m_ListIcon[m_iPageIndex][i*3+q].gameObject.SetActive(true);
 						m_ListIcon[m_iPageIndex][i*3+q].spriteName = CommonItemTemplate.getCommonItemTemplateById(data1.pageData[i].zhuangbeiData[q].id).icon + "";
+						int tempColor = CommonItemTemplate.getCommonItemTemplateById(data1.pageData[i].zhuangbeiData[q].id).color;
+						m_ListZhuangRect[i*3+q].spriteName = QualityIconSelected.SelectQuality(tempColor);
+						if (IconSampleManager.FreeQualityFrameSpriteName.Contains(tempColor - 1))
+						{
+							m_ListZhuangRect[i*3+q].width = m_ListZhuangRect[i*3+q].height = 86;
+						}
+						else if (IconSampleManager.FrameQualityFrameSpriteName.Contains(tempColor - 1))
+						{
+							m_ListZhuangRect[i*3+q].width = m_ListZhuangRect[i*3+q].height = 96;
+						}
+//						public static readonly List<int> FrameQualityFrameSpriteName = new List<int>() { 2, 4, 5, 7, 8, 10 };
+//						public static readonly List<int> FreeQualityFrameSpriteName = new List<int>() {0, 1, 3, 6, 9, 12, 13};
 					}
 					else
 					{
@@ -444,7 +463,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 		}
 		else if(ui.name.IndexOf("icon") != -1)
 		{
-			int tempIndex = int.Parse(ui.name.Substring(4,1));
+			int tempIndex = int.Parse(ui.name.Substring(4,ui.name.Length - 4));
 			switch(m_iPageIndex)
 			{
 			case 0:
@@ -472,7 +491,6 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 			case 1:
 				if(data1.pageData[tempIndex / 3].zhuangbeiData[tempIndex % 3].type == 0)
 				{
-
 					if(tempIndex / 3 == 0)
 					{
 						Global.m_sPanelWantRun = "1,";
@@ -492,6 +510,7 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 					{
 						Global.m_sPanelWantRun = "0,";
 						Global.m_sMainCityWantOpenPanel = 12;
+
 					}
 					Global.m_sPanelWantRun += data1.pageData[tempIndex / 3].zhuangbeiData[tempIndex % 3].id;
 					MainCityUI.TryRemoveFromObjectList(gameObject);

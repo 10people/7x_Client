@@ -25,10 +25,12 @@ public class CWBrandItem : MonoBehaviour {
 		m_nation1.spriteName = QXComData.GetNationSpriteName (tempInfo.nationId1);
 		m_nation2.spriteName = QXComData.GetNationSpriteName (tempInfo.nationId2);
 
+		QXComData.SetNationSprite (m_nation1,tempInfo.nationId1);
+		QXComData.SetNationSprite (m_nation2,tempInfo.nationId2);
 
-
-		m_allianceName1.text = (tempInfo.allianceName1 == QXComData.AllianceInfo ().name ? "[10ff2b]" : "[00e1c4]") + tempInfo.allianceName1 + "[-]";
-		m_allianceName2.text = (tempInfo.allianceName2 == QXComData.AllianceInfo ().name ? "[10ff2b]" : "[00e1c4]") + tempInfo.allianceName2 + "[-]的";
+		bool myself = tempInfo.allianceName1 == QXComData.AllianceInfo ().name ? true : false;
+		m_allianceName1.text = MyColorData.getColorString (myself ? 4 : 5,tempInfo.allianceName1);
+		m_allianceName2.text = MyColorData.getColorString (myself ? 4 : 5,tempInfo.allianceName2);
 
 		m_city.text = NameIdTemplate.GetName_By_NameId (JCZCityTemplate.GetJCZCityTemplateById (tempInfo.cityId).name);
 

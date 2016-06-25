@@ -9,6 +9,8 @@ public class CoolDown : MonoBehaviour
 
 	public BattleWeaponSkillDolt spriteWeaponDolt;
 
+	public UISprite spriteIcon;
+
 
 	private float timeTotal;
 
@@ -22,6 +24,9 @@ public class CoolDown : MonoBehaviour
 
 	private GameObject tempGc;
 
+	private Color iconColor = new Color(1f, 1f, 1f, 1f);
+
+	private Color iconGray = new Color(0f, 0f, 0f, 1f);
 
 
 	void Awake(){
@@ -38,6 +43,8 @@ public class CoolDown : MonoBehaviour
 		
 		spriteCD.gameObject.SetActive (false);
 
+		setIconColor(iconColor);
+
 		tempPosition = transform.localPosition;
 	}
 
@@ -47,7 +54,18 @@ public class CoolDown : MonoBehaviour
 
 		spriteCD.gameObject.SetActive (false);
 
+		setIconColor(iconColor);
+
 		tempPosition = transform.localPosition;
+	}
+
+	public void setIconColor(Color color)
+	{
+		if (spriteIcon == null) return;
+
+		SparkleEffectItem.CloseSparkle (spriteIcon.gameObject);
+
+		spriteIcon.color = color;
 	}
 
 	public void refreshCDTime(int time = 0)
@@ -71,9 +89,11 @@ public class CoolDown : MonoBehaviour
 		{
 			spriteCD.gameObject.SetActive (true);
 
+			setIconColor(iconGray);
+
 			timeLst = curTimeTotal;
 
-			if(labelCDTime != null) labelCDTime.text = "" + (int)timeLst;
+			if(labelCDTime != null) labelCDTime.text = "" + (int)(timeLst + 1);
 		}
 	}
 
@@ -91,6 +111,8 @@ public class CoolDown : MonoBehaviour
 
 			spriteCD.gameObject.SetActive(false);
 
+			setIconColor(iconColor);
+
 			if(tempGc == null)
 			{
 				tempGc = new GameObject();
@@ -118,7 +140,7 @@ public class CoolDown : MonoBehaviour
 		{
 			spriteCD.fillAmount = timeLst / curTimeTotal;
 
-			if(labelCDTime != null) labelCDTime.text = "" + (int)timeLst;
+			if(labelCDTime != null) labelCDTime.text = "" + (int)(timeLst + 1);
 		}
 	}
 
@@ -136,6 +158,8 @@ public class CoolDown : MonoBehaviour
 
 			spriteCD.gameObject.SetActive(false);
 
+			setIconColor(iconColor);
+
 			if(tempGc == null)
 			{
 				tempGc = new GameObject();
@@ -163,7 +187,7 @@ public class CoolDown : MonoBehaviour
 		{
 			spriteCD.fillAmount = timeLst / curTimeTotal;
 
-			if(labelCDTime != null) labelCDTime.text = "" + (int)timeLst;
+			if(labelCDTime != null) labelCDTime.text = "" + (int)(timeLst + 1);
 		}
 	}
 

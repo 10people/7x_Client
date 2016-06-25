@@ -1,6 +1,4 @@
-﻿//#define DEBUG_MOVE
-
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.IO;
@@ -32,9 +30,10 @@ namespace AllianceBattle
             if (Time.realtimeSinceStartup - PlayerManager.m_LatestServerSyncTime >
                 NetworkHelper.GetPingSecWithMin(Console_SetNetwork.GetMinPingForPreRun()) * NetworkHelper.GetValidRunC())
             {
-#if DEBUG_MOVE
-                Debug.LogWarning("+++++++++++++Limit self msg.");
-#endif
+                if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
+                {
+                    Debug.LogWarning("+++++++++++++Limit self upload message.");
+                }
 
                 if (!IsSetToRestrictPosition)
                 {
@@ -48,9 +47,10 @@ namespace AllianceBattle
             {
                 if (IsSetToRestrictPosition)
                 {
-#if DEBUG_MOVE
-                    Debug.LogWarning("+++++++++++Set restrict position from " + transform.localPosition + " to " + RestrictPosition);
-#endif
+                    //if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
+                    //{
+                    //    Debug.LogWarning("+++++++++++Set restrict position from " + transform.localPosition + " to " + RestrictPosition);
+                    //}
 
                     //transform.localPosition = RestrictPosition;
 

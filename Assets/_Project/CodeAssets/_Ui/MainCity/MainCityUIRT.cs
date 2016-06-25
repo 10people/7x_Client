@@ -110,7 +110,7 @@ public class MainCityUIRT : MYNGUIPanel
 		}
 		else if(ui.name.IndexOf("RT_BuyRecharge") != -1)
 		{
-			Global.CreateFunctionIcon(101);
+			RechargeData.Instance.RechargeDataReq ();
 		}
 		else if(ui.name.IndexOf("RT_BuyEnergy") != -1)
 		{

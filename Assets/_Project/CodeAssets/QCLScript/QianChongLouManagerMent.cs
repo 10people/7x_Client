@@ -9,6 +9,10 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 
+	public UISprite VipN;
+
+	public UILabel EXpAdd;
+
 	public GameObject m_PlayerModel;
 
 	public GameObject m_PlayerParent;
@@ -38,6 +42,12 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	public static QianChongLouManagerMent mQianChongLouManagerMent;
 
 	private bool YindaoIsopen;
+
+	private int mJunZhuZhanli;
+
+	public GameObject mSaoDangBtn;
+
+	public UISprite mSaodangSprite;
 
 	public static QianChongLouManagerMent Instance()
 	{
@@ -71,10 +81,19 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	
 		initStart ();
 	}
+	void Update()
+	{
+		if(JunZhuData.Instance().m_junzhuInfo.zhanLi > mJunZhuZhanli && mMainInfo != null)
+		{
+			mJunZhuZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
+			ShowmZhanLiInfo();
+		}
+	}
 	void initStart()
 	{
 		CanSaoDang = true;
-		SocketTool.Instance().SendSocketMessage(ProtoIndexes.CHONG_LOU_INFO_REQ); // 重楼主界面请求,
+
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.CHONG_LOU_INFO_REQ,ProtoIndexes.CHONG_LOU_INFO_RESP.ToString()); // 重楼主界面请求,
 		YinDaoManager ();
 	}
 	void YinDaoManager()
@@ -97,9 +116,7 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 		yield return new WaitForSeconds (0.5f);
 		YindaoIsopen = false;
 	}
-	void Update () {
-	
-	}
+
 	public bool OnProcessSocketMessage(QXBuffer p_message)
 	{
 		if (p_message != null)
@@ -149,7 +166,7 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 				}
 				else if(mChongLouSaoDangResp.result == 2)
 				{
-					string data = "[c40000]已无关卡扫荡！[-]";
+					string data = "[c40000]今日已无可扫荡关卡！[-]";
 					ClientMain.m_UITextManager.createText( data);
 				}
 				else if(mChongLouSaoDangResp.result == 3)
@@ -212,8 +229,16 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	{
 		MainCityUILT.ShowMainTipWindow();
 	}
+	public GameObject EnterBtn;
+	public UISprite m_EnterBtnSprite;
 	public void InitData()
 	{
+		int viplevel = 5;
+		VipN.spriteName = "v" + viplevel.ToString ();
+		VipTemplate mvtemp = VipTemplate.GetVipInfoByLevel (viplevel);
+
+		EXpAdd.text = "(额外获得"+((mvtemp.ExpAdd - 1)*100 ).ToString()+"%经验加成)";
+
 		Debug.Log("mMainInfo.currentLv = "+mMainInfo.currentLv);
 		InitAward ();
 		if(mMainInfo == null)
@@ -224,6 +249,16 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 		LayerName.text = "第"+mMainInfo.currentLv.ToString()+"层";
 		HistoryNumber.text = mMainInfo.historyHighestLv.ToString();
 		LoadPlayer ();
+
+		if (mMainInfo.currentLv > 70) {
+			EnterBtn.GetComponent<UIButton>().enabled = false;
+			m_EnterBtnSprite.color = Color.gray;
+		}
+		if(mMainInfo.currentLv > mMainInfo.historyHighestLv)
+		{
+			mSaoDangBtn.GetComponent<UIButton>().enabled = false;
+			mSaodangSprite.color = Color.gray;
+		}
 	}
 	void LoadPlayer()
 	{
@@ -231,10 +266,20 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 		{
 			Destroy(m_PlayerModel);
 		}
+
 		ChonglouPveTemplate mChonglouPve = ChonglouPveTemplate.Get_QCL_PVETemplate_By_Layer (mMainInfo.currentLv);
+		int modelid = ChongLouNpcTemplate.Get_QCL_NpcModel_By_npcid (mChonglouPve.npcId);
 
+		Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(modelid),
+		                        LoadCallback );
+		ShowmZhanLiInfo ();
+	}
+	public void ShowmZhanLiInfo()
+	{
+		ChonglouPveTemplate mChonglouPve = ChonglouPveTemplate.Get_QCL_PVETemplate_By_Layer (mMainInfo.currentLv);
+		
 		RecZhanLi.text = mChonglouPve.recZhanli.ToString ();
-
+		
 		if(JunZhuData.Instance().m_junzhuInfo.zhanLi < mChonglouPve.recZhanli )
 		{
 			OnStrongBtn.SetActive(true);
@@ -245,11 +290,6 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 			OnStrongBtn.SetActive(false);
 			mZhanLi.text = MyColorData.getColorString(4, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
 		}
-
-		int modelid = ChongLouNpcTemplate.Get_QCL_NpcModel_By_npcid (mChonglouPve.npcId);
-
-		Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(modelid),
-		                        LoadCallback );
 	}
 	public void LoadCallback(ref WWW p_www, string p_path, Object p_object)
 	{
@@ -288,7 +328,7 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	[HideInInspector]
 	public GameObject IconSamplePrefab;
 
-	float m_Dis = 60;
+	float m_Dis = 45;
 
 	void InitAward()
 	{
@@ -330,19 +370,23 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 			}
 		}
 
-		string[] First_item_strings = mCL.firstAwardID.Split(t_items_delimiter);
-		
-		for (int i = 0; i < First_item_strings.Length; i++)
+		if(mMainInfo.currentLv>mMainInfo.historyHighestLv)
 		{
-			string t_item = First_item_strings[i];
+			string[] First_item_strings = mCL.firstAwardID.Split(t_items_delimiter);
 			
-			string[] t_finals = t_item.Split(t_item_id_delimiter);
-			
-			if(t_finals[0] != "" && !First_t_items.Contains(int.Parse(t_finals[0])))
+			for (int i = 0; i < First_item_strings.Length; i++)
 			{
-				First_t_items.Add(int.Parse(t_finals[0]));
+				string t_item = First_item_strings[i];
+				
+				string[] t_finals = t_item.Split(t_item_id_delimiter);
+				
+				if(t_finals[0] != "" && !First_t_items.Contains(int.Parse(t_finals[0])))
+				{
+					First_t_items.Add(int.Parse(t_finals[0]));
+				}
 			}
 		}
+
 		numPara = t_items.Count + First_t_items.Count;
 //		Debug.Log ("numPara = "+numPara);
 //		for(int i = 0; i < AwardNumber; i++)
@@ -422,7 +466,7 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 					
 					iconSampleManager.SetIconByID(mItemTemp.id, mAwardTemp[i].itemNum.ToString(), 3);
 					iconSampleManager.SetIconPopText(mAwardTemp[i].itemId, popTitle, popDesc, 1);
-					iconSampleObject.transform.localScale = new Vector3(0.6f,0.6f,1);
+					iconSampleObject.transform.localScale = new Vector3(0.4f,0.4f,1);
 					if(n < First_t_items.Count)
 					iconSampleManager.FirstWinSpr.gameObject.SetActive(true);
 				}
@@ -434,6 +478,11 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	GameObject EnterBattelUI;
 	void BattleBtn() // 挑战
 	{
+		if(mMainInfo.currentLv > 70)
+		{
+			ClientMain.m_UITextManager.createText("此版本只可挑战到70层，敬请期待正式版！");
+			return;
+		}
 		if(EnterBattelUI)
 		{
 			return;

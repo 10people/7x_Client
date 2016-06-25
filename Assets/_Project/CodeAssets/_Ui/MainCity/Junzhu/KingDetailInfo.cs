@@ -30,7 +30,7 @@ public class KingDetailInfo : MonoBehaviour
 
     public static Dictionary<int, string> TransferNation = new Dictionary<int, string>()
     {
-        {1, "齐"}, {2, "楚"}, {3, "燕"}, {4, "韩"}, {5, "赵"}, {6, "魏"}, {7, "秦"},
+        {0, "周"}, {1, "齐"}, {2, "楚"}, {3, "燕"}, {4, "韩"}, {5, "赵"}, {6, "魏"}, {7, "秦"},
     };
 
     /// <summary>
@@ -81,6 +81,9 @@ public class KingDetailInfo : MonoBehaviour
     public void SetThis(JunZhuInfo data, List<KingDetailButtonController.KingDetailButtonConfig> configList)
     {
         m_KingInfo = data;
+
+        //Set role model.
+        SetModel();
 
         if (m_KingInfo.chenghao > 0)
         {
@@ -142,13 +145,11 @@ public class KingDetailInfo : MonoBehaviour
     void Awake()
     {
         MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
-        MainCityUI.setGlobalTitle(TopLeftAnchor, "玩家信息", 0, 0);
+        MainCityUI.setGlobalTitle(TopLeftAnchor, "君主信息", 0, 0);
     }
 
     void Start()
     {
-        m_ScaleEffectController.OpenCompleteDelegate = EndDelegate;
-
         //Close guide.
         CityGlobalData.m_isRightGuide = true;
     }
@@ -183,9 +184,8 @@ public class KingDetailInfo : MonoBehaviour
         m_PlayerModel.transform.rotation = new Quaternion(0, 163, 0, 0);
     }
 
-    public void EndDelegate()
+    public void SetModel()
     {
-        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + m_KingInfo.roleId),
-                                PlayerLoadCallBack);
+        Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + m_KingInfo.roleId), PlayerLoadCallBack);
     }
 }

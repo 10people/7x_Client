@@ -22,6 +22,8 @@ namespace Carriage
 		public GameObject historyBtnObj;
 		public GameObject enemyBtnObj;
 
+		public UILabel m_title;
+
 		public UILabel noRecordLabel;
 		public UILabel recordNumLabel;
 		public UILabel recordDesLabel;
@@ -81,8 +83,10 @@ namespace Carriage
 		{
 			recordType = tempType;
 
-			SetBtnState (historyBtnObj,recordType == BiaoJuRecordData.RecordType.HISTORY ? true : false);
-			SetBtnState (enemyBtnObj,recordType == BiaoJuRecordData.RecordType.ENEMY ? true : false);
+			m_title.text = "[b]" + (recordType == BiaoJuRecordData.RecordType.HISTORY ? "记 录" : "仇 家") + "[-]";
+
+			QXComData.SetBtnState (historyBtnObj,recordType == BiaoJuRecordData.RecordType.HISTORY ? true : false);
+			QXComData.SetBtnState (enemyBtnObj,recordType == BiaoJuRecordData.RecordType.ENEMY ? true : false);
 			
 			historyObj.SetActive (tempType == BiaoJuRecordData.RecordType.HISTORY ? true : false);
 			enemyPageObj.SetActive (tempType == BiaoJuRecordData.RecordType.ENEMY ? true : false);
@@ -128,6 +132,7 @@ namespace Carriage
 			historySb.gameObject.SetActive (tempResp.historyList.Count > 4 ? true : false);
 
 			noRecordLabel.text = historyItemList.Count > 0 ? "" : "劫镖记录为空";
+			noRecordLabel.transform.localPosition = new Vector3(0,-40,0);
 			recordDesLabel.text = "超出条目部分会自动移除";
 			recordNumLabel.text = "条数" + tempResp.historyList.Count + "/50";
 
@@ -165,11 +170,10 @@ namespace Carriage
 			enemySc.enabled = tempResp.enemyList.Count > 3 ? true : false;
 			enemySb.gameObject.SetActive (tempResp.enemyList.Count > 3 ? true : false);
 
-			string enemyRule = LanguageTemplate.GetText (LanguageTemplate.Text.YUN_BIAO_72);//规则说明
-			string[] enemyRuleLength = enemyRule.Split ('：');
-			enemyRules.text = MyColorData.getColorString (41,enemyRuleLength[0] + "：\n       " + enemyRuleLength[1]);
+			enemyRules.text = LanguageTemplate.GetText (LanguageTemplate.Text.YUN_BIAO_72);//规则说明
 
 			noRecordLabel.text = enemyItemList.Count > 0 ? "" : LanguageTemplate.GetText (LanguageTemplate.Text.YUN_BIAO_77);//还无人劫镖
+			noRecordLabel.transform.localPosition = Vector3.zero;
 			recordDesLabel.text = "一周未运镖的仇家将自动于记录内移除";
 			recordNumLabel.text = LanguageTemplate.GetText (LanguageTemplate.Text.YUN_BIAO_71) + tempResp.enemyList.Count + "/50";//仇家
 
@@ -225,15 +229,6 @@ namespace Carriage
 				break;
 			default:
 				break;
-			}
-		}
-
-		void SetBtnState (GameObject targetObj,bool isCur)
-		{
-			UIWidget[] widgets = targetObj.GetComponentsInChildren <UIWidget> ();
-			foreach (UIWidget widget in widgets)
-			{
-				widget.color = isCur ? Color.white : Color.gray;
 			}
 		}
 

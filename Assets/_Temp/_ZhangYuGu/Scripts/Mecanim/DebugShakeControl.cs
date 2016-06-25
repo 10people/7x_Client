@@ -18,16 +18,6 @@ public class DebugShakeControl : MonoBehaviour {
 
 	public Vector3 m_offset_unit = new Vector3( 0.1f, 0, 0 );
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	public void OnDelayAdd(){
 		m_shake.m_delay += m_delay_unit;
 

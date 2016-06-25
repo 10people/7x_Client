@@ -9,13 +9,4 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class FuWenChange : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

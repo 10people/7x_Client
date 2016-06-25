@@ -41,7 +41,7 @@ public class ShopData : Singleton<ShopData>, SocketProcessor
     }
     private ShopPageType spType = ShopPageType.MAIN_PAGE;
 
-    private readonly Dictionary<ShopType, string[]> shopReqDic = new Dictionary<ShopType, string[]>()
+    public readonly Dictionary<ShopType, string[]> shopReqDic = new Dictionary<ShopType, string[]>()
     {
         //string[0]:商铺刷新类型（免费，花钱）
         //string[1]:商铺按钮名字 
@@ -133,7 +133,7 @@ public class ShopData : Singleton<ShopData>, SocketProcessor
     {
         int redId = ShopBtnRedId(sType);
 
-        return redId == -1 ? false : (shopReqDic[sType][5] == "104" ? (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0 ? FunctionOpenTemp.IsShowRedSpotNotification(redId) : false) : FunctionOpenTemp.IsShowRedSpotNotification(redId));
+        return redId != -1 && (shopReqDic[sType][5] == "104" ? JunZhuData.Instance().m_junzhuInfo.lianMengId > 0 && PushAndNotificationHelper.IsShowRedSpotNotification(redId) : PushAndNotificationHelper.IsShowRedSpotNotification(redId));
     }
 
     /// <summary>
@@ -448,8 +448,6 @@ public class ShopData : Singleton<ShopData>, SocketProcessor
                                     {
                                         if (goodInfo.xmlId == duiHuan.id && goodInfo.site == duiHuan.site)
                                         {
-                                            //								Debug.Log ("goodInfo.xmlId:" + goodInfo.xmlId + "||goodInfo.site:" + goodInfo.site);
-                                            //								Debug.Log ("duiHuan.id:" + duiHuan.id + "||duiHuan.site:" + duiHuan.site);
                                             duiHuan.isChange = shopBuyRes.isChange;
                                             break;
                                         }

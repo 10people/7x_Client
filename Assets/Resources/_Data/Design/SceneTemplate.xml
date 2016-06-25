@@ -36,10 +36,10 @@
 <SceneTemplate sceneId="407" sceneName="BattleField_V4_407" isCheck="1" />
 <SceneTemplate sceneId="503" sceneName="BattleField_V4_503" isCheck="1" />
 <SceneTemplate sceneId="504" sceneName="BattleField_V4_504" isCheck="1" />
+<SceneTemplate sceneId="505" sceneName="BattleField_V4_505" isCheck="1" />
 <SceneTemplate sceneId="506" sceneName="BattleField_V4_506" isCheck="1" />
 <SceneTemplate sceneId="704" sceneName="BattleField_V4_704" isCheck="1" />
 <SceneTemplate sceneId="1503" sceneName="BattleField_V4_1503" isCheck="1" />
 <SceneTemplate sceneId="2008" sceneName="BattleField_V4_2008" isCheck="1" />
 <SceneTemplate sceneId="900" sceneName="BattleField_V4_900" isCheck="1" />
-<SceneTemplate sceneId="666" sceneName="BattleField_V4_666" isCheck="1" />
 </dataset>

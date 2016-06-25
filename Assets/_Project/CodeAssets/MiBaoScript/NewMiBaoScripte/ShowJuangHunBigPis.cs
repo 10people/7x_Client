@@ -12,14 +12,7 @@ public class ShowJuangHunBigPis : MonoBehaviour {
 	public UILabel mLabel;
 
 	private string desStr = "点击任意位置退出查看";
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	public void Init(int mibaoid)
 	{
 		MiBaoXmlTemp mmibaoxml = MiBaoXmlTemp.getMiBaoXmlTempById (mibaoid);

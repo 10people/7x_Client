@@ -16,6 +16,10 @@ public class TalentTemplate : XmlLoadManager
 	
 	public int maxLv;
 
+	public int arrID;
+
+	public int expID;
+
 	public List<int> listFrontPoint = new List<int>();
 	
 	public int FrontPointLv;
@@ -77,7 +81,10 @@ public class TalentTemplate : XmlLoadManager
 				t_template.maxLv = int.Parse( t_reader.Value );
 				
 				t_reader.MoveToNextAttribute();
+				t_template.arrID = int.Parse( t_reader.Value );
+
 				t_reader.MoveToNextAttribute();
+				t_template.expID = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
 				string[] tempString = t_reader.Value.Split(',');

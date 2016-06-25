@@ -9,6 +9,9 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class AllianceKeZhanManager : MonoBehaviour {
 
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
 	public	AllianceHaveResp m_AllianceHaveRes; 
 
 	public UILabel MaxPersonNum;
@@ -22,14 +25,9 @@ public class AllianceKeZhanManager : MonoBehaviour {
 	public GameObject Arelt;
 
 	public List<GameObject> MenBerAndEvet = new List<GameObject>();
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-
+	void Awake()
+	{
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "联盟客栈", 0, 0);
 	}
 	public void Init()
 	{

@@ -25,7 +25,7 @@ public class EmailTemp : XmlLoadManager
 	
 	public int operateType;//邮件操作类型 0-玩家邮件或系统邮件 1-阅后即删 2-领取即删 3-操作即删
 
-	public int whichType;//邮件类型 1-玩家邮件 2-房屋 3-联盟 4-荒野 5-百战 6-国战 7-运镖 8-运营
+	public int whichType;//邮件类型 1-玩家邮件 2-房屋 3-联盟 4-荒野 5-百战 6-国战 7-运镖 8-运营9-掠夺10-郡城战
 	
 	public static List<EmailTemp> m_templates = new List<EmailTemp>();
 

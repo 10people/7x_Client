@@ -152,23 +152,23 @@ public class SettingData : MonoBehaviour, SocketProcessor
                             }
 
 
-                            if (m_listSettingsInfo[4] == 1)
-                            {
-                                MainCityUIRB.LockRedAlert(310, true);
-                            }
-                            else
-                            {
-                                MainCityUIRB.LockRedAlert(310, false);   
-                            }
+                            //if (m_listSettingsInfo[4] == 1)
+                            //{
+                            //    MainCityUIRB.LockRedAlert(310, true);
+                            //}
+                            //else
+                            //{
+                            //    MainCityUIRB.LockRedAlert(310, false);   
+                            //}
 
-                            if (m_listSettingsInfo[5] == 1)
-                            {
-                                MainCityUIRB.LockRedAlert(9, true);
-                            }
-                            else
-                            {
-                                MainCityUIRB.LockRedAlert(9, false);
-                            }
+                            //if (m_listSettingsInfo[5] == 1)
+                            //{
+                            //    MainCityUIRB.LockRedAlert(9, true);
+                            //}
+                            //else
+                            //{
+                            //    MainCityUIRB.LockRedAlert(9, false);
+                            //}
  
 
                             m_jsonSaved["MUSIC"].AsInt = m_listSettingsInfo[0];

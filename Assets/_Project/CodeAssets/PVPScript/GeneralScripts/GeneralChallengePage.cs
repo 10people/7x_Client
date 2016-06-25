@@ -22,6 +22,7 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 
 	public ScaleEffectController sEffectController;
 	public GameObject m_topRightObj;
+	public GameObject m_topLeftObj;
 
 	private GameObject iconSamplePrefab;
 
@@ -36,7 +37,6 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 	public GameObject m_lock;
 	public GameObject m_add;
 	public GameObject m_parent;
-	private GameObject m_heroObj;
 	private List<GameObject> m_bingItemList = new List<GameObject> ();
 
 	public UILabel m_getJiFen;
@@ -54,7 +54,6 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 	public UISprite e_skill;
 	public GameObject e_lock;
 	public GameObject e_parent;
-	private GameObject e_heroObj;
 	private List<GameObject> e_bingItemList = new List<GameObject> ();
 
 	private int e_zhanLiNum;
@@ -88,16 +87,28 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 	void Start ()
 	{
 		QXComData.LoadYuanBaoInfo (m_topRightObj);
+		QXComData.LoadTitleObj (m_topLeftObj,"挑战阵容");
 	}
 
 	public void InItChallengePage (ChallengeType tempType,object tempObjectResp)
 	{
+		m_challengeType = tempType;
 		m_plunderInfoObj.SetActive (tempType == ChallengeType.PLUNDER ? true : false);
 
 		switch (tempType)
 		{
 		case ChallengeType.SPORT:
 			m_sportResp = tempObjectResp as ChallengeResp;
+
+//			for (int i = 0;i < m_sportResp.mySoldiers.Count;i ++)
+//			{
+//				Debug.Log ("mySoldiers.id:" + m_sportResp.mySoldiers[i].id);
+//			}
+//
+//			for (int i = 0;i < m_sportResp.oppoSoldiers.Count;i ++)
+//			{
+//				Debug.Log ("oppoSoldiers.id:" + m_sportResp.oppoSoldiers[i].id);
+//			}
 
 			m_zhanLiNum = m_sportResp.myZhanli;
 			e_zhanLiNum = m_sportResp.oppoZhanli;
@@ -213,16 +224,13 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 
 	void ShowMiBaoSkillBtnEffect (bool isActive)
 	{
-		UISprite sprite = m_changeSkillBtn.GetComponent<UISprite> ();
-		UILabel label = m_changeSkillBtn.GetComponentInChildren<UILabel> ();
-
 		if (m_skillId > 0)
 		{
+			QXComData.ClearEffect (m_skill.gameObject);
 			m_add.SetActive (false);
 			m_lock.SetActive (false);
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,7);
-			sprite.color = Color.white;
-			label.color = Color.white;
+			QXComData.SetBtnState (m_changeSkillBtn,true);
 		}
 		else
 		{
@@ -230,19 +238,19 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 			{
 				if (QXComData.CanSelectMiBaoSkill ())
 				{
-					sprite.color = Color.white;
-					sprite.color = Color.white;
+					QXComData.InstanceEffect (QXComData.EffectPos.TOP,m_skill.gameObject,620233);
+					QXComData.SetBtnState (m_changeSkillBtn,true);
 					m_add.SetActive (true);
 					m_lock.SetActive (false);
 					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,6);
 				}
 				else
 				{
+					QXComData.ClearEffect (m_skill.gameObject);
 					m_lock.SetActive (true);
 					m_add.SetActive (false);
 					QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,7);
-					sprite.color = Color.black;
-					sprite.color = Color.black;
+					QXComData.SetBtnState (m_changeSkillBtn,false);
 				}
 			}
 		}
@@ -262,19 +270,17 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 		}
 		else
 		{
-			WWW tempWww = null;
-			IconSampleLoadCallBack(ref tempWww, null, iconSamplePrefab);
+			m_bingItemList = InItItemList (1,m_parent,m_yongBingList,m_bingItemList);
+			e_bingItemList = InItItemList (2,e_parent,e_yongBingList,e_bingItemList);
 		}
 	}
 	private void IconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
 	{
-		if (iconSamplePrefab == null) 
-		{
-			iconSamplePrefab = p_object as GameObject;
-		}
+		iconSamplePrefab = Instantiate (p_object) as GameObject;
+		iconSamplePrefab.SetActive (false);
 
-		m_bingItemList = InItItemList (1,m_heroObj,m_parent,m_yongBingList,m_bingItemList);
-		e_bingItemList = InItItemList (2,e_heroObj,e_parent,e_yongBingList,e_bingItemList);
+		m_bingItemList = InItItemList (1,m_parent,m_yongBingList,m_bingItemList);
+		e_bingItemList = InItItemList (2,e_parent,e_yongBingList,e_bingItemList);
 	}
 
 	/// <summary>
@@ -282,96 +288,74 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 	/// </summary>
 	/// <returns>The it item list.</returns>
 	/// <param name="initType">Init type.1-my 2-enemy</param>
-	/// <param name="tempHeroObj">Temp hero object.</param>
 	/// <param name="tempYongBingList">Temp yong bing list.</param>
 	/// <param name="tempItemList">Temp item list.</param>
-	private List<GameObject> InItItemList (int initType,GameObject tempHeroObj,GameObject tempParentObj,List<YongBingInfo> tempYongBingList,List<GameObject> tempItemList)
+	private List<GameObject> InItItemList (int initType,GameObject tempParentObj,List<YongBingInfo> tempYongBingList,List<GameObject> tempItemList)
 	{
-		if (tempHeroObj == null)
+		tempItemList = QXComData.CreateGameObjectList (iconSamplePrefab,tempYongBingList.Count + 1,tempItemList);
+
+		for (int i = 0;i < tempItemList.Count;i ++)
 		{
-			tempHeroObj = Instantiate (iconSamplePrefab) as GameObject;
-		}
-		
-		tempHeroObj.SetActive(true);
-		tempHeroObj.transform.parent = tempParentObj.transform;
-		tempHeroObj.transform.localPosition = Vector3.zero;
-		
-		IconSampleManager heroIconSample = tempHeroObj.GetComponent<IconSampleManager>();
-		heroIconSample.SetIconType (IconSampleManager.IconType.mainCityAtlas);
+			tempItemList[i].SetActive(true);
+			tempItemList[i].transform.parent = tempParentObj.transform;
 
-		switch (initType)
-		{
-		case 1:
-
-			heroIconSample.SetIconBasic(m_iconBasicDepth,"PlayerIcon" + CityGlobalData.m_king_model_Id,QXComData.JunZhuInfo ().level.ToString());
-
-			break;
-		case 2:
-
-			heroIconSample.SetIconBasic (m_iconBasicDepth,"PlayerIcon" + e_roleId,e_level.ToString());
-
-			break;
-		default:
-			break;
-		}
-
-		tempHeroObj.transform.localScale = Vector3.one * 1.1f;
-		
-		int createCount = tempYongBingList.Count - tempItemList.Count;
-		int exitCount = tempItemList.Count;
-		if (createCount > 0)
-		{
-			for (int i = 0;i < createCount;i ++)
+			if (i == tempItemList.Count - 1)
 			{
-				GameObject soldier = (GameObject)Instantiate (iconSamplePrefab);
-				
-				soldier.SetActive(true);
-				soldier.transform.parent = tempHeroObj.transform;
+				tempItemList[i].transform.localPosition = Vector3.zero;
+				IconSampleManager heroIconSample = tempItemList[i].GetComponent<IconSampleManager>();
+				heroIconSample.SetIconType (IconSampleManager.IconType.mainCityAtlas);
 
 				switch (initType)
 				{
 				case 1:
-
-					soldier.transform.localPosition = new Vector3(120 + 110 * (i + exitCount),10,0);
-
+					
+					heroIconSample.SetIconBasic(m_iconBasicDepth,"PlayerIcon" + CityGlobalData.m_king_model_Id,QXComData.JunZhuInfo ().level.ToString());
+					
 					break;
 				case 2:
-
-					soldier.transform.localPosition = new Vector3(-120 - 110 * (i + exitCount),-10,0);
-
+					
+					heroIconSample.SetIconBasic (m_iconBasicDepth,"PlayerIcon" + e_roleId,e_level.ToString());
+					
 					break;
 				default:
 					break;
 				}
 				
-				tempItemList.Add (soldier);
+				tempItemList[i].transform.localScale = Vector3.one * 1.1f;
 			}
-		}
-		else
-		{
-			for (int i = 0;i < Mathf.Abs (createCount);i ++)
+			else
 			{
-				Destroy (tempItemList[tempItemList.Count - 1]);
-				tempItemList.RemoveAt (tempItemList.Count - 1);
+				switch (initType)
+				{
+				case 1:
+					
+					tempItemList[i].transform.localPosition = new Vector3(120 + 110 * i,10,0);
+					
+					break;
+				case 2:
+					
+					tempItemList[i].transform.localPosition = new Vector3(-120 - 110 * i,-10,0);
+					
+					break;
+				default:
+					break;
+				}
+
+				IconSampleManager soldierIconSample = tempItemList[i].GetComponent<IconSampleManager>();
+				soldierIconSample.SetIconType (IconSampleManager.IconType.pveHeroAtlas);
+				
+				string popName = NameIdTemplate.getNameIdTemplateByNameId (tempYongBingList[i].nameId).Name + " " + "LV" + tempYongBingList[i].level.ToString();
+				var popDesc = DescIdTemplate.getDescIdTemplateByNameId (tempYongBingList[i].desId).description;
+				
+				string rBottomSpriteName = "";
+				soldierIconSample.SetIconBasic (m_iconBasicDepth,tempYongBingList[i].iconId.ToString (),tempYongBingList[i].level.ToString());
+				soldierIconSample.SetIconPopText (0,popName,popDesc,1);
+				soldierIconSample.SetIconDecoSprite (bingDic[tempYongBingList[i].profession],rBottomSpriteName);
+				
+				tempItemList[i].transform.localScale = Vector3.one * 0.9f;
 			}
 		}
-
-		for (int i = 0; i < tempYongBingList.Count; i++)
-		{
-			IconSampleManager soldierIconSample = tempItemList[i].GetComponent<IconSampleManager>();
-			soldierIconSample.SetIconType (IconSampleManager.IconType.pveHeroAtlas);
-			
-			string popName = NameIdTemplate.getNameIdTemplateByNameId (tempYongBingList[i].nameId).Name + " " + "LV" + tempYongBingList[i].level.ToString();
-			var popDesc = DescIdTemplate.getDescIdTemplateByNameId (tempYongBingList[i].desId).description;
-			
-			string rBottomSpriteName = "";
-			soldierIconSample.SetIconBasic (m_iconBasicDepth,tempYongBingList[i].iconId.ToString (),tempYongBingList[i].level.ToString());
-			soldierIconSample.SetIconPopText (0,popName,popDesc,1);
-			soldierIconSample.SetIconDecoSprite (bingDic[tempYongBingList[i].profession],rBottomSpriteName);
-			
-			tempItemList[i].transform.localScale = Vector3.one * 0.9f;
-		}
-
+	
 		return tempItemList;
 	}
 
@@ -389,31 +373,11 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 	{
 		switch (ui.name)
 		{
+		case "MibaoSkill":
+			ChangeSkill ();
+			break;
 		case "ChangeSkillBtn":
-			if(!MiBaoGlobleData.Instance().GetEnterChangeMiBaoSkill_Oder ())
-			{
-				return;
-			}
-
-			int openId = -1;
-			switch (m_challengeType)
-			{
-			case ChallengeType.SPORT:
-				
-				openId = (int)CityGlobalData.MibaoSkillType.PvpSend;
-				UIYindao.m_UIYindao.CloseUI ();
-				
-				break;
-			case ChallengeType.PLUNDER:
-				
-				openId = (int)CityGlobalData.MibaoSkillType.LueDuo_GongJi;
-				
-				break;
-			default:
-				break;
-			}
-			
-			MiBaoGlobleData.Instance().OpenMiBaoSkillUI (openId,m_skillId);
+			ChangeSkill ();
 			break;
 		case "EnterFight":
 
@@ -426,7 +390,7 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 				break;
 				
 			case ChallengeType.PLUNDER:
-				
+				Debug.Log ("EnterPlunder");
 				EnterBattleField.EnterBattleLueDuo (m_plunderResp.oppoId);
 				PlunderData.Instance.CheckPlunderTimes ();
 				
@@ -447,6 +411,41 @@ public class GeneralChallengePage : GeneralInstance<GeneralChallengePage> {
 		default:
 			break;
 		}
+	}
+
+	void ChangeSkill ()
+	{
+		if(!MiBaoGlobleData.Instance().GetEnterChangeMiBaoSkill_Oder ())
+		{
+			return;
+		}
+		
+		int openId = -1;
+		switch (m_challengeType)
+		{
+		case ChallengeType.SPORT:
+			
+			openId = (int)CityGlobalData.MibaoSkillType.PvpSend;
+			UIYindao.m_UIYindao.CloseUI ();
+			
+			break;
+		case ChallengeType.PLUNDER:
+			
+			openId = (int)CityGlobalData.MibaoSkillType.LueDuo_GongJi;
+			
+			break;
+		default:
+			break;
+		}
+		
+		MiBaoGlobleData.Instance().OpenMiBaoSkillUI (openId,m_skillId,RefreshSillBtnState);
+	}
+
+	void RefreshSillBtnState (int id,bool isActive)
+	{
+		Debug.Log ("id:" + id);
+		m_skillId = id;
+		ShowSkill ();
 	}
 
 	new void OnDestroy ()

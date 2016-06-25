@@ -110,10 +110,6 @@ public class Debug_0618_Mecanim : MonoBehaviour {
 		m_act_ranges.Clear();
 	}
 
-	void LateUpdate(){
-
-	}
-	
 	// Update is called once per frame
 	void Update () {
 		UpdateMovement();

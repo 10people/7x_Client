@@ -10,6 +10,8 @@ using ProtoBuf.Meta;
 
 public class NewAlliancemanager : MonoBehaviour, SocketListener
 {
+	public GameObject JunChengBattleAlert;
+
     public bool mYinDaoisOpen = false;
     public GameObject RecruteBtn;
     private bool HaveappyMembers;
@@ -102,14 +104,15 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     }
     void Start()
     {
-        AllianceData.Instance.RequestData();
+//        AllianceData.Instance.RequestData();
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ,ProtoIndexes.ALLIANCE_HAVE_RESP.ToString());
 
         jieSanTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIACNE_JIESAN_TITLE);
         closeTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_CLOSE_RECRUIT_TITLE);
         confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         cancelStr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
         confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-		mLianmengLevel = AllianceData.Instance.g_UnionInfo.level;
+
         GetAllianceBuildsMessege();
         //Init ();
     }
@@ -119,7 +122,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     }
     public void BtnManagerMent(GameObject mbutton)
     {
-        Debug.Log("mbutton.name = " + mbutton.name);
+//        Debug.Log("mbutton.name = " + mbutton.name);
         switch (mbutton.name)
         {
             case "LookIfo": // 查看信息
@@ -216,7 +219,14 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 		}
 		else
 		{
-			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_UPINFO_SPEEDUP);
+			if(m_allianceHaveRes.speedUpRemainTimes <= 0)
+			{
+				ClientMain.m_UITextManager.createText("加速次数不足，已无法加速！");
+			}
+			else
+			{
+				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_UPINFO_SPEEDUP,ProtoIndexes.S_ALLIANCE_UPINFO_SPEEDUP.ToString());
+			}
 
 		}
 
@@ -235,7 +245,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,SendMassegeforUpLevel,null,null,null);
+		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null ,null,CancleBtn,confirmStr,SendMassegeforUpLevel,null,null,null);
 	}
 
 	void SendMassegeforUpLevel(int i)
@@ -256,7 +266,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
 			string mT = getmTime(m_UpgradeLevelInfoResp.mTime);
 			int mCos = m_UpgradeLevelInfoResp.mBuild;
-			string str = "加速可以缩短"+mT+"升级时间"+"\n\r"+"\n\r"+"消耗建设值："+mCos.ToString();
+			string str = "加速可以缩短"+mT+"升级时间"+"\n\r"+"消耗建设值："+mCos.ToString()+"\n\r"+"剩余加速次数："+m_allianceHaveRes.speedUpRemainTimes.ToString();
 			
 			string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 			
@@ -296,7 +306,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 			}
 			else
 			{
-				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_UPGRADELEVEL_SPEEDUP);
+				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_UPGRADELEVEL_SPEEDUP,ProtoIndexes.S_ALLIANCE_UPGRADELEVEL_SPEEDUP.ToString());
 			}
 		}
 	}
@@ -377,6 +387,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     /// </summary>
     public void ShowAllianceGuid()
     {
+		return;
         SomeUIis_OPen = false;
         UIYindao.m_UIYindao.CloseUI();
         //Debug.Log("联盟引导");
@@ -429,7 +440,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         {
             ShowAllianceGuid();
         }
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO);
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO,ProtoIndexes.S_JIAN_ZHU_INFO.ToString());
         MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
     }
 	private int mLianmengLevel ;
@@ -452,7 +463,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
                     t_qx.Deserialize(t_tream, allianceHaveRes, allianceHaveRes.GetType());
 
                     //Debug.Log ("监听到联盟信息返回了");
-
+				    mLianmengLevel = AllianceData.Instance.g_UnionInfo.level;
                     m_allianceHaveRes = allianceHaveRes;
 					if(mLianmengLevel != m_allianceHaveRes.level)
 					{
@@ -536,7 +547,32 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
                     }
                     else
                     {
-                        //Debug.Log("升级失败");
+					    string mstrtext = "";
+						switch(BuildUpback.errorCode)
+						{
+						case 1:
+							mstrtext = "只有盟主才能升级建筑！";
+							break;
+						case 10:
+							break;
+						case 20:
+							mstrtext = "建筑等级已达最高！";
+							break;
+						case 30:
+						    mstrtext = "联盟等级不足，请先提升联盟等级！";
+							break;
+						case 40:
+							mstrtext = "建设值不足！";
+							break;
+						case 50:
+							break;
+						case 60:
+							mstrtext = "联盟等级不足，请先提升联盟等级！";
+							break;
+					    default:
+						    break;
+						}
+					    ClientMain.m_UITextManager.createText(mstrtext);
                     }
                     return true;
                 }
@@ -571,8 +607,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
                             CityGlobalData.m_isMainScene = true;
 
                             //去掉商铺联盟相关红点
-                            PushAndNotificationHelper.SetRedSpotNotification(600700, false);//贡献商铺
-                            PushAndNotificationHelper.SetRedSpotNotification(903, false);//荒野商店
+						CloseAllRedPoints();
                         }
 
                         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
@@ -591,10 +626,10 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
                     LookApplicantsResp applicateResp = new LookApplicantsResp();
 
                     application_qx.Deserialize(application_stream, applicateResp, applicateResp.GetType());
-                    Debug.Log("==============3");
+//                    Debug.Log("==============3");
                     if (applicateResp != null)
                     {
-                        Debug.Log("==============2");
+//                        Debug.Log("==============2");
                         if (applicateResp.applicanInfo == null || applicateResp.applicanInfo.Count == 0)
                         {
                             HaveappyMembers = false;
@@ -608,7 +643,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
                     }
                     else
                     {
-                        Debug.Log("==============1");
+//                        Debug.Log("==============1");
                     }
                     return true;
                 }
@@ -656,6 +691,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 					{
 					int effectid = 100180;
 					BuildUpVecotry.SetActive(true);
+					BuildUpVecotry.transform.localPosition = Vector3.zero;
 					BuildUpVecotry.GetComponent<UISprite>().spriteName = "AddSpeed";
 					UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,BuildUpVecotry,EffectIdTemplate.GetPathByeffectId(effectid));
 					StartCoroutine( "closeEffect");
@@ -713,7 +749,22 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     
 	}
 
-	
+	void CloseAllRedPoints()
+	{
+		PushAndNotificationHelper.SetRedSpotNotification(600700, false);//贡献商铺
+		PushAndNotificationHelper.SetRedSpotNotification(903, false);//荒野商店
+		PushAndNotificationHelper.SetRedSpotNotification(500050, false);//XiaoWuid
+		PushAndNotificationHelper.SetRedSpotNotification(400000, false);//Mobai
+		PushAndNotificationHelper.SetRedSpotNotification(400017, false);//fangcan
+		PushAndNotificationHelper.SetRedSpotNotification(600900, false);//ChouJiangid1
+		PushAndNotificationHelper.SetRedSpotNotification(600905, false);//ChouJiangid2
+		PushAndNotificationHelper.SetRedSpotNotification(300200, false);//HYid
+		PushAndNotificationHelper.SetRedSpotNotification(600500, false);//Evet
+		PushAndNotificationHelper.SetRedSpotNotification(600600, false);//Readroom
+		PushAndNotificationHelper.SetRedSpotNotification(600800, false);//是否显示经验
+		PushAndNotificationHelper.SetRedSpotNotification(500020, false);//国家
+		PushAndNotificationHelper.SetRedSpotNotification(500022, false);//国家
+	}
 	[HideInInspector]public UpgradeLevelSpeedUpResp m_UpgradeLevelSpeedUpResp;
     IEnumerator closeEffect()
     {
@@ -736,7 +787,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
         }
         OnlineNum.text = "在线人数：" + Online.ToString();
-        AllianceName.text = m_allianceHaveRes.name + "(LV." + m_allianceHaveRes.level.ToString() + ")";
+        AllianceName.text = m_allianceHaveRes.name + "(Lv." + m_allianceHaveRes.level.ToString() + ")";
 
 		if(m_allianceHaveRes.identity != 2)
 		{
@@ -746,7 +797,38 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         ShowJianSheZhi();
         ShowBtn();
 		InitUpLevelInfo ();
+		ShowJunChengZhanAlert ();
+		if(m_JianZhu != null)
+		{
+			InitBuilds(m_JianZhu);
+		}
     }
+
+	public void ShowJunChengZhanAlert()
+	{
+		//NewAlliancemanager.Instance ().ShowJunChengZhanAlert ();
+
+		int JunCheng1 = 300500 ;
+		int JunCheng2 = 310410 ;
+		int JunCheng3 = 310420 ;
+		bool IsShow1 = PushAndNotificationHelper.IsShowRedSpotNotification(JunCheng1);
+		bool IsShow2 = PushAndNotificationHelper.IsShowRedSpotNotification(JunCheng2);
+		bool IsShow3 = PushAndNotificationHelper.IsShowRedSpotNotification(JunCheng3);
+
+//		Debug.Log ("IsShow1:" + IsShow1);
+//		Debug.Log ("IsShow2:" + IsShow2);
+//		Debug.Log ("IsShow3:" + IsShow3);
+
+		if(IsShow1||IsShow2||IsShow3)
+		{
+			JunChengBattleAlert.SetActive (true);
+		}
+		else
+		{
+			JunChengBattleAlert.SetActive (false);
+		}
+	}
+
     public void ShowJianSheZhi()
     {
         Builds.text = m_allianceHaveRes.build.ToString();
@@ -757,7 +839,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
         for (int i = 0; i < mJianZhu.list.Count; i++)
         {
-            Debug.Log("mJianZhu.list.lv = " + mJianZhu.list[i].lv);
+//            Debug.Log("mJianZhu.list.lv = " + mJianZhu.list[i].lv);
 
             AllBuildsTmp mAllBuildsTmp = mBUILDS[i].GetComponent<AllBuildsTmp>();
 
@@ -804,19 +886,19 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
         if (mexitResp.code == 0)
         {
-            string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_EXIT_DES1);
+            string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_EXIT_DES1)+"\n";
             string str2 = m_allianceHaveRes.name + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_EXIT_DES2);
-            uibox.YinDaoControl(Del);
-            uibox.setBox(exitTitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, confirmStr, null, null);
+//            uibox.YinDaoControl(Del);
+			uibox.setBox(exitTitleStr, MyColorData.getColorString(1, str1+str2), null, null, confirmStr, null, null);
             Del();
         }
         else
         {
             //Debug.Log("退出失败");
 
-            string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_EXIT_FAIL);
+            string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_EXIT_FAIL)+"\n";
             string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_EXIT_FAIL_REASON);
-            uibox.setBox(exitTitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, confirmStr, null, null);
+			uibox.setBox(exitTitleStr, MyColorData.getColorString(1, str1+str2), null, null, confirmStr, null, null);
         }
     }
     void Del()
@@ -848,9 +930,9 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     public void RecruitLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         OpenRecruit = Instantiate(p_object) as GameObject;
-        OpenRecruit.transform.parent = this.transform; ;
+//        OpenRecruit.transform.parent = this.transform; ;
         OpenRecruit.transform.localScale = Vector3.one;
-        OpenRecruit.transform.localPosition = Vector3.zero;
+        OpenRecruit.transform.localPosition = new Vector3 (1555,100,0);
         ReCruit mReCruit = OpenRecruit.GetComponent<ReCruit>();
         //mReCruit.Z_UnionInfo = m_tempInfo;
         mReCruit.initLevel();
@@ -987,9 +1069,9 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         UIBox uibox = boxObj.GetComponent<UIBox>();
 
         string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_CONFIRM_JIESAN_ASKSTR1);
-        string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_CONFIRM_JIESAN_ASKSTR2);
+//        string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_CONFIRM_JIESAN_ASKSTR2);
 
-        uibox.setBox(jieSanTitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, cancelStr, confirmStr, DisAlliance);
+		uibox.setBox(jieSanTitleStr, MyColorData.getColorString(1, str1), null, null, cancelStr, confirmStr, DisAlliance);
     }
 
     //退出联盟提示框异步加载回调
@@ -1043,13 +1125,13 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
         UIBox uibox = boxObj.GetComponent<UIBox>();
 
-        string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_CONFIRM_JIESAN_ASKSTR3);
+        string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_CONFIRM_JIESAN_ASKSTR3)+"\n";
         string str2 = m_allianceHaveRes.name + LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_CONFIRM_JIESAN_ASKSTR4);
 
         string sanSiStr = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_JIESAN_SANSI);
         string jieSanStr = LanguageTemplate.GetText(LanguageTemplate.Text.ALLIANCE_JIESAN);
 
-        uibox.setBox(jieSanTitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, sanSiStr, jieSanStr, DisAllianceReq);
+		uibox.setBox(jieSanTitleStr, MyColorData.getColorString(1, str1+str2), null, null, sanSiStr, jieSanStr, DisAllianceReq);
     }
     //发送解散联盟请求
     void DisAllianceReq(int i)
@@ -1168,7 +1250,8 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         if (m_OldBookWindow != null)
         {
             m_OldBookWindow.gameObject.SetActive(true);
-            m_OldBookWindow.OldBookMode = OldBookWindow.Mode.ExchangeBoxOther;
+            m_OldBookWindow.OldBookMode = OldBookWindow.Mode.OldBookSelf;
+			OldBookWindow.Itemids.Clear ();
             m_OldBookWindow.RefreshUI();
         }
         else
@@ -1182,11 +1265,14 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         var tempObject = Instantiate(loadedObject as GameObject) as GameObject;
         m_OldBookWindow = tempObject.GetComponent<OldBookWindow>();
         m_OldBookWindow.IsSelfHouse = true;
-        //m_OldBookWindow.m_House = this;
+		m_OldBookWindow.gameObject.SetActive(true);
+		m_OldBookWindow.OldBookMode = OldBookWindow.Mode.OldBookSelf;
+		OldBookWindow.Itemids.Clear ();
+		m_OldBookWindow.RefreshUI();
 
         TransformHelper.ActiveWithStandardize(transform, m_OldBookWindow.transform);
 
-        ENterAllianceHorse();
+       // ENterAllianceHorse();
     }
     public void EnterShop()
     {
@@ -1224,10 +1310,12 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     public void BackToThis(GameObject m_game)
     {
         //Buttons.transform.localPosition = new Vector3(0,298,0);
+		Debug.Log ("back to first");
         SomeUIis_OPen = false;
-        ShowAllianceGuid();
+//        ShowAllianceGuid();
+		All_FirstUI.SetActive(true);
         m_game.SetActive(false);
-        All_FirstUI.SetActive(true);
+		//All_FirstUI.GetComponent<MyAllianceInfo> ().ShowAllianceGuid ();
 
     }
 
@@ -1340,7 +1428,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 	{
 		int m_Time = m_allianceHaveRes.upgradeRemainTime;
 
-		Debug.Log("m_Time = " + m_Time);
+//		Debug.Log("m_Time = " + m_Time);
 
 		while(m_Time > 0)
 		{
@@ -1351,9 +1439,13 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 			int M = (int)(((m_Time%(60*60*24))%(60*60))/60);
 			int S = (int)(m_Time%60);
 
-			Debug.Log("Day = "+D);
-
-			DownTime.text = "剩余时间："+D.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.DAY)+H.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.HOUR)+M.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.MINUTE)+S.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.SECOND);
+//			Debug.Log("Day = "+D);
+			string mday = "";
+			if(D > 0)
+			{
+				mday = D.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.DAY);
+			}
+			DownTime.text = "剩余时间："+mday+H.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.HOUR)+M.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.MINUTE)+S.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.SECOND);
 			yield return new WaitForSeconds (1.0f);
 		}
 		if(m_Time <= 0)

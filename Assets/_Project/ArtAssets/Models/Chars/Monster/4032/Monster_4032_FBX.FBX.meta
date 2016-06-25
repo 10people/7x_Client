@@ -35,6 +35,14 @@ ModelImporter:
     100054: Bone03
     100056: //RootNode
     100058: qixiongwushuang_linxiangru
+    100060: Bip01 Footsteps
+    100062: Bip01 HeadNub
+    100064: Bip01 L Finger0Nub
+    100066: Bip01 L Toe0Nub
+    100068: Bip01 R Finger0Nub
+    100070: Bip01 R Toe0Nub
+    100072: Bone02
+    100074: Bone04
     400000: Bip01
     400002: Bip01 Head
     400004: Bip01 L Calf
@@ -65,6 +73,14 @@ ModelImporter:
     400054: Bone03
     400056: //RootNode
     400058: qixiongwushuang_linxiangru
+    400060: Bip01 Footsteps
+    400062: Bip01 HeadNub
+    400064: Bip01 L Finger0Nub
+    400066: Bip01 L Toe0Nub
+    400068: Bip01 R Finger0Nub
+    400070: Bip01 R Toe0Nub
+    400072: Bone02
+    400074: Bone04
     4300000: qixiongwushuang_linxiangru
     7400000: Attack_0
     7400002: Attack_1
@@ -605,6 +621,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .253401458
         functionName: PlaySound
         data: 4000|4001|4002|0|0
@@ -2039,7 +2062,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .951797903
         functionName: checkDieInKnockdown
         data: 

@@ -25,6 +25,23 @@ public class BattleResultPvpWin : MonoBehaviour
 
 	public UILabel labelRMB;
 
+	public GameObject layerNewRank;
+
+	public UILabel labelNewRank;
+
+	public UILabel labelAddrank;
+
+	public GameObject effNewRank;
+
+	public GameObject layerNewLevel;
+
+	public UISprite spriteNewLevel;
+
+	public GameObject effNewLevel;
+
+
+	private BaiZhanResultResp resp;
+
 
 	public void refreshData(BaiZhanResultResp _resp)
 	{
@@ -47,6 +64,8 @@ public class BattleResultPvpWin : MonoBehaviour
 
 		Debug.Log ("PVP Result   " + _resp.oldRank + ", " + _resp.newRank + ", " + _resp.highest + ", " + _resp.yuanbao);
 
+		resp = _resp;
+
 		newRecord.SetActive (_resp.newRank < _resp.highest);
 
 		spriteOld.spriteName = "junxian" + _resp.oldJunXianLevel;
@@ -66,6 +85,98 @@ public class BattleResultPvpWin : MonoBehaviour
 //		labelWeiWang.text = "" + _resp.reciveWeiWang;
 
 		labelRMB.text = "" + _resp.yuanbao;
+
+		//////////////////////////////////////////////////////////////////////////////
+
+		layerNewRank.SetActive (false);
+
+		if(_resp.newRank < _resp.oldRank)
+		{
+			layerNewRank.SetActive(true);
+
+			labelNewRank.text = "" + _resp.oldRank;
+
+			labelAddrank.text = "0";
+
+//			StartCoroutine(newRankAction());
+		}
+
+		spriteNewLevel.spriteName = "junxian" + _resp.newJunXianLevel;
+
+		layerNewLevel.SetActive (resp.oldJunXianLevel < resp.newJunXianLevel);
+
+//		if(_resp.newRank < _resp.highest)
+//		{
+//			StartCoroutine(newLevelAction());
+//		}
+	}
+
+	public void startAction()
+	{
+		if(resp.newRank < resp.oldRank)
+		{
+			StartCoroutine(newRankAction());
+		}
+
+		if(resp.oldJunXianLevel < resp.newJunXianLevel)
+		{
+			StartCoroutine(newLevelAction());
+		}
+	}
+
+	IEnumerator newRankAction()
+	{
+		float tRank = (resp.oldRank - resp.newRank) / 20f;
+
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, effNewRank, EffectTemplate.getEffectTemplateByEffectId( 100191 ).path);
+		
+		for(int i = 0; i < 20; i++)
+		{
+			int nRank = (int)(resp.oldRank - tRank * i);
+
+			if(nRank < resp.newRank)
+			{
+				nRank = resp.newRank;
+			}
+
+			labelNewRank.text = "" + nRank;
+
+			int aRank = (int)(tRank * i);
+
+			if(aRank > resp.oldRank - resp.newRank)
+			{
+				aRank = resp.oldRank - resp.newRank;
+			}
+
+			labelAddrank.text = "" + aRank;
+
+			yield return new WaitForEndOfFrame();
+		}
+
+		labelNewRank.text = "" + resp.newRank;
+
+		labelAddrank.text = "" + (resp.oldRank - resp.newRank);
+
+		yield return new WaitForSeconds(5.33f);
+
+		TweenAlpha.Begin (layerNewRank, .5f, 0);
+
+		yield return new WaitForSeconds(.5f);
+
+		layerNewRank.SetActive (false);
+	}
+
+	IEnumerator newLevelAction()
+	{
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, effNewLevel, EffectTemplate.getEffectTemplateByEffectId( 100191 ).path);
+
+		yield return new WaitForSeconds(6f);
+
+		TweenAlpha.Begin (layerNewLevel, .5f, 0);
+		
+		yield return new WaitForSeconds(.5f);
+
+		layerNewLevel.SetActive (false);
 	}
 
 }

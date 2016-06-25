@@ -26,19 +26,28 @@ public class SaoDangManeger : MonoBehaviour {
 	public int SaodangType ;// 1 为pve 2为游侠
 	public int SaodangTime ;
 	public UILabel BtnLabel;
-	void Start () {
-	
-	}
-	
+	public delegate void SaoDangFinshDo();
 
-	void Update () {
-	
-	}
+	private SaoDangFinshDo mSaoDangFinshDo;
 
-	public void Init()
+	private int myindaoid;
+
+	public void Init(int yindaoid = 0, SaoDangFinshDo mFunction = null)
 	{
+		if(yindaoid > 0 )
+		{
+			ShowSaoDangYinDao();
+			myindaoid = yindaoid;
+		}
+
+		mSaoDangFinshDo = mFunction;
 		Global.m_isZhanli = true;
 		StartCoroutine ( CreateAwardTemp() );
+	}
+	void ShowSaoDangYinDao()
+	{
+		ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100404];
+		UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[7]);
 	}
 	float mTime = 0;
 	IEnumerator CreateAwardTemp()
@@ -96,11 +105,11 @@ public class SaoDangManeger : MonoBehaviour {
 
 		}
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
-		if(SaodangTime == 1)
+		if(SaodangTime <= 5)
 		{
 			BtnLabel.text = "再扫1次";
 		}
-		if(SaodangTime == 10)
+		else if(SaodangTime == 10)
 		{
 			BtnLabel.text = "再扫10次";
 		}
@@ -146,7 +155,7 @@ public class SaoDangManeger : MonoBehaviour {
 	{
 		if(SaodangType == 1)
 		{
-			if(SaodangTime > 1)
+			if(SaodangTime > 5)
 			{
 				NewPVEUIManager.Instance().SaoDangBtn(10);
 			}
@@ -166,6 +175,12 @@ public class SaoDangManeger : MonoBehaviour {
 	{
 		Global.m_isZhanli = false;
 		FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
+		if(mSaoDangFinshDo != null && myindaoid > 0)
+		{
+			mSaoDangFinshDo();
+			myindaoid = 0;
+			mSaoDangFinshDo = null;
+		}
 		Destroy (this.gameObject);
 	}
 	IEnumerator mCloseEffect()

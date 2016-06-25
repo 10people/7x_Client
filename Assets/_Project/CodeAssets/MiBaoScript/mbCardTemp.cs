@@ -17,14 +17,6 @@ public class mbCardTemp : MonoBehaviour {
 
 	public UITexture mTexture;
 
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
 	public void init()
 	{
 		MiBaoXmlTemp mMiBaoXmlTemp = MiBaoXmlTemp.getMiBaoXmlTempById(mibaoTemp.miBaoId);

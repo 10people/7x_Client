@@ -194,6 +194,8 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 	private void _showSkillEffLabel1Start()
 	{
 		spriteLabel_1.gameObject.SetActive (true);
+
+		spriteLabel_1.alpha = 1f;
 	}
 
 	private void _showSkillEffLabel1Update(float _scale)
@@ -221,6 +223,8 @@ public class BattleMibaoSkillEffControllor : MonoBehaviour
 	private void _showSkillEffLabel2Start()
 	{
 		spriteLabel_2.gameObject.SetActive (true);
+
+		spriteLabel_2.alpha = 1f;
 	}
 
 	private void _showSkillEffLabel2Update(float _scale)

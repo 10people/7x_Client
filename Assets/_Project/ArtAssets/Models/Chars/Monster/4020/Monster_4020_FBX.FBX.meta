@@ -620,6 +620,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .187636435
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600239
+        messageOptions: 0
       - time: .291571975
         functionName: PlaySound
         data: 3300
@@ -633,13 +640,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .248447239
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 600239
         messageOptions: 0
       transformMask:
       - path: 
@@ -2771,6 +2771,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .253401458
         functionName: PlaySound
         data: 4000|4001|4002|0|0
@@ -3371,7 +3378,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .951797903
         functionName: checkDieInKnockdown
         data: 

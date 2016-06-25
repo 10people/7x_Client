@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<YunBiaoSafe areaID="1" saveAreaX="-191.2" saveAreaZ="-27.9" saveArear="8" />
-<YunBiaoSafe areaID="2" saveAreaX="-191.2" saveAreaZ="-27.9" saveArear="8" />
-<YunBiaoSafe areaID="3" saveAreaX="-191.2" saveAreaZ="-27.9" saveArear="8" />
-<YunBiaoSafe areaID="4" saveAreaX="-191.2" saveAreaZ="-27.9" saveArear="8" />
+<YunBiaoSafe areaID="1" saveAreaX="-190" saveAreaZ="-26.47" saveArear="8" rotateY="143.75" />
+<YunBiaoSafe areaID="2" saveAreaX="-95.07" saveAreaZ="101.41" saveArear="8" rotateY="153.04" />
+<YunBiaoSafe areaID="3" saveAreaX="-62.27" saveAreaZ="-135.49" saveArear="8" rotateY="347.1" />
+<YunBiaoSafe areaID="4" saveAreaX="63.99" saveAreaZ="-92.14" saveArear="8" rotateY="317.59" />
 </dataset>

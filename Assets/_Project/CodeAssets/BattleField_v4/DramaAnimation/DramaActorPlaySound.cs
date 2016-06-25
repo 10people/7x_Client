@@ -20,4 +20,11 @@ public class DramaActorPlaySound : DramaActor
 		return .1f;
 	}
 
+	protected override void funcForcedEnd()
+	{
+		SoundPlayEff spe = gameObject.GetComponent<SoundPlayEff>();
+
+		spe.StopSound ();
+	}
+
 }

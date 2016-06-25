@@ -151,21 +151,21 @@ public class DeviceHelper {
 	}
 	
 	public static bool IsSupported(){
-		if( SystemInfo.graphicsMemorySize < UtilityTool.GetInt( m_device_dict, CONST_MIN_G_MEM ) ){
+		if( SystemInfo.graphicsMemorySize < UtilityTool.GetInt( m_device_dict, CONST_MIN_G_MEM, 40 ) ){
 			m_nonsupport_reason = SystemInfo.graphicsMemorySize + " : " + 
 				CONST_MIN_G_MEM + " = " + UtilityTool.GetInt( m_device_dict, CONST_MIN_G_MEM );
 			
 			return false;
 		}
 		
-		if( SystemInfo.systemMemorySize < UtilityTool.GetInt( m_device_dict, CONST_MIN_MEM ) ){
+		if( SystemInfo.systemMemorySize < UtilityTool.GetInt( m_device_dict, CONST_MIN_MEM, 1024 ) ){
 			m_nonsupport_reason = SystemInfo.systemMemorySize + " : " + 
 				CONST_MIN_MEM + " = " + UtilityTool.GetInt( m_device_dict, CONST_MIN_MEM );
 			
 			return false;
 		}
 		
-		if( SystemInfo.graphicsShaderLevel < UtilityTool.GetInt( m_device_dict, CONST_MIN_SL ) ){
+		if( SystemInfo.graphicsShaderLevel < UtilityTool.GetInt( m_device_dict, CONST_MIN_SL, 20 ) ){
 			m_nonsupport_reason = SystemInfo.graphicsShaderLevel + " : " + 
 				CONST_MIN_SL + " = " + UtilityTool.GetInt( m_device_dict, CONST_MIN_SL );
 			
@@ -188,7 +188,7 @@ public class DeviceHelper {
 //			return false;
 //		}
 		
-		if( SystemInfo.supportsRenderTextures != UtilityTool.GetBool( m_device_dict, CONST_RT ) ){
+		if( SystemInfo.supportsRenderTextures != UtilityTool.GetBool( m_device_dict, CONST_RT, true ) ){
 			m_nonsupport_reason = SystemInfo.supportsRenderTextures + " : " + 
 				CONST_RT + " = " + UtilityTool.GetBool( m_device_dict, CONST_RT );
 			

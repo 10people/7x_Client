@@ -97,11 +97,17 @@ public class AIdata
 		ATTRTYPE_ArmorMax = 77,				//霸体值上限
 		ATTRTYPE_ArmorRatio = 78,			//霸体系数
 
+		ATTRTYPE_FianlAmplify = 79,			//最终伤害加深
+		ATTRTYPE_FianlReduction = 80,		//最终伤害减免
+
+		ATTRTYPE_HYK = 81,					//荒野战斗中用的计算伤害的系数
+
 		//////////////////////////////////
 
-		ATTRTYPE_Ice = 79,              	//冰箭射中后的短暂免疫
-		ATTRTYPE_Focus = 80,				//轻武器技能2的标记
-		ATTRTYPE_NUQI = 81,					//怒气
+		ATTRTYPE_Ice = 82,              	//冰箭射中后的短暂免疫
+		ATTRTYPE_Focus = 83,				//轻武器技能2的标记
+		ATTRTYPE_NUQI = 84,					//怒气
+		ATTRTYPE_hpShield = 85,				//护盾血量
 		ATTRTYPE_isIdle = 100,				//眩晕
 		ATTRTYPE_hpDelay = 101,				//减少生命
 		ATTRTYPE_Blind = 102,				//致盲，恐惧
@@ -274,11 +280,18 @@ public class AIdata
 		AddAttribute (nodeData.armorMax);//ATTRTYPE_ArmorMax = 77
 		AddAttribute (nodeData.armorRatio);//ATTRTYPE_ArmorRatio = 78
 
+		AddAttribute (nodeData.finalAmplify);//ATTRTYPE_FianlAmplify = 79,
+		AddAttribute (nodeData.finalReduction);//ATTRTYPE_FianlReduction = 80,
+
+		AddAttribute (nodeData.HYK);//ATTRTYPE_HYK = 81,
+
 		AddAttribute (0);//ATTRTYPE_Focus = 61,
 
 		AddAttribute (0);
 
 		AddAttribute (nodeData.nuQiZhi);//78,怒气
+
+		AddAttribute (0);
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan 
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YaBiao

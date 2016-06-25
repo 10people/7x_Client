@@ -174,7 +174,7 @@ public class BannerEffectController : MonoBehaviour
     {
         m_isCanClickEffect = true;
 
-        CycleTween.StartCycleTween(AlertEffectButtomInfoLabel.gameObject, 1, 0, 1.0f, OnUpdateAlertInfoLabelA);
+        CycleTween.StartCycleTween(AlertEffectButtomInfoLabel.gameObject, 1, 0.4f, 0.5f, OnUpdateAlertInfoLabelA);
     }
 
     public void DenableAlertEffectClick()

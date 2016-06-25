@@ -45,7 +45,9 @@ public class NetworkHelper {
 
 	public static void SetPingMS( long p_ping_ms ){
 		if( p_ping_ms < 0 ){
-			Debug.LogError( "Error in set ping ms: " + p_ping_ms );
+			if( !ConfigTool.IsEmulatingNetworkLatency() ){
+				Debug.LogError( "Error in set ping ms: " + p_ping_ms );
+			}
 
 			return;
 		}

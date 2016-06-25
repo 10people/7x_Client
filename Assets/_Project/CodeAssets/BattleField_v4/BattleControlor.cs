@@ -1,7 +1,6 @@
 //#define DEBUG_BATTLE_LOADING
 
 
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,6 +29,8 @@ public class BattleControlor : MonoBehaviour
 		DEFAULT,
 		BASE_REFLEX,
 		SKILL_REFLEX,
+		DROPPEN_COIN,
+		DROPPEN_ITEM,
 	}
 
 	public enum NuqiAddType
@@ -89,6 +90,8 @@ public class BattleControlor : MonoBehaviour
 
 	[HideInInspector] public Dictionary<int, BattleFlag> flags = new Dictionary<int, BattleFlag>();
 
+	[HideInInspector] public Dictionary<int, BattleFlagGroup> groupFlags = new Dictionary<int, BattleFlagGroup>();
+
 	[HideInInspector] public Dictionary<int, BattleBuffFlag> buffFlags = new Dictionary<int, BattleBuffFlag> ();
 
 	[HideInInspector] public Dictionary<int, BattleDoorFlag> doorFlags = new Dictionary<int, BattleDoorFlag>();
@@ -113,10 +116,9 @@ public class BattleControlor : MonoBehaviour
 
 	[HideInInspector] public List<int> droppenList = new List<int> ();
 
-	[HideInInspector] public float HYK;//荒野战斗中计算伤害的系数K
-
 	[HideInInspector] public BattleCheckResult battleCheck;
 
+	[HideInInspector] public bool haveEnemyKing;
 
 
 	private KingControllor king;
@@ -137,6 +139,10 @@ public class BattleControlor : MonoBehaviour
 
 	private GameObject labelTemple_default;
 
+	private GameObject labelTemple_droppenCoin;
+
+	private GameObject labelTemple_droppenItem;
+
 	private GameObject bloodbarTemple_red;
 	
 	private GameObject bloodbarTemple_green;
@@ -145,8 +151,11 @@ public class BattleControlor : MonoBehaviour
 
 	private int preLoadEffCount;
 
+	private System.DateTime appPauseStartTime;
+
 
 	private static BattleControlor _instance;
+
 
 	void Awake()
 	{
@@ -187,15 +196,56 @@ public class BattleControlor : MonoBehaviour
 	{
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)//过关斩将中有可能要屏蔽全服广播
 		{
-			int chapterId = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
-			
-			PveFunctionOpen template = PveFunctionOpen.getPveFunctionOpenByIdWithoutRefresh(chapterId);
+			PveFunctionOpen template = PveFunctionOpen.getPveFunctionOpenByIdWithoutRefresh(CityGlobalData.m_configId);
 			
 			if(template.broadcastable == false)
 			{
 				BroadCast.IsOpenBroadCast = false;
 
 				HighestUI.Instance.m_BroadCast.Clear();
+			}
+		}
+	}
+
+	void OnApplicationPause(bool p_pause)
+	{
+		if (p_pause) 
+		{
+			if(!inDrama && completed
+			   && CityGlobalData.m_battleType != EnterBattleField.BattleType.Type_BaiZhan 
+			   && CityGlobalData.m_battleType != EnterBattleField.BattleType.Type_LueDuo
+			   && CityGlobalData.m_battleType != EnterBattleField.BattleType.Type_YuanZhu
+			   && CityGlobalData.m_battleType != EnterBattleField.BattleType.Type_HuangYe_Pve)
+			{
+				appPauseStartTime = System.DateTime.Now;
+
+				BattleUIControlor.Instance ().enterPause ();
+			}
+		}
+		else
+		{
+			System.TimeSpan timeCust = System.DateTime.Now - appPauseStartTime;
+
+			if(BattleUIControlor.Instance().pauseControllor.gameObject.activeSelf == true)
+			{
+				int waitTime = 180;
+
+				if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan
+				   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo
+				   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YuanZhu
+				   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
+				{
+					waitTime = 10;
+				}
+
+				if(timeCust.TotalSeconds > waitTime)
+				{
+//					BattleUIControlor.Instance().pauseControllor.Lose();
+
+//					Time.timeScale = 1f;
+
+					SocketHelper.CreateConnectionLostOrFailWindow();
+				}
 			}
 		}
 	}
@@ -223,6 +273,8 @@ public class BattleControlor : MonoBehaviour
 		timeLast = 180;
 
 		result = BattleResult.RESULT_BATTLING;
+
+		haveEnemyKing = false;
 
 		totalBloodSelf = 0;
 
@@ -281,7 +333,7 @@ public class BattleControlor : MonoBehaviour
 		}
 
 		//玩家死亡之后，除了失败播放的剧情之外，其他都不触发
-		if(result == BattleResult.RESULT_LOSE || king.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
+		if(result == BattleResult.RESULT_LOSE || king.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0)
 		{
 			if(template.triggerType != 3)
 			{
@@ -326,6 +378,12 @@ public class BattleControlor : MonoBehaviour
 
 		Global.ResourcesDotLoad( EffectTemplate.getEffectTemplateByEffectId (55).path, 
 		                        ResourceLoadCallbackLabelTemple_default );
+
+		Global.ResourcesDotLoad( EffectTemplate.getEffectTemplateByEffectId (200).path, 
+		                        ResourceLoadCallbackLabelTemple_droppenCoin );
+
+		Global.ResourcesDotLoad( EffectTemplate.getEffectTemplateByEffectId (201).path, 
+		                        ResourceLoadCallbackLabelTemple_droppenItem );
 
 		Global.ResourcesDotLoad( EffectTemplate.getEffectTemplateByEffectId (73).path, 
 		                        ResourceLoadCallbackBloodBar_red );
@@ -387,6 +445,18 @@ public class BattleControlor : MonoBehaviour
 		preLoadEffCountPlus ();
 	}
 
+	public void ResourceLoadCallbackLabelTemple_droppenCoin( ref WWW p_www, string p_path, Object p_object ){
+		labelTemple_droppenCoin = (GameObject)p_object;
+		
+		preLoadEffCountPlus ();
+	}
+
+	public void ResourceLoadCallbackLabelTemple_droppenItem( ref WWW p_www, string p_path, Object p_object ){
+		labelTemple_droppenItem = (GameObject)p_object;
+		
+		preLoadEffCountPlus ();
+	}
+
 	public void ResourceLoadCallbackBloodBar_red( ref WWW p_www, string p_path, Object p_object ){
 		bloodbarTemple_red = (GameObject)p_object;
 		
@@ -405,7 +475,7 @@ public class BattleControlor : MonoBehaviour
 
 		preLoadEffCount ++;
 
-		if(preLoadEffCount >= 10)
+		if(preLoadEffCount >= 12)
 		{
 			BattleNet.Instance().initData();
 		}
@@ -525,6 +595,27 @@ public class BattleControlor : MonoBehaviour
 		}
 	}
 
+	public void loadGroupFlags()
+	{
+		Component[] t_battle_group_flags = flagRoot.GetComponentsInChildren( typeof( BattleFlagGroup ) );
+		
+		foreach( Component fl in t_battle_group_flags )
+		{
+			BattleFlagGroup bf = (BattleFlagGroup) fl;
+			
+			bool f = groupFlags.ContainsKey(bf.groupId);
+			
+			if(f == false)
+			{
+				groupFlags.Add( bf.groupId, bf );
+			}
+			else
+			{
+				Debug.LogError( "Battle Group Flag Already Contained Key: " + bf.groupId );
+			}
+		}
+	}
+
 	private void LogFlags()
 	{
 		foreach( KeyValuePair< int,BattleFlag > t_pair in flags )
@@ -600,7 +691,7 @@ public class BattleControlor : MonoBehaviour
 					
 					strSkillLevelLight += "" + i;
 					
-					if(i < nodeData.weaponHeavy.skillLevel.Count - 1) strSkillLevelLight += ",";
+					if(i < nodeData.weaponLight.skillLevel.Count - 1) strSkillLevelLight += ",";
 				}
 				
 				strSkillLevelLight += "]";
@@ -632,7 +723,7 @@ public class BattleControlor : MonoBehaviour
 					
 					strSkillLevelRange += "" + i;
 					
-					if(i < nodeData.weaponHeavy.skillLevel.Count - 1) strSkillLevelRange += ",";
+					if(i < nodeData.weaponRanged.skillLevel.Count - 1) strSkillLevelRange += ",";
 				}
 				
 				strSkillLevelRange += "]";
@@ -694,11 +785,10 @@ public class BattleControlor : MonoBehaviour
 
 		buffFlags.TryGetValue (flag, out buffbf);
 
-		if( bf == null && buffbf == null)
-		{
-			#if UNITY_EDITOR
+		if( bf == null && buffbf == null ){
+//			#if UNITY_EDITOR
 			Debug.LogError( "NO FLAG " + flag + " IN SCENE ! " + flags.Count + ", " + buffFlags.Count );
-			#endif
+//			#endif
 
 			return null;
 		}
@@ -723,6 +813,11 @@ public class BattleControlor : MonoBehaviour
 		nodeObjcet.transform.parent = parent.transform;
 		
 		nodeObjcet.transform.localScale = new Vector3( 1, 1, 1 );
+
+		if(CameraDivisionControllor.Instance().inWorking && nodeData.nodeType == NodeType.PLAYER)
+		{
+			GameObjectHelper.SetGameObjectLayerRecursive(nodeObjcet, 9);
+		}
 
 		BaseAI t_ai = (BaseAI)nodeObjcet.GetComponent( "BaseAI" );
 
@@ -787,6 +882,11 @@ public class BattleControlor : MonoBehaviour
 
 		t_ai.initDate( nodeData, nodeTemple, model );
 
+		if(copyIndex != 0)
+		{
+			t_ai.setNavEnabled(true);
+		}
+
 		if (t_ai.buffFlag != null)
 						t_ai.buffFlag.setNode (t_ai);
 
@@ -829,7 +929,7 @@ public class BattleControlor : MonoBehaviour
 
 			if(bf.hideWithDramable == true)
 			{
-				int level = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
+				int level = CityGlobalData.m_configId;
 
 				if(level <= CityGlobalData.m_pve_max_level)
 				{
@@ -865,7 +965,14 @@ public class BattleControlor : MonoBehaviour
 
 			if(nodeData.modleId == 5) BattleUIControlor.Instance().spriteAvatar.spriteName = "PlayerIcon4";
 		}
-		
+
+		if( t_ai.nodeData.nodeType == NodeType.PLAYER && stance == BaseAI.Stance.STANCE_ENEMY)
+		{
+			haveEnemyKing = true;
+
+			EffectTool.SetEnemyPlayerEffect(t_ai.body);
+		}
+
 		{
 			TimeHelper.UpdateTimeInfo( TimeHelper.CONST_TIME_INFO_CREATE_NODE, 
 			                           Time.realtimeSinceStartup - t_cur_time );
@@ -1176,9 +1283,7 @@ public class BattleControlor : MonoBehaviour
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)
 		{
-			int chapterId = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
-			
-			PveFunctionOpen template = PveFunctionOpen.getPveFunctionOpenByIdWithoutRefresh(chapterId);
+			PveFunctionOpen template = PveFunctionOpen.getPveFunctionOpenByIdWithoutRefresh(CityGlobalData.m_configId);
 			
 			if(template.broadcastable == false)
 			{
@@ -1250,6 +1355,34 @@ public class BattleControlor : MonoBehaviour
 				if(f == null) continue;
 
 				f.trigger();
+			}
+		}
+
+		foreach(BattleFlagGroup group in groupFlags.Values)
+		{
+			bool allNull = true;
+
+			foreach(BattleFlag flag in group.listFlags)
+			{
+				if(flag.node != null)
+				{
+					allNull = false;
+
+					break;
+				}
+			}
+
+			if(allNull)
+			{
+				BattleWinTemplate winTemp = BattleWinTemplate.getWinTemplateContainsType( BattleWinFlag.EndType.Kill_Wave, true);
+
+				if(winTemp != null) winTemp.killNum --;
+
+				winTemp = BattleWinTemplate.getWinTemplateContainsType( BattleWinFlag.EndType.Kill_Wave, false);
+				
+				if(winTemp != null) winTemp.killNum --;
+
+//				battleCheck.waveKilled ++;
 			}
 		}
 
@@ -1772,9 +1905,7 @@ public class BattleControlor : MonoBehaviour
 
 	private void checkStartDrama()
 	{
-		int level = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
-
-		bool f = GuideTemplate.HaveId_type (level, 1);
+		bool f = GuideTemplate.HaveId_type (CityGlobalData.m_configId, 1);
 
 		if (f == false) 
 		{
@@ -1783,9 +1914,9 @@ public class BattleControlor : MonoBehaviour
 			return;
 		}
 
-		GuideTemplate template = GuideTemplate.getTemplateByLevelAndType (level, 1);
+		GuideTemplate template = GuideTemplate.getTemplateByLevelAndType (CityGlobalData.m_configId, 1);
 
-		BattleUIControlor.Instance().showDaramControllor (level, template.id, showLockEff);
+		BattleUIControlor.Instance().showDaramControllor (CityGlobalData.m_configId, template.id, showLockEff);
 	}
 
 	IEnumerator showHintBox()
@@ -1955,6 +2086,14 @@ public class BattleControlor : MonoBehaviour
 		{
 			return (int)AttackType.DEFAULT;
 		}
+		else if(_type == AttackType.DROPPEN_COIN)
+		{
+			return (int)AttackType.DROPPEN_COIN;
+		}
+		else if(_type == AttackType.DROPPEN_ITEM)
+		{
+			return (int)AttackType.DROPPEN_ITEM;
+		}
 		
 		if(defender.stance == BaseAI.Stance.STANCE_SELF)
 		{
@@ -1969,11 +2108,15 @@ public class BattleControlor : MonoBehaviour
 		{
 			return (int)AttackType.MIBAO_ATTACK;
 		}
-		else if(_type == AttackType.SKILL_ATTACK || _type == AttackType.SKILL_REFLEX)
+		else if(_type == AttackType.SKILL_ATTACK)
 		{
 			return (int)AttackType.SKILL_ATTACK;
 		}
-		
+		else if(_type == AttackType.SKILL_REFLEX)
+		{
+			return (int)AttackType.SKILL_REFLEX;
+		}
+
 		return (int)AttackType.BASE_ATTACK;
 	}
 
@@ -2004,6 +2147,14 @@ public class BattleControlor : MonoBehaviour
 		else if(_type == AttackType.SKILL_ATTACK)
 		{
 			return labelTemple_skill;
+		}
+		else if(_type == AttackType.DROPPEN_COIN)
+		{
+			return labelTemple_droppenCoin;
+		}
+		else if(_type == AttackType.DROPPEN_ITEM)
+		{
+			return labelTemple_droppenItem;
 		}
 
 		return labelTemple_base;
@@ -2037,7 +2188,15 @@ public class BattleControlor : MonoBehaviour
 		{
 			return labelTemple_skill;
 		}
-		
+		else if(labelType == (int)AttackType.DROPPEN_COIN)
+		{
+			return labelTemple_droppenCoin;
+		}
+		else if(labelType == (int)AttackType.DROPPEN_ITEM)
+		{
+			return labelTemple_droppenItem;
+		}
+
 		return labelTemple_base;
 	}
 
@@ -2063,25 +2222,23 @@ public class BattleControlor : MonoBehaviour
 				ba.setNavMeshStop();
 			}
 
-			int level = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
+			bool fWin = GuideTemplate.HaveId_type(CityGlobalData.m_configId, 2);
 
-			bool fWin = GuideTemplate.HaveId_type(level, 2);
-
-			bool fLose = GuideTemplate.HaveId_type(level, 3);
+			bool fLose = GuideTemplate.HaveId_type(CityGlobalData.m_configId, 3);
 
 			bool f = CityGlobalData.getDramable() && CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan;
 
 			if(fWin == true && result == BattleResult.RESULT_WIN && f == true)
 			{
-				GuideTemplate gt_win = GuideTemplate.getTemplateByLevelAndType(level, 2);
+				GuideTemplate gt_win = GuideTemplate.getTemplateByLevelAndType(CityGlobalData.m_configId, 2);
 				
-				StartCoroutine(showDramaControllor(level, gt_win.id, showResult));
+				StartCoroutine(showDramaControllor(CityGlobalData.m_configId, gt_win.id, showResult));
 			}
 			else if(fLose == true && result == BattleResult.RESULT_LOSE && f == true)
 			{
-				GuideTemplate gt_lose = GuideTemplate.getTemplateByLevelAndType(level, 3);
+				GuideTemplate gt_lose = GuideTemplate.getTemplateByLevelAndType(CityGlobalData.m_configId, 3);
 				
-				StartCoroutine(showDramaControllor(level, gt_lose.id, showResult));
+				StartCoroutine(showDramaControllor(CityGlobalData.m_configId, gt_lose.id, showResult));
 			}
 			else
 			{
@@ -2368,7 +2525,7 @@ public class BattleControlor : MonoBehaviour
 			}
 		}
 
-		TimeHelper.SetTimeScale(1f);
+		if(Time.timeScale != 0) TimeHelper.SetTimeScale(1f);
 
 		lastCameraEffect = false;
 	}
@@ -2407,10 +2564,10 @@ public class BattleControlor : MonoBehaviour
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
-			if(fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
-			{
-				//fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
-			}
+//			if(fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
+//			{
+//				fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
+//			}
 
 			return fbp;
 		}
@@ -2428,10 +2585,10 @@ public class BattleControlor : MonoBehaviour
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
-			if(fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
-			{
-				//fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
-			}
+//			if(fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
+//			{
+//				fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
+//			}
 
 			return fbp;
 		}
@@ -2468,6 +2625,13 @@ public class BattleControlor : MonoBehaviour
 			fbp.Bool = false;
 			
 			return fbp;
+		}
+
+		float RA = 1;
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo)
+		{
+			RA = (1 + attacker.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_FianlAmplify)) / (1 + defender.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_FianlReduction));
 		}
 
 		float L = 500f;
@@ -2515,11 +2679,20 @@ public class BattleControlor : MonoBehaviour
 
 		float WM = (L + attackAmplify) / (L + attackReduction);
 
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && attacker.stance == BaseAI.Stance.STANCE_SELF)
+		{
+			WM = 2 * WM / (WM + 1);
+		}
+		else
+		{
+			WM = WM > 4 ? 4 : WM;
+		}
+
 		float WE = (1 + weaponAmplify) * (1 - weaponReduction);
 
 		float SJ = Random.value * 0.2f + 0.9f;
 
-		int pt = (int)(JC * weaponRatio * WM * WE * SJ);
+		int pt = (int)(JC * weaponRatio * WM * WE * SJ * RA);
 
 		pt = pt < 1 ? 1 : pt;
 
@@ -2540,9 +2713,9 @@ public class BattleControlor : MonoBehaviour
 
 			fbp.Bool = false;
 			
-			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && attacker.stance == BaseAI.Stance.STANCE_SELF)
 			{
-				fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
+				fbp.Float = (2 * fbp.Float / (fbp.Float + defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMax) / defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_HYK))) * (fbp.Float + defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMax) / defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_HYK));
 			}
 
 			return fbp;
@@ -2554,9 +2727,16 @@ public class BattleControlor : MonoBehaviour
 
 		float WB = (L / M + attackAmplify_cri) / (L / M + attackReduction_cri);
 
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && attacker.stance == BaseAI.Stance.STANCE_SELF)
+		{
+			WB = 2 * WB / (WB + 1);
+		}
+		else
+		{
+			WB = WB > 4 ? 4 : WB;
+		}
 
-
-		int bj = pt + (int)(JC * weaponRatio * WE * WB * SJ);
+		int bj = pt + (int)(JC * weaponRatio * WE * WB * SJ * RA);
 
 		bj = bj < 1 ? 1 : bj;
 
@@ -2572,11 +2752,6 @@ public class BattleControlor : MonoBehaviour
 		fbp.Float = bj;
 		
 		fbp.Bool = true;
-
-		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && fbp.Float >= 2 * HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
-		{
-			fbp.Float = (fbp.Float / (fbp.Float + 2 * HYK)) * 4 * HYK;
-		}
 		
 		return fbp;
 	}
@@ -2605,6 +2780,13 @@ public class BattleControlor : MonoBehaviour
 			fbp.Bool = false;
 
 			return fbp;
+		}
+
+		float RA = 1;
+		
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo)
+		{
+			RA = (1 + attacker.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_FianlAmplify)) / (1 + defender.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_FianlReduction));
 		}
 
 		float L = 500f;
@@ -2652,11 +2834,20 @@ public class BattleControlor : MonoBehaviour
 		
 		float WM = (L + attackAmplify) / (L + attackReduction);
 
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && attacker.stance == BaseAI.Stance.STANCE_SELF)
+		{
+			WM = 2 * WM / (WM + 1);
+		}
+		else
+		{
+			WM = WM > 4 ? 4 : WM;
+		}
+
 		float WE = (1 + skillAmplify) * (1 - skillReduction);
 
 		float SJ = Random.value * 0.2f + 0.9f;
 
-		int pt = (int)((JC * shanghaixishu + gudingshanghai) * WM * WE * SJ);
+		int pt = (int)((JC * shanghaixishu + gudingshanghai) * WM * WE * SJ * RA);
 
 		pt = pt < 1 ? 1 : pt;
 
@@ -2679,9 +2870,9 @@ public class BattleControlor : MonoBehaviour
 			
 			fbp.Bool = false;
 
-			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && fbp.Float >= HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && attacker.stance == BaseAI.Stance.STANCE_SELF)
 			{
-				fbp.Float = (fbp.Float / (fbp.Float + HYK)) * 2 * HYK;
+				fbp.Float = (2 * fbp.Float / (fbp.Float + defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMax) / defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_HYK))) * (fbp.Float + defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMax) / defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_HYK));
 			}
 
 			return fbp;
@@ -2694,8 +2885,17 @@ public class BattleControlor : MonoBehaviour
 		//int bj = (int)(pt * (1 + (L + attackAmplify_cri) / (L + attackReduction_cri)));
 
 		float JB = (L / M + attackAmplify_cri) / (L / M + attackReduction_cri);
-		
-		int bj = pt + (int)((JC * shanghaixishu + gudingshanghai) * WE * JB * SJ);
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && attacker.stance == BaseAI.Stance.STANCE_SELF)
+		{
+			JB = 2 * JB / (JB + 1);
+		}
+		else
+		{
+			JB = JB > 4 ? 4 : JB;
+		}
+
+		int bj = pt + (int)((JC * shanghaixishu + gudingshanghai) * WE * JB * SJ * RA);
 
 		if (bj < 1) bj = 1;
 
@@ -2712,17 +2912,14 @@ public class BattleControlor : MonoBehaviour
 		
 		fbp.Bool = true;
 
-		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && fbp.Float >= 2 * HYK && attacker.stance == BaseAI.Stance.STANCE_SELF)
-		{
-			fbp.Float = (fbp.Float / (fbp.Float + 2 * HYK)) * 4 * HYK;
-		}
-
 		return fbp;
 	}
 
 	public float getArmorValue(BaseAI defender, float tempHp)
 	{
 		float M = defender.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_ArmorRatio);
+
+		if (M < 0) return 0;
 
 		float N = defender.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_ArmorMax);
 

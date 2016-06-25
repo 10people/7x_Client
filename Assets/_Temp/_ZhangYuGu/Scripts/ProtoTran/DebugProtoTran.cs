@@ -23,9 +23,4 @@ public class DebugProtoTran : MonoBehaviour {
 		t_troop.heroType = HeroType.TYPE_CHE;
 		*/
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

@@ -9,6 +9,9 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class PveUImanager :MYNGUIPanel
 {
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
     public ScaleEffectController m_ScaleEffectController;
 
 	int maxChanpter = 13;
@@ -23,6 +26,10 @@ public class PveUImanager :MYNGUIPanel
 
     //public UILabel showTiLiClips;
     public UILabel show_All_TiLiClips;
+
+	public GameObject CQ_btnEffect;
+	public GameObject PT_btnEffect;
+
     public GameObject RightBtn;
     public GameObject LeftBtn;
     public GameObject ChooseChapterBtn;
@@ -42,6 +49,8 @@ public class PveUImanager :MYNGUIPanel
 
 	public UILabel m_DontOpenLvTips;
 
+	public GameObject m_ChaperAwardUI;//领取章节奖励界面
+
 //	public GameObject NeedScoleUI;
     void Awake()
     {
@@ -50,6 +59,7 @@ public class PveUImanager :MYNGUIPanel
 		EnergyDetailLongPress.NormalPressTriggerWhenLongPress = false;
 		EnergyDetailLongPress.OnLongPressFinish = OnCloseDetail;
 		EnergyDetailLongPress.OnLongPress = OnEnergyDetailClick;
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "过关斩将", 0, 0);
     }
 
     void Start()
@@ -74,8 +84,9 @@ public class PveUImanager :MYNGUIPanel
 	public void OPenEffect(GameObject Btn)
 	{
 		int id = 620225;
-		UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,Btn,
-		                                   EffectIdTemplate.GetPathByeffectId(id));
+		Btn.GetComponent<UISprite>().alpha = 1f;
+		UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,Btn,
+		                                   EffectIdTemplate.GetPathByeffectId(id),null,false);
 	}
 	void OnDestroy(){
 		instances = null;
@@ -88,11 +99,11 @@ public class PveUImanager :MYNGUIPanel
 			UIToggle mUItoggle = PT_btn.GetComponent<UIToggle>();
 			//mUItoggle.startsActive = true;
 			mUItoggle.value = !mUItoggle.value;
-			OPenEffect (PT_btn);
+			OPenEffect (PT_btnEffect);
 		
 		}else
 		{
-			OPenEffect (CQ_btn);
+			OPenEffect (CQ_btnEffect);
 			UIToggle mUItoggle = CQ_btn.GetComponent<UIToggle>();
 			//mUItoggle.startsActive = true;
 			mUItoggle.value = !mUItoggle.value;
@@ -152,48 +163,7 @@ public class PveUImanager :MYNGUIPanel
 	{
 		
 		TiliLabel.text = JunZhuData.Instance().m_junzhuInfo.tili.ToString() + "/" + JunZhuData.Instance().m_junzhuInfo.tiLiMax.ToString();
-        //AllTiLi.text = JunZhuData.Instance().m_junzhuInfo.tiLiMax.ToString();//修改为  体力上线
-
-//        if (JunZhuData.Instance().m_junzhuInfo.tili >= JunZhuData.Instance().m_junzhuInfo.tiLiMax)
-//        {
-//            show_All_TiLiClips.gameObject.SetActive(true);
-//            showTiLiClips.gameObject.SetActive(false);
-//        }
-//        else
-//        {
-//            show_All_TiLiClips.gameObject.SetActive(false);
-//            showTiLiClips.gameObject.SetActive(true);
-//			if(JunZhuData.Instance().m_remainTime > 60)
-//			{
-//				string Sec = "";
-//				if(JunZhuData.Instance().m_remainTime%60 <10)
-//				{
-//					showTiLiClips.text = ((int)(JunZhuData.Instance().m_remainTime/60)).ToString()+":"+"0"+(JunZhuData.Instance().m_remainTime%60).ToString();
-//				}
-//				else{
-//					showTiLiClips.text = ((int)(JunZhuData.Instance().m_remainTime/60)).ToString()+":"+(JunZhuData.Instance().m_remainTime%60).ToString();
-//				}
-//			}else
-//			{
-//				if(JunZhuData.Instance().m_remainTime < 10)
-//				{
-//					showTiLiClips.text = "0"+JunZhuData.Instance().m_remainTime.ToString();
-//				}
-//				else{
-//					showTiLiClips.text = JunZhuData.Instance().m_remainTime.ToString();
-//				}
-//
-//			}
-//
-//        }
-
-//        if (MapData.mapinstance.Cq_Chapter >= 2)
-//        {
-//            CQ_btn.SetActive(true);
-//        }
-//		Debug.Log("CityGlobalData.m_LastSection = "+CityGlobalData.m_LastSection);
-//		Debug.Log("FunctionOpenTemp.GetWhetherContainID( 109))= "+FunctionOpenTemp.GetWhetherContainID( 109));
-//		Debug.Log("CityGlobalData.m_temp_CQ_Section = "+CityGlobalData.m_temp_CQ_Section);
+  
 		if(!CQ_btn.activeInHierarchy)
 		{
 			//Debug.Log("CityGlobalData.m_LastSection = "+CityGlobalData.m_LastSection);
@@ -235,7 +205,25 @@ public class PveUImanager :MYNGUIPanel
 				RightBtn.SetActive(true);
 			}
 		}
-
+		if(CityGlobalData.PT_Or_CQ)
+		{
+			if (PassLevelBtn.Instance().mDataback&&MapData.mapinstance.MapdataBack) {
+				
+				if(PassLevelBtn.Instance().Sec_idlist == null)
+				{
+					return;
+				}
+				if(PassLevelBtn.Instance().Sec_idlist != null || PassLevelBtn.Instance().Sec_idlist.Count > 0)
+				{
+					//Debug.Log ("MainCityUI.m_MainCityUI.m_WindowObjectList.Count = "+MainCityUI.m_MainCityUI.m_WindowObjectList.Count);
+					if( m_ChaperAwardUI == null)
+					{
+						MapData.mapinstance.MapdataBack = false;
+						GetPveSectionAward();
+					}
+				}
+			}
+		}
     }
 
     /// <summary>
@@ -251,8 +239,8 @@ public class PveUImanager :MYNGUIPanel
             return;
         }
 		CityGlobalData.PT_Or_CQ = true;
-		UI3DEffectTool.ClearUIFx (CQ_btn);
-		OPenEffect(PT_btn);
+		UI3DEffectTool.ClearUIFx (CQ_btnEffect);
+		OPenEffect(PT_btnEffect);
       //  MapData.mapinstance.Is_Com_Lv = true;
 		if(FreshGuide.Instance().IsActive(100320)&& TaskData.Instance.m_TaskInfoDic[100320].progress >= 0)
 		{
@@ -272,8 +260,7 @@ public class PveUImanager :MYNGUIPanel
     {
 
 		choosemap.UpAndDownbtn = true;
-
-
+	
 	    CloseArt();
 		if (!CityGlobalData.PT_Or_CQ )
         {
@@ -282,9 +269,9 @@ public class PveUImanager :MYNGUIPanel
 		CityGlobalData.PT_Or_CQ = false;
        // MapData.mapinstance.Is_Com_Lv = false;
 		MapData.mapinstance.GuidLevel = 0;
-		UI3DEffectTool.ClearUIFx (PT_btn);
+		UI3DEffectTool.ClearUIFx (PT_btnEffect);
 		//Debug.Log ("CityGlobalData.m_temp_CQ_Section =  "+CityGlobalData.m_temp_CQ_Section);
-		OPenEffect(CQ_btn);
+		OPenEffect(CQ_btnEffect);
 		MapData.sendmapMessage(CityGlobalData.m_temp_CQ_Section);
 	}
 	
@@ -298,18 +285,6 @@ public class PveUImanager :MYNGUIPanel
         string Map_Name = NameIdTemplate.GetName_By_NameId(mPveTempTemplate.bigName);
 
         MapName.text = Map_Name;
-
-//		if (CityGlobalData.PT_Or_CQ) {
-//
-//			string [] s = Map_Name.Split (' ');
-//			Debug.Log ("s[0] = " + s [0]);
-//			JiangLi_Name.text = "("+s [0]+")";
-//
-//		} else
-//		{
-//			JiangLi_Name.gameObject.SetActive(false);
-//		}
-
     }
 
     public void BuyEnergyLoadResourceCallback(ref WWW p_www, string p_path, Object p_object)
@@ -349,26 +324,26 @@ public class PveUImanager :MYNGUIPanel
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_REMIND_MI_BAO ),OpenLockLoadBack);
 	}
 
-	GameObject AwardtempObject;
 
 	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
-		if(AwardtempObject != null)
+		if(m_ChaperAwardUI != null)
 		{
 			return;
 		}
-		AwardtempObject = ( GameObject )Instantiate( p_object );
-		AwardtempObject.name = "PVELevelPass";
-		AwardtempObject.transform.parent = AwardRoot.transform.parent;
+		m_ChaperAwardUI = ( GameObject )Instantiate( p_object );
+		m_ChaperAwardUI.name = "PVELevelPass";
 
-		AwardtempObject.transform.localPosition = Vector3.zero;
+		m_ChaperAwardUI.transform.localPosition = new Vector3(100,100,0);
 
-		AwardtempObject.transform.localScale  = Vector3.one;
+		m_ChaperAwardUI.transform.localScale  = Vector3.one;
 
-		PassLevelAward mPassLevelAward = AwardtempObject.GetComponent<PassLevelAward>();
+		PassLevelAward mPassLevelAward = m_ChaperAwardUI.GetComponent<PassLevelAward>();
 		mPassLevelAward.Init ();
 		MapData.mapinstance.CloseEffect();
 		PassLevelBtn.Instance().CloseEffect ();
+
+		Debug.Log ("加载通关奖励界面");
 	}
 	private IEnumerator discovertips()
 	{
@@ -637,6 +612,10 @@ public class PveUImanager :MYNGUIPanel
         {
             UIYindao.m_UIYindao.CloseUI();
         }
+		if(m_ChaperAwardUI)
+		{
+			Destroy(m_ChaperAwardUI);
+		}
         //MapData.mapinstance.IsCloseGuid = true;
 //		WindowBackShowController.CreateSaveWindow("Secret(Clone)");
 //		WindowBackShowController.CreateSaveWindow("JUN_ZHU_LAYER_AMEND");

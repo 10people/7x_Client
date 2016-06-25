@@ -73,6 +73,8 @@ public class SparkleEffectItem : MonoBehaviour {
 		InitSparkle();
 	}
 
+	private int m_tex_update_count = 0;
+
 	void Update(){
 		if( string.Compare( m_sprite_name, m_sprite.spriteName ) != 0 ||
 			m_tex != m_sprite.mainTexture ){
@@ -91,12 +93,28 @@ public class SparkleEffectItem : MonoBehaviour {
 			}
 		}
 
-		if( !IsActive() ){
-			return;
-		}
+//		if( !IsActive() ){
+//			#if DEBUG_EFFECT
+//			Debug.Log( "InActive, delta: " + ( Time.realtimeSinceStartup - m_start_time ) + "   duration: " + m_duration );
+//			#endif
+//
+//			return;
+//		}
 		
 		if( m_ui_tex != null ){
 			if( m_ui_tex.material != null ){
+				{
+					m_tex_update_count++;
+
+					if( m_tex_update_count == 3 ){
+						if( m_sprite != null ){
+							if( m_sprite.enabled ){
+								m_sprite.enabled = false;
+							}
+						}
+					}
+				}
+
 				m_ui_tex.material.SetColor( "_TintColor", m_color );
 
 				m_ui_tex.material.SetFloat( "_Coef", m_coef );
@@ -110,6 +128,16 @@ public class SparkleEffectItem : MonoBehaviour {
 					m_ui_tex.CustomReset();	
 				}
 			}
+			else{
+				#if DEBUG_EFFECT
+				Debug.Log( "m_ui_tex.mat is null." );
+				#endif
+			}
+		}
+		else{
+			#if DEBUG_EFFECT
+			Debug.Log( "m_ui_tex is null." );
+			#endif
 		}
 	}
 
@@ -179,13 +207,27 @@ public class SparkleEffectItem : MonoBehaviour {
 		}
 
 		if( m_sparkle_type == SparkleType.Sprite ){
+			{
+				Component t_com = ComponentHelper.RemoveIfExist( gameObject, typeof(UITexture) );
+
+				if( t_com != null ){
+					#if DEBUG_EFFECT
+					Debug.Log( "Delete Never should be exist UITexture." );
+					#endif
+				}
+			}
+
 			m_ui_tex = gameObject.AddComponent<UITexture>();
 
 			m_ui_tex.panel = m_sprite.panel;
 
 			m_ui_tex.depth = m_sprite.depth;
 
-			m_sprite.enabled = false;
+			{
+//				m_sprite.enabled = false;
+
+				m_tex_update_count = 0;
+			}
 
 			{
 				Vector4 t_dd = m_sprite.drawingDimensions;
@@ -297,7 +339,7 @@ public class SparkleEffectItem : MonoBehaviour {
 
 			UITexture t_tex = p_ui_sprite_gb.GetComponent<UITexture>();
 
-			if( t_sprite == null ){
+			if( ( t_sprite == null ) || ( t_sprite !=null && t_sprite.atlas == null ) ){
 				if( t_tex == null ){
 					Debug.Log( "No sprite or texture found for: " + p_ui_sprite_gb );
 

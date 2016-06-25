@@ -54,11 +54,11 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 		if (tempType == SportOperate.SPORT_ENEMY_PAGE || tempType == SportOperate.REFRESH_ENEMYLIST)
 		{
 			confirmReq.junxianid = tempJunXianId;
-			Debug.Log ("tempJunXianId:" + tempJunXianId);
+//			Debug.Log ("tempJunXianId:" + tempJunXianId);
 		}
 
 		QXComData.SendQxProtoMessage (confirmReq,ProtoIndexes.CONFIRM_EXECUTE_REQ,ProtoIndexes.CONFIRM_EXECUTE_RESP.ToString ());
-		Debug.Log ("ConfirmReq:" + ProtoIndexes.CONFIRM_EXECUTE_REQ);
+//		Debug.Log ("ConfirmReq:" + ProtoIndexes.CONFIRM_EXECUTE_REQ);
 	}
 
 	#endregion
@@ -102,7 +102,7 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 		challenge.type = (int)tempEnterPlace;
 
 		QXComData.SendQxProtoMessage (challenge,ProtoIndexes.CHALLENGE_REQ,ProtoIndexes.CHALLENGE_RESP.ToString ());
-		Debug.Log ("挑战请求：" + ProtoIndexes.CHALLENGE_REQ);
+//		Debug.Log ("挑战请求：" + ProtoIndexes.CHALLENGE_REQ);
 	}
 
 	#endregion
@@ -111,7 +111,7 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 	public void SportRecordReq ()
 	{
 		QXComData.SendQxProtoMessage (ProtoIndexes.ZhanDou_Notes_Req,ProtoIndexes.ZhanDou_Notes_Resq.ToString());
-		Debug.Log ("PvpRecordReq:" + ProtoIndexes.ZhanDou_Notes_Req);
+//		Debug.Log ("PvpRecordReq:" + ProtoIndexes.ZhanDou_Notes_Req);
 	}
 	#endregion
 
@@ -144,7 +144,7 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 			}
 			case ProtoIndexes.CONFIRM_EXECUTE_RESP:
 			{
-				Debug.Log ("竞技操作返回:" + ProtoIndexes.CONFIRM_EXECUTE_RESP);
+//				Debug.Log ("竞技操作返回:" + ProtoIndexes.CONFIRM_EXECUTE_RESP);
 				
 				ConfirmExecuteResp confirm = new ConfirmExecuteResp ();
 				confirm = QXComData.ReceiveQxProtoMessage (p_message,confirm) as ConfirmExecuteResp;
@@ -158,8 +158,10 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 						switch (confirm.buyCiShuInfo.success)
 						{
 						case 0://元宝不足
-							m_textStr = "元宝不足,是否前往充值？";
-							QXComData.CreateBoxDiy (m_textStr,false,TurnToVip);
+
+							Global.CreateFunctionIcon (101);
+//							m_textStr = "元宝不足,是否前往充值？";
+//							QXComData.CreateBoxDiy (m_textStr,false,TurnToVip);
 							break;
 						case 1://成功
 
@@ -174,8 +176,9 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 
 							if (QXComData.JunZhuInfo ().vipLv < QXComData.maxVipLevel)
 							{
-								m_textStr = "今日购买次数已用完，V特权等级提升到" + (QXComData.JunZhuInfo ().vipLv + 1) + "级即可购买更多挑战次数。\n\n是否前往充值？";
-								QXComData.CreateBox (1,m_textStr,false,TurnToVip);
+//								m_textStr = "今日购买次数已用完，V特权等级提升到" + (QXComData.JunZhuInfo ().vipLv + 1) + "级即可购买更多挑战次数。是否前往充值？";
+//								QXComData.CreateBox (1,m_textStr,false,TurnToVip);
+								Global.CreateFunctionIcon (1901);
 							}
 							else
 							{
@@ -193,8 +196,9 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 						switch (confirm.cleanCDInfo.success)
 						{
 						case 0://元宝不足
-							m_textStr = "元宝不足,是否前往充值？";
-							QXComData.CreateBoxDiy (m_textStr,false,TurnToVip);
+							Global.CreateFunctionIcon (101);
+//							m_textStr = "元宝不足,是否前往充值？";
+//							QXComData.CreateBoxDiy (m_textStr,false,TurnToVip);
 							break;
 						case 1://成功
 //							LanguageTemplate.GetText (LanguageTemplate.Text.BAIZHAN_DISCD_TITLE);
@@ -216,8 +220,9 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 							QXComData.CreateBoxDiy (m_textStr,true,null);
 							break;
 						case 3://vip等级不足
-							m_textStr = "V特权等级不足，V特权等级提升到" + QXComData.SportClearCdVipLevel + "级即可重置挑战冷却时间。\n\n是否前往充值？ ";
-							QXComData.CreateBoxDiy (m_textStr,false,TurnToVip);
+//							m_textStr = "V特权等级不足，V特权等级提升到" + QXComData.SportClearCdVipLevel + "级即可重置挑战冷却时间。是否前往充值？ ";
+//							QXComData.CreateBoxDiy (m_textStr,false,TurnToVip);
+							Global.CreateFunctionIcon (1901);
 							break;
 						default:
 							break;
@@ -277,10 +282,10 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 							{
 								confirm.refreshOtherInfo.oppoList = new List<OpponentInfo>();
 							}
-							Debug.Log ("confirm.refreshOtherInfo.oppoList:" + confirm.refreshOtherInfo.oppoList.Count);
+//							Debug.Log ("confirm.refreshOtherInfo.oppoList:" + confirm.refreshOtherInfo.oppoList.Count);
 							foreach (OpponentInfo oppo in confirm.refreshOtherInfo.oppoList)
 							{
-								Debug.Log ("oppo.junZhuId:" + oppo.junZhuId);
+//								Debug.Log ("oppo.junZhuId:" + oppo.junZhuId);
 							}
 							SportPage.m_instance.OpenJunXianRoom (confirm.refreshOtherInfo);
 						}
@@ -293,14 +298,14 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 			}
 			case ProtoIndexes.CHALLENGE_RESP:
 			{
-				Debug.Log ("请求挑战返回:" + ProtoIndexes.CHALLENGE_RESP);
+//				Debug.Log ("请求挑战返回:" + ProtoIndexes.CHALLENGE_RESP);
 				
 				ChallengeResp challenge = new ChallengeResp ();
 				challenge = QXComData.ReceiveQxProtoMessage (p_message,challenge) as ChallengeResp;
 				
 				if (challenge != null)
 				{
-					Debug.Log ("challenge.type:" + challenge.type);
+//					Debug.Log ("challenge.type:" + challenge.type);
 					ChallengeType challengeType = (ChallengeType)Enum.ToObject (typeof(ChallengeType),challenge.type);
 					if (challengeType == ChallengeType.ENTER_FIGHT)
 					{
@@ -324,41 +329,23 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 						if (challengeType == ChallengeType.CD)//冷却cd
 						{
 							M_ClearByBtn = false;
-							if (QXComData.JunZhuInfo ().vipLv < QXComData.SportClearCdVipLevel)
-							{
-								m_textStr = "V特权等级不足，V特权等级提升到" + QXComData.SportClearCdVipLevel + "级即可重置挑战冷却时间。\n\n是否前往充值？ ";
-								QXComData.CreateBoxDiy (m_textStr,false,TurnToVip);
-							}
-							else
-							{
-								m_textStr = "挑战冷却中,是否使用" + SportPage.m_instance.SportResp.cdYuanBao + "元宝清除挑战冷却？";
-								QXComData.CreateBoxDiy (m_textStr,false,ClearCd);
-							}
+							m_textStr = "挑战冷却中,\n是否使用" + SportPage.m_instance.SportResp.cdYuanBao + "元宝清除挑战冷却？";
+							QXComData.CreateBoxDiy (m_textStr,false,ClearCd,true,0,QXComData.SportClearCdVipLevel);
+//							if (QXComData.JunZhuInfo ().vipLv < QXComData.SportClearCdVipLevel)
+//							{
+//								m_textStr = "V特权等级不足，V特权等级提升到" + QXComData.SportClearCdVipLevel + "级即可重置挑战冷却时间。是否前往充值？ ";
+//								QXComData.CreateBoxDiy (m_textStr,false,TurnToVip);
+////								Global.CreateFunctionIcon (1901);
+//							}
+//							else
+//							{
+//								m_textStr = "挑战冷却中,是否使用" + SportPage.m_instance.SportResp.cdYuanBao + "元宝清除挑战冷却？";
+//								QXComData.CreateBoxDiy (m_textStr,false,ClearCd);
+//							}
 						}
 						else if (challengeType == ChallengeType.HAVE_NO_CHANCE)//挑战机会用完
 						{
-							if (SportPage.m_instance.SportResp.leftCanBuyCount == 0)
-							{
-								if (QXComData.JunZhuInfo ().vipLv < QXComData.maxVipLevel)
-								{
-									string textDes1 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_7);
-									string textDes2 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_8).Replace ('*',char.Parse ((QXComData.JunZhuInfo ().vipLv + 1).ToString ()));
-									string textDes3 = LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
-//									textStr = "今日挑战次数已用完，V特权等级提升到" + (JunZhuData.Instance().m_junzhuInfo.vipLv + 1) + "级即可购买更多挑战次数。\n\n是否前往充值？";
-									m_textStr = textDes1 + "\n" + textDes2 + "\n" + textDes3;
-									QXComData.CreateBox (1,m_textStr,true,null);
-								}
-								else
-								{
-									m_textStr = "今日挑战次数已用完...";
-									QXComData.CreateBox (1,m_textStr,true,null);
-								}
-							}
-							else
-							{
-								m_textStr = "今日挑战次数已用完\n\n是否使用" + SportPage.m_instance.SportResp.buyNeedYB + "元宝购买" + SportPage.m_instance.SportResp.buyNumber + "次挑战次数？\n\n今日还可购买" + SportPage.m_instance.SportResp.leftCanBuyCount + "回";
-								QXComData.CreateBox (1,m_textStr,false,BuyTimes);
-							}
+							BuyChallengeTimes ();
 						}
 						else
 						{
@@ -384,25 +371,27 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 							}
 							case ChallengeType.OPPO_RANK_CHANGE://对手名次发生变化
 							{
-								m_textStr = "对手名次发生变化，请重新选择对手...";
-								QXComData.CreateBoxDiy (m_textStr,true,null);
 								//更新对手列表
 
 								SportPage.m_instance.SetSportEnemyObj (false);
+								GeneralControl.Instance.SetChallengeObjState (false);
 
 								RefreshOtherInfo otherInfo = new RefreshOtherInfo();
 								otherInfo.oppoList = challenge.oppoList;
 								SportPage.m_instance.OpenJunXianRoom (otherInfo);
+								m_textStr = "对手名次发生变化，请重新选择对手...";
+								QXComData.CreateBoxDiy (m_textStr,true,RecheckPlayer,true);
 
 								break;
 							}
 							case ChallengeType.SELF_RANK_CHANGE://自己的名次已发生变化
 							{
-								m_textStr = "您的排名已经发生变化...";
-								QXComData.CreateBoxDiy (m_textStr,false,null);
-
+								SportPage.m_instance.SetSportEnemyObj (false);
+								GeneralControl.Instance.SetChallengeObjState (false);
 								//更新主界面军衔
 								SportPage.m_instance.RefreshPlayerInfo (challenge.myRank);
+								m_textStr = "您的排名已经发生变化...";
+								QXComData.CreateBoxDiy (m_textStr,true,RecheckPlayer,true);
 
 								break;
 							}
@@ -434,7 +423,7 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 					{
 						sportRecord.info = new List<ZhandouItem>();
 					}
-					GeneralControl.Instance.LoadRecordPage (GeneralRecord.RecordType.SPORT,sportRecord);
+					GeneralControl.Instance.LoadRecordPage (GeneralRecord.RecordType.SPORT,sportRecord,InstanceEffect);
 				}
 				
 				return true;
@@ -443,6 +432,16 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 		}
 
 		return false;
+	}
+
+	void RecheckPlayer (int i)
+	{
+		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
+	}
+
+	void InstanceEffect ()
+	{
+		SportPage.m_instance.DailyRewardBtnEffect ();
 	}
 
 	#region Challenge State Check
@@ -487,7 +486,7 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 		switch (i)
 		{
 		case 2:
-			EquipSuoData.TopUpLayerTip ();
+			RechargeData.Instance.RechargeDataReq ();
 			break;
 		default:
 			break;
@@ -538,8 +537,72 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 
 	#endregion
 
+	public void BuyChallengeTimes ()
+	{
+		if (SportPage.m_instance.SportResp.leftCanBuyCount <= 0)
+		{
+			if (QXComData.JunZhuInfo ().vipLv < QXComData.maxVipLevel)
+			{
+				if (QXComData.JunZhuInfo ().vipLv >= 1)
+				{
+					int curVipBuyTime = VipTemplate.GetVipInfoByLevel (QXComData.JunZhuInfo ().vipLv).bugBaizhanTime;//当前vip可购买回数
+					Debug.Log ("curVipBuyTime:" + curVipBuyTime);
+					int totleBuyNum = 0;//当前vip可购买的额外挑战总次数
+					for (int i = 0;i < curVipBuyTime;i ++)
+					{
+						totleBuyNum += (int)PurchaseTemplate.GetPurchaseTempByTypeAndTime (3,i + 1).number;
+					}
+					Debug.Log ("totleBuyNum:" + totleBuyNum);
+					if (totleBuyNum > SportPage.m_instance.SportResp.totalTimes - int.Parse (CanshuTemplate.GetStrValueByKey (CanshuTemplate.BAIZHAN_FREE_TIMES)))
+					{
+						int lastVipBuyTime = QXComData.JunZhuInfo ().vipLv - 1 >= 0 ? VipTemplate.GetVipInfoByLevel (QXComData.JunZhuInfo ().vipLv - 1).bugBaizhanTime : 0;//上个vip可购买回数
+						
+						int startBuyTime = lastVipBuyTime + 1;//当前vip第几回购买
+						
+						PurchaseTemplate purchas = PurchaseTemplate.GetPurchaseTempByTypeAndTime (3,startBuyTime);
+						int costYb = purchas.price;
+						int buyNum = (int)purchas.number;
+						int countBuyNum = curVipBuyTime - lastVipBuyTime;
+						
+						m_textStr = "今日挑战次数已用完\n是否使用" + costYb + "元宝购买" + buyNum + "次挑战次数？\n今日还可购买" + countBuyNum + "回";
+						QXComData.CreateBoxDiy (m_textStr,false,BuyTimes);
+					}
+					else
+					{
+						string textDes1 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_7);
+						string textDes2 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_8).Replace ('*',char.Parse (VipTemplate.GetNextBaiZhanBuyTimeVipLevel (QXComData.JunZhuInfo ().vipLv).ToString ()));
+						string textDes3 = LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
+						//									textStr = "今日挑战次数已用完，V特权等级提升到" + (JunZhuData.Instance().m_junzhuInfo.vipLv + 1) + "级即可购买更多挑战次数。\n\n是否前往充值？";
+						m_textStr = textDes1 + "\n" + textDes2 + textDes3;
+						QXComData.CreateBoxDiy (m_textStr,false,TurnToVip,true);
+					}
+				}
+				else
+				{
+					string textDes1 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_7);
+					string textDes2 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_8).Replace ('*',char.Parse (VipTemplate.GetNextBaiZhanBuyTimeVipLevel (QXComData.JunZhuInfo ().vipLv).ToString ()));
+					string textDes3 = LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
+					//									textStr = "今日挑战次数已用完，V特权等级提升到" + (JunZhuData.Instance().m_junzhuInfo.vipLv + 1) + "级即可购买更多挑战次数。\n\n是否前往充值？";
+					m_textStr = textDes1 + "\n" + textDes2 + textDes3;
+					QXComData.CreateBoxDiy (m_textStr,false,TurnToVip,true);
+				}
+			}
+			else
+			{
+				m_textStr = "今日挑战次数已用完...";
+				QXComData.CreateBoxDiy (m_textStr,true,null);
+			}
+		}
+		else
+		{
+			m_textStr = "今日挑战次数已用完\n是否使用" + SportPage.m_instance.SportResp.buyNeedYB + "元宝购买" + SportPage.m_instance.SportResp.buyNumber + "次挑战次数？\n今日还可购买" + SportPage.m_instance.SportResp.leftCanBuyCount + "回";
+			QXComData.CreateBoxDiy (m_textStr,false,BuyTimes);
+		}
+	}
+
 	void OnDestroy ()
 	{
 		SocketTool.UnRegisterMessageProcessor (this);
+		base.OnDestroy ();
 	}
 }

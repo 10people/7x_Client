@@ -24,14 +24,14 @@ public class WarData : Singleton<WarData>,SocketProcessor {
 	/// Wars the type req.
 	/// </summary>
 	/// <param name="tempType">Temp type.</param>
-	public void OpenWarSelectWindow ()
-	{
-		MainSimpleInfoReq mainSimpleReq = new MainSimpleInfoReq ();
-		mainSimpleReq.functionType = 8;
-		QXComData.SendQxProtoMessage (mainSimpleReq,ProtoIndexes.C_MAIN_SIMPLE_INFO_REQ,ProtoIndexes.S_MAIN_SIMPLE_INFO_RESP.ToString ());
-
-		//		Debug.Log ("Fight窗口信息请求" + ProtoIndexes.C_MAIN_SIMPLE_INFO_REQ);
-	}
+//	public void OpenWarSelectWindow ()
+//	{
+//		MainSimpleInfoReq mainSimpleReq = new MainSimpleInfoReq ();
+//		mainSimpleReq.functionType = 8;
+//		QXComData.SendQxProtoMessage (mainSimpleReq,ProtoIndexes.C_MAIN_SIMPLE_INFO_REQ,ProtoIndexes.S_MAIN_SIMPLE_INFO_RESP.ToString ());
+//
+//		//		Debug.Log ("Fight窗口信息请求" + ProtoIndexes.C_MAIN_SIMPLE_INFO_REQ);
+//	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)
 	{
@@ -54,7 +54,7 @@ public class WarData : Singleton<WarData>,SocketProcessor {
 					}
 					mainSimpleResp = mainSimpleRes;
 
-					WarPage.warPage.InItWarPage (mainSimpleResp);
+//					WarPage.m_instance.InItWarPage (mainSimpleResp);
 				}
 				return true;
 			}
@@ -96,7 +96,7 @@ public class WarData : Singleton<WarData>,SocketProcessor {
 			CityGlobalData.m_isRightGuide = true;
 		}
 
-		WarPage.warPage.InItWarPage (mainSimpleResp);
+//		WarPage.m_instance.InItWarPage (mainSimpleResp);
 	}
 
 	void OnDestroy (){

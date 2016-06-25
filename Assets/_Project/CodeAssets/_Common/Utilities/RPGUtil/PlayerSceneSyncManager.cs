@@ -109,7 +109,7 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 
     #region Treasure City
 
-    public void EnterTreasureCity(float initXPos = -15, float initZPos = -30)
+    public void EnterTreasureCity(float initXPos = 1f, float initZPos = 1.4f)
     {
         if (TreasureCityData.Instance().CanGetBoxCount() <= 0)
         {
@@ -130,7 +130,7 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
 #if DEBUG_SCENE_SYNC
 		Debug.Log( "EnterTreasureCity()" );
 #endif
-        byte[] t_protof = GetEnterSceneStructure(new Vector3(initXPos, 85, initZPos));
+        byte[] t_protof = GetEnterSceneStructure(new Vector3(initXPos, 0, initZPos));
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.Enter_TBBXScene, ref t_protof);
 
         //		Debug.Log ("ProtoIndexes.Enter_TBBXScene:" + ProtoIndexes.Enter_TBBXScene);

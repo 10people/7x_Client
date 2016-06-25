@@ -117,8 +117,8 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 		haojie.name = "0";
 		haojie.SetActive (false);
 		haojie.transform.parent = m_roleParent.transform;
-		haojie.transform.localPosition = new Vector3(0,0.04f,0);
-		haojie.transform.localScale = loadSize * 0.8f;
+		haojie.transform.localPosition = new Vector3(0,0,0);
+		haojie.transform.localScale = loadSize * 0.9f;
 		
 		m_roleObjList.Add ( haojie );
 		
@@ -132,8 +132,8 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 		ruya.name = "1";
 		ruya.SetActive (false);
 		ruya.transform.parent = m_roleParent.transform;
-		ruya.transform.localPosition = new Vector3(0,0.035f,0);
-		ruya.transform.localScale = loadSize * 0.7f;
+		ruya.transform.localPosition = new Vector3(0,0,0);
+		ruya.transform.localScale = loadSize * 0.8f;
 		
 		m_roleObjList.Add ( ruya );
 		
@@ -147,8 +147,8 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 		yujie.name = "2";
 		yujie.SetActive (false);
 		yujie.transform.parent = m_roleParent.transform;
-		yujie.transform.localPosition = new Vector3(0,0.03f,0);
-		yujie.transform.localScale = loadSize * 0.7f;
+		yujie.transform.localPosition = new Vector3(0,0,0);
+		yujie.transform.localScale = loadSize * 0.8f;
 		
 		m_roleObjList.Add ( yujie );
 		
@@ -162,8 +162,8 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 		luoli.name = "3";
 		luoli.SetActive (false);
 		luoli.transform.parent = m_roleParent.transform;
-		luoli.transform.localPosition = new Vector3(0,0.03f,0);
-		luoli.transform.localScale = loadSize * 0.7f;
+		luoli.transform.localPosition = new Vector3(0,0,0);
+		luoli.transform.localScale = loadSize * 0.8f;
 		
 		m_roleObjList.Add ( luoli );
 
@@ -174,7 +174,7 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 	{	
 		if (m_roleObjList.Count == 4)
 		{
-			Debug.Log ("AddLoadIndex");
+//			Debug.Log ("AddLoadIndex");
 			switch (m_selectType)
 			{
 			case SelectType.CREATE_ROLE:
@@ -196,7 +196,7 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 
 				SetObjListActiveState (m_createRoleObjList,false);
 				SetObjListActiveState (m_unLockRoleObjList,true);
-				Debug.Log ("CityGlobalData.m_king_model_Id:" + CityGlobalData.m_king_model_Id);
+//				Debug.Log ("CityGlobalData.m_king_model_Id:" + CityGlobalData.m_king_model_Id);
 				SelectRole (m_roleId == -1 ? CityGlobalData.m_king_model_Id - 1 : m_roleId);
 
 				break;
@@ -243,7 +243,7 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 				m_isShowCd = true;
 				if (m_cdTime == 0)
 				{
-					m_cdLabel.text = "[00bfe8]每次切换形象有48小时冷却时间[-]";
+					m_cdLabel.text = "[00bfe8]每次切换形象有" + int.Parse (CanshuTemplate.GetStrValueByKey (CanshuTemplate.TRANSFORM_ROLE_CD)) + "天冷却时间[-]";
 				}
 			}
 			else
@@ -434,7 +434,7 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 			break;
 		case "StartBtn":
 
-			QXSelectRole.Instance.CreatRole (m_inputList[m_roleId].value,m_roleId);
+			QXSelectRole.Instance ().CreatRole (m_inputList[m_roleId].value,m_roleId);
 
 			break;
 		case "CloseBtn":
@@ -454,7 +454,7 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 			{
 				if (m_cdTime <= 0)
 				{
-					QXSelectRole.Instance.UnLockRoleOperate (m_roleId,false);
+					QXSelectRole.Instance ().UnLockRoleOperate (m_roleId,false);
 				}
 				else
 				{
@@ -544,7 +544,11 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 				}
 			}
 		}
-
+//		Debug.Log ("m_roleId:" + m_roleId);
+		if (m_roleId == -1)
+		{
+			return;
+		}
 		RoleRotate roleRotate = m_roleObjList[m_roleId].GetComponent<RoleRotate> ();
 		if (m_leftPress)
 		{

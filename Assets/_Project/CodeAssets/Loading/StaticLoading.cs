@@ -154,7 +154,7 @@ public class StaticLoading : MonoBehaviour {
 
 	private LanguageTemplate.Text m_begin_id = LanguageTemplate.Text.LOADING_TIPS_1;
 
-	private LanguageTemplate.Text m_end_id = LanguageTemplate.Text.LOADING_TIPS_49;
+	private LanguageTemplate.Text m_end_id = LanguageTemplate.Text.LOADING_TIPS_52;
 
 	private void SetTipsText(){
 		int t_begin_id = (int)m_begin_id;
@@ -244,6 +244,8 @@ public class StaticLoading : MonoBehaviour {
 			#if DEBUG_BG_RES
 			Debug.Log( "Already loaded." );
 			#endif
+
+			UsePreloadedTexture();
 
 			return;
 		}

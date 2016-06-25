@@ -16,19 +16,10 @@ public class EnterHuangyebtn : MonoBehaviour {
 		return HYMapData;
 	}
 
-	void Start () {
-	
-	}
-
 	void OnDestroy(){
 		HYMapData = null;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-	
+
 	void loodBoxBack(ref WWW p_www,string p_path, Object p_object)
 	{
 

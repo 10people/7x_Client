@@ -64,12 +64,6 @@ public class YindaoEditor : MonoBehaviour
 			m_ObjBox.SetActive(true);
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		
-	}
 
 	private int getYindaoIndex(int id)
 	{

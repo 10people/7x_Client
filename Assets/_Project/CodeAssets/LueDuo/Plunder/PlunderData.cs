@@ -87,13 +87,13 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 		if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{
 			//无联盟
-			ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"去加入一个联盟再来掠夺对手吧！"));
+			ClientMain.m_UITextManager.createText("去加入一个联盟再来掠夺对手吧！");
 			return;
 		}
 		else if (JunZhuData.Instance().m_junzhuInfo.level < FunctionOpenTemp.GetTemplateById (211).Level)
 		{
 			//未到掠夺开启等级
-			ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"[dc0600]" + FunctionOpenTemp.GetTemplateById (211).Level + "[-]级开启掠夺！"));
+			ClientMain.m_UITextManager.createText("[dc0600]" + FunctionOpenTemp.GetTemplateById (211).Level + "[-]级开启掠夺！");
 			return;
 		}
 
@@ -164,27 +164,10 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 	{
 		tempEntrance = entrance;
 
-		if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
-		{
-			textStr = "您还没有联盟，请先加入一个联盟后再来掠夺对手！";
-			QXComData.CreateBox (1,textStr,true,null);
-			return;
-		}
-		
-		FunctionOpenTemp functionTemp = FunctionOpenTemp.GetTemplateById (211);
-		
-		if (JunZhuData.Instance().m_junzhuInfo.level >= functionTemp.Level)
-		{
-			LveGoLveDuoReq plunderReq = new LveGoLveDuoReq ();
-			plunderReq.enemyId = tempJunZhuId;
-			QXComData.SendQxProtoMessage (plunderReq,ProtoIndexes.LVE_GO_LVE_DUO_REQ,ProtoIndexes.LVE_GO_LVE_DUO_RESP.ToString ());
-//			Debug.Log ("掠夺对手请求:" + ProtoIndexes.LVE_GO_LVE_DUO_REQ);
-		}
-		else
-		{
-			textStr = MyColorData.getColorString (1,"达到") + MyColorData.getColorString (5,functionTemp.Level.ToString ()) + MyColorData.getColorString (1,"级可开启掠夺功能！");
-			QXComData.CreateBoxDiy (textStr,true,null);
-		}
+		LveGoLveDuoReq plunderReq = new LveGoLveDuoReq ();
+		plunderReq.enemyId = tempJunZhuId;
+		QXComData.SendQxProtoMessage (plunderReq,ProtoIndexes.LVE_GO_LVE_DUO_REQ,ProtoIndexes.LVE_GO_LVE_DUO_RESP.ToString ());
+		//			Debug.Log ("掠夺对手请求:" + ProtoIndexes.LVE_GO_LVE_DUO_REQ);
 	}
 
 	/// <summary>
@@ -325,8 +308,9 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 					{
 					case 0:
 
-						textStr = "元宝不足！\n\n是否跳转到充值？";
-						QXComData.CreateBox (1,textStr,false,TurnToVip);
+//						textStr = "元宝不足！\n是否跳转到充值？";
+//						QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+						Global.CreateFunctionIcon (101);
 
 						break;
 					case 1:
@@ -339,27 +323,28 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 						break;
 					case 2:
 
-						textStr = "您的VIP等级不够，\n\n达到VIP" + plunderResp.canClearCdVIP + "级可清除冷却！";
-						QXComData.CreateBox (1,textStr,true,null);
+//						textStr = "您的VIP等级不够，\n达到VIP" + plunderResp.canClearCdVIP + "级可清除冷却！";
+//						QXComData.CreateBoxDiy (textStr,true,null);
+						Global.CreateFunctionIcon (1901);
 
 						break;
 					case 3:
 
 						textStr = "购买失败！";
-						QXComData.CreateBox (1,textStr,true,null);
+						QXComData.CreateBoxDiy (textStr,true,null);
 
 						break;
 					case 6:
 
-						textStr = "购买失败！\n\n今日掠夺次数已用尽！";
-						QXComData.CreateBox (1,textStr,true,null);
+						textStr = "购买失败！\n今日掠夺次数已用尽！";
+						QXComData.CreateBoxDiy (textStr,true,null);
 						
 						break;
 					case 7:
 
 						textStr = "今天已领取过奖励！";
 
-						QXComData.CreateBox (1,textStr,true,null);
+						QXComData.CreateBoxDiy (textStr,true,null);
 
 						break;
 					case 8:
@@ -399,79 +384,74 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 						switch (plunderOpRes.isCanLveDuo)
 						{
 						case -1:
-							textStr = "无法掠夺自己！";
-							QXComData.CreateBox (1,textStr,true,null);
+							textStr = "该玩家是您本人，无法掠夺！";
+							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 0:
 							string openStr = CanshuTemplate.GetStrValueByKey (CanshuTemplate.OPENTIME_LUEDUO);
 							string closeStr = CanshuTemplate.GetStrValueByKey (CanshuTemplate.CLOSETIME_LUEDUO);
-							textStr = MyColorData.getColorString (1,"掠夺活动未开启，\n\n开启时间：") 
+							textStr = MyColorData.getColorString (1,"不在开启时段，无法掠夺！\n掠夺玩法开启时段：") 
 									+ MyColorData.getColorString (5,openStr) 
 									+ MyColorData.getColorString (1,"-") 
 									+ MyColorData.getColorString (5,closeStr);
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 1:
-							textStr = "不能掠夺自己的盟友！";
-							QXComData.CreateBox (1,textStr,true,null);
+							textStr = "该玩家是您的盟友，无法掠夺！";
+							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 2:
-							if (JunZhuData.Instance().m_junzhuInfo.vipLv < plunderResp.canClearCdVIP)
-							{
-								textStr = "掠夺冷却中！\n\n达到VIP" + plunderResp.canClearCdVIP + "级可清除冷却！";
-								QXComData.CreateBox (1,textStr,true,null);
-							}
-							else
-							{
-								textStr = "掠夺冷却中！\n\n是否使用" + plunderResp.clearCdYB + "元宝清除冷却时间？";
-								QXComData.CreateBox (1,textStr,false,ClearCdReqBack);
-							}
+							Debug.Log ("plunderResp.clearCdYB:" + plunderResp.clearCdYB);
+							Debug.Log ("PurchaseTemplate.GetPurchaseTempById (65047).price:" + PurchaseTemplate.GetPurchaseTempById (65047).price);
+							textStr = "掠夺冷却中！\n是否使用" + (plunderResp.clearCdYB == 0 ? PurchaseTemplate.GetPurchaseTempById (65047).price : plunderResp.clearCdYB) + "元宝清除冷却时间？";
+							QXComData.CreateBoxDiy (textStr,false,ClearCdReqBack,true,0,plunderResp.canClearCdVIP);
+//							if (JunZhuData.Instance().m_junzhuInfo.vipLv < plunderResp.canClearCdVIP)
+//							{
+//								textStr = "掠夺冷却中！\n达到VIP" + plunderResp.canClearCdVIP + "级可清除冷却！";
+//								QXComData.CreateBoxDiy (textStr,true,null);
+//							}
+//							else
+//							{
+//								textStr = "掠夺冷却中！\n是否使用" + plunderResp.clearCdYB + "元宝清除冷却时间？";
+//								QXComData.CreateBoxDiy (textStr,false,ClearCdReqBack);
+//							}
 							break;
 						case 3:
-							if (plunderResp.all < plunderResp.nowMaxBattleCount)
-							{
-								textStr = "掠夺次数用尽！\n\n是否使用" + plunderResp.buyNextBattleYB + "元宝购买" 
-										+ plunderResp.buyNextBattleCount + "次掠夺机会？\n\n今日还可购买" 
-										+ plunderResp.remainBuyHuiShi + "次";
-								QXComData.CreateBox (1,textStr,false,BuyPlunderNumReqBack);
-							}
-							else
-							{
-								if (JunZhuData.Instance().m_junzhuInfo.vipLv < 10)
-								{
-									textStr = "今日掠夺次数已用尽！\n\n升级到VIP" + (JunZhuData.Instance().m_junzhuInfo.vipLv + 1)
-											+ "级可购买更多掠夺次数！";
-								}
-								else
-								{
-									textStr = "今日掠夺次数已用尽！";
-								}
-								QXComData.CreateBox (1,textStr,true,null);
-							}
+
+							BuyPlunderTimes ();
+
 							break;
 						case 4:
-							textStr = "这位玩家正在掠夺保护期！请稍后再做尝试...";
-							QXComData.CreateBox (1,textStr,true,null);
+							textStr = "这位玩家正处于保护期内，无法掠夺！";
+							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 5:
-							textStr = "这位玩家正在被掠夺！请稍后再做尝试...";
-							QXComData.CreateBox (1,textStr,true,null);
+							textStr = "该玩家正在被其他玩家掠夺，请更换目标！";
+							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 6:
-							textStr = "所选玩家不存在,请选择其他玩家...";
-							QXComData.CreateBox (1,textStr,true,null);
+							textStr = "该玩家为系统机器人，无法掠夺！";
+							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 8:
-							textStr = "对手还没有开启掠夺！";
-							QXComData.CreateBox (1,textStr,true,null);
+							textStr = "该玩家暂未开启掠夺玩法，无法掠夺！";
+							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 9:
-							textStr = "您已不在联盟中，不能掠夺！";
-							QXComData.CreateBox (1,textStr,true,null);
+							textStr = "您暂时没有联盟，请加入联盟后再试！";
+							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 10:
-							textStr = "对手已不在联盟中，不能掠夺！";
-							QXComData.CreateBox (1,textStr,true,null);
+							textStr = "该玩家暂时没有联盟，无法掠夺！";
+							QXComData.CreateBoxDiy (textStr,true,null);
+							break;
+						case 11:
+							textStr = "该玩家暂未开启联盟功能，无法掠夺！";
+							QXComData.CreateBoxDiy (textStr,true,null);
+							break;
+						case 12:
+							textStr = "该玩家正在掠夺他人，请更换目标！";
+							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						default:
 							break;
@@ -618,8 +598,9 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 		{
 			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < plunderResp.buyNextBattleYB)
 			{
-				textStr = "元宝不足！\n\n是否跳转到充值？";
-				QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+//				textStr = "元宝不足！\n\n是否跳转到充值？";
+//				QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+				Global.CreateFunctionIcon (101);
 			}
 			else
 			{
@@ -635,8 +616,9 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 		{
 			if (JunZhuData.Instance().m_junzhuInfo.yuanBao < plunderResp.clearCdYB)
 			{
-				textStr = "元宝不足！\n\n是否跳转到充值？";
-				QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+//				textStr = "元宝不足！\n是否跳转到充值？";
+//				QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+				Global.CreateFunctionIcon (101);
 			}
 			else
 			{
@@ -654,7 +636,83 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 		if (i == 2)
 		{
 			//跳转到充值
-			EquipSuoData.TopUpLayerTip ();
+			RechargeData.Instance.RechargeDataReq ();
+		}
+	}
+
+	/// <summary>
+	/// Buies the plunder times.
+	/// </summary>
+	public void BuyPlunderTimes ()
+	{
+		if (plunderResp.remainBuyHuiShi <= 0)
+		{
+			if (QXComData.JunZhuInfo ().vipLv < QXComData.maxVipLevel)
+			{
+				if (QXComData.JunZhuInfo ().vipLv >= 1)
+				{
+					int curVipBuyTime = VipTemplate.GetVipInfoByLevel (QXComData.JunZhuInfo ().vipLv).LveduoTimes;//当前vip可购买回数
+					Debug.Log ("curVipBuyTime:" + curVipBuyTime);
+					int totleBuyNum = 0;//当前vip可购买的额外挑战总次数
+					for (int i = 0;i < curVipBuyTime;i ++)
+					{
+						totleBuyNum += (int)PurchaseTemplate.GetPurchaseTempByTypeAndTime (20,i + 1).number;
+					}
+					Debug.Log ("totleBuyNum:" + totleBuyNum);
+					if (totleBuyNum > plunderResp.nowMaxBattleCount - int.Parse (CanshuTemplate.GetStrValueByKey (CanshuTemplate.LUEDUO_MAXNUM)))
+					{
+						int lastVipBuyTime = QXComData.JunZhuInfo ().vipLv - 1 >= 0 ? VipTemplate.GetVipInfoByLevel (QXComData.JunZhuInfo ().vipLv - 1).LveduoTimes : 0;//上个vip可购买回数
+						
+						int startBuyTime = lastVipBuyTime + 1;//当前vip第几回购买
+						
+						PurchaseTemplate purchas = PurchaseTemplate.GetPurchaseTempByTypeAndTime (20,startBuyTime);
+						int costYb = purchas.price;
+						int buyNum = (int)purchas.number;
+						int countBuyNum = curVipBuyTime - lastVipBuyTime;
+						
+						textStr = "掠夺次数用尽\n是否使用" + costYb + "元宝购买" + buyNum + "次掠夺机会？\n今日还可购买" + countBuyNum + "回";
+						QXComData.CreateBoxDiy (textStr,false,BuyTimes);
+					}
+					else
+					{
+						textStr = "今日掠夺次数已用尽！\nV特权等级提升到" + (VipTemplate.GetNextLueDuoBuyTimeVipLevel (QXComData.JunZhuInfo ().vipLv))
+							+ "级可购买更多掠夺次数！是否跳转到充值？";
+						QXComData.CreateBoxDiy (textStr,false,TurnToVip,true);
+					}
+				}
+				else
+				{
+					textStr = "今日掠夺次数已用尽！\nV特权等级提升到" + (VipTemplate.GetNextLueDuoBuyTimeVipLevel (QXComData.JunZhuInfo ().vipLv))
+						+ "级可购买更多掠夺次数！是否跳转到充值？";
+					QXComData.CreateBoxDiy (textStr,false,TurnToVip,true);
+				}
+			}
+			else
+			{
+				textStr = "今日掠夺次数已用完...";
+				QXComData.CreateBoxDiy (textStr,true,null);
+			}
+		}
+		else
+		{
+			textStr = "今日掠夺次数已用完\n是否使用" + plunderResp.buyNextBattleYB + "元宝购买" + plunderResp.buyNextBattleCount + "次掠夺次数？\n今日还可购买" + plunderResp.remainBuyHuiShi + "回";
+			QXComData.CreateBoxDiy (textStr,false,BuyTimes);
+		}
+	}
+
+	/// <summary>
+	/// Buies the times.
+	/// </summary>
+	/// <param name="i">The index.</param>
+	public void BuyTimes (int i)
+	{
+		switch (i)
+		{
+		case 2:
+			PlunderOperate (OperateType.ADD_NUM);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -667,9 +725,9 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 		if (plunderResp.all - plunderResp.used == 1)
 		{
 			PushAndNotificationHelper.SetRedSpotNotification (215, false);
-			if (WarPage.warPage != null)
+			if (WarPage.m_instance != null)
 			{
-				WarPage.warPage.CheckRedPoint ();
+				WarPage.m_instance.CheckRedPoint ();
 			}
 		}
 	}

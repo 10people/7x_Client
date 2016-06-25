@@ -22,7 +22,8 @@ public class DramaActorPlayAnim : DramaActor
 		actorType = ACTOR_TYPE.ANIM;
 	}
 
-	protected override void OnDestroy(){
+	protected override void OnDestroy()
+	{
 		base.OnDestroy();
 
 		anim = null; 

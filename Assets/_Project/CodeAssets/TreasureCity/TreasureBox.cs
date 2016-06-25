@@ -18,9 +18,20 @@ public class TreasureBox : MonoBehaviour {
 
 	private TreasureOpenBox tOpenBox;
 
+	private GameObject m_light;
 	private GameObject lightEffect;
 
 	private Animator animation;
+
+	void Awake ()
+	{
+		Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(600246), LightEffectLoadBack);
+	}
+
+	void LightEffectLoadBack (ref WWW p_www, string p_path, UnityEngine.Object p_object)
+	{
+		m_light = p_object as GameObject;
+	}
 
 	/// <summary>
 	/// Ins it effect.
@@ -55,29 +66,28 @@ public class TreasureBox : MonoBehaviour {
 		{
 			Debug.Log ("Destroy2");
 
-			Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(600246), LightEffectLoadBack);
+//			Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(600246), LightEffectLoadBack);
+			StartCoroutine ("BoxAnimate");
 		}
 		else
 		{
 			DestroyGameObj ();
 		}
 	}
-
-	void LightEffectLoadBack (ref WWW p_www, string p_path, UnityEngine.Object p_object)
-	{
-		lightEffect = Instantiate(p_object) as GameObject;
-		lightEffect.transform.parent = this.transform.parent;
-		lightEffect.transform.localPosition = this.transform.localPosition + new Vector3(0,0.5f,0);
-		lightEffect.transform.localScale = Vector3.one;
-		
-		StartCoroutine ("BoxAnimate");
-	}
 	
 	IEnumerator BoxAnimate ()
 	{
-		yield return new WaitForSeconds (1f);
+		yield return new WaitForSeconds (0);
 
 		animation.enabled = true;
+	}
+
+	public void OpenBoxEffect ()
+	{
+		lightEffect = Instantiate(m_light) as GameObject;
+		lightEffect.transform.parent = this.transform.parent;
+		lightEffect.transform.localPosition = this.transform.localPosition + new Vector3(0,0.9f,0);
+		lightEffect.transform.localScale = Vector3.one;
 	}
 
 	public void JinBiFeiChu ()

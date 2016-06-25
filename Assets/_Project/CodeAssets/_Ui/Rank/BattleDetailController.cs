@@ -59,6 +59,8 @@ namespace Rank
             }
 
             StarLabel.text = m_BattleInfo.starCount.ToString();
+
+            SetBG(false);
         }
 
         new void OnClick()
@@ -70,72 +72,17 @@ namespace Rank
                 return;
             }
 
+            m_ModuleController.m_RootController.ShieldName = m_BattleInfo.name;
+
             //Create object and set.
             GameObject tempObject = (GameObject)Instantiate(m_ModuleController.m_RootController.FloatButtonPrefab);
             FloatButtonsController = tempObject.GetComponent<FloatButtonsController>();
 
-            List<FloatButtonsController.ButtonInfo> tempList = new List<FloatButtonsController.ButtonInfo>();
-            tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "查看信息", m_VoidDelegate = GetInfo });
-
-            if (m_BattleInfo.junZhuId != JunZhuData.Instance().m_junzhuInfo.id)
-            {
-                if (FriendOperationData.Instance.m_FriendListInfo == null || FriendOperationData.Instance.m_FriendListInfo.friends == null || !FriendOperationData.Instance.m_FriendListInfo.friends.Select(item => item.ownerid).Contains(m_BattleInfo.junZhuId))
-                {
-                    tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "加为好友", m_VoidDelegate = AddFriend });
-                }
-                if (BlockedData.Instance().m_BlockedInfoDic == null || BlockedData.Instance().m_BlockedInfoDic.Count == 0 || !BlockedData.Instance().m_BlockedInfoDic.Select(item => item.Value.junzhuId).Contains(m_BattleInfo.junZhuId))
-                {
-                    tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "屏蔽玩家", m_VoidDelegate = Shield });
-                }
-                if (m_BattleInfo.lianmeng != "无")
-                {
-                    tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "掠夺", m_VoidDelegate = Rob });
-                }
-            }
-
-            FloatButtonsController.Initialize(tempList, true);
+            FloatButtonsController.Initialize(FloatButtonsConfig.GetConfig(m_BattleInfo.junZhuId, m_BattleInfo.name, m_BattleInfo.lianmeng, new List<GameObject>() { m_ModuleController.m_RootController.gameObject }, m_ModuleController.ClampScrollView), true);
 
             TransformHelper.ActiveWithStandardize(FloatButtonsRoot.transform, tempObject.transform);
 
             StartCoroutine(AdjustFloatButton());
-        }
-
-        public override void GetInfo()
-        {
-            KingDetailInfoController.Instance.ShowKingDetailWindow(m_BattleInfo.junZhuId);
-
-            m_ModuleController.ClampScrollView();
-        }
-
-        public override void AddFriend()
-        {
-            if (FriendOperationData.Instance.m_FriendListInfo.friends.Select(item => item.ownerid).Contains(m_BattleInfo.junZhuId))
-            {
-                ClientMain.m_UITextManager.createText("该玩家已经是您的好友！");
-            }
-            else
-            {
-                FriendOperationLayerManagerment.AddFriends((int)m_BattleInfo.junZhuId);
-                m_ModuleController.ClampScrollView();
-            }
-        }
-
-        public override void Shield()
-        {
-            m_ModuleController.m_RootController.ShieldName = m_BattleInfo.name;
-
-            JoinToBlacklist tempMsg = new JoinToBlacklist
-            {
-                junzhuId = m_BattleInfo.junZhuId
-            };
-            SocketHelper.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
-            m_ModuleController.ClampScrollView();
-        }
-
-        public override void Rob()
-        {
-            PlunderData.Instance.PlunderOpponent(PlunderData.Entrance.RANKLIST, m_BattleInfo.junZhuId);
-            m_ModuleController.ClampScrollView();
         }
     }
 }

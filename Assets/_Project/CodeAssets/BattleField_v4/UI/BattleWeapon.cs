@@ -181,6 +181,8 @@ public class BattleWeapon : MonoBehaviour
 
 		if (playing.Equals ("XuanFengZhan") == true) return false;
 
+		if (playing.Equals (BattleControlor.Instance ().getKing ().getAnimationName (BaseAI.AniType.ANI_DODGE)) == true) return false;
+
 		if (playing.Equals (BattleControlor.Instance().getKing ().getAnimationName(BaseAI.AniType.ANI_BATCDown)) == true) return false;
 
 		if (playing.Equals (BattleControlor.Instance().getKing ().getAnimationName(BaseAI.AniType.ANI_BATCUp)) == true) return false;

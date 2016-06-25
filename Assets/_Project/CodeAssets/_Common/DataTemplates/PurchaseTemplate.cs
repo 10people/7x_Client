@@ -236,4 +236,32 @@ public class PurchaseTemplate : XmlLoadManager {
 		Debug.LogError( "not found: " + id );
 		return null;
 	}
+
+
+    public static PurchaseTemplate GetPurchaseTempByTypeAndTimes(int type,int times)
+    {
+        foreach (PurchaseTemplate _template in templates)
+        {
+            if (_template.type == type 
+                && _template.times == times)
+            {
+                return _template;
+            }
+        }
+        return null;
+    }
+
+	public static PurchaseTemplate GetPurchaseTempByTypeAndTime (int type,int time)
+	{
+		foreach (PurchaseTemplate _template in templates)
+		{
+			if (_template.type == type && _template.times == time)
+			{
+				return _template;
+			}
+		}
+		
+		Debug.LogError( "not found type: " + type + "or time:"  + time);
+		return null;
+	}
 }

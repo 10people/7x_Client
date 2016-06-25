@@ -165,10 +165,16 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 					string mdata = "没有联盟！";
 					ClientMain.m_UITextManager.createText(mdata);
 				}
-				else
+				else if(mChangeAllianceCountryResp.result == 4)
 				{
-					string mdata = "虎符不足！";
-					ClientMain.m_UITextManager.createText(mdata);
+					Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LockOFPices);
+//					string mdata = "虎符不足！";
+//					ClientMain.m_UITextManager.createText(mdata);
+				}
+				else if(mChangeAllianceCountryResp.result < 0)
+				{
+					mDataTime = -mChangeAllianceCountryResp.result;
+					Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), ZhuanGuoCDTime);
 				}
 				return true;
 			}
@@ -217,6 +223,9 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 		}
 		return m_Name;
 	}
+	private string m_TimeLabel;
+
+
 	void SendData()
 	{
 		if(Type == 1)
@@ -255,23 +264,17 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 		{
 			int needHuFu = 0; // 需要的护符数
 			int mHuFu = AllianceData.Instance.g_UnionInfo.hufuNum;
-			if(mHuFu >= needHuFu)
-			{
-				ChangeAllianceCountry mChangeAllianceCountry = new ChangeAllianceCountry ();
-				MemoryStream MiBaoinfoStream = new MemoryStream ();
-				QiXiongSerializer MiBaoinfoer = new QiXiongSerializer ();
-				
-				mChangeAllianceCountry.country = CurrCountryID;
-				MiBaoinfoer.Serialize (MiBaoinfoStream,mChangeAllianceCountry);
-				
-				byte[] t_protof;
-				t_protof = MiBaoinfoStream.ToArray();
-				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LM_CHANGE_COUNTRY,ref t_protof,ProtoIndexes.S_LM_CHANGE_COUNTRY_REQP.ToString());
-			}
-			else
-			{
-				Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LockOFPices);
-			}
+
+			ChangeAllianceCountry mChangeAllianceCountry = new ChangeAllianceCountry ();
+			MemoryStream MiBaoinfoStream = new MemoryStream ();
+			QiXiongSerializer MiBaoinfoer = new QiXiongSerializer ();
+			
+			mChangeAllianceCountry.country = CurrCountryID;
+			MiBaoinfoer.Serialize (MiBaoinfoStream,mChangeAllianceCountry);
+			
+			byte[] t_protof;
+			t_protof = MiBaoinfoStream.ToArray();
+			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_LM_CHANGE_COUNTRY,ref t_protof,ProtoIndexes.S_LM_CHANGE_COUNTRY_REQP.ToString());
 		}
 	}
 
@@ -287,8 +290,27 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr, null,MyColorData.getColorString (1,str1),null,confirmStr,null,null);
+		uibox.setBox(titleStr, MyColorData.getColorString (1,str1),null,null,confirmStr,null,null);
 	}
+	private UIBox uibox;
+	void ZhuanGuoCDTime(ref WWW p_www,string p_path, Object p_object)
+	{
+		uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+		
+		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
+		
+		string str1 = "成功转国后，24小时内不能再次进行转国！"+"\n";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+
+		string str2 = "还需等待";
+
+		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
+		
+		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+		
+		uibox.setBox(titleStr, MyColorData.getColorString (1,str1+str2),null,null,confirmStr,null,null);
+		uibox.mCountTime (mDataTime);
+	}
+	private int mDataTime;
 
 	void CanZhuanGuo(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -302,7 +324,7 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr, null,MyColorData.getColorString (1,str1),null,confirmStr,null,null);
+		uibox.setBox(titleStr, MyColorData.getColorString (1,str1),null,null,confirmStr,null,null);
 	}
 
 	private int CurrCountryID;

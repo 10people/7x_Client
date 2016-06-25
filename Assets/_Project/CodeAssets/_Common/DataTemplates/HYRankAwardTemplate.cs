@@ -8,7 +8,7 @@ public class HYRankAwardTemplate : XmlLoadManager {
 
 	public int rank;
 	
-	public string award;
+	public float award;
 	
 	//private static Dictionary<int, HYRankAwardTemplate> m_dict = new Dictionary<int, HYRankAwardTemplate>();
 	private static List<HYRankAwardTemplate> templates = new List<HYRankAwardTemplate>();
@@ -52,7 +52,7 @@ public class HYRankAwardTemplate : XmlLoadManager {
 				t_template.rank = int.Parse( t_reader.Value );
 
 				t_reader.MoveToNextAttribute();
-				t_template.award = t_reader.Value;
+				t_template.award = float.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

@@ -4,17 +4,25 @@ using System.Collections;
 
 public class TrackSkillExecuter : MonoBehaviour
 {
+    public int AttackerUID;
+
     public GameObject SkillPrefab;
+    public Vector3 PlayerHeightOffset = new Vector3(0, 1.22f, 0);
     public GameObject SourceObject;
     public GameObject TargetObject;
 
     public GameObject SkillObject;
 
     [HideInInspector]
-    public float MovingSpeed = 3f;
+    public float MovingSpeed = 5f;
+
+    public bool isFake = false;
+    public Vector3 FakeTargetPosition;
 
     public void Execute()
     {
+        isFake = false;
+
         if (SkillPrefab == null || SourceObject == null || TargetObject == null)
         {
             return;
@@ -27,17 +35,53 @@ public class TrackSkillExecuter : MonoBehaviour
         }
 
         SkillObject = Instantiate(SkillPrefab);
-        SkillObject.transform.position = SourceObject.transform.position;
+        SkillObject.transform.position = SourceObject.transform.position + PlayerHeightOffset;
         SkillObject.SetActive(true);
+
+        if (AttackerUID != PlayerSceneSyncManager.Instance.m_MyselfUid)
+        {
+            if (EffectNumController.Instance.IsCanPlayEffect())
+            {
+                EffectNumController.Instance.NotifyPlayingEffect();
+            }
+        }
+    }
+
+    public void ExecuteFake()
+    {
+        isFake = true;
+
+        if (SkillPrefab == null || SourceObject == null)
+        {
+            return;
+        }
+
+        if (SkillObject != null)
+        {
+            Destroy(SkillObject);
+            SkillObject = null;
+        }
+
+        SkillObject = Instantiate(SkillPrefab);
+        SkillObject.transform.position = SourceObject.transform.position + PlayerHeightOffset;
+        SkillObject.SetActive(true);
+
+        if (AttackerUID != PlayerSceneSyncManager.Instance.m_MyselfUid)
+        {
+            if (EffectNumController.Instance.IsCanPlayEffect())
+            {
+                EffectNumController.Instance.NotifyPlayingEffect();
+            }
+        }
     }
 
     void FixedUpdate()
     {
-        if (SkillObject != null)
+        if (isFake)
         {
-            if (TargetObject != null)
+            if (SkillObject != null)
             {
-                var distance = Vector3.Distance(SkillObject.transform.position, TargetObject.transform.position);
+                var distance = Vector3.Distance(SkillObject.transform.position, FakeTargetPosition + PlayerHeightOffset);
                 if (distance < 0.1f)
                 {
                     Destroy(SkillObject);
@@ -45,13 +89,32 @@ public class TrackSkillExecuter : MonoBehaviour
                     return;
                 }
 
-                iTween.MoveUpdate(SkillObject, TargetObject.transform.position, distance / MovingSpeed);
-                SkillObject.transform.eulerAngles = TransformHelper.GetTrackRotation(SkillObject.transform.position, TargetObject.transform.position);
+                iTween.MoveUpdate(SkillObject, FakeTargetPosition + PlayerHeightOffset, distance / MovingSpeed);
+                SkillObject.transform.eulerAngles = TransformHelper.Get2DTrackRotation(SkillObject.transform.position, FakeTargetPosition + PlayerHeightOffset);
             }
-            else
+        }
+        else
+        {
+            if (SkillObject != null)
             {
-                Destroy(SkillObject);
-                SkillObject = null;
+                if (TargetObject != null)
+                {
+                    var distance = Vector3.Distance(SkillObject.transform.position, TargetObject.transform.position + PlayerHeightOffset);
+                    if (distance < 1f)
+                    {
+                        Destroy(SkillObject);
+                        SkillObject = null;
+                        return;
+                    }
+
+                    iTween.MoveUpdate(SkillObject, TargetObject.transform.position + PlayerHeightOffset, distance / MovingSpeed);
+                    SkillObject.transform.eulerAngles = TransformHelper.Get2DTrackRotation(SkillObject.transform.position, TargetObject.transform.position + PlayerHeightOffset);
+                }
+                else
+                {
+                    Destroy(SkillObject);
+                    SkillObject = null;
+                }
             }
         }
     }

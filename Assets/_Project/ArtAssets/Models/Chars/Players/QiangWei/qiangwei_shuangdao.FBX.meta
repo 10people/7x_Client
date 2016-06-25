@@ -3380,7 +3380,7 @@ ModelImporter:
       name: DODGE
       takeName: Take 001
       firstFrame: 670
-      lastFrame: 688
+      lastFrame: 690
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3399,6 +3399,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .0307082944
+        functionName: PlaySound
+        data: 520101
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .0414002091
         functionName: attackMove
         data: 
@@ -3406,9 +3413,16 @@ ModelImporter:
         floatParameter: 0
         intParameter: 401
         messageOptions: 0
-      - time: .0307082944
+      - time: .058632046
         functionName: PlaySound
-        data: 520101
+        data: 3250
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .762049079
+        functionName: PlaySound
+        data: 3251
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

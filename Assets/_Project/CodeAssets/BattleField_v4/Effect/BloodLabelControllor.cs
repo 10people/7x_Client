@@ -11,7 +11,9 @@ public class BloodLabelControllor : MonoBehaviour
 
 	private Dictionary<int, List<BloodLabel>> dict = new Dictionary<int, List<BloodLabel>>();
 
-	private Dictionary<int, List<BloodLabel>> dictDroppen = new Dictionary<int, List<BloodLabel>>();
+	private Dictionary<int, List<BloodLabel>> dictDroppenCoin = new Dictionary<int, List<BloodLabel>>();
+
+	private Dictionary<int, List<BloodLabel>> dictDroppenItem = new Dictionary<int, List<BloodLabel>>();
 
 	private Dictionary<int, List<BloodLabel>> dictGenaral = new Dictionary<int, List<BloodLabel>>();
 
@@ -39,7 +41,7 @@ public class BloodLabelControllor : MonoBehaviour
 
 		labelTempleList.Clear ();
 
-		for(int i = 0; i <= 5; i++ )
+		for(int i = 0; i <= 8; i++ )
 		{
 			Dictionary<int, GameObject> list = new Dictionary<int, GameObject>();
 
@@ -65,7 +67,7 @@ public class BloodLabelControllor : MonoBehaviour
 
 		listIndexList.Clear ();
 
-		for(int i = 0; i <= 5; i++)
+		for(int i = 0; i <= 8; i++)
 		{
 			listIndexList.Add (i, 0);
 		}
@@ -101,11 +103,18 @@ public class BloodLabelControllor : MonoBehaviour
 			dict.Add(node.nodeId, new List<BloodLabel>());
 		}
 
-		dictDroppen.Clear ();
+		dictDroppenCoin.Clear ();
 
 		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
 		{
-			dictDroppen.Add(node.nodeId, new List<BloodLabel>());
+			dictDroppenCoin.Add(node.nodeId, new List<BloodLabel>());
+		}
+
+		dictDroppenItem.Clear ();
+		
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			dictDroppenItem.Add(node.nodeId, new List<BloodLabel>());
 		}
 	}
 
@@ -209,22 +218,61 @@ public class BloodLabelControllor : MonoBehaviour
 
 	public void showDroppenAwardEx(BaseAI defender, DroppenItem _item)
 	{
+		CommonItemTemplate commonItemTemplate = CommonItemTemplate.getCommonItemTemplateById(_item.commonItemId);
+
+		if(commonItemTemplate.id == 900001)//铜币
+		{
+			showDroppenAwardExCoin(defender, _item, commonItemTemplate);
+		}
+		else
+		{
+			showDroppenAwardExItem(defender, _item, commonItemTemplate);
+		}
+	}
+
+	private void showDroppenAwardExCoin(BaseAI defender, DroppenItem _item, CommonItemTemplate commonItemTemplate)
+	{
 		List<BloodLabel> list = null;
 		
-		dictDroppen.TryGetValue (defender.nodeId, out list);
+		dictDroppenCoin.TryGetValue (defender.nodeId, out list);
 		
 		if(list == null)
 		{
 			list = new List<BloodLabel>();
 			
-			dictDroppen.Add(defender.nodeId, list);
+			dictDroppenCoin.Add(defender.nodeId, list);
 		}
-
-		CommonItemTemplate commonItemTemplate = CommonItemTemplate.getCommonItemTemplateById(_item.commonItemId);
-
+		
 		string text = NameIdTemplate.GetName_By_NameId (commonItemTemplate.nameId) + "+" + _item.num;
+		
+		BloodLabel label = createBloodLabel (defender, text, false, BattleControlor.AttackType.DROPPEN_COIN, list);
+		
+		foreach(BloodLabel bl in list)
+		{
+			bl.state = 1;
+			
+			label.strong = true;
+		}
+		
+		list.Add (label);
+	}
 
-		BloodLabel label = createBloodLabel (defender, text, false, BattleControlor.AttackType.DEFAULT, list);
+	private void showDroppenAwardExItem(BaseAI defender, DroppenItem _item, CommonItemTemplate commonItemTemplate)
+	{
+		List<BloodLabel> list = null;
+		
+		dictDroppenItem.TryGetValue (defender.nodeId, out list);
+		
+		if(list == null)
+		{
+			list = new List<BloodLabel>();
+			
+			dictDroppenItem.Add(defender.nodeId, list);
+		}
+		
+		string text = NameIdTemplate.GetName_By_NameId (commonItemTemplate.nameId) + "+" + _item.num;
+		
+		BloodLabel label = createBloodLabel (defender, text, false, BattleControlor.AttackType.DROPPEN_ITEM, list);
 		
 		foreach(BloodLabel bl in list)
 		{
@@ -242,16 +290,16 @@ public class BloodLabelControllor : MonoBehaviour
 
 		List<BloodLabel> list = null;
 		
-		dictDroppen.TryGetValue (defender.nodeId, out list);
+		dictDroppenItem.TryGetValue (defender.nodeId, out list);
 		
 		if(list == null)
 		{
 			list = new List<BloodLabel>();
 			
-			dictDroppen.Add(defender.nodeId, list);
+			dictDroppenItem.Add(defender.nodeId, list);
 		}
 		
-		BloodLabel label = createBloodLabel (defender, text, false, BattleControlor.AttackType.DEFAULT, list, p_callback);
+		BloodLabel label = createBloodLabel (defender, text, false, BattleControlor.AttackType.DROPPEN_ITEM, list, p_callback);
 		
 		foreach(BloodLabel bl in list)
 		{
@@ -349,7 +397,7 @@ public class BloodLabelControllor : MonoBehaviour
 		
 		labelObject.SetActive (Console_SetBattleFieldFx.IsEnableBloodLabel());
 		
-		labelObject.transform.localPosition = host.transform.localPosition + new Vector3 (0, 1.5f, 0);
+		labelObject.transform.localPosition = host.transform.position + new Vector3 (0, 1.5f, 0);
 		
 		if(Camera.main != null && Camera.main.gameObject.activeSelf == true)
 		{

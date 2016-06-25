@@ -38,4 +38,21 @@ public class DramaActorMove : DramaActor
 		return false;
 	}
 
+	protected override void funcForcedEnd()
+	{
+		iTween.Stop (gameObject);
+
+		DramaActorMove[] coms = gameObject.GetComponents<DramaActorMove>();
+
+		foreach(DramaActorMove dam in coms)
+		{
+			if(dam.waittingTime > waittingTime)
+			{
+				return;
+			}
+		}
+
+		transform.position = targetPosition;
+	}
+
 }

@@ -15,7 +15,9 @@ public class TipJewelControllor : MonoBehaviour
 	public UILabel labelName;
 	
 	public UILabel labelNumNormal;
-	
+
+	public UILabel labelNumNormalText;
+
 	public UISlider bar;
 	
 	public UILabel labelNumBar;
@@ -66,40 +68,108 @@ public class TipJewelControllor : MonoBehaviour
 		//0普通道具;2装备;3玉玦;4秘宝；5秘宝碎片；6进阶材料；7基础属性符文；8高级属性符文；9强化材料;201联盟科技;202联盟科技;203联盟科技
 
 		string textNum = num + "";
-		
+
+		if (num == 0)
+		{
+			textNum = ColorTool.Color_Red_FF0000 + num + "[-]";
+		}
+		else 
+		{
+			Color col = labelNumNormalText.color;
+
+			string strCol = "[" + col.ToHexStringRGB() + "]";
+
+			textNum = strCol + num + "[-]";
+		}
+
 		string text_2 = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_2);
 
-		string text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_1) + textNum;
-		
-		labelNumNormal.text = text;
+		labelNumNormal.text = textNum;
 
 		labelDesc.text = DescIdTemplate.GetDescriptionById (template.descId);
 		
 		labelFrom.text = DescIdTemplate.GetDescriptionById (template.dropDesc);
 
-		FuWenTemplate fuwenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (commonItemId);
-
-		labelAttr.text = NameIdTemplate.GetName_By_NameId (fuwenTemp.shuXingName) + "：" + fuwenTemp.shuxingValue;
-
-		if(fuwenTemp.lvlupExp > 0)
+		if(template.itemType == 2)//装备
 		{
-			layerBar.SetActive(true);
+			ZhuangBei zhuangbei = ZhuangBei.GetItemByID(commonItemId);
 
-			spriteTab.SetActive(false);
+			string attrText = "";
 
-			int max = fuwenTemp.lvlupExp;
+			if(!zhuangbei.gongji.Equals("0"))
+			{
+				if(attrText.Length > 0)	attrText += "\n";
 
-			int exp = bagItem == null ? 0 : bagItem.qiangHuaExp;
+				attrText += NameIdTemplate.GetName_By_NameId(2101) + "：" + zhuangbei.gongji;
+			}
 
-			labelNumBar.text = exp + "/" + max;
+			if(!zhuangbei.fangyu.Equals("0"))
+			{
+				if(attrText.Length > 0)	attrText += "\n";
 
-			bar.value = exp * 1.0f / max;
+				attrText += NameIdTemplate.GetName_By_NameId(2102) + "：" + zhuangbei.fangyu;
+			}
+
+			if(!zhuangbei.shengming.Equals("0"))
+			{
+				if(attrText.Length > 0)	attrText += "\n";
+				
+				attrText += NameIdTemplate.GetName_By_NameId(2103) + "：" + zhuangbei.shengming;
+			}
+
+			labelAttr.text = attrText;
+
+			if(zhuangbei.lvlupExp > 0)
+			{
+				layerBar.SetActive(true);
+				
+				spriteTab.SetActive(false);
+				
+				int max = zhuangbei.lvlupExp;
+				
+				int exp = ShowTip.tipItemData == null ? 0 : ShowTip.tipItemData.exp;
+				
+				labelNumBar.text = exp + "/" + max;
+
+				if(exp == 0) labelNumBar.text = ColorTool.Color_Red_FF0000 + exp + "[-]/" + max;
+
+				bar.value = exp * 1.0f / max;
+			}
+			else
+			{
+				layerBar.SetActive(false);
+				
+				spriteTab.SetActive(true);
+			}
 		}
 		else
 		{
-			layerBar.SetActive(false);
-			
-			spriteTab.SetActive(true);
+			FuWenTemplate fuwenTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (commonItemId);
+
+			labelAttr.text = NameIdTemplate.GetName_By_NameId (fuwenTemp.shuXingName) + "：" + fuwenTemp.shuxingValue;
+
+			if(fuwenTemp.lvlupExp > 0)
+			{
+				layerBar.SetActive(true);
+
+				spriteTab.SetActive(false);
+
+				int max = fuwenTemp.lvlupExp;
+
+				int exp = ShowTip.tipItemData == null ? 0 : ShowTip.tipItemData.exp;
+
+				labelNumBar.text = exp + "/" + max;
+
+				if(exp == 0) labelNumBar.text = ColorTool.Color_Red_FF0000 + exp + "[-]/" + max;
+
+				bar.value = exp * 1.0f / max;
+			}
+			else
+			{
+				layerBar.SetActive(false);
+				
+				spriteTab.SetActive(true);
+			}
 		}
 	}
 	
@@ -142,10 +212,4 @@ public class TipJewelControllor : MonoBehaviour
 			}
 		}
 	}
-	
-	void Update()
-	{
-	
-	}
-
 }

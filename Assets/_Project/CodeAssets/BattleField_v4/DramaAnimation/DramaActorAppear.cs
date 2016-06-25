@@ -74,7 +74,7 @@ public class DramaActorAppear : DramaActor
 		
 		float defaultAlpha = 1f;
 		
-		for(;true;)
+		for(;!end;)
 		{
 			float dt = Time.deltaTime;
 			
@@ -131,6 +131,10 @@ public class DramaActorAppear : DramaActor
 						//r.gameObject.layer = 1;
 					}
 				}
+				else if(m.shader.name.Equals("Custom/Characters/Main Texture High Light"))
+				{
+					//m.color = new Color (m.color.r, m.color.g, m.color.b, alpha);
+				}
 			}
 		}
 	}
@@ -138,6 +142,18 @@ public class DramaActorAppear : DramaActor
 	protected override bool funcDone ()
 	{
 		return true;
+	}
+
+	protected override void funcForcedEnd()
+	{
+		if(appear == true)
+		{
+			setAlpha(1);
+		}
+		else
+		{
+			setAlpha(0);
+		}
 	}
 
 }

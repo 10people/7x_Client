@@ -1,7 +1,4 @@
-﻿//#define UNIT_TEST
-//#define DEBUG_MODE
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +13,11 @@ namespace AllianceBattle
         /// 1 for attacker, 2 for protecter.
         /// </summary>
         public int MyPart = -1;
+
+        public bool IsAttacker(string allianceName)
+        {
+            return (MyPart == 1 && allianceName == AllianceData.Instance.g_UnionInfo.name) || (MyPart == 2 && allianceName != AllianceData.Instance.g_UnionInfo.name);
+        }
 
         public AllianceBattleMain m_AllianceBattleMain;
         public ABPlayerSyncManager m_AbPlayerSyncManager;
@@ -33,7 +35,7 @@ namespace AllianceBattle
         [HideInInspector]
         public Vector3 TrackCameraRotation;
 
-        public static float BasicYPosition = 21f;
+        public static float BasicYPosition = 22f;
 
         #region Self Player and Player Sync
 
@@ -47,9 +49,10 @@ namespace AllianceBattle
                 }
                 else
                 {
-#if DEBUG_MODE
-                    Debug.LogWarning("Cannot get self player.");
-#endif
+                    if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ALLIANCE_BATTLE))
+                    {
+                        Debug.LogWarning("Cannot get self player.");
+                    }
                     return null;
                 }
             }
@@ -61,9 +64,10 @@ namespace AllianceBattle
                 }
                 else
                 {
-#if DEBUG_MODE
-                    Debug.LogWarning("Cannot get other player, " + p_uID);
-#endif
+                    if (ConfigTool.GetBool(ConfigTool.CONST_LOG_ALLIANCE_BATTLE))
+                    {
+                        Debug.LogWarning("Cannot get other player, " + p_uID);
+                    }
 
                     return null;
                 }
@@ -97,7 +101,7 @@ namespace AllianceBattle
         }
         private ABPlayerCultureController m_selfPlayerCultureController;
 
-        public void CreateSelfPlayer(int p_roleID, long p_junzhuID, Vector3 p_position, string p_kingName, string p_allianceName, int p_vipLevel, int p_TitleIndex, int p_alliancePost, int p_nation, int p_level, int p_battleValue, float p_remainBlood = -1, float p_totalBlood = -1)
+        public void CreateSinglePlayer(int p_roleID, long p_junzhuID, Vector3 p_position, string p_kingName, string p_allianceName, int p_vipLevel, int p_TitleIndex, int p_alliancePost, int p_nation, int p_level, int p_battleValue, float p_remainBlood = -1, float p_totalBlood = -1)
         {
             var tempObject = Instantiate(m_AbPlayerSyncManager.PlayerPrefabList[p_roleID - 1]) as GameObject;
             TransformHelper.ActiveWithStandardize(PlayerParentObject.transform, tempObject.transform);
@@ -105,6 +109,7 @@ namespace AllianceBattle
 
             m_SelfPlayerController = tempObject.GetComponent<ABPlayerController>() ?? tempObject.AddComponent<ABPlayerController>();
             m_SelfPlayerCultureController = tempObject.GetComponent<ABPlayerCultureController>();
+            tempObject.AddComponent<AutoHideObjects>();
             m_AllianceBattleMain.m_MapController.AddGizmos(PlayerSceneSyncManager.Instance.m_MyselfUid, 0, m_SelfPlayerController.transform.localPosition, m_SelfPlayerController.transform.localEulerAngles.y);
 
             //Set AllianceBattlePlayerController.
@@ -245,6 +250,18 @@ namespace AllianceBattle
             //}
 
             PrepareForAllianceBattle.UpdateLoadProgress(PrepareForAllianceBattle.LoadModule.INIT, "AB_Root");
+
+            StartCoroutine(SetMultiTouchCoroutine());
+        }
+
+        IEnumerator SetMultiTouchCoroutine()
+        {
+            if (UICamera.eventHandler.GetComponentInParent<EnterNextScene>() != null)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            UtilityTool.SetMultiTouch(true);
         }
 
         void Awake()
@@ -277,35 +294,43 @@ namespace AllianceBattle
             }
         }
 
-#if UNIT_TEST
+        new void OnDestroy()
+        {
+            UtilityTool.SetMultiTouch(false);
+
+            base.OnDestroy();
+        }
+
         void OnGUI()
         {
-            if (GUILayout.Button("Test long damage num"))
+            if (ConfigTool.GetBool(ConfigTool.CONST_UNIT_TEST))
             {
-                m_SelfPlayerCultureController.OnDamage(-647658086, 1, true);
-            }
-            if (GUILayout.Button("Test skip skill"))
-            {
-                if (m_AllianceBattleMain.m_TargetId < 0) return;
-
-                var temp = m_AllianceBattleItemSyncManager.m_PlayerDic[m_AllianceBattleMain.m_TargetId].transform;
-
-                SpriteMove tempInfo = new SpriteMove()
+                if (GUILayout.Button("Test long damage num"))
                 {
-                    uid = PlayerSceneSyncManager.Instance.m_MyselfUid,
-                    posX = temp.localPosition.x,
-                    posY = temp.localPosition.y,
-                    posZ = temp.localPosition.z,
-                    dir = temp.localEulerAngles.y
-                };
-                MemoryStream tempStream = new MemoryStream();
-                QiXiongSerializer tempSer = new QiXiongSerializer();
-                tempSer.Serialize(tempStream, tempInfo);
-                byte[] t_protof;
-                t_protof = tempStream.ToArray();
-                SocketTool.Instance().SendSocketMessage(ProtoIndexes.POS_JUMP, ref t_protof);
+                    m_SelfPlayerCultureController.OnDamage(-647658086, 1, true);
+                }
+                if (GUILayout.Button("Test skip skill"))
+                {
+                    if (m_AllianceBattleMain.m_TargetId < 0) return;
+
+                    var temp = m_AbPlayerSyncManager.m_PlayerDic[m_AllianceBattleMain.m_TargetId].transform;
+
+                    SpriteMove tempInfo = new SpriteMove()
+                    {
+                        uid = PlayerSceneSyncManager.Instance.m_MyselfUid,
+                        posX = temp.localPosition.x,
+                        posY = temp.localPosition.y,
+                        posZ = temp.localPosition.z,
+                        dir = temp.localEulerAngles.y
+                    };
+                    MemoryStream tempStream = new MemoryStream();
+                    QiXiongSerializer tempSer = new QiXiongSerializer();
+                    tempSer.Serialize(tempStream, tempInfo);
+                    byte[] t_protof;
+                    t_protof = tempStream.ToArray();
+                    SocketTool.Instance().SendSocketMessage(ProtoIndexes.POS_JUMP, ref t_protof);
+                }
             }
         }
-#endif
     }
 }

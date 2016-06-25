@@ -14,6 +14,7 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 	public UIHuodongPage2EnemtData m_UIHuodongPage2EnemtData;
 	public GameObject m_objButtonGoumai;
 	public GameObject m_objButtonYiGou;
+	public UISprite m_spriteVip;
 	public List<UIHuodongPage2EnemtData> m_listUIHuodongPage2EnemtData = new List<UIHuodongPage2EnemtData>();
 	void Start () 
 	{
@@ -24,16 +25,11 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 	{
 		SocketTool.UnRegisterSocketListener(this);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
-	
+		
 	public void setData(ActivityGrowthFundResp data)
 	{
 		m_Info = data;
-		Debug.Log(m_Info.result);
+		m_spriteVip.spriteName = "v" + (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHENGZHANGJIJIN_VIP);
 //		switch(m_ExploreResp.success)
 //		{
 //		case 0:
@@ -53,7 +49,7 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 			GameObject.Destroy(m_listUIHuodongPage2EnemtData[i].gameObject);
 		}
 		m_listUIHuodongPage2EnemtData = new List<UIHuodongPage2EnemtData>();
-
+		MainCityUI.SetRedAlert(1394 ,false);
 		for(int i = 0; i < m_Info.leveList.Count; i ++)
 		{
 			GameObject tempObj = GameObject.Instantiate(m_UIHuodongPage2EnemtData.gameObject);
@@ -71,12 +67,21 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 				tempIconObj.transform.parent = tempEnemtData.m_IconSampleManager.gameObject.transform.parent;
 				tempIconObj.transform.localPosition = new Vector3(-185 + q * 50, -16, 0);
 				IconSampleManager tempIconSampleManager = tempIconObj.GetComponent<IconSampleManager>();
-				tempIconSampleManager.SetIconByID(m_Info.leveList[i].awardList[q].itemId, "x" + m_Info.leveList[i].awardList[q].itemNumber);
+				tempIconSampleManager.SetIconByID(m_Info.leveList[i].awardList[q].itemId, "x" + m_Info.leveList[i].awardList[q].itemNumber, 3);
+				tempIconSampleManager.SetIconPopText(m_Info.leveList[i].awardList[q].itemId);
 				tempIconObj.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
 				tempEnemtData.m_listIconSampleManager.Add(tempIconSampleManager);
 			}
 			tempEnemtData.m_sName.text = m_Info.leveList[i].des;
-			tempEnemtData.m_sJindu.text = m_Info.leveList[i].process + "/" + m_Info.leveList[i].maxProcess;
+			if(m_Info.leveList[i].process < m_Info.leveList[i].maxProcess)
+			{
+				tempEnemtData.m_sJindu.text = "[ff0000]" + m_Info.leveList[i].process + "[-]/" + m_Info.leveList[i].maxProcess;
+			}
+			else
+			{
+				tempEnemtData.m_sJindu.text = m_Info.leveList[i].process + "/" + m_Info.leveList[i].maxProcess;
+			}
+
 			if(m_Info.leveList[i].process < m_Info.leveList[i].maxProcess)
 			{
 				tempEnemtData.m_BoxCollider.enabled = false;
@@ -88,6 +93,10 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 				tempEnemtData.m_BoxCollider.enabled = true;
 				tempEnemtData.m_spriteButtonBG.color = Color.white;
 				tempEnemtData.m_UILabelType.setType(10);
+				if(m_Info.result == 2)
+				{
+					MainCityUI.SetRedAlert(1394 ,true);
+				}
 			}
 			tempEnemtData.m_spriteButtonBG.name = "ButtonLingqu" + i;
 			m_listUIHuodongPage2EnemtData.Add(tempEnemtData);
@@ -100,6 +109,7 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 		else
 		{
 			m_objButtonGoumai.SetActive(true);
+			SparkleEffectItem.OpenSparkle( m_objButtonGoumai, SparkleEffectItem.MenuItemStyle.Common_Icon, -1);
 			m_objButtonYiGou.SetActive(false);
 		}
 //		for(int i = 0; i < m_listIconSample.Count; i ++)
@@ -165,7 +175,7 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 		{
 			if(m_Info.result == 0)
 			{
-				ClientMain.m_UITextManager.createText("临时提示应该出通用跳转 VIP等级不够 跳转到充值");
+				Global.CreateFunctionIcon(1901);
 			}
 			else if(m_Info.result == 1)
 			{
@@ -176,7 +186,7 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 				}
 				else
 				{
-					ClientMain.m_UITextManager.createText("临时提示应该出通用跳转 元宝不足 跳转到充值");
+					Global.CreateFunctionIcon(101);
 				}
 			}
 			else

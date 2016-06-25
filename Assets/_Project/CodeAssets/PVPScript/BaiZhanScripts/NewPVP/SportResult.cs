@@ -168,8 +168,8 @@ public class SportResult : GeneralInstance<SportResult> {
 	{
 		m_resultPage.SetActive (false);
 		m_rankRewardPage.SetActive (true);
-		yuanBaoLabel.text = (BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (1).yuanbao  - (SportPage.m_instance.SportResp.rank > BaiZhanRankTemplate.GetTemplatesCount() ? 
-		                                                                                      0 : BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (SportPage.m_instance.SportResp.rank).yuanbao)).ToString ();
+		yuanBaoLabel.text = (BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (1).yuanbao  - (SportPage.m_instance.SportResp.historyHighRank > BaiZhanRankTemplate.GetTemplatesCount() ? 
+		                                                                                      0 : BaiZhanRankTemplate.getBaiZhanRankTemplateByRank (SportPage.m_instance.SportResp.historyHighRank).yuanbao)).ToString ();
 	}
 	#endregion
 

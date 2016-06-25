@@ -27,14 +27,6 @@ public class DuiHuanMind : MonoBehaviour {
 	public UILabel FuWenname;
 
 	int mcost;
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
 
 	public void Init()
 	{
@@ -97,7 +89,7 @@ public class DuiHuanMind : MonoBehaviour {
 
 		if(mSuipianNumber < mcost)
 		{
-			string data = "甲片数量不足！";
+			string data = "当前甲片数量不足，无法完成兑换！";
 			
 			ClientMain.m_UITextManager.createText(data);
 		}

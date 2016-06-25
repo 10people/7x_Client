@@ -10,9 +10,9 @@
 <VipFuncOpen key="8" desc="进阶装备免费无损" needlv="0" />
 <VipFuncOpen key="9" desc="元宝消除百战等待时间" needlv="1" />
 <VipFuncOpen key="10" desc="传奇关卡挑战次数重置" needlv="1" />
-<VipFuncOpen key="11" desc="顶礼膜拜" needlv="4" />
+<VipFuncOpen key="11" desc="顶礼膜拜" needlv="0" />
 <VipFuncOpen key="12" desc="购买虎符" needlv="2" />
-<VipFuncOpen key="13" desc="连续扫荡" needlv="3" />
+<VipFuncOpen key="13" desc="连续扫荡" needlv="2" />
 <VipFuncOpen key="14" desc="小屋内装备秘宝展示" needlv="6" />
 <VipFuncOpen key="15" desc="百战威望产出增加" needlv="9" />
 <VipFuncOpen key="16" desc="房屋经验产出增加" needlv="8" />
@@ -25,6 +25,10 @@
 <VipFuncOpen key="23" desc="购买满血复活所需VIP等级" needlv="0" />
 <VipFuncOpen key="24" desc="购买原地复活所需VIP等级" needlv="2" />
 <VipFuncOpen key="25" desc="购买角色所需VIP等级" needlv="3" />
-<VipFuncOpen key="26" desc="购买虎符所需VIP等级" needlv="2" />
-<VipFuncOpen key="27" desc="购买建设值所需VIP等级" needlv="1" />
+<VipFuncOpen key="26" desc="购买虎符所需VIP等级" needlv="1" />
+<VipFuncOpen key="27" desc="购买建设值所需VIP等级" needlv="3" />
+<VipFuncOpen key="28" desc="清除试炼冷却" needlv="5" />
+<VipFuncOpen key="29" desc="补领体力" needlv="4" />
+<VipFuncOpen key="30" desc="郡城战购买分身" needlv="7" />
+<VipFuncOpen key="31" desc="广播频道发聊天" needlv="5" />
 </dataset>

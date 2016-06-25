@@ -7,7 +7,17 @@ using System.Reflection;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
+using System.Linq;
 public class AllianceTemples : MonoBehaviour ,SocketProcessor {
+
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
+	public UICamera mCamera;
+
+	public GameObject OneAlert;
+
+	public GameObject OneKeyAlert;
 
 	public ExploreResp g_mExploreResp;
 
@@ -40,6 +50,11 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	void Awake()
 	{ 
 		SocketTool.RegisterMessageProcessor(this);
+		// reigster trigger delegate
+		{
+			UIWindowEventTrigger.SetOnTopAgainDelegate( gameObject, ShowTempalesYinDao );
+		}
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "联盟图腾", 0, 0);
 	}
 	
 	void OnDestroy()
@@ -49,18 +64,25 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 
 	void Start () {
 	
+		ShowTempalesYinDao ();
+	}
+
+	private void ShowTempalesYinDao()
+	{
+		Debug.Log("去寺庙祭拜1");
 		if(FreshGuide.Instance().IsActive(400020)&& TaskData.Instance.m_TaskInfoDic[400020].progress >= 0)
 		{
-			//			Debug.Log("去寺庙祭拜");
+			Debug.Log("去寺庙祭拜2");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400020];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
 		}
 	}
-	
+
 	public void Init()
 	{
-		JiBaoBtn.GetComponent<UIButton>().enabled = true;
-		OneKeyJiBaoBtn.GetComponent<UIButton>().enabled = true;
+
+		JiBaoBtn.GetComponent<BoxCollider>().enabled = true;
+		OneKeyJiBaoBtn.GetComponent<BoxCollider>().enabled = true;
 		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_LM_CHOU_JIANG_INFO);
 	}
 	void Update () {
@@ -204,18 +226,28 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 
 
 	}
+	private List<RewardData> rewardList = new List<RewardData>();
 	IEnumerator OpenAwardUI()
 	{
+		rewardList = OneKeyAward.Select(item => new RewardData(item.itemId, item.itemNumber)).ToList();
 		UIYindao.m_UIYindao.CloseUI();
-		float t = 1f;
+		float t = 0.1f;
 		yield return new WaitForSeconds (t);
-		JiBaoBtn.GetComponent<UIButton>().enabled = true;
-		OneKeyJiBaoBtn.GetComponent<UIButton>().enabled = true;
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.PVE_SAO_DANG_DONE ),OpenLockLoadBack);
+		JiBaoBtn.GetComponent<BoxCollider>().enabled = true;
+		OneKeyJiBaoBtn.GetComponent<BoxCollider>().enabled = true;
+		DengDaiYaoJiang.SetActive(false);
+
+		MiBaoGlobleData.Instance ().GetCommAwards (OneKeyAward.Select(item=>item.itemId).ToList(),OneKeyAward.Select(item=>item.itemNumber).ToList(),null,mCamera);
+
+		//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.PVE_SAO_DANG_DONE ),OpenLockLoadBack);
+	}
+	private void ShowRollResult()
+	{
+		GeneralRewardManager.Instance().CreateReward(rewardList);
 	}
 	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
-        DengDaiYaoJiang.SetActive(false);
+        
 		GameObject tempObject = ( GameObject )Instantiate( p_object );
 
 		tempObject.transform.parent = this.transform.parent;
@@ -227,8 +259,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		GetJiBaiAward mGetJiBaiAward = tempObject.GetComponent<GetJiBaiAward>();
 
 		mGetJiBaiAward.m_OneKeyAward = OneKeyAward;
-       JiBaoBtn.GetComponent<Collider>().enabled = true;
-       OneKeyJiBaoBtn.GetComponent<Collider>().enabled = true;
+     
        mGetJiBaiAward.Init ();
 	}
 	public void InitData(ExploreResp m_ExploreResp)
@@ -273,12 +304,19 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	public void ShowTime()
 	{
 		Debug.Log ("g_mExploreResp.info.remainFreeCount = "+g_mExploreResp.info.remainFreeCount);
+		int ChouJiangid1 = 600900;
+		int ChouJiangid2 = 600905;
 		if(g_mExploreResp.info.remainFreeCount <= 0)
 		{
-			int ChouJiangid1 = 600900;
-			int ChouJiangid2 = 600905;
 			PushAndNotificationHelper.SetRedSpotNotification(ChouJiangid1,false);
 			PushAndNotificationHelper.SetRedSpotNotification(ChouJiangid2,false);
+			OneAlert.SetActive(false);
+			OneKeyAlert.SetActive(false);
+		}
+		else
+		{
+			OneAlert.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(ChouJiangid1));
+			OneKeyAlert.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(ChouJiangid2));
 		}
 		NewAlliancemanager.Instance().Refreshtification ();
 		RemainTimes.text = "剩余次数："+g_mExploreResp.info.remainFreeCount.ToString () + "/" + g_mExploreResp.info.cd.ToString ();
@@ -308,9 +346,9 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 			NewAlliancemanager.Instance().m_allianceHaveRes.contribution -= CostPreTime;
 			JiBaoTime = true;
 			UIYindao.m_UIYindao.CloseUI();
-			JiBaoBtn.GetComponent<UIButton>().enabled = false;
+//			JiBaoBtn.GetComponent<UIButton>().enabled = false;
             JiBaoBtn.GetComponent<Collider>().enabled = false;
-            OneKeyJiBaoBtn.GetComponent<UIButton>().enabled = false;
+			OneKeyJiBaoBtn.GetComponent<BoxCollider>().enabled = false;
 			DengDaiYaoJiang.SetActive(true);
 			SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_LM_CHOU_JIANG_1);
 			ShowTime();
@@ -345,9 +383,9 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 			JiBaoTime = false;
 			NewAlliancemanager.Instance().m_allianceHaveRes.contribution -= CostPreTime*AllTime;
 			g_mExploreResp.info.remainFreeCount-=AllTime;
-			JiBaoBtn.GetComponent<UIButton>().enabled = false;
-			OneKeyJiBaoBtn.GetComponent<UIButton>().enabled = false;
-            OneKeyJiBaoBtn.GetComponent<Collider>().enabled = false;
+			JiBaoBtn.GetComponent<BoxCollider>().enabled = false;
+			OneKeyJiBaoBtn.GetComponent<BoxCollider>().enabled = false;
+//            OneKeyJiBaoBtn.GetComponent<Collider>().enabled = false;
 
             DengDaiYaoJiang.SetActive(true);
 			SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_LM_CHOU_JIANG_N);

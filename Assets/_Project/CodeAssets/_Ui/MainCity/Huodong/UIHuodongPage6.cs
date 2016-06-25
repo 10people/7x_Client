@@ -15,21 +15,7 @@ public class UIHuodongPage6 : MYNGUIPanel
 	public UILabel m_labelDis2;
 	public GameObject m_objCopy;
 	public ErrorMessage m_Info;
-	void Start () 
-	{
 
-	}
-	
-	void OnDestroy()
-	{
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
 	public void setData(ErrorMessage data)
 	{
 		m_Info = data;

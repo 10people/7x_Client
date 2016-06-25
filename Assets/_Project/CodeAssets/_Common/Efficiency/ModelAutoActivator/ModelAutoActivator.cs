@@ -100,6 +100,12 @@ public class ModelAutoActivator : MonoBehaviour{
 
 			t_container.Update();
 		}
+
+		if( m_log ){
+			m_log = false;
+
+			Log();
+		}
 	}
 
 	public static void Clear(){
@@ -112,17 +118,35 @@ public class ModelAutoActivator : MonoBehaviour{
 		Log();
 	}
 
+	#if DEBUG_MODEL
+	public bool m_log = false;
+	#else
+	public bool m_log = false;
+	#endif
+
 	public static void Log(){
 		Debug.Log( "Count: " + m_activator_list.Count );
 
-		List<ActivatorContainer> t_list = GetActiveActivator();
+		{
+			for( int i = m_activator_list.Count - 1; i >= 0; i-- ){
+				ModelAutoActivator.ActivatorContainer t_container = m_activator_list[ i ];
 
-		for( int i = t_list.Count - 1; i >= 0; i-- ){
-			ModelAutoActivator.ActivatorContainer t_container = t_list[ i ];
+				Debug.Log( "Total " + i + 
+					" visible: " + t_container.IsVisible() + 
+					" Hierarchy: " + GameObjectHelper.GetGameObjectHierarchy( t_container.GetRootGameObject() ) );
+			}
+		}
 
-			Debug.Log( i + 
-				" visible: " + t_container.IsVisible() + 
-				" Hierarchy: " + GameObjectHelper.GetGameObjectHierarchy( t_container.GetRootGameObject() ) );
+		{
+			List<ActivatorContainer> t_list = GetActiveActivator();
+
+			for( int i = t_list.Count - 1; i >= 0; i-- ){
+				ModelAutoActivator.ActivatorContainer t_container = t_list[ i ];
+
+				Debug.Log( "Active " + i + 
+					" visible: " + t_container.IsVisible() + 
+					" Hierarchy: " + GameObjectHelper.GetGameObjectHierarchy( t_container.GetRootGameObject() ) );
+			}
 		}
 
 //		for( int i = m_activator_list.Count - 1; i >= 0; i-- ){
@@ -159,6 +183,14 @@ public class ModelAutoActivator : MonoBehaviour{
 
 		Vector3 t_vec = m_main_cam.WorldToViewportPoint( p_pos );
 
+		float t_offset = SCREEN_OFFSET;
+
+		#if TEMP_CLOSE_FOR_SVN_LOCK
+		t_offset = SCREEN_OFFSET;
+		#else
+		t_offset = ConfigTool.GetFloat( ConfigTool.CONST_HIDE_CHAR_TH_CAMERA_OFFSET, 0.1f );
+		#endif
+
 		if( t_vec.x < -SCREEN_OFFSET || t_vec.x > 1 + SCREEN_OFFSET ){
 			return false;
 		}
@@ -172,7 +204,7 @@ public class ModelAutoActivator : MonoBehaviour{
 
 	private static bool IsReachLimitation(){
 		#if TEMP_CLOSE_FOR_SVN_LOCK
-		if( m_active_activator_list.Count >= 30 ){
+		if( m_active_activator_list.Count >= 5 ){
 			return true;
 		}
 		#else
@@ -225,7 +257,7 @@ public class ModelAutoActivator : MonoBehaviour{
 		return false;
 	}
 
-	private static void Deactivate( ActivatorContainer p_containter ){
+	protected static void Deactivate( ActivatorContainer p_containter ){
 		if( p_containter == null ){
 			Debug.LogError( "Container is null." );
 
@@ -248,7 +280,7 @@ public class ModelAutoActivator : MonoBehaviour{
 		p_containter.SetVisible( false );
 	}
 
-	private static void Activate( ActivatorContainer p_containter ){
+	protected static void Activate( ActivatorContainer p_containter ){
 		if( p_containter == null ){
 			Debug.LogError( "Container is null." );
 
@@ -281,7 +313,7 @@ public class ModelAutoActivator : MonoBehaviour{
 
 	private static List<ActivatorContainer> m_active_activator_list = new List<ActivatorContainer>();
 
-	private const float SCREEN_OFFSET		= 0.2f;
+	private const float SCREEN_OFFSET		= 0.1f;
 
 
 	public static List<ActivatorContainer> GetActiveActivator(){
@@ -320,14 +352,7 @@ public class ModelAutoActivator : MonoBehaviour{
 			}
 
 			{
-				t_activator.Update();
-
-				if( t_activator.IsVisible() ){
-					Activate( t_activator );
-				}
-				else{
-					Deactivate( t_activator );
-				}
+				t_activator.InitVisible();
 			}
 		}
 	}
@@ -412,6 +437,8 @@ public class ModelAutoActivator : MonoBehaviour{
 
 		private bool m_is_visible = false;
 
+		private bool m_visible_initialized = false;
+
 		public ActivatorContainer( GameObject p_gb, IModelAutoActivateListener p_listener ){
 			if( p_gb == null ){
 				Debug.LogError( "GameObject is Null." );
@@ -426,6 +453,21 @@ public class ModelAutoActivator : MonoBehaviour{
 			Init();
 		}
 
+	public void InitVisible(){
+//		Debug.Log( "InitVisible( " + m_root_gameobject + " )" );
+
+		m_visible_initialized = true;
+
+		Update();
+
+		if( IsVisible() ){
+			Activate( this );
+		}
+		else{
+			Deactivate( this );
+		}
+	}
+
 		private void Init(){
 			m_renderers = m_root_gameobject.GetComponentsInChildren<MeshRenderer>();
 
@@ -439,6 +481,10 @@ public class ModelAutoActivator : MonoBehaviour{
 		}
 
 		public void Update(){
+			if( !m_visible_initialized ){
+				InitVisible();
+			}
+
 			if( ShouldClear() ){
 				Clear();
 
@@ -486,22 +532,35 @@ public class ModelAutoActivator : MonoBehaviour{
 					return false;
 				}	
 				else{
-					if( !m_is_in_screen && ModelAutoActivator.IsInScreen( m_root_gameobject.transform.position ) ){
-						#if DEBUG_MODEL
-						Debug.Log( "NotInScreen Before, InScreen Now." );
-						#endif
+					if( ModelAutoActivator.IsInScreen( m_root_gameobject.transform.position ) ){
+						{
+							m_is_in_screen = true;
 
-						m_is_in_screen = true;
+							ModelAutoActivator.Activate( this );
 
-						ModelAutoActivator.Activate( this );
+							return true;
+						}
 
-						return true;
+//						if( !m_is_in_screen ){
+//							#if DEBUG_MODEL
+//							Debug.Log( "NotInScreen Before, InScreen Now." );
+//							#endif
+//
+//							m_is_in_screen = true;
+//
+//							ModelAutoActivator.Activate( this );
+//
+//							return true;
+//						}
+//						else{
+//							#if DEBUG_MODEL
+//							Debug.Log( "Always not visible." );
+//							#endif
+//
+//							return false;
+//						}
 					}
 					else{
-						#if DEBUG_MODEL
-						Debug.Log( "Always not visible." );
-						#endif
-
 						return false;
 					}
 				}

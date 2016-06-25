@@ -11,8 +11,6 @@ namespace Carriage
 		public UIScrollView propSc;
 		public UIScrollBar propSb;
 
-		public UIGrid propGrid;
-
 		public GameObject propItemObj;
 		private List<GameObject> propItemList = new List<GameObject> ();
 
@@ -42,15 +40,16 @@ namespace Carriage
 				sEffectController.OnOpenWindowClick ();
 			}
 
-			propItemList = QXComData.CreateGameObjectList (propItemObj,propGrid,tempTotleList.Count,propItemList);
+			propItemList = QXComData.CreateGameObjectList (propItemObj,tempTotleList.Count,propItemList);
 
 			for (int i = 0;i < tempTotleList.Count;i ++)
 			{
+				propItemList[i].transform.localPosition = new Vector3(0,-i * 97,0);
 				HorsePropItem horseProp = propItemList[i].GetComponent<HorsePropItem> ();
 				horseProp.InItHorsePropItem (tempTotleList[i]);
-
-				propGrid.repositionNow = true;
 			}
+
+			propSc.UpdateScrollbars (true);
 
 			propSc.enabled = tempTotleList.Count > 3 ? true : false;
 			propSb.gameObject.SetActive (tempTotleList.Count > 3 ? true : false);
@@ -63,9 +62,13 @@ namespace Carriage
 				handler.m_click_handler += CloseBtnHandlerClickBack;
 			}
 
-			if (BiaoJuPage.bjPage.CheckGaoJiMaBian ())
+			if (BiaoJuPage.m_instance.CheckGaoJiMaBian ())
 			{
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,11);
+//				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,11);
+				if (QXComData.CheckYinDaoOpenState (100370))
+				{
+					CloseBtnHandlerClickBack (gameObject);
+				}
 			}
 			else
 			{

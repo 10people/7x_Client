@@ -40,15 +40,28 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 	[HideInInspector]
 	public readonly Dictionary<int,string[]> M_TimeLabelDic = new Dictionary<int, string[]>()
 	{
-		//0 - 郡城战状态-起 1 - 郡城战状态-终 2 - 时段name 3 - 城池状态spriteName
-		{0,new string[]{"declaration_startTime","declaration_endTime","宣战时段","YellowPoint"}},
-		{1,new string[]{"preparation_startTime","preparation_endTime","揭晓时段","GreenPoint"}},
-		{2,new string[]{"fighting_startTime","fighting_endTime","战斗时段","RedPoint"}},
-		{3,new string[]{"","","其它时段",""}},
+		//0 - 郡城战时段 1 - 时段name 2 - 城池状态spriteName
+		{0,new string[]{LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_1),"宣战时段","YellowPoint"}},
+		{1,new string[]{LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_2),"揭晓时段","GreenPoint"}},
+		{2,new string[]{LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_3),"战斗时段","RedPoint"}},
+		{3,new string[]{"","其它时段",""}},
 	};
+
+	[HideInInspector]
+	public string m_xuanZhan = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_19);//宣战
+	public string m_xuanZhanFail = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_20);//宣战失败
+	public string m_attack = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_21);//进攻
+	public string m_attackBefore = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_45);//进攻备战
+	public string m_fangShou = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_22);//防守
+	public string m_fangShouBefore = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_44);//防守备战
+	public string m_rec = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_18);//推荐
 
 	private bool m_isOpenFirst = true;
 	public GameObject m_texObj;
+
+	#region Red
+	public GameObject m_rewardRed;
+	#endregion
 
 	new void Awake ()
 	{
@@ -62,21 +75,26 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 
 		for (int i = 0;i < m_timeLabelList.Count;i ++)
 		{
-			m_timeLabelList[i].text = M_TimeLabelDic[i][2] + JCZTemplate.GetJCZTemplateByKey (M_TimeLabelDic[i][0]).value + "~" + JCZTemplate.GetJCZTemplateByKey (M_TimeLabelDic[i][1]).value;
+			m_timeLabelList[i].text = M_TimeLabelDic[i][1] + M_TimeLabelDic[i][0];
 		}
 
 		if (tempResp.interval == 3)
 		{
 			m_curTimeSprite.gameObject.SetActive (false);
+
+			//set redPoint
+			PushAndNotificationHelper.SetRedSpotNotification (300500,false);
+//			NewAlliancemanager.Instance ().ShowJunChengZhanAlert ();
+			CityWarData.Instance.SetAllianceRed ();
 		}
 		else
 		{
 			m_curTimeSprite.gameObject.SetActive (true);
-			m_curTimeSprite.transform.localPosition = m_timeLabelList [tempResp.interval].transform.parent.transform.localPosition - new Vector3(5,0,0);
+			m_curTimeSprite.transform.localPosition = m_timeLabelList [tempResp.interval].transform.parent.transform.localPosition - new Vector3(9,0,0);
 			m_curTimeSprite.alpha = 1;
 		}
 
-		m_allianceName.text = QXComData.AllianceInfo ().name;
+		m_allianceName.text = QXComData.AllianceName (QXComData.AllianceInfo ().name);
 		m_allianceLevel.text = "等级[0dbce8]  " + QXComData.AllianceInfo ().level.ToString () + "[-]";
 		m_allianceIcon.spriteName = QXComData.AllianceInfo ().icon.ToString ();
 		m_earth.text = "领地[0dbce8]  " + CityResp.myCityCount + "[-]";
@@ -101,10 +119,8 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 				}
 			}
 		}
-		Debug.Log ("M_HaveNormalCity:" + M_HaveNormalCity);
+//		Debug.Log ("M_HaveNormalCity:" + M_HaveNormalCity);
 		InItTuiJianState ();
-
-		m_bidDesLabel.text = tempResp.interval == 1 ? (tempResp.recCityId > 0 ? MyColorData.getColorString (45,"此时段还可宣战野城") : "") : "";
 
 		foreach (UILabel label in m_infoLabelList)
 		{
@@ -120,41 +136,54 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 		if (m_isOpenFirst)
 		{
 			m_isOpenFirst = false;
-			m_texObj.transform.localScale = Vector3.one * 0.9f;
-			m_texObj.transform.localPosition = new Vector3 (20,0,0);
+			m_texObj.transform.localScale = Vector3.one * 0.95f;
+			m_texObj.transform.localPosition = new Vector3 (255,-85,0);
 			TexScale ();
 		}
+
+		#region RedShow
+		SetRewardRed ();
+		#endregion
 	}
 
 	void InItTuiJianState ()
 	{
 		CityTween ();
 	
-		Debug.Log ("recCityId:" + CityResp.recCityId);
+//		Debug.Log ("recCityId:" + CityResp.recCityId);
 		switch (CityResp.interval)
 		{
 		case 0:
+			m_bidDesLabel.transform.localPosition = new Vector3(10,-95,0);
+			m_bidDesLabel.text = MyColorData.getColorString (45,LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_4));
 			if (CityResp.recCityId == 0)
 			{
-				m_tuiJian.spriteName = "BlueArrow";
-				m_tuiJianLabel.text = "[0dbce8]宣战[-]";
+				m_tuiJian.spriteName = "RedArrow";
+//				m_tuiJianLabel.text = "[0dbce8]" + m_xuanZhan + "[-]";//宣战
+				m_tuiJianLabel.text = MyColorData.getColorString (5,m_attackBefore);//进攻备战
 			}
 			else
 			{
 				m_tuiJian.spriteName = CityResp.recCityId > 0 ? "GreenArrow" : "";
-				m_tuiJianLabel.text = CityResp.recCityId > 0 ? MyColorData.getColorString (4,"推荐") : "";
+				m_tuiJianLabel.text = CityResp.recCityId > 0 ? MyColorData.getColorString (4,m_rec) : "";//推荐
 			}
 			break;
 		case 1:
+
+			//此时段仍可对野城宣战
+			m_bidDesLabel.transform.localPosition = new Vector3(210,-95,0);
+			m_bidDesLabel.text = CityResp.recCityId > 0 ? MyColorData.getColorString (45,LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_5)) : "";
+
 			if (CityResp.recCityId == 0)
 			{
 				m_tuiJian.spriteName = "RedArrow";
-				m_tuiJianLabel.text = MyColorData.getColorString (5,"进攻");
+//				m_tuiJianLabel.text = MyColorData.getColorString (5,m_attack);//进攻
+				m_tuiJianLabel.text = MyColorData.getColorString (5,m_attackBefore);//进攻备战
 			}
 			else if (CityResp.recCityId > 0)
 			{
 				m_tuiJian.spriteName = "GreenArrow";
-				m_tuiJianLabel.text = MyColorData.getColorString (4,"推荐");
+				m_tuiJianLabel.text = MyColorData.getColorString (4,m_rec);//推荐
 			}
 			else
 			{
@@ -163,8 +192,17 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 			}
 			break;
 		case 2:
+
+			m_bidDesLabel.transform.localPosition = new Vector3(410,-95,0);
+			m_bidDesLabel.text = (CityResp.recCityId == 0 || M_HaveNormalCity) ? MyColorData.getColorString (45,LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_6)) : "";
+
 			m_tuiJian.spriteName = CityResp.recCityId == 0 ? "RedArrow" : "";
-			m_tuiJianLabel.text = CityResp.recCityId == 0 ? MyColorData.getColorString (5,"进攻") : "";
+			m_tuiJianLabel.text = CityResp.recCityId == 0 ? MyColorData.getColorString (5,m_attack) : "";//进攻
+			break;
+		case 3:
+			m_bidDesLabel.text = "";
+			m_tuiJian.spriteName = "";
+			m_tuiJianLabel.text = "";
 			break;
 		default:
 			break;
@@ -259,7 +297,7 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 	{
 		string cityName = NameIdTemplate.GetName_By_NameId (JCZCityTemplate.GetJCZCityTemplateById (tempInfo.cityId).name);
 		string bidTime = tempInfo.bidTime.ToString ();
-		string info = MyColorData.getColorString (5,tempInfo.allianceName) + "对[e5e205]" + cityName + "[-]宣战  " + QXComData.UTCToTimeString (tempInfo.bidTime * 1000,"HH:mm");
+		string info = MyColorData.getColorString (5,tempInfo.allianceName) + "对[e5e205]" + cityName + "[-]" + m_xuanZhan;//+ "  " + QXComData.UTCToTimeString (tempInfo.bidTime * 1000,"HH:mm");
 
 		if (m_infoList.Contains (info))
 		{
@@ -336,6 +374,34 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 
 	#endregion
 
+	#region JiFen
+
+	public void OpenJiFenPage (OtherCity.PageType m_pageType,CityWarScoreResultResp tempResp)
+	{
+		m_otherCityObj.SetActive (true);
+		OtherCity.m_instance.InItJiFenPage (m_pageType,tempResp);
+		switch (m_pageType)
+		{
+		case OtherCity.PageType.JIFEN_BID:
+			BidPageDelegateCallBack ();
+			OtherCity.m_instance.M_OtherCityDelegate = BidJiFenPageCallBack;
+			break;
+		case OtherCity.PageType.JIFEN_OTHER_CITY:
+			OtherCity.m_instance.M_OtherCityDelegate = OtherCityDelegateCallBack;
+			break;
+		default:
+			break;
+		}
+	}
+
+	void BidJiFenPageCallBack ()
+	{
+		m_otherCityObj.SetActive (false);
+		m_bidObj.SetActive (true);
+	}
+
+	#endregion
+
 	#region CityWarBrand
 
 	public GameObject m_brandPageObj;
@@ -368,6 +434,17 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 	void BidPageDelegateCallBack ()
 	{
 		m_bidObj.SetActive (false);
+	}
+
+	#endregion
+
+	#region RefreshRed
+
+	public void SetRewardRed ()
+	{
+		m_rewardRed.SetActive (FunctionOpenTemp.IsShowRedSpotNotification (310410) || FunctionOpenTemp.IsShowRedSpotNotification (310420) ? true : false);
+//		NewAlliancemanager.Instance ().ShowJunChengZhanAlert ();
+		CityWarData.Instance.SetAllianceRed ();
 	}
 
 	#endregion
@@ -460,6 +537,11 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 			}
 
 			break;
+		case "MoveBtn":
+
+			VideoHelper.PlayVideo (EffectIdTemplate.GetPathByeffectId (700003),VideoHelper.VideoControlMode.None,ClickMove);
+
+			break;
 		default:
 
 			CityItem cityItem = ui.transform.parent.GetComponent<CityItem> ();
@@ -470,6 +552,11 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 
 			break;
 		}
+	}
+
+	void ClickMove ()
+	{
+
 	}
 
 	new void OnDestroy ()

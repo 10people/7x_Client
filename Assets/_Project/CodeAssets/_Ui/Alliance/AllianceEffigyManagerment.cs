@@ -79,11 +79,7 @@ public class AllianceEffigyManagerment : MonoBehaviour
         }
 
     }
-    void LateUpdate()
-    { 
-    
-    
-    }
+
     public void SetNpcInfo()
     {
         m_Itemtemplate.m_template = NpcCityTemplate.GetNpcItemById(10000);

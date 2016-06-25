@@ -52,11 +52,11 @@ public class BattleResultHint : MonoBehaviour
 			}
 			else if (awardItem.awardItemType == 4)//MiBao
 			{
-				iconType = IconSampleManager.IconType.OldMiBao;
+				iconType = IconSampleManager.IconType.Hero;
 			}
 			else if (awardItem.awardItemType == 5)//MibaoSuiPian
 			{
-				iconType = IconSampleManager.IconType.OldMiBaoSuiPian;
+				iconType = IconSampleManager.IconType.HeroFragment;
 			}
 			
 			IconSampleManager ism = gc.GetComponent<IconSampleManager>();

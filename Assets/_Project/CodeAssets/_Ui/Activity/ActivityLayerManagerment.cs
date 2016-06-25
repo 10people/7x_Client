@@ -513,8 +513,7 @@ public class ActivityLayerManagerment : MonoBehaviour, SocketProcessor
         tempObj.transform.localPosition = Vector3.zero;
         tempObj.transform.localScale = Vector3.one;
 
-        tempObj.GetComponent<ActivitySignalInItemManagerment>().ShowInfo(listSignalInInfo[index_SignalInNum]
-            , listSignalInInfo[index_SignalInNum].state == 0, index_SignalInNum < CurrentSignalInDays ? true : false, SignalIn, Retroactive);
+        
         if (index_SignalInNum < listSignalInInfo.Count - 1)
         {
             index_SignalInNum++;

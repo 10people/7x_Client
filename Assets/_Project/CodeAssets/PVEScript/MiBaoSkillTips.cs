@@ -43,9 +43,7 @@ public class MiBaoSkillTips : MYNGUIPanel {
 
 		ShowTip.showTip (id);
 	}
-	void Update () {
-	
-	}
+
 	#region fulfil my ngui panel
 	
 	/// <summary>

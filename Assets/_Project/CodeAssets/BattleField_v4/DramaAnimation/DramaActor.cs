@@ -26,7 +26,8 @@ public class DramaActor : MonoBehaviour
 	[HideInInspector] public bool actionDone;
 
 
-	private bool end;
+	protected bool end;
+
 
 	private float curTime;
 
@@ -55,8 +56,10 @@ public class DramaActor : MonoBehaviour
 
 		funcAfterWait ();
 
-		float t = func ();
-		
+		float t = 0;
+
+		if(!end) t = func ();
+
 		t = t < .02f ? .02f : t;
 
 		curTime = Time.realtimeSinceStartup;
@@ -115,6 +118,8 @@ public class DramaActor : MonoBehaviour
 	public void _forcedEnd()
 	{
 		end = true;
+
+		funcForcedEnd ();
 	}
 
 	public virtual void log()

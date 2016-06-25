@@ -41,11 +41,6 @@ public class Debug_0618_Soldier : MonoBehaviour {
 
 		RandomIdle();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	#endregion
 

@@ -11,13 +11,8 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 
 	public List<XiaoWuInrerface> mQiPaolist = new List<XiaoWuInrerface> ();
 
-//	public UIButton mButton;
-//
-//	public UILabel allianceExp;// 联盟经验进度
-//
-//	public UILabel alliance_Lv ;// 联盟等级到达
-//
-//	public UISlider mSlider;
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
 
 	public GameObject BianjiGonggangTishi;
 
@@ -75,12 +70,21 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	UpdateNoticeResp m_noticeResp ;
 
 	public List<_AllMember> m_AllMember = new List<_AllMember>();
+
+	[HideInInspector]public bool m_YinDaoIsOpen;
+	[HideInInspector]public bool m_SomeUIIsOpen;
 	public static MyAllianceInfo m_MyAllianceInfo;
 	void Awake()
 	{
+		// reigster trigger delegate
+	
 		m_MyAllianceInfo = this;
 		SocketTool.RegisterMessageProcessor(this);
 		//Debug.Log ( "MiBaoManager.Awake()" );
+		{
+			UIWindowEventTrigger.SetOnTopDelegate( gameObject, ShowAllianceGuid );
+		}
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "联盟", 0, 0);
 	}
 	void OnDestroy()
 	{
@@ -94,8 +98,11 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 	}
+
 	public void Init()
 	{
+		m_YinDaoIsOpen = NewAlliancemanager.Instance ().SomeUIis_OPen;
+	
 		InitUI ();
 	}
 	private void CloseEffect()
@@ -152,6 +159,55 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 	{
 		isopen = false;
 	}
+
+	/// <summary>
+	/// Shows the alliance GUID.联盟引导
+	/// </summary>
+	public void ShowAllianceGuid()
+	{
+//		Debug.Log("400010 = "+FreshGuide.Instance().IsActive(400010));
+//		Debug.Log(".progress = "+TaskData.Instance.m_TaskInfoDic[400010].progress );
+//		Debug.Log("Shows the alliance GUID");
+		if (FreshGuide.Instance().IsActive(400010) && TaskData.Instance.m_TaskInfoDic[400010].progress >= 0)
+		{
+			Debug.Log("去小屋领经验");
+
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400010];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			m_YinDaoIsOpen = true;
+		}
+		else if (FreshGuide.Instance().IsActive(400020) && TaskData.Instance.m_TaskInfoDic[400020].progress >= 0)
+		{
+			Debug.Log("去寺庙祭拜");
+
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400020];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			m_YinDaoIsOpen = true;
+		}
+		else if (FreshGuide.Instance().IsActive(400030) && TaskData.Instance.m_TaskInfoDic[400030].progress >= 0)
+		{
+			Debug.Log("去图腾祭拜");
+
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400030];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			m_YinDaoIsOpen = true;
+		}
+		else if (FreshGuide.Instance().IsActive(400040) && TaskData.Instance.m_TaskInfoDic[400040].progress >= 0)
+		{
+			Debug.Log("去商店购买东西");
+
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[400040];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+			m_YinDaoIsOpen = true;
+		}else
+		{
+			if(UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				UIYindao.m_UIYindao.CloseUI();
+			}
+		}
+	}
+
 	public bool OnProcessSocketMessage(QXBuffer p_message){
 		
 		if (p_message != null)
@@ -173,6 +229,9 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 					if (m_noticeResp.code == 0)
 					{
 						ClientMain.m_UITextManager.createText("公告修改成功！");
+						ShoweditInfo.text = m_noticeResp.notice;
+						editInfo.text = m_noticeResp.notice;
+						m_Alliance.notice = m_noticeResp.notice;
 					}
 					else{
 						ClientMain.m_UITextManager.createText("公告修改失败！");
@@ -261,6 +320,10 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 			}
 			mLabel_Font.text = (50-length).ToString();
 		}
+		if(!m_YinDaoIsOpen)
+		{
+			ShowAllianceGuid();
+		}
 	}
 	public void EnterKuanJieUI()
 	{
@@ -288,7 +351,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 		Alliance_Name.text = m_Alliance.name;
 		
 		Level.text = m_Alliance.level.ToString();
-		Debug.Log ("m_Alliance.country = "+m_Alliance.country);
+//		Debug.Log ("m_Alliance.country = "+m_Alliance.country);
 		switch(m_Alliance.country)
 		{
 		case 1:
@@ -552,7 +615,7 @@ public class MyAllianceInfo : MonoBehaviour,SocketProcessor {
 			string changeSuccessStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_GONGGAO_CHANGE_SUCCESS);
 			
 			string str  = changeSuccessStr;
-			uibox.setBox(changeTitleStr,null, MyColorData.getColorString (1,str), null,confirmStr,null,null);
+			uibox.setBox(changeTitleStr,MyColorData.getColorString (1,str), null, null,confirmStr,null,null);
 		}
 		
 		else

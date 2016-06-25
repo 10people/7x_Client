@@ -1,27 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LMGongXianDuihuan id="1000" itemType="0" itemId="900018" itemNum="250" needNum="250" weight="10000" site="1" needLv="1" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1001" itemType="0" itemId="900019" itemNum="250" needNum="250" weight="10000" site="2" needLv="1" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1002" itemType="0" itemId="900018" itemNum="1000" needNum="900" weight="10000" site="3" needLv="1" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1003" itemType="0" itemId="900019" itemNum="1000" needNum="900" weight="10000" site="4" needLv="1" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1018" itemType="5" itemId="316001" itemNum="5" needNum="500" weight="10000" site="22" needLv="1" max="1" ifRecomanded="1" />
-<LMGongXianDuihuan id="1004" itemType="7" itemId="901037" itemNum="2" needNum="400" weight="10000" site="5" needLv="2" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1005" itemType="7" itemId="902037" itemNum="2" needNum="1280" weight="10000" site="6" needLv="2" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1006" itemType="7" itemId="901027" itemNum="2" needNum="400" weight="10000" site="7" needLv="2" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1007" itemType="7" itemId="902027" itemNum="2" needNum="1280" weight="10000" site="8" needLv="2" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1008" itemType="7" itemId="901017" itemNum="2" needNum="400" weight="10000" site="9" needLv="2" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1009" itemType="7" itemId="902017" itemNum="2" needNum="1280" weight="10000" site="10" needLv="2" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1019" itemType="5" itemId="316002" itemNum="5" needNum="500" weight="10000" site="23" needLv="2" max="1" ifRecomanded="1" />
-<LMGongXianDuihuan id="1010" itemType="9" itemId="920003" itemNum="2" needNum="400" weight="10000" site="11" needLv="3" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1011" itemType="9" itemId="920004" itemNum="2" needNum="1400" weight="10000" site="12" needLv="3" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1012" itemType="9" itemId="921003" itemNum="2" needNum="400" weight="10000" site="13" needLv="3" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1013" itemType="9" itemId="921004" itemNum="2" needNum="1400" weight="10000" site="14" needLv="3" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1020" itemType="5" itemId="316003" itemNum="10" needNum="1000" weight="10000" site="24" needLv="3" max="1" ifRecomanded="1" />
-<LMGongXianDuihuan id="1014" itemType="7" itemId="903037" itemNum="1" needNum="3200" weight="10000" site="18" needLv="4" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1015" itemType="7" itemId="903027" itemNum="1" needNum="3200" weight="10000" site="19" needLv="4" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1016" itemType="7" itemId="903017" itemNum="1" needNum="3200" weight="10000" site="20" needLv="4" max="1" ifRecomanded="0" />
-<LMGongXianDuihuan id="1017" itemType="0" itemId="910002" itemNum="3" needNum="1200" weight="10000" site="21" needLv="5" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1021" itemType="0" itemId="951001" itemNum="5" needNum="500" weight="10000" site="15" needLv="9" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1022" itemType="0" itemId="951002" itemNum="2" needNum="800" weight="10000" site="16" needLv="9" max="999" ifRecomanded="0" />
-<LMGongXianDuihuan id="1023" itemType="0" itemId="951003" itemNum="1" needNum="2000" weight="10000" site="17" needLv="9" max="1" ifRecomanded="0" />
+<LMGongXianDuihuan id="1001" itemType="5" itemId="316001" itemNum="1" needNum="250" weight="10000" site="1" needLv="1" max="3" ifRecomanded="1" />
+<LMGongXianDuihuan id="1002" itemType="5" itemId="316002" itemNum="1" needNum="250" weight="10000" site="2" needLv="2" max="3" ifRecomanded="1" />
+<LMGongXianDuihuan id="1003" itemType="5" itemId="316003" itemNum="1" needNum="250" weight="10000" site="3" needLv="3" max="3" ifRecomanded="1" />
+<LMGongXianDuihuan id="1004" itemType="0" itemId="900018" itemNum="250" needNum="250" weight="10000" site="4" needLv="1" max="999" ifRecomanded="0" />
+<LMGongXianDuihuan id="1005" itemType="0" itemId="900019" itemNum="250" needNum="250" weight="10000" site="5" needLv="1" max="999" ifRecomanded="0" />
+<LMGongXianDuihuan id="1006" itemType="0" itemId="910002" itemNum="1" needNum="400" weight="10000" site="6" needLv="1" max="3" ifRecomanded="0" />
 </dataset>

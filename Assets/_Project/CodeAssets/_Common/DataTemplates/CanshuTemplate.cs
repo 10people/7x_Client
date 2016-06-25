@@ -160,6 +160,9 @@ public class CanshuTemplate : XmlLoadManager
 	public static string ARMOR_RECOVERYTIME2 = "ARMOR_RECOVERYTIME2";
 	public static string ARMOR_RECOVERYRATE = "ARMOR_RECOVERYRATE";
 	public static string UNLOCK_ROLE_PIRCE = "UNLOCK_ROLE_PIRCE";
+	public static string CHENGZHANGJIJIN_VIP = "CHENGZHANGJIJIN_VIP";
+	public static string TRANSFORM_ROLE_CD = "TRANSFORM_ROLE_CD";
+	public static string BAIZHAN_FREE_TIMES = "BAIZHAN_FREE_TIMES";
 
     /// <summary>
     /// 以下参数表里未找到

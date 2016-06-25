@@ -243,11 +243,7 @@ public class Config_Camera {
 		void Start(){
 			
 		}
-		
-		void Update(){
-			
-		}
-		
+
 		void OnPreRender() {
 			CameraSuperior();
 		}

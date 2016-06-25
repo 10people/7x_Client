@@ -59,6 +59,8 @@ public class DramaStroyWritor : MonoBehaviour
 
 		json ["totalTime"].AsFloat = dsb.totalTime;
 
+		json ["skippable"].AsBool = dsb.skippable;
+
 		foreach(DramaActorControllor actorControllor in dsb.getDramaActorControllors())
 		{
 			JSONClass jsonActor = new JSONClass();

@@ -9,37 +9,46 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class WarPage : MonoBehaviour, SocketProcessor {
-
-	public static WarPage warPage;
+public class WarPage : GeneralInstance<WarPage>, SocketProcessor {
 
 	private MainSimpleInfoResp mainSimpleResp;
 
 	public GameObject warItemObj;
 	private List<GameObject> warList = new List<GameObject> ();
 
-	public ScaleEffectController sEffectController;
-
-	void Awake ()
+	private Dictionary<string,int> m_warItemDic = new Dictionary<string, int>()
 	{
-		warPage = this;
+		{"War_Sport",300100},{"War_YunBiao",310},{"War_Plunder",211},
+	};
+
+	new void Awake ()
+	{
+		base.Awake ();
 		SocketTool.RegisterMessageProcessor (this);
 	}
 
-	void OnDestroy ()
+	new void OnDestroy ()
 	{
-		warPage = null;
+		base.OnDestroy ();
 		SocketTool.UnRegisterMessageProcessor (this);
+	}
+
+	public void OpenWarSelectWindow ()
+	{
+		MainSimpleInfoReq mainSimpleReq = new MainSimpleInfoReq ();
+		mainSimpleReq.functionType = 8;
+		QXComData.SendQxProtoMessage (mainSimpleReq,ProtoIndexes.C_MAIN_SIMPLE_INFO_REQ,ProtoIndexes.S_MAIN_SIMPLE_INFO_RESP.ToString ());
+		
+		//		Debug.Log ("Fight窗口信息请求" + ProtoIndexes.C_MAIN_SIMPLE_INFO_REQ);
 	}
 
 	/// <summary>
 	/// Ins it war page.
 	/// </summary>
 	/// <param name="tempType">Temp type.</param>
-	public void InItWarPage (MainSimpleInfoResp tempResp)
+	void InItWarPage (MainSimpleInfoResp tempResp)
 	{
 		mainSimpleResp = tempResp;
-		sEffectController.OnOpenWindowClick ();
 
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,1);
 
@@ -82,10 +91,28 @@ public class WarPage : MonoBehaviour, SocketProcessor {
 			default:
 				break;
 			}
-
+			warList[i].name = mainSimpleResp.info[i].functionId.ToString ();
 			warList[i].transform.localScale = Vector3.one;
 			WarItem war = warList[i].GetComponent<WarItem> ();
 			war.InItWarItem (mainSimpleResp.info[i]);
+		}
+		Debug.Log ("Global.m_sPanelWantRun:" + Global.m_sPanelWantRun);
+		if(!string.IsNullOrEmpty (Global.m_sPanelWantRun))
+		{
+			if (!m_warItemDic.ContainsKey (Global.m_sPanelWantRun)) return;
+
+			int funcId = m_warItemDic[Global.m_sPanelWantRun];
+
+			for (int i = 0;i < warList.Count;i ++)
+			{
+				WarItem warItem = warList[i].GetComponent<WarItem> ();
+				if (warItem.simpleInfo.functionId == funcId)
+				{
+					warItem.WarItemHandlerClickBack ();
+				}
+			}
+
+			Global.m_sPanelWantRun = "";
 		}
 	}
 
@@ -146,11 +173,22 @@ public class WarPage : MonoBehaviour, SocketProcessor {
 					
 					InItWarPage (mainSimpleResp);
 				}
+
+				EveryDayShowTime.Instance.m_isLoad2 = true;
 				return true;
 			}
 			}
 		}
 		
 		return false;
+	}
+
+	public override void MYClick (GameObject ui)
+	{
+		WarItem warItem = ui.transform.parent.GetComponent<WarItem> ();
+		if (warItem.simpleInfo.functionId == int.Parse (ui.transform.parent.name))
+		{
+			warItem.WarItemHandlerClickBack ();
+		}
 	}
 }

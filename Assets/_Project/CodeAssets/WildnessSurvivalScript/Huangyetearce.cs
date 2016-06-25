@@ -21,14 +21,6 @@ public class Huangyetearce : MonoBehaviour {
 
 	public UILabel Tre_JinDu;
 
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
 	public void Init()
 	{
 //		Debug.Log ("初始化藏宝点。。。。。。。。");

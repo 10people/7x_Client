@@ -18,6 +18,7 @@ public class MainCityAddFunction : MYNGUIPanel
 
 	public UILabel m_UILabel;
 	public UILabel m_UILabelDes;
+	public UILabel m_labelRenyi;
 	public GameObject m_objEff;
 	public GameObject m_objEff1;
 	public GameObject m_objThis;
@@ -55,8 +56,15 @@ public class MainCityAddFunction : MYNGUIPanel
 			spe.PlaySound(et.sound);
 		}
 		m_UILabelDes.text = m_FunctionOpenTemp.Des;
+
+		CycleTween.StartCycleTween(m_labelRenyi.gameObject, 1, 0.4f, 0.5f, OnUpdateAlertInfoLabelA);
+
 	}
-	
+
+	private void OnUpdateAlertInfoLabelA(float value)
+	{
+		m_labelRenyi.color = new Color(m_labelRenyi.color.r, m_labelRenyi.color.g, m_labelRenyi.color.b, value);
+	}	
 	// Update is called once per frame
 	void Update () 
 	{

@@ -131,4 +131,19 @@ public class LMDuiHuanTemplate : XmlLoadManager {
 		
 		return null;
 	}
+
+	public static LMDuiHuanTemplate getLMDuiHuanTemplateByItemId(int id)
+	{
+		foreach(LMDuiHuanTemplate template in templates)
+		{
+			if(template.itemId == id)
+			{
+				return template;
+			}
+		}
+		
+		Debug.LogError("XML ERROR: Can't get LMDuiHuanTemplate with id " + id);
+		
+		return null;
+	}
 }

@@ -21,8 +21,8 @@ public class SoundPlayYuyin : MonoBehaviour
 		{
 			if(!m_AudioSource.isPlaying)
 			{
-				SoundManager.EYuyin();
 				m_isPlay = false;
+				SoundManager.EYuyin();
 			}
 		}
 	}
@@ -102,6 +102,7 @@ public class SoundPlayYuyin : MonoBehaviour
 		m_AudioSource.spatialBlend = m_SoundData.iStereo;
 		m_isPlay = true;
 		SoundManager.BYuyin();
+		MSCPlayer.Instance.stopSound();
 	}
 	
 	#region Utilities

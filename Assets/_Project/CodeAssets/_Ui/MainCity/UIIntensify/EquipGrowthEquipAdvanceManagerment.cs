@@ -53,6 +53,11 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
         {
             case 0:
                 {
+                    if (ZhuangBei.getZhuangBeiById(_baseInfo._EquipId).jiejieId == 0)
+                    {
+                        ClientMain.m_UITextManager.createText("装备已进阶至最高品质");
+                        return;
+                    }
                     if (EquipGrowthMaterialUseManagerment.listTouchedId.Count > 0)
                     {
                         MemoryStream tempStream = new MemoryStream();
@@ -68,20 +73,25 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                     }
                     else
                     {
-                        ClientMain.m_UITextManager.createText("未选择材料");
+                        ClientMain.m_UITextManager.createText("未放入材料，无法合成");
                     }
                 }
                 break;
             case 1:
                 {
+                    if (ZhuangBei.getZhuangBeiById(_baseInfo._EquipId).jiejieId == 0)
+                    {
+                        ClientMain.m_UITextManager.createText("装备已进阶至最高品质");
+                        return;
+                    }
 
                     if (!isMaxSave)
                     {
-                        ClientMain.m_UITextManager.createText("已达到最高阶");
+                        ClientMain.m_UITextManager.createText("装备已进阶至最高品质");
                     }
                     else if (EquipGrowthMaterialUseManagerment.listMaterials.Count == 0)
                     {
-                        ClientMain.m_UITextManager.createText("材料不足");
+                        Global.CreateFunctionIcon(601);
                     }
                     else
                     {
@@ -150,7 +160,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                         _baseInfo._Xue = Equip.shengMing;
                         _baseInfo._dbid = Equip.equipId;
                         _baseInfo._Icon = ZhuangBei.getZhuangBeiById(Equip.zbItemId).icon;
-                        _baseInfo._PinZhi = CommonItemTemplate.getCommonItemTemplateById(Equip.zbItemId).color;
+                        _baseInfo._PinZhi = ZhuangBei.getZhuangBeiById(Equip.zbItemId).pinZhi;
                         _baseInfo._advanceExp = Equip.exp;
                         ShowInfo(_baseInfo);
                         return true;
@@ -228,6 +238,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
 
     void MaterialsInfoTidy()//材料信息整理
     {
+
         Dictionary<int, BagItem> tempEquipsOfBodyDic = EquipsOfBody.Instance().m_equipsOfBodyDic;
         EquipGrowthMaterialUseManagerment.listMaterials.Clear();
         foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
@@ -246,6 +257,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                 case 16: tempBuwei = 6; break;//鞋子
                 default: break;
             }
+ 
             if (tempBuwei == Equip_BuWei && item.Value.pinZhi <= Equip_PinZhi)
             {
                 EquipGrowthMaterialUseManagerment.MaterialInfo material = new EquipGrowthMaterialUseManagerment.MaterialInfo();
@@ -331,6 +343,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
         public string texture;
         public string count;
         public int pinzhi;
+        public int materialExp;
     }
     MaterialInfo matInfo;
     private List<MaterialInfo> listInfoo = new List<MaterialInfo>();
@@ -356,6 +369,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
             if (listInfoo[index_Num2].materialid != 0)
             {
                 iconSampleObject.GetComponent<IconSampleManager>().SubButton.SetActive(false);
+ 
             }
             EquipGrowthMaterialItem.MaterialNeed minfo = new EquipGrowthMaterialItem.MaterialNeed();
             //ShowMaterialInfo(int id, string icon, string count, bool isMaxExp, Over_JunZhu_Level callback)
@@ -421,6 +435,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                         minfo._count = EquipGrowthMaterialUseManagerment.listMaterials[i].count;
                         minfo._pinzhi = EquipGrowthMaterialUseManagerment.listMaterials[i].quality;
                         IconSampleGrid.transform.GetChild(i).GetComponent<EquipGrowthMaterialItem>().ShowMaterialInfo(minfo, isMaxSave , OverStepTip);
+                        
                     }
                     else
                     {
@@ -459,7 +474,9 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                         minfo._icon = EquipGrowthMaterialUseManagerment.listMaterials[i].icon;
                         minfo._count = EquipGrowthMaterialUseManagerment.listMaterials[i].count;
                         minfo._pinzhi = EquipGrowthMaterialUseManagerment.listMaterials[i].quality;
-                        IconSampleGrid.transform.GetChild(i).GetComponent<EquipGrowthMaterialItem>().ShowMaterialInfo(minfo, isMaxSave,  OverStepTip);
+                        
+                        IconSampleGrid.transform.GetChild(i).GetComponent<EquipGrowthMaterialItem>().ShowMaterialInfo(minfo, isMaxSave, OverStepTip);
+                  
                     }
                     else
                     {
@@ -469,6 +486,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                         mInfo.texture = list[i].icon;
                         mInfo.count = list[i].count;
                         mInfo.pinzhi = list[i].quality;
+                        mInfo.materialExp = list[i].materialEXP;
                         listInfoo.Add(mInfo);
                     }
                 }
@@ -679,11 +697,11 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
             m_EquipAdvanceInfo.m_PregressBar.value = 1;
             if (curr_residue > 0)
             {
-                m_EquipAdvanceInfo.m_LabelProgress.text = curr_residue.ToString();
+                m_EquipAdvanceInfo.m_LabelProgress.text = curr_residue.ToString() + "/0";
             }
             else
             {
-                m_EquipAdvanceInfo.m_LabelProgress.text = "";
+                m_EquipAdvanceInfo.m_LabelProgress.text = "0/0";
             }
 
         }
@@ -717,11 +735,11 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                 m_EquipAdvanceInfo.m_PregressBar.value = 1.0f;
                 if (curr_residue > 0)
                 {
-                    m_EquipAdvanceInfo.m_LabelProgress.text = curr_residue.ToString();
+                    m_EquipAdvanceInfo.m_LabelProgress.text = curr_residue.ToString()+ "/0";
                 }
                 else
                 {
-                    m_EquipAdvanceInfo.m_LabelProgress.text = "";
+                    m_EquipAdvanceInfo.m_LabelProgress.text = "0/0";
                 }
             }
             else
@@ -786,12 +804,12 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
         {
             if (ZhuangBei.getZhuangBeiById(EquipGrowthMaterialUseManagerment.equipAdvanceid).jiejieId == 0)
             {
-                ClientMain.m_UITextManager.createText("已达到最高阶");
+                ClientMain.m_UITextManager.createText("装备已进阶至最高品质");
             }
         }
         else
         {
-            ClientMain.m_UITextManager.createText("已达到最高阶");
+            ClientMain.m_UITextManager.createText("装备已进阶至最高品质");
           //  CreateMove(m_EquipAdvanceInfo.m_LabelProgress.gameObject, "已达到最高阶");
         }
     }
@@ -889,7 +907,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
         clone.AddComponent(typeof(TweenPosition));
         clone.AddComponent(typeof(TweenAlpha));
         clone.GetComponent<TweenPosition>().from = move.transform.localPosition;
-        clone.GetComponent<TweenPosition>().to = move.transform.localPosition + Vector3.up * 40;
+        clone.GetComponent<TweenPosition>().to = move.transform.localPosition + Vector3.up * 60;
         clone.GetComponent<TweenPosition>().duration = 0.5f;
         clone.GetComponent<TweenAlpha>().from = 1.0f;
         clone.GetComponent<TweenAlpha>().to = 0;
@@ -1038,7 +1056,7 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                                 ShowAddNum();
                             }
  
-                            ClientMain.m_UITextManager.createText("所需经验已满");
+                         //   ClientMain.m_UITextManager.createText("所需经验已满");
                             return;
                         }
                     }
@@ -1051,20 +1069,20 @@ public class EquipGrowthEquipAdvanceManagerment : MonoBehaviour, UI2DEventListen
                     CreateClone(GemExp - GemExpAdd);
                     ShowAddNum();
                 }
-                ClientMain.m_UITextManager.createText("已添加所有装备");
+               // ClientMain.m_UITextManager.createText("已添加所有装备");
                 return;
             }
         }
         else
         {
-            if (GetAllMaterialAddCount() == EquipGrowthMaterialUseManagerment.listTouchedId.Count)
-            {
-                ClientMain.m_UITextManager.createText("已添加所有装备");
-            }
-            else
-            {
-                ClientMain.m_UITextManager.createText("所需经验已满");
-            }
+            //if (GetAllMaterialAddCount() == EquipGrowthMaterialUseManagerment.listTouchedId.Count)
+            //{
+            //    ClientMain.m_UITextManager.createText("已添加所有装备");
+            //}
+            //else
+            //{
+            //    ClientMain.m_UITextManager.createText("所需经验已满");
+            //}
         }
         if (GemExp - GemExpAdd > 0)
         {

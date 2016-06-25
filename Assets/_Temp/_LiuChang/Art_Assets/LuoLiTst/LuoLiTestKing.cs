@@ -53,11 +53,6 @@ public class LuoLiTestKing : MonoBehaviour
 
 		movementList.Add (41, .5f);
 	}
-	
-	void Update () 
-	{
-
-	}
 
 	public void move(Vector3 offset)
 	{

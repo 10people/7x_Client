@@ -58,6 +58,7 @@
 <SoundList id="2004" name="UI_DrawWeapon" path="Sounds/Sfx/UI_DrawWeapon" loops="0" type="mp3" stereo="0" />
 <SoundList id="210910" name="Cha_HeartBeat01" path="Sounds/Sfx/Cha_HeartBeat01" loops="0" type="mp3" stereo="0" />
 <SoundList id="210915" name="UI_Whip" path="Sounds/UI/UI_Whip" loops="0" type="mp3" stereo="0" />
+<SoundList id="210917" name="UI_PoBaTi" path="Sounds/UI/UI_PoBaTi" loops="0" type="mp3" stereo="0" />
 <SoundList id="210950" name="UI_FunctionOpen" path="Sounds/UI/UI_FunctionOpen" loops="0" type="mp3" stereo="0" />
 <SoundList id="210955" name="UI_Star" path="Sounds/UI/UI_Star" loops="0" type="mp3" stereo="0" />
 <SoundList id="210957" name="UI_Victory" path="Sounds/UI/UI_Victory" loops="0" type="mp3" stereo="0" />
@@ -104,6 +105,8 @@
 <SoundList id="3201" name="Attack_Sword2" path="Sounds/Sfx/Attack_Sword2" loops="0" type="mp3" stereo="1" />
 <SoundList id="3202" name="Attack_Sword3" path="Sounds/Sfx/Attack_Sword3" loops="0" type="mp3" stereo="1" />
 <SoundList id="3203" name="Attack_Sword4" path="Sounds/Sfx/Attack_Sword4" loops="0" type="mp3" stereo="1" />
+<SoundList id="3250" name="JumpUp" path="Sounds/Sfx/JumpUp" loops="0" type="mp3" stereo="1" />
+<SoundList id="3251" name="JumpDown" path="Sounds/Sfx/JumpDown" loops="0" type="mp3" stereo="1" />
 <SoundList id="3300" name="Attack_BigSword1" path="Sounds/Sfx/Attack_BigSword1" loops="0" type="mp3" stereo="1" />
 <SoundList id="3301" name="Attack_BigSword2" path="Sounds/Sfx/Attack_BigSword2" loops="0" type="mp3" stereo="1" />
 <SoundList id="33000" name="Attack_BigSword3_Quake" path="Sounds/Sfx/Attack_BigSword3_Quake" loops="0" type="mp3" stereo="1" />
@@ -497,6 +500,9 @@
 <SoundList id="811910" name="VO_MIJISKILL_6" path="Sounds/Voice/VO_MIJISKILL_6" loops="0" type="mp3" stereo="0" />
 <SoundList id="811920" name="VO_MIJISKILL_7" path="Sounds/Voice/VO_MIJISKILL_7" loops="0" type="mp3" stereo="0" />
 <SoundList id="811930" name="VO_MIJISKILL_8" path="Sounds/Voice/VO_MIJISKILL_8" loops="0" type="mp3" stereo="0" />
+<SoundList id="1001011" name="1011" path="Sounds/BGM/1011" loops="0" type="mp3" stereo="0" />
+<SoundList id="1001021" name="1021" path="Sounds/BGM/1021" loops="0" type="mp3" stereo="0" />
+<SoundList id="1001025" name="VO_XIAO7_1" path="Sounds/Voice/VO_XIAO7_1" loops="0" type="mp3" stereo="0" />
 <SoundList id="1001031" name="1031" path="Sounds/BGM/1031" loops="0" type="mp3" stereo="0" />
 <SoundList id="1001032" name="1032" path="Sounds/BGM/1032" loops="0" type="mp3" stereo="0" />
 <SoundList id="1001041" name="1041" path="Sounds/BGM/1041" loops="0" type="mp3" stereo="0" />

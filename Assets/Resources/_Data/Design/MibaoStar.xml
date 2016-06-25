@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<MibaoStar star="1" needNum="20" needMoney="10000" chengzhang="2" />
-<MibaoStar star="2" needNum="30" needMoney="30000" chengzhang="3" />
-<MibaoStar star="3" needNum="50" needMoney="100000" chengzhang="4" />
-<MibaoStar star="4" needNum="70" needMoney="300000" chengzhang="5" />
-<MibaoStar star="5" needNum="0" needMoney="0" chengzhang="6" />
+<MibaoStar star="1" needNum="20" needMoney="10000" chengzhang="2" gongji="10" fangyu="10" shengming="200" />
+<MibaoStar star="2" needNum="30" needMoney="30000" chengzhang="3" gongji="30" fangyu="30" shengming="600" />
+<MibaoStar star="3" needNum="50" needMoney="100000" chengzhang="4" gongji="50" fangyu="50" shengming="1000" />
+<MibaoStar star="4" needNum="70" needMoney="300000" chengzhang="5" gongji="70" fangyu="70" shengming="1400" />
+<MibaoStar star="5" needNum="0" needMoney="0" chengzhang="6" gongji="90" fangyu="90" shengming="1800" />
 </dataset>

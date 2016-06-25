@@ -130,6 +130,7 @@ ModelImporter:
     7400056: XJLY_1
     7400058: tiao
     7400060: juqing_1
+    7400062: DODGE_JUQING
     9500000: //RootNode
     13700000: objWa_Sword_a04_B001
     13700002: S7_xinzhujue001
@@ -349,16 +350,16 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1101
         messageOptions: 0
-      - time: .235243663
+      - time: .221892804
         functionName: PlaySound
-        data: 3200
+        data: 4018|4019|4020|4021|0|0|0|0|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .238671333
+      - time: .235243663
         functionName: PlaySound
-        data: 4018|4019|4020|4021|0|0|0|0|0
+        data: 3200
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -377,12 +378,12 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: .869751334
-        functionName: attackDone
+      - time: .77902621
+        functionName: setWeaponTriggerTrue
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 1101
         messageOptions: 0
       - time: .863295853
         functionName: setWeaponTriggerFalse
@@ -391,12 +392,19 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: .77902621
-        functionName: setWeaponTriggerTrue
+      - time: .869751334
+        functionName: attackDone
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 1101
+        intParameter: 0
+        messageOptions: 0
+      - time: .812121093
+        functionName: PlaySound
+        data: 3200
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 
@@ -716,14 +724,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1103
         messageOptions: 0
-      - time: .409877509
-        functionName: PlaySound
-        data: 4018|4019|4020|4021|0|0|0|0|0
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .434848905
+      - time: .427496523
         functionName: PlaySound
         data: 3201
         objectReferenceParameter: {instanceID: 0}
@@ -737,12 +738,26 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: .931454301
-        functionName: attackDone
+      - time: .570951343
+        functionName: PlaySound
+        data: 4018|4019|4020|4021|0|0|0|0|0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .855805695
+        functionName: setWeaponTriggerTrue
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 1
+        intParameter: 1103
+        messageOptions: 0
+      - time: .878238261
+        functionName: PlaySound
+        data: 3201
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       - time: .917602539
         functionName: setWeaponTriggerFalse
@@ -751,12 +766,12 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: .855805695
-        functionName: setWeaponTriggerTrue
+      - time: .931454301
+        functionName: attackDone
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 1103
+        intParameter: 1
         messageOptions: 0
       transformMask:
       - path: 
@@ -1062,6 +1077,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 600276
         messageOptions: 0
+      - time: .0773477256
+        functionName: setAttackDir
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
       - time: .109704599
         functionName: updateAttackSpeed
         data: 
@@ -1078,12 +1100,12 @@ ModelImporter:
         messageOptions: 0
       - time: .315270931
         functionName: PlaySound
-        data: 4018|4019|4020|4021|0|0|0|0|0
+        data: 4021|4022|0|0|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .358809054
+      - time: .342030525
         functionName: PlaySound
         data: 3202
         objectReferenceParameter: {instanceID: 0}
@@ -1103,13 +1125,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 2
-        messageOptions: 0
-      - time: .0773477256
-        functionName: setAttackDir
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 1
         messageOptions: 0
       transformMask:
       - path: 
@@ -2196,19 +2211,19 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .00975609757
-        functionName: PlaySound
-        data: 4018
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .0414002091
+      - time: 0
         functionName: attackMove
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 401
+        messageOptions: 0
+      - time: .0175685976
+        functionName: PlaySound
+        data: 4018
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 
@@ -2329,7 +2344,7 @@ ModelImporter:
       name: fangunqishen
       takeName: Take 001
       firstFrame: 605
-      lastFrame: 610
+      lastFrame: 605
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -4474,8 +4489,8 @@ ModelImporter:
     - serializedVersion: 16
       name: skill_mibao
       takeName: Take 001
-      firstFrame: 100
-      lastFrame: 109
+      firstFrame: 620
+      lastFrame: 665
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -5229,6 +5244,144 @@ ModelImporter:
       takeName: Take 001
       firstFrame: 555
       lastFrame: 571
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bip001
+        weight: 1
+      - path: Bip001/Bip001 Footsteps
+        weight: 1
+      - path: Bip001/Bip001 Pelvis
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 L Thigh
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 L Thigh/Bip001 L Calf
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 L Thigh/Bip001 L Calf/Bip001
+          L Foot
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 L Thigh/Bip001 L Calf/Bip001
+          L Foot/Bip001 L Toe0
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 L Thigh/Bone034(mirrored)
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 L Thigh/Bone034(mirrored)/Bone035(mirrored)
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 R Thigh
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 R Thigh/Bip001 R Calf
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 R Thigh/Bip001 R Calf/Bip001
+          R Foot
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 R Thigh/Bip001 R Calf/Bip001
+          R Foot/Bip001 R Toe0
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 R Thigh/Bone034
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 R Thigh/Bone034/Bone035
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 Head
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L
+          Clavicle
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L
+          Clavicle/Bip001 L UpperArm
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L
+          Clavicle/Bip001 L UpperArm/Bip001 L Forearm
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L
+          Clavicle/Bip001 L UpperArm/Bip001 L Forearm/Bip001 L Hand
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L
+          Clavicle/Bip001 L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Finger0
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L
+          Clavicle/Bip001 L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Finger1
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L
+          Clavicle/Bip001 L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Finger2
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L
+          Clavicle/Bone026(mirrored)
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R
+          Clavicle
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R
+          Clavicle/Bip001 R UpperArm
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R
+          Clavicle/Bip001 R UpperArm/Bip001 R Forearm
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R
+          Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R
+          Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Bip001 R Finger0
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R
+          Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Bip001 R Finger1
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R
+          Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Bip001 R Finger2
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R
+          Clavicle/Bone026
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bone028
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bone028/Bone029
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bone031
+        weight: 1
+      - path: Bip001/Bip001 Pelvis/Bone031/Bone032
+        weight: 1
+      - path: Bip001/Bip001 Prop1
+        weight: 1
+      - path: Bip001/Bip001 Prop2
+        weight: 1
+      - path: Box001
+        weight: 1
+      - path: Box001 1
+        weight: 1
+      - path: objWa_Sword_a04_B001
+        weight: 1
+      - path: S7_xinzhujue001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: DODGE_JUQING
+      takeName: Take 001
+      firstFrame: 587
+      lastFrame: 605
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

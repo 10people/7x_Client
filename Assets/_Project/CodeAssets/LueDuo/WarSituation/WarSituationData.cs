@@ -95,7 +95,7 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 
 		JunQingReq junQingReq = new JunQingReq();
 		junQingReq.type = (int)tempType;
-		QXComData.SendQxProtoMessage (junQingReq,ProtoIndexes.alliance_junQing_req);
+		QXComData.SendQxProtoMessage (junQingReq,ProtoIndexes.alliance_junQing_req,ProtoIndexes.alliance_junQing_resq.ToString ());
 		Debug.Log ("联盟军情请求：" + ProtoIndexes.alliance_junQing_req);
 	}
 
@@ -109,7 +109,7 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 
 		QuZhuReq quZhu = new QuZhuReq ();
 		quZhu.itemId = tempId;
-		QXComData.SendQxProtoMessage (quZhu,ProtoIndexes.go_qu_zhu_req);
+		QXComData.SendQxProtoMessage (quZhu,ProtoIndexes.go_qu_zhu_req,ProtoIndexes.go_qu_zhu_resp.ToString ());
 	}
 
 	public bool OnProcessSocketMessage (QXBuffer p_message)

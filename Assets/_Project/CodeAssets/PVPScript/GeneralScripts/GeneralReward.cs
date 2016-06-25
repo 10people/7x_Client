@@ -13,13 +13,14 @@ public class GeneralReward : MonoBehaviour {
 	private int itemId;
 	private int itemCount;
 
-	public UIAtlas atlasFuwen;
-	public UIAtlas atlasEquip;
-
 	private float moveFirstTime;
 	private float stopTime;
 	private float moveSecondTime;
 	private RewardData rewardData;
+
+	private bool m_next = true;
+
+	private float m_scale = 0.005f;
 
 	/// <summary>
 	/// Ins it reward item.
@@ -77,57 +78,12 @@ public class GeneralReward : MonoBehaviour {
 	void MoveFirst ()
 	{
 		Hashtable move = new Hashtable ();
-		move.Add ("time",moveFirstTime);
-		move.Add ("position",Vector3.zero);
-		move.Add ("islocal",true);
-		move.Add ("oncomplete","MoveStop");
-		move.Add ("oncompletetarget",this.gameObject);
-		move.Add ("easetype",rewardData.itweenType1);
-		iTween.MoveTo (transObj,move);
-		
-		Hashtable scale = new Hashtable ();
-		scale.Add ("time",moveFirstTime);
-		scale.Add ("scale",Vector3.one);
-		scale.Add ("easetype",rewardData.itweenType1);
-		iTween.ScaleTo (transObj,scale);
-	}
-	
-	void MoveStop ()
-	{
-		StartCoroutine ("MoveSecond");
-
-		//if mibao or blue equip
-
-//		QXComData.XmlType xmlType = (QXComData.XmlType)Enum.ToObject (typeof (QXComData.XmlType),CommonItemTemplate.GetCommonItemTemplateTypeById (rewardData.itemId));
-//
-//		if (xmlType == QXComData.XmlType.MIBAO)
-//		{
-//			GeneralRewardManager.Instance().CreateSpecialReward (rewardData);
-//		}
-//		else if (xmlType == QXComData.XmlType.EQUIP)
-//		{
-//			CommonItemTemplate comTemp = CommonItemTemplate.getCommonItemTemplateById (rewardData.itemId);
-//			if (QXComData.GetEffectColorByXmlColorId (comTemp.color) >= 2)
-//			{
-//				GeneralRewardManager.Instance().CreateSpecialReward (rewardData);
-//			}
-//		}
-	}
-	
-	IEnumerator MoveSecond ()
-	{
-		yield return new WaitForSeconds (stopTime);
-
-		GeneralRewardManager.Instance().Reward_Index ++;
-		GeneralRewardManager.Instance().CheckReward ();
-
-		Hashtable move = new Hashtable ();
-		move.Add ("time",moveSecondTime * 2);
+		move.Add ("time",moveFirstTime * 4);
 		move.Add ("position",new Vector3 (0,100,0));
 		move.Add ("islocal",true);
 		move.Add ("oncomplete","DestroyObj");
 		move.Add ("oncompletetarget",this.gameObject);
-		move.Add ("easetype",rewardData.itweenType2);
+		move.Add ("easetype",rewardData.itweenType1);
 		iTween.MoveTo (transObj,move);
 	}
 	
@@ -141,12 +97,33 @@ public class GeneralReward : MonoBehaviour {
 		float rewardAlpha = transObj.GetComponent<UIWidget> ().alpha;
 		if (transObj.transform.localPosition.y <= 0)
 		{
-			rewardAlpha = 1 - (Mathf.Abs (transObj.transform.localPosition.y) / 225);
+//			rewardAlpha = 1 - (Mathf.Abs (transObj.transform.localPosition.y) / 100);//225
+			rewardAlpha = 1;
 		}
 		else
 		{
-			rewardAlpha = 1 - (Mathf.Abs (transObj.transform.localPosition.y) / 100);
+			rewardAlpha = 1 - (Mathf.Abs (transObj.transform.localPosition.y) / 225);
 		}
 		transObj.GetComponent<UIWidget> ().alpha = rewardAlpha;
+
+		if (m_next && transObj.transform.localPosition.y > -80)
+		{
+			m_next = false;
+			GeneralRewardManager.Instance().Reward_Index ++;
+			GeneralRewardManager.Instance().CheckReward ();
+		}
+
+		if (transObj.transform.localPosition.y >= -100)
+		{
+			if (transObj.transform.localScale.x > 0.6f)
+			{
+				transObj.transform.localScale -= Vector3.one * m_scale;
+				m_scale -= 0.0001f;
+				if (transObj.transform.localScale.x <= 0.6f)
+				{
+					transObj.transform.localScale = Vector3.one * 0.6f;
+				}
+			}
+		}
 	}
 }

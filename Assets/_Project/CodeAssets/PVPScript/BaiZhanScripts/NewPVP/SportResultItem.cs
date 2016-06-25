@@ -29,10 +29,12 @@ public class SportResultItem : MonoBehaviour {
 		int minRank = template.minRank;
 		
 		m_rankSprite.spriteName = maxRank == minRank ? "rank" + maxRank : "";
-		m_rank.text = maxRank == minRank ? "" : MyColorData.getColorString (3,minRank < 2001 ? "第" + minRank + "名-第" + maxRank + "名" : "2000名之后");
+		m_rank.text = maxRank == minRank ? "" : minRank < 2001 ? "第" + minRank + "名-第" + maxRank + "名" : "2000名之后";
 		
 		m_rankDes.text = tempXmlId == template.id ? MyColorData.getColorString (5,"排名提升，可获得更多奖励") : "";
-		m_bgSprite.color = tempXmlId == template.id ? new Color(1,0.75f,0.35f) : Color.white;
+//		m_bgSprite.color = tempXmlId == template.id ? new Color(1,0.75f,0.35f) : Color.white;
+//		m_bgSprite.spriteName = tempXmlId == template.id ? "jianbianbgliang" : "thirdBg";
+		QXComData.SetBgSprite (m_bgSprite,tempXmlId == template.id ? true : false);
 		
 		m_rewardStrList.Clear ();
 		string[] rewardLength = template.dayAward.Split ('#');

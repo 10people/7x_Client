@@ -37,7 +37,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     public  GameObject m_SwitchAccountObject;
     public  EventIndexHandle m_listSwitchAccountEvent;
 
- 
+    public UISprite m_SpriteV;
+    public UILabel m_LabV;
     public List<EventIndexHandle> m_listChangeCountryEvent;
     public List<SettingUpSelectCountryManagerment> m_listCountrySelect;
     public UISprite m_SpriteCountryCurrent;
@@ -46,9 +47,11 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     public GameObject m_ChangeCountryLayer;
     public GameObject m_ObjTopLeft;
     public UILabel m_LabelTopUp;
-
+    public UILabel m_LabelTimeDown;
     public UILabel m_LabRenameSignal;
     public UIInput m_CDKeyInput;
+
+    public EventPressIndexHandle m_ObjChangeName;
 
     private string RenameInfo = "";
     private string CDkeyInfo = "";
@@ -66,6 +69,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
  
 	void Start ()
     {
+        m_SpriteV.spriteName = "v" + VipFuncOpenTemplate.GetNeedLevelByKey(4);
+        m_LabelTimeDown.text = "";
         m_SettingUp = this;
 		_title = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         m_LabRenameSignal.text = LanguageTemplate.GetText(1604) + MyColorData.getColorString(5, "100") + "元宝。";
@@ -74,14 +79,32 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
       //  m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
         listEventMainLayer.ForEach(p => p.m_Handle += EventReception);
         listRenameEvent.ForEach(p => p.m_Handle += RenameReception);
+        m_ObjChangeName.m_Handle += RenameReception;
         m_listSwitchAccountEvent.m_Handle += SwitchAccoutTag;
         listCDKeyEvent.ForEach(p => p.m_Handle += CDKeyReception);
         m_listChangeCountryEvent.ForEach(p => p.m_Handle += ChangeCountryReception);
         //listEventMainLayer[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
         //listEventMainLayer[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
         //listEventMainLayer[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+        RenameCD();
         SettingInfoShow();
 	}
+
+    void RenameCD()
+    {
+
+        MemoryStream tempStream = new MemoryStream();
+        QiXiongSerializer t_serializer = new QiXiongSerializer();
+        ChangeName temp = new ChangeName();
+        temp.name = "";
+        t_serializer.Serialize(tempStream, temp);
+
+        byte[] t_protof = tempStream.ToArray();
+
+        t_protof = tempStream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_change_name, ref t_protof);
+    }
+
     public void OnInput()
     {
       
@@ -157,7 +180,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
            {
                createNameIsOn = false;
                listRenameObject[2].SetActive(false);
-               listRenameEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
+                m_ObjChangeName.GetComponent<ButtonColorManagerment>().ButtonsControl(true);
               // ButtonsControl(listRenameEvent[0].gameObject, true);
            }
        }
@@ -166,7 +189,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
            if (!createNameIsOn )
            {
                createNameIsOn = true;
-               listRenameEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+               m_ObjChangeName.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
               // ButtonsControl(listRenameEvent[0].gameObject, false);
            }
        }
@@ -327,14 +350,10 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         {
             case 0:
                 {
-                    if (JunZhuData.Instance().m_junzhuInfo.vipLv >= VipFuncOpenTemplate.GetNeedLevelByKey(4))
-                    {
+                   
                         listRenameObject[0].SetActive(true);
-                    }
-                    else
-                    {
-                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoad);
-                    }
+                    
+                   
                 }
                 break;
             case 1:
@@ -367,7 +386,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 break;
 			case 5:
 				//切换形象
-				QXSelectRole.Instance.SelectRolePage (QXSelectRolePage.SelectType.UNLOCK_ROLE);
+				QXSelectRole.Instance ().SelectRolePage (QXSelectRolePage.SelectType.UNLOCK_ROLE);
 				break;
             default:
                 break;
@@ -422,18 +441,19 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
                         NameSave = tempInfo.name;
                      
-                        listRenameEvent[1].GetComponent<Collider>().enabled = true;
+                        listRenameEvent[0].GetComponent<Collider>().enabled = true;
                         if (tempInfo.code == 0)
                         {
-                         //   listRenameObject[1].SetActive(false);
-                           // RenameInfo = "";
-                          //  listRenameEvent[2].GetComponent<UIInput>().value = "";
-                           // listRenameObject[2].SetActive(true);
+                            //   listRenameObject[1].SetActive(false);
+                            // RenameInfo = "";
+                            //  listRenameEvent[2].GetComponent<UIInput>().value = "";
+                            // listRenameObject[2].SetActive(true);
                             listMainLab[1].text = JunZhuData.Instance().m_junzhuInfo.level.ToString();
-                        
+
                             JunZhuData.Instance().m_junzhuInfo.name = NameSave;
-                            listMainLab[1].text = JunZhuData.Instance().m_junzhuInfo.name;
-                        listRenameObject[0].SetActive(false);
+                            listMainLab[2].text = JunZhuData.Instance().m_junzhuInfo.name;
+                            listRenameObject[0].SetActive(false);
+
                             //_content1 = LanguageTemplate.GetText(1506);
                             //_content2 = "\n" + NameSave;
                             //_SignalType = 2;
@@ -441,8 +461,9 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                             // Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
                             //EquipSuoData.ShowSignal(null, _content1, _content2);//tanchukuang 
 
-                            ClientMain.m_UITextManager.createText(  "改名成功！");
-
+                            ClientMain.m_UITextManager.createText("改名成功！");
+                            listEventMainLayer[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false, 1);
+                            TimeInfo(int.Parse(CanshuTemplate.GetStrValueByKey("CHANGE_NAME_CD")) * 3600, m_LabelTimeDown);
                         }
                         else if (tempInfo.code == -100)
                         {
@@ -474,12 +495,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         }
                         else if (tempInfo.code == -400)
                         {
-                            //_content1 = LanguageTemplate.GetText(1509);
-                            //_content2 = "";
-                            //_SignalType = 2;
-                            //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
-                            //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
-                            ClientMain.m_UITextManager.createText(  LanguageTemplate.GetText(1509));
+                            Global.CreateFunctionIcon(1901);
                         }
                         else if (tempInfo.code == -500)
                         {
@@ -488,8 +504,29 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                             //_SignalType = 2;
                             //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
                             //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
-                  
-                              ClientMain.m_UITextManager.createText("输入的名称包含敏感词！");
+                            ClientMain.m_UITextManager.createText("输入的名称包含敏感词！");
+                        }
+                        else if (tempInfo.code == -600)
+                        {
+                            //_content1 = LanguageTemplate.GetText(1509);
+                            //_content2 = "";
+                            //_SignalType = 2;
+                            //EquipSuoData.ShowSignal(_title, MyColorData.getColorString(1, _content1), MyColorData.getColorString(1, _content2));
+                            //  Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadRename);
+                            ClientMain.m_UITextManager.createText("未达到冷却时间！");
+                        }
+                        else if (tempInfo.code == -700)
+                        {
+
+                            if (int.Parse(tempInfo.msg) > 0)
+                            {
+                                listEventMainLayer[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false,1);
+                                TimeInfo(int.Parse(tempInfo.msg) / 1000, m_LabelTimeDown);
+                            }
+                            else
+                            {
+                                m_LabelTimeDown.text = "";
+                            }
                         }
                         else if (tempInfo.code > 0)
                         {
@@ -613,14 +650,14 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
             case 12:
                 {
                     OnInput();
-                    listRenameEvent[1].gameObject.SetActive(false);
+                    listRenameEvent[0].gameObject.SetActive(false);
                 }
                 break;
             case 13:
                 {
                    
                     listRenameObject[2].SetActive(false);
-                    listRenameEvent[1].gameObject.SetActive(true);
+                    listRenameEvent[0].gameObject.SetActive(true);
                 }
                 break;
             case 1:
@@ -694,7 +731,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         {
             UIYindao.m_UIYindao.CloseUI();
         }
-        EquipSuoData.Instance().m_listNoShow.Clear();
+ 
         CityGlobalData.m_isAllianceTenentsScene = false;
         CityGlobalData.m_isWashMaxSignal = false;
         SceneManager.m_isSequencer = false;
@@ -708,7 +745,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     void SwitchAccoutTag(int index = 0)
     {
         string cancelStr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        Global.CreateBox(LanguageTemplate.GetText(2000), "是否退出本账号并回到登录界面？", "", null, cancelStr, "确定", SwitchAccount);
+        Global.CreateBox("提示", "是否退出本账号并回到登录界面？", "", null, cancelStr, "确定", SwitchAccount);
        
     }
   
@@ -724,7 +761,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
             {
                 UIYindao.m_UIYindao.CloseUI();
             }
-            EquipSuoData.Instance().m_listNoShow.Clear();
+    
             CityGlobalData.m_isAllianceTenentsScene = false;
             CityGlobalData.m_isWashMaxSignal = false;
             SceneManager.m_isSequencer = false;
@@ -860,7 +897,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
             }
             else
             {
-                EquipSuoData.ShowSignal(null, "您的元宝不足！");
+                Global.CreateFunctionIcon(101);
+                //EquipSuoData.ShowSignal(null, "您的元宝不足！");
                 //EquipSuoData.TopUpLayerTip(m_MainParent);
             }
         }
@@ -977,5 +1015,30 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
             p_object = null;
         }
     }
+    private int _allTime = 0;
+    private void  TimeInfo(int time,UILabel label)
+    {
+ 
+        int hour = time / 3600;
+        int minute = (time - hour * 3600) / 60;
+        int second = time - hour * 3600 - minute * 60;
+ 
+        label.text = MyColorData.getColorString(56,"冷却时间" +hour.ToString("D2") + ":" + minute.ToString("D2") + ":" + second.ToString("D2"));
+        StartCoroutine(Wait(time, label));
+    }
 
+    IEnumerator Wait(int time,UILabel lab)
+    {
+        yield return new WaitForSeconds(1.0f);
+        time--;
+        if (time > 0)
+        {
+            TimeInfo(time, lab);
+        }
+        else
+        {
+            m_LabelTimeDown.text = "";
+            listEventMainLayer[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+        }
+    }
 }

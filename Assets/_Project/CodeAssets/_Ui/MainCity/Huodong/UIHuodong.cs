@@ -30,6 +30,8 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 	public UIHuodongPage6 m_UIHuodongPage6;
 	public UIHuodongPage7 m_UIHuodongPage7;
 
+	public GameObject m_objShow;
+
 	public List<GameObject> m_listObj;
 
 	public UIScrollView m_UIScrollView;
@@ -37,7 +39,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 	void Awake()
 	{
 		SocketTool.RegisterSocketListener(this);
-		Global.ScendNull(ProtoIndexes.C_ACTIVITY_FUNCTIONLIST_INFO_REQ);
+		Global.ScendNull(ProtoIndexes.C_ACTIVITY_FUNCTIONLIST_INFO_REQ, ProtoIndexes.S_ACTIVITY_FUNCTIONLIST_INFO_RESP);
 //		ActivityFunctionResp temp = new ActivityFunctionResp();
 //		temp.functionList = new List<int>();
 
@@ -79,7 +81,16 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 	// Update is called once per frame
 	void Update () 
 	{
-
+		if(m_Info != null)
+		{
+			for(int i = 0; i < m_Info.functionList.Count; i ++)
+			{
+				if(FunctionOpenTemp.GetTemplateById(m_Info.functionList[i]) != null)
+				{
+					m_listUIHuodongData[i].m_objRed.SetActive(FunctionOpenTemp.GetTemplateById(m_Info.functionList[i]).m_show_red_alert);
+				}
+			}
+		}
 	}
 
 	public bool OnSocketEvent(QXBuffer p_message)
@@ -112,12 +123,12 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 					}
 					if(tempHaveShouchong)
 					{
-						m_UIHuodongData.gameObject.transform.parent.transform.localPosition += new Vector3(0, 260, 0);
+						m_UIHuodongData.gameObject.transform.parent.transform.localPosition = new Vector3(-453, 154 + 260, 0);
 						m_UIPanel.clipOffset = new Vector2(0, -61 - 260);
 					}
 					else
 					{
-						m_UIHuodongData.gameObject.transform.parent.transform.localPosition += new Vector3(0, 130, 0);
+						m_UIHuodongData.gameObject.transform.parent.transform.localPosition = new Vector3(-453, 154 + 130, 0);
 						m_UIPanel.clipOffset = new Vector2(0, -61 - 130);
 					}
 				}
@@ -135,12 +146,11 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
 				m_UIHuodongPage0.setData(tempInfo);
-
 				m_listObj[m_iIndexPanel].SetActive(false);
 				
 				m_iIndexPanel = 0;
-
 				m_listObj[m_iIndexPanel].SetActive(true);
+				m_objShow.SetActive(true);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_MONTH_CARD_RESP:
@@ -160,6 +170,8 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_iIndexPanel = 1;
 
 				m_listObj[m_iIndexPanel].SetActive(true);
+
+				m_objShow.SetActive(true);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_GROWTHFUND_INFO_RESP:
@@ -179,6 +191,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_iIndexPanel = 2;
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
+				m_objShow.SetActive(true);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_STRENGTH_INFO_RESP:
@@ -198,6 +211,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_iIndexPanel = 3;
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
+				m_objShow.SetActive(true);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_LEVEL_INFO_RESP:
@@ -217,6 +231,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_iIndexPanel = 4;
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
+				m_objShow.SetActive(true);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_ACHIEVEMENT_INFO_RESP:
@@ -247,6 +262,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				}
 
 				m_listObj[m_iIndexPanel].SetActive(true);
+				m_objShow.SetActive(true);
 				break;
 			}
 			case ProtoIndexes.GET_QQ_INFO:
@@ -266,6 +282,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_iIndexPanel = 6;
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
+				m_objShow.SetActive(true);
 				break;
 			}
 			case ProtoIndexes.GET_REQ_INFO:
@@ -285,6 +302,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_iIndexPanel = 7;
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
+				m_objShow.SetActive(true);
 				break;
 			}
 			default: return false;
@@ -315,33 +333,33 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 			{
 			case 1422:
 			case 0:
-				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FIRST_CHARGE_REWARD_REQ);
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FIRST_CHARGE_REWARD_REQ, ProtoIndexes.S_ACTIVITY_FIRST_CHARGE_REWARD_RESP);
 				break;
 			case 1393:
 			case 1:
-				Global.ScendNull(ProtoIndexes.C_ACTIVITY_MONTH_CARD_REQ);
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_MONTH_CARD_REQ, ProtoIndexes.S_ACTIVITY_MONTH_CARD_RESP);
 				break;
 			case 1394:
 			case 2:
-				Global.ScendNull(ProtoIndexes.C_ACTIVITY_GROWTHFUND_INFO_REQ);
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_GROWTHFUND_INFO_REQ, ProtoIndexes.S_ACTIVITY_GROWTHFUND_INFO_RESP);
 				break;
 			case 1391:
 			case 3:
-				Global.ScendNull(ProtoIndexes.C_ACTIVITY_STRENGTH_INFO_REQ);
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_STRENGTH_INFO_REQ, ProtoIndexes.S_ACTIVITY_STRENGTH_INFO_RESP);
 				break;
 			case 600200:
 			case 4:
-				Global.ScendNull(ProtoIndexes.C_ACTIVITY_LEVEL_INFO_REQ);
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_LEVEL_INFO_REQ, ProtoIndexes.S_ACTIVITY_LEVEL_INFO_RESP);
 				break;
 			case 144:
 			case 5:
-				Global.ScendNull(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_INFO_REQ);
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_INFO_REQ, ProtoIndexes.S_ACTIVITY_ACHIEVEMENT_INFO_RESP);
 				break;
 			case 1395:
-				Global.ScendNull(ProtoIndexes.GET_QQ_INFO);
+				Global.ScendNull(ProtoIndexes.GET_QQ_INFO, ProtoIndexes.GET_QQ_INFO);
 				break;
 			case 1396:
-				Global.ScendNull(ProtoIndexes.GET_REQ_INFO);
+				Global.ScendNull(ProtoIndexes.GET_REQ_INFO, ProtoIndexes.GET_REQ_INFO);
 				break;
 			}
 		}
@@ -430,10 +448,31 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 
 		if(Global.m_sPanelWantRun != null && Global.m_sPanelWantRun != "")
 		{
-			Debug.Log("=========1");
 			GameObject tempButtonName = new GameObject();
 			tempButtonName.name = Global.m_sPanelWantRun;
+
 			MYClick(tempButtonName);
+			if(Global.m_sPanelWantRun == "PageButton144")
+			{
+				bool tempHaveShouchong = false;
+				for(int i = 0; i < m_Info.functionList.Count; i ++)
+				{
+					if(m_Info.functionList[i] == 1422)
+					{
+						tempHaveShouchong = true;
+					}
+				}
+				if(tempHaveShouchong)
+				{
+					m_UIHuodongData.gameObject.transform.parent.transform.localPosition = new Vector3(-453, 154 + 260, 0);
+					m_UIPanel.clipOffset = new Vector2(0, -61 - 260);
+				}
+				else
+				{
+					m_UIHuodongData.gameObject.transform.parent.transform.localPosition = new Vector3(-453, 154 + 130, 0);
+					m_UIPanel.clipOffset = new Vector2(0, -61 - 130);
+				}
+			}
 			Global.m_sPanelWantRun = "";
 			GameObject.Destroy(tempButtonName);
 		}

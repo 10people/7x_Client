@@ -7,9 +7,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class TreasureCityUITR : MYNGUIPanel,SocketProcessor {
-
-	public static TreasureCityUITR tCityUITR;
+public class TreasureCityUITR : GeneralInstance<TreasureCityUITR>,SocketProcessor {
 
 	public List<EventHandler> topRightHandlerList = new List<EventHandler>();
 
@@ -19,9 +17,9 @@ public class TreasureCityUITR : MYNGUIPanel,SocketProcessor {
 	public MainCityUITongzhi TongZhi;
 	public TPController m_TpController;
 
-	void Awake ()
+	new void Awake ()
 	{
-		tCityUITR = this;
+		base.Awake ();
 		SocketTool.RegisterMessageProcessor (this);
 	}
 
@@ -99,7 +97,7 @@ public class TreasureCityUITR : MYNGUIPanel,SocketProcessor {
 			{
 			case ProtoIndexes.S_MengYouKuaiBao_Resq:
 			{
-				Debug.Log ("ProtoIndexes.S_MengYouKuaiBao_Resq:" + ProtoIndexes.S_MengYouKuaiBao_Resq);
+//				Debug.Log ("ProtoIndexes.S_MengYouKuaiBao_Resq:" + ProtoIndexes.S_MengYouKuaiBao_Resq);
 				PromptMSGResp tempInfo = new PromptMSGResp();
 				tempInfo = QXComData.ReceiveQxProtoMessage (p_message,tempInfo) as PromptMSGResp;
 
@@ -123,7 +121,7 @@ public class TreasureCityUITR : MYNGUIPanel,SocketProcessor {
 			}
 			case ProtoIndexes.S_MengYouKuaiBao_PUSH:
 			{
-				Debug.Log ("ProtoIndexes.S_MengYouKuaiBao_PUSH:" + ProtoIndexes.S_MengYouKuaiBao_PUSH);
+//				Debug.Log ("ProtoIndexes.S_MengYouKuaiBao_PUSH:" + ProtoIndexes.S_MengYouKuaiBao_PUSH);
 				SuBaoMSG tempInfo1 = new SuBaoMSG();
 				tempInfo1 = QXComData.ReceiveQxProtoMessage (p_message,tempInfo1) as SuBaoMSG;
 				
@@ -139,7 +137,7 @@ public class TreasureCityUITR : MYNGUIPanel,SocketProcessor {
 			}
 			case ProtoIndexes.S_Prompt_Action_Resp:
 			{
-				Debug.Log ("ProtoIndexes.S_Prompt_Action_Resp:" + ProtoIndexes.S_Prompt_Action_Resp);
+//				Debug.Log ("ProtoIndexes.S_Prompt_Action_Resp:" + ProtoIndexes.S_Prompt_Action_Resp);
 				PromptActionResp msg = new PromptActionResp();
 				msg = QXComData.ReceiveQxProtoMessage (p_message,msg) as PromptActionResp;
 				
@@ -216,38 +214,9 @@ public class TreasureCityUITR : MYNGUIPanel,SocketProcessor {
 		TreasureCityUI.TryAddToObjectList(tempObject);
 	}
 
-	public override void MYMouseOver(GameObject ui)
+	new void OnDestroy ()
 	{
-	}
-	
-	public override void MYMouseOut(GameObject ui)
-	{
-	}
-	
-	public override void MYPress(bool isPress, GameObject ui)
-	{
-	}
-	
-	public override void MYelease(GameObject ui)
-	{
-	}
-	
-	public override void MYondrag(Vector2 delta)
-	{
-		
-	}
-	
-	public override void MYoubleClick(GameObject ui)
-	{
-	}
-	
-	public override void MYonInput(GameObject ui, string c)
-	{
-	}
-
-	void OnDestroy ()
-	{
-		tCityUITR = null;
+		base.OnDestroy ();
 		SocketTool.UnRegisterMessageProcessor (this);
 	}
 }

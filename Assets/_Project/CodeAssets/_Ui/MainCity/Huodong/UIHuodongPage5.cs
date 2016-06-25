@@ -22,12 +22,7 @@ public class UIHuodongPage5 : MYNGUIPanel , SocketListener
 	{
 		SocketTool.UnRegisterSocketListener(this);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	public void setData(ActivityAchievementResp data)
 	{
 		m_Info = data;
@@ -55,12 +50,20 @@ public class UIHuodongPage5 : MYNGUIPanel , SocketListener
 				tempIconObj.transform.parent = tempEnemtData.m_IconSampleManager.gameObject.transform.parent;
 				tempIconObj.transform.localPosition = new Vector3(-185 + q * 50, -16, 0);
 				IconSampleManager tempIconSampleManager = tempIconObj.GetComponent<IconSampleManager>();
-				tempIconSampleManager.SetIconByID(m_Info.leveList[i].awardList[q].itemId, "x" + m_Info.leveList[i].awardList[q].itemNumber);
+				tempIconSampleManager.SetIconByID(m_Info.leveList[i].awardList[q].itemId, "x" + m_Info.leveList[i].awardList[q].itemNumber, 3);
+				tempIconSampleManager.SetIconPopText(m_Info.leveList[i].awardList[q].itemId);
 				tempIconObj.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
 				tempEnemtData.m_listIconSampleManager.Add(tempIconSampleManager);
 			}
 			tempEnemtData.m_sName.text = m_Info.leveList[i].des;
-			tempEnemtData.m_sJindu.text = m_Info.leveList[i].process + "/" + m_Info.leveList[i].maxProcess;
+			if(m_Info.leveList[i].process < m_Info.leveList[i].maxProcess)
+			{
+				tempEnemtData.m_sJindu.text = "[ff0000]" + m_Info.leveList[i].process + "[-]/" + m_Info.leveList[i].maxProcess;
+			}
+			else
+			{
+				tempEnemtData.m_sJindu.text = m_Info.leveList[i].process + "/" + m_Info.leveList[i].maxProcess;
+			}
 			if(m_Info.leveList[i].process < m_Info.leveList[i].maxProcess)
 			{
 				tempEnemtData.m_BoxCollider.enabled = false;
@@ -76,12 +79,14 @@ public class UIHuodongPage5 : MYNGUIPanel , SocketListener
 			tempEnemtData.m_spriteButtonBG.name = "ButtonLingqu" + i;
 			m_listUIHuodongPage2EnemtData.Add(tempEnemtData);
 		}
+		MainCityUI.SetRedAlert(144 ,false);
 		for(int i = 0; i < m_Info.leveList.Count; i ++)
 		{
 			if(m_Info.leveList[i].process >= m_Info.leveList[i].maxProcess)
 			{
 				m_listUIHuodongPage2EnemtData[i].gameObject.transform.localPosition = new Vector3(69, 40 - 90 * tempIndex, 0);
 				tempIndex ++;
+				MainCityUI.SetRedAlert(144 ,true);
 			}
 		}
 		for(int i = 0; i < m_Info.leveList.Count; i ++)
@@ -135,17 +140,21 @@ public class UIHuodongPage5 : MYNGUIPanel , SocketListener
 		
 		return false;
 	}
-	
+	int m_iPid;
 	public override void MYClick(GameObject ui)
 	{
 		if(ui.name.IndexOf("ButtonLingqu") != -1)
 		{
 			int index = int.Parse(ui.name.Substring(12, ui.name.Length - 12));
-			Global.ScendID(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_GET_REQ, m_Info.leveList[index].id);
-			Global.ScendNull(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_INFO_REQ);
-			if (FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
+			if(m_iPid != m_Info.leveList[index].id)
 			{
-				UIHuodong.m_UIHuodong.m_UIScrollView.enabled = true;
+				m_iPid = m_Info.leveList[index].id;
+				Global.ScendID(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_GET_REQ, m_Info.leveList[index].id, ProtoIndexes.S_ACTIVITY_FIRST_CHARGE_GETREWARD_RESP);
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_INFO_REQ, ProtoIndexes.S_ACTIVITY_ACHIEVEMENT_INFO_RESP);
+				if (FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
+				{
+					UIHuodong.m_UIHuodong.m_UIScrollView.enabled = true;
+				}
 			}
 		}
 	}

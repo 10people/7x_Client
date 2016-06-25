@@ -7,33 +7,15 @@ Shader "Legacy Shaders/Transparent/Cutout/Diffuse Alpha" {
 	}
 
 	SubShader {
-		Tags {"Queue" = "Transparent" "IgnoreProjector"="True"}
+		Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
 		LOD 200
 		
 		CGPROGRAM
-		#pragma surface surf CustomLam alpha
+		#pragma surface surf Lambert alphatest:_Cutoff
 
 		float _Tran;
-		float _Cutoff;
 		sampler2D _MainTex;
 		fixed4 _Color;
-
-		half4 LightingCustomLam(SurfaceOutput s, half3 lightDir, half atten) {
-		  half NdotL = dot (s.Normal, lightDir);
-
-		  half4 c;
-
-		  c.rgb = s.Albedo * _LightColor0.rgb * (NdotL * atten);
-
-		  if( s.Alpha < _Cutoff ){
-		  	c.a = 0;
-		  }
-		  else{
-		  	c.a = s.Albedo * _Tran;
-		  }
-
-		  return c;
-		}
 
 		struct Input {
 			float2 uv_MainTex;
@@ -42,13 +24,12 @@ Shader "Legacy Shaders/Transparent/Cutout/Diffuse Alpha" {
 		void surf (Input IN, inout SurfaceOutput o) {
 			fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
 
-			o.Albedo = c.rgb;
+			o.Albedo = c.xyz;
 
-			if( c.a < _Cutoff ){
-				o.Alpha = 0;
-			}
-			else{
-				o.Alpha = c.a * _Tran;
+			o.Alpha = c.a;
+
+			if( o.Albedo.x + o.Albedo.y + o.Albedo.z - ( 1 - _Tran ) * 3 < 0 || c.a <= 0 ){
+				discard;
 			}
 		}
 		ENDCG

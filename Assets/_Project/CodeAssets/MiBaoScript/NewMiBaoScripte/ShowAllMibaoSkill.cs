@@ -57,15 +57,6 @@ public class ShowAllMibaoSkill : MonoBehaviour {
 	
 	public int SkillId;
 
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
-
 	public void Init()
 	{
 //		MiBaoSkillTemp mMibaoskill = MiBaoSkillTemp.getMiBaoSkillTempBy_id (SkillId);

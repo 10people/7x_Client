@@ -14,13 +14,19 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 
 	void Awake() { SocketTool.RegisterMessageProcessor( this ); }
 	
-	void OnDestroy() { SocketTool.UnRegisterMessageProcessor( this ); }
+	void OnDestroy() 
+	{
+		sending = false;
 
+		SocketTool.UnRegisterMessageProcessor( this ); 
+	}
 
 	public void sendBattle()
 	{
 		if (sending == true) 
 		{
+			Debug.Log( "Already.Sending, return now." );
+
 			DestroyObject (gameObject);
 
 			return;
@@ -277,6 +283,8 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 		{
 		case ProtoIndexes.ZhanDou_Init_Resp:
 		{
+			Debug.Log( "Receive Zhandou Init Resp." );
+
 			LoadingHelper.ItemLoaded( StaticLoading.m_loading_sections,
 			                         PrepareForBattleField.CONST_BATTLE_LOADING_NETWORK, "ZhanDou_Init_Resp" );
 			
@@ -308,8 +316,11 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 
 			return true;
 		}
+
 		case ProtoIndexes.S_ZHANDOU_INIT_ERROR:
 		{
+			Debug.Log( "Receive Zhandou Init Error." );
+
 			sending = false;
 
 			MemoryStream t_stream = new MemoryStream( p_message.m_protocol_message, 0, p_message.position );

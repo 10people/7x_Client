@@ -37,6 +37,8 @@ public class FuWenDress : MonoBehaviour ,SocketListener {
 	
 	private CheckYindao mCheckYindao;
 
+	public UILabel mMind;
+
 	void Awake()
 	{
 		SocketTool.RegisterSocketListener(this);
@@ -81,7 +83,7 @@ public class FuWenDress : MonoBehaviour ,SocketListener {
 		YindaoIsopen = false;
 		if(FreshGuide.Instance().IsActive(100470)&& TaskData.Instance.m_TaskInfoDic[100470].progress >= 0)
 		{
-			Debug.Log("千重楼战前准备引导");
+			Debug.Log("装上符文");
 			YindaoIsopen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100470];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
@@ -96,22 +98,22 @@ public class FuWenDress : MonoBehaviour ,SocketListener {
 		yield return new WaitForSeconds (0.5f);
 		YindaoIsopen = false;
 	}
-	void Update () {
-	
-	}
+
 	public void Init(CheckYindao m_CheckYindao = null)
 	{
 		//Debug.Log ("mFuwenLanwei.lanweiId = "+mFuwenLanwei.lanweiId);
+		mMind.gameObject.SetActive(false);
 		if(m_CheckYindao != null)
 		{
 			mCheckYindao = m_CheckYindao;
 		}
 		if(XiangQian_TiHuan)
 		{
-			TitleName.text = "穿戴";
+			TitleName.text = "穿 戴";
+			YinDaoManager();
 		}else
 		{
-			TitleName.text = "替换";
+			TitleName.text = "替 换";
 		}
 
 		FuWenOpenTemplate mOPenFunction = FuWenOpenTemplate.GetFuWenOpenTemplateBy_By_Id (mFuwenLanwei.lanweiId);
@@ -120,17 +122,41 @@ public class FuWenDress : MonoBehaviour ,SocketListener {
 		if(mFuwenInBagResp == null || mFuwenInBagResp.fuwenList == null)
 		{
 			Debug.Log("背包为空");
+			mMind.gameObject.SetActive(true);
 			return;
 		}
+
 		for(int i = 0; i < mFuwenInBagResp.fuwenList.Count; i++)
 		{
 			FuWenTemplate mfw = FuWenTemplate.GetFuWenTemplateByFuWenId(mFuwenInBagResp.fuwenList[i].itemId);
+
 			if(mfw.inlayColor == mOPenFunction.inlayColor)
 			{
 				//Debug.Log("mFuwenInBagResp.fuwenList[i].itemId = "+mFuwenInBagResp.fuwenList[i].itemId);
-				currfuwenList.Add(mFuwenInBagResp.fuwenList[i]);
+				if(XiangQian_TiHuan)
+				{
+					currfuwenList.Add(mFuwenInBagResp.fuwenList[i]);
+				}
+				else
+				{
+					FuWenTemplate LanweiFuWen = FuWenTemplate.GetFuWenTemplateByFuWenId(mFuwenLanwei.itemId);
+					if(mfw.color > LanweiFuWen.color)
+					{
+						currfuwenList.Add(mFuwenInBagResp.fuwenList[i]);
+					}
+					else if(mfw.color == LanweiFuWen.color)
+					{
+						if(mfw.fuwenLevel > LanweiFuWen.fuwenLevel)
+						{
+							currfuwenList.Add(mFuwenInBagResp.fuwenList[i]);
+						}
+					}
+				}
 			}
 		}
+
+
+		mMind.gameObject.SetActive(currfuwenList.Count <= 0);
 
 		fuWenBagItemList = QXComData.CreateGameObjectList (BagFuWenItem,mGrid,currfuwenList.Count,fuWenBagItemList);
 		for(int i = 0; i < fuWenBagItemList.Count; i++)
@@ -190,6 +216,7 @@ public class FuWenDress : MonoBehaviour ,SocketListener {
 				m_FuwenResp = mFuwenResp;
 				if(m_FuwenResp.result != 0)
 				{
+					ClientMain.m_UITextManager.createText("只能更换更换品质的符文！");
 					Debug.Log("m_FuwenResp.reason = "+m_FuwenResp.reason);
 				}
 				else
@@ -212,9 +239,14 @@ public class FuWenDress : MonoBehaviour ,SocketListener {
 	}
 	void InitData()
 	{
-		NewFuWenPage.Instance ().Init ();
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+		}
 
-		NewFuWenPage.Instance ().GetBagInfo ();
+		NewFuWenPage.Instance ().Init (NewFuWenPage.Instance ().mQueryFuwen.tab);
+//
+//		NewFuWenPage.Instance ().GetBagInfo ();
 
 		Close ();
 	}

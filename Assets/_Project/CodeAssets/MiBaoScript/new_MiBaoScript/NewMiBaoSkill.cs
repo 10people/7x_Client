@@ -7,7 +7,11 @@ using System.Reflection;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
+using System.Linq;
 public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
+
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
 
 	public UILabel Remaind;
 
@@ -51,9 +55,11 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 	public List<GameObject> EffectList = new List<GameObject>();
 
-	public delegate void mCloseMiBaoskillDo(int skillid,bool issave);
+	public delegate void mCloseMiBaoskillDo(int skillid = 0,bool issave = true);
 
 	private mCloseMiBaoskillDo m_mCloseMiBaoskillDo;
+
+	private int m_SaveID;
 	public static NewMiBaoSkill Instance()
 	{
 		if (!mMiBaoData)
@@ -66,6 +72,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 	void Awake()
 	{
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "无双技", 0, 0);
 		SocketTool.RegisterSocketListener(this);	
 	}
 
@@ -74,15 +81,6 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		SocketTool.UnRegisterSocketListener(this);
 
 		mMiBaoData = null;
-	}
-
-	void Start () {
-	
-
-	}
-
-	void Update () {
-	
 	}
 
 	void HidAllGameobj(int Index)
@@ -197,11 +195,13 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 //				Debug.Log ("Sava_MiBao.success = "+Sava_MiBao.success);
 				if(Sava_MiBao.success == 1)//保存成功
 				{
+					m_SaveID = Sava_MiBao.zuheSkill;
 					if(m_mCloseMiBaoskillDo != null)
 					{
-						m_mCloseMiBaoskillDo(Sava_MiBao.zuheSkill,true);
+						m_mCloseMiBaoskillDo(m_SaveID,true);
 						m_mCloseMiBaoskillDo = null;
 					}
+
 					skillZuHeId = Sava_MiBao.zuheSkill;
 //					Debug.Log ("Sava_MiBao.type:" + Sava_MiBao.type);
 					yinDaoId = Sava_MiBao.zuheSkill;
@@ -218,7 +218,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 					case (int)(CityGlobalData.MibaoSkillType.PvpSend ):
 					{					
 //						GeneralChallengePage.gcPage.RefreshMyMiBaoSkillInfo (skillZuHeId);
-						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
+//						QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,5);
 		
 						break;
 					}
@@ -354,10 +354,18 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		
 		return false;
 	}
+	private void ActiveMiBaoskills(GameObject kills)
+	{
+		kills.SetActive (true);
+	}
 	public void InitData()
 	{
 		//Money.text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString();
 		//Debug.Log ("m_Skill_MiBaoInfo.skillList.count  = "+m_Skill_MiBaoInfo.skillList.Count);
+//		for(int i =0; i < m_Skill_Gbj.Length; i ++)
+//		{
+//			ActiveMiBaoskills(m_Skill_Gbj[i]);
+//		}
 		if(m_Skill_MiBaoInfo.skillList != null)
 		{
 		//Debug.Log ("111SaveId = "+SaveId);
@@ -501,11 +509,11 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			SaveBtn.SetActive(false);
 			if(Acmibaonuber >=  mMiBaoSkillTemp.needNum)
 			{
-				Remaind.text = "[2b180a]该技能可以激活[-]";
+				Remaind.text = "该技能可以激活";
 			}
 			else{
 				int mibaonuber = mMiBaoSkillTemp.needNum - Acmibaonuber;
-				Remaind.text = "[2b180a]再激活[-]"+MyColorData.getColorString(5,mibaonuber.ToString()) +"[2b180a]个将魂可以解锁该技能[-]";
+				Remaind.text = "再激活"+MyColorData.getColorString(5,mibaonuber.ToString()) +"个将魂可以解锁该技能";
 			}
 		}
 		else
@@ -539,6 +547,11 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 //		Debug.Log ("NewSaveId = "+NewSaveId);
 
 		if (NewSaveId <= 0) {
+			if(m_mCloseMiBaoskillDo != null)
+			{
+				m_mCloseMiBaoskillDo(m_SaveID,true);
+				m_mCloseMiBaoskillDo = null;
+			}
 			Destroy (this.gameObject);
 
 		} else {
@@ -563,6 +576,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 
 	public void CloseBtn()
 	{
+	
 		if (COmeMiBaoUI) {
 
 			Destroy (this.gameObject);
@@ -570,13 +584,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
 
 			MainCityUI.TryRemoveFromObjectList(this.gameObject);
-//			if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
-//			{
-//				//	Debug.Log("切换秘技)
-//				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
-//				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[5]);
-//
-//			}
+
 			SendSaveMiBaoMasege ();
 		}
 	}

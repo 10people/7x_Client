@@ -31,14 +31,7 @@ public class MiBaoStarAwardUI : MonoBehaviour,SocketProcessor {
 		SocketTool.UnRegisterMessageProcessor(this);
 		
 	}
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	int Awardid;
 	int AwardidNum;
 	public void Init()

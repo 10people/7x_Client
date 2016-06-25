@@ -12,13 +12,4 @@ public class UIGotoPvPData : MonoBehaviour
 	public int m_iID;
 	public int m_iBigID;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

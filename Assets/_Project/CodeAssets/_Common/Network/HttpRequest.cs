@@ -169,16 +169,21 @@ public class HttpRequest : MonoBehaviour{
 		
         WWWForm t_form = new WWWForm();
 
-        if( p_dic != null ){
-            foreach( KeyValuePair<string, string> p_pair in p_dic ){
-				#if DEBUG_HTTP_PARAMS
-				Debug.Log(  p_pair.Key + ": " + p_pair.Value );
-				#endif
+		try{
+			if( p_dic != null ){
+				foreach( KeyValuePair<string, string> p_pair in p_dic ){
+					#if DEBUG_HTTP_PARAMS
+					Debug.Log(  p_pair.Key + ": " + p_pair.Value );
+					#endif
 
-                t_form.AddField(p_pair.Key, p_pair.Value);
-            }
-        }
-
+					t_form.AddField(p_pair.Key, p_pair.Value);
+				}
+			}
+		}
+		catch( System.Exception e ){
+			Debug.Log( "post error: " + e );
+		}
+        
         WWW t_www = new WWW(p_url,t_form);
 
 		{
@@ -272,6 +277,12 @@ public class HttpRequest : MonoBehaviour{
 	}
 
 	private static void AddWWW( WWW p_www ){
+		if( p_www == null ){
+			Debug.Log( "www is null, return now." );
+
+			return;
+		}
+
 		m_current_www_list.Add( p_www );
 	}
 

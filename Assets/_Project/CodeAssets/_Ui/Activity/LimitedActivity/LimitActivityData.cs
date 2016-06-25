@@ -16,6 +16,8 @@ public class LimitActivityData : Singleton<LimitActivityData>, SocketListener
     [HideInInspector]
     public bool IsOpenQiriActivity;
 
+	public bool m_isUpDateZaixian = false;
+
     public List<OpenXianShi> m_OpenXianShiList = new List<OpenXianShi>();
 
     public void RequestData()
@@ -41,21 +43,23 @@ public class LimitActivityData : Singleton<LimitActivityData>, SocketListener
             IsOpenQiriActivity = temp.Contains(1543000) && (m_OpenXianShiList.Where(item => item.typeId == 1543000).First().state == 10);
 
             //Set 2 activities red alert.
-            if (IsOpenZaixianActivity)
-            {
-                if (MainCityUI.m_MainCityUI != null)
-                {
-                    MainCityUI.m_MainCityUI.AddButton(15);
-                    MainCityUI.SetRedAlert(15, m_OpenXianShiList.Where(item => item.typeId == 1542000).First().isNewAward);
-                }
-            }
-            else
-            {
-                if (MainCityUI.m_MainCityUI != null)
-                {
-                    MainCityUI.m_MainCityUI.deleteMaincityUIButton(15);
-                }
-            }
+			if(m_isUpDateZaixian)
+			{
+				if (IsOpenZaixianActivity)
+				{
+					MainCityUI.m_MainCityUI.AddButton(15);
+					MainCityUI.SetRedAlert(15, m_OpenXianShiList.Where(item => item.typeId == 1542000).First().isNewAward);
+					MainCityUIRB.ShowTimeCalc(m_OpenXianShiList.Where(item => item.typeId == 1542000).First().shunxu);
+				}
+				else
+				{
+					if (MainCityUI.m_MainCityUI != null)
+					{
+						MainCityUI.m_MainCityUI.deleteMaincityUIButton(15);
+					}
+				}
+			}
+           
             if (IsOpenQiriActivity)
             {
                 if (MainCityUI.m_MainCityUI != null)
@@ -78,11 +82,6 @@ public class LimitActivityData : Singleton<LimitActivityData>, SocketListener
             }
 
             //Set zaixian activity time calc.
-            if (IsOpenZaixianActivity)
-            {
-                //use shunxu field as time second.
-                MainCityUIRB.ShowTimeCalc(m_OpenXianShiList.Where(item => item.typeId == 1542000).First().shunxu);
-            }
         }
 
         //Refresh limit activity window if window showed.
@@ -93,8 +92,6 @@ public class LimitActivityData : Singleton<LimitActivityData>, SocketListener
         {
             tempController.m_ActivityListController.Refresh(isLoadFromCache);
         }
-
-        PushAndNotificationHelper.SetRedSpotNotification(144, ActivityListController.m_openXianShiList.Any(item => item.isNewAward));
     }
 
     public void ProcessActivityListData(OpenXianShiResp data, bool isLoadFromCache = false)
@@ -104,7 +101,7 @@ public class LimitActivityData : Singleton<LimitActivityData>, SocketListener
             //Store to cache.
             RootController.CacheProtoActivityList = data;
         }
-
+		m_isUpDateZaixian = false;
         if (data.xianshi != null)
         {
             for (int i = 0; i < data.xianshi.Count; i++)
@@ -130,6 +127,10 @@ public class LimitActivityData : Singleton<LimitActivityData>, SocketListener
                         }
                     }
                 }
+				if(data.xianshi[i].typeId == 1542000)
+				{
+					m_isUpDateZaixian = true;
+				}
             }
         }
         RefreshData(isLoadFromCache);
@@ -145,6 +146,7 @@ public class LimitActivityData : Singleton<LimitActivityData>, SocketListener
             {
                 case ProtoIndexes.S_XIANSHI_RESP:
                     {
+//				Debug.Log("================1");
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
                         QiXiongSerializer t_qx = new QiXiongSerializer();
                         OpenXianShiResp tempInfo = new OpenXianShiResp();

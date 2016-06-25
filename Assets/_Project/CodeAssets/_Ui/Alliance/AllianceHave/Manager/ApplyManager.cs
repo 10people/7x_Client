@@ -12,7 +12,9 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 	private string cancelStr;
 	private string confirmStr;
 
-	
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
 	private string titleStr;
 	private string str1;
 	private string str2;
@@ -33,6 +35,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 
 	void Awake()
 	{ 
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "联盟申请", 0, 0);
 		SocketTool.RegisterMessageProcessor(this);
 	}
 	
@@ -169,8 +172,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 						RefreshItemsList (refuseApplyResp.junzhuId, 1);
 					}
 					
-					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-					                        RefuseResourceLoadCallback );
+					RefuseResourceLoadCallback();
 					AllianceData.Instance.RequestData();
 
 					AppleNumber -= 1;
@@ -197,24 +199,21 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 				AgreeApplyResp agreeResp = new AgreeApplyResp();
 				
 				agree_qx.Deserialize(agree_stream, agreeResp, agreeResp.GetType());
-				
+
+//				if(agreeResp.result == null)
+//				{
+//					Debug.Log("agreeResp.result == null ");
+//					return true;
+//				}
+//				Debug.Log("同意入盟申请请求返回 = "+agreeResp.result);
 				if (agreeResp != null)
 				{
 					agreeApplyResp = agreeResp;
-					
-					if (agreeResp.result == 0)
-					{
-					
-						RefreshItemsList (agreeResp.memberInfo.junzhuId ,2);
-					}
-					
-					else if (agreeResp.result == 3)
-					{
-						RefreshItemsList (agreeResp.junzhuId ,3);
-					}
-					
-					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-					                        AgreeResourceLoadCallback );
+
+					RefreshItemsList (agreeResp.memberInfo.junzhuId ,agreeApplyResp.result);
+			
+					AgreeResourceLoadCallback();
+
 					AllianceData.Instance.RequestData();
 				}
 				 AppleNumber --;
@@ -243,10 +242,15 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			if (junZhuId == m_AppMemberList[i].mApplicantInfo.junzhuId)
 			{
 				backName = m_AppMemberList[i].mApplicantInfo.name;
+//
+//				m_AppMemberList[i].IsAgree = agreeType;
+//
+//				m_AppMemberList[i].GetBackData();
+				Destroy(m_AppMemberList[i].gameObject);
 
-				m_AppMemberList[i].IsAgree = agreeType;
-
-				m_AppMemberList[i].GetBackData();
+				m_applicateResp.applicanInfo.RemoveAt(i);
+				m_AppMemberList.Remove(m_AppMemberList[i]);
+				InitApplyMembers();
 			}
 		}
 
@@ -254,11 +258,11 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 
 	string backName;
 
-	public void RefuseResourceLoadCallback ( ref WWW p_www, string p_path,  Object p_object )
+	public void RefuseResourceLoadCallback ()
 	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		titleStr = "拒绝申请";
+//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+//		
+//		titleStr = "拒绝申请";
 		
 		switch (refuseApplyResp.result)
 		{
@@ -267,7 +271,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			
 		//	Debug.Log ("Refuse Success!");
 			
-			str2 = "\r\n"+"\r\n"+"您已拒绝" + backName + "的入盟申请";
+			str2 ="您已拒绝对方的入盟申请！";
 			
 			break;
 			
@@ -276,30 +280,30 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 		//	Debug.Log ("Refuse Fail!");
 			
 			//str1 = "拒绝失败";
-			str2 = "\r\n"+"拒绝失败"+"\r\n"+"\r\n"+"您没有对该申请的拒绝权限";
+			str2 = "您没有对该申请的拒绝权限！";
 			
 			break;
 		}
-		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str2), null, 
-		             null,confirmStr,null,null);
+		ClientMain.m_UITextManager.createText(str2);
+//		uibox.setBox(titleStr, MyColorData.getColorString (1,str2), null, 
+//		             null,confirmStr,null,null);
 	}
 
-	public void AgreeResourceLoadCallback ( ref WWW p_www, string p_path,  Object p_object )
+	public void AgreeResourceLoadCallback ( )
 	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		titleStr = "同意申请";
+//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+//		
+//		titleStr = "同意申请";
 		
 		int resultType = agreeApplyResp.result;
 		if (resultType == 0)
 		{
 			//Debug.Log ("Agree Success!");
 			
-			str2 =  "\r\n"+"\r\n"+ "您已同意" + backName + "的入盟申请";
+			str2 = "您已同意" + backName + "的入盟申请！";
 			
-			uibox.setBox(titleStr, MyColorData.getColorString (1,str2), null, 
-			             null,confirmStr,null,null);
+//			uibox.setBox(titleStr, MyColorData.getColorString (1,str2), null, 
+//			             null,confirmStr,null,null);
 		}
 		
 		else
@@ -311,13 +315,13 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			if (resultType == 1)
 			{
 			//	Debug.Log ("没有权限");
-				str2 = "\r\n"+"同意入盟申请失败！"+"\r\n"+"\r\n"+ "您没有对该申请的同意权限";
+				str2 = "您没有对该申请的同意权限！";
 			}
 			
 			else if (resultType == 2)
 			{
 			//	Debug.Log ("联盟人数已满");
-				str2 = "\r\n"+"同意入盟申请失败！"+"\r\n"+"\r\n"+"联盟人数已满！";
+				str2 = "同意入盟申请失败,联盟人数已满！";
 			}
 			else if (resultType == 3)
 			{
@@ -325,10 +329,12 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 				
 				//str1 = "同意入盟申请失败";
 				
-				str2 = "\r\n"+"同意入盟申请失败"+backName +"\r\n"+"\r\n"+ "已取消申请或加入其他联盟";
+				str2 = "同意入盟申请失败,对方已取消申请或加入其他联盟！";
 			}
-			uibox.setBox(titleStr, MyColorData.getColorString (1,str2), null, 
-			             null,confirmStr,null,null);
+			Debug.Log("申请数据返回 = "+str2);
+			ClientMain.m_UITextManager.createText(str2);
+//			uibox.setBox(titleStr, MyColorData.getColorString (1,str2), null, 
+//			             null,confirmStr,null,null);
 		}
 	}
 
@@ -354,7 +360,7 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 			
 			m_Member.transform.parent = AppMemberItem.transform.parent;
 			
-			m_Member.transform.localPosition = new Vector3(0,154-i*Dis,0);
+			m_Member.transform.localPosition = new Vector3(0,167-i*Dis,0);
 			
 			m_Member.transform.localScale = Vector3.one;
 

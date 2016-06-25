@@ -42,7 +42,7 @@ public class HuangYePveTemplate : XmlLoadManager {
 
 	public string fastAward;
 
-	public int killAward;
+	public string killAward;
 
 	public int soundId;
 
@@ -54,7 +54,7 @@ public class HuangYePveTemplate : XmlLoadManager {
 
 	public int positionX;
 
-	public int positionY; //pveId="101509" paraK="2193" />
+	public int positionY; //pveId="101509" paraK="2193" /> perFastAward="0:900015:210" fastTimeLimit="24" fightAward="0:900015:57" />
 
 	public int pveId;
 
@@ -67,6 +67,13 @@ public class HuangYePveTemplate : XmlLoadManager {
 	public int frontGuanqiaID;
 
 	public int nextGuanqiaID;
+
+	public string perFastAward;
+
+	public int fastTimeLimit;
+
+	public string fightAward;
+
 	public static List<HuangYePveTemplate> templates = new List<HuangYePveTemplate>();
 
 
@@ -151,7 +158,7 @@ public class HuangYePveTemplate : XmlLoadManager {
 				t_template.fastAward =  t_reader.Value ;
 			
 				t_reader.MoveToNextAttribute();
-				t_template.killAward = int.Parse( t_reader.Value );
+				t_template.killAward = t_reader.Value;
 
 				t_reader.MoveToNextAttribute();
 				t_template.soundId = int.Parse( t_reader.Value );
@@ -188,6 +195,15 @@ public class HuangYePveTemplate : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.nextGuanqiaID = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.perFastAward =  t_reader.Value ;
+
+				t_reader.MoveToNextAttribute();
+				t_template.fastTimeLimit = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.fightAward =  t_reader.Value ;
 				#if DEBUG_TEMPLATE
 				Log( t_template );
 				#endif

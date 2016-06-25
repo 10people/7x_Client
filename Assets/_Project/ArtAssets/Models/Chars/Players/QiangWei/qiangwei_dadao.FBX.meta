@@ -1911,7 +1911,7 @@ ModelImporter:
       name: DODGE
       takeName: Take 001
       firstFrame: 657
-      lastFrame: 675
+      lastFrame: 677
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1930,6 +1930,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .0307082944
+        functionName: PlaySound
+        data: 520101
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .0414002091
         functionName: attackMove
         data: 
@@ -1937,9 +1944,16 @@ ModelImporter:
         floatParameter: 0
         intParameter: 401
         messageOptions: 0
-      - time: .0307082944
+      - time: .0618902445
         functionName: PlaySound
-        data: 520101
+        data: 3250
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .757134795
+        functionName: PlaySound
+        data: 3251
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -2966,6 +2980,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 12
         messageOptions: 0
+      - time: .0325078256
+        functionName: PlaySound
+        data: 520202|0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .0416656174
         functionName: playPre
         data: 
@@ -2987,12 +3008,12 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .662393093
+      - time: .630730808
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 500
+        intParameter: 600325
         messageOptions: 0
       - time: .69850105
         functionName: attackDone
@@ -3011,13 +3032,6 @@ ModelImporter:
       - time: .957188725
         functionName: swingEnd
         data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .0325078256
-        functionName: PlaySound
-        data: 520202|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

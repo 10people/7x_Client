@@ -10,6 +10,8 @@ using ProtoBuf.Meta;
 
 public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
 	public UILabel Builds;
 
 	public KeJiList m_mKeJiList;
@@ -42,6 +44,7 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 	void Awake()
 	{ 
 		SocketTool.RegisterMessageProcessor(this);
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "联盟科技", 0, 0);
 	}
 
 	void Start () {

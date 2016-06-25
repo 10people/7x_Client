@@ -22,14 +22,11 @@ namespace Carriage
 	//		Debug.Log ("propInfo.isBuy:" + propInfo.isBuy);
 			propIcon.spriteName = tempInfo.iconId.ToString ();
 
-			desLabel.text = MyColorData.getColorString (3, tempInfo.desc);
+			desLabel.text = tempInfo.desc;
 
 			costLabel.text = tempInfo.cost.ToString ();
 
-			UISprite btnSprite = buyBtn.GetComponent<UISprite> ();
-			btnSprite.color = BiaoJuPage.bjPage.HavePropCount () >= 3 ? Color.gray : (tempInfo.isBuy ? Color.gray : Color.white);
-			UIWidget btnWidget = buyBtn.transform.FindChild ("BtnLabel").gameObject.GetComponent<UIWidget> ();
-			btnWidget.color = BiaoJuPage.bjPage.HavePropCount () >= 3 ? Color.gray : (tempInfo.isBuy ? Color.gray : Color.white);
+			QXComData.SetBtnState (buyBtn.gameObject,BiaoJuPage.m_instance.HavePropCount () >= 3 || tempInfo.isBuy ? false : true);
 
 			buyBtn.m_click_handler -= BuyBtnHandlerClickBack;
 			buyBtn.m_click_handler += BuyBtnHandlerClickBack;
@@ -37,33 +34,23 @@ namespace Carriage
 
 		void BuyBtnHandlerClickBack (GameObject obj)
 		{
-			if (!propInfo.isBuy)
+			if (BiaoJuPage.m_instance.HavePropCount () < 3)
 			{
-				if (BiaoJuPage.bjPage.HavePropCount () < 3)
+				if (!propInfo.isBuy)
 				{
 					BiaoJuData.Instance.BuyHorsePropReq (propInfo.id);
-//					//发送购买请求
-//					if (JunZhuData.Instance().m_junzhuInfo.yuanBao >= propInfo.cost)
-//					{
-//						//					QXComData.CreateBox (1,"元宝不足！",true,null);
-//						//					return;
-//						BiaoJuData.Instance.BuyHorsePropReq (propInfo.id);
-//					}
-//					else
-//					{
-//						HorsePropWindow.propWindow.CloseBtnHandlerClickBack (gameObject);
-//						//元宝不足
-////						textStr = "元宝不足！是否前往充值？";
-////						QXComData.CreateBox (1,textStr,false,BiaoJuPage.bjPage.TurnToVip);
-//						BiaoJuPage.bjPage.LackYuanbao ();
-//					}
 				}
 				else
 				{
-					//道具栏已满
-					textStr = "道具栏已满";
-					QXComData.CreateBox (1,textStr,true,null);
+					textStr = "已购买此道具！";
+					ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
 				}
+			}
+			else
+			{
+				//道具栏已满
+				textStr = "道具栏已满";
+				ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
 			}
 		}
 	}

@@ -33,6 +33,12 @@ public class GUIHelper {
 		                ScreenHelper.GetWidth( p_w_in_percent ), ScreenHelper.GetHeight( p_h_in_percent ) );
 	}
 	
+		public static Rect NewRect( float p_x_in_percent, float p_y_in_percent,
+	                              float p_w_in_percent, float p_h_in_percent ){
+		return new Rect( ScreenHelper.GetX( p_x_in_percent ), ScreenHelper.GetY( p_y_in_percent ),
+		                ScreenHelper.GetWidth( p_w_in_percent ), ScreenHelper.GetHeight( p_h_in_percent ) );
+	}
+	
 	/** Desc:
 	 * Get GUI Rect with index and params[ 6 ].
 	 * 

@@ -22,14 +22,6 @@ public class LMMuBiaoAward : MonoBehaviour {
 	[HideInInspector]
 	public int  m_LMMBLevel;
 
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 	public void Init(int lv)
 	{
 		m_LMMBLevel = lv;

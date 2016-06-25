@@ -8,17 +8,7 @@ public class Debug_Load_JPG : MonoBehaviour {
 
 
 	#region Mono
-	
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	void OnGUI(){
 		int t_btn_index = 0;
 		

@@ -9,29 +9,10 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 
 	public static GeneralRewardManager Instance()
 	{
-		//if( m_instance == null )
-		//{
-		//	string t_ui_path = Res2DTemplate.GetResPath( Res2DTemplate.Res.UI_POP_REWARD_ROOT );
-			
-		//	Global.ResourcesDotLoad( t_ui_path, ResourceLoadCallback );
-		//}
-		
 		return m_instance;
 	}
 
-	private static void ResourceLoadCallback( ref WWW p_www, string p_path, UnityEngine.Object p_object )
-	{
-		GameObject t_gb = (GameObject)GameObject.Instantiate( p_object );
-		
-		if( t_gb == null )
-		{
-			Debug.LogError( "Instantiate to null." );
-			
-			return;
-		}
-		
-		DontDestroyOnLoad( t_gb );
-	}
+	public bool M_OtherExit = false;
 
 	void Awake()
 	{
@@ -112,7 +93,10 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 				isContainsSpecial = true;
 				specialRewardList.Add (pair.Value);
 			}
-			rewardDataList.Add (pair.Value);
+			else
+			{
+				rewardDataList.Add (pair.Value);
+			}
 		}
 
 		if (!isContainsSpecial && specialItemList.Count == 0)
@@ -158,8 +142,8 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 
 				rewardObj.SetActive (true);
 				rewardObj.transform.parent = rewardItemObj.transform.parent;
-				rewardObj.transform.localPosition = new Vector3 (0,-80,0);
-				rewardObj.transform.localScale = Vector3.one * 0.5f;
+				rewardObj.transform.localPosition = new Vector3 (0,-100,0);
+				rewardObj.transform.localScale = Vector3.one ;//* 0.5f
 				rewardItemList.Add (rewardObj);
 
 				GeneralReward reward = rewardObj.GetComponent<GeneralReward> ();
@@ -243,7 +227,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 			}
 
 			{
-				ShowRewardPanel ();
+				ShowRewardPanel (specialRewardList[SpecialReward_Index].m_cameraObj);
 			}
 		}
 	}
@@ -255,6 +239,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	public void RefreshSpecialItemList (GameObject obj)
 	{
 //		Debug.Log ("obj:" + obj);
+		GameObject cameraObj = obj.GetComponent<GeneralSpecialReward> ().rewardData.m_cameraObj;
 		for (int i = 0;i < specialItemList.Count;i ++)
 		{
 			if (specialItemList[i] == obj)
@@ -268,13 +253,17 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 		if (specialItemList.Count == 0)
 		{
 //			Debug.Log ("ClientMain.closePopUp();");
-			MainCityUI.TryRemoveFromObjectList (gameObject);
-			TreasureCityUI.TryRemoveFromObjectList (gameObject);
+//			UI2DTool.
+//			MainCityUI.TryRemoveFromObjectList (gameObject);
+//			TreasureCityUI.TryRemoveFromObjectList (gameObject);
 
-			if (MainCityUI.m_MainCityUI != null)
-			{
-				UIYindao.m_UIYindao.NeedOPenYInDao ();
-			}
+			Global.m_isZhanli = false;
+			EffectTool.SetUIBackgroundEffect (cameraObj,false);
+
+//			if (MainCityUI.m_MainCityUI != null)
+//			{
+//				UIYindao.m_UIYindao.NeedOPenYInDao ();
+//			}
 //			foreach (GameObject gameObj in MainCityUI.m_MainCityUI. m_WindowObjectList)
 //			{
 //				Debug.Log ("gameObj.name33333:" + gameObj.name);
@@ -313,20 +302,20 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	/// <summary>
 	/// 屏蔽其它ui
 	/// </summary>
-	void ShowRewardPanel ()
+	void ShowRewardPanel (GameObject obj)
 	{
 //		Debug.Log ("Add");
 //		foreach (GameObject gameObj in MainCityUI.m_MainCityUI. m_WindowObjectList)
 //		{
 //			Debug.Log ("gameObj.name11111:" + gameObj.name);
 //		}
-		if (MainCityUI.m_MainCityUI != null)
-		{
-			UIYindao.m_UIYindao.IsOPenYInDao ();
-		}
+//		if (MainCityUI.m_MainCityUI != null)
+//		{
+//			UIYindao.m_UIYindao.IsOPenYInDao ();
+//		}
 
-		MainCityUI.TryAddToObjectList (gameObject);
-		TreasureCityUI.TryAddToObjectList (gameObject);
+		Global.m_isZhanli = true;
+		EffectTool.SetUIBackgroundEffect (obj,true);
 //		foreach (GameObject gameObj in MainCityUI.m_MainCityUI. m_WindowObjectList)
 //		{
 //			Debug.Log ("gameObj.name22222:" + gameObj.name);
@@ -341,11 +330,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 	/// <returns><c>true</c> if this instance is exit reward; otherwise, <c>false</c>.</returns>
 	public bool IsExitReward ()
 	{
-		return rewardItemList.Count > 0 || specialItemList.Count > 0 ? true : false;
-	}
-	
-	void Update (){
-
+		return rewardItemList.Count > 0 || specialItemList.Count > 0 || M_OtherExit ? true : false;
 	}
 
 	#region IUIRootAutoActivator
@@ -374,14 +359,18 @@ public class RewardData {
 
 	public bool m_isCheckOnly = false;//仅仅查看
 
+	public bool m_isNew = false;//是否新将魂
+
 	public delegate void MiBaoClick ();
 	public MiBaoClick miBaoClick;
-	
+
+	public GameObject m_cameraObj = null;//要虚化的摄像机对象
+
 	public float moveTime1 = 0.2f;
-	public float stopTime = 0.2f;
+	public float stopTime = 0f;
 	public float moveTime2 = 0.1f;
 	
-	public iTween.EaseType itweenType1 = iTween.EaseType.easeOutBack;
+	public iTween.EaseType itweenType1 = iTween.EaseType.easeOutQuart;
 	public iTween.EaseType itweenType2 = iTween.EaseType.linear;
 	
 	/// <summary>

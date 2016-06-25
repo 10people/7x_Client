@@ -86,9 +86,16 @@ public class MBTemp : MonoBehaviour {
 			}
 			else if(mMiBaoinfo.suiPianNum >= mMiBaoSuipianXMltemp.hechengNum)
 			{
-				Tips.gameObject.SetActive(true);
+				if(CurMoney >= mMiBaoSuipianXMltemp.money)
+				{
+					Tips.gameObject.SetActive(true);
+				}
+				else
+				{
+					Tips.gameObject.SetActive(false);
+				}
 				MiBaoSuipianIcon.gameObject.GetComponent<Animator>().enabled = true;
-				HechengNum.text = MyColorData.getColorString(6, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoSuipianXMltemp.hechengNum.ToString();
+				HechengNum.text = MyColorData.getColorString(22, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoSuipianXMltemp.hechengNum.ToString();
 			}
 			else
 			{
@@ -138,7 +145,7 @@ public class MBTemp : MonoBehaviour {
 			}
 			else if(mMiBaoinfo.suiPianNum >= mMiBaoinfo.needSuipianNum)
 			{
-				ActiveHechengNum.text = MyColorData.getColorString(6, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoinfo.needSuipianNum.ToString();
+				ActiveHechengNum.text = MyColorData.getColorString(22, mMiBaoinfo.suiPianNum.ToString())+"/"+mMiBaoinfo.needSuipianNum.ToString();
 			}
 			else
 			{
@@ -169,49 +176,25 @@ public class MBTemp : MonoBehaviour {
 					Tips.gameObject.SetActive(false);
 				}
 			}
-
-			switch(mMiBaoinfo.star)
-			{
-			case 1:
-
-				MiBaopinZi.spriteName = "pinzhi6";
-				MiBaopinZi.SetDimensions(99,99);
-				break;
-			case 2:
-				MiBaopinZi.spriteName = "pinzhi6";
-				MiBaopinZi.SetDimensions(99,99);
-				
-				break;
-			case 3:
-				
-				MiBaopinZi.spriteName = "pinzhi6";
-				MiBaopinZi.SetDimensions(99,99);
-				break;
-			case 4:
-				
-				MiBaopinZi.spriteName = "pinzhi6";
-				MiBaopinZi.SetDimensions(99,99);
-				break;
-			case 5:
-				MiBaopinZi.spriteName = "pinzhi6";
-				MiBaopinZi.SetDimensions(99,99);
-				
-				break;
-			default:
-				break;
-
-			}
+			MiBaopinZi.spriteName = "pinzhi6";
+		
 			CreateStar (Star);
 		}
 	
-//		if(Global.m_sPanelWantRun != null&&Global.m_sPanelWantRun != "")
-//		{
-//			if(int.Parse(Global.m_sPanelWantRun)  == mMiBaoinfo.miBaoId)
-//			{
-//				//ShowActiveInfo();
-//				Global.m_sPanelWantRun = "";
-//			}
-//		}
+		if(Global.m_sPanelWantRun != null&&Global.m_sPanelWantRun != "")
+		{
+			int x = -1 ;
+			int.TryParse(Global.m_sPanelWantRun,out x);
+			if(x == -1)
+			{
+				Debug.Log("lobal.m_sPanelWantRun = "+Global.m_sPanelWantRun);
+			}
+			if(x  == mMiBaoinfo.miBaoId)
+			{
+				ShowActiveInfo();
+				Global.m_sPanelWantRun = "";
+			}
+		}
 	}
 	void CreateStar(UISprite star)
 	{

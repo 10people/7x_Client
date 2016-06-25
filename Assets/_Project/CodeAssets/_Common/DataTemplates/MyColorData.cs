@@ -24,8 +24,7 @@ public class MyColorData : XmlLoadManager
 	}
 
 
-	public static void LoadTemplates( EventDelegate.Callback p_callback = null )
-	{
+	public static void LoadTemplates( EventDelegate.Callback p_callback = null ){
 		UnLoadManager.DownLoad( PathManager.GetUrl( m_LoadPath + "MyColorData.xml" ), CurLoad, UtilityTool.GetEventDelegateList( p_callback ), false );
 	}
 	
@@ -75,12 +74,9 @@ public class MyColorData : XmlLoadManager
 //		Color a = System.Drawing.ColorTranslator.FromHtml("#ff0000");
 	}
 
-	public static MyColorData getNameIdMyColorDataId(int nameId)
-	{
-		foreach( MyColorData template in templates )
-		{
-			if(template.id == nameId)
-			{
+	public static MyColorData getNameIdMyColorDataId(int nameId){
+		foreach( MyColorData template in templates ){
+			if(template.id == nameId){
 				return template;
 			}
 		}
@@ -98,29 +94,35 @@ public class MyColorData : XmlLoadManager
 		}
 	}
 
-	public static string getColorString(int id, string data)
-	{
+	public static string getColorString(int id, string data){
 		MyColorData template = getNameIdMyColorDataId(id);
+
+		if( template == null ){
+			return data;
+		}
+
 		return "[" + template.color + "]" + data + "[-]";
 	}
 
-	public static string getColorString(int id, int data)
-	{
+	public static string getColorString(int id, int data){
 		MyColorData template = getNameIdMyColorDataId(id);
+
+		if( template == null ){
+			return data + "";
+		}
+
 		return "[" + template.color + "]" + data + "[-]";
 	}
 
-	public static void getColorString(int id, UILabel data)
-	{
-		if(data = null)
-		{
+	public static void getColorString(int id, UILabel data){
+		if(data = null){
 			return;
 		}
+
 		data.text = getColorString(id, data.text);
 	}
 
-	public static void getColorString(int id, GameObject data)
-	{
+	public static void getColorString(int id, GameObject data){
 		getColorString(id, data.GetComponent<UILabel>());
 	}
 }

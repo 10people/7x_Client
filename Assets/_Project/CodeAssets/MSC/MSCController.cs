@@ -61,15 +61,64 @@ public class MSCController : Singleton<MSCController>
 
     public void MSCResult(string result)
     {
+        StopCoroutine("DoProcessMSCResult");
+        StartCoroutine(DoProcessMSCResult(result));
+    }
+
+    private IEnumerator DoProcessMSCResult(string result)
+    {
+        if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+        {
+            Debug.Log(result);
+        }
+
         var splited = result.Split(new string[] { "&&&" }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
         if (splited.Count != 3)
         {
             Debug.LogError("Error in split MSCResult.");
-            return;
+            yield break;
         }
 
-        m_MscListenerList.ForEach(item => item.MSCResult(splited[0], splited[1], EncryptTool.Get64StringFromBytes(File.ReadAllBytes(splited[2]))));
+        byte[] fileBytes = File.ReadAllBytes(splited[1]);
+        int readCount = 1;
+
+        while (fileBytes.Length == 0)
+        {
+            if (readCount >= 10)
+            {
+                Debug.LogError("Cannot read bytes from file: " + splited[1] + " cause bytes is empty after reading for 10 times.");
+                yield break;
+            }
+
+            yield return new WaitForSeconds(.5f);
+
+            fileBytes = File.ReadAllBytes(splited[1]);
+            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+            {
+                Debug.Log(fileBytes.Length);
+            }
+
+            readCount++;
+        }
+
+        ////Process file with cutting first 0.5s audio.
+        //int bitRate = 8000;
+        //int cutBytesCount = (int)(bitRate / 8f / 1000 * 1024 * float.Parse(seconds));
+        //if (fileBytes.Length > cutBytesCount)
+        //{
+        //    fileBytes = fileBytes.Skip(cutBytesCount).ToArray();
+
+        //    File.WriteAllBytes(splited[1], fileBytes);
+        //}
+
+        string fileString = EncryptTool.Get64StringFromBytes(fileBytes);
+        if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+        {
+            Debug.Log(fileString.Length);
+        }
+
+        m_MscListenerList.ForEach(item => item.MSCResult(splited[0], splited[2], fileString));
 
         if (!SoundTagList.Contains(splited[0]))
         {
@@ -89,7 +138,25 @@ public class MSCController : Singleton<MSCController>
 
     public void MSCError(string error)
     {
-        m_MscListenerList.ForEach(item => item.MSCError(error));
+        int errorCode = int.Parse(error);
+
+        if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+        {
+            Debug.Log("MSCError, code:" + errorCode);
+        }
+
+        if (errorCode == 11606)
+        {
+            m_MscListenerList.ForEach(item => item.MSCError(LanguageTemplate.GetText(5102)));
+        }
+        else if (errorCode == 11605 || errorCode == 10118)
+        {
+            m_MscListenerList.ForEach(item => item.MSCError(LanguageTemplate.GetText(5103)));
+        }
+        else
+        {
+            m_MscListenerList.ForEach(item => item.MSCError(LanguageTemplate.GetText(5106)));
+        }
     }
 
     public void MSCVolume(string vol)
@@ -121,4 +188,11 @@ public class MSCController : Singleton<MSCController>
 
         base.OnDestroy();
     }
+
+    //public string seconds = "0.5";
+
+    //void OnGUI()
+    //{
+    //    seconds = GUILayout.TextArea(seconds, GUILayout.Width(200), GUILayout.MinHeight(100));
+    //}
 }

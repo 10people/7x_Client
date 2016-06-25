@@ -53,6 +53,8 @@ ModelImporter:
     100090: //RootNode
     100092: objAr_BigBow_A01_b
     100094: S7_xinzhujue001
+    100096: Box001 4
+    100098: Box001 5
     400000: Bip001
     400002: Bip001 Footsteps
     400004: Bip001 Head
@@ -101,6 +103,8 @@ ModelImporter:
     400090: //RootNode
     400092: objAr_BigBow_A01_b
     400094: S7_xinzhujue001
+    400096: Box001 4
+    400098: Box001 5
     2300000: objAr_BigBow_A01_b
     3300000: objAr_BigBow_A01_b
     4300000: S7_xinzhujue001
@@ -370,6 +374,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0370375067
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600287
+        messageOptions: 0
       - time: .0548518449
         functionName: attackStart
         data: 
@@ -384,26 +395,26 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .234947369
-        functionName: PlaySound
-        data: 33061
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .239795879
+      - time: .233151361
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 304
         messageOptions: 0
-      - time: .241974458
+      - time: .557589054
         functionName: createArrow
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 263
+        messageOptions: 0
+      - time: .577140033
+        functionName: PlaySound
+        data: 33061
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       - time: .837967575
         functionName: attackDone
@@ -411,13 +422,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .0370375067
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 600156
         messageOptions: 0
       transformMask:
       - path: 
@@ -533,6 +537,10 @@ ModelImporter:
       - path: Box001 2
         weight: 1
       - path: Box001 3
+        weight: 1
+      - path: Box001 4
+        weight: 1
+      - path: Box001 5
         weight: 1
       - path: S7_xinzhujue001
         weight: 1
@@ -724,6 +732,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0359982103
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600288
+        messageOptions: 0
       - time: .054852698
         functionName: attackStart
         data: 
@@ -737,13 +752,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .552664876
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 600156
         messageOptions: 0
       - time: .639503479
         functionName: PlaySound
@@ -1078,6 +1086,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .024484586
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600289
+        messageOptions: 0
       - time: .0464134216
         functionName: attackStart
         data: 
@@ -1098,13 +1113,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .757817924
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 304
         messageOptions: 0
       - time: .762651742
         functionName: createArrow
@@ -1425,6 +1433,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0256157946
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600290
+        messageOptions: 0
       - time: .0379750021
         functionName: attackStart
         data: 
@@ -1445,13 +1460,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .701806247
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 305
         messageOptions: 0
       - time: .711673915
         functionName: createArrow
@@ -3055,6 +3063,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0367211662
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 204
+        messageOptions: 0
       - time: .0379747562
         functionName: refreshCDTime
         data: 
@@ -3076,14 +3091,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .55234617
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 204
-        messageOptions: 0
-      - time: .554633141
+      - time: .562445641
         functionName: createArrow
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -3233,8 +3241,8 @@ ModelImporter:
     - serializedVersion: 16
       name: skill_mibao
       takeName: Take 001
-      firstFrame: 100
-      lastFrame: 116
+      firstFrame: 570
+      lastFrame: 615
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3423,6 +3431,10 @@ ModelImporter:
       - path: Box001 2
         weight: 1
       - path: Box001 3
+        weight: 1
+      - path: Box001 4
+        weight: 1
+      - path: Box001 5
         weight: 1
       - path: S7_xinzhujue001
         weight: 1

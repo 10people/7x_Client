@@ -11,6 +11,7 @@
 //#define DEBUG_HITTED
 
 
+
 using System;
 using UnityEngine;
 using System.IO;
@@ -18,14 +19,12 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
 public class EffectTool : Singleton<EffectTool> {
 
 
 	#region Mono
-
-	void Update(){
-	
-	}
 
 	void OnDestroy(){
 		ClearBoss();
@@ -364,7 +363,68 @@ public class EffectTool : Singleton<EffectTool> {
 
 
 
-	#region Boss
+	#region Boss Crushed Effect
+
+	public static void SetBossEffectNormal( GameObject p_gb ){
+		if( p_gb == null ){
+			Debug.LogError( "Error, gb is null." );
+
+			return;
+		}
+
+		BossEffect[] t_effects = p_gb.GetComponentsInChildren<BossEffect>();
+
+		for( int i = 0; i < t_effects.Length; i++ ){
+			t_effects[ i ].UseNormalMat();
+		}
+	}
+
+	public static void SetBossEffectCrushed( GameObject p_gb, float p_time ){
+		if( p_gb == null ){
+			Debug.LogError( "Error, gb is null." );
+
+			return;
+		}
+
+		BossEffect[] t_effects = p_gb.GetComponentsInChildren<BossEffect>();
+
+		#if UNITY_EDITOR
+		if( t_effects.Length == 0 ){
+			Debug.Log( "Boss has no effect: " + p_gb );
+		}
+		#endif
+
+		for( int i = 0; i < t_effects.Length; i++ ){
+			t_effects[ i ].UseCrushMat( p_time );
+		}
+	}
+
+	#endregion
+
+
+
+	#region Enemy Player Effect
+
+	// PVE's enemy player effect
+	public static void SetEnemyPlayerEffect( GameObject p_gb ){
+		EnemyPlayerEffect[] t_effects = p_gb.GetComponentsInChildren<EnemyPlayerEffect>();
+
+		#if UNITY_EDITOR
+		if( t_effects.Length == 0 ){
+			Debug.Log( "Enemy Player has no effect." );
+		}
+		#endif
+
+		for( int i = 0; i < t_effects.Length; i++ ){
+			t_effects[ i ].UseEnemyEffect();
+		}
+	}
+
+	#endregion
+
+
+
+	#region Old Boss Effect
 	
 	private static Shader m_sl_boss_effect = null;
 	
@@ -615,10 +675,10 @@ public class EffectTool : Singleton<EffectTool> {
 
 	#region Hitted
 	
-	public void SetHittedEffect( GameObject p_gb ){
-		if( true ){
-			return;
-		}
+	public void SetHittedEffect( GameObject p_gb, bool p_is_soldier_hitted = true ){
+//		if( true ){
+//			return;
+//		}
 
 		#if DEBUG_HITTED
 		Debug.Log( "SetHittedEffect( " + p_gb + " )" );
@@ -635,9 +695,9 @@ public class EffectTool : Singleton<EffectTool> {
 
 			// enemies but boss
 			{
-				Material t_mat_skin = ShaderHelper.Replace<SkinnedMeshRenderer>( p_gb, t_origin, t_new );
-
-				Material t_mat = ShaderHelper.Replace<MeshRenderer>( p_gb, t_origin, t_new );
+//				Material t_mat_skin = ShaderHelper.Replace<SkinnedMeshRenderer>( p_gb, t_origin, t_new );
+//
+//				Material t_mat = ShaderHelper.Replace<MeshRenderer>( p_gb, t_origin, t_new );
 
 //				if( t_mat_skin == null && t_mat == null ){
 //					t_hitted.SaveBossEffect( t_new );
@@ -648,6 +708,7 @@ public class EffectTool : Singleton<EffectTool> {
 			t_hitted.InitAnim();
 		}
 
+		t_hitted.SetIsSoldierHitted( p_is_soldier_hitted );
 
 		#if DEBUG_HITTED
 		Debug.Log( "SetHittedEffect.Done." );
@@ -698,6 +759,35 @@ public class EffectTool : Singleton<EffectTool> {
 	/// p_gb: give camera gb here.
 	public static UIBackgroundEffect SetUIBackgroundEffect( GameObject p_gb, bool p_enable ){
 		return UIBackgroundEffect.SetUIBackgroundEffect( p_gb, p_enable );
+	}
+
+	#endregion
+
+
+
+	#region Story Vignet
+
+	public static void StoryVignet( GameObject p_cam_gb ){
+		if( Quality_IEStatus.IsStatusNone() ){
+			return;
+		}
+
+		if( p_cam_gb == null ){
+			Debug.LogError( "Error, cam gb is null." );
+
+			return;
+		}
+
+
+		Camera t_cam = p_cam_gb.GetComponent<Camera>();
+
+		if( t_cam == null ){
+			Debug.LogError( "Cam not exist." );
+
+			return;
+		}
+
+		ComponentHelper.AddIfNotExist( p_cam_gb, typeof(Vignetting) );
 	}
 
 	#endregion

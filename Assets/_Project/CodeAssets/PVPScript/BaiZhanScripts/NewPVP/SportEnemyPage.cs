@@ -16,11 +16,6 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 
 	private BaiZhanTemplate m_sportTemp;
 
-	private readonly Dictionary<int,string> junXianDic = new Dictionary<int, string>()
-	{
-		{1,"小卒"},{2,"步兵"},{3,"骑士"},{4,"禁卫"},{5,"校尉"},{6,"先锋"},{7,"将军"},{8,"元帅"},{9,"诸侯"},
-	};
-
 	private string m_textStr;
 
 	new void Awake ()
@@ -59,7 +54,7 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 		m_junXianName.spriteName = "JunXian_" + m_sportTemp.jibie;
 
 		m_junXian.text = MyColorData.getColorString (1,NameIdTemplate.GetName_By_NameId (m_sportTemp.templateName));
-		m_chanChu.text = "军衔产出：" + SportPage.m_instance.SportResp.weiWangHour + "威望/小时";
+		m_chanChu.text = "军衔产出：" + m_sportTemp.produceSpeed + "威望/小时";
 
 		m_zhanLi.text = QXComData.JunZhuInfo ().zhanLi.ToString ();
 
@@ -81,7 +76,7 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 
 		m_isCanChallenge = SportPage.m_instance.SportTemp.jibie >= m_sportTemp.jibie - 1 ? true : false;
 
-		desLabel.text = m_isCanChallenge ? "" : "获得" + junXianDic[m_sportTemp.jibie - 1] + "后可以挑战";
+		desLabel.text = m_isCanChallenge ? "" : "获得" + QXComData.GetJunXianName (m_sportTemp.jibie - 1) + "后可以挑战";
 
 		m_changeBtnObj.SetActive (m_isCanChallenge);
 	}
@@ -110,7 +105,7 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 
 		for (int i = 0;i < enemyItemList.Count;i ++)
 		{
-			enemyItemList[i].transform.localPosition = new Vector3(i * 140 - (enemyItemList.Count - 1) * 70,23,0);
+			enemyItemList[i].transform.localPosition = new Vector3(i * 140 - (enemyItemList.Count - 1) * 70,24,0);
 			SportEnemyItem sportEnemyItem = enemyItemList[i].GetComponent<SportEnemyItem> ();
 			sportEnemyItem.SportEnemyInfo = tempInfo.oppoList[i];
 			sportEnemyItem.InItEnemy ();
@@ -133,11 +128,13 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 		case "CloseBtn":
 
 			m_enemyPageDelegate ();
+			SportPage.m_instance.DailyRewardBtnEffect ();
 
 			break;
 		case "ZheZhao":
 
 			m_enemyPageDelegate ();
+			SportPage.m_instance.DailyRewardBtnEffect ();
 
 			break;
 		default:
@@ -153,7 +150,7 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 				else
 				{
 					//军衔等级不够
-					m_textStr = MyColorData.getColorString (5,"获得" + junXianDic[m_sportTemp.jibie - 1] + "后可以挑战");
+					m_textStr = MyColorData.getColorString (5,"获得" + QXComData.GetJunXianName (m_sportTemp.jibie - 1) + "后可以挑战");
 					ClientMain.m_UITextManager.createText (m_textStr);
 				}
 			}

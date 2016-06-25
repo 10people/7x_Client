@@ -17,17 +17,7 @@ public class DebugLocalFileOps : MonoBehaviour {
 	private Dictionary<string,string> m_dict = new Dictionary<string,string>();
 
 	#region Mono
-	
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	void OnGUI(){
 		int t_btn_index = 0;
 		

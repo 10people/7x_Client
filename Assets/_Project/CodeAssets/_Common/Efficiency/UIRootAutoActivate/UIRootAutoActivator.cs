@@ -1,4 +1,7 @@
-﻿
+﻿//#define DEBUG_ACTIVATOR
+
+
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +13,17 @@ using System.Threading;
 using System.Text;
 using System.IO;
 
+
+
+/** 
+ * @author:		Zhang YuGu
+ * @Date: 		2015.10.27
+ * @since:		Unity 5.1.3
+ * Function:	Help to improve UI' efficiency.
+ * 
+ * Notes:
+ * 1.Implement IUIRootAutoActivator, then it will be auto activate or deactivate.
+ */ 
 public class UIRootAutoActivator : MonoBehaviour{
 
 	#region Instance
@@ -49,7 +63,15 @@ public class UIRootAutoActivator : MonoBehaviour{
 
 			t_container.Update();
 		}
+
+		if( m_log ){
+			m_log = false;
+
+			Log();
+		}
 	}
+
+	public bool m_log = false;
 
 	public static void Log(){
 		Debug.Log( "Count: " + m_activator_list.Count );
@@ -57,7 +79,7 @@ public class UIRootAutoActivator : MonoBehaviour{
 		for( int i = m_activator_list.Count - 1; i >= 0; i-- ){
 			ActivatorContainer t_container = m_activator_list[ i ];
 			
-			t_container.Log();
+			t_container.Log( i + "" );
 		}
 	}
 
@@ -116,22 +138,32 @@ public class UIRootAutoActivator : MonoBehaviour{
 
 		private GameObject m_root_gameobject = null;
 
-		private Camera m_target_camera = null;
+		private Camera[] m_target_cameras = null;
 
-		private UICamera m_target_ui_camera = null;
+		private List<UICamera> m_target_ui_camera_list = new List<UICamera>();
 
 		public ActivatorContainer( IUIRootAutoActivator p_ui_root ){
 			m_target_ui_root_activator = p_ui_root;
 
 			{
-				m_target_camera = ComponentHelper.GetCameraInSelfOrParent( ((MonoBehaviour)m_target_ui_root_activator).gameObject );
+				m_target_cameras = ComponentHelper.GetCamerasInSelfOrParent( ((MonoBehaviour)m_target_ui_root_activator).gameObject );
 				
-				if( m_target_camera == null ){
-					m_target_camera = ComponentHelper.GetCameraInSelfOrChildren( ((MonoBehaviour)m_target_ui_root_activator).gameObject );
+				if( m_target_cameras == null || m_target_cameras.Length == 0 ){
+					m_target_cameras = ComponentHelper.GetCamerasInSelfOrChildren( ((MonoBehaviour)m_target_ui_root_activator).gameObject );
 				}
 
-				if( m_target_camera != null ){
-					m_target_ui_camera = m_target_camera.gameObject.GetComponent<UICamera>();
+				if( m_target_cameras.Length > 0 ){
+					for( int i = 0; i < m_target_cameras.Length; i++ ){
+						UICamera t_cam = m_target_cameras[ i ].gameObject.GetComponent<UICamera>();
+
+						if( t_cam != null ){
+							m_target_ui_camera_list.Add( t_cam );
+						}
+					}
+				}
+
+				if( m_target_cameras.Length == 0 ){
+					Debug.Log( "Error, no cam exist: " + GameObjectHelper.GetGameObjectHierarchy( ((MonoBehaviour)m_target_ui_root_activator).gameObject ) );
 				}
 			}
 
@@ -153,11 +185,31 @@ public class UIRootAutoActivator : MonoBehaviour{
 		}
 
 		private void UpdateVisibility(){
-			if( m_target_camera != null ){
-				m_target_camera.enabled = m_target_ui_root_activator.IsNGUIVisible();
+			if( m_target_cameras != null ){
+				for( int i = 0; i < m_target_cameras.Length; i++ ){
+					Camera t_cam = m_target_cameras[ i ];
 
-				if( m_target_ui_camera != null ){
-					m_target_ui_camera.enabled = m_target_camera.enabled;
+					if( t_cam == null ){
+						continue;
+					}
+
+					t_cam.enabled = m_target_ui_root_activator.IsNGUIVisible();
+				}
+
+				for( int i = 0;  i < m_target_ui_camera_list.Count; i++ ){
+					UICamera t_ui_cam = m_target_ui_camera_list[ i ];
+
+					if( t_ui_cam == null ){
+						continue;
+					}
+
+					Camera t_cam = t_ui_cam.gameObject.GetComponent<Camera>();
+
+					if( t_cam == null ){
+						continue;
+					}
+
+					t_ui_cam.enabled = t_cam.enabled;
 				}
 
 				return;
@@ -168,12 +220,24 @@ public class UIRootAutoActivator : MonoBehaviour{
 			}
 		}
 
-		public void Log(){
+		public void Log( string p_prefix = "" ){
+			Debug.Log( "------------ " + p_prefix + "-----------------" );
+
 			Debug.Log( "m_target_ui_root_activator: " + GameObjectHelper.GetGameObjectHierarchy( ((MonoBehaviour)m_target_ui_root_activator).gameObject ) );
 
 			Debug.Log( "m_root_gameobject: " + m_root_gameobject );
 
-			Debug.Log( "m_target_behaviour: " + m_target_camera );
+			for( int i = 0; i < m_target_cameras.Length; i++ ){
+				Camera t_cam = m_target_cameras[ i ];
+
+				Debug.Log( "Target Camera " + i + " : " + GameObjectHelper.GetGameObjectHierarchy( t_cam.gameObject ) );
+			}
+
+			for( int i = 0; i < m_target_ui_camera_list.Count; i++ ){
+				UICamera t_ui_cam = m_target_ui_camera_list[ i ];
+
+				Debug.Log( "Target UICamera " + i + " : " + GameObjectHelper.GetGameObjectHierarchy( t_ui_cam.gameObject ) );
+			}
 		}
 
 		private bool ShouldClear(){

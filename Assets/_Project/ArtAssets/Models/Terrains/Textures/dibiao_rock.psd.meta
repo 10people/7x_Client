@@ -50,7 +50,7 @@ TextureImporter:
     textureFormat: 10
     compressionQuality: 50
   - buildTarget: Android
-    maxTextureSize: 128
+    maxTextureSize: 1024
     textureFormat: 47
     compressionQuality: 50
   spriteSheet:

@@ -10,7 +10,7 @@ Properties {
 SubShader {
 	Tags {
    "SplatCount" = "2"
-   "Queue" = "Transparent"
+   "RenderType" = "Opaque"
 	}
 CGPROGRAM
 #pragma surface surf T4M exclude_path:prepass noforwardadd alpha
@@ -40,6 +40,10 @@ void surf (Input IN, inout SurfaceOutput o) {
 	fixed3 lay1 = tex2D (_Splat0, IN.uv_Splat0);
 	fixed3 lay2 = tex2D (_Splat1, IN.uv_Splat1);
 	o.Albedo.rgb = (lay1 * splat_control.r + lay2 * splat_control.g);
+
+	if( o.Albedo.x + o.Albedo.y + o.Albedo.z - ( 1 - _Tran ) * 3 < 0 ){
+		discard;
+	}
 }
 ENDCG 
 }

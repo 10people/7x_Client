@@ -11,7 +11,7 @@
 <BubbleText id="9" text="不躲你就倒下吧！哈哈~" />
 <BubbleText id="10" text="让我们一起杀个痛快！" />
 <BubbleText id="11" text="赴汤蹈火，在所不辞！" />
-<BubbleText id="12" text="别逼我使出秘技！" />
+<BubbleText id="12" text="别逼我使出无双技！" />
 <BubbleText id="13" text="我被围攻了！快来帮我！" />
 <BubbleText id="14" text="啊！啊！好疼啊！" />
 <BubbleText id="15" text="跑哪去！快保护我去目的地！" />
@@ -38,5 +38,6 @@
 <BubbleText id="2040" text="老夫尚有使命在身！谁人救我？！" />
 <BubbleText id="2050" text="哼，一群乌合之众！杀光他们！" />
 <BubbleText id="2060" text="田忌冲过来了！我们快走！" />
+<BubbleText id="2070" text="感谢参与测试，正式版我还会回来的！" />
 
 </dataset>

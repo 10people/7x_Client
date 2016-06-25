@@ -34,16 +34,6 @@ public class DramaDirector : SingletonMono<DramaDirector> {
 		}
 	}
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	void OnLevelWasLoaded(){
 //		#if DEBUG_DRAMA_DIRECTOR
 //		Debug.Log( "DramaDirector.OnLevelWasLoaded( " + Application.loadedLevel + " )" );

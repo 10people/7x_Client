@@ -12,6 +12,8 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
     public static JunZHuEquipOfBody m_EquipOfBody;
     public List<JunZhuEquipInfoManagerment> m_listEquipEleInfo;
  
+
+
     private float _SaveValue = -1.0f;
     public static bool m_IsJiHuo = false;
     public struct SelfEquipInfo
@@ -216,9 +218,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
 
             if (EquipsOfBody.Instance().m_equipsOfBodyDic != null)
             {
-                if (_TaoZhuang_Temp != null)
-                    //ShowTaoZhang(_TaoZhuang_Temp);
-
+ 
                 EquipDataTidy();
             }
         }
@@ -284,8 +284,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                             
                                 equip._Signal0 = MyColorData.getColorString(35, LanguageTemplate.GetText(LanguageTemplate.Text.JUNZHU_EQUIP_SIGNAL2));
                                 equip._Signal1 = "";
-                           
-                          
+ 
                                 equip._NextItemIcon = ZhuangBei.templates[i].jiejieId;
                             }
                             else if (TaoZhuangTemplate.GetNextTaoZhuangById(EquipsOfBody.Instance().m_Activatetemp.maxActiZhuang) != null
@@ -334,7 +333,6 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                 {
                     equip._Signal0 = "";
                     equip._Signal1 = MyColorData.getColorString(34, ZBChushiDiaoluoTemp.GetTemplateById(EquipsOfBody.BuWeiRevert(j)));
-           
                 }
                 _listSelfEquipInfo.Add(equip);
             }
@@ -350,11 +348,11 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
 
             if (FunctionWindowsCreateManagerment.SpecialSizeFit(_listSelfEquipInfo[i]._PinZhi))
             {
-                m_listEquipEleInfo[i].m_SpritePinZhi.height = m_listEquipEleInfo[i].m_SpritePinZhi.width = 90;
+                m_listEquipEleInfo[i].m_SpritePinZhi.height = m_listEquipEleInfo[i].m_SpritePinZhi.width = 92;
             }
             else
             {
-                m_listEquipEleInfo[i].m_SpritePinZhi.height = m_listEquipEleInfo[i].m_SpritePinZhi.width = 80;
+                m_listEquipEleInfo[i].m_SpritePinZhi.height = m_listEquipEleInfo[i].m_SpritePinZhi.width = 85;
             }
             if (!string.IsNullOrEmpty(QualityIconSelected.SelectQuality(_listSelfEquipInfo[i]._PinZhi)))
             {
@@ -372,9 +370,9 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
 
             if (_listSelfEquipInfo[i]._isAdvance)
             {
-                ShowEffert(m_listEquipEleInfo[i].m_SpritePinZhi.gameObject);
+                ShowEffert(i);
             }
-        //   m_listEquipEleInfo[i].m_Tanhao.SetActive(_listSelfEquipInfo[i]._TanHao);
+            m_listEquipEleInfo[i].m_Tanhao.SetActive(_listSelfEquipInfo[i]._TanHao);
             m_listEquipEleInfo[i].m_Add.SetActive(_listSelfEquipInfo[i]._isAdd);
             m_listEquipEleInfo[i].m_Advance.SetActive(_listSelfEquipInfo[i]._isAdvance);
             m_listEquipEleInfo[i].m_LabNameBox.gameObject.SetActive(!_listSelfEquipInfo[i]._isAdd && !_listSelfEquipInfo[i]._isAdvance && string.IsNullOrEmpty(_listSelfEquipInfo[i]._icon));
@@ -440,13 +438,17 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
         int size = m_listEquipEleInfo.Count;
         for (int i = 0; i < size; i++)
         {
-            UI3DEffectTool.ClearUIFx(m_listEquipEleInfo[i].m_SpritePinZhi.gameObject);
+            m_listEquipEleInfo[i].m_Animation.SetActive(false);
         }
     }
-    private void ShowEffert(GameObject obj)
+    private void ShowEffert(int index)
     {
-        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, obj, EffectIdTemplate.GetPathByeffectId(100186), null);
+        m_listEquipEleInfo[index].m_Animation.SetActive(true);
     }
+    //private void ShowEffert(GameObject obj)
+    //{
+    //    UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, obj, EffectIdTemplate.GetPathByeffectId(100186), null);
+    //}
     void ShowEquipOfBody(GameObject tempObject) //显示玩家身上的装备信息
     {
         if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_iCurMissionIndex == 100100 && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
@@ -586,8 +588,14 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                 t_protof = tempStream.ToArray();
                 SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EquipAdd, ref t_protof);
             }
-           
+            else
+            {
+                ClientMain.m_UITextManager.createText(ZBChushiDiaoluoTemp.GetTemplateById(
+                                                     EquipsOfBody.BuWeiRevert(int.Parse(tempObject.name))));
+            }
+
         }
+ 
         
     }
 
@@ -635,7 +643,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                 m_equipUpgrade[i].gameObject.SetActive(ChangeEquip(i));
                 if (ChangeEquip(i))
                 {
-                    ShowEffert(m_equipPinZhi[i].gameObject);
+                    ShowEffert(i);
                 }
             }
             else

@@ -11,8 +11,7 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
 public class ChatPlayerItem : MYNGUIPanel,SocketListener {
-
-	private ChatMessage chatMsg;
+	public ChatMessage chatMsg;
 
 	public UISprite headIcon;
 	public UISprite vipIcon;
@@ -21,6 +20,10 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 	public UILabel nameLabel;
 	public UISprite textBg;
 	public UILabel textLabel;
+	public UISprite m_spriteRed;
+	public UILabel m_labelTime;
+	public UILabel m_labelTo;
+	public GameObject m_objHeadYuyin;
 
 	public UISprite channelTitle;
 
@@ -81,15 +84,21 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 	/// <param name="tempChatMsg">Temp chat message.</param>
 	public void InItChatPlayer (ChatMessage tempChatMsg)
 	{
+		int dialogW = 230;
 		chatMsg = tempChatMsg;
 
 		isPlayer = (tempChatMsg.chatPct.guoJia >= 0 && tempChatMsg.chatPct.guoJia < 8) ? true : false;
 
 		headIcon.gameObject.SetActive (isPlayer ? true : false);
 		channelTitle.spriteName = isPlayer ? "" : (tempChatMsg.chatPct.channel == ChatPct.Channel.Broadcast ? "broadCast" : "system");
-		textBg.transform.localPosition = new Vector3 (-105,isPlayer ? 1 : 20,0);
+		textBg.transform.localPosition = new Vector3 (-125,isPlayer ? 1 : 20,0);
+		string tempSprite = isPlayer ? (tempChatMsg.chatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id ? "DialogSelf" : "DialogOther") : "DialogOther";
+		if(tempChatMsg.chatPct.soundLen > 0)
+		{
+			tempSprite += "Yuyin";
+		}
 
-		textBg.spriteName = isPlayer ? (tempChatMsg.chatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id ? "DialogSelf" : "DialogOther") : "DialogOther";
+		textBg.spriteName = tempSprite;
 		textBg.color = isPlayer ? Color.white : new Color (0.02f, 0.02f, 0.02f);
 		textBg.gameObject.name = "dialog" + tempChatMsg.chatPct.seq;
 
@@ -101,23 +110,41 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 			vipIcon.spriteName = tempChatMsg.chatPct.vipLevel > 0 ? "vip" + tempChatMsg.chatPct.vipLevel : "";
 			channelIcon.spriteName = QXChatData.Instance.GetChannelTitleStr (tempChatMsg.chatPct.channel);
 			nationIcon.spriteName = QXComData.GetNationSpriteName (tempChatMsg.chatPct.guoJia);
-			nameLabel.text = MyColorData.getColorString (1,tempChatMsg.chatPct.senderName);
+			if(tempChatMsg.chatPct.channel == ChatPct.Channel.SILIAO && tempChatMsg.chatPct.senderId == JunZhuData.Instance().m_junzhuInfo.id)
+			{
+				m_labelTo.gameObject.SetActive(true);
+				nameLabel.text = MyColorData.getColorString (1,"       " + tempChatMsg.chatPct.receiverName);
+			}
+			else
+			{
+				m_labelTo.gameObject.SetActive(false);
+				nameLabel.text = MyColorData.getColorString (1,tempChatMsg.chatPct.senderName);
+			}
+
 		}
 
 //		byte[] bytes = System.Text.Encoding.Default.GetBytes (tempChatMsg.chatPct.content);
+
+		textLabel.text = isPlayer ? "[000000]" + tempChatMsg.chatPct.content + "[-]" : tempChatMsg.chatPct.content + "ID=" + tempChatMsg.chatPct.seq;
 
 		textLabel.text = isPlayer ? "[000000]" + tempChatMsg.chatPct.content + "[-]" : tempChatMsg.chatPct.content;
 
 		int row = textLabel.height / dis;
 
-		if (NGUIHelper.GetTextWidth (textLabel,textLabel.text).x <= 280)
+		if (NGUIHelper.GetTextWidth (textLabel,textLabel.text).x <= dialogW - 28)
 		{
 			textBg.width = (int)(NGUIHelper.GetTextWidth (textLabel,textLabel.text).x + 28);
 		}
 		else
 		{
-			textBg.width = 308;
+			textBg.width = dialogW;
 		}
+
+		m_spriteRed.gameObject.transform.localPosition = new Vector3(textBg.width - 125, 10, 0);
+		m_spriteRed.gameObject.SetActive(tempChatMsg.isPlay);
+		m_labelTime.gameObject.SetActive(tempChatMsg.chatPct.soundLen > 0);
+		m_objHeadYuyin.SetActive(tempChatMsg.chatPct.soundLen > 0);
+		m_labelTime.text = tempChatMsg.chatPct.soundLen + "\"";
 
 //		BetterList<Vector3> mTempVerts = new BetterList<Vector3> ();
 //		BetterList<int> mTempIndices = new BetterList<int> ();
@@ -153,6 +180,8 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 
 		textBg.height = minTextBgHeigh + (row - 1) * dis + (add ? 15 : 0);
 
+		m_labelTime.gameObject.transform.localPosition = new Vector3(textBg.width - 125, -textBg.height / 2, 0);
+
 		itemHeigh = isPlayer ? textBg.height + 14.5f : textBg.height;//*************消息的间隔
 
 		playerHandler.m_click_handler -= PlayerHandlerClickBack;
@@ -174,44 +203,44 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 			return;	
 		}
 
-		List<QXChatItemInfo.ChatBtnInfo> chatBtnInfoList = new List<QXChatItemInfo.ChatBtnInfo> ();
-		switch (chatMsg.sendState)
-		{
-		case ChatMessage.SendState.SEND_SUCCESS:
-	
-			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "查看信息",chatBtnDelegate = CheckJunZhuInfo});
-		
-			if (!FriendOperationData.Instance.friendIdList.Contains (chatMsg.chatPct.senderId))
-			{
-				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "加好友",chatBtnDelegate = AddFriend});
-			}
+//		List<QXChatItemInfo.ChatBtnInfo> chatBtnInfoList = new List<QXChatItemInfo.ChatBtnInfo> ();
+//		switch (chatMsg.sendState)
+//		{
+//		case ChatMessage.SendState.SEND_SUCCESS:
+//	
+//			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "查看信息",chatBtnDelegate = CheckJunZhuInfo});
+//		
+//			if (!FriendOperationData.Instance.friendIdList.Contains (chatMsg.chatPct.senderId))
+//			{
+//				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "加好友",chatBtnDelegate = AddFriend});
+//			}
+//
+//			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "邮件",chatBtnDelegate = SendEmail});
+//
+//			if (!BlockedData.Instance().m_BlockedInfoDic.ContainsKey (chatMsg.chatPct.senderId))
+//			{
+//				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "屏蔽",chatBtnDelegate = Shield});
+//			}
+//
+//			if (chatMsg.chatPct.lianmengId <= 0)
+//			{
+//				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "邀请入盟",chatBtnDelegate = InvitedIntoAlliance});
+//			}
+//
+//			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "私聊",chatBtnDelegate = GotoSiliao});
+//			break;
+//		case ChatMessage.SendState.SEND_FAIL:
+//
+//			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "重发",chatBtnDelegate = SendAgain});
+//			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "删除",chatBtnDelegate = Delate});
+//
+//			break;
+//		default:
+//			return;
+//			break;
+//		}
 
-			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "邮件",chatBtnDelegate = SendEmail});
-
-			if (!BlockedData.Instance().m_BlockedInfoDic.ContainsKey (chatMsg.chatPct.senderId))
-			{
-				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "屏蔽",chatBtnDelegate = Shield});
-			}
-
-			if (chatMsg.chatPct.lianmengId <= 0)
-			{
-				chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "邀请入盟",chatBtnDelegate = InvitedIntoAlliance});
-			}
-
-			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "私聊",chatBtnDelegate = GotoSiliao});
-			break;
-		case ChatMessage.SendState.SEND_FAIL:
-
-			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "重发",chatBtnDelegate = SendAgain});
-			chatBtnInfoList.Add (new QXChatItemInfo.ChatBtnInfo (){btnString = "删除",chatBtnDelegate = Delate});
-
-			break;
-		default:
-			return;
-			break;
-		}
-
-		QXChatPage.chatPage.InItChatItemInfo (gameObject,chatBtnInfoList);
+		QXChatPage.chatPage.InItChatItemInfo (gameObject,chatMsg);
 	}
 
 	void AllianceInfoHandlerClickBack (GameObject obj)
@@ -224,8 +253,9 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 
 		if (!FunctionOpenTemp.IsHaveID (104))
 		{
-			textStr = FunctionOpenTemp.GetTemplateById (104).m_sNotOpenTips;
-			QXComData.CreateBox (1,textStr,true,null);
+//			textStr = FunctionOpenTemp.GetTemplateById (104).m_sNotOpenTips;
+			textStr = LanguageTemplate.GetText (LanguageTemplate.Text.LIANMENG_LOCK_1);//联盟未开启
+			QXComData.CreateBoxDiy (textStr,true,null);
 			return;
 		}
 
@@ -234,21 +264,14 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 
 		if (m_allianceId <= 0)
 		{
+			Debug.Log("=========2");
 			//跳转到加入联盟页面（无联盟）
 			var noAllianceDic = AllianceData.Instance.m_AllianceInfoDic;
-			if (noAllianceDic.ContainsKey (chatMsg.chatPct.lianmengId))
-			{
-				FunctionWindowsCreateManagerment.CreateAllianceLayer (chatMsg.chatPct.lianmengId);
-			}
-			else
-			{
-				textStr = "此联盟不存在！";
-				QXComData.CreateBox (1,textStr,true,null);
-				return;
-			}
+			FunctionWindowsCreateManagerment.CreateAllianceLayer (chatMsg.chatPct.lianmengId);
 		}
 		else
 		{
+			Debug.Log("=========1");
 			//跳转到查看联盟信息页面（有联盟）
 			AllianceMemberWindowManager.Instance.OpenAllianceMemeberWindow (chatMsg.chatPct.lianmengId,chatMsg.chatPct.lianmengName);
 		}
@@ -274,7 +297,7 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 		
 		//Set response to king detail info and request.
 		QXChatData.Instance.SetOpenJunZhuInfo = true;
-		QXComData.SendQxProtoMessage (temp,ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ);
+		QXComData.SendQxProtoMessage (temp,ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ,ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP.ToString ());
 	}
 
 	private void AddFriend ()
@@ -304,7 +327,7 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 			{
 				junzhuId = chatMsg.chatPct.senderId
 			};
-			QXComData.SendQxProtoMessage (tempMsg,ProtoIndexes.C_Join_BlackList);
+			QXComData.SendQxProtoMessage (tempMsg,ProtoIndexes.C_Join_BlackList,null);
 			break;
 		default:
 			break;
@@ -381,8 +404,14 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 	{
 		if(ui.name.IndexOf("dialog") != -1)
 		{
-			Debug.Log(chatMsg.chatPct.soundLen);
-		    MSCPlayer.Instance.PlaySound(chatMsg.chatPct.seq, chatMsg.chatPct.channel);
+			if(chatMsg.chatPct.soundLen > 0)
+			{
+				QXChatPage.chatPage.m_isPlaying = true;
+				chatMsg.isPlay = false;
+				m_spriteRed.gameObject.SetActive(false);
+				MSCPlayer.Instance.PlaySound(chatMsg.chatPct.seq, chatMsg.chatPct.channel);
+				QXChatPage.chatPage.qiangzhiPlay(chatMsg);
+			}
 		}
 	}
 	

@@ -66,11 +66,6 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		ISCanSaodang = true;
 	}
 
-	void Update()
-	{
-
-	}
-
 	public void ColsePVEGuid()
 	{
 		if(UIYindao.m_UIYindao.m_isOpenYindao)
@@ -653,11 +648,11 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 	{
 		GameObject tempOjbect = Instantiate(p_object) as GameObject;
 		
-		GameObject obj = GameObject.Find ("Mapss");
+//		GameObject obj = GameObject.Find ("Mapss");
+//		
+//		tempOjbect.transform.parent = obj.transform;
 		
-		tempOjbect.transform.parent = obj.transform;
-		
-		tempOjbect.transform.localPosition = new Vector3 (0,0,0);
+		tempOjbect.transform.localPosition = new Vector3 (0,10000,0);
 		
 		tempOjbect.transform.localScale = new Vector3 (1,1,1);
 		

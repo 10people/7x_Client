@@ -93,11 +93,11 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 	{
 		GameObject tempOjbect = Instantiate(p_object) as GameObject;
 
-		GameObject obj = GameObject.Find ("Mapss");
-		
-		tempOjbect.transform.parent = obj.transform;
+//		GameObject obj = GameObject.Find ("Mapss");
+//		
+//		tempOjbect.transform.parent = obj.transform;
 
-		tempOjbect.transform.localPosition = new Vector3 (0,0,0);
+		tempOjbect.transform.localPosition = new Vector3 (0,10000,0);
 
 		tempOjbect.transform.localScale = new Vector3 (1,1,1);
 		

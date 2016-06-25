@@ -7,13 +7,7 @@ public class Eventitem : MonoBehaviour {
 	public UILabel m_Time;
 	public UILabel m_Event;
 
-	void Start () {
-	
-	}
 
-	void Update () {
-	
-	}
 	public void init()
 	{
 

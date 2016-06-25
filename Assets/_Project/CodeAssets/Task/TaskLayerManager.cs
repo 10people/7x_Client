@@ -140,19 +140,19 @@ public class TaskLayerManager : MonoBehaviour
             {
                 m_MainQuestObj.SetActive(true);
                 m_OtherQuestObj.SetActive(false);
-                m_DailyQuestObj.SetActive(false);
+          //      m_DailyQuestObj.SetActive(false);
             }
             else if (index == 1)
             {
                 m_MainQuestObj.SetActive(false);
                 m_OtherQuestObj.SetActive(true);
-                m_DailyQuestObj.SetActive(false);
+           //     m_DailyQuestObj.SetActive(false);
             }
             else
             {
                 m_MainQuestObj.SetActive(false);
                 m_OtherQuestObj.SetActive(false);
-                m_DailyQuestObj.SetActive(true);
+       //         m_DailyQuestObj.SetActive(true);
             }
 
             switch (index)
@@ -165,7 +165,7 @@ public class TaskLayerManager : MonoBehaviour
                 case 1:
                     {
                         TidySideTaskInfo();
-                        m_labOtherQuestTitle.text = MyColorData.getColorString(1, "支线任务");
+                        m_labOtherQuestTitle.text = MyColorData.getColorString(1, "盟务");
                     }
                     break;
                 default:
@@ -270,7 +270,7 @@ public class TaskLayerManager : MonoBehaviour
             case 1:
                 {
                     TidySideTaskInfo();
-                    m_labOtherQuestTitle.text = MyColorData.getColorString(1, "支线任务");
+                    m_labOtherQuestTitle.text = MyColorData.getColorString(1, "盟务");
                 }
               break;
      
@@ -286,38 +286,42 @@ public class TaskLayerManager : MonoBehaviour
         _listTaskInfo.Clear();
         foreach (KeyValuePair<int, ZhuXianTemp> item in TaskData.Instance.m_TaskInfoDic)
         {
-           if (ZhuXianTemp.getTemplateById(item.Value.id).type == 0)
+            if (ZhuXianTemp.getTemplateById(item.Value.id).type == 0)
             {
                 TaskNeedInfo tni = new TaskNeedInfo();
                 tni._TaskId = item.Value.id;
                 tni._Name = item.Value.title;
                 tni._Des = item.Value.brief;
                 tni._Target = item.Value.desc;
-         
+
                 tni._Progress = item.Value.progress;
                 tni._npcIcon = item.Value.icon;
                 List<FunctionWindowsCreateManagerment.RewardInfo> list = new List<FunctionWindowsCreateManagerment.RewardInfo>();
+
                 list = FunctionWindowsCreateManagerment.GetRewardInfo(item.Value.award);
-                int reward_count = list.Count;
-                for (int j = 0; j < reward_count; j++)
+                if (list != null)
                 {
-                    for (int i = 0; i < reward_count - 1 - j; i++)
+                    int reward_count = list.Count;
+                    for (int j = 0; j < reward_count; j++)
                     {
-                        if (list[i].type > list[i + 1].type)
+                        for (int i = 0; i < reward_count - 1 - j; i++)
                         {
-                            FunctionWindowsCreateManagerment.RewardInfo t = new FunctionWindowsCreateManagerment.RewardInfo();
+                            if (list[i].type > list[i + 1].type)
+                            {
+                                FunctionWindowsCreateManagerment.RewardInfo t = new FunctionWindowsCreateManagerment.RewardInfo();
 
-                            t = list[i];
+                                t = list[i];
 
-                            list[i] = list[i+1];
+                                list[i] = list[i + 1];
 
-                            list[i+1] = t;
+                                list[i + 1] = t;
+                            }
                         }
                     }
+                    tni._listReward = list;
                 }
-                tni._listReward = list;
-
                 _listTaskInfo.Add(tni);
+                
             }
         }
 
@@ -344,9 +348,17 @@ public class TaskLayerManager : MonoBehaviour
                 Destroy(m_RewardParent.transform.GetChild(i).gameObject);
             }
         }
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YINDAO_DRAMA_AVATAR_PREFIX) + _listTaskInfo[0]._npcIcon,
-                                ResourceLoadCallback);
-        RewardItemCreate();
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YINDAO_DRAMA_AVATAR_PREFIX) + _listTaskInfo[0]._npcIcon
+                               , ResourceLoadCallback);
+
+        if (_listTaskInfo[0]._listReward != null)
+        {
+            RewardItemCreate();
+        }
+        else
+        {
+            m_MainQuestObj.SetActive(true);
+        }
     }
     public void ResourceLoadCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object)
     {
@@ -536,22 +548,10 @@ public class TaskLayerManager : MonoBehaviour
 
     void overMission(int id)
     {
-        TaskSignalInfoShow.m_TaskId = id;
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), RewardCallback);
+        FunctionWindowsCreateManagerment.ShowTaskAward(id); 
     }
 
-    public void RewardCallback(ref WWW p_www, string p_path, Object p_object)
-    {
-        if (TaskSignalInfoShow.m_TaskSignal == null)
-        {
-            GameObject tempObject = (GameObject)Instantiate(p_object);
-            UIYindao.m_UIYindao.CloseUI();
-        }
-        else
-        {
-            p_object = null;
-        }
-    }
+ 
     IEnumerator WaitSecond(TaskLayerManager.TaskNeedInfo taskInfo, GameObject obj)
     {
         yield return new WaitForSeconds(0.4f);

@@ -17,10 +17,10 @@ namespace Carriage
 		{
 			horseInfo = tempInfo;
 
-			horseIcon.spriteName = BiaoJuPage.bjPage.HorseStringInfo (tempInfo.horseId,1);
-			border.spriteName = BiaoJuPage.bjPage.HorseStringInfo (tempInfo.horseId,3);
+			horseIcon.spriteName = BiaoJuPage.m_instance.HorseStringInfo (tempInfo.horseId,1);
+			border.spriteName = BiaoJuPage.m_instance.HorseStringInfo (tempInfo.horseId,3);
 
-			nameLabel.text = BiaoJuPage.bjPage.HorseStringInfo (tempInfo.horseId,0);
+			nameLabel.text = "[b]" + BiaoJuPage.m_instance.HorseStringInfo (tempInfo.horseId,0) + "[-]";
 
 			horsePress.OnLongPress -= ActiveTips;
 			horsePress.OnLongPress += ActiveTips;

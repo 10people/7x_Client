@@ -12,6 +12,9 @@ public class SportJunXian : MonoBehaviour {
 
 	public void InItJunXianRoom ()
 	{
+		UIDragObject dragObj = m_roomIcon.GetComponent<UIDragObject> ();
+		dragObj.enabled = !QXComData.CheckYinDaoOpenState (100200);
+
 		m_roomIcon.spriteName = m_sportTemp.icon.ToString ();
 		m_junXianIcon.spriteName = "junxian" + m_sportTemp.icon.ToString ();
 		m_junXian.text = NameIdTemplate.GetName_By_NameId (m_sportTemp.templateName);

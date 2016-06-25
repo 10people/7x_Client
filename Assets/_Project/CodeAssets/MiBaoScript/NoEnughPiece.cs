@@ -14,14 +14,6 @@ public class NoEnughPiece : MonoBehaviour {
 	public GameObject ChapterBtns;
 	public UILabel Dot_inLv;
 	//public UILabel SuipianName;
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
 
 	public void Init()
 	{

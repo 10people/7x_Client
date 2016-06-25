@@ -36,9 +36,14 @@ Quality:Low
 BattleFieldShadow:None
 Bloom:false
 
-GDN=Adreno (TM) 420/Adreno (TM) 430/Mali-T760?
+GDN=Adreno (TM) 420/Adreno (TM) 430
 Quality:Low
 AntiAlias:None
+
+GDN=Mali-T760
+Quality:Low
+AntiAlias:None
+IEStatus:None
 -------------------------------------------</Graphics.OR>
 
 
@@ -51,9 +56,10 @@ BladeEffect:false
 BossEffect:true
 AntiAlias:None
 Bloom:false
-HittedFx:false
+HittedFx:true
 SceneFx:Low
 MemLevel:High
+IEStatus:High
 
 Quality=Medium
 InCityShadow:High
@@ -65,6 +71,7 @@ Bloom:true
 HittedFx:true
 SceneFx:Medium
 MemLevel:High
+IEStatus:High
 
 Quality=High
 InCityShadow:High
@@ -76,4 +83,5 @@ Bloom:true
 HittedFx:true
 SceneFx:High
 MemLevel:High
+IEStatus:High
 -------------------------------------------</Config>

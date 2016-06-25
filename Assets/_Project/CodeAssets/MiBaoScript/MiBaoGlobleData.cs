@@ -8,6 +8,8 @@ using ProtoBuf;
 using qxmobile.protobuf;
 public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 {
+	public QueryFuwenResp mueryFuwen;
+	public Section m_yMapinfo;
 	private static MiBaoGlobleData m_instance;
 	public MibaoInfoResp G_MiBaoInfo;//返回秘宝信息
 	public MibaoInfoResp G_MiBaoInfoCopy;
@@ -29,6 +31,14 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 
 	private int m_iMibaoNum;
 
+	private GameObject m_ChaperAwardUI;//领取章节奖励界面
+
+	[HideInInspector]public List<int > Sec_idlist = new List<int>();
+
+	private bool mZhangJiedataback;
+
+	public bool m_NeedOpenUI;
+
 	public static MiBaoGlobleData Instance()
 	{
 		if (m_instance == null)
@@ -46,7 +56,9 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 	void Awake()
 	{
 		changeState = true;
+		mZhangJiedataback = false;
 		SocketTool.RegisterMessageProcessor(this);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_NOT_GET_AWART_ZHANGJIE_REQ); 
 	}
 	
 	void OnDestroy()
@@ -63,35 +75,59 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 	}
 
 	//发送秘宝请求
-	public static void SendMiBaoIfoMessage()
+	public void SendMiBaoIfoMessage(bool openUI = false)
 	{
+		m_NeedOpenUI = openUI;
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
+	}
+	public void ShowmiBaoPanle()//加载将魂主界面
+	{
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_PANEL_SECRET),
+		                        JiangHunLoadCallback);
+	}
+	public void JiangHunLoadCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject Secrtgb = (GameObject)Instantiate(p_object);
+		MainCityUI.TryAddToObjectList(Secrtgb);
+	}
+
+	public void GetFuwenInit(int page = 1)
+	{
+		QueryFuwen  m_mQueryFuwen  = new QueryFuwen  ();
+		MemoryStream MiBaoinfoStream = new MemoryStream ();
+		QiXiongSerializer MiBaoinfoer = new QiXiongSerializer ();
+		
+		m_mQueryFuwen.tab = page;
+		MiBaoinfoer.Serialize (MiBaoinfoStream,m_mQueryFuwen);
+		
+		byte[] t_protof;
+		t_protof = MiBaoinfoStream.ToArray();
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FUWEN_MAINPAGE_REQ,ref t_protof,ProtoIndexes.S_FUWEN_MAINPAGE_RES.ToString());	
+	}
+
+	public void ShowFuwenPanle()//加载符文主界面
+	{
+		if(mFuShi)
+		{
+			return;
+		}
+		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.FUWEN),Load111ResourceCallback);
+	}
+	private GameObject mFuShi;
+	void Load111ResourceCallback(ref WWW p_www,string p_path, Object p_object)
+	{
+	
+		mFuShi = Instantiate(p_object )as GameObject;
+		
+		mFuShi.transform.localScale = Vector3.one;
+		
+		mFuShi.transform.localPosition = new Vector3 (100,100,0);
+		MainCityUI.TryAddToObjectList(mFuShi);
 	}
 
 	void Update()
 	{
-//		{
-//			TimeHelper.SignetTime();
-//
-//			int t_count = 0;
-//
-//			for( int i = 0; i < 100; i++ ){
-//				t_count += i;
-//			}
-//		}
-//
-//		{
-//			TimeHelper.LogDeltaTimeSinceSignet( "After 100+." );
-//
-//			TimeHelper.SignetTime();
-//		}
 
-//		if(CityGlobalData.PveLevel_UI_is_OPen &&changeState)
-//		{
-//			changeState = false;
-//			StopCoroutine("ChangePveOpenDate");
-//			StartCoroutine("ChangePveOpenDate");
-//		}
 		if(CityGlobalData.MibaoSatrUpCallback &&changeState)
 		{
 			changeState = false;
@@ -113,14 +149,49 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 				ShowMiBaoCanLevelUp ();
 			}
 		}
-//		{
-//			TimeHelper.LogDeltaTimeSinceSignet( "After Coroutines." );
-//
-//			TimeHelper.SignetTime();
-//		}
-
-//		ShowMiBaoCanLevelUp ();
 	}
+
+	public void GetPveSectionAward()
+	{
+		Debug.Log ("Loda PVELevelPass");
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_REMIND_MI_BAO ),OpenLockLoadBack);
+	}
+	
+	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
+	{
+		mZhangJiedataback = false;
+		if(m_ChaperAwardUI != null)
+		{
+			return;
+		}
+		m_ChaperAwardUI = ( GameObject )Instantiate( p_object );
+		m_ChaperAwardUI.name = "PVELevelPass";
+		
+		m_ChaperAwardUI.transform.localPosition = new Vector3(100,100,0);
+		
+		m_ChaperAwardUI.transform.localScale  = Vector3.one;
+		
+		PassLevelAward mPassLevelAward = m_ChaperAwardUI.GetComponent<PassLevelAward>();
+		mPassLevelAward.Init (Sec_idlist[0]);
+		MainCityUI.TryAddToObjectList (m_ChaperAwardUI);
+	}
+
+	private GameObject mm_tempObject;
+    void ResLoaded( ref WWW p_www, string p_path, UnityEngine.Object p_object ) // 加载过关斩将地图
+	{
+		//Debug.Log ("加载pve页面 2222 " +Global.m_isOpenPVP );
+		if (mm_tempObject != null)
+		{
+			return;
+		}
+		mm_tempObject = ( GameObject )Instantiate( p_object );
+		MainCityUI.TryAddToObjectList(mm_tempObject);
+//		Debug.Log (MainCityUI.m_MainCityUI.m_WindowObjectList.Count);
+		mm_tempObject.transform.position = new Vector3( 0,500,0 );	
+		Debug.Log("加载过关斩将地图");
+//		Debug.Log (MainCityUI.m_MainCityUI.m_WindowObjectList.Count);
+	}
+
 	IEnumerator ChangePveOpenDate()
 	{
 //		Debug.Log ("ChangePveOpenDate ");
@@ -191,6 +262,11 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 					upMibaoShouji();
 				}
 				BoolSuperRedPoint();
+				if(m_NeedOpenUI)
+				{
+					m_NeedOpenUI = false;
+					ShowmiBaoPanle();
+				}
 				return true;
 			}
 			case ProtoIndexes.S_MIBAO_SELECT_RESP: //      密保保存返回
@@ -208,6 +284,140 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 				t_qx.Deserialize(t_stream, mMiBaoDealSkillResp, mMiBaoDealSkillResp.GetType());
 
 				//	UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,SkillTemp,EffectIdTemplate.GetPathByeffectId(100178));
+				return true;
+			}
+			case ProtoIndexes.S_NOT_GET_AWART_ZHANGJIE_RESP:// 请weilingqu章节奖励
+			{
+				
+				MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				GetNotGetAwardZhangJieResp mGetNotGetAwardZhangJieResp = new GetNotGetAwardZhangJieResp();
+				
+				t_qx.Deserialize(t_tream, mGetNotGetAwardZhangJieResp, mGetNotGetAwardZhangJieResp.GetType());
+				
+				Sec_idlist = mGetNotGetAwardZhangJieResp.zhangJiaId;
+				if(Sec_idlist == null)
+				{
+//					Debug.Log("Sec_idlist == nul");
+					mZhangJiedataback = false;
+				}
+				else
+				{
+					mZhangJiedataback = true;
+//					Debug.Log("Sec_idlist.count =" +Sec_idlist.Count);
+				}
+
+				return true;
+			}
+			case ProtoIndexes.S_FUWEN_MAINPAGE_RES: //FW首页返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				QueryFuwenResp mQueryFuwenResp  = new QueryFuwenResp();
+				
+				t_qx.Deserialize(t_stream, mQueryFuwenResp, mQueryFuwenResp.GetType());
+				
+				mueryFuwen = mQueryFuwenResp;
+
+				ShowFuwenPanle();
+				return true;
+			}
+			case ProtoIndexes.S_LOAD_FUWEN_IN_BAG_RESP: //FWbag返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				FuwenInBagResp mFuwenInBagResp  = new FuwenInBagResp();
+				
+				t_qx.Deserialize(t_stream, mFuwenInBagResp, mFuwenInBagResp.GetType());
+				
+				return true;
+			}
+			case ProtoIndexes.S_FUWEN_OPERAT_RES: //符文镶嵌返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				FuwenResp mFuwenResp  = new FuwenResp();
+				
+				t_qx.Deserialize(t_stream, mFuwenResp, mFuwenResp.GetType());
+	
+				return true;
+			}
+			case ProtoIndexes.S_FUWEN_DUI_HUAN_RESP: //符文兑换请求返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				FuwenDuiHuanResp mFuwenDuiHuanResp  = new FuwenDuiHuanResp();
+				
+				t_qx.Deserialize(t_stream, mFuwenDuiHuanResp, mFuwenDuiHuanResp.GetType());
+
+				return true;
+			}
+			case ProtoIndexes.S_FUWEN_EQUIP_ALL_RESP: //一键穿戴返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				FuwenEquipAllResp mFuwenEquipAllResp  = new FuwenEquipAllResp();
+				
+				t_qx.Deserialize(t_stream, mFuwenEquipAllResp, mFuwenEquipAllResp.GetType());
+	
+				return true;
+			}
+			case ProtoIndexes.S_FUWEN_UNLOAD_ALL_RESP: //一键拆卸返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				FuwenUnloadAllResp mFuwenUnloadAllResp  = new FuwenUnloadAllResp();
+				
+				t_qx.Deserialize(t_stream, mFuwenUnloadAllResp, mFuwenUnloadAllResp.GetType());
+		
+				return true;
+			}
+			case ProtoIndexes.PVE_PAGE_RET://章节请求返回
+			{
+				if(MainCityUI.m_MainCityUI != null)
+				{
+					MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+					
+					QiXiongSerializer t_qx = new QiXiongSerializer();
+					
+					Section tempInfo = new Section();
+					
+					t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+					
+					// 临时添加判断条件  只能到13章节
+					
+					if(tempInfo.s_section > 13)
+					{
+						tempInfo.s_section =13;
+					}
+					if(tempInfo.sectionMax > 13)
+					{
+						tempInfo.sectionMax = 13;
+					}
+					if(tempInfo.maxCqPassId > 13)
+					{
+						tempInfo.maxCqPassId = 13;
+					}
+					
+					m_yMapinfo = tempInfo;
+					//				Debug.Log("m_yMapinfo 1 ");
+					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.PVE_MAP_PREFIX ),
+					                        ResLoaded );
+				}
 				return true;
 			}
 			default: return false;
@@ -237,22 +447,25 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 				}
 			}
 
-			if(activemibaonuber >= mMiBaoskill.needNum)
+			if(MainCityUI.m_MainCityUI.getButton(6) != null)
 			{
-				MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(true);
+				MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(activemibaonuber >= mMiBaoskill.needNum);
 			}
-			else
-			{
-				MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(false);
-			}
-
 		}
 		else
 		{
 			int Maxid = 0;
 			if(G_MiBaoInfo.skillList.Count >= 7)
 			{
-				MainCityUI.m_MainCityUI.getButton(610).setSuperAlert(false);
+
+				if(MainCityUI.m_MainCityUI.getButton(6) != null)
+				{
+					MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(false);
+				}
+				else
+				{
+					Debug.Log("MainCityUI.m_MainCityUI.getButton(6) == null ");
+				}
 			}
 			else
 			{
@@ -440,10 +653,14 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 	private int Type;
 
 	private int Skill_id;
-	public void OpenMiBaoSkillUI( int type , int id)
+
+	private NewMiBaoSkill.mCloseMiBaoskillDo m_skillDo;
+
+	public void OpenMiBaoSkillUI( int type , int id ,NewMiBaoSkill.mCloseMiBaoskillDo m_mCloseMiBaoskillDo = null )
 	{
 		Type = type;
 		Skill_id = id;
+		m_skillDo = m_mCloseMiBaoskillDo;
 		Global.ResourcesDotLoad (Res2DTemplate.GetResPath(Res2DTemplate.Res.PVP_CHOOSE_MI_BAO), ChangeMiBaoSkillLoadBack);
 		
 	}
@@ -459,7 +676,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		
 		//mNewMiBaoSkill.COmeMiBaoUI = true;
 		
-		mNewMiBaoSkill.Init ( Type,Skill_id );
+		mNewMiBaoSkill.Init ( Type,Skill_id,m_skillDo );
 		MainCityUI.TryAddToObjectList(mChoose_MiBao);
 	}
 	public void OpenAllianceUI()
@@ -572,11 +789,17 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 	/// <param name="AwardID">Award I.</param>
 	/// <param name="m_numbers">M_numbers.</param>
 	private FuWenShow.CallBack m_rulesDelegate;
-	public  void GetCommAwards(List<int > AwardID,List<int > m_numbers,FuWenShow.CallBack mm_CallBack = null)
+
+	private UICamera m_UICamera;
+
+	public  void GetCommAwards(List<int > AwardID,List<int > m_numbers,FuWenShow.CallBack mm_CallBack = null,UICamera mUICamera = null)
 	{
 		m_rulesDelegate = mm_CallBack;
 		mdi = AwardID;
 		mnumbers = m_numbers;
+
+		m_UICamera = mUICamera;
+
 		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GETFUWEN),LoadShowFuwenCallback);
 	}
 	void LoadShowFuwenCallback(ref WWW p_www,string p_path, Object p_object)
@@ -590,7 +813,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		
 		FuWenShow mFuWenShow = ShowFuwen.GetComponent<FuWenShow>();
 	
-		mFuWenShow.Init (mdi,mnumbers,m_rulesDelegate);
+		mFuWenShow.Init (mdi,mnumbers,m_rulesDelegate,m_UICamera);
 	}
 
 }

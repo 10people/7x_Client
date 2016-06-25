@@ -10,6 +10,13 @@ namespace Rank
         public GameObject FloatButtonsRoot;
         public FloatButtonsController FloatButtonsController;
 
+        public UISprite BGSprite;
+
+        public void SetBG(bool isHighLight)
+        {
+            BGSprite.spriteName = isHighLight ? "jianbianbgliang" : "thirdBg";
+        }
+
         public IEnumerator AdjustFloatButton()
         {
             yield return new WaitForEndOfFrame();
@@ -20,7 +27,7 @@ namespace Rank
                 yield break;
             }
 
-			NGUIHelper.AdaptWidgetInScrollView(m_ModuleController.m_ScrollView, m_ModuleController.m_ScrollBar, FloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
+            NGUIHelper.AdaptWidgetInScrollView(m_ModuleController.m_ScrollView, m_ModuleController.m_ScrollBar, FloatButtonsController.m_BG.GetComponent<UIWidget>());
         }
 
         public void DestroyFloatButtons()
@@ -58,13 +65,5 @@ namespace Rank
                 }
             }
         }
-
-        public abstract void GetInfo();
-
-        public abstract void AddFriend();
-
-        public abstract void Shield();
-
-        public abstract void Rob();
     }
 }

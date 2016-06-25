@@ -93,12 +93,13 @@ public class GoodItem : MonoBehaviour
                     DuiHuanTemplete template = DuiHuanTemplete.getDuiHuanTemplateById(tempInfo.id);
                     goodInfo.itemId = template.itemId;
                     goodInfo.itemType = template.itemType;
-                    goodInfo.itemName = NameIdTemplate.GetName_By_NameId(template.itemId);
+                    goodInfo.itemName = NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(template.itemId).nameId);
                     goodInfo.itemNum = template.itemNum;
                     goodInfo.needMoney = template.needNum;
                     goodInfo.moneyType = ShopData.Instance.MoneyType(tempType);
                     goodInfo.countBuyTime = tempInfo.remainCount;
                     goodInfo.isRestrictBuy = template.max != 999;
+                    goodInfo.isAllianceCanBuy = true;
 
                     tuiJian = template.ifRecomanded == 0 ? false : true;
 
@@ -109,7 +110,7 @@ public class GoodItem : MonoBehaviour
                     LMDuiHuanTemplate template = LMDuiHuanTemplate.getLMDuiHuanTemplateById(tempInfo.id);
                     goodInfo.itemId = template.itemId;
                     goodInfo.itemType = template.itemType;
-                    goodInfo.itemName = NameIdTemplate.GetName_By_NameId(template.itemId);
+                    goodInfo.itemName = NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(template.itemId).nameId);
                     goodInfo.itemNum = template.itemNum;
                     goodInfo.needMoney = template.needNum;
                     goodInfo.moneyType = ShopData.Instance.MoneyType(tempType);
@@ -118,7 +119,9 @@ public class GoodItem : MonoBehaviour
                     goodInfo.isRestrictBuy = template.max != 999;
 
                     isAllianceCanBuy = ShopData.Instance.GetAllianceLevel() >= template.needLv;
-                    desLabel.text = isAllianceCanBuy ? "" : MyColorData.getColorString(5, "商铺升至" + template.needLv + "级可购买");
+                    goodInfo.isAllianceCanBuy = isAllianceCanBuy;
+
+                    desLabel.text = isAllianceCanBuy ? "" : MyColorData.getColorString(5, "联盟商铺升至" + template.needLv + "级可购买");
                     moneyIcon.transform.parent.gameObject.SetActive(isAllianceCanBuy);
 
                     tuiJian = template.ifRecomanded != 0;
@@ -130,12 +133,13 @@ public class GoodItem : MonoBehaviour
                     LMFightDuiHuanTemplate template = LMFightDuiHuanTemplate.getLMFightDuiHuanTemplateById(tempInfo.id);
                     goodInfo.itemId = template.itemId;
                     goodInfo.itemType = template.itemType;
-                    goodInfo.itemName = NameIdTemplate.GetName_By_NameId(template.itemId);
+                    goodInfo.itemName = NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(template.itemId).nameId);
                     goodInfo.itemNum = template.itemNum;
                     goodInfo.needMoney = template.needNum;
                     goodInfo.moneyType = ShopData.Instance.MoneyType(tempType);
                     goodInfo.countBuyTime = tempInfo.remainCount;
                     goodInfo.isRestrictBuy = template.max != 999;
+                    goodInfo.isAllianceCanBuy = true;
 
                     break;
                 }
@@ -167,7 +171,14 @@ public class GoodItem : MonoBehaviour
 
         soldOutSprite.SetActive(!tempInfo.isChange);
 
-        m_RemainingTimesLabel.text = (goodInfo.isRestrictBuy && goodInfo.countBuyTime > 0) ? MyColorData.getColorString(1, "今日可购[00ff00]" + goodInfo.countBuyTime + "[-]次") : "";
+        if (shopType == ShopData.ShopType.GONGXIAN && !isAllianceCanBuy)
+        {
+            m_RemainingTimesLabel.text = "";
+        }
+        else
+        {
+            m_RemainingTimesLabel.text = (goodInfo.isRestrictBuy && goodInfo.countBuyTime > 0) ? MyColorData.getColorString(1, "今日可购[00ff00]" + goodInfo.countBuyTime + "[-]次") : "";
+        }
 
         isSparkEffect = (tempInfo.isChange && JunZhuData.Instance().m_junzhuInfo.vipLv >= jieSuoVip) && (shopType != ShopData.ShopType.GONGXIAN || isAllianceCanBuy);
 
@@ -194,7 +205,7 @@ public class GoodItem : MonoBehaviour
 
         iconSamplePrefab.SetActive(true);
         iconSamplePrefab.transform.parent = this.transform;
-        iconSamplePrefab.transform.localPosition = new Vector3(0, 25, 0);
+        iconSamplePrefab.transform.localPosition = new Vector3(0, 32, 0);
 
         InItIconSamplePrefab();
     }
@@ -212,7 +223,22 @@ public class GoodItem : MonoBehaviour
         //		iconSamplePrefab.transform.localScale = Vector3.one * 0.9f;
 
         //if shopType == GongXian : SetBgColor to grey
+
+        StopCoroutine("DoSetBlack");
+        StartCoroutine("DoSetBlack");
+    }
+
+    public IEnumerator DoSetBlack()
+    {
         UISprite[] sprites = this.GetComponentsInChildren<UISprite>();
+
+        while (sprites.Length == 0)
+        {
+            yield return new WaitForEndOfFrame();
+
+            sprites = this.GetComponentsInChildren<UISprite>();
+        }
+
         foreach (UISprite sprite in sprites)
         {
             sprite.color = shopType == ShopData.ShopType.GONGXIAN ? (isAllianceCanBuy ? Color.white : Color.black) : Color.white;
@@ -225,19 +251,19 @@ public class GoodItem : MonoBehaviour
         {
             return;
         }
-        if (JunZhuData.Instance().m_junzhuInfo.vipLv >= jieSuoVip)
+        //if (JunZhuData.Instance().m_junzhuInfo.vipLv >= jieSuoVip)
+        //{
+        if (shopType == ShopData.ShopType.GONGXIAN)
         {
-            if (shopType == ShopData.ShopType.GONGXIAN)
-            {
-                if (isAllianceCanBuy)
-                {
-                    ShopPage.shopPage.OpenShopBuyWindow(goodInfo);
-                }
-            }
-            else
-            {
-                ShopPage.shopPage.OpenShopBuyWindow(goodInfo);
-            }
+            //if (isAllianceCanBuy)
+            //{
+            ShopPage.shopPage.OpenShopBuyWindow(goodInfo);
+            //}
         }
+        else
+        {
+            ShopPage.shopPage.OpenShopBuyWindow(goodInfo);
+        }
+        //}
     }
 }

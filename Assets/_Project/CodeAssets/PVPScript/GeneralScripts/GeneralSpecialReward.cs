@@ -10,7 +10,7 @@ using qxmobile.protobuf;
 
 public class GeneralSpecialReward : MonoBehaviour {
 
-	private RewardData rewardData;
+	[HideInInspector]public RewardData rewardData;
 
 	private QXComData.XmlType xmlType;
 
@@ -48,7 +48,9 @@ public class GeneralSpecialReward : MonoBehaviour {
 
 	public UILabel desLabel;
 	private float time = 1f;
-	private string desStr = "点击屏幕继续";
+	private string m_desStr = "[f2cc84]点击屏幕继续[-]";
+	private bool m_start = false;
+	private bool m_Count = false;
 
 	public EventHandler rewardHandler;
 
@@ -109,7 +111,11 @@ public class GeneralSpecialReward : MonoBehaviour {
 			{
 				isScaleEnd = true;
 			}
-//			QXComData.InstanceEffect (QXComData.EffectPos.TOP,miBaoObj,100148);
+
+//			UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.PopUI_2,
+//			                                   miBaoObj,
+//			                                   EffectIdTemplate.GetPathByeffectId(100157));
+			Debug.Log ("InstanceEffect:" + 100157);
 			QXComData.InstanceEffect (QXComData.EffectPos.MID,miBaoObj,100157);
 			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,3);
 
@@ -121,6 +127,12 @@ public class GeneralSpecialReward : MonoBehaviour {
 			break;
 		case QXComData.XmlType.EQUIP:
 
+//			UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,
+//			                                   equipObj,
+//			                                   EffectIdTemplate.GetPathByeffectId(100142 + effectId));
+//			UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.PopUI_2,
+//			                                   equipObj,
+//			                                   EffectIdTemplate.GetPathByeffectId(100150 + effectId));
 			QXComData.InstanceEffect (QXComData.EffectPos.TOP,equipObj,100142 + effectId);
 			QXComData.InstanceEffect (QXComData.EffectPos.MID,equipObj,100150 + effectId);
 			isScaleEnd = true;
@@ -156,23 +168,49 @@ public class GeneralSpecialReward : MonoBehaviour {
 				UIYindao.m_UIYindao.setOpenUIEff ();
 			}
 
+			if (!rewardData.m_isCheckOnly)
+			{
+				if (!rewardData.m_isNew)
+				{
+					TBMiBaoSuiPian.m_instance.GetMiBaoSuiPianInfo (rewardData);
+					TBMiBaoSuiPian.m_instance.M_SuiPianDelegate = CheckNext;
+					
+					gameObject.SetActive (false);
+				}
+				else
+				{
+					CheckNext ();
+					if (rewardData.miBaoClick != null)
+					{
+						rewardData.miBaoClick ();
+					}
+				}
+			}
+			else
+			{
+				CheckNext ();
+				if (rewardData.miBaoClick != null)
+				{
+					rewardData.miBaoClick ();
+				}
+			}
+
 			break;
 		case QXComData.XmlType.EQUIP:
 
 			UI3DEffectTool.ClearUIFx (equipObj);
+			CheckNext ();
 
 			break;
 		default:
 			break;
 		}
 
-		if (rewardData.miBaoClick != null)
-		{
-			rewardData.miBaoClick ();
-		}
-
 //		Debug.Log ("QXComData.CheckYinDaoOpenState (100160)2:" + QXComData.CheckYinDaoOpenState (100160));
+	}
 
+	void CheckNext ()
+	{
 		GeneralRewardManager.Instance().SpecialReward_Index ++;
 		GeneralRewardManager.Instance().CheckSpecialReward ();
 		GeneralRewardManager.Instance().RefreshSpecialItemList (this.gameObject);
@@ -257,7 +295,7 @@ public class GeneralSpecialReward : MonoBehaviour {
 		}
 
 		unLockNeedNum.text = unLockDesStr;
-		Debug.Log ("defaultStar:" + defaultStar);
+//		Debug.Log ("defaultStar:" + defaultStar);
 		rewardData.miBaoStar = rewardData.miBaoStar == 0 ? 1 : rewardData.miBaoStar;
 
 		shuxing_attack.text = "基础攻击：" + getMiBaoInfo.JiSuanZhanLi (rewardData.itemId,1,defaultStar,1);
@@ -291,33 +329,50 @@ public class GeneralSpecialReward : MonoBehaviour {
 
 	IEnumerator ShowDesLabel1 ()
 	{
-		desLabel.text = MyColorData.getColorString (4,desStr);
-		UIWidget widget = desLabel.GetComponent<UIWidget> ();
-		while (widget.alpha > 0)
-		{
-			yield return new WaitForSeconds (time);
-			time = 0.07f;
-			widget.alpha -= 0.1f;
-			if (widget.alpha <= 0)
-			{
-				StopCoroutine ("ShowDesLabel1");
-				StartCoroutine ("ShowDesLabel2");
-			}
-		}
+		desLabel.text = m_desStr;
+		yield return new WaitForSeconds (time);
+		m_start = true;
+		time = 0.07f;
 	}
 
-	IEnumerator ShowDesLabel2 ()
+	void Update ()
 	{
-		desLabel.text = MyColorData.getColorString (4,desStr);
-		UIWidget widget = desLabel.GetComponent<UIWidget> ();
-		while (widget.alpha < 1)
+		if (!m_start)
 		{
-			widget.alpha += 0.1f;
-			yield return new WaitForSeconds (time);
-			if (widget.alpha >= 1)
+			return;
+		}
+		UIWidget widget = desLabel.GetComponent<UIWidget> ();
+		float disCount = 0.03f;
+		if (!m_Count)
+		{
+			if (widget.alpha < 1)
 			{
-				StopCoroutine ("ShowDesLabel2");
-				StartCoroutine ("ShowDesLabel1");
+				widget.alpha += disCount;
+				if (widget.alpha >= 1)
+				{
+					widget.alpha = 1;
+					m_Count = true;
+				}
+			}
+			else
+			{
+				m_Count = true;
+			}
+		}
+		else
+		{
+			if (widget.alpha > 0.4f)
+			{
+				widget.alpha -= disCount;
+				if (widget.alpha <= 0.4f)
+				{
+					widget.alpha = 0.4f;
+					m_Count = false;
+				}
+			}
+			else
+			{
+				m_Count = false;
 			}
 		}
 	}
@@ -340,10 +395,10 @@ public class GeneralSpecialReward : MonoBehaviour {
 
 		effectId = QXComData.GetEffectColorByXmlColorId (colorId);
 
-		border.spriteName = "pinzhi" + (colorId - 1);
+//		border.spriteName = "pinzhi" + (colorId - 1);
 
-		border.width = QXComData.IsDifferent (colorId) ? 350 : 340;
-		border.height = QXComData.IsDifferent (colorId) ? 470 : 460;
+//		border.width = QXComData.IsDifferent (colorId) ? 350 : 340;
+//		border.height = QXComData.IsDifferent (colorId) ? 470 : 460;
 
 //		Debug.Log ("rewardData.xingJi:" + rewardData.xingJi);
 		for (int i = 0;i < defaultStar;i ++)

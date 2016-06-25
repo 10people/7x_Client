@@ -8,11 +8,6 @@ using ProtoBuf.Meta;
 
 public class UITiliMax : MYNGUIPanel
 {
-	void Update()
-	{
-
-	}
-	
 	public override void MYClick(GameObject ui)
 	{
 		if(ui.name.IndexOf("Button") != -1)

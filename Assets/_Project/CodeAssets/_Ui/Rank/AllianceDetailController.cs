@@ -46,6 +46,9 @@ namespace Rank
             }
 
             NumberLabel.text = m_AllianceInfo.member + "/" + m_AllianceInfo.allMember;
+
+            SetBG(false);
+            MyAllianceLogoSprite.gameObject.SetActive(false);
         }
 
         new void OnClick()
@@ -71,24 +74,9 @@ namespace Rank
             StartCoroutine(AdjustFloatButton());
         }
 
-        public override void GetInfo()
+        public void GetInfo()
         {
             AllianceMemberWindowManager.Instance.OpenAllianceMemberWindowInRank(m_AllianceInfo.mengId, m_AllianceInfo.mengName, m_ModuleController.m_RootController, "UseInRank");
-        }
-
-        public override void AddFriend()
-        {
-
-        }
-
-        public override void Shield()
-        {
-
-        }
-
-        public override void Rob()
-        {
-
         }
     }
 }

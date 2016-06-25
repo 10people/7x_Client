@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +9,7 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class PassLevelAward : MonoBehaviour , SocketProcessor{
 
-
+	public static PassLevelAward mStatePassLevelAward;
 	public UILabel PassLevel_id;
 	public string level;
 	public int LingQu; // 0为不可领取 1为可领取 2为已经领取
@@ -20,8 +20,18 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 
 	public int ZhangJieBigId;
 	public  Section m_Mapinfo; 
+	int yinid = -1;
+	/// <summary>
+	/// The type. 1 pve界面 2为主界面
+	/// </summary>
+	public int type;
+	private bool mdataback;
+	private bool CanLingQu;
+
+	public UIWindowEventTrigger mUIWidowEventTriger;
 	void Awake()
 	{
+		mStatePassLevelAward = this;
 		SocketTool.RegisterMessageProcessor(this);
 	}
 	void OnDisable()
@@ -35,14 +45,59 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 
 	void Update () {
 	
+		if(!FreshGuide.Instance().IsActive(100404))
+		{
+			if (UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				UIYindao.m_UIYindao.CloseUI();
+			}
+		}
+		if(!GeneralRewardManager.Instance().IsExitReward() && mdataback)
+		{
+			ClientMain.closePopUp();
+		}
 	}
-	public void Init()
+	private void YinDaoControl()
 	{
+		if (UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			yinid = UIYindao.m_UIYindao.m_iCurId;
+			Debug.Log("关闭引导 id = "+yinid);
+			UIYindao.m_UIYindao.CloseUI();
+		}
+	}
+	public void Init(int zhangjieid = -1)
+	{
+		mdataback = false;
+		CanLingQu = false;
 		FunctionWindowsCreateManagerment.m_IsSaoDangNow = true;
+		if(zhangjieid == -1)
+		{
+			m_Mapinfo = MapData.mapinstance.myMapinfo;
+			ZhangJieBigId = m_Mapinfo.s_section;
+			type = 1;
+	     
+			if(FreshGuide.Instance().IsActive(100404)&& TaskData.Instance.m_TaskInfoDic[100404].progress >= 0)
+			{
+				mUIWidowEventTriger = GetComponent<UIWindowEventTrigger>();
+				mUIWidowEventTriger.enabled = false;
+			}
+			else
+			{
+				if(UIYindao.m_UIYindao.m_isOpenYindao)
+				{
+					UIYindao.m_UIYindao.CloseUI();
+				}
+			}
+		}
+		else
+		{
+			YinDaoControl();
+			ZhangJieBigId = zhangjieid;
+			type = 2;
+		}
 
-		m_Mapinfo = MapData.mapinstance.myMapinfo;
-		ZhangJieBigId = m_Mapinfo.s_section;
-		PassLevel_id.text  = "打通 "+m_Mapinfo.s_section.ToString()+"-"+m_Mapinfo.s_allLevel.Count.ToString()+" 关卡";
+		PassLevel_id.text  = "打通 "+ZhangJieBigId.ToString()+"-"+PveTempTemplate.GetLevelCount_By_Chapter_Id(ZhangJieBigId).ToString()+" 关卡";
 
 		GetPassZhangJieAwardReq mGetPassZhangJieAwardReq = new GetPassZhangJieAwardReq ();
 		
@@ -59,16 +114,7 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 		SocketTool.Instance().SendSocketMessage (ProtoIndexes.has_get_zhangJie_award_req, ref t_protof,"24153");
 
 		ShowAward ();
-		if(FreshGuide.Instance().IsActive(100140)&& TaskData.Instance.m_TaskInfoDic[100140].progress >= 0)
-		{
-//			Debug.Log("指向宝箱点击领奖");
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100140];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-		}
-		else
-		{
-			UIYindao.m_UIYindao.CloseUI();
-		}
+	
 	}
 	List<int > itemislist = new  List<int>();
 
@@ -76,7 +122,7 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 
 	public void ShowAward()
 	{
-		PveAwardTemplate mPveAwardTemplate = PveAwardTemplate.getAwardTemp_By_AwardId (m_Mapinfo.s_section);
+		PveAwardTemplate mPveAwardTemplate = PveAwardTemplate.getAwardTemp_By_AwardId (ZhangJieBigId);
 		string[] ss = mPveAwardTemplate.awardId.Split('#');
 		itemislist.Clear ();
 		for (int j = 0; j < ss.Length; j++)
@@ -153,13 +199,16 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 				ErrorMessage mErrorMessage = new ErrorMessage();
 				t_qx.Deserialize(t_tream, mErrorMessage, mErrorMessage.GetType());
 
-				UIYindao.m_UIYindao.CloseUI();
+				if(type == 1)
+				{
+					PassLevelBtn.Instance().IsOPenEffect = false;
+					PassLevelBtn.Instance().CloseEffect ();
+				}
+
 				InitGetAwardData(mErrorMessage);
 
 				SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_NOT_GET_AWART_ZHANGJIE_REQ);
-				PassLevelBtn.Instance().IsOPenEffect = false;
-				PassLevelBtn.Instance().CloseEffect ();
-
+			
 				return true;
 			}
 				break;
@@ -180,6 +229,7 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 		{
 			LingQuButn.SetActive(true);
 			LingQuButnEnable.SetActive(false);
+			CanLingQu = true;
 		}
 		if(LingQu == 3)//已经领取
 		{
@@ -202,6 +252,7 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 		{
 			//Debug.Log ("领取失败———————— ");
 		}
+		CanLingQu = false;
 	}
 	void  ShowAwardByEffect()
 	{
@@ -213,8 +264,23 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 
 		}
 		GeneralRewardManager.Instance().CreateReward (tempDataList); 
+		mdataback = true;
+		if(type == 2)
+		{
+//			if (yinid > 0)
+//			{ 
+//				UIYindao.m_UIYindao.setOpenYindao(yinid);
+//				yinid = -1;
+//			}
+
+			Close();
+		}
 	}
 	public void LingQuBtn()
+	{
+		ClientMain.addPopUP (80, 0, "", null);
+	}
+	public void ComLingQU()
 	{
 		GetPassZhangJieAwardReq mGetPassZhangJieAwardReq = new GetPassZhangJieAwardReq ();
 		
@@ -229,18 +295,21 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 		byte[] t_protof = exitStream.ToArray ();
 		
 		SocketTool.Instance().SendSocketMessage (ProtoIndexes.get_zhangJie_award_req, ref t_protof,"24155");
-	
+
 	}
+
 	public void Close()
 	{
+		if(CanLingQu)
+		{
+			return;
+		}
 		FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
 		MapData.mapinstance.ShowYinDao = false;
 		PassLevelBtn.Instance().OPenEffect ();
-		if(MapData.mapinstance.myMapinfo.s_section == 1) //第一章节领奖引导
-		{
-//			MapData.mapinstance.BackToCity();
-			MapData.mapinstance.ShowYinDao = true;
-		}
+			
+		MapData.mapinstance.ShowYinDao = true;
+	
 		Destroy (this.gameObject);
 	}
 }

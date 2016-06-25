@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_ICON
 
-//debug duplicate set, may find possible error.
+//debug duplictlate set, may find possible error.
 //#define DEBUG_DUPLICATE
 
 using System;
@@ -17,6 +17,8 @@ public class IconSampleManager : MonoBehaviour
     private bool isSetted = false;
     public int iconID = -1;
 
+	public int m_Position_y;
+	public int t_Position_y;
     public static int TransferOldQualityID(int oldID)
     {
         switch (oldID)
@@ -63,6 +65,17 @@ public class IconSampleManager : MonoBehaviour
     /// quality frame sprite
     /// </summary>
     public UISprite QualityFrameSprite;
+
+	/// <summary>
+	///m2DAnimation
+	/// </summary>
+	public UISpriteAnimation m2DAnimation_Continuly;
+
+	public bool AnimationIsOpen = false;
+	/// <summary>
+	///m2DAnimation
+	/// </summary>
+	public UISpriteAnimation m2DAnimation;
 
     /// <summary>
     /// frame to show icon selected or not
@@ -171,8 +184,6 @@ public class IconSampleManager : MonoBehaviour
     /// </summary>
     public UIAtlas FuWenAtlas;
 
-    public UIAtlas BaoshiAtlas;
-
     public UIAtlas AllianceAtlas;
 
     public UIAtlas TuluBuffAtlas;
@@ -237,11 +248,11 @@ public class IconSampleManager : MonoBehaviour
         OldOldMiBao,
         exchangeBox,
         mainCityAtlas,
-        OldMiBao,
-        NewMiBao,
+        Hero,
+        MiBao,
         MiBaoSkill,
-        OldMiBaoSuiPian,
-        NewMiBaoSuiPian,
+        HeroFragment,
+        MiBaoFragment,
         Carriage,
         HuangyeMonster,
         FuWen,
@@ -257,13 +268,14 @@ public class IconSampleManager : MonoBehaviour
     private const string YellowSelectedSpriteName = "CheckBox";
 
     public static readonly List<int> FrameQualityFrameSpriteName = new List<int>() { 2, 4, 5, 7, 8, 10 };
-    public static readonly List<int> FreeQualityFrameSpriteName = new List<int>() { 0, 1, 3, 6, 9 };
+    public static readonly List<int> FreeQualityFrameSpriteName = new List<int>() {0, 1, 3, 6, 9, 12, 13};
     public static readonly List<int> MibaoPieceQualityFrameSpriteName = new List<int>() { 20, 21, 22, 23, 24 };
-    public const int FrameQualityFrameLength = 105;
-    public const int FreeQualityFrameLength = 93;
-    public const int MibaoPieceQualityFrameLength = 93;
+    public const int FrameQualityFrameLength = 111;
+    public const int FreeQualityFrameLength = 102;
+    public const int MibaoPieceQualityFrameLength = 95;
 
     private const int NormalForeLength = 87;
+    private const int BaoshiForeLength = 100;
     private const int MibaoForeLength = 105;
     private const int MibaoPieceForeLength = 83;
 
@@ -304,16 +316,16 @@ public class IconSampleManager : MonoBehaviour
                     type = IconType.item;
                     break;
                 case 4:
-                    type = IconType.OldMiBao;
+                    type = IconType.Hero;
                     break;
                 case 22:
-                    type = IconType.NewMiBao;
+                    type = IconType.MiBao;
                     break;
                 case 5:
-                    type = IconType.OldMiBaoSuiPian;
+                    type = IconType.HeroFragment;
                     break;
                 case 23:
-                    type = IconType.NewMiBaoSuiPian;
+                    type = IconType.MiBaoFragment;
                     break;
                 case 211:
                     type = IconType.MiBaoSkill;
@@ -333,6 +345,7 @@ public class IconSampleManager : MonoBehaviour
                     type = IconType.AllianceTech;
                     break;
                 case 221:
+                case 222:
                     type = IconType.TuluBuff;
                     break;
                 default:
@@ -548,7 +561,7 @@ public class IconSampleManager : MonoBehaviour
                     }
                     break;
                 }
-            case IconType.OldMiBao:
+            case IconType.Hero:
                 {
                     SetForegroundAtlas(MibaoLitterAtlas);
 
@@ -574,7 +587,7 @@ public class IconSampleManager : MonoBehaviour
                     }
                     break;
                 }
-            case IconType.OldMiBaoSuiPian:
+            case IconType.HeroFragment:
                 {
                     SetForegroundAtlas(MibaoSuiPianAtlas);
 
@@ -588,19 +601,19 @@ public class IconSampleManager : MonoBehaviour
                     RightTopCornorSprite.transform.localPosition = new Vector3(26, 26, 0);
                     RightTopCornorSprite.gameObject.SetActive(true);
 
-                    CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
-                    if (temp != null)
-                    {
-                        qualityFrameSpriteName = temp.color > 0
-                            ? QualityPrefix + (temp.color - 1)
-                            : "";
+                    //CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
+                    //if (temp != null)
+                    //{
+                    //    qualityFrameSpriteName = temp.color > 0
+                    //        ? QualityPrefix + (temp.color - 1)
+                    //        : "";
 
-                        QualityFrameSprite.width = QualityFrameSprite.height = MibaoPieceQualityFrameLength;
-                        QualityFrameSprite.SetDimensions(MibaoPieceQualityFrameLength, MibaoPieceQualityFrameLength);
-                    }
+                    //    QualityFrameSprite.width = QualityFrameSprite.height = MibaoPieceQualityFrameLength;
+                    //    QualityFrameSprite.SetDimensions(MibaoPieceQualityFrameLength, MibaoPieceQualityFrameLength);
+                    //}
                     break;
                 }
-            case IconType.NewMiBao:
+            case IconType.MiBao:
                 {
                     SetForegroundAtlas(MibaoLitterAtlas);
 
@@ -627,16 +640,16 @@ public class IconSampleManager : MonoBehaviour
                     }
                     break;
                 }
-            case IconType.NewMiBaoSuiPian:
+            case IconType.MiBaoFragment:
                 {
 			        SetForegroundAtlas(NewMiBaoSuiPianAtlas);
 
-                    BgSprite.spriteName = MibaoPieceBgSpriteName;
+                    //BgSprite.spriteName = MibaoPieceBgSpriteName;
 
-                    RightTopCornorSprite.atlas = ComAtlas_0;
-                    RightTopCornorSprite.spriteName = "mibaoPieceLogo";
-                    RightTopCornorSprite.transform.localPosition = new Vector3(26, 26, 0);
-                    RightTopCornorSprite.gameObject.SetActive(true);
+                    //RightTopCornorSprite.atlas = ComAtlas_0;
+                    //RightTopCornorSprite.spriteName = "mibaoPieceLogo";
+                    //RightTopCornorSprite.transform.localPosition = new Vector3(26, 26, 0);
+                    //RightTopCornorSprite.gameObject.SetActive(true);
 
                     CommonItemTemplate temp = CommonItemTemplate.getCommonItemTemplateById(id);
 
@@ -716,7 +729,7 @@ public class IconSampleManager : MonoBehaviour
                 }
             case IconType.Baoshi:
                 {
-                    SetForegroundAtlas(BaoshiAtlas);
+                    SetForegroundAtlas(EquipAtlas);
 
                     //Set fgSprite and quality frame.
                     var temp = CommonItemTemplate.getCommonItemTemplateById(id);
@@ -727,7 +740,7 @@ public class IconSampleManager : MonoBehaviour
                     }
 
                     fgSpriteName = id.ToString();
-                    FgSprite.width = FgSprite.height = NormalForeLength;
+                    FgSprite.width = FgSprite.height = BaoshiForeLength;
 
                     BgSprite.spriteName = NormalBgSpriteName;
 
@@ -872,11 +885,11 @@ public class IconSampleManager : MonoBehaviour
                 SetForegroundAtlas(IconDecoAtlas);
                 break;
 
-            case IconType.OldMiBao:
+            case IconType.Hero:
                 SetForegroundAtlas(MibaoLitterAtlas);
                 break;
 
-            case IconType.OldMiBaoSuiPian:
+            case IconType.HeroFragment:
                 SetForegroundAtlas(MibaoSuiPianAtlas);
                 break;
 
@@ -937,11 +950,11 @@ public class IconSampleManager : MonoBehaviour
             FgSprite.gameObject.SetActive(true);
             SetForegroundSpriteName(fgSpriteName);
 
-            if (m_type == IconType.OldMiBao)
+            if (m_type == IconType.Hero)
             {
                 FgSprite.SetDimensions(105, 105);
             }
-            else if (m_type == IconType.OldMiBaoSuiPian)
+            else if (m_type == IconType.HeroFragment)
             {
                 FgSprite.SetDimensions(83, 83);
             }
@@ -1217,6 +1230,8 @@ public class IconSampleManager : MonoBehaviour
         }
     }
 
+	[HideInInspector] public TipItemData tipItemData;
+	
     /// <summary>
     /// Active pop frame and set pos to adapt screen, may have little gap in offSetPosToUIRoot.
     /// </summary>
@@ -1225,9 +1240,9 @@ public class IconSampleManager : MonoBehaviour
     {
         //Debug.Log("===========active pop frame in: " + gameObject.name);
 
-        if (m_commonId != 0) ShowTip.showTip(m_commonId);//@author LiuChang
+        if (m_commonId != 0) ShowTip.showTip(m_commonId, tipItemData);//@author LiuChang
 
-        else ShowTip.showTipEnemy(m_iconName, m_enemyName, m_enemyDesc);//@author LiuChang
+		else ShowTip.showTipEnemy(m_iconName, m_enemyName, m_enemyDesc, tipItemData);//@author LiuChang
 
         //StartCoroutine(DoActivePopFrame());
     }
@@ -1446,7 +1461,23 @@ public class IconSampleManager : MonoBehaviour
 	public UILabel AwardName;
 	public void ShowAwardName(string m_name)
 	{
+		AwardName.gameObject.SetActive (true);
 		AwardName.text = m_name;
+	}
+	[HideInInspector]public int m_Itemid;
+	[HideInInspector]public int m_Boxid;
+	void Update()
+	{
+		if(AnimationIsOpen)
+		{
+			if(!OldBookWindow.Itemids.Contains(m_Itemid)&& !OldBookWindow.Itemids.Contains(m_Boxid))
+			{
+				AnimationIsOpen = false;
+//				Debug.Log("Close Effect");
+				m2DAnimation_Continuly.gameObject.SetActive(false);
+				m_Itemid = 0;
+			}
+		}
 	}
     void OnDestroy()
     {

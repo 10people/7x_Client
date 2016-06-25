@@ -62,7 +62,9 @@ public class GeneralRecordItem : MonoBehaviour {
 		m_result.spriteName = resultLength[tempInfo.win - 1];//1-攻击胜利 , 2-攻击失败 , 3-防守胜利 , 4-防守失败
 		
 		m_nation.spriteName = "nation_" + tempInfo.enemyGuoJiaId;
-		
+
+		QXComData.SetNationSprite (m_nation,tempInfo.enemyGuoJiaId);
+
 		m_head.spriteName = "PlayerIcon" + tempInfo.enemyRoleId;
 		
 		m_level.text = tempInfo.level.ToString ();

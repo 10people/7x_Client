@@ -33,6 +33,8 @@ public class WarSituationPage : MonoBehaviour {
 
 	public GameObject anchorTopRight;
 
+	public GameObject m_anchorLT;
+
 	private string textStr;
 
 	private bool isEnterByPlunder = false;
@@ -50,6 +52,7 @@ public class WarSituationPage : MonoBehaviour {
 	void Start ()
 	{
 		QXComData.LoadYuanBaoInfo (anchorTopRight);
+		QXComData.LoadTitleObj (m_anchorLT,"联盟军情");
 	}
 
 	/// <summary>
@@ -103,8 +106,8 @@ public class WarSituationPage : MonoBehaviour {
 		situationSc.enabled = situationList.Count > 3 ? true : false;
 		situationSb.gameObject.SetActive (situationList.Count > 3 ? true : false);
 
-		desLabel.text = situationList.Count > 0 ? "" : MyColorData.getColorString (1,"军情记录为空");
-		leftLabel.text = MyColorData.getColorString (5,tempType == WarSituationData.SituationType.YUNBIAO ? "盟友运镖成功后联盟可获得建设值" : "驱逐可获得贡献度奖励\n驱逐成功联盟将不会损失建设值");
+		desLabel.text = situationList.Count > 0 ? "" : "军情记录为空";
+		leftLabel.text = tempType == WarSituationData.SituationType.YUNBIAO ? "盟友运镖成功后联盟可获得建设值" : "驱逐可获得贡献度奖励\n驱逐成功联盟将不会损失建设值";
 
 		StopCoroutine ("PlunderSituationCd");
 
@@ -120,12 +123,12 @@ public class WarSituationPage : MonoBehaviour {
 				}
 				else
 				{
-					rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp);
+					rightLabel.text = "今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp;
 				}
 			}
 			else
 			{
-				rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp);
+				rightLabel.text = "今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp;
 			}
 
 			break;
@@ -138,8 +141,8 @@ public class WarSituationPage : MonoBehaviour {
 			break;
 		}
 
-		ShowBtnState (plunderBtnObj,tempType == WarSituationData.SituationType.PLUNDER ? true : false);
-		ShowBtnState (yunBiaoBtnObj,tempType == WarSituationData.SituationType.YUNBIAO ? true : false);
+		QXComData.SetBtnState (plunderBtnObj,tempType == WarSituationData.SituationType.PLUNDER ? true : false);
+		QXComData.SetBtnState (yunBiaoBtnObj,tempType == WarSituationData.SituationType.YUNBIAO ? true : false);
 
 		foreach (EventHandler handler in situationHandlerList)
 		{
@@ -164,7 +167,7 @@ public class WarSituationPage : MonoBehaviour {
 			break;
 		case "LueDuoBtn":
 
-			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER);
+			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER,isEnterByPlunder);
 
 			break;
 		default:
@@ -178,8 +181,8 @@ public class WarSituationPage : MonoBehaviour {
 		{
 			situationResp.cd --;
 
-			rightLabel.text = MyColorData.getColorString (5,"今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp +
-			                                              "\n驱逐冷却时间：" + TimeHelper.GetUniformedTimeString (situationResp.cd));
+			rightLabel.text = "今日剩余驱逐次数：" + situationResp.todayRemainHelp + "/" + situationResp.todayAllHelp +
+			                                              "\n驱逐冷却时间：" + TimeHelper.GetUniformedTimeString (situationResp.cd);
 
 			yield return new WaitForSeconds (1);
 
@@ -187,15 +190,6 @@ public class WarSituationPage : MonoBehaviour {
 			{
 				WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER,isEnterByPlunder);
 			}
-		}
-	}
-
-	void ShowBtnState (GameObject obj,bool light)
-	{
-		UIWidget[] widgets = obj.GetComponentsInChildren<UIWidget> ();
-		foreach (UIWidget widget in widgets)
-		{
-			widget.color = light ? Color.white : Color.grey;
 		}
 	}
 

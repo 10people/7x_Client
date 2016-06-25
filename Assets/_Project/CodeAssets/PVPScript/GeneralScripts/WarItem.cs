@@ -11,7 +11,7 @@ using ProtoBuf.Meta;
 
 public class WarItem : MonoBehaviour {
 
-	private SimpleInfo simpleInfo;
+	public SimpleInfo simpleInfo;
 
 	public UISprite icon;
 	public UILabel numLabel;
@@ -25,8 +25,6 @@ public class WarItem : MonoBehaviour {
 	{
 		get{return isShowRed;}
 	}
-
-	public EventHandler itemHandler;
 
 	/// <summary>
 	/// Ins it war item.
@@ -46,7 +44,7 @@ public class WarItem : MonoBehaviour {
 
 		icon.color = isOpen ? Color.white : Color.black;
 
-		string name = FunctionOpenTemp.GetTemplateById (tempInfo.functionId).Des.Split ('-')[1];
+//		string name = FunctionOpenTemp.GetTemplateById (tempInfo.functionId).Des.Split ('-')[1];
 
 		if (isOpen)
 		{
@@ -71,11 +69,9 @@ public class WarItem : MonoBehaviour {
 		}
 
 		CheckRedPoint ();
-		itemHandler.m_click_handler -= WarItemHandlerClickBack;
-		itemHandler.m_click_handler += WarItemHandlerClickBack;
 	}
 
-	void WarItemHandlerClickBack (GameObject obj)
+	public void WarItemHandlerClickBack ()
 	{
 		if (!isOpen)
 		{
@@ -125,7 +121,7 @@ public class WarItem : MonoBehaviour {
 			redObj.SetActive (isOpen && (FunctionOpenTemp.IsShowRedSpotNotification (215) || FunctionOpenTemp.IsShowRedSpotNotification (220)) ? true : false);
 			break;
 		case 300100:
-			redObj.SetActive (isOpen && (FunctionOpenTemp.IsShowRedSpotNotification (300103) || FunctionOpenTemp.IsShowRedSpotNotification (300100)) ? true : false);
+			redObj.SetActive (isOpen && (FunctionOpenTemp.IsShowRedSpotNotification (300103) || FunctionOpenTemp.IsShowRedSpotNotification (300105) || FunctionOpenTemp.IsShowRedSpotNotification (300108)) ? true : false);
 			break;
 		default:
 			break;

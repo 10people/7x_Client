@@ -14,11 +14,7 @@ public class GetDragData : MonoBehaviour {
 		if (mScrollView.verticalScrollBar != null)
 			mScrollView.verticalScrollBar.onDragFinished = OnDragFinished;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	void OnDrag (Vector2 delta)
 	{
 		MembersManager.mInstance.IsDrag = true;

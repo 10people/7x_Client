@@ -11,6 +11,8 @@ public class DramaStoryBoard : MonoBehaviour
 
 	public float totalTime;
 
+	public bool skippable = false;
+
 
 	[HideInInspector] public JSONNode m_json;
 
@@ -26,6 +28,8 @@ public class DramaStoryBoard : MonoBehaviour
 	private List<DramaActorControllor> controllors = new List<DramaActorControllor>();
 
 	private GameObject target;
+
+	private bool _forcedEnd;
 
 
 	void OnDestroy()
@@ -49,6 +53,8 @@ public class DramaStoryBoard : MonoBehaviour
 	public void init(GameObject _target)
 	{
 		target = _target;
+
+		_forcedEnd = false;
 	}
 
 	public void initWithWritor()
@@ -403,6 +409,8 @@ public class DramaStoryBoard : MonoBehaviour
 
 	public void action()
 	{
+		_forcedEnd = false;
+
 		foreach(DramaActorControllor dac in controllors)
 		{
 			dac.init(this);
@@ -430,10 +438,18 @@ public class DramaStoryBoard : MonoBehaviour
 
 	public void forcedEnd()
 	{
+		if(storyBoardId != 10000) _forcedEnd = true;
+
 		foreach(GameObject gc in m_actorGc)
 		{
 			gc.SendMessage("forcedEnd");
 		}
+
+		if (storyBoardId == 10000) return;
+
+		actionDone ();
+
+		if(target != null) target.SendMessage("storyBoardDone");
 	}
 
 	IEnumerator callback()
@@ -442,21 +458,24 @@ public class DramaStoryBoard : MonoBehaviour
 		{
 			yield return new WaitForSeconds(totalTime);
 
-			actionDone ();
+			if(!_forcedEnd)
+			{
+				actionDone ();
 
-			if(target != null) target.SendMessage("storyBoardDone");
+				if(target != null) target.SendMessage("storyBoardDone");
+			}
 		}
 		else
 		{
 			bool flag = false;
 
-			for(;flag == false && target != null;)
+			for(;flag == false && target != null && _forcedEnd == false;)
 			{
 				yield return new WaitForEndOfFrame();//WaitForSeconds(.5f);
 
 				flag = getCurActionDone ();
 
-				if (flag == true)
+				if (flag == true && !_forcedEnd)
 				{
 					actionDone ();
 

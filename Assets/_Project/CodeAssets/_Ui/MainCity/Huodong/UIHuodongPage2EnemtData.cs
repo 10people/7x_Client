@@ -11,13 +11,5 @@ public class UIHuodongPage2EnemtData : MonoBehaviour
 	public UISprite m_spriteButtonBG;
 	public UILabelType m_UILabelType;
 	public BoxCollider m_BoxCollider;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }

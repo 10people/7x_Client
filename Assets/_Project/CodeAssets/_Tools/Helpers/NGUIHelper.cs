@@ -12,8 +12,13 @@ public class NGUIHelper {
 			
 			return null;
 		}
-		
-		Transform t_parent = p_game_object.transform.parent;
+
+	    if (p_game_object.GetComponent<UIRoot>() != null)
+	    {
+	        return p_game_object;
+	    }
+
+	    Transform t_parent = p_game_object.transform.parent;
 		
 		while (t_parent != null)
 		{
@@ -31,7 +36,7 @@ public class NGUIHelper {
 				return null;
 			}
 		}
-		
+        
 		return t_parent.gameObject;
 	}
 	

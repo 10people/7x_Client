@@ -2,17 +2,7 @@
 using System.Collections;
 
 public class Debug_MainCity_FPS : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	void OnGUI(){
 		int t_btn_index = 0;
 		

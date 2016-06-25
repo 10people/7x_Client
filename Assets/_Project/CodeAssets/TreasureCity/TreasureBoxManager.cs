@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class TreasureBoxManager : TreasureCitySingleton<TreasureBoxManager> {
-
-	private LayerMask m_layerMask = 1 << 8;
+public class TreasureBoxManager : GeneralInstance<TreasureBoxManager> {
 	
 	private Ray m_ray;
 
@@ -61,7 +59,7 @@ public class TreasureBoxManager : TreasureCitySingleton<TreasureBoxManager> {
 					}
 				}
 
-				int t_index2 = LayerMask.NameToLayer("Default");
+				int t_index2 = LayerMask.NameToLayer("CityRoles");
 				
 				int depth2 = 1 << t_index2;
 				

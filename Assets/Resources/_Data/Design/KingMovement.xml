@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<KingMovement movementId="101" time="0.1" length="0.314" />
+<KingMovement movementId="101" time="0.15" length="0.314" />
 <KingMovement movementId="102" time="0.1" length="1.196" />
 <KingMovement movementId="103" time="0.1" length="0.142" />
 <KingMovement movementId="104" time="0.133" length="1.485" />
@@ -29,5 +29,5 @@
 <KingMovement movementId="236" time="0.18" length="0.347" />
 <KingMovement movementId="237" time="0.21" length="0.333" />
 <KingMovement movementId="238" time="0.09" length="0.274" />
-<KingMovement movementId="401" time="0.42" length="7" />
+<KingMovement movementId="401" time="0.667" length="7" />
 </dataset>

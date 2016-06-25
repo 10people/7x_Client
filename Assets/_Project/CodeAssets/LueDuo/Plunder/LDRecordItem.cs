@@ -46,16 +46,10 @@ public class LDRecordItem : MonoBehaviour {
 		headIcon.spriteName = "PlayerIcon" + tempInfo.anotherRoleId;
 		nameLabel.text = tempInfo.anotherName;
 
-		nation.spriteName = "nation_" + tempInfo.anotherGuoJiaId.ToString ();
+		nation.spriteName = QXComData.GetNationName (tempInfo.anotherGuoJiaId);
+		QXComData.SetNationSprite (nation,tempInfo.anotherGuoJiaId);
 
-		if (tempInfo.anotherMengName.Equals (""))
-		{
-			allianceName.text = "无联盟";
-		}
-		else
-		{
-			allianceName.text = "<" + tempInfo.anotherMengName + ">";
-		}
+		allianceName.text = QXComData.AllianceName (tempInfo.anotherMengName);
 
 		level.text = tempInfo.anotherLevel.ToString ();
 		zhanLiLabel.text = tempInfo.anotherZhanli.ToString ();
@@ -77,7 +71,7 @@ public class LDRecordItem : MonoBehaviour {
 				attackLabel.text = "成功掠夺";
 				getAwardLabel.text = "[dc0600]掠夺了[-]";
 				gongJin.text = QXComData.MoneyName (QXComData.MoneyType.JIFEN) + ":" + tempInfo.lostXiaYi.ToString ();
-				btnLabel.text = "复仇";
+				btnLabel.text = "复  仇";
 				
 				break;
 				
@@ -87,8 +81,9 @@ public class LDRecordItem : MonoBehaviour {
 				getAwardLabel.transform.localPosition = new Vector3(180,0,0);
 
 				attackLabel.text = "掠夺";
-				getAwardLabel.text = "[00ff00]未成功[-]";
-				btnLabel.text = "复仇";
+				getAwardLabel.text = "未成功";
+				getAwardLabel.color = Color.white;
+				btnLabel.text = "复  仇";
 				
 				break;
 				
@@ -122,7 +117,8 @@ public class LDRecordItem : MonoBehaviour {
 				getAwardLabel.transform.localPosition = new Vector3(180,0,0);
 
 				attackLabel.text = "掠夺";
-				getAwardLabel.text = "[00ff00]未成功[-]";
+				getAwardLabel.text = "未成功";
+				getAwardLabel.color = Color.white;
 				btnLabel.text = "再战一局";
 				
 				break;

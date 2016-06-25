@@ -11,7 +11,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class QXChatUIBox : MonoBehaviour {
+public class QXChatUIBox : MYNGUIPanel {
 
 	public static QXChatUIBox chatUIBox;
 
@@ -26,6 +26,9 @@ public class QXChatUIBox : MonoBehaviour {
 	public EventHandler situationHandler;
 	public UISprite lightBox;
 
+	public UISprite m_spriteLianmengSwitch;
+	public GameObject m_objYuyinScend;
+
 	private bool isShow = false;
 	public enum ShowState
 	{
@@ -39,6 +42,9 @@ public class QXChatUIBox : MonoBehaviour {
 	void Awake ()
 	{
 		chatUIBox = this;
+
+		UIWidget widget = chatUIBoxHandler.GetComponent<UIWidget> ();
+		widget.alpha = chatLabel.text != "" ? 1.0f : 0.5f;
 	}
 
 	void OnDestroy ()
@@ -51,7 +57,18 @@ public class QXChatUIBox : MonoBehaviour {
 		SetRedAlert (false);
 		chatUIBoxHandler.m_click_handler += ChatUIBoxClickBack;
 		situationHandler.m_click_handler += SituationHandlerClickBack;
-
+		if(Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE)
+		{
+			m_spriteLianmengSwitch.gameObject.SetActive(true);
+			m_objYuyinScend.SetActive(true);
+			chatUIBoxObj.transform.localPosition = new Vector3(480 + ClientMain.m_iMoveX, 27, 0);
+		}
+		else
+		{
+			m_spriteLianmengSwitch.gameObject.SetActive(false);
+			m_objYuyinScend.SetActive(false);
+			chatUIBoxObj.transform.localPosition = new Vector3(240, 27, 0);
+		}
 //		PushAndNotificationHelper.SetRedSpotNotification (410012,true);
 	}
 
@@ -62,7 +79,7 @@ public class QXChatUIBox : MonoBehaviour {
 	public void InItChatUIBox (ChatMessage tempChatMsg)
 	{
 		SetRedAlert (!QXChatData.Instance.SetOpenChat);
-		Debug.Log ("chatPct.guoJia:" + tempChatMsg.chatPct.guoJia);
+//		Debug.Log ("chatPct.guoJia:" + tempChatMsg.chatPct.guoJia);
 		#if ShowChatMsgInOneLabel
 		string chatText = "";
 		if (tempChatMsg.chatPct.guoJia == 100)
@@ -73,7 +90,7 @@ public class QXChatUIBox : MonoBehaviour {
 		{
 			string channelStr = "[00e1c4][" + QXChatData.Instance.GetChannelNameStr (tempChatMsg.chatPct.channel) + "][-]";
 			string nationStr = "[e5e205][" + QXComData.GetNationName (tempChatMsg.chatPct.guoJia) + "][-]";
-			string nameStr = "[f5aa29]" + tempChatMsg.chatPct.senderName + "[-]";
+			string nameStr = "[f5aa29]" + tempChatMsg.chatPct.senderName + "：[-]";
 			chatText = channelStr + nationStr + nameStr + tempChatMsg.chatPct.content;
 //			chatText = chatText.Replace (" ","");
 			chatText = chatText.Replace ("\n","");
@@ -90,6 +107,7 @@ public class QXChatUIBox : MonoBehaviour {
 				chatMsgList.RemoveAt (0);
 			}
 		}
+
 		for (int i = 0;i < chatMsgList.Count;i ++)
 		{
 //			Debug.Log ("chatMsgList:" + chatMsgList[i]);
@@ -102,6 +120,10 @@ public class QXChatUIBox : MonoBehaviour {
 				chatLabel.text = chatMsgList[chatMsgList.Count - 1] + "\n" + chatMsgList[chatMsgList.Count - 2];
 			}
 		}
+
+		UIWidget widget = chatUIBoxHandler.GetComponent<UIWidget> ();
+		
+		widget.alpha = chatLabel.text != "" ? 1.0f : 0.5f;
 
 		#endif
 
@@ -209,7 +231,9 @@ public class QXChatUIBox : MonoBehaviour {
 	{
 		if (MainCityUI.m_MainCityUI != null)
 		{
-			isShow = (FunctionOpenTemp.IsShowRedSpotNotification (410012) || FunctionOpenTemp.IsShowRedSpotNotification (410015)) && !AllianceData.Instance.IsAllianceNotExist;
+			bool plunderCheck = FunctionOpenTemp.IsShowRedSpotNotification (410012) && FunctionOpenTemp.IsHaveID (410012);
+			bool yunBiaoCheck = FunctionOpenTemp.IsShowRedSpotNotification (410015) && FunctionOpenTemp.IsHaveID (410015);
+			isShow = (plunderCheck || yunBiaoCheck) && !AllianceData.Instance.IsAllianceNotExist;
 			situationHandler.gameObject.SetActive (isShow);
 		}
 		else
@@ -220,12 +244,14 @@ public class QXChatUIBox : MonoBehaviour {
 
 	void SituationHandlerClickBack (GameObject obj)
 	{
-		if (FunctionOpenTemp.IsShowRedSpotNotification (410012))
+		bool plunderCheck = FunctionOpenTemp.IsShowRedSpotNotification (410012) && FunctionOpenTemp.IsHaveID (410012);
+		bool yunBiaoCheck = FunctionOpenTemp.IsShowRedSpotNotification (410015) && FunctionOpenTemp.IsHaveID (410015);
+		if (plunderCheck)
 		{
 			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER);
 			return;
 		}
-		else if (FunctionOpenTemp.IsShowRedSpotNotification (410015))
+		else if (yunBiaoCheck)
 		{
 			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.YUNBIAO);
 		}
@@ -233,6 +259,10 @@ public class QXChatUIBox : MonoBehaviour {
 
 	void Update ()
 	{
+		if(QXChatPage.chatPage != null && m_spriteLianmengSwitch != null)
+		{
+			m_spriteLianmengSwitch.spriteName = "lianmeng" + (QXChatPage.chatPage.m_listKaiguan[1] == true ? "open" : "close");
+		}
 		if (isShow)
 		{
 			if (showState == ShowState.ADD)
@@ -258,5 +288,90 @@ public class QXChatUIBox : MonoBehaviour {
 				}
 			}
 		}
+
+		if(!QXChatPage.chatPage.m_isPlaying && QXChatPage.chatPage.m_listKaiguan[3] && !SceneManager.IsInLoadingScene() && !ClientMain.m_ClientMain.m_SoundPlayEff.m_isPlay)
+		{
+			if(QXChatPage.chatPage.m_listChatMessage.Count > 0)
+			{
+				QXChatPage.chatPage.m_isPlaying = true;
+				MSCPlayer.Instance.PlaySound(QXChatPage.chatPage.m_listChatMessage[0].chatPct.seq, QXChatPage.chatPage.m_listChatMessage[0].chatPct.channel);
+				QXChatPage.chatPage.m_listChatMessage[0].isPlay = false;
+				for(int i = 0; i < QXChatPage.chatPage.chatItemList.Count; i ++)
+				{
+					ChatPlayerItem tempItem = QXChatPage.chatPage.chatItemList[i].GetComponent<ChatPlayerItem>();
+					
+					if(QXChatPage.chatPage.m_listChatMessage[0].chatPct.seq == tempItem.chatMsg.chatPct.seq)
+					{
+						tempItem.chatMsg.isPlay = false;
+						tempItem.m_spriteRed.gameObject.SetActive(false);
+						break;
+					}
+				}
+				QXChatPage.chatPage.m_listChatMessage.RemoveAt(0);
+			}
+		}
+	}
+	public static bool m_bFocused = true;
+	public static bool m_bPause = false;
+	void OnApplicationFocus( bool p_focused )
+	{
+		m_bFocused = p_focused;
+	}
+	
+	void OnApplicationPause(bool p_pause)
+	{
+		m_bPause = p_pause;
+	}
+
+	public override void MYClick(GameObject ui)
+	{
+		if(ui.name == "LianmengSwitch")
+		{
+			QXChatPage.chatPage.m_listKaiguan[1] = !QXChatPage.chatPage.m_listKaiguan[1];
+		}
+	}
+	
+	public override void MYMouseOver(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYMouseOut(GameObject ui)
+	{
+		
+	}
+	public float m_fMaxVolume = 1.0f;
+	
+	public float m_fMaxEffVolume = 1.0f;
+	public override void MYPress(bool isPress, GameObject ui)
+	{
+		if(ui.name.IndexOf("YuyinScendBtn") != -1)
+		{
+			if(isPress)
+			{
+				QXChatData.Instance.SetChatChannel (ChatPct.Channel.LIANMENG);
+			}
+			QXChatPage.chatPage.MYPress(isPress, ui);
+		}
+	}
+	
+	public override void MYelease(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYondrag(Vector2 delta)
+	{
+		QXChatPage.chatPage.MYondrag(delta);
+	}
+	
+	public override void MYoubleClick(GameObject ui)
+	{
+		
+	}
+	
+	public override void MYonInput(GameObject ui, string c)
+	{
+		
 	}
 }

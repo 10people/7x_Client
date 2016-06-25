@@ -18,6 +18,7 @@ public class QCLPreViewManager : MonoBehaviour {
 
 	public GameObject AwardTemp;
 
+	public UILabel mAddIntruction;
 	void Awake()
 	{
 		BtnList.ForEach (item => SetBtnMoth(item));
@@ -45,6 +46,12 @@ public class QCLPreViewManager : MonoBehaviour {
 			LayerAwardTemp.GetComponent<PreViewTemp>().Init ();
 		}
 		AwardRoot.GetComponent<UIGrid> ().repositionNow = true;
+
+		VipTemplate mvip = VipTemplate.GetVipInfoByLevel (5);
+
+		int x = (mvip.ExpAdd * 100 - 100);
+
+		mAddIntruction.text = "V5及以上特权可享受"+x.ToString()+"%经验加成";
 	}
 	
 	public void BtnManagerMent(GameObject mbutton)

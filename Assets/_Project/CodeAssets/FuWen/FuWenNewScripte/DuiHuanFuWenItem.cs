@@ -26,15 +26,15 @@ public class DuiHuanFuWenItem : MonoBehaviour {
 
 	public GameObject ButtonName;
 
-	void Update () {
-	
-	}
+	public UILabel FuWenName;
+
 	public void init()
 	{
 		FuWenDuiHuanTemplate mFuWenDuiHuanTemplate = FuWenDuiHuanTemplate.GetFuWenDuiHuanTemplate_By_Id (AwardId);
 
 		FuWenTemplate mfuwentemp = FuWenTemplate.GetFuWenTemplateByFuWenId (AwardId);
 
+//		Debug.Log ("mfuwentemp.color = "+mfuwentemp.color);
 		FuWenPinZhi.spriteName = "pinzhi"+(mfuwentemp.color -1).ToString();
 
 		FuwenIcon.spriteName = mfuwentemp.icon.ToString ();
@@ -42,6 +42,8 @@ public class DuiHuanFuWenItem : MonoBehaviour {
 		DuiHuanNeedCost.text = mFuWenDuiHuanTemplate.cost.ToString ();
 
 		Cost = mFuWenDuiHuanTemplate.cost;
+
+		FuWenName.text = NameIdTemplate.GetName_By_NameId(mfuwentemp.name).Substring(2,4);
 	}
 
 	public void DuiHuan()

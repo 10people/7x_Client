@@ -33,12 +33,12 @@ public class CWRewardItem : MonoBehaviour {
 		m_cityLevel.text = "Lv." + jczCityTemp.allianceLv;
 
 		m_state.text = CityWarReward.m_instance.M_RewardDic[tempInfo.warType][1];
-		Debug.Log ("tempInfo.warType:" + tempInfo.warType);
-		Debug.Log ("tempInfo.result:" + tempInfo.result);
+//		Debug.Log ("tempInfo.warType:" + tempInfo.warType);
+//		Debug.Log ("tempInfo.result:" + tempInfo.result);
 		m_result.text = tempInfo.warType == 2 ? "" : (tempType == CityWarData.CW_RewardType.ALLIANCE ? CityWarReward.m_instance.M_RewardDic [tempInfo.result][0] : ("[d80202]杀敌" + tempInfo.result + "[-]"));
 
 		m_gongXun.text = "x" + tempInfo.rewardNum;
-		Debug.Log ("tempInfo.time:" + tempInfo.time);
+//		Debug.Log ("tempInfo.time:" + tempInfo.time);
 		m_time.text = CityWarReward.m_instance.M_RewardDic[tempInfo.time][2];
 
 		m_getBtn.SetActive (tempInfo.getState == 0 ? true : false);

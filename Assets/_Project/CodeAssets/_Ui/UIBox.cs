@@ -39,6 +39,9 @@ public class UIBox : MYNGUIPanel
     private float m_fScale = 0.1f;
 	private bool m_isFunction;
 
+	public UISprite m_spriteVip0;
+	public UISprite m_spriteVip1;
+
 	public UIFont UI_TitleFont;
 
 	public UIFont UI_btnFont;
@@ -66,23 +69,24 @@ public class UIBox : MYNGUIPanel
 
         public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object)
         {
-            GameObject tempObject = (GameObject)Instantiate(p_object);
+            GameObject tempObject = (GameObject) Instantiate(p_object);
             IconSampleManager tempManager = tempObject.GetComponent<IconSampleManager>();
-            tempManager.transform.parent = m_ui_box.m_labelTile.transform.parent;
-            tempManager.transform.localScale = Vector3.one;
-            tempManager.transform.localPosition = new Vector3(m_pos_x, m_pos_y, 0);
 
-            try
+            if (m_ui_box.m_labelTile.gameObject.activeInHierarchy)
             {
-                tempManager.SetIconByID(m_bag_item.itemType == 20000 ? IconSampleManager.IconType.equipment : IconSampleManager.IconType.item, m_bag_item.itemId, UIBox.isShowNumBelow ? "" : ("x" + m_bag_item.cnt), 5);
-                tempManager.SetIconPopText(m_bag_item.itemId);
+                tempManager.transform.parent = m_ui_box.m_labelTile.transform.parent;
+                tempManager.transform.localScale = Vector3.one;
+                tempManager.transform.localPosition = new Vector3(m_pos_x, m_pos_y, 0);
             }
-            catch
+            else
             {
-                tempManager.SetIconType(m_bag_item.itemType == 20000 ? IconSampleManager.IconType.equipment : IconSampleManager.IconType.item);
-                tempManager.SetIconBasic(5, "20501", UIBox.isShowNumBelow ? "" : ("x" + m_bag_item.cnt));
-				tempManager.SetIconPopText(m_bag_item.itemId);
+                tempManager.transform.parent = m_ui_box.m_labelTile_2.transform.parent;
+                tempManager.transform.localScale = Vector3.one;
+                tempManager.transform.localPosition = new Vector3(0, -85, 0);
             }
+
+            tempManager.SetIconByID(m_bag_item.itemId, UIBox.isShowNumBelow ? "" : ("x" + m_bag_item.cnt), 5);
+            tempManager.SetIconPopText(m_bag_item.itemId);
 
             if (UIBox.isShowNumBelow)
             {
@@ -109,30 +113,6 @@ public class UIBox : MYNGUIPanel
             label.depth = 2;
 
             label.text = "×" + bagItem.cnt;
-        }
-    }
-
-    void Update()
-    {
-        if (gameObject.activeSelf)
-        {
-            if (m_fScale < 1)
-            {
-                if (1 - m_fScale < 0.1f)
-                {
-                    m_button1.GetComponent<EventHandler>().m_click_handler += OnClick;
-                    m_button2.GetComponent<EventHandler>().m_click_handler += OnClick;
-					m_button1_2.GetComponent<EventHandler>().m_click_handler += OnClick;
-					m_button2_2.GetComponent<EventHandler>().m_click_handler += OnClick;
-                    m_fScale = 1;
-                }
-                else
-                {
-                    m_fScale += ((1 - m_fScale) / 2);
-                }
-                m_Panel.transform.localScale = new Vector3(m_fScale, m_fScale, m_fScale);
-				m_Panel2.transform.localScale = new Vector3(m_fScale, m_fScale, m_fScale);
-            }
         }
     }
 
@@ -168,9 +148,32 @@ public class UIBox : MYNGUIPanel
 			bool isShowBagItemNumBelow = false, 
 			bool isSetDepth = true,
 			bool isBagItemTop = true,
-			bool isFunction = false, 
-			int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ){
-		if(buttonname1 != null && buttonname1.Length == 2)
+			bool isClickWhenClose = false, 
+			int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID,
+			int vip0 = 0, int vip1 = 0)
+    {
+        if ((bagItem == null && string.IsNullOrEmpty(dis2)) || (string.IsNullOrEmpty(dis2) && string.IsNullOrEmpty(dis1) && bagItem != null))
+        {
+            m_Panel2.gameObject.SetActive(true);
+            m_Panel.gameObject.SetActive(false);
+			if(vip0 != 0)
+			{
+				m_spriteVip0.spriteName = "v" + vip0;
+				m_spriteVip0.gameObject.SetActive(true);
+			}
+			if(vip1 != 0)
+			{
+				m_spriteVip1.spriteName = "v" + vip1;
+				m_spriteVip1.gameObject.SetActive(true);
+			}
+        }
+        else
+        {
+            m_Panel2.gameObject.SetActive(false);
+            m_Panel.gameObject.SetActive(true);
+        }
+
+        if (buttonname1 != null && buttonname1.Length == 2)
 		{
 			buttonname1 = buttonname1.Substring(0,1) + " " + buttonname1.Substring(1,1);
 		}
@@ -178,7 +181,7 @@ public class UIBox : MYNGUIPanel
 		{
 			buttonname2 = buttonname2.Substring(0,1) + " " + buttonname2.Substring(1,1);
 		}
-		m_isFunction = isFunction;
+		m_isFunction = isClickWhenClose;
         m_onclick = onClick;
         m_ButtonX = 0;
         if (uifontTile != null)
@@ -200,6 +203,7 @@ public class UIBox : MYNGUIPanel
         if (string.IsNullOrEmpty(dis1))
         {
             m_labelDis1.text = "";
+            m_labelDis1_2.text = "";
             m_LabelY = 55;
         }
         else
@@ -305,16 +309,6 @@ public class UIBox : MYNGUIPanel
 		{
 			UICamera.ReSortUICamera();
 		}
-		if(bagItem == null && (string.IsNullOrEmpty(dis2)))
-		{
-			m_Panel2.gameObject.SetActive(true);
-			m_Panel.gameObject.SetActive(false);
-		}
-		else
-		{
-			m_Panel2.gameObject.SetActive(false);
-			m_Panel.gameObject.SetActive(true);
-		}
 
 		{
 			UIWindowEventTrigger t_trigger = (UIWindowEventTrigger)ComponentHelper.AddIfNotExist( gameObject, typeof(UIWindowEventTrigger) );
@@ -350,7 +344,7 @@ public class UIBox : MYNGUIPanel
         {
             m_onclick( int.Parse(obj.name.Substring(6, 1)) );
         }
-		mYindaoControl = null;
+//		mYindaoControl = null;
         DoCloseWindow();
     }
 
@@ -368,19 +362,30 @@ public class UIBox : MYNGUIPanel
 				mYindaoControl();
 				mYindaoControl = null;
 			}
-			Destroy(gameObject);
+
+            Destroy(gameObject);
 		}
     }
 
     void OnEnable()
     {
-//        MainCityUI.TryAddToObjectList(gameObject);
+        m_button1.GetComponent<EventHandler>().m_click_handler += OnClick;
+        m_button2.GetComponent<EventHandler>().m_click_handler += OnClick;
+        m_button1_2.GetComponent<EventHandler>().m_click_handler += OnClick;
+        m_button2_2.GetComponent<EventHandler>().m_click_handler += OnClick;
+
+        //        MainCityUI.TryAddToObjectList(gameObject);
         HouseModelController.TryAddToHouseDimmer(gameObject);
     }
 
     void OnDisable()
     {
-//        MainCityUI.TryRemoveFromObjectList(gameObject);
+        m_button1.GetComponent<EventHandler>().m_click_handler -= OnClick;
+        m_button2.GetComponent<EventHandler>().m_click_handler -= OnClick;
+        m_button1_2.GetComponent<EventHandler>().m_click_handler -= OnClick;
+        m_button2_2.GetComponent<EventHandler>().m_click_handler -= OnClick;
+
+        //        MainCityUI.TryRemoveFromObjectList(gameObject);
         HouseModelController.TryRemoveFromHouseDimmer(gameObject);
     }
 
@@ -404,7 +409,35 @@ public class UIBox : MYNGUIPanel
 			}
 		}
 	}
-	
+	public void  mCountTime(int m_T) //add by guronglin
+	{
+		m_Time = m_T;
+		StopCoroutine ("CountTime");
+		StartCoroutine ("CountTime");
+	}
+	int m_Time;
+	IEnumerator CountTime()
+	{
+		while(m_Time > 0)
+		{
+			m_Time -=1;
+			
+			int D = (int)(m_Time/(60*60*24));
+			int H = (int)((m_Time%(60*60*24))/(60*60));
+			int M = (int)(((m_Time%(60*60*24))%(60*60))/60);
+			int S = (int)(m_Time%60);
+
+			string m_TimeLabel = H.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.HOUR)+M.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.MINUTE)+S.ToString()+LanguageTemplate.GetText(LanguageTemplate.Text.SECOND);
+			string str1 = "成功转国后，24小时内不能再次进行转国！"+"\n";
+			string str2 = "还需等待"+m_TimeLabel;
+
+			m_labelDis1_2.text = str1+MyColorData.getColorString(5,str2);
+
+			yield return new WaitForSeconds (1.0f);
+		}
+		
+	}
+
 	public override void MYMouseOver(GameObject ui)
 	{
 		

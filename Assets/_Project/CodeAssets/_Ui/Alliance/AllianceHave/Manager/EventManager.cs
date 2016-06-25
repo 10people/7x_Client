@@ -25,14 +25,6 @@ public class EventManager : MonoBehaviour  ,SocketProcessor {
 		SocketTool.UnRegisterMessageProcessor(this);
 	}
 
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
 	public void Init()
 	{
 
@@ -90,7 +82,7 @@ public class EventManager : MonoBehaviour  ,SocketProcessor {
 			
 			m_Eventitem.transform.parent = Eventitem.transform.parent;
 			
-			m_Eventitem.transform.localPosition = new Vector3(0,133-i*Dis,0);
+			m_Eventitem.transform.localPosition = new Vector3(2,133-i*Dis,0);
 			
 			m_Eventitem.transform.localScale = Vector3.one;
 			

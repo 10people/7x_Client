@@ -118,7 +118,7 @@ public class UIFuli : MYNGUIPanel , SocketListener
 					m_Box.enabled = false;
 					Global.ScendNull(ProtoIndexes.C_FULIINFO_REQ);
 				}
-				break;
+				return true;
 			}
 			case ProtoIndexes.S_FULIINFOAWARD_RESP:
 			{
@@ -174,11 +174,6 @@ public class UIFuli : MYNGUIPanel , SocketListener
 		Debug.Log("========1");
 		m_LingquButton.color = Color.white;
 		m_Box.enabled = true;
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
 	}
 
 	public override void MYClick(GameObject ui)

@@ -218,6 +218,10 @@ public class EnterNextScene : MonoBehaviour{
             // PrepareForAllianceBattle
 		    gameObject.AddComponent<PrepareForAllianceBattle>();
 		}
+		else if ( LoadingHelper.IsLoadingCarriage() ) {
+            // PrepareForCarriage
+            gameObject.AddComponent<PrepareForCarriage>();
+		}
         else {
             // load scenes
             DirectLoadLevel();

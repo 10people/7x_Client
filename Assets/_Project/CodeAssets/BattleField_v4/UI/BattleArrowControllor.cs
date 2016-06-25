@@ -67,7 +67,7 @@ public class BattleArrowControllor : MonoBehaviour
 		{
 			BaseAI node = BattleControlor.Instance().getNodebyId(id);
 
-			if(node == null || !node.gameObject.activeSelf || !node.isAlive || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
+			if(node == null || !node.gameObject.activeSelf || !node.isAlive || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0)
 			{
 				arrowList[id].SetActive(false);
 
@@ -88,7 +88,7 @@ public class BattleArrowControllor : MonoBehaviour
 
 			if(node.nodeData.nodeType == qxmobile.protobuf.NodeType.GOD || node.nodeData.nodeType == qxmobile.protobuf.NodeType.NPC) continue;
 
-			if(!node.isAlive || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0) continue;
+			if(!node.isAlive || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0) continue;
 
 			if(!arrowList.ContainsKey(node.nodeId))
 			{

@@ -27,3 +27,13 @@ MainCityUI.cs update 里 UIShouji.m_isPlayShouji = false;
 跳过电影
 EnterGame。cs  loginRet.code
 if(loginRet.code==2)loginRet.code=2016;//跳过电影
+
+自动跳过剧情对话：
+UIDialogSystem.cs  update () 
+if(gameObject.activeSelf)
+		{
+			OnPress(true);
+
+结算界面立即显示按钮 BattleResultControllor.cs
+closeAll()
+layer_3.SetActive (true);

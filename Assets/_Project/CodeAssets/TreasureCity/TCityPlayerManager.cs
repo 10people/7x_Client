@@ -8,7 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , SocketProcessor {
+public class TCityPlayerManager : GeneralInstance<TCityPlayerManager> , SocketProcessor {
 
 	public GameObject m_NameParent;
 
@@ -41,6 +41,7 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 		{PlayerInCityManager.GetModelResPathByRoleId (3),3},
 		{PlayerInCityManager.GetModelResPathByRoleId (4),4},
 		{PlayerInCityManager.GetModelResPathByRoleId (6902),600},
+		{Res2DTemplate.GetResPath(Res2DTemplate.Res.MODEL_PARENT),0},
 	};
 
 	void LoadModel ()
@@ -50,6 +51,7 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 		Global.ResourcesDotLoad ( PlayerInCityManager.GetModelResPathByRoleId (3), PlayerModelLoadCallback );
 		Global.ResourcesDotLoad ( PlayerInCityManager.GetModelResPathByRoleId (4), PlayerModelLoadCallback );
 		Global.ResourcesDotLoad ( PlayerInCityManager.GetModelResPathByRoleId (6902), PlayerModelLoadCallback );
+		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MODEL_PARENT),PlayerModelLoadCallback);
 	}
 
 	private void PlayerModelLoadCallback (ref WWW p_www, string p_path, Object p_object )
@@ -83,7 +85,7 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 //		Debug.Log ("boxUID:" + boxUID);
 		ErrorMessage msg = new ErrorMessage ();
 		msg.errorCode = openBoxId;
-		QXComData.SendQxProtoMessage (msg,ProtoIndexes.C_GET_BAO_XIANG);
+		QXComData.SendQxProtoMessage (msg,ProtoIndexes.C_GET_BAO_XIANG,null);
 		TreasureOpenBox box = new TreasureOpenBox ();
 //		Debug.Log ("开启宝箱:" + ProtoIndexes.C_GET_BAO_XIANG);
 		isOpeningId = openBoxId;
@@ -213,11 +215,15 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 			{
 				return;
 			}
-			GameObject tCityObj = (GameObject)Instantiate (playerModelDic [tempEnterScene.roleId]);
+			GameObject tCityObj = (GameObject)Instantiate (playerModelDic [0]);
 			tCityObj.name = "PlayerObject:" + tempEnterScene.jzId;
+			Debug.Log ("pos:" + new Vector3 (tempEnterScene.posX,tempEnterScene.posY,tempEnterScene.posZ));
 			tCityObj.transform.position = new Vector3 (tempEnterScene.posX,tempEnterScene.posY,tempEnterScene.posZ);
 			tCityObj.transform.localScale = Vector3.one * 1.5f;
-
+			GameObject tCityRoleObj = (GameObject)Instantiate (playerModelDic [tempEnterScene.roleId]);
+			tCityRoleObj.transform.parent = tCityObj.transform;
+			tCityRoleObj.transform.localPosition = Vector3.zero;
+			tCityRoleObj.transform.localScale = Vector3.one;
 			playerDic.Add (tempEnterScene.uid,tCityObj);
 
 			//ModelAutoActivator Controller
@@ -227,8 +233,10 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 				tempAuto.AddAutoObj (autoObj);
 			}
 
-			TCityPlayerMove playerMove = tCityObj.AddComponent<TCityPlayerMove> ();
-			playerMove.InItTCityPlayer (tempEnterScene);
+			TCityPersonMove personMove = tCityObj.AddComponent <TCityPersonMove> ();
+			personMove.m_playerID = tempEnterScene.uid;
+			personMove.m_animation = tCityObj.GetComponentInChildren <Animator> ();
+
 //			PlayerInCity tempItem = tCityObj.AddComponent<PlayerInCity>();
 //			tempItem.m_playerID = tempEnterScene.uid;
 //			Debug.Log ("NameParentIndex(playerDic.Count):" + NameParentIndex(playerDic.Count));
@@ -304,7 +312,7 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 					tempAuto.RemoveAutoObj ();
 				}
 
-				TCityPlayerMove playerMove = playerDic[tempPlayer.uid].GetComponent<TCityPlayerMove> ();
+				TCityPersonMove playerMove = playerDic[tempPlayer.uid].GetComponent<TCityPersonMove> ();
 				if (playerMove != null)
 				{
 					Destroy (playerDic[tempPlayer.uid]);
@@ -396,7 +404,7 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 		{
 			if (tempPlayer != null)
 			{
-				PlayerNameManager.UpdatePlayerNamePosition (tempPlayer.GetComponent<TCityPlayerMove> ().PlayerEnterScene ().uid,tempPlayer);
+				PlayerNameManager.UpdatePlayerNamePosition (tempPlayer.GetComponent<TCityPersonMove> ().m_playerID,tempPlayer);
 //				PlayerNameManager.UpdatePlayerNamePosition (tempPlayer.GetComponent<PlayerInCity>().m_playerID,tempPlayer);
 			}
 		}
@@ -418,9 +426,10 @@ public class TCityPlayerManager : TreasureCitySingleton<TCityPlayerManager> , So
 		}
 
 		Vector3 targetPosition = new Vector3( tempMove.posX,tempMove.posY,tempMove.posZ );
+		Debug.Log ("targetPosition:" + targetPosition);
 //		PlayerInCity tempPlayer = playerDic[tempMove.uid].GetComponent<PlayerInCity>();
 //		tempPlayer.PlayerRun (targetPosition);
-		TCityPlayerMove playerMove = playerDic[tempMove.uid].GetComponent<TCityPlayerMove> ();
+		TCityPersonMove playerMove = playerDic[tempMove.uid].GetComponent<TCityPersonMove> ();
 		playerMove.PlayerRun( targetPosition );
 	}
 

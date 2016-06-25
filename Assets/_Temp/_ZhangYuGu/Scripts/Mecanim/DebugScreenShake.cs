@@ -23,16 +23,6 @@ public class DebugScreenShake : MonoBehaviour {
 
 	private Vector3 m_late_shake_offset;
 
-	// Use this for initialization
-	void Start () {
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	void LateUpdate(){
 		if( m_late_shake ){
 			Camera.main.transform.position = Camera.main.transform.position + m_late_shake_offset;

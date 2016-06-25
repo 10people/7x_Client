@@ -25,8 +25,10 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     public GameObject m_HiddenObj;
     public ScaleEffectController m_SEC;
     public GameObject m_ObjRedPot;
-
+    public UILabel m_labDiduiDes;
     public GameObject m_ObjTopLeft;
+    public GameObject m_ObjTopRight;
+
     private List<GameObject> _listitem = new List<GameObject>();
     private List<GuojiaRankInfo> _listNationInfo = new List<GuojiaRankInfo>();
     private string _strTitle = "";
@@ -46,6 +48,9 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     void Start()
     {
         m_Nation = this;
+        m_labDiduiDes.text = LanguageTemplate.GetText(42001);
+        m_ObjTopLeft.gameObject.SetActive(false);
+        m_ObjTopRight.gameObject.SetActive(false);
         MainCityUI.setGlobalTitle(m_ObjTopLeft, "国家", 0, 0);
         NationData.Instance.m_DataGetComplete = false;
         m_SEC.OpenCompleteDelegate += RequestData;
@@ -66,15 +71,28 @@ public class NationManagerment : MonoBehaviour, SocketProcessor
     {
         _isShowEnable = true;
         NationData.Instance.m_DataRequest = true;
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.GUO_JIA_MAIN_INFO_REQ);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.GUO_JIA_MAIN_INFO_REQ,true);
     }
     void Update()
     {
         if (NationData.Instance.m_DataGetComplete)
         {
             NationData.Instance.m_DataGetComplete = false;
-            m_HiddenObj.SetActive(true);
-            NationInfo(NationData.Instance.m_NationInfo);
+            if (NationData.Instance.m_NationInfo != null)
+            {
+                m_ObjTopRight.gameObject.SetActive(true);
+                m_ObjTopLeft.gameObject.SetActive(true);
+                m_HiddenObj.SetActive(true);
+                NationInfo(NationData.Instance.m_NationInfo);
+            }
+            else
+            {
+                ClientMain.m_UITextManager.createText("加入联盟后可以访问国家功能!");
+                MainCityUI.TryRemoveFromObjectList(m_Main);
+                Destroy(m_Main);
+ 
+            }
+           
         }
     }
     void ShowInfo(int index)

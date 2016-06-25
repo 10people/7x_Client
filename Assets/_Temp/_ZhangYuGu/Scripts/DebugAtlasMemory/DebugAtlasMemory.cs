@@ -9,17 +9,7 @@ public class DebugAtlasMemory : MonoBehaviour {
 	public GameObject m_ui_instance;
 
 	#region Mono
-	
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	void OnGUI(){
 		int t_btn_index = 0;
 		

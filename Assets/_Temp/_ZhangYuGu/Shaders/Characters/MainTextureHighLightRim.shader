@@ -1,5 +1,6 @@
 Shader "Custom/Characters/Main Texture Hight Light Rim"{
 	Properties {
+		_FxColor("Fx Color", Color) = ( 0, 0, 0, 0 )
 		_MainTex( "Base (RGB)", 2D ) = "white" {}
         _MainColor( "Main Color", Color ) = ( 0.537, 0.537, 0.537, 1 )
         _RimColor( "Rim", Color) = ( 0, 0, 0, 1 )
@@ -9,9 +10,9 @@ Shader "Custom/Characters/Main Texture Hight Light Rim"{
 	
 	Category {
 		Tags {
-			"Queue"="AlphaTest+100"
+			"Queue"="Transparent"
 			"IgnoreProjector"="True"
-			"RenderType"="Opaque"
+			"RenderType"="Transparent"
 		}
 		
 		ZWrite On
@@ -78,14 +79,20 @@ Shader "Custom/Characters/Main Texture Hight Light Rim"{
 						t_w = pow( 1 - saturate( abs( dot( i.normal, normalize(ObjSpaceViewDir(i.vertex)) ) ) ), _RimWidth ) * _RimWeight;
 					}
 
-					t_c.rgb = t_c.rgb * _MainColor * 2.2f * ( 1 - t_w ) + t_w * _RimColor;
+					t_c.xyz = ( t_c.xyz + _FxColor.xyz ) * _MainColor * 2.2f * ( 1 - t_w ) + t_w * _RimColor;
+
+					t_c.w = _MainColor.w * t_c.w;
+
+					if( t_c.w <= 0 ){
+						discard;
+					}
 
 					return t_c;
 				}
 				ENDCG
 			}
-			
-			UsePass "Legacy Shaders/VertexLit/SHADOWCASTER"
+
+			UsePass "Custom/Characters/Main Texture/SHADOWCASTER"
 		}
 	}
 }

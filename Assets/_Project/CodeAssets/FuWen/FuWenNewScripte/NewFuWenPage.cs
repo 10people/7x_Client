@@ -7,10 +7,18 @@ using System.Reflection;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
+public class NewFuWenPage : MonoBehaviour ,SocketListener {
+
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
+	public List<GameObject> ActiveBtns;
+
 	[HideInInspector]public bool RongHeUIisOpen;
 
 	public UIScrollView mScrollView;
+
+	public UIScrollBar mUIScrollBar;
 
 	public UILabel JiaPianNumber;
 
@@ -42,6 +50,9 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 
 	public UILabel  page3;
 
+	public GameObject[] Locks;
+	public GameObject OneKeyArelt;
+
 	public static NewFuWenPage Instance()
 	{
 		if (!mNewFuWenPage)
@@ -53,7 +64,12 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 	}
 	void Awake()
 	{
-		SocketTool.RegisterMessageProcessor(this);
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "符文", 0, 0);
+		// reigster trigger delegate
+		{
+			UIWindowEventTrigger.SetOnTopAgainDelegate( gameObject, YinDaoManager );
+		}
+		SocketTool.RegisterSocketListener(this);
 		AddEventListener ();
 		
 	}
@@ -63,7 +79,8 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 	}
 	void OnDestroy()
 	{
-		SocketTool.UnRegisterMessageProcessor(this);
+		SocketTool.UnRegisterSocketListener(this);
+
 		mNewFuWenPage = null;
 	}
 	void SetBtnMoth(UIEventListener mUIEventListener)
@@ -148,14 +165,14 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 	
 		//BackToFirst ();
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
-		Init ();
-
+//		Init ();
+//		InitData();
+		OnekeyXiangqiang = false;
 		RongHeUIisOpen = false;
 
-		CreateBags ();
-
-		GetBagInfo ();
-
+//		GetBagInfo ();
+//		TopRightManualAnchor.transform.localPosition = new Vector3(480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY, 0);
+//		TopLeftManualAnchor.transform.localPosition = new Vector3(-480 - ClientMain.m_iMoveX, 320 + ClientMain.m_iMoveY, 0);
 		YinDaoManager ();
 	}
 	private bool YindaoIsopen;
@@ -164,9 +181,17 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 		YindaoIsopen = false;
 		if(FreshGuide.Instance().IsActive(200060)&& TaskData.Instance.m_TaskInfoDic[200060].progress >= 0)
 		{
-			Debug.Log("引导去猎符");
+			Debug.Log("第一次引导去猎符");
 			YindaoIsopen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200060];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+			StartCoroutine("SetBtnEnble");
+		}
+		else if(FreshGuide.Instance().IsActive(200065)&& TaskData.Instance.m_TaskInfoDic[200065].progress >= 0)
+		{
+			Debug.Log("第二次引导去猎符");
+			YindaoIsopen = true;
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200065];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			StartCoroutine("SetBtnEnble");
 		}
@@ -175,8 +200,9 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 			Debug.Log("引导装备猎符空");
 			YindaoIsopen = true;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100470];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 			StartCoroutine("SetBtnEnble");
+
 		}
 		else
 		{
@@ -200,12 +226,12 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 		}
 		return jiapian;
 	}
-	void BackToFirst()
+   public void BackToFirst()
 	{
+		OnekeyXiangqiang = false;
 		RongHeUIisOpen = false;
 		FuWenInfoShow.Instance().fuwensinBag.Clear ();
 		FirstPage.SetActive (true);
-		InitBags ();
 		SecondPage.SetActive (false);
 	}
 	// Update is called once per frame
@@ -276,55 +302,77 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 	}
 	public void Init(int page = 1)
 	{
-		QueryFuwen  mQueryFuwen  = new QueryFuwen  ();
+	
+		QueryFuwen  m_mQueryFuwen  = new QueryFuwen  ();
 		MemoryStream MiBaoinfoStream = new MemoryStream ();
 		QiXiongSerializer MiBaoinfoer = new QiXiongSerializer ();
 		
-		mQueryFuwen.tab = page;
-		MiBaoinfoer.Serialize (MiBaoinfoStream,mQueryFuwen);
+		m_mQueryFuwen.tab = page;
+		MiBaoinfoer.Serialize (MiBaoinfoStream,m_mQueryFuwen);
 		
 		byte[] t_protof;
 		t_protof = MiBaoinfoStream.ToArray();
-		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FUWEN_MAINPAGE_REQ,ref t_protof);
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FUWEN_MAINPAGE_REQ,ref t_protof,ProtoIndexes.S_FUWEN_MAINPAGE_RES.ToString());
 
+		InitPage ();
+
+	}
+	void InitPage()
+	{
+		
 		int page1number = FuWenTabTemplate.getFuWenTabTemplateBytab (1).level;
 		int page2number = FuWenTabTemplate.getFuWenTabTemplateBytab (2).level;
 		int page3number = FuWenTabTemplate.getFuWenTabTemplateBytab (3).level;
 		int junzhulevel = JunZhuData.Instance ().m_junzhuInfo.level;
 
 		int JunZhuLevel = JunZhuData.Instance ().m_junzhuInfo.level;
-
+		
 		if(page1number > JunZhuLevel)
 		{
 			page1.text = page1number.ToString()+"级开启";
+			Locks[0].SetActive(true);
 		}
 		else
 		{
 			page1.text = "符印一";
+			Locks[0].SetActive(false);
 		}
 		if(page2number > JunZhuLevel)
 		{
+			Locks[1].SetActive(true);
 			page2.text = page2number.ToString()+"级开启";
 		}
 		else
 		{
 			page2.text = "符印二";
+			Locks[1].SetActive(false);
 		}
 		if(page3number > JunZhuLevel)
 		{
+			Locks[2].SetActive(true);
 			page3.text = page3number.ToString()+"级开启";
 		}
 		else
 		{
 			page3.text = "符印三";
+			Locks[2].SetActive(false);
 		}
+	}
+	void setActiveFalse(int index)
+	{
+		ActiveBtns.ForEach (item =>DosetActiveFalse(item) );
 
+		ActiveBtns [index].SetActive (true);
+	}
+	void DosetActiveFalse(GameObject mobg)
+	{
+		mobg.SetActive (false);
 	}
 	public void GetBagInfo()
 	{
 		QXComData.SendQxProtoMessage (ProtoIndexes.C_LOAD_FUWEN_IN_BAG,"8006"); // 
 	}
-	public bool OnProcessSocketMessage(QXBuffer p_message)
+	public bool OnSocketEvent(QXBuffer p_message)
 	{
 		if (p_message != null)
 		{
@@ -357,7 +405,7 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 				t_qx.Deserialize(t_stream, mFuwenInBagResp, mFuwenInBagResp.GetType());
 				
 				mFuwenInBag = mFuwenInBagResp;
-				
+				Debug.Log("Log_Times  = ");
 				InitBags();
 				
 				return true;
@@ -376,14 +424,14 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 
 				if(mFuwenResp.result == 0)
 				{
-					Init();
-					GetBagInfo();
+					Init(mQueryFuwen.tab);
+//					GetBagInfo();
 				}
 				else if(mFuwenResp.result == 1)
 				{
 					BackToFirst();
-					Init();
-					GetBagInfo();
+					Init(mQueryFuwen.tab);
+//					GetBagInfo();
 				}
 				else 
 				{
@@ -428,7 +476,6 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 				{
 					string mStr = "一键穿戴成功！";
 					ClientMain.m_UITextManager.createText( mStr);
-					GetBagInfo();
 					Init(mQueryFuwen.tab);
 				}
 				else if(mFuwenEquipAllResp.result == 1)
@@ -457,7 +504,7 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 				{
 					string mStr = "一键拆卸成功！";
 					ClientMain.m_UITextManager.createText( mStr);
-					GetBagInfo();
+	
 					Init(mQueryFuwen.tab);
 				}
 				else if(mFuwenUnloadAllResp.result == 1)
@@ -486,12 +533,54 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 	private bool IsOpenlock;
 	void InitData()
 	{
+		if(mQueryFuwen == null)
+		{
+			mQueryFuwen = MiBaoGlobleData.Instance().mueryFuwen;
+		}
+		Debug.Log ("Global.m_sPanelWantRun = "+Global.m_sPanelWantRun);
+		if(Global.m_sPanelWantRun != null || Global.m_sPanelWantRun != "")
+		{
+			if(Global.m_sPanelWantRun == "LieFu")
+			{
+				GoTOLieFu();
+				Global.m_sPanelWantRun = null;
+			}
+		}
+		GetBagInfo();
+		if(RongHeUIisOpen)
+		{
+			foreach(FuwenLanwei mlanwei in mQueryFuwen.lanwei)
+			{
+				if(mlanwei.lanweiId == FuWenInfoShow.Instance().mFuWenlanwei.lanweiId)
+				{
+					FuWenInfoShow.Instance().mFuWenlanwei = mlanwei;
+					FuWenInfoShow.Instance().Init();
+				}
+			}
+			
+		}
 		JiaPianNumber.text = GetHuFuNum ().ToString();
 		Debug.Log ("mQueryFuwen.result = "+mQueryFuwen.result);
 		if(mQueryFuwen.result == 0)
 		{
 			IsOpenlock = true;
-			FuwenPage.text = "符文页 "+mQueryFuwen.tab.ToString();
+			string FuwenPagelabel = "";
+			switch(mQueryFuwen.tab)
+			{
+			case 1:
+				FuwenPagelabel = "符印一";
+				break;
+			case 2:
+				FuwenPagelabel = "符印二";
+				break;
+			case 3:
+				FuwenPagelabel = "符印三";
+				break;
+			default:
+				break;
+			}
+			FuwenPage.text = FuwenPagelabel;
+
 		}
 		else
 		{
@@ -502,18 +591,109 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 			return;
 		}
 		SortPropertyList ();
-		CreateFuWenLanWei ();
+		setActiveFalse ( mQueryFuwen.tab -1 );
+		InitPage ();
 	}
-	void CreateFuWenLanWei()
+	void CreateFuWenLanWei(bool bagisEmpty)
 	{
-		Debug.Log ("mQueryFuwen.lanwei.Count = "+mQueryFuwen.lanwei.Count);
+
+		OneKeyArelt.SetActive(false);
+		bool couldChanger = false;
+		bool CouldLevelUp = false;
+//		Debug.Log ("mmFuWenLanWeiList.Count = "+mFuWenLanWeiList.Count);
 		for(int i = 0 ; i < mQueryFuwen.lanwei.Count; i++)
 		{
+//			Debug.Log ("mQueryFuwen.lanwei[i].itemId = "+mQueryFuwen.lanwei[i].itemId);
 			if(i < mFuWenLanWeiList.Count)
 			{
 				mFuWenLanWeiList[i].mFuwenLanwei = mQueryFuwen.lanwei[i];
+				mFuWenLanWeiList[i].showChangeTips = false;
+				if(!bagisEmpty)
+				{
+					for(int j = 0 ; j < mFuwenInBag.fuwenList.Count ; j ++)
+					{
+						if(mQueryFuwen.lanwei[i].itemId != 0)
+						{
+							FuWenTemplate mfwbg1 = FuWenTemplate.GetFuWenTemplateByFuWenId(mFuwenInBag.fuwenList[j].itemId);
+							FuWenTemplate mfwlanweo2 = FuWenTemplate.GetFuWenTemplateByFuWenId(mQueryFuwen.lanwei[i].itemId);
+							if(mfwlanweo2.inlayColor == mfwbg1.inlayColor )
+							{
+								if(mfwlanweo2.color == mfwbg1.color)
+								{
+									if(mfwlanweo2.fuwenLevel < mfwbg1.fuwenLevel)
+									{
+										OneKeyArelt.SetActive(true);
+										mFuWenLanWeiList[i].showChangeTips = true;
+										couldChanger  = true;
+										break;
+									}
+								}
+								else
+								{
+									if(mfwlanweo2.color < mfwbg1.color)
+									{
+										OneKeyArelt.SetActive(true);
+										mFuWenLanWeiList[i].showChangeTips = true;
+										couldChanger  = true;
+										break;
+									}
+								}
+			
+							}
+							if(mQueryFuwen.lanwei[i].flag)
+							{
+								CouldLevelUp = true;
+							}
+						}
+						else if(mQueryFuwen.lanwei[i].itemId == 0)
+						{
+							if(mQueryFuwen.lanwei[i].flag)
+							{
+								OneKeyArelt.SetActive(true);
+								couldChanger = true;
+							}
+						}
+					}
+				}
+			
 				mFuWenLanWeiList[i].init();
 			}
+		}
+		if(mQueryFuwen.lanwei[0].itemId != 0 && FreshGuide.Instance().IsActive(100470)&& TaskData.Instance.m_TaskInfoDic[100470].progress >= 0)
+		{
+			if(UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				UIYindao.m_UIYindao.CloseUI();
+			}
+		}
+		// 符文的三个引导开关都在这控制
+//		Debug.Log ("CouldLevelUp = "+CouldLevelUp);
+//		Debug.Log ("OneKeyArelt.activeInHierarchy = "+OneKeyArelt.activeInHierarchy);
+//		Debug.Log ("couldChanger = "+couldChanger);
+//
+//		Debug.Log ("500016 = "+PushAndNotificationHelper.IsShowRedSpotNotification(500016));
+//		Debug.Log ("500014 = "+PushAndNotificationHelper.IsShowRedSpotNotification(500014));
+//		Debug.Log ("500017 = "+PushAndNotificationHelper.IsShowRedSpotNotification(500017));
+//		Debug.Log ("500010 = "+PushAndNotificationHelper.IsShowRedSpotNotification(500010));
+		if(!CouldLevelUp)
+		{
+			int levelUp = 500016;
+			PushAndNotificationHelper.SetRedSpotNotification(levelUp,false);
+		}
+		else
+		{
+			int levelUp = 500016;
+			PushAndNotificationHelper.SetRedSpotNotification(levelUp,true);
+		}
+		if(!OneKeyArelt.activeInHierarchy)
+		{
+			int Dressid = 500014;
+			PushAndNotificationHelper.SetRedSpotNotification(Dressid,false);
+		}
+		if(!couldChanger)
+		{
+			int CanChanege = 500017;
+			PushAndNotificationHelper.SetRedSpotNotification(CanChanege,false);
 		}
 	}
 	private List<GameObject> fuWenBagItemList = new List<GameObject> ();
@@ -522,8 +702,11 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 	public void InitBags() //初始化背包的符文
 	{
 		JiaPianNumber.text = GetHuFuNum ().ToString();
+
+		OnekeyXiangqiang = false;
 		if(mFuwenInBag.fuwenList == null)
 		{
+
 			Debug.Log("mFuwenInBag.fuwenList == null");
 			foreach(GameObject ma_bagItem in fuWenBagItemList)
 			{
@@ -531,27 +714,89 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 
 			}
 			fuWenBagItemList.Clear();
+			CreateBags (16);
+			CreateFuWenLanWei (true);
 			return;
+		}
+		else
+		{
+			int x = (mFuwenInBag.fuwenList.Count)%4;
+			int y = 16 - x;
+	
+			CreateBags (mFuwenInBag.fuwenList.Count +y);
+			CreateFuWenLanWei (false);
 		}
 
 		// 背包符文排序
 
-		for (int i = 0; i < mFuwenInBag.fuwenList.Count -1; i++) {
-			FuWenTemplate mtemp = FuWenTemplate.GetFuWenTemplateByFuWenId(mFuwenInBag.fuwenList[i].itemId);
-			for(int j = i+1; j < mFuwenInBag.fuwenList.Count; j++)
-			{
-				FuWenTemplate mtempNext = FuWenTemplate.GetFuWenTemplateByFuWenId(mFuwenInBag.fuwenList[j].itemId);
-				if(mtemp.color < mtempNext.color)
-				{
-					var mfuweninbag = mFuwenInBag.fuwenList[i];
+		SortFuwens (!RongHeUIisOpen);
+//
+//		mScrollView.UpdateScrollbars (true);
+
+	}
+	public void SortFuwens(bool firstpage)
+	{
+		if (!firstpage) {
+			for (int i = 0; i < mFuwenInBag.fuwenList.Count -1; i++) {
+				
+				for (int j = i+1; j < mFuwenInBag.fuwenList.Count; j++) {
+
+					FuWenTemplate mtemp = FuWenTemplate.GetFuWenTemplateByFuWenId (mFuwenInBag.fuwenList [i].itemId);
+					FuWenTemplate mtempNext = FuWenTemplate.GetFuWenTemplateByFuWenId (mFuwenInBag.fuwenList [j].itemId);
+
+					if (mtemp.color > mtempNext.color) 
+					{
+						var mfuweninbag = mFuwenInBag.fuwenList [i];
+						
+						mFuwenInBag.fuwenList [i] = mFuwenInBag.fuwenList [j];
+						
+						mFuwenInBag.fuwenList [j] = mfuweninbag;
+
+					} else if (mtemp.color == mtempNext.color) 
+					{
+						if (mtemp.fuwenLevel > mtempNext.fuwenLevel) 
+						{
+							var mfuweninbag = mFuwenInBag.fuwenList [i];
+							
+							mFuwenInBag.fuwenList [i] = mFuwenInBag.fuwenList [j];
+							
+							mFuwenInBag.fuwenList [j] = mfuweninbag;
+
+						} else if (mtemp.fuwenLevel == mtempNext.fuwenLevel) 
+						{
+							if(mFuwenInBag.fuwenList[i].exp > mFuwenInBag.fuwenList[j].exp)
+							{
+								var mfuweninbag = mFuwenInBag.fuwenList [i];
+								
+								mFuwenInBag.fuwenList [i] = mFuwenInBag.fuwenList [j];
+								
+								mFuwenInBag.fuwenList [j] = mfuweninbag;
+							}else if(mFuwenInBag.fuwenList[i].exp == mFuwenInBag.fuwenList[j].exp)
+							{
+								if(mFuwenInBag.fuwenList [i].cnt > mFuwenInBag.fuwenList [j].cnt)
+								{
+									var mfuweninbag = mFuwenInBag.fuwenList [i];
+									
+									mFuwenInBag.fuwenList [i] = mFuwenInBag.fuwenList [j];
+									
+									mFuwenInBag.fuwenList [j] = mfuweninbag;
+								}
+							}
+						}
+					}
 					
-					mFuwenInBag.fuwenList[i] = mFuwenInBag.fuwenList[j];
-					
-					mFuwenInBag.fuwenList[j] = mfuweninbag;
 				}
-				else if(mtemp.color == mtempNext.color)
+			}
+	
+
+		} else {
+			for (int i = 0; i < mFuwenInBag.fuwenList.Count -1; i++) {
+				
+				for(int j = i+1; j < mFuwenInBag.fuwenList.Count; j++)
 				{
-					if(mtemp.fuwenLevel < mtempNext.fuwenLevel)
+					FuWenTemplate mtemp = FuWenTemplate.GetFuWenTemplateByFuWenId(mFuwenInBag.fuwenList[i].itemId);
+					FuWenTemplate mtempNext = FuWenTemplate.GetFuWenTemplateByFuWenId(mFuwenInBag.fuwenList[j].itemId);
+					if(mtemp.color < mtempNext.color)
 					{
 						var mfuweninbag = mFuwenInBag.fuwenList[i];
 						
@@ -559,9 +804,9 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 						
 						mFuwenInBag.fuwenList[j] = mfuweninbag;
 					}
-					else if(mtemp.fuwenLevel == mtempNext.fuwenLevel)
+					else if(mtemp.color == mtempNext.color)
 					{
-						if(mtemp.exp < mtempNext.exp)
+						if(mtemp.fuwenLevel < mtempNext.fuwenLevel)
 						{
 							var mfuweninbag = mFuwenInBag.fuwenList[i];
 							
@@ -569,19 +814,41 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 							
 							mFuwenInBag.fuwenList[j] = mfuweninbag;
 						}
+						else if(mtemp.fuwenLevel == mtempNext.fuwenLevel)
+						{
+							if(mFuwenInBag.fuwenList[i].exp < mFuwenInBag.fuwenList[j].exp)
+							{
+								var mfuweninbag = mFuwenInBag.fuwenList[i];
+								
+								mFuwenInBag.fuwenList[i] = mFuwenInBag.fuwenList[j];
+								
+								mFuwenInBag.fuwenList[j] = mfuweninbag;
+							}
+							else if(mFuwenInBag.fuwenList[i].exp == mFuwenInBag.fuwenList[j].exp)
+							{
+								if(mFuwenInBag.fuwenList [i].cnt < mFuwenInBag.fuwenList [j].cnt)
+								{
+									var mfuweninbag = mFuwenInBag.fuwenList [i];
+									
+									mFuwenInBag.fuwenList [i] = mFuwenInBag.fuwenList [j];
+									
+									mFuwenInBag.fuwenList [j] = mfuweninbag;
+								}
+							}
+						}
 					}
+					
 				}
-			
 			}
+
 		}
-		fuWenBagItemList = QXComData.CreateGameObjectList (BagFuWenItem,mGrid,mFuwenInBag.fuwenList.Count,fuWenBagItemList);
-		for(int i = 0; i < fuWenBagItemList.Count; i++)
-		{
-			bagItem m_bagItem = fuWenBagItemList[i].GetComponent<bagItem>();
-
-			m_bagItem.mfwbg = mFuwenInBag.fuwenList[i];
-
-			m_bagItem.init();
+		fuWenBagItemList = QXComData.CreateGameObjectList (BagFuWenItem, mGrid, mFuwenInBag.fuwenList.Count, fuWenBagItemList);
+		for (int i = 0; i < fuWenBagItemList.Count; i++) {
+			bagItem m_bagItem = fuWenBagItemList [i].GetComponent<bagItem> ();
+			
+			m_bagItem.mfwbg = mFuwenInBag.fuwenList [i];
+			
+			m_bagItem.init ();
 		}
 		mScrollView.UpdatePosition ();
 	}
@@ -648,6 +915,13 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 	public void OnKeyIn()// 一键放入
 	{
 		if(!IsOpenlock)return;
+
+		FuWenTemplate mFUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (FuWenInfoShow.Instance().mFuWenlanwei.itemId);
+		if(mFUwen.fuwenLevel >= mFUwen.levelMax)
+		{
+			ClientMain.m_UITextManager.createText("符文等级已达最高，不能再进行熔合了！");
+			return;
+		}
 		if(fuWenBagItemList == null || fuWenBagItemList.Count <= 0)
 		{
 			string mData = "无可放入的符文！";
@@ -659,15 +933,46 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 		}
 		StartCoroutine ("AllXIangQian");
 	}
+	public bool OnekeyXiangqiang = false;
 	IEnumerator AllXIangQian()
 	{
-		for(int i = 0; i < fuWenBagItemList.Count; i++)
+//		FuWenTemplate FuwenInfo = FuWenTemplate.GetFuWenTemplateByFuWenId(FuWenInfoShow.Instance().mCurrFuWenlanwei.itemId);
+
+//		Debug.Log ("FuWenInfoShow.Instance().mCurrFuWenlanwei.exp = "+FuWenInfoShow.Instance().mCurrFuWenlanwei.exp);
+//
+//		Debug.Log ("FuwenInfo.lvlupExp = "+FuWenInfoShow.Instance().CurrLevelUpExp);
+
+		if(FuWenInfoShow.Instance ().fuwensinBag.Count > 0 && !OnekeyXiangqiang)
 		{
-			yield return new WaitForSeconds(0.0001f);
-			bagItem m_bagItem = fuWenBagItemList[i].GetComponent<bagItem>();
-			m_bagItem.isOneKey = true;
-			m_bagItem.Choose();
+			SecondPage.GetComponent<FuWenInfoShow>().Init ();
+			for(int i = 0; i < fuWenBagItemList.Count; i++)
+			{
+				bagItem m_bagItem = fuWenBagItemList[i].GetComponent<bagItem>();
+				
+				m_bagItem.init();
+			}
 		}
+		//Debug.Log ("OnekeyXiangqiang = "+OnekeyXiangqiang);
+		if(!OnekeyXiangqiang)
+		{
+			for(int i = 0; i < fuWenBagItemList.Count; i++)
+			{
+				yield return new WaitForSeconds(0.01f);
+				bagItem m_bagItem = fuWenBagItemList[i].GetComponent<bagItem>();
+				if(FuWenInfoShow.Instance().LanweiExp >= FuWenInfoShow.Instance().CurrLevelUpExp)
+				{
+					break;
+				}
+				else
+				{
+					m_bagItem.isOneKey = true;
+					m_bagItem.Choose();
+					//Debug.Log ("mCurrFuWenlanwei.exp = "+FuWenInfoShow.Instance().mCurrFuWenlanwei.exp);
+				}
+			}
+			OnekeyXiangqiang = true;
+		}
+
 	}
 	public void GoTOLieFu() // 猎符
 	{
@@ -683,7 +988,7 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 			NewfuWenObj = GameObject.Instantiate( p_object ) as GameObject;
 			LieFuManagerment mNewfuWenObj = NewfuWenObj.GetComponent<LieFuManagerment>();
 			mNewfuWenObj.Init (YinDaoManager);
-			MainCityUI.TryAddToObjectList(NewfuWenObj,false);
+			MainCityUI.TryAddToObjectList(NewfuWenObj,true);
 		} 
 	}
 	public void ChangeJiaPian()//兑换甲片
@@ -703,6 +1008,8 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 	public void BackBtn()//返回
 	{
 		BackToFirst ();
+		InitBags ( );
+	
 	}
 //	public void ChaiJie() // 拆卸
 //	{
@@ -725,17 +1032,21 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 		}
 		else
 		{
-			 if(mQueryFuwen.lanwei [index].flag)
+
+			if(mFuWenLanWeiList[index].showChangeTips)
 			{
 				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.FUWENCHUANDAI ),
 				                        FuWenChange );
 			}else
 			{
+
 				FirstPage.SetActive (false);
 				
 				SecondPage.SetActive (true);
 
 				RongHeUIisOpen = true;
+
+				InitBags();
 
 				FuWenInfoShow mFuWenInfoShow = SecondPage.GetComponent<FuWenInfoShow>();
 				
@@ -826,30 +1137,34 @@ public class NewFuWenPage : MonoBehaviour ,SocketProcessor {
 		{
 			return;
 		}
+		if(RongHeUIisOpen)
+		{
+			BackBtn();
+		}
 		Init (index);
 	}
 	List<GameObject> Bags = new List<GameObject>();
-	int bagsNumbers = 32;
+
 	public GameObject bagstemp;
 
 	public UIGrid  mgrid;
-
-	void CreateBags()
+	private int bagnuber;// 临时变量
+	void CreateBags(int bagNumber)
 	{
-		foreach(GameObject mGameObject in Bags)
+		if(bagNumber > bagnuber)
 		{
-			Destroy(mGameObject);
+			for(int i = bagnuber ;i < bagNumber; i ++)
+			{
+				GameObject mBag = Instantiate(bagstemp) as GameObject;
+				mBag.SetActive(true);
+				mBag.transform.parent = bagstemp.transform.parent;
+				mBag.transform.localScale = Vector3.one;
+				Bags.Add(mBag);
+			}
+			bagnuber = bagNumber;
+			mgrid.repositionNow = true;
 		}
-		Bags.Clear ();
-		for(int i = 0 ;i < bagsNumbers; i ++)
-		{
-			GameObject mBag = Instantiate(bagstemp) as GameObject;
-			mBag.SetActive(true);
-			mBag.transform.parent = bagstemp.transform.parent;
-			mBag.transform.localScale = Vector3.one;
-			Bags.Add(mBag);
-		}
-		mgrid.repositionNow = true;
+//		mScrollView.UpdatePosition ();
 	}
 	public  string GetFuWenProperty(int index)
 	{

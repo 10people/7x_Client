@@ -79,6 +79,20 @@ namespace Rank
         private void OnNationsClick(int index)
         {
             m_NationTogglesControl.OnToggleClick(index);
+            m_NationTogglesControl.TogglesEvents.ForEach(item =>
+            {
+                var temp = item.GetComponentsInChildren<UILabelType>(true);
+                if (temp.Any())
+                {
+                    temp.First().setType(11);
+                }
+            });
+
+            var temp2 = m_NationTogglesControl.TogglesEvents[index].GetComponentsInChildren<UILabelType>(true);
+            if (temp2.Any())
+            {
+                temp2.First().setType(10);
+            }
             CurrentNation = index;
             RequestAllInModule(1, index);
         }
@@ -112,6 +126,8 @@ namespace Rank
         public void OnModulesClick(int index)
         {
             m_ModuleTogglesControl.OnToggleClick(index);
+            m_ModuleTogglesControl.TogglesEvents.ForEach(item => item.GetComponentsInChildren<UILabelType>(true).First().setType(11));
+            m_ModuleTogglesControl.TogglesEvents[index].GetComponentsInChildren<UILabelType>(true).First().setType(10);
             m_ModuleControllerList.ForEach(item => item.gameObject.SetActive(false));
             m_ModuleControllerList[index].gameObject.SetActive(true);
             currentModule = index;
@@ -220,29 +236,51 @@ namespace Rank
             UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
             uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
             uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-                 null, "您已成功添加" + ShieldName + "到屏蔽列表",
+                 "您已成功添加" + ShieldName + "到屏蔽列表", null,
                  null,
                  LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
                  null);
         }
 
-        public void FindNoKingCallBack(ref WWW p_www, string p_path, Object p_object)
+        public void PlayerNotExistCallBack(ref WWW p_www, string p_path, Object p_object)
         {
             UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
             uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
             uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-                 null, "此玩家不存在！",
+                 "此玩家不存在！", null,
                  null,
                  LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
                  null);
         }
 
-        public void FindNoAllianceCallBack(ref WWW p_www, string p_path, Object p_object)
+        public void PlayerNotInRankCallBack(ref WWW p_www, string p_path, Object p_object)
         {
             UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
             uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
             uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-                 null, "此联盟不存在！",
+                 LanguageTemplate.GetText(2720), null,
+                 null,
+                 LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
+                 null);
+        }
+
+        public void AllianceNotExistCallBack(ref WWW p_www, string p_path, Object p_object)
+        {
+            UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+            uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
+            uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
+                 "此联盟不存在！", null,
+                 null,
+                 LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
+                 null);
+        }
+
+        public void AllianceNotInRankCallBack(ref WWW p_www, string p_path, Object p_object)
+        {
+            UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+            uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
+            uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
+                 "该联盟暂未上榜！", null,
                  null,
                  LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
                  null);

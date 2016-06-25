@@ -148,13 +148,6 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .00407542149
-        functionName: PlaySound
-        data: 42050|42051|0|0|0
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: .018444458
         functionName: setWeaponTriggerTrue
         data: 
@@ -197,7 +190,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .131895646
+      - time: .151407838
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -211,16 +204,16 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .277178913
-        functionName: PlaySound
-        data: 33081|33082|33083|33084
+      - time: .260182381
+        functionName: setWeaponTriggerFalse
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .279694587
-        functionName: setWeaponTriggerFalse
-        data: 
+      - time: .277178913
+        functionName: PlaySound
+        data: 33081|33082|33083|33084
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -233,15 +226,15 @@ ModelImporter:
         intParameter: 0
         messageOptions: 0
       - time: .339308351
-        functionName: setWeaponTriggerFalse
-        data: 
+        functionName: PlaySound
+        data: 33084
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: .339308351
-        functionName: PlaySound
-        data: 33084
+        functionName: setWeaponTriggerFalse
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -263,6 +256,13 @@ ModelImporter:
       - time: .5094347
         functionName: setWeaponTriggerFalse
         data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .561180711
+        functionName: PlaySound
+        data: 42050|42051
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -798,7 +798,7 @@ ModelImporter:
         messageOptions: 0
       - time: .00731871789
         functionName: PlaySound
-        data: 42054
+        data: 42054|0|0|0|0|0|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -914,6 +914,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .253401458
         functionName: PlaySound
         data: 4000|4001|4002|0|0
@@ -1143,7 +1150,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .00317460322
+      - time: .0226867981
         functionName: PlaySound
         data: 42052
         objectReferenceParameter: {instanceID: 0}
@@ -3429,6 +3436,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .121117666
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600242
+        messageOptions: 0
       - time: .170562476
         functionName: PlaySound
         data: 3300
@@ -3436,19 +3450,19 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .17083773
+      - time: .17551063
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .121117666
-        functionName: playAttackEffect
-        data: 
+      - time: .0632918626
+        functionName: PlaySound
+        data: 42050|42051|0|0|0|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 600242
+        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 
@@ -3561,26 +3575,26 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .138387442
-        functionName: PlaySound
-        data: 3300
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .138662696
-        functionName: setWeaponTriggerFalse
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: .118013173
         functionName: playAttackEffect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 600243
+        messageOptions: 0
+      - time: .13772811
+        functionName: setWeaponTriggerFalse
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .143994913
+        functionName: PlaySound
+        data: 3300
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 
@@ -3693,6 +3707,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .192546889
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600244
+        messageOptions: 0
       - time: .213033512
         functionName: PlaySound
         data: 3300
@@ -3700,19 +3721,12 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .21459578
+      - time: .218334094
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .192546889
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 600244
         messageOptions: 0
       transformMask:
       - path: 
@@ -3824,13 +3838,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 90
-        messageOptions: 0
-      - time: .00731871789
-        functionName: PlaySound
-        data: 42054
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
         messageOptions: 0
       - time: .968000233
         functionName: attackedActionEnd
@@ -3950,16 +3957,16 @@ ModelImporter:
         floatParameter: 0
         intParameter: 90
         messageOptions: 0
-      - time: .00731871789
-        functionName: PlaySound
-        data: 42054
+      - time: .968000233
+        functionName: attackedActionEnd
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .968000233
-        functionName: attackedActionEnd
-        data: 
+      - time: .0168774277
+        functionName: PlaySound
+        data: 42053|0|0
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -4067,8 +4074,8 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
-      - time: .951797903
+      events:
+      - time: .893946648
         functionName: checkDieInKnockdown
         data: 
         objectReferenceParameter: {instanceID: 0}

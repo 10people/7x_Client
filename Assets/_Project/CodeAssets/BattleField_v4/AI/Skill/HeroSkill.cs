@@ -266,6 +266,8 @@ public class HeroSkill : MonoBehaviour
 
 	public virtual void init()
 	{
+		string tempDebugOut = "";
+		tempDebugOut += "技能ID=" + template.id;
 		int tempValue;
 		temptemptempString = template.value7;
 
@@ -391,6 +393,7 @@ public class HeroSkill : MonoBehaviour
 		}
 
 		tempValue = int.Parse(Global.NextCutting(ref temptemptempString));
+//		Debug.Log ("tempValue="+tempValue);
 		for(int i = 0; i < tempValue; i ++)
 		{
 			m_ListAngleEffMove.Add(int.Parse(Global.NextCutting(ref temptemptempString)));
@@ -423,7 +426,7 @@ public class HeroSkill : MonoBehaviour
 			break;
 		}
 		m_sAnimName = Global.NextCutting(ref temptemptempString);//动作名字
-
+		tempDebugOut += "技能动作名字=" + m_sAnimName;
 //		Debug.Log("m_sAnimName="+m_sAnimName);
 		tempValue = int.Parse(Global.NextCutting(ref temptemptempString));//施法目标敌方我方
 		if(tempValue == 0)
@@ -511,6 +514,9 @@ public class HeroSkill : MonoBehaviour
 //		Debug.Log("temptemptempString="+temptemptempString);
 		tempValue = int.Parse(Global.NextCutting(ref temptemptempString));
 //		Debug.Log(tempValue);
+		tempDebugOut += "技能元素个数=" + tempValue;
+		tempDebugOut += "之后的数据=" + temptemptempString;
+//		Debug.Log (tempDebugOut);
 		for(int i = 0; i < tempValue; i ++)
 		{
 //			Debug.Log(temptemptempString);
@@ -929,6 +935,7 @@ public class HeroSkill : MonoBehaviour
 				tempEffobj.transform.rotation = node.gameObject.transform.rotation;
 				if(m_CollStateType == COLLSTATETYPE.VECTOR)
 				{
+					Debug.Log("m_iCollValue5="+m_iCollValue5);
 					if(m_iCollValue5 == -1000)
 					{
 						tempEffobj.transform.LookAt(tempTargetOne.gameObject.transform);
@@ -1073,11 +1080,18 @@ public class HeroSkill : MonoBehaviour
 					tempobjColl.transform.localScale = new Vector3(m_iCollValue1, m_iCollValue2, 1);
 
 //					Debug.Log(node.transform.localEulerAngles);
-
-					node.transform.localEulerAngles += new Vector3(0, m_iCollValue5, 0);
-					Vector3 moveat = node.transform.forward;
-					node.transform.localEulerAngles -= new Vector3(0, m_iCollValue5, 0);
-					tempobjColl.transform.localEulerAngles += new Vector3(0, m_iCollValue5, 0);
+					Vector3 moveat = Vector3.zero;
+					if(m_iCollValue5 != -1000)
+					{
+						node.transform.localEulerAngles += new Vector3(0, m_iCollValue5, 0);
+						moveat = node.transform.forward;
+						node.transform.localEulerAngles -= new Vector3(0, m_iCollValue5, 0);
+						tempobjColl.transform.localEulerAngles += new Vector3(0, m_iCollValue5, 0);
+					}
+					else
+					{
+						moveat = node.transform.forward;
+					}
 					moveat.y = 0;
 					tempobjColl.transform.position += (moveat.normalized * (m_iCollValue1 / 2));
 					m_listShowRange.Add(tempobjColl);
@@ -1181,6 +1195,8 @@ public class HeroSkill : MonoBehaviour
 				}
 			}
 		}
+		m_fEffMoveIndexBTime = Time.time;
+		m_fEffMovePassageTime = m_fEffMoveIndexBTime;
 	}
 	private int num = 0;
 	private Vector3 m_VectorPos;
@@ -1268,8 +1284,11 @@ public class HeroSkill : MonoBehaviour
 								BattleUIControlor.Instance().cooldownMibaoSkill_enemy.refreshCDTime();
 							}
 						}
-						node.openShow();
-						node.activeSkillStart(0);
+						if(!m_isGuanlian)
+						{
+							node.openShow();
+							node.activeSkillStart(0);
+						}
 //						setShowFanRand();
 //						activeSkill(0);
 //						for(int i = 0; i < m_otherSkill.Count; i ++)
@@ -1384,7 +1403,7 @@ public class HeroSkill : MonoBehaviour
 
 					if(m_iEffMoveIndex < m_ListAngleEffMove.Count)
 					{
-						m_fEffMovePassageTime = tempTime;
+//						m_fEffMovePassageTime = tempTime;
 						if(m_isEffLock && m_isEffPlaySelf)
 						{
 							node.transform.position += m_listMyEffElement[i].transform.forward.normalized * (((tempTime - m_fEffMovePassageTime) / m_ListEffMoveTime[m_iEffMoveIndex]) * m_ListEffMoveDistance[m_iEffMoveIndex]);
@@ -1394,21 +1413,25 @@ public class HeroSkill : MonoBehaviour
 							m_listMyEffElement[i].transform.position += m_listMyEffElement[i].transform.forward.normalized * (((tempTime - m_fEffMovePassageTime) / m_ListEffMoveTime[m_iEffMoveIndex]) * m_ListEffMoveDistance[m_iEffMoveIndex]);
 						}
 //						m_fEffMovePassageTime
+						m_fEffMovePassageTime = tempTime;
 						if(tempTime - m_fEffMoveIndexBTime >= m_ListEffMoveTime[m_iEffMoveIndex])
 						{
 							m_fEffMoveIndexBTime = tempTime;
 							m_fEffMovePassageTime = tempTime;
 							m_iEffMoveIndex ++;
-							int tempAngle;
-							if(m_ListAngleEffMove[m_iEffMoveIndex] == -1)
+							if(m_iEffMoveIndex < m_ListAngleEffMove.Count)
 							{
-								tempAngle = Global.getRandom(360);
+								int tempAngle;
+								if(m_ListAngleEffMove[m_iEffMoveIndex] == -1)
+								{
+									tempAngle = Global.getRandom(360);
+								}
+								else
+								{
+									tempAngle = m_ListAngleEffMove[m_iEffMoveIndex];
+								}
+								m_listMyEffElement[i].transform.localEulerAngles += new Vector3(0, tempAngle, 0);
 							}
-							else
-							{
-								tempAngle = m_ListAngleEffMove[m_iEffMoveIndex];
-							}
-							m_listMyEffElement[i].transform.localEulerAngles += new Vector3(0, tempAngle, 0);
 						}
 					}
 
@@ -1657,7 +1680,7 @@ public class HeroSkill : MonoBehaviour
 			}
 
 			//是否是死的角色
-			if( listBaseAI[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) <= 0 ){
+			if( listBaseAI[i].nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0 ){
 				int indexResurrection = -1;
 
 				for(int l = 0; l < m_look.Count; l ++)//遍历技能元素组是否有复活

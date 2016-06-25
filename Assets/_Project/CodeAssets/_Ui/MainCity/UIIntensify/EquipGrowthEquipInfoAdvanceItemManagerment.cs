@@ -160,24 +160,27 @@ public class EquipGrowthEquipInfoAdvanceItemManagerment : MonoBehaviour
         m_SpriteIcon.spriteName = baseInfo._Icon.ToString();
         m_LabelName.text = NameIdTemplate.GetName_By_NameId(int.Parse(ZhuangBei.getZhuangBeiById(_ExpId).m_name)); 
         m_LabelLevel.text = "Lv." + baseInfo._Level;
-        if (FunctionWindowsCreateManagerment.SpecialSizeFit(baseInfo._PinZhi))
+        if (FunctionWindowsCreateManagerment.SpecialSizeFit(CommonItemTemplate.getCommonItemTemplateById(baseInfo._EquipId).color))
         {
+            m_SpritePinZhi.transform.localPosition = new Vector3(-393, 173, 0);
             m_SpritePinZhi.width = m_SpritePinZhi.height = 115;
         }
         else
         {
-            m_SpritePinZhi.width = m_SpritePinZhi.height = 102;
+            m_SpritePinZhi.transform.localPosition = new Vector3(-394, 173, 0);
+            m_SpritePinZhi.width = m_SpritePinZhi.height = 105;
         }
-        m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(baseInfo._PinZhi);
+        m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(CommonItemTemplate.getCommonItemTemplateById(baseInfo._EquipId).color);
         if (baseInfo._MaxEXp > 0)
         {
+          
             m_PregressBar.value = baseInfo._advanceExp / float.Parse(baseInfo._MaxEXp.ToString());
             m_LabelProgress.text = baseInfo._advanceExp + "/" +  baseInfo._MaxEXp.ToString();
         }
         else
         {
             m_PregressBar.value = 1.0f;
-            m_LabelProgress.text = baseInfo._currEXp.ToString();
+            m_LabelProgress.text = baseInfo._advanceExp.ToString() + "/0";
         }
         ShowAttribute(baseInfo);
     }
@@ -309,11 +312,13 @@ public class EquipGrowthEquipInfoAdvanceItemManagerment : MonoBehaviour
         m_SpriteIcon_Next.spriteName = info._Icon;
         if (FunctionWindowsCreateManagerment.SpecialSizeFit(info._Quality))
         {
+            m_SpritePinZhi.transform.localPosition = new Vector3(-393, 173, 0);
             m_SpritePinZhi_Next.width = m_SpritePinZhi_Next.height = 115;
         }
         else
         {
-            m_SpritePinZhi_Next.width = m_SpritePinZhi_Next.height = 102;
+            m_SpritePinZhi.transform.localPosition = new Vector3(-394, 173, 0);
+            m_SpritePinZhi_Next.width = m_SpritePinZhi_Next.height = 105;
         }
 
         m_SpritePinZhi_Next.spriteName = QualityIconSelected.SelectQuality(info._Quality);

@@ -8,17 +8,6 @@ public class UIFunctionJump : MYNGUIPanel
 	public UISprite[] m_SpriteIcon;
 	public UISprite[] m_SpriteIconRed;
 	public FunctionLinkTemplate m_FunctionLinkTemplate;
-	// Use this for initialization
-	void Start () 
-	{
-	
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-	
-	}
 
 	public void setDate(int id)
 	{
@@ -54,9 +43,37 @@ public class UIFunctionJump : MYNGUIPanel
 		if (ui.name.IndexOf("MainCityUIButton_") != -1)
 		{
 			int index = int.Parse(ui.name.Substring(17, ui.name.Length - 17));
-			Global.m_sMainCityWantOpenPanel = FunctionOpenTemp.GetTemplateById(m_FunctionLinkTemplate.functionID[index]).GetParent_menu_id();
-			Global.m_sPanelWantRun = m_FunctionLinkTemplate.functionSprite[index];
-			Debug.Log(Global.m_sPanelWantRun);
+			if(!FunctionOpenTemp.IsHaveID(m_FunctionLinkTemplate.functionID[index]))
+			{
+				ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(m_FunctionLinkTemplate.functionID[index]).m_sNotOpenTips);
+			}
+			else
+			{
+				if((Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_MAINCITY || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_MAINCITY_YEWAN || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCECITY || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCECITY_YEWAN))
+				{
+					if(FunctionOpenTemp.GetTemplateById(m_FunctionLinkTemplate.functionID[index]).GetParent_menu_id() == 1420)
+					{
+						Global.m_sMainCityWantOpenPanel = m_FunctionLinkTemplate.functionID[index];
+						Global.m_sPanelWantRun = m_FunctionLinkTemplate.functionSprite[index];
+					}
+					else
+					{
+						Global.m_sMainCityWantOpenPanel = FunctionOpenTemp.GetTemplateById(m_FunctionLinkTemplate.functionID[index]).GetParent_menu_id();
+						Global.m_sPanelWantRun = m_FunctionLinkTemplate.functionSprite[index];
+					}
+				}
+				else
+				{
+					if(m_FunctionLinkTemplate.functionID[index] == 1300)
+					{
+						RechargeData.Instance.RechargeDataReq ();
+					}
+					else
+					{
+						ClientMain.m_UITextManager.createText("返回主城后才可进入本功能");
+					}
+				}
+			}
 		}
 		DoCloseWindow();
 	}

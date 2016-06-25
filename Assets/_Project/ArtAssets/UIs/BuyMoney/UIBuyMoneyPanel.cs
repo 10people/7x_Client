@@ -296,13 +296,11 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 		}
 		else if (inf.result == 1)
 		{
-			//购买失败
-			JunZhuData.Instance().IsBuyTongBi = true;
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), JunZhuData.Instance().LoadBuyTongBiNoTimesBack);
+			Global.CreateFunctionIcon (1901);
 		}
 		else if (inf.result == 2)
 		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), JunZhuData.Instance().LoadBack_2);
+			Global.CreateFunctionIcon(101);
 		}
 	}
 

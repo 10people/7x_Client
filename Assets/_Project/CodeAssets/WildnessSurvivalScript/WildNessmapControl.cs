@@ -13,13 +13,7 @@ public class WildNessmapControl : MonoBehaviour {
     	Transform mParent = mTrans.parent;
 		mRoot = NGUITools.FindInParents<UIRoot>(mParent);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 
-
-	}
 	void OnDrag(Vector2 delta)
 	{
 		OnDragDropMove((Vector3)delta * mRoot.pixelSizeAdjustment);

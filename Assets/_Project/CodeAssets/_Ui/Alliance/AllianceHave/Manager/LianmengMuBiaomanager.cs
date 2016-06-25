@@ -19,13 +19,6 @@ public class LianmengMuBiaomanager : MYNGUIPanel {
 		mEventListener.onClick = Close;
 	}
 
-	void Start () {
-	
-	}
-
-	void Update () {
-	
-	}
 	public void Init(string mstr)
 	{
 		mTitel.text = mstr;
@@ -49,7 +42,7 @@ public class LianmengMuBiaomanager : MYNGUIPanel {
 			MuBiaoItem mMuBiaoItem = m_mItem.GetComponent<MuBiaoItem>();
 
 			mMuBiaoItem.Id = i+1;
-			mMuBiaoItem.Init();
+			mMuBiaoItem.Init(Close);
 		}
 	}
 	public void Close(GameObject mbutton)

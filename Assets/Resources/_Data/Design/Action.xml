@@ -4,10 +4,11 @@
 <Action Id="111" TypeKey="1" Param1="5000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="1010" Prob="1000" />
 <Action Id="121" TypeKey="4" Param1="121" Param2="10000" Param3="0" Param4="0" Param5="0" TSR="1" TTR="0" CeOnHit="0" CsOnHit="0" Prob="1000" />
 <Action Id="131" TypeKey="3" Param1="25" Param2="0" Param3="0" Param4="0" Param5="0" TSR="1" TTR="0" CeOnHit="0" CsOnHit="0" Prob="1000" />
-<Action Id="151" TypeKey="4" Param1="151" Param2="5000" Param3="0" Param4="0" Param5="0" TSR="1" TTR="0" CeOnHit="0" CsOnHit="0" Prob="1000" />
-<Action Id="161" TypeKey="1" Param1="1000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="67" Prob="1000" />
-<Action Id="171" TypeKey="1" Param1="1000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="67" Prob="1000" />
+<Action Id="151" TypeKey="4" Param1="151" Param2="3000" Param3="0" Param4="0" Param5="0" TSR="1" TTR="0" CeOnHit="0" CsOnHit="0" Prob="1000" />
+<Action Id="161" TypeKey="2" Param1="1000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="67" Prob="1000" />
+<Action Id="171" TypeKey="2" Param1="1000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="67" Prob="1000" />
 <Action Id="181" TypeKey="4" Param1="161" Param2="4000" Param3="0" Param4="0" Param5="0" TSR="1" TTR="0" CeOnHit="0" CsOnHit="0" Prob="1000" />
 <Action Id="191" TypeKey="1" Param1="1000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="67" Prob="1000" />
 <Action Id="201" TypeKey="1" Param1="1000" Param2="0" Param3="0" Param4="0" Param5="0" TSR="2" TTR="0" CeOnHit="BATC" CsOnHit="67" Prob="1000" />
+<Action Id="300" TypeKey="7" Param1="70" Param2="70" Param3="0" Param4="0" Param5="0" TSR="1" TTR="0" CeOnHit="0" CsOnHit="0" Prob="1000" />
 </dataset>

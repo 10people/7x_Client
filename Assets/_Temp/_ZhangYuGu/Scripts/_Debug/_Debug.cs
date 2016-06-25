@@ -70,6 +70,8 @@ public class _Debug : MonoBehaviour {
 	void Awake(){
 		Debug.Log ( "_Debug.Awake()" );
 
+		ModelAutoActivator.Instance();
+
 //		FindAllUISprite();
 
 //		{
@@ -107,6 +109,12 @@ public class _Debug : MonoBehaviour {
 //		}
 
 //		GameObjectHelper.LogComponents( gameObject );
+	}
+
+	void OnEnable(){
+		Debug.Log( "_Debug.OnEnable()" );
+
+
 	}
 
 	public GameObject m_gb_destroy;
@@ -317,40 +325,6 @@ public class _Debug : MonoBehaviour {
 //			
 //			Debug.Log( "Log btn status: " + t_btn.isEnabled );
 //		}
-	}
-	
-	void LateUpdate() {
-		
-	}
-
-	void OnGUI(){
-//		{
-//			GUIHelper.GUILayoutVerticalSpace( 0.1f );
-//		}
-//		
-//		GUILayout.BeginVertical();
-//		
-//		{
-//			string t_path = "_3D/Fx/Prefabs/BattleEffect/BOSSwudi";
-//
-//			if( GUILayout.Button( "Global Fx" ) ){
-//				FxTool.PlayGlobalFx( t_path, FxLoadDelegate );
-//			}
-//
-//			if( GUILayout.Button( "Global Fx X" ) ){
-//				FxTool.PlayGlobalFx( t_path, FxLoadDelegate, new Vector3( 10, 10, 10 ), new Vector3( 30, 30, 30 ) );
-//			}
-//			
-//			if( GUILayout.Button( "Local Fx" ) ){
-//				FxTool.PlayLocalFx( t_path, gameObject, FxLoadDelegate );
-//			}
-//
-//			if( GUILayout.Button( "Local Fx" ) ){
-//				FxTool.PlayLocalFx( t_path, gameObject, FxLoadDelegate, new Vector3( -10, -10, -10 ), new Vector3( -30, -30, -30 ) );
-//			}
-//		}
-//		
-//		GUILayout.EndVertical();
 	}
 
 	public void FxLoadDelegate( GameObject p_fx ){

@@ -103,58 +103,58 @@ public class EquipGrowthMaterialUseManagerment
 	  }
 	}
 
-    public static void QuicklyStrengthen(int equipId,int curr,int max,int type)//一键强化ID统计
-    {
-        listTouchedId.Clear();
-        int maxExpSum = curr;//
-       // Debug.Log("listMaterials.CountlistMaterials.Count ::" + listMaterials.Count);
-        for (int i = 0; i < listMaterials.Count; i++)
-        {
-            int _count = int.Parse(listMaterials[i].count);
-                for (int j = 0; j < _count; j++)
-                {
-                    if (maxExpSum < ExpXxmlTemp.GetNeedMaxExpByExpId(ZhuangBei.GetExpIdBy_EquipId(m_EuipId)))
-                    {
-                        //if (ExpXxmlTemp.GetMaxLevelByAddExp(ZhuangBei.GetExpIdBy_EquipId(equipId), maxExpSum, EquipGrowthMaterialUseManagerment.Levelsaved) < JunZhuData.Instance().m_junzhuInfo.level)
-                        //{
-                            maxExpSum += listMaterials[i].materialEXP;
-                            listTouchedId.Add(listMaterials[i].dbid);
-                        //}
-                        //else
-                        //{
-                        //  //  Debug.Log("listTouchedId.Count listTouchedId.Count ::" + listTouchedId.Count);
-                        //    return;
-                        //}
-                    }
-                    //}
-                    //else if (type == 1 && listMaterials[i].type == 1)
-                    //{
-                    //    if (maxExpSum < ExpXxmlTemp.GetNeedMaxExpByExpId(ZhuangBei.GetExpIdBy_EquipId(m_EuipId)))
-                    //    {
-                    //        maxExpSum += listMaterials[i].materialEXP;
-                    //        listTouchedId.Add(listMaterials[i].dbid);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (maxExpSum < ExpXxmlTemp.GetNeedMaxExpByExpId(ZhuangBei.GetExpIdBy_EquipId(m_EuipId)))
-                    //    {
-                    //        maxExpSum += listMaterials[i].materialEXP;
-                    //        listTouchedId.Add(listMaterials[i].dbid);
-                    //    }
-                    //}
+    //public static void QuicklyStrengthen(int equipId,int curr,int max,int type)//一键强化ID统计
+    //{
+    //    listTouchedId.Clear();
+    //    int maxExpSum = curr;//
+    //   // Debug.Log("listMaterials.CountlistMaterials.Count ::" + listMaterials.Count);
+    //    for (int i = 0; i < listMaterials.Count; i++)
+    //    {
+    //        int _count = int.Parse(listMaterials[i].count);
+    //            for (int j = 0; j < _count; j++)
+    //            {
+    //                if (maxExpSum < ExpXxmlTemp.GetNeedMaxExpByExpId(ZhuangBei.GetExpIdBy_EquipId(m_EuipId)))
+    //                {
+    //                    //if (ExpXxmlTemp.GetMaxLevelByAddExp(ZhuangBei.GetExpIdBy_EquipId(equipId), maxExpSum, EquipGrowthMaterialUseManagerment.Levelsaved) < JunZhuData.Instance().m_junzhuInfo.level)
+    //                    //{
+    //                        maxExpSum += listMaterials[i].materialEXP;
+    //                        listTouchedId.Add(listMaterials[i].dbid);
+    //                    //}
+    //                    //else
+    //                    //{
+    //                    //  //  Debug.Log("listTouchedId.Count listTouchedId.Count ::" + listTouchedId.Count);
+    //                    //    return;
+    //                    //}
+    //                }
+    //                //}
+    //                //else if (type == 1 && listMaterials[i].type == 1)
+    //                //{
+    //                //    if (maxExpSum < ExpXxmlTemp.GetNeedMaxExpByExpId(ZhuangBei.GetExpIdBy_EquipId(m_EuipId)))
+    //                //    {
+    //                //        maxExpSum += listMaterials[i].materialEXP;
+    //                //        listTouchedId.Add(listMaterials[i].dbid);
+    //                //    }
+    //                //}
+    //                //else
+    //                //{
+    //                //    if (maxExpSum < ExpXxmlTemp.GetNeedMaxExpByExpId(ZhuangBei.GetExpIdBy_EquipId(m_EuipId)))
+    //                //    {
+    //                //        maxExpSum += listMaterials[i].materialEXP;
+    //                //        listTouchedId.Add(listMaterials[i].dbid);
+    //                //    }
+    //                //}
 
      
-                }
-            }
-            //else
-            //{
-            //    if (maxExpSum < ExpXxmlTemp.GetNeedMaxExpByExpId(ZhuangBei.GetExpIdBy_EquipId(m_EuipId)))
-            //    {
-            //        listTouchedId.Add(listMaterials[i].dbid);
-            //    }
-            //}
+    //            }
+    //        }
+    //        //else
+    //        //{
+    //        //    if (maxExpSum < ExpXxmlTemp.GetNeedMaxExpByExpId(ZhuangBei.GetExpIdBy_EquipId(m_EuipId)))
+    //        //    {
+    //        //        listTouchedId.Add(listMaterials[i].dbid);
+    //        //    }
+    //        //}
      
-    }
+    //}
 
 }

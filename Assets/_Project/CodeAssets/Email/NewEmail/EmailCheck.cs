@@ -62,11 +62,12 @@ public class EmailCheck : MonoBehaviour {
 
 			privateLabel.text = "       " + emailInfo.content;
 			privateSenderLabel.text = emailInfo.senderName;
-			privateSenderLabel.transform.localPosition = new Vector3(795,privateLabel.height >= 370 ? (-360 - (privateLabel.height - 370)) : -320, 0);
+			privateSenderLabel.transform.localPosition = new Vector3(795,privateLabel.height >= 336 ? (-336 - (privateLabel.height - 336)) : -335, 0);
 
 			m_priSc.UpdateScrollbars (true);
-			m_priSc.enabled = privateLabel.maxLineCount > 12 ? true : false;
-			m_priSb.gameObject.SetActive (privateLabel.maxLineCount > 12 ? true : false);
+			Debug.Log ("privateLabel.height：" + privateLabel.height);
+			m_priSc.enabled = privateLabel.height > 336 ? true : false;
+			m_priSb.gameObject.SetActive (privateLabel.height > 336 ? true : false);
 
 			for (int i = 0;i < btnList.Count;i ++)
 			{
@@ -90,11 +91,11 @@ public class EmailCheck : MonoBehaviour {
 			string contextStr = "\n     " + emailInfo.content;
 			systemLabel.text = taiTouStr + contextStr;
 			systemSenderLabel.text = emailInfo.senderName;
-			systemSenderLabel.transform.localPosition = new Vector3(795, systemLabel.height >= 270 ? (-42 - systemLabel.height) : -238, 0);
+			systemSenderLabel.transform.localPosition = new Vector3(795, systemLabel.height > 252 ? (-252- (systemLabel.height - 252)) : -252, 0);
 
 			m_sysSc.UpdateScrollbars (true);
-			m_sysSc.enabled = privateLabel.maxLineCount > 9 ? true : false;
-			m_sysSb.gameObject.SetActive (privateLabel.maxLineCount > 9 ? true : false);
+			m_sysSc.enabled = privateLabel.height > 252 ? true : false;
+			m_sysSb.gameObject.SetActive (privateLabel.height > 252 ? true : false);
 
 			bool isShow = operateType == EmailOperateType.DELATE_AFTER_OPERATE ? true : false;
 

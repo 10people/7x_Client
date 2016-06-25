@@ -279,6 +279,11 @@ public class BattleEffectControllor : MonoBehaviour
 
 		EffectIdTemplate et = EffectTemplate.getEffectTemplateByEffectId (effectId);
 
+#if UNITY_EDITOR || UNITY_STANDALONE
+#else
+		if(et == null) return null;
+#endif
+
 		GameObject temple;
 
 		dict_effectObj.TryGetValue (et.path, out temple);

@@ -55,8 +55,10 @@ public class WarSituationItem : MonoBehaviour {
 		enemyHead.spriteName = QXComData.PlayerIcon (situationInfo.enemyRoleId);
 		enemylevel.text = situationInfo.enemyLevel.ToString ();
 		enemyNation.spriteName = QXComData.GetNationSpriteName (situationInfo.enemyCountryId);
-		enemyName.text = MyColorData.getColorString (3,situationInfo.enemyName);
-		enemyAlliance.text = MyColorData.getColorString (6,situationInfo.enemyAllianceName.Equals ("") ? "无联盟" : "<" + situationInfo.enemyAllianceName + ">");
+		QXComData.SetNationSprite (enemyNation,situationInfo.enemyCountryId);
+
+		enemyName.text = situationInfo.enemyName;
+		enemyAlliance.text = QXComData.AllianceName (situationInfo.enemyAllianceName);
 		enemyZhanLi.text = "战力" + situationInfo.enemyZhanLi;
 
 		Debug.Log ("situationInfo.enemyRemainHP:" + situationInfo.enemyRemainHP);
@@ -74,7 +76,7 @@ public class WarSituationItem : MonoBehaviour {
 		string date = QXComData.UTCToTimeString (situationInfo.happendTime,"yyyy-MM-dd");
 		string time = QXComData.UTCToTimeString (situationInfo.happendTime,"HH:mm:ss");
 
-		fightTimeLabel.text = MyColorData.getColorString (3,date + " " + time);
+		fightTimeLabel.text = date + " " + time;
 
 		plunderObj.SetActive (tempType == WarSituationData.SituationType.PLUNDER ? true : false);
 		yunBiaoObj.SetActive (tempType == WarSituationData.SituationType.YUNBIAO ? true : false);
@@ -87,7 +89,7 @@ public class WarSituationItem : MonoBehaviour {
 		{
 		case WarSituationData.SituationType.PLUNDER:
 
-			pNameLabel.text = MyColorData.getColorString (3,situationInfo.friendName);
+			pNameLabel.text = situationInfo.friendName;
 
 			situationHandler.gameObject.SetActive (situationInfo.state == 1 ? false : true);
 
@@ -115,7 +117,7 @@ public class WarSituationItem : MonoBehaviour {
 			situationHandler.GetComponentInChildren <UILabel> ().text = "前往";
 			quZhuLabel.text = "";
 
-			yNameLabel.text = MyColorData.getColorString (3,situationInfo.friendName);
+			yNameLabel.text = situationInfo.friendName;
 
 			int yhp = (int)((situationInfo.friendRemainHP / (float)situationInfo.friendAllHP) * 100);
 			yhp = yhp < 1 ? 1 : yhp;
@@ -182,7 +184,7 @@ public class WarSituationItem : MonoBehaviour {
 			string timeStr = TimeHelper.GetUniformedTimeString (situationInfo.remainTime);
 			string lostBuildStr = situationInfo.willLostBuild.ToString ();
 
-			lostCdLabel.text = MyColorData.getColorString (3, timeStr + "后联盟将损失" + lostBuildStr + "建设值");
+			lostCdLabel.text =  timeStr + "后联盟将损失" + lostBuildStr + "建设值";
 
 			yield return new WaitForSeconds (1);
 

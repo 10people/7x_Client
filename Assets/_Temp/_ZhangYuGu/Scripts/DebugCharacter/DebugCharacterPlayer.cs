@@ -10,11 +10,6 @@ public class DebugCharacterPlayer : MonoBehaviour
 	{
 		character = this.GetComponent<CharacterController>();
 	}
-	
-	void Update ()
-	{
-	
-	}
 
 	void LateUpdate()
 	{

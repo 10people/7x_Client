@@ -1,0 +1,372 @@
+fileFormatVersion: 2
+guid: 007d9b3678f7054449989f03a64681c9
+timeCreated: 1464601561
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: bone00
+    100002: bone01
+    100004: bone02
+    100006: bone03
+    100008: bone04
+    100010: bone05
+    100012: bone06
+    100014: bone07
+    100016: bone08
+    100018: bone09
+    100020: bone10
+    100022: bone11
+    100024: bone12
+    100026: bone13
+    100028: bone14
+    100030: bone15
+    100032: bone16
+    100034: S7_3d_new_butongqizi_001
+    100036: S7_3d_new_butongqizi_002
+    100038: S7_3d_new_butongqizi_003
+    100040: S7_3d_new_butongqizi_004
+    100042: S7_3d_new_butongqizi_005
+    100044: S7_3d_new_butongqizi_006
+    100046: S7_3d_new_butongqizi_007
+    100048: //RootNode
+    400000: bone00
+    400002: bone01
+    400004: bone02
+    400006: bone03
+    400008: bone04
+    400010: bone05
+    400012: bone06
+    400014: bone07
+    400016: bone08
+    400018: bone09
+    400020: bone10
+    400022: bone11
+    400024: bone12
+    400026: bone13
+    400028: bone14
+    400030: bone15
+    400032: bone16
+    400034: S7_3d_new_butongqizi_001
+    400036: S7_3d_new_butongqizi_002
+    400038: S7_3d_new_butongqizi_003
+    400040: S7_3d_new_butongqizi_004
+    400042: S7_3d_new_butongqizi_005
+    400044: S7_3d_new_butongqizi_006
+    400046: S7_3d_new_butongqizi_007
+    400048: //RootNode
+    4300000: S7_3d_new_butongqizi_001
+    4300002: S7_3d_new_butongqizi_002
+    4300004: S7_3d_new_butongqizi_003
+    4300006: S7_3d_new_butongqizi_005
+    4300008: S7_3d_new_butongqizi_007
+    4300010: S7_3d_new_butongqizi_004
+    4300012: S7_3d_new_butongqizi_006
+    7400000: Stand
+    7400002: BATC
+    7400004: Dead
+    9500000: //RootNode
+    13700000: S7_3d_new_butongqizi_001
+    13700002: S7_3d_new_butongqizi_002
+    13700004: S7_3d_new_butongqizi_003
+    13700006: S7_3d_new_butongqizi_004
+    13700008: S7_3d_new_butongqizi_005
+    13700010: S7_3d_new_butongqizi_006
+    13700012: S7_3d_new_butongqizi_007
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Stand
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 45
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: bone01
+        weight: 1
+      - path: bone01/bone00
+        weight: 1
+      - path: bone01/bone00/bone02
+        weight: 1
+      - path: bone01/bone00/bone02/bone04
+        weight: 1
+      - path: bone01/bone00/bone02/bone04/bone06
+        weight: 1
+      - path: bone01/bone00/bone03
+        weight: 1
+      - path: bone01/bone00/bone03/bone05
+        weight: 1
+      - path: bone01/bone00/bone03/bone05/bone07
+        weight: 1
+      - path: bone01/bone00/bone08
+        weight: 1
+      - path: bone01/bone00/bone08/bone09
+        weight: 1
+      - path: bone01/bone00/bone08/bone09/bone10
+        weight: 1
+      - path: bone01/bone00/bone08/bone09/bone10/bone11
+        weight: 1
+      - path: bone01/bone12
+        weight: 1
+      - path: bone01/bone13
+        weight: 1
+      - path: bone01/bone14
+        weight: 1
+      - path: bone01/bone15
+        weight: 1
+      - path: bone01/bone16
+        weight: 1
+      - path: S7_3d_new_butongqizi_001
+        weight: 1
+      - path: S7_3d_new_butongqizi_002
+        weight: 1
+      - path: S7_3d_new_butongqizi_003
+        weight: 1
+      - path: S7_3d_new_butongqizi_004
+        weight: 1
+      - path: S7_3d_new_butongqizi_005
+        weight: 1
+      - path: S7_3d_new_butongqizi_006
+        weight: 1
+      - path: S7_3d_new_butongqizi_007
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: BATC
+      takeName: Take 001
+      firstFrame: 50
+      lastFrame: 75
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: bone01
+        weight: 1
+      - path: bone01/bone00
+        weight: 1
+      - path: bone01/bone00/bone02
+        weight: 1
+      - path: bone01/bone00/bone02/bone04
+        weight: 1
+      - path: bone01/bone00/bone02/bone04/bone06
+        weight: 1
+      - path: bone01/bone00/bone03
+        weight: 1
+      - path: bone01/bone00/bone03/bone05
+        weight: 1
+      - path: bone01/bone00/bone03/bone05/bone07
+        weight: 1
+      - path: bone01/bone00/bone08
+        weight: 1
+      - path: bone01/bone00/bone08/bone09
+        weight: 1
+      - path: bone01/bone00/bone08/bone09/bone10
+        weight: 1
+      - path: bone01/bone00/bone08/bone09/bone10/bone11
+        weight: 1
+      - path: bone01/bone12
+        weight: 1
+      - path: bone01/bone13
+        weight: 1
+      - path: bone01/bone14
+        weight: 1
+      - path: bone01/bone15
+        weight: 1
+      - path: bone01/bone16
+        weight: 1
+      - path: S7_3d_new_butongqizi_001
+        weight: 1
+      - path: S7_3d_new_butongqizi_002
+        weight: 1
+      - path: S7_3d_new_butongqizi_003
+        weight: 1
+      - path: S7_3d_new_butongqizi_004
+        weight: 1
+      - path: S7_3d_new_butongqizi_005
+        weight: 1
+      - path: S7_3d_new_butongqizi_006
+        weight: 1
+      - path: S7_3d_new_butongqizi_007
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Dead
+      takeName: Take 001
+      firstFrame: 80
+      lastFrame: 140
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: .964516163
+        functionName: OnDeadFinish
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: bone01
+        weight: 1
+      - path: bone01/bone00
+        weight: 1
+      - path: bone01/bone00/bone02
+        weight: 1
+      - path: bone01/bone00/bone02/bone04
+        weight: 1
+      - path: bone01/bone00/bone02/bone04/bone06
+        weight: 1
+      - path: bone01/bone00/bone03
+        weight: 1
+      - path: bone01/bone00/bone03/bone05
+        weight: 1
+      - path: bone01/bone00/bone03/bone05/bone07
+        weight: 1
+      - path: bone01/bone00/bone08
+        weight: 1
+      - path: bone01/bone00/bone08/bone09
+        weight: 1
+      - path: bone01/bone00/bone08/bone09/bone10
+        weight: 1
+      - path: bone01/bone00/bone08/bone09/bone10/bone11
+        weight: 1
+      - path: bone01/bone12
+        weight: 1
+      - path: bone01/bone13
+        weight: 1
+      - path: bone01/bone14
+        weight: 1
+      - path: bone01/bone15
+        weight: 1
+      - path: bone01/bone16
+        weight: 1
+      - path: S7_3d_new_butongqizi_001
+        weight: 1
+      - path: S7_3d_new_butongqizi_002
+        weight: 1
+      - path: S7_3d_new_butongqizi_003
+        weight: 1
+      - path: S7_3d_new_butongqizi_004
+        weight: 1
+      - path: S7_3d_new_butongqizi_005
+        weight: 1
+      - path: S7_3d_new_butongqizi_006
+        weight: 1
+      - path: S7_3d_new_butongqizi_007
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

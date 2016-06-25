@@ -79,7 +79,7 @@
 			 	}
 
 //			 	#ifdef LIGHTMAP_ON
-//				t_tex.rgb *= DecodeLightmap(UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uv[1]));
+//				t_tex.xyz *= DecodeLightmap(UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uv[1]));
 //            	#endif
 
 			 	return t_tex;

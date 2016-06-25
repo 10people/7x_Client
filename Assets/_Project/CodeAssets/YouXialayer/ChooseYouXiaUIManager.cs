@@ -40,13 +40,6 @@ public class ChooseYouXiaUIManager : MonoBehaviour,SocketProcessor {
 		SocketTool.UnRegisterMessageProcessor(this);
 	}
 
-	void Start () {
-	
-	}
-
-	void Update () {
-	
-	}
 	public void Init()
 	{
 	

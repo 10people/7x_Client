@@ -38,6 +38,10 @@ public class MainCityUITongzhi : MYNGUIPanel
 			{
 				return Global.m_listShiLianData;
 			}
+			else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE)
+			{
+				return Global.m_listJunchengData;
+			}
             else
             {
                 return new List<TongzhiData>();

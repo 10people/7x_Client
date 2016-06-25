@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TreasureCityUIBR : TreasureCitySingleton<TreasureCityUIBR> {
+public class TreasureCityUIBR : GeneralInstance<TreasureCityUIBR> {
 
 	public EventHandler openBoxHandler;
 

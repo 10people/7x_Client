@@ -9,6 +9,7 @@ class VignettingEditor extends Editor
   var mode : SerializedProperty;
   var intensity : SerializedProperty; // intensity == 0 disables pre pass (optimization)
   var chromaticAberration : SerializedProperty;
+  var vignetColor : SerializedProperty;
   var axialAberration : SerializedProperty;
   var blur : SerializedProperty; // blur == 0 disables blur pass (optimization)
   var blurSpread : SerializedProperty;
@@ -21,6 +22,7 @@ class VignettingEditor extends Editor
     mode = serObj.FindProperty ("mode");
     intensity = serObj.FindProperty ("intensity");
     chromaticAberration = serObj.FindProperty ("chromaticAberration");
+    vignetColor = serObj.FindProperty ("vigetColor");
     axialAberration = serObj.FindProperty ("axialAberration");
     blur = serObj.FindProperty ("blur");
     blurSpread = serObj.FindProperty ("blurSpread");
@@ -50,6 +52,8 @@ class VignettingEditor extends Editor
     }
     else
       EditorGUILayout.PropertyField (chromaticAberration, new GUIContent(" Chromatic Aberration"));
+
+      EditorGUILayout.PropertyField (vignetColor, new GUIContent("Vignet Color"));
         	
     serObj.ApplyModifiedProperties();
     }

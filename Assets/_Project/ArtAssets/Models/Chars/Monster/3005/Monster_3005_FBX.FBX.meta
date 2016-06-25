@@ -209,6 +209,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -307,6 +311,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -414,6 +422,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -519,6 +531,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -633,6 +649,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -640,8 +660,8 @@ ModelImporter:
     - serializedVersion: 16
       name: BATCDown
       takeName: Take 001
-      firstFrame: 564
-      lastFrame: 566
+      firstFrame: 296
+      lastFrame: 298
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -660,6 +680,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .253401458
         functionName: PlaySound
         data: 4000|4001|4002|0|0
@@ -746,6 +773,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -753,8 +784,8 @@ ModelImporter:
     - serializedVersion: 16
       name: BATCUp
       takeName: Take 001
-      firstFrame: 593
-      lastFrame: 625
+      firstFrame: 324
+      lastFrame: 356
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -837,6 +868,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -951,6 +986,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -1043,6 +1082,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -1134,6 +1177,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -1248,6 +1295,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -1360,6 +1411,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -1474,6 +1529,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -1566,6 +1625,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -1621,7 +1684,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .214046225
+      - time: .588235617
         functionName: activeSkillStart
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -1693,6 +1756,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -1700,8 +1767,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Skill_2
       takeName: Take 001
-      firstFrame: 359
-      lastFrame: 389
+      firstFrame: 530
+      lastFrame: 550
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1826,6 +1893,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -1961,6 +2032,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -2094,6 +2169,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -2229,6 +2308,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -2362,6 +2445,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -2497,6 +2584,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -2631,6 +2722,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -2723,6 +2818,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -2730,8 +2829,8 @@ ModelImporter:
     - serializedVersion: 16
       name: BATCLeft
       takeName: Take 001
-      firstFrame: 474
-      lastFrame: 494
+      firstFrame: 86
+      lastFrame: 106
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2835,6 +2934,10 @@ ModelImporter:
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
+        weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
         weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
@@ -2843,8 +2946,8 @@ ModelImporter:
     - serializedVersion: 16
       name: BATCRight
       takeName: Take 001
-      firstFrame: 497
-      lastFrame: 517
+      firstFrame: 86
+      lastFrame: 106
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2949,6 +3052,10 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
+      - path: Bip01 L Toe0
+        weight: 1
+      - path: Bip01 R Toe0
+        weight: 1
       - path: qixiongwushuang_sishi
         weight: 1
       maskType: 0
@@ -2956,8 +3063,8 @@ ModelImporter:
     - serializedVersion: 16
       name: BATCFly
       takeName: Take 001
-      firstFrame: 566
-      lastFrame: 593
+      firstFrame: 298
+      lastFrame: 324
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2975,7 +3082,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .951797903
         functionName: checkDieInKnockdown
         data: 

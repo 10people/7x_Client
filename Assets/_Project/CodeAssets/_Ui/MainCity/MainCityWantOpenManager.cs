@@ -93,13 +93,6 @@ public class MainCityWantOpenManager : MYNGUIPanel
 	public override void MYonInput(GameObject ui, string c)
 	{
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-
 
 	public void setAnimation()
 	{
@@ -122,7 +115,7 @@ public class MainCityWantOpenManager : MYNGUIPanel
 			                                       "oncomplete", "End"));
 			break;
 		case AnimationStatae.Click:
-			CycleTween.StartCycleTween(m_labelRenyi.gameObject, 1, 0, 1.0f, OnUpdateAlertInfoLabelA);
+			CycleTween.StartCycleTween(m_labelRenyi.gameObject, 1, 0.4f, 0.5f, OnUpdateAlertInfoLabelA);
 			break;
 		case AnimationStatae.MoveR:
 			iTween.ValueTo(gameObject, iTween.Hash("from", 0, 

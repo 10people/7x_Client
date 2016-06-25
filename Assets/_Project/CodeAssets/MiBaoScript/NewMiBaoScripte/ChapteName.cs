@@ -20,14 +20,6 @@ public class ChapteName : MonoBehaviour {
 
 	public bool IsOPen;
 
-	void Start () {
-	
-	}
-
-	void Update () {
-	
-	}
-
 	public void Init()
 	{
 //		LegendPveTemplate mlegendpve = LegendPveTemplate.GetlegendPveTemplate_By_id (Levelid);

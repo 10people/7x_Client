@@ -14,6 +14,7 @@ public class YunBiaoSafeTemplate : XmlLoadManager
         public int ID;
         public Vector2 AreaPos;
         public float AreaRadius;
+        public float RotateY;
     }
 
     public SafeArea m_SafeArea;
@@ -69,6 +70,9 @@ public class YunBiaoSafeTemplate : XmlLoadManager
 
                 t_reader.MoveToNextAttribute();
                 t_template.m_SafeArea.AreaRadius = float.Parse(t_reader.Value);
+
+                t_reader.MoveToNextAttribute();
+                t_template.m_SafeArea.RotateY = float.Parse(t_reader.Value);
             }
 
             Templates.Add(t_template);

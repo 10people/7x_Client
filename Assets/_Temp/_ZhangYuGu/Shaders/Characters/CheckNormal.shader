@@ -63,7 +63,7 @@
 				fixed4 frag(v2f i) : SV_Target {
 					fixed4 t_c = tex2D(_MainTex, i.uv);
 
-					t_c.rgb = i.color_d;
+					t_c.xyz = i.color_d;
 
 					return t_c;
 				}

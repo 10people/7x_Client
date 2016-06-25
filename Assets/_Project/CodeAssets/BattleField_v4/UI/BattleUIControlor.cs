@@ -161,6 +161,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public Camera uiCamera;
 
+	public BattleComboControllor comboControllor;
+
 
 	[HideInInspector] public bool b_joystick;
 	
@@ -303,13 +305,6 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	{
 		//bool f = CityGlobalData.getDramable ();
 		
-		int level = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
-
-		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
-		{
-			level += 200000;
-		}
-
 		if(first)
 		{
 			if(CityGlobalData.m_battleType != EnterBattleField.BattleType.Type_GuoGuan
@@ -349,7 +344,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			}
 			else
 			{
-				PveFunctionOpen template = PveFunctionOpen.getPveFunctionOpenById (level);
+				PveFunctionOpen template = PveFunctionOpen.getPveFunctionOpenById (CityGlobalData.m_configId);
 
 				b_joystick = template.joystick;
 
@@ -1616,7 +1611,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	{
 		if (BattleControlor.Instance().result != BattleControlor.BattleResult.RESULT_BATTLING) return;
 
-		if (Time.timeScale != 1) return;
+//		if (Time.timeScale != 1) return;
 
 		pauseControllor.refreshData ();
 
@@ -1624,7 +1619,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		TimeHelper.SetTimeScale (0.0f);
 	}
-	
+
 	void LateUpdate()
 	{
 		if(BattleControlor.Instance().getKing() != null)
@@ -1680,15 +1675,15 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public void devolopmentEasy()
 	{
-//		BattleControlor.Instance().getKing ().addHp (BattleControlor.Instance().getKing ().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ));
-//
-//		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
-//		{
-//			if(node.gameObject.activeSelf == true)
-//			{
-//				node.addHp(node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) * .05f - node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ));
-//			}
-//		}
+		BattleControlor.Instance().getKing ().addHp (BattleControlor.Instance().getKing ().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ));
+
+		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+		{
+			if(node.gameObject.activeSelf == true)
+			{
+				node.addHp(node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) * .05f - node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ));
+			}
+		}
 
 		BattleControlor.Instance().getKing ().addNuqi (5000);
 
@@ -1696,7 +1691,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 //		{
 //			if(node.gameObject.activeSelf == true)
 //			{
-//				node.addNuqi(5000);
+//				Debug.Log("=============    " + node.nodeId + ", " + node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp));
 //			}
 //		}
 	}
@@ -1940,6 +1935,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		req.layer = CityGlobalData.m_tempLevel;
 
 		req.result = result == BattleControlor.BattleResult.RESULT_WIN;
+
+		req.dropeenItemNpcs = BattleControlor.Instance().droppenList;
 
 		t_qx.Serialize(tempStream, req);
 		
@@ -2267,7 +2264,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		
 		Destroy ( al );
 		
-		if (CityGlobalData.m_isWhetherOpenLevelUp == false) return;
+//		if (CityGlobalData.m_isWhetherOpenLevelUp == false) return;
 		
 		ClientMain.m_ClientMainObj.AddComponent<AudioListener> ();
 		
@@ -2595,6 +2592,29 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 			winDesc.text = text;
 		}
+	}
+
+	public void setCloseYinDaoTime(float _time, int _yindaoId)
+	{
+		if (_time <= 0) return;
+		
+		StartCoroutine (closeYinDaoClock(_time, _yindaoId));
+	}
+
+	IEnumerator closeYinDaoClock(float _time, int _yindaoId)
+	{
+		float startTime = Time.realtimeSinceStartup;
+		
+		float tempTime = startTime;
+		
+		for(;tempTime - startTime < _time;)
+		{
+			yield return new WaitForEndOfFrame();
+			
+			tempTime = Time.realtimeSinceStartup;
+		}
+		
+		dramaControllor.closeYindao (_yindaoId);
 	}
 
 }

@@ -15,6 +15,10 @@ public class SceneFxConfig : MonoBehaviour {
 	#region Mono
 
 	void Awake(){
+		if( true ){
+			return;
+		}
+
 		if( Quality_SceneFx.IsSceneFxNone() ){
 			SetActive( false );
 
@@ -44,16 +48,6 @@ public class SceneFxConfig : MonoBehaviour {
 			SetActive( false );
 			break;
 		}
-	}
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 
 	#endregion

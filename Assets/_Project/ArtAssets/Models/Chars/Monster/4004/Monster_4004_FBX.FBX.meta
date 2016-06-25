@@ -184,8 +184,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -196,32 +194,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -240,10 +223,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -261,9 +240,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -271,17 +254,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -320,8 +297,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -332,32 +307,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -376,10 +336,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -397,9 +353,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -407,17 +367,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -463,8 +417,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -475,32 +427,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -519,10 +456,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -540,9 +473,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -550,17 +487,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -606,8 +537,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -618,32 +547,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -662,10 +576,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -683,9 +593,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -693,17 +607,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -756,8 +664,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -768,32 +674,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -812,10 +703,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -833,9 +720,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -843,17 +734,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -880,6 +765,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .253401458
         functionName: PlaySound
         data: 4000|4001|4002|0|0
@@ -906,8 +798,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -918,32 +808,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -962,10 +837,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -983,9 +854,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -993,17 +868,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1011,7 +880,7 @@ ModelImporter:
       name: Dead
       takeName: Take 001
       firstFrame: 58
-      lastFrame: 98
+      lastFrame: 95
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1056,8 +925,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -1068,32 +935,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -1112,10 +964,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -1133,9 +981,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -1143,17 +995,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1185,8 +1031,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -1197,32 +1041,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -1241,10 +1070,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -1262,9 +1087,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -1272,17 +1101,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1314,8 +1137,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -1326,32 +1147,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -1370,10 +1176,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -1391,9 +1193,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -1401,17 +1207,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1628,8 +1428,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -1640,32 +1438,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -1684,10 +1467,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -1705,9 +1484,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -1715,17 +1498,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1771,8 +1548,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -1783,32 +1558,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -1827,10 +1587,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -1848,9 +1604,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -1858,17 +1618,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1928,8 +1682,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -1940,32 +1692,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -1984,10 +1721,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -2005,9 +1738,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -2015,17 +1752,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2092,8 +1823,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -2104,32 +1833,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -2148,10 +1862,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -2169,9 +1879,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -2179,17 +1893,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2249,8 +1957,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -2261,32 +1967,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -2305,10 +1996,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -2326,9 +2013,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -2336,17 +2027,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2420,8 +2105,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -2432,32 +2115,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -2476,10 +2144,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -2497,9 +2161,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -2507,17 +2175,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2577,8 +2239,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -2589,32 +2249,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -2633,10 +2278,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -2654,9 +2295,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -2664,17 +2309,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2748,8 +2387,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -2760,32 +2397,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -2804,10 +2426,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -2825,9 +2443,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -2835,17 +2457,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2898,8 +2514,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -2910,32 +2524,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -2954,10 +2553,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -2975,9 +2570,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -2985,17 +2584,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -3048,8 +2641,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -3060,32 +2651,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -3104,10 +2680,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -3125,9 +2697,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -3135,17 +2711,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -3198,8 +2768,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -3210,32 +2778,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -3254,10 +2807,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -3275,9 +2824,13 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
@@ -3285,17 +2838,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: boss_qingjia_yi
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -3327,8 +2874,6 @@ ModelImporter:
         weight: 1
       - path: Bip01
         weight: 1
-      - path: Bip01/Bip01 Footsteps
-        weight: 1
       - path: Bip01/Bip01 Pelvis
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine
@@ -3339,38 +2884,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0/Bip01 L Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0/Bip01 R Toe0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bip01
-          HeadNub
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bone01
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bone01/Bone02
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bone01/Bone02/Bone03
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -3389,10 +2913,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
           L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle/Bip01
-          L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0/Bip01 L Finger01/Bip01
-          L Finger0Nub
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
@@ -3410,41 +2930,25 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
-          R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01/Bip01
-          R Finger0Nub
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04/Bone05
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone04/Bone05/Bone06
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08/Bone09
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10/Bone11
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10/Bone11/Bone12
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)/Bone11(mirrored)
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)/Bone11(mirrored)/Bone12(mirrored)
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: q_boss_si
-        weight: 1
-      - path: q_boss_si_w
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -3474,8 +2978,6 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
-      - path: _________-_________BOSS_____________________-______(1)
-        weight: 1
       - path: Bip01
         weight: 1
       - path: Bip01/Bip01 Pelvis
@@ -3488,27 +2990,17 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01
-          L Toe0
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
-          R Toe0
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bone01
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 Head/Bone01/Bone02
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 L Clavicle
         weight: 1
@@ -3544,27 +3036,25 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01/Bone02
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bone01(mirrored)/Bone02(mirrored)
+        weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone04/Bone05
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bone07
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone07/Bone08
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10/Bone11
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)
-        weight: 1
-      - path: Bip01/Bip01 Pelvis/Bone10(mirrored)/Bone11(mirrored)
-        weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
-      - path: Object10
+      - path: qixiongwushuang-jiandunxingzhongjiaBOSS
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -3845,7 +3335,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .951797903
+      - time: .911257386
         functionName: checkDieInKnockdown
         data: 
         objectReferenceParameter: {instanceID: 0}

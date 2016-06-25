@@ -8,14 +8,25 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class QXSelectRole : Singleton<QXSelectRole>,SocketProcessor {
+public class QXSelectRole : MonoBehaviour,SocketProcessor {
+
+	private static QXSelectRole m_selectRole;
+	public static QXSelectRole Instance ()
+	{
+		if (m_selectRole == null)
+		{
+			GameObject t_GameObject = GameObjectHelper.GetDontDestroyOnLoadGameObject();
+			
+			m_selectRole = t_GameObject.AddComponent<QXSelectRole>();
+		}
+		
+		return m_selectRole;
+	}
 
 	private GameObject m_selectRoleObj;
 	private QXSelectRolePage.SelectType m_selectType;
 
 	private ErrorMessage m_errorMsg;
-
-	private bool m_isOpenUnLockRole = false;
 
 	void Awake ()
 	{
@@ -33,6 +44,7 @@ public class QXSelectRole : Singleton<QXSelectRole>,SocketProcessor {
 			LoadSelectRoleObj ();
 			break;
 		case QXSelectRolePage.SelectType.UNLOCK_ROLE:
+			Global.m_isChangeRoleOpen = true;
 			QXComData.SendQxProtoMessage (ProtoIndexes.MODEL_INFO,ProtoIndexes.MODEL_INFO.ToString ());
 			break;
 		default:
@@ -58,10 +70,12 @@ public class QXSelectRole : Singleton<QXSelectRole>,SocketProcessor {
 
 	#region UnLockRole
 	private int m_unLockId = 0;
+	private bool m_haveBuy = false;
 	public void UnLockRoleOperate (int tempRoleId,bool isUnLock)
 	{
 		m_unLockId = tempRoleId;
-		Debug.Log ("tempRoleId：" + tempRoleId);
+//		Debug.Log ("tempRoleId：" + tempRoleId);
+		m_haveBuy = isUnLock;
 		ErrorMessage errorMsg = new ErrorMessage ();
 		errorMsg.errorCode = tempRoleId + 1;
 		QXComData.SendQxProtoMessage (errorMsg,isUnLock ? ProtoIndexes.UNLOCK_MODEL : ProtoIndexes.CHANGE_MODEL,
@@ -135,20 +149,17 @@ public class QXSelectRole : Singleton<QXSelectRole>,SocketProcessor {
                     Debug.Log("errorCode:" + errorMes.errorCode);
                     m_errorMsg = errorMes;
 
-					if (m_isOpenUnLockRole)
+					if (Global.m_isChangeRoleOpen)
 					{
-						if (int.Parse (errorMes.errorDesc.Split ('#')[0]) <= 0)
+						if (m_haveBuy && int.Parse (errorMes.errorDesc.Split ('#')[0]) <= 0)
 						{
 							UnLockRoleOperate (m_unLockId,false);
+							m_haveBuy = false;
 						}
 						else
 						{
 							LoadSelectRoleObj();
 						}
-					}
-					else
-					{
-						LoadSelectRoleObj();
 					}
                 }
 
@@ -161,18 +172,34 @@ public class QXSelectRole : Singleton<QXSelectRole>,SocketProcessor {
 
                 if (errorMes != null)
                 {
-                    Debug.Log("errorDesc:" + errorMes.errorCode);
-                    CityGlobalData.m_king_model_Id = errorMes.errorCode;
-                    SelectRolePage(QXSelectRolePage.SelectType.UNLOCK_ROLE);
-                    if (errorMes.cmd != PlayersManager.m_Self_UID)
-                    {
-                        PlayerInCityManager.m_PlayerInCity.Reload_Skeleton(errorMes.cmd, errorMes.errorCode);
-                    }
-                    else
-                    {
-                        PlayerModelController.m_playerModelController.SwitchModel();
-                    }
-                    //					QXSelectRolePage.m_instance.RefreshSelectRole (errorMes.errorCode);
+					if (errorMes.cmd == PlayersManager.m_Self_UID)
+					{
+						CityGlobalData.m_king_model_Id = errorMes.errorCode;
+					}
+                  
+					Debug.Log ("errorMes.errorCode:" + errorMes.errorCode);
+					Debug.Log ("Global.m_isChangeRoleOpen:" + Global.m_isChangeRoleOpen);
+					if (Global.m_isChangeRoleOpen)
+					{
+						SelectRolePage(QXSelectRolePage.SelectType.UNLOCK_ROLE);
+						
+						SettingUpLayerManangerment.m_SettingUp.ShowIcon();
+					}
+
+					if (MainCityUI.m_MainCityUI != null)
+					{
+						Debug.Log ("errorMes.cmd:" + errorMes.cmd);
+						Debug.Log ("PlayersManager.m_Self_UID:" + PlayersManager.m_Self_UID);
+						if (errorMes.cmd != PlayersManager.m_Self_UID)
+						{
+							PlayerInCityManager.m_PlayerInCity.Reload_Skeleton(errorMes.cmd, errorMes.errorCode);
+						}
+						else
+						{
+							PlayerModelController.m_playerModelController.SwitchModel();
+						}
+					}
+                    
                 }
 
                 break;
@@ -206,18 +233,20 @@ public class QXSelectRole : Singleton<QXSelectRole>,SocketProcessor {
 	void InItSelectRolePage ()
 	{
 		MainCityUI.TryAddToObjectList (m_selectRoleObj);
+		TreasureCityUI.TryAddToObjectList (m_selectRoleObj);
 		QXSelectRolePage.m_instance.InItRolePage (m_selectType,m_errorMsg);
 		QXSelectRolePage.m_instance.M_RoleDelegate = RoleDelegateCallBack;
-		m_isOpenUnLockRole = true;
 	}
 
 	void RoleDelegateCallBack ()
 	{
 		MainCityUI.TryRemoveFromObjectList (m_selectRoleObj);
+		TreasureCityUI.TryRemoveFromObjectList (m_selectRoleObj);
 		Destroy (m_selectRoleObj);
 		m_selectRoleObj = null;
 //		m_selectRoleObj.SetActive (false);
-		m_isOpenUnLockRole = false;
+		m_haveBuy = false;
+		Global.m_isChangeRoleOpen = false;
 	}
 
 	void RandomAgain (int i)
@@ -228,6 +257,5 @@ public class QXSelectRole : Singleton<QXSelectRole>,SocketProcessor {
 	new void OnDestroy ()
 	{
 		SocketTool.UnRegisterMessageProcessor (this);
-		base.OnDestroy ();
 	}
 }

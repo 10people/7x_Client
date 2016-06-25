@@ -6,13 +6,14 @@ Shader "Custom/Characters/Main Texture Diffuse Rim"{
         _MainWeight( "Brightness", Range( 0, 2 ) ) = 1.0
         _RimColor( "Rim", Color) = ( 0, 0, 0, 1 )
         _RimWeight( "Rim Weight", Range( 8, 1.0 ) ) = 8
+        _CutOut( "CutOut", Range( 0, 0.6 ) ) = 0
     }
 	
 	Category {
 		Tags {
-			"Queue"="AlphaTest"
+			"Queue"="Transparent"
 			"IgnoreProjector"="True"
-			"RenderType"="Opaque"
+			"RenderType"="Transparent"
 		}
 		
 		ZWrite On
@@ -36,7 +37,7 @@ Shader "Custom/Characters/Main Texture Diffuse Rim"{
 				
 				struct v2f{
 					float4 pos : SV_POSITION;
-					fixed3 color_d : COLOR0;
+					float4 norm : COLOR0;
 					fixed4 color_a : COLOR1;
 					float2 uv : TEXCOORD0;
 					float3 normal : TEXCOORD1;
@@ -53,6 +54,7 @@ Shader "Custom/Characters/Main Texture Diffuse Rim"{
 
 				float _MainWeight;
 				float _RimWeight;
+				float _CutOut;
 
 				v2f vert (appdata_base v) {
 					v2f o;
@@ -61,11 +63,11 @@ Shader "Custom/Characters/Main Texture Diffuse Rim"{
 
 					o.uv = v.texcoord.xy;
 
-					fixed3 t_v = UnityObjectToWorldNormal(v.normal);
+					o.norm.xyz = UnityObjectToWorldNormal(v.normal);
 
-					o.color_d = max(0, dot(t_v, _WorldSpaceLightPos0.xyz)) * _LightColor0;
+					o.norm.w = 1;
 
-					o.color_a.xyz = ShadeSH9(half4(t_v,1));
+					o.color_a.xyz = ShadeSH9(half4(o.norm.xyz,1));
 
 					o.color_a.w = 0;
 
@@ -83,7 +85,7 @@ Shader "Custom/Characters/Main Texture Diffuse Rim"{
 				fixed4 frag(v2f i) : SV_Target {
 					fixed4 t_c = tex2D(_MainTex, i.uv);
 
-					t_c.rgb = t_c.rgb * _MainWeight * ( i.color_d * SHADOW_ATTENUATION(i) + i.color_a ) * _MainColor;
+					t_c.xyz = t_c.xyz * _MainWeight * ( max(0, dot(i.norm, _WorldSpaceLightPos0.xyz)) * _LightColor0 * SHADOW_ATTENUATION(i) + i.color_a ) * _MainColor;
 
 					if( _RimWeight == 8 ){
 						i.color_a = 0;
@@ -92,7 +94,13 @@ Shader "Custom/Characters/Main Texture Diffuse Rim"{
 						i.color_a.w = pow( 1 - saturate( abs( dot( i.normal, normalize(ObjSpaceViewDir(i.vertex)) ) ) ), _RimWeight );
 					}
 
-					t_c.rgb = t_c.rgb * ( 1 - i.color_a.w ) + i.color_a.w * _RimColor;
+					t_c.xyz = t_c.xyz * ( 1 - i.color_a.w ) + i.color_a.w * _RimColor;
+
+					t_c.w = _MainColor.w * t_c.w;
+
+					if( t_c.w <= _CutOut ){
+						discard;
+					}
 
 					return t_c;
 				}

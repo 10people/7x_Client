@@ -83,16 +83,6 @@ public class ChangeMiBaoSkill : MonoBehaviour,SocketProcessor {
 		mMiBaoSkillData = null;
 	}
 
-	void Start () 
-	{
-
-	}
-	
-
-	void Update () {
-	
-	}
-
 	public int OldZuhe_id;
 
 	public List<GameObject> skilltemp = new List<GameObject> ();

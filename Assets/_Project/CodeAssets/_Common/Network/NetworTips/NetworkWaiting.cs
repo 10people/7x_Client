@@ -2,6 +2,8 @@
 
 //#define DEBUG_WAITING_INFO
 
+//#define DEBUG_TIPS
+
 
 
 using UnityEngine;
@@ -27,6 +29,11 @@ public class NetworkWaiting : MonoBehaviour {
 	public UILabel m_lb_tips;
 
 	public UISprite m_spt_bg;
+
+
+
+	public bool m_log_status = false;
+
 
 
 	private static NetworkWaiting m_instance = null;
@@ -102,9 +109,9 @@ public class NetworkWaiting : MonoBehaviour {
 			t_enable_detail = true;
 			#endif
 
-			{
-				m_spt_bg.gameObject.SetActive( true );	
-			}
+//			{
+//				m_spt_bg.gameObject.SetActive( true );	
+//			}
 
 			{
 				m_lb_title.gameObject.SetActive( t_enable_detail );
@@ -119,9 +126,13 @@ public class NetworkWaiting : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if( IsShowingSending() || IsShowingReceiving() ){
+			CheckTimeOut();
+		}
+
+		{
 			UpdateTitleWithTime();
 
-			CheckTimeOut();
+			SetConnectingTips( ShouldConnectingTipsVisible() );
 		}
 
 		if( Instance().gameObject.activeSelf && IsHiding() ){
@@ -131,15 +142,32 @@ public class NetworkWaiting : MonoBehaviour {
 			          Instance().gameObject.activeSelf + " )" );
 			#endif
 
-			Instance().gameObject.SetActive( false );
+			if( IsForceTipsShowing() ){
+				
+			}
+			else{
+				#if DEBUG_TIPS
+				Debug.Log( "Close Waiting UI: " + Time.realtimeSinceStartup );
+				#endif
 
-			if( m_lb_tips != null ){
-				m_lb_tips.text = "";
+				{
+					Instance().gameObject.SetActive( false );
+				}
+
+				if( m_lb_tips != null ){
+					m_lb_tips.text = "";
+				}
 			}
 		}
 
 		{
 			UpdateTipsTexture();
+		}
+
+		if( m_log_status ){
+			m_log_status = false;
+
+			LogStatus();
 		}
 	}
 
@@ -156,10 +184,62 @@ public class NetworkWaiting : MonoBehaviour {
 	#region Time Update
 
 	private void ResetShowTime(){
-		#if DEBUG_WAITING
+		#if DEBUG_WAITING || DEBUG_TIPS
 		Debug.Log( "ResetShowTime: " + Time.realtimeSinceStartup );
 		#endif
 		m_show_time = Time.realtimeSinceStartup;
+	}
+
+	private bool IsShowingConnectingTips(){
+		return m_tips_tex.gameObject.activeSelf;
+	}
+
+	private bool ShouldConnectingTipsVisible(){
+		if( IsShowingSending() || IsShowingReceiving() ){
+			if( IsPreparingWaiting() ){
+				return false;
+			}
+			else{
+				return true;
+			}
+		}
+		else{
+			if( IsForceTipsShowing() ){
+				return true;
+			}
+
+			return false;
+		}
+	}
+
+	private void SetConnectingTips( bool p_show_connect_tips ){
+		if( m_tips_tex.gameObject.activeSelf == p_show_connect_tips ){
+			return;
+		}
+
+		#if DEBUG_TIPS
+		Debug.Log( "SetConnectingTips: " + p_show_connect_tips + " - " + Time.realtimeSinceStartup );
+		#endif
+
+		m_tips_tex.gameObject.SetActive( p_show_connect_tips );
+	}
+
+	private bool IsPreparingWaiting(){
+		if( Time.realtimeSinceStartup - m_show_time < ConfigTool.GetFloat( ConfigTool.CONST_PREPARE_NETWORK_WAITING_TIME, 0.5f ) ){
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool IsForceTipsShowing(){
+		if( Time.realtimeSinceStartup - m_show_time > ConfigTool.GetFloat( ConfigTool.CONST_PREPARE_NETWORK_WAITING_TIME, 0.5f ) ){
+			if( Time.realtimeSinceStartup - m_show_time - ConfigTool.GetFloat( ConfigTool.CONST_PREPARE_NETWORK_WAITING_TIME, 0.5f ) < ConfigTool.GetFloat( ConfigTool.CONST_FORCE_NETWORK_TIPS_WAITING_TIME, 0.1f ) ){
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private float GetWaitTime(){
@@ -183,6 +263,8 @@ public class NetworkWaiting : MonoBehaviour {
 
 					Debug.Log( "Show ReconnectUI, proto waiting: " + GetWaitingProtoDesc() );
 					#endif
+
+					SocketTool.LogNetworkWaiting();
 
 					SocketHelper.CreateTimeOutReConnectWindow( ReConnectCallback, OnReconnectBoxCreated );
 				}
@@ -248,11 +330,16 @@ public class NetworkWaiting : MonoBehaviour {
 
 		return false;
 	}
+
 	#endregion
 
 
 
 	#region Waiting Status
+
+	private void SetWaitingStatus( ENUM_NETWORK_WAITING p_waiting_status ){
+		m_waiting_state = p_waiting_status;
+	}
 
 	public bool IsHiding(){
 		if( !m_instance_exist ){
@@ -333,12 +420,12 @@ public class NetworkWaiting : MonoBehaviour {
 //	}
 
 	public void ShowNetworkSending( string p_sending ){
-		#if DEBUG_WAITING
+		#if DEBUG_WAITING || DEBUG_TIPS
 		Debug.Log( "ShowNetworkSending( " + p_sending + " ) " + Time.frameCount );
 		#endif
 
 		{
-			m_waiting_state = ENUM_NETWORK_WAITING.SENDING_WAITING;
+			SetWaitingStatus( ENUM_NETWORK_WAITING.SENDING_WAITING );
 
 			UpdateWaitingUI( CONST_TITLE_SENDING, p_sending );
 		}
@@ -349,8 +436,8 @@ public class NetworkWaiting : MonoBehaviour {
 	}
 
 	public void ShowNetworkSending( int p_proto_index ){
-		#if DEBUG_WAITING
-		Debug.Log( "ShowNetworkSending( " + p_proto_index + " ) " + Time.frameCount );
+		#if DEBUG_WAITING || DEBUG_TIPS
+		Debug.Log( "ShowNetworkSending( " + p_proto_index + " ) " + Time.realtimeSinceStartup );
 		#endif
 
 		{
@@ -373,12 +460,12 @@ public class NetworkWaiting : MonoBehaviour {
 	}
 
 	public void ShowNetworkReceiving( string p_proto_waiting ){
-		#if DEBUG_WAITING
-		Debug.Log( "ShowNetworkReceiving( " + p_proto_waiting + " ) " + Time.frameCount );
+		#if DEBUG_WAITING || DEBUG_TIPS
+		Debug.Log( "ShowNetworkReceiving( " + p_proto_waiting + " ) " + Time.realtimeSinceStartup );
 		#endif
 
 		{
-			m_waiting_state = ENUM_NETWORK_WAITING.RECEIVING_WAITING;
+			SetWaitingStatus( ENUM_NETWORK_WAITING.RECEIVING_WAITING );
 			
 			UpdateWaitingUI( CONST_TITLE_RECEIVING, p_proto_waiting );
 		}
@@ -390,8 +477,8 @@ public class NetworkWaiting : MonoBehaviour {
 
 
 	public void HideNeworkWaiting(){
-		#if DEBUG_WAITING
-		Debug.Log( "HideNeworkWaiting() " + Time.frameCount );
+		#if DEBUG_WAITING || DEBUG_TIPS
+		Debug.Log( "HideNeworkWaiting() " + Time.realtimeSinceStartup );
 		#endif
 
 		if( !m_instance_exist ){
@@ -408,7 +495,7 @@ public class NetworkWaiting : MonoBehaviour {
 //				m_lb_tips.text = "";
 //			}
 			
-			m_waiting_state = ENUM_NETWORK_WAITING.HIDING;
+			SetWaitingStatus( ENUM_NETWORK_WAITING.HIDING );
 		}
 	}
 
@@ -442,7 +529,6 @@ public class NetworkWaiting : MonoBehaviour {
 		m_lb_title.text = m_default_title;
 	}
 
-
 	private void UpdateWaitingContent( string p_show ){
 		// update state
 		{
@@ -471,6 +557,24 @@ public class NetworkWaiting : MonoBehaviour {
 
 			m_lb_time.text = t_time + "";
 		}
+	}
+
+	#endregion
+
+
+
+	#region Utilities
+
+	private void LogStatus(){
+		Debug.Log( "WaitingState: " + m_waiting_state );
+
+		Debug.Log( "IsForcingShow: " + IsForceTipsShowing() );
+
+		Debug.Log( "IsPreparingWaiting: " + IsPreparingWaiting() );
+
+		Debug.Log( "IsShowConnectingTip: " + IsShowingConnectingTips() );
+
+		Debug.Log( "ShouldConnectingTIpsVisible: " + ShouldConnectingTipsVisible() );
 	}
 
 	#endregion

@@ -22,12 +22,7 @@ public class UIHuodongPage4 : MYNGUIPanel , SocketListener
 	{
 		SocketTool.UnRegisterSocketListener(this);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	public void setData(ActivitLevelGiftResp data)
 	{
 		m_Info = data;
@@ -36,7 +31,7 @@ public class UIHuodongPage4 : MYNGUIPanel , SocketListener
 			GameObject.Destroy(m_listUIHuodongPage2EnemtData[i].gameObject);
 		}
 		m_listUIHuodongPage2EnemtData = new List<UIHuodongPage2EnemtData>();
-		
+		MainCityUI.SetRedAlert(600200 ,false);
 		for(int i = 0; i < m_Info.leveList.Count; i ++)
 		{
 			GameObject tempObj = GameObject.Instantiate(m_UIHuodongPage2EnemtData.gameObject);
@@ -54,12 +49,20 @@ public class UIHuodongPage4 : MYNGUIPanel , SocketListener
 				tempIconObj.transform.parent = tempEnemtData.m_IconSampleManager.gameObject.transform.parent;
 				tempIconObj.transform.localPosition = new Vector3(-185 + q * 50, -16, 0);
 				IconSampleManager tempIconSampleManager = tempIconObj.GetComponent<IconSampleManager>();
-				tempIconSampleManager.SetIconByID(m_Info.leveList[i].awardList[q].itemId, "x" + m_Info.leveList[i].awardList[q].itemNumber);
+				tempIconSampleManager.SetIconByID(m_Info.leveList[i].awardList[q].itemId, "x" + m_Info.leveList[i].awardList[q].itemNumber, 3);
+				tempIconSampleManager.SetIconPopText(m_Info.leveList[i].awardList[q].itemId);
 				tempIconObj.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
 				tempEnemtData.m_listIconSampleManager.Add(tempIconSampleManager);
 			}
 			tempEnemtData.m_sName.text = m_Info.leveList[i].des;
-			tempEnemtData.m_sJindu.text = m_Info.leveList[i].process + "/" + m_Info.leveList[i].maxProcess;
+			if(m_Info.leveList[i].process < m_Info.leveList[i].maxProcess)
+			{
+				tempEnemtData.m_sJindu.text = "[ff0000]" + m_Info.leveList[i].process + "[-]/" + m_Info.leveList[i].maxProcess;
+			}
+			else
+			{
+				tempEnemtData.m_sJindu.text = m_Info.leveList[i].process + "/" + m_Info.leveList[i].maxProcess;
+			}
 			if(m_Info.leveList[i].process < m_Info.leveList[i].maxProcess)
 			{
 				tempEnemtData.m_BoxCollider.enabled = false;
@@ -71,6 +74,7 @@ public class UIHuodongPage4 : MYNGUIPanel , SocketListener
 				tempEnemtData.m_BoxCollider.enabled = true;
 				tempEnemtData.m_spriteButtonBG.color = Color.white;
 				tempEnemtData.m_UILabelType.setType(10);
+				MainCityUI.SetRedAlert(600200 ,true);
 			}
 			tempEnemtData.m_spriteButtonBG.name = "ButtonLingqu" + i;
 			m_listUIHuodongPage2EnemtData.Add(tempEnemtData);

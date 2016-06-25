@@ -168,9 +168,4 @@ public class SceneTour : MonoBehaviour {
 			}
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

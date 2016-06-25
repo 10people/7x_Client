@@ -103,6 +103,20 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 
 	#endregion
 
+	#region CityWarJiFen
+	private OtherCity.PageType m_pageType;
+
+	public void CityWarJiFenReq (OtherCity.PageType tempType,int tempCityId)
+	{
+		m_pageType = tempType;
+		CityWarScoreResultReq scoreReq = new CityWarScoreResultReq ();
+		scoreReq.cityId = tempCityId;
+		QXComData.SendQxProtoMessage (scoreReq,ProtoIndexes.C_CITYWAR_SCORE_RESULT_REQ,ProtoIndexes.S_CITYWAR_SCORE_RESULT_RESP.ToString ());
+		Debug.Log ("郡城战积分请求：" + ProtoIndexes.C_CITYWAR_SCORE_RESULT_REQ);
+	}
+
+	#endregion
+
 	public bool OnProcessSocketMessage (QXBuffer p_message)
 	{
 		if (p_message != null)
@@ -218,7 +232,7 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 					switch (m_operateInfo.operateType)
 					{
 					case CityOperateType.GET_REWARD://领奖
-
+					{
 						if (operateResp.result == 0)
 						{
 //							Debug.Log ("领取成功");
@@ -234,8 +248,9 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 						CityWarReward.m_instance.RefreshReward (m_operateInfo.rewardId);
 
 						break;
+					}
 					case CityOperateType.BID://竞拍
-
+					{
 						if (operateResp.result == 0)//成功
 						{
 							if (operateResp.bidRecord == null)
@@ -252,73 +267,123 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 						}
 						else
 						{
-							switch (operateResp.result)
+							int cityType = JCZCityTemplate.GetJCZCityTemplateById (m_operateInfo.cityId).type;
+//							Debug.Log ("citytype:" + cityType);
+							if (operateResp.result == 5)
 							{
-							case 1://不是盟主或副盟主
-								m_text = "盟主/副盟主才可宣战！";
-								break;
-							case 2://非宣战时段
-								m_text = MyColorData.getColorString (5,JCZTemplate.GetJCZTemplateByKey(CityWarPage.m_instance.M_TimeLabelDic[0][0]).value + "~" + JCZTemplate.GetJCZTemplateByKey(CityWarPage.m_instance.M_TimeLabelDic[0][1]).value) + "为可宣战时段！";
-								break;
-							case 3://联盟等级不足
-								m_text = "本城只有" + MyColorData.getColorString (5,JCZCityTemplate.GetJCZCityTemplateById (m_targetCityInfo.cityId).allianceLv) + "级联盟才可宣战！";
-								break;
-							case 4://不能对自己领土宣战
-								int cityType = JCZCityTemplate.GetJCZCityTemplateById (m_operateInfo.cityId).type;
-								if (cityType == 1)
-								{
-									m_text = "您不能对自己的领土宣战！";
-								}
-								else
-								{
-									m_text = "野城只能宣战一个难度！";
-								}
-								break;
-							case 5://虎符不足
-								m_text = "虎符不足！";
-								break;
-							case 6:
-								m_text = "联盟已对该难度宣战！";
-								CityWarPage.m_instance.RefreshRecState (m_operateInfo.cityId);
-								break;
-							default:
-								break;
+//								m_text = "虎符不足！";
+//								int cost = JCZCityTemplate.GetJCZCityTemplateById (m_operateInfo.cityId).cost;
+								Global.CreateFunctionIcon (2202);
 							}
-							ClientMain.m_UITextManager.createText (m_text);
+							else
+							{
+								switch (operateResp.result)
+								{
+								case 1://不是盟主或副盟主
+									//								m_text = "盟主/副盟主才可宣战！";
+									if (cityType == 1)
+									{
+										m_text = LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_30);
+									}
+									else
+									{
+										m_text = LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_10);
+									}
+
+									break;
+								case 2://非宣战时段
+									//									m_text = MyColorData.getColorString (5,JCZTemplate.GetJCZTemplateByKey(CityWarPage.m_instance.M_TimeLabelDic[0][0]).value + "~" + JCZTemplate.GetJCZTemplateByKey(CityWarPage.m_instance.M_TimeLabelDic[0][1]).value) + "为可宣战时段！";
+									if (cityType == 1)
+									{
+										m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_31);	
+									}
+									else
+									{
+										m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_12);	
+									}
+									break;
+								case 3://联盟等级不足
+									//								m_text = "本城只有" + MyColorData.getColorString (5,JCZCityTemplate.GetJCZCityTemplateById (m_targetCityInfo.cityId).allianceLv) + "级联盟才可宣战！";
+									m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_32).Replace ("N",MyColorData.getColorString (5,JCZCityTemplate.GetJCZCityTemplateById (m_targetCityInfo.cityId).allianceLv.ToString ()));
+									break;
+								case 4://不能对自己领土宣战
+									if (cityType == 1)
+									{
+										//									m_text = "您不能对自己的领土宣战！";
+										m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_34);
+									}
+									else
+									{
+										//									m_text = "野城只能宣战一个难度！";
+										m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_11);	
+									}
+									break;
+								case 6:
+									m_text = "联盟已对该难度宣战！";
+									CityWarPage.m_instance.RefreshRecState (m_operateInfo.cityId);
+									break;
+								default:
+									break;
+								}
+								ClientMain.m_UITextManager.createText (m_text);
+							}
 						}
 
 						break;
+					}
 					case CityOperateType.ENTER_FIGHT://进入战场
-
+					{
 						if (operateResp.result == 0)//成功
 						{
 							//进入战场
+							m_isOpenCityWar = false;
+
+							//set redPoint
+
+							PushAndNotificationHelper.SetRedSpotNotification (300500,false);
+//							NewAlliancemanager.Instance ().ShowJunChengZhanAlert ();
+							SetAllianceRed ();
+
 							PlayerSceneSyncManager.Instance.EnterAB (m_operateInfo.cityId);
 						}
 						else
 						{
+							int cityType = JCZCityTemplate.GetJCZCityTemplateById (m_operateInfo.cityId).type;
 							switch (operateResp.result)
 							{
 							case 1://非攻方或守方盟员
-								m_text = "非攻守方禁止进入战场！";
+//								m_text = "非攻守方禁止进入战场！";
+								m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_37);	
 								break;
 							case 2://非战斗时段
-								m_text = "非战斗时段禁止进入战场！请于" + MyColorData.getColorString (5,JCZTemplate.GetJCZTemplateByKey(CityWarPage.m_instance.M_TimeLabelDic[2][0]).value + "~" + JCZTemplate.GetJCZTemplateByKey(CityWarPage.m_instance.M_TimeLabelDic[2][1]).value) + "期间再来！";
+//								m_text = "非战斗时段禁止进入战场！请于" + MyColorData.getColorString (5,JCZTemplate.GetJCZTemplateByKey(CityWarPage.m_instance.M_TimeLabelDic[2][0]).value + "~" + JCZTemplate.GetJCZTemplateByKey(CityWarPage.m_instance.M_TimeLabelDic[2][1]).value) + "期间再来！";
+								m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_35);
 								break;
 							case 3://不能频繁进出
 								Debug.Log ("cd:" + operateResp.cdTime);
-								m_text = "禁止频繁进入战场，进入战场冷却还有" + MyColorData.getColorString (5,operateResp.cdTime.ToString ()) + "秒！";
+//								m_text = "禁止频繁进入战场，进入战场冷却还有" + MyColorData.getColorString (5,operateResp.cdTime.ToString ()) + "秒！";
+								if (cityType == 1)
+								{
+									m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_39).Replace ("XX",MyColorData.getColorString (5,operateResp.cdTime.ToString ()));	
+								}
+								else
+								{
+									m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_16).Replace ("XX",MyColorData.getColorString (5,operateResp.cdTime.ToString ()));	
+								}
 								break;
 							case 4://今日战斗已结束
-								m_text = "今日战斗已结束！";
+//								m_text = "今日战斗已结束！";
+								m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_40);	
 								break;
 							case 5://没有敌人宣战
-								m_text = "没有敌人对您的该领土宣战，去开疆辟土吧主人！";
+//								m_text = "没有敌人对您的该领土宣战，去开疆辟土吧主人！";
+								m_text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_36);	
 								break;
 							}
 							ClientMain.m_UITextManager.createText (m_text);
 						}
 						break;
+					}
 					default:
 						break;
 					}
@@ -342,6 +407,26 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 					}
 				}
 				
+				return true;
+			}
+			case ProtoIndexes.S_CITYWAR_SCORE_RESULT_RESP:
+			{
+				CityWarScoreResultResp scoreResp = new CityWarScoreResultResp();
+				scoreResp = QXComData.ReceiveQxProtoMessage (p_message,scoreResp) as CityWarScoreResultResp;
+				Debug.Log ("积分返回：" + ProtoIndexes.S_CITYWAR_SCORE_RESULT_RESP);
+				if (scoreResp != null)
+				{
+					if (scoreResp.scoreList == null)
+					{
+						scoreResp.scoreList = new List<ScoreInfo>();
+					}
+//					Debug.Log ("积分list:" + scoreResp.scoreList.Count);
+//					Debug.Log ("城池名字:" + scoreResp.cityName);
+//					Debug.Log ("时间:" + scoreResp.date);
+					Debug.Log ("npc:" + scoreResp.isNpc);
+					CityWarPage.m_instance.OpenJiFenPage (m_pageType,scoreResp);
+				}
+
 				return true;
 			}
 			}
@@ -382,6 +467,15 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 		MainCityUI.TryRemoveFromObjectList (m_cityObj);
 		m_cityObj.SetActive (false);
 		m_isOpenCityWar = false;
+	}
+
+	public void SetAllianceRed ()
+	{
+		GameObject allianceObj = GameObject.Find ("New_My_Union(Clone)");
+		if (allianceObj != null)
+		{
+			NewAlliancemanager.Instance ().ShowJunChengZhanAlert ();
+		}
 	}
 
 	void OnDestroy ()

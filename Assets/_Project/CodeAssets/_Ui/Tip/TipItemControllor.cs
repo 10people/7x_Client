@@ -21,7 +21,9 @@ public class TipItemControllor : MonoBehaviour
 	public GameObject layerProgress;
 	
 	public UILabel labelNumNormal;
-	
+
+	public UILabel labelNumNormalText;
+
 	public UISlider bar;
 	
 	public UILabel labelNumBar;
@@ -56,13 +58,27 @@ public class TipItemControllor : MonoBehaviour
 	
 	public void refreshData(int _commonItemId)
 	{
-		if(UICamera.lastTouchPosition.x < Screen.width / 2)
+		if(ShowTip.tipItemData != null && ShowTip.tipItemData.touchedPositon != TipItemData.ScreenPosition.DEFAULT)
 		{
-			gameObject.transform.localPosition = new Vector3(240, 0, 0);
+			if(ShowTip.tipItemData.touchedPositon == TipItemData.ScreenPosition.LEFT)
+			{
+				gameObject.transform.localPosition = new Vector3(240, 0, 0);
+			}
+			else
+			{
+				gameObject.transform.localPosition = new Vector3(-240, 0, 0);
+			}
 		}
 		else
 		{
-			gameObject.transform.localPosition = new Vector3(-240, 0, 0);
+			if(UICamera.lastTouchPosition.x < Screen.width / 2)
+			{
+				gameObject.transform.localPosition = new Vector3(240, 0, 0);
+			}
+			else
+			{
+				gameObject.transform.localPosition = new Vector3(-240, 0, 0);
+			}
 		}
 
 		commonItemId = _commonItemId;
@@ -114,6 +130,10 @@ public class TipItemControllor : MonoBehaviour
 		//0普通道具;2装备;3玉玦;4秘宝；5秘宝碎片；6进阶材料；7基础属性符文；8高级属性符文；9强化材料;201联盟科技;202联盟科技;203联盟科技
 		if(template.itemType == 5)
 		{
+			showNormalNum = !refreshProgress_JiangHunSuiPian();
+		}
+		else if(template.itemType == 23)
+		{
 			showNormalNum = !refreshProgress_MibaoSuiPian();
 		}
 		else if(template.itemType == 6)
@@ -124,7 +144,7 @@ public class TipItemControllor : MonoBehaviour
 		{
 			showNormalNum = true;
 		}
-		else if(template.itemType == 211 || template.itemType == 201 || template.itemType == 202 || template.itemType == 203)
+		else if(template.itemType == 211 || template.itemType == 201 || template.itemType == 202 || template.itemType == 203 || template.itemType == 221 || template.itemType == 222)
 		{
 			showNormalNum = false;
 		}
@@ -139,22 +159,33 @@ public class TipItemControllor : MonoBehaviour
 
 			string textNum = num + "";
 
+			if(num == 0)
+			{
+				textNum = ColorTool.Color_Red_FF0000 + num + "[-]";
+			}
+			else
+			{
+				Color col = labelNumNormalText.color;
+				
+				string strCol = "[" + col.ToHexStringRGB() + "]";
+				
+				textNum = strCol + num + "[-]";
+			}
+
 			string text_2 = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_2);
 
 			if(commonItemId == 900003)//体力
 			{
-				textNum = num + "/" + JunZhuData.Instance().m_junzhuInfo.tiLiMax;
+				textNum = textNum + "/" + JunZhuData.Instance().m_junzhuInfo.tiLiMax;
 
 				text_2 = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_3);
 			}
 			else if(commonItemId == 900006)//exp
 			{
-				textNum = num + "/" + JunZhuData.Instance().m_junzhuInfo.expMax;
+				textNum = textNum + "/" + JunZhuData.Instance().m_junzhuInfo.expMax;
 			}
 
-			string text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_1) + textNum;
-
-			labelNumNormal.text = text;
+			labelNumNormal.text = textNum;
 		}
 		
 		labelDesc.text = DescIdTemplate.GetDescriptionById (template.descId);
@@ -257,6 +288,11 @@ public class TipItemControllor : MonoBehaviour
 			num = AllianceData.Instance.g_UnionInfo == null ? 0 :
 				AllianceData.Instance.g_UnionInfo.build;
 		}
+		else if(template.id == 900027)//功勋
+		{
+			num = AllianceData.Instance.g_UnionInfo == null ? 0 :
+				AllianceData.Instance.g_UnionInfo.gongXun;
+		}
         else if (template.id == 900018)//武艺精气
         {
             num = JunZhuData.Instance().m_junzhuInfo.wuYiJingQi;
@@ -320,6 +356,20 @@ public class TipItemControllor : MonoBehaviour
 				}
 			}
 		}
+		else if(template.itemType == 23)//秘宝碎片
+		{
+			MibaoNewSuipianTemplate suipianTemplate = MibaoNewSuipianTemplate.GetTemplateByID (template.id);
+			
+			MibaoNewTemplate mibaoTemplate = MibaoNewTemplate.GetTemplateByID (suipianTemplate.mibaoID);
+			
+			foreach(MibaoInfo mibao in MishuGlobalData.Instance.m_MibaoInfoResp.miBaoList)
+			{
+				if(mibaoTemplate.id == mibao.miBaoId)
+				{
+					num = mibao.suiPianNum;
+				}
+			}
+		}
 
 		if(gotoBag == true)
 		{
@@ -338,8 +388,8 @@ public class TipItemControllor : MonoBehaviour
 		}
 	}
 
-	//秘宝碎片
-	private bool refreshProgress_MibaoSuiPian()
+	//将魂碎片
+	private bool refreshProgress_JiangHunSuiPian()
 	{
 		//if (bagItem != null) return false;
 
@@ -384,7 +434,9 @@ public class TipItemControllor : MonoBehaviour
 		bar.value = bar.value > 1 ? 1 : bar.value;
 		
 		labelNumBar.text = num + "/" + numMax;
-		
+
+		if(num == 0) labelNumBar.text = ColorTool.Color_Red_FF0000 + num + "[-]/" + numMax;
+
 		if(isLock == true)
 		{
 			spriteTab.gameObject.SetActive(true);
@@ -429,7 +481,76 @@ public class TipItemControllor : MonoBehaviour
 		
 		return true;
 	}
-	
+
+	//秘宝碎片
+	private bool refreshProgress_MibaoSuiPian()
+	{
+		//if (bagItem != null) return false;
+		
+		layerNum.SetActive(false);
+		
+		layerProgress.SetActive (true);
+		
+		bool isHave = false;
+		
+		int numMax = 0;
+
+		MibaoNewSuipianTemplate suipianTemplate = MibaoNewSuipianTemplate.GetTemplateByID (template.id);
+
+		MibaoNewTemplate mibaoTemplate = MibaoNewTemplate.GetTemplateByID (suipianTemplate.mibaoID);
+
+		numMax = mibaoTemplate.jinjieNum;
+		
+		foreach(MibaoInfo mibao in MishuGlobalData.Instance.m_MibaoInfoResp.miBaoList)
+		{
+			if(mibaoTemplate.id == mibao.miBaoId)
+			{
+				isHave = mibao.star != 0;
+			}
+		}
+		
+		bar.value = (num * 1f) / (numMax * 1f);
+		
+		bar.value = bar.value > 1 ? 1 : bar.value;
+		
+		labelNumBar.text = num + "/" + numMax;
+
+		if(num == 0) labelNumBar.text = ColorTool.Color_Red_FF0000 + num + "[-]/" + numMax;
+
+		if(num < numMax)
+		{
+			spriteTab.gameObject.SetActive(false);
+			
+			labelTab.gameObject.SetActive(true);
+			
+			if(isHave == false)//没有秘宝，显示"待合成"
+			{
+				labelTab.text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_HECHENG);
+			}
+			else
+			{
+				labelTab.text = LanguageTemplate.GetText(LanguageTemplate.Text.TIP_SHENGXING);
+			}
+		}
+		else
+		{
+			spriteTab.gameObject.SetActive(true);
+			
+			labelTab.gameObject.SetActive(false);
+			
+			if(isHave == false)//没有秘宝，显示"可合成"
+			{
+				spriteTab.spriteName = "tips_1";
+			}
+			else //有秘宝，显示"可升星"
+			{
+				spriteTab.spriteName = "tips_3";
+			}
+		}
+		
+		return !isHave;
+	}
+
 	//进阶材料
 	private bool refreshProgress_JinJieCaiLiao()
 	{
@@ -448,7 +569,9 @@ public class TipItemControllor : MonoBehaviour
 		bar.value = bar.value > 1 ? 1 : bar.value;
 		
 		labelNumBar.text = num + "/" + numMax;
-		
+
+		if(num == 0) labelNumBar.text = ColorTool.Color_Red_FF0000 + num + "[-]/" + numMax;
+
 		if(num < numMax)
 		{
 			spriteTab.gameObject.SetActive(false);

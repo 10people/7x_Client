@@ -113,7 +113,8 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
         t_qx.Serialize(t_tream, xinshou);
         byte[] t_protof;
         t_protof = t_tream.ToArray();
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_XINSHOU_XIANSHI_INFO_REQ, ref t_protof);
+ 
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_XINSHOU_XIANSHI_INFO_REQ, ref t_protof, p_receiving_wait_proto_index: ProtoIndexes.S_XINSHOU_XIANSHI_INFO_RESP);
     }
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
@@ -139,18 +140,50 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                         QiXiongSerializer t_qx = new QiXiongSerializer();
                         ReturnAward ReponseInfo = new ReturnAward();
                         t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
-                   
+                  
+ 
+
                         for (int i = 0; i < _listOnlineInfo.Count; i++)
                         {
                             if (_listOnlineInfo[i].huodongId == ReponseInfo.huodongId)
                             {
-                                FunctionWindowsCreateManagerment.ShowRAwardInfo(_listOnlineInfo[0].jiangli);
+                                //FunctionWindowsCreateManagerment.ShowRAwardInfo(_listOnlineInfo[0].jiangli);
                                 _listOnlineInfo.RemoveAt(i);
                                 break;
                             }
                         }
 
-//				Debug.Log ("_listOnlineInfo.Count:" + _listOnlineInfo.Count);
+                        if (ReponseInfo.awardList != null)
+                        {
+                            List<FunctionWindowsCreateManagerment.GenerialWard> listward = new List<FunctionWindowsCreateManagerment.GenerialWard>();
+                            int size = ReponseInfo.awardList.Count;
+                            for (int i = 0; i < size; i++)
+                            {
+                                FunctionWindowsCreateManagerment.GenerialWard gw = new FunctionWindowsCreateManagerment.GenerialWard();
+                                gw.id = ReponseInfo.awardList[i].itemId;
+                                gw.count = ReponseInfo.awardList[i].itemNumber;
+                                if (ReponseInfo.awardList[i].pieceNumber != null)
+                                {
+                                    if (ReponseInfo.awardList[i].itemType == 4 
+                                        && ReponseInfo.awardList[i].pieceNumber > 0)
+                                    {
+                                        gw.isNew = false;
+                                    }
+                                    else
+                                    {
+                                        gw.isNew = true;
+                                    }
+                                }
+                                else
+                                {
+                                    gw.isNew = true;
+                                }
+                                listward.Add(gw);
+                              
+                            }
+                            FunctionWindowsCreateManagerment.ShowSpecialAwardInfo(listward);
+                        }
+ 
                         if (_listOnlineInfo.Count > 0)
                         {
                             int size = m_CenterParent.transform.childCount;
@@ -355,6 +388,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                 {
                     m_LabTopTitle.text = "";
                     m_LabMiddleTitle.text = MyColorData.getColorString(1, LanguageTemplate.GetText(int.Parse(_MainInfo.midTitle)));
+                    if(int.Parse(_MainInfo.midCount) > 0)
                     m_LabMiddleCount.text = LanguageTemplate.GetText(int.Parse(_MainInfo.midCount));
                 }
                 break;
@@ -392,7 +426,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
     {
         _indexNum = 0;
         int size = _listReward.Count;
-        m_BottomParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size - 1, 50), 0, 0);
+        m_BottomParent.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size - 1, 55), 0, 0);
     
         for (int i = 0; i < size; i++)
         {
@@ -463,7 +497,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                 //                                            tempObject,
                 //                                            EffectIdTemplate.GetPathByeffectId(100154));
 
-               UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, tempObject, EffectIdTemplate.GetPathByeffectId(600206), null);
+               UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.FunctionUI_1, tempObject, EffectIdTemplate.GetPathByeffectId(600206), null);
                 if (_listReward[_indexNum].count > 1)
                 {
                     iconSampleManager.SetIconByID(_listReward[_indexNum].id, _listReward[_indexNum].count.ToString(), 10);

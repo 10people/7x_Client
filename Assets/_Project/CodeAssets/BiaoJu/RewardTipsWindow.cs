@@ -15,8 +15,6 @@ namespace Carriage
 		public delegate void RewardTipsDelegate (int i);
 		private RewardTipsDelegate tipsDelegate;
 
-		public ScaleEffectController sEffectController;
-
 		void Awake ()
 		{
 			rewardTips = this;
@@ -29,16 +27,14 @@ namespace Carriage
 
 		public void InItRewardTips (RewardTipsDelegate tempDelegate)
 		{
-			sEffectController.OnOpenWindowClick ();
-
 			tipLableList [0].text = "运镖总收益=" 
 				+ MyColorData.getColorString (16,"基础收益+") 
 					+ MyColorData.getColorString (4,"品质加成+")
 					+ MyColorData.getColorString (15,"马具增益");
 
-			int startReward = BiaoJuPage.bjPage.GetHorseAwardNum (1);
-			int pinZhiReward = BiaoJuPage.bjPage.GetHorseAwardNum (BiaoJuPage.bjPage.CurHorseLevel) - BiaoJuPage.bjPage.GetHorseAwardNum (1);
-			int propReward = BiaoJuPage.bjPage.PropReward;
+			int startReward = BiaoJuPage.m_instance.GetHorseAwardNum (1);
+			int pinZhiReward = BiaoJuPage.m_instance.GetHorseAwardNum (BiaoJuPage.m_instance.CurHorseLevel) - BiaoJuPage.m_instance.GetHorseAwardNum (1);
+			int propReward = BiaoJuPage.m_instance.PropReward;
 			int totleReward = startReward + pinZhiReward + propReward;
 
 			tipLableList [1].text = "=" + MyColorData.getColorString (16, startReward.ToString () + (totleReward == startReward ? "" : "+")) 

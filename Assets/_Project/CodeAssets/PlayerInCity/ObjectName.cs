@@ -1,21 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class ObjectName : MonoBehaviour {
-
     public GameObject m_ObjController;
 	public UILabel m_playerName;
     public UILabel m_LabAllianceName;
     public UISprite m_SpriteChengHao;
     public UILabel m_playerVip;
     public UISprite m_SpriteVip;
+    public GameObject m_ObjVip;
     public UISprite m_SpriteZH;
     [HideInInspector]
     public string m_NameSend = "";
     protected Transform m_transform;
     public bool m_isShowChengHao = false;
+    private GameObject _ObjEffect = null;
+    public string _Designation = null;
 
-	private bool isPlayer = true;
+    private bool isPlayer = true;
 	public bool IsPlayer { set{isPlayer = value;} get{return isPlayer;} }
 
 	void Start()
@@ -31,16 +33,36 @@ public class ObjectName : MonoBehaviour {
         }
         else
         {
-            m_LabAllianceName.text = MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
+            m_LabAllianceName.text = MyColorData.getColorString(12, "<" +LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT)+">");
         }
 
         if (!string.IsNullOrEmpty(u_info._Designation) && !u_info._Designation.Equals("-1"))
         {
+            m_isShowChengHao = true;
             m_SpriteChengHao.gameObject.SetActive(true);
             m_SpriteChengHao.spriteName = u_info._Designation;
+
+            if (!string.IsNullOrEmpty(_Designation)
+                )
+            {
+                CreateEffect(int.Parse(u_info._Designation));
+            }
+            else if (!_Designation.Equals(u_info._Designation))
+            {
+                CreateEffect(int.Parse(u_info._Designation));
+            }
+
+            if (string.IsNullOrEmpty(_Designation))
+            {
+                _Designation = u_info._Designation;
+            }
         }
         else
         {
+            //if (_ObjEffect)
+            //{
+            //    Destroy(_ObjEffect);
+            //}
             m_SpriteChengHao.gameObject.SetActive(false);
         }
 
@@ -48,20 +70,20 @@ public class ObjectName : MonoBehaviour {
         {
             if (int.Parse(u_info._VInfo) > 0)
             {
-                m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(u_info._Name) - 1) * 18, -11, 0);
-                m_SpriteVip.gameObject.SetActive(true);
-                m_SpriteVip.spriteName = "vip" + u_info._VInfo;
+                m_ObjVip.transform.localPosition = new Vector3(-50 - (FunctionWindowsCreateManagerment.DistanceCount(u_info._Name) - 1) * 6, -11, 0);
+                m_ObjVip.SetActive(true);
+                m_SpriteVip.spriteName = "v" + u_info._VInfo;
                 m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
             }
             else
             {
-                m_SpriteVip.gameObject.SetActive(false);
+                m_ObjVip.gameObject.SetActive(false);
                 m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
             }
         }
         else
         {
-            m_SpriteVip.gameObject.SetActive(false);
+            m_ObjVip.gameObject.SetActive(false);
             m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
         }
 
@@ -84,14 +106,31 @@ public class ObjectName : MonoBehaviour {
 
 			if (!string.IsNullOrEmpty(tempChengHao) && !tempChengHao.Equals("-1"))
 			{
-				m_isShowChengHao = true;
 				m_SpriteChengHao.gameObject.SetActive(true);
 				m_SpriteChengHao.spriteName = tempChengHao;
-			}
+                if (!string.IsNullOrEmpty(_Designation)
+                )
+                {
+                    CreateEffect(int.Parse(tempChengHao));
+                }
+                else if (!_Designation.Equals(tempChengHao))
+                {
+                    CreateEffect(int.Parse(tempChengHao));
+                }
+
+                if (string.IsNullOrEmpty(_Designation))
+                {
+                    _Designation = tempChengHao;
+                }
+            }
 			else
 			{
-				m_isShowChengHao = false;
-				m_SpriteChengHao.gameObject.SetActive(false);
+                if (_ObjEffect)
+                {
+                    Destroy(_ObjEffect);
+                }
+                m_isShowChengHao = false;
+                m_SpriteChengHao.gameObject.SetActive(false);
 			}
 
 			if (!string.IsNullOrEmpty(vip_level))
@@ -165,5 +204,32 @@ public class ObjectName : MonoBehaviour {
      //   m_playerName.gameObject.SetActive(is_show);
         m_LabAllianceName.gameObject.SetActive(is_show);
         m_SpriteChengHao.gameObject.SetActive(is_show);
+    }
+
+    void CreateEffect(int Designation)
+    {
+        if (_ObjEffect)
+        {
+            Destroy(_ObjEffect);
+        }
+
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(ChenghaoTemplate.GetChenghaoColor(Designation)), UIBoxLoad_SelectCountry);
+    }
+    public void UIBoxLoad_SelectCountry(ref WWW p_www, string p_path, Object p_object)
+    {
+        if (m_SpriteChengHao != null)
+        {
+            GameObject tempObject = Instantiate(p_object) as GameObject;
+            _ObjEffect = tempObject;
+            tempObject.transform.parent = m_SpriteChengHao.transform;
+            tempObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
+            tempObject.transform.localPosition = Vector3.zero;
+            tempObject.transform.localScale = Vector3.one;
+        }
+        else
+        {
+            p_object = null;
+        }
+
     }
 }

@@ -22,15 +22,11 @@ public class UIHuodongPage1 : MYNGUIPanel , SocketListener
 	{
 		SocketTool.UnRegisterSocketListener(this);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	public void setData(ActivityCardResp data)
 	{
 		m_Info = data;
+		MainCityUI.SetRedAlert(1393 ,false);
 		for(int i = 0; i < m_Info.monthCard.Count; i ++)
 		{
 			if(m_Info.monthCard[i].rmDays == -1)
@@ -40,7 +36,7 @@ public class UIHuodongPage1 : MYNGUIPanel , SocketListener
 			else
 			{
 				m_listEnemt[i].m_labelDes.gameObject.SetActive(true);
-				m_listEnemt[i].m_labelDes.text = "剩余天数：[ff0000]" + m_Info.monthCard[0].rmDays + "[-]";
+				m_listEnemt[i].m_labelDes.text = "剩余天数：[ff0000]" + m_Info.monthCard[i].rmDays + "[-]";
 			}
 			m_listEnemt[i].m_labelNum.text = "" + m_Info.monthCard[i].giveNum;
 			switch(m_Info.monthCard[i].result)
@@ -54,6 +50,7 @@ public class UIHuodongPage1 : MYNGUIPanel , SocketListener
 				m_listEnemt[i].m_objButton.SetActive(true);
 				m_listEnemt[i].m_labelTime.gameObject.SetActive(false);
 				m_listEnemt[i].m_labelButtonDes.text = "领 取";
+				MainCityUI.SetRedAlert(1393 ,true);
 				break;
 			case 2:
 				m_listEnemt[i].m_objButton.SetActive(false);
@@ -136,7 +133,7 @@ public class UIHuodongPage1 : MYNGUIPanel , SocketListener
 			switch(m_Info.monthCard[index].result)
 			{
 			case 0:
-				TopUpLoadManagerment.LoadPrefab(false);
+				RechargeData.Instance.RechargeDataReq ();
 				break;
 			case 1:
 				Global.ScendID(ProtoIndexes.C_ACTIVITY_MONTH_CARD_REWARD_REQ, index);

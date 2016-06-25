@@ -7,6 +7,8 @@ public class Buff : MonoBehaviour
 	public AIdata.AttributeType buffType;
 
 
+	private BaseAI attacker;
+
 	private BaseAI ai;
 
 	private float buffValue;
@@ -28,10 +30,8 @@ public class Buff : MonoBehaviour
 	private int skillId;
 
 
-	public static Buff createBuff(BaseAI _ai, AIdata.AttributeType _buffType, float _buffValue, float _time, SkillBuff _supplement = null )
+	public static Buff createBuff(BaseAI _ai, AIdata.AttributeType _buffType, float _buffValue, float _time, SkillBuff _supplement = null)
 	{
-//		Debug.Log ("CCCCCCCCCCCCCC   " + _buffType + ", " + _buffValue + ", " + _time);
-
 		List<Buff> m_typeListBuff = _ai.getBuffs();//鑾峰彇AI鐨凚UFFS
 
 		for(int i = 0; i < m_typeListBuff.Count; i ++)//妫鏌ヨ韩涓婃槸鍚︽湁鎶垫秷BUFF 骞朵笖姝ｅソ鍙?互鎶垫秷姝?UFF
@@ -64,6 +64,8 @@ public class Buff : MonoBehaviour
 		buff.supplement = _supplement;
 
 		buff.startTime = Time.time;
+
+		buff.attacker = null;
 
 		buff.initValue();
 
@@ -299,6 +301,16 @@ public class Buff : MonoBehaviour
 		else if(buffType == AIdata.AttributeType.ATTRTYPE_Blind)
 		{
 			ai.isBlind = true;
+
+			if(ai.nodeData.nodeType == qxmobile.protobuf.NodeType.PLAYER)
+			{
+				for(int i = 0; i < 4; i++)
+				{
+					if(ai.containsParameter("attack_" + i)) ai.mAnim.SetBool("attack_" + i, false);
+				}
+
+				(ai as KingControllor).hitCount = 0;
+			}
 		}
 		else if(buffType == AIdata.AttributeType.ATTRTYPE_hpDelay)
 		{
@@ -311,6 +323,16 @@ public class Buff : MonoBehaviour
 		{
 			ai.isIdle = true;
 
+			if(ai.nodeData.nodeType == qxmobile.protobuf.NodeType.PLAYER)
+			{
+				for(int i = 0; i < 4; i++)
+				{
+					if(ai.containsParameter("attack_" + i)) ai.mAnim.SetBool("attack_" + i, false);
+				}
+				
+				(ai as KingControllor).hitCount = 0;
+			}
+
 			if(BattleControlor.Instance().achivement != null && ai.nodeId == 1)
 			{
 				BattleControlor.Instance().achivement.ByJiYun();
@@ -319,6 +341,16 @@ public class Buff : MonoBehaviour
 		else if(buffType == AIdata.AttributeType.ATTRTYPE_Sleep)
 		{
 			ai.sleep = true;
+
+			if(ai.nodeData.nodeType == qxmobile.protobuf.NodeType.PLAYER)
+			{
+				for(int i = 0; i < 4; i++)
+				{
+					if(ai.containsParameter("attack_" + i)) ai.mAnim.SetBool("attack_" + i, false);
+				}
+				
+				(ai as KingControllor).hitCount = 0;
+			}
 		}
 		else if(buffType == AIdata.AttributeType.ATTRTYPE_Betray)
 		{
@@ -361,12 +393,28 @@ public class Buff : MonoBehaviour
 		{
 
 		}
+		else if(buffType == AIdata.AttributeType.ATTRTYPE_hpShield)
+		{
+			float t_att = ai.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hpMaxReal);
+			
+			ai.nodeData.SetAttribute( buffType, t_att * buffValue );
+		}
 		else
 		{
 			float t_att = ai.nodeData.GetAttribute( buffType );
 
 			ai.nodeData.SetAttribute( buffType, t_att + buffValue );
 		}
+	}
+
+	public static void setAttacker(BaseAI _attacker, Buff buff)
+	{
+		if (buff != null) buff.setAttacker (_attacker);
+	}
+
+	public void setAttacker(BaseAI _attacker)
+	{
+		attacker = _attacker;
 	}
 
 	public void setEffect(GameObject effectObject)
@@ -405,7 +453,14 @@ public class Buff : MonoBehaviour
 
 			if(buffValue > 0)
 			{
-				ai.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
+				if(attacker != null && attacker.isAlive && attacker.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) >= 0)
+				{
+					attacker.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
+				}
+				else
+				{
+					ai.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
+				}
 			}
 			else 
 			{
@@ -483,6 +538,10 @@ public class Buff : MonoBehaviour
 				ai.threatDict [dictId].actionThreat -= buffValue;
 			}
 		}
+		else if(buffType == AIdata.AttributeType.ATTRTYPE_hpShield)
+		{
+			ai.nodeData.SetAttribute( buffType, 0);
+		}
 		else if((int)buffType < 100)
 		{
 			float t_att = ai.nodeData.GetAttribute( buffType );
@@ -491,6 +550,8 @@ public class Buff : MonoBehaviour
 		}
 
 		ai.getBuffs().Remove(this);
+
+		attacker = null;
 
 		Destroy(m_ObjEff);
 

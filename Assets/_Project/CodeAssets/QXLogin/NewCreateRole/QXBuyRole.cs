@@ -37,18 +37,20 @@ public class QXBuyRole : GeneralInstance<QXBuyRole> {
 				int m_costNum = (int)CanshuTemplate.GetValueByKey (CanshuTemplate.UNLOCK_ROLE_PIRCE);
 				if (QXComData.JunZhuInfo ().yuanBao >= m_costNum)
 				{
-					QXSelectRole.Instance.UnLockRoleOperate (m_roleId,true);
+					QXSelectRole.Instance ().UnLockRoleOperate (m_roleId,true);
 				}
 				else
 				{
 					//元宝不足
-					ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,"元宝不足！"));
+//					ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,"元宝不足！"));
+					Global.CreateFunctionIcon (101);
 				}
 			}
 			else
 			{
 				//vip等级不足
-				ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,"V特权等级不足！"));
+//				ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,"V特权等级不足！"));
+				Global.CreateFunctionIcon (1901);
 			}
 			break;
 		default:

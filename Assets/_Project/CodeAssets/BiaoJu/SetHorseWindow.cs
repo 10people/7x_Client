@@ -65,8 +65,8 @@ namespace Carriage
 			}
 
 			totleShouYiDes.text = "您的总收益=" + MyColorData.getColorString (1,"基础收益") + MyColorData.getColorString (4,"+加成收益");
-			totleShouYiNum.text = "=" + MyColorData.getColorString (1, BiaoJuPage.bjPage.GetHorseAwardNum (1).ToString ()) 
-				+ MyColorData.getColorString (4,"+" + (BiaoJuPage.bjPage.GetHorseAwardNum (tempType) - BiaoJuPage.bjPage.GetHorseAwardNum (1)).ToString ());
+			totleShouYiNum.text = "=" + MyColorData.getColorString (1, BiaoJuPage.m_instance.GetHorseAwardNum (1).ToString ()) 
+				+ MyColorData.getColorString (4,"+" + (BiaoJuPage.m_instance.GetHorseAwardNum (tempType) - BiaoJuPage.m_instance.GetHorseAwardNum (1)).ToString ());
 
 			foreach (EventHandler handler in closeHandlerList)
 			{
@@ -76,7 +76,11 @@ namespace Carriage
 
 			if (tempType == 5)
 			{
-				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,8);
+//				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,8);
+				if (QXComData.CheckYinDaoOpenState (100370))
+				{
+					CloseSetHorseWindow (gameObject);
+				}
 			}
 			else
 			{
@@ -87,7 +91,7 @@ namespace Carriage
 		public void CloseSetHorseWindow (GameObject obj)
 		{
 			//判断是否有高级马鞭
-			if (BiaoJuPage.bjPage.CheckGaoJiMaBian ())
+			if (BiaoJuPage.m_instance.CheckGaoJiMaBian ())
 			{
 				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,12);
 			}

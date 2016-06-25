@@ -408,7 +408,7 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
         int size_s = m_listSignal.Count;
         for (int i = 0; i < size_s; i++)
         {
-            if (i < _listAttribute.Count)
+            if (i < _listAttribute.Count || i > 3)
             {
                 m_listSignal[i].SetActive(false);
             }
@@ -474,13 +474,13 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
         m_SpriteIcon.spriteName = exInfo.EquipIcon;
         if (FunctionWindowsCreateManagerment.SpecialSizeFit(exInfo.PinZhi))
         {
-            m_SpritePinZhi.width = m_SpritePinZhi.height = 81;
+            m_SpritePinZhi.width = m_SpritePinZhi.height = 90;
         }
         else
         {
-            m_SpritePinZhi.width = m_SpritePinZhi.height = 70;
+            m_SpritePinZhi.width = m_SpritePinZhi.height = 80;
         }
-            m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(exInfo.PinZhi);
+        m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(exInfo.PinZhi);
   
         m_ObjIcon.SetActive(true);
  

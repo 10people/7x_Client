@@ -22,14 +22,6 @@ public class ChapterBtn : MonoBehaviour {
 	[HideInInspector]public int Chapters;
 
 	[HideInInspector]public string lv_name;
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	public void  Init()
 	{

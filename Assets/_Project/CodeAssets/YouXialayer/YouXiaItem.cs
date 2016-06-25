@@ -55,13 +55,6 @@ public class YouXiaItem : MonoBehaviour {
 	public GameObject Win;
 
 	public bool ISOpenlock = true;
-	void Start () {
-	
-	}
-
-	void Update () {
-	
-	}
 
 	public void Init()
 	{

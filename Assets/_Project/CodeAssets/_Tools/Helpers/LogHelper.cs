@@ -16,8 +16,17 @@ using System.Reflection;
 public class LogHelper : MonoBehaviour {
 
 	
-	
-	
+	#region Develop Log
+
+	public static void DevelopLog( string p_info ){
+		if( Debug.isDebugBuild ){
+			Debug.Log( p_info );
+		}
+	}
+
+	#endregion
+
+
 	
 	#region Log
 	

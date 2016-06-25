@@ -8,15 +8,15 @@ namespace Carriage
     {
         public static int GetRealValueOfCarriage(int p_value, int p_carriageLevel, int p_carriageBattleValue, int p_carriageQuality, bool isRevenge)
         {
-            float realValue = CartTemplate.Templates.Where(item => item.Quality == p_carriageQuality).First().RobProfit * p_value;
+            float realValue = p_value;
 
             //Calc level
             if (p_carriageLevel - JunZhuData.Instance().m_junzhuInfo.level > 5)
             {
-                p_carriageLevel = JunZhuData.Instance().m_junzhuInfo.level + 5;
-
-                realValue = (float)p_value / (JunzhuShengjiTemplate.GetJunZhuShengJi(JunZhuData.Instance().m_junzhuInfo.level).xishu) * (JunzhuShengjiTemplate.GetJunZhuShengJi(p_carriageLevel).xishu);
+                realValue = (float)realValue / (JunzhuShengjiTemplate.GetJunZhuShengJi(p_carriageLevel).xishu) * (JunzhuShengjiTemplate.GetJunZhuShengJi(JunZhuData.Instance().m_junzhuInfo.level + 5).xishu);
             }
+
+            realValue = CartTemplate.Templates.Where(item => item.Quality == p_carriageQuality).First().RobProfit * realValue;
 
             //Calc battle value.
             float battleValueK = (float)p_carriageBattleValue / JunZhuData.Instance().m_junzhuInfo.zhanLi;

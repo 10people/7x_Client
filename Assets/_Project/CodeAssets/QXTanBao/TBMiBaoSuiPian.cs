@@ -8,11 +8,12 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class TBMiBaoSuiPian : MonoBehaviour {
+public class TBMiBaoSuiPian : GeneralInstance<TBMiBaoSuiPian> {
 
-	public static TBMiBaoSuiPian tbSuiPian;
+	public delegate void TBMiBaoSuiPianDelegate ();
+	public TBMiBaoSuiPianDelegate M_SuiPianDelegate; 
 
-	private Award rewardInfo;
+	private RewardData rewardInfo;
 	private int suiPianTempId;
 
 	public UILabel pieceDesLabel;
@@ -21,36 +22,30 @@ public class TBMiBaoSuiPian : MonoBehaviour {
 	public GameObject pieceObj;
 	private GameObject iconSamplePrefab;
 
-	public List<EventHandler> closeHandlerList = new List<EventHandler>();
-
 	private bool isScaleEnd = false;
 
-	void Awake ()
+	new void Awake ()
 	{
-		tbSuiPian = this;
+		base.Awake ();
 	}
 
-	void OnDestroy ()
+	new void OnDestroy ()
 	{
-		tbSuiPian = null;
+		base.OnDestroy ();
 	}
 
 	/// <summary>
 	/// Gets the mi bao sui pian info.
 	/// </summary>
 	/// <param name="tempInfo">Temp info.</param>
-	public void GetMiBaoSuiPianInfo (Award tempInfo)
+	public void GetMiBaoSuiPianInfo (RewardData tempInfo)
 	{
+		GeneralRewardManager.Instance ().M_OtherExit = true;
+//		Debug.Log ("tempInfo.itemId：" + tempInfo.itemId);
 		rewardInfo = tempInfo;
 
 		pieceWindowObj.SetActive (true);
 		pieceObj.transform.localScale = Vector3.zero;
-
-		foreach (EventHandler handler in closeHandlerList)
-		{
-			handler.m_click_handler -= CloseHandlerClickBack;
-			handler.m_click_handler += CloseHandlerClickBack;
-		}
 		
 		MiBaoXmlTemp mibaoTemp = MiBaoXmlTemp.getMiBaoXmlTempById (rewardInfo.itemId);
 		suiPianTempId = mibaoTemp.suipianId;
@@ -104,14 +99,14 @@ public class TBMiBaoSuiPian : MonoBehaviour {
 		string mdesc = DescIdTemplate.GetDescriptionById(commonTemp.descId);
 		
 		IconSampleManager iconSampleManager = iconSamplePrefab.GetComponent<IconSampleManager>();
-		iconSampleManager.SetIconByID (suiPianTempId,"x" + rewardInfo.pieceNumber,2);
+		iconSampleManager.SetIconByID (suiPianTempId,"x" + MiBaoSuipianXMltemp.getMiBaoSuipianXMltempById (suiPianTempId).fenjieNum,2);
 		
 		iconSampleManager.SetIconBasicDelegate (true,true,null);
-		iconSampleManager.BgSprite.gameObject.SetActive (false);
+//		iconSampleManager.BgSprite.gameObject.SetActive (false);
 		iconSampleManager.SetIconPopText(commonTemp.id, itemName, mdesc, 1);
 	}
 	
-	void CloseHandlerClickBack (GameObject obj)
+	public override void MYClick (GameObject ui)
 	{
 		if (!isScaleEnd)
 		{
@@ -119,7 +114,17 @@ public class TBMiBaoSuiPian : MonoBehaviour {
 		}
 		isScaleEnd = false;
 		pieceWindowObj.SetActive (false);
-
-		TBReward.tbReward.CloseShowMiBao ();
+		GeneralRewardManager.Instance ().M_OtherExit = false;
+//		TBReward.tbReward.CloseShowMiBao ();
+		if (M_SuiPianDelegate != null)
+		{
+			M_SuiPianDelegate ();
+		}
+		M_SuiPianDelegate = null;
+		if (rewardInfo.miBaoClick != null)
+		{
+			rewardInfo.miBaoClick ();
+		}
+		rewardInfo.miBaoClick = null;
 	}
 }

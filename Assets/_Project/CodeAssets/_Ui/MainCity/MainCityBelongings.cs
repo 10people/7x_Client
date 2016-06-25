@@ -76,7 +76,16 @@ public class MainCityBelongings : MYNGUIPanel , SocketListener
 		}
 		else if(ui.name.IndexOf("RT_BuyRecharge") != -1)
 		{
-			Global.CreateFunctionIcon(101);
+			Debug.Log(Application.loadedLevelName);
+			if((Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_MAINCITY || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_MAINCITY_YEWAN || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCECITY || Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCECITY_YEWAN))
+			{
+				Global.CreateFunctionIcon(101);
+			}
+			else
+			{
+				RechargeData.Instance.RechargeDataReq ();
+
+			}
         }
 		else if(ui.name.IndexOf("RT_BuyEnergy") != -1)
 		{

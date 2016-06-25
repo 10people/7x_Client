@@ -28,7 +28,8 @@ public class DramaActorCameraMove : DramaActor
 		}
 	}
 
-	protected override void OnDestroy(){
+	protected override void OnDestroy()
+	{
 		base.OnDestroy();
 
 		targetCamera = null;
@@ -68,6 +69,10 @@ public class DramaActorCameraMove : DramaActor
 				GameObject targetCameraObject = (GameObject)Instantiate(mainCamera);
 				
 				targetCameraObject.name = "STORY_CAMERA";
+
+				{
+					EffectTool.StoryVignet( targetCameraObject );
+				}
 				
 				targetCameraObject.transform.parent = node.transform;
 				
@@ -78,7 +83,9 @@ public class DramaActorCameraMove : DramaActor
 				Destroy(targetCameraObject.GetComponent<KingCamera>());
 				
 				targetCamera = targetCameraObject.GetComponent<Camera>();
-				
+
+				targetCamera.cullingMask = LayerMask.GetMask(new string[]{"3D Layer", "Grounded", "3D Layer Without Light"});
+
 				targetCameraObject.SetActive(false);
 			}
 			else
@@ -108,8 +115,10 @@ public class DramaActorCameraMove : DramaActor
 		 * 
 		 * REMOVED, avoid multi-load.
 		 */
-		if ( DramaDirector.IsDramaPreviewing ( )) {
-			if( m_Animator != null ) {
+		if ( DramaDirector.IsDramaPreviewing ( )) 
+		{
+			if( m_Animator != null )
+			{
 				ComponentHelper.DestroyImmediate( m_Animator );
 				
 				m_Animator = null;
@@ -126,6 +135,11 @@ public class DramaActorCameraMove : DramaActor
 		}
 
 		return movingTime;
+	}
+
+	protected override void funcForcedEnd ()
+	{
+		funcDone ();
 	}
 
 	protected override bool funcDone ()

@@ -51,11 +51,12 @@ namespace Carriage
 
 			nameLabel.text = tempInfo.junZhuName;
 
-			allianceLabel.text = MyColorData.getColorString (6,tempInfo.lianMengName.Equals ("") ? "无联盟" : "<" + tempInfo.lianMengName + ">");
+			allianceLabel.text = QXComData.AllianceName (tempInfo.lianMengName);
 
-			zhanLiLabel.text = "战力" + tempInfo.zhanLi.ToString ();
+			zhanLiLabel.text = tempInfo.zhanLi.ToString ();
 
-			nation.spriteName = "nation_" + tempInfo.guojia;
+			nation.spriteName = QXComData.GetNationName (tempInfo.guojia);
+			QXComData.SetNationSprite (nation,tempInfo.guojia);
 
 			desObj.SetActive (tempInfo.state == 10 ? false : true);
 
@@ -72,7 +73,7 @@ namespace Carriage
 				hpLabel.text = tempInfo.hp.ToString () + "/" + tempInfo.maxHp.ToString ();
 				QXComData.InItScrollBarValue (hpBar,hpNum);
 
-				awardLabel.text = BiaoJuPage.bjPage.GetHorseAwardNum (tempInfo.horseType).ToString ();
+				awardLabel.text = BiaoJuPage.m_instance.GetHorseAwardNum (tempInfo.horseType).ToString ();
 			}
 
 			this.GetComponent<EventHandler> ().m_click_handler -= ClickBack;

@@ -46,7 +46,7 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
     private enum MoveType
     {
         NONE,
-        MOVE_TYPE_RUN,
+        MOVE_TYPE_STOPRUN,
         MOVE_TYPE_IDLE
     }
     MoveType m_MoveType = new MoveType();
@@ -70,63 +70,49 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
  
     public void PlayerRun(Vector3 targetPosition)
     {
-      
-        //Debug.Log("DistanceDistanceDistanceDistance ::" + Vector3.Distance(targetPosition, transform.position));
-        if (Vector3.Distance(targetPosition, transform.position) < 0.35f)
+        if (Vector3.Distance(targetPosition, transform.position) < 0.4f)
         {
             return;
         }
         _isRun = true;
+        _isTarget = false;
         _TargetPos = targetPosition;
         GameObject target = new GameObject();
         target.transform.position = new Vector3( targetPosition.x, transform.position.y, targetPosition.z);
-//
         transform.LookAt(target.transform);
         Destroy(target);
-       // transform.Rotate(0, Vector3.Angle(transform.forward, _TargetPos),0);
-     //   m_Agent.stoppingDistance = m_Agent.remainingDistance;
-       //    MovingOn(targetPosition);
-       
     }
+    bool _isTarget = false;
     void Update()
     {
         if (m_MoveType == MoveType.NONE)
         {
             _playerRandomAnimator = true;
         }
+        else if (m_MoveType == MoveType.MOVE_TYPE_IDLE
+            && Mathf.Abs(Vector3.Distance(_TargetPos, transform.position)) <= 0.4f && !_isTarget)
+        {
+            _isTarget = true;
+            m_MoveType = MoveType.MOVE_TYPE_IDLE;
+            _isRun = false;
+            PlayerStop();
+        }
 
         if (_isRun && Mathf.Abs(Vector3.Distance(_TargetPos,transform.position)) > 0)
         {
-            if (_TargetPos != transform.position)
+            if (Mathf.Abs(Vector3.Distance(_TargetPos, transform.position)) > 0.4f)
             {
                 Move(_TargetPos);
             }
             else
             {
+                m_MoveType = MoveType.MOVE_TYPE_IDLE;
                 _isRun = false;
                 PlayerStop();
             }
         }
-        else if (Mathf.Abs(Vector3.Distance(_TargetPos, transform.position)) <= 0.01f)
-        {
-         
-        }
-        //else if(!_playerRandomAnimator)
-        //{
-        //    StartCoroutine(StoPMove());
-        //}
-
-        //if (m_Agent != null)
-        //{
-        //    if (Mathf.Abs(m_Agent.remainingDistance) < 0.01f)
-        //    {
-        //        PlayerStop();
-        //    }
-        //    else
-        //    {
-        //        Move(_TargetPos);
-        //    }
-        //}
+       
+       
         if (_playerRandomAnimator && !_isTimeGo)
         {
             _time_StayAnimator += Time.deltaTime;
@@ -185,47 +171,26 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
         if (_playerRandomAnimator)
         {
             _playerRandomAnimator = false;
-            AnimationPlay(1);
+   
         }
+        AnimationPlay(1);
         transform.localPosition = Vector3.Lerp(transform.position, point, PlayerModelController.m_playerModelController.m_speed * Time.deltaTime * 0.3f);
         //CharacterController controller = GetComponent<CharacterController>();
         //Vector3 v = Vector3.ClampMagnitude(point - transform.position, PlayerModelController.m_playerModelController.m_speed * Time.deltaTime);
 
         //controller.Move(v);
     }
-    void MovingOn(Vector3 targetPosition)
-    {
-        if (_playerRandomAnimator)
-        {
-            _playerRandomAnimator = false;
-            AnimationPlay(1);
-        }
-
-		if (PlayerModelController.m_playerModelController != null)
-		{
-			m_Agent.speed = PlayerModelController.m_playerModelController.m_speed;
-		}
-		else if (TreasureCityPlayer.m_instance != null)
-		{
-			m_Agent.speed = TreasureCityPlayer.m_instance.m_speed;
-		}
-        m_Agent.Resume();
-        m_Agent.SetDestination(targetPosition);
-    }
- 
+    
     protected bool inTurning;
-
-
-
+ 
     public void PlayerStop()
     {
-        m_Agent.Stop();
-     
- 
+       // m_Agent.Stop();
+
         if (m_MoveType == MoveType.MOVE_TYPE_IDLE)
         {
-            m_MoveType = MoveType.MOVE_TYPE_RUN;
             AnimationPlay(0);
+            m_MoveType = MoveType.MOVE_TYPE_STOPRUN;
             _playerRandomAnimator = true;
         }
     }
@@ -297,78 +262,7 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
     private GameObject camObject;
     private GameObject offObject;
     private GameObject angleObject;
-    void MoveTurnToDestination(Vector3 targetPosition)
-    {
-        if (_playerRandomAnimator)
-        {
-            _playerRandomAnimator = false;
-            AnimationPlay(1);
-        }
-        if (offObject == null)
-        {
-            offObject = new GameObject();
-        }
-
-        offObject.transform.localPosition = targetPosition;
-
-        offObject.transform.localEulerAngles = new Vector3(0, 0, 0);
-
-        offObject.transform.localScale = new Vector3(1, 1, 1);
-
-        if (camObject == null)
-        {
-            camObject = new GameObject();
-        }
-
-        camObject.transform.localPosition = new Vector3(0, 0, 0);
-
-        camObject.transform.localEulerAngles = Vector3.zero;
-
-        camObject.transform.localScale = new Vector3(1, 1, 1);
-
-        offObject.transform.parent = camObject.transform;
-
-        camObject.transform.localEulerAngles = new Vector3(0, Camera.main.transform.localEulerAngles.y, 0);
-
-        targetPosition = offObject.transform.position;
-
-
-
-        if (angleObject == null)
-        {
-            angleObject = new GameObject();
-        }
-
-        angleObject.transform.localScale = new Vector3(1, 1, 1);
-
-        angleObject.transform.localPosition = Vector3.zero;
-
-        angleObject.transform.eulerAngles = m_transform.transform.eulerAngles;
-
-        Vector3 oldangle = angleObject.transform.eulerAngles;
-
-        angleObject.transform.forward = targetPosition;
-
-        float tar = angleObject.transform.eulerAngles.y;
-
-        float sp = 1080 * Time.deltaTime;
-
-        float angle = Mathf.MoveTowardsAngle(oldangle.y, tar, sp);
-
-        angleObject.transform.eulerAngles = new Vector3(0, angle, 0);
-
-
-        {
-
-       
-            Vector3 sp2 = targetPosition * PlayerModelController.m_playerModelController.m_speed * Time.deltaTime;
-
-            m_transform.forward = sp2;
-        
-            m_character.Move(sp2);
-        }
-
-    }
+    
     public void DestoryObject()
     {
         Destroy(this.gameObject);

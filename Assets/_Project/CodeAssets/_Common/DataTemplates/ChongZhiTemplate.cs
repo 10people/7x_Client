@@ -11,6 +11,7 @@ public class ChongZhiTemplate : XmlLoadManager
     public string name;
 
     public string desc;
+
     public int needNum;
 
     public int addNum;
@@ -20,6 +21,11 @@ public class ChongZhiTemplate : XmlLoadManager
     public int type;
 
     public int extraFirst;
+
+	public int addVipExp;
+
+	public int rank;
+
 	public static List<ChongZhiTemplate> templates = new List<ChongZhiTemplate>();
 
 
@@ -85,6 +91,11 @@ public class ChongZhiTemplate : XmlLoadManager
                  t_reader.MoveToNextAttribute();
                  t_template.extraFirst = int.Parse(t_reader.Value);
 
+				t_reader.MoveToNextAttribute();
+				t_template.addVipExp = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_template.rank = int.Parse(t_reader.Value);
             }
 
             //			t_template.Log();

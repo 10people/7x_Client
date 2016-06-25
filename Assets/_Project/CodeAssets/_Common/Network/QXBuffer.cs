@@ -222,6 +222,10 @@ public class QXBuffer{
 		return m_create_time_long / 1000.0;
 	}
 
+	public float GetSecSinceCreate(){
+		return ( TimeHelper.GetCurrentTime_MilliSecond() - m_create_time_long ) / 1000.0f;
+	}
+
 	#endregion
 
 
@@ -252,6 +256,12 @@ public class QXBuffer{
 
 	public void SetReceivingWait( bool p_receiving_wait ){
 		m_is_receiving_wait = p_receiving_wait;
+	}
+
+	public void SetAllWaiting( bool p_wait ){
+		SetSendingWait( p_wait );	
+
+		SetReceivingWait( p_wait );
 	}
 
 	#endregion

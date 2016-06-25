@@ -43,14 +43,10 @@ public class MiBaoScrollView : MonoBehaviour,SocketProcessor {
 		SocketTool.RegisterMessageProcessor(this);
 		m_MiBaoScrollView = this;
 	}
+
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
-		
-	}
-
-	void Start () {
-	
 	}
 
 //	void OnEnable()
@@ -59,10 +55,6 @@ public class MiBaoScrollView : MonoBehaviour,SocketProcessor {
 //
 //		Init ();
 //	}
-
-	void Update () {
-	
-	}
 
 	public void Init()
 	{

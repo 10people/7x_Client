@@ -17,17 +17,6 @@ public class Debug_0625_Mec_With_Offset : MonoBehaviour {
 		m_origin_pos = transform.position;
 	}
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-
 	public void MecAnimSync(){
 		Debug.Log( "MecAnimSync()" );
 

@@ -124,6 +124,8 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 	private void LoadFlagsDone(){
 		BattleControlor.Instance().loadFlags();
 
+		BattleControlor.Instance ().loadGroupFlags ();
+
 		BattleControlor.Instance().loadBuffFlags ();
 
 		BattleControlor.Instance().loadDoorFlag ();
@@ -285,7 +287,6 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 
 		Global.ResourcesDotLoad( EffectTemplate.getEffectTemplateByEffectId( 76 ).path, 
 		                        LoadGuangQiangDone_2);
-
 
 		doorCount = BattleDoorTemplate.templates.Count;
 
@@ -964,8 +965,6 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 
 		CityGlobalData.m_pve_max_level = resp.selfTroop.maxLevel;
 
-		BattleControlor.Instance().HYK = resp.HYK;
-
 		CityGlobalData.setDramable (resp.selfTroop.maxLevel);
 
 		modelList.Clear ();
@@ -974,6 +973,10 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 
 		{
 			PreCountModels( resp );
+		}
+
+		{
+			HittedEffect.PreloadAnims();
 		}
 
 		//////////////////    preLoadEff   //////////////////
@@ -1192,7 +1195,11 @@ public class BattleNet : MonoBehaviour, SocketProcessor{
 
 				tempEffectTemp = EffectTemplate.getEffectTemplateByEffectId(data[i]);
 
+#if UNITY_EDITOR || UNITY_STANDALONE
 				wantAddSoundID(tempEffectTemp.sound);
+#else
+				if(tempEffectTemp != null) wantAddSoundID(tempEffectTemp.sound);
+#endif
 			}
 		}
 	}

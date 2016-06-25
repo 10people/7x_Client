@@ -12,16 +12,6 @@ public class DebugModelSkeleton : MonoBehaviour {
 
 	public float m_model_offset;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	public void AddModel(){
 		Debug.Log( "AddModel()" );
 

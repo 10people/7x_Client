@@ -13,16 +13,6 @@ public class Editor_FindMissingMono : MonoBehaviour {
 
 	#region Mono
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	#endregion
 
 
@@ -82,9 +72,43 @@ public class Editor_FindMissingMono : MonoBehaviour {
 
 				DestroyImmediate( t_gb );
 			}
-
-
 		}
+	}
+	
+	[MenuItem("Utility/Utilities/Find Missing In Selection", false, (int)EditorUtilityUtilities.MenuItemPriority.UTILITIES___FIND_MISSING_MONO_IN_SEL)]
+	static void FindMissingMonoInSelection(){
+		GameObject t_gb = Selection.activeGameObject;
+
+		MonoBehaviour[] t_monos = t_gb.GetComponentsInChildren<MonoBehaviour>();
+
+		bool t_found = false;
+
+		for( int j = 0; j < t_monos.Length; j++ ){
+			MonoBehaviour t_mono = t_monos[ j ];
+
+			if( t_mono == null ){
+				t_found = true;
+			}
+
+			if( t_found ){
+				LogMissing( t_gb );
+
+				break;
+			}
+		}
+	}
+	
+	[MenuItem("Utility/Utilities/Find GameObjects And Monos", false, (int)EditorUtilityUtilities.MenuItemPriority.UTILITIES___FIND_GB_AND_MONOS)]
+	static void FindGameObjectsAndMonos(){
+		Debug.Log( "FindGameObjectsAndMonos()" );
+
+		GameObject t_gb = Selection.activeGameObject;
+
+		MonoBehaviour[] t_monos = t_gb.GetComponentsInChildren<MonoBehaviour>();
+
+		Debug.Log( "Mono.Count: " + t_monos.Length );
+
+		Debug.Log( "GameObjects.Count: " + GetGameObjectsCount( t_gb ) );
 	}
 
 	#endregion
@@ -93,6 +117,22 @@ public class Editor_FindMissingMono : MonoBehaviour {
 
 	#region Utilities
 
+	private static int GetGameObjectsCount( GameObject p_gb ){
+		if( p_gb == null ){
+			return 0;
+		}
+
+		int t_child_count = p_gb.transform.childCount;
+
+		int t_count = 1;
+
+		for( int i = 0; i < t_child_count; i++ ){
+			t_count = t_count + GetGameObjectsCount( p_gb.transform.GetChild( i ).gameObject );
+		}
+
+		return t_count;
+	}
+	
 	private static void LogMissing( GameObject p_gb ){
 		if( GameObjectHelper.HaveMissingMono( p_gb ) ){
 			GameObjectHelper.LogGameObjectHierarchy( p_gb, " Missing Mono: " );

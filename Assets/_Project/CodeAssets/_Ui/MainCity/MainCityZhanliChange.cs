@@ -23,6 +23,7 @@ public class MainCityZhanliChange : MYNGUIPanel
 	// Use this for initialization
 	void Start () 
 	{
+		Global.m_isAddZhanli = false;
 		m_UILabelHeroZhanli.text = Global.m_iPChangeZhanli.ToString();
 		m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
 
@@ -40,7 +41,7 @@ public class MainCityZhanliChange : MYNGUIPanel
 		{
 		case ZhanliAnimationSatatae.Def:
 			m_iNum ++;
-			if(m_iNum == 10)
+			if(m_iNum == 1)
 			{
 				m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Label;
 				m_iNum = 0;
@@ -56,7 +57,7 @@ public class MainCityZhanliChange : MYNGUIPanel
 				m_iNum = 0;
 			}
 			m_iNum ++;
-			if(m_iNum == 30)
+			if(m_iNum == 20)
 			{
 //				Debug.Log("===========1");
 				ClientMain.closePopUp();
@@ -64,6 +65,7 @@ public class MainCityZhanliChange : MYNGUIPanel
 				Global.m_iAddZhanli = 0;
 				GameObject.Destroy(gameObject);
 				Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
+				Global.m_isAddZhanli = true;
 			}
 
 			break;
@@ -71,7 +73,7 @@ public class MainCityZhanliChange : MYNGUIPanel
 			if(m_iWantToZhanli < JunZhuData.Instance().m_junzhuInfo.zhanLi)
 			{
 				m_UILabelUpZhanli.text = Global.m_iAddZhanli + " ↑";
-				m_iChangeNum = (JunZhuData.Instance().m_junzhuInfo.zhanLi - m_iCurZhanli) / 20f;
+				m_iChangeNum = (JunZhuData.Instance().m_junzhuInfo.zhanLi - m_iCurZhanli) / 15f;
 				m_iWantToZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 				m_iNum = 0;
 			}
@@ -79,7 +81,7 @@ public class MainCityZhanliChange : MYNGUIPanel
 			m_iCurZhanli += m_iChangeNum;
 
 			m_UILabelHeroZhanli.text = (int)m_iCurZhanli + "";
-			if(m_iNum == 20)
+			if(m_iNum == 15)
 			{
 				m_iNum = 0;
 				m_ZhanliAnimationSatatae = ZhanliAnimationSatatae.Eff;

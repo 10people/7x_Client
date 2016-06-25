@@ -34,16 +34,6 @@ public class MiBaoSkillTEm : MonoBehaviour {
 		set{chooseType = value;}
 	}
 
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
-
- 
 	public void BoolBeChoose()
 	{
 		

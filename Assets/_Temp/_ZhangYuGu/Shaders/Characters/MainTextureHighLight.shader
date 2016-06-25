@@ -1,7 +1,6 @@
 Shader "Custom/Characters/Main Texture High Light" {
 	Properties {
 		_FxColor("Fx Color", Color) = ( 0, 0, 0, 0 )
-	
 		_Color( "Main Color", Color ) = ( 0.537, 0.537, 0.537, 1 )
 		_MainTex( "Base (RGB) Trans (A)", 2D ) = "white" {}
 	}

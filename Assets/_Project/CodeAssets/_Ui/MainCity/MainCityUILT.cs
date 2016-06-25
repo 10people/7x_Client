@@ -134,12 +134,20 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
             {
                 m_leagueName.text = "<" + AllianceData.Instance.g_UnionInfo.name + ">";
             }
+			if(MainCityUI.m_MainCityUI.getButton(104) != null)
+			{
+				MainCityUI.m_MainCityUI.getButton(104).setSuperAlert(false);
+			}
         }
         else
         {
             m_isLianmeng = false;
 
             m_leagueName.text = "<无联盟>";
+			if(MainCityUI.m_MainCityUI.getButton(104) != null)
+			{
+				MainCityUI.m_MainCityUI.getButton(104).setSuperAlert(true);
+			}
         }
     }
 
@@ -276,10 +284,6 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 	{
 		if (TaskData.Instance.m_TaskInfoDic.ContainsKey(id))
 		{
-			if(TaskData.Instance.m_TaskInfoDic[id].m_sSprite != "null")
-			{
-				Global.m_sPanelWantRun = TaskData.Instance.m_TaskInfoDic[id].m_sSprite;
-			}
 			if(TaskData.Instance.m_TaskInfoDic[id].progress < 0 && TaskData.Instance.m_TaskInfoDic[id].type != 0)
 			{
      			overMission(id);
@@ -294,9 +298,11 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 				{
 					if(FunctionOpenTemp.IsHaveID(TaskData.Instance.m_TaskInfoDic[id].FunctionId))
 					{
-						GameObject tempObj = new GameObject();
-						tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskInfoDic[id].FunctionId;
-						MainCityUI.m_MainCityUI.MYClick(tempObj);
+						if(TaskData.Instance.m_TaskInfoDic[id].m_sSprite != "null")
+						{
+							Global.m_sPanelWantRun = TaskData.Instance.m_TaskInfoDic[id].m_sSprite;
+						}
+						Global.m_sMainCityWantOpenPanel = FunctionOpenTemp.GetTemplateById(TaskData.Instance.m_TaskInfoDic[id].FunctionId).GetParent_menu_id();
 					}
 					else
 					{
@@ -308,29 +314,35 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 		}
 		else if(TaskData.Instance.m_TaskDailyDic.ContainsKey(id))
 		{
-			if(TaskData.Instance.m_TaskDailyDic[id].Script != "null")
-			{
-				Global.m_sPanelWantRun = TaskData.Instance.m_TaskDailyDic[id].Script;
-			}
 			if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId != -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId == -1)
 			{
 				NpcManager.m_NpcManager.setGoToNpc(TaskData.Instance.m_TaskDailyDic[id].LinkNpcId);
 			}
 			else if (TaskData.Instance.m_TaskDailyDic[id].LinkNpcId == -1 && TaskData.Instance.m_TaskDailyDic[id].FunctionId != -1)
 			{
-				GameObject tempObj = new GameObject();
-				tempObj.name = "MainCityUIButton_" + TaskData.Instance.m_TaskDailyDic[id].FunctionId;
-				
-				MainCityUI.m_MainCityUI.MYClick(tempObj);
+//				for(int i = 0; i < FunctionOpenTemp.m_EnableFuncIDList.Count; i ++)
+//				{
+//					Debug.Log(FunctionOpenTemp.m_EnableFuncIDList[i]);
+//				}
+                if (!FunctionOpenTemp.IsHaveID(TaskData.Instance.m_TaskDailyDic[id].FunctionId) 
+                    || !FunctionOpenTemp.IsHaveID(TaskData.Instance.m_TaskDailyDic[id].funcID))
+				{
+					ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(TaskData.Instance.m_TaskDailyDic[id].FunctionId).m_sNotOpenTips);
+					return;
+				}
+				if(TaskData.Instance.m_TaskDailyDic[id].Script != "null")
+				{
+					Global.m_sPanelWantRun = TaskData.Instance.m_TaskDailyDic[id].Script;
+				}
+				Global.m_sMainCityWantOpenPanel = FunctionOpenTemp.GetTemplateById(TaskData.Instance.m_TaskDailyDic[id].FunctionId).GetParent_menu_id();
 			}
 		}
 	}
 
 	public void overMission(int id)
 	{
-		TaskSignalInfoShow.m_TaskId = id;
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), MainCityUI.m_MainCityUI.AddUIPanel);
-	}
+        FunctionWindowsCreateManagerment.ShowTaskAward(id);
+    }
 
     void OnDestroy()
     {
@@ -440,8 +452,8 @@ public class MainCityUILT : MYNGUIPanel, SocketListener
 
                     t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                    JunZhuData.Instance().m_junzhuInfo = tempInfo;
-
+                   //JunZhuData.Instance().m_junzhuInfo = tempInfo;
+                    JunZhuData.Instance().SetInfo(tempInfo);
                     RefreshJunZhuInfo();
                     RefreshBattleValue();
                     RefreshAllianceInfo();

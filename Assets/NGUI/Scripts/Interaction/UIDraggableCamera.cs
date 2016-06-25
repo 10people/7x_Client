@@ -140,12 +140,15 @@ public class UIDraggableCamera : MonoBehaviour
 
 	public void Press (bool isPressed)
 	{
-		if (isPressed) mDragStarted = false;
+		if (isPressed) 
+		{
+			mDragStarted = false;
+		}
 
 		if (rootForBounds != null)
 		{
 			mPressed = isPressed;
-
+			Debug.Log ("rootforbounds:" +  rootForBounds);
 			if (isPressed)
 			{
 				// Update the bounds
@@ -240,6 +243,7 @@ public class UIDraggableCamera : MonoBehaviour
 					SpringPosition sp = GetComponent<SpringPosition>();
 					if (sp != null) sp.enabled = false;
 				}
+
 				return;
 			}
 			else mScroll = 0f;

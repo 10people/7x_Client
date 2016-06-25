@@ -43,14 +43,6 @@ public class SelectYouXiaEntertype : MonoBehaviour {
 		mSelectYouXia = this;
 	}
 
-	void Start () {
-	
-	}
-
-	void Update () {
-	
-	}
-
 	public void ShowAlert()
 	{
 		mAlert.SetActive (true);

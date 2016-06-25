@@ -8,6 +8,7 @@ public class EquipGrowthGemSelectItemManagerment : MonoBehaviour {
     public UILabel m_LabAttributeNum;
     public UILabel m_LabExp;
     public UILabel m_LabExpNum;
+    public UILabel m_LabButtonTitle;
     public delegate void dele_Inlay(long index);
     public EventIndexHandle m_Event;
     dele_Inlay On_touchInlay;
@@ -26,9 +27,18 @@ public class EquipGrowthGemSelectItemManagerment : MonoBehaviour {
             On_touchInlay(_gemDBId);
         }
     }
-
+    int exp = 0;
     public void ShowInfo(EquipGrowthInlayLayerManagerment.GemSelectInfo gemInfo, dele_Inlay callBack)
     {
+        exp = gemInfo._Exp;
+        if (gemInfo._isSwitch)
+        {
+            m_LabButtonTitle.text = "替换";
+        }
+        else
+        {
+            m_LabButtonTitle.text = "镶嵌";
+        }
         On_touchInlay = callBack;
         _gemDBId = gemInfo._dbid;
         _gemId = gemInfo._Gemid;
@@ -43,7 +53,7 @@ public class EquipGrowthGemSelectItemManagerment : MonoBehaviour {
         }
         else
         {
-            m_LabExpNum.text = gemInfo._Exp.ToString();
+            m_LabExpNum.text = "已达最高";
         }
        
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
@@ -62,6 +72,9 @@ public class EquipGrowthGemSelectItemManagerment : MonoBehaviour {
             iconSampleManager.SetIconPopText(_gemId,
                 NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(_gemId).nameId),
                 DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(_gemId).descId));
+            iconSampleManager.tipItemData = TipItemData.createTipItemData();
+            iconSampleManager.tipItemData.setExp(exp);
+            iconSampleManager.tipItemData.setTouchPosition(TipItemData.ScreenPosition.RIGHT);
             iconSampleObject.transform.localScale = Vector3.one * 0.65f;
  
         }

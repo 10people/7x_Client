@@ -17,10 +17,58 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 
 	private bool openFirstChannel = true;//是否第一次打开聊天
 
+	public List<ChatMessage> m_listChatMessage = new List<ChatMessage>();//要播放的语音列表
+	public List<UISprite> m_listSpriteKaiguan = new List<UISprite>();
+	public bool[] m_listKaiguan = new bool[]{true, true, true, true};
+	public bool m_isPlaying = false;//是否播放语音中
+	public GameObject m_objSetting;
+
+	public bool m_isLuyining = false;//是否录音中
+	public float m_fNum = 0;
+	public float m_fBTime;
+	public int m_iLuzhiTime = 0;
+	public UILabel m_labelLuyin;
+	public List<UISprite> m_listYinLiang = new List<UISprite>();
+	public GameObject m_objLuying;
+	public GameObject m_objLuyinTime;
+	public GameObject m_objGotoOBj = null;
+	public List<GameObject> m_listGotoObj;
+
+	public UISprite m_spriteVipGuangbo;
+	public UILabel m_labelVipGuangbo;
+	public BoxCollider m_BoxCollider;
+
+	public struct NewSiliaoData
+	{
+		public int id;
+		public string name;
+	}
+
+	public List<NewSiliaoData> m_listNewSiliaoData = new List<NewSiliaoData>();
+	public GameObject m_objNotFirend;
+
 	void Awake ()
 	{
 		chatPage = this;
 		MSCController.RegisterListener(this);
+		MSCPlayer.Instance.ExecuteAfterPlayEnds = PlayeringEnd;
+		m_spriteVipGuangbo.spriteName = "v" + VipFuncOpenTemplate.GetNeedLevelByKey(31);
+
+
+		string saveString;
+		saveString = PlayerPrefs.GetString( "DialogSetting" );
+		if(saveString != null && saveString != "")
+		{
+			for(int i = 0; i < 4; i ++)
+			{
+				m_listKaiguan[i] = int.Parse(Global.NextCutting(ref saveString, ",")) == 1 ? true : false;
+			}
+		}
+
+		if (m_floatBtnObj == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FLOAT_BUTTON), FloatButtonLoadCallBack);
+		}
 	}
 
 	void OnDestroy ()
@@ -31,29 +79,38 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 
 	public void MSCResult(string key, string data, string fileBytes)
 	{
-		ChatPct chatPct1 = new ChatPct();
-		
-		ChatMessage chatMsg = new ChatMessage()
+		Debug.Log("MSCResult");
+		Debug.Log(QXChatUIBox.m_bFocused);
+		Debug.Log(QXChatUIBox.m_bPause);
+		Debug.Log(fileBytes.Length);
+		if(QXChatUIBox.m_bFocused && !QXChatUIBox.m_bPause)
 		{
-			sendState = ChatMessage.SendState.SENDING,
+			ChatPct chatPct1 = new ChatPct();
 			
-			
-			chatPct = new ChatPct()
+			ChatMessage chatMsg = new ChatMessage()
 			{
-				roleId = CityGlobalData.m_king_model_Id,
-				senderName = JunZhuData.Instance().m_junzhuInfo.name,
-				senderId = JunZhuData.Instance().m_junzhuInfo.id,
-				channel = chatChannel,
-				content = data,
-				guoJia = JunZhuData.Instance().m_junzhuInfo.guoJiaId,
-				vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv,
-				receiverId = m_iSiliaoID,
-				soundData = fileBytes,
-				soundLen = 5,
-			},
-		};
-		
-		QXChatData.Instance.SendChatData (chatMsg);
+				sendState = ChatMessage.SendState.SENDING,
+				
+				
+				chatPct = new ChatPct()
+				{
+					roleId = CityGlobalData.m_king_model_Id,
+					senderName = JunZhuData.Instance().m_junzhuInfo.name,
+					senderId = JunZhuData.Instance().m_junzhuInfo.id,
+					channel = chatChannel,
+					content = data,
+					guoJia = JunZhuData.Instance().m_junzhuInfo.guoJiaId,
+					vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv,
+					receiverId = m_iSiliaoID,
+					receiverName = m_sScendName,
+					soundData = fileBytes,
+					soundLen = m_iLuzhiTime,
+				},
+			};
+			
+			QXChatData.Instance.SendChatData (chatMsg);
+		}
+
 	}
 	
 	public void MSCStarted()
@@ -65,15 +122,31 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	{
 
 	}
+
+	public void PlayeringEnd()
+	{
+//		Debug.Log("邸松接收到梁霄的播放接收");
+		m_isPlaying = false;
+	}
+
+	public void stopYuyin()
+	{
+		m_isPlaying = false;
+		MSCPlayer.Instance.stopSound();
+	}
 	
 	public void MSCError(string error)
 	{
-
+		ClientMain.m_UITextManager.createText(error);
 	}
 
 	public void MSCVolume(int vol)
 	{
-
+		int num = vol / 6;
+		for(int i = 0; i < 5; i ++)
+		{
+			m_listYinLiang[i].gameObject.SetActive(i < num);
+		}
 	}
 
 	#region ShowChatInfo
@@ -83,11 +156,15 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	public UIDragScrollView dragArea;
 	private float lastScHeigh;
 	
-	private List<GameObject> chatItemList = new List<GameObject> ();
+	public List<GameObject> chatItemList = new List<GameObject> ();
 	public GameObject chatItemObj;
 	public GameObject m_objSiliaoObj;
+	public string m_sScendName;
 	public UILabel m_labelSiLiaoName;
 	public long m_iSiliaoID;
+	public GameObject m_objFriendButton;
+	public GameObject m_objFirendPanel;
+	public List<QXFriendData> m_listFriendData;
 
 	public QXChatInputEnemt chatInputObj;
 	private List<QXChatInputEnemt> inputList = new List<QXChatInputEnemt> ();
@@ -145,9 +222,9 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 				inputList.Add (tempInputEnemt);
 				if(i == 3)
 				{
-					tempInputEnemt.m_spriteBG.SetDimensions(222, 40);
-					tempInputEnemt.m_labelInputLabel.SetDimensions(196, 30);
-					tempInputEnemt.m_labelInputLabel.text = "          点此输入";
+					tempInputEnemt.m_spriteBG.SetDimensions(127, 40);
+					tempInputEnemt.m_labelInputLabel.SetDimensions(107, 30);
+					tempInputEnemt.m_labelInputLabel.text = "  点此输入";
 				}
 			}
 		}
@@ -184,6 +261,28 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 
 		CityGlobalData.m_isRightGuide = true;
 //		MainCityUI.TryAddToObjectList (gameObject);
+	}
+
+	void FloatButtonLoadCallBack(ref WWW p_www, string p_path, UnityEngine.Object p_object)
+	{
+		m_floatBtnObj = p_object as GameObject;
+	}
+
+	public void qiangzhiPlay(ChatMessage data)
+	{
+		for(int i = 0; i < m_listChatMessage.Count; i ++)
+		{
+			if(m_listChatMessage[i].chatPct.seq == data.chatPct.seq)
+			{
+				m_listChatMessage.RemoveAt(i);
+//				int q = i;
+//				for(int p = 0; p < q; p ++)
+//				{
+//					m_listChatMessage.RemoveAt(0);
+//				}
+				break;
+			}
+		}
 	}
 	
 	void CreateChatList (List<ChatMessage> tempChatList)
@@ -305,7 +404,7 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 
 		openFirstChannel = false;
 	}
-
+		
 	public void ChatBtnHandlerClickBack (GameObject obj)
 	{
 		SetChatItemInfoClose (false);
@@ -392,6 +491,11 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 			inputList[i].gameObject.SetActive (i == tempIndex ? true : false);
 		}
 		m_objSiliaoObj.SetActive(false);
+		m_objFriendButton.SetActive(false);
+
+		m_spriteVipGuangbo.gameObject.SetActive(false);
+		m_labelVipGuangbo.gameObject.SetActive(false);
+
 		chatInputIndex = tempIndex;
 		OnChatSubmit ();
 		switch (tempIndex)
@@ -400,20 +504,66 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 			freeLabel.text = QXChatData.Instance.FreeTimes > 0 ? "免费\n（" + QXChatData.Instance.FreeTimes + "）" : "";
 			costLabel.gameObject.SetActive (QXChatData.Instance.FreeTimes > 0 ? false : true);
 			costLabel.text = CanshuTemplate.GetStrValueByKey (CanshuTemplate.WORLDCHAT_PRICE);
+			m_objFirendPanel.SetActive(false);
+			break;
+		case 1:
+			m_objFirendPanel.SetActive(false);
 			break;
 		case 2:
 			freeLabel.text = "";
 			costLabel.gameObject.SetActive (true);
 			costLabel.text = CanshuTemplate.GetStrValueByKey (CanshuTemplate.BROADCAST_PRICE);
+			m_objFirendPanel.SetActive(false);
+			m_spriteVipGuangbo.gameObject.SetActive(true);
+			m_labelVipGuangbo.gameObject.SetActive(true);
 			break;
 		case 3:
 			m_objSiliaoObj.SetActive(true);
+			m_objFriendButton.SetActive(true);
 			break;
 		default:
 			break;
 		}
+		if(m_isYuyin && chatInputIndex != 2)
+		{
+			m_spriteYuYinQiehuanButton.spriteName = "jianpan";
+			m_spriteYuyinScendButton.gameObject.SetActive(true);
+			sendBtnHandlerList[2].gameObject.SetActive(false);
+			inputList[chatInputIndex].gameObject.SetActive(false);
+			//				m_spriteYuyinScendButton.SetDimensions();
+		}
+		else
+		{
+			m_spriteYuYinQiehuanButton.spriteName = "yuyin";
+			m_spriteYuyinScendButton.gameObject.SetActive(false);
+			sendBtnHandlerList[2].gameObject.SetActive(true);
+			inputList[chatInputIndex].gameObject.SetActive(true);
+		}
+		if(chatInputIndex == 2)
+		{
+			m_spriteYuYinQiehuanButton.gameObject.SetActive(false);
+		}
+		else
+		{
+			m_spriteYuYinQiehuanButton.gameObject.SetActive(true);
+		}
+		switch(chatInputIndex)
+		{
+		case 0:
+		case 1:
+		case 2:
+			m_spriteYuyinScendButton.gameObject.transform.localPosition = new Vector3(0, 0, 0);
+			m_spriteYuyinScendButton.SetDimensions(257, m_spriteYuyinScendButton.height);
+			m_spriteYuyinScendButton.GetComponent<BoxCollider>().size = new Vector3(257, 60, 0);
+			break;
+		case 3:
+			m_spriteYuyinScendButton.gameObject.transform.localPosition = new Vector3(28, 0, 0);
+			m_spriteYuyinScendButton.SetDimensions(195, m_spriteYuyinScendButton.height);
+			m_spriteYuyinScendButton.GetComponent<BoxCollider>().size = new Vector3(195, 60, 0);
+			break;
+		}
 	}
-
+	
 	public void OnChatSubmit ()
 	{
 		UIInput input = inputList[chatInputIndex].GetComponent<UIInput> ();
@@ -431,8 +581,8 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	{
 		if(m_isYuyin)
 		{
-			m_spriteYuyinScendButton.color = active ? Color.white : Color.grey;
-			m_UILabelTypeYuyin.setType(active ? 10 : 11);
+//			m_spriteYuyinScendButton.color = active ? Color.white : Color.grey;
+//			m_UILabelTypeYuyin.setType(active ? 10 : 11);
 		}
 		else
 		{
@@ -466,6 +616,22 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 			{
 				ClientMain.m_UITextManager.createText (MyColorData.getColorString (5, "发送内容不能为空！"));
 			}
+			else if(chatChannel == ChatPct.Channel.SILIAO && JunZhuData.Instance().m_junzhuInfo.level < 2)
+			{
+				ClientMain.m_UITextManager.createText("等级达到2级后才可私聊");
+			}
+			else if(chatChannel == ChatPct.Channel.SILIAO && (m_sScendName == null || m_sScendName == ""))
+			{
+				ClientMain.m_UITextManager.createText("请选择私聊对象");
+			}
+			else if(chatChannel == ChatPct.Channel.Broadcast && JunZhuData.Instance().m_junzhuInfo.vipLv < VipFuncOpenTemplate.GetNeedLevelByKey(31))
+			{
+				Global.CreateFunctionIcon(1901);
+			}
+			else if(chatChannel == ChatPct.Channel.Broadcast && JunZhuData.Instance().m_junzhuInfo.yuanBao < int.Parse(CanshuTemplate.GetStrValueByKey (CanshuTemplate.BROADCAST_PRICE)))
+			{
+				Global.CreateFunctionIcon(101);
+			}
 			else
 			{
 				ChatMessage chatMsg = new ChatMessage()
@@ -481,10 +647,9 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 						guoJia = JunZhuData.Instance().m_junzhuInfo.guoJiaId,
 						vipLevel = JunZhuData.Instance().m_junzhuInfo.vipLv,
 						receiverId = m_iSiliaoID,
+						receiverName = m_sScendName,
 					},
 				};
-				Debug.Log(m_iSiliaoID);
-				Debug.Log(chatChannel);
 
 				QXChatData.Instance.SendChatData (chatMsg);
 			}
@@ -505,26 +670,30 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 
 	#region OpenChatItemInfo
 
-	public GameObject chatItemInfoObj;
 	private bool isChatItemInfoOpen = false;
+
+	private GameObject m_tempObject;
+	private GameObject m_floatBtnObj;
 
 	/// <summary>
 	/// Ins it chat item info.
 	/// </summary>
 	/// <param name="target">Target.</param>
 	/// <param name="tempList">Temp list.</param>
-	public void InItChatItemInfo (GameObject target,List<QXChatItemInfo.ChatBtnInfo> tempList)
+	public void InItChatItemInfo (GameObject target,ChatMessage tempMsg)
 	{
 		isChatItemInfoOpen = true;
 
-		chatItemInfoObj.SetActive (true);
-		chatItemInfoObj.transform.localPosition = target.transform.localPosition + new Vector3(-60,260,0);
-		chatItemInfoObj.transform.localScale = Vector3.one;
-
-		QXChatItemInfo chatItemInfo = chatItemInfoObj.GetComponent<QXChatItemInfo> ();
-		chatItemInfo.InItChatBtn (tempList);
-
-		UISprite widget = chatItemInfoObj.GetComponent<UISprite>();
+		m_tempObject = (GameObject)Instantiate(m_floatBtnObj);
+		m_tempObject.SetActive (true);
+		m_tempObject.transform.parent = target.transform.parent;
+		m_tempObject.transform.localPosition = target.transform.localPosition + new Vector3(25,0,0);
+		m_tempObject.transform.localScale = Vector3.one * 0.8f;
+		FloatButtonsController floatBtn = m_tempObject.GetComponent<FloatButtonsController>();
+		floatBtn.Initialize(FloatButtonsConfig.GetConfig(tempMsg.chatPct.senderId, tempMsg.chatPct.senderName, tempMsg.chatPct.lianmengName, new List<GameObject> (){}, null), true);
+		Debug.Log ("m_tempObject:" + m_tempObject);
+		Debug.Log ("floatBtn:" + floatBtn);
+		UISprite widget = m_tempObject.GetComponentInChildren<UISprite>();
 		float widgetValue = chatSc.GetWidgetValueRelativeToScrollView (widget).y;
 		if (widgetValue < 0 || widgetValue > 1)
 		{
@@ -544,7 +713,7 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	/// </summary>
 	public void SetChatItemInfoClose (bool springPanel)
 	{
-		chatItemInfoObj.SetActive (false);
+		Destroy (m_tempObject);
 		isChatItemInfoOpen = false;
 
 		if (springPanel && chatSb.value >= 0.99f)
@@ -559,16 +728,58 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	
 	private bool isCdEnd = false;
 
-	void Update ()
+	void Update()
 	{
-		UIYindao.m_UIYindao.CloseUI ();
-		if (QXChatData.Instance.m_listScendWaitTime[chatInputIndex] > 0)
+		if(isOpenChat)
 		{
-			sendCdLabel.text = "冷却" + MyColorData.getColorString (5,QXChatData.Instance.m_listScendWaitTime[chatInputIndex] + "s");
+			UIYindao.m_UIYindao.CloseUI ();
+			if (QXChatData.Instance.m_listScendWaitTime[chatInputIndex] > 0)
+			{
+				if(m_isYuyin)
+				{
+					m_spriteYuyinScendButton.color = Color.gray;
+					m_spriteYuyinScendButton.GetComponent<BoxCollider>().enabled = false;
+					
+					sendCdLabel.fontSize = 24;
+					sendCdLabel.gameObject.transform.localPosition = new Vector3(0, 2, 0);
+					sendCdLabel.text = MyColorData.getColorString (5,QXChatData.Instance.m_listScendWaitTime[chatInputIndex] + "s");
+				}
+				else
+				{
+					sendCdLabel.fontSize = 12;
+					sendCdLabel.gameObject.transform.localPosition = new Vector3(90, 22, 0);
+					sendCdLabel.text = "冷却" + MyColorData.getColorString (5,QXChatData.Instance.m_listScendWaitTime[chatInputIndex] + "s");
+				}
+			}
+			else
+			{
+				sendCdLabel.text = "";
+				if(m_isYuyin)
+				{
+					m_spriteYuyinScendButton.color = Color.white;
+					m_spriteYuyinScendButton.GetComponent<BoxCollider>().enabled = true;
+				}
+			}
 		}
-		else
+
+		if(m_isLuyining)
 		{
-			sendCdLabel.text = "";
+//			Debug.Log(Time.time);
+			m_iLuzhiTime = (int)(Time.time - m_fBTime);
+			if(m_iLuzhiTime >= 15)
+			{
+				m_objLuyinTime.gameObject.SetActive(true);
+				m_objLuying.gameObject.SetActive(false);
+				m_labelLuyin.text = "0" + (20 - m_iLuzhiTime);
+			}
+			if(m_iLuzhiTime >= 20)
+			{
+				m_objLuying.SetActive(false);
+				m_objLuyinTime.SetActive(false);
+				m_isLuyining = false;
+				m_iVoiceIndex ++;
+				MSCController.Instance.StopMSC();
+			}
 		}
 	}
 
@@ -578,7 +789,6 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	private bool isOpenChat;
 	public void ChatPageAnimation (bool isOpen)
 	{
-		Debug.Log("=======1");
 		isOpenChat = isOpen;
 
 		Hashtable move = new Hashtable ();
@@ -592,6 +802,7 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	}
 	void ChatPageAnimationEnd ()
 	{
+		Debug.Log("==========1");
 		chatWindowBtn.transform.localRotation = Quaternion.Euler (0,0,isOpenChat ? 90 : -90);
 		if (!isOpenChat)
 		{
@@ -607,12 +818,26 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 			chatSb.value = 0;
 //			MainCityUI.TryRemoveFromObjectList (gameObject);
 			QXChatData.Instance.SetOpenChat = false;
-			gameObject.SetActive (false);
+//			gameObject.SetActive (false);
+			if(m_objGotoOBj != null)
+			{
+				m_objGotoOBj.SetActive(true);
+				m_objGotoOBj = null;
+			}
+			if(m_listGotoObj != null)
+			{
+				for(int i = 0; i < m_listGotoObj.Count; i ++)
+				{
+					m_listGotoObj[i].SetActive(true);
+				}
+			}
 		}
+		m_BoxCollider.enabled = isOpenChat;
 	}
 
 	public void SetSiliaoName(string name)
 	{
+		m_sScendName = name;
 		m_labelSiLiaoName.text = "@" + name + ":";
 	}
 	#endregion
@@ -634,11 +859,67 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 		}
 	}
 
+	public void DeleteDialogType(ChatPct.Channel channel)
+	{
+		for(int i = 0; i < m_listChatMessage.Count; i ++)
+		{
+			if(m_listChatMessage[i].chatPct.channel == channel)
+			{
+				m_listChatMessage.RemoveAt(i);
+				i --;
+			}
+		}
+	}
+
+	public void AddFriend(int id0, int id1, string name0, string name1)
+	{
+		NewSiliaoData temp;
+		int id;
+		string name;
+		if(id0 == JunZhuData.Instance().m_junzhuInfo.id)
+		{
+			id = id1;
+			name = name1;
+		}
+		else
+		{
+			id = id0;
+			name = name0;
+		}
+
+		temp.id = id;
+		temp.name = name;
+		for(int i = 0; i < m_listNewSiliaoData.Count; i ++)
+		{
+			if(m_listNewSiliaoData[i].id == id)
+			{
+				m_listNewSiliaoData.RemoveAt(i);
+				break;
+			}
+		}
+		m_listNewSiliaoData.Add(temp);
+		setUpFriendList(m_listNewSiliaoData);
+	}
+
+	public void setUpFriendList(List<NewSiliaoData> listNewSiliaoData)
+	{
+		m_objNotFirend.SetActive(false);
+		for(int i = 0; i < m_listNewSiliaoData.Count; i ++)
+		{
+			m_listFriendData[i].gameObject.SetActive(true);
+			m_listFriendData[i].m_labelName.text = listNewSiliaoData[i].name;
+		}
+	}
+
 	public override void MYClick(GameObject ui)
 	{
-		Debug.Log(ui.name);
 		if(ui.name.IndexOf("YunyinQiehuanBtn") != -1)
 		{
+			if(JunZhuData.Instance().m_junzhuInfo.level < 20 && chatInputIndex == 0)
+			{
+				ClientMain.m_UITextManager.createText("世界频道语音聊天功能在20级后开启！");
+				return;
+			}
 			m_isYuyin = !m_isYuyin;
 			if(m_isYuyin)
 			{
@@ -655,6 +936,91 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 				sendBtnHandlerList[2].gameObject.SetActive(true);
 				inputList[chatInputIndex].gameObject.SetActive(true);
 			}
+			switch(chatInputIndex)
+			{
+			case 0:
+			case 1:
+			case 2:
+				m_spriteYuyinScendButton.gameObject.transform.localPosition = new Vector3(0, 0, 0);
+				m_spriteYuyinScendButton.SetDimensions(257, m_spriteYuyinScendButton.height);
+				break;
+			case 3:
+				m_spriteYuyinScendButton.gameObject.transform.localPosition = new Vector3(28, 0, 0);
+				m_spriteYuyinScendButton.SetDimensions(195, m_spriteYuyinScendButton.height);
+				break;
+			}
+		}
+		else if(ui.name.IndexOf("Kaiguan") != -1)
+		{
+			int index = int.Parse(ui.name.Substring(7, 1));
+			m_listKaiguan[index] = !m_listKaiguan[index];
+			if(m_listKaiguan[index])
+			{
+				m_listSpriteKaiguan[index].gameObject.transform.localPosition = new Vector3(-22, 0, 0);
+			}
+			else
+			{
+				m_listSpriteKaiguan[index].gameObject.transform.localPosition = new Vector3(22, 0, 0);
+			}
+			if(!m_listKaiguan[index])
+			{
+				switch(index)
+				{
+				case 0:
+					DeleteDialogType(ChatPct.Channel.SHIJIE);
+					break;
+				case 1:
+					DeleteDialogType(ChatPct.Channel.LIANMENG);
+					break;
+				case 2:
+					DeleteDialogType(ChatPct.Channel.SILIAO);
+					break;
+				case 3:
+					m_listChatMessage = new List<ChatMessage>();
+					break;
+				}
+			}
+			string saveString = "";
+			for(int i = 0; i < m_listKaiguan.Length; i ++)
+			{
+				saveString += m_listKaiguan[i] ? "1" : "0";
+				saveString += ",";
+			}
+			PlayerPrefs.SetString( "DialogSetting", saveString );
+			PlayerPrefs.Save();
+		}
+		else if(ui.name.IndexOf("FirendElenemt") != -1)
+		{
+			int index = int.Parse(ui.name.Substring(13, 1));
+			if(m_listNewSiliaoData.Count > index)
+			{
+				SetSiliaoName(m_listNewSiliaoData[index].name);
+				m_iSiliaoID = m_listNewSiliaoData[index].id;
+				m_objFirendPanel.SetActive(false);
+			}
+		}
+		else if(ui.name.IndexOf("FirendButton") != -1)
+		{
+			m_objFirendPanel.gameObject.SetActive(!m_objFirendPanel.gameObject.activeSelf);
+		}
+		else if(ui.name.IndexOf("OpenSetting") != -1)
+		{
+			m_objSetting.SetActive(true);
+			for(int i = 0; i < 4; i ++)
+			{
+				if(m_listKaiguan[i])
+				{
+					m_listSpriteKaiguan[i].gameObject.transform.localPosition = new Vector3(-22, 0, 0);
+				}
+				else
+				{
+					m_listSpriteKaiguan[i].gameObject.transform.localPosition = new Vector3(22, 0, 0);
+				}
+			}
+		}
+		else if(ui.name.IndexOf("CloseSetting") != -1)
+		{
+			m_objSetting.SetActive(false);
 		}
 	}
 	
@@ -667,25 +1033,62 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	{
 		
 	}
+	public float m_fMaxVolume = 1.0f;
 	
+	public float m_fMaxEffVolume = 1.0f;
 	public override void MYPress(bool isPress, GameObject ui)
 	{
 		if(ui.name.IndexOf("YuyinScendBtn") != -1)
 		{
 			if(isPress)
 			{
+				m_fBTime = Time.time;
+				m_fNum = 0;
+				m_isLuyining = true;
+				m_objLuying.SetActive(true);
+				for(int i = 0; i < 5; i ++)
+				{
+					m_listYinLiang[i].gameObject.SetActive(false);
+				}
 				MSCController.Instance.StartMSC(m_iVoiceIndex + "");
+				m_fMaxVolume = ClientMain.m_sound_manager.m_fMaxEffVolume;
+				m_fMaxEffVolume = ClientMain.m_sound_manager.m_fMaxEffVolume;
+				ClientMain.m_sound_manager.setMaxVolume(0);
+				ClientMain.m_sound_manager.setMaxEffVolume(0);
 			}
 			else
 			{
-				m_iVoiceIndex ++;
-				MSCController.Instance.StopMSC();
+				m_objLuying.SetActive(false);
+				m_objLuyinTime.SetActive(false);
+				m_isLuyining = false;
+				m_iLuzhiTime = (int)(Time.time - m_fBTime);
+				Debug.Log("press");
+				Debug.Log(QXChatUIBox.m_bFocused);
+				Debug.Log(QXChatUIBox.m_bPause);
+				if(QXChatUIBox.m_bFocused && !QXChatUIBox.m_bPause)
+				{
+					if(m_iLuzhiTime < 1)
+					{
+						MSCController.Instance.CancelMSC();
+						ClientMain.m_UITextManager.createText(LanguageTemplate.GetText(5102));
+					}
+					else
+					{
+						m_iVoiceIndex ++;
+						MSCController.Instance.StopMSC();
+						ClientMain.m_sound_manager.setMaxVolume(m_fMaxVolume);
+						ClientMain.m_sound_manager.setMaxEffVolume(m_fMaxEffVolume);
+					}
+				}
+				else
+				{
+					MSCController.Instance.CancelMSC();
+				}
 			}
 		}
 		else if(ui.name.IndexOf("dialog") != -1)
 		{
 			int index = int.Parse(ui.name.Substring(6, ui.name.Length - 6));
-
 		}
 	}
 	
@@ -696,7 +1099,14 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	
 	public override void MYondrag(Vector2 delta)
 	{
-		
+		m_fNum += delta.y;
+		if(m_fNum >= 200 && m_isLuyining)
+		{
+			m_isLuyining = false;
+			m_objLuying.SetActive(false);
+			m_objLuyinTime.SetActive(false);
+			MSCController.Instance.CancelMSC();
+		}
 	}
 	
 	public override void MYoubleClick(GameObject ui)
@@ -707,6 +1117,37 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	public override void MYonInput(GameObject ui, string c)
 	{
 		
+	}
+
+	public void setSiliao(long id, string name, GameObject obj)
+	{
+		m_objGotoOBj = obj;
+		m_objGotoOBj.SetActive(false);
+
+		SetSiliaoName(name);
+		m_iSiliaoID = id;
+
+		if(!QXChatData.Instance.SetOpenChat)
+		{
+			QXChatData.Instance.OpenChatPage(ChatPct.Channel.SILIAO);
+		}
+	}
+
+	public void setSiliaoList(long id, string name, List<GameObject> obj)
+	{
+		m_listGotoObj = obj;
+		for(int i = 0; i < m_listGotoObj.Count; i ++)
+		{
+			m_listGotoObj[i].SetActive(false);
+		}
+		
+		SetSiliaoName(name);
+		m_iSiliaoID = id;
+		
+		if(!QXChatData.Instance.SetOpenChat)
+		{
+			QXChatData.Instance.OpenChatPage(ChatPct.Channel.SILIAO);
+		}
 	}
 	#endregion
 }

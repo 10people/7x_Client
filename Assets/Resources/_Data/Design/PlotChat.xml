@@ -142,9 +142,9 @@
 <PlotChat plotChatId="1040102" seriestId="2" pName="孙膑" pText="将军不要着急。魏王已经连发十道金令催促庞涓救援，想必也快了！" icon="401" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1040103" seriestId="3" pName="xxxxx" pText="师兄，不如我和小七北上去探查一下消息如何？" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1040104" seriestId="4" pName="孙膑" pText="也好！" icon="401" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1040111" seriestId="1" pName="校尉李" pText="快，快，快！" icon="3003" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1040111" seriestId="1" pName="校尉李" pText="快，快，快！" icon="4019" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1040112" seriestId="2" pName="小七" pText="是魏兵！怎么人这么少？" icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1040113" seriestId="3" pName="校尉李" pText="什么人？！给我上！" icon="3003" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1040113" seriestId="3" pName="校尉李" pText="什么人？！给我上！" icon="4019" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1040121" seriestId="1" pName="xxxxx" pText="这一定是魏军的前方巡哨，魏军主力一定在后边！我们继续前进！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1040201" seriestId="1" pName="xxxxx" pText="是魏军的主力！我们快回去禀报师兄！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -208,7 +208,7 @@
 <PlotChat plotChatId="1050501" seriestId="1" pName="小七" pText="哇，连墙面上都是鎏金的哎！这里一定是孟尝君的寝室！西施一定在这里！" icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1050511" seriestId="1" pName="xxxxx" pText="西施果然在这里！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1050521" seriestId="1" pName="西施" pText="你们是......" icon="3009" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1050522" seriestId="2" pName="xxxxx" pText="我们是范先生派来就姑娘出去的！快跟我们走！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1050522" seriestId="2" pName="xxxxx" pText="我们是范先生派来救姑娘出去的！快跟我们走！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1050523" seriestId="3" pName="西施" pText="多谢英雄搭救！" icon="3009" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1050601" seriestId="1" pName="西施" pText="啊！他们追上来了！" icon="3009" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -269,7 +269,7 @@
 <PlotChat plotChatId="1060701" seriestId="1" pName="xxxxx" pText="可恶，怎么丝毫不见魏国太子的身影！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1060702" seriestId="2" pName="小七" pText="我们再找找看！也许他在前面！" icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
-<PlotChat plotChatId="1060801" seriestId="1" pName="太子申" pText="可恶，贼人追上来了！你们快给我拦住他！" icon="4026" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1060801" seriestId="1" pName="太子申" pText="可恶，贼人追上来了！你们快给我拦住他！" icon="4028" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1060811" seriestId="1" pName="xxxxx" pText="魏申！你往哪里跑" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1060901" seriestId="1" pName="xxxxx" pText="师兄，魏太子申已死，我们是否进攻魏都大梁？" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -344,7 +344,7 @@
 <PlotChat plotChatId="1080502" seriestId="2" pName="xxxxx" pText="我来保护你们村子！村长放心，有我在，一定保你安然无恙！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1080511" seriestId="1" pName="村长" pText="多亏英雄帮助，我们这才赶走了山贼！" icon="939" position="0" forwardFlagId="0" cameraTarget="无" cameraId="12" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1080512" seriestId="2" pName="xxxxx" pText="山贼虽然被赶走了，但是以后兴许还会回来！不如把村里的壮丁聚集起来，我们一起去剿灭那伙山贼，好永绝后患！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1080513" seriestId="3" pName="村长" pText="好！老朽正好知道山寨的位置！我老带你们去！" icon="939" position="0" forwardFlagId="0" cameraTarget="无" cameraId="12" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1080513" seriestId="3" pName="村长" pText="好！老朽正好知道山寨的位置！我带你们去！" icon="939" position="0" forwardFlagId="0" cameraTarget="无" cameraId="12" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1080601" seriestId="1" pName="村长" pText="就是这里！" icon="939" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1080602" seriestId="2" pName="xxxxx" pText="杀！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -352,17 +352,17 @@
 <PlotChat plotChatId="1080612" seriestId="2" pName="xxxxx" pText="不能纵虎归山！我去追他们！你们在这里把山寨烧个干净！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1080613" seriestId="3" pName="村长" pText="英雄对我们张村的大恩，我们全村老少感激不尽！英雄一定要保重！" icon="939" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
-<PlotChat plotChatId="1080701" seriestId="1" pName="山贼头目" pText="不好，这群鸟人竟然追来了！快撤！" icon="4003" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1080701" seriestId="1" pName="山贼头目" pText="不好，这群鸟人竟然追来了！快撤！" icon="537" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1080702" seriestId="2" pName="xxxxx" pText="哼，哪里走！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1080711" seriestId="1" pName="小七" pText="咦？这里有个树洞......呀，下面有密室！" icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1080712" seriestId="2" pName="xxxxx" pText="走，我们下去！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1080801" seriestId="1" pName="xxxxx" pText="这里有个铁门！山贼的头目一定就藏在里面！走！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
-<PlotChat plotChatId="1080901" seriestId="1" pName="乐毅" pText="竟然追到了这里！哈哈哈，还真有两下子！就让我来会会你！" icon="4023" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1080911" seriestId="1" pName="乐毅" pText="呃......在下落草为寇实属无奈之举。若英雄肯放过在下，在下一定痛改前非！" icon="4023" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1080901" seriestId="1" pName="乐毅" pText="竟然追到了这里！哈哈哈，还真有两下子！就让我来会会你！" icon="4031" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1080911" seriestId="1" pName="乐毅" pText="呃......在下落草为寇实属无奈之举。若英雄肯放过在下，在下一定痛改前非！" icon="4031" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1080912" seriestId="2" pName="xxxxx" pText="看你也不是泛泛之辈，若是投奔哪个诸侯，一定可以有一番作为。你走吧！若是再被我撞见你落草欺侮百姓，我一定取你首级！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1080913" seriestId="3" pName="乐毅" pText="多谢英雄饶命！乐毅一定痛改前非！" icon="4023" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1080913" seriestId="3" pName="乐毅" pText="多谢英雄饶命！乐毅一定痛改前非！" icon="4031" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1090101" seriestId="1" pName="小七" pText="呼~呼——为何这般着急赶路......那秦国攻魏，与我们又没什么关系...... " icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1090102" seriestId="2" pName="xxxxx" pText="师妹可还记得当初考验我的梦境？梦境中秦王一统后广施暴政，天下万民处于水深火热之中！我一定要阻止此事发生！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -381,7 +381,7 @@
 <PlotChat plotChatId="1090402" seriestId="2" pName="村夫" pText="唉！秦军势如破竹，如今已经包围了少梁。主帅龙贾将军被困在城中。大魏怕是不行了！" icon="939" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1090403" seriestId="3" pName="xxxxx" pText="如果魏军主帅被俘，此战魏国就输定了，我们快去少梁！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1090411" seriestId="1" pName="小七" pText="少梁到了！可是......秦军把城池围的水泄不通，我们怎么办？" icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1090412" seriestId="2" pName="xxxxx" pText="我们一定要救出龙贾将军！快走！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1090412" seriestId="2" pName="xxxxx" pText="刚刚不是遇到几个逃出来的魏军士兵？把他们叫来一起突围进去！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1090501" seriestId="1" pName="xxxxx" pText="秦军攻破城门了！我们快进入城中保护龙贾将军！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
@@ -401,7 +401,7 @@
 
 <PlotChat plotChatId="1090801" seriestId="1" pName="xxxxx" pText="师兄！你怎么在这里？" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1090802" seriestId="2" pName="孙膑" pText="嘿嘿，我早料到你会攻秦都城，所以特来助你一臂之力！这是我带来的帮手，我只能帮你到这里啦！" icon="401" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1090811" seriestId="1" pName="公孙衍" pText="秦军将士听令！杀！" icon="4025" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1090811" seriestId="1" pName="公孙衍" pText="秦军将士听令！杀！" icon="4030" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1090901" seriestId="1" pName="秦王" pText="快！快撤！迁都！" icon="4022" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1090911" seriestId="2" pName="小七" pText="秦王逃跑了！孙膑师兄的战法果然屡试不爽！" icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -432,12 +432,12 @@
 
 <PlotChat plotChatId="1100501" seriestId="1" pName="小七" pText="听说那个龙阳君与当今魏王有断袖之好。不知是真是假！" icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1100502" seriestId="2" pName="xxxxx" pText="此次如果救出龙阳君，也许可以化解此前与魏国的矛盾，那么以后我们也就多了一些选择！我们快走吧！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1100511" seriestId="1" pName="龙阳君" pText="你们这些没用的东西！快给本公子挡住他们！要是我有丝毫闪失，当心你们的脑袋！信陵君这个狗东西，竟然把我丢在这！" icon="4008" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1100511" seriestId="1" pName="龙阳君" pText="你们这些没用的东西！快给本公子挡住他们！要是我有丝毫闪失，当心你们的脑袋！信陵君这个狗东西，竟然把我丢在这！" icon="3010" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1100521" seriestId="1" pName="xxxxx" pText="龙阳君，在下受信陵君委托前来救你！快随我冲出重围吧！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1100522" seriestId="2" pName="龙阳君" pText="好！好！好！待我回了大梁，一定叫大王重重的赏你！" icon="4008" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1100522" seriestId="2" pName="龙阳君" pText="好！好！好！待我回了大梁，一定叫大王重重的赏你！" icon="3010" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1100601" seriestId="1" pName="信陵君" pText="龙阳君从百万敌军中金蝉脱壳，平安归来，真是可喜可贺！" icon="4023" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1100602" seriestId="2" pName="龙阳君" pText="哼，此次我在前方大营险些遭遇不测，皆因你作战不利！待我回国都，定要将此事禀告大王！" icon="4008" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1100602" seriestId="2" pName="龙阳君" pText="哼，此次我在前方大营险些遭遇不测，皆因你作战不利！待我回国都，定要将此事禀告大王！" icon="3010" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1100701" seriestId="1" pName="xxxxx" pText="信陵君，当下战事不利，在下打算前往赵军大营中刺杀赵军主帅，也许可以争取一些时间来等待援军。不知您意下如何？" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1100702" seriestId="2" pName="信陵君" pText="嗯，此计也许可行！北边山上有条小路，你可以从那里迂回到赵军背后！" icon="4023" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -448,7 +448,7 @@
 <PlotChat plotChatId="1100801" seriestId="1" pName="赵军将领" pText="不好！有刺客！快拦住他们！我去禀报平原君！" icon="4007" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1100802" seriestId="2" pName="小七" pText="快追上他！" icon="200" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1100803" seriestId="3" pName="赵国哨兵" pText="抓刺客！抓刺客！" icon="3001" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1100811" seriestId="1" pName="平原君" pText="哼，哪来的毛贼，敢打扰本将军的好梦！" icon="4026" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1100811" seriestId="1" pName="平原君" pText="哼，哪来的毛贼，敢打扰本将军的好梦！" icon="4029" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1100901" seriestId="1" pName="赵军士兵" pText="保护平原君！捉拿刺客！" icon="3004" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1100902" seriestId="2" pName="xxxxx" pText="不好！我们快走！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -503,7 +503,7 @@
 <PlotChat plotChatId="1120202" seriestId="2" pName="xxxxx" pText="我们皆是同门，这也是应该的。已快到燕国境内了，听闻燕国内乱，我们还当小心些！" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1120301" seriestId="1" pName="燕国叛军" pText="站住！" icon="500" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1120302" seriestId="2" pName="郭隗" pText="救......救命！" icon="940" position="0" forwardFlagId="0" cameraTarget="无" cameraId="12" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1120302" seriestId="2" pName="郭隗" pText="救......救命！" icon="4001" position="0" forwardFlagId="0" cameraTarget="无" cameraId="12" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1120311" seriestId="1" pName="xxxxx" pText="这位大叔，那些军人为什么要追你？" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1120312" seriestId="2" pName="郭隗" pText="那些都是子之的叛军！子之叛乱，燕王被困在前方的小庙里，老夫是去找救兵的！" icon="940" position="0" forwardFlagId="0" cameraTarget="无" cameraId="12" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1120313" seriestId="3" pName="苏秦" pText="什么？燕王有难？这可怎么办......" icon="402" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
@@ -529,9 +529,9 @@
 
 <PlotChat plotChatId="1130101" seriestId="1" pName="赵国哨兵" pText="站住！有奸细！" icon="3001" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
-<PlotChat plotChatId="1130201" seriestId="1" pName="乐毅" pText="是你？你怎么在这里？" icon="4023" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1130201" seriestId="1" pName="乐毅" pText="是你？你怎么在这里？" icon="4031" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1130202" seriestId="2" pName="xxxxx" pText="我受燕王之托，前来寻找足下！如今燕王求贤似渴，乐兄随我前往燕国效力燕王如何？" icon="0" position="1" forwardFlagId="0" cameraTarget="无" cameraId="9" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
-<PlotChat plotChatId="1130203" seriestId="3" pName="乐毅" pText="听说燕王年轻有为，乐毅愿往！我们这就出发吧！" icon="4023" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
+<PlotChat plotChatId="1130203" seriestId="3" pName="乐毅" pText="听说燕王年轻有为，乐毅愿往！我们这就出发吧！" icon="4031" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 
 <PlotChat plotChatId="1130301" seriestId="1" pName="赵国哨兵" pText="燕国细作在这里！上！" icon="500" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />
 <PlotChat plotChatId="1130311" seriestId="1" pName="秦开" pText="在下在此等候多时了！乐毅先生就由我来护送返回国都吧！齐国大举入侵，苏秦客卿让英雄立刻前往河间助他一臂之力！" icon="4009" position="0" forwardFlagId="0" cameraTarget="无" cameraId="1" islocale="1" cameraPx="0" cameraPy="0" cameraPz="0" cameraRx="0" cameraRy="0" />

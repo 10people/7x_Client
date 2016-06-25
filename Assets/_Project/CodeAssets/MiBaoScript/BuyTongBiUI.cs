@@ -17,14 +17,7 @@ public class BuyTongBiUI : MonoBehaviour {
 	public GameObject UIroot;
 	public GameObject mEffect;
 	public GameObject BaojiRoot;
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	public void  Init()
 	{
 		//Debug.Log ("M_BuyTongBiInfo.baoji = "+M_BuyTongBiInfo.baoji);

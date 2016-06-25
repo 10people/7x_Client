@@ -10,7 +10,8 @@ using ProtoBuf.Meta;
 
 public class ReCruit : MonoBehaviour, SocketProcessor {
 
-	//[HideInInspector]public  AllianceHaveResp Z_UnionInfo;
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
 
 	public delegate void OnRecuitBtnClick ();
 
@@ -46,7 +47,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	[HideInInspector]
 	public int mjunxian_min  = 1;
 	[HideInInspector]
-	public int mjunxian_Max  = 8;
+	public int mjunxian_Max  = 9;
 	[HideInInspector]
 	public  int  mlv  = 20;
 	[HideInInspector]
@@ -75,7 +76,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 	public GameObject EditBtn;
 	void Awake()
 	{ 
-
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "招募设置", 0, 0);
 		SocketTool.RegisterMessageProcessor(this);
 	}
 	void Start () {
@@ -113,7 +114,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		mlv_Max  = 100;
 		mjunxian = 1;
 		needSp = 1;
-		mjunxian_Max  = 8;
+		mjunxian_Max  = 9;
 		mjunxian_min  = 1;
 	}
 	public void init(OnRecuitBtnClick m_OnRecuitBtnClick = null)
@@ -146,7 +147,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 			
 			JunXian_LeftBtn.SetActive(false);
 		}
-		if(mjunxian == 8)
+		if(mjunxian == 9)
 		{
 			
 			JunXian_RightBtn.SetActive(false);
@@ -174,7 +175,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		}
 
 		str_needShenpi = needShenpi.text;
-		//Debug.Log ("str_needShenpiaaa = "+str_needShenpi);
+		Debug.Log ("str_needShenpiaaa = "+str_needShenpi);
 
 	}
 	AllianceHaveResp mAllianceHaveResp;
@@ -207,7 +208,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 //			
 //			SaveRecuiBtn.SetActive(false);
 //		}
-		if(mAllianceHaveResp.identity == 2)
+		if(mAllianceHaveResp.identity == 1 ||mAllianceHaveResp.identity == 2)
 		{
 			EditBtn.SetActive(true);
 		}
@@ -232,8 +233,14 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		}
 		if(needSp != 1)
 		{
+			ShenPi_LeftBtn.SetActive(true);
+			ShenPi_RightBtn.SetActive(true);
+
 			needSp = 1;
-			init ();
+
+			needShenpi.text = LanguageTemplate.GetText (LanguageTemplate.Text.NO);
+
+			ShenPi_LeftBtn.SetActive(false);
 		}
 
 	}
@@ -248,7 +255,10 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		if(needSp != 0)
 		{
 			needSp = 0;
-			init ();
+			ShenPi_LeftBtn.SetActive(true);
+			ShenPi_RightBtn.SetActive(true);
+			needShenpi.text = LanguageTemplate.GetText (LanguageTemplate.Text.YES);
+			ShenPi_RightBtn.SetActive(false);
 		}
 
 	}
@@ -276,22 +286,6 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		input_Notice.SetActive (false);
 
 	}
-//	public void NoticeLoadCallback( ref WWW p_www, string p_path,  Object p_object )
-//	{
-//		GameObject boxObj = Instantiate( p_object ) as GameObject;
-//		
-//		UIBox uibox = boxObj.GetComponent<UIBox> ();
-//		
-//		string changeTitleStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_GONGGAO_CHANGE_TITLE);
-//	
-//		//Debug.Log("修改失败，，，，，，，，，，");
-//		
-//		string str1 = "\n"+LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_GONGGAO_STR_TOOMUCH)+"或有非法字符！";
-//		
-//		uibox.setBox(changeTitleStr, MyColorData.getColorString (1,str1), null,
-//		             null,confirmStr,null,null);
-//
-//	}
 
 	public void BackBtn()//back按钮
 	{
@@ -387,12 +381,15 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		
 		SocketTool.Instance().SendSocketMessage(
 			ProtoIndexes.OPEN_APPLY,ref t_protof,"30134");
-		QXChatData.Instance.SendAllianceInfo ();
-		isSave = false;
-		GameObject m_root2 = GameObject.Find ("Leader_Setting(Clone)");
-		MainCityUI.TryRemoveFromObjectList (m_root2);
 
-		Destroy(m_root2);
+		isSave = false;
+//		GameObject m_root2 = GameObject.Find ("Leader_Setting(Clone)");
+//		if(m_root2)
+//		{
+//			MainCityUI.TryRemoveFromObjectList (m_root2);
+//			
+//			Destroy(m_root2);
+//		}
 	}
 	private bool isSave = false;
 	public void ComfrimBtm(int i)//确定发布按钮
@@ -464,6 +461,7 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 				
 				t_qx.Deserialize(t_stream, openApplyRes, openApplyRes.GetType());
 
+				Debug.Log("openApplyRes.code = " +openApplyRes.code);
 				if (openApplyRes != null)
 				{
 					openRes = openApplyRes;
@@ -472,35 +470,40 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 					{
 						Show_Notice.text = openRes.attach;
 						mAllianceHaveResp.attchCndition =openRes.attach ;
-						//SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);//刷新页面
+						if(mOnRecuitBtnClick != null )
+						{
+							mOnRecuitBtnClick();
+							mOnRecuitBtnClick = null;
+						}
 						AllianceData.Instance.RequestData ();
-//						GameObject leaderSetObj = GameObject.Find("AllaniceApply");
-//						if(leaderSetObj)
-//						{
-//							ApplyManager mLeaderSetting = leaderSetObj.GetComponent<ApplyManager>();
-//							mLeaderSetting.m_tempInfo.isAllow = 1;
-//						}
 
+						QXChatData.Instance.SendAllianceInfo ();
+						if(!isSave)
+						{	GameObject m_root = GameObject.Find ("New_My_Union(Clone)");
+							MainCityUI.TryRemoveFromObjectList (m_root);
+							Destroy (m_root);
+						}
+						Destroy(this.gameObject);
 					}
-					else
+					else if (openApplyRes.code == 1)
 					{
-						Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-						                        NoticeLoadCallback );
+						ClientMain.m_UITextManager.createText("联盟成员已满，无法发布招募公告。");
+//						Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+//						                        NoticeLoadCallback );
 					}
-//					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-//					                        ResourceLoadCallback );
-					if(mOnRecuitBtnClick != null )
+					else if (openApplyRes.code == 2)
 					{
-						mOnRecuitBtnClick();
-						mOnRecuitBtnClick = null;
+						ClientMain.m_UITextManager.createText("公告字数过长。");
+					}
+					else if (openApplyRes.code == 3)
+					{
+						ClientMain.m_UITextManager.createText("不能输入非法字符。");
+					}
+					else if (openApplyRes.code == 4)
+					{
+						ClientMain.m_UITextManager.createText("权限不足，只有盟主或副盟主才能修改公告内容。");
 					}
 
-					if(!isSave)
-					{	GameObject m_root = GameObject.Find ("New_My_Union(Clone)");
-						MainCityUI.TryRemoveFromObjectList (m_root);
-						Destroy (m_root);
-					}
-					Destroy(this.gameObject);
 				}
 				return true;
 			}
@@ -556,56 +559,6 @@ public class ReCruit : MonoBehaviour, SocketProcessor {
 		
 		string str = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_CLOSE_RECRUIT_SUCCESS);
 		uibox.setBox(closeTitleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null);
-	}
-	public void ResourceLoadCallback( ref WWW p_www, string p_path,  Object p_object )
-	{
-		UIBox uibox = (Instantiate( p_object ) as GameObject).GetComponent<UIBox> ();
-
-		string str = "";
-		
-		string titleStr = "";
-		
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);;
-
-		switch (openRes.code)
-		{
-		case 0:
-
-			if(!IsSava)
-			{
-				str = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_RUCRUIT_TIPS_SUCCESS);
-				
-				titleStr = titleStr = "发布成功";
-			}else
-			{
-				str = "联盟招募信息保存成功";;// LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_RUCRUIT_TIPS_SUCCESS);
-				
-				titleStr = "发布成功";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_RUCRUIT_TITLE);
-			}
-
-
-			break;
-
-		case 1:
-
-			titleStr = "招募失败";
-
-			str = "您的联盟已经达到人数上限，暂时无法加入新玩家！";
-
-			break;
-
-		case 2:
-
-			titleStr = "招募失败";
-
-			str = "公告字数超出限制，请重新编辑公告！";
-
-			break;
-
-		default:break;
-		}
-
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null);
 	}
 
 	void OnDestroy()

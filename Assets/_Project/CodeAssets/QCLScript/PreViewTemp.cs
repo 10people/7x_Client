@@ -27,13 +27,7 @@ public class PreViewTemp : MonoBehaviour {
 	private int numPara;
 
 	public GameObject AwardRoot;
-	void Start () {
-	
-	}
 
-	void Update () {
-	
-	}
 	public void Init()
 	{
 		LayerNunber.text = "第"+Layer.ToString()+"层";
@@ -46,7 +40,7 @@ public class PreViewTemp : MonoBehaviour {
 		{
 			Debug.Log("m_Award = "+m_Award);
 		}
-		char[] t_items_delimiter = { '#' };
+		char[] t_items_delimiter = { ',' };
 		
 		char[] t_item_id_delimiter = { ':' };
 		

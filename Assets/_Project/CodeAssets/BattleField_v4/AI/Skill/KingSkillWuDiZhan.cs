@@ -270,13 +270,17 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			"easetype", iTween.EaseType.easeInOutQuart
 			));
 
-		if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 4)
+		if(king.modelId == 1005)
 		{
 			BattleEffectControllor.Instance().PlayEffect (600267, king.copyObject.transform.position, king.copyObject.transform.forward);
 		}
-		else if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 1)
+		else if(king.modelId == 1002)
 		{
 			BattleEffectControllor.Instance().PlayEffect (600281, king.copyObject.transform.position, king.copyObject.transform.forward);
+		}
+		else if(king.modelId == 1003)
+		{
+			BattleEffectControllor.Instance().PlayEffect (600310, king.copyObject.transform.position, king.copyObject.transform.forward);
 		}
 		else
 		{
@@ -333,13 +337,17 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 		if(index == 0)
 		{
-			if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 4)
+			if(king.modelId == 1005)
 			{
 				BattleEffectControllor.Instance().PlayEffect (600265, king.copyObject.transform.position, king.copyObject.transform.forward);
 			}
-			else if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 1)
+			else if(king.modelId == 1002)
 			{
 				BattleEffectControllor.Instance().PlayEffect (600278, king.copyObject.transform.position, king.copyObject.transform.forward);
+			}
+			else if(king.modelId == 1003)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600311, king.copyObject.transform.position, king.copyObject.transform.forward);
 			}
 			else
 			{
@@ -348,9 +356,13 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		}
 		else if(index  == 1)
 		{
-			if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 1)
+			if(king.modelId == 1002)
 			{
 				BattleEffectControllor.Instance().PlayEffect (600279, king.copyObject.transform.position, king.copyObject.transform.forward);
+			}
+			else if(king.modelId == 1003)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600312, king.copyObject.transform.position, king.copyObject.transform.forward);
 			}
 			else
 			{
@@ -412,6 +424,10 @@ public class KingSkillWuDiZhan : MonoBehaviour
 			else if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 1)
 			{
 				BattleEffectControllor.Instance().PlayEffect (600280, curNode.gameObject);
+			}
+			else if(CityGlobalData.t_resp.selfTroop.nodes[0].modleId == 2)
+			{
+				BattleEffectControllor.Instance().PlayEffect (600309, curNode.gameObject);
 			}
 			else
 			{
@@ -644,9 +660,19 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		{
 			foreach (Material m in r.materials)
 			{
-				if(m.shader.name.Equals("Custom/Characters/Main Texture High Light"))
+				if(m.shader.name.Equals("Custom/Characters/Main Texture Hight Light Rim"))
+				{
+					m.SetColor("_MainColor", new Color( 0.537f, 0.537f, 0.537f, alpha));
+				}
+				else if(m.shader.name.Equals("Custom/Characters/Main Texture High Light"))
 				{
 					m.color = new Color( 0.537f, 0.537f, 0.537f, alpha);
+				}
+				else if(m.shader.name.Equals("Custom/Characters/Main Texture Diffuse Rim"))
+				{
+					Color c = m.GetColor("_MainColor");
+					
+					m.SetColor("_MainColor", new Color( c.r, c.g, c.b, alpha));
 				}
 			}
 		}
@@ -660,9 +686,19 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		{
 			foreach (Material m in r.materials)
 			{
-				if(m.shader.name.Equals("Custom/Characters/Main Texture High Light"))
+				if(m.shader.name.Equals("Custom/Characters/Main Texture Hight Light Rim"))
+				{
+					m.SetColor("_MainColor", new Color( 0.537f, 0.537f, 0.537f, alpha));
+				}
+				else if(m.shader.name.Equals("Custom/Characters/Main Texture High Light"))
 				{
 					m.color = new Color( 0.537f, 0.537f, 0.537f, alpha);
+				}
+				else if(m.shader.name.Equals("Custom/Characters/Main Texture Diffuse Rim"))
+				{
+					Color c = m.GetColor("_MainColor");
+
+					m.SetColor("_MainColor", new Color( c.r, c.g, c.b, alpha));
 				}
 			}
 		}
@@ -675,7 +711,13 @@ public class KingSkillWuDiZhan : MonoBehaviour
 
 	IEnumerator cutAction()
 	{
+		iTween.Stop (king.gameObject);
+
 		yield return new WaitForSeconds (.1f);
+
+		curCount = 0;
+
+		king.mAnim.SetBool("WuDiOver", false);
 
 		setAlphaCopy(1);
 		
@@ -694,6 +736,8 @@ public class KingSkillWuDiZhan : MonoBehaviour
 		king.copyObject.transform.position = new Vector3(0, -1000, 0);
 		
 		if(king.stance == BaseAI.Stance.STANCE_SELF) king.gameCamera.targetChang (king.gameObject);
+
+		transform.position = tempPos;
 
 		inSkill = false;
 	}

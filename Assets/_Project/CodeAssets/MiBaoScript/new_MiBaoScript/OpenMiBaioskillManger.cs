@@ -6,32 +6,43 @@ public class OpenMiBaioskillManger : MonoBehaviour {
 
 	bool add = true;
 
+	public UISprite m_skillIcon1;
+	public UISprite m_skillIcon2;
+
 	public GameObject skillIcon1;
 	public GameObject skillIcon2;
 	public GameObject EffectRoot;
+
+	public UISprite m_SkillName;
+
+	public UILabel mSkillDesc;
+
+	float m_color;
+	
+	int index;
+
 	void Start () {
 	
+//		Init ();
 	}
 	
 
 	void Update () {
 
 
-//		float aph = 0f;
-//	
-//		if(aph < 1f)
-//		{
-//
-//			aph += 0.01f;
-//		}
-//		Remainlabel.alpha = aph;
+		if(m_color >= 1 )
+		{
+			index = -1;
+		}
+		if(m_color < 0.5f )
+		{
+			index = 1;
+		}
+		m_color += index*Time.deltaTime*0.90f;
+		Remainlabel.alpha = Mathf.Abs (m_color);
+
 	}
-	void OnEnable()
-	{
-		Init ();
-		//StartCoroutine ("ShowEffect");
-	}
-	void Init ()
+	public void Init ()
 	{
 		StartCoroutine ("showOpenMiBaoskillEffect");
 	}
@@ -62,5 +73,12 @@ public class OpenMiBaioskillManger : MonoBehaviour {
 	void OnDisable()
 	{
 		UI3DEffectTool.ClearUIFx(skillIcon1.gameObject);
+
+	}
+	public void Close()
+	{
+		NewMiBaoManager.Instance ().InitUI ();
+		MainCityUI.TryRemoveFromObjectList(this.gameObject);
+		Destroy (this.gameObject);
 	}
 }

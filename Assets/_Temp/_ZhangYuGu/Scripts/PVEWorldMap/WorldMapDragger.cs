@@ -277,9 +277,4 @@ public class WorldMapDragger : MonoBehaviour {
 	}
 
 	#endregion
-
-	// Update is called once per frame
-	void Update () {
-
-	}
 }

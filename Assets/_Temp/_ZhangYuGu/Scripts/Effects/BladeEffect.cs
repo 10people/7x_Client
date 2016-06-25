@@ -19,13 +19,4 @@ public class BladeEffect : MonoBehaviour {
 		Quality_Blade.UpdateBladeEffect( gameObject );
 	}
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

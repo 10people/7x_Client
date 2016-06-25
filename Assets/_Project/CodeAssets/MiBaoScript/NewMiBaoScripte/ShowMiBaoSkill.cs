@@ -73,14 +73,6 @@ public class ShowMiBaoSkill : MonoBehaviour,SocketProcessor {
 		SocketTool.UnRegisterMessageProcessor(this);
 	}
 
-	void Start () {
-	
-	}
-
-
-	void Update () {
-	
-	}
 	public int SkillId;
 	public void Init()
 	{

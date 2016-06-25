@@ -119,23 +119,24 @@ public class PlayerModelController : MonoBehaviour
         Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(100 + CityGlobalData.m_king_model_Id),
                                ResourceLoad_Skeleton_Callback);
     }
+    private bool _isRoleLoad = false;
     public void ResourceLoad_Skeleton_Callback(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject obj = Instantiate(p_object) as GameObject;
         obj.transform.parent = m_ObjHero.transform;
         obj.transform.localScale = Vector3.one;
         obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.Euler(Vector3.zero);
         if (_ObjSkeleton)
         {
             Destroy(_ObjSkeleton);
         }
         _ObjSkeleton = obj;
 
-            switch (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene())
+       switch (FunctionWindowsCreateManagerment.IsCurrentJunZhuScene())
         {
             case 0:
                 {
-                    m_ObjHero.transform.localRotation = Quaternion.Euler(Vector3.zero);
                     if (CityGlobalData.m_CreateRoleCurrent)
                     {
                         CityGlobalData.m_CreateRoleCurrent = false;
@@ -212,8 +213,11 @@ public class PlayerModelController : MonoBehaviour
         {
             SceneGuideManager.Instance().ShowSceneGuide(1020001);
         }
-
-        SendPlayerData();
+        if (!_isRoleLoad)
+        {
+            _isRoleLoad = true;
+            SendPlayerData();
+        }
     }
 
     public bool AddFunaction()
@@ -764,19 +768,12 @@ public class PlayerModelController : MonoBehaviour
         t_protof = tempStream.ToArray();
 
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.Enter_Scene, ref t_protof);
+ 
+        PlayerState t_state = new PlayerState();
 
-        {
-            //  Debug.Log( "--- Scene Tag --- PlayerModelController.SendPlayerData --- State_LEAGUEOFCITY" );
+        t_state.s_state = State.State_LEAGUEOFCITY;
 
-            PlayerState t_state = new PlayerState();
-
-            t_state.s_state = State.State_LEAGUEOFCITY;
-
-            SocketHelper.SendQXMessage(t_state, ProtoIndexes.PLAYER_STATE_REPORT);
-        }
-
-        //        Debug.Log("SendPlayerData. m_ObjHero.transform.position :" + m_ObjHero.transform.position);
-
+        SocketHelper.SendQXMessage(t_state, ProtoIndexes.PLAYER_STATE_REPORT);
     }
 
     void InitWithGlobalData()
@@ -806,6 +803,8 @@ public class PlayerModelController : MonoBehaviour
 		TreasureCityData.Instance ();
 
 		PlunderData.Instance.PlunderDataReq ();
+
+		QXSelectRole.Instance ();
     }
 
 

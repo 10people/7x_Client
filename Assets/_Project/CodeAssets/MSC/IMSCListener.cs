@@ -13,6 +13,13 @@ public interface IMSCListener
 
     void MSCEnded();
 
+    /// <summary>
+    /// Put error code to user.
+    /// </summary>
+    /// <param name="error">
+    /// 
+    /// 
+    /// </param>
     void MSCError(string error);
 
     void MSCVolume(int vol);

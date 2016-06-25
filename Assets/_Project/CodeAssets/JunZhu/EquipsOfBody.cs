@@ -599,4 +599,10 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
 //        
 //		m_iCurNum = EquipsOfBody.Instance().GetEquipCountByQuality(TaoZhuangTemplate.GetNextTaoZhuangById(m_Activatetemp.maxActiZhuang).condition);
 	}
+
+
+	public bool GetWetherWearArrow()
+	{
+		return	m_equipsOfBodyDic.ContainsKey(5);
+	}
 }

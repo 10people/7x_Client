@@ -33,7 +33,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                             m_RootManager.m_CarriageMain.m_MainCityUiTongzhi.upDataShow();
                             m_RootManager.m_CarriageMain.ExecuteReportData();
                         }
-                        break;
+                        return true;
                     }
                 case ProtoIndexes.S_MengYouKuaiBao_PUSH:
                     {
@@ -56,7 +56,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
 
                         if (msg.result != 10)
                         {
-//                            ClientMain.m_UITextManager.createText("通知已过时");
+                            ClientMain.m_UITextManager.createText("通知已过时");
 
                             return true;
                         }
@@ -394,11 +394,11 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                             case 40:
                                 if (tempInfo.remainTimes > 0)
                                 {
-                                    CommonBuy.Instance.ShowBuy(tempInfo.nextCost, tempInfo.nextGet, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_RootManager.m_CarriageMain.DoBuyBloodTimes);
+                                    CommonBuy.Instance.ShowBuy(tempInfo.nextCost, tempInfo.nextGet, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_RootManager.m_CarriageMain.DoBuyBloodTimes, VipTemplate.templates.Where(item => item.CarriageBlood > 0).OrderBy(item => item.lv).First().lv);
                                 }
                                 else
                                 {
-                                    CommonBuy.Instance.ShowVIP(JunZhuData.Instance().m_junzhuInfo.vipLv + 1);
+                                    CommonBuy.Instance.ShowVIP();
                                 }
 
                                 m_RootManager.m_CarriageMain.SetRemainingBloodNum(tempInfo.remainXuePing);
@@ -427,7 +427,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                                 ClientMain.m_UITextManager.createText("元宝不足");
                                 break;
                             case 3:
-                                CommonBuy.Instance.ShowVIP(tempInfo.vipLevel);
+                                CommonBuy.Instance.ShowVIP();
                                 break;
                             case 4:
                                 ClientMain.m_UITextManager.createText("今日购买次数已用完");
@@ -632,7 +632,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
             UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
             uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
             uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-                null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_46).Replace("X", template.price.ToString()).Replace("Y", template.number.ToString()).Replace("N", (totalTimes - m_YabiaoJunZhuList.buyCiShu).ToString()),
+                LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_46).Replace("X", template.price.ToString()).Replace("Y", template.number.ToString()).Replace("N", (totalTimes - m_YabiaoJunZhuList.buyCiShu).ToString()), null,
                 null,
                 LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL), LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM),
                 OnBuyRobTimes);
@@ -680,7 +680,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
         UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
         uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
         uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-            null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_47),
+            LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_47), null,
             null,
             LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL), LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM),
             OnBoxReCharge);
@@ -694,7 +694,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                 break;
             case 2:
                 //goto recharge.
-                TopUpLoadManagerment.LoadPrefab(true);
+                RechargeData.Instance.RechargeDataReq();
                 break;
             default:
                 Debug.LogError("UIBox callback para:" + i + " is not correct.");
@@ -707,7 +707,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
         UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
         uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
         uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-            null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_49).Replace("x", (JunZhuData.Instance().m_junzhuInfo.vipLv + 1).ToString()),
+            LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_49).Replace("x", (JunZhuData.Instance().m_junzhuInfo.vipLv + 1).ToString()), null,
             null,
             LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
             null);
@@ -718,7 +718,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
         UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
         uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
         uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-            null, LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_47),
+            LanguageTemplate.GetText(LanguageTemplate.Text.YUN_BIAO_47), null,
             null,
             LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
             OnGotoRecharge);
@@ -729,7 +729,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
         UIBox uibox = (Instantiate(p_object) as GameObject).GetComponent<UIBox>();
         uibox.m_labelDis2.overflowMethod = UILabel.Overflow.ResizeHeight;
         uibox.setBox(LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO),
-            null, "购买成功",
+            "购买成功", null,
             null,
             LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM), null,
             null);
@@ -743,7 +743,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
         switch (i)
         {
             case 1:
-                TopUpLoadManagerment.LoadPrefab(true);
+                RechargeData.Instance.RechargeDataReq();
                 break;
         }
     }

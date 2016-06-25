@@ -105,7 +105,7 @@ namespace Carriage
                 RootManager.Instance.m_CarriageMain.TryCancelChaseToAttack();
 
                 RootManager.Instance.m_SelfPlayerController.m_CompleteNavDelegate = null;
-                RootManager.Instance.m_CarriageMain.m_TargetItemTransform = RootManager.Instance.m_CarriageItemSyncManager.m_PlayerDic[m_StoredCarriageInfo.UID].transform;
+                RootManager.Instance.m_CarriageMain.m_TargetItemUID = m_StoredCarriageInfo.UID;
                 RootManager.Instance.m_CarriageMain.NavigateToItem();
 
                 m_TotalCarriageListController.OnCloseWindowClick();

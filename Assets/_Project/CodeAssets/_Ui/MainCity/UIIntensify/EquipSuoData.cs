@@ -69,6 +69,7 @@ public class EquipSuoData:MonoBehaviour
         public bool _IsAdd;
         public int _CountAdd;
         public bool _IsAllMax;
+        public bool _IsMaxQualliaty;
     }
     public static Dictionary<int, List<WashInfo>> m_listEquipWash = new Dictionary<int, List<WashInfo>>();
     public struct AttributeLocked
@@ -84,7 +85,7 @@ public class EquipSuoData:MonoBehaviour
         public int m_AttributeCount;
     };
     public AttributeLocked m_AttributeLockedInfo;
-    public Dictionary<int, AttributeLocked> m_listNoShow = new Dictionary<int,AttributeLocked>();
+  
     public Dictionary<int, AttributeLocked> m_listNoCurrentShow = new Dictionary<int,AttributeLocked>();
     public struct LockedSignal
     {
@@ -162,7 +163,7 @@ public class EquipSuoData:MonoBehaviour
          
         if (type == 1 && string.IsNullOrEmpty(Des))
         {
-            TopUpLoadManagerment.LoadPrefab(SpecialNeed);
+			RechargeData.Instance.RechargeDataReq ();
         }
         else
         {
@@ -212,7 +213,7 @@ public class EquipSuoData:MonoBehaviour
                     _MainParent.SetActive(false);
                 }
             }
-            TopUpLoadManagerment.LoadPrefab(_IsSpecial);
+			RechargeData.Instance.RechargeDataReq ();
         }
     }
 

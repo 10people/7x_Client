@@ -147,7 +147,7 @@ public class SettingUpButtonController : MonoBehaviour
                         m_IsTurnOn = true;
                         m_ObjOn.SetActive(true);
                         m_ObjOff.SetActive(false);
-                        MainCityUIRB.LockRedAlert(9, true);
+                       // MainCityUIRB.LockRedAlert(9, true);
                     }
                     else
                     {
@@ -156,7 +156,7 @@ public class SettingUpButtonController : MonoBehaviour
                         m_IsTurnOn = false;
                         m_ObjOn.SetActive(false);
                         m_ObjOff.SetActive(true);
-                        MainCityUIRB.LockRedAlert(9, false);
+                      //  MainCityUIRB.LockRedAlert(9, false);
                     }
                 }
                 break;
@@ -173,7 +173,7 @@ public class SettingUpButtonController : MonoBehaviour
                         m_IsTurnOn = true;
                         m_ObjOn.SetActive(true);
                         m_ObjOff.SetActive(false);
-                        MainCityUIRB.LockRedAlert(310, true);
+                      //  MainCityUIRB.LockRedAlert(310, true);
                     }
                     else
                     {
@@ -182,7 +182,7 @@ public class SettingUpButtonController : MonoBehaviour
                         m_IsTurnOn = false;
                         m_ObjOn.SetActive(false);
                         m_ObjOff.SetActive(true);
-                        MainCityUIRB.LockRedAlert(310, false);
+                      //  MainCityUIRB.LockRedAlert(310, false);
                     }
                 }
                 break;

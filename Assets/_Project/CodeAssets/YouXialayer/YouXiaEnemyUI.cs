@@ -89,14 +89,7 @@ public class YouXiaEnemyUI : MonoBehaviour,SocketProcessor {
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
 	}
-	void Start () {
-	
-	}
-	
 
-	void Update () {
-	
-	}
 	public void SaodangBtn()  // w未定协议7 23
 	{
 		if(m_You_XiaInfo.remainTimes == 1)

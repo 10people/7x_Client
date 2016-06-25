@@ -213,8 +213,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -317,8 +315,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -430,8 +426,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -528,8 +522,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -539,8 +531,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Attack_0
       takeName: Take 001
-      firstFrame: 373
-      lastFrame: 405
+      firstFrame: 377
+      lastFrame: 409
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -633,8 +625,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -644,8 +634,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Attack_1
       takeName: Take 001
-      firstFrame: 603
-      lastFrame: 650
+      firstFrame: 552
+      lastFrame: 599
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -738,8 +728,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -749,8 +737,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Attack_2
       takeName: Take 001
-      firstFrame: 373
-      lastFrame: 405
+      firstFrame: 377
+      lastFrame: 409
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -849,8 +837,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -1011,8 +997,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -1136,8 +1120,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -1277,8 +1259,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -1395,8 +1375,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -1515,8 +1493,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -1633,8 +1609,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -1753,8 +1727,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -1872,8 +1844,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -1903,6 +1873,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .253401458
         functionName: PlaySound
         data: 4000|4001|4002|0|0
@@ -1990,8 +1967,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -2089,8 +2064,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -2187,8 +2160,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -2284,8 +2255,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -2404,8 +2373,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -2516,8 +2483,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -2613,8 +2578,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -2754,8 +2717,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -2851,8 +2812,6 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
-        weight: 1
-      - path: Bip01/Bip01 Prop1
         weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
@@ -2971,8 +2930,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -3090,8 +3047,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -3188,8 +3143,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
         weight: 1
-      - path: Bip01/Bip01 Prop1
-        weight: 1
       - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
@@ -3218,7 +3171,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .951797903
         functionName: checkDieInKnockdown
         data: 
@@ -3292,6 +3245,8 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Neck/Bip01 R Clavicle/Bip01
           R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0/Bip01 R Finger01
+        weight: 1
+      - path: Bip01/Bip01 Prop2
         weight: 1
       - path: Object01
         weight: 1

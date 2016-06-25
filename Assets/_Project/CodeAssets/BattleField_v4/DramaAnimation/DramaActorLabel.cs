@@ -176,7 +176,12 @@ public class DramaActorLabel : DramaActor
 				));
 		}
 	}
-	
+
+	protected override void funcForcedEnd ()
+	{
+		funcDone ();
+	}
+
 	protected override bool funcDone ()
 	{
 		Destroy (labelGc);

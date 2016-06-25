@@ -16,6 +16,7 @@ public class RechargeItem : MonoBehaviour {
 	public ChongZhiTemplate M_RechargeTemp;
 
 	public UISprite m_icon;
+	public UISprite m_getYB;
 
 	public UILabel m_numDes;
 	public UILabel m_cost;
@@ -32,9 +33,17 @@ public class RechargeItem : MonoBehaviour {
 		m_cost.text = "[eac102][b]" + M_RechargeTemp.needNum.ToString () + "元[/b][-]";
 
 		m_icon.spriteName = tempTimes.id.ToString ();
+		m_getYB.spriteName = "YB_" + M_RechargeTemp.id;
 
-		m_recObj.SetActive(M_RechargeTemp.type == 1 && tempTimes.times == 0 ? true : false);
+		if (tempTimes.id == 2 || tempTimes.id == 1)
+		{
+			m_recObj.SetActive (true);
+		}
+		else
+		{
+			m_recObj.SetActive (tempTimes.times == 0 ? true : false);
+		}
 
-		m_desLabel.text = "[b]" + (tempTimes.times > 0 ? (M_RechargeTemp.extraYuanbao > 0 ? "[eac102]另赠" + M_RechargeTemp.extraYuanbao + "元宝[-]" : "") : "[e80000]" + M_RechargeTemp.desc + "[-]") + "[/b]";
+		m_desLabel.text = "[b]" + (M_ChongTimes.id != 1 && M_ChongTimes.id != 2 ? (tempTimes.times > 0 ? (M_RechargeTemp.extraYuanbao > 0 ? "[eac102]另赠" + M_RechargeTemp.extraYuanbao + "元宝[-]" : "") : "[e80000]" + M_RechargeTemp.desc + "[-]") : "[eac102]" + M_RechargeTemp.desc + "[-]") + "[/b]";
 	}
 }

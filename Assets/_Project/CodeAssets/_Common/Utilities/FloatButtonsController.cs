@@ -8,8 +8,10 @@ public class FloatButtonsController : MonoBehaviour
 {
     public GameObject m_ButtonPrefab;
     public UIGrid m_Grid;
-    public GameObject m_BGLeft;
-    public GameObject m_BGRight;
+    //public GameObject m_BGLeft;
+    //public GameObject m_BGRight;
+    public GameObject m_BG;
+    private const int BGGap = 5;
 
     public delegate void VoidDelegate();
 
@@ -36,7 +38,7 @@ public class FloatButtonsController : MonoBehaviour
     /// Initialize float buttons.
     /// </summary>
     /// <param name="l_buttonInfos">button label and delegate setting</param>
-    /// <param name="isLeft">left mode or right mode</param>
+    /// <param name="isLeft">[Obsolete]not used, left mode or right mode</param>
     /// <param name="addDepth">add depth to whole buttons to adjust ui</param>
     public void Initialize(List<ButtonInfo> l_buttonInfos, bool isLeft, int addDepth = 0)
     {
@@ -74,28 +76,36 @@ public class FloatButtonsController : MonoBehaviour
 
         m_Grid.Reposition();
 
-        if (isLeft)
-        {
-            m_BGLeft.SetActive(true);
-            m_BGRight.SetActive(false);
+        //if (isLeft)
+        //{
+        //    m_BGLeft.SetActive(true);
+        //    m_BGRight.SetActive(false);
 
-            var sprite = m_BGLeft.GetComponent<UISprite>();
-            sprite.topAnchor.target = m_ButtonObjectDic[0].transform;
-            sprite.leftAnchor.target = sprite.transform;
-            sprite.rightAnchor.target = sprite.transform;
-            sprite.bottomAnchor.target = m_ButtonObjectDic[l_buttonInfos.Count - 1].transform;
-        }
-        else
-        {
-            m_BGLeft.SetActive(false);
-            m_BGRight.SetActive(true);
+        //    var sprite = m_BGLeft.GetComponent<UISprite>();
+        //    sprite.topAnchor.target = m_ButtonObjectDic[0].transform;
+        //    sprite.leftAnchor.target = sprite.transform;
+        //    sprite.rightAnchor.target = sprite.transform;
+        //    sprite.bottomAnchor.target = m_ButtonObjectDic[l_buttonInfos.Count - 1].transform;
+        //}
+        //else
+        //{
+        //    m_BGLeft.SetActive(false);
+        //    m_BGRight.SetActive(true);
 
-            var sprite = m_BGRight.GetComponent<UISprite>();
-            sprite.topAnchor.target = m_ButtonObjectDic[0].transform;
-            sprite.leftAnchor.target = sprite.transform;
-            sprite.rightAnchor.target = sprite.transform;
-            sprite.bottomAnchor.target = m_ButtonObjectDic[l_buttonInfos.Count - 1].transform;
-        }
+        //    var sprite = m_BGRight.GetComponent<UISprite>();
+        //    sprite.topAnchor.target = m_ButtonObjectDic[0].transform;
+        //    sprite.leftAnchor.target = sprite.transform;
+        //    sprite.rightAnchor.target = sprite.transform;
+        //    sprite.bottomAnchor.target = m_ButtonObjectDic[l_buttonInfos.Count - 1].transform;
+        //}
+
+        var sprite = m_BG.GetComponent<UISprite>();
+        var pos = m_ButtonObjectDic[0].transform.localPosition - new Vector3(0, Math.Max(0, l_buttonInfos.Count - 1) / 2f * m_Grid.cellHeight, 0);
+        var width = m_ButtonObjectDic[0].GetComponent<UISprite>().width;
+        var height = m_Grid.cellHeight * l_buttonInfos.Count;
+        m_BG.transform.localPosition = pos;
+        sprite.width = BGGap * 2 + width;
+        sprite.height = BGGap * 2 + (int)height;
 
         if (addDepth != 0)
         {

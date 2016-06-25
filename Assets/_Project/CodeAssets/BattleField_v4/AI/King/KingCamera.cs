@@ -18,7 +18,9 @@ public class KingCamera : MonoBehaviour
 
 	public RuntimeAnimatorController shakeControllor;
 
-	public GameObject childCamera;
+	public Camera childCamera;
+
+	public Camera camera3dui;
 
 
 	[HideInInspector] public GameObject target;
@@ -85,7 +87,7 @@ public class KingCamera : MonoBehaviour
 
 	public static GameObject getChildCamera()
 	{
-		return Camera.main.GetComponent<KingCamera>().childCamera;
+		return Camera.main.GetComponent<KingCamera>().childCamera.gameObject;
 	}
 
 	public void loadFlags()
@@ -117,13 +119,13 @@ public class KingCamera : MonoBehaviour
 
 	public void targetChang(GameObject _target)
 	{
-		if (_target == null) _target = BattleControlor.Instance().getKing ().gameObject;
+//		if (_target == null) _target = BattleControlor.Instance().getKing ().gameObject;
 
-		if (_target.Equals (target)) return;
+		if (_target != null && _target.Equals (target)) return;
 
 		GameObject tempTarget = target;
 
-		target = _target;
+		target = _target != null ? _target : BattleControlor.Instance().getKing ().gameObject;
 
 		if(tempTarget != null)
 		{
@@ -131,14 +133,19 @@ public class KingCamera : MonoBehaviour
 
 			Destroy(al);
 		}
+
+		Destroy (ClientMain.m_ClientMainObj.GetComponent<AudioListener>());
+
+		Destroy (gameObject.GetComponent<AudioListener>());
+
+		if(_target != null)
+		{
+			target.AddComponent<AudioListener>();
+		}
 		else
 		{
-			AudioListener al = ClientMain.m_ClientMainObj.GetComponent<AudioListener>();
-
-			Destroy(al);
+			gameObject.AddComponent<AudioListener>();
 		}
-
-		target.AddComponent<AudioListener>();
 	}
 
 	public void setDebugCameraValue()
@@ -355,7 +362,7 @@ public class KingCamera : MonoBehaviour
 
 			float l = Vector3.Distance(targetPos, transform.position);
 
-			if(l > 50 || BattleControlor.Instance().inDrama == true)
+			if(l > 5 || BattleControlor.Instance().inDrama == true)
 			{
 				transform.eulerAngles = targetRotation;
 
@@ -436,13 +443,16 @@ public class KingCamera : MonoBehaviour
 	{
 		yield return new WaitForSeconds (.3f);
 
-		Animator[] anims = gameObject.GetComponents<Animator>();
-
-		foreach(Animator anim in anims)
+		if(!BattleControlor.Instance().inDrama)
 		{
-			if(anim != null)
+			Animator[] anims = gameObject.GetComponents<Animator>();
+
+			foreach(Animator anim in anims)
 			{
-				Destroy(anim);
+				if(anim != null)
+				{
+					Destroy(anim);
+				}
 			}
 		}
 	}

@@ -12,12 +12,7 @@ public class TempSoundplay : MonoBehaviour
 		m_AudioSource = gameObject.AddComponent<AudioSource>();
 		m_Animator = gameObject.GetComponent<Animator>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	void OnGUI()
 	{
 		if (GUI.Button(new Rect(10, 10, 100, 50), "ʏ"))

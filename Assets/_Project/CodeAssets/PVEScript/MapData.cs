@@ -7,7 +7,7 @@ using System.Text;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class MapData : MonoBehaviour, SocketProcessor {
+public class MapData : MonoBehaviour, SocketListener {
 
 	public UISprite MapBianKuang;
 
@@ -63,19 +63,25 @@ public class MapData : MonoBehaviour, SocketProcessor {
 
 	void Awake()
 	{ 
-		SocketTool.RegisterMessageProcessor(this);
+		SocketTool.RegisterSocketListener(this);
 		mapinstance = this;
+		// reigster trigger delegate
+		{
+			UIWindowEventTrigger.SetOnTopAgainDelegate( gameObject, ShowPVEGuid );
+		}
      }
 
 	void Start ()
 	{
 		StartCoroutine (Changestatebtn());
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5 ,null ,null);
-
+		GuidLevel = 0;
+//		InitData ();
 	}
 
 	void OnDestroy(){
-		SocketTool.UnRegisterMessageProcessor( this );
+
+		SocketTool.UnRegisterSocketListener(this);
 
 		mapinstance = null;
 	}
@@ -92,7 +98,7 @@ public class MapData : MonoBehaviour, SocketProcessor {
     void Update()
 	{
 //		Debug.Log ("a = "+CityGlobalData.PveLevel_UI_is_OPen);
-		if(ShowYinDao && !CityGlobalData.PveLevel_UI_is_OPen)
+		if(ShowYinDao && !CityGlobalData.PveLevel_UI_is_OPen && !GeneralRewardManager.Instance().IsExitReward())
 		{
 			CityGlobalData.m_isRightGuide = false;
 			ShowPVEGuid();
@@ -243,14 +249,14 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			ShowYinDao = false;
 			return;
 		}
-		if(FreshGuide.Instance().IsActive(100140)&& TaskData.Instance.m_TaskInfoDic[100140].progress >= 0)
-		{
-//			Debug.Log("指向宝箱");
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100140];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-			ShowYinDao = false;
-			return;
-		}
+//		if(FreshGuide.Instance().IsActive(100140)&& TaskData.Instance.m_TaskInfoDic[100140].progress >= 0)
+//		{
+////			Debug.Log("指向宝箱");
+//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100140];
+//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
+//			ShowYinDao = false;
+//			return;
+//		}
 
 		if (FreshGuide.Instance().IsActive (100145) && TaskData.Instance.m_TaskInfoDic [100145].progress >= 0) {
 			Debug.Log("领完奖励回程");
@@ -276,14 +282,14 @@ public class MapData : MonoBehaviour, SocketProcessor {
 	public void ShowPve_PT_GuidSection2() // 第二章节引导
 	{
 		//Debug.Log("进入第2张引导");
-		if(FreshGuide.Instance().IsActive(100140)&& TaskData.Instance.m_TaskInfoDic[100140].progress >= 0)
-		{
-//			Debug.Log("指向宝箱");
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100140];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
-			ShowYinDao = false;
-			return;
-		}
+//		if(FreshGuide.Instance().IsActive(100140)&& TaskData.Instance.m_TaskInfoDic[100140].progress >= 0)
+//		{
+////			Debug.Log("指向宝箱");
+//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100140];
+//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
+//			ShowYinDao = false;
+//			return;
+//		}
 		if (FreshGuide.Instance().IsActive (100145) && TaskData.Instance.m_TaskInfoDic [100145].progress >= 0) {
 //			Debug.Log("领完奖励回程");
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100145];
@@ -382,9 +388,11 @@ public class MapData : MonoBehaviour, SocketProcessor {
 	}
     public	void ShowPVEGuid()
 	{
-		//return;
+		if (!ShowYinDao) {
+			return;
+		}
 		ShowYinDaoBackToCity = false;
-	//	Debug.Log ("myMapinfo.s_section = "+myMapinfo.s_section);
+//		Debug.Log ("myMapinfo.s_section = "+myMapinfo.s_section);
 		if(EnterGuoGuanmap.Instance().ShouldOpen_id > 1)
 		{
 			return;
@@ -446,7 +454,15 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			if(FreshGuide.Instance().IsActive(100405)&& TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
 			{
 				Debug.Log("返回城中激活蓝色秘宝");
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200030];
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100405];
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
+				ShowYinDao = false;
+				return;
+			}
+			if(FreshGuide.Instance().IsActive(100057)&& TaskData.Instance.m_TaskInfoDic[100057].progress >= 0)
+			{
+				Debug.Log("返回城中激活两个绿品质的秘宝");
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100057];
 				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[0]);
 				ShowYinDao = false;
 				return;
@@ -470,13 +486,15 @@ public class MapData : MonoBehaviour, SocketProcessor {
 		}
 	}
 	public bool IsChoosedMiBao;
+	public bool MapdataBack;
 	public void  startsendinfo(int Currchapter)
 	{
 		ClosewPVEGuid ();
+		MapdataBack = false;
 		sendmapMessage( Currchapter );
 	}
 
-	public bool OnProcessSocketMessage(QXBuffer p_message){
+	public bool OnSocketEvent(QXBuffer p_message){
 
 		if (p_message != null)
 		{
@@ -495,7 +513,7 @@ public class MapData : MonoBehaviour, SocketProcessor {
 
 				// 临时添加判断条件  只能到13章节
 			
-				   
+				    MapdataBack = true;
 					if(tempInfo.s_section > 13)
 					{
 						tempInfo.s_section =13;
@@ -510,55 +528,8 @@ public class MapData : MonoBehaviour, SocketProcessor {
 					}
 
 			     	myMapinfo = tempInfo;
-				    MapType ();
-			       CurrChapter = myMapinfo.s_section;
-//				foreach(Level tempLevel in myMapinfo.s_allLevel)
-//				{
-//					Debug.Log("tempLevel = "+tempLevel.s_pass);
-//				}
-					//					if(UIYindao.m_UIYindao.m_isOpenYindao)
-//					{
-//						UIYindao.m_UIYindao.CloseUI();
-//					}
-				    ShowYinDao = true;
-
-				    CityGlobalData.m_temp_CQ_Section = tempInfo.maxCqPassId;
-
-//				Debug.Log("tempInfo.sectionMax = "+tempInfo.sectionMax);
-					if(tempInfo.sectionMax < 0)
-					{
-						tempInfo.sectionMax = 1;
-					}
-				    CityGlobalData.m_LastSection = tempInfo.sectionMax;
-//					if(tempInfo.s_section > CityGlobalData.m_LastSection)
-//					{
-//						CityGlobalData.m_LastSection = tempInfo.s_section;
-//					}
-					AllChapteres = CityGlobalData.m_LastSection;
-					//第一次进入pve场景时候获得当前的章节数
-					if(IsFirstIn)
-                    {
-						CoM_Chapter = myMapinfo.s_section;
-						Cq_Chapter = CoM_Chapter - 1;
-						Cq_CurrChapter = Cq_Chapter;
-
-						nowCurrChapter = CurrChapter;
-						IsFirstIn = false;
-
-					}
-				   if(CityGlobalData.PT_Or_CQ){
-						Initmapinfo();  
-					    PassLevelBtn.Instance().InitData(CurrChapter);
-					}
-					else{
-						Init_Cqmapinfo();
-					   
-					}
-				     	
-					if(PveUIs1){
-						PveUIs1.GetComponent<PveUImanager>().ShowChapterName(CurrChapter);
-					}
-				    
+				  
+				    InitData();
 					return true;
 				}
 
@@ -569,7 +540,52 @@ public class MapData : MonoBehaviour, SocketProcessor {
 
 		return false;
 	}
+	void InitData()
+	{
+		MapType ();
+		if(myMapinfo == null)
+		{
+			myMapinfo = MiBaoGlobleData.Instance().m_yMapinfo;
+		}
+		CurrChapter = myMapinfo.s_section;
 
+		ShowYinDao = true;
+		
+		CityGlobalData.m_temp_CQ_Section = myMapinfo.maxCqPassId;
+
+		if(myMapinfo.sectionMax < 0)
+		{
+			myMapinfo.sectionMax = 1;
+		}
+		CityGlobalData.m_LastSection = myMapinfo.sectionMax;
+
+		AllChapteres = CityGlobalData.m_LastSection;
+		//第一次进入pve场景时候获得当前的章节数
+		if(IsFirstIn)
+		{
+			CoM_Chapter = myMapinfo.s_section;
+			Cq_Chapter = CoM_Chapter - 1;
+			Cq_CurrChapter = Cq_Chapter;
+			
+			nowCurrChapter = CurrChapter;
+			IsFirstIn = false;
+			
+		}
+//		Debug.Log ("CityGlobalData.PT_Or_CQ :"+CityGlobalData.PT_Or_CQ);
+		if(CityGlobalData.PT_Or_CQ){
+			Initmapinfo();  
+			PassLevelBtn.Instance().InitData(CurrChapter);
+			ShowLvs();
+		}
+		else{
+			Init_Cqmapinfo();
+			
+		}
+		
+		if(PveUIs1){
+			PveUIs1.GetComponent<PveUImanager>().ShowChapterName(CurrChapter);
+		}
+	}
 	public void Init_Cqmapinfo()//初始化传奇关卡的地图信息
 	{
 		CQLv.Clear ();
@@ -651,11 +667,12 @@ public class MapData : MonoBehaviour, SocketProcessor {
 			mchoosemap.AddCurMap (CurrChapter);
 		}
 
-		ShowLvs();
+
 	}
 	
 	void  ShowLvs()
 	{
+//		Debug.Log ("Global.m_sPanelWantRun ==== "+Global.m_sPanelWantRun);
 		if(Global.m_sPanelWantRun != null && Global.m_sPanelWantRun != "")
 		{
 			if(Global.m_sPanelWantRun == "chuanqi")

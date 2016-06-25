@@ -28,7 +28,7 @@ public class EquipGrowthGemEquipItemManagerment : MonoBehaviour {
     {
         m_SpriteIcon.spriteName = baseInfo._Icon.ToString();
         m_LabelLevel.text = "[b]Lv." + baseInfo._Level + "[/b]";
-        if (FunctionWindowsCreateManagerment.SpecialSizeFit(baseInfo._PinZhi))
+        if (FunctionWindowsCreateManagerment.SpecialSizeFit(CommonItemTemplate.getCommonItemTemplateById(baseInfo._EquipId).color))
         {
             m_SpritePinZhi.width = m_SpritePinZhi.height = 96;
         }
@@ -37,7 +37,7 @@ public class EquipGrowthGemEquipItemManagerment : MonoBehaviour {
             m_SpritePinZhi.width = m_SpritePinZhi.height = 86;
         }
 
-        m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(baseInfo._PinZhi);
+        m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(CommonItemTemplate.getCommonItemTemplateById(baseInfo._EquipId).color);
         ShowAttribute(baseInfo);
     }
     private string GetName(int index)

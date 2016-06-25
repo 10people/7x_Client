@@ -212,7 +212,7 @@ public class EquipGrowthMaterialItem : MonoBehaviour
                     MaterialUsingCount--;
                     EquipGrowthMaterialUseManagerment.m_MaterialId._itemid = m_Itemid;
                     EquipGrowthMaterialUseManagerment.m_MaterialId._dbid = m_ItemDB;
-                    //EquipGrowthMaterialUseManagerment.ReduceUseMaterials(EquipGrowthMaterialUseManagerment.m_MaterialId);
+       
                     if (MaterialUsingCount == 0)
                     {
                         IconSampleManager.SubButton.SetActive(false);
@@ -228,9 +228,18 @@ public class EquipGrowthMaterialItem : MonoBehaviour
     }
     public void showLabInfo(int count_use)
     {
-        MaterialUsingCount = count_use;
-        IconSampleManager.SubButton.SetActive(true);
-        IconSampleManager.RightButtomCornorLabel.text = MaterialUsingCount + "/" + MaterialAllCount;
+        if (count_use > 0)
+        {
+            MaterialUsingCount = count_use;
+            IconSampleManager.SubButton.SetActive(true);
+            IconSampleManager.RightButtomCornorLabel.text = MaterialUsingCount + "/" + MaterialAllCount;
+        }
+        else
+        {
+            MaterialUsingCount = count_use;
+            IconSampleManager.SubButton.SetActive(false);
+            IconSampleManager.RightButtomCornorLabel.text = MaterialAllCount;
+        }
     }
 
 }

@@ -9,23 +9,13 @@ public class BoxChangeScale : MonoBehaviour {
 	
 		this.transform.localScale = new Vector3(m_scale,m_scale,m_scale);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	
-	
-	}
+
 	void OnEnable()
 	{
-//		Debug.Log("=========1");
-//		Debug.Log("enabled="+enabled);
 		StartCoroutine ("BtnShake");
 	}
 	void OnDisable()
 	{
-//		Debug.Log("=========2");
-//		Debug.Log("enabled="+enabled);
 		StopCoroutine("BtnShake");
 		this.transform.localScale = Vector3.one;
 		this.transform.localEulerAngles = Vector3.zero;

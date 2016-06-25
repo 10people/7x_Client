@@ -56,6 +56,10 @@ ModelImporter:
     100096: S7_3d_qiangbao_baoxiang02
     100098: S7_3d_qiangbao_jinzhuan01
     100100: S7_3d_qiangbao_jinzhuan02
+    100102: S7_3d_qiangbao_tuan02
+    100104: S7_3d_qiangbao_jinbi01
+    100106: S7_3d_qiangbao_jinbi02
+    100108: S7_3d_qiangbao_jinbi03
     400000: build_large_017_074
     400002: //RootNode
     400004: S7_3d_qiangbao_deng01
@@ -107,6 +111,10 @@ ModelImporter:
     400096: S7_3d_qiangbao_baoxiang02
     400098: S7_3d_qiangbao_jinzhuan01
     400100: S7_3d_qiangbao_jinzhuan02
+    400102: S7_3d_qiangbao_tuan02
+    400104: S7_3d_qiangbao_jinbi01
+    400106: S7_3d_qiangbao_jinbi02
+    400108: S7_3d_qiangbao_jinbi03
     2300000: build_large_017_074
     2300002: S7_3d_qiangbao_deng01
     2300004: S7_3d_qiangbao_dimian01
@@ -157,6 +165,10 @@ ModelImporter:
     2300094: S7_3d_qiangbao_baoxiang02
     2300096: S7_3d_qiangbao_jinzhuan01
     2300098: S7_3d_qiangbao_jinzhuan02
+    2300100: S7_3d_qiangbao_tuan02
+    2300102: S7_3d_qiangbao_jinbi01
+    2300104: S7_3d_qiangbao_jinbi02
+    2300106: S7_3d_qiangbao_jinbi03
     3300000: build_large_017_074
     3300002: S7_3d_qiangbao_deng01
     3300004: S7_3d_qiangbao_dimian01
@@ -207,6 +219,10 @@ ModelImporter:
     3300094: S7_3d_qiangbao_baoxiang02
     3300096: S7_3d_qiangbao_jinzhuan01
     3300098: S7_3d_qiangbao_jinzhuan02
+    3300100: S7_3d_qiangbao_tuan02
+    3300102: S7_3d_qiangbao_jinbi01
+    3300104: S7_3d_qiangbao_jinbi02
+    3300106: S7_3d_qiangbao_jinbi03
     4300000: S7_3d_qiangbao_taijie01
     4300002: S7_3d_qiangbao_xianglu01
     4300004: S7_3d_qiangbao_dimian02
@@ -257,6 +273,11 @@ ModelImporter:
     4300094: S7_3d_qiangbao_baoshi03
     4300096: S7_3d_qiangbao_baoshi01
     4300098: S7_3d_qiangbao_baoshi02
+    4300100: S7_3d_qiangbao_tuan02
+    4300102: S7_3d_qiangbao_jinbi02
+    4300104: S7_3d_qiangbao_jinbi01
+    4300106: S7_3d_qiangbao_jinbi03
+    7400000: Take 001
     9500000: //RootNode
   materials:
     importMaterials: 1

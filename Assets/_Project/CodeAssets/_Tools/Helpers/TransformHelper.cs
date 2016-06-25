@@ -1,5 +1,7 @@
 ﻿//#define DEBUG_TRANSFORM_HELPER
 
+
+
 using System;
 using UnityEngine;
 using System.IO;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Xml;
 
 using qxmobile.protobuf;
+
 
 
 public class TransformHelper : MonoBehaviour {
@@ -26,11 +29,16 @@ public class TransformHelper : MonoBehaviour {
 		p_gb.transform.localRotation = Quaternion.Euler( p_local_rot );
 	}
 
-    public static Vector3 GetTrackRotation(Vector3 sourcePos, Vector3 targetPos)
+    public static Vector3 Get2DTrackRotation(Vector3 sourcePos, Vector3 targetPos)
     {
         double angleTemp = Math.Atan2(targetPos.x - sourcePos.x, targetPos.z - sourcePos.z)/Math.PI*180;
 
         return new Vector3(0, (float) angleTemp, 0);
+    }
+
+    public static Vector3 Get2DTrackPosition(Vector3 sourcePos, Vector3 rotation, float distance)
+    {
+        return new Vector3((float) Math.Sin(rotation.y/180*Math.PI)*distance, 0, (float) Math.Cos(rotation.y/180*Math.PI)*distance) + sourcePos;
     }
 
     #endregion
@@ -73,47 +81,48 @@ public class TransformHelper : MonoBehaviour {
 
     public static readonly List<string> SpecificGridItemName = new List<string>() {"a_", "z_"};
 
-	/// <summary>
-	/// Set parent's child num to specific num, standardize automaticlly.
-	/// </summary>
-	/// <param name="parentTransform">parent</param>
-	/// <param name="prefabObject">child prefab</param>
-	/// <param name="num">specific num</param>
-	public static void AddOrDelItem(Transform parentTransform, GameObject prefabObject, int num)
-	{
-		if (num < 0)
-		{
-			Debug.LogError("Num should not be nagative, num:" + num);
-			return;
-		}
-		
-		if (parentTransform.childCount > num)
-		{
-			while (parentTransform.childCount != num)
-			{
-				var child = parentTransform.GetChild(0);
-				child.parent = null;
-				Destroy(child.gameObject);
-			}
-		}
-		else if (parentTransform.childCount < num)
-		{
-			while (parentTransform.childCount != num)
-			{
-				var child = Instantiate(prefabObject) as GameObject;
-				
-				if (child == null)
-				{
-					Debug.LogError("Fail to instantiate prefab, abort.");
-					return;
-				}
-				
-				ActiveWithStandardize(parentTransform, child.transform);
-			}
-		}
-	}
-	
-	/// <summary>
+    /// <summary>
+    /// Set parent's child num to specific num, standardize automaticlly.
+    /// </summary>
+    /// <param name="parentTransform">parent</param>
+    /// <param name="prefabObject">child prefab</param>
+    /// <param name="num">specific num</param>
+    public static void AddOrDelItem(Transform parentTransform, GameObject prefabObject, int num, float offsetY = 0)
+    {
+        if (num < 0)
+        {
+            Debug.LogError("Num should not be nagative, num:" + num);
+            return;
+        }
+
+        if (parentTransform.childCount > num)
+        {
+            while (parentTransform.childCount != num)
+            {
+                var child = parentTransform.GetChild(parentTransform.childCount - 1);
+                child.parent = null;
+                Destroy(child.gameObject);
+            }
+        }
+        else if (parentTransform.childCount < num)
+        {
+            while (parentTransform.childCount != num)
+            {
+                var child = Instantiate(prefabObject) as GameObject;
+
+                if (child == null)
+                {
+                    Debug.LogError("Fail to instantiate prefab, abort.");
+                    return;
+                }
+
+                ActiveWithStandardize(parentTransform, child.transform);
+                child.transform.localPosition = new Vector3(0, -offsetY*(parentTransform.childCount - 1), 0);
+            }
+        }
+    }
+
+    /// <summary>
 	/// Set parent's child num to specific num, using pool manager, standardize automaticlly.
 	/// </summary>
 	/// <param name="parentTransform">parent</param>
@@ -172,6 +181,51 @@ public class TransformHelper : MonoBehaviour {
 
 
 
+	#region Relations
+
+	public static bool IsAncestor( GameObject p_parent_gb, GameObject p_child_gb ){
+		if( p_child_gb.transform.parent == null ){
+			return false;
+		}
+
+		GameObject t_temp = p_child_gb.transform.parent.gameObject;
+
+		while( t_temp != null ){
+			if( t_temp == p_parent_gb ){
+				return true;
+			}
+
+			if( t_temp.transform.parent != null ){
+				t_temp = t_temp.transform.parent.gameObject;	
+			}
+			else{
+				t_temp = null;	
+			}
+		}
+
+		return false;
+	}
+
+	public static bool IsParentOrChild( GameObject p_gb_1, GameObject p_gb_2 ){
+		if( p_gb_1 == p_gb_2 ){
+			return true;
+		}
+
+		if( IsAncestor( p_gb_1, p_gb_2 ) ){
+			return true;
+		}
+
+		if( IsAncestor( p_gb_2, p_gb_1 ) ){
+			return true;
+		}
+
+		return false;
+	}
+
+	#endregion
+
+
+
 	#region Logs
 
 	public static void LogPosition( GameObject p_gb, string p_prefex = "" ){
@@ -225,10 +279,8 @@ public class TransformHelper : MonoBehaviour {
 	#region Utilities
 
 	/// Set localPosition and localRotation to Zero.
-	public static void ResetLocalPosAndLocalRot(GameObject p_gb)
-	{
-		if (p_gb == null)
-		{
+	public static void ResetLocalPosAndLocalRot( GameObject p_gb ){
+		if (p_gb == null){
 			return;
 		}
 		
@@ -238,8 +290,7 @@ public class TransformHelper : MonoBehaviour {
 	}
 	
 	/// Set localPosition and localRotation and localScale to Zero.
-	public static void ResetLocalPosAndLocalRotAndLocalScale(GameObject p_gb)
-	{
+	public static void ResetLocalPosAndLocalRotAndLocalScale( GameObject p_gb ){
 		if (p_gb == null)
 		{
 			return;
@@ -250,10 +301,8 @@ public class TransformHelper : MonoBehaviour {
 		p_gb.transform.localScale = Vector3.one;
 	}
 	
-	public static Vector3 GetLocalPositionInUIRoot(GameObject p_ngui_gb)
-	{
-		if (p_ngui_gb == null)
-		{
+	public static Vector3 GetLocalPositionInUIRoot( GameObject p_ngui_gb ){
+		if (p_ngui_gb == null){
 			Debug.LogError("Error, ngui gb = null.");
 			
 			return Vector3.zero;
@@ -265,10 +314,12 @@ public class TransformHelper : MonoBehaviour {
 		
 		Transform t_parent = p_ngui_gb.transform.parent;
 		
-		while (t_parent != null)
-		{
-			if (t_parent.gameObject.GetComponent<UIRoot>() != null)
-			{
+		while ( t_parent != null ){
+			if (t_parent.gameObject.GetComponent<UIRoot>() != null){
+				break;
+			}
+
+			if( t_parent.gameObject.GetComponent<UICamera>() != null ){
 				break;
 			}
 			
@@ -278,8 +329,7 @@ public class TransformHelper : MonoBehaviour {
 			
 			t_parent = t_parent.parent;
 			
-			if (t_parent == null)
-			{
+			if (t_parent == null){
 				Debug.LogError("Error, UIRoot Not Founded.");
 				
 				return Vector3.zero;
@@ -440,6 +490,54 @@ public class TransformHelper : MonoBehaviour {
 		return child.GetComponent<T>() ?? GetComponentInParent<T>(child.parent.transform);
 	}
 
-	#endregion
+    public static bool RayCastXToFirstCollider(Vector3 originalPos, out float firstPos, int direction = 2, bool isMax = true)
+    {
+        RaycastHit[] tempHits = new RaycastHit[] {};
+        switch (direction)
+        {
+            case 1:
+                tempHits = Physics.RaycastAll(new Ray(new Vector3((isMax ? 1 : -1)*Mathf.Infinity, originalPos.y, originalPos.z), new Vector3((isMax ? -1 : 1), 0, 0)), Mathf.Infinity);
+                break;
+            case 2:
+                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, (isMax ? 1 : -1)*Mathf.Infinity, originalPos.z), new Vector3(0, (isMax ? -1 : 1), 0)), Mathf.Infinity);
+                break;
+            case 3:
+                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, originalPos.y, (isMax ? 1 : -1)*Mathf.Infinity), new Vector3(0, 0, (isMax ? -1 : 1))), Mathf.Infinity);
+                break;
+            default:
+                Debug.LogError("Input direction is wrong");
+                firstPos = Mathf.Infinity;
+                return false;
+        }
+
+        if (tempHits.Any())
+        {
+            switch (direction)
+            {
+                case 1:
+                    firstPos = isMax ? tempHits.Max(item => item.point.x) : tempHits.Min(item => item.point.x);
+                    break;
+                case 2:
+                    firstPos = isMax ? tempHits.Max(item => item.point.y) : tempHits.Min(item => item.point.y);
+                    break;
+                case 3:
+                    firstPos = isMax ? tempHits.Max(item => item.point.z) : tempHits.Min(item => item.point.z);
+                    break;
+                default:
+                    Debug.LogError("Input direction is wrong");
+                    firstPos = Mathf.Infinity;
+                    return false;
+            }
+
+            return true;
+        }
+        else
+        {
+            firstPos = Mathf.Infinity;
+            return false;
+        }
+    }
+
+    #endregion
 
 }

@@ -22,7 +22,7 @@ public class PlayerManager : MonoBehaviour
         Debug.LogError("Call AddTrackCamera in base class.");
     }
 
-    public bool CreatePlayer(int l_roleID, int l_uID, Vector3 l_position,Transform p_parentTransform)
+    public bool CreatePlayer(int l_roleID, int l_uID, Vector3 l_position, Transform p_parentTransform)
     {
         if (m_PlayerDic.ContainsKey(l_uID))
         {
@@ -49,6 +49,26 @@ public class PlayerManager : MonoBehaviour
             tempItem.m_UID = l_uID;
 
             m_PlayerDic.Add(l_uID, tempItem);
+        }
+
+        return true;
+    }
+
+    public bool AddPlayer(int l_roleID, int l_uID, OtherPlayerController p_otherPlayerController)
+    {
+        if (m_PlayerDic.ContainsKey(l_uID))
+        {
+            return false;
+        }
+
+        if (!m_PlayerDic.ContainsKey(l_uID))
+        {
+            AddTrackCamera(p_otherPlayerController);
+
+            p_otherPlayerController.m_RoleID = l_roleID;
+            p_otherPlayerController.m_UID = l_uID;
+
+            m_PlayerDic.Add(l_uID, p_otherPlayerController);
         }
 
         return true;

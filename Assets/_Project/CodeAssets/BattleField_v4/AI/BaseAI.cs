@@ -193,6 +193,8 @@ public class BaseAI : MonoBehaviour
 
 	[HideInInspector] public UIAnchor.Side attackDir;//攻击动作的方向，left:从左向右
 
+	[HideInInspector] public RuntimeAnimatorController dramaAnimControlor;
+
 
 	protected CharacterController chongfengControllor;
 
@@ -261,6 +263,10 @@ public class BaseAI : MonoBehaviour
 
 	private float disarmorCD;
 
+	private bool inBeatDown;
+
+	private Dictionary<string, AnimatorControllerParameter> animatorParameterDic = new Dictionary<string, AnimatorControllerParameter>();
+
 
 	#if UNITY_EDITOR && REMOVE_MIBAO_CD
 	private static bool m_log_tips = true;
@@ -305,6 +311,10 @@ public class BaseAI : MonoBehaviour
 
 		mAnim = null;
 
+		animatorParameterDic.Clear ();
+
+		animatorParameterDic = null;
+
 		{
 			UnRegisterTrigger( this );
 		}
@@ -348,6 +358,8 @@ public class BaseAI : MonoBehaviour
 		nav = gameObject.GetComponent<NavMeshAgent>();
 
 		mAnim = GetComponentInChildren<Animator>();
+
+		refreshAnimatorParameterDic ();
 
 		character = this.GetComponent<CharacterController>();
 
@@ -413,11 +425,38 @@ public class BaseAI : MonoBehaviour
 
 		inFlyAction = false;
 
+		inBeatDown = false;
+
 		attackDir = UIAnchor.Side.Center;
 
 		avoidancePriority = nav.avoidancePriority;
 
 		threatDict.Clear ();
+
+		int mid = nodeData.modleId;
+
+		if(nodeData.nodeType == NodeType.PLAYER)
+		{
+			mid += 1001;
+		}
+
+		Global.ResourcesDotLoad("_3D/Models/BattleField/DramaControllor/DramaControllor_" + mid,
+		                        loadControllorCallback );
+	}
+
+	protected void refreshAnimatorParameterDic()
+	{
+		animatorParameterDic.Clear ();
+		
+		foreach(AnimatorControllerParameter _parameter in mAnim.parameters)
+		{
+			animatorParameterDic.Add(_parameter.name, _parameter);
+		}
+	}
+
+	public void loadControllorCallback(ref WWW p_www, string p_path, Object p_object)
+	{
+		dramaAnimControlor = (RuntimeAnimatorController)p_object;
 	}
 
 	public void init(int _modelId, Node _nodeData)
@@ -682,9 +721,15 @@ public class BaseAI : MonoBehaviour
 
 				skills[skills.Count - 1].init( skill , skills.Count - 1);
 
+//				Debug.Log("initSkill " + nodeId + ", " + skill.id);
+
 				if(nodeData.nodeType == NodeType.PLAYER && skill.zhudong == true)
 				{
-					if(skill.id == 200012 || skill.id == 201301 || skill.id == 201302)//旧机制乾坤斗转技能从服务器获取，改为前台读表
+					if(skill.id == 200012 || skill.id == 200112 || skill.id == 200212
+					   || skill.id == 200312 || skill.id == 201301 || skill.id == 201311
+					   || skill.id == 201321 || skill.id == 201331 || skill.id == 201302
+					   || skill.id == 201312 || skill.id == 201322 || skill.id == 201332
+					   )//旧机制乾坤斗转技能从服务器获取，改为前台读表
 					{
 						//BattleControlor.Instance().setHeavySkill_2(heroSkill, this);
 					}
@@ -698,13 +743,36 @@ public class BaseAI : MonoBehaviour
 
 		if(nodeData.nodeType == NodeType.PLAYER)//手动添加乾坤斗转技能
 		{
-			if((this as KingControllor).skillLevel[(int)CityGlobalData.skillLevelId.qiankundouzhuan] > 0)
+			KingControllor kingNode = this as KingControllor;
+
+			int qiankunLevel = kingNode.skillLevel[(int)CityGlobalData.skillLevelId.qiankundouzhuan];
+
+			if(qiankunLevel > 0)
 			{
+				int skillId = 0;
+
+				if(modelId == 1002)//豪杰
+				{
+					skillId = (new int[]{200012, 201301, 201302})[HeroSkillUpTemplate.GetHeroSkillUpByID(qiankunLevel).m_iQuality];
+				}
+				else if(modelId == 1003)//青岚
+				{
+					skillId = (new int[]{200112, 201311, 201312})[HeroSkillUpTemplate.GetHeroSkillUpByID(qiankunLevel).m_iQuality];
+				}
+				else if(modelId == 1004)//蔷薇
+				{
+					skillId = (new int[]{200212, 201321, 201322})[HeroSkillUpTemplate.GetHeroSkillUpByID(qiankunLevel).m_iQuality];
+				}
+				else if(modelId == 1005)//萝莉
+				{
+					skillId = (new int[]{200312, 201331, 201332})[HeroSkillUpTemplate.GetHeroSkillUpByID(qiankunLevel).m_iQuality];
+				}
+
 				HeroSkill heroSkill = gameObject.AddComponent<HeroSkill>();
 				
 				skills.Add(heroSkill);
 
-				skills[skills.Count - 1].init( SkillTemplate.getSkillTemplateBySkillLevelIndex(CityGlobalData.skillLevelId.qiankundouzhuan, this as KingControllor) , skills.Count - 1);
+				skills[skills.Count - 1].init( SkillTemplate.getSkillTemplateById(skillId), skills.Count - 1);
 
 				BattleControlor.Instance().setHeavySkill_2(heroSkill, this);
 			}
@@ -873,6 +941,8 @@ public class BaseAI : MonoBehaviour
 
 	public void setStand()
 	{
+		inBeatDown = false;
+
 		attackDir = UIAnchor.Side.Center;
 
 		if (BattleControlor.Instance().inDrama == true) return;
@@ -881,10 +951,34 @@ public class BaseAI : MonoBehaviour
 		{
 			nav.avoidancePriority = avoidancePriority;
 		}
+
+		if(nodeData != null && nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0)
+		{
+//			if (isAlive == false) return;
+
+//			Debug.Log ("setStand 1  " + nodeId + ", " + flag.dieable);
+			
+			if(flag.dieable == true)
+			{
+				mAnim.runtimeAnimatorController = dramaAnimControlor;
+
+				refreshAnimatorParameterDic();
+
+				mAnim.Play (getAnimationName(AniType.ANI_Dead));
+			}
+			else
+			{
+				dieActionDone ();
+			}
+		}
 	}
 
 	public void setStone()
 	{
+		if (targetNode == null) return;
+
+		if (Vector3.Distance (transform.position, targetNode.transform.position) > targetNode.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_attackRange)) return;
+
 		if(nav != null && nav.enabled == true) 
 		{
 			nav.Stop();
@@ -897,13 +991,11 @@ public class BaseAI : MonoBehaviour
 	{
 		if (CityGlobalData.m_battleType != EnterBattleField.BattleType.Type_GuoGuan) return;
 
-		int level = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
-
-		bool f = GuideTemplate.HaveId_type (level, 6, skillId);
+		bool f = GuideTemplate.HaveId_type (CityGlobalData.m_configId, 6, skillId);
 
 		if (f == false) return;
 
-		GuideTemplate template = GuideTemplate.getTemplateByLevelAndType (level, 6, skillId);
+		GuideTemplate template = GuideTemplate.getTemplateByLevelAndType (CityGlobalData.m_configId, 6, skillId);
 
 		bool flag = BattleControlor.Instance().havePlayedGuide (template);
 
@@ -911,7 +1003,7 @@ public class BaseAI : MonoBehaviour
 
 		if(template.flagId.Count == 0)
 		{
-			BattleUIControlor.Instance().showDaramControllor (level, template.id);
+			BattleUIControlor.Instance().showDaramControllor (CityGlobalData.m_configId, template.id);
 		}
 		else
 		{
@@ -965,7 +1057,7 @@ public class BaseAI : MonoBehaviour
 		{
 			if(nodeData.nodeType != NodeType.NPC)
 			{
-				mAnim.SetFloat("move_speed", 0);
+				if(containsParameter("move_speed")) mAnim.SetFloat("move_speed", 0);
 			}
 		}
 		else if(sp == 0)
@@ -978,7 +1070,7 @@ public class BaseAI : MonoBehaviour
 		}
 		else
 		{
-			mAnim.SetFloat("move_speed", sp);
+			if(containsParameter("move_speed")) mAnim.SetFloat("move_speed", sp);
 		}
 		
 		moveZeroCount = 0;
@@ -1126,6 +1218,14 @@ public class BaseAI : MonoBehaviour
 		return false;
 	}
 
+	private void OnAnimatorMove()
+	{
+		if( mAnim.deltaPosition.sqrMagnitude != 0 )
+		{
+			character.Move( mAnim.deltaPosition );
+		}
+	}
+
 	// use Update() to make it faster.
 //	void FixedUpdate ()
 	void Update()
@@ -1180,7 +1280,7 @@ public class BaseAI : MonoBehaviour
 		{
 			if(IsPlaying() == "Run" || IsPlaying() == "Walk" || IsPlaying() == "Stand0" || IsPlaying() == "Stand1")
 			{
-				mAnim.SetTrigger (m_sPlaySkillAnimation);
+				if(containsParameter(m_sPlaySkillAnimation)) mAnim.SetTrigger (m_sPlaySkillAnimation);
 			}
 		}
 
@@ -1201,6 +1301,12 @@ public class BaseAI : MonoBehaviour
 
 	private void updateThreats()
 	{
+		int frameCount = Time.frameCount % 5;
+		
+		int idIndex = Mathf.Abs(nodeId % 5);
+		
+		if (frameCount != idIndex) return;
+
 		foreach(BaseAI node in enemysInRange)
 		{
 			if(node == null) continue;
@@ -1209,7 +1315,7 @@ public class BaseAI : MonoBehaviour
 
 			if(node.isAlive == false) continue;
 
-			if(node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0) continue;
+			if(node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0) continue;
 
 			Threat threat = null;
 
@@ -1247,6 +1353,10 @@ public class BaseAI : MonoBehaviour
 				armorbar.gameObject.SetActive(true);
 
 				updataBloodBar();
+
+				if(body != null) EffectTool.SetBossEffectNormal(body);
+				
+				else EffectTool.SetBossEffectNormal(gameObject);
 			}
 		}
 		else //霸体状态
@@ -1474,24 +1584,12 @@ public class BaseAI : MonoBehaviour
 			{
 				foreach(BaseAI tn in BattleControlor.Instance().selfNodes)
 				{
-					if(tn.flag.hoverPath.Count > 0)
-					{
-						if(Vector3.Distance(transform.position, tn.transform.position) < 3)
-						{
-							setNavMeshStop();
-						}
-						else
-						{
-							setNavMeshDestination(tn.transform.position);
-						}
-						
-						return;
-					}
+					if(tn.flag.hoverPath.Count > 0) return;
 				}
 
 				foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
 				{
-					if(node == null || node.isAlive == false || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
+					if(node == null || node.isAlive == false || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0)
 					{
 						continue;
 					}
@@ -1507,24 +1605,12 @@ public class BaseAI : MonoBehaviour
 			{
 				foreach(BaseAI tn in BattleControlor.Instance().enemyNodes)
 				{
-					if(tn.flag.hoverPath.Count > 0)
-					{
-						if(Vector3.Distance(transform.position, tn.transform.position) < 7)
-						{
-							setNavMeshStop();
-						}
-						else
-						{
-							setNavMeshDestination(tn.transform.position);
-						}
-						
-						return;
-					}
+					if(tn.flag.hoverPath.Count > 0) return;
 				}
 
 				foreach(BaseAI node in BattleControlor.Instance().selfNodes)
 				{
-					if(node == null || node.isAlive == false || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) <= 0)
+					if(node == null || node.isAlive == false || node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) < 0)
 					{
 						continue;
 					}
@@ -2006,7 +2092,9 @@ public class BaseAI : MonoBehaviour
 
 		if (IsPlaying (getAnimationName(AniType.ANI_BATCUp)) == true) return false;
 
-		mAnim.SetTrigger(getAnimationName(AniType.ANI_Attack_0 + (int)((Random.value * 100) % ModelTemplate.getModelTemplateByModelId(modelId).attackCount)));
+		string animatorName = getAnimationName (AniType.ANI_Attack_0 + (int)((Random.value * 100) % ModelTemplate.getModelTemplateByModelId (modelId).attackCount));
+
+		if(containsParameter(animatorName)) mAnim.SetTrigger(animatorName);
 
 		transform.forward = defender.transform.position - transform.position;
 
@@ -2052,7 +2140,7 @@ public class BaseAI : MonoBehaviour
 	{
 		if(shadowObject != null)
 		{
-			if (nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) <= 0) shadowObject.SetActive(false);
+			if (nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0) shadowObject.SetActive(false);
 		}
 
 		float rate = nodeData.GetAttribute ((int)AIdata.AttributeType.ATTRTYPE_hp) / nodeData.GetAttribute ((int)AIdata.AttributeType.ATTRTYPE_hpMaxReal);
@@ -2074,7 +2162,7 @@ public class BaseAI : MonoBehaviour
 			}
 		}
 
-		if(nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0 && armorbar != null)
+		if(nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0 && armorbar != null && nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) >= 0)
 		{
 			if(mt.height != 0)
 			{
@@ -2399,10 +2487,27 @@ public class BaseAI : MonoBehaviour
 
 		//dropItem ();
 
+//		Debug.Log ("die 1  " + nodeId + ", " + flag.dieable + ", " + inBeatDown);
+
 		if(flag.dieable == true)
 		{
-			mAnim.SetTrigger (getAnimationName(AniType.ANI_Dead));
-			
+			ModelTemplate modelTemplate = ModelTemplate.getModelTemplateByModelId(modelId);
+
+//			bool inSkill = isPlayingSkill();
+//
+//			bool inAttack = isPlayingAttack();
+
+			if(!inBeatDown || !modelTemplate.beatdownable || nodeData.nodeType == NodeType.PLAYER)
+			{
+//				Debug.Log ("die 2  " + nodeId);
+
+				mAnim.runtimeAnimatorController = dramaAnimControlor;
+
+				refreshAnimatorParameterDic();
+
+				mAnim.Play (getAnimationName(AniType.ANI_Dead));
+			}
+
 			if(slowDown == true)
 			{
 				dieActionDone ();
@@ -2423,6 +2528,8 @@ public class BaseAI : MonoBehaviour
 
 	public void _dieActionDone(bool force = false)
 	{
+//		Debug.Log ("_dieActionDone   " + nodeId);
+
 		if (BattleControlor.Instance().inDrama == true && force == false) return;
 
 		if (isAlive == false) return;
@@ -2434,6 +2541,8 @@ public class BaseAI : MonoBehaviour
 
 	public virtual IEnumerator dieAction()
 	{
+//		Debug.Log ("dieAction   " + nodeId + ", " + aiable);
+
 		for(;aiable == false;)
 		{
 			yield return new WaitForEndOfFrame();
@@ -2486,7 +2595,7 @@ public class BaseAI : MonoBehaviour
 				{
 					if(bf.node != null)
 					{
-						if(bf.node.isAlive || bf.node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) > 0)
+						if(bf.node.isAlive || bf.node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) >= 0)
 						{
 							lastOne = false;
 
@@ -2500,6 +2609,13 @@ public class BaseAI : MonoBehaviour
 					BattleControlor.Instance().battleCheck.waveKilled ++;
 				}
 			}
+		}
+
+		if(nodeData.nodeType == NodeType.PLAYER)
+		{
+			KingControllor kc = (KingControllor) this;
+
+			kc.copyObject.SetActive(false);
 		}
 
 		if(stance == Stance.STANCE_SELF)
@@ -2669,6 +2785,10 @@ public class BaseAI : MonoBehaviour
 	public void checkDieInKnockdown()
 	{
 		if (nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) >= 0) return;
+
+		inBeatDown = false;
+
+//		Debug.Log ("checkDieInKnockdown " + nodeId);
 
 		mAnim.speed = 0;
 
@@ -2881,7 +3001,11 @@ public class BaseAI : MonoBehaviour
 
 		if (actionName.IndexOf (getAnimationName(AniType.ANI_BATCDown)) != -1) return true;
 
+		if (actionName.IndexOf (getAnimationName(AniType.ANI_BATCFly)) != -1) return true;
+
 		if (actionName.IndexOf (getAnimationName(AniType.ANI_Dead)) != -1) return true;
+
+		if (inBeatDown) return true;
 
 		return false;
 	}
@@ -2894,9 +3018,13 @@ public class BaseAI : MonoBehaviour
 
 		if (playing.IndexOf ("Skill") != -1) return true;
 
+		if (playing.IndexOf (getAnimationName(AniType.ANI_Dead)) != -1) return true;
+
 		string nextPlying = nextPlaying ();
 
 		if (nextPlying.IndexOf ("Skill") != -1) return true;
+
+		if (nextPlying.IndexOf (getAnimationName(AniType.ANI_Dead)) != -1) return true;
 
 		return false;
 	}
@@ -3023,18 +3151,13 @@ public class BaseAI : MonoBehaviour
 		{
 			beatDown(100, attacker);
 
-			TimeHelper.SetTimeScale(.5f);
+			TimeHelper.SetTimeScale(.25f);
 
-			iTween.ValueTo(gameObject, iTween.Hash(
-				"from", 0f,
-				"to", 1f,
-				"time", 1f,
-				"onupdate", "forcedArmorTimeUpdata",
-				"oncomplete", "forcedArmorTimeComplete",
-				"ignoretimescale", true
-				));
+			ScheduleHelper.RegisterSchedule(forcedArmorTimeComplete, 1f);
 
 			BattleEffectControllor.Instance().PlayEffect(601254, gameObject);
+
+//			if(nodeData.nodeType == NodeType.BOSS) EffectTool.SetBossEffectCrushed(gameObject, (float)CanshuTemplate.GetValueByKey(CanshuTemplate.ARMOR_RECOVERYTIME2));
 
 			if(nodeId == BattleUIControlor.Instance().barEnemy.getFocusNodeId() && nodeData.nodeType == NodeType.BOSS)
 			{
@@ -3054,7 +3177,8 @@ public class BaseAI : MonoBehaviour
 		{
 			GameObject t_gb = BattleEffectControllor.Instance().PlayEffect(67, transform.position + new Vector3(0, 1.2f, 0), transform.forward);
 
-			if( !QualityTool.GetBool( QualityTool.CONST_CHARACTER_HITTED_FX ) ){
+			if( !QualityTool.GetBool( QualityTool.CONST_CHARACTER_HITTED_FX ) )
+			{
 				ComponentHelper.DisableAllVisibleObject( t_gb );
 			}
 		}
@@ -3078,7 +3202,9 @@ public class BaseAI : MonoBehaviour
 
 	private void forcedArmorTimeComplete()
 	{
-		TimeHelper.SetTimeScale(1f);
+		ScheduleHelper.UnRegisterSchedule (forcedArmorTimeComplete);
+
+		if(Time.timeScale != 0) TimeHelper.SetTimeScale(1f);
 	}
 
 	private void playBATC(BaseAI attacker)
@@ -3150,14 +3276,14 @@ public class BaseAI : MonoBehaviour
 			}
 		}
 
-		mAnim.SetTrigger(getAnimationName(at));
+		if(containsParameter(getAnimationName (at))) mAnim.SetTrigger(getAnimationName (at));
 		
 		setNavMeshStop();
 	}
 
 	private void playBATCFly()
 	{
-		mAnim.SetTrigger(getAnimationName(AniType.ANI_BATCFly));
+		if(containsParameter(getAnimationName (AniType.ANI_BATCFly))) mAnim.SetTrigger(getAnimationName(AniType.ANI_BATCFly));
 
 		setNavMeshStop();
 
@@ -3260,7 +3386,7 @@ public class BaseAI : MonoBehaviour
 
 		if (able == false) return false;
 
-		mAnim.SetTrigger(getAnimationName(AniType.ANI_BATCDown));
+		if(containsParameter(getAnimationName (AniType.ANI_BATCDown))) mAnim.SetTrigger(getAnimationName(AniType.ANI_BATCDown));
 
 		if(nodeData.nodeType == NodeType.PLAYER)
 		{
@@ -3289,9 +3415,14 @@ public class BaseAI : MonoBehaviour
 		return true;
 	}
 
+	public void beatDownCallback()
+	{
+		inBeatDown = true;
+	}
+
 	public void BATC()
 	{
-		if (isAlive == false || nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) <= 0) return;
+		if (isAlive == false || nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) < 0) return;
 
 		string playing = IsPlaying ();
 
@@ -3303,7 +3434,7 @@ public class BaseAI : MonoBehaviour
 
 		if (isPlayingSkill () == true || isPlayingAttack () == true) return;
 
-		mAnim.SetTrigger(getAnimationName(AniType.ANI_BATC));
+		if(containsParameter(getAnimationName (AniType.ANI_BATC))) mAnim.SetTrigger(getAnimationName(AniType.ANI_BATC));
 		
 		setNavMeshStop();
 		
@@ -3318,13 +3449,13 @@ public class BaseAI : MonoBehaviour
 
 	public void rupt()//打断，强制播放受击动作
 	{
-		if (nodeData.nodeType == NodeType.PLAYER && isPlayingSkill () == true) return;
+		//if (nodeData.nodeType == NodeType.PLAYER && isPlayingSkill () == true) return;
 
 		if (nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) < 0) return;
 
 		if (IsPlaying ().IndexOf (getAnimationName (BaseAI.AniType.ANI_DODGE)) != -1) return;
 
-		mAnim.SetBool(getAnimationName(AniType.ANI_BATC), true);
+		if(containsParameter(getAnimationName (AniType.ANI_BATC))) mAnim.SetTrigger(getAnimationName(AniType.ANI_BATC));
 
 		setNavMeshStop();
 		
@@ -3416,7 +3547,11 @@ public class BaseAI : MonoBehaviour
 
 	public IEnumerator attackedMovement(float delay, Vector3 targetPosition, iTween.EaseType easeType, float time)
 	{
-		if(nodeData.nodeType != NodeType.GEAR)
+		if(nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0 && nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Armor) > 0)
+		{
+
+		}
+		else if(nodeData.nodeType != NodeType.GEAR)
 		{
 			yield return new WaitForSeconds (delay);
 
@@ -3621,7 +3756,9 @@ public class BaseAI : MonoBehaviour
 		{
 			Vector3 oldangle = transform.eulerAngles;
 
-			transform.forward = nextPosition - transform.position;
+			Vector3 fo = nextPosition - transform.position;
+
+			if(Vector3.Distance(Vector3.zero, fo) > .2f) transform.forward = fo;
 
 			float tar = transform.eulerAngles.y; 
 
@@ -3646,7 +3783,7 @@ public class BaseAI : MonoBehaviour
 			setNavDestination(targetPosition);
 		}
 
-		yield return new WaitForSeconds (.5f);
+//		yield return new WaitForSeconds (.5f);
 
 		inTurning = false;
 	}
@@ -3655,9 +3792,9 @@ public class BaseAI : MonoBehaviour
 	{
 		nav.Resume ();
 
-		if(Vector3.Distance(destination, nav.destination) < 1f)
+		if(Vector3.Distance(destination, nav.destination) < 1f && nodeId == 1)
 		{
-//			return;
+			return;
 		}
 
 		nav.SetDestination(destination);
@@ -3715,7 +3852,7 @@ public class BaseAI : MonoBehaviour
 		{
 			if( AnimatorHelper.HaveParameter( mAnim, "move_speed" ) )
 			{
-				mAnim.SetFloat("move_speed", 0);	
+				if(containsParameter("move_speed")) mAnim.SetFloat("move_speed", 0);	
 			}
 		}
 
@@ -3983,8 +4120,36 @@ public class BaseAI : MonoBehaviour
 
 		float t_attr = defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp );
 
+		float t_arrs = defender.nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hpShield);
+
 //		if(defender.nodeId != 101)
-		defender.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp, t_attr - hpValue );
+
+		if(t_arrs > hpValue)
+		{
+			defender.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpShield, t_attr - hpValue );
+
+			BloodLabelControllor.Instance().showText(defender, LanguageTemplate.GetText(1536));
+		}
+		else if(t_arrs > 0)
+		{
+			defender.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpShield, 0 );
+
+			foreach(Buff buff in buffs)
+			{
+				if(buff.buffType == AIdata.AttributeType.ATTRTYPE_hpShield)
+				{
+					buff.end();
+				}
+			}
+
+			BloodLabelControllor.Instance().showText(defender, LanguageTemplate.GetText(1536));
+
+			defender.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp, t_attr - (t_arrs - hpValue));
+		}
+		else
+		{
+			defender.nodeData.SetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp, t_attr - hpValue );
+		}
 
 		float curArmor = defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Armor);
 
@@ -4173,7 +4338,21 @@ public class BaseAI : MonoBehaviour
 		
 		foreach(Renderer ren in rens)
 		{
-			GameObjectHelper.SetGameObjectLayer( ren.gameObject, layer );
+			if(layer == 13)
+			{
+				if(TransformHelper.IsAncestor(body, ren.gameObject))
+				{
+					GameObjectHelper.SetGameObjectLayer( ren.gameObject, layer );
+				}
+				else
+				{
+					GameObjectHelper.SetGameObjectLayer( ren.gameObject, 8 );
+				}
+			}
+			else
+			{
+				GameObjectHelper.SetGameObjectLayer( ren.gameObject, layer );
+			}
 		}
 	}
 
@@ -4182,7 +4361,10 @@ public class BaseAI : MonoBehaviour
 		return appearanceTemplate.height * ModelTemplate.getModelTemplateByModelId(modelId).height;
 	}
 
-
+	public bool containsParameter(string parameterName)
+	{
+		return animatorParameterDic.ContainsKey (parameterName);
+	}
 
 	#region Custom Trigger
 

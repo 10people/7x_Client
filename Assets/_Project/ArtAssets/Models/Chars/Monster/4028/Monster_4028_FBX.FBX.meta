@@ -850,6 +850,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .253401458
         functionName: PlaySound
         data: 4000|4001|4002|0|0
@@ -1921,6 +1928,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .00270100636
+        functionName: playPre
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 3
+        messageOptions: 0
       - time: .0126580643
         functionName: refreshRupt
         data: 
@@ -1935,21 +1949,14 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .0186510757
-        functionName: playPre
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 3
-        messageOptions: 0
-      - time: .0377981327
+      - time: .130350187
         functionName: openShow
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .450049579
+      - time: .441557288
         functionName: activeSkillStart
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -2642,14 +2649,14 @@ ModelImporter:
       curves: []
       events:
       - time: .0126580643
-        functionName: refreshRupt
+        functionName: checkSkillDrama
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: .0126580643
-        functionName: checkSkillDrama
+        functionName: refreshRupt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -2662,14 +2669,14 @@ ModelImporter:
         floatParameter: 0
         intParameter: 3
         messageOptions: 0
-      - time: .0377981327
+      - time: .215608194
         functionName: openShow
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .450049579
+      - time: .694171309
         functionName: activeSkillStart
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -4480,7 +4487,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .951797903
         functionName: checkDieInKnockdown
         data: 
@@ -4492,8 +4499,6 @@ ModelImporter:
       - path: 
         weight: 1
       - path: Bip001
-        weight: 1
-      - path: Bip001/Bip001 Footsteps
         weight: 1
       - path: Bip001/Bip001 Pelvis
         weight: 1
@@ -4593,18 +4598,6 @@ ModelImporter:
       - path: Bip001/Bip001 Pelvis/Bone003/Bone004
         weight: 1
       - path: Bip001/Bip001 Pelvis/Bone003/Bone004/Bone005
-        weight: 1
-      - path: Bone01
-        weight: 1
-      - path: Bone03
-        weight: 1
-      - path: Bone03/Bone04
-        weight: 1
-      - path: Bone06
-        weight: 1
-      - path: Bone06/Bone07
-        weight: 1
-      - path: Bone06/Bone07/Bone08
         weight: 1
       - path: Bone018
         weight: 1

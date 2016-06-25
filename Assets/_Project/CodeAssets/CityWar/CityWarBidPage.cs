@@ -16,6 +16,7 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 	public CityWarBidResp BidResp;
 	private CityInfo m_cityInfo;
 
+	public UILabel m_attack;
 	public UILabel m_title;
 	public UILabel m_speed;
 	public UILabel m_general;
@@ -33,7 +34,7 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 	public UILabel m_bidBtnLabel;
 	private readonly Dictionary<int,string> m_bidLabelDic = new Dictionary<int, string>()
 	{
-		{0,"宣战竞拍"},{1,"加  价"},{2,"宣战成功"},{3,"竞拍失败"},
+		{0,"宣战竞拍"},{1,"加 价"},{2,"宣战成功"},{3,"竞拍失败"},
 	};
 	private readonly string[] m_btnSpriteLen = new string[]{"SmallYellowBtn","btn_yellow_219x74"};
 
@@ -45,7 +46,7 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 
 	private int m_identity;
 
-	private int m_defaultIndex = 0;
+	private int m_defaultIndex = 0;//虎符index
 
 	private bool m_moveEnd = true;
 
@@ -62,11 +63,14 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 
 		m_identity = QXComData.AllianceInfo ().identity;//0-成员 1-副门主 2-盟主
 
+		//进攻军团名字
+		m_attack.text = CityWarPage.m_instance.CityResp.interval == 0 ||  CityWarPage.m_instance.CityResp.interval == 3 ? LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_43) : (string.IsNullOrEmpty (tempResp.general) ? LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_43) : "进攻军团：" + MyColorData.getColorString (tempResp.general == QXComData.AllianceInfo ().name ? 12 : 5,"<" + tempResp.general + ">"));
+
 		JCZCityTemplate jczCityTemp = JCZCityTemplate.GetJCZCityTemplateById (tempInfo.cityId);
 
 		string cityName = NameIdTemplate.GetName_By_NameId (jczCityTemp.name);
 		string cityLevel = "Lv" + jczCityTemp.allianceLv;
-		m_title.text = cityName + "  " + cityLevel;
+		m_title.text = "[b]" + cityName + "  " + cityLevel + "[-]";
 
 		m_speed.text = "资源产出：[cd02d8]" + jczCityTemp.awardShow + "功勋/天[-]";
 
@@ -77,22 +81,24 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 			generalStr = jczCityTemp.NPCname;//"NPC"
 			break;
 		case 1://己方
-			generalStr = tempResp.general + "<" + tempResp.allianceName + ">";
+			generalStr = "<" + tempResp.allianceName + ">";
 			break;
 		case 2://敌人
-			generalStr = tempResp.general + "<" + tempResp.allianceName + ">";
+			generalStr = "<" + tempResp.allianceName + ">";
 			break;
 		default:
 			break;
 		}
 
-		m_general.text = "镇守大将：" + MyColorData.getColorString (5,generalStr);
+		m_general.text = "镇守军团：" + MyColorData.getColorString (tempInfo.cityState == 1 ? 12 : 5,generalStr);
 
-		m_huFuNum.text = m_identity != 0 ? MyColorData.getColorString (1,"联盟拥有数量：") + MyColorData.getColorString (CityWarPage.m_instance.CityResp.haveHufu == 0 ? 5 : 4,CityWarPage.m_instance.CityResp.haveHufu.ToString ()) : "";
+		//联盟拥有虎符N
+		m_huFuNum.text = m_identity != 0 ? MyColorData.getColorString (1,LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_24).Replace ("N",MyColorData.getColorString (tempResp.haveHufu  == 0 ? 5 : 4,tempResp.haveHufu.ToString ()))) : "";
 
 		m_bidBtnLabel.text = m_bidLabelDic[tempResp.bidState];
 
-		m_enterNum.text = CityWarPage.m_instance.CityResp.interval == 3 ? (tempResp.lmNum > 0 ? MyColorData.getColorString (4,tempResp.lmNum.ToString ()) + "个盟友正在作战" : "") : "";
+		//N个盟友正在战斗
+		m_enterNum.text = tempResp.lmNum > 0 ? MyColorData.getColorString (4,LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_38).Replace ("N",tempResp.lmNum.ToString ())) : "";
 
 		DesStrState ();
 
@@ -113,22 +119,26 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 		case 0:
 			btnSpriteIndex = 0;
 			colorCode = "[e5e205]";
-			desStr = "使用虎符出价竞拍，\n出价最高联盟获得本城的攻打权";
+//			desStr = "使用虎符出价竞拍，\n出价最高联盟获得本城的攻打权";
+			desStr = LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_26);
 			break;
 		case 1:
 			btnSpriteIndex = 0;
 			colorCode = "[e5e205]";
-			desStr = "每日[d80202]18[-]点揭晓结果，\n竞拍失败全额返还虎符";
+//			desStr = "每日[d80202]18[-]点揭晓结果，\n竞拍失败全额返还虎符";
+			desStr = LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_27);
 			break;
 		case 2:
 			btnSpriteIndex = 0;
 			colorCode = "[e5e205]";
-			desStr = "[d80202]21:00[-]准时开战！\n不要忘记集结盟友哦！";
+//			desStr = "[d80202]21:00[-]准时开战！\n不要忘记集结盟友哦！";
+			desStr = LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_28);
 			break;
 		case 3:
 			btnSpriteIndex = 1;
 			colorCode = "[d80202]";
-			desStr = "虎符已全额返还";
+//			desStr = "虎符已全额返还";
+			desStr = LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_29);
 			break;
 		default:
 			break;
@@ -161,6 +171,8 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 
 	private bool m_isOpenBidRecord = false;
 
+	public UILabel m_bidRules;
+
 	public void InItRecord ()
 	{
 		m_showAddEffect = false;
@@ -168,6 +180,8 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 		m_winName = BidResp.recordList.Count > 0 ? BidResp.recordList[0].allianceName : "";
 
 		CreateRecordList ();
+
+		m_bidRules.text = "[e5e205]" + LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_25) + "[-]";
 	}
 
 	void CreateRecordList ()
@@ -225,9 +239,9 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 
 	public void RefreshBidRecord (BidRecord tempRecord)
 	{
-		Debug.Log ("allianceName:" + tempRecord.allianceName);
-		Debug.Log ("huFuNum:" + tempRecord.huFuNum);
-		Debug.Log ("time:" + tempRecord.time);
+//		Debug.Log ("allianceName:" + tempRecord.allianceName);
+//		Debug.Log ("huFuNum:" + tempRecord.huFuNum);
+//		Debug.Log ("time:" + tempRecord.time);
 		BidResp.bidState = 1;
 		m_bidBtnLabel.text = m_bidLabelDic[BidResp.bidState];
 		DesStrState ();
@@ -251,14 +265,16 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 		if (!m_showAddEffect)
 		{
 			BidResp.recordList.Add (tempRecord);
+			BidResp.haveHufu -= tempRecord.huFuNum;
 			CityWarPage.m_instance.CityResp.haveHufu -= tempRecord.huFuNum;
 		}
 		else
 		{
+			BidResp.haveHufu -= m_addNum;
 			CityWarPage.m_instance.CityResp.haveHufu -= m_addNum;
 		}
 
-		m_huFuNum.text = MyColorData.getColorString (1,"联盟拥有数量：") + MyColorData.getColorString (CityWarPage.m_instance.CityResp.haveHufu <= 0 ? 5 : 4,CityWarPage.m_instance.CityResp.haveHufu.ToString ());
+		m_huFuNum.text = m_identity != 0 ? MyColorData.getColorString (1,LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_24).Replace ("N",MyColorData.getColorString (BidResp.haveHufu == 0 ? 5 : 4,BidResp.haveHufu.ToString ()))) : "";
 
 		CreateRecordList ();
 		BidIteen (true);
@@ -292,11 +308,11 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 		if (m_isOpenBidRecord)
 		{
 			m_bidRecordWidget.gameObject.SetActive (true);
-			m_checkSprite.transform.localRotation = Quaternion.Euler (0,0,-90);
+			m_checkSprite.transform.localRotation = Quaternion.Euler (0,0,180);
 		}
 		else
 		{
-			m_checkSprite.transform.localRotation = Quaternion.Euler (0,0,90);
+			m_checkSprite.transform.localRotation = Quaternion.Euler (0,0,0);
 		}
 
 		m_moveEnd = true;
@@ -320,26 +336,35 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 
 	public override void MYClick (GameObject ui)
 	{
+		int identity = QXComData.AllianceInfo ().identity;//0-成员 1-副门主 2-盟主
 		switch (ui.name)
 		{
 		case "BidBtn":
 		{
 			if(CityWarPage.m_instance.CityResp.interval == 0)
 			{
-				if (CityWarPage.m_instance.CityResp.recCityId > 0 && !CityWarPage.m_instance.M_HaveNormalCity)
+				if (identity == 0)
 				{
 					BidReq ();
 				}
 				else
 				{
-					if (BidResp.bidState != 0)
+					if (CityWarPage.m_instance.CityResp.recCityId > 0 && !CityWarPage.m_instance.M_HaveNormalCity)
 					{
 						BidReq ();
 					}
 					else
 					{
-						string text = "今日您已对其他城池宣战，是否为多线战斗做好了准备？";
-						QXComData.CreateBoxDiy (text,false,BidBtnCallBack);
+						if (BidResp.bidState != 0)
+						{
+							BidReq ();
+						}
+						else
+						{
+							//						string text = "今日您已对其他城池宣战，是否为多线战斗做好了准备？";
+							string text = LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_33);
+							QXComData.CreateBoxDiy (text,false,BidBtnCallBack);
+						}
 					}
 				}
 			}
@@ -372,15 +397,15 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 			{
 				if (CityWarPage.m_instance.CityResp.interval == 0)
 				{
-					if (m_identity != 0)
+					if (identity != 0)
 					{
 						//查看竞拍记录
 						BidIteen (true);
 					}
 					else
 					{
-						//普通盟员
-						ClientMain.m_UITextManager.createText ("宣战时段只有盟主或副盟主才可查看！");
+						//普通盟员宣战时段只有盟主/副盟主可查看竞拍记录
+						ClientMain.m_UITextManager.createText (LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_23));
 					}
 				}
 				else
@@ -391,13 +416,18 @@ public class CityWarBidPage : GeneralInstance<CityWarBidPage> {
 			}
 
 			break;
+		case "JiFenBtn":
+
+			CityWarData.Instance.CityWarJiFenReq (OtherCity.PageType.JIFEN_BID,m_cityInfo.cityId);
+
+			break;
 		case "ZheZhao":
 
 			if (M_BidDelegate != null && m_moveEnd)
 			{
 				m_defaultIndex = 0;
 				m_isOpenBidRecord = false;
-				m_checkSprite.transform.localRotation = Quaternion.Euler (0,0,90);
+				m_checkSprite.transform.localRotation = Quaternion.Euler (0,0,0);
 				m_bgObj.transform.localPosition = new Vector3(15,0,0);
 				m_bidRecordWidget.gameObject.SetActive (false);
 				M_BidDelegate ();

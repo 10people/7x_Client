@@ -17,6 +17,7 @@ public class QCLLayerSaoDang : MonoBehaviour {
 	[HideInInspector]public ChongLouSaoDangResp mQCL_saodangInfo;
 
 	public GameObject AwardRoot;
+	public GameObject GridRoot;
 	void Awake()
 	{
 		BtnList.ForEach (item => SetBtnMoth(item));
@@ -106,6 +107,10 @@ public class QCLLayerSaoDang : MonoBehaviour {
 
 		AwardRoot.GetComponent<BoxCollider> ().size = new Vector3 (290,m_y,0);
 		AwardRoot.GetComponent<BoxCollider> ().center = new Vector3 (0,-(m_y-120)/2,0);
+		if(mQCL_saodangInfo.awards.Count < 8)
+		{
+			GridRoot.GetComponent<mFixUniform> ().enabled = true;
+		}
 	}
 	public void BtnManagerMent(GameObject mbutton)
 	{

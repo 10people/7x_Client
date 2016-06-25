@@ -74,7 +74,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
         t_qx.Serialize(t_tream, xinshou);
         byte[] t_protof;
         t_protof = t_tream.ToArray();
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_XINSHOU_XIANSHI_INFO_REQ, ref t_protof);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_XINSHOU_XIANSHI_INFO_REQ, ref t_protof, p_receiving_wait_proto_index: ProtoIndexes.S_XINSHOU_XIANSHI_INFO_RESP);
     }
 
     public bool OnProcessSocketMessage(QXBuffer p_message)

@@ -10,9 +10,7 @@ using ProtoBuf.Meta;
 
 namespace Carriage
 {
-	public class BiaoJuPage : MonoBehaviour {
-
-		public static BiaoJuPage bjPage;
+	public class BiaoJuPage : GeneralInstance<BiaoJuPage> {
 
 		public enum BiaoJuPageType
 		{
@@ -53,9 +51,9 @@ namespace Carriage
 
 		private string fuLiDesStr = "括号内为福利次数，优先消耗";
 
-		void Awake ()
+		new void Awake ()
 		{
-			bjPage = this;
+			base.Awake ();
 		}
 
 		void Start ()
@@ -67,59 +65,38 @@ namespace Carriage
 			rulesLabel.fontSize = 20;
 			List<string> ruleList = new List<string> ();
 			string ybTimeStr = "";
-			for (int i = 0;i < 6;i ++)
+			for (int i = 0;i < 3;i ++)
 			{
-				string s = "YUN_BIAO_" + (78 + i);
+				string s = "YUN_BIAO_" + (79 + i);
 				LanguageTemplate.Text t = (LanguageTemplate.Text)System.Enum.Parse(typeof(LanguageTemplate.Text), s);
 				string ruleStr = LanguageTemplate.GetText (t);
-				if (i == 1)
+				if (i == 0)
 				{
 					//开服时间
 					string openTime = CanshuTemplate.GetStrValueByKey (CanshuTemplate.OPENTIME_YUNBIAO);
 					string closeTime = CanshuTemplate.GetStrValueByKey (CanshuTemplate.CLOSETIME_YUNBIAO);
 					ruleStr += MyColorData.getColorString (4,openTime + "—" + closeTime + "[-]") + "      福利时段：" + fuLiTimeStr;
-					ybTimeStr = ruleStr;
 				}
-				
-//				if (i == 3)
-//				{
-//					string[] strLen = ruleStr.Split ('*');
-//					
-//					ruleStr = strLen[0] + "[00ff00]" + 50 + "[-]" + strLen[1];
-//				}
-				
-				if (i != 1)
-				{
-					ruleList.Add (ruleStr);
-				}
+
+				ruleList.Add (ruleStr);
 			}
 			for (int i = 0;i < ruleList.Count;i ++)
 			{
-				ybTimeStr += "\n" + ruleList[i];
+				if (i < ruleList.Count - 1)
+				{
+					ybTimeStr += ruleList[i] + "\n";
+				}
+				else
+				{
+					ybTimeStr += ruleList[i];
+				}
 			}
 			rulesLabel.text = ybTimeStr;
 
 			//horsePage rules
 			//LanguageTemp LID:437-440 LanguageTemplate:YUN_BIAO_4-YUN_BIAO_7
-			List<string> horseRuleList = new List<string> ();
-			for (int i = 0;i < 4;i ++)
-			{
-				string s = "YUN_BIAO_" + (4 + i);
-				LanguageTemplate.Text t = (LanguageTemplate.Text)System.Enum.Parse(typeof(LanguageTemplate.Text), s);
-				string ruleStr = LanguageTemplate.GetText (t);
-				horseRuleList.Add (ruleStr);
-			}
-			for (int i = 0;i < horseRuleList.Count;i ++)
-			{
-				if (i < horseRuleList.Count - 1)
-				{
-					horseRuleLabel.text += horseRuleList[i] + "\n";
-				}
-				else
-				{
-					horseRuleLabel.text += horseRuleList[i];
-				}
-			}
+		
+			horseRuleLabel.text = LanguageTemplate.GetText (LanguageTemplate.Text.YUN_BIAO_5);
 
 			QXComData.LoadYuanBaoInfo (anchorTopRight);
 		}
@@ -167,8 +144,6 @@ namespace Carriage
 			set{biaoJuResp = value;}
 		}
 
-		public List<EventHandler> mainPageBtnList = new List<EventHandler> ();
-
 		public UILabel rulesLabel;
 		public UILabel numLabel;
 
@@ -204,10 +179,10 @@ namespace Carriage
 			fuLiDesLabel.text = RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? MyColorData.getColorString (5,fuLiDesStr) : "";
 //			Debug.Log ("biaoJuResp.yaBiaoCiShu:" + biaoJuResp.yaBiaoCiShu);
 //			Debug.Log ("RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes:" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes);
-			countDownTimeLabel.text = MyColorData.getColorString (10,"今日剩余") 
+			countDownTimeLabel.text = "今日剩余"
 							+ MyColorData.getColorString (4,(biaoJuResp.yaBiaoCiShu - RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes).ToString ()) 
 							+ MyColorData.getColorString (5,RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? "(" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes + ")" : "")	
-							+ MyColorData.getColorString (10,"次");
+							+ "次";
 
 			fuLiDesLabel2.text = RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? MyColorData.getColorString (5,fuLiDesStr) : "";
 
@@ -231,12 +206,6 @@ namespace Carriage
 				widget.color = biaoJuResp.yaBiaoCiShu > 0 ? Color.white : Color.grey;
 			}
 
-			foreach (EventHandler handler in mainPageBtnList)
-			{
-				handler.m_click_handler -= BiaoJuBtnHandlerClickBack;
-				handler.m_click_handler += BiaoJuBtnHandlerClickBack;
-			}
-
 			if (QXComData.CheckYinDaoOpenState (100370))
 			{
 				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,5);
@@ -248,54 +217,6 @@ namespace Carriage
 			}
 
 			isStartYinDao = true;
-		}
-
-		void BiaoJuBtnHandlerClickBack (GameObject obj)
-		{
-			if (!isStartYinDao)
-			{
-				return;
-			}
-			switch (obj.name)
-			{
-			case "YunBiaoBtn":
-
-				if (!biaoJuResp.isOpen)
-				{
-					textStr = "押镖活动未开启！";
-					QXComData.CreateBox (1,textStr,true,null);
-				}
-				else
-				{
-					if (biaoJuResp.yaBiaoCiShu > 0)
-					{
-						//请求镖局马场
-						BiaoJuData.Instance.OpenBiaoJuHorse ();
-					}
-					else
-					{
-						textStr = "每日" + fuLiTimeStr + "可领取额外的运镖次数";
-						QXComData.CreateBox (1,textStr,true,null);
-					}
-				}
-
-				break;
-			case "CloseBtn":
-
-				if (pType == BiaoJuPageType.MAIN_PAGE)
-				{
-					sEffectController.OnCloseWindowClick ();
-					sEffectController.CloseCompleteDelegate += CloseBiaoJu;
-				}
-				else
-				{
-					SwitchPage (BiaoJuPageType.MAIN_PAGE);
-				}
-
-				break;
-			default:
-				break;
-			}
 		}
 
 		//是否购买运镖次数
@@ -318,8 +239,9 @@ namespace Carriage
 		/// </summary>
 		public void LackYuanbao ()
 		{
-			textStr = "元宝不足，是否跳转到充值？";
-			QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+//			textStr = "元宝不足，是否跳转到充值？";
+//			QXComData.CreateBoxDiy (textStr,false,TurnToVip);
+			Global.CreateFunctionIcon (101);
 		}
 
 		/// <summary>
@@ -346,8 +268,6 @@ namespace Carriage
 			{4,new string[]{"骏马","horse4","horseIcon4","pinzhi6","4"}},
 			{5,new string[]{"神驹","horse5","horseIcon5","pinzhi9","9.5"}}
 		};
-
-		public List<EventHandler> horsePageBtnList = new List<EventHandler> ();
 
 		private List<BiaoJuHorseInfo> horseInfoList = new List<BiaoJuHorseInfo> ();
 
@@ -498,12 +418,6 @@ namespace Carriage
 
 			HorseRandomAnimation (horsePageInfo.isNewHorse,horsePageInfo.horse);
 	//		HorseRandomAnimation (true,horsePageInfo.horse);
-
-			foreach (EventHandler handler in horsePageBtnList)
-			{
-				handler.m_click_handler -= HorsePageBtnHandlerClickBack;
-				handler.m_click_handler += HorsePageBtnHandlerClickBack;
-			}
 		}
 
 		/// <summary>
@@ -579,15 +493,49 @@ namespace Carriage
 			return buyCount;
 		}
 
-		void HorsePageBtnHandlerClickBack (GameObject obj)
+		public override void MYClick (GameObject ui)
 		{
-			if (!isHorseYinDao)
-			{
-				return;
-			}
 //			Debug.Log ("bbbbb");
-			switch (obj.name)
+			switch (ui.name)
 			{
+			case "YunBiaoBtn":
+				
+				if (!biaoJuResp.isOpen)
+				{
+//					textStr = "押镖活动未开启！";
+//					QXComData.CreateBox (1,textStr,true,null);
+					ClientMain.m_UITextManager.createText ("[d80202]" + LanguageTemplate.GetText (LanguageTemplate.Text.XING_BIAO_LOCK_TIPS_1) + "[-]");
+//					ClientMain.m_UITextManager.createText (LanguageTemplate.GetText (LanguageTemplate.Text.XING_BIAO_LOCK_TIPS_1));
+				}
+				else
+				{
+					if (biaoJuResp.yaBiaoCiShu > 0)
+					{
+						//请求镖局马场
+						BiaoJuData.Instance.OpenBiaoJuHorse ();
+					}
+					else
+					{
+						textStr = "每日" + fuLiTimeStr + "可领取额外的运镖次数";
+//						QXComData.CreateBox (1,textStr,true,null);
+						ClientMain.m_UITextManager.createText (textStr);
+					}
+				}
+				
+				break;
+			case "CloseBtn":
+				
+				if (pType == BiaoJuPageType.MAIN_PAGE)
+				{
+					sEffectController.OnCloseWindowClick ();
+					sEffectController.CloseCompleteDelegate += CloseBiaoJu;
+				}
+				else
+				{
+					SwitchPage (BiaoJuPageType.MAIN_PAGE);
+				}
+				
+				break;
 			case "AddLevelBtn":
 
 				OpenSetHorseWindow ();
@@ -598,20 +546,10 @@ namespace Carriage
 				OpenHorsePropWindow (gameObject);
 
 				break;
-			case "YunBiaoBtn":
+			case "BeginBtn":
 
-				//开始运镖
-				if (biaoJuResp.yaBiaoCiShu <= 0)
-				{
-					//次数不够
-				}
-				else
-				{
-//					textStr = "确定消耗一个运镖次数吗？\n\n如果运镖成功，收益会通过邮件发送给您。";
-//					QXComData.CreateBox (1,textStr,false,YunBiaoBtnClickBack);
-					OpenRewardTipsWindow ();
-				}
-
+				OpenRewardTipsWindow ();
+			
 				break;
 			default:
 				break;
@@ -723,11 +661,11 @@ namespace Carriage
 			
 			if (indexNumber < 1)
 			{
-				horseShouYi.text = MyColorData.getColorString (10,GetHorseAwardNum (1).ToString ());
+				horseShouYi.text = GetHorseAwardNum (1).ToString ();
 			}
 			else
 			{
-				horseShouYi.text = MyColorData.getColorString (10,GetHorseAwardNum (1).ToString ()) + MyColorData.getColorString (4,"+" + (GetHorseAwardNum (indexNumber + 1) - GetHorseAwardNum (1)).ToString ());
+				horseShouYi.text = GetHorseAwardNum (1).ToString () + MyColorData.getColorString (4,"+" + (GetHorseAwardNum (indexNumber + 1) - GetHorseAwardNum (1)).ToString ());
 			}
 		}
 
@@ -884,6 +822,11 @@ namespace Carriage
 
 			isFirstOpen = true;
 			gameObject.SetActive (false);
+		}
+
+		new void OnDestroy ()
+		{
+			base.OnDestroy ();
 		}
 	}
 }

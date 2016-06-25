@@ -46,7 +46,7 @@ public class QXComData {
 
 	public static string AllianceName (string tempName)
 	{
-		return tempName.Equals ("***") || tempName.Equals ("") ? "无联盟" : "<" + tempName + ">";
+		return "[00e1c4]" +  (tempName.Equals ("***") || string.IsNullOrEmpty (tempName) ? "无联盟" : "<" + tempName + ">") + "[-]";
 	}
 
 	#endregion
@@ -189,6 +189,17 @@ public class QXComData {
 		return nationId >= 0 ? nationDic [nationId][1] : "";
 	}
 
+	/// <summary>
+	/// Sets the nation sprite.
+	/// </summary>
+	/// <param name="tempSprite">Temp sprite.</param>
+	/// <param name="nationId">Nation identifier.</param>
+	public static void SetNationSprite (UISprite tempSprite,int nationId)
+	{
+		tempSprite.SetDimensions (nationId == 0 ? 100 : 31,nationId == 0 ? 99 : 43);
+		tempSprite.transform.localScale = nationId == 0 ? Vector3.one * 0.5f : Vector3.one;
+	}
+
 	#endregion
 
 	#region XmlTemplateType
@@ -249,7 +260,7 @@ public class QXComData {
 	/// <param name="value">Value.</param>
 	/// <param name="protoA">C_ProtoIndex</param>
 	/// <param name="protoB">S_Protoindex</param>
-	public static void SendQxProtoMessage (object value, int protoA ,string protoB = null)
+	public static void SendQxProtoMessage (object value, int protoA ,string protoB)
 	{
 		MemoryStream t_stream = new MemoryStream ();
 		
@@ -291,20 +302,6 @@ public class QXComData {
 	#endregion
 
 	#region MiBaoSkillLevel
-	public static int GetMiBaoSkillLevel (int tempSkillId)
-	{
-		var skillList = MiBaoGlobleData.Instance().G_MiBaoInfo.skillList;
-		foreach (SkillInfo skill in skillList)
-		{
-			if (skill.activeZuheId == tempSkillId)
-			{
-				return skill.level;
-			}
-		}
-
-		return 0;
-	}
-
 	public static bool CanSelectMiBaoSkill ()
 	{
 		var skillList = MiBaoGlobleData.Instance().G_MiBaoInfo.skillList;
@@ -338,6 +335,22 @@ public class QXComData {
 			}
 		}
 	}
+
+	public static void SetBtnState (GameObject obj,bool highLight)
+	{
+		UIWidget[] widgets = obj.GetComponentsInChildren<UIWidget> ();
+		foreach (UIWidget widget in widgets)
+		{
+			UILabel label = widget.GetComponent<UILabel> ();
+			widget.color = highLight ? (label == null ? Color.white : Global.getStringColor("ffeed1")) : Color.grey;
+		}
+	}
+
+	public static void SetBgSprite (UISprite tempSprite,bool tempLight)
+	{
+		tempSprite.spriteName = tempLight ? "jianbianbgliang" : "thirdBg";
+	}
+
 	#endregion
 
 	#region YinDaoControl
@@ -497,10 +510,10 @@ public class QXComData {
 			                                			  isFunction);
 	}
 
-	public static GameObject CreateBoxDiy (string tempText,bool isOneBtn,UIBox.onclick onClick,bool isFunction = false)
+	public static GameObject CreateBoxDiy (string tempText,bool isOneBtn,UIBox.onclick onClick,bool isFunction = false,int v1 = 0,int v2 = 0)
 	{
 		return isOneBtn ? UtilityTool.Instance.CreateBox (titleStr,
-                                               			  "\n" + tempText,null,null,
+                                               			  tempText,null,null,
                                                			  confirmStr,null,
 		                                                  onClick,
 		                                                  null,
@@ -509,9 +522,12 @@ public class QXComData {
 		                                                  false,
 		                                                  true,
 		                                                  true,
-		                                                  isFunction) 
+		                                                  isFunction,
+		                                                  UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID,
+		                                                  v1,
+		                                                  v2) 
 						: UtilityTool.Instance.CreateBox (titleStr,
-			                                   			  "\n" + tempText,null,null,
+			                                   			  tempText,null,null,
 			                                   			  cancelStr,confirmStr,
                                   			  		      onClick,
 						                                  null,
@@ -520,7 +536,10 @@ public class QXComData {
 						                                  false,
 						                                  true,
 						                                  true,
-						                                  isFunction);
+						                                  isFunction,
+			                                  			  UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID,
+						                                  v1,
+						                                  v2);
 	}
 
 	#endregion
@@ -884,6 +903,7 @@ public class ShopGoodInfo
 	public int countBuyTime;//剩余购买次数
     public bool isRestrictBuy;
 	public QXComData.MoneyType moneyType;//币种
+    public bool isAllianceCanBuy;
 }
 
 /// <summary>
@@ -983,6 +1003,7 @@ public class ChatMessage
 		SEND_SUCCESS
 	}
 	public SendState sendState;
+	public bool isPlay = false;
 	public ChatPct chatPct;
 }
 

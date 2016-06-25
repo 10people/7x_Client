@@ -100,6 +100,12 @@ public class FileHelper {
 	}
 
 	public static void FileCopy( string p_src, string p_dest ){
+		if( !File.Exists( p_src ) ){
+			Debug.Log( "skip not existing file: " + p_src );
+
+			return;
+		}
+
 		if ( File.Exists ( p_dest ) ) {
 			File.Delete ( p_dest );
 		}

@@ -35,12 +35,22 @@ namespace Carriage
                 TransformHelper.ActiveWithStandardize(m_RootManager.PlayerParentObject.transform, temp.transform);
 
                 temp.transform.position = new Vector3(m_SafeAreaList[m_CarriageNPCList.Count].AreaPos.x, RootManager.BasicYPosition, m_SafeAreaList[m_CarriageNPCList.Count].AreaPos.y);
+                temp.transform.eulerAngles = new Vector3(0, item.RotateY, 0);
+
+                OtherPlayerController otherPlayerController = temp.GetComponent<OtherPlayerController>() ?? temp.AddComponent<OtherPlayerController>();
+                otherPlayerController.m_CharacterLerpDuration = 1.0f;
+                otherPlayerController.TrackCamera = m_RootManager.TrackCamera;
+
+                CarriageNPCController npcController = temp.GetComponent<CarriageNPCController>() ?? temp.AddComponent<CarriageNPCController>();
+                npcController.TrackCamera = m_RootManager.TrackCamera;
 
                 m_CarriageNPCList.Add(temp);
                 //Create npc in safe area.
                 //Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(NpcCityTemplate.GetNpcItemById(301).m_npcShowId),
                 //                        LoadModelCallback);
             });
+
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.INIT, "Carriage_SAFE_AREA");
         }
 
         void Awake()

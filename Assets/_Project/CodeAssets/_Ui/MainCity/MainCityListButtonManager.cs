@@ -40,7 +40,7 @@ public class MainCityListButtonManager
 			m_iTY = 0;
 			break;
 		case 2:
-			m_iBX = 960 + ClientMain.m_iMoveX * 2 - 150;
+			m_iBX = 960 + ClientMain.m_iMoveX * 2 - 140;
 			m_iBY = -(640 + ClientMain.m_iMoveY * 2 - 45);
 			m_iTX = -75;
 			m_iTY = 0;
@@ -58,7 +58,7 @@ public class MainCityListButtonManager
 			m_iTY = 0;
 			break;
 		case 5:
-			m_iBX = 960 + ClientMain.m_iMoveX * 2 - 25;
+			m_iBX = 960 + ClientMain.m_iMoveX * 2 - 35;
 			m_iBY = -25;
 			break;
 		}

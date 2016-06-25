@@ -10,13 +10,12 @@ using ProtoBuf.Meta;
 
 public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
 {
- 
     public List<EventIndexHandle> m_listEvent;
     public List<EventIndexHandle> m_listItemEvent;
-    public GameObject m_Parent;
+    public UIGrid m_Parent;
     public GameObject m_ParentForbid;
     public GameObject m_MainParent;
-    public List<UIScrollView> m_listScrollView;
+ 
     public List<UILabel> m_listLabel;
     public UIScrollView m_ScrollView;
     public GameObject m_Durable_UI;
@@ -85,7 +84,11 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
                     CallBackDeleteFriend(_OwnerID, _ForbidName);
                 }
                 break;
-
+            case 3:
+                {
+                    CallBackChatFriend(_OwnerID, getFriendInfoByID(_OwnerID).name);
+                }
+                break;
         }
     }
     void TouchEvent(int index)
@@ -176,7 +179,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         t_qx.Serialize(t_tream, friend);
         byte[] t_protof;
         t_protof = t_tream.ToArray();
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FRIEND_REQ, ref t_protof);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FRIEND_REQ, ref t_protof, p_receiving_wait_proto_index: ProtoIndexes.S_FRIEND_RESP);
         
     }
 
@@ -326,6 +329,8 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
                         }
                         m_ObjItemMesh.SetActive(false);
                         _isTouchOn = false;
+                        m_Parent.repositionNow = true;
+                        m_ScrollView.UpdatePosition();
                         return true;
                     }
                     break;
@@ -381,7 +386,6 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
                     break;
                 case ProtoIndexes.S_CANCEL_BLACK://返回解除屏蔽
                     {
-                       // Debug.Log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRS");
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
                         QiXiongSerializer t_qx = new QiXiongSerializer();
@@ -741,6 +745,11 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
     }
     long save_FriendId = 0;
     private GameObject _objDelNull = null;
+    void CallBackChatFriend(long id, string name)
+    {
+        QXChatPage.chatPage.setSiliao(id, name,m_MainParent);
+        Destroy(m_MainParent);
+    }
     void CallBackDeleteFriend(long id, string name)
     {
         save_FriendId = id;
@@ -856,13 +865,13 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         obj.transform.parent = friendItenDic[int.Parse(name)].transform;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.parent = m_ObjItemMesh.transform;
-        if (obj.transform.localPosition.y < -137)
+        if (obj.transform.localPosition.y < -150)
         {
-            obj.transform.localPosition = -137 * Vector3.one;
+            obj.transform.localPosition = -150 * Vector3.one;
         }
-        else if (obj.transform.localPosition.y > 122)
+        else if (obj.transform.localPosition.y > 95)
         {
-            obj.transform.localPosition = 122 * Vector3.one;
+            obj.transform.localPosition = 95 * Vector3.one;
         }
         m_ObjItemMesh2.transform.localPosition = new Vector3(293, obj.transform.localPosition.y, 0);
         Destroy(obj);
@@ -984,4 +993,17 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         return false;
     }
 
+    private FriendJunzhuInfo getFriendInfoByID(long id)
+    {
+        int size = listInfo.Count;
+
+        for (int i = 0; i < size; i++)
+        {
+            if (listInfo[i].ownerid == id)
+            {
+                return listInfo[i];
+            }
+        }
+        return null;
+   }
 }

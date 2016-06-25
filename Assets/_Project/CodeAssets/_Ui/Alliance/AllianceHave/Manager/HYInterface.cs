@@ -27,9 +27,9 @@ public class HYInterface : MonoBehaviour {
 		switch(Type)
 		{
 		case 1:
-			int XiaoWuid = 600800;
+			int XiaoWuid = 500050;
 		    IsShow = PushAndNotificationHelper.IsShowRedSpotNotification(XiaoWuid);
-			Is_Show = IsShow;
+			Is_Show = PushAndNotificationHelper.IsShowRedSpotNotification(600800);//是否显示经验
 			Arelt.SetActive(IsShow);
 			break;
 		case 2:
@@ -77,6 +77,11 @@ public class HYInterface : MonoBehaviour {
 		case 6:
 			int Readroom = 600600;
 			IsShow = PushAndNotificationHelper.IsShowRedSpotNotification(Readroom);
+			Arelt.SetActive(IsShow);
+			break;
+		case 7:
+			int Shop = 600700;
+			IsShow = PushAndNotificationHelper.IsShowRedSpotNotification(Shop);
 			Arelt.SetActive(IsShow);
 			break;
 		default:

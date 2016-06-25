@@ -27,7 +27,7 @@ public class RoleRotate : MonoBehaviour {
 
 		shadowTemp.transform.parent =this.transform.GetChild (0);
 		
-		shadowTemp.transform.localPosition = new Vector3 (0,0.03f,0);
+		shadowTemp.transform.localPosition = new Vector3 (0,0,0);
 		
 		shadowTemp.transform.localScale = Vector3.one * 2;
 		

@@ -421,15 +421,13 @@ public class BattleFlag : MonoBehaviour
 			if(triggerCount > 0) return false;
 		}
 		
-		int level = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
-		
-		GuideTemplate template = GuideTemplate.getTemplateByLevelAndEvent (level, guideId);
+		GuideTemplate template = GuideTemplate.getTemplateByLevelAndEvent (CityGlobalData.m_configId, guideId);
 		
 		bool flag = BattleControlor.Instance().havePlayedGuide (template);
 		
 		if (flag == true) return false;
 		
-		BattleUIControlor.Instance().showDaramControllor (level, template.id);
+		BattleUIControlor.Instance().showDaramControllor (CityGlobalData.m_configId, template.id);
 
 		return true;
 	}

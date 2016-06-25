@@ -45,6 +45,10 @@ TextureImporter:
   alphaIsTransparency: 0
   textureType: 5
   buildTargetSettings:
+  - buildTarget: Standalone
+    maxTextureSize: 128
+    textureFormat: 10
+    compressionQuality: 50
   - buildTarget: Android
     maxTextureSize: 128
     textureFormat: 34

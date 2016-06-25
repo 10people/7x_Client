@@ -121,6 +121,7 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
                         part_info._AllianceName = tempScene.allianceName;
                         part_info._VInfo = tempScene.vipLevel.ToString();
                         Fresh_HeadInfo(part_info);
+                        Debug.Log("tempScene.senderNametempScene.senderNametempScene.senderName ::" + tempScene.senderName);
                     }
                     return true;
                 case ProtoIndexes.S_HEAD_STRING: //玩家称号、vip更新
@@ -245,6 +246,7 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
         //删除3d模型
         PlayerInCityManager.DestroyPlayer(tempPlayer);
 
+     
         //及对应的名字
         PlayerNameManager.DestroyPlayerName(tempPlayer);
     }

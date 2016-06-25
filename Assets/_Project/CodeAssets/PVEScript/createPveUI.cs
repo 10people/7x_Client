@@ -16,11 +16,7 @@ public class createPveUI : MonoBehaviour {
 		this.transform.localScale = new Vector3(mScale,mScale,mScale);
 		Create ();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	public void delet()
 	{
 		CityGlobalData.PveLevel_UI_is_OPen = false;

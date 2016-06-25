@@ -80,7 +80,11 @@ public class SceneManager{
 		}
 		
 		string t_loading_level_name = ConstInGame.CONST_SCENE_NAME_LOADING___FOR_COMMON_SCENE;
-		
+		if(QXChatPage.chatPage != null)
+		{
+			QXChatPage.chatPage.stopYuyin();
+		}
+
 		Global.LoadLevel( t_loading_level_name, LoadLoadinglDone );
 
 		return true;
@@ -355,6 +359,8 @@ public class SceneManager{
 			Global.m_isOpenBaiZhan = false;
 			Global.m_isOpenHuangYe = false;
 			Global.m_iOpenFunctionIndex = -1;
+
+			Global.m_isCityWarOpen = false;
 			
 			Global.m_iScreenID = 0;
 			
@@ -374,6 +380,7 @@ public class SceneManager{
 			Global.m_isOpenFuWen = false;
 			Global.m_isOpenShop = false;
 			Global.m_isOpenPlunder = false;
+			Global.m_isChangeRoleOpen = false;
 
 			Global.m_listAllTheData = new List<TongzhiData>();
 			Global.m_listMainCityData = new List<TongzhiData>();
@@ -386,7 +393,7 @@ public class SceneManager{
 			CityGlobalData.m_temp_CQ_Section = 0;
 			LimitActivityData.Instance.IsOpenQiriActivity = true;
 			LimitActivityData.Instance.IsOpenZaixianActivity = true;
-			EnterBattleFieldNet.sending = true;
+			EnterBattleFieldNet.sending = false;
 			MainCityUI.m_listShoujiData = new List<ShoujiData>();
             //Clear highest ui and chat objects.
 			if( ClientMain.Instance() != null ){

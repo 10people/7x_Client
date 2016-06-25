@@ -21,6 +21,7 @@ class Vignetting /* And Chromatic Aberration */ extends PostEffectsBase {
 	public var blur : float = 0.0f; // blur == 0 disables blur pass (optimization)
 	public var blurSpread : float = 0.75f;
 
+	public var vigetColor : Color = Color.black;
 	public var luminanceDependency : float = 0.25f;
 
 	public var blurDistance : float = 2.5f;
@@ -86,6 +87,7 @@ class Vignetting /* And Chromatic Aberration */ extends PostEffectsBase {
 				}	
 			}
 
+			vignetteMaterial.SetColor( "_VigColor", vigetColor );
 			vignetteMaterial.SetFloat ("_Intensity", intensity); 		// intensity for vignette
 			vignetteMaterial.SetFloat ("_Blur", blur); 					// blur intensity
 			vignetteMaterial.SetTexture ("_VignetteTex", color2a);	// blurred texture

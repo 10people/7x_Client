@@ -16,4 +16,10 @@ public interface UIWindowEventListener{
 	 * 3.Id will be send, because logic may under a big class.
 	 */ 
 	void OnTopAgain( int p_ui_id );
+
+	/** Note:
+	 * 1.Anytime UI was on top, it will be called.
+	 * 3.Id will be send, because logic may under a big class.
+	 */ 
+	void OnTop( int p_ui_id );
 }

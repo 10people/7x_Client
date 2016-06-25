@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<PuGong id="1100" modelID="1" skillId="200101" />
+<PuGong id="1100" modelID="2" skillId="200001" />
+<PuGong id="1100" modelID="3" skillId="200001" />
+<PuGong id="1100" modelID="4" skillId="200201" />
+<PuGong id="1101" modelID="1" skillId="201111" />
+<PuGong id="1101" modelID="2" skillId="201101" />
+<PuGong id="1101" modelID="3" skillId="201101" />
+<PuGong id="1101" modelID="4" skillId="201121" />
+<PuGong id="1102" modelID="1" skillId="201112" />
+<PuGong id="1102" modelID="2" skillId="201102" />
+<PuGong id="1102" modelID="3" skillId="201102" />
+<PuGong id="1102" modelID="4" skillId="201122" />
+<PuGong id="2100" modelID="1" skillId="200102" />
+<PuGong id="2100" modelID="2" skillId="200002" />
+<PuGong id="2100" modelID="3" skillId="200002" />
+<PuGong id="2100" modelID="4" skillId="200202" />
+<PuGong id="2101" modelID="1" skillId="202111" />
+<PuGong id="2101" modelID="2" skillId="202101" />
+<PuGong id="2101" modelID="3" skillId="202101" />
+<PuGong id="2101" modelID="4" skillId="202121" />
+<PuGong id="2102" modelID="1" skillId="202112" />
+<PuGong id="2102" modelID="2" skillId="202102" />
+<PuGong id="2102" modelID="3" skillId="202102" />
+<PuGong id="2102" modelID="4" skillId="202122" />
+<PuGong id="3100" modelID="1" skillId="200103" />
+<PuGong id="3100" modelID="2" skillId="200003" />
+<PuGong id="3100" modelID="3" skillId="200003" />
+<PuGong id="3100" modelID="4" skillId="200203" />
+<PuGong id="3101" modelID="1" skillId="203111" />
+<PuGong id="3101" modelID="2" skillId="203101" />
+<PuGong id="3101" modelID="3" skillId="203101" />
+<PuGong id="3101" modelID="4" skillId="203121" />
+<PuGong id="3102" modelID="1" skillId="203112" />
+<PuGong id="3102" modelID="2" skillId="203102" />
+<PuGong id="3102" modelID="3" skillId="203102" />
+<PuGong id="3102" modelID="4" skillId="203122" />
+</dataset>

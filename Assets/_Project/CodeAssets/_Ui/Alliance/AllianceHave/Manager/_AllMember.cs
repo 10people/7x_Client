@@ -18,14 +18,6 @@ public class _AllMember : MonoBehaviour {
 
 	public UILabel m_Contrbiution;
 
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
 	public void init()
 	{
 		m_name.text = mMemberInfo.name;

@@ -101,15 +101,14 @@ public class BiaoJuRecordItem : MonoBehaviour {
 		awardLabel.gameObject.SetActive (type == JieBiaoType.JIEBIAO_FAIL || type == JieBiaoType.YUNBIAO_SUCCESS ? false : true);
 		awardLabel.text = tempRecordInfo.shouyi.ToString ();
 
-		nation.spriteName = "nation_" + tempRecordInfo.enemyGuojia;
+		nation.spriteName = QXComData.GetNationName (tempRecordInfo.enemyGuojia);
+		QXComData.SetNationSprite (nation,tempRecordInfo.enemyGuojia);
 
 		levelLabel.text = "Lv" + tempRecordInfo.enemyLevel.ToString ();
 
 		nameLabel.text = tempRecordInfo.enemyName;
 
-		string allianceName = QXComData.AllianceName (tempRecordInfo.enemylianMengName);
-
-		allianceNameLabel.text = MyColorData.getColorString (6,allianceName);
+		allianceNameLabel.text = QXComData.AllianceName (tempRecordInfo.enemylianMengName);
 
 		zhanLiLabel.text = "战力" + tempRecordInfo.enemyzhanLi.ToString ();
 		

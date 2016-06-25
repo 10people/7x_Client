@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LianMengZongMiao id="105001" zongMiaoLevel="1" alliance_lv_needed="1" zongMiao_lvUp_value="900" jiBaiMaxTimes="1" />
-<LianMengZongMiao id="105002" zongMiaoLevel="2" alliance_lv_needed="2" zongMiao_lvUp_value="2400" jiBaiMaxTimes="2" />
-<LianMengZongMiao id="105003" zongMiaoLevel="3" alliance_lv_needed="3" zongMiao_lvUp_value="6000" jiBaiMaxTimes="3" />
-<LianMengZongMiao id="105004" zongMiaoLevel="4" alliance_lv_needed="4" zongMiao_lvUp_value="10800" jiBaiMaxTimes="4" />
-<LianMengZongMiao id="105005" zongMiaoLevel="5" alliance_lv_needed="5" zongMiao_lvUp_value="25300" jiBaiMaxTimes="5" />
-<LianMengZongMiao id="105006" zongMiaoLevel="6" alliance_lv_needed="6" zongMiao_lvUp_value="60200" jiBaiMaxTimes="6" />
-<LianMengZongMiao id="105007" zongMiaoLevel="7" alliance_lv_needed="7" zongMiao_lvUp_value="135300" jiBaiMaxTimes="7" />
-<LianMengZongMiao id="105008" zongMiaoLevel="8" alliance_lv_needed="8" zongMiao_lvUp_value="240600" jiBaiMaxTimes="8" />
-<LianMengZongMiao id="105009" zongMiaoLevel="9" alliance_lv_needed="9" zongMiao_lvUp_value="397000" jiBaiMaxTimes="9" />
-<LianMengZongMiao id="105010" zongMiaoLevel="10" alliance_lv_needed="10" zongMiao_lvUp_value="541400" jiBaiMaxTimes="10" />
+<LianMengZongMiao id="105001" zongMiaoLevel="1" alliance_lv_needed="1" zongMiao_lvUp_value="800" jiBaiMaxTimes="1" />
+<LianMengZongMiao id="105002" zongMiaoLevel="2" alliance_lv_needed="3" zongMiao_lvUp_value="6000" jiBaiMaxTimes="2" />
+<LianMengZongMiao id="105003" zongMiaoLevel="3" alliance_lv_needed="5" zongMiao_lvUp_value="27300" jiBaiMaxTimes="3" />
+<LianMengZongMiao id="105004" zongMiaoLevel="4" alliance_lv_needed="7" zongMiao_lvUp_value="133600" jiBaiMaxTimes="4" />
+<LianMengZongMiao id="105005" zongMiaoLevel="5" alliance_lv_needed="9" zongMiao_lvUp_value="389200" jiBaiMaxTimes="5" />
 </dataset>

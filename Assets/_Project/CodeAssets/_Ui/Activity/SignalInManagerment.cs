@@ -109,7 +109,8 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
 
     void RequestSignalInInfo()
     {
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_SIGNALINLIST_REQ,true);
+       SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_SIGNALINLIST_REQ,true , p_receiving_wait_proto_index: ProtoIndexes.S_SIGNALINLIST_RESP);
+       // SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YOUXIA_TYPE_INFO_REQ, null, p_receiving_wait_proto_index: ProtoIndexes.S_YOUXIA_TYPE_INFO_RESP);
     }
 
     void SignalIn()
@@ -124,6 +125,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         {
             case 0:
                 {
+                   
                     SignalIn();
                 }
                 break;
@@ -131,7 +133,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                 {
                     _isGeneralRules = true;
                   // m_ObjDesInfo.SetActive(true);
-                    GeneralControl.Instance.LoadRulesPrefab(QianDaoMonthTemplate.getQianDaoMonthTemplateByMonth(currentMonth).icon.ToString());
+                    GeneralControl.Instance.LoadRulesPrefab(QianDaoMonthTemplate.getQianDaoMonthTemplateByMonth(currentMonth).desc);
                     //m_ObjSignal.SetActive(false);
                     //ShowQianDaoDes();
                 }
@@ -193,18 +195,14 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                             {
                                 SparkleEffectItem.CloseSparkle(m_SpriteQianDao.gameObject);
                                 m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
-                                m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
-                                //m_LabSignalInButtonRight.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_3)
-                                //    + MyColorData.getColorString(5, 4)
-                                //    + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_4);
-                          //      m_LabSignalInButtonRight.text = "每日[ff0000]4[-]点可领新的签到奖励!";
+                               // m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
+                              
                             }
                             else
                             {
                                 m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
                                 SparkleEffectItem.OpenSparkle(m_SpriteQianDao.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
-                               // m_LabSignalInButtonRight.text = "";
-
+                            
                             }
 
                             for (int i = 0; i < ReponseInfo.award.Count; i++)
@@ -222,7 +220,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                             //   required int32 allQianNum = 7; // 历史总共签到次数)
 
                             ShowSignalIn();
-                            m_ObjHidden.SetActive(true);
+                            m_ObjAllSignal.SetActive(true);
                         }
                         return true;
                     }
@@ -242,27 +240,42 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                             SparkleEffectItem.CloseSparkle(m_SpriteQianDao.gameObject);
                             m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
                             m_ObjHidden.SetActive(true);
-                            m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
-                            //m_LabSignalInButtonRight.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_3)
-                            //    + MyColorData.getColorString(5, 4)
-                            //    + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_4);
+                    //        m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
                             listSignalReward.Clear();
-                    
-                            string award = "";
-                            for (int i = 0; i < ReponseInfo.award.Count; i++)
+                            CurrentSignalInDays++;
+                            m_LabSignalTop.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_1)
+                                                    + MyColorData.getColorString(5, CurrentSignalInDays.ToString())
+                                                    + LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_2);
+                            if (ReponseInfo.award != null)
                             {
-                                listSignalReward.Add(ReponseInfo.award[i]);
-                                if (i > 0)
+                                List<FunctionWindowsCreateManagerment.GenerialWard> listward = new List<FunctionWindowsCreateManagerment.GenerialWard>();
+                                int size = ReponseInfo.award.Count;
+                                for (int i = 0; i < size; i++)
                                 {
-                                    award += "#" + ReponseInfo.award[i].awardType + ":" + ReponseInfo.award[i].awardId + ":" + ReponseInfo.award[i].awardNum;
+                                    FunctionWindowsCreateManagerment.GenerialWard gw = new FunctionWindowsCreateManagerment.GenerialWard();
+                                    gw.id = ReponseInfo.award[i].awardId;
+                                    gw.count = ReponseInfo.award[i].awardNum;
+                                    if (ReponseInfo.award[i].pieceNum != null)
+                                    {
+                                        if (ReponseInfo.award[i].awardType == 4 
+                                            && ReponseInfo.award[i].pieceNum > 0)
+                                        {
+                                            gw.isNew = false;
+                                        }
+                                        else
+                                        {
+                                            gw.isNew = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        gw.isNew = true;
+                                    }
+                                    listward.Add(gw);
+                                    
                                 }
-                                else
-                                {
-                                    award += ReponseInfo.award[i].awardType + ":" + ReponseInfo.award[i].awardId + ":" + ReponseInfo.award[i].awardNum;
-                                }
+                                FunctionWindowsCreateManagerment.ShowSpecialAwardInfo(listward);
                             }
-                         
-                            FunctionWindowsCreateManagerment.ShowRAwardInfo(award);
                             PushAndNotificationHelper.SetRedSpotNotification(140, false);
                           //  SignalRewardInfo();
                         }
@@ -282,20 +295,37 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                         t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
                         _listSignalInItem[_TouchNum].m_SignalInState = 2;
                         _listSignalInItem[_TouchNum].m_Event.gameObject.SetActive(false);
-                        string award = "";
-                        for (int i = 0; i < ReponseInfo.award.Count; i++)
+                        _listSignalInItem[_TouchNum].m_GouAnimator.gameObject.SetActive(true);
+                       
+                        if (ReponseInfo.award != null)
                         {
-                            if (i > 0)
+                            List<FunctionWindowsCreateManagerment.GenerialWard> listward = new List<FunctionWindowsCreateManagerment.GenerialWard>();
+                            int size = ReponseInfo.award.Count;
+                            for (int i = 0; i < size; i++)
                             {
-                                award += "#" + ReponseInfo.award[i].awardType + ":" + ReponseInfo.award[i].awardId + ":" + ReponseInfo.award[i].awardNum;
+                                FunctionWindowsCreateManagerment.GenerialWard gw = new FunctionWindowsCreateManagerment.GenerialWard();
+                                gw.id = ReponseInfo.award[i].awardId;
+                                gw.count = ReponseInfo.award[i].awardNum;
+                                if (ReponseInfo.award[i].pieceNum != null)
+                                {
+                                    if (ReponseInfo.award[i].awardType == 4)
+                                    {
+                                        gw.isNew = false;
+                                    }
+                                    else
+                                    {
+                                        gw.isNew = true;
+                                    }
+                                }
+                                else
+                                {
+                                    gw.isNew = true;
+                                }
+                                listward.Add(gw);
+                               
                             }
-                            else
-                            {
-                                award += ReponseInfo.award[i].awardType + ":" + ReponseInfo.award[i].awardId + ":" + ReponseInfo.award[i].awardNum;
-                            }
+                            FunctionWindowsCreateManagerment.ShowSpecialAwardInfo(listward);
                         }
-
-                        FunctionWindowsCreateManagerment.ShowRAwardInfo(award);
                         return true;
                     }
 
@@ -322,10 +352,19 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
             if (_listSignalInItem[i].m_NowSignalIn)
             {
                 _listSignalInItem[i].m_NowSignalIn = false;
+                if (JunZhuData.Instance().m_junzhuInfo.vipLv < _listSignalInItem[i].m_SignalInfo.vipDouble 
+                    && _listSignalInItem[i].m_SignalInfo.vipDouble > 0 
+                    && _listSignalInItem[i].m_SignalInfo.isDouble < 2)
+                {
+                    _listSignalInItem[i].m_Event.gameObject.SetActive(true);
+                }
+                else
+                {
+
+                }
                 _listSignalInItem[i].m_listGameobject[0].gameObject.SetActive(false);
                 _listSignalInItem[i].m_listGameobject[2].gameObject.SetActive(true);
-               // _listSignalInItem[i].m_GouAnimator.gameObject.SetActive(true);
-             //   _listSignalInItem[i].m_GouAnimator.enabled = true;
+                _listSignalInItem[i].m_SignalIns = 0;
             }
         }
     }
@@ -383,6 +422,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     int index_TopUpReward = 0;
     private Vector3 startPos2;
     int index_SignalInNum = 0;
+    int index_Reward = 0;
     public void LoadSignalInItemCallback(ref WWW p_www, string p_path, Object p_object)
     {
         if (m_Grid != null)
@@ -408,11 +448,15 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                                                                                    index_SignalInNum < CurrentSignalInDays ? true : false,
                                                                                    SignalIn, Retroactive,SingnalUpdate);
             }
-         
-          
+
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIcon_LoadCallBack);
             if (index_SignalInNum < listSignalInInfo.Count - 1)
             {
                 index_SignalInNum++;
+            }
+            else
+            {
+                m_ObjAllSignal.SetActive(true);
             }
             m_Grid.repositionNow = true;
         }
@@ -522,6 +566,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     }
     void OnDestroy()
     {
+        ClientMain.closePopUp();
         m_SignalIn = null;
         SocketTool.UnRegisterMessageProcessor(this);
     }
@@ -571,5 +616,42 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         RuntimeAnimatorController anim = (RuntimeAnimatorController)p_object;
       
         m_Anim_2.runtimeAnimatorController = anim;
+    }
+
+
+
+    private void OnIcon_LoadCallBack(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject iconSampleObject = Instantiate(p_object) as GameObject;
+        iconSampleObject.SetActive(true);
+        iconSampleObject.transform.parent = _listSignalInItem[index_Reward].transform;
+        iconSampleObject.transform.localPosition = Vector3.zero;
+        iconSampleObject.transform.localScale = Vector3.one;
+        IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+        
+        iconSampleManager.SetIconByID(listSignalInInfo[index_Reward].awardId, listSignalInInfo[index_Reward].awardNum.ToString(), 2);
+        iconSampleManager.SetIconPopText(listSignalInInfo[index_Reward].awardId, NameIdTemplate.GetName_By_NameId(
+          CommonItemTemplate.getCommonItemTemplateById(listSignalInInfo[index_Reward].awardId).nameId),
+          DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(listSignalInInfo[index_Reward].awardId).descId));
+        if (index_Reward < listSignalInInfo.Count - 1)
+        {
+            index_Reward++;
+        }
+        else
+        {
+            m_ObjHidden.SetActive(true);
+        }
+    
+
+        if (listSignalInInfo[index_Reward].state == 1)
+        {
+            iconSampleManager.NguiLongPress.OnNormalPress = OnNormalPress;
+        }
+    }
+
+
+    void OnNormalPress(GameObject obj)
+    {
+        SignalIn();
     }
 }

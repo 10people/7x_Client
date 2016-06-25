@@ -14,14 +14,23 @@ namespace Rank
             RequestOne(JunZhuData.Instance().m_junzhuInfo.name);
         }
 
-        public void Refresh(List<ChongLouInfo> list)
+        public void Refresh(List<ChongLouInfo> list, int result)
         {
             if (list == null || list.Count == 0)
             {
                 //Find nothing in one mode.
                 if (IsOneMode)
                 {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.FindNoKingCallBack);
+                    //not exist
+                    if (result == 1)
+                    {
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.PlayerNotExistCallBack);
+                    }
+                    //not in rank
+                    else if (result == 2)
+                    {
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.PlayerNotInRankCallBack);
+                    }
                 }
                 else if (CurrentPageIndex == 1)
                 {
@@ -37,38 +46,38 @@ namespace Rank
                     NoDataLabel.text = LanguageTemplate.GetText(LanguageTemplate.Text.PAI_HANG_BANG_01);
                     NoDataLabel.gameObject.SetActive(true);
                 }
+                else
+                {
+                    Debug.LogError("Return null when page index is: " + CurrentPageIndex + " and not one mode.");
+                }
             }
             else
             {
                 //Clear all
-                while (m_Grid.transform.childCount != 0)
-                {
-                    var child = m_Grid.transform.GetChild(0);
-                    child.parent = null;
-                    Destroy(child.gameObject);
-                }
                 m_DetailControllerList.Clear();
+
+                TransformHelper.AddOrDelItem(m_Grid.transform, m_Prefab, list.Count, m_Grid.cellHeight);
 
                 for (int i = 0; i < list.Count; i++)
                 {
-                    var temp = Instantiate(m_Prefab) as GameObject;
-                    TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                    var temp = m_Grid.transform.GetChild(i);
+                    temp.name = "_" + UtilityTool.FullNumWithZeroDigit(i, list.Count.ToString().Length);
+
                     var controller = temp.GetComponent<ChongLouDetailController>();
-
-                    temp.name += "_" + UtilityTool.FullNumWithZeroDigit(i, list.Count.ToString().Length);
-
                     controller.m_ModuleController = this;
                     controller.m_ChongLouInfo = list[i];
                     controller.SetThis();
 
                     m_DetailControllerList.Add(controller);
-
-                    m_Grid.Reposition();
-
-                    //Reset scroll view.
-                    m_ScrollView.UpdateScrollbars(true);
-                    m_ScrollBar.value = IsRefreshToTop ? 0.0f : 1.0f;
                 }
+
+                m_Grid.Reposition();
+
+                //Reset scroll view.
+                m_ScrollView.UpdateScrollbars(true);
+                m_ScrollBar.value = IsRefreshToTop ? 0.0f : 1.0f;
+                m_ScrollBar.ForceUpdate();
+                m_ScrollView.UpdatePosition();
                 NoDataLabel.gameObject.SetActive(false);
             }
 
@@ -79,7 +88,7 @@ namespace Rank
                 if (detailControllerList.Count == 1)
                 {
                     UISprite sprite = detailControllerList[0].GetComponent<UISprite>();
-                    sprite.spriteName = "jianbianbgliang";
+                    detailControllerList[0].SetBG(true);
 
                     float widgetValue = m_ScrollView.GetWidgetValueRelativeToScrollView(sprite).y;
                     if (widgetValue < 0 || widgetValue > 1)
@@ -123,7 +132,7 @@ namespace Rank
                             CurrentPageIndex = tempResp.pageNo;
                             TotalPageIndex = tempResp.pageCount;
 
-                            Refresh(tempResp.chongLouList);
+                            Refresh(tempResp.chongLouList, tempResp.result);
 
                             return true;
                         }

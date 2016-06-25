@@ -172,10 +172,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 
 	void InItTanBaoInfo ()
 	{
-		if (!MainCityUI.IsExitInObjectList (tbObj))
-		{
-			MainCityUI.TryAddToObjectList(tbObj);
-		}
+		MainCityUI.TryAddToObjectList(tbObj);
 
 		//十连副本场景
 		TreasureCityUI.TryAddToObjectList (tbObj);

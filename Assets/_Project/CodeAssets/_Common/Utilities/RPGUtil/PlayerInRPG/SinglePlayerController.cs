@@ -1,6 +1,4 @@
-﻿//#define DEBUG_MODE
-
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.IO;
@@ -29,7 +27,7 @@ public class SinglePlayerController : MonoBehaviour
 
     #region Move Controller
 
-    private bool is_CanMove = true;
+    public bool is_CanMove = true;
 
     public void DeactiveMove()
     {
@@ -78,24 +76,19 @@ public class SinglePlayerController : MonoBehaviour
     /// <summary>
     /// quit navigation when use character control
     /// </summary>
-    [HideInInspector]
     public bool IsInNavigate;
 
-    [HideInInspector]
     public delegate void VoidDelegate();
-    [HideInInspector]
     public VoidDelegate m_CompleteNavDelegate;
     public VoidDelegate m_StartNavDelegate;
     public VoidDelegate m_EndNavDelegate;
 
-    [HideInInspector]
     public Vector3 NavigationEndPosition;
     private float navigateDistance = 1f;
 
     public CharacterController m_CharacterController;
     public NavMeshAgent m_NavMeshAgent;
 
-    [HideInInspector]
     public Joystick m_Joystick;
 
     public Vector3 m_RealJoystickOffset
@@ -112,14 +105,14 @@ public class SinglePlayerController : MonoBehaviour
     }
 
     public float m_CharacterSpeed = 6;
-    public float m_CharacterSpeedY = 0.6f;
+    public float m_CharacterSpeedY = 10f;
     public float m_NavigateSpeed = 6;
 
     /// <summary>
     /// how much degree does angle change per second.
     /// </summary>
     [HideInInspector]
-    public const float angleSpeed = 120;
+    public const float angleSpeed = 1080;
 
     public Transform m_Transform;
 
@@ -143,48 +136,44 @@ public class SinglePlayerController : MonoBehaviour
     /// <param name="tempDistance">navigate distance, 1f for default.</param>
     public void StartNavigation(Vector3 tempPosition, float tempDistance = 1f)
     {
-        if (!is_CanMove)
-        {
-#if DEBUG_MODE
-            Debug.LogWarning("Cancel navigate cause controller set.");
-#endif
-            return;
-        }
-
         if (m_RealJoystickOffset != Vector3.zero)
         {
-#if DEBUG_MODE
-            Debug.LogWarning("Cancel navigation cause in character control");
-#endif
+            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
+            {
+                Debug.LogWarning("Cancel navigation cause in character control");
+            }
             return;
         }
 
-        if (!m_IsTurning)
+        m_LastNavigateTime = Time.realtimeSinceStartup;
+
+        navigateDistance = tempDistance;
+
+        StopCoroutine("DoStartNavigation");
+        StartCoroutine(DoStartNavigation(tempPosition));
+
+        if (m_StartNavDelegate != null)
         {
-            m_LastNavigateTime = Time.realtimeSinceStartup;
-
-            m_IsTurning = true;
-
-            navigateDistance = tempDistance;
-
-            StartCoroutine(DoStartNavigation(tempPosition));
-
-            if (m_StartNavDelegate != null)
-            {
-                m_StartNavDelegate();
-            }
+            m_StartNavDelegate();
         }
     }
 
+    private float navigationRotateSpeed = 1000f;
+
     public IEnumerator DoStartNavigation(Vector3 tempPosition)
     {
+        m_IsTurning = true;
+
         while (true)
         {
             Vector3 oldAngle = transform.eulerAngles;
-            transform.forward = tempPosition - transform.position;
 
+            //Get target angle.
+            transform.forward = tempPosition - transform.position;
             float targetAngleY = transform.eulerAngles.y;
-            float maxDelta = 1080 * Time.deltaTime;
+
+            //Get angle per frame.
+            float maxDelta = navigationRotateSpeed * Time.deltaTime;
             float angle = Mathf.MoveTowardsAngle(oldAngle.y, targetAngleY, maxDelta);
 
             transform.eulerAngles = new Vector3(0, angle, 0);
@@ -196,6 +185,8 @@ public class SinglePlayerController : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
         }
+
+        m_IsTurning = false;
 
         NavigationEndPosition = tempPosition;
 
@@ -221,7 +212,6 @@ public class SinglePlayerController : MonoBehaviour
 
         m_NavMeshAgent.SetDestination(tempPosition);
 
-        m_IsTurning = false;
         IsInNavigate = true;
     }
 
@@ -261,7 +251,6 @@ public class SinglePlayerController : MonoBehaviour
 
     #region Character track camera
 
-    [HideInInspector]
     public Camera TrackCamera;
 
     /// <summary>
@@ -285,9 +274,7 @@ public class SinglePlayerController : MonoBehaviour
     [Obsolete("Only effective in camera rotate mode, this mode of camera has not exist in the game.")]
     public float TrackCameraOffsetUpDownRotation;
 
-    [HideInInspector]
     public Vector3 TrackCameraPosition;
-    [HideInInspector]
     public Vector3 TrackCameraRotation;
 
     public void LateUpdate()
@@ -407,11 +394,18 @@ public class SinglePlayerController : MonoBehaviour
 
         #region Character Controller
 
+        //Always execute gravity.
+        if (m_CharacterController.enabled && !m_CharacterController.isGrounded)
+        {
+            m_CharacterController.Move(new Vector3(0, -m_CharacterSpeedY * Time.deltaTime, 0));
+        }
+
         if (!is_CanMove)
         {
-#if DEBUG_MODE
-            Debug.Log("Cancel move cause controller set.");
-#endif
+            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
+            {
+                //Debug.Log("Cancel move cause controller set.");
+            }
         }
         else
         {
@@ -457,11 +451,6 @@ public class SinglePlayerController : MonoBehaviour
 
                         Vector3 moveDirection = transform.forward;
 
-                        if (!m_CharacterController.isGrounded)
-                        {
-                            moveDirection.y -= m_CharacterSpeedY;
-                        }
-
                         //move if offset above half distance
                         if (distance > Joystick.MaxToggleDistance / 2.0f || isMoveForward)
                         {
@@ -491,13 +480,7 @@ public class SinglePlayerController : MonoBehaviour
                         //rotate and move.
                         transform.forward = moveDirection.normalized;
 
-                        if (!m_CharacterController.isGrounded)
-                        {
-                            moveDirection.y -= m_CharacterSpeedY;
-                        }
-
                         m_CharacterController.Move(moveDirection.normalized * m_CharacterSpeed * Time.deltaTime);
-
                     }
                 }
                 else
@@ -515,15 +498,6 @@ public class SinglePlayerController : MonoBehaviour
                             UIYindao.m_UIYindao.setOpenUIEff();
                         }
                     }
-
-                    Vector3 moveDirection = Vector3.zero;
-
-                    if (!m_CharacterController.isGrounded)
-                    {
-                        moveDirection.y -= m_CharacterSpeedY;
-                    }
-
-                    m_CharacterController.Move(moveDirection.normalized * m_CharacterSpeed * Time.deltaTime);
                 }
             }
         }
@@ -537,11 +511,14 @@ public class SinglePlayerController : MonoBehaviour
             //Check navigation remaining destination
             if (Vector3.Distance(m_Transform.position, NavigationEndPosition) <= navigateDistance)
             {
+                Debug.LogWarning("=======end navi with:" + m_CompleteNavDelegate);
+
                 StopPlayerNavigation();
                 if (m_CompleteNavDelegate != null)
                 {
-                    m_CompleteNavDelegate();
+                    var tempDelegate = m_CompleteNavDelegate;
                     m_CompleteNavDelegate = null;
+                    tempDelegate();
                 }
             }
         }
@@ -554,6 +531,12 @@ public class SinglePlayerController : MonoBehaviour
         m_Transform = transform;
         m_CharacterController.enabled = true;
         m_NavMeshAgent.enabled = false;
+
+        if (ConfigTool.GetBool(ConfigTool.CONST_TEST_MODE))
+        {
+            m_CharacterSpeed = 20;
+            m_NavigateSpeed = 20;
+        }
 
         m_NavMeshAgent.speed = m_NavigateSpeed;
         m_NavMeshAgent.acceleration = 10000.0f;

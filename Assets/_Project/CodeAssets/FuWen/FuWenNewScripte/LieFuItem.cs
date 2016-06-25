@@ -21,15 +21,7 @@ public class LieFuItem : MonoBehaviour {
 	public GameObject HitEnabel;
 
 	public BoxCollider mColider;
-	void Start () {
-	
 
-	}
-	
-
-	void Update () {
-	
-	}
 	public void Init()
 	{
 		mColider.gameObject.name = "Button_"+mLieFuActionInfo.type;
@@ -37,7 +29,7 @@ public class LieFuItem : MonoBehaviour {
 
 		LieFuTemplate mLieFuTemp = LieFuTemplate.getLieFuTemplateBy_Id (mLieFuActionInfo.type);
 		ItemName.text = mLieFuTemp.Name;
-		Icon.spriteName = mLieFuTemp.IconId.ToString ();
+
 		if(mLieFuActionInfo.cost <= 0)
 		{
 			PreCost.text = "首次免费";
@@ -77,12 +69,14 @@ public class LieFuItem : MonoBehaviour {
 			Icon.color = Color.gray;
 			mColider.enabled = false;
 			HitEnabel.SetActive(true);
+			Icon.spriteName = (mLieFuTemp.IconId+100).ToString ();
 		}
 		else
 		{
 			Icon.color = Color.white;
 			HitEnabel.SetActive(false);
 			mColider.enabled = true;
+			Icon.spriteName = mLieFuTemp.IconId.ToString ();
 		}
 	}
 	public void LieFuBtn()
@@ -112,7 +106,7 @@ public class LieFuItem : MonoBehaviour {
 			
 			byte[] t_protof;
 			t_protof = MiBaoinfoStream.ToArray();
-			SocketTool.Instance().SendSocketMessage(ProtoIndexes.LieFu_Action_req,ref t_protof);
+			SocketTool.Instance().SendSocketMessage(ProtoIndexes.LieFu_Action_req,ref t_protof,ProtoIndexes.LieFu_Action_Resp.ToString());
 		}
 	
 	}

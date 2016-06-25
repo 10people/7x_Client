@@ -16,8 +16,8 @@
 <PveStar starId="2022" desc="510048" condition="1,180" award="9:920001:30" />
 <PveStar starId="2023" desc="510028" condition="11,60,1" award="9:921001:60" />
 <PveStar starId="2031" desc="510043" condition="1,999999" award="0:900002:15" />
-<PveStar starId="2032" desc="510048" condition="1,180" award="9:920001:30" />
-<PveStar starId="2033" desc="510028" condition="11,60,1" award="9:921001:60" />
+<PveStar starId="2032" desc="510048" condition="1,999999" award="9:920001:30" />
+<PveStar starId="2033" desc="510028" condition="1,999999" award="9:921001:60" />
 <PveStar starId="3011" desc="510043" condition="1,999999" award="0:900002:20" />
 <PveStar starId="3012" desc="510052" condition="1,240" award="9:920001:40" />
 <PveStar starId="3013" desc="510053" condition="11,0,1" award="9:921001:80" />

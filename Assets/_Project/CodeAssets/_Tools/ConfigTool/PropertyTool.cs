@@ -31,10 +31,6 @@ public class PropertyTool : Singleton<PropertyTool>{
 
 	}
 
-	void Update(){
-		
-	}
-
 	void OnDestroy(){
 		CleanData();
 

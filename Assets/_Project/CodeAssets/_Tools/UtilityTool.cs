@@ -50,10 +50,6 @@ public class UtilityTool : Singleton<UtilityTool>{
 
     }
 
-    void FixedUpdate(){
-
-    }
-
     // Update is called once per frame
     void Update(){
 		{
@@ -75,14 +71,6 @@ public class UtilityTool : Singleton<UtilityTool>{
 			OnQuitTips();
 		}
 		#endif
-
-    }
-
-    void LateUpdate(){
-
-    }
-
-    void OnGUI(){
 
     }
 
@@ -187,7 +175,8 @@ public class UtilityTool : Singleton<UtilityTool>{
 			UIFont uifontButton1 = null, UIFont uifontButton2 = null, 
 			bool isShowBagItemNumBelow = false, 
 			bool isSetDepth = true, bool isBagItemTop = true, bool isFunction = false,
-			int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ){
+	      	int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID,
+	   		int vip0 = 0, int vip1 = 0){
 		bool t_debug_box = false;
 
 		if ( ConfigTool.GetBool (ConfigTool.CONST_LOG_DIALOG_BOX) ) {
@@ -244,7 +233,9 @@ public class UtilityTool : Singleton<UtilityTool>{
 	                   isSetDepth,
 	                   isBagItemTop,
 		               isFunction,
-						p_window_id );
+						p_window_id,
+		                   vip0,
+		                   vip1);
     }
 
 	GameObject ExecLoadBox(
@@ -264,7 +255,8 @@ public class UtilityTool : Singleton<UtilityTool>{
 		bool isSetDepth = true, 
 		bool isBagItemTop = true, 
 		bool isFunction = false,
-		int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ){
+		int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ,
+		int vip0 = 0, int vip1 = 0){
         if ( m_cached_box_obj == null ){
             Debug.LogError("Error, No Cached box.");
 
@@ -288,7 +280,9 @@ public class UtilityTool : Singleton<UtilityTool>{
 		             isSetDepth,
 		             isBagItemTop,
 		             isFunction,
-						p_window_id );
+						p_window_id,
+		             vip0,
+		             vip1);
 
 		return t_gb;
     }
@@ -652,6 +646,47 @@ public class UtilityTool : Singleton<UtilityTool>{
 
 	#region Coroutine Box
 
+	public static void StartUniqueCorutineBox(
+		string tile, 
+		string dis1, 
+		string dis2, 
+		List<BagItem> bagItem, 
+		string buttonname1,
+
+		string buttonname2, 
+		UIBox.onclick onClcik, 
+		UIBox.OnBoxCreated p_on_create = null, 
+		UIFont uifontButton1 = null, 
+		UIFont uifontButton2 = null, 
+
+		bool isShowBagItemNumBelow = false, 
+		bool isSetDepth = true, 
+		bool isBagItemTop = true,
+		bool isFunction = false ){
+
+		if( UIBox.BoxExistWithTime( tile ) ){
+			return;
+		}
+
+		UtilityTool.Instance.StartCoroutine(
+			UtilityTool.Instance.CoroutineBox( tile,
+				dis1,
+				dis2,
+				bagItem,
+				buttonname1,
+
+				buttonname2, 
+				onClcik, 
+				p_on_create, 
+				uifontButton1, 
+				uifontButton2, 
+
+				isShowBagItemNumBelow, 
+				isSetDepth, 
+				isBagItemTop,
+				isFunction ) );
+	}
+
 	/** Desc:
 	 * Coroutine box will not be destroyed when loading.
 	 * 
@@ -804,6 +839,11 @@ public class UtilityTool : Singleton<UtilityTool>{
         }
 
         return true;
+    }
+
+    public static void SetMultiTouch(bool isOpen)
+    {
+        UICamera.eventHandler.allowMultiTouch = isOpen;
     }
 
     #endregion

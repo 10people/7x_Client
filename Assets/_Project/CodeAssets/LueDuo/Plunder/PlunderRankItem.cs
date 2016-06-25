@@ -10,6 +10,7 @@ using ProtoBuf.Meta;
 
 public class PlunderRankItem : MonoBehaviour {
 
+	public UISprite m_bg;
 	public UISprite rankSprite;
 	public UILabel rankLabel;
 	public UILabel nameLabel;
@@ -21,11 +22,17 @@ public class PlunderRankItem : MonoBehaviour {
 	/// <param name="tempInfo">Temp info.</param>
 	public void InItRankItem (PlunderData.PlunderRankType tempType,GongJinInfo tempInfo)
 	{
+		SetBg (false);
 		rankSprite.spriteName = "rank" + tempInfo.rank;
-		rankLabel.text = tempInfo.rank > 3 ? MyColorData.getColorString (10,tempInfo.rank.ToString ()) : "";
+		rankLabel.text = tempInfo.rank > 3 ? tempInfo.rank.ToString () : "";
 
-		nameLabel.text = tempType == PlunderData.PlunderRankType.ALLIANCE_RANK ? MyColorData.getColorString (10,"<" + tempInfo.name + ">") : MyColorData.getColorString (10,tempInfo.name);
+		nameLabel.text = tempType == PlunderData.PlunderRankType.ALLIANCE_RANK ? "<" + tempInfo.name + ">" : tempInfo.name;
 
-		numLabel.text = MyColorData.getColorString (10,tempInfo.gongJin.ToString ());
+		numLabel.text = tempInfo.gongJin.ToString ();
+	}
+
+	public void SetBg (bool light)
+	{
+		QXComData.SetBgSprite (m_bg,light);
 	}
 }

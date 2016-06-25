@@ -8,14 +8,7 @@ public class ShowDropinfo : MonoBehaviour {
 
 	[HideInInspector]public string mName;
 	[HideInInspector]public string mInfo;
-	void Start () {
-	
-	}
-	
 
-	void Update () {
-	
-	}
 	public void init()
 	{
 		Rew_Name.text = mName;

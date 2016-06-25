@@ -94,6 +94,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 	public UILabel unlockLabel;
 
+	public UILabel labelV;
+
 
 	[HideInInspector] public int winLevel;
 
@@ -115,6 +117,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 	private float actionTime = .3f;
 
 	private CloseCallback mCloseCallback;
+
+	private bool inStronger = false;
 
 
     private int[,] positionDictX = new int[,] {
@@ -138,6 +142,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
     public void OnResultQuit()
     {
+//		Debug.Log ("OnResultQuit  1   " + (mCloseCallback != null) + ", " + CityGlobalData.m_isWhetherOpenLevelUp);
+
 		UIYindao.m_UIYindao.CloseUI ();
 		
 		if(mCloseCallback != null)
@@ -151,23 +157,31 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		
 		Destroy ( al );
 
-		if (CityGlobalData.m_isWhetherOpenLevelUp == false) return;
+//		if (CityGlobalData.m_isWhetherOpenLevelUp == false) return;
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan && CityGlobalData.m_tempSection == 0)
 		{
+//			Debug.Log ("OnResultQuit  2");
+
 			ExecQuit();
 		}
 		else
 		{
+//			Debug.Log ("OnResultQuit  3");
+
 			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_TaskReq,
 			                                        //"29502|10000" );
 			                                        true,
 			                                        ProtoIndexes.S_TaskList);
+
+			ScheduleHelper.RegisterSchedule(ExecQuit, 10);
 		}
         
 		ClientMain.m_ClientMainObj.AddComponent<AudioListener> ();
 		
 		SocketTool.RegisterSocketListener(this);
+
+//		Debug.Log ("OnResultQuit  4");
     }
 
 	public void OnResultHelp()
@@ -203,10 +217,14 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
     public bool OnSocketEvent(QXBuffer p_message)
     {
+//		Debug.Log ("OnSocketEvent  1");
+
         if (p_message == null)
         {
             return false;
         }
+
+//		Debug.Log ("OnSocketEvent  " + p_message.m_protocol_index);
 
         switch (p_message.m_protocol_index)
         {
@@ -226,23 +244,27 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
     private void ExecQuit()
     {
+//		Debug.Log ("ExecQuit  1");
+
+		ScheduleHelper.UnRegisterSchedule(ExecQuit);
+
         GameObject root3d = GameObject.Find("BattleField_V4_3D");
 
         GameObject root2d = GameObject.Find("BattleField_V4_2D");
 
 	 	foreach( BaseAI node in BattleControlor.Instance().enemyNodes)
 		{
-			node.setNavEnabled(false);
+			if(node != null) node.setNavEnabled(false);
 		}
 
 		foreach( BaseAI node in BattleControlor.Instance().selfNodes)
 		{
-			node.setNavEnabled(false);
+			if(node != null) node.setNavEnabled(false);
 		}
 
 		foreach( BaseAI node in BattleControlor.Instance().midNodes)
 		{
-			node.setNavEnabled(false);
+			if(node != null) node.setNavEnabled(false);
 		}
 
         //Destroy(root3d);
@@ -259,10 +281,11 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		}
 		else
         {
-			if (CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan)
+			if (CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan && !inStronger)
 			{
 				Global.m_isOpenBaiZhan = true;
 			}
+
 			SceneManager.EnterMainCity();
         }
 
@@ -270,6 +293,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
         {
             CityGlobalData.m_JunZhuCreate = true;
         }
+
+//		Debug.Log ("ExecQuit  2");
     }
 
     public void OnResultRetry()
@@ -287,6 +312,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
     public void OnStronger()
     {
+		inStronger = true;
+
         OnResultQuit();
 		
 		MainCityUILT.IsDoDelegateAfterInit = true;//goto main city tip window.
@@ -296,6 +323,11 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		Global.m_isOpenPVP = false;
 
 		Global.m_isOpenBaiZhan = false;
+
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_ChongLou)
+		{
+			CityGlobalData.QCLISOPen = false;
+		}
 
 		if (CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve) Global.m_isOpenHuangYe = false;
     }
@@ -646,7 +678,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 //			yield return new WaitForEndOfFrame ();
 //		}
 
-		if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN)
+		if(BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN && CityGlobalData.m_battleType != EnterBattleField.BattleType.Type_BaiZhan)
 		{
 			UI3DEffectTool.ShowMidLayerEffect( 
 			                                             UI3DEffectTool.UIType.FunctionUI_1, 
@@ -681,7 +713,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
 					BattleResultStar star = stars[i];
 
-					star.onShow();
+					star.onShow(actionTime > 0);
 				}
 
 				star_win.refreshData_2(winLevel == 3 && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN, null);
@@ -695,13 +727,13 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 					yield return new WaitForEndOfFrame ();
 				}
 
-				star_win.onShow_2();
+				star_win.onShow_2(actionTime > 0);
 			}
 			else if(CityGlobalData.m_levelType == LevelType.LEVEL_TALE)//传奇
 			{
 				star_win.refreshData_2(winLevel == 3 && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN, null);
 
-				star_win.onShow_2();
+				star_win.onShow_2(actionTime > 0);
 			}
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
@@ -808,6 +840,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan)
 		{
 			layerBaizhan_1.gameObject.SetActive(true);
+
+			layerBaizhan_1.startAction();
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pvp)
 		{
@@ -840,6 +874,13 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_ChongLou)
 		{
 			layerGuoguan_2.SetActive (true);
+
+			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_ChongLou && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_WIN)
+			{
+				labelV.gameObject.SetActive(true);
+
+				labelV.text = LanguageTemplate.GetText(51000);
+			}
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{

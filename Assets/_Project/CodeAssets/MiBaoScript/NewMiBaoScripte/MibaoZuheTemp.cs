@@ -36,14 +36,6 @@ public class MibaoZuheTemp : MonoBehaviour {
 	public GameObject Art;
 
 	public UISprite Dikuang;
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
 
 	public void Init()
 	{

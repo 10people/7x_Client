@@ -35,6 +35,7 @@ public class My_DamageRank : MonoBehaviour {
 
 	float mScrollView_y;
 
+	[HideInInspector]public int m_levelid;
 	void Awake()
 	{
 		BtnList.ForEach(item => SetBtnMoth(item));
@@ -110,7 +111,7 @@ public class My_DamageRank : MonoBehaviour {
 			{
 				mm__RankItem.iSMyself = false;
 			}
-			mm__RankItem.Init();
+			mm__RankItem.Init(m_levelid);
 		}
 		if(mrank <= 0)
 		{

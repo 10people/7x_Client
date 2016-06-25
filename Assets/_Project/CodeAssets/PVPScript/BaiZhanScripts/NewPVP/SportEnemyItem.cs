@@ -25,7 +25,10 @@ public class SportEnemyItem : MonoBehaviour {
 		m_headIcon.spriteName = "PlayerIcon" + SportEnemyInfo.roleId;
 
 		m_nation.spriteName = "nation_" + SportEnemyInfo.guojia;
-		m_name.text = MyColorData.getColorString (1,SportEnemyInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse(SportEnemyInfo.junZhuName)) : SportEnemyInfo.junZhuName);
+
+		QXComData.SetNationSprite (m_nation,SportEnemyInfo.guojia);
+
+		m_name.text = SportEnemyInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse(SportEnemyInfo.junZhuName)) : SportEnemyInfo.junZhuName;
 		
 		m_zhanLi.text = "战力：" + MyColorData.getColorString (SportEnemyInfo.zhanLi > QXComData.JunZhuInfo ().zhanLi ? 5 : 4,SportEnemyInfo.zhanLi.ToString ());
 		

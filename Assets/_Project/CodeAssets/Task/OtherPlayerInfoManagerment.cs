@@ -37,7 +37,6 @@ public class OtherPlayerInfoManagerment : MonoBehaviour
             MainCityUI.TryRemoveFromObjectList(m_MainParent);
             Destroy(m_MainParent);
         }
-
     }
     void ShowInfo()
     {
@@ -91,7 +90,16 @@ public class OtherPlayerInfoManagerment : MonoBehaviour
                         string[] ss = m_OtherPlayerId.Split(':');
              
                         AllianceData.Instance.RequestAllianceInvite(long.Parse(ss[1]));
+                        Destroy(m_MainParent);
                     }
+                }
+                break;
+            case 3:
+                {
+                    string[] ss = m_OtherPlayerId.Split(':');
+                    // long.Parse(ss[1])   ss[2];
+                    QXChatPage.chatPage.setSiliao(long.Parse(ss[1]), ss[2], m_MainParent);
+                    Destroy(m_MainParent);
                 }
                 break;
         }

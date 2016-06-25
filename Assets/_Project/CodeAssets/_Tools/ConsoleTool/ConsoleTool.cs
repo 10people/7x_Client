@@ -100,11 +100,6 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 		}
 	}
 
-	// Update is called once per frame
-	void Update () {
-
-	}
-
 //	void LateUpdate(){
 //		ManualLateUpdate();
 //	}
@@ -236,6 +231,9 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 				RegisterCommand( SET_LIGHT, Console_SetQuality.SetLight );
 				
 				RegisterCommand( SET_BLOOM, Console_SetQuality.SetBloom );
+
+				RegisterCommand( SWITCH_SCENE_CAMERA_FX, Console_SetQuality.SwitchCameraFx );
+
 
 				RegisterCommand( SET_WEIGHT, Console_SetQuality.SetWeight );
 
@@ -516,6 +514,8 @@ public class ConsoleTool : MonoBehaviour, SocketProcessor, SocketListener {
 	public const string SET_LIGHT 						= "/SetLight";
 
 	public const string SET_BLOOM						= "/SetBloom";
+
+	public const string SWITCH_SCENE_CAMERA_FX			= "/SwitchCameraFx";
 
 
 

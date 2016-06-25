@@ -77,7 +77,7 @@ Shader "Custom/Objects/Main Texture Cutout" {
 	            o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
 	            o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
 	            o.posWorld = mul(_Object2World, v.vertex);
-	            float3 lightColor = _LightColor0.rgb;
+	            float3 lightColor = _LightColor0.xyz;
 	            o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 	            UNITY_TRANSFER_FOG(o,o.pos);
 	            TRANSFER_VERTEX_TO_FRAGMENT(o)
@@ -90,7 +90,7 @@ Shader "Custom/Objects/Main Texture Cutout" {
 	            float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 	            float3 normalDirection = i.normalDir;
 	            float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
-	            float3 lightColor = _LightColor0.rgb;
+	            float3 lightColor = _LightColor0.xyz;
 	            float attenuation = LIGHT_ATTENUATION(i);
 	            float3 attenColor = attenuation * _LightColor0.xyz;
 	            UnityLight light;

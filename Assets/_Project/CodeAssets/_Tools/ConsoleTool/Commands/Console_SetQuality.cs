@@ -186,6 +186,25 @@ public class Console_SetQuality {
 	
 	#endregion
 
+
+
+	#region Scene Camera Fx
+
+	public static void SwitchCameraFx( string[] p_params ){
+		if( p_params.Length <= 1 ){
+			Debug.LogError( "Error, params not enough." );
+
+			return;
+		}
+
+
+		{
+			Quality_SceneCameraFx.SwitchSceneCameraFx();
+		}
+	}
+
+	#endregion
+
 	
 	
 	#region Set Light

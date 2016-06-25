@@ -36,14 +36,6 @@ public class GetMiBaoInfo : MonoBehaviour {
 		return mGetMiBaoInfo;
 	}
 
-	void Start () {
-	
-	}
-
-	void Update () {
-	
-	}
-
 	public void addAttrToX(string x1, int addValue){
 		char []x = x1.ToCharArray ();
 		//Debug.Log ("x[0] = "+x[0]);

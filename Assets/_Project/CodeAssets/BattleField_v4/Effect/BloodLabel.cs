@@ -53,6 +53,8 @@ public class BloodLabel : UILabel
 
 		m_callback = p_callback;
 
+		Update ();
+
 		StartCoroutine (_Clock(time));
 
 		StartCoroutine (_showBloodEx(time, _ty));

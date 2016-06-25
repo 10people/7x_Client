@@ -49,9 +49,7 @@ public class JiBaiAward : MYNGUIPanel {
 //		Debug.Log ("Star_Id = "+Star_Id);
 		ShowTip.showTip (Star_Id);
 	}
-	void Update () {
-	
-	}
+
 	public void Init()
 	{
 		CommonItemTemplate mItemTemp = CommonItemTemplate.getCommonItemTemplateById(mAwardinfo.itemId);

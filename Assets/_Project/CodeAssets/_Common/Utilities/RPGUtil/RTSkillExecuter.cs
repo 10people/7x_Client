@@ -19,7 +19,7 @@ public class RTSkillExecuter
         if (p_attackUID == PlayerSceneSyncManager.Instance.m_MyselfUid)
         {
             //mine skill
-            if (m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(p_attackUID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot))
+            if (m_AnimationHierarchyPlayer.IsCanPlayAnimation(p_attackUID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot))
             {
                 //turn rotation
                 if (m_PlayerManager.m_PlayerDic.ContainsKey(p_beenAttackUID))
@@ -30,7 +30,7 @@ public class RTSkillExecuter
 
                 m_SelfPlayerController.DeactiveMove();
 
-                m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(p_attackUID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
+                m_AnimationHierarchyPlayer.TryPlayAnimation(p_attackUID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
 
                 if (RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot > 0)
                 {
@@ -44,7 +44,7 @@ public class RTSkillExecuter
             if (temp.Any())
             {
                 //other player skill.
-                if (m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(p_attackUID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot))
+                if (m_AnimationHierarchyPlayer.IsCanPlayAnimation(p_attackUID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot))
                 {
                     //turn rotation.
                     if (m_PlayerManager.m_PlayerDic.ContainsKey(p_beenAttackUID))
@@ -68,62 +68,83 @@ public class RTSkillExecuter
                         m_PlayerManager.m_PlayerDic[p_attackUID].transform.forward = m_SelfPlayerController.transform.position - m_PlayerManager.m_PlayerDic[p_attackUID].transform.position;
                         m_PlayerManager.m_PlayerDic[p_attackUID].transform.localEulerAngles = new Vector3(0, m_PlayerManager.m_PlayerDic[p_attackUID].transform.localEulerAngles.y, 0);
 
-                        if (RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot > 0)
+                        if (EffectNumController.Instance.IsCanPlayEffect())
                         {
-                            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+                            EffectNumController.Instance.NotifyPlayingEffect();
+
+                            if (RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot > 0)
+                            {
+                                FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+                            }
                         }
                     }
 
                     temp.First().Value.DeactiveMove();
 
-                    m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(p_attackUID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
+                    m_AnimationHierarchyPlayer.TryPlayAnimation(p_attackUID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
                 }
             }
         }
     }
 
-    public void ExecuteBeenAttack(int p_attackUID, int p_beenAttackUID, long p_damage, float p_remaining, int p_targetId, int p_skillID)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="p_attackUID"></param>
+    /// <param name="p_beenAttackUID"></param>
+    /// <param name="p_damage"></param>
+    /// <param name="p_remaining"></param>
+    /// <param name="p_selectTargetId">current select uid, use this to update head icon</param>
+    /// <param name="p_skillID"></param>
+    public void ExecuteBeenAttack(int p_attackUID, int p_beenAttackUID, long p_damage, float p_remaining, int p_selectTargetId, int p_skillID)
     {
         if (p_beenAttackUID == PlayerSceneSyncManager.Instance.m_MyselfUid)
         {
             //mine been attack
-            if (m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(p_beenAttackUID, RTActionTemplate.GetTemplateByID(p_skillID).CeOnHit))
+            if (m_AnimationHierarchyPlayer.IsCanPlayAnimation(p_beenAttackUID, RTActionTemplate.GetTemplateByID(p_skillID).CeOnHit))
             {
-                m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(p_beenAttackUID, RTActionTemplate.GetTemplateByID(p_skillID).CeOnHit);
-
-                FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(p_skillID).CsOnHit), m_SelfPlayerController.gameObject, null, Vector3.zero, m_SelfPlayerController.transform.forward);
-
-                EffectTool.Instance.SetHittedEffect(m_SelfPlayerController.gameObject);
+                m_AnimationHierarchyPlayer.TryPlayAnimation(p_beenAttackUID, RTActionTemplate.GetTemplateByID(p_skillID).CeOnHit);
             }
+
+            //Been attack effect not controlled by animation.
+            FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(p_skillID).CsOnHit), m_SelfPlayerController.gameObject, null, Vector3.zero, m_SelfPlayerController.transform.forward);
+
+            EffectTool.Instance.SetHittedEffect(m_SelfPlayerController.gameObject);
 
             m_SelfPlayerCultureController.OnDamage(p_damage, p_remaining, p_skillID == 111);
             m_SelfIconSetter.UpdateBar(p_remaining);
         }
         else
         {
-            var temp = m_PlayerManager.m_PlayerDic.Where(item => item.Key == p_beenAttackUID).ToList();
-            if (temp.Any())
+            var list = m_PlayerManager.m_PlayerDic.Where(item => item.Key == p_beenAttackUID).ToList();
+            if (list.Any())
             {
+                var cultureController = list.First().Value.GetComponent<RPGBaseCultureController>();
+
                 //other player been attack.
-                if (m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(p_beenAttackUID, RTActionTemplate.GetTemplateByID(p_skillID).CeOnHit))
+                if (m_AnimationHierarchyPlayer.IsCanPlayAnimation(p_beenAttackUID, RTActionTemplate.GetTemplateByID(p_skillID).CeOnHit))
                 {
-                    m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(p_beenAttackUID, RTActionTemplate.GetTemplateByID(p_skillID).CeOnHit);
-
-                    if (EffectNumController.Instance.IsCanPlayEffect())
+                    //Cancel play been attack animation on special target.
+                    if (!cultureController.IsCarriage)
                     {
-                        EffectNumController.Instance.NotifyPlayingEffect();
-
-                        FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(p_skillID).CsOnHit), temp.First().Value.gameObject, null, Vector3.zero, temp.First().Value.transform.forward);
+                        m_AnimationHierarchyPlayer.TryPlayAnimation(p_beenAttackUID, RTActionTemplate.GetTemplateByID(p_skillID).CeOnHit);
                     }
-
-                    EffectTool.Instance.SetHittedEffect(temp.First().Value.gameObject);
                 }
 
-                var temp2 = temp.First().Value.GetComponent<RPGBaseCultureController>();
-                if (temp2 != null)
+                //Been attack effect not controlled by animation.
+                if (EffectNumController.Instance.IsCanPlayEffect())
                 {
-                    temp2.OnDamage(p_damage, p_remaining, p_skillID == 111);
-                    if (p_targetId == p_beenAttackUID)
+                    EffectNumController.Instance.NotifyPlayingEffect();
+
+                    FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(p_skillID).CsOnHit), list.First().Value.gameObject, null, Vector3.zero, list.First().Value.transform.forward);
+                }
+
+                EffectTool.Instance.SetHittedEffect(list.First().Value.gameObject);
+
+                if (cultureController != null)
+                {
+                    cultureController.OnDamage(p_damage, p_remaining, p_skillID == 111);
+                    if (p_selectTargetId == p_beenAttackUID)
                     {
                         m_TargetIconSetter.UpdateBar(p_remaining);
                     }
@@ -137,11 +158,11 @@ public class RTSkillExecuter
         if (p_uID == PlayerSceneSyncManager.Instance.m_MyselfUid)
         {
             //mine skill
-            if (m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot))
+            if (m_AnimationHierarchyPlayer.IsCanPlayAnimation(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot))
             {
                 m_SelfPlayerController.DeactiveMove();
 
-                m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
+                m_AnimationHierarchyPlayer.TryPlayAnimation(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
 
                 if (RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot > 0)
                 {
@@ -160,11 +181,11 @@ public class RTSkillExecuter
                 if (!temp.First().Value.IsCarriage)
                 {
                     //other player skill, carriage not included.
-                    if (m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot))
+                    if (m_AnimationHierarchyPlayer.IsCanPlayAnimation(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot))
                     {
                         temp.First().Value.DeactiveMove();
 
-                        m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
+                        m_AnimationHierarchyPlayer.TryPlayAnimation(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
 
                         if (EffectNumController.Instance.IsCanPlayEffect())
                         {

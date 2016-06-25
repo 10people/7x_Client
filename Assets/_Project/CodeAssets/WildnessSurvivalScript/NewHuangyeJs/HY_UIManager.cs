@@ -12,7 +12,10 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 
 	public AllianceHaveResp M_UnionInfo;
 
-	public UILabel Builds;
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
+//	public UILabel Builds;
 
 	//public UILabel Hy_JinBi;
 
@@ -60,7 +63,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	}
 	void Awake()
 	{ 
-		
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, "荒野求生", 0, 0);
 		SocketTool.RegisterMessageProcessor(this);
 		
 	}
@@ -79,9 +82,6 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 	}
 
-	void Update () {
-	
-	}
 	//public GameObject NeedScoleUI;
 	public void init()
 	{
@@ -319,14 +319,16 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		My_DamageRank mMy_DamageRank = RankUI.GetComponent<My_DamageRank>();
 		
 		mMy_DamageRank.mRankList = m_MaxDamageRank;
-		
+
+		mMy_DamageRank.m_levelid = m_Huangye_resp.treasure.guanQiaId;
+
 		mMy_DamageRank.Init ();
 		
 		MainCityUI.TryAddToObjectList (RankUI,false);
 	}
 	public void ShowRemainTime()
 	{
-		Builds.text = M_UnionInfo.build.ToString();
+//		Builds.text = M_UnionInfo.build.ToString();
 		if(m_Huangye_resp.remianTimes <= 0)
 		{
 			int Hyid = 300200;

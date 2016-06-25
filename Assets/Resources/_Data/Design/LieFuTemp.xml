@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LieFuTemp id="1" cost="20000" awardID="311=100,312=5" promoRate="10" name="庄周" icon="101" />
-<LieFuTemp id="2" cost="30000" awardID="321=100,322=50" promoRate="10" name="老子" icon="102" />
-<LieFuTemp id="3" cost="50000" awardID="331=100,332=80" promoRate="10" name="姜太公" icon="103" />
-<LieFuTemp id="4" cost="100000" awardID="341=100,342=100" promoRate="10" name="女娲" icon="104" />
+<LieFuTemp id="1" cost="10000" awardID="311=100" promoRate="40" name="庄周" icon="101" />
+<LieFuTemp id="2" cost="20000" awardID="321=100,322=10" promoRate="40" name="老子" icon="102" />
+<LieFuTemp id="3" cost="50000" awardID="331=100,332=50" promoRate="40" name="姜太公" icon="103" />
+<LieFuTemp id="4" cost="100000" awardID="341=100,342=100" promoRate="0" name="女娲" icon="104" />
 </dataset>

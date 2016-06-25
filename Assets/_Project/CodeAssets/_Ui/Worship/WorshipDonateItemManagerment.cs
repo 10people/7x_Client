@@ -11,5 +11,5 @@ public class WorshipDonateItemManagerment : MonoBehaviour
     public UILabel m_LabTimes;
     public UILabel m_LabDes;
     public GameObject m_TanHao;
-    public EventIndexHandle m_Event;
+    public EventPressIndexHandle m_Event;
 }

@@ -121,6 +121,22 @@ public class ExpTempTemp : XmlLoadManager
         return 0;
     }
 
+	public static int GetExp(int expId,int leve)
+	{
+		{
+			ProcessAsset();
+		}
+		for (int i = 0; i < templates.Count; i++)
+		{
+			ExpTempTemp t_item = templates[i];
+			
+			if (t_item.expId == expId && t_item.level == leve)
+			{
+				return t_item.needExp;
+			}
+		}
+		return 0;
+	}
 
 
 }

@@ -13,6 +13,7 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
     public GameObject m_BackObj;
     public GameObject m_Back_2Obj;
     public List<UILabel> m_listLabel;
+    public GameObject m_ObjEffect;
     public EventPressIndexHandle m_Event;
     public delegate void OnClick_TouchEachDay();
     OnClick_TouchEachDay CallBackSignalIn;
@@ -20,14 +21,24 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
     OnClick_TouchRetroactive CallBack_Retroactive;
     public delegate void dele_AnimationFinish();
     dele_AnimationFinish CallBackAnimationFinish;
-
+    public List<GameObject> m_listEffect;
     private bool _isTouchEnable = false;
     [HideInInspector]
     public bool m_NowSignalIn = false;
+    public QiandaoAward m_SignalInfo;
     void Start()
     {
         m_Event.m_Handle += Retroactive;
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(245), ResourceLoadCallback_0);
+    }
+    private bool _isCanSignalIn = false;
+    void Update()
+    {
+        if (_isCanSignalIn && m_SignalInfo.state == 1)
+        {
+          _isCanSignalIn = false;
+            ShowEffect();
+        }
     }
 
     void Retroactive(int index)
@@ -36,7 +47,14 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         {
             case 0:
                 {
-                    Global.CreateFunctionIcon(1901);
+                    if (JunZhuData.Instance().m_junzhuInfo.vipLv >= m_SignalInfo.vipDouble)
+                    {
+                        CallBack_Retroactive(int.Parse(transform.name));
+                    }
+                    else
+                    {
+                        Global.CreateFunctionIcon(1901);
+                    }
                 }
                 break;
             case 1:
@@ -65,12 +83,19 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
 
     };
     public int m_SignalInState;
-  
+    public int m_SignalIns = 0;
     private ItemInfo rewardInfo = new ItemInfo();
     private int _state = 0;
     private bool _isSpark = false;
+
     public void ShowInfo(QiandaoAward reward, bool isGuang, bool isMesh, OnClick_TouchEachDay callback, OnClick_TouchRetroactive callback_TouchRetroactive, dele_AnimationFinish callback_finish = null)
     {
+        m_SignalInfo = reward;
+
+        if (  m_SignalInfo.state == 1)
+        {
+            _isCanSignalIn = true;
+        }
         m_SignalInState = reward.isDouble;
         CallBack_Retroactive = callback_TouchRetroactive;
         m_BackObj.SetActive(reward.bottomColor == 0);
@@ -81,17 +106,19 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         }
         CallBackSignalIn = callback;
         m_NowSignalIn = reward.state == 1;
-        m_listGameobject[0].gameObject.SetActive(reward.state == 1);
-        if (reward.state == 1)
+        m_SignalIns = reward.state;
+   
+
+        _state = reward.state;
+        m_Event.gameObject.SetActive(isMesh && reward.state == 0 && reward.vipDouble > 0 && m_SignalInState < 2);
+        if (isMesh && reward.state == 0 && reward.vipDouble > 0)
         {
-            m_GouAnimator.enabled = true;
+            m_GouAnimator.gameObject.SetActive(isMesh && reward.state == 0 && reward.vipDouble > 0 && m_SignalInState == 2);
         }
         else
         {
-            m_GouAnimator.enabled = false;
+            m_GouAnimator.gameObject.SetActive(true);
         }
-        _state = reward.state;
-        m_Event.gameObject.SetActive(isMesh && reward.state == 0 && reward.vipDouble > 0 && reward.isDouble < 2);
         _isSpark = isMesh && reward.state == 0;
         m_listGameobject[2].gameObject.SetActive(isMesh && reward.state == 0);
         _isTouchEnable = isMesh && reward.state == 0 ? true : false;
@@ -108,7 +135,7 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         {
             m_listGameobject[1].SetActive(false);
         }
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+    //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
     }
 
     private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
@@ -143,4 +170,40 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         CallBackAnimationFinish();
     }
 
+    int index_num = 0;
+    void ShowEffect()
+    {
+        m_ObjEffect.SetActive(true);
+       StartCoroutine(waitInfo());
+    }
+
+    IEnumerator waitInfo()
+    {
+        m_listEffect[index_num].SetActive(true);
+        yield return new WaitForSeconds(0.05f);
+        index_num++;
+        if (index_num < m_listEffect.Count)
+        {
+            m_listEffect[index_num].SetActive(true);
+            if (index_num > 0)
+            {
+                m_listEffect[index_num - 1].SetActive(false);
+            }
+            if (m_SignalIns == 1)
+            {
+                StartCoroutine(waitInfo());
+            }
+            else
+            {
+                m_ObjEffect.SetActive(false);
+            }
+        }
+        else
+        {
+             m_listEffect[index_num - 1].SetActive(false);
+            index_num = 0;
+            StartCoroutine(waitInfo());
+        }
+      
+    }
 }

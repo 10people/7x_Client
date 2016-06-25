@@ -31,14 +31,6 @@ public class AppMember : MonoBehaviour {
 
 	public AllianceHaveResp m_tAllianceHaveResp;
 
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
 	public void init()
 	{
 		if(m_tAllianceHaveResp.identity == 1||m_tAllianceHaveResp.identity == 2)
@@ -62,8 +54,11 @@ public class AppMember : MonoBehaviour {
 		}
 		nameLabel.text = mApplicantInfo.name;
 
-		BaiZhanTemplate mBaiZhanTemplate = BaiZhanTemplate.getBaiZhanTemplateById (mApplicantInfo.junXian);
-		string mJX = NameIdTemplate.GetName_By_NameId (mBaiZhanTemplate.funDesc);
+//		BaiZhanTemplate mBaiZhanTemplate = BaiZhanTemplate.getBaiZhanTemplateById (mApplicantInfo.junXian);
+
+		string mJX = QXComData.GetJunXianName (mApplicantInfo.junXian);
+
+//		string mJX = NameIdTemplate.GetName_By_NameId (mBaiZhanTemplate.funDesc);
 
 		junXianLabel.text = mJX;
 

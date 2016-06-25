@@ -1113,6 +1113,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0167681184
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600298
+        messageOptions: 0
       - time: .0210969169
         functionName: attackForward
         data: 
@@ -1133,13 +1140,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .438196689
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 203
         messageOptions: 0
       - time: .546003878
         functionName: createArrow
@@ -1304,6 +1304,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0281126294
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 204
+        messageOptions: 0
       - time: .0421939455
         functionName: refreshCDTime
         data: 
@@ -1311,7 +1318,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 32
         messageOptions: 0
-      - time: .177215353
+      - time: .184358209
         functionName: PlaySound
         data: 33060
         objectReferenceParameter: {instanceID: 0}
@@ -1324,13 +1331,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .55430311
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 204
         messageOptions: 0
       - time: .557622671
         functionName: createArrow
@@ -1774,7 +1774,7 @@ ModelImporter:
       name: DODGE
       takeName: Take 001
       firstFrame: 224
-      lastFrame: 243
+      lastFrame: 244
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1806,6 +1806,20 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 401
+        messageOptions: 0
+      - time: .0684040114
+        functionName: PlaySound
+        data: 3250
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .718578935
+        functionName: PlaySound
+        data: 3251
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       transformMask:
       - path: 
@@ -2063,6 +2077,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .125249386
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600294
+        messageOptions: 0
       - time: .0548518449
         functionName: attackStart
         data: 
@@ -2083,13 +2104,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .88020128
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 304
         messageOptions: 0
       - time: .883100092
         functionName: createArrow
@@ -2233,6 +2247,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0314377397
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600295
+        messageOptions: 0
       - time: .0421943814
         functionName: attackStart
         data: 
@@ -2253,13 +2274,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .657628238
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 304
         messageOptions: 0
       - time: .659535825
         functionName: createArrow
@@ -2403,6 +2417,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .528351665
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600296
+        messageOptions: 0
       - time: .0464134216
         functionName: attackStart
         data: 
@@ -2423,13 +2444,6 @@ ModelImporter:
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
-        messageOptions: 0
-      - time: .757817924
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 304
         messageOptions: 0
       - time: .762651742
         functionName: createArrow
@@ -2573,6 +2587,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0206738357
+        functionName: playAttackEffect
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 600297
+        messageOptions: 0
       - time: .0295366738
         functionName: attackStart
         data: 
@@ -2594,14 +2615,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .551626205
-        functionName: playAttackEffect
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 305
-        messageOptions: 0
-      - time: .554867864
+      - time: .559629738
         functionName: createArrow
         data: 
         objectReferenceParameter: {instanceID: 0}

@@ -29,19 +29,6 @@ public class SceneBackgroundEffect : MonoBehaviour {
 		InitEffect();
 	}
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-
-	void OnEnable(){
-		
-	}
-
-	void OnDisable(){
-		
-	}
-	
 	// Update is called once per frame
 	void Update () {
 		if( !m_is_supported ){

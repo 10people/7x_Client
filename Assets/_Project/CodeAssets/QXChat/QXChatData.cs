@@ -101,7 +101,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	private void LoadChatPrefabCallBack (ref WWW p_www, string p_path, UnityEngine.Object p_object)
 	{
 		chatPrefab = Instantiate (p_object) as GameObject;
-		chatPrefab.SetActive (false);
+//		chatPrefab.SetActive (false);
 		DontDestroyOnLoad (chatPrefab);
 	}
 
@@ -146,27 +146,23 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 	/// <param name="tempChatMsg">Temp chat message.</param>
 	public void SendChatData (ChatMessage tempChatMsg)
 	{
-		Debug.Log("====================1");
 		int spaceChar = 0;
 		foreach (char s in tempChatMsg.chatPct.content)
 		{
 			spaceChar += s == ' ' ? 1 : 0;
 		}
-		Debug.Log("====================2");
 		if (spaceChar == tempChatMsg.chatPct.content.Length)
 		{
 			ClientMain.m_UITextManager.createText (MyColorData.getColorString (5, "发送内容不能为空！"));
 			setOpen = false;
 			return;
 		}
-		Debug.Log("====================3");
 		if (m_listScendWaitTime[QXChatPage.chatPage.chatInputIndex] > 0) 
 		{
 			ClientMain.m_UITextManager.createText (MyColorData.getColorString (5, "您发言太快！"));
 			setOpen = false;
 			return;
 		}
-		Debug.Log("====================4");
 		willSendChatMsg = tempChatMsg;
 
 		switch (tempChatMsg.chatPct.channel)
@@ -175,7 +171,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 			
 			if (FreeTimes <= 0 && int.Parse (CanshuTemplate.GetStrValueByKey (CanshuTemplate.WORLDCHAT_PRICE)) > 0)
 			{
-				QXComData.CreateBox (1,"是否花费" + MyColorData.getColorString (5,CanshuTemplate.GetStrValueByKey (CanshuTemplate.WORLDCHAT_PRICE)) + "元宝发送本条消息到世界频道？",false,ShiJieSendCallBack);
+				Global.CreateFunctionIcon(101);
 			}
 			else
 			{
@@ -278,7 +274,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 			QXChatPage.chatPage.ClearInputText (int.Parse (chatInfoDic[chatChannel][1]));
 		}
 		Debug.Log("发送发送发送");
-		QXComData.SendQxProtoMessage (tempChatMsg.chatPct,ProtoIndexes.C_Send_Chat);
+		QXComData.SendQxProtoMessage (tempChatMsg.chatPct,ProtoIndexes.C_Send_Chat,null);
 //		Debug.Log ("聊天发送：" + ProtoIndexes.C_Send_Chat);
 		
 		//计算发送时间，***秒后未收到判定为发送失败(断线时间 + 策划配)
@@ -311,8 +307,8 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 					#region ShowIn HighestUI
 					if (chatData.channel == ChatPct.Channel.Broadcast)
 					{
-						HighestUI.Instance.m_BroadCast.ShowBroadCast (((chatData.guoJia >= 1 && chatData.guoJia <= 7) ? 
-						                                               (ColorTool.Color_Gold_edc347 + "[" + QXComData.GetNationName (chatData.guoJia) + "][-]") : "") + ColorTool.Color_Gold_ffb12a + chatData.senderName + "[-]" + chatData.content,true);
+						HighestUI.Instance.m_BroadCast.ShowBroadCast (((chatData.guoJia >= 0 && chatData.guoJia <= 7) ? 
+						                                               (ColorTool.Color_Gold_edc347 + "[" + QXComData.GetNationName (chatData.guoJia) + "][-]") : "") + ColorTool.Color_Gold_ffb12a + chatData.senderName + "：[-]" + chatData.content,true);
 					}
 					#endregion
 
@@ -326,7 +322,6 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 						QXChatUIBox.chatUIBox.SetRedAlert (!SetOpenChat);
 					}
 					#endregion
-
 					ChatMessage chatMsg = new ChatMessage()
 					{
 						sendState = ChatMessage.SendState.SEND_SUCCESS,
@@ -351,7 +346,41 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 							}
 						}
 					}
-
+					else if(chatMsg.chatPct.soundLen > 0)
+					{
+						chatMsg.isPlay = true;
+						if(QXChatPage.chatPage.m_listKaiguan[3])
+						{
+							switch(chatMsg.chatPct.channel)
+							{
+							case ChatPct.Channel.SHIJIE:
+								if(QXChatPage.chatPage.m_listKaiguan[0])
+								{
+									Debug.Log("自动播放列表增加世界播放" + chatMsg.chatPct.seq);
+									QXChatPage.chatPage.m_listChatMessage.Add(chatMsg);
+								}
+								break;
+							case ChatPct.Channel.LIANMENG:
+								if(QXChatPage.chatPage.m_listKaiguan[1])
+								{
+									Debug.Log("自动播放列表增加联盟播放" + chatMsg.chatPct.seq);
+									QXChatPage.chatPage.m_listChatMessage.Add(chatMsg);
+								}
+								break;
+							case ChatPct.Channel.SILIAO:
+								if(QXChatPage.chatPage.m_listKaiguan[2])
+								{
+									Debug.Log("自动播放列表增加私聊播放" + chatMsg.chatPct.seq);
+									QXChatPage.chatPage.m_listChatMessage.Add(chatMsg);
+								}
+								break;
+							}
+						}
+					}
+					else
+					{
+						chatMsg.isPlay = false;
+					}
 					if (QXChatUIBox.chatUIBox != null)
 					{
 						QXChatUIBox.chatUIBox.InItChatUIBox (chatMsg);
@@ -365,18 +394,34 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 						}
 					}
 
+					if(chatMsg.chatPct.channel == ChatPct.Channel.SILIAO)
+					{
+						QXChatPage.chatPage.AddFriend((int)chatMsg.chatPct.senderId, (int)chatMsg.chatPct.receiverId, chatMsg.chatPct.senderName, chatMsg.chatPct.receiverName);
+					}
+
 					if (chatData.channel != ChatPct.Channel.SYSTEM)
 					{
+						if(chatData.channel == ChatPct.Channel.SILIAO)
+						{
+							if(chatDic[chatData.channel].Count == 30)
+							{
+								chatDic[chatData.channel].RemoveAt(0);
+							}
+						}
 						chatDic[chatData.channel].Add (chatMsg);
 
-//						if (chatData.channel == ChatPct.Channel.Broadcast)
-//						{
-//							chatDic[ChatPct.Channel.SHIJIE].Add (chatMsg);
-//						}
+						if (chatData.channel != ChatPct.Channel.SHIJIE)
+						{
+							chatDic[ChatPct.Channel.SHIJIE].Add (chatMsg);
+						}
 
 						if (SetOpenChat)
 						{
 							if (chatData.channel == chatChannel)
+							{
+								QXChatPage.chatPage.InItChatPage (chatChannel,chatDic[chatChannel]);
+							}
+							if (ChatPct.Channel.SHIJIE == chatChannel)
 							{
 								QXChatPage.chatPage.InItChatPage (chatChannel,chatDic[chatChannel]);
 							}
@@ -406,6 +451,11 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 
 				return true;
 			}
+			case ProtoIndexes.S_Send_ERROR:
+				ErrorMessage error = new ErrorMessage();
+				error = QXComData.ReceiveQxProtoMessage (p_message,error) as ErrorMessage;
+				ClientMain.m_UITextManager.createText(LanguageTemplate.GetText(5000 + Math.Abs(error.errorCode)));
+				break;
 			case ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP:
 			{
 				if (!SetOpenJunZhuInfo)
@@ -583,7 +633,7 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 			{
 				junzhuId = junZhuInfo.junZhuId
 			};
-			QXComData.SendQxProtoMessage (tempMsg,ProtoIndexes.C_Join_BlackList);
+			QXComData.SendQxProtoMessage (tempMsg,ProtoIndexes.C_Join_BlackList,null);
 			break;
 		default:
 			break;
@@ -699,8 +749,8 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 				type = 2,
 			},
 		};
-
-		SendChatData (chatMsg);
+		QXComData.SendQxProtoMessage (chatMsg.chatPct,ProtoIndexes.C_Send_Chat,null);
+//		SendChatData (chatMsg);
 	}
 	#endregion
 

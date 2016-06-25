@@ -10,11 +10,7 @@ public class BuyTiLiBtn : MonoBehaviour {
 		buyTimes = 3;//测试3次情况 
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	public void LoadResourceCallback(ref WWW p_www,string p_path, Object p_object)
 	{
 		GameObject tempOjbect = Instantiate(p_object)as GameObject;

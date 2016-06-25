@@ -25,7 +25,7 @@ public class bagItem : MYNGUIPanel {
 	public UIButton mbtn;
 
 	private FuwenInBag m_fwbg;
-
+	private FuWenTemplate mFW;
 	void Awake()
 	{
 		EnergyDetailLongPress1.LongTriggerType = NGUILongPress.TriggerType.Press;
@@ -41,7 +41,8 @@ public class bagItem : MYNGUIPanel {
 	{
 		if(InfoIsOpen)
 			return;
-		ShowTip.showTip (mfwbg.itemId);
+		Debug.Log ("mfwbg.exp = "+mfwbg.exp);
+		ShowTip.showTip (mfwbg.itemId,TipItemData.createTipItemData(TipItemData.ScreenPosition.LEFT,mfwbg.exp));
 	}
 	void Start () {
 	
@@ -64,67 +65,133 @@ public class bagItem : MYNGUIPanel {
 	{
 		//Debug.Log ("mfwbg.itemId = "+mfwbg.itemId);
 		isOneKey = false;
-		FuWenTemplate mFW = FuWenTemplate.GetFuWenTemplateByFuWenId (mfwbg.itemId);
+	    mFW = FuWenTemplate.GetFuWenTemplateByFuWenId (mfwbg.itemId);
 
 		//Debug.Log ("mFW.icon = "+mFW.icon);
 		Icon.spriteName = mFW.icon.ToString ();
 		pinzhi.spriteName = "pinzhi"+(mFW.color - 1).ToString ();
 		Numbers.text = mfwbg.cnt.ToString();
-		cur = mfwbg.cnt;
 
 		m_fwbg = new FuwenInBag();
-
+		cur = 0;
 		ChooseTps.SetActive (false);
 	}
-	public void OnKeyIN()
-	{
-		cur = 0;
-		ChooseTps.SetActive (true);
-		Numbers.text = cur.ToString()+"/"+mfwbg.cnt.ToString();
-	}
+
 	int mUseNumber;
 	public bool isOneKey;
 	public void Choose()
 	{
+
 		if(InfoIsOpen)
 		{
-			ChooseTps.SetActive(true);
-			if(cur > 0)
+
+			if(cur < mfwbg.cnt)
 			{
+				FuWenTemplate FuwenInfo = FuWenTemplate.GetFuWenTemplateByFuWenId(FuWenInfoShow.Instance().mFuWenlanwei.itemId);
+
+	
+				if(FuwenInfo.fuwenLevel >= FuwenInfo.levelMax)
+				{
+					ClientMain.m_UITextManager.createText("符文等级已达最高，不能再进行熔合了！");
+					return;
+				}
+
 				if(isOneKey)
 				{
+					isOneKey = false;
 					//FuwenInBagResp m_FuwenInBag = (FuwenInBagResp)NewFuWenPage.Instance().mFuwenInBag.Public_MemberwiseClone;
-
+					if( FuwenInfo.color < mFW.color )
+					{
+						return;
+					}
+					ChooseTps.SetActive(true);
 					if(!FuWenInfoShow.Instance().fuwensinBag.Contains(m_fwbg))
 					{
-						m_fwbg.cnt = mfwbg.cnt;
-						m_fwbg.bagId = mfwbg.bagId;
-						m_fwbg.itemId = 0;
-						m_fwbg.exp = mfwbg.exp;
+						if(FuWenInfoShow.Instance().mCurrFuWenlanwei.exp < FuwenInfo.lvlupExp)
+						{
+							int Max_exp = FuwenInfo.lvlupExp - FuWenInfoShow.Instance().mCurrFuWenlanwei.exp ;
+							if( Max_exp >= mfwbg.cnt * mfwbg.exp )
+							{
+								m_fwbg.cnt = mfwbg.cnt;
+
+								cur = mfwbg.cnt;
+							}
+							else
+							{
+								for(int i = 1 ; i < mfwbg.cnt+1; i++)
+								{
+									if( i * mfwbg.exp >= Max_exp)
+									{
+										m_fwbg.cnt = i;
+										cur = m_fwbg.cnt;
+										break;
+									}
+								}
+							}
+
+							m_fwbg.bagId = mfwbg.bagId;
+							m_fwbg.itemId = 0;
+							m_fwbg.exp = mfwbg.exp;
+						}
+						int m_EXp = mFW.exp + m_fwbg.exp;
 						FuWenInfoShow.Instance().fuwensinBag.Add(m_fwbg);
-						FuWenInfoShow.Instance().CreateLifeMoveNow(m_fwbg.exp*m_fwbg.cnt);
+						FuWenInfoShow.Instance().CreateLifeMoveNow(m_EXp*m_fwbg.cnt);
 					}
 					else
 					{
+					
 						foreach(FuwenInBag mfuweninbag in FuWenInfoShow.Instance().fuwensinBag)
 						{
 							if(mfuweninbag.bagId == m_fwbg.bagId)
 							{
-								mfuweninbag.cnt =  mfwbg.cnt;
+								if(FuWenInfoShow.Instance().mCurrFuWenlanwei.exp < FuwenInfo.lvlupExp)
+								{
+									int Max_exp = FuwenInfo.lvlupExp - FuWenInfoShow.Instance().mCurrFuWenlanwei.exp ;
+									if( Max_exp > mfwbg.cnt * mfwbg.exp )
+									{
+										mfuweninbag.cnt = mfwbg.cnt;
+										
+										cur = mfwbg.cnt;
+									}
+									else
+									{
+										for(int i = 1 ; i < mfwbg.cnt+1; i++)
+										{
+											if( i * mfwbg.exp >= Max_exp)
+											{
+												mfuweninbag.cnt = i;
+												cur = mfwbg.cnt;
+												break;
+											}
+										}
+									}
+									
+								}
 							}
+							int m_EXp = mfuweninbag.exp + mFW.exp;
+							FuWenInfoShow.Instance().CreateLifeMoveNow(m_EXp*cur);
 						}
-						FuWenInfoShow.Instance().CreateLifeMoveNow(m_fwbg.exp*cur);
-
 					}
-					cur = 0;
 					Numbers.text = cur.ToString()+"/"+mfwbg.cnt.ToString();
-				}
+				} // 单次选择
 				else
 				{
-					cur -= 1;
+					NewFuWenPage.Instance().OnekeyXiangqiang = false;
+					if(FuwenInfo.color < mFW.color)
+					{
+						ClientMain.m_UITextManager.createText("低品质符文不能熔合高品质符文！");
+						return;
+					}
+//					if(FuWenInfoShow.Instance().mCurrFuWenlanwei.exp >= FuwenInfo.lvlupExp)
+//					{
+//						ClientMain.m_UITextManager.createText("不能点了，等浩南配置提示语！");
+//						return;
+//					}
+					ChooseTps.SetActive(true);
+					cur += 1;
 					Numbers.text = cur.ToString()+"/"+mfwbg.cnt.ToString();
 					
-					mUseNumber = mfwbg.cnt - cur;
+					mUseNumber = cur;
 					
 					if(!FuWenInfoShow.Instance().fuwensinBag.Contains(m_fwbg))
 					{
@@ -145,8 +212,8 @@ public class bagItem : MYNGUIPanel {
 							}
 						}
 					}
-
-					FuWenInfoShow.Instance().CreateLifeMoveNow(m_fwbg.exp);
+					int m_EXp = m_fwbg.exp + mFW.exp;
+					FuWenInfoShow.Instance().CreateLifeMoveNow(m_EXp);
 				}
 
 			}
@@ -156,10 +223,11 @@ public class bagItem : MYNGUIPanel {
 
 	public void BackChoose()
 	{
-		if(cur < mfwbg.cnt)
+		if(cur > 0)
 		{
-			cur ++;
-			if(cur == mfwbg.cnt)
+			NewFuWenPage.Instance().OnekeyXiangqiang = false;
+			cur --;
+			if(cur == 0)
 			{
 				ChooseTps.SetActive(false);
 				Numbers.text = mfwbg.cnt.ToString();
@@ -175,13 +243,17 @@ public class bagItem : MYNGUIPanel {
 					if(mfuweninbag.bagId == mfwbg.bagId)
 					{
 						//Debug.Log("mfuweninbag.cnt = " +mfuweninbag.cnt);
-						if(mfuweninbag.cnt > 0)
+						if(mfuweninbag.cnt > 1)
 						{
 							mfuweninbag.cnt -= 1;
-							FuWenInfoShow.Instance()._DeleltLifeMoveNow(mfwbg.exp);
+							int m_EXp = m_fwbg.exp + mFW.exp;
+							FuWenInfoShow.Instance()._DeleltLifeMoveNow(m_EXp);
 						}
 						else
 						{
+							mfuweninbag.cnt -= 1;
+							int m_EXp = m_fwbg.exp + mFW.exp;
+							FuWenInfoShow.Instance()._DeleltLifeMoveNow(m_EXp);
 							FuWenInfoShow.Instance().fuwensinBag.Remove(mfuweninbag);
 						}
 						break;

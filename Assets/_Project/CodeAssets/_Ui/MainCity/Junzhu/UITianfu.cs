@@ -21,6 +21,7 @@ public class UITianfu : MYNGUIPanel
 	public UILabel m_UILabelJGDS;
 	public UILabel m_UILabelFYJQ;
 	public UILabel m_UILabelFYDS;
+	public GameObject m_objClosePanel;
 	
 	public List<GameObject> m_listTianfuIconData;
 	public List<TianfuData> m_listTianFuData;
@@ -57,6 +58,7 @@ public class UITianfu : MYNGUIPanel
 	
 	private int m_iCurId;
 	private bool m_isUp = true;
+	private int m_iNum = 0;
 	
 	// Use this for initialization
 	void Start () 
@@ -66,7 +68,15 @@ public class UITianfu : MYNGUIPanel
 	
 	// Update is called once per frame
 	void Update () {
-		
+		for(int i = 0; i < m_listTianFuData.Count; i ++)
+		{
+			m_listTianFuData[i].m_UISpriteCanUp.spriteName = "tainfu_ui_" + m_iNum / 3;
+		}
+		m_iNum ++;
+		if(m_iNum == 30)
+		{
+			m_iNum = 0;
+		}
 	}
 	
 	public override void MYClick(GameObject ui)
@@ -76,8 +86,10 @@ public class UITianfu : MYNGUIPanel
 		{
 			gameObject.SetActive(false);
 			m_TianfuDisPanel.SetActive(false);
+			m_objClosePanel.SetActive(false);
 			m_UIJunzhu.m_PlayerRight.SetActive(true);
 			m_UIJunzhu.m_PlayerLeft.SetActive(true);
+			m_UIJunzhu.m_LeftUI.SetActive(true);
 			
 //			if (FreshGuide.Instance().IsActive(100380) && TaskData.Instance.m_TaskInfoDic[100380].progress >= 0)
 //			{
@@ -98,6 +110,44 @@ public class UITianfu : MYNGUIPanel
 		{
 			if(m_isUp)
 			{
+				for(int i = 0; i < m_UIJunzhu.m_TalentInfoResp.points.Count; i ++)
+				{
+					if(m_iCurId == m_UIJunzhu.m_TalentInfoResp.points[i].pointId)
+					{
+						m_UIJunzhu.m_TalentInfoResp.points[i].pointLev ++;
+						TalentTemplate tempTalent = TalentTemplate.getSkillTemplateById(m_UIJunzhu.m_TalentInfoResp.points[i].pointId);
+						if(tempTalent.type == 1)
+						{
+							m_UIJunzhu.m_TalentInfoResp.wuYiJingQi -= m_UIJunzhu.m_TalentInfoResp.points[i].needJingQi;
+							if(m_UIJunzhu.m_TalentInfoResp.points[i].pointLev == 1)
+							{
+								if(m_UIJunzhu.m_TalentInfoResp.points[i].pointId != 101)
+								{
+									m_UIJunzhu.m_TalentInfoResp.jinGongDianShu --;
+								}
+							}
+						}
+						else if(tempTalent.type == 2)
+						{
+							m_UIJunzhu.m_TalentInfoResp.tiPoJingQi -= m_UIJunzhu.m_TalentInfoResp.points[i].needJingQi;
+							if(m_UIJunzhu.m_TalentInfoResp.points[i].pointLev == 1)
+							{
+								if(m_UIJunzhu.m_TalentInfoResp.points[i].pointId != 201)
+								{
+									m_UIJunzhu.m_TalentInfoResp.fangShouDianShu --;
+								}
+							}
+						}
+						m_UIJunzhu.m_TalentInfoResp.points[i].desc = TalentArrTemplate.getByIDLV(tempTalent.arrID, m_UIJunzhu.m_TalentInfoResp.points[i].pointLev).des;
+						m_UIJunzhu.m_TalentInfoResp.points[i].needJingQi = ExpTempTemp.GetExp(tempTalent.expID, m_UIJunzhu.m_TalentInfoResp.points[i].pointLev);
+						setData(m_UIJunzhu.m_TalentInfoResp);
+//						temp.m_iID = talentData.points[i].pointId;
+//						temp.m_iCurLV = talentData.points[i].pointLev;
+//						temp.m_sDir = talentData.points[i].desc;
+//						temp.m_iUPJingqi = talentData.points[i].needJingQi;
+//						temp.m_iUPGiveDianshu = talentData.points[i].difValueLev;
+					}
+				}
 				TalentUpLevelReq req = new TalentUpLevelReq();
 				
 				req.pointId = m_iCurId;
@@ -117,9 +167,14 @@ public class UITianfu : MYNGUIPanel
 			}
 			
 		}
-		else if(ui.name.IndexOf("TianfuDisBG") != -1)
+		else if(ui.name.IndexOf("TianfuDisClose") != -1)
 		{
 			m_TianfuDisPanel.SetActive(false);
+			m_objClosePanel.SetActive(false);
+		}
+		else if(ui.name.IndexOf("GetJingqi") != -1)
+		{
+			Global.CreateFunctionIcon(1001);
 		}
 	}
 	
@@ -403,7 +458,7 @@ public class UITianfu : MYNGUIPanel
 		TianfuData temp = getTianfuData(id);
 		m_TianfuWantLv.text = "需求";
 		m_TianfuDisPanel.SetActive(true);
-		
+		m_objClosePanel.SetActive(true);
 		if(temp.m_iCurLV >= JunZhuData.Instance().m_junzhuInfo.level)
 		{
 			m_TianfuWantLv.text += "君主等级" + MyColorData.getColorString(5, (temp.m_iCurLV + 1) + "级");

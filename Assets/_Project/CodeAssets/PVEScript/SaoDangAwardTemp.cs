@@ -31,15 +31,9 @@ public class SaoDangAwardTemp : MonoBehaviour {
 	[HideInInspector]
 	public GameObject IconSamplePrefab;
 
-	void Start () {
-	
+//	void Start () {
 		//Init ();////////
-	}
-	
-
-	void Update () {
-	
-	}
+//	}
 
 	public void Init()
 	{
@@ -82,7 +76,7 @@ public class SaoDangAwardTemp : MonoBehaviour {
 
 		if( m_tempInfo.awardItems == null ||m_tempInfo.awardItems.Count <= 0)
 		{
-			NoAwardLable.gameObject.SetActive(true);
+//			NoAwardLable.gameObject.SetActive(true);
 
 		}
 		else{

@@ -15,6 +15,7 @@ public class BloodBar : MonoBehaviour
 
 	private Camera m_cached_camera_main = null;
 
+
 	void Update ()
 	{
 		m_cached_camera_main = Camera.main;
@@ -54,7 +55,7 @@ public class BloodBar : MonoBehaviour
 
 //		if (bar.value == 1) gameObject.SetActive (false);
 
-		if (bar.value <= 0) gameObject.SetActive (false);
+		if (bar.value <= 0 && targetValue <= 0) gameObject.SetActive (false);
 	}
 
 	public void setValue(float _value)

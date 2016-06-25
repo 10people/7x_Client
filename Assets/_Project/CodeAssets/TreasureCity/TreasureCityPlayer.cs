@@ -8,7 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
+public class TreasureCityPlayer : GeneralInstance<TreasureCityPlayer> {
 
 	public Joystick joyStick;
 
@@ -27,7 +27,9 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 	public Animator m_animator;
 	public NavMeshAgent m_agent;
 
-	void Awake ()
+	public GameObject m_tCityPlayerObj;
+
+	new void Awake ()
 	{
 		base.Awake ();
 	}
@@ -64,7 +66,7 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 		
 		GetAllianceData.Instance();
 		//CheckXml.Instance();
-		
+
 		BagData.Instance();
 		
 		EquipsOfBody.Instance();
@@ -80,6 +82,8 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 		QXChatData.Instance.LoadChatPrefab ();
 		
 		TreasureCityData.Instance ();
+
+		QXSelectRole.Instance ();
 	}
 
 	#region CreatePlayer Model
@@ -100,11 +104,11 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 		obj.transform.localScale = Vector3.one;
 		obj.transform.localPosition = Vector3.zero;
 
-		Vector3 pos = new Vector3 (TCityPlayerManager.m_instance.gameObject.transform.position.x,
-		                           TCityPlayerManager.m_instance.gameObject.transform.position.y,
-		                           TCityPlayerManager.m_instance.gameObject.transform.position.z);
+		Vector3 pos = new Vector3 (m_tCityPlayerObj.transform.position.x,
+		                           				   m_tCityPlayerObj.transform.position.y,
+		                          			 	   m_tCityPlayerObj.transform.position.z);
 		
-		//		Debug.Log ("pos:" + pos);
+//		Debug.Log ("pos:" + pos);
 		m_playerObj.transform.position = pos;
 		m_playerObj.transform.localRotation = Quaternion.Euler(Vector3.zero);
 		m_playerObj.transform.localScale = Vector3.one * 1.5f;
@@ -151,7 +155,7 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 			
 			t_state.s_state = State.State_LEAGUEOFCITY;
 
-			QXComData.SendQxProtoMessage (t_state,ProtoIndexes.PLAYER_STATE_REPORT);
+			QXComData.SendQxProtoMessage (t_state,ProtoIndexes.PLAYER_STATE_REPORT,null);
 		}
 		
 //		Debug.Log("SendPlayerData. m_ObjHero.transform.position :" + m_playerObj.transform.position);
@@ -270,7 +274,8 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 		m_agent.speed = m_speed;
 		m_agent.Resume();
 		m_agent.SetDestination(targetPosition);
-		
+//		m_playerObj.transform.position = Vector3.Lerp (m_playerObj.transform.position,targetPosition,Time.deltaTime * 2);
+
 		m_currenPos = Vector3.zero;
 		
 		CityGlobalData.m_selfNavigation = true;
@@ -355,7 +360,7 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 			tempPositon.posY = m_targetPos.y;
 			tempPositon.posZ = m_targetPos.z;
 
-			QXComData.SendQxProtoMessage (tempPositon,ProtoIndexes.Sprite_Move);
+			QXComData.SendQxProtoMessage (tempPositon,ProtoIndexes.Sprite_Move,null);
 
 			m_currenPos = m_targetPos;
 		}
@@ -608,7 +613,7 @@ public class TreasureCityPlayer : TreasureCitySingleton<TreasureCityPlayer> {
 	}
 	#endregion
 
-	void OnDestroy ()
+	new void OnDestroy ()
 	{
 		base.OnDestroy ();
 	}

@@ -25,14 +25,7 @@ public class YXItem : MonoBehaviour  {
 	public UISprite Icon;
 	private int LimitLevel ;
 	public bool isQianchonglou = false;
-	void Start () {
-	
-	}
-	
 
-	void Update () {
-	
-	}
 	public void InitQianChongLouBtn()
 	{
 		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (101);
@@ -115,6 +108,7 @@ public class YXItem : MonoBehaviour  {
 			if(mYouXiaInfo.remainColdTime > 0)
 			{
 				CountTime.gameObject.SetActive(true);
+				StopCoroutine("StartCountTime");
 				StartCoroutine("StartCountTime");
 			}
 			else{
@@ -151,6 +145,7 @@ public class YXItem : MonoBehaviour  {
 			
 			int S = (int)(T % 60);
 			string m_s = "";
+			string m_M = "";
 			if(S < 10)
 			{
 				m_s = "0"+S.ToString();
@@ -159,8 +154,16 @@ public class YXItem : MonoBehaviour  {
 			{
 				m_s = S.ToString();
 			}
-			CountTime.text = M.ToString()+":"+m_s+" 后可进入";
-			
+			if(M < 10)
+			{
+				m_M = "0"+M.ToString();
+			}
+			else
+			{
+				m_M = M.ToString();
+			}
+			CountTime.text = m_M+":"+m_s+" 后可进入";
+			mYouXiaInfo.remainColdTime = T;
 			yield return new WaitForSeconds(1f);
 		}
 		//this.gameObject.GetComponent<BoxCollider>().enabled = true;
@@ -168,6 +171,10 @@ public class YXItem : MonoBehaviour  {
 		CountTime.gameObject.SetActive(false);
 		Art.gameObject.SetActive(true);
 		ShowTime ();
+	}
+	public int GetColdTime()
+	{
+		return mYouXiaInfo.remainColdTime;
 	}
 	private void ShowTime()
 	{
@@ -198,12 +205,24 @@ public class YXItem : MonoBehaviour  {
 		}
 		if (!isQianchonglou)
 		{
+			Debug.Log("mYouXiaInfo.id = "+mYouXiaInfo.id);
+			if(mYouXiaInfo.id == 1)
+			{
+				if(!EquipsOfBody.Instance ().GetWetherWearArrow ())
+				{
+					ClientMain.m_UITextManager.createText("挑战此关卡需要装备弓箭！");
+					return;
+				}
+			}
 			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.CHOOSEYOUXIA), LoadResourceCallback);
 
 		} else
 		{
 			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.QIANCHONGLOU), Load_QCL_ResourceCallback);
 		}
+
+
+
 	}
 	private GameObject QCL_tempOjbect;
 	void Load_QCL_ResourceCallback(ref WWW p_www,string p_path, Object p_object)

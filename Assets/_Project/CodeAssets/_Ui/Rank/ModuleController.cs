@@ -69,7 +69,7 @@ namespace Rank
 
             RankingReq temp = new RankingReq { rankType = ModuleIndex + 1, guojiaId = nationID, pageNo = pageID };
 
-            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_REQ, ProtoIndexes.RANKING_RESP);
 
             //Set CurrentNationIndex.
             CurrentNationIndex = nationID;
@@ -88,7 +88,7 @@ namespace Rank
                 rankType = ModuleIndex + 1,
                 name = p_name,
             };
-            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_REQ);
+            SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_REQ, ProtoIndexes.RANKING_RESP);
         }
 
         public abstract void GetMyRank(int type, int nationID);
@@ -187,9 +187,25 @@ namespace Rank
 
         private bool IsCanSlideRequest = true;
 
+#if UNITY_EDITOR
+
+        public bool isShowScrollViewValue = false;
+
+#endif
+
         public void Update()
         {
             float temp = m_ScrollView.GetSingleScrollViewValue();
+
+#if UNITY_EDITOR
+
+            if (isShowScrollViewValue)
+            {
+                Debug.LogWarning("=============adjusted scoll view value: " + temp);
+            }
+
+#endif
+
             if (temp == -100) return;
 
             //Reset can slide request.

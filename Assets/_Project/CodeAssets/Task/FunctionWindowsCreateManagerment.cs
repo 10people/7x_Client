@@ -10,6 +10,8 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
     private static int SmallHouseId = 0;
     public static int m_AllianceID = -1;
     public static int m_BuWeiNum = -1;
+    public static bool m_IsSaoDangNow = false;
+    public static bool m_IsEquipJihuoShow = false;
     private readonly static List<int> FrameQuality = new List<int>() { 2, 4, 5, 7, 8, 10 };
     public enum SettingType
     {
@@ -44,8 +46,8 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         public int _minggadd;
     }
     public static EquipTaoJiHuo m_JiHuoInfo;
-    public static bool m_IsEquipJihuoShow = false;
-    public static bool m_IsSaoDangNow = false;
+ 
+ 
     public static void CreateAllianceLayer(int id)
     {
         m_AllianceID = id;
@@ -57,6 +59,13 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         GameObject tempObject = Instantiate(p_object) as GameObject;
         MainCityUI.TryAddToObjectList(tempObject);
     }
+
+    public struct GenerialWard
+    {
+        public int id;
+        public int count;
+        public bool isNew;
+    };
     public static void FunctionWindowShow(int id)
     {
         switch (id)
@@ -75,34 +84,6 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
 
                 break;
         }
-    }
-
-    public static bool WetherHaveEquipsWearIsLowQuality(int buwei)
-    {
-        foreach (KeyValuePair<int, BagItem> item in BagData.Instance().m_playerEquipDic)
-        {
-            int tempBuwei = 0;
-            switch (item.Value.buWei)
-            {
-                case 1: tempBuwei = 3; break;//重武器
-                case 2: tempBuwei = 4; break;//轻武器
-                case 3: tempBuwei = 5; break;//弓
-                case 11: tempBuwei = 0; break;//头盔
-                case 12: tempBuwei = 8; break;//肩膀
-                case 13: tempBuwei = 1; break;//铠甲
-                case 14: tempBuwei = 7; break;//手套
-                case 15: tempBuwei = 2; break;//裤子
-                case 16: tempBuwei = 6; break;//鞋子
-                default: break;
-            }
-
-            if (tempBuwei == buwei && item.Value.pinZhi > EquipsOfBody.Instance().m_equipsOfBodyDic[buwei].pinZhi)
-            {
-				MainCityUIRB.setSavePropUse(item.Value.itemId, 1);
-                return true;
-            }
-        }
-        return false;
     }
 
     private static void DoGoHome()
@@ -403,9 +384,22 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
         return null;
 
     }
+
+    public static void ShowSpecialAwardInfo(List<GenerialWard> _listaward)
+    {
+        List<RewardData> tempDataList = new List<RewardData>();
+        for (int i = 0; i < _listaward.Count; i++)
+        {
+//            Debug.Log("ididid ::" + _listaward[i].id);
+            RewardData rr = new RewardData(_listaward[i].id, _listaward[i].count);
+            rr.m_isNew = _listaward[i].isNew;
+            //rr.itemCount = int.Parse(info[2]);
+            tempDataList.Add(rr);
+        }
+        GeneralRewardManager.Instance().CreateReward(tempDataList);
+    }
     public static void ShowRAwardInfo(string _award)
     {
-//        Debug.Log("_award_award_award ：：" + _award);
         List<RewardData> tempDataList = new List<RewardData>();
         if (_award.IndexOf('#') > -1)
         {
@@ -414,9 +408,9 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
             {
                 string[] info = ss[i].Split(':');
                 RewardData rr = new RewardData(int.Parse(info[1]), int.Parse(info[2]));
+                rr.m_isNew = true;
                 tempDataList.Add(rr);
             }
-
         }
         else
         {
@@ -629,5 +623,56 @@ public class FunctionWindowsCreateManagerment : MonoBehaviour
             EquipsOfBody.Instance().m_equipsOfBodyDic[tempBuwei].itemId = Equip.zbItemId;
             
         }
+    }
+    private static int _GuidanceId = -1;
+    public static void GuidanceIsOpen()
+    {
+        if (UIYindao.m_UIYindao.m_isOpenYindao)
+        {
+            _GuidanceId = UIYindao.m_UIYindao.m_iCurId;
+        }
+    }
+
+    public static void OpenCurrentGuidance()
+    {
+        if (_GuidanceId > 0)
+        {
+            UIYindao.m_UIYindao.setOpenYindao(_GuidanceId);
+            _GuidanceId = -1;
+        }
+    }
+    private static int _taskID_save = 0;
+    public static void ShowTaskAward(int id)
+    {
+        if (TaskSignalInfoShow.m_TaskSignal == null 
+            && !TaskData.Instance.m_TaskRewardsGetID.ContainsKey(id))
+        {
+            TaskData.Instance.m_TaskRewardsGetID.Add(id, id);
+            if ( TaskData.Instance.m_TaskInfoDic.ContainsKey(id)
+                && !string.IsNullOrEmpty(TaskData.Instance.m_TaskInfoDic[id].award)
+                && TaskData.Instance.m_TaskInfoDic[id].award.IndexOf(':') > -1)
+            {
+                TaskSignalInfoShow.m_TaskId = id;
+                TaskCompleteEffect();
+            }
+            else if (TaskData.Instance.m_TaskDailyDic.ContainsKey(id)
+               && !string.IsNullOrEmpty(TaskData.Instance.m_TaskDailyDic[id].award)
+               && TaskData.Instance.m_TaskDailyDic[id].award.IndexOf(':') > -1)
+            {
+                TaskSignalInfoShow.m_TaskId = id;
+                TaskCompleteEffect();
+            }
+        }
+    }
+
+    private static void TaskCompleteEffect()
+    {
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), AddUIPanel);
+    }
+    private static void AddUIPanel(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject tempObject = (GameObject)Instantiate(p_object);
+        MainCityUI.TryAddToObjectList(tempObject);
+        UIYindao.m_UIYindao.CloseUI();
     }
 }

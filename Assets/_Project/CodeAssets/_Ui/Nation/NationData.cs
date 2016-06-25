@@ -12,7 +12,7 @@ public class NationData : Singleton<NationData>,SocketProcessor
     {
         SocketTool.RegisterMessageProcessor(this);
     }
-    public  GuoJiaMainInfoResp m_NationInfo;
+    public  GuoJiaMainInfoResp m_NationInfo = null;
     public bool m_DataGetComplete = false;
     public bool m_DataRequest = false;
     
@@ -40,22 +40,21 @@ public class NationData : Singleton<NationData>,SocketProcessor
 
                         GuoJiaMainInfoResp ReponseInfo = new GuoJiaMainInfoResp();
                         t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
-                        m_NationInfo = ReponseInfo;
-                        //if (ReponseInfo.guojiaAward.Equals("0"))
-                        //{
-                        //    MainCityUIRB.SetRedAlert(212, false);
-                        //}
-                        //else
-                        //{
-                        //    MainCityUIRB.SetRedAlert(212, true);
-                        //}
+                    
+                        if (ReponseInfo.result == 0)
+                        {
+                            m_NationInfo = ReponseInfo;
+                        }
+                        else
+                        {
+                            m_NationInfo = null;
+                        }
+
                         if (m_DataRequest)
                         {
                             m_DataRequest = false;
                             m_DataGetComplete = true;
                         }
-
-                       
                         return true;
                     }
             }

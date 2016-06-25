@@ -33,7 +33,7 @@ public class UIShouji : MonoBehaviour
 
 	void Start () 
 	{
-		gameObject.transform.localPosition = new Vector3(-620 - ClientMain.m_iMoveX, 418 + ClientMain.m_iMoveY, 0);
+		gameObject.transform.localPosition = new Vector3(-643 - ClientMain.m_iMoveX, 418 + ClientMain.m_iMoveY, 0);
 	}
 	
 	// Update is called once per frame
@@ -42,18 +42,25 @@ public class UIShouji : MonoBehaviour
 		switch(m_iAnimState)
 		{
 		case 0:
-			gameObject.transform.localPosition += new Vector3(20, 0, 0);
-//			m_spriteManzu.gameObject.transform.localScale = new Vector3(3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f);
-//			m_spriteManzu.gameObject.transform.localPosition = new Vector3(38f, -137 - m_iNum, 0);
+			gameObject.transform.localPosition += new Vector3(21, 0, 0);
 			m_iNum ++;
-			if(m_iNum == 14)
+			if(m_iNum == 15)
 			{
 				m_iAnimState = 1;
 				m_iNum = 0;
+				if(m_ShoujiData.m_iCurNum >= m_ShoujiData.m_iMaxNum)
+				{
+					m_spriteManzu.gameObject.SetActive(true);
+				}
 			}
 			break;
 		case 1:
 			m_iNum ++;
+			if(m_iNum <= 10)
+			{
+				m_spriteManzu.gameObject.transform.localScale = new Vector3(3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f, 3f - m_iNum * 0.2f);
+				m_spriteManzu.gameObject.transform.localPosition = new Vector3(38f, -137 - m_iNum, 0);
+			}
 			if(m_iNum == 50)
 			{
 				m_iAnimState = 2;
@@ -62,9 +69,9 @@ public class UIShouji : MonoBehaviour
 			}
 			break;
 		case 2:
-			gameObject.transform.localPosition += new Vector3(-20, 0, 0);
+			gameObject.transform.localPosition += new Vector3(-21, 0, 0);
 			m_iNum ++;
-			if(m_iNum == 4)
+			if(m_iNum == 5)
 			{
 				m_iAnimState = 3;
 				m_iNum = 0;
@@ -72,13 +79,15 @@ public class UIShouji : MonoBehaviour
 			}
 			break;
 		case 3:
-			gameObject.transform.localPosition += new Vector3(-20, 0, 0);
+			gameObject.transform.localPosition += new Vector3(-21, 0, 0);
 			m_iNum ++;
 			if(m_iNum == 10)
 			{
 				m_iAnimState = -1;
 				m_iNum = 0;
 				m_icon.SetActive(false);
+				m_spriteManzu.gameObject.SetActive(false);
+				gameObject.SetActive(false);
 			}
 			break;
 		}
@@ -101,7 +110,7 @@ public class UIShouji : MonoBehaviour
 		m_iAnimState = 0;
 		if(cur >= max)
 		{
-			m_spriteManzu.gameObject.SetActive(true);
+//			m_spriteManzu.gameObject.SetActive(true);
 			m_spriteManzu.spriteName = "Type" + type;
 			if(m_iFirstManzuID == -1 || m_iFirstManzuID != id)
 			{

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<VIPGift vip="1" award="0:900001:10000" />
-<VIPGift vip="2" award="0:900001:10001" />
-<VIPGift vip="3" award="0:900001:10002" />
-<VIPGift vip="4" award="0:900001:10003" />
-<VIPGift vip="5" award="0:900001:10004" />
-<VIPGift vip="6" award="0:900001:10005" />
-<VIPGift vip="7" award="0:900001:10006" />
+<VIPGift vip="1" award="7:903037:1#9:920002:4#0:900001:50000" />
+<VIPGift vip="2" award="7:903017:1#0:900019:400#0:900001:60000" />
+<VIPGift vip="3" award="2:103103:1#9:920003:3#0:900001:70000" />
+<VIPGift vip="4" award="7:904037:1#0:900018:800#0:900001:80000" />
+<VIPGift vip="5" award="2:104002:1#9:921003:5#0:900001:100000" />
+<VIPGift vip="6" award="7:904017:1#0:900019:1200#0:900001:120000" />
+<VIPGift vip="7" award="2:105001:1#9:921003:7#0:900001:150000" />
 </dataset>

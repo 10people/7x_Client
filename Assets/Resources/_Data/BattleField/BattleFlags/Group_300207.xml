@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+<BattleGroup groupId="1" maxActive="10" delay="0" />
+<BattleGroup groupId="2" maxActive="10" delay="0" />
+<BattleGroup groupId="3" maxActive="10" delay="0" />
+<BattleGroup groupId="4" maxActive="10" delay="0" />
+<BattleGroup groupId="5" maxActive="10" delay="0" />
+<BattleGroup groupId="6" maxActive="10" delay="0" />
 </dataset>

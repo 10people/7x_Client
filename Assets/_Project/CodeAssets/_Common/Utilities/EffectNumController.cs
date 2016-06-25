@@ -1,6 +1,4 @@
-﻿//#define UNIT_TEST
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class EffectNumController : Singleton<EffectNumController>
@@ -17,9 +15,9 @@ public class EffectNumController : Singleton<EffectNumController>
         return m_playedEffectCount < m_limitNumber;
     }
 
-    public void NotifyPlayingEffect()
+    public void NotifyPlayingEffect(int plusNum = 1)
     {
-        m_playedEffectCount++;
+        m_playedEffectCount += plusNum;
     }
 
     private void ResetPlayedEffectCount()
@@ -41,19 +39,4 @@ public class EffectNumController : Singleton<EffectNumController>
         m_limitDuration = ConfigTool.GetFloat(ConfigTool.CONST_EFFECT_UPDATE_INTERVAL, 2.0f);
         m_limitNumber = ConfigTool.GetInt(ConfigTool.CONST_MAX_EFFECT_COUNT, 3);
     }
-
-#if UNIT_TEST
-    void OnGUI()
-    {
-        if (GUILayout.Button("Test effect num"))
-        {
-            if (IsCanPlayEffect())
-            {
-                Debug.LogWarning("==========Play effect");
-
-                NotifyPlayingEffect();
-            }
-        }
-    }
-#endif
 }

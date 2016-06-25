@@ -81,7 +81,9 @@ public class PlunderReward : MonoBehaviour {
 			PlunderRewardItem reward = pRewardItemList[i].GetComponent<PlunderRewardItem> ();
 			reward.InItRewardItem (LueDuoPersonRankTemplate.m_templates[i],curPRewardIndex - 1,i);
 		}
-		
+
+		plunderPSc.UpdateScrollbars (true);
+
 		if (curPRewardIndex > 0 && curPRewardIndex < LueDuoPersonRankTemplate.m_templates.Count - 1)
 		{
 			QXComData.SetWidget (plunderPSc,plunderPSb,pRewardItemList[curPRewardIndex - 1]);
@@ -182,7 +184,9 @@ public class PlunderReward : MonoBehaviour {
 			PlunderRewardItem reward = aRewardItemList[i].GetComponent<PlunderRewardItem> ();
 			reward.InItRewardItem (LueDuoLianmengRankTemplate.m_templates[i],curARewardIndex - 1,i);
 		}
-		
+
+		plunderASc.UpdateScrollbars (true);
+
 		if (curARewardIndex > 0 && curARewardIndex < LueDuoLianmengRankTemplate.m_templates.Count - 1)
 		{
 			QXComData.SetWidget (plunderASc,plunderASb,aRewardItemList[curARewardIndex - 1]);

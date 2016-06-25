@@ -12,6 +12,9 @@ public class BattleResultStar : MonoBehaviour
 
 	private bool m_enable;
 
+	private bool soundPlayable;
+
+
 	public void refreshData(bool enable, string desc)
 	{
 		//gameObject.SetActive (true);
@@ -60,9 +63,11 @@ public class BattleResultStar : MonoBehaviour
 		TweenAlpha.Begin (labelDesc.gameObject, 0, 0);
 	}
 
-	public void onShow()
+	public void onShow(bool b_playSound)
 	{
 		gameObject.SetActive(true);
+
+		soundPlayable = b_playSound;
 
 		if(m_enable == true)
 		{
@@ -88,10 +93,12 @@ public class BattleResultStar : MonoBehaviour
 			));
 	}
 
-	public void onShow_2()
+	public void onShow_2(bool b_playSound)
 	{
 		gameObject.SetActive(true);
-		
+
+		soundPlayable = b_playSound;
+
 		if(m_enable == true)
 		{
 			iTween.ScaleTo(spriteStar.gameObject, iTween.Hash(
@@ -117,7 +124,7 @@ public class BattleResultStar : MonoBehaviour
 
 	void playSound()
 	{
-		NGUITools.PlaySound(audioClip, 1, 1);
+		if(soundPlayable) NGUITools.PlaySound(audioClip, 1, 1);
 	}
 
 }

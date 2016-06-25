@@ -4,50 +4,48 @@ using System.Collections.Generic;
 using System.IO;
 using qxmobile.protobuf;
 
-public class MSCPlayer : MonoBehaviour, SocketListener
+public class MSCPlayer : Singleton<MSCPlayer>, SocketListener
 {
-    public static MSCPlayer Instance
-    {
-        get
-        {
-            if (m_instance == null)
-            {
-                //lock to assure only instance once.
-                lock (temp)
-                {
-                    //another thread may wait outside the lock while this thread goes into lock and instanced singleton, so check null again when enter into lock.
-                    if (m_instance == null)
-                    {
-                        var singleton = new GameObject();
-                        singleton.name = "MSCSoundPlayer";
-
-                        m_instance = singleton.AddComponent<MSCPlayer>();
-
-                        DontDestroyOnLoad(singleton);
-                    }
-                }
-            }
-
-            return m_instance;
-        }
-    }
-
-    private static MSCPlayer m_instance;
-    private static readonly object temp = new object();
-
     public List<string> SoundTagList = new List<string>();
 
     public void PlaySound(int seq, ChatPct.Channel channel)
     {
+        if (m_AudioSource.isPlaying && m_path == "/sdcard/msc/Bamboo/msc_" + (int)channel + "_" + seq + ".mp3")
+        {
+            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+            {
+                Debug.Log("Stop play " + m_path + " sound.");
+            }
+
+            stopSound();
+            return;
+        }
+
         m_path = "/sdcard/msc/Bamboo/msc_" + (int)channel + "_" + seq + ".mp3";
+
+        if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+        {
+            Debug.Log(m_path);
+        }
+
         StopAllCoroutines();
 
         if (SoundTagList.Contains((int)channel + "_" + seq) && File.Exists(m_path))
         {
+            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+            {
+                Debug.Log("play sound directly");
+            }
+
             StartCoroutine(PlaySound());
         }
         else
         {
+            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+            {
+                Debug.Log("request sound message.");
+            }
+
             CGetYuYing tempReq = new CGetYuYing()
             {
                 seq = seq,
@@ -57,7 +55,49 @@ public class MSCPlayer : MonoBehaviour, SocketListener
         }
     }
 
+    private void LogAudioSourceInfo(string p_prefix = "")
+    {
+        Debug.Log(p_prefix +
+            ComponentHelper.GetAudioSourcePlayTime(m_AudioSource) + " / " +
+            ComponentHelper.GetAudioClipLength(m_AudioSource.clip));
+    }
+
+    public void stopSound()
+    {
+        if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC) && m_AudioSource.isPlaying)
+        {
+            Debug.Log("Trying to stop a playing audio");
+        }
+
+        StopAllCoroutines();
+
+        if (m_AudioSource.isPlaying)
+        {
+            m_AudioSource.Stop();
+        }
+
+        if (ExecuteAfterPlayEnds != null)
+        {
+            ExecuteAfterPlayEnds();
+        }
+
+        SoundManager.EYuyin();
+    }
+
     private string m_path;
+
+    public AudioSource m_AudioSource
+    {
+        get
+        {
+            if (m_audioSource == null)
+            {
+                m_audioSource = gameObject.AddComponent<AudioSource>();
+            }
+            return m_audioSource;
+        }
+    }
+
     private AudioSource m_audioSource;
 
     private IEnumerator PlaySound()
@@ -71,12 +111,87 @@ public class MSCPlayer : MonoBehaviour, SocketListener
             yield break;
         }
 
-        m_audioSource.clip = www.GetAudioClip(false, false, AudioType.MPEG);
+        if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+        {
+            Debug.Log("play sound with length: " + www.bytes.Length);
+        }
 
-        m_audioSource.Play();
+
+        m_AudioSource.clip = www.GetAudioClip(false, false);
+
+        if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+        {
+            Debug.Log("audio clip length: " + m_AudioSource.clip.length);
+
+        }
+
+        {
+            m_AudioSource.volume = 0.0f;
+
+            LeanTween.value(gameObject, 0.0f, 1.0f, 1.0f).setEase(LeanTweenType.easeInQuart).setOnUpdate(UpdateVolume);
+        }
+
+
+        m_AudioSource.Play();
+        SoundManager.BYuyin();
+
+        StartCheck(m_AudioSource.clip.length);
     }
 
-    void OnDestroy()
+    public void UpdateVolume(float p_volume)
+    {
+        m_AudioSource.volume = p_volume;
+
+    }
+
+    private bool isCheckPlay = false;
+    private float m_check_start_time = 0.0f;
+    private float m_check_end_time = 0.0f;
+
+    private void StartCheck(float p_clip_duration)
+    {
+        isCheckPlay = true;
+
+        m_check_start_time = Time.realtimeSinceStartup;
+
+        m_check_end_time = m_check_start_time + p_clip_duration + 2.0f;
+    }
+
+    private void StopCheck()
+    {
+        isCheckPlay = false;
+    }
+
+    public DelegateHelper.VoidDelegate ExecuteAfterPlayEnds;
+
+    void Update()
+
+    {
+        if (isCheckPlay)
+        {
+            if (Time.realtimeSinceStartup > m_check_end_time)
+            {
+                if (!m_AudioSource.isPlaying)
+                {
+                    if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+                    {
+                        Debug.Log("execute playing ends");
+                    }
+
+                    if (ExecuteAfterPlayEnds != null)
+                    {
+                        ExecuteAfterPlayEnds();
+
+                        StopCheck();
+                    }
+
+					SoundManager.EYuyin();
+                }
+            }
+        }
+    }
+
+    new void OnDestroy()
     {
         SocketTool.UnRegisterSocketListener(this);
 
@@ -89,6 +204,11 @@ public class MSCPlayer : MonoBehaviour, SocketListener
         });
 
         SoundTagList.Clear();
+
+        Destroy(m_audioSource);
+        m_audioSource = null;
+
+        base.OnDestroy();
     }
 
     void Awake()
@@ -109,6 +229,11 @@ public class MSCPlayer : MonoBehaviour, SocketListener
                         object tempReveive = new SGetYuYing();
                         SocketHelper.ReceiveQXMessage(ref tempReveive, p_message, ProtoIndexes.S_Get_Sound);
                         var tempSound = tempReveive as SGetYuYing;
+
+                        if (ConfigTool.GetBool(ConfigTool.CONST_LOG_MSC))
+                        {
+                            Debug.Log("receive sound data: " + tempSound.soundData.Length);
+                        }
 
                         FileStream stream = File.Open(m_path, FileMode.OpenOrCreate);
                         byte[] bytes = EncryptTool.GetBytesFrom64(tempSound.soundData);

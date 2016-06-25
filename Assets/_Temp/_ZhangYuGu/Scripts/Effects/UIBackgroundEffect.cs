@@ -49,21 +49,8 @@ public class UIBackgroundEffect : MonoBehaviour {
 		m_self_cam = GetComponent<Camera>();
 	}
 
-	void OnEnable(){
-		
-	}
-
 	void OnDisable(){
 		ManualCloseEffect();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-	void OnDestroy(){
-		
 	}
 
 	void OnRenderImage( RenderTexture p_src, RenderTexture p_dest ) {
@@ -252,6 +239,36 @@ public class UIBackgroundEffect : MonoBehaviour {
 
 
 	#region Use
+
+	public static bool IsUIBackgroundEffectOpen( GameObject p_gb ){
+		if( p_gb == null ){
+			Debug.Log( "gameobjet is null: " + p_gb );
+
+			return false;
+		}
+
+		Camera t_cam = p_gb.GetComponent<Camera>();
+
+		if( t_cam == null ){
+			Debug.Log( "No Camera found in gb: " + p_gb );
+
+			return false;
+		}
+
+		UIBackgroundEffect t_effect = p_gb.GetComponent<UIBackgroundEffect>();
+
+		if( t_effect != null ){
+			if( t_effect.IsGoingToBeDestroyed() ){
+				return false;
+			}
+			else{
+				return true;
+			}
+		}
+		else{
+			return false;
+		}
+	}
 
 	public static UIBackgroundEffect SetUIBackgroundEffect( GameObject p_gb, bool p_open ){
 		if( p_gb == null ){

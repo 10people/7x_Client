@@ -34,11 +34,12 @@ public class PlunderRewardItem : MonoBehaviour {
 		int minRank = tempLate.min;
 
 		rankSprite.spriteName = maxRank == minRank ? "rank" + maxRank : "";
-		rankLabel.text = maxRank == minRank ? "" : MyColorData.getColorString (3,"第" + minRank + "名-第" + maxRank + "名");
+		rankLabel.text = maxRank == minRank ? "" : "第" + minRank + "名-第" + maxRank + "名";
 		
 		rankDesLabel.text = tempIndex == tempNextIndex ? MyColorData.getColorString (5,"排名提升，可获得更多奖励") : "";
-		bgSprite.color = tempIndex == tempNextIndex ? new Color(1,0.75f,0.35f) : Color.white;
-		
+//		bgSprite.color = tempIndex == tempNextIndex ? new Color(1,0.75f,0.35f) : Color.white;
+		QXComData.SetBgSprite (bgSprite,tempIndex == tempNextIndex ? true : false);
+
 		rewardList.Clear ();
 		string[] rewardLength = tempLate.award.Split ('#');
 		for (int i = 0;i < rewardLength.Length;i ++)
@@ -69,11 +70,12 @@ public class PlunderRewardItem : MonoBehaviour {
 		int minRank = tempLate.min;
 
 		rankSprite.spriteName = maxRank == minRank ? "rank" + maxRank : "";
-		rankLabel.text = maxRank == minRank ? (maxRank > 3 ? MyColorData.getColorString (3,"第" + maxRank + "名") : "") : MyColorData.getColorString (3,"第" + minRank + "名-第" + maxRank + "名");
+		rankLabel.text = maxRank == minRank ? (maxRank > 3 ? "第" + maxRank + "名" : "") : "第" + minRank + "名-第" + maxRank + "名";
 		
 		rankDesLabel.text = tempIndex == tempNextIndex ? MyColorData.getColorString (5,"排名提升，可获得更多奖励") : "";
-		bgSprite.color = tempIndex == tempNextIndex ? new Color(1,0.75f,0.35f) : Color.white;
-		
+//		bgSprite.color = tempIndex == tempNextIndex ? new Color(1,0.75f,0.35f) : Color.white;
+		QXComData.SetBgSprite (bgSprite,tempIndex == tempNextIndex ? true : false);
+
 		rewardList.Clear ();
 		rewardList.Add (new string[]{"0","900017",tempLate.award.ToString ()});
 		

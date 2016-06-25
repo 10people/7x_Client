@@ -3,13 +3,6 @@ using System.Collections;
 
 public class PopchooseChapterUI : MonoBehaviour {
 
-
-	void Start () {
-	
-	}
-	void Update () {
-	
-	}
 	public void LoadResourceCallback(ref WWW p_www,string p_path, Object p_object)
 	{
 		GameObject tempOjbect = Instantiate(p_object )as GameObject;

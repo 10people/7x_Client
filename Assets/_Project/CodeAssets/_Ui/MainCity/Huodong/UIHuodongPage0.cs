@@ -15,35 +15,34 @@ public class UIHuodongPage0 : MYNGUIPanel , SocketListener
 	public GameObject m_objButton;
 	public UILabel m_labelButton;
 	public ExploreResp m_ExploreResp;
+	public GameObject m_Eff;
 	// Use this for initialization
 	void Start () 
 	{
 		SocketTool.RegisterSocketListener(this);
+		UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_Eff, EffectTemplate.getEffectTemplateByEffectId(620243).path);
 	}
 	
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterSocketListener(this);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	public void setData(ExploreResp exploreResp)
 	{
 		m_ExploreResp = exploreResp;
-		Debug.Log(m_ExploreResp.success);
+		MainCityUI.SetRedAlert(1422 ,false);
 		switch(m_ExploreResp.success)
 		{
 		case 0:
 			m_objButton.SetActive(true);
 			m_labelButton.text = "前往充值";
+			SparkleEffectItem.OpenSparkle( m_objButton, SparkleEffectItem.MenuItemStyle.Common_Icon, -1);
 			break;
 		case 1:
 			m_objButton.SetActive(true);
 			m_labelButton.text = "领 取";
+			MainCityUI.SetRedAlert(1422 ,true);
 			break;
 		case 2:
 			m_objButton.SetActive(false);
@@ -101,7 +100,7 @@ public class UIHuodongPage0 : MYNGUIPanel , SocketListener
 			switch(m_ExploreResp.success)
 			{
 			case 0:
-				TopUpLoadManagerment.LoadPrefab(false);
+				RechargeData.Instance.RechargeDataReq ();
 				break;
 			case 1:
 				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FIRST_CHARGE_GETREWARD_REQ);

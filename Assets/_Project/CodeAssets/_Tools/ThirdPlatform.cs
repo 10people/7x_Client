@@ -699,6 +699,25 @@ public class ThirdPlatform : MonoBehaviour {
 		yield break;
 	}
 
+	/** Param define:
+	*  
+	* Result Code:
+	* //说明游戏初始化绑定service不成功
+	* PAYRESULT_SERVICE_BIND_FAIL   = -2;
+	* （此时需要在回调中重新绑定，否则有可能无法拉起支付页面）
+	*
+	* //支付流程失败
+	* PAYRESULT_ERROR        = -1;
+	*
+	* //支付流程成功
+	* PAYRESULT_SUCC         = 0;
+	*
+	* //用户取消
+	* PAYRESULT_CANCEL       = 2;
+	*
+	* //参数错误
+	* PAYRESULT_PARAMERROR   = 3;
+	*/
 	public void SetPayResultCode( string p_result_code ){
 		Debug.Log( "SetPayResultCode( " + p_result_code + " )" );
 
@@ -717,18 +736,31 @@ public class ThirdPlatform : MonoBehaviour {
 			//支付流程失败
 			//PAYRESULT_ERROR        = -1;
 			Debug.LogError( "Error, PayResult Error." );
+			RechargeData.Instance.RechargeReport (RechargeData.ReportState.FAIL,
+			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
+			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
+//			QXComData.CreateBoxDiy ("充值成功！",true,null);
+			QXComData.CreateBoxDiy (LanguageTemplate.GetText(LanguageTemplate.Text.RECHARGE_TIPS_8),true,null);
 			break;
 
 		case 0:
 			//支付流程成功
 			//PAYRESULT_SUCC         = 0;
 			Debug.LogError( "Error, PayResult Success." );
+			RechargeData.Instance.RechargeReport (RechargeData.ReportState.AFTER_SUCCESS,
+			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
+			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
+//			QXComData.CreateBoxDiy ("充值成功！",true,null);
 			break;
 
 		case 2:
 			//用户取消
 			//PAYRESULT_CANCEL       = 2;
 			Debug.LogError( "Error, PayResult Cancel." );
+			RechargeData.Instance.RechargeReport (RechargeData.ReportState.CANCEL,
+			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
+			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
+//			QXComData.CreateBoxDiy ("取消充值！",true,null);
 			break;
 
 		case 3:
@@ -737,11 +769,49 @@ public class ThirdPlatform : MonoBehaviour {
 			Debug.LogError( "Error, PayResult Param Error." );
 			break;
 
+		case 1106:
+			// sessionid, sessionkey校验失败		
+			Debug.LogError( "Error, session id session key verify error." );
+			
+			UtilityTool.StartUniqueCorutineBox( "支付失败",
+				"支付校验失败，请重新登陆。",
+				"",
+				null,
+				"确定",
+
+				null,
+				ReLoginClickCallback,
+				null,
+				null,
+				null,
+
+				false,
+				false,
+				true,
+				true );
+			break;
+
 		default:
 			Debug.LogError( "Error, PayResult Not defined ." );
 			break;
 		}
 	}
+
+	public static void ReLoginClickCallback( int p_i ){
+		Debug.Log( "ReLoginClickCallback()" );
+
+		SceneManager.RequestEnterLogin();
+	}
+
+	//	*
+	//	*	支付状态
+	//	*	PAYSTATE_PAYUNKOWN     = -1;
+	//	*	//支付成功
+	//	*	PAYSTATE_PAYSUCC       = 0;
+	//	*	//用户取消
+	//	*	PAYSTATE_PAYCANCEL     = 1;
+	//	*	//支付出错
+	//	*	PAYSTATE_PAYERROR      = 2;
 
 	public static string GetPayToken(){
 		return m_pay_token;
@@ -1807,86 +1877,6 @@ public class ThirdPlatform : MonoBehaviour {
 	private void ConvertFinish( string p_des ){
 		Debug.Log( "------ ConvertFinish ------: " + p_des );
 	}
-
-	#endregion
-
-
-
-	#region Payment
-
-	/** Param define:
-	*  
-	* Result Code:
-	* //说明游戏初始化绑定service不成功
-	* PAYRESULT_SERVICE_BIND_FAIL   = -2;
-	* （此时需要在回调中重新绑定，否则有可能无法拉起支付页面）
-	*
-	* //支付流程失败
-	* PAYRESULT_ERROR        = -1;
-	*
-	* //支付流程成功
-	* PAYRESULT_SUCC         = 0;
-	*
-	* //用户取消
-	* PAYRESULT_CANCEL       = 2;
-	*
-	* //参数错误
-	* PAYRESULT_PARAMERROR   = 3;
-	*/
-	public void SetPayResult( int p_result_code, string p_result_message ){
-		Debug.Log( "SetPayResult()" );
-
-		Debug.Log( "Result Code: " + p_result_code );
-
-		Debug.Log( "Result Message: " + p_result_message );
-
-		switch( p_result_code ){
-		case -2:
-			Debug.LogError( "Bind Service Fail." );
-			break;
-
-		case -1:
-			Debug.LogError( "Payment Fail." );
-			RechargeData.Instance.RechargeReport (RechargeData.ReportState.FAIL,
-			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
-			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
-			QXComData.CreateBoxDiy ("充值失败！",true,null);
-			break;
-
-		case 0:
-			Debug.Log( "Pay Success." );
-			RechargeData.Instance.RechargeReport (RechargeData.ReportState.AFTER_SUCCESS,
-			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
-			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
-			QXComData.CreateBoxDiy ("充值成功！",true,null);
-			break;
-
-		case 2:
-			Debug.Log( "Pay Cancel." );
-			RechargeData.Instance.RechargeReport (RechargeData.ReportState.CANCEL,
-			                                      int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
-			                                      RechargeData.Instance.M_ErrorMsg.errorCode);
-			QXComData.CreateBoxDiy ("取消充值！",true,null);
-			break;
-
-		case 3:
-			Debug.Log( "Param Error." );
-			break;
-
-		default:
-			Debug.Log( "Not defined Result Code: " + p_result_code );
-			break;
-		}
-	}
-	//	*
-	//	*	支付状态
-	//	*	PAYSTATE_PAYUNKOWN     = -1;
-	//	*	//支付成功
-	//	*	PAYSTATE_PAYSUCC       = 0;
-	//	*	//用户取消
-	//	*	PAYSTATE_PAYCANCEL     = 1;
-	//	*	//支付出错
-	//	*	PAYSTATE_PAYERROR      = 2;
 
 	#endregion
 }

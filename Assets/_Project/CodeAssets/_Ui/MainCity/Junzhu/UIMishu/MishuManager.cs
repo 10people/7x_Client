@@ -50,7 +50,7 @@ public class MishuManager : MYNGUIPanel , SocketListener
 
 	public UIGotoPvPPanel m_UIGotoPvPPanel;
 	public GameObject m_objButtonAllUp;
-	private int m_iClickIndex = 0;
+	private int m_iClickIndex = -1;
 
 	public bool m_isBAnimation = false;
 	public bool m_isAnimationing = false;
@@ -64,7 +64,8 @@ public class MishuManager : MYNGUIPanel , SocketListener
 	void Start () {
 		SocketTool.RegisterSocketListener(this);
 		Global.ScendNull(ProtoIndexes.NEW_MIBAO_INFO);
-		if (FreshGuide.Instance ().IsActive (100404) && TaskData.Instance.m_TaskInfoDic [100404].progress >= 0) {
+		if (FreshGuide.Instance ().IsActive (100404) && TaskData.Instance.m_TaskInfoDic [100404].progress >= 0) 
+		{
 			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
 			{
 				TaskData.Instance.m_iCurMissionIndex = 100404;
@@ -73,7 +74,9 @@ public class MishuManager : MYNGUIPanel , SocketListener
 				CityGlobalData.m_isRightGuide = false;
 				UIYindao.m_UIYindao.setOpenYindao (tempTaskData.m_listYindaoShuju [tempTaskData.m_iCurIndex++]);
 			}
-		} else if (FreshGuide.Instance ().IsActive (200010) && TaskData.Instance.m_TaskInfoDic [200010].progress >= 0) {
+		}
+		else if (FreshGuide.Instance ().IsActive (200010) && TaskData.Instance.m_TaskInfoDic [200010].progress >= 0) 
+		{
 			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
 			{
 				TaskData.Instance.m_iCurMissionIndex = 200010;
@@ -84,6 +87,17 @@ public class MishuManager : MYNGUIPanel , SocketListener
 
 			}
 		}
+		else if (FreshGuide.Instance ().IsActive (100057) && TaskData.Instance.m_TaskInfoDic [100057].progress >= 0) 
+		{
+			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+			{
+				TaskData.Instance.m_iCurMissionIndex = 100057;
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic [TaskData.Instance.m_iCurMissionIndex];
+				tempTaskData.m_iCurIndex = 2;
+				CityGlobalData.m_isRightGuide = false;
+				UIYindao.m_UIYindao.setOpenYindao (tempTaskData.m_listYindaoShuju [tempTaskData.m_iCurIndex++]);
+			}
+		}
 		for(int i = 0; i < 9; i ++)
 		{
 			float movex = (m_MibaoMishuData.gameObject.transform.localPosition.x - m_MibaoData[i].gameObject.transform.localPosition.x) / 5;
@@ -91,7 +105,6 @@ public class MishuManager : MYNGUIPanel , SocketListener
 			m_listMoveX.Add(movex);
 			m_listMoveY.Add(movey);
 		}
-		Debug.Log(m_listMoveX.Count);
 	}
 
 	void OnDestroy()
@@ -137,6 +150,8 @@ public class MishuManager : MYNGUIPanel , SocketListener
 					}
 					break;
 				case 2:
+					Debug.Log(m_listAnimationObj.Count);
+					Debug.Log(m_listMoveX.Count);
 					m_listAnimationObj[i].transform.localPosition += new Vector3(m_listMoveX[i], m_listMoveY[i], 0);
 					m_listNum[i] ++;
 					if(m_listNum[i] == 5)
@@ -180,8 +195,6 @@ public class MishuManager : MYNGUIPanel , SocketListener
 							}
 							m_listState = new List<int>();
 							m_listNum = new List<int>();
-							m_listMoveX = new List<float>();
-							m_listMoveY = new List<float>();
 						}
 					}
 					break;
@@ -192,9 +205,13 @@ public class MishuManager : MYNGUIPanel , SocketListener
 
 	public void setDataMiBao()
 	{
+		MainCityUI.SetRedAlert(701, false);
 		m_objButtonAllUp.SetActive(false);
+		bool upMishu = true;
 		for(int i = 0; i < m_MibaoInfoResp.miBaoList.Count; i ++)
 		{
+			UI3DEffectTool.ClearUIFx(m_MibaoData[i].gameObject);
+			bool tempRed = m_MibaoData[i].m_ObjRed.activeSelf;
 			m_MibaoData[i].m_ObjRed.SetActive(false);
 			if(m_MibaoInfoResp.miBaoList[i].star == 0)
 			{
@@ -204,17 +221,27 @@ public class MishuManager : MYNGUIPanel , SocketListener
 				{
 					m_MibaoData[i].m_ObjRed.SetActive(true);
 					m_objButtonAllUp.SetActive(true);
+					MainCityUI.SetRedAlert(701, true);
 				}
+				upMishu = false;
 			}
 			else
 			{
 				m_MibaoData[i].m_SpriteIcon.color = Color.white;
 				m_MibaoData[i].m_SpritePinZhi.gameObject.SetActive(true);
 				m_MibaoData[i].m_SpritePinZhi.spriteName = "inlaRound" + MibaoNewTemplate.GetTemplateByID(m_MibaoInfoResp.miBaoList[i].tempId).color;
+				if(tempRed)
+				{
+					UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_MibaoData[i].gameObject, EffectTemplate.getEffectTemplateByEffectId(620230).path);
+				}
 			}
 			m_MibaoData[i].m_SpriteIcon.spriteName = "" + MibaoNewTemplate.GetTemplateByID(m_MibaoInfoResp.miBaoList[i].tempId).iconID;
 		}
-		
+		if(upMishu)
+		{
+			MainCityUI.SetRedAlert(701, true);
+		}
+		m_MibaoMishuData.m_ObjRed.SetActive(upMishu);
 		if(m_MibaoInfoResp.levelPoint == 9)
 		{
 			m_MibaoMishuData.m_SpriteIcon.spriteName = "" + MishuTemplate.templates[8].iconID;
@@ -226,7 +253,10 @@ public class MishuManager : MYNGUIPanel , SocketListener
 			m_MibaoMishuData.m_SpriteIcon.color = Color.gray;
 		}
 
-
+		if(m_iClickIndex != -1)
+		{
+			setMiBaoUpData(m_iClickIndex);
+		}
 	}
 
 	public void setDataMishu()
@@ -244,7 +274,7 @@ public class MishuManager : MYNGUIPanel , SocketListener
 					tempIndex = 8;
 				}
 
-				m_MishuData[i].m_SpritePinZhi.spriteName = "inlaRound" + MishuTemplate.templates[tempIndex].color;
+				m_MishuData[i].m_SpritePinZhi.spriteName = "inlaRound" + MishuTemplate.templates[i].color;
 				m_MishuData[i].m_SpritePinZhi.gameObject.SetActive(true);
 			}
 			else
@@ -252,6 +282,14 @@ public class MishuManager : MYNGUIPanel , SocketListener
 				m_MishuData[i].m_SpriteIcon.color = Color.black;
 				m_MishuData[i].m_SpritePinZhi.gameObject.SetActive(false);
 			}
+		}
+	}
+
+	void OnDisable()
+	{
+		for(int i = 0; i < 9; i ++)
+		{
+			UI3DEffectTool.ClearUIFx(m_MibaoData[i].gameObject);
 		}
 	}
 
@@ -306,7 +344,9 @@ public class MishuManager : MYNGUIPanel , SocketListener
 		{
 			m_MibaoTipObj.SetActive(true);
 			m_MibaoTipName.text = MibaoNewTemplate.GetTemplateByID(m_MibaoInfoResp.miBaoList[index].tempId).pinzhiName + "\n" + MibaoNewTemplate.GetTemplateByID(m_MibaoInfoResp.miBaoList[index].tempId).showName;
-			
+
+			m_MibaoTipData.m_SpriteIcon.spriteName = "" + MibaoNewTemplate.GetTemplateByID(m_MibaoInfoResp.miBaoList[index].tempId).iconID;
+			m_MibaoTipData.m_SpritePinZhi.spriteName = "inlaRound" + MibaoNewTemplate.GetTemplateByID(m_MibaoInfoResp.miBaoList[index].tempId).color;
 			string tempString = "";
 			bool nextLink = false;
 			if(m_MibaoInfoResp.miBaoList[index].gongJi > 0)
@@ -336,6 +376,7 @@ public class MishuManager : MYNGUIPanel , SocketListener
 		}
 	}
 
+
 	public void setMiShuUpData(int index)
 	{
 		if(index == 9)
@@ -345,9 +386,8 @@ public class MishuManager : MYNGUIPanel , SocketListener
 
 		m_MishuUpObj.SetActive(true);
 		m_MishuUpName.text = MishuTemplate.templates[index].pinzhiName + "\n" + MishuTemplate.templates[index].name;
-
 		m_MishuUpData.m_SpriteIcon.spriteName = "" + MishuTemplate.templates[index].iconID;
-
+		m_MishuUpData.m_SpritePinZhi.spriteName = "inlaRound" + MishuTemplate.templates[index].color;
 		string tempString = "";
 		bool nextLink = false;
 		if(MishuTemplate.templates[index].wqSH > 0)
@@ -421,13 +461,13 @@ public class MishuManager : MYNGUIPanel , SocketListener
 		bool isUpMishu = true;
 		for(int i = 0; i < m_MibaoInfoResp.miBaoList.Count; i ++)
 		{
-			if(m_MibaoInfoResp.miBaoList[i].star == 0 && m_MibaoInfoResp.miBaoList[i].suiPianNum < m_MibaoInfoResp.miBaoList[i].needSuipianNum)
+			if(m_MibaoInfoResp.miBaoList[i].star == 0)
 			{
 				isUpMishu = false;
 			}
 		}
 		m_MishuUpDes.text = tempString;
-		if(isUpMishu)
+		if(isUpMishu && index == m_MibaoInfoResp.levelPoint && m_MibaoInfoResp.levelPoint != 9)
 		{
 			m_MishuUpButtonObj.SetActive(true);
 			m_MishuUpJihuoLabel.gameObject.SetActive(false);
@@ -435,7 +475,7 @@ public class MishuManager : MYNGUIPanel , SocketListener
 		else
 		{
 			m_MishuUpButtonObj.SetActive(false);
-			m_MishuUpJihuoLabel.gameObject.SetActive(true);
+			m_MishuUpJihuoLabel.gameObject.SetActive(m_MibaoInfoResp.levelPoint < 9);
 		}
 	}
 
@@ -443,7 +483,9 @@ public class MishuManager : MYNGUIPanel , SocketListener
 	{
 		m_MishuTipObj.SetActive(true);
 		m_MishuTipName.text = MishuTemplate.templates[index].pinzhiName + "\n" + MishuTemplate.templates[index].name;
-		
+
+		m_MishuTipData.m_SpriteIcon.spriteName = "" + MishuTemplate.templates[index].iconID;
+		m_MishuTipData.m_SpritePinZhi.spriteName = "inlaRound" + MishuTemplate.templates[index].color;
 		string tempString = "";
 		bool nextLink = false;
 		if(MishuTemplate.templates[index].wqSH > 0)
@@ -536,9 +578,12 @@ public class MishuManager : MYNGUIPanel , SocketListener
 				MibaoInfoResp tempInfo = new MibaoInfoResp();
 				
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-
+//				Debug.Log("============1");
 				m_MibaoInfoResp = tempInfo;
-
+//				m_isBAnimation = false;
+//				m_isAnimationing = true;
+//				m_listState.Add(0);
+//				m_listNum.Add(0);
 				if(m_isBAnimation)
 				{
 					m_isBAnimation = false;
@@ -564,7 +609,6 @@ public class MishuManager : MYNGUIPanel , SocketListener
 
 	public override void MYClick(GameObject ui)
 	{
-		Debug.Log(ui.name);
 		if(ui.name.IndexOf("Icon") != -1)
 		{
 			m_iClickIndex = int.Parse(ui.name.Substring(4,1));
@@ -581,7 +625,7 @@ public class MishuManager : MYNGUIPanel , SocketListener
 				{
 
 				}
-				else if(m_iClickIndex == m_MibaoInfoResp.levelPoint)
+				else if(m_iClickIndex >= m_MibaoInfoResp.levelPoint)
 				{
 					setMiShuUpData(m_iClickIndex);
 				}
@@ -634,6 +678,7 @@ public class MishuManager : MYNGUIPanel , SocketListener
 					UIYindao.m_UIYindao.CloseUI();
 				}
 			}
+			m_MibaoMishuData.m_ObjRed.SetActive(false);
 		}
 		else if(ui.name.IndexOf("MishuButton") != -1)
 		{
@@ -652,6 +697,22 @@ public class MishuManager : MYNGUIPanel , SocketListener
 		else if(ui.name.IndexOf("MibaoUpClose") != -1)
 		{
 			m_MibaoUpObj.SetActive(false);
+			if (FreshGuide.Instance().IsActive(100404) && TaskData.Instance.m_TaskInfoDic[100404].progress >= 0)
+			{
+				TaskData.Instance.m_iCurMissionIndex = 100404;
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+				tempTaskData.m_iCurIndex = 2;
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+			}
+			if (FreshGuide.Instance().IsActive(100405) && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
+			{
+				TaskData.Instance.m_iCurMissionIndex = 100405;
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+				tempTaskData.m_iCurIndex = 2;
+				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+			}
+			m_iClickIndex = -1;
+			Global.ScendNull(ProtoIndexes.NEW_MIBAO_INFO);
 		}
 		else if(ui.name.IndexOf("MishuUpClose") != -1)
 		{
@@ -694,7 +755,14 @@ public class MishuManager : MYNGUIPanel , SocketListener
 					UIYindao.m_UIYindao.CloseUI();
 				}
 			}
-			if (FreshGuide.Instance().IsActive(200005) && TaskData.Instance.m_TaskInfoDic[200005].progress >= 0)
+			else if (FreshGuide.Instance().IsActive(100057) && TaskData.Instance.m_TaskInfoDic[100057].progress >= 0)
+			{
+				//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+				{
+					UIYindao.m_UIYindao.CloseUI();
+				}
+			}
+			else if (FreshGuide.Instance().IsActive(200005) && TaskData.Instance.m_TaskInfoDic[200005].progress >= 0)
 			{
 				ZhuXianTemp tempTaskData = ZhuXianTemp.getTemplateById(200010);
 				tempTaskData.m_iCurIndex = 2;

@@ -1099,7 +1099,7 @@ public class Pve_Level_Info : MonoBehaviour {
 //		}
 		if (issended)
 		{
-			UIYindao.m_UIYindao.CloseUI ();
+
 			Startsendmasg = false;
 			if(CityGlobalData.PveLevel_UI_is_OPen)
 			{

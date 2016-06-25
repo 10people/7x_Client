@@ -7,13 +7,4 @@ public class MishuData : MonoBehaviour
 	public GameObject m_ObjRed;
 	public UISprite m_SpritePinZhi;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

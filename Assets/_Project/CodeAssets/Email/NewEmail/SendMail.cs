@@ -15,12 +15,19 @@ public class SendMail : MonoBehaviour {
 
 	public UIInput nameLabel;
 	public UIInput contentLabel;
+
+	public UILabel m_content;
+
+	public UIScrollView m_sc;
+	public UIScrollBar m_sb;
 	
 	public UILabel btnLabel;
 
 	private string textStr;
 
 	public GameObject selectFriendWindow;
+
+	private bool m_isDefault = false;
 
 	/// <summary>
 	/// Gets the name of the reply.
@@ -45,12 +52,25 @@ public class SendMail : MonoBehaviour {
 
 		btnDic["Block"].GetComponent<UISprite> ().alpha = 0.1f;
 
-		bool isDefault = NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT ? true : false;
+		m_isDefault = NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT ? true : false;
 
 		nameLabel.value = NewEmailData.Instance().SendName;
-		contentLabel.value = isDefault ? NewEmailData.Instance().SendContent : "";
+		contentLabel.value = m_isDefault ? NewEmailData.Instance().SendContent : "";
+		SetContent ();
 
-		nameLabel.GetComponent<BoxCollider> ().enabled = isDefault;
+		nameLabel.GetComponent<BoxCollider> ().enabled = m_isDefault;
+	}
+
+	void SetContent ()
+	{
+		if (m_content.height <= 232)
+		{
+			m_sc.ResetPosition ();
+		}
+
+		m_sc.UpdateScrollbars (true);
+		m_sc.enabled = m_content.height > 232 ? true : false;
+		m_sb.gameObject.SetActive (m_content.height > 232 ? true : false);
 	}
 
 	void BtnHandlerCallBack (GameObject obj)
@@ -58,16 +78,17 @@ public class SendMail : MonoBehaviour {
 		switch (obj.name)
 		{
 		case "InputName":
-
-			#if UNITY_EDITOR
-			Debug.Log ("Unity");
-			#else
-			Debug.Log ("Android or Ios");
 			btnDic["Block"].gameObject.SetActive (true);
-			#endif
+//			#if UNITY_EDITOR
+//			Debug.Log ("Unity");
+//			#else
+//			Debug.Log ("Android or Ios");
+//			btnDic["Block"].gameObject.SetActive (true);
+//			#endif
 
 			break;
 		case "InputContent":
+			btnDic["Block"].gameObject.SetActive (true);
 			break;
 		case "SendBtn":
 
@@ -77,6 +98,7 @@ public class SendMail : MonoBehaviour {
 		case "Block":
 
 			NameSubmit ();
+			ContentSubmit ();
 
 			break;
 		case "SelectFriendBtn":
@@ -95,6 +117,12 @@ public class SendMail : MonoBehaviour {
 	{
 		btnDic["Block"].gameObject.SetActive (false);
 		nameLabel.value = QXComData.TextLengthLimit (QXComData.StrLimitType.CREATE_ROLE_NAME,nameLabel.value);
+	}
+
+	public void ContentSubmit ()
+	{
+		btnDic["Block"].gameObject.SetActive (false);
+		SetContent ();
 	}
 
 	/// <summary>
@@ -123,7 +151,7 @@ public class SendMail : MonoBehaviour {
 		switch (tempState)
 		{
 		case 1:
-			str = "发送";
+			str = "发  送";
 			break;
 		case 2:
 			str = "";

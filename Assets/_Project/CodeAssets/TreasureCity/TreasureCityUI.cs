@@ -10,7 +10,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class TreasureCityUI : TreasureCitySingleton<TreasureCityUI> {
+public class TreasureCityUI : GeneralInstance<TreasureCityUI> {
 
 	public TreasureCityUIBR tCityUIBR;//右下
 	public TreasureCityUITop tCityUITop;//正上

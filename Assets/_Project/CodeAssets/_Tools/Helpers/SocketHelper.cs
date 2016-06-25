@@ -58,8 +58,19 @@ public class SocketHelper {
 		
 		SocketTool.Instance().SendSocketMessage((short)protoIndex, ref t_protof);
 	}
-	
-	/// <summary>
+
+    public static void SendQXMessage(object value, int protoIndex, int waitIndex)
+    {
+        MemoryStream memStream = new MemoryStream();
+
+        QiXiongSerializer qxSer = new QiXiongSerializer();
+        qxSer.Serialize(memStream, value);
+        byte[] t_protof = memStream.ToArray();
+
+        SocketTool.Instance().SendSocketMessage((short)protoIndex, ref t_protof, true, waitIndex);
+    }
+
+    /// <summary>
 	/// Send QX message index to server.
 	/// </summary>
 	/// <param name="protoIndex">message index</param>
@@ -266,9 +277,9 @@ public class SocketHelper {
 		}
 
 		if( m_to_create_lost_or_fail_window ){
-			#if DEBUG_SOCKET_WINDOW
+//			#if DEBUG_SOCKET_WINDOW
 			Debug.Log( "Show Create Lost or Fail Window()" );
-			#endif
+//			#endif
 
 			{
 				ResetErrorBoxFlag();
@@ -293,9 +304,9 @@ public class SocketHelper {
 		}
 
 		if( m_to_create_time_out_window ){
-			#if DEBUG_SOCKET_WINDOW
+//			#if DEBUG_SOCKET_WINDOW
 			Debug.Log( "Show Create Time Out Window()" );
-			#endif
+//			#endif
 
 			{
 				ResetErrorBoxFlag();

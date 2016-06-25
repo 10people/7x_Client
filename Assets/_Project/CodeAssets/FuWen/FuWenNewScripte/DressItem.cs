@@ -32,13 +32,7 @@ public class DressItem : MonoBehaviour {
 	public bool XiangQian;
 
 	public UILabel mButtonName;
-	void Start () {
-	
-	}
 
-	void Update () {
-	
-	}
 	public void Init()
 	{
 		if(XiangQian)
@@ -51,11 +45,17 @@ public class DressItem : MonoBehaviour {
 		}
 		FuWenTemplate mTemp = FuWenTemplate.GetFuWenTemplateByFuWenId (mFuwenInBag.itemId);
 		FuWenPinZhi.spriteName = "pinzhi"+(mTemp.color -1).ToString();
-		FuWenName.text = mTemp.fuwenLevel.ToString()+"级"+NameIdTemplate.GetName_By_NameId (mTemp.name);
+		FuWenName.text = NameIdTemplate.GetName_By_NameId (mTemp.name);
 
 		FuwenNumber.text = "x"+mFuwenInBag.cnt.ToString ();
-
-		Exp.text = mFuwenInBag.exp + "/" + mTemp.lvlupExp.ToString ();
+		if(mTemp.lvlupExp == -1)
+		{
+			Exp.text = "已达最高";
+		}
+		else
+		{
+			Exp.text = mFuwenInBag.exp + "/" + mTemp.lvlupExp.ToString ();
+		}
 
 		FuWenICon.spriteName = mTemp.icon.ToString ();
 		//DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId (mTemp.desc);

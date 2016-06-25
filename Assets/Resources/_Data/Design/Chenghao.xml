@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<Chenghao id="4101" name="声名鹊起" desc="4201" price="1000" validityPeriod="3" add_injury_scale="10" reduce_injury_scale="10" daibi="900011" />
-<Chenghao id="4102" name="闻达诸侯" desc="4202" price="2000" validityPeriod="3" add_injury_scale="15" reduce_injury_scale="15" daibi="900011" />
-<Chenghao id="4103" name="威名远扬" desc="4203" price="3000" validityPeriod="3" add_injury_scale="20" reduce_injury_scale="20" daibi="900011" />
-<Chenghao id="4104" name="国之栋梁" desc="4204" price="4000" validityPeriod="3" add_injury_scale="25" reduce_injury_scale="25" daibi="900011" />
-<Chenghao id="4201" name="初出茅庐" desc="4201" price="1000" validityPeriod="3" add_injury_scale="10" reduce_injury_scale="10" daibi="900027" />
-<Chenghao id="4202" name="崭露头角" desc="4202" price="2000" validityPeriod="3" add_injury_scale="15" reduce_injury_scale="15" daibi="900027" />
-<Chenghao id="4203" name="乱世豪杰" desc="4203" price="3000" validityPeriod="3" add_injury_scale="20" reduce_injury_scale="20" daibi="900027" />
-<Chenghao id="4204" name="名震天下" desc="4204" price="4000" validityPeriod="3" add_injury_scale="25" reduce_injury_scale="25" daibi="900027" />
+<Chenghao id="4101" name="百战勇者" desc="4201" price="200" validityPeriod="2" add_injury_scale="10" reduce_injury_scale="10" daibi="900011" aniColor="272" />
+<Chenghao id="4102" name="百战英豪" desc="4202" price="1000" validityPeriod="2" add_injury_scale="15" reduce_injury_scale="15" daibi="900011" aniColor="273" />
+<Chenghao id="4103" name="百战枭雄" desc="4203" price="2500" validityPeriod="2" add_injury_scale="20" reduce_injury_scale="20" daibi="900011" aniColor="274" />
+<Chenghao id="4104" name="百战至尊" desc="4204" price="5000" validityPeriod="2" add_injury_scale="25" reduce_injury_scale="25" daibi="900011" aniColor="275" />
+<Chenghao id="4201" name="勇冠三军" desc="4201" price="1000" validityPeriod="2" add_injury_scale="10" reduce_injury_scale="10" daibi="900027" aniColor="272" />
+<Chenghao id="4202" name="六师之雄" desc="4202" price="4000" validityPeriod="2" add_injury_scale="15" reduce_injury_scale="15" daibi="900027" aniColor="273" />
+<Chenghao id="4203" name="九州翘楚" desc="4203" price="10000" validityPeriod="2" add_injury_scale="20" reduce_injury_scale="20" daibi="900027" aniColor="274" />
+<Chenghao id="4204" name="威震天下" desc="4204" price="20000" validityPeriod="2" add_injury_scale="25" reduce_injury_scale="25" daibi="900027" aniColor="275" />
 </dataset>

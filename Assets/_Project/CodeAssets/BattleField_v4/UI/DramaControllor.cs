@@ -27,6 +27,8 @@ public class DramaControllor : MonoBehaviour
 
 	public GameObject labelTemple;
 
+	public GameObject btnForcedEnd;
+
 	public UIAnchor anchorTop;
 	
 	public UIAnchor anchorTopLeft;
@@ -388,9 +390,18 @@ public class DramaControllor : MonoBehaviour
 
 			if(yindaoable == true)
 			{
-				yindaoId = int.Parse(template.ap3);
+				string[] strs = template.ap3.Split(',');
+
+				yindaoId = int.Parse(strs[0]);
 
 				UIYindao.m_UIYindao.setOpenYindao(template.ap1);
+
+				if(strs.Length > 1)
+				{
+					float _time = float.Parse(strs[1]);
+
+					BattleUIControlor.Instance().setCloseYinDaoTime(_time, yindaoId);
+				}
 			}
 
 			dramaOver (yindaoable == true && template.pause == 1);
@@ -457,7 +468,7 @@ public class DramaControllor : MonoBehaviour
 		}
 		else if(template.actionType == 10)//播放视频
 		{
-			playVideo(template.ap1);
+			playVideo(template.ap1, template.ap2 != 0);
 		}
 		else if(template.actionType == 11)//强制死亡
 		{
@@ -513,7 +524,11 @@ public class DramaControllor : MonoBehaviour
 
 		storyControllor.playAction (gameObject, index);
 
+		btnForcedEnd.SetActive (index != 10000 && storyControllor.getCurBoardSkippable());
+
 		BattleControlor.Instance().inDrama = true;
+
+		BattleControlor.Instance().getKing().gameCamera.camera3dui.enabled = false;
 	}
 
 	private void playmusic(int musicId)
@@ -536,13 +551,15 @@ public class DramaControllor : MonoBehaviour
 		ClientMain.m_ClientMain.m_SoundPlayEff.PlaySound (soundId + "");
 	}
 
-	private void playVideo(int videoId)
+	private void playVideo(int videoId, bool skippable)
 	{
 		EffectIdTemplate template = EffectIdTemplate.getEffectTemplateByEffectId (videoId);
 
 		spriteVedioBG.SetActive (true);
 
-		VideoHelper.PlayDramaVideo (template.path, onPressInDrama);
+		VideoHelper.PlayDramaVideo (template.path, skippable, onPressInDrama);
+
+		BattleControlor.Instance().inDrama = true;
 	}
 
 	private void nodeDie(int nodeId)
@@ -558,17 +575,21 @@ public class DramaControllor : MonoBehaviour
 	{
 		foreach(BaseAI node in BattleControlor.Instance().selfNodes)
 		{
-			node.setLayer(8);//3D Layer
+			if(node.nodeData.nodeType == qxmobile.protobuf.NodeType.PLAYER) node.setLayer(8);//3D Layer
+
+			else node.setLayer(13);//3D Layer Without Light
 		}
 
 		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
 		{
-			node.setLayer(8);//3D Layer
+			if(node.nodeData.nodeType == qxmobile.protobuf.NodeType.PLAYER) node.setLayer(8);//3D Layer
+			
+			else node.setLayer(13);//3D Layer Without Light
 		}
 
 		foreach(BaseAI node in BattleControlor.Instance().midNodes)
 		{
-			node.setLayer(8);//3D Layer
+			node.setLayer(13);//3D Layer Without Light
 		}
 
 		onPressInDrama ();
@@ -1138,11 +1159,27 @@ public class DramaControllor : MonoBehaviour
 		OnPress (true);
 	}
 
-	public void OnPress(bool pressed)
+	public void storyForcedEnd()
 	{
-		if(m_templateCallback.actionType == 1 && m_templateCallback.ap1 == 10000)
+		if(m_templateCallback.actionType == 1)
 		{
 			storyControllor.forcedEnd();
+			
+			return;
+		}
+	}
+
+	public void OnPress(bool pressed)
+	{
+		if(m_templateCallback.actionType == 1)
+		{
+#if UNITY_EDITOR
+			if(pressed) storyControllor.forcedEnd();
+#endif
+			if(m_templateCallback.ap1 == 10000)// || storyControllor.getCurBoardSkippable())
+			{
+				storyControllor.forcedEnd();
+			}
 
 			return;
 		}
@@ -1197,6 +1234,8 @@ public class DramaControllor : MonoBehaviour
 
 	private void dramaOver(bool _stopAction = true)
 	{
+		btnForcedEnd.SetActive (false);
+
 		inDrama = false;
 
 		inGuide = false;
@@ -1209,7 +1248,7 @@ public class DramaControllor : MonoBehaviour
 
 		bool guideFlag = GuideTemplate.HaveId (tempLevel, e);
 
-		TimeHelper.SetTimeScale(1f);
+		if(!BattleUIControlor.Instance().pauseControllor.gameObject.activeSelf) TimeHelper.SetTimeScale(1f);
 
 		spriteVedioBG.SetActive (false);
 
@@ -1336,10 +1375,14 @@ public class DramaControllor : MonoBehaviour
 
 	private void openEye()
 	{
+
+
 		if( BattleUIControlor.Instance() == null ) return;
 
 		if( BattleUIControlor.Instance().layerFight == null ) return;
 
+		BattleControlor.Instance().getKing().gameCamera.camera3dui.enabled = true;
+		
 		BattleUIControlor.Instance().layerFight.SetActive (true);
 
 		bool have = GuideTemplate.HaveId (tempLevel, tempEventId);

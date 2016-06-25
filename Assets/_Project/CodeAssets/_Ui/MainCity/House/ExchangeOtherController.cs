@@ -25,6 +25,8 @@ public class ExchangeOtherController : MonoBehaviour
 
     public UILabel PlayerInfoLabel;
 
+	private bool EffectisOpen;
+
     public void Init()
     {
         if (IconSamplePrefab != null)
@@ -46,8 +48,9 @@ public class ExchangeOtherController : MonoBehaviour
         }
 
         IconSampleManagerList.Clear();
-
+		EffectisOpen = false;
         //ergodic each exchange box item.
+
         for (int i = 0; i < IconSampleParentList.Count; i++)
         {
             GameObject iconSampleObject;
@@ -66,9 +69,11 @@ public class ExchangeOtherController : MonoBehaviour
                   iconSampleObject.AddComponent<OldBookItemManager>();
             itemManager.BoxId = ExchangeOtherInfoList[i].boxId;
             itemManager.ItemId = ExchangeOtherInfoList[i].itemId;
-
+		
             //instance icon and set
             var m_IconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+
+
             if (ExchangeOtherInfoList[i].itemId != 0)
             {
                 m_IconSampleManager.SetIconByID(IconSampleManager.IconType.exchangeBox, ExchangeOtherInfoList[i].itemId, "", 5);
@@ -80,7 +85,20 @@ public class ExchangeOtherController : MonoBehaviour
                 m_IconSampleManager.SetIconBasic(5);
                 m_IconSampleManager.SetIconBasicDelegate();
             }
+			m_IconSampleManager.t_Position_y = i;
 
+			if(OldBookWindow.Itemids.Contains(ExchangeOtherInfoList[i].itemId)&&OldBookWindow.Itemids.Contains(ExchangeOtherInfoList[i].boxId )&& !EffectisOpen)
+			{
+				if(m_OldBookWindow.TheyPosition == m_IconSampleManager.t_Position_y)
+				{
+					m_IconSampleManager.m2DAnimation_Continuly.gameObject.SetActive(true);
+					m_IconSampleManager.m2DAnimation_Continuly.Reset();
+					m_IconSampleManager.AnimationIsOpen = true;
+					m_IconSampleManager.m_Itemid = ExchangeOtherInfoList[i].itemId;
+					m_IconSampleManager.m_Itemid = ExchangeOtherInfoList[i].boxId;
+					EffectisOpen = true;
+				}
+			}
             IconSampleManagerList.Add(m_IconSampleManager);
         }
     }
@@ -91,12 +109,17 @@ public class ExchangeOtherController : MonoBehaviour
     /// <param name="go"></param>
     private void OnSelectClick(GameObject go)
     {
+//		Debug.Log ("other");
         var iconSampleManager = go.GetComponent<IconSampleManager>();
         var itemManager = go.GetComponent<OldBookItemManager>();
 
         //set active state.
         bool isActiveBefore = iconSampleManager.SelectFrameSprite.gameObject.activeSelf;
 
+		iconSampleManager.m2DAnimation.gameObject.SetActive (!isActiveBefore);
+		iconSampleManager.m2DAnimation.loop = false;
+		m_OldBookWindow.TheyPosition = iconSampleManager.t_Position_y;
+		iconSampleManager.m2DAnimation.Reset();
         m_OldBookWindow.ExchangeOtherControllerList.ForEach(
             controller =>
                 controller.IconSampleManagerList.ForEach(

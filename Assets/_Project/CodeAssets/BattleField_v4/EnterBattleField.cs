@@ -42,21 +42,28 @@ public class EnterBattleField : ScriptableObject
 
 		CityGlobalData.m_save = 0;
 
-//		int chapterId = 100000 + section * 100 + level;
+		if(levelType== LevelType.LEVEL_TALE)
+		{
+			LegendPveTemplate template = LegendPveTemplate.GetLegendPVETemplate (section, level);
+			
+			CityGlobalData.battleTemplateId = template.id;
+			
+			CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( template.sceneId );
+			
+			CityGlobalData.m_configId = template.configId;
+		}
+		else
+		{
+			PveTempTemplate template = PveTempTemplate.GetPVETemplate (section, level);
 
-		PveTempTemplate template = PveTempTemplate.GetPVETemplate (section, level);
+			CityGlobalData.battleTemplateId = template.id;
 
-		CityGlobalData.battleTemplateId = template.id;
+			CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( template.sceneId );
 
-//		CityGlobalData.m_nextSceneName = "BattleField_V4_" + template.sceneId;
+			CityGlobalData.m_configId = template.configId;
+		}
 
-		CityGlobalData.t_next_battle_field_scene = SceneTemplate.GetScenePath( template.sceneId );
-
-		CityGlobalData.m_configId = template.configId;
-
-		//Application.LoadLevelAdditiveAsync
-
-		if(template.id == 100001)
+		if(section == 0)
 		{
 			SceneManager.EnterBattleField( CityGlobalData.t_next_battle_field_scene );
 		}
@@ -305,6 +312,8 @@ public class EnterBattleField : ScriptableObject
 
 	private static void sendData()
 	{
+		Debug.Log( "EnterBattleField.sendData()" );
+
 		GameObject gc = new GameObject ();
 		
 		EnterBattleFieldNet net = gc.AddComponent<EnterBattleFieldNet>();

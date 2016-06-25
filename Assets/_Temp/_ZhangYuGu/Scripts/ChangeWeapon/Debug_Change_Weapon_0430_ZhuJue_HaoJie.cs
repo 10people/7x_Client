@@ -36,12 +36,7 @@ public class Debug_Change_Weapon_0430_ZhuJue_HaoJie : MonoBehaviour {
 		
 		m_animation = GetComponent<Animation>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
+
 	private AnimationClip GetAnimation( int p_index ){
 		int t_i = 0;
 		

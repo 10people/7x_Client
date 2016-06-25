@@ -50,13 +50,7 @@ public class BoxBtn : MYNGUIPanel {
 		int awardid = int.Parse(Awardlist[1]);
 		ShowTip.showTip (awardid);
 	}
-	void Start () {
-	
-	}
 
-	void Update () {
-	
-	}
 	public void Init()
 	{
 //		Debug.Log ("IsLingQu = "+IsLingQu);

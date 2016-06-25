@@ -48,7 +48,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 	public List<GameObject> BtnsList = new List<GameObject>();
 
 	//public List<string> Friendsid = new List<string>();
-
+	public GameObject BtnsRoot;
 	public static MembersManager mInstance;
 	public bool IsDrag = false;
 	void Awake()
@@ -91,6 +91,11 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 	}
 	public void Init()
 	{
+		Transform btns = BtnsRoot.transform.FindChild ("FloatButtons(Clone)");
+		if(btns)
+		{
+			Destroy(btns.gameObject);
+		}
 		foreach(ShowAllMembers m in m_ShowAllMemberList)
 		{
 			Destroy( m.gameObject );
@@ -319,25 +324,25 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		{
 			switch (p_message.m_protocol_index)
 			{
-			case ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP://查看君主信息返回
-			{
-				MemoryStream exit_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-				
-				QiXiongSerializer exit_qx = new QiXiongSerializer();
-				
-				JunZhuInfo mJunZhuInfo = new JunZhuInfo();
-				
-				exit_qx.Deserialize(exit_stream, mJunZhuInfo, mJunZhuInfo.GetType());
-
-				//Debug.Log ("查看君主信息返回:" + ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP);
-
-				m_JunZhuInfo = mJunZhuInfo;
-
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
-
-				return true;
-				break;
-			}
+//			case ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP://查看君主信息返回
+//			{
+//				MemoryStream exit_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+//				
+//				QiXiongSerializer exit_qx = new QiXiongSerializer();
+//				
+//				JunZhuInfo mJunZhuInfo = new JunZhuInfo();
+//				
+//				exit_qx.Deserialize(exit_stream, mJunZhuInfo, mJunZhuInfo.GetType());
+//
+//				//Debug.Log ("查看君主信息返回:" + ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP);
+//
+//				m_JunZhuInfo = mJunZhuInfo;
+//
+//				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
+//
+//				return true;
+//				break;
+//			}
 
 //			case ProtoIndexes.ALLIANCE_DISMISS_NOTIFY://无法判断是否解散成功
 //			{
@@ -383,7 +388,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 				FireMemberResp fireResp = new FireMemberResp();
 				
 				fire_qx.Deserialize (fire_stream, fireResp, fireResp.GetType());
-				
+
 				if (fireResp != null)
 				{
 					fireMemberResp = fireResp;
@@ -394,8 +399,8 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 						if (fireResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
 						{
 							backName = m_allianceHaveRes.memberInfo[i].name;
-						//	Debug.Log ("BackName:" + backName);
-					//		Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
+							//	Debug.Log ("BackName:" + backName);
+							//		Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
 							m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
 						}
 					}
@@ -418,41 +423,48 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 				UpTitleResp upResp = new UpTitleResp();
 				
 				up_qx.Deserialize (up_stream,upResp,upResp.GetType ());
-				
-				if (upResp != null)
+				if(upResp.code == 3)
 				{
-					upTitleResp = upResp;
-					
-					for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+					string mstr2 = "当前正在进行联盟战，无法进行升职操作！";
+					ClientMain.m_UITextManager.createText(mstr2);
+				}
+				else{
+					if (upResp != null)
 					{
-						if (upResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+						upTitleResp = upResp;
+						
+						for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
 						{
-							backName = m_allianceHaveRes.memberInfo[i].name;
-						//	Debug.Log ("BackName:" + backName);
-						//	Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
-							
-							if (upResp.code == 0)
+							if (upResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
 							{
-							//	Debug.Log ("地位：" + upResp.title);
-							//	Debug.Log ("升职成功");
-								m_allianceHaveRes.memberInfo[i].identity = upResp.title;
+								backName = m_allianceHaveRes.memberInfo[i].name;
+								//	Debug.Log ("BackName:" + backName);
+								//	Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
 								
-							}
-							
-							else if (upResp.code == 2)
-							{
-								m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+								if (upResp.code == 0)
+								{
+									//	Debug.Log ("地位：" + upResp.title);
+									//	Debug.Log ("升职成功");
+									m_allianceHaveRes.memberInfo[i].identity = upResp.title;
+									
+								}
 								
+								else if (upResp.code == 2)
+								{
+									m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+									
+								}
 							}
 						}
+						AllianceData.Instance.RequestData ();
+						Init();
+						
+						//升职返回提示弹窗
+						Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+						                        UpResourceLoadCallback );
 					}
-					AllianceData.Instance.RequestData ();
-					Init();
-					
-					//升职返回提示弹窗
-					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-					                        UpResourceLoadCallback );
 				}
+
 				
 				return true;
 			}
@@ -466,39 +478,48 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 				DownTitleResp downResp = new DownTitleResp();
 				
 				down_qx.Deserialize(down_stream, downResp, downResp.GetType());
-				
-				if (downResp != null)
+
+				if(downResp.code == 2)
 				{
-					downTitleResp = downResp;
-					
-					for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+					string mstr2 = "当前正在进行联盟战，无法进行降职操作！";
+					ClientMain.m_UITextManager.createText(mstr2);
+				}
+				else
+				{
+					if (downResp != null)
 					{
-						if (downResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+						downTitleResp = downResp;
+						
+						for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
 						{
-							backName = m_allianceHaveRes.memberInfo[i].name;
-						//	Debug.Log ("BackName:" + backName);
-						//	Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
-							if (downResp.code == 0)
+							if (downResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
 							{
-							//	Debug.Log ("你被降职了");
-							//	Debug.Log ("identy:" + downResp.title);
-								m_allianceHaveRes.memberInfo[i].identity = downResp.title;
-							}
-							
-							else if (downResp.code == 1)
-							{
-								//Debug.Log ("该玩家已经不在联盟中");
-								m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+								backName = m_allianceHaveRes.memberInfo[i].name;
+								//	Debug.Log ("BackName:" + backName);
+								//	Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
+								if (downResp.code == 0)
+								{
+									//	Debug.Log ("你被降职了");
+									//	Debug.Log ("identy:" + downResp.title);
+									m_allianceHaveRes.memberInfo[i].identity = downResp.title;
+								}
+								
+								else if (downResp.code == 1)
+								{
+									//Debug.Log ("该玩家已经不在联盟中");
+									m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+								}
 							}
 						}
+						AllianceData.Instance.RequestData ();
+						Init();
+						
+						//降职返回提示弹窗
+						Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+						                        DownResourceLoadCallback );
 					}
-					AllianceData.Instance.RequestData ();
-					Init();
-					
-					//降职返回提示弹窗
-					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-					                        DownResourceLoadCallback );
 				}
+			
 				
 				return true;
 			}
@@ -511,51 +532,58 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 				TransferAllianceResp transResp = new TransferAllianceResp();
 				
 				trans_qx.Deserialize(trans_stream, transResp, transResp.GetType());
-				
-				if (transResp != null)
+				if(transResp.result == 2)
 				{
-					transAllianceResp = transResp;
-
-					if (transResp.result == 0)
-					{
-					//	Debug.Log ("转让成功！");
-
-						for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
-						{
-
-							if (transResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
-							{
-								transName = m_allianceHaveRes.memberInfo[i].name;
-								m_allianceHaveRes.memberInfo[i].identity = 2;
-								m_allianceHaveRes.identity = 1;
-							}
-							if(m_allianceHaveRes.memberInfo[i].junzhuId == JunZhuData.Instance().m_junzhuInfo.id )
-							{
-								m_allianceHaveRes.memberInfo[i].identity = 1;
-							}
-						}
-					}
-					
-					else if (transResp.result == 1)
-					{
-						//Debug.Log ("不在联盟列表里！");
-						
-						for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
-						{
-							if (transResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
-							{
-								transName = m_allianceHaveRes.memberInfo[i].name;
-								
-								m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
-							}
-						}
-					}
-
-					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-					                        TransAllianceLoadBack);
-					AllianceData.Instance.RequestData ();
-					Init();
+					string mstr2 = "当前正在进行联盟战，无法进行开除操作！";
+					ClientMain.m_UITextManager.createText(mstr2);
 				}
+				else{
+					if (transResp != null)
+					{
+						transAllianceResp = transResp;
+						
+						if (transResp.result == 0)
+						{
+							Debug.Log ("转让成功！");
+							
+							for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+							{
+								
+								if (transResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+								{
+									transName = m_allianceHaveRes.memberInfo[i].name;
+									m_allianceHaveRes.memberInfo[i].identity = 2;
+									m_allianceHaveRes.identity = 1;
+								}
+								if(m_allianceHaveRes.memberInfo[i].junzhuId == JunZhuData.Instance().m_junzhuInfo.id )
+								{
+									m_allianceHaveRes.memberInfo[i].identity = 1;
+								}
+							}
+						}
+						
+						else if (transResp.result == 1)
+						{
+							//Debug.Log ("不在联盟列表里！");
+							
+							for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+							{
+								if (transResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+								{
+									transName = m_allianceHaveRes.memberInfo[i].name;
+									
+									m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+								}
+							}
+						}
+						
+						Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
+						                        TransAllianceLoadBack);
+						AllianceData.Instance.RequestData ();
+						Init();
+					}
+				}
+			
 				return true;
 			}
 			default: 
@@ -568,7 +596,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 
 	void TransAllianceLoadBack (ref WWW p_www,string p_path, Object p_object)
 	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
 		string titleStr = "";
 		string str2 = "";
@@ -580,8 +608,8 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			titleStr = "转让成功";
 			str2 = "您已将联盟转让给副盟主" + transName + "！";
 			
-			uibox.setBox(titleStr,null, MyColorData.getColorString (1,str2),null,confirmStr,null,
-			             null);
+//			uibox.setBox(titleStr,null, MyColorData.getColorString (1,str2),null,confirmStr,null,
+//			             null);
 		}
 		
 		else if (transAllianceResp.result == 1)
@@ -589,16 +617,17 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			titleStr = "转让失败";
 			str2 = transName + "已不在联盟中！";
 			
-			uibox.setBox(titleStr,null, MyColorData.getColorString (1,str2),null,confirmStr,null,
-			             null);
+//			uibox.setBox(titleStr,null, MyColorData.getColorString (1,str2),null,confirmStr,null,
+//			             null);
 		}
+		ClientMain.m_UITextManager.createText (str2);
 	}
 	//开除loadCallBack
 	public void FireResourceLoadCallback( ref WWW p_www, string p_path,  Object p_object )
 	{
-		GameObject boxObj = Instantiate( p_object ) as GameObject;
-		UIBox uibox = boxObj.GetComponent<UIBox> ();
-		
+//		GameObject boxObj = Instantiate( p_object ) as GameObject;
+//		UIBox uibox = boxObj.GetComponent<UIBox> ();
+//		
 		if (fireMemberResp.result == 0)
 		{
 			//Debug.Log ("开除成功");
@@ -614,17 +643,18 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			str2 = backName + "已不在联盟中！";
 		}
 		
-		uibox.setBox(titleStr, null, MyColorData.getColorString (1,str2), 
-		             null,confirmStr,null,null);
+//		uibox.setBox(titleStr, null, MyColorData.getColorString (1,str2), 
+//		             null,confirmStr,null,null);
+		ClientMain.m_UITextManager.createText (str2);
 	}
 
 
 	//升职loadCallBack
 	public void UpResourceLoadCallback( ref WWW p_www, string p_path,  Object p_object )
 	{
-		GameObject boxObj = Instantiate( p_object ) as GameObject;
-		UIBox uibox = boxObj.GetComponent<UIBox> ();
-		
+//		GameObject boxObj = Instantiate( p_object ) as GameObject;
+//		UIBox uibox = boxObj.GetComponent<UIBox> ();
+//		
 		if (upTitleResp.code == 0)
 		{
 			titleStr = "升职成功";
@@ -645,9 +675,11 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			
 			str2 = backName + "已不在联盟中！";
 		}
-		
-		uibox.setBox(titleStr, null, MyColorData.getColorString (1,str2), 
-		             null,confirmStr,null,null);
+//		
+//		uibox.setBox(titleStr, null, MyColorData.getColorString (1,str2), 
+//		             null,confirmStr,null,null);
+
+		ClientMain.m_UITextManager.createText (str2);
 	}
 
 	
@@ -670,9 +702,9 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			
 			str2 = backName + "已不在联盟中！";
 		}
-		
-		uibox.setBox(titleStr, null, MyColorData.getColorString (1,str2), 
-		             null,confirmStr,null,null);
+		ClientMain.m_UITextManager.createText (str2);
+//		uibox.setBox(titleStr, null, MyColorData.getColorString (1,str2), 
+//		             null,confirmStr,null,null);
 	}
 
 

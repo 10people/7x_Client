@@ -41,6 +41,8 @@ public class CameraHelper {
 				continue;
 			}
 
+//			Debug.Log( "Set.Main.Camera: " + p_enable + "   " + GameObjectHelper.GetGameObjectHierarchy( m_cached_main_cams[ i ].gameObject ) );
+
 			m_cached_main_cams[ i ].enabled = p_enable;
 		}
 

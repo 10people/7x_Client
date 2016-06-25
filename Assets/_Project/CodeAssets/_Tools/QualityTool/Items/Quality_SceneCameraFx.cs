@@ -4,6 +4,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 
 
@@ -40,6 +41,18 @@ public class Quality_SceneCameraFx : MonoBehaviour{
 
 	#region Utilities
 
+	private bool m_fx_open = true;
+
+	private List<GameObject> m_fx_gb_list = new List<GameObject>();
+
+	public static void SwitchSceneCameraFx(){
+		m_instance.m_fx_open = !m_instance.m_fx_open;
+
+		for( int i = 0; i < m_instance.m_fx_gb_list.Count; i++ ){
+			m_instance.m_fx_gb_list[ i ].SetActive( m_instance.m_fx_open );
+		}
+	}
+
 	public static void InitSceneCameraAndCameraFx(){
 		GameObject t_gb = KingCamera.getChildCamera();
 
@@ -59,13 +72,44 @@ public class Quality_SceneCameraFx : MonoBehaviour{
 			return;
 		}
 
+		{
+			AudioListener t_listener = m_instance.gameObject.GetComponent<AudioListener>();
+
+			if( t_listener != null ){
+				#if DEBUG_SCENE_CAMERA_FX
+				Debug.Log( "Scene Camera Remove additional AudioListener." );
+				#endif
+
+				Destroy( t_listener );
+			}
+			else{
+				#if DEBUG_SCENE_CAMERA_FX
+				Debug.Log( "Listener not found." );
+				#endif
+			}
+		}
+
 		// origin game camera
 		Camera t_origin_cam = t_gb.GetComponent<Camera>();
 
 		GameObject t_cam_root = t_gb.transform.parent.gameObject;
 
 		// art configured camera
-		Camera t_scene_cam = m_instance.gameObject.GetComponentInChildren<Camera>();
+		Camera t_scene_cam = GetSceneConfiggedCamera();
+
+		{
+			{
+				m_instance.m_fx_open = true;
+
+				m_instance.m_fx_gb_list.Clear();
+			}
+
+			int t_count = t_scene_cam.gameObject.transform.childCount;
+
+			for( int i = 0; i < t_count; i++ ){
+				m_instance.m_fx_gb_list.Add( t_scene_cam.gameObject.transform.GetChild( i ).gameObject );
+			}
+		}
 
 		{
 			m_instance.transform.parent = t_cam_root.transform;
@@ -79,10 +123,43 @@ public class Quality_SceneCameraFx : MonoBehaviour{
 		}
 
 		if( t_origin_cam != null ){
-			t_origin_cam.gameObject.SetActive( false );
+			if( t_origin_cam.fieldOfView != 45.0f ){
+				Debug.LogError( "Error, Fov is not 45.0f." );
 
-			Destroy( t_origin_cam );
+				t_origin_cam.gameObject.SetActive( false );
+			}
+			else{
+				t_origin_cam.gameObject.SetActive( false );
+
+				Destroy( t_origin_cam );	
+			}
 		}
+
+		if( Quality_IEStatus.IsStatusNone() ){
+			Vignetting m_vignetting = t_scene_cam.gameObject.GetComponent<Vignetting>();
+
+			if( m_vignetting != null ){
+				#if DEBUG_SCENE_CAMERA_FX
+				Debug.Log( "Remove vignetting." );
+				#endif
+				m_vignetting.enabled = false;
+			}
+			else{
+				#if DEBUG_SCENE_CAMERA_FX
+				Debug.Log( "vignetting None." );
+				#endif
+			}
+		}
+	}
+
+	public static Camera GetSceneConfiggedCamera(){
+		if( m_instance == null ){
+			return null;
+		}
+
+		Camera t_scene_cam = m_instance.gameObject.GetComponentInChildren<Camera>();
+
+		return t_scene_cam;
 	}
 
 	#endregion

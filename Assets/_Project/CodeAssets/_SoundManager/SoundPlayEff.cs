@@ -6,6 +6,10 @@ public class SoundPlayEff : MonoBehaviour
 	public AudioSource m_AudioSource;
 	SoundManager.shoudId m_SoundData;
 
+	void Awake(){
+		
+	}
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -14,11 +18,6 @@ public class SoundPlayEff : MonoBehaviour
 //		m_AudioSource.maxDistance = 50;
 //		m_AudioSource.Play();
 //		gameObject.AddComponent<AudioSource>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 
 	public void PlaySound(string path)
@@ -72,11 +71,16 @@ public class SoundPlayEff : MonoBehaviour
 	}
 
 	public void ResourceLoadCallback( ref WWW p_www, string p_path, Object p_object){
-		if( p_object == null ){
+		if( this == null ){
 			return;
 		}
 
-		ClientMain.m_sound_manager.getIdClipResLoad( ref p_www, p_path, p_object );
+	    if (p_object == null || gameObject == null)
+	    {
+	        return;
+	    }
+
+	    ClientMain.m_sound_manager.getIdClipResLoad( ref p_www, p_path, p_object );
 		int tempIndex = -1;
 		
 		AudioSource[] tempAudio = gameObject.GetComponents<AudioSource>();
@@ -115,8 +119,10 @@ public class SoundPlayEff : MonoBehaviour
 			m_AudioSource.clip = (AudioClip)p_object;
 
 			SoundManager.addEffSound(m_AudioSource);
-
-			m_AudioSource.Play();
+			if(m_AudioSource.gameObject.activeSelf)
+			{
+				m_AudioSource.Play();
+			}
 		}
 		else{
 			tempAudio[tempIndex].rolloffMode = AudioRolloffMode.Linear;
@@ -137,8 +143,10 @@ public class SoundPlayEff : MonoBehaviour
 			tempAudio[tempIndex].spatialBlend = m_SoundData.iStereo;
 
 			tempAudio[tempIndex].clip = (AudioClip)p_object;
-
-			tempAudio[tempIndex].Play();
+			if(tempAudio[tempIndex].gameObject.activeSelf)
+			{
+				tempAudio[tempIndex].Play();
+			}
 		}
 	}
 

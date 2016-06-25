@@ -15,6 +15,12 @@ public class KingDetailEquipInfo : MonoBehaviour
 
     public Dictionary<int, BagItem> m_BagItemDic = new Dictionary<int, BagItem>();
 
+    public static readonly List<int> FrameQualityFrameSpriteName = new List<int>() { 2, 4, 5, 7, 8, 10 };
+    public static readonly List<int> FreeQualityFrameSpriteName = new List<int>() { 0, 1, 3, 6, 9, 12, 13 };
+
+    public const int FrameQualityFrameLength = 93;
+    public const int FreeQualityFrameLength = 85;
+
     void Awake()
     {
         m_IconList.ForEach(item => item.GetComponent<EventHandler>().m_click_handler += ShowEquipOfBody);
@@ -68,6 +74,14 @@ public class KingDetailEquipInfo : MonoBehaviour
                 if (color > 0)
                 {
                     sprite.spriteName = IconSampleManager.QualityPrefix + color;
+                    if (FreeQualityFrameSpriteName.Contains(color))
+                    {
+                        sprite.SetDimensions(FreeQualityFrameLength, FreeQualityFrameLength);
+                    }
+                    else if (FrameQualityFrameSpriteName.Contains(color))
+                    {
+                        sprite.SetDimensions(FrameQualityFrameLength, FrameQualityFrameLength);
+                    }
                     //if (IconSampleManager.FreeQualityFrameSpriteName.Contains(color))
                     //{
                     //    sprite.SetDimensions(IconSampleManager.FreeQualityFrameLength, IconSampleManager.FreeQualityFrameLength);

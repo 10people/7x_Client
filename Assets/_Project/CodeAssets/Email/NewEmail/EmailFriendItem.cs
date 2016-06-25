@@ -14,7 +14,7 @@ public class EmailFriendItem : MonoBehaviour {
 
 	public UISprite headIcon;
 	public UISprite nation;
-	public UILabel vipLabel;
+	public UISprite m_vip;
 	public UILabel nameLabel;
 
 	public GameObject selectObj;
@@ -29,9 +29,21 @@ public class EmailFriendItem : MonoBehaviour {
 		friendInfo = tempInfo;
 
 		headIcon.spriteName = "PlayerIcon" + tempInfo.iconId;
+		if (tempInfo.guojia > 0)
+		{
+			nation.SetDimensions (31,42);
+			nation.transform.localScale = Vector3.one;
+		}
+		else
+		{
+			nation.SetDimensions (100,99);
+			nation.transform.localScale = Vector3.one * 0.4f;
+		}
+
 		nation.spriteName = "nation_" + tempInfo.guojia;
-		vipLabel.text = "V" + tempInfo.vipLv;
-		nameLabel.text = tempInfo.name + (string.IsNullOrEmpty (tempInfo.lianMengName) ? "\n无联盟" : "\n[00e1c4]<" + tempInfo.lianMengName + ">[-]");
+		m_vip.spriteName = "v" + tempInfo.vipLv;
+		nameLabel.text = tempInfo.name + (string.IsNullOrEmpty (tempInfo.lianMengName) ? MyColorData.getColorString(12,"\n无联盟")
+                         : MyColorData.getColorString(12, "\n<" + tempInfo.lianMengName + ">"));
 
 		EventHandler handler = this.GetComponent<EventHandler> ();
 		handler.m_click_handler -= FriendItemHandlerClickBack;

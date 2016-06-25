@@ -59,6 +59,11 @@ public class AchivementHintControllor : MonoBehaviour
 				"islocal",true,
 				"oncomplete", "upDone"
 				));
+
+			foreach(AchivementHintItem item in itemList)
+			{
+				item.sprite_2.gameObject.SetActive(false);
+			}
 		}
 		else if(updown == -1)
 		{
@@ -74,6 +79,11 @@ public class AchivementHintControllor : MonoBehaviour
 				"islocal",true,
 				"oncomplete", "downDone"
 				));
+
+			foreach(AchivementHintItem item in itemList)
+			{
+				item.sprite_2.gameObject.SetActive(true);
+			}
 		}
 	}
 

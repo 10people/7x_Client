@@ -10,6 +10,7 @@ using Object = UnityEngine.Object;
 public class LMZBuildingTemplate : XmlLoadManager
 {
     public int Id;
+	public string Name;
     public int Type;
     public int Side;
 
@@ -65,6 +66,9 @@ public class LMZBuildingTemplate : XmlLoadManager
                 t_reader.MoveToNextAttribute();
                 t_template.Id = int.Parse(t_reader.Value);
 
+				t_reader.MoveToNextAttribute();
+				t_template.Name =t_reader.Value;
+
                 t_reader.MoveToNextAttribute();
                 t_template.Type = int.Parse(t_reader.Value);
 
@@ -72,10 +76,10 @@ public class LMZBuildingTemplate : XmlLoadManager
                 t_template.Side = int.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
-                var x = int.Parse(t_reader.Value);
+                var x = float.Parse(t_reader.Value);
 
                 t_reader.MoveToNextAttribute();
-                t_template.Position = new Vector2(x, int.Parse(t_reader.Value));
+                t_template.Position = new Vector2(x, float.Parse(t_reader.Value));
 
                 t_reader.MoveToNextAttribute();
                 t_template.Rotation = float.Parse(t_reader.Value);

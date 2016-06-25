@@ -47,16 +47,12 @@ public class AllBuildsTmp : MonoBehaviour {
 	public UILabel OPenHYRemian;
 
 	private bool isneedInit = false;
-	void Start () {
-	
-	}
 
-	void Update () {
-	
-	}
+	private string Descodition;
+
 	public void Init()
 	{
-		Debug.Log ("NewAlliancemanager.Instance().m_allianceHaveRes.build:" + NewAlliancemanager.Instance().m_allianceHaveRes.build);
+//		Debug.Log ("NewAlliancemanager.Instance().m_allianceHaveRes.build:" + NewAlliancemanager.Instance().m_allianceHaveRes.build);
 		AllianceLevel = NewAlliancemanager.Instance().m_allianceHaveRes.level;
 
 		Identity = NewAlliancemanager.Instance().m_allianceHaveRes.identity;
@@ -82,12 +78,13 @@ public class AllBuildsTmp : MonoBehaviour {
 		{
 		case 1:
 
-			if(Identity != 0)
+			if(Identity ==2)
 			{
 				if(Max_Lv > lv)
 				{
 				
 					UpBtn.SetActive(true);
+					UpBtn.GetComponent<BoxCollider>().enabled = true;
 					GreenUpBtn.SetActive(false);
 					LianMengKeZhanTemplate m_LianMengKeZhanTemplate = LianMengKeZhanTemplate.GetLianMengKeZhanTemplate_by_lev(lv);
 					
@@ -96,13 +93,14 @@ public class AllBuildsTmp : MonoBehaviour {
 				else
 				{
 					UpBtn.SetActive(false);
+					UpBtn.GetComponent<BoxCollider>().enabled = false;
 					GreenUpBtn.SetActive(true);
 				}
-				if(lv == AllianceLevel)
-				{
-					UpBtn.SetActive(false);
-					GreenUpBtn.SetActive(false);
-				}
+			}
+			else
+			{
+				UpBtn.SetActive(false);
+				GreenUpBtn.SetActive(false);
 			}
 			if(!FunctionOpenTemp.GetWhetherContainID(600500))
 			{
@@ -111,11 +109,12 @@ public class AllBuildsTmp : MonoBehaviour {
 				BuildIcon.color = new Color(0,0,0,255);
 				UpBtn.SetActive(false);
 				GreenUpBtn.SetActive(false);
+				Descodition = FunctionOpenTemp.GetTemplateById(600500).m_sNotOpenTips;
 			}
 			else
 			{
 				JianZhuBtn.enabled = true;
-				
+				Descodition = "";
 				BuildIcon.color = new Color(255,255,255,255);
 			}
 			BuildName = "联盟客栈";
@@ -127,11 +126,12 @@ public class AllBuildsTmp : MonoBehaviour {
 		
 			break;
 		case 2:
-			if(Identity != 0)
+			if(Identity ==2)
 			{
 				if(Max_Lv > lv)
 				{
 					UpBtn.SetActive(true);
+					UpBtn.GetComponent<BoxCollider>().enabled = true;
 					GreenUpBtn.SetActive(false);
 					LianMengShuYuanTemplate m_LianMengShuYuanTemplate = LianMengShuYuanTemplate.GetLianMengShuYuanTemplate_by_shuYuanLevel(lv);
 					costbuild = m_LianMengShuYuanTemplate.shuYuan_lvUp_value;
@@ -139,27 +139,28 @@ public class AllBuildsTmp : MonoBehaviour {
 				else
 				{
 					UpBtn.SetActive(false);
+					UpBtn.GetComponent<BoxCollider>().enabled = false;
 					GreenUpBtn.SetActive(true);
 				}
-				if(lv == AllianceLevel)
-				{
-					UpBtn.SetActive(false);
-					GreenUpBtn.SetActive(false);
-				}
 			}
-
+			else
+			{
+				UpBtn.SetActive(false);
+				GreenUpBtn.SetActive(false);
+			}
 			if(!FunctionOpenTemp.GetWhetherContainID(600600))
 			{
-				JianZhuBtn.enabled = false;
+				JianZhuBtn.enabled = true;
 				
 				BuildIcon.color = new Color(0,0,0,255);
 				UpBtn.SetActive(false);
 				GreenUpBtn.SetActive(false);
+				Descodition = FunctionOpenTemp.GetTemplateById(600600).m_sNotOpenTips;
 			}
 			else
 			{
 				JianZhuBtn.enabled = true;
-				
+				Descodition = "";
 				BuildIcon.color = new Color(255,255,255,255);
 			}
 
@@ -170,11 +171,12 @@ public class AllBuildsTmp : MonoBehaviour {
 			break;
 		case 3:
 
-			if(Identity != 0)
+			if(Identity ==2)
 			{
 				if(Max_Lv > lv)
 				{
 					UpBtn.SetActive(true);
+					UpBtn.GetComponent<BoxCollider>().enabled = true;
 					GreenUpBtn.SetActive(false);
 					LianMengTuTengTemplate m_LianMengTuTengTemplate = LianMengTuTengTemplate.getTuTengAwardByLevel(lv);
 					costbuild = m_LianMengTuTengTemplate.tuTeng_lvUp_value;
@@ -182,24 +184,27 @@ public class AllBuildsTmp : MonoBehaviour {
 				else
 				{
 					UpBtn.SetActive(false);
+					UpBtn.GetComponent<BoxCollider>().enabled = false;
 					GreenUpBtn.SetActive(true);
 				}
-				if(lv == AllianceLevel)
-				{
-					UpBtn.SetActive(false);
-					GreenUpBtn.SetActive(false);
-				}
-			}
-			if(!FunctionOpenTemp.GetWhetherContainID(300300))
-			{
-				JianZhuBtn.enabled = false;
-				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = false;
-				BuildIcon.color = new Color(0,0,0,255);
-				UpBtn.SetActive(false);
-				GreenUpBtn.SetActive(false);
 			}
 			else
 			{
+				UpBtn.SetActive(false);
+				GreenUpBtn.SetActive(false);
+			}
+			if(!FunctionOpenTemp.GetWhetherContainID(300300))
+			{
+				JianZhuBtn.enabled = true;
+				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = true;
+				BuildIcon.color = new Color(0,0,0,255);
+				UpBtn.SetActive(false);
+				GreenUpBtn.SetActive(false);
+				Descodition = FunctionOpenTemp.GetTemplateById(300300).m_sNotOpenTips;
+			}
+			else
+			{
+				Descodition = "";
 				JianZhuBtn.enabled = true;
 				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = true;
 				BuildIcon.color = new Color(255,255,255,255);
@@ -211,37 +216,41 @@ public class AllBuildsTmp : MonoBehaviour {
 			break;
 		case 4:
 
-			if(Identity != 0)
+			if(Identity ==2)
 			{
 				if(Max_Lv > lv)
 				{
 					UpBtn.SetActive(true);
+					UpBtn.GetComponent<BoxCollider>().enabled = true;
 					GreenUpBtn.SetActive(false);
 					LianMengShangPuTemplate m_LLianMengShangPuTemplate = LianMengShangPuTemplate.GetLianMengShangPuTemplate_by_lv(lv);
 					costbuild = m_LLianMengShangPuTemplate.shangPu_lvUp_value;
-					Debug.Log ("costbuild000:" + costbuild);
+//					Debug.Log ("costbuild000:" + costbuild);
 				}
 				else
 				{
 					UpBtn.SetActive(false);
+					UpBtn.GetComponent<BoxCollider>().enabled = false;
 					GreenUpBtn.SetActive(true);
 				}
-				if(lv == AllianceLevel)
-				{
-					UpBtn.SetActive(false);
-					GreenUpBtn.SetActive(false);
-				}
-			}
-			if(!FunctionOpenTemp.GetWhetherContainID(600700))
-			{
-				JianZhuBtn.enabled = false;
-				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = false;
-				BuildIcon.color = new Color(0,0,0,255);
-				UpBtn.SetActive(false);
-				GreenUpBtn.SetActive(false);
 			}
 			else
 			{
+				UpBtn.SetActive(false);
+				GreenUpBtn.SetActive(false);
+			}
+			if(!FunctionOpenTemp.GetWhetherContainID(600700))
+			{
+				JianZhuBtn.enabled = true;
+				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = true;
+				BuildIcon.color = new Color(0,0,0,255);
+				UpBtn.SetActive(false);
+				GreenUpBtn.SetActive(false);
+				Descodition = FunctionOpenTemp.GetTemplateById(600700).m_sNotOpenTips;
+			}
+			else
+			{
+				Descodition = "";
 				JianZhuBtn.enabled = true;
 				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = true;
 				BuildIcon.color = new Color(255,255,255,255);
@@ -252,11 +261,12 @@ public class AllBuildsTmp : MonoBehaviour {
 			break;
 		case 5:
 		
-			if(Identity != 0)
+			if(Identity ==2)
 			{
 				if(Max_Lv > lv)
 				{
 					UpBtn.SetActive(true);
+					UpBtn.GetComponent<BoxCollider>().enabled = true;
 					GreenUpBtn.SetActive(false);
 					LianMengZongMiaoTemplate m_LianMengZongMiaoTemplate = LianMengZongMiaoTemplate.GetLianMengZongMiaoTemplate_by_lev(lv);
 					costbuild = m_LianMengZongMiaoTemplate.zongMiao_lvUp_value;
@@ -264,24 +274,28 @@ public class AllBuildsTmp : MonoBehaviour {
 				else
 				{
 					UpBtn.SetActive(false);
+					UpBtn.GetComponent<BoxCollider>().enabled = false;
 					GreenUpBtn.SetActive(true);
 				}
-				if(lv == AllianceLevel)
-				{
-					UpBtn.SetActive(false);
-					GreenUpBtn.SetActive(false);
-				}
-			}
-			if(!FunctionOpenTemp.GetWhetherContainID(600850))
-			{
-				JianZhuBtn.enabled = false;
-				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = false;
-				BuildIcon.color = new Color(0,0,0,255);
-				UpBtn.SetActive(false);
-				GreenUpBtn.SetActive(false);
+	
 			}
 			else
 			{
+				UpBtn.SetActive(false);
+				GreenUpBtn.SetActive(false);
+			}
+			if(!FunctionOpenTemp.GetWhetherContainID(600850))
+			{
+				JianZhuBtn.enabled = true;
+				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = true;
+				BuildIcon.color = new Color(0,0,0,255);
+				UpBtn.SetActive(false);
+				GreenUpBtn.SetActive(false);
+				Descodition = FunctionOpenTemp.GetTemplateById(600850).m_sNotOpenTips;
+			}
+			else
+			{
+				Descodition = "";
 				JianZhuBtn.enabled = true;
 				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = true;
 				BuildIcon.color = new Color(255,255,255,255);
@@ -294,13 +308,15 @@ public class AllBuildsTmp : MonoBehaviour {
 		case 6:
 			if(!FunctionOpenTemp.GetWhetherContainID(600750))
 			{
-				JianZhuBtn.enabled = false;
-				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = false;
+				JianZhuBtn.enabled = true;
+				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = true;
 				BuildIcon.color = new Color(0,0,0,255);
+				Descodition = FunctionOpenTemp.GetTemplateById(600750).m_sNotOpenTips;
 			
 			}
 			else
 			{
+				Descodition = "";
 				JianZhuBtn.enabled = true;
 				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = true;
 				BuildIcon.color = new Color(255,255,255,255);
@@ -333,11 +349,15 @@ public class AllBuildsTmp : MonoBehaviour {
 	}
 	public void Enter()
 	{
-//		if(Input.touchCount > 1)
-//		{
-//			return;
-//		}
-		NewAlliancemanager.Instance().ENterOtherUI (id);
+		Debug.Log ("Descodition = " + Descodition);
+		if(Descodition != "")
+		{
+			ClientMain.m_UITextManager.createText(Descodition);
+		}
+		else
+		{
+			NewAlliancemanager.Instance().ENterOtherUI (id);
+		}
 	}
 	public void UpGreed()
 	{
@@ -347,6 +367,11 @@ public class AllBuildsTmp : MonoBehaviour {
 //		}
 		if(GameObject.Find("Box(Clone)"))
 		{
+			return;
+		}
+		if(Identity != 2)
+		{
+			ClientMain.m_UITextManager.createText("只有盟主才能升级建筑！");
 			return;
 		}
 		if( AllianceLevel <= lv)
@@ -379,7 +404,7 @@ public class AllBuildsTmp : MonoBehaviour {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"确定将"+BuildName+"升级吗？" +"\r\n"+"\r\n"+"需要消耗联盟建设值："+costbuild.ToString();//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "确定将"+BuildName+"升级吗？" +"\r\n"+"需要消耗联盟建设值："+costbuild.ToString();//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		

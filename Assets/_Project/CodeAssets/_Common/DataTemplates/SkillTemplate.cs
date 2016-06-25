@@ -358,7 +358,7 @@ public class SkillTemplate : XmlLoadManager
 		//		m_fEffEndTime = float.Parse(Global.NextCutting(ref temptemptempString));
 		//		Debug.Log("temptemptempString="+temptemptempString);
 		tempValue = int.Parse(Global.NextCutting(ref tempString));
-//				Debug.Log(tempValue);
+		//		Debug.Log(tempValue);
 		for(int i = 0; i < tempValue; i ++)
 		{
 			//			Debug.Log(temptemptempString);

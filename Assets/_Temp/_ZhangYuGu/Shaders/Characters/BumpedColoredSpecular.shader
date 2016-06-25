@@ -39,7 +39,7 @@ Shader "Custom/Characters/Bumped Colored Specular" {
 			
 			half4 t_spe = tex2D( _SpeckTex, p_in.uv_MainTex );
 			
-			p_out.Albedo = lerp( t_tex.rgb, t_tex.rgb * _Color.rgb, t_tex.a );
+			p_out.Albedo = lerp( t_tex.xyz, t_tex.xyz * _Color.xyz, t_tex.a );
 			
 			p_out.Alpha = _Color.a;
 			
@@ -63,11 +63,11 @@ Shader "Custom/Characters/Bumped Colored Specular" {
 
 			half4 t_cf;
 			
-			t_cf.rgb = ( p_s_out.Albedo * diffuseFactor + _SpecColor.rgb * specularFactor ) * _LightColor0.rgb;
+			t_cf.xyz = ( p_s_out.Albedo * diffuseFactor + _SpecColor.xyz * specularFactor ) * _LightColor0.xyz;
 			
-			t_cf.rgb *= ( p_atten * _Atten );
+			t_cf.xyz *= ( p_atten * _Atten );
 			
-			t_cf.a = p_s_out.Alpha;
+			t_cf.w = p_s_out.Alpha;
 			
 			return t_cf;
 		}

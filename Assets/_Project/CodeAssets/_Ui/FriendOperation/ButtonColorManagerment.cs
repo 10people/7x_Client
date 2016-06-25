@@ -5,6 +5,9 @@ public class ButtonColorManagerment : MonoBehaviour
 {
     public GameObject m_BackObj;
     private GameObject m_ObjShake;
+    public UILabel m_LabelTitle;
+
+ 
     private enum ShakeType
     {
         SHAKE_NONE,
@@ -16,6 +19,7 @@ public class ButtonColorManagerment : MonoBehaviour
     private float _ValueTime = 2.0f;
     void Update()
     {
+       
         if (_ShakeTypeInfo == ShakeType.SHAKE_RUNNING && _timeInterval < _ValueTime)
         {
            _timeInterval += Time.deltaTime;
@@ -40,38 +44,34 @@ public class ButtonColorManagerment : MonoBehaviour
         }
     }
  
-    public void ButtonsControl(bool colliderEnable)
+    public void ButtonsControl(bool Enable ,int type = 0)
     {
-        if (m_BackObj.GetComponent<TweenColor>() == null)
+        
+        if (Enable)
         {
-            m_BackObj.gameObject.AddComponent<TweenColor>();
-            m_BackObj.gameObject.AddComponent<TweenColor>().enabled = false;
-        }
-        if (colliderEnable)
-        {
-            m_BackObj.GetComponent<TweenColor>().from = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
-            m_BackObj.GetComponent<TweenColor>().to = new Color(1.0f, 1.0f, 1.0f);
+            if (m_LabelTitle != null)
+            {
+                m_LabelTitle.GetComponent<UILabelType>().setType(10);
+            }
+
+            m_BackObj.GetComponent<UISprite>().color = new Color(1.0f, 1.0f, 1.0f);
         }
         else 
         {
-            m_BackObj.GetComponent<TweenColor>().from = new Color(1.0f, 1.0f, 1.0f);
-            m_BackObj.GetComponent<TweenColor>().to = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
+            if (m_LabelTitle != null)
+            {
+                m_LabelTitle.GetComponent<UILabelType>().setType(11);
+            }
+
+            m_BackObj.GetComponent<UISprite>().color = new Color(128 / 255.0f, 128 / 255.0f, 128 / 255.0f);
         }
-        m_BackObj.GetComponent<TweenColor>().duration = 0.08f;
-        m_BackObj.GetComponent<TweenColor>().enabled = true;
-        transform.GetComponent<Collider>().enabled = colliderEnable;
-       EventDelegate.Add(m_BackObj.GetComponent<TweenColor>().onFinished, TweenColorDestroy);
-
-    }
-
-    void TweenColorDestroy()
-    {
-        if (m_BackObj.GetComponent<TweenColor>() != null)
+        if (type == 0)
         {
-            EventDelegate.Remove(m_BackObj.GetComponent<TweenColor>().onFinished, TweenColorDestroy);
-            Destroy(m_BackObj.GetComponent<TweenColor>());
+            transform.GetComponent<Collider>().enabled = Enable;
         }
     }
+
+   
     public void ShakeEffectShow(bool isTurn = false,GameObject obj = null)
     {
         if (isTurn)

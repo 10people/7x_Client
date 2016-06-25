@@ -9,7 +9,10 @@ public class ModelTouchShowOrMoveManagerment : MonoBehaviour
     {
         if (gameObject.name.IndexOf("PlayerObject") > -1)
         {
-            //EquipSuoData.CreateChaKan(gameObject.name, gameObject.transform.position);
+            if (MainCityUI.IsWindowsExist())
+            {
+                return;
+            }
             m_MouseOrTouch = UICamera.GetTouch(UICamera.currentTouchID);
             EquipSuoData.CreateChaKan(gameObject.name, m_MouseOrTouch.pos);
             return;

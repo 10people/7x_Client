@@ -23,16 +23,6 @@ public class SecretCardTemp : MonoBehaviour {
 	public int[]  jnBJ ;  //	技能暴击加深
 	public int[]  jnRX ;  //	技能暴击减免
 
-
-	void Start () {
-	
-	}
-	
-
-	void Update () {
-	
-	}
-
 	public void hitSkill()
 	{
 		int posx = (int)(this.gameObject.transform.localPosition.x + mPanel.transform.localPosition.x);

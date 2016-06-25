@@ -32,9 +32,25 @@ public class MiBaoStarUpUI : MonoBehaviour {
 	public UITexture MiBaoicon1;
 	public UITexture MiBaoicon2;
 
+	public UILabel m_ShanSuoLabel;
+	float m_color;
 
+	int index;
 	void Start () {
 	
+	}
+	void Update()
+	{
+		if(m_color >= 1 )
+		{
+			index = -1;
+		}
+		if(m_color < 0.5f )
+		{
+			index = 1;
+		}
+		m_color += index*Time.deltaTime*0.90f;
+		m_ShanSuoLabel.alpha = Mathf.Abs (m_color);
 	}
 	GameObject mCamer;
 	public void Init()

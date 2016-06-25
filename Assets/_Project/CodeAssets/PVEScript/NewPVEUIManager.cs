@@ -8,6 +8,15 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
+	public UISprite VipN;
+
+	public int stateSaodang;
+
+	public GameObject EffectRoot;
+
 	public GameObject NoMiBaoSkillMind;
 
 	public GameObject NoMiBaoSkill;
@@ -35,6 +44,8 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	public SparkleEffectItem mSparkleEffectItem;
 	public GameObject OnStrongBtn;
 	[HideInInspector]public bool YinDaoOpen = false;
+
+	public UILabel mBtnName ;
 	public static NewPVEUIManager Instance()
 	{
 		if (!mNewPVEUIManager)
@@ -94,9 +105,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 		ShowTip.showTip (awardid);
 	}
-	void Update () {
-	
-	}
+
 	#region fulfil my ngui panel
 	
 	/// <summary>
@@ -155,9 +164,9 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	{
 		OpenBxo = ( GameObject )Instantiate( p_object );
 		
-		OpenBxo.transform.parent = XingJiJianglIUI.transform;
+//		OpenBxo.transform.parent = XingJiJianglIUI.transform;
 		
-		OpenBxo.transform.localPosition = Vector3.zero;
+		OpenBxo.transform.localPosition = new Vector3(-10000,0,0);
 		
 		OpenBxo.transform.localScale  = Vector3.one;
 
@@ -187,10 +196,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		{
 			SaodangBtns.SetActive(false);
 		}
-		else
-		{
-			SaodangBtns.SetActive(true);
-		}
+	
 	}
 	public void  sendLevelDrop()
 	{
@@ -401,12 +407,12 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	public void LoadResourceCallback(ref WWW p_www,string p_path, Object p_object)
 	{
 		GameObject tempOjbect = Instantiate(p_object) as GameObject;
+//		
+//		GameObject obj = GameObject.Find ("NewPVEUI(Clone)");
+//		
+//		tempOjbect.transform.parent = obj.transform;
 		
-		GameObject obj = GameObject.Find ("NewPVEUI(Clone)");
-		
-		tempOjbect.transform.parent = obj.transform;
-		
-		tempOjbect.transform.localPosition = new Vector3 (0,0,0);
+		tempOjbect.transform.localPosition = new Vector3 (0,10000,0);
 		
 		tempOjbect.transform.localScale = new Vector3 (1,1,1);
 		
@@ -416,7 +422,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 		mSaoDangManeger.SaodangType = 1;
 		
-		mSaoDangManeger.Init ();
+		mSaoDangManeger.Init (stateSaodang,ShowSpecilGuid);
 	}
 	private int tiaoZhanNum;
 	int sdTotleTime = 0;
@@ -437,13 +443,16 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			 sdCountTime = sdTotleTime -GuanqiaReq.jySaoDangUsedTimes;
 
 			TodayAllTime.text = "今日扫荡次数："+sdCountTime.ToString () + "/" + sdTotleTime.ToString ();
+
+			mBtnName.text = "扫荡10次";
 			break;
 		case 2:
 			tiaoZhanNum = GuanqiaReq.cqDayTimes- GuanqiaReq.cqPassTimes;
 			sdTotleTime = GuanqiaReq.cqSaoDangDayTimes;
 			sdCountTime = sdTotleTime - GuanqiaReq.cqSaoDangUsedTimes;
 			ToDayTime.text = "今日剩余挑战"+(GuanqiaReq.cqDayTimes-GuanqiaReq.cqPassTimes).ToString ()+"/"+GuanqiaReq.cqDayTimes.ToString()+"次";
-			TodayAllTime.text = sdCountTime.ToString () + "/" + sdTotleTime.ToString ();
+			TodayAllTime.text = "今日扫荡次数:"+sdCountTime.ToString () + "/" + sdTotleTime.ToString ();
+			mBtnName.text = "连续扫荡";
 			break;
 		default:
 			break;
@@ -465,6 +474,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			{
 				NoMiBaoSkill.SetActive(false);
 				mSparkleEffectItem.enabled = true ;
+				OPeneffect();
 //				mChangemibaobtn.SetActive(true);
 			}
 			MiBaoIcon.gameObject.SetActive(false);
@@ -474,6 +484,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		}
 		else
 		{
+			Closeffect();
 			NoMiBaoSkillMind.SetActive(false);
 			MiBaoIcon.gameObject.SetActive(true);
 			MiBaoSkillTemp mMiBaoSkill  = MiBaoSkillTemp.getMiBaoSkillTempBy_id(GuanqiaReq.zuheId);
@@ -481,11 +492,20 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			MiBaoIcon.spriteName = mMiBaoSkill.icon.ToString();
 		}
 	}
-
+	
+	public void OPeneffect()
+	{
+		int effectid = 620233;
+		UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.FunctionUI_1,EffectRoot,EffectIdTemplate.GetPathByeffectId(effectid));
+	}
+	public void Closeffect()
+	{
+		UI3DEffectTool.ClearUIFx (EffectRoot);
+	}
 	/// <summary>
 	/// 
 	public UISprite MiBaoIcon;
-	public UILabel LevelName;
+//	public UILabel LevelName;
 	public UILabel desLabel;
 	public UILabel Person_name;//描述label
 	public UILabel LevelWanFa;
@@ -511,17 +531,17 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 
 	public UISprite saodang1sprite;
 	public UISprite saodang10sprite;
-	public UISprite saodangsprite;
+	//public UISprite saodangsprite;
 
 	public UILabel saodang1UILabel;
 	public UILabel saodang10UILabel;
-	public UILabel saodangUILabel;
+	//public UILabel saodangUILabel;
 
 	public GameObject Saodang1;
 
 	public GameObject  Saodang10;
 
-	public GameObject Saodang;
+	//public GameObject Saodang;
 	/// </summary>
 
 	public void InitStarUI()
@@ -545,6 +565,9 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		}
 		ColsePVEGuid ();
 		ShowPVEGuid ();
+		int vlevel = VipFuncOpenTemplate.GetNeedLevelByKey (13);
+		VipN.gameObject.SetActive(true);
+		VipN.spriteName = "v"+vlevel.ToString();
 	}
 	private void Putong()
 	{
@@ -570,7 +593,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		string []s = M_Name.Split(' ');
 		if(s.Length > 1)
 		{
-			LevelName.text = "[b]"+s[1];
+			MainCityUI.setGlobalTitle(TopLeftManualAnchor, s[1], 0, 0);
 		}
 		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
 		
@@ -636,8 +659,10 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		string []s = M_Name.Split(' ');
 		if(s.Length > 1)
 		{
-			LevelName.text = "[b]"+s[1];
+//			LevelName.text = "[b]"+s[1];
+			MainCityUI.setGlobalTitle(TopLeftManualAnchor, s[1], 0, 0);
 		}
+
 		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
 		
 		desLabel.text = descStr;
@@ -658,11 +683,10 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			}
 			mobg.GetComponent<MiBaoSkillTips>().Init();
 		}
-
 		BtnRoot.SetActive (true);
 		Saodang1.SetActive (true);
 		Saodang10.SetActive (true);
-		Saodang.SetActive (false);
+//		Saodang.SetActive (false);
 	
 		LevelTypeLabel.text = "[b]精英关卡";
 		RefreshStar ();
@@ -699,6 +723,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		mBoxBtnList.Clear ();
 		LingQuBtn.SetActive(false);
 		int starsnum = 0;
+		Color p_color = Color.red;
 		for(int i = 0; i< count; i++)
 		{
 			int Star_Id = mLevel.starInfo [i].starId;
@@ -729,7 +754,9 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			}
 			else
 			{
-				Conditions[i].text = MyColorData.getColorString(8,mDes);
+				Conditions[i].text = mDes;//MyColorData.getColorString(8,mDes);
+				MathHelper.ParseHexString( "bebebe", out p_color, Color.red );
+				Conditions[i].color = p_color;
 				mBoxBtn.IsLingQu = 1;
 			}
 			mBoxBtn.Init();
@@ -741,11 +768,13 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			Saodang1.GetComponent<UIButton>().enabled = true;
 			Saodang10.GetComponent<UIButton>().enabled = true;
 			SaodangConditions.gameObject.SetActive (false);
+			TodayAllTime.gameObject.SetActive(true);
 		} else {
 
 			Saodang1.GetComponent<UIButton>().enabled = false;
 			Saodang10.GetComponent<UIButton>().enabled = false;
 			SaodangConditions.gameObject.SetActive (true);
+			TodayAllTime.gameObject.SetActive(false);
 			saodang1sprite.color = new Color(0,0,0,255);
 			saodang10sprite.color = new Color(0,0,0,255);
 			saodang1UILabel.GetComponent<UILabelType>().m_iType = 100;
@@ -758,9 +787,9 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	private void Chuanqi()
 	{
 		BtnRoot.SetActive (true);
-		Saodang1.SetActive (false);
-		Saodang10.SetActive (false);
-		Saodang.SetActive (true);
+		Saodang1.SetActive (true);
+		Saodang10.SetActive (true);
+		//Saodang.SetActive (true);
 		ChuanQi_RefreshStar ();
 		LevelTypeLabel.text = "[b]传奇关卡";
 //		int count = 3;
@@ -820,7 +849,8 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		string []s = M_Name.Split(' ');
 		if(s.Length > 1)
 		{
-			LevelName.text = "[b]"+s[1];
+//			LevelName.text = "[b]"+s[1];
+			MainCityUI.setGlobalTitle(TopLeftManualAnchor, s[1], 0, 0);
 		}
 		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
 		
@@ -859,6 +889,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		mBoxBtnList.Clear ();
 		LingQuBtn.SetActive(false);
 		int starsnum = 0;
+		Color p_color = Color.red;
 		for(int i = 0; i< count; i++)
 		{
 			int Star_Id = mLevel.cqStarInfo [i].starId;
@@ -890,25 +921,33 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			}
 			else
 			{
-				Conditions[i].text = MyColorData.getColorString(8,mDes);
+				Conditions[i].text = mDes;//MyColorData.getColorString(8,mDes);
+				MathHelper.ParseHexString( "bebebe", out p_color, Color.red );
+				Conditions[i].color = p_color;
 				mBoxBtn.IsLingQu = 1;
 			}
 			mBoxBtn.Init();
 			mBoxBtnList.Add(mBoxBtn);
 		}
-		//Debug.Log("starsnum = "+starsnum);
 		if (starsnum >= 3) {
-			saodangsprite.color = new Color(255,255,255,255);
-			Saodang.GetComponent<UIButton>().enabled = true;
+			saodang1sprite.color = new Color(255,255,255,255);
+			saodang10sprite.color = new Color(255,255,255,255);
+			Saodang1.GetComponent<UIButton>().enabled = true;
+			Saodang10.GetComponent<UIButton>().enabled = true;
 			SaodangConditions.gameObject.SetActive (false);
+			TodayAllTime.gameObject.SetActive(true);
 		} else {
-		//	Debug.Log("starsnum = "+starsnum);
-			Saodang.GetComponent<UIButton>().enabled = false;
+			
+			Saodang1.GetComponent<UIButton>().enabled = false;
+			Saodang10.GetComponent<UIButton>().enabled = false;
 			SaodangConditions.gameObject.SetActive (true);
-			saodangsprite.color = new Color(0,0,0,255);
-
-			saodangUILabel.GetComponent<UILabelType>().m_iType = 100;
-			saodangUILabel.GetComponent<UILabelType>().init();
+			TodayAllTime.gameObject.SetActive(false);
+			saodang1sprite.color = new Color(0,0,0,255);
+			saodang10sprite.color = new Color(0,0,0,255);
+			saodang1UILabel.GetComponent<UILabelType>().m_iType = 100;
+			saodang1UILabel.GetComponent<UILabelType>().init();
+			saodang10UILabel.GetComponent<UILabelType>().m_iType = 100;
+			saodang10UILabel.GetComponent<UILabelType>().init();
 		}
 	}
 
@@ -942,7 +981,6 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	/// </summary>
 	public void EnterBattleBtn()
 	{
-
 		if(IsTest)
 		{
 			CityGlobalData.m_tempSection = Test_Section;
@@ -950,14 +988,15 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			CityGlobalData.m_tempLevel = Test_Level;
 			Global.m_isOpenPVP = true;
 			EnterBattleField.EnterBattlePve(Test_Section, Test_Level, LevelType.LEVEL_NORMAL);
-			
+			Debug.Log("进入快捷方式");
 			return;
 		}
 
 		if(JunZhuData.Instance().m_junzhuInfo.tili < GuanqiaReq.tili)
 		{
-			//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
-			Global.CreateFunctionIcon (401);
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
+//			Global.CreateFunctionIcon (401);
+			Debug.Log("体力不够了");
 			return ;
 		}
 		if(mLevel.type == 2)
@@ -965,7 +1004,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			if(tiaoZhanNum <= 0)
 			{
 				ReSettingLv();
-				
+				Debug.Log("次数不够重置了");
 				return;
 			}
 		}
@@ -985,62 +1024,55 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 //		Debug.Log ("my_tempSection = "+my_tempSection);
 //		Debug.Log ("my_tempLevel = "+my_tempLevel);
 //		Debug.Log ("mLevel.type = "+mLevel.type);
-
+//		JunZhuData.Instance ().m_junzhuInfo.tili -= GuanqiaReq.tili;
 		if(CityGlobalData.PT_Or_CQ )
 		{
-//			Debug.Log(mLevel.type);
+			Debug.Log(mLevel.type);
 			if(mLevel.type == 1)
 			{
+				Debug.Log("进入精英关卡前");
 				EnterBattleField.EnterBattlePve(my_tempSection, my_tempLevel, LevelType.LEVEL_ELITE);
+				Debug.Log("进入精英关卡前");
 			}
 			else{
+				Debug.Log("进入普通关卡后");
 				EnterBattleField.EnterBattlePve(my_tempSection, my_tempLevel, LevelType.LEVEL_NORMAL);
+				Debug.Log("进入普通关卡前");
 			}
 		}
 		else{
+			Debug.Log("进入传奇关卡前");
 			EnterBattleField.EnterBattlePve(my_tempSection, my_tempLevel, LevelType.LEVEL_TALE);
+			Debug.Log("进入传奇关卡后");
 		}
 
 	}
 	public  void ReSettingLv(){
-		
-		int viplv = VipFuncOpenTemplate.GetNeedLevelByKey(10);
-		if(JunZhuData.Instance().m_junzhuInfo.vipLv < viplv)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),loadback1);
-			return;
-		}
+
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockResttingBox);
 	}
-	public void loadback1(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-		string str = "V特权等级不足，V特权等级提升到4级即可重置关卡挑战次数。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";//LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_DESC);
-		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
-		uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,btnStr,null,null);
-	}
+//	public void loadback1(ref WWW p_www,string p_path, Object p_object)
+//	{
+//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+//		
+//		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
+//		string str = "V特权等级不足，V特权等级提升到4级即可重置关卡挑战次数。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";//LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_DESC);
+//		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+//		
+//		uibox.setBox(titleStr,MyColorData.getColorString (1,str),null,null,btnStr,null,null);
+//	}
 	public void LockResttingBox(ref WWW p_www,string p_path, Object p_object)
 	{
-		if(GuanqiaReq.cqResetLeft <= 0)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockResttingtimesload);
-			
-			return;
-		}
-		
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
 		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.RESTTING_CQ_TITLE);
-		string str1 = "\r\n"+LanguageTemplate.GetText (LanguageTemplate.Text.USE_YUANBAO)+GuanqiaReq.cqResetPay.ToString()+LanguageTemplate.GetText (LanguageTemplate.Text.YUANBAO_RESTTING);//;LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+		string titleStr = "重置关卡";//LanguageTemplate.GetText (LanguageTemplate.Text.RESTTING_CQ_TITLE);
+		string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.USE_YUANBAO)+GuanqiaReq.cqResetPay.ToString()+LanguageTemplate.GetText (LanguageTemplate.Text.YUANBAO_RESTTING)+"\n";//;LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		string str2 = LanguageTemplate.GetText (LanguageTemplate.Text.TODAY_RESETTING)+GuanqiaReq.cqResetLeft.ToString()+LanguageTemplate.GetText (LanguageTemplate.Text.BAIZHAN_ADDNUM_ASKSTR3);
 		string btnStr1 = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		string btnStr2 = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		//Debug.Log ("cqResetPay = "+GuanqiaReq.cqResetPay);
-		//.Log ("cqResetLeft = "+GuanqiaReq.cqResetLeft);
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str1),MyColorData.getColorString (1,str2),null,btnStr1,btnStr2,ShowResettingLv);
+		int viplv = VipFuncOpenTemplate.GetNeedLevelByKey(10);
+		
+		uibox.setBox(titleStr,MyColorData.getColorString (1,str1+str2),null,null,btnStr1,btnStr2,ShowResettingLv,null,null,null,false,true,true,false,100,0,viplv);
 	}
 	void ShowResettingLv(int i)
 	{
@@ -1055,9 +1087,17 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		}
 		if( GuanqiaReq.cqResetLeft > 0)
 		{
+			int viplv = VipFuncOpenTemplate.GetNeedLevelByKey(10);
+			if(JunZhuData.Instance().m_junzhuInfo.vipLv < viplv)
+			{
+				Global.CreateFunctionIcon (1901);
+				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),loadback1);
+				return;
+			}
 			if(JunZhuData.Instance().m_junzhuInfo.yuanBao < GuanqiaReq.cqResetPay)
 			{
-				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),loadback2);
+				Global.CreateFunctionIcon (101);
+				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),loadback2);
 				
 			}
 			else
@@ -1076,7 +1116,8 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		}
 		else
 		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockResttingtimesload);
+			Global.CreateFunctionIcon (1901);
+			//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockResttingtimesload);
 		}
 	
 	}
@@ -1103,41 +1144,41 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		string str = "还未通关";//LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_DESC);
 		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,btnStr,null,null);
+		uibox.setBox(titleStr,MyColorData.getColorString (1,str),null,null,btnStr,null,null);
 	}
-	public void LockResttingtimesload(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-
-		string str = LanguageTemplate.GetText (LanguageTemplate.Text.RESETTING_FINSHED);
-		string str3 = "";
-		if(JunZhuData.Instance().m_junzhuInfo.vipLv < 7)
-		{
-			int junzhuvip = JunZhuData.Instance().m_junzhuInfo.vipLv;
-			VipTemplate mvip = VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv);
-			int RessteingTimes = mvip.legendPveRefresh;
-			for(int viplevel = JunZhuData.Instance().m_junzhuInfo.vipLv+1; viplevel < 8; viplevel++)
-			{
-				VipTemplate mvip1 = VipTemplate.GetVipInfoByLevel(viplevel);
-				if(RessteingTimes < mvip1.legendPveRefresh)
-				{
-					junzhuvip = viplevel;
-					break;
-				}
-			}
-			str3 = "V特权等级不足，V特权等级提升到" + junzhuvip.ToString()+"级即可购买更多重置次数。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
-		}
-		else
-		{
-			str3 = "今日重置次数已经用完了。";
-		}
-		//string str = LanguageTemplate.GetText (LanguageTemplate.Text.RESETTING_FINSHED);
-		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
-		uibox.setBox(titleStr,str3,null,null,btnStr,null,null,null,null);
-	}
+//	public void LockResttingtimesload(ref WWW p_www,string p_path, Object p_object)
+//	{
+//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+//		
+//		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
+//
+//		string str = LanguageTemplate.GetText (LanguageTemplate.Text.RESETTING_FINSHED);
+//		string str3 = "";
+//		if(JunZhuData.Instance().m_junzhuInfo.vipLv < 7)
+//		{
+//			int junzhuvip = JunZhuData.Instance().m_junzhuInfo.vipLv;
+//			VipTemplate mvip = VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv);
+//			int RessteingTimes = mvip.legendPveRefresh;
+//			for(int viplevel = JunZhuData.Instance().m_junzhuInfo.vipLv+1; viplevel < 8; viplevel++)
+//			{
+//				VipTemplate mvip1 = VipTemplate.GetVipInfoByLevel(viplevel);
+//				if(RessteingTimes < mvip1.legendPveRefresh)
+//				{
+//					junzhuvip = viplevel;
+//					break;
+//				}
+//			}
+//			str3 = "V特权等级不足，V特权等级提升到" + junzhuvip.ToString()+"级即可购买更多重置次数。\n\r参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";
+//		}
+//		else
+//		{
+//			str3 = "今日重置次数已经用完了。";
+//		}
+//		//string str = LanguageTemplate.GetText (LanguageTemplate.Text.RESETTING_FINSHED);
+//		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+//		
+//		uibox.setBox(titleStr,str3,null,null,btnStr,null,null,null,null);
+//	}
 	void LockTiLiLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
 		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
@@ -1166,8 +1207,13 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			UIYindao.m_UIYindao.CloseUI();
 		}
 	}
+	public	void ShowSpecilGuid()
+	{
+		UIYindao.m_UIYindao.setOpenYindao(3113);
+	}
 	public	void ShowPVEGuid()
 	{
+		stateSaodang = 0;
 		if(FreshGuide.Instance().IsActive(100020)&& TaskData.Instance.m_TaskInfoDic[100020].progress >= 0)
 		{
 			//			Debug.Log("进入PVE 第一个任务 1-1");
@@ -1254,13 +1300,13 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 //
 //			return;
 //		}
-		if(FreshGuide.Instance().IsActive(100405)&& TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
+		if(FreshGuide.Instance().IsActive(100404)&& TaskData.Instance.m_TaskInfoDic[100404].progress >= 0)
 		{
-			//	Debug.Log("扫荡引导)
+			Debug.Log("扫荡引导");
 			YinDaoOpen = true;
-			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100405];
-			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[5]);
-			
+			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100404];
+			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[6]);
+			stateSaodang = 100404;
 			return;
 		}
 		YinDaoOpen = false;
@@ -1676,30 +1722,34 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		if (junZhuLevel >= FunctionOpenTemp.GetTemplateById(3000010).Level)
 		{
 
+			int viplv = VipFuncOpenTemplate.GetNeedLevelByKey(13);
+			
+			if(Vipgrade<viplv && Times > 1)
+			{
+				//ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(500000).m_sNotOpenTips);
+				//					string data = LanguageTemplate.GetText(LanguageTemplate.Text.VIPDesc3);
+				//					ClientMain.m_UITextManager.createText( data);
+				Global.CreateFunctionIcon (1901);
+				return false;
+			}
+	
 			needpower = GuanqiaReq.tili*Times;
 			//Debug.Log ("needpower" +needpower);
 			if(needpower > ExistingPower)//体力不够
 			{
 //				string data = "体力不足！";
 //				ClientMain.m_UITextManager.createText( data);
-				//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
-				Global.CreateFunctionIcon (401);
+				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTiLiLoadBack);
+				//Global.CreateFunctionIcon (401);
 				return false;
 			}
 			else
 			{
-				int viplv = VipFuncOpenTemplate.GetNeedLevelByKey(13);
-				
-				if(Times>1&&Vipgrade<viplv)
 				{
-					//ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(500000).m_sNotOpenTips);
-					string data = LanguageTemplate.GetText(LanguageTemplate.Text.VIPDesc3);
-					ClientMain.m_UITextManager.createText( data);
-					return false;
-				}else{
 					//Debug.Log ("发送扫荡请求。。。");
-					
+					ExistingPower -= needpower;
 					SendSaoDangInfo (mLevel.guanQiaId,Times);
+					JunZhuData.Instance().m_junzhuInfo.tili = ExistingPower;
 				}
 			}
 		}
@@ -1732,7 +1782,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 		t_protof = saodangstream.ToArray();
 		
-		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_PVE_SAO_DANG,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_PVE_SAO_DANG,ref t_protof,p_receiving_wait_proto_index:ProtoIndexes.S_PVE_SAO_DANG);
 		
 	}
 	/// <summary>
@@ -1754,7 +1804,9 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		if(!m_isShaodang)
 		{
 			m_isShaodang = true;
-			m_isShaodang = SaoDangBtn (10);
+			int times = mLevel.type == 2?tiaoZhanNum:10;
+
+			m_isShaodang = SaoDangBtn (times);
 		}
 	}
 	/// <summary>
@@ -1798,28 +1850,36 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	}
 	public void CloseUI()
 	{
-		if (mTouchCount <= 3) {
-			if (UIYindao.m_UIYindao.m_isOpenYindao) {
-				UIYindao.m_UIYindao.CloseUI ();
-			}
 
-			if (CityGlobalData.PT_Or_CQ) {
-				PassLevelBtn.Instance ().OPenEffect ();
-			}
-			MainCityUI.TryRemoveFromObjectList (this.gameObject);
-			if (EnterGuoGuanmap.Instance ().ShouldOpen_id == 1) {
-				EnterGuoGuanmap.Instance ().ShouldOpen_id = 0;
-				
-				GameObject map = GameObject.Find ("Map(Clone)");
-				if (map) {
-					MainCityUI.TryRemoveFromObjectList (map);
-					Destroy (map);
-				}
-			}
-			mTouchCount ++;
-		} 
+		if (UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
+
+		if (CityGlobalData.PT_Or_CQ) 
+		{
+			PassLevelBtn.Instance ().OPenEffect ();
+		}
+//		if (EnterGuoGuanmap.Instance ().ShouldOpen_id == 1) 
+//		{
+//			EnterGuoGuanmap.Instance ().ShouldOpen_id = 0;
+//			
+//			GameObject map = MapData.mapinstance.gameObject;
+//			if (map) 
+//			{
+//				MainCityUI.TryRemoveFromObjectList (map);
+//				CityGlobalData.PT_Or_CQ = true;
+//				Destroy (map);
+//			}
+//			if(PveUImanager.instances.m_ChaperAwardUI)
+//			{
+//				Destroy (PveUImanager.instances.m_ChaperAwardUI);
+//			}
+//		}
+ 
 		CityGlobalData.PveLevel_UI_is_OPen = false;
 		MapData.mapinstance.ShowYinDao = true;
+		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Destroy (this.gameObject);
 	}
 	/// <summary>

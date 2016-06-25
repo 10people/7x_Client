@@ -73,7 +73,7 @@ Shader "Custom/Characters/Main Texture Rim"{
 
 					t_normal = t_normal / length( t_normal );
 
-					o.color_d = max( 0, dot( t_normal, -normalize( _Light ) ) ) * _DiffuseColor.rgb * _DiffuseWeight;
+					o.color_d = max( 0, dot( t_normal, -normalize( _Light ) ) ) * _DiffuseColor.xyz * _DiffuseWeight;
 					
 					o.color = smoothstep( 1 - _RimWidth * _RimWidth, 1.0, 1 - dot( v.normal, viewDir ) ) * _RimWeight * _RimColor;
 
@@ -85,7 +85,7 @@ Shader "Custom/Characters/Main Texture Rim"{
 				fixed4 frag(v2f i) : COLOR {
 					fixed4 t_c = tex2D(_MainTex, i.uv);
 
-					t_c.rgb = ( t_c.rgb * _MainColor + t_c.rgb ) * _MainWeight + i.color_d + i.color + _FxColor.rgb;
+					t_c.xyz = ( t_c.xyz * _MainColor + t_c.xyz ) * _MainWeight + i.color_d + i.color + _FxColor.xyz;
 				   
 					return t_c;
 				}

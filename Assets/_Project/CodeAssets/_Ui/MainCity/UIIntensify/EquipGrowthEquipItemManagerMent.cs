@@ -21,7 +21,7 @@ public class EquipGrowthEquipItemManagerMent : MonoBehaviour
     public void ResourcesLoadAddCallBack(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject rewardShow = Instantiate(p_object) as GameObject;
-        rewardShow.transform.parent = m_Level.transform;
+        rewardShow.transform.parent = m_SpriteIcon.transform;
         rewardShow.transform.localScale = Vector3.one;
         rewardShow.transform.localPosition = Vector3.zero;
 
@@ -37,10 +37,10 @@ public class EquipGrowthEquipItemManagerMent : MonoBehaviour
         rewardShow.AddComponent<TweenAlpha>();
         rewardShow.GetComponent<TweenPosition>().from = rewardShow.transform.localPosition;
         rewardShow.GetComponent<TweenPosition>().to = rewardShow.transform.localPosition + Vector3.up * 40;
-        rewardShow.GetComponent<TweenPosition>().duration = 0.5f;
+        rewardShow.GetComponent<TweenPosition>().duration = 0.1f;
         rewardShow.GetComponent<TweenAlpha>().from = 1.0f;
         rewardShow.GetComponent<TweenAlpha>().to = 0;
-        rewardShow.GetComponent<TweenPosition>().duration = 0.8f;
+        rewardShow.GetComponent<TweenPosition>().duration = 0.15f;
         StartCoroutine(WatiForee(rewardShow));
     }
 
@@ -48,7 +48,7 @@ public class EquipGrowthEquipItemManagerMent : MonoBehaviour
     {
         yield return new WaitForSeconds(0.8f);
         Destroy(obj);
-       // m_ObjEffect.SetActive(false);
-     //   EquipGrowthEquipInfoManagerment.m_isEffect = true;
+        m_ObjEffect.SetActive(false);
+        EquipGrowthEquipInfoManagerment.m_isEffect = true;
     }
 }

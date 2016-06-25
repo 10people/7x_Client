@@ -75,63 +75,7 @@ public class OnlineRewardcGiftBagsManagerment : MonoBehaviour, SocketProcessor
                         return true;
                     }
                     break;
-                case ProtoIndexes.S_XINSHOU_XIANSHI_AWARD_RESP:// 
-                    {
-                        MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-                        QiXiongSerializer t_qx = new QiXiongSerializer();
-                        ReturnAward ReponseInfo = new ReturnAward();
-                        t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
-                   
-                        int s_size = m_GridObject.transform.childCount;
-     
-                        for (int i = 0; i < s_size; i++)
-                        {
-                            if (int.Parse(m_GridObject.transform.GetChild(i).transform.name) == ReponseInfo.huodongId)
-                            {
-                                m_GridObject.transform.GetChild(i).GetComponent<OnlineRewardcGiftBagsItemManagerment>().m_EventTouch.gameObject.SetActive(false);
-                                m_GridObject.transform.GetChild(i).GetComponent<OnlineRewardcGiftBagsItemManagerment>().m_LingQuObj.SetActive(true);
-                                break;
-                            }
-                        }
-                       
-                        for (int i = 0; i < _listOnlineInfo.Count; i++)
-                        {
-                            if ( _listOnlineInfo[i].huodongId == ReponseInfo.huodongId)
-                            {
-                                _listOnlineInfo[i].state = 30;
-                                FunctionWindowsCreateManagerment.ShowRAwardInfo(_listOnlineInfo[i].jiangli);
-                                break;
-                            }
-                        }
-
-                        if (CityGlobalData.m_Limite_Activity_Type == 1542000)
-                        {
-                            MainCityUI.SetRedAlert(15, false);
-                        }
-                        else if (CityGlobalData.m_Limite_Activity_Type != 1542000 && WetherComplete())
-                        {
-                            MainCityUI.SetRedAlert(16, false);
-                        }
-
-                    
-                        int size_2 = _listOnlineInfo.Count;
-                        if (int.Parse(XianshiHuodongTemp.GetXianShiHuoDongById(ReponseInfo.huodongId).doneCondition) > 100)
-                        {
-                            for (int i = 0; i < size_2; i++)
-                            {
-                                if (_listOnlineInfo[i].huodongId == ReponseInfo.huodongId)
-                                {
-                                    if (i + 1 < size_2 )
-                                    {
-                                      MainCityUIRB.ShowTimeCalc(int.Parse(XianshiHuodongTemp.GetXianShiHuoDongById(_listOnlineInfo[i+1].huodongId).doneCondition));
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                            return true;
-                    }
-                    break;
+                
             }
         }
         return false;

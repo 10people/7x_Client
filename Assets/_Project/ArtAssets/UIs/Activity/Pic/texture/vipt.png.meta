@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: b4b495a61f9e5e94aa8c2da14535081b
-timeCreated: 1457343060
+guid: 7716f44e9cc4d944c98e844c0778183c
+timeCreated: 1464775469
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -44,7 +44,7 @@ TextureImporter:
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
-  alphaIsTransparency: 1
+  alphaIsTransparency: 0
   textureType: 5
   buildTargetSettings:
   - buildTarget: Android

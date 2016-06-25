@@ -11,11 +11,7 @@ public class AllianceUp : MonoBehaviour {
 
 		StartCoroutine(WaitForUpgaade());
 	}
-	
 
-	void Update () {
-	
-	}
 	IEnumerator WaitForUpgaade()
 	{
 		yield return new WaitForSeconds(0.4f);

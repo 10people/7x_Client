@@ -198,7 +198,7 @@ public class EmailPage : MonoBehaviour {
 
 		for (int i = 0;i < tempList.Count;i ++)
 		{
-			emailItemList[i].transform.localPosition = new Vector3(0,-130 * i,0);
+			emailItemList[i].transform.localPosition = new Vector3(0,-118 * i,0);
 			emailSc.UpdateScrollbars (true);
 //			emailSc.UpdatePosition ();
 			EmailItem email = emailItemList[i].GetComponent<EmailItem> ();

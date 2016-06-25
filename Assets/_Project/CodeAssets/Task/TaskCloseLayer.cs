@@ -29,9 +29,8 @@ public class TaskCloseLayer : MonoBehaviour
     //        m_ScaleEffectController.OnCloseWindowClick();
     //    }
     //}
-        void DoCloseWindow()
+    void DoCloseWindow()
     {
-        ClientMain.m_isNewOpenFunction = false;
         if (FreshGuide.Instance().IsActive(100040) && TaskData.Instance.m_TaskInfoDic[100040].progress < 0
             || FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress < 0
             || FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress < 0)
@@ -43,7 +42,6 @@ public class TaskCloseLayer : MonoBehaviour
 			    
 			if(GameObject.Find("New_My_Union(Clone)"))
 			{
-				NewAlliancemanager.Instance ().ShowAllianceGuid ();
 				NewAlliancemanager.Instance ().SomeUIis_OPen = false;
 			}
                 MainCityUI.TryRemoveFromObjectList(m_gameObject);

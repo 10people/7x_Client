@@ -17,11 +17,7 @@ public class MoveClouds : MonoBehaviour {
 		MoveCloud ();
 		Destroy (this.gameObject,1.4f);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	void MoveCloud()
 	{
 

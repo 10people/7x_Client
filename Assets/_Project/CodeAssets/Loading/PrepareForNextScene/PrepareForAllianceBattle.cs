@@ -46,7 +46,7 @@ public class PrepareForAllianceBattle : MonoBehaviour
         LoadModuleDic = new Dictionary<LoadModule, LoadProgress>()
         {
             {LoadModule.UI, new LoadProgress() {Name = "AB_UI", LoadedNum = 0, TotalNum = 1, Weight = 10}},
-            {LoadModule.MODEL, new LoadProgress() {Name = "AB_MODEL", LoadedNum = 0, TotalNum = 4, Weight = 10}},
+            {LoadModule.MODEL, new LoadProgress() {Name = "AB_MODEL", LoadedNum = 0, TotalNum = 8, Weight = 10}},
             {LoadModule.EFFECT, new LoadProgress() {Name = "AB_EFFECT", LoadedNum = 0, TotalNum = itemCount, Weight = 10}},
             {LoadModule.INIT, new LoadProgress() {Name = "AB_INIT", LoadedNum = 0, TotalNum = 5, Weight = 15}}
         };

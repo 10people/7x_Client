@@ -2,6 +2,7 @@ Shader "Hidden/Vignetting" {
 	Properties {
 		_MainTex ("Base", 2D) = "white" {}
 		_VignetteTex ("Vignette", 2D) = "white" {}
+		_VigColor( "Vig Color", Color) = ( 0, 0, 0, 1 )
 	}
 	
 	CGINCLUDE
@@ -16,7 +17,8 @@ Shader "Hidden/Vignetting" {
 	
 	sampler2D _MainTex;
 	sampler2D _VignetteTex;
-	
+	uniform half4 _VigColor;
+
 	half _Intensity;
 	half _Blur;
 
@@ -48,8 +50,14 @@ Shader "Hidden/Vignetting" {
 		
 		half4 colorBlur = tex2D (_VignetteTex, i.uv2);
 		color = lerp (color, colorBlur, saturate (_Blur * coordDot));
-		
-		return color * mask;
+
+		half4 t_add = ( color - color * mask );
+
+		t_add.x *= _VigColor.x;
+		t_add.y *= _VigColor.y;
+		t_add.z *= _VigColor.z;
+
+		return color * mask + t_add;
 	}
 
 	ENDCG 

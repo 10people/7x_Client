@@ -89,7 +89,7 @@ public class AddLvLeftBtn : MonoBehaviour {
 			if(mReCruit_root.mjunxian < mReCruit_root.mjunxian_Max)
 			{
 				mReCruit_root.mjunxian += 1;
-				if(mReCruit_root.mjunxian == 8)
+				if(mReCruit_root.mjunxian == 9)
 				{
 					ispress = false;
 				}

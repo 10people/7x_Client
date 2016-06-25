@@ -66,6 +66,8 @@ namespace Rank
                 JunxianLabel.text = m_JunZhuInfo.junxian + " " + m_JunZhuInfo.junxianRank;
                 JunxianSprite.spriteName = "junxian" + m_JunZhuInfo.junxianLevel;
             }
+
+            SetBG(false);
         }
 
         new void OnClick()
@@ -81,29 +83,13 @@ namespace Rank
                 return;
             }
 
+            m_AllianceMemberController.m_RootController.ShieldName = m_JunZhuInfo.name;
+
             //Create object and set.
             GameObject tempObject = (GameObject)Instantiate(m_AllianceMemberController.FloatButtonPrefab);
             FloatButtonsController = tempObject.GetComponent<FloatButtonsController>();
 
-            List<FloatButtonsController.ButtonInfo> tempList = new List<FloatButtonsController.ButtonInfo>();
-            tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "查看信息", m_VoidDelegate = GetInfo });
-            if (m_JunZhuInfo.junZhuId != JunZhuData.Instance().m_junzhuInfo.id)
-            {
-                if (FriendOperationData.Instance.m_FriendListInfo == null || FriendOperationData.Instance.m_FriendListInfo.friends == null || !FriendOperationData.Instance.m_FriendListInfo.friends.Select(item => item.ownerid).Contains(m_JunZhuInfo.junZhuId))
-                {
-                    tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "加为好友", m_VoidDelegate = AddFriend });
-                }
-                if (BlockedData.Instance().m_BlockedInfoDic == null || BlockedData.Instance().m_BlockedInfoDic.Count == 0 || !BlockedData.Instance().m_BlockedInfoDic.Select(item => item.Value.junzhuId).Contains(m_JunZhuInfo.junZhuId))
-                {
-                    tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "屏蔽玩家", m_VoidDelegate = Shield });
-                }
-                if (m_JunZhuInfo.lianMeng != "无")
-                {
-                    tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "掠夺", m_VoidDelegate = Rob });
-                }
-            }
-
-            FloatButtonsController.Initialize(tempList, true);
+            FloatButtonsController.Initialize(FloatButtonsConfig.GetConfig(m_JunZhuInfo.junZhuId, m_JunZhuInfo.name, m_JunZhuInfo.lianMeng, new List<GameObject>() { m_AllianceMemberController.gameObject, m_AllianceMemberController.m_RootController.gameObject }, m_AllianceMemberController.ClampScrollView), true);
 
             TransformHelper.ActiveWithStandardize(FloatButtonsRoot.transform, tempObject.transform);
 
@@ -120,48 +106,7 @@ namespace Rank
                 yield break;
             }
 
-            NGUIHelper.AdaptWidgetInScrollView(m_AllianceMemberController.m_ScrollView, m_AllianceMemberController.m_ScrollBar, FloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
-        }
-
-        public override void GetInfo()
-        {
-            KingDetailInfoController.Instance.ShowKingDetailWindow(m_JunZhuInfo.junZhuId);
-
-            m_AllianceMemberController.ClampScrollView();
-        }
-
-        public override void AddFriend()
-        {
-            if (FriendOperationData.Instance.m_FriendListInfo.friends.Select(item => item.ownerid).Contains(m_JunZhuInfo.junZhuId))
-            {
-                ClientMain.m_UITextManager.createText("该玩家已经是您的好友！");
-            }
-            else
-            {
-                FriendOperationLayerManagerment.AddFriends((int)m_JunZhuInfo.junZhuId);
-                m_AllianceMemberController.ClampScrollView();
-            }
-        }
-
-        public override void Shield()
-        {
-            if (!m_AllianceMemberController.isOutterCall)
-            {
-                m_AllianceMemberController.m_RootController.ShieldName = m_JunZhuInfo.name;
-            }
-
-            JoinToBlacklist tempMsg = new JoinToBlacklist
-            {
-                junzhuId = m_JunZhuInfo.junZhuId
-            };
-            SocketHelper.SendQXMessage(tempMsg, ProtoIndexes.C_Join_BlackList);
-            m_AllianceMemberController.ClampScrollView();
-        }
-
-        public override void Rob()
-        {
-            PlunderData.Instance.PlunderOpponent(PlunderData.Entrance.RANKLIST, m_JunZhuInfo.junZhuId);
-            m_AllianceMemberController.ClampScrollView();
+            NGUIHelper.AdaptWidgetInScrollView(m_AllianceMemberController.m_ScrollView, m_AllianceMemberController.m_ScrollBar, FloatButtonsController.m_BG.GetComponent<UIWidget>());
         }
 
         /// <summary>

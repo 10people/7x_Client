@@ -165,7 +165,7 @@ public class ExpXxmlTemp : XmlLoadManager {
         List<ExpXxmlTemp> listNeedInfo = new List<ExpXxmlTemp>();
         for (int i = 0; i < templates.Count; i++)
         {
-            if (templates[i].expId == expId && templates[i].level >= level && templates[i].level <= JunZhuData.Instance().m_junzhuInfo.level && templates[i].level <= MaxLevel)
+            if (templates[i].expId == expId && templates[i].level >= level /*&& templates[i].level <= JunZhuData.Instance().m_junzhuInfo.level */&& templates[i].level <= MaxLevel)
             {
                 listNeedInfo.Add(templates[i]);
 
@@ -297,34 +297,34 @@ public class ExpXxmlTemp : XmlLoadManager {
         
     }
 
-    public static int GetNeedMaxExpByExpId(int expId){
-		{
-			ProcessAsset();
-		}
+  //  public static int GetNeedMaxExpByExpId(int expId){
+		//{
+		//	ProcessAsset();
+		//}
 
-        List<ExpXxmlTemp> listNeedInfo = new List<ExpXxmlTemp>();
-        int sum = 0;
-        for (int i = 0; i < templates.Count; i++)
-        {
-            if (JunZhuData.Instance().m_junzhuInfo.level < 100)
-            {
-                if (templates[i].expId == expId && templates[i].level <= JunZhuData.Instance().m_junzhuInfo.level)
-                {
-                    sum += templates[i].needExp; 
-                }
-            }
-            else
-            {
-                if (templates[i].expId == expId && templates[i].level < 100)
-                {
-                    sum += templates[i].needExp;
-                }
-            }
+  //      List<ExpXxmlTemp> listNeedInfo = new List<ExpXxmlTemp>();
+  //      int sum = 0;
+  //      for (int i = 0; i < templates.Count; i++)
+  //      {
+  //          if (JunZhuData.Instance().m_junzhuInfo.level < 100)
+  //          {
+  //              if (templates[i].expId == expId && templates[i].level <= JunZhuData.Instance().m_junzhuInfo.level)
+  //              {
+  //                  sum += templates[i].needExp; 
+  //              }
+  //          }
+  //          else
+  //          {
+  //              if (templates[i].expId == expId && templates[i].level < 100)
+  //              {
+  //                  sum += templates[i].needExp;
+  //              }
+  //          }
  
-        }
-        return sum;
+  //      }
+  //      return sum;
 
-    }
+  //  }
     public static int GetCurrentRealAdd(int expId, int Exptotal, int Expnow){
 		{
 			ProcessAsset();
@@ -336,7 +336,7 @@ public class ExpXxmlTemp : XmlLoadManager {
         {
             if (JunZhuData.Instance().m_junzhuInfo.level < 100)
             {
-                if (templates[i].expId == expId && templates[i].level < JunZhuData.Instance().m_junzhuInfo.level)
+                if (templates[i].expId == expId /*&& templates[i].level < JunZhuData.Instance().m_junzhuInfo.level*/)
                 {
                     sum += templates[i].needExp;
                 }

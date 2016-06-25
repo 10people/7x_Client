@@ -115,7 +115,7 @@ public class SkillBuff : SkillDataBead
 				}
 				else
 				{
-					Buff.createBuff(defender, (AIdata.AttributeType)m_iBuffID, va, m_fLastTime, this);
+					Buff.setAttacker(m_HeroSkill.node, Buff.createBuff(defender, (AIdata.AttributeType)m_iBuffID, va, m_fLastTime, this));
 				}
 
 				m_HeroSkill.isFirse(defender);

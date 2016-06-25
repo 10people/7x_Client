@@ -14,6 +14,7 @@ public class MibaoNewTemplate : XmlLoadManager
 	public int color;
 	public int iconID;
 	public int suipianID;
+	public int jinjieNum;
 	public int gongji;
 	public int fangyu;
 	public int shengming;
@@ -78,6 +79,8 @@ public class MibaoNewTemplate : XmlLoadManager
 				t_template.suipianID = int.Parse(t_reader.Value);
 
 				t_reader.MoveToNextAttribute();
+				t_template.jinjieNum = int.Parse(t_reader.Value);
+
 				t_reader.MoveToNextAttribute();
 
 				t_reader.MoveToNextAttribute();

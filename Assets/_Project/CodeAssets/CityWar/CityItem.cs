@@ -20,6 +20,8 @@ public class CityItem : MonoBehaviour {
 	public UILabel m_cityName;
 	public UILabel m_cityLevel;
 
+	public UILabel m_alliance;
+
 	public UILabel m_targetLabel;
 	public UISprite m_target;
 	
@@ -28,66 +30,114 @@ public class CityItem : MonoBehaviour {
 		M_CityInfo = tempInfo;
 
 		JCZCityTemplate cityTemp = JCZCityTemplate.GetJCZCityTemplateById (tempInfo.cityId);
-		m_cityIcon.spriteName = cityTemp.icon == 2 ? "8" : "9";
+		m_cityIcon.spriteName = cityTemp.icon == 2 ? "9" : "8";
 		m_cityLevel.text = "Lv" + cityTemp.allianceLv.ToString ();
-		m_cityState.spriteName = CityWarPage.m_instance.M_TimeLabelDic [M_CityInfo.cityState][3];
+		m_cityState.spriteName = CityWarPage.m_instance.M_TimeLabelDic [M_CityInfo.cityState][2];
 		m_cityName.text = NameIdTemplate.GetName_By_NameId (cityTemp.name);
 
 		m_allianceFlag.spriteName = tempInfo.cityState == 0 ? "" : "flag_" + tempInfo.guojiaId;
 		m_allianceIcon.spriteName = tempInfo.cityState == 0 ? "" : tempInfo.lmIconId.ToString ();
 
+		m_alliance.text = tempInfo.cityState == 0 ? "" : MyColorData.getColorString (tempInfo.cityState == 1 ? 4 : 5,"<" + tempInfo.ocLmName + ">");
+
 		m_target.gameObject.SetActive (tempInfo.cityState2 == 0 ? false : true);
 //		Debug.Log ("m_cityName:" + m_cityName.text);
 //		Debug.Log ("interval:" + CityWarPage.m_instance.CityResp.interval);
 //		Debug.Log ("cityState2:" + tempInfo.cityState2);
-		if (tempInfo.cityState2 == 1)
+//		Debug.Log (m_cityName.text + ":tempInfo.cityState2:" + tempInfo.cityState2 + "||CityWarPage.m_instance.CityResp.interval:" + CityWarPage.m_instance.CityResp.interval);
+		switch (tempInfo.cityState2)
 		{
-			if (CityWarPage.m_instance.CityResp.interval == 0)
-			{
-				m_target.spriteName = "BlueArrow";
-				m_targetLabel.text = "[0dbce8]宣战[-]";
-			}
-			else if (CityWarPage.m_instance.CityResp.interval == 1)
-			{
-				m_target.spriteName = "RedArrow";
-				m_targetLabel.text =  MyColorData.getColorString (5,"进攻");
-			}
-			else
-			{
-				m_target.spriteName = "";
-				m_targetLabel.text = "";
-			}
-
-			CityTween ();
-		}
-		else if (tempInfo.cityState2 == 2 || tempInfo.cityState2 == 3 || tempInfo.cityState2 == 4)
-		{
-			switch (tempInfo.cityState2)
-			{
-			case 2:
-				m_target.spriteName = "RedArrow";
-				m_targetLabel.text =  MyColorData.getColorString (5,"防守");
-				break;
-			case 3:
-				m_target.spriteName = "RedArrow";
-				m_targetLabel.text =  MyColorData.getColorString (5,"进攻");
-				break;
-			case 4:
-//				Debug.Log ("interval:" + CityWarPage.m_instance.CityResp.interval);
-				m_target.spriteName = CityWarPage.m_instance.CityResp.interval == 1 ? "RedArrow" : "";
-				m_targetLabel.text =  CityWarPage.m_instance.CityResp.interval == 1 ? MyColorData.getColorString (5,"宣战失败") : "";
-				break;
-			default:
-				break;
-			}
-
-			CityTween ();
-		}
-		else
-		{
+		case 0://无状态
 			m_target.spriteName = "";
 			m_targetLabel.text = "";
+			break;
+		case 1://宣战
+			switch (CityWarPage.m_instance.CityResp.interval)
+			{
+			case 0://宣战时段
+				m_target.spriteName = "BlueArrow";
+				m_targetLabel.text =  MyColorData.getColorString (5,"[0dbce8]" + CityWarPage.m_instance.m_xuanZhan + "[-]");//宣战
+				break;
+//			case 1://揭晓时段
+//				m_target.spriteName = "RedArrow";
+//				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_attackBefore);//进攻备战
+//				break;
+//			case 2://战斗时段
+//				m_target.spriteName = "RedArrow";
+//				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_attack);//进攻
+//				break;
+			default://其它时段
+				m_target.spriteName = "";
+				m_targetLabel.text = "";
+				break;
+			}
+			break;
+		case 2://防守
+			switch (CityWarPage.m_instance.CityResp.interval)
+			{
+			case 0://宣战时段
+				m_target.spriteName = "RedArrow";
+				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_fangShouBefore);//防守备战
+				break;
+			case 1://揭晓时段
+				m_target.spriteName = "RedArrow";
+				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_fangShouBefore);//防守备战
+				break;
+			case 2://战斗时段
+				m_target.spriteName = "RedArrow";
+				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_fangShou);//防守
+				break;
+			case 3://其它时段
+				m_target.spriteName = "";
+				m_targetLabel.text = "";
+				break;
+			}
+			break;
+		case 3://进攻
+			switch (CityWarPage.m_instance.CityResp.interval)
+			{
+			case 0://宣战时段
+				m_target.spriteName = "RedArrow";
+				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_attackBefore);//进攻备战
+				break;
+			case 1://揭晓时段
+				m_target.spriteName = "RedArrow";
+				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_attackBefore);//进攻备战
+				break;
+			case 2://战斗时段
+				m_target.spriteName = "RedArrow";
+				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_attack);//进攻
+				break;
+			default://其它时段
+				m_target.spriteName = "";
+				m_targetLabel.text = "";
+				break;
+			}
+			break;
+		case 4://宣战失败
+			switch (CityWarPage.m_instance.CityResp.interval)
+			{
+//			case 0://宣战时段
+//				m_target.spriteName = "RedArrow";
+//				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_xuanZhan);//宣战
+//				break;
+			case 1://揭晓时段
+				m_target.spriteName = "RedArrow";
+				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_xuanZhanFail);//宣战失败
+				break;
+//			case 2://战斗时段
+//				m_target.spriteName = "RedArrow";
+//				m_targetLabel.text =  MyColorData.getColorString (5,CityWarPage.m_instance.m_attack);//进攻
+//				break;
+			default://其它时段
+				m_target.spriteName = "";
+				m_targetLabel.text = "";
+				break;
+			}
+			break;
 		}
+
+		CityTween ();
 	}
 
 	private Vector3 m_pos;

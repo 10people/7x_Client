@@ -165,10 +165,11 @@ public class TBRewardCard : MonoBehaviour {
 		if (cardInfo.itemType == 4)
 		{
 			cardLabel.text = NameIdTemplate.GetName_By_NameId (nameId);
-
+//			Debug.Log ("cardInfo.miBaoStar:" + cardInfo.miBaoStar);
 			m_starList = QXComData.CreateGameObjectList (m_star,cardInfo.miBaoStar,m_starList);
 			for (int i = 0;i < m_starList.Count;i ++)
 			{
+				m_starList[i].SetActive (true);
 				m_starList[i].transform.localPosition = new Vector3(18 * i - (m_starList.Count - 1) * 9,-20,0);
 				m_starList[i].transform.localScale = Vector3.one * 0.2f;
 			}
@@ -185,6 +186,13 @@ public class TBRewardCard : MonoBehaviour {
 				nameStr = NameIdTemplate.GetName_By_NameId (nameId);
 				nameStr = nameStr.Insert(nameStr.IndexOf ("碎片"),"\n");
 
+				cardLabel.text = nameStr + "x" + cardInfo.itemNumber;
+			}
+			else if (cardInfo.itemType == 8)
+			{
+				nameStr = NameIdTemplate.GetName_By_NameId (nameId);
+				nameStr = nameStr.Insert(nameStr.IndexOf ("符文"),"\n");
+				
 				cardLabel.text = nameStr + "x" + cardInfo.itemNumber;
 			}
 			else
@@ -225,7 +233,7 @@ public class TBRewardCard : MonoBehaviour {
 
 		iconSampleManager.SetIconByID (cardInfo.itemId,"",2);
 		iconSampleManager.SetIconBasicDelegate (true,true,null);///////////////////////////////
-		iconSampleManager.BgSprite.gameObject.SetActive (false);
+//		iconSampleManager.BgSprite.gameObject.SetActive (false);
 		iconSampleManager.SetIconPopText(cardInfo.itemId, itemName, mdesc, 1);
 	}
 }

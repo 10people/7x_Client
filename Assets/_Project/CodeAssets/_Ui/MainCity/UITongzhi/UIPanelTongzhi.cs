@@ -31,6 +31,10 @@ public class UIPanelTongzhi : MYNGUIPanel
 			{
 				return Global.m_listShiLianData;
 			}
+			else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE)
+			{
+				return Global.m_listJunchengData;
+			}
             else
             {
                 return new List<TongzhiData>();
@@ -52,7 +56,11 @@ public class UIPanelTongzhi : MYNGUIPanel
             }
 			else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_TREASURECITY)
 			{
-				return TreasureCityUITR.tCityUITR.TongZhi;
+				return TreasureCityUITR.m_instance.TongZhi;
+			}
+			else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_ALLIANCE_BATTLE)
+			{
+			    return AllianceBattle.RootManager.Instance.m_AllianceBattleMain.m_MainCityUiTongzhi;
 			}
             else
             {
@@ -148,7 +156,7 @@ public class UIPanelTongzhi : MYNGUIPanel
         }
 		else if (Application.loadedLevelName == ConstInGame.CONST_SCENE_NAME_TREASURECITY)
 		{
-			TreasureCityUITR.tCityUITR.TongZhi.upDataShow ();
+			TreasureCityUITR.m_instance.TongZhi.upDataShow ();
 		}
     }
 
@@ -236,9 +244,4 @@ public class UIPanelTongzhi : MYNGUIPanel
     {
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

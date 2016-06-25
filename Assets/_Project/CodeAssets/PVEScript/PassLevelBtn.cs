@@ -8,7 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
+public class PassLevelBtn : MonoBehaviour  , SocketListener{
 
 	[HideInInspector]public int LingQu; // 0为不可领取 1为可领取 2为已经领取
 
@@ -17,6 +17,9 @@ public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
 
 	public static PassLevelBtn mPaaseBtn;
 	[HideInInspector]public bool IsOPenEffect;
+
+	[HideInInspector]public bool mDataback;
+
 	public static PassLevelBtn Instance()
 	{
 		if (!mPaaseBtn)
@@ -28,11 +31,12 @@ public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
 	}
 	void Awake()
 	{
-		SocketTool.RegisterMessageProcessor(this);
+		mDataback = false;
+		SocketTool.RegisterSocketListener(this);
 	}
 	void OnDisable()
 	{
-		SocketTool.UnRegisterMessageProcessor(this);
+		SocketTool.UnRegisterSocketListener(this);
 	}
 	void Start () 
 	{
@@ -48,10 +52,8 @@ public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
 		//Debug.Log("CNOT_GET_AWART_ZHANGJIE_RESP = 24156");
 		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_NOT_GET_AWART_ZHANGJIE_REQ);
 	}
-	void Update () {
-	
-	}
-	public bool OnProcessSocketMessage(QXBuffer p_message)
+
+	public bool OnSocketEvent(QXBuffer p_message)
 	{
 		if (p_message != null)
 		{
@@ -67,6 +69,8 @@ public class PassLevelBtn : MonoBehaviour  , SocketProcessor{
 				GetNotGetAwardZhangJieResp mGetNotGetAwardZhangJieResp = new GetNotGetAwardZhangJieResp();
 
 				t_qx.Deserialize(t_tream, mGetNotGetAwardZhangJieResp, mGetNotGetAwardZhangJieResp.GetType());
+
+				mDataback = true;
 
 				Sec_idlist = mGetNotGetAwardZhangJieResp.zhangJiaId;
 

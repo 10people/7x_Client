@@ -17,7 +17,7 @@ public class ExchangeSelfController : MonoBehaviour
     public List<IconSampleManager> IconSampleManagerList = new List<IconSampleManager>();
     [HideInInspector]
     public GameObject IconSamplePrefab;
-
+	private bool EffectisOpen;
     [HideInInspector]
     public List<OldBookWindow.ExchangeInfo> ExchangeSelfInfoList = new List<OldBookWindow.ExchangeInfo>();
 
@@ -40,7 +40,7 @@ public class ExchangeSelfController : MonoBehaviour
         {
             IconSamplePrefab = loadedObject as GameObject;
         }
-
+		EffectisOpen = false;
         IconSampleManagerList.Clear();
         List<OldBookWindow.ExchangeInfo> sortedList =
             ExchangeSelfInfoList.Where(item => item.itemId != 0)
@@ -69,6 +69,8 @@ public class ExchangeSelfController : MonoBehaviour
 
             //instance icon and set
             var m_IconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
+		
+
             if (sortedList[i].itemId != 0)
             {
                 m_IconSampleManager.SetIconByID(IconSampleManager.IconType.exchangeBox, sortedList[i].itemId, "", 5);
@@ -80,7 +82,20 @@ public class ExchangeSelfController : MonoBehaviour
                 m_IconSampleManager.SetIconBasic(5);
                 m_IconSampleManager.SetIconBasicDelegate();
             }
+			m_IconSampleManager.m_Position_y = i;
 
+			if(OldBookWindow.Itemids.Contains(sortedList[i].itemId)&&OldBookWindow.Itemids.Contains(sortedList[i].boxId)&& !EffectisOpen)
+			{
+				if( m_OldBookWindow.myPosition == m_IconSampleManager.m_Position_y)
+				{
+					m_IconSampleManager.m2DAnimation_Continuly.gameObject.SetActive(true);
+					m_IconSampleManager.m2DAnimation_Continuly.Reset();
+					m_IconSampleManager.m_Itemid = sortedList[i].itemId;
+					m_IconSampleManager.m_Itemid = sortedList[i].boxId;
+					m_IconSampleManager.AnimationIsOpen = true;
+					EffectisOpen = true;
+				}
+			}
             IconSampleManagerList.Add(m_IconSampleManager);
         }
     }
@@ -108,10 +123,15 @@ public class ExchangeSelfController : MonoBehaviour
                 break;
             //add to or remove from exchange items.
             case OldBookWindow.Mode.ExchangeBoxOther:
+		
+//			    Debug.Log ("myself");
                 bool isActiveBefore = iconSampleManager.SelectFrameSprite.gameObject.activeSelf;
 
+				iconSampleManager.m2DAnimation.gameObject.SetActive (!isActiveBefore);
+				iconSampleManager.m2DAnimation.loop = false;
+			    iconSampleManager.m2DAnimation.Reset();
                 IconSampleManagerList.ForEach(manager => manager.SelectFrameSprite.gameObject.SetActive(false));
-
+			    m_OldBookWindow.myPosition = iconSampleManager.m_Position_y;
                 iconSampleManager.SelectFrameSprite.gameObject.SetActive(!isActiveBefore);
 
                 if (iconSampleManager.SelectFrameSprite.gameObject.activeSelf)

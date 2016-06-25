@@ -479,4 +479,18 @@ public class PveTempTemplate : XmlLoadManager {
 
         return null;
     }
+	public static int  GetLevelCount_By_Chapter_Id( int Chapter_Id ){
+		{
+			ProcessAsset();	
+		}
+		int count = 0;
+		for( int i = 0; i < templates.Count; i++ ){
+			PveTempTemplate t_item = templates[ i ];
+			
+			if( t_item.bigId == Chapter_Id ){
+				count++;
+			}
+		}		
+		return count;
+	}
 }

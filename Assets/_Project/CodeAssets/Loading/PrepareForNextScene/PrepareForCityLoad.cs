@@ -23,7 +23,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         public GameObject _Obj;
     };
 
-    public List<NpcInfo> m_listNpcTemp = new List<NpcInfo>();
+    private List<NpcInfo> m_listNpcTemp = new List<NpcInfo>();
 
     NpcInfo _PortSelf;
     NpcInfo _PortOther;
@@ -307,6 +307,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         if (GeneralRewardManager.Instance() == null)
         {
             GameObject obj = GameObject.Instantiate(m_GeneralReward);
+//			UI2DTool.Instance.AddTopUI(obj);
             DontDestroyOnLoad(obj);
         }
         EnterNextScene.Instance().DestroyUI();
@@ -324,7 +325,8 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 		#endif
 
         InitCityLoading();
-
+        StartCoroutine(CheckingDataForMainCity());
+        StartCoroutine(CheckingDataLoadingTime());
         // reset info
         {
 			#if DEBUG_PREPARE_FOR_CITY_LOAD
@@ -333,7 +335,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 
             m_received_data_for_main_city = 0;
 
-            StartCoroutine(CheckingDataForMainCity());
+           
         }
 
         // request PVE Info
@@ -362,7 +364,8 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         {
             FriendOperationData.Instance.RequestData();
         }
-
+    
+       
     }
 
     private bool _isEnterMainCity = true;
@@ -370,47 +373,68 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
     {
    
         while ( m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY ){
-			#if DEBUG_PREPARE_FOR_CITY_LOAD
+            //   Global.CreateBox("提示", "数据加载错误", "", null, null, "确定", ReLogin);
+#if DEBUG_PREPARE_FOR_CITY_LOAD
+          
 			Debug.Log( "CheckingDataForMainCity( " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
-			#endif
+#endif
 
             yield return new WaitForEndOfFrame();
         }
 
-        // enter pve for 1st battle.
-		//if (Global.m_iScreenID == 100101 || Global.m_iScreenID == 100102 || Global.m_iScreenID == 100103)
-		//if (Global.m_iScreenID == 100001)
-		//{
-  //          _isEnterMainCity = false;
-           
-  //          DestroyForNextLoading();
-  //          //UnRegister();
-  //          EnterBattleField.EnterBattlePve(0, Global.m_iScreenID % 10, LevelType.LEVEL_NORMAL);
-  //      }
-  //      else{
-		//	#if DEBUG_PREPARE_FOR_CITY_LOAD
-		//	Debug.Log( "skip 1st battle." );
-		//	#endif
 
-		//	_isEnterMainCity = true;
-
+        if (_isEnterMainCity)
+        {
             EnterNextScene.DirectLoadLevel();
-  //      }
- 
-        if (m_received_data_for_main_city >= REQUEST_DATA_COUNT_FOR_MAINCITY ){
-			
         }
-		else{
-			#if DEBUG_PREPARE_FOR_CITY_LOAD
-			Debug.Log( "not entering main city." );
-			#endif
-		}
+ 
 
-		{
+        {
 			UnRegister();
 
 			Load_2D_UI();
 		}
+    }
+    IEnumerator CheckingDataLoadingTime()
+    {
+        yield return new WaitForSeconds(20.0f);
+ 
+       if (m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY)
+        {
+            _isEnterMainCity = false;
+            if (Debug.isDebugBuild)
+            {
+                Global.CreateBox("提示",
+                                    "数据加载失败" + "\n" + ss + "\n" + SocketTool.GetSocketState(),
+                                    null,
+                                    null,
+                                    "确定",
+                                    null,
+                                    ReLogin,
+                                    null,
+                                    null,
+                                    null,
+                                    false,
+                                    false,
+                                    true);
+            }
+            else
+            {
+                Global.CreateBox("提示",
+                                       "数据加载失败",
+                                       null,
+                                       null,
+                                       "确定",
+                                       null,
+                                       ReLogin,
+                                       null,
+                                       null,
+                                       null,
+                                       false,
+                                       false,
+                                       true);
+            }
+        }
     }
     private static float m_preserve_percentage = 0.0f;
     private void DestroyForNextLoading()
@@ -420,7 +444,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
      //   UnRegister();
       EnterNextScene.Instance().DestroyUI();
     }
-
+    string ss = "";
     public bool OnSocketEvent(QXBuffer p_message)
     {
      //   Debug.LogError("OnSocketEventOnSocketEventOnSocketEventOnSocketEvent");
@@ -441,8 +465,9 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 						Debug.Log( "OnSocketEvent( " + "PVE_PAGE_RET " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
 					}
-
+                    ss += " PVE_PAGE_RET :";
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
+                     
                             CONST_CITY_LOADING_CITY_NET, "PVE_PAGE_RET");
 
                     return true;
@@ -451,7 +476,12 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
                 {
 
                     //				Debug.Log( "获得君主数据: " + Global.m_iScreenID );
+                    MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                    QiXiongSerializer t_qx = new QiXiongSerializer();
+                    JunZhuInfoRet tempInfo = new JunZhuInfoRet();
+                    t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
+                   JunZhuData.Instance().SetInfo(tempInfo);
                     m_received_data_for_main_city++;
 
 					{
@@ -459,7 +489,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 						Debug.Log( "OnSocketEvent( " + "JunZhuInfoRet " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
 					}
-
+                    ss += " JunZhuInfoRet :";
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "JunZhuInfoRet");
 
@@ -478,7 +508,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 						Debug.Log( "OnSocketEvent( " + "ALLIANCE_HAVE_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
 					}
-
+                    ss += " ALLIANCE_HAVE_RESP :";
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "ALLIANCE_HAVE_RESP");
 
@@ -496,7 +526,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 						Debug.Log( "OnSocketEvent( " + "ALLIANCE_NON_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
 					}
-
+                    ss += " ALLIANCE_NON_RESP : ";
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "ALLIANCE_NON_RESP");
                     return true;
@@ -511,7 +541,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 						Debug.Log( "OnSocketEvent( " + "ALLIANCE_NON_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
 					}
-
+                    ss += " TaskList : ";
                     LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
                                    CONST_CITY_LOADING_CITY_NET, "TaskList");
                     return true;
@@ -604,6 +634,26 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         {
             FriendOperationData.Instance.RequestData();
         }
+    }
+
+    void ReLogin(int index)
+    {
+        WindowBackShowController.m_SaveEquipBuWei = 0;
+        FunctionWindowsCreateManagerment.SetSelectEquipDefault();
+        SceneManager.m_isSequencer = false;
+        if (UIYindao.m_UIYindao != null && UIYindao.m_UIYindao.m_isOpenYindao)
+        {
+            UIYindao.m_UIYindao.CloseUI();
+        }
+        CityGlobalData.m_isAllianceTenentsScene = false;
+        CityGlobalData.m_isWashMaxSignal = false;
+        SceneManager.m_isSequencer = false;
+        CityGlobalData.m_isAllianceTenentsScene = false;
+
+        {
+            SceneManager.RequestEnterLogin();
+        }
+        _isEnterMainCity = true;
     }
 
 }

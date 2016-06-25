@@ -18,12 +18,7 @@ public class Temp : MonoBehaviour
 //		m_Animation.wrapMode = WrapMode.Loop;
 //		m_Animation.Play("Run");
 	}
-	
-	// Update is called once per frame
-	void Update () {
 		
-	}
-	
 	void OnGUI()
 	{
 		GUI.DrawTexture(new Rect(0,0,1024,1024), a);

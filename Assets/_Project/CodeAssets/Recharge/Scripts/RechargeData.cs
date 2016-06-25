@@ -11,12 +11,29 @@ using ProtoBuf.Meta;
 
 public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 
+	public enum RechargeType
+	{
+		WEEK_CARD = 2,		//周卡
+		MONTH_CARD = 1,	//月卡
+		YB_60 = 3,				//60元宝
+		YB_300 = 4,				//300元宝
+		YB_500 = 5,				//500元宝
+		YB_980 = 6,				//980元宝
+		YB_1980 = 7,			//1980元宝
+		YB_3280 = 8,			//3280元宝
+		YB_6480 = 9,			//6480元宝
+	}
+	public RechargeType m_rechargeType;
+
 	private VipInfoResp m_vipResp;
 
 	private GameObject m_rechargeRoot;
 
-	private int m_rechargeId;
-	private int m_rechargeNum;
+	private bool m_isOpenRecharge = false;
+
+	private bool m_checkBack = false;
+
+	private int m_lastVip;
 
 	void Awake ()
 	{
@@ -26,17 +43,30 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 	#region RechargeInfo Req
 	public void RechargeDataReq ()
 	{
+		m_isOpenRecharge = true;
+		Recharge ();
+	}
+
+	void Recharge ()
+	{
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_VIPINFO_REQ,ProtoIndexes.S_VIPINFO_RESP.ToString ());
 		Debug.Log ("充值首页请求：" + ProtoIndexes.C_VIPINFO_REQ);
 	}
 	#endregion
 
 	#region Recharge Req
-	public void RechargeReq (int tempId,int tempAmount)
+	[HideInInspector]
+	public int m_rechargeNum;
+	public int m_times;
+
+	public void RechargeReq (RechargeType tempType,int tempAmount,int tempTimes = 0)
 	{
-		m_rechargeId = tempId;
+		m_rechargeType = tempType;
+		m_rechargeNum = tempAmount;
+		m_times = tempTimes;
+
 		RechargeReq rechargeReq = new RechargeReq ();
-		rechargeReq.type = tempId;
+		rechargeReq.type = (int)tempType;
 		rechargeReq.amount = tempAmount;
 		QXComData.SendQxProtoMessage (rechargeReq,ProtoIndexes.C_RECHARGE_REQ,ProtoIndexes.S_RECHARGE_RESP.ToString ());
 		Debug.Log ("充值请求：" + ProtoIndexes.S_RECHARGE_RESP);
@@ -82,7 +112,7 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 
 		M_ErrorMsg = errorMsg;
 
-		QXComData.SendQxProtoMessage (errorMsg,ProtoIndexes.C_CHECK_CHARGE);
+		QXComData.SendQxProtoMessage (errorMsg,ProtoIndexes.C_CHECK_CHARGE,tempState == ReportState.AFTER_SUCCESS ? ProtoIndexes.CHARGE_OK.ToString () : "");
 		Debug.Log ("充值状态汇报：" + ProtoIndexes.C_CHECK_CHARGE);
 	}
 	#endregion
@@ -113,10 +143,27 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 					Debug.Log ("需要元宝数：" + vipResp.needYb);
 					Debug.Log ("拥有元宝数：" + vipResp.hasYb);
 					Debug.Log ("是否达到最高级：" + vipResp.isMax);
+					Debug.Log ("zhouka：" + vipResp.zhouKaLeftDays);
+					Debug.Log ("yueka：" + vipResp.yueKaLeftDays);
 
 					m_vipResp = vipResp;
 
-					LoadRechargeRoot ();
+					if (m_isOpenRecharge)
+					{
+						LoadRechargeRoot ();
+						if (m_checkBack)
+						{
+							if (m_lastVip < m_vipResp.vipLevel)
+							{
+								m_lastVip = m_vipResp.vipLevel;
+								RechargePage.m_instance.ShowVip (m_vipResp.vipLevel);
+							}
+							else
+							{
+								RechargeBack ();
+							}
+						}
+					}
 				}
 
 				return true;
@@ -135,18 +182,17 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 //					Debug.Log ("月卡剩余天数：" + rechargeResp.yueKaLeftDays);
 //					Debug.Log ("msg：" + rechargeResp.msg);
 
-					RechargeDataReq ();
-					if (m_rechargeId == 0)
+					if (m_isOpenRecharge)
 					{
-						QXComData.CreateBoxDiy ("购买月卡成功！",true,null);
-					}
-					else if (m_rechargeId == 1)
-					{
-						QXComData.CreateBoxDiy ("购买终生卡成功！",true,null);
-					}
-					else
-					{
-						QXComData.CreateBoxDiy ("充值成功！",true,null);
+						if (rechargeResp.vipLevel > m_vipResp.vipLevel)
+						{
+							RechargePage.m_instance.ShowVip (rechargeResp.vipLevel);
+						}
+						else
+						{
+							RechargeBack ();
+						}
+						Recharge ();
 					}
 				}
 
@@ -187,9 +233,39 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 
 				return true;
 			}
+			case ProtoIndexes.CHARGE_OK:
+			{
+				Debug.Log ("充值成功");
+				if (m_isOpenRecharge)
+				{
+					m_checkBack = true;
+					Recharge ();
+				}
+				return true;
+			}
 			}
 		}
 		return false;
+	}
+
+	public void RechargeBack ()
+	{
+		string text = "";
+		switch (m_rechargeType)
+		{
+		case RechargeType.MONTH_CARD://月卡
+			text = LanguageTemplate.GetText (LanguageTemplate.Text.RECHARGE_TIPS_5).Replace ("a",MyColorData.getColorString (4,CanshuTemplate.GetStrValueByKey ("YUEKA_TIME")));
+			text = text.Replace ("N",MyColorData.getColorString (4,m_times.ToString ()));
+			break;
+		case RechargeType.WEEK_CARD://周卡
+			text = LanguageTemplate.GetText (LanguageTemplate.Text.RECHARGE_TIPS_7).Replace ("a",MyColorData.getColorString (4,CanshuTemplate.GetStrValueByKey ("ZHOUKA_TIME")));
+			text = text.Replace ("N",MyColorData.getColorString (4,m_times.ToString ()));
+			break;
+		default:
+			text = LanguageTemplate.GetText (LanguageTemplate.Text.RECHARGE_TIPS_4);
+			break;
+		}
+		QXComData.CreateBoxDiy (text,true,null);
 	}
 
 	void LoadRechargeRoot ()
@@ -221,12 +297,15 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 
 	void RechargeDelegateCallBack ()
 	{
+		m_checkBack = false;
+		m_isOpenRecharge = false;
 		MainCityUI.TryRemoveFromObjectList (m_rechargeRoot);
 		m_rechargeRoot.SetActive (false);
 	}
 
 	void OnDestroy ()
 	{
+		m_isOpenRecharge = false;
 		SocketTool.UnRegisterMessageProcessor (this);
 	}
 }

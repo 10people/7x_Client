@@ -42,9 +42,10 @@ public class PlunderNationBtn : MonoBehaviour {
 	public void BtnAnimation (bool isAnimate)
 	{	
 		//按钮背景颜色显示
-		btnBg.color = isAnimate ? Color.white : Color.gray;
-		nationName.color = isAnimate ? Color.white : Color.gray;
-		
+//		btnBg.color = isAnimate ? Color.white : Color.gray;
+//		nationName.color = isAnimate ? Color.white : Color.gray;
+		QXComData.SetBtnState (gameObject,isAnimate);
+
 		float time = 0.5f;
 		float size = 1.1f;
 		

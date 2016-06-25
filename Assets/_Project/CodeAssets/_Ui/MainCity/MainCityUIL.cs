@@ -71,11 +71,6 @@ public class MainCityUIL : MYNGUIPanel
 
     #endregion
 
-    void Update()
-    {
-
-    }
-
     public void EmailLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         GameObject tempObject = Instantiate(p_object) as GameObject;

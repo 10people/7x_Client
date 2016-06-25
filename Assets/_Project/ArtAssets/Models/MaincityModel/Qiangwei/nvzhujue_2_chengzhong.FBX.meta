@@ -45,6 +45,8 @@ ModelImporter:
     100074: Bone10(mirrored)
     100076: //RootNode
     100078: qixiongwushuang_nvjiang_xin0831
+    100080: Bip01 L Toe0
+    100082: Bip01 R Toe0
     400000: Bip01
     400002: Bip01 Head
     400004: Bip01 L Calf
@@ -85,6 +87,8 @@ ModelImporter:
     400074: Bone10(mirrored)
     400076: //RootNode
     400078: qixiongwushuang_nvjiang_xin0831
+    400080: Bip01 L Toe0
+    400082: Bip01 R Toe0
     4300000: qixiongwushuang_nvjiang_xin0831
     7400000: inDle
     7400002: inRun
@@ -372,7 +376,7 @@ ModelImporter:
       name: inRelax_1
       takeName: Take 001
       firstFrame: 70
-      lastFrame: 137
+      lastFrame: 189
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -492,8 +496,8 @@ ModelImporter:
     - serializedVersion: 16
       name: inRelax_2
       takeName: Take 001
-      firstFrame: 163
-      lastFrame: 235
+      firstFrame: 198
+      lastFrame: 270
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

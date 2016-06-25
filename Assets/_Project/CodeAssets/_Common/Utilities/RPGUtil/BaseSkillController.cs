@@ -20,16 +20,35 @@ public class BaseSkillController : MonoBehaviour
 
     public DelegateHelper.VoidDelegate BaseSkillClickDelegate;
 
+    public bool IsMultiClickCheck = true;
+    public float MultiClickDuration = 0.2f;
+    private float lastClickTime;
+
     public void OnClick()
     {
+        if (IsMultiClickCheck)
+        {
+            if (Time.realtimeSinceStartup - lastClickTime < MultiClickDuration)
+            {
+                return;
+            }
+
+            lastClickTime = Time.realtimeSinceStartup;
+        }
+
         if (BaseSkillClickDelegate != null)
         {
             BaseSkillClickDelegate();
         }
     }
 
-    public void TryStartSharedCD()
+    public void TryStartSharedCD(bool isShowCDLabel = false)
     {
+        if (SharedCD <= 0)
+        {
+            return;
+        }
+
         if (SharedCD > GetRemainingCDTime)
         {
             ActivedCD = SharedCD;
@@ -38,13 +57,21 @@ public class BaseSkillController : MonoBehaviour
             IsInCD = true;
             m_ShieldSprite.gameObject.SetActive(true);
 
-            //m_CDLabel.text = ActivedCD + "s";
-            //m_CDLabel.gameObject.SetActive(true);
+            if (isShowCDLabel)
+            {
+                m_CDLabel.text = ActivedCD + "s";
+                m_CDLabel.gameObject.SetActive(true);
+            }
         }
     }
 
-    public void TryStartSelfCD()
+    public void TryStartSelfCD(bool isShowCDLabel = true)
     {
+        if (SelfCD <= 0)
+        {
+            return;
+        }
+
         if (SelfCD > GetRemainingCDTime)
         {
             ActivedCD = SelfCD;
@@ -53,15 +80,47 @@ public class BaseSkillController : MonoBehaviour
             IsInCD = true;
             m_ShieldSprite.gameObject.SetActive(true);
 
-            m_CDLabel.text = ActivedCD + "s";
-            m_CDLabel.gameObject.SetActive(true);
+            if (isShowCDLabel)
+            {
+                m_CDLabel.text = ActivedCD + "s";
+                m_CDLabel.gameObject.SetActive(true);
+            }
         }
     }
+
+    public void TryStartAmountOfSelfCD(float amountTime, bool isShowCDLabel = true)
+    {
+        if (amountTime <= 0)
+        {
+            return;
+        }
+
+        if (amountTime > SelfCD)
+        {
+            Debug.LogError("Cannot show amount of self cd cause amount bigger than self cd.");
+        }
+
+        if (amountTime > GetRemainingCDTime)
+        {
+            ActivedCD = SelfCD;
+            StartCDTime = Time.realtimeSinceStartup - (SelfCD - amountTime);
+
+            IsInCD = true;
+            m_ShieldSprite.gameObject.SetActive(true);
+
+            if (isShowCDLabel)
+            {
+                m_CDLabel.text = amountTime + "s";
+                m_CDLabel.gameObject.SetActive(true);
+            }
+        }
+    }
+
 
     public void StopCD()
     {
         //if cd ends.
-        if (IsInCD && IsShowCdEndEffect)
+        if (IsInCD && IsShowCdEndEffect && ActivedCD > 2)
         {
             if (UI3DEffectTool.HaveAnyFx(gameObject))
             {
@@ -83,7 +142,7 @@ public class BaseSkillController : MonoBehaviour
     public void Update()
     {
         var elapseTime = Time.realtimeSinceStartup - StartCDTime;
-        if (elapseTime <= ActivedCD)
+        if (elapseTime < ActivedCD)
         {
             m_ShieldSprite.fillAmount = (1 - elapseTime / ActivedCD);
             m_CDLabel.text = (int)Math.Ceiling(ActivedCD - elapseTime) + "s";

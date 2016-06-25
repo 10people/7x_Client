@@ -152,6 +152,13 @@ public class DramaStoryControllor : MonoBehaviour
 		curStroyBoard.forcedEnd ();
 	}
 
+	public bool getCurBoardSkippable()
+	{
+		return curStroyBoard.skippable;
+
+//		return true;
+	}
+
 	public void storyBoardDone()
 	{
 		GameObject gc = GameObject.Find ("UISpirteAlphaBG");

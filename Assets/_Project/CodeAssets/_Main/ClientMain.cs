@@ -461,7 +461,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 	
 	#region Loading
 	
-	private int CONST_BASIC_ASSET_TO_LOAD_COUNT		= 5;
+	private int CONST_BASIC_ASSET_TO_LOAD_COUNT		= 6;
 	
 	private int m_basic_assets_loaded_count 		= 0;
 	
@@ -486,17 +486,19 @@ public class ClientMain : MonoBehaviour , SocketListener
 		// load basic assets
 		{
 			m_basic_assets_loaded_count = 0;
-			
+
+			Res2DTemplate.LoadTemplates( BasicAssetsLoadCallback );
+
+			LanguageTemplate.LoadTemplates( BasicAssetsLoadCallback );
+
 			MyColorData.LoadTemplates( BasicAssetsLoadCallback );
 			
 			ConfigTool.Instance.LoadConfigs( BasicAssetsLoadCallback );
 
 			PropertyTool.Instance.LoadConfigs( BasicAssetsLoadCallback );
-			
-			Res2DTemplate.LoadTemplates( BasicAssetsLoadCallback );
-			
-			LanguageTemplate.LoadTemplates( BasicAssetsLoadCallback );
-			
+
+
+
 			QualityTool.Instance.LoadQualities( BasicAssetsLoadCallback );
 			
 			
@@ -1028,6 +1030,8 @@ public class ClientMain : MonoBehaviour , SocketListener
 		// 161-170
 		{
 			GuideInfoTemplate.LoadTemplates( TemplateLoadedCallback );
+
+			TalentArrTemplate.LoadTemplates( TemplateLoadedCallback );
 		}
 		  
 		m_is_templates_loaded = true;
@@ -1115,11 +1119,11 @@ public class ClientMain : MonoBehaviour , SocketListener
 			case ProtoIndexes.S_TALENT_UP_CAN:
 			{
 				MainCityUI.SetRedAlert(500000, true);
-				break;
+				return true;
 			}
 			case ProtoIndexes.S_NOTICE_TALENT_CAN_NOT_UP:
 				MainCityUI.SetRedAlert(500000, false);
-				break;
+				return true;
 			case ProtoIndexes.S_GET_CUR_CHENG_HAO:
 				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				QiXiongSerializer t_qx = new QiXiongSerializer();
@@ -1174,10 +1178,10 @@ public class ClientMain : MonoBehaviour , SocketListener
 						}
 					}
 				}
-				break;
+				return true;
 			case ProtoIndexes.S_FUWEN_TIPS:
 				MainCityUI.SetRedAlert(500010, true);
-				break;
+				return true;
 			default: return false;
 			}
 		}

@@ -55,41 +55,49 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
     Dictionary<int, GameObject> _MainParentDic = new Dictionary<int, GameObject>();
     public void ResourceLoad_Main_Callback(ref WWW p_www, string p_path, Object p_object)
     {
-        GameObject t_gb = Instantiate(p_object) as GameObject;
-        t_gb.transform.localScale = Vector3.one * 1.5f;
-        t_gb.transform.Rotate(0, _PlayerRotation, 0);
-        PlayerInCity tempItem = t_gb.AddComponent<PlayerInCity>();
-        t_gb.AddComponent<ModelTouchShowOrMoveManagerment>();
-   
-        EffectTool.DisableCityOcclusion(t_gb);
+  
         for (int i = _PlayerInfo.Count - 1; i >= 0; i--)
         {
-            if (GetModelResPathByRoleId(_PlayerInfo[i]._RoleId) == _listMainInf[i]._Path && _listMainInf[i]._UID == _PlayerInfo[i]._UID)
+            if (GetModelResPathByRoleId(_PlayerInfo[i]._RoleId) == _listMainInf[i]._Path 
+                && _listMainInf[i]._UID == _PlayerInfo[i]._UID)
             {
-                t_gb.transform.localPosition = _PlayerInfo[i]._SeverPos;
-                _PlayerRotation = Random.Range(0.0f, 180.0f);
-                t_gb.name = "PlayerObject:" + _PlayerInfo[i]._MonarchId;
-                tempItem.m_playerID = _PlayerInfo[i]._UID;
-                m_playrDic.Add(_PlayerInfo[i]._UID, t_gb);
-                PlayerNameManager.m_PlayerNamesParent = m_NameParent;
-                Create_Name(_PlayerInfo[i]);
-                _MainParentDic.Add(_PlayerInfo[i]._UID, t_gb);
+                if (!m_playrDic.ContainsKey(_PlayerInfo[i]._UID))
+                {
+                    GameObject t_gb = Instantiate(p_object) as GameObject;
+                    t_gb.transform.localScale = Vector3.one * 1.5f;
+                    t_gb.transform.Rotate(0, _PlayerRotation, 0);
+                    PlayerInCity tempItem = t_gb.AddComponent<PlayerInCity>();
+                    t_gb.AddComponent<ModelTouchShowOrMoveManagerment>();
+                    EffectTool.DisableCityOcclusion(t_gb);
+                    t_gb.transform.localPosition = _PlayerInfo[i]._SeverPos;
+                    _PlayerRotation = Random.Range(0.0f, 180.0f);
+                    t_gb.name = "PlayerObject:" + _PlayerInfo[i]._MonarchId + ":" + _PlayerInfo[i]._Name;
+                    tempItem.m_playerID = _PlayerInfo[i]._UID;
+                    m_playrDic.Add(_PlayerInfo[i]._UID, t_gb);
+                    PlayerNameManager.m_PlayerNamesParent = m_NameParent;
+                    Create_Name(_PlayerInfo[i]);
+                    _MainParentDic.Add(_PlayerInfo[i]._UID, t_gb);
 
-                Global.ResourcesDotLoad(GetModelResPathByRoleId(_PlayerInfo[i]._RoleId), ResourceLoadCallback);
-                _listMainInf.Remove(_listMainInf[i]);
+                    Global.ResourcesDotLoad(GetModelResPathByRoleId(_PlayerInfo[i]._RoleId), ResourceLoadCallback);
+
+                }
+        
             }
         }
+   
     }
         float _PlayerRotation = 0;
     public void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
         for (int i = _PlayerInfo.Count - 1; i >= 0; i--)
         {
-            if (GetModelResPathByRoleId(_PlayerInfo[i]._RoleId) == p_path)
+            if (GetModelResPathByRoleId(_PlayerInfo[i]._RoleId) == p_path
+                && _MainParentDic.ContainsKey(_PlayerInfo[i]._UID))
             {
                 LoadingPlayer(_PlayerInfo[i], p_object, _MainParentDic[_PlayerInfo[i]._UID]);
                 _MainParentDic.Remove(_PlayerInfo[i]._UID);
                 _PlayerInfo.Remove(_PlayerInfo[i]);
+                _listMainInf.RemoveAt(i);
             }
         }
     }
@@ -143,6 +151,7 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
                 m_playrDic[_listSkeletonInf[i]._UID].GetComponent<PlayerShadowManagerment>().m_Skeleton = t_gb;
                 t_gb.transform.localScale = Vector3.one;
                 t_gb.transform.localPosition = Vector3.zero;
+                t_gb.transform.localRotation = Quaternion.Euler(Vector3.zero);
                 _listSkeletonInf.Remove(_listSkeletonInf[i]);
             }
         }
@@ -174,6 +183,7 @@ public class PlayerInCityManager : MonoBehaviour { //主城玩家管理类
     {
         if (tempPlayer != null)
         {
+          
             if (m_playrDic.ContainsKey(tempPlayer.uid))
             {
                 Destroy(m_playrDic[tempPlayer.uid]);

@@ -6,15 +6,10 @@ public class Showinstruction : MonoBehaviour {
 	[HideInInspector]public int star2;
 	[HideInInspector]public int Lvs;
 //	GameObject gbj;
-	void Start () {
-
+//	void Start () {
 //		gbj = GameObject.Find ("Map(Clone)");
-	}
-	
+//	}
 
-	void Update () {
-	
-	}
 	public void loadback(ref WWW p_www, string p_path,  UnityEngine.Object p_object)
 	{
 		star1 = MapData.mapinstance.LingJiangStar;

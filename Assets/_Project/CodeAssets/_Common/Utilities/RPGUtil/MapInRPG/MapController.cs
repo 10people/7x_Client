@@ -78,13 +78,13 @@ public class MapController : MonoBehaviour
 
     #region Been Attack Effect
 
-    public MapBeenAttackEffectController m_MapBeenAttackEffectController;
+    public MapEffectController m_MapEffectController;
 
     public void ShowBeenAttackEffect(int p_uid)
     {
         if (m_ItemGizmosDic.ContainsKey(p_uid))
         {
-            m_MapBeenAttackEffectController.BlinkEffect(p_uid, m_ItemGizmosDic[p_uid].localPosition);
+            m_MapEffectController.BlinkEffect(p_uid, m_ItemGizmosDic[p_uid].localPosition);
         }
     }
 

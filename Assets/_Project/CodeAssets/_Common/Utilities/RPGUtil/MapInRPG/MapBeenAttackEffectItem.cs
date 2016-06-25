@@ -16,16 +16,16 @@ public class MapBeenAttackEffectItem : MonoBehaviour
         {
             TimeHelper.Instance.RemoveFromTimeCalc("BeenAttackEffect" + m_BeenAttackUid);
         }
-        TimeHelper.Instance.AddFrameDelegateToTimeCalc("BeenAttackEffect" + m_BeenAttackUid, MapBeenAttackEffectController.EffectDuration, SetEffectState);
+        TimeHelper.Instance.AddFrameDelegateToTimeCalc("BeenAttackEffect" + m_BeenAttackUid, MapEffectController.EffectDuration, SetEffectState);
     }
 
     private void SetEffectState(float elapseTime)
     {
-        if (MapBeenAttackEffectController.EffectDuration - elapseTime <= 0)
+        if (MapEffectController.EffectDuration - elapseTime <= 0)
         {
-            if (MapBeenAttackEffectController.BeenAttackEffectUidList.Contains(m_BeenAttackUid))
+            if (MapEffectController.BeenAttackEffectUidList.Contains(m_BeenAttackUid))
             {
-                MapBeenAttackEffectController.BeenAttackEffectUidList.Remove(m_BeenAttackUid);
+                MapEffectController.BeenAttackEffectUidList.Remove(m_BeenAttackUid);
             }
 
             TimeHelper.Instance.RemoveFromTimeCalc("BeenAttackEffect" + m_BeenAttackUid);
@@ -35,7 +35,7 @@ public class MapBeenAttackEffectItem : MonoBehaviour
         }
         else
         {
-            var flag = elapseTime % MapBeenAttackEffectController.BeenAttackPeriodDuration / MapBeenAttackEffectController.BeenAttackPeriodDuration;
+            var flag = elapseTime % MapEffectController.BeenAttackPeriodDuration / MapEffectController.BeenAttackPeriodDuration;
             BeenAttackEffect2.transform.localScale = Vector3.one * (1 - flag);
         }
     }

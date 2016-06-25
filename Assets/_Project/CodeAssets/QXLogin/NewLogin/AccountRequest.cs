@@ -639,7 +639,7 @@ public class AccountRequest : MonoBehaviour {
 	public void ShowLastLoginBtn (UISprite btnSprite,UILabel btnLabel)
 	{
 		isNewPlayer = dengLuNode ["isLogined"].AsInt;//新老用户 1.登陆过 2.未登陆过
-		Debug.Log ("isNewPlayer:" + isNewPlayer);
+//		Debug.Log ("isNewPlayer:" + isNewPlayer);
 		btnSprite.color = Color.white;
 		btnLabel.color = Color.white;
 
@@ -683,22 +683,41 @@ public class AccountRequest : MonoBehaviour {
 
 	public static void CreateReConnectWindow()
     {
-//		Debug.Log( "AccountRequest.CreateReConnectWindow()" );
-
-        Global.CreateBox(LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_1),
-                        LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_2),
-                        "",
-                        null,
-                         LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_3),
-                        null,
-                        ReLoginClickCallback,
-		                 null,
-		                 null,
-		                 null,
-		                 false,
-		                 false,
-		                 false,
-						true );
+        //		Debug.Log( "AccountRequest.CreateReConnectWindow()" );
+        if (string.IsNullOrEmpty(LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_1)))
+        {
+            Global.CreateBox("网络异常",
+                         "对不起，您的网络异常，游戏连接中断",
+                          "",
+                          null,
+                          "确定",
+                          null,
+                          ReLoginClickCallback,
+                           null,
+                           null,
+                           null,
+                           false,
+                           false,
+                           false,
+                          true);
+        }
+        else
+        {
+            Global.CreateBox(LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_1),
+                            LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_2),
+                            "",
+                            null,
+                             LanguageTemplate.GetText(LanguageTemplate.Text.LOST_CONNECTION_3),
+                            null,
+                            ReLoginClickCallback,
+                             null,
+                             null,
+                             null,
+                             false,
+                             false,
+                             false,
+                            true);
+        }
     }
 
      public static void ReLoginClickCallback(int p_i)

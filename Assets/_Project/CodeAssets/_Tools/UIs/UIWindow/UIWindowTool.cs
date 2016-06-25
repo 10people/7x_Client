@@ -62,7 +62,7 @@ public class UIWindowTool : Singleton<UIWindowTool> {
 	#region Use
 
 	/// Get Current Top UI.
-	public static int GetCurrentUIId(){
+	public static int GetCurrentTopUIWindowId(){
 		if( m_window_state_list.Count == 0 ){
 			return UIWindowEventTrigger.DEFAULT_UI_WINDOW_ID;
 		}
@@ -205,6 +205,8 @@ public class UIWindowTool : Singleton<UIWindowTool> {
 			t_state = new WindowState( p_target, p_ui_id, p_ui_event );
 
 			m_window_state_list.Add( t_state );
+
+			TryNotifyOnTop();
 		}
 		else{
 			#if DEBUG_WINDOW_TOOL
@@ -214,6 +216,8 @@ public class UIWindowTool : Singleton<UIWindowTool> {
 			m_window_state_list.Remove( t_state );
 
 			m_window_state_list.Add( t_state );
+
+			TryNotifyOnTop();
 
 			TryNotifyOnTopAgain();
 		}
@@ -229,7 +233,7 @@ public class UIWindowTool : Singleton<UIWindowTool> {
 		WindowState t_state = GetWindowState( p_ui_id );
 
 		if( t_state == null ){
-			#if UNITY_EDITOR
+			#if UNITY_ANDROID && DEBUG_WINDOW_TOOL
 			Debug.LogError( "UI Not Exist: " + p_ui_id + " - " + p_ui_event );
 			#endif
 
@@ -240,8 +244,46 @@ public class UIWindowTool : Singleton<UIWindowTool> {
 			m_window_state_list.Remove( t_state );
 		}
 
+		{
+			TryNotifyOnTop();
+		}
+
 		if( t_top_state == t_state ){
 			TryNotifyOnTopAgain();
+		}
+	}
+
+	private static void TryNotifyOnTop(){
+		#if DEBUG_WINDOW_TOOL
+		Debug.Log( "TryNotifyOnTop()" );
+		#endif
+
+		WindowState t_state = GetTopOpenedWindow();
+
+		if( t_state == null ){
+			#if DEBUG_WINDOW_TOOL
+			Debug.Log( "Top Window doesn't exist." );
+			#endif
+
+			return;
+		}
+
+		{
+			t_state.NotifyOnTop( t_state.GetUIId() );
+		}
+
+		{
+			for( int i = 0; i < m_window_event_listeners_list.Count; i++ ){
+				UIWindowEventListener t_listener = m_window_event_listeners_list[ i ];
+
+				if( t_listener != null ){
+					#if DEBUG_WINDOW_TOOL
+					Debug.Log( "OnTopAgain( " + t_listener + " )" );
+					#endif
+
+					t_listener.OnTop( t_state.GetUIId() );
+				}
+			}
 		}
 	}
 
@@ -428,6 +470,22 @@ public class UIWindowTool : Singleton<UIWindowTool> {
 
 		public WindowEvent GetWindowEvent(){
 			return m_window_event;
+		}
+
+		public void NotifyOnTop( int p_ui_id ){
+			if( m_trigger == null ){
+				#if DEBUG_WINDOW_TOOL
+				Debug.Log( "Top Window's trigger doesn't exist." );
+				#endif
+
+				return;
+			}
+
+			#if DEBUG_WINDOW_TOOL
+			Debug.Log( "WindowState.Trigger.OnTop( " + p_ui_id + " )" );
+			#endif
+
+			m_trigger.OnTop( p_ui_id );
 		}
 
 		public void NotifyOnTopAgain( int p_ui_id ){

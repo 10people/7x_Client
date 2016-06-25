@@ -11,6 +11,9 @@ using Object = UnityEngine.Object;
 /// </summary>
 public class OldBookSelfController : MonoBehaviour
 {
+    public UISprite m_Effectsprite;
+    public UISprite m_RedAlertSprite;
+
     public OldBookWindow m_OldBookWindow;
 
     public List<GameObject> IconSampleParentList;
@@ -120,6 +123,14 @@ public class OldBookSelfController : MonoBehaviour
     public void SetBox()
     {
         BoxSprite.spriteName = NumList.Contains(0) ? DarkBoxStr : LightBoxStr;
+        //		UI3DEffectTool.ClearUIFx(BoxSprite.gameObject);
+        m_Effectsprite.gameObject.SetActive(false);
+
+        //			UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,BoxSprite.gameObject,EffectIdTemplate.GetPathByeffectId(100179));
+        m_Effectsprite.gameObject.SetActive(!NumList.Contains(0));
+        m_RedAlertSprite.gameObject.SetActive(!NumList.Contains(0));
+
+        // 特效在此添加100179  
     }
 
     private void ActiveTips(GameObject go)
@@ -141,7 +152,7 @@ public class OldBookSelfController : MonoBehaviour
         //can't combine cause not enough fragment.
         if (NumList.Contains(0))
         {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), OnCombineFailLoadCallBack);
+            Global.CreateFunctionIcon(1401);
             return;
         }
 
@@ -152,16 +163,14 @@ public class OldBookSelfController : MonoBehaviour
             return;
         }
 
+        m_OldBookWindow.m_CombineBagItemList = bagItemList;
+
         combineIndex = int.Parse(BagItemIdList[0].ToString().Substring(2, 1));
         ExCanJuanJiangLi temp = new ExCanJuanJiangLi
         {
             code = combineIndex
         };
         SocketHelper.SendQXMessage(temp, ProtoIndexes.C_EX_CAN_JUAN_JIANG_LI);
-
-        //Show combine succeed effect.
-        List<RewardData> tempList = bagItemList.Select(item => new RewardData(item.itemId, item.cnt)).ToList();
-        GeneralRewardManager.Instance().CreateReward(tempList);
     }
 
     /// <summary>
@@ -170,6 +179,7 @@ public class OldBookSelfController : MonoBehaviour
     /// <param name="www"></param>
     /// <param name="path"></param>
     /// <param name="loadedObject"></param>
+    [Obsolete]
     private void OnCombineFailLoadCallBack(ref WWW www, string path, Object loadedObject)
     {
         UIBox uibox = (Instantiate(loadedObject) as GameObject).GetComponent<UIBox>();

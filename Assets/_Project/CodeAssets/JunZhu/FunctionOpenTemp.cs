@@ -53,6 +53,8 @@ public class FunctionOpenTemp : XmlLoadManager
     public static List<int> m_EnableFuncIDList = new List<int>();
 
     public const int GoHomeID = 7;
+
+	public GameObject m_objPanel;
     public static void LoadTemplates(EventDelegate.Callback p_callback = null)
     {
         UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "FunctionOpen.xml"), CurLoad, UtilityTool.GetEventDelegateList(p_callback), false);
@@ -225,6 +227,7 @@ public class FunctionOpenTemp : XmlLoadManager
 //                    if (templates[i].type > 0)
                     {
                         Global.m_iOpenFunctionIndex = templates[i].m_iID;
+						Debug.Log(templates[i].m_iID);
                     }
                     if (!m_EnableFuncIDList.Contains(templates[i].m_iID))
                     {

@@ -51,7 +51,7 @@
 <Res2DTemplate UIID="49" path="_UIs/Pawnshop/Pawnshop" />
 <Res2DTemplate UIID="50" path="_UIs/MainCity/UITanBao/Prefabs/QXTanBao" />
 <Res2DTemplate UIID="51" path="_UIs/MainCity/UITask/Prefabs/TaskLayerAmend" />
-<Res2DTemplate UIID="52" path="_UIs/MiBao/Prefabs/NewSecret" />
+<Res2DTemplate UIID="52" path="_UIs/MiBao/Prefabs/AtiveJiangHunSKill" />
 <Res2DTemplate UIID="53" path="_UIs/MainCity/UIMonarch/Prefabs/JunZhuLayerAmend" />
 <Res2DTemplate UIID="54" path="_UIs/MainCity/UIShop/Prefabs/QXShop" />
 <Res2DTemplate UIID="55" path="_UIs/MainCity/UIIntensify/Prefabs/MaterialItem" />
@@ -191,7 +191,7 @@
 <Res2DTemplate UIID="189" path="_UIs/AllianceBattle/AllianceBattleHistory" />
 <Res2DTemplate UIID="190" path="_UIs/AllianceBattle/AllianceBattleRule" />
 <Res2DTemplate UIID="191" path="_UIs/AllianceBattle/AllianceBattleWindow" />
-<Res2DTemplate UIID="192" path="_UIs/FuWen/Prefabs/FuWenPage" />
+<Res2DTemplate UIID="192" path="_UIs/FuWen/Prefabs/FuWen" />
 <Res2DTemplate UIID="193" path="_UIs/MainCity/UITask/Prefabs/TaskLayerEffectLayer" />
 <Res2DTemplate UIID="194" path="_UIs/Tip/Tip" />
 <Res2DTemplate UIID="195" path="_UIs/WildNess/DamageRank" />
@@ -271,4 +271,11 @@
 <Res2DTemplate UIID="269" path="New/PlayerModel/Player_ChengzhongRole_Parent" />
 <Res2DTemplate UIID="270" path="_UIs/Recharge/Prefabs/RechargeRoot" />
 <Res2DTemplate UIID="271" path="_UIs/AllianceBattle/ABScene" />
+<Res2DTemplate UIID="272" path="_UIs/_Anim/Greem" />
+<Res2DTemplate UIID="273" path="_UIs/_Anim/Bule" />
+<Res2DTemplate UIID="274" path="_UIs/_Anim/Purple" />
+<Res2DTemplate UIID="275" path="_UIs/_Anim/Orange" />
+<Res2DTemplate UIID="276" path="_UIs/Alliance/Prefabs/CountrySelectItem" />
+ <Res2DTemplate UIID="277" path="_UIs/Loading/Loading_LianMeng" />
+
 </dataset>

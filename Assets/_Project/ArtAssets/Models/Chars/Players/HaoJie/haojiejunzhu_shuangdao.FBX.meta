@@ -2873,6 +2873,20 @@ ModelImporter:
         floatParameter: 0
         intParameter: 401
         messageOptions: 0
+      - time: .0618886538
+        functionName: PlaySound
+        data: 3250
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .781759739
+        functionName: PlaySound
+        data: 3251
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1

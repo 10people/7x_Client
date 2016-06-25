@@ -216,21 +216,21 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .134143531
+      - time: .420601875
         functionName: setWeaponTriggerTrue
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .291571975
+      - time: .575426161
         functionName: PlaySound
         data: 3300
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .299433231
+      - time: .585891545
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -422,21 +422,21 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .239619851
+      - time: .445349008
         functionName: setWeaponTriggerTrue
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .323887259
+      - time: .594720602
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .329405993
+      - time: .602843523
         functionName: PlaySound
         data: 3300
         objectReferenceParameter: {instanceID: 0}
@@ -628,21 +628,21 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .239619851
+      - time: .502640665
         functionName: setWeaponTriggerTrue
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .323887259
+      - time: .594720602
         functionName: setWeaponTriggerFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .329405993
+      - time: .602843523
         functionName: PlaySound
         data: 3300
         objectReferenceParameter: {instanceID: 0}
@@ -1040,6 +1040,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: .268288851
+        functionName: beatDownCallback
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .779999614
         functionName: checkDieInKnockdown
         data: 
@@ -1404,8 +1411,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Dead
       takeName: Take 001
-      firstFrame: 974
-      lastFrame: 1019
+      firstFrame: 1017
+      lastFrame: 1058
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1610,8 +1617,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Dialog
       takeName: Take 001
-      firstFrame: 606
-      lastFrame: 660
+      firstFrame: 649
+      lastFrame: 703
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1980,8 +1987,8 @@ ModelImporter:
     - serializedVersion: 16
       name: OnTheStage
       takeName: Take 001
-      firstFrame: 770
-      lastFrame: 890
+      firstFrame: 813
+      lastFrame: 933
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2165,8 +2172,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Run
       takeName: Take 001
-      firstFrame: 746
-      lastFrame: 766
+      firstFrame: 789
+      lastFrame: 809
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -4442,8 +4449,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Stand0
       takeName: Take 001
-      firstFrame: 563
-      lastFrame: 603
+      firstFrame: 606
+      lastFrame: 646
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -4826,8 +4833,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Walk
       takeName: Take 001
-      firstFrame: 710
-      lastFrame: 742
+      firstFrame: 753
+      lastFrame: 785
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -5025,8 +5032,8 @@ ModelImporter:
     - serializedVersion: 16
       name: zisha
       takeName: Take 001
-      firstFrame: 894
-      lastFrame: 964
+      firstFrame: 937
+      lastFrame: 1007
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -5210,8 +5217,8 @@ ModelImporter:
     - serializedVersion: 16
       name: shoushang
       takeName: Take 001
-      firstFrame: 663
-      lastFrame: 703
+      firstFrame: 706
+      lastFrame: 746
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -5620,7 +5627,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00343588996
         functionName: playAttackEffect
         data: 

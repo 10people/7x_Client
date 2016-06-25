@@ -19,6 +19,9 @@ public class UIMultiAnimEffect : MonoBehaviour {
 	// self
 	private Animator m_source_anim = null;
 
+	// target sprite
+	private UISprite m_sprite = null;
+
 
 
 	private int m_source_effect_id = -1;
@@ -35,10 +38,6 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 	void Start(){
 		Init();
-	}
-
-	void Update(){
-
 	}
 
 	void OnDestroy(){
@@ -171,6 +170,12 @@ public class UIMultiAnimEffect : MonoBehaviour {
 			m_fx_gb = null;
 		}
 
+		if( m_sprite != null ){
+			m_sprite.enabled = false;
+
+			m_sprite.enabled = true;
+		}
+
 		enabled = false;
 	}
 
@@ -212,6 +217,10 @@ public class UIMultiAnimEffect : MonoBehaviour {
 		#if DEBUG_EFFECT
 		Debug.Log( Time.frameCount + " AniEffect.Init()" );
 		#endif
+
+		{
+			m_sprite = GetComponent<UISprite>();
+		}
 
 		Global.ResourcesDotLoad( Res2DTemplate.GetResPath( m_source_effect_id ), LoadSourceEffectCallback );
 

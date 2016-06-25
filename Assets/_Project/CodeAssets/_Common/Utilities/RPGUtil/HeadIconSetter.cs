@@ -6,11 +6,13 @@ public class HeadIconSetter : MonoBehaviour
 {
     public UISprite PlayerHeadSprite;
     public UISprite HorseHeadSprite;
-    public UISprite HourseQualitySprite;
+    public UISprite HoldPointHeadSprite;
+    public UISprite HorseQualitySprite;
     public UISprite HpOrExpSprite;
     public UILabel LevelLabel;
     public UILabel NameLabel;
     public UIProgressBar Bar;
+    public UISprite BarSprite;
     public UISprite NationSprite;
     public UILabel AllianceLabel;
     public GameObject VipObject;
@@ -21,6 +23,7 @@ public class HeadIconSetter : MonoBehaviour
 
     private string playerIconPrefix = "PlayerIcon";
     private string horseIconPrefix = "horseIcon";
+    private string holdPointIconPrefix = "HoldIcon";
     private string horseQualityPrefix = "pinzhi";
 
     public static readonly Dictionary<int, int> horseIconToQualityTransferDic = new Dictionary<int, int>()
@@ -30,14 +33,34 @@ public class HeadIconSetter : MonoBehaviour
 
     private string hpLogo = "HP";
     private string expLogo = "exp";
+    private string hpBarSprite = "Blood";
+    private string expBarSprite = "Exp";
     private string nationLogoPrefix = "nation_";
 
     private string vipPrefix = "v";
-    private string levelPrefix = "Lv";
+    public string levelPrefix = "";
 
-    public void SetPlayer(int roleID, bool isHP, int level, string name, string allianceName, float totalValue, float currentValue, int nationID, int vipID, int battleValue, int horseLevel)
+    public void SetPlayer(int roleID, bool isHP, int level, string name, string allianceName, float totalValue, float currentValue, int nationID, int vipID, int battleValue, int horseLevel, string holdPointName = null)
     {
-        if (roleID >= 50000)
+        if (roleID >= 100000)
+        {
+            if (PlayerHeadSprite != null)
+            {
+                PlayerHeadSprite.gameObject.SetActive(false);
+            }
+
+            if (HorseHeadSprite != null)
+            {
+                HorseHeadSprite.gameObject.SetActive(false);
+            }
+
+            if (HoldPointHeadSprite != null && !string.IsNullOrEmpty(holdPointName))
+            {
+                HoldPointHeadSprite.gameObject.SetActive(true);
+                HoldPointHeadSprite.spriteName = holdPointIconPrefix + holdPointName;
+            }
+        }
+        else if (roleID >= 50000)
         {
             if (PlayerHeadSprite != null)
             {
@@ -50,17 +73,22 @@ public class HeadIconSetter : MonoBehaviour
                 HorseHeadSprite.spriteName = horseIconPrefix + horseLevel;
             }
 
-            if (HourseQualitySprite != null)
+            if (HorseQualitySprite != null)
             {
                 if (horseIconToQualityTransferDic.ContainsKey(horseLevel))
                 {
-                    HourseQualitySprite.gameObject.SetActive(true);
-                    HourseQualitySprite.spriteName = horseQualityPrefix + horseIconToQualityTransferDic[horseLevel];
+                    HorseQualitySprite.gameObject.SetActive(true);
+                    HorseQualitySprite.spriteName = horseQualityPrefix + horseIconToQualityTransferDic[horseLevel];
                 }
                 else
                 {
-                    HourseQualitySprite.gameObject.SetActive(false);
+                    HorseQualitySprite.gameObject.SetActive(false);
                 }
+            }
+
+            if (HoldPointHeadSprite != null)
+            {
+                HoldPointHeadSprite.gameObject.SetActive(false);
             }
         }
         else
@@ -75,6 +103,11 @@ public class HeadIconSetter : MonoBehaviour
             {
                 HorseHeadSprite.gameObject.SetActive(false);
             }
+
+            if (HoldPointHeadSprite != null)
+            {
+                HoldPointHeadSprite.gameObject.SetActive(false);
+            }
         }
 
         if (HpOrExpSprite != null)
@@ -82,12 +115,17 @@ public class HeadIconSetter : MonoBehaviour
             HpOrExpSprite.spriteName = isHP ? hpLogo : expLogo;
         }
 
+        if (BarSprite != null)
+        {
+            BarSprite.spriteName = isHP ? hpBarSprite : expBarSprite;
+        }
+
         if (NameLabel != null)
         {
             NameLabel.text = name;
         }
 
-        if (LevelLabel != null)
+        if (LevelLabel != null && level > 0)
         {
             LevelLabel.text = levelPrefix + level;
         }
@@ -149,7 +187,12 @@ public class HeadIconSetter : MonoBehaviour
 
             if (BarPrecentLabel != null)
             {
-                BarPrecentLabel.text = (CurrentValue / TotalValue * 100).ToString("n1") + "%";
+                BarPrecentLabel.text = ((CurrentValue / TotalValue * 100 > 0 && CurrentValue / TotalValue * 100 < 1) ? 1 : (CurrentValue / TotalValue * 100)).ToString("n0") + "%";
+            }
+
+            if (BarSprite != null)
+            {
+                BarSprite.fillAmount = CurrentValue / TotalValue;
             }
         }
     }

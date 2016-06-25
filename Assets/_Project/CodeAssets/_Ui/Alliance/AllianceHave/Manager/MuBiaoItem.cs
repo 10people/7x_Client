@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
+using ProtoBuf;
+using qxmobile.protobuf;
+using ProtoBuf.Meta;
 public class MuBiaoItem : MonoBehaviour {
 
 	public UILabel mName;
@@ -12,21 +16,22 @@ public class MuBiaoItem : MonoBehaviour {
 	public UILabel Menbers;
     bool IsReCret;
 	[HideInInspector]public int Id;
+	public delegate void  m_ReturnFun(GameObject mobg = null);
 
+	private m_ReturnFun mm_ReturnFun;
 	//public GameObject AllUIroot;
-	void Start () {
-	
-	}
 
-	void Update () {
-	
-	}
-	public void Init()
+	public void Init(m_ReturnFun mbackfun)
 	{
 		LMTargetTemplate mLMTargetTemplate = LMTargetTemplate.getLMTargetTemplate_by_Id (Id);
 
 		mDesc.text = mLMTargetTemplate.condition;
 		mName.text = mLMTargetTemplate.Name;
+
+		if(mbackfun != null)
+		{
+			mm_ReturnFun = mbackfun;
+		}
 	}
 	public void GoToNewUI()
 	{
@@ -72,6 +77,11 @@ public class MuBiaoItem : MonoBehaviour {
 			break;
 		default:
 			break;
+		}
+		if(mm_ReturnFun != null)
+		{
+			mm_ReturnFun();
+			mm_ReturnFun = null;
 		}
 	}
 	void CantEnterOpenLockLoadBack(ref WWW p_www, string p_path, Object p_object)

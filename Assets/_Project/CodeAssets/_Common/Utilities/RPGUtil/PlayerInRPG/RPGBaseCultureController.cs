@@ -12,21 +12,38 @@ public class RPGBaseCultureController : MonoBehaviour
 
     public WeaponSwitcher m_WeaponSwitcher;
 
-    public Animator m_Animator;
+    public AnimationHierarchyController m_AnimationController;
     public Renderer m_MainRenderer;
     public GameObject m_ShadowObject;
 
     public UIProgressBar ProgressBar;
     public UISprite ProgressBarForeSprite;
 
-    public bool IsSelf
+    public GameObject BloodSourceObject;
+
+    public virtual bool IsSelf
     {
         get { return JunZhuData.Instance().m_junzhuInfo.name == KingName; }
     }
 
-    public bool IsEnemy
+    public virtual bool IsEnemy
     {
         get { return !(((!string.IsNullOrEmpty(AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (AllianceName == AllianceData.Instance.g_UnionInfo.name))) || (KingName == JunZhuData.Instance().m_junzhuInfo.name)); }
+    }
+
+    public bool IsSpecial
+    {
+        get { return RoleID >= 50000; }
+    }
+
+    public bool IsCarriage
+    {
+        get { return RoleID >= 50000 && RoleID < 100000; }
+    }
+
+    public bool IsHold
+    {
+        get { return RoleID >= 100000; }
     }
 
     public string KingName;
@@ -162,7 +179,13 @@ public class RPGBaseCultureController : MonoBehaviour
     public int RoleID;
     public long JunzhuID;
 
-    public GameObject PlayerSelectedSign;
+    public GameObject FriendSelectEffect;
+    public GameObject EnemySelectEffect;
+
+    public GameObject SelectEffect
+    {
+        get { return IsEnemy ? EnemySelectEffect : FriendSelectEffect; }
+    }
 
     public void OnClick()
     {
@@ -176,12 +199,12 @@ public class RPGBaseCultureController : MonoBehaviour
 
     public void OnSelected()
     {
-        PlayerSelectedSign.SetActive(true);
+        SelectEffect.SetActive(true);
     }
 
     public void OnDeSelected()
     {
-        PlayerSelectedSign.SetActive(false);
+        SelectEffect.SetActive(false);
     }
 
     /// <summary>
@@ -215,10 +238,12 @@ public class RPGBaseCultureController : MonoBehaviour
         UpdateBloodBar(remaining);
     }
 
-    public void UpdateBloodBar(float remaining)
+    public virtual void UpdateBloodBar(float remaining)
     {
         RemainingBlood = remaining;
         ProgressBar.value = RemainingBlood / TotalBlood;
+
+        ProgressBarForeSprite.gameObject.SetActive(ProgressBar.value > 0);
     }
 
     private readonly Vector3 originalPos = new Vector3(0, 470, 0);
@@ -227,8 +252,13 @@ public class RPGBaseCultureController : MonoBehaviour
     private const float moveDuration = 0.5f;
     private const float stayDuration = 0.25f;
 
-    private void ShowBloodChange(long change, bool isSub, bool isSPDamage)
+    public void ShowBloodChange(long change, bool isSub, bool isSPDamage)
     {
+        if (change == 0)
+        {
+            return;
+        }
+
         string labelText = (isSub ? "-" : "+") + change;
 
         GlobalBloodLabelController.BloodLabelType type;
@@ -245,7 +275,14 @@ public class RPGBaseCultureController : MonoBehaviour
             type = GlobalBloodLabelController.BloodLabelType.EnemyAttack;
         }
 
-        GlobalBloodLabelController.Instance.ShowBloodLabel(gameObject, labelText, type, isSPDamage);
+        if (BloodSourceObject == null)
+        {
+            GlobalBloodLabelController.Instance.ShowBloodLabel(gameObject, labelText, type, isSPDamage);
+        }
+        else
+        {
+            GlobalBloodLabelController.Instance.ShowBloodLabel(BloodSourceObject, labelText, type, isSPDamage);
+        }
     }
 
     [Obsolete]
@@ -291,16 +328,16 @@ public class RPGBaseCultureController : MonoBehaviour
             Animator.StringToHash("Run"), Animator.StringToHash("BATC"), Animator.StringToHash("Stand")
         };
 
-    void Update()
+    public void Update()
     {
         if (Time.realtimeSinceStartup - checkTime > 0.5f)
         {
-            if (m_SinglePlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_Animator)))
+            if (m_SinglePlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_AnimationController)))
             {
                 m_SinglePlayerController.ActiveMove();
             }
 
-            if (m_OtherPlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_Animator)))
+            if (m_OtherPlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_AnimationController)))
             {
                 m_OtherPlayerController.ActiveMove();
             }
@@ -309,17 +346,21 @@ public class RPGBaseCultureController : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    public void LateUpdate()
     {
         if (TrackCamera == null) return;
 
         m_UIParentObject.transform.eulerAngles = new Vector3(TrackCamera.transform.eulerAngles.x, TrackCamera.transform.eulerAngles.y, 0);
     }
 
-    void Awake()
+    public void Awake()
     {
-        m_Animator = GetComponent<Animator>();
-        m_ShadowObject.SetActive(Quality_Shadow.BattleField_ShowSimpleShadow());
+        m_AnimationController = GetComponent<AnimationHierarchyController>() ?? gameObject.AddComponent<AnimationHierarchyController>();
+
+        if (m_ShadowObject != null)
+        {
+            m_ShadowObject.SetActive(Quality_Shadow.BattleField_ShowSimpleShadow());
+        }
 
         if (m_WeaponSwitcher == null)
         {
@@ -342,5 +383,8 @@ public class RPGBaseCultureController : MonoBehaviour
                 Debug.LogError("Logic main is null, r u use this in a new scene?");
             }
         }
+
+        FriendSelectEffect.transform.localPosition = new Vector3(0, 0.3f, 0);
+        EnemySelectEffect.transform.localPosition = new Vector3(0, 0.3f, 0);
     }
 }

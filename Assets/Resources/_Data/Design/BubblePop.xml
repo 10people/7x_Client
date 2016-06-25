@@ -42,8 +42,9 @@
 <BubblePop levelId="100805" nodeId="2" triggerFunc="3" tp1="1" tp2="10" tp3="0" textList="2020" triggerNum="2" soundID="0" cdTime="1.5" />
 <BubblePop levelId="100903" nodeId="2" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="1020" triggerNum="200000" soundID="0" cdTime="4" />
 <BubblePop levelId="100903" nodeId="2" triggerFunc="3" tp1="1" tp2="12" tp3="0" textList="15" triggerNum="3" soundID="0" cdTime="1.5" />
-<BubblePop levelId="100906" nodeId="2" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="1020" triggerNum="200000" soundID="0" cdTime="4" />
+<BubblePop levelId="100906" nodeId="2" triggerFunc="5" tp1="0" tp2="0" tp3="0" textList="1050" triggerNum="200000" soundID="0" cdTime="4" />
 <BubblePop levelId="100906" nodeId="2" triggerFunc="3" tp1="1" tp2="12" tp3="0" textList="15" triggerNum="3" soundID="0" cdTime="1.5" />
 <BubblePop levelId="101103" nodeId="2" triggerFunc="2" tp1="0" tp2="0" tp3="0" textList="1050" triggerNum="1" soundID="800230" cdTime="1.5" />
 <BubblePop levelId="101106" nodeId="2" triggerFunc="2" tp1="0" tp2="0" tp3="0" textList="1050" triggerNum="1" soundID="800230" cdTime="1.5" />
+<BubblePop levelId="101309" nodeId="310" triggerFunc="2" tp1="0" tp2="0" tp3="0" textList="2070" triggerNum="1" soundID="0" cdTime="1.5" />
 </dataset>

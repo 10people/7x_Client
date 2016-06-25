@@ -16,21 +16,6 @@ public class Debug_Bundle_Load_With_Dependence : MonoBehaviour {
 
 	private static JSONNode m_bundle_node;
 
-	void Awake(){
-
-	}
-
-	// Use this for initialization
-	void Start () {
-	}
-	
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-
 	#region WWW Loader
 	
 	IEnumerator DownloadAndCache ( string p_url, int p_version, string p_bundle_dict_key ){

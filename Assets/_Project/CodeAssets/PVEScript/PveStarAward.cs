@@ -22,14 +22,6 @@ public class PveStarAward : MonoBehaviour {
 	[HideInInspector]
 	public GameObject IconSamplePrefab;
 
-	void Start () {
-	
-	}
-
-	void Update () {
-	
-
-	}
 	public void Init()
 	{
 		if (IconSamplePrefab == null)
@@ -57,8 +49,18 @@ public class PveStarAward : MonoBehaviour {
 		{
 			IconSamplePrefab = p_object as GameObject;
 		}
+		int j = 0;
+		int Number = 0;
 		if(CityGlobalData.PT_Or_CQ)
 		{
+
+			for(int i = 0 ; i < mLevel.starInfo.Count; i ++)
+			{
+				if(mLevel.starInfo[i].finished && !mLevel.starInfo[i].getRewardState)
+				{
+					Number ++;
+				}
+			}
 			for(int i = 0 ; i < mLevel.starInfo.Count; i ++)
 			{
 				if(mLevel.starInfo[i].finished && !mLevel.starInfo[i].getRewardState)
@@ -92,12 +94,21 @@ public class PveStarAward : MonoBehaviour {
 					
 					iconSampleManager.SetIconByID(mItemTemp.id, Awardlist[2], 3);
 					iconSampleManager.SetIconPopText(int.Parse(Awardlist[1]), popTitle, popDesc, 1);
-					iconSampleObject.transform.localScale = new Vector3(0.5f,0.5f,1);
+					iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
+					iconSampleObject.transform.localPosition = new Vector3(j * 80 - (Number - 1) * 40, 0, 0);
+					j++;
 				}
 				
 			}
 		}
 		else{
+			for(int i = 0 ; i < mLevel.cqStarInfo.Count; i ++)
+			{
+				if(mLevel.cqStarInfo[i].finished && !mLevel.cqStarInfo[i].getRewardState)
+				{
+					Number++;
+				}
+			}
 			for(int i = 0 ; i < mLevel.cqStarInfo.Count; i ++)
 			{
 				if(mLevel.cqStarInfo[i].finished && !mLevel.cqStarInfo[i].getRewardState)
@@ -131,13 +142,15 @@ public class PveStarAward : MonoBehaviour {
 					
 					iconSampleManager.SetIconByID(mItemTemp.id, Awardlist[2], 3);
 					iconSampleManager.SetIconPopText(int.Parse(Awardlist[1]), popTitle, popDesc, 1);
-					iconSampleObject.transform.localScale = new Vector3(0.5f,0.5f,1);
+					iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
+					iconSampleObject.transform.localPosition = new Vector3(j * 80 - (Number - 1) * 40, 0, 0);
+					j++;
 				}
 				
 			}
 		}
 
-		UIgrid.GetComponent<UIGrid> ().repositionNow = true;
+		//UIgrid.GetComponent<UIGrid> ().repositionNow = true;
 	}
 	public void SendLingQu()
 	{

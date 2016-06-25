@@ -278,6 +278,8 @@ public class QualityTool : Singleton<QualityTool>{
 		ConfigTool.LoadValues( m_quality_value_dict, CONST_SCENE_FX_LEVEL, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_SCENE_FX_LEVEL ) );
 
 		ConfigTool.LoadValues( m_quality_value_dict, CONST_MEM_LEVEL, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_MEM_LEVEL ) );
+
+		ConfigTool.LoadValues( m_quality_value_dict, CONST_IE_STATUS, ConfigTool.LoadStringValue( m_config_xml_dict, CONST_IE_STATUS ) );
 	}
 
 	private static void LogQualityItem( string p_quality_item ){
@@ -308,6 +310,8 @@ public class QualityTool : Singleton<QualityTool>{
 		LogQualityItem( CONST_SCENE_FX_LEVEL );
 
 		LogQualityItem( CONST_MEM_LEVEL );
+
+		LogQualityItem( CONST_IE_STATUS );
 	}
 
 	private void ExecQualityItems(){
@@ -335,11 +339,15 @@ public class QualityTool : Singleton<QualityTool>{
 		}
 
 		{
-			Quality_SceneFx.LoadSceneFxLevel( GetString( QualityTool.CONST_SCENE_FX_LEVEL ) );
+			Quality_SceneFx.LoadSceneFxLevel( GetString( CONST_SCENE_FX_LEVEL ) );
 		}
 
 		{
-			Quality_MemLevel.LoadMemLevel( GetString( QualityTool.CONST_MEM_LEVEL ) );
+			Quality_MemLevel.LoadMemLevel( GetString( CONST_MEM_LEVEL ) );
+		}
+
+		{
+			Quality_IEStatus.LoadIEStatusLevel( GetString( CONST_IE_STATUS ) );
 		}
 	}
 
@@ -465,6 +473,8 @@ public class QualityTool : Singleton<QualityTool>{
 
 		m_config_xml_dict[ CONST_MEM_LEVEL ] = Quality_MemLevel.CONST_MEM_LEVEL_LOW;
 
+		m_config_xml_dict[ CONST_IE_STATUS ] = Quality_IEStatus.CONST_IE_STATUS_NONE;
+
 //		LogQualityItem( CONST_MEM_LEVEL );
 	}
 
@@ -493,6 +503,8 @@ public class QualityTool : Singleton<QualityTool>{
 		m_config_xml_dict[ CONST_SCENE_FX_LEVEL ] = Quality_SceneFx.CONST_SCENE_FX_LEVEL_HIGH;
 
 		m_config_xml_dict[ CONST_MEM_LEVEL ] = Quality_MemLevel.CONST_MEM_LEVEL_HIGH;
+
+		m_config_xml_dict[ CONST_IE_STATUS ] = Quality_IEStatus.CONST_IE_STATUS_HIGH;
 	}
 
 	#endregion
@@ -618,6 +630,8 @@ public class QualityTool : Singleton<QualityTool>{
 
 	public const string CONST_MEM_LEVEL					= "MemLevel";
 
+	public const string CONST_IE_STATUS					= "IEStatus";
+
 	#endregion
 
 
@@ -631,4 +645,7 @@ public class QualityTool : Singleton<QualityTool>{
 	public const string CONST_QUALITY_SECTION_HIGH		= "High";
 	
 	#endregion
+
+
+
 }

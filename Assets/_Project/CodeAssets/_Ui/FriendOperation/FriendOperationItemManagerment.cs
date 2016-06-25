@@ -13,8 +13,10 @@ public class FriendOperationItemManagerment : MonoBehaviour
     public GameObject m_AllianceInfo;
     public List<UISprite> m_listSprite;
     public GameObject m_GaoLiangKuang;
+
+    public GameObject m_ObjV;
     public GameObject m_BackGround;
- 
+    public UISprite m_SpriteVip;
     private GameObject _YJQHboxObj = null;
     public delegate void OnClick_TouchEmail(long id);
     OnClick_TouchEmail CallBackEmail;
@@ -92,25 +94,27 @@ public class FriendOperationItemManagerment : MonoBehaviour
         //CallBackDelete = dele;
         m_listLabel[0].text = "Lv " + info.level.ToString() + "  " + info.name; 
         m_listSprite[0].spriteName = "PlayerIcon" + info.iconId.ToString();
-        if (info.level > 0)
+ 
+        if (info.vipLv > 0)
         {
-            m_listLabel[3].text = "V" + info.vipLv.ToString();
+            m_ObjV.SetActive(true);
+            m_SpriteVip.spriteName = "v" + info.vipLv.ToString();
         }
         else
         {
-            m_listLabel[3].text = "V0";
+            m_ObjV.SetActive(false);
         }
 
         m_listLabel[2].text = info.zhanLi.ToString();
 
         if (string.IsNullOrEmpty(info.lianMengName))
         {
-            m_listLabel[1].text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT);
+            m_listLabel[1].text = MyColorData.getColorString(12, "<" + LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT) + ">");
             m_AllianceInfo.SetActive(true);
         }
         else
         {
-            m_listLabel[1].text = "<"+ info.lianMengName+ ">";
+            m_listLabel[1].text = MyColorData.getColorString(12, "<" +info.lianMengName+ ">");
             m_AllianceInfo.SetActive(true);
         }
         m_listSprite[2].spriteName = "junxian" + info.junXian;

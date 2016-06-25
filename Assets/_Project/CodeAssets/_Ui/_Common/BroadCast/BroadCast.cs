@@ -1,6 +1,4 @@
-﻿//#define UNIT_TEST
-
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,22 +37,60 @@ public class BroadCast : MonoBehaviour, SocketListener
     private const float StartStayDuration = 1;
     private const float CompleteStayDuration = 3;
 
+
+	public List<string> m_storedDataListCart = new List<string>();
+	public List<string> m_storedDataListGM = new List<string>();
+	public List<string> m_storedDataListSYS = new List<string>();
+
     public List<string> m_storedDataList = new List<string>();
 
     public bool IsInBroadCast;
 
+	private const float CompleteyDuration = 1;
+
     private void StartBroadCast()
     {
-        if (!IsInBroadCast && m_storedDataList.Count != 0)
-        {
-            IsInBroadCast = true;
-            var temp = m_storedDataList[0];
-            m_storedDataList.Remove(temp);
-
-            SetInfo(temp);
-
-            ScrollInfo();
-        }
+//        if (!IsInBroadCast && m_storedDataList.Count != 0)
+//        {
+//            IsInBroadCast = true;
+//            var temp = m_storedDataList[0];
+//            m_storedDataList.Remove(temp);
+//
+//            SetInfo(temp);
+//
+//            ScrollInfo();
+//        }
+		Debug.Log ("IsInBroadCast = "+IsInBroadCast);
+		if (!IsInBroadCast && m_storedDataListGM.Count != 0)
+		{
+			IsInBroadCast = true;
+			var temp = m_storedDataListGM[0];
+			m_storedDataListGM.Remove(temp);
+			
+			SetInfo(temp);
+			
+			ScrollInfo();
+		}
+		else if (!IsInBroadCast && m_storedDataListCart.Count != 0)
+		{
+			IsInBroadCast = true;
+			var temp = m_storedDataListCart[0];
+			m_storedDataListCart.Remove(temp);
+			
+			SetInfo(temp);
+			
+			ScrollInfo();
+		}
+		else if (!IsInBroadCast && m_storedDataListSYS.Count != 0)
+		{
+			IsInBroadCast = true;
+			var temp = m_storedDataListSYS[0];
+			m_storedDataListSYS.Remove(temp);
+			
+			SetInfo(temp);
+			
+			ScrollInfo();
+		}
     }
 
     private void SetInfo(string info)
@@ -118,39 +154,118 @@ public class BroadCast : MonoBehaviour, SocketListener
         {
             TimeHelper.Instance.RemoveFromTimeCalc("BroadCastClear");
         }
-        TimeHelper.Instance.AddOneDelegateToTimeCalc("BroadCastClear", CompleteStayDuration, GotoNextOrClear);
+		StopCoroutine ("isCloseBroadCast");
+		StartCoroutine ("isCloseBroadCast");
+		//TimeHelper.Instance.AddOneDelegateToTimeCalc("BroadCastClear", CompleteStayDuration, GotoNextOrClear);
     }
-
+	IEnumerator isCloseBroadCast()
+	{
+		yield return new WaitForSeconds (CompleteyDuration);
+		m_Sort = -1;
+		GotoNextOrClear ();
+	}
     private void GotoNextOrClear()
     {
-        if (m_storedDataList.Count != 0)
-        {
-            //Continue to next.
-            var temp = m_storedDataList[0];
-            m_storedDataList.Remove(temp);
-
-            SetInfo(temp);
-
-            ScrollInfo();
-        }
+		Debug.Log ("GotoNextOrClear()");
+//        if (m_storedDataList.Count != 0)
+//        {
+//            //Continue to next.
+//            var temp = m_storedDataList[0];
+//            m_storedDataList.Remove(temp);
+//
+//            SetInfo(temp);
+//
+//            ScrollInfo();
+//        }
+		if (m_storedDataListGM.Count != 0)
+		{
+			IsInBroadCast = true;
+			var temp = m_storedDataListGM[0];
+			m_storedDataListGM.Remove(temp);
+			
+			SetInfo(temp);
+			
+			ScrollInfo();
+		}
+		else if (m_storedDataListCart.Count != 0)
+		{
+			IsInBroadCast = true;
+			var temp = m_storedDataListCart[0];
+			m_storedDataListCart.Remove(temp);
+			
+			SetInfo(temp);
+			
+			ScrollInfo();
+		}
+		else if (m_storedDataListSYS.Count != 0)
+		{
+			IsInBroadCast = true;
+			var temp = m_storedDataListSYS[0];
+			m_storedDataListSYS.Remove(temp);
+			
+			SetInfo(temp);
+			
+			ScrollInfo();
+		}
         else
         {
             Clear();
         }
     }
-
-    public void ShowBroadCast(string info, bool isFirst = false)
+	private int m_Sort;
+    public void ShowBroadCast(string info, bool  isFirst = false, int sorting = -1)
     {
-        if (isFirst)
-        {
-            Stop();
+		Debug.Log ("sorting = "+sorting);
+		if (isFirst)
+		{
+			m_storedDataListCart.Add (info);
+		} 
+		else 
+		{
+			if(sorting == 2000)
+			{
+				m_storedDataListGM.Add(info);
+			}
+			else if(sorting == 0)
+			{
+				m_storedDataListSYS .Add(info);
+			}
+		}
+		  
 
-            m_storedDataList.Insert(0, info);
-        }
-        else
-        {
-            m_storedDataList.Add(info);
-        }
+//
+//        if (isFirst)
+//        {
+//            //Stop();
+//			if(m_Sort == 2000)
+//			{
+//				m_storedDataList.Insert(1, info);
+//			}
+//            else
+//			{
+//				if(m_Sort == 0)
+//				{
+//					m_storedDataList.Insert(0, info);
+//				}
+//				else
+//				{
+//					m_storedDataList.Add(info);
+//				}
+//			}
+//        }
+//        else
+//        {
+//			if(sorting == 2000)
+//			{
+//				m_storedDataList.Insert(0, info);
+//			}
+//			else 
+//			{
+//				m_storedDataList.Add(info);
+//			}
+//           
+//        }
+//		m_Sort = sorting;
         StartBroadCast();
     }
 
@@ -173,7 +288,7 @@ public class BroadCast : MonoBehaviour, SocketListener
                         ErrorMessage tempResp = new ErrorMessage();
                         t_qx.Deserialize(t_tream, tempResp, tempResp.GetType());
 
-                        ShowBroadCast(tempResp.errorDesc);
+				        ShowBroadCast(tempResp.errorDesc,false,tempResp.errorCode);
 
                         //Add to chat broadcast channel.
                         //                        if (ChatWindow.s_ChatWindow != null)
@@ -205,6 +320,9 @@ public class BroadCast : MonoBehaviour, SocketListener
     {
         Stop();
         m_storedDataList.Clear();
+		m_storedDataListCart.Clear();
+		m_storedDataListGM.Clear();
+		m_storedDataListSYS.Clear();
     }
 
     public void Stop()
@@ -241,14 +359,4 @@ public class BroadCast : MonoBehaviour, SocketListener
     {
         SocketTool.UnRegisterSocketListener(this);
     }
-
-#if UNIT_TEST
-    void OnGUI()
-    {
-        if (GUILayout.Button("Run insert broadcast"))
-        {
-            ShowBroadCast("insertinsertinsertinsertinsertinsertinsert", true);
-        }
-    }
-#endif
 }

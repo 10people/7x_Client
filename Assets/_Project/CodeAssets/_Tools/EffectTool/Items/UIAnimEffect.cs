@@ -21,10 +21,6 @@ public class UIAnimEffect : MonoBehaviour {
 		Init();
 	}
 
-	void Update(){
-
-	}
-
 	void OnDestroy(){
 		if( m_source_anim != null ){
 			#if DEBUG_EFFECT

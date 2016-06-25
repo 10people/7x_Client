@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-<LianMeng id="1001" lv="1" exp="5000" renshuMax="50" fumeng="5" statueType="0" mobaiAward="100" buffNum="15" jiansheMax="100225" targetAward="0:900001:10000" lvlupTime="24" cost="1800" />
-<LianMeng id="1002" lv="2" exp="20000" renshuMax="60" fumeng="5" statueType="0" mobaiAward="100" buffNum="20" jiansheMax="130300" targetAward="0:900001:20000" lvlupTime="48" cost="4800" />
-<LianMeng id="1003" lv="3" exp="60000" renshuMax="70" fumeng="5" statueType="0" mobaiAward="100" buffNum="25" jiansheMax="160375" targetAward="0:900001:30000" lvlupTime="96" cost="12000" />
-<LianMeng id="1004" lv="4" exp="108000" renshuMax="80" fumeng="5" statueType="0" mobaiAward="100" buffNum="30" jiansheMax="190450" targetAward="0:900001:40000" lvlupTime="144" cost="21600" />
-<LianMeng id="1005" lv="5" exp="250000" renshuMax="90" fumeng="5" statueType="0" mobaiAward="100" buffNum="35" jiansheMax="220525" targetAward="0:900001:50000" lvlupTime="288" cost="50400" />
-<LianMeng id="1006" lv="6" exp="600000" renshuMax="100" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" jiansheMax="250600" targetAward="0:900001:60000" lvlupTime="600" cost="120000" />
-<LianMeng id="1007" lv="7" exp="1350000" renshuMax="110" fumeng="5" statueType="0" mobaiAward="100" buffNum="45" jiansheMax="280675" targetAward="0:900001:70000" lvlupTime="1200" cost="270000" />
-<LianMeng id="1008" lv="8" exp="2400000" renshuMax="120" fumeng="5" statueType="0" mobaiAward="100" buffNum="50" jiansheMax="310750" targetAward="0:900001:80000" lvlupTime="1920" cost="480000" />
-<LianMeng id="1009" lv="9" exp="3960000" renshuMax="130" fumeng="5" statueType="0" mobaiAward="100" buffNum="55" jiansheMax="340825" targetAward="0:900001:90000" lvlupTime="2880" cost="792000" />
-<LianMeng id="1010" lv="10" exp="3960000" renshuMax="140" fumeng="5" statueType="0" mobaiAward="100" buffNum="60" jiansheMax="370900" targetAward="0:900001:100000" lvlupTime="0" cost="0" />
+<LianMeng id="1001" lv="1" exp="5000" renshuMax="50" fumeng="5" statueType="0" mobaiAward="100" buffNum="15" jiansheMax="95725" targetAward="0:900001:10000" lvlupTime="20" cost="3200" speedUpTimes="2" />
+<LianMeng id="1002" lv="2" exp="20000" renshuMax="60" fumeng="5" statueType="0" mobaiAward="100" buffNum="20" jiansheMax="124300" targetAward="0:900001:20000" lvlupTime="30" cost="6200" speedUpTimes="4" />
+<LianMeng id="1003" lv="3" exp="60000" renshuMax="70" fumeng="5" statueType="0" mobaiAward="100" buffNum="25" jiansheMax="152875" targetAward="0:900001:30000" lvlupTime="94" cost="24000" speedUpTimes="10" />
+<LianMeng id="1004" lv="4" exp="108000" renshuMax="80" fumeng="5" statueType="0" mobaiAward="100" buffNum="30" jiansheMax="181450" targetAward="0:900001:40000" lvlupTime="144" cost="43500" speedUpTimes="15" />
+<LianMeng id="1005" lv="5" exp="250000" renshuMax="90" fumeng="5" statueType="0" mobaiAward="100" buffNum="35" jiansheMax="210025" targetAward="0:900001:50000" lvlupTime="312" cost="109200" speedUpTimes="25" />
+<LianMeng id="1006" lv="6" exp="600000" renshuMax="100" fumeng="5" statueType="0" mobaiAward="100" buffNum="40" jiansheMax="238600" targetAward="0:900001:60000" lvlupTime="600" cost="238600" speedUpTimes="35" />
+<LianMeng id="1007" lv="7" exp="1350000" renshuMax="110" fumeng="5" statueType="0" mobaiAward="100" buffNum="45" jiansheMax="267175" targetAward="0:900001:70000" lvlupTime="1200" cost="534400" speedUpTimes="50" />
+<LianMeng id="1008" lv="8" exp="2400000" renshuMax="120" fumeng="5" statueType="0" mobaiAward="100" buffNum="50" jiansheMax="295750" targetAward="0:900001:80000" lvlupTime="1920" cost="946400" speedUpTimes="70" />
+<LianMeng id="1009" lv="9" exp="3960000" renshuMax="130" fumeng="5" statueType="0" mobaiAward="100" buffNum="55" jiansheMax="324325" targetAward="0:900001:90000" lvlupTime="2880" cost="1556800" speedUpTimes="90" />
+<LianMeng id="1010" lv="10" exp="3960000" renshuMax="140" fumeng="5" statueType="0" mobaiAward="100" buffNum="60" jiansheMax="352900" targetAward="0:900001:100000" lvlupTime="0" cost="0" speedUpTimes="0" />
 </dataset>

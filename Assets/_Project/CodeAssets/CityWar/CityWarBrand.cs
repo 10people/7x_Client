@@ -26,6 +26,8 @@ public class CityWarBrand : GeneralInstance<CityWarBrand> {
 	private bool m_canTap = false;
 	private bool m_isRefreshToTop = true;
 
+	private bool m_isCanRequest = true;//可否请求数据
+
 	new void Awake ()
 	{
 		base.Awake ();
@@ -46,65 +48,111 @@ public class CityWarBrand : GeneralInstance<CityWarBrand> {
 		for (int i = 0;i < m_brandList.Count;i ++)
 		{
 			m_brandList[i].transform.localPosition = new Vector3(0,-49 * i,0);
-			m_sc.UpdateScrollbars (true);
-			m_sb.value = m_isRefreshToTop ? 0 : 1;
 			CWBrandItem cwBrand = m_brandList[i].GetComponent<CWBrandItem> ();
 			cwBrand.InItBrandItem (tempResp.grandList[i]);
 		}
 
-		m_des.text = m_brandList.Count > 0 ? "" : ("战报记录为空");
+		//Reset scroll view.
+		m_sc.UpdateScrollbars(true);
+		m_sb.value = m_isRefreshToTop ? 0.0f : 1.0f;
+		m_sb.ForceUpdate();
+		m_sc.UpdatePosition();
 
-		m_sc.enabled = m_brandList.Count < 8 ? false : true;
-		m_sb.gameObject.SetActive (m_brandList.Count < 8 ? false : true);
+		m_des.text = m_brandList.Count > 0 ? "" : "战报记录为空";
 
-		m_rules.text = QXComData.yellow + "历史战报最多保存" + 50 + "条[-]";
+		m_brandObj.transform.parent.GetComponent<ItemTopCol> ().enabled = m_brandList.Count < 7 ? true : false;
+
+		m_sc.enabled = m_brandList.Count < 7 ? false : true;
+		m_sb.gameObject.SetActive (m_brandList.Count < 7 ? false : true);
+
+		m_rules.text = m_brandList.Count == 20 ? QXComData.yellow + LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_9) + "[-]" : "";
 	}
 
 	void Update ()
 	{
 		float temp = m_sc.GetSingleScrollViewValue();
-		if (temp != -100) 
+		
+		if (temp == -100) return;
+		
+		//Reset can slide request.
+		if (temp > -0.1f && temp < 1.1f)
 		{
-			if (CityWarData.Instance.M_BrandPage == 1)
+			m_isCanRequest = true;
+		}
+		
+		if (!m_isCanRequest) return;
+
+		if (CityWarData.Instance.M_BrandPage == 1)
+		{
+			if (m_brandList.Count >= 20)
 			{
-				if (m_brandList.Count >= 20)
+				if (temp > 1.25f)
 				{
-					if (temp > 1.25f && m_canTap)
-					{
-						m_isRefreshToTop = true;
-						m_canTap = false;
-						CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage + 1);
-					}
-				}
-			}
-			else if (CityWarData.Instance.M_BrandPage > 1)
-			{
-				if (m_brandList.Count >= 20)
-				{
-					if (temp > 1.25f && m_canTap)
-					{
-						m_isRefreshToTop = true;
-						m_canTap = false;
-						CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage + 1);
-					}
-					else if (temp < -0.25f && m_canTap)
-					{
-						m_isRefreshToTop = false;
-						m_canTap = false;
-						CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage - 1);
-					}
-				}
-				else
-				{
-					if ((m_brandList.Count < 5 ? temp > 1.0f : temp < -0.25f) && m_canTap)
-					{
-						m_isRefreshToTop = false;
-						m_canTap = false;
-						CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage - 1);
-					}
+					m_isRefreshToTop = true;
+					
+					CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage + 1);
+					
+					m_isCanRequest = false;
+					return;
 				}
 			}
 		}
+		else if (CityWarData.Instance.M_BrandPage > 1)
+		{
+			if (m_brandList.Count >= 20)
+			{
+				if (temp > 1.25f)
+				{
+					m_isRefreshToTop = true;
+					
+					CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage + 1);
+					
+					m_isCanRequest = false;
+					return;
+				}
+				
+				if (temp < -0.25f)
+				{
+					m_isRefreshToTop = false;
+					
+					CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage - 1);
+					
+					m_isCanRequest = false;
+					return;
+				}
+			}
+			else
+			{
+				if (temp < -0.25f)
+				{
+					m_isRefreshToTop = false;
+					
+					CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage - 1);
+					
+					m_isCanRequest = false;
+					return;
+				}
+			}
+		}
+
+//		if (temp > 1.25f)
+//		{
+//			m_isRefreshToTop = true;
+//
+//			CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage + 1);
+//
+//			m_isCanRequest = false;
+//			return;
+//		}
+//		if (temp < -0.25f)
+//		{
+//			m_isRefreshToTop = false;
+//			
+//			CityWarData.Instance.BrandReq (CityWarData.Instance.M_BrandPage - 1);
+//
+//			m_isCanRequest = false;
+//			return;
+//		}
 	}
 
 	public override void MYClick (GameObject ui)

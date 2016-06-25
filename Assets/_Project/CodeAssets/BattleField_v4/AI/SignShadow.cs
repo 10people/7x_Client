@@ -308,11 +308,6 @@ public class SignShadow : MonoBehaviour
 	{
 		enterFight = true;
 
-		StartCoroutine (enterBattleAction());
-	}
-
-	IEnumerator enterBattleAction()
-	{
 		signRing_B.SetActive (false);
 		
 		signRing_R.SetActive (false);
@@ -321,7 +316,12 @@ public class SignShadow : MonoBehaviour
 		
 		signRing_R_B.SetActive (false);
 
-		yield return new WaitForSeconds(.5f);
+		ScheduleHelper.RegisterSchedule (enterBattleAction, .5f);
+	}
+
+	private void enterBattleAction()
+	{
+		ScheduleHelper.UnRegisterSchedule (enterBattleAction);
 
 		if(enterFight == true)
 		{
@@ -339,11 +339,6 @@ public class SignShadow : MonoBehaviour
 	{
 		enterFight = false;
 
-		StartCoroutine (exitBattleAction());
-	}
-
-	IEnumerator exitBattleAction()
-	{
 		signRing_B.SetActive (false);
 		
 		signRing_R.SetActive (false);
@@ -351,8 +346,13 @@ public class SignShadow : MonoBehaviour
 		signRing_B_R.SetActive (false);
 		
 		signRing_R_B.SetActive (true);
-		
-		yield return new WaitForSeconds(.5f);
+
+		ScheduleHelper.RegisterSchedule (exitBattleAction, .5f);
+	}
+
+	private void exitBattleAction()
+	{
+		ScheduleHelper.UnRegisterSchedule (exitBattleAction);
 
 		if(enterFight == false)
 		{

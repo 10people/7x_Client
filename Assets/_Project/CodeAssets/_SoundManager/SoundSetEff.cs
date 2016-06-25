@@ -7,9 +7,5 @@ public class SoundSetEff : MonoBehaviour {
 	void Start () {
 		SoundManager.getAudioSource(GameObject.Find("3D Layer"));
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }

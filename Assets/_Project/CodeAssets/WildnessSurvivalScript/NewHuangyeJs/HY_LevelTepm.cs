@@ -43,11 +43,7 @@ public class HY_LevelTepm : MonoBehaviour {
 		
 		 confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 	}
-	
 
-	void Update () {
-
-	}
 	public void Init()
 	{
 		m_Allance = AllianceData.Instance.g_UnionInfo;//获取联盟的信息

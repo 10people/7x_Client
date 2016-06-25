@@ -8,10 +8,11 @@ using ProtoBuf.Meta;
 public class SettingBlockedItemManagerment : MonoBehaviour 
 {
     public UILabel m_LabName;
-    public UILabel m_LabVip;
+    public UISprite m_SpriteVip;
     public UILabel m_LabAllianceName;
     public UILabel m_PowerCount;
     public GameObject m_AllianceObject;
+    public GameObject m_ObjectV;
     public UISprite m_HeadIcon;
     public EventIndexHandle m_Event;
     public List<UISprite> m_listSprite;
@@ -36,22 +37,23 @@ public class SettingBlockedItemManagerment : MonoBehaviour
         if (string.IsNullOrEmpty(info.lianMengName))
         {
             m_AllianceObject.SetActive(true);
-            m_LabAllianceName.text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT);
+            m_LabAllianceName.text = MyColorData.getColorString(12, "<"  +LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT) + ">");
         }
         else
         {
             m_AllianceObject.SetActive(true);
-            m_LabAllianceName.text = "<" + info.lianMengName + ">";
+            m_LabAllianceName.text = MyColorData.getColorString(12, "<" + info.lianMengName + ">");
         }
       //  m_HeadIcon.spriteName = icon;
         m_LabName.text = "Lv" + info.level + "    " + info.name;
         if (info.vipLv > 0)
         {
-            m_LabVip.text = "V" + info.vipLv.ToString();
+            m_ObjectV.SetActive(true);
+            m_SpriteVip.spriteName = "v" + info.vipLv.ToString();
         }
         else
         {
-            m_LabVip.text = "V0";
+            m_ObjectV.SetActive(false);
         }
        // m_HeadIcon.spriteName = "PlayerIcon" + info.iconId; //info.iconId;
         m_PowerCount.text = info.zhanLi.ToString();

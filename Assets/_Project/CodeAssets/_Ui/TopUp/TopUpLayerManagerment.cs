@@ -42,15 +42,12 @@ public class TopUpLayerManagerment : MonoBehaviour, SocketProcessor
         m_Confirm.m_Handle += ConFirmTouch;
         RequestData();
 	}
+
     public void RequestData()
     {
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_VIPINFO_REQ);
     }
 
-    void Update()
-    {
-       
-    }
     void ConFirmTouch(int index)
     {
         m_listGameObject[3].SetActive(false);

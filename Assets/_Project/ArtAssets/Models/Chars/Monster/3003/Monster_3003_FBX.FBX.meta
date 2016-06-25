@@ -50,6 +50,9 @@ ModelImporter:
     100088: Bip01 R Toe0Nub
     100090: zhongjidunjiang_nan
     100092: chujigongjiang_nan
+    100094: gongjiang_chujinan01
+    100096: Object01
+    100098: Object01 1
     400000: //RootNode
     400002: _________-_________BOSS_____________________-______(1)
     400004: Bip01
@@ -97,11 +100,15 @@ ModelImporter:
     400088: Bip01 R Toe0Nub
     400090: zhongjidunjiang_nan
     400092: chujigongjiang_nan
+    400094: gongjiang_chujinan01
+    400096: Object01
+    400098: Object01 1
     4300000: _________-_________BOSS_____________________-______(1)
     4300002: Object10
     4300004: _________-_________BOSS_____________________-___
     4300006: zhongjidunjiang_nan
     4300008: chujigongjiang_nan
+    4300010: gongjiang_chujinan01
     7400000: Stand0
     7400002: Stand1
     7400004: Walk
@@ -127,12 +134,14 @@ ModelImporter:
     7400044: Null
     7400046: BATCLeft
     7400048: BATCRight
+    7400050: BATCFly
     9500000: //RootNode
     13700000: _________-_________BOSS_____________________-______(1)
     13700002: Object10
     13700004: _________-_________BOSS_____________________-___
     13700006: zhongjidunjiang_nan
     13700008: chujigongjiang_nan
+    13700010: gongjiang_chujinan01
   materials:
     importMaterials: 1
     materialName: 0
@@ -219,9 +228,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -235,13 +241,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -311,9 +315,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -327,13 +328,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -410,9 +409,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -426,13 +422,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -509,9 +503,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -525,13 +516,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -615,9 +604,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -631,21 +617,19 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
       name: BATCDown
       takeName: Take 001
-      firstFrame: 219
-      lastFrame: 248
+      firstFrame: 571
+      lastFrame: 573
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -664,14 +648,28 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: .779999614
-        functionName: checkDieInKnockdown
+      - time: .268288851
+        functionName: beatDownCallback
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .394849956
+      - time: .253401458
+        functionName: PlaySound
+        data: 4000|4001|4002|0|0
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .277498633
+        functionName: setStone
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .81562382
         functionName: PlaySound
         data: 3000|3001|3002
         objectReferenceParameter: {instanceID: 0}
@@ -714,9 +712,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -730,13 +725,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -744,7 +737,7 @@ ModelImporter:
       name: Dead
       takeName: Take 001
       firstFrame: 70
-      lastFrame: 116
+      lastFrame: 104
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -820,9 +813,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -836,13 +826,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -905,9 +893,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -921,13 +906,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -990,9 +973,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1006,13 +986,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1096,9 +1074,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1112,13 +1087,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1202,9 +1175,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1218,13 +1188,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1301,9 +1269,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1317,13 +1282,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1421,9 +1384,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1437,13 +1397,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1541,9 +1499,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1557,13 +1512,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1654,9 +1607,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1670,13 +1620,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1760,9 +1708,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1776,13 +1721,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1866,9 +1809,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1882,13 +1822,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -1972,9 +1910,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -1988,13 +1923,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2078,9 +2011,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -2094,13 +2024,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2184,9 +2112,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -2200,13 +2125,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2290,9 +2213,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -2306,21 +2226,19 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
       name: BATCUp
       takeName: Take 001
-      firstFrame: 248
-      lastFrame: 303
+      firstFrame: 600
+      lastFrame: 632
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2375,9 +2293,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -2391,13 +2306,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2460,9 +2373,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -2476,13 +2386,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip01 HeadNub
+      - path: gongjiang_chujinan01
         weight: 1
-      - path: Bip01 L Toe0Nub
+      - path: Object01
         weight: 1
-      - path: Bip01 R Toe0Nub
-        weight: 1
-      - path: zhongjidunjiang_nan
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2508,7 +2416,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00275561796
         functionName: playAttackEffect
         data: 
@@ -2566,9 +2474,6 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
-      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
-        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
@@ -2582,7 +2487,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: chujigongjiang_nan
+      - path: gongjiang_chujinan01
+        weight: 1
+      - path: Object01
+        weight: 1
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -2608,7 +2517,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .00275561796
         functionName: playAttackEffect
         data: 
@@ -2666,8 +2575,92 @@ ModelImporter:
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
           UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm/Bip01 R Forearm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle/Bip01 R
+          UpperArm/Bip01 R Forearm/Bip01 R Hand
+        weight: 1
+      - path: Bip01/Bip01 Prop1
+        weight: 1
+      - path: gongjiang_chujinan01
+        weight: 1
+      - path: Object01
+        weight: 1
+      - path: Object01 1
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: BATCFly
+      takeName: Take 001
+      firstFrame: 573
+      lastFrame: 600
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: .951797903
+        functionName: checkDieInKnockdown
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bip01
+        weight: 1
+      - path: Bip01/Bip01 Pelvis
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Head
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle
+        weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
-          UpperArm/Bip01 L Forearm/Bip01 L Hand/Bone01
+          UpperArm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm/Bip01 L Forearm
+        weight: 1
+      - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 L Clavicle/Bip01 L
+          UpperArm/Bip01 L Forearm/Bip01 L Hand
         weight: 1
       - path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 R Clavicle
         weight: 1
@@ -2682,7 +2675,11 @@ ModelImporter:
         weight: 1
       - path: Bip01/Bip01 Prop1
         weight: 1
-      - path: chujigongjiang_nan
+      - path: gongjiang_chujinan01
+        weight: 1
+      - path: Object01
+        weight: 1
+      - path: Object01 1
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}

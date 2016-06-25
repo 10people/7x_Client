@@ -10,13 +10,5 @@ public class FuliPageData : MonoBehaviour
 	public UILabel m_listJiangliLabel;
 	public UISprite m_listObjIcon;
 	public UILabel m_labelFunctionName;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }

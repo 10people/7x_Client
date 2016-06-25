@@ -15,14 +15,7 @@ public class GetJiBaiAward : MonoBehaviour {
 	public List<Award> m_OneKeyAward = new List<Award>();
 	public GameObject AwardUitroot;
 	public UILabel UIName;
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	public void Init()
 	{
 		if (IconSamplePrefab == null)

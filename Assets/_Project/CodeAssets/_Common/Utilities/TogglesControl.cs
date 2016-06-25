@@ -78,6 +78,6 @@ public class TogglesControl : MonoBehaviour
     private void SetColorA(GameObject go, float a)
     {
         var widget = go.GetComponent<UIWidget>();
-        widget.color = new Color(widget.color.r, widget.color.g, widget.color.b, a);
+        widget.color = new Color(a, a, a, 1f);
     }
 }

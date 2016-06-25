@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 8cd332debd20eee4b95dc632c6e3773c
-timeCreated: 1461832283
+guid: ab61ee818685b2d4cac20dbeaaee6522
+timeCreated: 1466127041
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -47,12 +47,8 @@ TextureImporter:
   alphaIsTransparency: 1
   textureType: 5
   buildTargetSettings:
-  - buildTarget: iPhone
-    maxTextureSize: 4096
-    textureFormat: 13
-    compressionQuality: 50
   - buildTarget: Android
-    maxTextureSize: 1024
+    maxTextureSize: 4096
     textureFormat: 47
     compressionQuality: 50
   spriteSheet:

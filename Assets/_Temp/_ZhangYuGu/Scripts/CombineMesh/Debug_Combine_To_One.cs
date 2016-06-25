@@ -31,9 +31,5 @@ public class Debug_Combine_To_One : MonoBehaviour {
 
 		transform.gameObject.SetActive( true );
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }

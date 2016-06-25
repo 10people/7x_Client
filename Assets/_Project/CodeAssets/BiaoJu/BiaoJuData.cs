@@ -164,7 +164,7 @@ namespace Carriage
 //						Debug.Log ("马匹类型:" + horseRes.horse);
 //						Debug.Log ("是否随机过马:" + horseRes.isNewHorse);
 
-						BiaoJuPage.bjPage.GetHorseResp (horseRes);
+						BiaoJuPage.m_instance.GetHorseResp (horseRes);
 					}
 					return true;
 				}
@@ -181,24 +181,26 @@ namespace Carriage
 						{
 						case 10:
 
-							BiaoJuPage.bjPage.RefreshHorsePage (upHorseTargetLevel);
+							BiaoJuPage.m_instance.RefreshHorsePage (upHorseTargetLevel);
 
 							break;
 						case 20:
 
 							textStr = "已经是最高等级马！";
-							QXComData.CreateBox (1,textStr,true,null);
+//							QXComData.CreateBox (1,textStr,true,null);
+							ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
 
 							break;
 						case 30:
 
 							textStr = "君主押镖信息不存在！";
-							QXComData.CreateBox (1,textStr,true,null);
+//							QXComData.CreateBox (1,textStr,true,null);
+							ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
 
 							break;
 						case 40://元宝不足
 
-							BiaoJuPage.bjPage.LackYuanbao ();
+							BiaoJuPage.m_instance.LackYuanbao ();
 
 							break;
 						default:
@@ -221,21 +223,22 @@ namespace Carriage
 						{
 						case 10:
 
-							BiaoJuPage.bjPage.InItHorseProp (horsePropRes.prop);
-							BiaoJuPage.bjPage.OpenHorsePropWindow (gameObject);
+							BiaoJuPage.m_instance.InItHorseProp (horsePropRes.prop);
+							BiaoJuPage.m_instance.OpenHorsePropWindow (gameObject);
 
 							break;
 						case 20:
 
 							//购买失败
 							textStr = "购买失败！";
-							QXComData.CreateBox (1,textStr,true,null);
+//							QXComData.CreateBox (1,textStr,true,null);
+							ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
 
 							break;
 						case 30:
 
 							//元宝不足
-							BiaoJuPage.bjPage.LackYuanbao ();
+							BiaoJuPage.m_instance.LackYuanbao ();
 
 							break;
 						default:
@@ -267,30 +270,33 @@ namespace Carriage
 							};
 							SocketHelper.SendQXMessage(temp5, ProtoIndexes.C_YABIAO_MOREINFO_RSQ);
 
-							BiaoJuPage.bjPage.BiaoJuResp.yaBiaoCiShu -= 1;
+							BiaoJuPage.m_instance.BiaoJuResp.yaBiaoCiShu -= 1;
 
-							BiaoJuPage.bjPage.CloseBiaoJu ();
+							BiaoJuPage.m_instance.CloseBiaoJu ();
 
 							break;
 						case 20:
 							
 //							Debug.Log ("YunBiao Fail!");
 							textStr = "运镖失败...";
-							QXComData.CreateBox (1,textStr,true,null);
-							
+//							QXComData.CreateBox (1,textStr,true,null);
+							ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
+
 							break;
 						case 30:
 
 //							Debug.Log ("已进入押镖");
 							textStr = "正在运镖...";
-							QXComData.CreateBox (1,textStr,true,null);
+//							QXComData.CreateBox (1,textStr,true,null);
+							ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
 
 							break;
 						case 40:
 							
 							//运镖次数用完
 							textStr = "运镖次数已用完...";
-							QXComData.CreateBox (1,textStr,true,null);
+//							QXComData.CreateBox (1,textStr,true,null);
+							ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
 
 							break;
 						default:
@@ -326,14 +332,15 @@ namespace Carriage
 							case 20:
 
 								//元宝不足
-								BiaoJuPage.bjPage.LackYuanbao ();
+								BiaoJuPage.m_instance.LackYuanbao ();
 
 								break;
 							case 30:
 
 								//今日购买次数已用完
 								textStr = "今日购买次数已用尽...";
-								QXComData.CreateBox (1,textStr,true,null);
+//								QXComData.CreateBox (1,textStr,true,null);
+								ClientMain.m_UITextManager.createText (MyColorData.getColorString (5,textStr));
 
 								break;
 							default:
@@ -360,7 +367,7 @@ namespace Carriage
 			{
 				CityGlobalData.m_isRightGuide = true;
 			}
-			BiaoJuPage.bjPage.GetBiaoJuResp (biaoJuMainResp);
+			BiaoJuPage.m_instance.GetBiaoJuResp (biaoJuMainResp);
 		}
 
 		void OnDestroy (){

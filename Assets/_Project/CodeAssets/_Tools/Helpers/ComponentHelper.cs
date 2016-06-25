@@ -112,6 +112,26 @@ public class ComponentHelper{
 		return t_com;
 	}
 
+	public static Camera[] GetCamerasInSelfOrChildren( GameObject p_gb ){
+		if( p_gb == null ){
+			return null;
+		}
+
+		Camera[] t_cams = p_gb.GetComponentsInChildren<Camera>();
+
+		return t_cams;
+	}
+
+	public static Camera[] GetCamerasInSelfOrParent( GameObject p_gb ){
+		if( p_gb == null ){
+			return null;
+		}
+
+		Camera[] t_cams = p_gb.GetComponentsInParent<Camera>();
+
+		return t_cams;
+	}
+
 	#endregion
 
 
@@ -1115,7 +1135,37 @@ public class ComponentHelper{
 		}
 	}
 
-	public static Material GetMaterialWithShader<T>( GameObject p_gb ) where T : Renderer{
+	public static List<Material> GetMaterials<T>( GameObject p_gb ) where T : Renderer{
+		if( p_gb == null ){
+//			Debug.Log( "p_object is null." );
+
+			return null;
+		}
+
+		List<Material> t_matetial_list = new List<Material>();
+
+		T[] t_renderers = p_gb.GetComponentsInChildren<T>();
+
+		for( int i = 0; i < t_renderers.Length; i++ ){
+			T t_renderer = t_renderers[i];
+
+			Material[] t_mats = t_renderer.materials;
+
+			for ( int j = 0; j < t_renderer.materials.Length; j++ ){
+				Material t_mat = t_renderer.materials[ j ];
+
+				if ( t_mat == null ){
+					continue;
+				}
+
+				t_matetial_list.Add( t_mat );
+			}
+		}
+
+		return t_matetial_list;
+	}
+
+	public static Material GetFirstMaterial<T>( GameObject p_gb ) where T : Renderer{
 		if( p_gb == null ){
 //			Debug.Log( "p_object is null." );
 
@@ -1143,7 +1193,7 @@ public class ComponentHelper{
 		return null;
 	}
 
-	public static Material GetMaterialWithShader<T>( GameObject p_gb, Shader p_shader ) where T : Renderer{
+	public static Material GetFirstMaterial<T>( GameObject p_gb, Shader p_shader ) where T : Renderer{
 		if( p_gb == null ){
 //			Debug.Log( "p_object is null." );
 			
@@ -1218,13 +1268,23 @@ public class ComponentHelper{
 	}
 
 	public static Material GetFirstMaterial( GameObject p_gb ){
-		Material t_mat = ComponentHelper.GetMaterialWithShader<MeshRenderer>( p_gb );
+		Material t_mat = ComponentHelper.GetFirstMaterial<MeshRenderer>( p_gb );
 
 		if( t_mat == null ){
-			t_mat = ComponentHelper.GetMaterialWithShader<SkinnedMeshRenderer>( p_gb );
+			t_mat = ComponentHelper.GetFirstMaterial<SkinnedMeshRenderer>( p_gb );
 		}
 
 		return t_mat;
+	}
+
+	public static List<Material> GetMaterials( GameObject p_gb ){
+		List<Material> t_mesh_material_list = ComponentHelper.GetMaterials<MeshRenderer>( p_gb );
+
+		List<Material> t_skin_material_list = ComponentHelper.GetMaterials<SkinnedMeshRenderer>( p_gb );
+
+		t_mesh_material_list.AddRange( t_skin_material_list );
+
+		return t_mesh_material_list;
 	}
 
 	#endregion
@@ -1329,6 +1389,36 @@ public class ComponentHelper{
 		}
 
 		return t_max;
+	}
+
+	#endregion
+
+
+
+	#region Audio Source
+
+	public static float GetAudioClipLength( AudioClip p_clip ){
+		if( p_clip == null ){
+			if( Debug.isDebugBuild ){
+				Debug.Log( "AudioClip is null." );
+			}
+
+			return 0.0f;
+		}
+
+		return p_clip.length;
+	}
+
+	public static float GetAudioSourcePlayTime( AudioSource p_src ){
+		if( p_src == null ){
+			if( Debug.isDebugBuild ){
+				Debug.Log( "AudioSource is null." );
+			}
+
+			return 0.0f;
+		}
+
+		return p_src.time;
 	}
 
 	#endregion

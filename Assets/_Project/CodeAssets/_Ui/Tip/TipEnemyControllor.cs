@@ -12,13 +12,27 @@ public class TipEnemyControllor : MonoBehaviour
 
 	public void refreshData(string iconName, string enemyName, string enemyDesc)
 	{
-		if(UICamera.lastTouchPosition.x < Screen.width / 2)
+		if(ShowTip.tipItemData != null && ShowTip.tipItemData.touchedPositon != TipItemData.ScreenPosition.DEFAULT)
 		{
-			gameObject.transform.localPosition = new Vector3(240, 0, 0);
+			if(ShowTip.tipItemData.touchedPositon == TipItemData.ScreenPosition.LEFT)
+			{
+				gameObject.transform.localPosition = new Vector3(240, 0, 0);
+			}
+			else
+			{
+				gameObject.transform.localPosition = new Vector3(-240, 0, 0);
+			}
 		}
 		else
 		{
-			gameObject.transform.localPosition = new Vector3(-240, 0, 0);
+			if(UICamera.lastTouchPosition.x < Screen.width / 2)
+			{
+				gameObject.transform.localPosition = new Vector3(240, 0, 0);
+			}
+			else
+			{
+				gameObject.transform.localPosition = new Vector3(-240, 0, 0);
+			}
 		}
 
 		spriteIcon.spriteName = iconName;

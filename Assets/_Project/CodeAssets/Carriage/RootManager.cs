@@ -1,7 +1,4 @@
-﻿//#define UNIT_TEST
-//#define DEBUG_MODE
-
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -102,6 +99,7 @@ namespace Carriage
 
             m_SelfPlayerController = tempObject.GetComponent<CarriagePlayerController>() ?? tempObject.AddComponent<CarriagePlayerController>();
             m_SelfPlayerCultureController = tempObject.GetComponent<CarriagePlayerCultureController>();
+            tempObject.AddComponent<AutoHideObjects>();
             m_CarriageMain.m_MapController.AddGizmos(PlayerSceneSyncManager.Instance.m_MyselfUid, 0, m_SelfPlayerController.transform.localPosition, m_SelfPlayerController.transform.localEulerAngles.y);
 
             //Set CarriagePlayerController.
@@ -228,6 +226,35 @@ namespace Carriage
             //#endif
         }
 
+        private List<int> m_effectIDList = new List<int>();
+        private List<GameObject> m_effectList = new List<GameObject>();
+
+        private void PreLoadBattleEffect()
+        {
+            m_effectIDList = RTActionTemplate.templates.Where(item => item.CsOnHit > 0).Select(item => item.CsOnHit).Concat(RTSkillTemplate.templates.Where(item => item.EsOnShot > 0).Select(item => item.EsOnShot)).Concat(RTBuffTemplate.templates.Where(item => item.BuffDisplay > 0).Select(item => item.BuffDisplay)).ToList();
+
+            m_effectIDList.ForEach(item =>
+            {
+                Global.ResourcesDotLoad(EffectIdTemplate.getEffectTemplateByEffectId(item).path, OnBattleEffectLoaded);
+            });
+
+            //Global.ResourcesDotLoad(EffectIdTemplate.getEffectTemplateByEffectId(RTSkillTemplate.GetTemplateByID(171).EsOnTrack).path, OnLongSkillEffectLoaded);
+        }
+
+        private void OnBattleEffectLoaded(ref WWW www, string path, Object prefab)
+        {
+            //Store loaded to optimize performance.
+            m_effectList.Add(prefab as GameObject);
+
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.EFFECT, "Carriage_EFFECT_" + path);
+        }
+
+        //private void OnLongSkillEffectLoaded(ref WWW www, string path, Object prefab)
+        //{
+        //    //Store loaded to optimize performance.
+        //    m_AllianceBattleMain.m_LongSkillEffectPrefab = prefab as GameObject;
+        //}
+
         void Start()
         {
             var offsetPosition = TrackCamera.transform.localPosition - m_CarriagePlayerTransform.transform.localPosition;
@@ -256,10 +283,26 @@ namespace Carriage
             {
                 UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[100370].m_listYindaoShuju[2]);
             }
+
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.INIT, "Carriage_Root");
+
+            StartCoroutine(SetMultiTouchCoroutine());
+        }
+
+        IEnumerator SetMultiTouchCoroutine()
+        {
+            if (UICamera.eventHandler.GetComponentInParent<EnterNextScene>() != null)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            UtilityTool.SetMultiTouch(true);
         }
 
         void Awake()
         {
+            PreLoadBattleEffect();
+
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.YUNBIAO_MAIN_PAGE),
                         BiaoJuLoadCallBack);
 
@@ -326,47 +369,49 @@ namespace Carriage
 
         new void OnDestroy()
         {
+            UtilityTool.SetMultiTouch(false);
+
             base.OnDestroy();
         }
 
-#if UNIT_TEST
         void OnGUI()
         {
-            if (GUILayout.Button("Test buy blood times"))
+            if (ConfigTool.GetBool(ConfigTool.CONST_UNIT_TEST))
             {
-                CommonBuy.Instance.ShowBuy(123, 456, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_CarriageMain.DoBuyBloodTimes);
-            }
-            if (GUILayout.Button("Test vip"))
-            {
-                CommonBuy.Instance.ShowVIP(JunZhuData.Instance().m_junzhuInfo.vipLv + 1);
-            }
-            if (GUILayout.Button("Test long damage num"))
-            {
-                m_SelfPlayerCultureController.OnDamage(-647658086, 1, true);
-            }
-            if (GUILayout.Button("Test skip skill"))
-            {
-                if (m_CarriageMain.m_TargetId < 0) return;
-
-                var temp = m_CarriageItemSyncManager.m_PlayerDic[m_CarriageMain.m_TargetId].transform;
-
-                SpriteMove tempInfo = new SpriteMove()
+                if (GUILayout.Button("Test buy blood times"))
                 {
-                    uid = PlayerSceneSyncManager.Instance.m_MyselfUid,
-                    posX = temp.localPosition.x,
-                    posY = temp.localPosition.y,
-                    posZ = temp.localPosition.z,
-                    dir = temp.localEulerAngles.y
-                };
-                MemoryStream tempStream = new MemoryStream();
-                QiXiongSerializer tempSer = new QiXiongSerializer();
-                tempSer.Serialize(tempStream, tempInfo);
-                byte[] t_protof;
-                t_protof = tempStream.ToArray();
-                SocketTool.Instance().SendSocketMessage(ProtoIndexes.POS_JUMP, ref t_protof);
+                    CommonBuy.Instance.ShowBuy(123, 456, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_CarriageMain.DoBuyBloodTimes);
+                }
+                if (GUILayout.Button("Test vip"))
+                {
+                    CommonBuy.Instance.ShowVIP();
+                }
+                if (GUILayout.Button("Test long damage num"))
+                {
+                    m_SelfPlayerCultureController.OnDamage(-647658086, 1, true);
+                }
+                if (GUILayout.Button("Test skip skill"))
+                {
+                    if (m_CarriageMain.m_TargetId < 0) return;
+
+                    var temp = m_CarriageItemSyncManager.m_PlayerDic[m_CarriageMain.m_TargetId].transform;
+
+                    SpriteMove tempInfo = new SpriteMove()
+                    {
+                        uid = PlayerSceneSyncManager.Instance.m_MyselfUid,
+                        posX = temp.localPosition.x,
+                        posY = temp.localPosition.y,
+                        posZ = temp.localPosition.z,
+                        dir = temp.localEulerAngles.y
+                    };
+                    MemoryStream tempStream = new MemoryStream();
+                    QiXiongSerializer tempSer = new QiXiongSerializer();
+                    tempSer.Serialize(tempStream, tempInfo);
+                    byte[] t_protof;
+                    t_protof = tempStream.ToArray();
+                    SocketTool.Instance().SendSocketMessage(ProtoIndexes.POS_JUMP, ref t_protof);
+                }
             }
         }
-#endif
-
     }
 }

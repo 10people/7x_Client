@@ -7,7 +7,7 @@ using System.Text;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class TaskLayerEveryDayManager : MonoBehaviour
+public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
 {
 	public static TaskLayerEveryDayManager m_TaskLayerM;
     public UISprite m_MoveSprite;
@@ -45,7 +45,8 @@ public class TaskLayerEveryDayManager : MonoBehaviour
     public UILabel m_labVitalityRewardGet;
     public GameObject m_ObjTopLeft;
     public bool m_isDailyVitilityFresh = false;
-    public bool m_isFinishCurrent = false;
+	public GameObject m_panel;
+ 
     public struct TaskType
     {
         public int _type;
@@ -106,7 +107,8 @@ public class TaskLayerEveryDayManager : MonoBehaviour
 				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 			}
 		}
-	}
+		FunctionOpenTemp.GetTemplateById(106).m_objPanel = m_panel;
+    }
     void Hide(int index)
     {
         _LoneTouchOn = false;
@@ -123,6 +125,26 @@ public class TaskLayerEveryDayManager : MonoBehaviour
         }
  
         m_VitalityRewardShow.SetActive(false);
+    }
+
+    public void OnUI2DShow()
+    {
+        if (FreshGuide.Instance().IsActive(100200) && TaskData.Instance.m_TaskInfoDic[100200].progress >= 0)
+        {
+            
+        }
+        else if (FreshGuide.Instance().IsActive(100220) && TaskData.Instance.m_TaskInfoDic[100220].progress >= 0)
+        {
+           
+        }
+        else if (FreshGuide.Instance().IsActive(100315) && TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
+        {
+          
+        }
+        else
+        {
+            UIYindao.m_UIYindao.CloseUI();
+        }
     }
     void VitalityGet(int index)
     {
@@ -145,14 +167,9 @@ public class TaskLayerEveryDayManager : MonoBehaviour
     {
         TaskData.Instance.m_MainReload = false;
         TaskData.Instance.m_MainReload = false;
-        TaskData.Instance.m_DailyQuestIsRefresh = false;
     }
     void Update()
     {
-        //if(TaskData.Instance.m_isDailyTimeDown)
-        //{
-        //    m_labTimeDown.text = MyColorData.getColorString(4, TimeHelper.GetUniformedTimeString(TaskData.Instance.m_RemainTime)) + "后刷新";
-        //}
         if (m_isDailyVitilityFresh)
         {
             m_isDailyVitilityFresh = false;
@@ -181,6 +198,12 @@ public class TaskLayerEveryDayManager : MonoBehaviour
             FreshVitality();
         }
 
+        if (TaskData.Instance.m_DailyLocalRefresh)
+        {
+            TaskData.Instance.m_DailyLocalRefresh = false;
+            TidyDailyTaskInfo();
+        }
+
     }
 
     void MainTaskTouch(int index)
@@ -192,47 +215,12 @@ public class TaskLayerEveryDayManager : MonoBehaviour
         }
         else
         {
+
             TaskData.Instance.GetQuestAward(_listTaskInfo[0]._TaskId);
         }
     }
-    void TouchInfo(int index)
-    {
-        if (_touchIndex != index)
-        {
-            _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(true);
-            _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_Guang.SetActive(true);
-            _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(false);
-            _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Guang.SetActive(false);
-            _touchIndex = index;
-            if (index == 0)
-            {
-                m_DailyQuestObj.SetActive(false);
-            }
-            else if (index == 1)
-            {
-                m_DailyQuestObj.SetActive(false);
-            }
-            else
-            {
-                m_DailyQuestObj.SetActive(true);
-            }
-
-            switch (index)
-            {
-                case 2:
-                    {
-                        TidyDailyTaskInfo();
-//                        m_labOtherQuestTitle.text = MyColorData.getColorString(1, "日常任务");
-                    }
-                    break;
-                default:
-                    break;
-
-            }
-        }
-    }
-
-   private bool GetWetherContainQuest(int type)
+  
+    private bool GetWetherContainQuest(int type)
     {
         if (type < 2)
         {
@@ -266,15 +254,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour
     }
     void ShowInfo()
     {
-        switch (TaskData.Instance.m_ShowType)
-        {
-            case 2:
-                {
-                    TidyDailyTaskInfo();
-//                    m_labOtherQuestTitle.text = MyColorData.getColorString(1, "日常任务");
-                }
-              break;
-        }
+      TidyDailyTaskInfo();
     }
 
 
@@ -299,7 +279,6 @@ public class TaskLayerEveryDayManager : MonoBehaviour
 
     void TidyDailyTaskInfo()
     {
-		Debug.Log("============1");
         _listTaskInfo.Clear();
         foreach (KeyValuePair<int, RenWuTemplate> item in TaskData.Instance.m_TaskDailyDic)
         {
@@ -323,7 +302,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour
         if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue > 0 && TaskData.Instance.m_VitalityShowInfo._todaylHuoYue <= 100)
         {
             m_MoveSprite.gameObject.SetActive(true);
-			m_MoveSprite.transform.localPosition = new Vector3(412, -220 + GetLengthMove(float.Parse(TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString()) / HuoYueTempTemplate.GetHuoYueTempById(5).needNum), 0);
+			m_MoveSprite.transform.localPosition = new Vector3(398, -220 + GetLengthMove(float.Parse(TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString()) / HuoYueTempTemplate.GetHuoYueTempById(5).needNum), 0);
         }
         else
         {
@@ -355,6 +334,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour
         }
         if (size_a == 0)
         {
+			EveryDayShowTime.Instance.m_isLoad0 = true;
             m_DailyQuestObj.SetActive(true);
             m_LabelNullSignal.gameObject.SetActive(true);
         }
@@ -366,7 +346,6 @@ public class TaskLayerEveryDayManager : MonoBehaviour
 
     public void ResourcesDailyLoadCallBack(ref WWW p_www, string p_path, Object p_object)
     {
-
         if (m_DailyParent != null)
         {
             GameObject tempObject = Instantiate(p_object) as GameObject;
@@ -384,6 +363,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour
             {
                 m_DailyQuestObj.SetActive(true);
                 m_DailyParent.transform.parent.GetComponent<UIScrollView>().UpdateScrollbars(true);
+				EveryDayShowTime.Instance.m_isLoad0 = true;
             }
             m_DailyParent.GetComponent<UIGrid>().repositionNow = true;
         }
@@ -479,11 +459,6 @@ public class TaskLayerEveryDayManager : MonoBehaviour
     {
         if (taskInfo._Progress < 0)
         {
-            if (m_isFinishCurrent)
-            {
-                return;
-            }
-            m_isFinishCurrent = true;
             if (TaskData.Instance.m_TaskDailyDic.ContainsKey(taskInfo._TaskId))
             {
                 CleartVitalityEffect();
@@ -494,29 +469,32 @@ public class TaskLayerEveryDayManager : MonoBehaviour
         }
         else 
         {
-          
-            if (RenWuTemplate.GetWetherContainId(taskInfo._TaskId) && !FunctionOpenTemp.GetWhetherContainID(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID) && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != -1 && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900002 && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900001)
+            if (RenWuTemplate.GetWetherContainId(taskInfo._TaskId) &&
+                !FunctionOpenTemp.GetWhetherContainID(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID) 
+                && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != -1 
+                && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900002
+                && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900001)
             {
                 ClientMain.m_UITextManager.createText(MyColorData.getColorString(1, FunctionOpenTemp.GetTemplateById(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID).m_sNotOpenTips));
               //  EquipSuoData.ShowSignal(null, FunctionOpenTemp.GetTemplateById(104).m_sNotOpenTips);
             }
             else
             {
-              
-                MainCityUI.TryRemoveFromObjectList(m_MainParent);
-               
+                {
+                    MainCityUI.TryRemoveFromObjectList(m_MainParent);
+                    Destroy(m_MainParent);
+                }
                 MainCityUI.m_MainCityUI.m_MainCityUILT.ClickTasID(taskInfo._TaskId);
-                Destroy(m_MainParent);
+              
                 //m_MainParent.SetActive(false);
 
             }
         }
     }
-
+ 
     void overMission(int id)
     {
-        TaskSignalInfoShow.m_TaskId = id;
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), RewardCallback);
+        FunctionWindowsCreateManagerment.ShowTaskAward(id);
     }
 
     public void RewardCallback(ref WWW p_www, string p_path, Object p_object)
@@ -626,6 +604,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour
             iconSampleObject.SetActive(true);
             iconSampleObject.transform.parent = m_VitalityRewardGetParent.transform;
             iconSampleObject.transform.localPosition = Vector3.zero;
+
             IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 
             iconSampleManager.SetIconByID(_listVitalityReward[index_Vitality_Reward].icon, _listVitalityReward[index_Vitality_Reward].count.ToString(), 4);
@@ -634,7 +613,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour
                 DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(_listVitalityReward[index_Vitality_Reward].icon).descId));
 
           
-            iconSampleObject.transform.localScale = Vector3.one;
+			iconSampleObject.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
 
             if (index_Vitality_Reward < _listVitalityReward.Count - 1)
             {
@@ -697,8 +676,8 @@ public class TaskLayerEveryDayManager : MonoBehaviour
         for (i = 0; i < 7; i++)
         {
             m_listVitalityInfo[i].m_LabTitle.text = HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum.ToString();
-            if (i < 5)
-            {
+//            if (i < 5)
+//            {
                 if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
                 {
                     m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(true);
@@ -719,10 +698,10 @@ public class TaskLayerEveryDayManager : MonoBehaviour
                     m_listVitalityInfo[i].m_SecondObj.SetActive(true);
                     UI3DEffectTool.ClearUIFx(m_listVitalityInfo[i].gameObject);
                 }
-            }
+//            }
         }
 		i = 5;
-		if(TaskData.Instance.m_VitalityShowInfo._listawardStatus[5] != 2)
+		if(TaskData.Instance.m_VitalityShowInfo._listawardStatus[5] != 1)
 		{
 			i = 5;
 			m_listVitalityInfo[6].gameObject.SetActive(false);
@@ -731,7 +710,9 @@ public class TaskLayerEveryDayManager : MonoBehaviour
 		{
 			i = 6;
 			m_listVitalityInfo[5].gameObject.SetActive(false);
+			m_listVitalityInfo[6].gameObject.SetActive(true);
 		}
+		m_labVitalityWeekly.gameObject.transform.parent = m_listVitalityInfo[i].gameObject.transform;
 		if (TaskData.Instance.m_VitalityShowInfo._weekHuoYue >= HuoYueTempTemplate.GetHuoYueTempById(i + 1).needNum && TaskData.Instance.m_VitalityShowInfo._listawardStatus[i] != 1)
 		{
 			m_listVitalityInfo[i].m_TouchLQEvent.gameObject.SetActive(true);

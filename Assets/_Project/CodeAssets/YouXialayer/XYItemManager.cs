@@ -47,13 +47,9 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 		SocketTool.UnRegisterMessageProcessor(this);
 	}
 	void Start () {
-		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YOUXIA_INFO_REQ);
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YOUXIA_INFO_REQ, ProtoIndexes.S_YOUXIA_INFO_RESP + "");
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	public bool OnProcessSocketMessage(QXBuffer p_message){
 		
 		if (p_message != null)
@@ -72,7 +68,8 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 				
 				InitUI(tempInfo);
-				
+
+				EveryDayShowTime.Instance.m_isLoad1 = true;
 				return true;
 			}
 
@@ -143,6 +140,7 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 //
 //		}
 		int index = 0;
+		Debug.Log ("Global.m_sPanelWantRun = "+Global.m_sPanelWantRun);
 		if(Global.m_sPanelWantRun != null || Global.m_sPanelWantRun != "")
 		{
 			switch(Global.m_sPanelWantRun)

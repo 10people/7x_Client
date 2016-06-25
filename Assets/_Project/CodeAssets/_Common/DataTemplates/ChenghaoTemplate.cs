@@ -13,6 +13,8 @@ public class ChenghaoTemplate : XmlLoadManager {
 	public int m_iDisID;
 
 	public int m_iType;
+
+	public int m_iColor;
 	
 	public static List<ChenghaoTemplate> templates = new List<ChenghaoTemplate>();
 	
@@ -65,6 +67,14 @@ public class ChenghaoTemplate : XmlLoadManager {
 				
 				t_reader.MoveToNextAttribute();
 				t_template.m_iType = int.Parse(t_reader.Value);
+
+				t_reader.MoveToNextAttribute();
+				t_reader.MoveToNextAttribute();
+				t_reader.MoveToNextAttribute();
+				t_reader.MoveToNextAttribute();
+
+				t_reader.MoveToNextAttribute();
+				t_template.m_iColor = int.Parse(t_reader.Value);
 			}
 			
 			//			t_template.Log();
@@ -72,6 +82,21 @@ public class ChenghaoTemplate : XmlLoadManager {
 			templates.Add(t_template);
 		}
 		while (t_has_items);
+	}
+
+	public static int GetChenghaoColor(int id)
+	{
+		foreach (ChenghaoTemplate template in templates)
+		{
+			if (template.m_iID == id)
+			{
+				return template.m_iColor;
+			}
+		}
+		
+		Debug.LogError("XML ERROR: Can't get ChenghaoTemplate with chenghaoID " + id);
+		
+		return 0;
 	}
 
 	public static string GetChenghaoName(int id)

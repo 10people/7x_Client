@@ -231,7 +231,7 @@ public class Technologytemp : MonoBehaviour {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "\r\n"+"确定将"+mLianMengKeJiTemplate.name+"升级吗？" +"\r\n"+"\r\n"+"需要消耗联盟建设值："+mLianMengKeJiTemplate.lvUpValue.ToString();//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "确定将"+mLianMengKeJiTemplate.name+"升级吗？" +"\r\n"+"需要消耗联盟建设值："+mLianMengKeJiTemplate.lvUpValue.ToString();//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
@@ -239,12 +239,16 @@ public class Technologytemp : MonoBehaviour {
 		
 		uibox.setBox(titleStr,MyColorData.getColorString (1,str1), null,null,CancleBtn,confirmStr,UpCom,null,null);
 	}
+	string Titie;
 	void UpCom(int i)
 	{
 		if (i == 2) {
 			if (mLianMengKeJiTemplate.lvUpValue > Alliance_Builds) 
 			{
-				Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LackOfBuildLoadBack);
+				Titie  = "建设值不足";
+				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.ALLIANCE_LEADER_SETTINGS ),
+				                        LeaderSettingsLoadCallback );
+				//Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.GLOBAL_DIALOG_BOX), LackOfBuildLoadBack);
 			}
 			else
 			{
@@ -268,18 +272,21 @@ public class Technologytemp : MonoBehaviour {
 			}
 		}
 	}
-	void LackOfBuildLoadBack(ref WWW p_www,string p_path, Object p_object)
+	GameObject LederSet;
+	public void LeaderSettingsLoadCallback( ref WWW p_www, string p_path,  Object p_object )
 	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+		if(LederSet == null)
+		{
+			LederSet = Instantiate( p_object ) as GameObject;
+			
+			LederSet.transform.localScale = Vector3.one;
+			LederSet.transform.localPosition = new Vector3 (500,200,0);
+			LianmengMuBiaomanager mLianmengMuBiaomanager = LederSet.GetComponent<LianmengMuBiaomanager>();
+			//mLianmengMuBiaomanager.Lianmeng_Alliance = m_Alliance;
+			
+			mLianmengMuBiaomanager.Init(Titie);
+			MainCityUI.TryAddToObjectList(LederSet,false);
+		}
 		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str1 = "\r\n"+"建设值不足，无法研究该科技。" ;//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-		
-		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
-		
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str1), null,null,confirmStr,null,null,null);
 	}
 }

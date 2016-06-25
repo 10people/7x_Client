@@ -40,7 +40,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
         }
     }
 
-    private bool _isAllianceNotExist;
+    private bool _isAllianceNotExist = true;
 
 
     public AllianceHaveResp g_UnionInfo;
@@ -129,7 +129,13 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         {
                             MainCityUI.m_MainCityUI.m_MainCityUILT.RefreshAllianceInfo();
                         }
-
+						
+						//抢宝箱
+						if (TreasureCityUI.m_instance != null)
+						{
+							TreasureCityUI.m_instance.tCityUITL.RefreshAllianceInfo ();
+						}
+					
                         if (PlayerNameManager.m_ObjSelfName != null)
                         {
                             PlayerNameManager.UpdateSelfName();
@@ -212,6 +218,12 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             MainCityUI.m_MainCityUI.m_MainCityUILT.RefreshAllianceInfo();
                         }
 
+						//抢宝箱
+						if (TreasureCityUI.m_instance != null)
+						{
+							TreasureCityUI.m_instance.tCityUITL.RefreshAllianceInfo ();
+						}
+
                         if (PlayerNameManager.m_ObjSelfName != null)
                         {
                             PlayerNameManager.UpdateSelfName();
@@ -234,6 +246,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             Isdismissed = true;
                             JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;//new add
                             IsAllianceNotExist = true;
+							MainCityUI.SetSuperRed(104, true);
                             //if (!CityGlobalData.m_isJieBiaoScene && BattleControlor.Instance() == null)
                             //{
                             //    CityGlobalData.m_isAllianceScene = false;
@@ -270,7 +283,8 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             }
                             else
                             {
-                                ClientMain.m_UITextManager.createText("加入联盟成功！现在您可以协助盟友运镖了！！");
+								RequestData ();
+                                ClientMain.m_UITextManager.createText("您的申请已被批准！您已成功加入联盟！");
                             }
                             JunZhuData.Instance().m_junzhuInfo.lianMengId = 1;//new add
                         }
@@ -290,8 +304,9 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         JunZhuData.Instance().m_junzhuInfo.lianMengId = 0;
 						{
 							//去掉商铺联盟相关红点
-							PushAndNotificationHelper.SetRedSpotNotification (600700,false);//贡献商铺
-							PushAndNotificationHelper.SetRedSpotNotification (903,false);//荒野商店
+//							PushAndNotificationHelper.SetRedSpotNotification (600700,false);//贡献商铺
+//							PushAndNotificationHelper.SetRedSpotNotification (903,false);//荒野商店
+					        CloseAllRedPoints();
 						}
 						
 						if(MainCityUI.m_MainCityUI.m_WindowObjectList.Count>=1)
@@ -352,7 +367,6 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                         immediatelyJoinResp AllianceQuickApply = new immediatelyJoinResp();
                         t_qx.Deserialize(t_tream, AllianceQuickApply, AllianceQuickApply.GetType());
                         _AllianceQuickApply = AllianceQuickApply;
-               
                         switch ((AllianceConnectRespEnum)AllianceQuickApply.code)
                         {
                             case AllianceConnectRespEnum.E_ALLIANCE_ZERO:
@@ -367,6 +381,11 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                                     else
                                     {
                                         ClientMain.m_UITextManager.createText("联盟加入成功！");
+										//十连副本刷新
+										if (Application.loadedLevelName.Equals(ConstInGame.CONST_SCENE_NAME_TREASURECITY))
+										{
+											RequestData ();
+										}
                                     }
                                 }
                                 break;
@@ -378,7 +397,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                             case AllianceConnectRespEnum.E_ALLIANCE_TWO:
                                 {
 
-                                    ClientMain.m_UITextManager.createText("很遗憾，找不到这个联盟！");
+                                    ClientMain.m_UITextManager.createText("未能加入联盟！该联盟已经解散！");
 
                                 }
                                 break;
@@ -501,14 +520,34 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                                     ClientMain.m_UITextManager.createText("君主不存在！");
                                 }
                                 break;
+                            case 2:
+                                {
+                                    ClientMain.m_UITextManager.createText("联盟人数已满！");
+                                }
+                                break;
+                            case 3:
+                                {
+                                    ClientMain.m_UITextManager.createText("此玩家尚未开启联盟功能，无法邀请入盟！");
+                                }
+                                break;
                             case 4:
                                 {
-                                    ClientMain.m_UITextManager.createText("对方已加入别的联盟！");
+                                    ClientMain.m_UITextManager.createText("该玩家已经是其他联盟成员,无法邀请入盟。");
                                 }
                                 break;
                             case 5:
                                 {
                                     ClientMain.m_UITextManager.createText("你没有权限邀请别人加入联盟！");
+                                }
+                                break;
+                            case 6:
+                                {
+                                    ClientMain.m_UITextManager.createText("该玩家已是我盟的一员！");
+                                }
+                                break;
+                            case 7:
+                                {
+                                    ClientMain.m_UITextManager.createText("对方未开启联盟！");
                                 }
                                 break;
                         }
@@ -538,16 +577,18 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 		//Vector3 vec_pos = new Vector3(-1.0f, 0.4f, -63.0f);
 		//PlayerModelController.m_playerModelController.UploadPlayerPosition(vec_pos);
 		CityGlobalData.m_isMainScene = true;
-		string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_JIESAN_SUCCESS_STR1);
+		string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_JIESAN_SUCCESS_STR1)+"\n";
 		string str2 = g_UnionInfo.name + LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_JIESAN_SUCCESS_STR2);
+
 		string jieSanTitleStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIACNE_JIESAN_TITLE);
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		uibox.setBox(jieSanTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,confirmStr,null,DisAllianceSuccessBack);
+		uibox.setBox(jieSanTitleStr, MyColorData.getColorString (1,str1+str2), null,null,confirmStr,null,DisAllianceSuccessBack);
 		
 	}
 	void DisAllianceSuccessBack (int i)
     {
         AllianceData.Instance.IsAllianceNotExist = true;
+		MainCityUI.SetSuperRed(104, true);
         QXChatUIBox.chatUIBox.SetSituationState();
         GameObject uirot = GameObject.Find("New_My_Union(Clone)");
 		
@@ -568,7 +609,22 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);
     }
-
+	void CloseAllRedPoints()
+	{
+		PushAndNotificationHelper.SetRedSpotNotification(600700, false);//贡献商铺
+		PushAndNotificationHelper.SetRedSpotNotification(903, false);//荒野商店
+		PushAndNotificationHelper.SetRedSpotNotification(500050, false);//XiaoWuid
+		PushAndNotificationHelper.SetRedSpotNotification(400000, false);//Mobai
+		PushAndNotificationHelper.SetRedSpotNotification(400017, false);//fangcan
+		PushAndNotificationHelper.SetRedSpotNotification(600900, false);//ChouJiangid1
+		PushAndNotificationHelper.SetRedSpotNotification(600905, false);//ChouJiangid2
+		PushAndNotificationHelper.SetRedSpotNotification(300200, false);//HYid
+		PushAndNotificationHelper.SetRedSpotNotification(600500, false);//Evet
+		PushAndNotificationHelper.SetRedSpotNotification(600600, false);//Readroom
+		PushAndNotificationHelper.SetRedSpotNotification(600800, false);//是否显示经验
+		PushAndNotificationHelper.SetRedSpotNotification(500020, false);//国家
+		PushAndNotificationHelper.SetRedSpotNotification(500022, false);//国家
+	}
     public void RefreshAllianceInfo(AllianceNonResp tempAllianceInfo)
     {
 //        Debug.Log("tempAllianceInfotempAllianceInfo ::" + tempAllianceInfo.alincInfo.Count);
@@ -605,7 +661,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 		
 		byte[] t_protof = t_stream.ToArray ();
 		
-		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof,"30124");
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof);
 
 //		Debug.Log ("ApplicateReq" + ProtoIndexes.LOOK_APPLICANTS);
 	}
@@ -656,12 +712,14 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
         t_protof = t_tream.ToArray();
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ALLIANCE_INVITE_REFUSE, ref t_protof);
     }
+    public int m_agree_id = 0;
     public void RequestAgreeInvite(int id)//同意联盟邀请
     {
         MemoryStream t_tream = new MemoryStream();
         QiXiongSerializer t_qx = new QiXiongSerializer();
         AgreeInvite agree = new AgreeInvite();
         agree.id = id;
+        m_agree_id = id;
         t_qx.Serialize(t_tream, agree);
         byte[] t_protof;
         t_protof = t_tream.ToArray();

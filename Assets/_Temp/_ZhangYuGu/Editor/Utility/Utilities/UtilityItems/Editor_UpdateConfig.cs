@@ -36,12 +36,6 @@ public class Editor_UpdateConfig : AssetPostprocessor {
 		AssetsChanged();
 	}
 
-
-	[DidReloadScripts(100)]
-	public static void ReloadedScripts(){
-		AssetsChanged();
-	}
-
 	#endregion
 
 

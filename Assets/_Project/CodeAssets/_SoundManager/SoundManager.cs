@@ -56,6 +56,10 @@ public class SoundManager{
 
 	public List<int> m_listPlayerID = new List<int>();
 
+	public List<int> m_listPlayerNextID = new List<int>();
+	public List<Bundle_Loader.LoadResourceDone> m_listPlayerNextDone = new List<Bundle_Loader.LoadResourceDone>();
+	public List<List<EventDelegate>> m_listPlayerNextEvent = new List<List<EventDelegate>>();
+
 	public SoundManager(AudioSource sound1, AudioSource sound2){
 		{
 			m_listSource.Clear();
@@ -132,6 +136,16 @@ public class SoundManager{
 			{
 				m_isSoundPlay = false;
 				m_ListMusic[m_iCurMusicIndex].volume = m_fMaxVolume;
+			}
+		}
+		for(int i = 0; i < m_listPlayerNextID.Count; i ++)
+		{
+			if(getEffIdClip(m_listPlayerNextID[i], m_listPlayerNextDone[i], m_listPlayerNextEvent[i], false))
+			{
+				m_listPlayerNextID.RemoveAt(i);
+				m_listPlayerNextDone.RemoveAt(i);
+				m_listPlayerNextEvent.RemoveAt(i);
+				i--;
 			}
 		}
 	}
@@ -328,7 +342,9 @@ public class SoundManager{
 
 					AudioClip t_clip = m_sound_dict[ p_id ];
 
-					p_callback( ref t_www, t_sound_path, t_clip );
+					if( p_callback != null ){
+						p_callback( ref t_www, t_sound_path, t_clip );
+					}
 
 					EventDelegate.Execute( p_callback_list );
 
@@ -349,12 +365,17 @@ public class SoundManager{
 		Debug.LogError( "Sound Not Exist in SoundId.xml: " + t_sound_path );
 	}
 
-	public void getEffIdClip(int p_id, Bundle_Loader.LoadResourceDone p_callback, List<EventDelegate> p_callback_list = null)
+	public bool getEffIdClip(int p_id, Bundle_Loader.LoadResourceDone p_callback, List<EventDelegate> p_callback_list = null, bool isAdd = true)
 	{
+//		if((p_id >= 300001 && p_id <= 300008) || (p_id >= 3309 && p_id <= 3316))
+//		{
+//			Debug.Log("==========================" + p_id);
+//		}
 		float thisTime = Time.time;
+
 		for(int i = 0; i < m_listPlayTime.Count; i ++)
 		{
-			if(thisTime - m_listPlayTime[i] > 0.1)
+			if(thisTime - m_listPlayTime[i] > SoundIdGroup.getSoundGroup(m_listPlayerID[i]).allNumTime)
 			{
 				m_listPlayTime.RemoveAt(i);
 				m_listPlayerID.RemoveAt(i);
@@ -372,18 +393,51 @@ public class SoundManager{
 				{
 					if(m_listPlayerID.Contains(SoundIdGroup.m_ListSoundGroup[i].SoundID[q]))
 					{
+//						if((p_id >= 300001 && p_id <= 300008) || (p_id >= 3309 && p_id <= 3316))
+//						{
+//							Debug.Log("??????ID="+SoundIdGroup.m_ListSoundGroup[i].SoundID[q]);
+//						}
 						tempNum++;
 					}
 				}
+//				if((p_id >= 300001 && p_id <= 300008) || (p_id >= 3309 && p_id <= 3316))
+//				{
+//					Debug.Log("??????????????????="+tempNum);
+//				}
 				if(tempNum >= SoundIdGroup.m_ListSoundGroup[i].playNum)
 				{
-					return;
+//					if((p_id >= 300001 && p_id <= 300008) || (p_id >= 3309 && p_id <= 3316))
+//					{
+//						Debug.Log("?????????????????????????????????);
+//					}
+					return false;
+				}
+				else if(thisTime - SoundIdGroup.m_ListSoundGroup[i].pTime < SoundIdGroup.m_ListSoundGroup[i].nextTime)
+				{
+					if(isAdd)
+					{
+						m_listPlayerNextID.Add(p_id);
+						m_listPlayerNextDone.Add(p_callback);
+						m_listPlayerNextEvent.Add(p_callback_list);
+					}
+					return false;
+				}
+				else
+				{
+					SoundIdGroup.SoundGroup tempa = SoundIdGroup.m_ListSoundGroup[i];
+					tempa.pTime = thisTime;
+					SoundIdGroup.m_ListSoundGroup[i] = tempa;
 				}
 			}
 		}
 		m_listPlayerID.Add(p_id);
 		m_listPlayTime.Add(thisTime);
+//		if((p_id >= 300001 && p_id <= 300008) || (p_id >= 3309 && p_id <= 3316))
+//		{
+//			Debug.Log("????????????????????????");
+//		}
 		getIdClip(p_id, p_callback, p_callback_list);
+		return true;
 	}
 
 	// add to dict.
@@ -546,12 +600,15 @@ public class SoundManager{
 
 	public static void EYuyin()
 	{
-		ClientMain.m_sound_manager.m_ListMusic[ClientMain.m_sound_manager.m_iCurMusicIndex].volume = ClientMain.m_sound_manager.m_fMaxVolume * 4;
-		for(int i = 0; i < m_listSourceEff.Count; i ++)
+		if(!ClientMain.m_ClientMain.m_SoundPlayEff.m_isPlay && !QXChatPage.chatPage.m_isPlaying)
 		{
-			if(m_listSourceEff[i] != null)
+			ClientMain.m_sound_manager.m_ListMusic[ClientMain.m_sound_manager.m_iCurMusicIndex].volume = ClientMain.m_sound_manager.m_fMaxVolume * 4;
+			for(int i = 0; i < m_listSourceEff.Count; i ++)
 			{
-				m_listSourceEff[i].volume = ClientMain.m_sound_manager.m_fMaxEffVolume * 4;
+				if(m_listSourceEff[i] != null)
+				{
+					m_listSourceEff[i].volume = ClientMain.m_sound_manager.m_fMaxEffVolume * 4;
+				}
 			}
 		}
 	}

@@ -1157,12 +1157,6 @@ public class UIScrollView : MonoBehaviour
     /// <returns></returns>
     private float DoReturnTotalValue(float contentOutLow, float contentOutHigh, float contentSize, float viewSize, bool isVerticle)
     {
-        if (viewSize >= contentSize)
-        {
-            contentOutLow = -contentOutLow;
-            contentOutHigh = -contentOutHigh;
-        }
-
         //return value between 0 - 1.
         if ((contentOutLow >= 0 && contentOutHigh >= 0) || (contentOutLow <= 0 && contentOutHigh <= 0))
         {

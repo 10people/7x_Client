@@ -39,6 +39,8 @@ public class FuWenShow : MonoBehaviour {
 	public List<int >m_numbers = new List<int>();
 	public bool mFuwenType ;//  fales 为其他东西调用，True 为符文功能调用
 
+	public UICamera m_Camera;
+
 	void Awake()
 	{
 		mEventListener.onClick = Close;
@@ -47,8 +49,12 @@ public class FuWenShow : MonoBehaviour {
 	void Start () {
 
 	}
-	public void Init(List <int > ids = null,List <int > Nunbers = null,CallBack mcallBack = null)
+	public void Init(List <int > ids = null,List <int > Nunbers = null,CallBack mcallBack = null ,UICamera mCamera = null)
 	{
+		if(mCamera != null)
+		{
+			m_Camera = mCamera ;
+		}
 		Move = false;
 		if(mcallBack != null)
 		{m_CallBack = mcallBack; }
@@ -142,21 +148,22 @@ public class FuWenShow : MonoBehaviour {
 //			string pinzhi = "pinzhi"+(mCommonItemTemplate.color-1).ToString();
 //			
 			string mname = NameIdTemplate.GetName_By_NameId(mCommonItemTemplate.nameId);
-//			Debug.Log("m_numbers[i] = "+m_numbers[i]);
 
 			iconSampleManager.SetIconByID(mCommonItemTemplate.id, m_numbers[i].ToString(), 3);
-			iconSampleManager.SetIconBasic(3, mCommonItemTemplate.icon.ToString());
-			var popTextTitle = NameIdTemplate.GetName_By_NameId(mCommonItemTemplate.nameId);
-			DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mCommonItemTemplate.nameId);
-			var popTextDesc = mDesc.description;
-			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
-			iconSampleManager.SetAwardNumber(m_numbers[i]);
+
+			iconSampleManager.SetIconPopText();
+
+			iconSampleManager.ShowAwardName(mname);
 			iconSampleObject.transform.localPosition = new Vector3(i * 120 - (m_Ids.Count - 1) * 60, 0, 0);
+		}
+		if(m_Camera != null)
+		{
+			EffectTool.SetUIBackgroundEffect (m_Camera.gameObject,true);
 		}
 	}
 	IEnumerator CreateAward()
 	{
-		if(Move) mTime = 0.5f;
+		if(Move) mTime = 0.0f;
 		else{
 			mTime = 0.01f;
 		}
@@ -176,16 +183,13 @@ public class FuWenShow : MonoBehaviour {
 			{
 				FuWenTemplate mFuwen = FuWenTemplate.GetFuWenTemplateByFuWenId (m_LieFuActionInfo.lieFuAwardList[i].itemId);
 				
-				string m_Name = mFuwen.fuwenLevel.ToString()+"级"+ NameIdTemplate.GetName_By_NameId(mFuwen.name);
+				string m_Name = NameIdTemplate.GetName_By_NameId(mFuwen.name);
 
-				string pinzhi = "pinzhi"+(mFuwen.color-1).ToString();
+				iconSampleManager.SetIconByID(mFuwen.fuwenID, m_LieFuActionInfo.lieFuAwardList[i].itemNum.ToString());
+
+				iconSampleManager.SetIconPopText();
+
 				iconSampleManager.ShowAwardName(m_Name);
-				
-				iconSampleManager.SetIconType(IconSampleManager.IconType.FuWen);
-				iconSampleManager.SetIconBasic(3, mFuwen.icon.ToString(),"",pinzhi);
-				var popTextTitle = m_Name + " " + "LV" + mFuwen.fuwenLevel.ToString();
-				var popTextDesc = DescIdTemplate.getDescIdTemplateByNameId(mFuwen.desc).description;
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 
 			}
 			else
@@ -196,20 +200,22 @@ public class FuWenShow : MonoBehaviour {
 				
 				iconSampleManager.ShowAwardName(NameIdTemplate.GetName_By_NameId(mCommonItemTemplate.nameId)+"x"+m_LieFuActionInfo.lieFuAwardList[i].itemNum.ToString());
 
-				string pinzhi = "pinzhi"+(mCommonItemTemplate.color-1).ToString();
-
+				iconSampleManager.SetIconByID(mCommonItemTemplate.id, m_LieFuActionInfo.lieFuAwardList[i].itemNum.ToString(), 3);
+			
 				string mname = NameIdTemplate.GetName_By_NameId(mCommonItemTemplate.nameId)+"x"+m_LieFuActionInfo.lieFuAwardList[i].itemNum.ToString();
-				iconSampleManager.SetIconType(IconSampleManager.IconType.FuWen);
-				iconSampleManager.SetIconBasic(3, mCommonItemTemplate.icon.ToString(),"",pinzhi);
-				var popTextTitle = NameIdTemplate.GetName_By_NameId(mCommonItemTemplate.nameId);
-				DescIdTemplate mDesc = DescIdTemplate.getDescIdTemplateByNameId(mCommonItemTemplate.nameId);
-				var popTextDesc = mDesc.description;
-				iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
+
+				iconSampleManager.SetIconPopText();
+
+				iconSampleManager.ShowAwardName(mname);
 
 			}
 			Debug.Log("Move = "+Move);
 			if(!Move)
 			{
+				if(m_Camera != null)
+				{
+					EffectTool.SetUIBackgroundEffect (m_Camera.gameObject,true);
+				}
 				iconSampleObject.transform.localPosition = new Vector3(i * 120 - (m_LieFuActionInfo.lieFuAwardList.Count - 1) * 60, 0, 0);
 			}
 			else
@@ -224,22 +230,35 @@ public class FuWenShow : MonoBehaviour {
 	private void Movetodisplay(GameObject mobg)
 	{
 		GameObject clone = NGUITools.AddChild(mobg.transform.parent.gameObject, mobg);
-		clone.AddComponent< TweenPosition>();
-		clone.AddComponent<TweenAlpha>();
-		clone.GetComponent<TweenPosition>().from = mobg.transform.localPosition;
-		clone.GetComponent<TweenPosition>().to = mobg.transform.localPosition + Vector3.up * 250;
-		clone.GetComponent<TweenPosition>().duration = 1.2f;
-		clone.GetComponent<TweenAlpha>().from = 1.0f;
-		clone.GetComponent<TweenAlpha>().to = 0;
-		clone.GetComponent<TweenPosition>().duration = 1.2f;
+		transObj = clone;
+		iTween.MoveTo (clone, iTween.Hash(
+			"position", clone.transform.localPosition +Vector3.up * 250,
+			"time", 1.5f,"islocal",true,
+			"easetype", iTween.EaseType.easeInOutQuart
+			));
+//		clone.AddComponent< TweenPosition>();
+//		clone.AddComponent<TweenAlpha>();
+//		clone.GetComponent<TweenPosition>().from = mobg.transform.localPosition;
+//		clone.GetComponent<TweenPosition>().to = mobg.transform.localPosition + Vector3.up * 250;
+//
+//		clone.GetComponent<TweenPosition>().duration = 1.2f;
+//		clone.GetComponent<TweenAlpha>().from = 1.0f;
+//		clone.GetComponent<TweenAlpha>().to = 0;
+//		clone.GetComponent<TweenPosition>().duration = 1.2f;
 		StartCoroutine(WatiFor(mobg));
 		//		mobg.transform.Translate (); = new Vector3(0,mobg.transform.localPosition.y + 5, 0);
 	}
+//	void DestroyObj ()
+//	{
+//		Destroy(obj);
+//		Close(this.gameObject);
+//	}
 	IEnumerator WatiFor(GameObject obj)
 	{
-		yield return new WaitForSeconds(0.8f);
+		yield return new WaitForSeconds(1.30f);
 		Destroy(obj);
-		Close(this.gameObject);
+		transObj = null;
+		Destroy (this.gameObject);
 	}
 	public void setPosC()
 	{
@@ -251,21 +270,66 @@ public class FuWenShow : MonoBehaviour {
 			Close(this.gameObject);
 		}
 	}
+	public UILabel m_ContinueLabel;
+	GameObject transObj;
+	float m_scale = 0.05f;
+	float m_color;
+	int index;
 	void Update () {
 	
-//		if(Move)
-//		{
-//			Movetodisplay();
-//			setPosC();
-//		}
+		if(transObj)
+		{
+			float rewardAlpha = transObj.GetComponent<UIWidget> ().alpha;
+			if (transObj.transform.localPosition.y <= 200)
+			{
+				//			rewardAlpha = 1 - (Mathf.Abs (transObj.transform.localPosition.y) / 100);//225
+				rewardAlpha = 1;
+			}
+			else
+			{
+				rewardAlpha = 1 - (Mathf.Abs (transObj.transform.localPosition.y - 200) / 225);
+			}
+			transObj.GetComponent<UIWidget> ().alpha = rewardAlpha;
+			if (transObj.transform.localPosition.y >= 200)
+			{
+				if (transObj.transform.localScale.x > 0.6f)
+				{
+					transObj.transform.localScale -= Vector3.one * m_scale;
+					m_scale -= 0.0001f;
+					if (transObj.transform.localScale.x <= 0.3f)
+					{
+						transObj.transform.localScale = Vector3.one * 0.3f;
+					}
+				}
+			}
+	
+		}
+		if(!Move)
+		{
+			if(m_color >= 1 )
+			{
+				index = -1;
+			}
+			if(m_color < 0.5f )
+			{
+				index = 1;
+			}
+			m_color += index*Time.deltaTime*0.90f;
+			m_ContinueLabel.alpha = Mathf.Abs (m_color);
+		}
+
 	}
 	public void Close(GameObject mbutton)
 	{
-		if(mFuwenType)
+//		if(mFuwenType)
+//		{
+//			NewFuWenPage.Instance ().Init (NewFuWenPage.Instance ().mQueryFuwen.tab);
+//		}
+		if(m_Camera != null)
 		{
-			NewFuWenPage.Instance ().Init (NewFuWenPage.Instance ().mQueryFuwen.tab);
+			EffectTool.SetUIBackgroundEffect (m_Camera.gameObject,false);
+			m_Camera = null;
 		}
-
 		if(m_CallBack != null)
 		{
 			Debug.Log ("m_CallBack != null");
@@ -276,6 +340,7 @@ public class FuWenShow : MonoBehaviour {
 		{
 			Debug.Log ("m_CallBack == null");
 		}
+	
 		Destroy (this.gameObject);
 	}
 }

@@ -49,10 +49,15 @@ public class Global
 
 	public static bool m_isOpenPlunder = false;//lue duo
 
+	public static bool m_isCityWarOpen = false;//citywar
+
+	public static bool m_isChangeRoleOpen = false;//切换形象
+
 	public static List<TongzhiData> m_listAllTheData = new List<TongzhiData>();
 	public static List<TongzhiData> m_listMainCityData = new List<TongzhiData>();
 	public static List<TongzhiData> m_listJiebiaoData = new List<TongzhiData>();
 	public static List<TongzhiData> m_listShiLianData = new List<TongzhiData> ();
+	public static List<TongzhiData> m_listJunchengData = new List<TongzhiData> ();
 
 	public const int TILILVMAX = 14;
 
@@ -323,7 +328,8 @@ public class Global
 		bool isShowBagItemNumBelow = false, 
 		bool isSetDepth = true, bool isBagItemTop = true,
 		bool isFunction = false,
-		int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID ){
+		int p_window_id = UIWindowEventTrigger.DEFAULT_POP_OUT_WINDOW_ID,
+	    int vip0 = 0, int vip1 = 0){
 		return UtilityTool.Instance.CreateBox(
 			tile,
 			dis1,
@@ -339,7 +345,9 @@ public class Global
 			isSetDepth,
 			isBagItemTop, 
 			isFunction,
-			p_window_id );
+			p_window_id,
+			vip0,
+			vip1);
 	}
 
 	public static GameObject CreateFunctionIcon(int id)
@@ -769,12 +777,12 @@ public class Global
 		return returnTemp;
 	}
 
-	public static void ScendNull(short sendID)
+	public static void ScendNull(short sendID, int waitid = -1)
 	{
-		SocketTool.Instance().SendSocketMessage(sendID);
+		SocketTool.Instance().SendSocketMessage(sendID, waitid + "");
 	}
 
-	public static void ScendID(short sendID, int id)
+	public static void ScendID(short sendID, int id, int waitid = -1)
 	{
 		TalentUpLevelReq req = new TalentUpLevelReq();
 		
@@ -790,7 +798,7 @@ public class Global
 		
 		t_protof = tempStream.ToArray();
 		
-		SocketTool.Instance().SendSocketMessage(sendID, ref t_protof);
+		SocketTool.Instance().SendSocketMessage(sendID, ref t_protof, waitid + "");
 	}
 
 	public static void upDataTongzhiData(List<TongzhiData> listData)
@@ -815,6 +823,7 @@ public class Global
 		m_listJiebiaoData = new List<TongzhiData>();
 		m_listMainCityData = new List<TongzhiData>();
 		m_listShiLianData = new List<TongzhiData> ();
+		m_listJunchengData = new List<TongzhiData> ();
 		for(int i = 0; i < m_listAllTheData.Count; i ++)
 		{
 //			int tempState = m_listAllTheData[i].m_iSceneType;
@@ -829,6 +838,10 @@ public class Global
 			if((m_listAllTheData[i].m_ReceiveSceneType & 4) != 0)
 			{
 				m_listShiLianData.Add(m_listAllTheData[i]);
+			}
+			if((m_listAllTheData[i].m_ReceiveSceneType & 8) != 0)
+			{
+				m_listJunchengData.Add(m_listAllTheData[i]);
 			}
 		}
 //		Debug.Log("m_listMainCityData.cout="+m_listMainCityData.Count);

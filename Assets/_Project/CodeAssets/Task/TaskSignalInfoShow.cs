@@ -15,6 +15,7 @@ public class TaskSignalInfoShow : MonoBehaviour
     public GameObject m_grid;
     public GameObject m_ObjHidden;
     public UILabel m_labelTitle;
+    public UILabel m_labObject;
     public static int m_TaskId = 0;
     public ScaleEffectController m_SEC;
     private string _rewardInfo = "";
@@ -28,8 +29,16 @@ public class TaskSignalInfoShow : MonoBehaviour
         public string icon;
     }
     private List<RewardInfo> listRewardInfo = new List<RewardInfo>();
+    private  int _GuidanceId = -1;
+    
     void Awake()
     {
+        if (UIYindao.m_UIYindao.m_isOpenYindao)
+        {
+           _GuidanceId = UIYindao.m_UIYindao.m_iCurId;
+ 
+            UIYindao.m_UIYindao.CloseUI();
+        }
         if (MainCityUI.m_MainCityUI)
         {
             int size = MainCityUI.m_MainCityUI.m_WindowObjectList.Count;
@@ -53,9 +62,13 @@ public class TaskSignalInfoShow : MonoBehaviour
         _listObj.Clear();
         m_TaskSignal = this;
         m_ListEvent.ForEach(item => item.m_click_handler += GetAwards);
+        CycleTween.StartCycleTween(m_labObject.gameObject, 1, 0.4f, 0.5f, sdssd);
         m_SEC.OpenCompleteDelegate += ChargeData;
     }
-
+    void sdssd(float f)
+    {
+        m_labObject.color = new Color(m_labObject.color.r, m_labObject.color.g, m_labObject.color.b, f);
+    }
     int index_Num = 0;
 
     private List<GameObject> _listObj = new List<GameObject>();
@@ -96,21 +109,26 @@ public class TaskSignalInfoShow : MonoBehaviour
 
     void ChargeData()
     {
-        if (TaskData.Instance.m_TaskInfoDic.ContainsKey(m_TaskId) && TaskData.Instance.m_TaskInfoDic[m_TaskId].type == 1)
+        if (TaskData.Instance.m_TaskInfoDic.ContainsKey(m_TaskId)
+            && TaskData.Instance.m_TaskInfoDic[m_TaskId].type == 1)
         {
             m_SpriteIcon.spriteName = "side";
             ShowAwardInfo(TaskData.Instance.m_TaskInfoDic[m_TaskId]);
         }
         else if (TaskData.Instance.m_TaskDailyDic.ContainsKey(m_TaskId))
         {
-            m_SpriteIcon.spriteName = "meiri";
+            m_SpriteIcon.spriteName = "daily";
             ShowDailyAwardInfo(TaskData.Instance.m_TaskDailyDic[m_TaskId]);
+        }
+        else if (TaskData.Instance.m_TaskInfoDic.ContainsKey(m_TaskId))
+        {
+            m_SpriteIcon.spriteName = "main";
+            ShowAwardInfo(TaskData.Instance.m_MainComplete);
         }
         else
         {
-            m_TaskId = TaskData.Instance.m_MainComplete.id;
-            m_SpriteIcon.spriteName = "zhuxian";
-            ShowAwardInfo(TaskData.Instance.m_MainComplete);
+            UI3DEffectTool.ClearUIFx(m_ObjFinish);
+            Destroy(gameObject);
         }
     }
 
@@ -119,7 +137,7 @@ public class TaskSignalInfoShow : MonoBehaviour
         UI3DEffectTool.ClearUIFx(m_ObjFinish);
         m_ObjFinish.SetActive(false);
         m_ObjHidden.SetActive(true);
-        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_labelTitle.gameObject, EffectIdTemplate.GetPathByeffectId(620214), null);
+        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_labelTitle.gameObject, EffectIdTemplate.GetPathByeffectId(620246), null);
         taskId = temp.id;
         _rewardInfo = temp.award;
         m_labelTitle.text = "完成任务：" + temp.doneTitle;
@@ -156,6 +174,11 @@ public class TaskSignalInfoShow : MonoBehaviour
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
             }
         }
+        else
+        {
+            UI3DEffectTool.ClearUIFx(m_ObjFinish);
+            Destroy(gameObject);
+        }
     }
 
     void ShowDailyAwardInfo(RenWuTemplate temp)
@@ -163,7 +186,7 @@ public class TaskSignalInfoShow : MonoBehaviour
         UI3DEffectTool.ClearUIFx(m_ObjFinish);
         m_ObjFinish.SetActive(false);
         m_ObjHidden.SetActive(true);
-        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_labelTitle.gameObject, EffectIdTemplate.GetPathByeffectId(620214), null);
+        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_labelTitle.gameObject, EffectIdTemplate.GetPathByeffectId(620246), null);
         m_TaskSignal = this;
         taskId = temp.id;
         _rewardInfo = temp.jiangli;
@@ -202,6 +225,11 @@ public class TaskSignalInfoShow : MonoBehaviour
                 Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
             }
         }
+        else
+        {
+            UI3DEffectTool.ClearUIFx(m_ObjFinish);
+            Destroy(gameObject);
+        }
     }
     private bool _isCancelEffect = false;
     void GetAwards(GameObject obj)
@@ -221,6 +249,16 @@ public class TaskSignalInfoShow : MonoBehaviour
             else if (TaskData.Instance.m_TaskDailyDic.ContainsKey(m_TaskId))
             {
                 TaskData.Instance.GetDailyQuestAward(taskId);
+ 
+                if (TaskData.Instance.m_TaskDailyDic.ContainsKey(m_TaskId))
+                {
+                    TaskData.Instance.m_DailyLocalRefresh = true;
+                    if (!string.IsNullOrEmpty(TaskData.Instance.m_TaskDailyDic[m_TaskId].award))
+                    {
+                        FunctionWindowsCreateManagerment.ShowRAwardInfo(TaskData.Instance.m_TaskDailyDic[m_TaskId].award);
+                    }
+                    TaskData.Instance.m_TaskDailyDic.Remove(m_TaskId);
+                }
             }
             UI3DEffectTool.ClearUIFx(m_ObjFinish);
             Destroy(gameObject);
@@ -235,11 +273,18 @@ public class TaskSignalInfoShow : MonoBehaviour
 
     void OnDestroy()
     {
-       
+        if (TaskData.Instance.m_TaskRewardsGetID.ContainsKey(m_TaskId))
+        {
+            TaskData.Instance.m_TaskRewardsGetID.Remove(m_TaskId);
+        }
+
+        if (_GuidanceId > 0)
+        {
+            UIYindao.m_UIYindao.setOpenYindao(_GuidanceId);
+            _GuidanceId = -1;
+        }
         m_TaskSignal = null;
         if (TaskLayerManager.m_TaskLayerM)
             TaskLayerManager.m_TaskLayerM.m_isFinishCurrent = false;
-		if (TaskLayerEveryDayManager.m_TaskLayerM)
-			TaskLayerEveryDayManager.m_TaskLayerM.m_isFinishCurrent = false;
     }
 }

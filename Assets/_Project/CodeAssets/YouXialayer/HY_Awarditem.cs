@@ -12,11 +12,7 @@ public class HY_Awarditem : MYNGUIPanel {
 		EnergyDetailLongPress.OnLongPress = OnEnergyDetailClick;
 
 	}
-	
 
-	void Update () {
-	
-	}
 	public void ShowTips()
 	{
 

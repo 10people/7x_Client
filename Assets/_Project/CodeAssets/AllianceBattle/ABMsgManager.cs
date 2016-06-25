@@ -16,7 +16,10 @@ namespace AllianceBattle
     {
         public RootManager m_RootManager;
 
+        [Obsolete]
         public BattlefieldInfoResp m_BattlefieldInfoResp;
+
+        public DelegateHelper.VoidDelegate ExecuteAfterScoreList;
 
         // Use this for initialization
         void Awake()
@@ -79,26 +82,10 @@ namespace AllianceBattle
 
                     //        switch (msg.subaoType)
                     //        {
-                    //            //transport to position.
-
-                    //            //help AllianceBattle that under attack.
-                    //            case 101:
-                    //            case 102:
-                    //                {
-                    //                    m_RootManager.m_AllianceBattleMain.TpToPosition(new Vector2(msg.posX, msg.posZ));
-
-                    //                    break;
-                    //                }
-                    //            //join to AllianceBattle help list.
-                    //            case 104:
-                    //            case 105:
+                    //            case 501:
                     //                {
                     //                    ClientMain.m_UITextManager.createText("成功加入协助");
                     //                    m_RootManager.m_AllianceBattleMain.TpToPosition(new Vector2(msg.posX, msg.posZ));
-                    //                    break;
-                    //                }
-                    //            default:
-                    //                {
                     //                    break;
                     //                }
                     //        }
@@ -154,46 +141,37 @@ namespace AllianceBattle
                                     case Result.SKILL_NOT_EXIST:
                                         {
                                             ClientMain.m_UITextManager.createText("技能不存在");
+                                            m_RootManager.m_AllianceBattleMain.TryCancelChaseToAttack();
                                             return true;
                                         }
                                     case Result.TARGET_NOT_EXIST:
                                         {
                                             ClientMain.m_UITextManager.createText("目标不存在");
-                                            return true;
-                                        }
-                                    case Result.TARGET_IN_SAFE_AREA:
-                                        {
-                                            ClientMain.m_UITextManager.createText("目标在安全区");
+                                            m_RootManager.m_AllianceBattleMain.TryCancelChaseToAttack();
                                             return true;
                                         }
                                     case Result.SKILL_TARGET_NOT_SELF:
                                         {
                                             ClientMain.m_UITextManager.createText("不能对自己使用");
+                                            m_RootManager.m_AllianceBattleMain.TryCancelChaseToAttack();
                                             return true;
                                         }
                                     case Result.SKILL_TARGET_NOT_OTHER:
                                         {
                                             ClientMain.m_UITextManager.createText("不能对他人使用");
+                                            m_RootManager.m_AllianceBattleMain.TryCancelChaseToAttack();
                                             return true;
                                         }
                                     case Result.SKILL_TARGET_NOT_TEAMMATE:
                                         {
                                             ClientMain.m_UITextManager.createText("不能对友方使用");
+                                            m_RootManager.m_AllianceBattleMain.TryCancelChaseToAttack();
                                             return true;
                                         }
                                     case Result.SKILL_TARGET_NOT_ENEMY:
                                         {
                                             ClientMain.m_UITextManager.createText("不能对敌方使用");
-                                            return true;
-                                        }
-                                    case Result.CART_IN_PROTECT_TIME:
-                                        {
-                                            ClientMain.m_UITextManager.createText("本马使用了带保护效果的马具,在马具生效期间无法被攻击");
-                                            return true;
-                                        }
-                                    case Result.DAY_NOT_GET_AWARD_TIMES:
-                                        {
-                                            ClientMain.m_UITextManager.createText("今日的劫镖次数已用完,可与其他玩家切磋身手");
+                                            m_RootManager.m_AllianceBattleMain.TryCancelChaseToAttack();
                                             return true;
                                         }
                                 }
@@ -204,6 +182,12 @@ namespace AllianceBattle
                             //skill
                             if (tempInfo.skillId >= 0)
                             {
+                                //play been attack effect if hold.
+                                if (m_RootManager.m_AbPlayerSyncManager.m_PlayerDic.ContainsKey(tempInfo.targetUid) && m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[tempInfo.targetUid].IsHold && tempInfo.damage > 0)
+                                {
+                                    m_RootManager.m_AbHoldPointManager.TryPlayAlert(m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[tempInfo.targetUid].GetComponent<RPGBaseCultureController>().AlliancePost);
+                                }
+
                                 m_RootManager.m_AllianceBattleMain.ExecuteSkill(tempInfo);
                             }
                             else
@@ -225,7 +209,7 @@ namespace AllianceBattle
 
                             break;
                         }
-                    //AOE skill
+                    //[Obsolete]AOE skill
                     case ProtoIndexes.AOE_SKILL:
                         {
                             MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -244,7 +228,7 @@ namespace AllianceBattle
                             ErrorMessage tempInfo = new ErrorMessage();
                             t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                            m_RootManager.m_AllianceBattleMain.StopAOESkill(tempInfo);
+                            //m_RootManager.m_AllianceBattleMain.StopAOESkill(tempInfo.errorCode);
 
                             break;
                         }
@@ -272,22 +256,19 @@ namespace AllianceBattle
 
                             switch (tempInfo.resCode)
                             {
+                                case 20:
                                 case 40:
-                                    if (tempInfo.remainTimes > 0)
-                                    {
-                                        m_RootManager.m_AllianceBattleMain.ShowBuyItemWindow(ABBuyItemWindowManager.Type.Blood, tempInfo.nextCost, JunZhuData.Instance().m_junzhuInfo.yuanBao);
-                                    }
-                                    else
-                                    {
-                                        CommonBuy.Instance.ShowVIP(JunZhuData.Instance().m_junzhuInfo.vipLv + 1);
-                                    }
-
-                                    m_RootManager.m_AllianceBattleMain.SetRemainingBloodNum(tempInfo.remainXuePing);
+                                    m_RootManager.m_AllianceBattleMain.ShowBuyItemWindow(ABBuyItemWindowManager.Type.Blood, tempInfo.nextCost, tempInfo.remainTimes);
                                     break;
                                 default:
-                                    m_RootManager.m_AllianceBattleMain.SetRemainingBloodNum(tempInfo.remainXuePing);
+                                    if (m_RootManager.m_AllianceBattleMain.m_AbBuyItemWindowManager.gameObject.activeInHierarchy)
+                                    {
+                                        m_RootManager.m_AllianceBattleMain.m_AbBuyItemWindowManager.SetThis(ABBuyItemWindowManager.Type.Blood, tempInfo.nextCost, tempInfo.remainTimes);
+                                    }
                                     break;
                             }
+
+                            m_RootManager.m_AllianceBattleMain.SetRemainingBloodNum(tempInfo.remainXuePing);
 
                             return true;
                         }
@@ -303,22 +284,19 @@ namespace AllianceBattle
 
                             switch (tempInfo.resCode)
                             {
+                                case 20:
                                 case 40:
-                                    if (tempInfo.remainTimes > 0)
-                                    {
-                                        m_RootManager.m_AllianceBattleMain.ShowBuyItemWindow(ABBuyItemWindowManager.Type.Summon, tempInfo.nextCost, JunZhuData.Instance().m_junzhuInfo.yuanBao);
-                                    }
-                                    else
-                                    {
-                                        CommonBuy.Instance.ShowVIP(JunZhuData.Instance().m_junzhuInfo.vipLv + 1);
-                                    }
-
-                                    m_RootManager.m_AllianceBattleMain.SetRemainingSummonNum(tempInfo.remainXuePing);
+                                    m_RootManager.m_AllianceBattleMain.ShowBuyItemWindow(ABBuyItemWindowManager.Type.Summon, tempInfo.nextCost, tempInfo.remainTimes);
                                     break;
                                 default:
-                                    m_RootManager.m_AllianceBattleMain.SetRemainingSummonNum(tempInfo.remainXuePing);
+                                    if (m_RootManager.m_AllianceBattleMain.m_AbBuyItemWindowManager.gameObject.activeInHierarchy)
+                                    {
+                                        m_RootManager.m_AllianceBattleMain.m_AbBuyItemWindowManager.SetThis(ABBuyItemWindowManager.Type.Summon, tempInfo.nextCost, tempInfo.remainTimes);
+                                    }
                                     break;
                             }
+
+                            m_RootManager.m_AllianceBattleMain.SetRemainingSummonNum(tempInfo.remainXuePing);
 
                             return true;
                         }
@@ -330,20 +308,31 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
 
-                            m_RootManager.m_AllianceBattleMain.m_ScoreDataList = tempMsg.list.Select(item => new ABScoreItemController.ScoreData()
+                            m_RootManager.m_AllianceBattleMain.m_AbScoreWindowController.DefenderBTN.SetActive(tempMsg.cityId >= 510201);
+                            m_RootManager.m_AllianceBattleMain.m_AbScoreWindowController.CannotClickDefenderBTN.SetActive(tempMsg.cityId < 510201);
+
+                            m_RootManager.m_AllianceBattleMain.m_AbScoreWindowController.m_ScoreDataList = tempMsg.list.Select(item => new ABScoreItemController.ScoreData()
                             {
                                 Name = item.roleName,
                                 Rank = item.rank,
                                 ComboKill = item.lianSha,
                                 TotalKill = item.killCnt,
-                                Score = item.jiFen
+                                Score = item.jiFen,
+                                ID = item.jzId,
+                                AllianceName = item.lmName,
+                                GongXun = item.gx,
+                                RoleID = item.roleId
                             }).ToList();
 
-                            m_RootManager.m_AllianceBattleMain.ShowScoreWindow();
+                            if (ExecuteAfterScoreList != null)
+                            {
+                                ExecuteAfterScoreList();
+                                ExecuteAfterScoreList = null;
+                            }
 
                             break;
                         }
-                    //Commands.
+                    //Command list.
                     case ProtoIndexes.LMZ_CMD_LIST:
                         {
                             MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -359,6 +348,7 @@ namespace AllianceBattle
 
                             break;
                         }
+                    //Command response.
                     case ProtoIndexes.LMZ_CMD_ONE:
                         {
                             MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -366,19 +356,77 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
 
-                            ClientMain.m_UITextManager.createText(ColorTool.Color_Red_c40000 + tempMsg.errorDesc + "[-]");
+                            if (tempMsg.cmd == 20160530)
+                            {
+                                m_RootManager.m_AllianceBattleMain.StartCommandCDCalc((int)(float.Parse(tempMsg.errorDesc) / 1000));
+
+                                if (tempMsg.errorCode == 1)
+                                {
+                                    m_RootManager.MyPart = 2;
+                                }
+                                else if (tempMsg.errorCode == 2)
+                                {
+                                    m_RootManager.MyPart = 1;
+                                }
+
+                                //Init after set part.
+                                m_RootManager.m_AllianceBattleMain.RefreshAttackerGainedBuff();
+                            }
+                            else
+                            {
+                                m_RootManager.m_AllianceBattleMain.StartCommandCDCalc();
+
+                                ClientMain.m_UITextManager.createText(tempMsg.errorDesc);
+                                m_RootManager.m_AllianceBattleMain.ShowCommandMapEffect(tempMsg.errorCode);
+                            }
 
                             break;
                         }
                     //Summon
                     case ProtoIndexes.LMZ_ZhaoHuan:
                         {
-                            MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-                            ErrorMessage tempMsg = new ErrorMessage();
-                            QiXiongSerializer t_qx = new QiXiongSerializer();
-                            t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
+                            MemoryStream stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                            QiXiongSerializer xiongSerializer = new QiXiongSerializer();
+                            SuBaoMSG msg = new SuBaoMSG();
+                            xiongSerializer.Deserialize(stream, msg, msg.GetType());
 
-                            m_RootManager.m_AllianceBattleMain.ExecuteSummon(tempMsg.errorCode);
+                            if (msg.otherJzId == -999 && msg.eventId == -501)
+                            {
+                                //set cd.
+                                var triggeredSkill = m_RootManager.m_AllianceBattleMain.m_SkillControllers.Where(item => item.m_Index == 200).ToList();
+                                if (triggeredSkill.Any())
+                                {
+                                    triggeredSkill.First().TryStartAmountOfSelfCD(float.Parse(msg.subao) / 1000, false);
+                                }
+
+                                //set play video config.
+                                if (msg.configId == 0)
+                                {
+                                    //Play guide video.
+                                    VideoHelper.PlayDramaVideo(EffectIdTemplate.GetPathByeffectId(700003), true);
+                                }
+                            }
+                            else
+                            {
+                                m_RootManager.m_AllianceBattleMain.ExecuteSummon((int)msg.otherJzId, msg.subao);
+                            }
+
+                            break;
+                        }
+                    //Summon
+                    case ProtoIndexes.LMZ_fenShen:
+                        {
+                            MemoryStream stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                            QiXiongSerializer xiongSerializer = new QiXiongSerializer();
+                            ErrorMessage msg = new ErrorMessage();
+                            xiongSerializer.Deserialize(stream, msg, msg.GetType());
+
+                            //set cd.
+                            var triggeredSkill = m_RootManager.m_AllianceBattleMain.m_SkillControllers.Where(item => item.m_Index == 300).ToList();
+                            if (triggeredSkill.Any())
+                            {
+                                triggeredSkill.First().TryStartAmountOfSelfCD(msg.cmd / 1000f);
+                            }
 
                             break;
                         }
@@ -394,7 +442,7 @@ namespace AllianceBattle
 
                             break;
                         }
-                    //Big buff
+                    //Tulu buff
                     case ProtoIndexes.LMZ_ChengHao:
                         {
                             MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -402,11 +450,25 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
 
-                            m_RootManager.m_AllianceBattleMain.AddBigBuff(tempMsg.errorCode);
+                            //Add buff
+                            if (tempMsg.cmd == 1)
+                            {
+                                m_RootManager.m_AllianceBattleMain.SetBigBuff(true, tempMsg.errorCode, int.Parse(tempMsg.errorDesc));
+                            }
+                            //add buff without notification
+                            else if (tempMsg.cmd == 2)
+                            {
+                                m_RootManager.m_AllianceBattleMain.SetBigBuff(true, tempMsg.errorCode, int.Parse(tempMsg.errorDesc), false);
+                            }
+                            //Remove buff
+                            else if (tempMsg.cmd == 0)
+                            {
+                                m_RootManager.m_AllianceBattleMain.SetBigBuff(false, tempMsg.errorCode, int.Parse(tempMsg.errorDesc));
+                            }
 
                             break;
                         }
-                    //skip skill.
+                    //Skip skill, use this for tp.
                     case ProtoIndexes.POS_JUMP:
                         {
                             MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -468,7 +530,7 @@ namespace AllianceBattle
                             BattlefieldInfoNotify tempInfo = new BattlefieldInfoNotify();
                             t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                            m_RootManager.m_AbHoldPointManager.UpdateHoldPoints(tempInfo.campInfos);
+                            //m_RootManager.m_AbHoldPointManager.UpdateHoldPoints(tempInfo.campInfos);
                             m_RootManager.m_AllianceBattleMain.UpdateBattleTime(tempInfo.endRemainTime, tempInfo.winSide);
 
                             if (tempInfo.winSide < 0)
@@ -489,31 +551,15 @@ namespace AllianceBattle
                             ABResult tempInfo = new ABResult();
                             t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
-                            m_RootManager.m_AllianceBattleMain.ShowBattleResult(tempInfo.IsSucceed, tempInfo.PersonalScore, tempInfo.Rank, tempInfo.KillNum, tempInfo.AllianceResult, tempInfo.GainItem);
+                            m_RootManager.m_AllianceBattleMain.m_ABResultManager.ShowBattleResult(tempInfo.IsSucceed, tempInfo.PersonalScore, tempInfo.Rank, tempInfo.KillNum, tempInfo.lmGX);
 
                             break;
                         }
-                    //[Obsolete]End battle msg.
-                    case ProtoIndexes.ALLIANCE_BATTLE_RESULT:
+                    case ProtoIndexes.ALLIANCE_FIRE_NOTIFY:
                         {
-                            MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-                            QiXiongSerializer t_qx = new QiXiongSerializer();
-                            BattleResultAllianceFight tempInfo = new BattleResultAllianceFight();
-                            t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+                            m_RootManager.m_AllianceBattleMain.m_ABResultManager.ShowBattleResult(false, 0, 1, 0, 0, false);
 
-                            BattleControlor.BattleResult result = tempInfo.result ? BattleControlor.BattleResult.RESULT_WIN : BattleControlor.BattleResult.RESULT_LOSE;
-                            List<Enums.Currency> currencyList = new List<Enums.Currency>();
-                            List<int> numList = new List<int>();
-                            tempInfo.awardItems.ForEach(item =>
-                            {
-                                currencyList.Add(Enums.Currency.GongXian);
-                                numList.Add(item.awardNum);
-                            });
-                            int second = tempInfo.costTime;
-
-                            EnterBattleResult.showBattleResult(result, currencyList, numList, second, second, m_RootManager.m_AllianceBattleMain.OnReturnClick);
-
-                            return true;
+                            break;
                         }
                 }
             }

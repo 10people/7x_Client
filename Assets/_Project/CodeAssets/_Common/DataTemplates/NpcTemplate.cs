@@ -237,7 +237,7 @@ public class NpcTemplate : XmlLoadManager {
 		{
 			NpcTemplate t_item = templates[ i ];
 
-			if( t_item.NpcId == npc_id && t_item.ifTeammate != 1&&t_item.icon != "0"&&t_item.type < 6){
+			if( t_item.NpcId == npc_id && t_item.ifTeammate != 1&&t_item.icon != "0" && t_item.type < 6){
 
 				temps.Add(t_item);
 			}

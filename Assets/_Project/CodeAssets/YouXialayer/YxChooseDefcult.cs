@@ -8,13 +8,17 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
+
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
 	[HideInInspector]
 	
 	public int BigId;
 
 	public GameObject Item;
 
-	public UILabel YxName;
+//	public UILabel YxName;
 	public UIGrid mGid;
 	public YouXiaInfo mYouXia_Info;
 	public List <YouXiaItem> YouXiaItemmList = new List<YouXiaItem>();
@@ -42,6 +46,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	
 	void Awake()
 	{
+
 		SocketTool.RegisterMessageProcessor(this);
 	}
 	void OnDestroy()
@@ -49,9 +54,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 		mmmYxChooseDefcult = null;
 		SocketTool.UnRegisterMessageProcessor(this);
 	}
-	void Update () {
-	
-	}
+
 	public void Init()
 	{
 		SetMessegae ();
@@ -76,7 +79,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 		
 		t_protof = saodangstream.ToArray();
 		
-		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_YOUXIA_TYPE_INFO_REQ,ref t_protof);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_YOUXIA_TYPE_INFO_REQ,ref t_protof,p_receiving_wait_proto_index:ProtoIndexes.S_YOUXIA_TYPE_INFO_RESP);
 	}
 	public   bool OnProcessSocketMessage(QXBuffer p_message){
 		
@@ -124,7 +127,8 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 		//Debug.Log ("BigId.Count = "+BigId);
 		List<YouxiaPveTemplate> mYouxiaPveTemplateList = YouxiaPveTemplate.getYouXiaPveTemplateListBy_BigId (BigId);
 		YouxiaPveTemplate myouxia = YouxiaPveTemplate.getYouXiaPveTemplateBy_BigId (BigId);
-		YxName.text = NameIdTemplate.GetName_By_NameId (myouxia.bigName);
+//		YxName.text = NameIdTemplate.GetName_By_NameId (myouxia.bigName);
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, NameIdTemplate.GetName_By_NameId (myouxia.bigName), 0, 0);
 		foreach(YouXiaItem m_YXItem in YouXiaItemmList)
 		{
 			Destroy(m_YXItem.gameObject);

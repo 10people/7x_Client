@@ -42,7 +42,8 @@ namespace Carriage
         {
             get
             {
-                return m_SkillControllers.Where(item => item.m_Template.SkillTarget != 0).ToList();
+                //return m_SkillControllers.Where(item => item.m_Template != null && item.m_Template.SkillTarget != 0).ToList();
+                return new List<RTSkillController>();
             }
         }
 
@@ -92,23 +93,65 @@ namespace Carriage
 
         #region Navigate with tracking
 
-        [HideInInspector]
-        public Transform m_TargetItemTransform;
+        public int m_TargetItemUID;
 
         private const float m_TrackingNavigateRange = 1.5f;
+        public DelegateHelper.VoidDelegate ExecuteAfterNavigateToItem;
 
         public void NavigateToItem()
         {
-            if (m_RootManager.m_SelfPlayerController == null || m_TargetItemTransform == null)
+            if (m_RootManager.m_SelfPlayerController == null || m_TargetItemUID < 0)
             {
                 return;
             }
 
-            //Make navigate move.
-            if (Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, m_TargetItemTransform.position) > m_TrackingNavigateRange)
+            Transform m_TargetItemTransform = null;
+
+            if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(m_TargetItemUID))
             {
-                m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = NavigateToItem;
-                m_RootManager.m_SelfPlayerController.StartNavigation(m_TargetItemTransform.position);
+                m_TargetItemTransform = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetItemUID].transform;
+
+                if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetItemUID].GetComponent<RPGBaseCultureController>().IsSelf)
+                {
+                    //Make navigate move.
+                    if (Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, m_TargetItemTransform.position) > m_TrackingNavigateRange)
+                    {
+                        m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = NavigateToItem;
+                        m_RootManager.m_SelfPlayerController.StartNavigation(m_TargetItemTransform.position);
+                    }
+                    else
+                    {
+                        //achieve target position.
+                        ClientMain.m_UITextManager.createText("鞭打可提升镖马的速度!");
+                    }
+                }
+                else
+                {
+                    //Make navigate move.
+                    if (Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, m_TargetItemTransform.position) > m_TrackingNavigateRange)
+                    {
+                        m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = NavigateToItem;
+                        m_RootManager.m_SelfPlayerController.StartNavigation(m_TargetItemTransform.position);
+                    }
+                    else
+                    {
+                        //achieve target position.
+                        if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetItemUID].GetComponent<RPGBaseCultureController>().IsEnemy)
+                        {
+                            if (!IsChaseAttack)
+                            {
+                                ClientMain.m_UITextManager.createText("自动开始追击!");
+                                ActiveTarget(m_TargetItemUID);
+                                OnChaseAttackClick();
+                            }
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                Debug.LogError("Cannot navigate to item: " + m_TargetItemUID + " cause item not found.");
             }
         }
 
@@ -162,7 +205,7 @@ namespace Carriage
             if (m_RootManager.m_SelfPlayerController != null && m_RootManager.m_SelfPlayerCultureController != null)
             {
                 //Cancel chase.
-                m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
+                TryCancelChaseToAttack();
 
                 m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = m_RootManager.m_CarriageMain.DoStartCarriage;
                 m_RootManager.m_SelfPlayerController.StartNavigation(m_RootManager.m_CarriageSafeArea.m_CarriageNPCList.OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.transform.position)).First().transform.position, 2);
@@ -199,6 +242,13 @@ namespace Carriage
                 var tempController = m_SkillControllers.Where(item => item.m_Index == index).First();
                 var template = tempController.m_Template;
 
+                //Check self player not exist
+                if (m_RootManager.m_SelfPlayerController == null || m_RootManager.m_SelfPlayerCultureController == null)
+                {
+                    TryCancelChaseToAttack();
+                    return;
+                }
+
                 //Check CD.
                 if (tempController.IsInCD)
                 {
@@ -209,7 +259,9 @@ namespace Carriage
                 //Update target ,skill target check, return when no target.
                 if (template.SkillTarget == 1 && (m_TargetId < 0 || !m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(m_TargetId)))
                 {
-                    ClientMain.m_UITextManager.createText("需要选定一个目标");
+                    ExecuteSelfFakeSkill(template.SkillId);
+
+                    //ClientMain.m_UITextManager.createText("需要选定一个目标");
                     TryCancelChaseToAttack();
                     DeactiveTarget();
                     return;
@@ -275,7 +327,7 @@ namespace Carriage
                 if ((template.SkillId == 101 || template.SkillId == 111) && m_RootManager.m_SelfPlayerController != null && m_RootManager.m_SelfPlayerCultureController != null && m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(m_TargetId) && m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetId].IsCarriage && RemainingRobCarriageTimes <= 0)
                 {
                     ClientMain.m_UITextManager.createText("今日的劫镖次数已用完,可与其他玩家切磋身手");
-                    m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
+                    TryCancelChaseToAttack();
                     return;
                 }
 
@@ -314,10 +366,10 @@ namespace Carriage
                 if (temp.Any() && m_RootManager.m_CarriageItemSyncManager.m_PlayerDic.ContainsKey(temp.First().UID))
                 {
                     //Cancel chase.
-                    m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
+                    TryCancelChaseToAttack();
 
                     m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = null;
-                    m_TargetItemTransform = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[temp.First().UID].transform;
+                    m_TargetItemUID = temp.First().UID;
                     NavigateToItem();
 
                     //m_TotalCarriageListController.OnCloseWindowClick();
@@ -560,7 +612,7 @@ namespace Carriage
                 return null;
             }
 
-            return allItemList.OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.Value.transform.position)).ThenBy(item => item.Value.IsCarriage).Select(item => item.Key).ToList();
+            return allItemList.Where(item => item.Value.GetComponent<RPGBaseCultureController>().IsEnemy).OrderBy(item => Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, item.Value.transform.position)).ThenBy(item => item.Value.IsCarriage).Select(item => item.Key).ToList();
         }
 
         /// <summary>
@@ -688,6 +740,37 @@ namespace Carriage
             }
         }
 
+        public void ExecuteSelfFakeSkill(int skillId)
+        {
+            switch (skillId)
+            {
+                //normal attack
+                //sp attack
+                case 101:
+                case 111:
+                    {
+                        m_RTSkillExecuter.ExecuteAttack(PlayerSceneSyncManager.Instance.m_MyselfUid, -1, skillId);
+
+                        break;
+                    }
+                //Recover skill
+                case 121:
+                    {
+                        m_RTSkillExecuter.ExecuteRecover(PlayerSceneSyncManager.Instance.m_MyselfUid, skillId);
+
+                        break;
+                    }
+            }
+
+            //Set cds.
+            m_SkillControllers.ForEach(item => item.TryStartSharedCD());
+            var triggeredSkill = m_SkillControllers.Where(item => item.m_Index == skillId).ToList();
+            if (triggeredSkill.Any())
+            {
+                triggeredSkill.First().TryStartSelfCD();
+            }
+        }
+
         public void ExecuteBuff(BufferInfo tempInfo)
         {
             switch (tempInfo.bufferId)
@@ -805,6 +888,9 @@ namespace Carriage
         public UIButton QuickRebirthButton;
         public GameObject BuyFullRebirthTimeObject;
 
+        public GameObject VipObject;
+        public UISprite VipSprite;
+
         public int SlowRebirthTime;
 
         public void ShowDeadWindow(int killerUID, int remainFullRebirthTimes, int slowRebirthTime, int quickRebirthCost)
@@ -843,6 +929,12 @@ namespace Carriage
                 TimeHelper.Instance.RemoveFromTimeCalc("CarriageRebirth");
             }
             TimeHelper.Instance.AddEveryDelegateToTimeCalc("CarriageRebirth", slowRebirthTime, SetRebirthTime);
+
+            //Set vip sign.
+            int vip = VipTemplate.templates.Where(item => item.CarriageRebirth > 0).OrderBy(item => item.lv).First().lv;
+
+            VipObject.SetActive(true);
+            VipSprite.spriteName = "v" + vip;
 
             //vague
             m_MainUIVagueEffect.enabled = true;
@@ -885,6 +977,14 @@ namespace Carriage
 
         public void OnSlowRebirthClick()
         {
+            int vip = VipTemplate.templates.Where(item => item.CarriageRebirth > 0).OrderBy(item => item.lv).First().lv;
+
+            if (JunZhuData.Instance().m_junzhuInfo.vipLv < vip)
+            {
+                CommonBuy.Instance.ShowVIP();
+                return;
+            }
+
             PlayerReviveRequest tempInfo = new PlayerReviveRequest()
             {
                 type = 0
@@ -1542,10 +1642,10 @@ namespace Carriage
             if (temp.Any())
             {
                 //Cancel chase.
-                m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
+                TryCancelChaseToAttack();
 
                 m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = null;
-                m_TargetItemTransform = temp.First().transform;
+                m_TargetItemUID = temp.First().UID;
                 NavigateToItem();
             }
         }
@@ -1718,7 +1818,7 @@ namespace Carriage
                     if (Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetId].transform.position) > template.Range_Max)
                     {
                         m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = null;
-                        m_TargetItemTransform = m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetId].transform;
+                        m_TargetItemUID = m_TargetId;
                         NavigateToItem();
                     }
                 }
@@ -1747,6 +1847,8 @@ namespace Carriage
             {
                 SetRecordRedAlert(true);
             }
+
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.INIT, "Carriage_Main");
         }
 
         void Awake()
@@ -1782,25 +1884,42 @@ namespace Carriage
             m_MapController.m_ExecuteAfterCloseMap = ExecuteAfterCloseMap;
         }
 
-#if UNIT_TEST
-
         void OnGUI()
         {
-            if (GUILayout.Button("Test TP"))
+            if (ConfigTool.GetBool(ConfigTool.CONST_UNIT_TEST))
             {
-                TpToPosition(new Vector2(202, 30));
-            }
-            if (GUILayout.Button("Test buy"))
-            {
-                CommonRecharge.Instance.ShowBuy(10000, 5, doBuy);
-            }
-            if (GUILayout.Button("Test vip"))
-            {
-                CommonRecharge.Instance.ShowVIP(5);
-            }
-            if (GUILayout.Button("Test effect"))
-            {
-                m_BannerEffectController.ShowAlertInfo("testing", "testing2", "", new List<int>() { 900010, 900011 }, new List<int>() { 1, 2 });
+                if (GUILayout.Button("Test TP"))
+                {
+                    TpToPosition(new Vector2(202, 30));
+                }
+                if (GUILayout.Button("Test buy"))
+                {
+                    CommonRecharge.Instance.ShowBuy(10000, 5, doBuy);
+                }
+                if (GUILayout.Button("Test vip"))
+                {
+                    CommonRecharge.Instance.ShowVIP(5);
+                }
+                if (GUILayout.Button("Test effect"))
+                {
+                    m_BannerEffectController.ShowAlertInfo("testing", "testing2", "", new List<int>() { 900010, 900011 }, new List<int>() { 1, 2 });
+                }
+                if (GUILayout.Button("Test attack"))
+                {
+                    m_RTSkillExecuter.ExecuteAttack(PlayerSceneSyncManager.Instance.m_MyselfUid, m_TargetId, 101);
+                }
+                if (GUILayout.Button("Test been attack"))
+                {
+                    m_RTSkillExecuter.ExecuteBeenAttack(-1, m_TargetId, 999, 1, m_TargetId, 101);
+                }
+                if (GUILayout.Button("Test attack"))
+                {
+                    m_RTSkillExecuter.ExecuteAttack(PlayerSceneSyncManager.Instance.m_MyselfUid, m_TargetId, 111);
+                }
+                if (GUILayout.Button("Test been attack"))
+                {
+                    m_RTSkillExecuter.ExecuteBeenAttack(-1, m_TargetId, 999, 1, m_TargetId, 111);
+                }
             }
         }
 
@@ -1808,7 +1927,5 @@ namespace Carriage
         {
             m_BannerEffectController.ShowAlertInfo("testing", "testing2", "", new List<int>() { 900010, 900011 }, new List<int>() { 1, 2 });
         }
-#endif
-
     }
 }

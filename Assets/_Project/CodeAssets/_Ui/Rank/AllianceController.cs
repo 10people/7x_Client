@@ -18,14 +18,23 @@ namespace Rank
             }
         }
 
-        public void Refresh(List<LianMengInfo> list)
+        public void Refresh(List<LianMengInfo> list, int result)
         {
             if (list == null || list.Count == 0)
             {
                 //Find nothing in one mode.
                 if (IsOneMode)
                 {
-                    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.FindNoAllianceCallBack);
+                    //not exist
+                    if (result == 1)
+                    {
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.AllianceNotExistCallBack);
+                    }
+                    //not in rank
+                    else if (result == 2)
+                    {
+                        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), m_RootController.AllianceNotInRankCallBack);
+                    }
                 }
                 else if (CurrentPageIndex == 1)
                 {
@@ -63,39 +72,38 @@ namespace Rank
                         return;
                     }
                 }
+                else
+                {
+                    Debug.LogError("Return null when page index is: " + CurrentPageIndex + " and not one mode.");
+                }
             }
             else
             {
                 //Clear all
-                while (m_Grid.transform.childCount != 0)
-                {
-                    var child = m_Grid.transform.GetChild(0);
-                    child.parent = null;
-                    Destroy(child.gameObject);
-                }
                 m_DetailControllerList.Clear();
+
+                TransformHelper.AddOrDelItem(m_Grid.transform, m_Prefab, list.Count, m_Grid.cellHeight);
 
                 for (int i = 0; i < list.Count; i++)
                 {
-                    var temp = Instantiate(m_Prefab) as GameObject;
-                    TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                    var temp = m_Grid.transform.GetChild(i);
+                    temp.name = "_" + UtilityTool.FullNumWithZeroDigit(i, list.Count.ToString().Length);
+
                     var controller = temp.GetComponent<AllianceDetailController>();
-
-                    temp.name += "_" + UtilityTool.FullNumWithZeroDigit(i, list.Count.ToString().Length);
-
                     controller.m_ModuleController = this;
                     controller.m_AllianceInfo = list[i];
                     controller.SetThis();
 
                     m_DetailControllerList.Add(controller);
-
-                    m_Grid.Reposition();
-
-                    //Reset scroll view.
-                    m_ScrollView.UpdateScrollbars(true);
-                    m_ScrollBar.value = IsRefreshToTop ? 0.0f : 1.0f;
                 }
 
+                m_Grid.Reposition();
+
+                //Reset scroll view.
+                m_ScrollView.UpdateScrollbars(true);
+                m_ScrollBar.value = IsRefreshToTop ? 0.0f : 1.0f;
+                m_ScrollBar.ForceUpdate();
+                m_ScrollView.UpdatePosition();
                 NoDataLabel.gameObject.SetActive(false);
             }
 
@@ -106,8 +114,13 @@ namespace Rank
                 if (detailControllerList.Count == 1)
                 {
                     UISprite sprite = detailControllerList[0].GetComponent<UISprite>();
-                    sprite.spriteName = "jianbianbgliang";
-                    detailControllerList.First().MyAllianceLogoSprite.gameObject.SetActive(true);
+                    detailControllerList[0].SetBG(true);
+
+                    //Show myself logo if possible.
+                    if (AllianceData.Instance.g_UnionInfo.name == m_OneModeNameStr)
+                    {
+                        detailControllerList.First().MyAllianceLogoSprite.gameObject.SetActive(true);
+                    }
 
                     float widgetValue = m_ScrollView.GetWidgetValueRelativeToScrollView(sprite).y;
                     if (widgetValue < 0 || widgetValue > 1)
@@ -158,7 +171,7 @@ namespace Rank
                             CurrentPageIndex = tempResp.pageNo;
                             TotalPageIndex = tempResp.pageCount;
 
-                            Refresh(tempResp.mengList);
+                            Refresh(tempResp.mengList, tempResp.result);
 
                             return true;
                         }

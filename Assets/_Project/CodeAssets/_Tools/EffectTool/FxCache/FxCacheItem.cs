@@ -9,18 +9,6 @@ public class FxCacheItem : MonoBehaviour{
 
 	#region Register & UnRegister
 
-	void Awake(){
-		
-	}
-
-	void OnEnable(){
-		
-	}
-
-	void OnDisable(){
-		
-	}
-
 	public void FreeFx(){
 		FxHelper.FreeFxGameObject( m_fx_path, gameObject );
 	}

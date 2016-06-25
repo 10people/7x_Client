@@ -29,14 +29,7 @@ public class MiBaoAddStar : MonoBehaviour,SocketProcessor {
 		SocketTool.UnRegisterMessageProcessor(this);
 		
 	}
-	void Start () {
-	
-	}
-	
 
-	void Update () {
-	
-	}
 	public void init()
 	{
 		int star = showMiBao.star;

@@ -9,16 +9,6 @@ public class TestEffect : MonoBehaviour {
 		EffectIdTemplate.LoadTemplates();
 	}
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	private GUIStyle m_gui_lb_style;
 	
 	private GUIStyle m_gui_btn_style;

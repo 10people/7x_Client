@@ -28,8 +28,8 @@ public class ShowAllMembers : MonoBehaviour {
 
 	GetDragData mGetDragData;
 
-	public UIAtlas m_Atlas1;
-	public UIAtlas m_Atlas2;
+	public GameObject AllianceRoot;
+	
 	public UISprite mBg;
 	void Start () {
 	
@@ -37,11 +37,7 @@ public class ShowAllMembers : MonoBehaviour {
 		confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 	}
-	
 
-	void Update () {
-	
-	}
 	public void init()
 	{
 		FriendData.Instance.RequestData ();
@@ -82,8 +78,7 @@ public class ShowAllMembers : MonoBehaviour {
 		if(mMemberInfo.offlineTime <= 0)
 		{
 			DownTime.text = "在线";
-			mBg.atlas = m_Atlas1;
-			mBg.spriteName = "tint_back";
+			mBg.spriteName = "thirdBg";
 			return;
 		}
 		if(mMemberInfo.offlineTime > (60*60*24))
@@ -107,8 +102,8 @@ public class ShowAllMembers : MonoBehaviour {
 		{
 			DownTime.text = "离线1分钟";
 		}
-		mBg.atlas = m_Atlas2;
-		mBg.spriteName = "di_shen";
+
+		mBg.spriteName = "jianbianbgan";
 	}
 	GameObject m_tempObject;
 	void OnClick()
@@ -161,7 +156,7 @@ public class ShowAllMembers : MonoBehaviour {
 				}
 			}
 
-			//tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "复制名字", m_VoidDelegate = CopyMemberName });
+			tempList.Add(new FloatButtonsController.ButtonInfo() { m_LabelStr = "私聊", m_VoidDelegate = PrivateChat });
 
 		}
 	
@@ -191,9 +186,9 @@ public class ShowAllMembers : MonoBehaviour {
 		float m_y = 0;
 
 		m_y = this.transform.localPosition.y + this.transform.parent.parent.localPosition.y;
-		Debug.Log ("m_y = "+m_y);
-		Debug.Log ("this.transform.localPosition.y = "+this.transform.localPosition.y);
-		Debug.Log ("this.transform.parent.parent.localPosition.y = "+this.transform.parent.parent.localPosition.y);
+//		Debug.Log ("m_y = "+m_y);
+//		Debug.Log ("this.transform.localPosition.y = "+this.transform.localPosition.y);
+//		Debug.Log ("this.transform.parent.parent.localPosition.y = "+this.transform.parent.parent.localPosition.y);
 		if(NewAlliancemanager.Instance().m_allianceHaveRes.identity  == 0)
 		{
 			if(m_y < -160)
@@ -227,19 +222,20 @@ public class ShowAllMembers : MonoBehaviour {
 
 	public  void GetInfo()
 	{
-		JunZhuInfoSpecifyReq mJunZhuInfoSpecifyReq = new JunZhuInfoSpecifyReq ();
+//		JunZhuInfoSpecifyReq mJunZhuInfoSpecifyReq = new JunZhuInfoSpecifyReq ();
+//
+//		mJunZhuInfoSpecifyReq.junzhuId = mMemberInfo.junzhuId;
+//		
+//		MemoryStream t_stream = new MemoryStream ();
+//		
+//		QiXiongSerializer q_serializer = new QiXiongSerializer ();
+//		
+//		q_serializer.Serialize (t_stream,mJunZhuInfoSpecifyReq);
+//		
+//		byte[] t_protof = t_stream.ToArray ();
 
-		mJunZhuInfoSpecifyReq.junzhuId = mMemberInfo.junzhuId;
-		
-		MemoryStream t_stream = new MemoryStream ();
-		
-		QiXiongSerializer q_serializer = new QiXiongSerializer ();
-		
-		q_serializer.Serialize (t_stream,mJunZhuInfoSpecifyReq);
-		
-		byte[] t_protof = t_stream.ToArray ();
-		
-		SocketTool.Instance().SendSocketMessage (ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ,ref t_protof,"23068");
+		KingDetailInfoController.Instance.ShowKingDetailWindow (mMemberInfo.junzhuId);
+		//SocketTool.Instance().SendSocketMessage (ProtoIndexes.JUNZHU_INFO_SPECIFY_REQ,ref t_protof,"23068");
 		DestroyFloatButtons();
 
 		//Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
@@ -250,6 +246,11 @@ public class ShowAllMembers : MonoBehaviour {
 
 		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_GET_FRIEND_IDS);
 
+		DestroyFloatButtons();
+	}
+	public  void PrivateChat()
+	{
+		QXChatPage.chatPage.setSiliao (mMemberInfo.junzhuId,mMemberInfo.name,AllianceRoot);
 		DestroyFloatButtons();
 	}
 	public  void TouPiao()

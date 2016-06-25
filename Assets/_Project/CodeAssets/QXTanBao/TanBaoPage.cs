@@ -48,6 +48,7 @@ public class TanBaoPage : MonoBehaviour {
 	public ScaleEffectController sEffectController;
 
 	public GameObject anchorTopRight;
+	public GameObject m_anchorTL;
 
 	private bool isOpenFirst = true;
 
@@ -67,6 +68,7 @@ public class TanBaoPage : MonoBehaviour {
 	void Start ()
 	{
 		QXComData.LoadYuanBaoInfo (anchorTopRight);
+		QXComData.LoadTitleObj (m_anchorTL,"探宝");
 	}
 
 	/// <summary>

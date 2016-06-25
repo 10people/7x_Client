@@ -42,16 +42,22 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 
 	public FuwenLanwei mFuWenlanwei;
 
-	private FuwenLanwei mCurrFuWenlanwei ;
+	public FuwenLanwei mCurrFuWenlanwei ;
 
 
 	public GameObject RongHeBtn;
+
+	public UISprite RongHeBtnSprite;
 
 	public static FuWenInfoShow mFuWenInfoShow;
 
 	public List<FuwenInBag> fuwensinBag = new List<FuwenInBag>();
 
 	public UILabel DataMove;
+
+	[HideInInspector]public int CurrLevelUpExp;
+
+	[HideInInspector]public int LanweiExp;// 栏位上的经验值
 
 	public static FuWenInfoShow Instance()
 	{
@@ -103,106 +109,112 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 
 	void Update () {
 	
+		if(fuwensinBag.Count <= 0)
+		{
+			RongHeBtnSprite.color = Color.gray;
+		}
+		else
+		{
+			RongHeBtnSprite.color = Color.white;
+		}
 	}
 	public void Init()
 	{
 //		FuWenItem_Id
+		LanweiExp = 0;
+
 		fuwensinBag.Clear ();
-		RongHeBtn.SetActive (false);
 
 		FuWenTemplate mFUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mFuWenlanwei.itemId);
 
 		mCurrFuWenlanwei = (FuwenLanwei)mFuWenlanwei.Public_MemberwiseClone();
-
+		CurrLevelUpExp = mFUwen.lvlupExp;
 		InitLevelInfo ();
+		if(UIYindao.m_UIYindao.m_isOpenYindao)
+		{
+			UIYindao.m_UIYindao.CloseUI();
+		}
 	}
 	void InitLevelInfo()
 	{
-//		Debug.Log ("mFuWenlanwei.exp = "+mFuWenlanwei.exp);
-//
-//		Debug.Log ("mCurrFuWenlanwei.exp = "+mCurrFuWenlanwei.exp);
-
 		FuWenTemplate mFUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mCurrFuWenlanwei.itemId);
+
 		mFuwenIcon.spriteName = mFUwen.icon.ToString ();
-		Debug.Log ("mFUwen.icon = "+mFUwen.icon);
+
 		mFuwenpinzhi.spriteName = "pinzhi"+(mFUwen.color-1).ToString();
 
 		mFuwenName.text = NameIdTemplate.GetName_By_NameId (mFUwen.name);
-		Apply_Exp.text = "被融合时提给的经验："+mCurrFuWenlanwei.exp.ToString ();//...........................................................................
-		if(mCurrFuWenlanwei.exp < mFUwen.lvlupExp) // 判断是否该升级了
-		{
-			//Debug.Log ("mFUwen.fuwenFront = "+mFUwen.fuwenFront);
-			if(mFUwen.fuwenFront > 0)
-			{
-				FuWenTemplate mFrontFUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mFUwen.fuwenFront);
-				//Debug.Log ("mFrontFUwen.exp = "+mFrontFUwen.lvlupExp);
-				if(mCurrFuWenlanwei.exp < mFrontFUwen.lvlupExp && mFUwen.fuwenLevel > 1)// 判断是否该降级了
-				{
-					Debug.Log ("判断是否该降级了 ");
-					mCurrFuWenlanwei.itemId = mFUwen.fuwenFront;
-					InitLevelInfo();
-					return;
-				}
-			}
-			if(mFUwen.fuwenLevel < mFUwen.levelMax)
-			{
-				LevelInfo.SetActive(true);
-				MaxLevel.text = "";
-				mFuwenLevel.text = mFUwen.fuwenLevel.ToString() +"级";
-				mNextFuwenLevel.text = (mFUwen.fuwenLevel+1).ToString() +"级";
-			}
-			else
-			{
-				LevelInfo.SetActive(false);
-				MaxLevel.text = "等级已满";
-				
-			}
-			Up_Need_Exp.text = "升级经验："+mCurrFuWenlanwei.exp.ToString()+"/"+mFUwen.lvlupExp.ToString();
 
+//		Apply_Exp.text = "被熔合时提供的经验："+mCurrFuWenlanwei.exp.ToString ();//...........................................................................
+
+		if(mFUwen.fuwenLevel >= mFUwen.levelMax)// 等级已满
+		{
+			LevelInfo.SetActive(false);
+			MaxLevel.gameObject.SetActive(true);
+			MaxLevel.text = "等级已满";
+			Up_Need_Exp.text = "升级经验：等级已满";
+			mSlider.value = 1.0f;
 			CurrProperty.text = GetFuWenProperty (mFUwen.shuxing)+mFUwen.shuxingValue.ToString();
-			if(mFUwen.fuwenNext > 0)
-			{
-				FuWenTemplate m_FUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mFUwen.fuwenNext);
-				NextProperty.text = GetFuWenProperty (m_FUwen.shuxing)+m_FUwen.shuxingValue.ToString();
-			}
-			else{
-				NextProperty.text = "等级已满";
-			}
-			mSlider.value = (float)(mCurrFuWenlanwei.exp)/(float)(mFUwen.lvlupExp);
+			NextProperty.text = "等级已满";
 		}
 		else
 		{
-			Debug.Log ("可以升级 ");
-			mCurrFuWenlanwei.itemId = mFUwen.fuwenNext;
-			InitLevelInfo();
-//			FuWenTemplate m_mFUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mFUwen.fuwenNext);
-//			Up_Need_Exp.text = "升级经验："+mCurrFuWenlanwei.exp.ToString()+"/"+m_mFUwen.lvlupExp.ToString();	
-//
-//			if(m_mFUwen.fuwenLevel < m_mFUwen.levelMax)
-//			{
-//				LevelInfo.SetActive(true);
-//				MaxLevel.text = "";
-//				mFuwenLevel.text = m_mFUwen.fuwenLevel.ToString() +"级";
-//				mNextFuwenLevel.text = (m_mFUwen.fuwenLevel+1).ToString() +"级";
-//			}
-//			else
-//			{
-//				LevelInfo.SetActive(false);
-//				MaxLevel.text = "等级已满";
-//				
-//			}
-//			CurrProperty.text = GetFuWenProperty (m_mFUwen.shuxing)+m_mFUwen.shuxingValue.ToString();
-//			if(m_mFUwen.fuwenNext > 0)
-//			{
-//				FuWenTemplate m_FUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (m_mFUwen.fuwenNext);
-//				NextProperty.text = GetFuWenProperty (m_FUwen.shuxing)+m_FUwen.shuxingValue.ToString();
-//			}
-//			else{
-//				NextProperty.text = "等级已满";
-//			}
-//			mSlider.value = (float)(mCurrFuWenlanwei.exp)/(float)(m_mFUwen.lvlupExp);
+			if(mCurrFuWenlanwei.exp > LanweiExp)
+			{
+				LanweiExp = mCurrFuWenlanwei.exp;
+			}
+			if(mCurrFuWenlanwei.exp < mFUwen.lvlupExp) // 判断是否该升级了
+			{
+				//Debug.Log ("mFUwen.fuwenFront = "+mFUwen.fuwenFront);
+				if(mFUwen.fuwenFront > 0)
+				{
+					FuWenTemplate mFrontFUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mFUwen.fuwenFront);
+					//Debug.Log ("mFrontFUwen.exp = "+mFrontFUwen.lvlupExp);
+					if(mCurrFuWenlanwei.exp <0 && mFUwen.fuwenLevel > 1)// 判断是否该降级了
+					{
+						Debug.Log ("判断是否该降级了 ");
+						mCurrFuWenlanwei.exp = mFrontFUwen.lvlupExp + mCurrFuWenlanwei.exp;
+						mCurrFuWenlanwei.itemId = mFUwen.fuwenFront;
+						InitLevelInfo();
+						return;
+					}
+				}
+				if(mFUwen.fuwenLevel < mFUwen.levelMax)
+				{
+					LevelInfo.SetActive(true);
+					MaxLevel.text = "";
+					mFuwenLevel.text = mFUwen.fuwenLevel.ToString() +"级";
+					mNextFuwenLevel.text = (mFUwen.fuwenLevel+1).ToString() +"级";
+				}
+				else
+				{
+					LevelInfo.SetActive(false);
+					MaxLevel.text = "等级已满";
+					
+				}
+				Up_Need_Exp.text = "升级经验："+mCurrFuWenlanwei.exp.ToString()+"/"+mFUwen.lvlupExp.ToString();
+				
+				CurrProperty.text = GetFuWenProperty (mFUwen.shuxing)+mFUwen.shuxingValue.ToString();
+				if(mFUwen.fuwenNext > 0)
+				{
+					FuWenTemplate m_FUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mFUwen.fuwenNext);
+					NextProperty.text = GetFuWenProperty (m_FUwen.shuxing)+m_FUwen.shuxingValue.ToString();
+				}
+				else{
+					NextProperty.text = "等级已满";
+				}
+				mSlider.value = (float)(mCurrFuWenlanwei.exp)/(float)(mFUwen.lvlupExp);
+			}
+			else
+			{
+				Debug.Log ("可以升级 ");
+				mCurrFuWenlanwei.itemId = mFUwen.fuwenNext;
+				//			FuWenTemplate m_NextFUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mCurrFuWenlanwei.itemId);
+				mCurrFuWenlanwei.exp = mCurrFuWenlanwei.exp - mFUwen.lvlupExp ;
+				InitLevelInfo();
+			}
 		}
-
+	
 	}
 	string GetFuWenProperty(int index)
 	{
@@ -267,11 +279,11 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 				{
 					string mStr = "熔合成功！";
 					ClientMain.m_UITextManager.createText( mStr);
-					NewFuWenPage.Instance().GetBagInfo();
-					NewFuWenPage.Instance().Init();
+//					NewFuWenPage.Instance().BackToFirst();
+					NewFuWenPage.Instance().Init(NewFuWenPage.Instance().mQueryFuwen.tab);
 					mFuWenlanwei.exp = mFuwenRongHeResp.exp;
 					FuWenItem_Id = mFuwenRongHeResp.itemId;
-					Init();
+
 				}
 				else
 				{
@@ -343,7 +355,14 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 	}
 	public void RongHe() //融合
 	{
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockRongHeLoadBack);
+		if(fuwensinBag.Count <= 0)
+		{ComRong_He (1);}
+		else
+		{
+			ComRong_He(2);
+		}
+
+		//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockRongHeLoadBack);
 	}
 	void LockRongHeLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -359,7 +378,7 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 		
 		uibox.setBox(titleStr,MyColorData.getColorString (1,str),null,null,CancleBtn,confirmStr,ComRong_He,null,null,null);
 	}
-	void ComRong_He(int i)
+	void ComRong_He(int i = 2)
 	{
 		if(i == 2)
 		{
@@ -378,6 +397,11 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 			byte[] t_protof;
 			t_protof = MiBaoinfoStream.ToArray();
 			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FUWEN_RONG_HE,ref t_protof,ProtoIndexes.S_FUWEN_RONG_HE_RESP.ToString());
+			fuwensinBag.Clear();
+		}
+		else
+		{
+			ClientMain.m_UITextManager.createText("未选择熔合符文！");
 		}
 	}
 }

@@ -58,32 +58,43 @@ namespace Rank
             //Set alliance name label.
             m_AllianceLabel.text = m_AllianceName;
 
-            //Clear all grid data.
-            while (m_Grid.transform.childCount != 0)
-            {
-                var child = m_Grid.transform.GetChild(0);
-                child.parent = null;
-                Destroy(child.gameObject);
-            }
-            m_AllianceMemberDetailControllerList.Clear();
-
             //Add grid data.
             if (m_AlliancePlayerResp.player != null)
             {
+                //Clear all
+                m_AllianceMemberDetailControllerList.Clear();
+
+                TransformHelper.AddOrDelItem(m_Grid.transform, m_Prefab, m_AlliancePlayerResp.player.Count, m_Grid.cellHeight);
+
                 for (int i = 0; i < m_AlliancePlayerResp.player.Count; i++)
                 {
-                    var temp = Instantiate(m_Prefab) as GameObject;
-                    var controller = temp.GetComponent<AllianceMemberDetailController>();
-                    TransformHelper.ActiveWithStandardize(m_Grid.transform, temp.transform);
+                    var temp = m_Grid.transform.GetChild(i);
+                    temp.name = "_" + UtilityTool.FullNumWithZeroDigit(i, m_AlliancePlayerResp.player.Count.ToString().Length);
 
+                    var controller = temp.GetComponent<AllianceMemberDetailController>();
                     controller.m_JunZhuInfo = m_AlliancePlayerResp.player[i];
                     controller.SetThis();
 
                     m_AllianceMemberDetailControllerList.Add(controller);
                 }
-
                 m_Grid.Reposition();
             }
+            else
+            {
+                //Clear all grid data.
+                while (m_Grid.transform.childCount != 0)
+                {
+                    var child = m_Grid.transform.GetChild(0);
+                    child.parent = null;
+                    Destroy(child.gameObject);
+                }
+                m_AllianceMemberDetailControllerList.Clear();
+            }
+
+            //Reset scroll view.
+            m_ScrollView.UpdateScrollbars(true);
+            m_ScrollBar.ForceUpdate();
+            m_ScrollView.UpdatePosition();
         }
 
         public UIEventListener DragAreaHandler;

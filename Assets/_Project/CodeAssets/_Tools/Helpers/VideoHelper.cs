@@ -23,10 +23,10 @@ using System.Collections.Generic;
 public class VideoHelper : MonoBehaviour {
 
 	public enum VideoControlMode{
-		None,				// Hidden
-		NoneButCancelable,	// CancelOnInput
-		Minimal,			// Minimal
-		Full,				// Full
+		None,				// Hidden			- Android: Exit only when backspace is pressed
+		NoneButCancelable,	// CancelOnInput	- Android: exit when backspace is pressed or screen is touched
+		Minimal,			// Minimal			- Android: forward + back + pause + time line
+		Full,				// Full				- Android: forward + back + pause + time line
 	}
 
 	#region Mono
@@ -112,13 +112,21 @@ public class VideoHelper : MonoBehaviour {
 	#region Interface
 
 	/// All mp4 file must be put under "StreamingAssets\Video" and "ResourcesCache\Video".
+	/// skippable:
+	/// 	true = could skip when touch screen
+	/// 	false = must played until finish or backspace is pressed
 	/// path: Video/x7.mp4
-	public static void PlayDramaVideo( string p_path, EventDelegate.Callback p_callback = null ){
+	public static void PlayDramaVideo( string p_path, bool p_skippable, EventDelegate.Callback p_callback = null ){
 		#if DEBUG_VIDEO
 		Debug.Log( "PlayDramaVideo( " + p_path + " )" );
 		#endif
 
-		PlayVideo( p_path, VideoControlMode.None, p_callback );
+		if( p_skippable ){
+			PlayVideo( p_path, VideoControlMode.NoneButCancelable, p_callback );
+		}
+		else{
+			PlayVideo( p_path, VideoControlMode.None, p_callback );
+		}
 	}
 
 	#if PC_VIDEO && UNITY_EDITOR
@@ -144,6 +152,7 @@ public class VideoHelper : MonoBehaviour {
 	private static EventDelegate.Callback m_video_done_callback = null;
 
 	/// Debug and Internal use, please use PlayDramaVideo() instead.
+	/// path: Video/x7.mp4
 	public static void PlayVideo( string p_path, VideoControlMode p_mode, EventDelegate.Callback p_callback = null ){
 		#if DEBUG_VIDEO
 		Debug.Log( "PlayVideo( " + p_path + " - " + p_mode + " )" );
@@ -199,9 +208,13 @@ public class VideoHelper : MonoBehaviour {
 			
 			m_movie_texture.loop = false;
 
-			m_movie_audio = (AudioSource)ComponentHelper.AddIfNotExist( 
-					GameObjectHelper.GetDontDestroyOnLoadGameObject(),
-					typeof(AudioSource) );
+//			m_movie_audio = (AudioSource)ComponentHelper.AddIfNotExist( 
+//					GameObjectHelper.GetDontDestroyOnLoadGameObject(),
+//					typeof(AudioSource) );
+
+			m_movie_audio = (AudioSource)ComponentHelper.AddComponet( 
+				GameObjectHelper.GetDontDestroyOnLoadGameObject(),
+				typeof(AudioSource) );
 
 			if( m_movie_texture.audioClip == null ){
 				Debug.LogError( "Error, Movie Has no Audio." );
@@ -259,15 +272,15 @@ public class VideoHelper : MonoBehaviour {
 		Debug.Log( "VideoPlayedDone()" );
 		#endif
 
+		#if PC_VIDEO && UNITY_EDITOR
 		{
-			AudioSource t_audio = gameObject.GetComponent<AudioSource>();
-			
-			if( t_audio != null ){
-				t_audio.enabled = false;
-				
-				Destroy( t_audio );
+			if( m_movie_audio != null ){
+				m_movie_audio.enabled = false;
+						
+				Destroy( m_movie_audio );
 			}
 		}
+		#endif
 
 		if( m_video_done_callback != null ){
 			m_video_done_callback();

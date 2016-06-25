@@ -1,3 +1,4 @@
+//#define DEBUG_UTILITIES
 
 
 
@@ -36,6 +37,10 @@ public class EditorUtilityUtilities : MonoBehaviour
 		UTILITIES___ASSETS_FILTER,
 		UTILITIES___COMBINE_MESH,
 		UTILITIES___FIND_MISSING_MONO,
+		UTILITIES___FIND_MISSING_MONO_IN_SEL,
+		UTILITIES___FIND_GB_AND_MONOS,
+		UTILITIES___CUR_UI_IMAGES,
+		UTILITIES___SVN_PATH,
 
 
 
@@ -58,8 +63,8 @@ public class EditorUtilityUtilities : MonoBehaviour
 	#region Debug
 
 	[MenuItem("Utility/Utilities/Debug", false, (int)MenuItemPriority.UTILITIES_DEBUG)]
-	static void FindTexInRes(){
-		
+	static void UtilitiesDebug(){
+		Resources.UnloadUnusedAssets();
 	}
 
 	#endregion
@@ -390,20 +395,62 @@ public class EditorUtilityUtilities : MonoBehaviour
 
 
 
-	#region Utilities
+	#region Cur UI
 
-	public static List<string> GetFilePaths( string p_dir, string p_pattern ){
-		List<string> t_scene_names = new List<string>();
+//	[MenuItem("Utility/Utilities/Get Cur UI Image", false, (int)EditorUtilityUtilities.MenuItemPriority.UTILITIES___CUR_UI_IMAGES)]
+	static void CurUI(){
+		//		Debug.Log( "CurUI()" );
 
-		string[] t_paths = Directory.GetFiles ( PathHelper.GetFullPath_WithRelativePath( p_dir ), p_pattern, SearchOption.AllDirectories );
+		TextAsset t_text = (TextAsset)AssetDatabase.LoadAssetAtPath( "Assets/Resources/_Temp.txt", typeof(TextAsset) );
 
-		for (int i = 0; i < t_paths.Length; i++) {
-			t_scene_names.Add( t_paths[ i ] );
+		if( t_text == null ){
+			Debug.LogError( "Text is null." );
+
+			return;
 		}
 
-		return t_scene_names;
-	}
+		Debug.Log( "t_text: " + t_text );
 
+		string[] t_lines = t_text.text.Split( '\n' );
+
+		for( int i = 0; i < t_lines.Length; i++ ){
+			string t_line = t_lines[ i ];
+
+			Debug.Log( "line " + i + " : " + t_line );
+
+			string[] t_contents = t_line.Split( ' ' );
+
+			string t_final = t_contents[ t_contents.Length - 1 ];
+
+			int t_index = t_final.LastIndexOf( "/" );
+
+			if( t_index < 0 ){
+				Debug.LogError( "path error: " + t_final );
+
+				continue;
+			}
+
+			t_final = t_final.Trim();
+
+			string t_name = t_final.Substring( t_final.LastIndexOf( "/" ) + 1 );
+
+			t_name = t_name.Trim();
+
+			Debug.Log( "name: " + t_name );
+
+			Debug.Log( "desktop: " + PathHelper.GetDeskTopPath() );
+
+			string t_path = Path.Combine( PathHelper.GetDeskTopPath(), "Lab" );
+
+			t_path = Path.Combine( t_path, "Images" );
+
+			t_path = Path.Combine( t_path, t_name );
+
+			Debug.Log( "full path: " + t_path );
+
+			FileHelper.FileCopy( PathHelper.GetFullPath_WithRelativePath( t_final ), t_path );
+		}
+	}
 
 	#endregion
 
@@ -464,9 +511,51 @@ public class EditorUtilityUtilities : MonoBehaviour
 
 
 
+	#region SVN Path
+
+	/// Source: _Temp/_ZhangYuGu/Editor/Utility/Utilities/EditorUtilityUtilities.cs
+	/// Target: /release/v1.1/Client/Unity_Project/Assets/_Project/ArtAssets/UIs/Loading/Prefabs/UI_Loading_Bg.prefab
+//	[MenuItem("Utility/Utilities/Get SVN Path", false, (int)EditorUtilityUtilities.MenuItemPriority.UTILITIES___SVN_PATH)]
+	static void ConvertSVNPath(){
+		Debug.Log( "ConvertSVNPath()" );
+
+		TextAsset t_text = (TextAsset)AssetDatabase.LoadAssetAtPath( "Assets/Resources/_Temp.txt", typeof(TextAsset) );
+
+		string t_path = Application.dataPath + "/Resources/_SVN.txt";
+
+		StringBuilder t_sb = new StringBuilder();
+
+		string[] t_lines = t_text.text.Split( '\n' );
+
+		for( int i = 0; i < t_lines.Length; i++ ){
+			string t_line = t_lines[ i ];
+
+			t_line = "/release/v1.2/Client/Unity_Project/Assets/" + t_line;
+
+			t_sb.Append( t_line + "\n" );
+		}
+
+		FileHelper.WriteFile( t_path, t_sb.ToString() );
+	}
+
+	#endregion
+
+
+
 	#region Utilities
 
-	
+	public static List<string> GetFilePaths( string p_dir, string p_pattern ){
+		List<string> t_scene_names = new List<string>();
+
+		string[] t_paths = Directory.GetFiles ( PathHelper.GetFullPath_WithRelativePath( p_dir ), p_pattern, SearchOption.AllDirectories );
+
+		for (int i = 0; i < t_paths.Length; i++) {
+			t_scene_names.Add( t_paths[ i ] );
+		}
+
+		return t_scene_names;
+	}
+
 
 	#endregion
 }

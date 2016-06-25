@@ -7,15 +7,6 @@ public class MainCityOpenFunction : MonoBehaviour
 {
 	public UISprite m_spriteIcon;
 	public UILabel m_labelDes;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	public void setData(int id)
 	{
@@ -24,19 +15,16 @@ public class MainCityOpenFunction : MonoBehaviour
 
 	public void upShow()
 	{
-		var temp = FunctionUnlock.templates.Where(item => !FunctionOpenTemp.m_EnableFuncIDList.Contains(item.id));
-
-//		Debug.Log(temp.First().id);
-
-		if (temp.Any())
+		gameObject.SetActive(false);
+		for(int i = 0; i < FunctionUnlock.templates.Count; i ++)
 		{
-			gameObject.SetActive(true);
-			m_spriteIcon.spriteName = "Function_" + temp.First().id;
-			m_labelDes.text = temp.First().des2;
-		}
-		else
-		{
-			gameObject.SetActive(false);
+			if(!FunctionOpenTemp.IsHaveID(FunctionUnlock.templates[i].id))
+			{
+				gameObject.SetActive(true);
+				m_spriteIcon.spriteName = "Function_" + FunctionUnlock.templates[i].id;
+				m_labelDes.text = FunctionUnlock.templates[i].des2;
+				break;
+			}
 		}
 	}
 }

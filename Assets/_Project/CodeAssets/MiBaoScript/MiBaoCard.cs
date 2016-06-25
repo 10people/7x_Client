@@ -79,11 +79,7 @@ public class MiBaoCard : MonoBehaviour,SocketProcessor {
 		iTween.MoveTo(this.gameObject, iTween.Hash("position", endposition, "time",time,"islocal",true));
 		iTween.ScaleTo (this.gameObject,iTween.Hash("scale",scale,"time",time));
 	}
-	
-	void Update () {
-		
-	}
-	
+
 	public void init()
 	{
 		ShowShuXing ();

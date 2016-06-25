@@ -12,6 +12,8 @@ public class ShopPage : MonoBehaviour
 {
     public static ShopPage shopPage;
 
+    public GameObject LeftTopAnchor;
+
     public GameObject shopMainPage;
     public GameObject sellPage;
 
@@ -32,6 +34,9 @@ public class ShopPage : MonoBehaviour
     void Awake()
     {
         shopPage = this;
+
+        MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
+        MainCityUI.setGlobalTitle(LeftTopAnchor, "商铺", 0, 0);
     }
 
     void Start()
@@ -69,7 +74,7 @@ public class ShopPage : MonoBehaviour
     public GameObject refreshBtn;
     public GameObject refreshLabelObj;
 
-    private List<EventHandler> shopBtnList = new List<EventHandler>();
+    public List<EventHandler> shopBtnList = new List<EventHandler>();
     public GameObject shopBtnObj;
 
     private ShopData.ShopType shopType;
@@ -116,26 +121,18 @@ public class ShopPage : MonoBehaviour
         {
             EventHandler handler0 = shopBtnObj.GetComponent<EventHandler>();
             handler0.name = "1";
-            handler0.m_click_handler -= ShopBtnClickBack;
-            handler0.m_click_handler += ShopBtnClickBack;
+            handler0.m_click_handler -= OnShopBTNClick;
+            handler0.m_click_handler += OnShopBTNClick;
 
             //Active
             ShopData.ShopType sType = (ShopData.ShopType)Enum.ToObject(typeof(ShopData.ShopType), 1);
 
-            if (ShopData.Instance.IsShopFunctionOpen(sType))
-            {
-                handler0.GetComponent<UISprite>().color = Color.white;
-                handler0.GetComponent<BoxCollider>().enabled = true;
+            handler0.GetComponent<UISprite>().color = Color.white;
+            handler0.GetComponent<BoxCollider>().enabled = true;
 
-                handler0.transform.FindChild("Red").gameObject.SetActive(sType == shopType ? false : ShopData.Instance.IsBtnRed(sType));
+            handler0.transform.FindChild("Red").gameObject.SetActive(ShopData.Instance.IsBtnRed(sType));
 
-                shopBtnList.Add(handler0);
-            }
-            else
-            {
-                handler0.GetComponent<UISprite>().color = Color.black;
-                handler0.GetComponent<BoxCollider>().enabled = false;
-            }
+            shopBtnList.Add(handler0);
 
             UILabel btn0Label = handler0.GetComponentInChildren<UILabel>();
             btn0Label.text = "武备坊";
@@ -153,26 +150,20 @@ public class ShopPage : MonoBehaviour
                 btnLabel.text = ShopData.Instance.ShopBtnName(i + 2);
 
                 EventHandler shopBtnHandler = shopBtn.GetComponent<EventHandler>();
-                shopBtnHandler.m_click_handler -= ShopBtnClickBack;
-                shopBtnHandler.m_click_handler += ShopBtnClickBack;
+                shopBtnHandler.m_click_handler -= OnShopBTNClick;
+                shopBtnHandler.m_click_handler += OnShopBTNClick;
 
                 //Active
                 ShopData.ShopType sType2 = (ShopData.ShopType)Enum.ToObject(typeof(ShopData.ShopType), i + 2);
 
-                if (ShopData.Instance.IsShopFunctionOpen(sType2))
-                {
-                    shopBtnHandler.GetComponent<UISprite>().color = Color.white;
-                    shopBtnHandler.GetComponent<BoxCollider>().enabled = true;
+                shopBtnHandler.GetComponent<UISprite>().color = Color.white;
+                shopBtnHandler.GetComponent<BoxCollider>().enabled = true;
 
-                    shopBtnHandler.transform.FindChild("Red").gameObject.SetActive(sType2 == shopType ? false : ShopData.Instance.IsBtnRed(sType2));
+                //Close all red spot expect roll shop.
+                //shopBtnHandler.transform.FindChild("Red").gameObject.SetActive(sType2 == shopType ? false : ShopData.Instance.IsBtnRed(sType2));
+                shopBtnHandler.transform.FindChild("Red").gameObject.SetActive(false);
 
-                    shopBtnList.Add(shopBtnHandler);
-                }
-                else
-                {
-                    shopBtnHandler.GetComponent<UISprite>().color = Color.black;
-                    shopBtnHandler.GetComponent<BoxCollider>().enabled = false;
-                }
+                shopBtnList.Add(shopBtnHandler);
             }
         }
 
@@ -207,57 +198,41 @@ public class ShopPage : MonoBehaviour
             handler.m_click_handler += OtherHandlerClickBack;
         }
 
+        if (shopType == ShopData.ShopType.ROLL)
+        {
+            OpenRollPage();
+        }
+        else
+        {
+            OpenClassicPage();
+        }
+
         if (tempType != ShopData.ShopType.ROLL)
         {
             CreateGoodList();
         }
 
-        //yindao 
+        //Add guide here.
         switch (shopType)
         {
             case ShopData.ShopType.WEIWANG:
                 {
-                    OpenClassicPage();
-
                     if (QXComData.CheckYinDaoOpenState(100220))
                     {
-                        Debug.Log("WEIWANG");
                         if (!BuyFinished)
                         {
-                            QXComData.YinDaoStateController(QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100220, 2);
+                            //yindao 
+                            QXComData.YinDaoStateController(QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 100220, 3);
                         }
                     }
                     break;
                 }
-            //case ShopData.ShopType.MYSTRERT:
-            //{
-            //	if (QXComData.CheckYinDaoOpenState (100460))
-            //	{
-            //		Debug.Log ("MYSTRERT2");
-            //		if (!BuyFinished)
-            //		{
-            //			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100460,2);
-            //		}
-            //	}
-
-            //	break;
-            //}
             case ShopData.ShopType.GONGXIAN:
                 {
-                    OpenClassicPage();
-
-                    if (QXComData.CheckYinDaoOpenState(400040))
+                    if (!BuyFinished)
                     {
-                        Debug.Log("GONGXIAN");
-                        if (!BuyFinished)
-                        {
-                            QXComData.YinDaoStateController(QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 1);
-                            goodScrollView.enabled = false;
-                        }
-                        else
-                        {
-                            goodScrollView.enabled = true;
-                        }
+                        QXComData.YinDaoStateController(QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 1);
+                        goodScrollView.enabled = false;
                     }
                     else
                     {
@@ -268,38 +243,14 @@ public class ShopPage : MonoBehaviour
                 }
             case ShopData.ShopType.ROLL:
                 {
-                    OpenRollPage();
-
                     m_ShopRollController.SetThis(ShopData.Instance.m_WubeiFangInfoResp);
 
-                    //if (QXComData.CheckYinDaoOpenState(400040))
-                    //{
-                    //    if (!BuyFinished)
-                    //    {
-                    //        QXComData.YinDaoStateController(QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 400040, 1);
-                    //    }
-                    //}
-
+                    QXComData.YinDaoStateController(QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO, 200040, 2);
                     break;
                 }
         }
 
         clickTime = 0.5f;
-
-        //Open guide.
-        //Add guide here.
-        if (FreshGuide.Instance().IsActive(100220) && TaskData.Instance.m_TaskInfoDic[100220].progress >= 0)
-        {
-            UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[100220].m_listYindaoShuju[3]);
-        }
-        else if (FreshGuide.Instance().IsActive(200040) && TaskData.Instance.m_TaskInfoDic[200040].progress >= 0)
-        {
-            UIYindao.m_UIYindao.setOpenYindao(TaskData.Instance.m_TaskInfoDic[200040].m_listYindaoShuju[2]);
-        }
-        else
-        {
-            UIYindao.m_UIYindao.CloseUI();
-        }
     }
 
     /// <summary>
@@ -325,25 +276,31 @@ public class ShopPage : MonoBehaviour
         }
     }
 
-    void ShopBtnClickBack(GameObject obj)
+    void OnShopBTNClick(GameObject obj)
     {
-        Debug.Log("IsShowYinDao4");
-
         if (clickTime > 0)
         {
             return;
         }
-        //		Debug.Log (obj.name + "||" + ((int)shopType).ToString ());
+
         if (((int)shopType).ToString() != obj.name)
         {
             int btnIndex = int.Parse(obj.name);
             ShopData.ShopType type = (ShopData.ShopType)Enum.ToObject(typeof(ShopData.ShopType), btnIndex);
 
-            ShopData.Instance.OpenShop(type);
-
-            if (ShopData.Instance.ShopBtnRedId(type) != -1)
+            if (ShopData.Instance.IsShopFunctionOpen(type))
             {
-                PushAndNotificationHelper.SetRedSpotNotification(ShopData.Instance.ShopBtnRedId(type), false);
+                //Close all red spot expect roll shop.
+                //if (ShopData.Instance.ShopBtnRedId(type) != -1)
+                //{
+                //    PushAndNotificationHelper.SetRedSpotNotification(ShopData.Instance.ShopBtnRedId(type), false);
+                //}
+
+                ShopData.Instance.OpenShop(type);
+            }
+            else
+            {
+                ClientMain.m_UITextManager.createText(FunctionOpenTemp.GetTemplateById(int.Parse(ShopData.Instance.shopReqDic[type][5])).m_sNotOpenTips);
             }
         }
     }
@@ -845,10 +802,10 @@ public class ShopPage : MonoBehaviour
         clickTime = 0;
         ShopData.Instance.IsOpenFirstTime = true;
         Global.m_isOpenShop = false;
-        if (GameObject.Find("New_My_Union(Clone)"))
-        {
-            NewAlliancemanager.Instance().ShowAllianceGuid();
-        }
+        //        if (GameObject.Find("New_My_Union(Clone)"))
+        //        {
+        //            NewAlliancemanager.Instance().ShowAllianceGuid();
+        //        }
         MainCityUI.TryRemoveFromObjectList(gameObject);
         gameObject.SetActive(false);
     }

@@ -14,7 +14,7 @@ public class Technology1 : MonoBehaviour {
 
 	public KeJiList m_JianZhuKeji;
 
-	float Dis = 142;
+	float Dis = 110;
 	public UIScrollView mUIScrollView;
 	int kejiNumber; 
 	List<LianMengKeJiTemplate> m_LianMengKeJiTemplate = new List<LianMengKeJiTemplate>();
@@ -25,7 +25,7 @@ public class Technology1 : MonoBehaviour {
 
 	public void Init()
 	{
-		Dis = 142;
+		Dis = 114;
 		List<LianMengKeJiTemplate> LianMengKeJiTemplateList = LianMengKeJiTemplate.GetLianMengKeJiTemplate_by_type ( );
 
 		//Debug.Log ("LianMengKeJiTemplateList.count = " +LianMengKeJiTemplateList.Count);
@@ -58,7 +58,7 @@ public class Technology1 : MonoBehaviour {
 			
 			m_KeJiTemp.transform.parent = KeJiTemp.transform.parent;
 			
-			m_KeJiTemp.transform.localPosition = new Vector3(0,102-i*Dis,0);
+			m_KeJiTemp.transform.localPosition = new Vector3(8,129-i*Dis,0);
 			//Debug.Log("localPosition= "+m_KeJiTemp.transform.localPosition.y);
 			m_KeJiTemp.transform.localScale = Vector3.one;
 

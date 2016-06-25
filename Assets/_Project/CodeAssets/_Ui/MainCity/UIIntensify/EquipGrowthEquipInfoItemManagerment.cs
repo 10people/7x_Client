@@ -14,6 +14,8 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
     public UIProgressBar m_PregressBar;
     public UIProgressBar m_EffectPregressBar;
     public List<int> m_listEffect;
+
+    public bool m_StopEffectNow = false;
     private float _ValueCount;
     public int m_LevelSave;
     private int _LevelChange = 0;
@@ -23,13 +25,13 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
     public UILabel m_LabEffect;
     public List<EquipAttributeManagerment> m_listAttribute;
     public Dictionary<int, UILabel> m_DicInfo = new Dictionary<int, UILabel>();
-    private enum EffectType
+    public enum EffectType
     {
         EFFECT_NONE,
         EFFECT_RUNNING,
         EFFECT_STOP
     };
-    private EffectType _TypeShow;
+    public  EffectType m_TypeShow;
     private float _timeInterval = 0;
     private int _CircleCount = 0;
     private int _SaveNum = 0;
@@ -43,9 +45,10 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
     private List<AttributeInfo> _listsInfo = new List<AttributeInfo>();
     void Update()
     {
-        if (m_listEffect.Count > 0 && _TypeShow == EffectType.EFFECT_NONE)
+        if (m_listEffect.Count > 0 && m_TypeShow == EffectType.EFFECT_NONE)
         {
             m_EffectPregressBar.value = 0;
+            m_EffectPregressBar.ForceUpdate();
             _ValueTime = 1.5f * Time.deltaTime;
             int tt = 0;
 
@@ -55,27 +58,29 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
             }
 
             _LevelChange = m_LevelSave - tt;
-
-            _MaxExp = ExpXxmlTemp.getExpXxmlTemp_By_expId(_ExpId, _LevelChange).needExp;
+            if (ExpXxmlTemp.getExpXxmlTemp_By_expId(_ExpId, _LevelChange) != null)
+            {
+                _MaxExp = ExpXxmlTemp.getExpXxmlTemp_By_expId(_ExpId, _LevelChange).needExp;
+            }
 
             m_LabEffect.text = "0/" + _MaxExp.ToString();
             if (m_listEffect[m_listEffect.Count - 1] < 8)
             {
 
-                _ValueCount = 0.2f + (m_listEffect[m_listEffect.Count - 1] - 1) * 0.05f;
+                _ValueCount = 0.2f + (m_listEffect[m_listEffect.Count - 1] - 1) * 0.02f;
                 _PerTimeAddExp = (_MaxExp * m_listEffect.Count) / (1 / _ValueCount);
             }
             else
             {
-                _ValueCount = 0.44f;
+                _ValueCount = 0.3f;
                 _PerTimeAddExp = (_MaxExp * m_listEffect.Count) / (1 / _ValueCount);
             }
 
             _SaveNum = m_listEffect[m_listEffect.Count - 1];
-            _TypeShow = EffectType.EFFECT_RUNNING;
+            m_TypeShow = EffectType.EFFECT_RUNNING;
         }
 
-        if (_TypeShow == EffectType.EFFECT_RUNNING && _timeInterval < _ValueTime)
+        if (m_TypeShow == EffectType.EFFECT_RUNNING && _timeInterval < _ValueTime)
         {
 
             _timeInterval += Time.deltaTime;
@@ -85,7 +90,7 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
         {
             ShowEffectInfo();
         }
-        else if (_TypeShow == EffectType.EFFECT_STOP)
+        else if (m_TypeShow == EffectType.EFFECT_STOP)
         {
             ShowEffectInfo();
         }
@@ -93,31 +98,39 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
     private float _runningValueLab = 0;
     void ShowEffectInfo()
     {
-        switch (_TypeShow)
+        switch (m_TypeShow)
         {
             case EffectType.EFFECT_RUNNING:
                 {
                     m_PregressBar.gameObject.SetActive(false);
                     m_EffectPregressBar.gameObject.SetActive(true);
                     m_EffectPregressBar.value += _ValueCount;
+                    m_EffectPregressBar.ForceUpdate();
                     _timeInterval = 0;
                     _runningValueLab += _PerTimeAddExp;
                     m_LabEffect.text = _runningValueLab + "/" + _MaxExp.ToString();
 
                     if (m_EffectPregressBar.value >= 1)
                     {
+                        m_EffectPregressBar.value = 1;
+                        m_EffectPregressBar.ForceUpdate();
                         _CircleCount++;
                         if (_CircleCount >= _SaveNum)
                         {
-                            _TypeShow = EffectType.EFFECT_STOP;
+                            m_TypeShow = EffectType.EFFECT_STOP;
                         }
                         else
                         {
                             m_EffectPregressBar.value = 0;
+                            m_EffectPregressBar.ForceUpdate();
                         }
                         _runningValueLab = 0;
                         _LevelChange++;
-                        _MaxExp = ExpXxmlTemp.getExpXxmlTemp_By_expId(_ExpId, _LevelChange).needExp;
+                        if (ExpXxmlTemp.getExpXxmlTemp_By_expId(_ExpId, _LevelChange) != null)
+                        {
+                            _MaxExp = ExpXxmlTemp.getExpXxmlTemp_By_expId(_ExpId, _LevelChange).needExp;
+                        }
+
                     }
                 }
                 break;
@@ -127,10 +140,19 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
                     _CircleCount = 0;
                     _SaveNum = 0;
                     _timeInterval = 0;
-                    m_listEffect.RemoveAt(m_listEffect.Count - 1);
+                    if (m_listEffect.Count > 0)
+                    {
+                        m_listEffect.RemoveAt(m_listEffect.Count - 1);
+                    }
+                    if (m_StopEffectNow)
+                    {
+                        m_StopEffectNow = false;
+                        m_listEffect.Clear();
+                    }
                     m_PregressBar.gameObject.SetActive(true);
                     m_EffectPregressBar.gameObject.SetActive(false);
-                    _TypeShow = EffectType.EFFECT_NONE;
+                    m_EffectPregressBar.ForceUpdate();
+                    m_TypeShow = EffectType.EFFECT_NONE;
                 }
                 break;
             case EffectType.EFFECT_NONE:
@@ -146,16 +168,18 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
         m_LabelProgress.text = baseInfo._Progress;
         m_SpriteIcon.spriteName = baseInfo._Icon.ToString();
 
-        if (FunctionWindowsCreateManagerment.SpecialSizeFit(baseInfo._PinZhi))
+        if (FunctionWindowsCreateManagerment.SpecialSizeFit(CommonItemTemplate.getCommonItemTemplateById(baseInfo._EquipId).color))
         {
+            m_SpritePinZhi.transform.localPosition = new Vector3(-393, 173, 0);
             m_SpritePinZhi.width = m_SpritePinZhi.height = 115;
         }
         else
         {
-            m_SpritePinZhi.width = m_SpritePinZhi.height = 102;
+            m_SpritePinZhi.transform.localPosition = new Vector3(-394, 173, 0);
+            m_SpritePinZhi.width = m_SpritePinZhi.height = 105;
         }
 
-        m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(baseInfo._PinZhi);
+        m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(CommonItemTemplate.getCommonItemTemplateById(baseInfo._EquipId).color);
         m_PregressBar.value = baseInfo._PregressValue;
         ShowAttribute(baseInfo);
     }

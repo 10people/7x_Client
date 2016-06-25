@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
-
+using System.Linq;
 using qxmobile;
 using qxmobile.protobuf;
 public class VipTemplate : XmlLoadManager
@@ -33,10 +33,20 @@ public class VipTemplate : XmlLoadManager
 	public int LveduoTimes;
 
 	public int HuangyeTimes;
-	public int BloodVialTimes;
-	public int resurgenceTimes;
+	public int CarriageBlood;
+	public int CarriageRebirth;
 	public int CartPinZhiMax;
 
+    public int resOnSiteTimes;
+    public int ABRebirth;
+    public int ABBlood;
+    public int buyEquipment;
+    public int buyBaoshi;
+    public int buyQianghua;
+    public int buyJingqi;
+    public int buyJianshezhi;
+    public int buyHufu;
+	public int ExpAdd;
     public static List<VipTemplate> templates = new List<VipTemplate>();
 
 
@@ -144,14 +154,34 @@ public class VipTemplate : XmlLoadManager
 				t_template.HuangyeTimes = int.Parse(t_reader.Value);
 
 				t_reader.MoveToNextAttribute();
-				t_template.BloodVialTimes = int.Parse(t_reader.Value);
+				t_template.CarriageBlood = int.Parse(t_reader.Value);
 
 				t_reader.MoveToNextAttribute();
-				t_template.resurgenceTimes = int.Parse(t_reader.Value);
+				t_template.CarriageRebirth = int.Parse(t_reader.Value);
 
 				t_reader.MoveToNextAttribute();
 				t_template.CartPinZhiMax = int.Parse(t_reader.Value);
-            }
+				t_reader.MoveToNextAttribute();
+				t_template.resOnSiteTimes = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.ABRebirth = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.ABBlood = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.buyEquipment = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.buyBaoshi = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.buyQianghua = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.buyJingqi = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.buyJianshezhi = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.buyHufu = int.Parse(t_reader.Value);
+				t_reader.MoveToNextAttribute();
+				t_template.ExpAdd = int.Parse(t_reader.Value);
+}
 
             //			t_template.Log();
 
@@ -172,6 +202,34 @@ public class VipTemplate : XmlLoadManager
         return 0;
 
     }
+
+    public static int GetVipABRebirthInfoByLevel(int level)
+    {
+        for (int i = 0; i < templates.Count; i++)
+        {
+            if (templates[i].lv == level)
+            {
+                return templates[i].ABRebirth;
+            }
+        }
+        return 0;
+
+    }
+
+    public static int GetLevelOfABQuickRebirthStart()
+    {
+        var list = templates.Where(item => item.ABRebirth > 0).ToList();
+
+        if (list.Any())
+        {
+            return list.First().lv;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
     public static VipTemplate GetVipInfoByLevel(int level)
     {
         for (int i = 0; i < templates.Count; i++)
@@ -185,4 +243,33 @@ public class VipTemplate : XmlLoadManager
 
     }
 
+	public static int GetNextBaiZhanBuyTimeVipLevel (int curVipLevel)
+	{
+		for (int i = 0;i < templates.Count;i ++)
+		{
+			if (templates[i].bugBaizhanTime > VipTemplate.GetVipInfoByLevel (curVipLevel).bugBaizhanTime)
+			{
+				return templates[i].lv;
+			}
+		}
+
+		Debug.LogError ("Can not GetNextBaiZhanBuyTimeVipLevel :" + curVipLevel);
+
+		return -1;
+	}
+
+	public static int GetNextLueDuoBuyTimeVipLevel (int curVipLevel)
+	{
+		for (int i = 0;i < templates.Count;i ++)
+		{
+			if (templates[i].LveduoTimes > VipTemplate.GetVipInfoByLevel (curVipLevel).LveduoTimes)
+			{
+				return templates[i].lv;
+			}
+		}
+		
+		Debug.LogError ("Can not GetNextBaiZhanBuyTimeVipLevel :" + curVipLevel);
+		
+		return -1;
+	}
 }

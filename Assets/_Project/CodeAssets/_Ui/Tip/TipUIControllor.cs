@@ -29,11 +29,11 @@ public class TipUIControllor : MonoBehaviour
 
 		if( !state )
 		{
-//			ShowTip.close();	
+			ShowTip.close();
 
-			gameObject.SetActive( false );
-
-			Destroy( gameObject );
+//			gameObject.SetActive( false );
+//
+//			Destroy( gameObject );
 		}
 	}
 
@@ -43,7 +43,7 @@ public class TipUIControllor : MonoBehaviour
 
 		CommonItemTemplate template = CommonItemTemplate.getCommonItemTemplateById (commonItemId);
 
-		if(template.itemType == 7 || template.itemType == 8)//宝石
+		if(template.itemType == 2 || template.itemType == 7 || template.itemType == 8)//装备，宝石，符文
 		{
 			jewelControllor.gameObject.SetActive (true);
 			
@@ -77,7 +77,7 @@ public class TipUIControllor : MonoBehaviour
 
 	void Update()
 	{
-		if(UICamera.touchCount == 0)
+		if(UICamera.touchCount <= 0)
 		{
 			ShowTip.close();
 

@@ -15,6 +15,7 @@ public class JunZhuLevelUpManagerment : MonoBehaviour
     public GameObject m_HiddenObj;
     public GameObject m_EffectObj;
     public UISprite m_SpriteIcon;
+    public UILabel m_labObject; 
     private UICamera m_Camera = null;
     void Awake()
     {
@@ -46,9 +47,13 @@ public class JunZhuLevelUpManagerment : MonoBehaviour
         m_JunZhuLevelUp = this;
         //m_Handler.m_handler += SelefDestroy;
         m_HandCancelEffect.m_click_handler += SelefDestroy;
+        CycleTween.StartCycleTween(m_labObject.gameObject, 1, 0.4f, 0.5f, sdssd);
         ShowInfo();
     }
-   
+    void sdssd(float f)
+    {
+        m_labObject.color = new Color(m_labObject.color.r, m_labObject.color.g, m_labObject.color.b, f);
+    }
     void SelefDestroy(GameObject obj)
     {
         ClientMain.closePopUp();
@@ -59,7 +64,7 @@ public class JunZhuLevelUpManagerment : MonoBehaviour
     {
         m_SpriteIcon.spriteName = "Player_" + CityGlobalData.m_king_model_Id;
         m_HiddenObj.SetActive(true);
-        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EffectObj, EffectIdTemplate.GetPathByeffectId(100020), null);
+        UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_EffectObj, EffectIdTemplate.GetPathByeffectId(620246), null);
         m_LabTitle.text = NameIdTemplate.GetName_By_NameId(990020) +MyColorData.getColorString(4, JunZhuData.Instance().m_junzhuInfo.level.ToString()) + NameIdTemplate.GetName_By_NameId(990019);
         m_LabGong.text = MyColorData.getColorString(9,(JunZhuData.Instance().m_junzhuSavedInfo.gongji - int.Parse(JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level).gongAdd)).ToString() + " (") + MyColorData.getColorString(4, (JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level).gongAdd) + "↑") + MyColorData.getColorString(9, ")");
         m_LabFang.text = MyColorData.getColorString(9, (JunZhuData.Instance().m_junzhuSavedInfo.fangyu - int.Parse(JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level).fangAdd)).ToString() + " (") + MyColorData.getColorString(4, ( JunzhuShengjiTemplate.GetJunZhuLevelUpInfo(JunZhuData.Instance().m_junzhuInfo.level).fangAdd) + "↑") + MyColorData.getColorString(9, ")");
@@ -77,11 +82,7 @@ public class JunZhuLevelUpManagerment : MonoBehaviour
     {
         m_JunZhuLevelUp = null;
        
-        if (yinid > 0)
-        { 
-            UIYindao.m_UIYindao.setOpenYindao(yinid);
-			yinid = -1;
-        }
+       
 
         if (m_Camera != null)
             EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);

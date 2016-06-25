@@ -9,16 +9,6 @@ public class Debug_Attack_Range : MonoBehaviour {
 
 	#region Mono
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	#endregion
 
 

@@ -1,15 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TreasureCityRoot : TreasureCitySingleton<TreasureCityRoot> {
+public class TreasureCityRoot : GeneralInstance<TreasureCityRoot> {
 
 	public GameObject treasureCityUI;
 
-	void Awake()
+	new void Awake()
 	{
 		base.Awake ();
-
-		LoadTreasureCityUI ();
 	}
 
 	// Use this for initialization
@@ -17,6 +15,7 @@ public class TreasureCityRoot : TreasureCitySingleton<TreasureCityRoot> {
 	{
 		UIYindao.m_UIYindao.CloseUI ();
 		ClientMain.m_sound_manager.chagneBGSound (1001);
+		LoadTreasureCityUI ();
 	}
 
 	public void LoadTreasureCityUI ()
@@ -44,6 +43,8 @@ public class TreasureCityRoot : TreasureCitySingleton<TreasureCityRoot> {
 	}
 	private void ResourceLoadModelCallback(ref WWW p_www, string p_path, Object p_object)
 	{
+		Debug.Log ("p_object:" + p_object);
+		Debug.Log ("TreasureCityPlayer.m_instance:" + TreasureCityPlayer.m_instance);
 		TreasureCityPlayer.m_instance.CreatePlayerModel (p_object);
 		LoadSelfName();
 	}
@@ -59,7 +60,7 @@ public class TreasureCityRoot : TreasureCitySingleton<TreasureCityRoot> {
 		PlayerSelfNameManagerment.ShowSelfeName (p_object);
 	}
 
-	void OnDestroy()
+	new void OnDestroy()
 	{
 		base.OnDestroy ();
 	}

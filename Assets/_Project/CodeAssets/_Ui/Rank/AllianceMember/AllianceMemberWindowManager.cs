@@ -1,6 +1,4 @@
-﻿//#define UNIT_TEST
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -12,7 +10,7 @@ public class AllianceMemberWindowManager : Singleton<AllianceMemberWindowManager
     public void OpenAllianceMemeberWindow(int allianceID, string selectedAllianceName)
     {
         AlliancePlayerReq temp = new AlliancePlayerReq() { mengId = allianceID };
-        SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_ALLIANCE_MEMBER_REQ);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_ALLIANCE_MEMBER_REQ, ProtoIndexes.RANKING_ALLIANCE_MEMBER_RESP);
 
         SelectedAllianceName = selectedAllianceName;
         isOutterCall = true;
@@ -26,7 +24,7 @@ public class AllianceMemberWindowManager : Singleton<AllianceMemberWindowManager
         }
 
         AlliancePlayerReq temp = new AlliancePlayerReq() { mengId = allianceID };
-        SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_ALLIANCE_MEMBER_REQ);
+        SocketHelper.SendQXMessage(temp, ProtoIndexes.RANKING_ALLIANCE_MEMBER_REQ, ProtoIndexes.RANKING_ALLIANCE_MEMBER_RESP);
 
         SelectedAllianceName = selectedAllianceName;
         isOutterCall = false;
@@ -113,21 +111,4 @@ public class AllianceMemberWindowManager : Singleton<AllianceMemberWindowManager
 
         base.OnDestroy();
     }
-
-#if UNIT_TEST
-
-    private int allianceid;
-
-    void OnGUI()
-    {
-        allianceid = int.Parse(GUILayout.TextArea(allianceid.ToString()));
-
-        if (GUILayout.Button("Test alliance memeber"))
-        {
-            OpenAllianceMemeberWindow(allianceid, "test");
-        }
-    }
-
-#endif
-
 }

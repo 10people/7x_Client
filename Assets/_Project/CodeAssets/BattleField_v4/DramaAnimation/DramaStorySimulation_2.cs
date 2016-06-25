@@ -3,16 +3,6 @@ using System.Collections;
 
 public class DramaStorySimulation_2 : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	public void ResetHitCount(){}
 	public void attackDone(int actionId){}
 	public void playAttackEffect(int attackId){}

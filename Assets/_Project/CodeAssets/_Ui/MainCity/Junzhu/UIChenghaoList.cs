@@ -10,6 +10,7 @@ public class UIChenghaoList : MonoBehaviour {
 	public UILabel m_LabelYiDuiHuan;
 	public UILabel m_LabelArr;
 	public UILabel m_LabelTime;
+	public UILabel m_LabelDuihua;
 
 	public UIButton m_UIButton;
 	public UILabel m_LabelButton;
@@ -20,13 +21,4 @@ public class UIChenghaoList : MonoBehaviour {
 	public UISprite m_SpriteSelect;
 	public UISprite m_SpriteBG;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

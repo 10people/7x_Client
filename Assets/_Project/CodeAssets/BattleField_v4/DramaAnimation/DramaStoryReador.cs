@@ -119,8 +119,6 @@ public class DramaStoryReador : MonoBehaviour
 
 		isDebug = false;
 
-		int levelId = 100000 + CityGlobalData.m_tempSection * 100 + CityGlobalData.m_tempLevel;
-
 		storyBoardIds.Clear ();
 
 		bool flag = false;
@@ -131,7 +129,7 @@ public class DramaStoryReador : MonoBehaviour
 		{
 			foreach( GuideTemplate gt in GuideTemplate.GetTemplates() )
 			{
-				if(gt.dungeonId == levelId && gt.levelType == levelType)
+				if(gt.dungeonId == CityGlobalData.m_configId && gt.levelType == levelType)
 				{
 					flag = true;
 
@@ -298,6 +296,8 @@ public class DramaStoryReador : MonoBehaviour
 		storyBoard.storyBoardId = storyboardId;
 
 		storyBoard.totalTime = json ["totalTime"].AsFloat;
+
+		storyBoard.skippable = json ["skippable"].AsBool;
 
 		storyBoard.m_json = json;
 

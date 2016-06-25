@@ -140,12 +140,12 @@ public class EquipGrowthGemInfoItemManagerment : MonoBehaviour
            < FuWenTemplate.GetFuWenTemplateByFuWenId(info._id).levelMax)
         {
             m_objArrow.SetActive(true);
-            m_LabelLevel.text = FuWenTemplate.GetFuWenTemplateByFuWenId(info._id).fuwenLevel + "阶                 "   
-                + MyColorData.getColorString(4,(FuWenTemplate.GetFuWenTemplateByFuWenId(info._id).fuwenLevel+1).ToString() + "阶");
+            m_LabelLevel.text = FuWenTemplate.GetFuWenTemplateByFuWenId(info._id).fuwenLevel + "级                 "   
+                + MyColorData.getColorString(4,(FuWenTemplate.GetFuWenTemplateByFuWenId(info._id).fuwenLevel+1).ToString() + "级");
         }
         else
         {
-            m_LabelLevel.text = FuWenTemplate.GetFuWenTemplateByFuWenId(info._id).fuwenLevel + "阶";
+            m_LabelLevel.text = MyColorData.getColorString(5, "当前宝石已合成到最高品质");
             m_objArrow.SetActive(false);
         }
         m_SpriteIcon.spriteName = CommonItemTemplate.getCommonItemTemplateById(info._id).icon.ToString();
@@ -155,7 +155,7 @@ public class EquipGrowthGemInfoItemManagerment : MonoBehaviour
         }
         else
         {
-            m_SpritePinZhi.width = m_SpritePinZhi.height = 102;
+            m_SpritePinZhi.width = m_SpritePinZhi.height = 105;
         }
 
         m_SpritePinZhi.spriteName = QualityIconSelected.SelectQuality(CommonItemTemplate.getCommonItemTemplateById(info._id).color);
@@ -170,7 +170,7 @@ public class EquipGrowthGemInfoItemManagerment : MonoBehaviour
         {
             m_PregressBar.value = 1.0f;
             m_PregressBar.ForceUpdate();
-            m_LabelProgress.text = info._exp.ToString();
+            m_LabelProgress.text = info._exp.ToString()+ "/0";
         }
         ShowAttribute(info);
     }

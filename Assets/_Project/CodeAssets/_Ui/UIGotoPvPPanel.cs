@@ -13,22 +13,7 @@ public class UIGotoPvPPanel : MYNGUIPanel
 	public List<UIGotoPvPData> m_listUIGotoPvPData = new List<UIGotoPvPData>();
 	public UIGotoPvPData m_UIGotoPvPData;
 	public UILabel m_labelTile;
-	// Use this for initialization
-	void Start () 
-	{
 
-	}
-	
-	void OnDestroy()
-	{
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	
 	public void setData(string data, string tile)
 	{
 		gameObject.SetActive(true);
@@ -48,7 +33,7 @@ public class UIGotoPvPPanel : MYNGUIPanel
 			tempObj.name = "Enemt" + num;
 			tempObj.transform.parent = m_UIGotoPvPData.gameObject.transform.parent;
 			tempObj.transform.localScale = Vector3.one;
-			tempObj.transform.localPosition = new Vector3(-96 + ((num % 2) * 190), 64 - (64 * (num / 2)), 0);
+			tempObj.transform.localPosition = new Vector3(-108 + ((num % 2) * 214), 64 - (64 * (num / 2)), 0);
 			UIGotoPvPData tempEnemtData = tempObj.GetComponent<UIGotoPvPData>();
 			num ++;
 			tempEnemtData.m_iGuankaType = int.Parse(Global.NextCutting(ref temp, ":"));

@@ -32,13 +32,9 @@ public class MiBaodelIfon : MonoBehaviour {
 	[HideInInspector]public int  Activenums;//碎片总数和需要的个数
 
 	void Start () {
-	
 		 theRoot = GameObject.Find ("SkillRoot");
+	}
 
-	}
-	void Update () {
-	
-	}
 	public void InitSkill()
 	{
 		//Debug.Log ("MibaoInfo_ZHsasssssssssss" +MibaoInfo_ZH.Count);

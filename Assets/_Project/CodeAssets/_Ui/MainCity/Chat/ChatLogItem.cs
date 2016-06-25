@@ -420,7 +420,7 @@ public class ChatLogItem : MonoBehaviour
         }
 
         //adapt pop up buttons to scroll view.
-        NGUIHelper.AdaptWidgetInScrollView(m_ChatBaseDataHandler.m_ScrollView, m_ChatBaseDataHandler.m_ScrollBar, SenderFloatButtonsController.m_BGLeft.GetComponent<UIWidget>());
+        NGUIHelper.AdaptWidgetInScrollView(m_ChatBaseDataHandler.m_ScrollView, m_ChatBaseDataHandler.m_ScrollBar, SenderFloatButtonsController.m_BG.GetComponent<UIWidget>());
     }
 
     public void OnDetailClick()
@@ -472,10 +472,10 @@ public class ChatLogItem : MonoBehaviour
         //adapt pop up buttons to scroll view.
         UIScrollView scrollView = m_ChatBaseDataHandler.m_ScrollView;
         UIScrollBar scrollBar = m_ChatBaseDataHandler.m_ScrollBar;
-        float widgetValue = scrollView.GetWidgetValueRelativeToScrollView(AlertFloatButtonsController.m_BGLeft.GetComponent<UIWidget>()).y;
+        float widgetValue = scrollView.GetWidgetValueRelativeToScrollView(AlertFloatButtonsController.m_BG.GetComponent<UIWidget>()).y;
         if (widgetValue < 0 || widgetValue > 1)
         {
-            scrollView.SetWidgetValueRelativeToScrollView(AlertFloatButtonsController.m_BGLeft.GetComponent<UIWidget>(), 0);
+            scrollView.SetWidgetValueRelativeToScrollView(AlertFloatButtonsController.m_BG.GetComponent<UIWidget>(), 0);
 
             //clamp scroll bar value.
             //donot update scroll bar cause SetWidgetValueRelativeToScrollView has updated.

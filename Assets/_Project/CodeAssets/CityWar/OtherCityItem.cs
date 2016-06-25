@@ -18,6 +18,8 @@ public class OtherCityItem : MonoBehaviour {
 	public UISprite m_LevelIcon;
 	public UILabel m_enterNum;
 
+	public UILabel m_rewrdNum;
+
 	public GameObject m_passObj;
 
 	public GameObject m_enterBtn;
@@ -28,6 +30,8 @@ public class OtherCityItem : MonoBehaviour {
 	public GameObject m_iconSampleParent;
 	private GameObject m_iconSamplePrefab;
 
+	[HideInInspector]public int m_cost;
+
 	public void InItOtherCity (CityInfo tempInfo,int tempCurId)
 	{
 		M_CityInfo = tempInfo;
@@ -36,7 +40,13 @@ public class OtherCityItem : MonoBehaviour {
 		m_title.text = NameIdTemplate.GetName_By_NameId (M_Template.name);
 		m_LevelIcon.spriteName = "1-" + M_Template.smaID;
 
+		m_rewrdNum.text = "x" +  M_Template.awardShow.ToString ();
+
 		m_passObj.SetActive (tempInfo.cityState == 0 ? false : true);
+
+		m_cost = JCZCityTemplate.GetJCZCityTemplateById (tempInfo.cityId).cost;
+
+//		Debug.Log ("tempInfo.cityState:" + tempInfo.cityState);
 
 		if (tempCurId > 0)
 		{
@@ -57,20 +67,21 @@ public class OtherCityItem : MonoBehaviour {
 					if (QXComData.AllianceInfo ().level >= M_Template.allianceLv)
 					{
 						M_canJoin = true;
+
 						if (tempInfo.cityState2 == 0)
 						{
-							m_enterNum.text = "";
+							m_enterNum.text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_13).Replace ("N",MyColorData.getColorString(4,m_cost.ToString ()));
 							m_btnLabel.text = "宣 战";
 						}
 						else
 						{
-							m_enterNum.text = MyColorData.getColorString (4,tempInfo.lmNum > 0 ? tempInfo.lmNum + "个盟友正在作战" : "");
-							m_btnLabel.text = CityWarPage.m_instance.CityResp.interval == 1 ? "宣战成功" : "进入战场";
+							m_enterNum.text = MyColorData.getColorString (4,tempInfo.lmNum > 0 ? LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_17).Replace ("N",tempInfo.lmNum.ToString ()) : "");
+							m_btnLabel.text = CityWarPage.m_instance.CityResp.interval == 0 ? "宣战成功" : "进入战场";
 						}
 					}
 					else
 					{
-						m_enterNum.text = MyColorData.getColorString (5,"联盟" + M_Template.allianceLv + "级可宣战");
+						m_enterNum.text = MyColorData.getColorString (5,LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_46).Replace ("X",M_Template.allianceLv.ToString ()));
 						m_btnLabel.text = "宣 战";
 						M_canJoin = false;
 					}
@@ -80,12 +91,12 @@ public class OtherCityItem : MonoBehaviour {
 					M_canJoin = true;
 					if (tempInfo.cityState2 == 0)
 					{
-						m_enterNum.text = "";
-						m_btnLabel.text = "宣  战";
+						m_enterNum.text = m_enterNum.text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_13).Replace ("N",MyColorData.getColorString(4,m_cost.ToString ()));
+						m_btnLabel.text = "宣 战";
 					}
 					else
 					{
-						m_enterNum.text = MyColorData.getColorString (4,tempInfo.lmNum > 0 ? tempInfo.lmNum + "个盟友正在作战" : "");
+						m_enterNum.text = MyColorData.getColorString (4,tempInfo.lmNum > 0 ? LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_17).Replace ("N",tempInfo.lmNum.ToString ()) : "");
 						m_btnLabel.text = "进入战场";
 					}
 				}
@@ -98,15 +109,17 @@ public class OtherCityItem : MonoBehaviour {
 			M_canJoin = true;
 			if (tempInfo.cityState2 == 0)
 			{
-				m_enterNum.text = "";
-				m_btnLabel.text = "宣  战";
+				m_enterNum.text = m_enterNum.text = LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_13).Replace ("N",MyColorData.getColorString(4,m_cost.ToString ()));
+				m_btnLabel.text = "宣 战";
 			}
 			else
 			{
-				m_enterNum.text = MyColorData.getColorString (4,tempInfo.lmNum > 0 ? tempInfo.lmNum + "个盟友正在作战" : "");
+				m_enterNum.text = MyColorData.getColorString (4,tempInfo.lmNum > 0 ? LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_17).Replace ("N",tempInfo.lmNum.ToString ()) : "");
 				m_btnLabel.text = "进入战场";
 			}
 		}
+
+		QXComData.SetBtnState (m_enterBtn,M_canJoin);
 
 		if (m_iconSamplePrefab == null)
 		{
@@ -131,14 +144,14 @@ public class OtherCityItem : MonoBehaviour {
 	{
 		string[] rewardStr = M_Template.award.Split (':');
 		
-		m_iconSamplePrefab.transform.localPosition = new Vector3(0,-13,0);
+		m_iconSamplePrefab.transform.localPosition = new Vector3(0,0,0);
 		
 		CommonItemTemplate commonTemp = CommonItemTemplate.getCommonItemTemplateById (int.Parse (rewardStr[1]));
 		string mdesc = DescIdTemplate.GetDescriptionById (commonTemp.descId);
 		string nameStr = NameIdTemplate.GetName_By_NameId (commonTemp.nameId);
 		
 		IconSampleManager iconSample = m_iconSamplePrefab.GetComponent<IconSampleManager> ();
-		iconSample.SetIconByID (int.Parse (rewardStr[1]),"x" + rewardStr[2],2);
+		iconSample.SetIconByID (int.Parse (rewardStr[1]),"",2);
 		//			iconSample.SetIconBasicDelegate (true,true,null);
 		iconSample.SetIconPopText(int.Parse (rewardStr[1]), nameStr, mdesc, 1);
 		

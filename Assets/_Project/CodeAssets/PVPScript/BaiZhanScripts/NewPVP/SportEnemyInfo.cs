@@ -52,9 +52,10 @@ public class SportEnemyInfo : GeneralInstance<SportEnemyInfo> {
 		m_rank.text = MyColorData.getColorString (1,tempInfo.rank.ToString ());
 //		Debug.Log ("tempInfo.guojia:" + tempInfo.guojia);
 		m_nation.spriteName = QXComData.GetNationSpriteName (tempInfo.guojia);
+		QXComData.SetNationSprite (m_nation,tempInfo.guojia);
 
 		m_name.text = tempInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse (tempInfo.junZhuName)) : tempInfo.junZhuName;
-		m_alliance.text = tempInfo.lianMengName.Equals ("***") || tempInfo.lianMengName.Equals ("") ? "   " + QXComData.AllianceName (tempInfo.lianMengName) : QXComData.AllianceName (tempInfo.lianMengName);
+		m_alliance.text = tempInfo.lianMengName.Equals ("***") || tempInfo.lianMengName.Equals ("") ? QXComData.AllianceName (tempInfo.lianMengName) : QXComData.AllianceName (tempInfo.lianMengName);
 		m_zhanLi.text = "战力：" + MyColorData.getColorString (QXComData.JunZhuInfo ().zhanLi >= tempInfo.zhanLi ? 4 : 5,tempInfo.zhanLi.ToString ());
 
 		string biJiaoStr = "";
@@ -67,7 +68,7 @@ public class SportEnemyInfo : GeneralInstance<SportEnemyInfo> {
 		}
 		else
 		{
-			colorId = 45;
+			colorId = 4;
 			biJiaoStr = zhanLi == 0 ? "与我战力相同" : "比我低 " + zhanLi;
 		}
 		m_zhanLiCompare.text = MyColorData.getColorString (colorId,biJiaoStr);
@@ -92,7 +93,7 @@ public class SportEnemyInfo : GeneralInstance<SportEnemyInfo> {
 			m_skill.spriteName = "";
 			m_skillName.spriteName = "";
 			m_skillDes.text = "";
-			m_noSkillDes.text = "未配置秘技";
+			m_noSkillDes.text = "未配置无双技";
 		}
 	}
 

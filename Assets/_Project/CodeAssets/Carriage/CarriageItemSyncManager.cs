@@ -176,9 +176,10 @@ namespace Carriage
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
 
-#if DEBUG_MOVE
-                            Debug.Log("=============Receive, id:" + tempMsg.uid + ", pos:" + new Vector3(tempMsg.posX, tempMsg.posY, tempMsg.posZ) + ", time:" + Time.realtimeSinceStartup);
-#endif
+                            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
+                            {
+                                //Debug.Log("=============Receive, id:" + tempMsg.uid + ", pos:" + new Vector3(tempMsg.posX, tempMsg.posY, tempMsg.posZ) + ", time:" + Time.realtimeSinceStartup);
+                            }
 
                             var temp = m_PlayerDic.Where(item => item.Value.m_UID == tempMsg.uid);
                             if (temp.Any())
@@ -258,12 +259,12 @@ namespace Carriage
                                 }
 
                                 //Play dead animation.
-                                if (m_RootManager.m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(tempMsg.uid, "Dead"))
+                                if (m_RootManager.m_AnimationHierarchyPlayer.IsCanPlayAnimation(tempMsg.uid, "Dead"))
                                 {
                                     //Disable move.
                                     m_PlayerDic[tempMsg.uid].DeactiveMove();
 
-                                    m_RootManager.m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(tempMsg.uid, "Dead");
+                                    m_RootManager.m_AnimationHierarchyPlayer.TryPlayAnimation(tempMsg.uid, "Dead");
                                 }
                             }
 
@@ -288,13 +289,15 @@ namespace Carriage
                                 m_StoredPlayerDeadNotify = tempMsg;
 
                                 //Play dead animation.
-                                if (m_RootManager.m_AnimationHierarchyPlayer.IsCanPlayAnimationInAnimator(tempMsg.uid, "Dead"))
+                                if (m_RootManager.m_AnimationHierarchyPlayer.IsCanPlayAnimation(tempMsg.uid, "Dead"))
                                 {
                                     //Disable move.
                                     m_RootManager.m_SelfPlayerController.DeactiveMove();
 
-                                    m_RootManager.m_AnimationHierarchyPlayer.TryPlayAnimationInAnimator(tempMsg.uid, "Dead");
+                                    m_RootManager.m_AnimationHierarchyPlayer.TryPlayAnimation(tempMsg.uid, "Dead");
                                 }
+
+                                m_RootManager.m_CarriageMain.TryCancelChaseToAttack();
                             }
 
                             //Remove gizmos.
@@ -462,7 +465,7 @@ namespace Carriage
                                     }
                                 case 1:
                                     {
-                                        ClientMain.m_UITextManager.createText("原地复活元宝不足");
+                                        CommonBuy.Instance.ShowIngot();
                                         break;
                                     }
                             }
@@ -474,13 +477,27 @@ namespace Carriage
             return false;
         }
 
-        private void Awake()
+        void Start()
+        {
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.INIT, "Carriage_Player_Sync");
+        }
+
+        void Awake()
         {
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageHaoJie"));
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.MODEL, "Carriage_MODEL");
+
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageQinglan"));
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.MODEL, "Carriage_MODEL");
+
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageQiangwei"));
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.MODEL, "Carriage_MODEL");
+
             PlayerPrefabList.Add(Resources.Load<GameObject>("_3D/Models/Carriage/CarriageLuoli"));
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.MODEL, "Carriage_MODEL");
+
             CarriagePrefab = Resources.Load<GameObject>("_3D/Models/Carriage/Carriage");
+            PrepareForCarriage.UpdateLoadProgress(PrepareForCarriage.LoadModule.MODEL, "Carriage_MODEL");
 
             SocketTool.RegisterSocketListener(this);
         }

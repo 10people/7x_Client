@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#define SetMapPos
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,11 @@ public class SportPage : GeneralInstance<SportPage> {
 	[HideInInspector]
 	public BaiZhanInfoResp SportResp;
 	public BaiZhanTemplate SportTemp;
+
+	public GameObject m_recordRed;
+
+	public GameObject m_dailyRewardBtn;
+	public GameObject m_rankRewardBtn;
 
 	private string m_textStr;
 
@@ -41,6 +47,9 @@ public class SportPage : GeneralInstance<SportPage> {
 		//yindao
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 
+		UIDragObject dragObj = m_pageObj.GetComponent<UIDragObject> ();
+		dragObj.enabled = !QXComData.CheckYinDaoOpenState (100200);
+
 		SportResp = tempResp;
 		m_sportPageDelegate = tempDelegate;
 		m_pageObj.transform.localScale = Vector3.one;//0,96f
@@ -57,8 +66,9 @@ public class SportPage : GeneralInstance<SportPage> {
 			m_isShopYinDao = true;
 		}
 
+		m_recordRed.SetActive (FunctionOpenTemp.IsShowRedSpotNotification (300105));
+
 		InItPlayerInfo ();
-		InItJunXianRoomInfo ();
 	}
 
 	#region EnemyJunXianRoomInfo
@@ -68,7 +78,7 @@ public class SportPage : GeneralInstance<SportPage> {
 
 	public readonly Dictionary<int,string> M_RoomBoxDic = new Dictionary<int, string>()
 	{
-		{1,"200:175"},{2,"200:180"},{3,"210:180"},{4,"210:190"},{5,"220:190"},{6,"240:240"},{7,"400:280"},{8,"460:330"},{9,"495:345"},
+		{1,"120:100"},{2,"130:110"},{3,"180:130"},{4,"180:130"},{5,"200:150"},{6,"200:160"},{7,"270:170"},{8,"300:240"},{9,"400:280"},
 	};
 
 	private readonly Dictionary<int,Vector3> m_texPosDic = new Dictionary<int, Vector3>()
@@ -78,10 +88,10 @@ public class SportPage : GeneralInstance<SportPage> {
 		{304,new Vector3 (455,-30,0)},{303,new Vector3 (315,40,0)},{302,new Vector3 (25,175,0)},{301,new Vector3 (-135,275,0)},//骑士
 		{404,new Vector3 (345,-130,0)},{403,new Vector3 (180,-30,0)},{402,new Vector3 (-35,130,0)},{401,new Vector3 (-230,210,0)},//禁卫
 		{504,new Vector3 (180,-200,0)},{503,new Vector3 (100,-60,0)},{502,new Vector3 (-170,65,0)},{501,new Vector3 (-330,170,0)},//校尉
-		{604,new Vector3 (395,230,0)},{603,new Vector3 (0,-110,0)},{602,new Vector3 (-220,15,0)},{601,new Vector3 (-360,80,0)},//先锋
+		{604,new Vector3 (240,-170,0)},{603,new Vector3 (0,-110,0)},{602,new Vector3 (-220,15,0)},{601,new Vector3 (-360,80,0)},//先锋
 		{703,new Vector3 (-15,-300,0)},{702,new Vector3 (-290,-230,0)},{701,new Vector3 (-415,-45,0)},//少将
 		{802,new Vector3 (-225,-275,0)},{801,new Vector3 (-430,-185,0)},//元帅
-		{901,new Vector3 (-465,-305,0)},//诸侯
+		{901,new Vector3 (-410,-305,0)},//诸侯
 	};
 
 	private void InItJunXianRoomInfo ()
@@ -113,6 +123,9 @@ public class SportPage : GeneralInstance<SportPage> {
 	public UILabel m_sportCd;
 	public UILabel m_getRewardCd;
 
+	public UILabel m_vipAdd;
+	public UISprite m_vipIcon;
+
 	public GameObject m_addBtnObj;
 	public GameObject m_clearCdBtnObj;
 
@@ -126,13 +139,19 @@ public class SportPage : GeneralInstance<SportPage> {
 		m_chanChu.text = AddColor("产出：" + SportResp.weiWangHour + "威望/小时");
 		m_shouYi.text = AddColor("威望：" + SportResp.hasWeiWang + "威望");
 
+//		m_vipIcon.spriteName = QXComData.JunZhuInfo ().vipLv >= 6 ? "v" + QXComData.JunZhuInfo ().vipLv : "";
+//		m_vipAdd.text = QXComData.JunZhuInfo ().vipLv >= 6 ? "(      +" + (VipTemplate.GetVipInfoByLevel (QXComData.JunZhuInfo ().vipLv).baizhanPara - 1.0) * 100 + "%)" : "";
+
+		m_vipIcon.spriteName = "v" + 6;
+		m_vipAdd.text = "(      +" + (VipTemplate.GetVipInfoByLevel (6).baizhanPara - 1.0) * 100 + "%)";
+
 		int curVipMaxTime = VipTemplate.GetVipInfoByLevel (QXComData.JunZhuInfo ().vipLv).bugBaizhanTime + 5;
 		string countTimeStr = "";
-		if (SportResp.totalTimes == curVipMaxTime)
+		if (SportResp.leftTimes == 0)
 		{
-			if (SportResp.leftTimes == 0)
+			if (SportResp.leftCanBuyCount == 0)
 			{
-				countTimeStr = "今日次数用尽";
+				countTimeStr = QXComData.JunZhuInfo ().vipLv >= QXComData.maxVipLevel ? "今日次数用尽" : "剩余次数：" + SportResp.leftTimes + "/" + SportResp.totalTimes;
 			}
 			else
 			{
@@ -145,28 +164,48 @@ public class SportPage : GeneralInstance<SportPage> {
 		}
 		m_countTime.text = AddColor(countTimeStr);
 
-		m_addBtnObj.SetActive (SportResp.leftTimes > 0 ? false : SportResp.totalTimes == curVipMaxTime ? false : true);
+//		m_addBtnObj.SetActive (SportResp.leftTimes > 0 ? false : SportResp.totalTimes == curVipMaxTime ? false : true);
+		m_addBtnObj.SetActive (SportResp.leftTimes > 0 ? false : (SportResp.leftCanBuyCount > 0 ? true : (QXComData.JunZhuInfo ().vipLv >= QXComData.maxVipLevel ? false : true)));
 
-		m_clearCdBtnObj.SetActive (SportResp.time > 0 ? true : false);
+		m_clearCdBtnObj.SetActive (SportResp.leftTimes > 0 ? (SportResp.time > 0 ? true : false) : false);
 
-		StopCoroutine ("SportCd");
-		if (SportResp.time > 0)
+		SportCdTime (SportResp.time);
+
+		if (SportResp.nextTimeTo21 > 0)
 		{
-			StartCoroutine ("SportCd");
+			GetRewardCdTime (SportResp.nextTimeTo21);
 		}
 		else
-		{
-			m_sportCd.text = "";
-		}
-
-		StopCoroutine ("GetReward");
-		if (SportResp.nextTimeTo21 <= 0)
 		{
 			m_getRewardCd.text = "";
 		}
+
+		DailyRewardBtnEffect ();
+
+		InItJunXianRoomInfo ();
+	}
+
+	public void DailyRewardBtnEffect ()
+	{
+		QXComData.ClearEffect (m_dailyRewardBtn);
+		QXComData.ClearEffect (m_rankRewardBtn);
+
+		if (SportResp.nextTimeTo21 == 0)
+		{
+			QXComData.InstanceEffect (QXComData.EffectPos.TOP,m_dailyRewardBtn,620247);
+		}
 		else
 		{
-			StartCoroutine ("GetReward");
+			QXComData.ClearEffect (m_dailyRewardBtn);
+		}
+
+		if (SportResp.historyHighRank > 1 && SportResp.rankAward == 0)
+		{
+			QXComData.InstanceEffect (QXComData.EffectPos.TOP,m_rankRewardBtn,620247);
+		}
+		else
+		{
+			QXComData.ClearEffect (m_rankRewardBtn);
 		}
 	}
 
@@ -175,43 +214,64 @@ public class SportPage : GeneralInstance<SportPage> {
 		return "[e15a00]" + tempStr + "[-]";
 	}
 
-	IEnumerator SportCd ()
+	#region SportCdTime
+	private float m_sportCdTime;
+	void SportCdTime (int cdTime)
 	{
-		while (SportResp.time > 0)
+		m_sportCdTime = cdTime;
+		if (TimeHelper.Instance.IsTimeCalcKeyExist("SportCdTime"))
 		{
-			SportResp.time --;
-			m_sportCd.text = AddColor("冷却时间：" + TimeHelper.GetUniformedTimeString (SportResp.time));
-			yield return new WaitForSeconds (1);
+			TimeHelper.Instance.RemoveFromTimeCalc("SportCdTime");
+		}
+		TimeHelper.Instance.AddEveryDelegateToTimeCalc("SportCdTime", cdTime, OnUpdateSportTime);
+	}
 
-			if (SportResp.time <= 0)
-			{
-				SportResp.time = 0;
-				m_sportCd.text = "";
-
-				StopCoroutine ("SportCd");
-			}
+	private void OnUpdateSportTime (int p_time)
+	{
+		if (m_sportCdTime - p_time > 0)
+		{
+			m_sportCd.text = AddColor((SportResp.leftTimes > 0 ? "冷却时间：" : "重置时间：") + TimeHelper.GetUniformedTimeString (m_sportCdTime - p_time));
+			Debug.Log ("m_sportCdTime - p_time:" + (m_sportCdTime - p_time));
+		}
+		else
+		{
+			TimeHelper.Instance.RemoveFromTimeCalc("SportCdTime");
+			SportResp.time = 0;
+			m_sportCd.text = "";
 		}
 	}
 
-	IEnumerator GetReward ()
+	#endregion
+
+	#region GetRewardCdTime
+	private float m_getRewardCdTime;
+	void GetRewardCdTime (int cdTime)
 	{
-		while (SportResp.nextTimeTo21 > 0)
+		m_getRewardCdTime = cdTime;
+		if (TimeHelper.Instance.IsTimeCalcKeyExist("GetRewardCdTime"))
 		{
-			SportResp.nextTimeTo21 --;
-
-			yield return new WaitForSeconds (1);
-
-			if (SportResp.nextTimeTo21 <= 0)
-			{
-				m_getRewardCd.text = "";
-				SportResp.nextTimeTo21 = 0;
-			}
-			else
-			{
-				m_getRewardCd.text = QXComData.TimeFormat (SportResp.nextTimeTo21);
-			}
+			TimeHelper.Instance.RemoveFromTimeCalc("GetRewardCdTime");
+		}
+		TimeHelper.Instance.AddEveryDelegateToTimeCalc("GetRewardCdTime", cdTime, OnUpdateGetRewardTime);
+	}
+	
+	private void OnUpdateGetRewardTime (int p_time)
+	{
+		if (m_getRewardCdTime - p_time > 0)
+		{
+			m_getRewardCd.text = TimeHelper.GetUniformedTimeString (m_getRewardCdTime - p_time);
+			Debug.Log ("m_getRewardCdTime - p_time:" + (m_getRewardCdTime - p_time));
+		}
+		else
+		{
+			TimeHelper.Instance.RemoveFromTimeCalc("GetRewardCdTime");
+			SportResp.nextTimeTo21 = 0;
+			m_getRewardCd.text = "";
+			QXComData.InstanceEffect (QXComData.EffectPos.TOP,m_dailyRewardBtn,620247);
 		}
 	}
+	
+	#endregion
 
 	/// <summary>
 	/// Refreshs the player info.
@@ -239,6 +299,11 @@ public class SportPage : GeneralInstance<SportPage> {
 
 		m_addBtnObj.SetActive (false);
 		m_countTime.text = AddColor("剩余次数：" + SportResp.leftTimes + "/" + SportResp.totalTimes);
+		SportResp.time = tempInfo.cdTime;
+
+		m_clearCdBtnObj.SetActive (SportResp.leftTimes > 0 ? (SportResp.time > 0 ? true : false) : false);
+
+		SportCdTime (SportResp.time);
 	}
 
 	/// <summary>
@@ -249,9 +314,19 @@ public class SportPage : GeneralInstance<SportPage> {
 	{
 		SportResp.cdYuanBao = tempInfo.nextCDYB;
 		SportResp.time = 0;
-		StopCoroutine ("SportCd");
+		SportCdTime (SportResp.time);
 		m_clearCdBtnObj.SetActive (false);
 		m_sportCd.text = "";
+	}
+
+	/// <summary>
+	/// Refreshs the wei wang.
+	/// </summary>
+	/// <param name="tempWeiWang">Temp wei wang.</param>
+	public void RefreshWeiWang (int tempWeiWang)
+	{
+		SportResp.hasWeiWang = tempWeiWang;
+		m_shouYi.text = AddColor("威望：" + SportResp.hasWeiWang + "威望");
 	}
 
 	/// <summary>
@@ -273,28 +348,21 @@ public class SportPage : GeneralInstance<SportPage> {
 	
 	public GameObject m_ownHeadObj;
 	public UISprite m_headIcon;
-	private Vector3 m_pos;		//定位
+
 	private Vector3 m_targetPos;
 	private iTween.EaseType m_targetType;
 	private float m_moveTime;
 
-	public UIRoot m_root;
 	public Camera m_camera;
-	public UIAnchor m_centerAnchor;
 	public GameObject m_pageObj;
 
-	enum PagePosType
-	{
-		L_B,
-		R_B,
-		R_T,
-		L_T,
-	}
-	private PagePosType m_page_posType;
+	public GameObject m_tempObj;
 
 	void MoveToMyHeadPos ()
 	{
 		m_headIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id;
+//		SportTemp.id = 901;
+		float pageWidth = m_pageObj.GetComponent<UITexture> ().width;
 		foreach (GameObject obj in m_junXianRoomList)
 		{
 			SportJunXian sportJunXian = obj.GetComponent<SportJunXian> ();
@@ -302,7 +370,8 @@ public class SportPage : GeneralInstance<SportPage> {
 			{
 				m_ownHeadObj.transform.parent = obj.transform.parent;
 				m_ownHeadObj.transform.localPosition = obj.transform.localPosition + new Vector3(0,375,0);
-				m_pos = obj.transform.localPosition;
+
+				m_tempObj.transform.localPosition = m_texPosDic[SportTemp.id] + new Vector3(pageWidth / 2,0,0);
 
 				m_targetPos = obj.transform.localPosition + new Vector3 (0, 75, 0);
 				m_targetType = iTween.EaseType.easeOutQuart;
@@ -310,71 +379,46 @@ public class SportPage : GeneralInstance<SportPage> {
 				break;
 			}
 		}
-//		m_pos = m_junXianRoomList [m_junXianRoomList.Count - 1].transform.localPosition;
-
-		UITexture pageTex = m_pageObj.GetComponent<UITexture> ();
-
-		bool left = m_pos.x < 0 ? true : false;
-		float disX = (float)(pageTex.width / 2) - Mathf.Abs (m_pos.x);
-		bool top = m_pos.y > 0 ? true : false;
-		float disY = (float)(pageTex.width / 2) - Mathf.Abs (m_pos.y);
-		Debug.Log ("disX:" + disX);
-		Debug.Log ("disY:" + disY);
-		Debug.Log ("screen.width:" + Screen.width);
-		Debug.Log ("screen.height:" + Screen.height);
-
-		Debug.Log ("m_centerAnchortion:" + m_centerAnchor.transform.localPosition);
-		Debug.Log ("m_root:" + m_root.transform.localPosition);
-
-		Vector3 worldPos = m_pos + m_texPosDic [SportTemp.id] + m_centerAnchor.transform.localPosition + m_root.transform.localPosition;
-		Debug.Log ("worldPos:" + worldPos);
-		Vector3 screenPos = m_camera.WorldToViewportPoint (worldPos);
-		Debug.Log ("screenPos:" + screenPos);
-		if (left && top)
+	
+		#if SetMapPos
+		
+		//		Debug.Log ("ScreenWidth:" + Screen.width);
+		//		Debug.Log ("height:" + Screen.height);
+		
+		Vector3 sToView = m_camera.ScreenToViewportPoint (new Vector3(Screen.width,0,0));
+		//		Debug.Log ("sToView:" + sToView);
+		
+		Vector3 sToViewPos = m_camera.WorldToViewportPoint (m_tempObj.transform.position);
+		//		Debug.Log ("sToViewPos:" + sToViewPos);
+		
+		Vector3 tarPos = new Vector3();
+		if (sToViewPos.x < sToView.x)
 		{
-			m_page_posType = PagePosType.L_T;
-		}
-		else if (left && !top)
-		{
-			m_page_posType = PagePosType.L_B;
-		}
-		else if (!left && top)
-		{
-			m_page_posType = PagePosType.R_T;
+			float dis = (sToView.x - sToViewPos.x) * Screen.width;
+			//			Debug.Log ("dis:" + dis);
+			tarPos = m_texPosDic[SportTemp.id] + new Vector3(dis,0,0);
 		}
 		else
 		{
-			m_page_posType = PagePosType.R_B;
+			tarPos = m_texPosDic[SportTemp.id];
 		}
+		#endif
 
-		if (m_pageObj.transform.localPosition != m_texPosDic[SportTemp.id])
+		if (m_pageObj.transform.localPosition != tarPos)
 		{
-			PageMove (m_texPosDic[SportTemp.id]);
-		}
-
-		if (disX < Screen.width / 2 - Math.Abs ((m_pos + m_texPosDic[SportTemp.id]).x))
-		{
-			
-		}
-		switch (m_page_posType)
-		{
-		case PagePosType.L_B:
-
-
-
-			break;
-		case PagePosType.L_T:
-			break;
-		case PagePosType.R_B:
-			break;
-		case PagePosType.R_T:
-			break;
-		default:
-			break;
+			PageMove (tarPos);
 		}
 
 		PageScale ();
-		HeadItween ();
+		if (QXComData.CheckYinDaoOpenState (100200))
+		{
+			m_ownHeadObj.SetActive (false);
+		}
+		else
+		{
+			m_ownHeadObj.SetActive (true);
+			HeadItween ();
+		}
 	}
 
 	void PageMove (Vector3 pos)
@@ -384,6 +428,10 @@ public class SportPage : GeneralInstance<SportPage> {
 		move.Add ("easetype",iTween.EaseType.easeInOutQuad);
 		move.Add ("position",pos);
 		move.Add ("islocal",true);
+
+//		move.Add ("oncomplete","MoveEnd");
+//		move.Add ("oncompletetarget",gameObject);
+
 		iTween.MoveTo (m_pageObj,move);
 	}
 
@@ -435,6 +483,9 @@ public class SportPage : GeneralInstance<SportPage> {
 	{
 		SetJunXianRoomObj (true);
 		SportEnemyPage.m_instance.InItSportEnemyPage (tempInfo,SportEnemyPageClickCallBack);
+
+		QXComData.ClearEffect (m_dailyRewardBtn);
+		QXComData.ClearEffect (m_rankRewardBtn);
 	}
 
 	void SportEnemyPageClickCallBack ()
@@ -503,13 +554,20 @@ public class SportPage : GeneralInstance<SportPage> {
 	{
 		m_getHighRankRewardObj.SetActive (true);
 
+		SportResp.rankAward = 0;
 		SportHighRank.m_instance.InItHighRank (m_rewardList);
 		SportHighRank.m_instance.M_SportHighRankDelegate = GetHighRankRewardBack;
+
+		QXComData.ClearEffect (m_dailyRewardBtn);
+		QXComData.ClearEffect (m_rankRewardBtn);
 	}
 
 	void GetHighRankRewardBack ()
 	{
 		m_getHighRankRewardObj.SetActive (false);
+
+		DailyRewardBtnEffect ();
+
 //		Global.m_isOpenBaiZhan = false;
 		Global.m_isSportDataInItEnd = true;
 		m_isShopYinDao = true;
@@ -521,11 +579,16 @@ public class SportPage : GeneralInstance<SportPage> {
 		m_dailyRankRewardObj.SetActive (true);
 		SportResult.m_instance.InItRankReward ();
 		SportResult.m_instance.M_SportResultDelegate = SportResultDelegateCallBack;
+
+		QXComData.ClearEffect (m_dailyRewardBtn);
+		QXComData.ClearEffect (m_rankRewardBtn);
 	}
 
 	void HighRankDelegateCallBack ()
 	{
 		m_dailyRankRewardObj.SetActive (false);
+
+		DailyRewardBtnEffect ();
 	}
 
 	#endregion
@@ -538,20 +601,34 @@ public class SportPage : GeneralInstance<SportPage> {
 	public void GetDailyRankReward ()
 	{
 		SportResp.nextTimeTo21 = -1;
-		
+
+		PushAndNotificationHelper.SetRedSpotNotification (300108,false);
+
+		if (WarPage.m_instance != null)
+		{
+			WarPage.m_instance.CheckRedPoint ();
+		}
+
+		QXComData.ClearEffect (m_dailyRewardBtn);
+
 		GeneralRewardManager.Instance().CreateReward (m_dailyRewardList);
 	}
 
 	private void OpenDailyRankReward ()
 	{
 		m_dailyRankRewardObj.SetActive (true);
-		SportResult.m_instance.InItSportResult (SportResp.rank);
+		SportResult.m_instance.InItSportResult (SportResp.historyHighRank);
 		SportResult.m_instance.M_SportResultDelegate = SportResultDelegateCallBack;
+
+		QXComData.ClearEffect (m_dailyRewardBtn);
+		QXComData.ClearEffect (m_rankRewardBtn);
 	}
 
 	void SportResultDelegateCallBack ()
 	{
 		m_dailyRankRewardObj.SetActive (false);
+
+		DailyRewardBtnEffect ();
 	}
 
 	#endregion
@@ -567,7 +644,16 @@ public class SportPage : GeneralInstance<SportPage> {
 			break;
 		case "RecordBtn":
 
+			QXComData.ClearEffect (m_dailyRewardBtn);
+			QXComData.ClearEffect (m_rankRewardBtn);
+
 			SportData.Instance.SportRecordReq ();
+			PushAndNotificationHelper.SetRedSpotNotification (300105,false);
+			m_recordRed.SetActive (FunctionOpenTemp.IsShowRedSpotNotification (300105));
+			if (WarPage.m_instance != null)
+			{
+				WarPage.m_instance.CheckRedPoint ();
+			}
 
 			break;
 		case "RankBtn":
@@ -610,46 +696,40 @@ public class SportPage : GeneralInstance<SportPage> {
 			break;
 		case "CloseBtn":
 
+			if (SportResp.time > 0 || SportResp.leftTimes == 0)
+			{
+				PushAndNotificationHelper.SetRedSpotNotification (300103,false);
+				if (WarPage.m_instance != null)
+				{
+					WarPage.m_instance.CheckRedPoint ();
+				}
+			}
+
+			StopCdTime ();
+
 			m_sportPageDelegate ();
 
 			break;
 		case "AddBtn":
 
-			if (SportResp.leftCanBuyCount == 0)
-			{
-				if (QXComData.JunZhuInfo ().vipLv < QXComData.maxVipLevel)
-				{
-					string textDes1 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_7);
-					string textDes2 = LanguageTemplate.GetText (LanguageTemplate.Text.V_PRIVILEGE_TIPS_8).Replace ('*',char.Parse ((JunZhuData.Instance().m_junzhuInfo.vipLv + 1).ToString ()));
-					string textDes3 = LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
-					//					textStr = "今日剩余购买次数已用完,V特权等级提升到" + (JunZhuData.Instance().m_junzhuInfo.vipLv + 1) + "级即可购买更多挑战次数。\n\n是否前往充值？";
-					m_textStr = textDes1 + "\n" + textDes2 + "\n" + textDes3;
-					QXComData.CreateBoxDiy (m_textStr,true,null);
-				}
-				else
-				{
-					m_textStr = "今日已无剩余购买次数...";
-					QXComData.CreateBoxDiy (m_textStr,true,null);
-				}
-			}
-			else
-			{
-				m_textStr = "是否使用" + SportResp.buyNeedYB + "元宝购买" + SportResp.buyNumber + "次挑战次数？\n\n今日还可购买" + SportResp.leftCanBuyCount + "回";
-				QXComData.CreateBoxDiy (m_textStr,false,SportData.Instance.BuyTimes);
-			}
+			SportData.Instance.BuyChallengeTimes ();
 
 			break;
 		case "ClearCdBtn":
 
 			SportData.Instance.M_ClearByBtn = true;
 			m_textStr = "是否使用" + SportResp.cdYuanBao + "元宝清除挑战冷却？";
-			QXComData.CreateBoxDiy (m_textStr,false,SportData.Instance.ClearCd);
+			QXComData.CreateBoxDiy (m_textStr,false,SportData.Instance.ClearCd,true,0,QXComData.SportClearCdVipLevel);
 
 			break;
 		default:
 			SportJunXian junXian = ui.transform.parent.GetComponent<SportJunXian> ();
 			if (junXian != null)
 			{
+				if (Input.touchCount > 1)
+				{
+					return;
+				}
 				SportData.Instance.SportOperateReq (SportData.SportOperate.SPORT_ENEMY_PAGE,junXian.m_sportTemp.id);
 			}
 			break;
@@ -665,8 +745,22 @@ public class SportPage : GeneralInstance<SportPage> {
 		}
 	}
 
+	void StopCdTime ()
+	{
+		if (TimeHelper.Instance.IsTimeCalcKeyExist ("SportCdTime"))
+		{
+			TimeHelper.Instance.RemoveFromTimeCalc("SportCdTime");
+		}
+		
+		if (TimeHelper.Instance.IsTimeCalcKeyExist ("GetRewardCdTime"))
+		{
+			TimeHelper.Instance.RemoveFromTimeCalc("GetRewardCdTime");
+		}
+	}
+
 	new void OnDestroy ()
 	{
+		StopCdTime ();
 		base.OnDestroy ();
 	}
 }
