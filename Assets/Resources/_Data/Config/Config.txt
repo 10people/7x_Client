@@ -1,7 +1,7 @@
 
 -------------------------------------------------------------------- <Version Config>
 // show version code and lag
-ShowVersion:			true
+ShowVersion:			false
 
 // Investigate use or not, if true then skip all Movies
 InVestigateVersion:		false
@@ -50,7 +50,7 @@ QuickPause:					false
 QuickFx:					false
 
 //Unit test
-UnitTest:					true
+UnitTest:					false
 
 //Test mode
 TestMode:					true
@@ -88,7 +88,7 @@ CarriageInfoSendingDis:		5.0
 // must be 30 or 60
 TargetFPS:			30
 
-ShowFPS:			true
+ShowFPS:			false
 
 LoadingInterval:	0.8
 
@@ -113,10 +113,10 @@ OpenAllTheFunction:			false
 
 ---------------------------------------------------------------- <BattleField Config>
 // quick choose level
-QuickChooseLevel:			true
+QuickChooseLevel:			false
 
 // quick finish game
-QuickFight:					true
+QuickFight:					false
 
 // operate battle's camera
 ShowBattleCameraOps:		false

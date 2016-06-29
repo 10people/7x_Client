@@ -13,10 +13,16 @@ public class UIGotoPvPPanel : MYNGUIPanel
 	public List<UIGotoPvPData> m_listUIGotoPvPData = new List<UIGotoPvPData>();
 	public UIGotoPvPData m_UIGotoPvPData;
 	public UILabel m_labelTile;
+	public UILabel m_labelWeikaifang;
 
 	public void setData(string data, string tile)
 	{
 		gameObject.SetActive(true);
+		if(data == "-1")
+		{
+			m_labelWeikaifang.gameObject.SetActive(true);
+			return;
+		}
 		m_labelTile.text = tile;
 		int num = 0;
 		//0普通1传奇

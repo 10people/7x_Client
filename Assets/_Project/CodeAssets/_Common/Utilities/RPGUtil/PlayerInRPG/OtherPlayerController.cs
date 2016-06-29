@@ -11,9 +11,6 @@ public class OtherPlayerController : MonoBehaviour
     private bool ReadyToCorrectPos = false;
     private bool IsInMove = false;
 
-    private float possibleMinYPos = 18f;
-    private float possibleMaxYPos = 24f;
-
     /// <summary>
     /// Is use character controller or lerp position to move.
     /// </summary>
@@ -91,6 +88,11 @@ public class OtherPlayerController : MonoBehaviour
             m_CharacterController.Move(new Vector3(0, -m_CharacterSpeedY * Time.deltaTime, 0));
         }
 
+        if (IsHold)
+        {
+            return;
+        }
+
         var precentFromMove = (Time.realtimeSinceStartup - m_startMoveTime) / m_CharacterLerpDuration;
 
         //Close this for better percision.
@@ -126,34 +128,31 @@ public class OtherPlayerController : MonoBehaviour
         //    StartPlayerTransformTurn(tempPosition, tempRotation, false);
         //}
 
-        if (!IsCanMove)
-        {
-            ReadyToCorrectPos = true;
-        }
-        else if (precentFromMove > 1 && ReadyToCorrectPos)
-        {
-            ReadyToCorrectPos = false;
+        //if (!IsCanMove)
+        //{
+        //    ReadyToCorrectPos = true;
+        //}
+        //else if (precentFromMove > 1 && ReadyToCorrectPos)
+        //{
+        //    ReadyToCorrectPos = false;
 
-            if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
-            {
-                Debug.Log("Correct after move recover: " + m_UID + ", move from: " + transform.localPosition + " to: " + m_targetPosition);
-            }
+        //    if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
+        //    {
+        //        Debug.Log("Correct after move recover: " + m_UID + ", move from: " + transform.localPosition + " to: " + m_targetPosition);
+        //    }
 
-            float modifiedPos;
-            if (TransformHelper.RayCastXToFirstCollider(m_targetPosition, out modifiedPos))
-            {
-                if (modifiedPos > possibleMinYPos && modifiedPos < possibleMaxYPos)
-                {
-                    transform.localPosition = new Vector3(m_targetPosition.x, modifiedPos, m_targetPosition.z);
-                }
-            }
-            else
-            {
-                transform.localPosition = m_targetPosition;
-            }
+        //    float modifiedPos;
+        //    if (TransformHelper.RayCastXToFirstCollider(m_targetPosition, out modifiedPos))
+        //    {
+        //        transform.localPosition = new Vector3(m_targetPosition.x, modifiedPos, m_targetPosition.z);
+        //    }
+        //    //else
+        //    //{
+        //    //    transform.localPosition = m_targetPosition;
+        //    //}
 
-            transform.localEulerAngles = m_targetRotation;
-        }
+        //    transform.localEulerAngles = m_targetRotation;
+        //}
 
         //Moving
         if (precentFromMove >= 0 && precentFromMove <= 1 && IsCanMove)
@@ -249,15 +248,12 @@ public class OtherPlayerController : MonoBehaviour
         float modifiedPos;
         if (TransformHelper.RayCastXToFirstCollider(m_targetPosition, out modifiedPos))
         {
-            if (modifiedPos > possibleMinYPos && modifiedPos < possibleMaxYPos)
-            {
-                transform.position = new Vector3(m_targetPosition.x, modifiedPos, m_targetPosition.z);
-            }
+            transform.position = new Vector3(m_targetPosition.x, modifiedPos, m_targetPosition.z);
         }
-        else
-        {
-            transform.position = m_targetPosition;
-        }
+        //else
+        //{
+        //    transform.position = m_targetPosition;
+        //}
         transform.eulerAngles = m_targetRotation;
     }
 

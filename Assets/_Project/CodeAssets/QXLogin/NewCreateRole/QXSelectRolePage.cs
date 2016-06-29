@@ -299,9 +299,15 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 					
 					if (QXComData.GetAvailableTextLength (QXComData.StrLimitType.CREATE_ROLE_NAME, t_nick_name) > QXComData.GetCreateRoleNameLimit())
 					{
-						t_final_nick_name = t_final_nick_name.Substring (0, QXComData.GetCreateRoleNameLimit() - 2);
-						
-						t_final_nick_name = t_final_nick_name + "..";
+//						{
+//							t_final_nick_name = t_final_nick_name.Substring (0, QXComData.GetCreateRoleNameLimit() - 2);
+//
+//							t_final_nick_name = t_final_nick_name + "..";
+//						}
+
+						{
+							t_final_nick_name = t_final_nick_name.Substring (0, QXComData.GetCreateRoleNameLimit() );	
+						}
 					}
 					
 					foreach (UIInput input in m_inputList)

@@ -388,7 +388,7 @@ public class ShowAllMembers : MonoBehaviour {
 		
 		string exitTitle = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_TITLE);
 		
-		uibox.setBox(exitTitle, MyColorData.getColorString (1,str2), null,
+		uibox.setBox(exitTitle, str2, null,
 		             null,cancelStr,confirmStr,ComfirmZhuanRangAlliance);
 	}
 	void ComfirmZhuanRangAlliance(int i)
@@ -431,7 +431,7 @@ public class ShowAllMembers : MonoBehaviour {
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		string cancelStr = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
-		uibox.setBox(warringTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2), 
+		uibox.setBox(warringTitleStr, str1+"\n"+str2, null, 
 		             null,cancelStr,confirmStr,KaiChuWarring);
 	}
 	

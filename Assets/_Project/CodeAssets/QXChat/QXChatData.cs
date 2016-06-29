@@ -619,8 +619,8 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 
 	private void OnShieldClick()
 	{
-		string textStr = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO) + "\n\n" + LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_IS_SHIELD).Replace("***", junZhuInfo.name);
-		QXComData.CreateBox (1,textStr,false,ShieldCallBack);
+		string textStr = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_INFO) + "\n" + LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_IS_SHIELD).Replace("***", junZhuInfo.name);
+		QXComData.CreateBoxDiy (textStr,false,ShieldCallBack);
 	}
 	void ShieldCallBack (int i)
 	{

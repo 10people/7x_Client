@@ -114,7 +114,7 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
         byte[] t_protof;
         t_protof = t_tream.ToArray();
  
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_XINSHOU_XIANSHI_INFO_REQ, ref t_protof, p_receiving_wait_proto_index: ProtoIndexes.S_XINSHOU_XIANSHI_INFO_RESP);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_XINSHOU_XIANSHI_INFO_REQ, ref t_protof, false,p_receiving_wait_proto_index: ProtoIndexes.S_XINSHOU_XIANSHI_INFO_RESP);
     }
     public bool OnProcessSocketMessage(QXBuffer p_message)
     {
@@ -388,8 +388,14 @@ public class OnlineRewardcGiftDayManagerment : MonoBehaviour, SocketProcessor
                 {
                     m_LabTopTitle.text = "";
                     m_LabMiddleTitle.text = MyColorData.getColorString(1, LanguageTemplate.GetText(int.Parse(_MainInfo.midTitle)));
-                    if(int.Parse(_MainInfo.midCount) > 0)
-                    m_LabMiddleCount.text = LanguageTemplate.GetText(int.Parse(_MainInfo.midCount));
+                    if (int.Parse(_MainInfo.midCount) > 0)
+                    {
+                        m_LabMiddleCount.text = LanguageTemplate.GetText(int.Parse(_MainInfo.midCount));
+                    }
+                    else
+                    {
+                        m_LabMiddleCount.text = "";
+                    }
                 }
                 break;
             default:

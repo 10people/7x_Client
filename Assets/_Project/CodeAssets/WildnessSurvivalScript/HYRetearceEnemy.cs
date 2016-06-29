@@ -9,6 +9,9 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
+	public GameObject TopLeftManualAnchor;
+	public GameObject TopRightManualAnchor;
+
 	public GameObject NoMiBaoSkillMind;
 
 	public SparkleEffectItem mSparkleEffectItem;
@@ -229,7 +232,8 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 			desText += s[j]+"\r\n";
 		}
 		Lv_Instruction.text = desText;
-		Res_Name.text = mName;
+//		Res_Name.text = mName;
+		MainCityUI.setGlobalTitle(TopLeftManualAnchor, mName, 0, 0);
 		//m_UISlider.value = (float)( mHuangYeTreasure.jindu )/ (float)(100);
 		int id = mHuangYeTreasure.guanQiaId;
 
@@ -739,7 +743,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		
 		string str = "您今日的挑战次数已经用完!";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
+		uibox.setBox(titleStr,null, str,null,confirmStr,null,null,null,null);
 	}
 	public void HY_EnterBattle() //  进入战斗接口
 	{
@@ -849,7 +853,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 //		}
 		string str =LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc0)+vip.ToString()+LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc1)+LanguageTemplate.GetText (LanguageTemplate.Text.VIPDesc2);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
+		uibox.setBox(titleStr,null, str,null,confirmStr,null,null,null,null);
 	}
 	void NoCondiction(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -861,7 +865,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
 		string str = "只有先通关过关斩将第"+mHuangyePve.condition.ToString()+"章才能挑战该宝藏点！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
+		uibox.setBox(titleStr,null, str,null,confirmStr,null,null,null,null);
 	}
 	void buyFailLoad(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -884,7 +888,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 
 			str  = "今日的购买次数已经用完了，请明日再来吧。";
 		}
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
+		uibox.setBox(titleStr,null, str,null,confirmStr,null,null,null,null);
 	}
 	
 	void OpenBuyUILoadBack(ref WWW p_www,string p_path, Object p_object)
@@ -895,7 +899,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		
 		string str = "您是否要花费"+M_Treas_info.buyNextMoney.ToString()+"元宝购买"+M_Treas_info.buyNextCiShu.ToString()+"次挑战次数？\r\n 今日还可购买"+M_Treas_info.leftBuyCiShu.ToString()+"次。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,SureBuy,null,null);
+		uibox.setBox(titleStr,null, str,null,CancleBtn,confirmStr,SureBuy,null,null);
 	}
 	void SureBuy(int i)
 	{

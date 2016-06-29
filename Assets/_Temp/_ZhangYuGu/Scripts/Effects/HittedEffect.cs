@@ -26,7 +26,9 @@ public class HittedEffect : MonoBehaviour {
 
 	private const float BLINK_DUR	= 0.25f;
 
-
+	void Awake(){
+		PreloadAnims();
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -63,15 +65,28 @@ public class HittedEffect : MonoBehaviour {
 		t_res_path = "_3D/Anims/BattleField/HittedAnim";
 		#else
 		if( p_is_soldier_hitted ){
-			t_res_path = "_3D/Anims/BattleField/OriginHittedAnim";
+			t_res_path = "_3D/Anims/BattleField/" + GetHittedAnimName( p_is_soldier_hitted );
 		}
 		else{
-			t_res_path = "_3D/Anims/BattleField/OriginHittedAnim_Boss";
+			t_res_path = "_3D/Anims/BattleField/" + GetHittedAnimName( p_is_soldier_hitted );
 		}
 
 		#endif
 
 		return t_res_path;
+	}
+
+	private static string GetHittedAnimName( bool p_is_soldier_hitted ){
+		string t_name = "";
+
+		if( p_is_soldier_hitted ){
+			t_name = "OriginHittedAnim";
+		}
+		else{
+			t_name = "OriginHittedAnim_Boss";
+		}
+
+		return t_name;
 	}
 
 	private void AnimLoadedCallback(ref WWW p_www, string p_path, UnityEngine.Object p_object){
@@ -83,9 +98,11 @@ public class HittedEffect : MonoBehaviour {
 
 		Animation t_anim = (Animation)ComponentHelper.AddIfNotExist( gameObject, typeof(Animation) );
 
-		t_anim.AddClip( (AnimationClip)p_object, GetHittedAnimPath( IsSoldierHitted() ) );
+		AnimationClip t_clip = (AnimationClip)p_object;
 
-		t_anim.clip = (AnimationClip)p_object;
+		t_anim.AddClip( t_clip, GetHittedAnimName( IsSoldierHitted() ) );
+
+		t_anim.clip = t_clip;
 
 		{
 			InitAnim();

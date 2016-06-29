@@ -14,6 +14,10 @@ public class EventPressIndexHandle : MonoBehaviour
 
     public void OnPress(bool isdown )
     {
+        if (Input.touchCount > 1)
+        {
+            return;
+        }
         if (!isdown)
         {
             if (m_Handle != null)

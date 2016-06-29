@@ -177,6 +177,8 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
 //        Global.ScendID(ProtoIndexes.C_EquipAdd, m_UiBagLeft.m_iIndex);
 
 		Global.ScendID(ProtoIndexes.C_EquipAdd, m_BagItem.bagIndex);
+
+        MainCityUIRB.setDeletePropUse(m_BagItem.itemId);
     }
 
     void CheckOKBTNInfo(GameObject tempObject)

@@ -157,10 +157,12 @@ public class ThirdPlatform : MonoBehaviour {
 
 	void OnApplicationPause( bool p_pause ){
 		#if MYAPP_ANDROID_PLATFORM
+		Debug.Log( "ThirdPlatform.OnApplicationPause( " + p_pause + " )" );
+
+		Debug.Log( "GetPlatformStatus: " + GetPlatformStatus() );
+
 		if( !p_pause ){
 			if( GetPlatformStatus() == PlatformStatus.Verifying ){
-				UpdateLoginRequestTime();
-
 				StartCoroutine( CheckIfVerifyingTimeOut() );
 			}
 		}
@@ -674,15 +676,6 @@ public class ThirdPlatform : MonoBehaviour {
 
 	private static string m_nick_name = "";
 
-	// fix bug for WX back not callback when logout in wx( request login )
-	private float m_request_login_time = 0.0f;
-
-	private void UpdateLoginRequestTime(){
-		Debug.Log( "UpdateLoginRequestTime()" );
-
-		m_request_login_time = Time.realtimeSinceStartup;	
-	}
-
 	IEnumerator CheckIfVerifyingTimeOut(){
 		Debug.Log( "CheckIfVerifyingTimeOut()" );
 
@@ -769,12 +762,12 @@ public class ThirdPlatform : MonoBehaviour {
 			Debug.LogError( "Error, PayResult Param Error." );
 			break;
 
-		case 1106:
+		case 1016:
 			// sessionid, sessionkey校验失败		
 			Debug.LogError( "Error, session id session key verify error." );
 			
-			UtilityTool.StartUniqueCorutineBox( "支付失败",
-				"支付校验失败，请重新登陆。",
+			UtilityTool.StartUniqueCorutineBox( "支付校验",
+				"支付校验更新，请重新登录后再购买",
 				"",
 				null,
 				"确定",
@@ -792,6 +785,11 @@ public class ThirdPlatform : MonoBehaviour {
 			break;
 
 		default:
+			
+			RechargeData.Instance.RechargeReport (RechargeData.ReportState.DEFAULT,
+				int.Parse (RechargeData.Instance.M_ErrorMsg.errorDesc),
+				t_result);
+
 			Debug.LogError( "Error, PayResult Not defined ." );
 			break;
 		}
@@ -879,11 +877,46 @@ public class ThirdPlatform : MonoBehaviour {
 		}
 	}
 
+	private static float m_request_login_time = -1.0f;
+
+	private static void TryRequestLoginIfMyAppBugOccur(){
+		if( m_request_login_time <= 0.0f ){
+			return;
+		}
+
+		if( Time.realtimeSinceStartup - m_request_login_time > 30.0f ){
+			if( GetPlatformStatus() == PlatformStatus.Verifying ){
+				Debug.Log( "TryRequestLoginIfMyAppBugOccur()" );
+
+				LogOut();
+			}
+			else{
+				Debug.Log( "Bug not occur: " + GetPlatformStatus() );
+			}
+		}
+		else{
+			Debug.Log( "Check Bug Time not passed, now: " + Time.realtimeSinceStartup );
+			
+			Debug.Log( "Check Bug Time not passed, last: " + m_request_login_time );
+		}
+		
+	}
+
+	private static void UpdateRequestLoginTime(){
+		m_request_login_time = Time.realtimeSinceStartup;
+	}
+
 	public static void ShowQQLogin(){
 		Debug.Log ( "ShowQQLogin()" );
 
+		{
+			TryRequestLoginIfMyAppBugOccur();
+		
+			UpdateRequestLoginTime();
+		}
+
 		if( GetPlatformStatus() != PlatformStatus.LogOut ){
-			Debug.Log( "Not In LogOut State, Return." );
+			Debug.Log( "Not In LogOut State, Return: " + GetPlatformStatus() );
 
 			return;
 		}
@@ -906,8 +939,14 @@ public class ThirdPlatform : MonoBehaviour {
 	public static void ShowWXLogin(){
 		Debug.Log ( "ShowWXLogin()" );
 
+		{
+			TryRequestLoginIfMyAppBugOccur();
+
+			UpdateRequestLoginTime();
+		}
+
 		if( GetPlatformStatus() != PlatformStatus.LogOut ){
-			Debug.Log( "Not In LogOut State, Return." );
+			Debug.Log( "Not In LogOut State, Return: " + GetPlatformStatus() );
 
 			return;
 		}
@@ -964,14 +1003,14 @@ public class ThirdPlatform : MonoBehaviour {
 	}
 
 	private bool m_login_notified = false;
-	
+
 	/// <summary>
 	///  登陆回调
 	/// </summary>
 	/// <param name="jsonRet">Json ret.</param>
 	void OnLoginNotify( string p_ret_flag ){
 		Debug.Log( "OnLoginNotify( " + p_ret_flag + " )" );
-		
+
 		m_login_notified = true;
 
 		#if MYAPP_ANDROID_PLATFORM

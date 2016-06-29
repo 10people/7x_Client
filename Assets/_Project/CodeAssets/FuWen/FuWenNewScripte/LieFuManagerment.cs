@@ -30,6 +30,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 	private CheckYindao mCheckYindao;
 
 	private bool FirstLieFu = false;
+
 	void Awake()
 	{
 		// reigster trigger delegate
@@ -38,7 +39,6 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 		}
 		SocketTool.RegisterMessageProcessor(this);
 		AddEventListener ();
-		
 	}
 	public void AddEventListener()
 	{
@@ -116,7 +116,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 				//StartCoroutine("SetBtnEnble");
 			}
 		}
-		if(FreshGuide.Instance().IsActive(200065)&& TaskData.Instance.m_TaskInfoDic[200065].progress >= 0)
+		if(FreshGuide.Instance().IsActive(200065)&& TaskData.Instance.m_TaskInfoDic[200065].progress >= 0 && !NewFuWenPage.Instance().SecondLieFu)
 		{
 			Debug.Log("第二次引导猎符按钮");
 			YindaoIsopen = true;
@@ -194,13 +194,13 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 					{
 						FuWenInfoShow.Instance().Init();
 					}
-
+					YindaoIsopen = false;
 				}
 				else if(mLieFuActionResp.result == 1)
 				{
 					Global.CreateFunctionIcon (501);
 				}
-				YindaoIsopen = false;
+
 				return true;
 			}
 			default: return false;
@@ -284,7 +284,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 			mCheckYindao = null;
 		}
 		QXComData.SendQxProtoMessage (ProtoIndexes.C_LOAD_FUWEN_IN_BAG); // 
-		MainCityUI.TryRemoveFromObjectList(this.gameObject);
+//		MainCityUI.TryRemoveFromObjectList(this.gameObject);
 		Destroy (this.gameObject);
 	}
 }

@@ -26,7 +26,7 @@
 <Mail type="10024" icon="10024" title="房屋异动" taitou="主人：" content="恭喜主人已经成功拍下豪宅bbb。您此前拍买豪宅aaa时所花费的ccc贡献值将在扣除折旧费后返回ddd贡献值给您。" sender="小七" award="0" remainTime="0" mailType="2" mailfenlei="2" />
 <Mail type="20001" icon="20001" title="荒野求生分配奖励" taitou="英雄：" content="您的联盟在本次荒野求生活动中获取大批宝藏，盟主为表彰您为联盟做的突出贡献，特赠予您一批财宝作为奖励，还请笑纳。" sender="掌军司马" award="0" remainTime="0" mailType="2" mailfenlei="4" />
 <Mail type="20002" icon="20002" title="荒野求生通关奖励" taitou="英雄：" content="您的联盟在本次荒野求生活动中挑战关卡***大获全胜！您在战斗中的伤害排名为第A名！特赠予您相应联盟贡献度作为奖励，您的联盟也获得了建设值。" sender="掌军司马" award="0" remainTime="0" mailType="2" mailfenlei="4" />
-<Mail type="20003" icon="20003" title="荒野求生快速通关奖励" taitou="英雄：" content="您的联盟在本次荒野求生活动中以不到24小时的时间挑战关卡***大获全胜，完成快速通关目标！特赠予您额外的个人贡献度作为奖励。您的联盟也获得了额外建设值奖励。" sender="掌军司马" award="0" remainTime="0" mailType="2" mailfenlei="4" />
+<Mail type="20003" icon="20003" title="荒野求生快速通关奖励" taitou="英雄：" content="您的联盟在本次荒野求生活动在限定时间内挑战关卡***大获全胜，完成快速通关目标！特赠予您额外的个人贡献度作为奖励。您的联盟也获得了额外建设值奖励。" sender="掌军司马" award="0" remainTime="0" mailType="2" mailfenlei="4" />
 <Mail type="21001" icon="21001" title="荒野求生资源点奖励" taitou="英雄：" content="您的联盟在本次荒野求生活动中获得了大批稀有资源，盟主为表彰您为联盟做的突出贡献，特赠予您一批资源作为奖励，还请笑纳。" sender="掌军司马" award="0" remainTime="0" mailType="2" mailfenlei="4" />
 <Mail type="21002" icon="21002" title="荒野求生资源点被攻占" taitou="英雄：" content="您所属联盟的XX资源点被敌人占领了，损失惨重，运回的资源都在这里。" sender="掌军司马" award="0" remainTime="0" mailType="2" mailfenlei="4" />
 <Mail type="21003" icon="21003" title="荒野求生资源点被攻占" taitou="英雄：" content="您所属联盟的XX资源点被敌人占领了，联盟损失惨重，快秣马厉兵，与盟友重新夺回资源点，向敌人复仇。" sender="掌军司马" award="0" remainTime="0" mailType="1" mailfenlei="4" />

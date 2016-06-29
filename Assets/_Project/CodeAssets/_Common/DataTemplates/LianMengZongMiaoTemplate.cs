@@ -92,4 +92,28 @@ public class LianMengZongMiaoTemplate : XmlLoadManager {
 		return null;
 		
 	}
+	public static int  GetLianMengZongMiao_MaxTimes()
+	{
+		int m_Max = 0;
+		for (int i = 0; i < templates.Count; i++)
+		{
+			if (templates[i].jiBaiMaxTimes > m_Max)
+			{
+				m_Max =  templates[i].jiBaiMaxTimes;
+			}
+		}
+		return m_Max;
+		
+	}
+	public static int  GetLianMengZongMiaoMaxTimes_by_level(int mLevel)
+	{
+		for (int i = 0; i < templates.Count; i++)
+		{
+			if (templates[i].zongMiaoLevel == mLevel)
+			{
+				return templates[i].jiBaiMaxTimes;
+			}
+		}
+		return 0;
+	}
 }

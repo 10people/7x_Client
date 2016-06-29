@@ -97,6 +97,8 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
     private bool _Load2dUIIsDone = false;
     private void Load_2D_UI()
     {
+        ss += " Load_2D_UI";
+        StartCoroutine(CheckingDataLoadingTime());
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_MAINUI),
                                 Load2DCallback);
 
@@ -146,6 +148,8 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
     }
     void LoadCityNpc()
     {
+        ss += "LoadCityNpc";
+        StartCoroutine(CheckingDataLoadingTime());
         listNpcTempInfo.Clear();
         m_listNpcTemp.Clear();
         _IndexNum = 0;
@@ -201,8 +205,9 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         }
         else
         {
-   
-                Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202), LoadHousePort);
+            ss += "LoadHousePort";
+            StartCoroutine(CheckingDataLoadingTime());
+            Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(100202), LoadHousePort);
  
         }
         index_Port_Num = 0;
@@ -230,6 +235,8 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 
     void LoadSelfName()
     {
+        ss += "LOADING_2D_NAME";
+        StartCoroutine(CheckingDataLoadingTime());
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MAINCITY_PLAYER_NAME),
                             LoadSelfNameCallback);
     }
@@ -239,6 +246,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         m_CitySelfName = p_object as GameObject;
         LoadingHelper.ItemLoaded(StaticLoading.m_loading_sections,
             CONST_CITY_LOADING_2D_NAME, "");
+ 
 
         // CityLoadDone();
         LoadGeneralReward();
@@ -246,6 +254,8 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 
     void LoadGeneralReward()
     {
+        ss += "LoadGeneralReward";
+        StartCoroutine(CheckingDataLoadingTime());
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_POP_REWARD_ROOT), ResourceLoadGeneralRewardCallback);
     }
 
@@ -267,6 +277,8 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
     }
      void LoadJunZhuModel()
     {
+        ss += "LoadGeneralReward";
+        StartCoroutine(CheckingDataLoadingTime());
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MODEL_PARENT),
                         ResourceLoadModelCallback);
 

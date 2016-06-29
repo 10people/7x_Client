@@ -313,7 +313,7 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 	private void Shield ()
 	{
 		string textStr = LanguageTemplate.GetText(LanguageTemplate.Text.CHAT_UIBOX_IS_SHIELD).Replace("***", chatMsg.chatPct.senderName);
-		QXComData.CreateBox (1,textStr,false,ShieldCallBack);
+		QXComData.CreateBoxDiy (textStr,false,ShieldCallBack);
 	}
 
 	void ShieldCallBack (int i)
@@ -386,7 +386,7 @@ public class ChatPlayerItem : MYNGUIPanel,SocketListener {
 					case 103:
 
 						string textStr = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_2) + "\n" + LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_3);
-						QXComData.CreateBox (1,textStr,true,null);
+						QXComData.CreateBoxDiy (textStr,true,null);
 
 						break;
 					default:

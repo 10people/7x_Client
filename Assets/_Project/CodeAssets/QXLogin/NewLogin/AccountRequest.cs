@@ -380,7 +380,7 @@ public class AccountRequest : MonoBehaviour {
 		    userName.value == "请输入账号名" || password.value == "请输入密码")
 		{
 			textStr = "账号或密码不能为空！";
-			QXComData.CreateBox (1,textStr,true,null);
+			QXComData.CreateBoxDiy (textStr,true,null);
 		}
 		
 		else
@@ -433,14 +433,14 @@ public class AccountRequest : MonoBehaviour {
 		JSONNode zhuCeNode = JSON.Parse (tempResponse);
 
 		textStr = zhuCeNode ["msg"].Value;
-		QXComData.CreateBox (1,textStr,true,null);
+		QXComData.CreateBoxDiy (textStr,true,null);
 	}
 	
 	void LoginRequestFail (string tempResponse) 
 	{
 		Debug.LogError( "LoginRequestFail: " + tempResponse );
 		textStr = "请选择其他服务器！";
-		QXComData.CreateBox (1,textStr,true,null);
+		QXComData.CreateBoxDiy (textStr,true,null);
 	}
 
 	#endregion
@@ -468,7 +468,7 @@ public class AccountRequest : MonoBehaviour {
 		    userName.value == "请输入账号名" || password.value == "请输入密码")
 		{
 			textStr = "账号或密码不能为空！";
-			QXComData.CreateBox (1,textStr,true,null);
+			QXComData.CreateBoxDiy (textStr,true,null);
 		}
 		
 		else
@@ -540,7 +540,7 @@ public class AccountRequest : MonoBehaviour {
 		case 0:
 //			Debug.Log( "AccountRequest Normal Fail." );
 
-			QXComData.CreateBox (1,textStr,true,null);
+			QXComData.CreateBoxDiy (textStr,true,null);
 			break;
 		case 1:
 
@@ -564,7 +564,7 @@ public class AccountRequest : MonoBehaviour {
 		// TODO, PopOut Window
 		Debug.LogError ( "DengLuRequestFail: " + tempResponse );
 		textStr = "请选择其他服务器！";
-		QXComData.CreateBox (1,textStr,true,null);
+		QXComData.CreateBoxDiy (textStr,true,null);
 	}
 
 	#endregion

@@ -40,7 +40,7 @@ GDN=Adreno (TM) 420/Adreno (TM) 430
 Quality:Low
 AntiAlias:None
 
-GDN=Mali-T760
+GDN=Mali-T760/Mali-T880
 Quality:Low
 AntiAlias:None
 IEStatus:None

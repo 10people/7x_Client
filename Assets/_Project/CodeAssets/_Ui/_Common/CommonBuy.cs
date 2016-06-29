@@ -3,6 +3,9 @@ using UnityEngine;
 using System.Collections;
 using Object = UnityEngine.Object;
 
+/// <summary>
+/// Only use this in carriage.
+/// </summary>
 public class CommonBuy : Singleton<CommonBuy>
 {
     /// <summary>
@@ -12,7 +15,7 @@ public class CommonBuy : Singleton<CommonBuy>
     /// <param name="times">购买个数/次数</param>
     /// <param name="p_buyItemStr">购买物品名字</param>
     /// <param name="doBuyDelegate">购买操作回调</param>
-    public void ShowBuy(int ingot, int times, string p_buyItemStr, string p_buyItemDesc, DelegateHelper.VoidDelegate doBuyDelegate, int vip = 0)
+    public void ShowBuy(int ingot, int times, string p_buyItemStr, string p_buyItemDesc, DelegateHelper.VoidDelegate doBuyDelegate, int vip, int remainingTimes)
     {
         m_times = times;
         m_ingot = ingot;
@@ -20,6 +23,7 @@ public class CommonBuy : Singleton<CommonBuy>
         m_doBuyDelegate = doBuyDelegate;
         m_buyItemDesc = p_buyItemDesc;
         m_requiredVip = vip;
+        m_remainingTimes = remainingTimes;
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), ConfirmBuy);
     }
 
@@ -29,6 +33,7 @@ public class CommonBuy : Singleton<CommonBuy>
     private string m_buyItemDesc;
     private DelegateHelper.VoidDelegate m_doBuyDelegate;
     private int m_requiredVip;
+    private int m_remainingTimes;
 
     public GameObject VipObject;
     public UISprite VipSprite;
@@ -52,6 +57,11 @@ public class CommonBuy : Singleton<CommonBuy>
                 break;
             case 2:
                 if (JunZhuData.Instance().m_junzhuInfo.vipLv < m_requiredVip)
+                {
+                    ShowVIP();
+                    return;
+                }
+                if (m_remainingTimes <= 0)
                 {
                     ShowVIP();
                     return;

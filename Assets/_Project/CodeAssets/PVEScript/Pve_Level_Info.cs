@@ -1101,10 +1101,6 @@ public class Pve_Level_Info : MonoBehaviour {
 		{
 
 			Startsendmasg = false;
-			if(CityGlobalData.PveLevel_UI_is_OPen)
-			{
-				return;
-			}
 
 			if(CityGlobalData.PT_Or_CQ)
 			{
@@ -1170,7 +1166,24 @@ public class Pve_Level_Info : MonoBehaviour {
 								ShowUIbaseBackData ();
 							}
 							else{
-								Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadPowerUpBack);
+								//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LoadPowerUpBack);
+
+								int lv = 0;
+								
+								if(CityGlobalData.PT_Or_CQ)
+								{
+									lv = PveTempTemplate.GetPveTemplate_By_id (CurLev).PowerLimit;
+								}
+								else{
+									
+									lv = LegendPveTemplate.GetlegendPveTemplate_By_id (CurLev).PowerLimit;
+								}
+								string title = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
+								
+								string Contain1 =  LanguageTemplate.GetText(LanguageTemplate.Text.POWER_LIMIT);
+								
+								string Contain2 = lv.ToString ();
+								ClientMain.m_UITextManager.createText(Contain2);
 							}
 						}
 						else{
@@ -1238,13 +1251,17 @@ public class Pve_Level_Info : MonoBehaviour {
 
 	public void loadback(ref WWW p_www,string p_path, Object p_object)
 	{
-		if(CityGlobalData.PveLevel_UI_is_OPen)
-		{
-			return;
-		}
+//		if(CityGlobalData.PveLevel_UI_is_OPen)
+//		{
+//			return;
+//		}
 		CityGlobalData.PveLevel_UI_is_OPen = true;
-		tempOjbect_PVEUI = Instantiate (p_object)as GameObject;
-		MainCityUI.TryAddToObjectList (tempOjbect_PVEUI);
+		if(tempOjbect_PVEUI == null)
+		{
+			tempOjbect_PVEUI = Instantiate (p_object)as GameObject;
+			MainCityUI.TryAddToObjectList (tempOjbect_PVEUI);
+		}
+
 		MapData.mapinstance.CloseEffect();
 		if(CityGlobalData.PT_Or_CQ)
 		{

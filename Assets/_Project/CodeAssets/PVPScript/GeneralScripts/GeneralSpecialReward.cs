@@ -115,9 +115,14 @@ public class GeneralSpecialReward : MonoBehaviour {
 //			UI3DEffectTool.ShowMidLayerEffect (UI3DEffectTool.UIType.PopUI_2,
 //			                                   miBaoObj,
 //			                                   EffectIdTemplate.GetPathByeffectId(100157));
-			Debug.Log ("InstanceEffect:" + 100157);
+
 			QXComData.InstanceEffect (QXComData.EffectPos.MID,miBaoObj,100157);
-			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,3);
+
+			if (QXComData.CheckOpenTask (100160) && !TanBaoData.Instance.M_IsGetCard)
+			{
+				TanBaoData.Instance.M_IsGetCard = true;
+				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.FINISHED_TASK_YINDAO,100160,3);
+			}
 
 			if (!QXComData.CheckYinDaoOpenState (100160))
 			{

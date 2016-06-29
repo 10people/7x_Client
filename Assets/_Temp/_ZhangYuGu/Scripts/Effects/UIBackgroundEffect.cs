@@ -286,7 +286,7 @@ public class UIBackgroundEffect : MonoBehaviour {
 		}
 
 		#if DEBUG_OPEN_CLOSE || DEBUG_UI_BG_EF
-		Debug.Log( "SetUIBackgroundEffect( " + p_open + " - " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) + " )" );
+		Debug.Log( "------------------ SetUIBackgroundEffect( " + p_open + " - " + GameObjectHelper.GetGameObjectHierarchy( p_gb ) + " )" );
 		#endif
 
 		if( p_open ){

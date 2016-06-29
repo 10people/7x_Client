@@ -177,8 +177,8 @@ public class QXSelectRole : MonoBehaviour,SocketProcessor {
 						CityGlobalData.m_king_model_Id = errorMes.errorCode;
 					}
                   
-					Debug.Log ("errorMes.errorCode:" + errorMes.errorCode);
-					Debug.Log ("Global.m_isChangeRoleOpen:" + Global.m_isChangeRoleOpen);
+//					Debug.Log ("errorMes.errorCode:" + errorMes.errorCode);
+//					Debug.Log ("Global.m_isChangeRoleOpen:" + Global.m_isChangeRoleOpen);
 					if (Global.m_isChangeRoleOpen)
 					{
 						SelectRolePage(QXSelectRolePage.SelectType.UNLOCK_ROLE);
@@ -188,8 +188,8 @@ public class QXSelectRole : MonoBehaviour,SocketProcessor {
 
 					if (MainCityUI.m_MainCityUI != null)
 					{
-						Debug.Log ("errorMes.cmd:" + errorMes.cmd);
-						Debug.Log ("PlayersManager.m_Self_UID:" + PlayersManager.m_Self_UID);
+//						Debug.Log ("errorMes.cmd:" + errorMes.cmd);
+//						Debug.Log ("PlayersManager.m_Self_UID:" + PlayersManager.m_Self_UID);
 						if (errorMes.cmd != PlayersManager.m_Self_UID)
 						{
 							PlayerInCityManager.m_PlayerInCity.Reload_Skeleton(errorMes.cmd, errorMes.errorCode);
@@ -200,6 +200,10 @@ public class QXSelectRole : MonoBehaviour,SocketProcessor {
 						}
 					}
                     
+					if (TCityPlayerManager.m_instance != null)
+					{
+						TCityPlayerManager.m_instance.TreasureChangeRole (errorMes.cmd,errorMes.errorCode);
+					}
                 }
 
                 break;
@@ -242,11 +246,13 @@ public class QXSelectRole : MonoBehaviour,SocketProcessor {
 	{
 		MainCityUI.TryRemoveFromObjectList (m_selectRoleObj);
 		TreasureCityUI.TryRemoveFromObjectList (m_selectRoleObj);
-		Destroy (m_selectRoleObj);
-		m_selectRoleObj = null;
+
 //		m_selectRoleObj.SetActive (false);
 		m_haveBuy = false;
 		Global.m_isChangeRoleOpen = false;
+		Destroy (m_selectRoleObj);
+		m_selectRoleObj = null;
+//		Debug.Log ("des");
 	}
 
 	void RandomAgain (int i)

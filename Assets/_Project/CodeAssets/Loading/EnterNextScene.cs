@@ -222,6 +222,11 @@ public class EnterNextScene : MonoBehaviour{
             // PrepareForCarriage
             gameObject.AddComponent<PrepareForCarriage>();
 		}
+		else if ( LoadingHelper.IsLoadingTreasureCity() )
+		{
+			// PrepareForTreasureCity
+			gameObject.AddComponent<PrepareForTreasureCity>();
+		}
         else {
             // load scenes
             DirectLoadLevel();

@@ -476,11 +476,18 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
 
+                            //float yPos;
+                            Vector3 tempPos = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
+                            //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                            //{
+                            //    tempPos = new Vector3(tempMsg.posX, yPos, tempMsg.posZ);
+                            //}
+
                             if (tempMsg.uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
                             {
                                 if (m_RootManager.m_SelfPlayerController != null)
                                 {
-                                    m_RootManager.m_SelfPlayerController.transform.localPosition = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
+                                    m_RootManager.m_SelfPlayerController.transform.localPosition = tempPos;
                                     m_RootManager.m_SelfPlayerController.transform.localEulerAngles = new Vector3(0, tempMsg.dir, 0);
                                 }
                             }
@@ -490,7 +497,7 @@ namespace AllianceBattle
                                 if (temp.Any())
                                 {
                                     int uID = temp.First().Key;
-                                    m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[uID].transform.localPosition = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
+                                    m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[uID].transform.localPosition = tempPos;
                                     m_RootManager.m_AbPlayerSyncManager.m_PlayerDic[uID].transform.localEulerAngles = new Vector3(0, tempMsg.dir, 0);
                                 }
                             }

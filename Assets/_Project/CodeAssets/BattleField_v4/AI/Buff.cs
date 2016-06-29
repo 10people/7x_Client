@@ -455,11 +455,13 @@ public class Buff : MonoBehaviour
 			{
 				if(attacker != null && attacker.isAlive && attacker.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) >= 0)
 				{
-					attacker.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
+					Debug.Log("$$$$$$$$$$$$$$$   " + CityGlobalData.m_tempSection);
+
+					attacker.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL, true);
 				}
 				else
 				{
-					ai.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL);
+					ai.attackHp(ai, buffValue, false, BattleControlor.AttackType.SKILL_ATTACK, BattleControlor.NuqiAddType.NULL, true);
 				}
 			}
 			else 

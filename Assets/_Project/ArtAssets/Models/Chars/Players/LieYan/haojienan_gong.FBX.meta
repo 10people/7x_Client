@@ -2835,7 +2835,7 @@ ModelImporter:
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
-      loopBlendPositionXZ: 1
+      loopBlendPositionXZ: 0
       keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0
@@ -3028,6 +3028,10 @@ ModelImporter:
       - path: Box001 2
         weight: 1
       - path: Box001 3
+        weight: 1
+      - path: Box001 4
+        weight: 1
+      - path: Box001 5
         weight: 1
       - path: S7_xinzhujue001
         weight: 1

@@ -1338,6 +1338,8 @@ public class BaseAI : MonoBehaviour
 	{
 		if (nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_ArmorMax) <= 0) return;
 
+		if (nodeData.GetAttribute (AIdata.AttributeType.ATTRTYPE_hp) < 0) return;
+
 		float curArmor = nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_Armor);
 
 		if(curArmor == 0)//破防状态
@@ -2587,13 +2589,13 @@ public class BaseAI : MonoBehaviour
 
 			if (nodeData.nodeType == NodeType.SOLDIER && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING) BattleControlor.Instance().battleCheck.soldierKilled ++;
 		
-			if (flag.flagGroup != null && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING)
+			if (flag.flagGroup != null && BattleControlor.Instance().result == BattleControlor.BattleResult.RESULT_BATTLING && nodeId > 0)
 			{
 				bool lastOne = true;
 
 				foreach(BattleFlag bf in flag.flagGroup.listFlags)
 				{
-					if(bf.node != null)
+					if(bf.node != null && nodeId > 0)
 					{
 						if(bf.node.isAlive || bf.node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp) >= 0)
 						{
@@ -3034,7 +3036,7 @@ public class BaseAI : MonoBehaviour
 		return false;
 	}
 
-	public void attacked(BaseAI attacker, float hpValue, bool cri, BattleControlor.AttackType attackedType, BattleControlor.NuqiAddType nuqiType, bool forcedArmor)
+	public void attacked(BaseAI attacker, float hpValue, bool cri, BattleControlor.AttackType attackedType, BattleControlor.NuqiAddType nuqiType, bool forcedArmor, bool fromBuff = false)
 	{
 		//BattleReplayorWrite.Instance().addReplayNodeAttacked(nodeId, hpValue);
 
@@ -3188,7 +3190,7 @@ public class BaseAI : MonoBehaviour
 		{
 			if(gameObject.activeSelf == true) 
 			{
-				BloodLabelControllor.Instance().showBloodEx(this, (int)hpValue, cri, attackedType);
+				BloodLabelControllor.Instance().showBloodEx(this, (int)hpValue, cri, attackedType, fromBuff);
 			}
 		}
 
@@ -4114,7 +4116,7 @@ public class BaseAI : MonoBehaviour
 		updataBloodBar ();
 	}
 
-	public void attackHp(BaseAI defender, float hpValue, bool cri, BattleControlor.AttackType attackedType, BattleControlor.NuqiAddType nuqiType)
+	public void attackHp(BaseAI defender, float hpValue, bool cri, BattleControlor.AttackType attackedType, BattleControlor.NuqiAddType nuqiType, bool fromBuff = false)
 	{
 		if ( defender == null ) return;
 
@@ -4181,7 +4183,7 @@ public class BaseAI : MonoBehaviour
 			forcedArmor = true;
 		}
 
-		defender.attacked(this, hpValue, cri, attackedType, nuqiType, forcedArmor);
+		defender.attacked(this, hpValue, cri, attackedType, nuqiType, forcedArmor, fromBuff);
 
 		if( defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ) < 0 )
 		{

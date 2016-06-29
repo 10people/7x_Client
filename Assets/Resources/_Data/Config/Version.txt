@@ -1,10 +1,10 @@
 
 -------------------------------------------------------------------- <Version Config>
 // changed every build
-SmallVersion	= 2016_0404_1823
+SmallVersion	= 2016_0627_0240
 
 // changed every big build with small version
-BigVersion		= 2016_0404_1823
+BigVersion		= 2016_0627_0240
 
 // only used when http login
 ClientVersionString	= 1.1.0

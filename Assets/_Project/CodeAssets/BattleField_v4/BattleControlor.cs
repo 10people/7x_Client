@@ -627,22 +627,22 @@ public class BattleControlor : MonoBehaviour
 	public BaseAI CreateNode( Node nodeData, BaseAI.Stance stance, int flag, GameObject nodeTemple, int copyIndex = 0 )
 	{
 //		Debug.Log("Create Node " + stance + ", " + flag + " with NodeData: "
-//		           + " nodeType: " + nodeData.nodeType + ", nodeProfession: " + nodeData.nodeProfession
-//		           + ", modleId: " + nodeData.modleId + ", skill.Count: " + (nodeData.skills == null ? "0" : (nodeData.skills.Count + ""))
-//		           + ", nodeName: " + nodeData.nodeName + ", moveSpeed: " + nodeData.moveSpeed
-//		           + ", attackSpeed: " + nodeData.attackSpeed + ", attackRange: " + nodeData.attackRange
-//		           + ", eyeRange: " + nodeData.eyeRange + ", attackValue: " + nodeData.attackValue
-//		           + ", defenceValue: " + nodeData.defenceValue 
-//		           + ", hp: " + nodeData.hp + ", hpMax: " + nodeData.hpMax + ", hpNum: " + nodeData.hpNum
-//		           + ", attackAmplify: " + nodeData.attackAmplify + ", attackReduction: " + nodeData.attackReduction
-//		           + ", attackAmplify_cri: " + nodeData.attackAmplify_cri + ", attackReduction_cri: " + nodeData.attackReduction_cri
-//		           + ", skillAmplify: " + nodeData.skillAmplify + ", skillReduction: " + nodeData.skillReduction
-//		           + ", skillAmplify_cri: " + nodeData.skillAmplify_cri + ", skillReduction_cri: " + nodeData.skillReduction_cri
-//		           + ", criX: " + nodeData.criX + ", criY: " + nodeData.criY
-//		           + ", criSkillX: " + nodeData.criSkillX + ", criSkillY: " + nodeData.criSkillY
-//  		           + ", droppenItem: " + (nodeData.droppenItems == null ? 0 : nodeData.droppenItems.Count)
-//		           + ", appearance: " + nodeData.appearanceId
-//		           + ", armor: " + nodeData.armor + ", armorMax: " + nodeData.armorMax + ", armorRatio: " + nodeData.armorRatio
+//		          + " nodeType: " + nodeData.nodeType + ", nodeProfession: " + nodeData.nodeProfession
+//		          + ", modleId: " + nodeData.modleId + ", skill.Count: " + (nodeData.skills == null ? "0" : (nodeData.skills.Count + ""))
+//		          + ", nodeName: " + nodeData.nodeName + ", moveSpeed: " + nodeData.moveSpeed
+//		          + ", attackSpeed: " + nodeData.attackSpeed + ", attackRange: " + nodeData.attackRange
+//		          + ", eyeRange: " + nodeData.eyeRange + ", attackValue: " + nodeData.attackValue
+//		          + ", defenceValue: " + nodeData.defenceValue 
+//		          + ", hp: " + nodeData.hp + ", hpMax: " + nodeData.hpMax + ", hpNum: " + nodeData.hpNum
+//		          + ", attackAmplify: " + nodeData.attackAmplify + ", attackReduction: " + nodeData.attackReduction
+//		          + ", attackAmplify_cri: " + nodeData.attackAmplify_cri + ", attackReduction_cri: " + nodeData.attackReduction_cri
+//		          + ", skillAmplify: " + nodeData.skillAmplify + ", skillReduction: " + nodeData.skillReduction
+//		          + ", skillAmplify_cri: " + nodeData.skillAmplify_cri + ", skillReduction_cri: " + nodeData.skillReduction_cri
+//		          + ", criX: " + nodeData.criX + ", criY: " + nodeData.criY
+//		          + ", criSkillX: " + nodeData.criSkillX + ", criSkillY: " + nodeData.criSkillY
+//		          + ", droppenItem: " + (nodeData.droppenItems == null ? 0 : nodeData.droppenItems.Count)
+//		          + ", appearance: " + nodeData.appearanceId + ", HYK: " + nodeData.HYK
+//		          + ", armor: " + nodeData.armor + ", armorMax: " + nodeData.armorMax + ", armorRatio: " + nodeData.armorRatio
 //		          );
 
 		float t_cur_time = Time.realtimeSinceStartup;
@@ -2552,6 +2552,13 @@ public class BattleControlor : MonoBehaviour
 		float H = attacker.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) <= defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) ? 1f : Mathf.Atan (attacker.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) / defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax )) * 1.083f + 0.15f;;
 		
 		float JC = (a * attacker.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_attackValue ) * (attacker.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_attackValue ) + k)) / (attacker.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_attackValue ) + defender.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_defenceValue ) + k) * D * H;
+		
+		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && attacker.stance == BaseAI.Stance.STANCE_SELF)
+		{
+			float r = defender.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_hpMaxReal) / defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_HYK);
+			
+			JC = 2 * JC / (JC + r) * r;
+		}
 
 		return JC;
 	}
@@ -2560,6 +2567,9 @@ public class BattleControlor : MonoBehaviour
 	{
 		FloatBoolParam fbp = _getAttackValue (attacker, defender, weaponRatio);
 
+//		if (attacker.stance == BaseAI.Stance.STANCE_SELF)
+//			fbp.Float = defender.nodeData.GetAttribute ( AIdata.AttributeType.ATTRTYPE_hpMaxReal) * 2;
+//
 //		fbp.Float = 1;
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
@@ -2712,11 +2722,6 @@ public class BattleControlor : MonoBehaviour
 			fbp.Float = pt;
 
 			fbp.Bool = false;
-			
-			if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve && attacker.stance == BaseAI.Stance.STANCE_SELF)
-			{
-				fbp.Float = (2 * fbp.Float / (fbp.Float + defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMax) / defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_HYK))) * (fbp.Float + defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hpMax) / defender.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_HYK));
-			}
 
 			return fbp;
 		}

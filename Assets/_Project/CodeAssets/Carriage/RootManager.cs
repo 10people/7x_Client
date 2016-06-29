@@ -380,7 +380,7 @@ namespace Carriage
             {
                 if (GUILayout.Button("Test buy blood times"))
                 {
-                    CommonBuy.Instance.ShowBuy(123, 456, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_CarriageMain.DoBuyBloodTimes);
+                    CommonBuy.Instance.ShowBuy(123, 456, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_CarriageMain.DoBuyBloodTimes, 0, 1);
                 }
                 if (GUILayout.Button("Test vip"))
                 {

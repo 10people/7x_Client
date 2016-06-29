@@ -1039,6 +1039,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		RewardData data1 = new RewardData (ShowmMiBaoinfo.miBaoId,1,ShowmMiBaoinfo.star);
 		data1.m_isNew = true;
 		data.Add (data1);
+		data1.m_cameraObj = mMainCamera.gameObject;
 		GeneralRewardManager.Instance().CreateSpecialReward (data);
 //		GameObject cardtemp = Instantiate(p_object) as GameObject;
 //		
@@ -1068,7 +1069,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,CancleBtn,confirmStr,getTongBi,null,null,null);
+		uibox.setBox(titleStr,str, null,null,CancleBtn,confirmStr,getTongBi,null,null,null);
 	}
 
 	void LoadMiBaolvBack(ref WWW p_www,string p_path, Object p_object)//将魂等级不足回调函数
@@ -1147,7 +1148,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			
 			str = "\r\n"+"星级已满, 不能在进行升星了！";
 		
-			uibox.setBox(titleStr,MyColorData.getColorString (1,str),null,null,confirm,null,null);
+			uibox.setBox(titleStr,str,null,null,confirm,null,null);
 		}
 		else
 		{
@@ -1178,7 +1179,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				
 				str ="\r\n"+"此将魂升星需要消耗" + StarNeedMoney.ToString() + "铜币"+"\r\n"+"是否现在升星？";
 
-				uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,cancel,confirm,SendStarUpInfo);
+				uibox.setBox(titleStr,str, null,null,cancel,confirm,SendStarUpInfo);
 				needMibao = ShowmMiBaoinfo;
 			}
 		}
@@ -1275,7 +1276,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		uibox.YinDaoControl (MakeMiBaoYinDao);
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str1), null,null,CancleBtn,confirmStr,StarmakeMiBao,null,null);
+		uibox.setBox(titleStr,str1, null,null,CancleBtn,confirmStr,StarmakeMiBao,null,null);
 	}
 
 	void LockOFPices(ref WWW p_www,string p_path, Object p_object)
@@ -1290,7 +1291,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr, null,MyColorData.getColorString (1,str1),null,confirmStr,null,null);
+		uibox.setBox(titleStr, null,str1,null,confirmStr,null,null);
 	}
 	void StarmakeMiBao(int i)
 	{

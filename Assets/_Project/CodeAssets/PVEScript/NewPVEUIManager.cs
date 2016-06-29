@@ -183,14 +183,8 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		InItEnemyList ();
 		GetAward (mLevel.type);
 
-		if( ConfigTool.GetBool(ConfigTool.CONST_QUICK_CHOOSE_LEVEL))
-		{
-			TestBtn.SetActive(true);
-		}
-		else
-		{
-			TestBtn.SetActive(false);
-		}
+		TestBtn.SetActive(ConfigTool.GetBool(ConfigTool.CONST_QUICK_CHOOSE_LEVEL));
+
 //		Debug.Log ("FunctionOpenTemp.GetWhetherContainID(3000010) = "+FunctionOpenTemp.GetWhetherContainID(3000010));
 		if(!FunctionOpenTemp.GetWhetherContainID(3000010)|| mLevel.type == 0)
 		{
@@ -1072,7 +1066,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		string btnStr2 = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		int viplv = VipFuncOpenTemplate.GetNeedLevelByKey(10);
 		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str1+str2),null,null,btnStr1,btnStr2,ShowResettingLv,null,null,null,false,true,true,false,100,0,viplv);
+		uibox.setBox(titleStr,str1+str2,null,null,btnStr1,btnStr2,ShowResettingLv,null,null,null,false,true,true,false,100,0,viplv);
 	}
 	void ShowResettingLv(int i)
 	{
@@ -1130,7 +1124,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		string str = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_LACK_YUANBAO);
 		string btnStr1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
 		
-		uibox.setBox(titleStr, null, MyColorData.getColorString(1, str),null, btnStr1, btnStr, TopUpShow);
+		uibox.setBox(titleStr, null, str ,null, btnStr1, btnStr, TopUpShow);
 	}
 	void TopUpShow(int index)
 	{
@@ -1144,7 +1138,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		string str = "还未通关";//LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_DESC);
 		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str),null,null,btnStr,null,null);
+		uibox.setBox(titleStr,str ,null,null,btnStr,null,null);
 	}
 //	public void LockResttingtimesload(ref WWW p_www,string p_path, Object p_object)
 //	{
@@ -1191,7 +1185,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,CancleBtn,confirmStr,getTili);
+		uibox.setBox(titleStr,str, null,null,CancleBtn,confirmStr,getTili);
 	}
 	void getTili(int i)
 	{
@@ -1300,7 +1294,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 //
 //			return;
 //		}
-		if(FreshGuide.Instance().IsActive(100404)&& TaskData.Instance.m_TaskInfoDic[100404].progress >= 0)
+		if(FreshGuide.Instance().IsActive(100404)&& TaskData.Instance.m_TaskInfoDic[100404].progress >= 0 && mLevel.guanQiaId == 100207)
 		{
 			Debug.Log("扫荡引导");
 			YinDaoOpen = true;

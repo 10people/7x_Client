@@ -338,7 +338,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 							//刷新查看邮件界面
 							EmailPage.emailPage.RefreshEmailCheck (EmailPage.RefreshType.SHIELD_FRIEND);
 							textStr = "您已将" + operateEmail.senderName + "加入黑名单！\n\n您可以在【好友】-【屏蔽名单】功能中解除黑名单设置";
-							QXComData.CreateBox (1,textStr,true,null);
+							QXComData.CreateBoxDiy (textStr,true,null);
 						}
 						else
 						{
@@ -413,7 +413,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 					
 					tempList.Remove (email);
 					string textStr = "邮件不存在!";
-					QXComData.CreateBox (1,textStr,true,null);
+					QXComData.CreateBoxDiy (textStr,true,null);
 					
 					break;
 				default:
@@ -469,7 +469,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 			default:
 				break;
 			}
-			QXComData.CreateBox (1,textStr,true,null);
+			QXComData.CreateBoxDiy (textStr,true,null);
 		}
 
 		systemList.Remove (tempEmail);
@@ -511,7 +511,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 			break;
 		}
 
-		QXComData.CreateBox (1,textStr,true,null);
+		QXComData.CreateBoxDiy (textStr,true,null);
 
 		foreach (EmailInfo email in tempEmailList)
 		{
@@ -544,14 +544,14 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		if (tempResult == 0)
 		{
 			textStr = "发送成功！";
-			QXComData.CreateBox (1,textStr,true,SendSuccessCallBack);
+			QXComData.CreateBoxDiy (textStr,true,SendSuccessCallBack);
 			//更新发送按钮状态
 			EmailPage.emailPage.RefreshEmailSendBtnState (3);
 		}
 		else
 		{
 			textStr = sendFailLength[tempResult - 1];
-			QXComData.CreateBox (1,textStr,true,null);
+			QXComData.CreateBoxDiy (textStr,true,null);
 			EmailPage.emailPage.RefreshEmailSendBtnState (1);
 		}
 	}

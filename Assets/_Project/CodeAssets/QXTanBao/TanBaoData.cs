@@ -25,6 +25,8 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 	
 	private string textStr;
 
+	public bool M_IsGetCard = false;//是否第一次探宝已经得到将魂卡
+
 	void Awake ()
 	{
 		SocketTool.RegisterMessageProcessor (this);
@@ -129,7 +131,7 @@ public class TanBaoData : Singleton<TanBaoData>,SocketProcessor {
 							break;
 						case 3:
 							textStr = "数据错误...";
-							QXComData.CreateBox (1,textStr,true,TanBaoRespCallBack,true);
+							QXComData.CreateBoxDiy (textStr,true,TanBaoRespCallBack,true);
 							break;
 						default:
 							break;

@@ -10,6 +10,8 @@ using ProtoBuf.Meta;
 
 public class QCLLayerInfo : MYNGUIPanel {
 
+	public GameObject mTestBtn;
+
     public List<UIEventListener> BtnList = new List<UIEventListener>(); 
 
 	public UISprite TuiJianSkill;
@@ -186,7 +188,8 @@ public class QCLLayerInfo : MYNGUIPanel {
 		InitAwards ();
 
 		GreeyBtn.gameObject.SetActive(m_Layer > 70);
-		
+
+		mTestBtn.SetActive (ConfigTool.GetBool(ConfigTool.CONST_QUICK_CHOOSE_LEVEL));
 	}
 	private int JuanghunSkillId;
 	public void initData(int m_mSkillid,bool ISChange = false)

@@ -112,6 +112,8 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_OPEN_HUANGYE);
 
 		HY_IdList = HuangYePveTemplate.getHuangYePveTemplateList ();
+
+		Debug.Log ("HY_IdList.Count = " +HY_IdList.Count);
 	}
 
 	public bool OnProcessSocketMessage(QXBuffer p_message){
@@ -190,8 +192,8 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 				else
 				{
 					//Debug.Log("建设值不足了--- 开启失败");
-
-					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),IsOpenFailLoadBack);
+					ClientMain.m_UITextManager.createText("联盟建设值不足或者权限不足，开启失败！");
+					//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),IsOpenFailLoadBack);
 
 					//Global.CreateBox(LanguageTemplate.GetText (LanguageTemplate.Text.HUANGYE_1), null, LanguageTemplate.GetText (LanguageTemplate.Text.HUANGYE_3), null, LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM), null, null, null);
 				}
@@ -280,7 +282,7 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 		
 		//Debug.Log ("mHuangYeTreasure.id = "+mHuangYeTreasure.id);
 		
-		mMaxDamageRankReq.id = m_Huangye_resp.treasure.guanQiaId;
+		mMaxDamageRankReq.id = m_Huangye_resp.treasure.id;
 		
 		HYTreasureBattleper.Serialize (HYTreasureBattleStream,mMaxDamageRankReq);
 		
@@ -373,15 +375,15 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 
 //		ShowHuangyeBi (mHuangye_resp.hYMoney);
 
-//		Debug.Log ("a = " + a);
+
 		if(a % Levelsnum == 0)
 		{
-			MaxMap = (a / Levelsnum);//总的章节数
+			MaxMap = (HY_IdList.Count / Levelsnum);//总的章节数
 
 		}
 		else
 		{
-			MaxMap = (a / Levelsnum)+1;//总的章节数
+			MaxMap = (HY_IdList.Count / Levelsnum)+1;//总的章节数
 		}
 		int count = 0; // 激活个数
 
@@ -563,7 +565,9 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 	
 		if((CurMap)*Levelsnum == HY_IdList.Count )
 		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTongBiLoadBack);
+			ClientMain.m_UITextManager.createText("需要通关所有关卡才能进入下一张荒野地图！");
+//			Debug.Log("11111111");
+			//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTongBiLoadBack);
 			return;
 		}
 		for(int i = (CurMap -1)*Levelsnum; i < (CurMap)*Levelsnum; i++)
@@ -573,22 +577,29 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 			{
 				if(m_OpenHuangYeResp.treasure.guanQiaId == HY_IdList[i])
 				{
-					Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTongBiLoadBack);
+					ClientMain.m_UITextManager.createText("需要通关所有关卡才能进入下一张荒野地图！");
+					//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockTongBiLoadBack);
+//					Debug.Log("222222");
 					return;
 				}
 			}
 
 		}
+//		Debug.Log("CurMap+1 = "+CurMap);
+//
+//		Debug.Log("MaxMap = "+MaxMap);
+
 		if((CurMap+1) <= MaxMap)
 		{
 			CurMap +=1 ;
-
+//			Debug.Log("33333333");
 			LordMap(vectRight,1,CurMap +100); //map name call 101 102...CurMap+1+100
 
 		}
 		else
 		{
-			//Debug.Log("暂时没有新的关卡可开启");
+			Debug.Log("暂时没有新的关卡可开启");
+			ClientMain.m_UITextManager.createText("暂时没有新的关卡可开启！");
 		}
 
 	}
@@ -605,21 +616,6 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 			//Debug.Log("暂时没有新的关卡可开启");
 		}
 		
-	}
-
-	void LockTongBiLoadBack(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str = "需要通关所有关卡才能进入下一张荒野地图！";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-		
-		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
-		
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null,null);
 	}
 
 	List<string> InstrctionList = new List<string>();
@@ -641,113 +637,6 @@ public class HY_UIManager : MonoBehaviour,SocketProcessor {
 
 	List<DuiHuanInfo> tempHuangyeList = new List<DuiHuanInfo>();
 
-	/// <summary>
-	/// 商店是否可开启
-	/// </summary>
-//	private bool canOpenShop = true; 
-//	public bool CanOpenShop
-//	{
-//		set{canOpenShop = value;}
-//	}
-
-//	public void EnterHY_Shop()
-//	{
-//	
-////			GeneralControl.Instance.GeneralStoreReq (GeneralControl.StoreType.HUANGYE,GeneralControl.StoreReqType.FREE);
-//	   ShopData.Instance.OpenShop (ShopData.ShopType.HUANGYE);
-//
-//	}
-
-//	public void AddTimes()
-//	{
-//		if(m_OpenHuangYeResp.buyCiShuInfo == 1)
-//		{
-//			if(m_OpenHuangYeResp.leftBuyCiShu <= 0)
-//			{
-//				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),buyFailLoad);
-//			}
-//			else{
-//				Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),OpenBuyUILoadBack);
-//			}
-//		}
-//		if(m_OpenHuangYeResp.buyCiShuInfo == 2)
-//		{
-//			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),UpVipLoadBack);
-//		}
-//		if(m_OpenHuangYeResp.buyCiShuInfo == 3)
-//		{
-//			Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),buyFailLoad);
-//		}
-//	}
-
-//
-//	void UpVipLoadBack(ref WWW p_www,string p_path, Object p_object)
-//	{
-//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-//		
-//		string titleStr = "购买失败";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-//		int vip = 3;
-//		if (vip <= JunZhuData.Instance().m_junzhuInfo.vipLv) {
-//			
-//			vip = 7;
-//		} 
-//		string str = "V特权等级不足，V特权等级提升到"+(vip).ToString()+"级即可购买挑战次数。参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-//
-//		//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-//		
-//		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
-//	}
-
-//	void buyFailLoad(ref WWW p_www,string p_path, Object p_object)
-//	{
-//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-//		
-//		string titleStr = "购买失败";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-//		int vip = 3;
-//
-//		if (vip <= JunZhuData.Instance().m_junzhuInfo.vipLv) {
-//
-//			vip = 7;
-//		} 
-//	
-//		string str = "V特权等级不足，V特权等级提升到"+(vip).ToString()+"级即可购买挑战次数。参与【签到】即可每天提升一级【V特权】等级，最多可提升至V特权7级。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-//		if (7 <= JunZhuData.Instance().m_junzhuInfo.vipLv) {
-//			
-//			str = "今日的购买次数已经用完了，请明日再来吧。";
-//		} 
-//		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,confirmStr,null,null,null,null);
-//	}
-
-//	void OpenBuyUILoadBack(ref WWW p_www,string p_path, Object p_object)
-//	{
-//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-//		
-//		string titleStr = "购买次数";//LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-//		
-//		string str = "您是否要花费"+m_OpenHuangYeResp.buyNextMoney.ToString()+"元宝购买"+m_OpenHuangYeResp.buyNextCiShu.ToString()+"次挑战次数？\r\n 今日还可购买"+m_OpenHuangYeResp.leftBuyCiShu.ToString()+"次。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
-//		
-//		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,SureBuy,null,null);
-//	}
-//	void SureBuy(int i)
-//	{
-//		int mMoney  = JunZhuData.Instance().m_junzhuInfo.yuanBao; 
-//
-//
-//		if(i == 2)
-//		{
-//			if(mMoney < m_OpenHuangYeResp.buyNextMoney)
-//			{
-//                EquipSuoData.TopUpLayerTip();
-//                
-//			}
-//			else
-//			{
-//				SocketTool.Instance().SendSocketMessage(ProtoIndexes.HY_BUY_BATTLE_TIMES_REQ);
-//			}
-//		}
-//	}
-	 
-	
 	public void CloseUI()
 	{
 		CityGlobalData.CurrentHY_Capter = 0;

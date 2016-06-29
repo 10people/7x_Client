@@ -10,7 +10,7 @@
 <YunbiaoTemp key="bloodVial_recoveryPro" desc="血瓶血量回复速率（已无效）" value="10" />
 <YunbiaoTemp key="bloodVialCD" desc="血瓶CD（秒）" value="30" />
 <YunbiaoTemp key="bloodVial_freeTimes" desc="每日免费血瓶数量" value="2" />
-<YunbiaoTemp key="resurgenceTimes" desc="每日满血复活次数" value="0" />
+<YunbiaoTemp key="resurgenceTimes" desc="每日满血复活次数" value="3" />
 <YunbiaoTemp key="resTimes_buy_ViplvlMin" desc="购买满血复活所需VIP等级" value="0" />
 <YunbiaoTemp key="onSiteresTimes_buy_ViplvlMin" desc="购买原地复活所需VIP等级" value="0" />
 <YunbiaoTemp key="incomeAddPro" desc="时间段内运镖收益倍数" value="100" />

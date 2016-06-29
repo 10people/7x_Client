@@ -1227,8 +1227,8 @@ ModelImporter:
     - serializedVersion: 16
       name: BATCDown
       takeName: Take 001
-      firstFrame: 290
-      lastFrame: 318
+      firstFrame: 434
+      lastFrame: 474
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1276,17 +1276,11 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bip02 L Thigh/Bip02 L Calf/Bip02 L Foot
         weight: 1
-      - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bip02 L Thigh/Bip02 L Calf/Bip02 L Foot/Bip02
-          L Toe0
-        weight: 1
       - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bip02 R Thigh
         weight: 1
       - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bip02 R Thigh/Bip02 R Calf
         weight: 1
       - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bip02 R Thigh/Bip02 R Calf/Bip02 R Foot
-        weight: 1
-      - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bip02 R Thigh/Bip02 R Calf/Bip02 R Foot/Bip02
-          R Toe0
         weight: 1
       - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bip02 Spine1
         weight: 1
@@ -1399,7 +1393,9 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bone17/Bip01/Bip01 Prop1
         weight: 1
-      - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bone17/Bip01/Bip01 Prop1/S7_boss_zhongjiachangqiang_wq
+      - path: "Bip02/Bip02 Pelvis/Bip02 Spine/Bone17/Bip01/Bip01 Prop1/\u9006\u9CDE\u53CC\u520301"
+        weight: 1
+      - path: Bip02/Bip02 Pelvis/Bip02 Spine/Bone17/Bone18
         weight: 1
       - path: Bip02/Bip02 Pelvis/Bone13
         weight: 1
@@ -1407,9 +1403,13 @@ ModelImporter:
         weight: 1
       - path: Bip02/Bip02 Pelvis/Bone13/Bone14/Bone15
         weight: 1
-      - path: S7_boss_zhongjiachangqiang_er
+      - path: Bip02 L Toe0
         weight: 1
-      - path: S7_boss_zhongjiachangqiang_ma
+      - path: Bip02 R Toe0
+        weight: 1
+      - path: boss_pangjuan_er
+        weight: 1
+      - path: boss_pangjuan_zuoqi_ma
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}

@@ -8,6 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 {
+	private int mChapter;
 	public QueryFuwenResp mueryFuwen;
 	public Section m_yMapinfo;
 	private static MiBaoGlobleData m_instance;
@@ -177,20 +178,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 	}
 
 	private GameObject mm_tempObject;
-    void ResLoaded( ref WWW p_www, string p_path, UnityEngine.Object p_object ) // 加载过关斩将地图
-	{
-		//Debug.Log ("加载pve页面 2222 " +Global.m_isOpenPVP );
-		if (mm_tempObject != null)
-		{
-			return;
-		}
-		mm_tempObject = ( GameObject )Instantiate( p_object );
-		MainCityUI.TryAddToObjectList(mm_tempObject);
-//		Debug.Log (MainCityUI.m_MainCityUI.m_WindowObjectList.Count);
-		mm_tempObject.transform.position = new Vector3( 0,500,0 );	
-		Debug.Log("加载过关斩将地图");
-//		Debug.Log (MainCityUI.m_MainCityUI.m_WindowObjectList.Count);
-	}
+
 
 	IEnumerator ChangePveOpenDate()
 	{
@@ -386,40 +374,7 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 		
 				return true;
 			}
-			case ProtoIndexes.PVE_PAGE_RET://章节请求返回
-			{
-				if(MainCityUI.m_MainCityUI != null)
-				{
-					MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-					
-					QiXiongSerializer t_qx = new QiXiongSerializer();
-					
-					Section tempInfo = new Section();
-					
-					t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
-					
-					// 临时添加判断条件  只能到13章节
-					
-					if(tempInfo.s_section > 13)
-					{
-						tempInfo.s_section =13;
-					}
-					if(tempInfo.sectionMax > 13)
-					{
-						tempInfo.sectionMax = 13;
-					}
-					if(tempInfo.maxCqPassId > 13)
-					{
-						tempInfo.maxCqPassId = 13;
-					}
-					
-					m_yMapinfo = tempInfo;
-					//				Debug.Log("m_yMapinfo 1 ");
-					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.PVE_MAP_PREFIX ),
-					                        ResLoaded );
-				}
-				return true;
-			}
+		
 			default: return false;
 			}
 			
@@ -446,10 +401,12 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 					activemibaonuber ++;
 				}
 			}
-
-			if(MainCityUI.m_MainCityUI.getButton(6) != null)
+			if(MainCityUI.m_MainCityUI != null)
 			{
-				MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(activemibaonuber >= mMiBaoskill.needNum);
+				if(MainCityUI.m_MainCityUI.getButton(6) != null)
+				{
+					MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(activemibaonuber >= mMiBaoskill.needNum);
+				}
 			}
 		}
 		else
@@ -457,15 +414,18 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 			int Maxid = 0;
 			if(G_MiBaoInfo.skillList.Count >= 7)
 			{
-
-				if(MainCityUI.m_MainCityUI.getButton(6) != null)
+				if(MainCityUI.m_MainCityUI != null)
 				{
-					MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(false);
+					if(MainCityUI.m_MainCityUI.getButton(6) != null)
+					{
+						MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(false);
+					}
+					else
+					{
+						Debug.Log("MainCityUI.m_MainCityUI.getButton(6) == null ");
+					}
 				}
-				else
-				{
-					Debug.Log("MainCityUI.m_MainCityUI.getButton(6) == null ");
-				}
+			
 			}
 			else
 			{
@@ -487,14 +447,16 @@ public class MiBaoGlobleData : MonoBehaviour ,SocketProcessor
 						activemibaonuber ++;
 					}
 				}
-
-				if(activemibaonuber >= mMiBaoskill.needNum)
+				if(MainCityUI.m_MainCityUI != null)
 				{
-					MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(true);
-				}
-				else
-				{
-					MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(false);
+					if(activemibaonuber >= mMiBaoskill.needNum)
+					{
+						MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(true);
+					}
+					else
+					{
+						MainCityUI.m_MainCityUI.getButton(6).setSuperAlert(false);
+					}
 				}
 			}
 			

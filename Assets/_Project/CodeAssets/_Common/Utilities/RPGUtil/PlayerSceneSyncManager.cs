@@ -113,13 +113,13 @@ public class PlayerSceneSyncManager : Singleton<PlayerSceneSyncManager>, SocketL
     {
         if (TreasureCityData.Instance().CanGetBoxCount() <= 0)
         {
-            ClientMain.m_UITextManager.createText(MyColorData.getColorString(4, "今日您可抢的宝箱数已为[d80202]0[-]，明天再来吧。"));
+            ClientMain.m_UITextManager.createText("今日您可抢的宝箱数已为 [d80202]0[-]，明天再来吧。");
             return;
         }
 
         if (TreasureCityData.Instance().openState == 100)
         {
-            ClientMain.m_UITextManager.createText(MyColorData.getColorString(4, "宝箱副本里的人数已满，请稍后再试。"));
+            ClientMain.m_UITextManager.createText("宝箱副本里的人数已满，请稍后再试。");
             return;
         }
 

@@ -133,7 +133,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	public GameObject btnLose;
 
-	public UILabel labelDebug;
+//	public UILabel labelDebug;
 
 	public AttackJoystick attackJoystick;
 
@@ -546,7 +546,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			return;
 		}
 
-		m_show_quick_fight = ConfigTool.GetBool( ConfigTool.CONST_QUICK_FIGHT );
+		m_show_quick_fight = false; //ConfigTool.GetBool( ConfigTool.CONST_QUICK_FIGHT );
 
 		btnWin.SetActive( m_show_quick_fight );
 
@@ -1673,28 +1673,28 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		BattleControlor.Instance().showResult ();
 	}
 
-	public void devolopmentEasy()
-	{
-		BattleControlor.Instance().getKing ().addHp (BattleControlor.Instance().getKing ().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ));
-
-		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
-		{
-			if(node.gameObject.activeSelf == true)
-			{
-				node.addHp(node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) * .05f - node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ));
-			}
-		}
-
-		BattleControlor.Instance().getKing ().addNuqi (5000);
-
+//	public void devolopmentEasy()
+//	{
+//		BattleControlor.Instance().getKing ().addHp (BattleControlor.Instance().getKing ().nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ));
+//
 //		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
 //		{
 //			if(node.gameObject.activeSelf == true)
 //			{
-//				Debug.Log("=============    " + node.nodeId + ", " + node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp));
+//				node.addHp(node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hpMax ) * .05f - node.nodeData.GetAttribute( (int)AIdata.AttributeType.ATTRTYPE_hp ));
 //			}
 //		}
-	}
+//
+//		BattleControlor.Instance().getKing ().addNuqi (5000);
+//
+////		foreach(BaseAI node in BattleControlor.Instance().enemyNodes)
+////		{
+////			if(node.gameObject.activeSelf == true)
+////			{
+////				Debug.Log("=============    " + node.nodeId + ", " + node.nodeData.GetAttribute(AIdata.AttributeType.ATTRTYPE_hp));
+////			}
+////		}
+//	}
 
 	public void devolopmentLose()
 	{

@@ -24,25 +24,30 @@ public class MainCityUIRT : MYNGUIPanel
 	void Start()
 	{
 //		MainCityUI.m_MainCityUI.setGlobalBelongings(gameObject, 0, 0);
+		m_Time = Time.time;
 	}
 
 	void Update()
 	{
-		if(JunZhuData.Instance().m_junzhuInfo.tili >= JunZhuData.Instance().m_junzhuInfo.tiLiMax)
+		if(JunZhuData.Instance().m_junzhuInfo.tili >= JunZhuData.Instance().m_junzhuInfo.tiLiMax && JunZhuData.Instance().m_junzhuInfo.level > Global.TILILVMAX)
 		{
 			float tempTime = Time.time - m_Time;
 			if(m_TiliMaxTishi.activeSelf)
 			{
-				if(tempTime > 10)
+				if(tempTime > 14)
 				{
 					m_TiliMaxTishi.SetActive(false);
 				}
 			}
 			else
 			{
-				if(tempTime > 120)
+				if(tempTime > 4 && tempTime < 14)
 				{
-					m_TiliMaxTishi.SetActive(false);
+					m_TiliMaxTishi.SetActive(true);
+				}
+				if(tempTime >= 20)
+				{
+					m_Time = Time.time;
 				}
 			}
 		}
@@ -67,17 +72,15 @@ public class MainCityUIRT : MYNGUIPanel
 		//energy info
 		string energyText = JunZhuData.Instance().m_junzhuInfo.tili > 10000 ? JunZhuData.Instance().m_junzhuInfo.tili / 10000 + "万" : JunZhuData.Instance().m_junzhuInfo.tili.ToString();
 		string energyMaxText = JunZhuData.Instance().m_junzhuInfo.tiLiMax > 10000 ? JunZhuData.Instance().m_junzhuInfo.tiLiMax / 10000 + "万" : JunZhuData.Instance().m_junzhuInfo.tiLiMax.ToString();
+//		Debug.Log(energyText);
+//		Debug.Log(energyMaxText);
 		if(int.Parse(energyText) >= int.Parse(energyMaxText) && JunZhuData.Instance().m_junzhuInfo.level > Global.TILILVMAX)
 		{
 			m_energyNuM.text = MyColorData.getColorString(18, energyText + "/" + energyMaxText);
-			m_TiliMaxTishi.SetActive(true);
-			m_Time = Time.time;
 		}
 		else
 		{
 			m_energyNuM.text = energyText + "/" + energyMaxText;
-			m_TiliMaxTishi.SetActive(false);
-			m_Time = Time.time;
 		}
 	}
 

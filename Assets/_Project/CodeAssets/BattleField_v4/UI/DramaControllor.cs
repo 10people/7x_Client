@@ -95,6 +95,8 @@ public class DramaControllor : MonoBehaviour
 
 	private GuideTemplate m_templateCallback;
 
+	private bool inSkipping = false;
+
 
 	void Awake()
 	{
@@ -528,7 +530,18 @@ public class DramaControllor : MonoBehaviour
 
 		BattleControlor.Instance().inDrama = true;
 
-		BattleControlor.Instance().getKing().gameCamera.camera3dui.enabled = false;
+		set3DuiCameraEnable (false);
+
+		//BattleControlor.Instance().getKing().gameCamera.camera3dui.enabled = false;
+
+		if(inSkipping && btnForcedEnd.activeSelf)
+		{
+			storyForcedEnd();
+
+			return;
+		}
+
+		inSkipping = false;
 	}
 
 	private void playmusic(int musicId)
@@ -1163,6 +1176,8 @@ public class DramaControllor : MonoBehaviour
 	{
 		if(m_templateCallback.actionType == 1)
 		{
+			inSkipping = m_templateCallback.ap1 != 10000;
+
 			storyControllor.forcedEnd();
 			
 			return;
@@ -1174,11 +1189,11 @@ public class DramaControllor : MonoBehaviour
 		if(m_templateCallback.actionType == 1)
 		{
 #if UNITY_EDITOR
-			if(pressed) storyControllor.forcedEnd();
+			if(pressed) storyForcedEnd();
 #endif
-			if(m_templateCallback.ap1 == 10000)// || storyControllor.getCurBoardSkippable())
+			if(pressed && m_templateCallback.ap1 == 10000)// || storyControllor.getCurBoardSkippable())
 			{
-				storyControllor.forcedEnd();
+				storyForcedEnd();
 			}
 
 			return;
@@ -1295,6 +1310,8 @@ public class DramaControllor : MonoBehaviour
 			}
 		}
 
+		inSkipping = false;
+
 //		if(nextPlayList.Count > 0)
 //		{
 //			int nextId = nextPlayList[0];
@@ -1373,15 +1390,43 @@ public class DramaControllor : MonoBehaviour
 		movingCount += 1f;
 	}
 
+	private void set3DuiCameraEnable(bool enable)
+	{
+		Camera camera = Quality_SceneCameraFx.GetSceneConfiggedCamera ();
+
+		if (camera == null) camera = BattleControlor.Instance ().getKing ().gameCamera.childCamera;
+
+		Debug.Log ("set3DuiCameraEnable   " + (Quality_SceneCameraFx.GetSceneConfiggedCamera () != null) + ", " + enable + ", " + camera.cullingMask );
+
+		if(enable) camera.cullingMask |= (1 << 21); 
+
+		else camera.cullingMask &= ~(1 << 21); 
+
+//		if(Quality_SceneCameraFx.GetSceneConfiggedCamera () != null)
+//		{
+//			if(enable) Quality_SceneCameraFx.GetSceneConfiggedCamera ().cullingMask |= (1 << 21); 
+//
+//			else Quality_SceneCameraFx.GetSceneConfiggedCamera ().cullingMask &= ~(1 << 21); 
+//		}
+//		else
+//		{
+//			if(enable) BattleControlor.Instance().getKing().gameCamera.childCamera.cullingMask |= (1 << 21); 
+//			
+//			else BattleControlor.Instance().getKing().gameCamera.childCamera.cullingMask &= ~(1 << 21); 
+//		}
+
+		Debug.Log ("-------------    " + camera.cullingMask);
+	}
+
 	private void openEye()
 	{
-
-
 		if( BattleUIControlor.Instance() == null ) return;
 
 		if( BattleUIControlor.Instance().layerFight == null ) return;
 
-		BattleControlor.Instance().getKing().gameCamera.camera3dui.enabled = true;
+		set3DuiCameraEnable (true);
+
+		//BattleControlor.Instance().getKing().gameCamera.camera3dui.enabled = true;
 		
 		BattleUIControlor.Instance().layerFight.SetActive (true);
 

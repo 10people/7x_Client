@@ -490,19 +490,22 @@ public class TransformHelper : MonoBehaviour {
 		return child.GetComponent<T>() ?? GetComponentInParent<T>(child.parent.transform);
 	}
 
+    public static float PossibleMinYPos = 18f;
+    public static float PossibleMaxYPos = 24f;
+
     public static bool RayCastXToFirstCollider(Vector3 originalPos, out float firstPos, int direction = 2, bool isMax = true)
     {
         RaycastHit[] tempHits = new RaycastHit[] {};
         switch (direction)
         {
             case 1:
-                tempHits = Physics.RaycastAll(new Ray(new Vector3((isMax ? 1 : -1)*Mathf.Infinity, originalPos.y, originalPos.z), new Vector3((isMax ? -1 : 1), 0, 0)), Mathf.Infinity);
+                tempHits = Physics.RaycastAll(new Ray(new Vector3((isMax ? 1 : -1)*100, originalPos.y, originalPos.z), new Vector3((isMax ? -1 : 1), 0, 0)), Mathf.Infinity);
                 break;
             case 2:
-                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, (isMax ? 1 : -1)*Mathf.Infinity, originalPos.z), new Vector3(0, (isMax ? -1 : 1), 0)), Mathf.Infinity);
+                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, (isMax ? 1 : -1)*100, originalPos.z), new Vector3(0, (isMax ? -1 : 1), 0)), Mathf.Infinity);
                 break;
             case 3:
-                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, originalPos.y, (isMax ? 1 : -1)*Mathf.Infinity), new Vector3(0, 0, (isMax ? -1 : 1))), Mathf.Infinity);
+                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, originalPos.y, (isMax ? 1 : -1)*100), new Vector3(0, 0, (isMax ? -1 : 1))), Mathf.Infinity);
                 break;
             default:
                 Debug.LogError("Input direction is wrong");
@@ -519,6 +522,14 @@ public class TransformHelper : MonoBehaviour {
                     break;
                 case 2:
                     firstPos = isMax ? tempHits.Max(item => item.point.y) : tempHits.Min(item => item.point.y);
+                    if (firstPos > PossibleMinYPos && firstPos < PossibleMaxYPos)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                     break;
                 case 3:
                     firstPos = isMax ? tempHits.Max(item => item.point.z) : tempHits.Min(item => item.point.z);

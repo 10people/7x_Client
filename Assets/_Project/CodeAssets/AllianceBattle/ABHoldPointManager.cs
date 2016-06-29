@@ -237,7 +237,7 @@ namespace AllianceBattle
                 }
 
                 var holdPoint = Instantiate(m_HoldPointPrefab);
-                TransformHelper.ActiveWithStandardize(transform, holdPoint.transform);
+                TransformHelper.ActiveWithStandardize(m_RootManager.PlayerParentObject.transform, holdPoint.transform);
                 holdPoint.transform.position = item.Position;
                 holdPoint.transform.eulerAngles = new Vector3(0, 180, 0);
                 item.OccupyObject = holdPoint;
@@ -281,31 +281,51 @@ namespace AllianceBattle
             //Read data from xmls.
             //Protecter.
             var temp = LMZBuildingTemplate.GetTemplates(2, 1).Concat(LMZBuildingTemplate.GetTemplates(3, 1)).Concat(LMZBuildingTemplate.GetTemplates(4, 1)).ToList();
-            temp.ForEach(item => HoldPointDic.Add(item.Id, new OccupyPoint()
+            temp.ForEach(item =>
             {
-                Position = new Vector3(item.Position.x, RootManager.BasicYPosition, item.Position.y),
-                MaxValue = item.ZhanlingzhiMax,
-                Range = item.Radius,
-                IsProtecter = true,
-                Type = item.Type,
-                Side = item.Side,
-                ID = item.Id,
-                Name = item.Name
-            }));
+                //float yPos;
+                Vector3 tempPos = new Vector3(item.Position.x, RootManager.BasicYPosition, item.Position.y);
+                //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                //{
+                //    tempPos = new Vector3(item.Position.x, yPos + .5f, item.Position.y);
+                //}
+
+                HoldPointDic.Add(item.Id, new OccupyPoint()
+                {
+                    Position = tempPos,
+                    MaxValue = item.ZhanlingzhiMax,
+                    Range = item.Radius,
+                    IsProtecter = true,
+                    Type = item.Type,
+                    Side = item.Side,
+                    ID = item.Id,
+                    Name = item.Name
+                });
+            });
 
             //Attacker.
             var temp2 = LMZBuildingTemplate.GetTemplates(4, 2);
-            temp2.ForEach(item => HoldPointDic.Add(item.Id, new OccupyPoint()
+            temp2.ForEach(item =>
             {
-                Position = new Vector3(item.Position.x, RootManager.BasicYPosition, item.Position.y),
-                MaxValue = item.ZhanlingzhiMax,
-                Range = item.Radius,
-                IsProtecter = false,
-                Type = item.Type,
-                Side = item.Side,
-                ID = item.Id,
-                Name = item.Name
-            }));
+                //float yPos;
+                Vector3 tempPos = new Vector3(item.Position.x, RootManager.BasicYPosition, item.Position.y);
+                //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                //{
+                //    tempPos = new Vector3(item.Position.x, yPos + .5f, item.Position.y);
+                //}
+
+                HoldPointDic.Add(item.Id, new OccupyPoint()
+                {
+                    Position = tempPos,
+                    MaxValue = item.ZhanlingzhiMax,
+                    Range = item.Radius,
+                    IsProtecter = false,
+                    Type = item.Type,
+                    Side = item.Side,
+                    ID = item.Id,
+                    Name = item.Name
+                });
+            });
 
             //Shield wall.
             var temp3 = LMZBuildingTemplate.GetTemplatesByType(5);

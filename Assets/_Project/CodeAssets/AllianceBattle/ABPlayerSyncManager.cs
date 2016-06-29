@@ -96,11 +96,18 @@ namespace AllianceBattle
 
                             //Only limit player pos, change to all if AllianceBattle move type changed.
                             Vector2 limitedPosition = new Vector2(tempMsg.posX, tempMsg.posZ);
+                            //float yPos;
+                            Vector3 tempPos = new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y);
+                            //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                            //{
+                            //    tempPos = new Vector3(limitedPosition.x, yPos, limitedPosition.y);
+                            //}
 
                             //Self
                             if (tempMsg.uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
                             {
-                                m_RootManager.CreateSinglePlayer(tempMsg.roleId, tempMsg.jzId, m_RootManager.LimitPlayerPositionByHoldPoint(new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y)), tempMsg.senderName, tempMsg.allianceName, tempMsg.vipLevel, tempMsg.chengHao, tempMsg.zhiWu, tempMsg.guojia, tempMsg.level, tempMsg.zhanli, tempMsg.currentLife, tempMsg.totalLife);
+
+                                m_RootManager.CreateSinglePlayer(tempMsg.roleId, tempMsg.jzId, m_RootManager.LimitPlayerPositionByHoldPoint(tempPos), tempMsg.senderName, tempMsg.allianceName, tempMsg.vipLevel, tempMsg.chengHao, tempMsg.zhiWu, tempMsg.guojia, tempMsg.level, tempMsg.zhanli, tempMsg.currentLife, tempMsg.totalLife);
 
                                 tempBaseCultureController = m_RootManager.m_SelfPlayerCultureController;
                                 tempBaseCultureController.TrackCamera = m_RootManager.TrackCamera;
@@ -126,7 +133,7 @@ namespace AllianceBattle
                             {
                                 if (tempMsg.roleId < 50000)
                                 {
-                                    if (!CreatePlayer(tempMsg.roleId, tempMsg.uid, m_RootManager.LimitPlayerPositionByHoldPoint(new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y)), m_RootManager.PlayerParentObject.transform))
+                                    if (!CreatePlayer(tempMsg.roleId, tempMsg.uid, m_RootManager.LimitPlayerPositionByHoldPoint(tempPos), m_RootManager.PlayerParentObject.transform))
                                     {
                                         Debug.LogError("Cannot create duplicated player.");
                                         return true;
@@ -151,7 +158,7 @@ namespace AllianceBattle
                                     {
                                         typeID = 4;
                                     }
-                                    m_RootManager.m_AllianceBattleMain.m_MapController.AddGizmos(tempMsg.uid, typeID, new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y), 0);
+                                    m_RootManager.m_AllianceBattleMain.m_MapController.AddGizmos(tempMsg.uid, typeID, tempPos, 0);
                                 }
                                 //Hold point
                                 else
@@ -510,16 +517,23 @@ namespace AllianceBattle
                                         //Dead dic contains all data.
                                         if (m_DeadPlayerDic.ContainsKey(tempMsg.uid))
                                         {
+                                            //float yPos;
+                                            Vector3 tempPos = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
+                                            //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                                            //{
+                                            //    tempPos = new Vector3(tempMsg.posX, yPos, tempMsg.posZ);
+                                            //}
+
                                             if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.uid)
                                             {
-                                                m_RootManager.CreateSinglePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_JunzhuID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), m_DeadPlayerDic[tempMsg.uid].m_KingName, m_DeadPlayerDic[tempMsg.uid].m_AllianceName, m_DeadPlayerDic[tempMsg.uid].m_VipLevel, m_DeadPlayerDic[tempMsg.uid].m_Title, m_DeadPlayerDic[tempMsg.uid].m_AlliancePost, m_DeadPlayerDic[tempMsg.uid].m_Nation, m_DeadPlayerDic[tempMsg.uid].m_Level, m_DeadPlayerDic[tempMsg.uid].m_BattleValue, tempMsg.life, m_DeadPlayerDic[tempMsg.uid].m_TotalBlood);
+                                                m_RootManager.CreateSinglePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_JunzhuID, m_RootManager.LimitPlayerPositionByHoldPoint(tempPos), m_DeadPlayerDic[tempMsg.uid].m_KingName, m_DeadPlayerDic[tempMsg.uid].m_AllianceName, m_DeadPlayerDic[tempMsg.uid].m_VipLevel, m_DeadPlayerDic[tempMsg.uid].m_Title, m_DeadPlayerDic[tempMsg.uid].m_AlliancePost, m_DeadPlayerDic[tempMsg.uid].m_Nation, m_DeadPlayerDic[tempMsg.uid].m_Level, m_DeadPlayerDic[tempMsg.uid].m_BattleValue, tempMsg.life, m_DeadPlayerDic[tempMsg.uid].m_TotalBlood);
 
                                                 //Show dead dimmer.
                                                 m_RootManager.m_AllianceBattleMain.HideDeadWindows();
                                             }
                                             else
                                             {
-                                                CreatePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_UID, new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ), m_RootManager.PlayerParentObject.transform);
+                                                CreatePlayer(m_DeadPlayerDic[tempMsg.uid].m_RoleID, m_DeadPlayerDic[tempMsg.uid].m_UID, m_RootManager.LimitPlayerPositionByHoldPoint(tempPos), m_RootManager.PlayerParentObject.transform);
 
                                                 //Add to mesh controller.
                                                 if (m_PlayerDic.ContainsKey(tempMsg.uid) && m_DeadPlayerDic[tempMsg.uid].m_KingName != JunZhuData.Instance().m_junzhuInfo.name)

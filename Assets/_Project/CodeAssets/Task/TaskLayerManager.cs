@@ -92,7 +92,7 @@ public class TaskLayerManager : MonoBehaviour
     {
         TaskData.Instance.m_MainReload = false;
         TaskData.Instance.m_MainReload = false;
-        TaskData.Instance.m_DailyQuestIsRefresh = false;
+ 
     }
     void Update()
     {
@@ -415,10 +415,19 @@ public class TaskLayerManager : MonoBehaviour
         }
 
         int size_a = _listTaskInfo.Count;
-        for (int i = 0; i < size_a; i++)
-        {
-            CreateScrollViewItem();
-        }
+
+        //if (size_a > 0)
+        //{
+            for (int i = 0; i < size_a; i++)
+            {
+                CreateScrollViewItem();
+            }
+        //}
+        //else
+        //{
+        //    m_OtherQuestObj.SetActive(true);
+        //    TidyMainTaskInfo();
+        //}
     }
  
     private bool DailyTaskComplete()

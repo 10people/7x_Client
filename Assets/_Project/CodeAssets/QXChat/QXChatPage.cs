@@ -684,6 +684,11 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	{
 		isChatItemInfoOpen = true;
 
+		if (m_tempObject != null)
+		{
+			Destroy (m_tempObject);
+		}
+
 		m_tempObject = (GameObject)Instantiate(m_floatBtnObj);
 		m_tempObject.SetActive (true);
 		m_tempObject.transform.parent = target.transform.parent;
@@ -713,7 +718,10 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 	/// </summary>
 	public void SetChatItemInfoClose (bool springPanel)
 	{
-		Destroy (m_tempObject);
+		if (m_tempObject != null)
+		{
+			Destroy (m_tempObject);
+		}
 		isChatItemInfoOpen = false;
 
 		if (springPanel && chatSb.value >= 0.99f)
@@ -1051,7 +1059,7 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 					m_listYinLiang[i].gameObject.SetActive(false);
 				}
 				MSCController.Instance.StartMSC(m_iVoiceIndex + "");
-				m_fMaxVolume = ClientMain.m_sound_manager.m_fMaxEffVolume;
+				m_fMaxVolume = ClientMain.m_sound_manager.m_fMaxVolume;
 				m_fMaxEffVolume = ClientMain.m_sound_manager.m_fMaxEffVolume;
 				ClientMain.m_sound_manager.setMaxVolume(0);
 				ClientMain.m_sound_manager.setMaxEffVolume(0);
@@ -1144,7 +1152,7 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 		SetSiliaoName(name);
 		m_iSiliaoID = id;
 		
-		if(!QXChatData.Instance.SetOpenChat)
+		if(QXChatData.Instance.SetOpenChat)
 		{
 			QXChatData.Instance.OpenChatPage(ChatPct.Channel.SILIAO);
 		}

@@ -148,7 +148,7 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 			case "SL_JiaoMiePanJun":
 				index = 3;
 				break;
-			case "L_XiJieQuanGui":
+			case "SL_XiJieQuanGui":
 				index = 1;
 				break;
 			case "SL_WanBiGuiZhao":
@@ -169,6 +169,9 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 			Global.m_sPanelWantRun = "";
 		}
 		bool idshow_alert = false;
+
+		Debug.Log ("index = "+index);
+
 		foreach(YXItem mXY in YXItemList)
 		{
 			if(mXY.mYouXiaInfo.id == index)
@@ -179,6 +182,7 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 			{
 				mXY.isQianchonglou = true;
 				mXY.Enter();
+				index = 0;
 			}
 			if(mXY.Art.gameObject.activeInHierarchy)
 			{

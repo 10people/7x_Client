@@ -9,6 +9,8 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class MapData : MonoBehaviour, SocketListener {
 
+	public GameObject mMap;
+
 	public UISprite MapBianKuang;
 
 	[HideInInspector]public bool UI_exsit = false;
@@ -526,10 +528,13 @@ public class MapData : MonoBehaviour, SocketListener {
 					{
 						tempInfo.maxCqPassId = 13;
 					}
-
 			     	myMapinfo = tempInfo;
-				  
-				    InitData();
+				    
+					if(!mMap.activeInHierarchy)
+					{
+						mMap.SetActive(true);
+					}
+					InitData();
 					return true;
 				}
 
@@ -540,13 +545,14 @@ public class MapData : MonoBehaviour, SocketListener {
 
 		return false;
 	}
-	void InitData()
+	public void InitData()
 	{
+
 		MapType ();
-		if(myMapinfo == null)
-		{
-			myMapinfo = MiBaoGlobleData.Instance().m_yMapinfo;
-		}
+//	
+//		myMapinfo = MiBaoGlobleData.Instance().m_yMapinfo;
+//		
+		Debug.Log("aaa" +myMapinfo.s_section);
 		CurrChapter = myMapinfo.s_section;
 
 		ShowYinDao = true;
@@ -698,7 +704,7 @@ public class MapData : MonoBehaviour, SocketListener {
 	{
 		CityGlobalData.PveLevel_UI_is_OPen = false;
 
-		//Debug.Log ("CityGlobalData.PT_Or_CQ = "+CityGlobalData.PT_Or_CQ);
+//		Debug.Log (" a = "+ a);
 		PvePageReq mapinfo = new PvePageReq ();
 
 		MemoryStream mapStream = new MemoryStream ();

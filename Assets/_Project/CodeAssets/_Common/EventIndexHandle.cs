@@ -16,6 +16,11 @@ public class EventIndexHandle : MonoBehaviour
 
     public void OnClick()
     {
+        if (Input.touchCount > 1)
+        {
+            return;
+        }
+
         if (IsMultiClickCheck)
         {
             if (Time.realtimeSinceStartup - lastClickTime < MultiClickDuration)

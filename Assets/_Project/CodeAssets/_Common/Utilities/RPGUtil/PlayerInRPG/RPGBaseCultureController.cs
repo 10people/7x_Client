@@ -28,7 +28,7 @@ public class RPGBaseCultureController : MonoBehaviour
 
     public virtual bool IsEnemy
     {
-        get { return !(((!string.IsNullOrEmpty(AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (AllianceName == AllianceData.Instance.g_UnionInfo.name))) || (KingName == JunZhuData.Instance().m_junzhuInfo.name)); }
+        get { return !(((!string.IsNullOrEmpty(AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (AllianceName == AllianceData.Instance.g_UnionInfo.name))) || (UID == PlayerSceneSyncManager.Instance.m_MyselfUid)); }
     }
 
     public bool IsSpecial

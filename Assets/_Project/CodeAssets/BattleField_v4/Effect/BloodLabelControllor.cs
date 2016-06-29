@@ -180,7 +180,7 @@ public class BloodLabelControllor : MonoBehaviour
 		}
 	}
 
-	public void showBloodEx(BaseAI defender, int hpValue, bool cri, BattleControlor.AttackType _type)
+	public void showBloodEx(BaseAI defender, int hpValue, bool cri, BattleControlor.AttackType _type, bool formBuff = false)
 	{
 		List<BloodLabel> list = null;
 
@@ -199,9 +199,13 @@ public class BloodLabelControllor : MonoBehaviour
 		{
 			text = "+" + hpValue;
 		}
+		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia && CityGlobalData.m_tempSection == 1 && formBuff)
+		{
+			text = "中毒" + hpValue;
+		}
 		else
 		{
-			text = "  " + hpValue;
+			text = "" + hpValue;
 		}
 
 		BloodLabel label = createBloodLabel (defender, text, cri, _type, list);

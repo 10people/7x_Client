@@ -137,6 +137,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 		private string m_waiting_str = "";
 
+		private StringBuilder m_str_builder = new StringBuilder();
+
 		public bool IsBingo( int p_cur_proto_id ){
 			for( int i = 0; i < m_waiting_list.Count; i++ ){
 				int t_waiting_id = m_waiting_list[ i ];
@@ -151,6 +153,8 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 
 		public void AddReceivingWaiting( int p_waiting_id ){
 			m_waiting_list.Add( p_waiting_id );
+
+			UpdateWaitingString();
 		}
 
 		/// Seperated By '|':
@@ -160,11 +164,25 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		public void SetReceivingWaiting( string p_waiting_string ){
 			string[] t_items = p_waiting_string.Split( RECEIVING_WAIT_SPLITTER );
 
-			m_waiting_str = p_waiting_string;
-
 			for( int i = 0; i < t_items.Length; i++ ){
 				AddReceivingWaiting( int.Parse( t_items[ i ] ) );
 			}
+
+			UpdateWaitingString();
+		}
+
+		private void UpdateWaitingString(){
+			m_str_builder.Remove( 0, m_str_builder.Length );
+
+			for( int i = 0; i < m_waiting_list.Count; i++ ){
+				m_str_builder.Append( m_waiting_list[ i ] );
+
+				if( i != m_waiting_list.Count - 1 ){
+					m_str_builder.Append( " | " );
+				}
+			}
+
+			m_waiting_str = m_str_builder.ToString();
 		}
 
 		public string GetReceivingString(){
@@ -548,7 +566,23 @@ public class SocketTool : MonoBehaviour, SocketProcessor, SocketListener {
 		Debug.Log( "SocketTool.LogNetworkWaiting()" );
 
 		for( int i = 0; i < m_receiving_waiting_list.Count; i++ ){
-			Debug.Log( i + " Waiting " + m_receiving_waiting_list[ i ].GetReceivingString() );
+			Debug.Log( i + " Receiving Waiting " + m_receiving_waiting_list[ i ].GetReceivingString() );
+		}
+
+		Debug.Log( "----------------- Receiving Wait Count: " + m_receiving_waiting_list.Count + " ---------------" );
+
+		int t_sending_wait_index = 0;
+
+		lock( m_sending_messages ){
+			foreach( QXBuffer t_buffer in m_sending_messages ){
+				if( t_buffer.IsSendingWait() ){
+					Debug.Log( t_sending_wait_index + " Sending Wait " + t_buffer.m_protocol_index );
+
+					t_sending_wait_index++;
+				}
+			}
+
+			Debug.Log( "----------------- Sending Wait Count: " + t_sending_wait_index + " ---------------" );
 		}
 	}
 

@@ -297,7 +297,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str1+str2), null,null,confirmStr,null,null,null,null);
+		uibox.setBox(titleStr, str1+str2, null,null,confirmStr,null,null,null,null);
 	}
 	//扫荡次数用完了提示框异步加载回调
 	public void ExitLoadCallback( ref WWW p_www, string p_path,  Object p_object )
@@ -314,7 +314,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str1+str2), null,null,confirmStr,null,null,null,null);
+		uibox.setBox(titleStr, str1+str2, null,null,confirmStr,null,null,null,null);
 	}
 	private void ComfireBuyTimesInfoBack(YouXiaTimesBuyResp m_tempInfo)
 	{
@@ -856,7 +856,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 		str ="是否使用"+CanshuTemplate.GetStrValueByKey("SHILIAN_CLEARCD_COST")+"元宝清除冷却？";
 		int v = VipFuncOpenTemplate.GetNeedLevelByKey (28);
 		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,cancel,confirm,ClearTime,null ,null ,null ,false,true,true,false,100,0,v);
+		uibox.setBox(titleStr,str, null,null,cancel,confirm,ClearTime,null ,null ,null ,false,true,true,false,100,0,v);
 		
 	}
 	void ClearTime(int i)
@@ -898,7 +898,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 	//	Debug.Log ("次数不足");
 		str ="\r\n"+"今日挑战次数已用完，是否购买挑战次数？";
 		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str), null,null,cancel,confirm,BuyTimes);
+		uibox.setBox(titleStr,str, null,null,cancel,confirm,BuyTimes);
 	
 	}
 	 void BuyTimes(int i)

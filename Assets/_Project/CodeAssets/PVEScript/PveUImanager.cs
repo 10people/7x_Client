@@ -565,7 +565,10 @@ public class PveUImanager :MYNGUIPanel
         MapData.mapinstance.IsCloseGuid = true;
 
 		MapData.mapinstance.CloseEffect();
-		PassLevelBtn.Instance().CloseEffect ();
+		if(CityGlobalData.PT_Or_CQ)
+		{
+			PassLevelBtn.Instance().CloseEffect ();
+		}
 		MapData.mapinstance.ClosewPVEGuid ();
 
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.PVE_CHOOSE_CHAPTER), ChooseChapterLoadResourceCallback);

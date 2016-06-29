@@ -176,7 +176,7 @@ public class ShopData : Singleton<ShopData>, SocketProcessor
 
         shopType = tempType;
         textStr = "立刻刷新货物需要花费" + shopDic[shopType].nextRefreshNeedMoney + QXComData.MoneyName(MoneyType(shopType)) + "\n\n确定刷新货物吗？";
-        QXComData.CreateBox(1, textStr, false, RefreshShopAskBack);
+        QXComData.CreateBoxDiy(textStr, false, RefreshShopAskBack);
     }
 
     void RefreshShopAskBack(int i)
@@ -356,7 +356,7 @@ public class ShopData : Singleton<ShopData>, SocketProcessor
                                     else
                                     {
                                         textStr = "今日刷新次数已用完\n提升V特权等级可增加商铺刷新次数！";
-                                        QXComData.CreateBox(1, textStr, true, null);
+                                        QXComData.CreateBoxDiy (textStr, true, null);
                                     }
 
                                     break;
@@ -454,7 +454,7 @@ public class ShopData : Singleton<ShopData>, SocketProcessor
                                     }
                                     ShopPage.shopPage.SetShopPage(shopType);
                                     textStr = "购买失败，该物品已售罄！";
-                                    QXComData.CreateBox(1, textStr, true, null);
+                                    QXComData.CreateBoxDiy (textStr, true, null);
 
                                     break;
                                 case 3:
@@ -462,7 +462,7 @@ public class ShopData : Singleton<ShopData>, SocketProcessor
                                     shopDic.Remove(shopType);
                                     ShopInfoReq(shopType, ShopReqType.FREE);
                                     textStr = "商品不存在，请重新尝试购买！";
-                                    QXComData.CreateBox(1, textStr, true, null);
+                                    QXComData.CreateBoxDiy (textStr, true, null);
 
                                     break;
                                 default:
@@ -590,7 +590,7 @@ public class ShopData : Singleton<ShopData>, SocketProcessor
         //else
         {
             textStr = "商铺刷新失败，" + QXComData.MoneyName(MoneyType(shopType)) + "不足！";
-            QXComData.CreateBox(1, textStr, true, null);
+            QXComData.CreateBoxDiy (textStr, true, null);
         }
     }
     /// <summary>

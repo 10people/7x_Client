@@ -109,7 +109,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
 
     void RequestSignalInInfo()
     {
-       SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_SIGNALINLIST_REQ,true , p_receiving_wait_proto_index: ProtoIndexes.S_SIGNALINLIST_RESP);
+       SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_SIGNALINLIST_REQ, false, p_receiving_wait_proto_index: ProtoIndexes.S_SIGNALINLIST_RESP);
        // SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YOUXIA_TYPE_INFO_REQ, null, p_receiving_wait_proto_index: ProtoIndexes.S_YOUXIA_TYPE_INFO_RESP);
     }
 

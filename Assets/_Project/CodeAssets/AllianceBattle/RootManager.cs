@@ -159,19 +159,19 @@ namespace AllianceBattle
         {
             if (m_AbHoldPointManager.HoldPointDic != null && m_AbHoldPointManager.HoldPointDic.Any())
             {
-                var temp = m_AbHoldPointManager.HoldPointDic.Where(item => Vector3.Distance(item.Value.Position, original) < 2f).ToList();
+                var temp = m_AbHoldPointManager.HoldPointDic.Where(item => Vector3.Distance(new Vector3(item.Value.Position.x, 0, item.Value.Position.z), new Vector3(original.x, 0, original.z)) < 2f).ToList();
 
                 if (temp != null && temp.Any())
                 {
-                    var distance = Vector3.Distance(temp.First().Value.Position, original);
+                    var distance = Vector3.Distance(new Vector3(temp.First().Value.Position.x, 0, temp.First().Value.Position.z), new Vector3(original.x, 0, original.z));
 
                     if (distance > 0.01f)
                     {
-                        return temp.First().Value.Position + new Vector3((original.x - temp.First().Value.Position.x) / distance * 2, 0, (original.z - temp.First().Value.Position.z) / distance * 2);
+                        return new Vector3(temp.First().Value.Position.x, 0, temp.First().Value.Position.z) + new Vector3((original.x - temp.First().Value.Position.x) / distance * 2, original.y, (original.z - temp.First().Value.Position.z) / distance * 2);
                     }
                     else
                     {
-                        return temp.First().Value.Position + new Vector3(0, 0, -2f);
+                        return new Vector3(temp.First().Value.Position.x, 0, temp.First().Value.Position.z) + new Vector3(0, original.y, -2f);
                     }
                 }
             }

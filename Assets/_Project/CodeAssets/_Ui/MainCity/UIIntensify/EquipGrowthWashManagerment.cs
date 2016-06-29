@@ -51,7 +51,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
     public int m_EquipType = 0;
     public UIGrid m_GridAdd;
     public GameObject m_ObjNormal;
-    public GameObject m_ObjJinJie;
+ 
     public UILabel m_LabJinJie;
     public struct RangeInfo
     {
@@ -287,10 +287,11 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
                         {
                             PushAndNotificationHelper.SetRedSpotNotification(1210, false);
                         }
-                        else if(!AllQualityLowest() && _WadhStoneCount > 0 && !PushAndNotificationHelper.IsShowRedSpotNotification(1210))
-                        {
-                            PushAndNotificationHelper.SetRedSpotNotification(1210, true);
-                        }
+                        //else if(!AllQualityLowest() && _WadhStoneCount > 0 && !PushAndNotificationHelper.IsShowRedSpotNotification(1210))
+                        //{
+                        //    Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+                        //    PushAndNotificationHelper.SetRedSpotNotification(1210, true);
+                        //}
                         if (buttonNum == 0)
                         {
                             ShowRangeInfo(WashInfo);
@@ -997,8 +998,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
 
         if (pinzhiSaved > 1 && !_isFull)
         {
-            Debug.Log("_isFull_isFull_isFull_isFull_isFull_isFull");
-
+ 
             m_EventPress.gameObject.SetActive(true);
             m_SuoTagSignal.SetActive(false);
             if (YBXiLianLimited == 0 && (_StoneWashTImes >= int.Parse(CanshuTemplate.GetStrValueByKey(CanshuTemplate.XILIANSHI_MAXTIMES)) || _WadhStoneCount == 0))
@@ -1012,24 +1012,28 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
             m_labNewAttSignal.gameObject.SetActive(true);
             m_EventPress_JinJie.gameObject.SetActive(false);
             m_ObjNormal.SetActive(true);
-            m_ObjJinJie.SetActive(false);
+           // m_ObjJinJie.SetActive(false);
             m_LabJinJie.text = MyColorData.getColorString(1, "洗练装备可以\n提升装备高级属性");
         }
         else
         {
+ 
             if (ZhuangBei.getZhuangBeiById(savedId).jiejieId != 0)
             {
                 m_EventPress.gameObject.SetActive(false);
                 m_ObjNormal.SetActive(false);
-                m_ObjJinJie.SetActive(true);
+                m_EventPress_JinJie.gameObject.SetActive(true); 
             }
             else
             {
+                m_EventPress_JinJie.gameObject.SetActive(false);
+                m_ObjNormal.SetActive(true);
                 m_EventPress.GetComponent<ButtonColorManagerment>().ButtonsControl(false);
             }
  
             if (pinzhiSaved == 1)
             {
+ 
                 m_LabJinJie.text = MyColorData.getColorString(1, "绿色装备无法洗练\n需进阶");
             }
        

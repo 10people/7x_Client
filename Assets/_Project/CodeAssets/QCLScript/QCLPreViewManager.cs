@@ -36,8 +36,10 @@ public class QCLPreViewManager : MonoBehaviour {
 	public void Init()
 	{
 		List <int > NendShowLayerNumber = ChonglouPveTemplate.Get_Key_Layer ();
-		Debug.Log ("NendShowLayerNumber.count = "+NendShowLayerNumber.Count);
-		for (int n = 0; n < NendShowLayerNumber.Count; n++)
+	
+		int count = NendShowLayerNumber.Count > 14 ? 14:NendShowLayerNumber.Count;
+	
+		for (int n = 0; n < count; n++)
 		{
 			GameObject LayerAwardTemp = Instantiate(AwardTemp) as GameObject;
 			LayerAwardTemp.SetActive(true);

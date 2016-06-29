@@ -104,20 +104,11 @@ public class BagData : MonoBehaviour, SocketProcessor
 
                         if (tempBagInfo.items != null)
                         {
-                            int Index = 0;
-                            for (int i = 0; i < tempBagInfo.items.Count; i++, Index++)
-                            {
-                                tempBagInfo.items[i].bagIndex = Index;
-                                if (tempBagInfo.items[i].itemId == -1)
-                                {
-                                    tempBagInfo.items.RemoveAt(i);
-                                    i--;
-                                }
-                            }
-                            m_bagItemList = tempBagInfo.items;
+                            tempBagInfo.items.ForEach(item => item.bagIndex = tempBagInfo.items.IndexOf(item));
+                            m_bagItemList = tempBagInfo.items.Where(item => item.itemId != -1).ToList();
 
                             SetPlayerEquipData();
-                            
+
                             RefreshPlayerCaiLiaoData();
 
                             GetCardBagCount();
@@ -235,7 +226,7 @@ public class BagData : MonoBehaviour, SocketProcessor
         }
 
         MainCityUI.SetRedAlert(500005, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace());
- 
+
 
 
         //        if (!Global.m_isTianfuUpCan && !Global.m_isNewChenghao && !Global.m_isFuWen)
@@ -295,7 +286,7 @@ public class BagData : MonoBehaviour, SocketProcessor
 
             MainCityUI.SetRedAlert(500005, EquipsOfBody.Instance().EquipUnWear() || EquipsOfBody.Instance().EquipReplace());
 
-           // MainCityUI.SetRedAlert(1211, BagData.AllUpgrade());
+            // MainCityUI.SetRedAlert(1211, BagData.AllUpgrade());
         }
 
     }
@@ -580,8 +571,8 @@ public class BagData : MonoBehaviour, SocketProcessor
             equipLevel = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaLv;
             EquipExp = EquipsOfBody.Instance().m_equipsOfBodyDic[index].qiangHuaExp;
             pinzhi = EquipsOfBody.Instance().m_equipsOfBodyDic[index].pinZhi;
-            if (EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 3 
-                || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 4 
+            if (EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 3
+                || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 4
                 || EquipsOfBody.Instance().m_equipsOfBodyDic[index].buWei == 5)
             {
                 EquipType = 1;

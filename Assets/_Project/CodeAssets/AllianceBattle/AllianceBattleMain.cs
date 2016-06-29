@@ -1347,7 +1347,14 @@ namespace AllianceBattle
 
         private void ExecuteAfterTp(Vector2 p_position)
         {
-            m_RootManager.m_SelfPlayerController.transform.localPosition = new Vector3(p_position.x, RootManager.BasicYPosition, p_position.y);
+            //float yPos;
+            Vector3 tempPos = new Vector3(p_position.x, RootManager.BasicYPosition, p_position.y);
+            //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+            //{
+            //    tempPos = new Vector3(p_position.x, yPos, p_position.y);
+            //}
+
+            m_RootManager.m_SelfPlayerController.transform.localPosition = tempPos;
         }
 
         #endregion
@@ -2062,11 +2069,11 @@ namespace AllianceBattle
             AttackerGainBuffPercent = 0;
             if (m_RootManager.m_AbHoldPointManager.HoldPointDic.Values.Any(item => item.IsDestroyed && item.Type == 2 && item.Side == 1))
             {
-                AttackerGainBuffPercent += 3;
+                AttackerGainBuffPercent = 3;
             }
             if (m_RootManager.m_AbHoldPointManager.HoldPointDic.Values.Any(item => item.IsDestroyed && item.Type == 3 && item.Side == 1))
             {
-                AttackerGainBuffPercent += 5;
+                AttackerGainBuffPercent = 5;
             }
 
             if (AttackerGainBuffPercent > 0)

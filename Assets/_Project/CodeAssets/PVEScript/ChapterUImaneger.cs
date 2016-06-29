@@ -29,7 +29,13 @@ public class ChapterUImaneger : MonoBehaviour {
 		return mChapterUImaneger;
 	}
 
-
+	void Update()
+	{
+		if(GameObject.Find("NewPVEUI(Clone)"))
+		{
+			CloseUI();
+		}
+	}
 
 	void Start () {
 
@@ -94,17 +100,24 @@ public class ChapterUImaneger : MonoBehaviour {
 
 	public void DeletFun()
 	{
-
 		CityGlobalData.PveLevel_UI_is_OPen = false;
 
 		MapData.mapinstance.ShowYinDao = true;
-
+		
 		iTween.MoveTo(childgb, iTween.Hash("position", startpos, "time",time,"islocal",true));
-
+		
 		iTween.ScaleTo (childgb,iTween.Hash("scale",scale2,"time",time));
-
+		
 		//MapData.mapinstance.OpenEffect();
-		PassLevelBtn.Instance().OPenEffect ();
+		if (CityGlobalData.PT_Or_CQ) {
+			
+			PassLevelBtn.Instance().OPenEffect ();
+			
+		}
+		CloseUI ();
+	}
+	void CloseUI()
+	{
 		Destroy (this.gameObject,time);
 	}
 	void PopUI()

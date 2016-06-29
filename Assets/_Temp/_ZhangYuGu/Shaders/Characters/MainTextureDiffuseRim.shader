@@ -96,11 +96,11 @@ Shader "Custom/Characters/Main Texture Diffuse Rim"{
 
 					t_c.xyz = t_c.xyz * ( 1 - i.color_a.w ) + i.color_a.w * _RimColor;
 
-					t_c.w = _MainColor.w * t_c.w;
-
 					if( t_c.w <= _CutOut ){
 						discard;
 					}
+
+					t_c.w = _MainColor.w * t_c.w;
 
 					return t_c;
 				}

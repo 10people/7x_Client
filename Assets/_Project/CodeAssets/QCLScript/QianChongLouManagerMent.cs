@@ -239,7 +239,7 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 
 		EXpAdd.text = "(额外获得"+((mvtemp.ExpAdd - 1)*100 ).ToString()+"%经验加成)";
 
-		Debug.Log("mMainInfo.currentLv = "+mMainInfo.currentLv);
+//		Debug.Log("mMainInfo.currentLv = "+mMainInfo.currentLv);
 		InitAward ();
 		if(mMainInfo == null)
 		{
@@ -262,12 +262,8 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	}
 	void LoadPlayer()
 	{
-		if(m_PlayerModel)
-		{
-			Destroy(m_PlayerModel);
-		}
-
 		ChonglouPveTemplate mChonglouPve = ChonglouPveTemplate.Get_QCL_PVETemplate_By_Layer (mMainInfo.currentLv);
+
 		int modelid = ChongLouNpcTemplate.Get_QCL_NpcModel_By_npcid (mChonglouPve.npcId);
 
 		Global.ResourcesDotLoad(ModelTemplate.GetResPathByModelId(modelid),
@@ -293,11 +289,17 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	}
 	public void LoadCallback(ref WWW p_www, string p_path, Object p_object)
 	{
+		if(m_PlayerModel)
+		{
+			Destroy(m_PlayerModel);
+		}
+
 		m_PlayerModel = Instantiate(p_object) as GameObject;
-		
+
 		m_PlayerModel.SetActive( true );
 		
 		m_PlayerModel.transform.parent = m_PlayerParent.transform;
+
 		m_PlayerModel.name = p_object.name;
 
 		GameObjectHelper.SetGameObjectLayerRecursive( m_PlayerModel, m_PlayerModel.transform.parent.gameObject.layer );

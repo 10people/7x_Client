@@ -141,11 +141,13 @@ public class ABBuyItemWindowManager : MonoBehaviour
                     if (JunZhuData.Instance().m_junzhuInfo.vipLv < vip)
                     {
                         CommonBuy.Instance.ShowVIP();
+                        OnCloseWindowClick();
                         return;
                     }
                     else if (remainingTimes == 0)
                     {
                         ClientMain.m_UITextManager.createText("今日可购买药水次数已用尽");
+                        OnCloseWindowClick();
                         return;
                     }
                     break;
@@ -158,11 +160,6 @@ public class ABBuyItemWindowManager : MonoBehaviour
                 {
                     break;
                 }
-        }
-
-        if (remainingTimes == 0)
-        {
-            return;
         }
 
         if (JunZhuData.Instance().m_junzhuInfo.yuanBao >= costNum * num)
@@ -189,6 +186,7 @@ public class ABBuyItemWindowManager : MonoBehaviour
         else
         {
             CommonBuy.Instance.ShowIngot();
+            OnCloseWindowClick();
         }
     }
 

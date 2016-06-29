@@ -333,7 +333,7 @@ public class TanBaoPage : MonoBehaviour {
 			}
 			else
 			{
-				QXComData.CreateBox (1,tenFunctionDes,true,TanBaoData.Instance.TanBaoRespCallBack,true);
+				QXComData.CreateBoxDiy (tenFunctionDes,true,TanBaoData.Instance.TanBaoRespCallBack,true);
 			}
 
 			break;
@@ -354,7 +354,7 @@ public class TanBaoPage : MonoBehaviour {
 			}
 			else
 			{
-				QXComData.CreateBox (1,tenFunctionDes,true,TanBaoData.Instance.TanBaoRespCallBack,true);
+				QXComData.CreateBoxDiy (tenFunctionDes,true,TanBaoData.Instance.TanBaoRespCallBack,true);
 			}
 
 			break;

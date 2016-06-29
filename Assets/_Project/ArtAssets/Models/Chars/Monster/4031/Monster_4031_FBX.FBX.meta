@@ -7140,6 +7140,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0379745737
+        functionName: playPre
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .076642327
         functionName: openShow
         data: 
@@ -7147,15 +7154,8 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .516432106
+      - time: .151321858
         functionName: activeSkillStart
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .0379745737
-        functionName: playPre
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -7668,6 +7668,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .0379745737
+        functionName: playPre
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: .076642327
         functionName: openShow
         data: 
@@ -7675,15 +7682,8 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: .516432106
+      - time: .361755848
         functionName: activeSkillStart
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: .0379745737
-        functionName: playPre
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

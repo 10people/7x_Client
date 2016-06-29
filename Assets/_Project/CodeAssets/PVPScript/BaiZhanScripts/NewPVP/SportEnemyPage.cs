@@ -76,7 +76,7 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 
 		m_isCanChallenge = SportPage.m_instance.SportTemp.jibie >= m_sportTemp.jibie - 1 ? true : false;
 
-		desLabel.text = m_isCanChallenge ? "" : "获得" + QXComData.GetJunXianName (m_sportTemp.jibie - 1) + "后可以挑战";
+		desLabel.text = m_isCanChallenge ? "" : "晋升到" + QXComData.GetJunXianName (m_sportTemp.jibie - 1) + "军衔后可以挑战";
 
 		m_changeBtnObj.SetActive (m_isCanChallenge);
 	}
@@ -150,7 +150,7 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 				else
 				{
 					//军衔等级不够
-					m_textStr = MyColorData.getColorString (5,"获得" + QXComData.GetJunXianName (m_sportTemp.jibie - 1) + "后可以挑战");
+					m_textStr = "晋升到" + MyColorData.getColorString (5,QXComData.GetJunXianName (m_sportTemp.jibie - 1)) + "军衔后可以挑战";
 					ClientMain.m_UITextManager.createText (m_textStr);
 				}
 			}

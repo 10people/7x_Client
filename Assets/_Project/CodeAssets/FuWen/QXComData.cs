@@ -484,32 +484,6 @@ public class QXComData {
 	#endregion
 
 	#region CreateBox
-	public static GameObject CreateBox (int tempColorId,string tempText,bool isOneBtn,UIBox.onclick onClick,bool isFunction = false)
-	{
-		return isOneBtn ? UtilityTool.Instance.CreateBox (titleStr,
-                                               			  MyColorData.getColorString (tempColorId,"\n" + tempText),null,null,
-                                               			  confirmStr,null,
-		                                      			  onClick,
-		                                                  null,
-		                                                  null,
-		                                                  null,
-		                                                  false,
-		                                                  true,
-		                                                  true,
-		                                                  isFunction) 
-						: UtilityTool.Instance.CreateBox (titleStr,
-			                                  			  MyColorData.getColorString (tempColorId,"\n" + tempText),null,null,
-		                                       			  cancelStr,confirmStr,
-			                                   			  onClick,
-			                                  			  null,
-			                                 			  null,
-			                                			  null,
-			                                			  false,
-			                                			  true,
-			                                			  true,
-			                                			  isFunction);
-	}
-
 	public static GameObject CreateBoxDiy (string tempText,bool isOneBtn,UIBox.onclick onClick,bool isFunction = false,int v1 = 0,int v2 = 0)
 	{
 		return isOneBtn ? UtilityTool.Instance.CreateBox (titleStr,

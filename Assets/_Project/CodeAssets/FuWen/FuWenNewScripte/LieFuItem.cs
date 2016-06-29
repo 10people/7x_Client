@@ -103,7 +103,14 @@ public class LieFuItem : MonoBehaviour {
 			
 			mLieFuActionReq.type = mLieFuActionInfo.type;
 			MiBaoinfoer.Serialize (MiBaoinfoStream,mLieFuActionReq);
-			
+			if(mLieFuActionReq.type == 2)
+			{
+				NewFuWenPage.Instance().SecondLieFu = true;
+				if(UIYindao.m_UIYindao.m_isOpenYindao)
+				{
+					UIYindao.m_UIYindao.CloseUI();
+				}
+			}
 			byte[] t_protof;
 			t_protof = MiBaoinfoStream.ToArray();
 			SocketTool.Instance().SendSocketMessage(ProtoIndexes.LieFu_Action_req,ref t_protof,ProtoIndexes.LieFu_Action_Resp.ToString());

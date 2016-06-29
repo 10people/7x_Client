@@ -309,11 +309,21 @@ namespace Carriage
 
                             if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.killerUid)
                             {
+                                if (string.IsNullOrEmpty(m_RootManager.m_SelfPlayerCultureController.KingName))
+                                {
+                                    return true;
+                                }
+
                                 l_killerName = ColorTool.Color_Green_00ff00 + m_RootManager.m_SelfPlayerCultureController.KingName + "[-]";
                             }
                             else if (m_PlayerDic.ContainsKey(tempMsg.killerUid))
                             {
                                 var controller = m_PlayerDic[tempMsg.killerUid].GetComponent<CarriageBaseCultureController>();
+
+                                if (string.IsNullOrEmpty(controller.KingName))
+                                {
+                                    return true;
+                                }
 
                                 if (!(((!string.IsNullOrEmpty(controller.AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (controller.AllianceName == AllianceData.Instance.g_UnionInfo.name)))))
                                 {
@@ -343,14 +353,28 @@ namespace Carriage
                                     }
                                 }
                             }
+                            else
+                            {
+                                return true;
+                            }
 
                             if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.uid)
                             {
+                                if (string.IsNullOrEmpty(m_RootManager.m_SelfPlayerCultureController.KingName))
+                                {
+                                    return true;
+                                }
+
                                 l_targetName = ColorTool.Color_Green_00ff00 + m_RootManager.m_SelfPlayerCultureController.KingName + "[-]";
                             }
                             else if (m_PlayerDic.ContainsKey(tempMsg.uid))
                             {
                                 var controller = m_PlayerDic[tempMsg.uid].GetComponent<CarriageBaseCultureController>();
+
+                                if (string.IsNullOrEmpty(controller.KingName))
+                                {
+                                    return true;
+                                }
 
                                 if (!(((!string.IsNullOrEmpty(controller.AllianceName) && !AllianceData.Instance.IsAllianceNotExist && (controller.AllianceName == AllianceData.Instance.g_UnionInfo.name)))))
                                 {
@@ -379,6 +403,10 @@ namespace Carriage
                                         }
                                     }
                                 }
+                            }
+                            else
+                            {
+                                return true;
                             }
 
                             ClientMain.m_UITextManager.createText(l_killerName + "杀死了" + l_targetName);

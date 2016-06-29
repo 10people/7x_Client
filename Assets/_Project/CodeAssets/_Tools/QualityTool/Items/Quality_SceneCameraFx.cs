@@ -54,6 +54,10 @@ public class Quality_SceneCameraFx : MonoBehaviour{
 	}
 
 	public static void InitSceneCameraAndCameraFx(){
+		if (BattleControlor.Instance ().inDrama) {
+			return;
+		}
+
 		GameObject t_gb = KingCamera.getChildCamera();
 
 		if( t_gb == null ){

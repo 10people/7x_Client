@@ -358,7 +358,7 @@ public class Global
 
 		functionJump.setDate(id);
 
-		MainCityUI.TryAddToObjectList(temp);
+		MainCityUI.TryAddToObjectList(temp, true, false);
 
 		return temp;
 	}

@@ -65,9 +65,17 @@ public class DramaActorCameraMove : DramaActor
 			if(node != null)
 			{
 				GameObject mainCamera = GameObject.Find("Main Camera");
-				
+
+				Quality_SceneCameraFx tempSceneCamera = mainCamera.GetComponentInChildren<Quality_SceneCameraFx>();
+
+				GameObject tempCamera = tempSceneCamera == null ? null : tempSceneCamera.gameObject;
+
+				if(tempCamera != null) tempCamera.SetActive(false);
+
 				GameObject targetCameraObject = (GameObject)Instantiate(mainCamera);
-				
+
+				if(tempCamera != null) tempCamera.SetActive(true);
+
 				targetCameraObject.name = "STORY_CAMERA";
 
 				{

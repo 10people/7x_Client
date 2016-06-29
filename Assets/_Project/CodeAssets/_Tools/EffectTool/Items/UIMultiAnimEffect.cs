@@ -13,6 +13,9 @@ public class UIMultiAnimEffect : MonoBehaviour {
 	// mirror
 	private GameObject m_mirror_gb = null;
 
+	// mirror sprite
+	private UISprite m_mirror_sprite = null;
+
 	// fx
 	private GameObject m_fx_gb = null;
 
@@ -38,6 +41,12 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 	void Start(){
 		Init();
+	}
+
+	void OnApplicationPause( bool p_pause ){
+		{
+			CleanSprite();
+		}
 	}
 
 	void OnDestroy(){
@@ -123,6 +132,8 @@ public class UIMultiAnimEffect : MonoBehaviour {
 
 			t_effect.m_mirror_gb = t_gb;
 
+			t_effect.m_mirror_sprite = t_gb.GetComponent<UISprite>();
+
 			t_effect.m_source_effect_id = p_source_effect_id;
 
 			t_effect.m_mirror_effect_id = p_mirror_effect_id;
@@ -170,13 +181,29 @@ public class UIMultiAnimEffect : MonoBehaviour {
 			m_fx_gb = null;
 		}
 
+		{
+			CleanSprite();
+		}
+
+		enabled = false;
+	}
+
+	private void CleanSprite(){
 		if( m_sprite != null ){
 			m_sprite.enabled = false;
 
 			m_sprite.enabled = true;
+
+			m_sprite.color = Color.white;
 		}
 
-		enabled = false;
+		if( m_mirror_sprite != null ){
+			m_mirror_sprite.enabled = false;
+
+			m_mirror_sprite.enabled = true;
+
+			m_mirror_sprite.color = Color.white;
+		}
 	}
 
 	private void LogInfo(){

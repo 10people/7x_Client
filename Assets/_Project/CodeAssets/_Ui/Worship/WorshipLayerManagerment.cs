@@ -159,7 +159,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
         m_listDonateItem.ForEach(p => p.m_Event.m_Handle += Donate);
     }
 
-
+ 
     void Donate(int index)
     {
   
@@ -220,21 +220,26 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
             t_qx.Serialize(t_tream, fens);
             byte[] t_protof;
             t_protof = t_tream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_DO_ALLIANCE_FENGSHAN_REQ, ref t_protof);
-            _DonateTemple.fsInfo[index].usedTimes++;
-            if (_DonateTemple.fsInfo[index].totalTimes > 0)
-            {
-                m_listDonateItem[index].m_LabTimes.text = MyColorData.getColorString(5, "今日剩余次数 : "
-                                                      + (_DonateTemple.fsInfo[index].totalTimes - _DonateTemple.fsInfo[index].usedTimes)
-                                                      + "/" + _DonateTemple.fsInfo[index].totalTimes);
-            }
-            JunZhuData.Instance().m_junzhuInfo.yuanBao -= _DonateTemple.fsInfo[index].needYuanBao;
-            m_Durable_UI.transform.GetChild(0).GetComponent<MainCityBelongings>().m_MoneyNum.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
-                _DonateTemple.fsInfo[index].needYuanBao = PurchaseTemplate.GetPurchaseTempByTypeAndTimes(LianmengJuanxianTemplate.getJuanxianById(_DonateTemple.fsInfo[index].confId).type
-                   , _DonateTemple.fsInfo[index].totalTimes).price;
-            MoveActionAlong(m_listFengShanPiao[index].transform);
-            FunctionWindowsCreateManagerment.ShowRAwardInfo(LianmengJuanxianTemplate.getJuanxianById(_DonateTemple.fsInfo[index].confId).award);
-            ShowLabInfo(_DonateTemple);
+            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_DO_ALLIANCE_FENGSHAN_REQ, ref t_protof,false, p_receiving_wait_proto_index: ProtoIndexes.S_ALLIANCE_FENGSHAN_RESP);
+            //_DonateTemple.fsInfo[index].usedTimes++;
+            m_listDonateItem[index].m_Event.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false, 1);
+            //if (_DonateTemple.fsInfo[index].totalTimes > 0)
+            //{
+            //    m_listDonateItem[index].m_LabTimes.text = MyColorData.getColorString(5, "今日剩余次数 : "
+            //                                          + (_DonateTemple.fsInfo[index].totalTimes - _DonateTemple.fsInfo[index].usedTimes)
+            //                                          + "/" + _DonateTemple.fsInfo[index].totalTimes);
+            //}
+            //JunZhuData.Instance().m_junzhuInfo.yuanBao -= _DonateTemple.fsInfo[index].needYuanBao;
+            //m_Durable_UI.transform.GetChild(0).GetComponent<MainCityBelongings>().m_yuanbaoNuM.text = JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString();
+            //    _DonateTemple.fsInfo[index].needYuanBao = PurchaseTemplate.GetPurchaseTempByTypeAndTimes(LianmengJuanxianTemplate.getJuanxianById(_DonateTemple.fsInfo[index].confId).type
+            //       , _DonateTemple.fsInfo[index].totalTimes).price;
+            //MoveActionAlong(m_listFengShanPiao[index].transform);
+            //FunctionWindowsCreateManagerment.ShowRAwardInfo(LianmengJuanxianTemplate.getJuanxianById(_DonateTemple.fsInfo[index].confId).award);
+            //ShowLabInfo(_DonateTemple);
+            //if (_DonateTemple.fsInfo[index].totalTimes - _DonateTemple.fsInfo[index].usedTimes == 0)
+            //{
+            //    m_listDonateItem[index].m_Event.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+            //}
         }
 
     }
@@ -258,7 +263,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
         {
 
             m_listMoBaiItem[0].m_ButtonBack.GetComponent<UIButton>().enabled = false;
-            m_listMoBaiItem[0].m_ButtonBack.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+            m_listMoBaiItem[0].m_ButtonBack.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false,1);
             m_listMoBaiItem[0].m_LabDes.text = "膜拜";
         }
         //else
@@ -285,7 +290,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
         {
 
             m_listMoBaiItem[1].m_ButtonBack.GetComponent<UIButton>().enabled = false;
-            m_listMoBaiItem[1].m_ButtonBack.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+            m_listMoBaiItem[1].m_ButtonBack.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false,1);
             m_listMoBaiItem[1].m_LabDes.text = "膜拜";
         }
 
@@ -313,7 +318,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
         if (!worshipShow.yuOpen)
         {
             m_listMoBaiItem[2].m_ButtonBack.GetComponent<UIButton>().enabled = false;
-            m_listMoBaiItem[2].m_ButtonBack.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+            m_listMoBaiItem[2].m_ButtonBack.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false,1);
             m_listMoBaiItem[2].m_LabDes.text = "膜拜";
         }
         else
@@ -466,7 +471,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
 
         byte[] t_protof;
         t_protof = t_tream.ToArray();
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_MOBAI_AWARD, ref t_protof, p_receiving_wait_proto_index: ProtoIndexes.S_MoBai_Info);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_GET_MOBAI_AWARD, ref t_protof,false, p_receiving_wait_proto_index: ProtoIndexes.S_MoBai_Info);
     }
     void TuTengRewardData(string _award)
     {
@@ -519,18 +524,18 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
         {
             UIYindao.m_UIYindao.CloseUI();
         }
-        if (JunZhuData.Instance().m_RefreshCopperInfo)
-        {
-            JunZhuData.Instance().m_RefreshCopperInfo = false;
-            if (GetCopperCoinWorshipEnable())
-            {
-                m_ListCount[0].text = MyColorData.getColorString(1, LianmengMoBaiTemplate.GetShowInfoByType(1).needNum.ToString());
-            }
-            else
-            {
-                m_ListCount[0].text = MyColorData.getColorString(5, LianmengMoBaiTemplate.GetShowInfoByType(1).needNum.ToString());
-            }
-        }
+        //if (JunZhuData.Instance().m_RefreshCopperInfo)
+        //{
+        //    JunZhuData.Instance().m_RefreshCopperInfo = false;
+        //    if (GetCopperCoinWorshipEnable())
+        //    {
+        //        m_ListCount[0].text = MyColorData.getColorString(1, LianmengMoBaiTemplate.GetShowInfoByType(1).needNum.ToString());
+        //    }
+        //    else
+        //    {
+        //        m_ListCount[0].text = MyColorData.getColorString(5, LianmengMoBaiTemplate.GetShowInfoByType(1).needNum.ToString());
+        //    }
+        //}
 
         m_TanHaoMoBai.SetActive(PushAndNotificationHelper.IsShowRedSpotNotification(400010)
                                            || PushAndNotificationHelper.IsShowRedSpotNotification(400012)
@@ -684,7 +689,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
 
     void RequestData()
     {
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MoBai_Info);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MoBai_Info,false, p_receiving_wait_proto_index: ProtoIndexes.S_MoBai_Info);
 
     }
 
@@ -698,7 +703,8 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
         t_qx.Serialize(t_tream, mobai);
         byte[] t_protof;
         t_protof = t_tream.ToArray();
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MoBai, ref t_protof);
+        //SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MoBai, ref t_protof);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MoBai, ref t_protof,false, p_receiving_wait_proto_index: ProtoIndexes.S_MoBai_Info);
     }
     FengShanInfoResp _DonateTemple = null;
     public bool OnProcessSocketMessage(QXBuffer p_message)
@@ -710,6 +716,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
 
                 case ProtoIndexes.S_MoBai_Info:/** 返回膜拜信息 **/
                     {
+                     
                         listReWard.Clear();
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
@@ -722,7 +729,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                         {
                             worshipShow = worship;
                         }
-                        else
+                        else if(!_isGetReward)
                         {
 
                             if ((worshipShow.tongBiOpen == worship.tongBiOpen
@@ -799,7 +806,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                             ShowInfo();
                         }
 
-                        NewAlliancemanager.Instance().Refreshtification();
+                       // 
                         ShowWorshipInfo();
                         return true;
                     }
@@ -813,6 +820,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
 
                         if (FengShan.fsInfo != null)
                         {
+                          
                             int size = FengShan.fsInfo.Count;
                             if (size > 1)
                             {
@@ -841,14 +849,14 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                                                     
                                                     //else
                                                     {
-                                                        m_listDonateItem[i].m_Event.GetComponent<UIButton>().enabled = false;
+                                                    //    m_listDonateItem[i].m_Event.GetComponent<UIButton>().enabled = false;
                                                         m_listDonateItem[i].m_Event.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
                                                         m_listDonateItem[i].m_LabDes.text = "捐献";
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    m_listDonateItem[i].m_Event.GetComponent<UIButton>().enabled = true;
+                                             //       m_listDonateItem[i].m_Event.GetComponent<UIButton>().enabled = true;
                                                     m_listDonateItem[i].m_Event.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
                                                     m_listDonateItem[i].m_LabDes.text = "捐献";
                                                 }
@@ -873,7 +881,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                                                     //}
                                                     //else
                                                     {
-                                                        m_listDonateItem[i].m_Event.GetComponent<UIButton>().enabled = false;
+                                            
                                                         m_listDonateItem[i].m_Event.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
                                                         m_listDonateItem[i].m_LabDes.text = "捐献";
                                                     }
@@ -881,7 +889,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
 
                                                 else
                                                 {
-                                                    m_listDonateItem[i].m_Event.GetComponent<UIButton>().enabled = true;
+         
                                                     m_listDonateItem[i].m_Event.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
                                                     m_listDonateItem[i].m_LabDes.text = "捐献";
                                                 }
@@ -901,7 +909,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                                     else
                                     {
                                         m_listDonateItem[i].m_LabTimes.text = MyColorData.getColorString(5, "今日剩余次数 : "
-                                                                            + FengShan.fsInfo[i].usedTimes);
+                                                                            + FengShan.fsInfo[i].usedTimes +"/0");
                                     }
                                     m_LabWorshipCount.text = FengShan.huoyuedu.ToString() + "/" +
                                                LianMengTuTengTemplate.getTuTengAwardByLevel(m_bulidingLevel).moBaiTimes3.ToString() + "（每日凌晨4点重置）";
@@ -911,8 +919,8 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                             }
                             else
                             {
-
-                                NewAlliancemanager.Instance().Refreshtification();
+						       if(_DonateTemple !=null)
+						      {
                                 _DonateTemple.huoyuedu = FengShan.huoyuedu;
                                 _mobaiCount = FengShan.huoyuedu;
                                 m_LabWorshipCount.text = _DonateTemple.huoyuedu.ToString() + "/"
@@ -930,14 +938,14 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                                 int size_s = _DonateTemple.fsInfo.Count;
                                 for (int i = 0; i < size_s; i++)
                                 {
+ 
                                     if (_DonateTemple.fsInfo[i].confId == FengShan.fsInfo[0].confId)
-                                    {
-                                        _DonateTemple.fsInfo[i].usedTimes = FengShan.fsInfo[0].usedTimes;
-                                        m_listDonateItem[i].m_LabTimes.text = MyColorData.getColorString(5, "今日剩余次数 : "
+                                    { 
+                                      m_listDonateItem[i].m_Event.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                                      _DonateTemple.fsInfo[i].usedTimes = FengShan.fsInfo[0].usedTimes;
+                                      m_listDonateItem[i].m_LabTimes.text = MyColorData.getColorString(5, "今日剩余次数 : "
                                                                       + (_DonateTemple.fsInfo[i].totalTimes - _DonateTemple.fsInfo[i].usedTimes)
                                                                       + "/" + _DonateTemple.fsInfo[i].totalTimes);
- 
-                                        //MoveActionAlong(m_listFengShanPiao[i].transform);
                                     }
                                 }
                                 ShowLabInfo(FengShan);
@@ -949,15 +957,15 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                                     {
                                         if (_DonateTemple.fsInfo[i].totalTimes - _DonateTemple.fsInfo[i].usedTimes <= 0)
                                         {
-                                            m_listDonateItem[i].m_Event.GetComponent<UIButton>().enabled = false;
                                             m_listDonateItem[i].m_Event.GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
                                         }
                                        
                                     }
 
                                 }
-                              //  FunctionWindowsCreateManagerment.ShowRAwardInfo(LianmengJuanxianTemplate.getJuanxianById(FengShan.fsInfo[0].confId).award);
+                                FunctionWindowsCreateManagerment.ShowRAwardInfo(LianmengJuanxianTemplate.getJuanxianById(FengShan.fsInfo[0].confId).award);
                             }
+					     }
 
                         }
 
@@ -1066,9 +1074,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                     break;
             }
         }
-        //m_listMoBaiItem[0].m_LabSelfLeft.text = "X" + LianmengMoBaiTemplate.GetShowInfoByType(1).gongxian;
-        //m_listMoBaiItem[0].m_LabSelfRight.text = "X" + LianmengMoBaiTemplate.GetShowInfoByType(1).tili;
-        //m_listMoBaiItem[0].m_LabAlliance.text = "X" + LianmengMoBaiTemplate.GetShowInfoByType(1).jianshe;
+
         if (GetYuanBaoWorshipEnable())
         {
             m_listMoBaiItem[1].m_LabPrice.text = MyColorData.getColorString(1, LianmengMoBaiTemplate.GetShowInfoByType(2).needNum.ToString());
@@ -1140,17 +1146,6 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
                     break;
             }
         }
-      
-      
-      
-        //m_LabDingLiSignal.text = MyColorData.getColorString(1, NameIdTemplate.GetName_By_NameId(990035) + GetString(LianmengMoBaiTemplate.GetShowInfoByType(3).award) + LanguageTemplate.GetText(1531) + "\n" + NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(3).tili + LanguageTemplate.GetText(1529)
-        //                                                    + "  " + NameIdTemplate.GetName_By_NameId(990035) + LianmengMoBaiTemplate.GetShowInfoByType(3).gongxian + LanguageTemplate.GetText(1530)
-
-
-        //                                                    );
-        //;
-     
-
         YuJueInfo();
     }
 
@@ -1177,23 +1172,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
     void YuJueInfo()
     {
         _listYJ.Clear();
-        //if (!worshipShow.yuOpen)
-        //{
-        //  //  m_ListGameobjectShow[4].SetActive(false);
-        //    m_ListGameobjectShow[5].SetActive(true);
-        //    m_ListCount[9].text = "VIP" + JunZhuData.Instance().m_junzhuInfo.vipLv.ToString() + NameIdTemplate.GetName_By_NameId(990054) 
-        //        + VipTemplate.GetVipInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv).yujueDuihuan.ToString() 
-        //        + NameIdTemplate.GetName_By_NameId(990040);
-        //}
-
-        if (m_Gride.transform.childCount > 0)
-        {
-            int childCount = m_Gride.transform.childCount;
-            for (int i = 0; i < childCount; i++)
-            {
-                Destroy(m_Gride.transform.GetChild(i).gameObject);
-            }
-        }
+ 
         YuJueShow yj0 = new YuJueShow();
         yj0.icon = 950002;
         yj0.count = BagData.Instance().GetCountByItemId(950002);
@@ -1215,54 +1194,36 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
         if (BagData.Instance().GetCountByItemId(950005) >= 1)
         {
             yj1.color = 1;
-            // m_ListCount[5].text = MyColorData.getColorString(1, "1");
         }
         else
         {
             yj1.color = 5;
-            //  m_ListCount[5].text = MyColorData.getColorString(5, "1");
         }
         _listYJ.Add(yj1);
         YuJueShow yj2 = new YuJueShow();
         yj2.icon = 950001;
         yj2.count = BagData.Instance().GetCountByItemId(950001);
         if (BagData.Instance().GetCountByItemId(950001) >= 1)
-        //{
-        //    m_ListCount[6].text = MyColorData.getColorString(1, "1");
-        //}
-        //else
-        //{
-        //    m_ListCount[6].text = MyColorData.getColorString(5, "1");
-        //}
+    
         {
             yj2.color = 1;
-            // m_ListCount[5].text = MyColorData.getColorString(1, "1");
+         
         }
         else
         {
             yj2.color = 5;
-            //  m_ListCount[5].text = MyColorData.getColorString(5, "1");
         }
         _listYJ.Add(yj2);
         YuJueShow yj3 = new YuJueShow();
         yj3.icon = 950004;
         yj3.count = BagData.Instance().GetCountByItemId(950004);
         if (BagData.Instance().GetCountByItemId(950004) >= 1)
-        //{
-        //    m_ListCount[7].text = MyColorData.getColorString(1, "1");
-        //}
-        //else
-        //{
-        //    m_ListCount[7].text = MyColorData.getColorString(5, "1");
-        //}
         {
             yj3.color = 1;
-            // m_ListCount[5].text = MyColorData.getColorString(1, "1");
         }
         else
         {
             yj3.color = 5;
-            //  m_ListCount[5].text = MyColorData.getColorString(5, "1");
         }
         _listYJ.Add(yj3);
         YuJueShow yj4 = new YuJueShow();
@@ -1272,19 +1233,37 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
 
         {
             yj4.color = 1;
-            // m_ListCount[5].text = MyColorData.getColorString(1, "1");
         }
         else
         {
             yj4.color = 5;
-            //  m_ListCount[5].text = MyColorData.getColorString(5, "1");
+       
         }
         _listYJ.Add(yj4);
         _indexNum = 0;
-        for (int i = 0; i < 5; i++)
+
+
+        if (m_Gride.transform.childCount > 0)
         {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
-                       ResLoaded);
+            int childCount = m_Gride.transform.childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+              
+               IconSampleManager iconSampleManager = m_Gride.transform.GetChild(i).GetComponent<IconSampleManager>();
+               iconSampleManager.SetIconByID(_listYJ[i].icon, _listYJ[i].count.ToString(), 10);
+               iconSampleManager.SetIconPopText(_listYJ[i].icon
+                   ,NameIdTemplate.GetName_By_NameId(CommonItemTemplate.getCommonItemTemplateById(_listYJ[i].icon).nameId)
+                    , DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(_listYJ[i].icon).descId));
+               iconSampleManager.transform.localScale = Vector3.one * 0.45f;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
+                           ResLoaded);
+            }
         }
     }
 
@@ -1292,6 +1271,8 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
     void OnDestroy()
     {
         SocketTool.UnRegisterMessageProcessor(this);
+        AllianceData.Instance.RequestAllianceData();
+        NewAlliancemanager.Instance().Refreshtification();
     }
 
     private bool GetCopperCoinWorshipEnable()
@@ -1347,7 +1328,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
         for (int i = 0; i < size; i++)
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
-       ResLoaded3);
+                             ResLoaded3);
 
         }
     }
@@ -1420,21 +1401,7 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
 
     void TidyRewardInfo()
     {
-        //  listRewardYuJue.Clear();
-        // string award =  LianmengMoBaiTemplate.GetShowInfoByType(3).award;
-        // string[] yujueInfo ;
-
-        // yujueInfo = award.Split('#');
-
-        //for (int i = 0; i < yujueInfo.Length; i++)
-        //{
-
-        //    string[] ss = yujueInfo[i].Split(':');
-        //    RewardYuJueInfo ryji = new RewardYuJueInfo();
-        //    ryji.icon = ss[1];
-        //    ryji.count = ss[2];
-        //    listRewardYuJue.Add(ryji);
-        //}
+        
         RewardYuJueCreate();
     }
     int indexNum3 = 0;

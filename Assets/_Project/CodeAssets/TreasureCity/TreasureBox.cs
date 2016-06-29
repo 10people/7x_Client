@@ -64,7 +64,7 @@ public class TreasureBox : MonoBehaviour {
 		
 		if (tempOpenBox.isOpen && tempOpenBox.num > 0)
 		{
-			Debug.Log ("Destroy2");
+//			Debug.Log ("Destroy2");
 
 //			Global.ResourcesDotLoad(EffectIdTemplate.GetPathByeffectId(600246), LightEffectLoadBack);
 			StartCoroutine ("BoxAnimate");
@@ -92,7 +92,7 @@ public class TreasureBox : MonoBehaviour {
 
 	public void JinBiFeiChu ()
 	{
-		Debug.Log ("JinBiFeiChu");
+//		Debug.Log ("JinBiFeiChu");
 		Global.ResourcesDotLoad ( PlayerInCityManager.GetModelResPathByRoleId (6903), ResourceLoadCallback );
 	}
 

@@ -34,56 +34,67 @@ public class PreViewTemp : MonoBehaviour {
 
 		ChonglouPveTemplate mCL = ChonglouPveTemplate.Get_QCL_PVETemplate_By_Layer (Layer);
 		
-		string m_Award = mCL.awardShow;
+		string m_Award1 = "";
+		string m_Award2 = "";
 
-		if(Layer == 15)
+		char[] mChar = { '#' };
+
+		string[] mawardShow = mCL.awardShow.Split(mChar);
+		if(mawardShow.Length > 1)
 		{
-			Debug.Log("m_Award = "+m_Award);
-		}
-		char[] t_items_delimiter = { ',' };
-		
-		char[] t_item_id_delimiter = { ':' };
-		
-		string[] t_item_strings = m_Award.Split(t_items_delimiter);
-		
-		for (int i = 0; i < t_item_strings.Length; i++)
-		{
-			string t_item = t_item_strings[i];
-			
-			string[] t_finals = t_item.Split(t_item_id_delimiter);
-			
-			if(t_finals[1] != "" && !t_items.Contains(int.Parse(t_finals[1])))
+			for (int i = 0; i < mawardShow.Length; i++)
 			{
-				t_items.Add(int.Parse(t_finals[1]));
-				t_itemnunber2.Add(int.Parse(t_finals[2]));
+				
+				m_Award1 = mawardShow[0];
+				m_Award2 = mawardShow[1];
+			}
+			
+			char[] t_items_delimiter = { ',' };
+			
+			char[] t_item_id_delimiter = { ':' };
+			
+			string[] t_item_strings = m_Award2.Split(t_items_delimiter);
+			
+			for (int i = 0; i < t_item_strings.Length; i++)
+			{
+				string t_item = t_item_strings[i];
+				
+				string[] t_finals = t_item.Split(t_item_id_delimiter);
+				
+				if(t_finals[1] != "" && !t_items.Contains(int.Parse(t_finals[1])))
+				{
+					t_items.Add(int.Parse(t_finals[1]));
+					t_itemnunber2.Add(int.Parse(t_finals[2]));
+				}
+			}
+			
+			string[] First_item_strings = m_Award1.Split(t_items_delimiter);
+			
+			for (int i = 0; i < First_item_strings.Length; i++)
+			{
+				string t_item = First_item_strings[i];
+				
+				string[] t_finals = t_item.Split(t_item_id_delimiter);
+				
+				if(t_finals[1] != "" && !First_t_items.Contains(int.Parse(t_finals[1])))
+				{
+					First_t_items.Add(int.Parse(t_finals[1]));
+					First__itemnunber1.Add(int.Parse(t_finals[2]));
+				}
+			}
+			numPara = t_items.Count + First_t_items.Count;
+			
+			if (IconSamplePrefab == null)
+			{
+				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleCallBack);
+			}
+			else
+			{
+				WWW temp = null;
+				OnIconSampleCallBack(ref temp, null, IconSamplePrefab);
 			}
 		}
-		
-		string[] First_item_strings =m_Award.Split(t_items_delimiter);
-		
-		for (int i = 0; i < First_item_strings.Length; i++)
-		{
-			string t_item = First_item_strings[i];
-			
-			string[] t_finals = t_item.Split(t_item_id_delimiter);
-			
-			if(t_finals[1] != "" && !First_t_items.Contains(int.Parse(t_finals[1])))
-			{
-				First_t_items.Add(int.Parse(t_finals[1]));
-				First__itemnunber1.Add(int.Parse(t_finals[2]));
-			}
-		}
-		numPara = t_items.Count + First_t_items.Count;
 
-		if (IconSamplePrefab == null)
-		{
-			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleCallBack);
-		}
-		else
-		{
-			WWW temp = null;
-			OnIconSampleCallBack(ref temp, null, IconSamplePrefab);
-		}
 	}
 	private void OnIconSampleCallBack(ref WWW p_www, string p_path, Object p_object)
 	{

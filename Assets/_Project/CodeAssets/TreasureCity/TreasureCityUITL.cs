@@ -119,12 +119,12 @@ public class TreasureCityUITL : MonoBehaviour ,SocketListener {
 		{
 		case ProtoIndexes.JunZhuInfoRet:
 		{
-			Debug.Log ("RefreshJunZhuData:" + ProtoIndexes.JunZhuInfoRet);		
+//			Debug.Log ("RefreshJunZhuData:" + ProtoIndexes.JunZhuInfoRet);		
 			JunZhuInfoRet tempInfo = new JunZhuInfoRet();
 			tempInfo = QXComData.ReceiveQxProtoMessage (p_message,tempInfo) as JunZhuInfoRet;
 
 		//	JunZhuData.Instance().m_junzhuInfo = tempInfo;
-			Debug.Log ("tempInfo:" + tempInfo.lianMengId);
+//			Debug.Log ("tempInfo:" + tempInfo.lianMengId);
             JunZhuData.Instance().SetInfo(tempInfo);
             RefreshJunZhuInfo();
 

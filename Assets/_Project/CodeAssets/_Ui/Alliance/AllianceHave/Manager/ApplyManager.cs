@@ -200,18 +200,14 @@ public class ApplyManager : MonoBehaviour ,SocketProcessor {
 				
 				agree_qx.Deserialize(agree_stream, agreeResp, agreeResp.GetType());
 
-//				if(agreeResp.result == null)
-//				{
-//					Debug.Log("agreeResp.result == null ");
-//					return true;
-//				}
-//				Debug.Log("同意入盟申请请求返回 = "+agreeResp.result);
 				if (agreeResp != null)
 				{
 					agreeApplyResp = agreeResp;
 
-					RefreshItemsList (agreeResp.memberInfo.junzhuId ,agreeApplyResp.result);
-			
+					if(agreeApplyResp.result != 2)
+					{
+						RefreshItemsList (agreeResp.memberInfo.junzhuId ,agreeApplyResp.result);
+					}
 					AgreeResourceLoadCallback();
 
 					AllianceData.Instance.RequestData();

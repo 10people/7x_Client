@@ -213,7 +213,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		string str = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_DESC);
 		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 
-		uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,btnStr,null,null);
+		uibox.setBox(titleStr,null,str,null,btnStr,null,null);
 	}
 	public void loadback2(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -224,7 +224,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		string str = LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_LACK_YUANBAO);
         string btnStr1 = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
 
-        uibox.setBox(titleStr, null, MyColorData.getColorString(1, str),null, btnStr1, btnStr, TopUpShow);
+		uibox.setBox(titleStr, null, str,null, btnStr1, btnStr, TopUpShow);
 	}
 	public void LoadCQNo_Pass(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -234,7 +234,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		string str = "还未通关";//LanguageTemplate.GetText (LanguageTemplate.Text.PVE_RESET_BTN_BOX_DESC);
 		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,btnStr,null,null);
+		uibox.setBox(titleStr,null,str,null,btnStr,null,null);
 	}
     void TopUpShow(int index)
     {
@@ -313,7 +313,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		string btnStr2 = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		//Debug.Log ("cqResetPay = "+GuanqiaReq.cqResetPay);
 		//.Log ("cqResetLeft = "+GuanqiaReq.cqResetLeft);
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str1),MyColorData.getColorString (1,str2),null,btnStr1,btnStr2,ShowResettingLv);
+		uibox.setBox(titleStr,str1,str2,null,btnStr1,btnStr2,ShowResettingLv);
 	}
 
 	public void LockResttingtimesload(ref WWW p_www,string p_path, Object p_object)
@@ -324,7 +324,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		string str = LanguageTemplate.GetText (LanguageTemplate.Text.RESETTING_FINSHED);
 		string btnStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null,MyColorData.getColorString (1,str),null,btnStr,null,null,null,null);
+		uibox.setBox(titleStr,null,str,null,btnStr,null,null,null,null);
 	}
 	public void  sendLevelDrop(int Curr_Id)
 	{
@@ -556,7 +556,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		
 		string Btn = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(Tilte,null,MyColorData.getColorString (1,str),null,Btn,null,FalseZheZhao);
+		uibox.setBox(Tilte,null,str,null,Btn,null,FalseZheZhao);
 	}
 	
 	void FalseZheZhao (int i)
@@ -618,7 +618,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,getTili);
+		uibox.setBox(titleStr,null, str,null,CancleBtn,confirmStr,getTili);
 	}
 	void LoadRenWuBack(ref WWW p_www,string p_path, Object p_object)
 	{

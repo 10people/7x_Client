@@ -170,6 +170,10 @@ public class BattleEffect : MonoBehaviour
 			{
 				transform.position = kc.copyObject.transform.position;
 			}
+			else
+			{
+				transform.position = kc.transform.position;
+			}
 		}
 	}
 

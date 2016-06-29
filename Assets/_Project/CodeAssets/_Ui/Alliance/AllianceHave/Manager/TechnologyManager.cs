@@ -10,6 +10,8 @@ using ProtoBuf.Meta;
 
 public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 
+	public GameObject m_EffectRoot;
+
 	public GameObject TopLeftManualAnchor;
 	public GameObject TopRightManualAnchor;
 	public UILabel Builds;
@@ -120,10 +122,8 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				m_mKeJiList.list[JianZhu_InDex].lv += 1;
 				StudyVctry.gameObject.SetActive(true);
 				StudyVctry.spriteName = "StudyV";
-				int effectid = 100180;
-				UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,StudyVctry.gameObject,EffectIdTemplate.GetPathByeffectId(effectid));
-				StopCoroutine("closeEffect");
-				StartCoroutine( "closeEffect");
+
+				OpeneEffect();
 
 				bool showAerlt = false; // 是否显示红点
 				for(int i = 0; i < m_mKeJiList.list.Count; i ++)
@@ -173,10 +173,8 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 				StudyVctry.gameObject.SetActive(true);
 				// 激活特效需要更改
 				StudyVctry.spriteName = "Active";
-				int effectid = 100180;
-				UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,StudyVctry.gameObject,EffectIdTemplate.GetPathByeffectId(effectid));
-				StopCoroutine("closeEffect");
-				StartCoroutine( "closeEffect");
+
+				OpeneEffect();
 				
 				bool showAerlt = false; // 是否显示红点
 				foreach(KeJiInfo temp in m_mKeJiList.list)
@@ -206,9 +204,18 @@ public class TechnologyManager : MonoBehaviour ,SocketProcessor {
 		return false;
 	}
 
+	void OpeneEffect()
+	{
+		StopCoroutine("closeEffect");
+		StartCoroutine( "closeEffect");
+	}
+	
 	IEnumerator closeEffect()
 	{
+		int effectid = 100180;
+		UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,m_EffectRoot,EffectIdTemplate.GetPathByeffectId(effectid));
 		yield return new WaitForSeconds (1.3f);
+		UI3DEffectTool.ClearUIFx (m_EffectRoot);
 		StudyVctry.gameObject.SetActive(false);
 	}
 

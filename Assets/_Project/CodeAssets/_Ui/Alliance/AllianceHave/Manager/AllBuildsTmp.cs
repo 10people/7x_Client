@@ -63,7 +63,8 @@ public class AllBuildsTmp : MonoBehaviour {
 
 	void GetBuldType()
 	{
-		//Debug.Log ("id =    "+id);
+//		Debug.Log ("id =    "+id);
+//		Debug.Log ("lv =    "+lv);
 //		if (Identity == 0) {
 //			
 //			UpBtn.SetActive (false);
@@ -83,12 +84,20 @@ public class AllBuildsTmp : MonoBehaviour {
 				if(Max_Lv > lv)
 				{
 				
-					UpBtn.SetActive(true);
-					UpBtn.GetComponent<BoxCollider>().enabled = true;
-					GreenUpBtn.SetActive(false);
-					LianMengKeZhanTemplate m_LianMengKeZhanTemplate = LianMengKeZhanTemplate.GetLianMengKeZhanTemplate_by_lev(lv);
-					
-					costbuild = m_LianMengKeZhanTemplate.keZhan_lvUp_value;
+					if(AllianceLevel  == lv)
+					{
+						UpBtn.SetActive(false);
+						GreenUpBtn.SetActive(false);
+					}else
+					{
+						UpBtn.SetActive(true);
+						UpBtn.GetComponent<BoxCollider>().enabled = true;
+						GreenUpBtn.SetActive(false);
+						LianMengKeZhanTemplate m_LianMengKeZhanTemplate = LianMengKeZhanTemplate.GetLianMengKeZhanTemplate_by_lev(lv);
+						
+						costbuild = m_LianMengKeZhanTemplate.keZhan_lvUp_value;
+					}
+
 				}
 				else
 				{
@@ -130,11 +139,19 @@ public class AllBuildsTmp : MonoBehaviour {
 			{
 				if(Max_Lv > lv)
 				{
-					UpBtn.SetActive(true);
-					UpBtn.GetComponent<BoxCollider>().enabled = true;
-					GreenUpBtn.SetActive(false);
-					LianMengShuYuanTemplate m_LianMengShuYuanTemplate = LianMengShuYuanTemplate.GetLianMengShuYuanTemplate_by_shuYuanLevel(lv);
-					costbuild = m_LianMengShuYuanTemplate.shuYuan_lvUp_value;
+					if(AllianceLevel  == lv)
+					{
+						UpBtn.SetActive(false);
+						GreenUpBtn.SetActive(false);
+					}else
+					{
+						UpBtn.SetActive(true);
+						UpBtn.GetComponent<BoxCollider>().enabled = true;
+						GreenUpBtn.SetActive(false);
+						LianMengShuYuanTemplate m_LianMengShuYuanTemplate = LianMengShuYuanTemplate.GetLianMengShuYuanTemplate_by_shuYuanLevel(lv);
+						costbuild = m_LianMengShuYuanTemplate.shuYuan_lvUp_value;
+					}
+				
 				}
 				else
 				{
@@ -175,11 +192,19 @@ public class AllBuildsTmp : MonoBehaviour {
 			{
 				if(Max_Lv > lv)
 				{
-					UpBtn.SetActive(true);
-					UpBtn.GetComponent<BoxCollider>().enabled = true;
-					GreenUpBtn.SetActive(false);
-					LianMengTuTengTemplate m_LianMengTuTengTemplate = LianMengTuTengTemplate.getTuTengAwardByLevel(lv);
-					costbuild = m_LianMengTuTengTemplate.tuTeng_lvUp_value;
+					if(AllianceLevel  == lv)
+					{
+						UpBtn.SetActive(false);
+						GreenUpBtn.SetActive(false);
+					}else
+					{
+						UpBtn.SetActive(true);
+						UpBtn.GetComponent<BoxCollider>().enabled = true;
+						GreenUpBtn.SetActive(false);
+						LianMengTuTengTemplate m_LianMengTuTengTemplate = LianMengTuTengTemplate.getTuTengAwardByLevel(lv);
+						costbuild = m_LianMengTuTengTemplate.tuTeng_lvUp_value;
+					}
+			
 				}
 				else
 				{
@@ -220,11 +245,19 @@ public class AllBuildsTmp : MonoBehaviour {
 			{
 				if(Max_Lv > lv)
 				{
-					UpBtn.SetActive(true);
-					UpBtn.GetComponent<BoxCollider>().enabled = true;
-					GreenUpBtn.SetActive(false);
-					LianMengShangPuTemplate m_LLianMengShangPuTemplate = LianMengShangPuTemplate.GetLianMengShangPuTemplate_by_lv(lv);
-					costbuild = m_LLianMengShangPuTemplate.shangPu_lvUp_value;
+					if(AllianceLevel  == lv)
+					{
+						UpBtn.SetActive(false);
+						GreenUpBtn.SetActive(false);
+					}else
+					{
+						UpBtn.SetActive(true);
+						UpBtn.GetComponent<BoxCollider>().enabled = true;
+						GreenUpBtn.SetActive(false);
+						LianMengShangPuTemplate m_LLianMengShangPuTemplate = LianMengShangPuTemplate.GetLianMengShangPuTemplate_by_lv(lv);
+						costbuild = m_LLianMengShangPuTemplate.shangPu_lvUp_value;
+					}
+
 //					Debug.Log ("costbuild000:" + costbuild);
 				}
 				else
@@ -265,11 +298,19 @@ public class AllBuildsTmp : MonoBehaviour {
 			{
 				if(Max_Lv > lv)
 				{
-					UpBtn.SetActive(true);
-					UpBtn.GetComponent<BoxCollider>().enabled = true;
-					GreenUpBtn.SetActive(false);
-					LianMengZongMiaoTemplate m_LianMengZongMiaoTemplate = LianMengZongMiaoTemplate.GetLianMengZongMiaoTemplate_by_lev(lv);
-					costbuild = m_LianMengZongMiaoTemplate.zongMiao_lvUp_value;
+					if(AllianceLevel  == lv)
+					{
+						UpBtn.SetActive(false);
+						GreenUpBtn.SetActive(false);
+					}else
+					{
+						UpBtn.SetActive(true);
+						UpBtn.GetComponent<BoxCollider>().enabled = true;
+						GreenUpBtn.SetActive(false);
+						LianMengZongMiaoTemplate m_LianMengZongMiaoTemplate = LianMengZongMiaoTemplate.GetLianMengZongMiaoTemplate_by_lev(lv);
+						costbuild = m_LianMengZongMiaoTemplate.zongMiao_lvUp_value;
+					}
+
 				}
 				else
 				{
@@ -328,11 +369,17 @@ public class AllBuildsTmp : MonoBehaviour {
 
 			if(AllianceLevel < 2)
 			{
-				JianZhuBtn.enabled = false;
-				JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = false;
-				OPenHYRemian.gameObject.SetActive(true);
-				BuildIcon.color = new Color(0,0,0,255);
-			
+				if(AllianceLevel  == lv)
+				{
+					UpBtn.SetActive(false);
+					GreenUpBtn.SetActive(false);
+				}else
+				{
+					JianZhuBtn.enabled = false;
+					JianZhuBtn.gameObject.GetComponent<BoxCollider>().enabled = false;
+					OPenHYRemian.gameObject.SetActive(true);
+					BuildIcon.color = new Color(0,0,0,255);
+				}
 			}
 			else
 			{

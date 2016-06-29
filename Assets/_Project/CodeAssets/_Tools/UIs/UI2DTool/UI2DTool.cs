@@ -2,8 +2,6 @@
 
 
 
-#define SHOW_UIBGEF_ALL_THE_TIME
-
 //#define ENABLE_OPTIMIZE
 
 
@@ -91,9 +89,9 @@ public class UI2DTool : Singleton<UI2DTool>{
 	private void AddToTop( UI2DToolItem p_manager ){
 		// remove if exist
 		{
-			#if DEBUG_UI_2D_TOOL
-			Debug.Log( "Remove pre Added." );
-			#endif
+//			#if DEBUG_UI_2D_TOOL
+//			Debug.Log( "Remove pre Added." );
+//			#endif
 
 			UI2DToolItem t_ui = GetUI( p_manager.GetRootGameObject() );
 
@@ -183,9 +181,11 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 		if( GetTopUI() != null ){
 			if( GetTopUI().GetRootGameObject() == p_gb ){
-//				Debug.Log( "UI2D Already Added." );
+				#if DEBUG_UI_2D_TOOL
+				Debug.Log( "UI2D Already Added." );
 
-//				Debug.Log( "GetTopUI().GetRootGameObject():" + GetTopUI().GetRootGameObject() );
+				Debug.Log( "GetTopUI().GetRootGameObject():" + GetTopUI().GetRootGameObject() );
+				#endif
 
 				return;
 			}
@@ -216,15 +216,35 @@ public class UI2DTool : Singleton<UI2DTool>{
 				if( m_2d_manager_list.Count > 1 ){
 					HideOriginTopUI();
 				}
-			}	
+			}
+
+//			{
+//				for( int i = 1; i < m_2d_manager_list.Count - 1; i++ ){
+//					UI2DToolItem t_item = m_2d_manager_list[ i ];
+//
+//					if( t_item != null ){
+//						#if DEBUG_UI_2D_TOOL
+//						Debug.Log( "Making old UI Invisible: " + t_item.GetRootGameObject() );
+//						#endif
+//
+//						t_item.SetActive( false );
+//					}
+//				}
+//			}
 		}
 
 		{
 			AddToTop( t_manager );
 		}
 
-		// refresh new top
-		ForceUpdateTopUI();
+		{
+			ForceUpdateAllUI();
+		}
+
+		{
+			// refresh new top
+			ForceUpdateTopUI();
+		}
 	}
 
 //	public static void RemoveUI(){
@@ -251,13 +271,19 @@ public class UI2DTool : Singleton<UI2DTool>{
 	}
 
 	private void UpdateBackgroundScaler(){
-		if( m_active_background_scaler != null ){
-			if( !m_active_background_scaler.gameObject.activeInHierarchy ){
+		if( m_top_background_scaler != null ){
+			if( GetPreTopBackgroundScalerVisibility() != m_top_background_scaler.gameObject.activeInHierarchy ){
 				#if DEBUG_UI_2D_TOOL
-				Debug.Log( "Top Scaler Changed." );
+				Debug.Log( "----------------------- Top Scaler Changed. ----------------------------" );
 				#endif
 
-				ForceUpdateTopUI();
+				{
+					ForceUpdateAllUI();
+				}
+
+				{
+					ForceUpdateTopUI();
+				}
 			}
 		}
 	}
@@ -270,7 +296,9 @@ public class UI2DTool : Singleton<UI2DTool>{
 		UI2DToolItem t_top = GetTopUI();
 
 		if( m_cached_gb == null ){
-			ForceUpdateTopUI();
+			{
+				ForceUpdateTopUI( true );
+			}
 
 			return;
 		}
@@ -282,13 +310,17 @@ public class UI2DTool : Singleton<UI2DTool>{
 		}
 
 		if( m_cached_gb != t_top.GetRootGameObject() ){
-			ForceUpdateTopUI();
+			{
+				ForceUpdateTopUI( true );
+			}
 
 			return;
 		}
 
 		if( m_cached_visibility != t_top.GetVisibility() ){
-			ForceUpdateTopUI();
+			{
+				ForceUpdateTopUI( true );
+			}
 
 			return;
 		}
@@ -357,8 +389,50 @@ public class UI2DTool : Singleton<UI2DTool>{
 		}
 	}
 
+	// Update all UI
+	private static void ForceUpdateAllUI(){
+		#if DEBUG_UI_2D_TOOL
+		Debug.Log( "---------------- ForceUpdateAllUI()" );
+
+		LogInfo();
+		#endif
+
+		bool t_cover_found = false;
+
+		for( int i = m_2d_manager_list.Count - 1; i >= 0; i-- ){
+			UI2DToolItem t_item = m_2d_manager_list[ i ];
+
+			if( t_item != null ){
+				if( t_cover_found ){
+					#if DEBUG_UI_2D_TOOL
+					Debug.Log( "Making old UI Invisible: " + t_item.GetRootGameObject() );
+					#endif
+
+					t_item.SetActive( false );
+
+					continue;
+				}
+				else{
+					t_item.SetActive( true );
+				}
+
+				if( !t_cover_found && t_item.HaveActiveBackgroundScaler() ){
+					t_cover_found = true;
+
+					continue;
+				}
+			}
+		}
+	}
+
 	/// Update Top UI, if Top UI is invisible, Remove it.
-	private static void ForceUpdateTopUI(){
+	private static void ForceUpdateTopUI( bool p_force_update_all = false ){
+		#if DEBUG_UI_2D_TOOL
+		Debug.Log( "---------------- ForceUpdateTopUI()" );
+
+		LogInfo();
+		#endif
+
 		if( m_2d_manager_list.Count <= 0 ){
 			return;
 		}
@@ -369,11 +443,13 @@ public class UI2DTool : Singleton<UI2DTool>{
 			RemoveTopUI();
 		}
 
-		#if SHOW_UIBGEF_ALL_THE_TIME
-		UpdateUIBackground();
-		#elif !UNITY_EDITOR
-		UpdateUIBackground();
-		#endif
+		if( p_force_update_all ){
+			ForceUpdateAllUI();
+		}
+
+		{
+			UpdateUIBackground();
+		}
 	}
 	
 	private static void UpdateCachedGameObject(){
@@ -388,7 +464,7 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 			#if DEBUG_UI_2D_TOOL
 			if( !m_cached_visibility ){
-				Debug.Log( "not visible." );
+				Debug.Log( "TopUI not visible." );
 
 				GetTopUI().LogVisibility();
 			}
@@ -423,14 +499,24 @@ public class UI2DTool : Singleton<UI2DTool>{
 		m_2d_manager_list[ 0 ].SetActive( !( m_2d_manager_list.Count > 1 ) );
 	}
 
-	private static BackgroundScaler m_active_background_scaler = null;
+	private static BackgroundScaler m_top_background_scaler = null;
 
-	public static GameObject GetActiveBackgroundScalerGameObject(){
-		if( m_active_background_scaler == null ){
+	private static bool m_pre_top_background_scaler_visibility = false;
+
+	private static bool GetPreTopBackgroundScalerVisibility(){
+		return m_pre_top_background_scaler_visibility;
+	}
+
+	private static void SetPreTopBackgroundScalerVisibility( bool p_cur_visibility ){
+		m_pre_top_background_scaler_visibility = p_cur_visibility;
+	}
+
+	public static GameObject GetTopBackgroundScalerGameObject(){
+		if( m_top_background_scaler == null ){
 			return null;
 		}
 
-		return m_active_background_scaler.gameObject;
+		return m_top_background_scaler.gameObject;
 	}
 
 	private static void UpdateUIBackground(){
@@ -439,8 +525,12 @@ public class UI2DTool : Singleton<UI2DTool>{
 		#endif
 
 		#if DEBUG_UI_2D_TOOL
-		Debug.Log( "UpdateUIBackground( Count: " + m_2d_manager_list.Count + " )" );
+		Debug.Log( "-------------- UpdateUIBackground( Count: " + m_2d_manager_list.Count + " )" );
+
+		LogInfo();
+
 		#endif
+
 
 		#if ENABLE_OPTIMIZE 
 		if( m_2d_manager_list.Count > 1 ){
@@ -459,7 +549,11 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 		bool t_root_bg_scaled = false;
 
-		m_active_background_scaler = null;
+		BackgroundScaler t_active_background_scaler = null;
+
+		bool t_camera_fx_setted = false;
+
+		int t_camera_fx_index = -1;
 
 		for( int i = m_2d_manager_list.Count - 1; i >= 0; i-- ){
 			GameObject t_gb = m_2d_manager_list[ i ].GetRootGameObject();
@@ -471,11 +565,17 @@ public class UI2DTool : Singleton<UI2DTool>{
 			if( i == m_2d_manager_list.Count - 1 ){
 				m_2d_manager_list[i].SetCameraEffect( false );
 
-				m_active_background_scaler = m_2d_manager_list[ i ].GetActiveBackgroundScaler();
+				t_active_background_scaler = m_2d_manager_list[ i ].GetActiveBackgroundScaler();
 
-				if( m_active_background_scaler != null ){
+				m_top_background_scaler = m_2d_manager_list[ i ].GetBackgroundScaler();
+
+				if( m_top_background_scaler != null ){
+					SetPreTopBackgroundScalerVisibility( m_top_background_scaler.gameObject.activeInHierarchy );
+				}
+
+				if( t_active_background_scaler != null ){
 					#if DEBUG_UI_2D_TOOL
-					Debug.Log( "Scaler Found: " + GameObjectHelper.GetGameObjectHierarchy( m_active_background_scaler.gameObject ) );
+					Debug.Log( "Scaler Found: " + GameObjectHelper.GetGameObjectHierarchy( t_active_background_scaler.gameObject ) );
 					#endif
 
 					t_root_bg_scaled = true;
@@ -487,9 +587,24 @@ public class UI2DTool : Singleton<UI2DTool>{
 				}
 			}
 			else{
-//					if( !t_root_bg_scaled ){
-				m_2d_manager_list[i].SetCameraEffect( true );
-//					}
+				if( !m_2d_manager_list[i].GetVisibility() ){
+					continue;
+				}
+
+				if( t_root_bg_scaled ){
+					continue;
+				}
+
+				if( t_camera_fx_setted ){
+					m_2d_manager_list[i].SetCameraEffect( false );
+					continue;
+				}
+					
+				if( m_2d_manager_list[i].SetCameraEffect( true ) ){
+					t_camera_fx_setted = true;
+
+					t_camera_fx_index = i;
+				}
 			}
 		}
 
@@ -497,14 +612,19 @@ public class UI2DTool : Singleton<UI2DTool>{
 //
 //		Debug.Log( "t_root_bg_scaled: " + t_root_bg_scaled );
 
-		if( m_2d_manager_list.Count > 1 && t_root_bg_scaled ){
-			m_2d_manager_list[ 0 ].SetActive( false );
 
-			CameraHelper.SetMainCamera( false );
-		}
-		else{
-//			if( m_2d_manager_list.Count == 1 )
-			{
+		{
+			if( m_2d_manager_list.Count > 1 && t_root_bg_scaled ){
+				m_2d_manager_list[ 0 ].SetActive( false );
+
+				CameraHelper.SetMainCamera( false );
+			}
+			else if( t_camera_fx_setted && t_camera_fx_index > 0 ){
+				m_2d_manager_list[ 0 ].SetActive( false );
+
+				CameraHelper.SetMainCamera( false );
+			}
+			else{
 				if( m_2d_manager_list[ 0 ] != null ){
 					m_2d_manager_list[ 0 ].SetActive( true );
 
@@ -530,11 +650,7 @@ public class UI2DTool : Singleton<UI2DTool>{
 		return;
 		#endif
 
-		#if SHOW_UIBGEF_ALL_THE_TIME
 		Console_Effect.SetUIBackground( true );
-		#elif !UNITY_EDITOR
-		Console_Effect.SetUIBackground( true );
-		#endif
 	}
 
 	#endregion
@@ -552,6 +668,10 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 		m_log_info = false;
 
+		LogInfo();
+	}
+
+	private static void LogInfo(){
 		UI2DTool m_2d_tool = UI2DTool.GetInstanceWithOutCreate();
 
 		int t_count = m_2d_tool.GetUICount();
@@ -753,16 +873,12 @@ public class UI2DTool : Singleton<UI2DTool>{
 
 		public void SetActive( bool p_is_active ){
 			if( m_ui_root_gb == null ){
-				Debug.LogError( "Error, m_ui_root_gb is null." );
+//				Debug.LogError( "Error, m_ui_root_gb is null." );
 
 				return;
 			}
 
 			m_is_active = p_is_active;
-
-			#if DEBUG_UI_2D_TOOL
-			Debug.Log( m_ui_root_gb + ".SetActive( " + m_is_active + " )" );
-			#endif
 
 			ExecuteSetActive();
 		}
@@ -785,9 +901,9 @@ public class UI2DTool : Singleton<UI2DTool>{
 					t_cams[ i ].enabled = m_is_active;
 
 					#if DEBUG_UI_2D_TOOL
-					Debug.Log( "Manul Set Cam: " + m_is_active );
-					
-					GameObjectHelper.LogGameObjectHierarchy( t_cams[ i ].gameObject );
+					Debug.Log( "-- " + m_ui_root_gb + 
+						".Manul Set Cam: " + m_is_active + 
+						"   --- " + GameObjectHelper.GetGameObjectHierarchy( t_cams[ i ].gameObject ) );
 					#endif
 
 					{
@@ -863,18 +979,27 @@ public class UI2DTool : Singleton<UI2DTool>{
 			return false;
 		}
 
-		public void SetCameraEffect( bool p_enable_effect ){
+		// true, if UIBackgroundEffect found.
+		public bool SetCameraEffect( bool p_enable_effect ){
 			GameObject t_gb = GetRootGameObject();
 
+			bool t_found = false;
+
 			if( t_gb == null ) {
-				return;
+				return false;
 			}
 
 			Camera[] t_cams = t_gb.GetComponentsInChildren<Camera>();
 
 			for( int j = 0; j < t_cams.Length; j++ ){
-				EffectTool.SetUIBackgroundEffect( t_cams[ j ].gameObject, p_enable_effect );
+				UIBackgroundEffect t_fx = EffectTool.SetUIBackgroundEffect( t_cams[ j ].gameObject, p_enable_effect );
+
+				if( t_fx != null ){
+					t_found = true;
+				}
 			}
+
+			return t_found;
 		}
 
 		public bool IsCameraEffectOpen(){

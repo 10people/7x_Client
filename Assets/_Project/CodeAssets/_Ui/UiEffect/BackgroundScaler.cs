@@ -7,6 +7,8 @@ public class BackgroundScaler : MonoBehaviour {
 
 	public int m_designed_h		= 640;
 
+	public bool m_force_full_screen_mode = false;
+
 	#region Mono
 
 	void Start(){
@@ -48,6 +50,10 @@ public class BackgroundScaler : MonoBehaviour {
 			return true;
 		}
 
+		if (m_force_full_screen_mode) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -79,7 +85,7 @@ public class BackgroundScaler : MonoBehaviour {
 			}
 		}
 
-		Debug.LogError( "Error, no UITexture or UISprite found." );
+//		Debug.LogError( "Error, no UITexture or UISprite found." );
 	}
 
 	#endregion

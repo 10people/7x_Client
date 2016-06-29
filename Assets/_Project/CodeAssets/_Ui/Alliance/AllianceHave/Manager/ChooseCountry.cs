@@ -255,7 +255,7 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 		string jieSanTitleStr = "提示";
 		string str1 = "\n"+LanguageTemplate.GetText (LanguageTemplate.Text.ZHUANGUOCOST)+"x"+needHuFu.ToString()+"。\n"+LanguageTemplate.GetText (LanguageTemplate.Text.ZHUANCOMFORIE);//"联盟转国需要花费虎符"+needHuFu.ToString()+"\n"+ "确认转国吗？";
 
-		uibox.setBox(jieSanTitleStr, MyColorData.getColorString(1, str1), null, null, cancelStr, confirmStr, ChangeCountry);
+		uibox.setBox(jieSanTitleStr, str1, null, null, cancelStr, confirmStr, ChangeCountry);
 	}
 
 	void ChangeCountry(int i)
@@ -284,13 +284,13 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 		
 		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
 		
-		string str1 = "虎符不足，无法进行转国操作！"+"\n\r"+"联盟虎符通过成员进行军建设来获得。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
+		string str1 = "虎符不足，无法进行转国操作！"+"\n\r"+"联盟虎符通过成员进行军政建设来获得。";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
 		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str1),null,null,confirmStr,null,null);
+		uibox.setBox(titleStr, str1,null,null,confirmStr,null,null);
 	}
 	private UIBox uibox;
 	void ZhuanGuoCDTime(ref WWW p_www,string p_path, Object p_object)
@@ -307,7 +307,7 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str1+str2),null,null,confirmStr,null,null);
+		uibox.setBox(titleStr, str1+str2,null,null,confirmStr,null,null);
 		uibox.mCountTime (mDataTime);
 	}
 	private int mDataTime;
@@ -324,7 +324,7 @@ public class ChooseCountry : MonoBehaviour,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr, MyColorData.getColorString (1,str1),null,null,confirmStr,null,null);
+		uibox.setBox(titleStr, str1,null,null,confirmStr,null,null);
 	}
 
 	private int CurrCountryID;

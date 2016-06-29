@@ -265,7 +265,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	public void InitData(ExploreResp m_ExploreResp)
 	{
 
-		int addTime = NewAlliancemanager.Instance().ZongmiaoLev;
+		int addTime = LianMengZongMiaoTemplate.GetLianMengZongMiaoMaxTimes_by_level(NewAlliancemanager.Instance().ZongmiaoLev);
 
 		if(g_mExploreResp.info == null)
 		{
@@ -275,13 +275,15 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		JiBaiCostPreTime.text = g_mExploreResp.info.money.ToString () + "贡献/次";
 		CostPreTime = g_mExploreResp.info.money;
 		mAddProperty1.text = LanguageTemplate.GetText(LanguageTemplate.Text.RULL2)+addTime.ToString();
-		if(addTime >= 10)
+		Debug.Log (" addTime = "+addTime);
+		if(addTime >= LianMengZongMiaoTemplate.GetLianMengZongMiao_MaxTimes())
 		{
 			mAddProperty2.gameObject.SetActive(false);
 		}
 		else
 		{
-			mAddProperty2.text = LanguageTemplate.GetText(LanguageTemplate.Text.RULL3)+(addTime+1).ToString();
+			int addTimeNext = LianMengZongMiaoTemplate.GetLianMengZongMiaoMaxTimes_by_level(NewAlliancemanager.Instance().ZongmiaoLev+1);
+			mAddProperty2.text = LanguageTemplate.GetText(LanguageTemplate.Text.RULL3)+addTimeNext.ToString();
 		}
 		string Rul = LanguageTemplate.GetText(LanguageTemplate.Text.RULL1);
 		string []s = Rul.Split(':');

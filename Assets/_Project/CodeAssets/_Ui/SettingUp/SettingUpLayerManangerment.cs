@@ -547,7 +547,6 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                         GetCDKeyAwardResp tempResponse = new GetCDKeyAwardResp();
                      
                         t_qx.Deserialize(t_stream, tempResponse, tempResponse.GetType());
-
                         if (tempResponse.result == 0)
                         {
                             listCDKeyObject[0].SetActive(false);
@@ -564,10 +563,15 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                                 }
 
                           }
-                             _listReward = FunctionWindowsCreateManagerment.GetRewardInfo(_award);
+                            _listReward = FunctionWindowsCreateManagerment.GetRewardInfo(_award);
                             m_ObjReward.SetActive(true);
                             Create();
-                         
+                         //   Debug.Log("_award_award_award_award l:l:" + _award);
+                            //if (!string.IsNullOrEmpty(_award))
+                            //{ 
+                            // FunctionWindowsCreateManagerment.ShowRAwardInfo(_award);
+                            //}
+
                         }
                         else
                         {
@@ -977,12 +981,31 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     {
         index_Reward = 0;
         int size = _listReward.Count;
-        m_GrideCDReward.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size - 1, 108), 0, 0);
+        m_GrideCDReward.transform.localPosition = new Vector3(FunctionWindowsCreateManagerment.ParentPosOffset(size, 68), 57, 0);
         for (int i = 0; i < size; i++)
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
         }
  
+    }
+
+    int ParentPosOffset(int count, int distance)//坐标计算
+    {
+        if (count % 2 == 0)
+        {
+            if (count / 2 > 1)
+            {
+                return -1 * distance / 2 * (count / 2 + 1);
+            }
+            else
+            {
+                return -1 * distance / 2 * (count / 2 + 1);
+            }
+        }
+        else
+        {
+            return -1 * distance * (count / 2);
+        }
     }
     private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
     {
@@ -1000,12 +1023,16 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
                 DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(_listReward[index_Reward].icon).descId));
 
           
-                iconSampleObject.transform.localScale = Vector3.one;
-           
+                iconSampleObject.transform.localScale = Vector3.one * 0.6f;
+
 
             if (index_Reward < _listReward.Count - 1)
             {
                 index_Reward++;
+            }
+            else
+            {
+         
             }
 
             m_GrideCDReward.repositionNow = true;

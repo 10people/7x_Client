@@ -15,7 +15,8 @@ public class TreasureCityRoot : GeneralInstance<TreasureCityRoot> {
 	{
 		UIYindao.m_UIYindao.CloseUI ();
 		ClientMain.m_sound_manager.chagneBGSound (1001);
-		LoadTreasureCityUI ();
+//		LoadTreasureCityUI ();
+//		LoadModelParent ();
 	}
 
 	public void LoadTreasureCityUI ()
@@ -35,7 +36,7 @@ public class TreasureCityRoot : GeneralInstance<TreasureCityRoot> {
 		LoadModelParent ();
 	}
 
-	void LoadModelParent ()
+	public void LoadModelParent ()
 	{
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.MODEL_PARENT),
 		                        ResourceLoadModelCallback);
@@ -43,8 +44,8 @@ public class TreasureCityRoot : GeneralInstance<TreasureCityRoot> {
 	}
 	private void ResourceLoadModelCallback(ref WWW p_www, string p_path, Object p_object)
 	{
-		Debug.Log ("p_object:" + p_object);
-		Debug.Log ("TreasureCityPlayer.m_instance:" + TreasureCityPlayer.m_instance);
+//		Debug.Log ("p_object:" + p_object);
+//		Debug.Log ("TreasureCityPlayer.m_instance:" + TreasureCityPlayer.m_instance);
 		TreasureCityPlayer.m_instance.CreatePlayerModel (p_object);
 		LoadSelfName();
 	}

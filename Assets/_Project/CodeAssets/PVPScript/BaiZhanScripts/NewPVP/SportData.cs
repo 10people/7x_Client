@@ -183,7 +183,7 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 							else
 							{
 								m_textStr = "今日购买次数已用完...";
-								QXComData.CreateBox (1,m_textStr,true,null);
+								QXComData.CreateBoxDiy (m_textStr,true,null);
 							}
 							break;
 						default:
@@ -283,10 +283,10 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 								confirm.refreshOtherInfo.oppoList = new List<OpponentInfo>();
 							}
 //							Debug.Log ("confirm.refreshOtherInfo.oppoList:" + confirm.refreshOtherInfo.oppoList.Count);
-							foreach (OpponentInfo oppo in confirm.refreshOtherInfo.oppoList)
-							{
+//							foreach (OpponentInfo oppo in confirm.refreshOtherInfo.oppoList)
+//							{
 //								Debug.Log ("oppo.junZhuId:" + oppo.junZhuId);
-							}
+//							}
 							SportPage.m_instance.OpenJunXianRoom (confirm.refreshOtherInfo);
 						}
 						break;

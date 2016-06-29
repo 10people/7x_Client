@@ -25,21 +25,25 @@ public class chooseChapterBtn : MonoBehaviour {
 	public void init()
 	{
 		//ChaptersGB.text = Chapters;
-		List<int > zhangjieid = PassLevelBtn.Instance().Sec_idlist;
-		Art.SetActive(false);
-		//Debug.Log("Chapternumber = "+Chapternumber);
-		if(zhangjieid != null )
+		if(CityGlobalData.PT_Or_CQ)
 		{
-			foreach(int id in zhangjieid)
+			List<int > zhangjieid = PassLevelBtn.Instance().Sec_idlist;
+			Art.SetActive(false);
+			//Debug.Log("Chapternumber = "+Chapternumber);
+			if(zhangjieid != null )
 			{
-			//	Debug.Log("id = "+id);
-				if(id == Chapternumber)
+				foreach(int id in zhangjieid)
 				{
-					Art.SetActive(true);
-					break;
+					//	Debug.Log("id = "+id);
+					if(id == Chapternumber)
+					{
+						Art.SetActive(true);
+						break;
+					}
 				}
 			}
 		}
+	
 		ChapterNameGB.text = ChapterName;
 	}
 

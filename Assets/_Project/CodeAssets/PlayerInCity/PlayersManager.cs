@@ -121,7 +121,6 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
                         part_info._AllianceName = tempScene.allianceName;
                         part_info._VInfo = tempScene.vipLevel.ToString();
                         Fresh_HeadInfo(part_info);
-                        Debug.Log("tempScene.senderNametempScene.senderNametempScene.senderName ::" + tempScene.senderName);
                     }
                     return true;
                 case ProtoIndexes.S_HEAD_STRING: //玩家称号、vip更新
@@ -137,72 +136,18 @@ public class PlayersManager : MonoBehaviour, SocketProcessor { //所有在主城
                             if (tempScene.errorDesc.IndexOf('#') > -1)
                             {
                                 string[] info = tempScene.errorDesc.Split('#');
-                                //string chenghao = info[0].ToString();
-                                //if (chenghao.IndexOf(':') > -1)
-                                //{
-                                //    string[] designation_Info = chenghao.Split(':');
-                                //    string designation = designation_Info[1].ToString();
-                                //    if (!string.IsNullOrEmpty(designation) && !designation.Equals("-1"))
-                                //    {
-                                //        part_info._Designation = designation;
-                                //    }
-                                //    else
-                                //    {
-                                //        part_info._Designation = null;
-                                //    }
-                                //}
-                                //else
-                                //{
-                                //    part_info._Designation = null;
-                                //}
-
-                                //string alliance_Info = info[2].ToString();
-                                //string duty_detail_Info = info[6].ToString();
-                                //if (alliance_Info.IndexOf(':') > -1 && alliance_Info.IndexOf("***") < 0)
-                                //{
-                                //    string[] alliance_name_Info = alliance_Info.Split(':');
-                                //    string[] duty_info = duty_detail_Info.Split(':');
-                                //    part_info._AllianceName = alliance_name_Info[1];
-                                //    part_info._Duty = int.Parse(duty_info[1]);
-                                //}
-                                //else
-                                //{
-                                //    part_info._AllianceName = "";
-                                //    part_info._Duty = -1;
-                                //}
-
-                                //string vip_deatail_info = info[4].ToString();
-                                //if (vip_deatail_info.IndexOf(':') > -1)
-                                //{
-                                //    string[] vip_Info = vip_deatail_info.Split(':');
-
-                                //    if (!string.IsNullOrEmpty(vip_Info[1]) && int.Parse(vip_Info[1]) > 0)
-                                //    {
-                                //        part_info._VInfo = vip_Info[1].ToString();
-                                //    }
-                                //    else
-                                //    {
-                                //        part_info._VInfo = null;
-                                //    }
-                                //}
-
                                 if (tempScene.errorDesc.IndexOf("Face") > -1)
                                 {
                                     string greet_Info = info[8].ToString();
 
                                     part_info._Greet = greet_Info;
-                                    //if (greet_Info.IndexOf("|") > -1)
-                                    //{
-                                    //    string[] greet_detail = greet_Info.Split('|');
-                                    //    part_info._Greet = greet_detail[1];
-                                    //}
                                 }
                                 else
                                 {
                                     part_info._Greet = null;
                                 }
                             }
-                           if(part_info._UID == m_Self_UID)
+ 
                             Fresh_HeadInfo(part_info);
                         }
                     }

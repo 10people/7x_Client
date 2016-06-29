@@ -217,7 +217,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             t_qx.Serialize(t_tream, equip);
             byte[] t_protof;
             t_protof = t_tream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPGRADE, ref t_protof, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_UPGRADE);
+            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPGRADE, ref t_protof,false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_UPGRADE);
         }
     }
 
@@ -371,12 +371,12 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
         m_MianInfo.SetActive(true);
         m_SharePart.SetActive(true);
 
-        if (!_isUsed)
-        {
-            _isUsed = true;
+        //if (!_isUsed)
+        //{
+        //    _isUsed = true;
 
-            ManualAddToTop();
-        }
+        //    ManualAddToTop();
+        //}
     }
 
 	/// only runned once when Equip Window opened, if close then reset.
@@ -441,6 +441,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             {
                 int ff = int.Parse(ei.fang) + fang;
                 ei.fang = ff.ToString();
+                Debug.Log("ffffffffff ::" + ff);
                 CreateClone(m_EquipItenm.m_DicInfo[1].gameObject, fang);
                 if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
                     , _EquipBInfo._Level + 1) != null)
@@ -696,6 +697,8 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                         EquipInfo.gongJiAdd = 0;
                         EquipInfo.fangYuAdd = 0;
                         EquipInfo.shengMingAdd = 0;
+                        m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_Durable_UI.SetActive(true);
+                        m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_ObjTopLeft.SetActive(true);
                         if (Equip.gongJi > 0 && Equip.fangYu > 0 && Equip.shengMing > 0)
                         {
                             m_ObjBottom.transform.localPosition = new Vector3(-242, -44, 0);
@@ -819,12 +822,19 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                                             _EquipBInfo._PregressValue = 1.0f;
                                         }
                                     }
+                                    EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
+                                    EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
+                                    EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
+                                    EquipInfo.gongJi = EquipInfoSave.gongJi;
+                                    EquipInfo.fangYu = EquipInfoSave.fangYu;
+                                    EquipInfo.shengMing = EquipInfoSave.shengMing;
+                                    EquipInfoSave = EquipInfo;
+                           
+                                    EquipsInfoTidy(EquipInfo);
+
                                 }
                             }
-                            EquipInfo.gongJiAdd = EquipInfo.gongJi - EquipInfoSave.gongJi;
-                            EquipInfo.fangYuAdd = EquipInfo.fangYu - EquipInfoSave.fangYu;
-                            EquipInfo.shengMingAdd = EquipInfo.shengMing - EquipInfoSave.shengMing;
-                            EquipInfoSave = EquipInfo;
+                           
 
                             m_IntensifyTanHao.SetActive(AllIntensify());
                             MainCityUI.SetRedAlert(1212, AllIntensify());
@@ -869,6 +879,10 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     }
     void OnDisable()
     {
+        foreach (KeyValuePair<int, EquipSuoData.StrengthEffect> iten in EquipSuoData.m_listEffectInfo)
+        {
+            m_objSharePart.GetComponent<EquipGrowthWearManagerment>().m_listItemEvent[iten.Value._num].m_ObjEffect.SetActive(false);
+        }
         SocketTool.UnRegisterMessageProcessor(this);
     }
     private List<EquipSuoData.WashInfo> _listAttribute;
@@ -882,9 +896,6 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             EquipSuoData.m_listEquipWash.Remove(esr.zhuangbeiID);
         }
         EquipSuoData.Instance().listIndexs.Clear();
-    
-
-
         EquipGrowthMaterialUseManagerment.equipLevel = esr.level;
         EquipGrowthMaterialUseManagerment.Levelsaved = esr.level;
         for (int i = 0; i < ZhuangBei.templates.Count; i++)
@@ -895,8 +906,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                 , float.Parse(esr.wqRX.ToString()), float.Parse(esr.jnSH.ToString()), float.Parse(esr.jnJM.ToString())
                 , float.Parse(esr.jnBJ.ToString()), float.Parse(esr.jnRX.ToString())
                 ,esr.wqBJL, esr.jnBJL, esr.wqMBL, esr.jnMBL };
-               // int[] attribute = { esr.wqSH, esr.wqJM, esr.wqBJ, esr.wqRX, esr.jnSH, esr.jnJM, esr.jnBJ, esr.jnRX };
-               // int[] attribute_Max = { esr.wqSHMA, esr.wqJM, esr.wqBJ, esr.wqRX, esr.jnSH, esr.jnJM, esr.jnBJ, esr.jnRX };
+ 
                 listData.AddRange(attribute);
                 for (int j = 0; j < listData.Count; j++)
                 {
@@ -919,12 +929,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
                 }
 
                 EquipSuoData.m_listEquipWash.Add(esr.zhuangbeiID, _listAttribute);
-                // index_ShuXing = 0;
-
-
-
                 ShowEquipInfo(esr);
-               
             }
         }
     
@@ -985,14 +990,11 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     IEnumerator WatiFor(GameObject obj)
     {
         yield return new WaitForSeconds(0.8f);
-        //UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelXue.gameObject);
-        //UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelFang.gameObject);
-        //UI3DEffectTool.ClearUIFx(m_EquipItenm.m_LabelGong.gameObject);
+ 
         UI3DEffectTool.ClearUIFx(m_EquipItenm.m_SpritePinZhi.gameObject);
         Destroy(obj);
     }
  
-
     int EquipType = 0;
 
     private bool AllIntensify()

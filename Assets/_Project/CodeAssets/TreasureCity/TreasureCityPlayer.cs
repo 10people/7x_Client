@@ -60,7 +60,7 @@ public class TreasureCityPlayer : GeneralInstance<TreasureCityPlayer> {
 	void InitWithGlobalData()
 	{
 		//		Debug.Log ("PlayerModelCol");
-		LimitActivityData.Instance.RequestData();//request limit activity info.
+//		LimitActivityData.Instance.RequestData();//request limit activity info.
 		
 		MiBaoGlobleData.Instance();
 		
@@ -194,7 +194,7 @@ public class TreasureCityPlayer : GeneralInstance<TreasureCityPlayer> {
 		{
 			savePos = selfTargetPos;
 			StartCoroutine (TurnToDestination (tempPosition));
-			Debug.Log ("SelfNavigation");
+//			Debug.Log ("SelfNavigation");
 		}
 	}
 
@@ -216,7 +216,7 @@ public class TreasureCityPlayer : GeneralInstance<TreasureCityPlayer> {
 
 		m_character.enabled = true;
 
-		Debug.Log ("stop all");
+//		Debug.Log ("stop all");
 	}
 	
 	public void StopPlayerNavigationMove() //停止自动导航但不停止动作
@@ -410,15 +410,13 @@ public class TreasureCityPlayer : GeneralInstance<TreasureCityPlayer> {
 		
 		if (randomAnimatorState && !timeContinue)
 		{
-//			Debug.Log ("randomAnimatorState" + randomAnimatorState);
-//			Debug.Log ("timeContinue" + timeContinue);
 			stayTime += Time.deltaTime;
-			
+
 			if (stayTime >= 5.0f)
 			{
 				timeContinue = true;
 				curAnimatorState = animatorState;
-
+	
 				switch (animatorState)
 				{
 				case AnimatorState.IDLE:
@@ -445,9 +443,10 @@ public class TreasureCityPlayer : GeneralInstance<TreasureCityPlayer> {
 		}
 
 		#region If Play Complete
-		if ((IsPlayComplete (animatorDic[AnimatorState.RELAX1]) || IsPlayComplete (animatorDic[AnimatorState.RELAX2])) && animatorState == AnimatorState.RELAX1)
+		if ((IsPlayComplete ("inRelax_1") || IsPlayComplete ("inRelax_2")) && animatorState == AnimatorState.RELAX1)
 		{
 			timeContinue = false;
+
 			moveType = AnimatorState.IDLE;
 
 			animatorState = curAnimatorState == AnimatorState.IDLE ? AnimatorState.RELAX2 : AnimatorState.IDLE;
@@ -561,12 +560,13 @@ public class TreasureCityPlayer : GeneralInstance<TreasureCityPlayer> {
 	public bool IsPlayComplete (string tempName)
 	{
 		if (m_animator == null) return false;
-		
+//		Debug.Log ("tempName:" + tempName);
 		AnimatorClipInfo[] t_states = m_animator.GetCurrentAnimatorClipInfo(0);
+//		Debug.Log ("t_states:" + t_states.Length);
 		AnimatorStateInfo info = m_animator.GetCurrentAnimatorStateInfo(0);
-
+//		Debug.Log ("info:" + info);
 		float playing = Mathf.Clamp01 (info.normalizedTime);
-		
+//		Debug.Log ("playing:" + playing);
 		for (int i = 0; i < t_states.Length; /*i++*/ )
 		{
 			AnimatorClipInfo t_item = t_states[i];
@@ -608,7 +608,7 @@ public class TreasureCityPlayer : GeneralInstance<TreasureCityPlayer> {
 		default:
 			break;
 		}
-
+//		Debug.Log ("tempState:" + tempState);
 		m_animator.Play (animatorDic[tempState]);
 	}
 	#endregion

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 <FuncLink ID="101" title="元宝不足" desc="充值、提升百战千军排名、\n达成活动成就均可轻松获取元宝！" funcID="1300,null,300100,War_Sport,144,PageButton144" />
-<FuncLink ID="201" title="消耗体力" desc="扫荡关卡\n即可快速获得秘宝及将魂碎片。" funcID="300000,null,109,chuanqi" />
+<FuncLink ID="201" title="消耗体力" desc="扫荡关卡\n即可收集将魂和秘宝，获得大量经验。" funcID="300000,null,109,chuanqi" />
 <FuncLink ID="301" title="功 能" desc="点击图标\n进入辅助功能" funcID="3,null,4,null,212,null,1421,null" />
 <FuncLink ID="401" title="体力不足" desc="购买体力、每日体力赠送、\n达成活动成就均可轻松获取体力" funcID="2100,null,1391,PageButton1391,144,PageButton144" />
 <FuncLink ID="501" title="铜币不足" desc="购买铜币、行镖、\n试炼-洗劫权贵均可获取铜币" funcID="2101,null,310,War_YunBiao,302,SL_XiJieQuanGui" />
@@ -15,9 +15,9 @@
 <FuncLink ID="1301" title="强化石不足" desc="商铺、试炼-讨伐山贼\n均可获得强化石" funcID="9,null, 304,SI_TaoFaShanZei" />
 <FuncLink ID="1401" title="残简不足" desc="过关斩将掉落残简" funcID="300000,null" />
 <FuncLink ID="1501" title="将魂碎片不足" desc="探宝、传奇关卡、商铺购买，\n均可获得将魂碎片" funcID="11,null,109,chuanqi,9,null" />
-<FuncLink ID="1601" title="玉珏" desc="百战千军军衔奖励" funcID="300100,War_Sport" />
-<FuncLink ID="1701" title="符文" desc="猎符可获大量符文，\n多多尝试吧！" funcID="500012,null" />
-<FuncLink ID="1801" title="宝石" desc="商铺、试炼-剿灭叛军、千重楼，\n均可获得宝石" funcID="9,null,301,SL_JiaoMiePanJun,300,QianChongLou" />
+<FuncLink ID="1601" title="玉珏不足" desc="百战千军军衔奖励" funcID="300100,War_Sport" />
+<FuncLink ID="1701" title="符文不足" desc="猎符可获大量符文，\n多多尝试吧！" funcID="500012,null" />
+<FuncLink ID="1801" title="宝石不足" desc="商铺、试炼-剿灭叛军、千重楼，\n均可获得宝石" funcID="9,null,301,SL_JiaoMiePanJun,300,QianChongLou" />
 <FuncLink ID="1901" title="V特权不足" desc="充值提升V等级，\n获更多特权（便捷功能、次数、特权礼包）" funcID="1300,null" />
 <FuncLink ID="2001" title="装备提升" desc="商铺、试炼-横扫六合可获更高品质装备" funcID="9,null,305,SI_ZongHengLiuHe" />
 <FuncLink ID="2101" title="秘术提升" desc="关卡掉落大量秘宝，\n集齐成套秘宝即可激活秘术" funcID="300000,null" />

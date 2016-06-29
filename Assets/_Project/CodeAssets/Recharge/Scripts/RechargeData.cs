@@ -31,7 +31,7 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 
 	private bool m_isOpenRecharge = false;
 
-	private bool m_checkBack = false;
+	public bool M_IsRechargeEnd = false;
 
 	private int m_lastVip;
 
@@ -50,7 +50,7 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 	void Recharge ()
 	{
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_VIPINFO_REQ,ProtoIndexes.S_VIPINFO_RESP.ToString ());
-		Debug.Log ("充值首页请求：" + ProtoIndexes.C_VIPINFO_REQ);
+//		Debug.Log ("充值首页请求：" + ProtoIndexes.C_VIPINFO_REQ);
 	}
 	#endregion
 
@@ -69,7 +69,7 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 		rechargeReq.type = (int)tempType;
 		rechargeReq.amount = tempAmount;
 		QXComData.SendQxProtoMessage (rechargeReq,ProtoIndexes.C_RECHARGE_REQ,ProtoIndexes.S_RECHARGE_RESP.ToString ());
-		Debug.Log ("充值请求：" + ProtoIndexes.S_RECHARGE_RESP);
+//		Debug.Log ("充值请求：" + ProtoIndexes.S_RECHARGE_RESP);
 	}
 	#endregion
 
@@ -85,7 +85,7 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 		GetVipRewardReq rewardReq = new GetVipRewardReq ();
 		rewardReq.vipLevel = tempLevel;
 		QXComData.SendQxProtoMessage (rewardReq,ProtoIndexes.C_VIP_GET_GIFTBAG_REQ,ProtoIndexes.S_VIP_GET_GIFTBAG_RESP.ToString ());
-		Debug.Log ("领奖请求：" + ProtoIndexes.C_VIP_GET_GIFTBAG_REQ);
+//		Debug.Log ("领奖请求：" + ProtoIndexes.C_VIP_GET_GIFTBAG_REQ);
 	}
 	#endregion
 
@@ -96,6 +96,7 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 		AFTER_SUCCESS = 40,		//sdk充值结束后，success
 		CANCEL = 50,		//取消
 		FAIL = 60,		//失败
+		DEFAULT = 404,
 	}
 	public ReportState M_ReportState;
 
@@ -106,14 +107,15 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 		M_ReportState = tempState;
 
 		ErrorMessage errorMsg = new ErrorMessage ();
-		errorMsg.cmd = (int)tempState;
-		errorMsg.errorDesc = tempId.ToString ();
+		errorMsg.cmd = (int)tempState;				
+		errorMsg.errorDesc = tempId.ToString ();	// 404
 		errorMsg.errorCode = tempNum;
 
 		M_ErrorMsg = errorMsg;
 
-		QXComData.SendQxProtoMessage (errorMsg,ProtoIndexes.C_CHECK_CHARGE,tempState == ReportState.AFTER_SUCCESS ? ProtoIndexes.CHARGE_OK.ToString () : "");
-		Debug.Log ("充值状态汇报：" + ProtoIndexes.C_CHECK_CHARGE);
+//		QXComData.SendQxProtoMessage (errorMsg,ProtoIndexes.C_CHECK_CHARGE,tempState == ReportState.AFTER_SUCCESS ? ProtoIndexes.CHARGE_OK.ToString () : "");
+		QXComData.SendQxProtoMessage (errorMsg,ProtoIndexes.C_CHECK_CHARGE,null);
+//		Debug.Log ("充值状态汇报：" + ProtoIndexes.C_CHECK_CHARGE);
 	}
 	#endregion
 
@@ -125,7 +127,7 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 			{
 			case ProtoIndexes.S_VIPINFO_RESP:
 			{
-				Debug.Log ("充值首页返回：" + ProtoIndexes.S_VIPINFO_RESP);
+//				Debug.Log ("充值首页返回：" + ProtoIndexes.S_VIPINFO_RESP);
 				VipInfoResp vipResp = new VipInfoResp();
 				vipResp = QXComData.ReceiveQxProtoMessage (p_message,vipResp) as VipInfoResp;
 
@@ -139,19 +141,19 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 					{
 						vipResp.getRewardVipList = new List<int>();
 					}
-					Debug.Log ("vip等级：" + vipResp.vipLevel);
-					Debug.Log ("需要元宝数：" + vipResp.needYb);
-					Debug.Log ("拥有元宝数：" + vipResp.hasYb);
-					Debug.Log ("是否达到最高级：" + vipResp.isMax);
-					Debug.Log ("zhouka：" + vipResp.zhouKaLeftDays);
-					Debug.Log ("yueka：" + vipResp.yueKaLeftDays);
+//					Debug.Log ("vip等级：" + vipResp.vipLevel);
+//					Debug.Log ("需要元宝数：" + vipResp.needYb);
+//					Debug.Log ("拥有元宝数：" + vipResp.hasYb);
+//					Debug.Log ("是否达到最高级：" + vipResp.isMax);
+//					Debug.Log ("zhouka：" + vipResp.zhouKaLeftDays);
+//					Debug.Log ("yueka：" + vipResp.yueKaLeftDays);
 
 					m_vipResp = vipResp;
 
 					if (m_isOpenRecharge)
 					{
 						LoadRechargeRoot ();
-						if (m_checkBack)
+						if (ThirdPlatform.IsMyAppAndroidPlatform () && M_IsRechargeEnd)
 						{
 							if (m_lastVip < m_vipResp.vipLevel)
 							{
@@ -170,19 +172,19 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 			}
 			case ProtoIndexes.S_RECHARGE_RESP:
 			{
-				Debug.Log ("返回充值信息：" + ProtoIndexes.S_RECHARGE_RESP);
+//				Debug.Log ("返回充值信息：" + ProtoIndexes.S_RECHARGE_RESP);
 				RechargeResp rechargeResp = new RechargeResp();
 				rechargeResp = QXComData.ReceiveQxProtoMessage (p_message,rechargeResp) as RechargeResp;
 
 				if (rechargeResp != null)
 				{
-					Debug.Log ("充值结果：" + rechargeResp.isSuccess);
-					Debug.Log ("增加元宝数：" + rechargeResp.sumAoumnt);
-					Debug.Log ("vip等级：" + rechargeResp.vipLevel);
+//					Debug.Log ("充值结果：" + rechargeResp.isSuccess);
+//					Debug.Log ("增加元宝数：" + rechargeResp.sumAoumnt);
+//					Debug.Log ("vip等级：" + rechargeResp.vipLevel);
 //					Debug.Log ("月卡剩余天数：" + rechargeResp.yueKaLeftDays);
 //					Debug.Log ("msg：" + rechargeResp.msg);
 
-					if (m_isOpenRecharge)
+					if (m_isOpenRecharge && !ThirdPlatform.IsMyAppAndroidPlatform ())
 					{
 						if (rechargeResp.vipLevel > m_vipResp.vipLevel)
 						{
@@ -200,13 +202,13 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 			}
 			case ProtoIndexes.S_VIP_GET_GIFTBAG_RESP:
 			{
-				Debug.Log ("领奖返回：" + ProtoIndexes.S_VIP_GET_GIFTBAG_RESP);
+//				Debug.Log ("领奖返回：" + ProtoIndexes.S_VIP_GET_GIFTBAG_RESP);
 				GetVipRewardResp rewardResp = new GetVipRewardResp();
 				rewardResp = QXComData.ReceiveQxProtoMessage (p_message,rewardResp) as GetVipRewardResp;
 
 				if (rewardResp != null)
 				{
-					Debug.Log ("rewardResp.result:" + rewardResp.result);
+//					Debug.Log ("rewardResp.result:" + rewardResp.result);
 
 					if (rewardResp.result == 0 || rewardResp.result == 1)
 					{
@@ -235,10 +237,11 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 			}
 			case ProtoIndexes.CHARGE_OK:
 			{
-				Debug.Log ("充值成功");
+//				Debug.Log ("充值成功");
 				if (m_isOpenRecharge)
 				{
-					m_checkBack = true;
+					m_lastVip = m_vipResp.vipLevel;
+					M_IsRechargeEnd = true;
 					Recharge ();
 				}
 				return true;
@@ -265,7 +268,12 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 			text = LanguageTemplate.GetText (LanguageTemplate.Text.RECHARGE_TIPS_4);
 			break;
 		}
-		QXComData.CreateBoxDiy (text,true,null);
+		QXComData.CreateBoxDiy (text,true,RechargeCallBack);
+	}
+
+	void RechargeCallBack (int i)
+	{
+		M_IsRechargeEnd = false;
 	}
 
 	void LoadRechargeRoot ()
@@ -290,6 +298,7 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 	void InItRechargePage ()
 	{
 		MainCityUI.TryAddToObjectList (m_rechargeRoot);
+		TreasureCityUI.TryAddToObjectList (m_rechargeRoot);
 		RechargePage.m_instance.ChangePage (true);
 		RechargePage.m_instance.InItRechargePage (m_vipResp);
 		RechargePage.m_instance.M_RechargeDelegate = RechargeDelegateCallBack;
@@ -297,14 +306,16 @@ public class RechargeData : Singleton<RechargeData>,SocketProcessor {
 
 	void RechargeDelegateCallBack ()
 	{
-		m_checkBack = false;
 		m_isOpenRecharge = false;
+		M_IsRechargeEnd = false;
 		MainCityUI.TryRemoveFromObjectList (m_rechargeRoot);
+		TreasureCityUI.TryRemoveFromObjectList (m_rechargeRoot);
 		m_rechargeRoot.SetActive (false);
 	}
 
 	void OnDestroy ()
 	{
+		M_IsRechargeEnd = false;
 		m_isOpenRecharge = false;
 		SocketTool.UnRegisterMessageProcessor (this);
 	}

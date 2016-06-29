@@ -623,8 +623,16 @@ public class OldBookWindow : MonoBehaviour, SocketListener
     public UILabel HouseTechNameLabel;
     public UILabel HouseTechLvlLabel;
 
+    private RewardData toShowRewardData;
+
     void SetHouseExp(HouseExpInfo mmHouseExpInfo)
     {
+        if (toShowRewardData != null)
+        {
+            GeneralRewardManager.Instance().CreateReward(toShowRewardData);
+            toShowRewardData = null;
+        }
+
         totalValueBar = mmHouseExpInfo.max;
         currentValueBar = mmHouseExpInfo.cur;
         mSlider.value = currentValueBar / totalValueBar;
@@ -660,8 +668,7 @@ public class OldBookWindow : MonoBehaviour, SocketListener
         PushAndNotificationHelper.SetRedSpotNotification(600800, false);
         NewAlliancemanager.Instance().Refreshtification();
 
-        var temp = new RewardData(900006, (int)currentValueBar);
-        GeneralRewardManager.Instance().CreateReward(temp);
+        toShowRewardData = new RewardData(900006, (int)currentValueBar);
 
         //Close guide.
         UIYindao.m_UIYindao.CloseUI();

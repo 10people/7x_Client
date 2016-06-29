@@ -108,8 +108,11 @@ public class YXItem : MonoBehaviour  {
 			if(mYouXiaInfo.remainColdTime > 0)
 			{
 				CountTime.gameObject.SetActive(true);
-				StopCoroutine("StartCountTime");
-				StartCoroutine("StartCountTime");
+				Re_AllTimes.gameObject.SetActive(false);
+				T = mYouXiaInfo.remainColdTime;
+				SportCdTime(T);
+//				StopCoroutine("StartCountTime");
+//				StartCoroutine("StartCountTime");
 			}
 			else{
 				ShowTime ();
@@ -130,12 +133,42 @@ public class YXItem : MonoBehaviour  {
 //		Icon.spriteName = "Function_250";
 	}
 
+
+	#region SportCdTime
+	private float m_sportCdTime;
+	void SportCdTime (int cdTime)
+	{
+		m_sportCdTime = cdTime;
+		if (TimeHelper.Instance.IsTimeCalcKeyExist("SportCdTime"))
+		{
+			TimeHelper.Instance.RemoveFromTimeCalc("SportCdTime");
+		}
+		TimeHelper.Instance.AddEveryDelegateToTimeCalc("SportCdTime", cdTime, OnUpdateSportTime);
+	}
+	
+	private void OnUpdateSportTime (int p_time)
+	{
+		if (m_sportCdTime - p_time > 0)
+		{
+			CountTime.text = TimeHelper.GetUniformedTimeString (m_sportCdTime - p_time)+" 后可进入";
+//			Debug.Log ("m_sportCdTime - p_time:" + (m_sportCdTime - p_time));
+		}
+		else
+		{
+			TimeHelper.Instance.RemoveFromTimeCalc("SportCdTime");
+			CountTime.gameObject.SetActive(false);
+			Art.gameObject.SetActive(true);
+			ShowTime ();
+		}
+	}
+	
+	#endregion
+
 	private int T;
 	public UILabel CountTime;
 	IEnumerator StartCountTime()
 	{
-		Re_AllTimes.gameObject.SetActive(false);
-		T = mYouXiaInfo.remainColdTime;
+
 
 		while(T > 0)
 		{
@@ -241,14 +274,15 @@ public class YXItem : MonoBehaviour  {
 	private GameObject tempOjbect;
 	void LoadResourceCallback(ref WWW p_www,string p_path, Object p_object)
 	{
+		Debug.Log("tempOjbect = "+tempOjbect);
 		if(tempOjbect)
 		{
 			return;
 		}
 		tempOjbect = Instantiate(p_object )as GameObject;
 		
-		tempOjbect.transform.parent = GameObject.Find ("YxChooseDefcult1").transform;
-		
+//		tempOjbect.transform.parent = GameObject.Find ("YxChooseDefcult1").transform;
+//		
 		tempOjbect.transform.localScale = Vector3.one;
 		
 		tempOjbect.transform.localPosition = Vector3.zero;

@@ -87,7 +87,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 		if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
 		{
 			//无联盟
-			ClientMain.m_UITextManager.createText("去加入一个联盟再来掠夺对手吧！");
+			ClientMain.m_UITextManager.createText("您暂时没有联盟，请加入联盟后再试！");
 			return;
 		}
 		else if (JunZhuData.Instance().m_junzhuInfo.level < FunctionOpenTemp.GetTemplateById (211).Level)
@@ -162,6 +162,19 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 	/// <param name="tempJunZhuId">Temp jun zhu identifier.</param>
 	public void PlunderOpponent (Entrance tempEntrance,long tempJunZhuId)
 	{
+		if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
+		{
+			//无联盟
+			ClientMain.m_UITextManager.createText("您暂时没有联盟，请加入联盟后再试！");
+			return;
+		}
+		else if (JunZhuData.Instance().m_junzhuInfo.level < FunctionOpenTemp.GetTemplateById (211).Level)
+		{
+			//未到掠夺开启等级
+			ClientMain.m_UITextManager.createText("等级达到[dc0600]" + FunctionOpenTemp.GetTemplateById (211).Level + "[-]级开启掠夺！");
+			return;
+		}
+
 		tempEntrance = entrance;
 
 		LveGoLveDuoReq plunderReq = new LveGoLveDuoReq ();
@@ -384,7 +397,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 						switch (plunderOpRes.isCanLveDuo)
 						{
 						case -1:
-							textStr = "该玩家是您本人，无法掠夺！";
+							textStr = "该玩家是您本人，\n无法掠夺！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 0:
@@ -397,7 +410,7 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 1:
-							textStr = "该玩家是您的盟友，无法掠夺！";
+							textStr = "该玩家是您的盟友，\n无法掠夺！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 2:
@@ -422,31 +435,31 @@ public class PlunderData : Singleton<PlunderData>,SocketProcessor {
 
 							break;
 						case 4:
-							textStr = "这位玩家正处于保护期内，无法掠夺！";
+							textStr = "这位玩家正处于保护期内，\n无法掠夺！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 5:
-							textStr = "该玩家正在被其他玩家掠夺，请更换目标！";
+							textStr = "该玩家正在被其他玩家掠夺，\n请更换目标！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 6:
-							textStr = "该玩家为系统机器人，无法掠夺！";
+							textStr = "该玩家为系统机器人，\n无法掠夺！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 8:
-							textStr = "该玩家暂未开启掠夺玩法，无法掠夺！";
+							textStr = "该玩家暂未开启掠夺玩法，\n无法掠夺！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 9:
-							textStr = "您暂时没有联盟，请加入联盟后再试！";
+							textStr = "您暂时没有联盟，\n请加入联盟后再试！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 10:
-							textStr = "该玩家暂时没有联盟，无法掠夺！";
+							textStr = "该玩家暂时没有联盟，\n无法掠夺！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 11:
-							textStr = "该玩家暂未开启联盟功能，无法掠夺！";
+							textStr = "该玩家暂未开启联盟功能，\n无法掠夺！";
 							QXComData.CreateBoxDiy (textStr,true,null);
 							break;
 						case 12:

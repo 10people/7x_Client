@@ -10,6 +10,8 @@ using ProtoBuf.Meta;
 
 public class NewAlliancemanager : MonoBehaviour, SocketListener
 {
+
+	[HideInInspector]public bool LianMengJuanxian_Is_Open;
 	public GameObject JunChengBattleAlert;
 
     public bool mYinDaoisOpen = false;
@@ -87,6 +89,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     public GameObject HyQs;
     public GameObject ReadRoom;
     public GameObject BuildUpVecotry;
+	public GameObject BuildUpVecotryUIsprite;
 	public GameObject mindYouMenbers;
     public static NewAlliancemanager Instance()
     {
@@ -112,8 +115,13 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
         cancelStr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
         confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
+		if(AllianceData.Instance.g_UnionInfo != null)
+		{
+			mLianmengLevel = AllianceData.Instance.g_UnionInfo.level;
+		}
+		LianMengJuanxian_Is_Open = false;
         GetAllianceBuildsMessege();
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO,ProtoIndexes.S_JIAN_ZHU_INFO.ToString());
         //Init ();
     }
     void SetBtnMoth(UIEventListener mUIEventListener)
@@ -378,6 +386,10 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     void Update()
     {
         //Shownotice ();
+		if(mLianMengJuanXianOBG == null)
+		{
+			LianMengJuanxian_Is_Open = false;
+		}
     }
 
     public List<Collider> mainColliders = new List<Collider>();
@@ -440,7 +452,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         {
             ShowAllianceGuid();
         }
-		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO,ProtoIndexes.S_JIAN_ZHU_INFO.ToString());
+
         MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
     }
 	private int mLianmengLevel ;
@@ -462,16 +474,18 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
                     t_qx.Deserialize(t_tream, allianceHaveRes, allianceHaveRes.GetType());
 
-                    //Debug.Log ("监听到联盟信息返回了");
-				    mLianmengLevel = AllianceData.Instance.g_UnionInfo.level;
-                    m_allianceHaveRes = allianceHaveRes;
-					if(mLianmengLevel != m_allianceHaveRes.level)
-					{
-						mLianmengLevel = m_allianceHaveRes.level;
-						SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO);
-					}
-				    InitAlliance();
 
+					if(!LianMengJuanxian_Is_Open)
+					{
+						m_allianceHaveRes = allianceHaveRes;
+						if(mLianmengLevel != m_allianceHaveRes.level)
+						{
+							mLianmengLevel = m_allianceHaveRes.level;
+							SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO);
+						}
+						InitAlliance();
+					}
+              
                     return true;
                 }
                 case ProtoIndexes.S_JIAN_ZHU_INFO:
@@ -518,7 +532,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
                     t_qx.Deserialize(t_stream, BuildUpback, BuildUpback.GetType());
 
                     Debug.Log("BuildUpback   ");
-
+			    	Debug.Log ("BuildUpback.errorCode：" + BuildUpback.errorCode);
                     if (BuildUpback.errorCode == 0)
                     {
                         for (int i = 0; i < AllBuildsTmp_List.Count; i++)
@@ -526,15 +540,14 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
                             if (Up_id == AllBuildsTmp_List[i].id)
                             {
 
-                                //							Debug.Log ("Up_id：" + Up_id);
+                                
                                 AllBuildsTmp_List[i].lv += 1;
                                 AllBuildsTmp_List[i].Init();
 
                                 int effectid = 100180;
-                                BuildUpVecotry.SetActive(true);
-                                BuildUpVecotry.transform.localPosition = AllBuildsTmp_List[i].gameObject.transform.localPosition;
-                                UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, BuildUpVecotry, EffectIdTemplate.GetPathByeffectId(effectid));
-                                StartCoroutine(closeEffect());
+							    BuildUpVecotryUIsprite.SetActive(true);
+							    BuildUpVecotry.transform.localPosition = AllBuildsTmp_List[i].gameObject.transform.localPosition;
+							    OpeneEffect();
 
                                 HYInterface hyInterface = AllBuildsTmp_List[i].GetComponent<HYInterface>();
                                 if (hyInterface != null)
@@ -690,11 +703,11 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 				   if(mUpgradeLevelSpeedUpResp.result == 0)
 					{
 					int effectid = 100180;
-					BuildUpVecotry.SetActive(true);
+					BuildUpVecotryUIsprite.SetActive(true);
 					BuildUpVecotry.transform.localPosition = Vector3.zero;
-					BuildUpVecotry.GetComponent<UISprite>().spriteName = "AddSpeed";
-					UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,BuildUpVecotry,EffectIdTemplate.GetPathByeffectId(effectid));
-					StartCoroutine( "closeEffect");
+					BuildUpVecotryUIsprite.GetComponent<UISprite>().spriteName = "AddSpeed";
+
+					OpeneEffect();
 					m_allianceHaveRes.upgradeRemainTime = mUpgradeLevelSpeedUpResp.remainTime;
 				    Debug.Log("mUpgradeLevelSpeedUpResp.remainTime = "+mUpgradeLevelSpeedUpResp.remainTime);
 
@@ -766,11 +779,22 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 		PushAndNotificationHelper.SetRedSpotNotification(500022, false);//国家
 	}
 	[HideInInspector]public UpgradeLevelSpeedUpResp m_UpgradeLevelSpeedUpResp;
-    IEnumerator closeEffect()
-    {
-        yield return new WaitForSeconds(1f);
-        BuildUpVecotry.SetActive(false);
-    }
+
+	void OpeneEffect()
+	{
+		StopCoroutine("closeEffect");
+		StartCoroutine( "closeEffect");
+	}
+	
+	IEnumerator closeEffect()
+	{
+		int effectid = 100180;
+		UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,BuildUpVecotry,EffectIdTemplate.GetPathByeffectId(effectid));
+		yield return new WaitForSeconds (1.3f);
+		UI3DEffectTool.ClearUIFx (BuildUpVecotry);
+		BuildUpVecotryUIsprite.SetActive(false);
+	}
+
 	[HideInInspector]public  int Online = 0;
     public void InitAlliance()
     {
@@ -788,20 +812,22 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         }
         OnlineNum.text = "在线人数：" + Online.ToString();
         AllianceName.text = m_allianceHaveRes.name + "(Lv." + m_allianceHaveRes.level.ToString() + ")";
-
+//		Debug.Log ("m_allianceHaveRes.identity = "+m_allianceHaveRes.identity);
 		if(m_allianceHaveRes.identity != 2)
 		{
 			AllianceCountryChangebtn.GetComponent<BoxCollider>().enabled = false;
 			AllianceCountryChange.color = new Color (0,0,0,255);
 		}
+		else
+		{
+			AllianceCountryChangebtn.GetComponent<BoxCollider>().enabled = true;
+			AllianceCountryChange.color = Color.white;
+		}
         ShowJianSheZhi();
         ShowBtn();
 		InitUpLevelInfo ();
 		ShowJunChengZhanAlert ();
-		if(m_JianZhu != null)
-		{
-			InitBuilds(m_JianZhu);
-		}
+
     }
 
 	public void ShowJunChengZhanAlert()
@@ -1301,11 +1327,13 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.WORSHIP_MAIN_LAYER),
                                      WorshipLayerLoadCallback);
         SomeUIis_OPen = true;
+		LianMengJuanxian_Is_Open = true;
     }
-    private static void WorshipLayerLoadCallback(ref WWW p_www, string p_path, Object p_object)
+	private GameObject mLianMengJuanXianOBG;
+    private  void WorshipLayerLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
-        GameObject tempObject = Instantiate(p_object) as GameObject;
-        MainCityUI.TryAddToObjectList(tempObject);
+		mLianMengJuanXianOBG = Instantiate(p_object) as GameObject;
+		MainCityUI.TryAddToObjectList(mLianMengJuanXianOBG);
     }
     public void BackToThis(GameObject m_game)
     {

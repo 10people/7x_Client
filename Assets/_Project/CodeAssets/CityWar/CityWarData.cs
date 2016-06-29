@@ -67,7 +67,7 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 		CityWarRewardReq brandReq = new CityWarRewardReq ();
 		brandReq.rewardType = tempPage;
 		QXComData.SendQxProtoMessage (brandReq,ProtoIndexes.C_CITYWAR_GRAND_REQ,ProtoIndexes.S_CITYWAR_GRAND_RESP.ToString ());
-		Debug.Log ("郡城战报信息请求：" + ProtoIndexes.C_CITYWAR_GRAND_REQ);
+//		Debug.Log ("郡城战报信息请求：" + ProtoIndexes.C_CITYWAR_GRAND_REQ);
 	}
 
 	#endregion
@@ -112,7 +112,7 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 		CityWarScoreResultReq scoreReq = new CityWarScoreResultReq ();
 		scoreReq.cityId = tempCityId;
 		QXComData.SendQxProtoMessage (scoreReq,ProtoIndexes.C_CITYWAR_SCORE_RESULT_REQ,ProtoIndexes.S_CITYWAR_SCORE_RESULT_RESP.ToString ());
-		Debug.Log ("郡城战积分请求：" + ProtoIndexes.C_CITYWAR_SCORE_RESULT_REQ);
+//		Debug.Log ("郡城战积分请求：" + ProtoIndexes.C_CITYWAR_SCORE_RESULT_REQ);
 	}
 
 	#endregion
@@ -456,7 +456,10 @@ public class CityWarData : Singleton<CityWarData>,SocketProcessor {
 
 	void InItCityWarPage ()
 	{
-		MainCityUI.TryAddToObjectList (m_cityObj);
+		if( !MainCityUI.TryAddToObjectList (m_cityObj) ){
+			UI2DTool.Instance.AddTopUI( m_cityObj );
+		}
+
 		CityWarPage.m_instance.M_CityWarDelegate = CityWarDelegateCallBack;
 		CityWarPage.m_instance.InItCityWarPage (m_cityResp);
 		m_isOpenCityWar = true;

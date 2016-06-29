@@ -893,6 +893,8 @@ namespace Carriage
 
         public int SlowRebirthTime;
 
+        private int m_quickRebirthCost;
+
         public void ShowDeadWindow(int killerUID, int remainFullRebirthTimes, int slowRebirthTime, int quickRebirthCost)
         {
             //Set this.
@@ -911,12 +913,14 @@ namespace Carriage
                 killerName = m_RootManager.m_CarriageItemSyncManager.m_DeadPlayerDic[killerUID].m_KingName;
             }
 
+            m_quickRebirthCost = quickRebirthCost;
+
             FailInfoLabel.text = "您已被" + ColorTool.Color_Red_c40000 + (string.IsNullOrEmpty(killerName) ? "" : killerName) + "[-]" + "击溃";
             FullRebirthTimesLabel.text = "今日剩余满血复活次数" + ColorTool.Color_Red_c40000 + remainFullRebirthTimes + "[-]";
             SlowRebirthLabel.text = ColorTool.Color_Red_c40000 + slowRebirthTime + "[-]" + "秒后自动安全复活";
-            QuickRebirthLabel.text = "消耗" + ColorTool.Color_Blue_016bc5 + quickRebirthCost + "[-]" + "元宝立刻满血原地复活";
+            QuickRebirthLabel.text = "[ffb12b]消耗[-]" + MyColorData.getColorString(4, quickRebirthCost) + "[ffb12b]元宝立刻满血原地复活[-]";
 
-            QuickRebirthButton.isEnabled = remainFullRebirthTimes > 0;
+            QuickRebirthButton.isEnabled = true;
             //QuickRebirthButton.UpdateColor(QuickRebirthButton.isEnabled, true);
             BuyFullRebirthTimeObject.SetActive(remainFullRebirthTimes <= 0);
 
@@ -977,14 +981,6 @@ namespace Carriage
 
         public void OnSlowRebirthClick()
         {
-            int vip = VipTemplate.templates.Where(item => item.CarriageRebirth > 0).OrderBy(item => item.lv).First().lv;
-
-            if (JunZhuData.Instance().m_junzhuInfo.vipLv < vip)
-            {
-                CommonBuy.Instance.ShowVIP();
-                return;
-            }
-
             PlayerReviveRequest tempInfo = new PlayerReviveRequest()
             {
                 type = 0
@@ -999,6 +995,20 @@ namespace Carriage
 
         public void OnQuickRebirthClick()
         {
+            int vip = VipTemplate.templates.Where(item => item.CarriageRebirth > 0).OrderBy(item => item.lv).First().lv;
+
+            if (JunZhuData.Instance().m_junzhuInfo.vipLv < vip)
+            {
+                CommonBuy.Instance.ShowVIP();
+                return;
+            }
+
+            if (JunZhuData.Instance().m_junzhuInfo.yuanBao < m_quickRebirthCost)
+            {
+                CommonBuy.Instance.ShowIngot();
+                return;
+            }
+
             PlayerReviveRequest tempInfo = new PlayerReviveRequest()
             {
                 type = 1

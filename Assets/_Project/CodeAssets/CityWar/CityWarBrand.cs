@@ -65,7 +65,7 @@ public class CityWarBrand : GeneralInstance<CityWarBrand> {
 		m_sc.enabled = m_brandList.Count < 7 ? false : true;
 		m_sb.gameObject.SetActive (m_brandList.Count < 7 ? false : true);
 
-		m_rules.text = m_brandList.Count == 20 ? QXComData.yellow + LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_9) + "[-]" : "";
+		m_rules.text = m_brandList.Count >= 7 ? QXComData.yellow + LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_9) + "[-]" : "";
 	}
 
 	void Update ()

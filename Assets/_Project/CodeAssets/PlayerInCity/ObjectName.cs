@@ -17,9 +17,6 @@ public class ObjectName : MonoBehaviour {
     private GameObject _ObjEffect = null;
     public string _Designation = null;
 
-    private bool isPlayer = true;
-	public bool IsPlayer { set{isPlayer = value;} get{return isPlayer;} }
-
 	void Start()
 	{
 		m_transform = this.GetComponent<Transform>();
@@ -70,7 +67,7 @@ public class ObjectName : MonoBehaviour {
         {
             if (int.Parse(u_info._VInfo) > 0)
             {
-                m_ObjVip.transform.localPosition = new Vector3(-50 - (FunctionWindowsCreateManagerment.DistanceCount(u_info._Name) - 1) * 6, -11, 0);
+                m_ObjVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(u_info._Name) - 1) *13, -11, 0);
                 m_ObjVip.SetActive(true);
                 m_SpriteVip.spriteName = "v" + u_info._VInfo;
                 m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
@@ -90,90 +87,76 @@ public class ObjectName : MonoBehaviour {
         ShowOrHide(true);
     }
 
+	#region TreasureCity
+	private bool isPlayer = true;
+	public bool IsPlayer { set{isPlayer = value;} get{return isPlayer;} }
 
-    public void Init(string tempPlayerName,string tempAllianceName,string tempChengHao,string vip_level,int zhiwei)//初始化玩家名字
+	public void InItTreasureCityName (PlayersManager.OtherPlayerInfo u_info)//初始化十连副本玩家名字
 	{
-		if (IsPlayer)
+		m_NameSend = u_info._Name;
+		if (!string.IsNullOrEmpty(u_info._AllianceName)  && !u_info._AllianceName.Equals("***"))
 		{
-			if (!string.IsNullOrEmpty(tempAllianceName))
+			m_LabAllianceName.text = MyColorData.getColorString(12, "<" + u_info._AllianceName + ">  " + FunctionWindowsCreateManagerment.GetIdentityById(u_info._Duty));
+		}
+		else
+		{
+			m_LabAllianceName.text = MyColorData.getColorString(12, "<" +LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT)+">");
+		}
+		
+		if (!string.IsNullOrEmpty(u_info._Designation) && !u_info._Designation.Equals("-1"))
+		{
+			m_isShowChengHao = true;
+			m_SpriteChengHao.gameObject.SetActive(true);
+			m_SpriteChengHao.spriteName = u_info._Designation;
+			
+			if (!string.IsNullOrEmpty(_Designation)
+			    )
 			{
-				m_LabAllianceName.text = MyColorData.getColorString(12, "<" + tempAllianceName + ">  " + FunctionWindowsCreateManagerment.GetIdentityById(zhiwei)) ;
+				CreateEffect(int.Parse(u_info._Designation));
 			}
-			else
+			else if (!_Designation.Equals(u_info._Designation))
 			{
-				m_LabAllianceName.text = MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
+				CreateEffect(int.Parse(u_info._Designation));
 			}
-
-			if (!string.IsNullOrEmpty(tempChengHao) && !tempChengHao.Equals("-1"))
+			
+			if (string.IsNullOrEmpty(_Designation))
 			{
-				m_SpriteChengHao.gameObject.SetActive(true);
-				m_SpriteChengHao.spriteName = tempChengHao;
-                if (!string.IsNullOrEmpty(_Designation)
-                )
-                {
-                    CreateEffect(int.Parse(tempChengHao));
-                }
-                else if (!_Designation.Equals(tempChengHao))
-                {
-                    CreateEffect(int.Parse(tempChengHao));
-                }
-
-                if (string.IsNullOrEmpty(_Designation))
-                {
-                    _Designation = tempChengHao;
-                }
-            }
-			else
-			{
-                if (_ObjEffect)
-                {
-                    Destroy(_ObjEffect);
-                }
-                m_isShowChengHao = false;
-                m_SpriteChengHao.gameObject.SetActive(false);
-			}
-
-			if (!string.IsNullOrEmpty(vip_level))
-			{
-				//if (int.Parse(vip_level) > 0)
-				//{
-				//    m_playerName.text = MyColorData.getColorString(1,"V" + vip_level.ToString()) +" "+ MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-				//}
-				//else
-				//{
-				//    m_playerName.text =  MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-				//}
-				if (int.Parse(vip_level) > 0)
-				{
-					m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(tempPlayerName) - 1) * 20, -11, 0);
-					m_SpriteVip.gameObject.SetActive(true);
-					m_SpriteVip.spriteName = "vip" + vip_level;
-					m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-				}
-				else
-				{
-					m_SpriteVip.gameObject.SetActive(false);
-					m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
-				}
-			}
-			else
-			{
-				// m_playerName.alignment = NGUIText.Alignment.Automatic; 
-				m_playerName.text = MyColorData.getColorString(9, "[b]" + tempPlayerName + "[/b]");
+				_Designation = u_info._Designation;
 			}
 		}
-        else
+		else
 		{
-			m_LabAllianceName.text = "";
-			m_isShowChengHao = false;
+			//if (_ObjEffect)
+			//{
+			//    Destroy(_ObjEffect);
+			//}
 			m_SpriteChengHao.gameObject.SetActive(false);
-			m_SpriteVip.gameObject.SetActive(false);
-
-			m_playerName.text = IsPlayer ? tempPlayerName : MyColorData.getColorString (12,tempPlayerName) + "的宝箱";
 		}
-
-        ShowOrHide(true);
+		
+		if (!string.IsNullOrEmpty(u_info._VInfo))
+		{
+			if (int.Parse(u_info._VInfo) > 0)
+			{
+				m_ObjVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(u_info._Name) - 1) *13, -11, 0);
+				m_ObjVip.SetActive(true);
+				m_SpriteVip.spriteName = "v" + u_info._VInfo;
+				m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
+			}
+			else
+			{
+				m_ObjVip.gameObject.SetActive(false);
+				m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
+			}
+		}
+		else
+		{
+			m_ObjVip.gameObject.SetActive(false);
+			m_playerName.text = MyColorData.getColorString(9, "[b]" + u_info._Name + "[/b]");
+		}
+		
+		ShowOrHide(true);
 	}
+	#endregion
 
     public void UpdateZH(string info)
     {

@@ -10,8 +10,8 @@ public class UITextManager
 
 	public void createText(string data)
 	{
-//        Debug.Log("datadatadatadatadatadatadatadata ::" + data);
-		m_listData.Add(data);
+        //Debug.Log("datadatadatadatadatadatadatadata ::" + data);
+        m_listData.Add(data);
 		if(m_ObjText == null)
 		{
 			Global.ResourcesDotLoad("New/Text", CachedTextCallback);

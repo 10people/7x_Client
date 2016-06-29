@@ -57,7 +57,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
 
     public GameObject m_ObjTopLeft;
 
-
+    public GameObject m_ObjTopRight;
     public UILabel m_LabTitle;
     public List<AllianceCreateCountryItemManagerment> m_listEventSelectNation;
        public List<EventIndexHandle> m_listEventNation; 
@@ -174,7 +174,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
     }
     void RequestData()
     {
-        AllianceData.Instance.RequestData();
+        AllianceData.Instance.RequestCurrentData();
         AllianceData.Instance.RequestYaoQing();
     }
 
@@ -342,6 +342,8 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             {
                 isShowOn = false;
                 AllianceData.Instance.m_InstantiateNoAlliance = false;
+                m_ObjTopRight.SetActive(true);
+                m_Durable_UI.SetActive(true);
                 AllianceInfoShow();
                 if (FunctionWindowsCreateManagerment.m_AllianceID > 0)
                 {
@@ -945,8 +947,10 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                             _AppliedCount++;
                                         }
                                     }
-                                    AllianceData.Instance.NoAlliance = true;
-                                    AllianceData.Instance.m_InstantiateNoAlliance = true;
+                                    if (AllianceLayerManagerment.m_No_AllianceLayer)
+                                    {
+                                        AllianceData.Instance.m_InstantiateNoAlliance = true;
+                                    }
 
 
                                     m_ObjAllianceInfo.SetActive(false);
@@ -1089,8 +1093,11 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                             _AppliedCount++;
                                         }
                                     }
-                                    AllianceData.Instance.NoAlliance = true;
-                                    AllianceData.Instance.m_InstantiateNoAlliance = true;
+                                    if (AllianceLayerManagerment.m_No_AllianceLayer)
+                                    {
+                                        AllianceData.Instance.m_InstantiateNoAlliance = true;
+                                    }
+                             
 
 
                                     m_ObjAllianceInfo.SetActive(false);
@@ -1407,7 +1414,6 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                             return true;
                                         }
                                     }
-
                                 }
                                 break;
                             case AllianceConnectRespEnum.E_ALLIANCE_NINE:
@@ -1914,35 +1920,29 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
         TouchedItemId = alliance_id;
 
         _guojiaId = country_id;
-        if (_AppliedCount < 3)
-        {
-            for (int i = 0; i < listItemNeedInfo.Count; i++)
-            {
-                if (listItemNeedInfo[i].id == alliance_id)
-                {
 
-                    if (listItemNeedInfo[i].ShenPiId == 0)
+        for (int i = 0; i < listItemNeedInfo.Count; i++)
+        {
+            if (listItemNeedInfo[i].id == alliance_id)
+            {
+
+                if (listItemNeedInfo[i].ShenPiId == 0)
+                {
+                    if (_AppliedCount < 3)
                     {
-                        if (_AppliedCount < 3)
-                        {
-                            ConnectServer(3);
-                        }
-                        else
-                        {
-                            ClientMain.m_UITextManager.createText("您同时只能提出3份入盟申请！");
-                        }
+                        ConnectServer(3);
                     }
                     else
                     {
-                        ConnectServer(5);
+                        ClientMain.m_UITextManager.createText("您同时只能提出3份入盟申请！");
                     }
-                    break;
                 }
+                else
+                {
+                    ConnectServer(5);
+                }
+                break;
             }
-        }
-        else
-        {
-            ClientMain.m_UITextManager.createText("您同时只能提出3份入盟申请！");
         }
     }
     private void ShowSwitch(int _country_id)

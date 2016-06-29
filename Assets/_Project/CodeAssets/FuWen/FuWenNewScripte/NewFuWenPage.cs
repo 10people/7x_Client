@@ -53,6 +53,8 @@ public class NewFuWenPage : MonoBehaviour ,SocketListener {
 	public GameObject[] Locks;
 	public GameObject OneKeyArelt;
 
+	public bool SecondLieFu = false;
+
 	public static NewFuWenPage Instance()
 	{
 		if (!mNewFuWenPage)
@@ -659,7 +661,7 @@ public class NewFuWenPage : MonoBehaviour ,SocketListener {
 				mFuWenLanWeiList[i].init();
 			}
 		}
-		if(mQueryFuwen.lanwei[0].itemId != 0 && FreshGuide.Instance().IsActive(100470)&& TaskData.Instance.m_TaskInfoDic[100470].progress >= 0)
+		if(mQueryFuwen.lanwei[0].itemId != 0)
 		{
 			if(UIYindao.m_UIYindao.m_isOpenYindao)
 			{
@@ -988,7 +990,7 @@ public class NewFuWenPage : MonoBehaviour ,SocketListener {
 			NewfuWenObj = GameObject.Instantiate( p_object ) as GameObject;
 			LieFuManagerment mNewfuWenObj = NewfuWenObj.GetComponent<LieFuManagerment>();
 			mNewfuWenObj.Init (YinDaoManager);
-			MainCityUI.TryAddToObjectList(NewfuWenObj,true);
+			MainCityUI.TryAddToObjectList(NewfuWenObj,true,false);
 		} 
 	}
 	public void ChangeJiaPian()//兑换甲片

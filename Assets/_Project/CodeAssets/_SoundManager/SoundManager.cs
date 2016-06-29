@@ -600,7 +600,7 @@ public class SoundManager{
 
 	public static void EYuyin()
 	{
-		if(!ClientMain.m_ClientMain.m_SoundPlayEff.m_isPlay && !QXChatPage.chatPage.m_isPlaying)
+		if(!ClientMain.m_ClientMain.m_SoundPlayEff.m_isPlay && (QXChatPage.chatPage == null || !QXChatPage.chatPage.m_isPlaying))
 		{
 			ClientMain.m_sound_manager.m_ListMusic[ClientMain.m_sound_manager.m_iCurMusicIndex].volume = ClientMain.m_sound_manager.m_fMaxVolume * 4;
 			for(int i = 0; i < m_listSourceEff.Count; i ++)

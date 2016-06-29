@@ -11,9 +11,7 @@ using ProtoBuf.Meta;
 public class AllianceData : Singleton<AllianceData>, SocketProcessor
 {
     public Dictionary<int, NonAllianceInfo> m_AllianceInfoDic = new Dictionary<int, NonAllianceInfo>();
-
-    public bool NoAlliance = false;
-    // public int m_AllianceAppliedCount = 0;
+ 
     public int m_AllianceCreatePrice = 0;
 
     public bool m_InstantiateNoAlliance = false;
@@ -108,7 +106,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
                             if (allianceNoRes.alincInfo == null)
                             {
-                                NoAlliance = true;
+                                
                             }
                             else
                             {
@@ -605,11 +603,14 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 	}
     public void RequestData()
     {
-//        Debug.Log("30102");
-
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);
+         SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ);
     }
-	void CloseAllRedPoints()
+
+    public void RequestCurrentData()
+    {
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ, true, p_receiving_wait_proto_index: ProtoIndexes.ALLIANCE_NON_RESP);
+    }
+    void CloseAllRedPoints()
 	{
 		PushAndNotificationHelper.SetRedSpotNotification(600700, false);//贡献商铺
 		PushAndNotificationHelper.SetRedSpotNotification(903, false);//荒野商店
@@ -627,20 +628,11 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 	}
     public void RefreshAllianceInfo(AllianceNonResp tempAllianceInfo)
     {
-//        Debug.Log("tempAllianceInfotempAllianceInfo ::" + tempAllianceInfo.alincInfo.Count);
-
         for (int i = 0; i < tempAllianceInfo.alincInfo.Count; i++)
         {
-//            Debug.Log(" tempAllianceInfo.alincInfo[i].name tempAllianceInfo.alincInfo[i].name" + tempAllianceInfo.alincInfo[i].name);
-          
-            //if (tempAllianceInfo.alincInfo[i].isApplied)
-            //{
-            //    m_AllianceAppliedCount++;
-            //}
             m_AllianceInfoDic.Add(tempAllianceInfo.alincInfo[i].id, tempAllianceInfo.alincInfo[i]);
         }
 
-        NoAlliance = true;
     }
 	//查看入盟申请成员请求
 	void ApplicateAllianceReq (AllianceHaveResp tempInfo)
@@ -662,8 +654,6 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 		byte[] t_protof = t_stream.ToArray ();
 		
 		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_APPLICANTS,ref t_protof);
-
-//		Debug.Log ("ApplicateReq" + ProtoIndexes.LOOK_APPLICANTS);
 	}
 
 	void OnDestroy(){

@@ -686,9 +686,9 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 	//降职loadCallBack
 	public void DownResourceLoadCallback( ref WWW p_www, string p_path,  Object p_object )
 	{
-		GameObject boxObj = Instantiate( p_object ) as GameObject;
-		UIBox uibox = boxObj.GetComponent<UIBox> ();
-		
+//		GameObject boxObj = Instantiate( p_object ) as GameObject;
+//		UIBox uibox = boxObj.GetComponent<UIBox> ();
+//		
 		if (downTitleResp.code == 0)
 		{
 			titleStr = "降职成功";
@@ -722,7 +722,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_DES1);
 			string str2 = m_allianceHaveRes.name + LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_DES2);
 			
-			uibox.setBox(exitTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,confirmStr,null,DeletUI_i);
+			uibox.setBox(exitTitleStr, str1, str2,null,confirmStr,null,DeletUI_i);
 		}
 		else
 		{
@@ -730,7 +730,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			
 			string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_FAIL);
 			string str2 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_FAIL_REASON);
-			uibox.setBox(exitTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,confirmStr,null,null);
+			uibox.setBox(exitTitleStr, str1,str2,null,confirmStr,null,null);
 		}
 	}
 
@@ -765,7 +765,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_JIESAN_SUCCESS_STR1);
 		string str2 = m_allianceHaveRes.name + LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_JIESAN_SUCCESS_STR2);
 		
-		uibox.setBox(jieSanTitleStr, MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,confirmStr,null,DisAllianceSuccessBack);
+		uibox.setBox(jieSanTitleStr,str1, str2,null,confirmStr,null,DisAllianceSuccessBack);
 
 	}
 
@@ -816,7 +816,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		
 		string exitTitle = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_EXIT_TITLE);
 		
-		uibox.setBox(exitTitle, MyColorData.getColorString (1,str2), null,
+		uibox.setBox(exitTitle, str2, null,
 		             null,cancelStr,confirmStr,ExitAllianceReq);
 	}
 
@@ -852,7 +852,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		string str1 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_CONFIRM_JIESAN_ASKSTR1);
 		string str2 = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_CONFIRM_JIESAN_ASKSTR2);
 		
-		uibox.setBox(jieSanTitleStr,MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,cancelStr,confirmStr,DisAlliance);
+		uibox.setBox(jieSanTitleStr,str1, str2,null,cancelStr,confirmStr,DisAlliance);
 	}
 	void DisAlliance (int i)
 	{
@@ -875,7 +875,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		string sanSiStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_JIESAN_SANSI);
 		string jieSanStr = LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_JIESAN);
 		
-		uibox.setBox(jieSanTitleStr,MyColorData.getColorString (1,str1), MyColorData.getColorString (1,str2),null,sanSiStr,jieSanStr,DisAllianceReq);
+		uibox.setBox(jieSanTitleStr,str1, str2,null,sanSiStr,jieSanStr,DisAllianceReq);
 	}
 	//发送解散联盟请求
 	void DisAllianceReq (int i)

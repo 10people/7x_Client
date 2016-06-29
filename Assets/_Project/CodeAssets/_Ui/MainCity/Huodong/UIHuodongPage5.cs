@@ -149,7 +149,7 @@ public class UIHuodongPage5 : MYNGUIPanel , SocketListener
 			if(m_iPid != m_Info.leveList[index].id)
 			{
 				m_iPid = m_Info.leveList[index].id;
-				Global.ScendID(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_GET_REQ, m_Info.leveList[index].id, ProtoIndexes.S_ACTIVITY_FIRST_CHARGE_GETREWARD_RESP);
+				Global.ScendID(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_GET_REQ, m_Info.leveList[index].id, ProtoIndexes.S_ACTIVITY_ACHIEVEMENT_GET_RESP);
 				Global.ScendNull(ProtoIndexes.C_ACTIVITY_ACHIEVEMENT_INFO_REQ, ProtoIndexes.S_ACTIVITY_ACHIEVEMENT_INFO_RESP);
 				if (FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
 				{

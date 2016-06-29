@@ -128,6 +128,7 @@ public class TaskSignalInfoShow : MonoBehaviour
         else
         {
             UI3DEffectTool.ClearUIFx(m_ObjFinish);
+            ClientMain.closePopUp();
             Destroy(gameObject);
         }
     }

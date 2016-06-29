@@ -18,7 +18,7 @@ public class TCityPlayerManager : GeneralInstance<TCityPlayerManager> , SocketPr
 	private int targetBoxUID;
 
 	private int isOpeningId;
-
+	
 	void Awake ()
 	{
 		base.Awake ();
@@ -144,7 +144,11 @@ public class TCityPlayerManager : GeneralInstance<TCityPlayerManager> , SocketPr
 				}
 				return true;
 			}
-
+//			case ProtoIndexes.S_HEAD_INFO: //玩家称号、vip更新
+//			{
+//				Debug.Log ("ProtoIndexes.S_HEAD_INFO:" + ProtoIndexes.S_HEAD_INFO);
+//				return true;
+//			}
 			case ProtoIndexes.S_HEAD_STRING: //玩家称号、vip更新
 			{
 //				Debug.Log ("玩家称号、vip更新:" + ProtoIndexes.S_HEAD_STRING);
@@ -216,8 +220,8 @@ public class TCityPlayerManager : GeneralInstance<TCityPlayerManager> , SocketPr
 				return;
 			}
 			GameObject tCityObj = (GameObject)Instantiate (playerModelDic [0]);
-			tCityObj.name = "PlayerObject:" + tempEnterScene.jzId;
-			Debug.Log ("pos:" + new Vector3 (tempEnterScene.posX,tempEnterScene.posY,tempEnterScene.posZ));
+			tCityObj.name = "PlayerObject:" + tempEnterScene.jzId + ":" + tempEnterScene.senderName;
+//			Debug.Log ("pos:" + new Vector3 (tempEnterScene.posX,tempEnterScene.posY,tempEnterScene.posZ));
 			tCityObj.transform.position = new Vector3 (tempEnterScene.posX,tempEnterScene.posY,tempEnterScene.posZ);
 			tCityObj.transform.localScale = Vector3.one * 1.5f;
 			GameObject tCityRoleObj = (GameObject)Instantiate (playerModelDic [tempEnterScene.roleId]);
@@ -426,7 +430,7 @@ public class TCityPlayerManager : GeneralInstance<TCityPlayerManager> , SocketPr
 		}
 
 		Vector3 targetPosition = new Vector3( tempMove.posX,tempMove.posY,tempMove.posZ );
-		Debug.Log ("targetPosition:" + targetPosition);
+//		Debug.Log ("targetPosition:" + targetPosition);
 //		PlayerInCity tempPlayer = playerDic[tempMove.uid].GetComponent<PlayerInCity>();
 //		tempPlayer.PlayerRun (targetPosition);
 		TCityPersonMove playerMove = playerDic[tempMove.uid].GetComponent<TCityPersonMove> ();
@@ -488,6 +492,47 @@ public class TCityPlayerManager : GeneralInstance<TCityPlayerManager> , SocketPr
 		targetBoxUID = uid;
 		TreasureCityUI.m_instance.BottomUI (isFind);
 	}
+	#endregion
+
+	#region ChangeRole
+
+	public void TreasureChangeRole (int tempUID,int tempRoleId)
+	{
+		if (tempUID == PlayerSceneSyncManager.Instance.m_MyselfUid)//自己
+		{
+			Animator myAnimator = TreasureCityPlayer.m_instance.m_playerObj.GetComponentInChildren<Animator> ();
+			Destroy (myAnimator.gameObject);
+
+			GameObject myRoleObj = (GameObject)Instantiate (playerModelDic [tempRoleId]);
+			myRoleObj.transform.parent = TreasureCityPlayer.m_instance.m_playerObj.transform;
+			myRoleObj.transform.localPosition = Vector3.zero;
+			myRoleObj.transform.localRotation = new Quaternion (0,0,0,1);
+			myRoleObj.transform.localScale = Vector3.one;
+
+			TreasureCityPlayer.m_instance.m_animator = myRoleObj.GetComponent<Animator> ();
+		}
+		else
+		{
+			if (!playerDic.ContainsKey (tempUID))
+			{
+				return;
+			}
+
+			Animator roleAnimator = playerDic[tempUID].GetComponentInChildren<Animator> ();
+			Destroy (roleAnimator.gameObject);
+
+			GameObject tCityRoleObj = (GameObject)Instantiate (playerModelDic [tempRoleId]);
+			tCityRoleObj.transform.parent = playerDic[tempUID].transform;
+			tCityRoleObj.transform.localPosition = Vector3.zero;
+			tCityRoleObj.transform.localRotation = new Quaternion (0,0,0,1);
+			tCityRoleObj.transform.localScale = Vector3.one;
+
+			TCityPersonMove personMove = playerDic[tempUID].GetComponent <TCityPersonMove> ();
+			personMove.m_playerID = tempUID;
+			personMove.m_animation = tCityRoleObj.GetComponent <Animator> ();
+		}
+	}
+
 	#endregion
 
 	void OnDestroy ()

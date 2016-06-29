@@ -56,7 +56,7 @@ public class PlayerNameManager : MonoBehaviour
     }
     private static float _ScaleSize = 0f;
     /******************************************************************************************/
-    public static void CreatePlayerName(EnterScene p_player_data,float scale = 0.01f)
+    public static void CreatePlayerName(EnterScene p_player_data,float scale = 0.011f)
     {
         _ScaleSize = scale;
         int size = _PlayerNameInfo.Count;
@@ -102,7 +102,21 @@ public class PlayerNameManager : MonoBehaviour
 			tempName.m_ObjController.GetComponent<UIWidget>().m_camera_oriented = true;
 			tempName.m_ObjController.transform.localScale = new Vector3(_ScaleSize, _ScaleSize, 1.0f);
 			tempName.IsPlayer = _PlayerNameInfo[0].roleId == 600 ? false : true;
-			tempName.Init(_PlayerNameInfo[0].senderName, _PlayerNameInfo[0].allianceName, _PlayerNameInfo[0].chengHao.ToString (),_PlayerNameInfo[0].vipLevel.ToString (),_PlayerNameInfo[0].zhiWu);
+
+			PlayersManager.OtherPlayerInfo playerInfo = new PlayersManager.OtherPlayerInfo();
+			playerInfo._Name = _PlayerNameInfo[0].senderName;
+			playerInfo._UID = _PlayerNameInfo[0].uid;
+			playerInfo._RoleId = _PlayerNameInfo[0].roleId;
+			playerInfo._SeverPos = new Vector3(_PlayerNameInfo[0].posX, _PlayerNameInfo[0].posY, _PlayerNameInfo[0].posZ);
+			playerInfo._MonarchId = _PlayerNameInfo[0].jzId;
+			playerInfo._Designation = _PlayerNameInfo[0].chengHao.ToString();
+			playerInfo._Duty = _PlayerNameInfo[0].zhiWu;
+			playerInfo._AllianceName = _PlayerNameInfo[0].allianceName;
+			playerInfo._VInfo = _PlayerNameInfo[0].vipLevel.ToString();
+
+			tempName.InItTreasureCityName (playerInfo);
+
+//			tempName.Init(_PlayerNameInfo[0].senderName, _PlayerNameInfo[0].allianceName, _PlayerNameInfo[0].chengHao.ToString (),_PlayerNameInfo[0].vipLevel.ToString (),_PlayerNameInfo[0].zhiWu);
             m_playrNameDic.Add(_PlayerNameInfo[0].uid, tempPlayerName);
             _PlayerNameInfo.RemoveAt(0);
        
@@ -167,7 +181,14 @@ public class PlayerNameManager : MonoBehaviour
         if (u_info._UID != PlayersManager.m_Self_UID)
         {
             PlayerNameInCity playerName = m_playrNameDic[u_info._UID].GetComponent<PlayerNameInCity>();
-            playerName.Init_Maincity_PlayerHeadInfo(u_info);
+            if (!string.IsNullOrEmpty(u_info._Greet))
+            {
+                playerName.UpdateZH(u_info._Greet);
+            }
+            else
+            {
+                playerName.Init_Maincity_PlayerHeadInfo(u_info);
+            }
         }
         else if (u_info._UID == PlayersManager.m_Self_UID)
         {
@@ -232,13 +253,15 @@ public class PlayerNameManager : MonoBehaviour
 						string name = m_playrNameDic[u_info.errorCode].GetComponent<PlayerNameInCity>().m_NameSend;
 						if (!string.IsNullOrEmpty(vp[1]) && int.Parse(vp[1]) > 0)
 						{
-                            playerName.m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(name) - 1) * 20, -11, 0);
+//                            playerName.m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(name) - 1) * 20, -11, 0);
+							playerName.m_SpriteVip.transform.localPosition = Vector3.zero;
 							playerName.m_SpriteVip.gameObject.SetActive(true);
-							playerName.m_SpriteVip.spriteName = "vip" + vp[1].ToString();
+							playerName.m_SpriteVip.spriteName = "v" + vp[1].ToString();
 						}
 						else
 						{
-                            playerName.m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(name) - 1) * 20, -11, 0);
+//                            playerName.m_SpriteVip.transform.localPosition = new Vector3(-55 - (FunctionWindowsCreateManagerment.DistanceCount(name) - 1) * 20, -11, 0);
+							playerName.m_SpriteVip.transform.localPosition = Vector3.zero;
                             playerName.m_SpriteVip.gameObject.SetActive(false);
 						}
 					}

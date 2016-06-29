@@ -34,10 +34,10 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     }
     void Start () 
     {
-        for (int i = 0; i < m_listTypeEvent.Count; i++)
-        {
-          m_listTypeEvent[i].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-        }
+        //for (int i = 0; i < m_listTypeEvent.Count; i++)
+        //{
+        //  m_listTypeEvent[i].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+        //}
         m_LabToSignal.text = MyColorData.getColorString(2, LanguageTemplate.GetText(1513));
         m_LabContent.text = LanguageTemplate.GetText(1355);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
@@ -61,9 +61,7 @@ public class EquipGrowthWearManagerment : MonoBehaviour
         {
             TaskData.Instance.m_iCurMissionIndex = 100100;
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-
-            Debug.Log("_Index_Type_Save_Index_Type_Save ::" + _Index_Type_Save);
-            Debug.Log("_Index_Save_Index_Save_Index_Save ::" + _Index_Save);
+ 
             if (_Index_Type_Save != 3 && _Index_Save != 4)
             {
                 tempTaskData.m_iCurIndex = 3;
@@ -103,7 +101,16 @@ public class EquipGrowthWearManagerment : MonoBehaviour
         if (EquipsOfBody.Instance().m_equipsOfBodyDic != null)
         {
             ShowEquipInfo();
-            if (_Index_Type_Save != -1)
+
+
+            if (Global.m_sPanelWantRun != null
+                && !string.IsNullOrEmpty(Global.m_sPanelWantRun)
+                && Global.m_sPanelWantRun != "null")
+            {
+                ShowDefault();
+    
+           }
+           else if (_Index_Type_Save != -1)
             {
                 Dictionary<int, BagItem> tempEquipsOfBodyDic = EquipsOfBody.Instance().m_equipsOfBodyDic;
                 if (tempEquipsOfBodyDic.ContainsKey(_Index_Save))
@@ -169,25 +176,22 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             {
                 StrengthTanHao();
             }
+          
             _Index_Type_Save = index;
           
             switch (index)
             {
                 case 0:
                     {
-                        //m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
-                        //m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[3].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                     
+
                     }
 
                     break;
                 case 1:
                     {
-                        //m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
-                        //m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[3].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                      
+
                     }
                     break;
                 case 2:
@@ -201,19 +205,15 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
                         }
                         showAniMation();
-                        //m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
-                        //m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[3].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
+                       
+
                     }
                     break;
                 case 3:
                     {
 
-                        //m_listTypeEvent[2].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[0].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[1].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-                        //m_listTypeEvent[3].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(true);
+                   
+
                     }
                     break;
                 default:
@@ -264,17 +264,17 @@ public class EquipGrowthWearManagerment : MonoBehaviour
 
     }
 
-     public void ShowDefault()
+    public void ShowDefault()
     {
-        if (Global.m_sPanelWantRun != null 
+        if (Global.m_sPanelWantRun != null
             && !string.IsNullOrEmpty(Global.m_sPanelWantRun)
             && Global.m_sPanelWantRun != "null")
         {
-           
-            int type = int.Parse(Global.NextCutting( ref Global.m_sPanelWantRun));
+
+            int type = int.Parse(Global.NextCutting(ref Global.m_sPanelWantRun));
             int buwei = -1;
-   
-            string equip_id = Global.NextCutting(ref Global.m_sPanelWantRun) ;
+
+            string equip_id = Global.NextCutting(ref Global.m_sPanelWantRun);
             if (!string.IsNullOrEmpty(equip_id))
             {
                 int tt = 0;
@@ -300,9 +300,10 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             }
 
             Global.m_sPanelWantRun = null;
-     
+
             if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(buwei))
             {
+
                 m_listItemEvent[buwei].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
                 m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(false);
                 _Index_Save = buwei;
@@ -312,27 +313,23 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                     case 0:
                         {
                             ShowTypes(type);
+
                         }
                         break;
                     case 1:
                         {
+
                             ShowTypes(type);
                         }
                         break;
                     case 2:
                         {
-                           
-                            {
-                                ShowTypes(type);
-                            }
+                            ShowTypes(type);
                         }
                         break;
                     case 3:
                         {
-                            
-                            {
-                                ShowTypes(type);
-                            }
+                            ShowTypes(type);
                         }
                         break;
                     default: break;
@@ -341,13 +338,13 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             else
             {
                 ClientMain.m_UITextManager.createText(LanguageTemplate.GetText(LanguageTemplate.Text.EQUIP_WEAR));
-        
+
             }
         }
         else
         {
             string[] _info = FunctionWindowsCreateManagerment.m_EquipSaveInfo.Split(':');
-         
+
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(false);
             _Index_Save = int.Parse(_info[1]);
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
@@ -365,7 +362,7 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                     break;
                 case 2:
                     {
-                       ShowTypes(int.Parse(_info[0]));
+                        ShowTypes(int.Parse(_info[0]));
                     }
                     break;
                 case 3:
@@ -373,10 +370,10 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                         ShowTypes(int.Parse(_info[0]));
                     }
                     break;
-                default:break;
+                default: break;
             }
         }
-  }
+    }
     void showAniMation()
     {
         for (int i = 0; i < m_listItemEvent.Count; i++)

@@ -86,7 +86,7 @@ public class BbuttonColorChangeManegerment : MonoBehaviour
 
         m_BackObj.GetComponent<TweenColor>().duration = 0.08f;
         m_BackObj.GetComponent<TweenColor>().enabled = true;
-        if (type != 0)
+        if (type != 0 || colliderEnable)
         {
             transform.GetComponent<Collider>().enabled = colliderEnable;
         }

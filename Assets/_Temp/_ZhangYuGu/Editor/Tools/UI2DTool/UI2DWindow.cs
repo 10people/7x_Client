@@ -43,7 +43,7 @@ public class UI2DWindow : EditorWindow {
 		
 		EditorGUILayout.ObjectField( "Cached GameObject", UI2DTool.GetCachedGameObject(), typeof(GameObject) );
 
-		EditorGUILayout.ObjectField( "Scaler GameObject", UI2DTool.GetActiveBackgroundScalerGameObject(), typeof(GameObject) );
+		EditorGUILayout.ObjectField( "Scaler GameObject", UI2DTool.GetTopBackgroundScalerGameObject(), typeof(GameObject) );
 
 		EditorGUILayout.EndVertical();
 	}

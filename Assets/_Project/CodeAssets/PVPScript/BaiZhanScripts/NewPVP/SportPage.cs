@@ -29,6 +29,7 @@ public class SportPage : GeneralInstance<SportPage> {
 	private string m_textStr;
 
 	private bool m_isShopYinDao = false;
+	private bool m_moveFinished = false;
 
 	public GameObject m_anchorTR;
 
@@ -44,6 +45,7 @@ public class SportPage : GeneralInstance<SportPage> {
 
 	public void InItSportPage (BaiZhanInfoResp tempResp,SportPageDelegate tempDelegate)
 	{
+		m_moveFinished = false;
 		//yindao
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 
@@ -260,7 +262,7 @@ public class SportPage : GeneralInstance<SportPage> {
 		if (m_getRewardCdTime - p_time > 0)
 		{
 			m_getRewardCd.text = TimeHelper.GetUniformedTimeString (m_getRewardCdTime - p_time);
-			Debug.Log ("m_getRewardCdTime - p_time:" + (m_getRewardCdTime - p_time));
+//			Debug.Log ("m_getRewardCdTime - p_time:" + (m_getRewardCdTime - p_time));
 		}
 		else
 		{
@@ -356,13 +358,15 @@ public class SportPage : GeneralInstance<SportPage> {
 	public Camera m_camera;
 	public GameObject m_pageObj;
 
-	public GameObject m_tempObj;
+	public GameObject m_tempObj1;
+	public GameObject m_tempObj2;
 
 	void MoveToMyHeadPos ()
 	{
 		m_headIcon.spriteName = "PlayerIcon" + CityGlobalData.m_king_model_Id;
 //		SportTemp.id = 901;
 		float pageWidth = m_pageObj.GetComponent<UITexture> ().width;
+		float pageHeight = m_pageObj.GetComponent<UITexture> ().height;
 		foreach (GameObject obj in m_junXianRoomList)
 		{
 			SportJunXian sportJunXian = obj.GetComponent<SportJunXian> ();
@@ -371,7 +375,8 @@ public class SportPage : GeneralInstance<SportPage> {
 				m_ownHeadObj.transform.parent = obj.transform.parent;
 				m_ownHeadObj.transform.localPosition = obj.transform.localPosition + new Vector3(0,375,0);
 
-				m_tempObj.transform.localPosition = m_texPosDic[SportTemp.id] + new Vector3(pageWidth / 2,0,0);
+				m_tempObj1.transform.localPosition = m_texPosDic[SportTemp.id] - new Vector3(pageWidth / 2,pageHeight / 2,0);
+				m_tempObj2.transform.localPosition = m_texPosDic[SportTemp.id] + new Vector3(pageWidth / 2,pageHeight / 2,0);
 
 				m_targetPos = obj.transform.localPosition + new Vector3 (0, 75, 0);
 				m_targetType = iTween.EaseType.easeOutQuart;
@@ -382,31 +387,51 @@ public class SportPage : GeneralInstance<SportPage> {
 	
 		#if SetMapPos
 		
-		//		Debug.Log ("ScreenWidth:" + Screen.width);
-		//		Debug.Log ("height:" + Screen.height);
+		Vector3 sToView1 = m_camera.ScreenToViewportPoint (new Vector3 (0,0,0));
+		Vector3 sToView2 = m_camera.ScreenToViewportPoint (new Vector3 (Screen.width,Screen.height,0));
 		
-		Vector3 sToView = m_camera.ScreenToViewportPoint (new Vector3(Screen.width,0,0));
-		//		Debug.Log ("sToView:" + sToView);
+		Vector3 sToViewPos1 = m_camera.WorldToViewportPoint (m_tempObj1.transform.position);
+		Vector3 sToViewPos2 = m_camera.WorldToViewportPoint (m_tempObj2.transform.position);
+
+//		Debug.Log ("sToView1:" + sToView1);
+//		Debug.Log ("sToView2:" + sToView2);
+//
+//		Debug.Log ("sToViewPos1:" + sToViewPos1);
+//		Debug.Log ("sToViewPos2:" + sToViewPos2);
 		
-		Vector3 sToViewPos = m_camera.WorldToViewportPoint (m_tempObj.transform.position);
-		//		Debug.Log ("sToViewPos:" + sToViewPos);
-		
-		Vector3 tarPos = new Vector3();
-		if (sToViewPos.x < sToView.x)
+		Vector3 tarPos = m_texPosDic[SportTemp.id];
+
+		if (sToViewPos1.x > sToView1.x)
 		{
-			float dis = (sToView.x - sToViewPos.x) * Screen.width;
-			//			Debug.Log ("dis:" + dis);
-			tarPos = m_texPosDic[SportTemp.id] + new Vector3(dis,0,0);
+			float dis = (sToViewPos1.x - sToView1.x) * Screen.width;
+			tarPos.x = m_texPosDic[SportTemp.id].x - dis;
 		}
-		else
+		if (sToViewPos1.y > sToView1.y)
 		{
-			tarPos = m_texPosDic[SportTemp.id];
+			float dis = (sToViewPos1.y - sToView1.y) * Screen.height;
+			tarPos.y = m_texPosDic[SportTemp.id].y - dis;
 		}
+
+		if (sToViewPos2.x < sToView2.x)
+		{
+			float dis = (sToView2.x - sToViewPos2.x) * Screen.width;
+			tarPos.x = m_texPosDic[SportTemp.id].x + dis;
+		}
+		if (sToViewPos2.y < sToView2.y)
+		{
+			float dis = (sToView2.y - sToViewPos2.y) * Screen.height;
+			tarPos.y = m_texPosDic[SportTemp.id].y + dis;
+		}
+
 		#endif
 
 		if (m_pageObj.transform.localPosition != tarPos)
 		{
 			PageMove (tarPos);
+		}
+		else
+		{
+			m_moveFinished = true;
 		}
 
 		PageScale ();
@@ -429,10 +454,15 @@ public class SportPage : GeneralInstance<SportPage> {
 		move.Add ("position",pos);
 		move.Add ("islocal",true);
 
-//		move.Add ("oncomplete","MoveEnd");
-//		move.Add ("oncompletetarget",gameObject);
+		move.Add ("oncomplete","MoveEnd");
+		move.Add ("oncompletetarget",gameObject);
 
 		iTween.MoveTo (m_pageObj,move);
+	}
+
+	void MoveEnd ()
+	{
+		m_moveFinished = true;
 	}
 
 	void PageScale ()
@@ -635,6 +665,10 @@ public class SportPage : GeneralInstance<SportPage> {
 
 	public override void MYClick (GameObject ui)
 	{
+		if (!m_moveFinished)
+		{
+			return;
+		}
 		switch (ui.name)
 		{
 		case "ShopBtn":

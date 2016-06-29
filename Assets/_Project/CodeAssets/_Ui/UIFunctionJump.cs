@@ -55,11 +55,19 @@ public class UIFunctionJump : MYNGUIPanel
 					{
 						Global.m_sMainCityWantOpenPanel = m_FunctionLinkTemplate.functionID[index];
 						Global.m_sPanelWantRun = m_FunctionLinkTemplate.functionSprite[index];
+						if(Global.m_sPanelWantRun == "null")
+						{
+							Global.m_sPanelWantRun = null;
+						}
 					}
 					else
 					{
 						Global.m_sMainCityWantOpenPanel = FunctionOpenTemp.GetTemplateById(m_FunctionLinkTemplate.functionID[index]).GetParent_menu_id();
 						Global.m_sPanelWantRun = m_FunctionLinkTemplate.functionSprite[index];
+						if(Global.m_sPanelWantRun == "null")
+						{
+							Global.m_sPanelWantRun = null;
+						}
 					}
 				}
 				else

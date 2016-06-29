@@ -208,13 +208,13 @@ public class UIBuyMoneyPanel : MYNGUIPanel , SocketProcessor
 		}
 		else if(ui.name.IndexOf("Button1") != -1)
 		{
-			Global.ScendNull(ProtoIndexes.C_BUY_TongBi);
+			Global.ScendNull(ProtoIndexes.C_BUY_TongBi, ProtoIndexes.S_BUY_TongBi_LiXu);
 		}
 		else if(ui.name.IndexOf("Button2") != -1)
 		{
 			if(m_BuyTongbiData.nowCount >= m_BuyTongbiData.maxCount)
 			{
-				Global.ScendNull(ProtoIndexes.C_BUY_TongBi);
+				Global.ScendNull(ProtoIndexes.C_BUY_TongBi, ProtoIndexes.S_BUY_TongBi_LiXu);
 			}
 			else
 			{

@@ -77,7 +77,7 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
                             case 104:
                             case 105:
                                 {
-                                    ClientMain.m_UITextManager.createText("成功加入协助");
+                                    ClientMain.m_UITextManager.createText(DescIdTemplate.GetDescriptionById(3100003));
                                     m_RootManager.m_CarriageMain.TpToPosition(new Vector2(msg.posX, msg.posZ));
                                     break;
                                 }
@@ -391,22 +391,26 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
 
                         switch (tempInfo.resCode)
                         {
+                            //no ingot
+                            case 30:
+                            //can buy
                             case 40:
-                                if (tempInfo.remainTimes > 0)
-                                {
-                                    CommonBuy.Instance.ShowBuy(tempInfo.nextCost, tempInfo.nextGet, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_RootManager.m_CarriageMain.DoBuyBloodTimes, VipTemplate.templates.Where(item => item.CarriageBlood > 0).OrderBy(item => item.lv).First().lv);
-                                }
-                                else
-                                {
-                                    CommonBuy.Instance.ShowVIP();
-                                }
-
-                                m_RootManager.m_CarriageMain.SetRemainingBloodNum(tempInfo.remainXuePing);
+                            //xml error
+                            case 50:
+                                CommonBuy.Instance.ShowBuy(tempInfo.nextCost, tempInfo.nextGet, "血瓶", LanguageTemplate.GetText(1801).Replace("n", "5"), m_RootManager.m_CarriageMain.DoBuyBloodTimes, VipTemplate.templates.Where(item => item.CarriageBlood > 0).OrderBy(item => item.lv).First().lv, tempInfo.remainTimes);
                                 break;
-                            default:
-                                m_RootManager.m_CarriageMain.SetRemainingBloodNum(tempInfo.remainXuePing);
+                            //no remaining
+                            case 20:
+                            //vip
+                            case 60:
+                                CommonBuy.Instance.ShowVIP();
+                                break;
+                            //buy succeed
+                            case 10:
                                 break;
                         }
+
+                        m_RootManager.m_CarriageMain.SetRemainingBloodNum(tempInfo.remainXuePing);
 
                         return true;
                     }
@@ -420,25 +424,25 @@ public class CarriageMsgManager : MonoBehaviour, SocketListener
 
                         switch (tempInfo.result)
                         {
+                            //can buy
                             case 0:
-                                CommonBuy.Instance.ShowBuy(tempInfo.cost, tempInfo.getTimes, "次数", "", m_RootManager.m_CarriageMain.DoBuyRebirthFullTime);
-                                break;
+                            //ingot
                             case 2:
-                                ClientMain.m_UITextManager.createText("元宝不足");
+                                CommonBuy.Instance.ShowBuy(tempInfo.cost, tempInfo.getTimes, "次数", "", m_RootManager.m_CarriageMain.DoBuyRebirthFullTime, VipTemplate.templates.Where(item => item.CarriageRebirth > 0).OrderBy(item => item.lv).First().lv, 1);
                                 break;
+                            //vip
                             case 3:
+                            //no remaining
+                            case 4:
                                 CommonBuy.Instance.ShowVIP();
                                 break;
-                            case 4:
-                                ClientMain.m_UITextManager.createText("今日购买次数已用完");
-                                break;
+                            //buy succeed
                             case 100:
                                 ClientMain.m_UITextManager.createText("购买成功");
                                 if (m_RootManager.m_CarriageMain.DeadWindow.activeInHierarchy)
                                 {
                                     m_RootManager.m_CarriageMain.FullRebirthTimesLabel.text = "今日剩余满血复活次数" + ColorTool.Color_Red_c40000 + tempInfo.remainTimes + "[-]";
                                     m_RootManager.m_CarriageMain.QuickRebirthButton.isEnabled = tempInfo.remainTimes > 0;
-                                    //m_RootManager.m_CarriageMain.QuickRebirthButton.UpdateColor(tempInfo.remainTimes > 0, true);
                                 }
                                 break;
                         }

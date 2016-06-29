@@ -126,6 +126,15 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
                         }
                         _runningValueLab = 0;
                         _LevelChange++;
+                        if (_LevelChange < 100)
+                        {
+                          m_LabelLevel.text = "LV." + _LevelChange.ToString() + 
+                                MyColorData.getColorString(45, "                     LV." + (_LevelChange + 1).ToString());
+                        }
+                        else
+                        {
+                            m_LabelLevel.text = MyColorData.getColorString(5, "当前装备已强化至最高等级");
+                        }
                         if (ExpXxmlTemp.getExpXxmlTemp_By_expId(_ExpId, _LevelChange) != null)
                         {
                             _MaxExp = ExpXxmlTemp.getExpXxmlTemp_By_expId(_ExpId, _LevelChange).needExp;
@@ -146,6 +155,15 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
                     }
                     if (m_StopEffectNow)
                     {
+                        if (_Level < 100)
+                        {
+                            m_LabelLevel.text = "LV." + _Level.ToString() +
+                                  MyColorData.getColorString(45, "                     LV." + (_Level + 1).ToString());
+                        }
+                        else
+                        {
+                            m_LabelLevel.text = MyColorData.getColorString(5, "当前装备已强化至最高等级");
+                        }
                         m_StopEffectNow = false;
                         m_listEffect.Clear();
                     }
@@ -162,8 +180,10 @@ public class EquipGrowthEquipInfoItemManagerment : MonoBehaviour
                 break;
         }
     }
+    private int _Level = 0;
     public void ShowInfo(EquipGrowthEquipInfoManagerment.EquipBaseInfo baseInfo)
     {
+        _Level = baseInfo._Level;
         _ExpId = ZhuangBei.getZhuangBeiById(baseInfo._EquipId).expId;
         m_LabelProgress.text = baseInfo._Progress;
         m_SpriteIcon.spriteName = baseInfo._Icon.ToString();

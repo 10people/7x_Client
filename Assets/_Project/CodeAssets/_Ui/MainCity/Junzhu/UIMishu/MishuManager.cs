@@ -114,6 +114,33 @@ public class MishuManager : MYNGUIPanel , SocketListener
 
 	// Update is called once per frame
 	void Update () {
+		if (FreshGuide.Instance().IsActive(100404) && TaskData.Instance.m_TaskInfoDic[100404].progress >= 0)
+		{
+			if(m_UIGotoPvPPanel.gameObject.activeSelf)
+			{
+//				TaskData.Instance.m_iCurMissionIndex = 100404;
+//				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+//				tempTaskData.m_iCurIndex = 5;
+//				if(UIYindao.m_UIYindao.m_iCurId != tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex])
+//				{
+//					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
+//				}
+			}
+			else if(m_MibaoUpObj.activeSelf)
+			{
+				TaskData.Instance.m_iCurMissionIndex = 100404;
+				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+				tempTaskData.m_iCurIndex = 4;
+				if(UIYindao.m_UIYindao.m_iCurId != tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex])
+				{
+					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
+				}
+			}
+			else
+			{
+
+			}
+		}
 		if(m_isAnimationing)
 		{
 			for(int i = 0; i < m_listState.Count; i ++)
@@ -761,12 +788,6 @@ public class MishuManager : MYNGUIPanel , SocketListener
 				{
 					UIYindao.m_UIYindao.CloseUI();
 				}
-			}
-			else if (FreshGuide.Instance().IsActive(200005) && TaskData.Instance.m_TaskInfoDic[200005].progress >= 0)
-			{
-				ZhuXianTemp tempTaskData = ZhuXianTemp.getTemplateById(200010);
-				tempTaskData.m_iCurIndex = 2;
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 			}
 			for(int i = 0; i < m_MibaoInfoResp.miBaoList.Count; i ++)
 			{

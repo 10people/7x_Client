@@ -20,8 +20,6 @@ public class KingCamera : MonoBehaviour
 
 	public Camera childCamera;
 
-	public Camera camera3dui;
-
 
 	[HideInInspector] public GameObject target;
 
@@ -56,6 +54,11 @@ public class KingCamera : MonoBehaviour
 	
 	private float totalLength = 0;
 
+	private Vector3 tempOffset;
+
+	private List<Vector3> tempPositionList = new List<Vector3>();
+
+
 	void OnDestroy(){
 		shakeControllor = null;
 	}
@@ -79,6 +82,10 @@ public class KingCamera : MonoBehaviour
 		curCameraId = 0;
 
 		elasticCount = 5f;
+
+		tempOffset = Vector3.zero;
+
+		tempPositionList.Clear ();
 
 		loadFlags ();
 
@@ -112,8 +119,35 @@ public class KingCamera : MonoBehaviour
 
 		updateCamera();
 
+//		updateTempOffset ();
+
 		{
 			ConsoleTool.Instance().ManualLateUpdate();
+		}
+	}
+
+	private void updateTempOffset()
+	{
+		if(target == null || !target.Equals(BattleControlor.Instance().getKing().gameObject))
+		{
+			tempOffset = Vector3.zero;
+
+			return;
+		}
+
+		if(tempOffset.magnitude > 0)
+		{
+			if(BattleControlor.Instance().getKing().mAnim.GetFloat("move_speed") < .2f)
+			{
+				tempOffset = Vector3.zero;
+			}
+		}
+		else
+		{
+			if(BattleControlor.Instance().getKing().mAnim.GetFloat("move_speed") > .2f)
+			{
+			
+			}
 		}
 	}
 
@@ -362,7 +396,7 @@ public class KingCamera : MonoBehaviour
 
 			float l = Vector3.Distance(targetPos, transform.position);
 
-			if(l > 5 || BattleControlor.Instance().inDrama == true)
+			if(l > 5 || BattleControlor.Instance().inDrama == true || true)
 			{
 				transform.eulerAngles = targetRotation;
 
@@ -382,14 +416,60 @@ public class KingCamera : MonoBehaviour
 
 				transform.eulerAngles += tempAngle;
 
-				transform.position += tempPostion;
+				if(tempPositionList.Count < 5)
+				{
+					transform.position += tempPostion;
+
+					tempPositionList.Add(tempPostion);
+				}
+				else
+				{
+					float jiasudu = 0;
+
+					//计算当前加速度
+
+					Vector3 pj = Vector3.zero;
+
+					for(int i = 0; i < tempPositionList.Count; i++)
+					{
+						pj += tempPositionList[i];
+					}
+
+					pj = pj / tempPositionList.Count;
+
+					jiasudu = tempPostion.magnitude - pj.magnitude;
+
+					if(Mathf.Abs(jiasudu) > .7f * Time.deltaTime)
+					{
+						transform.position += tempPostion;
+					}
+					else
+					{
+						transform.position += targetPos - tempOffset;
+					}
+
+					tempPositionList.RemoveAt(0);
+
+					tempPositionList.Add(tempPostion);
+				}
+
+//				if(tempOffset.magnitude > 0)
+//				{
+//					transform.position += targetPos - tempOffset;
+//				}
+//				else
+//				{
+//					transform.position += tempPostion;
+//				}
+
+				tempOffset = targetPos;
 			}
 
-			//transform.eulerAngles = targetRotation;
+//			transform.eulerAngles = targetRotation;
 
-			//elasticCount -= Time.deltaTime;
+//			elasticCount -= Time.deltaTime * 5;
 
-			//elasticCount = elasticCount < 5 ? 5 : elasticCount;
+//			elasticCount = elasticCount < 1 ? 1 : elasticCount;
 
 			if(m_shake == true) 
 			{

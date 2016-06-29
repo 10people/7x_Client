@@ -113,11 +113,11 @@ public class choosemap : MonoBehaviour {
 	{
 		GameObject Cloud = Instantiate( p_object ) as GameObject;
 
-		Cloud.transform.parent = this.transform;
+//		Cloud.transform.parent = this.transform;
 
 		Cloud.transform.localScale = new Vector3(1,1,1);
 
-		Cloud.transform.localPosition = new Vector3(1,1,1);
+		Cloud.transform.localPosition = new Vector3(1,100000,1);
 
 	}
 

@@ -518,7 +518,9 @@ public class EmailPage : MonoBehaviour {
 		}
 
 		bool isUnSend = string.IsNullOrEmpty (NewEmailData.Instance ().SendName) && string.IsNullOrEmpty (NewEmailData.Instance ().SendContent) ? false : true;
-		redObjList[2].SetActive (isUnSend);
-		PushAndNotificationHelper.SetRedSpotNotification (20,isUnSend);
+//		redObjList[2].SetActive (isUnSend);
+//		PushAndNotificationHelper.SetRedSpotNotification (20,isUnSend);
+		redObjList[2].SetActive (false);
+		PushAndNotificationHelper.SetRedSpotNotification (20,false);
 	}
 }

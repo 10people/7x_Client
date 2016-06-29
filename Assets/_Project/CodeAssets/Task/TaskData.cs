@@ -167,7 +167,8 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
     int indexNum = 0;
     public bool ShowMainTaskGet(string data)
     {
-        if (TaskSignalInfoShow.m_TaskSignal == null
+        if ( !SceneManager.IsInLoadingScene() 
+                && TaskSignalInfoShow.m_TaskSignal == null
                 && !FunctionWindowsCreateManagerment.m_IsSaoDangNow
                 && !CityGlobalData.m_isBattleField_V4_2D
                 && !Global.m_isOpenPVP
@@ -179,7 +180,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
         {
             if (PlayerModelController.m_playerModelController != null)
             {
-                FunctionWindowsCreateManagerment.ShowTaskAward(m_MainComplete.id);
+                ShowMainTaskAward(m_MainComplete.id);
                 return true;
             }
         }
@@ -223,6 +224,12 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                         {
 											UIYindao.m_UIYindao.CloseUI();
                                         }
+										if (TaskListReponse.list[i].id == 200005)
+										{
+											ZhuXianTemp tempTaskData = ZhuXianTemp.getTemplateById(200010);
+											tempTaskData.m_iCurIndex = 2;
+											UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+										}
 										if (TaskListReponse.list[i].id == 100173)
 										{
 											UIYindao.m_UIYindao.CloseUI();
@@ -280,7 +287,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                 showTitleOn = true;
                             }
 
-                           
+
                             m_TaskInfoDic[TaskSyncReponse.task.id].progress = TaskSyncReponse.task.progress;
                             if (TaskLayerManager.m_TaskLayerM)
                             {
@@ -293,7 +300,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                     m_SideReload = true;
                                 }
                             }
-                          
+
                         }
                         else
                         {
@@ -317,6 +324,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                         m_TagIsShow = true;
                         return true;
                     }
+               
                 case ProtoIndexes.S_DAILY_TASK_LIST_RESP://返回日常任务列表
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -327,6 +335,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                 
                         t_qx.Deserialize(t_tream, dailyTaskList, dailyTaskList.GetType());
                         VitalityInfo vi = new VitalityInfo();
+           
                         if (dailyTaskList != null)
                         {
                             vi._todaylHuoYue = dailyTaskList.todaylHuoYue;
@@ -334,10 +343,6 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                             if (dailyTaskList.awardStatus != null)
                             {
                                 vi._listawardStatus = dailyTaskList.awardStatus;
-//						for(int i = 0; i < vi._listawardStatus.Count; i ++)
-//						{
-//							Debug.Log(vi._listawardStatus[i]);
-//						}
                             }
                             m_RemainTime = dailyTaskList.remainTime / 1000;
                             m_VitalityShowInfo = vi;
@@ -348,12 +353,13 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                 listUnComplete.Clear();
                                 RefreshDailyTaskInfo(dailyTaskList);
                                 m_TagIsShow = true;
-								if (TaskLayerEveryDayManager.m_TaskLayerM)
+                                if (TaskLayerEveryDayManager.m_TaskLayerM)
                                 {
                                     m_DailyQuestIsRefresh = true;
                                 }
                             }
                         }
+                 
                         return true;
                     }
 
@@ -461,44 +467,29 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                         QiXiongSerializer t_qx = new QiXiongSerializer();
                         DailyTaskRewardResponse dailyTask = new DailyTaskRewardResponse();
                         t_qx.Deserialize(t_tream, dailyTask, dailyTask.GetType());
-
                         if (dailyTask.status)
                         {
                             m_VitalityShowInfo._todaylHuoYue = dailyTask.todaylHuoYue;
+
                             m_VitalityShowInfo._weekHuoYue = dailyTask.weekHuoYue;
-                            string award = "";
-                        
-                            if (TaskData.Instance.m_TaskDailyDic.ContainsKey(dailyTask.taskId))
+                            if (TaskLayerEveryDayManager.m_TaskLayerM)
                             {
-                                award = m_TaskDailyDic[dailyTask.taskId].jiangli;
-                                //if (m_TaskDailyDic.ContainsKey(dailyTask.taskId))
-                                //{
-                                //    m_TaskDailyDic.Remove(dailyTask.taskId);
-                                //}
-                                //  m_TaskGetAwardComplete = true;
-								//if (TaskLayerEveryDayManager.m_TaskLayerM)
-        //                        {
-        //                            m_DailyQuestIsRefresh = true;
-        //                        }
-        //                        if (!string.IsNullOrEmpty(award))
-        //                        {
-        //                            FunctionWindowsCreateManagerment.ShowRAwardInfo(award);
-        //                        }
-                                MainCityUI.SetRedAlert(251, DailyWetherContainComplete(m_TaskDailyDic));
+                                m_DailyQuestIsRefresh = true;
                             }
-                       
+                            MainCityUI.SetRedAlert(251, DailyWetherContainComplete(m_TaskDailyDic));
+ 
                             switch (dailyTask.msg)
                             {
                                 case "success":
                                     {
-                                    
+
                                         //   Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
                                         //        UIBoxLoadCallbackZero);
                                     }
                                     break;
                                 case "fail":
                                     {
-                                  
+
                                         //index_Index = 1;
                                         //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
                                         //   UIBoxLoadCallbackZero);
@@ -506,7 +497,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                     break;
                                 case "hasGet":
                                     {
-                                 
+
 
                                         //Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
                                         //   UIBoxLoadCallbackZero);
@@ -654,29 +645,24 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                 showTitleOn = true;
                 ShowId = listMain[i].id;
             }
-            m_MainComplete = listMain[0];
-            if (listMain[0].progress < 0 )
-            {
-            
-                if (!string.IsNullOrEmpty(listMain[0].award))
-                {
-                  
-                    _isMainComplete = true;
-                }
-                else
-                {
-                    GetQuestAward(listMain[0].id);
-                }
-            }
-             
-     
-            ShowId = listMain[0].id;
-            // Debug.Log("listMain[i].idlistMain[i].idlistMain[i].id ::" + listMain[i].id);
+ 
             m_TaskInfoDic.Add(listMain[i].id, listMain[i]);
-
         }
 
+        if (listMain[0].progress < 0)
+        {
+            if (!string.IsNullOrEmpty(listMain[0].award))
+            {
+                m_MainComplete = listMain[0];
+                _isMainComplete = true;
+            }
+            else
+            {
+                GetQuestAward(listMain[0].id);
+            }
+        }
 
+        ShowId = listMain[0].id;
 
         for (int i = 0; i < listBranchComplete.Count; i++)
         {
@@ -909,6 +895,20 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
        
     }
 
-
+    public static void ShowMainTaskAward(int id)
+    {
+        TaskSignalInfoShow.m_TaskId = id;
+        TaskCompleteEffect();
+    }
+    private static void TaskCompleteEffect()
+    {
+        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.TASK_EFFECT), AddUIPanel);
+    }
+    private static void AddUIPanel(ref WWW p_www, string p_path, Object p_object)
+    {
+        GameObject tempObject = (GameObject)Instantiate(p_object);
+        MainCityUI.TryAddToObjectList(tempObject);
+        UIYindao.m_UIYindao.CloseUI();
+    }
 
 }

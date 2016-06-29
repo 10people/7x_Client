@@ -194,7 +194,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
         return MainCityUI.m_MainCityUI.m_WindowObjectList.Count > 0;
     }
 
-    public static bool TryAddToObjectList(GameObject go, bool p_add_to_2d_tool = true)
+	public static bool TryAddToObjectList(GameObject go, bool p_add_to_2d_tool = true, bool p_hide_origin=true)
     {
         if (m_MainCityUI != null)
         {
@@ -210,7 +210,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
             // assume all param:go is functionUI's main page, if not will cause an error
             if (p_add_to_2d_tool)
             {
-                UI2DTool.Instance.AddTopUI(go);
+				UI2DTool.Instance.AddTopUI(go,p_hide_origin);
             }
         }
         else
@@ -824,7 +824,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 			}
 			if (MainCityUI.m_MainCityUI != null)
 			{
-				if (temp.type >= 0 && temp.type <= 4 && MainCityUI.m_MainCityUI.m_listMainCityButtons.Count == 4)
+				if (temp.type >= 0 && temp.type <= 6 && MainCityUI.m_MainCityUI.m_listMainCityButtons.Count == 6)
 				{
 					FunctionButtonManager tempButton = MainCityUI.m_MainCityUI.m_listMainCityButtons[temp.type].getButtonManagerByID(id);
 					if (tempButton != null)
@@ -852,7 +852,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 		{
 			if (MainCityUI.m_MainCityUI != null)
 			{
-				if (temp.type >= 0 && temp.type <= 4 && MainCityUI.m_MainCityUI.m_listMainCityButtons.Count == 4)
+				if (temp.type >= 0 && temp.type <= 6 && MainCityUI.m_MainCityUI.m_listMainCityButtons.Count == 6)
 				{
 					FunctionButtonManager tempButton = MainCityUI.m_MainCityUI.m_listMainCityButtons[temp.type].getButtonManagerByID(id);
 					if (tempButton != null)
@@ -1224,11 +1224,13 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                         //                        Debug.Log("JunZhuData.Instance().m_junzhuInfo.lianMengIdJunZhuData.Instance().m_junzhuInfo.lianMengId ::" + JunZhuData.Instance().m_junzhuInfo.lianMengId);
                         if (JunZhuData.Instance().m_junzhuInfo.lianMengId <= 0)
                         {
+						Debug.Log("=============1");
                             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_NO_SELF_ALLIANCE),
                                                     NoAllianceLoadCallback);
                         }
                         if (JunZhuData.Instance().m_junzhuInfo.lianMengId > 0)
                         {
+						Debug.Log("=============2");
                             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ALLIANCE_HAVE_ROOT),
                                                     AllianceHaveLoadCallback);
                         }
@@ -1644,28 +1646,38 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
                     if (msg.result != 10)
                     {
-//                        ClientMain.m_UITextManager.createText("通知已过时");
+                        ClientMain.m_UITextManager.createText("通知已过时");
 
                         return true;
                     }
 
                     switch (msg.subaoType)
-            {
-                //transport to position.
-                case 101:
-                case 102:
-                case 104:
-                case 105:
-                {
-                    m_TpController.m_ExecuteAfterTP = EnterCarriageScene;
-                        m_TpController.TPToPosition(new Vector2(msg.posX, msg.posZ), float.Parse(YunBiaoTemplate.GetValueByKey("TP_duration")));
-                        break;
-                    }
-                default:
                     {
-                        break;
+                        //transport to position.
+
+                        //help carriage that under attack.
+                        case 101:
+                        case 102:
+                            {
+                                m_TpController.m_ExecuteAfterTP = EnterCarriageScene;
+                                m_TpController.TPToPosition(new Vector2(msg.posX, msg.posZ), float.Parse(YunBiaoTemplate.GetValueByKey("TP_duration")));
+                                break;
+                            }
+                        //join to carriage help list.
+                        case 104:
+                        case 105:
+                            {
+                                ClientMain.m_UITextManager.createText(DescIdTemplate.GetDescriptionById(3100003));
+                                m_TpController.m_ExecuteAfterTP = EnterCarriageScene;
+                                m_TpController.TPToPosition(new Vector2(msg.posX, msg.posZ), float.Parse(YunBiaoTemplate.GetValueByKey("TP_duration")));
+                                break;
+                            }
+                        default:
+                            {
+                                break;
+                            }
                     }
-            }
+
 			if(msg.fujian == null || msg.fujian == "")
 			{
 				break;
@@ -2039,13 +2051,13 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 	private GameObject expiectuiltempObject; // 联盟跳转到联盟做个特殊处理 直接删掉原来的UI才重新打开 fix by guronglin
     public void AllianceHaveLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
-		if( expiectuiltempObject )
-		{
-			Destroy(expiectuiltempObject);
-		}
+//		if( expiectuiltempObject )
+//		{
+//			Destroy(expiectuiltempObject);
+//		}
 		expiectuiltempObject = Instantiate(p_object) as GameObject;
+		FunctionOpenTemp.GetTemplateById (104).m_objPanel = expiectuiltempObject;
 		MainCityUI.TryAddToObjectList(expiectuiltempObject);
-
     }
     public void RewardCallback(ref WWW p_www, string p_path, Object p_object)
     {

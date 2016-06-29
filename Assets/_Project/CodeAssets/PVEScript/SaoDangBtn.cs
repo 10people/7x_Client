@@ -186,7 +186,7 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 		
 		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 		
-		uibox.setBox(titleStr,null, MyColorData.getColorString (1,str),null,CancleBtn,confirmStr,getTili);
+		uibox.setBox(titleStr,null, str,null,CancleBtn,confirmStr,getTili);
 	}
 
 	void LoadRenWuBack(ref WWW p_www,string p_path, Object p_object)
@@ -275,7 +275,7 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 
 		string Btn = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
 
-		uibox.setBox(Tilte,null,MyColorData.getColorString (1,str),null,Btn,null,FalseZheZhao);
+		uibox.setBox(Tilte,null,str,null,Btn,null,FalseZheZhao);
 	}
 
 	void FalseZheZhao (int i)

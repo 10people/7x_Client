@@ -11,7 +11,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
 {
 	public static TaskLayerEveryDayManager m_TaskLayerM;
     public UISprite m_MoveSprite;
-    public UILabel m_LabelNullSignal;
+	public UILabel m_LabelNullSignal;
     public UISprite m_ForeSprite;
     public List<EventIndexHandle> m_listEventVitality;
     public List<VitalityButtonEffectManangerment> m_listVitalityInfo;
@@ -354,6 +354,10 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
             tempObject.transform.localPosition = Vector3.zero;
             tempObject.transform.localScale = Vector3.one;
             tempObject.GetComponent<TaskScrollViewItemAmend>().ShowTaskInfo(_listTaskInfo[index_daily], ShowReward);
+			if (_listTaskInfo[index_daily]._Progress < 0)
+			{
+				EffectTool.OpenMultiUIEffect_ById(tempObject.GetComponent<TaskScrollViewItemAmend>().m_LingQu.gameObject, 223, 224, 225);
+			}
 
             if (index_daily < _listTaskInfo.Count - 1)
             {

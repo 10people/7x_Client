@@ -171,15 +171,15 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 						if (errorMsg.errorCode == 1 || errorMsg.errorCode == 2 | errorMsg.errorCode == 3)
 						{
 							//删除item
-							QXComData.CreateBox (1,textStr,true,DeleteItem);
+							QXComData.CreateBoxDiy (textStr,true,DeleteItem);
 						}
 						else if (errorMsg.errorCode == 4)
 						{
-							QXComData.CreateBox (1,textStr,true,Expeling);
+							QXComData.CreateBoxDiy (textStr,true,Expeling);
 						}
 						else
 						{
-							QXComData.CreateBox (1,textStr,true,null);
+							QXComData.CreateBoxDiy (textStr,true,null);
 						}
 					}
 				}
@@ -225,7 +225,7 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 	public void RefreshSituationPage (int xmlId)
 	{
 		string textStr = "";
-		QXComData.CreateBox (1,textStr,true,RefreshSituationPageCallBack,true);
+		QXComData.CreateBoxDiy (textStr,true,RefreshSituationPageCallBack,true);
 	}
 
 	void RefreshSituationPageCallBack (int cilckId)
