@@ -481,7 +481,7 @@ public class MainCityUIRB : MYNGUIPanel
 		{
 			if (bagItemList[i].itemId == id)
 			{
-				Global.ScendID(ProtoIndexes.C_EquipAdd, bagItemList[i].bagIndex);
+				EquipsOfBody.Instance().EquipADD(bagItemList[i].dbId);
 				break;
 			}
 		}

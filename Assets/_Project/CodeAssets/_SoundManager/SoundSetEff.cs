@@ -5,7 +5,7 @@ public class SoundSetEff : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		SoundManager.getAudioSource(GameObject.Find("3D Layer"));
+		SoundManager.getAudioSource(gameObject);
 	}
 
 }

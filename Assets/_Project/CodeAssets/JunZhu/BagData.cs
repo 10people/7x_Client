@@ -95,32 +95,68 @@ public class BagData : MonoBehaviour, SocketProcessor
                 case ProtoIndexes.S_BagInfo:
                     {
                         MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-
                         QiXiongSerializer t_qx = new QiXiongSerializer();
-
                         BagInfo tempBagInfo = new BagInfo();
-
                         t_qx.Deserialize(t_stream, tempBagInfo, tempBagInfo.GetType());
 
                         if (tempBagInfo.items != null)
                         {
                             tempBagInfo.items.ForEach(item => item.bagIndex = tempBagInfo.items.IndexOf(item));
-                            m_bagItemList = tempBagInfo.items.Where(item => item.itemId != -1).ToList();
+                            m_bagItemList = tempBagInfo.items.Where(item => item.itemId > 0).ToList();
 
                             SetPlayerEquipData();
-
                             RefreshPlayerCaiLiaoData();
-
                             GetCardBagCount();
-
                             RefreshJinJieCaiLiaoData();
-
                             RefreshAllianceBattleData();
                         }
 
-                        // Removed By YuGu, red alert auto updated by PushHelper.
-                        //Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                        //MainCityUI.SetRedAlert(12, AllIntensify() || PushAndNotificationHelper.IsShowRedSpotNotification(1210));
+                        return true;
+                    }
+                case ProtoIndexes.S_BAG_CHANGE_INFO:
+                    {
+                        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                        QiXiongSerializer t_qx = new QiXiongSerializer();
+                        BagChangeInfo tempBagInfo = new BagChangeInfo();
+                        t_qx.Deserialize(t_stream, tempBagInfo, tempBagInfo.GetType());
+
+                        if (tempBagInfo.items != null)
+                        {
+                            if (m_bagItemList == null)
+                            {
+                                m_bagItemList = new List<BagItem>();
+                            }
+
+                            for (int i = 0; i < tempBagInfo.items.Count; i++)
+                            {
+                                Debug.Log(tempBagInfo.items[i].dbId + " " + tempBagInfo.items[i].cnt);
+
+
+                                var temp = m_bagItemList.Where(item => item.dbId == tempBagInfo.items[i].dbId);
+                                if (temp.Any())
+                                {
+                                    temp.First().cnt = tempBagInfo.items[i].cnt;
+
+                                    if (temp.First().cnt <= 0)
+                                    {
+                                        m_bagItemList.Remove(temp.First());
+                                    }
+                                }
+                                else
+                                {
+                                    m_bagItemList.Add(tempBagInfo.items[i]);
+                                }
+                            }
+
+                            m_bagItemList.ForEach(item => item.bagIndex = m_bagItemList.IndexOf(item));
+
+                            SetPlayerEquipData();
+                            RefreshPlayerCaiLiaoData();
+                            GetCardBagCount();
+                            RefreshJinJieCaiLiaoData();
+                            RefreshAllianceBattleData();
+                        }
+
                         return true;
                     }
                 case ProtoIndexes.S_GET_HighLight_item_ids:

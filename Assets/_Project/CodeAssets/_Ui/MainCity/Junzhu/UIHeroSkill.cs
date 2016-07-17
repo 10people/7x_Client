@@ -177,7 +177,7 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 				}
 				else
 				{
-					TaskData.Instance.m_DestroyMiBao = false;
+					TaskData.Instance.IsCanShowComplete = true;
 				}
 				if (FreshGuide.Instance().IsActive(100230))
 				{
@@ -473,8 +473,9 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 			}
 			else
 			{
-				TaskData.Instance.m_DestroyMiBao = true;
-				m_iSelectId = m_listCurPageHeroData[m_iSelectIndex].skillId;
+                //TaskData.Instance.m_DestroyMiBao = true;
+                TaskData.Instance.IsCanShowComplete = false;
+                m_iSelectId = m_listCurPageHeroData[m_iSelectIndex].skillId;
 				Global.ScendID(ProtoIndexes.C_HEROSKILLUP_UP_REQ, m_iSelectId);
 			}
 		}
@@ -484,8 +485,9 @@ public class UIHeroSkill : MYNGUIPanel , SocketListener
 			setEff();
 			setEffUP();
 			clearTupo();
-			TaskData.Instance.m_DestroyMiBao = false;
-		}
+		//	TaskData.Instance.m_DestroyMiBao = false;
+            TaskData.Instance.IsCanShowComplete = true;
+        }
 		//		Debug.Log(ui.name);
 		//		if(ui.name.IndexOf("tianfuback") != -1)
 		//		{

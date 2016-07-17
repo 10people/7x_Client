@@ -321,6 +321,10 @@ public class QXChatUIBox : MYNGUIPanel {
 	void OnApplicationPause(bool p_pause)
 	{
 		m_bPause = p_pause;
+		if(m_bPause && QXChatPage.chatPage.m_isPlaying)
+		{
+			QXChatPage.chatPage.stopYuyin();
+		}
 	}
 
 	public override void MYClick(GameObject ui)

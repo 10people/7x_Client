@@ -16,6 +16,7 @@ public class TaskLayerManager : MonoBehaviour
     public UISprite m_ForeSprite;
     public List<EventIndexHandle> m_listMainTaskEvent;
     private Dictionary<int, GameObject> _QuestButtonDic = new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> _SideItemDic = new Dictionary<int, GameObject>();
     public UIGrid m_RewardParent;
     public UIGrid m_ItemParent;
  
@@ -133,8 +134,11 @@ public class TaskLayerManager : MonoBehaviour
         {
             _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(true);
             _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_Guang.SetActive(true);
-            _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(false);
-            _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Guang.SetActive(false);
+            if (_QuestButtonDic.ContainsKey(_touchIndex))
+            {
+                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(false);
+                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Guang.SetActive(false);
+            }
             _touchIndex = index;
             if (index == 0)
             {
@@ -407,29 +411,50 @@ public class TaskLayerManager : MonoBehaviour
    
     void OtherTaskShow()
     {
-        _index_OtherNum = 0;
-        int size = m_ItemParent.transform.childCount;
-        for (int i = 0; i < size; i++)
-        {
-            Destroy(m_ItemParent.transform.GetChild(i).gameObject);
-        }
+        //_index_OtherNum = 0;
+        //int size = m_ItemParent.transform.childCount;
+        //for (int i = 0; i < size; i++)
+        //{
+        //    Destroy(m_ItemParent.transform.GetChild(i).gameObject);
+        //}
 
         int size_a = _listTaskInfo.Count;
 
-        //if (size_a > 0)
-        //{
+        if (_SideItemDic.Count > 0)
+        {
             for (int i = 0; i < size_a; i++)
             {
-                CreateScrollViewItem();
+                if (_SideItemDic.ContainsKey(_listTaskInfo[i]._TaskId))
+                {
+                    _SideItemDic[_listTaskInfo[i]._TaskId].transform.localPosition = new Vector3(0,-1*i*m_ItemParent.cellHeight,0);
+                    _SideItemDic[_listTaskInfo[i]._TaskId].GetComponent<TaskScrollViewItemAmend>()
+                                           .ShowTaskInfo(_listTaskInfo[_index_OtherNum], ShowReward);
+                }
+                else
+                {
+                    CreateScrollViewItem();
+                }
             }
-        //}
-        //else
-        //{
-        //    m_OtherQuestObj.SetActive(true);
-        //    TidyMainTaskInfo();
-        //}
+        }
+        else
+        {
+            if (size_a > 0)
+            {
+                for (int i = 0; i < size_a; i++)
+                {
+                    CreateScrollViewItem();
+                }
+            }
+            else
+            {
+                Destroy(_QuestButtonDic[_touchIndex]);
+                TouchInfo(0);
+                m_OtherQuestObj.SetActive(false);
+                TidyMainTaskInfo();
+            }
+        }
     }
- 
+
     private bool DailyTaskComplete()
     {
         foreach (KeyValuePair<int, RenWuTemplate> item in TaskData.Instance.m_TaskDailyDic)
@@ -502,6 +527,10 @@ public class TaskLayerManager : MonoBehaviour
             tempObject.transform.localPosition = Vector3.zero;
             tempObject.transform.localScale = Vector3.one;
             tempObject.GetComponent<TaskScrollViewItemAmend>().ShowTaskInfo(_listTaskInfo[_index_OtherNum], ShowReward);
+            if (!_SideItemDic.ContainsKey(_listTaskInfo[_index_OtherNum]._TaskId))
+            {
+                _SideItemDic.Add(_listTaskInfo[_index_OtherNum]._TaskId, tempObject);
+            }
 
             if (_index_OtherNum < _listTaskInfo.Count - 1)
             {
@@ -529,7 +558,6 @@ public class TaskLayerManager : MonoBehaviour
                 return;
             }
             m_isFinishCurrent = true;
-            
             overMission(taskInfo._TaskId);
             //m_ObjFinish.SetActive(true);
             //StartCoroutine(WaitSecond(taskInfo, obj));
@@ -540,13 +568,10 @@ public class TaskLayerManager : MonoBehaviour
             if (RenWuTemplate.GetWetherContainId(taskInfo._TaskId) && !FunctionOpenTemp.GetWhetherContainID(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID) && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != -1 && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900002 && RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID != 900001)
             {
                 ClientMain.m_UITextManager.createText(MyColorData.getColorString(1, FunctionOpenTemp.GetTemplateById(RenWuTemplate.GetRenWuById(taskInfo._TaskId).funcID).m_sNotOpenTips));
-              //  EquipSuoData.ShowSignal(null, FunctionOpenTemp.GetTemplateById(104).m_sNotOpenTips);
             }
             else
             {
-              
                 MainCityUI.TryRemoveFromObjectList(m_MainParent);
-               
                 MainCityUI.m_MainCityUI.m_MainCityUILT.ClickTasID(taskInfo._TaskId);
                 Destroy(m_MainParent);
                 //m_MainParent.SetActive(false);
@@ -649,6 +674,21 @@ public class TaskLayerManager : MonoBehaviour
         else
         {
             p_object = null;
+        }
+    }
+
+
+    public void LocalSideFresh(int id)
+    {
+        if (_SideItemDic.ContainsKey(id))
+        {
+            Destroy(_SideItemDic[id]);
+            _SideItemDic.Remove(id);
+        }
+        m_ItemParent.repositionNow = true;
+        if (_SideItemDic.Count == 0)
+        {
+            TidySideTaskInfo();
         }
     }
    

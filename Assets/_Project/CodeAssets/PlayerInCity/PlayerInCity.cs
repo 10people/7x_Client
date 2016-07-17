@@ -173,11 +173,12 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
    
         }
         AnimationPlay(1);
-        transform.localPosition = Vector3.Lerp(transform.position, point, PlayerModelController.m_playerModelController.m_speed * 0.006f);
+       //  transform.localPosition = Vector3.Lerp(transform.position, point, PlayerModelController.m_playerModelController.m_speed * 0.006f);
         //CharacterController controller = GetComponent<CharacterController>();
-        //Vector3 v = Vector3.ClampMagnitude(point - transform.position, PlayerModelController.m_playerModelController.m_speed * Time.deltaTime);
-
-        //controller.Move(v);
+  
+        Vector3 v = Vector3.ClampMagnitude(point - transform.position, PlayerModelController.m_playerModelController.m_speed * 0.025f);
+        m_character.Move(v);
+        //m_character.Move(v);
     }
     
     protected bool inTurning;

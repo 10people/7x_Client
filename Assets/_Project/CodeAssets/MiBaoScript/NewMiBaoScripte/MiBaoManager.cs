@@ -97,9 +97,9 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 
-		TaskData.Instance.m_DestroyMiBao = true;
-
-		InitStart ();
+		//TaskData.Instance.m_DestroyMiBao = true;
+        TaskData.Instance.IsCanShowComplete = false;
+        InitStart ();
 	}
 
 	public void OnEnergyDetailClick(GameObject go)//显示体力恢复提示
@@ -534,7 +534,8 @@ public class MiBaoManager : MYNGUIPanel  , SocketListener
 		MainCityUI.TryRemoveFromObjectList(this.gameObject);
         MainCityUI.TryRemoveFromObjectList(gameObject);
      //   MainCityUI.TryRemoveFromObjectList(gameObject);
-		TaskData.Instance.m_DestroyMiBao = false;
+		//TaskData.Instance.m_DestroyMiBao = false;
+        TaskData.Instance.IsCanShowComplete = true;
         Destroy(this.gameObject);
     }
 

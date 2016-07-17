@@ -549,7 +549,9 @@ public class WorshipLayerManagerment : MonoBehaviour, SocketProcessor, UI2DEvent
     {
         if (JunZhuData.Instance().m_junzhuInfo.tili >= 999 && !FreshGuide.Instance().IsActive(400030))
         {
-            EquipSuoData.ShowSignal(null, LanguageTemplate.GetText(800));
+
+            Global.CreateBox(LanguageTemplate.GetText(800), "提示", "", null, "确定", "", null);
+   
             return;
 
         }

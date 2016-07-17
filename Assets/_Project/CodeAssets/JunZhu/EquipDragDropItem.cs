@@ -66,7 +66,7 @@ public class EquipDragDropItem : UIDragDropItem { //拖拽玩家身上或背包�
 			{
 				EquipAddReq tempAddReq = new EquipAddReq();
 
-				tempAddReq.gridIndex = m_bagIndex;
+				tempAddReq.bagDBId = m_bagIndex;
                 
 				MemoryStream tempStream = new MemoryStream();
 
@@ -76,7 +76,7 @@ public class EquipDragDropItem : UIDragDropItem { //拖拽玩家身上或背包�
 				
 				byte[] t_protof;
 				t_protof = tempStream.ToArray();
-				SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EquipAdd, ref t_protof);
+			//	SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EquipAdd, ref t_protof);
 
 				NGUITools.Destroy(gameObject);
 			}

@@ -157,8 +157,6 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
         IconSampleManager.IconType iconType = m_BagItem.itemType == 20000
             ? IconSampleManager.IconType.equipment
             : IconSampleManager.IconType.item;
-        var m_wide = 0;
-        var m_heiht = 0;
 
         tempManager.SetIconByID(m_BagItem.itemId, "x" + m_BagItem.cnt);
         tempManager.RightButtomCornorLabel.effectStyle = UILabel.Effect.Outline;
@@ -175,8 +173,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
     void CheckUseBTNInfo(GameObject tempObject)
     {
 //        Global.ScendID(ProtoIndexes.C_EquipAdd, m_UiBagLeft.m_iIndex);
-
-		Global.ScendID(ProtoIndexes.C_EquipAdd, m_BagItem.bagIndex);
+		EquipsOfBody.Instance().EquipADD(m_BagItem.dbId);
 
         MainCityUIRB.setDeletePropUse(m_BagItem.itemId);
     }

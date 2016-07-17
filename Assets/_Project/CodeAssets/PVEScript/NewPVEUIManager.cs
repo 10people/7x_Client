@@ -1751,8 +1751,9 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	}
 	void SendSaoDangInfo(int id,int howTimes)
 	{
-		FunctionWindowsCreateManagerment.m_IsSaoDangNow = true;
-		PveSaoDangReq saodanginfo = new PveSaoDangReq ();
+		//FunctionWindowsCreateManagerment.m_IsSaoDangNow = true;
+        TaskData.Instance.IsCanShowComplete = false;
+        PveSaoDangReq saodanginfo = new PveSaoDangReq ();
 		
 		MemoryStream saodangstream = new MemoryStream ();
 		

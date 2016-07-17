@@ -65,7 +65,7 @@ public class ButtonColorManagerment : MonoBehaviour
 
             m_BackObj.GetComponent<UISprite>().color = new Color(128 / 255.0f, 128 / 255.0f, 128 / 255.0f);
         }
-        if (type == 0)
+        if (type == 0 || Enable)
         {
             transform.GetComponent<Collider>().enabled = Enable;
         }

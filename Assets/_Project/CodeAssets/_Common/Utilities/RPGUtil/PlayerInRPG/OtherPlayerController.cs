@@ -8,7 +8,7 @@ public class OtherPlayerController : MonoBehaviour
     #region Move Controller
 
     private bool IsCanMove = true;
-    private bool ReadyToCorrectPos = false;
+    private bool TryToCorrectPos = false;
     private bool IsInMove = false;
 
     /// <summary>
@@ -67,6 +67,8 @@ public class OtherPlayerController : MonoBehaviour
     public float m_CharacterLerpDuration;
     public float m_CharacterSpeedY = 10f;
 
+    private float m_lerpDurationForUse;
+
     void Awake()
     {
         m_Animator = GetComponent<Animator>();
@@ -93,7 +95,12 @@ public class OtherPlayerController : MonoBehaviour
             return;
         }
 
-        var precentFromMove = (Time.realtimeSinceStartup - m_startMoveTime) / m_CharacterLerpDuration;
+        if (!IsCanMove)
+        {
+            TryToCorrectPos = true;
+        }
+
+        var precentFromMove = (Time.realtimeSinceStartup - m_startMoveTime) / m_lerpDurationForUse;
 
         //Close this for better percision.
 
@@ -128,31 +135,25 @@ public class OtherPlayerController : MonoBehaviour
         //    StartPlayerTransformTurn(tempPosition, tempRotation, false);
         //}
 
-        //if (!IsCanMove)
-        //{
-        //    ReadyToCorrectPos = true;
-        //}
-        //else if (precentFromMove > 1 && ReadyToCorrectPos)
-        //{
-        //    ReadyToCorrectPos = false;
 
-        //    if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
-        //    {
-        //        Debug.Log("Correct after move recover: " + m_UID + ", move from: " + transform.localPosition + " to: " + m_targetPosition);
-        //    }
+        if (IsCanMove && TryToCorrectPos)
+        {
+            TryToCorrectPos = false;
 
-        //    float modifiedPos;
-        //    if (TransformHelper.RayCastXToFirstCollider(m_targetPosition, out modifiedPos))
-        //    {
-        //        transform.localPosition = new Vector3(m_targetPosition.x, modifiedPos, m_targetPosition.z);
-        //    }
-        //    //else
-        //    //{
-        //    //    transform.localPosition = m_targetPosition;
-        //    //}
+            var distance = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(m_targetPosition.x, m_targetPosition.z));
 
-        //    transform.localEulerAngles = m_targetRotation;
-        //}
+            if (distance > 0.1f)
+            {
+                if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
+                {
+                    Debug.Log("Correct after move recover: " + m_UID + ", move from: " + transform.localPosition + " to: " + m_targetPosition);
+                }
+
+                StartPlayerTransformTurn(m_targetPosition, m_targetRotation, false);
+
+                m_lerpDurationForUse = distance / SinglePlayerController.m_CharacterSpeed;
+            }
+        }
 
         //Moving
         if (precentFromMove >= 0 && precentFromMove <= 1 && IsCanMove)
@@ -307,6 +308,8 @@ public class OtherPlayerController : MonoBehaviour
         {
             //Set now time.
             m_startMoveTime = Time.realtimeSinceStartup - Time.deltaTime;
+
+            m_lerpDurationForUse = m_CharacterLerpDuration;
         }
     }
 

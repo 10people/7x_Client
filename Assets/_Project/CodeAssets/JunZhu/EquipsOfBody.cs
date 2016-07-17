@@ -201,6 +201,18 @@ public class EquipsOfBody : MonoBehaviour, SocketProcessor
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_JINJIE, ref t_protof);
     }
 
+
+    public void EquipADD(long dbid)//穿装备
+    {
+        MemoryStream tempStream = new MemoryStream();
+        QiXiongSerializer t_qx = new QiXiongSerializer();
+        EquipAddReq tempAddReq = new EquipAddReq(); //装备在背包中下标
+        tempAddReq.bagDBId = dbid;
+        t_qx.Serialize(tempStream, tempAddReq);
+        byte[] t_protof;
+        t_protof = tempStream.ToArray();
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EquipAdd, ref t_protof);
+    }
     /// 刷新君主装备信息
     private void RefreshEquipsDic(EquipInfo tempInfo)
     {

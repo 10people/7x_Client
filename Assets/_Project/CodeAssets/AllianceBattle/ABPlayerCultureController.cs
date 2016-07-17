@@ -23,6 +23,17 @@ namespace AllianceBattle
             EnableMove();
         }
 
+        public DelegateHelper.VoidDelegate m_ExecuteAfterLongSkillShot;
+
+        public void OnLongSkillShot()
+        {
+            if (m_ExecuteAfterLongSkillShot != null)
+            {
+                m_ExecuteAfterLongSkillShot();
+                m_ExecuteAfterLongSkillShot = null;
+            }
+        }
+
         public bool IsCanPlayAOESkill = false;
         public float LastCheckEffectNumTime;
 
@@ -38,14 +49,14 @@ namespace AllianceBattle
                 {
                     if (Time.realtimeSinceStartup - LastCheckEffectNumTime > 5f)
                     {
-                        IsCanPlayAOESkill = EffectNumController.Instance.IsCanPlayEffect();
+                        IsCanPlayAOESkill = EffectNumController.Instance.IsCanPlayEffect(false);
 
                         LastCheckEffectNumTime = Time.realtimeSinceStartup;
                     }
 
                     if (IsCanPlayAOESkill)
                     {
-                        EffectNumController.Instance.NotifyPlayingEffect(10);
+                        EffectNumController.Instance.NotifyPlayingEffect(false, 10);
 
                         FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTBuffTemplate.GetTemplateByID(151).BuffDisplay), gameObject, null, Vector3.zero, transform.forward);
                     }

@@ -60,6 +60,10 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 	private mCloseMiBaoskillDo m_mCloseMiBaoskillDo;
 
 	private int m_SaveID;
+
+	public GameObject m_SkillGameObject;
+
+	private List<miBaoskilltemp> miBaoskilltempList = new List<miBaoskilltemp>();
 	public static NewMiBaoSkill Instance()
 	{
 		if (!mMiBaoData)
@@ -107,16 +111,6 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		if (!COmeMiBaoUI)
 		{
 			CHoseRemaind.gameObject.SetActive (true);
-//			if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
-//			{
-//				//	Debug.Log("切换秘技)
-//				if(CityGlobalData.PveLevel_UI_is_OPen)
-//				{
-//					ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
-//					UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
-//				}
-//
-//			}
 		}
 		else
 		{
@@ -358,26 +352,64 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 	{
 		kills.SetActive (true);
 	}
+	private void InitSkills()
+	{
+		miBaoskilltempList.Clear ();
+		foreach(GameObject eff in EffectList)
+		{
+			Destroy(eff);
+		}
+		EffectList.Clear ();
+
+//		Debug.Log ("m_Skill_MiBaoInfo.skillList.count = "+m_Skill_MiBaoInfo.skillList.Count);
+		for(int i = 0; i < 7 ; i ++)
+		{
+			GameObject m_mb_skill = Instantiate(m_SkillGameObject) as GameObject;
+
+			m_mb_skill.SetActive(true);
+
+			m_mb_skill.transform.parent = m_SkillGameObject.transform.parent;
+
+			m_mb_skill.transform.localScale = Vector3.one;
+
+			MiBaoSkillTemp mMiBaoSkill = MiBaoSkillTemp.getMiBaoSkillTempBy_id(i+1);
+
+			m_mb_skill.transform.localPosition = new Vector3(mMiBaoSkill.m_x,mMiBaoSkill.m_y,0);
+
+			miBaoskilltemp m_miBaoskilltemp = m_mb_skill.GetComponent<miBaoskilltemp>();
+
+			m_miBaoskilltemp.SKill_id = i+1;
+
+			if(m_Skill_MiBaoInfo.skillList != null)
+			{
+				if(m_Skill_MiBaoInfo.skillList.Count >= i+1)
+				{
+					m_miBaoskilltemp.mSkillInfo = m_Skill_MiBaoInfo.skillList[i];
+
+					m_miBaoskilltemp.Init();
+				}else
+				{
+					m_miBaoskilltemp.IsUnLock();
+				}
+
+			}
+			EffectList.Add(m_miBaoskilltemp.beChoosedSprite);
+			miBaoskilltempList.Add(m_miBaoskilltemp);
+		}
+	}
 	public void InitData()
 	{
-		//Money.text = JunZhuData.Instance().m_junzhuInfo.jinBi.ToString();
-		//Debug.Log ("m_Skill_MiBaoInfo.skillList.count  = "+m_Skill_MiBaoInfo.skillList.Count);
-//		for(int i =0; i < m_Skill_Gbj.Length; i ++)
-//		{
-//			ActiveMiBaoskills(m_Skill_Gbj[i]);
-//		}
+		InitSkills ();
 		if(m_Skill_MiBaoInfo.skillList != null)
 		{
-		//Debug.Log ("111SaveId = "+SaveId);
 
 			if(SaveId > 0)
 			{
-//				Debug.Log ("1aaaaaa ");
 				ShowBeChoosed_MiBao(SaveId,true);
 				if(!COmeMiBaoUI)
 				{
 					NewAddMiBaoShangZhen.SetActive(true);
-					NewAddMiBaoShangZhen.transform.localPosition = m_Skill_Gbj [SaveId-1].transform.localPosition;
+					NewAddMiBaoShangZhen.transform.localPosition = miBaoskilltempList [SaveId-1].gameObject.transform.localPosition;
 				}
 			}
 			else
@@ -385,47 +417,24 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 				if(!COmeMiBaoUI)
 				{
 					NewAddMiBaoShangZhen.SetActive(true);
-					NewAddMiBaoShangZhen.transform.localPosition = m_Skill_Gbj [0].transform.localPosition;
-					ShowBeChoosed_MiBao( m_Skill_Gbj[0].GetComponent<miBaoskilltemp>().SKill_id,true);
+					NewAddMiBaoShangZhen.transform.localPosition = miBaoskilltempList [0].gameObject.transform.localPosition;
+					ShowBeChoosed_MiBao( miBaoskilltempList[0].SKill_id,true);
 				}
 				else
 				{
 					if(m_Skill_MiBaoInfo.skillList.Count < 7)
 					{
-						ShowBeChoosed_MiBao( m_Skill_Gbj[m_Skill_MiBaoInfo.skillList.Count].GetComponent<miBaoskilltemp>().SKill_id,false);
+						ShowBeChoosed_MiBao( miBaoskilltempList[m_Skill_MiBaoInfo.skillList.Count].SKill_id,false);
 					}
 					else
 					{
-						ShowBeChoosed_MiBao( m_Skill_Gbj[m_Skill_MiBaoInfo.skillList.Count-1].GetComponent<miBaoskilltemp>().SKill_id,true);
+						ShowBeChoosed_MiBao( miBaoskilltempList[m_Skill_MiBaoInfo.skillList.Count-1].SKill_id,true);
 					}
 				}
 			}
-			for(int i = 0; i < m_Skill_Gbj.Length; i ++)
-			{
-				miBaoskilltemp m_miBaoskilltemp = m_Skill_Gbj[i].GetComponent<miBaoskilltemp>();
-				
-				for(int j = 0; j < m_Skill_MiBaoInfo.skillList.Count; j ++)
-				{
-					if(m_Skill_MiBaoInfo.skillList[j].activeZuheId == m_miBaoskilltemp.SKill_id)
-					{
-						m_miBaoskilltemp.mSkillInfo = m_Skill_MiBaoInfo.skillList[j];
-						
-						m_miBaoskilltemp.IsActive = true;
-						
-						m_miBaoskilltemp.Init();
-
-						if(isMiBaoSkillActive)
-						{
-							UI3DEffectTool.ShowTopLayerEffect (UI3DEffectTool.UIType.PopUI_2,m_Skill_Gbj[i],EffectIdTemplate.GetPathByeffectId(100166));
-						}
-					}
-				}
-			}
-			isMiBaoSkillActive = false;
 		}
 		else
 		{
-//			Debug.Log ("cccccccccc ");
 			ShowBeChoosed_MiBao(1,false);
 		}
 	
@@ -465,14 +474,11 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 //		Debug.Log ("SKillLv= "+SKillLv);
 //		Debug.Log ("ll_MiBaoInfo.skillList。count = "+m_Skill_MiBaoInfo.skillList.Count);
 		IsActived = Isactive;
-		for (int i = 0; i < m_Skill_Gbj.Length; i ++)
+		for (int i = 0; i < miBaoskilltempList.Count; i ++)
 		{
-			miBaoskilltemp m_miBaoskilltemp = m_Skill_Gbj [i].GetComponent<miBaoskilltemp> ();
-
-			if(m_miBaoskilltemp.SKill_id == m_Skllinfo_id  )
+			if(miBaoskilltempList[i].SKill_id == m_Skllinfo_id  )
 			{
 				HidAllGameobj(m_Skllinfo_id -1);
-
 			}
 		}
 		MiBaoSkillLvTempLate m_MiBaoSkillTemp = MiBaoSkillLvTempLate.GetMiBaoSkillLvTemplateByIdAndLevel (m_Skllinfo_id,SKillLv);
@@ -519,14 +525,7 @@ public class NewMiBaoSkill : MonoBehaviour ,SocketListener {
 		else
 		{
 			Instroduction.gameObject.SetActive(true);
-//			if (!COmeMiBaoUI)
-//			{
-//				//SaveBtn.SetActive(true);
-//			}
-//			else
-//			{
-//				SaveBtn.SetActive(false);
-//			}
+
 			int level = 0;
 			for(int j = 0; j < m_Skill_MiBaoInfo.skillList.Count; j ++)
 			{

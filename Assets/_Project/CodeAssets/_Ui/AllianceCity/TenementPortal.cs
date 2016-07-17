@@ -22,7 +22,7 @@ public class TenementPortal : MonoBehaviour
             {
                 return;
             }
-            ClientMain.m_UITextManager.createText(MyColorData.getColorString(1, FunctionOpenTemp.GetTemplateById(8).m_sNotOpenTips));
+            ClientMain.m_UITextManager.createText(MyColorData.getColorString(1, FunctionOpenTemp.GetTemplateById(310).m_sNotOpenTips));
             return;
         }
         if (other.name.Equals("EffectPortal"))

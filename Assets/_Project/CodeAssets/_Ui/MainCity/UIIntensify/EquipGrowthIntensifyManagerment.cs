@@ -652,7 +652,7 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour, UI2DEventListener
         t_qx.Serialize(t_tream, equip);
         byte[] t_protof;
         t_protof = t_tream.ToArray();
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPGRADE, ref t_protof);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPGRADE, ref t_protof,false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_UPGRADE);
     }
 
     public void WashBotton(bool ison, int index,int type = 0)

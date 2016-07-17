@@ -29,7 +29,7 @@ public class SportPage : GeneralInstance<SportPage> {
 	private string m_textStr;
 
 	private bool m_isShopYinDao = false;
-	private bool m_moveFinished = false;
+//	private bool m_moveFinished = false;
 
 	public GameObject m_anchorTR;
 
@@ -45,7 +45,7 @@ public class SportPage : GeneralInstance<SportPage> {
 
 	public void InItSportPage (BaiZhanInfoResp tempResp,SportPageDelegate tempDelegate)
 	{
-		m_moveFinished = false;
+//		m_moveFinished = false;
 		//yindao
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 
@@ -64,7 +64,9 @@ public class SportPage : GeneralInstance<SportPage> {
 		}
 		else
 		{
-			Global.m_isSportDataInItEnd = true;
+            TaskData.Instance.IsCanShowComplete = true;
+
+            Global.m_isSportDataInItEnd = true;
 			m_isShopYinDao = true;
 		}
 
@@ -431,7 +433,7 @@ public class SportPage : GeneralInstance<SportPage> {
 		}
 		else
 		{
-			m_moveFinished = true;
+//			m_moveFinished = true;
 		}
 
 		PageScale ();
@@ -462,7 +464,7 @@ public class SportPage : GeneralInstance<SportPage> {
 
 	void MoveEnd ()
 	{
-		m_moveFinished = true;
+//		m_moveFinished = true;
 	}
 
 	void PageScale ()
@@ -600,7 +602,8 @@ public class SportPage : GeneralInstance<SportPage> {
 
 //		Global.m_isOpenBaiZhan = false;
 		Global.m_isSportDataInItEnd = true;
-		m_isShopYinDao = true;
+        TaskData.Instance.IsCanShowComplete = true;
+        m_isShopYinDao = true;
 	}
 
 	//打开剩余可领元宝窗口
@@ -665,10 +668,10 @@ public class SportPage : GeneralInstance<SportPage> {
 
 	public override void MYClick (GameObject ui)
 	{
-		if (!m_moveFinished)
-		{
-			return;
-		}
+//		if (!m_moveFinished)
+//		{
+//			return;
+//		}
 		switch (ui.name)
 		{
 		case "ShopBtn":

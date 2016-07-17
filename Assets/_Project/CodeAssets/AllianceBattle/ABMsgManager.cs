@@ -476,12 +476,12 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             t_qx.Deserialize(t_stream, tempMsg, tempMsg.GetType());
 
-                            //float yPos;
+                            float yPos;
                             Vector3 tempPos = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
-                            //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
-                            //{
-                            //    tempPos = new Vector3(tempMsg.posX, yPos, tempMsg.posZ);
-                            //}
+                            if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                            {
+                                tempPos = new Vector3(tempMsg.posX, yPos, tempMsg.posZ);
+                            }
 
                             if (tempMsg.uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
                             {
@@ -557,6 +557,8 @@ namespace AllianceBattle
                             QiXiongSerializer t_qx = new QiXiongSerializer();
                             ABResult tempInfo = new ABResult();
                             t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+                            m_RootManager.m_AllianceBattleMain.TryCancelChaseToAttack();
 
                             m_RootManager.m_AllianceBattleMain.m_ABResultManager.ShowBattleResult(tempInfo.IsSucceed, tempInfo.PersonalScore, tempInfo.Rank, tempInfo.KillNum, tempInfo.lmGX);
 

@@ -383,7 +383,14 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
 
             }
             m_ObjSig.SetActive(true);
-            m_LabObjSig.text = AllianceData.Instance.m_InviteInfo.inviteInfo.Count.ToString();
+            if (AllianceData.Instance.m_InviteInfo.inviteInfo.Count > 99)
+            {
+                m_LabObjSig.text = "99+";
+            }
+            else
+            {
+                m_LabObjSig.text = AllianceData.Instance.m_InviteInfo.inviteInfo.Count.ToString();
+            }
             if (index_YQRequest > 0)
             {
                 m_MainCancel.SetActive(false);
@@ -1363,7 +1370,15 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                                     }
                                     else
                                     {
-                                        m_LabObjSig.text = _YaoQingDict.Count.ToString();
+                                        if (_YaoQingDict.Count > 99)
+                                        {
+                                            m_LabObjSig.text = "99+";
+                                        }
+                                        else
+                                        {
+                                            m_LabObjSig.text = _YaoQingDict.Count.ToString();
+                                        }
+
                                     }
 
                                     for (int i = 0; i < AllianceData.Instance.m_InviteInfo.inviteInfo.Count; i++)

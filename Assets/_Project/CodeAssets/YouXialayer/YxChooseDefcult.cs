@@ -12,6 +12,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	public GameObject TopLeftManualAnchor;
 	public GameObject TopRightManualAnchor;
 
+	public GameObject mUIRoot;
 	[HideInInspector]
 	
 	public int BigId;
@@ -57,6 +58,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 
 	public void Init()
 	{
+		mUIRoot.SetActive (false);
 		SetMessegae ();
 	}
 	private void SetMessegae()
@@ -115,6 +117,7 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	}
 	void InitData()
 	{
+		mUIRoot.SetActive (true);
 		mTimes.text = m_Times;
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
 //		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)

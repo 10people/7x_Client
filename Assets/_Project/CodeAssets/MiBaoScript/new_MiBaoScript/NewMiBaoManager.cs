@@ -120,8 +120,9 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	void Start () {
 	
 		isOpenMiBaoTempInfo = false;
-		TaskData.Instance.m_DestroyMiBao = true;
-		Init ();
+		//TaskData.Instance.m_DestroyMiBao = true;
+        TaskData.Instance.IsCanShowComplete = false;
+        Init ();
 		//ShowMiBaoYInDao ();
 	}
 
@@ -980,8 +981,9 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 	}
 	public void CloseBtn()
 	{
-		TaskData.Instance.m_DestroyMiBao = false;
-		MainCityUI.TryRemoveFromObjectList(this.gameObject);
+		//TaskData.Instance.m_DestroyMiBao = false;
+        TaskData.Instance.IsCanShowComplete = true;
+        MainCityUI.TryRemoveFromObjectList(this.gameObject);
 
 		Destroy (this.gameObject);
 	}

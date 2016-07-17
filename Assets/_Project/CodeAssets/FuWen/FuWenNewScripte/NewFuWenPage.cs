@@ -924,9 +924,11 @@ public class NewFuWenPage : MonoBehaviour ,SocketListener {
 			ClientMain.m_UITextManager.createText("符文等级已达最高，不能再进行熔合了！");
 			return;
 		}
-		if(fuWenBagItemList == null || fuWenBagItemList.Count <= 0)
+//		Debug.Log ("mFuwenInBag.fuwenList.Count = " +mFuwenInBag.fuwenList.Count);
+		if(mFuwenInBag.fuwenList == null || mFuwenInBag.fuwenList.Count <= 0)
 		{
-			string mData = "无可放入的符文！";
+			string mData = "无任何可放入的符文！";
+			ClientMain.m_UITextManager.createText(mData);
 			return;
 		}
 		if(fuWenBagItemList[0].GetComponent<bagItem>().isOneKey)
@@ -954,13 +956,18 @@ public class NewFuWenPage : MonoBehaviour ,SocketListener {
 				m_bagItem.init();
 			}
 		}
-		//Debug.Log ("OnekeyXiangqiang = "+OnekeyXiangqiang);
+		FuWenInfoShow.Instance().LanweiExp = 0;
 		if(!OnekeyXiangqiang)
 		{
 			for(int i = 0; i < fuWenBagItemList.Count; i++)
 			{
 				yield return new WaitForSeconds(0.01f);
 				bagItem m_bagItem = fuWenBagItemList[i].GetComponent<bagItem>();
+//
+//				Debug.Log ("FuWenInfoShow.Instance().LanweiExp = "+FuWenInfoShow.Instance().LanweiExp);
+//
+//				Debug.Log ("FuWenInfoShow.Instance().CurrLevelUpExp = "+FuWenInfoShow.Instance().CurrLevelUpExp);
+
 				if(FuWenInfoShow.Instance().LanweiExp >= FuWenInfoShow.Instance().CurrLevelUpExp)
 				{
 					break;

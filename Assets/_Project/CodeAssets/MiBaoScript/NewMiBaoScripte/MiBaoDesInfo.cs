@@ -336,7 +336,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	}
 	public void Init()
 	{
-		Debug.Log("加载单个将魂信息 ");
+//		Debug.Log("加载单个将魂信息 ");
 		NewMiBaoManager.Instance ().isOpenMiBaoTempInfo = true;
 		//JunzhuZhaoli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 		int viplv = JunZhuData.Instance().m_junzhuInfo.vipLv;

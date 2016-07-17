@@ -237,6 +237,20 @@ public class MainCityUITongzhi : MYNGUIPanel
         }
     }
 
+	void Update()
+	{
+		for(int i = 0; i < m_CurrentTongzhiDataList.Count; i ++)
+		{
+			if(Time.time - m_CurrentTongzhiDataList[i].bTime >= m_CurrentTongzhiDataList[i].m_SuBaoMSG.cdTime)
+			{
+				Global.m_listAllTheData.Remove(m_CurrentTongzhiDataList[i]);
+				Global.upDataTongzhiData(null);
+				upDataShow();
+				i --;
+			}
+		}
+	}
+
     public override void MYMouseOver(GameObject ui)
     {
     }

@@ -45,10 +45,17 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 
 	public void InItPlayerInfo ()
 	{
-		//yindao
-		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
-
 		m_sportTemp = BaiZhanTemplate.getBaiZhanTemplateById (m_enemyPageInfo.junxianid);
+
+		//yindao
+		if (m_sportTemp.id == 101)
+		{
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,4);
+		}
+		else
+		{
+			UIYindao.m_UIYindao.CloseUI ();
+		}
 
 		m_junXianIcon.spriteName = "junxian" + m_sportTemp.jibie;
 		m_junXianName.spriteName = "JunXian_" + m_sportTemp.jibie;
@@ -127,12 +134,14 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 			break;
 		case "CloseBtn":
 
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 			m_enemyPageDelegate ();
 			SportPage.m_instance.DailyRewardBtnEffect ();
 
 			break;
 		case "ZheZhao":
 
+			QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100200,3);
 			m_enemyPageDelegate ();
 			SportPage.m_instance.DailyRewardBtnEffect ();
 

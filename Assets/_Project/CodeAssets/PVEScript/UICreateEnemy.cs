@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define USING_DEBUG
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -99,13 +101,15 @@ public class UICreateEnemy : MonoBehaviour
 					}
 				}
 			}
-//			foreach(NpcTemplate mlengend in mNpcTemplate)
-//			{
-//				Debug.Log("mlengend.modelId = "+mlengend.modelId);
-//				Debug.Log("mlengend.type = "+mlengend.type);
-//			}
+			#if USING_DEBUG
+			foreach(NpcTemplate mlengend in mNpcTemplate)
+			{
+				Debug.Log("mlengend.modelId = "+mlengend.modelId);
+				Debug.Log("mlengend.type = "+mlengend.type);
+			}
+			#endif
 		}
-
+       
         getEnemyData();
     }
 
@@ -191,7 +195,7 @@ public class UICreateEnemy : MonoBehaviour
 			iconSampleManager.SetIconBasic(3, m_NpcTemplate.icon.ToString());
 			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			if(m_NpcTemplate.type == 4)
+			if(m_NpcTemplate.type == 4 || m_NpcTemplate.type == 5)
 			{
 				iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
 				iconSampleManager.ShowBOssName(Enemy_Namestr.Name);
@@ -257,7 +261,7 @@ public class UICreateEnemy : MonoBehaviour
 			iconSampleManager.SetIconBasic(3, m_LegendNpcTemplate.icon.ToString());
 			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			if(m_LegendNpcTemplate.type == 4)
+			if(m_LegendNpcTemplate.type == 4 || m_LegendNpcTemplate.type == 5)
 			{
 				iconSampleManager.ShowBOssName(Enemy_Namestr.Name);
 				iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);

@@ -32,7 +32,7 @@ public class OtherCityItem : MonoBehaviour {
 
 	[HideInInspector]public int m_cost;
 
-	public void InItOtherCity (CityInfo tempInfo,int tempCurId)
+	public void InItOtherCity (CityInfo tempInfo,int tempCurId,int tempXuanZhanId)
 	{
 		M_CityInfo = tempInfo;
 
@@ -117,6 +117,11 @@ public class OtherCityItem : MonoBehaviour {
 				m_enterNum.text = MyColorData.getColorString (4,tempInfo.lmNum > 0 ? LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_17).Replace ("N",tempInfo.lmNum.ToString ()) : "");
 				m_btnLabel.text = "进入战场";
 			}
+		}
+
+		if (tempXuanZhanId != 0 && tempXuanZhanId != tempInfo.cityId)
+		{
+			M_canJoin = false;
 		}
 
 		QXComData.SetBtnState (m_enterBtn,M_canJoin);

@@ -9,6 +9,8 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 
+	public GameObject QCLUIRoot;
+
 	public UISprite VipN;
 
 	public UILabel EXpAdd;
@@ -92,9 +94,9 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	void initStart()
 	{
 		CanSaoDang = true;
-
+		QCLUIRoot.gameObject.SetActive (false);
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.CHONG_LOU_INFO_REQ,ProtoIndexes.CHONG_LOU_INFO_RESP.ToString()); // 重楼主界面请求,
-		YinDaoManager ();
+
 	}
 	void YinDaoManager()
 	{
@@ -233,6 +235,8 @@ public class QianChongLouManagerMent : MonoBehaviour,SocketProcessor {
 	public UISprite m_EnterBtnSprite;
 	public void InitData()
 	{
+		QCLUIRoot.gameObject.SetActive (true);
+		YinDaoManager ();
 		int viplevel = 5;
 		VipN.spriteName = "v" + viplevel.ToString ();
 		VipTemplate mvtemp = VipTemplate.GetVipInfoByLevel (viplevel);

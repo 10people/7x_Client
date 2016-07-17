@@ -330,20 +330,20 @@ public class RPGBaseCultureController : MonoBehaviour
 
     public void Update()
     {
-        if (Time.realtimeSinceStartup - checkTime > 0.5f)
-        {
-            if (m_SinglePlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_AnimationController)))
-            {
-                m_SinglePlayerController.ActiveMove();
-            }
+        //if (Time.realtimeSinceStartup - checkTime > 0.5f)
+        //{
+        //    if (m_SinglePlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_AnimationController)))
+        //    {
+        //        m_SinglePlayerController.ActiveMove();
+        //    }
 
-            if (m_OtherPlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_AnimationController)))
-            {
-                m_OtherPlayerController.ActiveMove();
-            }
+        //    if (m_OtherPlayerController != null && m_canMoveHashList.Contains(AnimationHelper.GetAnimatorPlayingHash(m_AnimationController)))
+        //    {
+        //        m_OtherPlayerController.ActiveMove();
+        //    }
 
-            checkTime = Time.realtimeSinceStartup;
-        }
+        //    checkTime = Time.realtimeSinceStartup;
+        //}
     }
 
     public void LateUpdate()

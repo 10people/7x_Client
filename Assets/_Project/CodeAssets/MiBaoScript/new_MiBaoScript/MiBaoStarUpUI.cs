@@ -121,7 +121,7 @@ public class MiBaoStarUpUI : MonoBehaviour {
 	}
 	public void Close()
 	{
-
+		Global.m_isZhanli = false;
 		EffectTool.SetUIBackgroundEffect (mCamer.gameObject, false);
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Destroy (this.gameObject);

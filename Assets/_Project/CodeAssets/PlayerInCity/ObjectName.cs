@@ -30,7 +30,7 @@ public class ObjectName : MonoBehaviour {
         }
         else
         {
-            m_LabAllianceName.text = MyColorData.getColorString(12, "<" +LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT)+">");
+            m_LabAllianceName.text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT);//MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
         }
 
         if (!string.IsNullOrEmpty(u_info._Designation) && !u_info._Designation.Equals("-1"))
@@ -39,20 +39,12 @@ public class ObjectName : MonoBehaviour {
             m_SpriteChengHao.gameObject.SetActive(true);
             m_SpriteChengHao.spriteName = u_info._Designation;
 
-            if (!string.IsNullOrEmpty(_Designation)
-                )
-            {
-                CreateEffect(int.Parse(u_info._Designation));
-            }
-            else if (!_Designation.Equals(u_info._Designation))
-            {
-                CreateEffect(int.Parse(u_info._Designation));
-            }
-
-            if (string.IsNullOrEmpty(_Designation))
+            if (!_Designation.Equals(u_info._Designation))
             {
                 _Designation = u_info._Designation;
+                CreateEffect(int.Parse(u_info._Designation));
             }
+ 
         }
         else
         {
@@ -100,8 +92,8 @@ public class ObjectName : MonoBehaviour {
 		}
 		else
 		{
-			m_LabAllianceName.text = MyColorData.getColorString(12, "<" +LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT)+">");
-		}
+			m_LabAllianceName.text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT); //MyColorData.getColorString(12,LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
+        }
 		
 		if (!string.IsNullOrEmpty(u_info._Designation) && !u_info._Designation.Equals("-1"))
 		{
@@ -109,20 +101,12 @@ public class ObjectName : MonoBehaviour {
 			m_SpriteChengHao.gameObject.SetActive(true);
 			m_SpriteChengHao.spriteName = u_info._Designation;
 			
-			if (!string.IsNullOrEmpty(_Designation)
-			    )
+		    if (!_Designation.Equals(u_info._Designation))
 			{
-				CreateEffect(int.Parse(u_info._Designation));
+                _Designation = u_info._Designation;
+                CreateEffect(int.Parse(u_info._Designation));
 			}
-			else if (!_Designation.Equals(u_info._Designation))
-			{
-				CreateEffect(int.Parse(u_info._Designation));
-			}
-			
-			if (string.IsNullOrEmpty(_Designation))
-			{
-				_Designation = u_info._Designation;
-			}
+  
 		}
 		else
 		{

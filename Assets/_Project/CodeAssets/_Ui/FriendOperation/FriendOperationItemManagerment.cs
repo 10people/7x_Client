@@ -109,7 +109,7 @@ public class FriendOperationItemManagerment : MonoBehaviour
 
         if (string.IsNullOrEmpty(info.lianMengName))
         {
-            m_listLabel[1].text = MyColorData.getColorString(12, "<" + LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT) + ">");
+            m_listLabel[1].text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT);// MyColorData.getColorString(12, "<" + LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT) + ">");
             m_AllianceInfo.SetActive(true);
         }
         else

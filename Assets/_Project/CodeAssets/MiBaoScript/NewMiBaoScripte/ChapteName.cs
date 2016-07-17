@@ -62,9 +62,9 @@ public class ChapteName : MonoBehaviour {
 
 //		MainCityUI.TryRemoveFromObjectList(mobg);
 
-		TaskData.Instance.m_DestroyMiBao = false;
+		//TaskData.Instance.m_DestroyMiBao = false;
+        TaskData.Instance.IsCanShowComplete = true;
+        //		Destroy(mobg) ;
 
-//		Destroy(mobg) ;
-
-	}
+    }
 }

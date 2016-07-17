@@ -87,7 +87,7 @@ public class bagItem : MYNGUIPanel {
 
 			if(cur < mfwbg.cnt)
 			{
-				FuWenTemplate FuwenInfo = FuWenTemplate.GetFuWenTemplateByFuWenId(FuWenInfoShow.Instance().mFuWenlanwei.itemId);
+				FuWenTemplate FuwenInfo = FuWenTemplate.GetFuWenTemplateByFuWenId(FuWenInfoShow.Instance().mCurrFuWenlanwei.itemId);
 
 	
 				if(FuwenInfo.fuwenLevel >= FuwenInfo.levelMax)

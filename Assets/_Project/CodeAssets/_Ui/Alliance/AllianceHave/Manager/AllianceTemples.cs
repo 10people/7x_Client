@@ -178,9 +178,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		MaxNumber = index*10;
 		float WaitingTime = 0.5f;
 		mBoxEffect.SetActive (true);
-		Debug.Log("MaxNumber = "+MaxNumber);
-//		Debug.Log("mMark.count = "+mMark.Count);
-		Debug.Log("mMark[0] = "+Mark[0]);
+
 		int mStarcount = 0;
 		while(startcount <= MaxNumber+Mark[0])
 		{
@@ -212,8 +210,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 			}
 			if(startcount == MaxNumber+Mark[0])
 			{
-				mBoxEffect.SetActive (false);
-				DengDaiYaoJiang.SetActive(false);
+
 				mJiBaiList[mStarcount].GetDataByChouJiang();
 				OneKeyAward.Add(mJiBaiList[Mark[0]].mAwardinfo);
 				StartCoroutine ("OpenAwardUI");
@@ -231,12 +228,12 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	{
 		rewardList = OneKeyAward.Select(item => new RewardData(item.itemId, item.itemNumber)).ToList();
 		UIYindao.m_UIYindao.CloseUI();
-		float t = 0.1f;
+		float t = 1f;
 		yield return new WaitForSeconds (t);
 		JiBaoBtn.GetComponent<BoxCollider>().enabled = true;
 		OneKeyJiBaoBtn.GetComponent<BoxCollider>().enabled = true;
+		mBoxEffect.SetActive (false);
 		DengDaiYaoJiang.SetActive(false);
-
 		MiBaoGlobleData.Instance ().GetCommAwards (OneKeyAward.Select(item=>item.itemId).ToList(),OneKeyAward.Select(item=>item.itemNumber).ToList(),null,mCamera);
 
 		//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.PVE_SAO_DANG_DONE ),OpenLockLoadBack);
@@ -276,9 +273,10 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 		CostPreTime = g_mExploreResp.info.money;
 		mAddProperty1.text = LanguageTemplate.GetText(LanguageTemplate.Text.RULL2)+addTime.ToString();
 		Debug.Log (" addTime = "+addTime);
-		if(addTime >= LianMengZongMiaoTemplate.GetLianMengZongMiao_MaxTimes())
+		if(NewAlliancemanager.Instance().ZongmiaoLev >= LianMengZongMiaoTemplate.GetLianMengZongMiao_MaxLevel())
 		{
-			mAddProperty2.gameObject.SetActive(false);
+			string mstr = "当前已达最大等级";
+			mAddProperty2.text = mstr;
 		}
 		else
 		{
@@ -305,7 +303,7 @@ public class AllianceTemples : MonoBehaviour ,SocketProcessor {
 	}
 	public void ShowTime()
 	{
-		Debug.Log ("g_mExploreResp.info.remainFreeCount = "+g_mExploreResp.info.remainFreeCount);
+//		Debug.Log ("g_mExploreResp.info.remainFreeCount = "+g_mExploreResp.info.remainFreeCount);
 		int ChouJiangid1 = 600900;
 		int ChouJiangid2 = 600905;
 		if(g_mExploreResp.info.remainFreeCount <= 0)

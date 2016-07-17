@@ -38,14 +38,14 @@ public class KingDetailMibaoInfo : MonoBehaviour
     {
         for (int i = 0; i < m_MibaoInfoResp.miBaoList.Count; i++)
         {
-            m_MibaoData[i].m_ObjRed.SetActive(false);
+            //m_MibaoData[i].m_ObjRed.SetActive(false);
             if (m_MibaoInfoResp.miBaoList[i].star == 0)
             {
                 m_MibaoData[i].m_SpriteIcon.color = Color.black;
                 m_MibaoData[i].m_SpritePinZhi.gameObject.SetActive(false);
                 if (m_MibaoInfoResp.miBaoList[i].suiPianNum >= m_MibaoInfoResp.miBaoList[i].needSuipianNum)
                 {
-                    m_MibaoData[i].m_ObjRed.SetActive(true);
+                    //m_MibaoData[i].m_ObjRed.SetActive(true);
                 }
             }
             else

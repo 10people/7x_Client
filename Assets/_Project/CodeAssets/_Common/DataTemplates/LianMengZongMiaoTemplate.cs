@@ -105,6 +105,19 @@ public class LianMengZongMiaoTemplate : XmlLoadManager {
 		return m_Max;
 		
 	}
+	public static int  GetLianMengZongMiao_MaxLevel()
+	{
+		int m_Max = 0;
+		for (int i = 0; i < templates.Count; i++)
+		{
+			if (templates[i].zongMiaoLevel > m_Max)
+			{
+				m_Max =  templates[i].zongMiaoLevel;
+			}
+		}
+		return m_Max;
+		
+	}
 	public static int  GetLianMengZongMiaoMaxTimes_by_level(int mLevel)
 	{
 		for (int i = 0; i < templates.Count; i++)

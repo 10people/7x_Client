@@ -129,7 +129,11 @@ namespace Rank
         {
             //clamp scroll bar value.
             //set 0.99 and 0.01 cause same bar value not taken in execute.
-            StartCoroutine(DoClampScrollView());
+
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(DoClampScrollView());
+            }
         }
 
         IEnumerator DoClampScrollView()

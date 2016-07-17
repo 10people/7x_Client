@@ -62,23 +62,30 @@ public class TaskScrollViewItemAmend : MonoBehaviour
         listRewardInfo = taskInfo._listReward;
         int size_all = listRewardInfo.Count;
         index_num = 0;
-        for (int i = 0; i < size_all; i++)
+        if (m_awardIconGrid.transform.childCount == 0)
         {
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+            for (int i = 0; i < size_all; i++)
+            {
+                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+            }
         }
 
         if (taskInfo._Progress < 0)
         {
             m_LingQu.gameObject.SetActive(true);
             m_backGround.spriteName = "jianbianbgliang";
+            if(taskInfo._Type == 2 && m_LingQu.GetComponent<Animator>()== null)
+            {
+              EffectTool.OpenMultiUIEffect_ById( m_LingQu.gameObject, 223, 224, 225);
+            }
             m_flag_finish.SetActive(false);
             m_progressLabel.gameObject.SetActive(true);
-            //  m_progressLabel.text = "完成";
             m_progressLabel.text = "";
 
         }
         else  
         {
+            m_backGround.spriteName = "jianbianbgan";
             m_LingQu.gameObject.SetActive(false);
             m_flag_finish.SetActive(false);
             m_progressLabel.gameObject.SetActive(true);

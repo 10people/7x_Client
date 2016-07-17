@@ -268,6 +268,8 @@ namespace AllianceBattle
         {
             PreLoadBattleEffect();
 
+            NewEmailData.Instance().LoadEmailPrefab();
+
             //Set variables.
             m_AnimationHierarchyPlayer.m_PlayerManager = m_AbPlayerSyncManager;
             m_AnimationHierarchyPlayer.m_SinglePlayerController = m_SelfPlayerController;

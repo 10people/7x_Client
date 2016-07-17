@@ -495,17 +495,17 @@ public class TransformHelper : MonoBehaviour {
 
     public static bool RayCastXToFirstCollider(Vector3 originalPos, out float firstPos, int direction = 2, bool isMax = true)
     {
-        RaycastHit[] tempHits = new RaycastHit[] {};
+        List<RaycastHit> tempHits = new List<RaycastHit>();
         switch (direction)
         {
             case 1:
-                tempHits = Physics.RaycastAll(new Ray(new Vector3((isMax ? 1 : -1)*100, originalPos.y, originalPos.z), new Vector3((isMax ? -1 : 1), 0, 0)), Mathf.Infinity);
+                tempHits = Physics.RaycastAll(new Ray(new Vector3((isMax ? 1 : -1)*100, originalPos.y, originalPos.z), new Vector3((isMax ? -1 : 1), 0, 0)), Mathf.Infinity).Where(item => item.transform.gameObject.layer == LayerMask.NameToLayer("Real Time Ground")).ToList();
                 break;
             case 2:
-                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, (isMax ? 1 : -1)*100, originalPos.z), new Vector3(0, (isMax ? -1 : 1), 0)), Mathf.Infinity);
+                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, (isMax ? 1 : -1)*100, originalPos.z), new Vector3(0, (isMax ? -1 : 1), 0)), Mathf.Infinity).Where(item => item.transform.gameObject.layer == LayerMask.NameToLayer("Real Time Ground")).ToList();
                 break;
             case 3:
-                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, originalPos.y, (isMax ? 1 : -1)*100), new Vector3(0, 0, (isMax ? -1 : 1))), Mathf.Infinity);
+                tempHits = Physics.RaycastAll(new Ray(new Vector3(originalPos.x, originalPos.y, (isMax ? 1 : -1)*100), new Vector3(0, 0, (isMax ? -1 : 1))), Mathf.Infinity).Where(item => item.transform.gameObject.layer == LayerMask.NameToLayer("Real Time Ground")).ToList();
                 break;
             default:
                 Debug.LogError("Input direction is wrong");
@@ -530,6 +530,7 @@ public class TransformHelper : MonoBehaviour {
                     {
                         return false;
                     }
+
                     break;
                 case 3:
                     firstPos = isMax ? tempHits.Max(item => item.point.z) : tempHits.Min(item => item.point.z);

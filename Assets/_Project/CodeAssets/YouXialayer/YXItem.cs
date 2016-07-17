@@ -138,24 +138,25 @@ public class YXItem : MonoBehaviour  {
 	private float m_sportCdTime;
 	void SportCdTime (int cdTime)
 	{
+	
 		m_sportCdTime = cdTime;
-		if (TimeHelper.Instance.IsTimeCalcKeyExist("SportCdTime"))
+		if (TimeHelper.Instance.IsTimeCalcKeyExist(mYouXiaInfo.id.ToString()))
 		{
-			TimeHelper.Instance.RemoveFromTimeCalc("SportCdTime");
+			TimeHelper.Instance.RemoveFromTimeCalc(mYouXiaInfo.id.ToString());
 		}
-		TimeHelper.Instance.AddEveryDelegateToTimeCalc("SportCdTime", cdTime, OnUpdateSportTime);
+		TimeHelper.Instance.AddEveryDelegateToTimeCalc(mYouXiaInfo.id.ToString(), cdTime, OnUpdateSportTime);
 	}
 	
 	private void OnUpdateSportTime (int p_time)
 	{
+	
 		if (m_sportCdTime - p_time > 0)
 		{
 			CountTime.text = TimeHelper.GetUniformedTimeString (m_sportCdTime - p_time)+" 后可进入";
-//			Debug.Log ("m_sportCdTime - p_time:" + (m_sportCdTime - p_time));
 		}
 		else
 		{
-			TimeHelper.Instance.RemoveFromTimeCalc("SportCdTime");
+			TimeHelper.Instance.RemoveFromTimeCalc(mYouXiaInfo.id.ToString());
 			CountTime.gameObject.SetActive(false);
 			Art.gameObject.SetActive(true);
 			ShowTime ();

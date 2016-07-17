@@ -130,6 +130,7 @@ public class OnlineRewardcGiftTimesManagerment : MonoBehaviour, SocketProcessor
                         {
                             Destroy(m_MainParent);
                         }
+                        m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
                         return true;
                     }
                     break;

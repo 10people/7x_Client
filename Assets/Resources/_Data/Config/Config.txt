@@ -17,7 +17,7 @@ ShowScreenLog:				false
 ShowConsole:				false
 
 // common code error
-ShowCodeException:			true
+ShowCodeException:			false
 
 // close network anywhere
 NetworkCloseSwitcher:		false
@@ -113,10 +113,10 @@ OpenAllTheFunction:			false
 
 ---------------------------------------------------------------- <BattleField Config>
 // quick choose level
-QuickChooseLevel:			false
+QuickChooseLevel:			true
 
 // quick finish game
-QuickFight:					false
+QuickFight:					true
 
 // operate battle's camera
 ShowBattleCameraOps:		false

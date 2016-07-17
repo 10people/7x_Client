@@ -630,7 +630,7 @@ namespace AllianceBattle
                             trackSkill.TargetObject = targetObject;
                             trackSkill.AttackerUID = tempInfo.attackUid;
 
-                            playerObject.GetComponent<RPGBaseCultureController>().m_ExecuteAfterSkillFinish = trackSkill.Execute;
+                            playerObject.GetComponent<ABPlayerCultureController>().m_ExecuteAfterLongSkillShot = trackSkill.Execute;
                             //trackSkill.Execute();
                         }
                         else
@@ -733,7 +733,7 @@ namespace AllianceBattle
                             trackSkill.FakeTargetPosition = TransformHelper.Get2DTrackPosition(playerObject.transform.position, playerObject.transform.eulerAngles, SelectDistance);
                             trackSkill.AttackerUID = PlayerSceneSyncManager.Instance.m_MyselfUid;
 
-                            playerObject.GetComponent<RPGBaseCultureController>().m_ExecuteAfterSkillFinish = trackSkill.ExecuteFake;
+                            playerObject.GetComponent<ABPlayerCultureController>().m_ExecuteAfterLongSkillShot = trackSkill.ExecuteFake;
                             //trackSkill.ExecuteFake();
                         }
                         else
@@ -1347,12 +1347,12 @@ namespace AllianceBattle
 
         private void ExecuteAfterTp(Vector2 p_position)
         {
-            //float yPos;
+            float yPos;
             Vector3 tempPos = new Vector3(p_position.x, RootManager.BasicYPosition, p_position.y);
-            //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
-            //{
-            //    tempPos = new Vector3(p_position.x, yPos, p_position.y);
-            //}
+            if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+            {
+                tempPos = new Vector3(p_position.x, yPos, p_position.y);
+            }
 
             m_RootManager.m_SelfPlayerController.transform.localPosition = tempPos;
         }

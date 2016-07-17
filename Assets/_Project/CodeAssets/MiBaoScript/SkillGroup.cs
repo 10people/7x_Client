@@ -146,8 +146,9 @@ public class SkillGroup : MonoBehaviour {
 		GameObject supGb = GameObject.Find ("Secret(Clone)");
 		if(supGb)
 		{
-			TaskData.Instance.m_DestroyMiBao = false;
-			MainCityUI.TryRemoveFromObjectList(supGb);
+			//TaskData.Instance.m_DestroyMiBao = false;
+            TaskData.Instance.IsCanShowComplete = true;
+            MainCityUI.TryRemoveFromObjectList(supGb);
 			Destroy(supGb);
 		}
 	}

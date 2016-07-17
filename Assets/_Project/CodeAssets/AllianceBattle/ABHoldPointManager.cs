@@ -285,10 +285,11 @@ namespace AllianceBattle
             {
                 //float yPos;
                 Vector3 tempPos = new Vector3(item.Position.x, RootManager.BasicYPosition, item.Position.y);
-                //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
-                //{
-                //    tempPos = new Vector3(item.Position.x, yPos + .5f, item.Position.y);
-                //}
+                float yPos;
+                if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                {
+                    tempPos = new Vector3(item.Position.x, yPos, item.Position.y);
+                }
 
                 HoldPointDic.Add(item.Id, new OccupyPoint()
                 {
@@ -307,12 +308,12 @@ namespace AllianceBattle
             var temp2 = LMZBuildingTemplate.GetTemplates(4, 2);
             temp2.ForEach(item =>
             {
-                //float yPos;
+                float yPos;
                 Vector3 tempPos = new Vector3(item.Position.x, RootManager.BasicYPosition, item.Position.y);
-                //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
-                //{
-                //    tempPos = new Vector3(item.Position.x, yPos + .5f, item.Position.y);
-                //}
+                if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                {
+                    tempPos = new Vector3(item.Position.x, yPos, item.Position.y);
+                }
 
                 HoldPointDic.Add(item.Id, new OccupyPoint()
                 {

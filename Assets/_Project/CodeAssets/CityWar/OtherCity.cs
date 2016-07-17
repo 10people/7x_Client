@@ -63,6 +63,7 @@ public class OtherCity : GeneralInstance<OtherCity> {
 	private OtherCityItem m_otherCityItem;
 
 	private int curCityId;		//当前挑战难度郡城id
+	private int curXuanZhanId;		//当前宣战城池id
 	
 	public void InItOtherCity (CityFightInfoResp tempResp)
 	{
@@ -73,12 +74,16 @@ public class OtherCity : GeneralInstance<OtherCity> {
 		InItPageType (PageType.OTHER_CITY);
 
 		curCityId = 0;
+		curXuanZhanId = 0;
 		for (int i = 0;i < tempResp.cityList.Count;i ++)
 		{
 			if (tempResp.cityList[i].cityState == 0)
 			{
-				curCityId = tempResp.cityList[i].cityId;
-				break;
+				curCityId = curCityId == 0 ? tempResp.cityList[i].cityId : curCityId;
+			}
+			if (tempResp.cityList[i].cityState2 != 0)
+			{
+				curXuanZhanId = tempResp.cityList[i].cityId;
 			}
 		}
 
@@ -88,7 +93,7 @@ public class OtherCity : GeneralInstance<OtherCity> {
 		{
 			m_otherCityList[i].transform.localPosition = new Vector3(i * 150,0,0);
 			OtherCityItem cityItem = m_otherCityList[i].GetComponent<OtherCityItem> ();
-			cityItem.InItOtherCity (tempResp.cityList[i],curCityId);
+			cityItem.InItOtherCity (tempResp.cityList[i],curCityId,curXuanZhanId);
 		}
 
 		m_sc.UpdateScrollbars (true);
@@ -125,13 +130,18 @@ public class OtherCity : GeneralInstance<OtherCity> {
 
 	public void RefreshOtherCity (int cityId)
 	{
+		int xuanZhanId = cityId;
 		for (int i = 0;i < m_otherCityList.Count;i ++)
 		{
 			OtherCityItem cityItem = m_otherCityList[i].GetComponent<OtherCityItem> ();
 			if (cityId == cityItem.M_CityInfo.cityId)
 			{
 				cityItem.M_CityInfo.cityState2 = 1;
-				cityItem.InItOtherCity (cityItem.M_CityInfo,curCityId);
+				cityItem.InItOtherCity (cityItem.M_CityInfo,curCityId,xuanZhanId);
+			}
+			else
+			{
+				cityItem.InItOtherCity (cityItem.M_CityInfo,curCityId,xuanZhanId);
 			}
 		}
 	}

@@ -324,10 +324,9 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         }
         EnterNextScene.Instance().DestroyUI();
     }
-
-    private static int m_received_data_for_main_city = 0;
-
+ 
     private const  int REQUEST_DATA_COUNT_FOR_MAINCITY = 4;
+    private Dictionary<string, string> _ConnectInfoDic = new Dictionary<string, string>();
 
     /// Prepare Data For Main City.
     public void Prepare_For_MainCity()
@@ -341,11 +340,11 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         StartCoroutine(CheckingDataLoadingTime());
         // reset info
         {
-			#if DEBUG_PREPARE_FOR_CITY_LOAD
+#if DEBUG_PREPARE_FOR_CITY_LOAD
 			Debug.Log( "Prepare_For_MainCity()" );
-			#endif
+#endif
 
-            m_received_data_for_main_city = 0;
+            _ConnectInfoDic.Clear();
 
            
         }
@@ -384,7 +383,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
     IEnumerator CheckingDataForMainCity()
     {
    
-        while ( m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY ){
+        while (_ConnectInfoDic.Count < REQUEST_DATA_COUNT_FOR_MAINCITY ){
             //   Global.CreateBox("提示", "数据加载错误", "", null, null, "确定", ReLogin);
 #if DEBUG_PREPARE_FOR_CITY_LOAD
           
@@ -411,11 +410,12 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
     {
         yield return new WaitForSeconds(20.0f);
  
-       if (m_received_data_for_main_city < REQUEST_DATA_COUNT_FOR_MAINCITY)
+       if (_ConnectInfoDic.Count < REQUEST_DATA_COUNT_FOR_MAINCITY)
         {
             _isEnterMainCity = false;
             if (Debug.isDebugBuild)
             {
+      
                 Global.CreateBox("提示",
                                     "数据加载失败" + "\n" + ss + "\n" + SocketTool.GetSocketState(),
                                     null,
@@ -470,9 +470,11 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
                 {
 			        ProcessPVEPageReturn(p_message);
 
-                    m_received_data_for_main_city++;
-
-					{
+                    if (!_ConnectInfoDic.ContainsKey("PVE_PAGE_RET"))
+                    {
+                        _ConnectInfoDic.Add("PVE_PAGE_RET", "PVE_PAGE_RET");
+                    }
+                    {
 						#if DEBUG_PREPARE_FOR_CITY_LOAD
 						Debug.Log( "OnSocketEvent( " + "PVE_PAGE_RET " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
@@ -494,9 +496,12 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
                     t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
                    JunZhuData.Instance().SetInfo(tempInfo);
-                    m_received_data_for_main_city++;
-
-					{
+                  
+                    if (!_ConnectInfoDic.ContainsKey("JunZhuInfoRet"))
+                    {
+                        _ConnectInfoDic.Add("JunZhuInfoRet", "JunZhuInfoRet");
+                    }
+                    {
 						#if DEBUG_PREPARE_FOR_CITY_LOAD
 						Debug.Log( "OnSocketEvent( " + "JunZhuInfoRet " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
@@ -513,9 +518,12 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 
                     //				Debug.Log ("获得有联盟信息");
 
-                    m_received_data_for_main_city++;
+                    if (!_ConnectInfoDic.ContainsKey("ALLIANCE_HAVE_RESP"))
+                    {
+                        _ConnectInfoDic.Add("ALLIANCE_HAVE_RESP", "ALLIANCE_HAVE_RESP");
+                    }
 
-					{
+                    {
 						#if DEBUG_PREPARE_FOR_CITY_LOAD
 						Debug.Log( "OnSocketEvent( " + "ALLIANCE_HAVE_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
@@ -531,9 +539,12 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
                 {
 
                     //				Debug.Log ("获得无联盟信息");
-                    m_received_data_for_main_city++;
+                    if (!_ConnectInfoDic.ContainsKey("ALLIANCE_NON_RESP"))
+                    {
+                        _ConnectInfoDic.Add("ALLIANCE_NON_RESP", "ALLIANCE_NON_RESP");
+                    }
 
-					{
+                    {
 						#if DEBUG_PREPARE_FOR_CITY_LOAD
 						Debug.Log( "OnSocketEvent( " + "ALLIANCE_NON_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
@@ -546,9 +557,12 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
             case ProtoIndexes.S_TaskList:
                 {
                     //				Debug.Log( "获得主线任务: " + Global.m_iScreenID );
-                    m_received_data_for_main_city++;
+                    if (!_ConnectInfoDic.ContainsKey("S_TaskList"))
+                    {
+                        _ConnectInfoDic.Add("S_TaskList", "S_TaskList");
+                    }
 
-					{
+                    {
 						#if DEBUG_PREPARE_FOR_CITY_LOAD
 						Debug.Log( "OnSocketEvent( " + "ALLIANCE_NON_RESP " + m_received_data_for_main_city + " / " + REQUEST_DATA_COUNT_FOR_MAINCITY + " )" );
 						#endif
@@ -611,7 +625,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 
         // reset info
         {
-            m_received_data_for_main_city = 0;
+            _ConnectInfoDic.Clear();
 
             StartCoroutine(CheckingDataForMainCity());
         }

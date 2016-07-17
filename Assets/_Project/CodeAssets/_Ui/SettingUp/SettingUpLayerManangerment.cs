@@ -260,7 +260,7 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
         }
         else
         {
-            listMainLab[0].text = "<无联盟>";
+            listMainLab[0].text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT);
             m_AllianceHave.SetActive(false);
         }
         listMainLab[1].text =JunZhuData.Instance().m_junzhuInfo.level.ToString();

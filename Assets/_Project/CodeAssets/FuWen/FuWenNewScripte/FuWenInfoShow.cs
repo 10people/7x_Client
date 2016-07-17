@@ -147,23 +147,24 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 
 //		Apply_Exp.text = "被熔合时提供的经验："+mCurrFuWenlanwei.exp.ToString ();//...........................................................................
 
-		if(mFUwen.fuwenLevel >= mFUwen.levelMax)// 等级已满
+
+//		else
 		{
-			LevelInfo.SetActive(false);
-			MaxLevel.gameObject.SetActive(true);
-			MaxLevel.text = "等级已满";
-			Up_Need_Exp.text = "升级经验：等级已满";
-			mSlider.value = 1.0f;
-			CurrProperty.text = GetFuWenProperty (mFUwen.shuxing)+mFUwen.shuxingValue.ToString();
-			NextProperty.text = "等级已满";
-		}
-		else
-		{
+//			if(mFUwen.fuwenLevel >= mFUwen.levelMax)// 等级已满
+//			{
+//				LevelInfo.SetActive(false);
+//				MaxLevel.gameObject.SetActive(true);
+//				MaxLevel.text = "等级已满";
+//				Up_Need_Exp.text = "升级经验：等级已满";
+//				mSlider.value = 1.0f;
+//				CurrProperty.text = GetFuWenProperty (mFUwen.shuxing)+mFUwen.shuxingValue.ToString();
+//				NextProperty.text = "等级已满";
+//			}
 			if(mCurrFuWenlanwei.exp > LanweiExp)
 			{
 				LanweiExp = mCurrFuWenlanwei.exp;
 			}
-			if(mCurrFuWenlanwei.exp < mFUwen.lvlupExp) // 判断是否该升级了
+			if(mCurrFuWenlanwei.exp < mFUwen.lvlupExp || mFUwen.lvlupExp == -1) // 判断是否该升级了
 			{
 				//Debug.Log ("mFUwen.fuwenFront = "+mFUwen.fuwenFront);
 				if(mFUwen.fuwenFront > 0)
@@ -185,14 +186,17 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 					MaxLevel.text = "";
 					mFuwenLevel.text = mFUwen.fuwenLevel.ToString() +"级";
 					mNextFuwenLevel.text = (mFUwen.fuwenLevel+1).ToString() +"级";
+					Up_Need_Exp.text = "升级经验："+mCurrFuWenlanwei.exp.ToString()+"/"+mFUwen.lvlupExp.ToString();
+					mSlider.value = (float)(mCurrFuWenlanwei.exp)/(float)(mFUwen.lvlupExp);
 				}
 				else
 				{
 					LevelInfo.SetActive(false);
 					MaxLevel.text = "等级已满";
-					
+					Up_Need_Exp.text = "升级经验：等级已满";
+					mSlider.value = 1.0f;
 				}
-				Up_Need_Exp.text = "升级经验："+mCurrFuWenlanwei.exp.ToString()+"/"+mFUwen.lvlupExp.ToString();
+
 				
 				CurrProperty.text = GetFuWenProperty (mFUwen.shuxing)+mFUwen.shuxingValue.ToString();
 				if(mFUwen.fuwenNext > 0)
@@ -203,15 +207,21 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 				else{
 					NextProperty.text = "等级已满";
 				}
-				mSlider.value = (float)(mCurrFuWenlanwei.exp)/(float)(mFUwen.lvlupExp);
+
 			}
 			else
 			{
-				Debug.Log ("可以升级 ");
+				Debug.Log ("判断是否该升级了 = "+mCurrFuWenlanwei.itemId);
 				mCurrFuWenlanwei.itemId = mFUwen.fuwenNext;
 				//			FuWenTemplate m_NextFUwen = FuWenTemplate.GetFuWenTemplateByFuWenId (mCurrFuWenlanwei.itemId);
 				mCurrFuWenlanwei.exp = mCurrFuWenlanwei.exp - mFUwen.lvlupExp ;
 				InitLevelInfo();
+				Debug.Log ("mCurrFuWenlanwei.exp = "+mCurrFuWenlanwei.exp);
+				FuWenTemplate mmind = FuWenTemplate.GetFuWenTemplateByFuWenId (mCurrFuWenlanwei.itemId);
+				if(mmind.fuwenLevel >= mmind.levelMax)
+				{
+					Global.CreateBox("提示", "您所添加的符文经验超过最大等级上限了，继续添加可能导致经验损失！", "", null, "确定", null, null);
+				}
 			}
 		}
 	
@@ -316,7 +326,7 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 	public void _DeleltLifeMoveNow(int content)
 	{
 		mCurrFuWenlanwei.exp -= content;
-		Debug.Log ("fuwensinBag.Count = "+fuwensinBag.Count);
+//		Debug.Log ("fuwensinBag.Count = "+fuwensinBag.Count);
 		if(fuwensinBag.Count <= 0)
 		{
 			RongHeBtn.SetActive (false);
@@ -356,7 +366,10 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 	public void RongHe() //融合
 	{
 		if(fuwensinBag.Count <= 0)
-		{ComRong_He (1);}
+
+		{
+			ComRong_He (1);
+		}
 		else
 		{
 			ComRong_He(2);
@@ -364,21 +377,39 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 
 		//Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),LockRongHeLoadBack);
 	}
-	void LockRongHeLoadBack(ref WWW p_www,string p_path, Object p_object)
-	{
-		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
-		
-		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
-		
-		string str = "\n确定要熔合吗？";//被熔合的符文中包含高品质符文
-		
-		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
-		
-		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
-		
-		uibox.setBox(titleStr,MyColorData.getColorString (1,str),null,null,CancleBtn,confirmStr,ComRong_He,null,null,null);
-	}
+//	void LockRongHeLoadBack(ref WWW p_www,string p_path, Object p_object)
+//	{
+//		UIBox uibox = (GameObject.Instantiate(p_object) as GameObject).GetComponent<UIBox>();
+//		
+//		string titleStr = LanguageTemplate.GetText (LanguageTemplate.Text.CHAT_UIBOX_INFO);
+//		
+//		string str = "\n确定要熔合吗？";//被熔合的符文中包含高品质符文
+//		
+//		string CancleBtn = LanguageTemplate.GetText (LanguageTemplate.Text.CANCEL);
+//		
+//		string confirmStr = LanguageTemplate.GetText (LanguageTemplate.Text.CONFIRM);
+//		
+//		uibox.setBox(titleStr,MyColorData.getColorString (1,str),null,null,CancleBtn,confirmStr,ComRong_He,null,null,null);
+//	}
 	void ComRong_He(int i = 2)
+	{
+		if(i == 2)
+		{
+			FuWenTemplate m_mind = FuWenTemplate.GetFuWenTemplateByFuWenId (mCurrFuWenlanwei.itemId);
+			if(m_mind.fuwenLevel >= m_mind.levelMax)
+			{
+				Global.CreateBox("提示", "您所添加的符文经验超过最大等级上限，可能导致经验损失，确认熔合？",null,null, "取消", "确定", m_RongHeBtn,null, null);
+			}else
+			{
+				m_RongHeBtn(2);
+			}
+		}
+		else
+		{
+			ClientMain.m_UITextManager.createText("未选择熔合符文！");
+		}
+	}
+	void m_RongHeBtn(int i)
 	{
 		if(i == 2)
 		{
@@ -398,10 +429,6 @@ public class FuWenInfoShow : MonoBehaviour ,SocketProcessor {
 			t_protof = MiBaoinfoStream.ToArray();
 			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_FUWEN_RONG_HE,ref t_protof,ProtoIndexes.S_FUWEN_RONG_HE_RESP.ToString());
 			fuwensinBag.Clear();
-		}
-		else
-		{
-			ClientMain.m_UITextManager.createText("未选择熔合符文！");
 		}
 	}
 }

@@ -8,21 +8,30 @@ public class EffectNumController : Singleton<EffectNumController>
 
     private float m_lastCheckTime = -1f;
 
-    private int m_playedEffectCount;
+    private int m_selfRelatedEffectCount;
+    private int m_otherEffectCount;
 
-    public bool IsCanPlayEffect()
+    public bool IsCanPlayEffect(bool isSelfRelated)
     {
-        return m_playedEffectCount < m_limitNumber;
+        return isSelfRelated ? m_selfRelatedEffectCount < m_limitNumber : m_otherEffectCount < m_limitNumber;
     }
 
-    public void NotifyPlayingEffect(int plusNum = 1)
+    public void NotifyPlayingEffect(bool isSelfRelated, int plusNum = 1)
     {
-        m_playedEffectCount += plusNum;
+        if (isSelfRelated)
+        {
+            m_selfRelatedEffectCount += plusNum;
+        }
+        else
+        {
+            m_otherEffectCount += plusNum;
+        }
     }
 
     private void ResetPlayedEffectCount()
     {
-        m_playedEffectCount = 0;
+        m_selfRelatedEffectCount = 0;
+        m_otherEffectCount = 0;
     }
 
     void Update()

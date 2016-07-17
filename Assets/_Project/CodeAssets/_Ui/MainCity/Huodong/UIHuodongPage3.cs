@@ -37,7 +37,10 @@ public class UIHuodongPage3 : MYNGUIPanel , SocketListener
 				m_listEnemt[i].m_objButton.gameObject.SetActive(true);
 				m_listEnemt[i].m_labelLingqu.gameObject.SetActive(false);
 				m_listEnemt[i].m_spriteImage.gameObject.SetActive(true);
-				UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listEnemt[i].m_objEff, EffectTemplate.getEffectTemplateByEffectId(620240).path);
+				if(!UI3DEffectTool.HaveAnyFx(m_listEnemt[i].m_objEff))
+				{
+					UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listEnemt[i].m_objEff, EffectTemplate.getEffectTemplateByEffectId(620240).path);
+				}
 				m_listEnemt[i].m_labelNum.gameObject.SetActive(true);
 			}
 			else if(m_Info.periodList[i].status == 2)
@@ -61,7 +64,11 @@ public class UIHuodongPage3 : MYNGUIPanel , SocketListener
 				m_listEnemt[i].m_objButton.gameObject.SetActive(true);
 				m_listEnemt[i].m_labelLingqu.gameObject.SetActive(false);
 				m_listEnemt[i].m_spriteImage.gameObject.SetActive(true);
-				UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listEnemt[i].m_objEff, EffectTemplate.getEffectTemplateByEffectId(620240).path);
+
+				if(!UI3DEffectTool.HaveAnyFx(m_listEnemt[i].m_objEff))
+				{
+					UI3DEffectTool.ShowTopLayerEffect(UI3DEffectTool.UIType.PopUI_2, m_listEnemt[i].m_objEff, EffectTemplate.getEffectTemplateByEffectId(620240).path);
+				}
 				m_listEnemt[i].m_labelNum.gameObject.SetActive(true);
 			}
 

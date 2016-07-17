@@ -70,8 +70,9 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 	{
 		mdataback = false;
 		CanLingQu = false;
-		FunctionWindowsCreateManagerment.m_IsSaoDangNow = true;
-		if(zhangjieid == -1)
+		 //FunctionWindowsCreateManagerment.m_IsSaoDangNow = true;
+         TaskData.Instance.IsCanShowComplete = false;
+        if (zhangjieid == -1)
 		{
 			m_Mapinfo = MapData.mapinstance.myMapinfo;
 			ZhangJieBigId = m_Mapinfo.s_section;
@@ -304,8 +305,9 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 		{
 			return;
 		}
-		FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
-		MapData.mapinstance.ShowYinDao = false;
+		//FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
+        TaskData.Instance.IsCanShowComplete = true;
+        MapData.mapinstance.ShowYinDao = false;
 		PassLevelBtn.Instance().OPenEffect ();
 			
 		MapData.mapinstance.ShowYinDao = true;

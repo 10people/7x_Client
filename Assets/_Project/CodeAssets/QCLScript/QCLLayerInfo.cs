@@ -317,7 +317,7 @@ public class QCLLayerInfo : MYNGUIPanel {
 			iconSampleManager.SetIconBasic(3, m_ChongLouNpcTemplate.icon.ToString());
 			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			if(m_ChongLouNpcTemplate.type == 4)
+			if(m_ChongLouNpcTemplate.type == 4 ||m_ChongLouNpcTemplate.type == 5)
 			{
 				iconSampleObject.transform.localScale = new Vector3(0.55f,0.55f,1);
 				iconSampleManager.ShowBOssName(Enemy_Namestr.Name);

@@ -53,12 +53,10 @@ public class TaskSignalInfoShow : MonoBehaviour
                 UI2DTool.Instance.AddTopUI(gameObject);
             }
         }
-
-        //   UI2DTool.Instance.AddTopUI(gameObject);
     }
     void Start()
     {
-        // UIYindao.m_UIYindao.CloseUI();
+        TaskData.Instance.IsCanShowComplete = false;
         _listObj.Clear();
         m_TaskSignal = this;
         m_ListEvent.ForEach(item => item.m_click_handler += GetAwards);
@@ -245,20 +243,30 @@ public class TaskSignalInfoShow : MonoBehaviour
         {
             if (TaskData.Instance.m_TaskInfoDic.ContainsKey(m_TaskId))
             {
-                TaskData.Instance.GetQuestAward(taskId);
+                TaskData.Instance.GetQuestAward(m_TaskId);
+                if (TaskData.Instance.m_TaskInfoDic.ContainsKey(m_TaskId) 
+                    && TaskData.Instance.m_TaskInfoDic[m_TaskId].type == 1)
+                {
+                    TaskData.Instance.m_TaskInfoDic.Remove(m_TaskId);
+                    FunctionWindowsCreateManagerment.ShowRAwardInfo(ZhuXianTemp.getTemplateById(m_TaskId).award);
+                    if (TaskLayerManager.m_TaskLayerM != null)
+                    {
+                        TaskLayerManager.m_TaskLayerM.LocalSideFresh(m_TaskId);
+                    }
+                }
             }
             else if (TaskData.Instance.m_TaskDailyDic.ContainsKey(m_TaskId))
             {
                 TaskData.Instance.GetDailyQuestAward(taskId);
- 
+
                 if (TaskData.Instance.m_TaskDailyDic.ContainsKey(m_TaskId))
                 {
-                    TaskData.Instance.m_DailyLocalRefresh = true;
-                    if (!string.IsNullOrEmpty(TaskData.Instance.m_TaskDailyDic[m_TaskId].award))
-                    {
-                        FunctionWindowsCreateManagerment.ShowRAwardInfo(TaskData.Instance.m_TaskDailyDic[m_TaskId].award);
-                    }
                     TaskData.Instance.m_TaskDailyDic.Remove(m_TaskId);
+                    if (!string.IsNullOrEmpty(RenWuTemplate.GetRenWuById(m_TaskId).award))
+                    {
+                        FunctionWindowsCreateManagerment.ShowRAwardInfo(RenWuTemplate.GetRenWuById(m_TaskId).award);
+                    }
+                    TaskLayerEveryDayManager.m_TaskLayerM.LocalFreshDaily(m_TaskId);
                 }
             }
             UI3DEffectTool.ClearUIFx(m_ObjFinish);
@@ -274,6 +282,7 @@ public class TaskSignalInfoShow : MonoBehaviour
 
     void OnDestroy()
     {
+        TaskData.Instance.IsCanShowComplete = true;
         if (TaskData.Instance.m_TaskRewardsGetID.ContainsKey(m_TaskId))
         {
             TaskData.Instance.m_TaskRewardsGetID.Remove(m_TaskId);
@@ -284,8 +293,12 @@ public class TaskSignalInfoShow : MonoBehaviour
             UIYindao.m_UIYindao.setOpenYindao(_GuidanceId);
             _GuidanceId = -1;
         }
-        m_TaskSignal = null;
+        
+   
         if (TaskLayerManager.m_TaskLayerM)
+        {
             TaskLayerManager.m_TaskLayerM.m_isFinishCurrent = false;
+        }
+        ClientMain.closePopUp();
     }
 }

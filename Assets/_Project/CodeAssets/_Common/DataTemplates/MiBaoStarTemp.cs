@@ -10,7 +10,9 @@ public class MiBaoStarTemp : XmlLoadManager {
 	public int needNum;
 	public int needMoney;
 	public float chengzhang;
-
+	public int GongJi;
+	public int FangYu;
+	public int ShengMing;
 	public static List<MiBaoStarTemp> templates = new List<MiBaoStarTemp>();
 	
 	
@@ -64,6 +66,15 @@ public class MiBaoStarTemp : XmlLoadManager {
 
 				t_reader.MoveToNextAttribute();
 				t_template.chengzhang = float.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.GongJi = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.FangYu = int.Parse( t_reader.Value );
+
+				t_reader.MoveToNextAttribute();
+				t_template.ShengMing = int.Parse( t_reader.Value );
 			}
 			
 			//			t_template.Log();

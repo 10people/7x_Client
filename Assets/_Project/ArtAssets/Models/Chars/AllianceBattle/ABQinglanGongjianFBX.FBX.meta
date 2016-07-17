@@ -125,7 +125,7 @@ ModelImporter:
       curves: []
       events:
       - time: .53743577
-        functionName: OnSkillFinish
+        functionName: OnLongSkillShot
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -141,6 +141,13 @@ ModelImporter:
       - time: .0533331335
         functionName: PlaySound
         data: 33060
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .935483932
+        functionName: OnSkillFinish
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

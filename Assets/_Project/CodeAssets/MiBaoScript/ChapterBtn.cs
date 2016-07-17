@@ -76,7 +76,8 @@ public class ChapterBtn : MonoBehaviour {
 
 		CityGlobalData .PT_Or_CQ = false;
 		EnterGuoGuanmap.EnterPveUI(Chapters);
-		TaskData.Instance.m_DestroyMiBao = false;
-//		Destroy (GameObject.Find("Secret(Clone)"));
-	}
+		//TaskData.Instance.m_DestroyMiBao = false;
+        TaskData.Instance.IsCanShowComplete = true;
+        //		Destroy (GameObject.Find("Secret(Clone)"));
+    }
 }

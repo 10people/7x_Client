@@ -858,7 +858,7 @@ public class BattleControlor : MonoBehaviour
 
 		t_ai.buffFlag = buffbf;
 
-		if(t_ai.flag != null) t_ai.flag.node = t_ai;
+		if(t_ai.flag != null && copyIndex == 0) t_ai.flag.node = t_ai;
 	
 		if(copyIndex == 0)
 		{

@@ -17,11 +17,10 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
     public bool m_MainReload = false;
     public bool m_SideReload = false;
     public bool m_DailyQuestIsRefresh = false;
-
-    public bool m_DailyLocalRefresh = false;
+ 
     public bool m_VitaRefresh = false;
   //  public bool m_TaskGetAwardComplete = false;
-    public bool m_DestroyMiBao = false;
+ 
     public bool isRefrsh = false;
     public ZhuXianTemp m_MainComplete;
     public bool m_IsSaoDangNow = false;
@@ -31,10 +30,11 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
         set
         {
             _IsCanShow = value;
+            //Debug.Log("_IsCanShow ::" + _IsCanShow);
         }
     }
 
-    private bool _IsCanShow = false;
+    private bool _IsCanShow = true;
     public struct VitalityInfo
     {
         public int _todaylHuoYue;
@@ -167,15 +167,11 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
     int indexNum = 0;
     public bool ShowMainTaskGet(string data)
     {
+        Debug.Log("IsCanShowCompleteIsCanShowComplete ::" + IsCanShowComplete);
         if ( !SceneManager.IsInLoadingScene() 
-                && TaskSignalInfoShow.m_TaskSignal == null
-                && !FunctionWindowsCreateManagerment.m_IsSaoDangNow
-                && !CityGlobalData.m_isBattleField_V4_2D
-                && !Global.m_isOpenPVP
-                && EquipGrowthWearManagerment.m_EquipGrowth == null
-                && TanBaoPage.tbPage == null
-                && !m_DestroyMiBao
-                && Global.m_isSportDataInItEnd
+             && IsCanShowComplete
+             && !CityGlobalData.m_isBattleField_V4_2D
+             && !Global.m_isOpenPVP
                 )
         {
             if (PlayerModelController.m_playerModelController != null)
@@ -393,10 +389,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                         return true;
                     }
                 case ProtoIndexes.S_GetTaskRwardResult: //主线任务领取
-
-//				Debug.Log(ProtoIndexes.S_GetTaskRwardResult);
-
-                    {
+                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 
                         QiXiongSerializer t_qx = new QiXiongSerializer();
@@ -412,27 +405,26 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
                                 {
                                     FunctionOpenTemp.GetMissionDoneOpenFunction(TaskSyncReponse.taskId);
                                     string award = "";
-                                    m_TaskInfoDic.Remove(TaskSyncReponse.taskId);
-                                    m_TaskRewardsGetID.Remove(TaskSyncReponse.taskId);
+                                    if (ZhuXianTemp.getTemplateById(TaskSyncReponse.taskId).type == 0)
+                                    {
+                                        m_TaskInfoDic.Remove(TaskSyncReponse.taskId);
+                                    }
+                              
                                     foreach (KeyValuePair<int, ZhuXianTemp> item in m_TaskInfoDic)
                                     {
                                         if (item.Value.type == 0)
                                         {
+                                            award = ZhuXianTemp.getTemplateById(TaskSyncReponse.taskId).award;
                                             ShowId = item.Value.id;
                                         }
-
                                     }
 
-                                    award = ZhuXianTemp.getTemplateById(TaskSyncReponse.taskId).award;
+                                  
                                     if (TaskLayerManager.m_TaskLayerM)
                                     {
                                         if (ZhuXianTemp.getTemplateById(TaskSyncReponse.taskId).type == 0)
                                         {
                                             m_MainReload = true;
-                                        }
-                                        else
-                                        {
-                                            m_SideReload = true;
                                         }
                                     }
 
@@ -634,35 +626,36 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
 		}
 		else
 		{
-			ShowId = listMain[0].id;
-		}
+			//ShowId = listMain[0].id;
+            for (int i = 0; i < listMain.Count; i++)
+            {
+                if (i == 0)
+                {
+                    showTitleOn = true;
+                    ShowId = listMain[i].id;
+                }
+
+                m_TaskInfoDic.Add(listMain[i].id, listMain[i]);
+            }
+
+            if (listMain[0].progress < 0)
+            {
+                if (!string.IsNullOrEmpty(listMain[0].award))
+                {
+                    m_MainComplete = listMain[0];
+                    _isMainComplete = true;
+                }
+                else
+                {
+                    GetQuestAward(listMain[0].id);
+                }
+            }
+
+            ShowId = listMain[0].id;
+        }
 		 
 
-        for (int i = 0; i < listMain.Count; i++)
-        {
-            if (i == 0)
-            {
-                showTitleOn = true;
-                ShowId = listMain[i].id;
-            }
- 
-            m_TaskInfoDic.Add(listMain[i].id, listMain[i]);
-        }
-
-        if (listMain[0].progress < 0)
-        {
-            if (!string.IsNullOrEmpty(listMain[0].award))
-            {
-                m_MainComplete = listMain[0];
-                _isMainComplete = true;
-            }
-            else
-            {
-                GetQuestAward(listMain[0].id);
-            }
-        }
-
-        ShowId = listMain[0].id;
+  
 
         for (int i = 0; i < listBranchComplete.Count; i++)
         {

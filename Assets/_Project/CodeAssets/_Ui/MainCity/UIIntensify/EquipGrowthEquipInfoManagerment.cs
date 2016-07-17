@@ -97,6 +97,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private EquipGrowthInlayLayerManagerment.GemsMainInfo _GemiInfo;
     void Start()
     {
+        ManualAddToTop();
         _GemiInfo = new EquipGrowthInlayLayerManagerment.GemsMainInfo();
         _EquipBInfo = new EquipBaseInfo();
         _listObj.Clear();
@@ -171,10 +172,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     private bool _IsOn = false;
     void OnEnable()
     {
-        if (_isUsed)
-        {
-			ManualAddToTop();
-        }
+ 
         //if (_IsOn)
         //{
         //    if (ShowType == 0)//0强化
@@ -217,7 +215,7 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             t_qx.Serialize(t_tream, equip);
             byte[] t_protof;
             t_protof = t_tream.ToArray();
-            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPGRADE, ref t_protof,false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_UPGRADE);
+            SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPGRADE, ref t_protof,  false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_UPGRADE);
         }
     }
 
@@ -380,10 +378,9 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
     }
 
 	/// only runned once when Equip Window opened, if close then reset.
-	void ManualAddToTop(){
-//		Debug.Log( "Equip Window Opened." );
-		
-		UI2DTool.Instance.AddTopUI( GameObjectHelper.GetRootGameObject( gameObject ) );
+	void ManualAddToTop()
+    {
+		UI2DTool.Instance.AddTopUI(GameObjectHelper.GetRootGameObject(gameObject));
 	}
     private readonly Vector3 BasicIconPos = new Vector3(-110, 0, 0);
     private const int BasicIconDepth = 10;

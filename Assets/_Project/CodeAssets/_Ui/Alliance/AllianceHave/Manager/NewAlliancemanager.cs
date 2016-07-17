@@ -13,7 +13,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
 	[HideInInspector]public bool LianMengJuanxian_Is_Open;
 	public GameObject JunChengBattleAlert;
-
+	public GameObject AllianceUIRoot;
     public bool mYinDaoisOpen = false;
     public GameObject RecruteBtn;
     private bool HaveappyMembers;
@@ -121,6 +121,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 		}
 		LianMengJuanxian_Is_Open = false;
         GetAllianceBuildsMessege();
+		AllianceUIRoot.SetActive (false);
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_JIAN_ZHU_INFO,ProtoIndexes.S_JIAN_ZHU_INFO.ToString());
         //Init ();
     }
@@ -474,7 +475,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
                     t_qx.Deserialize(t_tream, allianceHaveRes, allianceHaveRes.GetType());
 
-
+			     	AllianceUIRoot.SetActive (true);
 					if(!LianMengJuanxian_Is_Open)
 					{
 						m_allianceHaveRes = allianceHaveRes;

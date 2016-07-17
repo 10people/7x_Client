@@ -743,7 +743,7 @@ public class HYRetearceEnemy : MYNGUIPanel , SocketProcessor { //突袭藏宝点
 		
 		string str = "您今日的挑战次数已经用完!";//LanguageTemplate.GetText (LanguageTemplate.Text.ALLIANCE_TRANS_92);
 		
-		uibox.setBox(titleStr,null, str,null,confirmStr,null,null,null,null);
+		uibox.setBox(titleStr,str, null,null,confirmStr,null,null,null,null);
 	}
 	public void HY_EnterBattle() //  进入战斗接口
 	{

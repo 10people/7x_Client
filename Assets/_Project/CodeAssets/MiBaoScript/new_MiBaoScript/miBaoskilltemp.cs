@@ -25,36 +25,35 @@ public class miBaoskilltemp : MonoBehaviour {
 	public bool beChoosed;
 	public GameObject NewAddMiBaoShangZhen;
 
+	public GameObject beChoosedSprite;
+
 	void Start () {
 
+
+	}
+
+	public void Init()
+	{
+		MiBaoSkillTemp mMiBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id (SKill_id);
+		Lv.text = "Lv."+mMiBaoSkillTemp.lv.ToString();
+		Icon.spriteName = mMiBaoSkillTemp.icon;
+		Lv.text = "Lv."+mSkillInfo.level.ToString ();
+		IsActive = true;
+		mLock.SetActive (false);
+//		Debug.Log ("SKill_id  = " +SKill_id);
+	}
+
+	public void IsUnLock()
+	{
 		IsActive = false;
-
+		
 		mLock.SetActive (true);
-
+		
 		MiBaoSkillTemp mMiBaoSkillTemp = MiBaoSkillTemp.getMiBaoSkillTempBy_id (SKill_id);
 		Lv.text = "Lv."+mMiBaoSkillTemp.lv.ToString();
 		Icon.spriteName = mMiBaoSkillTemp.icon;
 	}
 
-	public void Init()
-	{
-		Lv.text = "Lv."+mSkillInfo.level.ToString ();
-
-		mLock.SetActive (false);
-
-	}
-	public void Be_CHoosed()
-	{
-		//StartCoroutine (Changestatebtn());
-	}
-//	IEnumerator Changestatebtn()
-//	{
-//		yield return new WaitForSeconds (0.5f);
-//		
-//		this.gameObject.GetComponent<UIToggle>().value = !this.gameObject.GetComponent<UIToggle>().value;
-//		
-//
-//	}
 	public void ShowDeilInfo()
 	{
 		if(NewMiBaoSkill.Instance().COmeMiBaoUI)
@@ -67,12 +66,6 @@ public class miBaoskilltemp : MonoBehaviour {
 		}
 		else
 		{
-//			if(FreshGuide.Instance().IsActive(100260)&& TaskData.Instance.m_TaskInfoDic[100260].progress >= 0)
-//			{
-//				//	Debug.Log("切换秘技)Z
-//				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100260];
-//				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[4]);
-//			}
 			if(NewMiBaoSkill.Instance().SaveId == SKill_id)
 			{
 				return;

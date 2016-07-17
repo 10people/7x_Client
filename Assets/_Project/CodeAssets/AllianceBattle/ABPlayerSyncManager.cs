@@ -96,12 +96,12 @@ namespace AllianceBattle
 
                             //Only limit player pos, change to all if AllianceBattle move type changed.
                             Vector2 limitedPosition = new Vector2(tempMsg.posX, tempMsg.posZ);
-                            //float yPos;
+                            float yPos;
                             Vector3 tempPos = new Vector3(limitedPosition.x, RootManager.BasicYPosition, limitedPosition.y);
-                            //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
-                            //{
-                            //    tempPos = new Vector3(limitedPosition.x, yPos, limitedPosition.y);
-                            //}
+                            if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                            {
+                                tempPos = new Vector3(limitedPosition.x, yPos, limitedPosition.y);
+                            }
 
                             //Self
                             if (tempMsg.uid == PlayerSceneSyncManager.Instance.m_MyselfUid)
@@ -179,7 +179,10 @@ namespace AllianceBattle
                                     tempBaseCultureController = tempHoldCultureController;
 
                                     //Add gizmos.
-                                    m_RootManager.m_AbHoldPointManager.AddMapGizmos(m_RootManager.m_AbHoldPointManager.HoldPointDic[tempMsg.zhiWu], tempMsg.uid);
+                                    if (tempMsg.worth <= 0)
+                                    {
+                                        m_RootManager.m_AbHoldPointManager.AddMapGizmos(m_RootManager.m_AbHoldPointManager.HoldPointDic[tempMsg.zhiWu], tempMsg.uid);
+                                    }
                                 }
 
                                 tempBaseCultureController.TrackCamera = m_RootManager.TrackCamera;
@@ -517,12 +520,12 @@ namespace AllianceBattle
                                         //Dead dic contains all data.
                                         if (m_DeadPlayerDic.ContainsKey(tempMsg.uid))
                                         {
-                                            //float yPos;
+                                            float yPos;
                                             Vector3 tempPos = new Vector3(tempMsg.posX, RootManager.BasicYPosition, tempMsg.posZ);
-                                            //if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
-                                            //{
-                                            //    tempPos = new Vector3(tempMsg.posX, yPos, tempMsg.posZ);
-                                            //}
+                                            if (TransformHelper.RayCastXToFirstCollider(tempPos, out yPos))
+                                            {
+                                                tempPos = new Vector3(tempMsg.posX, yPos, tempMsg.posZ);
+                                            }
 
                                             if (PlayerSceneSyncManager.Instance.m_MyselfUid == tempMsg.uid)
                                             {

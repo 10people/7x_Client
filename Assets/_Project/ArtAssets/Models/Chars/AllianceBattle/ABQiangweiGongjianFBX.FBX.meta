@@ -147,6 +147,13 @@ ModelImporter:
         intParameter: 0
         messageOptions: 0
       - time: .527884424
+        functionName: OnLongSkillShot
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .941935539
         functionName: OnSkillFinish
         data: 
         objectReferenceParameter: {instanceID: 0}

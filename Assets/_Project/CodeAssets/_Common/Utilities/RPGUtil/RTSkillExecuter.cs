@@ -52,9 +52,9 @@ public class RTSkillExecuter
                         m_PlayerManager.m_PlayerDic[p_attackUID].transform.forward = m_PlayerManager.m_PlayerDic[p_beenAttackUID].transform.position - m_PlayerManager.m_PlayerDic[p_attackUID].transform.position;
                         m_PlayerManager.m_PlayerDic[p_attackUID].transform.localEulerAngles = new Vector3(0, m_PlayerManager.m_PlayerDic[p_attackUID].transform.localEulerAngles.y, 0);
 
-                        if (EffectNumController.Instance.IsCanPlayEffect())
+                        if (EffectNumController.Instance.IsCanPlayEffect(false))
                         {
-                            EffectNumController.Instance.NotifyPlayingEffect();
+                            EffectNumController.Instance.NotifyPlayingEffect(false);
 
                             if (RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot > 0)
                             {
@@ -68,9 +68,9 @@ public class RTSkillExecuter
                         m_PlayerManager.m_PlayerDic[p_attackUID].transform.forward = m_SelfPlayerController.transform.position - m_PlayerManager.m_PlayerDic[p_attackUID].transform.position;
                         m_PlayerManager.m_PlayerDic[p_attackUID].transform.localEulerAngles = new Vector3(0, m_PlayerManager.m_PlayerDic[p_attackUID].transform.localEulerAngles.y, 0);
 
-                        if (EffectNumController.Instance.IsCanPlayEffect())
+                        if (EffectNumController.Instance.IsCanPlayEffect(true))
                         {
-                            EffectNumController.Instance.NotifyPlayingEffect();
+                            EffectNumController.Instance.NotifyPlayingEffect(true);
 
                             if (RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot > 0)
                             {
@@ -132,9 +132,9 @@ public class RTSkillExecuter
                 }
 
                 //Been attack effect not controlled by animation.
-                if (EffectNumController.Instance.IsCanPlayEffect())
+                if (EffectNumController.Instance.IsCanPlayEffect(false))
                 {
-                    EffectNumController.Instance.NotifyPlayingEffect();
+                    EffectNumController.Instance.NotifyPlayingEffect(false);
 
                     FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTActionTemplate.GetTemplateByID(p_skillID).CsOnHit), list.First().Value.gameObject, null, Vector3.zero, list.First().Value.transform.forward);
                 }
@@ -187,9 +187,9 @@ public class RTSkillExecuter
 
                         m_AnimationHierarchyPlayer.TryPlayAnimation(p_uID, RTSkillTemplate.GetTemplateByID(p_skillID).CsOnShot);
 
-                        if (EffectNumController.Instance.IsCanPlayEffect())
+                        if (EffectNumController.Instance.IsCanPlayEffect(false))
                         {
-                            EffectNumController.Instance.NotifyPlayingEffect();
+                            EffectNumController.Instance.NotifyPlayingEffect(false);
 
                             if (RTSkillTemplate.GetTemplateByID(p_skillID).EsOnShot > 0)
                             {

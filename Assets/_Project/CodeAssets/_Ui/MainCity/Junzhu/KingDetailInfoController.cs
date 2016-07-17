@@ -9,6 +9,8 @@ public class KingDetailInfoController : Singleton<KingDetailInfoController>, Soc
 {
     private JunZhuInfo m_junzhuPlayerResp;
 
+    private GameObject m_kingDetailWindowObject;
+
     public void ShowKingDetailWindow(long id)
     {
         RequestInfo(id);
@@ -55,8 +57,14 @@ public class KingDetailInfoController : Singleton<KingDetailInfoController>, Soc
     /// <param name="p_object"></param>
     private void KingDetailLoadCallBack(ref WWW p_www, string p_path, Object p_object)
     {
-        var temp = Instantiate(p_object) as GameObject;
-        var info = temp.GetComponent<KingDetailInfo>();
+        if (m_kingDetailWindowObject != null)
+        {
+            Destroy(m_kingDetailWindowObject);
+            m_kingDetailWindowObject = null;
+        }
+
+        m_kingDetailWindowObject = Instantiate(p_object) as GameObject;
+        var info = m_kingDetailWindowObject.GetComponent<KingDetailInfo>();
 
         var tempConfigList = new List<KingDetailButtonController.KingDetailButtonConfig>();
         if (m_junzhuPlayerResp.junZhuId != JunZhuData.Instance().m_junzhuInfo.id)
@@ -75,7 +83,7 @@ public class KingDetailInfoController : Singleton<KingDetailInfoController>, Soc
 
         info.SetThis(m_junzhuPlayerResp, tempConfigList);
 
-        temp.SetActive(true);
+        m_kingDetailWindowObject.SetActive(true);
     }
 
     /// <summary>

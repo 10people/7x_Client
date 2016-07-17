@@ -816,6 +816,7 @@ public class Global
 				}
 				if(!tempBool)
 				{
+					listData[i].bTime = Time.time;
 					m_listAllTheData.Add(listData[i]);
 				}
 			}

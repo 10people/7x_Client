@@ -9,6 +9,8 @@ public class TongzhiData
     public SuBaoMSG m_SuBaoMSG;
     public ReportTemplate m_ReportTemplate;
 
+	public float bTime;
+
     public List<int> m_ButtonIndexList = new List<int>();
 	public List<int> m_ButtonIndexShowDesList = new List<int>();
 

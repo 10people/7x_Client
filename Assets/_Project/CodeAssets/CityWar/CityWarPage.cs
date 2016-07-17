@@ -70,6 +70,8 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 
 	public void InItCityWarPage (CityFightInfoResp tempResp)
 	{
+		UIYindao.m_UIYindao.CloseUI ();
+
 		CityResp = tempResp;
 		M_HaveNormalCity = false;
 

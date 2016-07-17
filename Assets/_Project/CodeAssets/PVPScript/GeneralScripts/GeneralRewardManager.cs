@@ -172,7 +172,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 		{
 //			Debug.Log ("ClientMain.closePopUp();");
 
-			ClientMain.closePopUp();
+//			ClientMain.closePopUp();
 		}
 	}
 	#endregion
@@ -271,7 +271,7 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 			CheckReward ();
 			if (rewardItemList.Count == 0)
 			{
-				ClientMain.closePopUp();
+//				ClientMain.closePopUp();
 			}
 		}
 	}

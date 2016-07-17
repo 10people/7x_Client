@@ -568,8 +568,9 @@ public class UIJunZhu :  MYNGUIPanel , SocketListener
 				temoObjClickName.name = "skillback";
 				MYClick(temoObjClickName);
 				m_JunzhuState = E_JUNZHUSTATE.E_DEF;
-				TaskData.Instance.m_DestroyMiBao = false;
-				m_objPanelBG.SetActive(true);
+				//TaskData.Instance.m_DestroyMiBao = false;
+                    TaskData.Instance.IsCanShowComplete = true;
+                    m_objPanelBG.SetActive(true);
 				break;
 			case E_JUNZHUSTATE.E_XIANGXI:
 				temoObjClickName.name = "ArrBack";

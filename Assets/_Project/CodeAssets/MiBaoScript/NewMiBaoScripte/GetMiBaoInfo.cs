@@ -132,7 +132,7 @@ public class GetMiBaoInfo : MonoBehaviour {
 	}
 
 	public int clacMibaoAttr(float chengZhang, double attrValue, double attrRate, int level) {
-		return (int)(chengZhang * attrRate * level + attrValue * chengZhang);
+		return (int)(chengZhang * attrRate * level + attrValue );
 	}
 	public void  GetMiBAoExtrattrit()
 	{
@@ -209,8 +209,9 @@ public class GetMiBaoInfo : MonoBehaviour {
 
 	public int getGongji()
 	{
-		MiBaoXmlTemp mMiBaoXML = MiBaoXmlTemp.getMiBaoXmlTempById (MiBaoid);
-		return (int)mMiBaoXML.gongji;
+		//MiBaoXmlTemp mMiBaoXML = MiBaoXmlTemp.getMiBaoXmlTempById (MiBaoid);
+		MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (MiBaoStar);
+		return mMiBaoStarTemp.GongJi;
 	}
 	public int getGongjiRate()
 	{
@@ -226,8 +227,8 @@ public class GetMiBaoInfo : MonoBehaviour {
 
 	public int getShengming()
 	{
-		MiBaoXmlTemp mMiBaoXML = MiBaoXmlTemp.getMiBaoXmlTempById (MiBaoid);
-		return (int)mMiBaoXML.shengming;
+		MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (MiBaoStar);
+		return mMiBaoStarTemp.ShengMing;
 	}
 	public int getShengmingRate()
 	{
@@ -237,8 +238,8 @@ public class GetMiBaoInfo : MonoBehaviour {
 
 	public int getFangyu()
 	{
-		MiBaoXmlTemp mMiBaoXML = MiBaoXmlTemp.getMiBaoXmlTempById (MiBaoid);
-		return (int)mMiBaoXML.fangyu;
+		MiBaoStarTemp mMiBaoStarTemp = MiBaoStarTemp.getMiBaoStarTempBystar (MiBaoStar);
+		return mMiBaoStarTemp.FangYu;
 	}
 	public int getWqSH()
 	{

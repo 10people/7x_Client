@@ -69,29 +69,29 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 			return;
 		}
 
-//		switch (situationType)
-//		{
-//		case SituationType.PLUNDER:
-//
-//			if (JunZhuData.Instance().m_junzhuInfo.level < FunctionOpenTemp.GetTemplateById (211).Level)
-//			{
-//				//未到掠夺开启等级
-//				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"[dc0600]" + FunctionOpenTemp.GetTemplateById (211).Level + "[-]级开启掠夺！"));
-//				return;
-//			}
-//			break;
-//		case SituationType.YUNBIAO:
-//			
-//			if (!FunctionOpenTemp.IsHaveID(310))
-//			{
-//				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,FunctionOpenTemp.GetTemplateById (310).m_sNotOpenTips));
-//				return;
-//			}
-//			
-//			break;
-//		default:
-//			break;
-//		}
+		switch (situationType)
+		{
+		case SituationType.PLUNDER:
+
+			if (JunZhuData.Instance().m_junzhuInfo.level < FunctionOpenTemp.GetTemplateById (211).Level)
+			{
+				//未到掠夺开启等级
+				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,"[dc0600]" + FunctionOpenTemp.GetTemplateById (211).Level + "[-]级开启掠夺！"));
+				return;
+			}
+			break;
+		case SituationType.YUNBIAO:
+			
+			if (!FunctionOpenTemp.IsHaveID(310))
+			{
+				ClientMain.m_UITextManager.createText(MyColorData.getColorString (1,FunctionOpenTemp.GetTemplateById (310).m_sNotOpenTips));
+				return;
+			}
+			
+			break;
+		default:
+			break;
+		}
 
 		JunQingReq junQingReq = new JunQingReq();
 		junQingReq.type = (int)tempType;

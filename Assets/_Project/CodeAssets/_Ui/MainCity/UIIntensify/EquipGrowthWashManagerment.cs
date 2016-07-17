@@ -28,6 +28,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
     public GameObject m_WashSuccesse;
     public GameObject m_UnWashSuccesse;
     public List<EventIndexHandle> listEvent;
+    public EventIndexHandle m_MaskEvent;
     public EventIndexHandle m_MaskTouch;
     XiLianRes EquipWashInfo = new XiLianRes();
     public EventPressIndexHandle m_EventPress;
@@ -74,6 +75,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
         listEvent.ForEach(p => p.m_Handle += TouchEvent);
         m_EventPress.m_Handle += PressEvent;
         m_EventPress_JinJie.m_Handle += PressEvent_JinJie;
+        m_MaskEvent.m_Handle += MaskEvent;
         if (FreshGuide.Instance().IsActive(100330) && TaskData.Instance.m_TaskInfoDic[100330].progress >= 0)
         {
             TaskData.Instance.m_iCurMissionIndex = 100330;
@@ -82,6 +84,11 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
             tempTaskData.m_iCurIndex = 1;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
         }
+    }
+
+    void MaskEvent(int index)
+    {
+        ClientMain.m_UITextManager.createText(LanguageTemplate.GetText(LanguageTemplate.Text.WASH_TAG));
     }
     public void OnUI2DShow()
     {
@@ -263,7 +270,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
         t_qx.Serialize(t_tream, equip);
         byte[] t_protof;
         t_protof = t_tream.ToArray();
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_XiLian, ref t_protof);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_XiLian, ref t_protof,false,p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_XiLian);
     }
     private XiLianRes _WashInfoSave;
     public bool OnProcessSocketMessage(QXBuffer p_message)

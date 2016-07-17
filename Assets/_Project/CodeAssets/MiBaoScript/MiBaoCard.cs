@@ -552,8 +552,9 @@ public class MiBaoCard : MonoBehaviour,SocketProcessor {
 			{
 				UIYindao.m_UIYindao.CloseUI();
 			}
-			TaskData.Instance.m_DestroyMiBao = false;
-			MainCityUI.TryRemoveFromObjectList(supGb);
+			//TaskData.Instance.m_DestroyMiBao = false;
+            TaskData.Instance.IsCanShowComplete = true;
+            MainCityUI.TryRemoveFromObjectList(supGb);
 			Destroy(supGb);
 		}
 	}

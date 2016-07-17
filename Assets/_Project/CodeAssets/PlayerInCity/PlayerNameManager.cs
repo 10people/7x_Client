@@ -194,7 +194,11 @@ public class PlayerNameManager : MonoBehaviour
         {
             if (!string.IsNullOrEmpty(u_info._Greet))
             {
-              m_ObjSelfName.GetComponent<PlayerNameInCity>().UpdateZH(u_info._Greet);
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().UpdateZH(u_info._Greet);
+            }
+            else
+            {
+                m_ObjSelfName.GetComponent<PlayerNameInCity>().Init_Maincity_PlayerHeadInfo(u_info);
             }
         }
     }
@@ -243,8 +247,8 @@ public class PlayerNameManager : MonoBehaviour
 					}
 					else
 					{
-						playerName.m_LabAllianceName.text = MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
-					}
+						playerName.m_LabAllianceName.text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT);// MyColorData.getColorString(12, LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT));
+                    }
 					
 					string vip = info[4].ToString();
 					if (vip.IndexOf(':') > -1)

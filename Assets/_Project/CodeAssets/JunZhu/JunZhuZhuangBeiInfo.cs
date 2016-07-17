@@ -534,26 +534,18 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                         CityGlobalData.m_isRightGuide = true;
                     }
                 }
-                EquipAddReq tempAddReq = new EquipAddReq(); //装备在背包中下标
+ 
                 Dictionary<int, BagItem> tempBagEquipDic = BagData.Instance().m_playerEquipDic;
                 foreach (KeyValuePair<int, BagItem> item in tempBagEquipDic)
                 {
                     if (item.Value.itemId == EquipSaveId)
                     {
-                        tempAddReq.gridIndex = item.Value.bagIndex;
+                        EquipsOfBody.Instance().EquipADD(item.Value.dbId);
                         EquipsOfBody.Instance().m_EquipBuWeiWearing = item.Value.buWei;
                         break;
                     }
                 }
-
-                MemoryStream tempStream = new MemoryStream();
-                QiXiongSerializer t_qx = new QiXiongSerializer();
-                t_qx.Serialize(tempStream, tempAddReq);
-
-                byte[] t_protof;
-                t_protof = tempStream.ToArray();
-                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EquipAdd, ref t_protof);
-
+ 
             }
             else if (obj.name.Equals("ButtondChange"))//装备替换
             {
@@ -578,29 +570,17 @@ public class JunZhuZhuangBeiInfo : MonoBehaviour, SocketProcessor, UI2DEventList
                         UIYindao.m_UIYindao.CloseUI();
                     }
                 }
-                EquipAddReq tempAddReq = new EquipAddReq(); //装备在背包中下标
+               
                 Dictionary<int, BagItem> tempBagEquipDic = BagData.Instance().m_playerEquipDic;
                 foreach (KeyValuePair<int, BagItem> item in tempBagEquipDic)
                 {
                     if (item.Value.itemId == EquipSaveId)
                     {
-                        tempAddReq.gridIndex = item.Value.bagIndex;
+                        EquipsOfBody.Instance().EquipADD(item.Value.dbId);
                         EquipsOfBody.Instance().m_EquipBuWeiWearing = item.Value.buWei;
                         break;
                     }
                 }
-
-                MemoryStream tempStream = new MemoryStream();
-                QiXiongSerializer t_qx = new QiXiongSerializer();
-                t_qx.Serialize(tempStream, tempAddReq);
-
-                byte[] t_protof;
-                t_protof = tempStream.ToArray();
-                //  if (BuWeiSave == 3 || BuWeiSave == 4 || BuWeiSave == 5)
-
-                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EquipAdd, ref t_protof);
-
-
             }
             else if (obj.name.Equals("ButtondIntensify"))
             {

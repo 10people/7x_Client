@@ -174,7 +174,8 @@ public class SaoDangManeger : MonoBehaviour {
 	public void ConfrimBtn()
 	{
 		Global.m_isZhanli = false;
-		FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
+        TaskData.Instance.IsCanShowComplete = true;
+        //FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
 		if(mSaoDangFinshDo != null && myindaoid > 0)
 		{
 			mSaoDangFinshDo();

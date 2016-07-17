@@ -320,8 +320,9 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 							UIYindao.m_UIYindao.CloseUI ();
 							SportPage.m_instance.SetSportEnemyObj (false);
 							Global.m_isSportDataInItEnd = false;
-//							Global.m_isOpenBaiZhan = true;
-							EnterBattleField.EnterBattlePvp (m_enemyId, QXComData.CheckYinDaoOpenState (100200));
+                            TaskData.Instance.IsCanShowComplete = false;
+                                    //							Global.m_isOpenBaiZhan = true;
+                                    EnterBattleField.EnterBattlePvp (m_enemyId, QXComData.CheckYinDaoOpenState (100200));
 						}
 					}
 					else
@@ -354,7 +355,7 @@ public class SportData : Singleton<SportData>,SocketProcessor {
 							case ChallengeType.FIGHTING://玩家正在被挑战
 							{
 								m_textStr = "对手正在被挑战...";
-								QXComData.CreateBoxDiy (m_textStr,true,null);
+								QXComData.CreateBoxDiy (m_textStr,true,RecheckPlayer,true);
 								break;
 							}
 							case ChallengeType.LEVEL_NOT_ENOUGH://君主等级不足

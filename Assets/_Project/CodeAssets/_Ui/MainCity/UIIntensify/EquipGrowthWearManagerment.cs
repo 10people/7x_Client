@@ -9,7 +9,7 @@ using qxmobile.protobuf;
 using ProtoBuf.Meta;
 public class EquipGrowthWearManagerment : MonoBehaviour
 {
-    public static EquipGrowthWearManagerment m_EquipGrowth; 
+   // public static EquipGrowthWearManagerment m_EquipGrowth; 
     public List<EventIndexHandle> m_listTypeEvent;
     public EventIndexHandle m_EventIllustrate;
     public GameObject m_Durable_UI;
@@ -27,23 +27,18 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     [HideInInspector]
     public int _Index_Type_Save = -1;//type
     [HideInInspector]
-    public int _Index_Save = 3;//equip
+    public int _Index_Save = 4;//equip
     void Awake()
     {
- 
     }
     void Start () 
     {
-        //for (int i = 0; i < m_listTypeEvent.Count; i++)
-        //{
-        //  m_listTypeEvent[i].GetComponent<BbuttonColorChangeManegerment>().ButtonsControl(false);
-        //}
         m_LabToSignal.text = MyColorData.getColorString(2, LanguageTemplate.GetText(1513));
         m_LabContent.text = LanguageTemplate.GetText(1355);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         MainCityUI.setGlobalTitle(m_ObjTopLeft, "装备", 0, 0);
       //  MainCityUI.setGlobalTitle(m_ObjTopLeft, "装备打造", 0, 0);
-        m_EquipGrowth = this;
+       // m_EquipGrowth = this;
         m_listTypeEvent.ForEach(p => p.m_Handle += ShowTypes);
         m_SEC.OpenCompleteDelegate += ShowDefault;
         m_EventIllustrate.m_Handle += Showillusrate;
@@ -56,12 +51,13 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     }
     void OnEnable()
     {
+        TaskData.Instance.IsCanShowComplete = false;
         UIYindao.m_UIYindao.CloseUI();
         if (FreshGuide.Instance().IsActive(100100) && TaskData.Instance.m_TaskInfoDic[100100].progress >= 0)
         {
             TaskData.Instance.m_iCurMissionIndex = 100100;
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
- 
+
             if (_Index_Type_Save != 3 && _Index_Save != 4)
             {
                 tempTaskData.m_iCurIndex = 3;
@@ -84,19 +80,19 @@ public class EquipGrowthWearManagerment : MonoBehaviour
         {
             TaskData.Instance.m_iCurMissionIndex = 200030;
             ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-       
+
             if (_Index_Type_Save == 3 && _Index_Save == 4)
-             {
+            {
                 tempTaskData.m_iCurIndex = 3;
-             }
-           else
+            }
+            else
             {
                 tempTaskData.m_iCurIndex = 2;
             }
-     
+
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex]);
         }
-      
+
         m_SEC.transform.localScale = Vector3.one;
         if (EquipsOfBody.Instance().m_equipsOfBodyDic != null)
         {
@@ -108,10 +104,14 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                 && Global.m_sPanelWantRun != "null")
             {
                 ShowDefault();
-    
-           }
-           else if (_Index_Type_Save != -1)
+
+            }
+            else if (_Index_Type_Save != -1)
             {
+                if (!EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(_Index_Save))
+                {
+                    _Index_Save = ContainEquip();
+                }
                 Dictionary<int, BagItem> tempEquipsOfBodyDic = EquipsOfBody.Instance().m_equipsOfBodyDic;
                 if (tempEquipsOfBodyDic.ContainsKey(_Index_Save))
                 {
@@ -123,7 +123,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                 }
             }
         }
-        
     }
  
   
@@ -181,19 +180,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
           
             switch (index)
             {
-                case 0:
-                    {
-                     
-
-                    }
-
-                    break;
-                case 1:
-                    {
-                      
-
-                    }
-                    break;
                 case 2:
                     {
                         if (FreshGuide.Instance().IsActive(100705) && TaskData.Instance.m_TaskInfoDic[100705].progress >= 0)
@@ -206,13 +192,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
                         }
                         showAniMation();
                        
-
-                    }
-                    break;
-                case 3:
-                    {
-
-                   
 
                     }
                     break;
@@ -270,7 +249,6 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             && !string.IsNullOrEmpty(Global.m_sPanelWantRun)
             && Global.m_sPanelWantRun != "null")
         {
-
             int type = int.Parse(Global.NextCutting(ref Global.m_sPanelWantRun));
             int buwei = -1;
 
@@ -347,6 +325,13 @@ public class EquipGrowthWearManagerment : MonoBehaviour
 
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(false);
             _Index_Save = int.Parse(_info[1]);
+
+            int[] arrange = { 3, 4, 5, 0, 8, 1, 7, 2, 6 };
+            if (!EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(_Index_Save))
+            {
+                _Index_Save = ContainEquip();
+            }
+    
             m_listItemEvent[_Index_Save].GetComponent<ButtonScaleManagerment>().ButtonsControl(true);
             switch (int.Parse(_info[0]))
             {
@@ -507,8 +492,8 @@ public class EquipGrowthWearManagerment : MonoBehaviour
     void OnDisable()
     {
         _IsNotNull = false;
-        m_EquipGrowth = null;
- 
+        //m_EquipGrowth = null;
+        TaskData.Instance.IsCanShowComplete = true;
     }
     void OnDestroy()
     {
@@ -597,5 +582,20 @@ public class EquipGrowthWearManagerment : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private int ContainEquip()
+    {
+        int[] arrange = { 3, 4, 5, 0, 8, 1, 7, 2, 6 };
+
+        for (int i = 0; i < arrange.Length; i++)
+        {
+            if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(arrange[i]))
+            {
+                return arrange[i];
+            }
+        }
+
+        return arrange[0];
     }
 }

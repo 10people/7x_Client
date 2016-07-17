@@ -31,6 +31,10 @@ public class MiBaoSkillTemp : XmlLoadManager {
 
 	public string icon;
 
+	public float m_x;
+
+	public float m_y;
+
 	public static List<MiBaoSkillTemp> templates = new List<MiBaoSkillTemp>();
 	
 	
@@ -110,7 +114,11 @@ UnLoadManager.DownLoad(PathManager.GetUrl(m_LoadPath + "MibaoSkill.xml"), CurLoa
 				t_reader.MoveToNextAttribute();
 				t_template.icon = t_reader.Value;
 
+				t_reader.MoveToNextAttribute();
+				t_template.m_x = float.Parse( t_reader.Value );
 
+				t_reader.MoveToNextAttribute();
+				t_template.m_y = float.Parse( t_reader.Value );
 			}
 
 			//			t_template.Log();

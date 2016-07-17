@@ -136,8 +136,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
             }
         }
 
-        Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE),
-                                    ResourceLoadCallback);
+        RefreshIcons();
 
         isInited = true;
     }
@@ -167,6 +166,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
         switch (p_message.m_protocol_index)
         {
             case ProtoIndexes.S_BagInfo:
+            case ProtoIndexes.S_BAG_CHANGE_INFO:
                 {
                     isInited = false;
 
@@ -196,13 +196,15 @@ public class UIBagLeft : MonoBehaviour, SocketListener
 
     #region Private Methods
 
-    private void ResourceLoadCallback(ref WWW p_www, string p_path, Object p_object)
+    public GameObject IconSamplePrefab;
+
+    private void RefreshIcons()
     {
         for (var i = 0; i < m_temp_count; i++)
         {
             if (m_objCopyEquip == null)
             {
-                m_objCopyEquip = (GameObject)p_object;
+                m_objCopyEquip = (GameObject)IconSamplePrefab;
             }
             GameObject tempObject = NGUITools.AddChild(gameObject, m_objCopyEquip);
             var tempManager = tempObject.GetComponent<IconSampleManager>();

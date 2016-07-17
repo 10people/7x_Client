@@ -57,12 +57,14 @@ public class TanBaoPage : MonoBehaviour {
 
 	void Awake ()
 	{
-		tbPage = this;
+        TaskData.Instance.IsCanShowComplete = false;
+        tbPage = this;
 	}
 
 	void OnDestroy ()
 	{
-		tbPage = null;
+        TaskData.Instance.IsCanShowComplete = true;
+        tbPage = null;
 	}
 
 	void Start ()

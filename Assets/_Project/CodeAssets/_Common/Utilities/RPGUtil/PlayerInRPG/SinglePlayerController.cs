@@ -104,7 +104,7 @@ public class SinglePlayerController : MonoBehaviour
         }
     }
 
-    public float m_CharacterSpeed = 6;
+    public static float m_CharacterSpeed = 6;
     public float m_CharacterSpeedY = 10f;
     public float m_NavigateSpeed = 6;
 
@@ -511,7 +511,10 @@ public class SinglePlayerController : MonoBehaviour
             //Check navigation remaining destination
             if (Vector3.Distance(m_Transform.position, NavigationEndPosition) <= navigateDistance)
             {
-                Debug.LogWarning("=======end navi with:" + m_CompleteNavDelegate);
+                if (ConfigTool.GetBool(ConfigTool.CONST_LOG_REALTIME_MOVE))
+                {
+                    Debug.LogWarning("=======end navi with:" + m_CompleteNavDelegate);
+                }
 
                 StopPlayerNavigation();
                 if (m_CompleteNavDelegate != null)

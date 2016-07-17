@@ -115,9 +115,9 @@ namespace AllianceBattle
                     {
                         if (RTSkillTemplate.GetTemplateByID(181).EsOnShot > 0)
                         {
-                            if (EffectNumController.Instance.IsCanPlayEffect())
+                            if (EffectNumController.Instance.IsCanPlayEffect(true))
                             {
-                                EffectNumController.Instance.NotifyPlayingEffect();
+                                EffectNumController.Instance.NotifyPlayingEffect(true);
 
                                 FxHelper.PlayLocalFx(EffectTemplate.GetEffectPathByID(RTSkillTemplate.GetTemplateByID(181).EsOnShot), m_attackObject, null, Vector3.zero, m_attackObject.transform.forward);
                             }
@@ -125,9 +125,9 @@ namespace AllianceBattle
                     }
                     else
                     {
-                        if (EffectNumController.Instance.IsCanPlayEffect())
+                        if (EffectNumController.Instance.IsCanPlayEffect(false))
                         {
-                            EffectNumController.Instance.NotifyPlayingEffect();
+                            EffectNumController.Instance.NotifyPlayingEffect(false);
 
                             if (RTSkillTemplate.GetTemplateByID(181).EsOnShot > 0)
                             {

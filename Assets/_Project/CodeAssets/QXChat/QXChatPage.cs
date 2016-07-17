@@ -696,8 +696,6 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 		m_tempObject.transform.localScale = Vector3.one * 0.8f;
 		FloatButtonsController floatBtn = m_tempObject.GetComponent<FloatButtonsController>();
 		floatBtn.Initialize(FloatButtonsConfig.GetConfig(tempMsg.chatPct.senderId, tempMsg.chatPct.senderName, tempMsg.chatPct.lianmengName, new List<GameObject> (){}, null), true);
-		Debug.Log ("m_tempObject:" + m_tempObject);
-		Debug.Log ("floatBtn:" + floatBtn);
 		UISprite widget = m_tempObject.GetComponentInChildren<UISprite>();
 		float widgetValue = chatSc.GetWidgetValueRelativeToScrollView (widget).y;
 		if (widgetValue < 0 || widgetValue > 1)
@@ -1050,6 +1048,7 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 		{
 			if(isPress)
 			{
+				Debug.Log("press1");
 				m_fBTime = Time.time;
 				m_fNum = 0;
 				m_isLuyining = true;
@@ -1070,7 +1069,7 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 				m_objLuyinTime.SetActive(false);
 				m_isLuyining = false;
 				m_iLuzhiTime = (int)(Time.time - m_fBTime);
-				Debug.Log("press");
+				Debug.Log("press2");
 				Debug.Log(QXChatUIBox.m_bFocused);
 				Debug.Log(QXChatUIBox.m_bPause);
 				if(QXChatUIBox.m_bFocused && !QXChatUIBox.m_bPause)

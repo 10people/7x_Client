@@ -516,34 +516,28 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
             {
                 m_listEquipEleInfo[int.Parse(tempObject.name)].m_SpriteIcon.GetComponent<Collider>().enabled = false;
 
-                EquipAddReq tempAddReq = new EquipAddReq(); //装备在背包中下标
+ 
                 Dictionary<int, BagItem> tempBagEquipDic = BagData.Instance().m_playerEquipDic;
 
                 foreach (KeyValuePair<int, BagItem> item in tempBagEquipDic)
                 {
                     if (item.Value.buWei == tempBuwei)
                     {
-                        tempAddReq.gridIndex = item.Value.bagIndex;
-                       	MainCityUIRB.setDeletePropUse(item.Value.itemId);
-                        // EquipsOfBody.Instance().m_EquipAddId = item.Value.itemId;
+
+                        EquipsOfBody.Instance().EquipADD(item.Value.dbId);
+                        MainCityUIRB.setDeletePropUse(item.Value.itemId);
+                         
                         EquipsOfBody.Instance().m_EquipBuWeiWearing = item.Value.buWei;
                         break;
                     }
                 }
 
-
-                MemoryStream tempStream = new MemoryStream();
-                QiXiongSerializer t_qx = new QiXiongSerializer();
-                t_qx.Serialize(tempStream, tempAddReq);
-
-                byte[] t_protof;
-                t_protof = tempStream.ToArray();
-                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EquipAdd, ref t_protof);
+          
             }
             else if (_listSelfEquipInfo[int.Parse(tempObject.name)]._isAdvance)//替换装备
             {
                 m_listEquipEleInfo[int.Parse(tempObject.name)].m_SpriteIcon.GetComponent<Collider>().enabled = false;
-                EquipAddReq tempAddReq = new EquipAddReq(); //装备在背包中下标
+   
                 List<BagItem> _listEquip = new List<BagItem>();
                 Dictionary<int, BagItem> tempBagEquipDic = BagData.Instance().m_playerEquipDic;
                 foreach (KeyValuePair<int, BagItem> item in tempBagEquipDic)
@@ -573,20 +567,14 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
                         }
                     }
 					MainCityUIRB.setDeletePropUse(_listEquip[0].itemId);
-                    tempAddReq.gridIndex = _listEquip[0].bagIndex;
+                
+                    EquipsOfBody.Instance().EquipADD(_listEquip[0].dbId);
                 }
                 else
                 {
 					MainCityUIRB.setDeletePropUse(_listEquip[0].itemId);
-                    tempAddReq.gridIndex = _listEquip[0].bagIndex;
+                    EquipsOfBody.Instance().EquipADD(_listEquip[0].dbId);
                 }
-                MemoryStream tempStream = new MemoryStream();
-                QiXiongSerializer t_qx = new QiXiongSerializer();
-                t_qx.Serialize(tempStream, tempAddReq);
-
-                byte[] t_protof;
-                t_protof = tempStream.ToArray();
-                SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EquipAdd, ref t_protof);
             }
             else
             {

@@ -40,9 +40,9 @@ public class TrackSkillExecuter : MonoBehaviour
 
         if (AttackerUID != PlayerSceneSyncManager.Instance.m_MyselfUid)
         {
-            if (EffectNumController.Instance.IsCanPlayEffect())
+            if (EffectNumController.Instance.IsCanPlayEffect(false))
             {
-                EffectNumController.Instance.NotifyPlayingEffect();
+                EffectNumController.Instance.NotifyPlayingEffect(false);
             }
         }
     }
@@ -68,9 +68,9 @@ public class TrackSkillExecuter : MonoBehaviour
 
         if (AttackerUID != PlayerSceneSyncManager.Instance.m_MyselfUid)
         {
-            if (EffectNumController.Instance.IsCanPlayEffect())
+            if (EffectNumController.Instance.IsCanPlayEffect(false))
             {
-                EffectNumController.Instance.NotifyPlayingEffect();
+                EffectNumController.Instance.NotifyPlayingEffect(false);
             }
         }
     }

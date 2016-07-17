@@ -654,7 +654,7 @@ public class BaseAI : MonoBehaviour
 
 		gameObject.name = "Node_" + nodeId;
 
-		if(flag != null) flag.node = this;
+		if(flag != null && nodeId > 0) flag.node = this;
 
 		if (buffFlag != null) buffFlag.setNode (this);
 
@@ -2424,7 +2424,7 @@ public class BaseAI : MonoBehaviour
 
 	protected void dropItem()
 	{
-		if (nodeData.droppenItems == null) return;
+		if (nodeData.droppenItems == null || nodeId < 0) return;
 
 		BattleControlor.Instance().droppenList.Add (nodeId);
 

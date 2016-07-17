@@ -534,6 +534,9 @@ public class ThirdPlatform : MonoBehaviour {
 
 		m_login_info = "";
 
+
+		p_response = "授权失败。";
+
 //		ShowErrorBox( p_response, BoxDoNone );
 
 		// other 3rd platform will continue uploading, because some platform gives token faster than there server's update
