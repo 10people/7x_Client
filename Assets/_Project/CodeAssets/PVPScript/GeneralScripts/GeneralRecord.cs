@@ -90,7 +90,7 @@ public class GeneralRecord : GeneralInstance<GeneralRecord> {
 
 		for (int i = 0;i < m_recordList.Count;i ++)
 		{
-			m_recordList[i].transform.localPosition = new Vector3(0,-80 - 110 * i,0);
+			m_recordList[i].transform.localPosition = new Vector3(0,- 90 * i,0);
 			m_recordSc.UpdateScrollbars (true);
 		}
 

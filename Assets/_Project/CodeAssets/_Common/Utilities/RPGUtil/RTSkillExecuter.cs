@@ -96,7 +96,7 @@ public class RTSkillExecuter
     /// <param name="p_remaining"></param>
     /// <param name="p_selectTargetId">current select uid, use this to update head icon</param>
     /// <param name="p_skillID"></param>
-    public void ExecuteBeenAttack(int p_attackUID, int p_beenAttackUID, long p_damage, float p_remaining, int p_selectTargetId, int p_skillID)
+    public void ExecuteBeenAttack(int p_attackUID, int p_beenAttackUID, long p_damage, float p_remaining, int p_selectTargetId, int p_skillID, bool isCriticalDamage = false)
     {
         if (p_beenAttackUID == PlayerSceneSyncManager.Instance.m_MyselfUid)
         {
@@ -111,7 +111,7 @@ public class RTSkillExecuter
 
             EffectTool.Instance.SetHittedEffect(m_SelfPlayerController.gameObject);
 
-            m_SelfPlayerCultureController.OnDamage(p_damage, p_remaining, p_skillID == 111);
+            m_SelfPlayerCultureController.OnDamage(p_damage, p_remaining, isCriticalDamage);
             m_SelfIconSetter.UpdateBar(p_remaining);
         }
         else
@@ -143,7 +143,7 @@ public class RTSkillExecuter
 
                 if (cultureController != null)
                 {
-                    cultureController.OnDamage(p_damage, p_remaining, p_skillID == 111);
+                    cultureController.OnDamage(p_damage, p_remaining, isCriticalDamage);
                     if (p_selectTargetId == p_beenAttackUID)
                     {
                         m_TargetIconSetter.UpdateBar(p_remaining);

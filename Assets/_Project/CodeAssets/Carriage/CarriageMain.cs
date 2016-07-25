@@ -98,10 +98,13 @@ namespace Carriage
         private const float m_TrackingNavigateRange = 1.5f;
         public DelegateHelper.VoidDelegate ExecuteAfterNavigateToItem;
 
+        public bool IsInNavigate = false;
+
         public void NavigateToItem()
         {
             if (m_RootManager.m_SelfPlayerController == null || m_TargetItemUID < 0)
             {
+                IsInNavigate = false;
                 return;
             }
 
@@ -117,11 +120,13 @@ namespace Carriage
                     if (Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, m_TargetItemTransform.position) > m_TrackingNavigateRange)
                     {
                         m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = NavigateToItem;
+                        IsInNavigate = true;
                         m_RootManager.m_SelfPlayerController.StartNavigation(m_TargetItemTransform.position);
                     }
                     else
                     {
                         //achieve target position.
+                        IsInNavigate = false;
                         ClientMain.m_UITextManager.createText("鞭打可提升镖马的速度!");
                     }
                 }
@@ -131,11 +136,13 @@ namespace Carriage
                     if (Vector3.Distance(m_RootManager.m_SelfPlayerController.transform.position, m_TargetItemTransform.position) > m_TrackingNavigateRange)
                     {
                         m_RootManager.m_SelfPlayerController.m_CompleteNavDelegate = NavigateToItem;
+                        IsInNavigate = true;
                         m_RootManager.m_SelfPlayerController.StartNavigation(m_TargetItemTransform.position);
                     }
                     else
                     {
                         //achieve target position.
+                        IsInNavigate = false;
                         if (m_RootManager.m_CarriageItemSyncManager.m_PlayerDic[m_TargetItemUID].GetComponent<RPGBaseCultureController>().IsEnemy)
                         {
                             if (!IsChaseAttack)
@@ -151,6 +158,7 @@ namespace Carriage
             }
             else
             {
+                IsInNavigate = false;
                 Debug.LogError("Cannot navigate to item: " + m_TargetItemUID + " cause item not found.");
             }
         }
@@ -715,7 +723,7 @@ namespace Carriage
                 case 111:
                     {
                         m_RTSkillExecuter.ExecuteAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.skillId);
-                        m_RTSkillExecuter.ExecuteBeenAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.damage, tempInfo.remainLife, m_TargetId, tempInfo.skillId);
+                        m_RTSkillExecuter.ExecuteBeenAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.damage, tempInfo.remainLife, m_TargetId, tempInfo.skillId, tempInfo.isBaoJi);
 
                         break;
                     }
@@ -1751,6 +1759,12 @@ namespace Carriage
                 AutoActiveTarget();
                 AutoDeactiveTarget();
 
+                //Update navigate.
+                if (IsInNavigate)
+                {
+                    NavigateToItem();
+                }
+
                 //check safe area.
                 SetSafeAreaFlag(new Vector2(m_RootManager.m_SelfPlayerController.transform.localPosition.x, m_RootManager.m_SelfPlayerController.transform.localPosition.z));
 
@@ -1920,7 +1934,7 @@ namespace Carriage
                 }
                 if (GUILayout.Button("Test been attack"))
                 {
-                    m_RTSkillExecuter.ExecuteBeenAttack(-1, m_TargetId, 999, 1, m_TargetId, 101);
+                    m_RTSkillExecuter.ExecuteBeenAttack(-1, m_TargetId, 999, 1, m_TargetId, 101, true);
                 }
                 if (GUILayout.Button("Test attack"))
                 {

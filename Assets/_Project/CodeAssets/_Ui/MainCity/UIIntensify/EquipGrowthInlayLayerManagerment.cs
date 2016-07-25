@@ -366,7 +366,7 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
                         t_qx.Serialize(t_tream, equip);
                         byte[] t_protof;
                         t_protof = t_tream.ToArray();
-                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof);
+                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof, false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_BAOSHI_RESP);
                     }
                 }
                 break;
@@ -395,7 +395,7 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
                         t_qx.Serialize(t_tream, equip);
                         byte[] t_protof;
                         t_protof = t_tream.ToArray();
-                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof);
+                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof, false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_BAOSHI_RESP);
                     }
                 }
                 break;
@@ -410,7 +410,7 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
                     t_qx.Serialize(t_tream, equip);
                     byte[] t_protof;
                     t_protof = t_tream.ToArray();
-                    SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof);
+                    SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof, false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_BAOSHI_RESP);
                 }
                 break;
             case 4://	type = 6：请求宝石合成
@@ -431,7 +431,7 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
                         t_qx.Serialize(t_tream, equip);
                         byte[] t_protof;
                         t_protof = t_tream.ToArray();
-                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof);
+                        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof, false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_BAOSHI_RESP);
                     }
                 }
                 break;
@@ -1804,7 +1804,7 @@ public class EquipGrowthInlayLayerManagerment : MonoBehaviour, UI2DEventListener
         t_qx.Serialize(t_tream, equip);
         byte[] t_protof;
         t_protof = t_tream.ToArray();
-        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof);
+        SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_BAOSHI_REQ, ref t_protof, false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_BAOSHI_RESP);
     }
 
     void Strengthen()// 合成升一级ID统计

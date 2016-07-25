@@ -55,6 +55,10 @@ public class UITianfu : MYNGUIPanel
 	public UISprite m_TianfuUpLvSprite;
 	public UILabel m_TianfuUpLvLabel;
 	public BoxCollider m_TianfuUpBox;
+	public TalentInfoResp m_TalentInfoResp;
+	private float m_fBTime;
+	private float m_fETime = 5.0f;
+	private bool m_bCheck = false;
 	
 	private int m_iCurId;
 	private bool m_isUp = true;
@@ -76,6 +80,15 @@ public class UITianfu : MYNGUIPanel
 		if(m_iNum == 30)
 		{
 			m_iNum = 0;
+		}
+		if(m_bCheck)
+		{
+			if(Time.time - m_fBTime > m_fETime)
+			{
+				m_TalentInfoResp = m_UIJunzhu.m_TalentInfoResp;
+				m_bCheck = false;
+				setData(m_UIJunzhu.m_TalentInfoResp);
+			}
 		}
 	}
 	
@@ -110,37 +123,37 @@ public class UITianfu : MYNGUIPanel
 		{
 			if(m_isUp)
 			{
-				for(int i = 0; i < m_UIJunzhu.m_TalentInfoResp.points.Count; i ++)
+				for(int i = 0; i < m_TalentInfoResp.points.Count; i ++)
 				{
-					if(m_iCurId == m_UIJunzhu.m_TalentInfoResp.points[i].pointId)
+					if(m_iCurId == m_TalentInfoResp.points[i].pointId)
 					{
-						m_UIJunzhu.m_TalentInfoResp.points[i].pointLev ++;
-						TalentTemplate tempTalent = TalentTemplate.getSkillTemplateById(m_UIJunzhu.m_TalentInfoResp.points[i].pointId);
+						m_TalentInfoResp.points[i].pointLev ++;
+						TalentTemplate tempTalent = TalentTemplate.getSkillTemplateById(m_TalentInfoResp.points[i].pointId);
 						if(tempTalent.type == 1)
 						{
-							m_UIJunzhu.m_TalentInfoResp.wuYiJingQi -= m_UIJunzhu.m_TalentInfoResp.points[i].needJingQi;
-							if(m_UIJunzhu.m_TalentInfoResp.points[i].pointLev == 1)
+							m_TalentInfoResp.wuYiJingQi -= m_TalentInfoResp.points[i].needJingQi;
+							if(m_TalentInfoResp.points[i].pointLev == 1)
 							{
-								if(m_UIJunzhu.m_TalentInfoResp.points[i].pointId != 101)
+								if(m_TalentInfoResp.points[i].pointId != 101)
 								{
-									m_UIJunzhu.m_TalentInfoResp.jinGongDianShu --;
+									m_TalentInfoResp.jinGongDianShu --;
 								}
 							}
 						}
 						else if(tempTalent.type == 2)
 						{
-							m_UIJunzhu.m_TalentInfoResp.tiPoJingQi -= m_UIJunzhu.m_TalentInfoResp.points[i].needJingQi;
-							if(m_UIJunzhu.m_TalentInfoResp.points[i].pointLev == 1)
+							m_TalentInfoResp.tiPoJingQi -= m_TalentInfoResp.points[i].needJingQi;
+							if(m_TalentInfoResp.points[i].pointLev == 1)
 							{
-								if(m_UIJunzhu.m_TalentInfoResp.points[i].pointId != 201)
+								if(m_TalentInfoResp.points[i].pointId != 201)
 								{
-									m_UIJunzhu.m_TalentInfoResp.fangShouDianShu --;
+									m_TalentInfoResp.fangShouDianShu --;
 								}
 							}
 						}
-						m_UIJunzhu.m_TalentInfoResp.points[i].desc = TalentArrTemplate.getByIDLV(tempTalent.arrID, m_UIJunzhu.m_TalentInfoResp.points[i].pointLev).des;
-						m_UIJunzhu.m_TalentInfoResp.points[i].needJingQi = ExpTempTemp.GetExp(tempTalent.expID, m_UIJunzhu.m_TalentInfoResp.points[i].pointLev);
-						setData(m_UIJunzhu.m_TalentInfoResp);
+						m_TalentInfoResp.points[i].desc = TalentArrTemplate.getByIDLV(tempTalent.arrID, m_TalentInfoResp.points[i].pointLev).des;
+						m_TalentInfoResp.points[i].needJingQi = ExpTempTemp.GetExp(tempTalent.expID, m_TalentInfoResp.points[i].pointLev);
+						setData(m_TalentInfoResp);
 //						temp.m_iID = talentData.points[i].pointId;
 //						temp.m_iCurLV = talentData.points[i].pointLev;
 //						temp.m_sDir = talentData.points[i].desc;
@@ -219,6 +232,13 @@ public class UITianfu : MYNGUIPanel
 		{
 			gameObject.SetActive(true);
 		}
+		if(m_TalentInfoResp != null && !Check(talentData))
+		{
+			m_fBTime = Time.time;
+			m_bCheck = true;
+			return;
+		}
+		m_TalentInfoResp = talentData;
 		m_JGJQ = talentData.wuYiJingQi;
 		m_JGDS = talentData.jinGongDianShu;
 		m_FYJQ = talentData.tiPoJingQi;
@@ -294,7 +314,19 @@ public class UITianfu : MYNGUIPanel
 			MYClick(tempObj);
 		}
 	}
-	
+
+	public bool Check(TalentInfoResp talentData)
+	{
+		for(int i = 0; i < talentData.points.Count; i ++)
+		{
+			if(m_TalentInfoResp.points[i].pointLev > talentData.points[i].pointLev)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public bool canUp(TianfuData  data)
 	{
 		if(data.m_iCurLV == 0)

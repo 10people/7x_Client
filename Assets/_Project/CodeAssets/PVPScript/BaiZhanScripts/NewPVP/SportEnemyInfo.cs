@@ -56,19 +56,19 @@ public class SportEnemyInfo : GeneralInstance<SportEnemyInfo> {
 
 		m_name.text = tempInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse (tempInfo.junZhuName)) : tempInfo.junZhuName;
 		m_alliance.text = tempInfo.lianMengName.Equals ("***") || tempInfo.lianMengName.Equals ("") ? QXComData.AllianceName (tempInfo.lianMengName) : QXComData.AllianceName (tempInfo.lianMengName);
-		m_zhanLi.text = "战力：" + MyColorData.getColorString (QXComData.JunZhuInfo ().zhanLi >= tempInfo.zhanLi ? 4 : 5,tempInfo.zhanLi.ToString ());
+		m_zhanLi.text = tempInfo.zhanLi.ToString ();
 
 		string biJiaoStr = "";
 		int colorId = 0;
 		int zhanLi = QXComData.JunZhuInfo ().zhanLi - tempInfo.zhanLi;
 		if (zhanLi < 0)
 		{
-			colorId = 5;
+			colorId = 104;
 			biJiaoStr = "比我高 " + Mathf.Abs(zhanLi);
 		}
 		else
 		{
-			colorId = 4;
+			colorId = 103;
 			biJiaoStr = zhanLi == 0 ? "与我战力相同" : "比我低 " + zhanLi;
 		}
 		m_zhanLiCompare.text = MyColorData.getColorString (colorId,biJiaoStr);

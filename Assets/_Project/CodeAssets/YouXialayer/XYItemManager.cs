@@ -37,7 +37,7 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 		if(FreshGuide.Instance().IsActive(200020)&& TaskData.Instance.m_TaskInfoDic[200020].progress >= 0)
 		{
 			Debug.Log("试练界面千重楼首页引导");
-
+			CityGlobalData.m_isRightGuide = false;
 			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[200020];
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
 		}

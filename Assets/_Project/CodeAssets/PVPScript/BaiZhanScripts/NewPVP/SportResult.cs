@@ -76,12 +76,12 @@ public class SportResult : GeneralInstance<SportResult> {
 
 		for (int i = 0;i < baizhanTemps.Count;i ++)
 		{
-			m_resultList[i].transform.localPosition = new Vector3(0,-80 * i,0);
+			m_resultList[i].transform.localPosition = new Vector3(0,-74 * i,0);
 			m_sc.UpdateScrollbars (true);
 			SportResultItem reward = m_resultList[i].GetComponent<SportResultItem> ();
 			reward.InItRewardItem (baizhanTemps[i],tempId);
 		}
-		Debug.Log ("tempXmlId；" + tempXmlIndex);
+//		Debug.Log ("tempXmlId；" + tempXmlIndex);
 		if (tempXmlIndex >= 0)
 		{
 			QXComData.SetWidget (m_sc,m_sb,m_resultList[tempXmlIndex]);

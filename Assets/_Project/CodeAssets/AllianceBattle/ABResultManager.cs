@@ -254,7 +254,29 @@ namespace AllianceBattle
             {
                 TimeHelper.Instance.RemoveFromTimeCalc("ABResultDelay");
             }
-            TimeHelper.Instance.AddOneDelegateToTimeCalc("ABResultDelay", m_ResultDelayTime, ActiveWindow);
+            TimeHelper.Instance.AddEveryDelegateToTimeCalc("ABResultDelay", m_ResultDelayTime, UpdateLeaveCount);
+        }
+
+        public UILabel LeaveLabel;
+
+        private void UpdateLeaveCount(int elapsedTime)
+        {
+            if (m_ResultDelayTime - elapsedTime > 0)
+            {
+                LeaveLabel.gameObject.SetActive(true);
+                LeaveLabel.text = (m_ResultDelayTime - elapsedTime) + "秒后离开战场...";
+            }
+            else
+            {
+                LeaveLabel.gameObject.SetActive(false);
+
+                if (TimeHelper.Instance.IsTimeCalcKeyExist("ABResultDelay"))
+                {
+                    TimeHelper.Instance.RemoveFromTimeCalc("ABResultDelay");
+                }
+
+                ActiveWindow();
+            }
         }
 
         private void ActiveWindow()
@@ -268,11 +290,6 @@ namespace AllianceBattle
             m_AllianceBattleMain.m_Joystick.m_Box.enabled = false;
             m_AllianceBattleMain.m_MainUIVagueEffect.enabled = true;
             m_AllianceBattleMain.m_Top2UIVagueEffect.enabled = true;
-
-            if (TimeHelper.Instance.IsTimeCalcKeyExist("ABResultDelay"))
-            {
-                TimeHelper.Instance.RemoveFromTimeCalc("ABResultDelay");
-            }
 
             ProcessResultAnimation();
         }

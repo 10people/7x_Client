@@ -111,12 +111,12 @@ public class GeneralRecordItem : MonoBehaviour {
 			int colorId = 0;
 			if (tempInfo.junRankChangeV > 0)
 			{
-				colorId = 45;
+				colorId = 103;
 				m_compareIcon.spriteName = "rankup";
 			}
 			else if (tempInfo.junRankChangeV < 0)
 			{
-				colorId = 5;
+				colorId = 104;
 				m_compareIcon.spriteName = "rankdown";
 			}
 			

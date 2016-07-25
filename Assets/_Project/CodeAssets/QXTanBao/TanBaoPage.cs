@@ -149,11 +149,13 @@ public class TanBaoPage : MonoBehaviour {
 	{
 		isTenTimesOpen = FunctionOpenTemp.IsHaveID (1103);
 
-		UIWidget[] widgets = obj.GetComponentsInChildren<UIWidget> ();
-		foreach (UIWidget widget in widgets)
-		{
-			widget.color = isTenTimesOpen ? Color.white : Color.grey;
-		}
+		QXComData.SetBtnState (obj,isTenTimesOpen);
+
+//		UIWidget[] widgets = obj.GetComponentsInChildren<UIWidget> ();
+//		foreach (UIWidget widget in widgets)
+//		{
+//			widget.color = isTenTimesOpen ? Color.white : Color.grey;
+//		}
 	}
 
 	/// <summary>
@@ -251,7 +253,7 @@ public class TanBaoPage : MonoBehaviour {
 		}
 
 		tempObj.transform.parent = parentObj.transform;
-		tempObj.transform.localPosition = new Vector3 (0,110,0);
+		tempObj.transform.localPosition = new Vector3 (0,111,0);
 		tempObj.transform.localScale = Vector3.one;
 		
 		CommonItemTemplate commonTemp = CommonItemTemplate.getCommonItemTemplateById (tempId);

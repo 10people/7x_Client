@@ -541,7 +541,10 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	public void InitStarUI()
 	{
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
-
+		for(int i = 0 ; i < CityGlobalData.mPveStar.Length; i ++)
+		{
+			CityGlobalData.mPveStar[i] = 0;
+		}
 		switch (mLevel.type)
 		{
 		case 0:
@@ -745,6 +748,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				{
 					mBoxBtn.IsLingQu = 3;
 				}
+				CityGlobalData.mPveStar[i] = 1;
 			}
 			else
 			{
@@ -776,6 +780,10 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			saodang10UILabel.GetComponent<UILabelType>().m_iType = 100;
 			saodang10UILabel.GetComponent<UILabelType>().init();
 		}
+//		for(int i = 0 ; i < CityGlobalData.mPveStar.Length; i ++)
+//		{
+//			Debug.Log("CityGlobalData.mPveStar[i]  = " +CityGlobalData.mPveStar[i]);
+//		}
 	}
 
 	private void Chuanqi()
@@ -912,6 +920,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				{
 					mBoxBtn.IsLingQu = 3;
 				}
+				CityGlobalData.mPveStar[i] = 1;
 			}
 			else
 			{

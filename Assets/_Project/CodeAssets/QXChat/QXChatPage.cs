@@ -1151,7 +1151,7 @@ public class QXChatPage : MYNGUIPanel , IMSCListener{
 		SetSiliaoName(name);
 		m_iSiliaoID = id;
 		
-		if(QXChatData.Instance.SetOpenChat)
+		if(!QXChatData.Instance.SetOpenChat)
 		{
 			QXChatData.Instance.OpenChatPage(ChatPct.Channel.SILIAO);
 		}

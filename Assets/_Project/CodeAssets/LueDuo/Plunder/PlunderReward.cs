@@ -76,7 +76,7 @@ public class PlunderReward : MonoBehaviour {
 //		Debug.Log ("curPRewardIndex：" + curPRewardIndex);
 		for (int i = 0;i < pRewardItemList.Count;i ++)
 		{
-			pRewardItemList[i].transform.localPosition = new Vector3(0,-80 * i,0);
+			pRewardItemList[i].transform.localPosition = new Vector3(0,-65 * i,0);
 			
 			PlunderRewardItem reward = pRewardItemList[i].GetComponent<PlunderRewardItem> ();
 			reward.InItRewardItem (LueDuoPersonRankTemplate.m_templates[i],curPRewardIndex - 1,i);
@@ -179,7 +179,7 @@ public class PlunderReward : MonoBehaviour {
 //		Debug.Log ("curARewardIndex：" + curARewardIndex);
 		for (int i = 0;i < aRewardItemList.Count;i ++)
 		{
-			aRewardItemList[i].transform.localPosition = new Vector3(0,-80 * i,0);
+			aRewardItemList[i].transform.localPosition = new Vector3(0,-65* i,0);
 			
 			PlunderRewardItem reward = aRewardItemList[i].GetComponent<PlunderRewardItem> ();
 			reward.InItRewardItem (LueDuoLianmengRankTemplate.m_templates[i],curARewardIndex - 1,i);

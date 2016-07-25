@@ -570,6 +570,19 @@ namespace AllianceBattle
 
                             break;
                         }
+                    case ProtoIndexes.JunZhuInfoRet:
+                        {
+                            MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+                            QiXiongSerializer t_qx = new QiXiongSerializer();
+                            JunZhuInfoRet tempInfo = new JunZhuInfoRet();
+                            t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
+
+                            //Refresh all infos.
+                            m_RootManager.m_AllianceBattleMain.SelfIconSetter.RefreshVIP(tempInfo.vipLv);
+                            m_RootManager.m_AllianceBattleMain.TryRefreshVIPInDeadWindow(tempInfo.vipLv);
+
+                            break;
+                        }
                 }
             }
             return false;

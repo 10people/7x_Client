@@ -1,4 +1,5 @@
 ﻿#define SetMapPos
+#define CheckBug
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ public class SportPage : GeneralInstance<SportPage> {
 //	private bool m_moveFinished = false;
 
 	public GameObject m_anchorTR;
+	public GameObject m_anchorTL;
 
 	new void Awake ()
 	{
@@ -41,6 +43,7 @@ public class SportPage : GeneralInstance<SportPage> {
 	void Start ()
 	{
 		QXComData.LoadYuanBaoInfo (m_anchorTR);
+		QXComData.LoadTitleObj (m_anchorTL,"百战千军");
 	}
 
 	public void InItSportPage (BaiZhanInfoResp tempResp,SportPageDelegate tempDelegate)
@@ -87,7 +90,7 @@ public class SportPage : GeneralInstance<SportPage> {
 
 	private readonly Dictionary<int,Vector3> m_texPosDic = new Dictionary<int, Vector3>()
 	{
-		{101,new Vector3 (395,230,0)},//小卒
+		{101,new Vector3 (450,230,0)},//小卒
 		{204,new Vector3 (480,-30,0)},{203,new Vector3 (450,120,0)},{202,new Vector3 (205,220,0)},{201,new Vector3 (35,270,0)},//步兵
 		{304,new Vector3 (455,-30,0)},{303,new Vector3 (315,40,0)},{302,new Vector3 (25,175,0)},{301,new Vector3 (-135,275,0)},//骑士
 		{404,new Vector3 (345,-130,0)},{403,new Vector3 (180,-30,0)},{402,new Vector3 (-35,130,0)},{401,new Vector3 (-230,210,0)},//禁卫
@@ -137,7 +140,7 @@ public class SportPage : GeneralInstance<SportPage> {
 	{
 		SportTemp = BaiZhanTemplate.GetBaiZhanTempByRank (SportResp.rank);
 //		Debug.Log ("SportResp.time:" + SportResp.time);
-		m_playerName.text = MyColorData.getColorString (1,QXComData.JunZhuInfo ().name);
+		m_playerName.text = MyColorData.getColorString (101,QXComData.JunZhuInfo ().name);
 		m_zhanLi.text = AddColor("战力：" + QXComData.JunZhuInfo ().zhanLi);
 		m_junXian.text = AddColor("军衔：" + QXComData.GetJunXianName (SportTemp.jibie));
 		m_chanChu.text = AddColor("产出：" + SportResp.weiWangHour + "威望/小时");
@@ -147,10 +150,57 @@ public class SportPage : GeneralInstance<SportPage> {
 //		m_vipAdd.text = QXComData.JunZhuInfo ().vipLv >= 6 ? "(      +" + (VipTemplate.GetVipInfoByLevel (QXComData.JunZhuInfo ().vipLv).baizhanPara - 1.0) * 100 + "%)" : "";
 
 		m_vipIcon.spriteName = "v" + 6;
-		m_vipAdd.text = "(      +" + (VipTemplate.GetVipInfoByLevel (6).baizhanPara - 1.0) * 100 + "%)";
+		m_vipAdd.text = "       以上额外产出" + (VipTemplate.GetVipInfoByLevel (6).baizhanPara - 1.0) * 100 + "%";
 
 		int curVipMaxTime = VipTemplate.GetVipInfoByLevel (QXComData.JunZhuInfo ().vipLv).bugBaizhanTime + 5;
 		string countTimeStr = "";
+
+		#if CheckBug
+		if (SportResp == null)
+		{
+			QXComData.CreateBoxDiy ("SportResp is null",true,null);
+		}
+		else
+		{
+			if (SportResp.leftTimes == null)
+			{
+				QXComData.CreateBoxDiy ("LeftTimes is null",true,null);
+			}
+			else
+			{
+				if (SportResp.leftCanBuyCount == null)
+				{
+					QXComData.CreateBoxDiy ("leftCanBuyCount is null",true,null);
+				}
+				else
+				{
+					if (SportResp.totalTimes == null)
+					{
+						QXComData.CreateBoxDiy ("totalTimes is null",true,null);
+					}
+					else
+					{
+						if (QXComData.JunZhuInfo () == null)
+						{
+							QXComData.CreateBoxDiy ("JunZhuInfo is null",true,null);
+						}
+						else 
+						{
+							if (QXComData.JunZhuInfo ().vipLv == null)
+							{
+								QXComData.CreateBoxDiy ("vipLv is null",true,null);
+							}
+							else if (QXComData.maxVipLevel == null)
+							{
+								QXComData.CreateBoxDiy ("maxVipLevel is null",true,null);
+							}
+						}
+					}
+				}
+			}
+		}
+		#endif
+
 		if (SportResp.leftTimes == 0)
 		{
 			if (SportResp.leftCanBuyCount == 0)
@@ -215,7 +265,7 @@ public class SportPage : GeneralInstance<SportPage> {
 
 	private string AddColor (string tempStr)
 	{
-		return "[e15a00]" + tempStr + "[-]";
+		return "[ffffff]" + tempStr + "[-]";
 	}
 
 	#region SportCdTime
@@ -235,13 +285,14 @@ public class SportPage : GeneralInstance<SportPage> {
 		if (m_sportCdTime - p_time > 0)
 		{
 			m_sportCd.text = AddColor((SportResp.leftTimes > 0 ? "冷却时间：" : "重置时间：") + TimeHelper.GetUniformedTimeString (m_sportCdTime - p_time));
-			Debug.Log ("m_sportCdTime - p_time:" + (m_sportCdTime - p_time));
+//			Debug.Log ("m_sportCdTime - p_time:" + (m_sportCdTime - p_time));
 		}
 		else
 		{
 			TimeHelper.Instance.RemoveFromTimeCalc("SportCdTime");
 			SportResp.time = 0;
 			m_sportCd.text = "";
+			m_clearCdBtnObj.SetActive (false);
 		}
 	}
 

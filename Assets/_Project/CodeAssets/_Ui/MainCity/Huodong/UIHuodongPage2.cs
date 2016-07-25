@@ -29,6 +29,10 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 	public void setData(ActivityGrowthFundResp data)
 	{
 		m_Info = data;
+		if(m_Info.leveList == null)
+		{
+			return;
+		}
 		m_spriteVip.spriteName = "v" + (int)CanshuTemplate.GetValueByKey (CanshuTemplate.CHENGZHANGJIJIN_VIP);
 //		switch(m_ExploreResp.success)
 //		{

@@ -82,7 +82,7 @@ public class AllianceItemManagerment : MonoBehaviour {
             else
             {
                 m_ObjYellow.SetActive(true);
-                m_labButtonContent.text = "成员已满";
+                m_labButtonContent.text = "人数已满";
             }
         }
         else

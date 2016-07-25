@@ -155,20 +155,9 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
 
                         if (allianceHaveRes != null)
                         {
-                            //					Debug.Log("接收有联盟信息！");
-
+                            //	Debug.Log("接收有联盟信息！");
                             g_UnionInfo = allianceHaveRes;
 
-                            for (int i = 0; i < allianceHaveRes.memberInfo.Count; i++)
-                            {
-                                if (allianceHaveRes.memberInfo[i].identity == 2)
-                                {
-                                    //Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                                    AllianceEffigyManagerment.m_EffigyRoleId = allianceHaveRes.memberInfo[i].roleId;
-                                    AllianceEffigyManagerment.m_EffigyInfoGet = true;
-                                    break;
-                                }
-                            }
                             IsAllianceNotExist = false;
 
                             CityGlobalData.m_AllianceIsHave = true;
@@ -520,7 +509,7 @@ public class AllianceData : Singleton<AllianceData>, SocketProcessor
                                 break;
                             case 2:
                                 {
-                                    ClientMain.m_UITextManager.createText("联盟人数已满！");
+                                    ClientMain.m_UITextManager.createText("联盟成员已满，无法邀请入盟！");
                                 }
                                 break;
                             case 3:

@@ -40,7 +40,7 @@ public class BattleResultPvpWin : MonoBehaviour
 	public GameObject effNewLevel;
 
 
-	private BaiZhanResultResp resp;
+	public static BaiZhanResultResp resp;
 
 
 	public void refreshData(BaiZhanResultResp _resp)
@@ -63,8 +63,6 @@ public class BattleResultPvpWin : MonoBehaviour
 //		Debug.Log ("新军衔：" + _resp.newJunXianLevel);
 
 		Debug.Log ("PVP Result   " + _resp.oldRank + ", " + _resp.newRank + ", " + _resp.highest + ", " + _resp.yuanbao);
-
-		resp = _resp;
 
 		newRecord.SetActive (_resp.newRank < _resp.highest);
 

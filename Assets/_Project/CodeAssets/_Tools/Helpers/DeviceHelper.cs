@@ -121,8 +121,10 @@ public class DeviceHelper {
 			
 			{
 				Dictionary<string,string> tempUrl = new Dictionary<string,string>();
-				
+
 				tempUrl.Add ( "UnSupport" , m_nonsupport_reason + " - " + GetDeviceInfo() );
+
+				OperationSupport.AppendHttpParamUUID( tempUrl );
 				
 				HttpRequest.Instance().Connect ( NetworkHelper.GetPrefix() + NetworkHelper.REPORT_UNSUPPORT_DEVICE_URL, 
 				                                 tempUrl, 
@@ -253,7 +255,8 @@ public class DeviceHelper {
 //				CONST_IE + "-" + SystemInfo.supportsImageEffects + " " +
 				CONST_RT + "-" + SystemInfo.supportsRenderTextures + " " +
 				CONST_CHANNEL_TAG + "-" + ThirdPlatform.GetPlatformTag () + " " +
-				CONST_SESSION_TAG + "-" + ThirdPlatform.GetPlatformSession ();
+				CONST_SESSION_TAG + "-" + ThirdPlatform.GetPlatformSession () + " " +
+				CONST_UUID_TAG + " - " + SystemInfo.deviceUniqueIdentifier + "";
 		
 		return t_info;
 	}
@@ -559,6 +562,8 @@ public class DeviceHelper {
 	public const string CONST_CHANNEL_TAG 				= "CNTG";
 	
 	public const string CONST_SESSION_TAG				= "SID";
+
+	public const string CONST_UUID_TAG					= "UUID";
 	
 	#endregion
 	

@@ -1839,12 +1839,12 @@ public class BattleControlor : MonoBehaviour
 	{
 		completed = true;
 
-		if(BattleUIControlor.Instance().b_autoFight == true && autoFight == false)
-		{
-			BattleConfigTemplate configTemp = BattleConfigTemplate.getBattleConfigTemplateByConfigId(CityGlobalData.m_configId);
-
-			if(configTemp.autoFight == 1) BattleUIControlor.Instance().changeAutoFight();
-		}
+//		if(BattleUIControlor.Instance().b_autoFight == true && autoFight == false)
+//		{
+//			BattleConfigTemplate configTemp = BattleConfigTemplate.getBattleConfigTemplateByConfigId(CityGlobalData.m_configId);
+//
+//			if(configTemp.autoFight == 1) BattleUIControlor.Instance().changeAutoFight();
+//		}
 
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_GuoGuan)
 		{
@@ -2202,6 +2202,11 @@ public class BattleControlor : MonoBehaviour
 
 	void FixedUpdate ()
 	{
+		if(achivement != null)
+		{
+			achivement.EndBattle();
+		}
+
 		BattleUIControlor.Instance().addDebugText ("completed " + completed + ", result " + result);
 
 		if(completed == false) return;
@@ -2366,10 +2371,9 @@ public class BattleControlor : MonoBehaviour
 			BattleUIControlor.Instance().changeAutoFight();
 		}
 
-		BattleUIControlor.Instance().LoadResultRes ();
+
 
 		double waitTime = 2f;
-
 		if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan
 		   || CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_LueDuo)
 		{
@@ -2381,6 +2385,7 @@ public class BattleControlor : MonoBehaviour
 			{
 				CanshuTemplate.m_TaskInfoDic.TryGetValue(CanshuTemplate.ENDTIME_BAIZHAN_LOSE, out waitTime);
 			}
+
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
 		{
@@ -2404,7 +2409,10 @@ public class BattleControlor : MonoBehaviour
 
 			BattleUIControlor.Instance().labelLeave.gameObject.SetActive (true);
 		}
-
+		else if(waitTime <= 0)
+		{
+			BattleUIControlor.Instance().LoadResultRes ();
+		}
 		//BattleUIControlor.Instance().layerFight.SetActive (false);
 
 		BattleUIControlor.Instance().labelLeave.text = (int)waitTime + LanguageTemplate.GetText((LanguageTemplate.Text)425);
@@ -2413,9 +2421,15 @@ public class BattleControlor : MonoBehaviour
 		{
 			yield return new WaitForSeconds (1f);
 
+			if(waitTime == 1)
+			{
+				BattleUIControlor.Instance().LoadResultRes ();
+			}
+
 			waitTime --;
 
 			BattleUIControlor.Instance().labelLeave.text = (int)waitTime + LanguageTemplate.GetText((LanguageTemplate.Text)425);
+
 
 			if(waitTime <= 0) break;
 		}
@@ -2427,7 +2441,7 @@ public class BattleControlor : MonoBehaviour
 			yield return new WaitForEndOfFrame();
 		}
 
-		BattleUIControlor.Instance().showResult(result);
+		BattleUIControlor.Instance().setResultBattle();
 
 		foreach(BaseAI node in selfNodes)
 		{
@@ -2444,8 +2458,13 @@ public class BattleControlor : MonoBehaviour
 	{
 		if(lastCameraEffect == true) return;
 
+		BattleResult temp = result;
 		result = battleCheck.checkResult (null);
-
+		if(result != temp)
+		{
+			BattleUIControlor.Instance().showResult(BattleControlor.Instance().result);
+			lastCameraEffect = true;
+		}
 //		BattleResult br = battleCheck.checkResult (null);
 //
 //		bool fWin = br == BattleResult.RESULT_WIN;
@@ -2503,8 +2522,6 @@ public class BattleControlor : MonoBehaviour
 
 	IEnumerator slowDownClock()
 	{
-		lastCameraEffect = true;
-
 		float scale = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.BATTLE_SLOWDOWN_VALUE);
 
 		float keepTime = (float)CanshuTemplate.GetValueByKey (CanshuTemplate.BATTLE_SLOWDOWN_TIME);
@@ -2526,8 +2543,6 @@ public class BattleControlor : MonoBehaviour
 		}
 
 		if(Time.timeScale != 0) TimeHelper.SetTimeScale(1f);
-
-		lastCameraEffect = false;
 	}
 
 	private float getBaseAttackValue(BaseAI attacker, BaseAI defender)

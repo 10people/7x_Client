@@ -100,7 +100,6 @@ public class BattleArrowControllor : MonoBehaviour
 			}
 		}
 	}
-
 	private void updatePosition()
 	{
 		foreach(int id in arrowList.Keys)
@@ -109,8 +108,21 @@ public class BattleArrowControllor : MonoBehaviour
 
 			BaseAI node = BattleControlor.Instance().getNodebyId(id);
 
+			BaseAI hero = BattleControlor.Instance().getNodebyId(1);
+
+			Vector3 curPos = node.gameObject.transform.position;
+
+			GameObject temp;
+			if(Vector3.Distance(hero.gameObject.transform.position, node.gameObject.transform.position) >= 20)
+			{
+				Vector3 tempMove = node.gameObject.transform.position - hero.gameObject.transform.position;
+				tempMove = tempMove.normalized * 20;
+				node.gameObject.transform.position = hero.gameObject.transform.position + tempMove;
+			}
+
 			Vector3 screenPo = Camera.main.WorldToScreenPoint(node.transform.position);
 
+//			Debug.Log();
 			float angle = Vector3.Angle(Camera.main.transform.forward, node.transform.position - Camera.main.transform.position);
 
 			float x = screenPo.x * width / Screen.width;
@@ -160,6 +172,10 @@ public class BattleArrowControllor : MonoBehaviour
 
 				gc.transform.localPosition = new Vector3(-width, -height, 0);
 			}
+			node.gameObject.transform.position = curPos;
+//			Camera.main.gameObject.transform.position = temp1.position;
+//			Camera.main.gameObject.transform.rotation = temp1.rotation;
+//			Camera.main.gameObject.transform.position = temp1.position;
 		}
 	}
 

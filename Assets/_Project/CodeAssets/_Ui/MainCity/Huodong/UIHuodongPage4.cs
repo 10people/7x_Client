@@ -26,6 +26,10 @@ public class UIHuodongPage4 : MYNGUIPanel , SocketListener
 	public void setData(ActivitLevelGiftResp data)
 	{
 		m_Info = data;
+		if(m_Info.leveList == null)
+		{
+			return;
+		}
 		for(int i = 0; i < m_listUIHuodongPage2EnemtData.Count; i ++)
 		{
 			GameObject.Destroy(m_listUIHuodongPage2EnemtData[i].gameObject);

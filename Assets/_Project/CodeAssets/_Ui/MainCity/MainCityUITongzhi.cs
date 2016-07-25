@@ -152,7 +152,7 @@ public class MainCityUITongzhi : MYNGUIPanel
 			{
 				iTween.MoveTo (m_objBGShow, iTween.Hash(
 					"name", "func",
-					"position", m_objBGShow.transform.localPosition + new Vector3(-315, 0, 0),
+					"position", new Vector3(-342, -146, -200),
 					"time", .4f,
 					"easeType", iTween.EaseType.easeOutElastic,
 					"islocal",true
@@ -163,7 +163,7 @@ public class MainCityUITongzhi : MYNGUIPanel
 			{
 				iTween.MoveTo (m_objBGShow, iTween.Hash(
 					"name", "func",
-					"position", m_objBGShow.transform.localPosition + new Vector3(315, 0, 0),
+					"position", new Vector3(-27, -146, -200),
 					"time", .4f,
 					"easeType", iTween.EaseType.easeOutElastic,
 					"islocal",true
@@ -220,7 +220,7 @@ public class MainCityUITongzhi : MYNGUIPanel
 
 			iTween.MoveTo (m_objBGShow, iTween.Hash(
 				"name", "func",
-				"position", m_objBGShow.transform.localPosition + new Vector3(315, 0, 0),
+				"position", new Vector3(-27, -146, -200),
 				"time", .4f,
 				"easeType", iTween.EaseType.easeOutElastic,
 				"islocal",true,

@@ -51,6 +51,13 @@ public class MainCityUIRT : MYNGUIPanel
 				}
 			}
 		}
+		else
+		{
+			if(m_TiliMaxTishi.activeSelf)
+			{
+				m_TiliMaxTishi.SetActive(false);
+			}
+		}
 	}
 
 	public void RefreshJunZhuInfo()

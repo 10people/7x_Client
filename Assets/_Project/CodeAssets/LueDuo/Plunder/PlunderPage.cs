@@ -92,7 +92,7 @@ public class PlunderPage : MonoBehaviour {
 	//国家按钮
 	private List<GameObject> nationBtnsList = new List<GameObject> ();
 	public GameObject nationBtnObj;
-	
+
 	//联盟
 	public UIScrollView allianceSc;
 	public UIScrollBar allianceSb;
@@ -166,7 +166,7 @@ public class PlunderPage : MonoBehaviour {
 				nationBtn.SetActive (true);
 				nationBtn.name = i.ToString ();
 				nationBtn.transform.parent = nationBtnObj.transform.parent;
-				nationBtn.transform.localPosition = new Vector3(0,-60 * i,0);
+				nationBtn.transform.localPosition = new Vector3(0,120 - 48 * i,0);
 				nationBtn.transform.localScale = Vector3.one;
 				
 				nationBtnsList.Add (nationBtn);
@@ -176,7 +176,7 @@ public class PlunderPage : MonoBehaviour {
 		for (int i = 0;i < tempRes.guoLianInfos.Count;i ++)
 		{
 			PlunderNationBtn ldNationBtn = nationBtnsList[i].GetComponent<PlunderNationBtn> ();
-			ldNationBtn.InItNationBtn (tempRes.guoLianInfos[i],i,new Vector3(0,-60 * i,0));
+			ldNationBtn.InItNationBtn (tempRes.guoLianInfos[i],i);
 			
 			EventHandler handler = nationBtnsList[i].GetComponent<EventHandler> ();
 			handler.m_click_handler -= NationBtnHandlerClickBack;
@@ -249,11 +249,11 @@ public class PlunderPage : MonoBehaviour {
 
 		for (int i = 0;i < allianceItemList.Count;i ++)
 		{
-			allianceItemList[i].transform.localPosition = new Vector3(0,-70 * i,0);
+			allianceItemList[i].transform.localPosition = new Vector3(0,-72 * i,0);
 			allianceItemList[i].name = i.ToString ();
 			PdAllianceItem pdAlliance = allianceItemList[i].GetComponent<PdAllianceItem> ();
 			pdAlliance.InItAllianceItem (plunderResp.mengInfos[i]);
-			M_CurAllianceId = plunderResp.mengInfos[i].mengId;
+			M_CurAllianceId = plunderResp.mengInfos[0].mengId;
 
 			EventHandler handler = allianceItemList[i].GetComponent<EventHandler> ();
 			handler.m_click_handler -= AllianceItemClickBack;
@@ -292,6 +292,7 @@ public class PlunderPage : MonoBehaviour {
 		if (int.Parse (obj.name) != startAllianceIndex)
 		{
 			//联盟成员信息请求
+			M_CurAllianceId = plunderResp.mengInfos[int.Parse (obj.name)].mengId;
 			startAllianceIndex = int.Parse (obj.name);
 			PlunderData.Instance.NextPageReq (PlunderData.NextPageReqType.JUNZHU,plunderResp.mengInfos[startAllianceIndex].mengId);
 		}
@@ -377,7 +378,7 @@ public class PlunderPage : MonoBehaviour {
 
 		for (int i = 0;i < opponentItemList.Count;i ++)
 		{
-			opponentItemList[i].transform.localPosition = new Vector3(0,-100 * i,0);
+			opponentItemList[i].transform.localPosition = new Vector3(0,-190 * i,0);
 			opponentSc.UpdateScrollbars (true);
 			opponentSb.value = IsOpponentToTop ? 0.0f : opponentSb.value;
 			PdOpponentItem pdOpponent = opponentItemList[i].GetComponent<PdOpponentItem> ();
@@ -540,7 +541,7 @@ public class PlunderPage : MonoBehaviour {
 	{
 		StopCoroutine ("PlunderCdTime");
 
-		gongJinLabel.text = QXComData.MoneyName (QXComData.MoneyType.JIFEN) + "：" + MyColorData.getColorString (4,plunderResp.gongJin);
+		gongJinLabel.text = QXComData.MoneyName (QXComData.MoneyType.JIFEN) + "：" + plunderResp.gongJin;
 		 
 		if (plunderResp.all >= plunderResp.nowMaxBattleCount)
 		{
@@ -557,38 +558,30 @@ public class PlunderPage : MonoBehaviour {
 			{
 				if (plunderResp.CdTime > 0)//掠夺冷却期
 				{
-					btnsObj.transform.localPosition = new Vector3(0,-270,0);
-					labelsObj.transform.localPosition = new Vector3(345,0,0);
-
 					plunderBtnDic["ResetBtn"].gameObject.SetActive (true);
 
-					numsLabel.text = "今日剩余次数：" + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+					numsLabel.text = "今日剩余次数：" + (plunderResp.all - plunderResp.used) + "/" + plunderResp.all;
 
 					cdTime = plunderResp.CdTime;
 					StartCoroutine ("PlunderCdTime");
 				}
 				else
 				{
-					btnsObj.transform.localPosition = new Vector3(10,-270,0);
-					labelsObj.transform.localPosition = new Vector3(345,0,0);
 					plunderBtnDic["ResetBtn"].gameObject.SetActive (false);
 
 					numsLabel.text = "";
-					timeLabel.text = "今日剩余次数：" + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+					timeLabel.text = "今日剩余次数：" + (plunderResp.all - plunderResp.used) + "/" + plunderResp.all;
 				}
 			}
 		}
 		else
 		{
 			if (plunderResp.used >= plunderResp.all)
-			{
-				btnsObj.transform.localPosition = new Vector3(0,-270,0);
-				labelsObj.transform.localPosition = new Vector3(335,0,0);
-				
+			{	
 				plunderBtnDic["ResetBtn"].gameObject.SetActive (false);
 				plunderBtnDic["AddNumBtn"].gameObject.SetActive (true);
 
-				timeLabel.text = "今日剩余次数：" + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+				timeLabel.text = "今日剩余次数：" + (plunderResp.all - plunderResp.used) + "/" + plunderResp.all;
 				numsLabel.text = "";
 			}
 			else
@@ -597,23 +590,18 @@ public class PlunderPage : MonoBehaviour {
 				
 				if (plunderResp.CdTime > 0)//掠夺冷却期
 				{
-					btnsObj.transform.localPosition = new Vector3(0,-270,0);
-					labelsObj.transform.localPosition = new Vector3(335,0,0);
-
 					plunderBtnDic["ResetBtn"].gameObject.SetActive (true);
 
-					numsLabel.text = "今日剩余次数：" + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+					numsLabel.text = "今日剩余次数：" + (plunderResp.all - plunderResp.used) + "/" + plunderResp.all;
 
 					cdTime = plunderResp.CdTime;
 					StartCoroutine ("PlunderCdTime");
 				}
 				else
 				{
-					btnsObj.transform.localPosition = new Vector3(10,-270,0);
-					labelsObj.transform.localPosition = new Vector3(345,0,0);
 					plunderBtnDic["ResetBtn"].gameObject.SetActive (false);
 
-					timeLabel.text = "今日剩余次数：" + MyColorData.getColorString (4,(plunderResp.all - plunderResp.used) + "/" + plunderResp.all);
+					timeLabel.text = "今日剩余次数：" + (plunderResp.all - plunderResp.used) + "/" + plunderResp.all;
 
 					numsLabel.text = "";
 				}
@@ -632,7 +620,7 @@ public class PlunderPage : MonoBehaviour {
 		{
 			cdTime --;
 			
-			timeLabel.text = "掠夺冷却：" + MyColorData.getColorString (5,TimeHelper.GetUniformedTimeString (cdTime));
+			timeLabel.text = "掠夺冷却：" + MyColorData.getColorString (104,TimeHelper.GetUniformedTimeString (cdTime));
 			
 			if (cdTime == 0) 
 			{
@@ -679,7 +667,7 @@ public class PlunderPage : MonoBehaviour {
 		{
 			getRewardCdTime --;
 
-			getRewardTimeLabel.text = MyColorData.getColorString (5,TimeHelper.GetUniformedTimeString (getRewardCdTime));
+			getRewardTimeLabel.text = MyColorData.getColorString (104,TimeHelper.GetUniformedTimeString (getRewardCdTime));
 
 			if (getRewardCdTime <= 0)
 			{
@@ -1052,7 +1040,7 @@ public class PlunderPage : MonoBehaviour {
 
 			for (int i = 0;i < pRankCount;i ++)
 			{
-				pRankItemList[i].transform.localPosition = new Vector3(0,-70 * i,0);
+				pRankItemList[i].transform.localPosition = new Vector3(0,-65 * i,0);
 				PlunderRankItem plunderRank = pRankItemList[i].GetComponent<PlunderRankItem> ();
 				plunderRank.InItRankItem (PlunderData.PlunderRankType.PERSONAL_RANK,tempResp.gongInfoList[i]);
 			}
@@ -1135,7 +1123,7 @@ public class PlunderPage : MonoBehaviour {
 
 			for (int i = 0;i < aRankCount;i ++)
 			{
-				aRankItemList[i].transform.localPosition = new Vector3(0,-70 * i,0);
+				aRankItemList[i].transform.localPosition = new Vector3(0,-65 * i,0);
 				PlunderRankItem plunderRank = aRankItemList[i].GetComponent<PlunderRankItem> ();
 				plunderRank.InItRankItem (PlunderData.PlunderRankType.ALLIANCE_RANK,tempResp.gongInfoList[i]);
 			}

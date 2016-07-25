@@ -56,7 +56,7 @@ public class PdOpponentItem : MonoBehaviour {
 		nameLabel.text = tempInfo.name;
 		
 		zhanLiLabel.text = "战力：" + tempInfo.zhanli;
-		victory.text = MyColorData.getColorString (4,"可掠夺：" + QXComData.MoneyName (QXComData.MoneyType.JIFEN)+ "+" + tempInfo.gongjin);
+		victory.text = "可掠夺：" + QXComData.MoneyName (QXComData.MoneyType.JIFEN)+ "+" + tempInfo.gongjin;
 
 		//Debug.Log ("HP:" + tempInfo.remainHp + "||" + tempInfo.shengMingMax);
 		int jinDu = (int)((tempInfo.remainHp / (float)tempInfo.shengMingMax) * 100);
@@ -70,7 +70,9 @@ public class PdOpponentItem : MonoBehaviour {
 		protectTime = tempInfo.leftProtectTime;
 		StopCoroutine ("ProtectTimeShow");
 		StartCoroutine ("ProtectTimeShow");
-//		Debug.Log ("lianmeng:" + junZhuInfo.lianMeng + "||" + AllianceData.Instance.g_UnionInfo.name);
+		Debug.Log ("lianmeng:" + junZhuInfo.lianMeng + "||" + AllianceData.Instance.g_UnionInfo.name);
+		Debug.Log ("M_CurAllianceId:" + PlunderPage.plunderPage.M_CurAllianceId);
+		Debug.Log ("g_UnionInfo.id:" + AllianceData.Instance.g_UnionInfo.id);
 		if (PlunderPage.plunderPage.M_CurAllianceId == AllianceData.Instance.g_UnionInfo.id)
 		{
 			QXComData.SetBtnState (plunderHandler.gameObject,false);

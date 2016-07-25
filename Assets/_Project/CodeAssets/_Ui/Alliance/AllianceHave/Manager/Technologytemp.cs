@@ -82,7 +82,7 @@ public class Technologytemp : MonoBehaviour {
 			NoOpen.text = "";
 		}
 //		Debug.Log("Identity = "+Identity);
-		if(Identity == 0) // 盟员 版
+		if(Identity == 0 || Identity == 1) // 盟员 版
 		{
 
 //

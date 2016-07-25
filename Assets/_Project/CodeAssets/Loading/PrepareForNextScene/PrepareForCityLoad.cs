@@ -325,7 +325,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         EnterNextScene.Instance().DestroyUI();
     }
  
-    private const  int REQUEST_DATA_COUNT_FOR_MAINCITY = 4;
+    private const  int REQUEST_DATA_COUNT_FOR_MAINCITY = 3;
     private Dictionary<string, string> _ConnectInfoDic = new Dictionary<string, string>();
 
     /// Prepare Data For Main City.
@@ -351,7 +351,7 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
 
         // request PVE Info
         {
-            JunZhuDiaoLuoManager.RequestMapInfo(-1);
+            //JunZhuDiaoLuoManager.RequestMapInfo(-1);
         }
 
         // request JunZhu Info
@@ -631,10 +631,10 @@ public class PrepareForCityLoad : MonoBehaviour, SocketListener
         }
 
 
-        // request PVE Info
-        {
-            JunZhuDiaoLuoManager.RequestMapInfo(-1);
-        }
+        //// request PVE Info
+        //{
+        //    JunZhuDiaoLuoManager.RequestMapInfo(-1);
+        //}
 
         // request JunZhu Info
         {

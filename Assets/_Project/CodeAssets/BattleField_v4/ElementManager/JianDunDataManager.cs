@@ -444,6 +444,10 @@ public class JianDunDataManager
 					{
 						temp = 0;
 					}
+					else
+					{
+						temp = 1;
+					}
 				}
 				break;
 			case 12:
@@ -453,11 +457,23 @@ public class JianDunDataManager
 				{
 					temp = 0;
 				}
+				else
+				{
+					temp = 1;
+				}
 				break;
 			}
 			if(m_listBool[i] != -1)
 			{
 				m_listBool[i] = temp;
+				if(temp == 1)
+				{
+					BattleControlor.Instance().achivementCallback(i, 1);
+				}
+				else
+				{
+					BattleControlor.Instance().achivementCallback(i, 0);
+				}
 			}
 		}
 		return m_listBool;

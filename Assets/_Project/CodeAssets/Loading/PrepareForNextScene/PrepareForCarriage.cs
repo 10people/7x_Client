@@ -70,6 +70,8 @@ public class PrepareForCarriage : MonoBehaviour
 
     public void CarriageLoadDone()
     {
+        GameObject.Find("SM_Stage001_WaterFallWave").GetComponent<AudioSource>().enabled = true;
+
         EnterNextScene.Instance().DestroyUI();
         Destroy(this);
     }

@@ -19,6 +19,9 @@ public class CityGlobalData  {
 		hanbingjian,
 		fangun
 	}
+
+	public static int[] mPveStar = new int[3] ;
+
 	public static bool QCLISOPen = false;//判断千重楼是UI是否打开
 
 	public static bool IsFistGetMiBaoData = true;//判断是否是第一次获取秘宝数据

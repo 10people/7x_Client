@@ -36,17 +36,17 @@ public class QXComData {
 
 	public static void LoadYuanBaoInfo (GameObject obj)
 	{
-		MainCityUI.setGlobalBelongings (obj, -30, 0);
+		MainCityUI.setGlobalBelongings (obj, 20, 0);
 	}
 
 	public static void LoadTitleObj (GameObject obj,string title)
 	{
-		MainCityUI.setGlobalTitle (obj,title,0,0);
+		MainCityUI.setGlobalTitle (obj,title,55,0);
 	}
 
 	public static string AllianceName (string tempName)
 	{
-		return "[00e1c4]" +  (tempName.Equals ("***") || string.IsNullOrEmpty (tempName) ? "无联盟" : "<" + tempName + ">") + "[-]";
+		return MyColorData.getColorString (106,(tempName.Equals ("***") || string.IsNullOrEmpty (tempName) ? "无联盟" : "<" + tempName + ">"));
 	}
 
 	#endregion
@@ -342,13 +342,18 @@ public class QXComData {
 		foreach (UIWidget widget in widgets)
 		{
 			UILabel label = widget.GetComponent<UILabel> ();
-			widget.color = highLight ? (label == null ? Color.white : Global.getStringColor("ffeed1")) : Color.grey;
+			widget.color = highLight ? (label == null ? Color.white : Global.getStringColor("fefbed")) : Color.grey;
 		}
 	}
 
 	public static void SetBgSprite (UISprite tempSprite,bool tempLight)
 	{
-		tempSprite.spriteName = tempLight ? "jianbianbgliang" : "thirdBg";
+		tempSprite.spriteName = tempLight ? "BlueItemBg1" : "BlueItemBg";
+	}
+
+	public static void SetBgSprite2 (UISprite tempSprite,bool tempLight)
+	{
+		tempSprite.spriteName = tempLight ? "InfoBg1" : "InfoBg";
 	}
 
 	#endregion

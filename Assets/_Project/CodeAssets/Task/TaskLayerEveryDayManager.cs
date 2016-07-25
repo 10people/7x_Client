@@ -141,6 +141,10 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
         {
 
         }
+		else if(FreshGuide.Instance().IsActive(200020)&& TaskData.Instance.m_TaskInfoDic[200020].progress >= 0)
+		{
+
+		}
         else
         {
             UIYindao.m_UIYindao.CloseUI();

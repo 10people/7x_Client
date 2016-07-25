@@ -26,6 +26,10 @@ public class UIHuodongPage3 : MYNGUIPanel , SocketListener
 	public void setData(ActivityGetStrengthResp data)
 	{
 		m_Info = data;
+		if(m_Info.periodList == null)
+		{
+			return;
+		}
 		for(int i = 0; i < m_Info.periodList.Count; i ++)
 		{
 			Debug.Log(m_Info.periodList[i].status);

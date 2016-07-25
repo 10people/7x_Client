@@ -35,6 +35,8 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 	public List<GameObject> m_listObj;
 
 	public UIScrollView m_UIScrollView;
+
+	public bool m_isAdd = false;
 	
 	void Awake()
 	{
@@ -68,10 +70,6 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 		{
 			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
 			{
-				TaskData.Instance.m_iCurMissionIndex = 100173;
-				ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-				tempTaskData.m_iCurIndex = 1;
-				UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
 				m_UIScrollView.enabled = false;
 			}
 		}
@@ -109,6 +107,13 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 
+				if(m_Info != null)
+				{
+					if(tempInfo.functionList.Count == m_Info.functionList.Count)
+					{
+						return false;
+					}
+				}
 				setData(tempInfo);
 
 				if (FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
@@ -132,7 +137,6 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 						m_UIPanel.clipOffset = new Vector2(0, -61 - 130);
 					}
 				}
-
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_FIRST_CHARGE_REWARD_RESP:
@@ -151,6 +155,23 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_iIndexPanel = 0;
 				m_listObj[m_iIndexPanel].SetActive(true);
 				m_objShow.SetActive(true);
+				if(!m_isAdd)
+				{
+					MainCityUI.TryAddToObjectList(gameObject);
+					UIYindao.m_UIYindao.CloseUI();
+					m_isAdd = true;
+				}
+				if (FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
+				{
+					//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+					{
+						TaskData.Instance.m_iCurMissionIndex = 100173;
+						ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+						tempTaskData.m_iCurIndex = 1;
+						UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+					}
+				}
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FUNCTIONLIST_INFO_REQ, ProtoIndexes.S_ACTIVITY_FUNCTIONLIST_INFO_RESP);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_MONTH_CARD_RESP:
@@ -172,6 +193,23 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_listObj[m_iIndexPanel].SetActive(true);
 
 				m_objShow.SetActive(true);
+				if(!m_isAdd)
+				{
+					MainCityUI.TryAddToObjectList(gameObject);
+					UIYindao.m_UIYindao.CloseUI();
+					m_isAdd = true;
+				}
+				if (FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
+				{
+					//if(!UIYindao.m_UIYindao.m_isOpenYindao)
+					{
+						TaskData.Instance.m_iCurMissionIndex = 100173;
+						ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
+						tempTaskData.m_iCurIndex = 1;
+						UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
+					}
+				}
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FUNCTIONLIST_INFO_REQ, ProtoIndexes.S_ACTIVITY_FUNCTIONLIST_INFO_RESP);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_GROWTHFUND_INFO_RESP:
@@ -189,9 +227,16 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				m_listObj[m_iIndexPanel].SetActive(false);
 				
 				m_iIndexPanel = 2;
-				
+
 				m_listObj[m_iIndexPanel].SetActive(true);
 				m_objShow.SetActive(true);
+				if(!m_isAdd)
+				{
+					MainCityUI.TryAddToObjectList(gameObject);
+					UIYindao.m_UIYindao.CloseUI();
+					m_isAdd = true;
+				}
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FUNCTIONLIST_INFO_REQ, ProtoIndexes.S_ACTIVITY_FUNCTIONLIST_INFO_RESP);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_STRENGTH_INFO_RESP:
@@ -212,6 +257,13 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
 				m_objShow.SetActive(true);
+				if(!m_isAdd)
+				{
+					MainCityUI.TryAddToObjectList(gameObject);
+					UIYindao.m_UIYindao.CloseUI();
+					m_isAdd = true;
+				}
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FUNCTIONLIST_INFO_REQ, ProtoIndexes.S_ACTIVITY_FUNCTIONLIST_INFO_RESP);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_LEVEL_INFO_RESP:
@@ -232,6 +284,13 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
 				m_objShow.SetActive(true);
+				if(!m_isAdd)
+				{
+					MainCityUI.TryAddToObjectList(gameObject);
+					UIYindao.m_UIYindao.CloseUI();
+					m_isAdd = true;
+				}
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FUNCTIONLIST_INFO_REQ, ProtoIndexes.S_ACTIVITY_FUNCTIONLIST_INFO_RESP);
 				break;
 			}
 			case ProtoIndexes.S_ACTIVITY_ACHIEVEMENT_INFO_RESP:
@@ -263,6 +322,13 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 
 				m_listObj[m_iIndexPanel].SetActive(true);
 				m_objShow.SetActive(true);
+				if(!m_isAdd)
+				{
+					MainCityUI.TryAddToObjectList(gameObject);
+					UIYindao.m_UIYindao.CloseUI();
+					m_isAdd = true;
+				}
+				Global.ScendNull(ProtoIndexes.C_ACTIVITY_FUNCTIONLIST_INFO_REQ, ProtoIndexes.S_ACTIVITY_FUNCTIONLIST_INFO_RESP);
 				break;
 			}
 			case ProtoIndexes.GET_QQ_INFO:
@@ -283,6 +349,12 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
 				m_objShow.SetActive(true);
+				if(!m_isAdd)
+				{
+					MainCityUI.TryAddToObjectList(gameObject);
+					UIYindao.m_UIYindao.CloseUI();
+					m_isAdd = true;
+				}
 				break;
 			}
 			case ProtoIndexes.GET_REQ_INFO:
@@ -303,6 +375,12 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 				
 				m_listObj[m_iIndexPanel].SetActive(true);
 				m_objShow.SetActive(true);
+				if(!m_isAdd)
+				{
+					MainCityUI.TryAddToObjectList(gameObject);
+					UIYindao.m_UIYindao.CloseUI();
+					m_isAdd = true;
+				}
 				break;
 			}
 			default: return false;

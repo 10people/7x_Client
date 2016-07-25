@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
+using System.Linq;
 using ProtoBuf;
 using qxmobile.protobuf;
 public class My_DamageRank : MonoBehaviour {
@@ -81,6 +81,48 @@ public class My_DamageRank : MonoBehaviour {
 			Debug.Log("_____排行榜 = null");
 			return;
 		}
+		mRankList.damageInfo.OrderByDescending (item=>item.rank);
+//		IEnumerable<DamageInfo> query = null;
+//		query = from items in mRankList.damageInfo orderby items.rank select items;
+//
+//		foreach (DamageInfo item in query)
+//		{
+//			GameObject m_mRanktemp = Instantiate(mRanktemp) as GameObject;
+//			
+//			m_mRanktemp.SetActive(true);
+//			
+//			m_mRanktemp.transform.parent = mRanktemp.transform.parent;
+//			
+////			m_mRanktemp.transform.localPosition = new Vector3(0,-i*Dis,0);
+////			
+//			m_mRanktemp.transform.localScale = Vector3.one;
+//			
+//			RankItem mm__RankItem = m_mRanktemp.GetComponent<RankItem>();
+//			
+//			mm__RankItem.mDamageInfo = item;
+//			
+//			if(item.junZhuName == JunZhuData.Instance().m_junzhuInfo.name)
+//			{
+//				MyRankBtn.SetActive(true);
+//				
+//				mrank = item.rank;
+//				
+//				MRankPosition = m_mRanktemp.transform.localPosition.y;
+//				
+//				mm__RankItem.iSMyself = true;
+//			}
+//			else
+//			{
+//				mm__RankItem.iSMyself = false;
+//			}
+//			mm__RankItem.Init(m_levelid);
+//		}
+//		UIgrid.GetComponent<UIGrid> ().repositionNow = true;
+//		for (int i = 0; i < query.Count; i ++) {
+//
+//
+//		}
+
 		for(int i = 0 ; i < mRankList.damageInfo.Count; i ++)
 		{
 			GameObject m_mRanktemp = Instantiate(mRanktemp) as GameObject;
@@ -139,11 +181,12 @@ public class My_DamageRank : MonoBehaviour {
 		AllBtn.SetActive(true);
 
 		mmFixUniform = UIgrid.GetComponent<mFixUniform>();
-
-		if(m_Scollview.transform.localPosition.y + MRankPosition  > mScrollView_y +45 )
+//		Debug.Log("11 = "+m_Scollview.transform.localPosition.y + MRankPosition);
+//		Debug.Log("mScrollView_y = "+mScrollView_y);
+//		Debug.Log("MRankPosition = "+MRankPosition);
+//		Debug.Log("m_Scollview.transform.localPosition.y = "+m_Scollview.transform.localPosition.y);
+		if(m_Scollview.transform.localPosition.y + MRankPosition  > mScrollView_y +40 )
 		{
-
-			Debug.Log("11");
 			float S_y = m_Scollview.transform.localPosition.y +MRankPosition - mScrollView_y;
 			Debug.Log("S_y = "+S_y);
 			mmFixUniform.offset = new Vector3(0,-S_y+45,0);
@@ -154,12 +197,12 @@ public class My_DamageRank : MonoBehaviour {
 
 			StartCoroutine("Closescripte");
 		}
-		else if(m_Scollview.transform.localPosition.y + MRankPosition  < -280+mScrollView_y)
+		else if(m_Scollview.transform.localPosition.y + MRankPosition  < -255+mScrollView_y)
 		{
 
 			float X_y = m_Scollview.transform.localPosition.y + MRankPosition -mScrollView_y;
 
-			mmFixUniform.offset = new Vector3(0,-X_y-280,0);
+			mmFixUniform.offset = new Vector3(0,-X_y-255,0);
 
 			mmFixUniform.enabled = true;
 
@@ -182,7 +225,13 @@ public class My_DamageRank : MonoBehaviour {
 
 	void LookAllRank()
 	{
-		m_Scollview.transform.localPosition = new Vector3 (0,mScrollView_y,0);
+		mmFixUniform.offset = new Vector3(0,mScrollView_y,0);
+		
+		mmFixUniform.enabled = true;
+		
+		StopCoroutine("Closescripte");
+		
+		StartCoroutine("Closescripte");
 	}
 	public void Close()
 	{

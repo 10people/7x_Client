@@ -257,6 +257,8 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 	}
 	void  ShowAwardByEffect()
 	{
+		mdataback = true;
+
 		List<RewardData> tempDataList = new List<RewardData> ();
 		for(int i = 0 ; i  < itemislist.Count ; i ++)
 		{
@@ -265,7 +267,7 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 
 		}
 		GeneralRewardManager.Instance().CreateReward (tempDataList); 
-		mdataback = true;
+
 		if(type == 2)
 		{
 //			if (yinid > 0)
@@ -311,7 +313,7 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 		PassLevelBtn.Instance().OPenEffect ();
 			
 		MapData.mapinstance.ShowYinDao = true;
-	
+		ClientMain.closePopUp();
 		Destroy (this.gameObject);
 	}
 }

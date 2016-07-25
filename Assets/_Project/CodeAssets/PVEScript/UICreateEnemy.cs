@@ -62,6 +62,14 @@ public class UICreateEnemy : MonoBehaviour
 					}
 				}
 			}
+			#if USING_DEBUG
+			foreach(LegendNpcTemplate mlengend in mLegendNpcTemplateList)
+			{
+				Debug.Log("mlengend.modelId = "+mlengend.modelId);
+				Debug.Log("mlengend.type = "+mlengend.type);
+				Debug.Log("mlengend.icon = "+mlengend.icon);
+			}
+			#endif
 		}
 		else
 		{

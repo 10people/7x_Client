@@ -438,7 +438,6 @@ public class EquipGrowthEquipInfoManagerment : MonoBehaviour, SocketProcessor
             {
                 int ff = int.Parse(ei.fang) + fang;
                 ei.fang = ff.ToString();
-                Debug.Log("ffffffffff ::" + ff);
                 CreateClone(m_EquipItenm.m_DicInfo[1].gameObject, fang);
                 if (QiangHuaTemplate.GetTemplateByItemId(int.Parse(ZhuangBei.getZhuangBeiById(_EquipBInfo._EquipId).qianghuaId)
                     , _EquipBInfo._Level + 1) != null)

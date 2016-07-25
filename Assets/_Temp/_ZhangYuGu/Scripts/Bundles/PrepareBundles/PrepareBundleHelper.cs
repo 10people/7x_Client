@@ -44,13 +44,21 @@ public class PrepareBundleHelper {
 		// set default http server prefix
 		if( ShowServerSelector() ){
 			PrepareBundleHelper.SetDefaultServer();
-
-//			PrepareBundleHelper.SetTiYanServer();
 		}
 		else{
-			PrepareBundleHelper.SetTiYanServer();
-			
-//			PrepareBundleHelper.SetCeshiServer();
+			switch( NetworkHelper.GetDefaultServerType() ){
+			case NetworkHelper.ServerType.CeShi:
+				PrepareBundleHelper.SetCeshiServer();
+				break;
+
+			case  NetworkHelper.ServerType.TiYan:
+				PrepareBundleHelper.SetTiYanServer();
+				break;
+
+			case NetworkHelper.ServerType.NeiWang:
+				PrepareBundleHelper.SetNeiWangServer();
+				break;
+			}
 		}
 
 //		#if DEBUG_BUNDLE

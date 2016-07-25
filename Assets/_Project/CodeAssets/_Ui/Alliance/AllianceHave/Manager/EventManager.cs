@@ -27,8 +27,7 @@ public class EventManager : MonoBehaviour  ,SocketProcessor {
 
 	public void Init()
 	{
-
-		SocketTool.Instance().SendSocketMessage (ProtoIndexes.ALLINACE_EVENT_REQ);
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.ALLINACE_EVENT_REQ,ProtoIndexes.ALLINACE_EVENT_RESP.ToString());
 	}
 	public bool OnProcessSocketMessage (QXBuffer p_message)
 	{
@@ -38,7 +37,7 @@ public class EventManager : MonoBehaviour  ,SocketProcessor {
 			{
 			case ProtoIndexes.ALLINACE_EVENT_RESP://联盟事件请求返回
 			{
-			//	Debug.Log ("ApplicateResp" + ProtoIndexes.ALLINACE_EVENT_RESP);
+				Debug.Log ("ApplicateResp" + ProtoIndexes.ALLINACE_EVENT_RESP);
 				MemoryStream application_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
 				
 				QiXiongSerializer application_qx = new QiXiongSerializer();

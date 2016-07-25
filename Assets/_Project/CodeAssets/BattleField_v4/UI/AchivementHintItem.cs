@@ -19,7 +19,7 @@ public class AchivementHintItem : MonoBehaviour
 	{
 		index = _index;
 
-		state = 0;
+		state = _state;
 
 		label.text = BattleControlor.Instance().achivement.descs [index];
 
@@ -28,8 +28,16 @@ public class AchivementHintItem : MonoBehaviour
 	
 	public void setState (int _state) 
 	{
-		if(_state == state)
+		if(_state == state || CityGlobalData.mPveStar[index] == 1)
 		{
+			if(CityGlobalData.mPveStar[index] == 1)
+			{
+				if(sprite.spriteName != "battle_star")
+				{
+					sprite.spriteName = "battle_star";
+					sprite_2.spriteName = sprite.spriteName;
+				}
+			}
 			return;
 		}
 

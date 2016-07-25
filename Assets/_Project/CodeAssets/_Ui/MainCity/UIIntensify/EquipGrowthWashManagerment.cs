@@ -294,11 +294,7 @@ public class EquipGrowthWashManagerment : MonoBehaviour, SocketProcessor, UI2DEv
                         {
                             PushAndNotificationHelper.SetRedSpotNotification(1210, false);
                         }
-                        //else if(!AllQualityLowest() && _WadhStoneCount > 0 && !PushAndNotificationHelper.IsShowRedSpotNotification(1210))
-                        //{
-                        //    Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                        //    PushAndNotificationHelper.SetRedSpotNotification(1210, true);
-                        //}
+                  
                         if (buttonNum == 0)
                         {
                             ShowRangeInfo(WashInfo);

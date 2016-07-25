@@ -143,18 +143,7 @@ public class HeadIconSetter : MonoBehaviour
             AllianceLabel.text = (string.IsNullOrEmpty(allianceName) || allianceName == "***") ? "无联盟" : allianceName;
         }
 
-        if (VipObject != null)
-        {
-            if (vipID > 0 && VipSprite != null)
-            {
-                VipSprite.spriteName = vipPrefix + vipID;
-                VipObject.SetActive(true);
-            }
-            else
-            {
-                VipObject.SetActive(false);
-            }
-        }
+        RefreshVIP(vipID);
 
         if (BattleValueLabel != null && BattleValueObject != null)
         {
@@ -166,6 +155,22 @@ public class HeadIconSetter : MonoBehaviour
             else
             {
                 BattleValueObject.SetActive(false);
+            }
+        }
+    }
+
+    public void RefreshVIP(int vipID)
+    {
+        if (VipObject != null)
+        {
+            if (vipID > 0 && VipSprite != null)
+            {
+                VipSprite.spriteName = vipPrefix + vipID;
+                VipObject.SetActive(true);
+            }
+            else
+            {
+                VipObject.SetActive(false);
             }
         }
     }

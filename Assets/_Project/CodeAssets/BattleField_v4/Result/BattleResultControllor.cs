@@ -97,7 +97,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 	public UILabel labelV;
 
 
-	[HideInInspector] public int winLevel;
+	[HideInInspector] public static int winLevel;
 
 	[HideInInspector] public int iExp;
 
@@ -105,7 +105,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 
     [HideInInspector] public GameObject itemTemple;
 
-	[HideInInspector] public List<int> bList_achivment;
+	[HideInInspector] public static List<int> bList_achivment;
 
 	[HideInInspector] public List<AwardItem> lmAwards = new List<AwardItem>();
 
@@ -591,6 +591,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_HuangYe_Pve)
 		{
 			spriteWinLevel.spriteName = "result_over";
+
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_YouXia)
 		{
@@ -839,6 +840,8 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_BaiZhan)
 		{
+			layerBaizhan_1.refreshData(BattleResultPvpWin.resp);
+
 			layerBaizhan_1.gameObject.SetActive(true);
 
 			layerBaizhan_1.startAction();
@@ -985,7 +988,7 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
 		}
     }
 
-    public int getStarCount()
+    public static int getStarCount()
     {
 //        float blood = 0;
 //
@@ -1122,10 +1125,10 @@ public class BattleResultControllor : MonoBehaviour, SocketListener
         iCoin = money;
     }
 
-	public void setPVPData(BaiZhanResultResp _resp)
-	{
-		layerBaizhan_1.refreshData (_resp);
-	}
+//	public static void setPVPData(BaiZhanResultResp _resp)
+//	{
+//		layerBaizhan_1.refreshData (_resp);
+//	}
 
 	public void setHYPvpData(BattleResultHYPvp _resp)
 	{

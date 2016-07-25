@@ -50,7 +50,7 @@ QuickPause:					false
 QuickFx:					false
 
 //Unit test
-UnitTest:					false
+UnitTest:					true
 
 //Test mode
 TestMode:					true

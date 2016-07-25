@@ -112,7 +112,7 @@ public class SportEnemyPage : GeneralInstance<SportEnemyPage> {
 
 		for (int i = 0;i < enemyItemList.Count;i ++)
 		{
-			enemyItemList[i].transform.localPosition = new Vector3(i * 140 - (enemyItemList.Count - 1) * 70,24,0);
+			enemyItemList[i].transform.localPosition = new Vector3(i * 132 - (enemyItemList.Count - 1) * 66,-2,0);
 			SportEnemyItem sportEnemyItem = enemyItemList[i].GetComponent<SportEnemyItem> ();
 			sportEnemyItem.SportEnemyInfo = tempInfo.oppoList[i];
 			sportEnemyItem.InItEnemy ();

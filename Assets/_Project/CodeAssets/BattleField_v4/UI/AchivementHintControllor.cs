@@ -25,11 +25,11 @@ public class AchivementHintControllor : MonoBehaviour
 			return;
 		}
 
-		int achive_1 = CityGlobalData.t_resp.starArrive / 100;
+		int achive_1 = CityGlobalData.mPveStar[0];
 
-		int achive_2 = CityGlobalData.t_resp.starArrive % 100 / 10;
+		int achive_2 = CityGlobalData.mPveStar[1];
 
-		int achive_3 = CityGlobalData.t_resp.starArrive % 10;
+		int achive_3 = CityGlobalData.mPveStar[2];
 
 		//BattleControlor.Instance().achivement.setListBool (achive_1, achive_2, achive_3);
 

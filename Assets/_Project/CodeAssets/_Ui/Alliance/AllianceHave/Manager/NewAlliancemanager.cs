@@ -800,18 +800,18 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
     public void InitAlliance()
     {
          Online = 0;
-        if (m_allianceHaveRes.memberInfo != null)
-        {
-            for (int i = 0; i < m_allianceHaveRes.memberInfo.Count; i++)
-            {
-                if (m_allianceHaveRes.memberInfo[i].offlineTime < 0)//之前为显示在线人数 后改为显示目前人数和最多能容纳人数
-                {
-                    Online += 1;
-                }
-            }
-
-        }
-        OnlineNum.text = "在线人数：" + Online.ToString();
+//        if (m_allianceHaveRes.memberInfo != null)
+//        {
+//            for (int i = 0; i < m_allianceHaveRes.memberInfo.Count; i++)
+//            {
+//                if (m_allianceHaveRes.memberInfo[i].offlineTime < 0)//之前为显示在线人数 后改为显示目前人数和最多能容纳人数
+//                {
+//                    Online += 1;
+//                }
+//            }
+//
+//        }
+        OnlineNum.text = "在线人数：" + Online.ToString(); // 人数已经不能从这儿获取 等待后台新数据
         AllianceName.text = m_allianceHaveRes.name + "(Lv." + m_allianceHaveRes.level.ToString() + ")";
 //		Debug.Log ("m_allianceHaveRes.identity = "+m_allianceHaveRes.identity);
 		if(m_allianceHaveRes.identity != 2)
@@ -1384,19 +1384,22 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 				else{
 					DownTime.text = "建设值尚且不足，请我盟兄弟齐心协力建设，壮大我盟！";
 				}
-
-				for(int i = 0 ; i < m_allianceHaveRes.memberInfo.Count; i++)
-				{
-					if(m_allianceHaveRes.memberInfo[i].identity == 2)
-					{
-						if(m_allianceHaveRes.memberInfo[i].offlineTime >(60*24*60))
-						{
-							Upmind.text = "盟主24小时未上线";
-							DownTime.text = "盟员可以转盟或提醒盟主上线";
-							break;
-						}
-					}
-				}
+//				if (m_allianceHaveRes.memberInfo != null)
+//				{
+//					for(int i = 0 ; i < m_allianceHaveRes.memberInfo.Count; i++)
+//					{
+//						if(m_allianceHaveRes.memberInfo[i].identity == 2)
+//						{
+//							if(m_allianceHaveRes.memberInfo[i].offlineTime >(60*24*60))
+//							{
+//								Upmind.text = "盟主24小时未上线";
+//								DownTime.text = "盟员可以转盟或提醒盟主上线";
+//								break;
+//							}
+//						}
+//					}
+//				}
+		
 				StopCoroutine("CountTime");
 			}
 			else

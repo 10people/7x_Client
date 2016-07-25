@@ -570,7 +570,7 @@ namespace AllianceBattle
                 case 111:
                     {
                         m_RTSkillExecuter.ExecuteAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.skillId);
-                        m_RTSkillExecuter.ExecuteBeenAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.damage, tempInfo.remainLife, m_TargetId, tempInfo.skillId);
+                        m_RTSkillExecuter.ExecuteBeenAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.damage, tempInfo.remainLife, m_TargetId, tempInfo.skillId, tempInfo.isBaoJi);
 
                         break;
                     }
@@ -639,7 +639,7 @@ namespace AllianceBattle
                         }
 
                         m_RTSkillExecuter.ExecuteAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.skillId);
-                        m_RTSkillExecuter.ExecuteBeenAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.damage, tempInfo.remainLife, m_TargetId, tempInfo.skillId);
+                        m_RTSkillExecuter.ExecuteBeenAttack(tempInfo.attackUid, tempInfo.targetUid, tempInfo.damage, tempInfo.remainLife, m_TargetId, tempInfo.skillId, tempInfo.isBaoJi);
 
                         break;
                     }
@@ -1186,6 +1186,27 @@ namespace AllianceBattle
             VipSprite.spriteName = "v" + vip;
 
             m_Joystick.m_Box.enabled = false;
+        }
+
+        public void TryRefreshVIPInDeadWindow(int vipID)
+        {
+            if (DeadWindow.activeInHierarchy)
+            {
+                FreeQuickRebirthLabel.text = "今日剩余快速复活次数" + m_remainingQuickRebirthTimes + "/" + VipTemplate.GetVipABRebirthInfoByLevel(JunZhuData.Instance().m_junzhuInfo.vipLv);
+                FreeQuickRebirthObject.SetActive(true);
+
+                //Set quick rebirth btn.
+                if (JunZhuData.Instance().m_junzhuInfo.vipLv >= VipTemplate.GetLevelOfABQuickRebirthStart() && m_remainingQuickRebirthTimes == 0)
+                {
+                    QuickRebirthButton.SetActive(false);
+                    CannotQuickRebirthButton.SetActive(true);
+                }
+                else
+                {
+                    QuickRebirthButton.SetActive(true);
+                    CannotQuickRebirthButton.SetActive(false);
+                }
+            }
         }
 
         public void HideDeadWindows()

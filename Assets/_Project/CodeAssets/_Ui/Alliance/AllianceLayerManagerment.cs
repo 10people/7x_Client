@@ -1738,12 +1738,26 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             m_listEvent[4].gameObject.SetActive(false);
             m_listEvent[5].gameObject.SetActive(false);
             m_listEvent[7].gameObject.SetActive(true);
+            m_listEvent[14].gameObject.SetActive(false);
         }
         else
         {
-            if (JunZhuData.Instance().m_junzhuInfo.level < tempinfo.allianceInfo.applyLevel
+            if (tempinfo.allianceInfo.members >= tempinfo.allianceInfo.memberMax)
+            {
+                m_ObjAllianceInfo.SetActive(true);
+                m_ObjButtonParent.SetActive(false);
+                m_ObjTitleMain.SetActive(false);
+                ShowInfo(1);
+                m_ObjCloseInfo.SetActive(true);
+                m_listEvent[3].gameObject.SetActive(false);
+                m_listEvent[4].gameObject.SetActive(false);
+                m_listEvent[5].gameObject.SetActive(false);
+                m_listEvent[7].gameObject.SetActive(false);
+                m_listEvent[14].gameObject.SetActive(true);
+            }
+            else if (JunZhuData.Instance().m_junzhuInfo.level < tempinfo.allianceInfo.applyLevel
                     || JunZhuData.Instance().m_junzhuInfo.junXian < tempinfo.allianceInfo.junXian 
-                    || tempinfo.allianceInfo.members >= tempinfo.allianceInfo.memberMax)
+                     )
             {
 
                 m_ObjAllianceInfo.SetActive(true);
@@ -1755,6 +1769,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                 m_listEvent[4].gameObject.SetActive(false);
                 m_listEvent[5].gameObject.SetActive(false);
                 m_listEvent[7].gameObject.SetActive(true);
+                m_listEvent[14].gameObject.SetActive(false);
             }
             else
             {
@@ -1770,6 +1785,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                     m_listEvent[4].gameObject.SetActive(true);
                     m_listEvent[5].gameObject.SetActive(false);
                     m_listEvent[7].gameObject.SetActive(false);
+                    m_listEvent[14].gameObject.SetActive(false);
                 }
                 else
                 {
@@ -1786,6 +1802,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                         m_listEvent[4].gameObject.SetActive(false);
                         m_listEvent[5].gameObject.SetActive(true);
                         m_listEvent[7].gameObject.SetActive(false);
+                        m_listEvent[14].gameObject.SetActive(false);
                     }
                     else
                     {
@@ -1793,6 +1810,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                         m_listEvent[4].gameObject.SetActive(false);
                         m_listEvent[5].gameObject.SetActive(false);
                         m_listEvent[7].gameObject.SetActive(false);
+                        m_listEvent[14].gameObject.SetActive(false);
                     }
                 }
             }
@@ -1825,9 +1843,22 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
             _AllianceCountry = AllianceData.Instance.m_AllianceInfoDic[id].country;
             m_SpriteCountry.spriteName = "nation_" + AllianceData.Instance.m_AllianceInfoDic[id].country.ToString();
             {
-                if (JunZhuData.Instance().m_junzhuInfo.level < AllianceData.Instance.m_AllianceInfoDic[id].applyLevel
+                if (AllianceData.Instance.m_AllianceInfoDic[id].members >= AllianceData.Instance.m_AllianceInfoDic[id].memberMax)
+                {
+                    m_ObjAllianceInfo.SetActive(true);
+                    m_ObjButtonParent.SetActive(false);
+                    m_ObjTitleMain.SetActive(false);
+                    ShowInfo(1);
+                    m_ObjCloseInfo.SetActive(true);
+                    m_listEvent[3].gameObject.SetActive(false);
+                    m_listEvent[4].gameObject.SetActive(false);
+                    m_listEvent[5].gameObject.SetActive(false);
+                    m_listEvent[7].gameObject.SetActive(false);
+                    m_listEvent[14].gameObject.SetActive(true);
+                }
+                else if (JunZhuData.Instance().m_junzhuInfo.level < AllianceData.Instance.m_AllianceInfoDic[id].applyLevel
                        || JunZhuData.Instance().m_junzhuInfo.junXian < AllianceData.Instance.m_AllianceInfoDic[id].junXian
-                       || AllianceData.Instance.m_AllianceInfoDic[id].members >= AllianceData.Instance.m_AllianceInfoDic[id].memberMax)
+                       )
                 {
                     m_ObjAllianceInfo.SetActive(true);
                     m_ObjButtonParent.SetActive(false);
@@ -1838,6 +1869,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                     m_listEvent[4].gameObject.SetActive(false);
                     m_listEvent[5].gameObject.SetActive(false);
                     m_listEvent[7].gameObject.SetActive(true);
+                    m_listEvent[14].gameObject.SetActive(false);
                 }
                 else
                 {
@@ -1852,6 +1884,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                         m_listEvent[4].gameObject.SetActive(true);
                         m_listEvent[5].gameObject.SetActive(false);
                         m_listEvent[7].gameObject.SetActive(false);
+                        m_listEvent[14].gameObject.SetActive(false);
                     }
                     else
                     {
@@ -1868,6 +1901,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                             m_listEvent[4].gameObject.SetActive(false);
                             m_listEvent[5].gameObject.SetActive(true);
                             m_listEvent[7].gameObject.SetActive(false);
+                            m_listEvent[14].gameObject.SetActive(false);
                         }
                         else
                         {
@@ -1875,6 +1909,7 @@ public class AllianceLayerManagerment : MonoBehaviour, SocketProcessor
                             m_listEvent[4].gameObject.SetActive(false);
                             m_listEvent[5].gameObject.SetActive(false);
                             m_listEvent[10].gameObject.SetActive(false);
+                            m_listEvent[14].gameObject.SetActive(false);
                         }
                     }
                 }

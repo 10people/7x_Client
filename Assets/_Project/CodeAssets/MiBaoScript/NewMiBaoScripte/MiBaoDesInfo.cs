@@ -378,7 +378,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		    m_Fangyu = ShowmMiBaoinfo.fangYu;
 		//	Debug.Log("levelPoint 11111");
 			m_Point = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint;
-
+			ShowGetAward ();
 		}
 		else
 		{
@@ -416,7 +416,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			{
 				LinShi_ZhanLi = ShowmMiBaoinfo.zhanLi;
 			}
-
+			ChangeJianghunColor();
 //			StopCoroutine("Update_ZhanliAndLevel");
 //			
 //			StartCoroutine("Update_ZhanliAndLevel");
@@ -434,7 +434,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 		ShowStar ();
 	
-		ShowGetAward ();
+
 		ShowMiBaoYInDao (tems);
 		ShowMiBaoYInDao2 (tems);
 	}
@@ -658,6 +658,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	}
 	public void ShowGetAward()
 	{
+		Debug.Log ("Upchanger");
 		int mGrad = 10;
 		Color p_color = Color.red;
 		for(int i = 0 ; i < Proprety.Length ; i++)
@@ -672,16 +673,38 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			else
 			{
 				MathHelper.ParseHexString( "bebebe", out p_color, Color.red );
-
+				
 				MiBaoExtrattributeTemplate mMiBaoExt = MiBaoExtrattributeTemplate.GetMiBaoExtrattributeTemplate_By_Id_and_level(ShowmMiBaoinfo.miBaoId,(i+1)*10);
 				AwardforGrad[i].text =MyColorData.getColorString (2,mstr+mGrad.ToString()+"级");
 				Proprety[i].text = MyColorData.getColorString (2,mMiBaoExt.Name +"+"+mMiBaoExt.Num.ToString());
-
+				
 				AwardforGrad[i].color = p_color;
 				Proprety[i].color = p_color;
 			}
 			mGrad += 10;
 		}
+
+	}
+	private void ChangeJianghunColor()
+	{
+		Color p_color = Color.red;
+//		Debug.Log ("ShowmMiBaoinfo.level = "+ShowmMiBaoinfo.level);
+//		Debug.Log ("ShowmMiBaoinfo.level%10 = "+ShowmMiBaoinfo.level%10);
+		if(ShowmMiBaoinfo.level%10 == 0 && ShowmMiBaoinfo.level >= 10)
+		{
+			int mNum = ShowmMiBaoinfo.level/10;
+			Debug.Log ("mNum = "+mNum);
+			string mstr = "等级升到";
+			int mGrad = 10;
+			for(int i = 0 ; i < mNum ; i++)
+			{
+				MiBaoExtrattributeTemplate mMiBaoExt = MiBaoExtrattributeTemplate.GetMiBaoExtrattributeTemplate_By_Id_and_level(ShowmMiBaoinfo.miBaoId,(i+1)*10);
+				AwardforGrad[i].text =MyColorData.getColorString (47,mstr+mGrad.ToString()+"级");
+				Proprety[i].text = MyColorData.getColorString (47,mMiBaoExt.Name +"+"+mMiBaoExt.Num.ToString());
+				mGrad += 10;
+			}
+		}
+	
 	}
     public void ShowEffect()
 	{
@@ -841,7 +864,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 
 		NewMiBaoManager.Instance ().m_MiBaoInfo.levelPoint -= 1;
 //		Debug.Log ("m_Point aaaaaaa = "+m_Point);
-
+		Is_LevelUp = true;
 
 		int zhanli = GetMiBaoInfo.Initance ().JiSuanZhanLi(ShowmMiBaoinfo.miBaoId,ShowmMiBaoinfo.level+1,ShowmMiBaoinfo.star,4);
 		int gongji = GetMiBaoInfo.Initance ().JiSuanZhanLi (ShowmMiBaoinfo.miBaoId,ShowmMiBaoinfo.level+1,ShowmMiBaoinfo.star,1);
@@ -930,7 +953,10 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				if(Levelup.mibaoInfo != null)
 				{
 //					Debug.Log("518  dataBack");
-
+					if(ShowmMiBaoinfo.level == Levelup.mibaoInfo.level)
+					{
+						return true;
+					}
 					ShowmMiBaoinfo = Levelup.mibaoInfo;
 
 					SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);

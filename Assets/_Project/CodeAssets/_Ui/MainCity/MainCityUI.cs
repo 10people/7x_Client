@@ -2097,8 +2097,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     private void OnActivityLoadCallBack(ref WWW www, string path, Object loadedObject)
     {
         GameObject tempObject = Instantiate(loadedObject) as GameObject;
-        MainCityUI.TryAddToObjectList(tempObject);
-        UIYindao.m_UIYindao.CloseUI();
     }
 
     public void DoGoHome()

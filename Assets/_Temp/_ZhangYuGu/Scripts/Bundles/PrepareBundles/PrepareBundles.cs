@@ -339,6 +339,20 @@ public class PrepareBundles : MonoBehaviour {
 		}
 
 		if( VersionTool.GetPackageBigVersion() != PrepareBundleHelper.GetServerBigVersion() ){
+			if( Debug.isDebugBuild ){
+				{
+					Debug.Log( "Package.Big.V: " + VersionTool.GetPackageBigVersion() );
+
+					Debug.Log( "Server.Big.V: " + PrepareBundleHelper.GetServerBigVersion() );
+				}
+
+				{
+					NGUIDebug.Log( "PackageBigVersion: " + VersionTool.GetPackageBigVersion() );
+
+					NGUIDebug.Log( "ServerBigVersion: " + PrepareBundleHelper.GetServerBigVersion() );
+				}
+			}
+
 			BigUpdate();
 		}
 		else{

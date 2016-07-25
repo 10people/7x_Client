@@ -30,7 +30,7 @@ public class SportEnemyItem : MonoBehaviour {
 
 		m_name.text = SportEnemyInfo.junZhuId < 0 ? NameIdTemplate.GetName_By_NameId (int.Parse(SportEnemyInfo.junZhuName)) : SportEnemyInfo.junZhuName;
 		
-		m_zhanLi.text = "战力：" + MyColorData.getColorString (SportEnemyInfo.zhanLi > QXComData.JunZhuInfo ().zhanLi ? 5 : 4,SportEnemyInfo.zhanLi.ToString ());
+		m_zhanLi.text = MyColorData.getColorString (SportEnemyInfo.zhanLi > QXComData.JunZhuInfo ().zhanLi ? 104 : 103,"战力：" + SportEnemyInfo.zhanLi.ToString ());
 		
 		m_level.text = SportEnemyInfo.level.ToString ();
 

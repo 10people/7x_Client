@@ -149,7 +149,7 @@ public class YXItem : MonoBehaviour  {
 	
 	private void OnUpdateSportTime (int p_time)
 	{
-	
+		mYouXiaInfo.remainColdTime = (int)(m_sportCdTime - p_time);
 		if (m_sportCdTime - p_time > 0)
 		{
 			CountTime.text = TimeHelper.GetUniformedTimeString (m_sportCdTime - p_time)+" 后可进入";
@@ -167,45 +167,45 @@ public class YXItem : MonoBehaviour  {
 
 	private int T;
 	public UILabel CountTime;
-	IEnumerator StartCountTime()
-	{
-
-
-		while(T > 0)
-		{
-			T -= 1;
-			
-			int M = (int)(T/60);
-			
-			int S = (int)(T % 60);
-			string m_s = "";
-			string m_M = "";
-			if(S < 10)
-			{
-				m_s = "0"+S.ToString();
-			}
-			else
-			{
-				m_s = S.ToString();
-			}
-			if(M < 10)
-			{
-				m_M = "0"+M.ToString();
-			}
-			else
-			{
-				m_M = M.ToString();
-			}
-			CountTime.text = m_M+":"+m_s+" 后可进入";
-			mYouXiaInfo.remainColdTime = T;
-			yield return new WaitForSeconds(1f);
-		}
-		//this.gameObject.GetComponent<BoxCollider>().enabled = true;
-
-		CountTime.gameObject.SetActive(false);
-		Art.gameObject.SetActive(true);
-		ShowTime ();
-	}
+//	IEnumerator StartCountTime()
+//	{
+//
+//
+//		while(T > 0)
+//		{
+//			T -= 1;
+//			
+//			int M = (int)(T/60);
+//			
+//			int S = (int)(T % 60);
+//			string m_s = "";
+//			string m_M = "";
+//			if(S < 10)
+//			{
+//				m_s = "0"+S.ToString();
+//			}
+//			else
+//			{
+//				m_s = S.ToString();
+//			}
+//			if(M < 10)
+//			{
+//				m_M = "0"+M.ToString();
+//			}
+//			else
+//			{
+//				m_M = M.ToString();
+//			}
+//			CountTime.text = m_M+":"+m_s+" 后可进入";
+//
+//			yield return new WaitForSeconds(1f);
+//		}
+//		//this.gameObject.GetComponent<BoxCollider>().enabled = true;
+//		mYouXiaInfo.remainColdTime = T;
+//		CountTime.gameObject.SetActive(false);
+//		Art.gameObject.SetActive(true);
+//		ShowTime ();
+//	}
 	public int GetColdTime()
 	{
 		return mYouXiaInfo.remainColdTime;

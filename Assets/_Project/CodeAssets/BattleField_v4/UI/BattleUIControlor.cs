@@ -341,6 +341,13 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 				b_autoFight = true;
 				
 				b_pause = false;
+
+				if(b_autoFight == true && BattleControlor.Instance().autoFight == false)
+				{
+					BattleConfigTemplate configTemp = BattleConfigTemplate.getBattleConfigTemplateByConfigId(CityGlobalData.m_configId);
+					
+					if(configTemp.autoFight == 1) changeAutoFight();
+				}
 			}
 			else
 			{
@@ -375,6 +382,13 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 				b_pause = template.pause;
 
 				b_dodge = template.dodge;
+
+				if(b_autoFight == true && BattleControlor.Instance().autoFight == false)
+				{
+					BattleConfigTemplate configTemp = BattleConfigTemplate.getBattleConfigTemplateByConfigId(CityGlobalData.m_configId);
+					
+					if(configTemp.autoFight == 1) changeAutoFight();
+				}
 			}
 		}
 
@@ -1670,6 +1684,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 		BattleControlor.Instance().result = BattleControlor.BattleResult.RESULT_WIN;
 
+		BattleUIControlor.Instance().showResult(BattleControlor.Instance().result);
+
 		BattleControlor.Instance().showResult ();
 	}
 
@@ -1709,6 +1725,8 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		}
 
 		BattleControlor.Instance().result = BattleControlor.BattleResult.RESULT_LOSE;
+
+		BattleUIControlor.Instance().showResult(BattleControlor.Instance().result);
 		
 		BattleControlor.Instance().showResult ();
 	}
@@ -1800,30 +1818,30 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 	private void sendResultPve(BattleControlor.BattleResult result)
 	{
-		resultControllor.bList_achivment = new List<int> ();
+		BattleResultControllor.bList_achivment = new List<int> ();
 		
 		if (BattleControlor.Instance().achivement != null)
 		{
-			resultControllor.bList_achivment = BattleControlor.Instance().achivement.EndBattle();	
+			BattleResultControllor.bList_achivment = BattleControlor.Instance().achivement.EndBattle();	
 		}
 		else
 		{
-			resultControllor.bList_achivment.Add(0);
+			BattleResultControllor.bList_achivment.Add(0);
 			
-			resultControllor.bList_achivment.Add(0);
+			BattleResultControllor.bList_achivment.Add(0);
 			
-			resultControllor.bList_achivment.Add(0);
+			BattleResultControllor.bList_achivment.Add(0);
 		}
 		
-		resultControllor.winLevel = resultControllor.getStarCount();
+		BattleResultControllor.winLevel = BattleResultControllor.getStarCount();
 		
 		int iAchiv = 0;
 		
-		if (resultControllor.bList_achivment [0] == 1) iAchiv += 100;
+		if (BattleResultControllor.bList_achivment [0] == 1) iAchiv += 100;
 		
-		if (resultControllor.bList_achivment [1] == 1) iAchiv += 10;
+		if (BattleResultControllor.bList_achivment [1] == 1) iAchiv += 10;
 
-		if (resultControllor.bList_achivment [2] == 1) iAchiv += 1;
+		if (BattleResultControllor.bList_achivment [2] == 1) iAchiv += 1;
 		
 		PveBattleOver tempbat = new PveBattleOver();
 		
@@ -1831,7 +1849,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		
 		tempbat.s_pass = (result == BattleControlor.BattleResult.RESULT_WIN);
 		
-		tempbat.star = resultControllor.winLevel;
+		tempbat.star = BattleResultControllor.winLevel;
 		
 		tempbat.achievement = iAchiv;
 
@@ -2243,19 +2261,6 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		SocketHelper.SendQXMessage( t_state, ProtoIndexes.PLAYER_STATE_REPORT );
 	}
 
-	private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
-	{
-		resultControllor.itemTemple = (GameObject)p_object;
-
-		resultControllor.itemTemple.SetActive (false);
-
-		resultControllor.gameObject.SetActive(true);
-
-		resultControllor.showResult();
-
-		showAward (res);
-	}
-
 	public void ExecQuit()
 	{
 		UIYindao.m_UIYindao.CloseUI ();
@@ -2322,6 +2327,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			else
 			{
 				loadIconSample(res);
+//				setResultBattle();
 			}
 			//showAward(res);
 			
@@ -2337,11 +2343,12 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 
 			t_qx.Deserialize(t_stream, res, res.GetType());
 
-			resultControllor.setPVPData(res);
-
-			resultControllor.gameObject.SetActive(true);
-			
-			resultControllor.showResult();
+			BattleResultPvpWin.resp = res;
+//			resultControllor.setPVPData(res);
+//
+//			resultControllor.gameObject.SetActive(true);
+//			
+//			resultControllor.showResult();
 
 			return true;
 		}
@@ -2355,11 +2362,11 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			
 			t_qx.Deserialize(t_stream, res, res.GetType());
 
-			resultControllor.setHYPvpData(res);
-
-			resultControllor.gameObject.SetActive(true);
-			
-			resultControllor.showResult();
+//			resultControllor.setHYPvpData(res);
+//
+//			resultControllor.gameObject.SetActive(true);
+//			
+//			resultControllor.showResult();
 
 			return true;
 		}
@@ -2441,8 +2448,35 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	private void loadIconSample(BattleResult _res)
 	{
 		res = _res;
+	}
 
-		Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+	public void setResultBattle()
+	{
+		if(resultControllor.itemTemple == null)
+		{
+			Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+		}
+		else
+		{
+			resultControllor.gameObject.SetActive(true);
+			
+			resultControllor.showResult();
+			
+			showAward (res);
+		}
+	}
+
+	private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
+	{
+		resultControllor.itemTemple = (GameObject)p_object;
+		
+		resultControllor.itemTemple.SetActive (false);
+
+		resultControllor.gameObject.SetActive(true);
+		
+		resultControllor.showResult();
+		
+		showAward (res);
 	}
 
 	private void showAward(BattleResult res)

@@ -16,6 +16,9 @@ public class UILabelType : MonoBehaviour
 	public int m_iType = 0;
 	public int m_iSize = 0;//Font Size
 	public FontStyle m_iFontStype = FontStyle.Normal;//Font Style
+
+	public bool m_redBtn = false;
+
 	UILabel m_UILabel;
 	// Use this for initialization
 
@@ -157,11 +160,13 @@ public class UILabelType : MonoBehaviour
 		case 9:
 			m_UILabel.fontSize = 22;
 			m_UILabel.fontStyle = FontStyle.Normal;
-			m_UILabel.applyGradient = true;
-			m_UILabel.gradientTop = Global.getStringColor("ffeed1");
-			m_UILabel.gradientBottom = Global.getStringColor("efc67f");
+//			m_UILabel.applyGradient = true;
+//			m_UILabel.gradientTop = Global.getStringColor("ffeed1");
+//			m_UILabel.gradientBottom = Global.getStringColor("efc67f");
+			m_UILabel.color = Global.getStringColor("d1faff");
 			m_UILabel.effectStyle = UILabel.Effect.Outline;
-			m_UILabel.effectColor = Global.getStringColor("251102");
+//			m_UILabel.effectColor = Global.getStringColor("251102");
+			m_UILabel.effectColor = Global.getStringColor("185d84");
 			m_UILabel.effectDistance = new Vector2(1, 1);
 //			m_UILabel.spacingX = 3;
 		
@@ -169,9 +174,11 @@ public class UILabelType : MonoBehaviour
 		case 10:
 			m_UILabel.fontSize = 22;
 			m_UILabel.fontStyle = FontStyle.Normal;
-			m_UILabel.color = Global.getStringColor("ffeed1");
+//			m_UILabel.color = Global.getStringColor("ffeed1");
+			m_UILabel.color = Global.getStringColor("fefbed");
 			m_UILabel.effectStyle = UILabel.Effect.Outline;
-			m_UILabel.effectColor = Global.getStringColor("251102");
+//			m_UILabel.effectColor = Global.getStringColor("251102");
+			m_UILabel.effectColor = Global.getStringColor(m_redBtn ? "841818" : "185d84");
 			m_UILabel.effectDistance = new Vector2(1, 1);
 			break;
 		case 11:
@@ -190,6 +197,16 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.gradientBottom = Global.getStringColor("ff984b");
 			m_UILabel.effectStyle = UILabel.Effect.Outline;
 			m_UILabel.effectColor = Global.getStringColor("251102");
+			m_UILabel.effectDistance = new Vector2(1, 1);
+			break;
+		case 13:
+			m_UILabel.fontSize = 16;
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.applyGradient = true;
+			m_UILabel.gradientTop = Global.getStringColor("f7c28c");
+			m_UILabel.gradientBottom = Global.getStringColor("ac7a47");
+			m_UILabel.effectStyle = UILabel.Effect.Outline;
+			m_UILabel.effectColor = Color.black;
 			m_UILabel.effectDistance = new Vector2(1, 1);
 			break;
 		case 100:
@@ -219,6 +236,12 @@ public class UILabelType : MonoBehaviour
 			m_UILabel.gradientBottom = new Color(1.0f, 152f/255f, 75f/255f);
 			m_UILabel.effectStyle = UILabel.Effect.None;
 			m_UILabel.effectColor = new Color(255f/255f, 248f/255f, 217f/255f);
+			m_UILabel.effectDistance = new Vector2(1, 1);
+			break;
+		case 1000:
+			m_UILabel.fontStyle = FontStyle.Normal;
+			m_UILabel.effectStyle = UILabel.Effect.Outline;
+			m_UILabel.effectColor = Color.black;
 			m_UILabel.effectDistance = new Vector2(1, 1);
 			break;
 		}

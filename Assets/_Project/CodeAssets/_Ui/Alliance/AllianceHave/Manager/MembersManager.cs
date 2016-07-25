@@ -10,10 +10,12 @@ using ProtoBuf.Meta;
 using System.Linq;
 public class MembersManager : MonoBehaviour , SocketProcessor {
 
+	private LookMembersResp m_membersResp;
+
 	private string titleStr;
-	//	private string str1;
+
 	private string str2;
-	//	private string cancelStr;
+
 	private string confirmStr;
 
 	public ScaleEffectController m_ScaleEffectController;
@@ -89,6 +91,25 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		}
 
 	}
+
+	//联盟成员信息请求
+	public void AllianceMembersReq (int a_id)
+	{
+		LookMembers membersReq = new LookMembers ();
+		
+		membersReq.id = a_id;
+		
+		MemoryStream t_stream = new MemoryStream ();
+		
+		QiXiongSerializer t_serializer = new QiXiongSerializer ();
+		
+		t_serializer.Serialize (t_stream,membersReq);
+		
+		byte[] t_protof = t_stream.ToArray ();
+		
+		SocketTool.Instance().SendSocketMessage (ProtoIndexes.LOOK_MEMBERS,ref t_protof,"30116");
+	}
+
 	public void Init()
 	{
 		Transform btns = BtnsRoot.transform.FindChild ("FloatButtons(Clone)");
@@ -104,102 +125,107 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		m_ShowAllMemberList.Clear ();
 
 		SocketTool.Instance().SendSocketMessage (ProtoIndexes.C_GET_FRIEND_IDS);
+		AllianceMembersReq (m_allianceHaveRes.id);
 
-		for(int i = 0; i < m_allianceHaveRes.memberInfo.Count-1; i++)
+	}
+
+	void SortMembers()
+	{
+		for(int i = 0; i < m_membersResp.memberInfo.Count-1; i++)
 		{
-			for(int j = i+1; j < m_allianceHaveRes.memberInfo.Count; j++)
+			for(int j = i+1; j < m_membersResp.memberInfo.Count; j++)
 			{
-				if(m_allianceHaveRes.memberInfo[i].offlineTime > 0 && m_allianceHaveRes.memberInfo[j].offlineTime <= 0)
+				if(m_membersResp.memberInfo[i].offlineTime > 0 && m_membersResp.memberInfo[j].offlineTime <= 0)
 				{
-					var memberinfo = m_allianceHaveRes.memberInfo[i];
+					var memberinfo = m_membersResp.memberInfo[i];
 					
-					m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+					m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 					
-					m_allianceHaveRes.memberInfo[j] = memberinfo;
+					m_membersResp.memberInfo[j] = memberinfo;
 				}
-				else if(m_allianceHaveRes.memberInfo[i].offlineTime <= 0 && m_allianceHaveRes.memberInfo[j].offlineTime <= 0)
+				else if(m_membersResp.memberInfo[i].offlineTime <= 0 && m_membersResp.memberInfo[j].offlineTime <= 0)
 				{
-					if(m_allianceHaveRes.memberInfo[i].identity < m_allianceHaveRes.memberInfo[j].identity)
+					if(m_membersResp.memberInfo[i].identity < m_membersResp.memberInfo[j].identity)
 					{
-						var memberinfo = m_allianceHaveRes.memberInfo[i];
+						var memberinfo = m_membersResp.memberInfo[i];
 						
-						m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+						m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 						
-						m_allianceHaveRes.memberInfo[j] = memberinfo;
+						m_membersResp.memberInfo[j] = memberinfo;
 					}
-					else if(m_allianceHaveRes.memberInfo[i].identity == m_allianceHaveRes.memberInfo[j].identity)
+					else if(m_membersResp.memberInfo[i].identity == m_membersResp.memberInfo[j].identity)
 					{
-						if(m_allianceHaveRes.memberInfo[i].zhanLi < m_allianceHaveRes.memberInfo[j].zhanLi)
+						if(m_membersResp.memberInfo[i].zhanLi < m_membersResp.memberInfo[j].zhanLi)
 						{
-							var memberinfo = m_allianceHaveRes.memberInfo[i];
+							var memberinfo = m_membersResp.memberInfo[i];
 							
-							m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+							m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 							
-							m_allianceHaveRes.memberInfo[j] = memberinfo;
+							m_membersResp.memberInfo[j] = memberinfo;
 						}
-						else if(m_allianceHaveRes.memberInfo[i].zhanLi == m_allianceHaveRes.memberInfo[j].zhanLi)
+						else if(m_membersResp.memberInfo[i].zhanLi == m_membersResp.memberInfo[j].zhanLi)
 						{
-							if(m_allianceHaveRes.memberInfo[i].curMonthGongXian < m_allianceHaveRes.memberInfo[j].curMonthGongXian)
+							if(m_membersResp.memberInfo[i].curMonthGongXian < m_membersResp.memberInfo[j].curMonthGongXian)
 							{
-								var memberinfo = m_allianceHaveRes.memberInfo[i];
+								var memberinfo = m_membersResp.memberInfo[i];
 								
-								m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+								m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 								
-								m_allianceHaveRes.memberInfo[j] = memberinfo;
+								m_membersResp.memberInfo[j] = memberinfo;
 							}
-							else if(m_allianceHaveRes.memberInfo[i].curMonthGongXian == m_allianceHaveRes.memberInfo[j].curMonthGongXian)
+							else if(m_membersResp.memberInfo[i].curMonthGongXian == m_membersResp.memberInfo[j].curMonthGongXian)
 							{
-								if(m_allianceHaveRes.memberInfo[i].contribution < m_allianceHaveRes.memberInfo[j].contribution)
+								if(m_membersResp.memberInfo[i].contribution < m_membersResp.memberInfo[j].contribution)
 								{
-									var memberinfo = m_allianceHaveRes.memberInfo[i];
+									var memberinfo = m_membersResp.memberInfo[i];
 									
-									m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+									m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 									
-									m_allianceHaveRes.memberInfo[j] = memberinfo;
+									m_membersResp.memberInfo[j] = memberinfo;
 								}
 							}
 						}
 					}
 				}
-				else if(m_allianceHaveRes.memberInfo[i].offlineTime > 0 && m_allianceHaveRes.memberInfo[j].offlineTime > 0)
+				else if(m_membersResp.memberInfo[i].offlineTime > 0 && m_membersResp.memberInfo[j].offlineTime > 0)
 				{
-					if(m_allianceHaveRes.memberInfo[i].identity < m_allianceHaveRes.memberInfo[j].identity)
+					if(m_membersResp.memberInfo[i].identity < m_membersResp.memberInfo[j].identity)
 					{
-						var memberinfo = m_allianceHaveRes.memberInfo[i];
+						var memberinfo = m_membersResp.memberInfo[i];
 						
-						m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+						m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 						
-						m_allianceHaveRes.memberInfo[j] = memberinfo;
+						m_membersResp.memberInfo[j] = memberinfo;
 					}
-					else if(m_allianceHaveRes.memberInfo[i].identity == m_allianceHaveRes.memberInfo[j].identity)
+					else if(m_membersResp.memberInfo[i].identity == m_membersResp.memberInfo[j].identity)
 					{
-						if(m_allianceHaveRes.memberInfo[i].zhanLi < m_allianceHaveRes.memberInfo[j].zhanLi)
+						if(m_membersResp.memberInfo[i].zhanLi < m_membersResp.memberInfo[j].zhanLi)
 						{
-							var memberinfo = m_allianceHaveRes.memberInfo[i];
+							var memberinfo = m_membersResp.memberInfo[i];
 							
-							m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+							m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 							
-							m_allianceHaveRes.memberInfo[j] = memberinfo;
+							m_membersResp.memberInfo[j] = memberinfo;
 						}
-						else if(m_allianceHaveRes.memberInfo[i].zhanLi == m_allianceHaveRes.memberInfo[j].zhanLi)
+						else if(m_membersResp.memberInfo[i].zhanLi == m_membersResp.memberInfo[j].zhanLi)
 						{
-							if(m_allianceHaveRes.memberInfo[i].curMonthGongXian < m_allianceHaveRes.memberInfo[j].curMonthGongXian)
+							if(m_membersResp.memberInfo[i].curMonthGongXian < m_membersResp.memberInfo[j].curMonthGongXian)
 							{
-								var memberinfo = m_allianceHaveRes.memberInfo[i];
+								var memberinfo = m_membersResp.memberInfo[i];
 								
-								m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+								m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 								
-								m_allianceHaveRes.memberInfo[j] = memberinfo;
+								m_membersResp.memberInfo[j] = memberinfo;
 							}
-							else if(m_allianceHaveRes.memberInfo[i].curMonthGongXian == m_allianceHaveRes.memberInfo[j].curMonthGongXian)
+							else if(m_membersResp.memberInfo[i].curMonthGongXian == m_membersResp.memberInfo[j].curMonthGongXian)
 							{
-								if(m_allianceHaveRes.memberInfo[i].contribution < m_allianceHaveRes.memberInfo[j].contribution)
+								if(m_membersResp.memberInfo[i].contribution < m_membersResp.memberInfo[j].contribution)
 								{
-									var memberinfo = m_allianceHaveRes.memberInfo[i];
+									var memberinfo = m_membersResp.memberInfo[i];
 									
-									m_allianceHaveRes.memberInfo[i] = m_allianceHaveRes.memberInfo[j];
+									m_membersResp.memberInfo[i] = m_membersResp.memberInfo[j];
 									
-									m_allianceHaveRes.memberInfo[j] = memberinfo;
+									m_membersResp.memberInfo[j] = memberinfo;
 								}
 							}
 						}
@@ -207,7 +233,7 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 				}
 			}
 		}
-		for(int i = 0; i < m_allianceHaveRes.memberInfo.Count; i++)
+		for(int i = 0; i < m_membersResp.memberInfo.Count; i++)
 		{
 			GameObject m_Member = Instantiate(MemberTemp) as GameObject;
 			
@@ -221,23 +247,18 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 			
 			ShowAllMembers mm__ShowAllMembers = m_Member.GetComponent<ShowAllMembers>();
 			
-			mm__ShowAllMembers.mMemberInfo = m_allianceHaveRes.memberInfo[i];
+			mm__ShowAllMembers.mMemberInfo = m_membersResp.memberInfo[i];
 			
 			mm__ShowAllMembers.init();
 			
 			m_ShowAllMemberList.Add(mm__ShowAllMembers);
-
+			
 		}
-		ShowBtn ();
 	}
 
 	public void J_inXuanBtn() // 暂时不做 
 	{
 	
-	}
-	void ShowBtn()
-	{
-
 	}
 
 	ExitAllianceResp m_exitResp;
@@ -324,61 +345,24 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 		{
 			switch (p_message.m_protocol_index)
 			{
-//			case ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP://查看君主信息返回
-//			{
-//				MemoryStream exit_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-//				
-//				QiXiongSerializer exit_qx = new QiXiongSerializer();
-//				
-//				JunZhuInfo mJunZhuInfo = new JunZhuInfo();
-//				
-//				exit_qx.Deserialize(exit_stream, mJunZhuInfo, mJunZhuInfo.GetType());
-//
-//				//Debug.Log ("查看君主信息返回:" + ProtoIndexes.JUNZHU_INFO_SPECIFY_RESP);
-//
-//				m_JunZhuInfo = mJunZhuInfo;
-//
-//				Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.KING_DETAIL_WINDOW), KingDetailLoadCallBack);
-//
-//				return true;
-//				break;
-//			}
+			case ProtoIndexes.LOOK_MEMBERS_RESP://成员信息返回
+			{
+				MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
+				
+				QiXiongSerializer t_qx = new QiXiongSerializer();
+				
+				LookMembersResp membersResp = new LookMembersResp();
+				
+				t_qx.Deserialize(t_stream, membersResp, membersResp.GetType());
+				Debug.Log ("联盟成员信息返回");
+				
+				m_membersResp = membersResp;
+				
+				SortMembers();
 
-//			case ProtoIndexes.ALLIANCE_DISMISS_NOTIFY://无法判断是否解散成功
-//			{
-//				Debug.Log ("jiesan:" + ProtoIndexes.DISMISS_ALLIANCE_OK);
-//				Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-//				                        DisAllianceLoadCallback );
-//				return true;
-//				break;
-//			}
-//
-//			case ProtoIndexes.EXIT_ALLIANCE_RESP://退出联盟返回
-//			{
-//				MemoryStream exit_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-//				
-//				QiXiongSerializer exit_qx = new QiXiongSerializer();
-//				
-//				ExitAllianceResp exitResp = new ExitAllianceResp();
-//				
-//				exit_qx.Deserialize(exit_stream, exitResp, exitResp.GetType());
-//				
-//				if(exitResp != null)
-//				{
-//					m_exitResp = exitResp;
-//					
-//					if (exitResp.code == 0)
-//					{
-//						CityGlobalData.m_isMainScene = true;
-//					}
-//					
-//					Global.ResourcesDotLoad( Res2DTemplate.GetResPath( Res2DTemplate.Res.GLOBAL_DIALOG_BOX ),
-//					                        ExitAllianceLoadCallback );
-//
-//				}
-//				return true;
-//			}
-
+				return true;
+			}
+			
 			case ProtoIndexes.FIRE_MEMBER_RESP://开除返回
 			{
 				MemoryStream fire_stream = new MemoryStream(p_message.m_protocol_message,0,p_message.position);
@@ -394,14 +378,14 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 					fireMemberResp = fireResp;
 					
 					//Debug.Log ("开除：" + fireResp.junzhuId);
-					for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+					for (int i = 0;i < m_membersResp.memberInfo.Count;i ++)
 					{
-						if (fireResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+						if (fireResp.junzhuId == m_membersResp.memberInfo[i].junzhuId)
 						{
-							backName = m_allianceHaveRes.memberInfo[i].name;
+							backName = m_membersResp.memberInfo[i].name;
 							//	Debug.Log ("BackName:" + backName);
-							//		Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
-							m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+							//		Debug.Log ("id:::::" + m_membersResp.memberInfo[i].junzhuId);
+							m_membersResp.memberInfo.Remove (m_membersResp.memberInfo[i]);
 						}
 					}
 					AllianceData.Instance.RequestData ();
@@ -433,25 +417,25 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 					{
 						upTitleResp = upResp;
 						
-						for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+						for (int i = 0;i < m_membersResp.memberInfo.Count;i ++)
 						{
-							if (upResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+							if (upResp.junzhuId == m_membersResp.memberInfo[i].junzhuId)
 							{
-								backName = m_allianceHaveRes.memberInfo[i].name;
+								backName = m_membersResp.memberInfo[i].name;
 								//	Debug.Log ("BackName:" + backName);
-								//	Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
+								//	Debug.Log ("id:::::" + m_membersResp.memberInfo[i].junzhuId);
 								
 								if (upResp.code == 0)
 								{
 									//	Debug.Log ("地位：" + upResp.title);
 									//	Debug.Log ("升职成功");
-									m_allianceHaveRes.memberInfo[i].identity = upResp.title;
+									m_membersResp.memberInfo[i].identity = upResp.title;
 									
 								}
 								
 								else if (upResp.code == 2)
 								{
-									m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+									m_membersResp.memberInfo.Remove (m_membersResp.memberInfo[i]);
 									
 								}
 							}
@@ -490,24 +474,24 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 					{
 						downTitleResp = downResp;
 						
-						for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+						for (int i = 0;i < m_membersResp.memberInfo.Count;i ++)
 						{
-							if (downResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+							if (downResp.junzhuId == m_membersResp.memberInfo[i].junzhuId)
 							{
-								backName = m_allianceHaveRes.memberInfo[i].name;
+								backName = m_membersResp.memberInfo[i].name;
 								//	Debug.Log ("BackName:" + backName);
-								//	Debug.Log ("id:::::" + m_allianceHaveRes.memberInfo[i].junzhuId);
+								//	Debug.Log ("id:::::" + m_membersResp.memberInfo[i].junzhuId);
 								if (downResp.code == 0)
 								{
 									//	Debug.Log ("你被降职了");
 									//	Debug.Log ("identy:" + downResp.title);
-									m_allianceHaveRes.memberInfo[i].identity = downResp.title;
+									m_membersResp.memberInfo[i].identity = downResp.title;
 								}
 								
 								else if (downResp.code == 1)
 								{
 									//Debug.Log ("该玩家已经不在联盟中");
-									m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+									m_membersResp.memberInfo.Remove (m_membersResp.memberInfo[i]);
 								}
 							}
 						}
@@ -546,18 +530,18 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 						{
 							Debug.Log ("转让成功！");
 							
-							for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+							for (int i = 0;i < m_membersResp.memberInfo.Count;i ++)
 							{
 								
-								if (transResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+								if (transResp.junzhuId == m_membersResp.memberInfo[i].junzhuId)
 								{
-									transName = m_allianceHaveRes.memberInfo[i].name;
-									m_allianceHaveRes.memberInfo[i].identity = 2;
+									transName = m_membersResp.memberInfo[i].name;
+									m_membersResp.memberInfo[i].identity = 2;
 									m_allianceHaveRes.identity = 1;
 								}
-								if(m_allianceHaveRes.memberInfo[i].junzhuId == JunZhuData.Instance().m_junzhuInfo.id )
+								if(m_membersResp.memberInfo[i].junzhuId == JunZhuData.Instance().m_junzhuInfo.id )
 								{
-									m_allianceHaveRes.memberInfo[i].identity = 1;
+									m_membersResp.memberInfo[i].identity = 1;
 								}
 							}
 						}
@@ -566,13 +550,13 @@ public class MembersManager : MonoBehaviour , SocketProcessor {
 						{
 							//Debug.Log ("不在联盟列表里！");
 							
-							for (int i = 0;i < m_allianceHaveRes.memberInfo.Count;i ++)
+							for (int i = 0;i < m_membersResp.memberInfo.Count;i ++)
 							{
-								if (transResp.junzhuId == m_allianceHaveRes.memberInfo[i].junzhuId)
+								if (transResp.junzhuId == m_membersResp.memberInfo[i].junzhuId)
 								{
-									transName = m_allianceHaveRes.memberInfo[i].name;
+									transName = m_membersResp.memberInfo[i].name;
 									
-									m_allianceHaveRes.memberInfo.Remove (m_allianceHaveRes.memberInfo[i]);
+									m_membersResp.memberInfo.Remove (m_membersResp.memberInfo[i]);
 								}
 							}
 						}

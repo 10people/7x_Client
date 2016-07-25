@@ -527,7 +527,7 @@ public class SoundManager{
 
 //		Transform[] temp = GameObject.FindObjectsOfType( typeof( Transform ) ) as Transform[];
 
-		AudioSource[] temp = obj.GetComponentsInChildren<AudioSource>();
+		AudioSource[] temp = obj.GetComponentsInChildren<AudioSource>(true);
 //	
 //		Debug.Log("temp.Length=temp.Lengthtemp.Lengthtemp.Lengthtemp.Lengthtemp.Length="+temp.Length);
 

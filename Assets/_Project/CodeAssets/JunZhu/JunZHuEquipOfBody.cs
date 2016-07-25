@@ -401,14 +401,7 @@ public class JunZHuEquipOfBody : MonoBehaviour, SocketProcessor
             tempTaskData.m_iCurIndex = 3;
             UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
         }
-        else if (FreshGuide.Instance().IsActive(100405) && TaskData.Instance.m_iCurMissionIndex == 100405 && TaskData.Instance.m_TaskInfoDic[100405].progress >= 0)
-        {
-            TaskData.Instance.m_iCurMissionIndex = 100405;
-            ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[TaskData.Instance.m_iCurMissionIndex];
-            tempTaskData.m_iCurIndex = 3;
-            UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[tempTaskData.m_iCurIndex++]);
-
-        }
+        
         if (FunctionWindowsCreateManagerment.m_BuWeiNum != -1)
         {
             if (EquipsOfBody.Instance().m_equipsOfBodyDic.ContainsKey(FunctionWindowsCreateManagerment.m_BuWeiNum))

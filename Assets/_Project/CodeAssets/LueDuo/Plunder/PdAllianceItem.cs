@@ -16,6 +16,7 @@ public class PdAllianceItem : MonoBehaviour {
 	public UILabel rankLabel;
 	public UILabel nameLabel;
 	public UILabel shengWangLabel;
+	public UISprite m_bgSprite;
 	
 	public GameObject selectBox;
 
@@ -27,7 +28,7 @@ public class PdAllianceItem : MonoBehaviour {
 	{
 		//Debug.Log ("排名：" + tempInfo.rank + "，" + tempInfo.mengName);
 		allianceInfo = tempInfo;
-
+		selectBox.SetActive (false);
 		rankSprite.spriteName = tempInfo.rank > 3 ? "" : "rank" + tempInfo.rank.ToString ();
 		rankLabel.text = tempInfo.rank > 3 ? tempInfo.rank.ToString () : "";
 	
@@ -43,6 +44,7 @@ public class PdAllianceItem : MonoBehaviour {
 	/// <param name="isShow">If set to <c>true</c> is show.</param>
 	public void ShowSelect (bool isShow)
 	{
-		selectBox.SetActive (isShow);
+//		selectBox.SetActive (isShow);
+		QXComData.SetBgSprite2 (m_bgSprite,isShow);
 	}
 }
