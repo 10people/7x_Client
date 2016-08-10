@@ -88,8 +88,16 @@ public class FuWenShow : MonoBehaviour {
 			if(pinzhicolor >= 9)
 			{
 				//橙色品质框
-				Move = false;
-				mEventListener.gameObject.SetActive(true);
+				if(LieFuManagerment.Instance().mOneKeyLF)
+				{
+					mEventListener.gameObject.SetActive(false);
+					Move = true;
+				}
+				else
+				{
+					Move = false;
+					mEventListener.gameObject.SetActive(true);
+				}
 			}
 			else
 			{

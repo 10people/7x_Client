@@ -39,7 +39,7 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 	void Start () 
 	{
 
-		SaodangId = Pve_Level_Info.CurLev;
+		SaodangId = NewPveLevelInfo.CurLev;
 		//needpower = ShowTiLi.needTiLi*SaoDangTimes;
 		//Debug.Log ("needpower"+needpower);
 		//Debug.Log ("SaodangId"+SaodangId);
@@ -229,7 +229,7 @@ public class SaoDangBtn : MonoBehaviour,SocketProcessor {
 
 		if (junZhuLevel >= FunctionOpenTemp.GetTemplateById(3000010).Level)
 		{
-			SaodangId = Pve_Level_Info.CurLev;
+			SaodangId = NewPveLevelInfo.CurLev;
 			//Debug.Log("SaoDangTimes = " +SaoDangTimes);
 			needpower = PveLevelUImaneger.GuanqiaReq.tili*SaoDangTimes;
 			//Debug.Log ("needpower" +needpower);

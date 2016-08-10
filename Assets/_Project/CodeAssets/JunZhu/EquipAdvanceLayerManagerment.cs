@@ -129,7 +129,6 @@ public class EquipAdvanceLayerManagerment : MonoBehaviour {
         if (m_Camera != null)
             EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);
 
-        Global.m_isZhanli = false;
         FunctionWindowsCreateManagerment.m_IsEquipAdvance = false;
         UI3DEffectTool.ClearUIFx(m_LabTitle.gameObject);
     }

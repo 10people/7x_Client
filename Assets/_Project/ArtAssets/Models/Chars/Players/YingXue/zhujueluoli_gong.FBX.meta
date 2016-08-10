@@ -1628,6 +1628,8 @@ ModelImporter:
         weight: 1
       - path: Box001
         weight: 1
+      - path: Box001 1
+        weight: 1
       - path: Tluolinvzhu
         weight: 1
       maskType: 0

@@ -205,6 +205,7 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour, UI2DEventListener
         }
         else if (obj.name.Equals("ButtondYJQiangHua"))
         {
+            listEvent[1].GetComponent<Collider>().enabled = false;
             if (JunZhuData.Instance().m_junzhuInfo.vipLv >= VipFuncOpenTemplate.GetNeedLevelByKey(6))
             {
                 if (EquipsAllLevelMax())
@@ -223,17 +224,12 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour, UI2DEventListener
                 else
                 {
                     YiJianQiangHuaTag();
-                    // Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoad_YiJianQiangHua);
                 }
             }
             else
             {
                 Global.CreateFunctionIcon(1901);
-                //string str = "\n" + LanguageTemplate.GetText(600) + "\n" + VipFuncOpenTemplate.GetNeedLevelByKey(6).ToString()
-                //+ LanguageTemplate.GetText(602);
-                //// + "\n\n" + LanguageTemplate.GetText(700);
-                //EquipSuoData.ShowSignal(null, str);
-
+              
             }
         }
         else if (obj.name.Equals("ButtondGM"))
@@ -262,6 +258,7 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour, UI2DEventListener
     }
     public void ShowInfo(EquipStrengthResp equipinfo)//界面信息显示
     {
+        listEvent[1].GetComponent<Collider>().enabled = true;
         curr_residue = 0;
         curr_Max = 0;
         addCount = 0;
@@ -653,27 +650,6 @@ public class EquipGrowthIntensifyManagerment : MonoBehaviour, UI2DEventListener
         byte[] t_protof;
         t_protof = t_tream.ToArray();
         SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_EQUIP_UPGRADE, ref t_protof,false, p_receiving_wait_proto_index: ProtoIndexes.S_EQUIP_UPGRADE);
-    }
-
-    public void WashBotton(bool ison, int index,int type = 0)
-    {
-        if (ison)
-        {
-            listButton[index].transform.GetComponent<Collider>().enabled = ison;
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().from = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().to = new Color(1.0f, 1.0f, 1.0f);
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().enabled = true;
-        }
-        else
-        {
-            if (type == 0)
-            {
-                listButton[index].transform.GetComponent<Collider>().enabled = ison;
-            }
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().from = new Color(1.0f, 1.0f, 1.0f);
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().to = new Color(100 / 255.0f, 100 / 255.0f, 100 / 255.0f);
-            listButton[index].transform.FindChild("Background").GetComponent<TweenColor>().enabled = true;
-        }
     }
 
     void ProgressBarExhibition()

@@ -408,10 +408,21 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 								chatDic[chatData.channel].RemoveAt(0);
 							}
 						}
+						else
+						{
+							if(chatDic[chatData.channel].Count == 50)
+							{
+								chatDic[chatData.channel].RemoveAt(0);
+							}
+						}
 						chatDic[chatData.channel].Add (chatMsg);
 
 						if (chatData.channel != ChatPct.Channel.SHIJIE)
 						{
+							if(chatDic[chatData.channel].Count == 50)
+							{
+								chatDic[ChatPct.Channel.SHIJIE].RemoveAt(0);
+							}
 							chatDic[ChatPct.Channel.SHIJIE].Add (chatMsg);
 						}
 
@@ -431,6 +442,11 @@ public class QXChatData : Singleton<QXChatData>,SocketProcessor {
 					else
 					{
 						chatDic[ChatPct.Channel.Broadcast].Add (chatMsg);
+
+						if(chatDic[ChatPct.Channel.Broadcast].Count == 50)
+						{
+							chatDic[ChatPct.Channel.Broadcast].RemoveAt(0);
+						}
 
 						if (SetOpenChat)
 						{

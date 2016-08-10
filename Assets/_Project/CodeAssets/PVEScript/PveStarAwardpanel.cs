@@ -106,7 +106,7 @@ public class PveStarAwardpanel : MonoBehaviour  ,SocketProcessor {
 							}
 						}
 					   
-						foreach(Pve_Level_Info m_Lv in MapData.mapinstance.Pve_Level_InfoList )
+						foreach(NewPveLevelInfo m_Lv in MapData.mapinstance.Pve_Level_InfoList )
 						{
 
 							if(m_Lv.litter_Lv.guanQiaId == tempInfo.guanQiaId)

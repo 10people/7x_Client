@@ -811,7 +811,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 //            }
 //
 //        }
-        OnlineNum.text = "在线人数：" + Online.ToString(); // 人数已经不能从这儿获取 等待后台新数据
+		OnlineNum.text = "在线人数：" + m_allianceHaveRes.onlineNum.ToString(); // 人数已经不能从这儿获取 等待后台新数据
         AllianceName.text = m_allianceHaveRes.name + "(Lv." + m_allianceHaveRes.level.ToString() + ")";
 //		Debug.Log ("m_allianceHaveRes.identity = "+m_allianceHaveRes.identity);
 		if(m_allianceHaveRes.identity != 2)
@@ -1384,6 +1384,12 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 				else{
 					DownTime.text = "建设值尚且不足，请我盟兄弟齐心协力建设，壮大我盟！";
 				}
+				if(m_allianceHaveRes.mengZhuOfflineTime>(60*24*60))
+				{
+					Upmind.text = "盟主24小时未上线";
+					DownTime.text = "盟员可以转盟或提醒盟主上线";
+								
+				}
 //				if (m_allianceHaveRes.memberInfo != null)
 //				{
 //					for(int i = 0 ; i < m_allianceHaveRes.memberInfo.Count; i++)
@@ -1410,6 +1416,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 				Upmind.color = Color.green;
 				StopCoroutine("CountTime");
 				StartCoroutine("CountTime");
+//				SportCdTime(m_allianceHaveRes.upgradeRemainTime);
 			}
 		
 		}
@@ -1431,6 +1438,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 				}
 				ShengJi = true;
 				StopCoroutine("CountTime");
+
 				mindYouMenbers.SetActive(true);
 				UPBtnName.text = "升级";
 			}
@@ -1444,6 +1452,7 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 				ShengJi = false;
 				StopCoroutine("CountTime");
 				StartCoroutine("CountTime");
+//				SportCdTime(m_allianceHaveRes.upgradeRemainTime);
 			}
 		}
 	}
@@ -1455,7 +1464,34 @@ public class NewAlliancemanager : MonoBehaviour, SocketListener
 
 	private bool ShengJi;
 
-
+	#region SportCdTime
+	private float m_sportCdTime;
+	void SportCdTime (int cdTime)
+	{
+		
+		m_sportCdTime = cdTime;
+		if (TimeHelper.Instance.IsTimeCalcKeyExist("CdTime"))
+	    {
+			TimeHelper.Instance.RemoveFromTimeCalc("CdTime");
+		}
+		TimeHelper.Instance.AddEveryDelegateToTimeCalc("CdTime", cdTime, OnUpdateSportTime);
+		}
+		
+		private void OnUpdateSportTime (int p_time)
+		{
+			
+			if (m_sportCdTime - p_time > 0)
+			{
+			  DownTime.text = " 剩余时间："+TimeHelper.GetUniformedTimeString (m_sportCdTime - p_time);
+			}
+			else
+			{
+				TimeHelper.Instance.RemoveFromTimeCalc("CdTime");
+			    SocketTool.Instance().SendSocketMessage(ProtoIndexes.ALLIANCE_INFO_REQ); // 刷新联系信息
+			}
+		}
+		
+		#endregion
 	IEnumerator CountTime()
 	{
 		int m_Time = m_allianceHaveRes.upgradeRemainTime;

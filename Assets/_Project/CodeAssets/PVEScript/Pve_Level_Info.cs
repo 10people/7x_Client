@@ -1092,14 +1092,8 @@ public class Pve_Level_Info : MonoBehaviour {
 
 	void createpveui(bool issended)
 	{
-//		Debug.Log("CityGlobalData.PveLevel_UI_is_OPen) = " +CityGlobalData.PveLevel_UI_is_OPen);
-//		if(Input.touchCount > 1)
-//		{
-//			return;
-//		}
 		if (issended)
 		{
-
 			Startsendmasg = false;
 
 			if(CityGlobalData.PT_Or_CQ)
@@ -1213,8 +1207,7 @@ public class Pve_Level_Info : MonoBehaviour {
 	void ShowUIbaseBackData()
 	{
 		MapData.mapinstance.ShowYinDao = false;
-		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.PVE_UI),loadback);
-		
+		Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.PVE_UI),loadback);	
 	}
 	IEnumerator ChangerDataState()
 	{

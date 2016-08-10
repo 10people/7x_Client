@@ -1251,8 +1251,8 @@ ModelImporter:
     - serializedVersion: 16
       name: OnTheStage
       takeName: Take 001
-      firstFrame: 1080
-      lastFrame: 1311
+      firstFrame: 1655
+      lastFrame: 1815
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3840,7 +3840,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: 
+      events:
       - time: .951797903
         functionName: checkDieInKnockdown
         data: 

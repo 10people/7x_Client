@@ -7,13 +7,13 @@ using System.IO;
 using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
-public class SignalInManagerment : MonoBehaviour, SocketProcessor
+public class SignalInManagerment : MonoBehaviour, SocketProcessor, UI2DEventListener
 {
     public static SignalInManagerment m_SignalIn;
     public GameObject m_ObjBack;
     public GameObject m_ObjVSprite;
     public GameObject m_ObjVSprite2;
-
+    public GameObject m_RedPot;
     public UISprite m_SpriteQianDao;
     public UILabel m_LabName;
     public UILabel m_LabTitle;
@@ -90,8 +90,8 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(226), ResourceLoadCallback_0);
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(227), ResourceLoadCallback_1);
         Global.ResourcesDotLoad(Res2DTemplate.GetResPath(228), ResourceLoadCallback_2);
-        MainCityUI.setGlobalTitle(m_ObjTopLeft, "签到",0,0);
-       
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "签到",59,0);
+        MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         m_SEC.OpenCompleteDelegate += RequestSignalInInfo;
         m_listEvent.ForEach(p => p.m_Handle += Touch);
     }
@@ -100,7 +100,14 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
     {
         SocketTool.RegisterMessageProcessor(this);
     }
-
+    public void OnUI2DShow()
+    {
+        int size = _listSignalInItem.Count;
+        for (int i = 0; i < size; i++)
+        {
+            _listSignalInItem[i].FreshRedPot();
+        }
+    }
     void EffectHidden(int index)
     {
         m_ObjBack.GetComponent<FadeInOrOutManagerment>().FadeEffect(FadeInFinish);
@@ -195,11 +202,13 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                             {
                                 SparkleEffectItem.CloseSparkle(m_SpriteQianDao.gameObject);
                                 m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+                                m_RedPot.SetActive(false);
                                // m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
-                              
+
                             }
                             else
                             {
+                                m_RedPot.SetActive(true);
                                 m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(true);
                                 SparkleEffectItem.OpenSparkle(m_SpriteQianDao.gameObject, SparkleEffectItem.MenuItemStyle.Common_Icon);
                             
@@ -239,8 +248,10 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                             SingnalFinish();
                             SparkleEffectItem.CloseSparkle(m_SpriteQianDao.gameObject);
                             m_listEvent[0].GetComponent<ButtonColorManagerment>().ButtonsControl(false);
+                            m_RedPot.SetActive(false);
                             m_ObjHidden.SetActive(true);
-                    //        m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
+                            MainCityUI.SetRedAlert(150, false);
+                            //        m_LabSignalInButton.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_0);// "已签到";
                             listSignalReward.Clear();
                             CurrentSignalInDays++;
                             m_LabSignalTop.text = LanguageTemplate.GetText(LanguageTemplate.Text.SIGNAL_IN_DES_1)
@@ -276,7 +287,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                                 }
                                 FunctionWindowsCreateManagerment.ShowSpecialAwardInfo(listward);
                             }
-                            PushAndNotificationHelper.SetRedSpotNotification(140, false);
+                      
                           //  SignalRewardInfo();
                         }
                         else
@@ -295,6 +306,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                         t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
                         _listSignalInItem[_TouchNum].m_SignalInState = 2;
                         _listSignalInItem[_TouchNum].m_Event.gameObject.SetActive(false);
+                        _listSignalInItem[_TouchNum].m_RedPot.SetActive(false);
                         _listSignalInItem[_TouchNum].m_GouAnimator.gameObject.SetActive(true);
                        
                         if (ReponseInfo.award != null)
@@ -324,6 +336,7 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                                 listward.Add(gw);
                                
                             }
+                            MainCityUI.SetRedAlert(160, false);
                             FunctionWindowsCreateManagerment.ShowSpecialAwardInfo(listward);
                         }
                         return true;
@@ -357,6 +370,10 @@ public class SignalInManagerment : MonoBehaviour, SocketProcessor
                     && _listSignalInItem[i].m_SignalInfo.isDouble < 2)
                 {
                     _listSignalInItem[i].m_Event.gameObject.SetActive(true);
+                    if (JunZhuData.Instance().m_junzhuInfo.vipLv > _listSignalInItem[i].m_SignalInfo.vipDouble)
+                    {
+                        _listSignalInItem[i].m_RedPot.SetActive(true);
+                    }
                 }
                 else
                 {

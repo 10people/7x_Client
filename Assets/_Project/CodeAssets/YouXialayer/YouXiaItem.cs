@@ -18,6 +18,8 @@ public class YouXiaItem : MonoBehaviour {
 
 	public GameObject ColiderBox;
 
+	public GameObject m_EnterBtn;
+
 	[HideInInspector]
 
 	public int CountTime; // 次数
@@ -50,7 +52,7 @@ public class YouXiaItem : MonoBehaviour {
 
 	public UISprite Diffcult;
 
-	public UISprite DiffcultNameID;
+//	public UISprite DiffcultNameID;
 
 	public GameObject Win;
 
@@ -76,9 +78,9 @@ public class YouXiaItem : MonoBehaviour {
 
 		YouXia_difficulty.text = difficult;
 
-		Diffcult.spriteName = "D" + bigid.ToString ();
+		Diffcult.spriteName = "D" + YouXiadifficulty.ToString ();
 
-		DiffcultNameID.spriteName = bigid.ToString ()+"-"+YouXiadifficulty.ToString();
+//		DiffcultNameID.spriteName = bigid.ToString ()+"-"+YouXiadifficulty.ToString();
 		//UIIcon.spriteName = "00"+YouXiadifficulty.ToString (); //暂时没有cion
 
 		YouxiaPveTemplate mYouxia = YouxiaPveTemplate.getYouXiaPveTemplateById (L_id);
@@ -86,7 +88,7 @@ public class YouXiaItem : MonoBehaviour {
 		if(!ISOpenlock)
 		{
 			ColiderBox.SetActive(true);
-
+			m_EnterBtn.SetActive(false);
 			//YouXiaLimit.SetActive(true);
 
 			YouXia_Limit.text = "通关上一难度可解锁";
@@ -94,7 +96,7 @@ public class YouXiaItem : MonoBehaviour {
 		else
 		{
 			ColiderBox.SetActive(false);
-
+			m_EnterBtn.SetActive(true);
 			//YouXiaLimit.SetActive(false);
 		}
 		if (IconSamplePrefab == null)

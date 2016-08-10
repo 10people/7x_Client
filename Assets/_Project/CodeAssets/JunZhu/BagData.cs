@@ -129,7 +129,7 @@ public class BagData : MonoBehaviour, SocketProcessor
 
                             for (int i = 0; i < tempBagInfo.items.Count; i++)
                             {
-                                Debug.Log(tempBagInfo.items[i].dbId + " " + tempBagInfo.items[i].cnt);
+//                                Debug.Log(tempBagInfo.items[i].dbId + " " + tempBagInfo.items[i].cnt);
 
 
                                 var temp = m_bagItemList.Where(item => item.dbId == tempBagInfo.items[i].dbId);

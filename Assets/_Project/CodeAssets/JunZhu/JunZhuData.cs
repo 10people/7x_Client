@@ -40,6 +40,8 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
     public int m_tili;
 
+	public int m_tiliRemind;//剩余次数
+
     private int Max_tili = 999;
 
 	public bool UI_IsOpen = false;
@@ -80,25 +82,25 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
     void Update()
     {
-        if (CityGlobalData.m_showLevelupEnable)
-        {
-            CityGlobalData.m_showLevelupEnable = false;
-            if (ShowLevelUpLayer && CityGlobalData.m_isBattleField_V4_2D)
-            {
-                ShowLevelUpLayer = false;
-				ClientMain.addPopUP(20, 0, "", null);
-            }
-        }
-        else
-        {
-            if (ShowLevelUpLayer && !CityGlobalData.m_isBattleField_V4_2D 
-                && JunZhuLevelUpManagerment.m_JunZhuLevelUp == null 
-                && TaskSignalInfoShow.m_TaskSignal == null)
-            {
-                ShowLevelUpLayer = false;
-				ClientMain.addPopUP(20, 0, "", null);
-            }
-        }
+//        if (CityGlobalData.m_showLevelupEnable)
+//        {
+//            CityGlobalData.m_showLevelupEnable = false;
+//            if (ShowLevelUpLayer && CityGlobalData.m_isBattleField_V4_2D)
+//            {
+//                ShowLevelUpLayer = false;
+//				ClientMain.addPopUP(20, 0, "", null);
+//            }
+//        }
+//        else
+//        {
+//            if (ShowLevelUpLayer && !CityGlobalData.m_isBattleField_V4_2D 
+//                && JunZhuLevelUpManagerment.m_JunZhuLevelUp == null 
+//                && TaskSignalInfoShow.m_TaskSignal == null)
+//            {
+//                ShowLevelUpLayer = false;
+//				ClientMain.addPopUP(20, 0, "", null);
+//            }
+//        }
     }
 
     #endregion
@@ -215,7 +217,8 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
                         else if (tempInfo.level > m_CurrentLevel)
                         {
                             m_LevelUpInfoSave = true;
-                            ShowLevelUpLayer = true;
+							ClientMain.addPopUP(20, 0, "", null);
+//                            ShowLevelUpLayer = true;
                            // CityGlobalData.m_isWhetherOpenLevelUp = false;
                             //ShowLevelUp();
                             m_CurrentLevel = tempInfo.level;
@@ -253,7 +256,8 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 							if(Global.m_isAddZhanli)
 							{
 								Global.m_iPChangeZhanli = Global.m_iPZhanli;
-								ClientMain.addPopUP(70, 1, "", null);
+								Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_ADDZHANLI),
+								                        AddUIPanelNotCloseAndNotCloseYindao);
 							}
 						}
 						Global.m_iPZhanli = m_junzhuInfo.zhanLi;
@@ -292,8 +296,22 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 
                         Buy_TimespInfo = BuyTimespInfo;
                         // Debug.Log("Buy_TimespInfo tiLiHuaFei  = " + Buy_TimespInfo.tongBiHuaFei);
-                        // Debug.Log("Buy_TimespInfo tiLiHuaFei  = " + Buy_TimespInfo.tongBiHuoDe);
+//				        Debug.Log("Buy_TimespInfo.tiLi  = " + Buy_TimespInfo.tiLi);
+//				        Debug.Log("m_tiliRemind  = " + m_tiliRemind);
+						if(m_tiliRemind == 0)
+						{
+							m_tiliRemind = Buy_TimespInfo.tiLi;
+						}
+						else
+						{
+							if(Buy_TimespInfo.tiLi < m_tiliRemind)
+							{
+								m_tiliRemind = Buy_TimespInfo.tiLi;
+								ClientMain.m_UITextManager.createText("体力购买成功！");
+							}
+						}
                         InitBuyUI();
+
                         return true;
                     }
 				case ProtoIndexes.S_BUY_TongBi_Data://购买金币一级界面信息
@@ -520,6 +538,7 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
 		}
 		else
 		{
+			Debug.Log ("Pot = "+Pot);
 			SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_BUY_TIMES_REQ,(ProtoIndexes.S_BUY_TIMES_INFO).ToString());
 		}
 		if (UIYindao.m_UIYindao.m_isOpenYindao) {
@@ -857,4 +876,9 @@ public class JunZhuData : MonoBehaviour, SocketProcessor
             m_junzhuInfo = info;
         }
     }
+
+	public void AddUIPanelNotCloseAndNotCloseYindao(ref WWW p_www, string p_path, Object p_object)
+	{
+		GameObject tempObject = (GameObject)Instantiate(p_object);
+	}
 }

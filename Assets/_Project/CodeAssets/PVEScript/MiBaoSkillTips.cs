@@ -25,7 +25,7 @@ public class MiBaoSkillTips : MYNGUIPanel {
 	}
 	public void Init()
 	{
-
+//		Debug.Log ("加载秘宝信息 =- "+mibao_name);
 		Skillicon.spriteName = mibao_name;
 	}
 	private void OnCloseDetail(GameObject go)

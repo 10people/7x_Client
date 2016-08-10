@@ -257,7 +257,6 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 //			MainCityUI.TryRemoveFromObjectList (gameObject);
 //			TreasureCityUI.TryRemoveFromObjectList (gameObject);
 
-			Global.m_isZhanli = false;
 			EffectTool.SetUIBackgroundEffect (cameraObj,false);
 
 //			if (MainCityUI.m_MainCityUI != null)
@@ -314,7 +313,6 @@ public class GeneralRewardManager : MonoBehaviour, IUIRootAutoActivator {
 //			UIYindao.m_UIYindao.IsOPenYInDao ();
 //		}
 
-		Global.m_isZhanli = true;
 		EffectTool.SetUIBackgroundEffect (obj,true);
 //		foreach (GameObject gameObj in MainCityUI.m_MainCityUI. m_WindowObjectList)
 //		{

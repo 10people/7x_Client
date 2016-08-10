@@ -167,7 +167,7 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
     int indexNum = 0;
     public bool ShowMainTaskGet(string data)
     {
-        Debug.Log("IsCanShowCompleteIsCanShowComplete ::" + IsCanShowComplete);
+//        Debug.Log("IsCanShowCompleteIsCanShowComplete ::" + IsCanShowComplete);
         if ( !SceneManager.IsInLoadingScene() 
              && IsCanShowComplete
              && !CityGlobalData.m_isBattleField_V4_2D
@@ -780,9 +780,11 @@ public class TaskData : Singleton<TaskData>, SocketProcessor
     }
     void AddTaskInfo(RenWuTemplate tempTaskInfo)
     {
-       
         m_TagIsShow = true;
-        m_TaskDailyDic.Add(tempTaskInfo.id, tempTaskInfo);
+        if (!m_TaskDailyDic.ContainsKey(tempTaskInfo.id))
+        {
+            m_TaskDailyDic.Add(tempTaskInfo.id, tempTaskInfo);
+        }
         MainCityUI.SetRedAlert(251, DailyWetherContainComplete(m_TaskDailyDic));
     }
 

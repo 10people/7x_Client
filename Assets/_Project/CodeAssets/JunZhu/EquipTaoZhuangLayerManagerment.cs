@@ -59,7 +59,6 @@ public class EquipTaoZhuangLayerManagerment : MonoBehaviour {
         if (m_Camera != null)
             EffectTool.SetUIBackgroundEffect(m_Camera.gameObject, false);
 
-        Global.m_isZhanli = false;
         FunctionWindowsCreateManagerment.m_IsEquipJihuoShow = false;
     }
 }

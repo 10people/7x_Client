@@ -52,10 +52,10 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 				UIYindao.m_UIYindao.CloseUI();
 			}
 		}
-		if(!GeneralRewardManager.Instance().IsExitReward() && mdataback)
-		{
-			ClientMain.closePopUp();
-		}
+//		if(!GeneralRewardManager.Instance().IsExitReward() && mdataback)
+//		{
+//			ClientMain.closePopUp();
+//		}
 	}
 	private void YinDaoControl()
 	{
@@ -281,7 +281,7 @@ public class PassLevelAward : MonoBehaviour , SocketProcessor{
 	}
 	public void LingQuBtn()
 	{
-		ClientMain.addPopUP (80, 0, "", null);
+		ComLingQU ();
 	}
 	public void ComLingQU()
 	{

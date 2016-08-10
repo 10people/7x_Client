@@ -41,7 +41,7 @@ public class QXComData {
 
 	public static void LoadTitleObj (GameObject obj,string title)
 	{
-		MainCityUI.setGlobalTitle (obj,title,55,0);
+		MainCityUI.setGlobalTitle (obj,title,0,0);
 	}
 
 	public static string AllianceName (string tempName)

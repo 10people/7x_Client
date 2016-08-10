@@ -60,7 +60,7 @@ public class BroadCast : MonoBehaviour, SocketListener
 //
 //            ScrollInfo();
 //        }
-		Debug.Log ("IsInBroadCast = "+IsInBroadCast);
+//		Debug.Log ("IsInBroadCast = "+IsInBroadCast);
 		if (!IsInBroadCast && m_storedDataListGM.Count != 0)
 		{
 			IsInBroadCast = true;
@@ -166,7 +166,7 @@ public class BroadCast : MonoBehaviour, SocketListener
 	}
     private void GotoNextOrClear()
     {
-		Debug.Log ("GotoNextOrClear()");
+//		Debug.Log ("GotoNextOrClear()");
 //        if (m_storedDataList.Count != 0)
 //        {
 //            //Continue to next.
@@ -215,7 +215,7 @@ public class BroadCast : MonoBehaviour, SocketListener
 	private int m_Sort;
     public void ShowBroadCast(string info, bool  isFirst = false, int sorting = -1)
     {
-		Debug.Log ("sorting = "+sorting);
+//		Debug.Log ("sorting = "+sorting);
 		if (isFirst)
 		{
 			m_storedDataListCart.Add (info);

@@ -92,9 +92,9 @@ public class FriendOperationItemManagerment : MonoBehaviour
         //CallBackEmail = email;
         //CallBackForbid = forbid;
         //CallBackDelete = dele;
-        m_listLabel[0].text = "Lv " + info.level.ToString() + "  " + info.name; 
+        m_listLabel[0].text = info.level.ToString(); 
         m_listSprite[0].spriteName = "PlayerIcon" + info.iconId.ToString();
- 
+        m_listLabel[3].text = info.name;
         if (info.vipLv > 0)
         {
             m_ObjV.SetActive(true);

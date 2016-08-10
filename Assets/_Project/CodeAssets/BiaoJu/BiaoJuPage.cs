@@ -19,12 +19,12 @@ namespace Carriage
 		}
 		private BiaoJuPageType pType = BiaoJuPageType.MAIN_PAGE;
 
-		public UILabel biaoJuTitle;
+		public UISprite m_title;
 
 		private readonly Dictionary<BiaoJuPageType,string> titleDic = new Dictionary<BiaoJuPageType, string> ()
 		{
-			{BiaoJuPageType.MAIN_PAGE,"镖局"},
-			{BiaoJuPageType.HORSE_PAGE,"镖局马场"},
+			{BiaoJuPageType.MAIN_PAGE,"BiaoJuTitle"},
+			{BiaoJuPageType.HORSE_PAGE,"BiaoJuHorseTitle"},
 		};
 
 		public GameObject mainPageObj;
@@ -48,6 +48,7 @@ namespace Carriage
 		public UIAtlas biaoJuAtlas;
 
 		public GameObject anchorTopRight;
+		public GameObject m_anchorTopLeft;
 
 		private string fuLiDesStr = "括号内为福利次数，优先消耗";
 
@@ -99,13 +100,15 @@ namespace Carriage
 			horseRuleLabel.text = LanguageTemplate.GetText (LanguageTemplate.Text.YUN_BIAO_5);
 
 			QXComData.LoadYuanBaoInfo (anchorTopRight);
+			QXComData.LoadTitleObj (m_anchorTopLeft,"运镖");
 		}
 
 		void SwitchPage (BiaoJuPageType tempType)
 		{
 			pType = tempType;
-			biaoJuTitle.text = titleDic[tempType];
-			biaoJuTitle.GetComponent<UILabelType> ().init ();
+			m_title.spriteName = titleDic[tempType];
+//			biaoJuTitle.GetComponent<UILabelType> ().init ();
+
 			mainPageObj.SetActive (tempType == BiaoJuPageType.MAIN_PAGE ? true : false);
 			horsePageObj.SetActive (tempType == BiaoJuPageType.HORSE_PAGE ? true : false);
 		}
@@ -598,7 +601,7 @@ namespace Carriage
 		public void OpenSetHorseWindow ()
 		{
 			setHorseWindowObj.SetActive (true);
-			SetHorseWindow.setHorse.InItSetHorseWindow (horseInfoList,horsePageInfo.horse);
+			SetHorseWindow.m_instance.InItSetHorseWindow (horseInfoList,horsePageInfo.horse);
 		}
 
 		/// <summary>
@@ -735,7 +738,7 @@ namespace Carriage
 		public void OpenHorsePropWindow (GameObject obj)
 		{
 			horsePropWindowObj.SetActive (true);
-			HorsePropWindow.propWindow.InItHorsePropWindow (allPropInfoList);
+			HorsePropWindow.m_instance.InItHorsePropWindow (allPropInfoList);
 		}
 
 		/// <summary>

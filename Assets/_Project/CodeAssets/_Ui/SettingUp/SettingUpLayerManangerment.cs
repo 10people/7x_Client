@@ -21,7 +21,8 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
     public UISprite m_JunXian;
     public UIGrid m_GrideCDReward;
     public GameObject m_ObjReward;
-
+    public GameObject m_ObjVipInfo;
+    public UISprite m_SpriteVip;
     public List<SettingUpButtonController> listSettingButton;
 
     public List<EventIndexHandle> listEventMainLayer;
@@ -69,12 +70,19 @@ public class SettingUpLayerManangerment : MonoBehaviour, SocketProcessor
  
 	void Start ()
     {
+        if (JunZhuData.Instance().m_junzhuInfo.vipLv > 0)
+        {
+            m_ObjVipInfo.SetActive(true);
+            m_SpriteVip.spriteName = "v" + JunZhuData.Instance().m_junzhuInfo.vipLv;
+        }
+        
+   
         m_SpriteV.spriteName = "v" + VipFuncOpenTemplate.GetNeedLevelByKey(4);
         m_LabelTimeDown.text = "";
         m_SettingUp = this;
 		_title = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
         m_LabRenameSignal.text = LanguageTemplate.GetText(1604) + MyColorData.getColorString(5, "100") + "元宝。";
-        MainCityUI.setGlobalTitle(m_ObjTopLeft, LanguageTemplate.GetText(1528), 0, 0);
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, LanguageTemplate.GetText(1528), 59, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
       //  m_LabelTopUp.text = LanguageTemplate.GetText(LanguageTemplate.Text.TOPUP_SIGNAL);
         listEventMainLayer.ForEach(p => p.m_Handle += EventReception);

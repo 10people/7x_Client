@@ -98,6 +98,7 @@ public class Buff : MonoBehaviour
 				if(be == null) be = buff.m_ObjEff.AddComponent<BattleEffect>();
 
 				be.updataDodgeOn();
+				be.setTanstrformY(_ai.getHeight() * EffectIdTemplate.GetHeight(buff.supplement.m_iEffID));
 
 				EffectIdTemplate et = EffectTemplate.getEffectTemplateByEffectId (buff.supplement.m_iEffID);
 

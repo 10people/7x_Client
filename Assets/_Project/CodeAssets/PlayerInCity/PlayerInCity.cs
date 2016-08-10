@@ -74,6 +74,7 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
         {
             return;
         }
+
         _isRun = true;
         _isTarget = false;
         _TargetPos = targetPosition;
@@ -89,15 +90,9 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
         {
             _playerRandomAnimator = true;
         }
-        else if (m_MoveType == MoveType.MOVE_TYPE_IDLE
-            && Mathf.Abs(Vector3.Distance(_TargetPos, transform.position)) <= 0.2f && !_isTarget)
-        {
-            _isTarget = true;
-            m_MoveType = MoveType.MOVE_TYPE_IDLE;
-            PlayerStop();
-        }
+        
 
-        if (_isRun && Mathf.Abs(Vector3.Distance(_TargetPos,transform.position)) > 0)
+        if (_isRun)
         {
             if (Mathf.Abs(Vector3.Distance(_TargetPos, transform.position)) > 0.4f)
             {
@@ -170,7 +165,6 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
         if (_playerRandomAnimator)
         {
             _playerRandomAnimator = false;
-   
         }
         AnimationPlay(1);
        //  transform.localPosition = Vector3.Lerp(transform.position, point, PlayerModelController.m_playerModelController.m_speed * 0.006f);
@@ -178,7 +172,6 @@ public class PlayerInCity : MonoBehaviour { //在主城中跑动的玩家
   
         Vector3 v = Vector3.ClampMagnitude(point - transform.position, PlayerModelController.m_playerModelController.m_speed * 0.025f);
         m_character.Move(v);
-        //m_character.Move(v);
     }
     
     protected bool inTurning;

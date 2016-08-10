@@ -12,6 +12,8 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 	public GameObject TopLeftManualAnchor;
 	public GameObject TopRightManualAnchor;
 
+	public UISprite mNewName;
+
 	public UILabel m_ShowTime;
 
 	public GameObject EffectRoot;
@@ -54,7 +56,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 
 	int EnemyNumBers = 0;//显示敌人数量
 	
-	private int awardNum = 4;//掉落物品个数
+	private int awardNum = 6;//掉落物品个数
 	
 	int distance = 100;//敌人头像距离
 	
@@ -501,6 +503,10 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 
 		WanFa.text = mYouxiaPveTemplate.wanfaType;
 
+//		mNewName.spriteName = "30"+myouxia.bigId.ToString();
+		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (big_id);
+		
+		mNewName.spriteName = mYouxiaoOPen.functionID.ToString();
 //		YouxiaName.text = NameIdTemplate.GetName_By_NameId (myouxia.bigName);
 		MainCityUI.setGlobalTitle(TopLeftManualAnchor,NameIdTemplate.GetName_By_NameId (myouxia.bigName), 0, 0);
 		string mDesc = DescIdTemplate.GetDescriptionById (mYouxiaPveTemplate.smaDesc);
@@ -548,7 +554,8 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
 			mobg.SetActive(true);
 			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
-			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (m_str.Length - 1) * 35, 0, 0);
+			//mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (m_str.Length - 1) * 35, 0, 0);
+			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 , 0, 0);
 			mobg.transform.localScale = Vector3.one;
 			if(m_str[i] != ""&&m_str[i] != null)
 			{
@@ -1050,7 +1057,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 				allenemy = 4;
 			}
 			
-			iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
+			iconSampleObject.transform.localPosition = new Vector3((allenemy - n-1) * distance, 0, 0);
 			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 			
 			YouXiaNpcTemplate m_LegendNpcTemplate= YouXiaNpcTemplate.GetYouXiaNpcTemplate_By_id(mYouXiaNpcTemplateList[n].id);
@@ -1075,7 +1082,7 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 			iconSampleManager.SetIconBasic(3, m_LegendNpcTemplate.icon.ToString());
 			iconSampleManager.SetIconPopText(0, popTextTitle, popTextDesc, 1);
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
-			iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+			iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
 		}
 	}
 
@@ -1162,14 +1169,14 @@ public class NewYXUI : MYNGUIPanel,SocketProcessor {
 					m_AwardIcon.Add(iconSampleObject);
 					iconSampleObject.SetActive(true);
 					iconSampleObject.transform.parent = AwardRoot;
-					iconSampleObject.transform.localPosition = new Vector3(-150 + (pos - 1) * 100, -20, 0);
+					iconSampleObject.transform.localPosition = new Vector3( (pos - 1) * 100, 0, 0);
 					iconSampleObject.transform.localScale = Vector3.one;
 					var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 					NameIdTemplate mNameIdTemplate = NameIdTemplate.getNameIdTemplateByNameId(mAwardTemp[i].itemId);
 					string mdesc = DescIdTemplate.GetDescriptionById(mAwardTemp[i].itemId);
 					iconSampleManager.SetIconByID(mAwardTemp[i].itemId, "", 3);
 					iconSampleManager.SetIconPopText(mAwardTemp[i].itemId, mNameIdTemplate.Name, mdesc, 1);
-					iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+					iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
 				}
 			}
 		}

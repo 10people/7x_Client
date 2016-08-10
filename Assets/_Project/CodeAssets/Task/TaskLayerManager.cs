@@ -81,7 +81,7 @@ public class TaskLayerManager : MonoBehaviour
     {
         m_TaskLayerM = this;
         _touchIndex = TaskData.Instance.m_ShowType;
-        MainCityUI.setGlobalTitle(m_ObjTopLeft, "任务", 0, 0);
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "任务", 59, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         m_listMainTaskEvent.ForEach(p => p.m_Handle += MainTaskTouch);
 
@@ -132,31 +132,28 @@ public class TaskLayerManager : MonoBehaviour
     {
         if (_touchIndex != index)
         {
-            _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(true);
-            _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_Guang.SetActive(true);
+            _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_Sprite_1.SetActive(true);
+            _QuestButtonDic[index].GetComponent<TaskButtonItemController>().m_Sprite_0.SetActive(false);
             if (_QuestButtonDic.ContainsKey(_touchIndex))
             {
-                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(false);
-                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Guang.SetActive(false);
+                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Sprite_1.SetActive(false);
+                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Sprite_0.SetActive(true);
             }
             _touchIndex = index;
             if (index == 0)
             {
                 m_MainQuestObj.SetActive(true);
                 m_OtherQuestObj.SetActive(false);
-          //      m_DailyQuestObj.SetActive(false);
             }
             else if (index == 1)
             {
                 m_MainQuestObj.SetActive(false);
                 m_OtherQuestObj.SetActive(true);
-           //     m_DailyQuestObj.SetActive(false);
             }
             else
             {
                 m_MainQuestObj.SetActive(false);
                 m_OtherQuestObj.SetActive(false);
-       //         m_DailyQuestObj.SetActive(true);
             }
 
             switch (index)
@@ -174,7 +171,6 @@ public class TaskLayerManager : MonoBehaviour
                     break;
                 default:
                     break;
-
             }
         }
     }
@@ -195,7 +191,7 @@ public class TaskLayerManager : MonoBehaviour
                     }
                     else if (i == 1)
                     {
-                        type._Icon = "side";
+                        type._Icon = "mengwu";
                     }
                  
                    
@@ -223,10 +219,10 @@ public class TaskLayerManager : MonoBehaviour
             }
         }
 
-        foreach (KeyValuePair<int, GameObject> item in _QuestButtonDic)
-        {
-            item.Value.GetComponent<TaskButtonItemController>().m_TanHao.SetActive(IsProgressDone(item.Key));
-        }
+        //foreach (KeyValuePair<int, GameObject> item in _QuestButtonDic)
+        //{
+        //  item.Value.GetComponent<TaskButtonItemController>().m_TanHao.SetActive(IsProgressDone(item.Key));
+        //}
         Createbutton();
     }
 
@@ -662,11 +658,11 @@ public class TaskLayerManager : MonoBehaviour
             }
             else
             {
-                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_TaskButtonEffect.ButtonState(true);
-                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Guang.SetActive(true);
+                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Sprite_1.SetActive(true);
+                _QuestButtonDic[_touchIndex].GetComponent<TaskButtonItemController>().m_Sprite_0.SetActive(false);
                 foreach (KeyValuePair<int, GameObject> item in _QuestButtonDic)
                 {
-                  item.Value.GetComponent<TaskButtonItemController>().m_TanHao.SetActive(IsProgressDone(item.Key));
+                   item.Value.GetComponent<TaskButtonItemController>().m_TanHao.SetActive(IsProgressDone(item.Key));
                 }
             }
             m_ButtonParent.repositionNow = true;

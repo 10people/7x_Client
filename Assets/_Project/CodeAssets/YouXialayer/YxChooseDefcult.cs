@@ -12,6 +12,8 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 	public GameObject TopLeftManualAnchor;
 	public GameObject TopRightManualAnchor;
 
+	public UISprite mNewName;
+
 	public GameObject mUIRoot;
 	[HideInInspector]
 	
@@ -120,18 +122,16 @@ public class YxChooseDefcult : MonoBehaviour,SocketProcessor {
 		mUIRoot.SetActive (true);
 		mTimes.text = m_Times;
 		MainCityUI.setGlobalBelongings(this.gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY - 5);
-//		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
-//		{
-//			//Debug.Log("进入试练二阶界面222");
-//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
-//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[2]);
-//			mScorview.enabled = false;
-//		}
+
 		//Debug.Log ("BigId.Count = "+BigId);
 		List<YouxiaPveTemplate> mYouxiaPveTemplateList = YouxiaPveTemplate.getYouXiaPveTemplateListBy_BigId (BigId);
 		YouxiaPveTemplate myouxia = YouxiaPveTemplate.getYouXiaPveTemplateBy_BigId (BigId);
 //		YxName.text = NameIdTemplate.GetName_By_NameId (myouxia.bigName);
 		MainCityUI.setGlobalTitle(TopLeftManualAnchor, NameIdTemplate.GetName_By_NameId (myouxia.bigName), 0, 0);
+
+		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (BigId);
+
+		mNewName.spriteName = mYouxiaoOPen.functionID.ToString();
 		foreach(YouXiaItem m_YXItem in YouXiaItemmList)
 		{
 			Destroy(m_YXItem.gameObject);

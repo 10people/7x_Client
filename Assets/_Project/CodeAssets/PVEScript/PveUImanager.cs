@@ -321,9 +321,13 @@ public class PveUImanager :MYNGUIPanel
 	}
 	public void GetPveSectionAward()
 	{
+		ClientMain.addPopUP (80, 0, "", null);
+
+	}
+	public void ShowPveAwardUI ()
+	{
 		Global.ResourcesDotLoad(Res2DTemplate.GetResPath( Res2DTemplate.Res.MI_BAO_REMIND_MI_BAO ),OpenLockLoadBack);
 	}
-
 
 	void OpenLockLoadBack(ref WWW p_www,string p_path, Object p_object)
 	{
@@ -364,7 +368,7 @@ public class PveUImanager :MYNGUIPanel
 		if (CityGlobalData.PT_Or_CQ )
         {
             
-			foreach(Pve_Level_Info mLevel in MapData.mapinstance.Pve_Level_InfoList )
+			foreach(NewPveLevelInfo mLevel in MapData.mapinstance.Pve_Level_InfoList )
 			{
 				if(!mLevel.litter_Lv.s_pass)
 				{

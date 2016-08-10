@@ -232,29 +232,36 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			}
 		}
 
-		if(MaxPoint > NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint)
-		{
-			mtime = NewMiBaoManager.Instance().m_MiBaoInfo.remainTime;
-			int M = (int)(mtime/60);
-			int S = (int)(mtime%60);
-			string s = "";
-			if( S < 10)
-			{
-				if(S < 0)
-				{
-					S = 0;
-				}
-				s = "0"+S.ToString();
-			}
-			else
-			{
-				s = S.ToString();
-			}
-		
-			CountTime.text = "("+M.ToString()+":"+s+")";
-		}else{
-			CountTime.text = "("+"已满"+")";
-		}
+//		if(MaxPoint > NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint)
+//		{
+//			if(mtime != NewMiBaoManager.Instance().m_MiBaoInfo.remainTime)
+//			{
+//				mtime = NewMiBaoManager.Instance().m_MiBaoInfo.remainTime;
+//			}
+//			else
+//			{
+//				return;
+//			}
+//			int M = (int)(mtime/60);
+//			int S = (int)(mtime%60);
+//			string s = "";
+//			if( S < 10)
+//			{
+//				if(S < 0)
+//				{
+//					S = 0;
+//				}
+//				s = "0"+S.ToString();
+//			}
+//			else
+//			{
+//				s = S.ToString();
+//			}
+//		
+//			CountTime.text = "("+M.ToString()+":"+s+")";
+//		}else{
+//			CountTime.text = "("+"已满"+")";
+//		}
 	//	PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
 	}
 	
@@ -311,7 +318,10 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			CountTime.text = "("+M.ToString()+":"+s+")";	
 		}
 		NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint += 1;
-	
+		PointNum.text = NewMiBaoManager.Instance ().m_MiBaoInfo.levelPoint.ToString ();
+
+//		Debug.Log("MaxPoint = "+MaxPoint);
+//		Debug.Log("NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint = "+NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint);
 		if(MaxPoint > NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint)
 		{
 			//mtime = 10*60;
@@ -333,6 +343,17 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 	{
 		mibaolevel = 0;
 		YindaoNeedOpen = false;
+		ShowColdTime ();
+	}
+	public void ShowColdTime()
+	{
+		if(NewMiBaoManager.Instance().m_MiBaoInfo.remainTime > 0)
+		{
+			mtime = NewMiBaoManager.Instance().m_MiBaoInfo.remainTime;
+			CountTime.text = "";
+			StopCoroutine("showTime");
+			StartCoroutine("showTime");
+		}
 	}
 	public void Init()
 	{
@@ -417,9 +438,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 				LinShi_ZhanLi = ShowmMiBaoinfo.zhanLi;
 			}
 			ChangeJianghunColor();
-//			StopCoroutine("Update_ZhanliAndLevel");
-//			
-//			StartCoroutine("Update_ZhanliAndLevel");
 		}
 
 		ShowSuipian ();
@@ -718,53 +736,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		UI3DEffectTool.ClearUIFx (StarUpbtn);
 		UI3DEffectTool.ClearUIFx (MiBaoeffect);
 	}
-	IEnumerator Update_ZhanliAndLevel()
-	{
-		if(LinShi_ZhanLi > Cru_MiBao_Zhanli+1)
-		{
-			int m = (LinShi_ZhanLi - Cru_MiBao_Zhanli);
-			float mTime = 0.01f;
-
-			while(m > 0)
-			{
-
-				if(m > 10000)
-				{
-					m -= 10000;
-					Cru_MiBao_Zhanli += 10000;
-				}
-				if(m > 1000)
-				{
-					m -= 1000;
-					Cru_MiBao_Zhanli += 1000;
-				}
-				if(m > 100)
-				{
-					m -= 100;
-					Cru_MiBao_Zhanli += 100;
-				}
-				if(m > 10)
-				{
-					m -= 10;
-					Cru_MiBao_Zhanli += 10;
-				}
-				else
-				{
-					m -= 1;
-					Cru_MiBao_Zhanli += 1;
-				}
-			    MiBaoZl.text = "战力: "+ (Cru_MiBao_Zhanli).ToString();
-
-				MiBaoZl.gameObject.transform.localScale = new Vector3(1.2f,1.2f,1.2f);
-
-				yield return new WaitForSeconds(mTime);
-			}
-			MiBaoZl.gameObject.transform.localScale = Vector3.one;
-		}
-		else{
-			MiBaoZl.text = "战力: "+ LinShi_ZhanLi.ToString();
-		}
-	}
 
 	void ShowStar()
 	{
@@ -952,19 +923,23 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			//	Debug.Log("密保升级返回");
 				if(Levelup.mibaoInfo != null)
 				{
-//					Debug.Log("518  dataBack");
-					if(ShowmMiBaoinfo.level == Levelup.mibaoInfo.level)
-					{
-						return true;
-					}
+					Debug.Log("Levelup.remainTime = "+Levelup.remainTime);
+				
 					ShowmMiBaoinfo = Levelup.mibaoInfo;
-
-					SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 
 					MibaoUpCallback = true;
 
 					Is_LevelUp = true;
+					if(NewMiBaoManager.Instance().m_MiBaoInfo.remainTime <= 0)
+					{
+						NewMiBaoManager.Instance().m_MiBaoInfo.remainTime = Levelup.remainTime;
+						ShowColdTime();
+					}
 
+					if(ShowmMiBaoinfo.level == Levelup.mibaoInfo.level)
+					{
+						return true;
+					}
 					Init();
 					//MiBaoManager.Instance().ShowZhanLiAnmition();
 				}
@@ -1067,19 +1042,6 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 		data.Add (data1);
 		data1.m_cameraObj = mMainCamera.gameObject;
 		GeneralRewardManager.Instance().CreateSpecialReward (data);
-//		GameObject cardtemp = Instantiate(p_object) as GameObject;
-//		
-//		cardtemp.transform.parent = this.transform.parent;
-//		
-//		cardtemp.transform.localPosition = new Vector3(0,0,0);
-//		
-//		cardtemp.transform.localScale = new Vector3(0.9f,0.9f,0.9f);
-//
-//		mbCardTemp mmbCardTemp = cardtemp.GetComponent<mbCardTemp>();
-//		
-//		mmbCardTemp.mibaoTemp =  ShowmMiBaoinfo;
-//		
-//		mmbCardTemp.init();	
 	}
 
 	void LockTongBiLoadBack(ref WWW p_www,string p_path, Object p_object)
@@ -1368,6 +1330,7 @@ public class MiBaoDesInfo : MonoBehaviour , SocketProcessor{
 			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[3]);
 		}
 		CloseEffect ();
+		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ);
 		NewMiBaoManager.Instance().BackToFirstPage (this.gameObject);
 	}
 }

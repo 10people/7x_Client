@@ -17,6 +17,9 @@ public class choosemap : MonoBehaviour {
 	Vector3 vectRight = new Vector3(960,0,0);
 	Vector3 vectLeft = new Vector3(-960,0,0);
 	public GameObject Lev;
+
+	public GameObject NewLev;
+
 	public static bool UpAndDownbtn;
 	public GameObject MapRoot;
 	private int my_mapnum;
@@ -222,7 +225,7 @@ public class choosemap : MonoBehaviour {
 		{
 			Vector2 ZuoBiao1 = LegendPveZuoBiaoTemplate.GetCoordinate(MapData.mapinstance.myMapinfo.s_section,MapData.mapinstance.CQLv[n].guanQiaId);
 
-			GameObject LVL = Instantiate(Lev)as GameObject;
+			GameObject LVL = Instantiate(NewLev)as GameObject;
 
 			LVL.SetActive(true);
 
@@ -234,7 +237,7 @@ public class choosemap : MonoBehaviour {
 
 			LVL.transform.localPosition =new Vector3 (ZuoBiao1.x, ZuoBiao1.y,0);
 
-			Pve_Level_Info LvChild = LVL.GetComponent<Pve_Level_Info>();
+			NewPveLevelInfo LvChild = LVL.GetComponent<NewPveLevelInfo>();
 
 			LvChild.litter_Lv = MapData.mapinstance.CQLv[n];
 
@@ -266,7 +269,7 @@ public class choosemap : MonoBehaviour {
 		{
 			Vector2 ZuoBiao1 = PVEZuoBiaoTemplate.GetCoordinate(MapData.mapinstance.myMapinfo.s_section,MapData.mapinstance.myMapinfo.s_allLevel[n].guanQiaId);
 			
-			GameObject lvl = Instantiate(Lev)as GameObject;
+			GameObject lvl = Instantiate(NewLev)as GameObject;
 
 			lvl.SetActive(true);
 
@@ -279,19 +282,19 @@ public class choosemap : MonoBehaviour {
 			lvl.transform.localPosition =new Vector3 (ZuoBiao1.x, ZuoBiao1.y,0);
 
 
-			Pve_Level_Info LvChild = lvl.GetComponent<Pve_Level_Info>();
+			NewPveLevelInfo LvChild = lvl.GetComponent<NewPveLevelInfo>();
 
 			LvChild.litter_Lv = MapData.mapinstance.myMapinfo.s_allLevel[n];
 		
 			int DIR = PVEZuoBiaoTemplate.GetDir_by(MapData.mapinstance.myMapinfo.s_allLevel[n].guanQiaId);
-			if(DIR == 0)
-			{
-				LvChild.IsRotation = false;
-			}
-			else
-			{
-				LvChild.IsRotation = true;
-			}
+//			if(DIR == 0)
+//			{
+//				LvChild.IsRotation = false;
+//			}
+//			else
+//			{
+//				LvChild.IsRotation = true;
+//			}
 
 			if (n < MapData.mapinstance.myMapinfo.s_allLevel.Count-1)
 			{
@@ -313,7 +316,7 @@ public class choosemap : MonoBehaviour {
 	}
 	void POpPveUI_By_KuanJie()
 	{
-		foreach(Pve_Level_Info mLev in MapData.mapinstance.Pve_Level_InfoList)
+		foreach(NewPveLevelInfo mLev in MapData.mapinstance.Pve_Level_InfoList)
 		{
 			if(mLev.litter_Lv.guanQiaId == EnterGuoGuanmap.Instance().ShouldOpen_id)
 			{   

@@ -9,8 +9,7 @@ using qxmobile.protobuf;
 public class MainCityTipWindow : MYNGUIPanel , SocketListener
 {
     public ScaleEffectController m_ScaleEffectController;
-	public List<UISprite> m_pageButton = new List<UISprite>();//左边按钮
-	public List<UILabel> m_pageButtonLabel = new List<UILabel>();//左边按钮文字
+	public MyPageManager m_MyPageManager;
 	private int[] m_openFunctionID = new int[]{-1,12,6,500010,-1};
 	private bool[] m_isOpenFunction = new bool[]{false, false, false, false, false};
 	private int m_iPageIndex = -1;
@@ -74,15 +73,13 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 			if(m_openFunctionID[i] != -1 && !FunctionOpenTemp.IsHaveID(m_openFunctionID[i]))
 			{
 				m_isOpenFunction[i] = false;
-				m_pageButton[i].color = Color.black;
-				m_pageButtonLabel[i].GetComponent<UILabelType>().setType(100);
+				m_MyPageManager.m_listMyPageButtonManager[i].m_spriteCloseFunction.gameObject.SetActive(true);
 			}
 			else
 			{
 				m_isOpenFunction[i] = true;
 //				UIButton temp = m_pageButton[i].gameObject.AddComponent<UIButton>();
 //				temp.tweenTarget = m_pageButton[i].gameObject;
-				m_pageButton[i].color = Color.white;
 			}
 		}
 		m_ListIcon.Add(m_ListIcon0);
@@ -111,6 +108,11 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 		}
 		Global.ScendID(ProtoIndexes.C_GET_UPACTION_DATA, m_iWantPageIndex);
     }
+
+	void Update() 
+	{
+
+	}
 
 	void DoCloseWindow()
 	{
@@ -191,22 +193,9 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 		}
 		m_iPageIndex = m_iWantPageIndex;
 		m_PageObj[m_iPageIndex].SetActive(true);
-		for(int i = 0; i < m_pageButton.Count; i ++)
-		{
-			if(m_isOpenFunction[i])
-			{
-				if(i == m_iPageIndex)
-				{
-					m_pageButton[i].color = Color.white;
-					m_pageButtonLabel[i].GetComponent<UILabelType>().setType(10);
-				}
-				else
-				{
-					m_pageButton[i].color = Color.grey;
-					m_pageButtonLabel[i].GetComponent<UILabelType>().setType(11);
-				}
-			}
-		}
+
+		m_MyPageManager.setPageIndex(m_iPageIndex);
+
 		switch(m_iPageIndex)
 		{
 		case 0:
@@ -385,7 +374,6 @@ public class MainCityTipWindow : MYNGUIPanel , SocketListener
 
 	public override void MYClick(GameObject ui)
 	{
-		Debug.Log(ui.name);
 		if(ui.name.IndexOf("Close") != -1)
 		{
 			MainCityUI.TryRemoveFromObjectList(gameObject);

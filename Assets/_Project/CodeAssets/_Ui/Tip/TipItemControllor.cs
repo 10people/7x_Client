@@ -167,7 +167,7 @@ public class TipItemControllor : MonoBehaviour
 			{
 				Color col = labelNumNormalText.color;
 				
-				string strCol = "[" + col.ToHexStringRGB() + "]";
+				string strCol = "[" + "]";
 				
 				textNum = strCol + num + "[-]";
 			}

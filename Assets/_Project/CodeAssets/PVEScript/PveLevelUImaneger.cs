@@ -512,7 +512,7 @@ public class PveLevelUImaneger: MonoBehaviour,SocketProcessor {
 		
 		if (junZhuLevel >= FunctionOpenTemp.GetTemplateById(3000010).Level)
 		{
-			SaodangId = Pve_Level_Info.CurLev;
+			SaodangId = NewPveLevelInfo.CurLev;
 			//Debug.Log("SaoDangTimes = " +SaoDangTimes);
 			needpower = GuanqiaReq.tili*SaoDangTimes;
 			//Debug.Log ("needpower" +needpower);

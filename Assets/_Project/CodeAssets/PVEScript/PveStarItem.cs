@@ -52,7 +52,7 @@ public class PveStarItem : MonoBehaviour {
 			UiSpriteBg.gameObject.SetActive(false);
 
 			mBtn.enabled = false;
-
+			Item_Icon.spriteName = "BlueItemBg1";
 			mStar.spriteName = "KongStar"; 
 		}
 		else
@@ -66,7 +66,7 @@ public class PveStarItem : MonoBehaviour {
 
 				UiSpriteBg.gameObject.SetActive(false);
 
-				Item_Icon.spriteName = "jianbianbgliang";
+				Item_Icon.spriteName = "BlueItemBg1";
 				mBtn.enabled = true;
 			}
 			else
@@ -79,7 +79,7 @@ public class PveStarItem : MonoBehaviour {
 
 				this.gameObject.GetComponent<BoxCollider>().enabled = false;
 
-				Item_Icon.spriteName = "thirdBg";
+				Item_Icon.spriteName = "BlueItemBg";
 
 				mBtn.enabled = false;
 			}

@@ -31,6 +31,24 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 
 	private bool FirstLieFu = false;
 
+	public bool mOneKeyLF = false;
+
+	private int FirstCost;
+
+	public static LieFuManagerment mLieFuManagerment;
+
+	public UISprite mOneKyLiefuUIsprite;
+	public UISprite mStopOneKyLiefuUIsprite;
+	public UILabel mStopLabel;
+	public static LieFuManagerment Instance()
+	{
+		if (!mLieFuManagerment)
+		{
+			mLieFuManagerment = (LieFuManagerment)GameObject.FindObjectOfType (typeof(LieFuManagerment));
+		}
+		
+		return mLieFuManagerment;
+	}
 	void Awake()
 	{
 		// reigster trigger delegate
@@ -47,6 +65,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 	void OnDestroy()
 	{
 		SocketTool.UnRegisterMessageProcessor(this);
+		mLieFuManagerment = null;
 	}
 	void SetBtnMoth(UIEventListener mUIEventListener)
 	{
@@ -55,6 +74,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 	public void BtnManagerMent(GameObject mbutton)
 	{
 //		if(YindaoIsopen)return;
+
 		switch(mbutton.name)
 		{
 		case "Button_1":
@@ -71,6 +91,22 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 			break;
 		case "Sprite":
 			Close();
+			break;
+			break;
+		case "Button_OnekeyLF":
+			if(mOneKeyLF)
+			{
+				StopLiefuBtn ();
+			}
+			else
+			{
+				OneKeyLieFuBtn();
+			}
+
+			break;
+		case "StopLiefuBtn":
+//			StopLiefuBtn();
+			Debug.Log ("StopLiefuBtn----");
 			break;
 		default:
 			break;
@@ -90,13 +126,55 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 		}
 
 	}
+	public void StartLiefuBtn()
+	{
+		mOneKyLiefuUIsprite.color = Color.white;
+		mStopLabel.text = "停止";
+		mStopOneKyLiefuUIsprite.gameObject.GetComponent<BoxCollider>().enabled = true;
+	}
+	public void StopLiefuBtn()
+	{
+		Debug.Log ("Stop----");
+		mStopLabel.text = "一键猎符";
+		mOneKeyLF = false;
+		mOneKyLiefuUIsprite.color = Color.white;
+		mStopOneKyLiefuUIsprite.gameObject.GetComponent<BoxCollider>().enabled = false;
+	}
+	public void OneKeyLieFuBtn()
+	{
+		mOneKeyLF = true;
+		OneKeyLieFu ();
+	}
+    void OneKeyLieFu()
+	{
+		if(LieFuItemList.Count > 0)
+		{
+			for(int i = LieFuItemList.Count-1; i >= 0; i--)
+			{
+				if(LieFuItemList[i].mLieFuActionInfo.state == 1)
+				{
+					if(LieFuItemList[i].mLieFuActionInfo.type == 4)
+					{
+						ClientMain.m_UITextManager.createText("请先将女娲猎符完毕再使用该功能!");
+						StopLiefuBtn();
+					}
+					else
+					{
+						LieFuItemList[i].LieFuBtn();
+
+					}
+					break;
+				}
+			}
+		}
+	}
 	public void Init(CheckYindao m_CheckYindao = null)
 	{
 		if(m_CheckYindao != null)
 		{
 			mCheckYindao = m_CheckYindao;
 		}
-
+		mStopLabel.text = "一键猎符";
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.LieFu_Action_Info_Req); // 猎符请求,
 	}
 	private bool YindaoIsopen;
@@ -189,10 +267,13 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 					}
 					GetLieFuAward();
 
-					Init();
-					if(NewFuWenPage.Instance().RongHeUIisOpen)
+					if(FirstCost <= 0)
 					{
-						FuWenInfoShow.Instance().Init();
+						Init();
+					}
+					if(mOneKeyLF)
+					{
+						Invoke("OneKeyLieFu",0.5f);
 					}
 					YindaoIsopen = false;
 				}
@@ -246,6 +327,7 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 				{
 					BtnList.Add(m_LieFuItem.mEventListener);
 				}
+				FirstCost = mLieFuActionInfo.lieFuActionInfo[i].cost;
 			}
 			AddEventListener ();
 			mgrid.repositionNow = true;
@@ -282,6 +364,10 @@ public class LieFuManagerment : MonoBehaviour ,SocketProcessor {
 		{
 			mCheckYindao();
 			mCheckYindao = null;
+		}
+		if(NewFuWenPage.Instance().RongHeUIisOpen)
+		{
+			FuWenInfoShow.Instance().Init();
 		}
 		QXComData.SendQxProtoMessage (ProtoIndexes.C_LOAD_FUWEN_IN_BAG); // 
 //		MainCityUI.TryRemoveFromObjectList(this.gameObject);

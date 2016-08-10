@@ -25,7 +25,7 @@ public class TaskScrollViewItemAmend : MonoBehaviour
 
     public UISprite m_backGround;
     public UISprite m_LingQu;
-
+    public UISprite m_XiangZi;
     public GameObject m_flag_finish;
 
     public GameObject m_Kuang;
@@ -73,7 +73,11 @@ public class TaskScrollViewItemAmend : MonoBehaviour
         if (taskInfo._Progress < 0)
         {
             m_LingQu.gameObject.SetActive(true);
-            m_backGround.spriteName = "jianbianbgliang";
+            if (m_XiangZi != null)
+            {
+                m_XiangZi.gameObject.SetActive(false);
+            }
+            m_backGround.spriteName = "BlueItemBg";
             if(taskInfo._Type == 2 && m_LingQu.GetComponent<Animator>()== null)
             {
               EffectTool.OpenMultiUIEffect_ById( m_LingQu.gameObject, 223, 224, 225);
@@ -85,7 +89,11 @@ public class TaskScrollViewItemAmend : MonoBehaviour
         }
         else  
         {
-            m_backGround.spriteName = "jianbianbgan";
+            if (m_XiangZi != null)
+            {
+                m_XiangZi.gameObject.SetActive(true);
+            }
+            m_backGround.spriteName = "BlueItemBg1";
             m_LingQu.gameObject.SetActive(false);
             m_flag_finish.SetActive(false);
             m_progressLabel.gameObject.SetActive(true);

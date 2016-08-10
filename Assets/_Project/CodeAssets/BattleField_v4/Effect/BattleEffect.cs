@@ -31,6 +31,8 @@ public class BattleEffect : MonoBehaviour
 
 	private FxCacheItem m_fx_cache = null;
 
+	private float m_fTransformY = 0;
+
 
 	void OnEnable(){
 		m_fx_cache = GetComponent<FxCacheItem>();
@@ -106,6 +108,11 @@ public class BattleEffect : MonoBehaviour
 		selfUpdataDodge = true;
 	}
 
+	public void setTanstrformY(float y)
+	{
+		m_fTransformY = y;
+	}
+
 	void Update ()
 	{
 		//if (selfUpdate == false) return;
@@ -138,15 +145,15 @@ public class BattleEffect : MonoBehaviour
 		{
 			transform.position = host.transform.position + offset;
 			
-			if(ratio != 0)
-			{
-				BaseAI node = host.GetComponentInChildren<BaseAI>();
-				
-				if(node != null)
-				{
-					transform.position += new Vector3(0, node.getHeight() * ratio, 0);
-				}
-			}
+//			if(ratio != 0)
+//			{
+//				BaseAI node = host.GetComponentInChildren<BaseAI>();
+//				
+//				if(node != null)
+//				{
+//					transform.position += new Vector3(0, node.getHeight() * ratio, 0);
+//				}
+//			}
 			
 			transform.forward = host.transform.forward;
 		}
@@ -156,6 +163,7 @@ public class BattleEffect : MonoBehaviour
 			
 			if(Vector3.Distance(Vector3.zero, forward) > .1f) transform.forward = forward;
 		}
+		transform.position = new Vector3(transform.position.x, transform.position.y + m_fTransformY, transform.position.z);
 	}
 
 	public void updataPositionDodge()
@@ -175,6 +183,7 @@ public class BattleEffect : MonoBehaviour
 				transform.position = kc.transform.position;
 			}
 		}
+		transform.position = new Vector3(transform.position.x, transform.position.y + m_fTransformY, transform.position.z);
 	}
 
 	private void updataTime()

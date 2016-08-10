@@ -10,7 +10,7 @@ using ProtoBuf.Meta;
 
 public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
 {
-    public List<EventIndexHandle> m_listEvent;
+    public List<ButtonManagerment> m_listEvent;
     public List<EventIndexHandle> m_listItemEvent;
     public UIGrid m_Parent;
     public GameObject m_ParentForbid;
@@ -50,14 +50,14 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
     }
 	void Start () 
     {
-        MainCityUI.setGlobalTitle(m_ObjTopLeft, "好友", 0, 0);
+        MainCityUI.setGlobalTitle(m_ObjTopLeft, "好友", 59, 0);
         MainCityUI.setGlobalBelongings(m_Durable_UI, 0, 0);
         listInfo.Clear();
         friendItenDic.Clear();
         index = 0;
         m_listEvent.ForEach(p => p.m_Handle += TouchEvent);
         m_listItemEvent.ForEach(p => p.m_Handle += ItemTouchEvent);
-        m_listEvent[1].GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(false);
+     //   m_listEvent[1].GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(false);
         //  pageIndex = 1;
         BlockedData.Instance().RequestBlockedInfo();
 
@@ -95,23 +95,19 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
     {
         if (_index_Touch != index)
         {
+            m_listEvent[index].m_Touched.SetActive(true);
+            m_listEvent[index].m_Normal.SetActive(false);
+            m_listEvent[_index_Touch].m_Touched.SetActive(false);
+            m_listEvent[_index_Touch].m_Normal.SetActive(true);
             _index_Touch = index;
             switch (index)
             {
                 case 0:
                     {
-                        foreach (EventIndexHandle item in m_listEvent)
-                        {
-                            if (item.m_SendIndex == index)
-                            {
-                                item.GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(true);
-                            }
-                            else
-                            {
-                                item.GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(false);
-                            }
-                        }
                         listForbidInfor.Clear();
+                        m_ScrollView.disableDragIfFits = true;
+
+
                         listGameobject[0].SetActive(false);
                         listGameobject[1].SetActive(true);
                         RefreshFriendsInfo();
@@ -119,27 +115,14 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
                     break;
                 case 1:
                     {
-                        foreach (EventIndexHandle item in m_listEvent)
-                        {
-                            if (item.m_SendIndex == index)
-                            {
-                                item.GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(true);
-                            }
-                            else
-                            {
-                                item.GetComponent<ButtonColorAndDepthManagerment>().ButtonsControl(false);
-                            }
-                        }
-
-                 
                         foreach (KeyValuePair<int, GameObject> item in friendItenDic)
                         {
                             item.Value.GetComponent<UIDragScrollView>().enabled = true;
                             item.Value.GetComponent<FriendOperationItemManagerment>().m_GaoLiangKuang.SetActive(false);
                         }
-
                         listForbidInfor.Clear();
                         listGameobject[0].SetActive(true);
+                        m_ScrollView2.disableDragIfFits = true;
                         listGameobject[1].SetActive(false);
                         m_ObjItemMesh.SetActive(false);
                         ShowForbidInfo();
@@ -150,7 +133,6 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
             }
         }
     }
-
     void Update()
     {
         //if (listInfo.Count > 0)
@@ -221,6 +203,8 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         }
 
         m_HiddenObject.SetActive(true);
+   
+  
         listGameobject[1].SetActive(true);
         m_LoadingObj.SetActive(false);
         RefreshFriendsInfo();
@@ -233,49 +217,6 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         {
             switch (p_message.m_protocol_index)
             {
-                //case ProtoIndexes.S_FRIEND_RESP://返回好友信息
-                //    {
-                //        MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-
-                //        QiXiongSerializer t_qx = new QiXiongSerializer();
-
-                //        GetFriendListResp ReponseInfo = new GetFriendListResp();
-                //        t_qx.Deserialize(t_tream, ReponseInfo, ReponseInfo.GetType());
-                //        friendCountMax = ReponseInfo.friendCount;
-                     
-                //       // Debug.Log("ReponseInfo.friendCountReponseInfo.friendCountReponseInfo.friendCount ::" + ReponseInfo.friendCount);
-                //        m_listLabel[0].text = ReponseInfo.friendCount + " / " + ReponseInfo.friendMax;
-                  
-                //        if (listInfo.Count < ReponseInfo.friendCount)
-                //        {
-                //            //Debug.Log("ReponseInfo.friends.Count" + ReponseInfo.friends.Count);
-                //            for (int i = 0; i < ReponseInfo.friends.Count; i++)
-                //            {
-                //                listInfo.Add(ReponseInfo.friends[i]);
-                //            }
-                //        }
-                //       // if (ReponseInfo.friends != null)
-                //        {
-                //          //  Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                //            if (ReponseInfo.friendCount > 0)
-                //            {
-                //                listTitle[0].SetActive(false);
-                //            }
-                //            else
-                //            {
-                //                listTitle[0].SetActive(true);
-                //                m_labelFriedsTag.text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_FRIENDS_1);
-                //            }
-                         
-                //            m_HiddenObject.SetActive(true);
-                //            listGameobject[1].SetActive(true);
-                //            m_LoadingObj.SetActive(false);
-                //            RefreshFriendsInfo();
-                //        }
- 
-                //        return true;
-                //    }
-                //    break;
                 case ProtoIndexes.S_DELEFRIEND_RESP://返回删除信息 
                     {
                         MemoryStream t_tream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
@@ -361,7 +302,10 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
                         }
                         else if (ReponseInfo.result == 103)
                         {
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallbackForbidFull);
+                            string cancelStr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+                            string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_2);
+                            string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_3);
+                            Global.CreateBox("提示", str, str2, null, cancelStr, "确定",null,null);
                         }
 
                         for (int i = 0; i < listInfo.Count; i++)
@@ -393,8 +337,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
                         BlacklistResp tempResponse = new BlacklistResp();
 
                         t_qx.Deserialize(t_stream, tempResponse, tempResponse.GetType());
-
-                       // Debug.Log("tempResponse.junzhuIdtempResponse.junzhuId ::" + tempResponse.junzhuId);
+ 
                         if (tempResponse.result == 0)
                         {
                             need_Name = BlockedData.Instance().m_BlockedInfoDic[tempResponse.junzhuId].name;
@@ -425,36 +368,15 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
                             {
                                 listTitle[1].SetActive(false);
                             }
-                        
-                            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),UIBoxLoadCallbackDisForbidSuccss);
-                   
+                            string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_10);
+                            Global.CreateBox("提示", str, "", null, "", "确定", null, null);
+ 
                         }
                         m_listLabel[1].text = BlockedData.Instance().m_BlockedInfoDic.Count.ToString() + " / " + BlockedData.Instance().m_ForbidFriendsMax.ToString();
                         return true;
                     }
                     break;
-                //case ProtoIndexes.S_ADDRIEND_RESP://返回添加好友信息
-                //    {
-                  
-                //        MemoryStream t_stream = new MemoryStream(p_message.m_protocol_message, 0, p_message.position);
-
-                //        QiXiongSerializer t_qx = new QiXiongSerializer();
-
-                //        FriendResp tempResponse = new FriendResp();
-
-                //        t_qx.Deserialize(t_stream, tempResponse, tempResponse.GetType());
-                //       // Debug.Log("tempResponse.resulttempResponse.resulttempResponse.result ::" + tempResponse.result);
-                //        if (tempResponse.result == 0)
-                //        {
-                //            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallbackAddFriendSuccess);
-                //        }
-                //        else if (tempResponse.result == 103)
-                //        {
-                //            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX), UIBoxLoadCallbackFriendFull);
-                //        }
-                //        return true;
-                //    }
-                //    break;
+                
                 default:
                     break;
             }
@@ -462,59 +384,9 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         return false;
     }
     string need_Name = "";
-    public void UIBoxLoadCallbackAddFriendSuccess(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject boxObj = Instantiate(p_object) as GameObject;
-        UIBox uibox = boxObj.GetComponent<UIBox>();
-        string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_14) + need_Name + LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_15); 
- 
-       // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null);
- 
-    }
-
-    public void UIBoxLoadCallbackFriendFull(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject boxObj = Instantiate(p_object) as GameObject;
-        UIBox uibox = boxObj.GetComponent<UIBox>();
-        string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_2);
-        string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_3);
-
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), MyColorData.getColorString(1, str2), null, confirmStr, null, null);
-    }
-
-    public void UIBoxLoadCallbackForbidFull(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject boxObj = Instantiate(p_object) as GameObject;
-        UIBox uibox = boxObj.GetComponent<UIBox>();
-        string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_2);
-        string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_3);
-        string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), MyColorData.getColorString(1, str2), null, confirmStr, null, null);
-    }
-    public void UIBoxLoadCallbackDisForbidSuccss(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject boxObj = Instantiate(p_object) as GameObject;
-        UIBox uibox = boxObj.GetComponent<UIBox>();
-        string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_10);
-     //   string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_11);
-       // string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), "", null, confirmStr, null, null);
- 
-      //  uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str),MyColorData.getColorString(1, str2) ,null , concelr, confirmStr, AddFriend, titleFont, titleFont, btn1Font);
-    }
+   
+   
+   
 
     void AddFriend(int index)
     {
@@ -532,44 +404,26 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
             SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_ADDFRIEND_REQ, ref t_protof);
         }
     }
-  
+
     public void RefreshFriendsInfo()
     {
+        index = 0;
         int all_child = m_Parent.transform.childCount;
-        int size = listInfo.Count;
-        if (size > all_child)
+        friendItenDic.Clear();
+        if (all_child > 0)
         {
-   
-            //if (friendCountMax < 4)
-            //{
-            //    m_ScrollView.enabled = false;
-            //}
-            //else
-            //{
-            //    m_ScrollView.enabled = true;
-            //}
- 
-            for (int i = index; i < size; i++)
+            for (int i = 0; i < all_child; i++)
             {
-                Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FRIEND_OPERATION_ITEM),
-                                                LoadCallback);
+               Destroy(m_Parent.transform.GetChild(i).gameObject);
             }
         }
-        else
-        {
-            //foreach (KeyValuePair<int, GameObject> item in friendItenDic)
-            //{
-            //    if (int.Parse(item.Value.name) > int.Parse(deleName))
-            //    {
-            //        Vector3 vec = new Vector3();
-            //        vec = item.Value.transform.localPosition;
-            //        vec.y += 104.0f;
-            //        item.Value.transform.localPosition = vec;
-            //    }
-            //}
-        
-        }
+        int size = listInfo.Count;
  
+        for (int i = 0; i < size; i++)
+        {
+            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.FRIEND_OPERATION_ITEM),
+                                            LoadCallback);
+        }
     }
 
     int index = 0;
@@ -588,6 +442,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         }
         else
         {
+           // m_ScrollView.UpdatePosition();
             m_ScrollView.disableDragIfFits = true;
             index = listInfo.Count; 
         }
@@ -596,12 +451,10 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
     void ShowForbidInfo()
     {
         listForbidInfor.Clear();
+        friendForbidItenDic.Clear();
+        index_NUm = 0;
         int childCount = m_ParentForbid.transform.childCount;
-        if (childCount > 0)
-        {
-            index_NUm = 0;
-            friendForbidItenDic.Clear();
-        }
+     
         for (int i = 0; i < childCount; i++)
         {
             Destroy(m_ParentForbid.transform.GetChild(i).gameObject);
@@ -625,14 +478,14 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         }
 
         int size = listForbidInfor.Count;
-        if (size > 4)
-        {
-            m_ScrollView2.enabled = true;
-        }
-        else
-        {
-            m_ScrollView2.enabled = false;
-        }
+        //if (size > 4)
+        //{
+        //    m_ScrollView2.enabled = true;
+        //}
+        //else
+        //{
+        //    m_ScrollView2.enabled = false;
+        //}
         for (int i = size -1 ; i >= 0; i--)
         {
             Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SETTINGS_UP_BLOCKED_ITEM),
@@ -692,25 +545,15 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         if (_OblNull == null)
         {
             _OblNull = gameObject;
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                UIBoxLoadCallbackForbidTag);
+            string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_5) + forbid_FriendName + LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_6);
+            string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_7) + "\n" + LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_8);
+            string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+            
+            Global.CreateBox("提示", str1, str2, null, concelr, "确定", AddForbid);
+            
         }
     }
-    public void UIBoxLoadCallbackForbidTag(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject boxObj = Instantiate(p_object) as GameObject;
-        _OblNull = boxObj;
-        UIBox uibox = boxObj.GetComponent<UIBox>();
-        string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
-        string str1 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_5) + forbid_FriendName + LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_6);
-        string str2 = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_7) + "\n" + LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_8);
-        string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str1), MyColorData.getColorString(1, str2), null, concelr, confirmStr, AddForbid);
-
-    }
-
+  
     void AddForbid(int index)
     {
         if (index == 2)
@@ -757,22 +600,13 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         if (_objDelNull == null)
         {
             _objDelNull = gameObject;
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                                UIBoxLoadCallbackDeleTag);
+            string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_4);
+            string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+            Global.CreateBox("提示", str, "", null, concelr, "确定", DeleteFriend);
         }
     }
 
-    public void UIBoxLoadCallbackDeleTag(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject boxObj = Instantiate(p_object) as GameObject;
-        _objDelNull = boxObj;
-        UIBox uibox = boxObj.GetComponent<UIBox>();
-        string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_4);
-        string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), null, null, concelr, confirmStr, DeleteFriend);
-    }
+    
     string disForbideName = "";
     private GameObject _objNull = null;
     void CallBackAddDisForbid(long id, string name)
@@ -782,23 +616,13 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         if (_objNull == null)
         {
             _objNull = gameObject;
-            Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.GLOBAL_DIALOG_BOX),
-                         UIBoxLoadCallbackDisForbidTag);
+            string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_9);
+            string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
+            Global.CreateBox("提示", str, "", null, concelr, "确定", DisForbid);
+           
         }
     }
-
-    public void UIBoxLoadCallbackDisForbidTag(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject boxObj = Instantiate(p_object) as GameObject;
-        _objNull = boxObj;
-        UIBox uibox = boxObj.GetComponent<UIBox>();
-        string upLevelTitleStr = LanguageTemplate.GetText(LanguageTemplate.Text.PVE_RESET_BTN_BOX_TITLE);
-        string confirmStr = LanguageTemplate.GetText(LanguageTemplate.Text.CONFIRM);
-
-        string str = LanguageTemplate.GetText(LanguageTemplate.Text.FRIEND_SIGNAL_TAG_9);
-        string concelr = LanguageTemplate.GetText(LanguageTemplate.Text.CANCEL);
-        uibox.setBox(upLevelTitleStr, MyColorData.getColorString(1, str), null, null, concelr, confirmStr, DisForbid);
-    }
+ 
     void DisForbid(int index)
     {
         if (index == 2)
@@ -821,34 +645,7 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         SocketTool.UnRegisterSocketListener(this);
     }
     bool isOn = false;
-
-    void CallBack()
-    {
  
-            //Debug.Log("m_listScrollView[0].transform.localPosition.y" +m_listScrollView[0].transform.localPosition.y);
-            //Debug.Log("listInfo.Count * height_index" +listInfo.Count * height_index);
-            //if (m_listScrollView[0].transform.localPosition.y > -13 + listInfo.Count * height_index)
-            //{
-                //int child_Count =  m_Parent.transform.childCount;
-                //if (friendCountMax > child_Count)
-                //{
-                //    m_LoadingObj.SetActive(true);
-                //    pageIndex++;
-                //   // Debug.Log("SSSSSSSSSSSSSSSSSSSSSSSSS :" + pageIndex);
-                //    RequestData(pageIndex);
-                //}
-                //else
-                //{
-                //    Debug.Log("FULLFULLFULLFULLFULLFULLFULLFULLFULLFULLFULLFULLFULLFULL");
-                //}
-         //   }
-            //else
-            //{
-
-            //    Debug.Log("DOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWNDOWN");
-            //}
-        
-    }
     void ShowMesh()
     {
 
@@ -865,13 +662,13 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
         obj.transform.parent = friendItenDic[int.Parse(name)].transform;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.parent = m_ObjItemMesh.transform;
-        if (obj.transform.localPosition.y < -150)
+        if (obj.transform.localPosition.y < -199)
         {
-            obj.transform.localPosition = -150 * Vector3.one;
+            obj.transform.localPosition = -199 * Vector3.one;
         }
-        else if (obj.transform.localPosition.y > 95)
+        else if (obj.transform.localPosition.y > 147)
         {
-            obj.transform.localPosition = 95 * Vector3.one;
+            obj.transform.localPosition = 147 * Vector3.one;
         }
         m_ObjItemMesh2.transform.localPosition = new Vector3(293, obj.transform.localPosition.y, 0);
         Destroy(obj);
@@ -905,10 +702,9 @@ public class FriendOperationLayerManagerment : MonoBehaviour , SocketListener
             _ForbidName = name;
             _isTouchOn = true;
             m_ObjItemMesh.SetActive(true);
-         //   m_ScrollView.enabled = false;
+ 
         }
-     
-
+ 
     }
 
     public static void AddFriends(int FriendId)

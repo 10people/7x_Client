@@ -195,13 +195,13 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 	void Expeling (int i)
 	{
 		//刷新item驱逐状态
-		WarSituationPage.situationPage.RefreshItemList (itemId,false);
+		WarSituationPage.m_instance.RefreshItemList (itemId,false);
 	}                              
 
 	void DeleteItem (int i)
 	{
 		//删除无法驱逐的item
-		WarSituationPage.situationPage.RefreshItemList (itemId,true);
+		WarSituationPage.m_instance.RefreshItemList (itemId,true);
 	}
 
 	void SituationObjLoadBack ( ref WWW p_www, string p_path, UnityEngine.Object p_object )
@@ -216,7 +216,7 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 		IsSituationPageOpen = true;
 		MainCityUI.TryAddToObjectList (situationObj);
 		UIYindao.m_UIYindao.CloseUI ();
-		WarSituationPage.situationPage.InItWarSituationPage (situationType,situationResp,isEnterByPlunder);
+		WarSituationPage.m_instance.InItWarSituationPage (situationType,situationResp,isEnterByPlunder);
 	}
 
 	/// <summary>
@@ -237,7 +237,7 @@ public class WarSituationData : Singleton<WarSituationData>,SocketProcessor {
 
 		if (IsSituationPageOpen)
 		{
-			WarSituationPage.situationPage.InItWarSituationPage (situationType,situationResp,isEnterByPlunder);
+			WarSituationPage.m_instance.InItWarSituationPage (situationType,situationResp,isEnterByPlunder);
 		}
 	}
 }

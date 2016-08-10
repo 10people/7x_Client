@@ -172,6 +172,8 @@ public class NewFuWenPage : MonoBehaviour ,SocketListener {
 		OnekeyXiangqiang = false;
 		RongHeUIisOpen = false;
 
+		
+		CreateBags ();
 //		GetBagInfo ();
 //		TopRightManualAnchor.transform.localPosition = new Vector3(480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY, 0);
 //		TopLeftManualAnchor.transform.localPosition = new Vector3(-480 - ClientMain.m_iMoveX, 320 + ClientMain.m_iMoveY, 0);
@@ -716,16 +718,12 @@ public class NewFuWenPage : MonoBehaviour ,SocketListener {
 
 			}
 			fuWenBagItemList.Clear();
-			CreateBags (16);
 			CreateFuWenLanWei (true);
+			bagnuber = mFuwenInBag.fuwenList.Count+4;
 			return;
 		}
 		else
 		{
-			int x = (mFuwenInBag.fuwenList.Count)%4;
-			int y = 16 - x;
-	
-			CreateBags (mFuwenInBag.fuwenList.Count +y);
 			CreateFuWenLanWei (false);
 		}
 
@@ -1158,21 +1156,21 @@ public class NewFuWenPage : MonoBehaviour ,SocketListener {
 
 	public UIGrid  mgrid;
 	private int bagnuber;// 临时变量
-	void CreateBags(int bagNumber)
+	void CreateBags( )
 	{
-		if(bagNumber > bagnuber)
+		if(bagnuber < 40)
 		{
-			for(int i = bagnuber ;i < bagNumber; i ++)
-			{
-				GameObject mBag = Instantiate(bagstemp) as GameObject;
-				mBag.SetActive(true);
-				mBag.transform.parent = bagstemp.transform.parent;
-				mBag.transform.localScale = Vector3.one;
-				Bags.Add(mBag);
-			}
-			bagnuber = bagNumber;
-			mgrid.repositionNow = true;
+			bagnuber = 40;
 		}
+		for(int i = 0 ;i < bagnuber; i ++)
+		{
+			GameObject mBag = Instantiate(bagstemp) as GameObject;
+			mBag.SetActive(true);
+			mBag.transform.parent = bagstemp.transform.parent;
+			mBag.transform.localScale = Vector3.one;
+			Bags.Add(mBag);
+		}
+		mgrid.repositionNow = true;
 //		mScrollView.UpdatePosition ();
 	}
 	public  string GetFuWenProperty(int index)

@@ -55,7 +55,6 @@ public class MiBaoStarUpUI : MonoBehaviour {
 	GameObject mCamer;
 	public void Init()
 	{
-		Global.m_isZhanli = true;//当Global.m_isZhanli为true的时候  关闭播放战力提升
 
 	    mCamer = GameObject.FindGameObjectWithTag ("MiBao");
 //		mCamer.GetComponent<Camera> ().enabled = true;
@@ -116,12 +115,9 @@ public class MiBaoStarUpUI : MonoBehaviour {
 	IEnumerator OPenZhanliShow()
 	{
 		yield return new WaitForSeconds (1.5f);
-		Debug.Log ("显示战力提升！");
-		Global.m_isZhanli = false;
 	}
 	public void Close()
 	{
-		Global.m_isZhanli = false;
 		EffectTool.SetUIBackgroundEffect (mCamer.gameObject, false);
 		MainCityUI.TryRemoveFromObjectList (this.gameObject);
 		Destroy (this.gameObject);

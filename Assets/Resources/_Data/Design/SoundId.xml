@@ -506,4 +506,5 @@
 <SoundList id="1001031" name="1031" path="Sounds/BGM/1031" loops="0" type="mp3" stereo="0" />
 <SoundList id="1001032" name="1032" path="Sounds/BGM/1032" loops="0" type="mp3" stereo="0" />
 <SoundList id="1001041" name="1041" path="Sounds/BGM/1041" loops="0" type="mp3" stereo="0" />
+<SoundList id="1004024" name="VO_BOSS_Male_D_Attack1" path="Sounds/Sfx/VO_BOSS_Male_D_Attack1" loops="0" type="mp3" stereo="0" />
 </dataset>

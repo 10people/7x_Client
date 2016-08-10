@@ -18,7 +18,7 @@ public class MapData : MonoBehaviour, SocketListener {
     public  Section myMapinfo; 
 	public static MapData mapinstance;
 	public Dictionary<int,Level> Lv = new Dictionary<int,Level>();
-	[HideInInspector]public List<Pve_Level_Info> Pve_Level_InfoList = new List<Pve_Level_Info> ();
+	[HideInInspector]public List<NewPveLevelInfo> Pve_Level_InfoList = new List<NewPveLevelInfo> ();
 
 	[HideInInspector]public List<Level> CQLv = new List<Level> ();
 
@@ -112,7 +112,7 @@ public class MapData : MonoBehaviour, SocketListener {
 	{
 //		Debug.Log ("ShowEffectLevelid = "+ShowEffectLevelid);
 
-		foreach(Pve_Level_Info mPve_Level_Info in Pve_Level_InfoList)
+		foreach(NewPveLevelInfo mPve_Level_Info in Pve_Level_InfoList)
 		{
 			if(ShowEffectLevelid == mPve_Level_Info.litter_Lv.guanQiaId)
 			{
@@ -127,7 +127,7 @@ public class MapData : MonoBehaviour, SocketListener {
 
 	public void CloseEffect()
 	{
-		foreach(Pve_Level_Info mPve_Level_Info in Pve_Level_InfoList)
+		foreach(NewPveLevelInfo mPve_Level_Info in Pve_Level_InfoList)
 		{
 			if(ShowEffectLevelid == mPve_Level_Info.litter_Lv.guanQiaId)
 			{

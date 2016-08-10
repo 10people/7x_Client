@@ -4,6 +4,7 @@ using System.Collections;
 public class TaskButtonItemManagerment : MonoBehaviour {
 
     public UISprite m_SpriteIcon;
+    public UISprite m_SpriteIcon2;
     public delegate void OnClick_Touch(int type);
     OnClick_Touch CallBackTouch;
     private int _TypeNum = 0;
@@ -24,7 +25,8 @@ public class TaskButtonItemManagerment : MonoBehaviour {
     public void ShowInfo(TaskLayerManager.TaskType info, OnClick_Touch callback)
     {
         _TypeNum = info._type;
-        m_SpriteIcon.spriteName = info._Icon;
+        m_SpriteIcon.spriteName = info._Icon + "_1";
+        m_SpriteIcon2.spriteName = info._Icon + "_0";
         CallBackTouch = callback;
     }
 	

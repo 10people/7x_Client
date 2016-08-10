@@ -323,6 +323,15 @@ public class ClientMain : MonoBehaviour , SocketListener
 				}
 			}
 		}
+		for(int i = 0; i < Global.m_listAllTheData.Count; i ++)
+		{
+			if(Time.time - Global.m_listAllTheData[i].bTime >= Global.m_listAllTheData[i].m_SuBaoMSG.cdTime)
+			{
+				Global.m_listAllTheData.RemoveAt(i);
+				Global.upDataTongzhiData(null);
+				i --;
+			}
+		}
 		#if PC_VIDEO
 		if( m_movie_texture != null ){
 			if( Input.anyKeyDown ){
@@ -1191,7 +1200,7 @@ public class ClientMain : MonoBehaviour , SocketListener
 	public static void addPopUP(int Level, int type, string data, AddPopUpCallback callback)
 	{
 		//		Debug.Log("========================1");
-		//		Debug.Log(Level);
+				Debug.Log(Level);
 		//		Debug.Log(data);
 		for(int i = 0; i < m_listPopUpData.Count; i++)
 		{

@@ -41,7 +41,6 @@ public class SaoDangManeger : MonoBehaviour {
 		}
 
 		mSaoDangFinshDo = mFunction;
-		Global.m_isZhanli = true;
 		StartCoroutine ( CreateAwardTemp() );
 	}
 	void ShowSaoDangYinDao()
@@ -173,7 +172,6 @@ public class SaoDangManeger : MonoBehaviour {
 	}
 	public void ConfrimBtn()
 	{
-		Global.m_isZhanli = false;
         TaskData.Instance.IsCanShowComplete = true;
         //FunctionWindowsCreateManagerment.m_IsSaoDangNow = false;
 		if(mSaoDangFinshDo != null && myindaoid > 0)

@@ -20,6 +20,8 @@ public class CityGlobalData  {
 		fangun
 	}
 
+	public static bool mSaoDangFinshed = false;
+
 	public static int[] mPveStar = new int[3] ;
 
 	public static bool QCLISOPen = false;//判断千重楼是UI是否打开

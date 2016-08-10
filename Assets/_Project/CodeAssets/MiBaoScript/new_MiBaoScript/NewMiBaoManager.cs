@@ -151,8 +151,8 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		m_MiBaoInfo = MiBaoGlobleData.Instance ().G_MiBaoInfo;
 		mtime = m_MiBaoInfo.remainTime;
 		InitData();
-		StopCoroutine("showTime");
-		StartCoroutine("showTime");
+//		StopCoroutine("showTime");
+//		StartCoroutine("showTime");
 		//SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_MIBAO_INFO_REQ,ProtoIndexes.S_MIBAO_INFO_RESP.ToString());
 	}
 	public bool OnSocketEvent(QXBuffer p_message)
@@ -175,11 +175,14 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 //				Debug.Log("========1");
 				mtime = m_MiBaoInfo.remainTime;
 
-//				Debug.Log("将魂信息返回！");
+				Debug.Log("将魂信息返回！");
 
 				InitData();
-				StopCoroutine("showTime");
-				StartCoroutine("showTime");
+				if(mtime > 0)
+				{
+					StopCoroutine("showTime");
+					StartCoroutine("showTime");
+				}
 
 				return true;
 			}
@@ -304,32 +307,39 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 		}
 		VipTemplate mVip = VipTemplate.GetVipInfoByLevel (viplv);
 //		Debug.Log ("JunZhuData.Instance().m_junzhuInfo.vipLv = "+JunZhuData.Instance().m_junzhuInfo.vipLv);
-//		Debug.Log ("mVip = "+mVip.MiBaoLimit);
+
 		int MaxPoint = mVip.MiBaoLimit;
 
-		while (mtime > 0) {
+		while (mtime > 0) 
+		{
 			yield return new WaitForSeconds (1.0f);
 			mtime -= 1;
 			m_MiBaoInfo.remainTime = mtime;
+//			Debug.Log ("mtime = "+mtime);
+		
 		}
-		if(MaxPoint <= m_MiBaoInfo.levelPoint)
+		if(isOpenMiBaoTempInfo)
 		{
 			StopCoroutine("showTime");
-			MiBao_TempInfo.GetComponent<MiBaoDesInfo>().PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
 		}
 		else
 		{
 			m_MiBaoInfo.levelPoint += 1;
-			if(mtime <=0)
+			if(MaxPoint <= m_MiBaoInfo.levelPoint)
 			{
-				mtime = (int )CanshuTemplate.GetValueByKey("ADD_MIBAODIANSHU_INTERVAL_TIME");
+				StopCoroutine("showTime");
 			}
-
-			StopCoroutine("showTime");
-			
-			StartCoroutine("showTime");
-
-			MiBao_TempInfo.GetComponent<MiBaoDesInfo>().PointNum.text = NewMiBaoManager.Instance().m_MiBaoInfo.levelPoint.ToString ();
+			else
+			{
+				if(mtime <=0)
+				{
+					mtime = (int )CanshuTemplate.GetValueByKey("ADD_MIBAODIANSHU_INTERVAL_TIME");
+				}
+				
+				StopCoroutine("showTime");
+				
+				StartCoroutine("showTime");
+			}
 		}
 	}
 	int MaxId;
@@ -965,7 +975,10 @@ public class NewMiBaoManager : MYNGUIPanel ,SocketListener {
 
 	public void ShowMiBaoDeilInf( MibaoInfo mMiBaoifon)
 	{
-
+		if(mMiBaoifon == null)
+		{
+			return;
+		}
 		MiBao_TempInfo.SetActive (true);
 		MiBaoDesInfo mMiBaodes = MiBao_TempInfo.GetComponent<MiBaoDesInfo>();
 		mMiBaodes.ShowmMiBaoinfo = mMiBaoifon;

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 <FuncLink ID="101" title="元宝不足" desc="充值、提升百战千军排名、\n达成活动成就均可轻松获取元宝！" funcID="1300,null,300100,War_Sport,144,PageButton144" />
-<FuncLink ID="201" title="消耗体力" desc="扫荡关卡\n即可收集将魂和秘宝，获得大量经验。" funcID="300000,null,109,chuanqi" />
+<FuncLink ID="201" title="消耗体力" desc="扫荡关卡\n即可快速获得秘宝及将魂碎片。" funcID="300000,null,109,chuanqi" />
 <FuncLink ID="301" title="功 能" desc="点击图标\n进入辅助功能" funcID="3,null,4,null,212,null,1421,null" />
 <FuncLink ID="401" title="体力不足" desc="购买体力、每日体力赠送、\n达成活动成就均可轻松获取体力" funcID="2100,null,1391,PageButton1391,144,PageButton144" />
-<FuncLink ID="501" title="铜币不足" desc="购买铜币、行镖、\n试炼-洗劫权贵均可获取铜币" funcID="2101,null,310,War_YunBiao,302,SL_XiJieQuanGui" />
+<FuncLink ID="501" title="铜币不足" desc="购买铜币、行镖、\n试炼-百步穿杨均可获取铜币" funcID="2101,null,310,War_YunBiao,302,SL_XiJieQuanGui" />
 <FuncLink ID="601" title="装备提升" desc="首充、V特权礼包、试炼-横扫六合、商铺" funcID="9,null,305,SI_ZongHengLiuHe" />
-<FuncLink ID="701" title="贡献不足" desc="膜拜、运镖、荒野、掠夺，可获大量贡献！" funcID="104,null,310,War_YunBiao,211,War_Plunder" />
+<FuncLink ID="701" title="贡献不足" desc="膜拜、运镖、荒野、征讨，可获大量贡献！" funcID="104,null,310,War_YunBiao,211,War_Plunder" />
 <FuncLink ID="801" title="威望不足" desc="提升百战千军的排名军衔，\n可获得更多威望！" funcID="300100,War_Sport" />
-<FuncLink ID="901" title="建设值不足" desc="膜拜、运镖、荒野、掠夺\n均可提升联盟建设值" funcID="104,null,310,War_YunBiao" />
+<FuncLink ID="901" title="建设值不足" desc="膜拜、运镖、荒野、征讨\n均可提升联盟建设值" funcID="104,null,310,War_YunBiao" />
 <FuncLink ID="1001" title="精气值不足" desc="商铺、试炼-完璧归赵可获精气" funcID="9,null,303,SL_WanBiGuiZhao" />
-<FuncLink ID="1101" title="积分不足" desc="掠夺可获更多积分" funcID="211,War_Plunder" />
+<FuncLink ID="1101" title="积分不足" desc="征讨可获更多积分" funcID="211,War_Plunder" />
 <FuncLink ID="1201" title="洗练石不足" desc="商铺、联盟祭拜、千重楼，\n可获得更多洗练石！" funcID="9,null,104,null,300,QianChongLou" />
 <FuncLink ID="1301" title="强化石不足" desc="商铺、试炼-讨伐山贼\n均可获得强化石" funcID="9,null, 304,SI_TaoFaShanZei" />
 <FuncLink ID="1401" title="残简不足" desc="过关斩将掉落残简" funcID="300000,null" />

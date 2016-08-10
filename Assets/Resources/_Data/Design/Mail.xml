@@ -75,9 +75,9 @@
 <Mail type="60002" icon="60002" title="" taitou="" content="" sender="小七" award="0" remainTime="30" mailType="2" mailfenlei="8" />
 <Mail type="80000" icon="80000" title="" taitou="" content="" sender="" award="0" remainTime="30" mailType="0" mailfenlei="1" />
 <Mail type="90000" icon="90000" title="国战通知" taitou="亲爱的xxxxx：" content="国战将于今晚八点半准时开始，请各路英豪准时参加，保家卫国，征战天下。" sender="掌军司马" award="0" remainTime="0" mailType="0" mailfenlei="6" />
-<Mail type="100001" icon="100001" title="掠夺排行奖励" taitou="英雄：" content="上周掠夺玩法的排名已经确定，您的国家在全服排名中位列第***名，您的联盟在国家排名中位列第###名，特赠予您一批奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="0" mailType="2" mailfenlei="9" />
-<Mail type="100002" icon="100002" title="个人积分排行奖励" taitou="英雄：" content="恭喜您在昨日的掠夺玩法中表现优异！您的当日排行为第***名。特赠送您丰厚的奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="1" mailType="2" mailfenlei="9" />
-<Mail type="100003" icon="100003" title="联盟积分排行奖励通知" taitou="英雄：" content="恭喜您的联盟在昨日的掠夺玩法中表现优异！您的联盟在当日的排行为第***a名。***b建设值已发放至您的联盟！" sender="军情密探" award="0" remainTime="1" mailType="1" mailfenlei="9" />
+<Mail type="100001" icon="100001" title="征讨排行奖励" taitou="英雄：" content="上周征讨玩法的排名已经确定，您的国家在全服排名中位列第***名，您的联盟在国家排名中位列第###名，特赠予您一批奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="0" mailType="2" mailfenlei="9" />
+<Mail type="100002" icon="100002" title="个人积分排行奖励" taitou="英雄：" content="恭喜您在昨日的征讨玩法中表现优异！您的当日排行为第***名。特赠送您丰厚的奖励，敬请笑纳！" sender="军情密探" award="0" remainTime="1" mailType="2" mailfenlei="9" />
+<Mail type="100003" icon="100003" title="联盟积分排行奖励通知" taitou="英雄：" content="恭喜您的联盟在昨日的征讨玩法中表现优异！您的联盟在当日的排行为第***a名。***b建设值已发放至您的联盟！" sender="军情密探" award="0" remainTime="1" mailType="1" mailfenlei="9" />
 <Mail type="110001" icon="110001" title="郡城战战况" taitou="亲爱的xxxxx：" content="前方大捷！在我盟如潮水般的猛攻下，敌军终于一溃千里！**城已被我军攻克！如今我盟已是**城的主宰，此城将为我盟产出大量功勋！我盟需时刻警惕，防备敌人偷袭！此役我军击败敌人X名！您在此战中的排名是M，积分x，共击杀n人次！" sender="军情密探" award="0" remainTime="1" mailType="1" mailfenlei="10" />
 <Mail type="110002" icon="110002" title="郡城战战况" taitou="亲爱的xxxxx：" content="前方战斗失利！虽然我军奋勇拼杀，但由于敌人的防御固若金汤，我军无法攻破敌军防线，没能夺取**城！请我盟将士稍事休整，来日再战！此役我军击败敌人X名！您在此战中的排名是M，积分x，共击杀n人次！" sender="军情密探" award="0" remainTime="1" mailType="1" mailfenlei="10" />
 <Mail type="110003" icon="110003" title="郡城战战况" taitou="亲爱的xxxxx：" content="**城之战大捷！经过我军将士上下一心浴血奋战，侵犯我盟**城的敌寇已被我军成功击溃，敌人望风而逃！请我盟将士不要放松警惕，坚守城池，防范敌寇来袭！此役我军击败敌人X名！您在此战中的排名是M，积分x，共击杀n人次！" sender="军情密探" award="0" remainTime="1" mailType="1" mailfenlei="10" />

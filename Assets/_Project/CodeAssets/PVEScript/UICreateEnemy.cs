@@ -9,7 +9,7 @@ public class UICreateEnemy : MonoBehaviour
     [HideInInspector]
     public GameObject IconSamplePrefab;
 	
-    int distance = 97;//敌人头像距离
+    int distance = 100;//敌人头像距离
     int countDistance = 250;//偏移量
 
 	List<LegendNpcTemplate> mLegendNpcTemplateList = new List<LegendNpcTemplate>();
@@ -177,7 +177,7 @@ public class UICreateEnemy : MonoBehaviour
 				allenemy = 4;
 			}
 
-			iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
+			iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, 0, 0);
             var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 		
 			NpcTemplate m_NpcTemplate = NpcTemplate.GetNpcTemplate_By_id(mNpcTemplate[n].id);
@@ -205,13 +205,13 @@ public class UICreateEnemy : MonoBehaviour
 			iconSampleManager.SetIconDecoSprite(leftTopSpriteName, rightButtomSpriteName);
 			if(m_NpcTemplate.type == 4 || m_NpcTemplate.type == 5)
 			{
-				iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+				iconSampleObject.transform.localScale = new Vector3(0.8f,0.8f,1);
 				iconSampleManager.ShowBOssName(Enemy_Namestr.Name);
 			}
 			else
 			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -23, 0);
-				iconSampleObject.transform.localScale = new Vector3(0.8f,0.8f,1);
+				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -3, 0);
+				iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
 			}
         }
     }
@@ -240,7 +240,7 @@ public class UICreateEnemy : MonoBehaviour
 				allenemy = 4;
 			}
 
-			iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -20, 0);
+			iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, 0, 0);
 			var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 			
 			LegendNpcTemplate m_LegendNpcTemplate= LegendNpcTemplate.GetLegendNpcTemplate_By_id(mLegendNpcTemplateList[n].id);
@@ -272,12 +272,12 @@ public class UICreateEnemy : MonoBehaviour
 			if(m_LegendNpcTemplate.type == 4 || m_LegendNpcTemplate.type == 5)
 			{
 				iconSampleManager.ShowBOssName(Enemy_Namestr.Name);
-				iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+				iconSampleObject.transform.localScale = new Vector3(0.8f,0.8f,1);
 			}
 			else
 			{
-				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -23, 0);
-				iconSampleObject.transform.localScale = new Vector3(0.8f,0.8f,1);
+				iconSampleObject.transform.localPosition = new Vector3((allenemy - n) * distance - countDistance, -3, 0);
+				iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
 			}
 		}
 	}

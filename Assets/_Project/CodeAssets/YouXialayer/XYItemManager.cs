@@ -48,6 +48,7 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 	}
 	void Start () {
 		SocketTool.Instance().SendSocketMessage(ProtoIndexes.C_YOUXIA_INFO_REQ, ProtoIndexes.S_YOUXIA_INFO_RESP + "");
+		Debug.Log("游侠请求");
 	}
 
 	public bool OnProcessSocketMessage(QXBuffer p_message){
@@ -68,8 +69,8 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 				t_qx.Deserialize(t_stream, tempInfo, tempInfo.GetType());
 				
 				InitUI(tempInfo);
-
-				EveryDayShowTime.Instance.m_isLoad1 = true;
+				Debug.Log("游侠返回");
+				EveryDayShowTime.m_isLoad1 = true;
 				return true;
 			}
 
@@ -80,65 +81,61 @@ public class XYItemManager : MonoBehaviour, SocketProcessor{
 	}
 	void InitUI(YouXiaInfoResp mYouXiaInfoResp)
 	{
-		foreach(YXItem m_YXItem in YXItemList)
+	
+		if(YXItemList.Count > 0 )
 		{
-			Destroy(m_YXItem.gameObject);
-		}
-		YXItemList.Clear ();
-		//Debug.Log ("mYouXiaInfoResp.youXiaInfos.Count = "+mYouXiaInfoResp.youXiaInfos.Count);
-		for (int i = 0; i < mYouXiaInfoResp.youXiaInfos.Count-1; i++) {
-			//Debug.Log (" mYouXiaInfoResp.youXiaInfos.id = "+ mYouXiaInfoResp.youXiaInfos[i].id);
-		
-
-			for (int j = i+1; j < mYouXiaInfoResp.youXiaInfos.Count; j++)
+			for(int i = 0 ; i < mYouXiaInfoResp.youXiaInfos.Count; i++)
 			{
-				YouXiaOpenTimeTemplate mYouxiaOpen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id(mYouXiaInfoResp.youXiaInfos[i].id);
-				YouXiaOpenTimeTemplate m_YouxiaOpen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id(mYouXiaInfoResp.youXiaInfos[j].id);
-				if(mYouxiaOpen.openLevel > m_YouxiaOpen.openLevel)
-				{
-					YouXiaInfo mYouXiainfo = mYouXiaInfoResp.youXiaInfos[i];
-					mYouXiaInfoResp.youXiaInfos[i] = mYouXiaInfoResp.youXiaInfos[j];
-					mYouXiaInfoResp.youXiaInfos[j] = mYouXiainfo;
-				}
-			}
-
-		}
-		for(int i = 0 ; i < mYouXiaInfoResp.youXiaInfos.Count+1; i++)
-		{
-			GameObject m_UI = Instantiate(Item) as GameObject;
-			
-			m_UI.SetActive (true);
-			
-			m_UI.transform.parent = Item.transform.parent;
-			
-			m_UI.transform.localScale = Vector3.one;
-
-			YXItem mYXItem = m_UI.GetComponent<YXItem>();
-			if(i < mYouXiaInfoResp.youXiaInfos.Count)
-			{
-				m_UI.transform.localPosition = new Vector3(100 * (i+1),0,0);
-				mYXItem.mYouXiaInfo = mYouXiaInfoResp.youXiaInfos[i];
-
-				mYXItem.Init();
+				YXItemList[i].mYouXiaInfo = mYouXiaInfoResp.youXiaInfos[i];
 				
-				YXItemList.Add(mYXItem);
+				YXItemList[i].Init();
 			}
-			else
-			{				
-				m_UI.transform.localPosition = new Vector3(0,0,0);
-				mYXItem.InitQianChongLouBtn();
-			}
-
 		}
-//		if(FreshGuide.Instance().IsActive(100315)&& TaskData.Instance.m_TaskInfoDic[100315].progress >= 0)
-//		{
-//		//	Debug.Log("进入试练二阶界面1");
-//			ZhuXianTemp tempTaskData = TaskData.Instance.m_TaskInfoDic[100315];
-//			UIYindao.m_UIYindao.setOpenYindao(tempTaskData.m_listYindaoShuju[1]);
-//			mScorview.enabled = false;
-//			return;
-//
-//		}
+		else
+		{
+			for (int i = 0; i < mYouXiaInfoResp.youXiaInfos.Count-1; i++) {
+				
+				for (int j = i+1; j < mYouXiaInfoResp.youXiaInfos.Count; j++)
+				{
+					YouXiaOpenTimeTemplate mYouxiaOpen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id(mYouXiaInfoResp.youXiaInfos[i].id);
+					YouXiaOpenTimeTemplate m_YouxiaOpen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id(mYouXiaInfoResp.youXiaInfos[j].id);
+					if(mYouxiaOpen.openLevel > m_YouxiaOpen.openLevel)
+					{
+						YouXiaInfo mYouXiainfo = mYouXiaInfoResp.youXiaInfos[i];
+						mYouXiaInfoResp.youXiaInfos[i] = mYouXiaInfoResp.youXiaInfos[j];
+						mYouXiaInfoResp.youXiaInfos[j] = mYouXiainfo;
+					}
+				}
+				
+			}
+			for(int i = 0 ; i < mYouXiaInfoResp.youXiaInfos.Count+1; i++)
+			{
+				GameObject m_UI = Instantiate(Item) as GameObject;
+				
+				m_UI.SetActive (true);
+				
+				m_UI.transform.parent = Item.transform.parent;
+				
+				m_UI.transform.localScale = Vector3.one;
+				
+				YXItem mYXItem = m_UI.GetComponent<YXItem>();
+				if(i < mYouXiaInfoResp.youXiaInfos.Count)
+				{
+					m_UI.transform.localPosition = new Vector3(0,-90*(1+i),0);
+					mYXItem.mYouXiaInfo = mYouXiaInfoResp.youXiaInfos[i];
+					
+					mYXItem.Init();
+					
+					YXItemList.Add(mYXItem);
+				}
+				else
+				{				
+					m_UI.transform.localPosition = new Vector3(0,0,0);
+					mYXItem.InitQianChongLouBtn();
+				}
+				
+			}
+		}
 		int index = 0;
 		Debug.Log ("Global.m_sPanelWantRun = "+Global.m_sPanelWantRun);
 		if(Global.m_sPanelWantRun != null || Global.m_sPanelWantRun != "")

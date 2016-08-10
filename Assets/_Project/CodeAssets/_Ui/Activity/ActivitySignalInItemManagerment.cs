@@ -11,6 +11,7 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
     public List<GameObject> m_listGameobject;
     public Animator m_GouAnimator;
     public GameObject m_BackObj;
+    public GameObject m_RedPot;
     public GameObject m_Back_2Obj;
     public List<UILabel> m_listLabel;
     public GameObject m_ObjEffect;
@@ -87,9 +88,10 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
     private ItemInfo rewardInfo = new ItemInfo();
     private int _state = 0;
     private bool _isSpark = false;
-
+    private bool _Mesh = false;
     public void ShowInfo(QiandaoAward reward, bool isGuang, bool isMesh, OnClick_TouchEachDay callback, OnClick_TouchRetroactive callback_TouchRetroactive, dele_AnimationFinish callback_finish = null)
     {
+        _Mesh = isMesh;
         m_SignalInfo = reward;
 
         if (  m_SignalInfo.state == 1)
@@ -111,6 +113,9 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
 
         _state = reward.state;
         m_Event.gameObject.SetActive(isMesh && reward.state == 0 && reward.vipDouble > 0 && m_SignalInState < 2);
+     
+        m_RedPot.gameObject.SetActive(isMesh && reward.state == 0 && reward.vipDouble > 0 && m_SignalInState < 2
+                                     && JunZhuData.Instance().m_junzhuInfo.vipLv >= reward.vipDouble);
         if (isMesh && reward.state == 0 && reward.vipDouble > 0)
         {
             m_GouAnimator.gameObject.SetActive(isMesh && reward.state == 0 && reward.vipDouble > 0 && m_SignalInState == 2);
@@ -135,27 +140,9 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
         {
             m_listGameobject[1].SetActive(false);
         }
-    //    Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.ICON_SAMPLE), OnIconSampleLoadCallBack);
+    
     }
-
-    private void OnIconSampleLoadCallBack(ref WWW p_www, string p_path, Object p_object)
-    {
-        GameObject iconSampleObject = Instantiate(p_object) as GameObject;
-        iconSampleObject.SetActive(true);
-        iconSampleObject.transform.parent = transform;
-        iconSampleObject.transform.localPosition = Vector3.zero;
-        iconSampleObject.transform.localScale = Vector3.one;
-        IconSampleManager iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
-        int color = CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).color;
-        iconSampleManager.SetIconByID(rewardInfo.id, rewardInfo.count.ToString(),2);
-        iconSampleManager.SetIconPopText(rewardInfo.id, NameIdTemplate.GetName_By_NameId(
-            CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).nameId),
-            DescIdTemplate.GetDescriptionById(CommonItemTemplate.getCommonItemTemplateById(rewardInfo.id).descId));
-        if (rewardInfo.isTouch)
-        {
-            iconSampleManager.NguiLongPress.OnNormalPress = OnTouchEvent;
-        }
-    }
+ 
 
     void OnTouchEvent(GameObject tempObject)
     {
@@ -205,5 +192,11 @@ public class ActivitySignalInItemManagerment : MonoBehaviour
             StartCoroutine(waitInfo());
         }
       
+    }
+
+   public void FreshRedPot()
+    {
+        m_RedPot.gameObject.SetActive(_Mesh && m_SignalInfo.state == 0 && m_SignalInfo.vipDouble > 0 && m_SignalInState < 2
+                                        && JunZhuData.Instance().m_junzhuInfo.vipLv >= m_SignalInfo.vipDouble);
     }
 }

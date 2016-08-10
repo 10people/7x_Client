@@ -174,7 +174,7 @@ public class WarPage : GeneralInstance<WarPage>, SocketProcessor {
 					InItWarPage (mainSimpleResp);
 				}
 
-				EveryDayShowTime.Instance.m_isLoad2 = true;
+				EveryDayShowTime.m_isLoad2 = true;
 				return true;
 			}
 			}

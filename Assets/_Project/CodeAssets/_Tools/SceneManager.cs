@@ -367,7 +367,6 @@ public class SceneManager{
 			Global.m_iScreenNoID = 0;
 //		Debug.Log("===========1");
 			Global.m_isOpenJiaoxue = true;
-			Global.m_isZhanli = false;
 			Global.m_iPChangeZhanli = 0;
 			Global.m_iPZhanli = 0;
 			Global.m_iAddZhanli = 0;

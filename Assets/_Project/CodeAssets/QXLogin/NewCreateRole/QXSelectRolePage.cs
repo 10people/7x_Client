@@ -118,7 +118,7 @@ public class QXSelectRolePage : GeneralInstance<QXSelectRolePage> {
 		haojie.SetActive (false);
 		haojie.transform.parent = m_roleParent.transform;
 		haojie.transform.localPosition = new Vector3(0,0,0);
-		haojie.transform.localScale = loadSize * 0.9f;
+		haojie.transform.localScale = loadSize * 0.8f;
 		
 		m_roleObjList.Add ( haojie );
 		

@@ -86,11 +86,18 @@ public class LieFuItem : MonoBehaviour {
 		if(JunZhuData.Instance().m_junzhuInfo.jinBi < mLieFuActionInfo.cost )
 		{
 			Global.CreateFunctionIcon (501);
-
+			if(LieFuManagerment.Instance().mOneKeyLF)
+			{
+				LieFuManagerment.Instance().StopLiefuBtn();
+			}
 			return;
 		}
 		if(mLieFuActionInfo.state != 0)
 		{
+			if(LieFuManagerment.Instance().mOneKeyLF)
+			{
+				LieFuManagerment.Instance().StartLiefuBtn();
+			}
 			if(mLieFuActionInfo.type != 1)
 			{
 				mColider.enabled = false;

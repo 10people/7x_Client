@@ -269,7 +269,7 @@ public class PveLeveType : MonoBehaviour {
 		CityGlobalData.PveLevel_UI_is_OPen = false;
 		int  my_tempSection = MapData.mapinstance.myMapinfo.s_section;
 
-		int a = Pve_Level_Info.CurLev;
+		int a = NewPveLevelInfo.CurLev;
 		
 		int my_tempLevel = a%10;
 		

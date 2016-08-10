@@ -471,6 +471,7 @@
 <EffectTemplate  effectId="601269" path="_3D/Fx/Prefabs/BattleEffect/duwu" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="601270" path="_3D/Fx/Prefabs/BattleEffect/junchengzhan_dianjimubiao_hong" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="601271" path="_3D/Fx/Prefabs/BattleEffect/qizihueixue" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="601272" path="_3D/Fx/Prefabs/BattleEffect/shangyang" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620211" path="_3D/Fx/Prefabs/UiEffect/dangriqiandao" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620212" path="_3D/Fx/Prefabs/UiEffect/liuguangtexiao_1 1" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620213" path="_3D/Fx/Prefabs/UiEffect/liuguangtexiao_2 1" sound="-1" position="0" ratio="0" />

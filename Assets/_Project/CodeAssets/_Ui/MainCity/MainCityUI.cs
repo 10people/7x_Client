@@ -114,10 +114,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
         if (Global.m_isOpenJiaoxue)
         {
-			if(Global.m_isZhanli)
-			{
-				ClientMain.closePopUp();
-			}
             if (m_WindowObjectList.Count != 0)
             {
 
@@ -138,7 +134,6 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 
         m_isInited = true;
 		Global.m_isAddZhanli = true;
-		Global.m_isZhanli = false;
 		Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;
 
         setInit();
@@ -446,6 +441,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 		}
 		data = "[b]" + data + "[-]";
 		tempMainCityTitle.m_labelTitle.text = data;
+		tempMainCityTitle.m_spriteBG.SetDimensions(902 + ClientMain.m_iMoveX * 2 + 2, 54);
 //		tempMainCityTitle.m_labelType.setType(0);
 	}
 
@@ -702,7 +698,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 		{
 //			Debug.Log("isShow="+isShow);
 		}
-		if(id == 140 && isShow)
+		if((id == 150 || id == 160 || id == 140) && isShow)
 		{
 //			Debug.Log(FunctionOpenTemp.IsHaveID(140));
 
@@ -711,7 +707,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 				if(!ClientMain.m_isOpenQianDao)
 				{
 					ClientMain.m_isOpenQianDao = true;
-					ClientMain.addPopUP(4, 2, "1", null);
+//					ClientMain.addPopUP(4, 2, "1", null);
 				}
 			}
 		}
@@ -1217,6 +1213,9 @@ public class MainCityUI : MYNGUIPanel, SocketListener
 					//email
 					case 22:
 						NewEmailData.Instance ().OpenEmail (NewEmailData.EmailOpenType.EMAIL_MAIN_PAGE);
+						break;
+					case 40:
+						QXChatUIBox.chatUIBox.ChatUIBoxClickBack(null);
 						break;
                     //alliance sys
                     case 104:
@@ -1822,7 +1821,7 @@ public class MainCityUI : MYNGUIPanel, SocketListener
     public bool isFirstAnimation()
     {
 
-		if (CityGlobalData.QCLISOPen)
+		if (CityGlobalData.QCLISOPen && QCL_tempOjbect == null)
 		{
 		
 			Global.ResourcesDotLoad (Res2DTemplate.GetResPath (Res2DTemplate.Res.QIANCHONGLOU), Load_QCL_ResourceCallback);
@@ -1930,33 +1929,18 @@ public class MainCityUI : MYNGUIPanel, SocketListener
                             return true;
                         }
                         break;
-					case 4:
-						ClientMain.m_isNewOpenFunction = true;
-						ClientMain.m_listPopUpData.RemoveAt(i);
-						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SIGNAL_LAYER),
-						                        MainCityUI.m_MainCityUI.AddUIPanel);
+					case 70:
 						break;
-                    case 70:
-                        {
-							if(!Global.m_isZhanli)
-							{
-								Global.m_isZhanli = true;
-								Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.UI_ADDZHANLI),
-								                        AddUIPanelNotCloseAndNotCloseYindao);
-								ClientMain.m_isNewOpenFunction = true;
-								ClientMain.m_listPopUpData.RemoveAt(i);
-								return true;
-							}
-							else
-							{
-								return false;
-							}
-                        }
-                        break;
+//					case 4:
+//						ClientMain.m_isNewOpenFunction = true;
+//						ClientMain.m_listPopUpData.RemoveAt(i);
+//						Global.ResourcesDotLoad(Res2DTemplate.GetResPath(Res2DTemplate.Res.SIGNAL_LAYER),
+//						                        MainCityUI.m_MainCityUI.AddUIPanel);
+//						break;
 					case 80:
 					//Debug.Log(PassLevelAward.mStatePassLevelAward.ComLingQU());
-						
-					        PassLevelAward.mStatePassLevelAward.ComLingQU();
+						ClientMain.m_isNewOpenFunction = true;
+					        PveUImanager.instances.ShowPveAwardUI();
 							ClientMain.m_isNewOpenFunction = true;
 							ClientMain.m_listPopUpData.RemoveAt(i);
 						break;

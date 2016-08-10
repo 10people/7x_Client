@@ -25,7 +25,6 @@ public class Global
 
 	public static int m_iOpenFunctionIndex = -1;
 	public static bool m_isAddZhanli = true;
-	public static bool m_isZhanli = false;
 
 	public static int m_iScreenID = 0;
 

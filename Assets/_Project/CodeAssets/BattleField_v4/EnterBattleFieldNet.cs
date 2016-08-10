@@ -82,6 +82,8 @@ public class EnterBattleFieldNet : MonoBehaviour, SocketProcessor
 		}
 		else if(CityGlobalData.m_battleType == EnterBattleField.BattleType.Type_ChongLou)
 		{
+			CityGlobalData.QCLISOPen = true;
+
 			OnSendChongLou();
 
 			OnSendEnterBattle();

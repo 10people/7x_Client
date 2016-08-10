@@ -187,7 +187,7 @@ public class FunctionButtonManager : MonoBehaviour, IComparable<FunctionButtonMa
 			m_BoxChangeScale.enabled = false;
 			break;
 		case 3:
-			EffectTool.OpenMultiUIEffect_ById(m_ButtonSprite.gameObject, 223, 224, 225);
+			EffectTool.CloseMultiUIEffect_ById(m_ButtonSprite.gameObject, 223, 224, 225);
 			break;
 		case 4:
 			m_RedAlertObject.SetActive(false);

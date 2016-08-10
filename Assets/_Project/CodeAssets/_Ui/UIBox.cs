@@ -280,16 +280,6 @@ public class UIBox : MYNGUIPanel
             m_labelButton2.text = buttonname2;
 			m_labelButton2_2.text = buttonname2;
         }
-		if(buttonname1.IndexOf("取") != -1 && buttonname1.IndexOf("消") != -1)
-		{
-			m_buttonSprite1.spriteName = "btn_yellow_219x74";
-			m_buttonSprite1_2.spriteName = "btn_yellow_219x74";
-		}
-		if(!string.IsNullOrEmpty(buttonname2) && buttonname2.IndexOf("取") != -1 && buttonname2.IndexOf("消") != -1)
-		{
-			m_buttonSprite2.spriteName = "btn_yellow_219x74";
-			m_buttonSprite2_2.spriteName = "btn_yellow_219x74";
-		}
 
 //		Debug.Log(isSetDepth);
 

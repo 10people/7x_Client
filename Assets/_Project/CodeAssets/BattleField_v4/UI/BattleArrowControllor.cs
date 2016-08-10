@@ -113,6 +113,11 @@ public class BattleArrowControllor : MonoBehaviour
 			Vector3 curPos = node.gameObject.transform.position;
 
 			GameObject temp;
+			if(hero == null)
+			{
+				gc.SetActive(false);
+				continue;
+			}
 			if(Vector3.Distance(hero.gameObject.transform.position, node.gameObject.transform.position) >= 20)
 			{
 				Vector3 tempMove = node.gameObject.transform.position - hero.gameObject.transform.position;

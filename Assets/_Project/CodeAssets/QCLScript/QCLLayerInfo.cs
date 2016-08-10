@@ -169,7 +169,7 @@ public class QCLLayerInfo : MYNGUIPanel {
 			ClientMain.m_UITextManager.createText("此版本只可挑战到70层，敬请期待正式版！");
 			return;
 		}
-		CityGlobalData.QCLISOPen = true;
+
 		EnterBattleField.EnterBattleChongLou (m_Layer);
 	}
 

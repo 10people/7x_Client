@@ -48,7 +48,7 @@ public class UICreateDropthings : MonoBehaviour
 		First_t_items.Clear ();
 		if(!CityGlobalData.PT_Or_CQ)
 		{
-			LegendPveTemplate Legendpvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(Pve_Level_Info.CurLev);
+			LegendPveTemplate Legendpvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(NewPveLevelInfo.CurLev);
 			char[] t_items_delimiter = { ',' };
 			
 			char[] t_item_id_delimiter = { '=' };
@@ -80,7 +80,7 @@ public class UICreateDropthings : MonoBehaviour
 		}
 		else
 		{
-			PveTempTemplate pvetemp = PveTempTemplate.GetPveTemplate_By_id(Pve_Level_Info.CurLev);
+			PveTempTemplate pvetemp = PveTempTemplate.GetPveTemplate_By_id(NewPveLevelInfo.CurLev);
 			//		Debug.Log ("pvetemp.awardId ：" +pvetemp.awardId);
 			
 			char[] t_items_delimiter = { ',' };

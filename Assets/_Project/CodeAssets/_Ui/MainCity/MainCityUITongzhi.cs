@@ -20,6 +20,7 @@ public class MainCityUITongzhi : MYNGUIPanel
     public List<UILabel> m_listButtonDes = new List<UILabel>();
     public TongzhiData m_TongzhiData;
 	public bool m_isOpen = false;
+	public long m_iCurSuBaoID = 0;
 	private bool m_isMove = false;
 
     public List<TongzhiData> m_CurrentTongzhiDataList
@@ -85,6 +86,7 @@ public class MainCityUITongzhi : MYNGUIPanel
             if (m_CurrentTongzhiDataList[i].IsInReceiveScene() && m_CurrentTongzhiDataList[i].IsReportShowType())
             {
                 m_labelDes.text = m_CurrentTongzhiDataList[i].m_SuBaoMSG.subao;
+				m_iCurSuBaoID = m_CurrentTongzhiDataList[i].m_SuBaoMSG.subaoId;
                 for (int q = 0; q < m_CurrentTongzhiDataList[i].m_ButtonIndexList.Count; q++)
                 {
                     string tempShowText = "";
@@ -239,16 +241,24 @@ public class MainCityUITongzhi : MYNGUIPanel
 
 	void Update()
 	{
-		for(int i = 0; i < m_CurrentTongzhiDataList.Count; i ++)
+		for(int i = 0; i < Global.m_listAllTheData.Count; i ++)
 		{
-			if(Time.time - m_CurrentTongzhiDataList[i].bTime >= m_CurrentTongzhiDataList[i].m_SuBaoMSG.cdTime)
+			if(m_iCurSuBaoID == Global.m_listAllTheData[i].m_SuBaoMSG.subaoId)
 			{
-				Global.m_listAllTheData.Remove(m_CurrentTongzhiDataList[i]);
-				Global.upDataTongzhiData(null);
-				upDataShow();
-				i --;
+				return;
 			}
 		}
+		upDataShow();
+//		for(int i = 0; i < m_CurrentTongzhiDataList.Count; i ++)
+//		{
+//			if(Time.time - m_CurrentTongzhiDataList[i].bTime >= m_CurrentTongzhiDataList[i].m_SuBaoMSG.cdTime)
+//			{
+//				Global.m_listAllTheData.Remove(m_CurrentTongzhiDataList[i]);
+//				Global.upDataTongzhiData(null);
+//				upDataShow();
+//				i --;
+//			}
+//		}
 	}
 
     public override void MYMouseOver(GameObject ui)

@@ -3152,8 +3152,10 @@ public class BaseAI : MonoBehaviour
 		if(forcedArmor)
 		{
 			beatDown(100, attacker);
-
-			TimeHelper.SetTimeScale(.25f);
+			if(nodeData.nodeType == NodeType.BOSS)
+			{
+				TimeHelper.SetTimeScale(.25f);
+			}
 
 			ScheduleHelper.RegisterSchedule(forcedArmorTimeComplete, 1f);
 

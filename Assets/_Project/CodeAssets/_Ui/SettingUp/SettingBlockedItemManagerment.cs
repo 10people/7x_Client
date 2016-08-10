@@ -7,6 +7,7 @@ using ProtoBuf.Meta;
 
 public class SettingBlockedItemManagerment : MonoBehaviour 
 {
+    public UILabel m_LabLevel;
     public UILabel m_LabName;
     public UISprite m_SpriteVip;
     public UILabel m_LabAllianceName;
@@ -37,15 +38,16 @@ public class SettingBlockedItemManagerment : MonoBehaviour
         if (string.IsNullOrEmpty(info.lianMengName))
         {
             m_AllianceObject.SetActive(true);
-            m_LabAllianceName.text = MyColorData.getColorString(12, "<"  +LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT) + ">");
+            m_LabAllianceName.text = LanguageTemplate.GetText(LanguageTemplate.Text.NO_ALLIANCE_TEXT) ;
         }
         else
         {
             m_AllianceObject.SetActive(true);
             m_LabAllianceName.text = MyColorData.getColorString(12, "<" + info.lianMengName + ">");
         }
-      //  m_HeadIcon.spriteName = icon;
-        m_LabName.text = "Lv" + info.level + "    " + info.name;
+        //  m_HeadIcon.spriteName = icon;
+        m_LabLevel.text = info.level.ToString()  ;
+        m_LabName.text = info.name;
         if (info.vipLv > 0)
         {
             m_ObjectV.SetActive(true);

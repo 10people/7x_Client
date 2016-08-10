@@ -77,7 +77,7 @@ public class TipJewelControllor : MonoBehaviour
 		{
 			Color col = labelNumNormalText.color;
 
-			string strCol = "[" + col.ToHexStringRGB() + "]";
+			string strCol = "["  + "]";
 
 			textNum = strCol + num + "[-]";
 		}

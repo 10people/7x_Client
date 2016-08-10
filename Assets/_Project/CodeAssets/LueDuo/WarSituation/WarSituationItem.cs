@@ -152,7 +152,7 @@ public class WarSituationItem : MonoBehaviour {
 			//请求可否驱逐状态
 			if (situationInfo.state != 1)
 			{
-				WarSituationPage.situationPage.FightJudgment (situationInfo);
+				WarSituationPage.m_instance.FightJudgment (situationInfo);
 			}
 
 			break;
@@ -191,7 +191,7 @@ public class WarSituationItem : MonoBehaviour {
 			if (situationInfo.remainTime == 0)
 			{
 				//刷新列表
-				WarSituationPage.situationPage.RefreshItemList (situationInfo.itemId,true);
+				WarSituationPage.m_instance.RefreshItemList (situationInfo.itemId,true);
 				StopCoroutine ("LostCd");
 			}
 		}

@@ -193,6 +193,16 @@ public class ControlOrderLvTemplate : XmlLoadManager
 
 		if(node.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_ArmorMax) > 0 && node.nodeData.GetAttribute( AIdata.AttributeType.ATTRTYPE_Armor) <= 0)
 		{
+			if(node.nodeData.nodeType == NodeType.BOSS)
+			{
+				if(node.isPlayingAttack())
+				{
+					if(controlType == AIdata.AttributeType.ATTRTYPE_ReductionBTACDown)
+					{
+						return false;
+					}
+				}
+			}
 			defenderControl -= 1;
 		}
 

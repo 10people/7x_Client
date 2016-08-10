@@ -60,8 +60,6 @@ public class MainCityZhanliChange : MYNGUIPanel
 			if(m_iNum == 20)
 			{
 //				Debug.Log("===========1");
-				ClientMain.closePopUp();
-				Global.m_isZhanli = false;
 				Global.m_iAddZhanli = 0;
 				GameObject.Destroy(gameObject);
 				Global.m_iPZhanli = JunZhuData.Instance().m_junzhuInfo.zhanLi;

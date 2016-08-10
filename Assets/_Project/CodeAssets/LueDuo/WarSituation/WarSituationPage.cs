@@ -9,9 +9,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class WarSituationPage : MonoBehaviour {
-
-	public static WarSituationPage situationPage;
+public class WarSituationPage : GeneralInstance<WarSituationPage> {
 
 	private JunQingResp situationResp;
 	private WarSituationData.SituationType situationType;
@@ -22,9 +20,10 @@ public class WarSituationPage : MonoBehaviour {
 	public GameObject situationObj;
 	private List<GameObject> situationList = new List<GameObject>();
 
-	public GameObject plunderBtnObj;
-	public GameObject yunBiaoBtnObj;
-	public List<EventHandler> situationHandlerList = new List<EventHandler>();
+//	public GameObject plunderBtnObj;
+//	public GameObject yunBiaoBtnObj;
+
+	public MyPageManager m_globalePageBtn;
 
 	public UILabel leftLabel;
 	public UILabel rightLabel;
@@ -39,20 +38,20 @@ public class WarSituationPage : MonoBehaviour {
 
 	private bool isEnterByPlunder = false;
 
-	void Awake ()
+	new void Awake ()
 	{
-		situationPage = this;
+		base.Awake ();
 	}
 
-	void OnDestroy ()
+	new void OnDestroy ()
 	{
-		situationPage = null;
+		base.OnDestroy ();
 	}
 
 	void Start ()
 	{
 		QXComData.LoadYuanBaoInfo (anchorTopRight);
-		QXComData.LoadTitleObj (m_anchorLT,"联盟军情");
+		QXComData.LoadTitleObj (m_anchorLT,"联盟");
 	}
 
 	/// <summary>
@@ -67,8 +66,9 @@ public class WarSituationPage : MonoBehaviour {
 
 		isEnterByPlunder = enterByPlunder;
 
-		yunBiaoBtnObj.SetActive (!enterByPlunder);
-		plunderBtnObj.transform.localPosition = new Vector3 (enterByPlunder ? -360 : -175,230,0);
+		m_globalePageBtn.m_listMyPageButtonManager[1].gameObject.SetActive (!enterByPlunder);
+//		yunBiaoBtnObj.SetActive (!enterByPlunder);
+//		plunderBtnObj.transform.localPosition = new Vector3 (enterByPlunder ? -360 : -175,230,0);
 
 		situationList = QXComData.CreateGameObjectList (situationObj,tempResp.infos.Count,situationList);
 
@@ -141,37 +141,35 @@ public class WarSituationPage : MonoBehaviour {
 			break;
 		}
 
-		QXComData.SetBtnState (plunderBtnObj,tempType == WarSituationData.SituationType.PLUNDER ? true : false);
-		QXComData.SetBtnState (yunBiaoBtnObj,tempType == WarSituationData.SituationType.YUNBIAO ? true : false);
-
-		foreach (EventHandler handler in situationHandlerList)
-		{
-			handler.m_click_handler -= SituationHandlerClickBack;
-			handler.m_click_handler += SituationHandlerClickBack;
-		}
+		m_globalePageBtn.setAnimation (tempType == WarSituationData.SituationType.PLUNDER ? 0 : 1);
+		m_globalePageBtn.setPageIndex (tempType == WarSituationData.SituationType.PLUNDER ? 0 : 1);
+//		QXComData.SetBtnState (plunderBtnObj,tempType == WarSituationData.SituationType.PLUNDER ? true : false);
+//		QXComData.SetBtnState (yunBiaoBtnObj,tempType == WarSituationData.SituationType.YUNBIAO ? true : false);
 	}
-
-	void SituationHandlerClickBack (GameObject obj)
+	
+	public override void MYClick (GameObject ui)
 	{
-		switch (obj.name)
+		if (ui.name == "CloseBtn")
 		{
-		case "CloseBtn":
-
 			CloseSituationPage ();
+		}
 
-			break;
-		case "YunBiaoBtn":
-
-			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.YUNBIAO);
-
-			break;
-		case "LueDuoBtn":
-
-			WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER,isEnterByPlunder);
-
-			break;
-		default:
-			break;
+		MyPageButtonManager pageBtn = ui.GetComponentInParent<MyPageButtonManager> ();
+		if (pageBtn.name.IndexOf ("Page") != -1)
+		{
+			int index = int.Parse (pageBtn.name.Substring (4,1));
+			Debug.Log ("index:" + index);
+			switch (index)
+			{
+			case 0:
+				WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.PLUNDER,isEnterByPlunder);
+				break;
+			case 1:
+				WarSituationData.Instance.OpenWarSituation (WarSituationData.SituationType.YUNBIAO);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 

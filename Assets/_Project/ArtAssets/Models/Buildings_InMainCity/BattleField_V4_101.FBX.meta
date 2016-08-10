@@ -1,0 +1,228 @@
+fileFormatVersion: 2
+guid: 76a9ac731a4c8c541aa9cfde7ea0af1f
+timeCreated: 1469701780
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: BattleField_V4_101_huopen01
+    100004: BattleField_V4_101_jianta01
+    100006: BattleField_V4_101_kucao01
+    100008: BattleField_V4_101_kushu01
+    100010: BattleField_V4_101_kushu02
+    100012: BattleField_V4_101_liangcang01
+    100014: BattleField_V4_101_muban01
+    100016: BattleField_V4_101_muzhuang01
+    100018: BattleField_V4_101_stone01
+    100020: BattleField_V4_101_stone02
+    100022: BattleField_V4_101_stone03
+    100024: BattleField_V4_101_stone04
+    100026: BattleField_V4_101_stone05
+    100028: BattleField_V4_101_stone06
+    100030: BattleField_V4_101_stone07
+    100032: BattleField_V4_101_stone08
+    100034: BattleField_V4_101_stone09
+    100036: BattleField_V4_101_xesong02
+    100038: BattleField_V4_101_xuesong01
+    100040: BattleField_V4_101_xuesong03
+    100042: BattleField_V4_101_xuesong04
+    100044: BattleField_V4_101_zhalan01
+    100046: BattleField_V4_101_zhalan02
+    100048: BattleField_V4_101_zhalan03
+    100050: BattleField_V4_101_zhalan04
+    100052: BattleField_V4_101_zhangpeng01
+    100054: BattleField_V4_101_huopen01 1
+    100056: BattleField_V4_101_qiz01
+    100058: BattleField_V4_101_shikuai01
+    100060: BattleField_V4_101_shikuai02
+    100062: BattleField_V4_101_shikuai03
+    400000: //RootNode
+    400002: BattleField_V4_101_huopen01
+    400004: BattleField_V4_101_jianta01
+    400006: BattleField_V4_101_kucao01
+    400008: BattleField_V4_101_kushu01
+    400010: BattleField_V4_101_kushu02
+    400012: BattleField_V4_101_liangcang01
+    400014: BattleField_V4_101_muban01
+    400016: BattleField_V4_101_muzhuang01
+    400018: BattleField_V4_101_stone01
+    400020: BattleField_V4_101_stone02
+    400022: BattleField_V4_101_stone03
+    400024: BattleField_V4_101_stone04
+    400026: BattleField_V4_101_stone05
+    400028: BattleField_V4_101_stone06
+    400030: BattleField_V4_101_stone07
+    400032: BattleField_V4_101_stone08
+    400034: BattleField_V4_101_stone09
+    400036: BattleField_V4_101_xesong02
+    400038: BattleField_V4_101_xuesong01
+    400040: BattleField_V4_101_xuesong03
+    400042: BattleField_V4_101_xuesong04
+    400044: BattleField_V4_101_zhalan01
+    400046: BattleField_V4_101_zhalan02
+    400048: BattleField_V4_101_zhalan03
+    400050: BattleField_V4_101_zhalan04
+    400052: BattleField_V4_101_zhangpeng01
+    400054: BattleField_V4_101_huopen01 1
+    400056: BattleField_V4_101_qiz01
+    400058: BattleField_V4_101_shikuai01
+    400060: BattleField_V4_101_shikuai02
+    400062: BattleField_V4_101_shikuai03
+    2300000: BattleField_V4_101_huopen01
+    2300002: BattleField_V4_101_jianta01
+    2300004: BattleField_V4_101_kucao01
+    2300006: BattleField_V4_101_kushu01
+    2300008: BattleField_V4_101_kushu02
+    2300010: BattleField_V4_101_liangcang01
+    2300012: BattleField_V4_101_muban01
+    2300014: BattleField_V4_101_muzhuang01
+    2300016: BattleField_V4_101_stone01
+    2300018: BattleField_V4_101_stone02
+    2300020: BattleField_V4_101_stone03
+    2300022: BattleField_V4_101_stone04
+    2300024: BattleField_V4_101_stone05
+    2300026: BattleField_V4_101_stone06
+    2300028: BattleField_V4_101_stone07
+    2300030: BattleField_V4_101_stone08
+    2300032: BattleField_V4_101_stone09
+    2300034: BattleField_V4_101_xesong02
+    2300036: BattleField_V4_101_xuesong01
+    2300038: BattleField_V4_101_xuesong03
+    2300040: BattleField_V4_101_xuesong04
+    2300042: BattleField_V4_101_zhalan01
+    2300044: BattleField_V4_101_zhalan02
+    2300046: BattleField_V4_101_zhalan03
+    2300048: BattleField_V4_101_zhalan04
+    2300050: BattleField_V4_101_zhangpeng01
+    2300052: BattleField_V4_101_huopen01 1
+    2300054: BattleField_V4_101_qiz01
+    2300056: BattleField_V4_101_shikuai01
+    2300058: BattleField_V4_101_shikuai02
+    2300060: BattleField_V4_101_shikuai03
+    3300000: BattleField_V4_101_huopen01
+    3300002: BattleField_V4_101_jianta01
+    3300004: BattleField_V4_101_kucao01
+    3300006: BattleField_V4_101_kushu01
+    3300008: BattleField_V4_101_kushu02
+    3300010: BattleField_V4_101_liangcang01
+    3300012: BattleField_V4_101_muban01
+    3300014: BattleField_V4_101_muzhuang01
+    3300016: BattleField_V4_101_stone01
+    3300018: BattleField_V4_101_stone02
+    3300020: BattleField_V4_101_stone03
+    3300022: BattleField_V4_101_stone04
+    3300024: BattleField_V4_101_stone05
+    3300026: BattleField_V4_101_stone06
+    3300028: BattleField_V4_101_stone07
+    3300030: BattleField_V4_101_stone08
+    3300032: BattleField_V4_101_stone09
+    3300034: BattleField_V4_101_xesong02
+    3300036: BattleField_V4_101_xuesong01
+    3300038: BattleField_V4_101_xuesong03
+    3300040: BattleField_V4_101_xuesong04
+    3300042: BattleField_V4_101_zhalan01
+    3300044: BattleField_V4_101_zhalan02
+    3300046: BattleField_V4_101_zhalan03
+    3300048: BattleField_V4_101_zhalan04
+    3300050: BattleField_V4_101_zhangpeng01
+    3300052: BattleField_V4_101_huopen01 1
+    3300054: BattleField_V4_101_qiz01
+    3300056: BattleField_V4_101_shikuai01
+    3300058: BattleField_V4_101_shikuai02
+    3300060: BattleField_V4_101_shikuai03
+    4300000: BattleField_V4_101_stone03
+    4300002: BattleField_V4_101_stone02
+    4300004: BattleField_V4_101_stone05
+    4300006: BattleField_V4_101_stone04
+    4300008: BattleField_V4_101_stone01
+    4300010: BattleField_V4_101_zhangpeng01
+    4300012: BattleField_V4_101_stone06
+    4300014: BattleField_V4_101_stone07
+    4300016: BattleField_V4_101_stone08
+    4300018: BattleField_V4_101_jianta01
+    4300020: BattleField_V4_101_huopen01
+    4300022: BattleField_V4_101_muzhuang01
+    4300024: BattleField_V4_101_liangcang01
+    4300026: BattleField_V4_101_zhalan03
+    4300028: BattleField_V4_101_zhalan04
+    4300030: BattleField_V4_101_zhalan01
+    4300032: BattleField_V4_101_zhalan02
+    4300034: BattleField_V4_101_xuesong04
+    4300036: BattleField_V4_101_xuesong01
+    4300038: BattleField_V4_101_xuesong03
+    4300040: BattleField_V4_101_xesong02
+    4300042: BattleField_V4_101_stone09
+    4300044: BattleField_V4_101_muban01
+    4300046: BattleField_V4_101_kucao01
+    4300048: BattleField_V4_101_kushu01
+    4300050: BattleField_V4_101_kushu02
+    4300052: BattleField_V4_101_qiz01
+    4300054: BattleField_V4_101_huopen01
+    4300056: BattleField_V4_101_shikuai01
+    4300058: BattleField_V4_101_shikuai02
+    4300060: BattleField_V4_101_shikuai03
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

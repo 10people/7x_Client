@@ -30,7 +30,7 @@ public class YXItem : MonoBehaviour  {
 	{
 		YouXiaOpenTimeTemplate mYouxiaoOPen = YouXiaOpenTimeTemplate.getYouXiaOpenTimeTemplateby_Id (101);
 		Re_AllTimes.gameObject.SetActive(false);
-		Icon.spriteName = "Function_"+mYouxiaoOPen.functionID.ToString();
+		Icon.spriteName = ""+mYouxiaoOPen.functionID.ToString();
 //		if()
 //		{
 //			Art.gameObject.SetActive(true);
@@ -129,7 +129,7 @@ public class YXItem : MonoBehaviour  {
 		}
 
 		//Debug.Log ("m_bigid.m_bigid = "+m_bigid);
-		Icon.spriteName = "Function_" + mYouxiaoOPen.functionID; // 有图标了就换
+		Icon.spriteName = "" + mYouxiaoOPen.functionID; // 有图标了就换
 //		Icon.spriteName = "Function_250";
 	}
 

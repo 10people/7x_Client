@@ -286,11 +286,10 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
             m_LabelNullSignal.gameObject.SetActive(false);
         }
         FreshVitality();
-
         if (TaskData.Instance.m_VitalityShowInfo._todaylHuoYue > 0 && TaskData.Instance.m_VitalityShowInfo._todaylHuoYue <= 100)
         {
             m_MoveSprite.gameObject.SetActive(true);
-            m_MoveSprite.transform.localPosition = new Vector3(398, -220 + GetLengthMove(float.Parse(TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString()) / HuoYueTempTemplate.GetHuoYueTempById(5).needNum), 0);
+			m_MoveSprite.transform.localPosition = new Vector3(-379 + GetLengthMove(float.Parse(TaskData.Instance.m_VitalityShowInfo._todaylHuoYue.ToString()) / HuoYueTempTemplate.GetHuoYueTempById(5).needNum), -237, 0);
         }
         else
         {
@@ -323,7 +322,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
                 if (_DailyObjInfo.ContainsKey(_listTaskInfo[i]._TaskId))
                 {
                     _DailyObjInfo[_listTaskInfo[i]._TaskId].transform.localPosition = new Vector3(0, -1*i*m_DailyParent.GetComponent<UIGrid>().cellHeight, 0);
-                    _DailyObjInfo[_listTaskInfo[i]._TaskId].GetComponent<TaskScrollViewItemAmend>()
+                    _DailyObjInfo[_listTaskInfo[i]._TaskId].GetComponent<TaskScrollViewItemAmendShort>()
                                                            .ShowTaskInfo(_listTaskInfo[i], ShowReward);
                 }
                 else
@@ -343,7 +342,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
             }
             if (size_a == 0)
             {
-                EveryDayShowTime.Instance.m_isLoad0 = true;
+                EveryDayShowTime.m_isLoad0 = true;
                 m_DailyQuestObj.SetActive(true);
                 m_LabelNullSignal.gameObject.SetActive(true);
             }
@@ -360,10 +359,10 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
         {
             GameObject tempObject = Instantiate(p_object) as GameObject;
             tempObject.transform.parent = m_DailyParent.transform;
-            tempObject.name = index_Num.ToString();
+//            tempObject.name = index_Num.ToString();
             tempObject.transform.localPosition = Vector3.zero;
             tempObject.transform.localScale = Vector3.one;
-            tempObject.GetComponent<TaskScrollViewItemAmend>().ShowTaskInfo(_listTaskInfo[index_daily], ShowReward);
+            tempObject.GetComponent<TaskScrollViewItemAmendShort>().ShowTaskInfo(_listTaskInfo[index_daily], ShowReward);
             if (!_DailyObjInfo.ContainsKey(_listTaskInfo[index_daily]._TaskId))
             {
                 _DailyObjInfo.Add(_listTaskInfo[index_daily]._TaskId, tempObject);
@@ -382,7 +381,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
             {
                 m_DailyQuestObj.SetActive(true);
                 m_DailyParent.transform.parent.GetComponent<UIScrollView>().UpdateScrollbars(true);
-                EveryDayShowTime.Instance.m_isLoad0 = true;
+                EveryDayShowTime.m_isLoad0 = true;
             }
             m_DailyParent.GetComponent<UIGrid>().repositionNow = true;
         }
@@ -873,7 +872,7 @@ public class TaskLayerEveryDayManager : MonoBehaviour, UI2DEventListener
 
     private float GetLengthMove(float tt)
     {
-        return m_ForeSprite.width * 0.55f * tt;
+        return m_ForeSprite.width * tt;
     }
 
     public void LocalFreshDaily(int id)

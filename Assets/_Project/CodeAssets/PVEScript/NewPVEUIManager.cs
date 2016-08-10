@@ -11,6 +11,10 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	public GameObject TopLeftManualAnchor;
 	public GameObject TopRightManualAnchor;
 
+	public UILabel mNewLevelname;
+
+	public UISprite mLvType;
+
 	public UISprite VipN;
 
 	public int stateSaodang;
@@ -257,7 +261,9 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 				popRewardUI();
 
 				m_isShaodang = false;
-				
+
+				CityGlobalData.mSaoDangFinshed = true;
+
 				return true;
 			}
 			case ProtoIndexes.S_PVE_Reset_CQ:
@@ -337,7 +343,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 						}
 					}
 					//sendLevelDrop();
-					foreach(Pve_Level_Info m_Lv in MapData.mapinstance.Pve_Level_InfoList )
+					foreach(NewPveLevelInfo m_Lv in MapData.mapinstance.Pve_Level_InfoList )
 					{
 						if(m_Lv.litter_Lv.guanQiaId == tempInfo.guanQiaId)
 						{
@@ -512,7 +518,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	public GameObject[] Active_Boxs;
 	public UISprite WinType;
 
-	public GameObject notCrossIcon;
+//	public GameObject notCrossIcon;
 	public UISprite[] starSpriteList;
 
 	public UILabel TiliCost;
@@ -549,12 +555,15 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		{
 		case 0:
 			LingQuBtn.SetActive(false);
+			mLvType.spriteName = "PTLevel";
 			Putong();
 			break;
 		case 1:
+			mLvType.spriteName = "JYLevel";
 			JingYIng();
 			break;
 		case 2:
+			mLvType.spriteName = "CQLevel";
 			Chuanqi();
 			break;
 			
@@ -585,43 +594,48 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 			my_Zhanli.text = MyColorData.getColorString(4, JunZhuData.Instance().m_junzhuInfo.zhanLi.ToString ());
 		}
 		
-		//		Debug.Log ("M_Name = "+M_Name);
-		
+//				Debug.Log ("M_Name = "+M_Name);
+//		Debug.Log ("s [1] = "+s [1]);
 		string []s = M_Name.Split(' ');
 		if(s.Length > 1)
 		{
 			MainCityUI.setGlobalTitle(TopLeftManualAnchor, s[1], 0, 0);
+			mNewLevelname.text = s [1];
 		}
+
 		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
 		
 		desLabel.text = descStr;
 		string TuiJiAnMiBAo = m_item.recMibaoSkill;
 		string []mstr = TuiJiAnMiBAo.Split(',');
-		for (int i = 0; i < mstr.Length; i++)
-		{
-//			Debug.Log("mstr [i] = "+mstr[i]);
-			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
-			mobg.SetActive(true);
-			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
-			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
-			mobg.transform.localScale = Vector3.one;
-			if(mstr[i] != ""&&mstr[i] != null)
+		if (TuiJiAnMiBAo != "") {
+			for (int i = 0; i < mstr.Length; i++)
 			{
-				mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
-				mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
-
+				Debug.Log("mstr [i] = "+mstr[i]);
+				GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
+				mobg.SetActive(true);
+				mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
+				mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
+				mobg.transform.localScale = Vector3.one;
+				if(mstr[i] != ""&&mstr[i] != null)
+				{
+					mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
+					mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
+					
+				}
+				mobg.GetComponent<MiBaoSkillTips>().Init();
 			}
-			mobg.GetComponent<MiBaoSkillTips>().Init();
 		}
 
-		notCrossIcon.SetActive (false);
+
+//		notCrossIcon.SetActive (false);
 		BtnRoot.SetActive (false);
 		LevelTypeLabel.text = "[b]普通关卡";
 		int count = 3;
 		for(int i = 0; i< count; i++)
 		{
 			starSpriteList[i].enabled = false;
-			if(i == 1)
+			if(i == 0)
 			{
 				Conditions[i].text = "普通关无星级奖励";
 			}
@@ -658,6 +672,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		{
 //			LevelName.text = "[b]"+s[1];
 			MainCityUI.setGlobalTitle(TopLeftManualAnchor, s[1], 0, 0);
+			mNewLevelname.text = s [1];
 		}
 
 		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
@@ -665,21 +680,26 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		desLabel.text = descStr;
 		string TuiJiAnMiBAo = m_item.recMibaoSkill;
 		string []mstr = TuiJiAnMiBAo.Split(',');
-		for (int i = 0; i < mstr.Length; i++)
+		if (TuiJiAnMiBAo != "") 
 		{
-			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
-			mobg.SetActive(true);
-			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
-			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
-			mobg.transform.localScale = Vector3.one;
-			if(mstr[i] != ""&&mstr[i] != null)
+			for (int i = 0; i < mstr.Length; i++)
 			{
-				mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
-				mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
-				
+				Debug.Log("mstr = "+mstr[i]);
+				GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
+				mobg.SetActive(true);
+				mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
+				mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
+				mobg.transform.localScale = Vector3.one;
+				if(mstr[i] != ""&&mstr[i] != null)
+				{
+					mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
+					mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
+					
+				}
+				mobg.GetComponent<MiBaoSkillTips>().Init();
 			}
-			mobg.GetComponent<MiBaoSkillTips>().Init();
 		}
+
 		BtnRoot.SetActive (true);
 		Saodang1.SetActive (true);
 		Saodang10.SetActive (true);
@@ -687,27 +707,27 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 	
 		LevelTypeLabel.text = "[b]精英关卡";
 		RefreshStar ();
-		if(mLevel.s_pass)
-		{
-			notCrossIcon.SetActive (true);
-			
-			if(mLevel.win_Level == 1)
-			{
-				WinType.spriteName = "X_Victoyr";
-			}
-			if(mLevel.win_Level == 2)
-			{
-				WinType.spriteName = "L_Victoyr";
-			}
-			if(mLevel.win_Level == 3)
-			{
-				WinType.spriteName = "Prefect_Victor";
-			}
-		}
-		else
-		{
-			notCrossIcon.SetActive (false);
-		}
+//		if(mLevel.s_pass)
+//		{
+////			notCrossIcon.SetActive (true);
+//			
+//			if(mLevel.win_Level == 1)
+//			{
+//				WinType.spriteName = "X_Victoyr";
+//			}
+//			if(mLevel.win_Level == 2)
+//			{
+//				WinType.spriteName = "L_Victoyr";
+//			}
+//			if(mLevel.win_Level == 3)
+//			{
+//				WinType.spriteName = "Prefect_Victor";
+//			}
+//		}
+//		else
+//		{
+////			notCrossIcon.SetActive (false);
+//		}
 	}
 	List<BoxBtn> mBoxBtnList = new List<BoxBtn>();
 	private void RefreshStar()
@@ -808,27 +828,27 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 //			//DisAble_Boxs[i].SetActive(false);
 //			Active_Boxs[i].SetActive(false);
 //		}
-		if(mLevel.chuanQiPass)
-		{
-			notCrossIcon.SetActive (true);
-			
-			if(mLevel.pingJia == 1)
-			{
-				WinType.spriteName = "X_Victoyr";
-			}
-			if(mLevel.pingJia == 2)
-			{
-				WinType.spriteName = "L_Victoyr";
-			}
-			if(mLevel.pingJia == 3)
-			{
-				WinType.spriteName = "Prefect_Victor";
-			}
-		}
-		else
-		{
-			notCrossIcon.SetActive (false);
-		}
+//		if(mLevel.chuanQiPass)
+//		{
+////			notCrossIcon.SetActive (true);
+//			
+//			if(mLevel.pingJia == 1)
+//			{
+//				WinType.spriteName = "X_Victoyr";
+//			}
+//			if(mLevel.pingJia == 2)
+//			{
+//				WinType.spriteName = "L_Victoyr";
+//			}
+//			if(mLevel.pingJia == 3)
+//			{
+//				WinType.spriteName = "Prefect_Victor";
+//			}
+//		}
+//		else
+//		{
+////			notCrossIcon.SetActive (false);
+//		}
 		LegendPveTemplate m_item = LegendPveTemplate.GetlegendPveTemplate_By_id (mLevel.guanQiaId);
 		
 		string M_Name = NameIdTemplate.GetName_By_NameId(m_item.smaName);
@@ -853,27 +873,32 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		{
 //			LevelName.text = "[b]"+s[1];
 			MainCityUI.setGlobalTitle(TopLeftManualAnchor, s[1], 0, 0);
+			mNewLevelname.text = s [1];
 		}
 		string descStr =  DescIdTemplate.GetDescriptionById (m_item.smaDesc);
 		
 		desLabel.text = descStr;
 		string TuiJiAnMiBAo = m_item.recMibaoSkill;
 		string []mstr = TuiJiAnMiBAo.Split(',');
-		for (int i = 0; i < mstr.Length; i++)
+		if(TuiJiAnMiBAo != "")
 		{
-			GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
-			mobg.SetActive(true);
-			mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
-			mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
-			mobg.transform.localScale = Vector3.one;
-			if(mstr[i] != ""&&mstr[i] != null)
+			for (int i = 0; i < mstr.Length; i++)
 			{
-				mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
-				mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
-				
+				GameObject mobg = (GameObject)Instantiate(mMiBaoSkillTips.gameObject);	
+				mobg.SetActive(true);
+				mobg.transform.parent = mMiBaoSkillTips.gameObject.transform.parent;
+				mobg.transform.localPosition = mMiBaoSkillTips.gameObject.transform.localPosition + new Vector3(i * 70 - (mstr.Length - 1) * 35, 0, 0);
+				mobg.transform.localScale = Vector3.one;
+				if(mstr[i] != ""&&mstr[i] != null)
+				{
+					mobg.GetComponent<MiBaoSkillTips>().Skillid = int.Parse(mstr[i]);
+					mobg.GetComponent<MiBaoSkillTips>().mibao_name = mstr[i];
+					
+				}
+				mobg.GetComponent<MiBaoSkillTips>().Init();
 			}
-			mobg.GetComponent<MiBaoSkillTips>().Init();
 		}
+
 		
 		recMibaoSkill.spriteName = m_item.recMibaoSkill;
 	}
@@ -1303,7 +1328,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 //
 //			return;
 //		}
-		if(FreshGuide.Instance().IsActive(100404)&& TaskData.Instance.m_TaskInfoDic[100404].progress >= 0 && mLevel.guanQiaId == 100207)
+		if(FreshGuide.Instance().IsActive(100404)&& TaskData.Instance.m_TaskInfoDic[100404].progress >= 0 && mLevel.guanQiaId == 100207 && !CityGlobalData.mSaoDangFinshed)
 		{
 			Debug.Log("扫荡引导");
 			YinDaoOpen = true;
@@ -1381,7 +1406,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		First_t_items.Clear ();
 		if(!CityGlobalData.PT_Or_CQ)
 		{
-			LegendPveTemplate Legendpvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(Pve_Level_Info.CurLev);
+			LegendPveTemplate Legendpvetemp = LegendPveTemplate.GetlegendPveTemplate_By_id(NewPveLevelInfo.CurLev);
 			char[] t_items_delimiter = { ',' };
 			
 			char[] t_item_id_delimiter = { '=' };
@@ -1413,7 +1438,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		}
 		else
 		{
-			PveTempTemplate pvetemp = PveTempTemplate.GetPveTemplate_By_id(Pve_Level_Info.CurLev);
+			PveTempTemplate pvetemp = PveTempTemplate.GetPveTemplate_By_id(NewPveLevelInfo.CurLev);
 			//		Debug.Log ("pvetemp.awardId ：" +pvetemp.awardId);
 			
 			char[] t_items_delimiter = { ',' };
@@ -1576,7 +1601,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 					
 					iconSampleObject.transform.parent = AwardRoot.transform;
 					
-					iconSampleObject.transform.localPosition = new Vector3(x + (pos-1) * 100, -20, 0);
+					iconSampleObject.transform.localPosition = new Vector3(x + (pos-1) * 100, 0, 0);
 					
 					//FirstAwardPos = iconSampleObject.transform.localPosition;
 					
@@ -1600,7 +1625,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 					
 					iconSampleManager.SetIconByID(mItemTemp.id, "", 3);
 					iconSampleManager.SetIconPopText(mAwardTemp[i].itemId, popTitle, popDesc, 1);
-					iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+					iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
 				}
 
 			}
@@ -1619,7 +1644,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		
 		iconSampleObject.transform.parent = AwardRoot.transform;
 		
-		iconSampleObject.transform.localPosition = new Vector3(-150, -20, 0);
+		iconSampleObject.transform.localPosition = new Vector3(-150, 0, 0);
 		
 		var iconSampleManager = iconSampleObject.GetComponent<IconSampleManager>();
 		
@@ -1644,7 +1669,7 @@ public class NewPVEUIManager : MYNGUIPanel ,SocketProcessor {
 		iconSampleManager.SetIconByID(mItemTemp.id, "", 3);
 		iconSampleManager.SetIconPopText(mAwardTemp[0].itemId, popTitle, popDesc, 1);
 		iconSampleManager.FirstWinSpr.gameObject.SetActive(true);
-		iconSampleObject.transform.localScale = new Vector3(0.9f,0.9f,1);
+		iconSampleObject.transform.localScale = new Vector3(0.7f,0.7f,1);
 	}
 	public bool m_isShaodang;
 	/// <summary>

@@ -6,6 +6,7 @@ Shader "Custom/Characters/Main Texture Hight Light Rim"{
         _RimColor( "Rim", Color) = ( 0, 0, 0, 1 )
         _RimWidth( "Rim Width", Range( 8, 1.0 ) ) = 8
 		_RimWeight( "Rim Weight", Range( 0, 1.0 ) ) = 1
+		_CutOut( "CutOut", Range( 0, 0.6 ) ) = 0
     }
 	
 	Category {
@@ -48,6 +49,7 @@ Shader "Custom/Characters/Main Texture Hight Light Rim"{
 
 				float _RimWidth;
 				float _RimWeight;
+				float _CutOut;
 
 				v2f vert (appdata_base v) {
 					v2f o;
@@ -80,6 +82,10 @@ Shader "Custom/Characters/Main Texture Hight Light Rim"{
 					}
 
 					t_c.xyz = ( t_c.xyz + _FxColor.xyz ) * _MainColor * 2.2f * ( 1 - t_w ) + t_w * _RimColor;
+
+					if( t_c.w <= _CutOut ){
+						discard;
+					}
 
 					t_c.w = _MainColor.w * t_c.w;
 

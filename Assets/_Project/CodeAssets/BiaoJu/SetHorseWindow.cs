@@ -10,14 +10,10 @@ using ProtoBuf.Meta;
 
 namespace Carriage
 {
-	public class SetHorseWindow : MonoBehaviour {
-
-		public static SetHorseWindow setHorse;
+	public class SetHorseWindow : GeneralInstance<SetHorseWindow> {
 
 		public GameObject horseItemObj;
 		private List<GameObject> horseItemList = new List<GameObject> ();
-
-		public List<EventHandler> closeHandlerList = new List<EventHandler>();
 
 		public UILabel totleShouYiDes;
 		public UILabel totleShouYiNum;
@@ -26,14 +22,14 @@ namespace Carriage
 
 		public ScaleEffectController sEffectController;
 
-		void Awake ()
+		new void Awake ()
 		{
-			setHorse = this;
+			base.Awake ();
 		}
 
-		void OnDestroy ()
+		new void OnDestroy ()
 		{
-			setHorse = null;
+			base.OnDestroy ();
 		}
 
 		public void InItSetHorseWindow (List<BiaoJuHorseInfo> tempList,int tempType)
@@ -68,18 +64,12 @@ namespace Carriage
 			totleShouYiNum.text = "=" + MyColorData.getColorString (1, BiaoJuPage.m_instance.GetHorseAwardNum (1).ToString ()) 
 				+ MyColorData.getColorString (4,"+" + (BiaoJuPage.m_instance.GetHorseAwardNum (tempType) - BiaoJuPage.m_instance.GetHorseAwardNum (1)).ToString ());
 
-			foreach (EventHandler handler in closeHandlerList)
-			{
-				handler.m_click_handler -= CloseSetHorseWindow;
-				handler.m_click_handler += CloseSetHorseWindow;
-			}
-
 			if (tempType == 5)
 			{
 //				QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,8);
 				if (QXComData.CheckYinDaoOpenState (100370))
 				{
-					CloseSetHorseWindow (gameObject);
+					MYClick (gameObject);
 				}
 			}
 			else
@@ -88,7 +78,7 @@ namespace Carriage
 			}
 		}
 
-		public void CloseSetHorseWindow (GameObject obj)
+		public override void MYClick (GameObject ui)
 		{
 			//判断是否有高级马鞭
 			if (BiaoJuPage.m_instance.CheckGaoJiMaBian ())
