@@ -27,8 +27,6 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 	
 	public GameObject autoFight_1;
 	
-	public GameObject autoFight_2;
-	
 	public List<GameObject> attackIconList;
 	
 	public GameObject btnDaoSkill_1;
@@ -284,9 +282,7 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 			gc.transform.localPosition = new Vector3 (0, -10000, 0);
 		}
 		
-		autoFight_1.gameObject.SetActive (false);
-		
-		autoFight_2.gameObject.SetActive (true);
+		autoFight_1.gameObject.SetActive (true);
 		
 		keyDownW = false;
 		
@@ -672,10 +668,6 @@ public class BattleUIControlor : MonoBehaviour, SocketProcessor
 		//changeAlphaTo (alpha);
 		
 		BattleControlor.Instance().autoFight = !BattleControlor.Instance().autoFight;
-
-		autoFight_1.gameObject.SetActive(BattleControlor.Instance().autoFight);
-		
-		autoFight_2.gameObject.SetActive(!BattleControlor.Instance().autoFight);
 
 		layerAutoFightHint.SetActive (BattleControlor.Instance().autoFight);
 

@@ -40,7 +40,7 @@ namespace Carriage
 
 			for (int i = 0;i < tempTotleList.Count;i ++)
 			{
-				propItemList[i].transform.localPosition = new Vector3(0,-i * 97,0);
+				propItemList[i].transform.localPosition = new Vector3(0,-i * 90,0);
 				HorsePropItem horseProp = propItemList[i].GetComponent<HorsePropItem> ();
 				horseProp.InItHorsePropItem (tempTotleList[i]);
 			}
@@ -50,7 +50,7 @@ namespace Carriage
 			propSc.enabled = tempTotleList.Count > 3 ? true : false;
 			propSb.gameObject.SetActive (tempTotleList.Count > 3 ? true : false);
 
-			yuanBaoLabel.text = "您拥有" + MyColorData.getColorString (1,JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString ()) + "元宝";
+			yuanBaoLabel.text = MyColorData.getColorString (108,JunZhuData.Instance().m_junzhuInfo.yuanBao.ToString ());
 
 			if (BiaoJuPage.m_instance.CheckGaoJiMaBian ())
 			{

@@ -69,7 +69,7 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 				tempIconObj.SetActive(true);
 				tempIconObj.name = "Icon" + q;
 				tempIconObj.transform.parent = tempEnemtData.m_IconSampleManager.gameObject.transform.parent;
-				tempIconObj.transform.localPosition = new Vector3(-185 + q * 50, -16, 0);
+				tempIconObj.transform.localPosition = new Vector3(-185 + q * 50, -12, 0);
 				IconSampleManager tempIconSampleManager = tempIconObj.GetComponent<IconSampleManager>();
 				tempIconSampleManager.SetIconByID(m_Info.leveList[i].awardList[q].itemId, "x" + m_Info.leveList[i].awardList[q].itemNumber, 3);
 				tempIconSampleManager.SetIconPopText(m_Info.leveList[i].awardList[q].itemId);
@@ -79,11 +79,13 @@ public class UIHuodongPage2 : MYNGUIPanel , SocketListener
 			tempEnemtData.m_sName.text = m_Info.leveList[i].des;
 			if(m_Info.leveList[i].process < m_Info.leveList[i].maxProcess)
 			{
-				tempEnemtData.m_sJindu.text = "[ff0000]" + m_Info.leveList[i].process + "[-]/" + m_Info.leveList[i].maxProcess;
+				tempEnemtData.m_sJindu.text = m_Info.leveList[i].process + "/" + m_Info.leveList[i].maxProcess;
+				tempEnemtData.m_sJindu.color = Global.getStringColor("fd2525");
 			}
 			else
 			{
 				tempEnemtData.m_sJindu.text = m_Info.leveList[i].process + "/" + m_Info.leveList[i].maxProcess;
+				tempEnemtData.m_sJindu.color = Color.green;
 			}
 
 			if(m_Info.leveList[i].process < m_Info.leveList[i].maxProcess)

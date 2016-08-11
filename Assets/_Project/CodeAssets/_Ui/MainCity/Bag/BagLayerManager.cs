@@ -25,7 +25,7 @@ public class BagLayerManager : MonoBehaviour
 
     void Awake()
     {
-        MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
+        MainCityUI.setGlobalBelongings(gameObject, 480 + ClientMain.m_iMoveX + 30, 320 + ClientMain.m_iMoveY);
         MainCityUI.setGlobalTitle(TopLeftAnchor, "背包", 0, 0);
     }
 }

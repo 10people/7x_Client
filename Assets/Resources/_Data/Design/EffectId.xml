@@ -509,6 +509,10 @@
 <EffectTemplate  effectId="620245" path="_3D/Fx/Prefabs/UiEffect/lianmengxiaowu_jiaohuan" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="620246" path="_3D/Fx/Prefabs/UiEffect/newshengji" sound="210510" position="0" ratio="0" />
 <EffectTemplate  effectId="620247" path="_3D/Fx/Prefabs/UiEffect/getreward" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620248" path="_3D/Fx/Prefabs/UiEffect/Effects_UI_tongyong" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620249" path="_3D/Fx/Prefabs/UiEffect/Effects_UI_jinrihuoyue_xiao" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620250" path="_3D/Fx/Prefabs/UiEffect/Effects_UI_jinrihuoyue_da" sound="-1" position="0" ratio="0" />
+<EffectTemplate  effectId="620251" path="_3D/Fx/Prefabs/UiEffect/Effects_UI_tuitu" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="700000" path="Video/x7.mp4" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="700001" path="Video/x7_1.mp4" sound="-1" position="0" ratio="0" />
 <EffectTemplate  effectId="700002" path="_3D/Fx/Prefabs/BattleEffect/shejiandianying" sound="-1" position="0" ratio="0" />

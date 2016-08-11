@@ -25,7 +25,8 @@ public class UIBagLeft : MonoBehaviour, SocketListener
     /// Panel that controls bag left.
     /// </summary>
     public GameObject m_LeftPanel;
-
+    public GameObject m_MainUIParent;
+    public GameObject m_BottomLeft;
     /// <summary>
     /// Stored BagItem data.
     /// </summary>
@@ -118,7 +119,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
 
         if (m_iIndex < m_ListBag.Count)
         {
-            m_UIBagRight.setProp(m_ListBag[m_iIndex]);
+          //  m_UIBagRight.setProp(m_ListBag[m_iIndex]);
             m_IsPanelToLeft = true;
         }
         else
@@ -126,7 +127,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
             if (m_ListBag.Count != 0)
             {
                 m_iIndex = 0;
-                m_UIBagRight.setProp(m_ListBag[0]);
+              //  m_UIBagRight.setProp(m_ListBag[0]);
                 m_IsPanelToLeft = true;
             }
             else
@@ -236,7 +237,7 @@ public class UIBagLeft : MonoBehaviour, SocketListener
         //Reposition items, wait one frame for avoiding error.
         StartCoroutine(DoReposition());
 
-        MovePanel();
+     //   MovePanel();
 
         //Refresh highlight.
         RefreshHighLightState();
@@ -268,16 +269,31 @@ public class UIBagLeft : MonoBehaviour, SocketListener
             return;
         }
 
-        foreach (var item in m_IconSampleManagers)
+        GameObject obj = new GameObject();
+        obj.transform.parent = tempObject.transform;
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.parent = m_MainUIParent.transform;
+        if (obj.transform.localPosition.y > 244 )
         {
-            item.SelectFrameSprite.gameObject.SetActive(false);
+           obj.transform.localPosition = new Vector3(obj.transform.localPosition.x, 244,0);
         }
-        tempManager.SelectFrameSprite.gameObject.SetActive(true);
+        else if (obj.transform.localPosition.y < 44)
+        {
+            obj.transform.localPosition = new Vector3(obj.transform.localPosition.x, 44, 0);
+        }
+        m_BottomLeft.transform.localPosition = new Vector3(obj.transform.localPosition.x, obj.transform.localPosition.y, 0);
+        Destroy(obj);
+
+        //foreach (var item in m_IconSampleManagers)
+        //{
+        //    item.SelectFrameSprite.gameObject.SetActive(false);
+        //}
+     //   tempManager.SelectFrameSprite.gameObject.SetActive(true);
 
         m_iIndex = int.Parse(tempManager.gameObject.name);
         m_UIBagRight.setProp(m_ListBag[m_iIndex]);
         m_IsPanelToLeft = true;
-        MovePanel();
+       // MovePanel();
     }
 
     #endregion

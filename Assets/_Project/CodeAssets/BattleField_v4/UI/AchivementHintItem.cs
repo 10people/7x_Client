@@ -5,8 +5,6 @@ public class AchivementHintItem : MonoBehaviour
 {
 	public UISprite sprite;
 
-	public UISprite sprite_2;
-
 	public UILabel label;
 
 
@@ -35,7 +33,6 @@ public class AchivementHintItem : MonoBehaviour
 				if(sprite.spriteName != "battle_star")
 				{
 					sprite.spriteName = "battle_star";
-					sprite_2.spriteName = sprite.spriteName;
 				}
 			}
 			return;
@@ -53,8 +50,6 @@ public class AchivementHintItem : MonoBehaviour
 		{
 			sprite.spriteName = "battle_cross";
 		}
-
-		sprite_2.spriteName = sprite.spriteName;
 
 		state = _state;
 	}

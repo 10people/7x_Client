@@ -267,6 +267,8 @@ ModelImporter:
         weight: 1
       - path: Bip001
         weight: 1
+      - path: Bip001/Bip001 Footsteps
+        weight: 1
       - path: Bip001/Bip001 L Thigh
         weight: 1
       - path: Bip001/Bip001 L Thigh/Bip001 L Calf

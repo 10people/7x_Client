@@ -176,9 +176,9 @@
 <NpcChat  id="400140" seriestId="1" ChatName="小七" pText="传奇关卡开启了！\n去镌写属于自己的传奇吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400150" seriestId="1" ChatName="小七" pText="传奇关卡开启了！\n去感受[cb02d8]将魂升星[-]的效果吧！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="400160" seriestId="1" ChatName="小七" pText="传奇关卡开启了！\n再战商鞅，扬我鬼谷威名！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="400170" seriestId="1" ChatName="小七" pText="恭喜主人！为您猎符的NPC品质提升了！猎符过程中有一定几率提升NPC的品质呦！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="400175" seriestId="1" ChatName="小七" pText="为您猎符的NPC品质代表着这个NPC的能力！\n品质越高的NPC为您猎符获得的符文品质就越高呦！" Icon="200" SoundId="-1" position="0" />
-<NpcChat  id="400175" seriestId="2" ChatName="小七" pText="猎符过程中有一定几率提升NPC的品质呦！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400170" seriestId="1" ChatName="小七" pText="恭喜主人！为您猎符的大师品质提升了！猎符过程中有一定几率提升大师的品质呦！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400175" seriestId="1" ChatName="小七" pText="为您猎符的大师品质代表着这个大师的能力！\n品质越高的大师为您猎符获得的符文品质就越高呦！" Icon="200" SoundId="-1" position="0" />
+<NpcChat  id="400175" seriestId="2" ChatName="小七" pText="猎符过程中有一定几率提升大师的品质呦！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="500100" seriestId="1" ChatName="xxxxx" pText="小七，我们该出发了！" Icon="0" SoundId="-1" position="1" />
 <NpcChat  id="500200" seriestId="1" ChatName="小七" pText="恭喜主人通过[ffb12a]精英关卡[-]！达成关卡条件即可领取相应[ffb12a]星级奖励[-]！" Icon="200" SoundId="-1" position="0" />
 <NpcChat  id="500300" seriestId="1" ChatName="小七" pText="先去[0dbce8]领取任务奖励[-]吧。" Icon="200" SoundId="-1" position="0" />

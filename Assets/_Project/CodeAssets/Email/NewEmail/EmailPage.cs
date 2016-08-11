@@ -9,9 +9,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class EmailPage : MonoBehaviour {
-
-	public static EmailPage emailPage;
+public class EmailPage : GeneralInstance<EmailPage> {
 
 	public enum EmailShowPage
 	{
@@ -29,8 +27,10 @@ public class EmailPage : MonoBehaviour {
 	{
 		SYSTEM,
 		PRIVATE,
+		WRITE,
 	}
-	public EmailShowType ShowType = EmailShowType.SYSTEM;
+	private EmailShowType ShowType = EmailShowType.SYSTEM;
+	private EmailShowType m_lastShowType = EmailShowType.SYSTEM;
 
 	private List<EmailInfo> systemList = new List<EmailInfo> ();//系统邮件列表
 	private List<EmailInfo> privateList = new List<EmailInfo> ();//私信列表
@@ -41,11 +41,8 @@ public class EmailPage : MonoBehaviour {
 
 	public GameObject emailItemObj;
 	private List<GameObject> emailItemList = new List<GameObject> ();
-	private List<EventHandler> emailItemHandlerList = new List<EventHandler> ();
-	public List<GameObject> redObjList = new List<GameObject> ();
-	
-	public List<EventHandler> btnHandlerList = new List<EventHandler> ();
-	private Dictionary<string,GameObject> btnObjDic = new Dictionary<string, GameObject> (); 
+
+	public MyPageManager m_pageManager;
 
 	public UILabel desLabel;
 
@@ -54,9 +51,14 @@ public class EmailPage : MonoBehaviour {
 	public GameObject anchorTopRight;
 	public GameObject m_anchorTL;
 
-	void Awake ()
+	new void Awake ()
 	{
-		emailPage = this;
+		base.Awake ();
+	}
+
+	new void OnDestroy ()
+	{
+		base.OnDestroy ();
 	}
 
 	void Start ()
@@ -84,16 +86,6 @@ public class EmailPage : MonoBehaviour {
 			for (int i = 0;i < emailPageList.Count;i ++)
 			{
 				pageDic.Add ((EmailShowPage)Enum.ToObject(typeof(EmailShowPage),i),emailPageList[i]);
-			}
-		}
-
-		if (btnObjDic.Count == 0)
-		{
-			foreach (EventHandler handler in btnHandlerList)
-			{
-				handler.m_click_handler -= EmailBtnHandlerCallBack;
-				handler.m_click_handler += EmailBtnHandlerCallBack;
-				btnObjDic.Add (handler.name,handler.gameObject);
 			}
 		}
 
@@ -138,16 +130,22 @@ public class EmailPage : MonoBehaviour {
 
 			desLabel.text = systemList.Count == 0 ? "您的邮箱暂时没有系统邮件！" : "";
 			InItEmailList (systemList);
-			BtnAnimation (btnObjDic["SystemBtn"],true);
-			BtnAnimation (btnObjDic["PrivateBtn"],false);
+			m_pageManager.setAnimation (0);
+			m_pageManager.setPageIndex (0);
 
 			break;
 		case EmailShowType.PRIVATE:
 
 			desLabel.text = privateList.Count == 0 ? "暂时没有玩家给您发送邮件！" : "";
 			InItEmailList (privateList);
-			BtnAnimation (btnObjDic["SystemBtn"],false);
-			BtnAnimation (btnObjDic["PrivateBtn"],true);
+			m_pageManager.setAnimation (1);
+			m_pageManager.setPageIndex (1);
+
+			break;
+		case EmailShowType.WRITE:
+
+			m_pageManager.setAnimation (2);
+			m_pageManager.setPageIndex (2);
 
 			break;
 		default:
@@ -188,25 +186,15 @@ public class EmailPage : MonoBehaviour {
 			}
 		}
 
-		foreach (EventHandler handler in emailItemHandlerList)
-		{
-			handler.m_click_handler -= EmailItemHandlerCallBack;
-		}
-		emailItemHandlerList.Clear ();
-
 		emailSb.value = tempList.Count > 4 ? emailSbValue : 0;
 
 		for (int i = 0;i < tempList.Count;i ++)
 		{
-			emailItemList[i].transform.localPosition = new Vector3(0,-118 * i,0);
+			emailItemList[i].transform.localPosition = new Vector3(0,-120 * i,0);
 			emailSc.UpdateScrollbars (true);
 //			emailSc.UpdatePosition ();
 			EmailItem email = emailItemList[i].GetComponent<EmailItem> ();
 			email.GetEmailItemInfo (tempList[i]);
-
-			EventHandler emailHandler = emailItemList[i].GetComponent<EventHandler> ();
-			emailHandler.m_click_handler += EmailItemHandlerCallBack;
-			emailItemHandlerList.Add (emailHandler);
 		}
 
 		emailSc.enabled = tempList.Count > 4 ? true : false;
@@ -215,67 +203,77 @@ public class EmailPage : MonoBehaviour {
 //		UIYindao.m_UIYindao.CloseUI ();
 	}
 
-	void EmailItemHandlerCallBack (GameObject obj)
+	public override void MYClick (GameObject ui)
 	{
-		EmailItem email = obj.GetComponent<EmailItem> ();
-		switch (email.EmailItemInfo.isRead)
+		MyPageButtonManager pageBtn = ui.GetComponentInParent<MyPageButtonManager> ();
+		if (pageBtn != null)
 		{
-		case 0:
-
-			NewEmailData.Instance().ReadEmail (email.EmailItemInfo.id,email.EmailItemInfo.type == 80000 ? 
-			                                    EmailShowType.PRIVATE : EmailShowType.SYSTEM);
-
-			break;
-		case 1:
-
-			OpenCheckEmail (email.EmailItemInfo);
-
-			break;
-		default:
-			break;
+			int index = int.Parse (pageBtn.name.Substring (4,1));
+			Debug.Log ("index:" + index);
+			switch (index)
+			{
+			case 0:
+				if (ShowType != EmailShowType.SYSTEM)
+				{
+					ShowType = EmailShowType.SYSTEM;
+					SwitchEmailType (EmailShowType.SYSTEM);
+					if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
+					{
+						GetSendEmailInfo ();
+						ShowEmailPage (EmailShowPage.EMAIL_MAINPGE);
+					}
+				}
+				break;
+			case 1:
+				if (ShowType != EmailShowType.PRIVATE)
+				{
+					ShowType = EmailShowType.PRIVATE;
+					SwitchEmailType (EmailShowType.PRIVATE);
+					if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
+					{
+						GetSendEmailInfo ();
+						ShowEmailPage (EmailShowPage.EMAIL_MAINPGE);
+					}
+				}
+				break;
+			case 2:
+				if (ShowType != EmailShowType.WRITE)
+				{
+					m_lastShowType = ShowType;
+					ShowType = EmailShowType.WRITE;
+					SwitchEmailType (EmailShowType.WRITE);
+					NewEmailData.Instance().SendEmailType = NewEmailData.SendType.DEFAULT;
+					ShowEmailPage (EmailShowPage.EMAIL_SEND);
+				}
+				break;
+			default:
+				break;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Emails the button handler call back.
-	/// </summary>
-	/// <param name="obj">Object.</param>
-	void EmailBtnHandlerCallBack (GameObject obj)
-	{
-		switch (obj.name)
+		EmailItem emailItem = ui.GetComponent <EmailItem> ();
+		if (emailItem != null)
 		{
-		case "SystemBtn":
-
-			if (ShowType != EmailShowType.SYSTEM)
+			switch (emailItem.EmailItemInfo.isRead)
 			{
-				ShowType = EmailShowType.SYSTEM;
-				SwitchEmailType (EmailShowType.SYSTEM);
+			case 0:
+				
+				NewEmailData.Instance().ReadEmail (emailItem.EmailItemInfo.id,emailItem.EmailItemInfo.type == 80000 ? 
+				                                   EmailShowType.PRIVATE : EmailShowType.SYSTEM);
+				
+				break;
+			case 1:
+				
+				OpenCheckEmail (emailItem.EmailItemInfo);
+				
+				break;
+			default:
+				break;
 			}
+		}
 
-			break;
-		case "PrivateBtn":
-
-			if (ShowType != EmailShowType.PRIVATE)
-			{
-				ShowType = EmailShowType.PRIVATE;
-				SwitchEmailType (EmailShowType.PRIVATE);
-			}
-
-			break;
-		case "WriteBtn":
-
-//			emailSbValue = emailSb.value;
-			NewEmailData.Instance().SendEmailType = NewEmailData.SendType.DEFAULT;
-			ShowEmailPage (EmailShowPage.EMAIL_SEND);
-	
-			break;
-		case "BackBtn":
-
-			BackBtnCallBack ();
-
-			break;
-		case "CloseBtn":
-
+		if (ui.name == "CloseBtn")
+		{
 			if (emailOpenType == NewEmailData.EmailOpenType.EMAIL_REPLY_PAGE)
 			{
 				m_ScaleEffectController.OnCloseWindowClick ();
@@ -290,24 +288,9 @@ public class EmailPage : MonoBehaviour {
 				}
 				else
 				{
-					if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
-					{
-						GetSendEmailInfo ();
-						ShowEmailPage (EmailShowPage.EMAIL_MAINPGE);
-						SwitchEmailType (ShowType);
-						CheckUnSendEmail ();
-					}
-					else
-					{
-						ShowEmailPage (EmailShowPage.EMAIL_CHECK);
-						NewEmailData.Instance().SendEmailType = NewEmailData.SendType.DEFAULT;
-					}
+					BackBtnCallBack ();
 				}
 			}
-
-			break;
-		default:
-			break;
 		}
 	}
 
@@ -317,53 +300,14 @@ public class EmailPage : MonoBehaviour {
 		{
 			GetSendEmailInfo ();
 			ShowEmailPage (EmailShowPage.EMAIL_MAINPGE);
-			if (NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT)
-			{
-				SwitchEmailType (ShowType);
-				CheckUnSendEmail ();
-			}
+			SwitchEmailType (m_lastShowType);
+			CheckUnSendEmail ();
 		}
 		else
 		{
 			ShowEmailPage (EmailShowPage.EMAIL_CHECK);
 			NewEmailData.Instance().SendEmailType = NewEmailData.SendType.DEFAULT;
 		}
-	}
-
-	//放缩当前点击按钮
-	void BtnAnimation (GameObject tempBtn,bool flag)
-	{
-		float time = 0.1f;
-		float y = tempBtn.transform.localPosition.y;
-		float z = tempBtn.transform.localPosition.z;
-		iTween.EaseType type = iTween.EaseType.linear;
-		
-		Hashtable move = new Hashtable ();
-		move.Add ("time",time);
-		move.Add ("easetype",type);
-		move.Add ("islocal",true);
-		if (flag)
-		{
-			move.Add ("position",new Vector3 (-5,y,z));
-		}
-		else
-		{
-			move.Add ("position",new Vector3 (0,y,z));
-		}
-		iTween.MoveTo (tempBtn,move);
-		
-		Hashtable scale = new Hashtable ();
-		scale.Add ("time",time);
-		scale.Add ("easetype",type);
-		if (flag)
-		{
-			scale.Add ("scale",Vector3.one * 1.1f);
-		}
-		else
-		{
-			scale.Add ("scale",Vector3.one);
-		}
-		iTween.ScaleTo (tempBtn,scale);
 	}
 
 	/// <summary>
@@ -473,7 +417,8 @@ public class EmailPage : MonoBehaviour {
 	{
 		if (systemList.Count == 0)
 		{
-			redObjList[0].SetActive (false);
+//			redObjList[0].SetActive (false);
+			m_pageManager.m_listMyPageButtonManager[0].m_spriteRed.gameObject.SetActive (false);
 			PushAndNotificationHelper.SetRedSpotNotification (41,false);
 		}
 		else
@@ -482,13 +427,15 @@ public class EmailPage : MonoBehaviour {
 			{
 				if (email.isRead == 0)
 				{
-					redObjList[0].SetActive (true);
+//					redObjList[0].SetActive (true);
+					m_pageManager.m_listMyPageButtonManager[0].m_spriteRed.gameObject.SetActive (true);
 					PushAndNotificationHelper.SetRedSpotNotification (41,true);
 					break;
 				}
 				else
 				{
-					redObjList[0].SetActive (false);
+//					redObjList[0].SetActive (false);
+					m_pageManager.m_listMyPageButtonManager[0].m_spriteRed.gameObject.SetActive (false);
 					PushAndNotificationHelper.SetRedSpotNotification (41,false);
 				}
 			}
@@ -496,7 +443,8 @@ public class EmailPage : MonoBehaviour {
 
 		if (privateList.Count == 0)
 		{
-			redObjList[1].SetActive (false);
+//			redObjList[1].SetActive (false);
+			m_pageManager.m_listMyPageButtonManager[1].m_spriteRed.gameObject.SetActive (false);
 			PushAndNotificationHelper.SetRedSpotNotification (10,false);
 		}
 		else
@@ -505,13 +453,15 @@ public class EmailPage : MonoBehaviour {
 			{
 				if (email.isRead == 0)
 				{
-					redObjList[1].SetActive (true);
+//					redObjList[1].SetActive (true);
+					m_pageManager.m_listMyPageButtonManager[1].m_spriteRed.gameObject.SetActive (true);
 					PushAndNotificationHelper.SetRedSpotNotification (10,true);
 					break;
 				}
 				else
 				{
-					redObjList[1].SetActive (false);
+//					redObjList[1].SetActive (false);
+					m_pageManager.m_listMyPageButtonManager[1].m_spriteRed.gameObject.SetActive (false);
 					PushAndNotificationHelper.SetRedSpotNotification (10,false);
 				}
 			}
@@ -520,7 +470,8 @@ public class EmailPage : MonoBehaviour {
 		bool isUnSend = string.IsNullOrEmpty (NewEmailData.Instance ().SendName) && string.IsNullOrEmpty (NewEmailData.Instance ().SendContent) ? false : true;
 //		redObjList[2].SetActive (isUnSend);
 //		PushAndNotificationHelper.SetRedSpotNotification (20,isUnSend);
-		redObjList[2].SetActive (false);
+//		redObjList[2].SetActive (false);
+		m_pageManager.m_listMyPageButtonManager[2].m_spriteRed.gameObject.SetActive (false);
 		PushAndNotificationHelper.SetRedSpotNotification (20,false);
 	}
 }

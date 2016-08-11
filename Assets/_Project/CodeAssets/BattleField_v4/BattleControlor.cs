@@ -2004,7 +2004,7 @@ public class BattleControlor : MonoBehaviour
 				}
 				else
 				{
-					BattleUIControlor.Instance().labelTime.color = Color.yellow;
+					BattleUIControlor.Instance().labelTime.color = Color.white;
 				}
 			}
 		}

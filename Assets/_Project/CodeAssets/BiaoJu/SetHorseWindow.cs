@@ -48,7 +48,7 @@ namespace Carriage
 					GameObject horseItem = (GameObject)Instantiate (horseItemObj);
 
 					horseItem.transform.parent = horseItemObj.transform.parent;
-					horseItem.transform.localPosition = horseItemObj.transform.localPosition + new Vector3(100 * (i + 1),0,0);
+					horseItem.transform.localPosition = horseItemObj.transform.localPosition + new Vector3(120 * (i + 1),0,0);
 					horseItem.transform.localScale = Vector3.one;
 					horseItemList.Add (horseItem);
 				}

@@ -134,7 +134,7 @@ public class EnemyBar : MonoBehaviour
 
 					UIProgressBar bar = barObject.GetComponent<UIProgressBar>();
 
-					bar.foregroundWidget.depth = 307 + i * 2;
+					bar.foregroundWidget.depth = 332 + i * 2;
 
 					UISprite sprite = bar.foregroundWidget as UISprite;
 
@@ -312,7 +312,7 @@ public class EnemyBar : MonoBehaviour
 
 	private void updataBarWhitBoss(float step, int curIndex)
 	{
-		barBoss_white.foregroundWidget.depth = 306 + curIndex * 2;
+		barBoss_white.foregroundWidget.depth = 331 + curIndex * 2;
 
 		if(tempTargetValue != targetValue)
 		{

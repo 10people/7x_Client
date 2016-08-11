@@ -541,7 +541,7 @@ public class PveUImanager :MYNGUIPanel
 
         tempOjbect.transform.parent = this.transform;
 
-        tempOjbect.transform.localPosition = new Vector3(0, 0, 0);
+        tempOjbect.transform.localPosition = new Vector3(0, 0, -300);
 
         tempOjbect.transform.localScale = new Vector3(1, 1, 1);
 

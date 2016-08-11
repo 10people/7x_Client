@@ -8,10 +8,7 @@ using ProtoBuf;
 using qxmobile.protobuf;
 using ProtoBuf.Meta;
 
-public class SendMail : MonoBehaviour {
-
-	public List<EventHandler> sendEmailBtnList = new List<EventHandler> ();
-	private Dictionary<string,EventHandler> btnDic = new Dictionary<string, EventHandler> ();
+public class SendMail : GeneralInstance<SendMail> {
 
 	public UIInput nameLabel;
 	public UIInput contentLabel;
@@ -25,9 +22,21 @@ public class SendMail : MonoBehaviour {
 
 	private string textStr;
 
+	public GameObject m_block;
+
 	public GameObject selectFriendWindow;
 
 	private bool m_isDefault = false;
+
+	new void Awake ()
+	{
+		base.Awake ();
+	}
+
+	new void OnDestroy ()
+	{
+		base.OnDestroy ();
+	}
 
 	/// <summary>
 	/// Gets the name of the reply.
@@ -40,17 +49,8 @@ public class SendMail : MonoBehaviour {
 		contentLabel.value = "";
 
 		RefreshBtnState (1);
-		foreach (EventHandler handler in sendEmailBtnList)
-		{
-			handler.m_click_handler -= BtnHandlerCallBack;
-			handler.m_click_handler += BtnHandlerCallBack;
-			if (btnDic.Count < sendEmailBtnList.Count)
-			{
-				btnDic.Add (handler.name,handler);
-			}
-		}
 
-		btnDic["Block"].GetComponent<UISprite> ().alpha = 0.1f;
+		m_block.GetComponent<UISprite> ().alpha = 0.1f;
 
 		m_isDefault = NewEmailData.Instance().SendEmailType == NewEmailData.SendType.DEFAULT ? true : false;
 
@@ -73,12 +73,12 @@ public class SendMail : MonoBehaviour {
 		m_sb.gameObject.SetActive (m_content.height > 232 ? true : false);
 	}
 
-	void BtnHandlerCallBack (GameObject obj)
+	public override void MYClick (GameObject ui)
 	{
-		switch (obj.name)
+		switch (ui.name)
 		{
 		case "InputName":
-			btnDic["Block"].gameObject.SetActive (true);
+			m_block.SetActive (true);
 //			#if UNITY_EDITOR
 //			Debug.Log ("Unity");
 //			#else
@@ -88,7 +88,7 @@ public class SendMail : MonoBehaviour {
 
 			break;
 		case "InputContent":
-			btnDic["Block"].gameObject.SetActive (true);
+			m_block.SetActive (true);
 			break;
 		case "SendBtn":
 
@@ -115,13 +115,13 @@ public class SendMail : MonoBehaviour {
 	//提交名字
 	public void NameSubmit ()
 	{
-		btnDic["Block"].gameObject.SetActive (false);
+		m_block.SetActive (false);
 		nameLabel.value = QXComData.TextLengthLimit (QXComData.StrLimitType.CREATE_ROLE_NAME,nameLabel.value);
 	}
 
 	public void ContentSubmit ()
 	{
-		btnDic["Block"].gameObject.SetActive (false);
+		m_block.SetActive (false);
 		SetContent ();
 	}
 

@@ -35,7 +35,7 @@ public class UIHuodongPage3 : MYNGUIPanel , SocketListener
 			Debug.Log(m_Info.periodList[i].status);
 			if(m_Info.periodList[i].status == 1)
 			{
-				m_listEnemt[i].m_spriteButton.spriteName = "btn_orange_219x74";
+				m_listEnemt[i].m_spriteButton.spriteName = "btn_yellow_219x74";
 				m_listEnemt[i].m_labelButton.text = "领 取";
 				m_listEnemt[i].m_objNeedYuanbao.SetActive(false);
 				m_listEnemt[i].m_objButton.gameObject.SetActive(true);

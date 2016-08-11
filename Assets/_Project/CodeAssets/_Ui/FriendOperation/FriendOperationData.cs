@@ -146,7 +146,7 @@ public class FriendOperationData :Singleton<FriendOperationData>, SocketProcesso
 							}
 							case AddFriendType.Email:
 							{
-								EmailPage.emailPage.RefreshEmailCheck (EmailPage.RefreshType.ADD_FRIEND);
+								EmailPage.m_instance.RefreshEmailCheck (EmailPage.RefreshType.ADD_FRIEND);
 								break;
 							}
 							default:

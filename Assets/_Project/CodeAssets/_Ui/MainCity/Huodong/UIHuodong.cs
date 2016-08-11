@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -17,9 +18,8 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 	public GameObject m_MonetParentObj;
 	public UISprite m_spriteSelect;
 
-	public UIHuodongData m_UIHuodongData;
-	public List<UIHuodongData> m_listUIHuodongData = new List<UIHuodongData>();
-	public UIPanel m_UIPanel;
+	public MyPageButtonManager m_UIHuodongData;
+	public List<MyPageButtonManager> m_listUIHuodongData = new List<MyPageButtonManager>();
 
 	public UIHuodongPage0 m_UIHuodongPage0;
 	public UIHuodongPage1 m_UIHuodongPage1;
@@ -34,9 +34,10 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 
 	public List<GameObject> m_listObj;
 
-	public UIScrollView m_UIScrollView;
-
 	public bool m_isAdd = false;
+
+	private int m_iPageIndex;
+	private int m_iSelectEndY = -99999;
 	
 	void Awake()
 	{
@@ -66,13 +67,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 	{
 		MainCityUI.setGlobalTitle(m_objTitle, "活动", 0, 0);
 		MainCityUI.setGlobalBelongings(m_MonetParentObj, 480 + ClientMain.m_iMoveX - 30, 320 + ClientMain.m_iMoveY);
-		if (FreshGuide.Instance().IsActive(100173) && TaskData.Instance.m_TaskInfoDic[100173].progress >= 0)
-		{
-			//if(!UIYindao.m_UIYindao.m_isOpenYindao)
-			{
-				m_UIScrollView.enabled = false;
-			}
-		}
+
 		m_UIHuodong = this;
 	}
 
@@ -85,10 +80,23 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 			{
 				if(FunctionOpenTemp.GetTemplateById(m_Info.functionList[i]) != null)
 				{
-					m_listUIHuodongData[i].m_objRed.SetActive(FunctionOpenTemp.GetTemplateById(m_Info.functionList[i]).m_show_red_alert);
+					m_listUIHuodongData[i].m_spriteRed.gameObject.SetActive(FunctionOpenTemp.GetTemplateById(m_Info.functionList[i]).m_show_red_alert);
 				}
 			}
 		}
+		if(m_spriteSelect.transform.position.y != m_iSelectEndY && m_iSelectEndY != -99999)
+		{
+			float tempY = 0;
+			if(Math.Abs((m_iSelectEndY - m_spriteSelect.transform.localPosition.y)) < 1)
+			{
+				tempY = m_iSelectEndY;
+			}
+			else
+			{
+				tempY = m_spriteSelect.transform.localPosition.y + (m_iSelectEndY - m_spriteSelect.transform.localPosition.y) / 2;
+			}
+			m_spriteSelect.transform.localPosition = new Vector3(m_spriteSelect.transform.localPosition.x, tempY, m_spriteSelect.transform.localPosition.z);
+		}	
 	}
 
 	public bool OnSocketEvent(QXBuffer p_message)
@@ -125,16 +133,6 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 						{
 							tempHaveShouchong = true;
 						}
-					}
-					if(tempHaveShouchong)
-					{
-						m_UIHuodongData.gameObject.transform.parent.transform.localPosition = new Vector3(-453, 154 + 260, 0);
-						m_UIPanel.clipOffset = new Vector2(0, -61 - 260);
-					}
-					else
-					{
-						m_UIHuodongData.gameObject.transform.parent.transform.localPosition = new Vector3(-453, 154 + 130, 0);
-						m_UIPanel.clipOffset = new Vector2(0, -61 - 130);
 					}
 				}
 				break;
@@ -405,8 +403,21 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 		if(ui.name.IndexOf("PageButton") != -1)
 		{
 			int index = int.Parse(ui.name.Substring(10, ui.name.Length - 10));
-			m_spriteSelect.gameObject.transform.parent = m_listUIHuodongData[getIndex(index)].gameObject.transform;
-			m_spriteSelect.gameObject.transform.localPosition = Vector3.zero;
+			for(int i = 0; i < m_Info.functionList.Count; i ++)
+			{
+				if(index == m_Info.functionList[i])
+				{
+					m_iPageIndex = i;
+					m_iSelectEndY = 128 - i * 48;
+					m_listUIHuodongData[i].m_spritePageButton.spriteName = "Function_" + m_Info.functionList[i] + "_1";
+				}
+				else
+				{
+					m_listUIHuodongData[i].m_spritePageButton.spriteName = "Function_" + m_Info.functionList[i] + "_0";
+				}
+			}
+//			m_spriteSelect.gameObject.transform.parent = m_listUIHuodongData[getIndex(index)].gameObject.transform;
+//			m_spriteSelect.gameObject.transform.localPosition = Vector3.zero;
 			switch(index)
 			{
 			case 1422:
@@ -453,7 +464,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 	{
 		for(int i = 0; i < m_listUIHuodongData.Count; i ++)
 		{
-			int tempid = int.Parse(m_listUIHuodongData[i].gameObject.name.Substring(10, m_listUIHuodongData[i].gameObject.name.Length - 10));
+			int tempid = int.Parse(m_listUIHuodongData[i].m_spritePageButton.gameObject.name.Substring(10, m_listUIHuodongData[i].gameObject.name.Length - 10));
 			if(tempid == id)
 			{
 				return i;
@@ -503,7 +514,7 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 		{
 			GameObject.Destroy(m_listUIHuodongData[i].gameObject);
 		}
-		m_listUIHuodongData = new List<UIHuodongData>();
+		m_listUIHuodongData = new List<MyPageButtonManager>();
 		m_Info = data;
 
 		for(int i = 0; i < m_Info.functionList.Count; i ++)
@@ -513,13 +524,15 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 			tempObj.name = "PageButton" + m_Info.functionList[i];
 			tempObj.transform.parent = m_UIHuodongData.gameObject.transform.parent;
 			tempObj.transform.localScale = Vector3.one;
-			tempObj.transform.localPosition = new Vector3(60, 22 - 130 * i, 0);
-			UIHuodongData tempEnemtData = tempObj.GetComponent<UIHuodongData>();
-			
-			tempEnemtData.m_spriteIcon.spriteName = "Function_" + m_Info.functionList[i];
+			tempObj.transform.localPosition = new Vector3(-32, 128 - 48 * i, 0);
+			MyPageButtonManager tempEnemtData = tempObj.GetComponent<MyPageButtonManager>();
+			tempEnemtData.gameObject.name = "Page" + m_Info.functionList[i];
+			tempEnemtData.m_spritePageButton.spriteName = "Function_" + m_Info.functionList[i] + "_0";
+			tempEnemtData.m_spritePageButton.name = "PageButton" + m_Info.functionList[i];
+			tempEnemtData.m_spritePageButton.MakePixelPerfect();
 			if(FunctionOpenTemp.GetTemplateById(m_Info.functionList[i]) != null)
 			{
-				tempEnemtData.m_objRed.SetActive(FunctionOpenTemp.GetTemplateById(m_Info.functionList[i]).m_show_red_alert);
+				tempEnemtData.m_spriteRed.gameObject.SetActive(FunctionOpenTemp.GetTemplateById(m_Info.functionList[i]).m_show_red_alert);
 			}
 			m_listUIHuodongData.Add(tempEnemtData);
 		}
@@ -540,23 +553,13 @@ public class UIHuodong :  MYNGUIPanel , SocketListener
 						tempHaveShouchong = true;
 					}
 				}
-				if(tempHaveShouchong)
-				{
-					m_UIHuodongData.gameObject.transform.parent.transform.localPosition = new Vector3(-453, 154 + 260, 0);
-					m_UIPanel.clipOffset = new Vector2(0, -61 - 260);
-				}
-				else
-				{
-					m_UIHuodongData.gameObject.transform.parent.transform.localPosition = new Vector3(-453, 154 + 130, 0);
-					m_UIPanel.clipOffset = new Vector2(0, -61 - 130);
-				}
 			}
 			Global.m_sPanelWantRun = "";
 			GameObject.Destroy(tempButtonName);
 		}
 		else
 		{
-			MYClick(m_listUIHuodongData[0].gameObject);
+			MYClick(m_listUIHuodongData[0].m_spritePageButton.gameObject);
 		}
 	}
 }

@@ -45,8 +45,8 @@ public class EmailItem : MonoBehaviour {
 			
 			emailIcon.spriteName = "PlayerIcon" + emailInfo.roleId;
 			
-			senderLabel.transform.localPosition = new Vector3(-280,15,0);
-			timeLabel.transform.localPosition = new Vector3(-280,-15,0);
+			senderLabel.transform.localPosition = new Vector3(-270,15,0);
+			timeLabel.transform.localPosition = new Vector3(-270,-15,0);
 
 			awardIcon.SetActive (false);
 		}

@@ -38,11 +38,11 @@ public class WarItem : MonoBehaviour {
 
 		lockObj.SetActive (!isOpen);
 
-		icon.spriteName = "Function_" + tempInfo.functionId;
-	
+		icon.spriteName = tempInfo.functionId.ToString ();
+		icon.SetDimensions (tempInfo.functionId == 300100 ? 139 : 86,44);
 //		Debug.Log( "InitWarItem: " + simpleInfo.functionId + " - " + isOpen + " - " + icon.spriteName );
 
-		icon.color = isOpen ? Color.white : Color.black;
+//		icon.color = isOpen ? Color.white : Color.black;
 
 //		string name = FunctionOpenTemp.GetTemplateById (tempInfo.functionId).Des.Split ('-')[1];
 

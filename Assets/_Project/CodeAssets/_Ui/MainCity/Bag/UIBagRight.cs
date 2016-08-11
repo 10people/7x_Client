@@ -11,6 +11,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
 {
     public UIBagLeft m_UiBagLeft;
     public UILabel m_UILabelDis;
+    public GameObject m_Parent;
 
     public UILabel m_UILabelName;
 
@@ -29,7 +30,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
     public UIButton m_UseButton;
     public UIButton m_UseAllButton;
     public UIButton m_OKButton;
-
+    public EventHandler m_OKButton_Similar;
     public UIPanel m_ThisPanel;
 
     private float m_eAlpha = 1.0f;
@@ -41,6 +42,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
         m_arrPosIndex = new int[5] { 1, 3, 4, 5, 7 };
         m_UseButton.gameObject.GetComponent<EventHandler>().m_click_handler += CheckUseBTNInfo;
         m_OKButton.gameObject.GetComponent<EventHandler>().m_click_handler += CheckOKBTNInfo;
+        m_OKButton_Similar.m_click_handler += CheckOKBTNInfo;
     }
 
     void Awake()
@@ -144,7 +146,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
 
     public void IconSampleLoadCallback(ref WWW p_www, string p_path, Object p_object)
     {
-        GameObject tempObject = NGUITools.AddChild(gameObject, p_object as GameObject);
+        GameObject tempObject = NGUITools.AddChild(m_Parent, p_object as GameObject);
 
         //Set label text and sprite name.
         if (tempObject == null)
@@ -165,7 +167,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
         //Set gameobject name and transform info.
         tempObject.name = "icon";
         tempObject.transform.localScale = Vector3.one;
-        tempObject.transform.localPosition = new Vector3(0, 160, 0);
+        tempObject.transform.localPosition = Vector3.zero;
 
         m_ListGameObject.Add(tempObject);
     }
@@ -182,7 +184,7 @@ public class UIBagRight : MonoBehaviour, SocketProcessor
     {
         setProp(null);
         m_UiBagLeft.m_IsPanelToLeft = false;
-        m_UiBagLeft.MovePanel();
+     //   m_UiBagLeft.MovePanel();
     }
 
     void OnDestroy()

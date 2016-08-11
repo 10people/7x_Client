@@ -50,7 +50,7 @@ public class UIHuodongPage0 : MYNGUIPanel , SocketListener
 		}
 		for(int i = 0; i < m_listIconSample.Count; i ++)
 		{
-			m_listIconSample[i].SetIconByID(m_ExploreResp.awardsList[i].itemId, "x" + m_ExploreResp.awardsList[i].itemNumber, 3);
+			m_listIconSample[i].SetIconByID(m_ExploreResp.awardsList[i].itemId, "x" + m_ExploreResp.awardsList[i].itemNumber, 8);
 			m_listIconSample[i].SetIconPopText(m_ExploreResp.awardsList[i].itemId);
 		}
 	}

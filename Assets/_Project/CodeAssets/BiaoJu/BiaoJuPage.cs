@@ -59,7 +59,7 @@ namespace Carriage
 
 		void Start ()
 		{
-			fuLiTimeStr = MyColorData.getColorString (5,YunBiaoTemplate.GetValueByKey (YunBiaoTemplate.incomeAdd_startTime2) + "—" + YunBiaoTemplate.GetValueByKey (YunBiaoTemplate.incomeAdd_endTime2));
+			fuLiTimeStr = MyColorData.getColorString (104,YunBiaoTemplate.GetValueByKey (YunBiaoTemplate.incomeAdd_startTime2) + "—" + YunBiaoTemplate.GetValueByKey (YunBiaoTemplate.incomeAdd_endTime2));
 
 			//mainPage rules
 			//LanguageTemp LID:533-538 LanguageTemplate:YUN_BIAO_78-YUN_BIAO_83
@@ -74,9 +74,10 @@ namespace Carriage
 				if (i == 0)
 				{
 					//开服时间
+					ruleStr = MyColorData.getColorString (109,ruleStr);
 					string openTime = CanshuTemplate.GetStrValueByKey (CanshuTemplate.OPENTIME_YUNBIAO);
 					string closeTime = CanshuTemplate.GetStrValueByKey (CanshuTemplate.CLOSETIME_YUNBIAO);
-					ruleStr += MyColorData.getColorString (4,openTime + "—" + closeTime + "[-]") + "      福利时段：" + fuLiTimeStr;
+					ruleStr += MyColorData.getColorString (103,openTime + "—" + closeTime + "[-]") + "\n" + MyColorData.getColorString (109,"福利时段：") + fuLiTimeStr;
 				}
 
 				ruleList.Add (ruleStr);
@@ -182,10 +183,10 @@ namespace Carriage
 			fuLiDesLabel.text = RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? MyColorData.getColorString (5,fuLiDesStr) : "";
 //			Debug.Log ("biaoJuResp.yaBiaoCiShu:" + biaoJuResp.yaBiaoCiShu);
 //			Debug.Log ("RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes:" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes);
-			countDownTimeLabel.text = "今日剩余"
-							+ MyColorData.getColorString (4,(biaoJuResp.yaBiaoCiShu - RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes).ToString ()) 
-							+ MyColorData.getColorString (5,RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? "(" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes + ")" : "")	
-							+ "次";
+			countDownTimeLabel.text = MyColorData.getColorString (109,"今日剩余：")
+							+ MyColorData.getColorString (103,(biaoJuResp.yaBiaoCiShu - RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes).ToString ()) 
+							+ MyColorData.getColorString (104,RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? "(" + RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes + ")" : "")	
+						    + MyColorData.getColorString (109,"次");
 
 			fuLiDesLabel2.text = RootManager.Instance.m_CarriageMain.RemainingAdditionalStartTimes > 0 ? MyColorData.getColorString (5,fuLiDesStr) : "";
 
@@ -341,7 +342,7 @@ namespace Carriage
 					
 					horseItem.SetActive (true);
 					horseItem.transform.parent = horseItemObj.transform.parent;
-					horseItem.transform.localPosition = new Vector3 (-370 + i * 185,0,0);
+					horseItem.transform.localPosition = new Vector3 (-365 + i * 182.5f,0,0);
 					horseItem.transform.localScale = Vector3.one;
 					
 					horseList.Add (horseItem);
@@ -373,7 +374,7 @@ namespace Carriage
 				{
 					GameObject propItem = (GameObject)Instantiate (propItemObj);
 					propItem.transform.parent = propItemObj.transform.parent;
-					propItem.transform.localPosition = new Vector3(105 * i,0,0);
+					propItem.transform.localPosition = new Vector3(-15 + 95 * i,0,0);
 					propItem.transform.localScale = propItemObj.transform.localScale;
 					propItemList.Add (propItem);
 				}
@@ -660,7 +661,7 @@ namespace Carriage
 			{
 				indexNumber = i;
 			}
-			selectBox.transform.localPosition = new Vector3 (-370 + 185 * indexNumber,0,0);
+			selectBox.transform.localPosition = new Vector3 (-365 + 182.5f * indexNumber,0,0);
 			
 			if (indexNumber < 1)
 			{

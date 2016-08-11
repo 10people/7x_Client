@@ -140,7 +140,7 @@ public class PlayerModelController : MonoBehaviour
                     if (CityGlobalData.m_CreateRoleCurrent)
                     {
                         CityGlobalData.m_CreateRoleCurrent = false;
-                        m_ObjHero.transform.position = new Vector3(0.38f, 2.1f, -29.5f);
+                        m_ObjHero.transform.position = new Vector3(-91.8f, 20.7f, 16.24f);
                     }
                     else
                     {
@@ -155,16 +155,12 @@ public class PlayerModelController : MonoBehaviour
                             else
                             {
                                 m_ObjHero.transform.position = FunctionWindowsCreateManagerment.GetCurrentPosition();
-
-                                if (m_ObjHero.transform.position.y > 10)
-                                {
-                                    m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
-                                }
+ 
                             }
                         }
                         else
                         {
-                            m_ObjHero.transform.position = new Vector3(0.0f, 4.62f, 0.0f);
+                            m_ObjHero.transform.position = new Vector3(-91.8f, 20.7f, 16.24f);
                         }
                     }
                 }

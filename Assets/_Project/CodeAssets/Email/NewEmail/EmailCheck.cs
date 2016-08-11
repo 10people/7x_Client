@@ -221,7 +221,7 @@ public class EmailCheck : MonoBehaviour {
 
 				NewEmailData.Instance().SendName = emailInfo.senderName;
 				NewEmailData.Instance().SendEmailType = NewEmailData.SendType.REPLY;
-				EmailPage.emailPage.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_SEND);
+				EmailPage.m_instance.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_SEND);
 
 				break;
 			default:
@@ -250,7 +250,7 @@ public class EmailCheck : MonoBehaviour {
 				default:
 					break;
 				}
-				EmailPage.emailPage.BackBtnCallBack ();
+				EmailPage.m_instance.BackBtnCallBack ();
 			}
 			else
 			{
@@ -259,7 +259,7 @@ public class EmailCheck : MonoBehaviour {
 					if (operateType == EmailOperateType.TURN_TO_ALLIANCE)
 					{
 						//跳转到联盟城
-						EmailPage.emailPage.CloseEmail ();
+						EmailPage.m_instance.CloseEmail ();
 					}
 					else
 					{
@@ -268,7 +268,7 @@ public class EmailCheck : MonoBehaviour {
 							//发送领取奖励请求
 							NewEmailData.Instance().GetEmailReward (emailInfo.id);
 						}
-						EmailPage.emailPage.BackBtnCallBack ();
+						EmailPage.m_instance.BackBtnCallBack ();
 					}
 				}
 			}

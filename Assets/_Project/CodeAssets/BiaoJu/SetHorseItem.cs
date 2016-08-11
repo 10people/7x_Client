@@ -11,7 +11,6 @@ namespace Carriage
 		public UISprite border;
 
 		public GameObject point;
-		public GameObject line;
 		public GameObject desLabel;
 
 		public UILabel shouYiLabel;
@@ -35,10 +34,8 @@ namespace Carriage
 
 			selectBox.SetActive (tempInfo.horseId == curId ? true : false);
 
-			line.SetActive (tempInfo.horseId == 2 ? false : true);
-
-			point.SetActive (tempInfo.horseId <= curId ? true : false);
-			point.transform.localPosition = new Vector3 (float.Parse (BiaoJuPage.m_instance.HorseStringInfo (tempInfo.horseId,4)),0,0);
+			point.SetActive (tempInfo.horseId < 5? true : false);
+//			point.transform.localPosition = new Vector3 (float.Parse (BiaoJuPage.m_instance.HorseStringInfo (tempInfo.horseId,4)),0,0);
 
 			desLabel.SetActive (tempInfo.horseId == curId ? true : false);
 			costLabel.gameObject.SetActive (tempInfo.horseId > curId ? true : false);

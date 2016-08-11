@@ -52,38 +52,17 @@ public class WarPage : GeneralInstance<WarPage>, SocketProcessor {
 
 		QXComData.YinDaoStateController (QXComData.YinDaoStateControl.UN_FINISHED_TASK_YINDAO,100370,1);
 
-		int warCount = mainSimpleResp.info.Count - warList.Count;
-		if (warCount > 0)
-		{
-			for (int i = 0;i < warCount;i ++)
-			{
-				GameObject warItem = (GameObject)Instantiate (warItemObj);
-				warItem.SetActive (true);
-				warItem.transform.parent = warItemObj.transform.parent;
-				warItem.transform.localPosition = Vector3.zero;
-				warItem.transform.localScale = Vector3.one;
-				
-				warList.Add (warItem);
-			}
-		}
-		else
-		{
-			for (int i = 0;i < Mathf.Abs (warCount);i ++)
-			{
-				Destroy (warList[warList.Count - 1]);
-				warList.RemoveAt (warList.Count - 1);
-			}
-		}
+		warList = QXComData.CreateGameObjectList (warItemObj,mainSimpleResp.info.Count,warList);
 
 		for (int i = 0;i < mainSimpleResp.info.Count;i ++)
 		{
 			switch (mainSimpleResp.info[i].functionId)
 			{
 			case 310:
-				warList[i].transform.localPosition = new Vector3(100,0,0);
+				warList[i].transform.localPosition = new Vector3(0,-85,0);
 				break;
 			case 211:
-				warList[i].transform.localPosition = new Vector3(200,0,0);
+				warList[i].transform.localPosition = new Vector3(0,-170,0);
 				break;
 			case 300100:
 				warList[i].transform.localPosition = new Vector3(0,0,0);

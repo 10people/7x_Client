@@ -137,7 +137,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 	}
 	public void setOpenYindao(int id)
     {
-//		Debug.Log(id);
+		Debug.Log(id);
 		m_iNum = 0;
 	//cancel yindao if in house.
 //        if(id < 200000)
@@ -511,7 +511,7 @@ public class UIYindao : MonoBehaviour, IUIRootAutoActivator {
 
 	public void CloseUI()
 	{
-//        Debug.Log("CloseYinDao");
+        Debug.Log("CloseYinDao");
         if (!Global.m_isOpenJiaoxue)
 		{
 			return;

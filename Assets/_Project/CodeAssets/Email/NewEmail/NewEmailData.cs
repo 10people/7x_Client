@@ -130,7 +130,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 			CityGlobalData.m_isRightGuide = true;
 		}
 
-		EmailPage.emailPage.GetEmailResp (emailOpenType,systemList,privateList);
+		EmailPage.m_instance.GetEmailResp (emailOpenType,systemList,privateList);
 	}
 	#endregion
 
@@ -247,13 +247,13 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 					case EmailPage.EmailShowType.SYSTEM:
 
 						systemList = ReadEmailCallBack (systemList,readResp.emailId,readResp.result);
-						EmailPage.emailPage.RefreshEmailList (readType,systemList);
+						EmailPage.m_instance.RefreshEmailList (readType,systemList);
 
 						break;
 					case EmailPage.EmailShowType.PRIVATE:
 
 						privateList = ReadEmailCallBack (privateList,readResp.emailId,readResp.result);
-						EmailPage.emailPage.RefreshEmailList (readType,privateList);
+						EmailPage.m_instance.RefreshEmailList (readType,privateList);
 
 						break;
 					default:
@@ -282,7 +282,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 
 						if (emailObj != null && emailObj.activeSelf)
 						{
-							EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.PRIVATE,privateList);
+							EmailPage.m_instance.RefreshEmailList (EmailPage.EmailShowType.PRIVATE,privateList);
 						}
 					}
 					else
@@ -291,7 +291,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 
 						if (emailObj != null && emailObj.activeSelf)
 						{
-							EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
+							EmailPage.m_instance.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
 						}
 					}
 //					ExistNewEmail ();
@@ -310,8 +310,8 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 				{
 					//删除邮件
 					systemList = GetRewardCallBack (getAwardResp.id,getAwardResp.isSuccess);
-					EmailPage.emailPage.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
-					EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
+					EmailPage.m_instance.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
+					EmailPage.m_instance.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
 				}
 				
 				return true;
@@ -336,7 +336,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 							}
 							BlockedData.Instance().m_BlockedInfoDic.Add (tempJunZhu.junzhuId,tempJunZhu);
 							//刷新查看邮件界面
-							EmailPage.emailPage.RefreshEmailCheck (EmailPage.RefreshType.SHIELD_FRIEND);
+							EmailPage.m_instance.RefreshEmailCheck (EmailPage.RefreshType.SHIELD_FRIEND);
 							textStr = "您已将" + operateEmail.senderName + "加入黑名单！\n\n您可以在【好友】-【屏蔽名单】功能中解除黑名单设置";
 							QXComData.CreateBoxDiy (textStr,true,null);
 						}
@@ -344,15 +344,15 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 						{
 							//删除该邮件
 							privateList = LetterOperateCallBack (LetterOperateType.SHIELD,1);
-							EmailPage.emailPage.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
-							EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.PRIVATE,privateList);
+							EmailPage.m_instance.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
+							EmailPage.m_instance.RefreshEmailList (EmailPage.EmailShowType.PRIVATE,privateList);
 						}
 					}
 					else
 					{
 						systemList = LetterOperateCallBack (LetterOperateType.SHIELD,responseResp.isSuccess);
-						EmailPage.emailPage.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
-						EmailPage.emailPage.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
+						EmailPage.m_instance.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
+						EmailPage.m_instance.RefreshEmailList (EmailPage.EmailShowType.SYSTEM,systemList);
 					}
 				}
 				
@@ -397,7 +397,7 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 				{
 				case 0:
 
-					EmailPage.emailPage.OpenCheckEmail (email);
+					EmailPage.m_instance.OpenCheckEmail (email);
 					EmailTemp emailTemp = EmailTemp.getEmailTempByType(email.type);
 					if (emailTemp.operateType == (int)EmailCheck.EmailOperateType.DELATE_AFTER_LOOK)//阅后即删
 					{
@@ -546,13 +546,13 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 			textStr = "发送成功！";
 			QXComData.CreateBoxDiy (textStr,true,SendSuccessCallBack);
 			//更新发送按钮状态
-			EmailPage.emailPage.RefreshEmailSendBtnState (3);
+			EmailPage.m_instance.RefreshEmailSendBtnState (3);
 		}
 		else
 		{
 			textStr = sendFailLength[tempResult - 1];
 			QXComData.CreateBoxDiy (textStr,true,null);
-			EmailPage.emailPage.RefreshEmailSendBtnState (1);
+			EmailPage.m_instance.RefreshEmailSendBtnState (1);
 		}
 	}
 	void SendSuccessCallBack (int i)
@@ -560,13 +560,13 @@ public class NewEmailData : MonoBehaviour,SocketProcessor {
 		//关闭发送页面
 		if (emailOpenType == EmailOpenType.EMAIL_REPLY_PAGE)
 		{
-			EmailPage.emailPage.CloseEmail ();
+			EmailPage.m_instance.CloseEmail ();
 		}
 		else
 		{
-			EmailPage.emailPage.GetSendEmailInfo ();
-			EmailPage.emailPage.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
-			EmailPage.emailPage.CheckUnSendEmail ();
+			EmailPage.m_instance.GetSendEmailInfo ();
+			EmailPage.m_instance.ShowEmailPage (EmailPage.EmailShowPage.EMAIL_MAINPGE);
+			EmailPage.m_instance.CheckUnSendEmail ();
 		}
 	}
 }
