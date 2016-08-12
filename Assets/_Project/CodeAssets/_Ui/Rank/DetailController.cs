@@ -14,7 +14,7 @@ namespace Rank
 
         public void SetBG(bool isHighLight)
         {
-            BGSprite.spriteName = isHighLight ? "jianbianbgliang" : "thirdBg";
+			BGSprite.spriteName = isHighLight ? "InfoBg1" : "InfoBg";
         }
 
         public IEnumerator AdjustFloatButton()

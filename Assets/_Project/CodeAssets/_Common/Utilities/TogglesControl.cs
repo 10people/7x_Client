@@ -25,19 +25,35 @@ public class TogglesControl : MonoBehaviour
 
     private GameObject TriggeredObject;
 
+	public bool IsLeft;
+
+	public GameObject mBtnBg;
     /// <summary>
     /// Call this method manully.
     /// </summary>
     /// <param name="index"></param>
     public void OnToggleClick(int index)
     {
-        TogglesEvents.ForEach(item => SetColorA(item.gameObject, ChangeA));
+		if(IsLeft)
+		{
+			for(int i = 0 ; i < TogglesEvents.Count ;i++)
+			{
+				TogglesEvents[i].gameObject.GetComponent<UISprite>().spriteName = "sprite"+(i+1).ToString();
+			}
+			
+			if (MoveDepth != 0)
+			{
+				SetObjectsDepth(TogglesEvents[index].gameObject, MoveDepth, true);
+			}
+		}
+		else
+		{
+			TogglesEvents.ForEach(item => SetColorA(item.gameObject, 0.5f));
+		}
 
-        if (MoveDepth != 0)
-        {
-            SetObjectsDepth(TogglesEvents[index].gameObject, MoveDepth, true);
-        }
-        SetColorA(TogglesEvents[index].gameObject, 1);
+
+	
+		SetColorA(TogglesEvents[index].gameObject, index);
 
         TriggeredObject = TogglesEvents[index].gameObject;
     }
@@ -77,7 +93,43 @@ public class TogglesControl : MonoBehaviour
     /// <param name="a">the value</param>
     private void SetColorA(GameObject go, float a)
     {
-        var widget = go.GetComponent<UIWidget>();
-        widget.color = new Color(a, a, a, 1f);
+		if (IsLeft) {
+			if (a == 0) {
+				return;
+			}
+			string mstr = "";
+			switch ((int)a) {
+			case 6:
+				TogglesEvents [0].gameObject.GetComponent<UISprite> ().spriteName = "Bigsprite5";
+				go = TogglesEvents [0].gameObject;
+				break;
+			case 2:
+				TogglesEvents [1].gameObject.GetComponent<UISprite> ().spriteName = "Bigsprite2";
+				go = TogglesEvents [1].gameObject;
+				break;
+			case 3:
+				TogglesEvents [2].gameObject.GetComponent<UISprite> ().spriteName = "Bigsprite3";
+				go = TogglesEvents [2].gameObject;
+				break;
+			case 1:
+				TogglesEvents [3].gameObject.GetComponent<UISprite> ().spriteName = "Bigsprite4";
+				go = TogglesEvents [3].gameObject;
+				break;
+			}
+			//		TogglesEvents[a].gameObject.GetComponent<UISprite>().spriteName = "Bigsprite"+(a+1).ToString();
+			Hashtable move = new Hashtable ();
+			move.Add ("time", 0.2f);
+			move.Add ("position", go.transform.localPosition);
+			move.Add ("islocal", true);
+			move.Add ("easetype", iTween.EaseType.linear);
+			iTween.MoveTo (mBtnBg, move);
+		}
+		else 
+		{
+	        var widget = go.GetComponent<UIWidget>();
+	        widget.color = new Color(a, a, a, 1f);
+		}
+
+
     }
 }

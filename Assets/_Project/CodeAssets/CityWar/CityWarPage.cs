@@ -63,9 +63,18 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 	public GameObject m_rewardRed;
 	#endregion
 
+	public GameObject m_anchorTL;
+	public GameObject m_anchorTR;
+
 	new void Awake ()
 	{
 		base.Awake ();
+	}
+
+	void Start ()
+	{
+		QXComData.LoadTitleObj (m_anchorTL,"郡城战");
+		QXComData.LoadYuanBaoInfo (m_anchorTR);
 	}
 
 	public void InItCityWarPage (CityFightInfoResp tempResp)
@@ -97,9 +106,9 @@ public class CityWarPage : GeneralInstance<CityWarPage> {
 		}
 
 		m_allianceName.text = QXComData.AllianceName (QXComData.AllianceInfo ().name);
-		m_allianceLevel.text = "等级[0dbce8]  " + QXComData.AllianceInfo ().level.ToString () + "[-]";
+		m_allianceLevel.text = QXComData.AllianceInfo ().level.ToString ();
 		m_allianceIcon.spriteName = QXComData.AllianceInfo ().icon.ToString ();
-		m_earth.text = "领地[0dbce8]  " + CityResp.myCityCount + "[-]";
+		m_earth.text = CityResp.myCityCount.ToString ();
 
 		m_cityList = QXComData.CreateGameObjectList (m_cityObj,CityResp.cityList.Count,m_cityList);
 		for (int i = 0;i < m_cityList.Count;i ++)

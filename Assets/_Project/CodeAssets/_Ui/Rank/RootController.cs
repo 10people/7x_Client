@@ -79,20 +79,20 @@ namespace Rank
         private void OnNationsClick(int index)
         {
             m_NationTogglesControl.OnToggleClick(index);
-            m_NationTogglesControl.TogglesEvents.ForEach(item =>
-            {
-                var temp = item.GetComponentsInChildren<UILabelType>(true);
-                if (temp.Any())
-                {
-                    temp.First().setType(11);
-                }
-            });
-
-            var temp2 = m_NationTogglesControl.TogglesEvents[index].GetComponentsInChildren<UILabelType>(true);
-            if (temp2.Any())
-            {
-                temp2.First().setType(10);
-            }
+//            m_NationTogglesControl.TogglesEvents.ForEach(item =>
+//            {
+//                var temp = item.GetComponentsInChildren<UILabelType>(true);
+//                if (temp.Any())
+//                {
+//                    temp.First().setType(11);
+//                }
+//            });
+//
+//            var temp2 = m_NationTogglesControl.TogglesEvents[index].GetComponentsInChildren<UILabelType>(true);
+//            if (temp2.Any())
+//            {
+//                temp2.First().setType(10);
+//            }
             CurrentNation = index;
             RequestAllInModule(1, index);
         }
@@ -126,8 +126,8 @@ namespace Rank
         public void OnModulesClick(int index)
         {
             m_ModuleTogglesControl.OnToggleClick(index);
-            m_ModuleTogglesControl.TogglesEvents.ForEach(item => item.GetComponentsInChildren<UILabelType>(true).First().setType(11));
-            m_ModuleTogglesControl.TogglesEvents[index].GetComponentsInChildren<UILabelType>(true).First().setType(10);
+//            m_ModuleTogglesControl.TogglesEvents.ForEach(item => item.GetComponentsInChildren<UILabelType>(true).First().setType(11));
+//            m_ModuleTogglesControl.TogglesEvents[index].GetComponentsInChildren<UILabelType>(true).First().setType(10);
             m_ModuleControllerList.ForEach(item => item.gameObject.SetActive(false));
             m_ModuleControllerList[index].gameObject.SetActive(true);
             currentModule = index;

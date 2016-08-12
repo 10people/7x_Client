@@ -145,6 +145,7 @@ public class NewPveLevelInfo : MonoBehaviour {
 		}
 		if(levelState == (int)m_Level_Type.ChuanQi)
 		{
+			ChuanQiLevel();
 			spriteStar_UIroot.SetActive(true);
 		}
 	}

@@ -58,7 +58,7 @@ public class CityWarReward : GeneralInstance<CityWarReward> {
 
 		for (int i = 0;i < m_rewardList.Count;i ++)
 		{
-			m_rewardList[i].transform.localPosition = new Vector3(0,-48 * i,0);
+			m_rewardList[i].transform.localPosition = new Vector3(0,-53 * i,0);
 			m_sc.UpdateScrollbars (true);
 			CWRewardItem cwRewardItem = m_rewardList[i].GetComponent<CWRewardItem> ();
 			cwRewardItem.InItReward (tempType,tempResp.rewardList[i]);
@@ -71,10 +71,12 @@ public class CityWarReward : GeneralInstance<CityWarReward> {
 			(tempType == CityWarData.CW_RewardType.ALLIANCE ? LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_41) : LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_42));
 
 //		m_rulesLabel.text = QXComData.yellow + (tempType == CityWarData.CW_RewardType.ALLIANCE ? "每日于18:00（未被宣战）与21:00（战斗结算）发放奖励，最多存3天" : "每日21：00开始参加与任意郡城战的进攻/镇守，都可获得奖励，最多存3天") + "[-]";
-		m_rulesLabel.text = QXComData.yellow + (tempType == CityWarData.CW_RewardType.ALLIANCE ? LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_7) : LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_8)) + "[-]";
+		m_rulesLabel.text = tempType == CityWarData.CW_RewardType.ALLIANCE ? LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_7) : LanguageTemplate.GetText(LanguageTemplate.Text.JUN_CHENG_ZHAN_8);
 
-		m_sc.enabled = m_rewardList.Count < 7 ? false : true;
-		m_sb.gameObject.SetActive (m_rewardList.Count < 7 ? false : true);
+		int maxCount = 5;
+
+		m_sc.enabled = m_rewardList.Count < maxCount ? false : true;
+		m_sb.gameObject.SetActive (m_rewardList.Count < maxCount ? false : true);
 
 		switch (tempType)
 		{

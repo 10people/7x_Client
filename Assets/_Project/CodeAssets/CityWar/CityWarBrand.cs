@@ -47,7 +47,7 @@ public class CityWarBrand : GeneralInstance<CityWarBrand> {
 
 		for (int i = 0;i < m_brandList.Count;i ++)
 		{
-			m_brandList[i].transform.localPosition = new Vector3(0,-49 * i,0);
+			m_brandList[i].transform.localPosition = new Vector3(0,-53 * i,0);
 			CWBrandItem cwBrand = m_brandList[i].GetComponent<CWBrandItem> ();
 			cwBrand.InItBrandItem (tempResp.grandList[i]);
 		}
@@ -60,12 +60,14 @@ public class CityWarBrand : GeneralInstance<CityWarBrand> {
 
 		m_des.text = m_brandList.Count > 0 ? "" : "战报记录为空";
 
-		m_brandObj.transform.parent.GetComponent<ItemTopCol> ().enabled = m_brandList.Count < 7 ? true : false;
+		int maxCount = 6;
 
-		m_sc.enabled = m_brandList.Count < 7 ? false : true;
-		m_sb.gameObject.SetActive (m_brandList.Count < 7 ? false : true);
+		m_brandObj.transform.parent.GetComponent<ItemTopCol> ().enabled = m_brandList.Count < maxCount ? true : false;
 
-		m_rules.text = m_brandList.Count >= 7 ? QXComData.yellow + LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_9) + "[-]" : "";
+		m_sc.enabled = m_brandList.Count < maxCount ? false : true;
+		m_sb.gameObject.SetActive (m_brandList.Count < maxCount ? false : true);
+
+		m_rules.text = m_brandList.Count >= maxCount ? LanguageTemplate.GetText (LanguageTemplate.Text.JUN_CHENG_ZHAN_9) : "历史战报最多保存99条";
 	}
 
 	void Update ()
